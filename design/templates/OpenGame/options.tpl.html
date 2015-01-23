@@ -251,10 +251,10 @@
         <tr>
           <th>{L_shortcut}</th>
           <td class="c_c" nowrap>
-            <input name="settings_esp"{user_settings_esp} type="checkbox" id="settings_esp" />&nbsp;<label for="settings_esp"><img height="14px" src="{dpath}img/e.gif" alt="{spy}" />&nbsp;{L_spy}</label>
-            <input name="settings_mis"{user_settings_mis} type="checkbox" id="settings_mis" />&nbsp;<label for="settings_mis"><img height="14px" src="{dpath}img/r.gif" alt="{attack_with_missile}" />&nbsp;{L_attack_with_missile}</label><br/>
-            <input name="settings_wri"{user_settings_wri} type="checkbox" id="settings_wri" />&nbsp;<label for="settings_wri"><img height="14px" src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_write_a_messege}</label>
-            <input name="settings_statistics"{user_settings_statistics} type="checkbox" id="settings_statistics" />&nbsp;<label for="settings_statistics"><img height="14px" src="design/images/statistics.png" alt="{L_opt_settings_statistics}">&nbsp;{L_opt_settings_statistics}</label><br/>
+            <input name="settings_esp"{user_settings_esp} type="checkbox" id="settings_esp" />&nbsp;<label for="settings_esp"><img height="14px" src="design/images/icon_espionage.png" alt="{spy}" />&nbsp;{L_spy}</label>
+            <input name="settings_mis"{user_settings_mis} type="checkbox" id="settings_mis" />&nbsp;<label for="settings_mis"><img height="14px" src="design/images/icon_missile.png" alt="{attack_with_missile}" />&nbsp;{L_attack_with_missile}</label><br/>
+            <input name="settings_wri"{user_settings_wri} type="checkbox" id="settings_wri" />&nbsp;<label for="settings_wri"><img height="14px" src="design/images/icon_mail.gif" alt="{write_a_messege}" />&nbsp;{L_write_a_messege}</label>
+            <input name="settings_statistics"{user_settings_statistics} type="checkbox" id="settings_statistics" />&nbsp;<label for="settings_statistics"><img src="design/images/icon_statistics.png" alt="{L_opt_settings_statistics}">&nbsp;{L_opt_settings_statistics}</label><br/>
             <input name="settings_info"{user_settings_info} type="checkbox" id="settings_info" />&nbsp;<label for="settings_info"><img height="14px" src="{dpath}icons/menu_empire_emperor.png" alt="{L_opt_settings_info}">&nbsp;{L_opt_settings_info}</label>
             <input name="settings_bud"{user_settings_bud} type="checkbox" id="settings_bud" />&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{add_to_buddylist}">&nbsp;{L_add_to_buddylist}</label>
             <!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {L_show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
@@ -274,7 +274,7 @@
           <td class="c_c"><label for="{options_1.NAME}">{options_1.TEXT}</label></td>
           <td class="c_c">
             <!-- IF options_1.PM != -1 -->
-            <input type="checkbox" id="opt_{options_1.NAME}" name="opt_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.PM --> checked<!-- ENDIF -->>&nbsp;<label for="opt_{options_1.NAME}"><img src="{dpath}img/m.gif" alt="{write_a_messege}" />&nbsp;{L_msg_personal_messages}</label>
+            <input type="checkbox" id="opt_{options_1.NAME}" name="opt_{options_1.NAME}" value="1" id="{options_1.NAME}"<!-- IF options_1.PM --> checked<!-- ENDIF -->>&nbsp;<label for="opt_{options_1.NAME}"><img src="design/images/icon_mail.gif" alt="{write_a_messege}" />&nbsp;{L_msg_personal_messages}</label>
             <!-- ENDIF -->&nbsp;
           </td>
           <!-- IF config_game_email_pm -->

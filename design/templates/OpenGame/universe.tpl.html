@@ -36,8 +36,9 @@ var users = new Array();
 users[{users.ID}] = {
   name: '{users.NAME_JS}',
   rank: '{users.RANK}',
-  ally_title: '{users.ALLY_TITLE}',
+  ally_id: parseInt('{users.ALLY_ID}') ? parseInt('{users.ALLY_ID}') : 0,
   ally_tag: '{users.ALLY_TAG}',
+  ally_title: '{users.ALLY_TITLE}',
   avatar: '{users.AVATAR}'
 };
 <!-- ENDIF --><!-- END users -->
@@ -88,6 +89,10 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <tr>
       <td class="c" colspan="3">{L_Galaxy}</td>
       <td class="c" colspan="3">{L_Solar_system}</td>
+      <th class="c markup" rowspan="2" align="center">
+        <input value="{L_sys_goto}" type="submit">
+        <input type="hidden" id="auto" value="dr" >
+      </th>
     </tr>
     <tr>
       <th class="c"><input name="galaxyLeft" value="&lt;-" type="button" onClick="this.form.galaxy.value--;this.form.submit();"></th>
@@ -98,19 +103,13 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <th class="c"><input name="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text"></th>
       <th class="c"><input name="systemRight" value="-&gt;" type="button" onClick="this.form.system.value++;this.form.submit();"></th>
     </tr>
-    <tr>
-      <th class="c" colspan="6" align="center">
-        <input value="{L_sys_goto}" type="submit">
-        <input type="hidden" id="auto" value="dr" >
-      </th>
-    </tr>
   </tbody></table>
 </form>
 
 <table width=595 id="universe_main"><tbody>
   <tr><th class="c_l" colspan="{COL_SPAN}">
-    <span class="fl">{L_sys_galaxy}&nbsp;{galaxy} <span class="ok">{GALAXY_NAME}</span>&nbsp;<a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a></span>
-    <span class="fr ok link" style="cursor: pointer;" onmouseout='popup_hide();' onmouseover="popup_show(jQuery('#legend_template').html());">{L_Legend}</span>
+    {L_sys_galaxy}&nbsp;{galaxy} <span class="ok">{GALAXY_NAME}</span>&nbsp;<a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a>
+    <span class="fr ok link_action" onmouseout='popup_hide();' onmouseover="popup_show(jQuery('#legend_template').html(), 'auto', 0, 0, {my: 'right top', at: 'right bottom', of: jQuery(this).parent()});">{L_Legend}</span>
   </th></tr>
 
   <tr><th class="c_l" colspan="{COL_SPAN}">
@@ -127,16 +126,16 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <td class=c>{L_Player}</td>
     <td class=c>{L_sys_alliance}</td>
     <!-- IF ACT_SPY -->
-    <th class=c_c><img src="{dpath}img/e.gif" alt="{L_gl_espionner}" title="{L_gl_espionner}" /></th>
+    <th class=c_c><img src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
-    <th class=c_c><img src="{dpath}img/r.gif" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" /></th>
+    <th class=c_c><img src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_WRITE -->
-    <th class=c_c><img src="{dpath}img/m.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></th>
+    <th class=c_c><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_STATISTICS -->
-    <th class=c_c><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 width="16px"></th>
+    <th class=c_c><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0></th>
     <!-- ENDIF -->
     <!-- IF ACT_INFO -->
     <th class=c_c><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></th>
@@ -146,31 +145,28 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <!-- ENDIF -->
   </tr>
 <!-- BEGIN galaxyrow -->
-  <tr>
-    <th width=30 style="white-space: nowrap" nowrap>
+  <tr user_id="{galaxyrow.USER_ID}" ally_id="{galaxyrow.ALLY_ID}" planet_pos="{galaxyrow.PLANET_NUM}">
+    <!-- IF galaxyrow.PLANET_ID -->
+    <th width=30>
       <!-- IF galaxyrow.PLANET_TYPE -->
         {galaxyrow.PLANET_NUM}
       <!-- ELSE -->
         <a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7">{galaxyrow.PLANET_NUM}</a>
       <!-- ENDIF -->
     </th>
-    <th style="white-space: nowrap;" width=30 valign=middle nowrap>
+    <th class="uni_show_planet" planet_type="{galaxyrow.PLANET_TYPE}">
       <!-- IF galaxyrow.PLANET_ID -->
-        <div style="position: relative; height: 30px; width: 30px;" onmouseover="show_planet({galaxyrow.PLANET_NUM}, {galaxyrow.PLANET_TYPE});">
-          <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
-            <img style="cursor: pointer;" src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg height=30 width=30>
-          </span>
+        <div>
+          <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg>
           <!-- IF galaxyrow.PLANET_FLEET_ID -->
-            <span class="alpha50" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;">
-              <img src=design/images/icon_fleet_own.png width=100%>
-            </span>
+          <img class="alpha25" src=design/images/icon_fleet_own.png>
           <!-- ENDIF -->
         </div>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
     </th>
-    <th style="white-space: nowrap;" width=130 nowrap>
+    <th nowrap>
       <!-- IF galaxyrow.PLANET_ID -->
         <div class="g_galaxy_row">
           <!-- IF galaxyrow.PLANET_DESTROYED -->
@@ -195,27 +191,25 @@ uni_row[{galaxyrow.PLANET_NUM}] =
               <!-- ENDIF -->
             <!-- ENDIF -->
 
-            <a href=#<!-- IF PLANET_PHALANX --> onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}"<!-- ENDIF -->>
+            <!-- IF PLANET_PHALANX && galaxyrow.USER_ID != USER_ID-->
+            <button onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}">
+            <!-- ENDIF -->
               <span class="{$PLANET_CLASS}">
                 {galaxyrow.PLANET_NAME}<!-- IF $PLANET_ACTIVITY -->&nbsp;({$PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF -->
               </span>
-            </a>
+            <!-- IF PLANET_PHALANX && galaxyrow.USER_ID != USER_ID-->
+            </button>
+            <!-- ENDIF -->
           <!-- ENDIF -->
         </div>
-      <!-- ELSE -->
-        &nbsp;
       <!-- ENDIF -->
     </th>
-    <th width=30 nowrap>
+    <th class="uni_show_planet" planet_type="{D_PT_MOON}">
       <!-- IF galaxyrow.MOON_DIAMETER -->
-        <div style="position: relative; height: 30px; width: 30px;" onmouseover="show_planet({galaxyrow.PLANET_NUM}, 3);" >
-          <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
-            <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg height=100% width=100%>
-          </span>
+        <div>
+          <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg />
           <!-- IF galaxyrow.MOON_FLEET_ID -->
-            <span class="alpha50" style="position: absolute; top: 0; left: 0; height: 100%; width: 100%;">
-              <img src=design/images/icon_fleet_own.png width=100%>
-            </span>
+          <img class="alpha25" src=design/images/icon_fleet_own.png width=100%>
           <!-- ENDIF -->
         </div>
       <!-- ELSE -->
@@ -233,12 +227,10 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- DEFINE $DEBRIS_BKG = '' -->
     <!-- ENDIF -->
 
-    <th style="white-space: nowrap; background-image: none; width: 60px; height: 100%; background-color: {$DEBRIS_BKG};" nowrap><center>
+    <td class="c_c uni_show_debris" style="background-color: {$DEBRIS_BKG};">
       <!-- IF galaxyrow.DEBRIS -->
-        <div style="position: relative; height: 30px; width: 30px;">
-          <span style="position: absolute; top: 0; left: 0; height: 30px; width: 30px;">
-            <img onmouseover='show_debris({galaxyrow.PLANET_NUM});' src="{dpath}planeten/debris.jpg" height="30px" width="30px">
-          </span>
+        <div>
+          <img src="{dpath}planeten/debris.jpg" height="30px" width="30px">
           <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
             <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
           <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
@@ -248,12 +240,12 @@ uni_row[{galaxyrow.PLANET_NUM}] =
           <!-- ELSE -->
             <!-- DEFINE $DEBRIS_FONT_CLASS = 'warning' -->
           <!-- ENDIF -->
-            <span class="icon_alpha {$DEBRIS_FONT_CLASS}" style="position: absolute; bottom: 0; right: 0;">{galaxyrow.DEBRIS_RESERVED_PERCENT}%</span>
+          <span class="icon_alpha {$DEBRIS_FONT_CLASS}">{galaxyrow.DEBRIS_RESERVED_PERCENT}%</span>
         </div>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
-    </center></th>
+    </td>
 
     <!-- IF galaxyrow.USER_ACTIVITY >= 28 -->
       <!-- DEFINE $FONT_TYPE = 'longinactive' -->
@@ -277,17 +269,19 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- DEFINE $USER_CLASS = '' -->
     <!-- ENDIF -->
 
-    <th width=150 align=center nowrap>
+    <th width=150 align=center nowrap class="uni_show_user">
       <!-- IF galaxyrow.USER_ID -->
-        <!-- IF galaxyrow.USER_BIRTHDAY --><img src="{D_SN_ROOT_VIRTUAL}design/images/birthday.png" alt="{galaxyrow.USER_BIRTHDAY}" title="{galaxyrow.USER_BIRTHDAY}">&nbsp;<!-- ENDIF --><span style="cursor: pointer;" onmouseover='show_user({galaxyrow.USER_ID});' class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACATION --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
+        <span<!-- IF galaxyrow.USER_ID != USER_ID --> class="link_action"<!-- ENDIF -->>
+        <!-- IF galaxyrow.USER_BIRTHDAY --><img src="{D_SN_ROOT_VIRTUAL}design/images/birthday.png" alt="{galaxyrow.USER_BIRTHDAY}" title="{galaxyrow.USER_BIRTHDAY}">&nbsp;<!-- ENDIF --><span class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_VACATION --><span class="vacation">{L_vacation_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
+        </span>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
     </th>
 
-    <th width=80 nowrap>
+    <th width=80 nowrap class="uni_show_ally">
       <!-- IF galaxyrow.ALLY_ID -->
-        <span style="line-height: 1em; height: 1em; cursor: pointer;" onmouseover='show_alliance({galaxyrow.ALLY_ID});' class="<!-- IF ALLY_ID == galaxyrow.ALLY_ID -->allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</span>
+        <span class="link_action<!-- IF ALLY_ID == galaxyrow.ALLY_ID --> allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</span>
       <!-- ELSE -->
         &nbsp;
       <!-- ENDIF -->
@@ -301,28 +295,28 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <!-- IF ACT_SPY -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <img onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="{dpath}img/e.gif" alt="{L_gl_espionner}" title="{L_gl_espionner}" />
+      <img onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" />
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <img onclick="uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="{dpath}img/r.gif" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" />
+      <img onclick="uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" />
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_WRITE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="{dpath}img/m.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></a>&nbsp;
+      <a href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_STATISTICS -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && galaxyrow.USER_RANK != '-' -->
-      <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}: {L_Place} {galaxyrow.USER_RANK}/{userCount}" width="16px" /></a>
+      <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
@@ -336,15 +330,26 @@ uni_row[{galaxyrow.PLANET_NUM}] =
     <!-- IF ACT_FRIEND -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></a>&nbsp;
+      <a href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
 
+    <!-- ELSE -->
+    <td colspan="{COL_SPAN}" class="c_c">
+      <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7');">
+        {L_uni_colonize} {galaxyrow.PLANET_NUM}
+      </button>
+    </td>
+    <!-- ENDIF -->
   </tr>
 <!-- END galaxyrow -->
   <tr>
-    <th colspan="{COL_SPAN}"><a href="fleet.php?galaxy={galaxy}&system={system}&planet={EXPIDITION}&planettype=1&target_mission={D_MT_EXPLORE}">{L_gf_unknowsp}</a></th>
+    <th colspan="{COL_SPAN}" class="subheader">
+      <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet={EXPIDITION}&planettype=1&target_mission={D_MT_EXPLORE}');">
+        {L_gf_unknowsp}
+      </button>
+    </th>
   </tr>
   <tr>
     <td class=c colspan=3>
@@ -357,7 +362,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <span id="flt_spies">{SPs}</span> {L_gf_sp_title}
     </td>
   </tr>
-  <tr style="display: none;" id="fleetstatusrow"><th class=c colspan="{COL_SPAN}"><table style="font-weight: bold" width="100%" id="fleetstatustable"></table></th></tr>
+  <tr style="display: none;" id="fleetstatusrow"><th class=c colspan="{COL_SPAN}"><table width="100%" id="fleetstatustable"></table></th></tr>
 </tbody></table>
 
 <form id="uni_missile_form" style="display: none;" name="uni_missile_form" method=POST>
@@ -410,12 +415,12 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <!-- ENDIF -->
 
       <tr><th class="c_l" colspan=2>{L_Actions}</th></tr>
-      <tr><td>{L_gl_espionner}</td><td><img src="{dpath}img/e.gif" border=0></td></tr>
-      <tr><td>{L_gl_mipattack}</td><td><img src="{dpath}img/r.gif" border=0></td></tr>
+      <tr><td>{L_gl_espionner}</td><td><img src="design/images/icon_espionage.png" border=0></td></tr>
+      <tr><td>{L_gl_mipattack}</td><td><img src="design/images/icon_missile.png" border=0></td></tr>
       <tr><td>{L_stat_details}</td><td><img src="{dpath}icons/menu_empire_emperor.png" border=0></td></tr>
-      <tr><td>{L_gl_sendmess}</td><td><img src="{dpath}img/m.gif" border=0></td></tr>
+      <tr><td>{L_gl_sendmess}</td><td><img src="design/images/icon_mail.gif" border=0></td></tr>
       <tr><td>{L_gl_buddyreq}</td><td><img src="{dpath}img/b.gif" border=0></td></tr>
-      <tr><td>{L_gl_stats}</td><td><img src="{D_SN_ROOT_VIRTUAL}design/images/statistics.png" border=0 width="16px"></td></tr>
+      <tr><td>{L_gl_stats}</td><td><img src="design/images/icon_statistics.png" border=0 /></td></tr>
     </table>
   </span>
 
@@ -431,14 +436,33 @@ uni_row[{galaxyrow.PLANET_NUM}] =
       <td class="c_c" width=75><img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" height=75 width=75 /><div>[PLANET_DIAMETER]</div></td>
 
       <td class="c_c">
-        <a class="owndeploy" style="[HIDE_PLANET_RELOCATE]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_RELOCATE}">{L_type_mission[4]}</a><br />
-        <a class="owntransport" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_TRANSPORT}">{L_type_mission[3]}</a><br />
-        <a class="ownhold" style="[HIDE_PLANET_HOLD]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_HOLD}">{L_type_mission[5]}</a><br />
+        <button style="[HIDE_PLANET_RELOCATE]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_RELOCATE}');">
+          <span class="owndeploy">{L_type_mission[4]}</span>
+        </button>
         <br />
-        <a class="owndestroy" style="[HIDE_PLANET_DESTROY]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_DESTROY}">{L_type_mission[9]}</a><br />
-        <a class="ownattack" style="[HIDE_PLANET_ATTACK]" href="fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_ATTACK}">{L_type_mission[1]}</a><br />
-        <span class="ownespionage" style="cursor:pointer; [HIDE_PLANET_SPY]" onclick="doit({D_MT_SPY}, [PLANET_POS], [PLANET_TYPE], {ACT_SPIO});">{L_type_mission[6]}</span><br />
-        <span style="cursor:pointer; [HIDE_PLANET_PHALANX]" onclick=fenster("phalanx.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]")>{L_gl_phalanx}</span>
+        <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_TRANSPORT}');">
+          <span class="owntransport">{L_type_mission[3]}</span>
+        </button>
+        <br />
+        <button style="[HIDE_PLANET_HOLD]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_HOLD}');">
+          <span class="ownhold">{L_type_mission[5]}</span>
+        </button>
+        <br />
+        <button style="[HIDE_PLANET_DESTROY]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_DESTROY}');">
+          <span class="owndestroy">{L_type_mission[9]}</span>
+        </button>
+        <br />
+        <button style="[HIDE_PLANET_ATTACK]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_ATTACK}');">
+          <span class="ownattack">{L_type_mission[1]}</span>
+        </button>
+        <br />
+        <button style="[HIDE_PLANET_SPY]" onclick="doit({D_MT_SPY}, [PLANET_POS], [PLANET_TYPE], {ACT_SPIO});">
+          <span class="ownespionage">{L_type_mission[6]}</span>
+        </button>
+        <br />
+        <button style="[HIDE_PLANET_PHALANX]" onclick=fenster("phalanx.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]")>
+          <span class="">{L_gl_phalanx}</span>
+        </button>
       </td>
       </tr>
     </table>
@@ -448,7 +472,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
 
   <span id="debris_template">
     <table width=100%>
-      <tr><th class="c_l" colspan="4">{L_Debris} [{galaxy}:{system}:[CURRENT_PLANET]]</th></tr>
+      <tr><th class="c_c" colspan="4">{L_Debris} [{galaxy}:{system}:[CURRENT_PLANET]]</th></tr>
       <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" height="75px" width="75px" /></td></tr>
 
       <tr>
@@ -483,7 +507,13 @@ uni_row[{galaxyrow.PLANET_NUM}] =
         <td class="c_r">[DEBRIS_WILL_GATHER_PERCENT]%</td>
       </tr>
 
-      <tr style="cursor:pointer; [HIDE_RECYCLER_LINK]" onclick="doit({D_MT_RECYCLE},[CURRENT_PLANET],{D_PT_DEBRIS});"><th class="c_c" colspan="4">[ {L_uni_recyclers_send} ]</th></tr>
+      <tr class="link c_c" style="[HIDE_RECYCLER_LINK]" >
+        <th colspan="4">
+          <button onclick="doit({D_MT_RECYCLE},[CURRENT_PLANET],{D_PT_DEBRIS});">
+            [ {L_uni_recyclers_send} ]
+          </button>
+        </th>
+      </tr>
 
     </table>
   </span>
@@ -491,12 +521,37 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   <span id="user_template">
     <table>
       <tr>
-        <td class="c_c" style="[HIDE_USER_AVATAR]"><img src="{D_SN_ROOT_VIRTUAL}images/avatar/avatar_[USER_ID].png" height=75 width=75 /></td>
-        <th class="c_c">
-          [USER_NAME]<br>
-          {L_Place}&nbsp;[USER_RANK]/{userCount}<br>
-          <span style="[HIDE_USER_ALLY]">[USER_ALLY_TITLE]</span>
+        <th class="c_c" colspan="[USER_COLSPAN]">
+          [USER_NAME]
         </th>
+      </tr>
+      <tr>
+        <td class="c_c subheader" style="[HIDE_USER_ALLY]" colspan="[USER_COLSPAN]">
+          [USER_ALLY_NAME]<br />
+          [USER_ALLY_TITLE]
+        </td>
+      </tr>
+      <tr>
+        <td class="c_c" style="[HIDE_USER_AVATAR]">
+          <div><img src="{D_SN_ROOT_VIRTUAL}images/avatar/avatar_[USER_ID].png" height=75 width=75 /></div>
+        </td>
+        <td class="c_c">
+          <button onclick="sn_redirect('stat.php?who=1&range=[USER_RANK]#[USER_RANK]');">
+            {L_gl_stats}: {L_Place} {galaxyrow.USER_RANK}/{userCount}
+          </button>
+          <br />
+          <button onclick="sn_redirect('index.php?page=imperator&int_user_id=[USER_ID]');">
+            {L_stat_details}
+          </button>
+          <br />
+          <button onclick="sn_redirect('messages.php?mode=write&id=[USER_ID]');">
+            {L_gl_sendmess}
+          </button>
+          <br />
+          <button onclick="sn_redirect('buddy.php?request_user_id=[USER_ID]');">
+            {L_gl_buddyreq}
+          </button>
+        </td>
       </tr>
     </table>
   </span>
@@ -504,24 +559,33 @@ uni_row[{galaxyrow.PLANET_NUM}] =
   <span id="ally_template">
     <table>
       <tr>
-        <td class="c_c" rowspan="4" style="[HIDE_ALLY_AVATAR]"><img src="{D_SN_ROOT_VIRTUAL}images/avatar/ally_[ALLY_ID].png" width=75 /></td>
-        <th class="c_c">
-          [ALLY_NAME]<br>
-          {L_Place}&nbsp;[ALLY_RANK]/{ALLY_COUNT}<br>
-          {L_gal_sys_members}&nbsp;[ALLY_MEMBERS]
+        <th class="c_c" colspan="[ALLY_COLSPAN]">
+          [ALLY_NAME]
         </th>
       </tr>
       <tr>
+        <td class="c_c" rowspan="4" style="[HIDE_ALLY_AVATAR]">
+          <img src="{D_SN_ROOT_VIRTUAL}images/avatar/ally_[ALLY_ID].png" width=75 />
+        </td>
         <td class="c_c">
-          <a href="alliance.php?mode=ainfo&a=[ALLY_ID]">{L_gl_ally_internal}</a>
+          {L_gal_sys_members}&nbsp;[ALLY_MEMBERS]
         </td>
       </tr>
       <tr>
         <td class="c_c">
-          <a href="stat.php?who=2&range=[ALLY_RANK]#[ALLY_RANK]">{L_gl_stats}</a>
+          <button onclick="sn_redirect('stat.php?who=2&range=[ALLY_RANK]#[ALLY_RANK]');">
+            {L_gl_stats}: {L_Place}&nbsp;[ALLY_RANK]/{ALLY_COUNT}
+          </button>
         </td>
       </tr>
-      <tr style="[HIDE_ALLY_URL]"><td class="c_c"><a href="[ALLY_URL]" target=_new>{L_gl_ally_web}</td></tr>
+      <tr>
+        <td class="c_c">
+          <button onclick="sn_redirect('alliance.php?mode=ainfo&a=[ALLY_ID]');">
+            {L_gl_ally_internal}
+          </button>
+        </td>
+      </tr>
+      <tr style="[HIDE_ALLY_URL]"><td class="c_c"><a class="link" href="[ALLY_URL]" target=_new>{L_gl_ally_web}</td></tr>
     </table>
   </span>
 

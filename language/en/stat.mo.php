@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a10.10
+* @version 39b4.0
 *
 */
 
@@ -63,6 +63,6 @@ $a_lang_array = (array(
   'stat_allys' => 'alliances',
   'stat_range' => 'ranks',
 
-  'stat_details' => 'Details',
+  'stat_details' => 'Player info',
 
 ));

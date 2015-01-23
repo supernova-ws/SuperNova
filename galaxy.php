@@ -212,19 +212,12 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 //  $recyclers_incoming = 0;
   $recyclers_incoming_capacity = 0;
   $uni_galaxyRowPlanet['debris'] = $uni_galaxyRowPlanet['debris_metal'] + $uni_galaxyRowPlanet['debris_crystal'];
-  if($uni_galaxyRowPlanet['debris'])
-  {
-//print('<hr>');
-    if($fleet_list[$Planet][PT_DEBRIS])
-    {
-      foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row)
-      {
-        if($fleet_row['fleet_owner'] == $user['id'])
-        {
+  if($uni_galaxyRowPlanet['debris']) {
+    if($fleet_list[$Planet][PT_DEBRIS]) {
+      foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row) {
+        if($fleet_row['fleet_owner'] == $user['id']) {
           $fleet_data = sys_unit_str2arr($fleet_row['fleet_array']);
-          foreach($recycler_info as $recycler_id => $recycler_data)
-          {
-//            $recyclers_incoming += $fleet_data[$recycler_id];
+          foreach($recycler_info as $recycler_id => $recycler_data) {
             $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
           }
         }
@@ -239,10 +232,10 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 
     $recyclers_fleet_data = flt_calculate_fleet_to_transport($recyclers_fleet, $uni_galaxyRowPlanet['debris_to_gather'], $planetrow, $uni_galaxyRowPlanet);
 
-    $uni_galaxyRowPlanet['debris_will_gather'] = min($recyclers_fleet_data['capacity'], $uni_galaxyRowPlanet['debris_to_gather']);
+    $uni_galaxyRowPlanet['debris_will_gather'] = max(0, min($recyclers_fleet_data['capacity'], $uni_galaxyRowPlanet['debris_to_gather']));
     $uni_galaxyRowPlanet['debris_will_gather_percent'] = $uni_galaxyRowPlanet['debris_to_gather'] ? floor($uni_galaxyRowPlanet['debris_will_gather'] / $uni_galaxyRowPlanet['debris_to_gather'] * $uni_galaxyRowPlanet['debris_to_gather_percent']) : 0;
 
-    $uni_galaxyRowPlanet['debris_gather_total'] = $uni_galaxyRowPlanet['debris_will_gather'] + $uni_galaxyRowPlanet['debris_reserved'];
+    $uni_galaxyRowPlanet['debris_gather_total'] = max(0, $uni_galaxyRowPlanet['debris_will_gather'] + $uni_galaxyRowPlanet['debris_reserved']);
     $uni_galaxyRowPlanet['debris_gather_total_percent'] = min(100, floor($uni_galaxyRowPlanet['debris_gather_total'] / $uni_galaxyRowPlanet['debris'] * 100));
   }
 
@@ -302,49 +295,43 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 
 tpl_assign_fleet($template, $fleets);
 
-foreach(sn_get_groups('defense_active') as $unit_id)
-{
+foreach(sn_get_groups('defense_active') as $unit_id) {
   $template->assign_block_vars('defense_active', array(
     'ID' => $unit_id,
     'NAME' => $lang['tech'][$unit_id],
   ));
 }
 
-foreach($cached['users'] as $PlanetUser)
-{
-  if($PlanetUser)
-  {
-    $user_ally = $cached['allies'][$PlanetUser['ally_id']];
-    if(isset($user_ally))
-    {
-      if($PlanetUser['id'] == $user_ally['ally_owner'])
-      {
-        $user_rank_title = $user_ally['ally_owner_range'];
-      }
-      else
-      {
-        $ally_ranks = explode(';', $user_ally['ranklist']);
-        list($user_rank_title) = explode(',', $ally_ranks[$PlanetUser['ally_rank_id']]);
-      }
-    }
-    else
-    {
-      $user_rank_title = '';
-    }
-
-    $birthday_array = $PlanetUser['user_birthday'] ? date_parse($PlanetUser['user_birthday']) : array();
-    $template->assign_block_vars('users', array(
-      'ID'   => $PlanetUser['id'],
-      'NAME' => player_nick_render_to_html($PlanetUser, true),
-      'NAME_JS' => js_safe_string(player_nick_render_to_html($PlanetUser, true)),
-      'RANK' => in_array($PlanetUser['id'], $user_skip_list) ? '-' : $PlanetUser['total_rank'],
-//      'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
-//      'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)
-      'AVATAR'   => $PlanetUser['avatar'],
-      'ALLY_TAG' => js_safe_string($user_ally['ally_tag']),
-      'ALLY_TITLE' => str_replace(' ', '&nbsp', js_safe_string($user_rank_title)),
-    ));
+foreach($cached['users'] as $PlanetUser) {
+  if(!$PlanetUser) {
+    continue;
   }
+
+  $user_ally = $cached['allies'][$PlanetUser['ally_id']];
+  if(isset($user_ally)) {
+    if($PlanetUser['id'] == $user_ally['ally_owner']) {
+      $user_rank_title = $user_ally['ally_owner_range'];
+    } else {
+      $ally_ranks = explode(';', $user_ally['ranklist']);
+      list($user_rank_title) = explode(',', $ally_ranks[$PlanetUser['ally_rank_id']]);
+    }
+  } else {
+    $user_rank_title = '';
+  }
+
+  $birthday_array = $PlanetUser['user_birthday'] ? date_parse($PlanetUser['user_birthday']) : array();
+  $template->assign_block_vars('users', array(
+    'ID'   => $PlanetUser['id'],
+    'NAME' => player_nick_render_to_html($PlanetUser, true),
+    'NAME_JS' => js_safe_string(player_nick_render_to_html($PlanetUser, true)),
+    'RANK' => in_array($PlanetUser['id'], $user_skip_list) ? '-' : $PlanetUser['total_rank'],
+    //'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
+    //'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)
+    'AVATAR'   => $PlanetUser['avatar'],
+    'ALLY_ID' => $PlanetUser['ally_id'],
+    'ALLY_TAG' => js_safe_string($user_ally['ally_tag']),
+    'ALLY_TITLE' => str_replace(' ', '&nbsp', js_safe_string($user_rank_title)),
+  ));
 }
 
 foreach($cached['allies'] as $PlanetAlly)

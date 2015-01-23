@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a10.10
+* @version 39b4.0
 *
 */
 
@@ -61,5 +61,5 @@ $a_lang_array = (array(
   'stat_allys' => 'Альянсы',
   'stat_range' => 'места',
 
-  'stat_details' => 'Подробности',
+  'stat_details' => 'Информация об игроке',
 ));

@@ -385,24 +385,32 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   var popupIsOpen = false;
   popup.dialog({autoOpen: false}); // , width: auto, resizable: false
   popup.mouseleave(function () {
-    popup.dialog("close");
+    popup_hide()
   });
 
-  function popup_show(html, width, aClientX, aClientY) {
+  function popup_hide() {
+    $('[popup_opened_here]').removeAttr('popup_opened_here');
+    popup.dialog("close");
+    popupIsOpen = false;
+  }
+
+  function popup_show(html, width, aClientX, aClientY, positioning) {
     popup_hide();
-    if (width) {
+    if(width) {
       popup.dialog("option", "width", width);
     }
-    popup.dialog("option", "position", [aClientX ? aClientX : clientX, aClientY ? aClientY : clientY]); // + 20
+    if(positioning) {
+      popup.dialog("option", "position", positioning);
+    } else {
+      aClientX = aClientX ? aClientX : clientX;
+      aClientY = aClientY ? aClientY : clientY;
+      popup.dialog("option", "position", [aClientX, aClientY]); // + 20
+    }
     popup.html(html);
     popup.dialog("open");
     popupIsOpen = true;
   }
 
-  function popup_hide() {
-    popup.dialog("close");
-    popupIsOpen = false;
-  }
 
 // Helper probe to use CSS-values in JS
   function sn_probe_style(element, css_attribute) {

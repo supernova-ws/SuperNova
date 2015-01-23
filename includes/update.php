@@ -1262,8 +1262,7 @@ switch($new_version) {
         "INSERT INTO {{notes}} (`owner`, `galaxy`, `system`, `planet`, `planet_type`, `title`, `text`, `priority`)
           SELECT `shortcut_user_id`, `shortcut_galaxy`, `shortcut_system`, `shortcut_planet`, `shortcut_planet_type`, `shortcut_text`, `shortcut_text`, 2 FROM {{shortcut}}");
     }
-
-    // $update_tables['shortcut'] && upd_do_query("DROP TABLE IF EXISTS {{shortcut}};");
+    $update_tables['shortcut'] && upd_do_query("DROP TABLE IF EXISTS {{shortcut}};");
 
     upd_do_query(
       "UPDATE `{{users}}` AS u

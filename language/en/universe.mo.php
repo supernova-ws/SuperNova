@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 38a8.0
+* @version 39b4.0
 *
 */
 
@@ -146,7 +146,7 @@ $a_lang_array = (array(
   'gf_fleetslt' => 'Fleets',
   'gf_rc_title' => 'Recycler',
   'gf_sp_title' => 'espionage probes',
-  'gf_unknowsp' => 'Explore space (here you can send an expedition)',
+  'gf_unknowsp' => 'Explore space - send expedition',
   'phalanx_header' => 'Fleets in flight',
   'phalanx_noflotes' => 'No fleets in flight',
   'phalanx_nodeuterium' => 'Lack of Deuterium for Sensory phalanx.',
@@ -184,4 +184,5 @@ $a_lang_array = (array(
   'uni_system_of' => 'system',
   'uni_msg_admin_rename' => 'Player ID %d [%s] for %d DM gives to %s at [%s%s] new name: %s',
 
+  'uni_colonize' => 'Send colonizer ship to make a Colony on position',
 ));

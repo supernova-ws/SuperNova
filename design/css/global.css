@@ -729,7 +729,7 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 }
 
 .i_icon_mail, .i_icon_mail_userlist {
-  background-image: url(../images/mail.gif);
+  background-image: url(../images/icon_mail.gif);
   background-size: contain;
   width: 16px;
   height: 16px;

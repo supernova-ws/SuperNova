@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 39b4.0
 *
 */
 
@@ -144,7 +144,7 @@ $a_lang_array = (array(
   'gf_fleetslt' => 'Флотов',
   'gf_rc_title' => 'переработчиков',
   'gf_sp_title' => 'шпионских зондов',
-  'gf_unknowsp' => 'Неисследованное пространство (сюда можно отправить экспедицию)',
+  'gf_unknowsp' => 'Неисследованное пространство - отправить Экспедицию',
   'phalanx_header' => 'Флоты в полёте',
   'phalanx_noflotes' => 'Нет флотов в полете',
   'phalanx_nodeuterium' => 'Нехватает Дейтерия для работы Сенсорной фаланги.',
@@ -186,4 +186,6 @@ $a_lang_array = (array(
   'uni_debris_incoming_recyclers' => 'В&nbsp;полете',
   'uni_debris_on_planet' => 'На&nbsp;орбите',
   'uni_recyclers_send' => 'Отправить переработчики',
+
+  'uni_colonize' => 'Послать колонизатор для основания колонии на позиции номер',
 ));

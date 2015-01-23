@@ -5,7 +5,7 @@ textarea {
   border-radius: 4px;
 }
 
-input, textarea {
+input, textarea, button {
   font-weight: bold !important;
 }
 
@@ -15,6 +15,70 @@ input, textarea {
 
 .note_coordinates {
   color: #00B7F3;
+}
+
+
+/* Universe/Galaxy ---------------------------------------------------------------------------------------------------*/
+.universe_main > tbody > tr > td, .universe_main > tbody > tr > th {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.uni_show_planet, .uni_show_debris, .uni_show_user, .uni_show_ally {
+  cursor: pointer;
+}
+
+.uni_show_user {
+  min-width: 130px;
+}
+
+.uni_show_planet {
+  max-width: 30px;
+  width: 30px;
+}
+.uni_show_planet > div {
+  position: relative;
+  height: 30px;
+  width: 30px;
+}
+.uni_show_planet > div > :first-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  width: 30px;
+}
+.uni_show_planet > div > :nth-child(2) {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.uni_show_debris {
+  background-image: none;
+  max-width: 60px;
+  width: 60px;
+  height: 100%;
+}
+.uni_show_debris > div {
+  margin:auto;
+  position: relative;
+  height: 30px;
+  width: 30px;
+}
+.uni_show_debris > div > :first-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 30px;
+  width: 30px;
+}
+.uni_show_debris > div > :nth-child(2) {
+  position: absolute;
+  bottom: 0;
+  right: 0;
 }
 
 /* Empire overview -------------------------------------------------------------- */
