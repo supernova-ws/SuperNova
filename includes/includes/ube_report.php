@@ -629,13 +629,11 @@ function sn_ube_report_generate(&$combat_data, &$template_result)
     $template_result[PLANET_NAME] = str_replace(' ', '&nbsp;', htmlentities($template_result[PLANET_NAME], ENT_COMPAT, 'UTF-8'));
   }
 
-  global $time_diff;
-
   /** @noinspection SpellCheckingInspection */
   $template_result += array(
     'MICROTIME' => $combat_data[UBE_TIME_SPENT],
-    'COMBAT_TIME' => $combat_data[UBE_TIME] ? $combat_data[UBE_TIME] + $time_diff : 0,
-    'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $combat_data[UBE_TIME] + $time_diff),
+    'COMBAT_TIME' => $combat_data[UBE_TIME] ? $combat_data[UBE_TIME] + SN_CLIENT_TIME_DIFF : 0,
+    'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $combat_data[UBE_TIME] + SN_CLIENT_TIME_DIFF),
     'COMBAT_ROUNDS' => count($combat_data[UBE_ROUNDS]) - 1,
     'UBE_MISSION_TYPE' => $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE],
     'MT_DESTROY' => MT_DESTROY,

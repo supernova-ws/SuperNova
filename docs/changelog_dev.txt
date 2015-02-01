@@ -731,9 +731,32 @@ users - индекс по banaday
 Показывать во вселенной нападение на свои планеты/луны
 Добавить атаку МПР в попап планеты
 
+Failed to load resource: the server responded with a status of 404 (Not Found) http://test.supernova.ws/design/css/global_server.css?1422205651
+Failed to load resource: the server responded with a status of 404 (Not Found) http://test.supernova.ws/skins/EpicBlue/skin_server.css?1422205651
+Failed to load resource: the server responded with a status of 404 (Not Found) http://test.supernova.ws/design/css/global_server.css?1422205651
+Failed to load resource: the server responded with a status of 404 (Not Found) http://test.supernova.ws/skins/EpicBlue/skin_server.css?1422205651
+
+defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
+  убрать использование $time_diff - в модулях
+
+Убрать из переменных и JS и темплейтов и кода
+  var dpath = '{dpath}';
+  var sn_path_prefix = '{D_SN_ROOT_VIRTUAL}';
+
+Компилировать ВСЁ время на стороне клиента - отказаться от хранения разницы во времени
+
+time_probe.php - возвращать результат в JSON
+
 
 #ctv
 
+
+
+
+2015-02-01 20:36:32 39b5.1
+[!] Настройки
+    Теперь большая часть модификаций времени осуществляется непосредственно на клиенте - т.е. не имеет значения, был произведен замер разницы времени или нет
+    Замер времени сохраняется для рендеринга времени на стороне сервера (дата/время сообщений, чат, новости итд)
 
 
 2015-02-01 15:19:11 39b5.0

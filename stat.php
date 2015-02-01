@@ -149,8 +149,8 @@ while ($row = mysql_fetch_assoc($query))
 
 $next_run = sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, true);
 $template->assign_vars(array(
-  'REFRESH_DATE' => $config->var_stat_update ? date(FMT_DATE_TIME, strtotime($config->var_stat_update) + $time_diff) : '',
-  'NEXT_DATE' => $next_run ? date(FMT_DATE_TIME, $next_run + $time_diff) : '',
+  'REFRESH_DATE' => $config->var_stat_update ? date(FMT_DATE_TIME, strtotime($config->var_stat_update) + SN_CLIENT_TIME_DIFF) : '',
+  'NEXT_DATE' => $next_run ? date(FMT_DATE_TIME, $next_run + SN_CLIENT_TIME_DIFF) : '',
   'RANGE' => $range,
   'SUBJECT' => $who,
   'TYPE' => $type,

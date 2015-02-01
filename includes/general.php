@@ -1704,7 +1704,7 @@ function user_time_diff_set($user_time_diff) {
 
 function user_time_diff_probe() {
   $result = array(
-    PLAYER_OPTION_TIME_DIFF => ($time_local = round(sys_get_param('localtime') / 1000)) ? $time_local - SN_TIME_NOW : 0,
+    PLAYER_OPTION_TIME_DIFF => ($time_local = sys_get_param_float('localtime')) ? round($time_local / 1000 - SN_TIME_MICRO) : 0,
     PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => ($time_local_utc_offset = sys_get_param_int('utc_offset')) ? $time_local_utc_offset - date('Z') : 0,
     PLAYER_OPTION_TIME_DIFF_FORCED => sys_get_param_int('user_time_diff_forced'),
     PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,

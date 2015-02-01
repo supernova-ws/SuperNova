@@ -10,6 +10,7 @@ define('INIT', true);
 global $microtime, $time_now;
 define('SN_TIME_MICRO', $microtime = microtime(true));
 define('SN_TIME_NOW', $time_now = intval(SN_TIME_MICRO));
+define('SN_TIME_ZONE_OFFSET', date('Z'));
 define('SN_MEM_START', memory_get_usage());
 
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
@@ -350,44 +351,18 @@ if(!$allow_anonymous && !$sys_user_logged_in) {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 
-/*
-if(!(
-  ($allow_anonymous || $sys_user_logged_in)
-  ||
-  (
-    defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] < 1
-  )
-))
-{
-  setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-  sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
-}
-*/
-
-// define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
 
 $user_time_diff = user_time_diff_get();
-defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', $user_time_diff[PLAYER_OPTION_TIME_DIFF]);
-defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET', $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
-$time_diff = SN_CLIENT_TIME_DIFF_SECONDS + SN_CLIENT_TIME_UTC_OFFSET;
-defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
-defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
+//defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', $user_time_diff[PLAYER_OPTION_TIME_DIFF]);
+//defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET', $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
+//$time_diff = SN_CLIENT_TIME_DIFF_SECONDS + SN_CLIENT_TIME_UTC_OFFSET;
+//defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
+//defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
+global $time_diff;
+define('SN_CLIENT_TIME_DIFF', $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DIFF] + $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
+define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
 
 lng_load_i18n($sn_mvc['i18n'][$sn_page_name]);
 execute_hooks($sn_mvc['model'][''], $template);
-
-/*
-if($sys_user_logged_in)
-{
-  sys_user_vacation($user);
-}
-*/
-/*
-if(empty($user) && ($username = sys_get_param_str_unsafe('username')))
-{
-  $password = sys_get_param_str_unsafe('password');
-  $result = sn_login_new($username, $password, sys_get_param_int('rememberme'));
-}
-*/

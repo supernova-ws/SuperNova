@@ -102,7 +102,7 @@ function sn_chat_add_model()
 }
 function sn_chat_msg_view($template = null)
 {
-  global $config, $skip_fleet_update, $microtime, $user, $time_diff, $lang;
+  global $config, $skip_fleet_update, $microtime, $user, $lang;
 
   define('IN_AJAX', true);
   $skip_fleet_update = true;
@@ -172,7 +172,7 @@ function sn_chat_msg_view($template = null)
       }
 
       $template_result['.']['chat'][] = array(
-        'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'] + $time_diff)),
+        'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF)),
         'NICK' => $nick,
         'TEXT' => cht_message_parse($chat_row['message'], false, intval($chat_row['authlevel'])),
       );

@@ -77,7 +77,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
 function tpl_parse_fleet_db($fleet, $index, $user_data = false){return sn_function_call('tpl_parse_fleet_db', array($fleet, $index, $user_data, &$result));}
 function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
 {
-  global $lang, $time_now, $user, $time_diff;
+  global $lang, $time_now, $user;
 
   if(!$user_data)
   {
@@ -112,23 +112,23 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
 
     'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$fleet['fleet_start_type']],
     'START_COORDS'       => "[{$fleet['fleet_start_galaxy']}:{$fleet['fleet_start_system']}:{$fleet['fleet_start_planet']}]",
-    'START_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['fleet_end_time'] + $time_diff),
+    'START_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['fleet_end_time'] + SN_CLIENT_TIME_DIFF),
     'START_LEFT'         => floor($fleet['fleet_end_time'] + 1 - $time_now),
     'START_URL'          => uni_render_coordinates_href($fleet, 'fleet_start_', 3),
     'START_NAME'         => $fleet['fleet_start_name'],
 
     'END_TYPE_TEXT_SH'   => $lang['sys_planet_type_sh'][$fleet['fleet_end_type']],
     'END_COORDS'         => "[{$fleet['fleet_end_galaxy']}:{$fleet['fleet_end_system']}:{$fleet['fleet_end_planet']}]",
-    'END_TIME_TEXT'      => date(FMT_DATE_TIME, $fleet['fleet_start_time'] + $time_diff),
+    'END_TIME_TEXT'      => date(FMT_DATE_TIME, $fleet['fleet_start_time'] + SN_CLIENT_TIME_DIFF),
     'END_LEFT'           => floor($fleet['fleet_start_time'] + 1 - $time_now),
     'END_URL'            => uni_render_coordinates_href($fleet, 'fleet_end_', 3),
     'END_NAME'           => $fleet['fleet_end_name'],
 
-    'STAY_TIME'          => date(FMT_DATE_TIME, $fleet['fleet_end_stay'] + $time_diff),
+    'STAY_TIME'          => date(FMT_DATE_TIME, $fleet['fleet_end_stay'] + SN_CLIENT_TIME_DIFF),
     'STAY_LEFT'          => floor($fleet['fleet_end_stay'] + 1 - $time_now),
 
     'OV_LABEL'           => $fleet['ov_label'],
-    'EVENT_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['event_time'] + $time_diff),
+    'EVENT_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['event_time'] + SN_CLIENT_TIME_DIFF),
     'OV_LEFT'            => floor($fleet['event_time'] + 1 - $time_now),
     'OV_THIS_PLANET'     => $fleet['ov_this_planet'],
   );

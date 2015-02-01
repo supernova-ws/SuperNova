@@ -219,12 +219,11 @@ switch ($mode)
     }
 
     $template = gettemplate('msg_message_list', true);
-    global $time_diff;
     while ($message_row = mysql_fetch_assoc($message_query))
     {
       $template->assign_block_vars('messages', array(
         'ID'             => $message_row['message_id'],
-        'DATE'           => date(FMT_DATE_TIME, $message_row['message_time'] + $time_diff),
+        'DATE'           => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
         'FROM'           => htmlspecialchars($message_row['message_from']),
         'SUBJ'           => htmlspecialchars($message_row['message_subject']),
         'TEXT'           => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : nl2br($message_row['message_text']),

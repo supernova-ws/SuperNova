@@ -205,7 +205,7 @@ function tpl_render_menu() {
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $time_diff, $sn_mvc;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $sn_mvc;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -234,8 +234,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'USER_AUTHLEVEL'           => $user['authlevel'],
 
     'TIME_NOW'                 => SN_TIME_NOW,
-    'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
-    'TIME_DIFF_SECONDS'        => defined('SN_CLIENT_TIME_DIFF_SECONDS') ? SN_CLIENT_TIME_DIFF_SECONDS : 0,
+    //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
     'TIME_DIFF_MEASURE'        => intval(
       empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
       &&
@@ -349,7 +348,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
     return;
   }
 
-  global $lang, $user, $time_now, $time_diff;
+  global $lang, $time_now;
 
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
@@ -385,7 +384,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
     $template->assign_block_vars("flying_{$type}s", array(
       'TIME' => max(0, $fleet_time - $time_now),
       'TEXT' => $fleet_flying_count,
-      'HINT' => date(FMT_DATE_TIME, $fleet_time + $time_diff) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
+      'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
     ));
     if($fleet_event['DECREASE'])
     {
@@ -545,9 +544,6 @@ function parsetemplate($template, $array = false) {
 
     $template->assign_vars(array(
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      // 'tpath'         => $tmpl_name,
-      // 'SN_ROOT_PATH'  => SN_ROOT_VIRTUAL,
-      // '-path_prefix-' => SN_ROOT_VIRTUAL,
       'TIME_NOW'      => $time_now,
       'USER_AUTHLEVEL'=> isset($user['authlevel']) ? $user['authlevel'] : -1,
       'SN_GOOGLE'     => defined('SN_GOOGLE'),

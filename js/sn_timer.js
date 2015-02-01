@@ -131,8 +131,9 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
 
     var local_time = new Date();
     var time_now = new Date(local_time.valueOf());
-    var timestamp = Math.round(time_now.valueOf() / 1000);
-    var timestamp_server = timestamp - timeDiffSeconds;
+    //var timestamp = Math.round(time_now.valueOf() / 1000);
+    //var timestamp_server = timestamp - timeDiffSeconds;
+    var timestamp_server = Math.round((time_now.valueOf() - timeDiffSecondsMicro) / 1000);
     var activeTimers = 0;
 
     for (timerID in sn_timers) {

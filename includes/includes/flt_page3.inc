@@ -14,7 +14,7 @@ function sn_fleet_page3()
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
-  global $duration, $time_now, $sn_module, $time_diff;
+  global $duration, $time_now, $sn_module;
 
   $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
 
@@ -282,9 +282,9 @@ function sn_fleet_page3()
     'deute_need' => pretty_number($consumption),
     'from' => "{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}",
     'time_go' => date(FMT_DATE_TIME, $fleet['start_time']),
-    'time_go_local' => date(FMT_DATE_TIME, $fleet['start_time'] + $time_diff),
+    'time_go_local' => date(FMT_DATE_TIME, $fleet['start_time'] + SN_CLIENT_TIME_DIFF),
     'time_back' => date(FMT_DATE_TIME, $fleet['end_time']),
-    'time_back_local' => date(FMT_DATE_TIME, $fleet['end_time'] + $time_diff),
+    'time_back_local' => date(FMT_DATE_TIME, $fleet['end_time'] + SN_CLIENT_TIME_DIFF),
   ));
 
   sn_db_transaction_commit();
