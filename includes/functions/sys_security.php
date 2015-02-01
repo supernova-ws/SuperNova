@@ -329,13 +329,11 @@ function sec_login_change_state() {
       "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
         VALUES ({$user['id']},{$template_result[F_DEVICE_ID]},{$template_result[F_BROWSER_ID]},INET_ATON('{$user['user_lastip']}'), '{$proxy_safe}');"
     );
+    sn_db_transaction_commit();
 
     db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ", `banaday` = {$user['banaday']}, `vacation` = {$user['vacation']},
       `user_lastip` = '{$user['user_lastip']}', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = {$template_result[F_BROWSER_ID]}"
     );
-//pdump($template_result);
-//die();
-    sn_db_transaction_commit();
   }
 }
 

@@ -132,7 +132,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
     var local_time = new Date();
     var time_now = new Date(local_time.valueOf());
     var timestamp = Math.round(time_now.valueOf() / 1000);
-    var timestamp_server = timestamp - timeDiffSeconds; // Math.round(time_now.valueOf() / 1000 + timeDiff + timeUTCOffset);
+    var timestamp_server = timestamp - timeDiffSeconds;
     var activeTimers = 0;
 
     for (timerID in sn_timers) {

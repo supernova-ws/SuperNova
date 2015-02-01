@@ -260,10 +260,21 @@ function sn_options_model() {
     $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
     $template_result['.']['result'][] = $avatar_upload_result;
 
+    $user_time_diff = user_time_diff_get();
     if(sys_get_param_int('user_time_diff_forced')) {
-      $user_birthday .= ', `user_time_diff_forced` = 1, `user_time_utc_offset` = 0, `user_time_measured` = ' . SN_TIME_NOW . ', `user_time_diff` = ' . sys_get_param_int('user_time_diff');
-    } else {
-      $user_birthday .= sys_get_param_int('opt_time_diff_clear') || $user['user_time_diff_forced'] ? ', `user_time_diff_forced` = 0, `user_time_diff` = NULL' : '';
+      user_time_diff_set(array(
+        PLAYER_OPTION_TIME_DIFF => sys_get_param_int('user_time_diff'),
+        PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => 0,
+        PLAYER_OPTION_TIME_DIFF_FORCED => 1,
+        PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+      ));
+    } elseif(sys_get_param_int('opt_time_diff_clear') || $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
+      user_time_diff_set(array(
+        PLAYER_OPTION_TIME_DIFF => '',
+        PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => 0,
+        PLAYER_OPTION_TIME_DIFF_FORCED => 0,
+        PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+      ));
     }
 
 //      `username` = '{$username_safe}',
@@ -363,6 +374,7 @@ function sn_options_view($template = null) {
 
 
 
+  $user_time_diff = user_time_diff_get();
   $player_options = player_load_option($user);
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
@@ -410,8 +422,8 @@ function sn_options_view($template = null) {
     'user_settings_statistics' => ($user['settings_statistics'] == 1) ? " checked='checked'/":'',
     'user_settings_info' => ($user['settings_info'] == 1) ? " checked='checked'/":'',
 
-    'user_time_diff_forced' => $user['user_time_diff_forced'],
-    'user_time_diff' => SN_CLIENT_TIME_DIFF,
+    'user_time_diff_forced' => $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED],
+    // '_user_time_diff' => SN_CLIENT_TIME_DIFF,
 
     'adm_pl_prot' => $user['admin_protection'],
 

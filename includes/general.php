@@ -1677,3 +1677,38 @@ function note_assign(&$template, $note_row) {
     'STICKY' => intval($note_row['sticky']),
   ));
 }
+
+function user_time_diff_get() {
+  $result = !empty($_COOKIE[SN_COOKIE_T]) ? explode(';', $_COOKIE[SN_COOKIE_T]) : null;
+  $result = array(
+    PLAYER_OPTION_TIME_DIFF => isset($result[PLAYER_OPTION_TIME_DIFF]) ? $result[PLAYER_OPTION_TIME_DIFF] : '',
+    PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => isset($result[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]) ? $result[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET] : 0,
+    PLAYER_OPTION_TIME_DIFF_FORCED => isset($result[PLAYER_OPTION_TIME_DIFF_FORCED]) ? $result[PLAYER_OPTION_TIME_DIFF_FORCED] : 0,
+    PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => isset($result[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? $result[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME] : '2010-01-01',
+  );
+  return $result;
+}
+
+function user_time_diff_set($user_time_diff) {
+  // Переопределяем массив, что бы элементы были в правильном порядке
+  $user_time_diff = array(
+    PLAYER_OPTION_TIME_DIFF => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF] : '',
+    PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET] : 0,
+    PLAYER_OPTION_TIME_DIFF_FORCED => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED] : 0,
+    PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+  );
+
+  $user_time_diff_str = implode(';', $user_time_diff);
+  sn_setcookie(SN_COOKIE_T, $user_time_diff_str, SN_TIME_NOW + PERIOD_MONTH);
+}
+
+function user_time_diff_probe() {
+  $result = array(
+    PLAYER_OPTION_TIME_DIFF => ($time_local = round(sys_get_param('localtime') / 1000)) ? $time_local - SN_TIME_NOW : 0,
+    PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => ($time_local_utc_offset = sys_get_param_int('utc_offset')) ? $time_local_utc_offset - date('Z') : 0,
+    PLAYER_OPTION_TIME_DIFF_FORCED => sys_get_param_int('user_time_diff_forced'),
+    PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
+  );
+
+  return $result;
+}

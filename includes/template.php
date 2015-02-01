@@ -227,14 +227,21 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   isset($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page);
 
   // Global header
+  $user_time_diff = user_time_diff_get();
+  $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
   $template = gettemplate('_global_header', true);
   $template->assign_vars(array(
-    'TIME_NOW'                 => $time_now,
-    'TIME_DIFF'                => isset($time_diff) ? $time_diff : '',
-    'TIME_DIFF_SECONDS'        => defined('SN_CLIENT_TIME_DIFF_SECONDS') ? SN_CLIENT_TIME_DIFF_SECONDS : 0,
-    'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
-    'TIME_DIFF_MEASURE'        => intval($time_now - $user['user_time_measured'] > 60 * 60),
     'USER_AUTHLEVEL'           => $user['authlevel'],
+
+    'TIME_NOW'                 => SN_TIME_NOW,
+    'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
+    'TIME_DIFF_SECONDS'        => defined('SN_CLIENT_TIME_DIFF_SECONDS') ? SN_CLIENT_TIME_DIFF_SECONDS : 0,
+    'TIME_DIFF_MEASURE'        => intval(
+      empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
+      &&
+      (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
+    ), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
+    //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
 
     'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
     '-meta-'                   => $metatags,

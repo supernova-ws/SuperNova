@@ -154,6 +154,7 @@ define('INITIAL_PAGE', $sn_page_name_original);
 define('SN_COOKIE'        , ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
 define('SN_COOKIE_I'      , SN_COOKIE . '_I');
 define('SN_COOKIE_D'      , SN_COOKIE . '_D');
+define('SN_COOKIE_T'      , SN_COOKIE . '_T'); // Time measure cookie
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . TEMPLATE_PATH);
@@ -365,9 +366,9 @@ if(!(
 
 // define('USER_LEVEL', isset($user['authlevel']) ? $user['authlevel'] : -1);
 
-defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', isset($user['user_time_diff']) ? $user['user_time_diff'] : 0);
-defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET',
-  isset($user['user_time_utc_offset']) && !(isset($user['user_time_diff_forced']) && $user['user_time_diff_forced']) ? $user['user_time_utc_offset'] : 0);
+$user_time_diff = user_time_diff_get();
+defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', $user_time_diff[PLAYER_OPTION_TIME_DIFF]);
+defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET', $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
 $time_diff = SN_CLIENT_TIME_DIFF_SECONDS + SN_CLIENT_TIME_UTC_OFFSET;
 defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
 defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);

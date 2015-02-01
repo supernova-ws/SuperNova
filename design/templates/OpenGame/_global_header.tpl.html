@@ -40,29 +40,19 @@
       var localTime = new Date();
       var serverTime = new Date('{TIME_NOW}' * 1000);
       var timeDiffSeconds = '{TIME_DIFF_SECONDS}';
-      var timeUTCOffset = parseInt('{TIME_UTC_OFFSET}') ? parseInt('{TIME_UTC_OFFSET}') : 0;
+      //var timeUTCOffset = parseInt('{TIME_UTC_OFFSET}') ? parseInt('{TIME_UTC_OFFSET}') : 0;
       var timeDiff = parseInt('{TIME_DIFF}') ? parseInt('{TIME_DIFF}') : 0;
       var TIME_DIFF_MEASURE = parseInt('{TIME_DIFF_MEASURE}') ? parseInt('{TIME_DIFF_MEASURE}') : 0;
 
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
       if(timeDiffSeconds === '' || TIME_DIFF_MEASURE) {
         timeDiffSeconds = 0;
-        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utcoffset': -localTime.getTimezoneOffset() * 60}, function(data) {
+        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utc_offset': -localTime.getTimezoneOffset() * 60}, function(data) {
           timeDiffSeconds = parseInt(data);
         });
       } else {
         timeDiffSeconds = parseInt(timeDiffSeconds);
       }
-      //      alert('timeDiff: ' + timeDiff + ', timeUTCOffset: ' + timeUTCOffset);
-      //      var timeDiff = serverTime.valueOf() - localTime.valueOf();
-
-      //      jQuery.post("time_probe.php", {'localtime': localTime.valueOf()}, function(data)
-      //        {
-      //          localTime = new Date();
-      //          serverTime = new Date(data * 1000);
-      //          timeDiff = serverTime.valueOf() - localTime.valueOf();
-      //        }
-      //      );
     </script>
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_global.js?{C_var_db_update}"></script>
