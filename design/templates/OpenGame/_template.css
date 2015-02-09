@@ -9,7 +9,7 @@ input, textarea, button {
   font-weight: bold !important;
 }
 
-.subheader {
+.subheader, tr.subheader > td, tr.subheader > th {
   background: #233452;
 }
 

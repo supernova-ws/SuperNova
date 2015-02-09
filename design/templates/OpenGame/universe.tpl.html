@@ -117,31 +117,31 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     <span class="fr"><!-- IF planets -->{L_gal_planets} {planets}<!-- ELSE -->{L_gal_planetNone}<!-- ENDIF --></span>
   </th></tr>
 
-  <tr align="center">
-    <td class=c>{L_Pos}</td>
-    <td class=c>{L_Planet}</td>
-    <td class=c>{L_Name}</td>
-    <td class=c>{L_Moon}</td>
-    <td class=c>{L_uni_debris}</td>
-    <td class=c>{L_Player}</td>
-    <td class=c>{L_sys_alliance}</td>
+  <tr class="c_c">
+    <th>{L_Pos}</th>
+    <th>{L_Planet}</th>
+    <th>{L_Name}</th>
+    <th>{L_Moon}</th>
+    <th>{L_uni_debris}</th>
+    <th>{L_Player}</th>
+    <th>{L_sys_alliance}</th>
     <!-- IF ACT_SPY -->
-    <th class=c_c><img src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" /></th>
+    <th><img src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
-    <th class=c_c><img src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" /></th>
+    <th><img src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_WRITE -->
-    <th class=c_c><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></th>
+    <th><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_STATISTICS -->
-    <th class=c_c><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0></th>
+    <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0></th>
     <!-- ENDIF -->
     <!-- IF ACT_INFO -->
-    <th class=c_c><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></th>
+    <th><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_FRIEND -->
-    <th class=c_c><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></th>
+    <th><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></th>
     <!-- ENDIF -->
   </tr>
 <!-- BEGIN galaxyrow -->
@@ -286,6 +286,14 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
         &nbsp;
       <!-- ENDIF -->
     </th>
+    <!-- ELSE -->
+    <td colspan="7" class="c_c">
+      <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7');">
+        {L_uni_colonize} {galaxyrow.PLANET_NUM}
+      </button>
+    </td>
+    <!-- ENDIF -->
+
     <!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID -->
       <!-- DEFINE $DIFFERENT_USER = 1 -->
     <!-- ELSE -->
@@ -332,14 +340,6 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       <!-- IF $DIFFERENT_USER -->
       <a href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></a>
       <!-- ENDIF -->
-    </td>
-    <!-- ENDIF -->
-
-    <!-- ELSE -->
-    <td colspan="{COL_SPAN}" class="c_c">
-      <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7');">
-        {L_uni_colonize} {galaxyrow.PLANET_NUM}
-      </button>
     </td>
     <!-- ENDIF -->
   </tr>
