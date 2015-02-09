@@ -22,7 +22,7 @@
           <option value="2" {t2}>{L_fl_ruins}</option>
           <option value="3" {t3}>{L_fl_moon}</option>
         </select>
-        <input type="hidden" name="fleet_group" onChange="shortInfo()" onKeyUp="shortInfo()" value="0" />
+        <input type="hidden" name="fleet_group" id="fleet_group" onChange="shortInfo()" onKeyUp="shortInfo()" value="0" />
         <input type="hidden" name="acs_target_mr" onChange="shortInfo()" onKeyUp="shortInfo()" value="0:0:0" />
       </th>
     </tr>
@@ -134,7 +134,7 @@
           <!-- BEGIN acss -->
             <tr>
               <th>
-                <input type="button" onClick="return setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
+                <input type="button" onclick="setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');return false;" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
               </th>
             </tr>
           <!-- BEGINELSE acss -->

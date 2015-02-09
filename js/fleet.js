@@ -57,8 +57,9 @@ function setMission(mission) {
 }
 
 function setACS(fleet_group) {
-   document.getElementsByName('fleet_group')[0].value = fleet_group;
-   return;
+  $('#fleet_group').val(fleet_group);
+//   document.getElementsByName('fleet_group')[0].value = fleet_group;
+//   return;
 }
 
 function setACS_target(acs_target_mr) {

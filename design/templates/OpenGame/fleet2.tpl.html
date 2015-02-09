@@ -132,11 +132,18 @@ var fleet_slide_changing = false;
 </form>
 
 <script type="text/javascript"><!--
-  tme = document.getElementsByName("target_mission");
-  for(i = tme.length-1; i > 0; i--)
-    if(tme[i].checked) break;
-  changeMission(tme[i]);
-  tme[i].checked = true;
+  mission_checked = 0;
+  $("[name='target_mission']:checked").each(function(){
+    mission_checked = $(this).val();
+  });
+  if(!mission_checked) {
+    $("[name='target_mission']:first").attr('checked', 1);
+    mission_checked = $("[name='target_mission']:first").attr('checked', 1).val();
+  }
+  changeMission(mission_checked);
 
   calculateTransportCapacity();
+//  tme = document.getElementsByName("target_mission");
+//  for(i = tme.length - 1; i > 0; i--) {if(tme[i].checked) break;}
+//  changeMission(tme[i]);tme[i].checked = true;calculateTransportCapacity();
 --></script>
