@@ -60,7 +60,7 @@
       <input type="text" id="note_planet" name="note_planet" size="4" maxlength="4" value="{note.PLANET}" />
       <select name="note_planet_type">
         <!-- BEGIN !planet_type -->
-        <option value="{planet_type.ID}"<!-- IF planet_type.ID == planet_type.PLANET_TYPE --> selected<!-- ENDIF -->>{planet_type.TEXT}</option>
+        <option value="{planet_type.ID}"<!-- IF planet_type.ID == note.PLANET_TYPE --> selected<!-- ENDIF -->>{planet_type.TEXT}</option>
         <!-- END !planet_type -->
       </select>
     </div>
