@@ -387,6 +387,7 @@ $template->assign_vars(array(
      'ACT_INFO'            => $user['settings_info'],
      'opt_uni_avatar_user' => $user['opt_uni_avatar_user'],
      'opt_uni_avatar_ally' => $user['opt_uni_avatar_ally'],
+     'opt_uni_tooltip_time'=> $user['settings_tooltiptime'],
      'ACT_MISSILE'         => $is_missile,
      'PLANET_PHALANX'      => $HavePhalanx && $uni_galaxy == $CurrentGalaxy && $uni_system >= $CurrentSystem - $PhalanxRange && $uni_system <= $CurrentSystem + $PhalanxRange,
      'PAGE_HINT'           => $lang['gal_sys_hint'],

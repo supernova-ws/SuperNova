@@ -16,6 +16,10 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   }
   sn_inframe = window.frameElement ? getFrameName(self) : false;
 
+  var sn_delay = function(func, wait) {
+    var args = Array.prototype.slice.call(arguments, 2);
+    return setTimeout(function(){ return func.apply(null, args); }, wait);
+  };
 
   var language = {};
 

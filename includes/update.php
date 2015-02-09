@@ -1286,6 +1286,14 @@ switch($new_version) {
             dark_matter
           );");
 
+    if($update_tables['users']['settings_tooltiptime']['Type'] != 'smallint(5) unsigned') {
+      upd_alter_table('users', array(
+        "MODIFY COLUMN `settings_tooltiptime` smallint(5) unsigned NOT NULL DEFAULT '500'",
+      ), $update_tables['users']['settings_tooltiptime']['Type'] != 'smallint');
+
+      upd_do_query("UPDATE `{{users}}` SET settings_tooltiptime = 500;");
+    }
+
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
     upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));

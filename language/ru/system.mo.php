@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b3.0#
+* @version #39b5.3#
 *
 */
 
@@ -982,5 +982,7 @@ $a_lang_array = (array(
     3 => 'Важная',
     4 => 'Очень важная',
   ),
+
+  'sys_milliseconds' => 'миллисекунд',
 
 ));

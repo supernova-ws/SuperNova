@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b3.0
+* @version 39b5.3
 *
 */
 
@@ -976,5 +976,7 @@ $a_lang_array = (array(
     3 => 'Important',
     4 => 'Very important',
   ),
+
+  'sys_milliseconds' => 'milliseconds',
 
 ));

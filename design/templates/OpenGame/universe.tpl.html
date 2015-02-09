@@ -17,6 +17,7 @@ var game_ally_count = {ALLY_COUNT};
 
 var opt_uni_avatar_user = '{opt_uni_avatar_user}';
 var opt_uni_avatar_ally = '{opt_uni_avatar_ally}';
+var opt_uni_tooltip_time = parseInt('{opt_uni_tooltip_time}') ? parseInt('{opt_uni_tooltip_time}') : 500;
 
 var uni_phalanx = '{PLANET_PHALANX}';
 var uni_spies = '{ACT_SPIO}';
@@ -56,8 +57,7 @@ allies[{alliances.ID}] = {
 
 var uni_row = new Array();
 <!-- BEGIN galaxyrow --><!-- IF galaxyrow.PLANET_NUM -->
-uni_row[{galaxyrow.PLANET_NUM}] = 
-{
+uni_row[{galaxyrow.PLANET_NUM}] = {
   owner: '{galaxyrow.USER_ID}',
   planet: '{galaxyrow.PLANET_NUM}',
   planet_name: '{galaxyrow.PLANET_NAME_JS}',
@@ -154,7 +154,7 @@ uni_row[{galaxyrow.PLANET_NUM}] =
         <a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7">{galaxyrow.PLANET_NUM}</a>
       <!-- ENDIF -->
     </th>
-    <th class="uni_show_planet" planet_type="{galaxyrow.PLANET_TYPE}">
+    <th class="uni_show_planet" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}">
       <!-- IF galaxyrow.PLANET_ID -->
         <div>
           <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg>

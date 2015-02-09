@@ -738,6 +738,22 @@ Failed to load resource: the server responded with a status of 404 (Not Found) h
 Failed to load resource: the server responded with a status of 404 (Not Found) http://test.supernova.ws/skins/EpicBlue/skin_server.css?1422205651
 Failed to load resource: the server responded with a status of 404 (Not Found) http://test.supernova.ws/design/css/global_server.css?1422205651
 Failed to load resource: the server responded with a status of 404 (Not Found) http://test.supernova.ws/skins/EpicBlue/skin_server.css?1422205651
+GET http://test.supernova.ws/skins/immi/icons/menu_ally.png 404 (Not Found)
+GET http://test.supernova.ws/skins/immi/icons/menu_radio.png 404 (Not Found)
+http://test.supernova.ws/skins/immi/icons/menu_documentation.png 404 (Not Found)
+
+
+Отдельно от Империи - страница производства. С масс продакшном?
+
+Меню: "Ваш Альянс"/"Создать Альянс"
+
+Чат:
+  Кнопка "Impersonate" в чате
+  ИД пользователя в чате и/или БАН/МЬЮТ по имени
+
+Во всех случаях (отправка флота, флоты в полете) кнопка "Свезти ресы"
+
+3d на JS http://habrahabr.ru/post/246259/
 
 defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
   убрать использование $time_diff - в модулях
@@ -746,11 +762,24 @@ defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
   var dpath = '{dpath}';
   var sn_path_prefix = '{D_SN_ROOT_VIRTUAL}';
 
+Скользящий лог запросов к таблице users - для поиска дедлоков
+  Или пока полный лог с записью в файл - и туда же ошибки и еще ошибки в отдельный файл
+
 
 
 #ctv
 
 
+2015-02-09 13:09:50 39b5.3
+[+] Обзор Вселенной
+    Восстановлена работа настройки "Время показа подсказок" в разделе "Вселенная" на вкладке "Интерфейс"
+    Настройка даёт возможность задать задержку между наведением курсора мыши на элемент в Обзоре Вселенной и появлением попапа
+    По умолчанию задержка выставлена в 500 миллисекунд (0,5 секунды)
+    Значение "0" означает "использовать задержку по умолчанию". Для фактического отключения задержки можно использовать небольшие значения, например, "1"
+    Задержка действует только при наведении курсора - при клике на элементе попап появляется сразу
+
+[-] Настройки/Замер времени
+    Отключено использование window.performance при замере времени - не все браузеры адекватно возвращают соответствующие значения
 
 
 2015-02-01 20:36:32 39b5.1
