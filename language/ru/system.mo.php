@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b5.3#
+* @version #39b5.7#
 *
 */
 
@@ -557,7 +557,7 @@ $a_lang_array = (array(
   // Built-in chat
   'chat_common'   => 'Общий чат',
   'chat_ally'     => 'Чат Альянса',
-  'chat_history'  => 'История',
+  'chat_history'  => 'История чата',
   'chat_message'  => 'Сообщение',
   'chat_send'     => 'Отправить',
   'chat_page'     => 'Страница',

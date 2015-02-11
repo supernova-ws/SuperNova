@@ -592,6 +592,12 @@ th.c_j, td.c_j
   cursor: pointer;
 }
 
+.link_external {
+  border-bottom: 3px double;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .pointer
 {
   cursor: pointer;

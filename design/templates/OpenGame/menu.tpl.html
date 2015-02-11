@@ -128,7 +128,7 @@
     <!-- ELSE -->
       <!-- IF menu.LINK -->
         <!-- DEFINE $LINK_CLOSE = '</a>' -->
-        <a href="{menu.LINK}" class="link"{$LINK_BLANK}><!-- ENDIF --><!-- IF menu.ICON --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!-- ENDIF -->{$HEADER_PREFIX}<!-- IF menu.TYPE == 'image' -->
+        <a href="{menu.LINK}" class="link<!-- IF $LINK_BLANK && menu.TYPE != 'image' -->_external<!-- ENDIF -->"{$LINK_BLANK}><!-- ENDIF --><!-- IF menu.ICON --><img src="{dpath}icons/{menu.ICON}" height="14px" border="0" style="margin-right: 5px;" /><!-- ENDIF -->{$HEADER_PREFIX}<!-- IF menu.TYPE == 'image' -->
             <img border="0" src="{menu.ITEM}"
               <!-- IF menu.ALT --> alt="{menu.ALT}"<!-- ELSEIF menu.TITLE --> alt="{menu.TITLE}"<!-- ENDIF -->
             /><!-- ELSE -->{menu.ITEM}<!-- ENDIF -->{$HEADER_SUFFIX}
