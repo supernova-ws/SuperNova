@@ -780,6 +780,10 @@ defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
 #ctv
 
 
+2015-02-12 13:43:58 39b6.1
+[%] Сообщения
+    Исправлена очепятка в темплейте
+
 
 2015-02-12 13:35:56 39b6.0
 [+] Сообщения
