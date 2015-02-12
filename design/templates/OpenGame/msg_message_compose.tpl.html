@@ -1,6 +1,8 @@
 <h2>{L_msg_page_header}</h2>
 <h3>{L_msg_compose}</h3>
-<!-- INCLUDE int_message_box -->
+
+<!-- INCLUDE _result_message -->
+
 <form action="messages.php" method="post">
   <input type="hidden" name="mode" value="write">
   <input type="hidden" name="id" value="{RECIPIENT_ID}">
@@ -29,3 +31,26 @@
     </tr>
   </table>
 </form>
+
+<!-- IF RECIPIENT_ID && .messages -->
+<h3>{L_msg_header_dialog} {RECIPIENT_NAME}</h3>
+<table width="519">
+  <!-- BEGIN messages -->
+  <tr class="<!-- IF RECIPIENT_ID == messages.FROM_ID -->mnl_joueur<!-- ELSE -->mnl_outbox<!-- ENDIF --> c_l" >
+    <td>
+      {messages.DATE}
+    </td>
+    <td>
+      {messages.FROM}
+    </td>
+    <td>
+      {messages.SUBJ}<br/>
+    </td>
+  </tr>
+  <tr>
+    <td class="<!-- IF RECIPIENT_ID == messages.FROM_ID -->mnl_joueur<!-- ELSE -->mnl_outbox<!-- ENDIF --> c_l" colspan="3">
+      {messages.TEXT}
+    </td>
+  </tr>
+</table>
+<!-- ENDIF -->
