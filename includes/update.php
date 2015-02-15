@@ -1305,7 +1305,7 @@ switch($new_version) {
     }
 
     $pack_until = "2014-11-01 00:00:00";
-    $temp = upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';");
+    $temp = mysql_fetch_assoc(upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';"));
     if($temp['cnt']) {
       upd_do_query("DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp <= '{$pack_until}';");
 

@@ -804,6 +804,10 @@ defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
 
 
 
+2015-02-15 17:29:42 39b6.4
+[%] Обновление
+    Исправлены очепятки
+
 
 2015-02-15 17:22:33 39b6.3
 [~] Обновление
