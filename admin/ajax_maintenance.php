@@ -15,6 +15,7 @@ define('IN_AJAX', true);
 lng_include('admin');
 
 $totaltime = microtime(true);
+$pack_until = date("Y-m-01 00:00:00", SN_TIME_NOW - PERIOD_MONTH * 3);
 
 $ques = array(
 //  'DELETE {{users}}.* FROM {{users}} WHERE `user_as_ally` IS NULL and `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and metamatter_total <= 0;',
@@ -45,14 +46,13 @@ $ques = array(
   // Deleting empty Alliances
   'DELETE FROM {{alliance}} WHERE ally_members <= 0;',
   "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_tag = null, ally_register_time = 0, ally_rank_id = 0 WHERE ally_id not in (select id from {{alliance}});",
-
   array(
     "INSERT INTO {{log_dark_matter}}
       (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason, log_dark_matter_amount,
       log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
     SELECT
       '{$pack_until}', IF(u.username IS NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", sum(ldm.log_dark_matter_amount),
-      'Average balance on {$pack_until}', '" . SN_ROOT_VIRTUAL_PARENT . "admin/ajax_maintenance.php', ldm.log_dark_matter_sender
+      'Average balance on {$pack_until}', 'admin/ajax_maintenance.php', ldm.log_dark_matter_sender
     FROM
       {{log_dark_matter}} AS ldm
       LEFT JOIN {{users}} AS u ON u.id = ldm.log_dark_matter_sender
@@ -72,12 +72,31 @@ $ques = array(
     FROM
     `{{log_users_online}}`
     WHERE
-      online_timestamp < {$pack_until} AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE . "
+      online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE . "
     GROUP BY
       UNIX_TIMESTAMP(online_timestamp) DIV (" . PERIOD_MINUTE_10 . ") * (" . PERIOD_MINUTE_10 . ");",
 
-    "DELETE FROM {{log_users_online}} WHERE online_timestamp < {$pack_until} AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE,
+    "DELETE FROM {{log_users_online}} WHERE online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE,
   ),
+/*
+UPDATE CODE
+  array(
+    "DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp <= '{$pack_until}';",
+
+    "INSERT INTO {{log_dark_matter}}
+      (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason, log_dark_matter_amount,
+      log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
+    SELECT
+      '{$pack_until}', IF(ldm.log_dark_matter_username IS NOT NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", 
+      u.dark_matter - sum(ldm.log_dark_matter_amount),
+      'Balance on {$pack_until}', 'admin/ajax_maintenance.php', u.id
+    FROM
+      {{users}} AS u
+      LEFT JOIN {{log_dark_matter}} AS ldm ON u.id = ldm.log_dark_matter_sender
+    GROUP BY
+      u.id;",
+  ),
+*/
 );
 
 function sn_maintenance_pack_user_list($user_list) {
@@ -106,7 +125,6 @@ $old_server_status = $config->db_loadItem('game_disable');
 $old_server_status == GAME_DISABLE_NONE ? $config->db_saveItem('game_disable', GAME_DISABLE_MAINTENANCE) : false;
 sn_db_transaction_commit();
 
-$pack_until = date("Y-m", SN_TIME_NOW - PERIOD_MONTH * 3);
 foreach($ques as $que_transaction) {
   sn_db_transaction_start();
 
@@ -114,6 +132,7 @@ foreach($ques as $que_transaction) {
   foreach($que_transaction as $que) {
     set_time_limit(120);
     $QryResult = doquery($que);
+    //$msg .= '<hr>' . $que . '<hr>';
     $que = str_replace(array('{{', '}}'), '', $que);
     //$que = str_replace('{{', '', $que);
     //$que = str_replace('}}', '', $que);

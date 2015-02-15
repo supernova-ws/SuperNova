@@ -1304,6 +1304,24 @@ switch($new_version) {
       ), $update_indexes['log_users_online']['PRIMARY'] != 'online_timestamp,online_aggregated,');
     }
 
+    $pack_until = "2014-11-01 00:00:00";
+    $temp = upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';");
+    if($temp['cnt']) {
+      upd_do_query("DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp <= '{$pack_until}';");
+
+      upd_do_query(
+        "INSERT INTO {{log_dark_matter}} (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason,
+          log_dark_matter_amount, log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
+        SELECT
+          '{$pack_until}', IF(ldm.log_dark_matter_username IS NOT NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ",
+          u.dark_matter - sum(ldm.log_dark_matter_amount), 'Баланс на {$pack_until}', 'admin/ajax_maintenance.php', u.id
+        FROM
+          {{users}} AS u
+          LEFT JOIN {{log_dark_matter}} AS ldm ON u.id = ldm.log_dark_matter_sender
+        GROUP BY
+          u.id;");
+    }
+
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
     upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
