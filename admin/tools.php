@@ -46,17 +46,6 @@ switch($mode){
       'STRING' => htmlentities($string),
       'MD5' => md5($string),
     ));
-/*
-    $parse   = $lang;
-
-    if ($_POST['md5q'] != "") {
-      $parse['md5_md5'] = $_POST['md5q'];
-      $parse['md5_enc'] = md5 ($_POST['md5q']);
-    } else {
-      $parse['md5_md5'] = "";
-      $parse['md5_enc'] = md5 ("");
-    }
-*/
     display($template, $lang['adm_tools_md5_header'], false, '', true );
   break;
 

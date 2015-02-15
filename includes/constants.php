@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b6.1');
+define('SN_VERSION', '39b6.2');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -190,6 +190,7 @@ define('RPG_MERCENARY_DISMISSED', 28);
 define('RPG_EVENT_CHRISTMAS', 29);
 define('RPG_EVENT_CHRISTMAS_TREE_BURN', 30);
 define('RPG_EVENT_BLACK_MOON_TICK', 31);
+define('RPG_CUMULATIVE', 32);
 
 
 
@@ -323,6 +324,7 @@ define('LOG_INFO_DB_CHANGE', 103); // Изменение структуры БД
 define('LOG_INFO_UNI_RENAME', 104); // Переименование объекта Вселенной
 define('LOG_INFO_PREMIUM_CANCEL', 105); // Пользователь отменил премиум аккаунт
 define('LOG_INFO_PAYMENT', 110); // Записи системы платежей
+define('LOG_INFO_MAINTENANCE', 180); // Записи системы платежей
 define('LOG_INFO_STAT_START', 190); // Запуск обновления статистики игроков
 define('LOG_INFO_STAT_PROCESS', 191); // Сообщения системы обновления статистики
 define('LOG_INFO_STAT_FINISH', 192); // Обновление статистики игроков выполнено успешно
@@ -1158,6 +1160,10 @@ define('GAME_DISABLE_UPDATE', 2);
 define('GAME_DISABLE_STAT', 3);
 define('GAME_DISABLE_INSTALL', 4);
 define('GAME_DISABLE_EVENT_BLACK_MOON', 5);
+define('GAME_DISABLE_MAINTENANCE', 6);
 
 define('USER_BOT_PLAYER', 0);
 define('USER_BOT_BLACK_MOON', 1);
+
+define('LOG_ONLIINE_AGGREGATE_NONE', 0);
+define('LOG_ONLIINE_AGGREGATE_PERIOD_MINUTE_10', 1);

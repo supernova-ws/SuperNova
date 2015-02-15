@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b3.0
+* @version 39b6.2
 *
 */
 
@@ -95,7 +95,7 @@ $a_lang_array = (array(
   'adm_ban' => 'Забанить',
   'adm_unban' => 'Разбанить',
   'adm_chat' => 'Редактор чата',
-  'adm_updpt' => 'Обновление',
+  'adm_updpt' => 'Обновить стату',
   'adm_msg' => 'Список сообщений',
   'adm_md5' => 'Шифрование',
   'adm_updrank' => 'Обнуление базы',

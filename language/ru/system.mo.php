@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b5.7#
+* @version #39b6.2#
 *
 */
 
@@ -969,6 +969,7 @@ $a_lang_array = (array(
     GAME_DISABLE_UPDATE => 'Игра обновляется',
     GAME_DISABLE_STAT => 'Происходит пересчет статистики',
     GAME_DISABLE_INSTALL => 'Игра еще не сконфигурирована',
+    GAME_DISABLE_MAINTENANCE => 'Техобслуживание базы данных сервера',
     GAME_DISABLE_EVENT_BLACK_MOON => 'Чёрная Луна!',
   ),
 

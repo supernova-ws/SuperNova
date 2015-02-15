@@ -98,11 +98,11 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
         imagettftext($image, 9, 0, 410-$is[2], 35, $txt_color, $fonts['info'], $b_ally);
 
         // Player b_planet
-        imagettftext($image, 6, 0, 8, 10, $txt_shadow2, $fonts['raids'], $b_planet." ".$b_xyz."");
-        imagettftext($image, 6, 0, 6, 9, $txt_color2, $fonts['raids'], $b_planet." ".$b_xyz."");
+        imagettftext($image, 6, 0, 8, 10, $txt_shadow2, $fonts['raids'], $b_planet." ".$b_xyz);
+        imagettftext($image, 6, 0, 6, 9, $txt_color2, $fonts['raids'], $b_planet." ".$b_xyz);
 
         //StatPoint
-        $b_points = $lang['ov_points'].": ".pretty_number($user['total_points'])."";
+        $b_points = $lang['ov_points'].": ".pretty_number($user['total_points']);
         $is = imagettfbbox(8, 0, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 412-$is[2], 11, $txt_shadow, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 410-$is[2], 9, $txt_color, $fonts['info'], $b_points);

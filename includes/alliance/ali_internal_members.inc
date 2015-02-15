@@ -172,7 +172,7 @@ if ($i != $ally['ally_members'])
 }
 
 $template->assign_vars(array(
-  'mode' => $mode . ($edit ? "&edit=" . $edit : ""),
+  'mode' => $mode . ($edit ? "&edit=" . $edit : ''),
   'ADMIN_MODE' => $user_can_kick,
   'dpath' => SN_ROOT_VIRTUAL . $dpath,
   'onlineMessage' => $user_admin ? $lang['ali_sys_lastActive'] : $lang['Online'],

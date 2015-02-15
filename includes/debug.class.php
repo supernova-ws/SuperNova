@@ -53,7 +53,7 @@ class debug
 
   function echo_log()
   {
-    echo "<br><table><tr><td class=k colspan=4><a href=\"" . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
+    echo '<br><table><tr><td class=k colspan=4><a href="' . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
     die();
   }
 
@@ -292,7 +292,7 @@ class debug
 // Copyright (c) 2009-2010 Gorlum for http://supernova.ws
 // Dump variables nicer then var_dump()
 
-function dump($value, $varname = null, $level=0, $dumper = "")
+function dump($value, $varname = null, $level=0, $dumper = '')
 {
   if (isset($varname)) $varname .= " = ";
 
@@ -312,8 +312,8 @@ function dump($value, $varname = null, $level=0, $dumper = "")
 
   if ($type=='string')
   {
-    $dumper .= '('.strlen($value).')';
-    $value = dump($value,"",-1);
+    $dumper .= '(' . strlen($value) . ')';
+    $value = dump($value, '', -1);
   }
   elseif ($type=='boolean') $value= ($value?'true':'false');
   elseif ($type=='object')
@@ -323,7 +323,7 @@ function dump($value, $varname = null, $level=0, $dumper = "")
     foreach($props as $key=>$val)
     {
       $dumper .= "\n".str_repeat("\t",$level+1).$key.' => ';
-      $dumper .= dump($value->$key,"",$level+1);
+      $dumper .= dump($value->$key,'',$level+1);
     }
     $value= '';
   }
@@ -332,8 +332,8 @@ function dump($value, $varname = null, $level=0, $dumper = "")
     $dumper .= '('.count($value).')';
     foreach($value as $key=>$val)
     {
-      $dumper .= "\n".str_repeat("\t",$level+1).dump($key,"",-1).' => ';
-      $dumper .= dump($val,"",$level+1);
+      $dumper .= "\n".str_repeat("\t",$level+1).dump($key,'',-1).' => ';
+      $dumper .= dump($val,'',$level+1);
     }
     $value= '';
   }

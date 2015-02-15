@@ -28,9 +28,9 @@ $ip         = sys_get_param_str('ip');
 $PanelMainTPL = gettemplate('admin/admin_panel_main');
 
 $parse                  = $lang;
-$parse['adm_sub_form1'] = "";
-$parse['adm_sub_form2'] = "";
-$parse['adm_sub_form3'] = "";
+$parse['adm_sub_form1'] = '';
+$parse['adm_sub_form2'] = '';
+$parse['adm_sub_form3'] = '';
 
 // Afficher les templates
 if (isset($GET_result)) {
@@ -155,7 +155,7 @@ if (isset($GET_action)) {
 
 
       for ($Lvl = 0; $Lvl < 4; $Lvl++) {
-        $bloc['adm_level_lst'] .= "<option value=\"". $Lvl ."\">". $lang['adm_usr_level'][ $Lvl ] ."</option>";
+        $bloc['adm_level_lst'] .= '<option value="'. $Lvl .'">'. $lang['adm_usr_level'][ $Lvl ] ."</option>";
       }
       $SubPanelTPL            = gettemplate('admin/admin_panel_frm3');
       break;

@@ -109,7 +109,7 @@ function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
     }
 
     foreach($replaces as $key => $html) {
-      $msg = preg_replace("".$key."", $html, $msg);
+      $msg = preg_replace(''.$key.'', $html, $msg);
     }
   }
 

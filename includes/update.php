@@ -1276,15 +1276,17 @@ switch($new_version) {
     upd_alter_table('users', "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0", !isset($update_tables['users']['user_bot']));
     upd_alter_table('unit', "ADD KEY `I_unit_type_snid` (unit_type, unit_snid) USING BTREE", !$update_indexes['unit']['I_unit_type_snid']);
 
-    upd_alter_table('users', "ADD `dark_matter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Dark Matter amount ever gained' AFTER `dark_matter`", !$update_tables['users']['dark_matter_total']);
-    upd_do_query(
-      "UPDATE `{{users}}` AS u
+    if(!$update_tables['users']['dark_matter_total']) {
+      upd_alter_table('users', "ADD `dark_matter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Dark Matter amount ever gained' AFTER `dark_matter`", !$update_tables['users']['dark_matter_total']);
+      upd_do_query(
+        "UPDATE `{{users}}` AS u
         SET dark_matter_total =
           IF(
             dark_matter < (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
             (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
             dark_matter
           );");
+    }
 
     if($update_tables['users']['settings_tooltiptime']['Type'] != 'smallint(5) unsigned') {
       upd_alter_table('users', array(
@@ -1292,6 +1294,14 @@ switch($new_version) {
       ), $update_tables['users']['settings_tooltiptime']['Type'] != 'smallint');
 
       upd_do_query("UPDATE `{{users}}` SET settings_tooltiptime = 500;");
+    }
+
+    if(!isset($update_tables['log_users_online']['online_aggregated'])) {
+      upd_alter_table('log_users_online', "ADD COLUMN `online_aggregated` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0", !isset($update_tables['log_users_online']['online_aggregated']));
+      upd_alter_table('log_users_online', array(
+        "DROP PRIMARY KEY",
+        "ADD PRIMARY KEY (`online_timestamp`, `online_aggregated`)",
+      ), $update_indexes['log_users_online']['PRIMARY'] != 'online_timestamp,online_aggregated,');
     }
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));

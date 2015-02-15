@@ -201,7 +201,7 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   {
     $BuildStartLvl = 1;
   }
-  $Table = "";
+  $Table = '';
   $ProdFirst = 0;
   for ($BuildLevel = $BuildStartLvl; $BuildLevel < $BuildStartLvl + 10; $BuildLevel++)
   {
@@ -230,7 +230,7 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
       }
       else
       {
-        $bloc['build_gain'] = "";
+        $bloc['build_gain'] = '';
       }
       if ($BuildID != STRUC_MINE_FUSION)
       {

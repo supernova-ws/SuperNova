@@ -17,7 +17,7 @@ function gettemplatename($u_dpath)
 //
 // Routine Affichage d'un message administrateur avec saut vers une autre page si souhaité
 //
-function AdminMessage ($mes, $title = 'Error', $dest = "", $time = "3") {
+function AdminMessage ($mes, $title = 'Error', $dest = '', $time = 3) {
 //  $parse['color'] = $color;
   $parse['title'] = $title;
   $parse['mes']   = $mes;
@@ -40,7 +40,7 @@ function message ($mes, $title = 'Error', $dest = '', $time = 5, $show_header = 
     'DEST'  => $dest,
   ));
 
-  display($template, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
+  display($template, $title, $show_header, (($dest != '') ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
 /*
   global $lang;
 

@@ -37,9 +37,9 @@ if ($_POST && $mode == "change") {
   }
   if ($config->tresc != '' and $config->temat) {
     $Time    = time();
-    $From    = "<font color=\"". $kolor ."\">". $ranga ." ".$user['username']."</font>";
-    $Subject = "<font color=\"". $kolor ."\">". $config->temat ."</font>";
-    $Message = "<font color=\"". $kolor ."\"><b>". $config->tresc ."</b></font>";
+    $From    = '<font color="'. $kolor .'">'. $ranga ." ".$user['username']."</font>";
+    $Subject = '<font color="'. $kolor .'">'. $config->temat ."</font>";
+    $Message = '<font color="'. $kolor .'"><b>'. $config->tresc ."</b></font>";
     $sq      = db_user_list('', false, 'id');
     foreach($sq as $u)
     // while ($u = mysql_fetch_assoc($sq))

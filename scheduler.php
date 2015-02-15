@@ -56,19 +56,17 @@ print(      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . 
   }
 
   if($ts_scheduled_update > $ts_var_stat_update) {
-    $ts_var_stat_update_end = strtotime($config->var_stat_update_end);
+    sn_db_transaction_start();
+    $ts_var_stat_update_end = strtotime($config->db_loadItem('var_stat_update_end'));
     if(SN_TIME_NOW > $ts_var_stat_update_end) {
       $old_server_status = $config->db_loadItem('game_disable');
       $config->db_saveItem('game_disable', GAME_DISABLE_STAT);
-      
+
       $config->db_saveItem('var_stat_update_end', date(FMT_DATE_TIME_SQL, SN_TIME_NOW + ($config->db_loadItem('stats_minimal_interval') ? $config->stats_minimal_interval : 600)));
       $config->db_saveItem('var_stat_update_msg', 'Update started');
+      sn_db_transaction_commit();
 
-      if($is_admin_request) {
-        $msg = 'admin request';
-      } else {
-        $msg = 'scheduler';
-      };
+      $msg = $is_admin_request ? 'admin request' : 'scheduler';
       $next_run = date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run($config->stats_schedule, $config->var_stat_update, true));
       $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . $config->var_stat_update .
         ', $ts_scheduled_update = ' . date(FMT_DATE_TIME_SQL, $ts_scheduled_update) .
@@ -100,6 +98,7 @@ print(      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . 
       $msg = $config->db_loadItem('var_stat_update_msg');
       $msg = "{$msg} ETA {$timeout} seconds. Please wait...";
     }
+    sn_db_transaction_rollback();
   } elseif($is_admin_request) {
     $msg = 'Stat is up to date';
   }

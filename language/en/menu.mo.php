@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b3.0
+* @version 39b6.2
 *
 */
 
@@ -97,7 +97,7 @@ $a_lang_array = (array(
   'adm_ban' => 'Ban',
   'adm_unban' => 'UnBan',
   'adm_chat' => 'Chat Editor',
-  'adm_updpt' => 'Update',
+  'adm_updpt' => 'Update Stat',
   'adm_msg' => 'Message List',
   'adm_md5' => 'Encryption',
   'adm_updrank' => 'Reset Databases',
