@@ -65,16 +65,16 @@ $ques = array(
   ),
 
   array(
-    "INSERT INTO `{{log_users_online}}`
+    "REPLACE INTO `{{log_users_online}}`
       (online_timestamp, online_count, online_aggregated)
     SELECT
-      FROM_UNIXTIME(UNIX_TIMESTAMP(online_timestamp) DIV (" . PERIOD_MINUTE_10 . ") * (" . PERIOD_MINUTE_10 . ")), ceil(avg(online_count)), " . LOG_ONLIINE_AGGREGATE_PERIOD_MINUTE_10 . "
+      FROM_UNIXTIME((UNIX_TIMESTAMP(online_timestamp) DIV " . PERIOD_MINUTE_10 . ") * (" . PERIOD_MINUTE_10 . ")), ceil(avg(online_count)), " . LOG_ONLIINE_AGGREGATE_PERIOD_MINUTE_10 . "
     FROM
     `{{log_users_online}}`
     WHERE
       online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE . "
     GROUP BY
-      UNIX_TIMESTAMP(online_timestamp) DIV (" . PERIOD_MINUTE_10 . ") * (" . PERIOD_MINUTE_10 . ");",
+      (UNIX_TIMESTAMP(online_timestamp) DIV " . PERIOD_MINUTE_10 . ") * (" . PERIOD_MINUTE_10 . ");",
 
     "DELETE FROM {{log_users_online}} WHERE online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE,
   ),
