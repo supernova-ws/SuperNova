@@ -78,25 +78,8 @@ $ques = array(
 
     "DELETE FROM {{log_users_online}} WHERE online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE,
   ),
-/*
-UPDATE CODE
-  array(
-    "DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp <= '{$pack_until}';",
 
-    "INSERT INTO {{log_dark_matter}}
-      (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason, log_dark_matter_amount,
-      log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
-    SELECT
-      '{$pack_until}', IF(ldm.log_dark_matter_username IS NOT NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", 
-      u.dark_matter - sum(ldm.log_dark_matter_amount),
-      'Balance on {$pack_until}', 'admin/ajax_maintenance.php', u.id
-    FROM
-      {{users}} AS u
-      LEFT JOIN {{log_dark_matter}} AS ldm ON u.id = ldm.log_dark_matter_sender
-    GROUP BY
-      u.id;",
-  ),
-*/
+  "DELETE FROM {{logs}} WHERE log_timestamp < '{$pack_until}';",
 );
 
 function sn_maintenance_pack_user_list($user_list) {
