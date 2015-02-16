@@ -798,6 +798,8 @@ defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
 
 Скрипт массового начисления ТМ через запрос и/или допусловия
 
+Чат - проверить, что бы в mute reason писалась введенная причина
+
 
 
 

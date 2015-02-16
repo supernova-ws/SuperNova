@@ -52,7 +52,7 @@ $ques = array(
       log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
     SELECT
       '{$pack_until}', IF(u.username IS NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", sum(ldm.log_dark_matter_amount),
-      'Average balance on {$pack_until}', 'admin/ajax_maintenance.php', ldm.log_dark_matter_sender
+      'Баланс на {$pack_until}', 'admin/ajax_maintenance.php', ldm.log_dark_matter_sender
     FROM
       {{log_dark_matter}} AS ldm
       LEFT JOIN {{users}} AS u ON u.id = ldm.log_dark_matter_sender
@@ -70,7 +70,7 @@ $ques = array(
     SELECT
       FROM_UNIXTIME((UNIX_TIMESTAMP(online_timestamp) DIV " . PERIOD_MINUTE_10 . ") * (" . PERIOD_MINUTE_10 . ")), ceil(avg(online_count)), " . LOG_ONLIINE_AGGREGATE_PERIOD_MINUTE_10 . "
     FROM
-    `{{log_users_online}}`
+      `{{log_users_online}}`
     WHERE
       online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE . "
     GROUP BY

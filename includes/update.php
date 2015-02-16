@@ -1314,7 +1314,7 @@ switch($new_version) {
           log_dark_matter_amount, log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
         SELECT
           '{$pack_until}', IF(ldm.log_dark_matter_username IS NOT NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ",
-          u.dark_matter - sum(ldm.log_dark_matter_amount), 'Баланс на {$pack_until}', 'admin/ajax_maintenance.php', u.id
+          u.dark_matter - sum(ldm.log_dark_matter_amount), 'Баланс на {$pack_until}', 'includes/update.php', u.id
         FROM
           {{users}} AS u
           LEFT JOIN {{log_dark_matter}} AS ldm ON u.id = ldm.log_dark_matter_sender
