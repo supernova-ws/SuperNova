@@ -567,47 +567,47 @@ $lang['info'] = (array(
     ),
 
     UNIT_PLANET_DENSITY => array(
-      'description' => 'Средняя планетарная плотность (далее - просто "плотность") характеризует химический состав геосферы планеты. В частности, она очень точно предсказывает соотношения добываемых полезных веществ.<br />
-      В общем случае геосфера планеты делится на атмосферу (газовая оболочка), гидросферу (жидкая оболочка), литосферу (твердая оболочка из относительно легких веществ и элементов), мантию (промежуточная оболочка между литосферой и ядром) и ядро (самые тяжелые вещества и элементы, находящиеся в центре планеты под высоким давлением).<br />
-      Основное влияние на плотность оказывает ядро. Именно оно содержит основную массу планеты, поскольку плотность химических соединений убывает по мере подъема от центра планеты к её поверхности.<br />
-      Таким образом именно тип ядра полностью определяет виды и уровень добычи полезных ископаемых. Комбинации типов планетарных ядер с разными температурными режимами и размерами дают всё многообразие известных планет.<br />
-      Для примера рассмотрим планету с ледяным ядром. Оно состоит из водяного льда с небольшой примесью других веществ, мантия - из твердого метана, а литосфера - из кристаллического водорода.
-      В подавляющем большинстве такие планеты встречаются на периферии звездных систем. И выглядят они под стать своему названию: гигантские глыбы из смеси льда.
-      Впрочем, иногда такая планета может оказаться и на низкой орбите вокруг звезды. Обычно это происходит после столкновения звездных систем. Так же звезда может захватить своим тяготением какую-нибудь блуждающую планету.
-      Близость к звезде преображает планету. На ней образуется быстроулетучивающаяся атмосфера из легких газов (водород и гелий), а иногда даже и гидросфера из жидкого водорода и метана. При этом ядро планеты по-прежнему остается ледяным.
-      Существование такой планеты чрезвычайно коротко во вселенских масштабах, но учитывая те же масштабы, обнаружить такую планету вполне возможно.
+      'description' => 'The average planetary density (hereafter - "density") describes the chemical composition of the planet\'s geosphere. In particular, it very accurately predicts the ratio of extracted resources. <br />
+      In general, the geosphere of a planet is divided into the atmosphere (gaseous envelope), hydrosphere (liquid shell), lithosphere (the solid shell of a relatively light materials and components), mantle (intermediate sheath between the lithosphere and the nucleus) and the core (the hardest substance and the elements that are in the center of the planet at high pressure). <br />
+      The main influence on the density the core. It contains the bulk of the planet, since the density of chemical compounds decreases as it rises from the center of the planet to its surface. <br />
+      Thus it is the type of core that completely determines the types and level of mining. Combinations of types of planetary cores and multi-temperature and size give all the diversity of the known planets. <br />
+      For example, consider a planet with an ice core. It is composed of water ice with a small mixture of other substances, the mantle - a solid methane and lithosphere - crystalline hydrogen.
+      The vast majority of these planets are found at the periphery of star systems. And they look to match its name: the giant blocks of ice mixture.
+      However, sometimes such a planet may be on the low orbit around the star. This usually occurs after the collision of stellar systems. So the star can capture their gravitation some rogue planet.
+      The proximity to the star transforms the planet. It is formed by an atmosphere of light gases (hydrogen, helium), and sometimes even hydrosphere of liquid hydrogen and methane. In this case, the planet\'s core is still icy.
+      The existence of this planet is extremely short on a universal scale, but given the same scale, to detect such a planet is possible.
       <br />
-      В зависимости от типа ядра выделяют семь классов планет:
+      <br />
+      Depending on the type of core there are seven classes of planets:
       <ul>
         <li>
-          <span class="ok">Ледяные планеты</span> (плотность <span class="zero">менее 2000</span> кг/м&sup3;).
-          Из-за обилия водно-метанового льда и большого количества водорода в различных состояних, на ледяных планетах <span class="ok">очень высокая добыча дейтерия</span>.
-          Есть и обратная сторона - из-за маленького количества более плотного вещества <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча металла</span>. Ледяные планеты встречаются <span class="error">очень редко</span>.
-        </li>
+          <span class = "ok"> Ice planet </span> (density <span class = "zero"> less than 2000 </span> kg / m &sup3;).
+          due to the abundance of water and methane ice and a large amount of hydrogen in various states on the ice planet <span class = "ok"> very high production of deuterium </span>.
+          there is a downside - because of the small number of more dense material <span class = "error"> very low production of crystals </span> and <span class = "error"> very low metal mining </span>. Ice planets are found <span class = "error"> very rarely </span>.
+        </ li>
         <li>
-          <span class="ok">Силикатные планеты</span> (плотность <span class="zero">более 2000, но менее 3250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>. На них 
-          <span class="error">очень низкая добыча металлов</span>, <span class="ok">очень высокая добыча кристаллов</span> и чуть более низкая, чем обычно, но всё еще <span class="zero">хорошая добыча дейтерия</span>.
-        </li>
+          <span class = "ok"> Silicate planet </span> (density <span class = "zero"> more than 2000 but less than 3250 </span> kg / m &sup3;) occur <span class = "warning"> rarely </span>. they have
+          <span class = "error"> very low production of metals </span>, <span class = "ok"> very high production of crystals </span> and a little lower than usual, but still <span class = "zero "> good production of deuterium </span>.
+        </ li>
         <li>
-          <span class="ok">Каменные планеты</span> (плотность <span class="zero">более 3250, но менее 4500 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>. На них 
-          слегка пониженная, но <span class="zero">хорошая добыча металлов</span>, <span class="ok">высокая добыча кристаллов</span> и <span class="warning">пониженная добыча дейтерия</span>.
-        </li>
+          <span class = "ok"> Stone planet </span> (density <span class = "zero"> more than 3250 but less than 4500 </span> kg / m &sup3;) occur <span class = "zero"> often </span>. They have <span class = "zero"> good metal extraction </span>, <span class = "ok"> high production of crystals </span> and <span class = "warning"> reduced production of deuterium </ span >.
+        </ li>
         <li>
-          <span class="ok">Стандарнтые планеты</span> (плотность <span class="zero">более 4500, но менее 5750 </span> кг/м&sup3;) встречаются <span class="ok">очень часто</span>. По химическому составу они сильно похожи на Землю.
-          Полезные ископаемые распределены на ней стандартно - <span class="zero">хорошая добыча металлов</span>, <span class="zero">хорошая добыча кристаллов</span> и <span class="zero">хорошая добыча дейтерия</span>.
-        </li>
+          <span class = "ok"> Standard type planet </span> (density <span class = "zero"> more than 4500 but less than 5750 </span> kg / m &sup3;) occur <span class = "ok"> very often </span>. In chemical composition they are very similar to earth.
+          Mineral resources allocated to it as standard - <span class = "zero"> good metal extraction </span>, <span class = "zero"> good mining crystals </span> and <span class = "zero"> good production of deuterium </span>.
+        </ li>
         <li>
-          <span class="ok">Железнорудные планеты</span> (плотность <span class="zero">более 5750, но менее 7000 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>.
-          На них <span class="ok">очень хорошая добыча металлов</span>, <span class="warning">пониженная добыча кристаллов</span> и <span class="zero">пониженная добыча дейтерия</span>.
-        </li>
+          <span class = "ok"> Iron ore planet </span> (density <span class = "zero"> more than 5750 but less than 7000 </span> kg / m &sup3;) occur <span class = "zero"> often </span>.
+          They have <span class = "ok"> very good metal extraction </span>, <span class = "warning"> reduced production of crystals </span> and <span class = "zero"> reduced production of deuterium </span> .
+        </ li>
         <li>
-          <span class="ok">Металлические планеты</span> (плотность <span class="zero">более 7000, но менее 8250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>.
-          На них <span class="ok">отличная добыча металлов</span>, <span class="warning">низкая добыча кристаллов</span> и <span class="zero">низкая добыча дейтерия</span>.
-        </li>
+          <span class = "ok"> Metal planet </span> (density <span class = "zero"> more than 7000 but less than 8250 </span> kg / m &sup3;) occur <span class = "warning"> rare </span>.
+          They have <span class = "ok"> excellent metal extraction </span>, <span class = "warning"> low production of crystals </span> and <span class = "zero"> low production of deuterium </span>.
+        </ li>
         <li>
-          <span class="ok">Тяжелометаллические планеты</span> (плотность <span class="zero">более 8250 </span> кг/м&sup3;) встречаются <span class="error">очень редко</span>.
-          На них <span class="ok">великолепная добыча металлов</span>, <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча дейтерия</span>.
-        </li>
+          <span class = "ok"> Organometallic planet </span> (density <span class = "zero"> more 8250 </span> kg / m &sup3;) occur <span class = "error"> very rarely </span> .
+          They have <span class = "ok"> gorgeous metal extraction </span>, <span class = "error"> very low production of crystals </span> and <span class = "error"> very low production of deuterium </ span >.
+        </ li>
       </ul>',
     ),
   )
