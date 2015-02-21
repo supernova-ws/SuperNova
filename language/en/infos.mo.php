@@ -584,30 +584,30 @@ $lang['info'] = (array(
           <span class = "ok"> Ice planet </span> (density <span class = "zero"> less than 2000 </span> kg / m &sup3;).
           due to the abundance of water and methane ice and a large amount of hydrogen in various states on the ice planet <span class = "ok"> very high production of deuterium </span>.
           there is a downside - because of the small number of more dense material <span class = "error"> very low production of crystals </span> and <span class = "error"> very low metal mining </span>. Ice planets are found <span class = "error"> very rarely </span>.
-        </ li>
+        </li>
         <li>
           <span class = "ok"> Silicate planet </span> (density <span class = "zero"> more than 2000 but less than 3250 </span> kg / m &sup3;) occur <span class = "warning"> rarely </span>. they have
           <span class = "error"> very low production of metals </span>, <span class = "ok"> very high production of crystals </span> and a little lower than usual, but still <span class = "zero "> good production of deuterium </span>.
-        </ li>
+        </li>
         <li>
-          <span class = "ok"> Stone planet </span> (density <span class = "zero"> more than 3250 but less than 4500 </span> kg / m &sup3;) occur <span class = "zero"> often </span>. They have <span class = "zero"> good metal extraction </span>, <span class = "ok"> high production of crystals </span> and <span class = "warning"> reduced production of deuterium </ span >.
-        </ li>
+          <span class = "ok"> Stone planet </span> (density <span class = "zero"> more than 3250 but less than 4500 </span> kg / m &sup3;) occur <span class = "zero"> often </span>. They have <span class = "zero"> good metal extraction </span>, <span class = "ok"> high production of crystals </span> and <span class = "warning"> reduced production of deuterium </span >.
+        </li>
         <li>
           <span class = "ok"> Standard type planet </span> (density <span class = "zero"> more than 4500 but less than 5750 </span> kg / m &sup3;) occur <span class = "ok"> very often </span>. In chemical composition they are very similar to earth.
           Mineral resources allocated to it as standard - <span class = "zero"> good metal extraction </span>, <span class = "zero"> good mining crystals </span> and <span class = "zero"> good production of deuterium </span>.
-        </ li>
+        </li>
         <li>
           <span class = "ok"> Iron ore planet </span> (density <span class = "zero"> more than 5750 but less than 7000 </span> kg / m &sup3;) occur <span class = "zero"> often </span>.
           They have <span class = "ok"> very good metal extraction </span>, <span class = "warning"> reduced production of crystals </span> and <span class = "zero"> reduced production of deuterium </span> .
-        </ li>
+        </li>
         <li>
           <span class = "ok"> Metal planet </span> (density <span class = "zero"> more than 7000 but less than 8250 </span> kg / m &sup3;) occur <span class = "warning"> rare </span>.
           They have <span class = "ok"> excellent metal extraction </span>, <span class = "warning"> low production of crystals </span> and <span class = "zero"> low production of deuterium </span>.
-        </ li>
+        </li>
         <li>
           <span class = "ok"> Organometallic planet </span> (density <span class = "zero"> more 8250 </span> kg / m &sup3;) occur <span class = "error"> very rarely </span> .
-          They have <span class = "ok"> gorgeous metal extraction </span>, <span class = "error"> very low production of crystals </span> and <span class = "error"> very low production of deuterium </ span >.
-        </ li>
+          They have <span class = "ok"> gorgeous metal extraction </span>, <span class = "error"> very low production of crystals </span> and <span class = "error"> very low production of deuterium </span >.
+        </li>
       </ul>',
     ),
   )
