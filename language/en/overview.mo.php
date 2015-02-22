@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a21.3
+* @version 39b6.22
 *
 */
 
@@ -188,4 +188,6 @@ $a_lang_array = (array(
   'imp_experience_to_level' => 'Level-up',
 
   'ov_manage_special' => 'Special functions',
+  'ov_password' => 'Your password to confirm',
+
 ));

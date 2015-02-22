@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a21.3
+* @version 39b6.22
 *
 */
 
@@ -192,4 +192,5 @@ $a_lang_array = (array(
   'imp_experience_to_level' => 'Левелап',
 
   'ov_manage_special' => 'Особые функции',
+  'ov_password' => 'Ваш пароль для подтверждения',
 ));
