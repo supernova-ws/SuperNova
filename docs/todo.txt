@@ -29,6 +29,55 @@ where unit_type = 3001 ;
 
 happening
 
+Враппер для добавления методов в рилтайме
+class stdObject {
+    public function __call($method, $arguments) {
+        return call_user_func_array(Closure::bind($this->$method, $this, get_called_class()), $arguments);
+    }
+}
+
+$obj = new stdObject();
+$obj->test = function() {
+    echo "<pre>" . print_r($this, true) . "</pre>";
+};
+$obj->test();
+
+
+<?php
+trait DynamicDefinition {
+
+    public function __call($name, $args) {
+        if (is_callable($this->$name)) {
+            return call_user_func($this->$name, $args);
+        }
+        else {
+            throw new \RuntimeException("Method {$name} does not exist");
+        }
+    }
+
+    public function __set($name, $value) {
+        $this->$name = is_callable($value)?
+            $value->bindTo($this, $this):
+            $value;
+    }
+}
+
+class Foo {
+    use DynamicDefinition;
+    private $privateValue = 'I am private';
+}
+
+$foo = new Foo;
+$foo->bar = function() {
+    return $this->privateValue;
+};
+
+// prints 'I am private'
+print $foo->bar();
+
+?>
+
+
 Рандомизатор онлайна активности
   update lh_users set onlinetime = UNIX_TIMESTAMP() - FLOOR(1 + RAND() * (30 - 1)) * 24*60*60 ;
 
@@ -800,7 +849,7 @@ xsolla - передавать описание платежа
 ======================
 
 
-Текущий билд #39b6.2#
+Текущий билд #39b6.23#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять fleet_update_last

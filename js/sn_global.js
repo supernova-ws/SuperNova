@@ -489,6 +489,8 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       max = 0;
     }
 
+    // isNaN(number) || typeof number == 'undefined' ? number = 0 : false;
+
     number = Math.round(number * Math.pow(10, precission)) / Math.pow(10, precission);
     if (number > 0) {
       str_number = number + '';

@@ -17,6 +17,9 @@ input, textarea, button {
   color: #00B7F3;
 }
 
+.income_with_fleet {
+  color: #80a0C0;
+}
 
 /* Universe/Galaxy ---------------------------------------------------------------------------------------------------*/
 .universe_main > tbody > tr > td, .universe_main > tbody > tr > th {
