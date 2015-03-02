@@ -1337,18 +1337,18 @@ switch($new_version) {
       upd_check_key('payment_currency_exchange_mm_', 20000, true);
       upd_check_key('payment_currency_exchange_usd', 1, true);
     }
-    upd_check_key('payment_currency_exchange_wmz', 1.05, true);
+    upd_check_key('payment_currency_exchange_wmz', 1.00, true);
 
-    upd_check_key('payment_currency_exchange_eur', 0.87, true);
+    upd_check_key('payment_currency_exchange_eur', 0.90, true);
     upd_check_key('payment_currency_exchange_wme', 0.90, true);
 
-    upd_check_key('payment_currency_exchange_wmb', 15000, !$config->payment_currency_exchange_wmb);
+    upd_check_key('payment_currency_exchange_wmb', 18000, !$config->payment_currency_exchange_wmb);
 
-    upd_check_key('payment_currency_exchange_uah', 20, true);
-    upd_check_key('payment_currency_exchange_wmu', 20, true);
+    upd_check_key('payment_currency_exchange_uah', 30, true);
+    upd_check_key('payment_currency_exchange_wmu', 30, true);
 
-    upd_check_key('payment_currency_exchange_rub', 55, true);
-    upd_check_key('payment_currency_exchange_wmr', 55, true);
+    upd_check_key('payment_currency_exchange_rub', 60, true);
+    upd_check_key('payment_currency_exchange_wmr', 60, true);
 
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
