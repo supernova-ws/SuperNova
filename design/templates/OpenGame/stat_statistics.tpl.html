@@ -73,7 +73,7 @@
       <td class="c_r"><!-- IF stat.RANK == RANGE --><a name="{stat.RANK}"><span class="fl">&gt;</span></a><!-- ENDIF -->{stat.RANK}</td>
       <td class="c_r {$RANK_CLASS}">{$RANK_SIGN}</td>
       <!-- IF SUBJECT == 1 -->
-        <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->">
+        <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->" nowrap>
           {stat.NAME}
         </td>
         <td class ="c_c">
@@ -88,7 +88,7 @@
           </a>
         </td>
         <!-- ENDIF -->
-        <td class="c_l"><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
+        <td class="c_l" nowrap><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
       <!-- ELSE -->
         <td class="c_l"><a href="alliance.php?mode=ainfo&a={stat.ID}"><span class="<!-- IF USER_ALLY == stat.ID -->same_alliance<!-- ENDIF -->">{stat.NAME}</span></a></td>
         <td class="c_r">{stat.MEMBERS}</td>
