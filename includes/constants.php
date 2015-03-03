@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b6.24');
+define('SN_VERSION', '39b6.25');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1116,6 +1116,7 @@ define('NICK_FIRST',             1);
 define('NICK_RACE',           1000);
 define('NICK_GENDER',         2000);
 define('NICK_AWARD',          3000);
+define('NICK_VACATION',       3500);
 define('NICK_BIRTHSDAY',      4000);
 define('NICK_PREMIUM',        5000);
 define('NICK_AUTH_LEVEL',     6000);

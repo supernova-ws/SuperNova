@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b6.2#
+* @version #39b6.25#
 *
 */
 
@@ -218,6 +218,7 @@ $a_lang_array = (array(
 
   'sys_vacation'        => 'Вы же в отпуске до',
   'sys_vacation_leave'  => 'Я уже отдохнул - выйти из отпуска!',
+  'sys_vacation_in'     => 'В отпуске',
   'sys_level'           => 'Уровень',
   'sys_level_short'     => 'Ур',
   'sys_level_max'       => 'Максимальный уровень',

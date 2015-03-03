@@ -30,8 +30,10 @@ foreach(sn_get_groups('fleet') as $n => $unit_id)
       'ID'          => $unit_id,
       'NAME'        => $lang['tech'][$unit_id],
       'AMOUNT'      => $unit_level,
+      'AMOUNT_TEXT' => pretty_number($unit_level),
       'CONSUMPTION' => $ship_data['consumption'],
       'SPEED'       => $ship_data['speed'],
+      'SPEED_TEXT'  => pretty_number($ship_data['speed']),
       'CAPACITY'    => $ship_data['capacity'],
     ));
   }

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b5.3
+* @version 39b6.25
 *
 */
 
@@ -217,6 +217,7 @@ $a_lang_array = (array(
 
   'sys_vacation'        => 'Your are on vacation until',
   'sys_vacation_leave'  => 'I have got rest - break holiday!',
+  'sys_vacation_in'     => 'On vacation',
   'sys_level'           => 'Level',
   'sys_level_short'     => 'Lvl',
   'sys_level_max'       => 'Max level',

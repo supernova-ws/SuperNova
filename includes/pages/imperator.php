@@ -65,6 +65,7 @@ function sn_imperator_view($template = null)
     'user_username'        => player_nick_render_to_html($user_data, true),
     'user_sex'             => $user_data['sex'] == 'F' ? 'female' : 'male',
     'USER_AVATAR'          => $user_data['avatar'],
+    'VACATION'             => $user_data['vacation'],
 
     'NEW_MESSAGES'         => $user_data['new_message'],
     'REGISTRATION_DATE'    => date(FMT_DATE_TIME, $user_data['register_time']),

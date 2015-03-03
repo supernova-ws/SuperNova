@@ -1017,6 +1017,10 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
     $result[NICK_BIRTHSDAY] = '<img src="design/images/birthday.png" />';
   }
 
+  if(isset($nick_array[NICK_VACATION])) {
+    $result[NICK_VACATION] = '<img src="design/images/icon_vacation.png" />';
+  }
+
   if(isset($nick_array[NICK_GENDER])) {
     $result[NICK_GENDER] = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/sex_' . $nick_array[NICK_GENDER] . '.png" />';
   }
@@ -1085,6 +1089,10 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
   if($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['gender']) && $options['gender'])) {
     $result[NICK_GENDER] = $render_user['sex'] == 'F' ? 'female' : 'male';
+  }
+
+  if(($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['vacancy']) && $options['vacancy'])) && $render_user['vacation']) {
+    $result[NICK_VACATION] = $render_user['vacation'];
   }
 
   if($options === true || (isset($options['color']) && $options['color'])) {
