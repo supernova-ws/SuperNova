@@ -1022,7 +1022,7 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   }
 
   if(isset($nick_array[NICK_GENDER])) {
-    $result[NICK_GENDER] = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/sex_' . $nick_array[NICK_GENDER] . '.png" />';
+    $result[NICK_GENDER] = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/gender_' . $nick_array[NICK_GENDER] . '.png" />';
   }
 
   if(isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {
@@ -1088,7 +1088,7 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
   }
 
   if($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['gender']) && $options['gender'])) {
-    $result[NICK_GENDER] = $render_user['sex'] == 'F' ? 'female' : 'male';
+    $result[NICK_GENDER] = $render_user['gender'] == GENDER_UNKNOWN ? 'unknown' : ($render_user['gender'] == GENDER_FEMALE ? 'female' : 'male');
   }
 
   if(($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['vacancy']) && $options['vacancy'])) && $render_user['vacation']) {

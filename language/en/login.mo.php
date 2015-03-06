@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a10.2
+* @version 39b6.27
 *
 */
 
@@ -81,7 +81,7 @@ $a_lang_array = (array(
   'E-Mail' => 'E-Mail address',
   'MainPlanet' => 'The name of your planet',
   'GameName' => 'Game name',
-  'Sex' => 'Sex',
+  'gender' => 'Gender',
   'accept' => 'Accept',
   'reg_i_agree' => 'I have read and agree with',
   'reg_with_rules' => 'Rules of the game',
@@ -103,7 +103,7 @@ $a_lang_array = (array(
   'error_rgt' => 'You must comply with the rules !<br />',
   'error_userexist' => 'This name is already in use !<br />',
   'error_emailexist' => 'This e-mail is already in use !<br />',
-  'error_sex' => 'Error in the choice of sex !<br />',
+  'error_sex' => 'Error in the choice of gender !<br />',
   'error_mailsend' => 'Error in sending the email, your password: ',
   'reg_welldone' => 'Registration complete! Your password was specified when registering the mailbox. Here it is again just in case',
   'error_captcha' => 'The wrong graphic code !<br/>',

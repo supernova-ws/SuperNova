@@ -132,7 +132,6 @@ while ($row = mysql_fetch_assoc($query))
   {
     $row_stat['BIRTHDAY'] = date(FMT_DATE, $row['nearest_birthday']);
     $row_stat['BIRTHDAY_TODAY'] = $row_stat['BIRTHDAY'] == date(FMT_DATE, $time_now);
-    $row_stat['SEX'] = $row['sex'];
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
     $row_stat['NAME'] = player_nick_render_to_html($row, array('icons' => true));

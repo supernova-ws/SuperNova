@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a10.2
+* @version 39b6.27
 *
 */
 
@@ -81,7 +81,7 @@ $a_lang_array = (array(
   'E-Mail' => 'Адрес e-Mail',
   'MainPlanet' => 'Имя главной планеты',
   'GameName' => 'Имя',
-  'Sex' => 'Пол',
+  'gender' => 'Пол',
   'accept' => 'Я согласен с правилами',
   'reg_i_agree' => 'Я ознакомился и согласен с',
   'reg_with_rules' => 'правилами игры',

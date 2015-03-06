@@ -1304,6 +1304,12 @@ switch($new_version) {
       ), $update_indexes['log_users_online']['PRIMARY'] != 'online_timestamp,online_aggregated,');
     }
 
+    if(!isset($update_tables['users']['gender'])) {
+      upd_alter_table('users', "ADD COLUMN `gender` TINYINT(1) UNSIGNED NOT NULL DEFAULT " . GENDER_UNKNOWN, !isset($update_tables['users']['gender']));
+      upd_do_query("UPDATE {{users}} SET `gender` = IF(UPPER(`sex`) = 'F', " . GENDER_FEMALE. ", IF(UPPER(`sex`) = 'M', " . GENDER_MALE . ", " . GENDER_UNKNOWN . "));");
+      upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+    }
+
     $pack_until = "2014-11-01 00:00:00";
     $temp = mysql_fetch_assoc(upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';"));
     if($temp['cnt']) {

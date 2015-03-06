@@ -372,7 +372,7 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
     $md5pass = md5($password_raw);
     $language = sys_get_param_str('lang', DEFAULT_LANG);
     $skin = DEFAULT_SKINPATH;
-    // `id_planet` = 0, `sex` = '{$sex}', `design` = '1',
+    // `id_planet` = 0, `gender` = '{$gender}', `design` = '1',
     $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
       `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}',
       `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");

@@ -325,8 +325,6 @@ foreach($cached['users'] as $PlanetUser) {
     'NAME' => player_nick_render_to_html($PlanetUser, true),
     'NAME_JS' => js_safe_string(player_nick_render_to_html($PlanetUser, true)),
     'RANK' => in_array($PlanetUser['id'], $user_skip_list) ? '-' : $PlanetUser['total_rank'],
-    //'SEX'      => $PlanetUser['sex'] == 'F' ? 'female' : 'male',
-    //'BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? 1 : 0, // date(FMT_DATE, $time_now)
     'AVATAR'   => $PlanetUser['avatar'],
     'ALLY_ID' => $PlanetUser['ally_id'],
     'ALLY_TAG' => js_safe_string($user_ally['ally_tag']),

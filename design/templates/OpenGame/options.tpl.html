@@ -97,6 +97,21 @@
         </tr>
 
         <tr>
+          <th>{L_sys_gender}</th>
+          <th>
+            <!-- IF GENDER -->
+            {GENDER_TEXT}
+            <!-- ELSE -->
+            <select name="gender">
+              <!-- BEGIN gender_list -->
+              <option value="{gender_list.VALUE}"<!-- IF gender_list.SELECTED --> selected<!-- ENDIF -->>{gender_list.NAME}</option>
+              <!-- END gender_list -->
+            </select>
+            <!-- ENDIF -->
+          </th>
+        </tr>
+
+        <tr>
           <th class="c_c" colspan="2">{L_opt_avatar}</th>
         </tr>
         <tr>

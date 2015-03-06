@@ -45,7 +45,7 @@ if (isset($GET_result)) {
       $bloc['answer3']        = $SelUser['user_lastip'];
       $bloc['answer4']        = $SelUser['email'];
       $bloc['answer5']        = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-      $bloc['answer6']        = $lang['adm_usr_genre'][ $SelUser['sex'] ];
+      $bloc['answer6']        = $lang['adm_usr_genre'][ $SelUser['gender'] ];
       $bloc['answer7']        = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
       $bloc['answer8']        = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
       $bloc['qst_quest_complete'] = get_quest_amount_complete($SelUser['id']);
@@ -66,7 +66,7 @@ if (isset($GET_result)) {
       $bloc['answer3']         = $SelUser['user_lastip'];
       $bloc['answer4']         = $SelUser['email'];
       $bloc['answer5']         = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-      $bloc['answer6']         = $lang['adm_usr_genre'][ $SelUser['sex'] ];
+      $bloc['answer6']         = $lang['adm_usr_genre'][ $SelUser['gender'] ];
       $bloc['answer7']         = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
       $bloc['answer8']         = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
       $bloc['qst_quest_complete'] = get_quest_amount_complete($SelUser['id']);

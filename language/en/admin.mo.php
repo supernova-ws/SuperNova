@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a20.18
+* @version 39b6.27
 *
 */
 
@@ -328,8 +328,9 @@ $a_lang_array = (array(
   ),
 
   'adm_usr_genre' => array(
-    'M' => 'Male',
-    'F' => 'Female',
+    GENDER_UNKNOWN => 'Not set',
+    GENDER_MALE => 'Male',
+    GENDER_FEMALE => 'Female',
   ),
 
   'panel_mainttl' => 'Admin Panel',

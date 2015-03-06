@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b6.25
+* @version 39b6.27
 *
 */
 
@@ -979,5 +979,12 @@ $a_lang_array = (array(
   ),
 
   'sys_milliseconds' => 'milliseconds',
+
+  'sys_gender' => 'Gender',
+  'sys_gender_list' => array(
+    GENDER_UNKNOWN => 'Not selected',
+    GENDER_MALE => 'Male',
+    GENDER_FEMALE => 'Female',
+  ),
 
 ));

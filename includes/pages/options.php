@@ -203,16 +203,17 @@ function sn_options_model() {
     $user['planet_sort_order'] = sys_get_param_int('settings_order');
     $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : $time_now + $config->player_delete_time);
 
-    try
-    {
-      if($user['birthday'])
-      {
+    $gender = sys_get_param_int('gender', $user['gender']);
+    !isset($lang['sys_gender_list'][$gender]) ? $gender = $user['gender'] : false;
+    $user['gender'] = $user['gender'] == GENDER_UNKNOWN ? $gender : $user['gender'];
+
+    try {
+      if($user['birthday']) {
         throw new exception();
       }
 
       $user_birthday = sys_get_param_str_unsafe('user_birthday');
-      if(!$user_birthday || $user_birthday == $FMT_DATE)
-      {
+      if(!$user_birthday || $user_birthday == $FMT_DATE) {
         throw new exception();
       }
 
@@ -222,19 +223,16 @@ function sn_options_model() {
       $pos['Y'] = strpos(FMT_DATE, 'Y');
       asort($pos);
       $i = 0;
-      foreach($pos as &$position)
-      {
+      foreach($pos as &$position) {
         $position = ++$i;
       }
 
       $regexp = "/" . preg_replace(array('/\\\\/', '/\//', '/\./', '/\-/', '/d/', '/m/', '/Y/'), array('\\\\\\', '\/', '\.', '\-', '(\d?\d)', '(\d?\d)', '(\d{4})'), FMT_DATE) . "/";
-      if(!preg_match($regexp, $user_birthday, $match))
-      {
+      if(!preg_match($regexp, $user_birthday, $match)) {
         throw new exception();
       }
 
-      if(!checkdate($match[$pos['m']], $match[$pos['d']], $match[$pos['Y']]))
-      {
+      if(!checkdate($match[$pos['m']], $match[$pos['d']], $match[$pos['Y']])) {
         throw new exception();
       }
 
@@ -242,16 +240,13 @@ function sn_options_model() {
       // EOF black magic! Now we have valid MYSQL date in $user['user_birthday'] - independent of date format
 
       $year = date('Y', $time_now);
-      if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > $time_now)
-      {
+      if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > $time_now) {
         $year--;
       }
       $user['user_birthday_celebrated'] = mysql_real_escape_string("{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}");
 
       $user_birthday = ", `user_birthday` = '{$user['user_birthday']}', `user_birthday_celebrated` = '{$user['user_birthday_celebrated']}'";
-    }
-    catch (exception $e)
-    {
+    } catch (exception $e) {
       $user_birthday = '';
     }
 
@@ -278,13 +273,13 @@ function sn_options_model() {
     }
 
 //      `username` = '{$username_safe}',
-    db_user_set_by_id($user['id'], "`password` = '{$user['password']}', `email` = '{$user['email']}', `email_2` = '{$user['email_2']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
+    db_user_set_by_id($user['id'], $q = "`password` = '{$user['password']}', `email` = '{$user['email']}', `email_2` = '{$user['email_2']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
       `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `planet_sort` = '{$user['planet_sort']}', `planet_sort_order` = '{$user['planet_sort_order']}', `spio_anz` = '{$user['spio_anz']}',
       `settings_tooltiptime` = '{$user['settings_tooltiptime']}', `settings_fleetactions` = '{$user['settings_fleetactions']}', `settings_esp` = '{$user['settings_esp']}',
       `settings_wri` = '{$user['settings_wri']}', `settings_bud` = '{$user['settings_bud']}', `settings_statistics` = '{$user['settings_statistics']}',
       `settings_info` = '{$user['settings_info']}', `settings_mis` = '{$user['settings_mis']}', `settings_rep` = '{$user['settings_rep']}',
-      `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user['options']}'
+      `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user['options']}', `gender` = {$user['gender']}
       {$user_birthday}"
     );
 
@@ -340,6 +335,14 @@ function sn_options_view($template = null) {
       'VALUE' => $i,
       'NAME'  => $lang['opt_lst_ord' . $i],
       'SELECTED' => $user['planet_sort'] == $i,
+    );
+  }
+
+  foreach($lang['sys_gender_list'] as $key => $value) {
+    $template_result['.']['gender_list'][] = array(
+      'VALUE' => $key,
+      'NAME'  => $value,
+      'SELECTED' => $user['gender'] == $key,
     );
   }
 
@@ -428,6 +431,8 @@ function sn_options_view($template = null) {
     'adm_pl_prot' => $user['admin_protection'],
 
     'user_birthday' => $user['user_birthday'],
+    'GENDER' => $user['gender'],
+    'GENDER_TEXT' => $lang['sys_gender_list'][$user['gender']],
     'FMT_DATE' => $FMT_DATE,
     'JS_FMT_DATE' => js_safe_string($FMT_DATE),
 

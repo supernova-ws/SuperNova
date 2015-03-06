@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b6.25#
+* @version #39b6.27#
 *
 */
 
@@ -986,5 +986,12 @@ $a_lang_array = (array(
   ),
 
   'sys_milliseconds' => 'миллисекунд',
+
+  'sys_gender' => 'Пол',
+  'sys_gender_list' => array(
+    GENDER_UNKNOWN => 'Не выбран',
+    GENDER_MALE => 'Мужской',
+    GENDER_FEMALE => 'Женский',
+  ),
 
 ));

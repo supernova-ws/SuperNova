@@ -354,7 +354,7 @@ Duplicate entry '3267-1-60088-1500' for key 'I_unit_player_location_snid'<br />/
   user_birthday             - нужно очень редко
   sign - подпись в сообщениях. Не участвует нигде
   lang
-  sex
+  sex - gender
   avatar
   dpath
   design
@@ -849,7 +849,7 @@ xsolla - передавать описание платежа
 ======================
 
 
-Текущий билд #39b6.23#
+Текущий билд #39b6.27#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять fleet_update_last

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a20.18
+* @version 39b6.27
 *
 */
 
@@ -347,8 +347,9 @@ $a_lang_array = (array(
   ),
 
   'adm_usr_genre' => array(
-    'M' => 'Мужчина',
-    'F' => 'Женщина',
+    GENDER_UNKNOWN => 'Не выбран',
+    GENDER_MALE => 'Мужчина',
+    GENDER_FEMALE => 'Женщина',
   ),
 
   'panel_mainttl' => 'Панель администратора',
