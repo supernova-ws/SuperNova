@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b6.27
+* @version 39b6.29
 *
 */
 
@@ -982,7 +982,7 @@ $a_lang_array = (array(
 
   'sys_gender' => 'Gender',
   'sys_gender_list' => array(
-    GENDER_UNKNOWN => 'Not selected',
+    GENDER_UNKNOWN => 'Will decide - when grew up',
     GENDER_MALE => 'Male',
     GENDER_FEMALE => 'Female',
   ),

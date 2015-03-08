@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b6.27');
+define('SN_VERSION', '39b6.29');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -796,6 +796,9 @@ define('UNIT_AWARD_ORDER_SPONSOR', 2109);
 
 define('UNIT_AWARD_MEDAL', 2200); // Медали за Серъезные Достижения - например, за победу в конкурсе
 define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за существование и участие - например "4 года в игре". "Был онлайн в новогоднюю ночь 2013". итд
+define('UNIT_AWARD_MEMORY_IMMORTAL', 2301);  // Бессмертный
+define('UNIT_AWARD_MEMORY_2015_WOMEN_DAY', 2302);  // Значек за подарок Женщине от Мужчины во время ивента 8 марта 2015 года
+
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
 
