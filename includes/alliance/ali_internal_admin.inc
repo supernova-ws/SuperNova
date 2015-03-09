@@ -1,12 +1,10 @@
 <?php
 
-if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
-{
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
-if(!$user_admin)
-{
+if(!$user_admin) {
   message($lang['Denied_access'], $lang['ally_admin']);
 }
 
@@ -23,17 +21,49 @@ $text_list = array(
 $allyTextID = sys_get_param_int('t', 1);
 $allyTextID = ($allyTextID<1 || $allyTextID>3) ? 1 : $allyTextID;
 
-if(sys_get_param_str('isSaveOptions'))
-{
+if(sys_get_param_str('isSaveOptions')) {
   require_once('includes/includes/sys_avatar.php');
 
-  $avatar_upload_result = sys_avatar_upload($ally['id'], $ally['ally_image'], 'ally');
+  $new_image = $ally['ally_image'];
+  $avatar_upload_result = sys_avatar_upload($ally['id'], $new_image, 'ally');
   $template->assign_vars(array(
     'AVATAR_UPLOAD_STATUS' => $avatar_upload_result['STATUS'],
     'AVATAR_UPLOAD_MESSAGE' => $avatar_upload_result['MESSAGE'],
   ));
 //  $template->assign_block_vars('result', $avatar_upload_result);
 
+  $ally_changeset = array();
+  if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
+    $new_tag = mysql_real_escape_string($new_tag);
+    $ally_changeset[] = "`ally_tag`='{$new_tag}'";
+    db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
+  }
+  if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) && $new_name != $ally['ally_name']) {
+    $new_name = mysql_real_escape_string($new_name);
+    $ally_changeset[] = "`ally_name`='{$new_name}'";
+  }
+
+  if(($new_owner_rank = sys_get_param_str_unsafe('owner_range', $ally['ally_owner_range'])) && $new_owner_rank != $ally['ally_owner_range']) {
+    $new_owner_rank = mysql_real_escape_string($new_owner_rank);
+    $ally_changeset[] = "`ally_owner_range` = '{$new_owner_rank}'";
+  }
+  if(($new_web = sys_get_param_str_unsafe('web', $ally['ally_web'])) && $new_web != $ally['ally_web']) {
+    $new_web = mysql_real_escape_string($new_web);
+    $ally_changeset[] = "`ally_web` = '{$new_web}'";
+  }
+  if(($new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow'])) && $new_request != $ally['ally_request_notallow']) {
+    $ally_changeset[] = "`ally_request_notallow` = '{$new_request}'";
+  }
+  if($new_image != $ally['ally_image']) {
+    $new_image = intval($new_image);
+    $ally_changeset[] = "`ally_image` = '{$new_image}'";
+  }
+
+  if(!empty($ally_changeset)) {
+    doquery("UPDATE {{alliance}} SET " . implode(',', $ally_changeset) . " WHERE `id`='{$ally['id']}' LIMIT 1;");
+    sys_redirect('alliance.php?mode=admin&edit=ally');
+  }
+/*
   $old_tag = $ally['ally_tag'];
   $old_name = $ally['ally_name'];
   $old_rank = $ally['ally_owner_range'];
@@ -41,8 +71,7 @@ if(sys_get_param_str('isSaveOptions'))
   $ally['ally_name'] = sys_get_param_str('name');
   $ally['ally_tag']  = sys_get_param_str('tag');
   $ally['ally_owner_range'] = sys_get_param_str('owner_range');
-  if($ally['ally_tag'] && $ally['ally_name'] && $ally['ally_owner_range'])
-  {
+  if($ally['ally_tag'] && $ally['ally_name'] && $ally['ally_owner_range']) {
     $ally['ally_web'] = strip_tags(sys_get_param_str('web'));
     $ally['ally_request_notallow'] = sys_get_param_str('request_notallow');
 
@@ -56,8 +85,7 @@ if(sys_get_param_str('isSaveOptions'))
         `ally_request_notallow`='{$ally['ally_request_notallow']}'
       WHERE `id`='{$ally['id']}' LIMIT 1;");
 
-    if($ally['ally_tag'] != mysql_real_escape_string($old_tag))
-    {
+    if($ally['ally_tag'] != mysql_real_escape_string($old_tag)) {
       db_user_set_by_id($ally['ally_user_id'], "`username`='[{$ally['ally_tag']}]'");
     }
     sn_db_transaction_commit();
@@ -68,7 +96,7 @@ if(sys_get_param_str('isSaveOptions'))
     $ally['ally_tag']  = $old_tag;
     $ally['ally_owner_range'] = $old_rank;
   }
-
+*/
 //  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}';", '', true);
 }
 elseif(sys_get_param_str('isSaveText'))

@@ -1224,7 +1224,7 @@ function sn_sn_get_groups($groups, &$result)
 function idval($value, $default = 0)
 {
   $value = floatval($value);
-  return preg_match('#^(\d*)#', $value, $matches) ? $matches[1] : $default;
+  return preg_match('#^(\d*)#', $value, $matches) && $matches[1] ? floatval($matches[1]) : $default;
 }
 
 function unit_requirements_render($user, $planetrow, $unit_id){return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, &$result));}
