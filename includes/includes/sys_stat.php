@@ -174,15 +174,13 @@ function sys_stat_calculate() {
   $row_num = mysql_num_rows($query);
   while($que_item = mysql_fetch_assoc($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating ques stats (que item {$i}/{$row_num})", false);
-    if(array_key_exists($user_id = $que_item['id_owner'], $user_skip_list)) continue;
-
+    if(array_key_exists($user_id = $que_item['que_player_id'], $user_skip_list)) continue;
     $que_unit_amount = $que_item['que_unit_amount'];
     $que_item = sys_unit_str2arr($que_item['que_unit_price']);
-    $resources = ($que_item['metal'] * $rate[RES_METAL] + $que_item['crystal'] * $rate[RES_CRYSTAL] + $que_item['deuterium'] * $rate[RES_DEUTERIUM]) * $que_unit_amount;
+    $resources = ($que_item[RES_METAL] * $rate[RES_METAL] + $que_item[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $que_item[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $que_unit_amount;
     $counts[$user_id][UNIT_RESOURCES] += $resources;
     // $points[$user_id][UNIT_RESOURCES] += $resources;
   }
-
 
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation

@@ -1152,42 +1152,38 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
 
 // TODO sys_stat_get_user_skip_list() ПЕРЕДЕЛАТЬ!
-function sys_stat_get_user_skip_list()
-{
+function sys_stat_get_user_skip_list() {
   global $config;
 
+  $result = array();
+
   $user_skip_list = array();
-  if($config->stats_hide_admins)
-  {
+
+  if($config->stats_hide_admins) {
     $user_skip_list[] = '`authlevel` > 0';
   }
-  if($config->stats_hide_player_list)
-  {
+
+  if($config->stats_hide_player_list) {
     $temp = explode(',', $config->stats_hide_player_list);
-    foreach($temp as $user_id)
-    {
+    foreach($temp as $user_id) {
       $user_id = floatval($user_id);
-      if($user_id)
-      {
+      if($user_id) {
         $user_skip_list[] = '`id` = ' . $user_id;
       }
     }
   }
-  if(!empty($user_skip_list))
-  {
+
+  if(!empty($user_skip_list)) {
     $user_skip_list = implode(' OR ', $user_skip_list);
     $user_skip_query = db_user_list($user_skip_list);
-    if(!empty($user_skip_query))
-    {
-      $user_skip_list = array();
-      foreach($user_skip_query as $user_skip_row)
-      {
-        $user_skip_list[$user_skip_row['id']] = $user_skip_row['id'];
+    if(!empty($user_skip_query)) {
+      foreach($user_skip_query as $user_skip_row) {
+        $result[$user_skip_row['id']] = $user_skip_row['id'];
       }
     }
   }
 
-  return $user_skip_list;
+  return $result;
 }
 
 // function player_nick_render_to_html($render_user, $options = false){return sn_function_call('player_nick_render_to_html', array($render_user, $options, &$result));}
