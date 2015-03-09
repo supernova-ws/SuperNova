@@ -76,12 +76,13 @@ function eco_que_arr2str($que_arr)
 
 
 
-function que_build($user, $planet, $build_mode = BUILD_CREATE) {
+function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true) {
   global $lang;
 
+  $unit_amount_qued = 0;
   try {
     if(!$user['id']) {
-      throw new exception('Нет идентификатора пользователя - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Нет идентификатора пользователя - сообщите Администрации}', ERR_ERROR); // TODO EXCEPTION
     }
 
     $unit_id = sys_get_param_int('unit_id');
@@ -92,16 +93,16 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
     }
     */
     if(!$unit_id) {
-      throw new exception('Нет идентификатора юнита - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Нет идентификатора юнита - сообщите Администрации}', ERR_ERROR); // TODO EXCEPTION
     }
 
     $que_id = que_get_unit_que($unit_id);
     if(!$que_id) {
-      throw new exception('Неправильный тип очереди - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Неправильный тип очереди - сообщите Администрации}', ERR_ERROR); // TODO EXCEPTION
     }
 
     if($build_mode == BUILD_DESTROY && $que_id != QUE_STRUCTURES) {
-      throw new exception('Уничтожать можно только здания на планете', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Уничтожать можно только здания на планете}', ERR_ERROR); // TODO EXCEPTION
     }
 
     $que_data = sn_get_groups('ques');
@@ -114,7 +115,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
       $que_data['unit_list'] = $sn_groups_build_allow[$planet['planet_type']];
 
       if(!isset($que_data['unit_list'][$unit_id])) {
-        throw new exception('Это здание нельзя строить на ' . ($planet['planet_type'] == PT_PLANET ? 'планете' : 'луне'), ERR_ERROR); // TODO EXCEPTION
+        throw new exception('{Это здание нельзя строить на ' . ($planet['planet_type'] == PT_PLANET ? 'планете' : 'луне'), ERR_ERROR); // TODO EXCEPTION
       }
     }
     /*
@@ -147,33 +148,34 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
     $que_max_length = que_get_max_que_length($user, $planet, $que_id, $que_data);
     // TODO Добавить вызовы функций проверок текущей и максимальной длин очередей
     if(count($in_que) >= $que_max_length) {
-      throw new exception('Все слоты очереди заняты', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Все слоты очереди заняты}', ERR_ERROR); // TODO EXCEPTION
     }
 
     // TODO Отдельно посмотреть на уничтожение зданий - что бы можно было уничтожать их без планов
     switch(eco_can_build_unit($user, $planet, $unit_id)) {
       case BUILD_ALLOWED: break;
-      case BUILD_UNIT_BUSY: throw new exception('Строение занято', ERR_ERROR); break; // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
+      case BUILD_UNIT_BUSY: throw new exception('{Строение занято}', ERR_ERROR); break; // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
       // case BUILD_REQUIRE_NOT_MEET:
       default:
         if($build_mode == BUILD_CREATE) {
-          throw new exception('Требования не удовлетворены', ERR_ERROR);
+          throw new exception('{Требования не удовлетворены}', ERR_ERROR);
         }
         break; // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
     }
 
     $unit_amount = floor(sys_get_param_float('unit_amount', 1));
+    $unit_amount_qued = $unit_amount;
     $units_qued = isset($in_que[$unit_id]) ? $in_que[$unit_id] : 0;
     $unit_level = mrc_get_level($user, $planet, $unit_id, true, true) + $units_qued;
     if($unit_max = get_unit_param($unit_id, P_MAX_STACK)) {
       if($unit_level >= $unit_max) {
-        throw new exception('Максимальное количество юнитов данного типа уже достигнуто или будет достигнуто по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
+        throw new exception('{Максимальное количество юнитов данного типа уже достигнуто или будет достигнуто по окончанию очереди}', ERR_ERROR); // TODO EXCEPTION
       }
       $unit_amount = max(0, min($unit_amount, $unit_max - $unit_level));
     }
 
     if($unit_amount < 1) {
-      throw new exception('Неправильное количество юнитов - сообщите Администрации', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Неправильное количество юнитов - сообщите Администрации}', ERR_ERROR); // TODO EXCEPTION
     }
 
     /*
@@ -199,11 +201,11 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
         }
         $free_silo = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY) - $used_silo;
         if($free_silo <= 0) {
-          throw new exception('Ракетная шахта уже заполнена или будет заполнена по окончанию очереди', ERR_ERROR); // TODO EXCEPTION
+          throw new exception('{Ракетная шахта уже заполнена или будет заполнена по окончанию очереди}', ERR_ERROR); // TODO EXCEPTION
         }
         $unit_size = get_unit_param($unit_id, P_UNIT_SIZE);
         if($free_silo < $unit_size) {
-          throw new exception("В ракетной шахте нет места для {$lang['tech'][$unit_id]}", ERR_ERROR); // TODO EXCEPTION
+          throw new exception("{В ракетной шахте нет места для {$lang['tech'][$unit_id]}}", ERR_ERROR); // TODO EXCEPTION
         }
         $unit_amount = max(0, min($unit_amount, floor($free_silo / $unit_size)));
       }
@@ -215,7 +217,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
         $sectors_qued = is_array($in_que) ? array_sum($in_que) : 0;
         if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $sectors_qued <= 0)
         {
-          throw new exception('Не хватает секторов на планете', ERR_ERROR); // TODO EXCEPTION
+          throw new exception('{Не хватает секторов на планете}', ERR_ERROR); // TODO EXCEPTION
         }
         // И что это я такое написал? Зачем?
         //if($build_mode == BUILD_DESTROY && $planet['field_current'] <= $que['amounts'][$que_id])
@@ -231,23 +233,25 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
 
     $unit_amount = min($build_data['CAN'][$build_mode], $unit_amount);
     if($unit_amount < 0) {
-      throw new exception('Не хватает ресурсов', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Не хватает ресурсов}', ERR_ERROR); // TODO EXCEPTION
     }
 
     if($new_unit_level < 0) {
-      throw new exception('Нельзя уничтожить больше юнитов, чем есть', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Нельзя уничтожить больше юнитов, чем есть}', ERR_ERROR); // TODO EXCEPTION
     }
 
     if($build_data['RESULT'][$build_mode] != BUILD_ALLOWED) {
-      throw new exception('Строительство блокировано', ERR_ERROR); // TODO EXCEPTION
+      throw new exception('{Строительство блокировано}', ERR_ERROR); // TODO EXCEPTION
     }
 
 //    $unit_amount = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
+    $unit_amount_qued = 0;
     while($unit_amount > 0 && count($que['ques'][$que_id][$user['id']][$planet_id]) < $que_max_length) {
       $place = min($unit_amount, MAX_FLEET_OR_DEFS_PER_ROW);
       que_add_unit($unit_id, $user, $planet, $build_data, $new_unit_level, $place, $build_mode);
       $unit_amount -= $place;
       $que = que_get($user['id'], $planet['id'], $que_id, true);
+      $unit_amount_qued += $place;
     }
 
 //    pdump($que);
@@ -260,14 +264,27 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE) {
 
     sn_db_transaction_commit();
 
-    sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
-    die();
+    if($redirect) {
+      sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
+      die();
+    }
+
+    $operation_result = array(
+      'STATUS'  => ERR_NONE,
+      'MESSAGE' => '{Строительство начато}',
+    );
   } catch(exception $e) {
     sn_db_transaction_rollback();
     $operation_result = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
       'MESSAGE' => $e->getMessage()
     );
+  }
+
+  if(!empty($operation_result['MESSAGE'])) {
+    $operation_result['MESSAGE'] .= ' ' . ($unit_amount_qued ? $unit_amount_qued : $unit_amount) . 'x[' . $lang['tech'][$unit_id] . ']' .
+    (isset($planet['id']) ? ' на ' . $planet['name'] : '')
+    . '}';
   }
 
   return $operation_result;
