@@ -1328,10 +1328,12 @@ switch($new_version) {
           u.id;");
     }
 
-    upd_do_query(
-      "UPDATE {{users}} AS u JOIN {{player_award}} AS pa ON u.id = pa.player_id
-      SET metamatter_total = 1
-      WHERE award_id = 2301 AND metamatter_total = 0;", isset($update_tables['player_award']));
+    if(isset($update_tables['player_award'])) {
+      upd_do_query(
+        "UPDATE {{users}} AS u JOIN {{player_award}} AS pa ON u.id = pa.player_id
+        SET metamatter_total = 1
+        WHERE award_id = 2301 AND metamatter_total = 0;");
+    }
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
