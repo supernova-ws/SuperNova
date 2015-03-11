@@ -1268,9 +1268,9 @@ switch($new_version) {
       "UPDATE `{{users}}` AS u
         SET metamatter_total =
           IF(
-            metamatter_total > (SELECT sum(amount) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0),
+            metamatter_total > (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0),
             metamatter_total,
-            (SELECT sum(amount) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0)
+            (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0)
           );");
 
     upd_alter_table('users', "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0", !isset($update_tables['users']['user_bot']));
