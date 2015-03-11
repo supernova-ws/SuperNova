@@ -331,6 +331,10 @@ function sec_login_change_state() {
     );
     sn_db_transaction_commit();
 
+    //if(in_array($template_result[F_DEVICE_ID], array(463735, 86823))) {
+    //  die();
+    //}
+
     db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ", `banaday` = {$user['banaday']}, `vacation` = {$user['vacation']},
       `user_lastip` = '{$user['user_lastip']}', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = {$template_result[F_BROWSER_ID]}"
     );

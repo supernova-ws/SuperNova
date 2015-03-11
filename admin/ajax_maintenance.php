@@ -26,6 +26,48 @@ $ques = array(
 // FK  'DELETE FROM `{{buddy}}`     WHERE `owner`          not in (select id from {{users}});',
 // Not used  'DELETE FROM `{{annonce}}`   WHERE `user`           not in (select id from {{users}});',
 //  'DELETE FROM `{{messages}}`  WHERE `message_sender` not in (select id from {{users}});',
+
+  // Выводим из отпуска игроков, которые находятся там более 8 недель
+  'UPDATE {{users}}
+  SET vacation = 0, vacation_next = 0
+  WHERE
+    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 /* Не админы, Не Альянсы, Не боты */
+    AND vacation > 0 AND banaday = 0 /* В отпуске и не в бане */
+    AND vacation < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 8 WEEK)) /* Находящиеся в отпуске более 8 недель */;',
+
+  // Игроки, которые не были активны более 4 недель становятся I-шками. Для них
+  // Отключаем получение писем
+  'UPDATE {{users}}
+  SET OPTIONS = ""
+  WHERE
+    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
+    AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
+  // Отключаем производство на планетах
+  'UPDATE {{users}} AS u
+    JOIN {{planets}} AS p ON p.id_owner = u.id
+  SET
+    metal_perhour = 0,
+    crystal_perhour  = 0,
+    deuterium_perhour  = 0,
+    metal_mine_porcent = 0,
+    crystal_mine_porcent = 0,
+    deuterium_sintetizer_porcent = 0,
+    solar_plant_porcent = 0,
+    fusion_plant_porcent = 0,
+    solar_satelit_porcent = 0,
+    ship_sattelite_sloth_porcent = 0
+  WHERE
+		authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
+		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
+  // Удаляем все здания из очереди
+  'DELETE q FROM {{users}} AS u JOIN {{que}} AS q ON q.que_player_id = u.id
+  WHERE
+		authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
+		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
+  // Возвращаем все флоты ???
+  // Пока не будем делать запрос - за 4 недели всяко все флоты должны вернутся...
+
+
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK
   'DELETE FROM `{{planets}}`   WHERE `id_owner`       not in (select id from {{users}}) AND id_owner <> 0;', // TODO NO FK
   'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});',
