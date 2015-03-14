@@ -66,6 +66,7 @@ $ques = array(
 		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
   // Возвращаем все флоты ???
   // Пока не будем делать запрос - за 4 недели всяко все флоты должны вернутся...
+  // TODO I-шки - неделя на разграбление - или сколько там стата хранится...
 
 
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK

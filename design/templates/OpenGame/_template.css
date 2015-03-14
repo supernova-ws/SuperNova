@@ -515,3 +515,64 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #chat_color_select div:nth-child(7), #chat_color_button div:nth-child(7) {
   color: white;
 }
+
+#stat_cell_min_max {
+  position: relative;
+}
+#stat_cell_min_max > .stat_min, #stat_cell_min_max > .stat_avg, #stat_cell_min_max > .stat_max {
+  text-align: center;
+  width: 100%;
+
+  position: absolute;
+  left: 0;
+}
+#stat_cell_min_max > .stat_max {
+  top: 0;
+}
+#stat_cell_min_max > .stat_avg {
+  top: 45%;
+}
+#stat_cell_min_max > .stat_min {
+  bottom: 0;
+}
+
+.stat_cell, .stat_date_cell {
+  width: 40px;
+}
+
+.stat_cell {
+  height: 200px;
+
+  position: relative;
+}
+.stat_cell > .stat_value {
+  text-align: center;
+  width: 100%;
+
+  position: absolute;
+  left: 0;
+  bottom: 1.1em;
+}
+.stat_cell > .stat_delta {
+  text-align: center;
+  width: 100%;
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+.stat_bar {
+  width: 100%;
+  height: 100%;
+
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+/*
+.stat_text {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+*/

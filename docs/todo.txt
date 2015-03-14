@@ -12,21 +12,6 @@ where unit_type = 3001 group by unit_snid;
 select unit_snid, sum(unit_level) as count from game_unit
 where unit_type = 3001 ;
 
-
-НОВЫЙ ГОД
-Обязательно
-  Новогодний бэкграунд
-  Новогодние смайлы
-  Новогодняя сказка
-  Увеличенные рейты по этапам
-  Призы самым стойким
-Опционально
-  Ивент "ЧЛ" (?)
-  Новый эвент в экспе - какой-нибудь сборный артефакт, который собирается по кускам. Типа, там "Ёлочка" с игрушками итд. Собирается всем сервером. Механику пока не продумал
-  Скидки на ММ
-  Скидки на Прем
-
-
 happening
 
 Враппер для добавления методов в рилтайме
@@ -99,15 +84,9 @@ print $foo->bar();
 
 select u.id, u.onlinetime, UNIX_TIMESTAMP(NOW()),
 IF((UNIX_TIMESTAMP(NOW()) - u.onlinetime)/24/60/60 < 7, 0,
-IF((UNIX_TIMESTAMP(NOW()) - u.onlinetime)/24/60/60 < 28, 1, 2
-)
-
-)
+IF((UNIX_TIMESTAMP(NOW()) - u.onlinetime)/24/60/60 < 28, 1, 2))
 from lh_planets as p
 join lh_users as u on u.id = p.id_owner
-
-
-
 order by u.id
 limit 1000;
 
@@ -849,7 +828,7 @@ xsolla - передавать описание платежа
 ======================
 
 
-Текущий билд #39b6.27#
+Текущий билд #39b8.0#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять fleet_update_last

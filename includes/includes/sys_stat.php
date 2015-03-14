@@ -184,7 +184,7 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation
-  doquery("DELETE FROM {{statpoints}} WHERE `stat_code` >= 10;");
+  doquery("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
   doquery("UPDATE {{statpoints}} SET `stat_code` = `stat_code` + 1;");
 
   sta_set_time_limit('posting new user stats to DB');

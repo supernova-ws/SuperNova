@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b6.29
+* @version 39b8.0
 *
 */
 
@@ -986,5 +986,29 @@ $a_lang_array = (array(
     GENDER_MALE => 'Male',
     GENDER_FEMALE => 'Female',
   ),
+
+  'imp_stat_header' => 'График изменений',
+  'imp_stat_types' => array(
+    'TOTAL_RANK' => 'Место в общей статистике',
+    'TOTAL_POINTS' => 'Общее количество очков',
+    // 'TOTAL_COUNT' => 'Общее количество ресурсов',
+    'TECH_RANK' => 'Место в статистике по Исследованиям',
+    'TECH_POINTS' => 'Количество очков за Исследования',
+    // 'TECH_COUNT' => 'Количество уровней',
+    'BUILD_RANK' => 'Место в статистике по Постройкам',
+    'BUILD_POINTS' => 'Количество очков за Постройки',
+    // 'BUILD_COUNT' => '',
+    'DEFS_RANK' => 'Место в статистике по Обороне',
+    'DEFS_POINTS' => 'Количество очков за Оборону',
+    //'DEFS_COUNT' => '',
+    'FLEET_RANK' => 'Место в статистике по Кораблям',
+    'FLEET_POINTS' => 'Количество очков за Корабли',
+    //'FLEET_COUNT' => '',
+    'RES_RANK' => 'Место в статистике по свободным ресурсам',
+    'RES_POINTS' => 'Количество очков за свободные ресурсы',
+    //'RES_COUNT' => '',
+  ),
+
+  'sys_date' => 'Date',
 
 ));

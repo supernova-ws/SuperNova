@@ -87,6 +87,115 @@
   </tr>
 </table>
 
+<script type="text/javascript">
+  var stat = {
+  <!-- BEGIN stat -->
+  '{stat.TYPE}': {
+    'MIN': '{stat.MIN}',
+    'MAX': '{stat.MAX}',
+    'AVG': '{stat.AVG}',
+    'DATA': {
+      <!-- BEGIN entry -->
+      {entry.ID}: {
+        // 'ID': '{entry.ID}',
+        'VALUE': '{entry.VALUE}',
+        'DELTA': '{entry.DELTA}',
+        'PERCENT': '{entry.PERCENT}',
+      },
+      <!-- END entry -->
+    },
+  },
+  <!-- END stat -->
+  };
+  var STAT_COUNT = parseInt('{STAT_COUNT}') ? parseInt('{STAT_COUNT}') : 0;
+
+  var stat_date = {
+    <!-- BEGIN stat_date -->
+    {stat_date.ID}: {
+      // 'ID': '{entry.ID}',
+      'VALUE': '{stat_date.VALUE}',
+      'TEXT': '{stat_date.TEXT}',
+    },
+    <!-- END stat_date -->
+  };
+
+  console.log(stat);
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function() {
+    $(document).on('change', '#stat_type_select', function(){
+      stat_type = $(this).val();
+      $('#stat_cell_min_max').find('.stat_min').each(function(){
+        $(this).text(sn_format_number(stat[stat_type]['MIN']));
+        $(this).parent().find('.stat_max').text(sn_format_number(stat[stat_type]['MAX']));
+        $(this).parent().find('.stat_avg').text(sn_format_number(stat[stat_type]['AVG']));
+      });
+      $('.stat_cell').each(function(){
+        that = $(this);
+        stat_id = that.attr('stat_id');
+        that.find('.stat_bar').height(stat[stat_type]['DATA'][stat_id]['PERCENT'] + '%');
+        that.find('.stat_value').text(sn_format_number(stat[stat_type]['DATA'][stat_id]['VALUE']));
+        that.find('.stat_delta').html('(' + sn_format_number(stat[stat_type]['DATA'][stat_id]['DELTA'], 0, 'positive', 0, true) + ')');
+      });
+    });
+
+    $('#stat_type_select').change();
+  });
+</script>
+
+<!-- IF .stat -->
+<h3>
+  {L_imp_stat_header}
+  <select id="stat_type_select" name="stat_type_select">
+    <!-- BEGIN stat -->
+      <option value="{stat.TYPE}">{stat.TEXT}</option>
+    <!-- END stat -->
+  </select>
+</h3>
+
+<table>
+  <tr class="c_c">
+    <th>{L_sys_date}</th>
+    <!-- BEGIN stat_date -->
+    <th class="stat_date_cell">
+      {stat_date.TEXT}
+    </th>
+    <!-- END stat_date -->
+  </tr>
+  <tr>
+    <td id="stat_cell_min_max">
+      <div class="stat_max positive">
+      </div>
+
+      <div class="stat_avg neutral">
+      </div>
+
+      <div class="stat_min negative">
+      </div>
+
+      <div style="visibility: hidden;">
+        <div class="stat_min"></div>
+        <div class="stat_max"></div>
+      </div>
+    </td>
+    <!-- BEGIN stat_date -->
+    <td stat_id="{stat_date.ID}" class="stat_cell">
+      <div class="ok_bg stat_bar">
+      </div>
+
+      <div class="stat_value"></div>
+      <div class="stat_delta"></div>
+      <div style="visibility: hidden;">
+        <div class="stat_value"></div>
+        <div class="stat_delta"></div>
+      </div>
+    </td>
+    <!-- END stat_date -->
+  </tr>
+</table>
+<!-- ENDIF -->
+
 <!-- IF SAME_USER -->
   <!-- IF BANNER_URL -->
     <table width="519" align="center">
