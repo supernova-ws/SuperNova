@@ -134,7 +134,12 @@
       $('.stat_cell').each(function(){
         that = $(this);
         stat_id = that.attr('stat_id');
-        that.find('.stat_bar').height(stat[stat_type]['DATA'][stat_id]['PERCENT'] + '%');
+        // that.find('.stat_bar').height(stat[stat_type]['DATA'][stat_id]['PERCENT'] + '%');
+
+        that.find('.stat_bar').animate({height: stat[stat_type]['DATA'][stat_id]['PERCENT'] + '%'});
+        // that.find('.stat_bar').animate({height: stat[stat_type]['DATA'][stat_id]['PERCENT']}, 1000);
+
+
         that.find('.stat_value').text(sn_format_number(stat[stat_type]['DATA'][stat_id]['VALUE']));
         that.find('.stat_delta').html('(' + sn_format_number(stat[stat_type]['DATA'][stat_id]['DELTA'], 0, 'positive', 0, true) + ')');
       });

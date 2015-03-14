@@ -563,7 +563,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 .stat_bar {
   width: 100%;
-  height: 100%;
+  height: 0;
 
   position: absolute;
   left: 0;
