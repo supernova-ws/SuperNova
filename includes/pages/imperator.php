@@ -101,7 +101,7 @@ function sn_imperator_view($template = null) {
 //$template_data[$stat_type][$key]['PERCENT'] = $key ? $stat_type_data['PERCENT'][$key] : 50; // TODO DEBUG
     }
   }
-  pdump($stat_array['RES_POINTS']);
+  // pdump($stat_array['RES_POINTS']);
 
   foreach($template_data as $stat_type => $stat_type_data) {
     $template->assign_block_vars('stat', array(
