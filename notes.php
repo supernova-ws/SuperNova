@@ -79,7 +79,7 @@ if(sys_get_param('note_delete')) {
     $note_priority = min(sys_get_param_id('note_priority', 2), count($note_priority_classes) - 1);
     $note_galaxy = max(0, min(sys_get_param_id('note_galaxy'), $config->game_maxGalaxy));
     $note_system = max(0, min(sys_get_param_id('note_system'), $config->game_maxSystem));
-    $note_planet = max(0, min(sys_get_param_id('note_planet'), $config->game_maxPlanet));
+    $note_planet = max(0, min(sys_get_param_id('note_planet'), $config->game_maxPlanet + 1));
     $note_planet_type = max(1, min(sys_get_param_id('note_planet_type', 1), count($lang['sys_planet_type'])));
     $note_sticky = intval(sys_get_param_id('note_sticky')) ? 1 : 0;
 
