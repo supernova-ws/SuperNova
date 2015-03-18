@@ -124,7 +124,7 @@ while ($row = mysql_fetch_assoc($query))
   $row_stat = array(
       'ID' => $row['id'],
       'RANK'        => $row['rank'],
-      'RANK_CHANGE' => $row['rank_old'] - $row['rank'],
+      'RANK_CHANGE' => $row['rank_old'] ? $row['rank_old'] - $row['rank'] : 0,
       'POINTS' => pretty_number($row['points']),
   );
 

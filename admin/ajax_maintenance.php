@@ -185,7 +185,21 @@ $ques = array(
 
   // UBE reports
   'DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(now(), INTERVAL 60 day);',
-  'DELETE FROM {{messages}} WHERE message_time < unix_timestamp(now()) - (60 * 60 * 24 * 30);',
+
+
+  // Чистка сообщений
+  // Удаляются сообщения, старше  4 недель, кроме личных и Альянсовских
+  'DELETE FROM {{messages}} WHERE
+    UNIX_TIMESTAMP() - message_time > 4*7 * 24 * 60 * 60 AND
+    message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ');',
+  // Удаляются сообщения у пользователей, которые неактивны больше 4 недель - кроме личных и Альянсовских
+  'DELETE m FROM `{{users}}` AS u
+  JOIN game_messages AS m ON m.message_owner = u.id
+  WHERE
+    message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ') AND
+    authlevel = 0 AND  user_as_ally IS NULL AND /* Не админы, Не Альянсы */
+    UNIX_TIMESTAMP() - onlinetime > 4*7 *86400;',
+
   'DELETE FROM {{chat}} WHERE timestamp < unix_timestamp(now()) - (60 * 60 * 24 * 14);',
 
   // Recalculate Alliance members
