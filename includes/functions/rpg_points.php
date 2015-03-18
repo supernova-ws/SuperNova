@@ -10,33 +10,26 @@
 
 
 function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false){return sn_function_call('mm_points_change', array($user_id, $change_type, $metamatter, $comment, $already_changed, &$result));}
-function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false, &$result)
-{
-  global $debug, $mm_change_legit, $user;
+function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false, &$result) {
+  global $debug, $mm_change_legit, $user, $config;
 
-  if(!$user_id || !($metamatter = intval($metamatter)))
-  {
+  if(!$user_id || !($metamatter = intval($metamatter))) {
     return false;
   }
 
   $mm_change_legit = true;
   $sn_data_metamatter_db_name = pname_resource_name(RES_METAMATTER);
-  if($already_changed)
-  {
+  if($already_changed) {
     $result = -1;
-  }
-  else
-  {
+  } else {
     db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}'" .
-      ($metamatter > 0 ? ", `metamatter_total` = `metamatter_total` + '{$metamatter}'" : ''));
+      ($metamatter > 0 ? ", `immortal` = IF(`metamatter_total` + '{$metamatter}' >= {$config->player_metamatter_immortal}, NOW(), `immortal`), `metamatter_total` = `metamatter_total` + '{$metamatter}'" : ''));
     $result = mysql_affected_rows();
   }
 
-  if($result)
-  {
+  if($result) {
     $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
-    if(is_array($comment))
-    {
+    if(is_array($comment)) {
       $comment = call_user_func_array('sprintf', $comment);
     }
     $comment = mysql_real_escape_string($comment);
@@ -52,13 +45,10 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
     ;");
     $result = mysql_insert_id();
 
-    if($user['id'] == $user_id)
-    {
+    if($user['id'] == $user_id) {
       $user['metamatter'] += $metamatter;
     }
-  }
-  else
-  {
+  } else {
     $debug->warning("Error adjusting Metamatter for player ID {$user_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
   }
 

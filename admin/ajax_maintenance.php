@@ -27,13 +27,25 @@ $ques = array(
 // Not used  'DELETE FROM `{{annonce}}`   WHERE `user`           not in (select id from {{users}});',
 //  'DELETE FROM `{{messages}}`  WHERE `message_sender` not in (select id from {{users}});',
 
-  // Выводим из отпуска игроков, которые находятся там более 8 недель
+  // Выводим из отпуска игроков, которые находятся там более 4 недель
   'UPDATE {{users}}
   SET vacation = 0, vacation_next = 0
   WHERE
     authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 /* Не админы, Не Альянсы, Не боты */
     AND vacation > 0 AND banaday = 0 /* В отпуске и не в бане */
-    AND vacation < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 8 WEEK)) /* Находящиеся в отпуске более 8 недель */;',
+    AND vacation < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Находящиеся в отпуске более 4 недель */;',
+
+  // Игроки удаляются по Регламенту
+  'DELETE FROM `{{users}}` WHERE
+    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND metamatter_total = 0 AND /* Не админы, Не Альянсы, Не боты, Не Бессмертные*/
+    vacation = 0 AND banaday = 0 AND /* Не в отпуске, Не в бане */
+    (
+      (onlinetime - register_time < 5 * 60 AND UNIX_TIMESTAMP() - onlinetime > 2*7 *86400)
+      OR (onlinetime - register_time < 30 * 60 AND UNIX_TIMESTAMP() - onlinetime > 4*7 *86400)
+      OR (onlinetime - register_time < 10 * 60*60 AND UNIX_TIMESTAMP() - onlinetime > 6*7 *86400)
+
+      OR (UNIX_TIMESTAMP() - onlinetime > 8*7 *86400)
+    );',
 
   // Игроки, которые не были активны более 4 недель становятся I-шками. Для них
   // Отключаем получение писем
@@ -67,6 +79,100 @@ $ques = array(
   // Возвращаем все флоты ???
   // Пока не будем делать запрос - за 4 недели всяко все флоты должны вернутся...
   // TODO I-шки - неделя на разграбление - или сколько там стата хранится...
+
+//  -- DELETE
+//SELECT
+//	id, username AS `Name`, user_as_ally AS `is_ally`,
+//	FROM_UNIXTIME(register_time) as `register`, FROM_UNIXTIME(onlinetime) AS `online`,
+//	ROUND((onlinetime - register_time)/60/60, 2) as `played, h`,
+//	(onlinetime - register_time)/((UNIX_TIMESTAMP() - onlinetime)/24/7) AS 'hrs/week',
+//	metamatter_total as `MM`, total_points AS 'points', dark_matter as `DM Now`, dark_matter_total as `DM Ever`,
+//	(SELECT sum(log_dark_matter_amount) FROM game_log_dark_matter AS dm WHERE dm.log_dark_matter_sender = id AND dm.log_dark_matter_amount > 0) as "DM logged"
+///**/FROM `game_users`
+//
+//WHERE
+///* Не админы */
+//authlevel = 0 AND
+///* Не Альянсы */
+//user_as_ally is null AND
+///* Не боты */
+//user_bot = 0 AND
+///* Не Бессмертные */
+//metamatter_total = 0 AND
+///* Зареганные в 2014 или позже */
+//register_time >= UNIX_TIMESTAMP("2014-01-01") AND
+///* Не в отпуске */
+//vacation = 0 AND
+///* Не в бане */
+//banaday = 0 AND
+//(
+//-- Зарегались больше недели назад и ничего не сделали в игре
+//-- (total_points <= 0 AND UNIX_TIMESTAMP() - onlinetime > 1*7 *86400)
+//-- Зарегались более недели назад и никогда не заходили
+//-- OR (onlinetime <= 0 AND UNIX_TIMESTAMP() - onlinetime > 1*7 *86400)
+//
+//-- Зарегались более недели назад и провели меньше минуты в игре. Такие уже не вернутся ИМХО
+//-- OR (onlinetime - register_time < 1 * 60 AND UNIX_TIMESTAMP() - onlinetime > 1*7 *86400)
+//-- OR
+//(onlinetime - register_time < 5 * 60 AND UNIX_TIMESTAMP() - onlinetime > 2*7 *86400)
+//OR (onlinetime - register_time < 30 * 60 AND UNIX_TIMESTAMP() - onlinetime > 4*7 *86400)
+//OR (onlinetime - register_time < 120 * 60 AND UNIX_TIMESTAMP() - onlinetime > 2*30 *86400)
+//-- OR (onlinetime - register_time < 300 * 60 AND UNIX_TIMESTAMP() - onlinetime > 3*30 *86400)
+//-- OR (onlinetime - register_time < 600 * 60 AND UNIX_TIMESTAMP() - onlinetime > 4*30 *86400)
+//
+//-- Не логинились 3 месяца
+//OR (UNIX_TIMESTAMP() - onlinetime > 3*30 *86400)
+//
+//-- Больше двух месяцев не логинился и не тратил ТМ вообще
+//-- OR (dark_matter = dark_matter_total AND UNIX_TIMESTAMP() - onlinetime > 2*30 *86400)
+//
+//-- Был онлайн больше 2 месяцев назад и не играл хотя бы час в неделю за каждую неделю регистрации
+//-- OR((onlinetime - register_time)/((UNIX_TIMESTAMP() - onlinetime)/24/7) < 1 AND UNIX_TIMESTAMP() - onlinetime > 2*30 *86400)
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//-- Зарегались до НГ и с НГ пор ничего не делали - отсечка по НГ-ивентам
+//-- OR (dark_matter_total <= 40000 and FROM_UNIXTIME(register_time) < "2015-01-01" AND FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 2 month))
+//
+//-- OR (total_points <= 1100000 and FROM_UNIXTIME(register_time) < "2014-07-01" and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 3 month))
+//
+///*
+//(dark_matter <= 40000 and total_points = 0 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 2 week))
+//OR
+//(dark_matter <= 50000 and onlinetime - register_time < 1 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 week))
+//OR
+//(dark_matter <= 60000 and onlinetime - register_time < 5 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 2 week))
+//OR
+//(dark_matter <= 70000 and onlinetime - register_time < 10 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 3 week))
+//OR
+//(dark_matter <= 80000 and onlinetime - register_time < 20 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 month))
+//
+//-- Зарегались более месяца назад и провели в игре не более 20 минут со времени регистрации
+//OR (onlinetime - register_time < 20 * 60 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 month))
+//-- Зарегались более недели назад и никогда не заходили
+//OR (onlinetime <= 0 and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 1 week))
+//*/
+///*
+//(onlinetime - register_time < 1 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 week))
+//OR
+//(onlinetime - register_time < 10 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 2 week))
+//OR
+//(onlinetime - register_time < 15 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 3 week))
+//OR
+//(onlinetime - register_time < 30 * 60 and FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 1 month))
+//*/
+///*
+//OR
+//(total_points < 90000 AND FROM_UNIXTIME(register_time) < DATE_SUB(date(now()),INTERVAL 3 month) and FROM_UNIXTIME(onlinetime) < DATE_SUB(date(now()),INTERVAL 3 month))
+//*/
+//) ORDER BY onlinetime desc, register_time desc;
+
 
 
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK

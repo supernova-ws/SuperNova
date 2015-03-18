@@ -1335,6 +1335,14 @@ switch($new_version) {
         WHERE award_id = 2301 AND metamatter_total = 0;");
     }
 
+    if(!isset($update_tables['users']['immortal'])) {
+      upd_alter_table('users', "ADD COLUMN `immortal` TIMESTAMP NULL", !isset($update_tables['users']['immortal']));
+      upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
+      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+    }
+
+    upd_check_key('player_metamatter_immortal', 100000, !isset($config->player_metamatter_immortal));
+
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
     upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
@@ -1344,7 +1352,7 @@ switch($new_version) {
     upd_check_key('fleet_update_last', SN_TIME_SQL, true);
     upd_check_key('fleet_update_lock', '', empty($config->fleet_update_interval));
 
-    if($config->payment_currency_default == 'UAH') {
+    if($config->payment_currency_default != 'USD') {
       upd_check_key('payment_currency_default',      'USD', true);
       upd_check_key('payment_currency_exchange_dm_', 20000, true);
       upd_check_key('payment_currency_exchange_mm_', 20000, true);
