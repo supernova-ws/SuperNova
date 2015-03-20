@@ -1,0 +1,38 @@
+<h1>{PAGE_HEADER}</h1>
+
+<br />
+<table>
+  <tr>
+    <th class="c_l">{L_sys_player}</th>
+  </tr>
+
+  <!-- BEGIN registrations -->
+  <tr>
+    <td class="c_l">
+      {registrations.NAME}
+    </td>
+  </tr>
+  <!-- BEGINELSE -->
+  <tr>
+    <td>
+      {L_sys_blitz_registration_no_users}
+    </td>
+  </tr>
+  <!-- END registrations -->
+</table>
+
+<!-- IF REGISTRATION_OPEN -->
+  <!-- IF PLAYER_REGISTERED -->
+    <form action="" method="post">
+      <input type="submit" name="register_me_not" value="{L_sys_blitz_registration_player_register_un}" />
+    </form>
+  <!-- ELSE -->
+    <form action="" method="post">
+      <input type="submit" name="register_me" value="{L_sys_blitz_registration_player_register}" />
+    </form>
+  <!-- ENDIF -->
+<!-- ELSE -->
+{L_sys_blitz_registration_closed}
+<!-- ENDIF -->
+
+<!-- INCLUDE page_hint -->

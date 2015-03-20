@@ -74,7 +74,9 @@
   <div id="login_container" style="display: none">
     <ol>
       <li><a class="nohover" href="#tab_login">{L_log_login_page}</a></li>
+      <!-- IF ! GAME_BLITZ -->
       <li><a class="nohover" href="#tab_register">{L_log_reg}</a></li>
+      <!-- ENDIF -->
       <li><a class="nohover" href="#tab_password_reset">{L_log_lost_header}</a></li>
     </ol>
 
@@ -112,8 +114,8 @@
       </form>
     </div>
 
+    <!-- IF ! GAME_BLITZ -->
     <div id="tab_register">
-<!--      <form name="registerForm" method="POST" action="login.php{LANG}{referral}#tab_register" onsubmit="changeAction('register');" > -->
       <form name="registerForm" method="POST" action="{FILENAME}{REQUEST_PARAMS}#tab_register" onsubmit="changeAction('register');" >
         <input type="hidden" name="id_ref" value="{id_ref}">
         <table width="340" align="center">
@@ -210,6 +212,7 @@
       <br>
       -->
     </div>
+    <!-- ENDIF -->
 
     <div id="tab_password_reset">
 <!--

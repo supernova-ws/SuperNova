@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b9.0
+* @version 39b9.1
 *
 */
 
@@ -938,6 +938,8 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_ERROR_CHANGE => 'Password change error. Contact server administration',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Email with new password successfully sent to your email',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
+
+    REGISTER_ERROR_BLITZ_MODE => 'Регистрация новых игроков в режиме Блиц-сервера отключена',
   ),
 
   'log_reg_email_title' => "Your registration on SuperNova game server %1\$s",
@@ -1011,5 +1013,13 @@ $a_lang_array = (array(
   ),
 
   'sys_date' => 'Date',
+
+  'sys_blitz_global_button' => 'Регистрация для игры на Блиц-сервере',
+  'sys_blitz_page_disabled' => 'В режиме Блиц-сервера эта страница недоступна',
+  'sys_blitz_registration_disabled' => 'Регистрация на игру в Блиц-сервер отключена',
+  'sys_blitz_registration_no_users' => 'Нет зарегестрированных игроков',
+  'sys_blitz_registration_player_register' => 'Зарегестрироваться для игры',
+  'sys_blitz_registration_player_register_un' => 'Отозвать регистрацию',
+  'sys_blitz_registration_closed' => 'Регистрация пока закрыта. Попробуйте зайти позже',
 
 ));

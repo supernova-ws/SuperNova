@@ -12,6 +12,11 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+if($config->game_mode == GAME_BLITZ) {
+  message($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
+  die();
+}
+
 lng_include('search');
 
 $searchtext = sys_get_param_str('searchtext');

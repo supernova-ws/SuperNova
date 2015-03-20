@@ -1236,6 +1236,7 @@ switch($new_version) {
       CONSTRAINT `FK_security_player_entry_player_id` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 
+
     upd_alter_table('users', array(
       "DROP COLUMN `user_agent`",
       "DROP COLUMN `user_proxy`",
@@ -1331,7 +1332,7 @@ switch($new_version) {
     if(isset($update_tables['player_award'])) {
       upd_do_query(
         "UPDATE {{users}} AS u JOIN {{player_award}} AS pa ON u.id = pa.player_id
-        SET metamatter_total = 1
+        SET metamatter_total = 1, immortal = 1
         WHERE award_id = 2301 AND metamatter_total = 0;");
     }
 
@@ -1340,6 +1341,17 @@ switch($new_version) {
       upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
       // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
     }
+
+    upd_create_table('blitz_registrations', " (
+      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `user_id` bigint(20) unsigned DEFAULT NULL,
+      `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      `blitz_name` varchar(32) CHARACTER SET utf8 NOT NULL,
+      `blitz_password` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
+      PRIMARY KEY (`id`),
+      UNIQUE KEY `I_user_id` (`user_id`) USING BTREE,
+      CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 
     upd_check_key('player_metamatter_immortal', 100000, !isset($config->player_metamatter_immortal));
 

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b9.0#
+* @version #39b9.1#
 *
 */
 
@@ -944,6 +944,8 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_ERROR_CHANGE => 'Ошибка смены пароля. Обратитесь к Администрации сервера',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Пароль успешно сброшен. Вам отправлено письмо с новым паролем',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Ошибка отправки письма с новым паролем. Получите новый код восстановления и повторите попытку',
+
+    REGISTER_ERROR_BLITZ_MODE => 'Регистрация новых игроков в режиме Блиц-сервера отключена',
   ),
 
   'log_reg_email_title' => "Ваша регистрация на сервере %1\$s игры Сверхновая",
@@ -1018,5 +1020,13 @@ $a_lang_array = (array(
   ),
 
   'sys_date' => 'Дата',
+
+  'sys_blitz_global_button' => 'Регистрация для игры на Блиц-сервере',
+  'sys_blitz_page_disabled' => 'В режиме Блиц-сервера эта страница недоступна',
+  'sys_blitz_registration_disabled' => 'Регистрация на игру в Блиц-сервер отключена',
+  'sys_blitz_registration_no_users' => 'Нет зарегестрированных игроков',
+  'sys_blitz_registration_player_register' => 'Зарегестрироваться для игры',
+  'sys_blitz_registration_player_register_un' => 'Отозвать регистрацию',
+  'sys_blitz_registration_closed' => 'Регистрация пока закрыта. Попробуйте зайти позже',
 
 ));

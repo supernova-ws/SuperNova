@@ -74,6 +74,10 @@
     <!-- IF ADV_SEO_JAVASCRIPT -->
       {ADV_SEO_JAVASCRIPT}
     <!-- ENDIF -->
+
+    <!-- IF GAME_BLITZ_REGISTER && ! GAME_BLITZ -->
+    <div class="c_c"><input type="button" value="{L_sys_blitz_global_button}" onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}blitz_register.php');"/></div>
+    <!-- ENDIF -->
     <table class="markup" width="100%" id="global_page_markup">
       <tr>
         <td valign="top" align="center"><div style="margin: 0 auto" id="main_content_center">

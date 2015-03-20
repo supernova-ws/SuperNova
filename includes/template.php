@@ -236,6 +236,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'TIME_NOW'                 => SN_TIME_NOW,
     'LOGIN_LOGOUT'             => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
     'GAME_MODE_CSS_PREFIX'     => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
+    'GAME_BLITZ_REGISTER'      => $config->game_blitz_register,
+    'GAME_BLITZ'               => $config->game_mode == GAME_BLITZ,
     //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
     'TIME_DIFF_MEASURE'        => intval(
       empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])

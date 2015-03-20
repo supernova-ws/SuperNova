@@ -345,8 +345,13 @@ function sec_login_change_state() {
 function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
   global $lang, $config;
 
+
   sn_db_transaction_start();
   try {
+    if($config->game_mode == GAME_BLITZ) {
+      throw new exception(REGISTER_ERROR_USERNAME_WRONG, ERR_ERROR);
+    }
+
     if(!$username_unsafe) {
       throw new exception(REGISTER_ERROR_USERNAME_WRONG, ERR_ERROR);
     }

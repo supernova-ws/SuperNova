@@ -236,7 +236,7 @@ $sn_menu = array(
     'ITEM'  => 'sys_alliance',
   ),
 */
-  'menu_ally' => array(
+  'menu_ally' => $config->game_mode == GAME_BLITZ ? array() : array(
     'LEVEL' => 'header',
 //    'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
@@ -244,7 +244,7 @@ $sn_menu = array(
     'LINK'  => 'alliance.php',
     'ICON'  => true,
   ),
-  'menu_ally_chat' => array(
+  'menu_ally_chat' => $config->game_mode == GAME_BLITZ ? array() : array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'AllyChat',
@@ -286,7 +286,7 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'm_others',
   ),
-  'menu_utils_search' => array(
+  'menu_utils_search' => $config->game_mode == GAME_BLITZ ? array() : array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Search',

@@ -125,6 +125,7 @@ $template->assign_vars(array(
   'URL_RULES'    => $config->url_rules,
   'URL_FORUM'    => $config->url_forum,
   'URL_FAQ'      => $config->url_faq,
+  'GAME_BLITZ'   => $config->game_mode == GAME_BLITZ,
 ));
 
 tpl_login_lang($template);

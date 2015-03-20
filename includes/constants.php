@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b9.0');
+define('SN_VERSION', '39b9.1');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -390,6 +390,8 @@ define('PASSWORD_RESTORE_ERROR_CHANGE', 18);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT', 19);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR', 20);
 // 23
+define('REGISTER_ERROR_BLITZ_MODE', 23);
+// 24
 
 define('AUTH_LEVEL_ANONYMOUS', -10);
 define('AUTH_LEVEL_GUEST', -5);
@@ -1176,3 +1178,7 @@ define('USER_BOT_BLACK_MOON', 1);
 
 define('LOG_ONLIINE_AGGREGATE_NONE', 0);
 define('LOG_ONLIINE_AGGREGATE_PERIOD_MINUTE_10', 1);
+
+define('BLITZ_REGISTER_DISABLED', 0);
+define('BLITZ_REGISTER_OPEN'    , 1);
+define('BLITZ_REGISTER_CLOSED'  , 2);

@@ -2,6 +2,11 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+if($config->game_mode == GAME_BLITZ) {
+  message($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
+  die();
+}
+
 define('SN_IN_ALLY', true);
 
 // Main admin page save themes
@@ -12,7 +17,7 @@ $mode = sys_get_param_str('mode');
 if($mode == 'ainfo')
 {
   include('includes/alliance/ali_info.inc');
-};
+}
 
 if(!$user['ally_id'])
 {
