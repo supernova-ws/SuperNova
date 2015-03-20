@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b8.0
+* @version 39b9.0
 *
 */
 
@@ -684,6 +684,7 @@ $a_lang_array = (array(
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'SuperNova',
     GAME_OGAME     => 'oGame',
+    GAME_BLITZ     => 'Blitz',
   ),
 
   'months' => array(

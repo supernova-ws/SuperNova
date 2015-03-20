@@ -14,7 +14,6 @@ and (max-width : 320px) {
   /* Styles */
   body
   {
-    background-image: none;
   }
 }
 
@@ -25,7 +24,6 @@ and (max-device-width : 1024px) {
   /* Styles */
   body
   {
-    background-image: none;
   }
 }
 
@@ -37,7 +35,6 @@ and (orientation : landscape) {
   /* Styles */
   body
   {
-    background-image: none;
   }
 }
 
@@ -49,7 +46,6 @@ and (orientation : portrait) {
   /* Styles */
   body
   {
-    background-image: none;
   }
 }
 
@@ -59,7 +55,6 @@ and (min-width : 760px) {
   /* Styles */
   body
   {
-      background-image: none;
   }
 }
 
@@ -69,8 +64,6 @@ and (min-width : 1224px) {
   /* Styles */
   body 
   {
-      background-image: url(../images/bg-unauthorized.jpg);
-      background-repeat: no-repeat;
   }
 }
 
@@ -80,8 +73,6 @@ and (min-width : 1824px) {
   /* Styles */
   body 
   {
-      background-image: url(../images/bg-unauthorized.jpg);
-      background-repeat: no-repeat;
   }
 }
 

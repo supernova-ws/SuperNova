@@ -1,0 +1,38 @@
+/* Desktops and laptops medium-res */
+@media only screen
+and (min-width : 760px) {
+  /* Styles */
+  body
+  {
+    background-image     : url(img/blitz_background_medium.jpg);
+      background-repeat: no-repeat;
+      background-size: auto 100%;
+    background-position: bottom 0px right 0px;
+  }
+}
+
+/* Desktops and laptops ----------- */
+@media only screen
+and (min-width : 1224px) {
+  /* Styles */
+  body
+  {
+    background-image     : url(img/blitz_background.jpg);
+      background-repeat: no-repeat;
+      background-size: auto 100%;
+    background-position: bottom 0px right 0px;
+  }
+}
+
+/* Large screens ----------- */
+@media only screen
+and (min-width : 1824px) {
+  /* Styles */
+  body
+  {
+    background-image     : url(img/blitz_background.jpg);
+      background-repeat: no-repeat;
+      background-size: auto 100%;
+    background-position: bottom 0px right 0px;
+  }
+}

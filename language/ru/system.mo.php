@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b8.0#
+* @version #39b9.0#
 *
 */
 
@@ -687,6 +687,7 @@ $a_lang_array = (array(
   'sys_game_mode' => array(
     GAME_SUPERNOVA => 'Сверхновая',
     GAME_OGAME     => 'оГейм',
+    GAME_BLITZ     => 'Блиц-сервер',
   ),
 
   'months' => array(

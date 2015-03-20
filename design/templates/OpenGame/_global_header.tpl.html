@@ -7,6 +7,9 @@
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}jquery.css?{C_var_db_update}" />
 
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global.css?{C_var_db_update}" />
+    <!-- IF LOGIN_LOGOUT -->
+    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/login.css?{C_var_db_update}" />
+    <!-- ENDIF -->
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_server.css?{C_var_db_update}" />
     <!--[if IE]>
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global-ie.css?{C_var_db_update}" />
@@ -14,6 +17,11 @@
 
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{D_TEMPLATE_PATH}/_template.css?{C_var_db_update}" />
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin.css?{C_var_db_update}" />
+    <!-- IF LOGIN_LOGOUT -->
+    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/{GAME_MODE_CSS_PREFIX}login_background.css?{C_var_db_update}" />
+    <!-- ELSE -->
+    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}{GAME_MODE_CSS_PREFIX}skin_background.css?{C_var_db_update}" />
+    <!-- ENDIF -->
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin_server.css?{C_var_db_update}" />
     <!-- IF ADV_SEO_META_KEYWORDS -->
     <meta name="keywords" content="{ADV_SEO_META_KEYWORDS}" />
