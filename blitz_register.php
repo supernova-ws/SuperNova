@@ -49,6 +49,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     }
   } elseif(sys_get_param_str('import_generated')) {
     doquery("DELETE FROM {{users}} WHERE username like 'Игрок%';");
+    doquery("DELETE FROM {{planets}} WHERE id_owner not in (SELECT `id` FROM {{users}});");
 
     $imported_string = explode(';', sys_get_param_str('generated_string'));
     shuffle($imported_string);
