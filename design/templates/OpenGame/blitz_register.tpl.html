@@ -20,7 +20,7 @@
   </tr>
   <!-- END registrations -->
 </table>
-
+<br />
 <!-- IF REGISTRATION_OPEN -->
   <!-- IF PLAYER_REGISTERED -->
     <form action="" method="post">
@@ -32,7 +32,27 @@
     </form>
   <!-- ENDIF -->
 <!-- ELSE -->
-{L_sys_blitz_registration_closed}
+  {L_sys_blitz_registration_closed}
+  <br />
+  <!-- IF REGISTRATION_SHOW_LOGIN && PLAYER_REGISTERED -->
+    <h2>
+      {L_sys_blitz_registration_player_name} {BLITZ_NAME}<br />
+      {L_sys_blitz_registration_player_password} {BLITZ_PASSWORD}<br />
+    </h2>
+  <!-- ENDIF -->
+<!-- ENDIF -->
+
+<!-- IF USER_AUTHLEVEL >= 3 -->
+  <br />
+  <textarea rows="" cols="">{BLITZ_GENERATED}</textarea>
+  <form action="" method="post">
+    <input type="submit" name="generate" value="{L_sys_blitz_registration_player_generate}" />
+  </form>
+  <br />
+  <form action="" method="post">
+    <textarea rows="" cols="" name="generated_string"></textarea>
+    <input type="submit" name="import_generated" value="{L_sys_blitz_registration_player_import_generated}" />
+  </form>
 <!-- ENDIF -->
 
 <!-- INCLUDE page_hint -->

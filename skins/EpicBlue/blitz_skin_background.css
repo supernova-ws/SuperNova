@@ -6,7 +6,7 @@ and (min-width : 760px) {
   {
     background-image     : url(img/blitz_background_medium.jpg);
       background-repeat: no-repeat;
-      background-size: auto 100%;
+      background-size: 100% auto ;
     background-position: bottom 0px right 0px;
   }
 }
@@ -19,7 +19,7 @@ and (min-width : 1224px) {
   {
     background-image     : url(img/blitz_background.jpg);
       background-repeat: no-repeat;
-      background-size: auto 100%;
+      background-size: 100% auto ;
     background-position: bottom 0px right 0px;
   }
 }
@@ -32,7 +32,7 @@ and (min-width : 1824px) {
   {
     background-image     : url(img/blitz_background.jpg);
       background-repeat: no-repeat;
-      background-size: auto 100%;
+      background-size: 100% auto ;
     background-position: bottom 0px right 0px;
   }
 }

@@ -236,21 +236,6 @@ $sn_menu = array(
     'ITEM'  => 'sys_alliance',
   ),
 */
-  'menu_ally' => $config->game_mode == GAME_BLITZ ? array() : array(
-    'LEVEL' => 'header',
-//    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_alliance',
-    'LINK'  => 'alliance.php',
-    'ICON'  => true,
-  ),
-  'menu_ally_chat' => $config->game_mode == GAME_BLITZ ? array() : array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'AllyChat',
-    'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
-    'ICON'  => true,
-  ),
 
   'menu_comm' => array(
     'LEVEL' => 'header',
@@ -271,27 +256,11 @@ $sn_menu = array(
     'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_COMMON,
     'ICON'  => true,
   ),
-  'menu_comm_forum' => !$config->url_forum ? array() : array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_forum',
-    'LINK'  => $config->url_forum,
-    'BLANK' => true,
-    'ICON'  => true,
-  ),
 
-// TODO: menu_races
   'menu_utils' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'm_others',
-  ),
-  'menu_utils_search' => $config->game_mode == GAME_BLITZ ? array() : array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'Search',
-    'LINK'  => 'search.php',
-    'ICON'  => true,
   ),
   'menu_utils_shortcuts' => array(
     'LEVEL' => 'submenu',
@@ -336,14 +305,6 @@ $sn_menu = array(
     'ITEM'  => 'navig',
   ),
 */
-  'menu_rules' => !$config->url_rules ? array() : array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_game_rules',
-    'LINK'  => $config->url_rules,
-    'BLANK' => true,
-    'ICON'  => true,
-  ),
   'menu_news' => array(
     'LEVEL' => 'submenu',
 //    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
@@ -448,6 +409,65 @@ if($user['authlevel'] > 0) {
       'LOCATION' => '+menu_server_logo',
       'MOVEABLE' => 2,
       'HIDEABLE' => 3,
+    ),
+  );
+}
+
+if($config->url_forum) {
+  $sn_menu_extra += array(
+    'menu_comm_forum' => !$config->url_forum ? array() : array(
+      'LEVEL' => 'submenu',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'm_forum',
+      'LINK'  => $config->url_forum,
+      'BLANK' => true,
+      'ICON'  => true,
+      'LOCATION' => '+menu_comm_chat',
+    ),
+  );
+}
+
+if($config->url_rules) {
+  $sn_menu_extra += array(
+    'menu_rules' => !$config->url_rules ? array() : array(
+      'LEVEL' => 'header',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'sys_game_rules',
+      'LINK'  => $config->url_rules,
+      'BLANK' => true,
+      'ICON'  => true,
+      'LOCATION' => '+menu_utils_simulator',
+    ),
+  );
+}
+
+
+if($config->game_mode != GAME_BLITZ) {
+  $sn_menu_extra += array(
+    'menu_ally' => $config->game_mode == GAME_BLITZ ? null : array(
+      'LEVEL' => 'header',
+  //    'LEVEL' => 'submenu',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'sys_alliance',
+      'LINK'  => 'alliance.php',
+      'ICON'  => true,
+      'LOCATION' => '+menu_affiliates',
+    ),
+    'menu_ally_chat' => $config->game_mode == GAME_BLITZ ? null : array(
+      'LEVEL' => 'submenu',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'AllyChat',
+      'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
+      'ICON'  => true,
+      'LOCATION' => '+menu_ally',
+    ),
+    'menu_utils_search' => $config->game_mode == GAME_BLITZ ? array() : array(
+      'LEVEL' => 'submenu',
+      'TYPE'  => 'lang',
+      'ITEM'  => 'Search',
+      'LINK'  => 'search.php',
+      'ICON'  => true,
+      'LOCATION' => '+menu_utils',
     ),
   );
 }

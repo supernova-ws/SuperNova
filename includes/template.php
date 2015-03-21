@@ -231,7 +231,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
   $template = gettemplate('_global_header', true);
   $template->assign_vars(array(
-    'USER_AUTHLEVEL'           => $user['authlevel'],
+    'USER_AUTHLEVEL'           => intval($user['authlevel']),
 
     'TIME_NOW'                 => SN_TIME_NOW,
     'LOGIN_LOGOUT'             => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,

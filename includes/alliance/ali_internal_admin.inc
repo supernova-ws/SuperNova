@@ -51,9 +51,11 @@ if(sys_get_param_str('isSaveOptions')) {
     $new_web = mysql_real_escape_string($new_web);
     $ally_changeset[] = "`ally_web` = '{$new_web}'";
   }
-  if(($new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow'])) && $new_request != $ally['ally_request_notallow']) {
-    $ally_changeset[] = "`ally_request_notallow` = '{$new_request}'";
-  }
+  $new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow']);
+  $ally_changeset[] = "`ally_request_notallow` = '{$new_request}'";
+//  if(($new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow'])) && $new_request != $ally['ally_request_notallow']) {
+//    $ally_changeset[] = "`ally_request_notallow` = '{$new_request}'";
+//  }
   if($new_image != $ally['ally_image']) {
     $new_image = intval($new_image);
     $ally_changeset[] = "`ally_image` = '{$new_image}'";
@@ -153,7 +155,7 @@ $template->assign_vars(array(
   'ally_owner_range' => htmlspecialchars($ally['ally_owner_range']),
   'hideNotOwner' => $ally['ally_owner'] != $user['id'] ? ' style="hide"' : '',
 ));
-
+/*
 unset($tmp);
 foreach($ranks as $rankID => $rank)
 {
@@ -165,12 +167,16 @@ foreach($ranks as $rankID => $rank)
 $tmp = substr($tmp, 0, -4);
 
 if(!empty($tmp))
+*/
 {
-  $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']} AND {$tmp}", false, '`id`, `username`');
+//pdump($ally['id']);
+  // $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']} AND ({$tmp})", false, '`id`, `username`');
+  $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']}", false, '`id`, `username`');
   unset($tmp);
   // while ($userAllyAdmin = mysql_fetch_assoc($userAllyAdmins))
   foreach($userAllyAdmins as $userAllyAdmin)
   {
+// pdump($userAllyAdmin);
     $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";
   }
 
