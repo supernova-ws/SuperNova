@@ -86,7 +86,10 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 
       // $system += $system_step;
       // $system >= $config->game_maxSystem ? $galaxy++ : false;
-      ($system += $system_step) >= $config->game_maxSystem ? $galaxy++ : false;
+      if(($system += $system_step) >= $config->game_maxSystem) {
+        $galaxy++;
+        $system = $system_step;
+      }
     }
 
     doquery('UPDATE {{users}} SET dark_matter = 10000;');
