@@ -93,7 +93,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
       }
     }
 
-    doquery('UPDATE {{users}} SET dark_matter = 10000;');
+    doquery('UPDATE {{users}} SET dark_matter = 10000, dark_matter_total = 10000;');
 
     $config->db_saveItem('users_amount', $config->users_amount + $new_players);
     pdump($imported_string);

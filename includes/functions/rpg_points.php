@@ -13,7 +13,7 @@ function mm_points_change($user_id, $change_type, $metamatter, $comment = false,
 function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false, &$result) {
   global $debug, $mm_change_legit, $user, $config;
 
-  if(!$user_id || !($metamatter = intval($metamatter))) {
+  if(!$user_id || !($metamatter = floatval($metamatter))) {
     return false;
   }
 
@@ -22,8 +22,9 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
   if($already_changed) {
     $result = -1;
   } else {
+    $metamatter_total = $metamatter > 0 ? $metamatter : 0;
     db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}'" .
-      ($metamatter > 0 ? ", `immortal` = IF(`metamatter_total` + '{$metamatter}' >= {$config->player_metamatter_immortal}, NOW(), `immortal`), `metamatter_total` = `metamatter_total` + '{$metamatter}'" : ''));
+      ($metamatter > 0 ? ", `immortal` = IF(`metamatter_total` + '{$metamatter_total}' >= {$config->player_metamatter_immortal}, NOW(), `immortal`), `metamatter_total` = `metamatter_total` + '{$metamatter_total}'" : ''));
     $result = mysql_affected_rows();
   }
 
@@ -79,7 +80,8 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   if($already_changed) {
     $rows_affected = 1;
   } else {
-    db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter}'");
+    $dark_matter_total = $dark_matter > 0 ? $dark_matter : 0;
+    db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter_total}'");
     $rows_affected = mysql_affected_rows();
   }
 

@@ -787,13 +787,6 @@ switch($new_version) {
       "MODIFY COLUMN `metamatter` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Metamatter amount'",
     ), $update_tables['users']['metamatter']['Type'] == 'int(20)');
 
-    if(!$update_tables['users']['metamatter_total'])
-    {
-      upd_alter_table('users', "ADD `metamatter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Metamatter amount ever bought'", !$update_tables['users']['metamatter_total']);
-
-      // upd_do_query('UPDATE {{users}} SET metamatter_total = (SELECT sum(payment_dark_matter_gained) FROM {{payment}} WHERE payment_user_id = id AND payment_status > 0);');
-    }
-
     $query = upd_do_query("SELECT * FROM {{que}} WHERE `que_type` = " . QUE_RESEARCH . " AND que_unit_id in (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ") FOR UPDATE");
     while($row = mysql_fetch_assoc($query))
     {
@@ -1265,29 +1258,8 @@ switch($new_version) {
     }
     $update_tables['shortcut'] && upd_do_query("DROP TABLE IF EXISTS {{shortcut}};");
 
-    upd_do_query(
-      "UPDATE `{{users}}` AS u
-        SET metamatter_total =
-          IF(
-            metamatter_total > (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0),
-            metamatter_total,
-            (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0)
-          );");
-
     upd_alter_table('users', "ADD COLUMN `user_bot` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0", !isset($update_tables['users']['user_bot']));
     upd_alter_table('unit', "ADD KEY `I_unit_type_snid` (unit_type, unit_snid) USING BTREE", !$update_indexes['unit']['I_unit_type_snid']);
-
-    if(!$update_tables['users']['dark_matter_total']) {
-      upd_alter_table('users', "ADD `dark_matter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Dark Matter amount ever gained' AFTER `dark_matter`", !$update_tables['users']['dark_matter_total']);
-      upd_do_query(
-        "UPDATE `{{users}}` AS u
-        SET dark_matter_total =
-          IF(
-            dark_matter < (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
-            (SELECT sum(log_dark_matter_amount) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
-            dark_matter
-          );");
-    }
 
     if($update_tables['users']['settings_tooltiptime']['Type'] != 'smallint(5) unsigned') {
       upd_alter_table('users', array(
@@ -1329,17 +1301,42 @@ switch($new_version) {
           u.id;");
     }
 
-    if(isset($update_tables['player_award'])) {
-      upd_do_query(
-        "UPDATE {{users}} AS u JOIN {{player_award}} AS pa ON u.id = pa.player_id
-        SET metamatter_total = 1, immortal = 1
-        WHERE award_id = 2301 AND metamatter_total = 0;");
+    if(!$update_tables['users']['dark_matter_total']) {
+      upd_alter_table('users', "ADD `dark_matter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Dark Matter amount ever gained' AFTER `dark_matter`", !$update_tables['users']['dark_matter_total']);
     }
+    upd_do_query(
+      "UPDATE `{{users}}` AS u
+        SET dark_matter_total =
+          IF(
+            dark_matter < (SELECT IF(sum(log_dark_matter_amount) IS NULL, 0, sum(log_dark_matter_amount)) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
+            (SELECT IF(sum(log_dark_matter_amount) IS NULL, 0, sum(log_dark_matter_amount)) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
+            dark_matter
+          );");
 
+    upd_check_key('player_metamatter_immortal', 100000, !isset($config->player_metamatter_immortal));
+    if(!$update_tables['users']['metamatter_total']) {
+      upd_alter_table('users', "ADD `metamatter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Metamatter amount ever bought'", !$update_tables['users']['metamatter_total']);
+
+      // upd_do_query('UPDATE {{users}} SET metamatter_total = (SELECT sum(payment_dark_matter_gained) FROM {{payment}} WHERE payment_user_id = id AND payment_status > 0);');
+    }
+    upd_do_query(
+      "UPDATE `{{users}}` AS u
+        SET metamatter_total =
+          IF(
+            metamatter_total > (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0),
+            metamatter_total,
+            (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0)
+          );");
     if(!isset($update_tables['users']['immortal'])) {
       upd_alter_table('users', "ADD COLUMN `immortal` TIMESTAMP NULL", !isset($update_tables['users']['immortal']));
       upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
       // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+    }
+    if(isset($update_tables['player_award'])) {
+      upd_do_query(
+        "UPDATE {{users}} AS u JOIN {{player_award}} AS pa ON u.id = pa.player_id
+          SET metamatter_total = 1, immortal = NOW()
+          WHERE award_id = 2301 AND (metamatter_total = 0 OR metamatter_total IS NULL);");
     }
 
     upd_create_table('blitz_registrations', " (
@@ -1353,7 +1350,6 @@ switch($new_version) {
       CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 
-    upd_check_key('player_metamatter_immortal', 100000, !isset($config->player_metamatter_immortal));
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
