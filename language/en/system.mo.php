@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b9.1
+* @version 39b9.5
 *
 */
 
@@ -1021,5 +1021,10 @@ $a_lang_array = (array(
   'sys_blitz_registration_player_register' => 'Зарегестрироваться для игры',
   'sys_blitz_registration_player_register_un' => 'Отозвать регистрацию',
   'sys_blitz_registration_closed' => 'Регистрация пока закрыта. Попробуйте зайти позже',
+  'sys_blitz_registration_player_generate' => 'Сгенерировать логины и пароли',
+  'sys_blitz_registration_player_import_generated' => 'Импортировать сгенерированную строку',
+  'sys_blitz_registration_player_name' => 'Ваш логин для Блиц-сервера:',
+  'sys_blitz_registration_player_password' => 'Ваш пароль для Блиц-сервера:',
+  'sys_blitz_registration_server_link' => 'Ссылка на Блиц-сервер',
 
 ));

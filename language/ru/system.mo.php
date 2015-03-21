@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b9.2#
+* @version #39b9.5#
 *
 */
 
@@ -1032,5 +1032,6 @@ $a_lang_array = (array(
   'sys_blitz_registration_player_import_generated' => 'Импортировать сгенерированную строку',
   'sys_blitz_registration_player_name' => 'Ваш логин для Блиц-сервера:',
   'sys_blitz_registration_player_password' => 'Ваш пароль для Блиц-сервера:',
+  'sys_blitz_registration_server_link' => 'Ссылка на Блиц-сервер',
 
 ));
