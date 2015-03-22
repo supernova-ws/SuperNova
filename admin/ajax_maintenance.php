@@ -38,6 +38,7 @@ $ques = array(
   // Игроки удаляются по Регламенту
   'DELETE FROM `{{users}}` WHERE
     authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND metamatter_total = 0 AND /* Не админы, Не Альянсы, Не боты, Не Бессмертные*/
+    metamatter = 0 AND /* Нету ММ */
     vacation = 0 AND banaday = 0 AND /* Не в отпуске, Не в бане */
     (
       (onlinetime - register_time < 5 * 60 AND UNIX_TIMESTAMP() - onlinetime > 2*7 *86400)
@@ -194,7 +195,7 @@ $ques = array(
     message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ');',
   // Удаляются сообщения у пользователей, которые неактивны больше 4 недель - кроме личных и Альянсовских
   'DELETE m FROM `{{users}}` AS u
-  JOIN game_messages AS m ON m.message_owner = u.id
+  JOIN {{messages}} AS m ON m.message_owner = u.id
   WHERE
     message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ') AND
     authlevel = 0 AND  user_as_ally IS NULL AND /* Не админы, Не Альянсы */
