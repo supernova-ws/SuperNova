@@ -1360,6 +1360,8 @@ switch($new_version) {
     upd_check_key('fleet_update_last', SN_TIME_SQL, true);
     upd_check_key('fleet_update_lock', '', empty($config->fleet_update_interval));
 
+    upd_check_key('uni_galaxy_distance', 20000, empty($config->uni_galaxy_distance));
+
     if($config->payment_currency_default != 'USD') {
       upd_check_key('payment_currency_default',      'USD', true);
       upd_check_key('payment_currency_exchange_dm_', 20000, true);

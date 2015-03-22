@@ -37,21 +37,25 @@
   </head>
 
   <body class="style">
-    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
     <script type="text/javascript">
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
+      var localTime = new Date();
+    </script>
+
+    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
+    <script type="text/javascript">
       // Корректировка по времени запроса - если доступно
       // var localTime = window.performance ? localTime = new Date(window.performance.timing.requestStart) : new Date();
       // var localTime = window.performance ? localTime = new Date(window.performance.timing.responseStart) : new Date();
-      var localTime = new Date();
-
       var timeDiff;
       // С сервера ВСЕГДА должна передаваться РАЗНИЦА во времени - что бы корректно работали скрипты при навигации вперед-назад по страницам в браузерах!
       if(!(timeDiff = parseInt('{D_SN_CLIENT_TIME_DIFF}'))) {
         timeDiff = false;
       }
 
-//      var serverTime = new Date(parseFloat('{D_SN_TIME_MICRO}') * 1000);
+      var serverTime = new Date(parseFloat('{D_SN_TIME_MICRO}') * 1000);
+      var TIME_NOW = {D_SN_TIME_NOW};
+      var D_SN_TIME_NOW = {D_SN_TIME_NOW};
 //      var timeDiffSecondsMicro = localTime.valueOf() - serverTime.valueOf();
 //      var timeDiff = Math.round((localTime.valueOf()) / 1000 - '{D_SN_TIME_MICRO}')
 //              - localTime.getTimezoneOffset() * 60 - '{D_SN_TIME_ZONE_OFFSET}';

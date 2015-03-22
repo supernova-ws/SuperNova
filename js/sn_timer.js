@@ -129,11 +129,9 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
   function sn_timer() {
     var HTML, HTML_timer, HTML_finish;
 
-    var local_time = new Date();
-    var time_now = new Date(local_time.valueOf());
-    //var timestamp = Math.round(time_now.valueOf() / 1000);
-    //var timestamp_server = timestamp - timeDiffSeconds;
-    var timestamp_server = Math.round(time_now.valueOf() / 1000 - timeDiff);
+    var time_local_now = new Date();
+    var time_passed = Math.round((time_local_now.valueOf() - localTime.valueOf()) / 1000);
+    var timestamp_server = D_SN_TIME_NOW + time_passed;
     var activeTimers = 0;
 
     for (timerID in sn_timers) {
@@ -291,7 +289,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
           timer_options_delta = typeof timer['options']['delta'] == 'undefined' ? 0 : timer['options']['delta'];
           timer_options_format = typeof timer['options']['format'] == 'undefined' ? timer['options'] : timer['options']['format'];
           var local_time_plus = new Date();
-          local_time_plus.setTime(local_time.valueOf() + (timer_options_delta * 1000));
+          local_time_plus.setTime(time_local_now.valueOf() + (timer_options_delta * 1000));
 
           timer_options_format & 1 ? printData += local_time_plus.toLocaleDateString() : false;
           timer_options_format & 3 ? printData += '&nbsp;' : false;

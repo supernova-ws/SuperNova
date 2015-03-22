@@ -93,14 +93,13 @@ function distance() {
   targetPlanet = document.getElementsByName("planet")[0].value;
 
   thisGalaxy = document.getElementsByName("thisgalaxy");
-  if(thisGalaxy.length)
-  {
+  if(thisGalaxy.length) {
     thisGalaxy = document.getElementsByName("thisgalaxy")[0].value;
     thisSystem = document.getElementsByName("thissystem")[0].value;
     thisPlanet = document.getElementsByName("thisplanet")[0].value;
 
     if ((targetGalaxy - thisGalaxy) != 0) {
-      dist = Math.abs(targetGalaxy - thisGalaxy) * 20000;
+      dist = Math.abs(targetGalaxy - thisGalaxy) * UNIVERSE_GALAXY_DISTANCE;
     } else if ((targetSystem - thisSystem) != 0) {
       dist = Math.abs(targetSystem - thisSystem) * 5 * 19 + 2700;
     } else if ((targetPlanet - thisPlanet) != 0) {
@@ -108,10 +107,8 @@ function distance() {
     } else {
       dist = 5;
     }
-  }
-  else
-  {
-    dist = 20000;
+  } else {
+    dist = UNIVERSE_GALAXY_DISTANCE;
   }
 
   return(dist);

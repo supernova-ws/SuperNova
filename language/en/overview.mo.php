@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b6.22
+* @version 39b9.9
 *
 */
 
@@ -189,5 +189,7 @@ $a_lang_array = (array(
 
   'ov_manage_special' => 'Special functions',
   'ov_password' => 'Your password to confirm',
+
+  'ov_governor_purchase' => 'Игрок купил Губернатора %1$s ID %2$d уровня %3$d на планету %4$s',
 
 ));

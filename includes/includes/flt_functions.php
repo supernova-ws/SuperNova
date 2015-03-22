@@ -24,9 +24,11 @@ function flt_fleet_speed($user, $fleet)
 }
 
 function flt_travel_distance($from, $to) {
+  global $config;
+
   if($from['galaxy'] != $to['galaxy'])
   {
-    $distance = abs($from['galaxy'] - $to['galaxy']) * 20000;
+    $distance = abs($from['galaxy'] - $to['galaxy']) * $config->uni_galaxy_distance;
   }
   elseif($from['system'] != $to['system'])
   {

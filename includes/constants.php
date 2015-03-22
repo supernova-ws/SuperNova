@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b9.8');
+define('SN_VERSION', '39b9.9');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -192,6 +192,7 @@ define('RPG_EVENT_CHRISTMAS', 29);
 define('RPG_EVENT_CHRISTMAS_TREE_BURN', 30);
 define('RPG_EVENT_BLACK_MOON_TICK', 31);
 define('RPG_CUMULATIVE', 32);
+define('RPG_GOVERNOR', 33);
 
 
 
