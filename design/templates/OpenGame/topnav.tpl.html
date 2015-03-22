@@ -199,80 +199,49 @@
 <!-- </div></td></tr> -->
 
 <script type="text/javascript"><!--
-  function changePlanet(obj)
-  {
+  function changePlanet(obj) {
     var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value + ('{TOPNAV_MODE}' ? '&mode={TOPNAV_MODE}' : '');
     regexp=/\?page\=(.*)/i;
     var parsed = regexp.exec(window.location.href);
-    if(parsed)
-    {
+    if(parsed) {
       // pathAdd = parsed[0] + '&' + pathAdd;
       pathAdd = parsed[0].replace(/\&cp=\d*/i, '').replace(/\&mode=\d*/i, '') + '&' + pathAdd;
-    }
-    else
-    {
+    } else {
       pathAdd = '?' + pathAdd;
     }
     // alert(pathAdd);
     window.location.href = window.location.pathname + pathAdd;
   }
 
-  sn_timers.unshift({
-    'id': 'top_time_server',
-    'type': 4,
-    'active': true,
-    'start_time': {TIME_NOW},
-    options: 
-      {
-        'format': 3,
-        'delta': -timeDiff,
-      },
-  });
+  sn_timers.unshift({'id': 'top_time_server', 'type': 4, 'active': true, 'start_time': {TIME_NOW}, 'options': {
+    'format': 3,
+    'delta': -timeDiff
+  }});
 
-  sn_timers.unshift({
-    'id': 'top_time',
-    'type': 2,
-    'active': true,
-    'start_time': {TIME_NOW},
-    options: 3
-  });
+//  sn_timers.unshift({'id': 'top_time', 'type': 2, 'active': true, 'start_time': {TIME_NOW}, options: 3});
+  sn_timers.unshift({'id': 'top_time', 'type': 4, 'active': true, 'start_time': {TIME_NOW}, 'options': {
+    'format': 3,
+    'delta': 0
+  }});
 
   <!-- IF .flying_fleets -->
-  sn_timers.unshift({
-    'id': 'topnav_fleet_counter',
-    'type': 5,
-    'active': true,
-    'start_time': {TIME_NOW},
-    'options':
-      {'msg_done': '0',
-        'unchanged': false,
-        'que':
-          [
-            <!-- BEGIN flying_fleets -->
-              [{flying_fleets.TIME}, '{flying_fleets.TEXT}', '{flying_fleets.HINT}'],
-            <!-- END flying_fleets -->
-          ]
-      }
-  });
+  sn_timers.unshift({'id': 'topnav_fleet_counter', 'type': 5, 'active': true, 'start_time': {TIME_NOW}, 'options': {
+    'msg_done': '0',
+    'unchanged': false,
+    'que': [<!-- BEGIN flying_fleets -->
+      [{flying_fleets.TIME}, '{flying_fleets.TEXT}', '{flying_fleets.HINT}'],
+    <!-- END flying_fleets -->]
+  }});
   <!-- ENDIF -->
 
   <!-- IF .flying_expeditions -->
-  sn_timers.unshift({
-    'id': 'topnav_expedition_counter',
-    'type': 5,
-    'active': true,
-    'start_time': {TIME_NOW},
-    'options':
-      {'msg_done': '0',
-        'unchanged': false,
-        'que':
-          [
-            <!-- BEGIN flying_expeditions -->
-              [{flying_expeditions.TIME}, '{flying_expeditions.TEXT}', '{flying_expeditions.HINT}'],
-            <!-- END flying_expeditions -->
-          ]
-      }
-  });
+  sn_timers.unshift({'id': 'topnav_expedition_counter', 'type': 5, 'active': true, 'start_time': {TIME_NOW}, 'options': {
+    'msg_done': '0',
+    'unchanged': false,
+    'que': [<!-- BEGIN flying_expeditions -->
+      [{flying_expeditions.TIME}, '{flying_expeditions.TEXT}', '{flying_expeditions.HINT}'],
+    <!-- END flying_expeditions -->]
+  }});
   <!-- ENDIF -->
 // --></script>
 

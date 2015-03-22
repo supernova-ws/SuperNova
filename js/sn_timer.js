@@ -133,7 +133,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
     var time_now = new Date(local_time.valueOf());
     //var timestamp = Math.round(time_now.valueOf() / 1000);
     //var timestamp_server = timestamp - timeDiffSeconds;
-    var timestamp_server = Math.round((time_now.valueOf() - timeDiffSecondsMicro) / 1000);
+    var timestamp_server = Math.round(time_now.valueOf() / 1000 - timeDiff);
     var activeTimers = 0;
 
     for (timerID in sn_timers) {
@@ -179,8 +179,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
               infoText += que_item[UNIT_LEVEL] ? ' (' + (que_item[UNIT_LEVEL]) + ')' : '';
             }
             timerText = sn_timestampToString(timeLeft);
-          }
-          else {
+          } else {
             timer['active'] = false;
             infoText = timer_options['msg_done'];
             timerText = '';
@@ -188,8 +187,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
 
           if (HTML_timer != null) {
             HTML_timer.innerHTML = timerText;
-          }
-          else {
+          } else {
             if (infoText != '' && timerText) {
               infoText += '<br>';
             }
@@ -203,184 +201,14 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
           if (HTML != null) {
             HTML.innerHTML = infoText;
           }
-          break;
+        break;
 
-        case 1: // time-independent counter
-          var new_value = parseInt(timer_options['start_value']) + (timestamp_server - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
-          if (timer_options['round'] === undefined) {
-            timer_options['round'] = 0;
-          }
-          if (new_value < 0) {
-            new_value = 0;
-            timer['active'] = false;
-          }
-          printData = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
-          if ((new_value >= timer_options['max_value'] && timer_options['per_second'] > 0) || (timer_options['per_second'] == 0)) {
-            timer['active'] = false;
-          }
-          ;
-
-          if (HTML != null) {
-            HTML.innerHTML = printData;
-          }
-          else {
-            timer['active'] = false;
-          }
-          break;
-// TODO: Merge case 2 and case 4 together
-        case 2: // date&time
-          printData = '';
-
-          if (timer['options'] & 1) {
-            printData += local_time.toLocaleDateString();
-          }
-
-          if (timer['options'] & 3) {
-            printData += '&nbsp;';
-          }
-
-          if (timer['options'] & 2) {
-            printData += local_time.toTimeString().substring(0, 8);
-          }
-
-          if (HTML != null) {
-            HTML.innerHTML = printData;
-          }
-          else {
-            timer['active'] = false;
-          }
-          break;
-
-        case 4: // date&time with delta
-          printData = '';
-
-          var local_time_plus = new Date();
-          local_time_plus.setTime(local_time.valueOf() + (timer['options']['delta'] * 1000));
-
-          if (timer['options']['format'] & 1) {
-            printData += local_time_plus.toLocaleDateString();
-          }
-
-          if (timer['options']['format'] & 3) {
-            printData += '&nbsp;';
-          }
-
-          if (timer['options']['format'] & 2) {
-            printData += local_time_plus.toTimeString().substring(0, 8);
-          }
-
-          if (HTML != null) {
-            HTML.innerHTML = printData;
-          }
-          else {
-            timer['active'] = false;
-          }
-          break;
-
-        case 3: // new que display
-          if (timer_options['que'].length == 0) {
-            timer['active'] = false;
-            if (timer_options['url'] != undefined) {
-              document.location = timer_options['url'];
-            }
-            break;
-          }
-          var que_item = timer_options['que'][0];
-          var que_compiled = '';
-
-          if (!timer['que_compiled'] || timer['que_compiled'] != '') {
-            sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
-//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
-          }
-          que_compiled = sn_timers[timerID]['que_compiled'];
-
-          if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
-            que_item[UNIT_AMOUNT]--;
-            if (que_item[UNIT_AMOUNT] <= 0) {
-              timer_options['que'].shift();
-              que_item = timer_options['que'][0];
-            }
-            else {
-              que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
-            }
-            timer['start_time'] = timestamp_server;
-            sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
-//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
-            que_compiled = sn_timers[timerID]['que_compiled'];
-          }
-
-          var should_break = true;
-          if (que_item != undefined) {
-            if (que_item[UNIT_ID]) {
-              should_break = false;
-            }
-          }
-
-          if (timer_options['que'].length && !should_break) {
-            timeFinish = timer['start_time'] + que_item[UNIT_TIME];
-            timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
-            total_text = sn_timestampToString(timeLeft + timer_options['total']);
-            infoText = que_item[UNIT_NAME];
-            if (que_item[UNIT_LEVEL]) {
-              infoText += ' (' + que_item[UNIT_LEVEL] + ')';
-            }
-            else
-            // if(que_item[UNIT_AMOUNT] > 1)
-            {
-              infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
-            }
-            timerText = sn_timestampToString(timeLeft);
-          }
-          else {
-            timer['active'] = false;
-            if (timer_options['url'] != undefined) {
-              document.location = timer_options['url'];
-            }
-            infoText = timer_options['msg_done'];
-            timerText = '';
-            total_text = '00:00:00';
-          }
-
-          if (HTML_total != null) {
-            HTML_total.innerHTML = total_text;
-          }
-          else {
-            timerText += '<br>' + total_text;
-          }
-
-          if (HTML_timer != null) {
-            HTML_timer.innerHTML = timerText;
-          }
-          else {
-            if (infoText != '' && timerText) {
-              infoText += '<br>';
-            }
-            infoText += timerText;
-          }
-
-          if (HTML_que != null) {
-            HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
-          }
-          else {
-            infoText += sn_timers[timerID]['que_compiled'];
-          }
-
-          if (HTML_finish != null) {
-            HTML_finish.innerHTML = timeFinish;
-          }
-
-          if (HTML != null) {
-            HTML.innerHTML = infoText;
-          }
-
-          break;
-
-        case 5: // old que display
+        case 5:
           var que_item = timer_options['que'][0];
 
           if (que_item[EVENT_TIME] <= timestamp_server - timer['start_time']) {
             timer_options['que'].shift();
-//          timer['start_time'] = timestamp;
+            //timer['start_time'] = timestamp;
             timer['options']['unchanged'] = false;
           }
 
@@ -405,14 +233,181 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
 
             if (HTML_total != null) {
               HTML_total.title = hintText;
-            }
-            else {
+            } else {
               HTML.title = hintText;
             }
           }
+        break;
 
+        case 1: // time-independent counter
+          var new_value = parseInt(timer_options['start_value']) + (timestamp_server - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
+          if (timer_options['round'] === undefined) {
+            timer_options['round'] = 0;
+          }
+          if (new_value < 0) {
+            new_value = 0;
+            timer['active'] = false;
+          }
+          printData = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
+          if ((new_value >= timer_options['max_value'] && timer_options['per_second'] > 0) || (timer_options['per_second'] == 0)) {
+            timer['active'] = false;
+            new_value = timer_options['max_value'];
+          }
+
+          if (HTML != null) {
+            HTML.innerHTML = printData;
+          } else {
+            timer['active'] = false;
+          }
+        break;
+
+        case 2: // date&time // Unused
+          /*
+          printData = '';
+
+          if (timer['options'] & 1) {
+            printData += local_time.toLocaleDateString();
+          }
+
+          if (timer['options'] & 3) {
+            printData += '&nbsp;';
+          }
+
+          if (timer['options'] & 2) {
+            printData += local_time.toTimeString().substring(0, 8);
+          }
+
+          if (HTML != null) {
+            HTML.innerHTML = printData;
+          }
+          else {
+            timer['active'] = false;
+          }
           break;
+          */
+        case 4: // date&time with delta
+          printData = '';
 
+          timer_options_delta = typeof timer['options']['delta'] == 'undefined' ? 0 : timer['options']['delta'];
+          timer_options_format = typeof timer['options']['format'] == 'undefined' ? timer['options'] : timer['options']['format'];
+          var local_time_plus = new Date();
+          local_time_plus.setTime(local_time.valueOf() + (timer_options_delta * 1000));
+
+          timer_options_format & 1 ? printData += local_time_plus.toLocaleDateString() : false;
+          timer_options_format & 3 ? printData += '&nbsp;' : false;
+          timer_options_format & 2 ? printData += local_time_plus.toTimeString().substring(0, 8) : false;
+
+          /*
+          var local_time_plus = new Date();
+          local_time_plus.setTime(local_time.valueOf() + (timer['options']['delta'] * 1000));
+          if (timer['options']['format'] & 1) {
+            printData += local_time_plus.toLocaleDateString();
+          }
+          if (timer['options']['format'] & 3) {
+            printData += '&nbsp;';
+          }
+          if (timer['options']['format'] & 2) {
+            printData += local_time_plus.toTimeString().substring(0, 8);
+          }
+          */
+
+          if (HTML != null) {
+            HTML.innerHTML = printData;
+          } else {
+            timer['active'] = false;
+          }
+        break;
+
+        case 3: // new que display
+          if (timer_options['que'].length == 0) {
+            timer['active'] = false;
+            if (timer_options['url'] != undefined) {
+              document.location = timer_options['url'];
+            }
+            break;
+          }
+          var que_item = timer_options['que'][0];
+          var que_compiled = '';
+
+          if (!timer['que_compiled'] || timer['que_compiled'] != '') {
+            sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
+//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+          }
+          que_compiled = sn_timers[timerID]['que_compiled'];
+
+          if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
+            que_item[UNIT_AMOUNT]--;
+            if (que_item[UNIT_AMOUNT] <= 0) {
+              timer_options['que'].shift();
+              que_item = timer_options['que'][0];
+            } else {
+              que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
+            }
+            timer['start_time'] = timestamp_server;
+            sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
+//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+            que_compiled = sn_timers[timerID]['que_compiled'];
+          }
+
+          var should_break = true;
+          if (que_item != undefined) {
+            if (que_item[UNIT_ID]) {
+              should_break = false;
+            }
+          }
+
+          if (timer_options['que'].length && !should_break) {
+            timeFinish = timer['start_time'] + que_item[UNIT_TIME];
+            timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
+            total_text = sn_timestampToString(timeLeft + timer_options['total']);
+            infoText = que_item[UNIT_NAME];
+            if (que_item[UNIT_LEVEL]) {
+              infoText += ' (' + que_item[UNIT_LEVEL] + ')';
+            } else
+            // if(que_item[UNIT_AMOUNT] > 1)
+            {
+              infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
+            }
+            timerText = sn_timestampToString(timeLeft);
+          } else {
+            timer['active'] = false;
+            if (timer_options['url'] != undefined) {
+              document.location = timer_options['url'];
+            }
+            infoText = timer_options['msg_done'];
+            timerText = '';
+            total_text = '00:00:00';
+          }
+
+          if (HTML_total != null) {
+            HTML_total.innerHTML = total_text;
+          } else {
+            timerText += '<br>' + total_text;
+          }
+
+          if (HTML_timer != null) {
+            HTML_timer.innerHTML = timerText;
+          } else {
+            if (infoText != '' && timerText) {
+              infoText += '<br>';
+            }
+            infoText += timerText;
+          }
+
+          if (HTML_que != null) {
+            HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
+          } else {
+            infoText += sn_timers[timerID]['que_compiled'];
+          }
+
+          if (HTML_finish != null) {
+            HTML_finish.innerHTML = timeFinish;
+          }
+
+          if (HTML != null) {
+            HTML.innerHTML = infoText;
+          }
+        break;
       }
 
       activeTimers++;

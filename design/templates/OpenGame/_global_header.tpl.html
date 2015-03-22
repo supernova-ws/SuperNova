@@ -38,21 +38,28 @@
 
   <body class="style">
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
-    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>
-
     <script type="text/javascript">
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
       // Корректировка по времени запроса - если доступно
       // var localTime = window.performance ? localTime = new Date(window.performance.timing.requestStart) : new Date();
       // var localTime = window.performance ? localTime = new Date(window.performance.timing.responseStart) : new Date();
       var localTime = new Date();
-      var serverTime = new Date(parseFloat('{D_SN_TIME_MICRO}') * 1000);
-      var timeDiffSecondsMicro = localTime.valueOf() - serverTime.valueOf();
-      var timeDiff = Math.round((localTime.valueOf()) / 1000 - '{D_SN_TIME_MICRO}')
-              - localTime.getTimezoneOffset() * 60 - '{D_SN_TIME_ZONE_OFFSET}';
 
-      if(parseInt('{TIME_DIFF_MEASURE}')) {
+      var timeDiff;
+      // С сервера ВСЕГДА должна передаваться РАЗНИЦА во времени - что бы корректно работали скрипты при навигации вперед-назад по страницам в браузерах!
+      if(!(timeDiff = parseInt('{D_SN_CLIENT_TIME_DIFF}'))) {
+        timeDiff = false;
+      }
+
+//      var serverTime = new Date(parseFloat('{D_SN_TIME_MICRO}') * 1000);
+//      var timeDiffSecondsMicro = localTime.valueOf() - serverTime.valueOf();
+//      var timeDiff = Math.round((localTime.valueOf()) / 1000 - '{D_SN_TIME_MICRO}')
+//              - localTime.getTimezoneOffset() * 60 - '{D_SN_TIME_ZONE_OFFSET}';
+
+      if(parseInt('{TIME_DIFF_MEASURE}') || timeDiff === false) {
+        timeDiff = 0;
         jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utc_offset': -localTime.getTimezoneOffset() * 60}, function(data) {
+          timeDiff = parseInt(data);
         });
       }
 
@@ -60,6 +67,9 @@
       var sn_path_prefix = '{D_SN_ROOT_VIRTUAL}';
       var SN_GOOGLE = parseInt('{SN_GOOGLE}') ? 1 : 0;
     </script>
+
+    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>
+
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_global.js?{C_var_db_update}"></script>
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_timer.js?{C_var_db_update}"></script>

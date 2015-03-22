@@ -1,6 +1,9 @@
 <!-- IF .menu -->
 <script type="text/javascript">
-  sn_timers.unshift({'id': 'menu_admin_server_time', 'type': 2, 'active': true, 'start_time': {TIME_NOW}, options: 3});
+  sn_timers.unshift({'id': 'menu_admin_server_time', 'type': 4, 'active': true, 'start_time': {TIME_NOW}, 'options': {
+    'format': 3,
+    'delta': 0
+  }});
 
   var MENU_HIDDEN = "{MENU_START_HIDE}" ? 1 : 0;
   var SN_COOKIE = "{D_SN_COOKIE}";
@@ -19,9 +22,10 @@
 
 
   jQuery(document).ready(function(){
-    if(MENU_HIDDEN) {
-      jQuery('#left_menu').attr('menu_hidden', '1');
-    }
+    MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : false;
+//    if(MENU_HIDDEN) {
+//      jQuery('#left_menu').attr('menu_hidden', '1');
+//    }
   });
 </script>
 <!-- IF MENU_CUSTOMIZE -->
