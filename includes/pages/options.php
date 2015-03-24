@@ -65,9 +65,7 @@ function sn_options_model() {
           );
         }
         $user['vacation'] = $time_now + $config->player_vacation_time;
-      }
-      else
-      {
+      } else {
         $user['vacation'] = $time_now;
       }
       sn_db_transaction_commit();
@@ -396,6 +394,8 @@ function sn_options_view($template = null) {
       ? $player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
     'menu_customize_items_as_buttons' => isset($player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS])
       ? $player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
+    'sound_enabled' => isset($player_options[PLAYER_OPTION_SOUND_ENABLED])
+      ? $player_options[PLAYER_OPTION_SOUND_ENABLED] : 0,
 
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,

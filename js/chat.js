@@ -15,17 +15,14 @@
 var chat_refreshing = false;
 var chat_last_message = 0;
 
-function addSmiley(smiley)
-{
+function addSmiley(smiley) {
   document.chat_form.msg.value += smiley;
   document.chat_form.msg.focus();
 }
 
-function addMessage()
-{
+function addMessage() {
   var message = document.chat_form.msg.value;
-  if(!message)
-  {
+  if(!message) {
     return;
   }
 
@@ -42,40 +39,38 @@ function addMessage()
   });
 }
 
-function showMessage(norefresh)
-{
-  if(chat_refreshing)
-  {
+function showMessage(initial) {
+  if(chat_refreshing) {
     return;
   }
 
   chat_refreshing = true;
-  jQuery.post("index.php?page=chat_msg", {'page': 'chat_msg', 'ally': ally_id, 'last_message': chat_last_message}, function(data)
-    {
-      var shoutbox = document.getElementById('shoutbox');
-      if(data.html)
-      {
-        chat_last_message = data.last_message;
-        shoutbox.innerHTML += data.html;
-        jQuery('#shoutbox').animate({scrollTop: jQuery('#shoutbox').prop('scrollHeight')}, 2000);
+  jQuery.post("index.php?page=chat_msg", {'page': 'chat_msg', 'ally': ally_id, 'last_message': chat_last_message}, function(data) {
+    var shoutbox = document.getElementById('shoutbox');
+    if(data.html) {
+      chat_last_message = data.last_message;
+      shoutbox.innerHTML += data.html;
+      jQuery('#shoutbox').animate({scrollTop: jQuery('#shoutbox').prop('scrollHeight')}, 2000);
+      if(initial !== true) {
+        sn_sound_play("chat_message");
       }
+    }
 
-      if(data.disable != undefined)
-      {
-        jQuery('#msg,#send,#chat_color').attr('disabled', 'disabled');
-        jQuery('#chat_message_inputs, #chat_message_smiles').hide();
-      }
-      else
-      {
-        chat_refreshing = false;
-        window.setTimeout(showMessage, 5000);
-      }
-    }, "json"
-  );
+    if(data.disable != undefined) {
+      jQuery('#msg,#send,#chat_color').attr('disabled', 'disabled');
+      jQuery('#chat_message_inputs, #chat_message_smiles').hide();
+    } else {
+      chat_refreshing = false;
+      window.setTimeout(showMessage, 5000);
+    }
+  }, "json");
 }
 
-jQuery(document).ready(function()
-  {
-    showMessage();
-  }
-);
+jQuery(document).ready(function() {
+  showMessage(true);
+  /*
+  $('#msg').on('keydown', function() {
+    sn_sound_play("key_press");
+  });
+  */
+});

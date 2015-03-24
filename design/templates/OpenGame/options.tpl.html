@@ -273,8 +273,17 @@
             <input name="settings_info"{user_settings_info} type="checkbox" id="settings_info" />&nbsp;<label for="settings_info"><img height="14px" src="{dpath}icons/menu_empire_emperor.png" alt="{L_opt_settings_info}">&nbsp;{L_opt_settings_info}</label>
             <input name="settings_bud"{user_settings_bud} type="checkbox" id="settings_bud" />&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{add_to_buddylist}">&nbsp;{L_add_to_buddylist}</label>
             <!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {L_show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
+          </td>
+        </tr>
+
+        <tr class="c_c">
+          <th colspan="2">
+            <input type="hidden" name="options[{D_PLAYER_OPTION_SOUND_ENABLED}]" value="0" />
+            <input type="checkbox" id="sound_enabled" name="options[{D_PLAYER_OPTION_SOUND_ENABLED}]" value="1"<!-- IF sound_enabled --> checked<!-- ENDIF --> />
+            <label for="sound_enabled">{L_opt_sound_enabled}</label>
           </th>
         </tr>
+
       </table>
     </div>
 

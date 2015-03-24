@@ -40,6 +40,8 @@
     <script type="text/javascript">
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
       var localTime = new Date();
+
+      var SN_SOUND_ENABLED = parseInt('{SOUND_ENABLED}') ? parseInt('{SOUND_ENABLED}') : 0;
     </script>
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
@@ -74,6 +76,8 @@
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>
 
+    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/ion.sound.min.js?{C_var_db_update}"></script>
+    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_sound.js?{C_var_db_update}"></script>
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_global.js?{C_var_db_update}"></script>
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_timer.js?{C_var_db_update}"></script>

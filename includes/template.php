@@ -229,6 +229,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   // Global header
   $user_time_diff = user_time_diff_get();
   $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
+  $player_options = player_load_option($user);
   $template = gettemplate('_global_header', true);
   $template->assign_vars(array(
     'USER_AUTHLEVEL'           => intval($user['authlevel']),
@@ -255,6 +256,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'LANG_LANGUAGE'            => $lang['LANG_INFO']['LANG_NAME_ISO2'],
     'LANG_ENCODING'            => 'utf-8',
     'LANG_DIRECTION'           => $lang['LANG_INFO']['LANG_DIRECTION'],
+
+    'SOUND_ENABLED'            => $player_options[PLAYER_OPTION_SOUND_ENABLED],
 
     'IMPERSONATING'            => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
   ));

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a15.4
+* @version 39b10.0
 *
 */
 
@@ -159,4 +159,7 @@ $a_lang_array = (array(
 
   'opt_mail_optional_description' => 'Personal messages from other players and notifications about internal game events (like combat reports, expedition reports etc) will be sent to this e-mail',
   'opt_mail_permanent_description' => 'Your game account linked permanently to this e-mail. All system notices (like password change confirmation) will be sent to this address. You can enter this email only once',
+
+  'opt_sound_enabled' => 'Включить звуки в игре',
+
 ));

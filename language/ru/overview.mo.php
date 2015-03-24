@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b9.9
+* @version 39b10.0
 *
 */
 
@@ -192,7 +192,7 @@ $a_lang_array = (array(
   'imp_experience_to_level' => 'Левелап',
 
   'ov_manage_special' => 'Особые функции',
-  'ov_password' => 'Ваш пароль для подтверждения',
+  'ov_password' => 'Ваш пароль на вход в игру',
 
   'ov_governor_purchase' => 'Игрок купил Губернатора %1$s ID %2$d уровня %3$d на планету %4$s',
 
