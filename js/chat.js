@@ -69,7 +69,7 @@ function showMessage(initial) {
 jQuery(document).ready(function() {
   showMessage(true);
   /*
-  $('#msg').on('keydown', function() {
+  $('#msg').on('keypress', function() {
     sn_sound_play("key_press");
   });
   */

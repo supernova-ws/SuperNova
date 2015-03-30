@@ -17,6 +17,12 @@ textarea {
   resize: none;
 }
 
+.bar_anchor_h {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
 #sn_menu {
 /*  float:left; */
   width: 130px;
@@ -648,6 +654,32 @@ th.c_j, td.c_j
   text-decoration: underline;
   font-weight: bold;
   cursor: pointer;
+}
+
+.survey_block {
+  text-align: left;
+}
+.survey_header {
+  background-color: #233452;
+}
+.survey_votes_text {
+  width: 50%;
+  max-width: 50%;
+}
+.survey_bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+
+  background-color: darkgreen;
+}
+.survey_bar_number {
+  position: absolute;
+  right: 0;
+  top: 0;
+  text-align: right;
+  width: 100%;
 }
 
 .percent33{

@@ -1350,6 +1350,37 @@ switch($new_version) {
       CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 
+    upd_create_table('survey', " (
+      `survey_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `survey_announce_id` bigint(11) unsigned DEFAULT NULL,
+      `survey_question` varchar(250) NOT NULL,
+      `survey_until` datetime DEFAULT NULL,
+      PRIMARY KEY (`survey_id`),
+      KEY `I_survey_announce_id` (`survey_announce_id`) USING BTREE,
+      CONSTRAINT `FK_survey_announce_id` FOREIGN KEY (`survey_announce_id`) REFERENCES `{{announce}}` (`idAnnounce`) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+    upd_create_table('survey_answers', " (
+      `survey_answer_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `survey_parent_id` int(10) unsigned DEFAULT NULL,
+      `survey_answer_text` varchar(250) DEFAULT NULL,
+      PRIMARY KEY (`survey_answer_id`),
+      KEY `I_survey_answers_survey_parent_id` (`survey_parent_id`) USING BTREE,
+      CONSTRAINT `FK_survey_answers_survey_parent_id` FOREIGN KEY (`survey_parent_id`) REFERENCES `{{survey}}` (`survey_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+    upd_create_table('survey_votes', " (
+      `survey_vote_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+      `survey_parent_id` int(10) unsigned DEFAULT NULL,
+      `survey_parent_answer_id` int(10) unsigned DEFAULT NULL,
+      `survey_vote_user_id` bigint(20) unsigned DEFAULT NULL,
+      `survey_vote_user_name` varchar(32) DEFAULT NULL,
+      PRIMARY KEY (`survey_vote_id`),
+      KEY `I_survey_votes_survey_parent_id` (`survey_parent_id`) USING BTREE,
+      KEY `I_survey_votes_user` (`survey_vote_user_id`,`survey_vote_user_name`) USING BTREE,
+      KEY `I_survey_votes_survey_parent_answer_id` (`survey_parent_answer_id`) USING BTREE,
+      CONSTRAINT `FK_survey_votes_user` FOREIGN KEY (`survey_vote_user_id`, `survey_vote_user_name`) REFERENCES `{{users}}` (`id`, `username`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+      CONSTRAINT `FK_survey_votes_survey_parent_answer_id` FOREIGN KEY (`survey_parent_answer_id`) REFERENCES `{{survey_answers}}` (`survey_answer_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+      CONSTRAINT `FK_survey_votes_survey_parent_id` FOREIGN KEY (`survey_parent_id`) REFERENCES `{{survey}}` (`survey_id`) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');

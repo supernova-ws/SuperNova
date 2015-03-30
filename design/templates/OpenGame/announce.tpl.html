@@ -21,6 +21,28 @@
         <td>{L_news_detail_url}</td>
         <td><input type="text" name="detail_url" style="width: 330px" maxlength="250" value="{DETAIL_URL}"></td>
       </tr>
+
+      <tr>
+        <td>
+          {L_survey}<br />
+          <!-- IF MODE == 'edit' --><span class="error">{L_survey_questions_hint_edit}</span><!-- ENDIF -->
+        </td>
+        <td><input type="text" name="survey_question" style="width: 330px" maxlength="250" value="{SURVEY_QUESTION}"></td>
+      </tr>
+      <tr>
+        <td valign="top">
+          {L_survey_questions}<br />
+          {L_survey_questions_hint}
+        </td>
+        <td><textarea name="survey_answers" cols=40 rows=5>{SURVEY_ANSWERS}</textarea></td>
+      </tr>
+      <tr>
+        <td>{L_survey_until}</td>
+        <td>
+          <input type="text" class="fl" name="survey_until" maxlength="19" value="{SURVEY_UNTIL}">
+        </td>
+      </tr>
+
       <tr>
         <td colspan="2" align="center">
           <span class="fl"><input type="checkbox" id="news_mass_mail" name="news_mass_mail" value="1">&nbsp;<label for="news_mass_mail">{L_news_mass_mail}</label></span>

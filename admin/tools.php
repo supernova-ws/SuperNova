@@ -22,6 +22,7 @@ $mode = sys_get_param_int('mode');
 switch($mode){
   case ADM_TOOL_CONFIG_RELOAD:
     $config->db_loadAll();
+    sys_refresh_tablelist($config->db_prefix);
 
     $config->db_loadItem('game_watchlist');
     if($config->game_watchlist)

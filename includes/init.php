@@ -363,6 +363,7 @@ define('SN_CLIENT_TIME_DIFF', $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DI
 define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
+!empty($user) && sys_get_param_id('survey_vote') ? die(survey_vote($user)) : false;
 
 lng_load_i18n($sn_mvc['i18n'][$sn_page_name]);
 execute_hooks($sn_mvc['model'][''], $template);

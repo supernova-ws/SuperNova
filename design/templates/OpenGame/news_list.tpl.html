@@ -1,28 +1,64 @@
-  <!-- BEGIN announces -->
-    <tr>
-      <td>
-        <div class="news_header">
-          <div class="news_date fl"><!-- IF announces.FUTURE --><span class="news_future">{L_news_future}</span>&nbsp;<!-- ELSEIF announces.NEW --><span class="news_fresh">{L_news_new}</span>&nbsp;<!-- ENDIF -->{announces.TIME}</div>
-          <!-- IF announces.USER_NAME -->
-            <div class="news_publisher fr">
-              {announces.USER_NAME}
-            </div>
-          <!-- ENDIF -->
-          <br />
-        </div>
-        <div class="news_text">
-          {announces.ANNOUNCE}
-          <!-- IF announces.DETAIL_URL -->
-           <a class="news_link" href="{announces.DETAIL_URL}">{L_news_more}</a>
-          <!-- ENDIF -->
-        </div>
-      </td>
-      <!-- IF AUTHLEVEL >= 3 -->
-        <td><a href="announce.php?mode=edit&id={announces.ID}"><img src="design/images/icon_edit.png"></a></td>
-        <td><a href="announce.php?mode=copy&id={announces.ID}"><img src="design/images/icon_copy.gif"></a></td>
-        <td><a href="announce.php?mode=del&id={announces.ID}"><img src="design/images/r1.png"></a></td>
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_survey.js?{C_var_db_update}"></script>
+<script type="text/javascript">
+  var LA_survey_result_sent = '{LA_survey_result_sent}';
+</script>
+<!-- BEGIN announces -->
+  <tr>
+    <td>
+      <div class="news_header">
+        <div class="news_date fl"><!-- IF announces.FUTURE --><span class="news_future">{L_news_future}</span>&nbsp;<!-- ELSEIF announces.NEW --><span class="news_fresh">{L_news_new}</span>&nbsp;<!-- ENDIF -->{announces.TIME}</div>
+        <!-- IF announces.USER_NAME -->
+          <div class="news_publisher fr">
+            {announces.USER_NAME}
+          </div>
+        <!-- ENDIF -->
+        <br />
+      </div>
+      <div class="news_text">
+        {announces.ANNOUNCE}
+        <!-- IF announces.DETAIL_URL -->
+         <a class="news_link" href="{announces.DETAIL_URL}">{L_news_more}</a>
+        <!-- ENDIF -->
+      </div>
+      <!-- IF announces.SURVEY_TEXT -->
+      <div class="survey_block" survey_id="{announces.SURVEY_ID}">
+        <div class="survey_header">
+          <!-- IF announces.SURVEY_COMPLETE -->
+          <span class="warning">{L_survey_complete}:</span>
+          <!-- ELSE -->
+          {L_survey}:
+          <!-- ENDIF --> {announces.SURVEY_TEXT}</div>
+        <!-- IF announces.SURVEY_CAN_VOTE -->
+          <!-- BEGIN survey_answers -->
+          <input type="radio" name="survey[{announces.SURVEY_ID}]" id="sa_{survey_answers.ID}" value="{survey_answers.ID}" />
+          <label for="sa_{survey_answers.ID}">{survey_answers.TEXT}</label><br />
+          <!-- END survey_answers -->
+          {L_survey_select_one} <button name="survey_confirm" value="{announces.SURVEY_ID}">{L_survey_confirm}</button>
+        <!-- ELSE -->
+          <table width="100%">
+          <!-- BEGIN survey_votes -->
+          <tr>
+            <td class="survey_votes_text">{survey_votes.TEXT}</td>
+            <td>
+              <div class="bar_anchor_h">
+                &nbsp;
+                <div class="survey_bar" style="width: {survey_votes.PERCENT}%;">&nbsp;</div>
+                <div class="survey_bar_number">{survey_votes.VOTES}</div>
+              </div>
+            </td>
+          </tr>
+          <!-- END survey_votes -->
+          </table>
+        <!-- ENDIF -->
+      </div>
       <!-- ENDIF -->
-    </tr>
-  <!-- BEGINELSE announces -->
-    <tr><th class="c">{L_news_none}</th></tr>
-  <!-- END announces -->
+    </td>
+    <!-- IF AUTHLEVEL >= 3 -->
+      <td><a href="announce.php?mode=edit&id={announces.ID}"><img src="design/images/icon_edit.png"></a></td>
+      <td><a href="announce.php?mode=copy&id={announces.ID}"><img src="design/images/icon_copy.gif"></a></td>
+      <td><a href="announce.php?mode=del&id={announces.ID}"><img src="design/images/r1.png"></a></td>
+    <!-- ENDIF -->
+  </tr>
+<!-- BEGINELSE announces -->
+  <tr><th class="c">{L_news_none}</th></tr>
+<!-- END announces -->

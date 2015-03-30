@@ -1,7 +1,7 @@
 var SN_SOUND_INIT = false;
 
 function sn_sound_play(sound) {
-  SN_SOUND_ENABLED ? ion.sound.play(sound) : false;
+  SN_SOUND_INIT && SN_SOUND_ENABLED ? ion.sound.play(sound) : false;
 }
 
 $(document).ready(function() {
@@ -13,7 +13,7 @@ $(document).ready(function() {
       },
       {
         alias: "key_press",
-        name: "button_click_on",
+        name: "snap",
       },
     ],
     path: "sounds/",

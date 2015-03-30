@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b9.5
+* @version 39b11.0
 *
 */
 
@@ -1026,5 +1026,16 @@ $a_lang_array = (array(
   'sys_blitz_registration_player_name' => 'Ваш логин для Блиц-сервера:',
   'sys_blitz_registration_player_password' => 'Ваш пароль для Блиц-сервера:',
   'sys_blitz_registration_server_link' => 'Ссылка на Блиц-сервер',
+
+  'survey' => 'Опрос',
+  'survey_questions' => 'Варианты для выбора',
+  'survey_questions_hint' => '1 вариант на строку',
+  'survey_questions_hint_edit' => 'Редактированние опроса обнулит его результаты',
+  'survey_until' => 'Длительность опроса (3 дня по умолчанию)',
+
+  'survey_select_one' => 'Выберите один вариант ответа и нажмите',
+  'survey_confirm' => 'Подтвердить',
+  'survey_result_sent' => 'Ваш голос учтен. Обновите страницу или воспользуйтесь ссылкой <a class="link" href="announce.php">Новости</a> что бы увидеть текущие результаты опроса',
+  'survey_complete' => 'Опрос завершен',
 
 ));
