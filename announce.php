@@ -26,7 +26,7 @@ $announce = array();
 if ($user['authlevel'] >= 3) {
   if (!empty($text)) {
     // $idAnnounce = sys_get_param_id('id');
-    $announce_time = strtotime($announce_time);
+    $announce_time = strtotime($announce_time, SN_TIME_NOW);
     $announce_time = $announce_time ? $announce_time : SN_TIME_NOW;
 
     if ($mode == 'edit') {
@@ -41,7 +41,8 @@ if ($user['authlevel'] >= 3) {
     if(($survey_question = sys_get_param_str('survey_question')) && ($survey_answers = sys_get_param_str('survey_answers'))) {
       $survey_answers = explode('\r\n', $survey_answers);
       if(count($survey_answers) > 1) {
-        $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW) ? $survey_until : date(FMT_DATE_TIME_SQL, SN_TIME_NOW + PERIOD_DAY * 3);
+        $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW);
+        $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ? $survey_until : SN_TIME_NOW + PERIOD_DAY * 1);
         doquery("INSERT INTO {{survey}} SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
         $survey_id = mysql_insert_id();
         foreach($survey_answers as $survey_answer) {
