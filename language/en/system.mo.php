@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b11.0
+* @version 39b11.1
 *
 */
 
@@ -1032,6 +1032,8 @@ $a_lang_array = (array(
   'survey_questions_hint' => '1 вариант на строку',
   'survey_questions_hint_edit' => 'Редактированние опроса обнулит его результаты',
   'survey_until' => 'Длительность опроса (3 дня по умолчанию)',
+
+  'survey_lasts_until' => 'Опрос продлится до',
 
   'survey_select_one' => 'Выберите один вариант ответа и нажмите',
   'survey_confirm' => 'Подтвердить',

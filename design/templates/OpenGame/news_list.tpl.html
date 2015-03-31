@@ -22,20 +22,27 @@
       </div>
       <!-- IF announces.SURVEY_TEXT -->
       <div class="survey_block" survey_id="{announces.SURVEY_ID}">
-        <div class="survey_header">
-          <!-- IF announces.SURVEY_COMPLETE -->
-          <span class="warning">{L_survey_complete}:</span>
-          <!-- ELSE -->
-          {L_survey}:
-          <!-- ENDIF --> {announces.SURVEY_TEXT}</div>
+        <table width="100%" class="c_l">
+          <tr>
+            <th class="survey_header" colspan="2">
+              {L_survey}: {announces.SURVEY_TEXT}
+            </th>
+          </tr>
         <!-- IF announces.SURVEY_CAN_VOTE -->
           <!-- BEGIN survey_answers -->
-          <input type="radio" name="survey[{announces.SURVEY_ID}]" id="sa_{survey_answers.ID}" value="{survey_answers.ID}" />
-          <label for="sa_{survey_answers.ID}">{survey_answers.TEXT}</label><br />
+          <tr>
+            <td colspan="2">
+              <input type="radio" name="survey[{announces.SURVEY_ID}]" id="sa_{survey_answers.ID}" value="{survey_answers.ID}" />
+              <label for="sa_{survey_answers.ID}">{survey_answers.TEXT}</label><br />
+            </td>
+          </tr>
           <!-- END survey_answers -->
-          {L_survey_select_one} <button name="survey_confirm" value="{announces.SURVEY_ID}">{L_survey_confirm}</button>
+          <tr>
+            <th class="survey_header" colspan="2">
+              {L_survey_select_one} <button name="survey_confirm" value="{announces.SURVEY_ID}">{L_survey_confirm}</button>
+            </th>
+          </tr>
         <!-- ELSE -->
-          <table width="100%">
           <!-- BEGIN survey_votes -->
           <tr>
             <td class="survey_votes_text">{survey_votes.TEXT}</td>
@@ -48,8 +55,17 @@
             </td>
           </tr>
           <!-- END survey_votes -->
-          </table>
         <!-- ENDIF -->
+          <tr>
+            <th class="c_c" colspan="2">
+              <!-- IF announces.SURVEY_COMPLETE -->
+                <span class="warning">{L_survey_complete}</span>
+              <!-- ELSE -->
+                <span class="ok">{L_survey_lasts_until} {announces.SURVEY_UNTIL}</span>
+              <!-- ENDIF -->
+            </th>
+          </tr>
+        </table>
       </div>
       <!-- ENDIF -->
     </td>

@@ -29,19 +29,20 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     }
 
     $template->assign_block_vars('announces', array(
-      'ID'         => $announce['idAnnounce'],
-      'TIME'       => date(FMT_DATE_TIME, $announce['unix_time'] + SN_CLIENT_TIME_DIFF),
-      'ANNOUNCE'   => cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])),
-      'DETAIL_URL' => $announce['detail_url'],
-      'USER_NAME'  =>
+      'ID'              => $announce['idAnnounce'],
+      'TIME'            => date(FMT_DATE_TIME, $announce['unix_time'] + SN_CLIENT_TIME_DIFF),
+      'ANNOUNCE'        => cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])),
+      'DETAIL_URL'      => $announce['detail_url'],
+      'USER_NAME'       =>
         isset($users[$announce['user_id']]) && $users[$announce['user_id']] ? player_nick_render_to_html($users[$announce['user_id']], array('color' => true)):
         js_safe_string($announce['user_name']),
-      'NEW'        => $announce['unix_time'] + $config->game_news_actual >= SN_TIME_NOW,
-      'FUTURE'     => $announce['unix_time'] > SN_TIME_NOW,
-      'SURVEY_ID' => $announce['survey_id'],
-      'SURVEY_TEXT' => $announce['survey_question'],
+      'NEW'             => $announce['unix_time'] + $config->game_news_actual >= SN_TIME_NOW,
+      'FUTURE'          => $announce['unix_time'] > SN_TIME_NOW,
+      'SURVEY_ID'       => $announce['survey_id'],
+      'SURVEY_TEXT'     => $announce['survey_question'],
       'SURVEY_CAN_VOTE' => empty($survey_vote) && !$survey_complete,
       'SURVEY_COMPLETE' => $survey_complete,
+      'SURVEY_UNTIL'    => $announce['survey_until'],
     ));
     if($announce['survey_id']) {
       if(empty($survey_vote) && !$survey_complete) {

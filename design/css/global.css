@@ -658,6 +658,7 @@ th.c_j, td.c_j
 
 .survey_block {
   text-align: left;
+  padding: 5px;
 }
 .survey_header {
   background-color: #233452;
