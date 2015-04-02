@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b11.1#
+* @version #39b11.3#
 *
 */
 
@@ -1038,7 +1038,7 @@ $a_lang_array = (array(
   'survey_questions' => 'Варианты для выбора',
   'survey_questions_hint' => '1 вариант на строку',
   'survey_questions_hint_edit' => 'Редактированние опроса обнулит его результаты',
-  'survey_until' => 'Длительность опроса (3 дня по умолчанию)',
+  'survey_until' => 'Длительность опроса (1 сутки по умолчанию)',
 
   'survey_lasts_until' => 'Опрос продлится до',
 
@@ -1046,5 +1046,16 @@ $a_lang_array = (array(
   'survey_confirm' => 'Подтвердить',
   'survey_result_sent' => 'Ваш голос учтен. Обновите страницу или воспользуйтесь ссылкой <a class="link" href="announce.php">Новости</a> что бы увидеть текущие результаты опроса',
   'survey_complete' => 'Опрос завершен',
+
+  'player_option_fleet_ship_sort' => array(
+    PLAYER_OPTION_FLEET_SHIP_SORT_DEFAULT => 'Стандартная',
+    PLAYER_OPTION_FLEET_SHIP_SORT_NAME => 'По названию',
+    PLAYER_OPTION_FLEET_SHIP_SORT_SPEED => 'По скорости',
+    PLAYER_OPTION_FLEET_SHIP_SORT_COUNT => 'По количеству',
+    PLAYER_OPTION_FLEET_SHIP_SORT_ID => 'По ID',
+  ),
+
+  'sys_sort' => 'Сортировка',
+  'sys_sort_inverse' => 'В порядке убывания',
 
 ));

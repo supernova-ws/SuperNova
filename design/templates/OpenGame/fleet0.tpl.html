@@ -87,7 +87,17 @@ var speed_factor   = {speed_factor};
           </th>
         </tr>
         <tr class="c_c">
-          <th colspan="4"><input type="submit" value="{L_fl_continue}" /></th>
+          <th colspan="4">
+            <div class="fl">
+              {L_sys_sort}
+              <select name="fleet_ship_sort" id="fleet_ship_sort">
+                <!-- BEGIN ship_sort_list -->
+                <option value="{ship_sort_list.VALUE}"<!-- IF ship_sort_list.VALUE == FLEET_SHIP_SORT --> selected<!-- ENDIF -->>{ship_sort_list.TEXT}</option>
+                <!-- END ship_sort_list -->
+              </select>
+              {L_sys_sort_inverse} <input type="checkbox" name="fleet_ship_sort_inverse" id="fleet_ship_sort_inverse" value="1"<!-- IF FLEET_SHIP_SORT_INVERSE --> checked<!-- ENDIF -->/>
+            </div>
+            <input class="fr" type="submit" value="{L_fl_continue}" /></th>
         </tr>
       <!-- ELSE -->
         <tr>

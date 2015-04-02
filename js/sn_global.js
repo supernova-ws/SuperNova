@@ -49,6 +49,16 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
 //  document.location.href = url;
   }
 
+  function sn_reload() {
+    location.reload();
+  }
+
+  jQuery(document).on('change', '#fleet_ship_sort,#fleet_ship_sort_inverse', function () {
+    jQuery.post('fleet.php?fleet_ship_sort=' + $('#fleet_ship_sort').val() + '&fleet_ship_sort_inverse=' + ($('#fleet_ship_sort_inverse').is(':checked') ? '1' : '0'), function(){
+      sn_reload();
+    });
+  });
+
   /* CHAT_ADVANCED specific */
   jQuery(document).on('click', '.player_nick_award', function (e) {
     document.location.assign("index.php?page=imperator&int_user_id=" + jQuery(this).attr('player_id'));
