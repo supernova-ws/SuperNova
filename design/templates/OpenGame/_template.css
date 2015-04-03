@@ -150,7 +150,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   /*left: 0;*/
   /*top: 0;*/
   /*width: 140px;*/
-  position: fixed;
+  /*position: fixed;*/
   z-index: 9999;
 }
 
