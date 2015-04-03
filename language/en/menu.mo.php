@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b6.2
+* @version 39b11.6
 *
 */
 
@@ -122,8 +122,8 @@ $a_lang_array = (array(
   'menu_stat_records' => 'Universe records',
   'menu_races' => 'Homeworlds',
 
-  'menu_hide' => 'Hide menu',
-  'menu_show' => 'Show menu',
+  'menu_hide' => '<<',
+  'menu_show' => '>>',
 
   'menu_pin' => 'Pin menu',
   'menu_unpin' => 'Unpin menu',

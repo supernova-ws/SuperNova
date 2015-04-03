@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b6.2
+* @version 39b11.6
 *
 */
 
@@ -121,8 +121,8 @@ $a_lang_array = (array(
   'menu_races' => 'Родные миры',
   'menu_metamatter' => 'Метаматерия',
 
-  'menu_hide' => 'Спрятать меню',
-  'menu_show' => 'Показать меню',
+  'menu_hide' => '<<',
+  'menu_show' => '>>',
 
   'menu_pin' => 'Закрепить меню',
   'menu_unpin' => 'Открепить меню',

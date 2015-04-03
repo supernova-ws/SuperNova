@@ -21,12 +21,6 @@
   var LA_menu_customize_hide_items = "{LA_menu_customize_hide_items}";
 
 
-  jQuery(document).ready(function(){
-    MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : false;
-//    if(MENU_HIDDEN) {
-//      jQuery('#left_menu').attr('menu_hidden', '1');
-//    }
-  });
 </script>
 <!-- IF MENU_CUSTOMIZE -->
   <!-- IF MENU_START_HIDE -->
@@ -47,14 +41,18 @@
       position: fixed;
       float: left;
     }
+    /*
     #left_menu {
       margin-top: 28px;
     }
+    */
     <!-- ELSEIF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
+    /*
     #left_menu_show {
       float: left;
       margin-bottom: 4px;
     }
+    */
     <!-- ELSE -->
     #left_menu_show, #menu_pin {
       display: none;
@@ -64,14 +62,16 @@
     <!-- IF PLAYER_OPTION_MENU_UNPIN_ABSOLUTE -->
     #left_menu {
       position: absolute;
+      /*
       <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
         margin-top: 28px;
       <!-- ENDIF -->
+      */
     }
     <!-- ENDIF -->
   </style>
 
-  <input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />
+  <!--<input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />-->
 <!-- ENDIF -->
   <table cellspacing="0" cellpadding="0" id="left_menu" class="c_l"><!-- BEGIN menu -->
     <!-- IF menu.LEVEL == 'header' -->
@@ -144,6 +144,17 @@
     </tr>
   <!-- END menu --></table>
 </td>
-<td>&nbsp;</td>
+<td valign="top"><!-- IF MENU_CUSTOMIZE --><input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />  <script type="text/javascript">
+  jQuery(document).ready(function(){
+    MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : (
+            jQuery('#left_menu_show').offset().left < 50 ?
+            jQuery('#left_menu_show').offset({top: $('#left_menu_show').offset().top, left: $('#left_menu_show').offset().left + jQuery('#left_menu').width()}).css('visibility', 'visible')
+                    : false
+    );
+//    if(MENU_HIDDEN) {
+//      jQuery('#left_menu').attr('menu_hidden', '1');
+//    }
+  });
+</script><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
 <td width="100%" valign="top" align="center"><div style="margin: 0 auto">
 <!-- ENDIF -->
