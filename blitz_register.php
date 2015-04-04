@@ -105,7 +105,15 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     unset($blitz_result[0]);
     foreach($blitz_result as $blitz_result_data) {
       $blitz_result_data = explode(',', $blitz_result_data);
-      // pdump($blitz_result_data);
+      if(count($blitz_result_data) == 4) {
+        $blitz_result_data[0] = mysql_real_escape_string($blitz_result_data[0]);
+        doquery(
+          "UPDATE `{{blitz_registrations}}` SET
+            `blitz_online` = '{$blitz_result_data[1]}',
+            `blitz_place` = '{$blitz_result_data[2]}',
+            `blitz_points` = '{$blitz_result_data[3]}'
+          WHERE `blitz_name` = '{$blitz_result_data[0]}';");
+      }
     }
   }
 
