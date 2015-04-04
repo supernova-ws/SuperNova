@@ -23,7 +23,7 @@ if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
 //  }
 }
 
-if($config->game_blitz_register == BLITZ_REGISTER_OPEN) {
+if($config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN) {
   if(sys_get_param_str('register_me')) {
     sn_db_transaction_start();
     $is_registered = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} FOR UPDATE;", true);
@@ -115,6 +115,7 @@ while($row = mysql_fetch_assoc($query)) {
   $template->assign_block_vars('registrations', array(
     'ID' => $row['id'],
     'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => 'true')),
+    'BLITZ_NAME' => $row['blitz_name'],
   ));
   if($row['id'] == $user['id']) {
     $player_registered = $row;
@@ -125,6 +126,7 @@ $template->assign_vars(array(
   'REGISTRATION_OPEN' => $config->game_blitz_register == BLITZ_REGISTER_OPEN,
   'REGISTRATION_CLOSED' => $config->game_blitz_register == BLITZ_REGISTER_CLOSED,
   'REGISTRATION_SHOW_LOGIN' => $config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
+  'REGISTRATION_DISCLOSURE_NAMES' => $config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
   'PLAYER_REGISTERED' => !empty($player_registered),
   'BLITZ_GENERATED' => implode(';', $blitz_generated),
   'BLITZ_NAME' => $player_registered['blitz_name'],

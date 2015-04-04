@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b11.7');
+define('SN_VERSION', '39b11.8');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1196,3 +1196,4 @@ define('BLITZ_REGISTER_DISABLED', 0);
 define('BLITZ_REGISTER_OPEN'    , 1);
 define('BLITZ_REGISTER_CLOSED'  , 2);
 define('BLITZ_REGISTER_SHOW_LOGIN', 3);
+define('BLITZ_REGISTER_DISCLOSURE_NAMES', 4);

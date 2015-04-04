@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b11.3#
+* @version #39b11.8#
 *
 */
 
@@ -1033,6 +1033,7 @@ $a_lang_array = (array(
   'sys_blitz_registration_player_name' => 'Ваш логин для Блиц-сервера:',
   'sys_blitz_registration_player_password' => 'Ваш пароль для Блиц-сервера:',
   'sys_blitz_registration_server_link' => 'Ссылка на Блиц-сервер',
+  'sys_blitz_registration_player_blitz_name' => 'Имя на Блиц-сервере',
 
   'survey' => 'Опрос',
   'survey_questions' => 'Варианты для выбора',
