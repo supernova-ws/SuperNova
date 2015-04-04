@@ -1349,6 +1349,41 @@ switch($new_version) {
       UNIQUE KEY `I_user_id` (`user_id`) USING BTREE,
       CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
+/*
+    if(empty($update_tables['blitz_registrations']['server_id'])) {
+      upd_alter_table('blitz_registrations', array(
+        "ADD COLUMN `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`",
+        "ADD COLUMN `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`",
+        "ADD COLUMN `result_place` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+        "ADD COLUMN `result_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+      ), empty($update_tables['blitz_registrations']['server_id']));
+      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
+      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+    }
+    if(empty($update_tables['blitz_registrations']['blitz_points'])) {
+      upd_alter_table('blitz_registrations', array(
+        "DROP COLUMN `result_place`",
+        "DROP COLUMN `result_status`",
+        "ADD COLUMN `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+        "ADD COLUMN `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+        "ADD COLUMN `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0",
+      ), empty($update_tables['blitz_registrations']['blitz_points']));
+      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
+      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+    }
+*/
+    if(empty($update_tables['blitz_registrations']['server_id'])) {
+      upd_alter_table('blitz_registrations', array(
+        "ADD COLUMN `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`",
+        "ADD COLUMN `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`",
+        "ADD COLUMN `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+        "ADD COLUMN `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+        "ADD COLUMN `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0",
+        "ADD COLUMN `blitz_online` INT(11) UNSIGNED NOT NULL DEFAULT 0",
+      ), empty($update_tables['blitz_registrations']['server_id']));
+      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
+      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+    }
 
     upd_create_table('survey', " (
       `survey_id` int(10) unsigned NOT NULL AUTO_INCREMENT,

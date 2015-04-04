@@ -37,6 +37,7 @@ if($config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN) {
 }
 
 $blitz_generated = array();
+$blitz_result = array();
 if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
   if(sys_get_param_str('generate')) {
     $next_id = 0;
@@ -98,11 +99,27 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     $config->db_saveItem('users_amount', $config->users_amount + $new_players);
     pdump($imported_string);
     // generated_string
+  } elseif(sys_get_param_str('import_result') && ($blitz_result_string = sys_get_param_str('blitz_result_string'))) {
+    $blitz_result = explode(';', $blitz_result_string);
+    $blitz_last_update = $blitz_result[0]; // Пока не используется
+    unset($blitz_result[0]);
+    foreach($blitz_result as $blitz_result_data) {
+      $blitz_result_data = explode(',', $blitz_result_data);
+      // pdump($blitz_result_data);
+    }
   }
 
-  $query = doquery("SELECT `blitz_name`, `blitz_password` FROM {{blitz_registrations}} ORDER BY `id`;");
+  $query = doquery("SELECT blitz_name, blitz_password FROM {{blitz_registrations}} ORDER BY `id`;");
   while($row = mysql_fetch_assoc($query)) {
     $blitz_generated[] = "{$row['blitz_name']},{$row['blitz_password']}";
+  }
+
+  if($config->game_mode == GAME_BLITZ) {
+    $blitz_result = array($config->db_loadItem('var_stat_update'));
+    $query = doquery("SELECT username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
+    while($row = mysql_fetch_assoc($query)) {
+      $blitz_result[] = "{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
+    }
   }
 }
 
@@ -110,12 +127,15 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 $template = gettemplate('blitz_register', true);
 
 $player_registered = false;
-$query = doquery("SELECT u.*, br.blitz_name, br.blitz_password FROM {{blitz_registrations}} AS br JOIN {{users}} AS u ON u.id = br.user_id;");
+$query = doquery("SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points FROM {{blitz_registrations}} AS br JOIN {{users}} AS u ON u.id = br.user_id order by `blitz_place`, `timestamp`;");
 while($row = mysql_fetch_assoc($query)) {
   $template->assign_block_vars('registrations', array(
     'ID' => $row['id'],
     'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => 'true')),
     'BLITZ_NAME' => $row['blitz_name'],
+    // 'BLITZ_STATUS' => $row['blitz_status'],
+    'BLITZ_PLACE' => $row['blitz_place'],
+    'BLITZ_POINTS' => $row['blitz_points'],
   ));
   if($row['id'] == $user['id']) {
     $player_registered = $row;
@@ -129,6 +149,7 @@ $template->assign_vars(array(
   'REGISTRATION_DISCLOSURE_NAMES' => $config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
   'PLAYER_REGISTERED' => !empty($player_registered),
   'BLITZ_GENERATED' => implode(';', $blitz_generated),
+  'BLITZ_RESULT' => implode(';', $blitz_result),
   'BLITZ_NAME' => $player_registered['blitz_name'],
   'BLITZ_PASSWORD' => $player_registered['blitz_password'],
 ));

@@ -3,24 +3,36 @@
 <br />
 <table>
   <tr>
-    <th class="c_l">{L_sys_player}</th>
     <!-- IF REGISTRATION_DISCLOSURE_NAMES -->
+    <th class="c_l">
+      {Место}
+    </th>
+    <th class="c_l">
+      {Очки}
+    </th>
     <th class="c_l">
       {L_sys_blitz_registration_player_blitz_name}
     </th>
     <!-- ENDIF -->
+    <th class="c_l">{L_sys_player}</th>
   </tr>
 
   <!-- BEGIN registrations -->
   <tr>
-    <td class="c_l">
-      {registrations.NAME}
-    </td>
     <!-- IF REGISTRATION_DISCLOSURE_NAMES -->
+    <td class="c_l">
+      {registrations.BLITZ_PLACE}
+    </td>
+    <td class="c_l">
+      {registrations.BLITZ_POINTS}
+    </td>
     <td class="c_l">
       {registrations.BLITZ_NAME}
     </td>
     <!-- ENDIF -->
+    <td class="c_l">
+      {registrations.NAME}
+    </td>
   </tr>
   <!-- BEGINELSE -->
   <tr>
@@ -63,6 +75,12 @@
   <form action="" method="post">
     <textarea rows="" cols="" name="generated_string"></textarea>
     <input type="submit" name="import_generated" value="{L_sys_blitz_registration_player_import_generated}" />
+  </form>
+  <br />
+  {Результат раунда}
+  <form action="" method="post">
+    <textarea rows="" cols="" name="blitz_result_string">{BLITZ_RESULT}</textarea>
+    <!--<input type="submit" name="import_result" value="{Импортировать результаты}" />-->
   </form>
 <!-- ENDIF -->
 
