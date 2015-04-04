@@ -1380,7 +1380,17 @@ switch($new_version) {
         "ADD COLUMN `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
         "ADD COLUMN `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0",
         "ADD COLUMN `blitz_online` INT(11) UNSIGNED NOT NULL DEFAULT 0",
+        "ADD COLUMN `blitz_player_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
       ), empty($update_tables['blitz_registrations']['server_id']));
+      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
+      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+    }
+
+    // TODO - Убрать после установки на свои
+    if(empty($update_tables['blitz_registrations']['blitz_player_id'])) {
+      upd_alter_table('blitz_registrations', array(
+        "ADD COLUMN `blitz_player_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
+      ), empty($update_tables['blitz_registrations']['blitz_player_id']));
       // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
       // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
     }

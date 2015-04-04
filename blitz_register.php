@@ -109,10 +109,11 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
         $blitz_result_data[0] = mysql_real_escape_string($blitz_result_data[0]);
         doquery(
           "UPDATE `{{blitz_registrations}}` SET
-            `blitz_online` = '{$blitz_result_data[1]}',
-            `blitz_place` = '{$blitz_result_data[2]}',
-            `blitz_points` = '{$blitz_result_data[3]}'
-          WHERE `blitz_name` = '{$blitz_result_data[0]}';");
+            `blitz_player_id` = '{$blitz_result_data[0]}',
+            `blitz_online` = '{$blitz_result_data[2]}',
+            `blitz_place` = '{$blitz_result_data[3]}',
+            `blitz_points` = '{$blitz_result_data[4]}'
+          WHERE `blitz_name` = '{$blitz_result_data[1]}';");
       }
     }
   }
@@ -124,9 +125,9 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 
   if($config->game_mode == GAME_BLITZ) {
     $blitz_result = array($config->db_loadItem('var_stat_update'));
-    $query = doquery("SELECT username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
+    $query = doquery("SELECT id, username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
     while($row = mysql_fetch_assoc($query)) {
-      $blitz_result[] = "{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
+      $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
     }
   }
 }
