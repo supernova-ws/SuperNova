@@ -13,6 +13,9 @@
     <th class="c_l">
       {L_sys_blitz_registration_player_blitz_name}
     </th>
+    <th class="c_l">
+      {Награда ТМ}
+    </th>
     <!-- ENDIF -->
     <th class="c_l">{L_sys_player}</th>
   </tr>
@@ -28,6 +31,9 @@
     </td>
     <td class="c_l">
       {registrations.BLITZ_NAME}
+    </td>
+    <td class="c_l">
+      {registrations.BLITZ_REWARD_DARK_MATTER}
     </td>
     <!-- ENDIF -->
     <td class="c_l">
@@ -65,23 +71,45 @@
   <!-- ENDIF -->
 <!-- ENDIF -->
 
+
 <!-- IF USER_AUTHLEVEL >= 3 -->
-  <br />
-  <textarea rows="" cols="">{BLITZ_GENERATED}</textarea>
-  <form action="" method="post">
-    <input type="submit" name="generate" value="{L_sys_blitz_registration_player_generate}" />
-  </form>
-  <br />
-  <form action="" method="post">
-    <textarea rows="" cols="" name="generated_string"></textarea>
-    <input type="submit" name="import_generated" value="{L_sys_blitz_registration_player_import_generated}" />
-  </form>
-  <br />
-  {Результат раунда}
-  <form action="" method="post">
-    <textarea rows="" cols="" name="blitz_result_string">{BLITZ_RESULT}</textarea>
-    <input type="submit" name="import_result" value="{Импортировать результаты}" />
-  </form>
+<div class="blitz_admin">
+  <!-- IF GAME_BLITZ -->
+  <div>
+    <form action="" method="post">
+      <textarea rows="" cols="" name="generated_string"></textarea>
+      <input type="submit" name="import_generated" value="{L_sys_blitz_registration_player_import_generated}" />
+    </form>
+  </div>
+  <!-- ELSE -->
+  <div>
+    <textarea rows="" cols="">{BLITZ_GENERATED}</textarea>
+    <form action="" method="post">
+      <input type="submit" name="generate" value="{L_sys_blitz_registration_player_generate}" />
+    </form>
+  </div>
+  <!-- ENDIF -->
+
+  <div>
+    {Результат раунда}
+    <form action="" method="post">
+      <textarea rows="" cols="" name="blitz_result_string">{BLITZ_RESULT}</textarea>
+      <!-- IF ! GAME_BLITZ -->
+      <input type="submit" name="import_result" value="{Импортировать результаты}" />
+      <!-- ENDIF -->
+    </form>
+  </div>
+
+  <!-- IF ! GAME_BLITZ -->
+  <div>
+    <form action="" method="post">
+      {Призовой фонд} <input type="text" name="blitz_prize_dark_matter" value="{BLITZ_PRIZE_DARK_MATTER}" /><br />
+      {Количество призеров} <input type="text" name="blitz_prize_places" value="{BLITZ_PRIZE_PLACES}" /><br />
+      <input type="submit" name="prize_calculate" value="{Начислить призы и медали}" />
+    </form>
+  </div>
+  <!-- ENDIF -->
+</div>
 <!-- ENDIF -->
 
 <!-- INCLUDE page_hint -->

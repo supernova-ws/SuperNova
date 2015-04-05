@@ -575,3 +575,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   top: 0;
 }
 */
+
+.blitz_admin > div {
+  margin-top: 20px;
+}

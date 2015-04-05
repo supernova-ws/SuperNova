@@ -7,15 +7,12 @@
  *   [!] Full rewrote
 */
 
-function stat_tpl_assign(&$template, $selected, $array_name, $array, $sn_group_stat_common)
-{
+function stat_tpl_assign(&$template, $selected, $array_name, $array, $sn_group_stat_common) {
   global $who, $lang;
 
   // $sn_group_stat_common = sn_get_groups('STAT_COMMON');
-  foreach($array as $key => $value)
-  {
-    if($array_name == 'type' && $who == 2 && !in_array($key, $sn_group_stat_common)) // $key > 6 &&
-    {
+  foreach($array as $key => $value) {
+    if($array_name == 'type' && $who == 2 && !in_array($key, $sn_group_stat_common)) {
       continue;
     }
 
@@ -42,6 +39,7 @@ $type = $who != 1 && !in_array($type, $sn_group_stat_common) ? 1 : $type;
 $range = sys_get_param_int('range', 1);
 
 $template = gettemplate('stat_statistics', true);
+
 stat_tpl_assign($template, $who, 'subject', array(
   1 => array('header' => $lang['stat_player']),
   2 => array('header' => $lang['stat_allys']),
@@ -104,8 +102,7 @@ $record_count = $who == 1 ? db_user_count() : db_ally_count();
 
 $page_count = floor($record_count / 100);
 $pages = array();
-for($i = 0; $i <= $page_count; $i++)
-{
+for($i = 0; $i <= $page_count; $i++) {
   $first_element = $i * 100 + 1;
   $last_element = $first_element + 99;
   $pages[$first_element] = array(
@@ -119,8 +116,7 @@ stat_tpl_assign($template, $range, 'range', $pages, $sn_group_stat_common);
 $is_common_stat = in_array($type, $sn_group_stat_common);
 $start = floor($range / 100 % 100) * 100;
 $query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start);
-while ($row = mysql_fetch_assoc($query))
-{
+while ($row = mysql_fetch_assoc($query)) {
   $row_stat = array(
       'ID' => $row['id'],
       'RANK'        => $row['rank'],
@@ -128,16 +124,13 @@ while ($row = mysql_fetch_assoc($query))
       'POINTS' => pretty_number($row['points']),
   );
 
-  if($who == 1)
-  {
+  if($who == 1) {
     $row_stat['BIRTHDAY'] = date(FMT_DATE, $row['nearest_birthday']);
     $row_stat['BIRTHDAY_TODAY'] = $row_stat['BIRTHDAY'] == date(FMT_DATE, $time_now);
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
     $row_stat['NAME'] = player_nick_render_to_html($row, array('icons' => true));
-  }
-  else
-  {
+  } else {
     $row_stat['MEMBERS'] = $row['ally_members'];
     $row_stat['POINTS_PER_MEMBER'] = pretty_number(floor($row['points'] / $row['ally_members']));
     $row_stat['NAME'] = $row['name'];

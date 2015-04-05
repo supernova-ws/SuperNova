@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b11.8
+* @version 39b12.3
 *
 */
 
@@ -1014,7 +1014,7 @@ $a_lang_array = (array(
 
   'sys_date' => 'Date',
 
-  'sys_blitz_global_button' => 'Регистрация для игры на Блиц-сервере',
+  'sys_blitz_global_button' => 'Блиц-сервер: информация и регистрация',
   'sys_blitz_page_disabled' => 'В режиме Блиц-сервера эта страница недоступна',
   'sys_blitz_registration_disabled' => 'Регистрация на игру в Блиц-сервер отключена',
   'sys_blitz_registration_no_users' => 'Нет зарегестрированных игроков',
@@ -1051,5 +1051,7 @@ $a_lang_array = (array(
 
   'sys_sort' => 'Сортировка',
   'sys_sort_inverse' => 'В порядке убывания',
+
+  'sys_blitz_reward_log_message' => 'Блиц-сервер %1$d призовое место блиц-имя "%2$s"',
 
 ));

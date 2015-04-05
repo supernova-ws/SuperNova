@@ -38,6 +38,10 @@ if($config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN) {
 
 $blitz_generated = array();
 $blitz_result = array();
+$blitz_prize_players_active = 0;
+$blitz_players = 0;
+$blitz_prize_dark_matter = 0;
+$blitz_prize_places = 0;
 if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
   if(sys_get_param_str('generate')) {
     $next_id = 0;
@@ -97,7 +101,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     doquery('UPDATE {{users}} SET dark_matter = 10000, dark_matter_total = 10000;');
 
     $config->db_saveItem('users_amount', $config->users_amount + $new_players);
-    pdump($imported_string);
+    // pdump($imported_string);
     // generated_string
   } elseif(sys_get_param_str('import_result') && ($blitz_result_string = sys_get_param_str('blitz_result_string'))) {
     $blitz_result = explode(';', $blitz_result_string);
@@ -105,8 +109,8 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     unset($blitz_result[0]);
     foreach($blitz_result as $blitz_result_data) {
       $blitz_result_data = explode(',', $blitz_result_data);
-      if(count($blitz_result_data) == 4) {
-        $blitz_result_data[0] = mysql_real_escape_string($blitz_result_data[0]);
+      if(count($blitz_result_data) == 5) {
+        $blitz_result_data[1] = mysql_real_escape_string($blitz_result_data[1]);
         doquery(
           "UPDATE `{{blitz_registrations}}` SET
             `blitz_player_id` = '{$blitz_result_data[0]}',
@@ -116,11 +120,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
           WHERE `blitz_name` = '{$blitz_result_data[1]}';");
       }
     }
-  }
-
-  $query = doquery("SELECT blitz_name, blitz_password FROM {{blitz_registrations}} ORDER BY `id`;");
-  while($row = mysql_fetch_assoc($query)) {
-    $blitz_generated[] = "{$row['blitz_name']},{$row['blitz_password']}";
+    $blitz_result = array();
   }
 
   if($config->game_mode == GAME_BLITZ) {
@@ -129,6 +129,52 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     while($row = mysql_fetch_assoc($query)) {
       $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
     }
+  } else {
+    $query = doquery("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} ORDER BY `id`;");
+    while($row = mysql_fetch_assoc($query)) {
+      $blitz_generated[] = "{$row['blitz_name']},{$row['blitz_password']}";
+      $row['blitz_online'] ? $blitz_prize_players_active++ : false;
+      $blitz_players++;
+    }
+    $blitz_prize_dark_matter = $blitz_prize_players_active * 20000;
+    $blitz_prize_places = ceil($blitz_prize_players_active / 5);
+    /*
+    'Игрок10'
+    'Игрок14'
+    'Игрок23'
+    'Игрок32'
+    'Игрок40'
+    */
+
+    if(sys_get_param_str('prize_calculate') && $blitz_prize_players_active && ($blitz_prize_dark_matter_actual = sys_get_param_int('blitz_prize_dark_matter'))) {
+      // $blitz_prize_dark_matter_actual = sys_get_param_int('blitz_prize_dark_matter');
+      $blitz_prize_places_actual = sys_get_param_int('blitz_prize_places');
+      sn_db_transaction_start();
+      $query = doquery("SELECT * FROM {{blitz_registrations}} ORDER BY `blitz_place` FOR UPDATE;");
+      while($row = mysql_fetch_assoc($query)) {
+        if(!$row['blitz_place']) {
+          continue;
+        }
+
+        $blitz_prize_dark_matter_actual = round($blitz_prize_dark_matter_actual / 2);
+        $blitz_prize_places_actual--;
+
+        $reward = $blitz_prize_dark_matter_actual - $row['blitz_reward_dark_matter'];
+pdump("{{$row['id']}} {$row['blitz_name']}, Place {$row['blitz_place']}, Prize places {$blitz_prize_places_actual}, Prize {$reward}",$row['id']);
+        if($reward) {
+          rpg_points_change($row['user_id'], RPG_BLITZ, $reward, sprintf(
+            $lang['sys_blitz_reward_log_message'], $row['blitz_place'], $row['blitz_name']
+          ));
+          doquery("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']};");
+        }
+
+        if(!$blitz_prize_places_actual || $blitz_prize_dark_matter_actual < 1000) {
+          break;
+        }
+      }
+      sn_db_transaction_commit();
+    }
+
   }
 }
 
@@ -136,15 +182,16 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 $template = gettemplate('blitz_register', true);
 
 $player_registered = false;
-$query = doquery("SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points FROM {{blitz_registrations}} AS br JOIN {{users}} AS u ON u.id = br.user_id order by `blitz_place`, `timestamp`;");
+$query = doquery("SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points, br.blitz_reward_dark_matter FROM {{blitz_registrations}} AS br JOIN {{users}} AS u ON u.id = br.user_id order by `blitz_place`, `timestamp`;");
 while($row = mysql_fetch_assoc($query)) {
   $template->assign_block_vars('registrations', array(
     'ID' => $row['id'],
-    'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => 'true')),
+    'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => true, 'ally' => true)),
     'BLITZ_NAME' => $row['blitz_name'],
     // 'BLITZ_STATUS' => $row['blitz_status'],
     'BLITZ_PLACE' => $row['blitz_place'],
     'BLITZ_POINTS' => $row['blitz_points'],
+    'BLITZ_REWARD_DARK_MATTER' => $row['blitz_reward_dark_matter'],
   ));
   if($row['id'] == $user['id']) {
     $player_registered = $row;
@@ -152,15 +199,22 @@ while($row = mysql_fetch_assoc($query)) {
 }
 
 $template->assign_vars(array(
+  'GAME_BLITZ' => $config->game_mode == GAME_BLITZ,
+
   'REGISTRATION_OPEN' => $config->game_blitz_register == BLITZ_REGISTER_OPEN,
   'REGISTRATION_CLOSED' => $config->game_blitz_register == BLITZ_REGISTER_CLOSED,
   'REGISTRATION_SHOW_LOGIN' => $config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
   'REGISTRATION_DISCLOSURE_NAMES' => $config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
+
   'PLAYER_REGISTERED' => !empty($player_registered),
-  'BLITZ_GENERATED' => implode(';', $blitz_generated),
-  'BLITZ_RESULT' => implode(';', $blitz_result),
   'BLITZ_NAME' => $player_registered['blitz_name'],
   'BLITZ_PASSWORD' => $player_registered['blitz_password'],
+
+  'BLITZ_GENERATED' => implode(';', $blitz_generated),
+  'BLITZ_RESULT' => implode(';', $blitz_result),
+  'BLITZ_PRIZE_PLAYERS_ACTIVE' => $blitz_prize_players_active,
+  'BLITZ_PRIZE_DARK_MATTER' => $blitz_prize_dark_matter,
+  'BLITZ_PRIZE_PLACES' => $blitz_prize_places,
 ));
 
 display($template, $lang['sys_blitz_global_button']);

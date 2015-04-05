@@ -131,12 +131,10 @@ function db_unit_records_plain($unit_id, $user_skip_list_unit)
     , true);
 }
 
-function db_stat_list_statistic($who, $is_common_stat, $Rank, $start)
-{
-  if($who == 1)
-  {
-    if($is_common_stat)
-    {
+function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = false) {
+
+  if($who == 1) {
+    if($is_common_stat) {
       $query_str =
         "SELECT
       @rownum:=@rownum+1 rownum, subject.id, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.username as name, subject.*, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
@@ -151,9 +149,7 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start)
       sp.`{$Rank}_rank`, subject.id
     LIMIT
       ". $start .",100;";
-    }
-    else
-    {
+    } else {
       $query_str =
         "SELECT
       @rownum:=@rownum+1 AS rank, subject.id, @rownum as rank_old, subject.{$Rank} as points, subject.username as name, subject.*, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
@@ -167,9 +163,7 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start)
     LIMIT
       ". $start .",100;";
     }
-  }
-  else
-  {
+  } else {
     $query_str =
       "SELECT
     @rownum:=@rownum+1 as rownum, subject.id, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.ally_name as name, subject.ally_tag, subject.ally_members
