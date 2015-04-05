@@ -138,15 +138,17 @@ while ($row = mysql_fetch_assoc($query)) {
     // $row_stat['BIRTHDAY_TODAY'] = $row_stat['BIRTHDAY'] == date(FMT_DATE, $time_now);
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
-    $row_stat['NAME'] = player_nick_render_to_html(array(
-      'id' => $row['id'],
-      // TODO - Добавлять реальное имя игрока на Блице для закрытого раунда
-      'username' => $row['name'],
-      'gender' => isset($row['gender']) ? $row['gender'] : GENDER_UNKNOWN,
-      // 'gender',
-      // 'race',
-      // 'ally_tag',
-    ), array('icons' => empty($source), 'color' => empty($source)));
+    empty($row['username']) ? $row['username'] = $row['name'] : false;
+    $row_stat['NAME'] = player_nick_render_to_html($row, array('icons' => empty($source), 'color' => empty($source)));
+//    $row_stat['NAME'] = player_nick_render_to_html(array(
+//      'id' => $row['id'],
+//      // TODO - Добавлять реальное имя игрока на Блице для закрытого раунда
+//      'username' => $row['name'],
+//      'gender' => isset($row['gender']) ? $row['gender'] : GENDER_UNKNOWN,
+//      // 'gender',
+//      // 'race',
+//      // 'ally_tag',
+//    ), array('icons' => empty($source), 'color' => empty($source)));
   } else {
     $row_stat['MEMBERS'] = $row['ally_members'];
     $row_stat['POINTS_PER_MEMBER'] = pretty_number(floor($row['points'] / $row['ally_members']));
