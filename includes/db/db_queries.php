@@ -132,46 +132,68 @@ function db_unit_records_plain($unit_id, $user_skip_list_unit)
 }
 
 function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = false) {
+// pdump($source);
+  if(!$source) {
+    $source = array(
+      'statpoints' => 'statpoints',
+      'users' => 'users',
+      'id' => 'id',
+      'username' => 'username',
 
+      'alliance' => 'alliance',
+
+    );
+  } else {
+    $source = array(
+      'statpoints' => 'blitz_statpoints',
+      'users' => 'blitz_registrations',
+      'id' => 'blitz_player_id',
+      'username' => 'blitz_name',
+
+      'alliance' => 'blitz_alliance', // TODO
+    );
+  }
+// pdump($source);
   if($who == 1) {
-    if($is_common_stat) {
+    if($is_common_stat) { // , UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
       $query_str =
         "SELECT
-      @rownum:=@rownum+1 rownum, subject.id, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.username as name, subject.*, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
+      @rownum:=@rownum+1 rownum, subject.{$source['id']} as `id`, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.{$source['username']} as `name`, subject.*
     FROM
       (SELECT @rownum:={$start}) r,
-      {{statpoints}} as sp
-      LEFT JOIN {{users}} AS subject ON subject.id = sp.id_owner
-      LEFT JOIN {{statpoints}} AS sp_old ON sp_old.id_owner = subject.id AND sp_old.`stat_type` = 1 AND sp_old.`stat_code` = 2
+      {{{$source['statpoints']}}} as sp
+      LEFT JOIN {{{$source['users']}}} AS subject ON subject.{$source['id']} = sp.id_owner
+      LEFT JOIN {{{$source['statpoints']}}} AS sp_old ON sp_old.id_owner = subject.{$source['id']} AND sp_old.`stat_type` = 1 AND sp_old.`stat_code` = 2
     WHERE
       sp.`stat_type` = 1 AND sp.`stat_code` = 1
     ORDER BY
-      sp.`{$Rank}_rank`, subject.id
+      sp.`{$Rank}_rank`, subject.{$source['id']}
     LIMIT
       ". $start .",100;";
-    } else {
+    } else { // , UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
       $query_str =
         "SELECT
-      @rownum:=@rownum+1 AS rank, subject.id, @rownum as rank_old, subject.{$Rank} as points, subject.username as name, subject.*, UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
+      @rownum:=@rownum+1 AS rank, subject.{$source['id']} as `id`, @rownum as rank_old, subject.{$Rank} as points, subject.{$source['username']} as name, subject.*
     FROM
       (SELECT @rownum:={$start}) r,
-      {{users}} AS subject
+      {{{$source['users']}}} AS subject
     WHERE
       subject.user_as_ally is null
     ORDER BY
-      subject.{$Rank} DESC, subject.id
+      subject.{$Rank} DESC, subject.{$source['id']}
     LIMIT
       ". $start .",100;";
     }
   } else {
+    // TODO
     $query_str =
       "SELECT
-    @rownum:=@rownum+1 as rownum, subject.id, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.ally_name as name, subject.ally_tag, subject.ally_members
+    @rownum:=@rownum+1 as rownum, subject.id as `id`, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.ally_name as name, subject.ally_tag, subject.ally_members
   FROM
     (SELECT @rownum:={$start}) r,
-    {{statpoints}} AS sp
-    LEFT JOIN {{alliance}} AS subject ON subject.id = sp.id_ally
-    LEFT JOIN {{statpoints}} AS sp_old ON sp_old.id_ally = subject.id AND sp_old.`stat_type` = 2 AND sp_old.`stat_code` = 2
+    {{{$source['statpoints']}}} AS sp
+    LEFT JOIN {{{$source['alliance']}}} AS subject ON subject.id = sp.id_ally
+    LEFT JOIN {{{$source['statpoints']}}} AS sp_old ON sp_old.id_ally = subject.id AND sp_old.`stat_type` = 2 AND sp_old.`stat_code` = 2
   WHERE
     sp.`stat_type` = 2 AND sp.`stat_code` = 1
   ORDER BY

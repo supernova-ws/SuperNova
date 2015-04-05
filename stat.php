@@ -37,13 +37,17 @@ $who = sys_get_param_int('who', 1);
 $type = sys_get_param_int('type');
 $type = $who != 1 && !in_array($type, $sn_group_stat_common) ? 1 : $type;
 $range = sys_get_param_int('range', 1);
+$source = sys_get_param_str('source');
 
 $template = gettemplate('stat_statistics', true);
 
-stat_tpl_assign($template, $who, 'subject', array(
+$subject_list = array(
   1 => array('header' => $lang['stat_player']),
-  2 => array('header' => $lang['stat_allys']),
-), $sn_group_stat_common);
+);
+if(!$source) {
+  $subject_list[2] = array('header' => $lang['stat_allys']);
+}
+stat_tpl_assign($template, $who, 'subject', $subject_list, $sn_group_stat_common);
 
 $stat_types = array(
    STAT_TOTAL => array(
@@ -98,7 +102,14 @@ stat_tpl_assign($template, $type, 'type', $stat_types, $sn_group_stat_common);
 
 $Rank = $stat_types[$type]['type'];
 
-$record_count = $who == 1 ? db_user_count() : db_ally_count();
+$is_common_stat = in_array($type, $sn_group_stat_common);
+$start = floor($range / 100 % 100) * 100;
+$query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source);
+
+// TODO - Не работает, если игроков на Блице > 100
+$record_count = $source ? mysql_num_rows($query) : ($who == 1 ? db_user_count() : db_ally_count());
+// pdump($record_count, '$record_count');
+// $record_count = mysql_num_rows($query);
 
 $page_count = floor($record_count / 100);
 $pages = array();
@@ -113,23 +124,29 @@ for($i = 0; $i <= $page_count; $i++) {
 $range = $range > $record_count ? $record_count : $range;
 stat_tpl_assign($template, $range, 'range', $pages, $sn_group_stat_common);
 
-$is_common_stat = in_array($type, $sn_group_stat_common);
-$start = floor($range / 100 % 100) * 100;
-$query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start);
 while ($row = mysql_fetch_assoc($query)) {
   $row_stat = array(
-      'ID' => $row['id'],
-      'RANK'        => $row['rank'],
-      'RANK_CHANGE' => $row['rank_old'] ? $row['rank_old'] - $row['rank'] : 0,
-      'POINTS' => pretty_number($row['points']),
+    'ID' => $row['id'],
+    'RANK'        => $row['rank'],
+    'RANK_CHANGE' => $row['rank_old'] ? $row['rank_old'] - $row['rank'] : 0,
+    'POINTS' => pretty_number($row['points']),
   );
+//pdump($row);
 
   if($who == 1) {
-    $row_stat['BIRTHDAY'] = date(FMT_DATE, $row['nearest_birthday']);
-    $row_stat['BIRTHDAY_TODAY'] = $row_stat['BIRTHDAY'] == date(FMT_DATE, $time_now);
+    // $row_stat['BIRTHDAY'] = date(FMT_DATE, $row['nearest_birthday']);
+    // $row_stat['BIRTHDAY_TODAY'] = $row_stat['BIRTHDAY'] == date(FMT_DATE, $time_now);
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
-    $row_stat['NAME'] = player_nick_render_to_html($row, array('icons' => true));
+    $row_stat['NAME'] = player_nick_render_to_html(array(
+      'id' => $row['id'],
+      // TODO - Добавлять реальное имя игрока на Блице для закрытого раунда
+      'username' => $row['name'],
+      'gender' => isset($row['gender']) ? $row['gender'] : GENDER_UNKNOWN,
+      // 'gender',
+      // 'race',
+      // 'ally_tag',
+    ), array('icons' => empty($source), 'color' => empty($source)));
   } else {
     $row_stat['MEMBERS'] = $row['ally_members'];
     $row_stat['POINTS_PER_MEMBER'] = pretty_number(floor($row['points'] / $row['ally_members']));
@@ -147,8 +164,10 @@ $template->assign_vars(array(
   'SUBJECT' => $who,
   'TYPE' => $type,
   'USER_ALLY' => $user['ally_id'],
-  'USER_ID' => $user['id'],
-  'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link,
+  // TODO - Для блица - вытаскивать blitz_player_id и подсвечивать пользователя на блице
+  'USER_ID' => $source ? 0 : $user['id'],
+  'SOURCE' => $source,
+  'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link || $source,
 ));
 
 display($template, $lang['stat_header'], !empty($user), '', false, !empty($user));

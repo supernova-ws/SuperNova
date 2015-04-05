@@ -1341,37 +1341,24 @@ switch($new_version) {
 
     upd_create_table('blitz_registrations', " (
       `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`,
+      `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`,
       `user_id` bigint(20) unsigned DEFAULT NULL,
       `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      `blitz_name` varchar(32) CHARACTER SET utf8 NOT NULL,
-      `blitz_password` varchar(8) COLLATE utf8_unicode_ci NOT NULL,
+      `blitz_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
+      `blitz_password` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+      `blitz_player_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+      `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+      `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+      `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0,
+      `blitz_online` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+      `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
       PRIMARY KEY (`id`),
       UNIQUE KEY `I_user_id` (`user_id`) USING BTREE,
       CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
-/*
-    if(empty($update_tables['blitz_registrations']['server_id'])) {
-      upd_alter_table('blitz_registrations', array(
-        "ADD COLUMN `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`",
-        "ADD COLUMN `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`",
-        "ADD COLUMN `result_place` TINYINT UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `result_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
-      ), empty($update_tables['blitz_registrations']['server_id']));
-      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
-      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
-    }
-    if(empty($update_tables['blitz_registrations']['blitz_points'])) {
-      upd_alter_table('blitz_registrations', array(
-        "DROP COLUMN `result_place`",
-        "DROP COLUMN `result_status`",
-        "ADD COLUMN `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0",
-      ), empty($update_tables['blitz_registrations']['blitz_points']));
-      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
-      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
-    }
-*/
+
+    // TODO - Убрать перед релизом
     if(empty($update_tables['blitz_registrations']['server_id'])) {
       upd_alter_table('blitz_registrations', array(
         "ADD COLUMN `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`",
@@ -1392,6 +1379,54 @@ switch($new_version) {
       upd_alter_table('blitz_registrations', array(
         "ADD COLUMN `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
       ), empty($update_tables['blitz_registrations']['blitz_reward_dark_matter']));
+    }
+
+    if(empty($update_tables['blitz_statpoints'])) {
+      upd_create_table('blitz_statpoints', " (
+        `stat_date` int(11) NOT NULL DEFAULT '0',
+        `id_owner` bigint(20) unsigned DEFAULT NULL,
+        `id_ally` bigint(20) unsigned DEFAULT NULL,
+        `stat_type` tinyint(3) unsigned DEFAULT '0',
+        `stat_code` tinyint(3) unsigned NOT NULL DEFAULT '0',
+        `tech_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `tech_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `tech_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `tech_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `build_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `build_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `build_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `build_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `defs_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `defs_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `defs_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `defs_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `fleet_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `fleet_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `fleet_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `fleet_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `res_rank` int(11) unsigned DEFAULT '0' COMMENT 'Rank by resources',
+        `res_old_rank` int(11) unsigned DEFAULT '0' COMMENT 'Old rank by resources',
+        `res_points` decimal(65,0) unsigned DEFAULT '0' COMMENT 'Resource stat points',
+        `res_count` decimal(65,0) unsigned DEFAULT '0' COMMENT 'Resource count',
+        `total_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `total_old_rank` int(11) unsigned NOT NULL DEFAULT '0',
+        `total_points` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `total_count` decimal(65,0) unsigned NOT NULL DEFAULT '0',
+        `server_id` SMALLINT UNSIGNED DEFAULT 0,
+        `round_number` SMALLINT UNSIGNED DEFAULT 0
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
+      /*
+        KEY `TECH` (`tech_points`),
+        KEY `BUILDS` (`build_points`),
+        KEY `DEFS` (`defs_points`),
+        KEY `FLEET` (`fleet_points`),
+        KEY `TOTAL` (`total_points`),
+        KEY `i_stats_owner` (`id_owner`,`stat_type`,`stat_code`,`tech_rank`,`build_rank`,`defs_rank`,`fleet_rank`,`total_rank`),
+        KEY `I_stats_id_ally` (`id_ally`,`stat_type`,`stat_code`) USING BTREE,
+        KEY `I_stats_type_code` (`stat_type`,`stat_code`) USING BTREE,
+        CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `bl0_alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT `FK_stats_id_owner` FOREIGN KEY (`id_owner`) REFERENCES `bl0_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+       */
     }
 
     upd_create_table('survey', " (

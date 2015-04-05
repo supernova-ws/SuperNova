@@ -184,15 +184,23 @@ $template = gettemplate('blitz_register', true);
 $player_registered = false;
 $query = doquery("SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points, br.blitz_reward_dark_matter FROM {{blitz_registrations}} AS br JOIN {{users}} AS u ON u.id = br.user_id order by `blitz_place`, `timestamp`;");
 while($row = mysql_fetch_assoc($query)) {
-  $template->assign_block_vars('registrations', array(
-    'ID' => $row['id'],
+  $tpl_player_data = array(
     'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => true, 'ally' => true)),
-    'BLITZ_NAME' => $row['blitz_name'],
-    // 'BLITZ_STATUS' => $row['blitz_status'],
-    'BLITZ_PLACE' => $row['blitz_place'],
-    'BLITZ_POINTS' => $row['blitz_points'],
-    'BLITZ_REWARD_DARK_MATTER' => $row['blitz_reward_dark_matter'],
-  ));
+  );
+
+  if($config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES) {
+    // Вот так хитро, что бы не было не единого шанса попадания на страницу данных об игроках Блиц-сервера до закрытия раунда
+    $tpl_player_data = array_merge($tpl_player_data, array(
+      'ID' => $row['id'],
+      'BLITZ_NAME' => $row['blitz_name'],
+      // 'BLITZ_STATUS' => $row['blitz_status'],
+      'BLITZ_PLACE' => $row['blitz_place'],
+      'BLITZ_POINTS' => $row['blitz_points'],
+      'BLITZ_REWARD_DARK_MATTER' => $row['blitz_reward_dark_matter'],
+    ));
+  }
+
+  $template->assign_block_vars('registrations', $tpl_player_data);
   if($row['id'] == $user['id']) {
     $player_registered = $row;
   }

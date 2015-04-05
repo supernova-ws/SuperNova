@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b12.3#
+* @version #39b12.4#
 *
 */
 
@@ -1060,5 +1060,6 @@ $a_lang_array = (array(
   'sys_sort_inverse' => 'В порядке убывания',
 
   'sys_blitz_reward_log_message' => 'Блиц-сервер %1$d призовое место блиц-имя "%2$s"',
+  'sys_blitz_registration_view_stat' => 'Посмотреть статистику Блиц-сервера',
 
 ));

@@ -1,20 +1,27 @@
 <h1>{L_stat_header}</h1>
-<!-- IF REFRESH_DATE -->
-<h2>{L_stat_refresh_last}&nbsp;{REFRESH_DATE}</h2>
-<!-- ENDIF -->
-<!-- IF NEXT_DATE -->
-<h3>{L_stat_refresh_next}&nbsp;{NEXT_DATE}</h3>
+<!-- IF ! SOURCE -->
+  <!-- IF REFRESH_DATE -->
+  <h2>{L_stat_refresh_last}&nbsp;{REFRESH_DATE}</h2>
+  <!-- ENDIF -->
+  <!-- IF NEXT_DATE -->
+  <h3>{L_stat_refresh_next}&nbsp;{NEXT_DATE}</h3>
+  <!-- ENDIF -->
 <!-- ENDIF -->
 
 <!-- IF STATS_HIDE_PM_LINK && SUBJECT == 1 -->
-  <!-- DEFINE $HEADER_COLSPAN = '6' -->
+  <!-- IF SOURCE -->
+    <!-- DEFINE $HEADER_COLSPAN = '4' -->
+  <!-- ELSE -->
+    <!-- DEFINE $HEADER_COLSPAN = '6' -->
+  <!-- ENDIF -->
+
 <!-- ELSE -->
   <!-- DEFINE $HEADER_COLSPAN = '7' -->
 <!-- ENDIF -->
 
 <table width="519">
   <tr>
-    <th class="c_c" colspan="{$HEADER_COLSPAN}">
+    <th class="c_c" colspan="{$HEADER_COLSPAN}" nowrap>
       <form name="stat_form" method="get">
         {L_stat_show}
         <select name="type" onChange="document.stat_form.submit()">
@@ -34,6 +41,7 @@
           <option value="{range.ID}"<!-- IF range.SELECTED --> selected<!-- ENDIF -->>{range.HEADER}</option>
           <!-- END range -->
         </select>
+        <input type="hidden" name="source" value="{SOURCE}" />
       </form>
     </th>
   </tr>
@@ -44,11 +52,10 @@
 
     <!-- IF SUBJECT == 1 -->
       <th class ="c_c">{L_sys_player}</th>
+      <!-- IF ! SOURCE -->
       <th class ="c_c"><img src="{dpath}icons/menu_empire_emperor.png" border="0" alt="{L_stat_details}" title="{L_stat_details}" /></th>
-      <!-- IF ! STATS_HIDE_PM_LINK -->
-        <th class ="c_c"><img src="design/images/icon_mail.gif" border="0" alt="{L_stat_message_write}" title="{L_stat_message_write}" /></th>
-      <!-- ENDIF -->
       <th class ="c_c">{L_sys_alliance}</th>
+      <!-- ENDIF -->
     <!-- ELSE -->
       <th class ="c_c">{L_sys_alliance}</th>
       <th class ="c_c">{L_stat_members}</th>
@@ -56,6 +63,9 @@
     <!-- ENDIF -->
 
     <th class ="c_c">{L_stat_points}</th>
+    <!-- IF SUBJECT == 1 && ! STATS_HIDE_PM_LINK -->
+    <th class ="c_c"><img src="design/images/icon_mail.gif" border="0" alt="{L_stat_message_write}" title="{L_stat_message_write}" /></th>
+    <!-- ENDIF -->
   </tr>
 
   <!-- BEGIN stat -->
@@ -76,25 +86,28 @@
         <td class="c_l<!-- IF USER_ID == stat.ID --> same_player<!-- ENDIF -->" nowrap>
           {stat.NAME}
         </td>
+        <!-- IF ! SOURCE -->
         <td class ="c_c">
-          <a href="index.php?page=imperator&int_user_id={stat.ID}">
+          <a href="index.php?page=imperator&int_user_id={stat.ID}<!-- IF SOURCE -->&source={SOURCE}<!-- ENDIF -->">
             <img src="{dpath}icons/menu_empire_emperor.png" border="0" alt="{L_stat_details}" title="{L_stat_details}"  />
           </a>
         </td>
-        <!-- IF ! STATS_HIDE_PM_LINK -->
-        <td class="c_c">
-          <a href="messages.php?mode=write&id={stat.ID}">
-            <img src="design/images/icon_mail.gif" border="0" alt="{L_stat_message_write}" title="{L_stat_message_write}" />
-          </a>
-        </td>
-        <!-- ENDIF -->
         <td class="c_l" nowrap><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
+        <!-- ENDIF -->
       <!-- ELSE -->
         <td class="c_l"><a href="alliance.php?mode=ainfo&a={stat.ID}"><span class="<!-- IF USER_ALLY == stat.ID -->same_alliance<!-- ENDIF -->">{stat.NAME}</span></a></td>
         <td class="c_r">{stat.MEMBERS}</td>
         <td class="c_r">{stat.POINTS_PER_MEMBER}</td>
       <!-- ENDIF -->
       <td class="c_r">{stat.POINTS}</td>
+
+      <!-- IF SUBJECT == 1 && ! STATS_HIDE_PM_LINK -->
+      <td class="c_c">
+        <a href="messages.php?mode=write&id={stat.ID}">
+          <img src="design/images/icon_mail.gif" border="0" alt="{L_stat_message_write}" title="{L_stat_message_write}" />
+        </a>
+      </td>
+      <!-- ENDIF -->
     </tr>
   <!-- END stat -->
 
