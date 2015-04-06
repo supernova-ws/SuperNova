@@ -237,8 +237,6 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'TIME_NOW'                 => SN_TIME_NOW,
     'LOGIN_LOGOUT'             => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
     'GAME_MODE_CSS_PREFIX'     => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
-    'GAME_BLITZ_REGISTER'      => $config->game_blitz_register,
-    'GAME_BLITZ'               => $config->game_mode == GAME_BLITZ,
     //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
     'TIME_DIFF_MEASURE'        => intval(
       empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
@@ -474,6 +472,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'TIME_TEXT_LOCAL'          => sprintf($str_date_format, $time_local_parsed['year'], $lang['months'][$time_local_parsed['mon']], $time_local_parsed['mday'],
       $time_local_parsed['hours'], $time_local_parsed['minutes'], $time_local_parsed['seconds']
     ),
+
+    'GAME_BLITZ_REGISTER'      => $config->game_blitz_register,
+    'GAME_BLITZ'               => $config->game_mode == GAME_BLITZ,
 
     'USERS_ONLINE'         => $config->var_online_user_count,
     'USERS_TOTAL'          => $config->users_amount,
