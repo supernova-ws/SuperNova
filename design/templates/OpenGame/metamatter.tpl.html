@@ -1,3 +1,6 @@
+<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/metamatter.js?{C_var_db_update}"></script>
+
+
 <!-- IF ! $TABLE_WIDTH -->
   <!-- DEFINE $TABLE_WIDTH = '519px' -->
   <h2>{PAGE_HEADER}</h2>
@@ -8,11 +11,8 @@
 <script type="text/javascript">
   var LA_sys_show = "{LA_sys_show}";
   var LA_sys_hide = "{LA_sys_hide}";
-  var exchange_mm_default = parseInt("{C_payment_currency_exchange_mm_}");
-</script>
+  var exchange_mm_default = parseFloat("{PLAYER_CURRENCY_PRICE_PER_MM}");
 
-
-<script type="text/javascript">
   var mm_discounts = Array();
   <!-- BEGIN discount -->
   mm_discounts.push({sum: {discount.SUM}, discount: {discount.DISCOUNT_ONE}});
@@ -20,59 +20,62 @@
 </script>
 
 <script type="text/javascript">
-  jQuery(document)
-          .on('keyup change', "#metamatter", function(event, ui) {
-            value = (value = parseInt(jQuery(this).val())) ? value : 0;
-            jQuery(this).val(value);
-
-            current_discount = 1;
-            for(i in mm_discounts) {
-              if(value >= mm_discounts[i]['sum']) {
-                current_discount = mm_discounts[i]['discount'];
-              }
-            }
-            jQuery("#metamatter_total").html(sn_format_number(Math.floor(value * current_discount)));
-            if(current_discount > 1) {
-              jQuery("#metamatter_undiscounted").show().html(sn_format_number(value));
-              jQuery("#metamatter_bonus_percent").show().find('span').html(Math.round(current_discount * 100 - 100));
-            } else {
-              jQuery("#metamatter_undiscounted").hide();
-              jQuery("#metamatter_bonus_percent").hide();
-            }
-
-            jQuery("#metamatter_price").html(sn_format_number(Math.ceil(value / exchange_mm_default * 100) / 100, 2));
-          })
-          .on('focus', "#metamatter", function(event, ui) {
-            if(this.value == '0') this.value='';
-            this.select();
-          })
-          .on('blur', "#metamatter", function(event, ui) {
-            that = jQuery(this);
-            that.val(parseInt(that.val()) ? that.val() : 0);
-          })
-  ;
-
-  jQuery(document).on("click", ".payment_mm_amount", function(){
-    jQuery("#metamatter").val(jQuery(this).attr("value")).change();
-    jQuery("#payment_form").submit();
-  });
-
-  jQuery(document).on("click", '.payment_mm_method', function(){
-    jQuery("#payment_method").val(jQuery(this).attr("value"));
-    jQuery("#payment_type").val(jQuery(this).parent().attr("value"));
-    jQuery("#payment_form").submit();
-  });
-
-  jQuery(document).on("click", '.payment_mm_module', function(){
-    jQuery("#payment_module").val(jQuery(this).attr("value"));
-    jQuery("#payment_form").submit();
-  });
-
-  jQuery(document).ready(function() {
-    // Натягиваем скины на элементы ввода
-    // jQuery('.payment_mm_amount, .payment_mm_module').button().addClass('ui-textfield');
-    jQuery('.payment_mm_amount, .payment_mm_method:not(.payment_mm_method_nobutton), .payment_mm_module').button().addClass('ui-textfield');
-  });
+//  jQuery(document)
+//          .on('keyup change', "#metamatter", function(event, ui) {
+//            value = (value = parseInt(jQuery(this).val())) ? value : 0;
+//            jQuery(this).val(value);
+//
+//            current_discount = 1;
+//            for(i in mm_discounts) {
+//              if(value >= mm_discounts[i]['sum']) {
+//                current_discount = mm_discounts[i]['discount'];
+//              }
+//            }
+//            jQuery("#metamatter_total").html(sn_format_number(Math.floor(value * current_discount)));
+//            if(current_discount > 1) {
+//              jQuery("#metamatter_undiscounted").show().html(sn_format_number(value));
+//              jQuery("#metamatter_bonus_percent").show().find('span').html(Math.round(current_discount * 100 - 100));
+//            } else {
+//              jQuery("#metamatter_undiscounted").hide();
+//              jQuery("#metamatter_bonus_percent").hide();
+//            }
+//
+//            jQuery("#metamatter_price").html(sn_format_number(Math.ceil(value / exchange_mm_default * 100) / 100, 2));
+//          })
+//          .on('focus', "#metamatter", function(event, ui) {
+//            if(this.value == '0') this.value='';
+//            this.select();
+//          })
+//          .on('blur', "#metamatter", function(event, ui) {
+//            that = jQuery(this);
+//            that.val(parseInt(that.val()) ? that.val() : 0);
+//          })
+//          .on('change', '#player_currency',function(){
+//            sn_redirect('metamatter.php?player_currency=' + $(this).val());
+//          })
+//  ;
+//
+//  jQuery(document).on("click", ".payment_mm_amount", function(){
+//    jQuery("#metamatter").val(jQuery(this).attr("value")).change();
+//    jQuery("#payment_form").submit();
+//  });
+//
+//  jQuery(document).on("click", '.payment_mm_method', function(){
+//    jQuery("#payment_method").val(jQuery(this).attr("value"));
+//    jQuery("#payment_type").val(jQuery(this).parent().attr("value"));
+//    jQuery("#payment_form").submit();
+//  });
+//
+//  jQuery(document).on("click", '.payment_mm_module', function(){
+//    jQuery("#payment_module").val(jQuery(this).attr("value"));
+//    jQuery("#payment_form").submit();
+//  });
+//
+//  jQuery(document).ready(function() {
+//    // Натягиваем скины на элементы ввода
+//    // jQuery('.payment_mm_amount, .payment_mm_module').button().addClass('ui-textfield');
+//    jQuery('.payment_mm_amount, .payment_mm_method:not(.payment_mm_method_nobutton), .payment_mm_module').button().addClass('ui-textfield');
+//  });
 </script>
 
 <table width="{$TABLE_WIDTH}">
@@ -111,24 +114,27 @@
     </td>
   </tr>
 
+  <!-- IF .exchange || .discount -->
   <tr class="c_j">
     <th>
-      {L_pay_mm_bonus_header}
+      <table class="markup" width="100%">
+        <tr>
+          <th class="c_l">{L_pay_mm_bonus_header}</th>
+          <th class="c_r link_action" onclick="sn_show_hide(this, 'exchange_and_bonuses');">[ {L_sys_show} ]</th>
+        </tr>
+      </table>
     </th>
   </tr>
-  <tr class="c_j">
+  <tr class="c_j" id="exchange_and_bonuses" style="display: none;">
     <td>
-      {L_pay_mm_buy_text_cost} {PAYMENT_CURRENCY_EXCHANGE_DEFAULT} {L_sys_metamatter_sh}
-      {L_pay_mm_buy_text_unit} <span class="notice">1 {C_payment_currency_default} ({PAYMENT_CURRENCY_DEFAULT_TEXT})</span><br />
-
       <!-- IF .exchange -->
-      <br />
       <table class="markup" width="100%">
         <tr>
           <td>{L_pay_currency_exchange_title}</td>
-          <td class="c_r"><span class="link_action" onclick="sn_show_hide(this, 'currency_exchange');">[ {L_sys_show} ]</span></td>
+          <!--<td class="c_r"><span class="link_action" onclick="sn_show_hide(this, 'currency_exchange');">[ {L_sys_show} ]</span></td>-->
         </tr>
-        <tr id="currency_exchange" style="display: none;">
+        <tr id="currency_exchange">
+        <!--<tr id="currency_exchange" style="display: none;">-->
           <td colspan="2" class="c_j">
             <table width="100%">
               <tr class="c_c">
@@ -153,24 +159,27 @@
           </td>
         </tr>
       </table>
+      <br />
       <!-- ENDIF -->
 
       <!-- IF .discount -->
-      <br />
       <table class="markup" width="100%">
         <tr>
           <td>{L_pay_mm_bonus}</td>
-          <td class="c_r"><span class="link_action" onclick="sn_show_hide(this, 'bonuses');">[ {L_sys_show} ]</span></td>
+          <!--<td class="c_r"><span class="link_action" onclick="sn_show_hide(this, 'bonuses');">[ {L_sys_show} ]</span></td>-->
         </tr>
       </table>
-      <ul id="bonuses" style="display: none;">
+      <!--<ul id="bonuses" style="display: none;">-->
+      <ul id="bonuses">
         <!-- BEGIN discount -->
         <li>{discount.TEXT}</li>
         <!-- END discount -->
       </ul>
+      <br />
       <!-- ENDIF -->
     </td>
   </tr>
+  <!-- ENDIF -->
 
   <tr class="c_j">
     <th>
@@ -189,6 +198,14 @@
         <!-- ENDIF -->
 
         <!-- IF ! UNIT_AMOUNT -->
+          {L_pay_mm_buy_text_cost} {PAYMENT_CURRENCY_EXCHANGE_DEFAULT} {L_sys_metamatter_sh}
+          {L_pay_mm_buy_text_unit}
+          <select name="player_currency" id="player_currency" class="notice">
+            <!-- BEGIN exchange -->
+            <option value="{exchange.SYMBOL}"<!-- IF PLAYER_CURRENCY == exchange.SYMBOL --> selected<!-- ENDIF -->>{exchange.LOT_PRICE} {exchange.SYMBOL} ({exchange.TEXT})</option>
+            <!-- END exchange -->
+          </select>
+
           {L_pay_mm_buy_metamatter_amount}
           <div style="width: 100%; text-align: center;">
             <!-- BEGIN mm_amount -->
@@ -201,6 +218,8 @@
               <!-- ENDIF -->
               <br />
               {L_pay_mm_buy_unit}
+              <br />
+              <span class="zero">{mm_amount.PRICE_TEXT} {mm_amount.CURRENCY}</span>
             </div>
             <!-- END mm_amount -->
           </div>
@@ -210,7 +229,7 @@
           {L_pay_mm_buy_metamatter_amount_enter} <input type="text" name="metamatter" id="metamatter" value="0" style="width: 100px;" maxlength="8" /><br />
           {L_pay_mm_buy_price_for} <del class="negative"><span class="hide" id="metamatter_undiscounted">0</span></del>
           <span class="positive" ><span id="metamatter_total">0</span><span class="hide" id="metamatter_bonus_percent"> ({L_pay_mm_bonus_text} <span>0</span>%)</span></span> {L_pay_mm_buy_unit}
-          <span class="neutral"><span id="metamatter_price">0,00</span> {C_payment_currency_default}</span>
+          <span class="neutral"><span id="metamatter_price">0,00</span> {PLAYER_CURRENCY}</span>
           <br />
           <br />
         <!-- ELSE -->
@@ -224,7 +243,7 @@
           <!-- ENDIF -->
           {L_pay_mm_buy_unit}
           <br />
-          {UNIT_AMOUNT_TEXT_COST_BASE}
+          {L_pay_mm_buy_cost_base} <span class="zero">{UNIT_AMOUNT_TEXT_COST_BASE} {PLAYER_CURRENCY}</span>
           <br />
           <br />
 

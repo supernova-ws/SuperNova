@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a17.9
+* @version 39b12.9
 *
 */
 
@@ -80,8 +80,8 @@ $a_lang_array = (array(
   'pay_mm_buy_pay' => 'Purchase Metamatter',
   'pay_mm_buy_reset' => 'Discard and start again',
   'pay_mm_buy_in_progress' => 'Payment in progress...',
-  'pay_mm_buy_conversion_cost' => 'Calculated cost of %s Metamatter will be %s %s',
-  'pay_mm_buy_cost_base' => 'Cost in base server currency will be %s %s',
+  'pay_mm_buy_conversion_cost' => 'Calculated cost of %s Metamatter in payment system currency will be %s %s',
+  'pay_mm_buy_cost_base' => 'Cost will be',
   'pay_mm_buy_real_income' => 'Бонус за оптовую покупку составит %s%% и на ваш игровой счёт будет зачислено %s ММ',
 
   'pay_currency_name' => 'Currency',

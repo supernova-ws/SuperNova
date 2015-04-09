@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39a21.0# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39b12.9# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -218,9 +218,9 @@ abstract class sn_module_payment extends sn_module {
      10000 => 0,
      20000 => 0,
 
-     40000 => 0.025,
+     50000 => 0.02,
     100000 => 0.05,
-    200000 => 0.075,
+    200000 => 0.07,
     300000 => 0.10,
     400000 => 0.15,
     500000 => 0.20,
@@ -549,7 +549,7 @@ abstract class sn_module_payment extends sn_module {
   );
 
   // Function converts money values between currencies
-  static function currency_convert($value, $currency_from = '', $currency_to = '') {
+  static function currency_convert($value, $currency_from = '', $currency_to = '', $round = 2) {
     global $config;
 
     if(strtolower($currency_from) != strtolower($currency_to)) {
@@ -559,8 +559,8 @@ abstract class sn_module_payment extends sn_module {
       // $value = $value / $exchange_from * $exchange_to;
       // $value = round($value, $currency_to == 'MM_' ? 0 : 2);
 
-      $value = $exchange_from ? $value / $exchange_from * $exchange_to * 100 : 0;
-      $value = ceil($value) / 100;
+      $value = $exchange_from ? $value / $exchange_from * $exchange_to * pow(10, $round) : 0;
+      $value = ceil($value) / pow(10, $round);
     }
 
     return $value;

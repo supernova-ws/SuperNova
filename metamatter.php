@@ -6,16 +6,23 @@
 
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(!sn_module_get_active_count('payment'))
-{
+if(!sn_module_get_active_count('payment')) {
   sys_redirect('overview.php');
   die();
 }
+
+global $config;
 
 lng_include('payment');
 
 $template = gettemplate('metamatter', true);
 
+$player_currency_default = player_load_option($user, PLAYER_OPTION_CURRENCY_DEFAULT);
+$player_currency = sys_get_param_str('player_currency', $player_currency_default);
+empty($lang['pay_currency_list'][$player_currency]) ? ($player_currency =  $player_currency_default ? $player_currency_default : $config->payment_currency_default) : false;
+$player_currency_default != $player_currency ? player_save_option($user, PLAYER_OPTION_CURRENCY_DEFAULT, $player_currency) : false;
+
+// Конвертация ММ в ТМ
 if(sys_get_param('mm_convert_do')) {
   try {
     if(!($mm_convert = sys_get_param_id('mm_convert'))) {
@@ -24,12 +31,11 @@ if(sys_get_param('mm_convert_do')) {
 
     sn_db_transaction_start();
     $user = db_user_by_id($user['id'], true);
-    if($mm_convert > mrc_get_level($user, '', RES_METAMATTER)) {
+    if($mm_convert > mrc_get_level($user, null, RES_METAMATTER)) {
       throw new exception($lang['pay_msg_mm_convert_not_enough'], ERR_ERROR);
     }
 
     $payment_comment = sprintf("Игрок сконвертировал %d Метаматерии в Тёмную Материю", $mm_convert);
-
     if(!mm_points_change($user['id'], RPG_CONVERT_MM, -$mm_convert, $payment_comment)) {
       throw new exception($lang['pay_msg_mm_convert_mm_error'], ERR_ERROR);
     }
@@ -52,6 +58,7 @@ if(sys_get_param('mm_convert_do')) {
   }
 }
 
+// Таблица скидок
 $prev_discount = 0;
 if(isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus_table)) {
   foreach(sn_module_payment::$bonus_table as $sum => $discount) {
@@ -67,22 +74,20 @@ if(isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus_
   }
 }
 
+// Результат платежа
 if($payment_id = sys_get_param_id('payment_id')) {
   $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
   if($payment && $payment['payment_user_id'] == $user['id']) {
-    if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE || $payment['payment_status'] == PAYMENT_STATUS_TEST)
-    {
+    if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE || $payment['payment_status'] == PAYMENT_STATUS_TEST) {
       $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['pay_msg_mm_purchase_complete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name'], $payment['payment_dark_matter_gained'])));
     }
-    if($payment['payment_status'] == PAYMENT_STATUS_NONE)
-    {
+    if($payment['payment_status'] == PAYMENT_STATUS_NONE) {
       $template->assign_block_vars('result', array(
         'MESSAGE' => sprintf($lang['pay_msg_mm_purchase_incomplete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name']),
         'STATUS' => 1,
       ));
     }
-    if($payment['payment_status'] == PAYMENT_STATUS_TEST)
-    {
+    if($payment['payment_status'] == PAYMENT_STATUS_TEST) {
       $template->assign_block_vars('result', array(
         'MESSAGE' => sprintf($lang['pay_msg_mm_purchase_test']),
         'STATUS' => -1,
@@ -96,7 +101,7 @@ $unit_available_amount_list = &sn_module_payment::$bonus_table;
 $request = array(
   'metamatter' => sys_get_param_float('metamatter'),
 );
-// $request['metamatter'] = isset($unit_available_amount_list[$request['metamatter']]) ? $request['metamatter'] : 0;
+
 if(!$request['metamatter']) {
   unset($_POST);
 }
@@ -128,7 +133,7 @@ foreach($sn_module_list['payment'] as $module_name => $module) {
 }
 
 global $template_result;
-
+// Доступные платежные методы
 foreach($payment_methods_available as $payment_type_id => $payment_methods) {
   if(empty($payment_methods)) continue;
 
@@ -162,34 +167,6 @@ foreach($payment_methods_available as $payment_type_id => $payment_methods) {
 
 $template->assign_recursive($template_result);
 
-
-//foreach($payment_methods_available as $payment_type_id => $payment_methods) {
-//  if(empty($payment_methods)) continue;
-//
-//  $template->assign_block_vars('payment', array(
-//    'ID' => $payment_type_id,
-//    'NAME' => $lang['pay_methods'][$payment_type_id],
-//  ));
-//  foreach($payment_methods as $payment_method_id => $module_list) {
-//    $template->assign_block_vars('payment.method', array(
-//      'ID' => $payment_method_id,
-//      'NAME' => $lang['pay_methods'][$payment_method_id],
-//      'IMAGE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'])
-//                  ? sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'] : '',
-//      'NAME_FORCE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['name']),
-//      'BUTTON' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['button']),
-//    ));
-//    foreach($module_list as $payment_module_name => $payment_module_method_details) {
-//      $template->assign_block_vars('payment.method.module', array(
-//        'MODULE' => $payment_module_name,
-//      ));
-//    }
-//  }
-//}
-//
-
-// pdump($template);die();
-
 $payment_type_selected = sys_get_param_int('payment_type');
 $payment_method_selected = sys_get_param_int('payment_method');
 
@@ -217,11 +194,11 @@ if($payment_type_selected && $payment_method_selected) {
   }
 }
 
-
 foreach($lang['pay_currency_list'] as $key => $value) {
   $var_name = 'payment_currency_exchange_' . strtolower($key);
   $course = $config->$var_name;
-  if(!$course || $key == $config->payment_currency_default) {
+//  if(!$course || $key == $config->payment_currency_default) {
+  if(!$course) {
     continue;
   }
   $template->assign_block_vars('exchange', array(
@@ -230,6 +207,8 @@ foreach($lang['pay_currency_list'] as $key => $value) {
     'COURSE_DIRECT' => pretty_number($course, 4),
     'COURSE_REVERSE' => pretty_number(1 / $course, 4),
     'MM_PER_CURRENCY' => pretty_number(sn_module_payment::currency_convert(1, $key, 'MM_')),
+    'LOT_PRICE' => sn_module_payment::currency_convert($config->payment_currency_exchange_mm_, 'MM_', $key),
+    'DEFAULT' => $key == $config->payment_currency_default,
     // 'UNIT_PER_LOT' => sn_module_payment::currency_convert(2500, 'MM_', $key),
   ));
 }
@@ -281,9 +260,14 @@ if($request['metamatter'] && $payment_module) {
   }
 }
 
+// Прегенерированные пакеты
 foreach($unit_available_amount_list as $unit_amount => $discount) {
+  $temp = sn_module_payment::currency_convert($unit_amount, 'MM_', $player_currency);
   $template->assign_block_vars('mm_amount', array(
     'VALUE' => $unit_amount,
+    // 'PRICE' => $temp,
+    'PRICE_TEXT' => pretty_number($temp, 2),
+    'CURRENCY' => $player_currency,
     'DISCOUNT' => $discount,
     'DISCOUNT_PERCENT' => $discount * 100,
     'DISCOUNTED' => $unit_amount * (1 + $discount),
@@ -309,14 +293,16 @@ $template->assign_vars(array(
   'PAYMENT_MODULE_NAME' => $lang["module_{$payment_module}_name"],
   'PAYMENT_MODULE_DESCRIPTION' => $lang["module_{$payment_module}_description"],
 
+  'PLAYER_CURRENCY' => $player_currency,
+  // 'PLAYER_CURRENCY_LOT_PRICE' => sn_module_payment::currency_convert($config->payment_currency_exchange_mm_, 'MM_', $player_currency),
+  //'PLAYER_CURRENCY_EXCHANGE_DEFAULT' => sn_module_payment::currency_convert(1, $config->payment_currency_default, $player_currency),
+  'PLAYER_CURRENCY_PRICE_PER_MM' => sn_module_payment::currency_convert(1, $player_currency, 'MM_', 10),
+
   'UNIT_AMOUNT' => (float)$request['metamatter'],
   'UNIT_AMOUNT_TEXT' => pretty_number($request['metamatter']),
   'UNIT_AMOUNT_BONUS_PERCENT' => $bonus_percent,
   'UNIT_AMOUNT_TEXT_DISCOUNTED' => $income_metamatter_text,
-  'UNIT_AMOUNT_TEXT_COST_BASE' => sprintf($lang['pay_mm_buy_cost_base'],
-    //pretty_number($request['metamatter'], true, true),
-    pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $config->payment_currency_default), 2, true),
-    $config->payment_currency_default),
+  'UNIT_AMOUNT_TEXT_COST_BASE' => pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
 
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number($config->payment_currency_exchange_mm_, true, true),
   'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['pay_currency_list'][$config->payment_currency_default],

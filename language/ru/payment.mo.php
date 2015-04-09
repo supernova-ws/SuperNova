@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a17.9
+* @version 39b12.9
 *
 */
 
@@ -80,8 +80,8 @@ $a_lang_array = (array(
   'pay_mm_buy_pay' => 'Оплатить Метаматерию',
   'pay_mm_buy_reset' => 'Начать заново',
   'pay_mm_buy_in_progress' => 'Происходит оплата...',
-  'pay_mm_buy_conversion_cost' => 'Рассчётная стоимость %s единиц Метаматерии составит %s %s',
-  'pay_mm_buy_cost_base' => 'Стоимость в базовой валюте сервера составит %s %s',
+  'pay_mm_buy_conversion_cost' => 'Рассчётная стоимость %s единиц Метаматерии в валюте платежной системы составит %s %s',
+  'pay_mm_buy_cost_base' => 'Стоимость составит',
   'pay_mm_buy_real_income' => 'Бонус за оптовую покупку составит %s%% и на ваш игровой счёт будет зачислено %s ММ',
 
   'pay_currency_name' => 'Валюта',
