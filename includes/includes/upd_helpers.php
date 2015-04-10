@@ -45,57 +45,44 @@ function upd_log_version_update() {
   upd_log_message("Detected outdated version {$new_version}. Upgrading...");
 }
 
-function upd_add_more_time($time = 0)
-{
+function upd_add_more_time($time = 0) {
   global $config, $time_now, $sys_log_disabled;
 
   $time = $time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30);
 
-  if(!$sys_log_disabled)
-  {
-    $config->db_saveItem('var_db_update_end', $time_now + $time);
-  }
+  !$sys_log_disabled ? $config->db_saveItem('var_db_update_end', $time_now + $time) : false;
   set_time_limit($time);
 }
 
-function upd_log_message($message)
-{
+function upd_log_message($message) {
   global $sys_log_disabled, $upd_log, $debug;
 
   if($sys_log_disabled)
   {
 //    print("{$message}<br />");
-  }
-  else
-  {
+  } else {
     $upd_log .= "{$message}\r\n";
     $debug->warning($message, 'Database Update', 103);
   }
 }
 
-function upd_unset_table_info($table_name)
-{
+function upd_unset_table_info($table_name) {
   global $update_tables, $update_indexes, $update_foreigns;
 
-  if(isset($update_tables[$table_name]))
-  {
+  if(isset($update_tables[$table_name])) {
     unset($update_tables[$table_name]);
   }
 
-  if(isset($update_indexes[$table_name]))
-  {
+  if(isset($update_indexes[$table_name])) {
     unset($update_indexes[$table_name]);
   }
 
-  if(isset($update_foreigns[$table_name]))
-  {
+  if(isset($update_foreigns[$table_name])) {
     unset($update_foreigns[$table_name]);
   }
-
 }
 
-function upd_load_table_info($prefix_table_name, $prefixed = true)
-{
+function upd_load_table_info($prefix_table_name, $prefixed = true) {
   global $config, $update_tables, $update_indexes, $update_foreigns, $db_name;
 
   $tableName = $prefixed ? str_replace($config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
@@ -104,32 +91,27 @@ function upd_load_table_info($prefix_table_name, $prefixed = true)
   upd_unset_table_info($tableName);
 
   $q1 = doquery("SHOW COLUMNS FROM {$prefix_table_name};");
-  while($r1 = mysql_fetch_assoc($q1))
-  {
+  while($r1 = mysql_fetch_assoc($q1)) {
     $update_tables[$tableName][$r1['Field']] = $r1;
   }
 
   $q1 = doquery("SHOW INDEX FROM {$prefix_table_name};");
-  while($r1 = mysql_fetch_assoc($q1))
-  {
+  while($r1 = mysql_fetch_assoc($q1)) {
     $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 
   $q1 = doquery("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;");
-  while($r1 = mysql_fetch_assoc($q1))
-  {
+  while($r1 = mysql_fetch_assoc($q1)) {
     $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
     $update_foreigns[$tableName][$r1['CONSTRAINT_NAME']] .= "{$r1['COLUMN_NAME']},{$table_referenced},{$r1['REFERENCED_COLUMN_NAME']};";
   }
 }
 
-function upd_alter_table($table, $alters, $condition = true)
-{
-  global $config;
+function upd_alter_table($table, $alters, $condition = true) {
+  global $config, $update_tables;
 
-  if(!$condition)
-  {
+  if(!$condition) {
     return;
   }
 
@@ -137,17 +119,18 @@ function upd_alter_table($table, $alters, $condition = true)
   $alters_print = is_array($alters) ? dump($alters) : $alters;
   upd_log_message("Altering table '{$table}' with alterations {$alters_print}");
 
-  if(!is_array($alters))
-  {
+  if(!is_array($alters)) {
     $alters = array($alters);
   }
 
-  $qry = "ALTER TABLE {$config->db_prefix}{$table} " . implode(',', $alters) . ';';
+  $alters = implode(',', $alters);
+  // foreach($alters as $table_name => )
+  $qry = "ALTER TABLE {$config->db_prefix}{$table} {$alters};";
 
-  $result = mysql_query($qry);
+  //$result = mysql_query($qry);
+  $result = upd_do_query($qry);
   $error = mysql_error();
-  if($error)
-  {
+  if($error) {
     die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
   }
 
@@ -159,8 +142,7 @@ function upd_alter_table($table, $alters, $condition = true)
   return $result;
 }
 
-function upd_drop_table($table_name)
-{
+function upd_drop_table($table_name) {
   global $config;
 
   mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
@@ -168,16 +150,14 @@ function upd_drop_table($table_name)
   upd_unset_table_info($table_name);
 }
 
-function upd_create_table($table_name, $declaration)
-{
+function upd_create_table($table_name, $declaration) {
   global $config, $update_tables;
 
   if(!$update_tables[$table_name]) {
     doquery('set foreign_key_checks = 0;');
     $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
     $error = mysql_error();
-    if($error)
-    {
+    if($error) {
       die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
     }
     doquery('set foreign_key_checks = 1;');
@@ -188,8 +168,7 @@ function upd_create_table($table_name, $declaration)
   return $result;
 }
 
-function upd_db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
-{
+function upd_db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
   return mysql_fetch_assoc(upd_do_query(
     "SELECT {$fields}
     FROM {{unit}}
@@ -203,17 +182,15 @@ function upd_db_unit_by_location($user_id = 0, $location_type, $location_id, $un
 }
 
 
-function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null)
-{
-  if(!is_array($user))
-  {
+function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
+  if(!is_array($user)) {
     // TODO - remove later
     print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
     pdump(debug_backtrace());
     die('USER is not ARRAY');
   }
-  if(!isset($user['id']) || !$user['id'])
-  {
+
+  if(!isset($user['id']) || !$user['id']) {
     // TODO - remove later
     print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
     pdump($user);
@@ -228,8 +205,7 @@ function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id 
 
   $db_changeset = array();
   $temp = upd_db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
-  if($temp['unit_id'])
-  {
+  if($temp['unit_id']) {
     // update
     $db_changeset = array(
       'action' => SQL_OP_UPDATE,
@@ -242,9 +218,7 @@ function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id 
         ),
       ),
     );
-  }
-  else
-  {
+  } else {
     // insert
     $db_changeset = array(
       'action' => SQL_OP_INSERT,
@@ -276,53 +250,42 @@ function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id 
 
 
 
-function upd_db_changeset_apply($db_changeset)
-{
-  if(!is_array($db_changeset) || empty($db_changeset))
+function upd_db_changeset_apply($db_changeset) {
+  if(!is_array($db_changeset) || empty($db_changeset)) {
     return;
+  }
 
-  foreach($db_changeset as $table_name => $table_data)
-  {
-    foreach($table_data as $record_id => $conditions)
-    {
+  foreach($db_changeset as $table_name => $table_data) {
+    foreach($table_data as $record_id => $conditions) {
       $where = '';
-      if(!empty($conditions['where']))
-      {
+      if(!empty($conditions['where'])) {
         $where = 'WHERE ' . implode(' AND ', $conditions['where']);
       }
 
       $fields = array();
-      if($conditions['fields'])
-      {
-        foreach($conditions['fields'] as $field_name => $field_data)
-        {
+      if($conditions['fields']) {
+        foreach($conditions['fields'] as $field_name => $field_data) {
           $condition = "`{$field_name}` = ";
           $value = '';
-          if($field_data['delta'])
-          {
+          if($field_data['delta']) {
             $value = "`{$field_name}`" . ($field_data['delta'] >= 0 ? '+' : '') . $field_data['delta'];
-          }
-          elseif($field_data['set'])
-          {
+          } elseif($field_data['set']) {
             $value = (is_string($field_data['set']) ? "'{$field_data['set']}'": $field_data['set']);
           }
-          if($value)
-          {
+          if($value) {
             $fields[] = $condition . $value;
           }
         }
       }
       $fields = implode(',', $fields);
 
-      switch($conditions['action'])
-      {
+      switch($conditions['action']) {
         case SQL_OP_DELETE:
           upd_do_query("DELETE FROM {{{$table_name}}} {$where}");
           break;
 
         case SQL_OP_UPDATE:
-          if($fields)
-          {
+          if($fields) {
             /*if($table_name == 'unit')
             {
               pdump("UPDATE {{{$table_name}}} SET {$fields} {$where}");
@@ -333,15 +296,13 @@ function upd_db_changeset_apply($db_changeset)
           break;
 
         case SQL_OP_INSERT:
-          if($fields)
-          {
+          if($fields) {
             upd_do_query("INSERT INTO {{{$table_name}}} SET {$fields}");
           }
           break;
 
         case SQL_OP_REPLACE:
-          if($fields)
-          {
+          if($fields) {
             upd_do_query("REPLACE INTO {{{$table_name}}} SET {$fields}");
           }
           break;

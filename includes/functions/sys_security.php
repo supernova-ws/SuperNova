@@ -311,11 +311,25 @@ function sec_login_process(&$result) {
   $result[F_VACATION_STATUS] = $user['vacation'];
 }
 
+// Процедура по установке значения поля из словаря по данным
+function sec_login_set_fields(&$template_result, $field_value, $security_field_name, $security_field_id, $db_field_id, $db_table_name, $db_field_name) {
+  $browser_safe = mysql_real_escape_string($template_result[$security_field_name] = $field_value);
+  $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
+  if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
+    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
+    $template_result[$security_field_id] = mysql_insert_id();
+  } else {
+    $template_result[$security_field_id] = $browser_id['id_field'];
+  }
+}
+
 function sec_login_change_state() {
-  global $user, $user_impersonator, $template_result;
+  global $user, $user_impersonator, $template_result, $config, $sys_stop_log_hit, $is_watching;
 
   if(isset($user['id']) && intval($user['id']) && !$user_impersonator) {
     sn_db_transaction_start();
+    sec_login_set_fields($template_result, $_SERVER['HTTP_USER_AGENT'], F_BROWSER, F_BROWSER_ID, 'browser_id', 'security_browser', 'browser_user_agent');
+    /*
     $browser_safe = mysql_real_escape_string($template_result[F_BROWSER] = $_SERVER['HTTP_USER_AGENT']);
     $browser_id = doquery("SELECT `browser_id` FROM {{security_browser}} WHERE `browser_user_agent` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
     if(!isset($browser_id['browser_id']) || !$browser_id['browser_id']) {
@@ -324,11 +338,41 @@ function sec_login_change_state() {
     } else {
       $template_result[F_BROWSER_ID] = $browser_id['browser_id'];
     }
+    */
     $proxy_safe = mysql_real_escape_string($user['user_proxy']);
     doquery(
       "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
         VALUES ({$user['id']},{$template_result[F_DEVICE_ID]},{$template_result[F_BROWSER_ID]},INET_ATON('{$user['user_lastip']}'), '{$proxy_safe}');"
     );
+
+    // TODO REMOVE SYS_LOG_HIT
+
+//    global $config, $time_now, $sys_stop_log_hit, $is_watching, $user;
+//
+    if(!$sys_stop_log_hit && $config->game_counter) {
+      $is_watching = true;
+//    $ip = sec_player_ip();
+      sec_login_set_fields($template_result, $_SERVER['PHP_SELF'], F_PAGE, F_PAGE_ID, 'url_id', 'security_url', 'url_string');
+      sec_login_set_fields($template_result, $_SERVER['REQUEST_URI'], F_URL, F_URL_ID, 'url_id', 'security_url', 'url_string');
+      /*
+      $page_safe = mysql_real_escape_string($template_result[F_PAGE] = $_SERVER['PHP_SELF']);
+      $page_id = doquery("SELECT `url_id` FROM {{security_url}} WHERE `url_string` = '{$page_safe}' LIMIT 1 FOR UPDATE", true);
+      if(!isset($page_id['url_id']) || !$page_id['url_id']) {
+        doquery("INSERT INTO {{security_url}} (`url_string`) VALUES ('{$page_safe}');");
+        $template_result[F_PAGE_ID] = mysql_insert_id();
+      } else {
+        $template_result[F_PAGE_ID] = $page_id['url_id'];
+      }
+      */
+
+      doquery(
+        "INSERT INTO {{counter}}
+          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
+        VALUES
+          ('" . SN_TIME_SQL. "', {$user['id']}, {$template_result[F_DEVICE_ID]},{$template_result[F_BROWSER_ID]},
+            INET_ATON('{$user['user_lastip']}'),'{$proxy_safe}', {$template_result[F_PAGE_ID]}, {$template_result[F_URL_ID]});");
+      $is_watching = false;
+    }
     sn_db_transaction_commit();
 
     //if(in_array($template_result[F_DEVICE_ID], array(463735, 86823))) {

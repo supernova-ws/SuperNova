@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b12.9');
+define('SN_VERSION', '39b13.0');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -416,6 +416,11 @@ define('F_PASSWORD_NEW', 'F_PASSWORD_NEW');
 
 define('F_BROWSER', 'F_BROWSER');
 define('F_BROWSER_ID', 'F_BROWSER_ID');
+
+define('F_PAGE', 'F_PAGE');
+define('F_PAGE_ID', 'F_PAGE_ID');
+define('F_URL', 'F_URL');
+define('F_URL_ID', 'F_URL_ID');
 
 define('F_BANNED_STATUS', 'F_BANNED_STATUS');
 define('F_BANNED_MESSAGE', 'F_BANNED_MESSAGE');

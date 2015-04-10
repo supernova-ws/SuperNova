@@ -242,20 +242,20 @@ function is_email($email)
 // ----------------------------------------------------------------------------------------------------------------
 // Logs page hit to DB
 //
-function sys_log_hit()
-{
-  global $config, $time_now, $sys_stop_log_hit, $is_watching, $user;
-
-  if (!$config->game_counter || $sys_stop_log_hit)
-  {
-    return;
-  }
-
-  $is_watching = true;
-  $ip = sec_player_ip();
-  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['ip']}', '{$ip['proxy_chain']}');");
-  $is_watching = false;
-}
+//function sys_log_hit()
+//{
+//  global $config, $time_now, $sys_stop_log_hit, $is_watching, $user;
+//
+//  if (!$config->game_counter || $sys_stop_log_hit)
+//  {
+//    return;
+//  }
+//
+//  $is_watching = true;
+//  $ip = sec_player_ip();
+//  doquery("INSERT INTO {{counter}} (`time`, `page`, `url`, `user_id`, `ip`, `proxy`) VALUES ('{$time_now}', '{$_SERVER['PHP_SELF']}', '{$_SERVER['REQUEST_URI']}', '{$user['id']}', '{$ip['ip']}', '{$ip['proxy_chain']}');");
+//  $is_watching = false;
+//}
 
 function sys_user_vacation($user)
 {

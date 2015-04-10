@@ -308,7 +308,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   ));
   displayP(parsetemplate($template));
 
-  sys_log_hit();
+  // sys_log_hit();
 
   // Affichage du Debug si necessaire
   if($user['authlevel'] >= 3 && $config->debug)
