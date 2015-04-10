@@ -2,55 +2,51 @@
 /* @import url(./design/css/login.css);*/
 </style>
 
-<script type="text/javascript"><!--
+<script type="text/javascript">
   var password, password2;
   var L_sys_login_password_show = '{LA_sys_login_password_show}';
   var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
 
-  $(document).ready(function(){
-    $("#login_container").tabs().show();
+  $('.password_show').on('click', function(){
+    input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
+    if(input.attr('type') == 'password') {
+      type = 'text';
+      button_value = L_sys_login_password_hide;
+    }
+    else{
+      type = 'password';
+      button_value = L_sys_login_password_show;
+    }
 
-    $('.password_show').on('click', function(){
-      input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
-      if(input.attr('type') == 'password') {
-        type = 'text';
-        button_value = L_sys_login_password_hide;
-      }
-      else{
-        type = 'password';
-        button_value = L_sys_login_password_show;
-      }
+    var rep = $('<input type="' + type + '" maxlength="32" />').attr("id", input.attr("id")).attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
 
-      var rep = $('<input type="' + type + '" maxlength="32" />').attr("id", input.attr("id")).attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
+    input.remove();
 
-      input.remove();
+    $(this).attr('value', button_value);
 
-      $(this).attr('value', button_value);
-
-      // alert(show_element.attr('type'));
-    });
-    /*
-    $("[name=username],[name=password],[name=email]").on('keyup', function(){
-      $("[name=" + $(this).attr('name') + "]").val($(this).val());
-    });
-    */
-
+    // alert(show_element.attr('type'));
   });
-// --></script>
 
+  //  $(document).ready(function(){
+  //    $("#login_container").tabs().show();
+  //  });
+</script>
 
 <div id="log_main">
   <div id="log_title">{L_sys_supernova}: {L_sys_universe} "{C_game_name}"</div>
-  <div id="log_status">
+  <!--<div id="log_status">-->
+  <div>
     {L_adm_opt_galaxies}: <font color="red">{C_game_maxGalaxy}</font> - {L_adm_opt_systems}: <font color="red">{C_game_maxSystem}</font> - {L_adm_opt_planets}: <font color="red">{C_game_maxPlanet}</font>
   </div>
-  <div id="log_status">
+  <!--<div id="log_status">-->
+  <div>
     {L_adm_opt_speed}:
     {L_adm_opt_game_gspeed} <font color="red">x{C_game_speed}</font> -
     {L_adm_opt_game_fspeed} <font color="red">x{C_fleet_speed}</font> -
     {L_adm_opt_game_pspeed} <font color="red">x{C_resource_multiplier}</font>
   </div>
-  <div id="log_status">
+  <!--<div id="log_status">-->
+  <div>
     {L_log_online}: <font color="red">{online_users}</font> - {L_log_lastreg}: <font color="red">{last_user}</font> - {L_log_numbreg}: <font color="red">{C_users_amount}</font><br>
   </div>
   <div id="log_description">{L_log_desc}</div>
@@ -71,7 +67,7 @@
   </div>
   <!-- ENDIF -->
 
-  <div id="login_container" style="display: none">
+  <div id="login_container">
     <ol>
       <li><a class="nohover" href="#tab_login">{L_log_login_page}</a></li>
       <!-- IF ! GAME_BLITZ -->
@@ -298,3 +294,7 @@
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  $("#login_container").tabs().show();
+</script>
