@@ -8,8 +8,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-if(!defined('INSIDE'))
-{
+if(!defined('INSIDE')) {
   die();
 }
 
@@ -18,39 +17,31 @@ define('DB_MYSQL_TRANSACTION_REPEATABLE_READ', 'REPEATABLE READ');
 define('DB_MYSQL_TRANSACTION_READ_COMMITTED', 'READ COMMITTED');
 define('DB_MYSQL_TRANSACTION_READ_UNCOMMITTED', 'READ UNCOMMITTED');
 
-function security_watch_user_queries($query)
-{
+function security_watch_user_queries($query) {
   // TODO Заменить это на новый логгер
   global $config, $is_watching, $user, $debug;
 
   if(!$is_watching && $config->game_watchlist_array && in_array($user['id'], $config->game_watchlist_array))
   {
-    {
-      if(!preg_match('/^(select|commit|rollback|start transaction)/i', $query))
-      {
-        $is_watching = true;
-        $msg = "\$query = \"{$query}\"\n\r";
-        if(!empty($_POST))
-        {
-          $msg .= "\n\r" . dump($_POST,'$_POST');
-        }
-        if(!empty($_GET))
-        {
-          $msg .= "\n\r" . dump($_GET,'$_GET');
-        }
-        $debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
-        $is_watching = false;
+    if(!preg_match('/^(select|commit|rollback|start transaction)/i', $query)) {
+      $is_watching = true;
+      $msg = "\$query = \"{$query}\"\n\r";
+      if(!empty($_POST)) {
+        $msg .= "\n\r" . dump($_POST,'$_POST');
       }
+      if(!empty($_GET)) {
+        $msg .= "\n\r" . dump($_GET,'$_GET');
+      }
+      $debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
+      $is_watching = false;
     }
   }
 }
 
-function security_query_check_bad_words($query)
-{
+function security_query_check_bad_words($query) {
   global $user, $dm_change_legit, $mm_change_legit;
 
-  switch(true)
-  {
+  switch(true) {
     case stripos($query, 'RUNCATE TABL') != false:
     case stripos($query, 'ROP TABL') != false:
     case stripos($query, 'ENAME TABL') != false:
@@ -101,12 +92,10 @@ function security_query_check_bad_words($query)
   }
 }
 
-function sn_db_connect()
-{
+function sn_db_connect() {
   global $link, $debug;
 
-  if($link)
-  {
+  if($link) {
     return true;
   }
 
@@ -123,17 +112,14 @@ function sn_db_connect()
   return true;
 }
 
-function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
-{
+function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
   global $numqueries, $link, $debug, $sn_cache, $config, $db_prefix;
 
-  if(!is_string($table))
-  {
+  if(!is_string($table)) {
     $fetch = $table;
   }
 
-  if(!$link)
-  {
+  if(!$link) {
     sn_db_connect();
   }
 
@@ -142,16 +128,13 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
   $skip_query_check or security_query_check_bad_words($query);
 
   $sql = $query;
-  if(!(strpos($sql, '{{') === false) )
-  {
-    foreach($sn_cache->tables as $tableName)
-    {
+  if(strpos($sql, '{{') !== false) {
+    foreach($sn_cache->tables as $tableName) {
       $sql = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $sql);
     }
   }
 
-  if($config->debug)
-  {
+  if($config->debug) {
     $numqueries++;
     $arr = debug_backtrace();
     $file = end(explode('/',$arr[0]['file']));
@@ -159,8 +142,7 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
     $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
   }
 
-  if(defined('DEBUG_SQL_COMMENT'))
-  {
+  if(defined('DEBUG_SQL_COMMENT')) {
     $backtrace = debug_backtrace();
     $sql_comment = $debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
     //    pdump($backtrace[0]);
@@ -187,13 +169,11 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
     //    $sql = "/* {$function} '{$file}' Line {$a_trace['line']} tID {$transaction_id} */ " . $sql;
 
     $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
-    if(defined('DEBUG_SQL_ONLINE'))
-    {
+    if(defined('DEBUG_SQL_ONLINE')) {
       $debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
     }
 
-    if(defined('DEBUG_SQL_ERROR'))
-    {
+    if(defined('DEBUG_SQL_ERROR')) {
       array_unshift($sql_comment, preg_replace("/\s+/", ' ', $sql));
       $debug->add_to_array($sql_comment);
       // $debug->add_to_array($sql_comment . preg_replace("/\s+/", ' ', $sql));
@@ -206,11 +186,9 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
   return $fetch ? mysql_fetch_assoc($sqlquery) : $sqlquery;
 }
 
-function db_change_units_perform($query, $tablename, $object_id)
-{
+function db_change_units_perform($query, $tablename, $object_id) {
   $query = implode(',', $query);
-  if($query && $object_id)
-  {
+  if($query && $object_id) {
     return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
     // return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
   }
@@ -219,8 +197,7 @@ function db_change_units_perform($query, $tablename, $object_id)
 // TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
 // TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
-function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
-{
+function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) {
   $query = is_array($query) ? $query : array(
     LOC_USER => array(),
     LOC_PLANET => array(),
@@ -228,18 +205,15 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
 
   $group = sn_get_groups('resources_loot');
 
-  foreach($unit_list as $unit_id => $unit_amount)
-  {
-    if(!in_array($unit_id, $group))
-    {
+  foreach($unit_list as $unit_id => $unit_amount) {
+    if(!in_array($unit_id, $group)) {
     // TODO - remove later
       print('<h1>СООБЩИТЕ ЭТО АДМИНУ: db_change_units() вызван для не-ресурсов!</h1>');
       pdump(debug_backtrace());
       die('db_change_units() вызван для не-ресурсов!');
     }
 
-    if(!$unit_amount)
-    {
+    if(!$unit_amount) {
       continue;
     }
 
@@ -248,8 +222,7 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
     $unit_location = sys_get_unit_location($user, $planet, $unit_id);
 
     // Changing value in object
-    switch($unit_location)
-    {
+    switch($unit_location) {
       case LOC_USER:
         $user[$unit_db_name] += $unit_amount;
       break;
@@ -265,37 +238,31 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null)
   db_change_units_perform($query[LOC_USER], 'users', $user['id']);
   db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
 }
-function sn_db_perform($table, $values, $type = 'insert', $options = false)
-{
+function sn_db_perform($table, $values, $type = 'insert', $options = false) {
   $mass_perform = false;
 
   $field_set = '';
   $value_set = '';
 
-  switch($type)
-  {
+  switch($type) {
     case 'delete':
       $query = 'DELETE FROM';
     break;
 
     case 'insert':
       $query = 'INSERT INTO';
-      if(isset($options['__multi']))
-      {
+      if(isset($options['__multi'])) {
         // Here we generate mass-insert set
         break;
       }
     case 'update':
-      if(!$query)
-      {
+      if(!$query) {
         $query = 'UPDATE';
       }
 
-      foreach($values as $field => &$value)
-      {
+      foreach($values as $field => &$value) {
         $value_type = gettype($value);
-        if ($value_type == 'string')
-        {
+        if ($value_type == 'string') {
           $value = "'" . mysql_real_escape_string($value) . "'";
         }
         $value = "`{$field}` = {$value}";
@@ -309,28 +276,22 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false)
   return doquery($query);
 }
 
-function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null)
-{
+function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
   return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
 }
-function db_changeset_apply($db_changeset)
-{
+function db_changeset_apply($db_changeset) {
   return classSupernova::db_changeset_apply($db_changeset);
 }
-function sn_db_transaction_check($transaction_should_be_started = null)
-{
+function sn_db_transaction_check($transaction_should_be_started = null) {
   return classSupernova::db_transaction_check($transaction_should_be_started);
 }
-function sn_db_transaction_start($level = '')
-{
+function sn_db_transaction_start($level = '') {
   return classSupernova::db_transaction_start($level);
 }
-function sn_db_transaction_commit()
-{
+function sn_db_transaction_commit() {
   return classSupernova::db_transaction_commit();
 }
-function sn_db_transaction_rollback()
-{
+function sn_db_transaction_rollback() {
   return classSupernova::db_transaction_rollback();
 }
 

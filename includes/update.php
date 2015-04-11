@@ -1518,38 +1518,6 @@ switch($new_version) {
           "DROP COLUMN `url`",
         ), isset($update_tables['counter']['ip']));
       }
-
-//      upd_alter_table('counter', array(
-//        "MODIFY COLUMN `visit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `counter_id`",
-//        "MODIFY COLUMN `device_id` bigint(20) unsigned DEFAULT NULL AFTER `user_id`",
-//        "MODIFY COLUMN `browser_id` bigint(20) unsigned DEFAULT NULL AFTER `device_id`",
-//        "MODIFY COLUMN `user_ip` int(10) unsigned NOT NULL DEFAULT '0' AFTER `browser_id`",
-//        "MODIFY COLUMN `user_proxy` varchar(250) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' AFTER `user_ip`",
-//        "MODIFY COLUMN `page_url_id` int unsigned DEFAULT NULL AFTER `user_proxy`",
-//        "MODIFY COLUMN `plain_url_id` int unsigned DEFAULT NULL AFTER `page_url_id`",
-//      ), true);
-
-      // pdump($update_tables);
-//      upd_alter_table('counter', array(
-//        "ADD COLUMN `device_id` bigint(20) unsigned DEFAULT NULL",
-//        "ADD COLUMN `browser_id` bigint(20) unsigned DEFAULT NULL",
-//        "ADD COLUMN `user_ip` int(10) unsigned NOT NULL DEFAULT '0'",
-//        "ADD COLUMN `user_proxy` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT ''",
-//        "ADD KEY `I_counter_device_id` (`device_id`) USING BTREE",
-//        "ADD KEY `I_counter_browser_id` (`browser_id`)",
-//        "ADD CONSTRAINT `FK_counter_device_id` FOREIGN KEY (`device_id`) REFERENCES `{{security_device}}` (`device_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-//        "ADD CONSTRAINT `FK_counter_browser_id` FOREIGN KEY (`browser_id`) REFERENCES `{{security_browser}}` (`browser_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-//      ), !isset($update_tables['counter']['device_id']));
-//
-//      // pdump($update_tables);
-//      upd_alter_table('counter', array(
-//        "ADD COLUMN `page_url_id` int unsigned DEFAULT NULL",
-//        "ADD COLUMN `plain_url_id` int unsigned DEFAULT NULL",
-//        "ADD KEY `I_counter_page_url_id` (`page_url_id`)",
-//        "ADD KEY `I_counter_plain_url_id` (`plain_url_id`)",
-//        "ADD CONSTRAINT `FK_counter_page_url_id` FOREIGN KEY (`page_url_id`) REFERENCES `{{security_url}}` (`url_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-//        "ADD CONSTRAINT `FK_counter_plain_url_id` FOREIGN KEY (`plain_url_id`) REFERENCES `{{security_url}}` (`url_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-//      ), !isset($update_tables['counter']['page_url_id']));
     }
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));

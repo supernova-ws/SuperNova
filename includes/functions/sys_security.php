@@ -354,16 +354,6 @@ function sec_login_change_state() {
 //    $ip = sec_player_ip();
       sec_login_set_fields($template_result, $_SERVER['PHP_SELF'], F_PAGE, F_PAGE_ID, 'url_id', 'security_url', 'url_string');
       sec_login_set_fields($template_result, $_SERVER['REQUEST_URI'], F_URL, F_URL_ID, 'url_id', 'security_url', 'url_string');
-      /*
-      $page_safe = mysql_real_escape_string($template_result[F_PAGE] = $_SERVER['PHP_SELF']);
-      $page_id = doquery("SELECT `url_id` FROM {{security_url}} WHERE `url_string` = '{$page_safe}' LIMIT 1 FOR UPDATE", true);
-      if(!isset($page_id['url_id']) || !$page_id['url_id']) {
-        doquery("INSERT INTO {{security_url}} (`url_string`) VALUES ('{$page_safe}');");
-        $template_result[F_PAGE_ID] = mysql_insert_id();
-      } else {
-        $template_result[F_PAGE_ID] = $page_id['url_id'];
-      }
-      */
 
       doquery(
         "INSERT INTO {{counter}}
@@ -523,6 +513,34 @@ function sec_user_by_cookie($cookie) {
   return $user;
 }
 
+function sys_user_vacation($user) {
+  global $time_now, $config;
+
+  if(sys_get_param_str('vacation') == 'leave') {
+    if ($user['vacation'] < $time_now) {
+      $user['vacation'] = 0;
+      $user['vacation_next'] = $time_now + $config->player_vacation_timeout;
+      db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
+    }
+  }
+
+  if($user['vacation']) {
+    sn_sys_logout(false, true);
+
+    $template = gettemplate('vacation', true);
+
+    $template->assign_vars(array(
+      'NAME' => $user['username'],
+      'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
+      'CAN_LEAVE' => $user['vacation'] <= $time_now,
+      'RANDOM' => mt_rand(1, 2),
+    ));
+
+    display(parsetemplate($template), '', false, '', false, false);
+  }
+
+  return false;
+}
 
 
 
@@ -605,7 +623,7 @@ function DeleteSelectedUser ($UserID) {
   }
   doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
 
-    db_planet_list_delete_by_owner($UserID);
+  db_planet_list_delete_by_owner($UserID);
 
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
@@ -625,8 +643,7 @@ function DeleteSelectedUser ($UserID) {
   sn_db_transaction_commit();
 }
 
-function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '')
-{
+function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '') {
   global $time_now;
 
   $ban_current = db_user_by_id($banned['id'], false, 'banaday');
