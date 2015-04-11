@@ -34,21 +34,21 @@ if(sys_get_param_str('isSaveOptions')) {
 
   $ally_changeset = array();
   if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
-    $new_tag = mysql_real_escape_string($new_tag);
+    $new_tag = db_escape($new_tag);
     $ally_changeset[] = "`ally_tag`='{$new_tag}'";
     db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
   }
   if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) && $new_name != $ally['ally_name']) {
-    $new_name = mysql_real_escape_string($new_name);
+    $new_name = db_escape($new_name);
     $ally_changeset[] = "`ally_name`='{$new_name}'";
   }
 
   if(($new_owner_rank = sys_get_param_str_unsafe('owner_range', $ally['ally_owner_range'])) && $new_owner_rank != $ally['ally_owner_range']) {
-    $new_owner_rank = mysql_real_escape_string($new_owner_rank);
+    $new_owner_rank = db_escape($new_owner_rank);
     $ally_changeset[] = "`ally_owner_range` = '{$new_owner_rank}'";
   }
   if(($new_web = sys_get_param_str_unsafe('web', $ally['ally_web'])) && $new_web != $ally['ally_web']) {
-    $new_web = mysql_real_escape_string($new_web);
+    $new_web = db_escape($new_web);
     $ally_changeset[] = "`ally_web` = '{$new_web}'";
   }
   $new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow']);
@@ -87,7 +87,7 @@ if(sys_get_param_str('isSaveOptions')) {
         `ally_request_notallow`='{$ally['ally_request_notallow']}'
       WHERE `id`='{$ally['id']}' LIMIT 1;");
 
-    if($ally['ally_tag'] != mysql_real_escape_string($old_tag)) {
+    if($ally['ally_tag'] != db_escape($old_tag)) {
       db_user_set_by_id($ally['ally_user_id'], "`username`='[{$ally['ally_tag']}]'");
     }
     sn_db_transaction_commit();
@@ -173,7 +173,7 @@ if(!empty($tmp))
   // $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']} AND ({$tmp})", false, '`id`, `username`');
   $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']}", false, '`id`, `username`');
   unset($tmp);
-  // while ($userAllyAdmin = mysql_fetch_assoc($userAllyAdmins))
+  // while ($userAllyAdmin = db_fetch($userAllyAdmins))
   foreach($userAllyAdmins as $userAllyAdmin)
   {
 // pdump($userAllyAdmin);

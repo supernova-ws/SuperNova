@@ -1,21 +1,15 @@
 <?php
 
 /**
- * db.php
- * Previously mysql.php
- *
- * @version 1.0
- * @copyright 2008 by Chlorel for XNova
+ * @version 2015-04-11 11:47:49 39b14.2
+ * @copyright 2008-2015 Gorlum for Project "SuperNova.WS"
  */
 
 if(!defined('INSIDE')) {
   die();
 }
 
-define('DB_MYSQL_TRANSACTION_SERIALIZABLE', 'SERIALIZABLE');
-define('DB_MYSQL_TRANSACTION_REPEATABLE_READ', 'REPEATABLE READ');
-define('DB_MYSQL_TRANSACTION_READ_COMMITTED', 'READ COMMITTED');
-define('DB_MYSQL_TRANSACTION_READ_UNCOMMITTED', 'READ UNCOMMITTED');
+require('db/__mysql.php');
 
 function security_watch_user_queries($query) {
   // TODO Заменить это на новый логгер
@@ -93,24 +87,38 @@ function security_query_check_bad_words($query) {
 }
 
 function sn_db_connect() {
-  global $link, $debug;
-
-  if($link) {
-    return true;
-  }
-
+  global $link;
+//  global $link, $debug;
+//
+//  if($link) {
+//    return true;
+//  }
+//
+//  require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+//
+//  $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or $debug->error(db_error(),'DB Error - cannot connect to server');
+//
+//  mysql_query("/*!40101 SET NAMES 'utf8' */") or die('Error: ' . db_error());
+//  mysql_select_db($dbsettings['name']) or $debug->error(db_error(), 'DB error - cannot find DB on server');
+//  // mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . db_error());
+//  mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . db_error());
+//  unset($dbsettings);
+//
+//  return true;
   require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 
-  $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or $debug->error(mysql_error(),'DB Error - cannot connect to server');
-
-  mysql_query("/*!40101 SET NAMES 'utf8' */") or die('Error: ' . mysql_error());
-  mysql_select_db($dbsettings['name']) or $debug->error(mysql_error(), 'DB error - cannot find DB on server');
-  // mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . mysql_error());
-  mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . mysql_error());
-  unset($dbsettings);
-
-  return true;
+  __db_connect($link, $dbsettings);
 }
+
+function sn_db_diconnect($link = null) {
+  return __db_disconnect($link);
+}
+
+function db_error($link = null) {
+  return __db_error($link);
+}
+
+
 
 function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
   global $numqueries, $link, $debug, $sn_cache, $config, $db_prefix;
@@ -181,9 +189,9 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
     $sql = $sql_commented;
   }
 
-  $sqlquery = mysql_query($sql) or $debug->error(mysql_error()."<br />$sql<br />",'SQL Error');
+  $sqlquery = __db_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
 
-  return $fetch ? mysql_fetch_assoc($sqlquery) : $sqlquery;
+  return $fetch ? db_fetch($sqlquery) : $sqlquery;
 }
 
 function db_change_units_perform($query, $tablename, $object_id) {
@@ -263,7 +271,7 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false) {
       foreach($values as $field => &$value) {
         $value_type = gettype($value);
         if ($value_type == 'string') {
-          $value = "'" . mysql_real_escape_string($value) . "'";
+          $value = "'" . db_escape($value) . "'";
         }
         $value = "`{$field}` = {$value}";
       }

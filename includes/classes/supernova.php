@@ -359,7 +359,7 @@ class classSupernova {
             ($fetch ? ' LIMIT 1' : ''), false, true);
 
           //pdump($q, 'Запрос блокировки');
-          while($row = mysql_fetch_assoc($query)) {
+          while($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if(!static::cache_lock_get($owner_location_type, $row['parent_id']))
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
@@ -381,7 +381,7 @@ class classSupernova {
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
-      while($row = mysql_fetch_assoc($query)) {
+      while($row = db_fetch($query)) {
         // static::db_get_record_by_id($location_type, $row[$id_field]);
         static::cache_set($location_type, $row[$id_field], $row);
         $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
@@ -412,7 +412,7 @@ class classSupernova {
     $table_name = $location_info[P_TABLE_NAME];
     if($result = static::db_query($q = "UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
-      if(mysql_affected_rows()) {
+      if(db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         // TODO - переделать под работу со структурированными $set
 
@@ -436,7 +436,7 @@ class classSupernova {
 
     if($result = static::db_query("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
-      if(mysql_affected_rows()) { // Обновляем данные только если ряд был затронут
+      if(db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         // TODO - когда будет структурированный $condition и $set - перепаковывать данные
         static::cache_clear($location_type, true);
@@ -450,9 +450,9 @@ class classSupernova {
     $set = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     if($result = static::db_query("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
-      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      if(db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
-        $record_id = mysql_insert_id();
+        $record_id = db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
         $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
@@ -474,7 +474,7 @@ class classSupernova {
     $table_name = $location_info[P_TABLE_NAME];
     if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}"))
     {
-      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      if(db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         static::cache_unset($location_type, $safe_record_id);
       }
@@ -493,7 +493,7 @@ class classSupernova {
 
     if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}"))
     {
-      if(mysql_affected_rows()) // Обновляем данные только если ряд был затронут
+      if(db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось
         // TODO - когда будет структурированный $condition можно будет делать только cache_unset по нужным записям
@@ -566,7 +566,7 @@ class classSupernova {
     if($user === null)
     {
       // Вытаскиваем запись
-      $username_safe = mysql_real_escape_string($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
+      $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
       // TODO переписать
       // classSupernova::db_get_record_list(LOC_USER, "`username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'");
@@ -602,7 +602,7 @@ class classSupernova {
     if($user === null)
     {
       // Вытаскиваем запись
-      $email_safe = mysql_real_escape_string($email);
+      $email_safe = db_escape($email);
       $user = static::db_query(
         "SELECT * FROM {{users}} WHERE LOWER(`email_2`) = '{$email_safe}'" .
         ($use_both ? " OR LOWER(`email`) = '{$email_safe}'" : '')
@@ -744,7 +744,7 @@ class classSupernova {
 
     if($que_query)
     {
-      while($row = mysql_fetch_assoc($que_query))
+      while($row = db_fetch($que_query))
       {
         $ques['items'][] = $row;
       }
@@ -960,7 +960,7 @@ class classSupernova {
           if(is_string($field_id)) {
             $field_value =
               $field_value === null ? 'NULL' :
-                (is_string($field_value) ? "'" . mysql_real_escape_string($field_value) . "'" :
+                (is_string($field_value) ? "'" . db_escape($field_value) . "'" :
                   (is_bool($field_value) ? intval($field_value) : $field_value));
             $the_conditions[] = "`{$field_id}` = {$field_value}";
           } else {

@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #39b12.9# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #39b14.2# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -693,7 +693,7 @@ abstract class sn_module_payment extends sn_module {
     $query = array();
     foreach($payment as $key => $value)
     {
-      $value = is_string($value) ? '"' . mysql_real_escape_string($value) . '"' : $value;
+      $value = is_string($value) ? '"' . db_escape($value) . '"' : $value;
       $query[] = "`{$key}` = {$value}";
     }
 
@@ -713,7 +713,7 @@ abstract class sn_module_payment extends sn_module {
     // doquery("INSERT INTO {{payment}} SET
     */
 
-    $payment_id = mysql_insert_id();
+    $payment_id = db_insert_id();
     // $payment = doquery("SELECT * FROM `{{payment}}` WHERE `payment_id` = {$payment_id}", true);
 
     return $payment_id;
@@ -765,7 +765,7 @@ abstract class sn_module_payment extends sn_module {
     }
 
     if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
-      $safe_comment = mysql_real_escape_string($payment['payment_comment'] = $lang['pay_msg_request_payment_cancelled'] .' ' . $payment['payment_comment']);
+      $safe_comment = db_escape($payment['payment_comment'] = $lang['pay_msg_request_payment_cancelled'] .' ' . $payment['payment_comment']);
 
       if(!$payment['payment_test']) {
         $result = mm_points_change($payment['payment_user_id'], RPG_PURCHASE_CANCEL, -$payment['payment_dark_matter_gained'], $payment['payment_comment']);

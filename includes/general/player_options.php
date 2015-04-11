@@ -40,7 +40,7 @@ function player_load_option(&$user, $option_id = null) {
         ($option_id ? " AND option_id " . (is_array($option_id) ? 'IN (' . implode(',',$option_id ) . ')' : "= '{$option_id}'") : '')
     );
 
-    while($row = mysql_fetch_array($query)) {
+    while($row = db_fetch($query)) {
       $user['player_options'][$row['option_id']] = $row['value'];
       $options[$row['option_id']] = $row['value'];
     }
@@ -57,8 +57,8 @@ function player_save_option_array(&$user, $options_array) {
     foreach($options_array as $option_id => &$option_value) {
       $user[$option_id] = $option_value;
 
-      $option_id = mysql_real_escape_string($option_id);
-      $option_value = mysql_real_escape_string($option_value);
+      $option_id = db_escape($option_id);
+      $option_value = db_escape($option_value);
 
       $option_value = "({$user['id']},'{$option_id}','{$option_value}')";
     }

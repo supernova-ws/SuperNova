@@ -12,7 +12,7 @@ if (!$user_can_negotiate) {
 $template = gettemplate('ali_admin_diplomacy', true);
 $page_title = $lang['ali_dip_title'];
 
-$ally_name_safe = mysql_real_escape_string($user['ally_name']);
+$ally_name_safe = db_escape($user['ally_name']);
 
 if(sys_get_param_str('ali_dip_offer_make'))
 {
@@ -164,7 +164,7 @@ foreach($sn_diplomacy_relation_list as $diplomacy_relation_id => $diplomacy_rela
 }
 
 $query = doquery("SELECT id, ally_name, ally_tag FROM {{alliance}} WHERE `id` != {$user['ally_id']} ORDER BY ally_name;");
-while($alliance = mysql_fetch_assoc($query))
+while($alliance = db_fetch($query))
 {
   $template->assign_block_vars('alliance', array(
     'ID'   => $alliance['id'],
@@ -183,7 +183,7 @@ $query = doquery(
   WHERE
     alliance_negotiation_ally_id = {$user['ally_id']} OR alliance_negotiation_contr_ally_id = {$user['ally_id']};"
 );
-while($offer = mysql_fetch_assoc($query))
+while($offer = db_fetch($query))
 {
   $template->assign_block_vars('offer', array(
     'ID'       => $offer['alliance_negotiation_id'],

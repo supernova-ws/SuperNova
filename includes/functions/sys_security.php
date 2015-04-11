@@ -16,7 +16,7 @@ function sec_player_ip() {
         ),
   );
 
-  return array_map('mysql_real_escape_string', $ip);
+  return array_map('db_escape', $ip);
 }
 
 /**
@@ -58,7 +58,7 @@ function sn_set_cookie($user, $rememberme) {
 function sec_login_username($username_unsafe, $password_raw, $remember_me = 1) {
   // TODO - Логин по старым именам
   // $status = LOGIN_UNDEFINED;
-  $username_safe = mysql_real_escape_string($username_unsafe);
+  $username_safe = db_escape($username_unsafe);
   if(!$username_safe)
   {
     $status = LOGIN_ERROR_USERNAME;
@@ -113,10 +113,10 @@ function sec_restore_password_send_email($email_unsafe) {
 
     do {
       $confirm_code = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION);
-      $confirm_code_safe = mysql_real_escape_string($confirm_code);
+      $confirm_code_safe = db_escape($confirm_code);
       $query = doquery("SELECT count(*) FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}'", true);
     } while(!$query);
-    $email_safe = mysql_real_escape_string($email_unsafe);
+    $email_safe = db_escape($email_unsafe);
     doquery("INSERT INTO {{confirmations}} SET `id_user`= '{$user_id['id']}', `type` = " . CONFIRM_PASSWORD_RESET . ", `code` = '{$confirm_code}', `email` = '{$email_safe}';");
 
     @$result = mymail($email_unsafe, sprintf($lang['log_lost_email_title'], $config->game_name), sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . $_SERVER['PHP_SELF'], $confirm_code, date(FMT_DATE_TIME, SN_TIME_NOW + 3*24*60*60), $config->game_name));
@@ -202,7 +202,7 @@ function sec_login() {
 
   sn_db_transaction_start();
   if($result[F_DEVICE_CYPHER]) {
-    $cypher_safe = mysql_real_escape_string($result[F_DEVICE_CYPHER]);
+    $cypher_safe = db_escape($result[F_DEVICE_CYPHER]);
     $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
     if(isset($device_id['device_id']) && $device_id['device_id']) {
       $result[F_DEVICE_ID] = $device_id['device_id'];
@@ -211,16 +211,16 @@ function sec_login() {
 
   if($result[F_DEVICE_ID] <= 0) {
     do {
-      $cypher_safe = mysql_real_escape_string($result[F_DEVICE_CYPHER] = sys_random_string());
+      $cypher_safe = db_escape($result[F_DEVICE_CYPHER] = sys_random_string());
       $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
     } while (!empty($row));
     doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
-    $result[F_DEVICE_ID] = mysql_insert_id();
+    $result[F_DEVICE_ID] = db_insert_id();
     sn_setcookie(SN_COOKIE_D, $result[F_DEVICE_CYPHER], PERIOD_FOREVER, SN_ROOT_RELATIVE);
   }
   sn_db_transaction_commit();
 
-//  $cypher_safe = mysql_real_escape_string($_COOKIE[SN_COOKIE_D]);
+//  $cypher_safe = db_escape($_COOKIE[SN_COOKIE_D]);
 //  $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1;", true);
 //  $result[F_DEVICE_CYPHER] = $_COOKIE[SN_COOKIE_D];
 //  $result[F_DEVICE_ID] = $device_id['device_id'];
@@ -313,11 +313,11 @@ function sec_login_process(&$result) {
 
 // Процедура по установке значения поля из словаря по данным
 function sec_login_set_fields(&$template_result, $field_value, $security_field_name, $security_field_id, $db_field_id, $db_table_name, $db_field_name) {
-  $browser_safe = mysql_real_escape_string($template_result[$security_field_name] = $field_value);
+  $browser_safe = db_escape($template_result[$security_field_name] = $field_value);
   $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
   if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
     doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
-    $template_result[$security_field_id] = mysql_insert_id();
+    $template_result[$security_field_id] = db_insert_id();
   } else {
     $template_result[$security_field_id] = $browser_id['id_field'];
   }
@@ -330,19 +330,20 @@ function sec_login_change_state() {
     sn_db_transaction_start();
     sec_login_set_fields($template_result, $_SERVER['HTTP_USER_AGENT'], F_BROWSER, F_BROWSER_ID, 'browser_id', 'security_browser', 'browser_user_agent');
     /*
-    $browser_safe = mysql_real_escape_string($template_result[F_BROWSER] = $_SERVER['HTTP_USER_AGENT']);
+    $browser_safe = db_escape($template_result[F_BROWSER] = $_SERVER['HTTP_USER_AGENT']);
     $browser_id = doquery("SELECT `browser_id` FROM {{security_browser}} WHERE `browser_user_agent` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
     if(!isset($browser_id['browser_id']) || !$browser_id['browser_id']) {
       doquery("INSERT INTO {{security_browser}} (`browser_user_agent`) VALUES ('{$browser_safe}');");
-      $template_result[F_BROWSER_ID] = mysql_insert_id();
+      $template_result[F_BROWSER_ID] = db_insert_id();
     } else {
       $template_result[F_BROWSER_ID] = $browser_id['browser_id'];
     }
     */
-    $proxy_safe = mysql_real_escape_string($user['user_proxy']);
+    $proxy_safe = db_escape($user['user_proxy']);
+    $ip_address = ip2longu($user['user_lastip']);
     doquery(
       "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
-        VALUES ({$user['id']},{$template_result[F_DEVICE_ID]},{$template_result[F_BROWSER_ID]},INET_ATON('{$user['user_lastip']}'), '{$proxy_safe}');"
+        VALUES ({$user['id']},{$template_result[F_DEVICE_ID]},{$template_result[F_BROWSER_ID]},{$ip_address}, '{$proxy_safe}');"
     );
 
     // TODO REMOVE SYS_LOG_HIT
@@ -360,7 +361,7 @@ function sec_login_change_state() {
           (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
         VALUES
           ('" . SN_TIME_SQL. "', {$user['id']}, {$template_result[F_DEVICE_ID]},{$template_result[F_BROWSER_ID]},
-            INET_ATON('{$user['user_lastip']}'),'{$proxy_safe}', {$template_result[F_PAGE_ID]}, {$template_result[F_URL_ID]});");
+            {$ip_address},'{$proxy_safe}', {$template_result[F_PAGE_ID]}, {$template_result[F_URL_ID]});");
       $is_watching = false;
     }
     sn_db_transaction_commit();
@@ -390,7 +391,7 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
       throw new exception(REGISTER_ERROR_USERNAME_WRONG, ERR_ERROR);
     }
 
-    $username_safe = mysql_real_escape_string($username_unsafe);
+    $username_safe = db_escape($username_unsafe);
     $db_check = doquery("SELECT `player_id` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", true);
     if(!empty($db_check)) {
       throw new exception(REGISTER_ERROR_USERNAME_EXISTS, ERR_ERROR);
@@ -651,8 +652,8 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 
   db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
 
-  $banned['username'] = mysql_real_escape_string($banned['username']);
-  $banner['username'] = mysql_real_escape_string($banner['username']);
+  $banned['username'] = db_escape($banned['username']);
+  $banner['username'] = db_escape($banner['username']);
   doquery("
     INSERT INTO
       {{banned}}
@@ -678,9 +679,9 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
 
   db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = {$time_now}");
 
-  $banned['username'] = mysql_real_escape_string($banned['username']);
-  $banner['username'] = mysql_real_escape_string($banner['username']);
-  $reason = mysql_real_escape_string($reason);
+  $banned['username'] = db_escape($banned['username']);
+  $banner['username'] = db_escape($banner['username']);
+  $reason = db_escape($reason);
   doquery("
     INSERT INTO {{banned}}
     SET

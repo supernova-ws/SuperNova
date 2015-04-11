@@ -183,7 +183,7 @@ switch($new_version)
     {
       $planet_query = upd_do_query('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
       $const_que_structures = QUE_STRUCTURES;
-      while($planet_data = mysql_fetch_assoc($planet_query))
+      while($planet_data = db_fetch($planet_query))
       {
         $old_que = explode(';', $planet_data['b_building_id']);
         foreach($old_que as $old_que_item_string)
@@ -288,7 +288,7 @@ switch($new_version)
       {
         upd_drop_table('errors_backup');
       }
-      mysql_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
+      __db_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
       upd_drop_table('errors');
     }
 
@@ -372,7 +372,7 @@ switch($new_version)
       $temp_planet_types = array(PT_PLANET, PT_DEBRIS, PT_MOON);
 
       $query = upd_do_query("SELECT id, fleet_shortcut FROM {{users}} WHERE fleet_shortcut > '';");
-      while($user_data = mysql_fetch_assoc($query))
+      while($user_data = db_fetch($query))
       {
         $shortcuts = explode("\r\n", $user_data['fleet_shortcut']);
         foreach($shortcuts as $shortcut)
@@ -383,7 +383,7 @@ switch($new_version)
           }
 
           $shortcut = explode(',', $shortcut);
-          $shortcut[0] = mysql_real_escape_string($shortcut[0]);
+          $shortcut[0] = db_escape($shortcut[0]);
           $shortcut[1] = intval($shortcut[1]);
           $shortcut[2] = intval($shortcut[2]);
           $shortcut[3] = intval($shortcut[3]);
@@ -595,7 +595,7 @@ switch($new_version)
     ), strtoupper($update_tables['planets']['debris_metal']['Type']) != 'BIGINT(20) UNSIGNED');
 
     $illegal_moon_query = upd_do_query("SELECT id FROM `{{planets}}` WHERE `id_owner` <> 0 AND `planet_type` = 3 AND `parent_planet` <> 0 AND `parent_planet` NOT IN (SELECT `id` FROM {{planets}} WHERE `planet_type` = 1);");
-    while($illegal_moon_row = mysql_fetch_assoc($illegal_moon_query))
+    while($illegal_moon_row = db_fetch($illegal_moon_query))
     {
       upd_do_query("DELETE FROM {{planets}} WHERE id = {$illegal_moon_row['id']} LIMIT 1;", true);
     }
@@ -637,8 +637,8 @@ switch($new_version)
     {
       upd_do_query('START TRANSACTION;', true);
       $query = upd_do_query("SELECT * FROM {{logs}} WHERE log_code = 102 order by log_id LIMIT 1000;");
-      $records = mysql_numrows($query);
-      while($row = mysql_fetch_assoc($query))
+      $records = db_num_rows($query);
+      while($row = db_fetch($query))
       {
         $result = preg_match('/^Player ID (\d+) Dark Matter was adjusted with (\-?\d+). Reason: (.+)$/', $row['log_text'], $matches);
 
@@ -685,9 +685,9 @@ switch($new_version)
 
         if($matches[2])
         {
-          $row['log_username'] = mysql_real_escape_string($row['log_username']);
-          $row['log_page'] = mysql_real_escape_string($row['log_page']);
-          $comment = mysql_real_escape_string($comment);
+          $row['log_username'] = db_escape($row['log_username']);
+          $row['log_page'] = db_escape($row['log_page']);
+          $comment = db_escape($comment);
 
           upd_do_query(
             "INSERT INTO {{log_dark_matter}} (`log_dark_matter_timestamp`, `log_dark_matter_username`, `log_dark_matter_reason`,
@@ -705,7 +705,7 @@ switch($new_version)
 
     foreach($update_tables as $table_name => $cork)
     {
-      $row = mysql_fetch_assoc(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';", true));
+      $row = db_fetch(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';", true));
       if($row['ENGINE'] != 'InnoDB')
       {
         upd_alter_table($table_name, 'ENGINE=InnoDB', true);
@@ -1333,7 +1333,7 @@ switch($new_version)
 
       $update_query_template = "UPDATE {{users}} SET id = id %s WHERE id = %d LIMIT 1;";
       $user_list = upd_do_query("SELECT * FROM {{users}};");
-      while($user_row = mysql_fetch_assoc($user_list))
+      while($user_row = db_fetch($user_list))
       {
         $update_query_str = '';
         foreach(sn_get_groups('mercenaries') as $mercenary_id)
@@ -1400,11 +1400,11 @@ switch($new_version)
     // ------------------------------------------------------------------------
     // Creating players for allies
     $ally_row_list = doquery("SELECT `id`, `ally_tag` FROM {{alliance}} WHERE ally_user_id IS NULL;");
-    while($ally_row = mysql_fetch_assoc($ally_row_list))
+    while($ally_row = db_fetch($ally_row_list))
     {
-      $ally_user_name = mysql_escape_string("[{$ally_row['ally_tag']}]");
+      $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
       doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = {$time_now}, `user_as_ally` = {$ally_row['id']};");
-      $ally_user_id = mysql_insert_id();
+      $ally_user_id = db_insert_id();
       doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
     }
     // Renaming old ally players TODO: Remove on release
@@ -1415,11 +1415,11 @@ switch($new_version)
     // ------------------------------------------------------------------------
     // Creating planets for allies
     $ally_user_list = doquery("SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NOT NULL AND `id_planet` = 0;");
-    while($ally_user_row = mysql_fetch_assoc($ally_user_list))
+    while($ally_user_row = db_fetch($ally_user_list))
     {
-      $ally_planet_name = mysql_escape_string($ally_user_row['username']);
+      $ally_planet_name = db_escape($ally_user_row['username']);
       doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = {$time_now}, `id_owner` = {$ally_user_row['id']};");
-      $ally_planet_id = mysql_insert_id();
+      $ally_planet_id = db_insert_id();
       doquery("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
     }
 
@@ -1450,7 +1450,7 @@ switch($new_version)
     if($update_tables['users']['b_tech_planet'])
     {
       $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
-      while($planet_row = mysql_fetch_assoc($query))
+      while($planet_row = db_fetch($query))
       {
         $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - $time_now) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
         doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
@@ -1504,7 +1504,7 @@ switch($new_version)
       doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
 
       $query = doquery("SELECT * FROM {{quest}}");
-      while($row = mysql_fetch_assoc($query))
+      while($row = db_fetch($query))
       {
         $query_add = '';
         $quest_reward_list = explode(';', $row['quest_rewards']);
@@ -1707,7 +1707,7 @@ switch($new_version)
 
       $query = upd_do_query("SELECT `BUDDY_ID`, `BUDDY_SENDER_ID`, `BUDDY_OWNER_ID` FROM {{buddy}} ORDER BY `BUDDY_ID`;");
       $found = $lost = array();
-      while($row = mysql_fetch_assoc($query))
+      while($row = db_fetch($query))
       {
         $index = min($row['BUDDY_SENDER_ID'], $row['BUDDY_OWNER_ID']) . ';' . max($row['BUDDY_SENDER_ID'], $row['BUDDY_OWNER_ID']);
         if(!isset($found[$index]))

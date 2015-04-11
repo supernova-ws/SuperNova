@@ -20,7 +20,7 @@ $template = gettemplate('banned_body', true);
 
 $query = doquery("SELECT * FROM {{banned}} ORDER BY `ban_id` DESC;");
 $i=0;
-while($ban_row = mysql_fetch_assoc($query))
+while($ban_row = db_fetch($query))
 {
   $template->assign_block_vars('banlist', array(
     'USER_NAME'   => $ban_row['ban_user_name'],

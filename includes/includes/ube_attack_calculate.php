@@ -230,7 +230,7 @@ UBE_OPTIONS[UBE_MOON_WAS]
       AND `fleet_start_time` <= {$ube_time} AND `fleet_end_stay` >= {$ube_time}
       AND `fleet_mess` = 0 FOR UPDATE"
   );
-  while($fleet = mysql_fetch_assoc($fleets))
+  while($fleet = db_fetch($fleets))
   {
     ube_attack_prepare_fleet($combat_data, $fleet, false);
   }
@@ -239,7 +239,7 @@ UBE_OPTIONS[UBE_MOON_WAS]
   if($fleet_row['fleet_group'])
   {
     $fleets = doquery("SELECT * FROM {{fleets}} WHERE fleet_group= {$fleet_row['fleet_group']} FOR UPDATE");
-    while($fleet = mysql_fetch_assoc($fleets))
+    while($fleet = db_fetch($fleets))
     {
       ube_attack_prepare_fleet($combat_data, $fleet, true);
     }

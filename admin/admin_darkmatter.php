@@ -34,9 +34,9 @@ if($points = sys_get_param_float('points')) {
     if(is_array($row) && isset($row['id'])) {
       // Does anything post to DB?
       if(rpg_points_change($row['id'], RPG_ADMIN, $points, sprintf($lang['adm_matter_change_log_record'],
-        $row['id'], mysql_real_escape_string($row['username']),
-        $user['id'], mysql_real_escape_string($user['username']),
-        mysql_real_escape_string(sys_get_param_str('reason'))
+        $row['id'], db_escape($row['username']),
+        $user['id'], db_escape($user['username']),
+        db_escape(sys_get_param_str('reason'))
       ))) {
         $message = sprintf($lang['adm_dm_user_added'], $row['username'], $row['id'], $points);
         $isNoError = true;

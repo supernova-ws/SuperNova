@@ -50,7 +50,7 @@ try
         }
 
         doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_ACTIVE . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
-        if(mysql_affected_rows($link))
+        if(db_affected_rows($link))
         {
           msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_accept_title'],
             sprintf($lang['buddy_msg_accept_text'], $user['username']));
@@ -108,7 +108,7 @@ try
   elseif($new_friend_name = sys_get_param_str_unsafe('request_user_name'))
   {
     $new_friend_row = db_user_by_username($new_friend_name, true, '`id`, `username`');
-    $new_friend_name = mysql_real_escape_string($new_friend_name);
+    $new_friend_name = db_escape($new_friend_name);
   }
 
   if($new_friend_row['id'] == $user['id'])
@@ -150,7 +150,7 @@ catch(exception $e)
 sn_db_transaction_rollback();
 
 $query = db_buddy_list_by_user($user['id']);
-while($row = mysql_fetch_assoc($query))
+while($row = db_fetch($query))
 {
   $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
 

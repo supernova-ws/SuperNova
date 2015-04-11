@@ -281,7 +281,7 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
       $OwnerName = db_user_by_id($PlanetOwnerID, false, 'username');
       $planet['name'] = "{$OwnerName['username']} {$planet['name']}";
     }
-    $planet['name'] = mysql_real_escape_string(strip_tags(trim($planet['name'])));
+    $planet['name'] = db_escape(strip_tags(trim($planet['name'])));
 
     $RetValue = classSupernova::db_ins_record(LOC_PLANET,
       "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
@@ -292,7 +292,7 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
       `crystal` = '{$planet['crystal']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `crystal_max` = '{$planet['crystal_max']}',
       `deuterium` = '{$planet['deuterium']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', `deuterium_max` = '{$planet['deuterium_max']}'"
     );
-    // $RetValue = mysql_insert_id();
+    // $RetValue = db_insert_id();
     $RetValue = is_array($RetValue) ? $RetValue['id'] : false;
   }
   else
@@ -352,7 +352,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
       $temp_max  = $temp_min + 40;
 
       $moon_name = $moon_name ? $moon_name : "{$moon_planet['name']} {$lang['sys_moon']}";
-      $moon_name_safe = mysql_real_escape_string($moon_name);
+      $moon_name_safe = db_escape($moon_name);
 
       $field_max = ceil($size / 1000);
 

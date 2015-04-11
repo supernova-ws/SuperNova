@@ -77,7 +77,7 @@ if (isset($GET_result)) {
       $parse['adm_sub_form2']  = "<table><tbody>";
       $parse['adm_sub_form2'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_colony']."</td></tr>";
       $UsrColo = db_planet_list_sorted($SelUser); // doquery("SELECT * FROM !!planets!! WHERE `id_owner` = '". $SelUser['id'] ." ORDER BY `galaxy` ASC, `planet` ASC, `system` ASC, `planet_type` ASC';");
-      while ( $Colo = mysql_fetch_assoc($UsrColo) ) {
+      while ( $Colo = db_fetch($UsrColo) ) {
         if ($Colo['id'] != $SelUser['id_planet']) {
           $parse['adm_sub_form2'] .= "<tr><th>".$Colo['id']."</th>";
           $parse['adm_sub_form2'] .= "<th>". (($Colo['planet_type'] == 1) ? $lang['adm_planet'] : $lang['adm_moon'] ) ."</th>";
@@ -120,7 +120,7 @@ if (isset($GET_result)) {
       $bloc                   = $lang;
       $bloc['adm_this_ip']    = $ip;
       $SelUser = db_user_list("`user_lastip` = '{$ip}'");
-      //while ( $Usr = mysql_fetch_assoc($SelUser) ) {
+      //while ( $Usr = db_fetch($SelUser) ) {
       foreach($SelUser as $Usr) {
         $UsrMain = db_planet_by_id($Usr['id_planet'], false, 'name');
         $bloc['adm_plyer_lst'] .= "<tr><th>".$Usr['username']."</th><th>[".$Usr['galaxy'].":".$Usr['system'].":".$Usr['planet']."] ".$UsrMain['name']."</th></tr>";

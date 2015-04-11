@@ -57,7 +57,7 @@ $template = gettemplate('ali_members', true);
 $userList = db_user_list("`ally_id`= {$user['ally_id']} ORDER BY " . sprintf($sort1s[$sort1], $sort2s), false,
   'id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points');
 
-// while ($userRow = mysql_fetch_assoc($userList))
+// while ($userRow = db_fetch($userList))
 foreach($userList as $userRow)
 {
   $i++;

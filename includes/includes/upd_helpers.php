@@ -18,7 +18,7 @@ function upd_do_query($query, $no_log = false) {
       $query = str_replace("{{{$tableName}}}", $db_prefix . $tableName, $query);
     }
   }
-  $result = mysql_query($query) or die('Query error for ' . $query . ': ' . mysql_error());
+  $result = __db_query($query) or die('Query error for ' . $query . ': ' . db_error());
   return $result;
 }
 
@@ -91,17 +91,17 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
   upd_unset_table_info($tableName);
 
   $q1 = doquery("SHOW COLUMNS FROM {$prefix_table_name};");
-  while($r1 = mysql_fetch_assoc($q1)) {
+  while($r1 = db_fetch($q1)) {
     $update_tables[$tableName][$r1['Field']] = $r1;
   }
 
   $q1 = doquery("SHOW INDEX FROM {$prefix_table_name};");
-  while($r1 = mysql_fetch_assoc($q1)) {
+  while($r1 = db_fetch($q1)) {
     $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 
   $q1 = doquery("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;");
-  while($r1 = mysql_fetch_assoc($q1)) {
+  while($r1 = db_fetch($q1)) {
     $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
     $update_foreigns[$tableName][$r1['CONSTRAINT_NAME']] .= "{$r1['COLUMN_NAME']},{$table_referenced},{$r1['REFERENCED_COLUMN_NAME']};";
@@ -114,7 +114,7 @@ function upd_alter_table($table, $alters, $condition = true) {
   if(!$condition) {
     return;
   }
-
+pdump($alters, $table);
   upd_add_more_time();
   $alters_print = is_array($alters) ? dump($alters) : $alters;
   upd_log_message("Altering table '{$table}' with alterations {$alters_print}");
@@ -127,9 +127,9 @@ function upd_alter_table($table, $alters, $condition = true) {
   // foreach($alters as $table_name => )
   $qry = "ALTER TABLE {$config->db_prefix}{$table} {$alters};";
 
-  //$result = mysql_query($qry);
+  //$result = db_query($qry);
   $result = upd_do_query($qry);
-  $error = mysql_error();
+  $error = db_error();
   if($error) {
     die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
   }
@@ -145,7 +145,7 @@ function upd_alter_table($table, $alters, $condition = true) {
 function upd_drop_table($table_name) {
   global $config;
 
-  mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
+  __db_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
 
   upd_unset_table_info($table_name);
 }
@@ -156,7 +156,7 @@ function upd_create_table($table_name, $declaration) {
   if(!$update_tables[$table_name]) {
     doquery('set foreign_key_checks = 0;');
     $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
-    $error = mysql_error();
+    $error = db_error();
     if($error) {
       die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
     }
@@ -169,7 +169,7 @@ function upd_create_table($table_name, $declaration) {
 }
 
 function upd_db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
-  return mysql_fetch_assoc(upd_do_query(
+  return db_fetch(upd_do_query(
     "SELECT {$fields}
     FROM {{unit}}
     WHERE

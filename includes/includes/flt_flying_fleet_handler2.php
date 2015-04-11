@@ -191,7 +191,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   FOR UPDATE;");
 
 //log_file('Выборка флотов');
-  while($fleet_row = mysql_fetch_assoc($_fleets)) {
+  while($fleet_row = db_fetch($_fleets)) {
     set_time_limit(15);
     // Унифицировать код с темплейтным разбором эвентов на планете!
     $fleet_list[$fleet_row['fleet_id']] = $fleet_row;

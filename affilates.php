@@ -18,7 +18,7 @@ $rpg_bonus_minimum = $config->rpg_bonus_minimum;
 $rpg_bonus_divisor = $config->rpg_bonus_divisor ? $config->rpg_bonus_divisor : 10;
 
 $affilates = db_referrals_list_by_id($user['id']);
-while ($affilate = mysql_fetch_assoc($affilates))
+while ($affilate = db_fetch($affilates))
 {
   $affilate_gain = $affilate['dark_matter'] >= $rpg_bonus_minimum ? floor($affilate['dark_matter'] / $rpg_bonus_divisor) : 0;
 

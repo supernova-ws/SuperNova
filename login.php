@@ -28,7 +28,7 @@ $email = sys_get_param_str('email');
 
 /*
 if(sys_get_param('confirm_code_send') && $email_unsafe = sys_get_param_str_unsafe('email')) {
-  $email = mysql_real_escape_string($email_unsafe);
+  $email = db_escape($email_unsafe);
 
   $user_id = db_user_by_email($email_unsafe, false, false, 'id');
   if(!$user_id['id']) {
@@ -42,7 +42,7 @@ if(sys_get_param('confirm_code_send') && $email_unsafe = sys_get_param_str_unsaf
 
     do {
       $confirm_code = sys_random_string(6, SN_SYS_SEC_CHARS_CONFIRMATION);
-      $confirm_code_safe = mysql_real_escape_string($confirm_code);
+      $confirm_code_safe = db_escape($confirm_code);
       $query = doquery("SELECT count(*) FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}'", true);
     } while($query);
 

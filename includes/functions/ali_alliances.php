@@ -37,7 +37,7 @@ function ali_relations($ally_from, $ally_to = 0)
       ORDER BY alliance_diplomacy_time, alliance_diplomacy_id;"
   );
 
-  while($record = mysql_fetch_assoc($query))
+  while($record = db_fetch($query))
   {
     $temp_array[$record['alliance_diplomacy_contr_ally_id']] = $record;
   }

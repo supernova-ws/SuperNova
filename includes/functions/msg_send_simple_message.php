@@ -11,7 +11,7 @@
    1.2 - Correction bug (addslashes pour les zone texte pouvant contenir une apostrophe)
    1.3 - Correction bug (integration de la variable $Time pour afficher l'heure exacte de l'evenement pour les flottes)
    1.4 - copyright (c) 2010 by Gorlum for http://supernova.ws
-         [+] Ability to mass-send emails. Mass-sending done via two mysql queries - one for messages table, one for users table
+         [+] Ability to mass-send emails. Mass-sending done via two queries - one for messages table, one for users table
    1.5 - copyright (c) 2010-2011 by Gorlum for http://supernova.ws
          [+] SuperMassMailing - authlevel=3 player can send messages to whole server ('*' as $owners)
  */
@@ -25,7 +25,7 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
   $query = db_user_list(
     "ally_id = '{$ally_id}'" . ($ally_rank_id >= 0 ? " AND ally_rank_id = {$ally_rank_id}" : ''),
     false, 'id, username');
-  // while ($u = mysql_fetch_assoc($query))
+  // while ($u = db_fetch($query))
   foreach($query as $u)
   {
     $sendList[] = $u['id'];
@@ -55,9 +55,9 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
   if(!$escaped)
   {
-    $from = mysql_real_escape_string($from);
-    $subject = mysql_real_escape_string($subject);
-    $text = mysql_real_escape_string($text);
+    $from = db_escape($from);
+    $subject = db_escape($subject);
+    $text = db_escape($text);
   }
 
   $text_unescaped = stripslashes(str_replace(array('\r\n', "\r\n"), "<br />", $text));

@@ -27,8 +27,7 @@ $table_parent_columns = $planet_type == 3 || $planet_active;
 $template = gettemplate('admin/adm_planet_list', true);
 
 $query = db_planet_list_admin_list($table_parent_columns, $planet_active, $active_time, $planet_type);
-while ($planet_row = mysql_fetch_array($query))
-{
+while ($planet_row = db_fetch($query)) {
   $template->assign_block_vars('planet', array(
     'ID'          => $planet_row['id'],
     'NAME'        => js_safe_string($planet_row['name']),
@@ -52,7 +51,7 @@ $page_title =
 $template->assign_vars(array(
   'PAGE_TITLE' => $page_title,
 
-  'PLANET_COUNT'  => mysql_numrows($query),
+  'PLANET_COUNT'  => db_num_rows($query),
   'PARENT_COLUMN' => $table_parent_columns,
 ));
 

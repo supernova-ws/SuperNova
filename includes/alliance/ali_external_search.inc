@@ -13,9 +13,9 @@ if ($ali_search_text)
   $template->assign_var('SEARCH_TEXT', $ali_search_text);
 
   $search = doquery("SELECT DISTINCT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$ali_search_text}%' OR `ally_tag` LIKE '%{$ali_search_text}%' LIMIT 30");
-  if (mysql_num_rows($search))
+  if (db_num_rows($search))
   {
-    while ($ally_row = mysql_fetch_assoc($search))
+    while ($ally_row = db_fetch($search))
     {
       $template->assign_block_vars('alliances', array(
         'ID' => $ally_row['id'],

@@ -64,8 +64,8 @@ function sn_imperator_view($template = null) {
   $stat_array = array();
   $query = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
   global $link;
-  $stat_count = mysql_affected_rows($link);
-  while($row = mysql_fetch_assoc($query)) {
+  $stat_count = db_affected_rows($link);
+  while($row = db_fetch($query)) {
     foreach($stat_fields as $field_db_name => $field_template_name) {
       // $stat_count - $row['stat_code'] - для реверсирования ID статы в JS
       $stat_array[$field_template_name]['DATA'][$stat_count - $row['stat_code']] = $row[$field_db_name];

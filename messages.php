@@ -97,8 +97,8 @@ switch ($mode) {
       if(empty($error_list)) {
         $error_list[] = array('MESSAGE' => $lang['msg_not_message_sent'], 'STATUS' => ERR_NONE);
 
-        $user_safe_name = mysql_real_escape_string($user['username']);
-        $recipient_name = mysql_real_escape_string($recipient_name);
+        $user_safe_name = db_escape($user['username']);
+        $recipient_name = db_escape($recipient_name);
         msg_send_simple_message($recipient_id, $user['id'], $time_now, MSG_TYPE_PLAYER, "{$user_safe_name} [{$user['galaxy']}:{$user['system']}:{$user['planet']}]", $subject, $text, true);
 
         //$recipient_id = 0;
@@ -134,7 +134,7 @@ switch ($mode) {
           ((`message_owner` = '{$user['id']}' AND `message_sender` = '{$recipient_id}')
           OR
           (`message_sender` = '{$user['id']}' AND `message_owner` = '{$recipient_id}')) ORDER BY `message_time` DESC LIMIT 20;");
-    while ($message_row = mysql_fetch_assoc($message_query)) {
+    while ($message_row = db_fetch($message_query)) {
       $template->assign_block_vars('messages', array(
         'ID'             => $message_row['message_id'],
         'DATE'           => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
@@ -216,7 +216,7 @@ switch ($mode) {
     }
 
     $template = gettemplate('msg_message_list', true);
-    while ($message_row = mysql_fetch_assoc($message_query)) {
+    while ($message_row = db_fetch($message_query)) {
       $template->assign_block_vars('messages', array(
         'ID'             => $message_row['message_id'],
         'DATE'           => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
@@ -243,7 +243,7 @@ if(!$template) {
   $template = gettemplate('msg_message_class', true);
 
   $query = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
-  while($message_row = mysql_fetch_assoc($query)) {
+  while($message_row = db_fetch($query)) {
     $messages_total[$message_row['message_type']]  = $message_row['message_count'];
     $messages_total[MSG_TYPE_NEW]                 += $message_row['message_count'];
   }

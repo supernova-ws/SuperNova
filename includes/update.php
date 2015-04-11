@@ -66,7 +66,7 @@ upd_log_message('Server disabled. Loading table info...');
 $update_tables  = array();
 $update_indexes = array();
 $query = upd_do_query('SHOW TABLES;');
-while($row = mysql_fetch_row($query)) {
+while($row = db_fetch_row($query)) {
   upd_load_table_info($row[0]);
 }
 upd_log_message('Table info loaded. Now looking DB for upgrades...');
@@ -483,7 +483,7 @@ switch($new_version) {
     {
       $que_lines = array();
       $que_query = upd_do_query("SELECT * FROM {{users}} WHERE `que`");
-      while($que_row = mysql_fetch_assoc($que_query))
+      while($que_row = db_fetch($que_query))
       {
         $que_data = explode(',', $que_row['que']);
 
@@ -497,11 +497,11 @@ switch($new_version) {
         $que_data[QI_PLANET_ID] = $que_data[QI_PLANET_ID] ? $que_data[QI_PLANET_ID] : $que_row['id_planet'];
         if($que_data[QI_PLANET_ID])
         {
-          $que_planet_check = mysql_fetch_assoc(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
+          $que_planet_check = db_fetch(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
           if(!$que_planet_check['id'])
           {
             $que_data[QI_PLANET_ID] = $que_row['id_planet'];
-            $que_planet_check = mysql_fetch_assoc(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
+            $que_planet_check = db_fetch(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
             if(!$que_planet_check['id'])
             {
               $que_data[QI_PLANET_ID] = 'NULL';
@@ -556,7 +556,7 @@ switch($new_version) {
       $user_query = upd_do_query("SELECT * FROM {{users}}");
       upd_add_more_time(300);
       $sn_group_tech = sn_get_groups('tech');
-      while($user_row = mysql_fetch_assoc($user_query))
+      while($user_row = db_fetch($user_query))
       {
         foreach($sn_group_tech as $tech_id)
         {
@@ -676,7 +676,7 @@ switch($new_version) {
       $db_changeset = array();
 
       $query = upd_do_query("SELECT `id`, `player_artifact_list` FROM {{users}} WHERE `player_artifact_list` IS NOT NULL AND `player_artifact_list` != '' FOR UPDATE");
-      while($row = mysql_fetch_assoc($query))
+      while($row = db_fetch($query))
       {
         $artifact_list = explode(';', $row['player_artifact_list']);
         if(!$row['player_artifact_list'] || empty($artifact_list))
@@ -788,7 +788,7 @@ switch($new_version) {
     ), $update_tables['users']['metamatter']['Type'] == 'int(20)');
 
     $query = upd_do_query("SELECT * FROM {{que}} WHERE `que_type` = " . QUE_RESEARCH . " AND que_unit_id in (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ") FOR UPDATE");
-    while($row = mysql_fetch_assoc($query))
+    while($row = db_fetch($query))
     {
       $planet_id = ($row['que_planet_id_origin'] ? $row['que_planet_id_origin'] : $row['que_planet_id']);
       upd_do_query("SELECT id FROM {{planets}} WHERE id = {$planet_id} FOR UPDATE");
@@ -807,7 +807,7 @@ switch($new_version) {
     LEFT JOIN {{planets}} AS p ON p.id = u.id_planet
     WHERE unit_snid in (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ")
     FOR UPDATE");
-    while($row = mysql_fetch_assoc($query))
+    while($row = db_fetch($query))
     {
       if(!$row['id_planet'])
       {
@@ -1058,7 +1058,7 @@ switch($new_version) {
       }
 
       $query = upd_do_query("SELECT * FROM {{planets}} FOR UPDATE");
-      while($row = mysql_fetch_assoc($query)) {
+      while($row = db_fetch($query)) {
         $user_id = $row['id_owner'];
         $planet_id = $row['id'];
 
@@ -1218,7 +1218,7 @@ switch($new_version) {
       `player_id` bigint(20) unsigned NOT NULL DEFAULT '0',
       `device_id` bigint(20) unsigned NOT NULL DEFAULT '0',
       `browser_id` bigint(20) unsigned NOT NULL DEFAULT '0',
-      `user_ip` int(10) unsigned NOT NULL DEFAULT '0',
+      `user_ip` int(10) unsigned DEFAULT NULL,
       `user_proxy` varchar(255) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '',
       `first_visit` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
       PRIMARY KEY (`player_id`,`device_id`,`browser_id`,`user_ip`,`user_proxy`),
@@ -1284,7 +1284,7 @@ switch($new_version) {
     }
 
     $pack_until = "2014-11-01 00:00:00";
-    $temp = mysql_fetch_assoc(upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';"));
+    $temp = db_fetch(upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';"));
     if($temp['cnt']) {
       upd_do_query("DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp <= '{$pack_until}';");
 
@@ -1463,8 +1463,8 @@ switch($new_version) {
 
         $strings = array();
         $query = doquery($query);
-        while($row = mysql_fetch_array($query)) {
-          $strings[] = '("' . mysql_real_escape_string($row['url']) . '")';
+        while($row = db_fetch($query)) {
+          $strings[] = '("' . db_escape($row['url']) . '")';
           if(count($strings) > 100) {
             doquery($query_string . implode(',', $strings));
             $strings = array();
@@ -1490,7 +1490,7 @@ switch($new_version) {
         "ADD COLUMN `visit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `counter_id`",
         "ADD COLUMN `device_id` bigint(20) unsigned DEFAULT NULL AFTER `user_id`",
         "ADD COLUMN `browser_id` bigint(20) unsigned DEFAULT NULL AFTER `device_id`",
-        "ADD COLUMN `user_ip` int(10) unsigned NOT NULL DEFAULT '0' AFTER `browser_id`",
+        "ADD COLUMN `user_ip` int(10) unsigned DEFAULT NULL AFTER `browser_id`",
         "CHANGE COLUMN `proxy` `user_proxy` varchar(250) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' AFTER `user_ip`",
         "ADD COLUMN `page_url_id` int unsigned DEFAULT NULL AFTER `user_proxy`",
         "ADD COLUMN `plain_url_id` int unsigned DEFAULT NULL AFTER `page_url_id`",
@@ -1519,6 +1519,16 @@ switch($new_version) {
         ), isset($update_tables['counter']['ip']));
       }
     }
+//    // TODO remove after mine
+//    upd_alter_table('counter', array(
+//      "MODIFY COLUMN `user_ip` int(10) unsigned NULL DEFAULT NULL AFTER `browser_id`",
+//    ), strtolower($update_tables['counter']['user_ip']['Null']) == 'no');
+//
+//    upd_alter_table('security_player_entry', array(
+//      "MODIFY COLUMN `user_ip` int(10) unsigned NULL DEFAULT NULL",
+//    ), strtolower($update_tables['security_player_entry']['user_ip']['Null']) == 'no');
+//    pdump(strtolower($update_tables['security_player_entry']['user_ip']['Null']) == 'no');
+
 
     upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
     upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');

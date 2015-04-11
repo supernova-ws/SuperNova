@@ -308,25 +308,13 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   ));
   displayP(parsetemplate($template));
 
-  // sys_log_hit();
+  $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
-  // Affichage du Debug si necessaire
-  if($user['authlevel'] >= 3 && $config->debug)
-  {
-    $debug->echo_log();
-  }
-
-  if(isset($link))
-  {
-    mysql_close();
-  }
+  isset($link) ? sn_db_diconnect($link) : false;
 
   sn_benchmark();
 
-  if($die)
-  {
-    die($die === true ? 0 : $die);
-  }
+  $die ? die($die === true ? 0 : $die) : false;
 }
 
 function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count)
@@ -420,7 +408,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   */
 
   $ThisUsersPlanets = db_planet_list_sorted ( $user );
-  // while ($CurPlanet = mysql_fetch_assoc($ThisUsersPlanets))
+  // while ($CurPlanet = db_fetch($ThisUsersPlanets))
   foreach($ThisUsersPlanets as $CurPlanet)
   {
     if (!$CurPlanet['destruyed'])
@@ -454,7 +442,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   }
 
   $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
-  while($note_row = mysql_fetch_assoc($notes_query)) {
+  while($note_row = db_fetch($notes_query)) {
     note_assign($template, $note_row);
   }
 
@@ -652,7 +640,7 @@ function tpl_get_fleets_flying(&$user)
 {
   $fleet_flying_list = array();
   $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
-  while($fleet_flying_row = mysql_fetch_assoc($fleet_flying_query))
+  while($fleet_flying_row = db_fetch($fleet_flying_query))
   {
     $fleet_flying_list[0][] = $fleet_flying_row;
     $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list)-1];

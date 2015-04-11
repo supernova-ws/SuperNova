@@ -97,7 +97,7 @@ function sn_options_model() {
     }
 
     $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
-    $username_safe = mysql_real_escape_string($username);
+    $username_safe = db_escape($username);
     if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm'))
     {
     // проверка на корректность
@@ -234,14 +234,14 @@ function sn_options_model() {
         throw new exception();
       }
 
-      $user['user_birthday'] = mysql_real_escape_string("{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}");
-      // EOF black magic! Now we have valid MYSQL date in $user['user_birthday'] - independent of date format
+      $user['user_birthday'] = db_escape("{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}");
+      // EOF black magic! Now we have valid SQL date in $user['user_birthday'] - independent of date format
 
       $year = date('Y', $time_now);
       if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > $time_now) {
         $year--;
       }
-      $user['user_birthday_celebrated'] = mysql_real_escape_string("{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}");
+      $user['user_birthday_celebrated'] = db_escape("{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}");
 
       $user_birthday = ", `user_birthday` = '{$user['user_birthday']}', `user_birthday_celebrated` = '{$user['user_birthday_celebrated']}'";
     } catch (exception $e) {

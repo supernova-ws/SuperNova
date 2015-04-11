@@ -68,8 +68,8 @@ if(sys_get_param('note_delete')) {
     );
   }
 } elseif(($note_title = sys_get_param_str('note_title')) || ($note_text = sys_get_param_str('note_text'))) {
-  $note_title == mysql_real_escape_string($lang['note_new_title']) ? $note_title = '' : false;
-  ($note_text = sys_get_param_str('note_text')) == mysql_real_escape_string($lang['note_new_text']) ? $note_text = '' : false;
+  $note_title == db_escape($lang['note_new_title']) ? $note_title = '' : false;
+  ($note_text = sys_get_param_str('note_text')) == db_escape($lang['note_new_text']) ? $note_text = '' : false;
 
   try {
     if(!$note_text && !$note_title) {
@@ -130,7 +130,7 @@ if(!$note_id_edit) {
 
 $note_exist = false;
 $notes_query = doquery("SELECT * FROM {{notes}} WHERE owner={$user['id']} ORDER BY priority DESC, time DESC");
-while($note_row = mysql_fetch_assoc($notes_query)) {
+while($note_row = db_fetch($notes_query)) {
   note_assign($template, $note_row);
   $note_exist = $note_exist || $note_row['id'] == $note_id_edit;
 }

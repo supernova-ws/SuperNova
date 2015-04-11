@@ -157,7 +157,7 @@ function sn_maintenance_pack_user_list($user_list) {
   $result = array();
   if(!empty($user_list)) {
     $query = doquery("SELECT `id` FROM {{users}} WHERE `id` in (" . implode(',', $user_list) . ")");
-    while($row = mysql_fetch_assoc($query)) {
+    while($row = db_fetch($query)) {
       $result[] = $row['id'];
     }
   }
@@ -187,10 +187,10 @@ foreach($ques as $que_transaction) {
     $msg .=
       '<li>' . htmlspecialchars($que) .
         ' --- <span style="' . ($QryResult ? 'ok">OK' : 'error">FAILED!') . '</span> ' .
-        mysql_affected_rows($link) . ' ' . $lang['adm_records'] .
+      db_affected_rows($link) . ' ' . $lang['adm_records'] .
       "</li>";
 
-    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . mysql_affected_rows($link) . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
+    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . db_affected_rows($link) . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
   }
 
   sn_db_transaction_commit();

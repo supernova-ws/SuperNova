@@ -64,14 +64,14 @@ switch($mode){
     phpinfo();
   break;
 
-  case ADM_TOOL_INFO_MYSQL:
+  case ADM_TOOL_INFO_SQL:
     $template = gettemplate("simple_table", true);
 
-    $template->assign_block_vars('table', $lang['adm_tool_mysql_table']['server']);
+    $template->assign_block_vars('table', $lang['adm_tool_sql_table']['server']);
     $status = array(
-      $lang['adm_tool_mysql_server_version'] => mysql_get_server_info(),
-      $lang['adm_tool_mysql_client_version'] => mysql_get_client_info(),
-      $lang['adm_tool_mysql_host_info']      => mysql_get_host_info(),
+      $lang['adm_tool_sql_server_version'] => db_get_server_info(),
+      $lang['adm_tool_sql_client_version'] => db_get_client_info(),
+      $lang['adm_tool_sql_host_info']      => db_get_host_info(),
     );
     foreach($status as $key => $value)
     {
@@ -81,8 +81,8 @@ switch($mode){
       ));
     }
 
-    $template->assign_block_vars('table', $lang['adm_tool_mysql_table']['status']);
-    $status = explode('  ', mysql_stat());
+    $template->assign_block_vars('table', $lang['adm_tool_sql_table']['status']);
+    $status = explode('  ', db_server_stat());
     foreach($status as $value)
     {
       $row = explode(': ', $value);
@@ -93,9 +93,9 @@ switch($mode){
     }
 
 
-    $template->assign_block_vars('table', $lang['adm_tool_mysql_table']['params']);
+    $template->assign_block_vars('table', $lang['adm_tool_sql_table']['params']);
     $result = doquery('SHOW STATUS;');
-    while($row = mysql_fetch_assoc($result))
+    while($row = db_fetch($result))
     {
       $template->assign_block_vars('table.row', array(
         'VALUE_1' => $row['Variable_name'],
@@ -104,9 +104,9 @@ switch($mode){
     }
 
     $template->assign_vars(array(
-      'PAGE_HEADER' => $lang['adm_tool_mysql_page_header'],
-      'COLUMN_NAME_1' => $lang['adm_tool_mysql_param_name'],
-      'COLUMN_NAME_2' => $lang['adm_tool_mysql_param_value'],
+      'PAGE_HEADER' => $lang['adm_tool_sql_page_header'],
+      'COLUMN_NAME_1' => $lang['adm_tool_sql_param_name'],
+      'COLUMN_NAME_2' => $lang['adm_tool_sql_param_value'],
       'TABLE_FOOTER' => 'test',
     ));
 

@@ -64,8 +64,8 @@ function qst_render_page()
 
         if($mode == 'edit')
         {
-          $quest_name        = mysql_real_escape_string($quest_name);
-          $quest_description = mysql_real_escape_string($quest_description);
+          $quest_name        = db_escape($quest_name);
+          $quest_description = db_escape($quest_description);
           doquery(
             "UPDATE {{quest}} SET
               `quest_name` = '{$quest_name}',
@@ -210,7 +210,7 @@ function qst_get_quests($user_id = false, $status = false)
     ;"
   );
 
-  while($quest = mysql_fetch_assoc($query))
+  while($quest = db_fetch($query))
   {
     $quest_list[$quest['quest_id']] = qst_quest_parse($quest);
   }

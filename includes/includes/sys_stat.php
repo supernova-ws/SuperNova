@@ -37,7 +37,7 @@ function sta_set_time_limit($sta_update_msg = 'updating something', $next_step =
   set_time_limit($value);
   $config->db_saveItem('var_stat_update_end', time() + $value);
 
-  $sta_update_msg = mysql_real_escape_string($sta_update_msg);
+  $sta_update_msg = db_escape($sta_update_msg);
 
   if($next_step) {
     $sta_update_step++;
@@ -92,7 +92,7 @@ function sys_stat_calculate() {
   classSupernova::db_lock_tables('users');
   $user_list = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
   $row_num = count($user_list);
-  // while($player = mysql_fetch_assoc($query))
+  // while($player = db_fetch($query))
   foreach($user_list as $player) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating players stats (player {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $player['id'], $user_skip_list)) continue;
@@ -117,8 +117,8 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating planets stats');
   $i = 0;
   $query = db_planet_list_resources_by_owner();
-  $row_num = mysql_num_rows($query);
-  while($planet = mysql_fetch_assoc($query)) {
+  $row_num = db_num_rows($query);
+  while($planet = db_fetch($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $planet['id_owner'], $user_skip_list)) continue;
 
@@ -132,8 +132,8 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating flying fleets stats');
   $i = 0;
   $query = doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM {{fleets}};");
-  $row_num = mysql_num_rows($query);
-  while($fleet_row = mysql_fetch_assoc($query)) {
+  $row_num = db_num_rows($query);
+  while($fleet_row = db_fetch($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $fleet_row['fleet_owner'], $user_skip_list)) continue;
 
@@ -157,8 +157,8 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating unit stats');
   $i = 0;
   $query = db_unit_list_stat_calculate();
-  $row_num = mysql_num_rows($query);
-  while($unit = mysql_fetch_assoc($query)) {
+  $row_num = db_num_rows($query);
+  while($unit = db_fetch($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating unit stats (unit {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $unit['unit_player_id'], $user_skip_list)) continue;
 
@@ -171,8 +171,8 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating ques stats');
   $i = 0;
   $query = db_que_list_stat();
-  $row_num = mysql_num_rows($query);
-  while($que_item = mysql_fetch_assoc($query)) {
+  $row_num = db_num_rows($query);
+  while($que_item = db_fetch($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating ques stats (que item {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $que_item['que_player_id'], $user_skip_list)) continue;
     $que_unit_amount = $que_item['que_unit_amount'];

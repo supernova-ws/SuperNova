@@ -61,14 +61,14 @@ $template = gettemplate('admin/userlist', true);
 
 $multi_ip = array();
 $ip_query = db_user_list_admin_multiaccounts();
-while($ip = mysql_fetch_assoc($ip_query)) {
+while($ip = db_fetch($ip_query)) {
   $multi_ip[$ip['user_lastip']] = $ip['ip_count'];
 }
 
 $geoip = geoip_status();
 
 $query = db_user_list_admin_sorted($sort_fields[$sort]);
-while($user_row = mysql_fetch_assoc($query)) {
+while($user_row = db_fetch($query)) {
   if($user_row['banaday']) {
     $ban_details = doquery("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1", true);
   }
@@ -105,7 +105,7 @@ while($user_row = mysql_fetch_assoc($query)) {
 }
 
 $template->assign_vars(array(
-  'USER_COUNT' => mysql_num_rows($query),
+  'USER_COUNT' => db_num_rows($query),
   'SORT' => $sort,
   'GEOIP' => $geoip,
   'METAMATTER' => isset($sn_module['unit_res_metamatter']),

@@ -54,7 +54,7 @@ else
 
   $i = 0;
   $query = doquery("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
-  while($u = mysql_fetch_assoc($query))
+  while($u = db_fetch($query))
   {
     $i++;
     $v = array();

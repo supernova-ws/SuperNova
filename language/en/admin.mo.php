@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b6.27
+* @version 39b14.2
 *
 */
 
@@ -37,15 +37,15 @@ $a_lang_array = (array(
   'adm_tool_md5_encode' => '[ Encode ]',
   'adm_tool_md5_generate' => '[ Generate ]',
 
-  'adm_tool_mysql_page_header' => 'MySQL server parameters',
+  'adm_tool_sql_page_header' => 'SQL server parameters',
 
-  'adm_tool_mysql_server_version' => 'Server version',
-  'adm_tool_mysql_client_version' => 'Libriary version',
-  'adm_tool_mysql_host_info' => 'OS communication method',
+  'adm_tool_sql_server_version' => 'Server version',
+  'adm_tool_sql_client_version' => 'Libriary version',
+  'adm_tool_sql_host_info' => 'OS communication method',
 
-  'adm_tool_mysql_table' => array(
+  'adm_tool_sql_table' => array(
     'server' => array(
-      'TABLE_HEADER'  => 'MySQL server',
+      'TABLE_HEADER'  => 'SQL server',
       'COLUMN_NAME_1' => 'Parameter',
       'COLUMN_NAME_2' => 'Value',
 //      'TABLE_FOOTER'  => '',
@@ -53,14 +53,14 @@ $a_lang_array = (array(
     ),
 
     'status' => array(
-      'TABLE_HEADER'  => 'MySQL status',
+      'TABLE_HEADER'  => 'SQL status',
       'COLUMN_NAME_1' => 'Parameter',
       'COLUMN_NAME_2' => 'Value',
 //      'TABLE_FOOTER'  => '',
     ),
 
     'params' => array(
-      'TABLE_HEADER'  => 'MySQL settings',
+      'TABLE_HEADER'  => 'SQL settings',
       'COLUMN_NAME_1' => 'Parameter',
       'COLUMN_NAME_2' => 'Value',
 //      'TABLE_FOOTER'  => '',

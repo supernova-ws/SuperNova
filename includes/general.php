@@ -267,12 +267,12 @@ function sys_get_param_float($param_name, $default = 0)
 
 function sys_get_param_escaped($param_name, $default = '')
 {
-  return mysql_real_escape_string(sys_get_param($param_name, $default));
+  return db_escape(sys_get_param($param_name, $default));
 }
 /*
 function sys_get_param_safe($param_name, $default = '')
 {
-  return mysql_real_escape_string(strip_tags(sys_get_param($param_name, $default)));
+  return db_escape(strip_tags(sys_get_param($param_name, $default)));
 }
 */
 function sys_get_param_date_sql($param_name, $default = '2000-01-01')
@@ -288,7 +288,7 @@ function sys_get_param_str_unsafe($param_name, $default = '')
 
 function sys_get_param_str($param_name, $default = '')
 {
-  return mysql_real_escape_string(sys_get_param_str_unsafe($param_name, $default));
+  return db_escape(sys_get_param_str_unsafe($param_name, $default));
 }
 
 function sys_get_param_str_both($param_name, $default = '')
@@ -298,7 +298,7 @@ function sys_get_param_str_both($param_name, $default = '')
   return array(
     'raw' => $param,
     'unsafe' => $param_unsafe,
-    'safe' => mysql_real_escape_string($param_unsafe),
+    'safe' => db_escape($param_unsafe),
   );
 }
 
@@ -1540,25 +1540,21 @@ function flt_send_back(&$fleet_row)
   return doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
 }
 
-function flt_destroy(&$fleet_row)
-{
+function flt_destroy(&$fleet_row) {
   $fleet_id = round(is_array($fleet_row) && isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
-  if(!$fleet_id)
-  {
+  if(!$fleet_id) {
     return false;
   }
 
   return doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
 }
 
-function str_raw2unsafe($raw)
-{
+function str_raw2unsafe($raw) {
   return trim(strip_tags($raw));
 }
 
-function ip2longu($ip)
-{
-  return sprintf('%u', ip2long($ip));
+function ip2longu($ip) {
+  return sprintf('%u', floatval(ip2long($ip)));
 }
 
 

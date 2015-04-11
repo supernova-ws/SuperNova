@@ -129,8 +129,7 @@ class debug
       }
     }
 
-    if($deadlock && ($q = mysql_fetch_assoc(mysql_query('SHOW ENGINE INNODB STATUS'))))
-    {
+    if($deadlock && ($q = db_fetch(__db_query('SHOW ENGINE INNODB STATUS')))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = classSupernova::$locks;
       $error_backtrace['cSN_data'] = classSupernova::$data;
@@ -172,12 +171,11 @@ class debug
 
   function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true)
   {
-    mysql_query("ROLLBACK;");
+    sn_db_transaction_rollback();
 
     global $config;
 
-    if($config->debug == 1)
-    {
+    if($config->debug == 1) {
       echo "<h2>{$title}</h2><br><font color=red>{$message}</font><br><hr>";
       echo "<table>{$this->log}</table>";
     }
@@ -186,43 +184,39 @@ class debug
 
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
-    if(!$link)
-    {
-      $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      mysql_query("/*!40101 SET NAMES 'utf8' */");
-      mysql_select_db($dbsettings['name']);
+    if(!$link) {
+      sn_db_connect();
+      // $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
+      // mysql_query("/*!40101 SET NAMES 'utf8' */");
+      // mysql_select_db($dbsettings['name']);
 
-      if(!$link)
-      {
-        die('mySQL server currently unavailable. Please contact Administration...');
+      if(!$link) {
+        // TODO Здесь надо писать в файло
+        die('SQL server currently unavailable. Please contact Administration...');
       }
     }
 
     $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
 
-    $error_text = mysql_real_escape_string($message);
+    $error_text = db_escape($message);
     $error_backtrace = $this->dump($dump, true, strpos($message, 'Deadlock') !== false);
 
     global $sys_log_disabled, $user;
-    if(!$sys_log_disabled)
-    {
-      if($error_backtrace)
-      {
-        $error_backtrace = ", `log_dump` = '" . mysql_real_escape_string(serialize($error_backtrace)) . "'";
-      }
-      else
-      {
+    if(!$sys_log_disabled) {
+      if($error_backtrace) {
+        $error_backtrace = ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'";
+      } else {
         $error_backtrace = '';
       }
 
-      $user_safe_name = mysql_real_escape_string($user['username']);
+      $user_safe_name = db_escape($user['username']);
 
-      mysql_query("INSERT INTO `{$dbsettings['prefix']}logs` SET
+      doquery("INSERT INTO `{{logs}}` SET
         `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user_safe_name}',
-        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".mysql_real_escape_string(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};")
-      or die($fatal_error . mysql_error());
+        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};")
+      or die($fatal_error . db_error());
 
-      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . mysql_insert_id() . "</b>";
+      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . db_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
       $sys_log_disabled = true;
@@ -256,11 +250,11 @@ class debug
 
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
-    if(!$link)
-    {
-      $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      mysql_query('/*!40101 SET NAMES \'utf8\' */');
-      mysql_select_db($dbsettings['name']);
+    if(!$link) {
+      sn_db_connect();
+//      $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
+//      mysql_query('/*!40101 SET NAMES \'utf8\' */');
+//      mysql_select_db($dbsettings['name']);
     }
 
     $error_backtrace = $this->dump($dump, false);
@@ -270,17 +264,17 @@ class debug
     {
       if($error_backtrace)
       {
-        $error_backtrace = ", `log_dump` = '" . mysql_real_escape_string(serialize($error_backtrace)) . "'";
+        $error_backtrace = ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'";
       }
       else
       {
         $error_backtrace = '';
       }
-      $query = "INSERT INTO `{$dbsettings['prefix']}logs` SET
+      $query = "INSERT INTO `{{logs}}` SET
         `log_time` = '".time()."', `log_code` = '{$log_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user['username']}',
-        `log_title` = '{$title}',  `log_text` = '".mysql_real_escape_string($message)."',
-        `log_page` = '".mysql_real_escape_string(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};";
-      $sqlquery = mysql_query($query);
+        `log_title` = '{$title}',  `log_text` = '".db_escape($message)."',
+        `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};";
+      $sqlquery = doquery($query);
     }
     else
     {

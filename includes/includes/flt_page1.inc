@@ -43,7 +43,7 @@ if(empty($fleet['fleetarray'])) {
 
 // Building list of shortcuts
 $query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
-while($shortcut = mysql_fetch_assoc($query)) {
+while($shortcut = db_fetch($query)) {
   $template->assign_block_vars('shortcut', array(
     'NAME'       => $shortcut['title'],
     'GALAXY'     => $shortcut['galaxy'],
@@ -56,7 +56,7 @@ while($shortcut = mysql_fetch_assoc($query)) {
   ));
 }
 //$query = doquery("SELECT * FROM {{shortcut}} WHERE shortcut_user_id = {$user['id']};");
-//while($shortcut = mysql_fetch_assoc($query)) {
+//while($shortcut = db_fetch($query)) {
 //  $template->assign_block_vars('shortcut', array(
 //    'NAME'       => $shortcut['shortcut_text'],
 //    'GALAXY'     => $shortcut['shortcut_galaxy'],
@@ -71,7 +71,7 @@ while($shortcut = mysql_fetch_assoc($query)) {
 $colonies = db_planet_list_sorted ( $user );
 if(count($colonies) > 1)
 {
-  // while($row = mysql_fetch_assoc($colonies))
+  // while($row = db_fetch($colonies))
   foreach($colonies as $row)
   {
     $template->assign_block_vars('colonies', array(
@@ -88,7 +88,7 @@ if(count($colonies) > 1)
 //ACS Start
 //Need to look for acs attacks.
 $aks_madnessred = doquery('SELECT * FROM {{aks}};');
-while($row = mysql_fetch_assoc($aks_madnessred))
+while($row = db_fetch($aks_madnessred))
 {
   $members = explode(',', $row['eingeladen']);
   foreach($members as $a => $b)

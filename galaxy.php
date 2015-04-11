@@ -91,7 +91,7 @@ $MissileRange  = flt_get_missile_range($user);
 $PhalanxRange  = GetPhalanxRange($HavePhalanx);
 
 $planet_precache_query = db_planet_list_in_system($uni_galaxy, $uni_system);
-// while($planet_row = mysql_fetch_assoc($planet_precache_query))
+// while($planet_row = db_fetch($planet_precache_query))
 if(!empty($planet_precache_query))
 foreach($planet_precache_query as $planet_row)
 {
@@ -105,7 +105,7 @@ $fleet_precache_query = doquery(
     OR
     (fleet_end_galaxy = {$uni_galaxy} AND fleet_end_system = {$uni_system} AND fleet_mess = 0);"
 );
-while($fleet_row = mysql_fetch_assoc($fleet_precache_query))
+while($fleet_row = db_fetch($fleet_precache_query))
 {
   $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
   $fleet_type   = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];

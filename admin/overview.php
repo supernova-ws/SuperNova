@@ -26,7 +26,7 @@ $template = gettemplate('admin/adm_overview', true);
 $Last15Mins = db_user_list_online_sorted($TypeSort);
 
 $Count      = 0;
-while($TheUser = mysql_fetch_assoc($Last15Mins))
+while($TheUser = db_fetch($Last15Mins))
 {
   $TheUser['NAME'] = htmlentities($TheUser['NAME'], ENT_COMPAT, 'UTF-8');
 //  $TheUser['BROWSER'] = htmlentities($TheUser['BROWSER'], ENT_COMPAT, 'UTF-8');

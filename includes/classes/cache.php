@@ -367,7 +367,7 @@ class classPersistent extends classCache
   public function db_loadItem($index) {
     $result = null;
     if($index) {
-      $index_safe = mysql_real_escape_string($index);
+      $index_safe = db_escape($index);
       $result = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
       // В две строки - что бы быть уверенным в порядке выполнения
       $result = $result[$this->sql_value_field];
@@ -380,7 +380,7 @@ class classPersistent extends classCache
     $this->loadDefaults();
 
     $query = doquery("SELECT * FROM {{{$this->table_name}}} FOR UPDATE;");
-    while($row = mysql_fetch_assoc($query)) {
+    while($row = db_fetch($query)) {
       $this->$row[$this->sql_index_field] = $row[$this->sql_value_field];
     }
 
@@ -413,8 +413,8 @@ class classPersistent extends classCache
     foreach($item_list as $item_name => $item_value) {
       if($item_name) {
 //        $item_value === NULL ? $item_value = $this->$item_name : false;
-        $item_value = mysql_real_escape_string($item_value === NULL ? $this->$item_name : $item_value);
-        $item_name = mysql_real_escape_string($item_name);
+        $item_value = db_escape($item_value === NULL ? $this->$item_name : $item_value);
+        $item_name = db_escape($item_name);
         $qry[] = "('{$item_name}', '{$item_value}')";
       }
     }
@@ -847,7 +847,7 @@ class class_db_cache extends classCache
 
     $result = NULL;
 
-    while ( $row = mysql_fetch_assoc($query) )
+    while ( $row = db_fetch($query) )
     {
       /*
       foreach($row as $index => &$value)

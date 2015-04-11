@@ -107,9 +107,9 @@ $start = floor($range / 100 % 100) * 100;
 $query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source);
 
 // TODO - Не работает, если игроков на Блице > 100
-$record_count = $source ? mysql_num_rows($query) : ($who == 1 ? db_user_count() : db_ally_count());
+$record_count = $source ? db_num_rows($query) : ($who == 1 ? db_user_count() : db_ally_count());
 // pdump($record_count, '$record_count');
-// $record_count = mysql_num_rows($query);
+// $record_count = db_num_rows($query);
 
 $page_count = floor($record_count / 100);
 $pages = array();
@@ -124,7 +124,7 @@ for($i = 0; $i <= $page_count; $i++) {
 $range = $range > $record_count ? $record_count : $range;
 stat_tpl_assign($template, $range, 'range', $pages, $sn_group_stat_common);
 
-while ($row = mysql_fetch_assoc($query)) {
+while ($row = db_fetch($query)) {
   $row_stat = array(
     'ID' => $row['id'],
     'RANK'        => $row['rank'],

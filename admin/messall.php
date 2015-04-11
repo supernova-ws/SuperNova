@@ -42,7 +42,7 @@ if ($_POST && $mode == "change") {
     $Message = '<font color="'. $kolor .'"><b>'. $config->tresc ."</b></font>";
     $sq      = db_user_list('', false, 'id');
     foreach($sq as $u)
-    // while ($u = mysql_fetch_assoc($sq))
+    // while ($u = db_fetch($sq))
     {
       msg_send_simple_message ($u['id'], $user['id'], $Time, MSG_TYPE_ADMIN, $From, $Subject, $Message);
     }

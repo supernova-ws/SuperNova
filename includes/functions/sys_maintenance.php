@@ -18,8 +18,8 @@ function sys_maintenance()
   foreach($queries as &$query)
   {
     $query['result'] = doquery($query['query']);
-    $query['error']  = mysql_error();
-    $query['affected_rows']  = mysql_affected_rows();
+    $query['error']  = db_error();
+    $query['affected_rows']  = db_affected_rows();
   }
 
   return $queries;

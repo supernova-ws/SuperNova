@@ -17,12 +17,12 @@ if(!is_numeric($fleetid) || empty($fleetid))
 }
 
 $query = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = '{$fleetid}'");
-if(mysql_num_rows($query) != 1)
+if(db_num_rows($query) != 1)
 {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
 
-$fleet = mysql_fetch_assoc($query);
+$fleet = db_fetch($query);
 if ($fleet['fleet_start_time'] <= $time_now || $fleet['fleet_end_time'] < $time_now || $fleet['fleet_mess'] == 1)
 {
   message($lang['fl_isback'], $lang['fl_error']);
@@ -39,7 +39,7 @@ $aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", 
 $userToAdd_unsafe = sys_get_param_str_unsafe('addtogroup');
 if($userToAdd_unsafe)
 {
-  $userToAdd = mysql_real_escape_string($userToAdd_unsafe);
+  $userToAdd = db_escape($userToAdd_unsafe);
   $userToAddID = db_user_by_username($userToAdd_unsafe, false, 'id', true, true);
   $userToAddID = $userToAddID['id'];
 
@@ -104,7 +104,7 @@ if($userToAdd_unsafe)
     {
       $add_user_message_mr = sprintf($lang['fl_aks_player_invited'], $userToAdd);
       doquery("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};")
-        or die(sprintf($lang['fl_aks_adding_error'],mysql_error()));
+        or die(sprintf($lang['fl_aks_adding_error'],db_error()));
       $aks['eingeladen'] .= ',' . $userToAddID;
     }
     msg_send_simple_message ( $userToAddID, $user['id'], $time_now, MSG_TYPE_COMBAT, $user['username'],

@@ -25,8 +25,7 @@ $payer_list = array(
   -1 => $lang['adm_pay_filter_all'],
 );
 $query = doquery("SELECT payment_user_id, payment_user_name FROM {{payment}} GROUP BY payment_user_id ORDER BY payment_user_name");
-while($row = mysql_fetch_array($query))
-{
+while($row = db_fetch($query)) {
   $payer_list[$row['payment_user_id']] = '[' . $row['payment_user_id'] . '] ' . $row['payment_user_name'];
 }
 tpl_assign_select($template, 'payer', $payer_list);
@@ -35,8 +34,7 @@ $module_list = array(
   '' => $lang['adm_pay_filter_all'],
 );
 $query = doquery("SELECT distinct payment_module_name FROM {{payment}} ORDER BY payment_module_name");
-while($row = mysql_fetch_array($query))
-{
+while($row = db_fetch($query)) {
   $module_list[$row['payment_module_name']] = $row['payment_module_name'];
 }
 tpl_assign_select($template, 'module', $module_list);
@@ -56,11 +54,9 @@ $query = doquery("SELECT * FROM {{payment}} WHERE 1 " .
 ($flt_module ? "AND payment_module_name = '{$flt_module}' " : '') .
 "ORDER BY payment_id desc");
 
-while($row = mysql_fetch_array($query))
-{
+while($row = db_fetch($query)) {
   $row2 = array();
-  foreach($row as $key => $value)
-  {
+  foreach($row as $key => $value) {
     $row2[strtoupper($key)] = $value;
   }
   $template->assign_block_vars('payment', $row2);

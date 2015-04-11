@@ -35,14 +35,14 @@ function flt_get_fleets($condition, $phalanx = false)
   }
   $sql_fleets = doquery("SELECT DISTINCT * FROM {{fleets}} WHERE {$condition};");
 
-  while ($fleet = mysql_fetch_assoc($sql_fleets))
+  while ($fleet = db_fetch($sql_fleets))
   {
     $fleet_db_list[] = $fleet;
   }
 
   // Missile attack
   $sql_fleets = doquery("SELECT * FROM `{{iraks}}` WHERE {$missile_query};");
-  while ($irak = mysql_fetch_assoc($sql_fleets))
+  while ($irak = db_fetch($sql_fleets))
   {
     if($irak['fleet_end_time'] >= $time_now)
     {

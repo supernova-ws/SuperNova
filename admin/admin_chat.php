@@ -38,7 +38,7 @@ elseif ($deleteall == 'yes')
 // Affichage des messages
 $query = doquery("SELECT * FROM {{chat}} ORDER BY messageid DESC LIMIT 25;");
 $i = 0;
-while ($e = mysql_fetch_assoc($query))
+while ($e = db_fetch($query))
 {
   $i++;
   $parse['msg_list'] .= stripslashes("<tr>" .

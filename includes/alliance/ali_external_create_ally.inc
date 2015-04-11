@@ -8,9 +8,9 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 }
 
 $ally_tag_raw = sys_get_param_str_unsafe('tag');
-$ally_tag     = mysql_real_escape_string($ally_tag_raw);
+$ally_tag     = db_escape($ally_tag_raw);
 $ally_name_raw = sys_get_param_str_unsafe('name');
-$ally_name     = mysql_real_escape_string($ally_name_raw);
+$ally_name     = db_escape($ally_name_raw);
 
 if($ally_tag)
 {
@@ -34,11 +34,11 @@ if($ally_tag)
     `ranklist` = '{$lang['ali_defaultRankName']},0,0,0,0,0',
     `ally_register_time`= {$time_now}"
   );
-  $ally_id = mysql_insert_id();
+  $ally_id = db_insert_id();
   db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= {$time_now}");
 
   $ally_user = classSupernova::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = {$time_now}, `user_as_ally` = {$ally_id}");
-  // $ally_user_id = mysql_insert_id();
+  // $ally_user_id = db_insert_id();
   $ally_user_id = is_array($ally_user) ? $ally_user['id'] : 'NULL';
   doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
 

@@ -13,10 +13,10 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     ORDER BY `tsTimeStamp` DESC, idAnnounce" .
     ($query_limit ? " LIMIT {$query_limit}" : ''));
 
-  $template->assign_var('NEWS_COUNT', mysql_num_rows($announce_list));
+  $template->assign_var('NEWS_COUNT', db_num_rows($announce_list));
 
   $users = array();
-  while($announce = mysql_fetch_assoc($announce_list)) {
+  while($announce = db_fetch($announce_list)) {
     if($announce['user_id'] && !isset($users[$announce['user_id']])) {
       $users[$announce['user_id']] = db_user_by_id($announce['user_id']);
     }
@@ -48,7 +48,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       if(empty($survey_vote) && !$survey_complete) {
         // Can vote
         $survey_query = doquery("SELECT * FROM {{survey_answers}} WHERE survey_parent_id  = {$announce['survey_id']} ORDER BY survey_answer_id;");
-        while($row = mysql_fetch_assoc($survey_query)) {
+        while($row = db_fetch($survey_query)) {
           $template->assign_block_vars('announces.survey_answers', array(
             'ID' => $row['survey_answer_id'],
             'TEXT' => $row['survey_answer_text'],
@@ -66,7 +66,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
         );
         $survey_vote_result = array();
         $total_votes = 0;
-        while($row = mysql_fetch_assoc($survey_query)) {
+        while($row = db_fetch($survey_query)) {
           $survey_vote_result[] = $row;
           $total_votes += $row['VOTES'];
         }
@@ -100,7 +100,7 @@ function survey_vote(&$user) {
     $survey_vote_id = sys_get_param_id('survey_vote');
     $is_answer_exists = doquery("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};", true);
     if(!empty($is_answer_exists)) {
-      $user_name_safe = mysql_real_escape_string($user['username']);
+      $user_name_safe = db_escape($user['username']);
       doquery("INSERT INTO {{survey_votes}} SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
     }
   }

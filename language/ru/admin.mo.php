@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b6.27
+* @version 39b14.2
 *
 */
 
@@ -35,15 +35,15 @@ $a_lang_array = (array(
   'adm_tool_md5_encode' => '[ Зашифровать ]',
   'adm_tool_md5_generate' => '[ Сгенерировать ]',
 
-  'adm_tool_mysql_page_header' => 'Параметры сервера MySQL',
+  'adm_tool_sql_page_header' => 'Параметры сервера SQL',
 
-  'adm_tool_mysql_server_version' => 'Версия сервера',
-  'adm_tool_mysql_client_version' => 'Версия библиотеки',
-  'adm_tool_mysql_host_info' => 'Метод соединения',
+  'adm_tool_sql_server_version' => 'Версия сервера',
+  'adm_tool_sql_client_version' => 'Версия библиотеки',
+  'adm_tool_sql_host_info' => 'Метод соединения',
 
-  'adm_tool_mysql_table' => array(
+  'adm_tool_sql_table' => array(
     'server' => array(
-      'TABLE_HEADER'  => 'Сервер MySQL',
+      'TABLE_HEADER'  => 'Сервер SQL',
       'COLUMN_NAME_1' => 'Параметр',
       'COLUMN_NAME_2' => 'Значение',
 //      'TABLE_FOOTER'  => '',
@@ -51,14 +51,14 @@ $a_lang_array = (array(
     ),
 
     'status' => array(
-      'TABLE_HEADER'  => 'Статус сервера MySQL',
+      'TABLE_HEADER'  => 'Статус сервера SQL',
       'COLUMN_NAME_1' => 'Параметр',
       'COLUMN_NAME_2' => 'Значение',
 //      'TABLE_FOOTER'  => '',
     ),
 
     'params' => array(
-      'TABLE_HEADER'  => 'Настройки сервера MySQL',
+      'TABLE_HEADER'  => 'Настройки сервера SQL',
       'COLUMN_NAME_1' => 'Параметр',
       'COLUMN_NAME_2' => 'Значение',
 //      'TABLE_FOOTER'  => '',

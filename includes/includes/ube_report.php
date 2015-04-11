@@ -117,7 +117,7 @@ function sn_ube_report_save(&$combat_data)
       `ube_report_debris_crystal` = " . (float)$outcome[UBE_DEBRIS][RES_CRYSTAL] .",
 
       `ube_report_planet_id`          = " . (int)$outcome[UBE_PLANET][PLANET_ID] . ",
-      `ube_report_planet_name`        = '" . mysql_real_escape_string($outcome[UBE_PLANET][PLANET_NAME]) . "',
+      `ube_report_planet_name`        = '" . db_escape($outcome[UBE_PLANET][PLANET_NAME]) . "',
       `ube_report_planet_size`        = " . (int)$outcome[UBE_PLANET][PLANET_SIZE] . ",
       `ube_report_planet_galaxy`      = " . (int)$outcome[UBE_PLANET][PLANET_GALAXY] . ",
       `ube_report_planet_system`      = " . (int)$outcome[UBE_PLANET][PLANET_SYSTEM] . ",
@@ -132,7 +132,7 @@ function sn_ube_report_save(&$combat_data)
       `ube_report_moon_destroy_chance` = " . (int)$outcome[UBE_MOON_DESTROY_CHANCE] . ",
       `ube_report_moon_reapers_die_chance` = " . (int)$outcome[UBE_MOON_REAPERS_DIE_CHANCE] . "
   ");
-  $ube_report_id = $combat_data[UBE_REPORT_ID] = mysql_insert_id();
+  $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
 
   // Сохраняем общую информацию по игрокам
   foreach($combat_data[UBE_PLAYERS] as $player_id => &$player_info)
@@ -141,7 +141,7 @@ function sn_ube_report_save(&$combat_data)
       $ube_report_id,
       $player_id,
 
-      "'" . mysql_real_escape_string($player_info[UBE_NAME]) . "'",
+      "'" . db_escape($player_info[UBE_NAME]) . "'",
       (int)$player_info[UBE_ATTACKER],
 
       (float)$player_info[UBE_BONUSES][UBE_ATTACK],
@@ -161,7 +161,7 @@ function sn_ube_report_save(&$combat_data)
       $fleet_id,
 
       (float)$fleet_info[UBE_PLANET][PLANET_ID],
-      "'" . mysql_real_escape_string($fleet_info[UBE_PLANET][PLANET_NAME]) . "'",
+      "'" . db_escape($fleet_info[UBE_PLANET][PLANET_NAME]) . "'",
       (int)$fleet_info[UBE_PLANET][PLANET_GALAXY],
       (int)$fleet_info[UBE_PLANET][PLANET_SYSTEM],
       (int)$fleet_info[UBE_PLANET][PLANET_PLANET],
@@ -274,7 +274,7 @@ function sn_ube_report_save(&$combat_data)
 // Читает боевой отчет из БД
 function sn_ube_report_load($report_cypher)
 {
-  $report_cypher = mysql_real_escape_string($report_cypher);
+  $report_cypher = db_escape($report_cypher);
 
   $report_row = doquery("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1", true);
   if(!$report_row)
@@ -329,7 +329,7 @@ function sn_ube_report_load($report_cypher)
   $outcome = &$combat_data[UBE_OUTCOME];
 
   $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
-  while($player_row = mysql_fetch_assoc($query))
+  while($player_row = db_fetch($query))
   {
     $combat_data[UBE_PLAYERS][$player_row['ube_report_player_player_id']] = array(
       UBE_NAME => $player_row['ube_report_player_name'],
@@ -344,7 +344,7 @@ function sn_ube_report_load($report_cypher)
   }
 
   $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
-  while($fleet_row = mysql_fetch_assoc($query))
+  while($fleet_row = db_fetch($query))
   {
     $combat_data[UBE_FLEETS][$fleet_row['ube_report_fleet_fleet_id']] = array(
       UBE_OWNER => $fleet_row['ube_report_fleet_player_id'],
@@ -378,7 +378,7 @@ function sn_ube_report_load($report_cypher)
   $rounds_data = &$combat_data[UBE_ROUNDS];
 
   $query = doquery("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_sort_order`");
-  while($round_row = mysql_fetch_assoc($query))
+  while($round_row = db_fetch($query))
   {
     $round = $round_row['ube_report_unit_round'];
     $fleet_id = $round_row['ube_report_unit_fleet_id'];
@@ -407,7 +407,7 @@ function sn_ube_report_load($report_cypher)
 
 
   $query = doquery("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
-  while($row = mysql_fetch_assoc($query))
+  while($row = db_fetch($query))
   {
     $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
 
@@ -441,7 +441,7 @@ function sn_ube_report_load($report_cypher)
   }
 
   $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
-  while($row = mysql_fetch_assoc($query))
+  while($row = db_fetch($query))
   {
     $fleet_id = $row['ube_report_outcome_unit_fleet_id'];
     $side= $combat_data[UBE_FLEETS][$fleet_id][UBE_FLEET_TYPE];

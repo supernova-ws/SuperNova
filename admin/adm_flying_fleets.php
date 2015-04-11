@@ -20,7 +20,7 @@ if($user['authlevel'] < 3)
 $template = gettemplate('admin/adm_flying_fleets', true);
 
 $FlyingFleets = db_fleet_list_with_usernames();
-while($CurrentFleet = mysql_fetch_assoc($FlyingFleets))
+while($CurrentFleet = db_fetch($FlyingFleets))
 {
   $FleetOwner = db_user_by_id($CurrentFleet['fleet_owner']);
 

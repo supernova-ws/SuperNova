@@ -25,17 +25,17 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
     $metamatter_total = $metamatter > 0 ? $metamatter : 0;
     db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}'" .
       ($metamatter > 0 ? ", `immortal` = IF(`metamatter_total` + '{$metamatter_total}' >= {$config->player_metamatter_immortal}, NOW(), `immortal`), `metamatter_total` = `metamatter_total` + '{$metamatter_total}'" : ''));
-    $result = mysql_affected_rows();
+    $result = db_affected_rows();
   }
 
   if($result) {
-    $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
+    $page_url = db_escape($_SERVER['SCRIPT_NAME']);
     if(is_array($comment)) {
       $comment = call_user_func_array('sprintf', $comment);
     }
-    $comment = mysql_real_escape_string($comment);
+    $comment = db_escape($comment);
     $row = db_user_by_id($user_id, false, 'username');
-    $row['username'] = mysql_real_escape_string($row['username']);
+    $row['username'] = db_escape($row['username']);
     doquery("INSERT INTO {{log_metamatter}} SET
       `user_id` = {$user_id},
       `username` = '{$row['username']}',
@@ -44,7 +44,7 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
       `comment` = '{$comment}',
       `page` = '{$page_url}'
     ;");
-    $result = mysql_insert_id();
+    $result = db_insert_id();
 
     if($user['id'] == $user_id) {
       $user['metamatter'] += $metamatter;
@@ -82,17 +82,17 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   } else {
     $dark_matter_total = $dark_matter > 0 ? $dark_matter : 0;
     db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter_total}'");
-    $rows_affected = mysql_affected_rows();
+    $rows_affected = db_affected_rows();
   }
 
   if($rows_affected || !$dark_matter) {
-    $page_url = mysql_real_escape_string($_SERVER['SCRIPT_NAME']);
+    $page_url = db_escape($_SERVER['SCRIPT_NAME']);
     if(is_array($comment)) {
       $comment = call_user_func_array('sprintf', $comment);
     }
-    $comment = mysql_real_escape_string($comment);
+    $comment = db_escape($comment);
     $row = db_user_by_id($user_id, false, 'username');
-    $row['username'] = mysql_real_escape_string($row['username']);
+    $row['username'] = db_escape($row['username']);
     doquery(
       "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
         `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)

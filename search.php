@@ -43,7 +43,7 @@ if($searchtext && $type)
     break;
   }
 
-  while($row = mysql_fetch_assoc($search))
+  while($row = db_fetch($search))
   {
     if($type=='playername' || $type=='planetname')
     {

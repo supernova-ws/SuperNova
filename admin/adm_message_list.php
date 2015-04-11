@@ -148,7 +148,7 @@ elseif($DelDat == true)
 $StartRec = ($int_page_current - 1) * 25;
 
 $Messages = db_message_list_admin_by_type($int_type_selected, $StartRec);
-while($row = mysql_fetch_assoc($Messages))
+while($row = db_fetch($Messages))
 {
   $row['FROM'] = htmlentities($row['FROM'], ENT_COMPAT, 'UTF-8');
   $row['OWNER_NAME'] = htmlentities($row['OWNER_NAME'], ENT_COMPAT, 'UTF-8');

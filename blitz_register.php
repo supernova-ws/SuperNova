@@ -46,7 +46,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
   if(sys_get_param_str('generate')) {
     $next_id = 0;
     $query = doquery("SELECT `id` FROM {{blitz_registrations}} ORDER BY RAND();");
-    while($row = mysql_fetch_assoc($query)) {
+    while($row = db_fetch($query)) {
       $next_id++;
       $blitz_name = 'Игрок' . $next_id;
       $blitz_password = sys_random_string(8);
@@ -110,7 +110,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     foreach($blitz_result as $blitz_result_data) {
       $blitz_result_data = explode(',', $blitz_result_data);
       if(count($blitz_result_data) == 5) {
-        $blitz_result_data[1] = mysql_real_escape_string($blitz_result_data[1]);
+        $blitz_result_data[1] = db_escape($blitz_result_data[1]);
         doquery(
           "UPDATE `{{blitz_registrations}}` SET
             `blitz_player_id` = '{$blitz_result_data[0]}',
@@ -126,12 +126,12 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
   if($config->game_mode == GAME_BLITZ) {
     $blitz_result = array($config->db_loadItem('var_stat_update'));
     $query = doquery("SELECT id, username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
-    while($row = mysql_fetch_assoc($query)) {
+    while($row = db_fetch($query)) {
       $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
     }
   } else {
     $query = doquery("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} ORDER BY `id`;");
-    while($row = mysql_fetch_assoc($query)) {
+    while($row = db_fetch($query)) {
       $blitz_generated[] = "{$row['blitz_name']},{$row['blitz_password']}";
       $row['blitz_online'] ? $blitz_prize_players_active++ : false;
       $blitz_players++;
@@ -151,7 +151,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
       $blitz_prize_places_actual = sys_get_param_int('blitz_prize_places');
       sn_db_transaction_start();
       $query = doquery("SELECT * FROM {{blitz_registrations}} ORDER BY `blitz_place` FOR UPDATE;");
-      while($row = mysql_fetch_assoc($query)) {
+      while($row = db_fetch($query)) {
         if(!$row['blitz_place']) {
           continue;
         }
@@ -183,7 +183,7 @@ $template = gettemplate('blitz_register', true);
 
 $player_registered = false;
 $query = doquery("SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points, br.blitz_reward_dark_matter FROM {{blitz_registrations}} AS br JOIN {{users}} AS u ON u.id = br.user_id order by `blitz_place`, `timestamp`;");
-while($row = mysql_fetch_assoc($query)) {
+while($row = db_fetch($query)) {
   $tpl_player_data = array(
     'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => true, 'ally' => true)),
   );

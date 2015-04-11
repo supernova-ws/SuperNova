@@ -65,7 +65,7 @@ class classLocale implements ArrayAccess {
     if(empty($this->stat_usage))
     {
       $query = doquery("SELECT * FROM {{lng_usage_stat}}");
-      while($row = mysql_fetch_assoc($query))
+      while($row = db_fetch($query))
       {
         $this->stat_usage[$row['lang_code'] . ':' . $row['string_id'] . ':' . $row['file'] . ':' . $row['line']] = $row['is_empty'];
       }
@@ -84,7 +84,7 @@ class classLocale implements ArrayAccess {
       {
         foreach($value as &$value2)
         {
-          $value2 = '"' . mysql_real_escape_string($value2) . '"';
+          $value2 = '"' . db_escape($value2) . '"';
         }
         $value = '(' . implode(',', $value) .')';
       }

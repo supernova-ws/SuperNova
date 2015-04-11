@@ -78,7 +78,7 @@ switch($action)
     <tr><th colspan=\"3\">{$lang['Infos_of_delivery']}</th><th colspan=\"3\">{$lang['Resources_to_be_sold']}</th><th colspan=\"3\">{$lang['Desired_resources']}</th><th>{$lang['Action']}</th></tr>
     <tr><th>{$lang['Salesman']}</th><th>{$lang['Galaxy']}</th><th>{$lang['Solar_system']}</th><th>{$lang['metal']}</th><th>{$lang['crystal']}</th><th>{$lang['deuterium']}</th><th>{$lang['metal']}</th><th>{$lang['crystal']}</th><th>{$lang['deuterium']}</th><th>{$lang['Delete']}</th></tr>";
 
-    while ($b = mysql_fetch_assoc($annonce))
+    while ($b = db_fetch($annonce))
     {
       $page2 .= '<tr><th>';
       foreach($b as $name => $value)

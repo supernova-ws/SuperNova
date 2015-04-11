@@ -46,7 +46,7 @@ switch($mode = sys_get_param_str('mode')) {
 
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
-      $new_name = mysql_real_escape_string($new_name);
+      $new_name = db_escape($new_name);
       db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
     } elseif(sys_get_param_str('capital')) {
       try {
@@ -267,7 +267,7 @@ switch($mode = sys_get_param_str('mode')) {
     $planet_count = 0;
     sn_db_transaction_start();
     $planets_query = db_planet_list_sorted($user, false, '*');
-    // while($UserPlanet = mysql_fetch_assoc($planets_query))
+    // while($UserPlanet = db_fetch($planets_query))
     foreach($planets_query as $an_id => $UserPlanet) {
       $UserPlanet = sys_o_get_updated($user['id'], $UserPlanet['id'], SN_TIME_NOW);
 // pdump(classSupernova::$data[LOC_LOCATION]);

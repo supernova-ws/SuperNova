@@ -166,7 +166,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   fleet_end_planet = {$planet_dst['planet']} AND
   fleet_end_type   = {$planet_dst['planet_type']} AND
   fleet_owner = {$user['id']} AND fleet_mission IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ") AND fleet_mess = 0;");
-  while($bashing_fleets = mysql_fetch_assoc($query)) {
+  while($bashing_fleets = db_fetch($query)) {
     // Checking for ACS - each ACS count only once
     if($bashing_fleets['fleet_group']) {
       $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_start_time'];
@@ -181,7 +181,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   }
 
   $query = doquery("SELECT bashing_time FROM {{bashing}} WHERE bashing_user_id = {$user['id']} AND bashing_planet_id = {$planet_dst['id']} AND bashing_time >= {$time_limit};");
-  while($bashing_row = mysql_fetch_assoc($query)) {
+  while($bashing_row = db_fetch($query)) {
     $bashing_list[] = $bashing_row['bashing_time'];
   }
 

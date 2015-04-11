@@ -45,7 +45,7 @@ $template = gettemplate('flying_fleets', true);
 $i  = 0;
 $fleet_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner={$user['id']};");
 
-while ($fleet_row = mysql_fetch_assoc($fleet_query))
+while ($fleet_row = db_fetch($fleet_query))
 {
   $i++;
   $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);

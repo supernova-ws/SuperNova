@@ -113,7 +113,7 @@ function coe_o_missile_calculate()
 
   $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= '" . SN_TIME_NOW . "' FOR UPDATE;");
 
-  while($fleetRow = mysql_fetch_assoc($iraks))
+  while($fleetRow = db_fetch($iraks))
   {
     set_time_limit(15);
     $db_changeset = array();
