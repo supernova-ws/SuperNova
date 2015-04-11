@@ -364,14 +364,18 @@ function sec_login_change_state() {
     }
     sn_db_transaction_commit();
 
-    //if(in_array($template_result[F_DEVICE_ID], array(463735, 86823))) {
-    //  die();
-    //}
+    if($extra = $config->security_ban_extra) {
+      $extra = explode(',', $extra);
+      array_walk($extra,'trim');
+      in_array($template_result[F_DEVICE_ID], $extra) and die();
+    }
 
     db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ", `banaday` = {$user['banaday']}, `vacation` = {$user['vacation']},
       `user_lastip` = '{$user['user_lastip']}', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = {$template_result[F_BROWSER_ID]}"
     );
   }
+
+  unset($template_result[F_DEVICE_ID]); // Не должно никуда уходить
 }
 
 // once OK

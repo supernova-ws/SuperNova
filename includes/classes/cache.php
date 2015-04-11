@@ -484,6 +484,7 @@ class classConfig extends classPersistent
     'deuterium_basic_income'       => 0,
     'eco_scale_storage'            => 1,
     'eco_stockman_fleet'           => '', // Black Market - Starting amount of s/h ship merchant to sell
+    'eco_stockman_fleet_populate'  => 1,  // Populate empty Stockman fleet with ships or not
     'empire_mercenary_base_period' => PERIOD_MONTH, // Base
     'empire_mercenary_temporary'   => 0, // Temporary empire-wide mercenaries
     'energy_basic_income'          => 0,
@@ -611,6 +612,8 @@ class classConfig extends classPersistent
     'rpg_scrape_crystal'           => 0.50,
     'rpg_scrape_deuterium'         => 0.25,
     'rpg_scrape_metal'             => 0.75,
+
+    'security_ban_extra'           => '',
 
     'server_log_online'            => 0, //
 
