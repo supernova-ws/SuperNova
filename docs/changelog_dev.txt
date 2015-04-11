@@ -999,20 +999,7 @@ if(in_array($template_result[F_DEVICE_ID], array(463735, 86823)) - добави�
 
 2015-04-11 11:46:48 39b14.1
 [@] Код
-    Простенький DB abstraction layer
-    Замена прямых вызовов mysql на враппер:
-      - mysql_query => __db_query()
-      - mysql_fetch_assoc => db_fetch
-      - mysql_fetch_array => db_fetch
-      - mysql_fetch_row => db_fetch_row
-      - mysql_escape_string => db_escape
-      - mysql_real_escape_string => db_escape
-      - mysql_insert_id => db_insert_id
-      - mysql_num_rows => db_num_rows
-      - mysql_numrows => db_num_rows
-      - mysql_error => db_error
-      - mysql_affected_rows -> db_affected_rows
-       итд
+    Простенький DB abstraction layer: замена прямых вызовов mysql на враппер
     Так же убрано использование подстроки mysql в переменных, строках локализации итд
 
 
