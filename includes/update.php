@@ -1541,6 +1541,8 @@ switch($new_version) {
 
     upd_check_key('uni_galaxy_distance', 20000, empty($config->uni_galaxy_distance));
 
+    upd_check_key('stats_history_days', 14, !$config->stats_history_days);
+
     if($config->payment_currency_default != 'USD') {
       upd_check_key('payment_currency_default',      'USD', true);
       upd_check_key('payment_currency_exchange_dm_', 20000, true);

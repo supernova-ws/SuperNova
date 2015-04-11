@@ -630,10 +630,11 @@ class classConfig extends classPersistent
     'server_updater_id'            => 0, // Server ID on update server
     'server_updater_key'           => '', // Server key on update server
 
+    'stats_history_days'           => 14, // За сколько дней хранить статистику в базе
     'stats_hide_admins'            => 1,
     'stats_hide_player_list'       => '',
     'stats_hide_pm_link'           => 0,
-    'stats_schedule'               => 'd@04:00:00',
+    'stats_schedule'               => '04:00:00',
 
     'tpl_minifier'                 => 0, // Template minifier
 
