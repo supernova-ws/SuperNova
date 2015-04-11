@@ -7,9 +7,9 @@ if(defined('INIT')) {
 define('INIT', true);
 
 // Замеряем начальные параметры
-global $microtime, $time_now;
+global $microtime;
 define('SN_TIME_MICRO', $microtime = microtime(true));
-define('SN_TIME_NOW', $time_now = intval(SN_TIME_MICRO));
+define('SN_TIME_NOW', intval(SN_TIME_MICRO));
 define('SN_TIME_ZONE_OFFSET', date('Z'));
 define('SN_MEM_START', memory_get_usage());
 
