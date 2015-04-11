@@ -56,7 +56,7 @@ if(sys_get_param_str('ali_dip_offer_make'))
         'alliance_negotiation_contr_ally_id' => $alliance_negotiation_contr_ally_id,
         'alliance_negotiation_contr_ally_name' => $contr_ally_row['ally_name'],
         'alliance_negotiation_relation' => $alliance_negotiation_relation,
-        'alliance_negotiation_time' => $time_now,
+        'alliance_negotiation_time' => SN_TIME_NOW,
         'alliance_negotiation_propose' => $alliance_negotiation_propose,
         'alliance_negotiation_status' =>  ALLY_PROPOSE_SEND
       )
@@ -130,7 +130,7 @@ if($accept_offer)
       'alliance_diplomacy_contr_ally_id' => $negotiation['alliance_negotiation_ally_id'],
       'alliance_diplomacy_contr_ally_name' => $negotiation['alliance_negotiation_ally_name'],
       'alliance_diplomacy_relation' => $negotiation['alliance_negotiation_relation'],
-      'alliance_diplomacy_time' => $time_now
+      'alliance_diplomacy_time' => SN_TIME_NOW
     ));
 
   sn_db_perform('{{alliance_diplomacy}}',
@@ -139,7 +139,7 @@ if($accept_offer)
       'alliance_diplomacy_contr_ally_id' => $user['ally_id'],
       'alliance_diplomacy_contr_ally_name' => $user['ally_name'],
       'alliance_diplomacy_relation' => $negotiation['alliance_negotiation_relation'],
-      'alliance_diplomacy_time' => $time_now
+      'alliance_diplomacy_time' => SN_TIME_NOW
     ));
 
   doquery(

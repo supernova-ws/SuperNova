@@ -92,7 +92,7 @@ if ($user['authlevel'] >= 3) {
     break;
   }
 } else {
-  $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . intval($time_now);
+  $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . SN_TIME_NOW;
 }
 
 nws_render($template, $annQuery, 20);

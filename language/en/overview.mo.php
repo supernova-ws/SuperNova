@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b9.9
+* @version 39b14.4
 *
 */
 
@@ -174,6 +174,7 @@ $a_lang_array = (array(
   'ov_teleport_err_destination_busy' => 'Destination is busy',
   'ov_teleport_err_cooldown' => 'You can not teleport until dimension metrics is normalized. Please wait',
   'ov_teleport_err_no_dark_matter' => 'There is not enough Dark Matter to teleport',
+  'ov_teleport_log_record' => 'Planet {%2$d} %1$s teleported from coordinates %3$s to coordinates %4$s',
 
   'ov_capital' => 'Transfer Empire capital here',
   'ov_capital_err_none' => 'This planet is now Empire\'s capital ',

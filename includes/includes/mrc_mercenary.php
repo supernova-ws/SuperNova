@@ -124,7 +124,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
 }
 
 function mrc_mercenary_render($user) {
-  global $time_now, $config, $lang, $sn_powerup_buy_discounts;
+  global $config, $lang, $sn_powerup_buy_discounts;
 
   $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
   $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;
@@ -202,7 +202,7 @@ function mrc_mercenary_render($user) {
         'LEVEL_MAX'   => $mercenary['max'],
         'BONUS'       => $mercenary_bonus,
         'BONUS_TYPE'  => $mercenary['bonus_type'],
-        'HIRE_END'    => $mercenary_time_finish && $mercenary_time_finish >= $time_now ? date(FMT_DATE_TIME, $mercenary_time_finish) : '',
+        'HIRE_END'    => $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW ? date(FMT_DATE_TIME, $mercenary_time_finish) : '',
         'CAN_BUY'     => mrc_officer_accessible($user, $mercenary_id),
       ));
 

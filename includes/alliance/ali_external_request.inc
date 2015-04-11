@@ -36,7 +36,7 @@ $id_ally = sys_get_param_id('a');
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time='{$time_now}';");
+  doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time='{" . SN_TIME_NOW . "}';");
   header('Location: alliance.php');
 }
 

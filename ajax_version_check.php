@@ -66,7 +66,7 @@ else
 }
 //debug($mode);
 
-$config->db_saveItem('server_updater_check_last', $time_now);
+$config->db_saveItem('server_updater_check_last', SN_TIME_NOW);
 $config->db_saveItem('server_updater_check_result', $version_check);
 
 if($ajax)

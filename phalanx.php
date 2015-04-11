@@ -71,7 +71,7 @@ $fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
 tpl_assign_fleet($template, $fleets);
 
 $template->assign_vars(array(
-  'TIME_NOW'             => $time_now,
+  'TIME_NOW'             => SN_TIME_NOW,
 ));
 
 display($template, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);

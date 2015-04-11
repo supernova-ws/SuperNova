@@ -7,10 +7,7 @@
  *   user ID - get all fleets from current owner
  *   array - (presumed planet row) get all fleets coming to selected planet
  */
-function flt_get_fleets($condition, $phalanx = false)
-{
-  global $time_now;
-  
+function flt_get_fleets($condition, $phalanx = false) {
   $fleet_db_list = array();
 
   if(!$condition)
@@ -44,7 +41,7 @@ function flt_get_fleets($condition, $phalanx = false)
   $sql_fleets = doquery("SELECT * FROM `{{iraks}}` WHERE {$missile_query};");
   while ($irak = db_fetch($sql_fleets))
   {
-    if($irak['fleet_end_time'] >= $time_now)
+    if($irak['fleet_end_time'] >= SN_TIME_NOW)
     {
       $irak['fleet_start_type'] = PT_PLANET;
       $planet_start = db_planet_by_vector($irak, 'fleet_start_', false, 'name');
@@ -61,7 +58,7 @@ function flt_get_fleets($condition, $phalanx = false)
 
 function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
 {
-  global $config, $user, $fleet_number, $lang, $time_now;
+  global $config, $user, $fleet_number, $lang;
 
   $fleet_events = array();
   $fleet_number = 0;
@@ -92,7 +89,7 @@ function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
       $fleet['fleet_end_name'] = $planet_end['name'];
     }
 
-    if($fleet['fleet_start_time'] > $time_now && $fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] != MT_MISSILE &&
+    if($fleet['fleet_start_time'] > SN_TIME_NOW && $fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] != MT_MISSILE &&
       ($planet_scanned === false
         ||
         (
@@ -107,13 +104,13 @@ function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
       $fleet_events[] = flt_register_fleet_event($fleet, 0, $planet_end_type);
     }
 
-    if($fleet['fleet_end_stay'] > $time_now && $fleet['fleet_mess'] == 0 && $planet_scanned === false && $fleet['fleet_mission'] != MT_MISSILE)
+    if($fleet['fleet_end_stay'] > SN_TIME_NOW && $fleet['fleet_mess'] == 0 && $planet_scanned === false && $fleet['fleet_mission'] != MT_MISSILE)
     {
       $fleet_events[] = flt_register_fleet_event($fleet, 1, $planet_end_type);
     }
 
     if(
-      $fleet['fleet_end_time'] > $time_now && $fleet['fleet_mission'] != MT_MISSILE && ($fleet['fleet_mess'] == 1 || ($fleet['fleet_mission'] != MT_RELOCATE && $fleet['fleet_mission'] != MT_COLONIZE)) && 
+      $fleet['fleet_end_time'] > SN_TIME_NOW && $fleet['fleet_mission'] != MT_MISSILE && ($fleet['fleet_mess'] == 1 || ($fleet['fleet_mission'] != MT_RELOCATE && $fleet['fleet_mission'] != MT_COLONIZE)) &&
       (
         ($planet_scanned === false && $fleet['fleet_owner'] == $user['id'])
         ||

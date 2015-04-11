@@ -17,7 +17,7 @@
  */
 function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
 {
-  global $time_now, $user;
+  global $user;
 
   $ally_id = $ally_id ? $ally_id : $user['ally_id'];
 
@@ -32,21 +32,21 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
     $list .= "<br>{$u['username']} ";
   }
 
-  msg_send_simple_message($sendList, $user['id'], $time_now, MSG_TYPE_ALLIANCE, $user['username'], $subject, $message, true);
+  msg_send_simple_message($sendList, $user['id'], SN_TIME_NOW, MSG_TYPE_ALLIANCE, $user['username'], $subject, $message, true);
 
   return $list;
 }
 
 function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false)
 {
-  global $config, $user, $sn_message_class_list, $time_now;
+  global $config, $user, $sn_message_class_list;
 
   if(!$owners)
   {
     return;
   }
 
-  $timestamp = $timestamp ? $timestamp : $time_now;
+  $timestamp = $timestamp ? $timestamp : SN_TIME_NOW;
   $sender = intval($sender);
   if(!is_array($owners))
   {

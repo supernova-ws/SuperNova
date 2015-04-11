@@ -18,7 +18,7 @@ $sn_mvc['i18n']['options'] = array(
  */
 
 function sn_options_model() {
-  global $user, $user_option_list, $lang, $template_result, $time_now, $config;
+  global $user, $user_option_list, $lang, $template_result, $config;
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
@@ -33,7 +33,7 @@ function sn_options_model() {
     if(sys_get_param_int('vacation') && !$config->user_vacation_disable) {
       sn_db_transaction_start();
       if($user['authlevel'] < 3) {
-        if($user['vacation_next'] > $time_now) {
+        if($user['vacation_next'] > SN_TIME_NOW) {
           message($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
@@ -54,19 +54,19 @@ function sn_options_model() {
         $query = classSupernova::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
         foreach($query as $planet)
         {
-          // $planet = sys_o_get_updated($user, $planet, $time_now);
+          // $planet = sys_o_get_updated($user, $planet, SN_TIME_NOW);
           // $planet = $planet['planet'];
 
           db_planet_set_by_id($planet['id'],
-            "last_update = '{$time_now}', energy_used = '0', energy_max = '0',
+            "last_update = '" . SN_TIME_NOW . "', energy_used = '0', energy_max = '0',
             metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
             metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
             fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"
           );
         }
-        $user['vacation'] = $time_now + $config->player_vacation_time;
+        $user['vacation'] = SN_TIME_NOW + $config->player_vacation_time;
       } else {
-        $user['vacation'] = $time_now;
+        $user['vacation'] = SN_TIME_NOW;
       }
       sn_db_transaction_commit();
     }
@@ -199,7 +199,7 @@ function sn_options_model() {
     $user['settings_rep'] = sys_get_param_int('settings_rep');
     $user['planet_sort']  = sys_get_param_int('settings_sort');
     $user['planet_sort_order'] = sys_get_param_int('settings_order');
-    $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : $time_now + $config->player_delete_time);
+    $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + $config->player_delete_time);
 
     $gender = sys_get_param_int('gender', $user['gender']);
     !isset($lang['sys_gender_list'][$gender]) ? $gender = $user['gender'] : false;
@@ -237,8 +237,8 @@ function sn_options_model() {
       $user['user_birthday'] = db_escape("{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}");
       // EOF black magic! Now we have valid SQL date in $user['user_birthday'] - independent of date format
 
-      $year = date('Y', $time_now);
-      if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > $time_now) {
+      $year = date('Y', SN_TIME_NOW);
+      if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > SN_TIME_NOW) {
         $year--;
       }
       $user['user_birthday_celebrated'] = db_escape("{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}");
@@ -295,7 +295,7 @@ function sn_options_model() {
 //-------------------------------
 
 function sn_options_view($template = null) {
-  global $lang, $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config, $time_now;
+  global $lang, $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config;
 
   sys_user_vacation($user);
 
@@ -439,8 +439,8 @@ function sn_options_view($template = null) {
     'USER_VACATION_DISABLE' => $config->user_vacation_disable,
     'VACATION_NEXT' => $user['vacation_next'],
     'VACATION_NEXT_TEXT' => date(FMT_DATE_TIME, $user['vacation_next']),
-    'VACATION_TIMEOUT' => $user['vacation_next'] - $time_now > 0 ? $user['vacation_next'] - $time_now : 0,
-    'TIME_NOW' => $time_now,
+    'VACATION_TIMEOUT' => $user['vacation_next'] - SN_TIME_NOW > 0 ? $user['vacation_next'] - SN_TIME_NOW : 0,
+    'TIME_NOW' => SN_TIME_NOW,
 
     'SERVER_SEND_EMAIL' => $config->game_email_pm,
 

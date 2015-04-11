@@ -122,7 +122,7 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
 
 function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duration, $fleet_group = 0)
 {
-  global $time_now, $config;
+  global $config;
 
   $config_bashing_attacks = $config->fleet_bashing_attacks;
   $config_bashing_interval = $config->fleet_bashing_interval;
@@ -138,7 +138,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
       $relations = $relations[$enemy['ally_id']];
       switch($relations['alliance_diplomacy_relation']) {
         case ALLY_DIPLOMACY_WAR:
-          if($time_now - $relations['alliance_diplomacy_time'] <= $config->fleet_bashing_war_delay) {
+          if(SN_TIME_NOW - $relations['alliance_diplomacy_time'] <= $config->fleet_bashing_war_delay) {
             $bashing_result = ATTACK_BASHING_WAR_DELAY;
           } else {
             return ATTACK_ALLOWED;
@@ -155,8 +155,8 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
     }
   }
 
-  $time_limit = $time_now + $flight_duration - $config->fleet_bashing_scope;
-  $bashing_list = array($time_now);
+  $time_limit = SN_TIME_NOW + $flight_duration - $config->fleet_bashing_scope;
+  $bashing_list = array(SN_TIME_NOW);
 
   // Retrieving flying fleets
   $flying_fleets = array();
@@ -474,20 +474,19 @@ $fleet - array of records $unit_id -> $amount
 $mission - fleet mission
 */
 
-function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array())
-{
+function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array()) {
 //ini_set('error_reporting', E_ALL);
 
   $internal_transaction = !sn_db_transaction_check(false) ? sn_db_transaction_start() : false;
 //pdump($internal_transaction);
 
+  // TODO Потенциальный дедлок - если успела залочится запись пользователя - хозяина планеты
   $user = db_user_by_id($user['id'], true);
   $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
   $from = $from['planet'];
 
   $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
-  if($can_attack != ATTACK_ALLOWED)
-  {
+  if($can_attack != ATTACK_ALLOWED) {
     $internal_transaction ? sn_db_transaction_rollback() : false;
     return $can_attack;
   }
@@ -498,13 +497,10 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
 
-  if($mission == MT_EXPLORE || $mission == MT_HOLD)
-  {
+  if($mission == MT_EXPLORE || $mission == MT_HOLD) {
     $stay_duration = $options['stay_time'] * 3600;
     $stay_time     = $fleet_start_time + $stay_duration;
-  }
-  else
-  {
+  } else {
     $stay_duration = 0;
     $stay_time     = 0;
   }

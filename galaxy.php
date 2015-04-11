@@ -112,7 +112,7 @@ while($fleet_row = db_fetch($fleet_precache_query))
   $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
 }
 
-$time_now_parsed = getdate($time_now);
+$time_now_parsed = getdate(SN_TIME_NOW);
 
 $recycler_info = array();
 $planet_recyclers_orbiting = 0;
@@ -161,7 +161,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     if(!$uni_galaxyRowUser['id'])
     {
       $debug->warning("Planet '{$uni_galaxyRowPlanet['name']}' [{$uni_galaxy}:{$uni_system}:{$Planet}] has no owner!", 'Userless planet', 503);
-      $uni_galaxyRowPlanet['destruyed'] = $time_now + 60 * 60 * 24;
+      $uni_galaxyRowPlanet['destruyed'] = SN_TIME_NOW + 60 * 60 * 24;
       $uni_galaxyRowPlanet['id_owner'] = 0;
       db_planet_set_by_id($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
     }
@@ -241,7 +241,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
 
   $RowUserPoints = $uni_galaxyRowUser['total_points'];
   $birthday_array = $uni_galaxyRowUser['user_birthday'] ? date_parse($uni_galaxyRowUser['user_birthday']) : array();
-  $user_activity = floor(($time_now - $uni_galaxyRowUser['onlinetime'])/(60*60*24));
+  $user_activity = floor((SN_TIME_NOW - $uni_galaxyRowUser['onlinetime'])/(60*60*24));
   $template->assign_block_vars('galaxyrow', array(
      'PLANET_ID'        => $uni_galaxyRowPlanet['id'],
      'PLANET_NUM'       => $Planet,
@@ -249,7 +249,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'PLANET_NAME_JS'   => js_safe_string($uni_galaxyRowPlanet['name']),
      'PLANET_DESTROYED' => $uni_galaxyRowPlanet["destruyed"],
      'PLANET_TYPE'      => $uni_galaxyRowPlanet["planet_type"],
-     'PLANET_ACTIVITY'  => floor(($time_now - $uni_galaxyRowPlanet['last_update'])/60),
+     'PLANET_ACTIVITY'  => floor((SN_TIME_NOW - $uni_galaxyRowPlanet['last_update'])/60),
      'PLANET_IMAGE'     => $uni_galaxyRowPlanet['image'],
      'PLANET_FLEET_ID'  => $planet_fleet_id,
      'PLANET_DIAMETER'  => number_format($uni_galaxyRowPlanet['diameter'], 0, '', '.'),
@@ -286,7 +286,7 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
      'USER_STRONG'   => $CurrentPoints * $config->game_noob_factor < $RowUserPoints && $config->game_noob_factor,
      'USER_AUTH'     => $uni_galaxyRowUser['authlevel'],
      'USER_ADMIN'    => $lang['user_level_shortcut'][$uni_galaxyRowUser['authlevel']],
-     'USER_BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? date(FMT_DATE, $time_now) : 0,
+     'USER_BIRTHDAY' => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? date(FMT_DATE, SN_TIME_NOW) : 0,
 
      'ALLY_ID'       => $uni_galaxyRowUser['ally_id'],
      'ALLY_TAG'      => $uni_galaxyRowUser['ally_tag'],

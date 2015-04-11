@@ -15,7 +15,7 @@ $sn_mvc['i18n']['imperator'] = array(
 $sn_mvc['view']['imperator'][] = 'sn_imperator_view';
 
 function sn_imperator_view($template = null) {
-  global $template_result, $config, $lang, $user, $time_now;
+  global $template_result, $config, $lang, $user;
 
   $stat_fields = array(
     'stat_date' => 'STAT_DATE',
@@ -132,7 +132,7 @@ function sn_imperator_view($template = null) {
     // News Frame ...
     if ($config->game_news_overview)
     {
-      nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now}", $config->game_news_overview);
+      nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=" . SN_TIME_NOW . "", $config->game_news_overview);
     }
     */
   }

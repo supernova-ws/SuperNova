@@ -23,7 +23,7 @@ if(db_num_rows($query) != 1)
 }
 
 $fleet = db_fetch($query);
-if ($fleet['fleet_start_time'] <= $time_now || $fleet['fleet_end_time'] < $time_now || $fleet['fleet_mess'] == 1)
+if ($fleet['fleet_start_time'] <= SN_TIME_NOW || $fleet['fleet_end_time'] < SN_TIME_NOW || $fleet['fleet_mess'] == 1)
 {
   message($lang['fl_isback'], $lang['fl_error']);
 }
@@ -107,7 +107,7 @@ if($userToAdd_unsafe)
         or die(sprintf($lang['fl_aks_adding_error'],db_error()));
       $aks['eingeladen'] .= ',' . $userToAddID;
     }
-    msg_send_simple_message ( $userToAddID, $user['id'], $time_now, MSG_TYPE_COMBAT, $user['username'],
+    msg_send_simple_message ( $userToAddID, $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'],
       $lang['fl_aks_invite_message_header'], sprintf( $lang['fl_aks_invite_message'], $user['username']));
   }
   else

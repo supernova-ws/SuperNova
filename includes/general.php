@@ -333,9 +333,7 @@ function GetPhalanxRange($phalanx_level)
 
 function CheckAbandonPlanetState(&$planet)
 {
-  global $time_now;
-
-  if($planet['destruyed'] && $planet['destruyed'] <= $time_now)
+  if($planet['destruyed'] && $planet['destruyed'] <= SN_TIME_NOW)
   {
     db_planet_delete_by_id($planet['id']);
   }
@@ -722,20 +720,16 @@ function sn_sys_get_unit_location($user, $planet, $unit_id)
   return get_unit_param($unit_id, 'location');
 }
 
-function sn_ali_fill_user_ally(&$user)
-{
-  if(!$user['ally_id'])
-  {
+function sn_ali_fill_user_ally(&$user) {
+  if(!$user['ally_id']) {
     return;
   }
 
-  if(!isset($user['ally']))
-  {
+  if(!isset($user['ally'])) {
     $user['ally'] = doquery("SELECT * FROM {{alliance}} WHERE `id` = {$user['ally_id']} LIMIT 1;", true);
   }
 
-  if(!isset($user['ally']['player']))
-  {
+  if(!isset($user['ally']['player'])) {
     $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
   }
 }
@@ -842,9 +836,12 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
   }
 
   sn_db_transaction_start();
-  $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
-  $user = $planetrow['user'];
-  $planetrow = $planetrow['planet'];
+  $user = db_user_by_id($user['id'], true, '*');
+  $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+  // Тут не надо делать обсчет - ресурсы мы уже посчитали, очередь (и количество зданий) - тоже
+//  $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
+//  $user = $planetrow['user'];
+//  $planetrow = $planetrow['planet'];
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
   if($sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)]) {
@@ -1327,37 +1324,33 @@ function planet_density_price_chart($planet_density_index)
   return $density_price_chart;
 }
 
-function sn_sys_planet_core_transmute(&$user, &$planetrow)
-{
-  if(!sys_get_param_str('transmute'))
-  {
+function sn_sys_planet_core_transmute(&$user, &$planetrow) {
+  if(!sys_get_param_str('transmute')) {
     return array();
   }
 
   global $lang;
 
-  try
-  {
-    if($planetrow['planet_type'] != PT_PLANET)
-    {
+  try {
+    if($planetrow['planet_type'] != PT_PLANET) {
       throw new exception($lang['ov_core_err_not_a_planet'], ERR_ERROR);
     }
 
-    if($planetrow['density_index'] == ($new_density_index = sys_get_param_id('density_type')))
-    {
+    if($planetrow['density_index'] == ($new_density_index = sys_get_param_id('density_type'))) {
       throw new exception($lang['ov_core_err_same_density'], ERR_WARNING);
     }
 
     sn_db_transaction_start();
-    $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
-    $user = $global_data['user'];
-    $planetrow = $global_data['planet'];
+    $user = db_user_by_id($user['id'], true, '*');
+    $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+//    $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
+//    $user = $global_data['user'];
+//    $planetrow = $global_data['planet'];
 
     $planet_density_index = $planetrow['density_index'];
 
     $density_price_chart = planet_density_price_chart($planet_density_index);
-    if(!isset($density_price_chart[$new_density_index]))
-    {
+    if(!isset($density_price_chart[$new_density_index])) {
       // Hack attempt
       throw new exception($lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
     }
@@ -1365,16 +1358,13 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
     $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
     $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
-    if($user_dark_matter < $transmute_cost)
-    {
+    if($user_dark_matter < $transmute_cost) {
       throw new exception($lang['ov_core_err_no_dark_matter'], ERR_ERROR);
     }
 
     $sn_data_planet_density = sn_get_groups('planet_density');
-    foreach($sn_data_planet_density as $key => $value)
-    {
-      if($key == $new_density_index)
-      {
+    foreach($sn_data_planet_density as $key => $value) {
+      if($key == $new_density_index) {
         break;
       }
       $prev_density_index = $key;
@@ -1384,7 +1374,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
 
     rpg_points_change($user['id'], RPG_PLANET_DENSITY_CHANGE, -$transmute_cost,
       array(
-        'Planet %s ID %d at coordinates %s changed density type from %d "%s" to %d "%s". New density is %d kg/m3',
+        'Planet %1$s ID %2$d at coordinates %3$s changed density type from %4$d "%5$s" to %6$d "%7$s". New density is %8$d kg/m3',
         $planetrow['name'],
         $planetrow['id'],
         uni_render_coordinates($planetrow),
@@ -1405,9 +1395,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow)
       'STATUS'  => ERR_NONE,
       'MESSAGE' => sprintf($lang['ov_core_err_none'], $lang['uni_planet_density_types'][$planet_density_index], $lang['uni_planet_density_types'][$new_density_index], $new_density),
     );
-  }
-  catch(exception $e)
-  {
+  } catch(exception $e) {
     sn_db_transaction_rollback();
     $result = array(
       'STATUS'  => $e->getCode(),

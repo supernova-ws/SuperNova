@@ -42,7 +42,7 @@ if($mode == 'banit' && $action)
     $BanTime += $hour * 3600;
     $BanTime += $mins * 60;
     $BanTime += $secs;
-//    $BannedUntil = $time_now + $BanTime;
+//    $BannedUntil = SN_TIME_NOW + $BanTime;
 
     sys_admin_player_ban($user, $player_banned_row, $BanTime, $is_vacation = sys_get_param_int('isVacation'), sys_get_param_str('why'));
 

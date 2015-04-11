@@ -1403,14 +1403,14 @@ switch($new_version)
     while($ally_row = db_fetch($ally_row_list))
     {
       $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
-      doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = {$time_now}, `user_as_ally` = {$ally_row['id']};");
+      doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = {" . SN_TIME_NOW . "}, `user_as_ally` = {$ally_row['id']};");
       $ally_user_id = db_insert_id();
       doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
     }
     // Renaming old ally players TODO: Remove on release
     upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.user_as_ally = a.id SET u.username = CONCAT('[', a.ally_tag, ']') WHERE u.user_as_ally IS NOT NULL AND u.username = '';");
     // Setting last online time to old ally players TODO: Remove on release
-    upd_do_query("UPDATE {{users}} SET `onlinetime` = {$time_now} WHERE onlinetime = 0;");
+    upd_do_query("UPDATE {{users}} SET `onlinetime` = {" . SN_TIME_NOW . "} WHERE onlinetime = 0;");
 
     // ------------------------------------------------------------------------
     // Creating planets for allies
@@ -1418,7 +1418,7 @@ switch($new_version)
     while($ally_user_row = db_fetch($ally_user_list))
     {
       $ally_planet_name = db_escape($ally_user_row['username']);
-      doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = {$time_now}, `id_owner` = {$ally_user_row['id']};");
+      doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = {" . SN_TIME_NOW . "}, `id_owner` = {$ally_user_row['id']};");
       $ally_planet_id = db_insert_id();
       doquery("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
     }
@@ -1452,7 +1452,7 @@ switch($new_version)
       $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
       while($planet_row = db_fetch($query))
       {
-        $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - $time_now) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
+        $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - SN_TIME_NOW) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
         doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
       }
 
@@ -1618,7 +1618,7 @@ switch($new_version)
 
     upd_do_query("UPDATE {{powerup}} SET powerup_time_start = 0, powerup_time_finish = 0 WHERE powerup_category = " . UNIT_PLANS . ";");
 
-    upd_check_key('server_start_date', date('d.m.Y', $time_now), !isset($config->server_start_date));
+    upd_check_key('server_start_date', date('d.m.Y', SN_TIME_NOW), !isset($config->server_start_date));
     upd_check_key('server_que_length_structures', 5, !isset($config->server_que_length_structures));
     upd_check_key('server_que_length_hangar', 5, !isset($config->server_que_length_hangar));
 

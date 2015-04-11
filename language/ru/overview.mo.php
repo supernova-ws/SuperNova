@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b10.0
+* @version 39b14.4
 *
 */
 
@@ -178,6 +178,7 @@ $a_lang_array = (array(
   'ov_teleport_err_destination_busy' => 'Место назначения занято',
   'ov_teleport_err_cooldown' => 'Невозможно телепортироваться два раза подряд. Подождите пока нормализуется метрика пространства',
   'ov_teleport_err_no_dark_matter' => 'Не хватает Тёмной Материи для телепортации',
+  'ov_teleport_log_record' => 'Планета {%2$d} %1$s телепортирована с координат %3$s по координатам %4$s',
 
   'ov_capital' => 'Сделать столицей Империи',
   'ov_capital_err_none' => 'Планета теперь является столицей Империи',
@@ -195,5 +196,6 @@ $a_lang_array = (array(
   'ov_password' => 'Ваш пароль на вход в игру',
 
   'ov_governor_purchase' => 'Игрок купил Губернатора %1$s ID %2$d уровня %3$d на планету %4$s',
+
 
 ));

@@ -51,9 +51,11 @@ switch($mode = sys_get_param_str('mode')) {
     } elseif(sys_get_param_str('capital')) {
       try {
         sn_db_transaction_start();
-        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
-        $user = $global_data['user'];
-        $planetrow = $global_data['planet'];
+        $user = db_user_by_id($user['id'], true, '*');
+        $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+//        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
+//        $user = $global_data['user'];
+//        $planetrow = $global_data['planet'];
 
         if($planetrow['planet_type'] != PT_PLANET) {
           throw new exception($lang['ov_capital_err_not_a_planet'], ERR_ERROR);
@@ -92,15 +94,18 @@ switch($mode = sys_get_param_str('mode')) {
         if(!uni_coordinates_valid($new_coordinates = array(
           'galaxy' => sys_get_param_int('new_galaxy'),
           'system' => sys_get_param_int('new_system'),
-          'planet' => sys_get_param_int('new_planet'))))
-        {
+          'planet' => sys_get_param_int('new_planet')))
+        ) {
           throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
         sn_db_transaction_start();
-        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
-        $user = $global_data['user'];
-        $planetrow = $global_data['planet'];
+        // При телепорте обновлять данные не надо - просто получить текущие данные и залочить их
+        $user = db_user_by_id($user['id'], true, '*');
+        $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+//        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
+//        $user = $global_data['user'];
+//        $planetrow = $global_data['planet'];
 
         $can_teleport = uni_planet_teleport_check($user, $planetrow, $new_coordinates);
         if($can_teleport['result'] != ERR_NONE) {
@@ -108,23 +113,20 @@ switch($mode = sys_get_param_str('mode')) {
         }
 
         rpg_points_change($user['id'], RPG_TELEPORT, -$config->planet_teleport_cost,
-          array('Planet %s ID %d teleported from coordinates %s to coordinates %s', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
+          array(&$lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
-        $planet_teleport_next = $time_now + $config->planet_teleport_timeout;
+        $planet_teleport_next = SN_TIME_NOW + $config->planet_teleport_timeout;
         db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
           "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
-        //doquery("UPDATE !!planets!!
-        //  SET galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}
-        //  WHERE galaxy = {$planetrow['galaxy']} AND system = {$planetrow['system']} AND planet = {$planetrow['planet']}");
 
         if($planetrow['id'] == $user['id_planet']) {
           db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
         }
 
-        $global_data = sys_o_get_updated($user, $planetrow['id'], $time_now);
+        // $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
         sn_db_transaction_commit();
-        $user = $global_data['user'];
-        $planetrow = $global_data['planet'];
+        $user = db_user_by_id($user['id'], true, '*');
+        $planetrow = db_planet_by_id($planetrow['id'], true, '*');
         $result = array(
           'STATUS'  => ERR_NONE,
           'MESSAGE' => $lang['ov_teleport_err_none'],
@@ -161,8 +163,7 @@ switch($mode = sys_get_param_str('mode')) {
           $planetrow['PLANET_GOVERNOR_LEVEL'] < get_unit_param($hire, P_MAX_STACK)
         )
       )
-    )
-    {
+    ) {
       sn_db_transaction_start();
       $user = db_user_by_id($user['id'], true);
       $planetrow = db_planet_by_id($planetrow['id'], true);
@@ -267,11 +268,8 @@ switch($mode = sys_get_param_str('mode')) {
     $planet_count = 0;
     sn_db_transaction_start();
     $planets_query = db_planet_list_sorted($user, false, '*');
-    // while($UserPlanet = db_fetch($planets_query))
     foreach($planets_query as $an_id => $UserPlanet) {
-      $UserPlanet = sys_o_get_updated($user['id'], $UserPlanet['id'], SN_TIME_NOW);
-// pdump(classSupernova::$data[LOC_LOCATION]);
-// die();
+      $UserPlanet = sys_o_get_updated($user, $UserPlanet['id'], SN_TIME_NOW, false, true);
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet = $UserPlanet['planet'];
 
@@ -379,7 +377,7 @@ switch($mode = sys_get_param_str('mode')) {
     $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
     $governor_level = $planetrow['PLANET_GOVERNOR_ID'] ? mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID'], false, true) : 0;
     $template->assign_vars(array(
-      'TIME_NOW'              => $time_now,
+      'TIME_NOW'              => SN_TIME_NOW,
 
       'USER_ID'               => $user['id'],
       'user_username'         => $user['username'],

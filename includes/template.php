@@ -205,7 +205,7 @@ function tpl_render_menu() {
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $time_now, $config, $lang, $template_result, $sn_mvc;
+  global $link, $debug, $user, $user_impersonator, $planetrow, $config, $lang, $template_result, $sn_mvc;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -303,7 +303,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $template = gettemplate('_global_footer', true);
   $template->assign_vars(array(
     'ADMIN_EMAIL' => $config->game_adminEmail,
-    'TIME_NOW' => $time_now,
+    'TIME_NOW' => SN_TIME_NOW,
     'SN_VERSION'  => SN_VERSION,
   ));
   displayP(parsetemplate($template));
@@ -341,7 +341,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
     return;
   }
 
-  global $lang, $time_now;
+  global $lang;
 
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
@@ -351,7 +351,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
     $will_return = true;
     if($fleet_flying_row['fleet_mess'] == 0)
     {
-      if($fleet_flying_row['fleet_start_time'] >= $time_now) // cut fleets on Hold and Expedition
+      if($fleet_flying_row['fleet_start_time'] >= SN_TIME_NOW) // cut fleets on Hold and Expedition
       {
         if($fleet_flying_row['fleet_mission'] == MT_RELOCATE)
         {
@@ -375,7 +375,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   {
     $fleet_event = &$fleet_flying_events[$fleet_event_id];
     $template->assign_block_vars("flying_{$type}s", array(
-      'TIME' => max(0, $fleet_time - $time_now),
+      'TIME' => max(0, $fleet_time - SN_TIME_NOW),
       'TEXT' => $fleet_flying_count,
       'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
     ));
@@ -392,7 +392,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     return '';
   }
 
-  global $time_now, $lang, $config;
+  global $lang, $config;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -402,7 +402,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   $planetrow = $planetrow ? $planetrow : $user['current_planet'];
 
   sn_db_transaction_start();
-  $planetrow = sys_o_get_updated($user, $planetrow, $time_now);
+  $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
   sn_db_transaction_commit();
   $planetrow = $planetrow['planet'];
   */
@@ -433,11 +433,10 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   que_tpl_parse($template, QUE_RESEARCH, $user);
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
-  $time_now_parsed = getdate($time_now);
+  $time_now_parsed = getdate(SN_TIME_NOW);
   $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 
   if($config->game_news_overview) {
-    // nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<={$time_now}", $config->game_news_overview);
     nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview);
   }
 
@@ -528,7 +527,7 @@ function displayP($template) {
 
 function parsetemplate($template, $array = false) {
   if(is_object($template)) {
-    global $time_now, $user;
+    global $user;
 
     if($array) {
       foreach($array as $key => $data) {
@@ -540,7 +539,7 @@ function parsetemplate($template, $array = false) {
 
     $template->assign_vars(array(
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      'TIME_NOW'      => $time_now,
+      'TIME_NOW'      => SN_TIME_NOW,
       'USER_AUTHLEVEL'=> isset($user['authlevel']) ? $user['authlevel'] : -1,
       'SN_GOOGLE'     => defined('SN_GOOGLE'),
     ));

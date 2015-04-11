@@ -516,19 +516,15 @@ function uni_coordinates_valid($coordinates, $prefix = '')
     isset($coordinates["{$prefix}planet"]) && $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= $config->game_maxPlanet;
 }
 
-function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null)
-{
-  global $lang, $time_now, $config;
+function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
+  global $lang, $config;
 
-  try
-  {
-    if($planetrow['planet_teleport_next'] && $planetrow['planet_teleport_next'] > $time_now)
-    {
+  try {
+    if($planetrow['planet_teleport_next'] && $planetrow['planet_teleport_next'] > SN_TIME_NOW) {
       throw new exception($lang['ov_teleport_err_cooldown'], ERR_ERROR);
     }
 
-    if(mrc_get_level($user, false, RES_DARK_MATTER) < $config->planet_teleport_cost)
-    {
+    if(mrc_get_level($user, false, RES_DARK_MATTER) < $config->planet_teleport_cost) {
       throw new exception($lang['ov_teleport_err_no_dark_matter'], ERR_ERROR);
     }
 
@@ -537,23 +533,19 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null)
       (fleet_start_galaxy = {$planetrow['galaxy']} and fleet_start_system = {$planetrow['system']} and fleet_start_planet = {$planetrow['planet']})
       or
       (fleet_end_galaxy = {$planetrow['galaxy']} and fleet_end_system = {$planetrow['system']} and fleet_end_planet = {$planetrow['planet']})", true);
-    if($incoming['incoming'])
-    {
+    if(!empty($incoming['incoming'])) {
       throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
     }
 
-    $incoming = doquery("SELECT COUNT(*) AS incoming FROM {{iraks}} WHERE fleet_end_galaxy = {$planetrow['galaxy']} and fleet_end_system = {$planetrow['system']} and fleet_end_planet = {$planetrow['planet']}", true);
-    if($incoming['incoming'])
-    {
-      throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
-    }
+    //$incoming = doquery("SELECT COUNT(*) AS incoming FROM {{iraks}} WHERE fleet_end_galaxy = {$planetrow['galaxy']} and fleet_end_system = {$planetrow['system']} and fleet_end_planet = {$planetrow['planet']}", true);
+    //if($incoming['incoming']) {
+    //  throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
+    //}
 
-    if(is_array($new_coordinates))
-    {
+    if(is_array($new_coordinates)) {
       $new_coordinates['planet_type'] = PT_PLANET;
       $incoming = db_planet_by_vector($new_coordinates, '', true, 'id');
-      if($incoming['id'])
-      {
+      if($incoming['id']) {
         throw new exception($lang['ov_teleport_err_destination_busy'], ERR_ERROR);
       }
     }
@@ -562,9 +554,7 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null)
       'result'  => ERR_NONE,
       'message' => '',
     );
-  }
-  catch(exception $e)
-  {
+  } catch(exception $e) {
     $response = array(
       'result'  => $e->getCode(),
       'message' => $e->getMessage(),

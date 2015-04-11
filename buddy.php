@@ -52,7 +52,7 @@ try
         doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_ACTIVE . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
         if(db_affected_rows($link))
         {
-          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_accept_title'],
+          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_accept_title'],
             sprintf($lang['buddy_msg_accept_text'], $user['username']));
           sn_db_transaction_commit();
           throw new exception('buddy_err_accept_none', ERR_NONE);
@@ -73,7 +73,7 @@ try
         {
           $ex_friend_id = $buddy_row['BUDDY_SENDER_ID'] == $user['id'] ? $buddy_row['BUDDY_OWNER_ID'] : $buddy_row['BUDDY_SENDER_ID'];
 
-          msg_send_simple_message($ex_friend_id, $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_unfriend_title'],
+          msg_send_simple_message($ex_friend_id, $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_unfriend_title'],
             sprintf($lang['buddy_msg_unfriend_text'], $user['username']));
 
           doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
@@ -88,7 +88,7 @@ try
         }
         elseif($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) // Deny incoming request
         {
-          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_deny_title'],
+          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_deny_title'],
             sprintf($lang['buddy_msg_deny_text'], $user['username']));
 
           doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_DENIED . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
@@ -131,7 +131,7 @@ try
       throw new exception('buddy_err_adding_exists', ERR_WARNING);
     }
 
-    msg_send_simple_message($new_friend_row['id'], $user['id'], $time_now, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_adding_title'],
+    msg_send_simple_message($new_friend_row['id'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_adding_title'],
       sprintf($lang['buddy_msg_adding_text'], $user['username']));
 
     doquery($q = "INSERT INTO {{buddy}} SET `BUDDY_SENDER_ID` = {$user['id']}, `BUDDY_OWNER_ID` = {$new_friend_row['id']}, `BUDDY_REQUEST` = '{$new_request_text}';");

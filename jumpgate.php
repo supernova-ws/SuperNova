@@ -48,13 +48,13 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         // Dit monsieur, y avait quelque chose a envoyer ???
         if(!empty($db_changeset))
         {
-          db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = '{$time_now}'");
-          db_planet_set_by_id($planetrow['id'], "`last_jump_time` = '{$time_now}'");
+          db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = '{" . SN_TIME_NOW . "}'");
+          db_planet_set_by_id($planetrow['id'], "`last_jump_time` = '{" . SN_TIME_NOW . "}'");
           db_changeset_apply($db_changeset);
 
           db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 
-          $planetrow['last_jump_time'] = $time_now;
+          $planetrow['last_jump_time'] = SN_TIME_NOW;
           $RetMessage = $lang['gate_jump_done'] ." - ". pretty_time(uni_get_time_to_jump($planetrow));
         } else {
           $RetMessage = $lang['gate_wait_data'];
@@ -112,7 +112,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
       'GATE_JUMP_REST_TIME' => uni_get_time_to_jump($planetrow),
       'gate_start_name' => $planetrow['name'],
       'gate_start_link' => uni_render_coordinates_href($planetrow, '', 3),
-      'TIME_NOW' => $time_now,
+      'TIME_NOW' => SN_TIME_NOW,
     ));
 
     display($template, $lang['tech'][STRUC_MOON_GATE]);

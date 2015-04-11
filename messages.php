@@ -99,7 +99,7 @@ switch ($mode) {
 
         $user_safe_name = db_escape($user['username']);
         $recipient_name = db_escape($recipient_name);
-        msg_send_simple_message($recipient_id, $user['id'], $time_now, MSG_TYPE_PLAYER, "{$user_safe_name} [{$user['galaxy']}:{$user['system']}:{$user['planet']}]", $subject, $text, true);
+        msg_send_simple_message($recipient_id, $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, "{$user_safe_name} [{$user['galaxy']}:{$user['system']}:{$user['planet']}]", $subject, $text, true);
 
         //$recipient_id = 0;
         //$recipient_name = '';

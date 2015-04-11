@@ -175,8 +175,6 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   coe_o_missile_calculate();
   sn_db_transaction_commit();
 
-  global $time_now;
-
   $fleet_list = array();
   $fleet_event_list = array();
   $missions_used = array();
@@ -185,9 +183,9 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   sn_db_transaction_start();
 //log_file('Запрос на флоты');
   $_fleets = doquery("SELECT * FROM `{{fleets}}` WHERE
-    (`fleet_start_time` <= '{$time_now}' AND `fleet_mess` = 0) 
-    OR (`fleet_end_stay` <= '{$time_now}' AND fleet_end_stay > 0 AND `fleet_mess` = 0)
-    OR (`fleet_end_time` <= '{$time_now}')
+    (`fleet_start_time` <= '" . SN_TIME_NOW . "' AND `fleet_mess` = 0)
+    OR (`fleet_end_stay` <= '" . SN_TIME_NOW . "' AND fleet_end_stay > 0 AND `fleet_mess` = 0)
+    OR (`fleet_end_time` <= '" . SN_TIME_NOW . "')
   FOR UPDATE;");
 
 //log_file('Выборка флотов');
@@ -204,7 +202,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       );
     }
 
-    if($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= $time_now && $fleet_row['fleet_mess'] == 0) {
+    if($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
       $fleet_event_list[] = array(
         'fleet_row' => &$fleet_list[$fleet_row['fleet_id']],
         'fleet_time' => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
@@ -212,7 +210,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       );
     }
 
-    if($fleet_row['fleet_end_time'] <= $time_now)
+    if($fleet_row['fleet_end_time'] <= SN_TIME_NOW)
     {
       $fleet_event_list[] = array(
         'fleet_row' => &$fleet_list[$fleet_row['fleet_id']],

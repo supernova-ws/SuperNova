@@ -268,18 +268,18 @@ $lang = new classLocale(DEFAULT_LANG, $config->server_locale_log_usage);
 $lang->lng_switch(sys_get_param_str('lang'));
 
 
-if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= $time_now) {
+if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= SN_TIME_NOW) {
   include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);
 }
 
-if($config->user_birthday_gift && $time_now > $config->user_birthday_celebrate + PERIOD_DAY) {
+if($config->user_birthday_gift && SN_TIME_NOW > $config->user_birthday_celebrate + PERIOD_DAY) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/user_birthday_celebrate" . DOT_PHP_EX);
   sn_user_birthday_celebrate();
 }
 
 if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TIME_NOW) {
   $config->db_saveItem('var_online_user_count', db_user_count(true));
-  $config->db_saveItem('var_online_user_time', $time_now);
+  $config->db_saveItem('var_online_user_time', SN_TIME_NOW);
   if($config->server_log_online) {
     doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
   }

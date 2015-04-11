@@ -46,11 +46,11 @@ function upd_log_version_update() {
 }
 
 function upd_add_more_time($time = 0) {
-  global $config, $time_now, $sys_log_disabled;
+  global $config, $sys_log_disabled;
 
   $time = $time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30);
 
-  !$sys_log_disabled ? $config->db_saveItem('var_db_update_end', $time_now + $time) : false;
+  !$sys_log_disabled ? $config->db_saveItem('var_db_update_end', SN_TIME_NOW + $time) : false;
   set_time_limit($time);
 }
 

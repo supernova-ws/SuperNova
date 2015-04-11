@@ -13,8 +13,8 @@ if(sys_get_param_str('return_fleet'))
 
     if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0)
     {
-      $ReturnFlyingTime = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < $time_now ? $FleetRow['fleet_start_time'] : $time_now) - $FleetRow['start_time'] + $time_now + 1;
-      doquery("UPDATE {{fleets}} SET `fleet_start_time` = '{$time_now}', `fleet_group` = 0, `fleet_end_stay` = '0', `fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;");
+      $ReturnFlyingTime = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < SN_TIME_NOW ? $FleetRow['fleet_start_time'] : SN_TIME_NOW) - $FleetRow['start_time'] + SN_TIME_NOW + 1;
+      doquery("UPDATE {{fleets}} SET `fleet_start_time` = '{" . SN_TIME_NOW . "}', `fleet_group` = 0, `fleet_end_stay` = '0', `fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;");
 
       if($FleetRow['fleet_group'])
       {
@@ -72,7 +72,7 @@ else
 $fleet_flying_amount = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}';", '', true);
 
 $template->assign_vars(array(
-  'TIME_NOW'           => $time_now,
+  'TIME_NOW'           => SN_TIME_NOW,
 
   'FLEETS_FLYING'      => $fleet_flying_amount['flying_fleets'],
   'FLEETS_MAX'         => GetMaxFleets($user),

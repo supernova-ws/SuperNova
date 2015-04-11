@@ -14,7 +14,7 @@ function sn_fleet_page3()
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
-  global $duration, $time_now, $sn_module;
+  global $duration, $sn_module;
 
   $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
 
@@ -172,7 +172,7 @@ function sn_fleet_page3()
     message ("<span class='error'><b>". $lang['fl_cheat_speed'] ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
-  $fleet['start_time'] = $duration + $time_now;
+  $fleet['start_time'] = $duration + SN_TIME_NOW;
 
   $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :
     ($target_mission == MT_HOLD ? 12 : 0);
@@ -192,7 +192,7 @@ function sn_fleet_page3()
     $StayDuration = 0;
     $StayTime     = 0;
   }
-  $fleet['end_time']   = $StayDuration + (2 * $duration) + $time_now;
+  $fleet['end_time']   = $StayDuration + (2 * $duration) + SN_TIME_NOW;
 
   if($aks && $target_mission == MT_AKS)
   {
@@ -253,7 +253,7 @@ function sn_fleet_page3()
   }
   $QryInsertFleet .= "`fleet_end_galaxy` = '{$galaxy}', `fleet_end_system` = '{$system}', `fleet_end_planet` = '{$planet}', `fleet_end_type` = '{$planet_type}', ";
   $QryInsertFleet .= "`fleet_resource_metal` = '{$TransMetal}', `fleet_resource_crystal` = '{$TransCrystal}', `fleet_resource_deuterium` = '{$TransDeuterium}', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetPlanet['id_owner']}', `fleet_group` = '{$fleet_group}', `start_time` = '{$time_now}';";
+  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetPlanet['id_owner']}', `fleet_group` = '{$fleet_group}', `start_time` = '" . SN_TIME_NOW . "';";
   doquery( $QryInsertFleet);
   $fleet_id = db_insert_id();
 

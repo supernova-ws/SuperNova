@@ -96,11 +96,11 @@ if(sys_get_param('note_delete')) {
         throw new exception('note_err_owner_wrong', ERR_ERROR);
       }
 
-      doquery("UPDATE {{notes}} SET `time` = {$time_now}, `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
+      doquery("UPDATE {{notes}} SET `time` = {" . SN_TIME_NOW . "}, `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
         `galaxy` = {$note_galaxy}, `system` = {$note_system}, `planet` = {$note_planet}, `planet_type` = {$note_planet_type}, `sticky` = {$note_sticky}
         WHERE `id` = {$note_id_edit} LIMIT 1;");
     } else {
-      doquery("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = {$time_now}, `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
+      doquery("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = {" . SN_TIME_NOW . "}, `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
         `galaxy` = {$note_galaxy}, `system` = {$note_system}, `planet` = {$note_planet}, `planet_type` = {$note_planet_type}, `sticky` = {$note_sticky};");
     }
 
@@ -120,7 +120,7 @@ if(sys_get_param('note_delete')) {
 if(!$note_id_edit) {
   note_assign($template, array(
     'id' => 0,
-    'time' => $time_now,
+    'time' => SN_TIME_NOW,
     'priority' => 2,
     'planet_type' => PT_PLANET,
     'title' => $lang['note_new_title'],

@@ -73,7 +73,7 @@ print $foo->bar();
   - если флотов несколько - ТМ распределяется между всеми игроками пропорционально цене флота
   - обсчет ЧЛ происходит каждые 10 минут
   - виртуальный игрок имеет две планеты. Первую - столицу, вторую - с ЧЛ. Столица обязательно появляется в населенном секторе (активный игрок), а ЧЛ - в ненаселенном (i-шки или пустые?)
-    $user_activity = floor(($time_now - $uni_galaxyRowUser['onlinetime'])/(60*60*24));
+    $user_activity = floor((SN_TIME_NOW - $uni_galaxyRowUser['onlinetime'])/(60*60*24));
      'USER_ACTIVITY' => $user_activity,
      'USER_ATTACKABLE' => $user_activity >= 7,
      'USER_INACTIVE' => $user_activity >= 28,
@@ -823,7 +823,7 @@ xsolla - передавать описание платежа
 ======================
 
 
-Текущий билд #39b14.2#
+Текущий билд #39b14.4#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять fleet_update_last
@@ -1320,7 +1320,7 @@ HAVING SUM(SIGN(1-SIGN(y.val-x.val))) = (COUNT(*)+1)/2
 [*] readme.txt -> readme.html
 
 [*] Заменить переменные на константы
-    define('SN_TIME_NOW', $time_now);
+    define('SN_TIME_NOW', SN_TIME_NOW);
     define('SN_CLIENT_TIME_DIFF', $time_diff);
 
 

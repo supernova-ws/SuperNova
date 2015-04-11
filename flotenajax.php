@@ -117,7 +117,7 @@ if($target_mission == MT_MISSILE)
 {
   $distance = abs($target_coord['system'] - $planetrow['system']);
   $duration = round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
-  $arrival = $time_now + $duration;
+  $arrival = SN_TIME_NOW + $duration;
   $travel_data['consumption'] = 0;
 
   doquery(
@@ -136,7 +136,7 @@ else
     die($lang['gs_c13']);
   }
 
-  $fleet_start_time = $time_now + $travel_data['duration'];
+  $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
   $fleet_end_time   = $fleet_start_time + $travel_data['duration'];
 
   $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
@@ -157,7 +157,7 @@ else
   }
   $QryInsertFleet .= "`fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}', `fleet_end_type` = '{$target_planet_type}', ";
   $QryInsertFleet .= "`fleet_target_owner` = '{$target_row['id_owner']}', ";
-  $QryInsertFleet .= "`start_time` = '{$time_now}';";
+  $QryInsertFleet .= "`start_time` = '". SN_TIME_NOW . "';";
   doquery($QryInsertFleet);
 }
 

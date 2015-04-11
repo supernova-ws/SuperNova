@@ -15,7 +15,7 @@ $sn_mvc['view']['imperium'][] = 'sn_imperium_view';
 
 function sn_imperium_view($template = null)
 {
-  global $user, $time_now, $lang, $template_result;
+  global $user, $lang;
 
   $planets = array();
   $ques = array();
@@ -53,19 +53,18 @@ function sn_imperium_view($template = null)
   sn_db_transaction_start();
   $planet_row_list = db_planet_list_sorted($user);
   // while ($planet = db_fetch($planet_row_list))
-  foreach($planet_row_list as $planet)
-  {
-    $global_data = sys_o_get_updated($user, $planet['id'], $time_now);
+  foreach($planet_row_list as $planet) {
+    $global_data = sys_o_get_updated($user, $planet['id'], SN_TIME_NOW, false, true);
     $planets[$planet['id']] = $global_data['planet'];
-    $ques[$planet['id']] = que_get($user['id'], $planet['id'], false);
+    // $ques[$planet['id']] = que_get($user['id'], $planet['id'], false);
+    $ques[$planet['id']] = $global_data['que'];
   }
   sn_db_transaction_commit();
 
   $template = gettemplate('imperium', $template);
   $template->assign_var('amount', count($planets) + 2);
 
-  for($i = 100; $i >= 0; $i -= 10)
-  {
+  for($i = 100; $i >= 0; $i -= 10) {
     $template->assign_block_vars('percent', array('PERCENT' => $i));
   }
 

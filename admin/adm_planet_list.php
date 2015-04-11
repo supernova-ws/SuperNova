@@ -20,7 +20,7 @@ if(!$planet_active)
 }
 else
 {
-  $active_time = $time_now - 15*60;
+  $active_time = SN_TIME_NOW - 15*60;
 }
 $table_parent_columns = $planet_type == 3 || $planet_active;
 

@@ -57,9 +57,9 @@ function init_update(&$config) {
           require_once($update_file);
           sys_refresh_tablelist($db_prefix);
 
-          $time_now = time();
-          $config->db_saveItem('var_db_update', $time_now);
-          $config->db_saveItem('var_db_update_end', $time_now);
+          $current_time = time();
+          $config->db_saveItem('var_db_update', $current_time);
+          $config->db_saveItem('var_db_update_end', $current_time);
         } elseif(filemtime($update_file) > $config->var_db_update) {
           $timeout = $config->var_db_update_end - SN_TIME_NOW;
           die(

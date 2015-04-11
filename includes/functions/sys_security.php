@@ -40,10 +40,10 @@ function sec_player_ip() {
 // TheCookie[3] = rememberme
 
 function sn_set_cookie($user, $rememberme) {
-  global $config, $time_now;
+  global $config;
 
   if($rememberme) {
-    $expiretime = $time_now + 31536000;
+    $expiretime = SN_TIME_NOW + 31536000;
     $rememberme = 1;
   } else {
     $expiretime = 0;
@@ -163,7 +163,7 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
 
 
 
-    if($last_confirm['id'] && ($time_now - $last_confirm['unix_time'] <= 3*24*60*60)) {
+    if($last_confirm['id'] && (SN_TIME_NOW - $last_confirm['unix_time'] <= 3*24*60*60)) {
 
       $user_data = db_user_by_id($last_confirm['id_user']);
       if(!$user_data['id']) {
@@ -348,8 +348,6 @@ function sec_login_change_state() {
 
     // TODO REMOVE SYS_LOG_HIT
 
-//    global $config, $time_now, $sys_stop_log_hit, $is_watching, $user;
-//
     if(!$sys_stop_log_hit && $config->game_counter) {
       $is_watching = true;
 //    $ip = sec_player_ip();
@@ -515,12 +513,12 @@ function sec_user_by_cookie($cookie) {
 }
 
 function sys_user_vacation($user) {
-  global $time_now, $config;
+  global $config;
 
   if(sys_get_param_str('vacation') == 'leave') {
-    if ($user['vacation'] < $time_now) {
+    if ($user['vacation'] < SN_TIME_NOW) {
       $user['vacation'] = 0;
-      $user['vacation_next'] = $time_now + $config->player_vacation_timeout;
+      $user['vacation_next'] = SN_TIME_NOW + $config->player_vacation_timeout;
       db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
     }
   }
@@ -533,7 +531,7 @@ function sys_user_vacation($user) {
     $template->assign_vars(array(
       'NAME' => $user['username'],
       'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
-      'CAN_LEAVE' => $user['vacation'] <= $time_now,
+      'CAN_LEAVE' => $user['vacation'] <= SN_TIME_NOW,
       'RANDOM' => mt_rand(1, 2),
     ));
 
@@ -645,10 +643,8 @@ function DeleteSelectedUser ($UserID) {
 }
 
 function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '') {
-  global $time_now;
-
   $ban_current = db_user_by_id($banned['id'], false, 'banaday');
-  $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : $time_now) + $term;
+  $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
 
   db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
 
@@ -661,7 +657,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
       `ban_user_id` = '{$banned['id']}',
       `ban_user_name` = '{$banned['username']}',
       `ban_reason` = '{$reason}',
-      `ban_time` = {$time_now},
+      `ban_time` = " . SN_TIME_NOW . ",
       `ban_until` = {$ban_until},
       `ban_issuer_id` = '{$banner['id']}',
       `ban_issuer_name` = '{$banner['username']}',
@@ -675,9 +671,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 }
 
 function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
-  global $time_now;
-
-  db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = {$time_now}");
+  db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
 
   $banned['username'] = db_escape($banned['username']);
   $banner['username'] = db_escape($banner['username']);
@@ -689,7 +683,7 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
       `ban_user_name` = '{$banned['username']}',
       `ban_reason` = '{$reason}',
       `ban_time` = 0,
-      `ban_until` = '{$time_now}',
+      `ban_until` = '" . SN_TIME_NOW . "',
       `ban_issuer_id` = '{$banner['id']}',
       `ban_issuer_name` = '{$banner['username']}',
       `ban_issuer_email` = '{$banner['email']}'

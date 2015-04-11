@@ -20,7 +20,7 @@ if(SN_IN_FLEET !== true)
 function flt_build_gathering($resources_taken = '') {
   sn_db_transaction_start();
 
-  global $time_now, $planetrow, $user, $lang;
+  global $planetrow, $user, $lang;
   // Caching sn_data names for quick access
   $lang_sys_planet_type = $lang['sys_planet_type'];
   $lang_fl_attack_error = $lang['fl_attack_error'];
@@ -47,7 +47,8 @@ function flt_build_gathering($resources_taken = '') {
     if(!$query) {
       $resources_taken[$planet_db_data['id']] = 1;
     }
-    $planet_db_data = sys_o_get_updated($user, $planet_db_data, $time_now, true);
+    // Вот тут надо посчитать - отработать очереди и выяснить, сколько ресов на каждой планете
+    $planet_db_data = sys_o_get_updated($user, $planet_db_data, SN_TIME_NOW, true);
     $planet_db_data = $planet_db_data['planet'];
 
     $planet_id = $planet_db_data['id'];

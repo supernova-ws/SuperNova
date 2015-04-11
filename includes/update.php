@@ -30,7 +30,7 @@ define('IN_UPDATE', true);
 
 require('includes/upd_helpers.php');
 
-global $sn_cache, $new_version, $db_prefix, $time_now, $config, $db_name, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_foreigns;
+global $sn_cache, $new_version, $db_prefix, $config, $db_name, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_foreigns;
 
 $config->reset();
 $config->db_loadAll();
@@ -39,7 +39,7 @@ $config->debug = 0;
 //$config->db_loadItem('db_version');
 if($config->db_version == DB_VERSION) {
 } elseif($config->db_version > DB_VERSION) {
-  $config->db_saveItem('var_db_update_end', $time_now);
+  $config->db_saveItem('var_db_update_end', SN_TIME_NOW);
   die(
     'Internal error! Auotupdater detects DB version greater then can be handled!<br />
     Possible you have out-of-date SuperNova version<br />

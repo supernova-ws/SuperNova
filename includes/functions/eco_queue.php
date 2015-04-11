@@ -520,8 +520,7 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = n
  *   (integer) - обрабатываются локальные очереди для планеты. Нужно, например, в обработчике флотов
  *
  */
-function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
-{
+function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
   sn_db_transaction_check(true);
 
   $que = array();
@@ -530,8 +529,8 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   $user = db_user_by_id($user['id'], true);
 
   $time_left[$user['id']][0] = max(0, $on_time - $user['que_processed']);
-  if($planet === null && !$time_left[$user['id']][0]) // TODO
-  {
+  if($planet === null && !$time_left[$user['id']][0]) {
+    // TODO
     return $que;
   }
 
@@ -540,14 +539,12 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW)
   $planet = intval(is_array($planet) ? $planet['id'] : $planet); // В $planet у нас теперь только её ID или шаблон null/0/false
   $que = que_get($user['id'], $planet, $que_type_id, true);
 //pdump($que);
-  if(empty($que['items']))
-  {
+  if(empty($que['items'])) {
     return $que;
   }
 
   $planet_list = array();
-  if($planet !== null)
-  {
+  if($planet !== null) {
     // Если нужно изменять данные на планетах - блокируем планеты и получаем данные о них
     // TODO - от них не надо ничего, кроме ID и que_processed
 

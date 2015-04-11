@@ -2,9 +2,9 @@
 
 function sys_maintenance()
 {
-  global $config, $time_now;
+  global $config;
 
-  $bashing_time_limit = $time_now - $config->fleet_bashing_scope;
+  $bashing_time_limit = SN_TIME_NOW - $config->fleet_bashing_scope;
 
   // TODO: Move here some cleaning procedures from admin/maintenance.php
   // TODO: Add description of operation to log it

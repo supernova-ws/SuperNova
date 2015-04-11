@@ -65,7 +65,7 @@ function sys_stat_calculate_flush(&$data, $force = false) {
 }
 
 function sys_stat_calculate() {
-  global $config, $time_now, $sta_update_step;
+  global $config, $sta_update_step;
 
   ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '1024M');
 
@@ -204,7 +204,7 @@ function sys_stat_calculate() {
     $data[] = $q = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
       "'{$points[$user_id][UNIT_STRUCTURES]}','{$counts[$user_id][UNIT_STRUCTURES]}','{$user_defence_points}','{$user_defence_counts}'," .
       "'{$points[$user_id][UNIT_SHIPS]}','{$counts[$user_id][UNIT_SHIPS]}','{$points[$user_id][UNIT_RESOURCES]}','{$counts[$user_id][UNIT_RESOURCES]}'," .
-      "{$user_points},{$user_counts},{$time_now})";
+      "{$user_points},{$user_counts}," . SN_TIME_NOW . ")";
 
     sys_stat_calculate_flush($data);
   }
@@ -224,7 +224,7 @@ function sys_stat_calculate() {
         SUM(u.`tech_points`)+aus.`tech_points`, SUM(u.`tech_count`)+aus.`tech_count`, SUM(u.`build_points`)+aus.`build_points`, SUM(u.`build_count`)+aus.`build_count`,
         SUM(u.`defs_points`)+aus.`defs_points`, SUM(u.`defs_count`)+aus.`defs_count`, SUM(u.`fleet_points`)+aus.`fleet_points`, SUM(u.`fleet_count`)+aus.`fleet_count`,
         SUM(u.`res_points`)+aus.`res_points`, SUM(u.`res_count`)+aus.`res_count`, SUM(u.`total_points`)+aus.`total_points`, SUM(u.`total_count`)+aus.`total_count`,
-        {$time_now}, NULL, u.`id_ally`, 2, 1,
+        " . SN_TIME_NOW . ", NULL, u.`id_ally`, 2, 1,
         a.tech_rank, a.build_rank, a.defs_rank, a.fleet_rank, a.res_rank, a.total_rank
       FROM {{statpoints}} as u
         join {{alliance}} as al on al.id = u.id_ally
