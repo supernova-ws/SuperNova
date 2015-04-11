@@ -73,7 +73,10 @@
 
   <!--<input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />-->
 <!-- ENDIF -->
-  <table cellspacing="0" cellpadding="0" id="left_menu"><!-- BEGIN menu -->
+  <table cellspacing="0" cellpadding="0" id="left_menu">
+  <!-- BEGIN menu -->
+  <!-- IF (! menu.AUTH_LEVEL || menu.AUTH_LEVEL <= AUTH_LEVEL) && ! menu.DISABLED -->
+
     <!-- IF menu.LEVEL == 'header' -->
       <!-- DEFINE $TX = 'th' -->
     <!-- ELSE -->
@@ -104,9 +107,6 @@
         <!-- IF menu.TITLE --> title="{menu.TITLE}"<!-- ELSEIF menu.ALT --> title="{menu.ALT}"<!-- ENDIF -->
         <!-- IF menu.STYLE --> style="{menu.STYLE}"<!-- ENDIF -->
       >
-
-
-
 
     <!-- IF menu.WRAP_START -->{menu.WRAP_START}<!-- ENDIF -->
 
@@ -142,6 +142,7 @@
     <!-- IF menu.WRAP_END -->{menu.WRAP_END}<!-- ENDIF -->
       </{$TX}>
     </tr>
+  <!-- ENDIF -->
   <!-- END menu --></table>
 </td>
 <td valign="top"><!-- IF MENU_CUSTOMIZE --><input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />  <script type="text/javascript">

@@ -7,6 +7,8 @@ if(!defined('INSIDE'))
 
 lng_include('menu');
 
+$active_payment_modules = sn_module_get_active_count('payment') > 0;
+
 $sn_menu = array(
 /*
   'menu_triolan' => array(                     // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
@@ -23,6 +25,9 @@ $sn_menu = array(
     'ALT'      => 'Triolan.COM',               // ALT-tag for image
 
     'HIDE'     => {0|1},                       // Should be this item hide?
+
+    'AUTH_LEVEL' => (int),                     // Меню будет видно только пользователям с уровнем доступа выше указанного
+    'DISABLED'  => {0|1},                      // DISABLED == 1 - пункт не будет показан
 
     'LOCATION' => '+menu_supernova_logo',      // Special atrtribute for modules' $extra_menu. SHOULD BE USE EXCLUSIVE IN MODULES!
                                                // Format
@@ -51,6 +56,24 @@ $sn_menu = array(
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
   ),
+  'menu_admin' => array(
+    'LEVEL' => 'header',
+    'ITEM'  => $lang['user_level'][$user['authlevel']],
+    'LINK'  => 'admin/overview.php',
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
+    'DISABLED' => $user['authlevel'] < 1,
+  ),
+  'menu_impersonator' => array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_impersonate_done',
+    'LINK'  => 'logout.php',
+    'SPAN'  => 'important',
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
+    'DISABLED' => empty($user_impersonator),
+  ),
 
 
 /*
@@ -60,6 +83,17 @@ $sn_menu = array(
     'ITEM'  => 'sys_planet',
   ),
 */
+  'menu_faq' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'm_faq',
+    'LINK'  => $config->url_faq,
+    'BLANK' => true,
+    'ICON'  => true,
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
+    'DISABLED' => empty($config->url_faq),
+  ),
   'menu_planet_overview' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
@@ -228,6 +262,26 @@ $sn_menu = array(
     'LINK'  => 'affilates.php',
     'ICON'  => true,
   ),
+  // 'menu_ally' => $config->game_mode == GAME_BLITZ ? null : array(
+  'menu_ally' => array(
+    'LEVEL' => 'header',
+    //    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_alliance',
+    'LINK'  => 'alliance.php',
+    'ICON'  => true,
+    'LOCATION' => '+menu_affiliates',
+    'DISABLED' => $config->game_mode == GAME_BLITZ,
+  ),
+  // 'menu_ally_chat' => $config->game_mode == GAME_BLITZ ? null : array(
+  'menu_ally_chat' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'AllyChat',
+    'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
+    'ICON'  => true,
+    'DISABLED' => $config->game_mode == GAME_BLITZ,
+  ),
 
 /*
   'menu_ally_overview' => array(
@@ -256,11 +310,30 @@ $sn_menu = array(
     'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_COMMON,
     'ICON'  => true,
   ),
+  // 'menu_comm_forum' => !$config->url_forum ? array() : array(
+  'menu_comm_forum' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'm_forum',
+    'LINK'  => $config->url_forum,
+    'BLANK' => true,
+    'ICON'  => true,
+    'DISABLED' => empty($config->url_forum),
+  ),
 
   'menu_utils' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'm_others',
+  ),
+  // 'menu_utils_search' => $config->game_mode == GAME_BLITZ ? array() : array(
+  'menu_utils_search' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'Search',
+    'LINK'  => 'search.php',
+    'ICON'  => true,
+    'DISABLED' => $config->game_mode == GAME_BLITZ,
   ),
   'menu_utils_shortcuts' => array(
     'LEVEL' => 'submenu',
@@ -296,6 +369,16 @@ $sn_menu = array(
     'ITEM'  => 'm_simulator',
     'LINK'  => 'simulator.php',
     'ICON'  => true,
+  ),
+  // 'menu_rules' => !$config->url_rules ? array() : array(
+  'menu_rules' => array(
+    'LEVEL' => 'header',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_game_rules',
+    'LINK'  => $config->url_rules,
+    'BLANK' => true,
+    'ICON'  => true,
+    'DISABLED' => empty($config->url_rules),
   ),
 
 /*
@@ -360,6 +443,15 @@ $sn_menu = array(
     'HIDEABLE' => 3,
   ),
 
+  'menu_extra' => array(
+    'LEVEL' => 'submenu',
+    'CLASS' => 'c_c',
+    'ITEM'  => $config->advGoogleLeftMenuCode,
+    'MOVEABLE' => 2,
+    'HIDEABLE' => 3,
+    'DISABLED' => !$config->advGoogleLeftMenuIsOn || empty($config->advGoogleLeftMenuCode),
+  ),
+
   'menu_supernova_logo' => array(
     'LEVEL' => 'submenu',
     'TYPE' => 'image',
@@ -384,122 +476,6 @@ $sn_menu = array(
   ),
 */
 );
-
-if(!empty($user_impersonator)) {
-  $sn_menu_extra += array(
-    'menu_impersonator' => array(
-      'LEVEL' => 'header',
-      'TYPE'  => 'lang',
-      'ITEM'  => 'sys_impersonate_done',
-      'LINK'  => 'logout.php',
-      'SPAN'  => 'important',
-      'LOCATION' => '+menu_server_logo',
-      'MOVEABLE' => 2,
-      'HIDEABLE' => 3,
-    ),
-  );
-}
-
-if($user['authlevel'] > 0) {
-  $sn_menu_extra += array(
-    'menu_admin' => array(
-      'LEVEL' => 'header',
-      'ITEM'  => $lang['user_level'][$user['authlevel']],
-      'LINK'  => 'admin/overview.php',
-      'LOCATION' => '+menu_server_logo',
-      'MOVEABLE' => 2,
-      'HIDEABLE' => 3,
-    ),
-  );
-}
-
-if($config->url_forum) {
-  $sn_menu_extra += array(
-    'menu_comm_forum' => !$config->url_forum ? array() : array(
-      'LEVEL' => 'submenu',
-      'TYPE'  => 'lang',
-      'ITEM'  => 'm_forum',
-      'LINK'  => $config->url_forum,
-      'BLANK' => true,
-      'ICON'  => true,
-      'LOCATION' => '+menu_comm_chat',
-    ),
-  );
-}
-
-if($config->url_rules) {
-  $sn_menu_extra += array(
-    'menu_rules' => !$config->url_rules ? array() : array(
-      'LEVEL' => 'header',
-      'TYPE'  => 'lang',
-      'ITEM'  => 'sys_game_rules',
-      'LINK'  => $config->url_rules,
-      'BLANK' => true,
-      'ICON'  => true,
-      'LOCATION' => '+menu_utils_simulator',
-    ),
-  );
-}
-
-
-if($config->game_mode != GAME_BLITZ) {
-  $sn_menu_extra += array(
-    'menu_ally' => $config->game_mode == GAME_BLITZ ? null : array(
-      'LEVEL' => 'header',
-  //    'LEVEL' => 'submenu',
-      'TYPE'  => 'lang',
-      'ITEM'  => 'sys_alliance',
-      'LINK'  => 'alliance.php',
-      'ICON'  => true,
-      'LOCATION' => '+menu_affiliates',
-    ),
-    'menu_ally_chat' => $config->game_mode == GAME_BLITZ ? null : array(
-      'LEVEL' => 'submenu',
-      'TYPE'  => 'lang',
-      'ITEM'  => 'AllyChat',
-      'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
-      'ICON'  => true,
-      'LOCATION' => '+menu_ally',
-    ),
-    'menu_utils_search' => $config->game_mode == GAME_BLITZ ? array() : array(
-      'LEVEL' => 'submenu',
-      'TYPE'  => 'lang',
-      'ITEM'  => 'Search',
-      'LINK'  => 'search.php',
-      'ICON'  => true,
-      'LOCATION' => '+menu_utils',
-    ),
-  );
-}
-
-
-if($config->url_faq) {
-  $sn_menu_extra += array(
-    'menu_faq' => array(
-      'LEVEL' => 'submenu',
-      'TYPE'  => 'lang',
-      'ITEM'  => 'm_faq',
-      'LINK'  => $config->url_faq,
-      'BLANK' => true,
-      'ICON'  => true,
-      'LOCATION' => '-menu_planet_overview',
-      'MOVEABLE' => 2,
-      'HIDEABLE' => 3,
-    ),
-  );
-}
-
-if($config->advGoogleLeftMenuIsOn) {
-  $sn_menu_extra += array(
-    'menu_extra' => array(
-      'LEVEL' => 'submenu',
-      'CLASS' => 'c_c',
-      'ITEM'  => $config->advGoogleLeftMenuCode,
-      'MOVEABLE' => 2,
-      'HIDEABLE' => 3,
-    ),
-  );
-}
 
 
 global $sn_version_check_class, $lang, $config, $sn_menu_admin_extra;
@@ -536,11 +512,47 @@ $sn_menu_admin = array(
     'TYPE' => 'lang',
     'ITEM' => 'adm_over',
     'LINK' => 'admin/overview.php',
+    'AUTH_LEVEL' => 3,
   ),
   'menu_admin_quests' => array(
     'TYPE'  => 'lang',
     'ITEM'  => 'qst_quests',
     'LINK'  => 'admin/adm_quest.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_configuration' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_conf',
+    'LINK' => 'admin/settings.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_dark_matter' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'dark_matter',
+    'LINK' => 'admin/admin_darkmatter.php',
+    'AUTH_LEVEL' => 3,
+  ),
+
+  'menu_admin_metamatter_header' => array(
+    'LEVEL' => 'header',
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_metametter_payment',
+    'AUTH_LEVEL' => 3,
+    'DISABLED' => !$active_payment_modules,
+  ),
+  'menu_admin_metamatter' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'sys_metamatter',
+    'LINK' => 'admin/adm_metamatter.php',
+    'AUTH_LEVEL' => 3,
+    'DISABLED' => !$active_payment_modules,
+  ),
+  'menu_admin_metametter_payment' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_pay',
+    'LINK' => 'admin/adm_payment.php',
+    'AUTH_LEVEL' => 3,
+    'DISABLED' => !$active_payment_modules,
   ),
 
   'menu_admin_player' => array(
@@ -553,31 +565,54 @@ $sn_menu_admin = array(
     'ITEM' => 'adm_ban_unban',
     'LINK' => 'admin/banned.php',
   ),
-
-  //    <!-- IF USER_AUTHLEVEL >= 2 -->
-  //    <tr><td><a href="">Add Research</a></td></tr>
-  //    <tr><td><a href="admin/del_research.php">Del Research</a></td></tr>
-  //    <!-- ENDIF -->
+  'menu_admin_player_list' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_plrlst',
+    'LINK' => 'admin/userlist.php',
+    'AUTH_LEVEL' => 3,
+  ),
 
   'menu_admin_universe' => array(
     'LEVEL' => 'header',
     'TYPE' => 'lang',
     'ITEM' => 'sys_universe',
+    'AUTH_LEVEL' => 3,
   ),
   'menu_admin_planet_list_active' => array(
     'TYPE' => 'lang',
     'ITEM' => 'adm_planet_active',
     'LINK' => 'admin/adm_planet_list.php?planet_active=1',
+    'AUTH_LEVEL' => 3,
   ),
   'menu_admin_planet_list_planets' => array(
     'TYPE' => 'lang',
     'ITEM' => 'adm_pltlst',
     'LINK' => 'admin/adm_planet_list.php?planet_type=' . PT_PLANET,
+    'AUTH_LEVEL' => 3,
   ),
   'menu_admin_planet_list_moons' => array(
     'TYPE' => 'lang',
     'ITEM' => 'adm_moonlst',
     'LINK' => 'admin/adm_planet_list.php?planet_type=' . PT_MOON,
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_planet_moon_add' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_addmoon',
+    'LINK' => 'admin/add_moon.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_planet_compensate' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_lm_compensate',
+    'LINK' => 'admin/planet_compensate.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_fleets' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_fleet',
+    'LINK' => 'admin/adm_flying_fleets.php',
+    'AUTH_LEVEL' => 3,
   ),
 
   'menu_admin_utilites' => array(
@@ -586,16 +621,49 @@ $sn_menu_admin = array(
     'ITEM' => 'tool',
     'CLASS' => 'link',
     'LINK' => 'admin/tools.php',
+    'AUTH_LEVEL' => 3,
   ),
   'menu_admin_statbuilder' => array(
     'TYPE' => 'lang',
     'ITEM' => 'adm_updpt',
     'LINK' => 'admin/statbuilder.php',
+    'AUTH_LEVEL' => 3,
   ),
   'menu_admin_languages' => array(
     'TYPE' => 'lang',
     'ITEM' => 'adm_lng_title',
     'LINK' => 'admin/admin_locale.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_maintenance' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_maint',
+    'LINK' => 'admin/maintenance.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_backup' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_backup',
+    'LINK' => 'admin/sxd/index.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_messages' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_msg',
+    'LINK' => 'admin/adm_message_list.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_chat' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_chat',
+    'LINK' => 'admin/admin_chat.php',
+    'AUTH_LEVEL' => 3,
+  ),
+  'menu_admin_logs' => array(
+    'TYPE' => 'lang',
+    'ITEM' => 'adm_log_main',
+    'LINK' => 'admin/adm_log_main.php',
+    'AUTH_LEVEL' => 3,
   ),
 
   'menu_admin_exit' => array(
@@ -606,123 +674,3 @@ $sn_menu_admin = array(
     'LINK'  => 'index.php',
   ),
 );
-
-if($user['authlevel'] >= 2)
-{
-  $sn_menu_admin_extra += array(
-    'menu_admin_planet_moon_add' => array(
-      'TYPE' => 'lang',
-      'ITEM' => 'adm_addmoon',
-      'LINK' => 'admin/add_moon.php',
-      'LOCATION' => '+menu_admin_planet_list_moons',
-    ),
-/*
-    'menu_admin_planet_edit' => array(
-      'TYPE' => 'lang',
-      'ITEM' => 'adm_lm_planet_edit',
-      'LINK' => 'admin/planet_edit.php',
-      'LOCATION' => '+menu_admin_planet_moon_add',
-    ),
-*/
-    'menu_admin_fleets' => array(
-      'TYPE' => 'lang',
-      'ITEM' => 'adm_fleet',
-      'LINK' => 'admin/adm_flying_fleets.php',
-      'LOCATION' => '-menu_admin_utilites',
-    ),
-  );
-
-  if($user['authlevel'] >= 3)
-  {
-    $sn_menu_admin_extra += array(
-      'menu_admin_configuration' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_conf',
-        'LINK' => 'admin/settings.php',
-        'LOCATION' => '+menu_admin_quests',
-      ),
-      'menu_admin_dark_matter' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'dark_matter',
-        'LINK' => 'admin/admin_darkmatter.php',
-        'LOCATION' => '+menu_admin_configuration',
-      ),
-
-      'menu_admin_planet_compensate' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_lm_compensate',
-        'LINK' => 'admin/planet_compensate.php',
-        'LOCATION' => '-menu_admin_fleets',
-      ),
-
-      'menu_admin_player_list' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_plrlst',
-        'LINK' => 'admin/userlist.php',
-        'LOCATION' => '+menu_admin_player_ban',
-      ),
-/*
-      'menu_admin_player_panel' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_panel',
-        'LINK' => 'admin/paneladmina.php',
-        'LOCATION' => '+menu_admin_player_list',
-      ),
-*/
-      'menu_admin_maintenance' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_maint',
-        'LINK' => 'admin/maintenance.php',
-        'LOCATION' => '+menu_admin_languages',
-      ),
-      'menu_admin_backup' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_backup',
-        'LINK' => 'admin/sxd/index.php',
-        'LOCATION' => '+menu_admin_maintenance',
-      ),
-      'menu_admin_messages' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_msg',
-        'LINK' => 'admin/adm_message_list.php',
-        'LOCATION' => '+menu_admin_backup',
-      ),
-      'menu_admin_chat' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_chat',
-        'LINK' => 'admin/admin_chat.php',
-        'LOCATION' => '+menu_admin_messages',
-      ),
-      'menu_admin_logs' => array(
-        'TYPE' => 'lang',
-        'ITEM' => 'adm_log_main',
-        'LINK' => 'admin/adm_log_main.php',
-        'LOCATION' => '+menu_admin_chat',
-      ),
-    );
-
-    if(sn_module_get_active_count('payment'))
-    {
-      $sn_menu_admin_extra += array(
-        'menu_admin_metamatter_header' => array(
-          'LEVEL' => 'header',
-          'TYPE' => 'lang',
-          'ITEM' => 'adm_metametter_payment',
-          'LOCATION' => '-menu_admin_player',
-        ),
-        'menu_admin_metamatter' => array(
-          'TYPE' => 'lang',
-          'ITEM' => 'sys_metamatter',
-          'LINK' => 'admin/adm_metamatter.php',
-          'LOCATION' => '-menu_admin_player',
-        ),
-        'menu_admin_metametter_payment' => array(
-          'TYPE' => 'lang',
-          'ITEM' => 'adm_pay',
-          'LINK' => 'admin/adm_payment.php',
-          'LOCATION' => '-menu_admin_player',
-        ),
-      );
-    }
-  }
-}
