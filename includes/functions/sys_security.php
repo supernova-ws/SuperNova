@@ -39,9 +39,13 @@ function sec_player_ip() {
 // TheCookie[2] = md5(Password . '--' . SecretWord)
 // TheCookie[3] = rememberme
 
-function sn_set_cookie($user, $rememberme) {
+function sec_password_cookie_encode($password) {
   global $config;
 
+  return md5("{$password}--{$config->secret_word}");
+}
+
+function sn_set_cookie($user, $rememberme) {
   if($rememberme) {
     $expiretime = SN_TIME_NOW + 31536000;
     $rememberme = 1;
@@ -50,9 +54,112 @@ function sn_set_cookie($user, $rememberme) {
     $rememberme = 0;
   }
 
-  $md5pass = md5("{$user['password']}--{$config->secret_word}");
+  $md5pass = sec_password_cookie_encode($user['password']);
   $cookie = "{$user['id']}/%/{$user['username']}/%/{$md5pass}/%/{$rememberme}";
   return sn_setcookie(SN_COOKIE, $cookie, $expiretime, SN_ROOT_RELATIVE);
+}
+
+function sec_password_encode($password, $salt) {
+  return md5($password . $salt);
+}
+
+function sec_password_salt_generate() {
+  return sys_random_string(16);
+}
+
+// Процедура по установке значения поля из словаря по данным
+function sec_login_set_fields(&$template_result, $field_value, $security_field_name, $security_field_id, $db_field_id, $db_table_name, $db_field_name) {
+  $browser_safe = db_escape($template_result[$security_field_name] = $field_value);
+  $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
+  if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
+    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
+    $template_result[$security_field_id] = db_insert_id();
+  } else {
+    $template_result[$security_field_id] = $browser_id['id_field'];
+  }
+}
+
+
+function sec_login_prepare(&$result) {
+  $result = array(
+    F_DEVICE_ID => -1,
+    F_DEVICE_CYPHER => $_COOKIE[SN_COOKIE_D],
+    F_LOGIN_STATUS => LOGIN_UNDEFINED,
+    F_LOGIN_MESSAGE => '',
+    F_LOGIN_USER => array(),
+    AUTH_LEVEL => AUTH_LEVEL_ANONYMOUS,
+    F_BANNED_STATUS => 0,
+    F_VACATION_STATUS => 0,
+    F_PASSWORD_NEW => '',
+  );
+
+  sn_db_transaction_start();
+  if($result[F_DEVICE_CYPHER]) {
+    $cypher_safe = db_escape($result[F_DEVICE_CYPHER]);
+    $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+    if(isset($device_id['device_id']) && $device_id['device_id']) {
+      $result[F_DEVICE_ID] = $device_id['device_id'];
+    }
+  }
+
+  if($result[F_DEVICE_ID] <= 0) {
+    do {
+      $cypher_safe = db_escape($result[F_DEVICE_CYPHER] = sys_random_string());
+      $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
+    } while (!empty($row));
+    doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
+    $result[F_DEVICE_ID] = db_insert_id();
+    sn_setcookie(SN_COOKIE_D, $result[F_DEVICE_CYPHER], PERIOD_FOREVER, SN_ROOT_RELATIVE);
+  }
+
+  // sec_login_set_fields($template_result, $_SERVER['HTTP_USER_AGENT'], F_BROWSER, F_BROWSER_ID, 'browser_id', 'security_browser', 'browser_user_agent');
+  sec_login_set_fields($result, $_SERVER['HTTP_USER_AGENT'], F_BROWSER, F_BROWSER_ID, 'browser_id', 'security_browser', 'browser_user_agent');
+  sn_db_transaction_commit();
+
+}
+
+function sec_login(&$result) {
+  sec_login_prepare($result);
+
+  $username_unsafe = sys_get_param_str_unsafe('username');
+  $password_raw = sys_get_param('password');
+  $email_unsafe = sys_get_param_str_unsafe('email');
+
+  // Проверяем регу
+  if(sys_get_param('register')) {
+    $password_repeat_raw = trim(sys_get_param('password_repeat'));
+    $language = sys_get_param_str('lang', DEFAULT_LANG);
+    if($password_raw <> $password_repeat_raw) {
+      // throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
+      $result[F_LOGIN_STATUS] = REGISTER_ERROR_PASSWORD_DIFFERENT;
+    } else {
+      $result[F_LOGIN_STATUS] = sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, sys_get_param_int('rememberme'));
+    }
+  }
+
+  // Если есть в параметрах логин и пароль...
+//  if($username_unsafe && $password_raw) {
+//    }
+
+  if(sys_get_param('login') && in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
+    $result[F_LOGIN_STATUS] = sec_login_username($username_unsafe, $password_raw, sys_get_param_int('rememberme'));
+  } elseif(sys_get_param('confirm_code_send') && $email_unsafe = sys_get_param_str_unsafe('email')) {
+    // TODO - test
+    $result[F_LOGIN_STATUS] = sec_restore_password_send_email($email_unsafe);
+  } elseif(sys_get_param('confirm_code_submit') && $confirm_safe = sys_get_param_str('confirm')) {
+    // TODO - test
+    sec_restore_password_confirm($confirm_safe, $result);
+  }
+  // Тут всякие логины по внешним плагинам
+//pdump($result, 'security');
+  // В этой точке должен быть установлена кука СН - логинимся по ней
+  if(in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
+    sec_login_cookie($result);
+  }
+
+  // TODO -          ЗАМЕНИТЬ F_LOGIN_MESSAGE       на сообщения по   F_LOGIN_STATUS
+
+  // return $result;
 }
 
 function sec_login_username($username_unsafe, $password_raw, $remember_me = 1) {
@@ -69,7 +176,7 @@ function sec_login_username($username_unsafe, $password_raw, $remember_me = 1) {
     // TODO: try..catch
     if(empty($user) || (isset($user['user_as_ally']) && $user['user_as_ally'])) {
       $status = LOGIN_ERROR_USERNAME;
-    } elseif(!$user['password'] || $user['password'] != md5($password_raw)) {
+    } elseif(!$user['password'] || $user['password'] != sec_password_encode($password_raw, $user['salt'])) {
       $status = LOGIN_ERROR_PASSWORD;
     } else {
       sec_set_cookie_by_fields($user['id'], $user['username'], $user['password'], $remember_me);
@@ -81,13 +188,6 @@ function sec_login_username($username_unsafe, $password_raw, $remember_me = 1) {
 
   return $status;
 }
-
-
-
-
-
-
-
 
 
 function sec_restore_password_send_email($email_unsafe) {
@@ -143,10 +243,12 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
       throw new exception(PASSWORD_RESTORE_ERROR_CODE_TOO_OLD);
     }
 
-
     $new_password = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION);
-    $md5 = md5($new_password);
-    if(!db_user_set_by_id($last_confirm['id_user'], "`password` = '{$md5}'")) {
+    $salt_unsafe = sec_password_salt_generate();
+    $md5 = sec_password_encode($new_password, $salt_unsafe);
+
+    $salt_safe = db_escape($salt_unsafe);
+    if(!db_user_set_by_id($last_confirm['id_user'], "`password` = '{$md5}', `salt` = '{$salt_safe}'")) {
       throw new exception(PASSWORD_RESTORE_ERROR_CHANGE);
     }
 
@@ -186,79 +288,6 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
 }
 
 
-// once OK
-function sec_login() {
-  $result = array(
-    F_DEVICE_ID => -1,
-    F_DEVICE_CYPHER => $_COOKIE[SN_COOKIE_D],
-    F_LOGIN_STATUS => LOGIN_UNDEFINED,
-    F_LOGIN_MESSAGE => '',
-    F_LOGIN_USER => array(),
-    AUTH_LEVEL => AUTH_LEVEL_ANONYMOUS,
-    F_BANNED_STATUS => 0,
-    F_VACATION_STATUS => 0,
-    F_PASSWORD_NEW => '',
-  );
-
-  sn_db_transaction_start();
-  if($result[F_DEVICE_CYPHER]) {
-    $cypher_safe = db_escape($result[F_DEVICE_CYPHER]);
-    $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
-    if(isset($device_id['device_id']) && $device_id['device_id']) {
-      $result[F_DEVICE_ID] = $device_id['device_id'];
-    }
-  }
-
-  if($result[F_DEVICE_ID] <= 0) {
-    do {
-      $cypher_safe = db_escape($result[F_DEVICE_CYPHER] = sys_random_string());
-      $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
-    } while (!empty($row));
-    doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
-    $result[F_DEVICE_ID] = db_insert_id();
-    sn_setcookie(SN_COOKIE_D, $result[F_DEVICE_CYPHER], PERIOD_FOREVER, SN_ROOT_RELATIVE);
-  }
-  sn_db_transaction_commit();
-
-//  $cypher_safe = db_escape($_COOKIE[SN_COOKIE_D]);
-//  $device_id = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1;", true);
-//  $result[F_DEVICE_CYPHER] = $_COOKIE[SN_COOKIE_D];
-//  $result[F_DEVICE_ID] = $device_id['device_id'];
-
-  $username_unsafe = sys_get_param_str_unsafe('username');
-  $password_raw = sys_get_param('password');
-//  pdump($username_unsafe);
-//  pdump($password_raw);
-
-  // Проверяем регу
-  if(sys_get_param('register')) {
-    $result[F_LOGIN_STATUS] = sec_login_register($username_unsafe, $password_raw, sys_get_param_int('rememberme'));
-  }
-
-  // Если есть в параметрах логин и пароль...
-//  if($username_unsafe && $password_raw) {
-//    }
-
-  if(sys_get_param('login') && in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
-    $result[F_LOGIN_STATUS] = sec_login_username($username_unsafe, $password_raw, sys_get_param_int('rememberme'));
-  } elseif(sys_get_param('confirm_code_send') && $email_unsafe = sys_get_param_str_unsafe('email')) {
-    // TODO - test
-    $result[F_LOGIN_STATUS] = sec_restore_password_send_email($email_unsafe);
-  } elseif(sys_get_param('confirm_code_submit') && $confirm_safe = sys_get_param_str('confirm')) {
-    // TODO - test
-    sec_restore_password_confirm($confirm_safe, $result);
-  }
-  // Тут всякие логины по внешним плагинам
-//pdump($result, 'security');
-  // В этой точке должен быть установлена кука СН - логинимся по ней
-  if(in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
-    sec_login_cookie($result);
-  }
-
-  // TODO -          ЗАМЕНИТЬ F_LOGIN_MESSAGE       на сообщения по   F_LOGIN_STATUS
-
-  return $result;
-}
 
 // once OK
 function sec_login_cookie(&$result) {
@@ -311,34 +340,12 @@ function sec_login_process(&$result) {
   $result[F_VACATION_STATUS] = $user['vacation'];
 }
 
-// Процедура по установке значения поля из словаря по данным
-function sec_login_set_fields(&$template_result, $field_value, $security_field_name, $security_field_id, $db_field_id, $db_table_name, $db_field_name) {
-  $browser_safe = db_escape($template_result[$security_field_name] = $field_value);
-  $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
-  if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
-    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
-    $template_result[$security_field_id] = db_insert_id();
-  } else {
-    $template_result[$security_field_id] = $browser_id['id_field'];
-  }
-}
-
 function sec_login_change_state() {
   global $user, $user_impersonator, $template_result, $config, $sys_stop_log_hit, $is_watching;
 
   if(isset($user['id']) && intval($user['id']) && !$user_impersonator) {
     sn_db_transaction_start();
-    sec_login_set_fields($template_result, $_SERVER['HTTP_USER_AGENT'], F_BROWSER, F_BROWSER_ID, 'browser_id', 'security_browser', 'browser_user_agent');
-    /*
-    $browser_safe = db_escape($template_result[F_BROWSER] = $_SERVER['HTTP_USER_AGENT']);
-    $browser_id = doquery("SELECT `browser_id` FROM {{security_browser}} WHERE `browser_user_agent` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
-    if(!isset($browser_id['browser_id']) || !$browser_id['browser_id']) {
-      doquery("INSERT INTO {{security_browser}} (`browser_user_agent`) VALUES ('{$browser_safe}');");
-      $template_result[F_BROWSER_ID] = db_insert_id();
-    } else {
-      $template_result[F_BROWSER_ID] = $browser_id['browser_id'];
-    }
-    */
+
     $proxy_safe = db_escape($user['user_proxy']);
     $ip_address = ip2longu($user['user_lastip']);
     doquery(
@@ -379,9 +386,11 @@ function sec_login_change_state() {
 }
 
 // once OK
-function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
+function sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me = 1) {
+  return sn_function_call('sec_login_register', array($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me, &$result));
+}
+function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me = 1, &$result) {
   global $lang, $config;
-
 
   sn_db_transaction_start();
   try {
@@ -404,27 +413,28 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
     }
     $password_raw = trim($password_raw);
 
-    $password_repeat_raw = trim(sys_get_param('password_repeat'));
-    if($password_raw <> $password_repeat_raw) {
-      throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
-    }
+//    $password_repeat_raw = trim(sys_get_param('password_repeat'));
+//    if($password_raw <> $password_repeat_raw) {
+//      throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
+//    }
 
-    $email_unsafe = sys_get_param_str_unsafe('email');
-    $email = sys_get_param_str('email');
+    $email = db_escape($email_unsafe);
     if(db_user_by_email($email, true)) {
       throw new exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
     }
 
-    $md5pass = md5($password_raw);
-    $language = sys_get_param_str('lang', DEFAULT_LANG);
+
+    $salt_unsafe = sec_password_salt_generate();
+    $md5pass = sec_password_encode($password_raw, $salt_unsafe);
+    $salt_safe = db_escape($salt_unsafe);
     $skin = DEFAULT_SKINPATH;
     // `id_planet` = 0, `gender` = '{$gender}', `design` = '1',
     $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
-      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}',
+      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}', `salt` = '{$salt_safe}',
       `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
 
     $user['id'] = $user_new['id'];
-    doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
+    doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
 
     if($id_ref = sys_get_param_int('id_ref')) {
       $referral_row = db_user_by_id($id_ref, true);
@@ -489,11 +499,9 @@ function sec_login_register($username_unsafe, $password_raw, $remember_me = 1) {
 
 // twice OK
 function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me) {
-  global $config;
-
   $expire_time = ($remember_me = intval($remember_me)) ? SN_TIME_NOW + PERIOD_YEAR : 0;
 
-  $md5pass = md5("{$password_hash}--{$config->secret_word}");
+  $md5pass = sec_password_cookie_encode($password_hash);
   $cookie = "{$user_id}/%/{$username_unsafe}/%/{$md5pass}/%/{$remember_me}";
 
   return sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
@@ -502,12 +510,10 @@ function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $r
 // 2 OK
 // 2 deprecated SN_AUTOLOGIN
 function sec_user_by_cookie($cookie) {
-  global $config;
-
   list($user_id_unsafe, $user_name, $password_hash_salted, $user_remember_me) = explode("/%/", $cookie);
 
   $user = db_user_by_id($user_id_unsafe, false, '*', true);
-  if(!empty($user) && md5("{$user['password']}--{$config->secret_word}") == $password_hash_salted) {
+  if(!empty($user) && sec_password_cookie_encode($user['password']) == $password_hash_salted) {
     $user['user_remember_me'] = $user_remember_me;
   } else {
     $user = false;

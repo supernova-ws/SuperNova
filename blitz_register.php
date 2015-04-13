@@ -77,10 +77,11 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
       $string_data = explode(',', $string_data);
       $username_safe = $string_data[0];
 
-      $md5pass = md5($string_data[1]);
-
+      $salt_unsafe = sec_password_salt_generate();
+      $md5pass = sec_password_encode($string_data[1], $salt_unsafe);
+      $salt_safe = db_escape($salt_unsafe);
       $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '', `email_2` = '', `username` = '{$username_safe}',
-      `dpath` = '{$skin}', `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}',
+      `dpath` = '{$skin}', `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}', `salt` = '{$salt_safe}',
       `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
 
       doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = \"{$username_safe}\"");

@@ -187,10 +187,10 @@ foreach($ques as $que_transaction) {
     $msg .=
       '<li>' . htmlspecialchars($que) .
         ' --- <span style="' . ($QryResult ? 'ok">OK' : 'error">FAILED!') . '</span> ' .
-      db_affected_rows($link) . ' ' . $lang['adm_records'] .
+      db_affected_rows() . ' ' . $lang['adm_records'] .
       "</li>";
 
-    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . db_affected_rows($link) . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
+    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . db_affected_rows() . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
   }
 
   sn_db_transaction_commit();

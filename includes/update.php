@@ -1519,6 +1519,11 @@ switch($new_version) {
         ), isset($update_tables['counter']['ip']));
       }
     }
+
+    upd_alter_table('users', array(
+      "ADD COLUMN `salt` char(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' AFTER `password`",
+    ), !isset($update_tables['users']['salt']));
+
 //    // TODO remove after mine
 //    upd_alter_table('counter', array(
 //      "MODIFY COLUMN `user_ip` int(10) unsigned NULL DEFAULT NULL AFTER `browser_id`",
