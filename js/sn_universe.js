@@ -17,7 +17,7 @@ var universe_popup;
 function sn_universe_show_planet(that) {
   planet_pos = that.parent().attr('planet_pos');
   planet_type = that.attr('planet_type');
-  if(!uni_row[planet_pos] || !planet_type || (planet_type == 3 && !parseInt(uni_row[planet_pos]['moon_diameter'])) || uni_row[planet_pos]['planet_destroyed']) {
+  if(!uni_row[planet_pos] || !planet_type || (planet_type == 3 && !parseInt(uni_row[planet_pos]['moon_diameter'])) || parseInt(uni_row[planet_pos]['planet_destroyed'])) {
     return;
   }
 
