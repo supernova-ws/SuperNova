@@ -7,7 +7,7 @@
   var L_sys_login_password_show = '{LA_sys_login_password_show}';
   var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
 
-  $('.password_show').on('click', function(){
+  $(document).on('click', '.password_show', function(){
     input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
     if(input.attr('type') == 'password') {
       type = 'text';
