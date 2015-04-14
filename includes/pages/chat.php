@@ -93,7 +93,7 @@ function sn_chat_add_model()
 
     $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
 
-    doquery("INSERT INTO {{chat}} (chat_message_sender_id, user, ally_id, message, timestamp) VALUES ('{$user['id']}', '{$nick}', '{$ally_id}', '{$message}', '" . SN_TIME_NOW . "');");
+    doquery("INSERT INTO {{chat}} (chat_message_sender_id, user, ally_id, message, timestamp) VALUES ('{$user['id']}', '{$nick}', '{$ally_id}', '{$message}', " . SN_TIME_NOW . ");");
 
     $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
   }

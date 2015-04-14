@@ -110,7 +110,7 @@ function coe_o_missile_calculate() {
 
   global $lang;
 
-  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= '" . SN_TIME_NOW . "' FOR UPDATE;");
+  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
 
   while($fleetRow = db_fetch($iraks)) {
     set_time_limit(15);

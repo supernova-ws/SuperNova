@@ -560,7 +560,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
   $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
   $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
-  $QryInsertFleet .= "`start_time` = '" . SN_TIME_NOW . "';";
+  $QryInsertFleet .= "`start_time` = " . SN_TIME_NOW . ";";
   doquery( $QryInsertFleet);
 
   $planet_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];

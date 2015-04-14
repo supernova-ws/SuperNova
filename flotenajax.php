@@ -157,7 +157,7 @@ else
   }
   $QryInsertFleet .= "`fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}', `fleet_end_type` = '{$target_planet_type}', ";
   $QryInsertFleet .= "`fleet_target_owner` = '{$target_row['id_owner']}', ";
-  $QryInsertFleet .= "`start_time` = '". SN_TIME_NOW . "';";
+  $QryInsertFleet .= "`start_time` = ". SN_TIME_NOW . ";";
   doquery($QryInsertFleet);
 }
 

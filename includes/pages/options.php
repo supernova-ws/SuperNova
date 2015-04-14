@@ -58,7 +58,7 @@ function sn_options_model() {
           // $planet = $planet['planet'];
 
           db_planet_set_by_id($planet['id'],
-            "last_update = '" . SN_TIME_NOW . "', energy_used = '0', energy_max = '0',
+            "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
             metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
             metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
             fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"

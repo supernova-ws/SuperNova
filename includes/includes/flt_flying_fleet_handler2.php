@@ -183,9 +183,9 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   sn_db_transaction_start();
 //log_file('Запрос на флоты');
   $_fleets = doquery("SELECT * FROM `{{fleets}}` WHERE
-    (`fleet_start_time` <= '" . SN_TIME_NOW . "' AND `fleet_mess` = 0)
-    OR (`fleet_end_stay` <= '" . SN_TIME_NOW . "' AND fleet_end_stay > 0 AND `fleet_mess` = 0)
-    OR (`fleet_end_time` <= '" . SN_TIME_NOW . "')
+    (`fleet_start_time` <= " . SN_TIME_NOW . " AND `fleet_mess` = 0)
+    OR (`fleet_end_stay` <= " . SN_TIME_NOW . " AND fleet_end_stay > 0 AND `fleet_mess` = 0)
+    OR (`fleet_end_time` <= " . SN_TIME_NOW . ")
   FOR UPDATE;");
 
 //log_file('Выборка флотов');

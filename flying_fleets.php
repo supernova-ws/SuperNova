@@ -14,7 +14,7 @@ if(sys_get_param_str('return_fleet'))
     if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0)
     {
       $ReturnFlyingTime = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < SN_TIME_NOW ? $FleetRow['fleet_start_time'] : SN_TIME_NOW) - $FleetRow['start_time'] + SN_TIME_NOW + 1;
-      doquery("UPDATE {{fleets}} SET `fleet_start_time` = '{" . SN_TIME_NOW . "}', `fleet_group` = 0, `fleet_end_stay` = '0', `fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;");
+      doquery("UPDATE {{fleets}} SET `fleet_start_time` = " . SN_TIME_NOW . ", `fleet_group` = 0, `fleet_end_stay` = '0', `fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;");
 
       if($FleetRow['fleet_group'])
       {

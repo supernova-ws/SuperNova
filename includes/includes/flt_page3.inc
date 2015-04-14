@@ -253,7 +253,7 @@ function sn_fleet_page3()
   }
   $QryInsertFleet .= "`fleet_end_galaxy` = '{$galaxy}', `fleet_end_system` = '{$system}', `fleet_end_planet` = '{$planet}', `fleet_end_type` = '{$planet_type}', ";
   $QryInsertFleet .= "`fleet_resource_metal` = '{$TransMetal}', `fleet_resource_crystal` = '{$TransCrystal}', `fleet_resource_deuterium` = '{$TransDeuterium}', ";
-  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetPlanet['id_owner']}', `fleet_group` = '{$fleet_group}', `start_time` = '" . SN_TIME_NOW . "';";
+  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetPlanet['id_owner']}', `fleet_group` = '{$fleet_group}', `start_time` = " . SN_TIME_NOW . ";";
   doquery( $QryInsertFleet);
   $fleet_id = db_insert_id();
 

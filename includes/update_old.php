@@ -1403,14 +1403,14 @@ switch($new_version)
     while($ally_row = db_fetch($ally_row_list))
     {
       $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
-      doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = {" . SN_TIME_NOW . "}, `user_as_ally` = {$ally_row['id']};");
+      doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_row['id']};");
       $ally_user_id = db_insert_id();
       doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
     }
     // Renaming old ally players TODO: Remove on release
     upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.user_as_ally = a.id SET u.username = CONCAT('[', a.ally_tag, ']') WHERE u.user_as_ally IS NOT NULL AND u.username = '';");
     // Setting last online time to old ally players TODO: Remove on release
-    upd_do_query("UPDATE {{users}} SET `onlinetime` = {" . SN_TIME_NOW . "} WHERE onlinetime = 0;");
+    upd_do_query("UPDATE {{users}} SET `onlinetime` = " . SN_TIME_NOW . " WHERE onlinetime = 0;");
 
     // ------------------------------------------------------------------------
     // Creating planets for allies
@@ -1418,7 +1418,7 @@ switch($new_version)
     while($ally_user_row = db_fetch($ally_user_list))
     {
       $ally_planet_name = db_escape($ally_user_row['username']);
-      doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = {" . SN_TIME_NOW . "}, `id_owner` = {$ally_user_row['id']};");
+      doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = " . SN_TIME_NOW . ", `id_owner` = {$ally_user_row['id']};");
       $ally_planet_id = db_insert_id();
       doquery("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
     }
