@@ -1649,3 +1649,15 @@ function user_time_diff_probe() {
 
   return $result;
 }
+
+function sn_version_compare_extra($version) {
+  static $version_regexp = '#(\d+)([a-f])(\d+)(?:\.(\d+))*#';
+  preg_match($version_regexp, $version, $version);
+  unset($version[0]);
+  $version[2] = ord($version[2]) - ord('a');
+  return implode('.', $version);
+}
+
+function sn_version_compare($ver1, $ver2) {
+  return version_compare(sn_version_compare_extra($ver1), sn_version_compare_extra($ver2));
+}

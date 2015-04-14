@@ -1547,7 +1547,7 @@ switch($new_version) {
       "ADD COLUMN `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
     ), !isset($update_tables['security_device']['timestamp']));
 
-
+    // sn_version_compare($ver1, $ver2)
 
 
 //    // TODO remove after mine
