@@ -72,7 +72,7 @@ if($info_action)
       break;
     }
 
-    if(!rpg_points_change($user['id'], RPG_MARKET, -$config->rpg_cost_info, "Using Black Market page {$lang['eco_mrk_info']} - getting info about user ID {$user_info['id']}"))
+    if(!rpg_points_change($user['id'], RPG_MARKET_INFO_MERCENARY, -$config->rpg_cost_info, "Using Black Market page {$lang['eco_mrk_info']} - getting info about user ID {$user_info['id']}"))
     {
       // TODO: throw new Exception(MARKET_INFO_PLAYER_SAME, ERR_ERROR);
     }

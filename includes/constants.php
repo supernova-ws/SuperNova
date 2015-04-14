@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b15.6');
+define('SN_VERSION', '39b15.8');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -194,6 +194,9 @@ define('RPG_EVENT_BLACK_MOON_TICK', 31);
 define('RPG_CUMULATIVE', 32);
 define('RPG_GOVERNOR', 33);
 define('RPG_BLITZ', 34);
+define('RPG_MARKET_EXCHANGE', 35);
+define('RPG_MARKET_FLEET', 36);
+define('RPG_MARKET_INFO_MERCENARY', 37);
 
 
 
