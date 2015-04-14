@@ -21,7 +21,12 @@ version_compare(PHP_VERSION, '5.3.1', '==') ? die('FATAL ERROR: you using PHP 5.
 // Бенчмарк
 register_shutdown_function(function() {
   if(!defined('IN_AJAX')) {
+    global $user, $lang;
+
     print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) . '</div>');
+    if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
+      echo '<a href="badqrys.txt" target="_blank" style="color:red">', $lang['ov_hack_alert'], '</a>';
+    }
   }
 });
 

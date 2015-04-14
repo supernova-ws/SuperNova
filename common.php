@@ -10,9 +10,6 @@
 require_once('includes/init.php');
 
 global $debug, $sn_mvc, $template_result, $user;
-if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
-  echo '<a href="badqrys.txt" target="_blank" style="color:red">', $lang[ov_hack_alert], '</a>';
-}
 
 // Напоминание для Администрации, что игра отключена
 if($template_result[F_GAME_DISABLE]) {
