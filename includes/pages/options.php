@@ -145,19 +145,31 @@ function sn_options_model() {
     $new_password = sys_get_param('newpass1');
     if($new_password) {
       try {
-        if(sec_password_encode(sys_get_param('db_password'), $user['salt']) != $user['password']) {
-          throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
-        }
-
         if($new_password != sys_get_param('newpass2')) {
           throw new Exception($lang['opt_err_pass_unmatched'], ERR_WARNING);
         }
 
-        $user['salt'] = sec_password_salt_generate();
-        $user['password'] = sec_password_encode($new_password, $user['salt']);
+        //if(sec_password_encode(sys_get_param('db_password'), $user['salt']) != $user['password']) {
+        if(!sec_password_change($user, $new_password, sys_get_param('db_password'), 1)) {// OK
+          throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
+        }
+        //sec_set_cookie_by_user($user, 1);
+        // Не нужно - мы просто перечитаем запись
+        //$aUser = db_user_by_id($user['id']);
+        //$user['password'] = $aUser['password'];
+        //$user['salt'] = $aUser['salt'];
+
+//        if(!sec_password_check($user, sys_get_param('db_password'))) {
+//          throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
+//        }
+//
+//        $user['salt'] = sec_password_salt_generate();
+//        $user['password'] = sec_password_encode($new_password, $user['salt']);
+
         // Changed cookie to not force user relogin
         // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-        sn_set_cookie($user, 1);
+        // sn_cookie_set_user($user, 1);
+        // sec_set_cookie_by_fields($user['id'], $user['username'], $user['password'], 1);
         throw new Exception($lang['opt_msg_pass_changed'], ERR_NONE);
       } catch (Exception $e) {
         $template_result['.']['result'][] = array(
@@ -265,7 +277,8 @@ function sn_options_model() {
     }
 
 //      `username` = '{$username_safe}',
-    db_user_set_by_id($user['id'], "`password` = '{$user['password']}', `salt` = '{$user['salt']}', `email` = '{$user['email']}', `email_2` = '{$user['email_2']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
+    // `password` = '{$user['password']}', `salt` = '{$user['salt']}',
+    db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `email_2` = '{$user['email_2']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
       `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `planet_sort` = '{$user['planet_sort']}', `planet_sort_order` = '{$user['planet_sort_order']}', `spio_anz` = '{$user['spio_anz']}',
       `settings_tooltiptime` = '{$user['settings_tooltiptime']}', `settings_fleetactions` = '{$user['settings_fleetactions']}', `settings_esp` = '{$user['settings_esp']}',
@@ -275,7 +288,10 @@ function sn_options_model() {
       {$user_birthday}"
     );
 
-    sys_redirect('index.php?page=options&result=ok');
+    $template_result['.']['result'][] = array(
+      'STATUS'  => ERR_NONE,
+      'MESSAGE' => $lang['opt_msg_saved']
+    );
   } elseif(sys_get_param_str('result') == 'ok') {
     $template_result['.']['result'][] = array(
       'STATUS'  => ERR_NONE,
@@ -283,7 +299,7 @@ function sn_options_model() {
     );
   }
 
-
+  $user = db_user_by_id($user['id']);
 }
 
 //-------------------------------

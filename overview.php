@@ -140,7 +140,8 @@ switch($mode = sys_get_param_str('mode')) {
         );
       }
     } elseif(sys_get_param_str('abandon')) {
-      if(sec_password_encode(sys_get_param('abandon_confirm'), $user['salt']) == $user['password']) {
+      //if(sec_password_encode(sys_get_param('abandon_confirm'), $user['salt']) == $user['password']) {
+      if(sec_password_check($user, sys_get_param('abandon_confirm'))) {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id) {
           $destroyed = SN_TIME_NOW + 60 * 60 * 24;
           db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");

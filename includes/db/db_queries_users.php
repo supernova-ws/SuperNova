@@ -3,7 +3,6 @@
 function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
   return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);
 }
-
 function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
   return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
 }
@@ -11,6 +10,11 @@ function db_user_by_email($email, $use_both = false, $for_update = false, $field
   return classSupernova::db_get_user_by_email($email, $use_both, $for_update, $fields);
 }
 
+// Перекрываемая функция для сторонних логинов
+function db_user_by_username_security($username_unsafe) {return sn_function_call('db_user_by_username_security', array($username_unsafe, &$result));}
+function sn_db_user_by_username_security($username_unsafe, &$result) {
+  return $result = db_user_by_username($username_unsafe);
+}
 
 function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
   return classSupernova::db_get_record_list(LOC_USER, $user_filter);

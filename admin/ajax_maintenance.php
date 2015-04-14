@@ -37,7 +37,6 @@ $ques = array(
 //      (onlinetime - register_time < 5 * 60 AND UNIX_TIMESTAMP() - onlinetime > 2*7 *86400)
 //      OR (onlinetime - register_time < 30 * 60 AND UNIX_TIMESTAMP() - onlinetime > 4*7 *86400)
 //      OR (onlinetime - register_time < 10 * 60*60 AND UNIX_TIMESTAMP() - onlinetime > 6*7 *86400)
-//
 //      OR (UNIX_TIMESTAMP() - onlinetime > 8*7 *86400)
 //    );',
 
@@ -66,29 +65,23 @@ $ques = array(
 //		authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
 //		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
   // Удаляем все здания из очереди
-  'DELETE q FROM {{users}} AS u JOIN {{que}} AS q ON q.que_player_id = u.id
-  WHERE
-		authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
-		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
+//  'DELETE q FROM {{users}} AS u JOIN {{que}} AS q ON q.que_player_id = u.id
+//  WHERE
+//		authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
+//		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
   // Возвращаем все флоты ???
   // Пока не будем делать запрос - за 4 недели всяко все флоты должны вернутся...
   // TODO I-шки - неделя на разграбление - или сколько там стата хранится...
 
-
-
-  'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK
-  'DELETE FROM `{{planets}}`   WHERE `id_owner`       not in (select id from {{users}}) AND id_owner <> 0;', // TODO NO FK
-  'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});',
-
-
-  'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} WHERE `user_as_ally` IS NOT NULL group by ally_id);',
-//  'DELETE FROM {{statpoints}} WHERE stat_type=2 AND id_owner not in (select id from {{alliance}});', // TODO CHECK!
+  'DELETE FROM `{{planets}}` WHERE `id_owner` not in (select id from {{users}}) AND id_owner <> 0;', // TODO NO FK Переписать на джоине
+  'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});', // TODO Переписать на джоине
 
   // UBE reports
-  'DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(now(), INTERVAL 60 day);',
+  'DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(now(), INTERVAL 60 day);', // TODO Настройка
 
 
   // Чистка сообщений
+  'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK
   // Удаляются сообщения, старше  4 недель, кроме личных и Альянсовских
   'DELETE FROM {{messages}} WHERE
     UNIX_TIMESTAMP() - message_time > 4*7 * 24 * 60 * 60 AND
@@ -106,28 +99,31 @@ $ques = array(
   // Recalculate Alliance members
   "UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}} WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id
     SET a.`ally_members` = u.ally_memeber_count;",
-
+  'DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} WHERE `user_as_ally` IS NOT NULL group by ally_id);',
   // Deleting empty Alliances
   'DELETE FROM {{alliance}} WHERE ally_members <= 0;',
   "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_tag = null, ally_register_time = 0, ally_rank_id = 0 WHERE ally_id not in (select id from {{alliance}});",
-  array(
-    "INSERT INTO {{log_dark_matter}}
-      (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason, log_dark_matter_amount,
-      log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
-    SELECT
-      '{$pack_until}', IF(u.username IS NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", sum(ldm.log_dark_matter_amount),
-      'Баланс на {$pack_until}', 'admin/ajax_maintenance.php', ldm.log_dark_matter_sender
-    FROM
-      {{log_dark_matter}} AS ldm
-      LEFT JOIN {{users}} AS u ON u.id = ldm.log_dark_matter_sender
-    WHERE
-      ldm.log_dark_matter_timestamp < '{$pack_until}'
-    GROUP BY
-      log_dark_matter_sender;",
 
-    "DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';",
-  ),
+  // Пакуем данные по логу ТМ
+//  array(
+//    "INSERT INTO {{log_dark_matter}}
+//      (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason, log_dark_matter_amount,
+//      log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
+//    SELECT
+//      '{$pack_until}', IF(u.username IS NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", sum(ldm.log_dark_matter_amount),
+//      'Баланс на {$pack_until}', 'admin/ajax_maintenance.php', ldm.log_dark_matter_sender
+//    FROM
+//      {{log_dark_matter}} AS ldm
+//      LEFT JOIN {{users}} AS u ON u.id = ldm.log_dark_matter_sender
+//    WHERE
+//      ldm.log_dark_matter_timestamp < '{$pack_until}'
+//    GROUP BY
+//      log_dark_matter_sender;",
+//
+//    "DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';",
+//  ),
 
+  // Пакуем статистические данные по онлайну пользователей
   array(
     "REPLACE INTO `{{log_users_online}}`
       (online_timestamp, online_count, online_aggregated)
@@ -144,6 +140,16 @@ $ques = array(
   ),
 
   "DELETE FROM {{logs}} WHERE log_timestamp < '{$pack_until}';",
+
+
+  // Удаляем устройства, на которые никто не ссылается
+  "DELETE sd FROM {{security_device}} AS sd
+    LEFT JOIN {{security_player_entry}} AS spe ON spe.device_id = sd.device_id
+  WHERE player_id IS NULL;",
+
+  "DELETE sb FROM {{security_browser}} AS sb
+    LEFT JOIN {{security_player_entry}} AS spe ON spe.browser_id = sb.browser_id
+  WHERE player_id IS NULL;",
 );
 
 function sn_maintenance_pack_user_list($user_list) {

@@ -1523,6 +1523,32 @@ switch($new_version) {
     upd_alter_table('users', array(
       "ADD COLUMN `salt` char(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '' AFTER `password`",
     ), !isset($update_tables['users']['salt']));
+    // TODO Смерджить после выливания на живой
+    upd_alter_table('users', array(
+      "ADD COLUMN `parent_account_id` bigint(20) unsigned NOT NULL DEFAULT 0",
+      "ADD COLUMN `parent_account_global` tinyint(1) unsigned NOT NULL DEFAULT 0",
+      "ADD KEY `I_user_account_id` (`parent_account_id`, `parent_account_global`)",
+    ), !isset($update_tables['users']['parent_account_id']));
+//    upd_alter_table('users', array(
+//      "ADD COLUMN `parent_account_id` bigint(20) unsigned NOT NULL DEFAULT 0",
+//      "ADD KEY `I_user_account_id` (`parent_account_id`)",
+//    ), !isset($update_tables['users']['parent_account_id']));
+//    upd_alter_table('users', array(
+//      "ADD COLUMN `parent_account_global` tinyint(1) unsigned NOT NULL DEFAULT 0",
+//      "DROP KEY `I_user_account_id`",
+//      "ADD KEY `I_user_account_id` (`parent_account_id`, `parent_account_global`)",
+//    ), !isset($update_tables['users']['parent_account_id']));
+
+
+    upd_alter_table('security_browser', array(
+      "ADD COLUMN `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    ), !isset($update_tables['security_browser']['timestamp']));
+    upd_alter_table('security_device', array(
+      "ADD COLUMN `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP",
+    ), !isset($update_tables['security_device']['timestamp']));
+
+
+
 
 //    // TODO remove after mine
 //    upd_alter_table('counter', array(
