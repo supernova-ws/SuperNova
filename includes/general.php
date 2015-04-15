@@ -567,6 +567,8 @@ function sys_user_options_pack(&$user)
       if (!isset($user[$option_name]))
       {
         $user[$option_name] = $option_value;
+      } elseif ($user[$option_name] == '') {
+        $user[$option_name] = 0;
       }
       $options .= "{$option_name}^{$user[$option_name]}|";
       $option_list[$option_group_id][$option_name] = $user[$option_name];

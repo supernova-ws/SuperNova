@@ -276,6 +276,8 @@ function sn_options_model() {
       ));
     }
 
+    $user_options_safe = db_escape($user['options']);
+
 //      `username` = '{$username_safe}',
     // `password` = '{$user['password']}', `salt` = '{$user['salt']}',
     db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `email_2` = '{$user['email_2']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
@@ -284,7 +286,7 @@ function sn_options_model() {
       `settings_tooltiptime` = '{$user['settings_tooltiptime']}', `settings_fleetactions` = '{$user['settings_fleetactions']}', `settings_esp` = '{$user['settings_esp']}',
       `settings_wri` = '{$user['settings_wri']}', `settings_bud` = '{$user['settings_bud']}', `settings_statistics` = '{$user['settings_statistics']}',
       `settings_info` = '{$user['settings_info']}', `settings_mis` = '{$user['settings_mis']}', `settings_rep` = '{$user['settings_rep']}',
-      `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user['options']}', `gender` = {$user['gender']}
+      `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe }', `gender` = {$user['gender']}
       {$user_birthday}"
     );
 
@@ -300,6 +302,7 @@ function sn_options_model() {
   }
 
   $user = db_user_by_id($user['id']);
+  $options = sys_user_options_unpack(&$user);
 }
 
 //-------------------------------
