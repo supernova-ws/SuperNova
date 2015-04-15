@@ -39,6 +39,8 @@ if($config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_ge
     doquery("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
     mm_points_change($user['id'], RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
   }
+  $registered_count = doquery("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
+  $config->db_saveItem('game_blitz_register_users', $registered_count['count']);
   sn_db_transaction_commit();
 }
 
