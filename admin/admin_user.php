@@ -18,8 +18,10 @@ if(!($user_row = db_user_by_id($user_id))) {
 
 $template = gettemplate('admin/admin_user', true);
 
-$temp = doquery("SELECT browser_user_agent FROM {{security_browser}} WHERE `browser_id` = {$user_row['user_last_browser_id']}", true);
-$user_row['browser_user_agent'] = $temp['browser_user_agent'];
+if(!empty($user_row['user_last_browser_id'])) {
+  $temp = doquery("SELECT browser_user_agent FROM {{security_browser}} WHERE `browser_id` = {$user_row['user_last_browser_id']}", true);
+  $user_row['browser_user_agent'] = $temp['browser_user_agent'];
+}
 
 $formats = array(
   'sys_time_human_system' => array(

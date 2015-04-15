@@ -1286,28 +1286,19 @@ function sn_sys_array_cumulative_sum(&$array)
   }
 }
 
-function planet_density_price_chart($planet_density_index)
-{
+function planet_density_price_chart($planet_density_index) {
   $sn_data_density = sn_get_groups('planet_density');
   $density_price_chart = array(0 => array(), 1 => array());
   $reverse_flag = false;
-  foreach($sn_data_density as $density_id => $density_data)
-  {
-    if($density_id == PLANET_DENSITY_NONE)
-    {
+  foreach($sn_data_density as $density_id => $density_data) {
+    if($density_id == PLANET_DENSITY_NONE) {
       continue;
-    }
-    elseif($density_id == $planet_density_index)
-    {
+    } elseif($density_id == $planet_density_index) {
       $reverse_flag = true;
       //continue;
-    }
-    elseif($reverse_flag)
-    {
+    } elseif($reverse_flag) {
       $density_price_chart[1][$density_id] = $density_data[UNIT_PLANET_DENSITY_RARITY];
-    }
-    else
-    {
+    } else {
       $density_price_chart[0][$density_id] = $density_data[UNIT_PLANET_DENSITY_RARITY];
     }
   }

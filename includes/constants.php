@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b15.9');
+define('SN_VERSION', '39b15.10');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -197,6 +197,8 @@ define('RPG_BLITZ', 34);
 define('RPG_MARKET_EXCHANGE', 35);
 define('RPG_MARKET_FLEET', 36);
 define('RPG_MARKET_INFO_MERCENARY', 37);
+define('RPG_BLITZ_REGISTRATION', 38);
+define('RPG_BLITZ_REGISTRATION_CANCEL', 39);
 
 
 
