@@ -8,8 +8,12 @@
   <!-- IF GAME_BLITZ_REGISTER && ! GAME_BLITZ -->
   <tr>
     <td class="c_r markup">
-      <input type="button" value="{L_sys_blitz_global_button}" onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}blitz_register.php');"
-              style="margin: 5px 0;"/>
+      <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}blitz_register.php');" style="margin: 5px 0;">
+        {L_sys_blitz_global_button}:
+        <span class="<!-- IF BLITZ_REGISTER_OPEN -->positive<!-- ELSEIF BLITZ_REGISTER_CLOSED -->negative<!-- ELSEIF BLITZ_REGISTER_SHOW_LOGIN -->zero<!-- ELSEIF BLITZ_REGISTER_DISCLOSURE_NAMES --><!-- ENDIF -->">
+          {GAME_BLITZ_REGISTER_TEXT}
+        </span>
+      </button>
     </td>
   </tr>
   <!-- ENDIF -->

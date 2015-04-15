@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b12.4
+* @version 39b15.11
 *
 */
 
@@ -1014,7 +1014,7 @@ $a_lang_array = (array(
 
   'sys_date' => 'Date',
 
-  'sys_blitz_global_button' => 'Блиц-сервер: информация и регистрация',
+  'sys_blitz_global_button' => 'Блиц-сервер',
   'sys_blitz_page_disabled' => 'В режиме Блиц-сервера эта страница недоступна',
   'sys_blitz_registration_disabled' => 'Регистрация на игру в Блиц-сервер отключена',
   'sys_blitz_registration_no_users' => 'Нет зарегестрированных игроков',
@@ -1027,6 +1027,14 @@ $a_lang_array = (array(
   'sys_blitz_registration_player_password' => 'Ваш пароль для Блиц-сервера:',
   'sys_blitz_registration_server_link' => 'Ссылка на Блиц-сервер',
   'sys_blitz_registration_player_blitz_name' => 'Имя на Блиц-сервере',
+  'sys_blitz_registration_price' => 'Стоимость подачи заявки',
+  'sys_blitz_registration_mode_list' => array(
+    BLITZ_REGISTER_DISABLED => 'Регистрация отключена',
+    BLITZ_REGISTER_OPEN => 'Регистрация открыта',
+    BLITZ_REGISTER_CLOSED => 'Регистрация закрыта',
+    BLITZ_REGISTER_SHOW_LOGIN => 'Открыты логины и пароли',
+    BLITZ_REGISTER_DISCLOSURE_NAMES => 'Подведение итогов',
+  ),
 
   'survey' => 'Опрос',
   'survey_questions' => 'Варианты для выбора',

@@ -461,6 +461,11 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     ),
 
     'GAME_BLITZ_REGISTER'      => $config->game_blitz_register,
+    'GAME_BLITZ_REGISTER_TEXT'      => $lang['sys_blitz_registration_mode_list'][$config->game_blitz_register],
+    'BLITZ_REGISTER_OPEN'      => $config->game_blitz_register == BLITZ_REGISTER_OPEN,
+    'BLITZ_REGISTER_CLOSED'      => $config->game_blitz_register == BLITZ_REGISTER_CLOSED,
+    'BLITZ_REGISTER_SHOW_LOGIN'      => $config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
+    'BLITZ_REGISTER_DISCLOSURE_NAMES'      => $config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
     'GAME_BLITZ'               => $config->game_mode == GAME_BLITZ,
 
     'USERS_ONLINE'         => $config->var_online_user_count,
