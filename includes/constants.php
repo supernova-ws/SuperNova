@@ -27,7 +27,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '38');
 define('SN_RELEASE', '38');
-define('SN_VERSION', '39b15.13');
+define('SN_VERSION', '39b15.15');
 define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -810,12 +810,18 @@ define('UNIT_AWARD_ORDER_SPONSOR', 2109);
 // 2110 - следующая группа орденов
 
 define('UNIT_AWARD_MEDAL', 2200); // Медали за Серъезные Достижения - например, за победу в конкурсе
+define('UNIT_AWARD_MEDAL_BLITZ_R0_PLACE1', 2201); // Блиц-сервер, участник 0-го раунда, 1-е место
+define('UNIT_AWARD_MEDAL_BLITZ_R0_PLACE2', 2202); // Блиц-сервер, участник 0-го раунда, 2-е место
+define('UNIT_AWARD_MEDAL_BLITZ_R0_PLACE3', 2203); // Блиц-сервер, участник 0-го раунда, 3-е место
+
 define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за существование и участие - например "4 года в игре". "Был онлайн в новогоднюю ночь 2013". итд
 define('UNIT_AWARD_MEMORY_IMMORTAL', 2301);  // Бессмертный
 define('UNIT_AWARD_MEMORY_2015_WOMEN_DAY', 2302);  // Значек за подарок Женщине от Мужчины во время ивента 8 марта 2015 года
+define('UNIT_AWARD_MEMORY_BLITZ_R0', 2303); // Блиц-сервер, участник 0-го раунда
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
+define('UNIT_AWARD_BADGE_BLITZ', 2601); // Медали за Блиц-сервер
 
 define('UNIT_EVENT_UNITS', 3000); // Special event units
 define('UNIT_EVENT_CHRISTMAS', 3001); // Christmas event units
