@@ -1454,9 +1454,13 @@ switch($new_version) {
       CONSTRAINT `FK_survey_votes_survey_parent_id` FOREIGN KEY (`survey_parent_id`) REFERENCES `{{survey}}` (`survey_id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 
-
     if(empty($update_tables['security_url'])) {
-      upd_alter_table('counter', "DROP COLUMN `user_name`", isset($update_tables['counter']['user_name']));
+      upd_create_table('security_url', " (
+        `url_id` int unsigned NOT NULL AUTO_INCREMENT,
+        `url_string` VARCHAR(250) NOT NULL DEFAULT '',
+        PRIMARY KEY (`url_id`),
+        UNIQUE KEY `I_url_string` (`url_string`)
+      ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
 
       function update_security_url($query) {
         static $query_string = "INSERT IGNORE INTO {{security_url}} (`url_string`) VALUES ";
@@ -1473,51 +1477,44 @@ switch($new_version) {
         !empty($strings) ? doquery($query_string . implode(',', $strings)) : false;
       }
 
-      upd_create_table('security_url', " (
-        `url_id` int unsigned NOT NULL AUTO_INCREMENT,
-        `url_string` VARCHAR(250) NOT NULL DEFAULT '',
-        PRIMARY KEY (`url_id`),
-        UNIQUE KEY `I_url_string` (`url_string`)
-      ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_bin;");
-
       if(isset($update_tables['counter']['page'])) // TODO REMOVE
       {
         update_security_url("SELECT DISTINCT `page` as url FROM {{counter}}");
         update_security_url("SELECT DISTINCT `url` as url FROM {{counter}}");
       }
+    }
+
+    upd_alter_table('counter', "DROP COLUMN `user_name`", isset($update_tables['counter']['user_name']));
+    upd_alter_table('counter', array(
+      "ADD COLUMN `visit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `counter_id`",
+      "ADD COLUMN `device_id` bigint(20) unsigned DEFAULT NULL AFTER `user_id`",
+      "ADD COLUMN `browser_id` bigint(20) unsigned DEFAULT NULL AFTER `device_id`",
+      "ADD COLUMN `user_ip` int(10) unsigned DEFAULT NULL AFTER `browser_id`",
+      "CHANGE COLUMN `proxy` `user_proxy` varchar(250) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' AFTER `user_ip`",
+      "ADD COLUMN `page_url_id` int unsigned DEFAULT NULL AFTER `user_proxy`",
+      "ADD COLUMN `plain_url_id` int unsigned DEFAULT NULL AFTER `page_url_id`",
+      "ADD KEY `I_counter_device_id` (`device_id`) USING BTREE",
+      "ADD KEY `I_counter_browser_id` (`browser_id`)",
+      "ADD KEY `I_counter_page_url_id` (`page_url_id`)",
+      "ADD KEY `I_counter_plain_url_id` (`plain_url_id`)",
+      "ADD CONSTRAINT `FK_counter_device_id` FOREIGN KEY (`device_id`) REFERENCES `{{security_device}}` (`device_id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_counter_browser_id` FOREIGN KEY (`browser_id`) REFERENCES `{{security_browser}}` (`browser_id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_counter_page_url_id` FOREIGN KEY (`page_url_id`) REFERENCES `{{security_url}}` (`url_id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_counter_plain_url_id` FOREIGN KEY (`plain_url_id`) REFERENCES `{{security_url}}` (`url_id`) ON DELETE CASCADE ON UPDATE CASCADE",
+    ), !isset($update_tables['counter']['device_id']));
+    if(isset($update_tables['counter']['ip'])) {
+      // upd_do_query('UPDATE `{{counter}}` SET `user_ip` = INET_ATON(`ip`), `user_proxy` = `proxy`, `visit_time` = FROM_UNIXTIME(`time`)');
+      upd_do_query('UPDATE `{{counter}}` SET `user_ip` = INET_ATON(`ip`), `visit_time` = FROM_UNIXTIME(`time`)');
+      upd_do_query('UPDATE `{{counter}}` AS c JOIN {{security_url}} AS u ON u.url_string = c.page SET c.page_url_id = u.url_id');
+      upd_do_query('UPDATE `{{counter}}` AS c JOIN {{security_url}} AS u ON u.url_string = c.url SET c.plain_url_id = u.url_id');
 
       upd_alter_table('counter', array(
-        "ADD COLUMN `visit_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `counter_id`",
-        "ADD COLUMN `device_id` bigint(20) unsigned DEFAULT NULL AFTER `user_id`",
-        "ADD COLUMN `browser_id` bigint(20) unsigned DEFAULT NULL AFTER `device_id`",
-        "ADD COLUMN `user_ip` int(10) unsigned DEFAULT NULL AFTER `browser_id`",
-        "CHANGE COLUMN `proxy` `user_proxy` varchar(250) CHARACTER SET latin1 COLLATE latin1_bin NOT NULL DEFAULT '' AFTER `user_ip`",
-        "ADD COLUMN `page_url_id` int unsigned DEFAULT NULL AFTER `user_proxy`",
-        "ADD COLUMN `plain_url_id` int unsigned DEFAULT NULL AFTER `page_url_id`",
-        "ADD KEY `I_counter_device_id` (`device_id`) USING BTREE",
-        "ADD KEY `I_counter_browser_id` (`browser_id`)",
-        "ADD KEY `I_counter_page_url_id` (`page_url_id`)",
-        "ADD KEY `I_counter_plain_url_id` (`plain_url_id`)",
-        "ADD CONSTRAINT `FK_counter_device_id` FOREIGN KEY (`device_id`) REFERENCES `{{security_device}}` (`device_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_counter_browser_id` FOREIGN KEY (`browser_id`) REFERENCES `{{security_browser}}` (`browser_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_counter_page_url_id` FOREIGN KEY (`page_url_id`) REFERENCES `{{security_url}}` (`url_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_counter_plain_url_id` FOREIGN KEY (`plain_url_id`) REFERENCES `{{security_url}}` (`url_id`) ON DELETE CASCADE ON UPDATE CASCADE",
-      ), !isset($update_tables['counter']['device_id']));
-
-      if(isset($update_tables['counter']['ip'])) {
-        // upd_do_query('UPDATE `{{counter}}` SET `user_ip` = INET_ATON(`ip`), `user_proxy` = `proxy`, `visit_time` = FROM_UNIXTIME(`time`)');
-        upd_do_query('UPDATE `{{counter}}` SET `user_ip` = INET_ATON(`ip`), `visit_time` = FROM_UNIXTIME(`time`)');
-        upd_do_query('UPDATE `{{counter}}` AS c JOIN {{security_url}} AS u ON u.url_string = c.page SET c.page_url_id = u.url_id');
-        upd_do_query('UPDATE `{{counter}}` AS c JOIN {{security_url}} AS u ON u.url_string = c.url SET c.plain_url_id = u.url_id');
-
-        upd_alter_table('counter', array(
-          //"DROP COLUMN `proxy`",
-          "DROP COLUMN `ip`",
-          "DROP COLUMN `time`",
-          "DROP COLUMN `page`",
-          "DROP COLUMN `url`",
-        ), isset($update_tables['counter']['ip']));
-      }
+        //"DROP COLUMN `proxy`",
+        "DROP COLUMN `ip`",
+        "DROP COLUMN `time`",
+        "DROP COLUMN `page`",
+        "DROP COLUMN `url`",
+      ), isset($update_tables['counter']['ip']));
     }
 
     upd_alter_table('users', array(
@@ -1623,7 +1620,7 @@ switch($new_version) {
 
     upd_do_query('COMMIT;', true);
     // $new_version = 39;
-};
+}
 upd_log_message('Upgrade complete.');
 
 upd_do_query('SET FOREIGN_KEY_CHECKS=1;');

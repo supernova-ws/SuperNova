@@ -169,18 +169,16 @@ class debug
     return $error_backtrace;
   }
 
-  function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true)
-  {
-    sn_db_transaction_rollback();
+  function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
+    global $config, $link, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
 
-    global $config;
+    sn_db_transaction_rollback();
 
     if($config->debug == 1) {
       echo "<h2>{$title}</h2><br><font color=red>{$message}</font><br><hr>";
       echo "<table>{$this->log}</table>";
     }
 
-    global $link, $sys_stop_log_hit, $lang;
 
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
@@ -201,41 +199,24 @@ class debug
     $error_text = db_escape($message);
     $error_backtrace = $this->dump($dump, true, strpos($message, 'Deadlock') !== false);
 
-    global $sys_log_disabled, $user;
     if(!$sys_log_disabled) {
-      if($error_backtrace) {
-        $error_backtrace = ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'";
-      } else {
-        $error_backtrace = '';
-      }
-
-      $user_safe_name = db_escape($user['username']);
-
-      doquery("INSERT INTO `{{logs}}` SET
-        `log_time` = '".time()."', `log_code` = '{$error_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user_safe_name}',
-        `log_title` = '{$title}',  `log_text` = '{$error_text}', `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};")
-      or die($fatal_error . db_error());
+      $query = "INSERT INTO `{{logs}}` SET
+        `log_time` = '".time()."', `log_code` = '" . db_escape($error_code) . "', `log_sender` = '" . db_escape($user['id']). "',
+        `log_username` = '" . db_escape($user['user_name']). "', `log_title` = '" . db_escape($title) . "',  `log_text` = '".db_escape($message)."',
+        `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'" .
+        ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
+      doquery($query, '', false, true) or die($fatal_error . db_error());
 
       $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . db_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
       $sys_log_disabled = true;
-      if(!function_exists('message'))
-      {
-        die($message);
-      }
-      else
-      {
-        message($message, 'Ошибка', $dest, 0, false);
-      }
-    }
-    else
-    {
+      !function_exists('message') ? die($message) : message($message, 'Ошибка', '', 0, false);
+    } else {
       ob_start();
       print("<hr>User ID {$user['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
 
-      foreach($error_backtrace as $name => $value)
-      {
+      foreach($error_backtrace as $name => $value) {
         print('<hr>');
         pdump($value, $name);
       }
@@ -244,9 +225,8 @@ class debug
     }
   }
 
-  function warning($message, $title = 'System Message', $log_code = 300, $dump = false)
-  {
-    global $link, $user, $lang;
+  function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
+    global $link, $user, $lang, $sys_log_disabled;
 
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
@@ -259,25 +239,14 @@ class debug
 
     $error_backtrace = $this->dump($dump, false);
 
-    global $sys_log_disabled;
-    if(!$sys_log_disabled)
-    {
-      if($error_backtrace)
-      {
-        $error_backtrace = ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'";
-      }
-      else
-      {
-        $error_backtrace = '';
-      }
+    if(!$sys_log_disabled) {
       $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '".time()."', `log_code` = '{$log_code}', `log_sender` = '{$user['id']}', `log_username` = '{$user['username']}',
-        `log_title` = '{$title}',  `log_text` = '".db_escape($message)."',
-        `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'{$error_backtrace};";
-      $sqlquery = doquery($query);
-    }
-    else
-    {
+        `log_time` = '".time()."', `log_code` = '" . db_escape($log_code) . "', `log_sender` = '" . db_escape($user['id']). "',
+        `log_username` = '" . db_escape($user['user_name']). "', `log_title` = '" . db_escape($title) . "',  `log_text` = '".db_escape($message)."',
+        `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'" .
+        ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
+      $sqlquery = doquery($query, '', false, true);
+    } else {
       print("<hr>User ID {$user['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }
   }
@@ -360,4 +329,3 @@ function pc($prePrint = false){
     print("<br>");
   print($_PRINT_COUNT_VALUE . "<br>");
 }
-?>
