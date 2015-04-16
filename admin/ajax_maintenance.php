@@ -21,12 +21,12 @@ $ques = array(
 //  'DELETE {{users}}.* FROM {{users}} WHERE `user_as_ally` IS NULL and `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and metamatter_total <= 0;',
 
   // Выводим из отпуска игроков, которые находятся там более 4 недель
-  'UPDATE {{users}}
-  SET vacation = 0, vacation_next = 0
-  WHERE
-    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 /* Не админы, Не Альянсы, Не боты */
-    AND vacation > 0 AND banaday = 0 /* В отпуске и не в бане */
-    AND vacation < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Находящиеся в отпуске более 4 недель */;',
+//  'UPDATE {{users}}
+//  SET vacation = 0, vacation_next = 0
+//  WHERE
+//    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 /* Не админы, Не Альянсы, Не боты */
+//    AND vacation > 0 AND banaday = 0 /* В отпуске и не в бане */
+//    AND vacation < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Находящиеся в отпуске более 4 недель */;',
 
 //  // Игроки удаляются по Регламенту
 //  'DELETE FROM `{{users}}` WHERE
@@ -42,11 +42,11 @@ $ques = array(
 
   // Игроки, которые не были активны более 4 недель становятся I-шками. Для них
   // Отключаем получение писем
-  'UPDATE {{users}}
-  SET OPTIONS = ""
-  WHERE
-    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
-    AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
+//  'UPDATE {{users}}
+//  SET OPTIONS = ""
+//  WHERE
+//    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
+//    AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
 //  // Отключаем производство на планетах
 //  'UPDATE {{users}} AS u
 //    JOIN {{planets}} AS p ON p.id_owner = u.id
