@@ -1282,57 +1282,59 @@ switch($new_version) {
     if(!isset($update_tables['users']['gender'])) {
       upd_alter_table('users', "ADD COLUMN `gender` TINYINT(1) UNSIGNED NOT NULL DEFAULT " . GENDER_UNKNOWN, !isset($update_tables['users']['gender']));
       upd_do_query("UPDATE {{users}} SET `gender` = IF(UPPER(`sex`) = 'F', " . GENDER_FEMALE. ", IF(UPPER(`sex`) = 'M', " . GENDER_MALE . ", " . GENDER_UNKNOWN . "));");
-      upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
     }
+    upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
 
-    $pack_until = "2014-11-01 00:00:00";
-    $temp = db_fetch(upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';"));
-    if($temp['cnt']) {
-      upd_do_query("DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp <= '{$pack_until}';");
-
-      upd_do_query(
-        "INSERT INTO {{log_dark_matter}} (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason,
-          log_dark_matter_amount, log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
-        SELECT
-          '{$pack_until}', IF(ldm.log_dark_matter_username IS NOT NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ",
-          u.dark_matter - sum(ldm.log_dark_matter_amount), 'Баланс на {$pack_until}', 'includes/update.php', u.id
-        FROM
-          {{users}} AS u
-          LEFT JOIN {{log_dark_matter}} AS ldm ON u.id = ldm.log_dark_matter_sender
-        GROUP BY
-          u.id;");
-    }
+// TODO - Решить - паковать баланс или нет
+//    $pack_until = "2014-11-01 00:00:00";
+//    $temp = db_fetch(upd_do_query("SELECT COUNT(*) AS cnt FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';"));
+//    if($temp['cnt']) {
+//      upd_do_query(
+//        "INSERT INTO {{log_dark_matter}} (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason,
+//          log_dark_matter_amount, log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
+//        SELECT
+//          '{$pack_until}', IF(ldm.log_dark_matter_username IS NOT NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ",
+//          u.dark_matter - sum(ldm.log_dark_matter_amount), 'Баланс на {$pack_until}', 'includes/update.php', u.id
+//        FROM
+//          {{users}} AS u
+//          LEFT JOIN {{log_dark_matter}} AS ldm ON u.id = ldm.log_dark_matter_sender
+//        WHERE log_dark_matter_timestamp < '{$pack_until}'
+//        GROUP BY
+//          u.id;");
+//
+//      upd_do_query("DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';");
+//    }
 
     if(!$update_tables['users']['dark_matter_total']) {
       upd_alter_table('users', "ADD `dark_matter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Dark Matter amount ever gained' AFTER `dark_matter`", !$update_tables['users']['dark_matter_total']);
-    }
-    upd_do_query(
-      "UPDATE `{{users}}` AS u
+      upd_do_query(
+        "UPDATE `{{users}}` AS u
         SET dark_matter_total =
           IF(
             dark_matter < (SELECT IF(sum(log_dark_matter_amount) IS NULL, 0, sum(log_dark_matter_amount)) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
             (SELECT IF(sum(log_dark_matter_amount) IS NULL, 0, sum(log_dark_matter_amount)) FROM {{log_dark_matter}} AS dm WHERE dm.log_dark_matter_sender = u.id AND dm.log_dark_matter_amount > 0),
             dark_matter
           );");
+    }
 
     upd_check_key('player_metamatter_immortal', 100000, !isset($config->player_metamatter_immortal));
     if(!$update_tables['users']['metamatter_total']) {
       upd_alter_table('users', "ADD `metamatter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Metamatter amount ever bought'", !$update_tables['users']['metamatter_total']);
 
-      // upd_do_query('UPDATE {{users}} SET metamatter_total = (SELECT sum(payment_dark_matter_gained) FROM {{payment}} WHERE payment_user_id = id AND payment_status > 0);');
-    }
-    upd_do_query(
-      "UPDATE `{{users}}` AS u
+      upd_do_query(
+        "UPDATE `{{users}}` AS u
         SET metamatter_total =
           IF(
             metamatter_total > (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0),
             metamatter_total,
             (SELECT IF(sum(amount) IS NULL, 0, sum(amount)) FROM {{log_metamatter}} AS mm WHERE mm.user_id = u.id AND mm.amount > 0)
           );");
+
+      // upd_do_query('UPDATE {{users}} SET metamatter_total = (SELECT sum(payment_dark_matter_gained) FROM {{payment}} WHERE payment_user_id = id AND payment_status > 0);');
+    }
     if(!isset($update_tables['users']['immortal'])) {
       upd_alter_table('users', "ADD COLUMN `immortal` TIMESTAMP NULL", !isset($update_tables['users']['immortal']));
       upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
-      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
     }
     if(isset($update_tables['player_award'])) {
       upd_do_query(
@@ -1374,7 +1376,6 @@ switch($new_version) {
 //        "ADD COLUMN `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
 //      ), empty($update_tables['blitz_registrations']['server_id']));
 //      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
-//      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
 //    }
 //    upd_create_table('blitz_registrations', " (
 //      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1557,6 +1558,10 @@ switch($new_version) {
       "ADD COLUMN `parent_account_global` tinyint(1) unsigned NOT NULL DEFAULT 0",
       "ADD KEY `I_user_account_id` (`parent_account_id`, `parent_account_global`)",
     ), !isset($update_tables['users']['parent_account_id']));
+    // TODO Смерджить после выливания на живой
+    upd_alter_table('users', array(
+      "ADD COLUMN `server_name` varchar(128) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT ''",
+    ), !isset($update_tables['users']['server_name']));
 //    upd_alter_table('users', array(
 //      "ADD COLUMN `parent_account_id` bigint(20) unsigned NOT NULL DEFAULT 0",
 //      "ADD KEY `I_user_account_id` (`parent_account_id`)",

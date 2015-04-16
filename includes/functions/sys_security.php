@@ -433,7 +433,7 @@ function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $
 //      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}', `salt` = '{$salt_safe}',
 //      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
     $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
-      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ",
+      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `server_name` = '" . db_escape(SN_ROOT_VIRTUAL) . "',
       `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
     sec_password_change($user_new, $password_raw, false, $remember_me);// OK
     $user = db_user_by_id($user_new['id']);

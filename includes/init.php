@@ -97,12 +97,13 @@ define('SN_ROOT_VIRTUAL_PARENT' , str_replace('//google.', '//', SN_ROOT_VIRTUAL
 global $phpbb_root_path;
 $phpbb_root_path = SN_ROOT_PHYSICAL;
 
-global $db_prefix, $db_name, $sn_secret_word, $user;
+global $cache_prefix, $db_prefix, $db_name, $sn_secret_word, $user;
 
 $user = array();
 
 require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 $db_prefix = $dbsettings['prefix'];
+$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : $db_prefix;
 $db_name = $dbsettings['name'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
@@ -126,15 +127,16 @@ doquery("SET NAMES 'utf8';");
 
 // Initializing global 'cacher' object
 global $sn_cache;
-$sn_cache = new classCache($db_prefix);
+$sn_cache = new classCache($cache_prefix);
 empty($sn_cache->tables) && sys_refresh_tablelist($db_prefix);
 empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
 
 // Initializing global "config" object
-$config = new classConfig($db_prefix);
+$config = new classConfig($cache_prefix);
 //$config->db_saveItem('db_prefix', $db_prefix);
 //$config->db_saveItem('secret_word', $sn_secret_word);
 $config->db_prefix = $db_prefix;
+$config->cache_prefix = $cache_prefix;
 $config->secret_word = $sn_secret_word;
 
 if(defined('BE_DEBUG') || $config->debug) {
