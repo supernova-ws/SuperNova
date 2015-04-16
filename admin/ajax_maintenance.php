@@ -105,23 +105,23 @@ $ques = array(
   "UPDATE {{users}} SET ally_id = null, ally_name = null, ally_tag = null, ally_register_time = 0, ally_rank_id = 0 WHERE ally_id not in (select id from {{alliance}});",
 
   // Пакуем данные по логу ТМ
-//  array(
-//    "INSERT INTO {{log_dark_matter}}
-//      (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason, log_dark_matter_amount,
-//      log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
-//    SELECT
-//      '{$pack_until}', IF(u.username IS NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", sum(ldm.log_dark_matter_amount),
-//      'Баланс на {$pack_until}', 'admin/ajax_maintenance.php', ldm.log_dark_matter_sender
-//    FROM
-//      {{log_dark_matter}} AS ldm
-//      LEFT JOIN {{users}} AS u ON u.id = ldm.log_dark_matter_sender
-//    WHERE
-//      ldm.log_dark_matter_timestamp < '{$pack_until}'
-//    GROUP BY
-//      log_dark_matter_sender;",
-//
-//    "DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';",
-//  ),
+  array(
+    "INSERT INTO {{log_dark_matter}}
+      (log_dark_matter_timestamp, log_dark_matter_username, log_dark_matter_reason, log_dark_matter_amount,
+      log_dark_matter_comment, log_dark_matter_page, log_dark_matter_sender)
+    SELECT
+      '{$pack_until}', IF(u.username IS NULL, ldm.log_dark_matter_username, u.username), " . RPG_CUMULATIVE . ", sum(ldm.log_dark_matter_amount),
+      'Баланс на {$pack_until}', 'admin/ajax_maintenance.php', ldm.log_dark_matter_sender
+    FROM
+      {{log_dark_matter}} AS ldm
+      LEFT JOIN {{users}} AS u ON u.id = ldm.log_dark_matter_sender
+    WHERE
+      ldm.log_dark_matter_timestamp < '{$pack_until}'
+    GROUP BY
+      log_dark_matter_sender;",
+
+    "DELETE FROM {{log_dark_matter}} WHERE log_dark_matter_timestamp < '{$pack_until}';",
+  ),
 
   // Пакуем статистические данные по онлайну пользователей
   array(
