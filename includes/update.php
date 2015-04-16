@@ -77,6 +77,8 @@ if($new_version < 32) {
   require_once('update_old.php');
 }
 
+ini_set('memory_limit', '1024M');
+
 switch($new_version) {
   case 35:
     upd_log_version_update();
@@ -1341,8 +1343,8 @@ switch($new_version) {
 
     upd_create_table('blitz_registrations', " (
       `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`,
-      `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`,
+      `server_id` SMALLINT UNSIGNED DEFAULT 0,
+      `round_number` SMALLINT UNSIGNED DEFAULT 0,
       `user_id` bigint(20) unsigned DEFAULT NULL,
       `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
       `blitz_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
@@ -1354,25 +1356,54 @@ switch($new_version) {
       `blitz_online` INT(10) UNSIGNED NOT NULL DEFAULT 0,
       `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
       PRIMARY KEY (`id`),
-      UNIQUE KEY `I_user_id` (`user_id`) USING BTREE,
+      KEY `I_blitz_user_id` (`user_id`) USING BTREE,
+      UNIQUE KEY `I_blitz_server_round_user` (`server_id`, `round_number`, `user_id`),
       CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
 
-    // TODO - Убрать перед релизом
-    if(empty($update_tables['blitz_registrations']['server_id'])) {
-      upd_alter_table('blitz_registrations', array(
-        "ADD COLUMN `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`",
-        "ADD COLUMN `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`",
-        "ADD COLUMN `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `blitz_online` INT(11) UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `blitz_player_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
-        "ADD COLUMN `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
-      ), empty($update_tables['blitz_registrations']['server_id']));
-      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
-      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
-    }
+//    // TODO - Убрать перед релизом
+//    if(empty($update_tables['blitz_registrations']['server_id'])) {
+//      upd_alter_table('blitz_registrations', array(
+//        "ADD COLUMN `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`",
+//        "ADD COLUMN `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`",
+//        "ADD COLUMN `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+//        "ADD COLUMN `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0",
+//        "ADD COLUMN `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0",
+//        "ADD COLUMN `blitz_online` INT(11) UNSIGNED NOT NULL DEFAULT 0",
+//        "ADD COLUMN `blitz_player_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
+//        "ADD COLUMN `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
+//      ), empty($update_tables['blitz_registrations']['server_id']));
+//      // upd_do_query("UPDATE {{users}} SET `immortal` = NOW() WHERE `metamatter_total` > 0;");
+//      // upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
+//    }
+//    upd_create_table('blitz_registrations', " (
+//      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+//      `server_id` SMALLINT UNSIGNED DEFAULT 0,
+//      `round_number` SMALLINT UNSIGNED DEFAULT 0,
+//      `user_id` bigint(20) unsigned DEFAULT NULL,
+//      `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+//      `blitz_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
+//      `blitz_password` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+//      `blitz_player_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+//      `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+//      `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0,
+//      `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0,
+//      `blitz_online` INT(10) UNSIGNED NOT NULL DEFAULT 0,
+//      `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
+//      PRIMARY KEY (`id`),
+//      UNIQUE KEY `I_user_id` (`user_id`) USING BTREE,
+//      CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+//    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
+
+//    if(!$update_indexes['blitz_registrations']['I_blitz_server_round_user']) {
+//      upd_alter_table('blitz_registrations', array(
+//        "ADD KEY `I_blitz_user_id` (`user_id`) USING BTREE",
+//      ), !$update_indexes['blitz_registrations']['I_blitz_server_round_user']);
+//      upd_alter_table('blitz_registrations', array(
+//        "DROP KEY `I_user_id`",
+//        "ADD UNIQUE KEY `I_blitz_server_round_user` (`server_id`, `round_number`, `user_id`)",
+//      ), !$update_indexes['blitz_registrations']['I_blitz_server_round_user']);
+//    }
 
     if(empty($update_tables['blitz_statpoints'])) {
       upd_create_table('blitz_statpoints', " (
@@ -1545,35 +1576,6 @@ switch($new_version) {
     ), !isset($update_tables['security_device']['timestamp']));
 
     // sn_version_compare($ver1, $ver2)
-
-    upd_create_table('blitz_registrations', " (
-      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `server_id` SMALLINT UNSIGNED DEFAULT 0 AFTER `id`,
-      `round_number` SMALLINT UNSIGNED DEFAULT 0 AFTER `server_id`,
-      `user_id` bigint(20) unsigned DEFAULT NULL,
-      `timestamp` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-      `blitz_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
-      `blitz_password` varchar(8) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
-      `blitz_player_id` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
-      `blitz_status` TINYINT UNSIGNED NOT NULL DEFAULT 0,
-      `blitz_place` TINYINT UNSIGNED NOT NULL DEFAULT 0,
-      `blitz_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0,
-      `blitz_online` INT(10) UNSIGNED NOT NULL DEFAULT 0,
-      `blitz_reward_dark_matter` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0,
-      PRIMARY KEY (`id`),
-      UNIQUE KEY `I_user_id` (`user_id`) USING BTREE,
-      CONSTRAINT `FK_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;");
-
-    if(!$update_indexes['blitz_registrations']['I_blitz_server_round_user']) {
-      upd_alter_table('blitz_registrations', array(
-        "ADD KEY `I_blitz_user_id` (`user_id`) USING BTREE",
-      ), !$update_indexes['blitz_registrations']['I_blitz_server_round_user']);
-      upd_alter_table('blitz_registrations', array(
-        "DROP KEY `I_user_id`",
-        "ADD UNIQUE KEY `I_blitz_server_round_user` (`server_id`, `round_number`, `user_id`)",
-      ), !$update_indexes['blitz_registrations']['I_blitz_server_round_user']);
-    }
 
 //    // TODO remove after mine
 //    upd_alter_table('counter', array(
