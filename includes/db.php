@@ -284,6 +284,52 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false) {
   return doquery($query);
 }
 
+function sn_db_field_set_is_safe(&$field_set) {
+  return !empty($field_set['__IS_SAFE']);
+}
+function sn_db_field_set_safe_flag_clear(&$field_set) {
+  unset($field_set['__IS_SAFE']);
+}
+function sn_db_field_set_safe_flag_set(&$field_set) {
+  $field_set['__IS_SAFE'] = true;
+}
+function sn_db_field_set_make_safe($field_set, $serialize = false) {
+  if(!is_array($field_set)) {
+    die('$field_set is not an array!');
+  }
+
+  $result = array();
+  foreach($field_set as $field => $value) {
+    $field = db_escape(trim($field));
+    switch (true) {
+      case is_int($value):
+      case is_double($value):
+      break;
+
+      case is_bool($value):
+        $value = intval($value);
+      break;
+
+      case is_array($value):
+      case is_object($value):
+        $serialize ? $value = serialize($value) : die('$value is object or array with no $serialize');
+
+      case is_string($value):
+        $value = '"' . db_escape($value) . '"';
+      break;
+
+      default:
+        die('unsupported operand type');
+    }
+    $result[$field] = $value;
+  }
+
+  sn_db_field_set_safe_flag_set(&$field_set);
+
+  return $result;
+}
+
+
 function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
   return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
 }

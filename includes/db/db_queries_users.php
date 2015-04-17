@@ -6,8 +6,8 @@ function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $pla
 function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
   return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
 }
-function db_user_by_email($email, $use_both = false, $for_update = false, $fields = '*') {
-  return classSupernova::db_get_user_by_email($email, $use_both, $for_update, $fields);
+function db_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
+  return classSupernova::db_get_user_by_email($email_unsafe, $use_both, $for_update, $fields);
 }
 
 // Перекрываемая функция для сторонних логинов

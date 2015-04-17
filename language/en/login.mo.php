@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b6.27
+* @version 39b15.23
 *
 */
 
@@ -128,4 +128,7 @@ $a_lang_array = (array(
 
   'login_register_offer' => 'Click here to register',
   'login_password_restore_offer' => 'Click here to reset password',
+
+  'login_register_email_hint' => 'Указывайте работающий e-mail - владельцем аккаунта считается владелец указанного e-mail<br />
+    Постарайтесь не использовать ящики на mail.ru',
 ));

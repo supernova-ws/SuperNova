@@ -225,21 +225,19 @@ function sec_restore_password_send_email($email_unsafe) {
       throw new exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
     }
 
-
     // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
     $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `id_user`= '{$user_id['id']}' AND `type` = " . CONFIRM_PASSWORD_RESET . " LIMIT 1;", true);
     if(isset($last_confirm['unix_time']) && SN_TIME_NOW - $last_confirm['unix_time'] < PERIOD_HOUR) {
       throw new exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
     }
-    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
+    !empty($last_confirm['id']) or doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
 
     do {
-      $confirm_code = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION);
-      $confirm_code_safe = db_escape($confirm_code);
-      $query = doquery("SELECT count(*) FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}'", true);
+      $confirm_code_safe = db_escape($confirm_code = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION));
+      $query = doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' LIMIT 1;", true);
     } while(!$query);
     $email_safe = db_escape($email_unsafe);
-    doquery("INSERT INTO {{confirmations}} SET `id_user`= '{$user_id['id']}', `type` = " . CONFIRM_PASSWORD_RESET . ", `code` = '{$confirm_code}', `email` = '{$email_safe}';");
+    doquery("INSERT INTO {{confirmations}} SET `id_user`= '{$user_id['id']}', `type` = " . CONFIRM_PASSWORD_RESET . ", `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
 
     @$result = mymail($email_unsafe, sprintf($lang['log_lost_email_title'], $config->game_name), sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . $_SERVER['PHP_SELF'], $confirm_code, date(FMT_DATE_TIME, SN_TIME_NOW + 3*24*60*60), $config->game_name));
 
@@ -281,7 +279,7 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
     $result[F_PASSWORD_NEW] = $new_password;
     $result[F_LOGIN_STATUS] = $operation_result ? PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT : PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR;
     $result[F_LOGIN_MESSAGE] = $message . ($operation_result ? $lang['log_lost_sent_pass'] : $lang['log_lost_err_sending']);
-    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id_user']}' AND `type` = " . CONFIRM_PASSWORD_RESET . " LIMIT 1;");
+    doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' AND `type` = " . CONFIRM_PASSWORD_RESET . " LIMIT 1;");
 
     // sys_redirect('login.php');
   } catch(exception $e) {
@@ -418,74 +416,15 @@ function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $
 //      throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
 //    }
 
-    $email = db_escape($email_unsafe);
-    if(db_user_by_email($email, true)) {
+    if(db_user_by_email($email_unsafe, true)) {
       throw new exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
     }
 
-
-    $skin = DEFAULT_SKINPATH;
-//    $salt_unsafe = sec_password_salt_generate();
-//    $md5pass = sec_password_encode($password_raw, $salt_unsafe);
-//    $salt_safe = db_escape($salt_unsafe);
-//    // `id_planet` = 0, `gender` = '{$gender}', `design` = '1',
-//    $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
-//      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `password` = '{$md5pass}', `salt` = '{$salt_safe}',
-//      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
-    $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '{$email}', `email_2` = '{$email}', `username` = '{$username_safe}', `dpath` = '{$skin}',
-      `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ", `server_name` = '" . db_escape(SN_ROOT_VIRTUAL) . "',
-      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
-    sec_password_change($user_new, $password_raw, false, $remember_me);// OK
-    $user = db_user_by_id($user_new['id']);
-    // sec_set_cookie_by_user($user, $remember_me);
-
-    // $user['id'] = $user_new['id'];
-    doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
-
-    if($id_ref = sys_get_param_int('id_ref')) {
-      $referral_row = db_user_by_id($id_ref, true);
-      if($referral_row) {
-        doquery("INSERT INTO {{referrals}} SET `id` = {$user['id']}, `id_partner` = {$id_ref}");
-      }
-    }
-
-    $galaxy = $config->LastSettedGalaxyPos;
-    $system = $config->LastSettedSystemPos;
-    $segment_size = floor($config->game_maxPlanet / 3);
-    $segment = floor($config->LastSettedPlanetPos / $segment_size);
-    $segment++;
-    $planet = mt_rand(1 + $segment * $segment_size, ($segment + 1) * $segment_size);
-
-    $new_planet_id = 0;
-    while(true) {
-      if($planet > $config->game_maxPlanet) {
-        $planet = mt_rand(0, $segment_size - 1) + 1;
-        $system++;
-      }
-      if($system > $config->game_maxSystem) {
-        $system = 1;
-        $galaxy++;
-      }
-      $galaxy = $galaxy > $config->game_maxGalaxy ? 1 : $galaxy;
-
-      $galaxy_row = db_planet_by_gspt($galaxy, $system, $planet, PT_PLANET, true, 'id');
-      if(!$galaxy_row['id']) {
-        $config->db_saveItem(array(
-          'LastSettedGalaxyPos' => $galaxy,
-          'LastSettedSystemPos' => $system,
-          'LastSettedPlanetPos' => $planet
-        ));
-        $new_planet_id = uni_create_planet($galaxy, $system, $planet, $user['id'], $username_unsafe . ' ' . $lang['sys_capital'], true);
-        break;
-      }
-      $planet += 3;
-    }
-
-    sys_player_new_adjust($user['id'], $new_planet_id);
-
-    db_user_set_by_id($user['id'], "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}'");
-
-    $config->db_saveItem('users_amount', $config->users_amount + 1);
+    player_create($username_unsafe, $password_raw, $email_unsafe, array(
+      'partner_id' => $partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id')),
+      'language_iso' => $language,
+      'remember_me' => $remember_me,
+    ));
 
     sn_db_transaction_commit();
 
@@ -504,34 +443,6 @@ function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $
 }
 
 
-function sys_user_vacation($user) {
-  global $config;
-
-  if(sys_get_param_str('vacation') == 'leave') {
-    if ($user['vacation'] < SN_TIME_NOW) {
-      $user['vacation'] = 0;
-      $user['vacation_next'] = SN_TIME_NOW + $config->player_vacation_timeout;
-      db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
-    }
-  }
-
-  if($user['vacation']) {
-    sn_sys_logout(false, true);
-
-    $template = gettemplate('vacation', true);
-
-    $template->assign_vars(array(
-      'NAME' => $user['username'],
-      'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
-      'CAN_LEAVE' => $user['vacation'] <= SN_TIME_NOW,
-      'RANDOM' => mt_rand(1, 2),
-    ));
-
-    display(parsetemplate($template), '', false, '', false, false);
-  }
-
-  return false;
-}
 
 
 
@@ -544,12 +455,6 @@ function sys_user_vacation($user) {
 
 
 
-
-function sys_is_multiaccount($user1, $user2) {
-  global $config;
-
-  return $user1['user_lastip'] == $user2['user_lastip'] && !$config->game_multiaccount_enabled;
-}
 
 function sn_sys_impersonate($user_selected) {
   global $user;
@@ -610,104 +515,6 @@ function sn_sys_logout($redirect = true, $only_impersonator = false) {
   }
 }
 
-/**
- * @param $UserID
- */
-function DeleteSelectedUser($UserID) {
-  // TODO: Full rewrite
-  sn_db_transaction_start();
-  $TheUser = db_user_by_id($UserID);
-  if ( $TheUser['ally_id'] != 0 ) {
-    $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
-    $TheAlly['ally_members'] -= 1;
-    if ( $TheAlly['ally_members'] > 0 ) {
-      doquery ( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
-    } else {
-      doquery ( "DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
-      doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");
-    }
-  }
-  doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
-
-  db_planet_list_delete_by_owner($UserID);
-
-  doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '" . $UserID . "';");
-//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
-//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
-
-
-  classSupernova::db_del_record_by_id(LOC_USER, $UserID);
-  doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
-  global $config;
-  $config->db_saveItem('users_amount', $config->db_loadItem('users_amount') - 1);
-  sn_db_transaction_commit();
-}
-
-/**
- * @param        $banner
- * @param        $banned
- * @param        $term
- * @param bool   $is_vacation
- * @param string $reason
- */
-function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '') {
-  $ban_current = db_user_by_id($banned['id'], false, 'banaday');
-  $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
-
-  db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
-
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
-  doquery(
-    "INSERT INTO
-      {{banned}}
-    SET
-      `ban_user_id` = '{$banned['id']}',
-      `ban_user_name` = '{$banned['username']}',
-      `ban_reason` = '{$reason}',
-      `ban_time` = " . SN_TIME_NOW . ",
-      `ban_until` = {$ban_until},
-      `ban_issuer_id` = '{$banner['id']}',
-      `ban_issuer_name` = '{$banner['username']}',
-      `ban_issuer_email` = '{$banner['email']}'
-  ");
-
-  db_planet_set_by_owner($banned['id'],
-    "`metal_mine_porcent` = 0, `crystal_mine_porcent` = 0, `deuterium_sintetizer_porcent` = 0, `solar_plant_porcent` = 0,
-    `fusion_plant_porcent` = 0, `solar_satelit_porcent` = 0, `ship_sattelite_sloth_porcent` = 0"
-  );
-}
-
-/**
- * @param        $banner
- * @param        $banned
- * @param string $reason
- */
-function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
-  db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
-
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
-  $reason = db_escape($reason);
-  doquery(
-    "INSERT INTO {{banned}}
-    SET
-      `ban_user_id` = '{$banned['id']}',
-      `ban_user_name` = '{$banned['username']}',
-      `ban_reason` = '{$reason}',
-      `ban_time` = 0,
-      `ban_until` = " . SN_TIME_NOW . ",
-      `ban_issuer_id` = '{$banner['id']}',
-      `ban_issuer_name` = '{$banner['username']}',
-      `ban_issuer_email` = '{$banner['email']}'
-  ");
-}
 
 /**
  * Получение пароля пользователя по его ID или записи

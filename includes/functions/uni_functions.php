@@ -318,31 +318,38 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
  * @copyright 2008
 */
 
-function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_chance = 0, $moon_name = '', $update_debris = true, $options = array())
-{
+/**
+ * @param        $pos_galaxy
+ * @param        $pos_system
+ * @param        $pos_planet
+ * @param        $user_id
+ * @param int    $moon_chance
+ * <p><b>0</b> случайный размер луны</p>
+ * <p>1..100 Шанс выпадения луны</p>
+ * <p>> 100 Размер луны</p>
+ * @param string $moon_name
+ * @param bool   $update_debris
+ * @param array  $options
+ *
+ * @return array|false|resource
+ */
+function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_chance = 0, $moon_name = '', $update_debris = true, $options = array()) {
   global $lang;
 
   $moon_name = '';
   $moon_row = array();
   $moon = db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_MOON, false, 'id');
-  if(!$moon['id'])
-  {
+  if(!$moon['id']) {
     $moon_planet = db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_PLANET, true, '`id`, `temp_min`, `temp_max`, `name`, `debris_metal`, `debris_crystal`');
 
-    if($moon_planet['id'])
-    {
+    if($moon_planet['id']) {
       $base_storage_size = BASE_STORAGE_SIZE;
 
-      if(!$moon_chance)
-      {
+      if(!$moon_chance) {
         $size = mt_rand(1100, 8999);
-      }
-      elseif($moon_chance <= 100)
-      {
+      } elseif($moon_chance <= 100) {
         $size = mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999);
-      }
-      else
-      {
+      } else {
         $size = $moon_chance;
       }
 
@@ -371,10 +378,9 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
           `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}'"
       );
 
-      if($update_debris)
-      {
+      if($update_debris) {
         $debris_spent = $moon_chance * 1000000;
-        $metal_spent  = min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100);
+        $metal_spent  = round(min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100));
         $crystal_spent = min($moon_planet['debris_crystal'], $debris_spent - $metal_spent);
         $metal_spent = min($moon_planet['debris_metal'], $debris_spent - $crystal_spent); // Need if crystal less then their part
         db_planet_set_by_id($moon_planet['id'], "`debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent})");

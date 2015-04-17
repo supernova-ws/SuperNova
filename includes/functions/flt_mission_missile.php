@@ -175,8 +175,8 @@ function coe_o_missile_calculate() {
         addslashes($sourcePlanet['name']), $fleetRow['fleet_start_galaxy'], $fleetRow['fleet_start_system'], $fleetRow['fleet_start_planet'],
         addslashes($target_planet_row['name']), $fleetRow['fleet_end_galaxy'], $fleetRow['fleet_end_system'], $fleetRow['fleet_end_planet']);
 
-      // empty($message) ? $message = $lang['mip_no_defense'] : false;
-      empty($message) && ($message = $lang['mip_no_defense']);
+      empty($message) ? $message = $lang['mip_no_defense'] : false;
+      // empty($message) && ($message = $lang['mip_no_defense']);
 
       msg_send_simple_message ( $fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
       msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );

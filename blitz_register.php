@@ -72,8 +72,8 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     $system_count = ceil($new_players / $config->game_maxGalaxy);
     $system_step = floor($config->game_maxSystem / $system_count);
 
-    pdump($system_count, '$system_count');
-    pdump($system_step, '$system_step');
+pdump($system_count, '$system_count');
+pdump($system_step, '$system_step');
 
     $skin = DEFAULT_SKINPATH;
     $language = DEFAULT_LANG;
@@ -86,18 +86,28 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
       $string_data = explode(',', $string_data);
       $username_safe = $string_data[0];
 
-      $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '', `email_2` = '', `username` = '{$username_safe}',
-      `dpath` = '{$skin}', `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ",
-      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
+      $user_new = player_create($username_safe, $string_data[1], '', array(
+        'galaxy' => $galaxy,
+        'system' => $system,
+        'planet' => $planet,
+      ));
 
-      sec_password_change($user_new, $string_data[1], false); // OK
 
-      doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = \"{$username_safe}\"");
+//      $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '', `email_2` = '', `username` = '{$username_safe}',
+//      `dpath` = '{$skin}', `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ",
+//      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
+//
+//      sec_password_change($user_new, $string_data[1], false); // OK
+//
+//      doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = \"{$username_safe}\"");
+//
+//      $new_planet_id = uni_create_planet($galaxy, $system, $planet, $user_new['id'], $username_unsafe . ' ' . $lang['sys_capital'], true);
+//      sys_player_new_adjust($user_new['id'], $new_planet_id);
+//
+//      db_user_set_by_id($user_new['id'], "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}'");
+//
 
-      $new_planet_id = uni_create_planet($galaxy, $system, $planet, $user_new['id'], $username_unsafe . ' ' . $lang['sys_capital'], true);
-      sys_player_new_adjust($user_new['id'], $new_planet_id);
-
-      db_user_set_by_id($user_new['id'], "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}'");
+      $moon_row = uni_create_moon($galaxy, $system, $planet, $user_new['id'], 30, '', false);
 
       // $system += $system_step;
       // $system >= $config->game_maxSystem ? $galaxy++ : false;
@@ -106,8 +116,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
         $system = $system_step;
       }
     }
-
-    doquery('UPDATE {{users}} SET dark_matter = 10000, dark_matter_total = 10000;');
+    doquery('UPDATE {{users}} SET dark_matter = 50000, dark_matter_total = 50000;');
 
     $config->db_saveItem('users_amount', $config->users_amount + $new_players);
     // pdump($imported_string);

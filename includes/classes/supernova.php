@@ -464,6 +464,29 @@ class classSupernova {
     return $result;
   }
 
+  public static function db_ins_field_set($location_type, $field_set, $serialize = false) {
+    // TODO multiinsert ?
+    !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set, $serialize) : false;
+    sn_db_field_set_safe_flag_clear($field_set);
+    $values = implode(',', $field_set);
+    $fields = implode(',', array_keys($field_set));
+
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+    if($result = static::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);")) {
+      if(db_affected_rows()) {
+        // Обновляем данные только если ряд был затронут
+        $record_id = db_insert_id();
+        // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
+        $result = static::db_get_record_by_id($location_type, $record_id);
+        // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
+        // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
+        static::cache_clear($location_type, false); // Мягкий сброс - только $queries
+      }
+    }
+
+    return $result;
+  }
+
   public static function db_del_record_by_id($location_type, $safe_record_id)
   {
     // if(!($safe_record_id = intval($safe_record_id))) return false;
@@ -579,30 +602,26 @@ class classSupernova {
 
     return $user;
   }
-  public static function db_get_user_by_email($email, $use_both = false, $for_update = false, $fields = '*')
-  {
-    if(!($email = strtolower(trim($email)))) return false;
+  public static function db_get_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
+    if(!($email_unsafe = strtolower(trim($email_unsafe)))) return false;
 
     $user = null;
     // TODO переделать на индексы
-    if(is_array(static::$data[LOC_USER]))
-    foreach(static::$data[LOC_USER] as $user_id => $user_data)
-    {
-      if(is_array($user_data) && isset($user_data['email_2']))
-      {
-        // проверяем поле
-        if(strtolower($user_data['email_2']) == $email || ($use_both && strtolower($user_data['email_2']) == $email))
-        {
-          $user = $user_data;
-          break;
+    if(is_array(static::$data[LOC_USER])) {
+      foreach(static::$data[LOC_USER] as $user_id => $user_data) {
+        if(is_array($user_data) && isset($user_data['email_2'])) {
+          // проверяем поле
+          if(strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email_2']) == $email_unsafe)) {
+            $user = $user_data;
+            break;
+          }
         }
       }
     }
 
-    if($user === null)
-    {
+    if($user === null) {
       // Вытаскиваем запись
-      $email_safe = db_escape($email);
+      $email_safe = db_escape($email_unsafe);
       $user = static::db_query(
         "SELECT * FROM {{users}} WHERE LOWER(`email_2`) = '{$email_safe}'" .
         ($use_both ? " OR LOWER(`email`) = '{$email_safe}'" : '')
