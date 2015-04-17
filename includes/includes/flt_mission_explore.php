@@ -127,7 +127,7 @@ function flt_mission_explore(&$mission_data) {
   switch($mission_outcome) {
 //  switch(FLT_EXPEDITION_OUTCOME_LOST_FLEET) { // TODO DEBUG!
     case FLT_EXPEDITION_OUTCOME_LOST_FLEET:
-      flt_mission_explore_outcome_lost_fleet(&$result);
+      flt_mission_explore_outcome_lost_fleet($result);
 //      // $fleet_left = 1 - mt_rand(1, 3) * 0.25;// * 0.25;
 //      $fleet_left = 1 - mt_rand(1, 3) * mt_rand(200000, 300000) / 1000000;
 //      $fleet_lost = array();
