@@ -324,7 +324,7 @@ function sn_db_field_set_make_safe($field_set, $serialize = false) {
     $result[$field] = $value;
   }
 
-  sn_db_field_set_safe_flag_set(&$field_set);
+  sn_db_field_set_safe_flag_set($field_set);
 
   return $result;
 }
