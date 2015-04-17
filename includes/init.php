@@ -136,7 +136,8 @@ $config = new classConfig($cache_prefix);
 //$config->db_saveItem('db_prefix', $db_prefix);
 //$config->db_saveItem('secret_word', $sn_secret_word);
 $config->db_prefix = $db_prefix;
-$config->cache_prefix = $cache_prefix;
+$config->db_saveItem('db_prefix', $db_prefix);
+$config->db_saveItem('cache_prefix', $cache_prefix);
 $config->secret_word = $sn_secret_word;
 
 if(defined('BE_DEBUG') || $config->debug) {

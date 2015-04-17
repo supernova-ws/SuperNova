@@ -31,9 +31,12 @@ define('IN_UPDATE', true);
 require('includes/upd_helpers.php');
 
 global $sn_cache, $new_version, $db_prefix, $config, $db_name, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_foreigns;
+global $db_prefix, $cache_prefix;
 
 $config->reset();
 $config->db_loadAll();
+$config->db_prefix = $db_prefix;
+$config->cache_prefix = $cache_prefix;
 $config->debug = 0;
 
 //$config->db_loadItem('db_version');
@@ -1110,7 +1113,7 @@ switch($new_version) {
             $que_data[] = "({$user_id},{$planet_id},{$planet_id},1,{$que_item[2]},{$unit_id},1,{$que_item[3]},{$units_levels[$unit_id]},{$que_item[2]},'{$unit_cost}')";
           }
         }
-
+ 
         // Конвертируем очередь верфи
         if($row['b_hangar_id']) {
           $return_resources = array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0, );
@@ -1626,7 +1629,13 @@ switch($new_version) {
     upd_check_key('payment_currency_exchange_wmr', 60, true);
 
     upd_do_query('COMMIT;', true);
-    // $new_version = 39;
+    $new_version = 39;
+
+  case 39:
+    upd_log_version_update();
+
+    upd_do_query('COMMIT;', true);
+    // $new_version = 40;
 }
 upd_log_message('Upgrade complete.');
 
