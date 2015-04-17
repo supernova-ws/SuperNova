@@ -156,7 +156,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
   // Watchdog timer
   if($config->db_loadItem('fleet_update_lock')) {
-    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(90, 120)) {
+    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(240, 300)) {
       sn_db_transaction_rollback();
       return;
     } else {
@@ -367,8 +367,10 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     }
     sn_db_transaction_commit();
   }
+  sn_db_transaction_start();
   $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
   $config->db_saveItem('fleet_update_lock', '');
+  sn_db_transaction_commit();
 
 //  log_file('Закончили обсчёт флотов');
 }

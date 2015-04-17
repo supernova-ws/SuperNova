@@ -145,7 +145,7 @@ function coe_o_missile_calculate() {
           $message = sprintf($lang['mip_destroyed'], $interceptors);
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
         }
-        $message .= $lang['mip_defense_destroyed'];
+//        $message .= $lang['mip_defense_destroyed'];
 
         $attackResult = COE_missileAttack($targetUser, $rowAttacker, $missiles - $interceptors, $planetDefense, $fleetRow['primaer']);
 
@@ -158,9 +158,13 @@ function coe_o_missile_calculate() {
           }
         }
 
-        $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
+        if(!empty($message)) {
+          $message = $lang['mip_defense_destroyed'] . $message . "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
 
-        db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
+          db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
+        }
+
+//        $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
       }
       db_changeset_apply($db_changeset);
 
@@ -172,7 +176,7 @@ function coe_o_missile_calculate() {
         addslashes($target_planet_row['name']), $fleetRow['fleet_end_galaxy'], $fleetRow['fleet_end_system'], $fleetRow['fleet_end_planet']);
 
       // empty($message) ? $message = $lang['mip_no_defense'] : false;
-      empty($message) or ($message = $lang['mip_no_defense']);
+      empty($message) && ($message = $lang['mip_no_defense']);
 
       msg_send_simple_message ( $fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
       msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
