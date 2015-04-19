@@ -44,6 +44,29 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   });
 
 
+  $(document).on('click', '.password_show', function(){
+    input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
+    if(input.attr('type') == 'password') {
+      type = 'text';
+      button_value = L_sys_login_password_hide;
+    }
+    else{
+      type = 'password';
+      button_value = L_sys_login_password_show;
+    }
+
+    var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);;
+//console.log(rep);
+//console.log(input);
+    rep.attr("id", input.attr("id"));
+
+    input.remove();
+
+    $(this).attr('value', button_value);
+
+    // alert(show_element.attr('type'));
+  });
+
   function sn_redirect(url) {
     document.location.assign(url);
 //  document.location.href = url;

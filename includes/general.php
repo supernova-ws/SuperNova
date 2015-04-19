@@ -440,46 +440,22 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
 }
 */
 
-function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call('mrc_get_level', array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
-function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result)
-{
+function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false){return sn_function_call(__FUNCTION__, array(&$user, $planet, $unit_id, $for_update, $plain, &$result));}
+function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result) {
   $mercenary_level = 0;
   $unit_db_name = pname_resource_name($unit_id);
 
-  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts'))))
-  {
-    /*
-    $context = array(
-      'location' => LOC_USER,
-      'user' => &$user,
-    );
-    $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
-    */
+  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts')))) {
     $unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
-  }
-  elseif(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense'))))
-  {
-    /*
-    $context = array(
-      'location' => LOC_PLANET,
-      'planet' => &$planet,
-    );
-    $mercenary_level = unit_get_level($unit_id, $context, array('for_update' => $for_update));
-    */
+  } elseif(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense')))) {
     $unit = classSupernova::db_get_unit_by_location(is_array($user) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
-  }
-  elseif(in_array($unit_id, sn_get_groups('governors')))
-  {
+  } elseif(in_array($unit_id, sn_get_groups('governors'))) {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
-  }
-  elseif($unit_id == RES_DARK_MATTER || $unit_id == RES_METAMATTER)
-  {
+  } elseif($unit_id == RES_DARK_MATTER || $unit_id == RES_METAMATTER) {
     $mercenary_level = $user[$unit_db_name];
-  }
-  elseif(in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR)
-  {
+  } elseif(in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR) {
     $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
 
@@ -531,7 +507,6 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
 }
 
 // Generates random string of $length symbols from $allowed_chars charset
-// Usefull for password and confirmation code generation
 function sys_random_string($length = 16, $allowed_chars = SN_SYS_SEC_CHARS_ALLOWED) {
   $allowed_length = strlen($allowed_chars);
 
@@ -657,8 +632,7 @@ function sys_unit_arr2str($unit_list)
   return implode(';', $fleet_string);
 }
 
-function mymail($to, $title, $body, $from = '', $html = false)
-{
+function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
   global $config, $lang;
 
   $from = trim($from ? $from : $config->game_adminEmail);
@@ -676,14 +650,13 @@ function mymail($to, $title, $body, $from = '', $html = false)
   $body = str_replace("\r\n", "\n", $body);
   $body = str_replace("\n", "\r\n", $body);
 
-  if($html)
-  {
+  if($html) {
     $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . nl2br($body) . '</body></html>';
   }
 
   $title = '=?UTF-8?B?' . base64_encode($title) . '?=';
 
-  return @mail($to, $title, $body, $head);
+  return @mail($email_unsafe, $title, $body, $head);
 }
 
 function sys_time_human($time, $full = false)
@@ -1647,4 +1620,9 @@ function sn_version_compare_extra($version) {
 
 function sn_version_compare($ver1, $ver2) {
   return version_compare(sn_version_compare_extra($ver1), sn_version_compare_extra($ver2));
+}
+
+function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELATIVE, $domain = null, $secure = null, $httponly = null) {
+  $_COOKIE[$name] = $value;
+  return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 }

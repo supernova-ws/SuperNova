@@ -1,11 +1,7 @@
 <?php
 
-function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELATIVE, $domain = null, $secure = null, $httponly = null) {
-  $_COOKIE[$name] = $value;
-  return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
-}
-
 function sec_player_ip() {
+  // НЕ ПЕРЕКРЫВАТЬ
   $ip = array(
     'ip' => $_SERVER["REMOTE_ADDR"],
     'proxy_chain' => $_SERVER["HTTP_X_FORWARDED_FOR"]
@@ -20,6 +16,7 @@ function sec_player_ip() {
 }
 
 function sec_password_cookie_encode($password) {
+  // НЕ ПЕРЕКРЫВАТЬ - написать СВОЮ реализацию
   global $config;
 
   return md5("{$password}--{$config->secret_word}");
@@ -36,6 +33,7 @@ function sec_password_encode($password, $salt) {
   return md5($password . $salt);
 }
 function sec_password_salt_generate() {
+  // НЕ ПЕРЕКРЫВАТЬ
   // TODO ВКЛЮЧИТЬ ГЕНЕРАЦИЮ СОЛИ !!!
   return ''; // sys_random_string(16);
 }
@@ -43,44 +41,30 @@ function sec_password_salt_generate() {
 
 // TheCookie[0] = `id`
 // TheCookie[1] = `username`
-// TheCookie[2] = md5(Password . '--' . SecretWord)
+// TheCookie[2] = md5(pass. '--' . SecretWord)
 // TheCookie[3] = rememberme
-// DEPRECATED
-//function sn_cookie_set_user($user, $rememberme) {
-//  if($rememberme) {
-//    $expiretime = SN_TIME_NOW + 31536000;
-//    $rememberme = 1;
-//  } else {
-//    $expiretime = 0;
-//    $rememberme = 0;
-//  }
-//
-//  $md5pass = sec_password_cookie_encode($user['password']);
-//  $cookie = "{$user['id']}/%/{$user['username']}/%/{$md5pass}/%/{$rememberme}";
-//  return sn_setcookie(SN_COOKIE, $cookie, $expiretime, SN_ROOT_RELATIVE);
-//}
 
-//function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me) {
-//  $expire_time = ($remember_me = intval($remember_me)) ? SN_TIME_NOW + PERIOD_YEAR : 0;
-//
-//  $password_encoded = sec_password_cookie_encode($password_hash);
-//  $cookie = "{$user_id}/%/{$username_unsafe}/%/{$password_encoded}/%/{$remember_me}";
-//
-//  return sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
-//}
-function sec_set_cookie_by_user($user, $remember_me) {
+function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me) {
+  // ПЕРЕКРЫТЬ - надо перекрыть - вытаскивать аккаунт по пользователю и выставлять куки на родительском домене
   $expire_time = ($remember_me = intval($remember_me)) ? SN_TIME_NOW + PERIOD_YEAR : 0;
 
-  $password_encoded = sec_password_cookie_encode($user['password']);
-  $cookie = "{$user['id']}/%/{$user['username']}/%/{$password_encoded}/%/{$remember_me}";
+  $password_encoded = sec_password_cookie_encode($password_hash);
+  $cookie = "{$user_id}/%/{$username_unsafe}/%/{$password_encoded}/%/{$remember_me}";
 
   return sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
 }
+function sec_set_cookie_by_user($user, $remember_me) {
+  $account = db_account_by_user($user);
+  return sec_set_cookie_by_fields($user['id'], '', $account['account_password'], $remember_me);
+}
 function sec_cookie_user_check($cookie) {
+  // НЕ ПЕРЕКРЫВАТЬ
+  // Тут всё в порядке - мы определяем локального пользователя по его ID
   list($user_id_unsafe, $user_name, $password_hash_salted, $user_remember_me) = explode("/%/", $cookie);
 
   $user = db_user_by_id($user_id_unsafe, false, '*', true);
-  if(!empty($user) && sec_password_cookie_encode($user['password']) == $password_hash_salted) {
+  $account = db_account_by_user($user);
+  if(!empty($user) && sec_password_cookie_encode($account['account_password']) == $password_hash_salted) {
     $user['user_remember_me'] = $user_remember_me;
   } else {
     $user = false;
@@ -108,7 +92,8 @@ function sec_login_prepare(&$result) {
     F_DEVICE_CYPHER => $_COOKIE[SN_COOKIE_D],
     F_LOGIN_STATUS => LOGIN_UNDEFINED,
     F_LOGIN_MESSAGE => '',
-    F_LOGIN_USER => array(),
+    F_LOGIN_USER => null,
+    F_LOGIN_ACCOUNT => null,
     AUTH_LEVEL => AUTH_LEVEL_ANONYMOUS,
     F_BANNED_STATUS => 0,
     F_VACATION_STATUS => 0,
@@ -153,27 +138,33 @@ function sec_login(&$result) {
       // throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
       $result[F_LOGIN_STATUS] = REGISTER_ERROR_PASSWORD_DIFFERENT;
     } else {
-      $result[F_LOGIN_STATUS] = sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, sys_get_param_int('rememberme'));
+      // WORK OK 2015-04-19 23:46:50 40a0.0
+      sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, sys_get_param_int('rememberme'), $result);
     }
   }
 
-  // Если есть в параметрах логин и пароль...
-//  if($username_unsafe && $password_raw) {
-//    }
+  // Тут всякие логины по внешним плагинам... ИЛИ НИЖЕ!
 
-  if(sys_get_param('login') && in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
-    $result[F_LOGIN_STATUS] = sec_login_username($username_unsafe, $password_raw, sys_get_param_int('rememberme'));
+
+  // Если есть в параметрах логин и пароль...
+  // if(in_array($result[F_LOGIN_STATUS], array(LOGIN_UNDEFINED, REGISTER_SUCCESS)) && sys_get_param('login')) {
+  if(empty($result[F_LOGIN_USER]) && sys_get_param('login')) {
+    // WORK OK 2015-04-19 23:46:50 40a0.0
+    sec_login_username($username_unsafe, $password_raw, sys_get_param_int('rememberme'), $result);
   } elseif(sys_get_param('confirm_code_send') && $email_unsafe = sys_get_param_str_unsafe('email')) {
-    // TODO - test
+    // WORK OK 2015-04-19 23:46:50 40a0.0
     $result[F_LOGIN_STATUS] = sec_restore_password_send_email($email_unsafe);
   } elseif(sys_get_param('confirm_code_submit') && $confirm_safe = sys_get_param_str('confirm')) {
-    // TODO - test
+    // WORK OK 2015-04-19 23:46:50 40a0.0
     sec_restore_password_confirm($confirm_safe, $result);
   }
-  // Тут всякие логины по внешним плагинам
+  // Тут всякие логины по внешним плагинам... ИЛИ ВЫШЕ!
 //pdump($result, 'security');
+
   // В этой точке должен быть установлена кука СН - логинимся по ней
-  if(in_array($result['status'], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
+//  if(in_array($result[F_LOGIN_STATUS], array(LOGIN_UNDEFINED, REGISTER_SUCCESS))) {
+  if(empty($result[F_LOGIN_USER])) {
+    // WORK OK 2015-04-19 23:46:50 40a0.0
     sec_login_cookie($result);
   }
 
@@ -182,33 +173,28 @@ function sec_login(&$result) {
   // return $result;
 }
 
-function sec_login_username($username_unsafe, $password_raw, $remember_me = 1) {
+function sec_login_username($username_unsafe, $password_raw, $remember_me = 1, &$result) {
   // TODO - Логин по старым именам
-  // $status = LOGIN_UNDEFINED;
-  $username_safe = db_escape($username_unsafe);
-  if(!$username_safe)
-  {
-    $status = LOGIN_ERROR_USERNAME;
+  if(!($username_safe = db_escape($username_unsafe))) {
+    // Экономим несколько запросов к БД - не переносить ниже!
+    $result[F_LOGIN_STATUS] = LOGIN_ERROR_USERNAME;
   } elseif(!$password_raw) {
-    $status = LOGIN_ERROR_PASSWORD;
+    $result[F_LOGIN_STATUS] = LOGIN_ERROR_PASSWORD;
   } else {
-    $user = db_user_by_username_security($username_unsafe);
+    $user = db_user_by_account_name($username_unsafe);
     // TODO: try..catch
     if(empty($user) || (isset($user['user_as_ally']) && $user['user_as_ally'])) {
-      $status = LOGIN_ERROR_USERNAME;
-    // } elseif(!$user['password'] || $user['password'] != sec_password_encode($password_raw, $user['salt'])) {
-    } elseif(!$user['password'] || !sec_password_check($user, $password_raw)) {
-      $status = LOGIN_ERROR_PASSWORD;
+      $result[F_LOGIN_STATUS] = LOGIN_ERROR_USERNAME;
+    } elseif(!sec_password_check($user['id'], $password_raw)) {
+      $result[F_LOGIN_STATUS] = LOGIN_ERROR_PASSWORD;
     } else {
-      // sec_set_cookie_by_fields($user['id'], $user['username'], $user['password'], $remember_me);
       sec_set_cookie_by_user($user, $remember_me);
-      $status = LOGIN_SUCCESS;
+      $result[F_LOGIN_STATUS] = LOGIN_SUCCESS;
     }
   }
   // Это можно раскомментить для большей безопасности - что бы не подбирали пароли
   // $status = $status == LOGIN_ERROR_PASSWORD ? LOGIN_ERROR_USERNAME : $status;
-
-  return $status;
+  $result[F_LOGIN_USER] = !empty($user) && ($result[F_LOGIN_STATUS] == LOGIN_SUCCESS) ?  $user : null;
 }
 
 
@@ -216,34 +202,40 @@ function sec_restore_password_send_email($email_unsafe) {
   global $lang, $config;
 
   try {
-    $user_id = db_user_by_email($email_unsafe, false, false, 'id, authlevel');
-    if(!isset($user_id['id']) || !$user_id['id']) {
+    sn_db_transaction_start();
+    // $user_id = db_user_by_email($email_unsafe, false, false, 'id, authlevel');
+    $account = db_account_by_email($email_unsafe);
+    if(empty($account['account_email'])) {
       throw new exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL);
     }
-
-    if($user_id['authlevel']) {
+    $user = db_user_by_account_id($account['account_id']);
+    if($user['authlevel'] > 0) {
       throw new exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
     }
 
     // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
-    $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `id_user`= '{$user_id['id']}' AND `type` = " . CONFIRM_PASSWORD_RESET . " LIMIT 1;", true);
-    if(isset($last_confirm['unix_time']) && SN_TIME_NOW - $last_confirm['unix_time'] < PERIOD_HOUR) {
+    $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `id_user`= '{$user['id']}' AND `type` = " . CONFIRM_PASSWORD_RESET . " ORDER BY create_time DESC;", true);
+    if(isset($last_confirm['unix_time']) && SN_TIME_NOW - $last_confirm['unix_time'] < PERIOD_MINUTE_10) {
       throw new exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
     }
+    // Удаляем предыдущие записи продтверждения сброса пароля
     !empty($last_confirm['id']) or doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$last_confirm['id']}' LIMIT 1;");
 
     do {
-      $confirm_code_safe = db_escape($confirm_code = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION));
-      $query = doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' LIMIT 1;", true);
-    } while(!$query);
+      // Ну, если у нас > 999.999.999 подтверждений - тут нас ждут проблемы...
+      $confirm_code_safe = db_escape($confirm_code = sys_random_string(LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH, SN_SYS_SEC_CHARS_CONFIRMATION));
+      $query = doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = " . CONFIRM_PASSWORD_RESET, true);
+    } while($query);
     $email_safe = db_escape($email_unsafe);
-    doquery("INSERT INTO {{confirmations}} SET `id_user`= '{$user_id['id']}', `type` = " . CONFIRM_PASSWORD_RESET . ", `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
+    doquery("INSERT INTO {{confirmations}} SET `id_user`= '{$user['id']}', `type` = " . CONFIRM_PASSWORD_RESET . ", `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
 
     @$result = mymail($email_unsafe, sprintf($lang['log_lost_email_title'], $config->game_name), sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . $_SERVER['PHP_SELF'], $confirm_code, date(FMT_DATE_TIME, SN_TIME_NOW + 3*24*60*60), $config->game_name));
 
     $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
+    sn_db_transaction_commit();
   } catch(exception $e) {
-     $result = $e->getMessage();
+    sn_db_transaction_rollback();
+    $result = $e->getMessage();
   }
 
   return $result;
@@ -254,7 +246,7 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
   global $lang, $config;
 
   try {
-    $last_confirm = doquery("SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `code` = '{$confirm_safe}' AND `type` = " . CONFIRM_PASSWORD_RESET . " LIMIT 1;", true);
+    $last_confirm = doquery($q = "SELECT *, UNIX_TIMESTAMP(`create_time`) as `unix_time` FROM {{confirmations}} WHERE `code` = '{$confirm_safe}' AND `type` = " . CONFIRM_PASSWORD_RESET, true);
     if(!isset($last_confirm['id'])) {
       throw new exception(PASSWORD_RESTORE_ERROR_CODE_WRONG);
     }
@@ -263,11 +255,7 @@ function sec_restore_password_confirm($confirm_safe, &$result) {
       throw new exception(PASSWORD_RESTORE_ERROR_CODE_TOO_OLD);
     }
 
-    $new_password = sys_random_string(8, SN_SYS_SEC_CHARS_CONFIRMATION);
-    // $salt_unsafe = sec_password_salt_generate();
-    // $md5 = sec_password_encode($new_password, $salt_unsafe);
-    // $salt_safe = db_escape($salt_unsafe);
-    //if(!db_user_set_by_id($last_confirm['id_user'], "`password` = '{$md5}', `salt` = '{$salt_safe}'")) {
+    $new_password = sys_random_string(LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH, SN_SYS_SEC_CHARS_CONFIRMATION);
     if(!sec_password_change($last_confirm['id_user'], $new_password, false, 1)) { // OK
       throw new exception(PASSWORD_RESTORE_ERROR_CHANGE);
     }
@@ -302,7 +290,7 @@ function sec_login_cookie(&$result) {
 
   $result[F_LOGIN_USER] = array();
   // Пытаемся войти по куке
-  if(!isset($_COOKIE[SN_COOKIE]) || !$_COOKIE[SN_COOKIE]) {
+  if(empty($_COOKIE[SN_COOKIE])) {
     // Ошибка кукеса или не найден пользователь по кукесу
     sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
     if(!empty($user_impersonator)) {
@@ -310,12 +298,12 @@ function sec_login_cookie(&$result) {
       sn_sys_logout();
     }
   } else {
-    $result[F_LOGIN_USER] = sec_cookie_user_check($_COOKIE[SN_COOKIE]);
+    $result[F_LOGIN_USER] = sec_cookie_user_check($_COOKIE[SN_COOKIE]); // WORK OK 2015-04-19 23:46:50 40a0.0
     if(empty($result[F_LOGIN_USER])) {
       $result[F_LOGIN_STATUS] = LOGIN_UNDEFINED;
     } else {
       $result[AUTH_LEVEL] = $result[F_LOGIN_USER]['authlevel'];
-      sec_login_process($result);
+      sec_login_process($result); // WORK OK 2015-04-19 23:46:50 40a0.0
     }
   }
 }
@@ -384,15 +372,21 @@ function sec_login_change_state(&$result) {
   unset($result[F_DEVICE_CYPHER]);
 }
 
-function sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me = 1) {
-  return sn_function_call('sec_login_register', array($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me, &$result));
-}
+function sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me = 1, &$result = null) {return sn_function_call(__FUNCTION__, array($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me, &$result));}
 function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, $remember_me = 1, &$result) {
   global $lang, $config;
 
-  sn_db_transaction_start();
+  if(!empty($result[F_LOGIN_USER])) {
+    return;
+  }
+
   try {
     if($config->game_mode == GAME_BLITZ) {
+      throw new exception(REGISTER_ERROR_USERNAME_WRONG, ERR_ERROR);
+    }
+
+    $username_safe = db_escape($username_unsafe);
+    if($username_safe != $username_unsafe) {
       throw new exception(REGISTER_ERROR_USERNAME_WRONG, ERR_ERROR);
     }
 
@@ -400,8 +394,12 @@ function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $
       throw new exception(REGISTER_ERROR_USERNAME_WRONG, ERR_ERROR);
     }
 
-    $username_safe = db_escape($username_unsafe);
-    $db_check = doquery("SELECT `player_id` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}' LIMIT 1;", true);
+    sn_db_transaction_start();
+    $db_check = doquery("SELECT `player_id` FROM {{player_name_history}} WHERE `player_name` = '{$username_safe}'", true);
+    if(!empty($db_check)) {
+      throw new exception(REGISTER_ERROR_USERNAME_EXISTS, ERR_ERROR);
+    }
+    $db_check = db_account_by_name($username_safe);
     if(!empty($db_check)) {
       throw new exception(REGISTER_ERROR_USERNAME_EXISTS, ERR_ERROR);
     }
@@ -416,11 +414,11 @@ function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $
 //      throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
 //    }
 
-    if(db_user_by_email($email_unsafe, true)) {
+    if(db_account_by_email($email_unsafe)) {
       throw new exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
     }
 
-    player_create($username_unsafe, $password_raw, $email_unsafe, array(
+    $result[F_LOGIN_USER] = player_create($username_unsafe, $password_raw, $email_unsafe, array(
       'partner_id' => $partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id')),
       'language_iso' => $language,
       'remember_me' => $remember_me,
@@ -431,15 +429,11 @@ function sn_sec_login_register($username_unsafe, $password_raw, $email_unsafe, $
     $email_message  = sprintf($lang['log_reg_email_text'], $config->game_name, SN_ROOT_VIRTUAL, sys_safe_output($username_unsafe), sys_safe_output($password_raw));
     @mymail($email_unsafe, sprintf($lang['log_reg_email_title'], $config->game_name), $email_message);
 
-    // sec_set_cookie_by_fields($user['id'], $user['username'], $user['password'], $remember_me);
-
-    $result = REGISTER_SUCCESS;
+    $result[F_LOGIN_STATUS] = REGISTER_SUCCESS;
   } catch(exception $e) {
     sn_db_transaction_rollback();
-    $result = $e->getMessage();
+    $result[F_LOGIN_STATUS] = $e->getMessage();
   }
-
-  return $result;
 }
 
 
@@ -468,8 +462,6 @@ function sn_sys_impersonate($user_selected) {
   }
 
   sn_setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
-  // sn_cookie_set_user($user_selected, 0);
-  // sec_set_cookie_by_fields($user_selected['id'], $user_selected['username'], $user_selected['password'], 0);
   sec_set_cookie_by_user($user_selected, 0);
   sys_redirect(SN_ROOT_RELATIVE);
 }
@@ -498,8 +490,6 @@ function sn_sys_logout($redirect = true, $only_impersonator = false) {
   }
 
   if($_COOKIE[SN_COOKIE_I] && $user_impersonator['authlevel'] >= 3) {
-    // sn_cookie_set_user($user_impersonator, 1);
-    // sec_set_cookie_by_fields($user_impersonator['id'], $user_impersonator['username'], $user_impersonator['password'], 1);
     sec_set_cookie_by_user($user_impersonator, 1);
     $redirect = $redirect === true ? 'admin/userlist.php' : $redirect;
   } else {
@@ -517,48 +507,22 @@ function sn_sys_logout($redirect = true, $only_impersonator = false) {
 
 
 /**
- * Получение пароля пользователя по его ID или записи
- *
- * @param int|array $user ID или запись пользователя
- *
- * @return array|bool Массив [password, salt] или FALSE в случае неудачи
- */
-function sec_password_get($user) {
-  if(!is_array($user) && ($user = intval($user))) {
-    // Это ID
-    $user = db_user_by_id($user);
-  }
-
-  if(is_array($user) && !empty($user['password'])) {
-    return array('password' => $user['password'], 'salt' => $user['salt']);
-  } else {
-    return false;
-  }
-}
-
-/**
  * Проверка совпадения пароля пользователя с указанной строкой
  *
- * @param int|array $user ID пользователя или его запись
+ * @param int|array $user_id_safe ID пользователя или его запись
  * @param string $check_against Строка, который нужно проверить на совпадение с паролем
  *
  * @return bool TRUE в случае совпадения и FALSE - в обратном случае
  */
-function sec_password_check($user, $check_against) {
-  $password_match = false;
-  if(empty($user['password'])) {
-    $user = sec_password_get($user);
-  }
-
-  if(!empty($user['password']) && isset($user['salt'])) {
-    $password_match = sec_password_encode($check_against, $user['salt']) == $user['password'];
-  }
-
-  return $password_match;
+function sec_password_check($user_id_safe, $check_against) {
+  return
+    ($account = db_account_by_user_id($user_id_safe))
+    &&
+    (sec_password_encode($check_against, $account['account_salt']) == $account['account_password']);
 }
 
 /**
- * @param int|array   $user
+ * @param int|array   $user_id_safe
  *
  * @param string      $new_password_unsafe
  *
@@ -574,10 +538,12 @@ function sec_password_check($user, $check_against) {
  *    <p>true - если пароль изменен успешно<p>
  *    <p>false - в остальных случаях<p>
  */
-function sec_password_change($user, $new_password_unsafe, $old_password_unsafe, $remember_me = false) {
-  // Если старый пароль не равен true - значит надо провести проверку пароля
+function sec_password_change($user_id_safe, $new_password_unsafe, $old_password_unsafe, $remember_me = false) {
+  global $lang;
+
+  // Если старый пароль не равен false - значит надо провести проверку пароля
   // Проверяем старый пароль и меняем только если всё ОК
-  if($old_password_unsafe !== false && !sec_password_check($user, $old_password_unsafe)) {
+  if($old_password_unsafe !== false && !sec_password_check($user_id_safe, $old_password_unsafe)) {
     return false;
   }
 
@@ -585,23 +551,31 @@ function sec_password_change($user, $new_password_unsafe, $old_password_unsafe, 
   $password_encoded = sec_password_encode($new_password_unsafe, $salt_unsafe);
   $salt_safe = db_escape($salt_unsafe);
 
-  $user_id = is_array($user) && !empty($user['id']) ? $user['id'] : $user;
+  // $user_id_safe = round(floatval(is_array($user_id_safe) && !empty($user_id_safe['id']) ? $user_id_safe['id'] : $user_id_safe));
 
-  $result = sec_password_set($user_id, $password_encoded, $salt_safe);
-  if($result && $remember_me !== false) {
-    sec_set_cookie_by_user(array('id' => $user_id, 'username' => '', 'password' => $password_encoded), $remember_me);
+  $result = sec_password_set($user_id_safe, $password_encoded, $salt_safe);
+
+  if($result) {
+    $user_id_safe = db_user_by_id($user_id_safe);
+    $user_id_safe = $user_id_safe['id'];
+    sec_set_cookie_by_fields($user_id_safe, '', $password_encoded, $remember_me);
+    $account = db_account_by_user_id($user_id_safe);
+    msg_send_simple_message($user_id_safe, 0, SN_TIME_NOW, MSG_TYPE_ADMIN,
+      $lang['sys_administration'], $lang['sys_login_register_message_title'],
+      sprintf($lang['sys_login_register_message_body'], $account['account_name'], $new_password_unsafe)
+    );
   }
 
   return $result;
 }
 
 /**
- * @param $user_id
+ * @param $user_id_safe
  * @param $encoded_pass_safe
  * @param $salt_safe
  *
  * @return array|bool|resource
  */
-function sec_password_set($user_id, $encoded_pass_safe, $salt_safe) {
-  return db_user_set_by_id($user_id, "`password` = '{$encoded_pass_safe}', `salt` = '{$salt_safe}'");
+function sec_password_set($user_id_safe, $encoded_pass_safe, $salt_safe) {
+  return db_account_set_by_user_id($user_id_safe, "`account_password` = '{$encoded_pass_safe}', `account_salt` = '{$salt_safe}'");
 }

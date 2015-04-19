@@ -11,6 +11,16 @@
 
 <!-- INCLUDE _result_message -->
 
+<script type="text/javascript">
+  // var password, password2;
+  var L_sys_login_password_show = '{LA_sys_login_password_show}';
+  var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
+
+  //  $(document).ready(function(){
+  //    $("#login_container").tabs().show();
+  //  });
+</script>
+
 <form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
   <div id="tab_container" style="width: 550px;display: none">
     <ol>
@@ -38,7 +48,14 @@
           <th class="c_c" colspan="2">{L_opt_common}</th>
         </tr>
         <tr>
-          <th>{L_username}</th>
+          <th>{L_opt_account_name}</th>
+          <th width=330>
+            {ACCOUNT_NAME}
+          </th>
+        </tr>
+
+        <tr>
+          <th>{L_opt_game_user_name}</th>
           <th width=330>
             <!-- IF SERVER_NAME_CHANGE -->
               {L_username_old} <span class="ok">{opt_usern_data}</span><br />
@@ -54,15 +71,25 @@
         </tr>
         <tr>
           <th>{L_lastpassword}</th>
-          <th><input name="db_password" size="20" maxlength="32" value="" type="password"></th>
+          <th>
+            <input id="db_password" name="db_password" size="20" maxlength="32" value="" type="password" />
+            <input class="password_show" type="button" value="{L_sys_login_password_show}" show_element="db_password" />
+          </th>
         </tr>
         <tr>
           <th>{L_newpassword}</th>
-          <th><input name="newpass1" size="20" maxlength="32" type="password"></th>
+          <th>
+            <input id="newpass1" name="newpass1" size="20" maxlength="32" type="password" />
+            <!--<input id="register_password_repeat" name="password_repeat" type="password" value="{PASSWORD_REPEAT}" size="20" maxlength="32" class="log_input" /><br />-->
+            <input class="password_show" type="button" value="{L_sys_login_password_show}" show_element="newpass1" />
+          </th>
         </tr>
         <tr>
           <th>{L_newpasswordagain}</th>
-          <th><input name="newpass2" size="20" maxlength="32" type="password"></th>
+          <th>
+            <input id="newpass2" name="newpass2" size="20" maxlength="32" type="password">
+            <input class="password_show" type="button" value="{L_sys_login_password_show}" show_element="newpass2" />
+          </th>
         </tr>
         <tr title="{L_emaildir_tip}">
           <th>{L_emaildir}</th>

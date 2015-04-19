@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b15.11
+* @version 40a0.0
 *
 */
 
@@ -26,20 +26,23 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) 
-{
+if (!defined('INSIDE')) {
 	die('Hack attempt!');
 }
 
-if (empty($lang) || !is_array($lang))
-{
-  $lang = array();
-}
+//if (empty($lang) || !is_array($lang)) {
+//  $lang = array();
+//}
+
+empty($lang) || !is_array($lang) ? $lang = array() : false;
 
 // System-wide localization
 
 //$lang = array_merge($lang,
 //$lang->merge(
+
+global $config;
+
 $a_lang_array = (array(
   'sys_administration' => 'SuperNova Administration',
   'sys_birthday' => 'Birthday',
@@ -929,8 +932,8 @@ $a_lang_array = (array(
 
     PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'There is no player with such base email',
     PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Forbidden to restore password for member of Server Team. Contact Administrator directly',
-    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per hour. Check your SPAM folder for restoration code or wait',
-    PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration',
+    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per 10 minutes. Check your SPAM folder for restoration code or contact server administration via email <span class="ok">' . $config->server_email . '</span> from your main email (email which you used for registration)',
+    PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration via email <span class="ok">' . $config->server_email . '</span>',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Restoration code successfully sent',
 
     PASSWORD_RESTORE_ERROR_CODE_WRONG => 'Wrong restoration code',
@@ -1062,5 +1065,8 @@ $a_lang_array = (array(
 
   'sys_blitz_reward_log_message' => 'Блиц-сервер %1$d призовое место блиц-имя "%2$s"',
   'sys_blitz_registration_view_stat' => 'Посмотреть статистику Блиц-сервера',
+
+  'sys_login_register_message_title' => "Ваше имя и пароль для входа в игру",
+  'sys_login_register_message_body' => "Ваше имя для входа в игру (логин)\r\n%1\$s\r\n\r\nВаш пароль для входа в игру\r\n%2\$s\r\n\r\nЗапишите или запомните эти данные!",
 
 ));

@@ -141,6 +141,8 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
 }
 
 function player_create($username_unsafe, $password_raw, $email_unsafe, $options) {
+  classSupernova::db_transaction_check(true);
+
   global $config, $lang;
 
   static $player_options_string = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';
@@ -154,7 +156,6 @@ function player_create($username_unsafe, $password_raw, $email_unsafe, $options)
 
     'username' => $username_unsafe,
     'email' => $email_unsafe,
-    'email_2' => $email_unsafe,
 
     'lang' => $options['language_iso'] ? $options['language_iso'] : DEFAULT_LANG,
     'dpath' => DEFAULT_SKINPATH,
@@ -169,21 +170,16 @@ function player_create($username_unsafe, $password_raw, $email_unsafe, $options)
   );
 
   $user_new = classSupernova::db_ins_field_set(LOC_USER, $field_set);
-  sec_password_change($user_new, $password_raw, false, $options['remember_me'] = intval(!empty($options['remember_me'])));
+  $account = db_account_create(array(
+    'account_name' => $username_unsafe,
+    'account_password' => $password_raw,
+    'account_email' => $email_unsafe,
+    'account_language' => $field_set['lang'],
+  ), $user_new['id']);
+  // db_user_set_by_id($user_new['id'], "`parent_account_id` = {$account['account_id']}");
+  sec_password_change($user_new['id'], $password_raw, false, $options['remember_me'] = intval(!empty($options['remember_me'])));
 
   $username_safe = db_escape($username_unsafe);
-
-//  $options['language_iso'] = db_escape($options['language_iso'] ? $options['language_iso'] : DEFAULT_LANG);
-//  $options['remember_me'] = intval(!empty($options['remember_me']));
-//
-//  $skin_safe = db_escape(DEFAULT_SKINPATH);
-//  $email_safe = db_escape($email_unsafe);
-//
-//  // sn_db_field_set_make_safe($field_set, $serialize = false)
-//
-//  $user_new = classSupernova::db_ins_record(LOC_USER, "`username` = '{$username_safe}', `email` = '{$email_safe}', `email_2` = '{$email_safe}', `dpath` = '{$skin_safe}',
-//      `lang` = '{$options['language_iso']}', `register_time` = " . SN_TIME_NOW . ", `server_name` = '" . db_escape(SN_ROOT_VIRTUAL) . "',
-//      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
 
   doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
 
@@ -224,12 +220,14 @@ function player_create($username_unsafe, $password_raw, $email_unsafe, $options)
       $options['planet'] += 3;
     }
   }
-
-  $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $username_unsafe . ' ' . $lang['sys_capital'], true, $options['planet_options']);
-
+  $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $lang['sys_capital'] . ' ' . $username_unsafe, true, $options['planet_options']);
   sys_player_new_adjust($user_new['id'], $new_planet_id);
 
-  db_user_set_by_id($user_new['id'], "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}', `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}'");
+  db_user_set_by_id($user_new['id'],
+    "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
+    `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}',
+    `parent_account_id` = {$account['account_id']}"
+  );
 
   $config->db_saveItem('users_amount', $config->users_amount + 1);
 

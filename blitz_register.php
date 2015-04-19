@@ -92,25 +92,8 @@ pdump($system_step, '$system_step');
         'planet' => $planet,
       ));
 
-
-//      $user_new = classSupernova::db_ins_record(LOC_USER, "`email` = '', `email_2` = '', `username` = '{$username_safe}',
-//      `dpath` = '{$skin}', `lang` = '{$language}', `register_time` = " . SN_TIME_NOW . ",
-//      `options` = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';");
-//
-//      sec_password_change($user_new, $string_data[1], false); // OK
-//
-//      doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = \"{$username_safe}\"");
-//
-//      $new_planet_id = uni_create_planet($galaxy, $system, $planet, $user_new['id'], $username_unsafe . ' ' . $lang['sys_capital'], true);
-//      sys_player_new_adjust($user_new['id'], $new_planet_id);
-//
-//      db_user_set_by_id($user_new['id'], "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}', `galaxy` = '{$galaxy}', `system` = '{$system}', `planet` = '{$planet}'");
-//
-
       $moon_row = uni_create_moon($galaxy, $system, $planet, $user_new['id'], 30, '', false);
 
-      // $system += $system_step;
-      // $system >= $config->game_maxSystem ? $galaxy++ : false;
       if(($system += $system_step) >= $config->game_maxSystem) {
         $galaxy++;
         $system = $system_step;

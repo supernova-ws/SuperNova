@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #39b15.11#
+* @version #40a0.0#
 *
 */
 
@@ -39,6 +39,9 @@ if (!isset($lang) || (!is_array($lang) && !is_object($lang)))
 
 //$lang = array_merge($lang,
 //$lang->merge(
+
+global $config;
+
 $a_lang_array = (array(
   'sys_birthday' => 'День рождения',
   'sys_birthday_message' => '%1$s! Администрация СверхНовой сердечно поздравляет тебя с твоим Днем Рождения, который пришелся на %2$s и преподносит тебе в качестве подарка %3$d %4$s! От всей души желаем тебе успехов в игре и высоких рангов в статистике! Может это поздравление и запоздало, но лучше раньше, чем позже.',
@@ -935,8 +938,8 @@ $a_lang_array = (array(
 
     PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'Нет игрока с таким основным емейлом',
     PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Запрещено восстановление пароля для Команды сервера. Обратитесь к Администратору',
-    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'Запросить код код восстановления можно только 1 раз в час. Если вы не получили письмо - проверьте папку СПАМа или подождите',
-    PASSWORD_RESTORE_ERROR_SENDING => 'Ошибка отправки письма. Обратитесь к Администрации сервера',
+    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'Запросить код восстановления можно только 1 раз в 10 минут. Если вы не получили письмо - проверьте папку СПАМа или напишите письмо Администрации сервера на email <span class="ok">' . $config->server_email . '</span> с адреса, который вы использовали при регистрации',
+    PASSWORD_RESTORE_ERROR_SENDING => 'Ошибка отправки письма. Напишите письмо Администрации сервера на email <span class="ok">' . $config->server_email . '</span>',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Письмо с кодом восстановления успешно отправлено',
 
     PASSWORD_RESTORE_ERROR_CODE_WRONG => 'Неправильный код восстановления',
@@ -1069,5 +1072,8 @@ $a_lang_array = (array(
 
   'sys_blitz_reward_log_message' => 'Блиц-сервер %1$d призовое место блиц-имя "%2$s"',
   'sys_blitz_registration_view_stat' => 'Посмотреть статистику Блиц-сервера',
+
+  'sys_login_register_message_title' => "Ваше имя и пароль для входа в игру",
+  'sys_login_register_message_body' => "Ваше имя для входа в игру (логин)\r\n%1\$s\r\n\r\nВаш пароль для входа в игру\r\n%2\$s\r\n\r\nЗапишите или запомните эти данные!",
 
 ));

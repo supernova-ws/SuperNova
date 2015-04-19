@@ -153,28 +153,6 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
   if(defined('DEBUG_SQL_COMMENT')) {
     $backtrace = debug_backtrace();
     $sql_comment = $debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
-    //    pdump($backtrace[0]);
-    //    pdump($backtrace[1]);
-    //    print("<hr/>");
-    //    foreach($backtrace as $a_trace)
-    //    {
-    //      if(!in_array($a_trace['function'], array('doquery', 'db_query', 'db_get_record_list'))) break;
-    //    }
-    //    // $a_trace = $backtrace[1]['function'] == 'db_query' ? $backtrace[2] : $backtrace[1];
-    //    $function =
-    //      ($a_trace['type']
-    //        ? ($a_trace['type'] == '->'
-    //          ? "({$a_trace['class']})" . get_class($a_trace['object'])
-    //          : $a_trace['class']
-    //        ) . $a_trace['type']
-    //        : ''
-    //      ) . $a_trace['function'] . '()';
-    //
-    //    $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $a_trace['file']));
-    //
-    //    $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
-    //
-    //    $sql = "/* {$function} '{$file}' Line {$a_trace['line']} tID {$transaction_id} */ " . $sql;
 
     $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
     if(defined('DEBUG_SQL_ONLINE')) {
@@ -347,6 +325,19 @@ function sn_db_transaction_commit() {
 }
 function sn_db_transaction_rollback() {
   return classSupernova::db_transaction_rollback();
+}
+
+function db_field_set_create($table_name, $field_set) {
+  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
+  sn_db_field_set_safe_flag_clear($field_set);
+
+  $values = implode(',', $field_set);
+  $fields = implode(',', array_keys($field_set));
+
+  classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);");
+  $account_id = db_insert_id();
+
+  return db_account_by_id($account_id);
 }
 
 require_once('db/db_queries.php');

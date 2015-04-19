@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b10.0
+* @version 40a0.0
 *
 */
 
@@ -43,8 +43,8 @@ $a_lang_array = (array(
   'opt_header' => 'User options',
   'opt_messages' => 'Automatic alerts',
   'opt_msg_saved' => 'Options succesfully saved',
-  'opt_msg_name_changed' => 'Username sucessfully changed.<br /><a href="login.php" target="_top">Back</a>',
-  'opt_msg_pass_changed' => 'Password sucessfully changed.<br /><a href="login.php" target="_top">Back</a>',
+  'opt_msg_name_changed' => 'Username sucessfully changed',
+  'opt_msg_pass_changed' => 'Password sucessfully changed',
   'opt_err_pass_wrong' => 'Wrong old password. Password was not changed',
   'opt_err_pass_unmatched' => 'New password confirmation is not identical to new password. Password was not changed',
 
@@ -161,5 +161,8 @@ $a_lang_array = (array(
   'opt_mail_permanent_description' => 'Your game account linked permanently to this e-mail. All system notices (like password change confirmation) will be sent to this address. You can enter this email only once',
 
   'opt_sound_enabled' => 'Включить звуки в игре',
+
+  'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
+  'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
 
 ));

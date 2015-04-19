@@ -303,6 +303,9 @@ if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > 
 }
 
 sec_login($result);
+
+
+
 $user = $result[F_LOGIN_USER];
 unset($result[F_LOGIN_USER]);
 $template_result += $result;

@@ -279,7 +279,7 @@ sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
     if(!$HomeWorld)
     {
       $OwnerName = db_user_by_id($PlanetOwnerID, false, 'username');
-      $planet['name'] = "{$OwnerName['username']} {$planet['name']}";
+      $planet['name'] = "{$planet['name']} {$OwnerName['username']}";
     }
     $planet['name'] = db_escape(strip_tags(trim($planet['name'])));
 

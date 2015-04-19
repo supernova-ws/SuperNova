@@ -3,29 +3,9 @@
 </style>
 
 <script type="text/javascript">
-  var password, password2;
+  // var password, password2;
   var L_sys_login_password_show = '{LA_sys_login_password_show}';
   var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
-
-  $(document).on('click', '.password_show', function(){
-    input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
-    if(input.attr('type') == 'password') {
-      type = 'text';
-      button_value = L_sys_login_password_hide;
-    }
-    else{
-      type = 'password';
-      button_value = L_sys_login_password_show;
-    }
-
-    var rep = $('<input type="' + type + '" maxlength="32" />').attr("id", input.attr("id")).attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
-
-    input.remove();
-
-    $(this).attr('value', button_value);
-
-    // alert(show_element.attr('type'));
-  });
 
   //  $(document).ready(function(){
   //    $("#login_container").tabs().show();
@@ -243,7 +223,7 @@
           </tr>
           <tr>
             <th>{L_log_lost_code}</th>
-            <th><input name="confirm" type="text" size="8" maxlength="8" /></th>
+            <th><input name="confirm" type="text" size="{D_LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH}" maxlength="{D_LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH}" /></th>
           </tr>
           <tr>
             <input name="lang" type="hidden" value="{LANG}" />

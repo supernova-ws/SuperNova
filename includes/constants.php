@@ -27,8 +27,8 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '39d2');
-define('SN_RELEASE_STABLE', '38d0'); // Latest stable release
+define('SN_VERSION', '40a0.0');
+define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -43,6 +43,8 @@ define('SCHEDULER_PREG2', '/^(?:\w\@)?(?:(?:(?:(?:(?:(\d*)-)?(\d*)-)?(?:(\d*)\ )
 define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
 define('PREG_DATE_SQL_FULL', '/(20[1-9][0-9]|19[0-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
 define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
+
+define('LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH', 9);
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
@@ -417,6 +419,7 @@ define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
 define('F_LOGIN_STATUS', 'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');
 define('F_LOGIN_USER', 'F_LOGIN_USER');
+define('F_LOGIN_ACCOUNT', 'F_LOGIN_ACCOUNT');
 define('F_PASSWORD_NEW', 'F_PASSWORD_NEW');
 
 define('F_BROWSER', 'F_BROWSER');

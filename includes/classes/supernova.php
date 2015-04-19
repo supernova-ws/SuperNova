@@ -602,30 +602,46 @@ class classSupernova {
 
     return $user;
   }
-  public static function db_get_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
-    if(!($email_unsafe = strtolower(trim($email_unsafe)))) return false;
-
+//  // UNUSED
+//  public static function db_get_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
+//    if(!($email_unsafe = strtolower(trim($email_unsafe)))) return false;
+//
+//    $user = null;
+//    // TODO переделать на индексы
+//    if(is_array(static::$data[LOC_USER])) {
+//      foreach(static::$data[LOC_USER] as $user_id => $user_data) {
+//        if(is_array($user_data) && isset($user_data['email_2'])) {
+//          // проверяем поле
+//          if(strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email_2']) == $email_unsafe)) {
+//            $user = $user_data;
+//            break;
+//          }
+//        }
+//      }
+//    }
+//
+//    // TODO переделать на db_get_user_by_where
+//    if($user === null) {
+//      // Вытаскиваем запись
+//      $email_safe = db_escape($email_unsafe);
+//      $user = static::db_query(
+//        "SELECT * FROM {{users}} WHERE LOWER(`email_2`) = '{$email_safe}'" .
+//        ($use_both ? " OR LOWER(`email`) = '{$email_safe}'" : '')
+//      , true);
+//
+//      static::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
+//    }
+//
+//    return $user;
+//  }
+  public static function db_get_user_by_where($where_safe, $for_update = false, $fields = '*') {
+//    if(!($email_unsafe = strtolower(trim($email_unsafe)))) return false;
     $user = null;
     // TODO переделать на индексы
-    if(is_array(static::$data[LOC_USER])) {
-      foreach(static::$data[LOC_USER] as $user_id => $user_data) {
-        if(is_array($user_data) && isset($user_data['email_2'])) {
-          // проверяем поле
-          if(strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email_2']) == $email_unsafe)) {
-            $user = $user_data;
-            break;
-          }
-        }
-      }
-    }
 
-    if($user === null) {
+    if($user === null && !empty($where_safe)) {
       // Вытаскиваем запись
-      $email_safe = db_escape($email_unsafe);
-      $user = static::db_query(
-        "SELECT * FROM {{users}} WHERE LOWER(`email_2`) = '{$email_safe}'" .
-        ($use_both ? " OR LOWER(`email`) = '{$email_safe}'" : '')
-      , true);
+      $user = static::db_query("SELECT * FROM {{users}} WHERE {$where_safe}", true);
 
       static::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
     }

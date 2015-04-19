@@ -205,7 +205,7 @@ class debug
         `log_username` = '" . db_escape($user['user_name']). "', `log_title` = '" . db_escape($title) . "',  `log_text` = '".db_escape($message)."',
         `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'" .
         ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
-      __db_query($query) or die($fatal_error . db_error());
+      doquery($query, '', false, true) or die($fatal_error . db_error());
 
       $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . db_insert_id() . "</b>";
 
@@ -245,7 +245,7 @@ class debug
         `log_username` = '" . db_escape($user['user_name']). "', `log_title` = '" . db_escape($title) . "',  `log_text` = '".db_escape($message)."',
         `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'" .
         ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
-      __db_query($query);
+      doquery($query, '', false, true);
     } else {
       print("<hr>User ID {$user['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }

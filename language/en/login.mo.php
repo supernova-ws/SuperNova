@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b15.23
+* @version 40a0.0
 *
 */
 
@@ -28,6 +28,7 @@
 
 if (!defined('INSIDE')) die();
 
+global $config;
 
 //$lang = array_merge($lang,
 //$lang->merge(
@@ -114,9 +115,12 @@ $a_lang_array = (array(
 
   'log_lost_header' => 'Password recovery',
   'log_lost_code' => 'Confirmation code',
-  'log_lost_description1' => 'Enter the email address you registered your account. It will be sent an email with a verification code to reset your password',
+  'log_lost_description1' => 'Enter the email address you registered your account. We will send an email with a verification code to reset your password',
+
   'log_lost_send_mail' => 'Send confirmation code',
-  'log_lost_description2' => 'If you have a confirmation code, please enter it below and click "Reset password". An e-mail will be sent an email with a new password',
+  'log_lost_description2' => 'If you have a confirmation code, please enter it below and click "Reset password". An e-mail will be sent an email with a new password<br /><br />
+    If you already asking for confirmation code but can not find email from us in your main folder - check your SPAM folder. Some mail servers can mark our letters as "SPAM"<br /><br />
+    If you absolutly sure that did not receive email from us - just write a email to Administration address <span class="ok">' . $config->server_email . '</span>',
   'log_lost_reset_pass' => 'Reset password',
   'log_lost_sent_code' => 'Email sent to this email with further instructions on resetting your password',
   'log_lost_sent_pass' => 'Just sent to your email message with the new password',

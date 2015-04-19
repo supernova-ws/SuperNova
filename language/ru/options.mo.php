@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b10.0
+* @version 40a0.0
 *
 */
 
@@ -50,7 +50,7 @@ $a_lang_array = (array(
   'username_change_confirm' => 'Сменить имя',
   'username_change_confirm_payed' => 'за',
 
-  'opt_msg_pass_changed' => 'Пароль успешно изменен.<br /><a href="login.php" target="_top">Назад</a>',
+  'opt_msg_pass_changed' => 'Пароль успешно изменен',
   'opt_err_pass_wrong' => 'Неправильный текущий пароль. Пароль не был изменен',
   'opt_err_pass_unmatched' => 'Введенный пароль не совпадает с подтвержденим пароля. Пароль не был изменен',
   'changue_pass' => 'Сменить пароль',
@@ -159,5 +159,8 @@ $a_lang_array = (array(
   'opt_mail_permanent_description' => 'К этому почтовому адресу привязывается игровой аккаунт. Ввести его можно только один раз. Все системные уведомления (например, о смене пароля) отправляются именно на этот адрес',
 
   'opt_sound_enabled' => 'Включить звуки в игре',
+
+  'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
+  'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
 
 ));

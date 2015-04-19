@@ -993,6 +993,7 @@ https://ru.wikipedia.org/wiki/Соль_(криптография)
 sec_login(&$result) - проверка существования $language = sys_get_param_str('lang', DEFAULT_LANG)
 
 
+Скиллы Императора - см. туду
 
 
 Пак "Быстрый старт" для новичков за ММ
@@ -1021,7 +1022,7 @@ sys_user_options_unpack($user);
   4. Выжидаем, скажем, недельку
   5. Проводим миграцию
 
-
+Goldilocks zone - пояс Златовласки https://ru.wikipedia.org/wiki/Зона_обитаемости
 
 "Не важные новости" - показывать только пока свежая. Если не свежая - прятать, что бы больше вмещалось в историю новостей
 
@@ -1029,10 +1030,27 @@ sys_user_options_unpack($user);
 
 Калькулятор расчета постройки корабля по текущим ресурсам
 
+Экспа - коррекция на мелкие флоты, что бы даже 1 ЛИ приносил добычу
+Или писать хотя бы, что флот мелкий
+
+sn_function_call - переделать на get_param()
+регестрировать функции как магические методы в classSuperNova
+Описать их через @method: http://manual.phpdoc.org/HTMLSmartyConverter/PHP/phpDocumentor/tutorial_tags.method.pkg.html
+
 Запаковать тики луны в один мегатик
 ЧЛ - вне отладки паковать данные по тику СРАЗУ
 
 "Холодный склад" - обновлять каждый патч через УРЛ, в котором параметром секретное слово - без логина, без пароля
+
+
+
+построить мультиюниты +10 +100 +1000 +2000
+
+
+Добавить в хуки проверку на наличие pdump и print в исходном коде!
+
+
+В класс $config - прописать все @property и так и поддерживать
 
 
 $db_prefix = $dbsettings['prefix'];
@@ -1041,22 +1059,194 @@ $sn_cache = new classCache($db_prefix);
 $config = new classConfig($db_prefix);
 
 
+https://ru.wikipedia.org/wiki/Markdown
+
+красный - боевой
+зеленый - транспорт
+синий - служебный
+
+now_typing - в продвинутом чате
+
+в настройках - выделять имя на фоне на предмет пробелов (трим)
+
+во всех модулях логгировать не прошедшие попытки оплаты
+не делать проверку на соответствие цены и ТМ (т.е. конверт не делать и не сверять) - запись будет в БД, сравнивать со значениями в БД
 
 
 sn_db_field_set_make_safe($field_set, $serialize = false)
-player_create()
 
-Капитаны - 10к ТМ
+
+убрать по коду (branch modules) избыточные врапперы тип classSupernova::db_get_user_by_username
+classSupernova:: -> cSN
+Добавить врапперы над db_get_record_by_id db_ins_field_set
+
+sn_sys_logout() -> sec_logout()
 
 
 СДЕЛАТЬ КОПИЮ АКТУАЛЬНЫХ МОДУЛЕЙ!
 ПОМЕНЯТЬ ВЕРСИЮ В .versions
 
 
+css - negative, positive, zero -> error, warning, notice, ok
+
+
+админка-настройки быстрые кнопки "Включить игру" и "Отключить игру"
+
+
+
+
+sn_function_call(__FUNCTION__, // __METHOD__
+$caller = next(debug_backtrace())['function'];
+
+player_create()
+
+поменять тип записи parent_account_global
+сортировка users по обоим индексам аккаунтов
+      "ADD COLUMN `parent_account_global` tinyint(1) unsigned NOT NULL DEFAULT 0",
+      "ADD KEY `I_user_account_id` (`parent_account_id`, `parent_account_global`)",
+
+дропнуть поля password и salt
+
+Что бы не вылогинивало - расширить куку и хранить в ней ИД
+
+user_as_ally -> user_bot BOT_ALLY - не заменять, а добавить признак
+
+Обслуживание - не удалять системные сообщения. У них сендер равен 0
+
+Критический опрос - спецфлаг и подтвеждение при голосовании или закрытии непроголосованного опроса
+
+sn_sec_login_register - вынести проверку валидности пароля в отдельную функцию
+                      - добавить проверку корректности емейла
+
+
+sec_password_change
+    Лимит на количество неудаляемых писем - сделать платным за ТМ/ММ (?)
+    Или для владельцев премиума от уровня премиума
+
+Админка - функционал для смены пароля пользователя
+
+Владельцам премиума - предуведомления в личку о том, что премиум истекает за 3 дня, 1 день
+
+Колонии - формат: столица|колония №Х <имя игрока>
+
+В регистрации менять хэш страницы при переключении вкладок
+
+
+// TODO - переделать все так!
+upd_check_key('server_email', 'root@localhost', !$config->db_loadItem('server_email'));
+
+OVERRIDE
+
+Все обращения к account должны идти через user_id
+Все выводы db_account_* с обращениями к БД должны перекрываться на уровень выше! А сами прямые функции перекрываться не должны!
+
+'sec_password_set'
+db_account_by_name
+db_account_by_id
+db_account_set_by_id
+db_account_by_name
+
+
+
+
+
+
+
+
+
+REDO
+db_user_by_account_name($username_unsafe)
+
+
+
+account_is_global - показывает локальный это аккаунт или глобальный
+
+
+sec_password_cookie_encode($password) // Не перекрывать - написать СВОЮ реализацию
+function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me) { // ПЕРЕКРЫТЬ - выставлять свою куку на нижнем домене
+function sec_set_cookie_by_fields($user_id, $username_unsafe, $password_hash, $remember_me) { // ПЕРЕКРЫТЬ - надо перекрыть - вытаскивать аккаунт по пользователю и выставлять куки на родительском домене
+
+
+
+
+
+
+**************************************************************
+
+ВСЕ ХУЙНЯ!
+Модуль сингллогина должен работать как секондари-auth модуль!
+Отдельная таблица чистаааа для сингл логина - для трансляции его собственных аккаунт_ид в аккаунты сервера
+
+function sec_login(&$result)
+  sec_login_prepare($result);
+    sec_login_set_fields($result, $_SERVER['HTTP_USER_AGENT'], F_BROWSER, F_BROWSER_ID, 'browser_id', 'security_browser', 'browser_user_agent')
+  sec_login_register($username_unsafe, $password_raw, $email_unsafe, $language, sys_get_param_int('rememberme'))
+    db_user_by_email
+    player_create()
+  sec_login_username($username_unsafe, $password_raw, sys_get_param_int('rememberme'))
+    db_user_by_account_name
+      db_user_by_account_id
+        db_account_by_name
+    sec_password_check
+      db_account_by_user
+        db_account_by_id
+      sec_password_encode
+    sec_set_cookie_by_user
+      db_account_by_user
+        db_account_by_id
+      sec_set_cookie_by_fields
+  sec_restore_password_send_email($email_unsafe)
+  sec_restore_password_confirm($confirm_safe, $result)
+  sec_login_cookie($result)
+
+sn_sys_logout();
+
+**************************************************************
+
+
+Убрать вообще юзернейм из куки
+
+
+проверить смену пароля
+
+sec_password_change - отсылать по ЛС пароль аккаунта. Сделать его неудаляемым (?).
+
+УЕБАТЬ email_2 - и заменить везде на account_email
+
+Убить поля password и salt
+
+ГлобалМессадже - вывешивать оповещение на всех страницах - их конфига
+
+
+добавить в настройки "основной емейл для жалоб" $config->server_email
+отправлять все письма с адреса $config->server_email
+
+$result[F_ACCOUNT] ??????????????
+
+
+
+2015-04-19 23:46:50 40a0.0 - Авторизация, Фаза 2
+[!] Авторизация
+    Переписана система авторизации - логин отделен от внутриигрового имени
+    Логин, пароль и системный емейл пользователя вынесены в отдельну таблицу `account`
+    Длина кода подтверждения для сброса пароля увеличена до 9 символов - усилена секретность и уменьшена вероятность коллизий
+    При регистрации запрещены символы ", ', \ в имени аккаунта
+    При смене пароля новый пароль так же сбрасывается в личную почту в сообщении от Администрации
+
+[+] Настройки игрока
+    Отделен логин от игрового имени
+    Добавлены кнопки "Показать пароль" ко всем парольным полям
+
+[~] Апдейтер
+    Код апдейтов по 36-ю версию включительно вынесены в старый файл
+
+
 2015-04-17 13:45:23 39d2
 [~] Апдейтер
     Повышена устойчивость работы движка при смене префикса в конфигурации
     Повышена устойчивость работы системы логгирования
+
+НЕ ВЫПУСКАТЬ ЭТО В РЕЛИЗ!
 
 ------------------------------------------------------------------------------------------------ Чейджлог релиза досуда
 
