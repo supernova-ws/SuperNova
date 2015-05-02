@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a0.0
+* @version 40a0.1
 *
 */
 
@@ -917,17 +917,33 @@ $a_lang_array = (array(
   'sys_colonies' => 'Colonies',
   'sys_radio' => '"Space" radio',
 
+  'sys_auth_provider_list' => array(
+    ACCOUNT_PROVIDER_BASIC => 'Таблица USERS',
+    ACCOUNT_PROVIDER_LOCAL => 'Таблица ACCOUNT',
+    ACCOUNT_PROVIDER_CENTRAL => 'Центральная таблица ACCOUNT',
+  ),
+
   'sys_login_messages' => array(
+    LOGIN_UNDEFINED => 'Login process does not started',
     LOGIN_SUCCESS => 'Login succesfull',
+    LOGIN_ERROR_USERNAME_EMPTY => 'Имя игрока не может быть пустым',
+    LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS => 'В имени игрока и логине не допускаются символы ',
     LOGIN_ERROR_USERNAME => 'There is no player with such name',
+    LOGIN_ERROR_USERNAME_ALLY_OR_BOT => 'Это имя принадлежит Альянсу или боту. Под ним нельзя логиниться... по крайней мере пока',
+    LOGIN_ERROR_PASSWORD_EMPTY => 'Пароль не может быть пустым',
+    LOGIN_ERROR_PASSWORD_TRIMMED => 'Пароль не может начинаться или заканчиваться пробелом, табуляцией или символом перевода строки',
     LOGIN_ERROR_PASSWORD => 'Wrong password',
+    LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION => 'СИСТЕМНАЯ ОШИБКА - СБОЙ В ТАБЛИЦЕ ТРАНСЛЯЦИИ ПРОВАЙДЕРОВ! Сообщите администрации сервера!',
     //    LOGIN_ERROR_COOKIE => '',
 
     REGISTER_SUCCESS => 'Registration succesfully complete',
+    REGISTER_ERROR_BLITZ_MODE => 'Регистрация новых игроков в режиме Блиц-сервера отключена',
     REGISTER_ERROR_USERNAME_WRONG => 'Wrong player name',
     REGISTER_ERROR_USERNAME_EXISTS => 'Player name already registered',
-    REGISTER_ERROR_PASSWORD_INSECURE => 'Insecure or wrong password. Password should be at least 4 characters long and cannot start or end with spaces',
+    REGISTER_ERROR_PASSWORD_INSECURE => 'Insecure or wrong password. Password should be at least ' . PASSWORD_LENGTH_MIN . ' characters long and cannot start or end with spaces',
     REGISTER_ERROR_PASSWORD_DIFFERENT => 'Password does not match confirmation password',
+    REGISTER_ERROR_EMAIL_EMPTY => 'Е-Мейл не может быть пустым',
+    REGISTER_ERROR_EMAIL_WRONG => 'Введенный Е-Мейл не является адресом электронной почты',
     REGISTER_ERROR_EMAIL_EXISTS => 'This email already registered',
 
     PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'There is no player with such base email',
@@ -941,8 +957,6 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_ERROR_CHANGE => 'Password change error. Contact server administration',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Email with new password successfully sent to your email',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
-
-    REGISTER_ERROR_BLITZ_MODE => 'Регистрация новых игроков в режиме Блиц-сервера отключена',
   ),
 
   'log_reg_email_title' => "Your registration on SuperNova game server %1\$s",
@@ -1068,5 +1082,11 @@ $a_lang_array = (array(
 
   'sys_login_register_message_title' => "Ваше имя и пароль для входа в игру",
   'sys_login_register_message_body' => "Ваше имя для входа в игру (логин)\r\n%1\$s\r\n\r\nВаш пароль для входа в игру\r\n%2\$s\r\n\r\nЗапишите или запомните эти данные!",
+
+  'auth_provider_list' => array(
+    ACCOUNT_PROVIDER_BASIC => 'Таблица users',
+    ACCOUNT_PROVIDER_LOCAL => 'Таблица account',
+    ACCOUNT_PROVIDER_CENTRAL => 'Центральное хранилище',
+  ),
 
 ));

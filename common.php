@@ -31,7 +31,8 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
     sn_db_transaction_start();
     sn_ali_fill_user_ally($user);
     if(!$user['ally']['player']['id']) {
-      sn_sys_logout(false, true);
+      // sn_sys_logout(false, true);
+      auth::logout(false, true);
       $debug->error("User ID {$user['id']} has ally ID {$user['ally_id']} but no ally info", 'User record error', 502);
     }
     // TODO UNCOMMENT
@@ -48,7 +49,8 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
 
   $planetrow = $global_data['planet'];
   if(!($planetrow && isset($planetrow['id']) && $planetrow['id'])) {
-    sn_sys_logout(false, true);
+    // sn_sys_logout(false, true);
+    auth::logout(false, true);
     $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
   }
 

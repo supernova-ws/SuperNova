@@ -28,18 +28,10 @@ function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false) {
   }
 }
 
-function sys_refresh_tablelist($db_prefix) {
+function sys_refresh_tablelist($db_prefix, $link = null) {
   global $sn_cache;
 
-  $tl = array();
-  $query = doquery('SHOW TABLES;');
-  while($row = db_fetch($query)) {
-    foreach($row as $row) {
-      $table_name = str_replace($db_prefix, '', $row);
-      $tl[$table_name] = $table_name;
-    }
-  }
-  $sn_cache->tables = $tl;
+  $sn_cache->tables = db_get_table_list($db_prefix, $link);
 }
 
 function init_update(&$config) {

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a0.0#
+* @version #40a0.1#
 *
 */
 
@@ -694,15 +694,15 @@ $a_lang_array = (array(
   ),
 
   'months' => array(
-    01 =>'января',
-    02 =>'февраля',
-    03 =>'марта',
-    04 =>'апреля',
-    05 =>'мая',
-    06 =>'июня',
-    07 =>'июля',
-    08 =>'августа',
-    09 =>'сентября',
+     1 =>'января',
+     2 =>'февраля',
+     3 =>'марта',
+     4 =>'апреля',
+     5 =>'мая',
+     6 =>'июня',
+     7 =>'июля',
+     8 =>'августа',
+     9 =>'сентября',
     10 =>'октября',
     11 =>'ноября',
     12 =>'декабря'
@@ -923,17 +923,33 @@ $a_lang_array = (array(
   'sys_colonies' => 'Колонии',
   'sys_radio' => 'Радио "Космос"',
 
+  'sys_auth_provider_list' => array(
+    ACCOUNT_PROVIDER_BASIC => 'Таблица USERS',
+    ACCOUNT_PROVIDER_LOCAL => 'Таблица ACCOUNT',
+    ACCOUNT_PROVIDER_CENTRAL => 'Центральная таблица ACCOUNT',
+  ),
+
   'sys_login_messages' => array(
+    LOGIN_UNDEFINED => 'Процесс логина не начался',
     LOGIN_SUCCESS => 'Вход успешен',
+    LOGIN_ERROR_USERNAME_EMPTY => 'Имя игрока не может быть пустым',
+    LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS => 'В имени игрока и логине не допускаются символы ',
     LOGIN_ERROR_USERNAME => 'Игрок с таким именем не найден',
+    LOGIN_ERROR_USERNAME_ALLY_OR_BOT => 'Это имя принадлежит Альянсу или боту. Под ним нельзя логиниться... по крайней мере пока',
+    LOGIN_ERROR_PASSWORD_EMPTY => 'Пароль не может быть пустым',
+    LOGIN_ERROR_PASSWORD_TRIMMED => 'Пароль не может начинаться или заканчиваться пробелом, табуляцией или символом перевода строки',
     LOGIN_ERROR_PASSWORD => 'Неправильный пароль',
+    LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION => 'СИСТЕМНАЯ ОШИБКА - СБОЙ В ТАБЛИЦЕ ТРАНСЛЯЦИИ ПРОВАЙДЕРОВ! Сообщите администрации сервера!',
   //    LOGIN_ERROR_COOKIE => '',
 
     REGISTER_SUCCESS => 'Регистрация успешно завершена',
+    REGISTER_ERROR_BLITZ_MODE => 'Регистрация новых игроков в режиме Блиц-сервера отключена',
     REGISTER_ERROR_USERNAME_WRONG => 'Некорректное имя игрока',
     REGISTER_ERROR_USERNAME_EXISTS => 'Такое имя игрока уже занято',
-    REGISTER_ERROR_PASSWORD_INSECURE => 'Неправильный пароль. Пароль должен состоять минимум из 4 символов и не может начинаться или заканчиваться пробелами',
+    REGISTER_ERROR_PASSWORD_INSECURE => 'Неправильный пароль. Пароль должен состоять минимум из ' . PASSWORD_LENGTH_MIN . ' символов',
     REGISTER_ERROR_PASSWORD_DIFFERENT => 'Пароль и проверочный пароль не совпадают. Проверьте правильность ввода',
+    REGISTER_ERROR_EMAIL_EMPTY => 'Е-Мейл не может быть пустым',
+    REGISTER_ERROR_EMAIL_WRONG => 'Введенный Е-Мейл не является адресом электронной почты',
     REGISTER_ERROR_EMAIL_EXISTS => 'Этот электронный адрес уже зарегестрирован',
 
     PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'Нет игрока с таким основным емейлом',
@@ -947,8 +963,6 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_ERROR_CHANGE => 'Ошибка смены пароля. Обратитесь к Администрации сервера',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Пароль успешно сброшен. Вам отправлено письмо с новым паролем',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Ошибка отправки письма с новым паролем. Получите новый код восстановления и повторите попытку',
-
-    REGISTER_ERROR_BLITZ_MODE => 'Регистрация новых игроков в режиме Блиц-сервера отключена',
   ),
 
   'log_reg_email_title' => "Ваша регистрация на сервере %1\$s игры Сверхновая",
@@ -1075,5 +1089,11 @@ $a_lang_array = (array(
 
   'sys_login_register_message_title' => "Ваше имя и пароль для входа в игру",
   'sys_login_register_message_body' => "Ваше имя для входа в игру (логин)\r\n%1\$s\r\n\r\nВаш пароль для входа в игру\r\n%2\$s\r\n\r\nЗапишите или запомните эти данные!",
+
+  'auth_provider_list' => array(
+    ACCOUNT_PROVIDER_BASIC => 'Таблица users',
+    ACCOUNT_PROVIDER_LOCAL => 'Таблица account',
+    ACCOUNT_PROVIDER_CENTRAL => 'Центральное хранилище',
+  ),
 
 ));

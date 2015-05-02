@@ -90,7 +90,8 @@ pdump($system_step, '$system_step');
         'galaxy' => $galaxy,
         'system' => $system,
         'planet' => $planet,
-      ));
+      ), $create_result);
+      // $user_new = &$create_result[F_LOGIN_USER];
 
       $moon_row = uni_create_moon($galaxy, $system, $planet, $user_new['id'], 30, '', false);
 

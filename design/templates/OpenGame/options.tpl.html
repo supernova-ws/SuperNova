@@ -47,15 +47,23 @@
         <tr>
           <th class="c_c" colspan="2">{L_opt_common}</th>
         </tr>
+        <!-- IF AUTH_PROVIDER -->
         <tr>
           <th>{L_opt_account_name}</th>
           <th width=330>
+            {AUTH_PROVIDER}
             {ACCOUNT_NAME}
           </th>
         </tr>
-
+        <!-- ENDIF -->
         <tr>
-          <th>{L_opt_game_user_name}</th>
+          <th>
+            <!-- IF AUTH_PROVIDER -->
+            {L_opt_game_user_name}
+            <!-- ELSE -->
+            {L_opt_account_name}
+            <!-- ENDIF -->
+          </th>
           <th width=330>
             <!-- IF SERVER_NAME_CHANGE -->
               {L_username_old} <span class="ok">{opt_usern_data}</span><br />
@@ -102,11 +110,12 @@
           <th>{L_permanentemaildir}</th>
           <th>
             <!-- IF ! opt_mail2_data -->
-            <input name="db_email2" maxlength="64" size="20" value="{opt_mail2_data}" type="text"><br />
-            {L_opt_mail_permanent_description}
+            <!--<input name="db_email2" maxlength="64" size="20" value="{opt_mail2_data}" type="text"><br />-->
+            <!--{L_opt_mail_permanent_description}-->
             <!-- ELSE -->
-            {opt_mail2_data}
+            <!--{opt_mail2_data}-->
             <!-- ENDIF -->
+            {opt_mail2_data}
           </th>
         </tr>
         <tr>

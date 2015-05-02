@@ -120,6 +120,7 @@ require_once(SN_ROOT_PHYSICAL . "includes/classes/_classes" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
+classSupernova::debug_set_handler($debug);
 global $supernova;
 $supernova = new classSupernova();
 
@@ -180,7 +181,6 @@ $template_result = array('.' => array('result' => array()));
 
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
-
 // Подключаем все модули
 // По нормальным делам тут надо подключать манифесты
 // И читать конфиги - вдруг модуль отключен?
@@ -188,6 +188,9 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 $sn_module = array();
 $sn_module_list = array();
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
+// Здесь - потому что auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
+new auth();
+new auth_basic();
 
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
@@ -210,6 +213,7 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
 }
 
 // load_order:
+//  100000 - default load order
 //  999999 - core_ship_constructor
 //  2000000000 - that requires that all possible modules loaded already
 
@@ -217,13 +221,15 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
 $load_order = array();
 $sn_req = array();
 foreach($sn_module as $loaded_module_name => $module_data) {
-  $load_order[$loaded_module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 1;
+  $load_order[$loaded_module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 100000;
   if(isset($module_data->manifest['require']) && !empty($module_data->manifest['require'])) {
     foreach($module_data->manifest['require'] as $require_name) {
       $sn_req[$loaded_module_name][$require_name] = 0;
     }
   }
 }
+
+// pdump($load_order, '$load_order');
 
 // Создаем последовательность инициализации модулей
 // По нормальным делам надо сначала читать их конфиги - вдруг какой-то модуль отключен?
@@ -249,6 +255,8 @@ do {
 while($prev_order != $load_order);
 
 asort($load_order);
+
+// pdump($load_order, '$load_order');
 
 // Инициализируем модули
 // По нормальным делам это должна быть загрузка модулей и лишь затем инициализация - что бы минимизировать размер процесса в памяти
@@ -302,35 +310,65 @@ if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > 
   flt_flying_fleet_handler($skip_fleet_update);
 }
 
-sec_login($result);
+// auth::init();
+
+auth::login($result);
 
 
+// die();
+// pdump($sn_module['auth'], '$sn_module');
+// pdump($sn_module_list['auth'], '$sn_module_list');
 
-$user = $result[F_LOGIN_USER];
-unset($result[F_LOGIN_USER]);
+// sec_login($result);
+
+
+$user = $result[F_USER] && ($result[F_LOGIN_STATUS] == LOGIN_SUCCESS) ? $result[F_USER] : false;
+unset($result[F_USER]);
 $template_result += $result;
 unset($result);
 // В этой точке пользователь либо авторизирован - и есть его запись - либо пользователя гарантированно нет в базе
 
 // Если сообщение пустое - заполняем его по коду
-$template_result[F_LOGIN_MESSAGE] = isset($template_result[F_LOGIN_MESSAGE]) && $template_result[F_LOGIN_MESSAGE]
-  ? $template_result[F_LOGIN_MESSAGE]
-  : $lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]];
+$template_result[F_LOGIN_MESSAGE] =
+  isset($template_result[F_LOGIN_MESSAGE]) && $template_result[F_LOGIN_MESSAGE]
+    ? $template_result[F_LOGIN_MESSAGE]
+    : ($template_result[F_LOGIN_STATUS] != LOGIN_UNDEFINED
+        ? $lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]]
+        : false
+      );
+
+if($template_result[F_LOGIN_STATUS] == LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS) {
+  $prohibited_characters = array_map(function($value) {
+    return "'" . htmlentities($value, ENT_QUOTES, 'UTF-8') . "'";
+  }, str_split(LOGIN_REGISTER_CHARACTERS_PROHIBITED));
+  $template_result[F_LOGIN_MESSAGE] .= implode(', ', $prohibited_characters);
+}
+
 
 // Это уже переключаемся на пользовательский язык с откатом до языка в параметрах запроса
 $lang->lng_switch(sys_get_param_str('lang'));
 global $dpath;
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL ? define('INSTALL_MODE', GAME_DISABLE_INSTALL) : false;
+$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
+  ? define('INSTALL_MODE', GAME_DISABLE_INSTALL)
+  : false;
 
 if($template_result[F_GAME_DISABLE] = $config->game_disable) {
-  $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse($config->game_disable == GAME_DISABLE_REASON ? $config->game_disable_reason : $lang['sys_game_disable_reason'][$config->game_disable]);
+  $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse(
+    $config->game_disable == GAME_DISABLE_REASON
+      ? $config->game_disable_reason
+      : $lang['sys_game_disable_reason'][$config->game_disable]
+  );
   if(defined('IN_API')) {
     return;
   }
 
-  if(($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN)) && !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))) {
+  if(
+    ($user['authlevel'] < 1 || !(defined('IN_ADMIN') && IN_ADMIN))
+    &&
+    !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))
+  ) {
     message($template_result[F_GAME_DISABLE_REASON], $config->game_name);
     ob_end_flush();
     die();
@@ -345,17 +383,22 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
 
   $bantime = date(FMT_DATE_TIME, $template_result[F_BANNED_STATUS]);
   // TODO: Add ban reason. Add vacation time. Add message window
-  sn_sys_logout(false, true);
+  // sn_sys_logout(false, true);
+  auth::logout(false, true);
   message("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
   die("{$lang['sys_banned_msg']} {$bantime}");
 }
 
-$template_result[F_USER_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
+$template_result[F_USER_IS_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
 
 // !!! Просто $allow_anonymous используется в платежных модулях !!!
 $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
 
+// pdump($allow_anonymous, '$allow_anonymous');
+// pdump($sys_user_logged_in, '$sys_user_logged_in');
+
 if(!$allow_anonymous && !$sys_user_logged_in) {
+// die('Редирект на фход');
   sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }

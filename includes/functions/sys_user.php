@@ -18,7 +18,8 @@ function sys_user_vacation($user) {
   }
 
   if($user['vacation']) {
-    sn_sys_logout(false, true);
+    // sn_sys_logout(false, true);
+    auth::logout(false, true);
 
     $template = gettemplate('vacation', true);
 
@@ -140,8 +141,9 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   ");
 }
 
-function player_create($username_unsafe, $password_raw, $email_unsafe, $options) {
-  classSupernova::db_transaction_check(true);
+// function    player_create($username_unsafe, $password_encoded_unsafe, $email_unsafe, $options, &$result = null) {return sn_function_call(__FUNCTION__, array($username_unsafe, $password_encoded_unsafe, $email_unsafe, $options, &$result));}
+function player_create($username_unsafe, $email_unsafe, $options) {
+  sn_db_transaction_check(true);
 
   global $config, $lang;
 
@@ -156,6 +158,7 @@ function player_create($username_unsafe, $password_raw, $email_unsafe, $options)
 
     'username' => $username_unsafe,
     'email' => $email_unsafe,
+    'email_2' => $email_unsafe,
 
     'lang' => $options['language_iso'] ? $options['language_iso'] : DEFAULT_LANG,
     'dpath' => DEFAULT_SKINPATH,
@@ -169,23 +172,10 @@ function player_create($username_unsafe, $password_raw, $email_unsafe, $options)
     'planet' => $options['planet'] = intval($options['planet'] ? $options['planet'] : 0),
   );
 
+  !empty($options['salt']) ? $field_set['salt'] = $options['salt'] : false;
+  !empty($options['password_encoded_unsafe']) ? $field_set['password'] = $options['password_encoded_unsafe'] : false;
+
   $user_new = classSupernova::db_ins_field_set(LOC_USER, $field_set);
-  $account = db_account_create(array(
-    'account_name' => $username_unsafe,
-    'account_password' => $password_raw,
-    'account_email' => $email_unsafe,
-    'account_language' => $field_set['lang'],
-  ), $user_new['id']);
-  // db_user_set_by_id($user_new['id'], "`parent_account_id` = {$account['account_id']}");
-  sec_password_change($user_new['id'], $password_raw, false, $options['remember_me'] = intval(!empty($options['remember_me'])));
-
-  $username_safe = db_escape($username_unsafe);
-
-  doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
-
-  if(!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {
-    doquery("INSERT INTO {{referrals}} SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
-  }
 
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
     $options['galaxy'] = $config->LastSettedGalaxyPos;
@@ -221,15 +211,27 @@ function player_create($username_unsafe, $password_raw, $email_unsafe, $options)
     }
   }
   $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $lang['sys_capital'] . ' ' . $username_unsafe, true, $options['planet_options']);
-  sys_player_new_adjust($user_new['id'], $new_planet_id);
 
+//  db_user_set_by_id($user_new['id'],
+//    "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
+//    `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}',
+//    `parent_account_id` = {$account['account_id']}"
+//  );
   db_user_set_by_id($user_new['id'],
     "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
-    `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}',
-    `parent_account_id` = {$account['account_id']}"
+    `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}'"
   );
 
   $config->db_saveItem('users_amount', $config->users_amount + 1);
 
-  return db_user_by_id($user_new['id']);
+  $username_safe = db_escape($username_unsafe);
+  doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
+
+  if(!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {
+    doquery("INSERT INTO {{referrals}} SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
+  }
+
+  sys_player_new_adjust($user_new['id'], $new_planet_id);
+
+  return $result = db_user_by_id($user_new['id']);
 }

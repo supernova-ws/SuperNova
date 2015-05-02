@@ -29,10 +29,21 @@ if(!defined('INSIDE'))
   die("attemp hacking");
 }
 
-class debug
-{
+class debug {
   var $log, $numqueries;
   var $log_array;
+
+  private $log_file_handler = null;
+
+  function log_file($message) {
+    if($this->log_file_handler === null) {
+      $this->log_file_handler = @fopen(SN_ROOT_PHYSICAL . '/.logs/supernova.log', 'a+');
+      @fwrite($this->log_file_handler, "\r\n\r\n");
+    }
+    if ($this->log_file_handler) {
+      fwrite($this->log_file_handler, date(FMT_DATE_TIME_SQL, time()) . ' ' . $message . "\r\n");
+    }
+  }
 
   function debug()
   {
@@ -307,7 +318,7 @@ function dump($value, $varname = null, $level=0, $dumper = '')
 
 function pdump($value, $varname = null)
 {
-  print('<span style="text-align: left">' . dump($value, $varname) . '</span>');
+  print('<div style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1px 0; font-weight: 800; font-size: 14px;">' . dump($value, $varname) . '</div>');
 }
 
 function debug($value, $varname = null)

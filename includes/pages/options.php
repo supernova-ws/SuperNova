@@ -148,7 +148,8 @@ function sn_options_model() {
         if($new_password != sys_get_param('newpass2')) {
           throw new Exception($lang['opt_err_pass_unmatched'], ERR_WARNING);
         }
-        if(!sec_password_change($user['id'], $new_password, sys_get_param('db_password'), 1)) {
+
+        if(!auth::password_change(sys_get_param('db_password'), $new_password)) {
           throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
         }
 
@@ -162,10 +163,9 @@ function sn_options_model() {
     }
 
     $user['email'] = sys_get_param_str('db_email');
-    $account = db_account_by_user_id($user['id']);
-    if(!$account['account_email'] && ($account['account_email'] = sys_get_param_str('db_email2'))) {
-      db_account_set_by_id($account['account_id'], "`account_email` = '{$account['account_email']}'");
-    }
+//    if(!$template_result[F_ACCOUNT]['account_email'] && ($email_2 = sys_get_param_str('db_email2'))) {
+//      auth::email_set($email_2);
+//    }
     $user['dpath'] = sys_get_param_str('dpath');
     $user['lang']  = sys_get_param_str('langer', $user['lang']);
 
@@ -366,15 +366,23 @@ function sn_options_view($template = null) {
   $time_now_parsed = getdate($user['deltime']);
 
 
-  $account = db_account_by_user_id($user['id']);
+//  $account = db_account_by_user_id($user['id']);
 
+
+//  pdump($template_result);
+//  pdump($template_result[F_USER_ID], F_USER_ID);
+//  pdump($template_result[F_PROVIDER_ID], F_PROVIDER_ID);
+//  pdump(sys_safe_output($template_result[F_ACCOUNT]['account_name']));
 
   $user_time_diff = user_time_diff_get();
   $player_options = player_load_option($user);
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
 
-    'ACCOUNT_NAME' => sys_safe_output($account['account_name']),
+    'AUTH_PROVIDER' => $template_result[F_PROVIDER_ID],
+    'ACCOUNT_NAME' => sys_safe_output($template_result[F_ACCOUNT]['account_name']),
+
+//    'ACCOUNT_NAME' => sys_safe_output($account['account_name']),
 
     'USER_AUTHLEVEL'           => $user['authlevel'],
 
@@ -397,7 +405,7 @@ function sn_options_view($template = null) {
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => htmlspecialchars($user['username']),
     'opt_mail1_data' => $user['email'],
-    'opt_mail2_data' => $account['account_email'],
+    'opt_mail2_data' => sys_safe_output($template_result[F_ACCOUNT]['account_email']),
     'OPT_DPATH_DATA' => $user['dpath'],
     'opt_probe_data' => $user['spio_anz'],
     'opt_toolt_data' => $user['settings_tooltiptime'],

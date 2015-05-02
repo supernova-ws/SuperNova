@@ -878,6 +878,8 @@ switch($new_version) {
       "ADD KEY `I_users_parent_account_global` (`parent_account_global`)",
     ), empty($update_indexes['users']['I_users_parent_account_id']));
 
+    // 2015-05-02 15:11:07 40a0.1
+
     if(empty($update_tables['account'])) {
       upd_create_table('account', " (
           `account_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -892,27 +894,76 @@ switch($new_version) {
           UNIQUE KEY `I_account_name` (`account_name`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 
+      upd_create_table('account_translate', " (
+          `provider_id` tinyint unsigned NOT NULL DEFAULT " . ACCOUNT_PROVIDER_LOCAL . " COMMENT 'Account provider',
+          `provider_account_id` bigint(20) unsigned NOT NULL COMMENT 'Account ID on provider',
+          `user_id` bigint(20) unsigned NOT NULL COMMENT 'User ID',
+          `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+          PRIMARY KEY (`user_id`, `provider_id`, `provider_account_id`),
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+
+
       upd_do_query(
         "INSERT IGNORE INTO {{account}}
-        (`account_name`, `account_register_time`, `account_password`, `account_salt`, `account_email`, `account_language`)
-      SELECT
-        `username`, FROM_UNIXTIME(register_time), `password`, `salt`, `email_2`, `lang`
-      FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . ";"
+            (`account_name`, `account_register_time`, `account_password`, `account_salt`, `account_email`, `account_language`)
+          SELECT
+            `username`, FROM_UNIXTIME(register_time), `password`, `salt`, `email_2`, `lang`
+          FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . ";"
       );
 
       upd_do_query(
-        "UPDATE {{users}} AS u
-        JOIN {{account}} AS a ON a.account_name = u.username AND a.account_password = u.password AND a.account_salt = u.salt
-      SET u.parent_account_id = a.account_id;");
-
-      // Уебать поля email_2, password и salt
+        "REPLACE INTO {{account_translate}} (`provider_id`, `provider_account_id`, `user_id`)
+          SELECT "  . ACCOUNT_PROVIDER_LOCAL . ", a.account_id, u.id
+            FROM {{users}} AS u
+            JOIN {{account}} AS a ON
+              a.account_name = u.username
+              AND a.account_password = u.password
+              AND a.account_salt = u.salt;"
+      );
     }
 
-    // TODO - переделать всё так!
+    upd_alter_table('confirmations', array(
+      "ADD COLUMN `provider_id` tinyint unsigned NOT NULL DEFAULT 0",
+      "ADD COLUMN `account_id` bigint unsigned NOT NULL DEFAULT 0",
+      "ADD UNIQUE KEY I_confirmations_unique (`provider_id`, `account_id`, `type`, `email`)"
+    ), empty($update_tables['confirmations']['provider_id']));
+
+    upd_alter_table('users', array(
+      "DROP KEY `I_user_account_id`",
+    ), isset($update_indexes['users']['I_user_account_id']));
+
+
     $virtual_exploded = explode('/', SN_ROOT_VIRTUAL_PARENT);
+    // TODO - переделать всё на db_loadItem... НАВЕРНОЕ
     upd_check_key('server_email', 'root@' . $virtual_exploded[2], !$config->db_loadItem('server_email'));
 
-    #ctv
+    upd_alter_table('survey_votes', array(
+      "DROP FOREIGN KEY `FK_survey_votes_user`",
+      "DROP KEY `I_survey_votes_user`",
+    ), !empty($update_foreigns['survey_votes']['FK_survey_votes_user']) && $update_foreigns['survey_votes']['FK_survey_votes_user'] == 'survey_vote_user_id,users,id;survey_vote_user_name,users,username;');
+
+    upd_alter_table('survey_votes', array(
+      "ADD KEY `I_survey_votes_user_id` (`survey_vote_user_id`)",
+      "ADD CONSTRAINT `FK_survey_votes_user_id` FOREIGN KEY (`survey_vote_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+    ), empty($update_foreigns['survey_votes']['FK_survey_votes_user']));
+
+//    upd_create_table('survey_votes', " (
+//      `survey_vote_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+//      `survey_parent_id` int(10) unsigned DEFAULT NULL,
+//      `survey_parent_answer_id` int(10) unsigned DEFAULT NULL,
+//      `survey_vote_user_id` bigint(20) unsigned DEFAULT NULL,
+//      `survey_vote_user_name` varchar(32) DEFAULT NULL,
+//      PRIMARY KEY (`survey_vote_id`),
+//      KEY `I_survey_votes_survey_parent_id` (`survey_parent_id`) USING BTREE,
+//      KEY `I_survey_votes_user` (`survey_vote_user_id`,`survey_vote_user_name`) USING BTREE,
+//      KEY `I_survey_votes_survey_parent_answer_id` (`survey_parent_answer_id`) USING BTREE,
+//      CONSTRAINT `FK_survey_votes_user` FOREIGN KEY (`survey_vote_user_id`, `survey_vote_user_name`) REFERENCES `{{users}}` (`id`, `username`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+//      CONSTRAINT `FK_survey_votes_survey_parent_answer_id` FOREIGN KEY (`survey_parent_answer_id`) REFERENCES `{{survey_answers}}` (`survey_answer_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+//      CONSTRAINT `FK_survey_votes_survey_parent_id` FOREIGN KEY (`survey_parent_id`) REFERENCES `{{survey}}` (`survey_id`) ON DELETE CASCADE ON UPDATE CASCADE
+//    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+
+    // #ctv
 
     upd_do_query('COMMIT;', true);
     // $new_version = 40;

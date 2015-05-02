@@ -6,40 +6,16 @@ function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $pla
 function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
   return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
 }
-// UNUSED
-//function db_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
-//  return classSupernova::db_get_user_by_email($email_unsafe, $use_both, $for_update, $fields);
-//}
-
-/**
- * Получаем запись user по ID его аккаунта (account)
- *
- * @param      $account_id_unsafe
- * @param null $result
- *
- * @return mixed
- */
-function    db_user_by_account_id($account_id_unsafe, &$result = null) {return sn_function_call(__FUNCTION__, array($account_id_unsafe, &$result));}
-function sn_db_user_by_account_id($account_id_unsafe, &$result = null) {
-  if(empty($result) && ($account = db_account_by_id($account_id_unsafe))) {
-    $result = classSupernova::db_get_user_by_where("`parent_account_id` = {$account['account_id']}");
-  }
-  return $result;
+function db_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
+  return classSupernova::db_get_user_by_email($email_unsafe, $use_both, $for_update, $fields);
 }
 
-function    db_user_by_account($account, &$result = null) {return sn_function_call(__FUNCTION__, array($account, &$result));}
-function sn_db_user_by_account($account, &$result = null) {
-  if(empty($result) && !empty($account['account_id'])) {
-    $result = classSupernova::db_get_user_by_where("`parent_account_id` = {$account['account_id']}");
-  }
-  return $result;
-}
-
+/*
 function    db_user_by_account_name($account_name_unsafe, &$result = null) {return sn_function_call(__FUNCTION__, array($account_name_unsafe, &$result));}
 function sn_db_user_by_account_name($account_name_unsafe, &$result = null) {
   return empty($result) ? $result = db_user_by_account(db_account_by_name($account_name_unsafe)) : $result;
 }
-
+*/
 function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
   return classSupernova::db_get_record_list(LOC_USER, $user_filter);
 }

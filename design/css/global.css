@@ -790,3 +790,13 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   height: 16px;
   display: inline-block;
 }
+
+.debug {
+  text-align: left;
+  background-color: #111111;
+  color: #0A0;
+  font-family: Courier, monospace !important;
+  padding: 1px 0;
+  font-weight: 800;
+  font-size: 14px;
+}

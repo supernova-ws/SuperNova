@@ -10,6 +10,7 @@ if(!defined('INSIDE')) {
 }
 
 require('db/__mysql.php');
+require_once('db/db_queries.php');
 
 function security_watch_user_queries($query) {
   // TODO Заменить это на новый логгер
@@ -334,10 +335,6 @@ function db_field_set_create($table_name, $field_set) {
   $values = implode(',', $field_set);
   $fields = implode(',', array_keys($field_set));
 
-  classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);");
-  $account_id = db_insert_id();
-
-  return db_account_by_id($account_id);
+  return classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);");
 }
 
-require_once('db/db_queries.php');

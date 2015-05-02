@@ -26,6 +26,8 @@ function __db_connect(&$link, $dbsettings) {
     $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or $debug->error(__db_error(),'DB Error - cannot connect to server');
 
     __db_query("/*!40101 SET NAMES 'utf8' */") or die('Error: ' . __db_error());
+    __db_query("SET NAMES 'utf8';") or die('Error: ' . __db_error());
+
     mysql_select_db($dbsettings['name']) or $debug->error(__db_error(), 'DB error - cannot find DB on server');
     // mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . __db_error());
     __db_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . __db_error());
@@ -61,6 +63,7 @@ function db_affected_rows($link = null) {
   return $link ? mysql_affected_rows($link) : mysql_affected_rows();
 }
 
+// Информационные функции
 function db_get_client_info() {
   return mysql_get_client_info();
 }
@@ -72,4 +75,25 @@ function db_get_host_info($link = null) {
 }
 function db_server_stat($link = null) {
   return $link ? mysql_stat($link) : mysql_stat();
+}
+function __db_get_table_list($link = null) {
+  return __db_query('SHOW TABLES;', $link);
+}
+function db_get_table_list($db_prefix, $link = null) {
+  $query = __db_get_table_list($link);
+
+  $prefix_length = strlen($db_prefix);
+
+  $tl = array();
+  while($row = db_fetch($query)) {
+    foreach($row as $table_name) {
+      if(strpos($table_name, $db_prefix) === 0) {
+        $table_name = substr($table_name, $prefix_length);
+      }
+      // $table_name = str_replace($db_prefix, '', $table_name);
+      $tl[$table_name] = $table_name;
+    }
+  }
+
+  return $tl;
 }

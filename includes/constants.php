@@ -23,11 +23,9 @@ define('HIDE_1ST_FROM_STATS', 0);
 define('HIDE_BUILDING_RECORDS', 0);
 define('SHOW_ADMIN', 1);
 
-
-
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a0.0');
+define('SN_VERSION', '40a0.1');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -45,6 +43,7 @@ define('PREG_DATE_SQL_FULL', '/(20[1-9][0-9]|19[0-9][0-9])\-(1[0-2]|0[1-9])\-(3[
 define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
 
 define('LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH', 9);
+define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', '/\\ |^&\'?"`<>[]{}()%');
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
@@ -366,9 +365,16 @@ define('LOG_ERR_INT_NEGATIVE_RESOURCE', 501); // У игрока отрицат�
 define('LOG_ERR_INT_NO_PLANET', 502); // Ошибка записи пользователя: у пользователя в качестве родного мира назначена несуществующая планета
 define('LOG_ERR_INT_ORPHANE_PLANET', 503); // У планеты нет хозяина
 define('LOG_ERR_INT_FLEET_TIMOUT', 504); // Таймаут менеджера флотов
+define('LOG_ERR_INT_CAPTAIN_DUPLICATE', 505); // Таймаут менеджера флотов
 // 9xx - Отладка
 define('LOG_DEBUG', 900); // Отладка
 define('LOG_DEBUG_SQL', 910); // Отладка SQL
+
+
+
+define('PASSWORD_LENGTH_MIN', 4);
+
+define('AUTH_COOKIE_DELIMETER', '_');
 
 // Login statuses
 define('LOGIN_UNDEFINED'             , 0);
@@ -383,8 +389,6 @@ define('LOGIN_ERROR_USERNAME'        , 4);
 define('REGISTER_ERROR_USERNAME_WRONG'     , 8);
 define('REGISTER_ERROR_USERNAME_EXISTS'     , 9);
 define('REGISTER_ERROR_PASSWORD_INSECURE'     , 10);
-define('REGISTER_ERROR_PASSWORD_DIFFERENT'     , 21);
-define('REGISTER_ERROR_EMAIL_EXISTS'     , 22);
 define('REGISTER_SUCCESS'               , 11);
 
 define('PASSWORD_RESTORE_ERROR_WRONG_EMAIL', 12);
@@ -398,9 +402,18 @@ define('PASSWORD_RESTORE_ERROR_CODE_TOO_OLD', 17);
 define('PASSWORD_RESTORE_ERROR_CHANGE', 18);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT', 19);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR', 20);
-// 23
+define('REGISTER_ERROR_PASSWORD_DIFFERENT'     , 21);
+define('REGISTER_ERROR_EMAIL_EXISTS'     , 22);
 define('REGISTER_ERROR_BLITZ_MODE', 23);
-// 24
+define('LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS', 24);
+define('LOGIN_ERROR_USERNAME_EMPTY', 25);
+define('LOGIN_ERROR_PASSWORD_EMPTY', 26);
+define('LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION', 27);
+define('LOGIN_ERROR_USERNAME_ALLY_OR_BOT', 28);
+define('LOGIN_ERROR_PASSWORD_TRIMMED', 29);
+define('REGISTER_ERROR_EMAIL_EMPTY', 30);
+define('REGISTER_ERROR_EMAIL_WRONG', 31);
+
 
 define('AUTH_LEVEL_ANONYMOUS', -10);
 define('AUTH_LEVEL_GUEST', -5);
@@ -410,16 +423,58 @@ define('AUTH_LEVEL_OPERATOR', 2);
 define('AUTH_LEVEL_ADMINISTRATOR', 3);
 define('AUTH_LEVEL_DEVELOPER', 4);
 
+define('ACCOUNT_PROVIDER_BASIC', 0);
+define('ACCOUNT_PROVIDER_LOCAL', 1);
+define('ACCOUNT_PROVIDER_CENTRAL', 2);
+
+// F_INPUT - constants
+define('F_INPUT',                      'F_INPUT');
+define('F_IS_REGISTER',                'F_IS_REGISTER');
+define('F_LOGIN_UNSAFE',               'F_LOGIN_UNSAFE');
+define('F_LOGIN_SAFE',                 'F_LOGIN_SAFE');
+define('F_LOGIN_PASSWORD_RAW',         'F_LOGIN_PASSWORD_RAW');
+//define('F_LOGIN_PASSWORD_RAW_TRIMMED', 'F_LOGIN_PASSWORD_RAW_TRIMMED');
+define('F_LOGIN_PASSWORD_REPEAT_RAW',  'F_LOGIN_PASSWORD_REPEAT_RAW');
+define('F_EMAIL_UNSAFE',               'F_EMAIL_UNSAFE');
+define('F_LANGUAGE_SAFE',              'F_LANGUAGE_SAFE');
+define('F_REMEMBER_ME_SAFE',           'F_REMEMBER_ME_SAFE');
+
+define('F_IS_PASSWORD_RESET',          'F_IS_PASSWORD_RESET');
+define('F_IS_PASSWORD_RESET_CONFIRM',  'F_IS_PASSWORD_RESET_CONFIRM');
+define('F_PASSWORD_RESET_CODE_SAFE',        'F_PASSWORD_RESET_CODE');
+//
+
+define('F_HIDDEN', 'F_HIDDEN');
+
 // Global template_result fields
 define('AUTH_LEVEL', 'AUTH_LEVEL');
 
-define('F_DEVICE_ID', 'F_DEVICE_ID');
+define('F_DEVICE_ID',     'F_DEVICE_ID');
 define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
 
-define('F_LOGIN_STATUS', 'F_LOGIN_STATUS');
+define('F_PROVIDER_ID',   'F_PROVIDER_ID');
+define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
+
+define('F_LOGIN_STATUS',  'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');
-define('F_LOGIN_USER', 'F_LOGIN_USER');
+
+define('F_USER_ID', 'F_USER_ID');
+define('F_USER', 'F_USER');
+define('F_USER_IS_AUTHORIZED', 'F_USER_IS_AUTHORIZED');
+
+
+define('F_ACCOUNT_ID', 'F_ACCOUNT_ID');
+define('F_ACCOUNT', 'F_ACCOUNT');
+define('F_PASSWORD_MATCHED', 'F_ACCOUNT_PASSWORD_MATCH');
+
+
+define('F_PASSWORD', 'F_PASSWORD');
+
+
+
 define('F_LOGIN_ACCOUNT', 'F_LOGIN_ACCOUNT');
+define('F_LOGIN_ACCOUNT_NAME', 'F_LOGIN_ACCOUNT');
+define('F_LOGIN_ACCOUNT_GLOBAL', 'F_LOGIN_ACCOUNT_GLOBAL');
 define('F_PASSWORD_NEW', 'F_PASSWORD_NEW');
 
 define('F_BROWSER', 'F_BROWSER');
@@ -435,11 +490,9 @@ define('F_BANNED_MESSAGE', 'F_BANNED_MESSAGE');
 
 define('F_VACATION_STATUS', 'F_VACATION_STATUS');
 
-define('F_USER_AUTHORIZED', 'F_USER_AUTHORIZED');
 
 define('F_GAME_DISABLE', 'F_GAME_DISABLE');
 define('F_GAME_DISABLE_REASON', 'F_GAME_DISABLE_REASON');
-
 
 
 
