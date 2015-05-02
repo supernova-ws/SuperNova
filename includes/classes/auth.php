@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a0.21#
+ * version #40a0.22#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.21# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.22# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -409,7 +409,8 @@ class auth extends sn_module {
       $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $found_provider->data[F_ACCOUNT]['account_name'], $new_password);
       @$operation_result = mymail($confirmation['email'], sprintf($lang['log_lost_email_title'], $config->game_name), htmlspecialchars($message));
       // TODO - Отправлять в личку сообщение о смене пароля
-      //$message = sys_bbcodeParse($message) . '<br><br>';
+      $message = sys_bbcodeParse($message) . '<br><br>';
+      msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
 
       // TODO - При ошибке добавлять Global Message
       $result[F_LOGIN_STATUS] = LOGIN_SUCCESS; // $operation_result ? PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT : PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR;
