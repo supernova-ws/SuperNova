@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a0.22
+* @version 40a0.23
 *
 */
 
@@ -973,7 +973,7 @@ $a_lang_array = (array(
 
   'log_lost_email_title' => 'Supernova, Universe %s: Password reset',
   'log_lost_email_code' => "Someone (possibly you) has requested a reset password on SuperNova Universe %4\$s . If you did not request reset password-then just ignore this email.\r\n\r\nFor password reset, go to the address \r\n%1\$s?password_reset_confirm=1&password_reset_code=%2\$s#tab_password_reset\r\nor enter the confirmation code \"%2\$s\" (WITHOUT THE DOUBLE QUOTES!) on the page %1\$s#tab_password_reset This code will be valid up to %3\$s. After the password reset you will need to request a new confirmation code",
-  'log_lost_email_pass' => "You changed your password on the SuperNova Universe %1\$s.\r\nYou login:\r\n%2\$s\r\nYour new password:\r\n%3\$s\r\nRemember it!",
+  'log_lost_email_pass' => "You changed your password on the SuperNova Universe %1\$s.\r\n\r\nYou login:\r\n%2\$s\r\n\r\nYour new password:\r\n%3\$s\r\n\r\nRemember it!\r\n\r\nYou can enter into game following link " . SN_ROOT_VIRTUAL . "login.php and using provided login and password",
 
   'sys_login_password_show' => 'Show password',
   'sys_login_password_hide' => 'Hide password',
