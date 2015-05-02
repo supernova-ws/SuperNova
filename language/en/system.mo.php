@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a0.15
+* @version 40a0.18
 *
 */
 
@@ -972,7 +972,7 @@ $a_lang_array = (array(
   Powered by OpenSource engine 'Project SuperNova.WS'. Light your SuperNova http://supernova.ws/",
 
   'log_lost_email_title' => 'Supernova, Universe %s: Password reset',
-  'log_lost_email_code' => "Someone (possibly you) has requested a reset password on SuperNova Universe %4\$s . If you did not request reset password-then just ignore this email.\r\n\r\nFor password reset, go to the address \r\n%1\$s?password_reset_confirm=1&confirm=%2\$s\r\nor enter the confirmation code \"%2\$s\" (WITHOUT THE DOUBLE QUOTES!) on the page %1\$s This code will be valid up to %3\$s. After the password reset you will need to request a new confirmation code",
+  'log_lost_email_code' => "Someone (possibly you) has requested a reset password on SuperNova Universe %4\$s . If you did not request reset password-then just ignore this email.\r\n\r\nFor password reset, go to the address \r\n%1\$s?password_reset_confirm=1&password_reset_code=%2#tab_password_reset\$s\r\nor enter the confirmation code \"%2\$s\" (WITHOUT THE DOUBLE QUOTES!) on the page %1\$s This code will be valid up to %3\$s. After the password reset you will need to request a new confirmation code",
   'log_lost_email_pass' => "You changed your password on the SuperNova Universe %1\$s.\r\nYou login:\r\n%2\$s\r\nYour new password:\r\n%3\$s\r\nRemember it!",
 
   'sys_login_password_show' => 'Show password',
