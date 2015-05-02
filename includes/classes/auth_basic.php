@@ -5,7 +5,7 @@ class auth_basic extends auth {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.8# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.17# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -387,7 +387,7 @@ class auth_basic extends auth {
   }
 
 
-  function real_password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe) {
+  function auth_password_check($old_password_unsafe) {
     unset($this->data[F_PASSWORD_MATCHED]);
     if($old_password_unsafe !== false) {
       if(!$this->data[F_ACCOUNT]['account_password'] ||
@@ -397,6 +397,14 @@ class auth_basic extends auth {
       }
     }
     $this->data[F_PASSWORD_MATCHED] = $old_password_unsafe;
+
+    return true;
+  }
+
+  function real_password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe) {
+    if(!$this->auth_password_check($old_password_unsafe)) {
+      return false;
+    }
 
     $new_password_encoded_unsafe = self::password_encode($new_password_unsafe, $salt_unsafe);
     // Это здесь - потому что db_escape в общем случае может быть другая!

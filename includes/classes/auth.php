@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a0.14#
+ * version #40a0.17#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.14# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.17# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -25,7 +25,7 @@ class auth extends sn_module {
   );
   protected static $is_init = false;
   /**
-   * @var auth_provider[]
+   * @var auth_basic[]
    */
   protected static $providers = array();
   protected static $provider_data = array();
@@ -239,6 +239,22 @@ class auth extends sn_module {
         $provider->email_set_do($new_email_unsafe);
       }
     }
+  }
+
+  static function password_check($old_password_unsafe) {
+    $return = false;
+
+    // $old_password_unsafe === false - ничего не менять
+    $found_provider = null;
+    foreach(self::$providers as $provider) {
+      // TODO - только для провайдеров, которые поддерживают смену пароля
+      if($provider->data[F_ACCOUNT_ID]) {
+        $found_provider = $provider;
+        break;
+      }
+    }
+
+    return $found_provider && $found_provider->auth_password_check($old_password_unsafe);
   }
 
   static function password_change($old_password_unsafe, $new_password_unsafe) {
