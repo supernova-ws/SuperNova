@@ -923,6 +923,8 @@ switch($new_version) {
       );
     }
 
+
+    upd_do_query("TRUNCATE TABLE {{confirmations}};");
     upd_alter_table('confirmations', array(
       "ADD COLUMN `provider_id` tinyint unsigned NOT NULL DEFAULT 0",
       "ADD COLUMN `account_id` bigint unsigned NOT NULL DEFAULT 0",
@@ -945,23 +947,10 @@ switch($new_version) {
 
     upd_alter_table('survey_votes', array(
       "ADD KEY `I_survey_votes_user_id` (`survey_vote_user_id`)",
+    ), empty($update_indexes['survey_votes']['I_survey_votes_user_id']));
+    upd_alter_table('survey_votes', array(
       "ADD CONSTRAINT `FK_survey_votes_user_id` FOREIGN KEY (`survey_vote_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
-    ), empty($update_foreigns['survey_votes']['FK_survey_votes_user']));
-
-//    upd_create_table('survey_votes', " (
-//      `survey_vote_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-//      `survey_parent_id` int(10) unsigned DEFAULT NULL,
-//      `survey_parent_answer_id` int(10) unsigned DEFAULT NULL,
-//      `survey_vote_user_id` bigint(20) unsigned DEFAULT NULL,
-//      `survey_vote_user_name` varchar(32) DEFAULT NULL,
-//      PRIMARY KEY (`survey_vote_id`),
-//      KEY `I_survey_votes_survey_parent_id` (`survey_parent_id`) USING BTREE,
-//      KEY `I_survey_votes_user` (`survey_vote_user_id`,`survey_vote_user_name`) USING BTREE,
-//      KEY `I_survey_votes_survey_parent_answer_id` (`survey_parent_answer_id`) USING BTREE,
-//      CONSTRAINT `FK_survey_votes_user` FOREIGN KEY (`survey_vote_user_id`, `survey_vote_user_name`) REFERENCES `{{users}}` (`id`, `username`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-//      CONSTRAINT `FK_survey_votes_survey_parent_answer_id` FOREIGN KEY (`survey_parent_answer_id`) REFERENCES `{{survey_answers}}` (`survey_answer_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-//      CONSTRAINT `FK_survey_votes_survey_parent_id` FOREIGN KEY (`survey_parent_id`) REFERENCES `{{survey}}` (`survey_id`) ON DELETE CASCADE ON UPDATE CASCADE
-//    ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+    ), empty($update_foreigns['survey_votes']['FK_survey_votes_user_id']));
 
     // #ctv
 
