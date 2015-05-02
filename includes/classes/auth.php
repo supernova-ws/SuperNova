@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a0.8#
+ * version #40a0.11#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.8# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.11# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -329,7 +329,7 @@ class auth extends sn_module {
 
       @$result = mymail($found_provider->data[F_INPUT][F_EMAIL_UNSAFE],
         sprintf($lang['log_lost_email_title'], $config->game_name),
-        sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . $_SERVER['PHP_SELF'], $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + 3*24*60*60), $config->game_name)
+        sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . 'login.php', $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + 3*24*60*60), $config->game_name)
       );
 
       $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
