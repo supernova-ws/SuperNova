@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a0.17#
+ * version #40a0.19#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.17# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.19# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -183,8 +183,9 @@ class auth extends sn_module {
     if(($result_password_reset = self::password_reset()) != LOGIN_UNDEFINED) {
       self::$hidden[F_LOGIN_STATUS] = $result_password_reset;
     } elseif(($result_password_reset = self::password_reset_confirm()) != LOGIN_UNDEFINED) {
-      self::$hidden[F_LOGIN_STATUS] = $result_password_reset[F_LOGIN_STATUS];
-      self::$hidden[F_LOGIN_MESSAGE] = $result_password_reset[F_LOGIN_MESSAGE];
+      self::$hidden[F_LOGIN_STATUS] = $result_password_reset;
+      // self::$hidden[F_LOGIN_STATUS] = $result_password_reset[F_LOGIN_STATUS];
+      // self::$hidden[F_LOGIN_MESSAGE] = $result_password_reset[F_LOGIN_MESSAGE];
     }
 
     $result = self::$hidden;
