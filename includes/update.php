@@ -900,7 +900,7 @@ switch($new_version) {
           `user_id` bigint(20) unsigned NOT NULL COMMENT 'User ID',
           `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
-          PRIMARY KEY (`user_id`, `provider_id`, `provider_account_id`),
+          PRIMARY KEY (`user_id`, `provider_id`, `provider_account_id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 
 
