@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a0.1#
+* @version #40a0.8#
 *
 */
 
@@ -947,6 +947,7 @@ $a_lang_array = (array(
     REGISTER_ERROR_USERNAME_WRONG => 'Некорректное имя игрока',
     REGISTER_ERROR_USERNAME_EXISTS => 'Такое имя игрока уже занято',
     REGISTER_ERROR_PASSWORD_INSECURE => 'Неправильный пароль. Пароль должен состоять минимум из ' . PASSWORD_LENGTH_MIN . ' символов',
+    REGISTER_ERROR_USERNAME_SHORT => 'Слишком короткое имя. Имя должно состоять минимум из ' . LOGIN_LENGTH_MIN. ' символов',
     REGISTER_ERROR_PASSWORD_DIFFERENT => 'Пароль и проверочный пароль не совпадают. Проверьте правильность ввода',
     REGISTER_ERROR_EMAIL_EMPTY => 'Е-Мейл не может быть пустым',
     REGISTER_ERROR_EMAIL_WRONG => 'Введенный Е-Мейл не является адресом электронной почты',

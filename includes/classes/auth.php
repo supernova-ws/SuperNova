@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a0.1#
+ * version #40a0.8#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.1# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.8# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -280,7 +280,7 @@ class auth extends sn_module {
       // $found_provider = reset(self::$providers);
       msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN,
         $lang['sys_administration'], $lang['sys_login_register_message_title'],
-        sprintf($lang['sys_login_register_message_body'], $found_provider->data[F_ACCOUNT]['account_name'], $new_password_unsafe)
+        sprintf($lang['sys_login_register_message_body'], $found_provider->data[F_ACCOUNT]['account_name'], $new_password_unsafe), true
       );
       $return = true;
     }

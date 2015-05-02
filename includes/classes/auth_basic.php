@@ -5,7 +5,7 @@ class auth_basic extends auth {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.1# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.8# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -348,6 +348,9 @@ class auth_basic extends auth {
     if(strpbrk($this->data[F_INPUT][F_LOGIN_UNSAFE], LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
       throw new exception(LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS, ERR_ERROR);
     }
+    if(strlen($this->data[F_INPUT][F_LOGIN_UNSAFE]) < LOGIN_LENGTH_MIN) {
+      throw new exception(REGISTER_ERROR_USERNAME_SHORT, ERR_ERROR);
+    }
     if(strlen($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW]) < PASSWORD_LENGTH_MIN) {
       throw new exception(REGISTER_ERROR_PASSWORD_INSECURE, ERR_ERROR);
     }
@@ -358,7 +361,7 @@ class auth_basic extends auth {
       throw new exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
     }
     if(!is_email($this->data[F_INPUT][F_EMAIL_UNSAFE])) {
-      throw new exception(LOGIN_ERROR_USERNAME_EMPTY, ERR_ERROR);
+      throw new exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
     }
   }
   function register() {
@@ -590,7 +593,7 @@ class auth_basic extends auth {
 
   // Local functions
   function auth_basic_user_create_from_input() {
-    $this->data[F_USER] = player_create($this->data[F_INPUT][F_EMAIL_UNSAFE], $this->data[F_INPUT][F_EMAIL_UNSAFE],
+    $this->data[F_USER] = player_create($this->data[F_INPUT][F_LOGIN_UNSAFE], $this->data[F_INPUT][F_EMAIL_UNSAFE],
       array(
         'partner_id' => $partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id')),
         'language_iso' => $this->data[F_ACCOUNT]['account_language'],

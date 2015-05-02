@@ -25,7 +25,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a0.7');
+define('SN_VERSION', '40a0.8');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -373,6 +373,7 @@ define('LOG_DEBUG_SQL', 910); // Отладка SQL
 
 
 define('PASSWORD_LENGTH_MIN', 4);
+define('LOGIN_LENGTH_MIN', 4);
 
 define('AUTH_COOKIE_DELIMETER', '_');
 
@@ -413,6 +414,7 @@ define('LOGIN_ERROR_USERNAME_ALLY_OR_BOT', 28);
 define('LOGIN_ERROR_PASSWORD_TRIMMED', 29);
 define('REGISTER_ERROR_EMAIL_EMPTY', 30);
 define('REGISTER_ERROR_EMAIL_WRONG', 31);
+define('REGISTER_ERROR_USERNAME_SHORT'     , 32);
 
 
 define('AUTH_LEVEL_ANONYMOUS', -10);
