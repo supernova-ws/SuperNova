@@ -35,8 +35,7 @@ define('CACHER_LOCK_SLEEP', 10000);
 * @package supernova
 *
 */
-class classCache
-{
+class classCache {
   // CACHER_NOT_INIT - not initialized
   // CACHER_NO_CACHE - no cache - array() used
   // CACHER_XCACHE   - xCache
@@ -46,46 +45,35 @@ class classCache
 
   protected static $cacheObject;
 
-  public function __construct($prefIn = 'CACHE_', $init_mode = false)
-  {
-    if( !($init_mode === false || $init_mode === CACHER_NO_CACHE || ($init_mode === CACHER_XCACHE && extension_loaded('xcache')) ))
-    {
+  public function __construct($prefIn = 'CACHE_', $init_mode = false) {
+    if( !($init_mode === false || $init_mode === CACHER_NO_CACHE || ($init_mode === CACHER_XCACHE && extension_loaded('xcache')) )) {
       throw new UnexpectedValueException('Wrong work mode or current mode does not supported on your server');
     }
 
     $this->prefix = $prefIn;
-    if(extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false))
-    {
-      if(self::$mode === CACHER_NOT_INIT)
-      {
+    if(extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false)) {
+      if(self::$mode === CACHER_NOT_INIT) {
         self::$mode = CACHER_XCACHE;
       }
-    }
-    else
-    {
-      if(self::$mode === CACHER_NOT_INIT)
-      {
+    } else {
+      if(self::$mode === CACHER_NOT_INIT) {
         self::$mode = CACHER_NO_CACHE;
-        if(!self::$data)
-        {
+        if(!self::$data) {
          self::$data = array();
         }
       }
     }
   }
 
-  public static function getInstance($prefIn = 'CACHE_', $table_name = '')
-  {
-    if (!isset(self::$cacheObject))
-    {
+  public static function getInstance($prefIn = 'CACHE_', $table_name = '') {
+    if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($prefIn);
     }
     return self::$cacheObject;
   }
 
-  public final function __clone()
-  {
+  public final function __clone() {
     // You NEVER need to copy cacher object or siblings
     throw new BadMethodCallException('Clone is not allowed');
   }
@@ -93,10 +81,8 @@ class classCache
   // -------------------------------------------------------------------------
   // Here comes low-level functions - those that directly works with cacher engines
   // -------------------------------------------------------------------------
-  public function __set($name, $value)
-  {
-    switch ($name)
-    {
+  public function __set($name, $value) {
+    switch ($name) {
       case '_MODE':
         throw new UnexpectedValueException('You can not change cacher mode on-the-fly!');
       break;
@@ -106,8 +92,7 @@ class classCache
       break;
 
       default:
-        switch (self::$mode)
-        {
+        switch (self::$mode) {
           case CACHER_NO_CACHE:
             self::$data[$this->prefix.$name] = $value;
           break;
@@ -115,16 +100,13 @@ class classCache
           case CACHER_XCACHE:
             xcache_set($this->prefix.$name, $value);
           break;
-
-        };
+        }
       break;
-    };
+    }
   }
 
-  public function __get($name)
-  {
-    switch ($name)
-    {
+  public function __get($name) {
+    switch ($name) {
       case '_MODE':
         return self::$mode;
       break;
@@ -134,8 +116,7 @@ class classCache
       break;
 
       default:
-        switch (self::$mode)
-        {
+        switch (self::$mode) {
           case CACHER_NO_CACHE:
             return self::$data[$this->prefix.$name];
           break;
@@ -145,13 +126,14 @@ class classCache
           break;
 
         }
+      break;
     }
+
+    return null;
   }
 
-  public function __isset($name)
-  {
-    switch (self::$mode)
-    {
+  public function __isset($name) {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
         return isset(self::$data[$this->prefix.$name]);
       break;
@@ -160,12 +142,12 @@ class classCache
         return xcache_isset($this->prefix.$name) && ($this->__get($name) !== null);
       break;
     }
+
+    return false;
   }
 
-  public function __unset($name)
-  {
-    switch (self::$mode)
-    {
+  public function __unset($name) {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
         unset(self::$data[$this->prefix . $name]);
       break;
@@ -176,10 +158,8 @@ class classCache
     }
   }
 
-  public function unset_by_prefix($prefix_unset = '')
-  {
-    switch (self::$mode)
-    {
+  public function unset_by_prefix($prefix_unset = '') {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
         array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), $this->prefix.$prefix_unset);
         return true;
@@ -192,25 +172,24 @@ class classCache
         }
         return xcache_unset_by_prefix($this->prefix.$prefix_unset);
       break;
-    };
+    }
+
+    return true;
   }
   // -------------------------------------------------------------------------
   // End of low-level functions
   // -------------------------------------------------------------------------
 
-  protected function make_element_name($args, $diff = 0)
-  {
+  protected function make_element_name($args, $diff = 0) {
     $num_args = count($args);
 
-    if($num_args<1)
-    {
+    if($num_args < 1) {
       return false;
     }
 
+    $name = '';
     $aName = array();
-
-    for($i = 0; $i <= $num_args - 1 - $diff; $i++)
-    {
+    for($i = 0; $i <= $num_args - 1 - $diff; $i++) {
       $name .= "[{$args[$i]}]";
       array_unshift($aName, $name);
     }
@@ -218,24 +197,19 @@ class classCache
     return $aName;
   }
 
-  public function array_set()
-  {
+  public function array_set() {
     $args = func_get_args();
     $name = $this->make_element_name($args, 1);
 
-    if(!$name)
-    {
+    if(!$name) {
       return NULL;
     }
 
-    if($this->$name[0] === NULL)
-    {
-      for($i = count($name) - 1; $i > 0; $i--)
-      {
+    if($this->$name[0] === NULL) {
+      for($i = count($name) - 1; $i > 0; $i--) {
         $cName = "{$name[$i]}_COUNT";
         $cName1 = "{$name[$i-1]}_COUNT";
-        if($this->$cName1 == NULL || $i == 1)
-        {
+        if($this->$cName1 == NULL || $i == 1) {
           $this->$cName++;
         }
       }
@@ -245,52 +219,42 @@ class classCache
     return true;
   }
 
-  public function array_get()
-  {
+  public function array_get() {
     $name = $this->make_element_name(func_get_args());
-    if(!$name)
-    {
+    if(!$name) {
       return NULL;
     }
     return $this->$name[0];
   }
 
-  public function array_count()
-  {
+  public function array_count() {
     $name = $this->make_element_name(func_get_args());
-    if(!$name)
-    {
+    if(!$name) {
       return 0;
     }
     $cName = "{$name[0]}_COUNT";
     $retVal = $this->$cName;
-    if(!$retVal)
-    {
+    if(!$retVal) {
       $retVal = NULL;
     }
     return $retVal;
   }
 
-  public function array_unset()
-  {
+  public function array_unset() {
     $name = $this->make_element_name(func_get_args());
 
-    if(!$name)
-    {
+    if(!$name) {
       return false;
     }
     $this->unset_by_prefix($name[0]);
 
-    for($i = 1; $i < count($name); $i++)
-    {
+    for($i = 1; $i < count($name); $i++) {
       $cName = "{$name[$i]}_COUNT";
       $cName1 = "{$name[$i-1]}_COUNT";
 
-      if($i == 1 || $this->$cName1 === NULL)
-      {
+      if($i == 1 || $this->$cName1 === NULL) {
         $this->$cName--;
-        if($this->$cName <= 0)
-        {
+        if($this->$cName <= 0) {
           unset($this->$cName);
         }
       }
@@ -436,8 +400,7 @@ class classPersistent extends classCache
 * @package supernova
 *
 */
-class classConfig extends classPersistent
-{
+class classConfig extends classPersistent {
   protected $defaults = array(
     // SEO meta
     'adv_conversion_code_payment'  => '',
@@ -668,15 +631,12 @@ class classConfig extends classPersistent
 
   );
 
-  public function __construct($gamePrefix = 'sn_')
-  {
+  public function __construct($gamePrefix = 'sn_') {
     parent::__construct($gamePrefix, 'config');
   }
 
-  public static function getInstance($gamePrefix = 'sn_', $table_name = 'config')
-  {
-    if(!isset(self::$cacheObject))
-    {
+  public static function getInstance($gamePrefix = 'sn_', $table_name = 'config') {
+    if(!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }
