@@ -952,6 +952,13 @@ switch($new_version) {
       "ADD CONSTRAINT `FK_survey_votes_user_id` FOREIGN KEY (`survey_vote_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
     ), empty($update_foreigns['survey_votes']['FK_survey_votes_user_id']));
 
+    // 2015-05-03 12:55:15 40a0.26
+
+    upd_do_query(
+      'update {{users}} as u join {{planets}} as p on p.id = u.id_planet
+      set u.system = p.system, u.planet = p.planet
+      where u.system = 0 and user_as_ally is null and current_planet > 0;');
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

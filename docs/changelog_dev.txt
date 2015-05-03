@@ -26,14 +26,6 @@ Stay out of my shed
 
 ЕСЛИ СН ОТКРЫВАЕТСЯ ВО ФРЕЙМЕ - РЕДИРЕКТИТЬ НА ОРИГИНАЛ!!!
 
-ИСПРАВИТЬ БАГ И ДОБАВИТЬ В АПДЕЙТ!!
-
-select u.id, username, u.galaxy, u.system, u.planet, u.id_planet, p.galaxy, p.system, p.planet from
--- update
-game_users as u join game_planets as p on p.id = u.id_planet
--- set u.system = p.system, u.planet = p.planet
-where u.system = 0 and user_as_ally is null
-
 Глюкобаг: не работает "открепление" чата
 
 #ctv
