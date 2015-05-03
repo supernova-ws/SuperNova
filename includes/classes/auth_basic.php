@@ -5,7 +5,7 @@ class auth_basic extends auth {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.17# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a0.25# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -361,7 +361,7 @@ class auth_basic extends auth {
       throw new exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
     }
     if(!is_email($this->data[F_INPUT][F_EMAIL_UNSAFE])) {
-      throw new exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
+      throw new exception(REGISTER_ERROR_EMAIL_WRONG, ERR_ERROR);
     }
   }
   function register() {

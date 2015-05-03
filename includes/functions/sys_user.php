@@ -141,7 +141,6 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   ");
 }
 
-// function    player_create($username_unsafe, $password_encoded_unsafe, $email_unsafe, $options, &$result = null) {return sn_function_call(__FUNCTION__, array($username_unsafe, $password_encoded_unsafe, $email_unsafe, $options, &$result));}
 function player_create($username_unsafe, $email_unsafe, $options) {
   sn_db_transaction_check(true);
 
@@ -219,7 +218,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
 //  );
   db_user_set_by_id($user_new['id'],
     "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
-    `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}'"
+    `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
   );
 
   $config->db_saveItem('users_amount', $config->users_amount + 1);
