@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a0.0
+* @version 40a1.0
 *
 */
 
@@ -63,14 +63,17 @@ $a_lang_array = (array(
   'emaildir' => 'Адрес e-mail',
   'emaildir_tip' => 'Этот адрес может быть изменён в любое время. Адрес станет основным, если он не изменялся в течении 7 дней.',
   'permanentemaildir' => 'Основной адрес e-mail',
-  'opt_lst_ord' => 'Упорядочить планеты по...',
-  'opt_lst_ord0' => 'Времени колонизации',
-  'opt_lst_ord1' => 'Координатам',
-  'opt_lst_ord2' => 'Алфавитному порядку',
-  'opt_lst_ord3' => 'Количеству полей',
-  'opt_lst_cla' => 'Упорядочить по:',
-  'opt_lst_cla0' => 'Возрастанию',
-  'opt_lst_cla1' => 'Убыванию',
+  'opt_planet_sort_title' => 'Сортировать планеты по',
+  'opt_planet_sort_options' => array(
+    SORT_ID       => 'Времени колонизации',
+    SORT_LOCATION => 'Координатам',
+    SORT_NAME     => 'Алфавиту',
+    SORT_SIZE     => 'Количеству полей',
+  ),
+  'opt_planet_sort_ascending' => array(
+    SORT_ASCENDING  => 'Возрастанию',
+    SORT_DESCENDING => 'Убыванию',
+  ),
   'opt_chk_skin' => 'Использовать оформление',
   'opt_adm_title' => 'Опции администрирования',
   'opt_adm_planet_prot' => 'Защита планет',
@@ -98,7 +101,7 @@ $a_lang_array = (array(
   'galaxyvision_options' => 'Вселенная',
   'spy_cant' => 'Количество зондов',
   'spy_cant_tip' => 'Количество зондов, которое будет отправляться, когда вы будете за кем-то следить.',
-  'tooltip_time' => 'Время показа подсказок',
+  'tooltip_time' => 'Задержка перед показом подсказки',
   'mess_ammount_max' => 'Количество максимальных сообщений флота',
   'seconds' => 'Секунд(а/ы)',
   'shortcut' => 'Быстрый доступ',

@@ -9,7 +9,6 @@ Reference: https://bugs.php.net/bug.php?id=50394
 */
 
 require_once('general/math.php');
-require_once('general/player_options.php');
 require_once('general_pname.php');
 
 function sn_function_call($func_name, $func_arg = array())
@@ -1598,7 +1597,7 @@ function user_time_diff_probe() {
   $result = array(
     PLAYER_OPTION_TIME_DIFF => ($time_local = sys_get_param_float('localtime')) ? round($time_local / 1000 - SN_TIME_MICRO) : 0,
     PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => ($time_local_utc_offset = sys_get_param_int('utc_offset')) ? $time_local_utc_offset - date('Z') : 0,
-    PLAYER_OPTION_TIME_DIFF_FORCED => sys_get_param_int('user_time_diff_forced'),
+    PLAYER_OPTION_TIME_DIFF_FORCED => sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),
     PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
   );
 

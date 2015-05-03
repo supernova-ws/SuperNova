@@ -22,14 +22,58 @@ Stay out of my shed
 
 // TODO ВКЛЮЧИТЬ ГЕНЕРАЦИЮ СОЛИ !!!
 
-ОТКРЕПИТЬ МЕНЮ + СТРЕЛОЧКА СПРАВА == ПРОБЛЕМЫ С ПОЗИЦИОНИРОВАНИЕМ!
+При записи в кэш массива - сериализовать его! Сериализованное занимает меньше байтов. И может даже - паковать!  return (@unserialize($string) !== false || $string == 'b:0;');
+
 
 ЕСЛИ СН ОТКРЫВАЕТСЯ ВО ФРЕЙМЕ - РЕДИРЕКТИТЬ НА ОРИГИНАЛ!!!
 
-Глюкобаг: не работает "открепление" чата
+
 
 #ctv
 
+
+ПРОВЕРИТЬ ИСПОЛЬЗОВАНИЕ В МОДУЯХ!!!
+
+settings_fleetactions / PLAYER_OPTION_FLEET_MESS_AMOUNT_MAX - нерабочая опция
+settings_rep - удалено
+
++ settings_esp / PLAYER_OPTION_UNIVERSE_ICON_SPYING
++ settings_mis / PLAYER_OPTION_UNIVERSE_ICON_MISSILE
++ settings_wri / PLAYER_OPTION_UNIVERSE_ICON_PM
++ settings_statistics / PLAYER_OPTION_UNIVERSE_ICON_STATS
++ settings_info / PLAYER_OPTION_UNIVERSE_ICON_PROFILE
++ settings_bud / PLAYER_OPTION_UNIVERSE_ICON_BUDDY
+
++ planet_sort / settings_sort / PLAYER_OPTION_PLANET_SORT
++ planet_sort_order / settings_order / PLAYER_OPTION_PLANET_SORT_INVERSE
+
++ settings_tooltiptime / opt_uni_tooltip_time / PLAYER_OPTION_TOOLTIP_DELAY
+
+ОТКРЕПИТЬ МЕНЮ + СТРЕЛОЧКА СПРАВА == ПРОБЛЕМЫ С ПОЗИЦИОНИРОВАНИЕМ!
+Глюкобаг: не работает "открепление" чата
+
+// TODO - типы опций и валидизация по типам. И группы опций
+
+Дальше - перенос OPTIONS из `users`
+
+Затем - типы полей и перенос текстовых полей с валидизацией
+
+
+Убрать неиспользуемые функции
+  function player_load_option(&$user, $option_id = null)
+  function player_save_option_array(&$user, $options_array)
+  function player_save_option(&$user, $option_id, $option_value)
+  // Искать еще player_options
+
+Вынос пола
+
+
+2015-05-03 23:03:52 40a1.0 - Настройки игрока, Фаза 1
+[!] Настройки игрока
+    Переписана с нуля работа с настройками игрока
+    Большая часть полей с настройками вынесены в отдельную таблицу player_options - уменьшен размер записи в таблице `users`
+    Настройки теперь кэшируются write-through - уменьшено количество обращений к БД
+    Закрыта возможность сменить имя игрока с использованием зарещенных символов
 
 
 2015-05-03 12:49:23 40a0.25

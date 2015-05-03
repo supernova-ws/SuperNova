@@ -60,8 +60,7 @@ function db_planet_list_in_system($galaxy, $system)
     "`galaxy` = {$galaxy} AND `system` = {$system}");
 }
 
-function db_planet_list_sorted($user_row, $skip_planet_id = false, $field_list = '', $conditions = '')
-{
+function db_planet_list_sorted($user_row, $skip_planet_id = false, $field_list = '', $conditions = '') {
   if(!is_array($user_row)) return false;
   // $field_list = $field_list != '*' ? "{{planets}}.`id`, `name`, `image`, {{planets}}.`galaxy`, {{planets}}.`system`, {{planets}}.`planet`, `planet_type`{$field_list}" : $field_list;
   $conditions .= $skip_planet_id ? " AND `id` <> {$skip_planet_id} " : '';
@@ -72,24 +71,19 @@ function db_planet_list_sorted($user_row, $skip_planet_id = false, $field_list =
     SORT_NAME     => '`name`',
     SORT_SIZE     => '({{planets}}.`field_max`)',
   );
-  $order_by =
-    (isset($sort_orders[$user_row['planet_sort']])
-      ? $sort_orders[$user_row['planet_sort']]
-      : $sort_orders[SORT_ID])
-    . ($user_row['planet_sort_order'] == SORT_DESCENDING ? " DESC" : " ASC");
+  $order_by = classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT];
+  empty($sort_orders[$order_by]) ? $order_by = SORT_ID : false;
+  $order_by = $sort_orders[$order_by] . ' ' . (classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE] == SORT_ASCENDING ? 'ASC' : 'DESC');
 
   // Compilating query
   return classSupernova::db_get_record_list(LOC_PLANET,
     "`id_owner` = '{$user_row['id']}' {$conditions} ORDER BY {$order_by}");
 }
-function db_planet_list_by_user_or_planet($user_id, $planet_id)
-{
-  // if(!($user_id = intval($user_id)) && !($planet_id = intval($planet_id))) return false;
+function db_planet_list_by_user_or_planet($user_id, $planet_id) {
   if(!($user_id = idval($user_id)) && !($planet_id = idval($planet_id))) return false;
 
   return classSupernova::db_get_record_list(LOC_PLANET,
     $planet_id = idval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
-//    $planet_id = intval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
 }
 
 function db_planet_set_by_id($planet_id, $set)

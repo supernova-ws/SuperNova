@@ -300,8 +300,7 @@ class classCache {
 * @package supernova
 *
 */
-class classPersistent extends classCache
-{
+class classPersistent extends classCache {
   protected $table_name;
   protected $sql_index_field;
   protected $sql_value_field;
@@ -358,11 +357,13 @@ class classPersistent extends classCache
   }
 
   public function db_saveAll() {
-    $toSave = array();
-    foreach($this->defaults as $field => $value) {
-      $toSave[$field] = NULL;
-    }
-    $this->db_saveItem($toSave);
+//    $toSave = array();
+//    foreach($this->defaults as $field => $value) {
+//      $toSave[$field] = NULL;
+//    }
+//    $this->db_saveItem($toSave);
+    // Для того, что бы не лезть в кэш за каждым айтемом, а сразу все известные переменные сохранить
+    $this->db_saveItem(array_combine(array_keys($this->defaults), array_fill(0, count($this->defaults), null)));
   }
 
   public function db_saveItem($item_list, $value = NULL) {
@@ -376,7 +377,6 @@ class classPersistent extends classCache
     $qry = array();
     foreach($item_list as $item_name => $item_value) {
       if($item_name) {
-//        $item_value === NULL ? $item_value = $this->$item_name : false;
         $item_value = db_escape($item_value === NULL ? $this->$item_name : $item_value);
         $item_name = db_escape($item_name);
         $qry[] = "('{$item_name}', '{$item_value}')";
@@ -651,275 +651,275 @@ class classConfig extends classPersistent {
 
 
 
-/*
-New test metaclass for handling DB table caching
-*/
-
-class class_db_cache extends classCache
-{
-  protected $tables = array(
-    'users' => array('name' => 'users', 'id' => 'id', 'index' => 'users_INDEX', 'count' => 'users_COUNT', 'lock' => 'users_LOCK', 'callback' => 'cb_users', 'ttl' => 0),
-    'config' => array('name' => 'config', 'id' => 'config_name', 'index' => 'config_INDEX', 'count' => 'config_COUNT', 'lock' => 'config_LOCK', 'callback' => 'cb_config', 'ttl' => 0),
-  );
-
-  public function __construct($gamePrefix = 'sn_')
-  {
-    parent::__construct("{$gamePrefix}dbcache_");
-  }
-
-  public function cache_add($table_name = 'table', $id_field = 'id', $ttl = 0, $force_load = false)
-  {
-    $table['name']     = $table_name;
-    $table['id']       = $id_field;
-    $table['index']    = "{$table_name}_INDEX";
-    $table['count']    = "{$table_name}_COUNT";
-    $table['lock']     = "{$table_name}_LOCK";
-    $table['callback'] = "cb_{$table_name}";
-    $table['ttl']      = $ttl;
-
-    $this->tables[$table_name] = $table;
-    // here we can load table data from DB - fields and indexes
-    // $force_reload would show should we need to reload table data from DB
-  }
-
-  // multilock
-  protected function table_lock($table_name, $wait_if_locked = false, $lock = NULL)
-  {
-    $lock_field_name = $this->tables['$table_name']['lock'];
-
-    $lock_wait_start = microtime(true);
-    while($wait_if_locked && !$this->$lock_field_name && (microtime(true) - $lock_wait_start <= CACHER_LOCK_WAIT))
-    {
-      usleep(mt_rand(100, CACHER_LOCK_SLEEP));
-    }
-
-    $result = (!$this->$lock_field_name) XOR ($lock === NULL);
-    if($result && $lock)
-    {
-      $this->$lock_field_name = $lock;
-    }
-
-    return $result;
-  }
-
-
-  /*
-    Magic start here. __call magic method will transform name of call to table name and handle all caching & db-related stuff
-    If there is such row in cache it will be returned. Otherwise it will read from DB, cached and returned
-    I.e. class_db_cache->table_name() call mean that all request will be done with records (cached or DB) in `table_name` table
-    __call interpets last argument as optional boolean parameter $force.
-    In read operations $force === true will tell cacher not to use cached data but load records from DB
-    In write operations $force === true will tell cacher immidiatly store new data to DB not relating on internal mechanics
-
-    __call have several forms
-
-    Form 1:
-      __call($id, [$force]) - "SELECT * FROM {table} WHERE id_field = $id"
-
-    Form 2: (not implemented yet)
-      __call('get', $condition, [$force]) - "SELECT * FROM {table} WHERE $condition"
-
-    Form 3: (not implemented yet)
-      __call('set', $data, [$condition], [$force]) - "UPDATE {table} SET $row = $data WHERE $condition"
-
-    Form 4: (not implemented yet)
-      __call('add', $data, [$condition], [$force]) - "UPDATE {table} SET $row = $row + $data WHERE $condition"
-  */
-
-  public function __call($name, $arguments)
-  {
-    $main_argument = $arguments[0];
-
-    switch($main_argument)
-    {
-      case 'get':
-        // it might be SELECT
-      break;
-
-      case 'set':
-        // it might be UPDATE
-      break;
-
-      default:
-        // it might be SELECT * FROM {table} WHERE id = $main_argument;
-        return $this->get_item($name, $main_argument, $arguments[1]);
-      break;
-    }
-  }
-
-  public function get_item($table_name, $id, $force_reload = false)
-  {
-    $internal_name = "{$table_name}_{$id}";
-
-    if(isset($this->$internal_name) && !$force_reload)
-    {
-      // pdump("{$id} - returning stored data");
-
-      return $this->$internal_name;
-    }
-    else
-    {
-      // pdump("{$id} - asking DB");
-
-      return $this->db_loadItem($table_name, $id);
-    }
-  }
-
-  public function db_loadItem($table_name, $id)
-  {
-    // If no table_name or no index - there is no such element
-    if(!$id && !$table_name)
-    {
-      return NULL;
-    }
-
-    $result = $this->db_loadItems($table_name, '*', "`{$this->tables[$table_name]['id']}` = '{$id}'", 1);
-    if($result)
-    {
-      return $result[$id];
-    }
-    else
-    {
-      $this->del_item($table_name, $id);
-      return NULL;
-    }
-  }
-
-  public function db_loadItems($table_name, $fields = '*', $condition = '', $limits = '')
-  {
-    if(!$fields)
-    {
-      $fields = '*';
-    }
-
-    if($condition)
-    {
-      $condition = " WHERE {$condition}";
-    }
-
-    if($limits)
-    {
-      $limits = " LIMIT {$limits}";
-    }
-
-    $query = doquery("SELECT {$fields} FROM `{{{$table_name}}}`{$condition}{$limits};");
-
-    $table = $this->tables[$table_name];
-
-    $index = $this->$table['index'];
-    $count = $this->$table['count'];
-
-    $result = NULL;
-
-    while ( $row = db_fetch($query) )
-    {
-      /*
-      foreach($row as $index => &$value)
-      {
-        if(is_numeric($value))
-        {
-          $value = floatval($value);
-
-          //if((double)intval($value) === $value)
-          //{
-          //  $value = intval($value);
-          //}
-        }
-      }
-      */
-
-      $item_id = $row[$table['id']];
-      $item_name = "{$table['name']}_{$item_id}";
-      if(!isset($this->$item_name))
-      {
-        $count++;
-      }
-
-      // Loading element to cache
-      $this->$item_name = $row;
-      // Also loading element to returning set
-      $result[$item_id] = $row;
-
-      // Internal work
-      // Indexing element for fast search
-      $index[$item_id] = true;
-    }
-
-    if($result)
-    {
-      $this->$table['index'] = $index;
-      $this->$table['count'] = $count;
-    }
-
-    return $result;
-  }
-
-  public function db_loadAll($table_name)
-  {
-    $this->unset_by_prefix("{$table_name}_");
-    $this->db_loadItems($table_name);
-  }
-
-  public function del_item($table_name, $id, $force_db_remove = false)
-  {
-    $internal_name = "{$table_name}_{$id}";
-
-    if(isset($this->$internal_name))
-    {
-      $table = $this->tables[$table_name];
-
-      $index = $this->$table['index'];
-      unset($index[$id]);
-      $this->$table['index'] = $index;
-
-      $this->$table['count']--;
-    }
-
-    if($force_db_remove)
-    {
-      doquery("DELETE FROM {{{$table_name}}} WHERE `{$table['id']}` = '{$id}';");
-    }
-  }
-
-/*
-  public function db_saveAll()
-  {
-    $toSave = array();
-    foreach($defaults as $field => $value)
-    {
-      $toSave[$field] = NULL;
-    }
-
-    $this->db_saveItem($toSave);
-  }
-
-  public function db_saveItem($index, $value = NULL)
-  {
-    if($index)
-    {
-      if(!is_array($index))
-      {
-        $index = array($index => $value);
-      }
-
-      foreach($index as $item_name => &$value)
-      {
-        if($value !== NULL)
-        {
-          $this->$item_name = $value;
-        }
-        else
-        {
-          $value = $this->$item_name;
-        }
-
-        $qry .= " ('{$item_name}', '{$value}'),";
-      }
-
-      $qry = substr($qry, 0, -1);
-      $qry = "REPLACE INTO `{{{$this->table_name}}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
-      doquery($qry);
-    };
-  }
-*/
-}
+///*
+//New test metaclass for handling DB table caching
+//*/
+//
+//class class_db_cache extends classCache
+//{
+//  protected $tables = array(
+//    'users' => array('name' => 'users', 'id' => 'id', 'index' => 'users_INDEX', 'count' => 'users_COUNT', 'lock' => 'users_LOCK', 'callback' => 'cb_users', 'ttl' => 0),
+//    'config' => array('name' => 'config', 'id' => 'config_name', 'index' => 'config_INDEX', 'count' => 'config_COUNT', 'lock' => 'config_LOCK', 'callback' => 'cb_config', 'ttl' => 0),
+//  );
+//
+//  public function __construct($gamePrefix = 'sn_')
+//  {
+//    parent::__construct("{$gamePrefix}dbcache_");
+//  }
+//
+//  public function cache_add($table_name = 'table', $id_field = 'id', $ttl = 0, $force_load = false)
+//  {
+//    $table['name']     = $table_name;
+//    $table['id']       = $id_field;
+//    $table['index']    = "{$table_name}_INDEX";
+//    $table['count']    = "{$table_name}_COUNT";
+//    $table['lock']     = "{$table_name}_LOCK";
+//    $table['callback'] = "cb_{$table_name}";
+//    $table['ttl']      = $ttl;
+//
+//    $this->tables[$table_name] = $table;
+//    // here we can load table data from DB - fields and indexes
+//    // $force_reload would show should we need to reload table data from DB
+//  }
+//
+//  // multilock
+//  protected function table_lock($table_name, $wait_if_locked = false, $lock = NULL)
+//  {
+//    $lock_field_name = $this->tables['$table_name']['lock'];
+//
+//    $lock_wait_start = microtime(true);
+//    while($wait_if_locked && !$this->$lock_field_name && (microtime(true) - $lock_wait_start <= CACHER_LOCK_WAIT))
+//    {
+//      usleep(mt_rand(100, CACHER_LOCK_SLEEP));
+//    }
+//
+//    $result = (!$this->$lock_field_name) XOR ($lock === NULL);
+//    if($result && $lock)
+//    {
+//      $this->$lock_field_name = $lock;
+//    }
+//
+//    return $result;
+//  }
+//
+//
+//  /*
+//    Magic start here. __call magic method will transform name of call to table name and handle all caching & db-related stuff
+//    If there is such row in cache it will be returned. Otherwise it will read from DB, cached and returned
+//    I.e. class_db_cache->table_name() call mean that all request will be done with records (cached or DB) in `table_name` table
+//    __call interpets last argument as optional boolean parameter $force.
+//    In read operations $force === true will tell cacher not to use cached data but load records from DB
+//    In write operations $force === true will tell cacher immidiatly store new data to DB not relating on internal mechanics
+//
+//    __call have several forms
+//
+//    Form 1:
+//      __call($id, [$force]) - "SELECT * FROM {table} WHERE id_field = $id"
+//
+//    Form 2: (not implemented yet)
+//      __call('get', $condition, [$force]) - "SELECT * FROM {table} WHERE $condition"
+//
+//    Form 3: (not implemented yet)
+//      __call('set', $data, [$condition], [$force]) - "UPDATE {table} SET $row = $data WHERE $condition"
+//
+//    Form 4: (not implemented yet)
+//      __call('add', $data, [$condition], [$force]) - "UPDATE {table} SET $row = $row + $data WHERE $condition"
+//  */
+//
+//  public function __call($name, $arguments)
+//  {
+//    $main_argument = $arguments[0];
+//
+//    switch($main_argument)
+//    {
+//      case 'get':
+//        // it might be SELECT
+//      break;
+//
+//      case 'set':
+//        // it might be UPDATE
+//      break;
+//
+//      default:
+//        // it might be SELECT * FROM {table} WHERE id = $main_argument;
+//        return $this->get_item($name, $main_argument, $arguments[1]);
+//      break;
+//    }
+//  }
+//
+//  public function get_item($table_name, $id, $force_reload = false)
+//  {
+//    $internal_name = "{$table_name}_{$id}";
+//
+//    if(isset($this->$internal_name) && !$force_reload)
+//    {
+//      // pdump("{$id} - returning stored data");
+//
+//      return $this->$internal_name;
+//    }
+//    else
+//    {
+//      // pdump("{$id} - asking DB");
+//
+//      return $this->db_loadItem($table_name, $id);
+//    }
+//  }
+//
+//  public function db_loadItem($table_name, $id)
+//  {
+//    // If no table_name or no index - there is no such element
+//    if(!$id && !$table_name)
+//    {
+//      return NULL;
+//    }
+//
+//    $result = $this->db_loadItems($table_name, '*', "`{$this->tables[$table_name]['id']}` = '{$id}'", 1);
+//    if($result)
+//    {
+//      return $result[$id];
+//    }
+//    else
+//    {
+//      $this->del_item($table_name, $id);
+//      return NULL;
+//    }
+//  }
+//
+//  public function db_loadItems($table_name, $fields = '*', $condition = '', $limits = '')
+//  {
+//    if(!$fields)
+//    {
+//      $fields = '*';
+//    }
+//
+//    if($condition)
+//    {
+//      $condition = " WHERE {$condition}";
+//    }
+//
+//    if($limits)
+//    {
+//      $limits = " LIMIT {$limits}";
+//    }
+//
+//    $query = doquery("SELECT {$fields} FROM `{{{$table_name}}}`{$condition}{$limits};");
+//
+//    $table = $this->tables[$table_name];
+//
+//    $index = $this->$table['index'];
+//    $count = $this->$table['count'];
+//
+//    $result = NULL;
+//
+//    while ( $row = db_fetch($query) )
+//    {
+//      /*
+//      foreach($row as $index => &$value)
+//      {
+//        if(is_numeric($value))
+//        {
+//          $value = floatval($value);
+//
+//          //if((double)intval($value) === $value)
+//          //{
+//          //  $value = intval($value);
+//          //}
+//        }
+//      }
+//      */
+//
+//      $item_id = $row[$table['id']];
+//      $item_name = "{$table['name']}_{$item_id}";
+//      if(!isset($this->$item_name))
+//      {
+//        $count++;
+//      }
+//
+//      // Loading element to cache
+//      $this->$item_name = $row;
+//      // Also loading element to returning set
+//      $result[$item_id] = $row;
+//
+//      // Internal work
+//      // Indexing element for fast search
+//      $index[$item_id] = true;
+//    }
+//
+//    if($result)
+//    {
+//      $this->$table['index'] = $index;
+//      $this->$table['count'] = $count;
+//    }
+//
+//    return $result;
+//  }
+//
+//  public function db_loadAll($table_name)
+//  {
+//    $this->unset_by_prefix("{$table_name}_");
+//    $this->db_loadItems($table_name);
+//  }
+//
+//  public function del_item($table_name, $id, $force_db_remove = false)
+//  {
+//    $internal_name = "{$table_name}_{$id}";
+//
+//    if(isset($this->$internal_name))
+//    {
+//      $table = $this->tables[$table_name];
+//
+//      $index = $this->$table['index'];
+//      unset($index[$id]);
+//      $this->$table['index'] = $index;
+//
+//      $this->$table['count']--;
+//    }
+//
+//    if($force_db_remove)
+//    {
+//      doquery("DELETE FROM {{{$table_name}}} WHERE `{$table['id']}` = '{$id}';");
+//    }
+//  }
+//
+///*
+//  public function db_saveAll()
+//  {
+//    $toSave = array();
+//    foreach($defaults as $field => $value)
+//    {
+//      $toSave[$field] = NULL;
+//    }
+//
+//    $this->db_saveItem($toSave);
+//  }
+//
+//  public function db_saveItem($index, $value = NULL)
+//  {
+//    if($index)
+//    {
+//      if(!is_array($index))
+//      {
+//        $index = array($index => $value);
+//      }
+//
+//      foreach($index as $item_name => &$value)
+//      {
+//        if($value !== NULL)
+//        {
+//          $this->$item_name = $value;
+//        }
+//        else
+//        {
+//          $value = $this->$item_name;
+//        }
+//
+//        $qry .= " ('{$item_name}', '{$value}'),";
+//      }
+//
+//      $qry = substr($qry, 0, -1);
+//      $qry = "REPLACE INTO `{{{$this->table_name}}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES {$qry};";
+//      doquery($qry);
+//    };
+//  }
+//*/
+//}

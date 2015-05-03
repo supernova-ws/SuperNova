@@ -67,7 +67,8 @@ $fleet_array = array();
 switch($target_mission)
 {
   case MT_SPY:
-    $fleet_array[SHIP_SPY] = min(mrc_get_level($user, $planetrow, SHIP_SPY), abs($user['spio_anz']));
+    // $fleet_array[SHIP_SPY] = min(mrc_get_level($user, $planetrow, SHIP_SPY), abs($user['spio_anz']));
+    $fleet_array[SHIP_SPY] = min(mrc_get_level($user, $planetrow, SHIP_SPY), abs(classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT]));
     $unit_group = 'flt_spies';
   break;
 

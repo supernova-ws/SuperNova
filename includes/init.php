@@ -121,6 +121,7 @@ require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 classSupernova::debug_set_handler($debug);
+classSupernova::init();
 global $supernova;
 $supernova = new classSupernova();
 
@@ -260,12 +261,11 @@ asort($load_order);
 
 // Инициализируем модули
 // По нормальным делам это должна быть загрузка модулей и лишь затем инициализация - что бы минимизировать размер процесса в памяти
-foreach($load_order as $loaded_module_name => $load_order) {
-  if($load_order < 0) {
-    continue;
+foreach($load_order as $loaded_module_name => $load_order_order) {
+  if($load_order_order >= 0) {
+    $sn_module[$loaded_module_name]->initialize();
+    $sn_module_list[$sn_module[$loaded_module_name]->manifest['package']][$loaded_module_name] = &$sn_module[$loaded_module_name];
   }
-  $sn_module[$loaded_module_name]->initialize();
-  $sn_module_list[$sn_module[$loaded_module_name]->manifest['package']][$loaded_module_name] = &$sn_module[$loaded_module_name];
 }
 
 // Скрипач не нужон
@@ -327,6 +327,10 @@ unset($result[F_USER]);
 $template_result += $result;
 unset($result);
 // В этой точке пользователь либо авторизирован - и есть его запись - либо пользователя гарантированно нет в базе
+
+if(!empty($user['id'])) {
+  classSupernova::$user_options->user_change($user['id']);
+}
 
 // Если сообщение пустое - заполняем его по коду
 $template_result[F_LOGIN_MESSAGE] =

@@ -18,6 +18,7 @@ lng_include('payment');
 $template = gettemplate('metamatter', true);
 
 $player_currency_default = player_load_option($user, PLAYER_OPTION_CURRENCY_DEFAULT);
+// $player_currency_default = classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT];
 $player_currency = sys_get_param_str('player_currency', $player_currency_default);
 empty($lang['pay_currency_list'][$player_currency]) ? ($player_currency =  $player_currency_default ? $player_currency_default : $config->payment_currency_default) : false;
 $player_currency_default != $player_currency ? player_save_option($user, PLAYER_OPTION_CURRENCY_DEFAULT, $player_currency) : false;

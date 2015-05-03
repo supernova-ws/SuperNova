@@ -84,22 +84,19 @@ function sn_options_model() {
 
 
     $player_options = sys_get_param('options');
-
     if(!empty($player_options)) {
       array_walk($player_options, function(&$value){
         // TODO - Когда будет больше параметров - сделать больше проверок
         $value = intval($value);
       });
-      player_save_option_array($user, $player_options);
-      if($player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] == PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_HIDDEN) {
-        sn_setcookie(SN_COOKIE . '_menu_hidden', '0', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-      }
+      classSupernova::$user_options->__set($player_options);
+      // pdump($player_options);die();
+      //      player_save_option_array($user, $player_options);
     }
 
     $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
     $username_safe = db_escape($username);
-    if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm'))
-    {
+    if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm') && !strpbrk($username, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
     // проверка на корректность
       sn_db_transaction_start();
       $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
@@ -121,9 +118,9 @@ function sn_options_model() {
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
             db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
-            doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = \"{$username_safe}\"");
+            doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
             // TODO: Change cookie to not force user relogin
-            sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+            // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
             $template_result['.']['result'][] = array(
               'STATUS'  => ERR_NONE,
               'MESSAGE' => $lang['opt_msg_name_changed']
@@ -176,18 +173,18 @@ function sn_options_model() {
 
     $user['design'] = sys_get_param_int('design');
     $user['noipcheck'] = sys_get_param_int('noipcheck');
-    $user['spio_anz'] = sys_get_param_int('spio_anz');
-    $user['settings_tooltiptime'] = sys_get_param_int('settings_tooltiptime');
-    $user['settings_fleetactions'] = sys_get_param_int('settings_fleetactions', 1);
-    $user['settings_esp'] = sys_get_param_int('settings_esp');
-    $user['settings_wri'] = sys_get_param_int('settings_wri');
-    $user['settings_bud'] = sys_get_param_int('settings_bud');
-    $user['settings_mis'] = sys_get_param_int('settings_mis');
-    $user['settings_statistics'] = sys_get_param_int('settings_statistics');
-    $user['settings_info'] = sys_get_param_int('settings_info');
-    $user['settings_rep'] = sys_get_param_int('settings_rep');
-    $user['planet_sort']  = sys_get_param_int('settings_sort');
-    $user['planet_sort_order'] = sys_get_param_int('settings_order');
+    // $user['spio_anz'] = sys_get_param_int('spio_anz');
+    // $user['settings_fleetactions'] = sys_get_param_int('settings_fleetactions', 1);
+    // $user['settings_tooltiptime'] = sys_get_param_int('settings_tooltiptime');
+    // $user['settings_esp'] = sys_get_param_int('settings_esp');
+    // $user['settings_wri'] = sys_get_param_int('settings_wri');
+    // $user['settings_bud'] = sys_get_param_int('settings_bud');
+    // $user['settings_mis'] = sys_get_param_int('settings_mis');
+    // $user['settings_statistics'] = sys_get_param_int('settings_statistics');
+    // $user['settings_info'] = sys_get_param_int('settings_info');
+    // $user['settings_rep'] = sys_get_param_int('settings_rep');
+    // $user['planet_sort']  = sys_get_param_int('settings_sort');
+    // $user['planet_sort_order'] = sys_get_param_int('settings_order');
     $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + $config->player_delete_time);
 
     $gender = sys_get_param_int('gender', $user['gender']);
@@ -243,9 +240,9 @@ function sn_options_model() {
     $template_result['.']['result'][] = $avatar_upload_result;
 
     $user_time_diff = user_time_diff_get();
-    if(sys_get_param_int('user_time_diff_forced')) {
+    if(sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED')) {
       user_time_diff_set(array(
-        PLAYER_OPTION_TIME_DIFF => sys_get_param_int('user_time_diff'),
+        PLAYER_OPTION_TIME_DIFF => sys_get_param_int('PLAYER_OPTION_TIME_DIFF'),
         PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => 0,
         PLAYER_OPTION_TIME_DIFF_FORCED => 1,
         PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
@@ -260,13 +257,13 @@ function sn_options_model() {
     }
 
     $user_options_safe = db_escape($user['options']);
-
+    // `spio_anz` = '{$user['spio_anz']}', `settings_fleetactions` = '{$user['settings_fleetactions']}',
+    // `settings_esp` = '{$user['settings_esp']}', `settings_mis` = '{$user['settings_mis']}', `settings_wri` = '{$user['settings_wri']}',
+    // `settings_statistics` = '{$user['settings_statistics']}', `settings_info` = '{$user['settings_info']}', `settings_bud` = '{$user['settings_bud']}',
+    // `settings_rep` = '{$user['settings_rep']}', `settings_tooltiptime` = '{$user['settings_tooltiptime']}',
+    // `planet_sort` = '{$user['planet_sort']}', `planet_sort_order` = '{$user['planet_sort_order']}',
     db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
       `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
-      `planet_sort` = '{$user['planet_sort']}', `planet_sort_order` = '{$user['planet_sort_order']}', `spio_anz` = '{$user['spio_anz']}',
-      `settings_tooltiptime` = '{$user['settings_tooltiptime']}', `settings_fleetactions` = '{$user['settings_fleetactions']}', `settings_esp` = '{$user['settings_esp']}',
-      `settings_wri` = '{$user['settings_wri']}', `settings_bud` = '{$user['settings_bud']}', `settings_statistics` = '{$user['settings_statistics']}',
-      `settings_info` = '{$user['settings_info']}', `settings_mis` = '{$user['settings_mis']}', `settings_rep` = '{$user['settings_rep']}',
       `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe }', `gender` = {$user['gender']}
       {$user_birthday}"
     );
@@ -315,21 +312,22 @@ function sn_options_view($template = null) {
   }
   $dir->close();
 
-  for($i = 0; $i < 2; $i++) {
-    $template_result['.']['planet_order'][] = array(
-      'VALUE' => $i,
-      'NAME'  => $lang['opt_lst_cla' . $i],
-      'SELECTED' => $user['planet_sort_order'] == $i,
+  foreach($lang['opt_planet_sort_options'] as $key => &$value) {
+    $template_result['.']['planet_sort_options'][] = array(
+      'VALUE' => $key,
+      'NAME'  => $value,
+      'SELECTED' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT] == $key,
     );
   }
-  for($i = 0; $i < 4; $i++) {
-    $template_result['.']['planet_order_type'][] = array(
-      'VALUE' => $i,
-      'NAME'  => $lang['opt_lst_ord' . $i],
-      'SELECTED' => $user['planet_sort'] == $i,
+/*
+  foreach($lang['opt_planet_sort_ascending'] as $key => &$value) {
+    $template_result['.']['planet_sort_ascending'][] = array(
+      'VALUE' => $key,
+      'NAME'  => $value,
+      'SELECTED' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE] == $key,
     );
   }
-
+*/
   foreach($lang['sys_gender_list'] as $key => $value) {
     $template_result['.']['gender_list'][] = array(
       'VALUE' => $key,
@@ -375,7 +373,7 @@ function sn_options_view($template = null) {
 //  pdump(sys_safe_output($template_result[F_ACCOUNT]['account_name']));
 
   $user_time_diff = user_time_diff_get();
-  $player_options = player_load_option($user);
+  // $player_options = player_load_option($user);
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
 
@@ -386,30 +384,41 @@ function sn_options_view($template = null) {
 
     'USER_AUTHLEVEL'           => $user['authlevel'],
 
-    'menu_customize_show_hide_button' => isset($player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON])
-      ? $player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 0,
-    'menu_customize_show_button_enter' => isset($player_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON])
-      ? $player_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON] : 0,
-    'menu_customize_hide_button_enter' => isset($player_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON])
-      ? $player_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON] : 0,
-    'menu_customize_hide_unpinned_on_exit' => isset($player_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE])
-      ? $player_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
-    'menu_customize_show_absolute' => isset($player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE])
-      ? $player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
-    'menu_customize_items_as_buttons' => isset($player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS])
-      ? $player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
-    'sound_enabled' => isset($player_options[PLAYER_OPTION_SOUND_ENABLED])
-      ? $player_options[PLAYER_OPTION_SOUND_ENABLED] : 0,
-
+//    'menu_customize_show_hide_button' => isset($player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON])
+//      ? $player_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 0,
+//    'menu_customize_show_button_enter' => isset($player_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON])
+//      ? $player_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON] : 0,
+//    'menu_customize_hide_button_enter' => isset($player_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON])
+//      ? $player_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON] : 0,
+//    'menu_customize_hide_unpinned_on_exit' => isset($player_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE])
+//      ? $player_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
+//    'menu_customize_show_absolute' => isset($player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE])
+//      ? $player_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
+//    'menu_customize_items_as_buttons' => isset($player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS])
+//      ? $player_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
+//    'sound_enabled' => isset($player_options[PLAYER_OPTION_SOUND_ENABLED])
+//      ? $player_options[PLAYER_OPTION_SOUND_ENABLED] : 0,
+    'menu_customize_show_hide_button' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
+    'menu_customize_show_button_enter' => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
+    'menu_customize_hide_button_enter' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
+    'menu_customize_hide_unpinned_on_exit' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
+    'menu_customize_show_absolute' => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
+    'menu_customize_items_as_buttons' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+    'sound_enabled' => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => htmlspecialchars($user['username']),
     'opt_mail1_data' => $user['email'],
     'opt_mail2_data' => sys_safe_output($template_result[F_ACCOUNT]['account_email']),
     'OPT_DPATH_DATA' => $user['dpath'],
-    'opt_probe_data' => $user['spio_anz'],
-    'opt_toolt_data' => $user['settings_tooltiptime'],
-    'opt_fleet_data' => $user['settings_fleetactions'],
+
+    'PLAYER_OPTION_PLANET_SORT_INVERSE' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE],
+    // 'opt_fleet_data' => $user['settings_fleetactions'],
+    // 'opt_fleet_data' => classSupernova::$user_options[PLAYER_OPTION_FLEET_MESS_AMOUNT_MAX],
+    // 'opt_probe_data' => $user['spio_anz'],
+    // 'opt_toolt_data' => $user['settings_tooltiptime'],
+    'PLAYER_OPTION_FLEET_SPY_DEFAULT' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
+    'PLAYER_OPTION_TOOLTIP_DELAY' => classSupernova::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
     'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'":'',
     'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'":'',
     'deltime'        => $user['deltime'],
@@ -421,13 +430,19 @@ function sn_options_view($template = null) {
 
     'config_game_email_pm'     => $config->game_email_pm,
 
-    'user_settings_rep' => ($user['settings_rep'] == 1) ? " checked='checked'/":'',
-    'user_settings_esp' => ($user['settings_esp'] == 1) ? " checked='checked'/":'',
-    'user_settings_wri' => ($user['settings_wri'] == 1) ? " checked='checked'/":'',
-    'user_settings_mis' => ($user['settings_mis'] == 1) ? " checked='checked'/":'',
-    'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
-    'user_settings_statistics' => ($user['settings_statistics'] == 1) ? " checked='checked'/":'',
-    'user_settings_info' => ($user['settings_info'] == 1) ? " checked='checked'/":'',
+    // 'user_settings_rep' => ($user['settings_rep'] == 1) ? " checked='checked'/":'', // UNUSED
+    // 'user_settings_esp' => ($user['settings_esp'] == 1) ? " checked='checked'/":'',
+    // 'user_settings_mis' => ($user['settings_mis'] == 1) ? " checked='checked'/":'',
+    // 'user_settings_wri' => ($user['settings_wri'] == 1) ? " checked='checked'/":'',
+    // 'user_settings_statistics' => ($user['settings_statistics'] == 1) ? " checked='checked'/":'',
+    // 'user_settings_info' => ($user['settings_info'] == 1) ? " checked='checked'/":'',
+    // 'user_settings_bud' => ($user['settings_bud'] == 1) ? " checked='checked'/":'',
+    'user_settings_esp' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING],
+    'user_settings_mis' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE],
+    'user_settings_wri' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM],
+    'user_settings_statistics' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_STATS],
+    'user_settings_info' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
+    'user_settings_bud' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
 
     'user_time_diff_forced' => $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED],
     // '_user_time_diff' => SN_CLIENT_TIME_DIFF,

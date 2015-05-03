@@ -959,6 +959,43 @@ switch($new_version) {
       set u.system = p.system, u.planet = p.planet
       where u.system = 0 and user_as_ally is null and current_planet > 0;');
 
+    // 2015-05-03 23:03:52 40a1.0
+
+    function propagade_player_options($old_option_name, $new_option_id) {
+      global $update_tables;
+
+      if(!empty($update_tables['users'][$old_option_name])) {
+        upd_do_query(
+          "REPLACE INTO {{player_options}} (`player_id`, `option_id`, `value`)
+          SELECT `id`, {$new_option_id}, `{$old_option_name}`
+          FROM {{users}}
+          WHERE `user_as_ally` is null and `user_bot` = " . USER_BOT_PLAYER);
+        // TODO - UNCOMMENT !!!
+        upd_alter_table('users', array("DROP COLUMN `{$old_option_name}`",));
+      }
+    }
+
+    propagade_player_options('spio_anz', PLAYER_OPTION_FLEET_SPY_DEFAULT);
+    propagade_player_options('settings_esp', PLAYER_OPTION_UNIVERSE_ICON_SPYING);
+    propagade_player_options('settings_mis', PLAYER_OPTION_UNIVERSE_ICON_MISSILE);
+    propagade_player_options('settings_wri', PLAYER_OPTION_UNIVERSE_ICON_PM);
+    propagade_player_options('settings_statistics', PLAYER_OPTION_UNIVERSE_ICON_STATS);
+    propagade_player_options('settings_info', PLAYER_OPTION_UNIVERSE_ICON_PROFILE);
+    propagade_player_options('settings_bud', PLAYER_OPTION_UNIVERSE_ICON_BUDDY);
+
+    propagade_player_options('planet_sort', PLAYER_OPTION_PLANET_SORT);
+    propagade_player_options('planet_sort_order', PLAYER_OPTION_PLANET_SORT_INVERSE);
+    propagade_player_options('settings_tooltiptime', PLAYER_OPTION_TOOLTIP_DELAY);
+
+    upd_alter_table('users', "DROP COLUMN `settings_fleetactions`", !empty($update_tables['users']['settings_fleetactions']));
+    upd_alter_table('users', "DROP COLUMN `settings_rep`", !empty($update_tables['users']['settings_rep']));
+
+    upd_alter_table('users', "DROP COLUMN `player_que`", !empty($update_tables['users']['player_que']));
+    upd_alter_table('users', "DROP COLUMN `user_time_measured`", !empty($update_tables['users']['user_time_measured']));
+    upd_alter_table('users', "DROP COLUMN `user_time_diff`", !empty($update_tables['users']['user_time_diff']));
+    upd_alter_table('users', "DROP COLUMN `user_time_utc_offset`", !empty($update_tables['users']['user_time_utc_offset']));
+    upd_alter_table('users', "DROP COLUMN `user_time_diff_forced`", !empty($update_tables['users']['user_time_diff_forced']));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

@@ -347,8 +347,8 @@ foreach($cached['allies'] as $PlanetAlly)
   }
 }
 
-$is_missile = $user["settings_mis"] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange);
-$colspan = $user['settings_esp'] + $user['settings_wri'] + $user['settings_bud'] + $is_missile;
+$is_missile = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange);
+$colspan = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY] + $is_missile;
 
 $ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', true);
 $galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", '', true);
@@ -377,19 +377,18 @@ $template->assign_vars(array(
      'fleet_max'           => $fleetmax,
      'ALLY_ID'             => $user['ally_id'],
      'USER_ID'             => $user['id'],
-     'ACT_SPY'             => $user['settings_esp'],
-     'ACT_SPIO'            => $user['spio_anz'],
-     'ACT_WRITE'           => $user['settings_wri'],
-     'ACT_FRIEND'          => $user['settings_bud'],
-     'ACT_STATISTICS'      => $user['settings_statistics'],
-     'ACT_INFO'            => $user['settings_info'],
+     'ACT_SPIO'            => classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
+     'ACT_SPY'             => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING],
+     'ACT_WRITE'           => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM],
+     'ACT_STATISTICS'      => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_STATS],
+     'ACT_INFO'            => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PROFILE],
+     'ACT_FRIEND'          => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
+     'opt_uni_tooltip_time'=> classSupernova::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
      'opt_uni_avatar_user' => $user['opt_uni_avatar_user'],
      'opt_uni_avatar_ally' => $user['opt_uni_avatar_ally'],
-     'opt_uni_tooltip_time'=> $user['settings_tooltiptime'],
      'ACT_MISSILE'         => $is_missile,
      'PLANET_PHALANX'      => $HavePhalanx && $uni_galaxy == $CurrentGalaxy && $uni_system >= $CurrentSystem - $PhalanxRange && $uni_system <= $CurrentSystem + $PhalanxRange,
      'PAGE_HINT'           => $lang['gal_sys_hint'],
-//     'LANG_RECYCLERS'      => $lang['tech'][SHIP_RECYCLER],
      'PLANET_RECYCLERS'    => $planet_recyclers_orbiting,
      'PLANET_RECYCLERS_TEXT' => pretty_number($planet_recyclers_orbiting),
      'GALAXY_NAME'         => $galaxy_name['universe_name'],
@@ -399,4 +398,4 @@ $template->assign_vars(array(
    )
 );
 
-display (parsetemplate($template), $lang['sys_universe'], true, '', false);
+display(parsetemplate($template), $lang['sys_universe'], true, '', false);

@@ -255,7 +255,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'LANG_ENCODING'            => 'utf-8',
     'LANG_DIRECTION'           => $lang['LANG_INFO']['LANG_DIRECTION'],
 
-    'SOUND_ENABLED'            => $player_options[PLAYER_OPTION_SOUND_ENABLED],
+    'SOUND_ENABLED'            => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
 
     'IMPERSONATING'            => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
   ));

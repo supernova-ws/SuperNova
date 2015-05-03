@@ -88,7 +88,6 @@
           <th>{L_newpassword}</th>
           <th>
             <input id="newpass1" name="newpass1" size="20" maxlength="32" type="password" />
-            <!--<input id="register_password_repeat" name="password_repeat" type="password" value="{PASSWORD_REPEAT}" size="20" maxlength="32" class="log_input" /><br />-->
             <input class="password_show" type="button" value="{L_sys_login_password_show}" show_element="newpass1" />
           </th>
         </tr>
@@ -152,7 +151,7 @@
         </tr>
         <tr>
           <th colspan="2">
-            <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="26"><br />
+            <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="26" id="avatar" /><br />
             <div>
               <!-- IF opt_avatar -->
               <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><br />
@@ -173,16 +172,16 @@
             <label for="opt_time_diff_clear">{L_opt_time_diff_clear}</label><br />
 
             <script type="text/javascript">
-              jQuery(document).on('click change', '#user_time_diff_forced', function (){
+              jQuery(document).on('click change', '#PLAYER_OPTION_TIME_DIFF_FORCED', function (){
                 $(this).is(":checked") ? jQuery('#opt_time_diff_clear').attr('disabled', 'disabled').removeAttr('checked') : jQuery('#opt_time_diff_clear').removeAttr('disabled');
               });
-              $('#user_time_diff_forced').change();
+              $('#PLAYER_OPTION_TIME_DIFF_FORCED').change();
             </script>
 
             {L_opt_time_diff_explain}<br/>
-            <input name="user_time_diff_forced" type="checkbox" id="user_time_diff_forced" value="1" <!-- IF user_time_diff_forced --> checked="checked" <!-- ENDIF --> />
-            <label for="user_time_diff_forced">{L_opt_time_diff_manual}</label>
-            <input name="user_time_diff" type="text" id="user_time_diff" value="{D_SN_CLIENT_TIME_DIFF}" style="width: 60px;" /> {L_sys_sec}<br/>
+            <input name="PLAYER_OPTION_TIME_DIFF_FORCED" type="checkbox" id="PLAYER_OPTION_TIME_DIFF_FORCED" value="1" <!-- IF user_time_diff_forced --> checked="checked" <!-- ENDIF --> />
+            <label for="PLAYER_OPTION_TIME_DIFF_FORCED">{L_opt_time_diff_manual}</label>
+            <input name="PLAYER_OPTION_TIME_DIFF" type="text" id="PLAYER_OPTION_TIME_DIFF" value="{D_SN_CLIENT_TIME_DIFF}" style="width: 60px;" /> <label for="PLAYER_OPTION_TIME_DIFF">{L_sys_sec}</label><br/>
           </td>
         </tr>
         <!-- IF ! USER_VACATION_DISABLE -->
@@ -197,16 +196,6 @@
           </th>
         </tr>
         <!-- ENDIF -->
-
-        <!--
-              <tr>
-                <td class="c_l" colspan="2">
-                  <input name="deltime" type="checkbox" id="deltime" !-- IF deltime -- checked!-- ENDIF --  /> <label for="deltime">{L_deleteaccount}. {L_deleteaccount_tip}</label><br />
-        {L_deleteaccount_on} !-- IF deltime -- {deltime_text}!-- ELSE -- <span id="delete_on"></span>!-- ENDIF --
-        </td>
-        </tr>
-        -->
-
       </table>
     </div>
 
@@ -239,11 +228,6 @@
         </tr>
 
         <!-- IF .options_3 -->
-        <!--
-        <tr>
-          <th class="c_c" colspan="2">{L_opt_int_options}</th>
-        </tr>
-        -->
         <!-- BEGIN options_3 -->
         <tr>
           <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
@@ -259,18 +243,17 @@
         <!-- END options_3 -->
         <!-- ENDIF -->
         <tr>
-          <th>{L_opt_lst_ord}</th>
-          <th>
-            <select name="settings_order">
-              <!-- BEGIN planet_order -->
-              <option value="{planet_order.VALUE}"<!-- IF planet_order.SELECTED --> selected<!-- ENDIF -->>{planet_order.NAME}</option>
-              <!-- END planet_order -->
+          <th colspan="2" nowrap>
+            {L_opt_planet_sort_title}
+            <select name="options[{D_PLAYER_OPTION_PLANET_SORT}]">
+              <!-- BEGIN planet_sort_options -->
+              <option value="{planet_sort_options.VALUE}"<!-- IF planet_sort_options.SELECTED --> selected<!-- ENDIF -->>{planet_sort_options.NAME}</option>
+              <!-- END planet_sort_options -->
             </select>
-            <select name="settings_sort">
-              <!-- BEGIN planet_order_type -->
-              <option value="{planet_order_type.VALUE}"<!-- IF planet_order_type.SELECTED --> selected<!-- ENDIF -->>{planet_order_type.NAME}</option>
-              <!-- END planet_order_type -->
-            </select>
+
+            <label for="planet_sort_inverse">{L_sys_sort_inverse}</label>
+            <input type="hidden" name="options[{D_PLAYER_OPTION_PLANET_SORT_INVERSE}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_PLANET_SORT_INVERSE}]" value="1" id="planet_sort_inverse" <!-- IF PLAYER_OPTION_PLANET_SORT_INVERSE -->checked="checked" <!-- ENDIF -->/>
           </th>
         </tr>
 
@@ -289,26 +272,34 @@
         <!-- ENDIF -->
         <tr title="{L_spy_cant_tip}">
           <th>{L_spy_cant}</th>
-          <th><input name="spio_anz" maxlength="2" size="2" value="{opt_probe_data}" type="text"></th>
+          <th><input name="options[{D_PLAYER_OPTION_FLEET_SPY_DEFAULT}]" maxlength="2" size="2" value="{PLAYER_OPTION_FLEET_SPY_DEFAULT}" type="text"></th>
         </tr>
         <tr>
           <th>{L_tooltip_time}</th>
-          <th><input name="settings_tooltiptime" maxlength="4" size="4" value="{opt_toolt_data}" type="text"> {L_sys_milliseconds} (0 - по умолчанию)</th>
-        </tr>
-        <tr>
-          <th>{L_mess_ammount_max}</th>
-          <th><input name="settings_fleetactions" maxlength="2" size="2" value="{opt_fleet_data}" type="text"></th>
+          <th><input name="options[{D_PLAYER_OPTION_TOOLTIP_DELAY}]" maxlength="4" size="4" value="{PLAYER_OPTION_TOOLTIP_DELAY}" type="text"> {L_sys_milliseconds} (0 - по умолчанию)</th>
         </tr>
         <tr>
           <th>{L_shortcut}</th>
           <td class="c_c" nowrap>
-            <input name="settings_esp"{user_settings_esp} type="checkbox" id="settings_esp" />&nbsp;<label for="settings_esp"><img height="14px" src="design/images/icon_espionage.png" alt="{spy}" />&nbsp;{L_spy}</label>
-            <input name="settings_mis"{user_settings_mis} type="checkbox" id="settings_mis" />&nbsp;<label for="settings_mis"><img height="14px" src="design/images/icon_missile.png" alt="{attack_with_missile}" />&nbsp;{L_attack_with_missile}</label><br/>
-            <input name="settings_wri"{user_settings_wri} type="checkbox" id="settings_wri" />&nbsp;<label for="settings_wri"><img height="14px" src="design/images/icon_mail.gif" alt="{write_a_messege}" />&nbsp;{L_write_a_messege}</label>
-            <input name="settings_statistics"{user_settings_statistics} type="checkbox" id="settings_statistics" />&nbsp;<label for="settings_statistics"><img src="design/images/icon_statistics.png" alt="{L_opt_settings_statistics}">&nbsp;{L_opt_settings_statistics}</label><br/>
-            <input name="settings_info"{user_settings_info} type="checkbox" id="settings_info" />&nbsp;<label for="settings_info"><img height="14px" src="{dpath}icons/menu_empire_emperor.png" alt="{L_opt_settings_info}">&nbsp;{L_opt_settings_info}</label>
-            <input name="settings_bud"{user_settings_bud} type="checkbox" id="settings_bud" />&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{add_to_buddylist}">&nbsp;{L_add_to_buddylist}</label>
-            <!--      <img src="{dpath}img/s.gif" alt="{show_report}"> {L_show_report} <input name="settings_rep"{user_settings_rep} type="checkbox" /> -->
+            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="1" id="settings_esp" <!-- IF user_settings_esp -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_esp"><img height="14px" src="design/images/icon_espionage.png" alt="{L_spy}" />&nbsp;{L_spy}</label>
+
+            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="1" id="settings_mis" <!-- IF user_settings_mis -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_mis"><img height="14px" src="design/images/icon_missile.png" alt="{L_attack_with_missile}" />&nbsp;{L_attack_with_missile}</label>
+            <br />
+
+            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="1" id="settings_wri" <!-- IF user_settings_wri -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_wri"><img height="14px" src="design/images/icon_mail.gif" alt="{L_write_a_messege}" />&nbsp;{L_write_a_messege}</label>
+
+            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="1" id="settings_statistics" <!-- IF user_settings_statistics -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_statistics"><img height="14px" src="design/images/icon_statistics.png" alt="{L_opt_settings_statistics}" />&nbsp;{L_opt_settings_statistics}</label>
+            <br />
+
+            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="1" id="settings_info" <!-- IF user_settings_info -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_info"><img height="14px" src="{dpath}icons/menu_empire_emperor.png" alt="{L_opt_settings_info}" />&nbsp;{L_opt_settings_info}</label>
+
+            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="1" id="settings_bud" <!-- IF user_settings_bud -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{L_add_to_buddylist}" />&nbsp;{L_add_to_buddylist}</label>
           </td>
         </tr>
 

@@ -3,23 +3,20 @@
 class classSupernova {
   public static $db_in_transaction = false;
   public static $transaction_id = 0;
+  public static $user = array();
+  /**
+   * @var userOptions
+   */
+  public static $user_options;
 
   /**
    * @var debug $debug_handler
    */
   private static $debug_handler = null;
 
-  public static function log_file($message) {
-    if(self::$debug_handler) {
-      self::$debug_handler->log_file($message);
-    }
-  }
-
-  public static function debug_set_handler(&$debug) {
-    self::$debug_handler = $debug;
-  }
 
   public $options = array();
+
 
   /*
   // protected static $user = null;
@@ -109,6 +106,20 @@ class classSupernova {
       ),
     ),
   );
+
+  public static function init() {
+    self::$user_options = new userOptions(0);
+  }
+
+
+  public static function log_file($message) {
+    if(self::$debug_handler) {
+      self::$debug_handler->log_file($message);
+    }
+  }
+  public static function debug_set_handler(&$debug) {
+    self::$debug_handler = $debug;
+  }
 
   // Перепаковывает массив на заданную глубину, убирая поля с null
   public static function array_repack(&$array, $level = 0) {
@@ -607,7 +618,7 @@ class classSupernova {
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
       // TODO переписать
-      // classSupernova::db_get_record_list(LOC_USER, "`username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'");
+      // self::db_get_record_list(LOC_USER, "`username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'");
 
       $user = static::db_query(
         "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'"
@@ -1032,7 +1043,7 @@ class classSupernova {
       case SQL_OP_UPDATE: $conditions[P_ACTION_STR] = ("UPDATE {{{$table_name}}} SET"); break;
       case SQL_OP_INSERT: $conditions[P_ACTION_STR] = ("INSERT INTO {{{$table_name}}} SET"); break;
       // case SQL_OP_REPLACE: $result = doquery("REPLACE INTO {{{$table_name}}} SET {$fields}") && $result; break;
-      default: die('Неподдерживаемая операция в classSupernova::db_changeset_apply');
+      default: die('Неподдерживаемая операция в classSupernova::db_changeset_condition_compile');
     }
 
     $conditions[P_QUERY_STR] = $conditions[P_ACTION_STR] . ' ' . $conditions[P_FIELDS_STR] . (' WHERE ' . $conditions[P_WHERE_STR]);
@@ -1061,9 +1072,9 @@ class classSupernova {
           //die('spec ops supernova.php line 928 Добавить работу с кэшем юнитов итд');
           switch($conditions['action'])
           {
-            case SQL_OP_DELETE: $result = classSupernova::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result; break;
-            case SQL_OP_UPDATE: $result = classSupernova::db_upd_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR], $conditions[P_FIELDS_STR]) && $result; break;
-            case SQL_OP_INSERT: $result = classSupernova::db_ins_record($conditions[P_LOCATION], $conditions[P_FIELDS_STR]) && $result; break;
+            case SQL_OP_DELETE: $result = self::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result; break;
+            case SQL_OP_UPDATE: $result = self::db_upd_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR], $conditions[P_FIELDS_STR]) && $result; break;
+            case SQL_OP_INSERT: $result = self::db_ins_record($conditions[P_LOCATION], $conditions[P_FIELDS_STR]) && $result; break;
             default: die('Неподдерживаемая операция в classSupernova::db_changeset_apply');
             // case SQL_OP_REPLACE: $result = $result && doquery("REPLACE INTO {{{$table_name}}} SET {$fields}"); break;
           }

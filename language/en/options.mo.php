@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a0.0
+* @version 40a1.0
 *
 */
 
@@ -66,14 +66,17 @@ $a_lang_array = (array(
   'emaildir' => 'E-mail address',
   'emaildir_tip' => 'This address can be changed at any time. Address will be the main, if it has not been modified within 7 days.',
   'permanentemaildir' => 'Main e-mail address',
-  'opt_lst_ord' => 'View of the universe:',
-  'opt_lst_ord0' => 'Time of colonization',
-  'opt_lst_ord1' => 'Coordinates',
-  'opt_lst_ord2' => 'Alphabetical order',
-  'opt_lst_ord3' => 'Maximum fields',
-  'opt_lst_cla' => 'Arrange by:',
-  'opt_lst_cla0' => 'Ascending Order',
-  'opt_lst_cla1' => 'Descending Order',
+  'opt_planet_sort_title' => 'Order planets by',
+  'opt_planet_sort_options' => array(
+    SORT_ID       => 'Colonization Time',
+    SORT_LOCATION => 'Coordinates',
+    SORT_NAME     => 'Name',
+    SORT_SIZE     => 'Size',
+  ),
+  'opt_planet_sort_ascending' => array(
+    SORT_ASCENDING  => 'Ascending',
+    SORT_DESCENDING => 'Descending',
+  ),
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',
   'opt_adm_planet_prot' => 'Planetary protection',
@@ -100,7 +103,7 @@ $a_lang_array = (array(
   'galaxyvision_options' => 'Universe',
   'spy_cant' => 'Number of probes',
   'spy_cant_tip' => 'Number of probes to be sent when you follow someone for.',
-  'tooltip_time' => 'Show ToolTips',
+  'tooltip_time' => 'Delay before show tooltip',
   'mess_ammount_max' => 'The number of maximum fleet communications',
   'seconds' => 'Second(s)',
   'shortcut' => 'Quick access',
