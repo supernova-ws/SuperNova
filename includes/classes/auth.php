@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a0.22#
+ * version #40a1.5#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.22# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a1.5# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -583,21 +583,21 @@ class auth extends sn_module {
     sn_db_transaction_commit();
   }
   static function flog($message, $die = false) {
-    list($called, $caller) = debug_backtrace(false);
-    $caller_name =
-      (!empty($caller['class']) ? $caller['class'] : '') .
-      (!empty($caller['type']) ? $caller['type'] : '') .
-      (!empty($caller['function']) ? $caller['function'] : '') .
-      (!empty($called['line']) ? ':' . $called['line'] : '');
-
-    // $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
-
-    classSupernova::log_file("$message - $caller_name");
-    if($die) {
-      // $die && die("Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . ")");
-      // pdump($caller);
-      // pdump(debug_backtrace(false));
-      $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
-    }
+//    list($called, $caller) = debug_backtrace(false);
+//    $caller_name =
+//      (!empty($caller['class']) ? $caller['class'] : '') .
+//      (!empty($caller['type']) ? $caller['type'] : '') .
+//      (!empty($caller['function']) ? $caller['function'] : '') .
+//      (!empty($called['line']) ? ':' . $called['line'] : '');
+//
+//    // $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
+//
+//    // classSupernova::log_file("$message - $caller_name");
+//    if($die) {
+//      // $die && die("Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . ")");
+//      // pdump($caller);
+//      // pdump(debug_backtrace(false));
+//      $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
+//    }
   }
 }
