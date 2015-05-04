@@ -3,18 +3,20 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   var sn_inframe;
   function getFrameName(frame) {
-    var frames = parent.frames,
-      l = frames.length,
-      name = null;
-
-    for (var x=0; x < l; x++) {
-      if (frames[x] === frame) {
-        name = frames[x].name;
+    for (var i = 0; i < parent.frames.length; i++) {
+      if (parent.frames[i] === frame) {
+        return (parent.frames[i].name); //
       }
     }
-    return name;
   }
-  sn_inframe = window.frameElement ? getFrameName(self) : false;
+
+  if(sn_inframe = window.frameElement ? getFrameName(self) : false) {
+    if(sn_inframe != 'sn_frame_chat' && sn_inframe != 'sn_frame_main') {
+      top.location.href = SN_ROOT_VIRTUAL;
+    }
+  }
+  // alert(sn_inframe);
+  // alert(top === self);
 
   var sn_delay = function(func, wait) {
     var args = Array.prototype.slice.call(arguments, 2);
