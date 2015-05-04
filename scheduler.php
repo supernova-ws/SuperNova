@@ -71,7 +71,7 @@ print(      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . 
       $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . $config->var_stat_update .
         ', $ts_scheduled_update = ' . date(FMT_DATE_TIME_SQL, $ts_scheduled_update) .
         ', next_stat_update = ' . $next_run;
-      $debug->warning($msg, 'Stat update', 190);
+      $debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
       $total_time = microtime(true);
 
       require_once('includes/includes/sys_stat.php');
@@ -79,7 +79,7 @@ print(      $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . 
 
       $total_time = microtime(true) - $total_time;
       $msg = "Stat update complete in {$total_time} seconds.";
-      $debug->warning($msg, 'Stat update', 192);
+      $debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
 
       $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}."; // . date(FMT_DATE_TIME, $ts_scheduled_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
 

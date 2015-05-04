@@ -89,17 +89,17 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
 
   upd_unset_table_info($tableName);
 
-  $q1 = upd_do_query("SHOW COLUMNS FROM {$prefix_table_name};");
+  $q1 = upd_do_query("SHOW COLUMNS FROM {$prefix_table_name};", true);
   while($r1 = db_fetch($q1)) {
     $update_tables[$tableName][$r1['Field']] = $r1;
   }
 
-  $q1 = upd_do_query("SHOW INDEX FROM {$prefix_table_name};");
+  $q1 = upd_do_query("SHOW INDEX FROM {$prefix_table_name};", true);
   while($r1 = db_fetch($q1)) {
     $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 
-  $q1 = upd_do_query("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;");
+  $q1 = upd_do_query("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
   while($r1 = db_fetch($q1)) {
     $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
@@ -153,13 +153,13 @@ function upd_create_table($table_name, $declaration) {
   global $config, $update_tables;
 
   if(!$update_tables[$table_name]) {
-    upd_do_query('set foreign_key_checks = 0;');
+    upd_do_query('set foreign_key_checks = 0;', true);
     $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
     $error = db_error();
     if($error) {
       die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
     }
-    upd_do_query('set foreign_key_checks = 1;');
+    upd_do_query('set foreign_key_checks = 1;', true);
     upd_load_table_info($table_name, false);
     sys_refresh_tablelist($config->db_prefix);
   }

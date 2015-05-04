@@ -73,12 +73,19 @@ $ques = array(
   // Пока не будем делать запрос - за 4 недели всяко все флоты должны вернутся...
   // TODO I-шки - неделя на разграбление - или сколько там стата хранится...
 
+  // Удаляем планеты без пользователей
   'DELETE FROM `{{planets}}` WHERE `id_owner` not in (select id from {{users}}) AND id_owner <> 0;', // TODO NO FK Переписать на джоине
+  // Удаляем юниты без планет
+  'DELETE un FROM {{unit}} AS un
+    LEFT JOIN {{planets}} AS pl ON pl.id = un.unit_location_id
+  WHERE unit_location_type = ' . LOC_PLANET . ' AND pl.id IS NULL;',
+  // Удаляем пустые юниты с 0 уровнем (кроме Капитана)
+  'DELETE FROM {{unit}} WHERE unit_location_type = ' . LOC_PLANET . ' AND unit_level = 0 AND unit_type <> ' . UNIT_CAPTAIN,
+
   'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});', // TODO Переписать на джоине
 
   // UBE reports
   'DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(now(), INTERVAL 60 day);', // TODO Настройка
-
 
   // Чистка сообщений
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK
@@ -139,14 +146,19 @@ $ques = array(
     "DELETE FROM {{log_users_online}} WHERE online_timestamp < '{$pack_until}' AND online_aggregated = " . LOG_ONLIINE_AGGREGATE_NONE,
   ),
 
+  // Удаляем старые записи из логов
   "DELETE FROM {{logs}} WHERE log_timestamp < '{$pack_until}';",
+  // Удаляем записи о маинтенансе, апдейте и пересчете статистики более чем недельной давности - они нам уже не нужны
+  'DELETE FROM `game_logs` WHERE
+    `log_code` IN (' . LOG_INFO_DB_CHANGE . ', ' . LOG_INFO_MAINTENANCE . ', ' . LOG_INFO_STAT_START . ', ' . LOG_INFO_STAT_PROCESS . ', ' . LOG_INFO_STAT_FINISH . ')
+    AND `log_timestamp` < DATE_SUB(NOW(),INTERVAL 7 DAY);',
 
 
   // Удаляем устройства, на которые никто не ссылается
   "DELETE sd FROM {{security_device}} AS sd
     LEFT JOIN {{security_player_entry}} AS spe ON spe.device_id = sd.device_id
   WHERE player_id IS NULL;",
-
+  // Удаляем браузеры, на которые никто не ссылается
   "DELETE sb FROM {{security_browser}} AS sb
     LEFT JOIN {{security_player_entry}} AS spe ON spe.browser_id = sb.browser_id
   WHERE player_id IS NULL;",

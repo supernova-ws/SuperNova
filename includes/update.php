@@ -68,13 +68,13 @@ $config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
 upd_log_message('Server disabled. Loading table info...');
 $update_tables  = array();
 $update_indexes = array();
-$query = upd_do_query('SHOW TABLES;');
+$query = upd_do_query('SHOW TABLES;', true);
 while($row = db_fetch_row($query)) {
   upd_load_table_info($row[0]);
 }
 upd_log_message('Table info loaded. Now looking DB for upgrades...');
 
-upd_do_query('SET FOREIGN_KEY_CHECKS=0;');
+upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
 
 if($new_version < 37) {
   require_once('update_old.php');
@@ -1003,7 +1003,7 @@ switch($new_version) {
 }
 upd_log_message('Upgrade complete.');
 
-upd_do_query('SET FOREIGN_KEY_CHECKS=1;');
+upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
 
 if($new_version) {
   $config->db_saveItem('db_version', $new_version);

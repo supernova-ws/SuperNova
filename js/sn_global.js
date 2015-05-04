@@ -10,13 +10,14 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
   }
 
-  if(sn_inframe = window.frameElement ? getFrameName(self) : false) {
-    if(sn_inframe != 'sn_frame_chat' && sn_inframe != 'sn_frame_main') {
-      top.location.href = SN_ROOT_VIRTUAL;
-    }
-  }
-  // alert(sn_inframe);
-  // alert(top === self);
+  sn_inframe = window.frameElement ? getFrameName(self) : false;
+  //if(sn_inframe = window.frameElement ? getFrameName(self) : false) {
+  //  if(sn_inframe != 'sn_frame_chat' && sn_inframe != 'sn_frame_main') {
+  //    top.location.href = SN_ROOT_VIRTUAL;
+  //  }
+  //}
+  //alert(sn_inframe);
+  //alert(top === self);
 
   var sn_delay = function(func, wait) {
     var args = Array.prototype.slice.call(arguments, 2);
