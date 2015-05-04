@@ -156,11 +156,12 @@ function tpl_render_menu() {
   $template = gettemplate('menu', true);
   $template->assign_recursive($template_result);
 
-  player_load_option($user, array(PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON, PLAYER_OPTION_MENU_SHOW_ON_BUTTON,
-    PLAYER_OPTION_MENU_HIDE_ON_BUTTON, PLAYER_OPTION_MENU_HIDE_ON_LEAVE, PLAYER_OPTION_MENU_UNPIN_ABSOLUTE,
-    PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS,
-  ));
+//  player_load_option($user, array(PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON, PLAYER_OPTION_MENU_SHOW_ON_BUTTON,
+//    PLAYER_OPTION_MENU_HIDE_ON_BUTTON, PLAYER_OPTION_MENU_HIDE_ON_LEAVE, PLAYER_OPTION_MENU_UNPIN_ABSOLUTE,
+//    PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS,
+//  ));
 
+//  $is_menu_customize = isset($template_result['MENU_CUSTOMIZE']);
   $template->assign_vars(array(
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
@@ -169,13 +170,24 @@ function tpl_render_menu() {
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']),
 //    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
 
-    'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => isset($template_result['MENU_CUSTOMIZE']) ? $user['player_options'][PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 0,
-    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_SHOW_ON_BUTTON] : 0,
-    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_BUTTON] : 0,
-    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
-    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
-    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => $template_result['MENU_CUSTOMIZE'] ? $user['player_options'][PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
+//    'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON]: 0,
+//    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON] : 0,
+//    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON] : 0,
+//    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
+//    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
+//    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
   ));
+
+  if(isset($template_result['MENU_CUSTOMIZE'])) {
+    $template->assign_vars(array(
+      'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
+      'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
+      'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
+      'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
+      'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
+      'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+    ));
+  }
 
   if(IN_ADMIN === true && $user['authlevel'] > 0) {
     //global $sn_version_check_class;
@@ -229,7 +241,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   // Global header
   $user_time_diff = user_time_diff_get();
   $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
-  $player_options = player_load_option($user);
+  // $player_options = player_load_option($user);
   $template = gettemplate('_global_header', true);
   $template->assign_vars(array(
     'USER_AUTHLEVEL'           => intval($user['authlevel']),

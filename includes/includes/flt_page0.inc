@@ -7,8 +7,10 @@
 
 if($fleet_ship_sort = sys_get_param_id('fleet_ship_sort')) {
   if(!empty($lang['player_option_fleet_ship_sort'][$fleet_ship_sort])) {
-    player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT, $fleet_ship_sort);
-    player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE, sys_get_param_id('fleet_ship_sort_inverse', 0));
+    // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT, $fleet_ship_sort);
+    // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE, sys_get_param_id('fleet_ship_sort_inverse', 0));
+    classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT] = $fleet_ship_sort;
+    classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE] = sys_get_param_id('fleet_ship_sort_inverse', 0);
   }
   die();
 }
@@ -44,8 +46,10 @@ foreach(sn_get_groups('fleet') as $n => $unit_id) {
   }
 }
 
-$fleet_ship_sort = player_load_option($user, PLAYER_OPTION_FLEET_SHIP_SORT);
-$fleet_ship_sort_inverse = player_load_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE);
+// $fleet_ship_sort = player_load_option($user, PLAYER_OPTION_FLEET_SHIP_SORT);
+// $fleet_ship_sort_inverse = player_load_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE);
+$fleet_ship_sort = classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT];
+$fleet_ship_sort_inverse = classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE];
 if($fleet_ship_sort && $fleet_ship_sort != PLAYER_OPTION_FLEET_SHIP_SORT_DEFAULT) {
   switch($fleet_ship_sort) {
     case PLAYER_OPTION_FLEET_SHIP_SORT_NAME: $fleet_ship_sort_field = 'NAME'; break;

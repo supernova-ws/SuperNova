@@ -29,43 +29,43 @@ Stay out of my shed
 
 
 
-#ctv
 
 
 ПРОВЕРИТЬ ИСПОЛЬЗОВАНИЕ В МОДУЯХ!!!
-
-settings_fleetactions / PLAYER_OPTION_FLEET_MESS_AMOUNT_MAX - нерабочая опция
-settings_rep - удалено
-
-+ settings_esp / PLAYER_OPTION_UNIVERSE_ICON_SPYING
-+ settings_mis / PLAYER_OPTION_UNIVERSE_ICON_MISSILE
-+ settings_wri / PLAYER_OPTION_UNIVERSE_ICON_PM
-+ settings_statistics / PLAYER_OPTION_UNIVERSE_ICON_STATS
-+ settings_info / PLAYER_OPTION_UNIVERSE_ICON_PROFILE
-+ settings_bud / PLAYER_OPTION_UNIVERSE_ICON_BUDDY
-
-+ planet_sort / settings_sort / PLAYER_OPTION_PLANET_SORT
-+ planet_sort_order / settings_order / PLAYER_OPTION_PLANET_SORT_INVERSE
-
-+ settings_tooltiptime / opt_uni_tooltip_time / PLAYER_OPTION_TOOLTIP_DELAY
 
 ОТКРЕПИТЬ МЕНЮ + СТРЕЛОЧКА СПРАВА == ПРОБЛЕМЫ С ПОЗИЦИОНИРОВАНИЕМ!
 Глюкобаг: не работает "открепление" чата
 
 // TODO - типы опций и валидизация по типам. И группы опций
+// TODO - serialize/unserialize options
 
 Дальше - перенос OPTIONS из `users`
 
 Затем - типы полей и перенос текстовых полей с валидизацией
 
 
-Убрать неиспользуемые функции
-  function player_load_option(&$user, $option_id = null)
-  function player_save_option_array(&$user, $options_array)
-  function player_save_option(&$user, $option_id, $option_value)
-  // Искать еще player_options
+В манифесте модулей
+  'engine' => 'диез40a1.1диез', - показывает под какую версию был закоммичен модуль
+  Можно использовать для сравнения
+В phpDoc ко всем файлам
+  собака-version 40a1.1
+  То же самое - показывает под какую версию был закоммичен файл
+
 
 Вынос пола
+
+
+2015-05-04 00:09:02 40a1.2 - Настройки игрока, Фаза 2
+[#] menu_customize 0d2
+    (%) Кнопка Скрыть/Показать меню
+        Исправлены проблемы с позиционированием кнопки
+
+[@] Код - Настройки игрока
+    Настройки игрока полностью переписаны с использованием объекта userOptions
+    Убраны неиспользуемые теперь функции
+      - player_load_option()
+      - player_save_option_array()
+      - player_save_option()
 
 
 2015-05-03 23:03:52 40a1.0 - Настройки игрока, Фаза 1

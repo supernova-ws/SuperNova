@@ -20,6 +20,9 @@
   var LA_menu_customize_show_items = "{LA_menu_customize_show_items}";
   var LA_menu_customize_hide_items = "{LA_menu_customize_hide_items}";
 
+  var LEFT_MENU_SHOW_BUTTON_TOP = 7;
+  var LEFT_MENU_SHOW_BUTTON_LEFT = 10;
+
 
 </script>
 <!-- IF MENU_CUSTOMIZE -->
@@ -148,9 +151,9 @@
 <td valign="top"><!-- IF MENU_CUSTOMIZE --><input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />  <script type="text/javascript">
   jQuery(document).ready(function(){
     MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : (
-            jQuery('#left_menu_show').offset().left < 50 ?
-            jQuery('#left_menu_show').offset({top: $('#left_menu_show').offset().top, left: $('#left_menu_show').offset().left + jQuery('#left_menu').width()}).css('visibility', 'visible')
-                    : false
+            // jQuery('#left_menu_show').offset().left < 50 ?
+            jQuery('#left_menu_show').offset({top: LEFT_MENU_SHOW_BUTTON_TOP, left: LEFT_MENU_SHOW_BUTTON_LEFT + jQuery('#left_menu').width()}).css('visibility', 'visible')
+            //        : false
     );
 //    if(MENU_HIDDEN) {
 //      jQuery('#left_menu').attr('menu_hidden', '1');
