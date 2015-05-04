@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a1.5#
+ * version #40a1.7#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a1.5# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a1.7# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -484,8 +484,6 @@ class auth extends sn_module {
     //TODO Сол и Парол тоже вкинуть в хидден
   }
   static function login_process($found_provider) {
-    self::extract_to_hidden($found_provider);
-
     global $user_impersonator, $config, $sys_stop_log_hit, $is_watching;
 
     $ip = self::sec_player_ip();
@@ -516,12 +514,12 @@ class auth extends sn_module {
         $is_watching = false;
         sn_db_transaction_commit();
       }
+    }
 
-      if($extra = $config->security_ban_extra) {
-        $extra = explode(',', $extra);
-        array_walk($extra,'trim');
-        in_array(self::$hidden[F_DEVICE_ID], $extra) and die();
-      }
+    if($extra = $config->security_ban_extra) {
+      $extra = explode(',', $extra);
+      array_walk($extra,'trim');
+      in_array(self::$hidden[F_DEVICE_ID], $extra) and die();
     }
 
     if($found_provider->data[F_LOGIN_STATUS] != LOGIN_SUCCESS) {
@@ -549,6 +547,8 @@ class auth extends sn_module {
       `user_lastip` = '" . db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$hidden[F_BROWSER_ID]
       );
     }
+
+    self::extract_to_hidden($found_provider);
 
     // Не должно никуда уходить
 //    unset($result[F_DEVICE_ID]);
