@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b14.4
+* @version 40a1.11
 *
 */
 
@@ -151,6 +151,7 @@ $a_lang_array = (array(
   'ov_manage' => 'Управление',
   'ov_return' => 'Вернуться к обзору',
   'ov_rename' => 'Переименовать',
+  'ov_planet_rename_dialog_title' => 'Переименование планеты/луны',
   'ov_new_name' => 'Новое название',
   'cur_governor' => 'Текущий губернатор',
   'ov_mrc_confirm_1' => 'Вы точно хотите заменить губернатора',

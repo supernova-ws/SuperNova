@@ -34,12 +34,14 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 
+$result = array();
+
 switch($mode = sys_get_param_str('mode')) {
   case 'manage':
     sn_sys_sector_buy('overview.php?mode=manage');
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
-    $result = sn_sys_planet_core_transmute($user, $planetrow);
+    $result[] = sn_sys_planet_core_transmute($user, $planetrow);
 
     $template  = gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
@@ -76,7 +78,7 @@ switch($mode = sys_get_param_str('mode')) {
         db_user_set_by_id($user['id'], "id_planet = {$planetrow['id']}, galaxy = {$planetrow['galaxy']}, system = {$planetrow['system']}, planet = {$planetrow['planet']}");
 
         $user['id_planet'] = $planetrow['id'];
-        $result = array(
+        $result[] = array(
           'STATUS'  => ERR_NONE,
           'MESSAGE' => $lang['ov_capital_err_none'],
         );
@@ -84,7 +86,7 @@ switch($mode = sys_get_param_str('mode')) {
         sys_redirect('overview.php?mode=manage');
       } catch(exception $e) {
         sn_db_transaction_rollback();
-        $result = array(
+        $result[] = array(
           'STATUS'  => $e->getCode(),
           'MESSAGE' => $e->getMessage(),
         );
@@ -127,14 +129,14 @@ switch($mode = sys_get_param_str('mode')) {
         sn_db_transaction_commit();
         $user = db_user_by_id($user['id'], true, '*');
         $planetrow = db_planet_by_id($planetrow['id'], true, '*');
-        $result = array(
+        $result[] = array(
           'STATUS'  => ERR_NONE,
           'MESSAGE' => $lang['ov_teleport_err_none'],
         );
         sys_redirect('overview.php?mode=manage');
       } catch(exception $e) {
         sn_db_transaction_rollback();
-        $result = array(
+        $result[] = array(
           'STATUS'  => $e->getCode(),
           'MESSAGE' => $e->getMessage(),
         );
@@ -245,7 +247,9 @@ switch($mode = sys_get_param_str('mode')) {
       'PAGE_HINT'   => $lang['ov_manage_page_hint'],
     ));
 
-    $template->assign_block_vars('result', $result);
+    foreach($result as &$a_result) {
+      $template->assign_block_vars('result', $a_result);
+    }
 
     display($template, $lang['rename_and_abandon_planet']);
   break;
@@ -253,7 +257,21 @@ switch($mode = sys_get_param_str('mode')) {
   default:
     sn_sys_sector_buy();
 
+    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
+      $planetrow['name'] = $new_name;
+      $new_name_safe = db_escape($new_name);
+      db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
+    }
+
+    $result[] = sn_sys_planet_core_transmute($user, $planetrow);
+
     $template = gettemplate('planet_overview', true);
+
+    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+
+    $planet_density_index = $planetrow['density_index'];
+    $density_price_chart = planet_density_price_chart($planet_density_index);
+    tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
 
     rpg_level_up($user, RPG_STRUCTURE);
     rpg_level_up($user, RPG_RAID);
@@ -264,7 +282,6 @@ switch($mode = sys_get_param_str('mode')) {
 
     $fleet_list = flt_get_fleets($user['id']);
     $fleets = flt_parse_fleets_to_events($fleet_list);
-//    int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE `fleet_owner` = '{$user['id']}'");
 
     $planet_count = 0;
     sn_db_transaction_start();
@@ -295,15 +312,15 @@ switch($mode = sys_get_param_str('mode')) {
 
       $moon_fleets = flt_get_fleets_to_planet($moon);
       $template->assign_block_vars('planet', array_merge($template_planet, array(
-          'PLANET_FLEET_ID'  => $planet_fleet_id,
+        'PLANET_FLEET_ID'  => $planet_fleet_id,
 
-          'MOON_ID'      => $moon['id'],
-          'MOON_NAME'    => $moon['name'],
-          'MOON_IMG'     => $moon['image'],
-          'MOON_FILL'    => min(100, $moon_fill),
-          'MOON_ENEMY'   => $moon_fleets['enemy']['count'],
+        'MOON_ID'      => $moon['id'],
+        'MOON_NAME'    => $moon['name'],
+        'MOON_IMG'     => $moon['image'],
+        'MOON_FILL'    => min(100, $moon_fill),
+        'MOON_ENEMY'   => $moon_fleets['enemy']['count'],
 
-          'MOON_PLANET'  => $moon['parent_planet'],
+        'MOON_PLANET'  => $moon['parent_planet'],
       )));
 
       $planet_count++;
@@ -418,11 +435,20 @@ switch($mode = sys_get_param_str('mode')) {
       'LIST_ROW_COUNT'        => $overview_planet_rows,
       'LIST_COLUMN_COUNT'     => $overview_planet_columns,
 
+      'DARK_MATTER'           => $user_dark_matter,
+
+      'PLANET_DENSITY_INDEX'  => $planet_density_index,
+      'PLANET_CORE_TEXT'      => $lang['uni_planet_density_types'][$planet_density_index],
+
       'SECTOR_CAN_BUY'        => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
       'SECTOR_COST'           => $sector_cost,
       'SECTOR_COST_TEXT'      => pretty_number($sector_cost),
     ));
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);
+
+    foreach($result as &$a_result) {
+      $template->assign_block_vars('result', $a_result);
+    }
 
     display($template, "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;

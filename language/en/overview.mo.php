@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b14.4
+* @version 40a1.11
 *
 */
 
@@ -192,5 +192,7 @@ $a_lang_array = (array(
   'ov_password' => 'Your password to confirm',
 
   'ov_governor_purchase' => 'Игрок купил Губернатора %1$s ID %2$d уровня %3$d на планету %4$s',
+
+  'ov_planet_rename_dialog_title' => 'Rename planet/moon',
 
 ));
