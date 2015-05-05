@@ -65,7 +65,7 @@ function sys_file_read($filename)
 
 function sys_file_write($filename, $content)
 {
-  return @file_put_contents($filename, $content);
+  return @file_put_contents($filename, $content, FILE_APPEND);
 }
 
 function get_game_speed(){return sn_function_call('get_game_speed', array(&$result));}
