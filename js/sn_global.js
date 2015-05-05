@@ -56,6 +56,12 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       // $('body').css('font-size', FONT_BASE + 'px');
       jQuery.post("time_probe.php", {'font_size': FONT_BASE}, function(data) {});
     });
+    $(document).on('click', '#font_normal', function(){
+      FONT_BASE = 11;
+      $('*').css('font-size', FONT_BASE + 'px');
+      $('body').css('font-size', FONT_BASE + 'px');
+      jQuery.post("time_probe.php", {'font_size': FONT_BASE}, function(data) {});
+    });
     $(document).on('click', '#font_minus', function(){
       FONT_BASE -= 2;
       FONT_BASE < 9 ? FONT_BASE = 9 : false;
