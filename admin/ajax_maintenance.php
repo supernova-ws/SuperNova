@@ -147,9 +147,9 @@ $ques = array(
   ),
 
   // Удаляем старые записи из логов
-  "DELETE FROM {{logs}} WHERE log_timestamp < '{$pack_until}';",
+  "DELETE FROM `{{logs}}` WHERE log_timestamp < '{$pack_until}';",
   // Удаляем записи о маинтенансе, апдейте и пересчете статистики более чем недельной давности - они нам уже не нужны
-  'DELETE FROM `game_logs` WHERE
+  'DELETE FROM `{{logs}}` WHERE
     `log_code` IN (' . LOG_INFO_DB_CHANGE . ', ' . LOG_INFO_MAINTENANCE . ', ' . LOG_INFO_STAT_START . ', ' . LOG_INFO_STAT_PROCESS . ', ' . LOG_INFO_STAT_FINISH . ')
     AND `log_timestamp` < DATE_SUB(NOW(),INTERVAL 7 DAY);',
 
