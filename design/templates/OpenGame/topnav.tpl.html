@@ -41,19 +41,16 @@
     <td class="c_l noborder">
       <table cellspacing="0" cellpadding="0" class="header c_c noborder" width="100%">
         <tr>
-          <th class="c_r">
-            {L_time_local}:
+          <th class="c_c">
+            {L_time_local}: <span id="top_time">{TIME_TEXT_LOCAL}</span><br />
+            {L_time_server}: <span id="top_time_server">{TIME_TEXT}</span>
           </th>
-          <th class="c_l">
-            <span id="top_time">{TIME_TEXT_LOCAL}</span>
-          </th>
-        </tr>
-        <tr>
-          <th class="c_r">
-            {L_time_server}:
-          </th>
-          <th class="c_l">
-            <span id="top_time_server">{TIME_TEXT}</span>
+        <!--</tr>-->
+        <!--<tr>-->
+          <th class="c_c">
+            <button id="font_plus">Шрифт +</button>
+            <button id="font_normal">Норма</button>
+            <button id="font_minus">Шрифт -</button>
           </th>
         </tr>
       </table>
@@ -168,11 +165,6 @@
 
         </td>
         <!-- EOF Nav Bar Right block -->
-        <td>
-          <button id="font_plus">font +</button><br />
-          <button id="font_normal">normal</button><br />
-          <button id="font_minus">font -</button>
-        </td>
       </tr></table>
     </td>
   </tr>
