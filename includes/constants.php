@@ -25,7 +25,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a1.11');
+define('SN_VERSION', '40a1.12');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1243,6 +1243,7 @@ define('PLAYER_OPTION_PLANET_SORT', 20);
 define('PLAYER_OPTION_PLANET_SORT_INVERSE', 21);
 define('PLAYER_OPTION_TOOLTIP_DELAY', 22);
 // define('PLAYER_OPTION_UNIVERSE_PLAYER_AVATAR_SHOW', 23);
+define('PLAYER_OPTION_BASE_FONT_SIZE', 24);
 
 
 

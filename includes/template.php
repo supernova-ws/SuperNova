@@ -246,6 +246,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $template->assign_vars(array(
     'USER_AUTHLEVEL'           => intval($user['authlevel']),
 
+    'FONT_SIZE'                => classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE],
+
     'TIME_NOW'                 => SN_TIME_NOW,
     'LOGIN_LOGOUT'             => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
     'GAME_MODE_CSS_PREFIX'     => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',

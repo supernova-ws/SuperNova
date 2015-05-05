@@ -29,6 +29,8 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   var x = "";
   var e = null;
 
+  var FONT_BASE = parseInt($('body').css('font-size'));
+
   jQuery(document).ready(function () {
     // Натягиваем скины на элементы ввода
     inputs = jQuery("input");
@@ -44,6 +46,23 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     if (typeof sn_timer === 'function') {
       sn_timer();
     }
+
+
+
+    $(document).on('click', '#font_plus', function(){
+      FONT_BASE += 2;
+      FONT_BASE > 19 ? FONT_BASE = 19 : false;
+      $('*').css('font-size', FONT_BASE + 'px');
+      // $('body').css('font-size', FONT_BASE + 'px');
+      jQuery.post("time_probe.php", {'font_size': FONT_BASE}, function(data) {});
+    });
+    $(document).on('click', '#font_minus', function(){
+      FONT_BASE -= 2;
+      FONT_BASE < 9 ? FONT_BASE = 9 : false;
+      $('*').css('font-size', FONT_BASE + 'px');
+      $('body').css('font-size', FONT_BASE + 'px');
+      jQuery.post("time_probe.php", {'font_size': FONT_BASE}, function(data) {});
+    });
   });
 
 

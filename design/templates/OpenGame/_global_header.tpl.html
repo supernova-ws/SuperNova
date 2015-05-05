@@ -75,6 +75,19 @@
       var SN_GOOGLE = parseInt('{SN_GOOGLE}') ? 1 : 0;
     </script>
 
+    <!-- IF FONT_SIZE != 14 -->
+    <style type="text/css">
+      html, body{
+      font-size: {FONT_SIZE}px !important;
+      }
+    </style>
+    <script type="text/javascript">
+      $(function(){
+        $('*').css('font-size', '{FONT_SIZE}px');
+      });
+    </script>
+    <!-- ENDIF -->
+
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/ion.sound.min.js?{C_var_db_update}"></script>
