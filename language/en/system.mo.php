@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a0.23
+* @version 40a1.15
 *
 */
 
@@ -654,8 +654,8 @@ $a_lang_array = (array(
 
   'sys_eco_lack_dark_matter' => 'Not enough Dark Matter',
 
-  'time_local' => 'Local time',
-  'time_server' => 'Server time',
+  'time_local' => 'Time on player',
+  'time_server' => 'Time on server',
 
   'topnav_imp_attack' => 'Your Empire is attacked!',
 

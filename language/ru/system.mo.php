@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a0.23#
+* @version #40a1.15#
 *
 */
 
@@ -659,8 +659,8 @@ $a_lang_array = (array(
 
   'sys_eco_lack_dark_matter' => 'Не хватает Тёмной Материи',
 
-  'time_local' => 'Локальное время',
-  'time_server' => 'Серверное время',
+  'time_local' => 'Время у игрока',
+  'time_server' => 'Время на сервере',
 
   'sys_result' => array(
     'error_dark_matter_not_enough' => 'Не хватает Тёмной Материи для завершения операции',
