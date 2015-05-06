@@ -127,22 +127,22 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     <th>{L_Player}</th>
     <th>{L_sys_alliance}</th>
     <!-- IF ACT_SPY -->
-    <th><img src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" /></th>
+    <th><img src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" style="height: 1.5em" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
-    <th><img src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" /></th>
+    <th><img src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_WRITE -->
-    <th><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></th>
+    <th><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_STATISTICS -->
-    <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0></th>
+    <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 style="height: 1.5em" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_INFO -->
-    <th><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></th>
+    <th><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></th>
     <!-- ENDIF -->
     <!-- IF ACT_FRIEND -->
-    <th><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></th>
+    <th><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></th>
     <!-- ENDIF -->
   </tr>
 <!-- BEGIN galaxyrow -->
@@ -157,10 +157,10 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     </th>
     <th class="uni_show_planet" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}">
       <!-- IF galaxyrow.PLANET_ID -->
-        <div>
-          <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg>
+        <div style="height: 2.75em; width: 2.75em">
+          <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg style="height: 2.75em; width: 2.75em" />
           <!-- IF galaxyrow.PLANET_FLEET_ID -->
-          <img class="alpha25" src=design/images/icon_fleet_own.png>
+          <img class="alpha25" src=design/images/icon_fleet_own.png style="height: 2.75em; width: 2.75em" />
           <!-- ENDIF -->
         </div>
       <!-- ELSE -->
@@ -207,10 +207,10 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     </th>
     <th class="uni_show_planet" planet_type="{D_PT_MOON}">
       <!-- IF galaxyrow.MOON_DIAMETER -->
-        <div>
-          <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg />
+        <div style="height: 2.75em; width: 2.75em">
+          <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg style="height: 2.75em; width: 2.75em" />
           <!-- IF galaxyrow.MOON_FLEET_ID -->
-          <img class="alpha25" src=design/images/icon_fleet_own.png width=100%>
+          <img class="alpha25" src=design/images/icon_fleet_own.png style="height: 2.75em; width: 2.75em" />
           <!-- ENDIF -->
         </div>
       <!-- ELSE -->
@@ -230,8 +230,8 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 
     <td class="c_c uni_show_debris" style="background-color: {$DEBRIS_BKG};">
       <!-- IF galaxyrow.DEBRIS -->
-        <div>
-          <img src="{dpath}planeten/debris.jpg" height="30px" width="30px">
+        <div style="height: 2.75em; width: 2.75em">
+          <img src="{dpath}planeten/debris.jpg" style="height: 100%; width: 100%" />
           <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
             <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
           <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
@@ -304,42 +304,42 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     <!-- IF ACT_SPY -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <img onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" />
+      <img onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" style="height: 1.5em" />
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <img onclick="uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" />
+      <img onclick="uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" />
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_WRITE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" /></a>
+      <a href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_STATISTICS -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && galaxyrow.USER_RANK != '-' -->
-      <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" /></a>
+      <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_INFO -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" /></a>
+      <a href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_FRIEND -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" /></a>
+      <a href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
@@ -416,12 +416,12 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       <!-- ENDIF -->
 
       <tr><th class="c_l" colspan=2>{L_Actions}</th></tr>
-      <tr><td>{L_gl_espionner}</td><td><img src="design/images/icon_espionage.png" border=0></td></tr>
-      <tr><td>{L_gl_mipattack}</td><td><img src="design/images/icon_missile.png" border=0></td></tr>
-      <tr><td>{L_stat_details}</td><td><img src="{dpath}icons/menu_empire_emperor.png" border=0></td></tr>
-      <tr><td>{L_gl_sendmess}</td><td><img src="design/images/icon_mail.gif" border=0></td></tr>
-      <tr><td>{L_gl_buddyreq}</td><td><img src="{dpath}img/b.gif" border=0></td></tr>
-      <tr><td>{L_gl_stats}</td><td><img src="design/images/icon_statistics.png" border=0 /></td></tr>
+      <tr><td>{L_gl_espionner}</td><td><img src="design/images/icon_espionage.png" border=0 style="height: 1.5em" /> </td></tr>
+      <tr><td>{L_gl_mipattack}</td><td><img src="design/images/icon_missile.png" border=0 style="height: 1.5em" /></td></tr>
+      <tr><td>{L_stat_details}</td><td><img src="{dpath}icons/menu_empire_emperor.png" border=0 style="height: 1.5em" /></td></tr>
+      <tr><td>{L_gl_sendmess}</td><td><img src="design/images/icon_mail.gif" border=0 style="height: 1.5em" /></td></tr>
+      <tr><td>{L_gl_buddyreq}</td><td><img src="{dpath}img/b.gif" border=0 style="height: 1.5em" /></td></tr>
+      <tr><td>{L_gl_stats}</td><td><img src="design/images/icon_statistics.png" border=0  style="height: 1.5em" /></td></tr>
     </table>
   </span>
 
@@ -434,7 +434,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       </tr>
 
       <tr>
-      <td class="c_c" width=75><img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" height=75 width=75 /><div>[PLANET_DIAMETER]</div></td>
+      <td class="c_c"><img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" style="width: 7em; font-size: 1em;" /><div>[PLANET_DIAMETER]</div></td>
 
       <td class="c_c">
         <button style="[HIDE_PLANET_RELOCATE]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_RELOCATE}');">
@@ -474,7 +474,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   <span id="debris_template">
     <table width=100%>
       <tr><th class="c_c" colspan="4">{L_Debris} [{galaxy}:{system}:[CURRENT_PLANET]]</th></tr>
-      <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" height="75px" width="75px" /></td></tr>
+      <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" style="width: 7em; font-size: 1em;" /></td></tr>
 
       <tr>
         <th class="c_l">{L_gl_ressource}</th>
@@ -534,7 +534,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       </tr>
       <tr>
         <td class="c_c" style="[HIDE_USER_AVATAR]">
-          <div><img src="{D_SN_ROOT_VIRTUAL}images/avatar/avatar_[USER_ID].png" height=75 width=75 /></div>
+          <div><img src="{D_SN_ROOT_VIRTUAL}images/avatar/avatar_[USER_ID].png" style="width: 9em;" /></div>
         </td>
         <td class="c_c">
           <button onclick="sn_redirect('stat.php?who=1&range=[USER_RANK]#[USER_RANK]');">
@@ -566,7 +566,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       </tr>
       <tr>
         <td class="c_c" rowspan="4" style="[HIDE_ALLY_AVATAR]">
-          <img src="{D_SN_ROOT_VIRTUAL}images/avatar/ally_[ALLY_ID].png" width=75 />
+          <img src="{D_SN_ROOT_VIRTUAL}images/avatar/ally_[ALLY_ID].png" style="width: 9em;" />
         </td>
         <td class="c_c">
           {L_gal_sys_members}&nbsp;[ALLY_MEMBERS]

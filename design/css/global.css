@@ -112,11 +112,26 @@ li
 /* Icon file */
 .icons { background-image: url(../images/icons.png); }
 
-.icon-plus { background-position: 0 0; }
-.icon-minus { background-position: -16px 0; }
-.icon-info { background-position: -32px 0; }
-.icon-cancel { background-position: -48px 0; }
-.icon-gather { background-position: -64px 0; }
+.icon-plus {
+  background-position: 0 0;
+  display: inline-block; vertical-align: middle;
+}
+.icon-minus {
+  background-position: -16px 0;
+  display: inline-block; vertical-align: middle;
+}
+.icon-info {
+  background-position: -32px 0;
+  display: inline-block; vertical-align: middle;
+}
+.icon-cancel {
+  background-position: -48px 0;
+  display: inline-block; vertical-align: middle;
+}
+.icon-gather {
+  background-position: -64px 0;
+  display: inline-block; vertical-align: middle;
+}
 
 .icon-info_empire {
   background-position: -32px 0;
@@ -131,7 +146,7 @@ li
   background: rgba(0, 0, 0, 0.75);
 }
 
-.alpha50
+.alpha50, .a50
 {
   /* Fallback for web browsers that doesn't support RGBa */
   background: rgb(0, 0, 0);
@@ -139,12 +154,27 @@ li
   background: rgba(0, 0, 0, 0.50);
 }
 
-.alpha25
+.alpha25, .a25
 {
   /* Fallback for web browsers that doesn't support RGBa */
   background: rgb(0, 0, 0);
   /* RGBa with 0.25 opacity */
   background: rgba(0, 0, 0, 0.25);
+}
+
+.opacity75, .o75 {
+  opacity: 0.75;
+  filter: alpha(opacity=75); /* For IE8 and earlier */
+}
+
+.opacity50, .o50 {
+  opacity: 0.50;
+  filter: alpha(opacity=50); /* For IE8 and earlier */
+}
+
+.opacity50, .o25 {
+  opacity: 0.25;
+  filter: alpha(opacity=25); /* For IE8 and earlier */
 }
 
 /* jQuery-UI */
@@ -306,31 +336,6 @@ table {margin-left: auto; margin-right: auto}
 }
 
 
-.planet_list_top87 {
-  width: 87px;
-}
-.planet_list_top87 > .planet_list_wrap
-{
-  height: 75px;
-}
-.planet_list_top87 > .planet_list_wrap > .images {
-  height: 100%;
-  width: 75px;
-}
-
-.planet_list_top112 {
-  width: 112px;
-}
-.planet_list_top112 > .planet_list_wrap
-{
-  height: 100px;
-}
-.planet_list_top112 > .planet_list_wrap > .images {
-  height: 100%;
-  width: 100px;
-}
-
-
 .planet_list_wrap {
   position: relative;
   border: 0 solid blue;
@@ -343,8 +348,53 @@ table {margin-left: auto; margin-right: auto}
 
   overflow: hidden;
 
-  width: 4px;
+  width: 0.25em;
   height: 100%;
+}
+
+.planet_list_top87 {
+  width: 7.75em;  /* 87/11 = 7,909090909091 */
+}
+.planet_list_top87 > .planet_list_wrap {
+  height: 7em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .images {
+  height: 100%;
+  width: 7em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .metal_bar {
+  left: 7em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .crystal_bar {
+  left: 7.25em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .deuterium_bar {
+  left: 7.50em; /* 75/11 = 6,818181818182 */
+}
+
+.planet_list_top112 {
+  width: 9.75em;
+}
+.planet_list_top112 > .planet_list_wrap {
+  height: 9em;
+}
+.planet_list_top112 > .planet_list_wrap > .images {
+  height: 100%;
+  width: 9em;
+}
+.planet_list_top112 > .planet_list_wrap > .metal_bar {
+  left: 9em;
+}
+.planet_list_top112 > .planet_list_wrap > .crystal_bar {
+  left: 9.25em;
+}
+.planet_list_top112 > .planet_list_wrap > .deuterium_bar {
+  left: 9.50em;
+}
+.planet_list_top112 > .planet_list_wrap > .images > .icon-gather-wrapper {
+  height: 2.25em; width: 2.25em;
+  bottom: 0px; right: 0px;
+  position: absolute;
 }
 
 
@@ -355,12 +405,13 @@ table {margin-left: auto; margin-right: auto}
   position: relative;
 
   width: 100%;
-  height: 10px;
+  height: 1.1em;
 
   overflow: hidden;
+
+  background-color: #344566;
 }
-.planet_list_fields > .numbers
-{
+.planet_list_fields > .numbers {
   position: absolute;
   left: 0;
   top: 0;
@@ -368,9 +419,21 @@ table {margin-left: auto; margin-right: auto}
   width: 100%;
   height: 100%;
 
-  font-size: 9px;
+  font-size: 0.9em;
   font-weight: bold;
 }
+.planet_list_fields > .bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  /*width: 100%;*/
+  height: 100%;
+
+  /*font-size: 1.1em;*/
+  font-weight: bold;
+}
+
 .planet_list_bar
 {
   position: absolute;
@@ -381,6 +444,7 @@ table {margin-left: auto; margin-right: auto}
 
 .ov_struc_timer{
   white-space: normal;
+  background-color: #344566;
 }
 
 
@@ -403,6 +467,7 @@ table {margin-left: auto; margin-right: auto}
   top: 100%;
   height: 10%;
   overflow: hidden;
+  background-color: #344566;
 }
 
 .planet_list_submoon_filler {
@@ -501,6 +566,8 @@ table {margin-left: auto; margin-right: auto}
   position: absolute;
   bottom: 0;
   right: 0;
+  width: 25%;
+  height: 25%;
 }
 
 .icon_25per_top_2

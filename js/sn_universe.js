@@ -98,9 +98,7 @@ function sn_universe_show_user(that) {
   result = result.replace(/\[USER_COLSPAN]/g, opt_uni_avatar_user && users[id]['avatar'] == 1 ? 2 : 1);
 
   result = result.replace(/\[USER_ALLY_TAG\]/g, users[id]['ally_tag']);
-  if(allies[users[id]['ally_id']]) {
-    result = result.replace(/\[USER_ALLY_NAME\]/g, allies[users[id]['ally_id']]['name']);
-  }
+  result = result.replace(/\[USER_ALLY_NAME\]/g, allies[users[id]['ally_id']] ? allies[users[id]['ally_id']]['name'] : '');
   result = result.replace(/\[USER_ALLY_TITLE\]/g, users[id]['ally_title']);
   result = result.replace(/\[HIDE_USER_ALLY\]/g,
     users[id]['ally_title'] && users[id]['ally_title'] != undefined ? '' : 'display: none;');

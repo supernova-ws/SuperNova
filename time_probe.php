@@ -14,6 +14,10 @@ $time_server = $time_local  - $time_diff
 */
 
 if($font_size = sys_get_param_int('font_size')) {
+  $font_size < 9 ? $font_size = 9 : false;
+  $font_size > 19 ? $font_size = 19 : false;
+
+  sn_setcookie(SN_COOKIE_F, $font_size, SN_TIME_NOW + PERIOD_YEAR);
   classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE] = $font_size;
 } else {
   $user_time_diff = user_time_diff_get();

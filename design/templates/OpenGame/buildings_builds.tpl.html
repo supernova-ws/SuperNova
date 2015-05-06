@@ -106,9 +106,9 @@ var que_id = '{QUE_ID}';
       <!-- ENDIF -->
 
       <!-- IF METAL > 99999999999 || CRYSTAL > 9999999999 || DEUTERIUM > 9999999999 || METAL < -9999999999 || CRYSTAL < -999999999 || DEUTERIUM < -999999999-->
-        <!-- DEFINE $FONT_SIZE = '80%' -->
+        <!-- DEFINE $FONT_SIZE = '0.8em' -->
       <!-- ELSE -->
-        <!-- DEFINE $FONT_SIZE = '100%' -->
+        <!-- DEFINE $FONT_SIZE = '1.0em' -->
       <!-- ENDIF -->
 
       <tr>
@@ -116,15 +116,15 @@ var que_id = '{QUE_ID}';
           <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">
             <tr>
               <th>
-                <div style="vertical-align: middle; min-height: 170px">
-                  <div id="unit_name" align="center" style="font-size: 100%; min-height: 3em;vertical-align: top;"></div>
-                  <div style="vertical-align: middle"><img id="unit_image" border="0" src="" align="top" width="120px" /></div>
-                  <div id="unit_level" style="font-size: 100%; min-height: 1.1em; vertical-align: bottom"></div>
+                <div style="vertical-align: middle; min-height: 170px; width: 11em;">
+                  <div id="unit_name" align="center" style="font-size: 1em; min-height: 3em;vertical-align: top;"></div>
+                  <div style="vertical-align: middle"><img id="unit_image" border="0" src="" align="top" width="100%" /></div>
+                  <div id="unit_level" style="font-size: 1em; min-height: 1.1em; vertical-align: bottom"></div>
                 </div>
               </th>
               <th valign="top" width="100%">
                 <div id="unit_description" style="text-align: justify;"></div>
-                <div id="unit_require_wrapper" style="font-size: 10px">
+                <div id="unit_require_wrapper" style="font-size: 0.8em">
                   <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
                   <ul id="unit_require"></ul>
                 </div>
@@ -234,7 +234,7 @@ var que_id = '{QUE_ID}';
 
               <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY && ! STACKABLE && ! TEMPORARY -->
                 <!-- IF QUE_HAS_FIELDS && production.BUILD_CAN && production.BUILD_RESULT == 0 -->
-                  <div class="right_top a75 unit_create">
+                  <div class="right_top a75 unit_create" style="width: 1.23em; height: 1.23em;">
                     <div class="icons icon-plus"></div>
                   </div>
                 <!-- ENDIF -->
@@ -245,16 +245,16 @@ var que_id = '{QUE_ID}';
               </span>
 
               <!-- IF     (production.METAL && (production.METAL_REST_NUM > 999999999 || production.METAL_REST_NUM < -99999999)) || (production.CRYSTAL && (production.CRYSTAL_REST_NUM > 999999999)) || production.CRYSTAL_REST_NUM < -99999999 || (production.DEUTERIUM && (production.DEUTERIUM_REST_NUM > 999999999  || production.DEUTERIUM_REST_NUM < -99999999)) -->
-                <!-- DEFINE $FONT_SIZE = '80%' -->
+                <!-- DEFINE $FONT_SIZE = '0.8em' -->
               <!-- ELSEIF (production.METAL && (production.METAL_REST_NUM > 99999999  || production.METAL_REST_NUM < -9999999 )) || (production.CRYSTAL && (production.CRYSTAL_REST_NUM > 99999999 )) || production.CRYSTAL_REST_NUM < -9999999  || (production.DEUTERIUM && (production.DEUTERIUM_REST_NUM > 99999999   || production.DEUTERIUM_REST_NUM < -9999999 )) -->
-                <!-- DEFINE $FONT_SIZE = '90%' -->
+                <!-- DEFINE $FONT_SIZE = '0.9em' -->
               <!-- ELSE -->
-                <!-- DEFINE $FONT_SIZE = '100%' -->
+                <!-- DEFINE $FONT_SIZE = '1em' -->
               <!-- ENDIF -->
               <span class="a75 resource_container" style="font-size: {$FONT_SIZE};">
-                <!-- IF production.METAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.METAL_TEXT}<!-- ELSE -->{production.METAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
-                <!-- IF production.CRYSTAL --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.CRYSTAL_TEXT}<!-- ELSE -->{production.CRYSTAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
-                <!-- IF production.DEUTERIUM --><div><div class="left"><!-- IF $FONT_SIZE == '80%' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.DEUTERIUM_TEXT}<!-- ELSE -->{production.DEUTERIUM_REST}<!-- ENDIF --></div></div><!-- ENDIF -->
+                <!-- IF production.METAL --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_metal_sh}<!-- ELSE -->{L_sys_metal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.METAL_TEXT}<!-- ELSE -->{production.METAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
+                <!-- IF production.CRYSTAL --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_crystal_sh}<!-- ELSE -->{L_sys_crystal}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.CRYSTAL_TEXT}<!-- ELSE -->{production.CRYSTAL_REST}<!-- ENDIF --></div></div><br><!-- ENDIF -->
+                <!-- IF production.DEUTERIUM --><div><div class="left"><!-- IF $FONT_SIZE != '1em' -->{L_sys_deuterium_sh}<!-- ELSE -->{L_sys_deuterium}<!-- ENDIF --></div><div class="fr"><!-- IF STACKABLE -->{production.DEUTERIUM_TEXT}<!-- ELSE -->{production.DEUTERIUM_REST}<!-- ENDIF --></div></div><!-- ENDIF -->
                 <!-- IF production.DARK_MATTER && ! TEMPORARY --><div><div class="left">{L_sys_dark_matter_sh}</div><div class="fr">{production.DARK_MATTER_REST}</div></div><!-- ENDIF -->
               </span>
 
@@ -267,15 +267,15 @@ var que_id = '{QUE_ID}';
 
               <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY && ! STACKABLE && ! TEMPORARY -->
                 <!-- IF production.LEVEL && production.DESTROY_CAN && production.DESTROY_RESULT == 0 -->
-                  <span class="left_top a75 unit_destroy" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}">
+                  <span class="left_top a75 unit_destroy" style="width: 1.23em; height: 1.23em;" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}">
                     <div class="icons icon-minus"></div>
                   </span>
                 <!-- ENDIF -->
               <!-- ENDIF -->
 
               <!-- IF ! ALLY_ID && ! production.DARK_MATTER_ONLY -->
-              <span class="a75 right_bottom gather_resources" title="{L_flt_gather_all}"
-                <!-- IF production.METAL_REST_NUM < 0 -->metal="{production.METAL_REST_NUM}"<!-- ENDIF -->
+              <span class="a75 right_bottom gather_resources" title="{L_flt_gather_all}" style="width: 1.23em; height: 1.23em;"
+              <!-- IF production.METAL_REST_NUM < 0 -->metal="{production.METAL_REST_NUM}"<!-- ENDIF -->
                 <!-- IF production.CRYSTAL_REST_NUM < 0 -->crystal="{production.CRYSTAL_REST_NUM}"<!-- ENDIF -->
                 <!-- IF production.DEUTERIUM_REST_NUM < 0 -->deuterium="{production.DEUTERIUM_REST_NUM}"<!-- ENDIF -->
               >
@@ -283,7 +283,7 @@ var que_id = '{QUE_ID}';
               </span>
               <!-- ENDIF -->
 
-              <span class="a75 left_bottom" go="info">
+              <span class="a75 left_bottom" go="info" style="width: 1.23em; height: 1.23em;">
                 <div class="icons icon-info_empire"></div>
               </span>
             </div>

@@ -7,8 +7,8 @@
   <table width=519>
     <tr>
       <td style="white-space: nowrap;" class="c" colspan=4>
-        <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
-        <div class="fr"><a href="overview.php"><font color="green">[{L_ov_return}]</font></a></div>
+        <div class="fl">{PLANET_TYPE_TEXT} "{PLANET_NAME}" <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a></div>
+        <button class="fr" onclick="sn_redirect('overview.php');return false;"><span class="ok">{L_ov_return}</span></button>
       </td>
     </tr>
     <tr>
@@ -86,7 +86,7 @@
             <!-- BEGIN governors -->
               <th valign="top">
                 {governors.NAME}<br />
-                <a href="infos.php?gid={governors.ID}"><img src="{dpath}gebaeude/{governors.ID}.jpg" align="top" width="120" height="120" /></a><br />
+                <a href="infos.php?gid={governors.ID}"><img src="{dpath}gebaeude/{governors.ID}.jpg" align="top" style="font-size: 1em; width: 11em; height: auto;" /></a><br />
                 <!-- IF governors.MAX && governors.LEVEL >= governors.MAX -->
                   <span class="negative">{L_sys_maximum_level}</span>
                 <!-- ELSEIF governors.COST <= DARK_MATTER -->

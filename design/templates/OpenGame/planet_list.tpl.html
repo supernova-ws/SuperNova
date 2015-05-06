@@ -16,19 +16,13 @@
   <!-- IF planet.ID -->
     <!-- IF planet.ID == PLANET_ID || (planet.MOON_ID == PLANET_ID && $OVERVIEW) -->
       <!-- DEFINE $PLANET_IMG_SIZE = 100 -->
-      <!-- DEFINE $RESOURCE_BAR = 4 -->
-      <!-- DEFINE $METAL_BAR = 100 -->
-      <!-- DEFINE $CRYSTAL_BAR = 103 -->
-      <!-- DEFINE $DEUTERIUM_BAR = 106 -->
-      <!-- DEFINE $OVERALL_BAR = 109 -->
+
+    <!-- КЛЮЧ -->
       <!-- DEFINE $FRAME_WIDTH = 112 -->
     <!-- ELSE -->
       <!-- DEFINE $PLANET_IMG_SIZE = 75 -->
-      <!-- DEFINE $RESOURCE_BAR = 4 -->
-      <!-- DEFINE $METAL_BAR = 75 -->
-      <!-- DEFINE $CRYSTAL_BAR = 79 -->
-      <!-- DEFINE $DEUTERIUM_BAR = 83 -->
-      <!-- DEFINE $OVERALL_BAR = 87 -->
+
+    <!-- КЛЮЧ -->
       <!-- DEFINE $FRAME_WIDTH = 87 -->
     <!-- ENDIF -->
 
@@ -49,26 +43,21 @@
 
           <img src="{dpath}planeten/<!-- IF $PLANET_IMG_SIZE == 75 -->small/s_<!-- ENDIF -->{planet.IMAGE}.jpg" class="element_fill_wrap" go="" />
 
-          <!-- IF .planet.building_que -->
-          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="a75 icon_25per_left_1" title="{planet.STRUCTURE}" go="build" />
-          <!-- ENDIF -->
 
-          <!-- IF planet.HANGAR -->
-          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="a75 icon_25per_left_2" title="{planet.HANGAR}" go="build" mode="fleet" />
-          <!-- ENDIF -->
+          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="<!-- IF .planet.building_que -->a75<!-- ELSE -->a50 o50<!-- ENDIF --> icon_25per_left_1" title="{planet.STRUCTURE}" go="build"/>
 
-          <!-- IF planet.DEFENSE -->
-          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_defense.png" class="a75 icon_25per_left_3" title="{planet.DEFENSE}" go="build" mode="defense" />
-          <!-- ENDIF -->
+          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_hangar.png" class="<!-- IF planet.HANGAR -->a75<!-- ELSE -->a50 o50<!-- ENDIF --> icon_25per_left_2" title="{planet.HANGAR}" go="build" mode="fleet" />
+
+          <img src="{D_SN_ROOT_VIRTUAL}design/images/build_defense.png" class="<!-- IF planet.DEFENSE -->a75<!-- ELSE -->a50 o50<!-- ENDIF --> icon_25per_left_3" title="{planet.DEFENSE}" go="build" mode="defense" />
 
           <!-- IF planet.PLANET_GOVERNOR_ID && planet.PLANET_GOVERNOR_LEVEL -->
           <span class="a75 icon_25per_left_4" title="{planet.PLANET_GOVERNOR_NAME} {planet.PLANET_GOVERNOR_LEVEL}" go="" mode="manage">
-            <img src="{dpath}gebaeude/{planet.PLANET_GOVERNOR_ID}.jpg" class="icon_fill">
+            <img src="{dpath}gebaeude/{planet.PLANET_GOVERNOR_ID}.jpg" class="icon_fill o75">
             <span class="a75 left_bottom">{planet.PLANET_GOVERNOR_LEVEL}</span>
           </span>
           <!-- ENDIF -->
 
-          <span title="{L_flt_gather_all}" class="a75 icon_25per_right_4" go="fleet" mode="5">
+          <span title="{L_flt_gather_all}" class="a75 icon-gather-wrapper" go="fleet" mode="5" style="">
             <div class="icons icon-gather"></div>
           </span>
 
@@ -84,9 +73,11 @@
             <div class="right_top percent{$MOON_IMG_SIZE}" planet_id="{planet.MOON_ID}">
               <img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" class="icon_fill" go="" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]" />
 
+              <!-- IF $MOON_IMG_SIZE == '66' -->
               <span title="{L_flt_gather_all}" class="a75 icon_25per_right_4" go="fleet" mode="5">
                 <div class="icons icon-gather"></div>
               </span>
+              <!-- ENDIF -->
 
               <span class="planet_list_submoon_fields">
                 <div class="fl planet_list_submoon_filler <!-- IF planet.MOON_FILL >= 100 -->negative<!-- ELSEIF planet.MOON_FILL > 80 -->neutral<!-- ELSE -->positive<!-- ENDIF -->_bg" style="width: {planet.MOON_FILL}%;"></div>
@@ -108,7 +99,7 @@
         <!-- ELSE -->
           <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
         <!-- ENDIF -->
-        <div class="{$FIELD_COLOR} res_bar" style="left: {$METAL_BAR}px;">
+        <div class="{$FIELD_COLOR} res_bar metal_bar">
           <div class="planet_list_bar metal_bg" style="height: {planet.METAL_PERCENT}%"></div>
         </div>
         <!-- IF planet.CRYSTAL_PERCENT < 50 --> 
@@ -120,7 +111,7 @@
         <!-- ELSE -->
           <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
         <!-- ENDIF -->
-        <div class="{$FIELD_COLOR} res_bar" style="left: {$CRYSTAL_BAR}px;">
+        <div class="{$FIELD_COLOR} res_bar crystal_bar">
           <div class="planet_list_bar crystal_bg" style="height: {planet.CRYSTAL_PERCENT}%"></div>
         </div>
         <!-- IF planet.DEUTERIUM_PERCENT < 50 -->
@@ -132,7 +123,7 @@
         <!-- ELSE -->
           <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
         <!-- ENDIF -->
-        <div class="{$FIELD_COLOR} res_bar" style="left: {$DEUTERIUM_BAR}px;">
+        <div class="{$FIELD_COLOR} res_bar deuterium_bar">
           <div class="planet_list_bar deuterium_bg" style="height: {planet.DEUTERIUM_PERCENT}%"></div>
         </div>
 
@@ -149,7 +140,7 @@
 
 
       <div class="planet_list_fields">
-        <div style="width: {planet.FILL}%;" class="{$FIELD_COLOR} empire_cell_filler"></div>
+        <div style="width: {planet.FILL}%;" class="{$FIELD_COLOR} bar"></div>
         <div class="numbers">{planet.FIELDS_CUR}&nbsp;/&nbsp;{planet.FIELDS_MAX}</div>
       </div>
 

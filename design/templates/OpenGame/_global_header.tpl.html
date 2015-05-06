@@ -75,15 +75,15 @@
       var SN_GOOGLE = parseInt('{SN_GOOGLE}') ? 1 : 0;
     </script>
 
-    <!-- IF FONT_SIZE != 11 -->
+    <!-- IF FONT_SIZE -->
     <style type="text/css">
-      html, body{
+      html, body, form, table, input, select {
       font-size: {FONT_SIZE}px !important;
       }
     </style>
     <script type="text/javascript">
       $(function(){
-        $('*').css('font-size', '{FONT_SIZE}px');
+        // $('*').css('font-size', '{FONT_SIZE}px');
       });
     </script>
     <!-- ENDIF -->

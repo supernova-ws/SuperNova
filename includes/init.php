@@ -166,6 +166,7 @@ define('SN_COOKIE'        , ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'Supe
 define('SN_COOKIE_I'      , SN_COOKIE . '_I');
 define('SN_COOKIE_D'      , SN_COOKIE . '_D');
 define('SN_COOKIE_T'      , SN_COOKIE . '_T'); // Time measure cookie
+define('SN_COOKIE_F'      , SN_COOKIE . '_F'); // Font size cookie
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . TEMPLATE_PATH);

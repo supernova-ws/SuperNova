@@ -32,24 +32,24 @@ input, textarea, button {
 }
 
 .uni_show_user {
-  min-width: 130px;
+  min-width: 12em;
 }
 
 .uni_show_planet {
-  max-width: 30px;
-  width: 30px;
+  width: 2.75em;
+  max-width: 2.75em;
 }
 .uni_show_planet > div {
   position: relative;
-  height: 30px;
-  width: 30px;
+  width: 2.75em;
+  max-width: 2.75em;
 }
 .uni_show_planet > div > :first-child {
   position: absolute;
   top: 0;
   left: 0;
-  height: 30px;
-  width: 30px;
+  width: 2.75em;
+  max-width: 2.75em;
 }
 .uni_show_planet > div > :nth-child(2) {
   position: absolute;
@@ -127,11 +127,11 @@ tr[prod_mode] > :not(:first-child) > span[style] {
 
 tr[prod_mode] > [ecs]:not(:first-child) {
 /* Standard single-height empire cell */
-  height: 13px;
+  height: 1.181818em;
 }
 /* Double-height empire cell - i.e. for Mines */
 tr[prod_mode] > [ecd]:not(:first-child), tr[prod_mode] > [ecd]:not(:first-child) > span[style] {
-  height: 35px;
+  height: 3.181818em;
 }
 tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire cell */
   z-index: 300;
@@ -203,6 +203,19 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 530px;
 }
 
+.unit_preview {
+  cursor: pointer;
+
+  border: 0.3em solid;
+
+  position: relative;
+  height: 11em;
+  width: 11em;
+
+  font-size: 100%;
+}
+
+
 .unit_preview .unit_image {
   position: absolute;
   left: 0;
@@ -215,37 +228,21 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   vertical-align: top;
 }
 
-.unit_preview .time {
-  position: absolute;
-  right: 18px;
-  bottom: 0;
-
-  height: 16px;
-  width: 70%;
-
-  font-size: 100%;
-
-  text-align: right;
-  white-space: nowrap;
-}
-
 .unit_preview .level, .unit_preview .count {
   position: absolute;
   top: 0;
 
-  height: 16px;
+  height: 1.23em;
 
-  font-size: 120%;
+  font-size: 1.0em;
 
   text-align: center;
   white-space: nowrap;
 }
-
 .unit_preview .level {
   left: 15%;
   width: 70%;
 }
-
 .unit_preview .count {
   left: 0;
   width: 100%;
@@ -254,18 +251,18 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 .unit_preview .name {
   position: absolute;
   left: 0;
-  top: 18px;
+  top: 1.23rem;
 
   width: 100%;
-  height: 5ex;
+  height: 2.46rem;
 
-  font-size: 100%;
+  font-size: 1.0em;
 }
 
 .unit_preview .resource_container {
   position: absolute;
   left: 0;
-  top: 48px;
+  top: 3.67rem;
   width: 100%;
   text-align: left;
 }
@@ -273,16 +270,35 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 .unit_preview .restrict {
   position: absolute;
   left: 0;
-  bottom: 18px;
+  bottom: 1.4em;
   width: 100%;
   /*height: 20%;*/
 
-  font-size: 90%;
-  line-height: 90%;
+  font-size: 0.9em;
+  /*line-height: 90%;*/
+}
+.unit_preview .time {
+  position: absolute;
+  right: 1.63em;
+  bottom: 0;
+
+  height: 1.2em;
+  width: 70%;
+
+  font-size: 1.0em;
+
+  text-align: right;
+  white-space: nowrap;
+}
+
+
+
+.unit_create {
+  font-size: 1em;
 }
 
 .ov_planet_fill_bar {
-  position: relative; width: 100%; height: 15px; border: 1px solid rgb(153, 153, 255);
+  position: relative; width: 100%; height: 1.3em; border: 0.1em solid rgb(153, 153, 255);
 }
 
 

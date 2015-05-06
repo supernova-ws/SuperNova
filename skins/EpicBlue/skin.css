@@ -1,23 +1,21 @@
 /*
-                                 ЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫ
-                                 ЫЫЫ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±ЫЫЫ±
-                                 ЫЫЫ±                                                  ЫЫЫ±
-                                 ЫЫЫ±                OGAME: EPIC BLUE                  ЫЫЫ±
-                                 ЫЫЫ±                                                  ЫЫЫ±
-                                 ЫЫЫ±                      V 1.0                       ЫЫЫ±
-                                 ЫЫЫ±                                                  ЫЫЫ±
-                                 ЫЫЫ±    Skin fuer "OGame" www.ogame.de V 1.2          ЫЫЫ±
-                                 ЫЫЫ±                                                  ЫЫЫ±
-                                 ЫЫЫ±                                                  ЫЫЫ±
-                                 ЫЫЫ±    Viel Spass                                    ЫЫЫ±
-                                 ЫЫЫ±                                                  ЫЫЫ±
-                                 ЫЫЫ±                    bei Problemen: etapred@gmx.de ЫЫЫ±
-                                 ЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫЫ±
-                                  ±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±±
+                                 █████████████████████████████████████████████████████████
+                                 ███▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒███▒
+                                 ███▒                                                  ███▒
+                                 ███▒                SuperNova: Epic Blue              ███▒
+                                 ███▒                                                  ███▒
+                                 ███▒                      V 2.0                       ███▒
+                                 ███▒                                                  ███▒
+                                 ███▒    Skin for "SuperNova.ws" http://supernova.ws   ███▒
+                                 ███▒                                                  ███▒
+                                 ███▒                                                  ███▒
+                                 ███▒     (c) 2009-2015 Gorlum smeagorl@gmail.com      ███▒
+                                 ███▒                                                  ███▒
+                                 █████████████████████████████████████████████████████████▒
+                                  ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 */
 
-body, form, table, input, select
-{
+body, form, table, input, select {
   font-family : Tahoma, sans-serif;
   font-size : 11px;
 }
@@ -332,16 +330,16 @@ div .ui-dialog-content table { background: #344055; }
 .que_item {
   cursor: pointer;
 
-  border: 0px;
+  border: 0;
 
   position: relative;
-  height: 60px;
-  width: 60px;
+  height: 5.5em;
+  width: 5.5em;
 
-  margin-right: 2px;
-  margin-bottom: 2px;
+  margin-right: 0.2em;
+  margin-bottom: 0.2em;
 
-  font-size: 100%;
+  font-size: 1em;
 }
 
 /* Unit picture */
@@ -358,17 +356,8 @@ div .ui-dialog-content table { background: #344055; }
 }
 
 /* Unit preview box on build pages */
-.unit_preview
-{
-  cursor: pointer;
-
-  border: 3px solid #344566;
-
-  position: relative;
-  height: 120px;
-  width: 120px;
-
-  font-size: 100%;
+.unit_preview {
+  border-color: #344566;
 }
 
 .casino_roulette
