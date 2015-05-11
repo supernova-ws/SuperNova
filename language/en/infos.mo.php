@@ -124,18 +124,18 @@ $lang['info'] = (array(
     ),
 
     STRUC_TERRAFORMER => array(
-      'description' => 'As more and more important building planets became the limited usable space. Traditional methods such as construction skyward and inside were insufficient. A small group of physicists and nanotehnikov found the solution-terraformer.<br><br>Spending large amounts of energy terraformer can convert vast areas and even the entire continents, making them suitable for construction. This structure is constantly produced special nanity, responsible for the constant quality of soil.',
+      'description' => 'As more and more important building planets became the limited usable space. Traditional methods such as construction skyward and inside were insufficient. A small group of physicists and nanotechnology found the solution terraformer.<br><br>Spending large amounts of energy terraformer can convert vast areas and even entire continents, making them suitable for construction. This structure is constantly producing special nanites, responsible for the constant quality of soil.',
       'description_short' => 'Terraformer can transform a huge territory, increasing the number of construction fields.',
     ),
 
     STRUC_ALLY_DEPOSIT => array(
-      'description' => 'Alliance depot provides a way to ensure fuel friendly fleets that help with defense and are in orbit. The higher the level of development, the more deuterium can be sent to fleets in orbit.',
-      'description_short' => 'Alliance depot provides a way to ensure fuel to friendly fleets that help with defense and are in orbit.',
+      'description' => 'Alliance depot provides a way to ensure fuel friendly fleets that help with defence and are in orbit. The higher the level of development, the more deuterium can be sent to fleets in orbit.',
+      'description_short' => 'Alliance depot provides a way to ensure fuel to friendly fleets that help with defence and are in orbit.',
     ),
 
     STRUC_LABORATORY_NANO => array(
       'description' => 'Reduce time to research stage doubled.',
-      'description_short' => 'Nanobots equipped with the latest technology. Heavy duty crystaline computers and super-precise nanosbots accelerated by any study by twice.',
+      'description_short' => 'Nanobots equipped with the latest technology. Heavy duty crystalline computers and super-precise nanosbots accelerate any study by 200%.',
     ),
 
     STRUC_MOON_STATION => array(
@@ -149,12 +149,12 @@ $lang['info'] = (array(
     ),
 
     STRUC_MOON_GATE => array(
-      'description' => 'Gate is a huge teleportery that can transmit between the fleets of all sizes without time-consuming. These teleportery do not require deuterium, but between two hops must undergo one hour, or gate recharge. Is also forwarding resources. The entire process requires very highly developed technology.',
-      'description_short' => 'Gate is a huge teleportery that can transmit between the fleets of all sizes without time-consuming.',
+      'description' => 'Gate is a huge teleporter that can transmit between the fleets of all sizes instantly. These teleporters do not require deuterium, but between two hops must undergo one hour of gate recharge. The entire process requires very highly developed technology.',
+      'description_short' => 'Gate is a huge teleporter that can transmit between the fleets of all sizes instantly.',
     ),
 
     STRUC_SILO => array(
-      'description' => 'Missile silo serve for storing missiles. With each level you can store four interplanetary or twelve interceptor missiles more. One interplanetary missiles require space triple the interceptor missile. May be any combination of different types of missiles.',
+      'description' => 'Missile silo serves for storing missiles. With each level you can store four interplanetary or twelve interceptor missiles more. One interplanetary missile requires space triple the interceptor missile. May be any combination of different types of missiles.',
       'description_short' => 'Missile silo allows firing rockets and missile plus storage.',
     ),
 
@@ -185,7 +185,7 @@ $lang['info'] = (array(
 
     TECH_ENERGY => array(
       'description' => 'Energy technology is a further development of transmission systems and energy storage that are required for many new technologies.',
-      'description_short' => 'Study of energy technology improves impact outcome of thermonuclear electrostations.',
+      'description_short' => 'Study of energy technology improves output of Fusion Reactors.',
     ),
 
     TECH_HYPERSPACE => array(
@@ -239,8 +239,8 @@ $lang['info'] = (array(
     ),
 
     TECH_ASTROTECH => array(
-      'description' => 'Астрокартография позволяет увеличить максимальное количество колоний и экспедиций, а так же максимальную длительность экспедиции',
-      'description_short' => 'Астрокартография позволяет увеличить максимальное количество колоний и экспедиций, а так же максимальную длительность экспедиции',
+      'description' => 'Astrocartography allows one to increase the maximum number of colonies and expeditions, as well as the maximum duration of the expedition.',
+      'description_short' => 'Astrocartography allows one to increase the maximum number of colonies and expeditions, as well as the maximum duration of the expedition.',
     ),
 
     TECH_GRAVITON => array(
@@ -250,17 +250,17 @@ $lang['info'] = (array(
 
     SHIP_CARGO_SMALL => array(
       'description' => 'Transports have approximately the same size as the fighter aircraft, but they don\'t have powerful engines and onboard weapons to save space. Small transport accommodates 5,000 units of stuff. Because small firepower small transports are often accompanied by other ships when pulse engine researched up to 5th grade, small transport improves the speed and it is equipped with a base that type engine.',
-      'description_short' => 'Small transport is highly maneuverable craft, which can easily transport the raw material to other planets. After research impulse drive 5th level ships are being refurbished.',
+      'description_short' => 'Small transport is highly manoeuvrable craft, which can easily transport the raw material to other planets. After research impulse drive 5th level ships are being refurbished.',
     ),
 
     SHIP_CARGO_BIG => array(
-      'description' => 'Aboard this ship there is only weak armament and no serious technology ... For this reason, they should never be run unattended. Thanks to its advanced Jet engine large transportation serves as a rapid interplanetary dostavsika resources, as it accompanies the fleets to attack the enemy planet to grab as many resources as possible.',
+      'description' => 'Aboard this ship there is only weak armament and no serious technology ... For this reason, they should never be run unattended. Thanks to its advanced Jet engine large transportation serves as a rapid interplanetary resource, as it accompanies the fleets to attack the enemy planet to grab as many resources as possible.',
       'description_short' => 'Further development of small transports a ships with greater capacity and more developed an engine that can travel faster than light travel, until small transports not installed impulse engines 5th level.',
     ),
 
     SHIP_CARGO_SUPER => array(
-      'description' => 'The last word in technology transfer. Supertransport-giant transport ship equipped with impulse engines. Its speed is low and the fuel consumption is very high, but it completely pays off an extraordinary sitting capacity. Supertransport is equipped with a laser turrent, but has a powerful shield.',
-      'description_short' => 'A giant self-propelled barge equipped with impulse engines. Equipped with a powerful shield, but of weapons has only laser turrent.',
+      'description' => 'The last word in technology transfer. Supertransport-giant transport ship equipped with impulse engines. Its speed is low and the fuel consumption is very high, but it completely pays off an extraordinary sitting capacity. Supertransport is equipped with a laser turret, but has a powerful shield.',
+      'description_short' => 'A giant self-propelled barge equipped with impulse engines. Equipped with a powerful shield, but of weapons has only laser turret.',
     ),
 
     SHIP_CARGO_HYPER => array(
@@ -464,17 +464,17 @@ $lang['info'] = (array(
     ),
 
     ART_HOOK_SMALL => array(
-      'description' => 'Принцип действия этого Артефакта до конца не изучен что, впрочем, не мешает его использовать. Малый Крюк телепортирует на устойчивую орбиту планеты небольшой астероид. Таким образом у планеты получается луна минимального диаметра',
+      'description' => 'The principle operation of this artifact is not fully understood yet, however that does not prevent its use. Small Hook teleports within a stable orbit of the planet a small asteroid. Thus the asteroid turns the minimum diameter of a moon.',
       'effect' => 'Creates minimal size Moon',
     ),
 
     ART_HOOK_MEDIUM => array(
-      'description' => 'Принцип действия этого Артефакта до конца не изучен что, впрочем, не мешает его использовать. Средний Крюк телепортирует на устойчивую орбиту планеты астероид, создавая таким образом луну<br /><span class=warning>ВНИМАНИЕ! Размер луны СЛУЧАЕН!</span>',
+      'description' => 'The principle operation of this artifact is not fully understood yet, however that does not prevent its use. Middle Hook teleports within a stable orbit of the planet an asteroid. Thus creating a moon <br /> <span class = warning> WARNING! Size of the moon depends on planet! </span> ',
       'effect' => 'Creates random size Moon',
     ),
 
     ART_HOOK_LARGE => array(
-      'description' => 'Принцип действия этого Артефакта до конца не изучен что, впрочем, не мешает его использовать. Большой Крюк телепортирует на устойчивую орбиту планеты огромный астероид. Таким образом у планеты получается луна максимального диаметра',
+      'description' => 'The principle operation of this artifact is not fully understood yet, however that does not prevent its use. Big Hook teleports within a stable orbit of the planet a huge asteroid. Thus the asteroid turns into a moon of maximum diameter. ',
       'effect' => 'Creates maximum size Moon',
     ),
 
@@ -500,13 +500,13 @@ $lang['info'] = (array(
     ),
 
     ART_HEURISTIC_CHIP => array(
-      'description' => 'Эвристический чип - уникальный преинсталлированный набор программ, записанных на кристаллический носитель. Подключаясь к исследовательской сети, алгоритмы чипа способны проанализировать текущее состояние исследования и выдать новые эффективные эвристики, таким образом значительно сокращая время исследования. Однажды активированный чип невозможно перенастроить на другое исследование. К сожалению, как и с любым другим кристаллическим чипом, декомпиляция &quot;зашитой&quot; программы принципиально невозможна, равно как и копирование сборщиками.',
-      'effect' => 'Уменьшает время текущего исследования в два раза (если до конца исследования осталось больше часа) или моментально заканчивает его (если до конца исследования осталось меньше 1 часа, но больше 1 минуты)', //. Если времени исследования осталось менее часа - остаток не переходит на следующий слот в очереди',
+      'description' => 'Heuristic chip - a unique set of pre-installed programs recorded on a crystalline medium. By connecting them to a research network an algorithms chip can analyse the current state of research and issue a new efficient heuristics, thus significantly reducing the time of the study. Once activated the chip can not be migrated to another study. Unfortunately, as with any other crystalline chip, decompile, &quot; wired &quot; program is essentially impossible, as well as copying collectors. ',
+      'effect' => 'Reduces the current study twice (if before the end of the study remained more than an hour), or immediately terminates it (if before the end of the study remained less than 1 hour, but more than 1 minute)', //. If the study period there were less than an hour - the remainder is not transferred to the next slot in the queue ',
     ),
 
     ART_NANO_BUILDER => array(
-      'description' => 'Как известно, сборщики обычно не используются в строительстве крупных объектов типа зданий. Экономически целесообразней возводить строения методом традиционной &quot;блочной сборки&quot;, когда отдельные стандартизированные детали производятся на роботизированных фабриках. Однако специализированные наносборщики оказываются эффективнее традиционных методов. Эти крошечные роботы собраны в преконфигурированные пакеты, каждый из которых обладает своим собственным роевым суб-ИИ. Анализируя текущее состояние возводимого здания, наностроители безошибочно находят узкие места и вычисляют наиболее эффективные пути ускорения строительства. Пакет является одноразовым и после использования больше непригоден к работе. Вдобавок инициированный пакет уже невозможно перенастроить на интеграцию с другой стройкой. Хотя сборщики и способны воспроизвести отдельно взяты наностроитель, но без управляющего кристалла такая реплика является не более чем масштабной моделью...',
-      'effect' => 'Уменьшает время постройки/разрушения текущего здания на данной планете в два раза (если до конца процесса осталось больше часа) или моментально заканчивает его (если до конца процесса меньше 1 часа, но больше 1 минуты)', // . Если времени строительства осталось менее часа - остаток не переходит на следующий слот в очереди',
+      'description' => 'We know that collectors are not commonly used in the construction of large objects such as buildings. Economically expedient to erect buildings using traditional &quot; block assembly &quot; when the individual parts are manufactured on standardized robotic factories. However, specialized nano builders are more effective than traditional methods. These tiny robots are collected in pre-configured packages, each of which has its own sub-swarms AI. Analysing the current state of the building being erected, nano builders accurately locate bottlenecks and calculate the most effective ways to accelerate construction. The package is disposable after use and more unfit for work. In addition, the package once already initiated can not be migrated to the integration with other building. Although collectors are able to reproduce individual nano builders, without the control of the crystal such replica is nothing more than a large-scale model ... ',
+      'effect' => 'Reduces the time of construction / destruction of the current buildings on this planet twice (if before the end of the process remains more than an hour), or immediately terminates it (if before the end of the process less than 1 hour, but more than 1 minute)', // . If construction time have less than an hour - the remainder is not transferred to the next slot in the queue ',
     ),
 
 
@@ -567,46 +567,46 @@ $lang['info'] = (array(
     ),
 
     UNIT_PLANET_DENSITY => array(
-      'description' => 'Средняя планетарная плотность (далее - просто "плотность") характеризует химический состав геосферы планеты. В частности, она очень точно предсказывает соотношения добываемых полезных веществ.<br />
-      В общем случае геосфера планеты делится на атмосферу (газовая оболочка), гидросферу (жидкая оболочка), литосферу (твердая оболочка из относительно легких веществ и элементов), мантию (промежуточная оболочка между литосферой и ядром) и ядро (самые тяжелые вещества и элементы, находящиеся в центре планеты под высоким давлением).<br />
-      Основное влияние на плотность оказывает ядро. Именно оно содержит основную массу планеты, поскольку плотность химических соединений убывает по мере подъема от центра планеты к её поверхности.<br />
-      Таким образом именно тип ядра полностью определяет виды и уровень добычи полезных ископаемых. Комбинации типов планетарных ядер с разными температурными режимами и размерами дают всё многообразие известных планет.<br />
-      Для примера рассмотрим планету с ледяным ядром. Оно состоит из водяного льда с небольшой примесью других веществ, мантия - из твердого метана, а литосфера - из кристаллического водорода.
-      В подавляющем большинстве такие планеты встречаются на периферии звездных систем. И выглядят они под стать своему названию: гигантские глыбы из смеси льда.
-      Впрочем, иногда такая планета может оказаться и на низкой орбите вокруг звезды. Обычно это происходит после столкновения звездных систем. Так же звезда может захватить своим тяготением какую-нибудь блуждающую планету.
-      Близость к звезде преображает планету. На ней образуется быстроулетучивающаяся атмосфера из легких газов (водород и гелий), а иногда даже и гидросфера из жидкого водорода и метана. При этом ядро планеты по-прежнему остается ледяным.
-      Существование такой планеты чрезвычайно коротко во вселенских масштабах, но учитывая те же масштабы, обнаружить такую планету вполне возможно.
+      'description' => 'The average planetary density (hereafter - "density") describes the chemical composition of the planet\'s geosphere. In particular, it very accurately predicts the ratio of extracted resources. <br />
+      In general, the geosphere of a planet is divided into the atmosphere (gaseous envelope), hydrosphere (liquid shell), lithosphere (the solid shell of a relatively light materials and components), mantle (intermediate sheath between the lithosphere and the nucleus) and the core (the hardest substance and the elements that are in the center of the planet at high pressure). <br />
+      The main influence on the density the core. It contains the bulk of the planet, since the density of chemical compounds decreases as it rises from the center of the planet to its surface. <br />
+      Thus it is the type of core that completely determines the types and level of mining. Combinations of types of planetary cores and multi-temperature and size give all the diversity of the known planets. <br />
+      For example, consider a planet with an ice core. It is composed of water ice with a small mixture of other substances, the mantle - a solid methane and lithosphere - crystalline hydrogen.
+      The vast majority of these planets are found at the periphery of star systems. And they look to match its name: the giant blocks of ice mixture.
+      However, sometimes such a planet may be on the low orbit around the star. This usually occurs after the collision of stellar systems. So the star can capture their gravitation some rogue planet.
+      The proximity to the star transforms the planet. It is formed by an atmosphere of light gases (hydrogen, helium), and sometimes even hydrosphere of liquid hydrogen and methane. In this case, the planet\'s core is still icy.
+      The existence of this planet is extremely short on a universal scale, but given the same scale, to detect such a planet is possible.
       <br />
-      В зависимости от типа ядра выделяют семь классов планет:
+      <br />
+      Depending on the type of core there are seven classes of planets:
       <ul>
         <li>
-          <span class="ok">Ледяные планеты</span> (плотность <span class="zero">менее 2000</span> кг/м&sup3;).
-          Из-за обилия водно-метанового льда и большого количества водорода в различных состояних, на ледяных планетах <span class="ok">очень высокая добыча дейтерия</span>.
-          Есть и обратная сторона - из-за маленького количества более плотного вещества <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча металла</span>. Ледяные планеты встречаются <span class="error">очень редко</span>.
+          <span class = "ok"> Ice planet </span> (density <span class = "zero"> less than 2000 </span> kg / m &sup3;).
+          due to the abundance of water and methane ice and a large amount of hydrogen in various states on the ice planet <span class = "ok"> very high production of deuterium </span>.
+          there is a downside - because of the small number of more dense material <span class = "error"> very low production of crystals </span> and <span class = "error"> very low metal mining </span>. Ice planets are found <span class = "error"> very rarely </span>.
         </li>
         <li>
-          <span class="ok">Силикатные планеты</span> (плотность <span class="zero">более 2000, но менее 3250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>. На них 
-          <span class="error">очень низкая добыча металлов</span>, <span class="ok">очень высокая добыча кристаллов</span> и чуть более низкая, чем обычно, но всё еще <span class="zero">хорошая добыча дейтерия</span>.
+          <span class = "ok"> Silicate planet </span> (density <span class = "zero"> more than 2000 but less than 3250 </span> kg / m &sup3;) occur <span class = "warning"> rarely </span>. they have
+          <span class = "error"> very low production of metals </span>, <span class = "ok"> very high production of crystals </span> and a little lower than usual, but still <span class = "zero "> good production of deuterium </span>.
         </li>
         <li>
-          <span class="ok">Каменные планеты</span> (плотность <span class="zero">более 3250, но менее 4500 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>. На них 
-          слегка пониженная, но <span class="zero">хорошая добыча металлов</span>, <span class="ok">высокая добыча кристаллов</span> и <span class="warning">пониженная добыча дейтерия</span>.
+          <span class = "ok"> Stone planet </span> (density <span class = "zero"> more than 3250 but less than 4500 </span> kg / m &sup3;) occur <span class = "zero"> often </span>. They have <span class = "zero"> good metal extraction </span>, <span class = "ok"> high production of crystals </span> and <span class = "warning"> reduced production of deuterium </span >.
         </li>
         <li>
-          <span class="ok">Стандарнтые планеты</span> (плотность <span class="zero">более 4500, но менее 5750 </span> кг/м&sup3;) встречаются <span class="ok">очень часто</span>. По химическому составу они сильно похожи на Землю.
-          Полезные ископаемые распределены на ней стандартно - <span class="zero">хорошая добыча металлов</span>, <span class="zero">хорошая добыча кристаллов</span> и <span class="zero">хорошая добыча дейтерия</span>.
+          <span class = "ok"> Standard type planet </span> (density <span class = "zero"> more than 4500 but less than 5750 </span> kg / m &sup3;) occur <span class = "ok"> very often </span>. In chemical composition they are very similar to earth.
+          Mineral resources allocated to it as standard - <span class = "zero"> good metal extraction </span>, <span class = "zero"> good mining crystals </span> and <span class = "zero"> good production of deuterium </span>.
         </li>
         <li>
-          <span class="ok">Железнорудные планеты</span> (плотность <span class="zero">более 5750, но менее 7000 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>.
-          На них <span class="ok">очень хорошая добыча металлов</span>, <span class="warning">пониженная добыча кристаллов</span> и <span class="zero">пониженная добыча дейтерия</span>.
+          <span class = "ok"> Iron ore planet </span> (density <span class = "zero"> more than 5750 but less than 7000 </span> kg / m &sup3;) occur <span class = "zero"> often </span>.
+          They have <span class = "ok"> very good metal extraction </span>, <span class = "warning"> reduced production of crystals </span> and <span class = "zero"> reduced production of deuterium </span> .
         </li>
         <li>
-          <span class="ok">Металлические планеты</span> (плотность <span class="zero">более 7000, но менее 8250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>.
-          На них <span class="ok">отличная добыча металлов</span>, <span class="warning">низкая добыча кристаллов</span> и <span class="zero">низкая добыча дейтерия</span>.
+          <span class = "ok"> Metal planet </span> (density <span class = "zero"> more than 7000 but less than 8250 </span> kg / m &sup3;) occur <span class = "warning"> rare </span>.
+          They have <span class = "ok"> excellent metal extraction </span>, <span class = "warning"> low production of crystals </span> and <span class = "zero"> low production of deuterium </span>.
         </li>
         <li>
-          <span class="ok">Тяжелометаллические планеты</span> (плотность <span class="zero">более 8250 </span> кг/м&sup3;) встречаются <span class="error">очень редко</span>.
-          На них <span class="ok">великолепная добыча металлов</span>, <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча дейтерия</span>.
+          <span class = "ok"> Organometallic planet </span> (density <span class = "zero"> more 8250 </span> kg / m &sup3;) occur <span class = "error"> very rarely </span> .
+          They have <span class = "ok"> gorgeous metal extraction </span>, <span class = "error"> very low production of crystals </span> and <span class = "error"> very low production of deuterium </span >.
         </li>
       </ul>',
     ),
