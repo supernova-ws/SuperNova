@@ -3,8 +3,8 @@
 /**
  * adm_payment.php
  *
- * @version 1.0
- * @copyright 2013 by Gorlum for http://supernova.ws
+ * @version #40a2.2#
+ * @copyright 2013-2015 by Gorlum for http://supernova.ws
 */
 
 

@@ -1,9 +1,11 @@
+<!-- * @version #40a2.2# -->
+
 <h2>{PAGE_HEADER}</h2>
 
 <form method="POST" name="filter">
 <table>
   <tr>
-    <th class="c_c" colspan="2">
+    <th class="c_c" colspan="3">
       {L_adm_pay_th_payer}
       <!-- IF .payer -->
       <br />
@@ -51,6 +53,7 @@
   <tr>
     <th class="c_c">{L_adm_pay_th_payer_id}</th>
     <th class="c_c">{L_adm_pay_th_payer_name}</th>
+    <th class="c_c"><img src="design/images/icon_mail.gif" border="0" /></th>
     <th class="c_c">{L_adm_pay_th_payment_id}</th>
     <th class="c_c">{L_adm_pay_th_payment_date}</th>
     <th class="c_c">{L_adm_pay_th_payment_status}</th>
@@ -67,6 +70,11 @@
   <tr>
     <td>{payment.PAYMENT_USER_ID}</TD>
     <td>{payment.PAYMENT_USER_NAME}</TD>
+    <td>
+      <a href="messages.php?mode=write&id={payment.PAYMENT_USER_ID}">
+        <img src="design/images/icon_mail.gif" border="0" />
+      </a>
+    </td>
     <td>{payment.PAYMENT_ID}</td>
     <td>{payment.PAYMENT_DATE}</TD>
     <td>
