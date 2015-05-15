@@ -521,7 +521,7 @@ $sn_data += array(
     'type' => UNIT_SHIPS,
     P_STACKABLE => true,
     'location' => LOC_PLANET,
-    'require' => array(STRUC_FACTORY_HANGAR => 12, TECH_HYPERSPACE => 6, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_DEATH_STAR => 1),
+    'require' => array(STRUC_FACTORY_HANGAR => 12, TECH_ENGINE_HYPER => 7, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_DEATH_STAR => 1),
     'cost' => array(
       RES_METAL     => 5000000,
       RES_CRYSTAL   => 4000000,
@@ -557,7 +557,7 @@ $sn_data += array(
     'type' => UNIT_SHIPS,
     P_STACKABLE => true,
     'location' => LOC_PLANET,
-    'require' => array(STRUC_FACTORY_HANGAR => 15, TECH_HYPERSPACE => 7, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_SUPERNOVA => 1),
+    'require' => array(STRUC_FACTORY_HANGAR => 15, TECH_ENGINE_HYPER => 9, TECH_GRAVITON => 1, UNIT_PLAN_SHIP_SUPERNOVA => 1),
     'cost' => array(
       RES_METAL     => 20000000,
       RES_CRYSTAL   => 15000000,

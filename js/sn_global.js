@@ -280,18 +280,19 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       new_element = '<table width="100%" class="markup">'; // main container - sets width
       new_element += '<tr>';
       if (!old.is('[disable_min]')) {
-        new_element += '<td><input type="button" value="0" parent_id="' + field_name + '" id="' + field_name + '_ai_zero" style="max-width: 31px"></td>';
+        new_element += '<td width="3em"><input type="button" value="0" parent_id="' + field_name + '" id="' + field_name + '_ai_zero" style="width: 3em"></td>';
         col_span++;
       }
-      new_element += '<td><input type="button" value="-" parent_id="' + field_name + '" id="' + field_name + '_ai_dec" style="max-width: 31px"></td>'; // style="width: 6px"
-      new_element += '<td><input type="text" ainput="true" value="0" id="' + field_name + '" style="width: ' + '80%' + ';" name="' + field_name_orig + '" /></td>'; // onfocus="if(this.value == \'0\') this.value=\'\';" onblur="if(this.value == \'\') this.value=\'0\';"
-      new_element += '<td><input type="button" value="+" parent_id="' + field_name + '" id="' + field_name + '_ai_inc"  style="max-width: 31px"></td>';
+      new_element += '<td width="3em"><input type="button" value="-" parent_id="' + field_name + '" id="' + field_name + '_ai_dec" style="width: 3em"></td>'; // style="width: 6px"
+      //new_element += '<td><input type="text" ainput="true" value="0" id="' + field_name + '" style="width: ' + '100%' + '; margin: 0em 5em 0em 0em; padding: 0em 5em 0em -20em" name="' + field_name_orig + '" /></td>'; // onfocus="if(this.value == \'0\') this.value=\'\';" onblur="if(this.value == \'\') this.value=\'0\';"
+      new_element += '<td style="padding-right: 2.25em;"><input type="text" ainput="true" value="0" id="' + field_name + '" style="width: ' + '100%' + ';" name="' + field_name_orig + '" /></td>'; // onfocus="if(this.value == \'0\') this.value=\'\';" onblur="if(this.value == \'\') this.value=\'0\';"
+      new_element += '<td width="3em"><input type="button" value="+" parent_id="' + field_name + '" id="' + field_name + '_ai_inc"  style="width: 3em"></td>';
       if (!old.is('[disable_max]')) {
-        new_element += '<td><input type="button" value="M" parent_id="' + field_name + '" id="' + field_name + '_ai_max"  style="max-width: 31px"></td>';
+        new_element += '<td width="3em"><input type="button" value="M" parent_id="' + field_name + '" id="' + field_name + '_ai_max"  style="width: 3em"></td>';
         col_span++;
       }
       new_element += '</tr>';
-      new_element += '<tr><td colspan="' + col_span + '"><div style="margin: 6px; width: auto" parent_id="' + field_name + '" id="' + slider_name + '"></div></td></tr>'; // slider container
+      new_element += '<tr><td colspan="' + col_span + '"><div style="margin: 0.75em; width: auto; height: 1em;" parent_id="' + field_name + '" id="' + slider_name + '"></div></td></tr>'; // slider container
       new_element += '</table>'; // main container
 
       jQuery(new_element).insertBefore(old);

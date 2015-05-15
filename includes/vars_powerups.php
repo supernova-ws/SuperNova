@@ -357,7 +357,7 @@ $sn_data += array(
     'name' => 'graviton_tech',
     'type' => UNIT_TECHNOLOGIES,
     'location' => LOC_USER,
-    'require' => array(STRUC_LABORATORY => 12, TECH_ENERGY => 12),
+    'require' => array(STRUC_LABORATORY => 12, TECH_ENERGY => 12, TECH_HYPERSPACE => 6),
     'cost' => array(
       RES_METAL     => 100000000,
       RES_CRYSTAL   => 100000000,

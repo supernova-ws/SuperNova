@@ -63,6 +63,81 @@ var que_id = '{QUE_ID}';
 --></script>
 
 <script type="text/javascript" src="js/build_unit.js?{C_var_db_update}"></script>
+<script type="text/javascript"><!-- BEGIN production -->
+  <!-- IF production.S_FIRST_ROW -->
+    var production_id_first = parseInt('{production.ID}');
+  <!-- ENDIF -->
+
+  <!-- IF .production.require -->
+  require[{production.ID}] = [<!-- BEGIN require -->
+    {
+      name: '{require.NAME}',
+      requerements_met: parseInt('{require.REQUEREMENTS_MET}'),
+      level_require: parseInt('{require.LEVEL_REQUIRE}'),
+      level: parseInt('{require.LEVEL}'),
+      level_basic: parseInt('{require.LEVEL_BASIC}'),
+      level_bonus: parseInt('{require.LEVEL_BONUS}'),
+      id: parseInt('{require.ID}'),
+    },<!-- END require -->];
+  <!-- ENDIF -->
+
+  production[{production.ID}] = {
+    id: '{production.ID}',
+    name: '{production.NAME}',
+    level: '{production.LEVEL}',
+    level_bonus: '{production.LEVEL_BONUS}',
+    change: '{production.CHANGE}',
+    description: '{production.DESCRIPTION}',
+    unit_busy: '{production.UNIT_BUSY}',
+    can_build: '{production.CAN_BUILD}',
+
+    metal: '{production.METAL}',
+    crystal: '{production.CRYSTAL}',
+    deuterium: '{production.DEUTERIUM}',
+    dark_matter: '{production.DARK_MATTER}',
+    time: '{production.TIME}',
+    time_seconds: parseInt('{production.TIME_SECONDS}'),
+    build_can: '{production.BUILD_CAN}',
+    build_result: '{production.BUILD_RESULT}',
+
+    destroy_metal: '{production.DESTROY_METAL}',
+    destroy_crystal: '{production.DESTROY_CRYSTAL}',
+    destroy_deuterium: '{production.DESTROY_DEUTERIUM}',
+    destroy_time: '{production.DESTROY_TIME}',
+    destroy_can: '{production.DESTROY_CAN}',
+    destroy_result: '{production.DESTROY_RESULT}',
+
+    map_is_resource: '{production.MAP_IS_RESOURCE}',
+
+    <!-- IF .production.resource -->
+    resource_map: [<!-- BEGIN resource -->
+      {
+        'shield': '{resource.ACTUAL_SHIELD}',
+        'armor': '{resource.ACTUAL_ARMOR}',
+        'weapon': '{resource.ACTUAL_WEAPON}',
+        'speed': '{resource.ACTUAL_SPEED}',
+        'consumption': '{resource.ACTUAL_CONSUMPTION}',
+        'capacity': '{resource.ACTUAL_CAPACITY}',
+
+        'level': '{resource.LEVEL}',
+        'sys_metal': '{resource.R901}',
+        'metal_diff': '{resource.D901}',
+        'sys_crystal': '{resource.R902}',
+        'crystal_diff': '{resource.D902}',
+        'sys_deuterium': '{resource.R903}',
+        'deuterium_diff': '{resource.D903}',
+        'sys_energy': '{resource.R904}',
+        'energy_diff': '{resource.D904}',
+
+        'sys_colonies': '{resource.RCOLONIES_MAX}',
+        'sys_colonies_diff': '{resource.DCOLONIES_MAX}',
+        'sys_expeditions': '{resource.REXPEDITIONS_MAX}',
+        'sys_expeditions_diff': '{resource.DEXPEDITIONS_MAX}',
+      },<!-- END resource -->
+    ]
+    <!-- ENDIF -->
+  };
+<!-- END production --></script>
 
 <!-- DEFINE $QUE_ID = '{QUE_ID}' -->
 <!-- INCLUDE eco_queue -->
@@ -73,7 +148,7 @@ var que_id = '{QUE_ID}';
     <table id="unit_table">
       <!-- IF SHOW_SECTORS -->
       <tr>
-        <th colspan="4" class="c_c">
+        <th class="c_c">
           <table class="markup noborder" width="100%">
             <tr>
               <th class="c_l">
@@ -99,7 +174,7 @@ var que_id = '{QUE_ID}';
 
       <!-- IF ! U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
       <tr>
-        <td colspan="4" class="c_c">
+        <td class="c_c">
           <!-- INCLUDE eco_bld_queue_list -->
         </td>
       </tr>
@@ -112,36 +187,47 @@ var que_id = '{QUE_ID}';
       <!-- ENDIF -->
 
       <tr>
-        <td colspan="4" style="vertical-align: top;">
-          <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">
-            <tr>
-              <th>
-                <div style="vertical-align: middle; min-height: 170px; width: 11em;">
-                  <div id="unit_name" align="center" style="font-size: 1em; min-height: 3em;vertical-align: top;"></div>
-                  <div style="vertical-align: middle"><img id="unit_image" border="0" src="" align="top" width="100%" /></div>
-                  <div id="unit_level" style="font-size: 1em; min-height: 1.1em; vertical-align: bottom"></div>
+        <td style="vertical-align: top;" class="c_c">
+          <!--<table cellspacing=0 cellpadding=0 style="vertical-align: top; border: 0;" width=100% class="noborder">-->
+            <!--<tr>-->
+              <!--<th valign="top">-->
+                <div style="vertical-align: top; height: 12em; width: 12em; position: relative; margin: 0.2em;" class="fl">
+                  <!--<div style="vertical-align: middle"><img id="unit_image" border="0" src="" align="top" width="100%" /></div>-->
+                  <img id="unit_image" style="width: 100%;height: 100%; position: absolute; left: 0; top: 0; border: 0;"/>
+                  <div id="unit_name" align="center" style="font-size: 1em; vertical-align: top; left: 0; top: 0; width: 100%; position: absolute;" class="a75"></div>
+                  <div id="unit_level" style="font-size: 1em; bottom: 0; left: 0; width: 100%; position: absolute;" class="a75"></div>
                 </div>
-              </th>
-              <th valign="top" width="100%">
+              <!--</th>-->
+              <!--<th valign="top" width="100%">-->
+              <div class="c_l noborder fr" id="unit_balance" style="vertical-align: top; margin: 0.2em; min-height: 12em; "></div>
+              <div style="vertical-align: top; margin: 0 0.2em;" id="unit_description_wrapper">
+                <!--max-width: 19em;-->
                 <div id="unit_description" style="text-align: justify;"></div>
                 <div id="unit_require_wrapper" style="font-size: 0.8em">
                   <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
-                  <ul id="unit_require"></ul>
+                  <ul id="unit_require" style="overflow:hidden;"></ul>
                 </div>
-              </th>
-              <td class="c_l noborder" id="unit_balance" valign="top"></td>
-            </tr>
-          </table>
+              </div>
+              <!--</th>-->
+              <!--<td class="c_l noborder" id="unit_balance" valign="top"></td>-->
+            <!--</tr>-->
+          <!--</table>-->
         </td>
       </tr>
 
       <tr>
-        <td colspan="4" style="vertical-align: top;">
-          <table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">
-            <tr>
-              <th valign=top width="50%" colspan="2">
-                <div id="unit_time_div" align="left">{STRING_BUILD_TIME}<span id="unit_time"></span></div>
-                <table style="margin: 0; font-size: {$FONT_SIZE};" id="unit_cost_table">
+        <td style="vertical-align: top;" class="c_c">
+          <form action="buildings.php" method="post" id="form_unit">
+            <input type="hidden" name="mode" value="{QUE_ID}" />
+            <input type="hidden" name="ally_id" value="{ALLY_ID}" />
+            <input type="hidden" name="unit_id" id="unit_id" />
+            <input type="hidden" name="action" />
+          <!--<table cellspacing=0 cellpadding=0 valign=top style="vertical-align: top; border: 0;" width=100% class="noborder">-->
+            <!--<tr>-->
+              <!--<td valign=top width="50%" colspan="4" class="c_c">-->
+              <!--<div>-->
+                <div id="unit_time_div" align="center">{STRING_BUILD_TIME}<span id="unit_time"></span></div>
+                <table style="font-size: {$FONT_SIZE};" id="unit_cost_table">
                   <tr class="c_c">
                     <th width=45px>{L_sys_resources}</th>
                     <th width=65>{L_eco_price}</th>
@@ -173,53 +259,44 @@ var que_id = '{QUE_ID}';
                     <td id="dark_matter_fleet" hide_no_fleet="yes">0</td>
                   </tr>
                 </table>
-                <div id="unit_max" style="display: none">{L_sys_maximum} <span id="unit_max_number"></span></div>
-              </th>
-              <th colspan="2" width="250px" style="max-width: 250px">
-                <form action="buildings.php" method="post" id="form_unit">
-                  <input type="hidden" name="mode" value="{QUE_ID}" />
-                  <input type="hidden" name="ally_id" value="{ALLY_ID}" />
-                  <input type="hidden" name="unit_id" id="unit_id" />
-                  <input type="hidden" name="action" />
-                  <!-- IF STACKABLE -->
-                  <div id="unit_create" style="display: none">
-                    <ainput type="text" name="unit_amount" id="unit_amount" max="0"></ainput>
-                    <script type="text/javascript">
-                      // sn_ainput_make('unit_amount', {max: 0, button_max: true, button_zero: true});
-                      sn_ainput_make_jquery();
-                    </script>
-                    <div id="unit_create_button" class="link positive unit_create">{STRING_CREATE}</div> <!-- <span id="unit_create_amount"></span> -->
-
-                  </div>
-                  <!-- ELSE -->
-                  <div id="unit_create" style="display: none" >
-                    <div id="unit_create_button" class="link positive unit_create">
-                      {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
-                    </div>
-                  </div>
-                  <div id="unit_destroy" style="visibility: hidden">
-                    <div id="unit_destroy_resources">&nbsp;</div>
-                    <div id="unit_destroy_time">&nbsp;</div>
-                    <div class="link negative unit_destroy">{LA_bld_destroy} {LA_level} <span id="unit_destroy_level"></span></div>
-                  </div>
-                  <!-- ENDIF -->
+                <div id="unit_max" style="display: none;">{L_sys_maximum} <span id="unit_max_number"></span></div>
+                <div id="unit_create">
+                <!-- IF STACKABLE -->
+                  <ainput type="text" name="unit_amount" id="unit_amount" max="0"></ainput>
                   <script type="text/javascript">
-                    $("#unit_create_button").button();
+                    sn_ainput_make_jquery();
                   </script>
-                </form>
-              </th>
-            </tr>
-
-
-          </table>
+                  <div id="unit_create_button" class="link positive unit_create">{STRING_CREATE}</div>
+                <!-- ELSE -->
+                  <div id="unit_create_button" class="link positive unit_create">
+                    {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
+                  </div>
+                </div>
+                <div id="unit_destroy" style="visibility: hidden">
+                  <div id="unit_destroy_resources">&nbsp;</div>
+                  <div id="unit_destroy_time">&nbsp;</div>
+                  <div class="link negative unit_destroy">{LA_bld_destroy} {LA_level} <span id="unit_destroy_level"></span></div>
+                <!-- ENDIF -->
+                </div>
+              <!--</div>-->
+              <!--</td>-->
+              <!--<th colspan="2" width="250px" style="max-width: 250px">-->
+              <!--<div>-->
+              <!--</div>-->
+              <!--</th>-->
+            <!--</tr>-->
+          <!--</table>-->
+          </form>
+          <script type="text/javascript">
+            $("#unit_create_button").button();
+          </script>
         </td>
       </tr>
 
       <tr>
+        <td class="c_c">
         <!-- BEGIN production -->
-          <!-- IF production.S_FIRST_ROW --><script type="text/javascript">var production_id_first = parseInt('{production.ID}');</script><!-- ENDIF -->
-          <td class="l" align="center" width="20%">
-            <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}">
+            <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}" style="display: inline-block">
               <img src="{dpath}gebaeude/{production.ID}.gif" class="unit_image">
 
               <!-- IF production.TIME_SECONDS -->
@@ -287,87 +364,8 @@ var que_id = '{QUE_ID}';
                 <div class="icons icon-info_empire"></div>
               </span>
             </div>
-          </td>
-
-          <!-- IF (production.S_ROW_COUNT + 1) mod 4 == 0 -->
-            </tr><tr>
-          <!-- ENDIF -->
-
-          <script type="text/javascript"><!--
-          <!-- IF .production.require -->
-            require[{production.ID}] = [<!-- BEGIN require -->
-              {
-                name: '{require.NAME}',
-                requerements_met: parseInt('{require.REQUEREMENTS_MET}'),
-                level_require: parseInt('{require.LEVEL_REQUIRE}'),
-                level: parseInt('{require.LEVEL}'),
-                level_basic: parseInt('{require.LEVEL_BASIC}'),
-                level_bonus: parseInt('{require.LEVEL_BONUS}'),
-                id: parseInt('{require.ID}'),
-              },
-            <!-- END require -->];
-          <!-- ENDIF -->
-
-          production[{production.ID}] = {
-            id: '{production.ID}',
-            name: '{production.NAME}',
-            level: '{production.LEVEL}',
-            level_bonus: '{production.LEVEL_BONUS}',
-            change: '{production.CHANGE}',
-            description: '{production.DESCRIPTION}',
-            unit_busy: '{production.UNIT_BUSY}',
-            can_build: '{production.CAN_BUILD}',
-
-            metal: '{production.METAL}',
-            crystal: '{production.CRYSTAL}',
-            deuterium: '{production.DEUTERIUM}',
-            dark_matter: '{production.DARK_MATTER}',
-            time: '{production.TIME}',
-            time_seconds: parseInt('{production.TIME_SECONDS}'),
-            build_can: '{production.BUILD_CAN}',
-            build_result: '{production.BUILD_RESULT}',
-
-            destroy_metal: '{production.DESTROY_METAL}',
-            destroy_crystal: '{production.DESTROY_CRYSTAL}',
-            destroy_deuterium: '{production.DESTROY_DEUTERIUM}',
-            destroy_time: '{production.DESTROY_TIME}',
-            destroy_can: '{production.DESTROY_CAN}',
-            destroy_result: '{production.DESTROY_RESULT}',
-
-            map_is_resource: '{production.MAP_IS_RESOURCE}',
-
-            <!-- IF .production.resource -->
-              resource_map: [
-              <!-- BEGIN resource -->
-                {
-                  'shield': '{resource.ACTUAL_SHIELD}',
-                  'armor': '{resource.ACTUAL_ARMOR}',
-                  'weapon': '{resource.ACTUAL_WEAPON}',
-                  'speed': '{resource.ACTUAL_SPEED}',
-                  'consumption': '{resource.ACTUAL_CONSUMPTION}',
-                  'capacity': '{resource.ACTUAL_CAPACITY}',
-
-                  'level': '{resource.LEVEL}',
-                  'sys_metal': '{resource.R901}',
-                  'metal_diff': '{resource.D901}',
-                  'sys_crystal': '{resource.R902}',
-                  'crystal_diff': '{resource.D902}',
-                  'sys_deuterium': '{resource.R903}',
-                  'deuterium_diff': '{resource.D903}',
-                  'sys_energy': '{resource.R904}',
-                  'energy_diff': '{resource.D904}',
-
-                  'sys_colonies': '{resource.RCOLONIES_MAX}',
-                  'sys_colonies_diff': '{resource.DCOLONIES_MAX}',
-                  'sys_expeditions': '{resource.REXPEDITIONS_MAX}',
-                  'sys_expeditions_diff': '{resource.DEXPEDITIONS_MAX}',
-                },
-              <!-- END resource -->
-              ]
-            <!-- ENDIF -->
-          };
-          --></script>
         <!-- END production -->
+        </td>
       </tr>
     </table>
   </td>

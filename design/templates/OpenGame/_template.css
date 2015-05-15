@@ -1,3 +1,85 @@
+@media only screen
+and (min-device-width : 320px)
+and (max-device-width : 480px) {
+  /* Styles */
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen
+and (min-width : 321px) {
+  /* Styles */
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen
+and (max-width : 320px) {
+  /* Styles */
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px) {
+  /* Styles */
+}
+
+/* iPads (landscape) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : landscape) {
+  /* Styles */
+}
+
+/* iPads (portrait) ----------- */
+@media only screen
+and (min-device-width : 768px)
+and (max-device-width : 1024px)
+and (orientation : portrait) {
+  /* Styles */
+}
+
+/*  */
+@media only screen
+and (max-width : 47.4375em) {
+  /* Styles */
+  #unit_table {
+    width: 37em;
+  }
+  #unit_description_wrapper {
+    clear: both;
+  }
+}
+
+/* Desktops and laptops medium-res */
+@media only screen
+and (min-width : 47.5em) { /* 69em */
+  /* Styles */
+  #unit_table {
+    width: 48.5em;
+  }
+}
+
+/* Desktops and laptops ----------- */
+@media only screen
+and (min-width : 1224px) {
+  /* Styles */
+}
+
+/* Large screens ----------- */
+@media only screen
+and (min-width : 1824px) {
+  /* Styles */
+}
+
+/* iPhone 4+ ----------- */
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+  /* Styles */
+}
+
+
 textarea {
   -moz-border-radius: 4px;
   -webkit-border-radius: 4px;
@@ -200,7 +282,19 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Unit purchase --------------------------------------------------------------- */
 #unit_table {
-  width: 530px;
+  /*width: 533px; /* == 48.2em */ /* 46.4em + 0.3em*2(padding)*/
+  /*
+    Opera, FF: 529px
+    Chrome: 531px
+    IE: 533px;
+
+    11.6em - .unit_preview width
+    46.4em - .unit_preview width * 4
+
+    533px/11 = 48.5
+
+  */
+   /*width: 48.5em;*/
 }
 
 .unit_preview {
@@ -257,6 +351,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   height: 2.46rem;
 
   font-size: 1.0em;
+  text-align: center;
 }
 
 .unit_preview .resource_container {

@@ -872,3 +872,19 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
   font-weight: 800;
   font-size: 14px;
 }
+
+.bred, .byellow, .bgreen, .bblue {
+  border: 0.1em solid;
+}
+.bred {
+  border-color: red;
+}
+.byellow {
+  border-color: yellow;
+}
+.bgreen {
+  border-color: green;
+}
+.bblue {
+  border-color: blue;
+}

@@ -117,9 +117,9 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     $('#unit_max_number').html(unit['can_build']);
   }
 
-  $('#unit_create').hide();
-  // $('#unit_max').hide();
-//  $('#unit_create').css('visibility', 'hidden');
+  // $('#unit_create').hide();
+  // $('#unit_create, #unit_create *').addClass('a75').disable();
+  $('#unit_create, #unit_create *').prop('disabled', true);
   $('#unit_destroy').css('visibility', 'hidden');
 
 //  <li style="margin: 0; padding: 0;"><span class="<!-- IF require.REQUEREMENTS_MET -->negative<!-- ELSE -->positive<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
@@ -157,7 +157,8 @@ function eco_struc_show_unit_info(unit_id, no_color) {
       if(STACKABLE) {
         if(unit['build_can'] != 0 && unit['build_result'] == 0)
         {
-          $('#unit_create').show();
+//          $('#unit_create').show();
+          $('#unit_create, #unit_create *').prop('disabled', false);
 //          $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
           $('#unit_amountslide').slider({ max: unit['can_build']});
@@ -183,7 +184,8 @@ function eco_struc_show_unit_info(unit_id, no_color) {
         }
 
         if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0) {
-          $('#unit_create').show();
+//          $('#unit_create').show();
+          $('#unit_create, #unit_create *').prop('disabled', false);
 //          $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
           /*
@@ -257,7 +259,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
       }
     }
 
-    result = result ? '<table  style="font-size: 9px">' + (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result + '</table>' : '';
+    result = result ? '<table  style="font-size: 0.8em">' + (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result + '</table>' : '';
   }
   document.getElementById('unit_balance').innerHTML = result;
 
