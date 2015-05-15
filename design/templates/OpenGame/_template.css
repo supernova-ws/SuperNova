@@ -39,30 +39,122 @@ and (orientation : portrait) {
   /* Styles */
 }
 
+#unit_info {
+  /*display: table;*/
+  vertical-align: top;
+  text-align: center;
+
+  width: 100%;
+}
+#unit_info_image_wrapper {
+  /*display: table-header-group;*/
+  vertical-align: top;
+  height: 12em;
+  width: 12em;
+  position: relative;
+  margin: 0.2em;
+  float: left;
+}
+#unit_info_image {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: 0;
+}
+#unit_name {
+  font-size: 1em;
+  vertical-align: top;
+  text-align: center;
+  left: 0;
+  top: 0;
+  width: 100%;
+  position: absolute;
+}
+#unit_level {
+  font-size: 1em;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  position: absolute;
+  text-align: center;
+}
+#unit_description_wrapper {
+  display: table-header-group;
+}
+#unit_info_extra_switch_wrapper {
+  display: table-row-group;
+}
+#unit_balance {
+  display: table-footer-group;
+  vertical-align: top;
+  text-align: center;
+  border: 0;
+  margin: 0.2em;
+  min-height: 12em;
+}
+
 /*  */
 @media only screen
 and (max-width : 47.4375em) {
   /* Styles */
-  #unit_table {
+  #unit_table { /* 3 preview */
     width: 37em;
   }
-  #unit_description_wrapper {
-    clear: both;
-  }
+  /*#unit_description_wrapper {*/
+    /*clear: both;*/
+  /*}*/
+  /*#unit_info_extra_switch_wrapper {*/
+    /*display: table-row-group;*/
+  /*}*/
 }
 
 /* Desktops and laptops medium-res */
 @media only screen
-and (min-width : 47.5em) { /* 69em */
+and (min-width : 47.5em) {
   /* Styles */
-  #unit_table {
+  #unit_table { /* 4 preview */
     width: 48.5em;
+  }
+  #unit_info_extra_switch_wrapper {
+    /*display: table-header-group;*/
+  }
+  /*#unit_info_extra_switch_wrapper {*/
+    /*display: table-row-group;*/
+  /*}*/
+}
+
+@media only screen
+and (min-width : 56em) {
+  /* Styles */
+  #unit_table { /* 5 preview */
+    width: 60.5em;
+  }
+}
+
+@media only screen
+and (min-width : 65em) {
+  /* Styles */
+  #unit_table { /* 6 preview */
+    width: 72.5em;
+  }
+  #unit_balance {
+    float: right;
+  }
+}
+
+@media only screen
+and (min-width : 74em) {
+  /* Styles */
+  #unit_table { /* 7 preview */
+    width: 84.5em;
   }
 }
 
 /* Desktops and laptops ----------- */
 @media only screen
-and (min-width : 1224px) {
+and (min-width : 1224px) { /* 76.5em*/
   /* Styles */
 }
 
@@ -77,6 +169,20 @@ and (min-width : 1824px) {
 only screen and (-webkit-min-device-pixel-ratio : 1.5),
 only screen and (min-device-pixel-ratio : 1.5) {
   /* Styles */
+}
+
+
+#unit_description_wrapper {
+  min-height: 12em;
+}
+
+#unit_description_wrapper:before {
+  content: "";
+  width: 20em;
+  display: block;
+  overflow: hidden;
+  /* For Demonstration */
+  border: 1px solid green;
 }
 
 
@@ -310,7 +416,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 
-.unit_preview .unit_image {
+.unit_preview .unit_preview_image {
   position: absolute;
   left: 0;
   top: 0;

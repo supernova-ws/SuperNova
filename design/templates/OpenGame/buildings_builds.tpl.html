@@ -39,6 +39,10 @@ language = {
   'sys_colonies': '{LA_sys_colonies}',
 
   'No_requirements': '{LA_No_requirements}',
+
+  'eco_bld_unit_info_extra_show': '{LA_eco_bld_unit_info_extra_show}',
+  'eco_bld_unit_info_extra_hide': '{LA_eco_bld_unit_info_extra_hide}',
+  'eco_bld_unit_info_extra_none': '{LA_eco_bld_unit_info_extra_none}',
 };
 
 planet = {
@@ -187,31 +191,30 @@ var que_id = '{QUE_ID}';
       <!-- ENDIF -->
 
       <tr>
-        <td style="vertical-align: top;" class="c_c">
-          <!--<table cellspacing=0 cellpadding=0 style="vertical-align: top; border: 0;" width=100% class="noborder">-->
-            <!--<tr>-->
-              <!--<th valign="top">-->
-                <div style="vertical-align: top; height: 12em; width: 12em; position: relative; margin: 0.2em;" class="fl">
-                  <!--<div style="vertical-align: middle"><img id="unit_image" border="0" src="" align="top" width="100%" /></div>-->
-                  <img id="unit_image" style="width: 100%;height: 100%; position: absolute; left: 0; top: 0; border: 0;"/>
-                  <div id="unit_name" align="center" style="font-size: 1em; vertical-align: top; left: 0; top: 0; width: 100%; position: absolute;" class="a75"></div>
-                  <div id="unit_level" style="font-size: 1em; bottom: 0; left: 0; width: 100%; position: absolute;" class="a75"></div>
-                </div>
-              <!--</th>-->
-              <!--<th valign="top" width="100%">-->
-              <div class="c_l noborder fr" id="unit_balance" style="vertical-align: top; margin: 0.2em; min-height: 12em; "></div>
-              <div style="vertical-align: top; margin: 0 0.2em;" id="unit_description_wrapper">
-                <!--max-width: 19em;-->
-                <div id="unit_description" style="text-align: justify;"></div>
-                <div id="unit_require_wrapper" style="font-size: 0.8em">
-                  <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
-                  <ul id="unit_require" style="overflow:hidden;"></ul>
-                </div>
-              </div>
-              <!--</th>-->
-              <!--<td class="c_l noborder" id="unit_balance" valign="top"></td>-->
-            <!--</tr>-->
-          <!--</table>-->
+        <td>
+<div id="unit_info">
+          <div id="unit_info_image_wrapper">
+            <img id="unit_info_image" />
+            <div id="unit_name" class="a75"></div>
+            <div id="unit_level" class="a75"></div>
+          </div>
+<!--<div style="display: table; width: 100%;">-->
+          <div id="unit_balance" style="display:none;"></div>
+          <div style="vertical-align: top; margin: 0 0.2em; " id="unit_description_wrapper">
+            <!--display: block;-->
+            <div id="unit_description" style="text-align: justify;"></div>
+            <div id="unit_require_wrapper" style="font-size: 0.8em">
+              <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
+              <ul id="unit_require" style="overflow:hidden;"></ul>
+            </div>
+          </div>
+          <div id="unit_info_extra_switch_wrapper">
+            <button id="unit_info_extra_switch">
+              {L_eco_bld_unit_info_extra_show}
+            </button>
+          </div>
+<!--</div>-->
+</div>
         </td>
       </tr>
 
@@ -297,7 +300,7 @@ var que_id = '{QUE_ID}';
         <td class="c_c">
         <!-- BEGIN production -->
             <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}" style="display: inline-block">
-              <img src="{dpath}gebaeude/{production.ID}.gif" class="unit_image">
+              <img src="{dpath}gebaeude/{production.ID}.gif" class="unit_preview_image">
 
               <!-- IF production.TIME_SECONDS -->
                 <span class="a75 time">
@@ -337,7 +340,7 @@ var que_id = '{QUE_ID}';
 
 
               <!-- IF production.BUILD_RESULT != 0 -->
-                <span class="a75 unit_image">
+                <span class="a75 unit_preview_image">
                   <div class="restrict">{production.BUILD_RESULT_TEXT}</div>
                 </span>
               <!-- ENDIF -->

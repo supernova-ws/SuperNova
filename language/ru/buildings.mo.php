@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 38a8.0
+* @version 40a3.1
 *
 */
 
@@ -100,4 +100,8 @@ $a_lang_array = (array(
   'eco_bld_msg_err_not_research' => 'В лабораториях могут быть исследованы только технологии',
   'eco_bld_msg_err_requirements_not_meet' => 'Требования для проведения исследований не удовлетворены',
   'eco_bld_msg_err_laboratory_upgrading' => 'Исследовательские лаборатории находятся в процессе модификации и не могут производить исследования',
+
+  'eco_bld_unit_info_extra_show' => 'Показать дополнительную информацию',
+  'eco_bld_unit_info_extra_hide' => 'Спрятать дополнительную информацию',
+  'eco_bld_unit_info_extra_none' => 'Нет дополнительной информации',
 ));
