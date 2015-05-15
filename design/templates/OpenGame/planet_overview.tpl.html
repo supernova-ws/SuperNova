@@ -78,13 +78,13 @@
             <table class="markup" width="100%">
               <tr>
                 <th class="c_l" nowrap>
-                  <div style="display: inline-block;">
-                    <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"</a>
-                    <input type="button" name="rename" value="{L_ov_rename}" onclick="$('#dialog-rename-planet').dialog('open');"/>
-                  </div>
+                  <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"</a>
                 </th>
                 <th class="c_r" nowrap width="11em">
-                  <button  go="" mode="manage" style="display: inline-block; width: 100%;">
+                  <input type="button" name="rename" value="{L_ov_rename}" onclick="$('#dialog-rename-planet').dialog('open');"/>
+                </th>
+                <th class="c_r" nowrap width="11em">
+                  <button  go="" mode="manage">
                     <span class="positive">{L_ov_manage}</span>
                   </button>
                 </th>
