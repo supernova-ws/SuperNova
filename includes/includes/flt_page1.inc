@@ -15,27 +15,51 @@ if(!is_array($ships)) {
   $ships = array();
 }
 
+foreach(array(PT_PLANET, PT_DEBRIS, PT_MOON) as $possible_planet_type_id) {
+  $template->assign_block_vars('possible_planet_type_id', array(
+    'ID' => $possible_planet_type_id,
+    'NAME' => $lang['sys_planet_type_sh'][$possible_planet_type_id],
+  ));
+}
+
+$template_route = array(
+  'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$planetrow['planet_type']],
+  'START_COORDS'       => uni_render_coordinates($planetrow),
+  'START_NAME'         => $planetrow['name'],
+);
+
+if(!empty($TargetPlanet)) {
+  $template_route += array(
+    'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
+    'END_COORDS'       => uni_render_coordinates($TargetPlanet),
+    'END_NAME'         => $TargetPlanet['name'],
+  );
+}
+
+$template->assign_block_vars('fleets', $template_route);
+
+$sn_groups_fleet = sn_get_groups('fleet');
 foreach($ships as $ship_id => $ship_count) {
-  if(in_array($ship_id, sn_get_groups('fleet')) && $ship_count) {
+  if(in_array($ship_id, $sn_groups_fleet) && $ship_count) {
     $ship_info = get_unit_param($ship_id);
     if($ship_count > mrc_get_level($user, $planetrow, $ship_id, false, true)) {
       $page .= $lang['fl_noenought'];
     } else {
       $fleet['fleetarray'][$ship_id]  = $ship_count;
-      // $fleet['fleetlist']            .= "{$ship_id},{$ship_count};";
       $fleet['amount']               += $ship_count;
     }
     $fleet['capacity'] += $ship_info[P_CAPACITY] * $ship_count;
     $ship_base_data = get_ship_data($ship_id, $user);
-    $template->assign_block_vars('ships', array(
+    $template->assign_block_vars('fleets.ships', array(
       'ID'          => $ship_id,
       'AMOUNT'      => $ship_count,
+      'AMOUNT_TEXT' => pretty_number($ship_count),
       'CONSUMPTION' => $ship_base_data['consumption'],
       'SPEED'       => $ship_base_data['speed'],
+      'NAME'        => $lang['tech'][$ship_id],
     ));
   }
 }
-
 
 if(empty($fleet['fleetarray'])) {
   message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
@@ -55,25 +79,12 @@ while($shortcut = db_fetch($query)) {
     'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['planet_type']],
   ));
 }
-//$query = doquery("SELECT * FROM {{shortcut}} WHERE shortcut_user_id = {$user['id']};");
-//while($shortcut = db_fetch($query)) {
-//  $template->assign_block_vars('shortcut', array(
-//    'NAME'       => $shortcut['shortcut_text'],
-//    'GALAXY'     => $shortcut['shortcut_galaxy'],
-//    'SYSTEM'     => $shortcut['shortcut_system'],
-//    'PLANET'     => $shortcut['shortcut_planet'],
-//    'TYPE'       => $shortcut['shortcut_planet_type'],
-//    'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['shortcut_planet_type']],
-//  ));
-//}
 
 // Building list of own planets & moons
 $colonies = db_planet_list_sorted ( $user );
-if(count($colonies) > 1)
-{
+if(count($colonies) > 1) {
   // while($row = db_fetch($colonies))
-  foreach($colonies as $row)
-  {
+  foreach($colonies as $row) {
     $template->assign_block_vars('colonies', array(
       'NAME'       => $row['name'],
       'GALAXY'     => $row['galaxy'],
@@ -88,13 +99,10 @@ if(count($colonies) > 1)
 //ACS Start
 //Need to look for acs attacks.
 $aks_madnessred = doquery('SELECT * FROM {{aks}};');
-while($row = db_fetch($aks_madnessred))
-{
+while($row = db_fetch($aks_madnessred)) {
   $members = explode(',', $row['eingeladen']);
-  foreach($members as $a => $b)
-  {
-    if ($b == $user['id'])
-    {
+  foreach($members as $a => $b) {
+    if ($b == $user['id']) {
       $template->assign_block_vars('acss', array(
         'ID'         => $row['id'],
         'NAME'       => $row['name'],

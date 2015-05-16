@@ -7,7 +7,9 @@ var fleet_slide_changing = false;
 --></script>
 
 <h2>{L_flt_page2_title}</h2>
-<h3>{TableTitle}</h3>
+
+<!-- INCLUDE fleet_miniatures -->
+
 <form action="fleet.php?fleet_page=3" method="post">
   <input type="hidden" name="galaxy"          value="{galaxy}" />
   <input type="hidden" name="system"          value="{system}" />
@@ -30,8 +32,6 @@ var fleet_slide_changing = false;
   <input type="hidden" name="speedfactor"     value="{speedfactor}" />
 
   <table>
-    <!--<tr><td class="c" colspan="2">{fl_mission}</td></tr>-->
-
     <!-- BEGIN missions -->
       <tr><th nowrap><div align=left>
         <input id="target_mission{missions.ID}" type="radio" name="target_mission" class="frameless" value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);" <!-- IF missions.CHECKED -->checked <!-- ENDIF -->>

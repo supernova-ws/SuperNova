@@ -1,5 +1,9 @@
 <!-- INCLUDE fleet_javascript -->
+
 <h2>{L_fl_floten1_ttl}</h2>
+
+<!-- INCLUDE fleet_miniatures -->
+
 <form action="fleet.php?fleet_page=2" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
   <input type="hidden" name="thissystem"      value="{thissystem}" />
@@ -10,9 +14,9 @@
 
   <input type="hidden" name="usedfleet"       value="{usedfleet}" />
 
-  <table border="0" cellpadding="0" cellspacing="1">
+  <table border="0" cellpadding="0" cellspacing="1" style="width: 42em">
     <tr>
-      <th>{L_fl_dest}</th>
+      <th width="12em">{L_fl_dest}</th>
       <th>
         <input type="text" name="galaxy" class="coordinate" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{galaxy}" />
         <input type="text" name="system" class="coordinate" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{system}" />
@@ -96,9 +100,12 @@
           <!-- BEGIN colonies -->
             <tr>
               <td class="c_l">
-                <button onclick="return setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE});">
+                <button onclick="return setTarget({colonies.GALAXY}, {colonies.SYSTEM}, {colonies.PLANET}, {colonies.TYPE});" style="width: 100%">
                   [{colonies.GALAXY}:{colonies.SYSTEM}:{colonies.PLANET}] {colonies.TYPE_PRINT} {colonies.NAME}
                 </button>
+                <script type="text/javascript">
+                  $.extend(planet_names, {'g{colonies.GALAXY}s{colonies.SYSTEM}p{colonies.PLANET}t{colonies.TYPE}': '{colonies.NAME}'});
+                </script>
               </td>
             </tr>
           <!-- BEGINELSE colonies -->
@@ -115,9 +122,14 @@
           <!-- BEGIN shortcut -->
             <tr>
               <td class="c_l {shortcut.PRIORITY_CLASS}">
-                <button onclick="return setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE});">
+                <button onclick="return setTarget({shortcut.GALAXY}, {shortcut.SYSTEM}, {shortcut.PLANET}, {shortcut.TYPE});" style="width: 100%">
                   [{shortcut.GALAXY}:{shortcut.SYSTEM}:{shortcut.PLANET}] {shortcut.TYPE_PRINT} {shortcut.NAME}
                 </button>
+                <script type="text/javascript">
+                  !planet_names['g{shortcut.GALAXY}s{shortcut.SYSTEM}p{shortcut.PLANET}t{shortcut.TYPE}']
+                          ? $.extend(planet_names, {'g{shortcut.GALAXY}s{shortcut.SYSTEM}p{shortcut.PLANET}t{shortcut.TYPE}': '{shortcut.NAME}'})
+                          : '';
+                </script>
               </td>
             </tr>
           <!-- BEGINELSE shortcut -->
@@ -134,7 +146,12 @@
           <!-- BEGIN acss -->
             <tr>
               <th>
-                <input type="button" onclick="setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');return false;" value="{acss.NAME} [{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT}">
+                <input type="button" onclick="setTarget({acss.GALAXY},{acss.SYSTEM},{acss.PLANET},{acss.TYPE});setACS({acss.ID});setACS_target('g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}');return false;" value="[{acss.GALAXY}:{acss.SYSTEM}:{acss.PLANET}] {acss.TYPE_PRINT} {acss.NAME}"  style="width: 100%" />
+                <script type="text/javascript">
+                  !planet_names['g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}']
+                          ? $.extend(planet_names, {'g{acss.GALAXY}s{acss.SYSTEM}p{acss.PLANET}t{acss.TYPE}': '{acss.NAME}'})
+                          : '';
+                </script>
               </th>
             </tr>
           <!-- BEGINELSE acss -->
@@ -157,11 +174,13 @@ var speed_factor   = {speed_factor};
 document.getElementById('fleet_speed').innerHTML = sn_format_number(fleet_speed);
 
 var ships = Array();
+<!-- BEGIN fleets -->
 <!-- BEGIN ships -->
   <!-- IF (ships.SPEED > 0) -->
   ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, 0);
   <!-- ENDIF -->
 <!-- END ships -->
+<!-- END fleets -->
 
 shortInfo();
 --></script>

@@ -75,19 +75,16 @@ function tpl_parse_fleet_sn($fleet, $fleet_id)
 }
 
 function tpl_parse_fleet_db($fleet, $index, $user_data = false){return sn_function_call('tpl_parse_fleet_db', array($fleet, $index, $user_data, &$result));}
-function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
-{
+function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result) {
   global $lang, $user;
 
-  if(!$user_data)
-  {
+  if(!$user_data) {
     $user_data = $user;
   }
 
-  if ($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == MT_AKS)
-  {
-    $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']} LIMIT 1;", '', true);
-  };
+  if($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == MT_AKS) {
+    $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet['fleet_group']} LIMIT 1;", true);
+  }
 
   $spy_level = $user['id'] == $fleet['fleet_owner'] ? 100 : GetSpyLevel($user);
 
@@ -135,31 +132,27 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result)
 
   $ship_list = explode(';', $fleet['fleet_array']);
 
-  if($spy_level >= 6)
-  {
-    foreach($ship_list as $ship_record)
-    {
-      if($ship_record)
-      {
+  if($spy_level >= 6) {
+    foreach($ship_list as $ship_record) {
+      if($ship_record) {
         $ship_data = explode(',', $ship_record);
-        if($spy_level >= 10)
-        {
+        if($spy_level >= 10) {
           $single_ship_data = get_ship_data($ship_data[0], $user_data);
           $result['ships'][$ship_data[0]] = array(
             'ID'          => $ship_data[0],
             'NAME'        => $lang['tech'][$ship_data[0]],
             'AMOUNT'      => $ship_data[1],
+            'AMOUNT_TEXT' => pretty_number($ship_data[1]),
             'CONSUMPTION' => $single_ship_data['consumption'],
             'SPEED'       => $single_ship_data['speed'],
             'CAPACITY'    => $single_ship_data['capacity'],
           );
-        }
-        else
-        {
+        } else {
           $result['ships'][$ship_data[0]] = array(
             'ID'          => $ship_id++,
             'NAME'        => $lang['tech'][UNIT_SHIPS],
             'AMOUNT'      => $ship_data[1],
+            'AMOUNT_TEXT' => pretty_number($ship_data[1]),
             'CONSUMPTION' => 0,
             'SPEED'       => 0,
             'CAPACITY'    => 0,

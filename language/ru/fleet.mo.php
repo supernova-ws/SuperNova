@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b3.0
+* @version 40a3.3
 *
 */
 
@@ -75,7 +75,7 @@ $a_lang_array = (array(
   'fl_ruins' => 'Поле обломков',
   'fl_moon' => 'Луна',
   'fl_dist' => 'Расстояние',
-  'fl_fltime' => 'Продолжительность(в одну сторону)',
+  'fl_fltime' => 'Продолжительность (в одну сторону)',
   'fl_time_go' => 'Прибытие в точку назначение',
   'fl_time_back' => 'Возвращение в точку старта',
   'fl_deute_need' => 'Потребление топлива',
@@ -216,11 +216,16 @@ $a_lang_array = (array(
   'fl_id' => '№',
   'fl_ressources' => 'Сырьё',
 
-  'fl_fuel_on_planet' => 'Запас топлива на планете',
+  'fl_fuel_on_planet' => 'Топливо на складе',
 
   'flt_aks_players_in_aks' => 'Игроки в САБ',
   'flt_aks_player_invite' => 'Пригласить игрока в САБ',
   'flt_aks_player_invite_do' => 'Пригласить',
   'flt_aks_player_same' => 'Нельзя присоединить к САБу пользователя, на которого совершается нападение!',
   'flt_aks_error_too_much_players' => 'Нельзя пригласить в САБ больше 5 игроков',
+
+  'flt_return_all' => 'Вернуть отмеченные',
+  'flt_return_fleet' => 'Вернуть флот',
+
+  'flt_acs_prefix' => 'САБ ',
 ));

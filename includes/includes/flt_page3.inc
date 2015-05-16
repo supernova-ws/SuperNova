@@ -3,13 +3,11 @@
 // @version 1.0
 // @copyright 2008 by Chlorel for XNova
 
-if(SN_IN_FLEET !== true)
-{
+if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
-function sn_fleet_page3()
-{
+function sn_fleet_page3() {
   global $missiontype, $target_mission, $fleetarray, $planetrow, $lang;
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
@@ -87,29 +85,21 @@ function sn_fleet_page3()
   }
 
 
-  if($sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id'))
-  {
+  if($sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id')) {
     $captain = $sn_module['unit_captain']->unit_captain_get($planetrow['id']);
 //      mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
-    if(!$captain)
-    {
+    if(!$captain) {
       $errorlist .= $lang['module_unit_captain_error_no_captain'];
-    }
-    elseif($captain['unit_location_type'] == LOC_PLANET)
-    {
-      if($target_mission == MT_RELOCATE && ($arriving_captain = mrc_get_level($user, $TargetPlanet, UNIT_CAPTAIN, true)))
-      {
+    } elseif($captain['unit_location_type'] == LOC_PLANET) {
+      if($target_mission == MT_RELOCATE && ($arriving_captain = mrc_get_level($user, $TargetPlanet, UNIT_CAPTAIN, true))) {
         $errorlist .= $lang['module_unit_captain_error_captain_already_bound'];
       }
-    }
-    else
-    {
+    } else {
       $errorlist .= $lang['module_unit_captain_error_captain_flying'];
     }
   }
 
-  if ($errorlist)
-  {
+  if ($errorlist) {
     sn_db_transaction_rollback();
     message ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
@@ -125,19 +115,16 @@ function sn_fleet_page3()
   $fleet_group = max(0, intval($_POST['fleet_group']));
   //But is it acs??
   //Well all acs fleets must have a fleet code.
-  if($fleet_group)
-  {
+  if($fleet_group) {
     //Also it must be mission type 2
     $target_mission = MT_AKS;
 
     //The co-ords must be the same as where the acs fleet is going.
     $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
-    if($_POST['acs_target_mr'] == $target)
-    {
+    if($_POST['acs_target_mr'] == $target) {
       //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
       $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", true);
-      if (!$aks)
-      {
+      if (!$aks) {
         $fleet_group = 0;
       }
       else
@@ -150,20 +137,17 @@ function sn_fleet_page3()
     }
   }
   //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
-  if(!$fleet_group && $target_mission == MT_AKS)
-  {
+  if(!$fleet_group && $target_mission == MT_AKS) {
     $target_mission = MT_ATTACK;
   }
 
-  if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE)
-  {
+  if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
     $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);
   }
   $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group, 'resources' => $StorageNeeded);
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
-  if($cant_attack !== ATTACK_ALLOWED)
-  {
+  if($cant_attack !== ATTACK_ALLOWED) {
     message("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
   }
 
@@ -176,28 +160,22 @@ function sn_fleet_page3()
 
   $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :
     ($target_mission == MT_HOLD ? 12 : 0);
-  if($max_duration)
-  {
+  if($max_duration) {
     $StayDuration = sys_get_param_id('missiontime');
-    if($StayDuration > $max_duration || $StayDuration < 1)
-    {
+    if($StayDuration > $max_duration || $StayDuration < 1) {
       $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
       die();
     }
     $StayDuration = ceil($StayDuration * 3600 / ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1));
     $StayTime     = $fleet['start_time'] + $StayDuration;
-  }
-  else
-  {
+  } else {
     $StayDuration = 0;
     $StayTime     = 0;
   }
   $fleet['end_time']   = $StayDuration + (2 * $duration) + SN_TIME_NOW;
 
-  if($aks && $target_mission == MT_AKS)
-  {
-    if ($fleet['start_time']>$aks['ankunft'])
-    {
+  if($aks && $target_mission == MT_AKS) {
+    if ($fleet['start_time']>$aks['ankunft']) {
       message ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
     }
     $fleet['start_time'] = $aks['ankunft'];
@@ -208,8 +186,7 @@ function sn_fleet_page3()
   $FleetShipCount      = 0;
 //pdump($fleetarray );
   $db_changeset = array();
-  foreach ($fleetarray as $Ship => $Count)
-  {
+  foreach ($fleetarray as $Ship => $Count) {
     $FleetStorage    += get_unit_param($Ship, P_CAPACITY) * $Count;
 //    $fleet_array     .= "{$Ship},{$Count};";
 //    $ship_db_name = get_unit_param($Ship, P_NAME);
@@ -222,24 +199,20 @@ function sn_fleet_page3()
 //pdump($db_changeset);
   $FleetStorage        -= $consumption;
 
-  if ( $StorageNeeded > $FleetStorage)
-  {
+  if ( $StorageNeeded > $FleetStorage) {
     message ("<span class='error'><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
-  if ($planetrow['deuterium'] < $TransDeuterium + $consumption)
-  {
+  if ($planetrow['deuterium'] < $TransDeuterium + $consumption) {
     message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
-  if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal))
-  {
+  if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
     message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
   $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', `fleet_mission` = '{$target_mission}', ";
   $QryInsertFleet .= "`fleet_amount` = '{$FleetShipCount}', `fleet_array` = '{$fleet_array}', `fleet_start_time` = '{$fleet['start_time']}', ";
-  if($planetrow['id'])
-  {
+  if($planetrow['id']) {
     $QryInsertFleet .= "`fleet_start_planet_id` = '{$planetrow['id']}', ";
   }
   $QryInsertFleet .= "`fleet_start_galaxy` = '". intval($planetrow['galaxy']) ."', ";
@@ -247,8 +220,7 @@ function sn_fleet_page3()
   $QryInsertFleet .= "`fleet_start_planet` = '". intval($planetrow['planet']) ."', ";
   $QryInsertFleet .= "`fleet_start_type` = '". intval($planetrow['planet_type']) ."', ";
   $QryInsertFleet .= "`fleet_end_time` = '{$fleet['end_time']}', `fleet_end_stay` = '{$StayTime}', ";
-  if($TargetPlanet['id'])
-  {
+  if($TargetPlanet['id']) {
     $QryInsertFleet .= "`fleet_end_planet_id` = '{$TargetPlanet['id']}', ";
   }
   $QryInsertFleet .= "`fleet_end_galaxy` = '{$galaxy}', `fleet_end_system` = '{$system}', `fleet_end_planet` = '{$planet}', `fleet_end_type` = '{$planet_type}', ";
@@ -262,17 +234,51 @@ function sn_fleet_page3()
 
   $template = gettemplate('fleet3', true);
 
-  foreach($fleetarray as $Ship => $Count)
-  {
-    $template->assign_block_vars('ships', array(
-      'NAME'  => $lang['tech'][$Ship],
-      'COUNT' => pretty_number($Count),
-    ));
+//  foreach($fleetarray as $Ship => $Count) {
+//    $template->assign_block_vars('ships', array(
+//      'NAME'  => $lang['tech'][$Ship],
+//      'COUNT' => pretty_number($Count),
+//    ));
+//  }
+
+  if(is_array($captain)) {
+    db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id}");
   }
 
-  if(is_array($captain))
-  {
-    db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id}");
+  $template_route = array(
+    'ID'                 => 1,
+    'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$planetrow['planet_type']],
+    'START_COORDS'       => uni_render_coordinates($planetrow),
+    'START_NAME'         => $planetrow['name'],
+    'START_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['end_time'] + SN_CLIENT_TIME_DIFF),
+    'START_LEFT'         => floor($fleet['end_time'] + 1 - SN_TIME_NOW),
+  );
+
+  if(!empty($TargetPlanet)) {
+    $template_route += array(
+      'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
+      'END_COORDS'       => uni_render_coordinates($TargetPlanet),
+      'END_NAME'         => $TargetPlanet['name'],
+      'END_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['start_time'] + SN_CLIENT_TIME_DIFF),
+      'END_LEFT'         => floor($fleet['start_time'] + 1 - SN_TIME_NOW),
+    );
+  }
+
+  $template->assign_block_vars('fleets', $template_route);
+
+  $sn_groups_fleet = sn_get_groups('fleet');
+  foreach($fleetarray as $ship_id => $ship_count) {
+    if(in_array($ship_id, $sn_groups_fleet) && $ship_count) {
+//      $ship_base_data = get_ship_data($ship_id, $user);
+      $template->assign_block_vars('fleets.ships', array(
+        'ID'          => $ship_id,
+        'AMOUNT'      => $ship_count,
+        'AMOUNT_TEXT' => pretty_number($ship_count),
+//        'CONSUMPTION' => $ship_base_data['consumption'],
+//        'SPEED'       => $ship_base_data['speed'],
+        'NAME'        => $lang['tech'][$ship_id],
+      ));
+    }
   }
 
   $template->assign_vars(array(

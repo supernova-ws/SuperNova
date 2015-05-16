@@ -116,7 +116,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   document.getElementById('unit_time').innerHTML = unit['time'];
   document.getElementById('unit_time_div').style.display = unit['time_seconds'] ? "block" : "none";
 
-  document.getElementById('unit_name').innerHTML = unit['name'];
+  document.getElementById('unit_info_name').innerHTML = unit['name'];
   if(unit['level'] > 0 || STACKABLE)
   {
     document.getElementById('unit_level').innerHTML = (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');

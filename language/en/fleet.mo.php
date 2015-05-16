@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b3.0
+* @version 40a3.3
 *
 */
 
@@ -226,4 +226,9 @@ $a_lang_array = (array(
   'flt_aks_player_invite_do' => 'Invite',
   'flt_aks_player_same' => 'You can not invite to ACS player to whom attack is launched!',
   'flt_aks_error_too_much_players' => 'You can invite to ACS 5 players maximum',
+
+  'flt_return_all' => 'Return selected',
+  'flt_return_fleet' => 'Return fleet',
+
+  'flt_acs_prefix' => 'ACS ',
 ));

@@ -12,15 +12,30 @@ var ships = Array();
   ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, {ships.CAPACITY});
   <!-- ENDIF -->
 <!-- END ships -->
-// var speed_factor   = {speed_factor};
+
+  $(document).on('change', '#fleet_select_all', function(){
+    $('[name^="return"]').prop('checked', $(this).is(':checked'));
+  });
+
+  $(document).on('click', '.return_fleet', function(){
+    $(this).parent().parent().find('[name^="return"]').prop('checked', true).closest('form').submit();
+  });
+
+  $(document).on('click', '#fleet_return_do', function(){
+    $(this).closest('form').submit();
+  });
 --></script>
 
 <!-- INCLUDE fleet_javascript -->
 
 <br>
+<form action="" method="post">
 <table border='0' cellpadding='0' cellspacing='1'>
-  <tr height='20' class='c'>
-    <td colspan=8 class='c'><div style="float: left">{L_fl_title}: {FLEETS_FLYING}/{FLEETS_MAX}</div><div align=right>{L_fl_expttl}: {EXPEDITIONS_FLYING}/{EXPEDITIONS_MAX}</div></td>
+  <tr class='c_c'>
+    <th colspan=9>
+      <div class="fl">{L_fl_title}: {FLEETS_FLYING}/{FLEETS_MAX}</div>
+      <div class="fr">{L_fl_expttl}: {EXPEDITIONS_FLYING}/{EXPEDITIONS_MAX}</div>
+    </th>
   </tr>
 
   <tr height='20'>
@@ -32,6 +47,7 @@ var ships = Array();
     <th>{L_fl_from}</th>
     <th>{L_fl_from_t}</th>
     <th>{L_fl_order}</th>
+    <th><input type="checkbox" id="fleet_select_all" /></th>
   </tr>
 
   <!-- BEGIN fleets -->
@@ -75,19 +91,18 @@ var ships = Array();
       </th>
       <th>
         <!-- IF fleets.MESSAGE == 0 -->
-          <form action="" method="post">
-            <input name="fleet_id" value="{fleets.ID}" type="hidden">
-            <input value="{L_fl_back_to_ttl}" type="submit" name="return_fleet">
-          </form>
+          <input value="{L_flt_return_fleet}" type="button" class="return_fleet" />
           <!-- IF fleets.MISSION == 1 || fleets.MISSION == 2 -->
-            <form action="fleet.php?fleet_page=4" method="post" style="margin: 0">
-              <input name="fleetid" value="{fleets.ID}" type="hidden">
-              <input value="<!-- IF fleets.MISSION == 1 -->{L_fl_associate}<!-- ELSE -->{fleets.ACS}<!-- ENDIF -->" type="submit">
-            </form>
+            <br/>
+            <input value="<!-- IF fleets.MISSION == 1 -->{L_fl_associate}<!-- ELSE -->{fleets.ACS}<!-- ENDIF -->" type="button"
+                   onclick="sn_redirect('fleet.php?fleet_page=4&fleetid={fleets.ID}');" />
           <!-- ENDIF -->
         <!-- ELSE -->
           {L_fl_isback}
         <!-- ENDIF -->
+      </th>
+      <th>
+        <input type="checkbox" name="return[]" value="{fleets.ID}" />
       </th>
     </tr>
     <script type="text/javascript"><!--
@@ -99,14 +114,18 @@ var ships = Array();
       ]}});
     --></script>
   <!-- BEGINELSE fleets -->
-    <tr><th colspan="8">{L_fl_no_flying_fleets}</th></tr>
+    <tr><th colspan="9">{L_fl_no_flying_fleets}</th></tr>
   <!-- END fleets -->
 
   <!-- IF FLEETS_FLYING >= FLEETS_MAX -->
-    <tr><th class="c_c negative" colspan="8">{L_fl_noslotfree}</th></tr>
+    <tr><th class="c_c negative" colspan="9">{L_fl_noslotfree}</th></tr>
   <!-- ELSE -->
-    <tr><th class="c_c" colspan="8"><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th></tr>
+    <tr>
+      <th class="c_c" colspan="7"><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th>
+      <th class="c_c" colspan="2"><input type="button" value="{L_flt_return_all}" id="fleet_return_do" /></th>
+    </tr>
   <!-- ENDIF -->
 </table><br>
+</form>
 
 <!-- INCLUDE page_hint -->

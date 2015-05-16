@@ -1,0 +1,53 @@
+<!-- BEGIN fleets -->
+  <!-- IF fleets.START_COORDS -->
+  <h3>
+  <div style="vertical-align: top">
+    <div style="display: inline-block;">
+      {fleets.START_COORDS} {fleets.START_TYPE_TEXT_SH} {fleets.START_NAME}
+      <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
+      <div class="z" id="fleet_timer_start{fleets.ID}"></div>
+      {fleets.START_TIME_TEXT}
+      <!-- ELSE -->
+      -
+      <!-- ENDIF -->
+    </div>
+    <div style="display: inline-block;vertical-align: top;">
+    =&gt;
+    </div>
+    <div style="display: inline-block;">
+      <span id="end_coords">{fleets.END_COORDS}</span> <span id="end_planet_type">{fleets.END_TYPE_TEXT_SH}</span> <span id="end_name">{fleets.END_NAME}</span>
+      <!-- IF fleets.MESSAGE == 0 -->
+      <div class="z" id="fleet_timer_end{fleets.ID}"></div>
+      {fleets.END_TIME_TEXT}
+      <!-- ELSE -->
+      -
+      <!-- ENDIF -->
+    </div>
+  </div>
+  </h3>
+  <!-- ENDIF -->
+
+  <div style="max-width: 42em; display: table;"><!-- BEGIN ships -->
+    <div id="unit_miniatures_wrapper">
+      <img src="{dpath}gebaeude/{ships.ID}.gif" style="width: 100%; height: 100%;"/>
+      <!--<img id="unit_info_image" />-->
+      <div id="unit_info_name" class="a75">{ships.NAME}</div>
+      <div id="unit_level" class="a75">{ships.AMOUNT_TEXT}</div>
+    </div>
+  <!-- END ships --></div>
+<!-- END fleets -->
+
+<script type="text/javascript">
+  <!-- BEGIN fleets -->
+  <!-- IF fleets.START_LEFT -->
+  sn_timers.unshift({id: 'fleet_timer_start{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_fleet_arrived}', que: [
+    ['{fleets.ID}', '', {fleets.START_LEFT}, '0']
+  ]}});
+  <!-- ENDIF -->
+  <!-- IF fleets.END_LEFT -->
+  sn_timers.unshift({id: 'fleet_timer_end{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_fleet_arrived}', que: [
+    ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
+  ]}});
+  <!-- ENDIF -->
+  <!-- END fleets -->
+</script>

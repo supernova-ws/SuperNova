@@ -814,7 +814,7 @@ input[type=checkbox].ui-textfield {
 }
 
 input[type=text].coordinate {
-  max-width: 20px;
+  max-width: 3em;
   padding: 4px;
 }
 

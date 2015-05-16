@@ -47,6 +47,10 @@ function setTarget(galaxy, solarsystem, planet, planet_type) {
   document.getElementsByName('system')[0].value = solarsystem;
   document.getElementsByName('planet')[0].value = planet;
   document.getElementsByName('planet_type')[0].value = planet_type;
+  $('#end_coords').html('[' + galaxy + ':' + solarsystem + ':' + planet + ']');
+  $('#end_planet_type').html(planet_types[planet_type]);
+  planet_name = planet_names['g' + galaxy + 's' + solarsystem + 'p' + planet + 't' + planet_type];
+  $('#end_name').html(planet_name ? planet_name : '');
   shortInfo();
   return false;
 }
