@@ -111,7 +111,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   var unit_destroy_link = '';
 
   document.getElementById('unit_info_image').src = dpath + 'gebaeude/' + unit['id'] +'.gif';
-  document.getElementById('unit_description').innerHTML = unit['description'];
+  document.getElementById('unit_info_description').innerHTML = unit['description'];
 
   document.getElementById('unit_time').innerHTML = unit['time'];
   document.getElementById('unit_time_div').style.display = unit['time_seconds'] ? "block" : "none";
@@ -267,8 +267,11 @@ function eco_struc_show_unit_info(unit_id, no_color) {
 
     result ? result = (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result : false;
   }
-  !result ? result = '<tr><td>' + language['eco_bld_unit_info_extra_none'] + '</td></tr>' : false;
-  document.getElementById('unit_balance').innerHTML = '<table style="font-size: 0.8em; min-height: 12em;">' + result + '</table>';
+  //!result ? result = '<tr><td style="font-size: 0.8em; min-height: 12.5em;" height="13em"><div style="font-size: 1em; min-height: 12.5em;">' + language['eco_bld_unit_info_extra_none'] + '</div></td></tr>' : false;
+  //document.getElementById('unit_balance').innerHTML = '<table style="font-size: 0.8em; min-height: 12.5em;">' + result + '</table>';
+  //!result ? result = '<tr><td><div style="font-size: 1em; min-height: 12.5em;">' + language['eco_bld_unit_info_extra_none'] + '</div></td></tr>' : false;
+  !result ? result = '<tr><td style="min-height: 12.25em; display: block;">' + language['eco_bld_unit_info_extra_none'] + '</td></tr>' : false;
+  document.getElementById('unit_balance').innerHTML = '<table>' + result + '</table>';
 
   bld_unit_info_width = Math.max(bld_unit_info_width, jQuery('#unit_table').width());
   document.getElementById('unit_table').width = bld_unit_info_width;

@@ -49,8 +49,8 @@ and (orientation : portrait) {
 #unit_info_image_wrapper {
   /*display: table-header-group;*/
   vertical-align: top;
-  height: 12em;
-  width: 12em;
+  height: 13em;
+  width: 13em;
   position: relative;
   margin: 0.2em;
   float: left;
@@ -83,6 +83,11 @@ and (orientation : portrait) {
 #unit_description_wrapper {
   display: table-header-group;
 }
+#unit_description_wrapper_inner {
+  display: table-cell;
+  height: 11.5em;
+}
+
 #unit_info_extra_switch_wrapper {
   display: table-row-group;
 }
@@ -92,7 +97,17 @@ and (orientation : portrait) {
   text-align: center;
   border: 0;
   margin: 0.2em;
-  min-height: 12em;
+  min-height: 13em;
+}
+
+#unit_balance table {
+  font-size: 0.8em;
+  min-height: 12.5em;
+}
+
+#unit_balance td, #unit_balance th {
+  font-size: 0.8em;
+  /*min-height: 12.5em;*/
 }
 
 #unit_miniatures_wrapper {
@@ -182,16 +197,18 @@ only screen and (min-device-pixel-ratio : 1.5) {
 
 #unit_description_wrapper {
   min-height: 12em;
+  vertical-align: top;
+  /*margin: 0 0.2em;*/
 }
 
-#unit_description_wrapper:before {
-  content: "";
-  width: 20em;
-  display: block;
-  overflow: hidden;
+/*#unit_description_wrapper:before {*/
+  /*content: "";*/
+  /*width: 20em;*/
+  /*display: block;*/
+  /*overflow: hidden;*/
   /* For Demonstration */
-  border: 1px solid green;
-}
+  /*border: 1px solid green;*/
+/*}*/
 
 
 textarea {
