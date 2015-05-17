@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2013-10-13 22:36:25
+Date: 2014-03-02 14:24:59
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -188,6 +188,8 @@ CREATE TABLE `sn_announce` (
   `tsTimeStamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Date & Time of announce',
   `strAnnounce` text,
   `detail_url` varchar(250) NOT NULL DEFAULT '' COMMENT 'Link to more details about update',
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Announcer user ID',
+  `user_name` varchar(32) DEFAULT NULL COMMENT 'Announcer user name',
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -214,8 +216,8 @@ CREATE TABLE `sn_banned` (
   KEY `ID` (`ban_id`),
   KEY `I_ban_user_id` (`ban_user_id`),
   KEY `I_ban_issuer_id` (`ban_issuer_id`),
-  CONSTRAINT `FK_ban_user_id` FOREIGN KEY (`ban_user_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `FK_ban_issuer_id` FOREIGN KEY (`ban_issuer_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  CONSTRAINT `FK_ban_issuer_id` FOREIGN KEY (`ban_issuer_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `FK_ban_user_id` FOREIGN KEY (`ban_user_id`) REFERENCES `sn_users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -258,8 +260,8 @@ CREATE TABLE `sn_buddy` (
   UNIQUE KEY `BUDDY_ID` (`BUDDY_ID`),
   KEY `I_BUDDY_SENDER_ID` (`BUDDY_SENDER_ID`,`BUDDY_OWNER_ID`),
   KEY `I_BUDDY_OWNER_ID` (`BUDDY_OWNER_ID`,`BUDDY_SENDER_ID`),
-  CONSTRAINT `FK_BUDDY_SENDER_ID` FOREIGN KEY (`BUDDY_SENDER_ID`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_BUDDY_OWNER_ID` FOREIGN KEY (`BUDDY_OWNER_ID`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_BUDDY_OWNER_ID` FOREIGN KEY (`BUDDY_OWNER_ID`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_BUDDY_SENDER_ID` FOREIGN KEY (`BUDDY_SENDER_ID`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -528,6 +530,43 @@ CREATE TABLE `sn_log_dark_matter` (
 -- ----------------------------
 
 -- ----------------------------
+-- Table structure for `sn_log_metamatter`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_log_metamatter`;
+CREATE TABLE `sn_log_metamatter` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Human-readable record timestamp',
+  `user_id` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'User ID which make log record',
+  `username` varchar(32) NOT NULL DEFAULT '' COMMENT 'Username',
+  `reason` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Reason ID for metamatter adjustment',
+  `amount` bigint(10) NOT NULL DEFAULT '0' COMMENT 'Amount of metamatter change',
+  `comment` text COMMENT 'Comments',
+  `page` varchar(512) NOT NULL DEFAULT '' COMMENT 'Page that makes entry to log',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id` (`id`),
+  KEY `I_log_metamatter_sender_id` (`user_id`,`id`),
+  KEY `I_log_metamatter_reason_sender_id` (`reason`,`user_id`,`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_log_metamatter
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `sn_log_users_online`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_log_users_online`;
+CREATE TABLE `sn_log_users_online` (
+  `online_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Measure time',
+  `online_count` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Users online',
+  PRIMARY KEY (`online_timestamp`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_log_users_online
+-- ----------------------------
+
+-- ----------------------------
 -- Table structure for `sn_messages`
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_messages`;
@@ -593,6 +632,7 @@ CREATE TABLE `sn_payment` (
   `payment_external_lots` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Payment system lot amount',
   `payment_external_amount` decimal(65,5) NOT NULL DEFAULT '0.00000' COMMENT 'Money incoming from payment system',
   `payment_external_currency` varchar(3) NOT NULL DEFAULT '' COMMENT 'Payment system currency',
+  `payment_test` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Is this a test payment?',
   PRIMARY KEY (`payment_id`),
   KEY `I_payment_user` (`payment_user_id`,`payment_user_name`),
   KEY `I_payment_module_internal_id` (`payment_module_name`,`payment_external_id`)
@@ -772,6 +812,28 @@ CREATE TABLE `sn_planets` (
   KEY `I_interplanetary_misil` (`id_owner`,`interplanetary_misil`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+-- ----------------------------
+-- Table structure for `sn_player_award`
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_player_award`;
+CREATE TABLE `sn_player_award` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `award_type_id` int(11) DEFAULT NULL COMMENT 'Award type i.e. order, medal, pennant, rank etc',
+  `award_id` int(11) DEFAULT NULL COMMENT 'Global award unit ID',
+  `award_variant_id` int(11) DEFAULT NULL COMMENT 'Multiply award subtype i.e. for same reward awarded early',
+  `player_id` bigint(20) unsigned DEFAULT NULL,
+  `awarded` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'When was awarded',
+  `active_from` datetime DEFAULT NULL,
+  `active_to` datetime DEFAULT NULL,
+  `hide` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `I_award_player` (`player_id`,`award_type_id`),
+  CONSTRAINT `FK_player_award_user_id` FOREIGN KEY (`player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of sn_player_award
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `sn_player_name_history`
@@ -835,9 +897,9 @@ CREATE TABLE `sn_que` (
   KEY `I_que_player_type` (`que_player_id`,`que_type`,`que_id`),
   KEY `I_que_planet_id` (`que_planet_id`),
   KEY `FK_que_planet_id_origin` (`que_planet_id_origin`),
-  CONSTRAINT `FK_que_player_id` FOREIGN KEY (`que_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `FK_que_planet_id` FOREIGN KEY (`que_planet_id`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `FK_que_planet_id_origin` FOREIGN KEY (`que_planet_id_origin`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `FK_que_planet_id_origin` FOREIGN KEY (`que_planet_id_origin`) REFERENCES `sn_planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `FK_que_player_id` FOREIGN KEY (`que_player_id`) REFERENCES `sn_users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ----------------------------
@@ -903,30 +965,6 @@ CREATE TABLE `sn_referrals` (
 
 -- ----------------------------
 -- Records of sn_referrals
--- ----------------------------
-
--- ----------------------------
--- Table structure for `sn_rw`
--- ----------------------------
-DROP TABLE IF EXISTS `sn_rw`;
-CREATE TABLE `sn_rw` (
-  `report_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `id_owner1` bigint(20) unsigned DEFAULT NULL,
-  `id_owner2` bigint(20) unsigned DEFAULT NULL,
-  `rid` varchar(72) NOT NULL DEFAULT '',
-  `raport` text,
-  `time` int(10) unsigned NOT NULL DEFAULT '0',
-  `owners` varchar(255) NOT NULL DEFAULT '0',
-  PRIMARY KEY (`report_id`),
-  UNIQUE KEY `report_id` (`report_id`),
-  KEY `id_owner1` (`id_owner1`,`rid`),
-  KEY `id_owner2` (`id_owner2`,`rid`),
-  KEY `time` (`time`),
-  KEY `i_rid` (`rid`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- ----------------------------
--- Records of sn_rw
 -- ----------------------------
 
 -- ----------------------------
@@ -1231,6 +1269,8 @@ CREATE TABLE `sn_users` (
   `vacation` int(11) unsigned DEFAULT '0',
   `banaday` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'User ban status',
   `dark_matter` bigint(20) DEFAULT '0',
+  `player_rpg_explore_xp` bigint(20) unsigned NOT NULL DEFAULT '0',
+  `player_rpg_explore_level` bigint(20) unsigned NOT NULL DEFAULT '0',
   `ally_id` bigint(20) unsigned DEFAULT NULL,
   `ally_tag` varchar(8) DEFAULT NULL,
   `ally_name` varchar(32) DEFAULT NULL,
@@ -1278,6 +1318,7 @@ CREATE TABLE `sn_users` (
   `user_proxy` varchar(250) NOT NULL DEFAULT '' COMMENT 'User proxy (if any)',
   `register_time` int(10) unsigned DEFAULT '0',
   `onlinetime` int(10) unsigned DEFAULT '0',
+  `user_time_measured` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'When was time diff measured last time',
   `user_time_diff` int(11) DEFAULT NULL COMMENT 'User time difference with server time',
   `user_time_utc_offset` int(11) DEFAULT NULL COMMENT 'User time difference with server time',
   `user_time_diff_forced` tinyint(1) DEFAULT '0' COMMENT 'User time difference forced with time zone selection flag',
@@ -1302,6 +1343,10 @@ CREATE TABLE `sn_users` (
   `user_birthday` date DEFAULT NULL COMMENT 'User birthday',
   `user_birthday_celebrated` date DEFAULT NULL COMMENT 'Last time where user got birthday gift',
   `player_race` int(11) NOT NULL DEFAULT '0' COMMENT 'Player''s race',
+  `vacation_next` int(11) NOT NULL DEFAULT '0' COMMENT 'Next datetime when player can go on vacation',
+  `metamatter` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Metamatter amount',
+  `metamatter_total` bigint(20) NOT NULL DEFAULT '0' COMMENT 'Total Metamatter amount ever bought',
+  `admin_protection` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Protection of administration planets',
   PRIMARY KEY (`id`),
   KEY `i_ally_id` (`ally_id`),
   KEY `i_ally_name` (`ally_name`),
@@ -1324,6 +1369,7 @@ CREATE TABLE `sn_users` (
 -- ----------------------------
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script>\r\n');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
+INSERT INTO `sn_config` VALUES ('adv_seo_javascript', '');
 INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
 INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
@@ -1346,7 +1392,7 @@ INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
 INSERT INTO `sn_config` VALUES ('db_prefix', 'sn_');
-INSERT INTO `sn_config` VALUES ('db_version', '36');
+INSERT INTO `sn_config` VALUES ('db_version', '38');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -1384,6 +1430,7 @@ INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
 INSERT INTO `sn_config` VALUES ('game_noob_factor', '5');
 INSERT INTO `sn_config` VALUES ('game_noob_points', '5000');
 INSERT INTO `sn_config` VALUES ('game_speed', '1');
+INSERT INTO `sn_config` VALUES ('game_speed_expedition', '1');
 INSERT INTO `sn_config` VALUES ('game_user_changename', '2');
 INSERT INTO `sn_config` VALUES ('game_user_changename_cost', 100000);
 INSERT INTO `sn_config` VALUES ('initial_fields', '163');
@@ -1403,18 +1450,16 @@ INSERT INTO `sn_config` VALUES ('LastSettedGalaxyPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedPlanetPos', '1');
 INSERT INTO `sn_config` VALUES ('LastSettedSystemPos', '1');
 INSERT INTO `sn_config` VALUES ('metal_basic_income', '40');
-INSERT INTO `sn_config` VALUES ('payment_currency_default', 'USD');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_dm_', '20000');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_eur', '0.8');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_mm_', '20000');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_rub', '32');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_uah', '13.33333333333333333333333');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_usd', '1');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmb', '11764.70588235');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wme', '0.7692307692308');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmr', '33.3333333333333333333');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmu', '14.28571428571');
-INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmz', '1.052631578947');
+INSERT INTO `sn_config` VALUES ('payment_currency_default', 'UAH');
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_dm_', 2500);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_eur', 0.09259259259259);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_mm_', 2500);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_rub', 4.0);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_usd', 0.125);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wme', 0.0952380952381);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmr', 4.1);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmu', 1.05);
+INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmz', 0.126582278481);
 INSERT INTO `sn_config` VALUES ('payment_lot_price', '1');
 INSERT INTO `sn_config` VALUES ('payment_lot_size', '2500');
 INSERT INTO `sn_config` VALUES ('planet_capital_cost', 25000);
@@ -1458,12 +1503,13 @@ INSERT INTO `sn_config` VALUES ('server_updater_key', '');
 INSERT INTO `sn_config` VALUES ('stats_hide_admins', 1);
 INSERT INTO `sn_config` VALUES ('stats_hide_player_list', '');
 INSERT INTO `sn_config` VALUES ('stats_hide_pm_link', 0);
-INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
+INSERT INTO `sn_config` VALUES ('stats_schedule', '01 00:00:00');
 INSERT INTO `sn_config` VALUES ('tpl_minifier', '0');
 INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
 INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
-INSERT INTO `sn_config` VALUES ('url_faq', '');
+INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
+INSERT INTO `sn_config` VALUES ('url_faq', 'http://faq.supernova.ws/');
 INSERT INTO `sn_config` VALUES ('url_forum', '');
 INSERT INTO `sn_config` VALUES ('url_purchase_metamatter', '');
 INSERT INTO `sn_config` VALUES ('url_rules', '');
@@ -1475,6 +1521,8 @@ INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update_end', '0');
 INSERT INTO `sn_config` VALUES ('var_news_last', '0');
+INSERT INTO `sn_config` VALUES ('var_online_user_count', 0);
+INSERT INTO `sn_config` VALUES ('var_online_user_time', 0);
 INSERT INTO `sn_config` VALUES ('var_stat_update', '0');
 INSERT INTO `sn_config` VALUES ('var_stat_update_end', '0');
 INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
@@ -1489,10 +1537,9 @@ INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authl
 -- ----------------------------
 -- Reserved 'admin' name
 -- ----------------------------
-INSERT INTO `sn_player_name_history` VALUES ('1', 'admin', '2013-10-13 22:35:51');
+INSERT INTO `sn_player_name_history` SET player_id = 1, player_name = 'admin';
 
 -- ----------------------------
 -- Administrator's planet
 -- ----------------------------
 INSERT INTO `sn_planets` (`id`, `name`, `id_owner`, `id_level`, `galaxy`, `system`, `planet`, `planet_type`, `last_update`) VALUES (1, 'Planet', 1, 0, 1, 1, 1, 1, UNIX_TIMESTAMP(NOW()));
-

@@ -3,6 +3,7 @@
 -- ----------------------------
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode', '<script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script>\r\n');
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
+INSERT INTO `sn_config` VALUES ('adv_seo_javascript', '');
 INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
 INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
@@ -25,7 +26,7 @@ INSERT INTO `sn_config` VALUES ('chat_timeout', '900');
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
 INSERT INTO `sn_config` VALUES ('db_prefix', 'sn_');
-INSERT INTO `sn_config` VALUES ('db_version', '36');
+INSERT INTO `sn_config` VALUES ('db_version', '38');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -63,6 +64,7 @@ INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
 INSERT INTO `sn_config` VALUES ('game_noob_factor', '5');
 INSERT INTO `sn_config` VALUES ('game_noob_points', '5000');
 INSERT INTO `sn_config` VALUES ('game_speed', '1');
+INSERT INTO `sn_config` VALUES ('game_speed_expedition', '1');
 INSERT INTO `sn_config` VALUES ('game_user_changename', '2');
 INSERT INTO `sn_config` VALUES ('game_user_changename_cost', 100000);
 INSERT INTO `sn_config` VALUES ('initial_fields', '163');
@@ -137,12 +139,13 @@ INSERT INTO `sn_config` VALUES ('server_updater_key', '');
 INSERT INTO `sn_config` VALUES ('stats_hide_admins', 1);
 INSERT INTO `sn_config` VALUES ('stats_hide_player_list', '');
 INSERT INTO `sn_config` VALUES ('stats_hide_pm_link', 0);
-INSERT INTO `sn_config` VALUES ('stats_schedule', 'd@04:00:00');
+INSERT INTO `sn_config` VALUES ('stats_schedule', '01 00:00:00');
 INSERT INTO `sn_config` VALUES ('tpl_minifier', '0');
 INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
 INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
-INSERT INTO `sn_config` VALUES ('url_faq', '');
+INSERT INTO `sn_config` VALUES ('url_dark_matter', '');
+INSERT INTO `sn_config` VALUES ('url_faq', 'http://faq.supernova.ws/');
 INSERT INTO `sn_config` VALUES ('url_forum', '');
 INSERT INTO `sn_config` VALUES ('url_purchase_metamatter', '');
 INSERT INTO `sn_config` VALUES ('url_rules', '');
@@ -154,6 +157,8 @@ INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update_end', '0');
 INSERT INTO `sn_config` VALUES ('var_news_last', '0');
+INSERT INTO `sn_config` VALUES ('var_online_user_count', 0);
+INSERT INTO `sn_config` VALUES ('var_online_user_time', 0);
 INSERT INTO `sn_config` VALUES ('var_stat_update', '0');
 INSERT INTO `sn_config` VALUES ('var_stat_update_end', '0');
 INSERT INTO `sn_config` VALUES ('var_stat_update_msg', '');
@@ -168,7 +173,7 @@ INSERT INTO `sn_users` (`id`, `username`, `password`, `email`, `email_2`, `authl
 -- ----------------------------
 -- Reserved 'admin' name
 -- ----------------------------
-INSERT INTO `sn_player_name_history` VALUES ('1', 'admin', '2013-10-13 22:35:51');
+INSERT INTO `sn_player_name_history` SET player_id = 1, player_name = 'admin';
 
 -- ----------------------------
 -- Administrator's planet

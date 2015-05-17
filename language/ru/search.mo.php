@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #38a8.0#
+* @version #40a3.9#
 *
 */
 

@@ -2599,6 +2599,10 @@ get_unit_param()
 [@] Все обращения к $sn_data['groups'] заменены на sn_get_groups()
 
 
+2014-03-03 18:28:35 38d0 Project "SuperNova.WS" Release 38 "Admin astro expo news bugfix"
+[!] Project "SuperNova.WS" Release 38 "Admin astro expo news bugfix"
+
+
 2014-02-22 04:38:08 38c0 Project "SuperNova.WS" Release Candidate 38RC0 "Admin astro expo news bugfix"
 [!] Project "SuperNova.WS" Release Candidate 38RC0 "Admin astro expo news bugfix"
 
