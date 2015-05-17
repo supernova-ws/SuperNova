@@ -242,9 +242,15 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $user_time_diff = user_time_diff_get();
   $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
   // $player_options = player_load_option($user);
-  $font_size = intval($_COOKIE[SN_COOKIE_F]) ? intval($_COOKIE[SN_COOKIE_F]) : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
-  $font_size < 9 ? $font_size = 9 : false;
-  $font_size > 19 ? $font_size = 19 : false;
+  $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
+  if(!empty($font_size) && $font_size == intval($font_size)) {
+    $font_size < 9 ? $font_size = 9 : false;
+    $font_size > 19 ? $font_size = 19 : false;
+    $font_size = ($font_size/16 * 100) . '%';
+  }
+  empty($font_size) ? $font_size = FONT_SIZE_PERCENT_DEFAULT . '%' :
+    (floatval($font_size) < FONT_SIZE_PERCENT_MIN ? $font_size = FONT_SIZE_PERCENT_MIN :
+      (floatval($font_size) > FONT_SIZE_PERCENT_MAX ? $font_size = FONT_SIZE_PERCENT_MAX : false));
   $template = gettemplate('_global_header', true);
   $template->assign_vars(array(
     'USER_AUTHLEVEL'           => intval($user['authlevel']),

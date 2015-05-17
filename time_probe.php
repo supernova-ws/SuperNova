@@ -13,9 +13,10 @@ $time_diff   = $time_local  - $time_server
 $time_server = $time_local  - $time_diff
 */
 
-if($font_size = sys_get_param_int('font_size')) {
-  $font_size < 9 ? $font_size = 9 : false;
-  $font_size > 19 ? $font_size = 19 : false;
+if($font_size = sys_get_param_str('font_size')) {
+  empty($font_size) ? $font_size = FONT_SIZE_PERCENT_DEFAULT . '%' :
+    (floatval($font_size) < FONT_SIZE_PERCENT_MIN ? $font_size = FONT_SIZE_PERCENT_MIN :
+      (floatval($font_size) > FONT_SIZE_PERCENT_MAX ? $font_size = FONT_SIZE_PERCENT_MAX : false));
 
   sn_setcookie(SN_COOKIE_F, $font_size, SN_TIME_NOW + PERIOD_YEAR);
   classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE] = $font_size;

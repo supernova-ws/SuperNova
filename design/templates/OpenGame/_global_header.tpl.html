@@ -73,19 +73,23 @@
 
       var dpath = '{dpath}';
       var SN_GOOGLE = parseInt('{SN_GOOGLE}') ? 1 : 0;
+
+      var FONT_SIZE_PERCENT_MIN = parseFloat('{D_FONT_SIZE_PERCENT_MIN}');
+      var FONT_SIZE_PERCENT_DEFAULT = parseFloat('{D_FONT_SIZE_PERCENT_DEFAULT}');
+      var FONT_SIZE_PERCENT_MAX = parseFloat('{D_FONT_SIZE_PERCENT_MAX}');
+      var FONT_SIZE_PERCENT_STEP = parseFloat('{D_FONT_SIZE_PERCENT_STEP}');
+      var FONT_SIZE = parseFloat('{FONT_SIZE}');
     </script>
 
     <!-- IF FONT_SIZE -->
     <style type="text/css">
-      html, body, form, table, input, select {
-      font-size: {FONT_SIZE}px !important;
+      html {
+        font-size: {FONT_SIZE} !important;
       }
+      /*html, body, form, table, input, select {*/
+      /*font-size: {FONT_SIZE}px !important;*/
+      /*}*/
     </style>
-    <script type="text/javascript">
-      $(function(){
-        // $('*').css('font-size', '{FONT_SIZE}px');
-      });
-    </script>
     <!-- ENDIF -->
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>

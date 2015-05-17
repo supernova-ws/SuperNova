@@ -192,31 +192,37 @@ var que_id = '{QUE_ID}';
 
       <tr>
         <td>
-<div id="unit_info">
-          <div id="unit_info_image_wrapper">
-            <img id="unit_info_image" />
-            <div id="unit_info_name" class="a75"></div>
-            <div id="unit_level" class="a75"></div>
-          </div>
-<!--<div style="display: table; width: 100%;">-->
-          <div id="unit_balance"></div>
-          <div id="unit_description_wrapper">
-            <!--display: block;-->
-            <div id="unit_description_wrapper_inner">
-              <div id="unit_info_description" style="text-align: justify;"></div>
-              <div id="unit_require_wrapper" style="font-size: 0.8em">
-                <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
-                <ul id="unit_require" style="overflow:hidden;"></ul>
+          <div id="unit_info">
+            <div id="unit_balance_wrapper">
+              <div id="unit_balance"></div>
+              <!--
+              <div id="unit_info_extra_switch_wrapper">
+                <button id="unit_info_extra_switch">
+                  {L_eco_bld_unit_info_extra_hide}
+                </button>
+              </div>
+              -->
+            </div>
+            <div id="unit_description_wrapper">
+              <div id="unit_description_wrapper_cell">
+                <div id="unit_info_image_outer">
+                  <div id="unit_info_image_wrapper">
+                    <img id="unit_info_image" />
+                    <div id="unit_info_name" class="a75"></div>
+                    <div id="unit_info_level" class="a75"></div>
+                  </div>
+                </div>
+                <!--display: block;-->
+                <div id="unit_description_wrapper_inner">
+                  <div id="unit_info_description"></div>
+                  <div id="unit_require_wrapper">
+                    <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
+                    <ul id="unit_require"></ul>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          <div id="unit_info_extra_switch_wrapper">
-            <button id="unit_info_extra_switch">
-              {L_eco_bld_unit_info_extra_hide}
-            </button>
-          </div>
-<!--</div>-->
-</div>
         </td>
       </tr>
 

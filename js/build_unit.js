@@ -117,12 +117,11 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   document.getElementById('unit_time_div').style.display = unit['time_seconds'] ? "block" : "none";
 
   document.getElementById('unit_info_name').innerHTML = unit['name'];
-  if(unit['level'] > 0 || STACKABLE)
-  {
-    document.getElementById('unit_level').innerHTML = (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
+  if(unit['level'] > 0 || STACKABLE) {
+    document.getElementById('unit_info_level').innerHTML = (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
     unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
   } else {
-    document.getElementById('unit_level').innerHTML = '&nbsp;';
+    document.getElementById('unit_info_level').innerHTML = '&nbsp;';
   }
 
   if(STACKABLE) {
@@ -166,13 +165,10 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     eco_struc_make_resource_row('dark_matter', unit['dark_matter'], unit['destroy_dark_matter'], unit['dark_matter'], STACKABLE);
 
     if(planet['que_has_place'] != 0 && !unit['unit_busy']) {
-//    var pre_href = '<a href="buildings.php?mode=' + que_id + '&action=';
       if(STACKABLE) {
         if(unit['build_can'] != 0 && unit['build_result'] == 0)
         {
-//          $('#unit_create').show();
           $('#unit_create, #unit_create *').prop('disabled', false);
-//          $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
           $('#unit_amountslide').slider({ max: unit['can_build']});
         }
@@ -186,25 +182,11 @@ function eco_struc_show_unit_info(unit_id, no_color) {
               + (unit['destroy_deuterium'] ? language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' ' : '')
           );
           $('#unit_destroy_time').html(unit['destroy_time']);
-          /*
-           document.getElementById('unit_destroy_link').innerHTML =
-           (unit['destroy_metal'] ? language['sys_metal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_metal']), 0, 'positive') + ' ' : '')
-           + (unit['destroy_crystal'] ? language['sys_crystal'][0] + ': ' + sn_format_number(parseFloat(unit['destroy_crystal']), 0, 'positive') + ' ' : '')
-           + (unit['destroy_deuterium'] ? language['sys_deuterium'][0] + ':' + sn_format_number(parseFloat(unit['destroy_deuterium']), 0, 'positive') + ' ' : '')
-           + '<br />' + unit['destroy_time']
-           + '<br />' + '<span class="link negative unit_destroy">' + unit_destroy_link + '</span>';
-           */
         }
 
         if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0) {
-//          $('#unit_create').show();
           $('#unit_create, #unit_create *').prop('disabled', false);
-//          $('#unit_create').css('visibility', 'visible');
           $('#unit_create_level').html(parseInt(unit['level']) + 1);
-          /*
-           document.getElementById('unit_create_link').innerHTML = '<span class="link positive unit_create">' +
-           language['bld_create'] + ' ' + language['level'] + ' ' + (parseInt(unit['level']) + 1) + '</span>';
-           */
         }
       }
     }
@@ -218,7 +200,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
         if(unit['resource_map'][0][i]) {
           result += '<tr>';
           result += '<th class="c_l">' + language[i] + '</th>';
-          result += '<td class="c_r" width="75px">' + unit['resource_map'][0][i] + '</td>';
+          result += '<td class="c_r">' + unit['resource_map'][0][i] + '</td>';
           result += '</tr>';
         }
       }
@@ -267,15 +249,14 @@ function eco_struc_show_unit_info(unit_id, no_color) {
 
     result ? result = (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result : false;
   }
-  //!result ? result = '<tr><td style="font-size: 0.8em; min-height: 12.5em;" height="13em"><div style="font-size: 1em; min-height: 12.5em;">' + language['eco_bld_unit_info_extra_none'] + '</div></td></tr>' : false;
-  //document.getElementById('unit_balance').innerHTML = '<table style="font-size: 0.8em; min-height: 12.5em;">' + result + '</table>';
-  //!result ? result = '<tr><td><div style="font-size: 1em; min-height: 12.5em;">' + language['eco_bld_unit_info_extra_none'] + '</div></td></tr>' : false;
-  !result ? result = '<tr><td style="min-height: 12.25em; display: block;">' + language['eco_bld_unit_info_extra_none'] + '</td></tr>' : false;
-  document.getElementById('unit_balance').innerHTML = '<table>' + result + '</table>';
+  !result ? result = '<tr><th class="c_c">' + language['eco_bld_unit_info_extra_none'] + '</th></tr>' : false;
+  //document.getElementById('unit_balance').innerHTML = '<table>' + result + '</table>';
+  $('#unit_balance').html('<table>' + result + '</table>');
+  $('<style></style>').appendTo($(document.body)).remove();
+  //alert('1');
 
-  bld_unit_info_width = Math.max(bld_unit_info_width, jQuery('#unit_table').width());
-  document.getElementById('unit_table').width = bld_unit_info_width;
-//  bld_unit_info_cache[unit_id] = jQuery('#unit_info').html();
+  //bld_unit_info_width = Math.max(bld_unit_info_width, jQuery('#unit_table').width());
+  //document.getElementById('unit_table').width = bld_unit_info_width;
 }
 
 function eco_struc_select_unit(unit_id) {

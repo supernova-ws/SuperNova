@@ -10,6 +10,11 @@ defined('INSIDE') or die('Hacking attempt');
  */
 
 
+define('FONT_SIZE_PERCENT_MIN', 56.25);
+define('FONT_SIZE_PERCENT_DEFAULT', 68.75);
+define('FONT_SIZE_PERCENT_STEP', 12.5);
+define('FONT_SIZE_PERCENT_MAX', 118.75);
+
 // ****************************************************************************************************************
 // SHOULD BE REPLACED WITH CONFIG!
 define('MAX_FLEET_OR_DEFS_PER_ROW', 2000);
@@ -25,7 +30,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a3.5');
+define('SN_VERSION', '40a3.6');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_

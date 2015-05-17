@@ -1,3 +1,11 @@
+html {
+  font-size: 68.75%;
+}
+body {
+  font-size: 1rem;
+  line-height: 1.1;
+}
+
 html, body
 {
   height: 100%;
@@ -60,7 +68,7 @@ input.button
   {
     border               : #ff0000;
     text-align           : center;
-    font-size            : 11px;
+    font-size            : 1em;
   }
 }
 

@@ -29,8 +29,6 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   var x = "";
   var e = null;
 
-  var FONT_BASE = parseInt($('body').css('font-size'));
-
   jQuery(document).ready(function () {
     // Натягиваем скины на элементы ввода
     inputs = jQuery("input");
@@ -49,25 +47,44 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
 
 
 
-    $(document).on('click', '#font_plus', function(){
-      FONT_BASE += 2;
-      FONT_BASE > 19 ? FONT_BASE = 19 : false;
-      $('*').css('font-size', FONT_BASE + 'px');
-      // $('body').css('font-size', FONT_BASE + 'px');
-      jQuery.post("time_probe.php", {'font_size': FONT_BASE}, function(data) {});
-    });
-    $(document).on('click', '#font_normal', function(){
-      FONT_BASE = 11;
-      $('*').css('font-size', FONT_BASE + 'px');
-      $('body').css('font-size', FONT_BASE + 'px');
-      jQuery.post("time_probe.php", {'font_size': FONT_BASE}, function(data) {});
-    });
-    $(document).on('click', '#font_minus', function(){
-      FONT_BASE -= 2;
-      FONT_BASE < 9 ? FONT_BASE = 9 : false;
-      $('*').css('font-size', FONT_BASE + 'px');
-      $('body').css('font-size', FONT_BASE + 'px');
-      jQuery.post("time_probe.php", {'font_size': FONT_BASE}, function(data) {});
+    $(document).on('click', '#font_minus, #font_normal, #font_plus', function(){
+      temp = FONT_SIZE;
+      $(this).attr('id') == 'font_plus' ? FONT_SIZE += FONT_SIZE_PERCENT_STEP :
+        ($(this).attr('id') == 'font_minus' ? FONT_SIZE -= FONT_SIZE_PERCENT_STEP : FONT_SIZE = FONT_SIZE_PERCENT_DEFAULT);
+      FONT_SIZE > FONT_SIZE_PERCENT_MAX ? FONT_SIZE = FONT_SIZE_PERCENT_MAX :
+        (FONT_SIZE < FONT_SIZE_PERCENT_MIN ? FONT_SIZE = FONT_SIZE_PERCENT_MIN : false);
+
+      new_size = (parseFloat($('body').css('font-size')) * FONT_SIZE / temp);
+      //console.log('old ' + $('body').css('font-size'));
+      //$('html').css('font-size', new_size + 'px');
+
+
+
+      //temp != FONT_SIZE ? $('*').css('font-size', new_size + 'px') : false;
+      temp != FONT_SIZE ? $('body').css('font-size', new_size + 'px') : false;
+
+      //console.log('new ' + $('body').css('font-size'));
+      //console.log('exp ' + new_size + 'px');
+
+      //Math.round(FONT_SIZE / temp * 100) != 100 ?
+      //  $('*').each(function() {
+      //    console.log($(this).css('font-size'));
+      //    $(this).css('font-size', (parseFloat($(this).css('font-size')) * FONT_SIZE / temp) + 'px');
+      //  }) : false;
+      //$('*').css('font-size', (FONT_SIZE / temp * 100) + '%');
+      //$('*').css('font-size', ($('html').css('font-size') * FONT_SIZE / temp) + 'px');
+
+
+      //console.log('old ' + $('html').css('font-size'));
+      //var currentFontSize = $('html').css('font-size');
+      //var currentFontSizeNum = parseFloat(currentFontSize, 10);
+      //var newFontSize = currentFontSizeNum*1.2;
+      //$('html').css('font-size', newFontSize);
+      //console.log(newFontSize);
+      //console.log('new ' + $('html').css('font-size'));
+
+
+      jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function(data) {});
     });
   });
 

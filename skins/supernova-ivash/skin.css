@@ -18,7 +18,10 @@
 
 body, form, table, input, select {
   font-family : Tahoma, sans-serif;
-  font-size : 11px;
+}
+
+form, table, tr, td, input, select {
+  font-size : 1em;
 }
 
 @media only screen
