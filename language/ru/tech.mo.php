@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39a8.17
+* @version 40a3.7
 *
 */
 
@@ -122,7 +122,7 @@ $a_lang_array = (array(
     SHIP_LARGE_BATTLESHIP => 'Линейный крейсер',
     SHIP_LARGE_DESTRUCTOR => 'Уничтожитель',
     SHIP_HUGE_DEATH_STAR => 'Звезда смерти',
-    SHIP_HUGE_SUPERNOVA => 'Крейсер класса &quot;Сверхновая&quot;',
+    SHIP_HUGE_SUPERNOVA => 'Крейсер класса &quot;СуперНова&quot;',
 
     UNIT_DEFENCE => 'Оборона',
     UNIT_DEF_TURRET_MISSILE => 'Ракетная установка',
@@ -177,7 +177,7 @@ $a_lang_array = (array(
     UNIT_PLAN_SHIP_CARGO_SUPER => 'Чертеж &quot;Супертранспорт&quot;',
     UNIT_PLAN_SHIP_CARGO_HYPER => 'Чертеж &quot;Гипертранспорт&quot;',
     UNIT_PLAN_SHIP_DEATH_STAR => 'Чертеж &quot;Звезда Смерти&quot;',
-    UNIT_PLAN_SHIP_SUPERNOVA => 'Чертеж крейсер &quot;Сверхновая&quot;',
+    UNIT_PLAN_SHIP_SUPERNOVA => 'Чертеж крейсер &quot;СуперНова&quot;',
     UNIT_PLAN_DEF_SHIELD_PLANET => 'Чертеж &quot;Планетарная защита&quot;',
 
     UNIT_PREMIUM => 'Премиум',

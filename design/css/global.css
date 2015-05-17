@@ -6,6 +6,11 @@ body {
   line-height: 1.1;
 }
 
+/* Rid of annoying Chrome on Android FontBoositng featurebug */
+body * {
+  max-height: 1000000em;
+}
+
 html, body
 {
   height: 100%;

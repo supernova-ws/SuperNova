@@ -1,7 +1,16 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" dir="{LANG_DIRECTION}" lang="{LANG_LANGUAGE}" xml:lang="{LANG_LANGUAGE}">
   <head>
-    <title>{title}</title>
+    <base href="{D_SN_ROOT_VIRTUAL}" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="Cache-Control" content="no-cache" />
+    <!-- IF ADV_SEO_META_KEYWORDS --><meta name="keywords" content="{ADV_SEO_META_KEYWORDS}" /><!-- ENDIF -->
+    <!-- IF ADV_SEO_META_DESCRIPTION --><meta name="description" content="{ADV_SEO_META_DESCRIPTION}" /><!-- ENDIF -->
+    {-meta-}
+
     <link rel="shortcut icon" href="{D_SN_ROOT_VIRTUAL}favicon.ico?{C_var_db_update}" />
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/jquery.css?{C_var_db_update}" />
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}jquery.css?{C_var_db_update}" />
@@ -23,20 +32,12 @@
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}{GAME_MODE_CSS_PREFIX}skin_background.css?{C_var_db_update}" />
     <!-- ENDIF -->
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin_server.css?{C_var_db_update}" />
-    <!-- IF ADV_SEO_META_KEYWORDS -->
-    <meta name="keywords" content="{ADV_SEO_META_KEYWORDS}" />
-    <!-- ENDIF -->
-    <!-- IF ADV_SEO_META_DESCRIPTION -->
-    <meta name="description" content="{ADV_SEO_META_DESCRIPTION}" />
-    <!-- ENDIF -->
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <meta http-equiv="Cache-Control" content="no-cache" />
-    {-meta-}
-    <!--<style> body, html { margin:0px; padding: 0px; overflow: hidden; font: menu; border: none; } </style>-->
-    <base href="{D_SN_ROOT_VIRTUAL}" />
+
+
+    <title>{title}</title>
   </head>
 
-  <body class="style">
+  <body class="style" style="max-height: 10000000em">
     <script type="text/javascript">
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
       var localTime = new Date();
