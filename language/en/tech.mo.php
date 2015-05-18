@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39a10.11
+* @version 40a3.10
 *
 */
 
@@ -122,7 +122,7 @@ $a_lang_array = (array(
     SHIP_LARGE_BATTLESHIP => 'Battleship',
     SHIP_LARGE_DESTRUCTOR => 'Destructor',
     SHIP_HUGE_DEATH_STAR => 'Deathstar',
-    SHIP_HUGE_SUPERNOVA => 'Cruiser Class &quot;Supernova&quot;',
+    SHIP_HUGE_SUPERNOVA => '&quot;Supernova&quot; Class Cruiser',
 
     UNIT_DEFENCE => 'Defences',
     UNIT_DEF_TURRET_MISSILE => 'Rocket Launcher',
@@ -171,12 +171,12 @@ $a_lang_array = (array(
     ART_NANO_BUILDER   => 'Nanobuilder',
 
     UNIT_PLANS => 'Schematics',
-    UNIT_PLAN_STRUC_MINE_FUSION => 'Schematic "Thermonuclear plant"',
-    UNIT_PLAN_SHIP_CARGO_SUPER => 'Schematic "Supertransport"',
-    UNIT_PLAN_SHIP_CARGO_HYPER => 'Schematic "Hyperstransport"',
-    UNIT_PLAN_SHIP_DEATH_STAR => 'Schematic "Death Star"',
-    UNIT_PLAN_SHIP_SUPERNOVA => 'Schematic \'"Supernova" cruiser\'',
-    UNIT_PLAN_DEF_SHIELD_PLANET => 'Schematic "Planet defense"',
+    UNIT_PLAN_STRUC_MINE_FUSION => 'Schematic &quot;Thermonuclear plant&quot;',
+    UNIT_PLAN_SHIP_CARGO_SUPER => 'Schematic &quot;Supertransport&quot;',
+    UNIT_PLAN_SHIP_CARGO_HYPER => 'Schematic &quot;Hyperstransport&quot;',
+    UNIT_PLAN_SHIP_DEATH_STAR => 'Schematic &quot;Death Star&quot;',
+    UNIT_PLAN_SHIP_SUPERNOVA => 'Schematic &quot;Supernova class cruiser&quot;',
+    UNIT_PLAN_DEF_SHIELD_PLANET => 'Schematic &quot;Planet defense&quot;',
 
     UNIT_PREMIUM => 'Premium',
     UNIT_CAPTAIN => 'Captain',
