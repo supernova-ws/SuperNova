@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a3.7
+* @version 40a3.11
 *
 */
 
@@ -682,6 +682,7 @@ $a_lang_array = (array(
     BUILD_QUE_FULL => 'Que is full',
     BUILD_SILO_FULL => 'Silo is full',
     BUILD_MAX_REACHED => 'You already build and/or enqued maximum numbers of this type units',
+    BUILD_SECTORS_NONE => 'No free sectors',
   ),
 
   'sys_game_mode' => array(

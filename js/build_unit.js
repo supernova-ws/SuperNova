@@ -16,7 +16,11 @@ jQuery(document).ready( function() {
   });
 
   $("#unit_amount").on('change', function(){
-     $('#unit_create_button').button(parseInt($('#unit_amount').val()) ? "enable" : "disable");
+    //var unit_id = parseInt($('#unit_id').val());
+    //!unit_id ? unit_id = 0 : false;
+    //var unit = production[unit_id];
+    //if(unit['build_can'] != 0 && unit['build_result'] == 0) {}
+      $('#unit_create_button').button(parseInt($('#unit_amount').val()) ? "enable" : "disable");
   });
 
   jQuery('#unit_amount').on('keyup change', function(event, ui) {
@@ -129,13 +133,9 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     $('#unit_max_number').html(unit['can_build']);
   }
 
-  // $('#unit_create').hide();
-  // $('#unit_create, #unit_create *').addClass('a75').disable();
   $('#unit_create, #unit_create *').prop('disabled', true);
+  $('#unit_create_button').button('disable');
   $('#unit_destroy').css('visibility', 'hidden');
-
-//  <li style="margin: 0; padding: 0;"><span class="<!-- IF require.REQUEREMENTS_MET -->negative<!-- ELSE -->positive<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
-
 
   if(require[unit_id]) {
     requirement_string = '';
@@ -151,7 +151,6 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     $('#unit_require_wrapper').show();
   } else {
     $('#unit_require_wrapper').hide();
-    // requirement_string = '<li class="neutral">' + language['No_requirements'] + '</li>';
   }
 
   if(TEMPORARY) {
@@ -166,10 +165,8 @@ function eco_struc_show_unit_info(unit_id, no_color) {
 
     if(planet['que_has_place'] != 0 && !unit['unit_busy']) {
       if(STACKABLE) {
-        if(unit['build_can'] != 0 && unit['build_result'] == 0)
-        {
+        if(unit['build_can'] != 0 && unit['build_result'] == 0) {
           $('#unit_create, #unit_create *').prop('disabled', false);
-          $('#unit_create_level').html(parseInt(unit['level']) + 1);
           $('#unit_amountslide').slider({ max: unit['can_build']});
         }
       } else {
@@ -185,12 +182,13 @@ function eco_struc_show_unit_info(unit_id, no_color) {
         }
 
         if(planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0) {
+          $('#unit_create_button').button('enable');
           $('#unit_create, #unit_create *').prop('disabled', false);
-          $('#unit_create_level').html(parseInt(unit['level']) + 1);
         }
       }
     }
   }
+  $('#unit_create_level').html((parseInt(unit['level']) ? parseInt(unit['level']) : 0) + 1);
 
   result = '';
   if(unit['resource_map']) {
@@ -250,13 +248,8 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     result ? result = (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result : false;
   }
   !result ? result = '<tr><th class="c_c">' + language['eco_bld_unit_info_extra_none'] + '</th></tr>' : false;
-  //document.getElementById('unit_balance').innerHTML = '<table>' + result + '</table>';
   $('#unit_balance').html('<table>' + result + '</table>');
   $('<style></style>').appendTo($(document.body)).remove();
-  //alert('1');
-
-  //bld_unit_info_width = Math.max(bld_unit_info_width, jQuery('#unit_table').width());
-  //document.getElementById('unit_table').width = bld_unit_info_width;
 }
 
 function eco_struc_select_unit(unit_id) {

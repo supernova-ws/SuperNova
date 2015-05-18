@@ -1,5 +1,6 @@
 html {
   font-size: 68.75%;
+  /*font-size: 100%;*/
 }
 body {
   font-size: 1rem;
@@ -274,19 +275,19 @@ table {margin-left: auto; margin-right: auto}
   color: grey;
 }
 
-.ok, .success, .positive {
+.ok, .success, .positive, button.positive {
   color: lime;
 }
 
-.notice, .zero, .neutral {
+.notice, .zero, .neutral, button.neutral, button.zero {
   color: yellow;
 }
 
-.warning {
+.warning, button.error {
   color: orange;
 }
 
-.error, .negative {
+.error, .negative, button.negative {
   color: red;
 }
 

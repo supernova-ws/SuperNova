@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a3.7#
+* @version #40a3.11#
 *
 */
 
@@ -685,6 +685,7 @@ $a_lang_array = (array(
     BUILD_QUE_FULL => 'Очередь полна',
     BUILD_SILO_FULL => 'Ракетная шахта заполнена',
     BUILD_MAX_REACHED => 'Вы уже построили и/или поставили в очередь максимальное количество юнитов данного типа',
+    BUILD_SECTORS_NONE => 'Нет свободных секторов',
   ),
 
   'sys_game_mode' => array(

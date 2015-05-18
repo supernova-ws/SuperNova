@@ -170,6 +170,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       }
     }
 
+    $unit_info['type'] == UNIT_STRUCTURES && !$planet_fields_queable ? $build_data['RESULT'][BUILD_CREATE] = BUILD_SECTORS_NONE : false;
     $build_result_text = $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
     $build_result_text = !is_array($build_result_text) ? $build_result_text : (isset($build_result_text[$unit_id]) ? $build_result_text[$unit_id] : $build_result_text[0]);
     $template->assign_block_vars('production', array(

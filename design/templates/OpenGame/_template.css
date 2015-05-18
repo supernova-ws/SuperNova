@@ -187,23 +187,134 @@ only screen and (min-device-pixel-ratio : 1.5) {
 #unit_balance tr > td:not(:first-child) {
   width: 7em;
 }
+#unit_max {
+  display: none;
+}
 
-@media only screen and (max-width : 51.9375em) {
+
+#form_unit {
+  display: table;
+  width: 100%;
+}
+#unit_cost_container {
+  display: table-header-group;
+  text-align: center;
+}
+/*#unit_action_container {*/
+  /*display: table-row;*/
+  /*text-align: center;*/
+/*}*/
+#unit_create {
+  display: table-row;
+  text-align: center;
+}
+#unit_destroy {
+  display: table-footer-group;
+  text-align: center;
+}
+
+#shoutbox td {
+  display: block;
+}
+#shoutbox tr  {
+  border-top: 1px dashed #233452;
+}
+#shoutbox tr > td:first-child {
+  margin-top: 0.4em;
+}
+#shoutbox tr > td:last-child {
+  margin-bottom: 0.25em;
+  margin-left: 1em;
+}
+
+/*#chat_smile_point {*/
+  /*float: none;*/
+/*}*/
+/*#chat_message_inputs #send {*/
+  /*float: none;*/
+/*}*/
+/*#chat_msg_wrapper {*/
+  /*display:block;*/
+/*}*/
+/*#chat_message_inputs {*/
+  /*text-align: right;*/
+/*}*/
+/*#chat_message_inputs #send {*/
+  /*float: right;*/
+/*}*/
+
+
+#chat_message_inputs #send {
+  float: right;
+}
+#chat_smile_point {
+  display: inline-block;
+}
+#chat_msg_wrapper {
+  width: 100%;
+}
+
+
+@media only screen and (max-width : 51.9375em) { /* 831px */
   #unit_table { /* 3 preview */
     width: 37em;
   }
 }
-@media only screen and (min-width : 52em) {
+@media only screen and (min-width : 52em) { /* 832px */
   #unit_table { /* 4 preview */
     width: 48.5em;
   }
+  #shoutbox tr > td:first-child {
+    float: left;
+  }
+  #shoutbox tr > td:nth-child(2) {
+    margin-top: 0.4em;
+  }
 }
-@media only screen and (min-width : 60em) {
+@media only screen and (min-width : 60em) { /* 960px */
   #unit_table { /* 5 preview */
     width: 60.5em;
   }
+  #unit_cost_container.unit_create_stackable {
+    display: table-cell;
+    width: 60%;
+  }
+  #unit_create.unit_create_stackable {
+    display: table-cell;
+    width: 40%;
+  }
+
+  #shoutbox td {
+    float: none ;
+    display: table-cell;
+  }
+  #shoutbox tr  {
+    border-top: 0;
+  }
+  #shoutbox td {
+    margin: 0;
+  }
+  #chat_message_inputs {
+    text-align: center;
+  }
+  #chat_msg_wrapper {
+    width: auto;
+  }
+  #chat_smile_point {
+    float: left;
+    display: block;
+  }
+  /*#chat_message_inputs #send {*/
+    /*float: right;*/
+  /*}*/
+  /*#shoutbox tr > td:first-child {*/
+    /*margin-top: 0;*/
+  /*}*/
+  /*#shoutbox tr > td:last-child {*/
+    /*margin-bottom: 0;*/
+  /*}*/
 }
-@media only screen and (min-width : 68em) {
+@media only screen and (min-width : 68em) { /* 1088px */
   #unit_table { /* 6 preview */
     width: 72.5em;
   }
@@ -227,8 +338,26 @@ only screen and (min-device-pixel-ratio : 1.5) {
   #unit_balance {
     display: inline-block;
   }
+
+  #form_unit {
+    /*display: table;*/
+  }
+  #unit_cost_container {
+    display: table-cell;
+  }
+  /*#unit_action_container {*/
+    /*display: table-cell;*/
+  /*}*/
+  #unit_create.unit_create_level {
+    display: table-cell;
+    max-width: 15em;
+  }
+  #unit_destroy {
+    display: table-cell;
+    /*vertical-align: top;*/
+  }
 }
-@media only screen and (min-width : 76.5em) {
+@media only screen and (min-width : 76.5em) { /* 1224px */
   #unit_table { /* 7 preview */
     width: 84.5em;
   }
@@ -611,6 +740,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 /* Shoutbox */
 #shoutbox {
   background-color: black;
+  overflow-y: hidden;
 }
 #shoutbox img {
   vertical-align: top;
@@ -684,14 +814,15 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   float: left;
 }
 #chat_smile_point {
-  float: left;
-  width: 24px;
-  height: 24px;
+  /*float: left;*/
+  /*display: block;*/
+  width: 2.2em;
+  height: 2.2em;
 }
 
 #chat_message_inputs #send {
   float: right;
-  width: 100px;
+  width: 9em;
 }
 
 #chat_msg_wrapper {
@@ -857,13 +988,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   left: 0;
   bottom: 0;
 }
-/*
-.stat_text {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
-*/
 
 .blitz_admin > div {
   margin-top: 20px;
