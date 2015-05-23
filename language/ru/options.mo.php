@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a1.15
+* @version 40a4.0
 *
 */
 
@@ -165,5 +165,7 @@ $a_lang_array = (array(
 
   'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
   'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
+
+  'opt_build_autoconvert_hide' => 'Скрыть кнопку автоконвертации',
 
 ));

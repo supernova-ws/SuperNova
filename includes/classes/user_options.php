@@ -33,6 +33,8 @@ class userOptions implements ArrayAccess {
     PLAYER_OPTION_TOOLTIP_DELAY => 500,
 
     PLAYER_OPTION_BASE_FONT_SIZE => 11,
+
+    PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE => 0,
   );
   public $data = array(); // Container // TODO - make protected
 

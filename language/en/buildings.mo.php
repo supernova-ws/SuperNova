@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a3.1
+* @version 40a4.0
 *
 */
 
@@ -106,4 +106,7 @@ $a_lang_array = (array(
   'eco_bld_unit_info_extra_show' => 'Показать дополнительную информацию',
   'eco_bld_unit_info_extra_hide' => 'Спрятать дополнительную информацию',
   'eco_bld_unit_info_extra_none' => 'Нет дополнительной информации',
+
+  'eco_bld_autoconvert' => 'Autoconvert',
+  'eco_bld_autoconvert_confirm' => 'Недостающие на постройку/исследование ресурсы будут автоматически сконвертированы из наличных ресурсов (металл, кристалл, дейтерий).\r\n\r\nЭта операция будет стоить {0} Тёмной Материи.\r\n\r\nПродолжать?',
 ));

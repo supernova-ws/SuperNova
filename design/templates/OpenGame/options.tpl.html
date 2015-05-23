@@ -243,6 +243,15 @@
         <!-- END options_3 -->
         <!-- ENDIF -->
         <tr>
+          <td class="c_c">
+            <label for="build_autoconvert_hide">{L_opt_build_autoconvert_hide}</label>
+          </td>
+          <td class="c_c">
+            <input type="hidden" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="1" id="build_autoconvert_hide" <!-- IF PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->checked="checked" <!-- ENDIF -->/>
+          </td>
+        </tr>
+        <tr>
           <th colspan="2" nowrap>
             {L_opt_planet_sort_title}
             <select name="options[{D_PLAYER_OPTION_PLANET_SORT}]">

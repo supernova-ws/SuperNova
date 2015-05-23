@@ -30,7 +30,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a3.11');
+define('SN_VERSION', '40a4.0');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -205,6 +205,7 @@ define('RPG_MARKET_FLEET', 36);
 define('RPG_MARKET_INFO_MERCENARY', 37);
 define('RPG_BLITZ_REGISTRATION', 38);
 define('RPG_BLITZ_REGISTRATION_CANCEL', 39);
+define('RPG_BUILD_AUTOCONVERT', 40);
 
 
 
@@ -614,6 +615,7 @@ define('BONUS_SPEED',               7);  // Speed bonus
 // *** Action constant (build should be replaced with ACTION)
 define('BUILD_CREATE' ,  1);
 define('BUILD_DESTROY', -1);
+define('BUILD_AUTOCONVERT', 2);
 
 define('ACTION_SELL'       , -1);
 define('ACTION_NOTHING'    ,  0);
@@ -635,6 +637,7 @@ define('BUILD_QUE_FULL'        , 9);
 define('BUILD_SILO_FULL'       ,10);
 define('BUILD_MAX_REACHED'     ,11);
 define('BUILD_SECTORS_NONE'    ,12);
+define('BUILD_AUTOCONVERT_AVAILABLE', 13);
 
 
 // *** Que types
@@ -1250,6 +1253,7 @@ define('PLAYER_OPTION_PLANET_SORT_INVERSE', 21);
 define('PLAYER_OPTION_TOOLTIP_DELAY', 22);
 // define('PLAYER_OPTION_UNIVERSE_PLAYER_AVATAR_SHOW', 23);
 define('PLAYER_OPTION_BASE_FONT_SIZE', 24);
+define('PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE', 25);
 
 
 

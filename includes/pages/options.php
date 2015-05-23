@@ -419,6 +419,7 @@ function sn_options_view($template = null) {
     // 'opt_toolt_data' => $user['settings_tooltiptime'],
     'PLAYER_OPTION_FLEET_SPY_DEFAULT' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
     'PLAYER_OPTION_TOOLTIP_DELAY' => classSupernova::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
+    'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
     'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'":'',
     'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'":'',
     'deltime'        => $user['deltime'],

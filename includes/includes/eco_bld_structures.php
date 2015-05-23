@@ -36,8 +36,9 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   switch($action = sys_get_param_escaped('action')) {
     case 'create': // Add unit to que for build
+    case 'create_autoconvert': // Add unit to que for build
     case 'destroy': // Add unit to que for remove
-      $operation_result = que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : BUILD_CREATE);
+      $operation_result = que_build($user, $planet, $action == 'destroy' ? BUILD_DESTROY : ($action == 'create' ? BUILD_CREATE : BUILD_AUTOCONVERT));
     break;
 
     case 'trim':
@@ -171,8 +172,12 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     }
 
     $unit_info['type'] == UNIT_STRUCTURES && !$planet_fields_queable ? $build_data['RESULT'][BUILD_CREATE] = BUILD_SECTORS_NONE : false;
+    $unit_autoconvert_can = !classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && !$unit_stackable && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
+    $unit_autoconvert_can ? $build_data['RESULT'][BUILD_CREATE] = BUILD_AUTOCONVERT_AVAILABLE : false;
+
     $build_result_text = $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
     $build_result_text = !is_array($build_result_text) ? $build_result_text : (isset($build_result_text[$unit_id]) ? $build_result_text[$unit_id] : $build_result_text[0]);
+//    $build_result_text = $unit_autoconvert_can ? $lang['sys_build_result'][BUILD_AUTOCONVERT_AVAILABLE] : $build_result_text;
     $template->assign_block_vars('production', array(
       'ID'                 => $unit_id,
       'NAME'               => $lang['tech'][$unit_id],
@@ -185,6 +190,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       'LEVEL'              => $level_base_and_que,
 
       'CAN_BUILD'          => $can_build,
+      'CAN_AUTOCONVERT'    => $unit_autoconvert_can,
 
       'BUILD_CAN'          => $build_data['CAN'][BUILD_CREATE],
       'TIME'               => pretty_time($build_data[RES_TIME][BUILD_CREATE]),
@@ -362,6 +368,11 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'STRING_BUILD_TIME'  => $que_type == QUE_RESEARCH ? $lang['ResearchTime'] : $lang['ConstructionTime'],
 
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
+
+    'MARKET_AUTOCONVERT_COST' => market_get_autoconvert_cost(),
+    'CAN_AUTOCONVERT'    => $user_dark_matter >= market_get_autoconvert_cost(),
+    'BUILD_AUTOCONVERT_AVAILABLE'    => BUILD_AUTOCONVERT_AVAILABLE,
+    'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
   ));
 
   display(parsetemplate($template)); // , $lang['Builds']

@@ -1620,3 +1620,9 @@ function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELA
   $_COOKIE[$name] = $value;
   return setcookie($name, $value, $expire, $path, $domain, $secure, $httponly);
 }
+
+function market_get_autoconvert_cost() {
+  global $config;
+
+  return $config->rpg_cost_exchange ? $config->rpg_cost_exchange * 3 : 3000;
+}

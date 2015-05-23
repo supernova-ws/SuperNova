@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a3.11
+* @version 40a4.0
 *
 */
 
@@ -683,6 +683,7 @@ $a_lang_array = (array(
     BUILD_SILO_FULL => 'Silo is full',
     BUILD_MAX_REACHED => 'You already build and/or enqued maximum numbers of this type units',
     BUILD_SECTORS_NONE => 'No free sectors',
+    BUILD_AUTOCONVERT_AVAILABLE => 'Autoconvert available',
   ),
 
   'sys_game_mode' => array(
@@ -1090,5 +1091,7 @@ $a_lang_array = (array(
     ACCOUNT_PROVIDER_LOCAL => 'Таблица account',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральное хранилище',
   ),
+
+  'bld_autoconvert' => 'Автоматическая конвертация при создании юнита {%1$d} "%4$s" в количесте %2$d на планете %3$s',
 
 ));

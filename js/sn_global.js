@@ -24,6 +24,15 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     return setTimeout(function(){ return func.apply(null, args); }, wait);
   };
 
+  String.prototype.format = function () {
+    var args = arguments;
+    return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {
+      if (m == "{{") { return "{"; }
+      if (m == "}}") { return "}"; }
+      return args[n];
+    });
+  };
+
   var language = {};
 
   var x = "";

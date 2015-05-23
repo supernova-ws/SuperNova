@@ -7,9 +7,14 @@ var unit_selected = null;
 var eco_bld_style_probe;
 var STACKABLE = '{STACKABLE}';
 var TEMPORARY = parseInt('{TEMPORARY}');
+var CAN_AUTOCONVERT = parseInt('{CAN_AUTOCONVERT}') ? parseInt('{CAN_AUTOCONVERT}') : 0;
+var MARKET_AUTOCONVERT_COST = parseInt('{MARKET_AUTOCONVERT_COST}') ? parseInt('{MARKET_AUTOCONVERT_COST}') : 0;
+var DARK_MATTER = parseInt('{DARK_MATTER}') ? parseInt('{DARK_MATTER}') : 0;
 
 var ALLY_ID = isNaN(ALLY_ID = '{ALLY_ID}') ? 0 : ALLY_ID;
 var PLANET_ID = isNaN(PLANET_ID = parseInt('{PLN_ID}')) ? 0 : PLANET_ID;
+
+var que_id = '{QUE_ID}';
 
 language = {
   level: '{LA_level}',
@@ -43,6 +48,10 @@ language = {
   'eco_bld_unit_info_extra_show': '{LA_eco_bld_unit_info_extra_show}',
   'eco_bld_unit_info_extra_hide': '{LA_eco_bld_unit_info_extra_hide}',
   'eco_bld_unit_info_extra_none': '{LA_eco_bld_unit_info_extra_none}',
+
+  'eco_bld_autoconvert_explain': '{LA_eco_bld_autoconvert_explain}'.replace(/\\r\\n/g, '\r\n').format(MARKET_AUTOCONVERT_COST),
+  'eco_bld_autoconvert_dark_matter_none': '{LA_eco_bld_autoconvert_dark_matter_none}'.replace(/\\r\\n/g, '\r\n').format(MARKET_AUTOCONVERT_COST - DARK_MATTER),
+  'eco_bld_autoconvert_confirm': '{LA_eco_bld_autoconvert_confirm}'.replace(/\\r\\n/g, '\r\n').format(MARKET_AUTOCONVERT_COST),
 };
 
 planet = {
@@ -63,17 +72,14 @@ planet = {
   fields_free: '{FIELDS_FREE}'
 };
 
-var que_id = '{QUE_ID}';
-</script>
-
-<script type="text/javascript" src="js/build_unit.js?{C_var_db_update}"></script>
-<script type="text/javascript"><!-- BEGIN production -->
+<!-- BEGIN production -->
   <!-- IF production.S_FIRST_ROW -->
-    var production_id_first = parseInt('{production.ID}');
+  var production_id_first = parseInt('{production.ID}');
   <!-- ENDIF -->
 
   <!-- IF .production.require -->
-  require[{production.ID}] = [<!-- BEGIN require -->
+  require[{production.ID}] = [
+    <!-- BEGIN require -->
     {
       name: '{require.NAME}',
       requerements_met: parseInt('{require.REQUEREMENTS_MET}'),
@@ -82,7 +88,9 @@ var que_id = '{QUE_ID}';
       level_basic: parseInt('{require.LEVEL_BASIC}'),
       level_bonus: parseInt('{require.LEVEL_BONUS}'),
       id: parseInt('{require.ID}'),
-    },<!-- END require -->];
+    },
+    <!-- END require -->
+  ];
   <!-- ENDIF -->
 
   production[{production.ID}] = {
@@ -94,6 +102,7 @@ var que_id = '{QUE_ID}';
     description: '{production.DESCRIPTION}',
     unit_busy: '{production.UNIT_BUSY}',
     can_build: '{production.CAN_BUILD}',
+    can_autoconvert: parseInt('{production.CAN_AUTOCONVERT}') ? parseInt('{production.CAN_AUTOCONVERT}') : 0,
 
     metal: '{production.METAL}',
     crystal: '{production.CRYSTAL}',
@@ -114,7 +123,8 @@ var que_id = '{QUE_ID}';
     map_is_resource: '{production.MAP_IS_RESOURCE}',
 
     <!-- IF .production.resource -->
-    resource_map: [<!-- BEGIN resource -->
+    resource_map: [
+      <!-- BEGIN resource -->
       {
         'shield': '{resource.ACTUAL_SHIELD}',
         'armor': '{resource.ACTUAL_ARMOR}',
@@ -137,15 +147,19 @@ var que_id = '{QUE_ID}';
         'sys_colonies_diff': '{resource.DCOLONIES_MAX}',
         'sys_expeditions': '{resource.REXPEDITIONS_MAX}',
         'sys_expeditions_diff': '{resource.DEXPEDITIONS_MAX}',
-      },<!-- END resource -->
+      },
+      <!-- END resource -->
     ]
     <!-- ENDIF -->
   };
-<!-- END production --></script>
+<!-- END production -->
+</script>
+
+<script type="text/javascript" src="js/build_unit.js?{C_var_db_update}"></script>
 
 <!-- DEFINE $QUE_ID = '{QUE_ID}' -->
 <!-- INCLUDE eco_queue -->
-{QUE_HAS_PLACE}
+
 <table class="markup">
 <tr>
   <td align="center" valign="top">
@@ -285,6 +299,14 @@ var que_id = '{QUE_ID}';
                 <button id="unit_create_button" class="unit_create positive">
                   {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
                 </button>
+              <!--</div>-->
+              <!--<div id="unit_create_autoconvert" class="unit_create_level">-->
+                <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
+                <button id="unit_create_button_auto" class="unit_create_autoconvert <!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">
+                  {STRING_CREATE} {LA_level} <span id="unit_create_level_auto"></span><br />
+                  {L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST} {L_sys_dark_matter_sh}
+                </button>
+                <!-- ENDIF -->
               </div>
               <div id="unit_destroy" style="visibility: hidden">
                 <div id="unit_destroy_resources">&nbsp;</div>
@@ -342,7 +364,7 @@ var que_id = '{QUE_ID}';
 
               <!-- IF production.BUILD_RESULT != 0 -->
                 <span class="a75 unit_preview_image">
-                  <div class="restrict">{production.BUILD_RESULT_TEXT}</div>
+                  <div class="restrict <!-- IF production.BUILD_RESULT == BUILD_AUTOCONVERT_AVAILABLE --><!-- IF DARK_MATTER < MARKET_AUTOCONVERT_COST -->negative<!-- ELSE -->zero<!-- ENDIF --><!-- ENDIF -->">{production.BUILD_RESULT_TEXT}</div>
                 </span>
               <!-- ENDIF -->
 

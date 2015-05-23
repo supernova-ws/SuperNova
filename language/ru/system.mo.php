@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a3.11#
+* @version #40a4.0#
 *
 */
 
@@ -686,6 +686,7 @@ $a_lang_array = (array(
     BUILD_SILO_FULL => 'Ракетная шахта заполнена',
     BUILD_MAX_REACHED => 'Вы уже построили и/или поставили в очередь максимальное количество юнитов данного типа',
     BUILD_SECTORS_NONE => 'Нет свободных секторов',
+    BUILD_AUTOCONVERT_AVAILABLE => 'Доступна автоконвертация',
   ),
 
   'sys_game_mode' => array(
@@ -1097,5 +1098,7 @@ $a_lang_array = (array(
     ACCOUNT_PROVIDER_LOCAL => 'Таблица account',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральное хранилище',
   ),
+
+  'bld_autoconvert' => 'Автоматическая конвертация при создании юнита {%1$d} "%4$s" в количесте %2$d на планете %3$s',
 
 ));

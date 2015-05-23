@@ -200,17 +200,17 @@ only screen and (min-device-pixel-ratio : 1.5) {
   display: table-header-group;
   text-align: center;
 }
-/*#unit_action_container {*/
-  /*display: table-row;*/
-  /*text-align: center;*/
-/*}*/
 #unit_create {
   display: table-row;
   text-align: center;
+  vertical-align: top;
 }
 #unit_destroy {
   display: table-footer-group;
   text-align: center;
+}
+#unit_create_button_auto {
+  margin-left: 5em;
 }
 
 #shoutbox td {
@@ -227,23 +227,6 @@ only screen and (min-device-pixel-ratio : 1.5) {
   margin-left: 1em;
 }
 
-/*#chat_smile_point {*/
-  /*float: none;*/
-/*}*/
-/*#chat_message_inputs #send {*/
-  /*float: none;*/
-/*}*/
-/*#chat_msg_wrapper {*/
-  /*display:block;*/
-/*}*/
-/*#chat_message_inputs {*/
-  /*text-align: right;*/
-/*}*/
-/*#chat_message_inputs #send {*/
-  /*float: right;*/
-/*}*/
-
-
 #chat_message_inputs #send {
   float: right;
 }
@@ -258,6 +241,13 @@ only screen and (min-device-pixel-ratio : 1.5) {
 @media only screen and (max-width : 51.9375em) { /* 831px */
   #unit_table { /* 3 preview */
     width: 37em;
+  }
+  #unit_create_button_auto {
+    /*display: block;*/
+    /*max-width: 15em;*/
+    /*margin-top: 3em;*/
+    /*margin-right: 5em;*/
+    margin: 2em 5em 1em;
   }
 }
 @media only screen and (min-width : 52em) { /* 832px */
@@ -351,6 +341,12 @@ only screen and (min-device-pixel-ratio : 1.5) {
   #unit_create.unit_create_level {
     display: table-cell;
     max-width: 15em;
+  }
+  #unit_create_button_auto {
+    /*display: table-cell;*/
+    /*max-width: 15em;*/
+    margin-top: 3em;
+    margin-left: 0;
   }
   #unit_destroy {
     display: table-cell;

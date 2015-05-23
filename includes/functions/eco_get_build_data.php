@@ -63,8 +63,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
   return $user['research_effective_level'][$lab_require];
 }
 
-function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false)
-{
+function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false) {
   global $config;
 
   $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
@@ -79,6 +78,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $can_destroy = 1000000000000;
   $time = 0;
   $only_dark_matter = 0;
+  $cost_in_metal = 0;
   foreach($unit_data[P_COST] as $resource_id => $resource_amount) {
     if($resource_id === P_FACTOR || !($resource_cost = $resource_amount * $price_increase)) {
       continue;
@@ -88,6 +88,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $cost[BUILD_DESTROY][$resource_id] = round($resource_cost / 2);
 
     $resource_db_name = pname_resource_name($resource_id);
+    $cost_in_metal += $cost[BUILD_CREATE][$resource_id] * $config->__get("rpg_exchange_{$resource_db_name}");
     if(in_array($resource_id, sn_get_groups('resources_loot'))) {
       $time += $resource_cost * $config->__get("rpg_exchange_{$resource_db_name}") / $rpg_exchange_deuterium;
       $resource_got = mrc_get_level($user, $planet, $resource_id);
@@ -103,6 +104,16 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $can_build = min($can_build, $resource_got / $cost[BUILD_CREATE][$resource_id]);
     $can_destroy = min($can_destroy, $resource_got / $cost[BUILD_DESTROY][$resource_id]);
   }
+
+  $resources_normalized = 0;
+  $resources_loot = sn_get_groups('resources_loot');
+  foreach($resources_loot as $resource_id) {
+    $resource_db_name = pname_resource_name($resource_id);
+    $resource_got = mrc_get_level($user, $planet, $resource_id);
+    $resources_normalized += floor($resource_got) * $config->__get("rpg_exchange_{$resource_db_name}");
+  }
+
+  $cost[BUILD_AUTOCONVERT] = $only_dark_matter != RES_DARK_MATTER ? max(!empty($unit_data[P_MAX_STACK]) ? $unit_data[P_MAX_STACK] : 0, floor($resources_normalized / $cost_in_metal)) : 0;
 
   $can_build = $can_build > 0 ? floor($can_build) : 0;
   $cost['CAN'][BUILD_CREATE]  = $can_build;

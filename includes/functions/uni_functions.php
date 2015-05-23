@@ -472,7 +472,7 @@ function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include
   else
   {
     $from_planet_id = $include_id ? (
-      'ID ' . ($from['id'] ? $from['id'] : ($from[$prefix . 'planet_id'] ? $from[$prefix . 'planet_id'] : 0)) . ' '
+      'ID {' . ($from['id'] ? $from['id'] : ($from[$prefix . 'planet_id'] ? $from[$prefix . 'planet_id'] : 0)) . '} '
     ) : '';
 
     $from_planet_type = $from['planet_type'] ? $from['planet_type'] : ($from[$prefix . 'type'] ? $from[$prefix . 'type'] : 0);

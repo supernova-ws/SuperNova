@@ -1,9 +1,32 @@
-jQuery(document).ready( function() {
-  $(".unit_create,.unit_destroy").on('click', function(e){
-    if(!$(this).is("[disabled]")) {
-      $('[name=action]').val($(this).hasClass('unit_create') ? 'create' : 'destroy');
-      $('#form_unit').submit();
+jQuery(document).ready( function(e) {
+  $(".unit_create,.unit_destroy,#unit_create_button_auto").on('click', function(e){
+    //if(!$(this).is("[disabled]") && $(this).attr("aria-disabled") != 'true') {
+    if($(this).is(":disabled") || $(this).attr("aria-disabled") == 'true') {
+      e.preventDefault();
+      return false;
     }
+
+    if($(this).hasClass('unit_create_autoconvert')) {
+      if(DARK_MATTER < MARKET_AUTOCONVERT_COST) {
+        alert(language['eco_bld_autoconvert_explain'] + language['eco_bld_autoconvert_dark_matter_none']);
+        e.preventDefault();
+        return false;
+      }
+      if(!confirm(language['eco_bld_autoconvert_explain'] + language['eco_bld_autoconvert_confirm'])) {
+        e.preventDefault();
+        return false;
+      }
+      //if(!confirm(language['eco_bld_autoconvert_confirm'])) {
+      //  return false;
+      //}
+      //if(!confirm('{Недостающие на постройку/исследование ресурсы будут автоматически сконвертированы из наличных ресурсов (металл, кристалл, дейтерий). ' +
+      //  '\r\n\r\nЭта операция будет стоить {0} ТМ.\r\n\r\nПродолжать?}'.format(MARKET_AUTOCONVERT_COST))) {
+      //  return false;
+      //}
+    }
+
+    $('[name=action]').val($(this).hasClass('unit_create') ? 'create' : ($(this).hasClass('unit_destroy') ? 'destroy' : 'create_autoconvert'));
+    $('#form_unit').submit();
   });
   $("#form_unit").on('keypress', function(e) { // 'form input[type="text"]',
     if(e.which == 13) {
@@ -16,11 +39,7 @@ jQuery(document).ready( function() {
   });
 
   $("#unit_amount").on('change', function(){
-    //var unit_id = parseInt($('#unit_id').val());
-    //!unit_id ? unit_id = 0 : false;
-    //var unit = production[unit_id];
-    //if(unit['build_can'] != 0 && unit['build_result'] == 0) {}
-      $('#unit_create_button').button(parseInt($('#unit_amount').val()) ? "enable" : "disable");
+    $('#unit_create_button').button(parseInt($('#unit_amount').val()) ? "enable" : "disable");
   });
 
   jQuery('#unit_amount').on('keyup change', function(event, ui) {
@@ -64,13 +83,6 @@ jQuery(document).ready( function() {
   eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
 
   production_id_first ? eco_struc_show_unit_info(production_id_first, true) : '';
-  // var production_id_first;
-/*
-  for(var production_id_first in production) {
-    eco_struc_show_unit_info(production_id_first, true);
-    break;
-  }
-*/
 });
 
 
@@ -188,7 +200,9 @@ function eco_struc_show_unit_info(unit_id, no_color) {
       }
     }
   }
-  $('#unit_create_level').html((parseInt(unit['level']) ? parseInt(unit['level']) : 0) + 1);
+  $('#unit_create_button_auto').button(unit['can_autoconvert'] ? 'enable' : 'disable').prop('disabled', unit['can_autoconvert'] ? false : true);
+  $('#unit_create_level, #unit_create_level_auto').html((parseInt(unit['level']) ? parseInt(unit['level']) : 0) + 1);
+//  $('#unit_create_button_auto').button(unit['can_autoconvert'] ? 'enable' : 'disable');
 
   result = '';
   if(unit['resource_map']) {
