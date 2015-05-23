@@ -82,7 +82,7 @@ jQuery(document).ready( function(e) {
     unit_id = $('#unit_id').val();
     var unit = production[unit_id];
 
-    $('#unit_max_number').html(unit['can_build']);
+    $('#unit_max_number').html(sn_format_number(unit['can_build']));
 
     if(unit['autoconvert_amount']) {
       $('#auto_convert').prop('disabled', false).button('enable');
@@ -97,7 +97,7 @@ jQuery(document).ready( function(e) {
       //if($(this).is(":disabled") || $(this).attr("aria-disabled") == 'true') {
       $('#unit_create, #unit_create *').prop('disabled', false);
       $('#unit_amountslide').slider({ max: unit['autoconvert_amount']});
-      $('#unit_max_number').html(unit['autoconvert_amount']);
+      $('#unit_max_number').html(sn_format_number(unit['autoconvert_amount']));
     } else {
       if(unit['build_can'] == 0 || unit['build_result'] != 0) {
         $('#unit_create, #unit_create *').prop('disabled', true);
@@ -182,8 +182,8 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   if(STACKABLE) {
     $('#unit_max').show();
 //alert($('#auto_convert').is(":checked"));
-    $('#unit_max_number').html(unit['can_build']);
-    $('#unit_max_number_autoconvert').html(unit['autoconvert_amount']);
+    $('#unit_max_number').html(sn_format_number(unit['can_build']));
+    $('#unit_max_number_autoconvert').html(sn_format_number(unit['autoconvert_amount']));
   }
 
   $('#unit_create, #unit_create *').prop('disabled', true);
