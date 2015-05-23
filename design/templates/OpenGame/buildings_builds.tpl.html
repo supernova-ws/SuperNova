@@ -49,9 +49,9 @@ language = {
   'eco_bld_unit_info_extra_hide': '{LA_eco_bld_unit_info_extra_hide}',
   'eco_bld_unit_info_extra_none': '{LA_eco_bld_unit_info_extra_none}',
 
-  'eco_bld_autoconvert_explain': '{LA_eco_bld_autoconvert_explain}'.replace(/\\r\\n/g, '\r\n').format(MARKET_AUTOCONVERT_COST),
-  'eco_bld_autoconvert_dark_matter_none': '{LA_eco_bld_autoconvert_dark_matter_none}'.replace(/\\r\\n/g, '\r\n').format(MARKET_AUTOCONVERT_COST - DARK_MATTER),
-  'eco_bld_autoconvert_confirm': '{LA_eco_bld_autoconvert_confirm}'.replace(/\\r\\n/g, '\r\n').format(MARKET_AUTOCONVERT_COST),
+  'eco_bld_autoconvert_explain': '{LA_eco_bld_autoconvert_explain}'.replace(/\\r\\n/g, '\r\n'),
+  'eco_bld_autoconvert_dark_matter_none': '{LA_eco_bld_autoconvert_dark_matter_none}'.replace(/\\r\\n/g, '\r\n').format(sn_format_number(MARKET_AUTOCONVERT_COST - DARK_MATTER)),
+  'eco_bld_autoconvert_confirm': '{LA_eco_bld_autoconvert_confirm}'.replace(/\\r\\n/g, '\r\n').format(sn_format_number(MARKET_AUTOCONVERT_COST, 0)),
 };
 
 planet = {
@@ -304,7 +304,7 @@ planet = {
                 <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
                 <button id="unit_create_button_auto" class="unit_create_autoconvert <!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">
                   {STRING_CREATE} {LA_level} <span id="unit_create_level_auto"></span><br />
-                  {L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST} {L_sys_dark_matter_sh}
+                  {L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}
                 </button>
                 <!-- ENDIF -->
               </div>

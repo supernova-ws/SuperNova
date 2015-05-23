@@ -370,6 +370,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
 
     'MARKET_AUTOCONVERT_COST' => market_get_autoconvert_cost(),
+    'MARKET_AUTOCONVERT_COST_TEXT' => pretty_number(market_get_autoconvert_cost()),
     'CAN_AUTOCONVERT'    => $user_dark_matter >= market_get_autoconvert_cost(),
     'BUILD_AUTOCONVERT_AVAILABLE'    => BUILD_AUTOCONVERT_AVAILABLE,
     'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
