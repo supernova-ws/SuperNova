@@ -345,6 +345,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       $unit_amount_qued += $place;
     }
 
+//    sn_db_transaction_rollback(); // TODO - REMOVE !!!!!!!!!!!!!!!!!!
     sn_db_transaction_commit();
 
     if($redirect) {
@@ -365,9 +366,9 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
   }
 
   if(!empty($operation_result['MESSAGE'])) {
-    $operation_result['MESSAGE'] .= ' ' . ($unit_amount_qued ? $unit_amount_qued : $unit_amount) . 'x[' . $lang['tech'][$unit_id] . ']' .
-    (isset($planet['id']) ? ' на ' . $planet['name'] : '')
-    . '}';
+    $operation_result['MESSAGE'] .= ' ' . ($unit_amount_qued ? $unit_amount_qued : $unit_amount) . 'x[' . $lang['tech'][$unit_id] . ']'
+//      . (isset($planet['id']) ? ' на ' . $planet['name'] : '')
+    ;
   }
 
   return $operation_result;

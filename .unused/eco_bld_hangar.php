@@ -1,5 +1,5 @@
 <?php
-
+/*
 function eco_hangar_is_building($que)
 {
   return $que['in_que_abs'][STRUC_FACTORY_HANGAR] ? true : false;
@@ -151,3 +151,4 @@ function eco_bld_hangar($que_type, $user, &$planet)
 
   display(parsetemplate($template), $lang[$page_mode]);
 }
+*/

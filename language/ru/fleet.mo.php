@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a3.3
+* @version 40a4.3
 *
 */
 
@@ -35,6 +35,7 @@ $a_lang_array = (array(
   'fl_mission' => 'Задание',
   'fl_count' => 'Количество',
   'fl_count_short' => 'К-во',
+  'fl_where' => 'Где',
   'fl_from' => 'Откуда',
   'fl_from_t' => 'Возвращение',
   'fl_start_t' => 'Время',

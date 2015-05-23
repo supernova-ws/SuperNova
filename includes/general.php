@@ -238,6 +238,12 @@ function is_id($value)
   return preg_match('/^\d+$/', $value) && ($value >= 0);
 }
 
+/**
+ * @param        $param_name
+ * @param string $default
+ *
+ * @return string|array
+ */
 function sys_get_param($param_name, $default = '')
 {
   return $_POST[$param_name] !== NULL ? $_POST[$param_name] : ($_GET[$param_name] !== NULL ? $_GET[$param_name] : $default);

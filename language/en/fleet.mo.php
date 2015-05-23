@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a3.3
+* @version 40a4.3
 *
 */
 
@@ -38,6 +38,7 @@ $a_lang_array = (array(
   'fl_mission' => 'Mission',
   'fl_count' => 'Number of',
   'fl_count_short' => 'Quantity of',
+  'fl_where' => 'Where',
   'fl_from' => 'From',
   'fl_from_t' => 'Return',
   'fl_start_t' => 'Time',

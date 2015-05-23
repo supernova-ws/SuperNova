@@ -1,5 +1,5 @@
 <?php
-
+/*
 function eco_bld_tech($que_type, &$user, &$planet)
 {
   global $config, $lang;
@@ -114,3 +114,4 @@ function eco_bld_tech($que_type, &$user, &$planet)
 
   display(parsetemplate($template), $page_header);
 }
+*/
