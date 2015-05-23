@@ -172,7 +172,10 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     }
 
     $unit_info['type'] == UNIT_STRUCTURES && !$planet_fields_queable ? $build_data['RESULT'][BUILD_CREATE] = BUILD_SECTORS_NONE : false;
-    $unit_autoconvert_can = !classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && !$unit_stackable && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
+//    $unit_autoconvert_can = !$unit_stackable && !classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
+    $unit_autoconvert_can = !classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
+
+
     $unit_autoconvert_can ? $build_data['RESULT'][BUILD_CREATE] = BUILD_AUTOCONVERT_AVAILABLE : false;
 
     $build_result_text = $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
@@ -191,6 +194,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
       'CAN_BUILD'          => $can_build,
       'CAN_AUTOCONVERT'    => $unit_autoconvert_can,
+      'AUTOCONVERT_AMOUNT' => $build_data[BUILD_AUTOCONVERT],
 
       'BUILD_CAN'          => $build_data['CAN'][BUILD_CREATE],
       'TIME'               => pretty_time($build_data[RES_TIME][BUILD_CREATE]),

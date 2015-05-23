@@ -103,6 +103,7 @@ planet = {
     unit_busy: '{production.UNIT_BUSY}',
     can_build: '{production.CAN_BUILD}',
     can_autoconvert: parseInt('{production.CAN_AUTOCONVERT}') ? parseInt('{production.CAN_AUTOCONVERT}') : 0,
+    autoconvert_amount: parseInt('{production.AUTOCONVERT_AMOUNT}') ? parseInt('{production.AUTOCONVERT_AMOUNT}') : 0,
 
     metal: '{production.METAL}',
     crystal: '{production.CRYSTAL}',
@@ -285,11 +286,19 @@ planet = {
             <!--<div id="unit_action_container">-->
             <!-- IF STACKABLE -->
               <div id="unit_create" class="unit_create_stackable">
-                <div id="unit_max">{L_sys_maximum} <span id="unit_max_number"></span></div>
+                <div id="unit_max">{L_sys_maximum} <span id="unit_max_number"></span> / <span id="unit_max_number_autoconvert" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->"></span></div>
                 <ainput type="text" name="unit_amount" id="unit_amount" max="0"></ainput>
                 <script type="text/javascript">
                   sn_ainput_make_jquery();
                 </script>
+
+                <!--<button id="unit_create_button_auto" class="unit_create_autoconvert &lt;!&ndash; IF CAN_AUTOCONVERT &ndash;&gt;zero&lt;!&ndash; ELSE &ndash;&gt;negative&lt;!&ndash; ENDIF &ndash;&gt;">-->
+                  <!--{STRING_CREATE} <span id="unit_create_count_auto"></span><br />-->
+
+                <!--</button>-->
+                <input type="checkbox" value="1" name="auto_convert" id="auto_convert" />
+                <label for="auto_convert" id="auto_convert_label" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">{L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}</label>
+
                 <button id="unit_create_button" class="unit_create positive">
                   {STRING_CREATE}
                 </button>

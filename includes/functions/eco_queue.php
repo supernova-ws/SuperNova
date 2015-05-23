@@ -63,7 +63,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
   global $lang, $config;
 
   $is_autoconvert = false;
-  if($build_mode == BUILD_AUTOCONVERT) {
+  if($build_mode == BUILD_AUTOCONVERT || sys_get_param_int('auto_convert')) {
     $build_mode = BUILD_CREATE;
     $is_autoconvert = true;
   }
@@ -219,21 +219,25 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 
     $build_data = eco_get_build_data($user, $planet, $unit_id, $unit_level);
 
-    $unit_amount = min($build_data['CAN'][$build_mode], $unit_amount);
     $exchange = array();
     $market_get_autoconvert_cost = market_get_autoconvert_cost();
-    if($unit_amount <= 0 && $is_autoconvert && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT]) {
+//pdump($unit_amount, '$unit_amount');
+//pdump($is_autoconvert, '$is_autoconvert');die();
+//    if($unit_amount <= 0 && $is_autoconvert && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT]) {
+    if($is_autoconvert && $build_data[BUILD_AUTOCONVERT]) {
       $dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
       if(mrc_get_level($user, null, RES_DARK_MATTER) < $market_get_autoconvert_cost) {
         throw new exception("{Нет хватает " . ($market_get_autoconvert_cost - $dark_matter) . "ТМ на постройки с автоконвертацией ресурсов}", ERR_ERROR); // TODO EXCEPTION
       }
 
-      $unit_amount = $build_data[BUILD_AUTOCONVERT];
+//      $unit_amount = $build_data[BUILD_AUTOCONVERT];
       !get_unit_param($unit_id, P_STACKABLE) ? $unit_amount = 1 : false;
+//pdump($unit_amount,'$unit_amount1');die();
       $resources_loot = sn_get_groups('resources_loot');
       $resource_got = array();
       $resource_exchange_rates = array();
       $resource_diff = array();
+      $all_positive = true;
       foreach($resources_loot as $resource_id) {
         $resource_db_name = pname_resource_name($resource_id);
         $resource_got[$resource_id] = floor(mrc_get_level($user, $planet, $resource_id));
@@ -242,35 +246,43 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 //$resource_got[903] = 0;
         $resource_exchange_rates[$resource_id] = $config->__get("rpg_exchange_{$resource_db_name}");
         $resource_diff[$resource_id] = $resource_got[$resource_id] - $build_data[BUILD_CREATE][$resource_id] * $unit_amount;
+        $all_positive = $all_positive && ($resource_diff[$resource_id] > 0);
       }
+//pdump($resource_diff);
+//pdump($all_positive);
+//die();
 //pdump($build_data[BUILD_CREATE], '$build_data[BUILD_CREATE]');
 //pdump($resource_got, '$resource_got');
 //pdump($resource_diff, '$resource_diff');
-      foreach($resource_diff as $resource_diff_id => &$resource_diff_amount) {
-        if($resource_diff_amount >= 0) {
-          continue;
-        }
-        foreach($resource_diff as $resource_got_id => &$resource_got_amount) {
-          if($resource_got_amount <= 0) {
+      // Нужна автоконвертация
+      if($all_positive) {
+        $is_autoconvert = false;
+      } else {
+        foreach($resource_diff as $resource_diff_id => &$resource_diff_amount) {
+          if($resource_diff_amount >= 0) {
             continue;
           }
+          foreach($resource_diff as $resource_got_id => &$resource_got_amount) {
+            if($resource_got_amount <= 0) {
+              continue;
+            }
 //pdump($resource_exchange_rates[$resource_got_id], '$resource_exchange_rates[$resource_got_id]');
 //pdump($resource_exchange_rates[$resource_diff_id], '$resource_exchange_rates[$resource_diff_id]');
-          $current_exchange = $resource_exchange_rates[$resource_got_id] / $resource_exchange_rates[$resource_diff_id];
+            $current_exchange = $resource_exchange_rates[$resource_got_id] / $resource_exchange_rates[$resource_diff_id];
 
-          $will_exchage_to = min(-$resource_diff_amount, floor($resource_got_amount * $current_exchange));
-          $will_exchage_from = $will_exchage_to / $current_exchange;
+            $will_exchage_to = min(-$resource_diff_amount, floor($resource_got_amount * $current_exchange));
+            $will_exchage_from = $will_exchage_to / $current_exchange;
 
-          $resource_diff_amount += $will_exchage_to;
-          $resource_got_amount -= $will_exchage_from;
-          $exchange[$resource_diff_id] += $will_exchage_to;
-          $exchange[$resource_got_id] -= $will_exchage_from;
+            $resource_diff_amount += $will_exchage_to;
+            $resource_got_amount -= $will_exchage_from;
+            $exchange[$resource_diff_id] += $will_exchage_to;
+            $exchange[$resource_got_id] -= $will_exchage_from;
 //pdump($will_exchage_from, '$will_exchage_from[' . $resource_got_id . ']');
 //pdump($will_exchage_to, '$will_exchage_to[' . $resource_diff_id . ']');
 //pdump($resource_diff, '$resource_diff');
 //pdump($exchange, '$exchange');
+          }
         }
-      }
 
 //      db_change_units($user, $planet, array(
 //        RES_METAL     => -$build_data[$build_mode][RES_METAL] * $unit_amount,
@@ -281,18 +293,20 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 //pdump($exchange, '$exchange');
 //pdump($build_data);
 
-      $is_autoconvert_ok = true;
-      foreach($resource_diff as $resource_diff_amount2) {
-        if($resource_diff_amount2 < 0) {
-          $is_autoconvert_ok = false;
-          break;
+        $is_autoconvert_ok = true;
+        foreach($resource_diff as $resource_diff_amount2) {
+          if($resource_diff_amount2 < 0) {
+            $is_autoconvert_ok = false;
+            break;
+          }
         }
-      }
 //pdump($resource_diff_amount2, '$resource_diff_amount2');
-      if($is_autoconvert_ok) {
-        $build_data['RESULT'][$build_mode] = BUILD_ALLOWED;
-      } else {
-        $unit_amount = 0;
+        if($is_autoconvert_ok) {
+          $build_data['RESULT'][$build_mode] = BUILD_ALLOWED;
+          $build_data['CAN'][$build_mode] = $unit_amount;
+        } else {
+          $unit_amount = 0;
+        }
       }
 //pdump($is_autoconvert_ok, '$is_autoconvert_ok');
 //pdump($resource_diff, '$resource_diff');
@@ -302,6 +316,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 //));
 //die();
     }
+    $unit_amount = min($build_data['CAN'][$build_mode], $unit_amount);
     if($unit_amount <= 0) {
       throw new exception('{Не хватает ресурсов}', ERR_ERROR); // TODO EXCEPTION
     }
