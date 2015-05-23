@@ -315,13 +315,24 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     }
 
     if($is_autoconvert) {
+      ksort($exchange);
+      ksort($resource_got);
+//pdump(sys_unit_arr2str($exchange), '$exchange');
+//pdump(sys_unit_arr2str($resource_got), '$resource_got');
+//pdump(sys_unit_arr2str($build_data[BUILD_CREATE]), 'BUILD_CREATE');
+//      pdump(sprintf(
+//        $lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), $lang['tech'][$unit_id],
+//        sys_unit_arr2str($build_data[BUILD_CREATE]), sys_unit_arr2str($resource_got), sys_unit_arr2str($exchange)
+//      ));
+//die();
       db_change_units($user, $planet, array(
         RES_METAL     => !empty($exchange[RES_METAL]) ? $exchange[RES_METAL] : 0,
         RES_CRYSTAL   => !empty($exchange[RES_CRYSTAL]) ? $exchange[RES_CRYSTAL] : 0,
         RES_DEUTERIUM => !empty($exchange[RES_DEUTERIUM]) ? $exchange[RES_DEUTERIUM] : 0,
       ));
       rpg_points_change($user['id'], RPG_BUILD_AUTOCONVERT, -$market_get_autoconvert_cost, sprintf(
-        $lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), $lang['tech'][$unit_id]
+        $lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), $lang['tech'][$unit_id],
+        sys_unit_arr2str($build_data[BUILD_CREATE]), sys_unit_arr2str($resource_got), sys_unit_arr2str($exchange)
       ));
     }
 
