@@ -138,9 +138,9 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
       $menu_item['ALT'] = htmlentities($menu_item['ALT']);
       $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
 
-      if($menu_item['ICON'] === true)
+      if(!empty($menu_item['ICON']))
       {
-        $menu_item['ICON'] = $menu_item_id . '.png';
+        $menu_item['ICON'] = !is_string($menu_item['ICON']) ? $menu_item_id . '.png' : $menu_item['ICON'];
       }
 
       $template->assign_block_vars('menu', $menu_item);

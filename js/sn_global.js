@@ -144,6 +144,10 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     document.location.assign("index.php?page=races");
   });
 
+  jQuery(document).on('click', 'button[href]', function (e) {
+    sn_redirect($(this).attr('href'));
+  });
+
   /* Empire ------------------------------------------------------------------------------------------ */
   jQuery(document).on('change', "#empire_overview select[selector]", function () {
     if (jQuery(this).val() != '-') {

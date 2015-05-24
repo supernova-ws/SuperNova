@@ -242,8 +242,7 @@ h1
   color: orange;
 }
 
-#menu_faq
-{
+#menu_faq, #menu_batch_operations {
   color: yellow;
 }
 
@@ -252,19 +251,19 @@ h1
   color: lime;
 }
 
-#menu_planet_structures /* .lm_buildings */
+#menu_planet_structures
 {
   color: #669933;
 }
 
-#menu_planet_shipyard, #menu_planet_defense /* .lm_shipyard */
+#menu_planet_shipyard, #menu_planet_defense
 {
   color: #993399;
 }
 
 #menu_empire_emperor, #menu_dark_matter
 {
-  color: purple
+  color: #c300c3;
 }
 
 #menu_info_research, #menu_empire_techtree /* .lm_techtree */
