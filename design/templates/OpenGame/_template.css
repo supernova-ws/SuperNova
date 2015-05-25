@@ -988,3 +988,83 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 .blitz_admin > div {
   margin-top: 20px;
 }
+
+#batch_fleet_table, #batch_fleet_results {
+  width: 2em;
+  border: 0;
+  border-spacing: 1px; /* cellspacing="1"  */
+}
+
+#batch_fleet_table > tbody > tr > td, #batch_fleet_table > tbody > tr > th,
+#batch_fleet_results > tbody > tr > td, #batch_fleet_results > tbody > tr > th
+{
+  padding: 0; /* cellpadding="0" */
+}
+
+#batch_fleet_results {
+  margin-bottom: 1em;
+  vertical-align: top;
+}
+
+#batch_fleet_table th, #batch_fleet_table td {
+  vertical-align: middle;
+}
+
+#batch_fleet_table tr:first-child th {
+  text-align: left;
+}
+
+#batch_fleet_table tr:first-child th:first-child, #batch_fleet_table tr:first-child th:nth-child(2), #batch_fleet_table tr:first-child th:nth-child(3)  {
+  width: 2em;
+  white-space: nowrap;
+}
+
+#batch_fleet_table tr:first-child th:nth-child(2)  {
+  text-align: center;
+}
+
+#batch_fleet_table .batch_resource_header th {
+  width: 2em;
+}
+
+#batch_fleet_table .batch_fleet_unit_row th:first-child {
+  width: 2em;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.qualifier_amount, .qualifier_apply {
+  display: none;
+}
+
+.homeworld_unit_income, .unit_change {
+  color: #80a0C0;
+}
+
+.homeworld_unit_total {
+  border-top: 2px groove;
+  text-align: right;
+}
+
+.homeworld_unit_income {
+  text-align: right;
+}
+
+.batch_unit_holder {
+  width: 2em;
+  white-space: nowrap;
+}
+
+.batch_unit_holder > div {
+  text-align: right;
+  margin-left: 24px;
+}
+
+.batch_unit_holder > input {
+  float: left;
+}
+
+#batch_fleet_table .total_row .tw_shrink {
+  width: 2em;
+  white-space: nowrap;
+}
