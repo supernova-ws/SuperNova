@@ -166,22 +166,22 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   jQuery(document)
     .on('mousedown', "input:button[id$='ai_dec'],input:button[id$='ai_inc']", function (event, ui) {
       that = jQuery(this);
-      parent = jQuery('#' + that.attr('parent_id'));
-      if (parent.is('[disabled]') || parent.is('[slider_ticks]')) {
+      var parentIEFix = jQuery('#' + that.attr('parent_id'));
+      if (parentIEFix.is('[disabled]') || parentIEFix.is('[slider_ticks]')) {
         return;
       }
 
       slider = jQuery("#" + that.attr('parent_id') + 'slide');
 
-      parent.attr('slider_ticks', 0)
+      parentIEFix.attr('slider_ticks', 0)
         .attr('step_now', slider.slider('option', 'step'))
-        .attr('increase', that.attr('id') == parent.attr('id') + '_ai_inc' ? 1 : -1);
+        .attr('increase', that.attr('id') == parentIEFix.attr('id') + '_ai_inc' ? 1 : -1);
       sn_ainput_mouselerate_jquery();
     })
     .on('mouseup', "input:button[id$='ai_dec'],input:button[id$='ai_inc']", function (event, ui) {
-      parent = jQuery('#' + jQuery(this).attr('parent_id'));
-      clearTimeout(parent.attr('timeout'));
-      parent.removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
+      var parentIEFix = jQuery('#' + jQuery(this).attr('parent_id'));
+      clearTimeout(parentIEFix.attr('timeout'));
+      parentIEFix.removeAttr('slider_ticks').removeAttr('step_now').removeAttr('increase').removeAttr('timeout');
     })
   ;
   jQuery(document)
