@@ -178,10 +178,10 @@ only screen and (min-device-pixel-ratio : 1.5) {
   height: 13em;
 }
 #unit_balance table {
-  border-spacing: 2px;
+  border-spacing: 0.2em;
 }
 #unit_balance td {
-  border-spacing: 2px;
+  border-spacing: 0.2em;
   padding: 0;
 }
 #unit_balance tr > td:not(:first-child) {
@@ -217,7 +217,7 @@ only screen and (min-device-pixel-ratio : 1.5) {
   display: block;
 }
 #shoutbox tr  {
-  border-top: 1px dashed #233452;
+  border-top: 0.1em dashed #233452;
 }
 #shoutbox tr > td:first-child {
   margin-top: 0.4em;
@@ -384,10 +384,10 @@ only screen and (min-device-pixel-ratio : 1.5) {
 
 
 textarea {
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  border-radius: 4px;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
+  -khtml-border-radius: 0.4em;
+  border-radius: 0.4em;
 }
 
 input, textarea, button {
@@ -446,22 +446,22 @@ input, textarea, button {
 
 .uni_show_debris {
   background-image: none;
-  max-width: 60px;
-  width: 60px;
+  max-width: 5.5em;
+  width: 5.5em;
   height: 100%;
 }
 .uni_show_debris > div {
   margin:auto;
   position: relative;
-  height: 30px;
-  width: 30px;
+  height: 2.75em;
+  width: 2.75em;
 }
 .uni_show_debris > div > :first-child {
   position: absolute;
   top: 0;
   left: 0;
-  height: 30px;
-  width: 30px;
+  height: 2.75em;
+  width: 2.75em;
 }
 .uni_show_debris > div > :nth-child(2) {
   position: absolute;
@@ -493,7 +493,7 @@ tr[prod_mode] > td:first-child {
 
 tr[prod_mode] > th:first-child > span  {
   position: absolute;
-  top: 6px;
+  top: 0.5em;
 }
 
 tr[prod_mode] > :not(:first-child) {
@@ -526,7 +526,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Menu ------------------------------------------------------------------------- */
 #left_menu {
-  margin: 5px 10px 0 5px;
+  margin: 0.5em 1em 0 0.5em;
   text-align: left;
   z-index: 999;
 }
@@ -540,7 +540,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 #left_menu tr, #left_menu td, #left_menu th {
-  height: 16px;
+  height: 1.5em;
 }
 
 #menu_show_hidden {
@@ -549,8 +549,8 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 .menu_visible {
-  width: 16px;
-  margin-left: 5px;
+  width: 1.5em;
+  margin-left: 0.5em;
   height: 100%;
   position: absolute;
   top: 0;
@@ -561,8 +561,8 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 .menu_drag {
-  margin-right: 5px;
-  width: 16px;
+  margin-right: 0.5em;
+  width: 1.5em;
   height: 100%;
   position: absolute;
   cursor: pointer;
@@ -740,7 +740,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 #shoutbox img {
   vertical-align: top;
-  margin: 0 1px 0 0;
+  margin: 0 0.1em 0 0;
 }
 #shoutbox .chat_private {
   color: lightblue; font-style: italic;
@@ -753,7 +753,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   border: 0;
   padding: 0;
   background-color: black;
-  margin: 3px 0;
+  margin: 0.25em 0;
   border-collapse: collapse;
   width: 100%;
 }
@@ -772,12 +772,12 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 #shoutbox > table > tbody > tr > td:last-child {
   width: 100%;
-  padding-left: 2px;
+  padding-left: 0.2em;
 }
 
 /* Chat messages on div */
 #shoutbox > div {
-  margin: 2px 0;
+  margin: 0.2em 0;
 }
 #shoutbox > div:after { /* Float clear */
   content: '';
@@ -793,7 +793,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Nick colors in chat */
 .chat_nick_whisper, .chat_nick_msg {
-  border-bottom: 1px dashed;
+  border-bottom: 0.1em dashed;
   font-weight: bold;
   cursor: pointer;
 }
@@ -804,7 +804,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 /* Input elements - color, smile, text, send button */
 #chat_color_button, #chat_smile_point, #chat_message_inputs #msg, #chat_message_inputs #msg, #chat_message_inputs #send {
   vertical-align: top;
-  margin: 0 5px;
+  margin: 0 0.5em;
 }
 #chat_color_button {
   float: left;
@@ -851,24 +851,24 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   background-color: #233452;
   vertical-align: top;
   text-align: center;
-  padding: 4px;
-  border: 1px solid;
-  -moz-border-radius: 4px;
-  -webkit-border-radius: 4px;
-  -khtml-border-radius: 4px;
-  border-radius: 4px;
+  padding: 0.4em;
+  border: 0.1em solid;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
+  -khtml-border-radius: 0.4em;
+  border-radius: 0.4em;
 }
 #chat_color_select {
-  max-width: 280px;
+  max-width: 26em;
 }
 #chat_message_smiles2 {
-  max-width: 340px;
+  max-width: 32.5em;
 }
 #chat_command_menu {
-  max-width: 360px;
+  max-width: 33em;
 }
 #chat_muted_tooltip {
-  max-width: 300px;
+  max-width: 27em;
 }
 #chat_muted_tooltip img, #chat_command_menu img {
   vertical-align: top;
@@ -876,14 +876,14 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Popup internal elements - color buttons, smile buttons, command length buttons */
 #chat_color_select div, #chat_message_smiles2 div, #chat_command_menu div:not(:first-child):not(:last-child) {
-  margin: 2px;
-  border: 1px solid;
+  margin: 0.2em;
+  border: 0.1em solid;
   vertical-align: top;
   display: inline-block;
 }
 #chat_message_smiles2 div {
-  width: 50px;
-  height: 40px;
+  width: 4.54545em;
+  height: 3.636363636em;
 
   -webkit-transform-style: preserve-3d;
   -moz-transform-style: preserve-3d;
@@ -902,10 +902,10 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 
 #chat_command_menu div:not(:first-child):not(:last-child) {
-  width: 80px;
+  width: 7.3em;
 }
 #chat_command_menu div:last-child {
-  margin-top: 5px;
+  margin-top: 0.5em;
 }
 
 
@@ -952,11 +952,11 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 .stat_cell, .stat_date_cell {
-  width: 40px;
+  width: 3.63636em;
 }
 
 .stat_cell {
-  height: 200px;
+  height: 18.2em;
 
   position: relative;
 }
@@ -986,69 +986,60 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 .blitz_admin > div {
-  margin-top: 20px;
+  margin-top: 1.8em;
 }
 
-#batch_fleet_table, #batch_fleet_results {
+#batch_fleet_table {
   width: 2em;
   border: 0;
-  border-spacing: 1px; /* cellspacing="1"  */
+  border-spacing: 0.1em; /* cellspacing="1"  */
 }
-
+#batch_fleet_results {
+  border: 0;
+  border-spacing: 0.1em; /* cellspacing="1"  */
+  margin-bottom: 1em;
+  vertical-align: top;
+}
 #batch_fleet_table > tbody > tr > td, #batch_fleet_table > tbody > tr > th,
 #batch_fleet_results > tbody > tr > td, #batch_fleet_results > tbody > tr > th
 {
   padding: 0; /* cellpadding="0" */
 }
 
-#batch_fleet_results {
-  margin-bottom: 1em;
-  vertical-align: top;
-}
-
 #batch_fleet_table th, #batch_fleet_table td {
   vertical-align: middle;
 }
-
 #batch_fleet_table tr:first-child th {
   text-align: left;
 }
-
 #batch_fleet_table tr:first-child th:first-child, #batch_fleet_table tr:first-child th:nth-child(2), #batch_fleet_table tr:first-child th:nth-child(3)  {
   width: 2em;
   white-space: nowrap;
 }
-
 #batch_fleet_table tr:first-child th:nth-child(2)  {
   text-align: center;
 }
-
 #batch_fleet_table .batch_resource_header th {
   width: 2em;
 }
-
 #batch_fleet_table .batch_fleet_unit_row th:first-child {
   width: 2em;
   white-space: nowrap;
   text-align: left;
+}
+#batch_fleet_table .total_row .tw_shrink {
+  width: 2em;
+  white-space: nowrap;
 }
 
 .qualifier_amount, .qualifier_apply {
   display: none;
 }
 
-.homeworld_unit_income, .unit_change {
+.unit_change {
   color: #80a0C0;
 }
 
-.homeworld_unit_total {
-  border-top: 2px groove;
-  text-align: right;
-}
-
-.homeworld_unit_income {
-  text-align: right;
-}
 
 .batch_unit_holder {
   width: 2em;
@@ -1057,14 +1048,13 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 .batch_unit_holder > div {
   text-align: right;
-  margin-left: 24px;
+  margin-left: 2.2em;
+}
+
+.batch_unit_holder > div.no_checkbox {
+  margin-left: 0.4em;
 }
 
 .batch_unit_holder > input {
   float: left;
-}
-
-#batch_fleet_table .total_row .tw_shrink {
-  width: 2em;
-  white-space: nowrap;
 }
