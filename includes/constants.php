@@ -30,7 +30,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a4.10');
+define('SN_VERSION', '40a4.11');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -567,6 +567,7 @@ define('ATTACK_ZERO_SPEED'        , 39);
 define('ATTACK_SHIP_COUNT_WRONG'  , 40);
 define('ATTACK_RESOURCE_COUNT_WRONG', 41);
 define('ATTACK_MORATORIUM', 42);
+define('ATTACK_CHILD_PROTECTION', 43);
 
 
 // *** Market variables

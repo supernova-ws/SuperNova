@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a4.3
+* @version 40a4.11
 *
 */
 
@@ -139,6 +139,7 @@ $a_lang_array = (array(
     ATTACK_SHIP_COUNT_WRONG => 'Количество кораблей во флоте не может быть негативным',
     ATTACK_RESOURCE_COUNT_WRONG => 'Количество ресурсов во флоте не может быть негативным',
     ATTACK_MORATORIUM => 'На запуск флота в эту миссию наложен мораторий',
+    ATTACK_CHILD_PROTECTION => 'Сегодня - День Защиты Детей! Нельзя атаковать игрока с меньшим количеством очков!',
   ),
 
   'fl_fleet_err' => 'Ошибка!',
