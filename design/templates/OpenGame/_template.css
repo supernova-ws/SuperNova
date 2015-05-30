@@ -990,7 +990,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 #batch_fleet_table {
-  width: 2em;
+  width: 10em;
   border: 0;
   border-spacing: 0.1em; /* cellspacing="1"  */
 }
@@ -1009,12 +1009,18 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #batch_fleet_table th, #batch_fleet_table td {
   vertical-align: middle;
 }
+#batch_fleet_table > tbody > tr:first-child > th {
+  min-width: 11em;
+  vertical-align: top;
+}
 #batch_fleet_table tr:first-child th {
   text-align: left;
 }
+/* Первая, вторая и третья ячейки заголовка*/
 #batch_fleet_table tr:first-child th:first-child, #batch_fleet_table tr:first-child th:nth-child(2), #batch_fleet_table tr:first-child th:nth-child(3)  {
   width: 2em;
   white-space: nowrap;
+  vertical-align: middle;
 }
 #batch_fleet_table tr:first-child th:nth-child(2)  {
   text-align: center;
@@ -1045,16 +1051,13 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 2em;
   white-space: nowrap;
 }
-
 .batch_unit_holder > div {
   text-align: right;
   margin-left: 2.2em;
 }
-
 .batch_unit_holder > div.no_checkbox {
   margin-left: 0.4em;
 }
-
 .batch_unit_holder > input {
   float: left;
 }
