@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a4.1#
+* @version #40a4.13#
 *
 */
 
@@ -1101,4 +1101,5 @@ $a_lang_array = (array(
 
   'bld_autoconvert' => 'Автоматическая конвертация при создании на планете %3$s юнита {%1$d} "%4$s" в количесте %2$d ценой "%5$s". Debug: $resource_got = "%6$s", $exchange = %7$s""',
 
+  'news_show_rest' => 'Показать текст новости',
 ));

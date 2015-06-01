@@ -7,8 +7,8 @@ $supernova->design['bbcodes'] = array(
   AUTH_LEVEL_ADMINISTRATOR => array(
     "#\[url=(ft|https?://)(.+)\](.+)\[/url\]#isU" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$3</a>",
 //    "#(?:^(?:href=\\\"))((?:ftp|https?)://.+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
-    "#^((?:ftp|https?)://[^\s\[]+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
-    "#([\s\)\]\}])((?:ftp|https?)://[^\s\[]+)#i" => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link\">$2$3</a>",
+    "#^((?:ftp|https|sn?)://[^\s\[]+)#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
+    "#([\s\)\]\}])((?:ftp|https?|sn)://[^\s\[]+)#i" => "$1<a href=\"$2$3\" target=\"_blank\" class=\"link\">$2$3</a>",
 //    "#^((?:ftp|https?)://.+?)$#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
 //    "#\s((?:ftp|https?)://.+)$#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
 //    "#^((?:ftp|https?)://.+)\s#i" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$1$2</a>",
@@ -122,6 +122,8 @@ function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
       $msg = preg_replace("#" . addcslashes($key, '()[]{}') . "#isU","<img src=\"design/images/smileys/".$imgName.".gif\" align=\"absmiddle\" title=\"".$key."\" alt=\"".$key."\">",$msg);
     }
   }
+
+  $msg = str_replace('sn://', SN_ROOT_VIRTUAL, $msg);
 
   return str_replace($escaped ? '\r\n' : "\r\n", '<br />', $msg);
 }

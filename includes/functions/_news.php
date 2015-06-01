@@ -1,5 +1,10 @@
 <?php
 
+/**
+ * @param template $template
+ * @param string $query_where
+ * @param int    $query_limit
+ */
 function nws_render(&$template, $query_where = '', $query_limit = 20) {
   global $config, $user;
 
@@ -28,6 +33,8 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       $survey_vote = !$survey_complete ? $survey_vote = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true) : array();
     }
 
+    $announce_exploded = explode("<br />", cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])));
+
     $template->assign_block_vars('announces', array(
       'ID'              => $announce['idAnnounce'],
       'TIME'            => date(FMT_DATE_TIME, $announce['unix_time'] + SN_CLIENT_TIME_DIFF),
@@ -44,6 +51,13 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       'SURVEY_COMPLETE' => $survey_complete,
       'SURVEY_UNTIL'    => $announce['survey_until'],
     ));
+
+    foreach($announce_exploded as $announce_paragraph) {
+      $template->assign_block_vars('announces.paragraph', array(
+        'TEXT' => $announce_paragraph,
+      ));
+    }
+
     if($announce['survey_id']) {
       if(empty($survey_vote) && !$survey_complete) {
         // Can vote

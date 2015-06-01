@@ -15,7 +15,23 @@
         <br />
       </div>
       <div class="news_text">
-        {announces.ANNOUNCE}
+
+        <!-- DEFINE $CLOSE_DIV = false -->
+        <!-- BEGIN paragraph -->
+          {paragraph.TEXT}
+        <!-- IF paragraph.S_LAST_ROW --><!-- IF $CLOSE_DIV --></div><!-- ENDIF --><!-- ELSE --><br /><!-- ENDIF -->
+
+        <!-- IF paragraph.S_FIRST_ROW && ! paragraph.S_LAST_ROW && ! $NEWS_FULL -->
+          <!-- DEFINE $CLOSE_DIV = true -->
+          <button news_toggle="{announces.ID}">
+            {L_news_show_rest}
+          </button>
+          <div id="news_{announces.ID}" class="news_hide">
+        <!-- ENDIF -->
+
+        <!-- END paragraph -->
+
+        <!--{announces.ANNOUNCE}-->
         <!-- IF announces.DETAIL_URL -->
          <a class="news_link" href="{announces.DETAIL_URL}">{L_news_more}</a>
         <!-- ENDIF -->

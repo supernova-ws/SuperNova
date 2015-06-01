@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a4.0
+* @version 40a4.13
 *
 */
 
@@ -1093,5 +1093,7 @@ $a_lang_array = (array(
   ),
 
   'bld_autoconvert' => 'Автоматическая конвертация при создании юнита {%1$d} "%4$s" в количесте %2$d на планете %3$s',
+
+  'news_show_rest' => 'Показать текст новости',
 
 ));

@@ -130,6 +130,12 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     location.reload();
   }
 
+  //jQuery(document).on('click', '.news_toggle', function () {
+  jQuery(document).on('click', '[news_toggle]', function () {
+    $('#news_' + $(this).attr('news_toggle')).show();
+    $(this).remove();
+  });
+
   jQuery(document).on('change', '#fleet_ship_sort,#fleet_ship_sort_inverse', function () {
     jQuery.post('fleet.php?fleet_ship_sort=' + $('#fleet_ship_sort').val() + '&fleet_ship_sort_inverse=' + ($('#fleet_ship_sort_inverse').is(':checked') ? '1' : '0'), function(){
       sn_reload();
