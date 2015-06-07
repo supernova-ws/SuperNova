@@ -30,7 +30,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a4.13');
+define('SN_VERSION', '40a4.14');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -206,6 +206,7 @@ define('RPG_MARKET_INFO_MERCENARY', 37);
 define('RPG_BLITZ_REGISTRATION', 38);
 define('RPG_BLITZ_REGISTRATION_CANCEL', 39);
 define('RPG_BUILD_AUTOCONVERT', 40);
+define('RPG_EVENT_SUPERBORN', 41);
 
 
 
@@ -905,6 +906,26 @@ define('UNIT_EVENT_CHRISTMAS_CONFETTI', 3009); // Christmas event units
 define('UNIT_EVENT_CHRISTMAS_FIRECRACKER', 3011); // Christmas event units
 define('UNIT_EVENT_CHRISTMAS_SWEET', 3012); // Christmas event units
 define('UNIT_EVENT_CHRISTMAS_CHINESE', 3013); // Christmas event units
+
+define('UNIT_EVENT_SUPERBORN', 3020); // SuperNova Birthday Units
+define('UNIT_EVENT_SUPERBORN_CAKE', 3021);
+define('UNIT_EVENT_SUPERBORN_CANDLE', 3022);
+define('UNIT_EVENT_SUPERBORN_BOOTSTRAP', 3023);
+define('UNIT_EVENT_SUPERBORN_GUIDE', 3024);
+define('UNIT_EVENT_SUPERBORN_CLASS', 3025);
+define('UNIT_EVENT_SUPERBORN_MODULE', 3026);
+define('UNIT_EVENT_SUPERBORN_TEMPLATE', 3027);
+define('UNIT_EVENT_SUPERBORN_FUNCTION', 3028);
+define('UNIT_EVENT_SUPERBORN_CONSTANT', 3029);
+define('UNIT_EVENT_SUPERBORN_XNOVA', 3030);
+define('UNIT_EVENT_SUPERBORN_DOC', 3031);
+define('UNIT_EVENT_SUPERBORN_CHANGELOG', 3032);
+define('UNIT_EVENT_SUPERBORN_HELLOWORLD', 3033);
+define('UNIT_EVENT_SUPERBORN_SCREENSHOT', 3034);
+define('UNIT_EVENT_SUPERBORN_UNUSED', 3035);
+define('UNIT_EVENT_SUPERBORN_HACK', 3036);
+
+// 3040
 
 define('UNIT_NEXT', 4000); // !!! Next unit start on 4000 !!!
 
