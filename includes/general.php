@@ -1429,7 +1429,8 @@ function get_player_current_expeditions(&$user) {
   return $FlyingExpeditions['expedi'];
 }
 
-function get_player_max_expeditons(&$user, $astrotech = -1)
+function get_player_max_expeditons(&$user, $astrotech = -1){return sn_function_call('get_player_max_expeditons', array(&$user, $astrotech, &$result));}
+function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0)
 {
   if($astrotech == -1) {
     if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX]))
@@ -1438,9 +1439,9 @@ function get_player_max_expeditons(&$user, $astrotech = -1)
       $user[UNIT_PLAYER_EXPEDITIONS_MAX] = $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
     }
 
-    return $user[UNIT_PLAYER_EXPEDITIONS_MAX];
+    return $result += $user[UNIT_PLAYER_EXPEDITIONS_MAX];
   } else {
-    return $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
+    return $result += $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
   }
 }
 
