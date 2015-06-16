@@ -48,7 +48,7 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
 
       case ACTION_USE:
         // Impersonate
-        sn_sys_impersonate($user_selected);
+        auth::impersonate($user_selected);
       break;
     }
   } else {

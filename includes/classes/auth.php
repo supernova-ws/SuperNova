@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a1.7#
+ * version #40a5.0#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a1.7# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a5.0# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -224,12 +224,37 @@ class auth extends sn_module {
     }
 
     if($redirect === true) {
-      sys_redirect(SN_ROOT_RELATIVE . 'login.php');
+      sys_redirect(SN_ROOT_RELATIVE . (empty($_COOKIE[SN_COOKIE]) ? 'login.php' : 'admin/overview.php'));
     } elseif($redirect !== false) {
       sys_redirect($redirect);
     }
   }
 
+  public static function impersonate($user_selected) {
+    global $config;
+
+    if($_COOKIE[SN_COOKIE_I]) {
+      die('You already impersonating someone. Go back to living other\'s life! Or clear your cookies and try again'); // TODO: Log it
+    }
+
+    if(self::$hidden[AUTH_LEVEL] < 3) {
+      die('You can\'t impersonate - too low level'); // TODO: Log it
+    }
+
+    if(self::$hidden[AUTH_LEVEL] <= $user_selected['authlevel']) {
+      die('You can\'t impersonate this account - level is greater or equal to yours'); // TODO: Log it
+    }
+
+    sn_setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
+
+    $expire_time = SN_TIME_NOW + PERIOD_YEAR; // TODO - Имперсонейт - только на одну сессию
+    $password_encoded = md5("{$user_selected['password']}--{$config->secret_word}");
+    $cookie = $user_selected['id'] . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . '1';
+    sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
+
+    // sec_set_cookie_by_user($user_selected, 0);
+    sys_redirect(SN_ROOT_RELATIVE);
+  }
 
   static function email_set($new_email_unsafe) {
     self::flog('Это пока не работает', true);
@@ -481,10 +506,13 @@ class auth extends sn_module {
     self::$hidden[F_BANNED_STATUS] = $found_provider->data[F_BANNED_STATUS];
     self::$hidden[F_VACATION_STATUS] = $found_provider->data[F_VACATION_STATUS];
 
+    self::$hidden[F_IMPERSONATE_STATUS] = $found_provider->data[F_IMPERSONATE_STATUS];
+    self::$hidden[F_IMPERSONATE_OPERATOR] = $found_provider->data[F_IMPERSONATE_OPERATOR];
+
     //TODO Сол и Парол тоже вкинуть в хидден
   }
   static function login_process($found_provider) {
-    global $user_impersonator, $config, $sys_stop_log_hit, $is_watching;
+    global $config, $sys_stop_log_hit, $is_watching;
 
     $ip = self::sec_player_ip();
     $ip_int_safe = ip2longu($ip['ip']);
@@ -493,7 +521,7 @@ class auth extends sn_module {
     $user_id = !empty($found_provider->data[F_USER_ID]) ? $found_provider->data[F_USER_ID] : 0;
     // if(!empty($user_id) && !$user_impersonator) {
     // $user_id не может быть пустым из-за констраинтов в таблице SPE
-    if($user_id && !$user_impersonator) {
+    if($user_id && $found_provider->data[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED) {
       doquery(
         "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
         VALUES ({$user_id}," . self::$hidden[F_DEVICE_ID] . "," . self::$hidden[F_BROWSER_ID]. ",{$ip_int_safe}, '{$proxy_safe}');"

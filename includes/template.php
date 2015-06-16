@@ -149,7 +149,7 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
 }
 
 function tpl_render_menu() {
-  global $user, $user_impersonator, $lang, $template_result; // $config,
+  global $user, $lang, $template_result; // $config,
 
   //$template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
   //$template = gettemplate($template_name, true);
@@ -165,7 +165,7 @@ function tpl_render_menu() {
   $template->assign_vars(array(
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
-    'USER_IMPERSONATOR'   => is_array($user_impersonator),
+//    'USER_IMPERSONATOR'   => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED,
     'PAYMENT'             => sn_module_get_active_count('payment'),
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']),
 //    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
@@ -217,7 +217,7 @@ function tpl_render_menu() {
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $user_impersonator, $planetrow, $config, $lang, $template_result, $sn_mvc;
+  global $link, $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -280,7 +280,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
     'SOUND_ENABLED'            => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
 
-    'IMPERSONATING'            => $user_impersonator ? sprintf($lang['sys_impersonated_as'], $user['username'], $user_impersonator['username']) : '',
+    'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]['username']) : '',
   ));
   $template->assign_recursive($template_result);
   displayP(parsetemplate($template));

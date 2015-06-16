@@ -1,13 +1,14 @@
 <?php
 
-if(!defined('INSIDE'))
-{
+if(!defined('INSIDE')) {
   die('Hack attempt!');
 }
 
 lng_include('menu');
 
 $active_payment_modules = sn_module_get_active_count('payment') > 0;
+
+global $sn_version_check_class, $template_result, $user, $config, $lang; // , $sn_menu_admin_extra
 
 $sn_menu = array(
 /*
@@ -72,7 +73,7 @@ $sn_menu = array(
     'SPAN'  => 'important',
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
-    'DISABLED' => empty($user_impersonator),
+    'DISABLED' => $template_result[F_IMPERSONATE_STATUS] == LOGIN_UNDEFINED,
   ),
 
 
@@ -477,8 +478,6 @@ $sn_menu = array(
 */
 );
 
-
-global $sn_version_check_class, $lang, $config, $sn_menu_admin_extra;
 
 $sn_menu_admin = array(
   'menu_admin_server_name' => array(

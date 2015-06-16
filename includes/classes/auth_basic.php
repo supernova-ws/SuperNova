@@ -5,7 +5,7 @@ class auth_basic extends auth {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.25# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a5.0# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -179,6 +179,8 @@ class auth_basic extends auth {
 
     $this->data += array(
       F_LOGIN_STATUS => LOGIN_UNDEFINED,
+      F_IMPERSONATE_STATUS => LOGIN_UNDEFINED,
+      F_IMPERSONATE_OPERATOR => null,
       F_PROVIDER_ID => $this->manifest['provider_id'],
       F_INPUT => array(
         F_IS_REGISTER => $is_register = sys_get_param('register'),
@@ -422,7 +424,6 @@ class auth_basic extends auth {
   }
 
 
-
   function password_encode_for_cookie($password) {
     global $config;
 
@@ -439,11 +440,16 @@ class auth_basic extends auth {
     // $this->login_cookie() - OK
 
     // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
-    sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    if(!empty($_COOKIE[SN_COOKIE_I])) {
+      sn_setcookie(SN_COOKIE, $_COOKIE[SN_COOKIE_I], SN_TIME_NOW + PERIOD_YEAR, SN_ROOT_RELATIVE);
+      sn_setcookie(SN_COOKIE_I, '', SN_TIME_NOW - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    } else {
+      sn_setcookie(SN_COOKIE, '', SN_TIME_NOW - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    }
   }
   function cookie_get_account($check_impersonator = false, $is_impersonator = false) {
     // $this->cookie_user_check()
-    $cookie = $_COOKIE[SN_COOKIE];
+    $cookie = $_COOKIE[$check_impersonator ? SN_COOKIE_I : SN_COOKIE];
 
     if(empty($cookie)) {
       // Тут делать ничего не надо. Куки нет - и суда нет
@@ -495,27 +501,52 @@ class auth_basic extends auth {
       // А ничего не делать. Здесь невалидная кука - может позже будет валидной
     }
   }
+  function impersonate_check_cookie($that) {
+    $this->data[F_IMPERSONATE_STATUS] = LOGIN_UNDEFINED;
+
+    if(empty($_COOKIE[SN_COOKIE_I])) {
+      return $this->data[F_IMPERSONATE_STATUS];
+    }
+
+    $this->cookie_get_account(true);
+    $this->db_user_id_by_provider_account_id($this->data[F_ACCOUNT_ID]);
+    $this->load_user_data();
+    if(empty($this->data[F_USER]['authlevel']) || $this->data[F_USER]['authlevel'] < 3) {
+      // Чистим куку имперсонатора
+      $this->cookie_clear();
+      // Чистим куку юзера
+      $this->cookie_clear();
+      // Переходим на страницу логина
+      sys_redirect(SN_ROOT_VIRTUAL);
+//      unset($this->data[F_ACCOUNT_ID]);
+//      unset($this->data[F_ACCOUNT]);
+//      unset($this->data[F_USER_ID]);
+//      unset($this->data[F_USER]);
+//      $this->data[F_LOGIN_STATUS] = LOGIN_UNDEFINED;
+//      sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+//      sn_setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    } else {
+      $this->data[F_IMPERSONATE_STATUS] = IMPERSONATOR_OK;
+    }
+
+    $that->data[F_IMPERSONATE_STATUS] = $this->data[F_IMPERSONATE_STATUS];
+    $that->data[F_IMPERSONATE_OPERATOR] = $this->data[F_USER];
+
+    return $this->data[F_IMPERSONATE_STATUS];
+  }
   function login_cookie() {
-    // TODO global $user_impersonator;
+    global $provider_impersonator;
 
-    // Проверяем куку имперсонатора на доступ
-//    if($_COOKIE[SN_COOKIE_I]) {
-//      $user_impersonator = $this->cookie_user_check($_COOKIE[SN_COOKIE_I], true);
-//      if(empty($user_impersonator['authlevel']) || $user_impersonator['authlevel'] < 3) {
-//        sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-//        sn_setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-//      }
-//    }
-
+    $provider_impersonator = new auth_basic();
+    $this->data[F_IMPERSONATE_STATUS] = $provider_impersonator->impersonate_check_cookie($this);
     // Пытаемся войти по куке
     if(empty($_COOKIE[SN_COOKIE])) {
       // Ошибка кукеса или не найден пользователь по кукесу
       $this->cookie_clear();
-//      if(!empty($user_impersonator)) {
-//        // Если это был корректный имперсонатор - просто выходим и редиректимся в админку
-//        // TODO - вылогиниваться из всего
-//        $this->logout();
-//      }
+      // Если это был корректный имперсонатор - просто выходим и редиректимся в админку
+      if(!empty($_COOKIE[SN_COOKIE])) {
+        sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
+      }
     } else {
       $this->cookie_get_account();
       /*
@@ -615,20 +646,3 @@ class auth_basic extends auth {
   }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -30,7 +30,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a4.15');
+define('SN_VERSION', '40a5.0');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -423,6 +423,8 @@ define('REGISTER_ERROR_EMAIL_EMPTY', 30);
 define('REGISTER_ERROR_EMAIL_WRONG', 31);
 define('REGISTER_ERROR_USERNAME_SHORT'     , 32);
 
+define('IMPERSONATOR_OK', 33);
+
 
 define('AUTH_LEVEL_ANONYMOUS', -10);
 define('AUTH_LEVEL_GUEST', -5);
@@ -463,6 +465,9 @@ define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
 
 define('F_PROVIDER_ID',   'F_PROVIDER_ID');
 define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
+
+define('F_IMPERSONATE_STATUS', 'F_IMPERSONATE_STATUS');
+define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
 
 define('F_LOGIN_STATUS',  'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');

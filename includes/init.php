@@ -17,6 +17,7 @@ define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
 
 version_compare(PHP_VERSION, '5.3.1', '==') ? die('FATAL ERROR: you using PHP 5.3.1. Due to bug in PHP 5.3.1 SuperNova is incompatible with this version. Please upgrade or downgrade your PHP. Read more <a href="https://bugs.php.net/bug.php?id=50394">here</a>.') : false;
+version_compare(PHP_VERSION, '5.3') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3') : false;
 
 // Бенчмарк
 register_shutdown_function(function() {
