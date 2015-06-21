@@ -30,7 +30,7 @@ define('SHOW_ADMIN', 1);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a5.1');
+define('SN_VERSION', '40a5.3');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -892,6 +892,11 @@ define('UNIT_AWARD_MEMORY', 2300); // Памятные знаки за суще�
 define('UNIT_AWARD_MEMORY_IMMORTAL', 2301);  // Бессмертный
 define('UNIT_AWARD_MEMORY_2015_WOMEN_DAY', 2302);  // Значек за подарок Женщине от Мужчины во время ивента 8 марта 2015 года
 define('UNIT_AWARD_MEMORY_BLITZ_R0', 2303); // Блиц-сервер, участник 0-го раунда
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2015_SIMPLE', 2304); // День Рождения СН
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2015_BRONZE', 2305); // День Рождения СН
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2015_SILVER', 2306); // День Рождения СН
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2015_GOLD', 2307); // День Рождения СН
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2015_PLATINUM', 2308); // День Рождения СН
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
