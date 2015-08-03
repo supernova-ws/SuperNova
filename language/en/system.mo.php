@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a4.13
+* @version 40a6.0
 *
 */
 
@@ -881,13 +881,16 @@ $a_lang_array = (array(
 
   'uni_planet_density_types' => array(
     PLANET_DENSITY_NONE => 'Never happens',
-    PLANET_DENSITY_ICE_WATER => 'Ice',
-    PLANET_DENSITY_SILICATE => 'Silicate',
-    PLANET_DENSITY_STONE => 'Stone',
+    PLANET_DENSITY_ICE_HYDROGEN => 'Hydrogen ice',
+    PLANET_DENSITY_ICE_METHANE => 'Methane ice',
+    PLANET_DENSITY_ICE_WATER => 'Water ice',
+    PLANET_DENSITY_CRYSTAL_RAW => 'Crystal',
+    PLANET_DENSITY_CRYSTAL_SILICATE => 'Silicate',
+    PLANET_DENSITY_CRYSTAL_STONE => 'Stone',
     PLANET_DENSITY_STANDARD => 'Standard',
     PLANET_DENSITY_METAL_ORE => 'Ore',
-    PLANET_DENSITY_METAL_PRILL => 'Metall',
-    PLANET_DENSITY_METAL_HEAVY => 'Heavy metall',
+    PLANET_DENSITY_METAL_PERIDOT => 'Peridot',
+    PLANET_DENSITY_METAL_RAW => 'Metal',
   ),
 
   'sys_planet_density' => 'Density',

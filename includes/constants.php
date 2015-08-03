@@ -28,9 +28,14 @@ define('HIDE_1ST_FROM_STATS', 0);
 define('HIDE_BUILDING_RECORDS', 0);
 define('SHOW_ADMIN', 1);
 
+define('UNIVERSE_RANDOM_PLANET_START', 16); // Позиция начала рандомизации планет
+define('UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE', 5); // Шаг тзменения минимальной температуры рандомной планеты
+
+define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
+
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a5.3');
+define('SN_VERSION', '40a6.0');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -860,15 +865,29 @@ define('UNIT_CAPTAIN', 1500);
 define('UNIT_PLANET_DENSITY', 1601);
 define('UNIT_PLANET_DENSITY_INDEX', 1602);
 define('UNIT_PLANET_DENSITY_RARITY', 1603);
+define('UNIT_PLANET_DENSITY_RICHNESS', 1604);
+define('UNIT_PLANET_DENSITY_MAX_SECTORS', 1605);
+define('UNIT_PLANET_DENSITY_PROBABILITY', 1606);
 
 define('PLANET_DENSITY_NONE', 0);
-define('PLANET_DENSITY_ICE_WATER', 1);
-define('PLANET_DENSITY_SILICATE', 2);
-define('PLANET_DENSITY_STONE', 3);
+define('PLANET_DENSITY_ICE_HYDROGEN', 8); // New
+define('PLANET_DENSITY_ICE_METHANE', 1); // Old ICE
+define('PLANET_DENSITY_ICE_WATER', 9); // New
+define('PLANET_DENSITY_CRYSTAL_RAW', 10); // New
+define('PLANET_DENSITY_CRYSTAL_SILICATE', 2);
+define('PLANET_DENSITY_CRYSTAL_STONE', 3);
 define('PLANET_DENSITY_STANDARD', 4);
 define('PLANET_DENSITY_METAL_ORE', 5);
-define('PLANET_DENSITY_METAL_PRILL', 6);
-define('PLANET_DENSITY_METAL_HEAVY', 7);
+define('PLANET_DENSITY_METAL_PERIDOT', 6);
+// define('PLANET_DENSITY_METAL_HEAVY', 7); // deprecated
+define('PLANET_DENSITY_METAL_RAW', 11); // New
+// MAXIMUM PLANET_DENSITY_METAL_RAW 11
+
+define('PLANET_DENSITY_RICHNESS_NORMAL', 0);
+define('PLANET_DENSITY_RICHNESS_AVERAGE', 1);
+define('PLANET_DENSITY_RICHNESS_GOOD', 2);
+define('PLANET_DENSITY_RICHNESS_PERFECT', 3);
+
 
 
 define('UNIT_AWARD', 2000); // Награды игрока 2.000-2.999

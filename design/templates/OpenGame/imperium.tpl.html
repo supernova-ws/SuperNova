@@ -63,14 +63,16 @@
       <div class="icons link icon-info_empire" go="info" unit_id="{D_UNIT_PLANET_DENSITY}"></div>
     </td>
     <!-- BEGIN planet -->
-      <!-- IF planet.DENSITY_CLASS == 4 -->
-        <!-- DEFINE $FIELD_COLOR = 'positive' -->
-      <!-- ELSEIF planet.DENSITY_CLASS == 3 || planet.DENSITY_CLASS == 5 -->
-        <!-- DEFINE $FIELD_COLOR = 'zero' -->
-      <!-- ELSEIF planet.DENSITY_CLASS == 2 || planet.DENSITY_CLASS == 6 -->
-        <!-- DEFINE $FIELD_COLOR = 'warning' -->
-      <!-- ELSE -->
+      <!-- IF planet.DENSITY_RICHNESS == PLANET_DENSITY_RICHNESS_NORMAL -->
+        <!-- DEFINE $FIELD_COLOR = '' -->
+      <!-- ELSEIF planet.DENSITY_RICHNESS == PLANET_DENSITY_RICHNESS_AVERAGE -->
         <!-- DEFINE $FIELD_COLOR = 'negative' -->
+      <!-- ELSEIF planet.DENSITY_RICHNESS == PLANET_DENSITY_RICHNESS_GOOD -->
+        <!-- DEFINE $FIELD_COLOR = 'warning' -->
+      <!-- ELSEIF planet.DENSITY_RICHNESS == PLANET_DENSITY_RICHNESS_PERFECT -->
+        <!-- DEFINE $FIELD_COLOR = 'zero' -->
+      <!-- ELSE -->
+        <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
 
       <td class="{$FIELD_COLOR}">

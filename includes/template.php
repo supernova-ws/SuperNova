@@ -699,13 +699,16 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
   $density_base_cost = $density_base_cost[RES_DARK_MATTER];
 
   foreach($density_price_chart as $density_price_index => &$density_price_data) {
-    $density_number_style = pretty_number($density_cost = $density_base_cost * $density_price_data, true, $user_dark_matter, false, false);
+    //$density_number_style = pretty_number($density_cost = $density_base_cost * $density_price_data, true, $user_dark_matter, false, false);
+    // $density_cost = ceil($density_base_cost * $density_price_data);
+    $density_cost = $density_price_data;
+    $density_number_style = pretty_number($density_cost, true, $user_dark_matter, false, false);
 
     $density_price_data = array(
       'COST' => $density_cost,
       'COST_TEXT' => $density_number_style['text'],
       'COST_TEXT_CLASS' => $density_number_style['class'],
-      'REST' => $user_dark_matter - ceil($density_base_cost * $density_price_data),
+      'REST' => $user_dark_matter - $density_cost,
       'ID' => $density_price_index,
       'TEXT' => $lang['uni_planet_density_types'][$density_price_index],
     );

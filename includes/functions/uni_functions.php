@@ -1,306 +1,119 @@
 <?php
 
 /**
- * uni_create_planet
+ * @param int        $Galaxy
+ * @param int        $System
+ * @param int        $Position
+ * @param int        $PlanetOwnerID
+ * @param string     $planet_name_unsafe
+ * @param bool|false $HomeWorld
+ * @param array      $options
  *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
+ * @return bool
  */
-
-function PlanetSizeRandomiser ($Position, $HomeWorld = false) {
-  global $config;
-
-  //$ClassicBase           = 163;
-  if(!$HomeWorld)
-  {
-    if(mt_rand(0,100) >= 60){
-      $Average          = array ( 64, 68, 73,173,167,155,144,150,159,101, 98,105,110, 84,101);
-      $SixtyMin          = array ( 39, 53, 34, 83, 84, 82,116,123,129, 62, 81, 85, 60, 42, 54);
-      $SixtyMax          = array ( 89, 83, 82,306,232,328,173,177,203,122,116,129,191,172,150);
-
-      $FrmAvgMin          = $SixtyMin[$Position - 1] - $Average[$Position - 1];
-      $FrmAvgMax          = $SixtyMax[$Position - 1] - $Average[$Position - 1];
-
-      $DifInDeveation      = $FrmAvgMin + $FrmAvgMax;
-      // $DifInDeveation = $SixtyMin[$Position - 1] + $SixtyMax[$Position - 1] - 2 * $Average[$Position - 1];
-      $BaseIncDeveatn      = $Average[$Position - 1] - ($DifInDeveation / 2);
-      // $BaseIncDeveatn = 2 * $Average[$Position - 1] - ($SixtyMin[$Position - 1] + $SixtyMax[$Position - 1]) / 2
-
-      $PlanetFieldsLow  = mt_rand($SixtyMin[$Position - 1], $BaseIncDeveatn);
-      $PlanetFieldsUpp  = mt_rand($BaseIncDeveatn, $SixtyMax[$Position - 1]);
-      $PlanetFields      = ($PlanetFieldsLow + $PlanetFieldsUpp) / 2;
-
-    }else{
-      $MinSize          =  30;
-      $MaxSize          = 330;
-      $PlanetFields      = mt_rand($MinSize, $MaxSize);
-    }
-  }
-  else
-  {
-    $PlanetFields     = $config->initial_fields;
-  }
-//  $SettingSize          = $config->initial_fields;
-//  $PlanetFields          = ($PlanetFields / $ClassicBase) * $config->initial_fields;
-  $PlanetFields          = floor($PlanetFields);
-
-  $PlanetSize           = ($PlanetFields ^ (14 / 1.5)) * 75;
-
-  $return['diameter']   = $PlanetSize;
-  $return['field_max']  = $PlanetFields;
-  return $return;
-}
-
 function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = array()) {
+  $Position = intval($Position);
+
+  if(!isset($options['skip_check']) && db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
+    return false;
+  }
+
   global $lang, $config;
 
-/*
- Типы планет по плотности (г/см^3) - добыча при средней температуре:
-1. <2 - Лёд (метановый, водный, водородный итд) + Газ (местами водород). Металл 0 Кристалл -- Дейтерий++
-2. 2-3.5 Силикат (кремний) + Водяной лёд + Газ (водород, метан). Метал --. Кристалл норма. Дейтерий +
-3. 3.5-5 - Камень. Металл - Кристалл+ Дейтерий норма
-4. 5-6 - Руда. Металл норма. Кристалл норма. Дейтерий норма
-5. 6-7 - Металл. Металл +. Кристалл -. Дейтерий -
-6. >7 - тяжелый металл. Металл ++ Кристалл -- Дейтерий --
+  $planet_generator = sn_get_groups('planet_generator');
+  $planet_images = sn_get_groups('planet_images');
 
-sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
-
-1-2-3 0..100
-4-5-6 -25..75
-7-8-9 -50..50
-10-11-12 -75..25
-13-14-15 -100..10
-16+ -120..10
-
-
-Типы планеты по средней температуре:
-1. Замороженная - меньше -183 градусов Цельсия. Метановый лёд
-2. Холодная - от -183 до -161 градусов. Жидкий метан, водный лёд
-3. Ледяная - от -161 до -20. Газообразный метан, водный лёд
-4. Земного типа - от -20 до +40 градусов
-5. Горячая - от +40 до +80 градусов
-6. Инферно - выше +80 градусов
-
-
- */
-
-
-  /*
-  $density = array(0,0,0,0,0,0,0,);
-
-  for($i = 0;$i<10000;$i++)
-  {
-    $q = sn_rand_gauss_range(850, 9250, true, 3);
-    if($q < 2000)
-    {
-      $density[0]++;
+  $position_data = $planet_generator[$Position >= UNIVERSE_RANDOM_PLANET_START || $Position < 1 ? UNIVERSE_RANDOM_PLANET_START : $Position];
+  if($HomeWorld) {
+    $position_data = $planet_generator[0];
+  } else {
+    if($Position >= UNIVERSE_RANDOM_PLANET_START) {
+      // Корректируем температуру для планеты-странника
+      $position_data['t_max_max'] -= UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE * ($Position - UNIVERSE_RANDOM_PLANET_START);
     }
-    elseif($q < 3250)
-    {
-      $density[1]++;
-    }
-    elseif($q < 4500)
-    {
-      $density[2]++;
-    }
-    elseif($q < 5750)
-    {
-      $density[3]++;
-    }
-    elseif($q < 7000)
-    {
-      $density[4]++;
-    }
-    elseif($q < 8250)
-    {
-      $density[5]++;
-    }
-    else
-    {
-      $density[6]++;
-    }
-  //  pdump($q);
   }
 
-  foreach($density as $key => $value)
-  {
-    echo $key,' ', $value, ' ',  str_repeat('*', $value/30), '<br />';
-  0. 0.75-2 - Лёд (метановый, водный, водородный итд) + Газ (местами водород).    Металл  25%  Кристалл  25%  Дейтерий 175%  225%+
-  1. 2-3.25 Силикат (кремний) + Водяной лёд + Газ (водород, метан).               Метал   25%  Кристалл 150%  Дейтерий  75%  250%+
-  2. 3.25-4.5 - Камень.                                                           Металл  50%  Кристалл 125%  Дейтерий 100%  275%+
-  3. 4.5-5.75 - Стандарт                                                          Металл 100%. Кристалл 100%  Дейтерий 100%  300%+
-  4. 5.25-6.50 - Руда                                                             Металл 125%  Кристалл  50%  Дейтерий 100%  275%+
-  5  6.50-7.75   Металл                                                           Металл 150%  Кристалл  25%  Дейтерий  75%  250%+
-  6. >7.75-9 - тяжелый металл.                                                    Металл 175%  Кристалл  25%  Дейтерий  25%  225%+
+  $planet_image = $position_data['planet_images'][mt_rand(0, count($position_data['planet_images']) - 1)];
+  $planet_image .= 'planet' . $planet_images[$planet_image][mt_rand(0, count($planet_images[$planet_image]) - 1)];
 
-  Лёд
-  Силикат
-  Камень
-  Стандарт
-  Руда
-  Металл
-  Тяжмет
+  $t_max = sn_rand_gauss_range($position_data['t_max_min'], $position_data['t_max_max'], true, 1.3, true);
+  $t_min = $t_max - sn_rand_gauss_range($position_data['t_delta_min'], $position_data['t_delta_max'], true, 1.3, true);
+
+  $planet_sectors = sn_rand_gauss_range($position_data['size_min'], $position_data['size_max'], true, 1.7, true);
+  $planet_diameter = round(pow($planet_sectors, 2) * 1000);
 
 
+  $density_list = sn_get_groups('planet_density');
+  $density_min = reset($density_list);
+  unset($density_list[PLANET_DENSITY_NONE]);
+
+  $possible_cores = array();
+  $probability = 0;
+  foreach($density_list as $possible_core_id => $core_data) {
+    if(!$core_data[UNIT_PLANET_DENSITY_RARITY]) {
+      continue;
+    }
+
+    if(in_array($possible_core_id, $position_data['core_types']) && $planet_sectors < $density_list[$possible_core_id][UNIT_PLANET_DENSITY_MAX_SECTORS]) {
+      // Фильтруем типы ядер, которые не подходят по размеру планеты
+      $probability += $density_list[$possible_core_id][UNIT_PLANET_DENSITY_RARITY];
+      $possible_cores[$possible_core_id] = array(
+        UNIT_PLANET_DENSITY_RARITY => $probability,
+        UNIT_PLANET_DENSITY => mt_rand($density_min[UNIT_PLANET_DENSITY], $density_list[$possible_core_id][UNIT_PLANET_DENSITY] - 1),
+      );
+    }
+    $density_min = $density_list[$possible_core_id];
   }
 
-  /*
-  */
-  /*
-  $planet_density = array(
-    2000 => array(RES_METAL => 0.25, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 1.75),
-    3250 => array(RES_METAL => 0.25, RES_CRYSTAL => 1.50, RES_DEUTERIUM => 0.75),
-    4500 => array(RES_METAL => 0.50, RES_CRYSTAL => 1.25, RES_DEUTERIUM => 1.00),
-    5750 => array(RES_METAL => 1.00, RES_CRYSTAL => 1.00, RES_DEUTERIUM => 1.00),
-    7000 => array(RES_METAL => 1.25, RES_CRYSTAL => 0.50, RES_DEUTERIUM => 1.00),
-    8250 => array(RES_METAL => 1.50, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 0.75),
-    9250 => array(RES_METAL => 1.75, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 0.25),
-  );
-  $planet_density = array(
-     850 => array(RES_METAL => 0.10, RES_CRYSTAL => 0.10, RES_DEUTERIUM => 1.30),
-    2000 => array(RES_METAL => 0.30, RES_CRYSTAL => 0.20, RES_DEUTERIUM => 1.20),  // Лёд
-    3250 => array(RES_METAL => 0.40, RES_CRYSTAL => 1.40, RES_DEUTERIUM => 0.90),  // Силикат
-    4500 => array(RES_METAL => 0.80, RES_CRYSTAL => 1.25, RES_DEUTERIUM => 0.80),  // Камень
-    5750 => array(RES_METAL => 1.00, RES_CRYSTAL => 1.00, RES_DEUTERIUM => 1.00),  // Норма
-    7000 => array(RES_METAL => 2.00, RES_CRYSTAL => 0.75, RES_DEUTERIUM => 0.75),  // Руда
-    8250 => array(RES_METAL => 3.00, RES_CRYSTAL => 0.50, RES_DEUTERIUM => 0.50),  // Металл
-    9250 => array(RES_METAL => 4.00, RES_CRYSTAL => 0.25, RES_DEUTERIUM => 0.25),  // Тяжмет
-  );
-  */
-  $planet_density = sn_get_groups('planet_density');
-  $density_min = reset($planet_density);
-  $density_min = $density_min[UNIT_PLANET_DENSITY];
-  $density_max = end($planet_density);
-  $density_max = $density_max[UNIT_PLANET_DENSITY];
-  $density = sn_rand_gauss_range($density_min, $density_max, true, 3);
+  $random = mt_rand(1, $probability);
+  foreach($possible_cores as $core_type => $core_info) {
+    if($random <= $core_info[UNIT_PLANET_DENSITY_RARITY]) break;
+  }
 
-    // Avant tout, on verifie s'il existe deja une planete a cet endroit
-  $PlanetExist = db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`');
+  $density_info_resources = &$density_list[$core_type][UNIT_RESOURCES];
 
-  // Si $PlanetExist est autre chose que false ... c'est qu'il y a quelque chose la bas ...
-  // C'est donc aussi que je ne peux pas m'y poser !!
-  if (!$PlanetExist) {
-    $planet                      = PlanetSizeRandomiser ($Position, $HomeWorld);
-    $planet['diameter']          = ($planet['field_max'] ^ (14 / 1.5)) * 75 ;
-    $planet['metal']             = BUILD_METAL;
-    $planet['crystal']           = BUILD_CRISTAL;
-    $planet['deuterium']         = BUILD_DEUTERIUM;
-    $planet['metal_max']         = BASE_STORAGE_SIZE;
-    $planet['crystal_max']       = BASE_STORAGE_SIZE;
-    $planet['deuterium_max']     = BASE_STORAGE_SIZE;
+  $OwnerName = db_user_by_id($PlanetOwnerID, false, 'username');
+  $planet_name_unsafe = $OwnerName['username'] . ' ' . ($planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname']);
 
-    // Posistion  1 -  3: 80% entre  40 et  70 Cases (  55+ / -15 )
-    // Posistion  4 -  6: 80% entre 120 et 310 Cases ( 215+ / -95 )
-    // Posistion  7 -  9: 80% entre 105 et 195 Cases ( 150+ / -45 )
-    // Posistion 10 - 12: 80% entre  75 et 125 Cases ( 100+ / -25 )
-    // Posistion 13 - 15: 80% entre  60 et 190 Cases ( 125+ / -65 )
+  $planet['name'] = db_escape(strip_tags(trim($planet_name_unsafe)));
+  $planet['id_owner']    = $PlanetOwnerID;
+  $planet['last_update'] = SN_TIME_NOW;
+  $planet['image'] = $planet_image;
 
-    $planet['galaxy'] = $Galaxy;
-    $planet['system'] = $System;
-    $planet['planet'] = $Position;
+  $planet['galaxy'] = $Galaxy;
+  $planet['system'] = $System;
+  $planet['planet'] = $planet['position_original'] = $Position;
+  $planet['planet_type'] = PT_PLANET;
 
-    if ($Position == 1 || $Position == 2 || $Position == 3) {
-      $PlanetType         = array('trocken');
-      $PlanetClass        = array('planet');
-//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
-      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10');
-      $planet['temp_min'] = rand(0, 100);
-      $planet['temp_max'] = $planet['temp_min'] + 40;
-    } elseif ($Position == 4 || $Position == 5 || $Position == 6) {
-      $PlanetType         = array('dschjungel');
-      $PlanetClass        = array('planet');
-//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
-      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10');
-      $planet['temp_min'] = rand(-25, 75);
-      $planet['temp_max'] = $planet['temp_min'] + 40;
-    } elseif ($Position == 7 || $Position == 8 || $Position == 9) {
-      $PlanetType         = array('normaltemp');
-      $PlanetClass        = array('planet');
-//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
-      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07');
-      $planet['temp_min'] = rand(-50, 50);
-      $planet['temp_max'] = $planet['temp_min'] + 40;
-    } elseif ($Position == 10 || $Position == 11 || $Position == 12) {
-      $PlanetType         = array('wasser');
-      $PlanetClass        = array('planet');
-//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
-      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09');
-      $planet['temp_min'] = rand(-75, 25);
-      $planet['temp_max'] = $planet['temp_min'] + 40;
-    } elseif ($Position == 13 || $Position == 14 || $Position == 15) {
-      $PlanetType         = array('eis');
-      $PlanetClass        = array('planet');
-//      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20');
-      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10');
-      $planet['temp_min'] = rand(-100, 10);
-      $planet['temp_max'] = $planet['temp_min'] + 40;
-    } else {
-      $PlanetType         = array('dschjungel', 'gas', 'normaltemp', 'trocken', 'wasser', 'wuesten', 'eis');
-      $PlanetClass        = array('planet');
-      $PlanetDesign       = array('01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '00',);
-      $planet['temp_min'] = rand(-140, 10);
-      $planet['temp_max'] = $planet['temp_min'] + 40;
-    }
+  $planet['diameter'] = $planet_diameter;
+  $planet['field_max'] = $planet['field_max_original'] = $planet_sectors;
+  $planet['density'] = $core_info[UNIT_PLANET_DENSITY];
+  $planet['density_index'] = $core_type;
+  $planet['temp_min'] = $planet['temp_min_original'] = $t_min;
+  $planet['temp_max'] = $planet['temp_max_original'] = $t_max;
 
-    if($HomeWorld)
-    {
-      $planet['temp_min'] = 0;
-      $planet['temp_max'] = $planet['temp_min'] + 40;
-      $planet['density'] = 5500;
-    }
-    else
-    {
-      $planet['density'] = $density;
-    }
+  $planet['metal']             = BUILD_METAL;
+  $planet['crystal']           = BUILD_CRISTAL;
+  $planet['deuterium']         = BUILD_DEUTERIUM;
+  $planet['metal_max']         = BASE_STORAGE_SIZE;
+  $planet['crystal_max']       = BASE_STORAGE_SIZE;
+  $planet['deuterium_max']     = BASE_STORAGE_SIZE;
+  $planet['metal_perhour']     = $config->metal_basic_income * $density_info_resources[RES_METAL];
+  $planet['crystal_perhour']   = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
+  $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
-    foreach($planet_density as $planet['density_index'] => $value)
-    {
-      if($planet['density'] < $value[UNIT_PLANET_DENSITY]) break;
-    }
-
-    $density_info_resources = &$planet_density[$planet['density_index']][UNIT_RESOURCES];
-
-    $planet['metal_perhour']     = $config->metal_basic_income * $density_info_resources[RES_METAL];
-    $planet['crystal_perhour']   = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
-    $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
-
-    if(isset($options['image']) && $options['image']) {
-      $planet['image'] = $options['image'];
-    } else {
-      $planet['image']       = $PlanetType[ rand( 0, count( $PlanetType ) -1 ) ];
-      $planet['image']      .= $PlanetClass[ rand( 0, count( $PlanetClass ) - 1 ) ];
-      $planet['image']      .= $PlanetDesign[ rand( 0, count( $PlanetDesign ) - 1 ) ];
-    }
-    $planet['planet_type'] = 1;
-    $planet['id_owner']    = $PlanetOwnerID;
-    $planet['last_update'] = time();
-
-    $planet['name']        = $planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname'];
-    if(!$HomeWorld)
-    {
-      $OwnerName = db_user_by_id($PlanetOwnerID, false, 'username');
-      $planet['name'] = "{$planet['name']} {$OwnerName['username']}";
-    }
-    $planet['name'] = db_escape(strip_tags(trim($planet['name'])));
-
-    $RetValue = classSupernova::db_ins_record(LOC_PLANET,
-      "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
-      `galaxy` = '{$planet['galaxy']}', `system` = '{$planet['system']}', `planet` = '{$planet['planet']}', `planet_type` = '{$planet['planet_type']}',
-      `diameter` = '{$planet['diameter']}', `field_max` = '{$planet['field_max']}', `density` = '{$planet['density']}', `density_index` = '{$planet['density_index']}',
-      `temp_min` = '{$planet['temp_min']}', `temp_max` = '{$planet['temp_max']}',
+  $RetValue = classSupernova::db_ins_record(LOC_PLANET,
+    "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
+      `galaxy` = '{$planet['galaxy']}', `system` = '{$planet['system']}', `planet` = '{$planet['planet']}', `planet_type` = '{$planet['planet_type']}', `position_original` = '{$planet['position_original']}',
+      `diameter` = '{$planet['diameter']}', `field_max` = '{$planet['field_max']}', `field_max_original` = '{$planet['field_max_original']}',
+      `density` = '{$planet['density']}', `density_index` = '{$planet['density_index']}',
+      `temp_min` = '{$planet['temp_min']}', `temp_max` = '{$planet['temp_max']}', `temp_min_original` = '{$planet['temp_min_original']}', `temp_max_original` = '{$planet['temp_max_original']}',
       `metal` = '{$planet['metal']}', `metal_perhour` = '{$planet['metal_perhour']}', `metal_max` = '{$planet['metal_max']}',
       `crystal` = '{$planet['crystal']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `crystal_max` = '{$planet['crystal_max']}',
       `deuterium` = '{$planet['deuterium']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', `deuterium_max` = '{$planet['deuterium_max']}'"
-    );
-    // $RetValue = db_insert_id();
-    $RetValue = is_array($RetValue) ? $RetValue['id'] : false;
-  }
-  else
-  {
-    $RetValue = false;
-  }
+  );
 
-  return $RetValue;
+  return is_array($RetValue) ? $RetValue['id'] : false; // OK
 }
 
 /**

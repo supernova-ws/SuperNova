@@ -996,6 +996,29 @@ switch($new_version) {
     upd_alter_table('users', "DROP COLUMN `user_time_utc_offset`", !empty($update_tables['users']['user_time_utc_offset']));
     upd_alter_table('users', "DROP COLUMN `user_time_diff_forced`", !empty($update_tables['users']['user_time_diff_forced']));
 
+    // 2015-08-03 15:05:26 40a6.0
+
+    if(empty($update_tables['planets']['position_original'])) {
+      upd_alter_table('planets', array(
+        "ADD COLUMN `position_original` smallint NOT NULL DEFAULT 0",
+        "ADD COLUMN `field_max_original` smallint NOT NULL DEFAULT 0",
+        "ADD COLUMN `temp_min_original` smallint NOT NULL DEFAULT 0",
+        "ADD COLUMN `temp_max_original` smallint NOT NULL DEFAULT 0",
+      ), empty($update_tables['planets']['position_original']));
+
+      // Для того, что бы не поменялась выработка на старых планетах
+      upd_do_query('UPDATE {{planets}} SET `temp_min` = `temp_max`');
+
+      // Оригинальные значения для статистики
+      upd_do_query('UPDATE {{planets}} SET `position_original` = `planet`, `field_max_original` = `field_max`, `temp_min_original` = `temp_min`, `temp_max_original` = `temp_max`;');
+
+      // Миграция тяжмета в оливин
+      upd_do_query('UPDATE {{planets}} SET `density_index` = ' . PLANET_DENSITY_METAL_PERIDOT . ' WHERE `density_index` = 7'); // deprecated define('PLANET_DENSITY_METAL_HEAVY', 7);
+
+      // Добавляем планету-странника
+      upd_check_key('game_maxPlanet', 16, $config->game_maxPlanet == 15);
+    }
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

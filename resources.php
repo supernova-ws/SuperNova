@@ -91,8 +91,8 @@ if(is_array($production))
 }
 
 // -------------------------------------------------------------------------------------------------------
-$BuildTemp                   = $planetrow[ 'temp_max' ];
-$BuildEnergyTech             = $user['energy_tech'];
+// $BuildTemp                   = $planetrow[ 'temp_max' ];
+// $BuildEnergyTech             = $user['energy_tech'];
 
 for ($Option = 10; $Option >= 0; $Option--)
 {
@@ -143,7 +143,7 @@ foreach($sn_group_factories as $unit_id)
 
 $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
 $planet_density_index = $planetrow['density_index'];
-$density_price_chart = planet_density_price_chart($planet_density_index);
+$density_price_chart = planet_density_price_chart($planetrow);
 tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
 
 $template->assign_block_vars('production', array(

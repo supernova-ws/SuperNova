@@ -30,11 +30,26 @@ function sn_rand_gauss($mu = 0, $sigma = 1, $strict = false)
 }
 
 // Функция возвращает случайное нормально распределенное целое число из указанного промежутка
-function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4)
-{
-  $random = sn_rand_gauss(($range_start + $range_end) / 2, ($range_end - $range_start) / $strict / 2, $strict);
-  $round_emul = pow(10, $round === true ? 0 : $round);
-  return $round ? round($random * $round_emul) / $round_emul : $random;
+/**
+ * @param float      $range_start - Начало диапазона
+ * @param float      $range_end - Конец диапазона
+ * @param bool|int  $round - До скольки знаков округлять результат. False - не округлять, True - округлять до целого, 1 - округлять до десятков, 2 - до сотен итд
+ * @param int        $strict - В сколько сигм надо уложить результат
+ * @param bool|false $cut_extreme - надо ли обрезать крайние значения. Например, при $strict = 2 их слишком много
+ *
+ * @return float|int
+ */
+function sn_rand_gauss_range($range_start, $range_end, $round = true, $strict = 4, $cut_extreme = false)  {
+  if($cut_extreme) {
+    $range_start--;
+    $range_end++;
+  }
+  do {
+    $random = sn_rand_gauss(($range_start + $range_end) / 2, ($range_end - $range_start) / $strict / 2, $strict);
+    $round_emul = pow(10, $round === true ? 0 : $round);
+    $result = $round ? round($random * $round_emul) / $round_emul : $random;
+  } while ($cut_extreme && ($result == $range_start || $result == $range_end));
+  return $result;
 }
 
 function median()

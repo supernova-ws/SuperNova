@@ -34,6 +34,51 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 
+/*
+//$density_min = 850;
+//$density_max = 8250;
+$planet_density = sn_get_groups('planet_density');
+$density_min = reset($planet_density);
+$density_min = $density_min[UNIT_PLANET_DENSITY];
+$density_max = end($planet_density);
+$density_max = $density_max[UNIT_PLANET_DENSITY];
+
+for($i=0;$i<10000;$i++) {
+  $density = sn_rand_gauss_range(50, 150, true, 1.7, true);
+
+  $a_planet = uni_create_planet(1, 1, 3, 2, $planet_name_unsafe = '', $HomeWorld = false, $options = array('skip_check' => true));
+  $test[$a_planet['density_index']]++;
+}
+ksort($test);
+// pdump($test);
+
+$columns = 220;
+
+$test_count = array_sum($test);
+// $normal = $test_count / $test[4];
+print('<table>');
+foreach($test as $key => &$value) {
+//  $value = $value / $test_count * 1000;
+  print('<tr>');
+  print('<td>');
+  print($key);
+  print('</td>');
+  print('<td>');
+  print(($value / $test_count * 100) . '%');
+  print('</td>');
+
+  print('<td>');
+  print(str_repeat('*', $value / $test_count * 1000 / $columns * 100));
+  print('</td>');
+  print('</tr>');
+
+}
+print('</table>');
+
+//pdump($test);
+die();
+*/
+
 $result = array();
 
 switch($mode = sys_get_param_str('mode')) {
@@ -213,7 +258,7 @@ switch($mode = sys_get_param_str('mode')) {
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
     $planet_density_index = $planetrow['density_index'];
-    $density_price_chart = planet_density_price_chart($planet_density_index);
+    $density_price_chart = planet_density_price_chart($planetrow);
     tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
 
     $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
@@ -270,7 +315,7 @@ switch($mode = sys_get_param_str('mode')) {
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
 
     $planet_density_index = $planetrow['density_index'];
-    $density_price_chart = planet_density_price_chart($planet_density_index);
+    $density_price_chart = planet_density_price_chart($planetrow);
     tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
 
     rpg_level_up($user, RPG_STRUCTURE);

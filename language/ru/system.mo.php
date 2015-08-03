@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a4.13#
+* @version #40a6.0#
 *
 */
 
@@ -886,13 +886,16 @@ $a_lang_array = (array(
 
   'uni_planet_density_types' => array(
     PLANET_DENSITY_NONE => 'Не бывает',
-    PLANET_DENSITY_ICE_WATER => 'Лёд',
-    PLANET_DENSITY_SILICATE => 'Силикат',
-    PLANET_DENSITY_STONE => 'Камень',
+    PLANET_DENSITY_ICE_HYDROGEN => 'Водородный лёд',
+    PLANET_DENSITY_ICE_METHANE => 'Метановый лёд',
+    PLANET_DENSITY_ICE_WATER => 'Водный лёд',
+    PLANET_DENSITY_CRYSTAL_RAW => 'Кристалл',
+    PLANET_DENSITY_CRYSTAL_SILICATE => 'Силикат',
+    PLANET_DENSITY_CRYSTAL_STONE => 'Камень',
     PLANET_DENSITY_STANDARD => 'Стандарт',
     PLANET_DENSITY_METAL_ORE => 'Руда',
-    PLANET_DENSITY_METAL_PRILL => 'Металл',
-    PLANET_DENSITY_METAL_HEAVY => 'Тяжелый металл',
+    PLANET_DENSITY_METAL_PERIDOT => 'Оливин',
+    PLANET_DENSITY_METAL_RAW => 'Металл',
   ),
 
   'sys_planet_density' => 'Плотность',

@@ -162,15 +162,15 @@ display($template);
 //
 function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
 {
-  global $config;
+//  global $config;
 
-  $unit_data = get_unit_param($BuildID);
+//  $unit_data = get_unit_param($BuildID);
 
   $config_resource_multiplier = game_resource_multiplier();
 
-  $BuildLevelFactor = $CurrentPlanet[pname_factory_production_field_name($BuildID)];
-  $BuildTemp = $CurrentPlanet['temp_max'];
-  $BuildEnergyTech = $CurrentUser['energy_tech'];
+//  $BuildLevelFactor = $CurrentPlanet[pname_factory_production_field_name($BuildID)];
+//  $BuildTemp = $CurrentPlanet['temp_max'];
+//  $BuildEnergyTech = $CurrentUser['energy_tech'];
   $CurrentBuildtLvl = mrc_get_level($CurrentUser, $CurrentPlanet, $BuildID);
 
   $BuildLevel = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;

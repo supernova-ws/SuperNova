@@ -1255,31 +1255,21 @@ function sn_sys_array_cumulative_sum(&$array)
   }
 }
 
-function planet_density_price_chart($planet_density_index) {
+function planet_density_price_chart($planet_row) {
   $sn_data_density = sn_get_groups('planet_density');
-  $density_price_chart = array(0 => array(), 1 => array());
-  $reverse_flag = false;
+  $density_price_chart = array();
+
   foreach($sn_data_density as $density_id => $density_data) {
-    if($density_id == PLANET_DENSITY_NONE) {
-      continue;
-    } elseif($density_id == $planet_density_index) {
-      $reverse_flag = true;
-      //continue;
-    } elseif($reverse_flag) {
-      $density_price_chart[1][$density_id] = $density_data[UNIT_PLANET_DENSITY_RARITY];
-    } else {
-      $density_price_chart[0][$density_id] = $density_data[UNIT_PLANET_DENSITY_RARITY];
-    }
+    // Отсекаем записи с RARITY = 0 - служебные записи и супер-ядра
+    $density_data[UNIT_PLANET_DENSITY_RARITY] ? $density_price_chart[$density_id] = $density_data[UNIT_PLANET_DENSITY_RARITY] : false;
   }
-//  pdump($density_price_chart);
+  unset($density_price_chart[PLANET_DENSITY_NONE]);
 
-  $density_price_chart[0] = array_reverse($density_price_chart[0], true);
-  sn_sys_array_cumulative_sum($density_price_chart[0]);
-  $density_price_chart[0] = array_reverse($density_price_chart[0], true);
+  $total_rarity = array_sum($density_price_chart);
 
-  sn_sys_array_cumulative_sum($density_price_chart[1]);
-
-  $density_price_chart = $density_price_chart[0] + array($planet_density_index => 0) + $density_price_chart[1];
+  foreach($density_price_chart as &$density_data) {
+    $density_data = ceil($total_rarity / $density_data * $planet_row['field_max'] * PLANET_DENSITY_TO_DARK_MATTER_RATE);
+  }
 
   return $density_price_chart;
 }
@@ -1309,15 +1299,16 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
 
     $planet_density_index = $planetrow['density_index'];
 
-    $density_price_chart = planet_density_price_chart($planet_density_index);
+    $density_price_chart = planet_density_price_chart($planetrow);
     if(!isset($density_price_chart[$new_density_index])) {
       // Hack attempt
       throw new exception($lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
     }
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
-    $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
-    $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
+    // $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
+    // $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
+    $transmute_cost = $density_price_chart[$new_density_index];
     if($user_dark_matter < $transmute_cost) {
       throw new exception($lang['ov_core_err_no_dark_matter'], ERR_ERROR);
     }

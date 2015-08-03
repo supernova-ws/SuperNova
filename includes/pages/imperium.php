@@ -21,6 +21,7 @@ function sn_imperium_view($template = null)
   $ques = array();
 
   $sn_group_factories = sn_get_groups('factories');
+  $planet_density = sn_get_groups('planet_density');
 
   if(sys_get_param('save_production'))
   {
@@ -107,6 +108,7 @@ function sn_imperium_view($template = null)
       'TEMP_MAX'          => $planet['temp_max'],
 
       'DENSITY_CLASS'     => $planet['density_index'],
+      'DENSITY_RICHNESS'  => $planet_density[$planet['density_index']][UNIT_PLANET_DENSITY_RICHNESS],
       'DENSITY_CLASS_TEXT'=> $lang['uni_planet_density_types'][$planet['density_index']],
     )));
 
@@ -262,6 +264,11 @@ function sn_imperium_view($template = null)
 
     'EXPEDITIONS_CURRENT' => get_player_current_expeditions($user),
     'EXPEDITIONS_MAX' => get_player_max_expeditons($user),
+
+    'PLANET_DENSITY_RICHNESS_NORMAL' => PLANET_DENSITY_RICHNESS_NORMAL,
+    'PLANET_DENSITY_RICHNESS_AVERAGE' => PLANET_DENSITY_RICHNESS_AVERAGE,
+    'PLANET_DENSITY_RICHNESS_GOOD' => PLANET_DENSITY_RICHNESS_GOOD,
+    'PLANET_DENSITY_RICHNESS_PERFECT' => PLANET_DENSITY_RICHNESS_PERFECT,
   ));
   //$template->assign_recursive($template_result);
 
