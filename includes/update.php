@@ -1019,6 +1019,10 @@ switch($new_version) {
       upd_check_key('game_maxPlanet', 16, $config->game_maxPlanet == 15);
     }
 
+    // 2015-08-04 05:28:26 40a6.2
+
+    upd_check_key('db_manual_lock_enabled', 1, empty($config->db_manual_lock_enabled));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

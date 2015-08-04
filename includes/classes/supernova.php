@@ -267,12 +267,20 @@ class classSupernova {
     return static::$db_in_transaction;
   }
   public static function db_transaction_start($level = '') {
+    global $config;
+
     static::db_transaction_check(null);
 
-    if($level)
-      doquery('SET TRANSACTION ISOLATION LEVEL ' . $level);
+    $level ? doquery('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
+
     static::$transaction_id++;
     doquery('START TRANSACTION');
+
+    if($config->db_manual_lock_enabled) {
+      $config->db_loadItem('var_db_manually_locked');
+      $config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
+    }
+
     static::$db_in_transaction = true;
     static::$locator = array();
     static::$queries = array();
