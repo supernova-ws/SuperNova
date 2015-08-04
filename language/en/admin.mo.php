@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a6.3
+* @version 40a6.4
 *
 */
 
@@ -560,6 +560,6 @@ $a_lang_array = (array(
 
   'adm_game_status' => 'Current game status',
 
-  'adm_log_delete_update_info' => 'Delete info about updates',
+  'adm_log_delete_update_info' => 'Delete info about maintenance and updates of stats, DB and engine',
 
 ));

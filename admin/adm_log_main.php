@@ -25,7 +25,7 @@ if($delete = sys_get_param_id('delete'))
 }
 elseif(sys_get_param_str('delete_update_info'))
 {
-  doquery("DELETE FROM `{{logs}}` WHERE `log_code` in (103, 191);");
+  doquery("DELETE FROM `{{logs}}` WHERE `log_code` in (103, 180, 191);");
 }
 elseif(sys_get_param_str('deleteall') == 'yes')
 {

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a6.3
+* @version 40a6.4
 *
 */
 
@@ -581,6 +581,6 @@ $a_lang_array = (array(
 
   'adm_game_status' => 'Текущее состояние игры',
 
-  'adm_log_delete_update_info' => 'Удалить информацию об обновлениях статистики и движка',
+  'adm_log_delete_update_info' => 'Удалить информацию об обслуживании БД, обновлениях статистики и движка',
 
 ));
