@@ -9,10 +9,6 @@ function que_get_unit_que($unit_id) {
     }
   }
 
-  if(!$que_type) {
-    die('wrong que type');
-  }
-
   return $que_type;
 }
 
@@ -221,18 +217,13 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 
     $exchange = array();
     $market_get_autoconvert_cost = market_get_autoconvert_cost();
-//pdump($unit_amount, '$unit_amount');
-//pdump($is_autoconvert, '$is_autoconvert');die();
-//    if($unit_amount <= 0 && $is_autoconvert && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT]) {
     if($is_autoconvert && $build_data[BUILD_AUTOCONVERT]) {
       $dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
       if(mrc_get_level($user, null, RES_DARK_MATTER) < $market_get_autoconvert_cost) {
         throw new exception("{Нет хватает " . ($market_get_autoconvert_cost - $dark_matter) . "ТМ на постройки с автоконвертацией ресурсов}", ERR_ERROR); // TODO EXCEPTION
       }
 
-//      $unit_amount = $build_data[BUILD_AUTOCONVERT];
       !get_unit_param($unit_id, P_STACKABLE) ? $unit_amount = 1 : false;
-//pdump($unit_amount,'$unit_amount1');die();
       $resources_loot = sn_get_groups('resources_loot');
       $resource_got = array();
       $resource_exchange_rates = array();
@@ -241,19 +232,10 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       foreach($resources_loot as $resource_id) {
         $resource_db_name = pname_resource_name($resource_id);
         $resource_got[$resource_id] = floor(mrc_get_level($user, $planet, $resource_id));
-//$resource_got[901] = 178503;
-//$resource_got[902] = 39693;
-//$resource_got[903] = 0;
         $resource_exchange_rates[$resource_id] = $config->__get("rpg_exchange_{$resource_db_name}");
         $resource_diff[$resource_id] = $resource_got[$resource_id] - $build_data[BUILD_CREATE][$resource_id] * $unit_amount;
         $all_positive = $all_positive && ($resource_diff[$resource_id] > 0);
       }
-//pdump($resource_diff);
-//pdump($all_positive);
-//die();
-//pdump($build_data[BUILD_CREATE], '$build_data[BUILD_CREATE]');
-//pdump($resource_got, '$resource_got');
-//pdump($resource_diff, '$resource_diff');
       // Нужна автоконвертация
       if($all_positive) {
         $is_autoconvert = false;
@@ -266,8 +248,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
             if($resource_got_amount <= 0) {
               continue;
             }
-//pdump($resource_exchange_rates[$resource_got_id], '$resource_exchange_rates[$resource_got_id]');
-//pdump($resource_exchange_rates[$resource_diff_id], '$resource_exchange_rates[$resource_diff_id]');
             $current_exchange = $resource_exchange_rates[$resource_got_id] / $resource_exchange_rates[$resource_diff_id];
 
             $will_exchage_to = min(-$resource_diff_amount, floor($resource_got_amount * $current_exchange));
@@ -277,21 +257,8 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
             $resource_got_amount -= $will_exchage_from;
             $exchange[$resource_diff_id] += $will_exchage_to;
             $exchange[$resource_got_id] -= $will_exchage_from;
-//pdump($will_exchage_from, '$will_exchage_from[' . $resource_got_id . ']');
-//pdump($will_exchage_to, '$will_exchage_to[' . $resource_diff_id . ']');
-//pdump($resource_diff, '$resource_diff');
-//pdump($exchange, '$exchange');
           }
         }
-
-//      db_change_units($user, $planet, array(
-//        RES_METAL     => -$build_data[$build_mode][RES_METAL] * $unit_amount,
-//        RES_CRYSTAL   => -$build_data[$build_mode][RES_CRYSTAL] * $unit_amount,
-//        RES_DEUTERIUM => -$build_data[$build_mode][RES_DEUTERIUM] * $unit_amount,
-//      ));
-
-//pdump($exchange, '$exchange');
-//pdump($build_data);
 
         $is_autoconvert_ok = true;
         foreach($resource_diff as $resource_diff_amount2) {
@@ -300,7 +267,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
             break;
           }
         }
-//pdump($resource_diff_amount2, '$resource_diff_amount2');
+
         if($is_autoconvert_ok) {
           $build_data['RESULT'][$build_mode] = BUILD_ALLOWED;
           $build_data['CAN'][$build_mode] = $unit_amount;
@@ -308,13 +275,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
           $unit_amount = 0;
         }
       }
-//pdump($is_autoconvert_ok, '$is_autoconvert_ok');
-//pdump($resource_diff, '$resource_diff');
-//pdump($exchange, '$exchange');
-//pdump(sprintf(
-//  $lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), $lang['tech'][$unit_id]
-//));
-//die();
     }
     $unit_amount = min($build_data['CAN'][$build_mode], $unit_amount);
     if($unit_amount <= 0) {
@@ -332,14 +292,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     if($is_autoconvert) {
       ksort($exchange);
       ksort($resource_got);
-//pdump(sys_unit_arr2str($exchange), '$exchange');
-//pdump(sys_unit_arr2str($resource_got), '$resource_got');
-//pdump(sys_unit_arr2str($build_data[BUILD_CREATE]), 'BUILD_CREATE');
-//      pdump(sprintf(
-//        $lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), $lang['tech'][$unit_id],
-//        sys_unit_arr2str($build_data[BUILD_CREATE]), sys_unit_arr2str($resource_got), sys_unit_arr2str($exchange)
-//      ));
-//die();
       db_change_units($user, $planet, array(
         RES_METAL     => !empty($exchange[RES_METAL]) ? $exchange[RES_METAL] : 0,
         RES_CRYSTAL   => !empty($exchange[RES_CRYSTAL]) ? $exchange[RES_CRYSTAL] : 0,
@@ -360,7 +312,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       $unit_amount_qued += $place;
     }
 
-//    sn_db_transaction_rollback(); // TODO - REMOVE !!!!!!!!!!!!!!!!!!
     sn_db_transaction_commit();
 
     if($redirect) {
@@ -381,9 +332,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
   }
 
   if(!empty($operation_result['MESSAGE'])) {
-    $operation_result['MESSAGE'] .= ' ' . ($unit_amount_qued ? $unit_amount_qued : $unit_amount) . 'x[' . $lang['tech'][$unit_id] . ']'
-//      . (isset($planet['id']) ? ' на ' . $planet['name'] : '')
-    ;
+    $operation_result['MESSAGE'] .= ' ' . ($unit_amount_qued ? $unit_amount_qued : $unit_amount) . 'x[' . $lang['tech'][$unit_id] . ']';
   }
 
   return $operation_result;
