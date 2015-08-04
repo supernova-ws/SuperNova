@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b14.2
+* @version 40a6.3
 *
 */
 
@@ -559,4 +559,7 @@ $a_lang_array = (array(
   'adm_matter_change_log_record' => 'Through admin interface for user {%1$d} %2$s by user {%3$s} %4$s reason "%5$s"',
 
   'adm_game_status' => 'Current game status',
+
+  'adm_log_delete_update_info' => 'Delete info about updates',
+
 ));

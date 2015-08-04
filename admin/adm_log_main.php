@@ -23,6 +23,10 @@ if($delete = sys_get_param_id('delete'))
 {
   doquery("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
 }
+elseif(sys_get_param_str('delete_update_info'))
+{
+  doquery("DELETE FROM `{{logs}}` WHERE `log_code` in (103, 191);");
+}
 elseif(sys_get_param_str('deleteall') == 'yes')
 {
 //  doquery("TRUNCATE TABLE `{{logs}}`");

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a3.7
+* @version 40a6.3
 *
 */
 
@@ -580,4 +580,7 @@ $a_lang_array = (array(
   'adm_matter_change_log_record' => 'Через админку пользователем {%3$s} %4$s для пользователя {%1$d} %2$s по причине "%5$s"',
 
   'adm_game_status' => 'Текущее состояние игры',
+
+  'adm_log_delete_update_info' => 'Удалить информацию об обновлениях статистики и движка',
+
 ));
