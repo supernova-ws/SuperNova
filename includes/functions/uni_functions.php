@@ -18,6 +18,8 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
     return false;
   }
 
+  $user_row = !empty($options['user_row']) && is_array($options['user_row']) ? $options['user_row'] : null;
+
   global $lang, $config;
 
   $planet_generator = sn_get_groups('planet_generator');
@@ -42,7 +44,6 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet_sectors = sn_rand_gauss_range($position_data['size_min'], $position_data['size_max'], true, 1.7, true);
   $planet_diameter = round(pow($planet_sectors, 2) * 1000);
 
-
   $density_list = sn_get_groups('planet_density');
   $density_min = reset($density_list);
   unset($density_list[PLANET_DENSITY_NONE]);
@@ -54,7 +55,14 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
       continue;
     }
 
-    if(in_array($possible_core_id, $position_data['core_types']) && $planet_sectors < $density_list[$possible_core_id][UNIT_PLANET_DENSITY_MAX_SECTORS]) {
+    if(
+      // Core type exists
+      in_array($possible_core_id, $position_data['core_types'])
+      // Limit core type with planet sector count
+      && $planet_sectors < $density_list[$possible_core_id][UNIT_PLANET_DENSITY_MAX_SECTORS]
+      // Limit core type with player AstroTech level
+      && (!$user_row || mrc_get_level($user, null, TECH_ASTROTECH) >= $density_list[$possible_core_id][UNIT_PLANET_DENSITY_MIN_ASTROTECH])
+    ) {
       // Фильтруем типы ядер, которые не подходят по размеру планеты
       $probability += $density_list[$possible_core_id][UNIT_PLANET_DENSITY_RARITY];
       $possible_cores[$possible_core_id] = array(

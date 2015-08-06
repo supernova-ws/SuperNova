@@ -35,7 +35,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a6.6');
+define('SN_VERSION', '40a7.0');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -868,6 +868,7 @@ define('UNIT_PLANET_DENSITY_RARITY', 1603);
 define('UNIT_PLANET_DENSITY_RICHNESS', 1604);
 define('UNIT_PLANET_DENSITY_MAX_SECTORS', 1605);
 define('UNIT_PLANET_DENSITY_PROBABILITY', 1606);
+define('UNIT_PLANET_DENSITY_MIN_ASTROTECH', 1607);
 
 define('PLANET_DENSITY_NONE', 0);
 define('PLANET_DENSITY_ICE_HYDROGEN', 8); // New

@@ -26,7 +26,7 @@
         <label for="density_type">{L_ov_core_change_to}</label>
         <select name="density_type" id="density_type">
           <!-- BEGIN densities -->
-          <option value="{densities.ID}" rest="{densities.REST}" html="{densities.COST_TEXT}" html_class="{densities.COST_TEXT_CLASS}"<!-- IF PLANET_DENSITY_INDEX == densities.ID --> selected current="1"<!-- ENDIF -->>{densities.TEXT}</option>
+          <option value="{densities.ID}" rest="{densities.REST}" html="{densities.COST_TEXT}" html_class="{densities.COST_TEXT_CLASS}"<!-- IF PLANET_DENSITY_INDEX == densities.ID --> selected current="1"<!-- ENDIF -->>{densities.TEXT} - {densities.COST_TEXT}</option>
           <!-- END densities -->
         </select>
       </th>
