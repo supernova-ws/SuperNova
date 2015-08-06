@@ -223,7 +223,7 @@ $sn_data += array(
       'factor' => 1,
     ),
     'production' => array(
-      RES_ENERGY    => create_function('$level, $production_factor, $user, $planet_row', 'return ($planet_row["temp_max"] / 4 + 20) * $level * (0.1 * $production_factor);'),
+      RES_ENERGY => function($level, $production_factor, $user, $planet_row) {return ($planet_row["temp_max"] / 4 + 20) * $level * (0.1 * $production_factor);},
     ),
     P_HULL_SIZE => HULL_SIZE_TINY,
     'capacity' => 1,

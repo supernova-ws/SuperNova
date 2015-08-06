@@ -1,9 +1,6 @@
 <?php
 
-if (!defined('INSIDE'))
-{
-  die('Hack attempt!');
-}
+!defined('INSIDE') ? die('Hack attempt!') : false;
 
 $sn_data += array(
   STRUC_MINE_METAL => array(
@@ -17,21 +14,10 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.5,
     ),
-//    'metal' => 80,
-//    'crystal' => 20,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 1.5,
     'production' => array(
-      RES_METAL     => create_function ('$level, $production_factor, $user, $planet_row', 'return  40 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
-//      RES_CRYSTAL   => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-//      RES_DEUTERIUM => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      RES_ENERGY    => create_function ('$level, $production_factor, $user, $planet_row', 'return -13 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
+      RES_METAL     => function ($level, $production_factor, $user, $planet_row) {return  40 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
+      RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return -13 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
-//    'metal_perhour'     => 'return   (40 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-//    'crystal_perhour'   => 'return 0;',
-//    'deuterium_perhour' => 'return 0;',
-//    'energy_perhour'    => 'return - (13 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
   ),
 
   STRUC_MINE_CRYSTAL => array(
@@ -45,21 +31,10 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.6,
     ),
-//    'metal' => 48,
-//    'crystal' => 24,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 1.6,
     'production' => array(
-      //RES_METAL     => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      RES_CRYSTAL   => create_function ('$level, $production_factor, $user, $planet_row', 'return  32 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
-      //RES_DEUTERIUM => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      RES_ENERGY    => create_function ('$level, $production_factor, $user, $planet_row', 'return -16 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
+      RES_CRYSTAL   => function ($level, $production_factor, $user, $planet_row) {return  32 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
+      RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return -16 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
-//    'metal_perhour'     => 'return 0;',
-//    'crystal_perhour'   => 'return   (32 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-//    'deuterium_perhour' => 'return 0;',
-//    'energy_perhour'    => 'return - (16 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
   ),
 
   STRUC_MINE_DEUTERIUM => array(
@@ -73,21 +48,10 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.5,
     ),
-//    'metal' => 225,
-//    'crystal' => 75,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 1.5,
     'production' => array(
-      //RES_METAL     => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      //RES_CRYSTAL   => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      RES_DEUTERIUM => create_function ('$level, $production_factor, $user, $planet_row', 'return  10 * $level * pow(1.1, $level) * (0.1 * $production_factor) * (-0.002 * $planet_row["temp_max"] + 1.28);'),
-      RES_ENERGY    => create_function ('$level, $production_factor, $user, $planet_row', 'return -20 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
+      RES_DEUTERIUM => function ($level, $production_factor, $user, $planet_row) {return  10 * $level * pow(1.1, $level) * (0.1 * $production_factor) * (-0.002 * $planet_row["temp_max"] + 1.28);},
+      RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return -20 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
-//    'metal_perhour'     => 'return 0;',
-//    'crystal_perhour'   => 'return 0;',
-//    'deuterium_perhour' => 'return  ((10 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor) * (-0.002 * $BuildTemp + 1.28));',
-//    'energy_perhour'    => 'return - (20 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
   ),
 
   STRUC_MINE_SOLAR => array(
@@ -101,21 +65,9 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.5,
     ),
-//    'metal' => 75,
-//    'crystal' => 30,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 1.5,
     'production' => array(
-      //RES_METAL     => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      //RES_CRYSTAL   => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      //RES_DEUTERIUM => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      RES_ENERGY    => create_function ('$level, $production_factor, $user, $planet_row', 'return ($planet_row["temp_max"] / 5 + 15) * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
+      RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return ($planet_row["temp_max"] / 5 + 15) * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
-//    'metal_perhour'     => 'return 0;',
-//    'crystal_perhour'   => 'return 0;',
-//    'deuterium_perhour' => 'return 0;',
-//    'energy_perhour'    => 'return   (($BuildTemp / 5 + 15) * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
   ),
 // −273,15 °C
   STRUC_MINE_FUSION => array(
@@ -130,21 +82,10 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.8,
     ),
-//    'metal' => 900,
-//    'crystal' => 360,
-//    'deuterium' => 180,
-//    'energy' => 0,
-//    'factor' => 1.8,
     'production' => array(
-      //RES_METAL     => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      //RES_CRYSTAL   => create_function ('$level, $production_factor, $user, $planet_row', 'return 0;'),
-      RES_DEUTERIUM => create_function ('$level, $production_factor, $user, $planet_row', 'return -10 * $level * pow(1.1, $level) * (0.1 * $production_factor);'),
-      RES_ENERGY    => create_function ('$level, $production_factor, $user, $planet_row', 'return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($user, "", TECH_ENERGY), $level) * (0.1 * $production_factor);'),
+      RES_DEUTERIUM => function ($level, $production_factor, $user, $planet_row) {return -10 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
+      RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($user, "", TECH_ENERGY), $level) * (0.1 * $production_factor);},
     ),
-//    'metal_perhour'     => 'return 0;',
-//    'crystal_perhour'   => 'return 0;',
-//    'deuterium_perhour' => 'return - (10 * $BuildLevel * pow(1.1, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
-//    'energy_perhour'    => 'return   (30 * $BuildLevel * pow(1.05 + 0.01 * $BuildEnergyTech, $BuildLevel)) * (0.1 * $BuildLevelFactor);',
   ),
 
   STRUC_STORE_METAL => array(
@@ -159,13 +100,8 @@ $sn_data += array(
       'factor' => 2,
     ),
     'storage' => array(
-      RES_METAL => create_function('$level', 'return BASE_STORAGE_SIZE * pow(1.5, $level);'),
+      RES_METAL => function($level) {return BASE_STORAGE_SIZE * pow(1.5, $level);},
     ),
-//    'metal' => 2000,
-//    'crystal' => 0,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_STORE_CRYSTAL => array(
@@ -180,13 +116,8 @@ $sn_data += array(
       'factor' => 2,
     ),
     'storage' => array(
-      RES_CRYSTAL => create_function('$level', 'return BASE_STORAGE_SIZE * pow(1.5, $level);'),
+      RES_CRYSTAL => function($level) {return BASE_STORAGE_SIZE * pow(1.5, $level);},
     ),
-//    'metal' => 2000,
-//    'crystal' => 1000,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_STORE_DEUTERIUM => array(
@@ -201,13 +132,8 @@ $sn_data += array(
       'factor' => 2,
     ),
     'storage' => array(
-      RES_DEUTERIUM => create_function('$level', 'return BASE_STORAGE_SIZE * pow(1.5, $level);'),
+      RES_DEUTERIUM => function($level) {return BASE_STORAGE_SIZE * pow(1.5, $level);},
     ),
-//    'metal' => 2000,
-//    'crystal' => 2000,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_FACTORY_ROBOT => array(
@@ -221,11 +147,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 400,
-//    'crystal' => 120,
-//    'deuterium' => 200,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_FACTORY_NANO => array(
@@ -240,11 +161,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 1000000,
-//    'crystal' => 500000,
-//    'deuterium' => 100000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_FACTORY_HANGAR => array(
@@ -259,11 +175,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 400,
-//    'crystal' => 200,
-//    'deuterium' => 100,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_LABORATORY => array(
@@ -277,11 +188,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 200,
-//    'crystal' => 400,
-//    'deuterium' => 200,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_TERRAFORMER => array(
@@ -296,11 +202,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 0,
-//    'crystal' => 50000,
-//    'deuterium' => 100000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_ALLY_DEPOSIT => array(
@@ -314,11 +215,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 20000,
-//    'crystal' => 40000,
-//    'deuterium' => 0,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_LABORATORY_NANO => array(
@@ -333,11 +229,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 1500000,
-//    'crystal' => 750000,
-//    'deuterium' => 150000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_MOON_STATION => array(
@@ -351,11 +242,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 20000,
-//    'crystal' => 40000,
-//    'deuterium' => 20000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_MOON_PHALANX => array(
@@ -370,11 +256,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 20000,
-//    'crystal' => 40000,
-//    'deuterium' => 20000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_MOON_GATE => array(
@@ -389,11 +270,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 2000000,
-//    'crystal' => 4000000,
-//    'deuterium' => 2000000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   STRUC_SILO => array(
@@ -408,11 +284,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 20000,
-//    'crystal' => 20000,
-//    'deuterium' => 1000,
-//    'energy' => 0,
-//    'factor' => 2,
     'capacity' => 12,
   ),
 );

@@ -159,18 +159,23 @@ class classCache {
   }
 
   public function unset_by_prefix($prefix_unset = '') {
+    static $array_clear;
+    !$array_clear ? $array_clear = function(&$v,$k,$p) {
+      strpos($k, $p) === 0 ? $v = NULL : false;
+    } : false;
+
     switch (self::$mode) {
       case CACHER_NO_CACHE:
-        array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), $this->prefix.$prefix_unset);
+//        array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), $this->prefix.$prefix_unset);
+        array_walk(self::$data, $array_clear, $this->prefix . $prefix_unset);
         return true;
       break;
 
       case CACHER_XCACHE:
-        if(!function_exists('xcache_unset_by_prefix'))
-        {
+        if(!function_exists('xcache_unset_by_prefix')) {
           return false;
         }
-        return xcache_unset_by_prefix($this->prefix.$prefix_unset);
+        return xcache_unset_by_prefix($this->prefix . $prefix_unset);
       break;
     }
 
