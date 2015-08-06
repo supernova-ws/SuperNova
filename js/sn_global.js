@@ -110,34 +110,28 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
 
     var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);;
-//console.log(rep);
-//console.log(input);
     rep.attr("id", input.attr("id"));
 
     input.remove();
 
     $(this).attr('value', button_value);
-
-    // alert(show_element.attr('type'));
   });
 
   function sn_redirect(url) {
     document.location.assign(url);
-//  document.location.href = url;
   }
 
   function sn_reload() {
     location.reload();
   }
 
-  //jQuery(document).on('click', '.news_toggle', function () {
   jQuery(document).on('click', '[news_toggle]', function () {
     $('#news_' + $(this).attr('news_toggle')).show();
     $(this).remove();
   });
 
-  jQuery(document).on('change', '#fleet_ship_sort,#fleet_ship_sort_inverse', function () {
-    jQuery.post('fleet.php?fleet_ship_sort=' + $('#fleet_ship_sort').val() + '&fleet_ship_sort_inverse=' + ($('#fleet_ship_sort_inverse').is(':checked') ? '1' : '0'), function(){
+  jQuery(document).on('change', '#sort_elements,#sort_elements_inverse', function () {
+    jQuery.post($('#page_file_name').val() + '?mode=' + $('#mode').val() + '&sort_elements=' + $('#sort_elements').val() + '&sort_elements_inverse=' + ($('#sort_elements_inverse').is(':checked') ? '1' : '0'), function(){
       sn_reload();
     });
   });

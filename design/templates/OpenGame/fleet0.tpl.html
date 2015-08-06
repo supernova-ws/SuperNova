@@ -34,6 +34,8 @@ var speed_factor   = {speed_factor};
   <input type="hidden" name="planet_type" value="{planet_type}">
   <input type="hidden" name="target_mission" value="{target_mission}">
 
+  <input type="hidden" id="page_file_name" value="fleet.php">
+
   <table border="0" cellpadding="0" cellspacing="1">
     <tr class="c_c">
       <th>{L_fl_fleet_typ}</th>
@@ -90,12 +92,12 @@ var speed_factor   = {speed_factor};
           <th colspan="4">
             <div class="fl">
               {L_sys_sort}
-              <select name="fleet_ship_sort" id="fleet_ship_sort">
+              <select name="sort_elements" id="sort_elements">
                 <!-- BEGIN ship_sort_list -->
                 <option value="{ship_sort_list.VALUE}"<!-- IF ship_sort_list.VALUE == FLEET_SHIP_SORT --> selected<!-- ENDIF -->>{ship_sort_list.TEXT}</option>
                 <!-- END ship_sort_list -->
               </select>
-              {L_sys_sort_inverse} <input type="checkbox" name="fleet_ship_sort_inverse" id="fleet_ship_sort_inverse" value="1"<!-- IF FLEET_SHIP_SORT_INVERSE --> checked<!-- ENDIF -->/>
+              {L_sys_sort_inverse} <input type="checkbox" name="sort_elements_inverse" id="sort_elements_inverse" value="1"<!-- IF FLEET_SHIP_SORT_INVERSE --> checked<!-- ENDIF -->/>
             </div>
             <input class="fr" type="submit" value="{L_fl_continue}" /></th>
         </tr>

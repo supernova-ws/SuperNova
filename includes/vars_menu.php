@@ -156,7 +156,7 @@ $sn_menu = array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Research',
-    'LINK'  => 'buildings.php?mode=research',
+    'LINK'  => 'buildings.php?mode=' . QUE_RESEARCH,
     'ICON'  => true,
   ),
   'menu_empire_techtree' => array(

@@ -15,7 +15,7 @@
 
 function eco_build($que_type, &$user, &$planet){return sn_function_call('eco_build', array($que_type, &$user, &$planet));}
 function sn_eco_build($que_type, &$auser, &$planet) {
-  global $lang, $config;
+  global $lang, $config, $template_result;
 
   if($ally_id = sys_get_param_id('ally_id')) {
     define('SN_IN_ALLY', true);
@@ -106,7 +106,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $template = gettemplate('buildings_builds', true);
   if(!empty($operation_result)) {
-    $template->assign_block_vars('result', $operation_result);
+    $template_result['.']['result'][] = $operation_result;
   }
 
   $planet_id = $que_type == QUE_RESEARCH || $que_type == QUE_MERCENARY ? 0 : $planet['id'];
@@ -126,13 +126,14 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $planet_fields_que     = is_array($in_que) ? -array_sum($in_que) : 0;
   $planet_fields_free    = max(0, $planet_fields_max - $planet_fields_current + $planet_fields_que);
   $planet_fields_queable = $que_type != QUE_STRUCTURES || $planet_fields_free > 0;
-  //$planet_temp_max       = $planet['temp_max'];
   $sn_modifiers_resource = sn_get_groups('modifiers');
   $sn_modifiers_resource = $sn_modifiers_resource[MODIFIER_RESOURCE_PRODUCTION];
   $sn_groups_density = sn_get_groups('planet_density');
   $density_info = $sn_groups_density[$planet['density_index']][UNIT_RESOURCES];
 
   $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
+
+  $record_index = 0;
 
   foreach($build_unit_list as $unit_id) {
     $level_base = mrc_get_level($user, $planet, $unit_id, false, true);
@@ -142,11 +143,9 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $level_base_and_que = $level_base + $level_in_que;
 
     $unit_info = get_unit_param($unit_id);
-// pdump($unit_info, '$unit_info');
     $unit_stackable = isset($unit_info[P_STACKABLE]) && $unit_info[P_STACKABLE];
 
     $build_data = eco_get_build_data($user, $planet, $unit_id, $level_base_and_que);
-// pdump($build_data, '$build_data');
     $temp[RES_METAL]     = floor($planet['metal'] + $fleet_list['own']['total'][RES_METAL] - $build_data[BUILD_CREATE][RES_METAL]);
     $temp[RES_CRYSTAL]   = floor($planet['crystal'] + $fleet_list['own']['total'][RES_CRYSTAL] - $build_data[BUILD_CREATE][RES_CRYSTAL]);
     $temp[RES_DEUTERIUM] = floor($planet['deuterium'] + $fleet_list['own']['total'][RES_DEUTERIUM] - $build_data[BUILD_CREATE][RES_DEUTERIUM]);
@@ -172,7 +171,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     }
 
     $unit_info['type'] == UNIT_STRUCTURES && !$planet_fields_queable ? $build_data['RESULT'][BUILD_CREATE] = BUILD_SECTORS_NONE : false;
-//    $unit_autoconvert_can = !$unit_stackable && !classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
     $unit_autoconvert_can = !classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE] && $build_data['RESULT'][BUILD_CREATE] == BUILD_NO_RESOURCES && $build_data[BUILD_AUTOCONVERT];
 
 
@@ -180,8 +178,9 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     $build_result_text = $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
     $build_result_text = !is_array($build_result_text) ? $build_result_text : (isset($build_result_text[$unit_id]) ? $build_result_text[$unit_id] : $build_result_text[0]);
-//    $build_result_text = $unit_autoconvert_can ? $lang['sys_build_result'][BUILD_AUTOCONVERT_AVAILABLE] : $build_result_text;
-    $template->assign_block_vars('production', array(
+
+    $production = array(
+      '__INDEX'             => $record_index++,
       'ID'                 => $unit_id,
       'NAME'               => $lang['tech'][$unit_id],
       'DESCRIPTION'        => $lang['info'][$unit_id]['description_short'],
@@ -231,7 +230,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       'UNIT_BUSY'         => eco_unit_busy($user, $planet, $que, $unit_id),
 
       'MAP_IS_RESOURCE'   => !empty($unit_info['production']),
-    ));
+    );
+
     if($unit_stackable) {
       $level_production_base = array(
         'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_info['shield'])),
@@ -256,7 +256,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
           }
         }
       }
-      $template->assign_block_vars('production.resource', $level_production_base);
+      $production['.']['resource'][] = $level_production_base;
     } elseif($unit_info['production']) {
       $level_production_base = array();
       $element_level_start = $level_effective + $in_que[$unit_id];
@@ -275,7 +275,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
             $level_production['D'.$resource_id] = $resource_income - $level_production_base[$resource_id];
           }
         }
-        $template->assign_block_vars('production.resource', $level_production);
+        $production['.']['resource'][] = $level_production;
       }
     } elseif($unit_id == TECH_ASTROTECH) {
       $element_level_start = $level_effective + $in_que[$unit_id];
@@ -307,7 +307,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
                 }
                 $template->assign_block_vars('production.resource', $level_production);
         */
-        $template->assign_block_vars('production.resource', $level_production);
+        $production['.']['resource'][] =  $level_production;
 
         $level_production_base = array(
           UNIT_PLAYER_EXPEDITIONS_MAX => $level_production['R'.UNIT_PLAYER_EXPEDITIONS_MAX],
@@ -315,16 +315,39 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         );
       }
     }
-    //pdump(unit_requirements_render($user, $planet, $unit_id));
     foreach(unit_requirements_render($user, $planet, $unit_id) as $requirement) {
-      $template->assign_block_vars('production.require', $requirement);
+      $production['.']['require'][] =  $requirement;
     }
+    $template_result['.']['production'][] = $production;
   }
 
+  foreach($lang['player_option_building_sort'] as $sort_id => $sort_text) {
+    $template->assign_block_vars('sort_values', array(
+      'VALUE' => $sort_id,
+      'TEXT' => $sort_text,
+    ));
+  }
+
+  $sort_option = classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT, $que_type)];
+  $sort_option_inverse = classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT_INVERSE, $que_type)];
+  if($sort_option || $sort_option_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
+    switch($sort_option) {
+      case PLAYER_OPTION_SORT_NAME: $sort_option_field = 'NAME'; break;
+      case PLAYER_OPTION_SORT_ID: $sort_option_field = 'ID'; break;
+      case PLAYER_OPTION_SORT_CREATE_TIME_LENGTH: $sort_option_field = 'TIME_SECONDS'; break;
+      default: $sort_option_field = '__INDEX'; break;
+    }
+    $sort_option_inverse_closure = $sort_option_inverse ? -1 : 1;
+    usort($template_result['.']['production'], function($a, $b) use ($sort_option_field, $sort_option_inverse_closure) {
+      return $a[$sort_option_field] < $b[$sort_option_field] ? -1 * $sort_option_inverse_closure : (
+      $a[$sort_option_field] > $b[$sort_option_field] ? 1 * $sort_option_inverse_closure : 0
+      );
+    });
+  }
 
   $sector_cost = eco_get_build_data($user, $planet, UNIT_SECTOR, mrc_get_level($user, $planet, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
-  $template->assign_vars(array(
+  $template_result += array(
     'ALLY_ID'            => $user['user_as_ally'],
 
     'QUE_ID'             => $que_type,
@@ -378,7 +401,12 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'CAN_AUTOCONVERT'    => $user_dark_matter >= market_get_autoconvert_cost(),
     'BUILD_AUTOCONVERT_AVAILABLE'    => BUILD_AUTOCONVERT_AVAILABLE,
     'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
-  ));
+
+    'SORT_OPTION' => $sort_option,
+    'SORT_OPTION_INVERSE' => $sort_option_inverse,
+  );
+
+  $template->assign_recursive($template_result);
 
   display(parsetemplate($template)); // , $lang['Builds']
 }

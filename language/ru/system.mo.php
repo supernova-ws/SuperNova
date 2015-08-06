@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a6.0#
+* @version #40a6.5#
 *
 */
 
@@ -1080,15 +1080,22 @@ $a_lang_array = (array(
   'survey_complete' => 'Опрос завершен',
 
   'player_option_fleet_ship_sort' => array(
-    PLAYER_OPTION_FLEET_SHIP_SORT_DEFAULT => 'Стандартная',
-    PLAYER_OPTION_FLEET_SHIP_SORT_NAME => 'По названию',
-    PLAYER_OPTION_FLEET_SHIP_SORT_SPEED => 'По скорости',
-    PLAYER_OPTION_FLEET_SHIP_SORT_COUNT => 'По количеству',
-    PLAYER_OPTION_FLEET_SHIP_SORT_ID => 'По ID',
+    PLAYER_OPTION_SORT_DEFAULT => 'Стандартная',
+    PLAYER_OPTION_SORT_NAME => 'По названию',
+    PLAYER_OPTION_SORT_ID => 'По ID',
+    PLAYER_OPTION_SORT_SPEED => 'По скорости',
+    PLAYER_OPTION_SORT_COUNT => 'По количеству',
+  ),
+
+  'player_option_building_sort' => array(
+    PLAYER_OPTION_SORT_DEFAULT => 'Стандартная',
+    PLAYER_OPTION_SORT_NAME => 'По названию',
+    PLAYER_OPTION_SORT_ID => 'По ID',
+    PLAYER_OPTION_SORT_CREATE_TIME_LENGTH => 'По времени постройки',
   ),
 
   'sys_sort' => 'Сортировка',
-  'sys_sort_inverse' => 'В порядке убывания',
+  'sys_sort_inverse' => 'В обратном порядке',
 
   'sys_blitz_reward_log_message' => 'Блиц-сервер %1$d призовое место блиц-имя "%2$s"',
   'sys_blitz_registration_view_stat' => 'Посмотреть статистику Блиц-сервера',

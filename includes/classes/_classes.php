@@ -1,5 +1,6 @@
 <?php
 
+require_once('core_classes.php');
 require_once('cache.php');
 require_once('locale.php');
 require_once('template.php');

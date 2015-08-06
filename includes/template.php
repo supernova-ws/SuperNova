@@ -590,6 +590,13 @@ function parsetemplate($template, $array = false) {
   }
 }
 
+/**
+ * @param            $files
+ * @param bool|false $template
+ * @param bool|false $template_path
+ *
+ * @return template
+ */
 function gettemplate($files, $template = false, $template_path = false)
 {
   global $user;

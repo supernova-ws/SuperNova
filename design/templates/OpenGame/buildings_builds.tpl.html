@@ -1,5 +1,20 @@
 <h2>{PAGE_HEADER}</h2>
 
+<table>
+<tr class="c_c">
+  <th colspan="4">
+    {L_sys_sort}
+    <select name="sort_elements" id="sort_elements">
+      <!-- BEGIN sort_values -->
+      <option value="{sort_values.VALUE}"<!-- IF sort_values.VALUE == SORT_OPTION --> selected<!-- ENDIF -->>{sort_values.TEXT}</option>
+      <!-- END sort_values -->
+    </select>
+    {L_sys_sort_inverse} <input type="checkbox" name="sort_elements_inverse" id="sort_elements_inverse" value="1"<!-- IF SORT_OPTION_INVERSE --> checked<!-- ENDIF -->/>
+  </th>
+</tr>
+</table>
+
+
 <script type="text/javascript">
 var production = Array();
 var require = Array();
@@ -244,7 +259,9 @@ planet = {
       <!--<tr>-->
         <!--<td style="vertical-align: top;" class="c_c">-->
           <form action="buildings.php" method="post" id="form_unit">
-            <input type="hidden" name="mode" value="{QUE_ID}" />
+            <input type="hidden" id="page_file_name" value="buildings.php">
+
+            <input type="hidden" name="mode" id="mode" value="{QUE_ID}" />
             <input type="hidden" name="ally_id" value="{ALLY_ID}" />
             <input type="hidden" name="unit_id" id="unit_id" />
             <input type="hidden" name="action" />

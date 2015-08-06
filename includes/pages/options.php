@@ -89,7 +89,7 @@ function sn_options_model() {
         // TODO - Когда будет больше параметров - сделать больше проверок
         $value = intval($value);
       });
-      classSupernova::$user_options->__set($player_options);
+      classSupernova::$user_options->offsetSet($player_options);
       // pdump($player_options);die();
       //      player_save_option_array($user, $player_options);
     }
