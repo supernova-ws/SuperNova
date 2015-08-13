@@ -1,18 +1,16 @@
 <?php
 
 /**
- * Class ArrayAccessMultidimensional
+ * РљР»Р°СЃСЃ СѓРїСЂРѕС‰Р°РµС‚ РѕРїРµСЂР°С†РёРё СЃ РјРЅРѕРіРѕРјРµСЂРЅС‹РјРё РёРЅРґРµРєСЃР°РјРё РґР»СЏ ArrayAccess - СЃС‚Р°СЂР°СЏ РІРµСЂСЃРёСЏ
+ * РњРЅРѕРіРѕРјРµСЂРЅС‹Рµ РёРЅРґРµРєСЃС‹ РјРѕРіСѓС‚ РїРµСЂРµРґР°РІР°С‚СЊСЃСЏ РІ $offset РІ РІРёРґРµ РјР°СЃСЃРёРІР°
+ * РќР°РїСЂРёРјРµСЂ: array('test', 1, 2, 3) Р±СѓРґРµС‚ СЃРѕРѕС‚РІРµС‚СЃС‚РІРѕРІР°С‚СЊ РѕР±СЂР°С‰РµРЅРёСЋ test[1][2][3]
  *
- * Класс упрощает операции с многомерными индексами для ArrayAccess
- * Многомерные индексы могут передаваться в $offset в виде массива
- * Например: array('test', 1, 2, 3) будет соответствовать обращению test[1][2][3]
+ * РўР°РєРёРј РѕР±СЂР°Р·РѕРј СЂР°Р±РѕС‚Р° СЃ РјРЅРѕРіРѕРјРµСЂРЅС‹РјРё РјР°СЃСЃРёРІР°РјРё РјРѕР¶РµС‚ Р±С‹С‚СЊ СЃРїСЂРѕРµС†РёСЂРѕРІР°РЅР° РЅР° Р»СЋР±РѕР№ РѕР±СЉРµРєС‚, РєРѕС‚РѕСЂС‹Р№ СѓРјРµРµС‚ РІ РїР°СЂС‹ РљР»СЋС‡-Р—РЅР°С‡РµРЅРёРµ Рё РїРѕРґРґРµСЂР¶РёРІР°РµС‚ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ magic methods __isset, __get, __set Рё __unset
  *
- * Таким образом работа с многомерными массивами может быть спроецирована на любой объект, который умеет в пары Ключ-Значение и поддерживает стандартные magic methods __isset, __get, __set и __unset
- *
- * Если объект-потомок поддерживает отложенную запись - ему нужно реализовать так же функцию __flush()
+ * Р•СЃР»Рё РѕР±СЉРµРєС‚-РїРѕС‚РѕРјРѕРє РїРѕРґРґРµСЂР¶РёРІР°РµС‚ РѕС‚Р»РѕР¶РµРЅРЅСѓСЋ Р·Р°РїРёСЃСЊ - РµРјСѓ РЅСѓР¶РЅРѕ СЂРµР°Р»РёР·РѕРІР°С‚СЊ С‚Р°Рє Р¶Рµ С„СѓРЅРєС†РёСЋ __flush()
  *
  */
-abstract class ArrayAccessMultidimensional implements ArrayAccess {
+abstract class oldArrayAccessNd implements ArrayAccess {
 
   abstract public function __get($offset);
   abstract public function __set($offset, $value = null);
@@ -92,25 +90,25 @@ abstract class ArrayAccessMultidimensional implements ArrayAccess {
    * @return void
    */
   public function offsetSet($offset, $value = null) {
-    // Если нет никакого индекса - значит нечего записывать
+    // Р•СЃР»Рё РЅРµС‚ РЅРёРєР°РєРѕРіРѕ РёРЅРґРµРєСЃР° - Р·РЅР°С‡РёС‚ РЅРµС‡РµРіРѕ Р·Р°РїРёСЃС‹РІР°С‚СЊ
     if(!isset($offset) || (is_array($offset) && empty($offset))) {
       return;
     }
 
-    // Если в массиве индекса только один элемент - значит это просто индекс
+    // Р•СЃР»Рё РІ РјР°СЃСЃРёРІРµ РёРЅРґРµРєСЃР° С‚РѕР»СЊРєРѕ РѕРґРёРЅ СЌР»РµРјРµРЅС‚ - Р·РЅР°С‡РёС‚ СЌС‚Рѕ РїСЂРѕСЃС‚Рѕ РёРЅРґРµРєСЃ
     if(is_array($offset) && count($offset) == 1) {
-      // Разворачиваем его в индекс
+      // Р Р°Р·РІРѕСЂР°С‡РёРІР°РµРј РµРіРѕ РІ РёРЅРґРµРєСЃ
       $offset = array(reset($offset) => $value);
       unset($value);
-      // Дальше будет использоваться стандартный код для пары $option, $value
+      // Р”Р°Р»СЊС€Рµ Р±СѓРґРµС‚ РёСЃРїРѕР»СЊР·РѕРІР°С‚СЊСЃСЏ СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ РєРѕРґ РґР»СЏ РїР°СЂС‹ $option, $value
     }
 
-    // Адресация многомерного массива через массив индексов в $option
+    // РђРґСЂРµСЃР°С†РёСЏ РјРЅРѕРіРѕРјРµСЂРЅРѕРіРѕ РјР°СЃСЃРёРІР° С‡РµСЂРµР· РјР°СЃСЃРёРІ РёРЅРґРµРєСЃРѕРІ РІ $option
     if(is_array($offset) && isset($value)) {
-      // TODO - а не переделать ли это всё на __isset() ??
+      // TODO - Р° РЅРµ РїРµСЂРµРґРµР»Р°С‚СЊ Р»Рё СЌС‚Рѕ РІСЃС‘ РЅР° __isset() ??
 //pdump($offset, '$offset');
 //pdump($value, '$value');
-      // Вытаскиваем корневой элемент
+      // Р’С‹С‚Р°СЃРєРёРІР°РµРј РєРѕСЂРЅРµРІРѕР№ СЌР»РµРјРµРЅС‚
       $root = $this->__get(reset($offset));
       $current_leaf = &$root;
       while(($leaf_index = next($offset)) !== false) {
@@ -123,11 +121,11 @@ abstract class ArrayAccessMultidimensional implements ArrayAccess {
         $current_leaf = $value;
 //pdump(reset($offset), 'reset($offset)');
 //pdump($root, '$root');
-        // Сохраняем данные с корня
+        // РЎРѕС…СЂР°РЅСЏРµРј РґР°РЅРЅС‹Рµ СЃ РєРѕСЂРЅСЏ
         $this->__set(reset($offset), $root);
       }
     } else {
-      // Пакетная запись из массива ключ -> значение
+      // РџР°РєРµС‚РЅР°СЏ Р·Р°РїРёСЃСЊ РёР· РјР°СЃСЃРёРІР° РєР»СЋС‡ -> Р·РЅР°С‡РµРЅРёРµ
       !is_array($offset) ? $offset = array($offset => $value) : false;
 
       foreach($offset as $key => $value) {
@@ -135,7 +133,7 @@ abstract class ArrayAccessMultidimensional implements ArrayAccess {
       }
     }
 
-    $this->__flush(); // Сбрасывем кэш - если есть его поддержка
+    $this->__flush(); // РЎР±СЂР°СЃС‹РІРµРј РєСЌС€ - РµСЃР»Рё РµСЃС‚СЊ РµРіРѕ РїРѕРґРґРµСЂР¶РєР°
   }
 
   /**
@@ -150,9 +148,7 @@ abstract class ArrayAccessMultidimensional implements ArrayAccess {
    * @return void
    */
   public function offsetUnset($offset) {
-    // TODO: Implement offsetUnset() method.
-    // Если нет никакого индекса - значит нечего записывать
-
+    // Р•СЃР»Рё РЅРµС‚ РЅРёРєР°РєРѕРіРѕ РёРЅРґРµРєСЃР° - Р·РЅР°С‡РёС‚ РЅРµС‡РµРіРѕ Р·Р°РїРёСЃС‹РІР°С‚СЊ
     if(!isset($offset) || (is_array($offset) && empty($offset))) {
       return;
     }
@@ -161,28 +157,28 @@ abstract class ArrayAccessMultidimensional implements ArrayAccess {
 
     if($this->offsetExists($offset)) {
 //pdump($offset);
-      // Перематываем массив в конец
+      // РџРµСЂРµРјР°С‚С‹РІР°РµРј РјР°СЃСЃРёРІ РІ РєРѕРЅРµС†
       $key_to_delete = end($offset);
 //      $key_to_delete = key($offset);
 //pdump($key_to_delete, '$key_to_delete');
       $parent_offset = $offset;
       array_pop($parent_offset);
       if(!count($parent_offset)) {
-        // В массиве был один элемент - мы удаляем в корне. Просто удаляем элемент
+        // Р’ РјР°СЃСЃРёРІРµ Р±С‹Р» РѕРґРёРЅ СЌР»РµРјРµРЅС‚ - РјС‹ СѓРґР°Р»СЏРµРј РІ РєРѕСЂРЅРµ. РџСЂРѕСЃС‚Рѕ СѓРґР°Р»СЏРµРј СЌР»РµРјРµРЅС‚
         $this->__unset($key_to_delete);
       } else {
-        // Получаем родительское дерево
+        // РџРѕР»СѓС‡Р°РµРј СЂРѕРґРёС‚РµР»СЊСЃРєРѕРµ РґРµСЂРµРІРѕ
 // pdump($parent_offset, '$parent_offset');
         $parent_element = $this->offsetGet($parent_offset);
 // pdump($parent_element, '$parent_element');
-        // Удаляем из него элемент
+        // РЈРґР°Р»СЏРµРј РёР· РЅРµРіРѕ СЌР»РµРјРµРЅС‚
         unset($parent_element[$key_to_delete]);
 // pdump($parent_element, '$parent_element');
-        // Записываем измененное родительское дерево назад
+        // Р—Р°РїРёСЃС‹РІР°РµРј РёР·РјРµРЅРµРЅРЅРѕРµ СЂРѕРґРёС‚РµР»СЊСЃРєРѕРµ РґРµСЂРµРІРѕ РЅР°Р·Р°Рґ
         $this->offsetSet($parent_offset, $parent_element);
       }
     }
 
-    $this->__flush(); // Сбрасывем кэш - если есть его поддержка
+    $this->__flush(); // РЎР±СЂР°СЃС‹РІРµРј РєСЌС€ - РµСЃР»Рё РµСЃС‚СЊ РµРіРѕ РїРѕРґРґРµСЂР¶РєР°
   }
 }

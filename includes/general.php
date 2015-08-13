@@ -1624,3 +1624,12 @@ function market_get_autoconvert_cost() {
 
   return $config->rpg_cost_exchange ? $config->rpg_cost_exchange * 3 : 3000;
 }
+
+function print_rr($var, $capture = false) {
+  $print = '<pre>' . htmlspecialchars(print_r($var, true)) . '</pre>';
+  if($capture) {
+    return $print;
+  } else {
+    print($print);
+  }
+}

@@ -105,6 +105,32 @@ class classSupernova {
         ),
       ),
     ),
+
+    LOC_FLEET => array(
+      P_TABLE_NAME => 'fleets',
+      P_ID => 'fleet_id',
+      P_OWNER_INFO => array(
+        array(
+          P_LOCATION => LOC_USER,
+          P_OWNER_FIELD => 'fleet_owner',
+        ),
+
+        array(
+          P_LOCATION => LOC_USER,
+          P_OWNER_FIELD => 'fleet_target_owner',
+        ),
+
+        array(
+          P_LOCATION => LOC_PLANET,
+          P_OWNER_FIELD => 'fleet_start_planet_id',
+        ),
+
+        array(
+          P_LOCATION => LOC_PLANET,
+          P_OWNER_FIELD => 'fleet_end_planet_id',
+        ),
+      ),
+    ),
   );
 
   public static function init() {
@@ -499,7 +525,7 @@ class classSupernova {
   }
 
   public static function db_ins_field_set($location_type, $field_set, $serialize = false) {
-    // TODO multiinsert ?
+    // TODO multiinsert
     !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set, $serialize) : false;
     sn_db_field_set_safe_flag_clear($field_set);
     $values = implode(',', $field_set);

@@ -297,6 +297,10 @@ function sn_db_field_set_make_safe($field_set, $serialize = false) {
         $value = '"' . db_escape($value) . '"';
       break;
 
+      case is_null($value):
+        $value = 'NULL';
+      break;
+
       default:
         die('unsupported operand type');
     }

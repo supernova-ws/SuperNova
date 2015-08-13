@@ -265,9 +265,9 @@ $sn_data += array(
     'amplify' => array(SHIP_CARGO_SMALL => 16.4, SHIP_SPY => 10.001, SHIP_SATTELITE_SOLAR => 21, ),
     'engine' => array(
       array(
+        'tech' => TECH_ENGINE_CHEMICAL,
         'speed' => 12500,
         'consumption' => 20,
-        'tech' => TECH_ENGINE_CHEMICAL,
         'min_level' => 1,
       ),
     ),

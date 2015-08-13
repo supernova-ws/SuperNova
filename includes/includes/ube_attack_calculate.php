@@ -152,10 +152,12 @@ function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet, $is_attacker)
   );
 }
 
-// ------------------------------------------------------------------------------------------------
-// Заполняет данные по планете
-function ube_attack_prepare_planet(&$combat_data, &$planet)
-{
+/**
+ * Заполняет данные по планете
+ * @param $combat_data
+ * @param $planet
+ */
+function ube_attack_prepare_planet(&$combat_data, &$planet) {
   global $ube_combat_bonus_list;
 
   $player_id = $planet['id_owner'];
@@ -203,16 +205,20 @@ function ube_attack_prepare_planet(&$combat_data, &$planet)
 }
 
 
-// ------------------------------------------------------------------------------------------------
-// Заполняет начальные данные по данным миссии
-function ube_attack_prepare(&$mission_data)
-{
-/*
-UBE_OPTIONS[UBE_LOADED]   
-UBE_OPTIONS[UBE_SIMULATOR]
-UBE_OPTIONS[UBE_EXCHANGE] 
-UBE_OPTIONS[UBE_MOON_WAS] 
-*/
+/**
+ * Заполняет начальные данные по данным миссии
+ *
+ * @param $mission_data
+ *
+ * @return array
+ */
+function ube_attack_prepare(&$mission_data) {
+  /*
+  UBE_OPTIONS[UBE_LOADED]
+  UBE_OPTIONS[UBE_SIMULATOR]
+  UBE_OPTIONS[UBE_EXCHANGE]
+  UBE_OPTIONS[UBE_MOON_WAS]
+  */
 
   $fleet_row          = &$mission_data['fleet'];
   $destination_planet = &$mission_data['dst_planet'];
@@ -224,7 +230,7 @@ UBE_OPTIONS[UBE_MOON_WAS]
   ube_attack_prepare_planet($combat_data, $destination_planet);
 
   // Готовим инфу по удержанию
-  $fleets = doquery("SELECT * FROM {{fleets}} 
+  $fleets = doquery("SELECT * FROM {{fleets}}
     WHERE
       `fleet_end_galaxy` = {$fleet_row['fleet_end_galaxy']} AND `fleet_end_system` = {$fleet_row['fleet_end_system']} AND `fleet_end_planet` = {$fleet_row['fleet_end_planet']} AND `fleet_end_type` = {$fleet_row['fleet_end_type']}
       AND `fleet_start_time` <= {$ube_time} AND `fleet_end_stay` >= {$ube_time}

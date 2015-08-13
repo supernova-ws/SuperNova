@@ -12,7 +12,7 @@
  * Поддержка отложенной записи
  *
  */
-class userOptions extends ArrayAccessMultidimensional {
+class userOptions extends oldArrayAccessNd {
   protected $user_id = 0;
   protected $loaded = false;
   protected $defaults = array(
