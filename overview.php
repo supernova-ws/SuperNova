@@ -34,51 +34,6 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');
 
-/*
-//$density_min = 850;
-//$density_max = 8250;
-$planet_density = sn_get_groups('planet_density');
-$density_min = reset($planet_density);
-$density_min = $density_min[UNIT_PLANET_DENSITY];
-$density_max = end($planet_density);
-$density_max = $density_max[UNIT_PLANET_DENSITY];
-
-for($i=0;$i<10000;$i++) {
-  $density = sn_rand_gauss_range(50, 150, true, 1.7, true);
-
-  $a_planet = uni_create_planet(1, 1, 3, 2, $planet_name_unsafe = '', $HomeWorld = false, $options = array('skip_check' => true));
-  $test[$a_planet['density_index']]++;
-}
-ksort($test);
-// pdump($test);
-
-$columns = 220;
-
-$test_count = array_sum($test);
-// $normal = $test_count / $test[4];
-print('<table>');
-foreach($test as $key => &$value) {
-//  $value = $value / $test_count * 1000;
-  print('<tr>');
-  print('<td>');
-  print($key);
-  print('</td>');
-  print('<td>');
-  print(($value / $test_count * 100) . '%');
-  print('</td>');
-
-  print('<td>');
-  print(str_repeat('*', $value / $test_count * 1000 / $columns * 100));
-  print('</td>');
-  print('</tr>');
-
-}
-print('</table>');
-
-//pdump($test);
-die();
-*/
-
 $result = array();
 
 switch($mode = sys_get_param_str('mode')) {
@@ -395,17 +350,19 @@ switch($mode = sys_get_param_str('mode')) {
     int_planet_pretemplate($planetrow, $template);
 
     $sn_group_ques = sn_get_groups('ques');
-    foreach(array(QUE_STRUCTURES => $sn_group_ques[QUE_STRUCTURES]) as $que_id => $que_type_data) {
-      $this_que = $que['ques'][$que_id][$user['id']][$planetrow['id']];
-      $template->assign_block_vars('ques', array(
-        'ID'     => $que_id,
-        'NAME'   => $lang['sys_ques'][$que_id],
-        'LENGTH' => empty($this_que) ? 0 : count($this_que),
-      ));
+    if(!defined('GAME_STRUCTURES_DISABLED') || !GAME_STRUCTURES_DISABLED) {
+      foreach(array(QUE_STRUCTURES => $sn_group_ques[QUE_STRUCTURES]) as $que_id => $que_type_data) {
+        $this_que = $que['ques'][$que_id][$user['id']][$planetrow['id']];
+        $template->assign_block_vars('ques', array(
+          'ID'     => $que_id,
+          'NAME'   => $lang['sys_ques'][$que_id],
+          'LENGTH' => empty($this_que) ? 0 : count($this_que),
+        ));
 
-      if(!empty($this_que)) {
-        foreach($this_que as $que_item) {
-          $template->assign_block_vars('que', que_tpl_parse_element($que_item));
+        if(!empty($this_que)) {
+          foreach($this_que as $que_item) {
+            $template->assign_block_vars('que', que_tpl_parse_element($que_item));
+          }
         }
       }
     }
@@ -417,12 +374,14 @@ switch($mode = sys_get_param_str('mode')) {
       'LENGTH' => $que_hangar_length,
     ));
 
-    $que_hangar_length = tpl_assign_hangar($template, $planetrow, SUBQUE_DEFENSE);
-    $template->assign_block_vars('ques', array(
-      'ID'     => SUBQUE_DEFENSE,
-      'NAME'   => $lang['sys_ques'][SUBQUE_DEFENSE],
-      'LENGTH' => $que_hangar_length,
-    ));
+    if(!defined('GAME_DEFENSE_DISABLED') || !GAME_DEFENSE_DISABLED) {
+      $que_hangar_length = tpl_assign_hangar($template, $planetrow, SUBQUE_DEFENSE);
+      $template->assign_block_vars('ques', array(
+        'ID'     => SUBQUE_DEFENSE,
+        'NAME'   => $lang['sys_ques'][SUBQUE_DEFENSE],
+        'LENGTH' => $que_hangar_length,
+      ));
+    }
 
     $overview_planet_rows = $user['opt_int_overview_planet_rows'];
     $overview_planet_columns = $user['opt_int_overview_planet_columns'];
