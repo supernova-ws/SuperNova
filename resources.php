@@ -133,6 +133,8 @@ foreach($sn_group_factories as $unit_id)
       'ENERGY_FULL'    => pretty_number($caps_real['production_full'][RES_ENERGY][$unit_id], true, true),
 
       'SELECT'         => $row_select,
+      'P_MINING_IS_MANAGED' => get_unit_param($unit_id, P_MINING_IS_MANAGED),
+
     ));
   }
 }

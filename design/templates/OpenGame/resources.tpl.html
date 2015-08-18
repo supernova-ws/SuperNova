@@ -97,7 +97,7 @@ function res_set_all(obj)
           <!-- IF production.ENERGY_FULL != '' && production.ENERGY_FULL != production.ENERGY_TYPE --><br />({production.ENERGY_FULL})<!-- ENDIF -->
         </th>
         <th>
-          <!-- IF production.LEVEL -->
+          <!-- IF production.LEVEL && production.P_MINING_IS_MANAGED -->
             <select name="production[{production.ID}]" id="production{production.ID}" size="1">
               <!-- BEGIN !option -->
                 <option value="{option.VALUE}"<!-- IF option.VALUE == production.PERCENT --> selected<!-- ENDIF -->>{option.VALUE}%</option>

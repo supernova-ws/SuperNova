@@ -37,7 +37,7 @@ function sn_imperium_view($template = null)
         foreach($sn_group_factories as $factory_unit_id)
         {
           $unit_db_name_porcent = pname_factory_production_field_name($factory_unit_id);
-          if(isset($production[$factory_unit_id][$planet['id']]) && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >=0 && $actual_porcent <= 10 && $actual_porcent != $planet[$unit_db_name_porcent])
+          if(get_unit_param($factory_unit_id, P_MINING_IS_MANAGED) && isset($production[$factory_unit_id][$planet['id']]) && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >=0 && $actual_porcent <= 10 && $actual_porcent != $planet[$unit_db_name_porcent])
           {
             $query[$planet['id']][] = "{$unit_db_name_porcent} = {$actual_porcent}";
           }
@@ -154,7 +154,7 @@ function sn_imperium_view($template = null)
     {
       $unit_count = $unit_count_abs = 0;
       $block_vars = array();
-      $unit_is_factory = in_array($unit_id, $sn_group_factories);
+      $unit_is_factory = in_array($unit_id, $sn_group_factories) && get_unit_param($unit_id, P_MINING_IS_MANAGED);
       // $unit_db_name = pname_resource_name($unit_id);
       foreach($planets as $planet)
       {
