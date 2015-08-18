@@ -178,13 +178,13 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   $modifiers = sn_get_groups('modifiers');
 
   $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data['production'][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
   $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data['production'][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
   $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data['production'][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
   $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data['production'][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
 
   $ActualProd = floor($Prod[$BuildID]);
   if ($BuildID != STRUC_MINE_FUSION)
@@ -208,13 +208,13 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
     if ($BuildID != STRUC_MOON_PHALANX)
     {
       $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data['production'][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
       $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data['production'][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
       $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data['production'][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
       $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data['production'][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
 
       $bloc['build_lvl'] = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">" . $BuildLevel . "</font>" : $BuildLevel;
       if ($ProdFirst > 0)

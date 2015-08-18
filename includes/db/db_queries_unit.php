@@ -19,6 +19,20 @@ function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_s
   return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid, $for_update, $fields);
 }
 
+function db_unit_count_by_user_and_type($user_id, $unit_type = 0) {
+  $query = doquery(
+    "SELECT unit_snid, sum(unit_level) as `qty`  FROM {{unit}} WHERE `unit_player_id` = {$user_id} " .
+    ($unit_type ? "AND `unit_type` = {$unit_type} " : false) .
+    'GROUP BY `unit_snid`'
+  );
+  $result = array();
+  while($row = db_fetch($query)) {
+    $result[$row['unit_snid']] = $row;
+  }
+
+  return $result;
+}
+
 function db_unit_in_fleet_by_user($user_id, $location_id, $unit_snid, $for_update)
 {
   return doquery(
@@ -48,13 +62,11 @@ function db_unit_list_laboratories($user_id)
 function db_unit_set_by_id($unit_id, $set)
 {
   return classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_id, $set);
-  return doquery("UPDATE {{unit}} SET {$set} WHERE `unit_id` = {$unit_id} LIMIT 1");
 }
 
 function db_unit_set_insert($set)
 {
   return classSupernova::db_ins_record(LOC_UNIT, $set);
-  return doquery("INSERT INTO {{unit}} SET {$set}");
 }
 
 function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_id, $unit_snid = 0)
@@ -65,15 +77,6 @@ function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_i
     ($user_id = idval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
 //    ($unit_snid = intval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
     ($unit_snid = idval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
-
-  return doquery(
-    "DELETE FROM {{unit}}
-    WHERE unit_location_type = {$unit_location_type} AND unit_location_id = {$unit_location_id}" .
-//    ($user_id = intval($user_id) ? " AND unit_player_id = {$user_id}" : '') .
-    ($user_id = idval($user_id) ? " AND unit_player_id = {$user_id}" : '') .
-//    ($unit_snid = intval($unit_snid) ? " AND unit_snid = {$unit_snid}" : '')
-    ($unit_snid = idval($unit_snid) ? " AND unit_snid = {$unit_snid}" : '')
-  );
 }
 
 

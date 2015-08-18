@@ -35,7 +35,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a7.1');
+define('SN_VERSION', '40a8.0');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1002,12 +1002,15 @@ define('P_BONUS_VALUE', 'bonus');
 define('P_CAPACITY', 'capacity');
 define('P_UNIT_SIZE', 'size');
 define('P_SPEED', 'speed');
+define('P_UNIT_PRODUCTION', 'production');
 
 define('P_CHAT', 'chat');
 define('P_CHAT_COMMANDS', 'commands');
 define('P_CHAT_ALIASES', 'aliases');
 
 define('P_RACE', 'player_race');
+
+define('P_UNIT_GRANTS', 'P_UNIT_GRANTS'); // Что дает этот юнит
 
 define('P_ATTACK', 'attack');
 define('P_SHIELD', 'shield');
@@ -1043,6 +1046,8 @@ define('P_COST_TOTAL', 'unit_cost');
 define('P_OPTIONS', 'options');
 define('P_ONLY_DARK_MATTER', 'P_ONLY_DARK_MATTER');
 define('P_TIME_RAW', 'P_TIME_RAW');
+
+define('P_MINING_IS_MANAGED', 'P_MINING_IS_MANAGED'); // Флаг, означающий что добычей ресурсов можно управлять
 
 define('SNC_VER_NEVER', -1);
 define('SNC_VER_ERROR_CONNECT', 0);

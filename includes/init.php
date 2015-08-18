@@ -219,6 +219,7 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
 //  100000 - default load order
 //  999999 - core_ship_constructor
 //  2000000000 - that requires that all possible modules loaded already
+//  2000100000 - game_skirmish
 
 // Генерируем список требуемых модулей
 $load_order = array();
@@ -423,5 +424,7 @@ define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
 !empty($user) && sys_get_param_id('survey_vote') ? die(survey_vote($user)) : false;
 
-lng_load_i18n($sn_mvc['i18n'][$sn_page_name]);
+!empty($sn_mvc['i18n']['']) ? lng_load_i18n($sn_mvc['i18n']['']) : false;
+$sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
+
 execute_hooks($sn_mvc['model'][''], $template);

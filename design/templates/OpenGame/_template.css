@@ -155,10 +155,10 @@ only screen and (min-device-pixel-ratio : 1.5) {
 
   /*border: solid 1px blue;*/
 }
-#unit_require_wrapper {
+#unit_require_wrapper, #unit_grants_wrapper {
   font-size: 0.8em;
 }
-#unit_require {
+#unit_require, #unit_grants {
   overflow: hidden;
 }
 

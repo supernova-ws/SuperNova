@@ -229,7 +229,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
       'UNIT_BUSY'         => eco_unit_busy($user, $planet, $que, $unit_id),
 
-      'MAP_IS_RESOURCE'   => !empty($unit_info['production']),
+      'MAP_IS_RESOURCE'   => !empty($unit_info[P_UNIT_PRODUCTION]),
     );
 
     if($unit_stackable) {
@@ -249,18 +249,18 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         );
       }
 
-      if($unit_info['production']) {
-        foreach($unit_info['production'] as $resource_id => $resource_calc) {
+      if($unit_info[P_UNIT_PRODUCTION]) {
+        foreach($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
           if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc(1, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))) {
             $level_production_base['R'. $resource_id] = $resource_income;
           }
         }
       }
       $production['.']['resource'][] = $level_production_base;
-    } elseif($unit_info['production']) {
+    } elseif($unit_info[P_UNIT_PRODUCTION]) {
       $level_production_base = array();
       $element_level_start = $level_effective + $in_que[$unit_id];
-      foreach($unit_info['production'] as $resource_id => $resource_calc) {
+      foreach($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
         if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))) {
           $level_production_base[$resource_id] = $resource_income;
         }
@@ -269,7 +269,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       $level_start = $level_base_and_que > 1 ? $level_effective + $level_in_que - 1 : 1;
       for($i = 0; $i < 6; $i++) {
         $level_production = array('LEVEL' => $level_start + $i);
-        foreach($unit_info['production'] as $resource_id => $resource_calc) {
+        foreach($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
           if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))) {
             $level_production['R'.$resource_id] = $resource_income;
             $level_production['D'.$resource_id] = $resource_income - $level_production_base[$resource_id];
@@ -279,13 +279,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       }
     } elseif($unit_id == TECH_ASTROTECH) {
       $element_level_start = $level_effective + $in_que[$unit_id];
-      /*
-      foreach($unit_info['production'] as $resource_id => $resource_calc) {
-        if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))) {
-          $level_production_base[$resource_id] = $resource_income;
-        }
-      }
-      */
       $level_production_base = array(
         UNIT_PLAYER_EXPEDITIONS_MAX => get_player_max_expeditons($user, $element_level_start),
         UNIT_PLAYER_COLONIES_MAX => get_player_max_colonies($user, $element_level_start),
@@ -298,15 +291,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         $level_production['D'.UNIT_PLAYER_EXPEDITIONS_MAX] = $level_production['R'.UNIT_PLAYER_EXPEDITIONS_MAX] - $level_production_base[UNIT_PLAYER_EXPEDITIONS_MAX];
         $level_production['R'.UNIT_PLAYER_COLONIES_MAX] = get_player_max_colonies($user, $level_start + $i);
         $level_production['D'.UNIT_PLAYER_COLONIES_MAX] = $level_production['R'.UNIT_PLAYER_COLONIES_MAX] - $level_production_base[UNIT_PLAYER_COLONIES_MAX];
-        /*
-                foreach($unit_info['production'] as $resource_id => $resource_calc) {
-                  if($resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet) * $config_resource_multiplier * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))) {
-                    $level_production['R'.$resource_id] = $resource_income;
-                    $level_production['D'.$resource_id] = $resource_income - $level_production_base[$resource_id];
-                  }
-                }
-                $template->assign_block_vars('production.resource', $level_production);
-        */
         $production['.']['resource'][] =  $level_production;
 
         $level_production_base = array(
@@ -315,9 +299,12 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         );
       }
     }
-    foreach(unit_requirements_render($user, $planet, $unit_id) as $requirement) {
-      $production['.']['require'][] =  $requirement;
-    }
+//    foreach(unit_requirements_render($user, $planet, $unit_id) as $requirement) {
+//      $production['.']['require'][] =  $requirement;
+//    }
+    $production['.']['require'] = unit_requirements_render($user, $planet, $unit_id);
+    $production['.']['grants'] = unit_requirements_render($user, $planet, $unit_id, P_UNIT_GRANTS);
+
     $template_result['.']['production'][] = $production;
   }
 

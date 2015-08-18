@@ -621,6 +621,15 @@ function gettemplate($files, $template = false, $template_path = false)
   $tmpl_name = gettemplatename($user['dpath']);
   $template->set_custom_template(($template_path ? $template_path : SN_ROOT_PHYSICAL . 'design/templates/') . $tmpl_name . '/', $tmpl_name, TEMPLATE_DIR);
 
+  // TODO ГРЯЗНЫЙ ХАК! Это нужно, что бы по возможности перезаписать инфу из языковых пакетов модулей там, где она была перезаписана раньше инфой из основного пакета. Почему?
+  //  - сначала грузятся модули и их языковые пакеты
+  //  - затем по ходу дела ОСНОВНОЙ языковой пакет может перезаписать данные из МОДУЛЬНОГО языкового пакета
+  // Поэтому и нужен этот грязный хак
+  // В норме же - страницы заявляют сами, какие им пакеты нужны. Так что сначала всегда должны грузится основные языковые пакеты, а уже ПОВЕРХ них - пакеты модулей
+  global $sn_mvc, $sn_page_name;
+  !empty($sn_mvc['i18n']['']) ? lng_load_i18n($sn_mvc['i18n']['']) : false;
+  $sn_page_name ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
+
   foreach($files as &$filename) {
     $filename = $filename . $template_ex;
   }

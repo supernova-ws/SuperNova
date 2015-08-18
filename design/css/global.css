@@ -800,7 +800,7 @@ th.c_j, td.c_j
   line-height: 1em;
 }
 
-#unit_require li {
+#unit_require li, #unit_grants li {
   margin: 0;
   padding: 0;
 }

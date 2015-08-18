@@ -42,16 +42,16 @@ switch ($mode) {
 //  break;
 
   case QUE_RESEARCH:
-    eco_build(QUE_RESEARCH, $user, $planetrow);
+    defined("GAME_RESEARCH_DISABLED") && GAME_RESEARCH_DISABLED ? eco_build(SUBQUE_FLEET, $user, $planetrow) : eco_build(QUE_RESEARCH, $user, $planetrow);
   break;
 
-  case SUBQUE_FLEET:
   case SUBQUE_DEFENSE:
-    eco_build($mode, $user, $planetrow);
+  case SUBQUE_FLEET:
+    defined("GAME_DEFENSE_DISABLED") && GAME_DEFENSE_DISABLED ? eco_build(SUBQUE_FLEET, $user, $planetrow) : eco_build($mode, $user, $planetrow);
   break;
 
   case QUE_STRUCTURES:
   default:
-    eco_build(QUE_STRUCTURES, $user, $planetrow);
+    defined("GAME_STRUCTURES_DISABLED") && GAME_RESEARCH_DISABLED ? eco_build(SUBQUE_FLEET, $user, $planetrow) : eco_build(QUE_STRUCTURES, $user, $planetrow);
   break;
 }

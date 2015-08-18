@@ -57,37 +57,33 @@ if(!empty($transmutation_result))
 
 $sn_group_factories = sn_get_groups('factories');
 $production = $_POST['production'];
-$SubQry     = '';
-if(is_array($production))
-{
-  foreach($production as $prod_id => $percent)
-  {
-    if($percent > 100 || $percent < 0)
-    {
+//$SubQry     = '';
+$SubQry     = array();
+if(is_array($production)) {
+  foreach($production as $prod_id => $percent) {
+    if($percent > 100 || $percent < 0) {
       $debug->warning('Supplying wrong production percent (less then 0 or greater then 100)', 'Hack attempt', 302, array('base_dump' => true));
       die();
     }
 
     $prod_id = intval($prod_id);
-    if(in_array($prod_id, $sn_group_factories))
-    {
+    if(in_array($prod_id, $sn_group_factories) && get_unit_param($prod_id, P_MINING_IS_MANAGED)) {
       $field_name              = pname_factory_production_field_name($prod_id);
       $percent                 = floor($percent / 10);
       $planetrow[$field_name]  = $percent;
-      $SubQry                 .= "`{$field_name}` = '{$percent}',";
-    }
-    else
-    {
-      $debug->warning('Supplying wrong ID in production array - attempt to change some field', 'Resource Page', 301);
-      die();
+      //$SubQry                 .= "`{$field_name}` = '{$percent}',";
+      $SubQry[]                 = "`{$field_name}` = '{$percent}'";
+    } else {
+      $debug->warning('Supplying wrong ID in production array - attempt to change some field - ID' . $prod_id, 'Resource Page', 301);
+      continue;
     }
   }
 
-  $SubQry = substr($SubQry, 0, -1);
-  if($SubQry)
-  {
-    db_planet_set_by_id($planetrow['id'], $SubQry);
-  }
+//  $SubQry = substr($SubQry, 0, -1);
+//  if($SubQry) {
+//    db_planet_set_by_id($planetrow['id'], $SubQry);
+//  }
+  !empty($SubQry) ? db_planet_set_by_id($planetrow['id'], implode(',', $SubQry)) : false;
 }
 
 // -------------------------------------------------------------------------------------------------------

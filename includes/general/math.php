@@ -1,5 +1,9 @@
 <?php
 
+function geometry_progression_sum($n, $b1, $q) {
+  return $q != 1 ? ($b1 * (pow($q, $n) - 1)/($q - 1)) : ($n * $b1);
+}
+
 function sn_floor($value)
 {
   return $value >= 0 ? floor($value) : ceil($value);

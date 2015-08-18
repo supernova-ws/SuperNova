@@ -345,7 +345,9 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 function que_recalculate($old_que) {
   $new_que = array();
 
-  if(is_array($old_que['items']))
+  if(!is_array($old_que['items'])) {
+    return $new_que;
+  }
   foreach($old_que['items'] as $row) {
     if(!isset($row) || !$row || $row['que_unit_amount'] <= 0) {
       continue;

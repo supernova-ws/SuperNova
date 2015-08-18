@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a7.0
+* @version 40a8.0
 *
 */
 
@@ -30,7 +30,6 @@ if (!defined('INSIDE')) die();
 //$lang->merge(
 $a_lang_array = (array(
   'wiki_title' => 'Новапедия',
-  'wiki_requrements' => 'Требуется',
 
   'wiki_char_nominal' => 'Паспортные',
   'wiki_char_actual' => 'Актуальные',

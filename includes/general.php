@@ -1144,17 +1144,17 @@ function idval($value, $default = 0)
   return preg_match('#^(\d*)#', $value, $matches) && $matches[1] ? floatval($matches[1]) : $default;
 }
 
-function unit_requirements_render($user, $planetrow, $unit_id){return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, &$result));}
-function sn_unit_requirements_render($user, $planetrow, $unit_id, &$result)
+function unit_requirements_render($user, $planetrow, $unit_id, $field = 'require'){return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, $field, &$result));}
+function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'require', &$result)
 {
   global $lang, $config;
 
   $sn_data_unit = get_unit_param($unit_id);
 
   $result = is_array($result) ? $result : array();
-  if($sn_data_unit['require'] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && $config->empire_mercenary_temporary))
+  if($sn_data_unit[$field] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && $config->empire_mercenary_temporary))
   {
-    foreach($sn_data_unit['require'] as $require_id => $require_level)
+    foreach($sn_data_unit[$field] as $require_id => $require_level)
     {
       $level_got = mrc_get_level($user, $planetrow, $require_id);
       $level_basic = mrc_get_level($user, $planetrow, $require_id, false, true);

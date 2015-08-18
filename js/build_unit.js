@@ -206,6 +206,22 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     $('#unit_require_wrapper').hide();
   }
 
+  if(grants[unit_id]) {
+    requirement_string = '';
+    for(i in grants[unit_id]) {
+      req = grants[unit_id][i];
+      requirement_string = requirement_string
+        + '<li class="' + (req['requerements_met'] ? 'positive' : 'negative  ') + '">'
+          + req['name']
+          + (!isNaN(req['level_basic']) ? ' ' + req['level_basic'] + (req['level_bonus'] ? '<span class="bonus">+' + req['level_bonus'] + '</span>' : '') + '/' + req['level_require'] : '')
+        + '</li>';
+    }
+    $('#unit_grants').empty().append(requirement_string);
+    $('#unit_grants_wrapper').show();
+  } else {
+    $('#unit_grants_wrapper').hide();
+  }
+
   if(TEMPORARY) {
     jQuery("#unit_cost_table").hide();//css.display = "none";
   } else {

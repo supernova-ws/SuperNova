@@ -14,10 +14,11 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.5,
     ),
-    'production' => array(
+    P_UNIT_PRODUCTION => array(
       RES_METAL     => function ($level, $production_factor, $user, $planet_row) {return  40 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
       RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return -13 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
+    P_MINING_IS_MANAGED => true,
   ),
 
   STRUC_MINE_CRYSTAL => array(
@@ -31,10 +32,11 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.6,
     ),
-    'production' => array(
+    P_UNIT_PRODUCTION => array(
       RES_CRYSTAL   => function ($level, $production_factor, $user, $planet_row) {return  32 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
       RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return -16 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
+    P_MINING_IS_MANAGED => true,
   ),
 
   STRUC_MINE_DEUTERIUM => array(
@@ -48,10 +50,11 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.5,
     ),
-    'production' => array(
+    P_UNIT_PRODUCTION => array(
       RES_DEUTERIUM => function ($level, $production_factor, $user, $planet_row) {return  10 * $level * pow(1.1, $level) * (0.1 * $production_factor) * (-0.002 * $planet_row["temp_max"] + 1.28);},
       RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return -20 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
+    P_MINING_IS_MANAGED => true,
   ),
 
   STRUC_MINE_SOLAR => array(
@@ -65,9 +68,10 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.5,
     ),
-    'production' => array(
+    P_UNIT_PRODUCTION => array(
       RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return ($planet_row["temp_max"] / 5 + 15) * $level * pow(1.1, $level) * (0.1 * $production_factor);},
     ),
+    P_MINING_IS_MANAGED => true,
   ),
 // −273,15 °C
   STRUC_MINE_FUSION => array(
@@ -82,10 +86,11 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 1.8,
     ),
-    'production' => array(
+    P_UNIT_PRODUCTION => array(
       RES_DEUTERIUM => function ($level, $production_factor, $user, $planet_row) {return -10 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
       RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($user, "", TECH_ENERGY), $level) * (0.1 * $production_factor);},
     ),
+    P_MINING_IS_MANAGED => true,
   ),
 
   STRUC_STORE_METAL => array(

@@ -35,6 +35,7 @@ function sn_techtree_view($template = null)
       );
 
       $rendered_info['.']['require'] = unit_requirements_render($user, $planetrow, $unit_id);
+      $rendered_info['.']['grants'] = unit_requirements_render($user, $planetrow, $unit_id, P_UNIT_GRANTS);
 
       $tech_tree[] = $rendered_info;
     }

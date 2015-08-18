@@ -56,9 +56,10 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
     $unit_level = mrc_get_level($user, $planet_row, $unit_id);
     $unit_load = $planet_row[pname_factory_production_field_name($unit_id)];
 
-    foreach($unit_data['production'] as $resource_id => $function)
+    foreach($unit_data[P_UNIT_PRODUCTION] as $resource_id => $function)
     {
       $caps['production_full'][$resource_id][$unit_id] = $function($unit_level, $unit_load, $user, $planet_row) * $config_resource_multiplier * (isset($planet_density[$resource_id]) ? $planet_density[$resource_id] : 1);
+      //$caps['production_full'][$resource_id][$unit_id] = $function($unit_level, $unit_load, $user, $planet_row, $resource_id, $unit_data) * $config_resource_multiplier * (isset($planet_density[$resource_id]) ? $planet_density[$resource_id] : 1);
     }
   }
 

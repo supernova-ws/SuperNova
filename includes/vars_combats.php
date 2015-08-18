@@ -222,9 +222,11 @@ $sn_data += array(
       RES_ENERGY    => 0, 
       'factor' => 1,
     ),
-    'production' => array(
+    P_UNIT_PRODUCTION => array(
       RES_ENERGY => function($level, $production_factor, $user, $planet_row) {return ($planet_row["temp_max"] / 4 + 20) * $level * (0.1 * $production_factor);},
     ),
+    P_MINING_IS_MANAGED => true,
+
     P_HULL_SIZE => HULL_SIZE_TINY,
     'capacity' => 1,
     'shield' => 10,

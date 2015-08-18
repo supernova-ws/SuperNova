@@ -761,21 +761,19 @@ class classSupernova {
     }
 
     $result = false;
-    if(is_array($query_cache))
-    {
-      foreach($query_cache as $key => $value)
-      {
+    if(is_array($query_cache)) {
+      foreach($query_cache as $key => $value) {
         $result[$key] = $value;
       }
     }
 
     return $result;
   }
-  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid, $for_update = false, $fields = '*')
+  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
   {
     static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
-    return static::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid];
+    return $unit_snid ? static::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : static::$locator[LOC_UNIT][$location_type][$location_id];
   }
 
 

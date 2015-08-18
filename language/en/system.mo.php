@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a6.5
+* @version 40a8.0
 *
 */
 
@@ -1106,4 +1106,6 @@ $a_lang_array = (array(
 
   'news_show_rest' => 'Показать текст новости',
 
+  'wiki_requrements' => 'Requires',
+  'wiki_grants' => 'Grants',
 ));
