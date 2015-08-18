@@ -27,6 +27,9 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0)
   }
 
   $caps = array();
+  $caps['storage'][RES_METAL][0] = $config->eco_planet_storage_metal;
+  $caps['storage'][RES_CRYSTAL][0] = $config->eco_planet_storage_crystal;
+  $caps['storage'][RES_DEUTERIUM][0] = $config->eco_planet_storage_deuterium;
   foreach(sn_get_groups('storages') as $unit_id)
   {
     foreach(get_unit_param($unit_id, P_STORAGE) as $resource_id => $function)

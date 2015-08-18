@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a8.0#
+* @version #40a8.4#
 *
 */
 
@@ -185,7 +185,9 @@ $a_lang_array = (array(
 
 // Resource page
   'res_planet_production' => 'Производство ресурсов на планете',
+  'res_basic_starting_resources' => 'Стартовые ресурсы на планете',
   'res_basic_income' => 'Естественное производство',
+  'res_basic_storage_size' => 'Размер хранилища у планеты',
   'res_total' => 'ВСЕГО',
   'res_calculate' => 'Рассчитать',
   'res_hourly' => 'В час',

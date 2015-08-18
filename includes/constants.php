@@ -21,9 +21,6 @@ define('MAX_FLEET_OR_DEFS_PER_ROW', 2000);
 define('MAX_ATTACK_ROUNDS', 10);
 //define('MAX_OVERFLOW', 1);
 define('BASE_STORAGE_SIZE', 500000);
-define('BUILD_METAL'      , 500);
-define('BUILD_CRISTAL'    , 500);
-define('BUILD_DEUTERIUM'  , 0);
 define('HIDE_1ST_FROM_STATS', 0);
 define('HIDE_BUILDING_RECORDS', 0);
 define('SHOW_ADMIN', 1);
@@ -35,7 +32,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a8.3');
+define('SN_VERSION', '40a8.4');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_

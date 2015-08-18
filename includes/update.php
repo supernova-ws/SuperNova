@@ -1023,6 +1023,16 @@ switch($new_version) {
 
     upd_check_key('db_manual_lock_enabled', 1, empty($config->db_manual_lock_enabled));
 
+    // 2015-08-18 11:11:53 40a8.4
+
+    upd_check_key('eco_planet_starting_metal', 500, empty($config->eco_planet_starting_metal));
+    upd_check_key('eco_planet_starting_crystal', 500, empty($config->eco_planet_starting_crystal));
+    upd_check_key('eco_planet_starting_deuterium', 0, empty($config->eco_planet_starting_deuterium));
+
+    upd_check_key('eco_planet_storage_metal', 500000, empty($config->eco_planet_storage_metal));
+    upd_check_key('eco_planet_storage_crystal', 500000, empty($config->eco_planet_storage_crystal));
+    upd_check_key('eco_planet_storage_deuterium', 500000, empty($config->eco_planet_storage_deuterium));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

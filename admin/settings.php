@@ -64,10 +64,16 @@ if(sys_get_param('save')) {
   $config->tpl_minifier            = sys_get_param_int('tpl_minifier', 0);
 
   $config->initial_fields          = sys_get_param_int('initial_fields', 200);
+  $config->eco_planet_starting_metal = sys_get_param_float('eco_planet_starting_metal', 500);
+  $config->eco_planet_starting_crystal = sys_get_param_float('eco_planet_starting_crystal', 500);
+  $config->eco_planet_starting_deuterium = sys_get_param_float('eco_planet_starting_deuterium', 0);
   $config->metal_basic_income      = sys_get_param_float('metal_basic_income', 40);
   $config->crystal_basic_income    = sys_get_param_float('crystal_basic_income', 20);
   $config->deuterium_basic_income  = sys_get_param_float('deuterium_basic_income', 10);
   $config->energy_basic_income     = sys_get_param_float('energy_basic_income', 0);
+  $config->eco_planet_storage_metal = sys_get_param_float('eco_planet_storage_metal', BASE_STORAGE_SIZE);
+  $config->eco_planet_storage_crystal = sys_get_param_float('eco_planet_storage_crystal', BASE_STORAGE_SIZE);
+  $config->eco_planet_storage_deuterium = sys_get_param_float('eco_planet_storage_deuterium', BASE_STORAGE_SIZE);
 
   $config->chat_timeout            = sys_get_param_int('chat_timeout', 5);
 

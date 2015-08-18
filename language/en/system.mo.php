@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a8.0
+* @version 40a8.4
 *
 */
 
@@ -184,7 +184,9 @@ $a_lang_array = (array(
 
 // Resource page
   'res_planet_production' => 'Planet Production',
+  'res_basic_starting_resources' => 'Planet starting resources',
   'res_basic_income' => 'Basic Income',
+  'res_basic_storage_size' => 'Planet storage size',
   'res_total' => 'Total',
   'res_calculate' => 'Calculate',
   'res_hourly' => 'Hourly',

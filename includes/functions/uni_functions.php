@@ -100,12 +100,12 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['temp_min'] = $planet['temp_min_original'] = $t_min;
   $planet['temp_max'] = $planet['temp_max_original'] = $t_max;
 
-  $planet['metal']             = BUILD_METAL;
-  $planet['crystal']           = BUILD_CRISTAL;
-  $planet['deuterium']         = BUILD_DEUTERIUM;
-  $planet['metal_max']         = BASE_STORAGE_SIZE;
-  $planet['crystal_max']       = BASE_STORAGE_SIZE;
-  $planet['deuterium_max']     = BASE_STORAGE_SIZE;
+  $planet['metal']             = $config->eco_planet_starting_metal;
+  $planet['crystal']           = $config->eco_planet_starting_crystal;
+  $planet['deuterium']         = $config->eco_planet_starting_deuterium;
+  $planet['metal_max']         = $config->eco_planet_storage_metal;
+  $planet['crystal_max']       = $config->eco_planet_storage_crystal;
+  $planet['deuterium_max']     = $config->eco_planet_storage_deuterium;
   $planet['metal_perhour']     = $config->metal_basic_income * $density_info_resources[RES_METAL];
   $planet['crystal_perhour']   = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
   $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
