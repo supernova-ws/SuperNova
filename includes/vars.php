@@ -492,13 +492,14 @@ mission = array(
 
     'planet_generator' => array(
       0 => array( // HomeWorld
-        't_max_min' => 40, // Tmax всегда 40
+        't_max_min' => 40, // Tmax 40
         't_max_max' => 40,
-        't_delta_min' => 40, // Tmin всегда 0
+        't_delta_min' => 40, // Tmin 0
         't_delta_max' => 40,
         'size_min' => $config->initial_fields,
         'size_max' => $config->initial_fields,
         'core_types' => array(PLANET_DENSITY_STANDARD,),
+        'planet_images' => array('normaltemp'),
       ),
       1 => array(
         't_max_min' => 100,
@@ -532,7 +533,6 @@ mission = array(
         ),
         'planet_images' => array('trocken'),
       ),
-      // Средние, богатые
       3 => array(
         't_max_min' => 70,
         't_max_max' => 135,
@@ -593,7 +593,6 @@ mission = array(
         ),
         'planet_images' => array('dschjungel'),
       ),
-      // Средние, богатые
       7 => array(
         't_max_min' => 5,
         't_max_max' => 90,
