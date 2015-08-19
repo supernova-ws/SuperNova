@@ -1033,9 +1033,9 @@ switch($new_version) {
     upd_check_key('eco_planet_storage_crystal', 500000, empty($config->eco_planet_storage_crystal));
     upd_check_key('eco_planet_storage_deuterium', 500000, empty($config->eco_planet_storage_deuterium));
 
-    // 2015-08-19 04:37:02 40a8.9
+    // 2015-08-19 04:41:57 40a8.10
 
-    upd_do_query('UPDATE {{planets}} SET `image` = "normaltemp01" WHERE `image` = "planet"'); // deprecated define('PLANET_DENSITY_METAL_HEAVY', 7);
+    upd_do_query('UPDATE {{planets}} SET `image` = "normaltempplanet01" WHERE `image` = "planet" OR `image` = "normaltemp01"'); // deprecated define('PLANET_DENSITY_METAL_HEAVY', 7);
 
     // #ctv
 
