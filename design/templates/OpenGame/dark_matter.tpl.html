@@ -1,6 +1,6 @@
 <!-- IF ! $TABLE_WIDTH || $TABLE_WIDTH == 0 -->
   <!-- DEFINE $TABLE_WIDTH = '519px' -->
-  <h2>{PAGE_HEADER}</h2>
+  <h1>{PAGE_HEADER}</h1>
 <!-- ENDIF -->
 
 <!-- INCLUDE _result_message -->
@@ -13,22 +13,21 @@
 <table width="{$TABLE_WIDTH}">
   <tr class="c_j">
     <th>
-      {L_sys_dark_matter_what_header}
+      <span>{L_sys_dark_matter_what_header}</span>
     </th>
   </tr>
   <tr class="c_j">
     <td>
       <div style="display: table-row; position: relative; margin: 7px;">
         <img src="design/images/DMaterie.jpg" align="top" border="0" height="120" width="120" class="fl" style="margin-right: 7px;">
-        {UNIT_DESCRIPTION}
+        {DARK_MATTER_DESCRIPTION}
       </div>
     </td>
   </tr>
 
   <tr class="c_j">
     <th>
-      {L_sys_dark_matter_obtain_header}
-      <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_obtain');">[ {L_sys_hide} ]</span>
+      <span>{L_sys_dark_matter_obtain_header}</span>
     </th>
   </tr>
   <tr class="c_j" id="dark_matter_obtain">
@@ -43,10 +42,9 @@
   <tr>
     <th class="c_l">
       {L_sys_dark_matter_description_header}
-      <span class="fr link_action" onclick="sn_show_hide(this, 'dark_matter_usage');">[ {L_sys_show} ]</span>
     </th>
   </tr>
-  <tr class="c_j" id="dark_matter_usage" style="display: none;">
+  <tr class="c_j" id="dark_matter_usage">
     <td>
       {L_sys_dark_matter_description_text}
     </td>

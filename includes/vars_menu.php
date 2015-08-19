@@ -222,6 +222,12 @@ $sn_menu = array(
 //    'ITEM'  => 'sys_dark_matter',
 //    'ICON'  => true,
 //  ),
+//  'menu_metamatter' => !defined('SN_GOOGLE') ? array(
+//    'LEVEL' => 'header',
+//    'TYPE'  => 'lang',
+//    'ITEM'  => 'sys_metamatter',
+//    'LINK'  => 'metamatter.php',
+//  ) : array(),
   'menu_dark_matter' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',

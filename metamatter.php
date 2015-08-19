@@ -7,13 +7,14 @@
 include_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(!sn_module_get_active_count('payment')) {
-  sys_redirect('overview.php');
+  sys_redirect('dark_matter.php');
   die();
 }
 
 global $config;
 
 lng_include('payment');
+lng_include('infos');
 
 $template = gettemplate('metamatter', true);
 
@@ -318,6 +319,11 @@ $template->assign_vars(array(
   'METAMATTER_COST_BONUS_TEXT' => $bonus_percent
     ? sprintf($lang['pay_mm_buy_real_income'], pretty_number($bonus_percent, true, true), $income_metamatter_text)
     : '',
+
+  'DARK_MATTER_DESCRIPTION' => $lang['info'][RES_DARK_MATTER]['description'],
+
+  'PAYMENT_AVAILABLE' => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
+
 ));
 
 display($template, $lang['sys_metamatter']);

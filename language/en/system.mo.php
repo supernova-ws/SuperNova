@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a8.8
+* @version 40a9.0
 *
 */
 
@@ -743,9 +743,9 @@ $a_lang_array = (array(
   'sys_dark_matter_desc' => 'Dark matter - using the standard methods of  fabric, which accounts for 23% mass of the universe. From there you can obtain an incredible amount of energy. Because of this, and because of the complexities associated with its extraction, Dark Matter is valued very highly.',
   'sys_dark_matter_hint' => 'With the help of this substance you can hire officers and commanders.',
 
-  'sys_dark_matter_what_header' => 'What is Dark Matter',
-  'sys_dark_matter_description_header' => 'Why do you need Dark Matter',
-  'sys_dark_matter_description_text' => 'Dark Matter is ingame currency, which in the game you can make a variety of operations:
+  'sys_dark_matter_what_header' => 'What is <span class="dark_matter">Dark Matter</span>',
+  'sys_dark_matter_description_header' => 'Why do you need <span class="dark_matter">Dark Matter</span>',
+  'sys_dark_matter_description_text' => '<span class="dark_matter">Dark Matter</span> is ingame currency, which in the game you can make a variety of operations:
     <ul>
       <li>Buy <a href="index.php?page=premium"><span class="link">Premium account</span></a></li>
       <li>Recruit <a href="officer.php?mode=600"><span class="link">Mercenaries</span></a> for Empire</li>
@@ -755,11 +755,11 @@ $a_lang_array = (array(
       <li>Use <a href="market.php"><span class="link">Black Market</span></a>: exchange resources; sell ships; buy ships; buy intelligence etc</li>
       <li>...and many other things</li>
     </ul>',
-  'sys_dark_matter_obtain_header' => 'How to obtain Dark Matter',
-  'sys_dark_matter_obtain_text' => 'You acquring Dark Matter in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
-    Also sometimes expeditions can gain you some DM.',
+  'sys_dark_matter_obtain_text' => 'You acquring <span class="dark_matter">Dark Matter</span> in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
+    Also sometimes expeditions can gain you some <span class="dark_matter">DM</span>.',
 
-  'sys_dark_matter_obtain_text_convert' => '<br /><br />Besides, you can convert Metamatter to Dark Matter. <a href="metamatter.php" class="link">More about Metamatter</a>',
+//  'sys_dark_matter_obtain_text_convert' => '<br />Besides, you can convert Metamatter to Dark Matter. <a href="metamatter.php" class="link">More about Metamatter</a>',
+  'sys_dark_matter_obtain_text_convert' => '<br />If you lack <span class="dark_matter">Dark Matter</span> - purchase the <span class="metamatter">Metamatter</span>. If you have not enough <span class="dark_matter">DM</span> needed amount of <span class="metamatter">Metamatter</span> would be used instead of <span class="dark_matter">DM</span>',
 
   'sys_msg_err_update_dm' => 'Error updating DM quantity!',
 

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a8.8#
+* @version #40a9.0#
 *
 */
 
@@ -741,14 +741,14 @@ $a_lang_array = (array(
 
   'sys_lessThen15min'   => '&lt; 15 мин',
 
-  'sys_no_points'         => 'У вас недостаточно тёмной материи!',
-  'sys_dark_matter_obtain_header' => 'Где взять Тёмную Материю',
+  'sys_no_points'         => 'У вас недостаточно <span class="dark_matter">Тёмной Материи</span>!',
+  'sys_dark_matter_obtain_header' => 'Как получить <span class="dark_matter">Тёмную Материю</span>',
   'sys_dark_matter_desc' => 'Тёмная материя - необнаружимая стандартными методами небарионная материя, на которую приходится 23% массы Вселенной. Из неё можно добывать невероятное количество энергии. Из-за этого, а так же из-за сложностей, связанных с её добычей, Тёмная Материя ценится очень высоко.',
   'sys_dark_matter_hint' => 'При помощи этой субстанции можно нанять офицеров и командиров.',
 
-  'sys_dark_matter_what_header' => 'Что такое Тёмная Материя',
-  'sys_dark_matter_description_header' => 'Зачем нужна Тёмная Материя',
-  'sys_dark_matter_description_text' => 'Тёмная Материя - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
+  'sys_dark_matter_what_header' => 'Что такое <span class="dark_matter">Тёмная Материя</span>',
+  'sys_dark_matter_description_header' => 'Зачем нужна <span class="dark_matter">Тёмная Материя</span>',
+  'sys_dark_matter_description_text' => '<span class="dark_matter">Тёмная Материя</span> - это внутриигровой ресурс, за счет которой в игре вы можете совершать различные операции:
     <ul>
       <li>Покупать <a href="index.php?page=premium"><span class="link">Премиум-аккаунт</span></a></li>
       <li>Рекрутировать <a href="officer.php?mode=600"><span class="link">Наемников</span></a> в Империю </li>
@@ -758,10 +758,11 @@ $a_lang_array = (array(
       <li>Использовать <a href="market.php"><span class="link">Чёрный Рынок</span></a>: Обменивать один вид ресурсов на другой; продавать корабли; покупать Б/У корабли итд</li>
       <li>...и многое, многое другое</li>
     </ul>',
-  'sys_dark_matter_obtain_text' => 'Вы получаете Тёмную Материю в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
-    Так же иногда исследовательские экспедиции могут принести ТМ.',
+  'sys_dark_matter_obtain_text' => 'Вы получаете <span class="metamatter">Тёмную Материю</span> в процессе игры: набирая опыт за успешные рейды на чужие планеты, исследование новых технологий, а так же за постройку и разрушение зданий.
+    Так же иногда исследовательские экспедиции могут принести <span class="metamatter">ТМ</span>.',
 
-  'sys_dark_matter_obtain_text_convert' => '<br /><br />Кроме того, вы можете сконвертировать Метаматерию в Тёмную Материю. <a href="metamatter.php" class="link">Узнать подробнее про Метаматерию</a>',
+  // 'sys_dark_matter_obtain_text_convert' => '<br /><br />Кроме того, вы можете сконвертировать Метаматерию в Тёмную Материю. <a href="metamatter.php" class="link">Узнать подробнее про Метаматерию</a>',
+  'sys_dark_matter_obtain_text_convert' => '<br />Если вам не хватает <span class="dark_matter">Тёмной Материи</span> - приобретите <span class="metamatter">Метаматерию</span>. В случае недостатка <span class="dark_matter">ТМ</span> нужное количество <span class="metamatter">Метаматерии</span> будет использована вместо <span class="dark_matter">ТМ</span>',
 
   'sys_msg_err_update_dm' => 'Ошибка обновления количества ТМ!',
 

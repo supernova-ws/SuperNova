@@ -80,8 +80,28 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   if($already_changed) {
     $rows_affected = 1;
   } else {
-    $dark_matter_total = $dark_matter > 0 ? $dark_matter : 0;
-    db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter_total}'");
+    $changeset = array("`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'");
+
+    $a_user = db_user_by_id($user_id, true);
+    if($dark_matter < 0) {
+      $dark_matter_exists = mrc_get_level($a_user, null, RES_DARK_MATTER, false, true);
+      $metamatter_to_reduce = -$dark_matter - $dark_matter_exists;
+      if($metamatter_to_reduce > 0) {
+        $metamatter_exists = mrc_get_level($a_user, null, RES_METAMATTER);
+        if($metamatter_exists < $metamatter_to_reduce) {
+          $debug->error('Ошибка снятия ТМ - ММ+ТМ меньше, чем сумма для снятия!', 'Ошибка снятия ТМ', LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER);
+        }
+        if(is_array($comment)) {
+          $comment = call_user_func_array('sprintf', $comment);
+        }
+        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'Автоконвертация ММ в ТМ: ' . $comment);
+        $dark_matter = -$dark_matter_exists;
+      }
+    } else {
+      $changeset[] = "`dark_matter_total` = `dark_matter_total` + '{$dark_matter}'";
+    }
+    // db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter_total}'");
+    db_user_set_by_id($user_id, implode(',', $changeset));
     $rows_affected = db_affected_rows();
   }
 

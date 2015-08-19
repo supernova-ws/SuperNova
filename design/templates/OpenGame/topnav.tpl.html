@@ -188,7 +188,12 @@
           <div style="position: relative; display: inline-block; width: 5.818181818182em; height: 5.818181818182em; margin-right: 0.25em;">
             <a href="dark_matter.php">
               <img style="position: absolute; left: 0px; top: 0px;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_dark_matter_standard.png" height="100%" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}">
-              <span style="position: absolute; right: 0; bottom: 0;" class="icon_alpha ok">{TOPNAV_DARK_MATTER_TEXT}</span>
+              <!-- IF TOPNAV_METAMATTER -->
+              <span style="position: absolute; right: 0; bottom: 2.3em;" class="icon_alpha metamatter">{TOPNAV_METAMATTER_TEXT}</span>
+              <span style="position: absolute; right: 0; bottom: 1.2em;" class="icon_alpha dark_matter">{TOPNAV_DARK_MATTER_PLAIN_TEXT}</span>
+              <span style="position: absolute; left: 0; bottom: 1.75em;" class="icon_alpha ok">+</span>
+              <!-- ENDIF -->
+              <span style="position: absolute; right: 0; bottom: 0; border-top: 2px solid;<!-- IF TOPNAV_METAMATTER --><!-- ENDIF -->" class="icon_alpha ok">{TOPNAV_DARK_MATTER_TEXT}</span>
             </a>
           </div>
 
@@ -196,7 +201,7 @@
           <div style="position: relative; display: inline-block; width: 5.818181818182em; height: 5.818181818182em; margin-right: 0.25em;">
             <a href="metamatter.php">
               <img style="position: absolute; left: 0px; top: 0px;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_metamatter_standard.png" height="100%" alt="{L_sys_metamatte}" title="{L_sys_metamatter}">
-              <span style="position: absolute; right: 0; bottom: 0;" class="icon_alpha ok">{TOPNAV_METAMATTER_TEXT}</span>
+              <span style="position: absolute; right: 0; bottom: 0;" class="icon_alpha metamatter">{TOPNAV_METAMATTER_TEXT}</span>
             </a>
           </div>
           <!-- ENDIF -->

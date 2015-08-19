@@ -410,7 +410,6 @@ if(!$allow_anonymous && !$sys_user_logged_in) {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 
-
 $user_time_diff = user_time_diff_get();
 //defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', $user_time_diff[PLAYER_OPTION_TIME_DIFF]);
 //defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET', $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);

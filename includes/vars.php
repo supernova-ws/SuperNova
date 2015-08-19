@@ -306,6 +306,13 @@ $sn_data += array(
     'bonus_type' => BONUS_ABILITY,
     P_STACKABLE => true,
   ),
+  RES_METAMATTER => array(
+    'name' => 'metamatter',
+    'type' => UNIT_RESOURCES,
+    'location' => LOC_USER,
+    'bonus_type' => BONUS_ABILITY,
+    P_STACKABLE => true,
+  ),
 
   UNIT_SECTOR => array(
     'name' => 'field_max',
@@ -1074,7 +1081,7 @@ mission = array(
     // Resource list
     'resources' => array ( 0 => 'metal', 1 => 'crystal', 2 => 'deuterium', 3 => 'dark_matter'),
     // Resources all
-    'resources_all' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_ENERGY => RES_ENERGY, RES_DARK_MATTER => RES_DARK_MATTER,),
+    'resources_all' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_ENERGY => RES_ENERGY, RES_DARK_MATTER => RES_DARK_MATTER, RES_METAMATTER => RES_METAMATTER, ),
     // Resources can be produced on planet
     'resources_planet' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_ENERGY => RES_ENERGY),
     // Resources can be looted from planet

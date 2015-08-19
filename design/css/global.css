@@ -902,3 +902,11 @@ input[type=text].ui-textfield:hover, input[type=password].ui-textfield, input[ty
 .bblue {
   border-color: blue;
 }
+
+.dark_matter {
+  color: dodgerblue;
+}
+
+.metamatter {
+  color: #cf95ff;
+}

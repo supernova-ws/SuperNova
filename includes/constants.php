@@ -32,7 +32,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a8.12');
+define('SN_VERSION', '40a9.0');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -375,6 +375,7 @@ define('LOG_ERR_INT_NO_PLANET', 502); // Ошибка записи пользо�
 define('LOG_ERR_INT_ORPHANE_PLANET', 503); // У планеты нет хозяина
 define('LOG_ERR_INT_FLEET_TIMOUT', 504); // Таймаут менеджера флотов
 define('LOG_ERR_INT_CAPTAIN_DUPLICATE', 505); // Таймаут менеджера флотов
+define('LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER', 506); // Ошибка снятия ТМ
 // 9xx - Отладка
 define('LOG_DEBUG', 900); // Отладка
 define('LOG_DEBUG_SQL', 910); // Отладка SQL

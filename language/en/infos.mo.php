@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a8.0
+* @version 40a9.0
 *
 */
 
@@ -561,7 +561,7 @@ $lang['info'] = (array(
     ),
 
     RES_DARK_MATTER => array(
-      'description' => 'Dark Matter is a matter that neither emits nor scatters light or other electromagnetic radiation, and so cannot be directly detected via optical or radio astronomy. From it we can get an incredible amount of energy. Because of this, and also because of the complexities associated with its production of dark matter is highly appreciated.',
+      'description' => '<span class="dark_matter">Dark Matter</span> is a matter that neither emits nor scatters light or other electromagnetic radiation, and so cannot be directly detected via optical or radio astronomy. From it we can get an incredible amount of energy. Because of this, and also because of the complexities associated with its production of <span class="dark_matter">Dark Matter</span> is highly appreciated.',
       'effect' => '',
     ),
 
