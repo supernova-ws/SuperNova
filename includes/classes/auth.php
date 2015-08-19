@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a8.7#
+ * version #40a8.12#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a8.7# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a8.12# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -520,7 +520,7 @@ class auth extends sn_module {
     $user_id = !empty($found_provider->data[F_USER_ID]) ? $found_provider->data[F_USER_ID] : 0;
     // if(!empty($user_id) && !$user_impersonator) {
     // $user_id не может быть пустым из-за констраинтов в таблице SPE
-    if($user_id && $found_provider->data[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED) {
+    if($user_id && $found_provider->data[F_IMPERSONATE_STATUS] == LOGIN_UNDEFINED) {
       doquery(
         "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
         VALUES ({$user_id}," . self::$hidden[F_DEVICE_ID] . "," . self::$hidden[F_BROWSER_ID]. ",{$ip_int_safe}, '{$proxy_safe}');"
