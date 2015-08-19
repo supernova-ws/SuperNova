@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a7.1#
+ * version #40a8.7#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a7.1# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a8.7# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -35,7 +35,7 @@ class auth extends sn_module {
   );
   // Этот список можно строить динамично по $login_methods_supported каждого модуля
   // Локальные данные для каждого метода
-  protected $data = array();
+  public $data = array();
   /**
    * @var auth $auth
    */
@@ -173,7 +173,7 @@ class auth extends sn_module {
       }
     }
 
-
+    // pdump($found_provider);die();
     // Сверить еще ИД юзеров, которые принадлежат кажому аккаунту - что бы коллизия не случилась
     // Ну и на аккаунте может быть больше одного ЮЗЕРА - официальные мультики
 
@@ -541,19 +541,7 @@ class auth extends sn_module {
         $is_watching = false;
         sn_db_transaction_commit();
       }
-    }
 
-    if($extra = $config->security_ban_extra) {
-      $extra = explode(',', $extra);
-      array_walk($extra,'trim');
-      in_array(self::$hidden[F_DEVICE_ID], $extra) and die();
-    }
-
-    if($found_provider->data[F_LOGIN_STATUS] != LOGIN_SUCCESS) {
-      return;
-    }
-
-    if($user_id) {
       $user = &$found_provider->data[F_USER];
 
       sys_user_options_unpack($user);
@@ -574,6 +562,40 @@ class auth extends sn_module {
       `user_lastip` = '" . db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$hidden[F_BROWSER_ID]
       );
     }
+
+    if($extra = $config->security_ban_extra) {
+      $extra = explode(',', $extra);
+      array_walk($extra,'trim');
+      in_array(self::$hidden[F_DEVICE_ID], $extra) and die();
+    }
+
+//    self::extract_to_hidden($found_provider);
+//
+//    if($found_provider->data[F_LOGIN_STATUS] != LOGIN_SUCCESS) {
+//      return;
+//    }
+//
+//    if($user_id) {
+//      $user = &$found_provider->data[F_USER];
+//
+//      sys_user_options_unpack($user);
+//
+//      if($user['banaday'] && $user['banaday'] <= SN_TIME_NOW) {
+//        $user['banaday'] = 0;
+//        $user['vacation'] = SN_TIME_NOW;
+//      }
+//
+//      $user['user_lastip'] = $ip['ip'];
+//      $user['user_proxy'] = $ip['proxy_chain'];
+//
+//      $found_provider->data[F_BANNED_STATUS] = $user['banaday'];
+//      $found_provider->data[F_VACATION_STATUS] = $user['vacation'];
+//
+//      db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ",
+//      `banaday` = " . db_escape($user['banaday']) . ", `vacation` = " . db_escape($user['vacation']) . ",
+//      `user_lastip` = '" . db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$hidden[F_BROWSER_ID]
+//      );
+//    }
 
     self::extract_to_hidden($found_provider);
 
