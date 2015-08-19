@@ -71,11 +71,16 @@
 
     <!-- IF ! RESTRICTED -->
     <td>
-      <!-- IF user.IP_MULTI -->
-      <span class="error">{user.IP} ({user.IP_MULTI})</span>
-      <!-- ELSE -->
-      {user.IP}
-      <!-- ENDIF -->
+      <div style="display: flex; justify-content: space-between;">
+        <!-- IF user.IP_MULTI -->
+        <span style="display: inline-block;" class="error">{user.IP} ({user.IP_MULTI})</span>
+        <!-- ELSE -->
+        <span style="display: inline-block;">{user.IP}</span>
+        <!-- ENDIF -->
+        <!-- IF GEOIP_WHOIS_URL -->
+        <a target="_blank" class="link_external" style="margin-left: 1em" href="{GEOIP_WHOIS_URL}{user.IP}">whois</a>
+        <!-- ENDIF -->
+      </div>
     </td>
     <!-- IF GEOIP -->
     <th>{user.COUNTRY}</th>

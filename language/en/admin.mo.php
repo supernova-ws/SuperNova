@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a6.4
+* @version 40a8.11
 *
 */
 
@@ -231,6 +231,7 @@ $a_lang_array = (array(
   'adm_opt_plan_base_inc' => 'Basic production',
   'adm_opt_game_debugmod' => 'Enable debug mode',
   'adm_opt_game_counter' => 'Add game counter',
+  'adm_opt_geoip_whois_url' => 'WHOIS provider URL<br />(i.e. "http://1whois.ru/?ip=")',
   'adm_opt_game_oth_info' => 'Other options',
   'adm_opt_int_news_count' => 'News count',
   'adm_opt_int_page_imperor' => 'On the page &quot;Emperor&quot;:',

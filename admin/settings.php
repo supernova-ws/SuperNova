@@ -82,6 +82,7 @@ if(sys_get_param('save')) {
   $config->advGoogleLeftMenuCode   = sys_get_param('advGoogleLeftMenuCode');
   $config->debug                   = sys_get_param_int('debug');
   $config->game_counter            = sys_get_param_int('game_counter');
+  $config->geoip_whois_url         = sys_get_param_str('geoip_whois_url');
 
   $config->uni_price_galaxy        = sys_get_param_float('uni_price_galaxy');
   $config->uni_price_system        = sys_get_param_float('uni_price_system');

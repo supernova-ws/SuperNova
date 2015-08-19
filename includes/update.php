@@ -1037,6 +1037,11 @@ switch($new_version) {
 
     upd_do_query('UPDATE {{planets}} SET `image` = "normaltempplanet01" WHERE `image` = "planet" OR `image` = "normaltemp01"'); // deprecated define('PLANET_DENSITY_METAL_HEAVY', 7);
 
+    // 2015-08-19 05:17:35 40a8.11
+
+    // http://1whois.ru?url=
+    upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', empty($config->core_geoip_whois_url));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

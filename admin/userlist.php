@@ -109,6 +109,7 @@ $template->assign_vars(array(
   'SORT' => $sort,
   'GEOIP' => $geoip,
   'METAMATTER' => isset($sn_module['unit_res_metamatter']),
+  'GEOIP_WHOIS_URL' => $config->geoip_whois_url,
 ));
 
 display($template, $lang['adm_ul_title'], false, '', true);

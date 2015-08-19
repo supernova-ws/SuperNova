@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a6.4
+* @version 40a8.11
 *
 */
 
@@ -249,6 +249,7 @@ $a_lang_array = (array(
   'adm_opt_plan_initial' => 'Размер главной планеты',
   'adm_opt_plan_base_inc' => 'Базовая добыча',
   'adm_opt_game_debugmod' => 'Включить режим отладки',
+  'adm_opt_geoip_whois_url' => 'URL сервиса WHOIS<br />(например "http://1whois.ru/?ip=")',
   'adm_opt_game_counter' => 'Включить счетчик посещений',
   'adm_opt_game_oth_info' => 'Прочие параметры',
   'adm_opt_int_news_count' => 'Количество новостей',
