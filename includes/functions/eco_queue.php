@@ -472,14 +472,16 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 }
 
 
-function que_tpl_parse_element($que_element) {
+function que_tpl_parse_element($que_element, $short_names = false) {
   global $lang;
 
   return
     array(
       'ID' => $que_element['que_unit_id'],
       'QUE' => $que_element['que_type'],
-      'NAME' => $lang['tech'][$que_element['que_unit_id']],
+      'NAME' => $short_names && !empty($lang['tech_short'][$que_element['que_unit_id']])
+                  ? $lang['tech_short'][$que_element['que_unit_id']]
+                  : $lang['tech'][$que_element['que_unit_id']],
       'TIME' => $que_element['que_time_left'],
       'TIME_FULL' => $que_element['que_unit_time'],
       'AMOUNT' => $que_element['que_unit_amount'],
@@ -498,7 +500,7 @@ function que_tpl_parse_element($que_element) {
  * $que - либо результат $que_get(), либо конкретная очередь
  *
  */
-function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = null) {
+function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = null, $short_names = false) {
   // TODO: Переделать для $que_type === false
   $planet['id'] = $planet['id'] ? $planet['id'] : 0;
 
@@ -512,7 +514,7 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = n
 
   if($que) {
     foreach($que as $que_element) {
-      $template->assign_block_vars('que', que_tpl_parse_element($que_element));
+      $template->assign_block_vars('que', que_tpl_parse_element($que_element, $short_names));
     }
   }
 

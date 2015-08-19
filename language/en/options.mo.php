@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a4.0
+* @version 40a8.8
 *
 */
 
@@ -77,6 +77,12 @@ $a_lang_array = (array(
     SORT_ASCENDING  => 'Ascending',
     SORT_DESCENDING => 'Descending',
   ),
+
+  'PLAYER_OPTION_NAVBAR' => 'Navigation Panel (on top of the screen)',
+  'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => 'Disable Planet button',
+  'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Disable Hangar button',
+  'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Disable Quest button',
+
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',
   'opt_adm_planet_prot' => 'Planetary protection',

@@ -420,6 +420,11 @@ function sn_options_view($template = null) {
     'PLAYER_OPTION_FLEET_SPY_DEFAULT' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
     'PLAYER_OPTION_TOOLTIP_DELAY' => classSupernova::$user_options[PLAYER_OPTION_TOOLTIP_DELAY],
     'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],
+
+    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
+    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
+    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
+
     'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'":'',
     'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'":'',
     'deltime'        => $user['deltime'],

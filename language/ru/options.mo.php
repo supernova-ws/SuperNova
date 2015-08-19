@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a4.0
+* @version 40a8.8
 *
 */
 
@@ -74,6 +74,12 @@ $a_lang_array = (array(
     SORT_ASCENDING  => 'Возрастанию',
     SORT_DESCENDING => 'Убыванию',
   ),
+
+  'PLAYER_OPTION_NAVBAR' => 'Панель навигации (вверху экрана)',
+  'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => 'Отключить кнопку планеты',
+  'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Отключить кнопку верфи',
+  'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Отключить кнопку квестов',
+
   'opt_chk_skin' => 'Использовать оформление',
   'opt_adm_title' => 'Опции администрирования',
   'opt_adm_planet_prot' => 'Защита планет',

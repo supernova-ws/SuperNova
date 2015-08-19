@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a8.4
+* @version 40a8.8
 *
 */
 
@@ -497,6 +497,7 @@ $a_lang_array = (array(
   'sys_max' => 'Max',
   'sys_banned_msg' => 'You are banned. For more information please visit <a href="banned.php">here</a>. Time of account ban: ',
   'sys_total_time' => 'Total time',
+  'sys_total_time_short' => 'Que time',
 
   // Univers
   'uni_moon_of_planet' => 'planet',

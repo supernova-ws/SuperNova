@@ -454,6 +454,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
   que_tpl_parse($template, QUE_RESEARCH, $user);
+  que_tpl_parse($template, SUBQUE_FLEET, $user, $planetrow, null, true);
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate(SN_TIME_NOW);
@@ -501,6 +502,10 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'USER_RACE'        	   => $user['player_race'],
 
     'TOPNAV_CURRENT_PLANET' => $user['current_planet'],
+    'TOPNAV_CURRENT_PLANET_NAME' => uni_render_planet_full($planetrow), // htmlspecialchars($planetrow['name']),
+    'TOPNAV_CURRENT_PLANET_IMAGE' => ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'planeten/small/s_' . $planetrow['image'] . '.jpg',
+    'TOPNAV_COLONIES_CURRENT' => get_player_current_colonies($user),
+    'TOPNAV_COLONIES_MAX' => get_player_max_colonies($user),
     'TOPNAV_MODE' => $GET_mode,
 
     'TOPNAV_DARK_MATTER' => mrc_get_level($user, '', RES_DARK_MATTER),
@@ -526,6 +531,15 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
     'GAME_NEWS_OVERVIEW'        => $config->game_news_overview,
     'GAME_RESEARCH_DISABLED'    => defined('GAME_RESEARCH_DISABLED') && GAME_RESEARCH_DISABLED,
+    'GAME_DEFENSE_DISABLED'     => defined('GAME_DEFENSE_DISABLED') && GAME_DEFENSE_DISABLED,
+    'GAME_STRUCTURES_DISABLED'  => defined('GAME_STRUCTURES_DISABLED') && GAME_STRUCTURES_DISABLED,
+    'GAME_HANGAR_DISABLED'      => defined('GAME_HANGAR_DISABLED') && GAME_HANGAR_DISABLED,
+
+    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
+    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
+    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
+
+    'SUBQUE_FLEET'              => SUBQUE_FLEET,
   ));
 
   if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false))

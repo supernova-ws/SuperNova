@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a8.4#
+* @version #40a8.8#
 *
 */
 
@@ -501,6 +501,7 @@ $a_lang_array = (array(
   'sys_game_documentation' => 'Описание игры',
   'sys_banned_msg' => 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ',
   'sys_total_time' => 'Общее время',
+  'sys_total_time_short' => 'Очередь',
 
   // Universe
   'uni_moon_of_planet' => 'планеты',
