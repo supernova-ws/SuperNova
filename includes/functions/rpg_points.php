@@ -98,7 +98,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
         if(is_array($comment)) {
           $comment = call_user_func_array('sprintf', $comment);
         }
-        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'Автоконвертация ММ в ТМ: ' . $comment);
+        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
         $dark_matter = -$dark_matter_exists;
 //pdump($dark_matter,'$dark_matter');
       }

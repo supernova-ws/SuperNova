@@ -32,7 +32,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a9.5');
+define('SN_VERSION', '40a9.6');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
