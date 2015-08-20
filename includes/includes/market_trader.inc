@@ -27,7 +27,7 @@ function eco_mrk_trader($user, $planetrow = null)
     RES_DARK_MATTER => $config->rpg_exchange_darkMatter
   );
 
-  $dm_db_name = pname_resource_name(RES_DARK_MATTER);
+  // $dm_db_name = pname_resource_name(RES_DARK_MATTER);
   $exchangeTo = in_array($exchangeTo = sys_get_param_int('exchangeTo'), sn_get_groups('resources_trader')) ? $exchangeTo : 0;
   if($exchangeTo && is_array($tradeList = $_POST['spend']))
   {
@@ -101,7 +101,7 @@ function eco_mrk_trader($user, $planetrow = null)
     $operation_cost = $config->rpg_cost_trader * ($exchangeTo == RES_DARK_MATTER ? 3 : 1) + $tradeList[RES_DARK_MATTER];
 
     $intError = $value <= 0 ? MARKET_ZERO_DEAL : $intError;
-    $intError = $user[$dm_db_name] < $operation_cost ? MARKET_NO_DM : $intError;
+    $intError = mrc_get_level($user, null, RES_DARK_MATTER) < $operation_cost ? MARKET_NO_DM : $intError;
 
     if($intError == MARKET_DEAL)
     {
