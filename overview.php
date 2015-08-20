@@ -222,7 +222,7 @@ switch($mode = sys_get_param_str('mode')) {
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
     $can_teleport = uni_planet_teleport_check($user, $planetrow);
     $template->assign_vars(array(
-      'DARK_MATTER'           => $user['dark_matter'],
+      'DARK_MATTER'           => $user_dark_matter,
 
       'PLANET_FILL'           => floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100),
       'PLANET_FILL_BAR'       => $planet_fill,
@@ -234,10 +234,10 @@ switch($mode = sys_get_param_str('mode')) {
 
       'CAN_TELEPORT'          => $can_teleport['result'] == ERR_NONE,
       'CAN_NOT_TELEPORT_MSG'  => $can_teleport['message'],
-      'TELEPORT_COST_TEXT'    => pretty_number($config->planet_teleport_cost, true, $user['dark_matter']),
+      'TELEPORT_COST_TEXT'    => pretty_number($config->planet_teleport_cost, true, $user_dark_matter),
 
-      'CAN_CAPITAL'           => $user['dark_matter'] >= $config->planet_capital_cost,
-      'CAPITAL_COST_TEXT'     => pretty_number($config->planet_capital_cost, true, $user['dark_matter']),
+      'CAN_CAPITAL'           => $user_dark_matter >= $config->planet_capital_cost,
+      'CAPITAL_COST_TEXT'     => pretty_number($config->planet_capital_cost, true, $user_dark_matter),
 
       'PLANET_DENSITY_INDEX'  => $planet_density_index,
       'PLANET_CORE_TEXT'      => $lang['uni_planet_density_types'][$planet_density_index],
