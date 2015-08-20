@@ -80,14 +80,18 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   if($already_changed) {
     $rows_affected = 1;
   } else {
-    $changeset = array("`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'");
-
+    $changeset = array();
     $a_user = db_user_by_id($user_id, true);
+//pdump($dark_matter);
     if($dark_matter < 0) {
       $dark_matter_exists = mrc_get_level($a_user, null, RES_DARK_MATTER, false, true);
+      $dark_matter_exists < 0 ? $dark_matter_exists = 0 : false;
+//pdump($dark_matter_exists, '$dark_matter_exists');
       $metamatter_to_reduce = -$dark_matter - $dark_matter_exists;
+//pdump($metamatter_to_reduce, '$metamatter_to_reduce');
       if($metamatter_to_reduce > 0) {
         $metamatter_exists = mrc_get_level($a_user, null, RES_METAMATTER);
+//pdump($metamatter_to_reduce, '$metamatter_to_reduce');
         if($metamatter_exists < $metamatter_to_reduce) {
           $debug->error('Ошибка снятия ТМ - ММ+ТМ меньше, чем сумма для снятия!', 'Ошибка снятия ТМ', LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER);
         }
@@ -96,12 +100,17 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
         }
         mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'Автоконвертация ММ в ТМ: ' . $comment);
         $dark_matter = -$dark_matter_exists;
+//pdump($dark_matter,'$dark_matter');
       }
     } else {
       $changeset[] = "`dark_matter_total` = `dark_matter_total` + '{$dark_matter}'";
+//      $changeset = array("`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'");
     }
+    $dark_matter ? $changeset[] = "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'" : false;
     // db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter_total}'");
-    db_user_set_by_id($user_id, implode(',', $changeset));
+//pdump($dark_matter,'$dark_matter');
+//pdump($changeset);die();
+    !empty($changeset) ? db_user_set_by_id($user_id, implode(',', $changeset)) : false;
     $rows_affected = db_affected_rows();
   }
 
