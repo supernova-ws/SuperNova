@@ -821,7 +821,7 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
 //  $planetrow = $planetrow['planet'];
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
-  if($sector_cost <= $user[get_unit_param(RES_DARK_MATTER, P_NAME)]) {
+  if($sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER)) {
     $planet_name_text = uni_render_planet($planetrow);
     if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, sprintf($lang['sys_sector_purchase_log'],
         $user['username'], $user['id'], $planet_name_text, $lang['sys_planet_type'][$planetrow['planet_type']], $planetrow['id'], $sector_cost)
