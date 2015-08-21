@@ -158,23 +158,23 @@
           <div style="display: inline-block; position: relative; width: 5.818181818182em; height: 5.818181818182em; margin-right: 0.25em;">
             <a href="messages.php">
               <img style="position: absolute; left: 0px; top: 0px;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_mail_standard.png" width="100%" alt="{L_Message}" title="{L_Message}">
-              <div style="position: absolute; left: 0px; bottom: 0px; width: 100%; text-align: center;" class="">
+              <div style="position: absolute; right: 0px; bottom: 0px;" class="">
                 <!-- IF TOPNAV_MESSAGES_ALL --><blink>[&nbsp;{TOPNAV_MESSAGES_ALL}&nbsp;]</blink><!-- ELSE -->0<!-- ENDIF -->
               </div>
             </a>
             <!-- IF TOPNAV_MESSAGES_ADMIN -->
             <a href="messages.php?mode=show&message_class={D_MSG_TYPE_ADMIN}">
-              <span style="width: 100%; position: absolute; right: 0; top: 0;" class=""><span class="msg_admin">[&nbsp;{TOPNAV_MESSAGES_ADMIN}&nbsp;]</span></span>
+              <span style="position: absolute; left: 0; bottom: 0;" class=""><span class="msg_admin">[&nbsp;{TOPNAV_MESSAGES_ADMIN}&nbsp;]</span></span>
             </a>
             <!-- ENDIF -->
             <!-- IF TOPNAV_MESSAGES_PLAYER -->
             <a href="messages.php?mode=show&message_class={D_MSG_TYPE_PLAYER}">
-              <span style="width: 100%; position: absolute; right: 0; top: 1.2em;" class=""><span class="mnl_joueur">[&nbsp;{TOPNAV_MESSAGES_PLAYER}&nbsp;]</span></span>
+              <span style="position: absolute; left: 0; top: 0;" class=""><span class="mnl_joueur">[&nbsp;{TOPNAV_MESSAGES_PLAYER}&nbsp;]</span></span>
             </a>
             <!-- ENDIF -->
             <!-- IF TOPNAV_MESSAGES_ALLIANCE && ! TOPNAV_ALLY -->
             <a href="messages.php?mode=show&message_class={D_MSG_TYPE_ALLIANCE}">
-              <span style="width: 100%; position: absolute; right: 0; top: 2.4em;" class=""><span class="mnl_alliance">[&nbsp;{TOPNAV_MESSAGES_ALLIANCE}&nbsp;]</span></span>
+              <span style="position: absolute; right: 0; top: 0" class=""><span class="mnl_alliance">[&nbsp;{TOPNAV_MESSAGES_ALLIANCE}&nbsp;]</span></span>
             </a>
             <!-- ENDIF -->
           </div>
