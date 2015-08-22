@@ -27,3 +27,11 @@ function db_que_delete_by_id($que_id)
   return classSupernova::db_del_record_by_id(LOC_QUE, $que_id);
   // return doquery("DELETE FROM {{que}} WHERE que_id = {$que_id} LIMIT 1");
 }
+
+function db_que_planet_change_owner($planet_id, $new_owner_id) {
+  return doquery("UPDATE {{que}} SET `que_player_id` = {$new_owner_id} WHERE `que_planet_id` = {$planet_id}");
+}
+
+function db_que_research_change_origin($planet_id, $new_planet_id) {
+  return doquery("UPDATE {{que}} SET `que_planet_id_origin` = {$new_planet_id} WHERE `que_planet_id_origin` = {$planet_id}");
+}

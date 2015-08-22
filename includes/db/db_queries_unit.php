@@ -93,6 +93,10 @@ function db_unit_list_stat_calculate()
 
 
 
+function db_unit_change_owner($location_type, $location_id, $new_owner_id) {
+  doquery("UPDATE {{unit}} SET `unit_player_id` = {$new_owner_id} WHERE `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id}");
+}
+
 
 function db_unit_list_admin_delete_mercenaries_finished()
 {

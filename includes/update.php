@@ -1042,6 +1042,10 @@ switch($new_version) {
     // http://1whois.ru?url=
     upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', empty($config->core_geoip_whois_url));
 
+    // 2015-08-22 18:24:26 40a9.10
+
+    upd_check_key('ube_capture_points_diff', 2, empty($config->ube_capture_points_diff));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

@@ -42,7 +42,9 @@ function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) 
 
 
 
-
+function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
+  return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet};");
+}
 
 
 

@@ -241,6 +241,26 @@ function db_chat_player_list_online($chat_refresh_rate, $ally_add)
 
 function db_flying_fleet_lock(&$mission_data, &$fleet_row)
 {
+//  // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
+//  // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице {{fleets}}
+//  return doquery(
+//    "SELECT 1 FROM {{users}} as u
+//    JOIN {{fleets}} AS f ON u.id = f.fleet_owner OR u.id = f.fleet_target_owner " .
+//
+//    // Выбираем все флоты, чьи координаты совпадают координатами $fleet_row
+//    "WHERE (" .
+//      // Начальные координаты совпадают с начальными
+//      "(f.fleet_start_galaxy = {$fleet_row['fleet_start_galaxy']} AND f.fleet_start_system = {$fleet_row['fleet_start_system']} AND f.fleet_start_planet = {$fleet_row['fleet_start_planet']} AND f.fleet_start_type = {$fleet_row['fleet_start_type']}) OR " .
+//      // Конечные координаты совпадают с конечными
+//      "(f.fleet_end_galaxy = {$fleet_row['fleet_end_galaxy']} AND f.fleet_end_system = {$fleet_row['fleet_end_system']} AND f.fleet_end_planet = {$fleet_row['fleet_end_planet']} AND f.fleet_end_type = {$fleet_row['fleet_end_type']}) OR " .
+//      // Конечные координаты совпадают с начальными
+//      "(f.fleet_end_galaxy = {$fleet_row['fleet_start_galaxy']} AND f.fleet_end_system = {$fleet_row['fleet_start_system']} AND f.fleet_end_planet = {$fleet_row['fleet_start_planet']} AND f.fleet_end_type = {$fleet_row['fleet_start_type']}) OR " .
+//      // Начальные координаты совпадают с конечными
+//      "(f.fleet_start_galaxy = {$fleet_row['fleet_end_galaxy']} AND f.fleet_start_system = {$fleet_row['fleet_end_system']} AND f.fleet_start_planet = {$fleet_row['fleet_end_planet']} AND f.fleet_start_type = {$fleet_row['fleet_end_type']}) " .
+//    ") " .
+//    "GROUP BY 1 FOR UPDATE"
+//  );
+//
   return doquery(
     "SELECT 1 FROM {{fleets}} AS f " .
     ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .

@@ -1473,7 +1473,7 @@ function get_player_current_colonies(&$user)
 
 function flt_send_back(&$fleet_row)
 {
-  $fleet_id = round(is_array($fleet_row) && isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
+  $fleet_id = round(isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
   if(!$fleet_id)
   {
     return false;
@@ -1483,7 +1483,7 @@ function flt_send_back(&$fleet_row)
 }
 
 function flt_destroy(&$fleet_row) {
-  $fleet_id = round(is_array($fleet_row) && isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
+  $fleet_id = round(isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
   if(!$fleet_id) {
     return false;
   }
@@ -1634,4 +1634,9 @@ function print_rr($var, $capture = false) {
   } else {
     print($print);
   }
+}
+
+function can_capture_planet(){return sn_function_call('can_capture_planet', array(&$result));}
+function sn_can_capture_planet(&$result) {
+  return $result = false;
 }
