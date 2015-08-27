@@ -32,7 +32,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a9.10');
+define('SN_VERSION', '40a10.2');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -63,6 +63,8 @@ $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/jav
 define('CONFIRM_REGISTRATION'  , 1);
 define('CONFIRM_PASSWORD_RESET', 2);
 define('CONFIRM_DELETE'        , 3);
+
+define('AFFILIATE_MM_TO_REFERRAL_DM', 2);
 
 // Date & time range constants
 define('DATE_FOREVER', 2000000000);
@@ -209,6 +211,7 @@ define('RPG_BLITZ_REGISTRATION', 38);
 define('RPG_BLITZ_REGISTRATION_CANCEL', 39);
 define('RPG_BUILD_AUTOCONVERT', 40);
 define('RPG_EVENT_SUPERBORN', 41);
+define('RPG_REFERRAL_BOUGHT_MM', 42);
 
 
 
