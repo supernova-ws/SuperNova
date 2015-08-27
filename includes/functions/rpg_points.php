@@ -49,6 +49,20 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
     if($user['id'] == $user_id) {
       $user['metamatter'] += $metamatter;
     }
+
+    if($metamatter > 0) {
+      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", '', true);
+      if($old_referral['id']) {
+        $dark_matter_from_metamatter = $metamatter * AFFILIATE_MM_TO_REFERRAL_DM;
+        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter_from_metamatter}' WHERE `id` = {$user_id} LIMIT 1;");
+        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
+
+        $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
+        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {
+          rpg_points_change($new_referral['id_partner'], RPG_REFERRAL_BOUGHT_MM, $partner_bonus, "Incoming MM From Referral ID {$user_id}");
+        }
+      }
+    }
   } else {
     $debug->warning("Error adjusting Metamatter for player ID {$user_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
   }
@@ -82,16 +96,12 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   } else {
     $changeset = array();
     $a_user = db_user_by_id($user_id, true);
-//pdump($dark_matter);
     if($dark_matter < 0) {
       $dark_matter_exists = mrc_get_level($a_user, null, RES_DARK_MATTER, false, true);
       $dark_matter_exists < 0 ? $dark_matter_exists = 0 : false;
-//pdump($dark_matter_exists, '$dark_matter_exists');
       $metamatter_to_reduce = -$dark_matter - $dark_matter_exists;
-//pdump($metamatter_to_reduce, '$metamatter_to_reduce');
       if($metamatter_to_reduce > 0) {
         $metamatter_exists = mrc_get_level($a_user, null, RES_METAMATTER);
-//pdump($metamatter_to_reduce, '$metamatter_to_reduce');
         if($metamatter_exists < $metamatter_to_reduce) {
           $debug->error('Ошибка снятия ТМ - ММ+ТМ меньше, чем сумма для снятия!', 'Ошибка снятия ТМ', LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER);
         }
@@ -100,16 +110,11 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
         }
         mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
         $dark_matter = -$dark_matter_exists;
-//pdump($dark_matter,'$dark_matter');
       }
     } else {
       $changeset[] = "`dark_matter_total` = `dark_matter_total` + '{$dark_matter}'";
-//      $changeset = array("`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'");
     }
     $dark_matter ? $changeset[] = "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'" : false;
-    // db_user_set_by_id($user_id, "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}', `dark_matter_total` = `dark_matter_total` + '{$dark_matter_total}'");
-//pdump($dark_matter,'$dark_matter');
-//pdump($changeset);die();
     !empty($changeset) ? db_user_set_by_id($user_id, implode(',', $changeset)) : false;
     $rows_affected = db_affected_rows();
   }
