@@ -319,6 +319,15 @@ function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id =
 function db_changeset_apply($db_changeset) {
   return classSupernova::db_changeset_apply($db_changeset);
 }
+/**
+ * Функция проверяет статус транзакции
+ *
+ * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
+ *   <p>null - транзакция НЕ должна быть запущена</p>
+ *   <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
+ *   <p>false - всё равно - для совместимости с $for_update</p>
+ * @return bool Текущий статус транзакции
+ */
 function sn_db_transaction_check($transaction_should_be_started = null) {
   return classSupernova::db_transaction_check($transaction_should_be_started);
 }

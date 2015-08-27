@@ -168,6 +168,7 @@ define('SN_COOKIE_I'      , SN_COOKIE . '_I');
 define('SN_COOKIE_D'      , SN_COOKIE . '_D');
 define('SN_COOKIE_T'      , SN_COOKIE . '_T'); // Time measure cookie
 define('SN_COOKIE_F'      , SN_COOKIE . '_F'); // Font size cookie
+define('SN_COOKIE_U'      , SN_COOKIE . '_U'); // Current user cookie aka user ID
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . TEMPLATE_PATH);
@@ -193,7 +194,7 @@ $sn_module_list = array();
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // Здесь - потому что auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
 new auth();
-new auth_basic();
+new auth_local();
 
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
@@ -313,23 +314,31 @@ if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > 
   flt_flying_fleet_handler($skip_fleet_update);
 }
 
-// auth::init();
+
+
+
 
 auth::login($result);
+
+
+if(!empty(auth::$accounts_authorised) && empty(auth::$user['id'])) {
+  die('{Тут должна быть ваша реклама. Точнее - ввод имени игрока}');
+}
+
+//pdump($result[F_LOGIN_STATUS], LOGIN_SUCCESS);
+// die();
+
 // pdump($result);die();
 
-// die();
-// pdump($sn_module['auth'], '$sn_module');
-// pdump($sn_module_list['auth'], '$sn_module_list');
+$user = !empty($result[F_USER]) ? $result[F_USER] : false;
 
-// sec_login($result);
-
-
-$user = $result[F_USER] && ($result[F_LOGIN_STATUS] == LOGIN_SUCCESS) ? $result[F_USER] : false;
 unset($result[F_USER]);
 $template_result += $result;
 unset($result);
 // В этой точке пользователь либо авторизирован - и есть его запись - либо пользователя гарантированно нет в базе
+
+$template_result[F_ACCOUNT_IS_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
+//pdump($template_result[F_ACCOUNT_IS_AUTHORIZED]);die();
 
 if(!empty($user['id'])) {
   classSupernova::$user_options->user_change($user['id']);
@@ -396,13 +405,15 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
   die("{$lang['sys_banned_msg']} {$bantime}");
 }
 
-$template_result[F_USER_IS_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
-
-// !!! Просто $allow_anonymous используется в платежных модулях !!!
+// TODO !!! Просто $allow_anonymous используется в платежных модулях !!!
 $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
 
 // pdump($allow_anonymous, '$allow_anonymous');
 // pdump($sys_user_logged_in, '$sys_user_logged_in');
+
+if($sys_user_logged_in && INITIAL_PAGE == 'login') {
+  sys_redirect(SN_ROOT_VIRTUAL . 'overview.php');
+}
 
 if(!$allow_anonymous && !$sys_user_logged_in) {
 // die('Редирект на фход');

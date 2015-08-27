@@ -9,6 +9,25 @@ defined('INSIDE') or die('Hacking attempt');
  * @copyright 2008 By Chlorel for XNova
  */
 
+// Date & time range constants
+define('DATE_FOREVER', 2000000000);
+
+define('PERIOD_MINUTE', 60);
+define('PERIOD_HOUR', PERIOD_MINUTE * 60);
+define('PERIOD_DAY', PERIOD_HOUR * 24);
+define('PERIOD_WEEK', PERIOD_DAY * 7);
+define('PERIOD_MONTH', PERIOD_DAY * 30);
+define('PERIOD_YEAR', PERIOD_DAY * 365);
+define('PERIOD_FOREVER', PERIOD_YEAR * 100);
+
+define('PERIOD_MINUTE_3' , PERIOD_MINUTE * 3);
+define('PERIOD_MINUTE_5' , PERIOD_MINUTE * 5);
+define('PERIOD_MINUTE_10', PERIOD_MINUTE * 10);
+define('PERIOD_DAY_3'    , PERIOD_DAY * 3);
+define('PERIOD_WEEK_2'   , PERIOD_WEEK * 2);
+define('PERIOD_MONTH_2'  , PERIOD_MONTH * 2);
+define('PERIOD_MONTH_3'  , PERIOD_MONTH * 3);
+
 
 define('FONT_SIZE_PERCENT_MIN', 56.25);
 define('FONT_SIZE_PERCENT_DEFAULT', 68.75);
@@ -32,7 +51,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a9.10');
+define('SN_VERSION', '40a10.0');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -50,11 +69,13 @@ define('PREG_DATE_SQL_FULL', '/(20[1-9][0-9]|19[0-9][0-9])\-(1[0-2]|0[1-9])\-(3[
 define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
 
 define('LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH', 9);
+define('SN_SYS_SEC_CHARS_CONFIRMATION', '0123456789');
+define('AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE', PERIOD_DAY);
+
 define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', '/\\ |^&\'?"`<>[]{}()%');
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
-define('SN_SYS_SEC_CHARS_CONFIRMATION', '0123456789');
 
 // Mot qui sont interdit a la saisie !
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
@@ -64,24 +85,6 @@ define('CONFIRM_REGISTRATION'  , 1);
 define('CONFIRM_PASSWORD_RESET', 2);
 define('CONFIRM_DELETE'        , 3);
 
-// Date & time range constants
-define('DATE_FOREVER', 2000000000);
-
-define('PERIOD_MINUTE', 60);
-define('PERIOD_HOUR', PERIOD_MINUTE * 60);
-define('PERIOD_DAY', PERIOD_HOUR * 24);
-define('PERIOD_WEEK', PERIOD_DAY * 7);
-define('PERIOD_MONTH', PERIOD_DAY * 30);
-define('PERIOD_YEAR', PERIOD_DAY * 365);
-define('PERIOD_FOREVER', PERIOD_YEAR * 100);
-
-define('PERIOD_MINUTE_3' , PERIOD_MINUTE * 3);
-define('PERIOD_MINUTE_5' , PERIOD_MINUTE * 5);
-define('PERIOD_MINUTE_10', PERIOD_MINUTE * 10);
-define('PERIOD_DAY_3'    , PERIOD_DAY * 3);
-define('PERIOD_WEEK_2'   , PERIOD_WEEK * 2);
-define('PERIOD_MONTH_2'  , PERIOD_MONTH * 2);
-define('PERIOD_MONTH_3'  , PERIOD_MONTH * 3);
 
 // Ally diplomacy statuses
 define('ALLY_DIPLOMACY_SELF'         , 'self');
@@ -387,34 +390,36 @@ define('LOGIN_LENGTH_MIN', 4);
 
 define('AUTH_COOKIE_DELIMETER', '_');
 
+define('AUTH_FEATURE_EMAIL_CHANGE', 1);
+define('AUTH_FEATURE_PASSWORD_RESET', 2);
+
 // Login statuses
-define('LOGIN_UNDEFINED'             , 0);
-define('LOGIN_SUCCESS'               , 1);
+define('LOGIN_UNDEFINED', 0);
+define('LOGIN_SUCCESS', 1);
 // define('LOGIN_SUCCESS_CREATE_PROFILE', 2);
-define('LOGIN_ERROR_PASSWORD'        , 3);
-define('LOGIN_ERROR_USERNAME'        , 4);
+define('LOGIN_ERROR_PASSWORD', 3);
+define('LOGIN_ERROR_USERNAME', 4);
 // define('LOGIN_ERROR_ACTIVE'          , 5);
 // define('LOGIN_ERROR_EXTERNAL_AUTH'   , 6);
 // define('LOGIN_ERROR_COOKIE'          , 7);
 
-define('REGISTER_ERROR_USERNAME_WRONG'     , 8);
-define('REGISTER_ERROR_USERNAME_EXISTS'     , 9);
-define('REGISTER_ERROR_PASSWORD_INSECURE'     , 10);
-define('REGISTER_SUCCESS'               , 11);
+define('REGISTER_ERROR_USERNAME_WRONG', 8);
+define('REGISTER_ERROR_ACCOUNT_NAME_EXISTS', 9);
+define('REGISTER_ERROR_PASSWORD_INSECURE', 10);
+define('REGISTER_SUCCESS', 11);
 
 define('PASSWORD_RESTORE_ERROR_WRONG_EMAIL', 12);
 define('PASSWORD_RESTORE_ERROR_TOO_OFTEN', 13);
-define('PASSWORD_RESTORE_ERROR_SENDING', 15);
-define('PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT', 18);
 define('PASSWORD_RESTORE_SUCCESS_CODE_SENT', 14);
+define('PASSWORD_RESTORE_ERROR_SENDING', 15);
+define('PASSWORD_RESET_ERROR_CODE_WRONG', 16);
+define('PASSWORD_RESET_ERROR_CODE_TOO_OLD', 17);
 
-define('PASSWORD_RESTORE_ERROR_CODE_WRONG', 16);
-define('PASSWORD_RESTORE_ERROR_CODE_TOO_OLD', 17);
 define('PASSWORD_RESTORE_ERROR_CHANGE', 18);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT', 19);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR', 20);
-define('REGISTER_ERROR_PASSWORD_DIFFERENT'     , 21);
-define('REGISTER_ERROR_EMAIL_EXISTS'     , 22);
+define('REGISTER_ERROR_PASSWORD_DIFFERENT', 21);
+define('REGISTER_ERROR_EMAIL_EXISTS', 22);
 define('REGISTER_ERROR_BLITZ_MODE', 23);
 define('LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS', 24);
 define('LOGIN_ERROR_USERNAME_EMPTY', 25);
@@ -424,9 +429,25 @@ define('LOGIN_ERROR_USERNAME_ALLY_OR_BOT', 28);
 define('LOGIN_ERROR_PASSWORD_TRIMMED', 29);
 define('REGISTER_ERROR_EMAIL_EMPTY', 30);
 define('REGISTER_ERROR_EMAIL_WRONG', 31);
-define('REGISTER_ERROR_USERNAME_SHORT'     , 32);
+define('REGISTER_ERROR_USERNAME_SHORT', 32);
 
 define('IMPERSONATOR_OK', 33);
+
+define('REGISTER_ERROR_ACCOUNT_CREATE', 34);
+
+define('PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT', 35);
+define('PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS', 36);
+define('AUTH_LOGIN_INSIDE_ERROR_ACCOUNT_NOT_EXISTS', 37);
+define('AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION', 38);
+
+
+
+
+//throw new exception(REGISTER_ERROR_PLAYER_NAME_TRIMMED, ERR_ERROR);
+//throw new exception(REGISTER_ERROR_PLAYER_NAME_EMPTY, ERR_ERROR);
+//throw new exception(REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS, ERR_ERROR);
+//throw new exception(REGISTER_ERROR_PLAYER_NAME_SHORT, ERR_ERROR);
+//throw new exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
 
 
 define('AUTH_LEVEL_ANONYMOUS', -10);
@@ -478,14 +499,18 @@ define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');
 define('F_USER_ID', 'F_USER_ID');
 define('F_USER', 'F_USER');
 define('F_USER_IS_AUTHORIZED', 'F_USER_IS_AUTHORIZED');
+define('F_ACCOUNT_IS_AUTHORIZED', 'F_ACCOUNT_IS_AUTHORIZED');
 
 
 define('F_ACCOUNT_ID', 'F_ACCOUNT_ID');
 define('F_ACCOUNT', 'F_ACCOUNT');
+define('F_ACCOUNTS_AUTHORISED', 'F_ACCOUNTS_AUTHORISED');
 define('F_PASSWORD_MATCHED', 'F_ACCOUNT_PASSWORD_MATCH');
 
 
 define('F_PASSWORD', 'F_PASSWORD');
+
+define('F_LOGIN_SUGGESTED_NAME', 'F_LOGIN_SUGGESTED_NAME');
 
 
 

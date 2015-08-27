@@ -880,50 +880,6 @@ switch($new_version) {
 
     // 2015-05-02 15:11:07 40a0.1
 
-    if(empty($update_tables['account'])) {
-      upd_create_table('account', " (
-          `account_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-          `account_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
-          `account_register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-          `account_password` char(32) NOT NULL DEFAULT '',
-          `account_salt` char(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '',
-          `account_email` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT '',
-          `account_language` varchar(5) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'ru',
-          `account_is_global` tinyint(1) unsigned NOT NULL DEFAULT 0,
-          PRIMARY KEY (`account_id`),
-          UNIQUE KEY `I_account_name` (`account_name`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
-
-      upd_create_table('account_translate', " (
-          `provider_id` tinyint unsigned NOT NULL DEFAULT " . ACCOUNT_PROVIDER_LOCAL . " COMMENT 'Account provider',
-          `provider_account_id` bigint(20) unsigned NOT NULL COMMENT 'Account ID on provider',
-          `user_id` bigint(20) unsigned NOT NULL COMMENT 'User ID',
-          `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-
-          PRIMARY KEY (`user_id`, `provider_id`, `provider_account_id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
-
-
-      upd_do_query(
-        "INSERT IGNORE INTO {{account}}
-            (`account_name`, `account_register_time`, `account_password`, `account_salt`, `account_email`, `account_language`)
-          SELECT
-            `username`, FROM_UNIXTIME(register_time), `password`, `salt`, `email_2`, `lang`
-          FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . ";"
-      );
-
-      upd_do_query(
-        "REPLACE INTO {{account_translate}} (`provider_id`, `provider_account_id`, `user_id`)
-          SELECT "  . ACCOUNT_PROVIDER_LOCAL . ", a.account_id, u.id
-            FROM {{users}} AS u
-            JOIN {{account}} AS a ON
-              a.account_name = u.username
-              AND a.account_password = u.password
-              AND a.account_salt = u.salt;"
-      );
-    }
-
-
     upd_do_query("TRUNCATE TABLE {{confirmations}};");
     upd_alter_table('confirmations', array(
       "ADD COLUMN `provider_id` tinyint unsigned NOT NULL DEFAULT 0",
@@ -1045,6 +1001,60 @@ switch($new_version) {
     // 2015-08-22 18:24:26 40a9.10
 
     upd_check_key('ube_capture_points_diff', 2, empty($config->ube_capture_points_diff));
+
+    // 2015-08-27 19:14:05 40a10.0
+
+    // Старая версия таблицы
+    if(!empty($update_tables['account']['account_is_global'])) {
+      upd_drop_table('account');
+      upd_drop_table('account_translate');
+    }
+
+    if(empty($update_tables['account'])) {
+      upd_create_table('account', " (
+          `account_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+          `account_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT '',
+          `account_password` char(32) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `account_salt` char(16) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '',
+          `account_email` varchar(64) CHARACTER SET utf8 NOT NULL DEFAULT '',
+          `account_email_verified` tinyint(1) unsigned NOT NULL DEFAULT 0,
+          `account_register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `account_language` varchar(5) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'ru',
+          -- `account_is_global` tinyint(1) unsigned NOT NULL DEFAULT 0,
+          PRIMARY KEY (`account_id`),
+          UNIQUE KEY `I_account_name_pass_salt` (`account_name`, `account_password`, `account_salt`), -- Если совпадают логин и сол-парол - это один и тот же аккаунт
+          KEY `I_account_email` (`account_email`) -- Для поиска дубликатов по емейлу
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+
+      upd_create_table('account_translate', " (
+          `provider_id` tinyint unsigned NOT NULL DEFAULT " . ACCOUNT_PROVIDER_LOCAL . " COMMENT 'Account provider',
+          `provider_account_id` bigint(20) unsigned NOT NULL COMMENT 'Account ID on provider',
+          `user_id` bigint(20) unsigned NOT NULL COMMENT 'User ID',
+          `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+          PRIMARY KEY (`provider_id`, `provider_account_id`, `user_id`),
+          KEY (`user_id`),
+          CONSTRAINT `FK_account_translate_user_id` FOREIGN KEY (`user_id`) REFERENCES `{{users}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+
+      upd_do_query(
+        "INSERT IGNORE INTO {{account}}
+            (`account_id`, `account_name`, `account_register_time`, `account_password`, `account_salt`, `account_email`, `account_language`)
+          SELECT
+            `id`, `username`, FROM_UNIXTIME(register_time), `password`, `salt`, `email_2`, `lang`
+          FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . ";"
+      );
+
+      upd_do_query(
+        "REPLACE INTO {{account_translate}} (`provider_id`, `provider_account_id`, `user_id`, `timestamp`)
+          SELECT " . ACCOUNT_PROVIDER_LOCAL . ", a.account_id, u.id, a.`account_register_time`
+            FROM {{users}} AS u
+            JOIN {{account}} AS a ON
+              a.account_name = u.username
+              AND a.account_password = u.password
+              AND a.account_salt = u.salt;"
+      );
+    }
 
     // #ctv
 

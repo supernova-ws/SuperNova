@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a9.0
+* @version 40a10.0
 *
 */
 
@@ -947,25 +947,30 @@ $a_lang_array = (array(
     REGISTER_SUCCESS => 'Registration succesfully complete',
     REGISTER_ERROR_BLITZ_MODE => 'Регистрация новых игроков в режиме Блиц-сервера отключена',
     REGISTER_ERROR_USERNAME_WRONG => 'Wrong player name',
-    REGISTER_ERROR_USERNAME_EXISTS => 'Player name already registered',
+    REGISTER_ERROR_ACCOUNT_NAME_EXISTS => 'Account name already registered',
     REGISTER_ERROR_PASSWORD_INSECURE => 'Insecure or wrong password. Password should be at least ' . PASSWORD_LENGTH_MIN . ' characters long and cannot start or end with spaces',
     REGISTER_ERROR_USERNAME_SHORT => 'Слишком короткое имя. Имя должно состоять минимум из ' . LOGIN_LENGTH_MIN. ' символов',
     REGISTER_ERROR_PASSWORD_DIFFERENT => 'Password does not match confirmation password',
     REGISTER_ERROR_EMAIL_EMPTY => 'Е-Мейл не может быть пустым',
     REGISTER_ERROR_EMAIL_WRONG => 'Введенный Е-Мейл не является адресом электронной почты',
-    REGISTER_ERROR_EMAIL_EXISTS => 'This email already registered',
+    REGISTER_ERROR_EMAIL_EXISTS => 'This email already registered. If you already registered try password reset option. Otherwise use other email address',
+    REGISTER_ERROR_ACCOUNT_CREATE => 'Error creating account! Please, message Administration about this error!',
 
     PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'There is no player with such base email',
     PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Forbidden to restore password for member of Server Team. Contact Administrator directly',
     PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per 10 minutes. Check your SPAM folder for restoration code or contact server administration via email <span class="ok">' . $config->server_email . '</span> from your main email (email which you used for registration)',
     PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration via email <span class="ok">' . $config->server_email . '</span>',
+    PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS => 'Account not found! Contact server administration!',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Restoration code successfully sent',
 
-    PASSWORD_RESTORE_ERROR_CODE_WRONG => 'Wrong restoration code',
-    PASSWORD_RESTORE_ERROR_CODE_TOO_OLD => 'Restoration code is too old. Get new one',
+    PASSWORD_RESET_ERROR_CODE_WRONG => 'Wrong restoration code',
+    PASSWORD_RESET_ERROR_CODE_TOO_OLD => 'Restoration code is too old. Get new one',
     PASSWORD_RESTORE_ERROR_CHANGE => 'Password change error. Contact server administration',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Email with new password successfully sent to your email',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
+
+    AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'Internal error - no account to change password on confirmation code. Report to Universe Administration!',
+
   ),
 
   'log_reg_email_title' => "Your registration on SuperNova game server %1\$s",
@@ -982,6 +987,8 @@ $a_lang_array = (array(
   'log_lost_email_title' => 'Supernova, Universe %s: Password reset',
   'log_lost_email_code' => "Someone (possibly you) has requested a reset password on SuperNova Universe %4\$s . If you did not request reset password-then just ignore this email.\r\n\r\nFor password reset, go to the address \r\n%1\$s?password_reset_confirm=1&password_reset_code=%2\$s#tab_password_reset\r\nor enter the confirmation code \"%2\$s\" (WITHOUT THE DOUBLE QUOTES!) on the page %1\$s#tab_password_reset This code will be valid up to %3\$s. After the password reset you will need to request a new confirmation code",
   'log_lost_email_pass' => "You changed your password on the SuperNova Universe %1\$s.\r\n\r\nYou login:\r\n%2\$s\r\n\r\nYour new password:\r\n%3\$s\r\n\r\nRemember it!\r\n\r\nYou can enter into game following link " . SN_ROOT_VIRTUAL . "login.php and using provided login and password",
+
+  'sys_password_reset_message_body' => "Your password to accessing this Universe was reset.\r\n\r\nYour new password is:\r\n\r\n%1\$s\r\n\r\nRemember your password!\r\n\r\nYou can change it any time to one that suits you on 'Settings' menu",
 
   'sys_login_password_show' => 'Show password',
   'sys_login_password_hide' => 'Hide password',

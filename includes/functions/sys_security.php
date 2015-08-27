@@ -1,16 +1,16 @@
 <?php
 // Процедура по установке значения поля из словаря по данным
-// НУЖНА
-function sec_login_set_fields(&$variable, &$variable_id, $field_value, $db_field_id, $db_table_name, $db_field_name) {
-  $browser_safe = db_escape($variable = $field_value);
-  $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
-  if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
-    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
-    $variable_id = db_insert_id();
-  } else {
-    $variable_id = $browser_id['id_field'];
-  }
-}
+// deprecated - метод в auth.php
+//function sec_login_set_fields(&$variable, &$variable_id, $field_value, $db_field_id, $db_table_name, $db_field_name) {
+//  $browser_safe = db_escape($variable = $field_value);
+//  $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
+//  if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
+//    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
+//    $variable_id = db_insert_id();
+//  } else {
+//    $variable_id = $browser_id['id_field'];
+//  }
+//}
 
 
 
