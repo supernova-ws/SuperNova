@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a10.0#
+* @version #40a10.4#
 *
 */
 
@@ -977,6 +977,12 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Ошибка отправки письма с новым паролем. Получите новый код восстановления и повторите попытку',
 
     AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'ВНУТРЕННЯЯ ОШИБКА! Нет аккаунтов для сброса пароля при корректном коде подтверждения! Пожалуйста, сообщите об этой ошибке Администрации Вселенной!',
+
+    REGISTER_ERROR_PLAYER_NAME_TRIMMED => 'Имя игрока не может начинаться или заканчиваться пробельными символами (символы "Пробел", "Табуляция", "Перенос строки" итд)',
+    REGISTER_ERROR_PLAYER_NAME_EMPTY => 'Имя игрока не может быть пустым',
+    REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS => 'Имя игрока не содержит запрещенные символы',
+    REGISTER_ERROR_PLAYER_NAME_SHORT => 'Имя игрока не может быть короче ' . LOGIN_LENGTH_MIN . ' символов',
+    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'Это имя игрока уже занята. Пожалуйста, выберите другое',
 
  ),
 

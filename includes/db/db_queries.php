@@ -323,3 +323,27 @@ function db_message_insert_all($message_type, $from, $subject, $text)
   return doquery($QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
     "SELECT `id`, 0, unix_timestamp(now()), {$message_type}, '{$from}', '{$subject}', '{$text}' FROM {{users}}");
 }
+
+
+/**
+ * Хелпер для работы с простыми хэш-таблицами в БД
+ *
+ * @param $variable
+ * @param $variable_id
+ * @param $field_value
+ * @param $db_field_id
+ * @param $db_table_name
+ * @param $db_field_name
+ */
+// OK v4
+// TODO - вынести в отдельный класс
+function db_get_set_unique_value_by_id(&$variable, &$variable_id, $field_value, $db_field_id, $db_table_name, $db_field_name) {
+  $browser_safe = db_escape($variable = $field_value);
+  $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
+  if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
+    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
+    $variable_id = db_insert_id();
+  } else {
+    $variable_id = $browser_id['id_field'];
+  }
+}

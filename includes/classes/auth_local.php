@@ -5,7 +5,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.0# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.4# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -149,7 +149,7 @@ class auth_local extends sn_module {
   /**
    * Создает пользователя по данным ввода
    *
-   * @throws exception
+   * @throws Exception
    */
   // OK v4
   function db_account_create_from_input() {
@@ -165,7 +165,7 @@ class auth_local extends sn_module {
         `account_language` = '{$this->data[F_INPUT][F_LANGUAGE_SAFE]}'"
     );
     if(!$result) {
-      throw new exception(REGISTER_ERROR_ACCOUNT_CREATE, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_ACCOUNT_CREATE, ERR_ERROR);
     }
     $account_id = db_insert_id();
     $this->data[F_ACCOUNT] = $this->v4_db_get_account_by_id($account_id);
@@ -185,20 +185,20 @@ class auth_local extends sn_module {
   /**
    * Проверки в БД на возможность регистрации
    *
-   * @throws exception
+   * @throws Exception
    */
   // OK v4
   function register_check_db() {
     $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$this->data[F_INPUT][F_LOGIN_SAFE]}' FOR UPDATE", true);
     if(!empty($account)) {
-      throw new exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
     }
     // TODO - проверить - а вдруг чувак пытается зарегаться с тем же паролем?
 //    if($this->db_account_by_name_safe($this->data[F_INPUT][F_LOGIN_UNSAFE])) {
-//      throw new exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
+//      throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
 //    }
     if($this->db_account_by_email($this->data[F_INPUT][F_EMAIL_UNSAFE])) {
-      throw new exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
     }
   }
   function db_confirmation_by_account_id($account_id_unsafe, $confirmation_type_safe, $email_unsafe = null) {
@@ -218,7 +218,7 @@ class auth_local extends sn_module {
   function db_confirmation_set($account_id_safe, $confirmation_type_safe, $email_safe) {
     $confirmation = $this->db_confirmation_by_account_id($account_id_safe, CONFIRM_PASSWORD_RESET);
     if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
-      throw new exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
+      throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
     }
 
     // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
@@ -322,7 +322,7 @@ class auth_local extends sn_module {
       $this->data[F_REMEMBER_ME_SAFE] = true;
       $this->cookie_set();
       $this->login_cookie();
-    } catch(exception $e) {
+    } catch(Exception $e) {
       // sn_db_transaction_rollback();
       $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
     }
@@ -487,37 +487,37 @@ class auth_local extends sn_module {
 
     // Если нет имени пользователя - NO GO!
     if(!$this->data[F_INPUT][F_LOGIN_UNSAFE]) {
-      throw new exception(LOGIN_ERROR_USERNAME_EMPTY, ERR_ERROR);
+      throw new Exception(LOGIN_ERROR_USERNAME_EMPTY, ERR_ERROR);
     }
     // Если логин имеет запрещенные символы - NO GO!
     if(strpbrk($this->data[F_INPUT][F_LOGIN_UNSAFE], LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
-      throw new exception(LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS, ERR_ERROR);
+      throw new Exception(LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS, ERR_ERROR);
     }
     // Если логин меньше минимальной длины - NO GO!
     if(strlen($this->data[F_INPUT][F_LOGIN_UNSAFE]) < LOGIN_LENGTH_MIN) {
-      throw new exception(REGISTER_ERROR_USERNAME_SHORT, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_USERNAME_SHORT, ERR_ERROR);
     }
     // Если пароль меньше минимальной длины - NO GO!
     if(strlen($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW]) < PASSWORD_LENGTH_MIN) {
-      throw new exception(REGISTER_ERROR_PASSWORD_INSECURE, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_PASSWORD_INSECURE, ERR_ERROR);
     }
     // Если пароль имеет пробельные символы в начале или конце - NO GO!
     if($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW] != trim($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW])) {
-      throw new exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
+      throw new Exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
     }
     // Если пароль не совпадает с подтверждением - NO GO! То, что у пароля нет пробельных символов в начале/конце - мы уже проверили выше
     //Если они есть у повтора - значит пароль и повтор не совпадут
     if($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW] <> $this->data[F_INPUT][F_LOGIN_PASSWORD_REPEAT_RAW]) {
-      throw new exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
     }
     // Если нет емейла - NO GO!
     // TODO - регистрация без емейла
     if(!$this->data[F_INPUT][F_EMAIL_UNSAFE]) {
-      throw new exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
     }
     // Если емейл не является емейлом - NO GO!
     if(!is_email($this->data[F_INPUT][F_EMAIL_UNSAFE])) {
-      throw new exception(REGISTER_ERROR_EMAIL_WRONG, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_EMAIL_WRONG, ERR_ERROR);
     }
   }
 
@@ -534,7 +534,7 @@ class auth_local extends sn_module {
     try {
       if(!$this->data[F_INPUT][F_IS_REGISTER]) {
         self::flog('Регистрация: не выставлен флаг регистрации - пропускаем');
-        throw new exception(LOGIN_UNDEFINED, ERR_ERROR);
+        throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
 
       $this->register_validate_input();
@@ -550,7 +550,7 @@ class auth_local extends sn_module {
       // А вот это пока не нужно. Трансляцией аккаунтов в юзеров и созданием новых юзеров для новозашедших аккаунтов занимается Auth
       // $this->register_account();
       sn_db_transaction_commit();
-    } catch(exception $e) {
+    } catch(Exception $e) {
       sn_db_transaction_rollback();
       $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
     }
@@ -762,7 +762,7 @@ class auth_local extends sn_module {
   /**
    * Проверяет введенные данные логина на корректность
    *
-   * @throws exception
+   * @throws Exception
    */
   // OK v4
   function login_validate_input() {
@@ -770,10 +770,10 @@ class auth_local extends sn_module {
     // Проверяем, что бы в начале и конце не было пустых символов
     // TODO - при копировании Эксель -> Опера - в конце образуются пустые места. Это не должно быть проблемой! Вынести проверку пароля в регистрацию!
     if($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW] != trim($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW])) {
-      throw new exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
+      throw new Exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
     }
     if(!$this->data[F_INPUT][F_LOGIN_PASSWORD_RAW]) {
-      throw new exception(LOGIN_ERROR_PASSWORD_EMPTY, ERR_ERROR);
+      throw new Exception(LOGIN_ERROR_PASSWORD_EMPTY, ERR_ERROR);
     }
   }
 
@@ -805,23 +805,23 @@ class auth_local extends sn_module {
       // TODO - в безбрейковом воркфлоу это не нужно
       if($this->data[F_INPUT][F_IS_REGISTER]) {
         self::flog('Логин: выставлен флаг регистрации - это не логин');
-        throw new exception(LOGIN_UNDEFINED, ERR_ERROR);
+        throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
 
       if(!$this->data[F_INPUT][F_LOGIN_UNSAFE]) {
-        throw new exception(LOGIN_UNDEFINED, ERR_ERROR);
+        throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
 
       $this->login_validate_input();
 
       $account = $this->db_account_by_name_safe($this->data[F_INPUT][F_LOGIN_SAFE]);
       if(empty($account)) {
-        throw new exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
+        throw new Exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
       }
 
       // TODO Простой метод для проверки - сол-парол
       if($this->password_encode($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW], $account['account_salt']) != $account['account_password']) {
-        throw new exception(LOGIN_ERROR_PASSWORD, ERR_ERROR);
+        throw new Exception(LOGIN_ERROR_PASSWORD, ERR_ERROR);
       }
 
       $this->data[F_ACCOUNT] = $account;
@@ -832,18 +832,18 @@ class auth_local extends sn_module {
 
 //      $user_id = $this->db_user_id_by_provider_account_id($account['account_id']);
 //      if(!$user_id) {
-//        throw new exception(LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION, ERR_ERROR);
+//        throw new Exception(LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION, ERR_ERROR);
 //      }
 //
 //      $user = db_user_by_id($user_id);
 //      if(empty($user) || !empty($user['user_as_ally']) || $user['user_bot'] != USER_BOT_PLAYER) {
-//        throw new exception(LOGIN_ERROR_USERNAME_ALLY_OR_BOT, ERR_ERROR);
+//        throw new Exception(LOGIN_ERROR_USERNAME_ALLY_OR_BOT, ERR_ERROR);
 //      }
 //
 //      $this->data[F_USER_ID] = $user_id;
 //      $this->data[F_USER] = $user;
 
-    } catch(exception $e) {
+    } catch(Exception $e) {
       // sn_db_transaction_rollback();
       $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
     }

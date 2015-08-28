@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a10.0
+* @version 40a10.4
 *
 */
 
@@ -970,6 +970,12 @@ $a_lang_array = (array(
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
 
     AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'Internal error - no account to change password on confirmation code. Report to Universe Administration!',
+
+    REGISTER_ERROR_PLAYER_NAME_TRIMMED => 'Player name can not starts or ends with "empty characters" (characters like "Space", "Tabulation", "New line" etc)',
+    REGISTER_ERROR_PLAYER_NAME_EMPTY => 'Player name can not be empty',
+    REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS => 'Player name contains forbidden characters',
+    REGISTER_ERROR_PLAYER_NAME_SHORT => 'Player name should have ' . LOGIN_LENGTH_MIN . ' characters at least',
+    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'This player name is owner by someone. Please choose another name',
 
   ),
 

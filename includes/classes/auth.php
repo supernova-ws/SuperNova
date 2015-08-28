@@ -5,7 +5,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.0#
+ * version #40a10.4#
  */
 
 class auth extends sn_module {
@@ -13,7 +13,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.0# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.4# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -23,29 +23,25 @@ class auth extends sn_module {
     'installed' => true,
     'active' => true,
   );
+
+  /**
+   * Статус инициализации
+   *
+   * @var bool
+   */
   protected static $is_init = false;
   /**
+   * Список провайдеров
+   *
    * @var auth_local[]
    */
   protected static $providers = array();
-  // protected static $provider_data = array();
+
   // Скрытые данные - общие для всех аккаунтов
+  // TODO - ХУЕТА! ИЗБАВИТЬСЯ!
   protected static $hidden = array(
     F_LOGIN_STATUS => LOGIN_UNDEFINED,
   );
-  // Этот список можно строить динамично по $login_methods_supported каждого модуля
-  // Локальные данные для каждого метода
-  // public $data = array();
-  /**
-   * @var auth $auth
-   */
-  // protected static $auth;
-  public static $login_methods_list = array(
-    'login_cookie',
-    'register',
-    'login_username',
-  );
-
 
   /**
    * Глобальный статус входа в игру
@@ -101,24 +97,9 @@ class auth extends sn_module {
 
 
   /**
-   * @param $variable
-   * @param $variable_id
-   * @param $field_value
-   * @param $db_field_id
-   * @param $db_table_name
-   * @param $db_field_name
+   * Статическая инициализация
    */
-  public static function db_get_set_unique_value_by_id(&$variable, &$variable_id, $field_value, $db_field_id, $db_table_name, $db_field_name) {
-    $browser_safe = db_escape($variable = $field_value);
-    $browser_id = doquery("SELECT `{$db_field_id}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_field_name}` = '{$browser_safe}' LIMIT 1 FOR UPDATE", true);
-    if(!isset($browser_id['id_field']) || !$browser_id['id_field']) {
-      doquery("INSERT INTO {{{$db_table_name}}} (`{$db_field_name}`) VALUES ('{$browser_safe}');");
-      $variable_id = db_insert_id();
-    } else {
-      $variable_id = $browser_id['id_field'];
-    }
-  }
-
+  // OK v4
   public static function init() {
     // В этой точке все модули уже прогружены и инициализированы по 1 экземпляру
     if(self::$is_init) {
@@ -152,47 +133,53 @@ class auth extends sn_module {
   }
 
   /**
-   * Функция проверяет корректность имени игрока
+   * Функция проверяет корректность имени игрока при регистрации
    *
    * @param $player_name_unsafe
    *
-   * @throws exception
+   * @throws Exception
    */
   // OK v4
-  public static function register_player_validate_name($player_name_unsafe) {
-    // $player_name_safe = db_escape($player_name_unsafe);
-
+  // TODO - вынести в отдельный хелпер
+  public static function register_player_name_validate($player_name_unsafe) {
+    // TODO - переделать под RAW-строки
+    // Если имя игрока пустое - NO GO!
+    if(trim($player_name_unsafe) == '') {
+      throw new Exception(REGISTER_ERROR_PLAYER_NAME_EMPTY, ERR_ERROR);
+    }
     // Проверяем, что бы в начале и конце не было пустых символов
     if($player_name_unsafe != trim($player_name_unsafe)) {
-      throw new exception(REGISTER_ERROR_PLAYER_NAME_TRIMMED, ERR_ERROR);
-    }
-    // Если имя игрока пустое - NO GO!
-    if(empty($player_name_unsafe)) {
-      throw new exception(REGISTER_ERROR_PLAYER_NAME_EMPTY, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_PLAYER_NAME_TRIMMED, ERR_ERROR);
     }
     // Если логин имеет запрещенные символы - NO GO!
     if(strpbrk($player_name_unsafe, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
-      throw new exception(REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS, ERR_ERROR);
+      // TODO - выдавать в сообщение об ошибке список запрещенных символов
+      // TODO - заранее извещать игрока, какие символы являются запрещенными
+      throw new Exception(REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS, ERR_ERROR);
     }
     // Если логин меньше минимальной длины - NO GO!
     if(strlen($player_name_unsafe) < LOGIN_LENGTH_MIN) {
-      throw new exception(REGISTER_ERROR_PLAYER_NAME_SHORT, ERR_ERROR);
+      // TODO - выдавать в сообщение об ошибке минимальную длину имени игрока
+      // TODO - заранее извещать игрока, какая минимальная и максимальная длина имени
+      throw new Exception(REGISTER_ERROR_PLAYER_NAME_SHORT, ERR_ERROR);
     }
+
+    // TODO проверка на максимальную длину имени игрока
   }
   /**
    * Функция проверяет наличие имени игрока в базе
    *
    * @param $player_name_unsafe
    *
-   * @throws exception
+   * @throws Exception
    */
   // OK v4
-  public static function register_player_check_db($player_name_unsafe) {
+  public static function register_player_name_check_db($player_name_unsafe) {
     sn_db_transaction_check(true);
     $player_name_safe = db_escape($player_name_unsafe);
     $player_name_exists = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
     if(!empty($player_name_exists)) {
-      throw new exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
+      throw new Exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
     }
   }
 
@@ -205,11 +192,11 @@ class auth extends sn_module {
   public static function register_player_db_create($player_name_unsafe) {
     try {
       // Проверить корректность имени
-      self::register_player_validate_name($player_name_unsafe);
+      self::register_player_name_validate($player_name_unsafe);
 
       sn_db_transaction_start();
       // Проверить наличие такого имени в истории имён
-      self::register_player_check_db($player_name_unsafe);
+      self::register_player_name_check_db($player_name_unsafe);
 
       // TODO Создаем игрока
 
@@ -247,7 +234,7 @@ class auth extends sn_module {
 
       sn_db_transaction_commit();
       self::$login_status = LOGIN_SUCCESS;
-    } catch(exception $e) {
+    } catch(Exception $e) {
       sn_db_transaction_rollback();
       // Если старое имя занято
       unset(self::$user);
@@ -260,7 +247,7 @@ class auth extends sn_module {
   /**
    * Функция управляет регистрацией нового игрока для существующих аккаунтов
    */
-  //
+  // OK v4
   public static function register_player() {
     // Есть хотя бы один удачно залогинившийся аккаунт. Но у него/них нету ни одного связанного аккаунта
 
@@ -300,6 +287,7 @@ class auth extends sn_module {
    *
    * @param null $result
    */
+  // OK v4
   public static function login(&$result = null) {
     !self::$is_init ? self::init() : false;
 
@@ -347,14 +335,6 @@ class auth extends sn_module {
         // Иначе - это первый запуск страницы. ИЛИ СПЕЦИАЛЬНОЕ ДЕЙСТВИЕ!
         self::password_reset_send_code();
         self::password_reset_confirm(); // Если успешно - сюда мы не вернемся, а уйдём на редирект
-
-//        if(($result_password_reset = self::password_reset()) != LOGIN_UNDEFINED) {
-//          self::$hidden[F_LOGIN_STATUS] = $result_password_reset;
-//        } elseif(($result_password_reset = self::password_reset_confirm()) != LOGIN_UNDEFINED) {
-//          self::$hidden[F_LOGIN_STATUS] = $result_password_reset;
-//          // self::$hidden[F_LOGIN_STATUS] = $result_password_reset[F_LOGIN_STATUS];
-//          // self::$hidden[F_LOGIN_MESSAGE] = $result_password_reset[F_LOGIN_MESSAGE];
-//        }
       }
       // - значит у нас ошибка как минимум в локальном аккаунте - а то и в каком-то другом
 
@@ -435,146 +415,11 @@ class auth extends sn_module {
     self::login_process();
     self::extract_to_hidden();
 
-    $result = self::$hidden;
-
-    return $result;
-
-//    $suggested_name = '';
-    // TODO - Нет игрока, к которому аккаунты имеют доступ
-    if(empty(self::$user['id'])) {
-      // Значит у нас - новый игрок или какие-то спец-действия
-
-      // Может это у нас - регистрация нового игрока?
-      if(!empty(self::$accounts_authorised)) {
-
-
-
-
-        {
-          // Предлагаем имя игроку. Оно должно браться из аккаунтов
-          $first_authorised_account = reset(self::$accounts_authorised);
-          $suggested_name = $first_authorised_account->data[F_ACCOUNT]['account_name'];
-          // TODO Придумать вариант, если пустое
-          self::$hidden[F_LOGIN_SUGGESTED_NAME] = $suggested_name;
-          $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
-        }
-      }
-
-      {
-        // ИЛИ ОШИБКА!
-      }
-
-      die('{New user create OR error}');
-      // Стираем куку юзера
-    }
-
-
-    // $account = null;
-    {
-      // Таки есть юзер, к которому текущие аккаунты имеют права доступа
-      // В качестве аккаунта берем первый попавшийся из имеющих LOGIN_SUCCESS
-      // TODO НИХУЯ! НАДО БРАТЬ ПЕРВОГО С LOGIN_SUCCESS
-      self::$account = reset($local_user_to_provider_list[self::$user['id']]);
-      // Устанавливаем новую куку юзера или обновляем старую - в зависимости от предыдущего workflow
-      sn_setcookie(SN_COOKIE_U, self::$user['id'], SN_TIME_NOW + PERIOD_YEAR);
-//pdump($user_list);
-      die('Past set cookie');
-    }
-
-    // Здесь у нас возможны варианты:
-    //    - ИЛИ валидный User и есть хотя бы один аккаунт, который может с ним работать
-    //    - ИЛИ eсть код ошибки
-    // TODO: По нормальным делам - тут надо определять какие аккаунты умеют в этого игрока и узнать у них поддерживаемые фишки. Как-то:
-    //    - смена пароля
-    //    - смена емейла
-    //    - итд
-
-
-
-//    $auth_level = AUTH_LEVEL_ANONYMOUS;
-//    $login_status = LOGIN_UNDEFINED;
-//    self::$account = reset($user_list[$user['id']]);
-//    self::$user = $user;
-//    $auth_level = self::$user['authlevel']; // По итогу должен быть передан в основной код аут_левел найденного игрока - что бы видеть 1 к 1 его экран в случае имперсонейта
-    //self::$account_status_list[$provider_id]
-
-
-
-    // У найденного провайдера ВСЕГДА должен быть выставлен F_ACCOUNT_ID и F_ACCOUNT!
-    if($found_provider && $found_provider->data[F_ACCOUNT_ID]) {
-      self::flog(dump($found_provider->data));
-      // Безопасно. Если пользователь уже подгружен - ничего не произойдет
-      $found_provider->load_user_data();
-
-      // Если пользователь не найден - значит у нас первый логин с этого аккаунта. Надо создать или прилинковать нового пользователя
-      if(!$found_provider->data[F_USER]) {
-        static::flog("Почему-то нет пользователя", true);
-        // TODO Аккаунт мог быть удален по блокировке. Или отправлен на хранение
-
-        // Создаем пользователя
-        // TODO - Решить, что делать если емейл аккаунта, который заходит на сервер в первый раз совпадает с емейлом уже существующего игрока, но при этом не совпадают пароли
-        $found_provider->user_create_from_account();
-
-        // Регистрация меняет статус аккаунта на LOGIN_SUCCESS
-        $found_provider->register_account();
-      }
-
-      // В этой точке у нас уже есть и созданный пользователь и созданный аккаунт хотя бы по одному провайдеру
-      // Так же юзер уже зарегестрирован на аккаунт, а операция - LOGIN_SUCCESS
-
-      // Проверяем всех провайдеров
-      foreach(self::$providers as $provider_id => $provider) {
-        // Если провайдер не вошел своим аккаунтом - создаем для него аккаунт по данным успешного провайдера
-        // TODO - Решить, что делать если емейл аккаунта, который заходит на сервер в первый раз совпадает с емейлом уже существующего игрока, но при этом не совпадают пароли
-        $provider->db_create_account_from_provider($found_provider);
-        // ПРОВАЙДЕР МОЖЕТ НЕ ПОДДЕРЖИВАТЬ ТАКОЕ СОЗДАНИЕ АККУНТОВ! ЭТО НОРМАЛЬНО
-        // НО ТОГДА ОН ДОЛЖЕН ВЫСТАВЛЯТЬ СТАТУС LOGIN_SUCCESS И ВСЁ РАВНО ПРИНИМАТЬ ПОЛЬЗОВАТЕЛЯ!
-      }
-
-      // В этой точке все провайдеры ЛИБО имеют какие-то аккаунты, ЛИБО отказались создать их. ОДНАКО! У НИХ ВСЁ РАВНО ВСТАВЛЕН LOGIN_SUCCESS И ПРИНЯТ ПОЛЬЗОВАТЕЛЬ!
-      foreach(self::$providers as $provider_id => $provider) {
-        // Если пользователь провайдера не равен текущему пользователю НО У НЕГО ЕСТЬ АККАУНТ - регестрируем аккаунт на нового пользователя
-        if(($provider->data[F_USER_ID] != $found_provider->data[F_USER_ID]) && $provider->data[F_ACCOUNT_ID]) {
-          $provider->data[F_USER_ID] = 0;
-          $provider->data[F_USER] = $found_provider->data[F_USER];
-          $provider->register_account();
-        }
-      }
-
-      // В этой точке У ВСЕХ провайдеров есть пользователи и ВСЕ провайдеры имеют статус LOGIN_SUCCESS, а так же на всех провайдеров с ACCOUNT_ID зарегестрирован текущий пользователь
-    } else {
-      // Ищем провайдера с ошибкой
-      $found_provider = null;
-      foreach(self::$providers as $provider_id => $provider) {
-        if($provider->data[F_LOGIN_STATUS] != LOGIN_UNDEFINED) {
-          $found_provider = $provider;
-          break;
-        }
-      }
-
-      // Нет ошибок - тогда берем первого попавшегося
-      if(!$found_provider) {
-        $found_provider = reset(self::$providers);
-      }
-    }
-
-    // pdump($found_provider);die();
-    // Сверить еще ИД юзеров, которые принадлежат кажому аккаунту - что бы коллизия не случилась
-    // Ну и на аккаунте может быть больше одного ЮЗЕРА - официальные мультики
-
-    self::login_process($found_provider);
-
-    if(($result_password_reset = self::password_reset_send_code()) != LOGIN_UNDEFINED) {
-      self::$hidden[F_LOGIN_STATUS] = $result_password_reset;
-    } elseif(($result_password_reset = self::password_reset_confirm()) != LOGIN_UNDEFINED) {
-      self::$hidden[F_LOGIN_STATUS] = $result_password_reset;
-      // self::$hidden[F_LOGIN_STATUS] = $result_password_reset[F_LOGIN_STATUS];
-      // self::$hidden[F_LOGIN_MESSAGE] = $result_password_reset[F_LOGIN_MESSAGE];
-    }
-
-    $result = self::$hidden;
+    return $result = self::$hidden;
   }
   /**
+   * Логаут игрока и всех аккаунтов
+   *
    * @param bool|string $redirect нужно ли сделать перенаправление после логаута
    * <p><b>false</b> - не перенаправлять</p>
    * <p><i><b>true</b></i> - перенаправить на главную страницу</p>
@@ -582,30 +427,13 @@ class auth extends sn_module {
    *
    * @param bool $only_impersonator Если установлен - то логаут происходит только при имперсонации
    */
-  static function logout($redirect = true, $only_impersonator = false) {
-//    global $user_impersonator;
-//
-//    if($only_impersonator && !$user_impersonator) {
-//      return;
-//    }
-
-//    if($_COOKIE[SN_COOKIE_I] && $user_impersonator['authlevel'] >= 3) {
-//      // TODO REWRITE
-////      self::$auth->data[F_USER_ID] = $user_impersonator['id'];
-////      self::$auth->data[F_ACCOUNT] = db_account_by_user($user_impersonator);
-////      self::$auth->data[F_ACCOUNT_ID] = self::$auth->data[F_ACCOUNT]['id'];
-////      self::$auth->cookie_set(); // TODO REWRITE
-////      $redirect = $redirect === true ? 'admin/userlist.php' : $redirect;
-//    } else
-//    {
-//      sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-//    }
-//
-//    sn_setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-
+  // OK v4
+  static function logout($redirect = true) {
     foreach(self::$providers as $provider_name => $provider) {
       $provider->logout_do();
     }
+
+    sn_setcookie(SN_COOKIE_U, '', SN_TIME_NOW - PERIOD_YEAR);
 
     if($redirect === true) {
       sys_redirect(SN_ROOT_RELATIVE . (empty($_COOKIE[SN_COOKIE]) ? 'login.php' : 'admin/overview.php'));
@@ -743,7 +571,7 @@ class auth extends sn_module {
 //  static function db_confirmation_set($account_id_safe, $confirmation_type_safe, $email_safe) {
 //    $confirmation = $this->db_confirmation_by_account_id($account_id_safe, CONFIRM_PASSWORD_RESET);
 //    if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
-//      throw new exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
+//      throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
 //    }
 //
 //    // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
@@ -817,7 +645,7 @@ class auth extends sn_module {
 //          $user = $provider->db_user_id_by_provider_account_id($account['account_id']);
 //
 //          if($user && $user['authlevel'] > 0) {
-//            throw new exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
+//            throw new Exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
 //          }
 //          $found_provider = $provider;
 //          break;
@@ -897,7 +725,7 @@ class auth extends sn_module {
 //            $user = $provider->db_user_id_by_provider_account_id($account['account_id']);
 //            // TODO - Проверять уровень доступа аккаунта!
 //            if($user && $user['authlevel'] > 0) {
-//              throw new exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
+//              throw new Exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
 //            }
 //            $found_provider = $provider;
 //            break;
@@ -906,7 +734,7 @@ class auth extends sn_module {
 //      }
 //
 //      if(!$found_provider || empty($account['account_email'])) {
-//        throw new exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL);
+//        throw new Exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL);
 //      }
 //
 //      $email_safe = db_escape($found_provider->data[F_INPUT][F_EMAIL_UNSAFE]);
@@ -919,7 +747,7 @@ class auth extends sn_module {
 //      );
 //
 //      $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
-//    } catch(exception $e) {
+//    } catch(Exception $e) {
 //      sn_db_transaction_rollback();
 //      $result = $e->getMessage();
 //    }
@@ -1035,8 +863,6 @@ class auth extends sn_module {
 //      ));
     }
   }
-  // UNUSED??????????
-  // static function password_check($old_password_unsafe) {  }
 
   static function password_encode($password, $salt) {
     return md5($password . $salt);
@@ -1102,8 +928,8 @@ class auth extends sn_module {
       if(!$sys_stop_log_hit && $config->game_counter) {
         sn_db_transaction_start();
         $is_watching = true;
-        self::db_get_set_unique_value_by_id(self::$hidden[F_PAGE], self::$hidden[F_PAGE_ID], $_SERVER['PHP_SELF'], 'url_id', 'security_url', 'url_string');
-        self::db_get_set_unique_value_by_id(self::$hidden[F_URL], self::$hidden[F_URL_ID], $_SERVER['REQUEST_URI'], 'url_id', 'security_url', 'url_string');
+        db_get_set_unique_value_by_id(self::$hidden[F_PAGE], self::$hidden[F_PAGE_ID], $_SERVER['PHP_SELF'], 'url_id', 'security_url', 'url_string');
+        db_get_set_unique_value_by_id(self::$hidden[F_URL], self::$hidden[F_URL_ID], $_SERVER['REQUEST_URI'], 'url_id', 'security_url', 'url_string');
 
         doquery(
           "INSERT INTO {{counter}}
@@ -1200,7 +1026,7 @@ class auth extends sn_module {
     sn_db_transaction_commit();
 
     sn_db_transaction_start();
-    self::db_get_set_unique_value_by_id(self::$hidden[F_BROWSER], self::$hidden[F_BROWSER_ID], $_SERVER['HTTP_USER_AGENT'], 'browser_id', 'security_browser', 'browser_user_agent');
+    db_get_set_unique_value_by_id(self::$hidden[F_BROWSER], self::$hidden[F_BROWSER_ID], $_SERVER['HTTP_USER_AGENT'], 'browser_id', 'security_browser', 'browser_user_agent');
     sn_db_transaction_commit();
   }
   static function flog($message, $die = false) {
