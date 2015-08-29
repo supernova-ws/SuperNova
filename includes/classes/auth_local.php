@@ -5,7 +5,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.4# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.5# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -25,6 +25,8 @@ class auth_local extends sn_module {
   protected $features = array(
     AUTH_FEATURE_EMAIL_CHANGE => AUTH_FEATURE_EMAIL_CHANGE,
     AUTH_FEATURE_PASSWORD_RESET => AUTH_FEATURE_PASSWORD_RESET,
+    AUTH_FEATURE_PASSWORD_CHANGE => AUTH_FEATURE_PASSWORD_CHANGE,
+    AUTH_FEATURE_HAS_PASSWORD => AUTH_FEATURE_HAS_PASSWORD,
   );
 
   // TODO - должны быть PRIVATE
@@ -147,7 +149,7 @@ class auth_local extends sn_module {
   }
 
   /**
-   * Создает пользователя по данным ввода
+   * Создает аккаунт по данным ввода
    *
    * @throws Exception
    */
@@ -175,10 +177,33 @@ class auth_local extends sn_module {
 //    $this->db_account_convert($this->data[F_ACCOUNT]);
     $this->data[F_ACCOUNT_ID] = $this->data[F_ACCOUNT]['account_id'];
   }
+  /**
+   * Физически меняет пароль аккаунта в БД
+   *
+   * @param $new_password_encoded_safe
+   * @param $salt_safe
+   *
+   * @return array|resource
+   */
+  // OK v4
   function db_account_password_change($new_password_encoded_safe, $salt_safe) {
-    return db_user_set_by_id($this->data[F_ACCOUNT]['account_id'], "`password` = '{$new_password_encoded_safe}', `salt` = '{$salt_safe}'");
+    return doquery(
+      "UPDATE {{account}} SET
+        `account_password` = '{$new_password_encoded_safe}',
+        `account_salt` = '{$salt_safe}'
+      WHERE `account_id` = '{$this->data[F_ACCOUNT]['account_id']}'"
+    );
+    // return db_user_set_by_id($this->data[F_ACCOUNT]['account_id'], "`password` = '{$new_password_encoded_safe}', `salt` = '{$salt_safe}'");
   }
+
+  /**
+   * @param $new_email_unsafe
+   *
+   * @return array|bool|resource
+   */
+  // TODO v4
   function email_set_do($new_email_unsafe) {
+    die('{Смена емейла пока не работает}');
     return db_user_set_by_id($this->data[F_ACCOUNT_ID], "`email_2` = '" . db_escape($new_email_unsafe) . "'");
   }
 
@@ -270,14 +295,14 @@ class auth_local extends sn_module {
         F_EMAIL_UNSAFE => sys_get_param_str_unsafe('email'),
         F_LANGUAGE_SAFE => sys_get_param_str('lang', DEFAULT_LANG),
 
-        F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
-        F_IS_PASSWORD_RESET_CONFIRM => sys_get_param('password_reset_confirm'),
+        // F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
+        // F_IS_PASSWORD_RESET_CONFIRM => sys_get_param('password_reset_confirm'),
         F_PASSWORD_RESET_CODE_SAFE => sys_get_param_str('password_reset_code'),
       ),
       F_REMEMBER_ME_SAFE => intval(sys_get_param_int('rememberme') || $is_register),
 
-      F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
-      F_IS_PASSWORD_RESET_CONFIRM => sys_get_param('password_reset_confirm'),
+      // F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
+      // F_IS_PASSWORD_RESET_CONFIRM => sys_get_param('password_reset_confirm'),
       F_PASSWORD_RESET_CODE_SAFE => sys_get_param_str('password_reset_code'),
     );
   }
@@ -572,13 +597,25 @@ class auth_local extends sn_module {
 
     return true;
   }
-  function real_password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe) {
+
+  /**
+   * Меняет пароль у аккаунта в БД
+   *
+   * @param      $old_password_unsafe
+   * @param      $new_password_unsafe
+   * @param null $salt_unsafe
+   *
+   * @return array|bool|resource
+   */
+  // OK v4
+  function real_password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
     if(!$this->auth_password_check($old_password_unsafe)) {
       return false;
     }
 
+    $salt_unsafe === null ? $salt_unsafe = self::password_salt_generate() : false;
+
     $new_password_encoded_unsafe = self::password_encode($new_password_unsafe, $salt_unsafe);
-    // Это здесь - потому что db_escape в общем случае может быть другая!
     $salt_safe = db_escape($salt_unsafe);
     $new_password_encoded_safe = db_escape($new_password_encoded_unsafe);
     $result = $this->db_account_password_change($new_password_encoded_safe, $salt_safe);

@@ -321,7 +321,7 @@ if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > 
 auth::login($result);
 
 
-if(!empty(auth::$accounts_authorised) && empty(auth::$user['id'])) {
+if(!empty(auth::$providers_authorised) && empty(auth::$user['id'])) {
   die('{Тут должна быть ваша реклама. Точнее - ввод имени игрока}');
 }
 
@@ -392,6 +392,7 @@ if($template_result[F_GAME_DISABLE] = $config->game_disable) {
 }
 
 // TODO ban
+// TODO $skip_ban_check
 if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
   if(defined('IN_API')) {
     return;
@@ -422,11 +423,6 @@ if(!$allow_anonymous && !$sys_user_logged_in) {
 }
 
 $user_time_diff = user_time_diff_get();
-//defined('SN_CLIENT_TIME_DIFF_SECONDS') or define('SN_CLIENT_TIME_DIFF_SECONDS', $user_time_diff[PLAYER_OPTION_TIME_DIFF]);
-//defined('SN_CLIENT_TIME_UTC_OFFSET') or define('SN_CLIENT_TIME_UTC_OFFSET', $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
-//$time_diff = SN_CLIENT_TIME_DIFF_SECONDS + SN_CLIENT_TIME_UTC_OFFSET;
-//defined('SN_CLIENT_TIME_DIFF') or define('SN_CLIENT_TIME_DIFF', $time_diff);
-//defined('SN_CLIENT_TIME_LOCAL') or define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 global $time_diff;
 define('SN_CLIENT_TIME_DIFF', $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DIFF] + $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
 define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);

@@ -51,7 +51,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.4');
+define('SN_VERSION', '40a10.5');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -72,7 +72,8 @@ define('LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH', 9);
 define('SN_SYS_SEC_CHARS_CONFIRMATION', '0123456789');
 define('AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE', PERIOD_DAY);
 
-define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', '/\\ |^&\'?"`<>[]{}()%');
+// define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', '/\\ |^&\'?"`<>[]{}()%');
+define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', "`'\"\\/ |^&?<>[]{}()%;\n\r\t\v\f\x00\x1a");
 
 // Default allowed chars for random string
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
@@ -394,6 +395,9 @@ define('AUTH_COOKIE_DELIMETER', '_');
 
 define('AUTH_FEATURE_EMAIL_CHANGE', 1);
 define('AUTH_FEATURE_PASSWORD_RESET', 2);
+define('AUTH_FEATURE_FORCE_PLAYER_NAME_SELECT', 3);
+define('AUTH_FEATURE_PASSWORD_CHANGE', 4);
+define('AUTH_FEATURE_HAS_PASSWORD', 5);
 
 // Login statuses
 define('LOGIN_UNDEFINED', 0);
@@ -484,8 +488,8 @@ define('F_EMAIL_UNSAFE',               'F_EMAIL_UNSAFE');
 define('F_LANGUAGE_SAFE',              'F_LANGUAGE_SAFE');
 define('F_REMEMBER_ME_SAFE',           'F_REMEMBER_ME_SAFE');
 
-define('F_IS_PASSWORD_RESET',          'F_IS_PASSWORD_RESET');
-define('F_IS_PASSWORD_RESET_CONFIRM',  'F_IS_PASSWORD_RESET_CONFIRM');
+// define('F_IS_PASSWORD_RESET',          'F_IS_PASSWORD_RESET');
+// define('F_IS_PASSWORD_RESET_CONFIRM',  'F_IS_PASSWORD_RESET_CONFIRM');
 define('F_PASSWORD_RESET_CODE_SAFE',        'F_PASSWORD_RESET_CODE');
 //
 
@@ -494,8 +498,8 @@ define('F_HIDDEN', 'F_HIDDEN');
 // Global template_result fields
 define('AUTH_LEVEL', 'AUTH_LEVEL');
 
-define('F_DEVICE_ID',     'F_DEVICE_ID');
-define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
+//define('F_DEVICE_ID',     'F_DEVICE_ID');
+//define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
 
 define('F_PROVIDER_ID',   'F_PROVIDER_ID');
 define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
@@ -529,13 +533,13 @@ define('F_LOGIN_ACCOUNT_NAME', 'F_LOGIN_ACCOUNT');
 define('F_LOGIN_ACCOUNT_GLOBAL', 'F_LOGIN_ACCOUNT_GLOBAL');
 define('F_PASSWORD_NEW', 'F_PASSWORD_NEW');
 
-define('F_BROWSER', 'F_BROWSER');
-define('F_BROWSER_ID', 'F_BROWSER_ID');
+// define('F_BROWSER', 'F_BROWSER');
+// define('F_BROWSER_ID', 'F_BROWSER_ID');
 
-define('F_PAGE', 'F_PAGE');
-define('F_PAGE_ID', 'F_PAGE_ID');
-define('F_URL', 'F_URL');
-define('F_URL_ID', 'F_URL_ID');
+// define('F_PAGE', 'F_PAGE');
+// define('F_PAGE_ID', 'F_PAGE_ID');
+// define('F_URL', 'F_URL');
+// define('F_URL_ID', 'F_URL_ID');
 
 define('F_BANNED_STATUS', 'F_BANNED_STATUS');
 define('F_BANNED_MESSAGE', 'F_BANNED_MESSAGE');

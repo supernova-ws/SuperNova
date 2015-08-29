@@ -1640,3 +1640,26 @@ function can_capture_planet(){return sn_function_call('can_capture_planet', arra
 function sn_can_capture_planet(&$result) {
   return $result = false;
 }
+
+/**
+ * Возвращает информацию об IPv4 адресах пользователя
+ *
+ * НЕ ПОДДЕРЖИВАЕТ IPv6!
+ *
+ * @return array
+ */
+// OK v4
+function sec_player_ip() {
+  // TODO - IPv6 support
+  $ip = array(
+    'ip' => $_SERVER["REMOTE_ADDR"],
+    'proxy_chain' => $_SERVER["HTTP_X_FORWARDED_FOR"]
+      ? $_SERVER["HTTP_X_FORWARDED_FOR"]
+      : ($_SERVER["HTTP_CLIENT_IP"]
+        ? $_SERVER["HTTP_CLIENT_IP"]
+        : '' // $_SERVER["REMOTE_ADDR"]
+      ),
+  );
+
+  return array_map('db_escape', $ip);
+}

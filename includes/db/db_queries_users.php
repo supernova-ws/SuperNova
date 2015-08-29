@@ -104,7 +104,7 @@ function db_user_list_admin_sorted($sort) {
  * @return array
  */
 function db_user_list_by_id($user_id_list) {
-  !array($user_id_list) ? $user_id_list = array($user_id_list) : false;
+  !is_array($user_id_list) ? $user_id_list = array($user_id_list) : false;
 
   $user_list = array();
   foreach($user_id_list as $user_id_unsafe) {
