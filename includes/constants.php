@@ -51,7 +51,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.5');
+define('SN_VERSION', '40a10.6');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -478,7 +478,7 @@ define('ACCOUNT_PROVIDER_CENTRAL', 2);
 
 // F_INPUT - constants
 define('F_INPUT',                      'F_INPUT');
-define('F_IS_REGISTER',                'F_IS_REGISTER');
+// define('F_IS_REGISTER',                'F_IS_REGISTER');
 define('F_LOGIN_UNSAFE',               'F_LOGIN_UNSAFE');
 define('F_LOGIN_SAFE',                 'F_LOGIN_SAFE');
 define('F_LOGIN_PASSWORD_RAW',         'F_LOGIN_PASSWORD_RAW');
@@ -486,12 +486,9 @@ define('F_LOGIN_PASSWORD_RAW',         'F_LOGIN_PASSWORD_RAW');
 define('F_LOGIN_PASSWORD_REPEAT_RAW',  'F_LOGIN_PASSWORD_REPEAT_RAW');
 define('F_EMAIL_UNSAFE',               'F_EMAIL_UNSAFE');
 define('F_LANGUAGE_SAFE',              'F_LANGUAGE_SAFE');
-define('F_REMEMBER_ME_SAFE',           'F_REMEMBER_ME_SAFE');
+// define('F_REMEMBER_ME_SAFE',           'F_REMEMBER_ME_SAFE');
 
-// define('F_IS_PASSWORD_RESET',          'F_IS_PASSWORD_RESET');
-// define('F_IS_PASSWORD_RESET_CONFIRM',  'F_IS_PASSWORD_RESET_CONFIRM');
-define('F_PASSWORD_RESET_CODE_SAFE',        'F_PASSWORD_RESET_CODE');
-//
+// define('F_PASSWORD_RESET_CODE_SAFE',        'F_PASSWORD_RESET_CODE');
 
 define('F_HIDDEN', 'F_HIDDEN');
 
@@ -502,7 +499,7 @@ define('AUTH_LEVEL', 'AUTH_LEVEL');
 //define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
 
 define('F_PROVIDER_ID',   'F_PROVIDER_ID');
-define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
+// define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
 
 define('F_IMPERSONATE_STATUS', 'F_IMPERSONATE_STATUS');
 define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
@@ -516,17 +513,15 @@ define('F_USER_IS_AUTHORIZED', 'F_USER_IS_AUTHORIZED');
 define('F_ACCOUNT_IS_AUTHORIZED', 'F_ACCOUNT_IS_AUTHORIZED');
 
 
-define('F_ACCOUNT_ID', 'F_ACCOUNT_ID');
+// define('F_ACCOUNT_ID', 'F_ACCOUNT_ID');
 define('F_ACCOUNT', 'F_ACCOUNT');
 define('F_ACCOUNTS_AUTHORISED', 'F_ACCOUNTS_AUTHORISED');
-define('F_PASSWORD_MATCHED', 'F_ACCOUNT_PASSWORD_MATCH');
+// define('F_PASSWORD_MATCHED', 'F_ACCOUNT_PASSWORD_MATCH');
 
 
 define('F_PASSWORD', 'F_PASSWORD');
 
 define('F_LOGIN_SUGGESTED_NAME', 'F_LOGIN_SUGGESTED_NAME');
-
-
 
 define('F_LOGIN_ACCOUNT', 'F_LOGIN_ACCOUNT');
 define('F_LOGIN_ACCOUNT_NAME', 'F_LOGIN_ACCOUNT');

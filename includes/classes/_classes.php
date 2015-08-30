@@ -6,6 +6,7 @@ require_once('locale.php');
 require_once('template.php');
 require_once('functions_template.php');
 require_once('module.php');
+require_once('RequestInfo.php');
 require_once('auth.php');
 // require_once('auth_provider.php');
 require_once('auth_local.php');

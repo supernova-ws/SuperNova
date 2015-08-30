@@ -193,6 +193,7 @@ $sn_module = array();
 $sn_module_list = array();
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // Здесь - потому что auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
+// TODO - переработать этот костыль
 new auth();
 new auth_local();
 
@@ -358,6 +359,11 @@ if($template_result[F_LOGIN_STATUS] == LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTER
     return "'" . htmlentities($value, ENT_QUOTES, 'UTF-8') . "'";
   }, str_split(LOGIN_REGISTER_CHARACTERS_PROHIBITED));
   $template_result[F_LOGIN_MESSAGE] .= implode(', ', $prohibited_characters);
+}
+
+
+if(defined('DEBUG_AUTH') && DEBUG_AUTH && !defined('IN_AJAX')) {
+  pdump("Отключи отладку перед продакшном!");
 }
 
 

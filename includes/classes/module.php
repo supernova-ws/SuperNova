@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #40a0.1# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.6# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -75,7 +75,7 @@ class sn_module {
     );
   }
 
-  function sn_module($filename = __FILE__) {
+  function __construct($filename = __FILE__) {
     // Getting module PHP class name
     $class_module_name = get_class($this);
 
