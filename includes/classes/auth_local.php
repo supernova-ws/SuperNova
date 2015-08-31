@@ -9,7 +9,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.6# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.7# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -297,7 +297,10 @@ class auth_local extends sn_module {
     return $result;
   }
 
-  // global functions
+
+
+
+
   /**
    * Функция инициализирует данные провайдера - разворачивает куки, берет данные итд
    */

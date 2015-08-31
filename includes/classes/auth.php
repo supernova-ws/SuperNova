@@ -1,4 +1,7 @@
 <?php
+
+define("DEBUG_AUTH", true);
+
 /**
  * Статический над-класс, который обеспечивает интерфейс авторизации для остального кода
  *
@@ -6,17 +9,15 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.6#
+ * version #40a10.7#
  */
-
-define("DEBUG_AUTH", true);
 
 class auth extends sn_module {
   public $manifest = array(
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.6# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.7# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -171,6 +172,7 @@ class auth extends sn_module {
    * @return array
    */
   // OK v4
+  // TODO - возможно, это должен делать провайдер - иметь свой транслятор. Наверное - кэширующий
   static function db_get_account_translation_from_account_list($provider_id_unsafe, $account_list) {
     $provider_id_safe = intval($provider_id_unsafe);
     !is_array($account_list) ? $account_list = array($account_list) : false;
