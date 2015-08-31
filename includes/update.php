@@ -991,7 +991,7 @@ switch($new_version) {
 
     // 2015-08-19 04:41:57 40a8.10
 
-    upd_do_query('UPDATE {{planets}} SET `image` = "normaltempplanet01" WHERE `image` = "planet" OR `image` = "normaltemp01"'); // deprecated define('PLANET_DENSITY_METAL_HEAVY', 7);
+    upd_do_query('UPDATE {{planets}} SET `image` = "normaltempplanet01" WHERE `image` = "planet" OR `image` = "normaltemp01"');
 
     // 2015-08-19 05:17:35 40a8.11
 
@@ -999,7 +999,6 @@ switch($new_version) {
     upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', empty($config->core_geoip_whois_url));
 
     // 2015-08-22 18:24:26 40a9.10
-
     upd_check_key('ube_capture_points_diff', 2, empty($config->ube_capture_points_diff));
 
     // 2015-08-27 19:14:05 40a10.0
@@ -1055,6 +1054,9 @@ switch($new_version) {
               AND a.account_salt = u.salt;"
       );
     }
+
+    // 2015-08-31 12:34:21 40a10.8
+    upd_do_query('UPDATE {{planets}} SET `diameter` = SQRT(`field_max`) * 1000 WHERE `diameter` > 1000000');
 
     // #ctv
 

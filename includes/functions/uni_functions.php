@@ -42,7 +42,8 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $t_min = $t_max - sn_rand_gauss_range($position_data['t_delta_min'], $position_data['t_delta_max'], true, 1.3, true);
 
   $planet_sectors = sn_rand_gauss_range($position_data['size_min'], $position_data['size_max'], true, 1.7, true);
-  $planet_diameter = round(pow($planet_sectors, 2) * 1000);
+//  $planet_diameter = round(pow($planet_sectors, 2) * 1000);
+  $planet_diameter = round(sqrt($planet_sectors) * 1000);
 
   $density_list = sn_get_groups('planet_density');
   $density_min = reset($density_list);
