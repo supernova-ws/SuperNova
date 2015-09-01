@@ -18,7 +18,7 @@ function upd_do_query($query, $no_log = false) {
       $query = str_replace("{{{$tableName}}}", $db_prefix . $tableName, $query);
     }
   }
-  $result = classSupernova::$db->__db_query($query) or die('Query error for ' . $query . ': ' . db_error());
+  $result = classSupernova::$db->mysql_query($query) or die('Query error for ' . $query . ': ' . db_error());
   return $result;
 }
 
@@ -144,7 +144,7 @@ function upd_alter_table($table, $alters, $condition = true) {
 function upd_drop_table($table_name) {
   global $config;
 
-  classSupernova::$db->__db_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
+  classSupernova::$db->mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
 
   upd_unset_table_info($table_name);
 }

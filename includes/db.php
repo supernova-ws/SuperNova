@@ -11,51 +11,233 @@ if(!defined('INSIDE')) {
 
 require_once('db/db_queries.php');
 
-// Среднеуровневые врапперы - для абстрагирования от типа БД
+function db_change_units_perform($query, $tablename, $object_id) {
+  $query = implode(',', $query);
+  if($query && $object_id) {
+    return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
+    // return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
+  }
+}
+
+// TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
+// TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ
+// $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
+function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) {
+  $query = is_array($query) ? $query : array(
+    LOC_USER => array(),
+    LOC_PLANET => array(),
+  );
+
+  $group = sn_get_groups('resources_loot');
+
+  foreach($unit_list as $unit_id => $unit_amount) {
+    if(!in_array($unit_id, $group)) {
+      // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: db_change_units() вызван для не-ресурсов!</h1>');
+      pdump(debug_backtrace());
+      die('db_change_units() вызван для не-ресурсов!');
+    }
+
+    if(!$unit_amount) {
+      continue;
+    }
+
+    $unit_db_name = pname_resource_name($unit_id);
+
+    $unit_location = sys_get_unit_location($user, $planet, $unit_id);
+
+    // Changing value in object
+    switch($unit_location) {
+      case LOC_USER:
+        $user[$unit_db_name] += $unit_amount;
+        break;
+      case LOC_PLANET:
+        $planet[$unit_db_name] += $unit_amount;
+        break;
+    }
+
+    $unit_amount = $unit_amount < 0 ? $unit_amount : "+{$unit_amount}"; // Converting positive unit_amount to string '+unit_amount'
+    $query[$unit_location][$unit_id] = "`{$unit_db_name}`=`{$unit_db_name}`{$unit_amount}";
+  }
+
+  db_change_units_perform($query[LOC_USER], 'users', $user['id']);
+  db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
+}
+function sn_db_perform($table, $values, $type = 'insert', $options = false) {
+  $mass_perform = false;
+
+  $field_set = '';
+  $value_set = '';
+
+  switch($type) {
+    case 'delete':
+      $query = 'DELETE FROM';
+      break;
+
+    case 'insert':
+      $query = 'INSERT INTO';
+      if(isset($options['__multi'])) {
+        // Here we generate mass-insert set
+        break;
+      }
+    case 'update':
+      if(!$query) {
+        $query = 'UPDATE';
+      }
+
+      foreach($values as $field => &$value) {
+        $value_type = gettype($value);
+        if ($value_type == 'string') {
+          $value = "'" . db_escape($value) . "'";
+        }
+        $value = "`{$field}` = {$value}";
+      }
+      $field_set = 'SET ' . implode(', ', $values);
+      break;
+
+  };
+
+  $query .= " {$table} {$field_set}";
+  return doquery($query);
+}
+
+
+
+function sn_db_field_set_is_safe(&$field_set) {
+  return !empty($field_set['__IS_SAFE']);
+}
+function sn_db_field_set_safe_flag_clear(&$field_set) {
+  unset($field_set['__IS_SAFE']);
+}
+function sn_db_field_set_safe_flag_set(&$field_set) {
+  $field_set['__IS_SAFE'] = true;
+}
+function sn_db_field_set_make_safe($field_set, $serialize = false) {
+  if(!is_array($field_set)) {
+    die('$field_set is not an array!');
+  }
+
+  $result = array();
+  foreach($field_set as $field => $value) {
+    $field = db_escape(trim($field));
+    switch (true) {
+      case is_int($value):
+      case is_double($value):
+        break;
+
+      case is_bool($value):
+        $value = intval($value);
+        break;
+
+      case is_array($value):
+      case is_object($value):
+        $serialize ? $value = serialize($value) : die('$value is object or array with no $serialize');
+
+      case is_string($value):
+        $value = '"' . db_escape($value) . '"';
+        break;
+
+      case is_null($value):
+        $value = 'NULL';
+        break;
+
+      default:
+        die('unsupported operand type');
+    }
+    $result[$field] = $value;
+  }
+
+  sn_db_field_set_safe_flag_set($field_set);
+
+  return $result;
+}
+function db_field_set_create($table_name, $field_set) {
+  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
+  sn_db_field_set_safe_flag_clear($field_set);
+
+  $values = implode(',', $field_set);
+  $fields = implode(',', array_keys($field_set));
+
+  return classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);");
+}
+
+
+function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
+  return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
+}
+function db_changeset_apply($db_changeset) {
+  return classSupernova::db_changeset_apply($db_changeset);
+}
+
+function sn_db_transaction_check($transaction_should_be_started = null) {
+  return classSupernova::db_transaction_check($transaction_should_be_started);
+}
+function sn_db_transaction_start($level = '') {
+  return classSupernova::db_transaction_start($level);
+}
+function sn_db_transaction_commit() {
+  return classSupernova::db_transaction_commit();
+}
+function sn_db_transaction_rollback() {
+  return classSupernova::db_transaction_rollback();
+}
+
+
+
+
+function db_error() {
+  return classSupernova::$db->db_error();
+}
+function sn_db_connect() {
+  return classSupernova::$db->sn_db_connect();
+}
+function sn_db_disconnect() {
+  return classSupernova::$db->db_disconnect();
+}
+function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
+  return classSupernova::$db->doquery($query, $table, $fetch, $skip_query_check);
+}
 function db_fetch(&$query) {
   return classSupernova::$db->db_fetch($query);
 }
 function db_fetch_row(&$query) {
   return classSupernova::$db->db_fetch_row($query);
 }
-
-function db_escape($unescaped_string, $link = null) {
-  return classSupernova::$db->db_escape($unescaped_string, $link);
+function db_escape($unescaped_string) {
+  return classSupernova::$db->db_escape($unescaped_string);
 }
-
-function db_insert_id($link = null) {
-  return classSupernova::$db->db_insert_id($link);
+function db_insert_id() {
+  return classSupernova::$db->db_insert_id();
 }
-
 function db_num_rows(&$result) {
   return classSupernova::$db->db_num_rows($result);
 }
-function db_affected_rows($link = null) {
-  return classSupernova::$db->db_affected_rows($link);
+function db_affected_rows() {
+  return classSupernova::$db->db_affected_rows();
 }
-
 // Информационные функции
 function db_get_client_info() {
   return classSupernova::$db->db_get_client_info();
 }
-function db_get_server_info($link = null) {
-  return classSupernova::$db->db_get_server_info($link);
+function db_get_server_info() {
+  return classSupernova::$db->db_get_server_info();
 }
-function db_get_host_info($link = null) {
-  return classSupernova::$db->db_get_host_info($link);
+function db_get_host_info() {
+  return classSupernova::$db->db_get_host_info();
 }
-function db_server_stat($link = null) {
-  return classSupernova::$db->db_get_server_stat($link);
+function db_server_stat() {
+  return classSupernova::$db->db_get_server_stat();
+}
+function db_get_table_list($db_prefix) {
+  return classSupernova::$db->db_get_table_list($db_prefix);
 }
 
-function db_get_table_list($db_prefix, $link = null) {
-  return classSupernova::$db->db_get_table_list($db_prefix, $link);
-}
 
-
+// Deprecated
 function security_watch_user_queries($query) {
   die('You should not use security_watch_user_queries()! Report to admin');
 //  // TODO Заменить это на новый логгер
+
 //  global $config, $is_watching, $user, $debug;
 //
 //  if(!$is_watching && $config->game_watchlist_array && in_array($user['id'], $config->game_watchlist_array))
@@ -74,7 +256,7 @@ function security_watch_user_queries($query) {
 //    }
 //  }
 }
-
+// Deprecated
 function security_query_check_bad_words($query) {
   die('You should not use security_query_check_bad_words()! Report to admin');
 //  global $user, $dm_change_legit, $mm_change_legit;
@@ -128,251 +310,4 @@ function security_query_check_bad_words($query) {
 //      die($message);
 //    break;
 //  }
-}
-
-function sn_db_connect() {
-//  global $link;
-//
-//  require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
-//
-//  __db_connect($link, $dbsettings);
-  return classSupernova::$db->sn_db_connect();
-}
-
-function sn_db_disconnect($link = null) {
-  // return __db_disconnect($link);
-  return classSupernova::$db->db_disconnect($link);
-}
-
-function db_error($link = null) {
-  // return __db_error($link);
-  return classSupernova::$db->db_error($link);
-}
-
-
-
-function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-  return classSupernova::$db->doquery($query, $table, $fetch, $skip_query_check);
-//  global $numqueries, $link, $debug, $sn_cache, $config, $db_prefix;
-//
-//  if(!is_string($table)) {
-//    $fetch = $table;
-//  }
-//
-//  if(!$link) {
-//    sn_db_connect();
-//  }
-//
-//  $query = trim($query);
-//  security_watch_user_queries($query);
-//  $skip_query_check or security_query_check_bad_words($query);
-//
-//  $sql = $query;
-//  if(strpos($sql, '{{') !== false) {
-//    foreach($sn_cache->tables as $tableName) {
-//      $sql = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $sql);
-//    }
-//  }
-//
-//  if($config->debug) {
-//    $numqueries++;
-//    $arr = debug_backtrace();
-//    $file = end(explode('/',$arr[0]['file']));
-//    $line = $arr[0]['line'];
-//    $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
-//  }
-//
-//  if(defined('DEBUG_SQL_COMMENT')) {
-//    $backtrace = debug_backtrace();
-//    $sql_comment = $debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
-//
-//    $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
-//    if(defined('DEBUG_SQL_ONLINE')) {
-//      $debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
-//    }
-//
-//    if(defined('DEBUG_SQL_ERROR')) {
-//      array_unshift($sql_comment, preg_replace("/\s+/", ' ', $sql));
-//      $debug->add_to_array($sql_comment);
-//      // $debug->add_to_array($sql_comment . preg_replace("/\s+/", ' ', $sql));
-//    }
-//    $sql = $sql_commented;
-//  }
-//
-//  $sqlquery = classSupernova::$db->__db_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
-//
-//  return $fetch ? db_fetch($sqlquery) : $sqlquery;
-}
-
-function db_change_units_perform($query, $tablename, $object_id) {
-  $query = implode(',', $query);
-  if($query && $object_id) {
-    return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
-    // return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
-  }
-}
-
-// TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
-// TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ
-// $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
-function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) {
-  $query = is_array($query) ? $query : array(
-    LOC_USER => array(),
-    LOC_PLANET => array(),
-  );
-
-  $group = sn_get_groups('resources_loot');
-
-  foreach($unit_list as $unit_id => $unit_amount) {
-    if(!in_array($unit_id, $group)) {
-    // TODO - remove later
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: db_change_units() вызван для не-ресурсов!</h1>');
-      pdump(debug_backtrace());
-      die('db_change_units() вызван для не-ресурсов!');
-    }
-
-    if(!$unit_amount) {
-      continue;
-    }
-
-    $unit_db_name = pname_resource_name($unit_id);
-
-    $unit_location = sys_get_unit_location($user, $planet, $unit_id);
-
-    // Changing value in object
-    switch($unit_location) {
-      case LOC_USER:
-        $user[$unit_db_name] += $unit_amount;
-      break;
-      case LOC_PLANET:
-        $planet[$unit_db_name] += $unit_amount;
-      break;
-    }
-
-    $unit_amount = $unit_amount < 0 ? $unit_amount : "+{$unit_amount}"; // Converting positive unit_amount to string '+unit_amount'
-    $query[$unit_location][$unit_id] = "`{$unit_db_name}`=`{$unit_db_name}`{$unit_amount}";
-  }
-
-  db_change_units_perform($query[LOC_USER], 'users', $user['id']);
-  db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
-}
-function sn_db_perform($table, $values, $type = 'insert', $options = false) {
-  $mass_perform = false;
-
-  $field_set = '';
-  $value_set = '';
-
-  switch($type) {
-    case 'delete':
-      $query = 'DELETE FROM';
-    break;
-
-    case 'insert':
-      $query = 'INSERT INTO';
-      if(isset($options['__multi'])) {
-        // Here we generate mass-insert set
-        break;
-      }
-    case 'update':
-      if(!$query) {
-        $query = 'UPDATE';
-      }
-
-      foreach($values as $field => &$value) {
-        $value_type = gettype($value);
-        if ($value_type == 'string') {
-          $value = "'" . db_escape($value) . "'";
-        }
-        $value = "`{$field}` = {$value}";
-      }
-      $field_set = 'SET ' . implode(', ', $values);
-    break;
-
-  };
-
-  $query .= " {$table} {$field_set}";
-  return doquery($query);
-}
-
-
-
-function sn_db_field_set_is_safe(&$field_set) {
-  return !empty($field_set['__IS_SAFE']);
-}
-function sn_db_field_set_safe_flag_clear(&$field_set) {
-  unset($field_set['__IS_SAFE']);
-}
-function sn_db_field_set_safe_flag_set(&$field_set) {
-  $field_set['__IS_SAFE'] = true;
-}
-function sn_db_field_set_make_safe($field_set, $serialize = false) {
-  if(!is_array($field_set)) {
-    die('$field_set is not an array!');
-  }
-
-  $result = array();
-  foreach($field_set as $field => $value) {
-    $field = db_escape(trim($field));
-    switch (true) {
-      case is_int($value):
-      case is_double($value):
-      break;
-
-      case is_bool($value):
-        $value = intval($value);
-      break;
-
-      case is_array($value):
-      case is_object($value):
-        $serialize ? $value = serialize($value) : die('$value is object or array with no $serialize');
-
-      case is_string($value):
-        $value = '"' . db_escape($value) . '"';
-      break;
-
-      case is_null($value):
-        $value = 'NULL';
-      break;
-
-      default:
-        die('unsupported operand type');
-    }
-    $result[$field] = $value;
-  }
-
-  sn_db_field_set_safe_flag_set($field_set);
-
-  return $result;
-}
-function db_field_set_create($table_name, $field_set) {
-  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
-  sn_db_field_set_safe_flag_clear($field_set);
-
-  $values = implode(',', $field_set);
-  $fields = implode(',', array_keys($field_set));
-
-  return classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);");
-}
-
-
-
-function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
-  return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
-}
-function db_changeset_apply($db_changeset) {
-  return classSupernova::db_changeset_apply($db_changeset);
-}
-
-
-function sn_db_transaction_check($transaction_should_be_started = null) {
-  return classSupernova::db_transaction_check($transaction_should_be_started);
-}
-function sn_db_transaction_start($level = '') {
-  return classSupernova::db_transaction_start($level);
-}
-function sn_db_transaction_commit() {
-  return classSupernova::db_transaction_commit();
-}
-function sn_db_transaction_rollback() {
-  return classSupernova::db_transaction_rollback();
 }

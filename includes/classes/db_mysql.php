@@ -25,6 +25,7 @@ class db_mysql {
    */
   public $link;
 
+  protected $dbsettings = array();
 
 
   function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
@@ -74,7 +75,7 @@ class db_mysql {
       $sql = $sql_commented;
     }
 
-    $sqlquery = $this->__db_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
+    $sqlquery = $this->mysql_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
@@ -157,101 +158,71 @@ class db_mysql {
   }
 
 
-  function sn_db_connect() {
-    if(!$this->connected) {
+  function load_db_settings() {
+    $dbsettings = array();
+
+    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+
+    $this->dbsettings = $dbsettings;
+  }
+
+  function sn_db_connect($external_db_settings = null) {
+    if(!empty($external_db_settings) && is_array($external_db_settings)) {
+      $this->db_disconnect();
+      $this->dbsettings = $external_db_settings;
+    }
+
+    if(empty($this->dbsettings)) {
+      $this->db_disconnect();
+
       $dbsettings = array();
 
       require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 
-      return $this->__sn_db_connect($dbsettings);
-    } else {
+      $this->dbsettings = $dbsettings;
+    }
+
+    return $this->connected || $this->mysql_connect();
+  }
+
+  function mysql_connect() {
+    global $debug;
+
+    static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
+
+    if($this->connected) {
       return true;
     }
-  }
 
-  function __sn_db_connect($dbsettings) {
-    global $link, $debug;
-
-    if(!$this->connected) {
-      // TODO !!!!!! DEBUG -> error!!!!
-      @$link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      if(!$link) {
-        $debug->error($this->db_error(), 'DB Error - cannot connect to server');
-      }
-
-      $this->__db_query("/*!40101 SET NAMES 'utf8' */") or die('Error: ' . $this->db_error());
-      $this->__db_query("SET NAMES 'utf8';") or die('Error: ' . $this->db_error());
-
-      mysql_select_db($dbsettings['name']) or $debug->error($this->db_error(), 'DB error - cannot find DB on server');
-      $this->__db_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . $this->db_error());
-
-      $this->connected = true;
+    if(empty($this->dbsettings) || !is_array($this->dbsettings) || array_intersect($need_keys, array_keys($this->dbsettings)) != $need_keys) {
+      $debug->error_fatal('There is missconfiguration in your config.php. Check it again', $this->db_error());
     }
 
-    return true;
+    // TODO !!!!!! DEBUG -> error!!!!
+    @$this->link = mysql_connect($this->dbsettings['server'], $this->dbsettings['user'], $this->dbsettings['pass']);
+    if(!$this->link) {
+      $debug->error_fatal('DB Error - cannot connect to server', $this->db_error());
+    }
+
+    $this->mysql_query("/*!40101 SET NAMES 'utf8' */") or $debug->error_fatal('DB error - cannot set names', $this->db_error());
+    $this->mysql_query("SET NAMES 'utf8';") or $debug->error_fatal('DB error - cannot set names', $this->db_error());
+
+    mysql_select_db($this->dbsettings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->db_error());
+    $this->mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or $debug->error_fatal('DB error - cannot set desired isolation level', $this->db_error());
+
+    return $this->connected;
   }
 
-  function __db_query($query_string, $a_link = null) {
-    return $a_link ? mysql_query($query_string, $a_link) : mysql_query($query_string);
-  }
-
-  function db_fetch(&$query) {
-    return mysql_fetch_assoc($query);
-  }
-
-  function db_fetch_row(&$query) {
-    return mysql_fetch_row($query);
-  }
-
-  function db_escape($unescaped_string, $link = null) {
-    return $link ? mysql_real_escape_string($unescaped_string, $link) : mysql_real_escape_string($unescaped_string);
-//    return mysql_real_escape_string($unescaped_string, $link);
-  }
-
-  function db_disconnect($link = null) {
-    global $link;
-
-    if($this->connected || !empty($link)) {
-      $this->connected = !$this->__db_disconnect($link);
+  function db_disconnect() {
+    if($this->connected || !empty($this->link)) {
+      $this->connected = !$this->mysql_close();
     }
 
     return !$this->connected;
   }
 
-  function __db_disconnect($link = null) {
-    return $link ? mysql_close($link) : mysql_close();
-  }
-
-  function db_error($link = null) {
-    return $link ? mysql_error($link) : mysql_error();
-//    return mysql_error($link);
-  }
-
-  function db_insert_id($link = null) {
-    return $link ? mysql_insert_id($link) : mysql_insert_id();
-//    return mysql_insert_id($link);
-  }
-
-  function db_num_rows(&$result) {
-    return mysql_num_rows($result);
-  }
-
-  function db_affected_rows($link = null) {
-    return $link ? mysql_affected_rows($link) : mysql_affected_rows();
-//    return mysql_affected_rows($link);
-  }
-
-
-  function __db_get_innodb_status($link = null) {
-    return $this->__db_query('SHOW ENGINE INNODB STATUS;', $link);
-  }
-
-  function __db_get_table_list($link = null) {
-    return $this->__db_query('SHOW TABLES;', $link);
-  }
-
-  function db_get_table_list($db_prefix, $link = null) {
-    $query = $this->__db_get_table_list($link);
+  function db_get_table_list($db_prefix) {
+    $query = $this->mysql_get_table_list();
 
     $prefix_length = strlen($db_prefix);
 
@@ -269,24 +240,53 @@ class db_mysql {
     return $tl;
   }
 
+  function mysql_get_table_list() {
+    return $this->mysql_query('SHOW TABLES;');
+  }
+  function mysql_get_innodb_status() {
+    return $this->mysql_query('SHOW ENGINE INNODB STATUS;');
+  }
 
+
+
+  function mysql_query($query_string) {
+    return mysql_query($query_string, $this->link);
+  }
+  function db_fetch(&$query) {
+    return mysql_fetch_assoc($query);
+  }
+  function db_fetch_row(&$query) {
+    return mysql_fetch_row($query);
+  }
+  function db_escape($unescaped_string) {
+    return mysql_real_escape_string($unescaped_string, $this->link);
+  }
+  function mysql_close() {
+    return mysql_close($this->link);
+  }
+  function db_error() {
+    return mysql_error($this->link);
+  }
+  function db_insert_id() {
+    return mysql_insert_id($this->link);
+  }
+  function db_num_rows(&$result) {
+    return mysql_num_rows($result);
+  }
+  function db_affected_rows() {
+    return mysql_affected_rows($this->link);
+  }
   function db_get_client_info() {
     return mysql_get_client_info();
   }
-
-  function db_get_server_info($link = null) {
-    return $link ? mysql_get_server_info($link) : mysql_get_server_info();
-//    return mysql_get_server_info($link);
+  function db_get_server_info() {
+    return mysql_get_server_info($this->link);
   }
-
-  function db_get_host_info($link = null) {
-    return $link ? mysql_get_host_info($link) : mysql_get_host_info();
-//    return mysql_get_host_info($link);
+  function db_get_host_info() {
+    return mysql_get_host_info($this->link);
   }
-
-  function db_get_server_stat($link = null) {
-    return $link ? mysql_stat($link) : mysql_stat();
-//    return mysql_stat($link);
+  function db_get_server_stat() {
+    return mysql_stat($this->link);
   }
 
 }

@@ -127,7 +127,7 @@ class debug {
     }
 
 //    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_query('SHOW ENGINE INNODB STATUS')))) {
-    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_get_innodb_status()))) {
+    if($deadlock && ($q = db_fetch(classSupernova::$db->mysql_get_innodb_status()))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = classSupernova::$locks;
       $error_backtrace['cSN_data'] = classSupernova::$data;
@@ -167,6 +167,11 @@ class debug {
     }
 
     return $error_backtrace;
+  }
+
+  function error_fatal($die_message, $details = 'There is a fatal error on page') {
+    // TODO - Записывать детали ошибки в лог-файл
+    die($die_message);
   }
 
   function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
