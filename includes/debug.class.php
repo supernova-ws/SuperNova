@@ -9,7 +9,7 @@
  *
  * V3.0 copyright 2010 by Gorlum for http://supernova.ws
  *  [+] Full rewrtie & optimize
- *  [*] Now there is fallback procedure if no $link to db detected
+ *  [*] Now there is fallback procedure if no link to db detected
  *
  * V2.0 copyright 2010 by Gorlum for http://supernova.ws
  *  [*] Now error also contains backtrace - to see exact way problem comes
@@ -24,8 +24,7 @@
  * que esperabas!!! soy newbie!!! D':<
 */
 
-if(!defined('INSIDE'))
-{
+if(!defined('INSIDE')) {
   die("attemp hacking");
 }
 
@@ -40,44 +39,40 @@ class debug {
       $this->log_file_handler = @fopen(SN_ROOT_PHYSICAL . '/.logs/supernova.log', 'a+');
       @fwrite($this->log_file_handler, "\r\n\r\n");
     }
-    if ($this->log_file_handler) {
+    if($this->log_file_handler) {
       fwrite($this->log_file_handler, date(FMT_DATE_TIME_SQL, time()) . ' ' . $message . "\r\n");
     }
   }
 
-  function debug()
-  {
+  function debug() {
     $this->vars = $this->log = '';
     $this->numqueries = 0;
   }
 
-  function add($mes)
-  {
+  function add($mes) {
     $this->log .= $mes;
     $this->numqueries++;
   }
 
-  function add_to_array($mes)
-  {
+  function add_to_array($mes) {
     $this->log_array[] = $mes;
   }
 
-  function echo_log()
-  {
+  function echo_log() {
     echo '<br><table><tr><td class=k colspan=4><a href="' . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
     die();
   }
 
-  function compact_backtrace($backtrace, $long_comment = false)
-  {
+  function compact_backtrace($backtrace, $long_comment = false) {
     static $exclude_functions = array('doquery', 'db_query', 'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id');
 
     $result = array();
     $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
     $result[] = "tID {$transaction_id}";
-    foreach($backtrace as $a_trace)
-    {
-      if(in_array($a_trace['function'], $exclude_functions)) continue;
+    foreach($backtrace as $a_trace) {
+      if(in_array($a_trace['function'], $exclude_functions)) {
+        continue;
+      }
       $function =
         ($a_trace['type']
           ? ($a_trace['type'] == '->'
@@ -92,7 +87,9 @@ class debug {
       // $result[] = "{$function} ({$a_trace['line']})'{$file}'";
       $result[] = "{$function} - '{$file}' Line {$a_trace['line']}";
 
-      if(!$long_comment) break;
+      if(!$long_comment) {
+        break;
+      }
     }
 
 
@@ -101,63 +98,55 @@ class debug {
     return $result;
   }
 
-  function dump($dump = false, $force_base = false, $deadlock = false)
-  {
-    if($dump === false)
-    {
+  function dump($dump = false, $force_base = false, $deadlock = false) {
+    if($dump === false) {
       return;
     }
 
     $error_backtrace = array();
     $base_dump = false;
 
-    if($force_base === true)
-    {
+    if($force_base === true) {
       $base_dump = true;
     }
 
-    if($dump === true)
-    {
+    if($dump === true) {
       $base_dump = true;
-    }
-    else
-    {
-      if(!is_array($dump))
-      {
+    } else {
+      if(!is_array($dump)) {
         $dump = array('var' => $dump);
       }
 
-      foreach($dump as $dump_var_name => $dump_var)
-      {
-        if($dump_var_name == 'base_dump')
-        {
+      foreach($dump as $dump_var_name => $dump_var) {
+        if($dump_var_name == 'base_dump') {
           $base_dump = $dump_var;
-        }
-        else
-        {
+        } else {
           $error_backtrace[$dump_var_name] = $dump_var;
         }
       }
     }
 
-    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_query('SHOW ENGINE INNODB STATUS')))) {
+//    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_query('SHOW ENGINE INNODB STATUS')))) {
+    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_get_innodb_status()))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = classSupernova::$locks;
       $error_backtrace['cSN_data'] = classSupernova::$data;
-      foreach($error_backtrace['cSN_data'] as &$location)
-        foreach($location as $location_id => &$location_data)
-//          $location_data = $location_id;
+      foreach($error_backtrace['cSN_data'] as &$location) {
+        foreach($location as $location_id => &$location_data) //          $location_data = $location_id;
+        {
           $location_data = isset($location_data['username']) ? $location_data['username'] :
             (isset($location_data['name']) ? $location_data['name'] : $location_id);
+        }
+      }
       $error_backtrace['cSN_queries'] = classSupernova::$queries;
     }
 
-    if($base_dump)
-    {
-      if(is_array($this->log_array) && count($this->log_array) > 0);
+    if($base_dump) {
+      if(is_array($this->log_array) && count($this->log_array) > 0) {
+        ;
+      }
       {
-        foreach($this->log_array as $log)
-        {
+        foreach($this->log_array as $log) {
           $error_backtrace['queries'][] = $log;
         }
       }
@@ -181,28 +170,18 @@ class debug {
   }
 
   function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
-    global $config, $link, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
+    global $config, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
+
+    if(empty(classSupernova::$db->connected)) {
+      // TODO - писать ошибку в файл
+      die('SQL server currently unavailable. Please contact Administration...');
+    }
 
     sn_db_transaction_rollback();
 
     if($config->debug == 1) {
       echo "<h2>{$title}</h2><br><font color=red>{$message}</font><br><hr>";
       echo "<table>{$this->log}</table>";
-    }
-
-
-    require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
-
-    if(!$link) {
-      classSupernova::$db->sn_db_connect();
-      // $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-      // mysql_query("/*!40101 SET NAMES 'utf8' */");
-      // mysql_select_db($dbsettings['name']);
-
-      if(!$link) {
-        // TODO Здесь надо писать в файло
-        die('SQL server currently unavailable. Please contact Administration...');
-      }
     }
 
     $fatal_error = 'Fatal error: cannot write to `logs` table. Please contact Administration...';
@@ -212,9 +191,9 @@ class debug {
 
     if(!$sys_log_disabled) {
       $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '".time()."', `log_code` = '" . db_escape($error_code) . "', `log_sender` = '" . db_escape($user['id']). "',
-        `log_username` = '" . db_escape($user['user_name']). "', `log_title` = '" . db_escape($title) . "',  `log_text` = '".db_escape($message)."',
-        `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'" .
+        `log_time` = '" . time() . "', `log_code` = '" . db_escape($error_code) . "', `log_sender` = '" . db_escape($user['id']) . "',
+        `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
+        `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
         ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
       doquery($query, '', false, true) or die($fatal_error . db_error());
 
@@ -224,6 +203,7 @@ class debug {
       $sys_log_disabled = true;
       !function_exists('message') ? die($message) : message($message, 'Ошибка', '', 0, false);
     } else {
+//        // TODO Здесь надо писать в файло
       ob_start();
       print("<hr>User ID {$user['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
 
@@ -237,27 +217,24 @@ class debug {
   }
 
   function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
-    global $link, $user, $lang, $sys_log_disabled;
+    global $user, $lang, $sys_log_disabled;
 
-    require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
-
-    if(!$link) {
-      classSupernova::$db->sn_db_connect();
-//      $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
-//      mysql_query('/*!40101 SET NAMES \'utf8\' */');
-//      mysql_select_db($dbsettings['name']);
+    if(empty(classSupernova::$db->connected)) {
+      // TODO - писать ошибку в файл
+      die('SQL server currently unavailable. Please contact Administration...');
     }
 
     $error_backtrace = $this->dump($dump, false);
 
     if(!$sys_log_disabled) {
       $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '".time()."', `log_code` = '" . db_escape($log_code) . "', `log_sender` = '" . db_escape($user['id']). "',
-        `log_username` = '" . db_escape($user['user_name']). "', `log_title` = '" . db_escape($title) . "',  `log_text` = '".db_escape($message)."',
-        `log_page` = '".db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE)))."'" .
+        `log_time` = '" . time() . "', `log_code` = '" . db_escape($log_code) . "', `log_sender` = '" . db_escape($user['id']) . "',
+        `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
+        `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
         ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
       doquery($query, '', false, true);
     } else {
+//        // TODO Здесь надо писать в файло
       print("<hr>User ID {$user['id']} made log entry with code {$log_code} titled '{$title}' with text '{$message}' on page {$_SERVER['SCRIPT_NAME']}");
     }
   }
@@ -266,77 +243,77 @@ class debug {
 // Copyright (c) 2009-2010 Gorlum for http://supernova.ws
 // Dump variables nicer then var_dump()
 
-function dump($value, $varname = null, $level=0, $dumper = '')
-{
-  if (isset($varname)) $varname .= " = ";
-
-  if ($level==-1)
-  {
-    $trans[' ']='&there4;';
-    $trans["\t"]='&rArr;';
-    $trans["\n"]='&para;;';
-    $trans["\r"]='&lArr;';
-    $trans["\0"]='&oplus;';
-    return strtr(htmlspecialchars($value),$trans);
+function dump($value, $varname = null, $level = 0, $dumper = '') {
+  if(isset($varname)) {
+    $varname .= " = ";
   }
-  if ($level==0) $dumper = '<pre>' . mt_rand(10, 99) . '|' . $varname;
+
+  if($level == -1) {
+    $trans[' '] = '&there4;';
+    $trans["\t"] = '&rArr;';
+    $trans["\n"] = '&para;;';
+    $trans["\r"] = '&lArr;';
+    $trans["\0"] = '&oplus;';
+
+    return strtr(htmlspecialchars($value), $trans);
+  }
+  if($level == 0) {
+    $dumper = '<pre>' . mt_rand(10, 99) . '|' . $varname;
+  }
 
   $type = gettype($value);
   $dumper .= $type;
 
-  if ($type=='string')
-  {
+  if($type == 'string') {
     $dumper .= '(' . strlen($value) . ')';
     $value = dump($value, '', -1);
-  }
-  elseif ($type=='boolean') $value= ($value?'true':'false');
-  elseif ($type=='object')
-  {
-    $props= get_class_vars(get_class($value));
-    $dumper .= '('.count($props).') <u>'.get_class($value).'</u>';
-    foreach($props as $key=>$val)
-    {
-      $dumper .= "\n".str_repeat("\t",$level+1).$key.' => ';
-      $dumper .= dump($value->$key,'',$level+1);
+  } elseif($type == 'boolean') {
+    $value = ($value ? 'true' : 'false');
+  } elseif($type == 'object') {
+    $props = get_class_vars(get_class($value));
+    $dumper .= '(' . count($props) . ') <u>' . get_class($value) . '</u>';
+    foreach($props as $key => $val) {
+      $dumper .= "\n" . str_repeat("\t", $level + 1) . $key . ' => ';
+      $dumper .= dump($value->$key, '', $level + 1);
     }
-    $value= '';
-  }
-  elseif ($type=='array')
-  {
-    $dumper .= '('.count($value).')';
-    foreach($value as $key=>$val)
-    {
-      $dumper .= "\n".str_repeat("\t",$level+1).dump($key,'',-1).' => ';
-      $dumper .= dump($val,'',$level+1);
+    $value = '';
+  } elseif($type == 'array') {
+    $dumper .= '(' . count($value) . ')';
+    foreach($value as $key => $val) {
+      $dumper .= "\n" . str_repeat("\t", $level + 1) . dump($key, '', -1) . ' => ';
+      $dumper .= dump($val, '', $level + 1);
     }
-    $value= '';
+    $value = '';
   }
   $dumper .= " <b>$value</b>";
-  if ($level==0) $dumper .= '</pre>';
+  if($level == 0) {
+    $dumper .= '</pre>';
+  }
+
   return $dumper;
 }
 
-function pdump($value, $varname = null)
-{
+function pdump($value, $varname = null) {
   print('<div style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1px 0; font-weight: 800; font-size: 14px;">' . dump($value, $varname) . '</div>');
 }
 
-function debug($value, $varname = null)
-{
+function debug($value, $varname = null) {
   return pdump($value, $varname);
 }
 
-function pr($prePrint = false){
-  if($prePrint)
+function pr($prePrint = false) {
+  if($prePrint) {
     print("<br>");
+  }
   print(mt_rand() . "<br>");
 }
 
-function pc($prePrint = false){
+function pc($prePrint = false) {
   global $_PRINT_COUNT_VALUE;
   $_PRINT_COUNT_VALUE++;
 
-  if($prePrint)
+  if($prePrint) {
     print("<br>");
+  }
   print($_PRINT_COUNT_VALUE . "<br>");
 }

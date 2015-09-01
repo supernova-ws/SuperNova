@@ -109,24 +109,43 @@ $db_name = $dbsettings['name'];
 $sn_secret_word = $dbsettings['secretword'];
 unset($dbsettings);
 
+
+// TODO - Разобраться с порядком подключени и зависимостями объектов
 require_once(SN_ROOT_PHYSICAL . "includes/constants" . DOT_PHP_EX);
+require_once('classes/core_classes.php');
+require_once('classes/supernova.php');
 
 // required for db.php
 // Initializing global 'debug' object
 require_once(SN_ROOT_PHYSICAL . "includes/debug.class" . DOT_PHP_EX);
 global $debug;
 $debug = new debug();
+classSupernova::debug_set_handler($debug);
 
-require_once(SN_ROOT_PHYSICAL . "includes/classes/_classes" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
+require_once('classes/db_mysql.php');
+classSupernova::init_main_db(new db_mysql());
+
+
+require_once('classes/cache.php');
+require_once('classes/locale.php');
+require_once('classes/template.php');
+require_once('classes/functions_template.php');
+require_once('classes/module.php');
+require_once('classes/auth.php');
+// require_once('auth_provider.php');
+require_once('classes/auth_basic.php');
+require_once('classes/sn_module_payment.php');
+require_once('classes/user_options.php');
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
-classSupernova::debug_set_handler($debug);
 classSupernova::init();
+
+
 global $supernova;
 $supernova = new classSupernova();
 
-doquery("SET NAMES 'utf8';");
+// doquery("SET NAMES 'utf8';");
 
 // Initializing global 'cacher' object
 global $sn_cache;

@@ -76,8 +76,8 @@ class classLocale implements ArrayAccess {
     {
       global $sn_cache;
       $sn_cache->lng_stat_usage = $this->stat_usage;
-      global $link;
-      $link = null;
+//      global $link;
+//      $link = null;
       doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
       foreach($this->stat_usage_new as &$value)
       {

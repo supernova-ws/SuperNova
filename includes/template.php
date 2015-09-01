@@ -217,7 +217,7 @@ function tpl_render_menu() {
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $link, $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc;
+  global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -333,9 +333,9 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
-  isset($link) ? sn_db_diconnect($link) : false;
-
   sn_benchmark();
+
+  sn_db_disconnect();
 
   $die ? die($die === true ? 0 : $die) : false;
 }

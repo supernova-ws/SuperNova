@@ -25,7 +25,7 @@ function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = fal
     $metamatter_total = $metamatter > 0 ? $metamatter : 0;
     db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}'" .
       ($metamatter > 0 ? ", `immortal` = IF(`metamatter_total` + '{$metamatter_total}' >= {$config->player_metamatter_immortal}, NOW(), `immortal`), `metamatter_total` = `metamatter_total` + '{$metamatter_total}'" : ''));
-    $result = db_affected_rows();
+    $result = classSupernova::$db->db_affected_rows();
   }
 
   if($result) {
@@ -116,7 +116,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
     }
     $dark_matter ? $changeset[] = "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'" : false;
     !empty($changeset) ? db_user_set_by_id($user_id, implode(',', $changeset)) : false;
-    $rows_affected = db_affected_rows();
+    $rows_affected = classSupernova::$db->db_affected_rows();
   }
 
   if($rows_affected || !$dark_matter) {

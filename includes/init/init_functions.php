@@ -28,10 +28,10 @@ function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false) {
   }
 }
 
-function sys_refresh_tablelist($db_prefix, $link = null) {
+function sys_refresh_tablelist($db_prefix) {
   global $sn_cache;
 
-  $sn_cache->tables = db_get_table_list($db_prefix, $link);
+  $sn_cache->tables = db_get_table_list($db_prefix);
 }
 
 function init_update(&$config) {

@@ -12,6 +12,13 @@ class db_mysql {
   const DB_MYSQL_TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITTED';
 
   /**
+   * Статус соеднения с MySQL
+   *
+   * @var bool
+   */
+  public $connected = false;
+
+  /**
    * Соединение с MySQL
    *
    * @var resource $link
@@ -19,14 +26,15 @@ class db_mysql {
   public $link;
 
 
+
   function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    global $numqueries, $link, $debug, $sn_cache, $config, $db_prefix;
+    global $numqueries, $debug, $sn_cache, $config, $db_prefix;
 
     if(!is_string($table)) {
       $fetch = $table;
     }
 
-    if(!$link) {
+    if(!$this->connected) {
       $this->sn_db_connect();
     }
 
@@ -66,9 +74,9 @@ class db_mysql {
       $sql = $sql_commented;
     }
 
-    $sqlquery = classSupernova::$db->__db_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
+    $sqlquery = $this->__db_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
 
-    return $fetch ? db_fetch($sqlquery) : $sqlquery;
+    return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
 
 
@@ -150,34 +158,41 @@ class db_mysql {
 
 
   function sn_db_connect() {
-    global $link;
+    if(!$this->connected) {
+      $dbsettings = array();
 
-    if(!$link) {
       require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 
-      $this->__sn_db_connect($dbsettings);
+      return $this->__sn_db_connect($dbsettings);
+    } else {
+      return true;
     }
   }
 
   function __sn_db_connect($dbsettings) {
     global $link, $debug;
 
-    if(!$link) {
+    if(!$this->connected) {
       // TODO !!!!!! DEBUG -> error!!!!
-      $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']) or $debug->error($this->db_error(), 'DB Error - cannot connect to server');
+      @$link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
+      if(!$link) {
+        $debug->error($this->db_error(), 'DB Error - cannot connect to server');
+      }
 
       $this->__db_query("/*!40101 SET NAMES 'utf8' */") or die('Error: ' . $this->db_error());
       $this->__db_query("SET NAMES 'utf8';") or die('Error: ' . $this->db_error());
 
       mysql_select_db($dbsettings['name']) or $debug->error($this->db_error(), 'DB error - cannot find DB on server');
       $this->__db_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or die('Error: ' . $this->db_error());
+
+      $this->connected = true;
     }
 
     return true;
   }
 
-  function __db_query($query_string, $link = null) {
-    return $link ? mysql_query($query_string, $link) : mysql_query($query_string);
+  function __db_query($query_string, $a_link = null) {
+    return $a_link ? mysql_query($query_string, $a_link) : mysql_query($query_string);
   }
 
   function db_fetch(&$query) {
@@ -193,9 +208,18 @@ class db_mysql {
 //    return mysql_real_escape_string($unescaped_string, $link);
   }
 
-  function sn_db_diconnect($link = null) {
+  function db_disconnect($link = null) {
+    global $link;
+
+    if($this->connected || !empty($link)) {
+      $this->connected = !$this->__db_disconnect($link);
+    }
+
+    return !$this->connected;
+  }
+
+  function __db_disconnect($link = null) {
     return $link ? mysql_close($link) : mysql_close();
-//    return mysql_close($link);
   }
 
   function db_error($link = null) {
@@ -217,6 +241,10 @@ class db_mysql {
 //    return mysql_affected_rows($link);
   }
 
+
+  function __db_get_innodb_status($link = null) {
+    return $this->__db_query('SHOW ENGINE INNODB STATUS;', $link);
+  }
 
   function __db_get_table_list($link = null) {
     return $this->__db_query('SHOW TABLES;', $link);

@@ -9,8 +9,49 @@ if(!defined('INSIDE')) {
   die();
 }
 
-require('db/__mysql.php');
 require_once('db/db_queries.php');
+
+// Среднеуровневые врапперы - для абстрагирования от типа БД
+function db_fetch(&$query) {
+  return classSupernova::$db->db_fetch($query);
+}
+function db_fetch_row(&$query) {
+  return classSupernova::$db->db_fetch_row($query);
+}
+
+function db_escape($unescaped_string, $link = null) {
+  return classSupernova::$db->db_escape($unescaped_string, $link);
+}
+
+function db_insert_id($link = null) {
+  return classSupernova::$db->db_insert_id($link);
+}
+
+function db_num_rows(&$result) {
+  return classSupernova::$db->db_num_rows($result);
+}
+function db_affected_rows($link = null) {
+  return classSupernova::$db->db_affected_rows($link);
+}
+
+// Информационные функции
+function db_get_client_info() {
+  return classSupernova::$db->db_get_client_info();
+}
+function db_get_server_info($link = null) {
+  return classSupernova::$db->db_get_server_info($link);
+}
+function db_get_host_info($link = null) {
+  return classSupernova::$db->db_get_host_info($link);
+}
+function db_server_stat($link = null) {
+  return classSupernova::$db->db_get_server_stat($link);
+}
+
+function db_get_table_list($db_prefix, $link = null) {
+  return classSupernova::$db->db_get_table_list($db_prefix, $link);
+}
+
 
 function security_watch_user_queries($query) {
   die('You should not use security_watch_user_queries()! Report to admin');
@@ -98,9 +139,9 @@ function sn_db_connect() {
   return classSupernova::$db->sn_db_connect();
 }
 
-function sn_db_diconnect($link = null) {
+function sn_db_disconnect($link = null) {
   // return __db_disconnect($link);
-  return classSupernova::$db->sn_db_diconnect($link);
+  return classSupernova::$db->db_disconnect($link);
 }
 
 function db_error($link = null) {
