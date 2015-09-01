@@ -1,6 +1,13 @@
 <?php
 
 class classSupernova {
+  /**
+   * @var db_mysql $db
+   */
+  public static $db;
+
+
+
   public static $db_in_transaction = false;
   public static $transaction_id = 0;
   public static $user = array();
@@ -135,6 +142,14 @@ class classSupernova {
 
   public static function init() {
     self::$user_options = new userOptions(0);
+  }
+
+  /**
+   * @param $db db_mysql
+   */
+  public static function init_main_db($db) {
+    self::$db = $db;
+    self::$db->sn_db_connect();
   }
 
 
@@ -354,7 +369,7 @@ class classSupernova {
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
     foreach($tables as $table_name => $condition) {
-      doquery("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
+      self::$db->doquery("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
     }
   }
   public static function db_query($query, $fetch = false, $skip_lock = false) {
@@ -363,9 +378,7 @@ class classSupernova {
     $query .= $select && $fetch ? ' LIMIT 1' : '';
     $query .= $select && !$skip_lock && static::db_transaction_check(false) ? ' FOR UPDATE' : '';
 
-//$t = microtime(true);
-    $result = doquery($query, $fetch);
-//pdump(str_replace('  ', ' ', $query), microtime(true) - $t . ($fetch ? ' fetch' : ''));
+    $result = self::$db->doquery($query, $fetch);
 
     return $result;
   }
@@ -472,7 +485,7 @@ class classSupernova {
     $table_name = $location_info[P_TABLE_NAME];
     if($result = static::db_query($q = "UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
-      if(db_affected_rows()) {
+      if(static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         // TODO - переделать под работу со структурированными $set
 
@@ -496,7 +509,7 @@ class classSupernova {
 
     if($result = static::db_query("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
-      if(db_affected_rows()) { // Обновляем данные только если ряд был затронут
+      if(static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         // TODO - когда будет структурированный $condition и $set - перепаковывать данные
         static::cache_clear($location_type, true);
@@ -510,7 +523,7 @@ class classSupernova {
     $set = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     if($result = static::db_query("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
-      if(db_affected_rows()) // Обновляем данные только если ряд был затронут
+      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         $record_id = db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
@@ -533,7 +546,7 @@ class classSupernova {
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     if($result = static::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);")) {
-      if(db_affected_rows()) {
+      if(static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         $record_id = db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
@@ -557,7 +570,7 @@ class classSupernova {
     $table_name = $location_info[P_TABLE_NAME];
     if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}"))
     {
-      if(db_affected_rows()) // Обновляем данные только если ряд был затронут
+      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         static::cache_unset($location_type, $safe_record_id);
       }
@@ -576,7 +589,7 @@ class classSupernova {
 
     if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}"))
     {
-      if(db_affected_rows()) // Обновляем данные только если ряд был затронут
+      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось
         // TODO - когда будет структурированный $condition можно будет делать только cache_unset по нужным записям

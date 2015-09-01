@@ -9,7 +9,7 @@ define("DEBUG_AUTH", true);
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.7#
+ * version #40a10.12#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.7# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.12# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -412,9 +412,9 @@ class auth extends sn_module {
     self::$accessible_user_row_list = array();
 
     self::flog('starting sequence');
-    self::flog('$_POST = ' . dump($_POST));
-    self::flog('$_GET = ' . dump($_GET));
-    self::flog('$_COOKIE = ' . dump($_COOKIE));
+    self::flog(dump($_POST, '$_POST'));
+    self::flog(dump($_GET, '$_GET'));
+    self::flog(dump($_COOKIE,'$_COOKIE'));
 
     global $lang, $config;
 

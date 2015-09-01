@@ -12,13 +12,13 @@ function upd_do_query($query, $no_log = false) {
     upd_log_message("Performing query '{$query}'");
   }
 
-  sn_db_connect();
+  classSupernova::$db->sn_db_connect();
   if(!(strpos($query, '{{') === false)) {
     foreach($update_tables as $tableName => $cork) {
       $query = str_replace("{{{$tableName}}}", $db_prefix . $tableName, $query);
     }
   }
-  $result = __db_query($query) or die('Query error for ' . $query . ': ' . db_error());
+  $result = classSupernova::$db->mysql_query($query) or die('Query error for ' . $query . ': ' . db_error());
   return $result;
 }
 
@@ -144,7 +144,7 @@ function upd_alter_table($table, $alters, $condition = true) {
 function upd_drop_table($table_name) {
   global $config;
 
-  __db_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
+  classSupernova::$db->mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
 
   upd_unset_table_info($table_name);
 }
