@@ -9,7 +9,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.7# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.13# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -33,11 +33,22 @@ class auth_local extends sn_module {
     AUTH_FEATURE_HAS_PASSWORD => AUTH_FEATURE_HAS_PASSWORD,
   );
 
+  // TODO - private ??
+  public $user = null;
+
   // TODO - должны быть PRIVATE
   public $data = array();
 
-  // TODO - private ??
-  public $user = null;
+  /**
+   * @var string $input_login_unsafe
+   */
+  protected $input_login_unsafe = '';
+  protected $input_login_safe = '';
+  protected $input_login_password_raw = '';
+  protected $input_login_password_raw_repeat = '';
+  protected $input_email_unsafe = '';
+  protected $input_language_safe = '';
+
 
   /**
    * Флаг регистрации
@@ -52,6 +63,12 @@ class auth_local extends sn_module {
    * @var bool
    */
   public $remember_me = 1;
+
+  /**
+   * @var db_mysql $db
+   */
+  protected $db = null;
+
 
 
 //  Пока не будем с этим заморачиваться. Будут юниттесты - будем плакать. А так - только лишний гемморой
@@ -238,8 +255,9 @@ class auth_local extends sn_module {
    * @throws Exception
    */
   // OK v4
-  function db_account_register_check_duplicate_name_or_email() {
-    $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$this->data[F_INPUT][F_LOGIN_SAFE]}' FOR UPDATE", true);
+  // TODO - через db_account_get_by_name() и db_account_get_by_email()
+  function db_account_register_check_duplicate_name_or_email($account_name_safe, $email_unsafe) {
+    $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}' FOR UPDATE", true);
     if(!empty($account)) {
       throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
     }
@@ -247,7 +265,7 @@ class auth_local extends sn_module {
 //    if($this->db_account_by_name_safe($this->data[F_INPUT][F_LOGIN_UNSAFE])) {
 //      throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
 //    }
-    if($this->db_account_by_email($this->data[F_INPUT][F_EMAIL_UNSAFE])) {
+    if($this->db_account_by_email($email_unsafe)) {
       throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
     }
   }
@@ -309,26 +327,34 @@ class auth_local extends sn_module {
     // $this->data = &$this->data[$this->manifest['provider_id']];
     !is_array($this->data) ? $this->data = array() : false;
 
+    $this->input_login_unsafe = sys_get_param_str_unsafe('username', sys_get_param_str_unsafe('login')); // TODO переделать эту порнографию
+    $this->input_login_safe = db_escape($this->input_login_unsafe);
+
     $this->is_register = sys_get_param('register');
     $this->remember_me = intval(sys_get_param_int('rememberme') || $this->is_register);
+    $this->input_login_password_raw = sys_get_param('password');
+    $this->input_login_password_raw_repeat = sys_get_param('password_repeat');
+    $this->input_email_unsafe = sys_get_param_str_unsafe('email');
+    $this->input_language_safe = sys_get_param_str('lang', DEFAULT_LANG);
+
 
     $this->data = array(
-      F_PROVIDER_ID => $this->manifest['provider_id'],
+      // F_PROVIDER_ID => $this->manifest['provider_id'],
       F_LOGIN_STATUS => LOGIN_UNDEFINED,
       F_IMPERSONATE_STATUS => LOGIN_UNDEFINED,
       F_IMPERSONATE_OPERATOR => null,
-      F_INPUT => array(
+      // F_INPUT => array(
         // F_IS_REGISTER => $is_register = sys_get_param('register'),
-        F_LOGIN_UNSAFE => sys_get_param_str_unsafe('username', sys_get_param_str_unsafe('login')), // TODO переделать эту порнографию
-        F_LOGIN_PASSWORD_RAW => sys_get_param('password'),
-        F_LOGIN_PASSWORD_REPEAT_RAW => trim(sys_get_param('password_repeat')),
-        F_EMAIL_UNSAFE => sys_get_param_str_unsafe('email'),
-        F_LANGUAGE_SAFE => sys_get_param_str('lang', DEFAULT_LANG),
+        // F_LOGIN_UNSAFE => sys_get_param_str_unsafe('username', sys_get_param_str_unsafe('login')),
+        // F_LOGIN_PASSWORD_RAW => sys_get_param('password'),
+        // F_LOGIN_PASSWORD_REPEAT_RAW => trim(sys_get_param('password_repeat')),
+        // F_EMAIL_UNSAFE => sys_get_param_str_unsafe('email'),
+        // F_LANGUAGE_SAFE => sys_get_param_str('lang', DEFAULT_LANG),
 
         // F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
         // F_IS_PASSWORD_RESET_CONFIRM => sys_get_param('password_reset_confirm'),
         // F_PASSWORD_RESET_CODE_SAFE => sys_get_param_str('password_reset_code'),
-      ),
+      // ),
       // F_REMEMBER_ME_SAFE => intval(sys_get_param_int('rememberme') || $this->is_register),
 
       // F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
@@ -406,7 +432,7 @@ class auth_local extends sn_module {
       $this->register_validate_input();
 
       sn_db_transaction_start();
-      $this->db_account_register_check_duplicate_name_or_email();
+      $this->db_account_register_check_duplicate_name_or_email($this->input_login_safe, $this->input_email_unsafe);
 
       // $email_safe = db_escape($this->data[F_INPUT][F_EMAIL_UNSAFE]);
       // $salt_unsafe = $this->password_salt_generate();
@@ -414,10 +440,10 @@ class auth_local extends sn_module {
       // $password_salted_safe = auth::password_encode($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW], $salt_unsafe);
 
       $account_id = $this->db_account_create(
-        $this->data[F_INPUT][F_LOGIN_SAFE],
-        $this->data[F_INPUT][F_LOGIN_PASSWORD_RAW],
-        $this->data[F_INPUT][F_EMAIL_UNSAFE],
-        $this->data[F_INPUT][F_LANGUAGE_SAFE]
+        $this->input_login_safe,
+        $this->input_login_password_raw,
+        $this->input_email_unsafe,
+        $this->input_language_safe
       ); // Пустой $account_id обработается catch()
 
 
@@ -587,19 +613,19 @@ class auth_local extends sn_module {
         throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
 
-      if(!$this->data[F_INPUT][F_LOGIN_UNSAFE]) {
+      if(!$this->input_login_unsafe) {
         throw new Exception(LOGIN_UNDEFINED, ERR_ERROR);
       }
 
       $this->login_validate_input();
 
-      $account = $this->db_account_get_by_name_safe($this->data[F_INPUT][F_LOGIN_SAFE]);
+      $account = $this->db_account_get_by_name_safe($this->input_login_safe);
       if(empty($account)) {
         throw new Exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
       }
 
       // TODO Простой метод для проверки - сол-парол
-      if($this->password_encode($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW], $account['account_salt']) != $account['account_password']) {
+      if($this->password_encode($this->input_login_password_raw, $account['account_salt']) != $account['account_password']) {
         throw new Exception(LOGIN_ERROR_PASSWORD, ERR_ERROR);
       }
 
@@ -669,13 +695,12 @@ class auth_local extends sn_module {
    */
   // OK v4
   function login_validate_input() {
-    $this->data[F_INPUT][F_LOGIN_SAFE] = db_escape($this->data[F_INPUT][F_LOGIN_UNSAFE]);
     // Проверяем, что бы в начале и конце не было пустых символов
     // TODO - при копировании Эксель -> Опера - в конце образуются пустые места. Это не должно быть проблемой! Вынести проверку пароля в регистрацию!
-    if($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW] != trim($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW])) {
+    if($this->input_login_password_raw != trim($this->input_login_password_raw)) {
       throw new Exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
     }
-    if(!$this->data[F_INPUT][F_LOGIN_PASSWORD_RAW]) {
+    if(!$this->input_login_password_raw) {
       throw new Exception(LOGIN_ERROR_PASSWORD_EMPTY, ERR_ERROR);
     }
   }
@@ -691,45 +716,43 @@ class auth_local extends sn_module {
     $this->login_validate_input();
 
     // Если нет имени пользователя - NO GO!
-    if(!$this->data[F_INPUT][F_LOGIN_UNSAFE]) {
+    if(!$this->input_login_unsafe) {
       throw new Exception(LOGIN_ERROR_USERNAME_EMPTY, ERR_ERROR);
     }
     // Если логин имеет запрещенные символы - NO GO!
-    if(strpbrk($this->data[F_INPUT][F_LOGIN_UNSAFE], LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
+    if(strpbrk($this->input_login_unsafe, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
       throw new Exception(LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS, ERR_ERROR);
     }
     // Если логин меньше минимальной длины - NO GO!
-    if(strlen($this->data[F_INPUT][F_LOGIN_UNSAFE]) < LOGIN_LENGTH_MIN) {
+    if(strlen($this->input_login_unsafe) < LOGIN_LENGTH_MIN) {
       throw new Exception(REGISTER_ERROR_USERNAME_SHORT, ERR_ERROR);
     }
     // Если пароль меньше минимальной длины - NO GO!
-    if(strlen($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW]) < PASSWORD_LENGTH_MIN) {
+    if(strlen($this->input_login_password_raw) < PASSWORD_LENGTH_MIN) {
       throw new Exception(REGISTER_ERROR_PASSWORD_INSECURE, ERR_ERROR);
     }
     // Если пароль имеет пробельные символы в начале или конце - NO GO!
-    if($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW] != trim($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW])) {
+    if($this->input_login_password_raw != trim($this->input_login_password_raw)) {
       throw new Exception(LOGIN_ERROR_PASSWORD_TRIMMED, ERR_ERROR);
     }
     // Если пароль не совпадает с подтверждением - NO GO! То, что у пароля нет пробельных символов в начале/конце - мы уже проверили выше
     //Если они есть у повтора - значит пароль и повтор не совпадут
-    if($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW] <> $this->data[F_INPUT][F_LOGIN_PASSWORD_REPEAT_RAW]) {
+    if($this->input_login_password_raw <> $this->input_login_password_raw_repeat) {
       throw new Exception(REGISTER_ERROR_PASSWORD_DIFFERENT, ERR_ERROR);
     }
     // Если нет емейла - NO GO!
     // TODO - регистрация без емейла
-    if(!$this->data[F_INPUT][F_EMAIL_UNSAFE]) {
+    if(!$this->input_email_unsafe) {
       throw new Exception(REGISTER_ERROR_EMAIL_EMPTY, ERR_ERROR);
     }
     // Если емейл не является емейлом - NO GO!
-    if(!is_email($this->data[F_INPUT][F_EMAIL_UNSAFE])) {
+    if(!is_email($this->input_email_unsafe)) {
       throw new Exception(REGISTER_ERROR_EMAIL_WRONG, ERR_ERROR);
     }
   }
   // OK v4
   function password_encode_for_cookie($password) {
-    global $config;
-
-    return md5("{$password}--{$config->secret_word}");
+    return md5("{$password}--" . classSupernova::$sn_secret_word);
   }
   // OK v4
   function password_encode($password, $salt) {
@@ -746,325 +769,5 @@ class auth_local extends sn_module {
   function flog($message, $die = false) {
     auth::flog($message, $die);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // UNUSED ????????????????????????????????????????????????????????????????????????????????????????????????????????????
-
-//  function impersonate_check_cookie($that) {
-//    $this->data[F_IMPERSONATE_STATUS] = LOGIN_UNDEFINED;
-//
-//    if(empty($_COOKIE[SN_COOKIE_I])) {
-//      return $this->data[F_IMPERSONATE_STATUS];
-//    }
-//
-//    $this->cookie_get_account(true);
-//    $this->db_user_id_by_provider_account_id($this->data[F_ACCOUNT_ID]);
-//    $this->load_user_data();
-//    if(empty($this->data[F_USER]['authlevel']) || $this->data[F_USER]['authlevel'] < 3) {
-//      // Чистим куку имперсонатора
-//      $this->cookie_clear();
-//      // Чистим куку юзера
-//      $this->cookie_clear();
-//      // Переходим на страницу логина
-//      sys_redirect(SN_ROOT_VIRTUAL);
-////      unset($this->data[F_ACCOUNT_ID]);
-////      unset($this->data[F_ACCOUNT]);
-////      unset($this->data[F_USER_ID]);
-////      unset($this->data[F_USER]);
-////      $this->data[F_LOGIN_STATUS] = LOGIN_UNDEFINED;
-////      sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-////      sn_setcookie(SN_COOKIE_I, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
-//    } else {
-//      $this->data[F_IMPERSONATE_STATUS] = IMPERSONATOR_OK;
-//    }
-//
-//    $that->data[F_IMPERSONATE_STATUS] = $this->data[F_IMPERSONATE_STATUS];
-//    $that->data[F_IMPERSONATE_OPERATOR] = $this->data[F_USER];
-//
-//    return $this->data[F_IMPERSONATE_STATUS];
-//  }
-
-//  function load_user_data() {
-//    if(!$this->data[F_USER] && $this->data[F_USER_ID]) {
-//      $this->data[F_USER] = db_user_by_id($this->data[F_USER_ID]);
-//    }
-//    if(!$this->data[F_USER]) {
-//      $this->data[F_USER_ID] = $this->db_user_id_by_provider_account_id($this->data[F_ACCOUNT_ID]);
-//      $this->data[F_USER] = db_user_by_id($this->data[F_USER_ID]);
-//    }
-//    $this->data[F_USER_ID] = $this->data[F_USER] ? $this->data[F_USER]['id'] : 0;
-//  }
-
-//  function db_user_id_by_provider_account_id($accound_id_safe) {
-//    if(!$accound_id_safe) {
-//      self::flog('ERROR! No $accound_id_unsafe on db_user_id_by_provider_account() in ' . get_called_class(), true);
-//    }
-////    $provider_id_safe = $this->manifest['provider_id'];
-////    $result = doquery("SELECT * FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$account_id_safe}", true);
-////    return !empty($result['user_id']) ? $result['user_id'] : false;
-//    return round(floatval($accound_id_safe));
-//  }
-
-//  function db_account_id_by_provider_user($user_id_safe) {
-//    // $provider_id_safe = $this->manifest['provider_id'];
-//    // auth->cookie_get_account()
-//    /*
-//        $result = doquery("SELECT * FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `user_id` = {$user_id_safe}", true);
-//        return !empty($result['provider_account_id']) ? $result['provider_account_id'] : false;
-//    */
-//    return $user_id_safe;
-//  }
-
-//  function db_create_account_from_provider($found_provider) {
-//    // $this->data[F_USER] = $found_provider->data[F_USER];
-//    if($this->data[F_ACCOUNT_ID]) {
-//      // $this->register_account();
-//      $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
-//      return;
-//    }
-//
-//    sn_db_transaction_start();
-//    if($double_email = $this->db_account_by_email($found_provider->data[F_ACCOUNT]['account_email'])) { // Может быть дубликат по емейлу, тогда
-//      // Проверить на совпадение пароля
-//      $email_password_match = $this->password_match_account_to_account($found_provider->data[F_ACCOUNT], $double_email);
-//      if($email_password_match) { // Если пароль и емейл совпадают - мы нашли нашего пользователя
-//        $this->data[F_ACCOUNT] = $double_email;
-//        $this->data[F_ACCOUNT_ID] = $this->data[F_ACCOUNT]['account_id'];
-//        $this->register_account(); // Дальше нас не интересует совпадение имени - ведь мы не будем создавать пользователя, а используем этого
-//      } else {
-//        // TODO - Решить, что делать если емейл аккаунта, который заходит на сервер в первый раз совпадает с емейлом уже существующего аккаунта, но при этом не совпадают пароли
-//        $this->data[F_ACCOUNT]['account_email'] = '';
-//        self::flog('Защита от взлома. Емейл глобального аккаунта совпадает с емейлом существующего локального аккаунта, а пароль отличается. Обратитесь к Администрации', true);
-//      }
-//    }
-//
-//    $account_name = $found_provider->data[F_ACCOUNT]['account_name'];
-//    if(!$this->data[F_ACCOUNT_ID] && ($double_username = $this->db_account_by_name_safe($account_name))) { // Может быть дубликат по имени
-//      // Проверить на совпадение пароля
-//      $username_password_match = $this->password_match_account_to_account($found_provider->data[F_ACCOUNT], $double_username);
-//      if($username_password_match) { // Если подходит - это тот же пользователь
-//        $this->data[F_ACCOUNT] = $double_username;
-//        $this->data[F_ACCOUNT_ID] = $this->data[F_ACCOUNT]['account_id'];
-//      } else { // Пароль не совпадает - сделать новый аккаунт
-//        do {
-//          $account_name .= mt_rand(0, 9);
-//          $double_username = $this->db_account_by_name_safe($account_name);
-//        } while($double_username);
-//      }
-//    }
-//
-//    if(!$this->data[F_ACCOUNT_ID]) {
-//      // Пробуем создать аккаунт с данными от провайдера
-//      $this->data[F_ACCOUNT] = $found_provider->data[F_ACCOUNT];
-//      $this->data[F_ACCOUNT]['account_name'] = $account_name;
-//      unset($this->data[F_ACCOUNT]['account_id']);
-//      $this->db_account_create();
-//      // ПРОВАЙДЕР МОЖЕТ НЕ ПОДДЕРЖИВАТЬ ТАКОЕ СОЗДАНИЕ АККУНТОВ! ЭТО НОРМАЛЬНО
-//      // НО ТОГДА ОН ДОЛЖЕН ВЫСТАВЛЯТЬ СТАТУС LOGIN_SUCCESS И ВСЁ РАВНО ПРИНИМАТЬ ПОЛЬЗОВАТЕЛЯ!
-//      $this->data[F_ACCOUNT_ID] = !empty($this->data[F_ACCOUNT]['account_id']) ? $this->data[F_ACCOUNT]['account_id'] : 0;
-//    }
-//    // Если получилось - делаем запись в таблице account translate
-//    $this->data[F_ACCOUNT_ID] ? $this->register_account() : false;
-//    sn_db_transaction_commit();
-//  }
-
-//  function db_account_create() {
-//    /*
-//    if($result = db_field_set_create('account', array(
-//      'account_name' => $this->data[F_INPUT][F_LOGIN_UNSAFE],
-//      'account_password' => $this->data[F_INPUT][F_LOGIN_PASSWORD_RAW_TRIMMED],
-//      'account_email' => $this->data[F_INPUT][F_EMAIL_UNSAFE],
-//      'account_language' => $this->data[F_INPUT][F_LANGUAGE_SAFE],
-//    ))) {
-//      $this->data[F_ACCOUNT] = db_account_by_id(db_insert_id());
-//      $this->data[F_ACCOUNT] ? $this->register_account() : false;
-//      $this->data[F_ACCOUNT_ID] = !empty($this->data[F_ACCOUNT]['account_id']) ? $this->data[F_ACCOUNT]['account_id'] : 0;
-//    }
-//    */
-//    // Тут надо делать проверку на ИД существование емейла и имени нового аккаунта
-//    // И делать новое имя другим если есть дубликаты
-//
-//
-//
-//    $this->data[F_ACCOUNT] = $this->data[F_USER];
-//    $this->db_account_convert($this->data[F_ACCOUNT]);
-//    $this->data[F_ACCOUNT_ID] = !empty($this->data[F_ACCOUNT]['account_id']) ? $this->data[F_ACCOUNT]['account_id'] : 0;
-//    // ТОЛЬКО ДЛЯ ЭТОГО МЕТОДА - ПОТОМУ ЧТО ОН НЕ ТРЕБУЕТ РЕГИСТРАЦИИ !!!
-//    $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
-//  }
-
-//  function db_confirmation_set($account_id_safe, $confirmation_type_safe, $email_safe) {
-//    $confirmation = $this->db_confirmation_by_account_id($account_id_safe, CONFIRM_PASSWORD_RESET);
-//    if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
-//      throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
-//    }
-//
-//    // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
-//    // Удаляем предыдущие записи продтверждения сброса пароля
-//    !empty($confirmation['id']) or doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$confirmation['id']}' LIMIT 1;");
-//
-//    do {
-//      // Ну, если у нас > 999.999.999 подтверждений - тут нас ждут проблемы...
-//      $confirm_code_safe = db_escape($confirm_code_unsafe = sys_random_string(LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH, SN_SYS_SEC_CHARS_CONFIRMATION));
-//      $query = doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe}", true);
-//    } while($query);
-//    doquery(
-//      "REPLACE INTO {{confirmations}}
-//        SET `provider_id` = {$this->manifest['provider_id']}, `account_id` = '{$account_id_safe}',
-//        `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
-//    return $confirm_code_unsafe;
-//  }
-
-//  function db_confirmation_by_account_id($account_id_unsafe, $confirmation_type_safe, $email_unsafe = null) {
-//    $account_id_safe = round(floatval($account_id_unsafe));
-//    $email_safe = db_escape($email_unsafe);
-//    return doquery(
-//      "SELECT *
-//      FROM {{confirmations}}
-//      WHERE
-//        `provider_id` = {$this->manifest['provider_id']}
-//        AND `account_id`= {$account_id_safe}
-//        AND `type` = {$confirmation_type_safe} " .
-//      ($email_safe ? " AND `email` = '{$email_safe}' " : '') .
-//      " ORDER BY create_time DESC;", true
-//    );
-//  }
-
-//  function db_confirmation_by_code($code_safe, $confirmation_type_safe) {
-//    return doquery(
-//      "SELECT *
-//      FROM {{confirmations}}
-//      WHERE
-//        `provider_id` = {$this->manifest['provider_id']}
-//        AND `code`= '{$code_safe}'
-//        AND `type` = {$confirmation_type_safe}
-//      ORDER BY create_time DESC", true
-//    );
-//  }
-
-//  function user_create_from_account() {
-//    if(empty($this->data[F_ACCOUNT])) {
-//      self::flog('Не установлен аккаунт при создании пользователя из аккаунта', true);
-//    }
-//    sn_db_transaction_start();
-//
-//    if($double_email = db_user_by_username($this->data[F_ACCOUNT]['account_email'])) { // Может быть дубликат по емейлу
-//      if($this->password_match_account_to_user($this->data[F_ACCOUNT], $double_email)) { // Проверить на совпадение пароля
-//        $this->data[F_USER] = $double_email; // Если пароль и емейл совпадают - мы нашли нашего пользователя
-//      } else { // TODO - Решить, что делать если емейл аккаунта, который заходит на сервер в первый раз совпадает с емейлом уже существующего игрока, но при этом не совпадают пароли
-//        $this->data[F_ACCOUNT]['account_email'] = '';
-//        self::flog('Защита от взлома. Емейл аккаунта совпадает с емейлом существующего пользователя, а пароль отличается. Обратитесь к Администрации', true);
-//      }
-//    }
-//
-//    $user_name = $this->data[F_ACCOUNT]['account_name'];
-//    if(!$this->data[F_USER] && ($double_username = db_user_by_username($user_name))) { // Может быть дубликат по имени
-//      if($this->password_match_account_to_user($this->data[F_ACCOUNT], $double_username)) { // Проверить на совпадение пароля
-//        $this->data[F_USER] = $double_username; // Если подходит - это тот же пользователь
-//      } else { // Пароль не совпадает - сделать новый аккаунт
-//        do {
-//          $user_name .= mt_rand(0, 9);
-//          $double_username = db_user_by_username($user_name);
-//        } while($double_username);
-//      }
-//    }
-//
-//    if(!$this->data[F_USER]) {
-//      $this->data[F_USER] = player_create($user_name, $this->data[F_ACCOUNT]['account_email'], array(
-//        'partner_id' => $partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id')),
-//        'language_iso' => $this->data[F_ACCOUNT]['account_language'],
-//        'password_encoded_unsafe' => $this->data[F_ACCOUNT]['account_password'],
-//        'salt' => $this->data[F_ACCOUNT]['account_salt'],
-//        // 'remember_me' => $this->data[F_REMEMBER_ME_SAFE],
-//      ));
-//    }
-//    sn_db_transaction_commit();
-//  }
-
-//  function password_match_account_to_user($account, $user) {
-//    // TODO - если логин, то проверить еще и на энкод пароля с солью
-//    // if(self::password_encode($user['password'], $user['salt'])) {
-//    $match = false;
-//    if(!empty($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW])) {
-//      $match = self::password_encode($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW], $user['salt']) == $user['password'];
-//    }
-//    return $match || $account['account_password'] == $user['password'] && $account['account_salt'] == $user['salt'];
-//  }
-
-//  function register_account() {
-//    if(empty($this->data[F_ACCOUNT_ID])) {
-//      self::flog('Не установлен F_ACCOUNT_ID при регистрации пользователя', true);
-//    }
-//    if(empty($this->data[F_USER_ID]) && empty($this->data[F_USER]['id'])) {
-//      self::flog('При регистрации пользователя должен быть установлен F_USER_ID или F_USER_ID[id]', true);
-//    }
-//
-//    // Проверяем - если аккаунт уже зареган на пользователя, то регать заново его не надо
-//    if($this->data[F_USER]['id'] != $this->data[F_USER_ID]) {
-//      $this->data[F_USER_ID] = $this->data[F_USER]['id'];
-//
-//      db_field_set_create('account_translate', array(
-//        'provider_id' => $this->manifest['provider_id'],
-//        'provider_account_id' => $this->data[F_ACCOUNT_ID],
-//        'user_id' => $this->data[F_USER_ID],
-//      ));
-//    }
-//    $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
-//  }
-
-//  function password_match_account_to_account($account1, $account2) {
-//    // TODO - если логин, то проверить еще и на энкод пароля с солью
-//    $match = false;
-//    if(!empty($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW])) {
-//      $match = self::password_encode($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW], $account2['account_salt']) == $account2['account_password'];
-//    }
-//
-//    return $match || ($account1['account_password'] == $account2['account_password'] && $account1['account_salt'] == $account2['account_salt']);
-//  }
-
-//  /**
-//   * Функция возвращает емейл аккаунта
-//   *
-//   * @return string
-//   */
-//  public function get_email() {
-//    return !empty($this->data[F_ACCOUNT]['account_email']) ? $this->data[F_ACCOUNT]['account_email'] : '';
-//  }
-
-//  function auth_basic_user_create_from_input() {
-//    $this->data[F_USER] = player_create($this->data[F_INPUT][F_LOGIN_UNSAFE], $this->data[F_INPUT][F_EMAIL_UNSAFE],
-//      array(
-//        'partner_id' => $partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id')),
-//        'language_iso' => $this->data[F_ACCOUNT]['account_language'],
-//        'salt' => $salt = $this->password_salt_generate(),
-//        'password_encoded_unsafe' => self::password_encode($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW], $salt),
-//
-//        // 'remember_me' => $this->data[F_REMEMBER_ME_SAFE],
-//      )
-//    );
-//    $this->data[F_USER_ID] = $this->data[F_USER]['id'];
-//  }
 
 }

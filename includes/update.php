@@ -30,13 +30,12 @@ define('IN_UPDATE', true);
 
 require('includes/upd_helpers.php');
 
-global $sn_cache, $new_version, $db_prefix, $config, $db_name, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_foreigns;
-global $db_prefix, $cache_prefix;
+global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_foreigns;
 
 $config->reset();
 $config->db_loadAll();
-$config->db_prefix = $db_prefix;
-$config->cache_prefix = $cache_prefix;
+$config->db_prefix = classSupernova::$db_prefix; // Оставить пока для совместимости
+$config->cache_prefix = classSupernova::$cache_prefix;
 $config->debug = 0;
 
 //$config->db_loadItem('db_version');

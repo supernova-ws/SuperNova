@@ -1,10 +1,31 @@
 <?php
 
 class classSupernova {
+
   /**
+   * Основная БД для доступа к данным
+   *
    * @var db_mysql $db
    */
   public static $db;
+  public static $db_name = '';
+
+  /**
+   * Настройки из файла конфигурации
+   *
+   * @var string
+   */
+  public static $cache_prefix = '';
+  public static $db_prefix = '';
+  public static $sn_secret_word = '';
+
+  /**
+   * Конфигурация игры
+   *
+   * @var classConfig $config
+   */
+  public static $config;
+
 
 
 
@@ -139,10 +160,6 @@ class classSupernova {
       ),
     ),
   );
-
-  public static function init() {
-    self::$user_options = new userOptions(0);
-  }
 
   /**
    * @param $db db_mysql
@@ -1192,6 +1209,114 @@ class classSupernova {
 
   // Для модулей - регистрация юнитов
   public static function unit_register() {
+
+  }
+
+
+  public static function init_0_prepare () {
+    // Отключаем magic_quotes
+    ini_get('magic_quotes_sybase') ? die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...') : false;
+    if(@get_magic_quotes_gpc()) {
+      $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
+      array_walk_recursive($gpcr, function (&$value, $key) {
+        $value = stripslashes($value);
+      });
+    }
+    if(function_exists('set_magic_quotes_runtime')) {
+      @set_magic_quotes_runtime(0);
+      @ini_set('magic_quotes_runtime', 0);
+      @ini_set('magic_quotes_sybase', 0);
+    }
+  }
+
+  public static function init_1_constants() {
+    global $microtime;
+    global $phpEx;
+    global $phpbb_root_path; // Это нужно для работы PTL
+
+    $microtime = SN_TIME_MICRO;
+
+    define('SN_TIME_NOW', intval(SN_TIME_MICRO));
+    define('SN_TIME_ZONE_OFFSET', date('Z'));
+
+    define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
+    define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
+
+    if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
+      define('SN_GOOGLE', true);
+    }
+
+    $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
+    define('PHP_EX', $phpEx); // PHP extension on this server
+    define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
+
+    $sn_root_relative = str_replace('\\', '/', getcwd());
+    $sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
+    $sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
+    $sn_root_relative .= basename($_SERVER['SCRIPT_NAME']);
+    $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
+    define('SN_ROOT_RELATIVE', $sn_root_relative);
+
+    define('SN_ROOT_VIRTUAL' , 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
+    define('SN_ROOT_VIRTUAL_PARENT' , str_replace('//google.', '//', SN_ROOT_VIRTUAL));
+
+    $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
+  }
+
+  public static function init_3_load_config_file() {
+    $dbsettings = array();
+
+    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+    self::$db_prefix = $dbsettings['prefix'];
+    self::$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : self::$db_prefix;
+    self::$db_name = $dbsettings['name'];
+    self::$sn_secret_word = $dbsettings['secretword'];
+    unset($dbsettings);
+  }
+
+  public static function init_global_objects() {
+    global $supernova, $sn_cache, $config;
+
+    self::$user_options = new userOptions(0);
+
+    $supernova = new classSupernova();
+
+    // Initializing global 'cacher' object
+    $sn_cache = new classCache(classSupernova::$cache_prefix);
+    empty($sn_cache->tables) && sys_refresh_tablelist(classSupernova::$db_prefix);
+    empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
+
+    // Initializing global "config" object
+    static::$config = new classConfig(classSupernova::$cache_prefix);
+    $config = static::$config;
+    //$config->db_prefix = classSupernova::$db_prefix;
+    //$config->secret_word = classSupernova::$sn_secret_word;
+    //$config->db_saveItem('secret_word', classSupernova::$sn_secret_word);
+    //$config->db_saveItem('db_prefix', classSupernova::$db_prefix);
+    //$config->db_saveItem('cache_prefix', classSupernova::$cache_prefix);
+  }
+
+  public static function init_debug_state() {
+    if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
+      define('BE_DEBUG', true);
+    }
+// define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
+    define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
+    define('DEBUG_SQL_COMMENT_LONG', true); // Добавлять SQL запрос длинные комментарии. Не зависим от всех остальных параметров. Подойдет любое значение
+    define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
+// Включаем нужные настройки
+    defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR') ? define('DEBUG_SQL_ERROR', true) : false;
+    defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
+    defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
+
+    if(defined('BE_DEBUG') || static::$config->debug) {
+      @define('BE_DEBUG', true);
+      @ini_set('display_errors', 1);
+      @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
+    } else {
+      @define('BE_DEBUG', false);
+      @ini_set('display_errors', 0);
+    }
 
   }
 

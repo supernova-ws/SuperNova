@@ -377,7 +377,7 @@ function sn_options_view($template = null) {
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
 
-    'AUTH_PROVIDER' => $template_result[F_PROVIDER_ID],
+    // 'AUTH_PROVIDER' => $template_result[F_PROVIDER_ID],
     'ACCOUNT_NAME' => sys_safe_output($template_result[F_ACCOUNT]['account_name']),
 
 //    'ACCOUNT_NAME' => sys_safe_output($account['account_name']),

@@ -51,7 +51,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.12');
+define('SN_VERSION', '40a10.13');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -383,7 +383,7 @@ define('LOG_ERR_INT_FLEET_TIMOUT', 504); // Таймаут менеджера ф
 define('LOG_ERR_INT_CAPTAIN_DUPLICATE', 505); // Таймаут менеджера флотов
 define('LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER', 506); // Ошибка снятия ТМ
 // 9xx - Отладка
-define('LOG_DEBUG', 900); // Отладка
+// define('LOG_DEBUG', 900); // Отладка Странный глюк - не хочет делать define LOG_DEBUG без ошибки!
 define('LOG_DEBUG_SQL', 910); // Отладка SQL
 
 
@@ -477,15 +477,15 @@ define('ACCOUNT_PROVIDER_LOCAL', 1);
 define('ACCOUNT_PROVIDER_CENTRAL', 2);
 
 // F_INPUT - constants
-define('F_INPUT',                      'F_INPUT');
+// define('F_INPUT',                      'F_INPUT');
 // define('F_IS_REGISTER',                'F_IS_REGISTER');
-define('F_LOGIN_UNSAFE',               'F_LOGIN_UNSAFE');
-define('F_LOGIN_SAFE',                 'F_LOGIN_SAFE');
-define('F_LOGIN_PASSWORD_RAW',         'F_LOGIN_PASSWORD_RAW');
+// define('F_LOGIN_UNSAFE',               'F_LOGIN_UNSAFE');
+//define('F_LOGIN_SAFE',                 'F_LOGIN_SAFE');
+//define('F_LOGIN_PASSWORD_RAW',         'F_LOGIN_PASSWORD_RAW');
 //define('F_LOGIN_PASSWORD_RAW_TRIMMED', 'F_LOGIN_PASSWORD_RAW_TRIMMED');
-define('F_LOGIN_PASSWORD_REPEAT_RAW',  'F_LOGIN_PASSWORD_REPEAT_RAW');
-define('F_EMAIL_UNSAFE',               'F_EMAIL_UNSAFE');
-define('F_LANGUAGE_SAFE',              'F_LANGUAGE_SAFE');
+// define('F_LOGIN_PASSWORD_REPEAT_RAW',  'F_LOGIN_PASSWORD_REPEAT_RAW');
+// define('F_EMAIL_UNSAFE',               'F_EMAIL_UNSAFE');
+// define('F_LANGUAGE_SAFE',              'F_LANGUAGE_SAFE');
 // define('F_REMEMBER_ME_SAFE',           'F_REMEMBER_ME_SAFE');
 
 // define('F_PASSWORD_RESET_CODE_SAFE',        'F_PASSWORD_RESET_CODE');

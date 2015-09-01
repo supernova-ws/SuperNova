@@ -9,7 +9,7 @@ define("DEBUG_AUTH", true);
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.12#
+ * version #40a10.13#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.12# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.13# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -558,8 +558,6 @@ class auth extends sn_module {
   }
 
   public static function impersonate($user_selected) {
-    global $config;
-
     if($_COOKIE[SN_COOKIE_I]) {
       die('You already impersonating someone. Go back to living other\'s life! Or clear your cookies and try again'); // TODO: Log it
     }
@@ -575,7 +573,7 @@ class auth extends sn_module {
     sn_setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
 
     $expire_time = SN_TIME_NOW + PERIOD_YEAR; // TODO - Имперсонейт - только на одну сессию
-    $password_encoded = md5("{$user_selected['password']}--{$config->secret_word}");
+    $password_encoded = md5("{$user_selected['password']}--" . classSupernova::$sn_secret_word);
     $cookie = $user_selected['id'] . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . '1';
     sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
 

@@ -5,7 +5,7 @@ if(!defined('IN_UPDATE')) {
 }
 
 function upd_do_query($query, $no_log = false) {
-  global $update_tables, $db_prefix;
+  global $update_tables;
 
   upd_add_more_time();
   if(!$no_log) {
@@ -15,10 +15,10 @@ function upd_do_query($query, $no_log = false) {
   classSupernova::$db->sn_db_connect();
   if(!(strpos($query, '{{') === false)) {
     foreach($update_tables as $tableName => $cork) {
-      $query = str_replace("{{{$tableName}}}", $db_prefix . $tableName, $query);
+      $query = str_replace("{{{$tableName}}}", classSupernova::$db_prefix . $tableName, $query);
     }
   }
-  $result = classSupernova::$db->mysql_query($query) or die('Query error for ' . $query . ': ' . db_error());
+  $result = classSupernova::$db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
   return $result;
 }
 
@@ -82,7 +82,7 @@ function upd_unset_table_info($table_name) {
 }
 
 function upd_load_table_info($prefix_table_name, $prefixed = true) {
-  global $config, $update_tables, $update_indexes, $update_foreigns, $db_name;
+  global $config, $update_tables, $update_indexes, $update_foreigns;
 
   $tableName = $prefixed ? str_replace($config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
   $prefix_table_name = $prefixed ? $prefix_table_name : $config->db_prefix . $prefix_table_name;
@@ -99,7 +99,7 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
     $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
   }
 
-  $q1 = upd_do_query("select * FROM information_schema.KEY_COLUMN_USAGE where TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
+  $q1 = upd_do_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name). "' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
   while($r1 = db_fetch($q1)) {
     $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
@@ -144,7 +144,7 @@ function upd_alter_table($table, $alters, $condition = true) {
 function upd_drop_table($table_name) {
   global $config;
 
-  classSupernova::$db->mysql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
+  classSupernova::$db->db_sql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
 
   upd_unset_table_info($table_name);
 }

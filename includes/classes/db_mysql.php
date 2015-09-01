@@ -23,13 +23,26 @@ class db_mysql {
    *
    * @var resource $link
    */
-  public $link;
+  // public $link;
 
   protected $dbsettings = array();
 
+  /**
+   * @var db_mysql_v5 $driver
+   */
+  protected $driver = null;
+
+  public function __construct() {
+    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+
+    $driver_name = empty($dbsettings['sn_driver']) ? 'db_mysql_v5' : $dbsettings['sn_driver'];
+
+    // $this->driver = new db_mysql_v5();
+    $this->driver = new $driver_name();
+  }
 
   function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    global $numqueries, $debug, $sn_cache, $config, $db_prefix;
+    global $numqueries, $debug, $sn_cache, $config;
 
     if(!is_string($table)) {
       $fetch = $table;
@@ -46,7 +59,7 @@ class db_mysql {
     $sql = $query;
     if(strpos($sql, '{{') !== false) {
       foreach($sn_cache->tables as $tableName) {
-        $sql = str_replace("{{{$tableName}}}", $db_prefix.$tableName, $sql);
+        $sql = str_replace("{{{$tableName}}}", classSupernova::$db_prefix . $tableName, $sql);
       }
     }
 
@@ -75,7 +88,7 @@ class db_mysql {
       $sql = $sql_commented;
     }
 
-    $sqlquery = $this->mysql_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
+    $sqlquery = $this->db_sql_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
@@ -182,44 +195,18 @@ class db_mysql {
       $this->dbsettings = $dbsettings;
     }
 
-    return $this->connected || $this->mysql_connect();
-  }
-
-  function mysql_connect() {
-    global $debug;
-
-    static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
-
-    if($this->connected) {
-      return true;
-    }
-
-    if(empty($this->dbsettings) || !is_array($this->dbsettings) || array_intersect($need_keys, array_keys($this->dbsettings)) != $need_keys) {
-      $debug->error_fatal('There is missconfiguration in your config.php. Check it again', $this->db_error());
-    }
-
-    // TODO !!!!!! DEBUG -> error!!!!
-    @$this->link = mysql_connect($this->dbsettings['server'], $this->dbsettings['user'], $this->dbsettings['pass']);
-    if(!$this->link) {
-      $debug->error_fatal('DB Error - cannot connect to server', $this->db_error());
-    }
-
-    $this->mysql_query("/*!40101 SET NAMES 'utf8' */") or $debug->error_fatal('DB error - cannot set names', $this->db_error());
-    $this->mysql_query("SET NAMES 'utf8';") or $debug->error_fatal('DB error - cannot set names', $this->db_error());
-
-    mysql_select_db($this->dbsettings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->db_error());
-    $this->mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or $debug->error_fatal('DB error - cannot set desired isolation level', $this->db_error());
-
-    return $this->connected = true;
+    return $this->connected = $this->connected || $this->driver_connect();
   }
 
   function db_disconnect() {
-    if($this->connected || !empty($this->link)) {
-      $this->connected = !$this->mysql_close();
+//    if($this->connected || !empty($this->link)) {
+    if($this->connected) {
+      $this->connected = !$this->db_mysql_close();
     }
 
     return !$this->connected;
   }
+
 
   function db_get_table_list($db_prefix) {
     $query = $this->mysql_get_table_list();
@@ -241,52 +228,87 @@ class db_mysql {
   }
 
   function mysql_get_table_list() {
-    return $this->mysql_query('SHOW TABLES;');
+    return $this->db_sql_query('SHOW TABLES;');
   }
   function mysql_get_innodb_status() {
-    return $this->mysql_query('SHOW ENGINE INNODB STATUS;');
+    return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
   }
 
 
+  function driver_connect() {
+    global $debug;
 
-  function mysql_query($query_string) {
-    return mysql_query($query_string, $this->link);
+    if(!is_object($this->driver)) {
+      $debug->error_fatal('DB Error - No driver for MySQL found!');
+    }
+
+    return $this->driver->mysql_connect($this->dbsettings);
+
+//    global $debug;
+//
+//    static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
+//
+//    if($this->connected) {
+//      return true;
+//    }
+//
+//    if(empty($this->dbsettings) || !is_array($this->dbsettings) || array_intersect($need_keys, array_keys($this->dbsettings)) != $need_keys) {
+//      $debug->error_fatal('There is missconfiguration in your config.php. Check it again', $this->db_error());
+//    }
+//
+//    // TODO !!!!!! DEBUG -> error!!!!
+//    @$this->link = mysql_connect($this->dbsettings['server'], $this->dbsettings['user'], $this->dbsettings['pass']);
+//    if(!$this->link) {
+//      $debug->error_fatal('DB Error - cannot connect to server', $this->db_error());
+//    }
+//
+//    $this->db_sql_query("/*!40101 SET NAMES 'utf8' */") or $debug->error_fatal('DB error - cannot set names', $this->db_error());
+//    $this->db_sql_query("SET NAMES 'utf8';") or $debug->error_fatal('DB error - cannot set names', $this->db_error());
+//
+//    mysql_select_db($this->dbsettings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->db_error());
+//    $this->db_sql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_REPEATABLE_READ . ';') or $debug->error_fatal('DB error - cannot set desired isolation level', $this->db_error());
+//
+//    return $this->connected = true;
+  }
+
+  function db_sql_query($query_string) {
+    return $this->driver->mysql_query($query_string);
   }
   function db_fetch(&$query) {
-    return mysql_fetch_assoc($query);
+    return $this->driver->mysql_fetch_assoc($query);
   }
   function db_fetch_row(&$query) {
-    return mysql_fetch_row($query);
+    return $this->driver->mysql_fetch_row($query);
   }
   function db_escape($unescaped_string) {
-    return mysql_real_escape_string($unescaped_string, $this->link);
+    return $this->driver->mysql_real_escape_string($unescaped_string);
   }
-  function mysql_close() {
-    return mysql_close($this->link);
+  function db_mysql_close() {
+    return $this->driver->mysql_close_link();
   }
   function db_error() {
-    return mysql_error($this->link);
+    return $this->driver->mysql_error();
   }
   function db_insert_id() {
-    return mysql_insert_id($this->link);
+    return $this->driver->mysql_insert_id();
   }
   function db_num_rows(&$result) {
-    return mysql_num_rows($result);
+    return $this->driver->mysql_num_rows($result);
   }
   function db_affected_rows() {
-    return mysql_affected_rows($this->link);
+    return $this->driver->mysql_affected_rows();
   }
   function db_get_client_info() {
-    return mysql_get_client_info();
+    return $this->driver->mysql_get_client_info();
   }
   function db_get_server_info() {
-    return mysql_get_server_info($this->link);
+    return $this->driver->mysql_get_server_info();
   }
   function db_get_host_info() {
-    return mysql_get_host_info($this->link);
+    return $this->driver->mysql_get_host_info();
   }
   function db_get_server_stat() {
-    return mysql_stat($this->link);
+    return $this->driver->mysql_stat();
   }
 
 }

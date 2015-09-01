@@ -708,7 +708,7 @@ switch($new_version)
 
     foreach($update_tables as $table_name => $cork)
     {
-      $row = db_fetch(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$db_name}' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';", true));
+      $row = db_fetch(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '" . db_escape(classSupernova::$db_name) . "' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';", true));
       if($row['ENGINE'] != 'InnoDB')
       {
         upd_alter_table($table_name, 'ENGINE=InnoDB', true);

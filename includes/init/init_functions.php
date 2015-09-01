@@ -34,9 +34,10 @@ function sys_refresh_tablelist($db_prefix) {
   $sn_cache->tables = db_get_table_list($db_prefix);
 }
 
+/**
+ * @param classConfig $config
+ */
 function init_update(&$config) {
-  global $db_prefix;
-
   $update_file = SN_ROOT_PHYSICAL . "includes/update" . DOT_PHP_EX;
   if(file_exists($update_file)) {
     if(filemtime($update_file) > $config->db_loadItem('var_db_update') || $config->db_loadItem('db_version') < DB_VERSION) {
@@ -47,7 +48,7 @@ function init_update(&$config) {
           sn_db_transaction_commit();
 
           require_once($update_file);
-          sys_refresh_tablelist($db_prefix);
+          sys_refresh_tablelist(classSupernova::$db_prefix);
 
           $current_time = time();
           $config->db_saveItem('var_db_update', $current_time);
