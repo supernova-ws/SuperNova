@@ -1,6 +1,13 @@
 <?php
 
 class classSupernova {
+  /**
+   * @var db_mysql $db
+   */
+  public static $db;
+
+
+
   public static $db_in_transaction = false;
   public static $transaction_id = 0;
   public static $user = array();
@@ -135,6 +142,11 @@ class classSupernova {
 
   public static function init() {
     self::$user_options = new userOptions(0);
+  }
+
+  public static function init_main_db() {
+
+    self::$db->sn_db_connect($dbsettings);
   }
 
 

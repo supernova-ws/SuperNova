@@ -140,7 +140,7 @@ class debug {
       }
     }
 
-    if($deadlock && ($q = db_fetch(__db_query('SHOW ENGINE INNODB STATUS')))) {
+    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_query('SHOW ENGINE INNODB STATUS')))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = classSupernova::$locks;
       $error_backtrace['cSN_data'] = classSupernova::$data;
@@ -194,7 +194,7 @@ class debug {
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link) {
-      sn_db_connect();
+      classSupernova::$db->sn_db_connect();
       // $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
       // mysql_query("/*!40101 SET NAMES 'utf8' */");
       // mysql_select_db($dbsettings['name']);
@@ -242,7 +242,7 @@ class debug {
     require(SN_ROOT_PHYSICAL . 'config.' . PHP_EX);
 
     if(!$link) {
-      sn_db_connect();
+      classSupernova::$db->sn_db_connect();
 //      $link = mysql_connect($dbsettings['server'], $dbsettings['user'], $dbsettings['pass']);
 //      mysql_query('/*!40101 SET NAMES \'utf8\' */');
 //      mysql_select_db($dbsettings['name']);

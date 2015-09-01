@@ -288,7 +288,10 @@ switch($new_version)
       {
         upd_drop_table('errors_backup');
       }
-      __db_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
+//      __db_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
+//      classSupernova::$db->__db_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
+      upd_alter_table('errors', ' RENAME TO {$config->db_prefix}errors_backup');
+
       upd_drop_table('errors');
     }
 
