@@ -9,7 +9,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'basic',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.13# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.14# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -43,10 +43,10 @@ class auth_local extends sn_module {
    * @var string $input_login_unsafe
    */
   protected $input_login_unsafe = '';
-  protected $input_login_safe = '';
   protected $input_login_password_raw = '';
   protected $input_login_password_raw_repeat = '';
   protected $input_email_unsafe = '';
+  protected $input_language_unsafe = '';
   protected $input_language_safe = '';
 
 
@@ -67,7 +67,7 @@ class auth_local extends sn_module {
   /**
    * @var db_mysql $db
    */
-  protected $db = null;
+  public $db;
 
 
 
@@ -92,6 +92,17 @@ class auth_local extends sn_module {
 //  public function auth_manager_set($auth) {
 //    $this->auth = $auth;
 //  }
+//
+  public function set_database($db) {
+    $this->db = $db;
+  }
+
+  function __construct($db = null) {
+    parent::__construct(__FILE__);
+
+    $this->db = is_object($db) ? $db : classSupernova::$db;
+  }
+
 
   /**
    * Возвращает аккаунт по его ID
@@ -100,12 +111,12 @@ class auth_local extends sn_module {
    *
    * @return array|false
    */
-  // OK v4
+  // OK v4.1
   function db_account_get_by_id($account_id_unsafe) {
     $account_id_safe = round(floatval($account_id_unsafe));
-    // $account = db_user_by_id($account_id_safe);
-    $account = doquery("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}", true);
-    !empty($account) ? $this->db_account_convert($account) : ($account = null);
+    // $account = doquery("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}", true);
+    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}", true);
+    !empty($account) ? $this->account_convert($account) : ($account = null);
     return $account;
   }
   /**
@@ -115,12 +126,13 @@ class auth_local extends sn_module {
    *
    * @return array|false
    */
-  // OK v4
-  // TODO - все данные для операций с БД должны приводится в безопасный вид ПО МЕСТУ! Движок всегда оперирует НЕБЕЗОПАСНЫМИ ДАННЫМИ!
-  function db_account_get_by_name_safe($account_name_safe) {
-    $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
+  // OK v4.1
+  function db_account_get_by_name($account_name_unsafe) {
+    $account_name_safe = $this->db->db_escape($account_name_unsafe);
+    // $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
+    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
     if(!empty($account)) {
-      $this->db_account_convert($account);
+      $this->account_convert($account);
     }
 
     return $account;
@@ -135,10 +147,13 @@ class auth_local extends sn_module {
   // TODO NOT OK v4
   // TODO - надо возвращать список аккаунтов
   // TODO - DEPRECATED! Использовать db_account_list_get_on_email()
+  // OK v4.1
   function db_account_by_email($email_unsafe) {
 //    TODO auth_account
-    if($email_safe = db_escape(trim($email_unsafe))) {
-      $result = doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}';", true);
+//    if($email_safe = db_escape(trim($email_unsafe))) {
+//      $result = doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}';", true);
+    if($email_safe = $this->db->db_escape(trim($email_unsafe))) {
+      $result = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}';", true);
     } else {
       return false;
     }
@@ -153,7 +168,7 @@ class auth_local extends sn_module {
    *
    * @return array|bool|resource
    */
-  // TODO v4
+  // TODO v4.1
   // TODO Должен работать со списками или с ID!
   function db_account_set_email($new_email_unsafe) {
     die('{Смена емейла пока не работает}');
@@ -166,49 +181,32 @@ class auth_local extends sn_module {
    *
    * @return array
    */
-  // OK v4
+  // OK v4.1
   function db_account_list_get_on_email($email_unsafe) {
-    $email_safe = db_escape($email_unsafe);
-    $query = doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}' FOR UPDATE;");
+    $email_safe = $this->db->db_escape($email_unsafe);
+    $query = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}' FOR UPDATE;");
     $account_list = array();
-    while($row = db_fetch($query)) {
+    while($row = $this->db->db_fetch($query)) {
       $account_list[$row['account_id']] = $row;
     }
     return $account_list;
-  }
-  /**
-   * Заполняет общие поля аккаунта из инфы, которую возвращает провайдер
-   *
-   * @param $account
-   */
-  // TODO DEPRECATED - это должен быть хелпер???? Или работать в геттере
-  function db_account_convert(&$account) {
-    $account = array(
-      'account_id' => $account['account_id'],
-      'account_name' => $account['account_name'],
-      'account_password' => $account['account_password'],
-      'account_salt' => $account['account_salt'],
-      'account_email' => $account['account_email'],
-      'account_email_verified' => $account['account_email_verified'],
-      'account_register_time' => $account['account_register_time'],
-      'account_language' => $account['account_language'],
-    );
   }
   /**
    * Создает аккаунт
    *
    * @throws Exception
    */
-  // OK v4
-  function db_account_create($account_name_safe, $password_raw, $email_unsafe, $language_safe = null, $salt_unsafe = null) {
+  // OK v4.1
+  function db_account_create($account_name_unsafe, $password_raw, $email_unsafe, $language_unsafe = null, $salt_unsafe = null) {
+    $account_name_safe = $this->db->db_escape($account_name_unsafe);
+    $email_safe = $this->db->db_escape($email_unsafe);
+    $language_safe = $this->db->db_escape($language_unsafe === null ? DEFAULT_LANG : $language_unsafe);
+
     $salt_unsafe === null ? $salt_unsafe = $this->password_salt_generate() : false;
-    $password_salted_safe = db_escape($this->password_encode($password_raw, $salt_unsafe));
-    $salt_safe = db_escape($salt_unsafe);
-    $email_safe = db_escape($email_unsafe);
+    $password_salted_safe = $this->db->db_escape($this->password_encode($password_raw, $salt_unsafe));
+    $salt_safe = $this->db->db_escape($salt_unsafe);
 
-    $language_safe == null ? $language_safe = db_escape(DEFAULT_LANG) : false;
-
-    $result = doquery(
+    $result = $this->db->doquery(
       "INSERT INTO {{account}} SET
         `account_name` = '{$account_name_safe}',
         `account_password` = '{$password_salted_safe}',
@@ -220,16 +218,11 @@ class auth_local extends sn_module {
       throw new Exception(REGISTER_ERROR_ACCOUNT_CREATE, ERR_ERROR);
     }
 
-    if(!($account_id = db_insert_id())) {
+    if(!($account_id = $this->db->db_insert_id())) {
       throw new Exception(REGISTER_ERROR_ACCOUNT_CREATE, ERR_ERROR);
     }
 
     return $account_id;
-
-
-//    $this->auth_basic_user_create_from_input();
-//    $this->db_account_convert($this->data[F_ACCOUNT]);
-//    $this->data[F_ACCOUNT_ID] = $this->data[F_ACCOUNT]['account_id'];
   }
   /**
    * Физически меняет пароль аккаунта в БД
@@ -239,29 +232,36 @@ class auth_local extends sn_module {
    *
    * @return array|resource
    */
-  // OK v4
-  function db_account_set_password_by_id($account_id_safe, $new_password_encoded_safe, $salt_safe) {
-    return doquery(
+  // OK v4.1
+  function db_account_set_password_by_id($account_id_unsafe, $new_password_encoded_unsafe, $salt_unsafe) {
+    $account_id_safe = $this->db->db_escape($account_id_unsafe);
+    $new_password_encoded_safe = $this->db->db_escape($new_password_encoded_unsafe);
+    $salt_safe = $this->db->db_escape($salt_unsafe);
+
+    return $this->db->doquery(
       "UPDATE {{account}} SET
         `account_password` = '{$new_password_encoded_safe}',
         `account_salt` = '{$salt_safe}'
       WHERE `account_id` = '{$account_id_safe}'"
     );
-    // return db_user_set_by_id($this->data[F_ACCOUNT]['account_id'], "`password` = '{$new_password_encoded_safe}', `salt` = '{$salt_safe}'");
   }
   /**
    * Проверки в БД на возможность регистрации
    *
    * @throws Exception
    */
-  // OK v4
+  // OK v4.1
   // TODO - через db_account_get_by_name() и db_account_get_by_email()
-  function db_account_register_check_duplicate_name_or_email($account_name_safe, $email_unsafe) {
-    $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}' FOR UPDATE", true);
+  function db_account_check_duplicate_name_or_email($account_name_unsafe, $email_unsafe) {
+    $account_name_safe = $this->db->db_escape($account_name_unsafe);
+
+    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}' FOR UPDATE", true);
     if(!empty($account)) {
       throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
     }
-    // TODO - проверить - а вдруг чувак пытается зарегаться с тем же паролем?
+    // TODO - добавить ограничение при регистрации ??
+    // Проверить - а вдруг чувак пытается зарегаться с тем же паролем?
+    // НЕ НАДО! Многие регаются с логином = паролю
 //    if($this->db_account_by_name_safe($this->data[F_INPUT][F_LOGIN_UNSAFE])) {
 //      throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
 //    }
@@ -270,41 +270,56 @@ class auth_local extends sn_module {
     }
   }
 
+  /**
+   * Заполняет общие поля аккаунта из инфы, которую возвращает провайдер
+   *
+   * @param $account
+   */
+  // TODO DEPRECATED - это должен быть хелпер???? Или работать в геттере
+  // OK v4.1
+  function account_convert(&$account) {
+    $account = array(
+      'account_id' => $account['account_id'],
+      'account_name' => $account['account_name'],
+      'account_password' => $account['account_password'],
+      'account_salt' => $account['account_salt'],
+      'account_email' => $account['account_email'],
+      'account_email_verified' => $account['account_email_verified'],
+      'account_register_time' => $account['account_register_time'],
+      'account_language' => $account['account_language'],
+    );
+  }
 
   /**
    * Физически меняется пароль в БД
    *
    * @param int $account_id_unsafe
    * @param string $new_password_unsafe
-   * @param null $salt_unsafe
+   * @param null $new_salt_unsafe
    *
    * @return boolean
    * @throws Exception
    */
-  // OK v4
   // TODO - переделать! См. точку вызова
   // TODO - Должен работать со списками и без ID!
-  function password_set_by_id_and_old_password($account_id_unsafe, $new_password_unsafe, $salt_unsafe = null) {
+  // OK v4.1
+  function account_password_set_by_id($account_id_unsafe, $new_password_unsafe, $new_salt_unsafe = null) {
     $account = $this->db_account_get_by_id($account_id_unsafe);
     if(empty($account['account_id'])) {
       // Внутренняя ошибка. Такого быть не должно!
       throw new Exception(PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS, ERR_ERROR);
     }
 
-    $salt_unsafe === null ? $salt_unsafe = $this->password_salt_generate() : false;
+    $new_salt_unsafe === null ? $new_salt_unsafe = $this->password_salt_generate() : false;
     // Проверка на тот же пароль
-    $salted_password_unsafe = $this->password_encode($new_password_unsafe, $salt_unsafe);
-    if($account['account_password'] == $new_password_unsafe && $account['account_salt'] == $salt_unsafe) {
+    $salted_password_unsafe = $this->password_encode($new_password_unsafe, $new_salt_unsafe);
+    if($account['account_password'] == $new_password_unsafe && $account['account_salt'] == $new_salt_unsafe) {
       return $account;
     }
 
-    $salted_password_safe = db_escape($salted_password_unsafe);
-    $salt_safe = db_escape($salt_unsafe);
-    $account_id_safe = db_escape($account_id_unsafe);
-
-    $result = $this->db_account_set_password_by_id($account_id_safe, $salted_password_safe, $salt_safe);
+    $result = $this->db_account_set_password_by_id($account_id_unsafe, $salted_password_unsafe, $new_salt_unsafe);
     // $result = doquery("UPDATE {{account}} SET `account_password` = '{$salted_password_safe}', `account_salt` = '{$salt_safe}' WHERE `account_id` = '{$account_id_safe}'");
-    if($result && db_affected_rows()) {
+    if($result && $this->db->db_affected_rows()) {
       // Меняем данные аккаунта
       $account = $this->db_account_get_by_id($account_id_unsafe);
       $this->data[F_ACCOUNT] = $account;
@@ -317,24 +332,22 @@ class auth_local extends sn_module {
 
 
 
-
-
   /**
    * Функция инициализирует данные провайдера - разворачивает куки, берет данные итд
    */
-  // OK v4
+  // OK v4.1
   public function prepare() {
     // $this->data = &$this->data[$this->manifest['provider_id']];
     !is_array($this->data) ? $this->data = array() : false;
 
     $this->input_login_unsafe = sys_get_param_str_unsafe('username', sys_get_param_str_unsafe('login')); // TODO переделать эту порнографию
-    $this->input_login_safe = db_escape($this->input_login_unsafe);
 
     $this->is_register = sys_get_param('register');
     $this->remember_me = intval(sys_get_param_int('rememberme') || $this->is_register);
     $this->input_login_password_raw = sys_get_param('password');
     $this->input_login_password_raw_repeat = sys_get_param('password_repeat');
     $this->input_email_unsafe = sys_get_param_str_unsafe('email');
+    $this->input_language_unsafe = sys_get_param_str_unsafe('lang', DEFAULT_LANG);
     $this->input_language_safe = sys_get_param_str('lang', DEFAULT_LANG);
 
 
@@ -368,7 +381,7 @@ class auth_local extends sn_module {
    *
    * @param string $method_name
    */
-  // OK v4
+  // OK v4.1
   public function login_try() {
     // TODO Проверяем поддерживаемость метода
     // TODO Пытаемся залогиниться
@@ -397,11 +410,12 @@ class auth_local extends sn_module {
   /**
    * Логин по выставленным полям
    */
+  // OK v4.1
   public function login_internal() {
     try {
       $this->data[F_LOGIN_STATUS] = LOGIN_UNDEFINED;
       $this->remember_me = true;
-      $this->cookie_set();
+      $this->account_cookie_set();
       $this->login_cookie();
     } catch(Exception $e) {
       // sn_db_transaction_rollback();
@@ -417,7 +431,7 @@ class auth_local extends sn_module {
    *
    * @return mixed
    */
-  // OK v4
+  // OK v4.1
   function register() {
     // TODO РЕГИСТРАЦИЯ ВСЕГДА ДОЛЖНА ЛОГИНИТЬ ПОЛЬЗОВАТЕЛЯ!
     $this->flog('Регистрация: начинаем. Провайдер ' . $this->manifest['provider_id']);
@@ -432,26 +446,21 @@ class auth_local extends sn_module {
       $this->register_validate_input();
 
       sn_db_transaction_start();
-      $this->db_account_register_check_duplicate_name_or_email($this->input_login_safe, $this->input_email_unsafe);
+      $this->db_account_check_duplicate_name_or_email($this->input_login_unsafe, $this->input_email_unsafe);
 
-      // $email_safe = db_escape($this->data[F_INPUT][F_EMAIL_UNSAFE]);
-      // $salt_unsafe = $this->password_salt_generate();
-      // $salt_safe = db_escape($salt_unsafe);
-      // $password_salted_safe = auth::password_encode($this->data[F_INPUT][F_LOGIN_PASSWORD_RAW], $salt_unsafe);
-
+      // Пустой $account_id - т.е. проблемы с созданием аккаунта - вызовут эксершн и обработается catch()
       $account_id = $this->db_account_create(
-        $this->input_login_safe,
+        $this->input_login_unsafe,
         $this->input_login_password_raw,
         $this->input_email_unsafe,
-        $this->input_language_safe
-      ); // Пустой $account_id обработается catch()
-
+        $this->input_language_unsafe
+      );
 
       $this->data[F_ACCOUNT] = $this->db_account_get_by_id($account_id);
 
       // Устанавливать не надо - мы дальше пойдем по workflow
       $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
-      $this->cookie_set();
+      $this->account_cookie_set();
 
       // А вот это пока не нужно. Трансляцией аккаунтов в юзеров и созданием новых юзеров для новозашедших аккаунтов занимается Auth
       // $this->register_account();
@@ -467,7 +476,7 @@ class auth_local extends sn_module {
 
   // TODO - переделать!
   // TODO - NOT OK v4
-  function auth_password_check($old_password_unsafe) {
+  function account_password_check($old_password_unsafe) {
     // unset($this->data[F_PASSWORD_MATCHED]);
     if($old_password_unsafe !== false) {
       if(!$this->data[F_ACCOUNT]['account_password'] ||
@@ -490,23 +499,22 @@ class auth_local extends sn_module {
    *
    * @return array|bool|resource
    */
-  // OK v4
+  // TODO - ПЕРЕДЕЛАТЬ Должен работать со списком аккаунтов
+  // OK v4.1
   function real_password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
-    if(!$this->auth_password_check($old_password_unsafe)) {
+    if(!$this->account_password_check($old_password_unsafe)) {
       return false;
     }
 
     $salt_unsafe === null ? $salt_unsafe = self::password_salt_generate() : false;
 
-    $new_password_encoded_unsafe = self::password_encode($new_password_unsafe, $salt_unsafe);
-    $salt_safe = db_escape($salt_unsafe);
-    $new_password_encoded_safe = db_escape($new_password_encoded_unsafe);
-    $result = $this->db_account_set_password_by_id($this->data[F_ACCOUNT]['account_id'], $new_password_encoded_safe, $salt_safe);
+    $salted_password_unsafe = self::password_encode($new_password_unsafe, $salt_unsafe);
+    $result = $this->db_account_set_password_by_id($this->data[F_ACCOUNT]['account_id'], $salted_password_unsafe, $salt_unsafe);
 
     if($result) {
-      $this->data[F_ACCOUNT]['account_password'] = $new_password_encoded_unsafe;
+      $this->data[F_ACCOUNT]['account_password'] = $salted_password_unsafe;
       $this->data[F_ACCOUNT]['account_salt'] = $salt_unsafe;
-      $this->cookie_set();
+      $this->account_cookie_set();
     }
 
     return $result;
@@ -517,7 +525,7 @@ class auth_local extends sn_module {
   /**
    * Очищает куку аккаунта - совсем или восстанавливая куку текущего имперсонатора
    */
-  // OK v4
+  // OK v4.1
   function cookie_clear($only_impersonator = null) {
     // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
     if(!empty($_COOKIE[SN_COOKIE_I])) {
@@ -534,7 +542,7 @@ class auth_local extends sn_module {
    * @param bool|false $check_impersonator
    * @param bool|false $is_impersonator
    */
-  // OK v4
+  // OK v4.1
   function cookie_get_account($check_impersonator = false, $is_impersonator = false) {
     $cookie = $_COOKIE[$check_impersonator ? SN_COOKIE_I : SN_COOKIE];
 
@@ -548,14 +556,9 @@ class auth_local extends sn_module {
     } else {
       list($REAL_account_id_unsafe_was_user, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $cookie);
     }
-    // $this->data[F_REMEMBER_ME_SAFE] = intval($user_remember_me);
     $this->remember_me = intval($user_remember_me);
 
-    // $REAL_account_id_safe_was_user = round(floatval($REAL_account_id_unsafe_was_user));
     $account = $this->db_account_get_by_id($REAL_account_id_unsafe_was_user);
-
-//    $account_id_unsafe = $this->db_account_id_by_provider_user($REAL_account_id_safe_was_user);
-//    $account = $this->db_account_by_id($account_id_unsafe);
 
     if(!empty($account) && ($this->password_encode_for_cookie($account['account_password']) == $cookie_password_hash_salted)) {
       $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
@@ -572,7 +575,7 @@ class auth_local extends sn_module {
    *
    * @return int Результат попытки
    */
-  // OK v4
+  // OK v4.1
   function login_cookie() {
     if($this->data[F_LOGIN_STATUS] != LOGIN_UNDEFINED) {
       return $this->data[F_LOGIN_STATUS];
@@ -602,7 +605,7 @@ class auth_local extends sn_module {
    *
    * @return mixed
    */
-  // OK v4
+  // OK v4.1
   function login_username() {
     // TODO - Логин по старым именам
     try {
@@ -619,7 +622,7 @@ class auth_local extends sn_module {
 
       $this->login_validate_input();
 
-      $account = $this->db_account_get_by_name_safe($this->input_login_safe);
+      $account = $this->db_account_get_by_name($this->input_login_unsafe);
       if(empty($account)) {
         throw new Exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
       }
@@ -631,7 +634,7 @@ class auth_local extends sn_module {
 
       $this->data[F_ACCOUNT] = $account;
 
-      $this->cookie_set();
+      $this->account_cookie_set();
       $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
     } catch(Exception $e) {
       $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
@@ -662,10 +665,10 @@ class auth_local extends sn_module {
    *
    * @return bool
    */
-  // OK v4
+  // OK v4.1
   // TODO - должен устанавливать куку исходя из пользователя, что бы пользователь мог логинится
   // TODO - или ставить мультикуку - хотя нахуя, спрашивается
-  function cookie_set() {
+  function account_cookie_set() {
     // $expire_time = $this->data[F_REMEMBER_ME_SAFE] ? SN_TIME_NOW + PERIOD_YEAR : 0;
     $expire_time = $this->remember_me ? SN_TIME_NOW + PERIOD_YEAR : 0;
 
@@ -682,7 +685,7 @@ class auth_local extends sn_module {
    *
    * @return bool
    */
-  // OK v4
+  // OK v4.1
   public function is_feature_supported($feature) {
     return !empty($this->features[$feature]);
   }
@@ -693,7 +696,7 @@ class auth_local extends sn_module {
    *
    * @throws Exception
    */
-  // OK v4
+  // OK v4.1
   function login_validate_input() {
     // Проверяем, что бы в начале и конце не было пустых символов
     // TODO - при копировании Эксель -> Опера - в конце образуются пустые места. Это не должно быть проблемой! Вынести проверку пароля в регистрацию!
@@ -710,7 +713,7 @@ class auth_local extends sn_module {
    *
    * @throws Exception
    */
-  // OK v4
+  // OK v4.1
   function register_validate_input() {
     // То, что не подходит для логина - не подходит и для регистрации
     $this->login_validate_input();
@@ -750,6 +753,7 @@ class auth_local extends sn_module {
       throw new Exception(REGISTER_ERROR_EMAIL_WRONG, ERR_ERROR);
     }
   }
+
   // OK v4
   function password_encode_for_cookie($password) {
     return md5("{$password}--" . classSupernova::$sn_secret_word);

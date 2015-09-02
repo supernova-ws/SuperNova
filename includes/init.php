@@ -264,7 +264,7 @@ if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > 
 
 
 global $user;
-auth::login($result);
+$result = auth::login();
 
 
 if(!empty(auth::$providers_authorised) && empty(auth::$user['id'])) {

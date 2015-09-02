@@ -9,7 +9,7 @@ define("DEBUG_AUTH", true);
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.13#
+ * version #40a10.14#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.13# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.14# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -34,6 +34,13 @@ class auth extends sn_module {
    * @var RequestInfo
    */
   static $device;
+
+  /**
+   * БД из которой читать данные
+   *
+   * @var db_mysql $db
+   */
+  static $db;
 
   /**
    * Статус инициализации
@@ -130,18 +137,20 @@ class auth extends sn_module {
    *
    * @throws Exception
    */
-  // OK v4
+  // OK v4.1
   public static function db_player_name_check_existence($player_name_unsafe) {
     sn_db_transaction_check(true);
-    $player_name_safe = db_escape($player_name_unsafe);
-    $player_name_exists = doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
+
+    $player_name_safe = static::$db->db_escape($player_name_unsafe);
+
+    $player_name_exists = static::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
     if(!empty($player_name_exists)) {
       throw new Exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
     }
   }
-  // OK v4
+  // OK v4.1
   static function db_player_get_max_id() {
-    $max_user_id = doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{user}}`", true);
+    $max_user_id = static::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{user}}`", true);
     return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
   }
 
@@ -156,9 +165,9 @@ class auth extends sn_module {
    *
    * @return array|resource
    */
-  // OK v4
+  // OK v4.0 - неправильные параметры
   static function db_translate_register_user($provider_id_safe, $provider_account_id_safe, $user_id_safe) {
-    return doquery(
+    return static::$db->doquery(
       "INSERT INTO `{{account_translate}}` (`provider_id`, `provider_account_id`, `user_id`) VALUES
                   ({$provider_id_safe}, {$provider_account_id_safe}, {$user_id_safe});"
     );
@@ -171,7 +180,7 @@ class auth extends sn_module {
    *
    * @return array
    */
-  // OK v4
+  // OK v4.1
   // TODO - возможно, это должен делать провайдер - иметь свой транслятор. Наверное - кэширующий
   static function db_get_account_translation_from_account_list($provider_id_unsafe, $account_list) {
     $provider_id_safe = intval($provider_id_unsafe);
@@ -181,8 +190,8 @@ class auth extends sn_module {
     foreach($account_list as $provider_account_id_unsafe) {
       $provider_account_id_safe = intval($provider_account_id_unsafe);
 
-      $query = doquery("SELECT `user_id` FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe} FOR UPDATE");
-      while($row = db_fetch($query)) {
+      $query = static::$db->doquery("SELECT `user_id` FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe} FOR UPDATE");
+      while($row = static::$db->db_fetch($query)) {
         $account_translation[$row['user_id']][$provider_id_safe] = $row;
       }
     }
@@ -193,31 +202,31 @@ class auth extends sn_module {
 
 
   static function db_confirmation_get_latest_by_email_and_type($email_safe, $confirmation_type_safe) {
-    return doquery(
+    return static::$db->doquery(
       "SELECT * FROM {{confirmations}} WHERE
           `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}' ORDER BY create_time DESC LIMIT 1;", true);
   }
   static function db_confirmation_delete_by_email_and_type($email_safe, $confirmation_type_safe) {
-    return doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}';");
+    return static::$db->doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}';");
   }
   static function db_confirmation_get_unique_code_by_type_on_email($confirmation_type_safe, $email_safe) {
     do {
       // Ну, если у нас > 999.999.999 подтверждений - тут нас ждут проблемы...
-      $confirm_code_safe = db_escape($confirm_code_unsafe = self::make_password_reset_code());
-      $query = doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
+      $confirm_code_safe = static::$db->db_escape($confirm_code_unsafe = self::make_password_reset_code());
+      $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
     } while($query);
 
-    doquery(
+    static::$db->doquery(
       "REPLACE INTO {{confirmations}}
         SET `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
   }
   static function db_confirmation_get_by_type_and_code($confirmation_type_safe, $confirmation_code_safe) {
-    return doquery(
+    return static::$db->doquery(
       "SELECT * FROM {{confirmations}} WHERE
           `type` = {$confirmation_type_safe} AND `code` = '{$confirmation_code_safe}' ORDER BY create_time DESC LIMIT 1;", true);
   }
   static function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_safe) {
-    return doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'");
+    return static::$db->doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'");
   }
 
 
@@ -225,9 +234,10 @@ class auth extends sn_module {
   static function db_security_entry_insert() {
     $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
 
-    return doquery(
+    return static::$db->doquery(
       "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
-        VALUES ({$user_id}," . self::$device->device_id . "," . self::$device->browser_id . "," . self::$device->ip_v4_int . ", '" . db_escape(self::$device->ip_v4_proxy_chain) . "');"
+        VALUES ({$user_id}," . self::$device->device_id . "," . self::$device->browser_id . "," .
+          self::$device->ip_v4_int . ", '" . static::$db->db_escape(self::$device->ip_v4_proxy_chain) . "');"
     );
   }
 
@@ -238,10 +248,10 @@ class auth extends sn_module {
 
     if(!$sys_stop_log_hit && $config->game_counter) {
       $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
-      $proxy_safe = db_escape(self::$device->ip_v4_proxy_chain);
+      $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
 
       $is_watching = true;
-      doquery(
+      static::$db->doquery(
         "INSERT INTO {{counter}}
           (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
         VALUES
@@ -257,13 +267,15 @@ class auth extends sn_module {
    * Статическая инициализация
    */
   // OK v4
-  public static function init() {
+  public static function init($db = null) {
     global $sn_module_list;
 
     // В этой точке все модули уже прогружены и инициализированы по 1 экземпляру
     if(self::$is_init) {
       return;
     }
+
+    self::$db = !is_object($db) ? classSupernova::$db : $db;
 
     if(empty($sn_module_list['auth'])) {
       die('{Не обнаружено ни одного провайдера авторизации!}');
@@ -326,7 +338,7 @@ class auth extends sn_module {
       // TODO - дописать эксепшнов в процедуре создания игрока
       self::$user = player_create($player_name_unsafe, $player_email, array(
         'partner_id' => $partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id')),
-        'language_iso' => db_escape($player_language),
+        'language_iso' => static::$db->db_escape($player_language),
         // 'password_encoded_unsafe' => $this->data[F_ACCOUNT]['account_password'],
         // 'salt' => $this->data[F_ACCOUNT]['account_salt'],
       ));
@@ -382,7 +394,6 @@ class auth extends sn_module {
     // Если у нас провайдеры не дают имени и пользователь не дал свой вариант - это у нас первый логин в игру
     if(!self::$player_suggested_name) {
       $max_user_id = self::db_player_get_max_id();
-      $max_user_id = $max_user_id['max_user_id'];
       // TODO - предлагать имя игрока по локали
       self::$player_suggested_name = 'Emperor ' . mt_rand($max_user_id + 1, $max_user_id + 1000);
     } else {
@@ -400,7 +411,7 @@ class auth extends sn_module {
    * @param null $result
    */
   // OK v4
-  public static function login(&$result = null) {
+  public static function login() {
     !self::$is_init ? self::init() : false;
 
     self::$login_status = LOGIN_UNDEFINED;
@@ -529,7 +540,7 @@ class auth extends sn_module {
 
     self::make_return_array();
 
-    return $result = self::$hidden;
+    return self::$hidden;
   }
 
   /**
@@ -616,7 +627,7 @@ class auth extends sn_module {
 
     foreach(self::$providers_authorised as $provider_id => $provider) {
       if($provider->is_feature_supported(AUTH_FEATURE_HAS_PASSWORD)) {
-        $result = $result || $provider->auth_password_check($old_password_unsafe);
+        $result = $result || $provider->account_password_check($old_password_unsafe);
       }
     }
 
@@ -729,7 +740,7 @@ class auth extends sn_module {
         }
       }
 
-      $email_safe = db_escape($email_unsafe);
+      $email_safe = static::$db->db_escape($email_unsafe);
 
       $confirmation = static::db_confirmation_get_latest_by_email_and_type($email_safe, CONFIRM_PASSWORD_RESET);
       if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
@@ -807,7 +818,7 @@ class auth extends sn_module {
           // Меняем пароль на всех аккаунтах
           foreach($account_list as $account_id => $account_data) {
             // TODO оно не меняет данных внутри аккаунта. Наверное, это верно...
-            $provider_result = $provider->password_set_by_id_and_old_password($account_id, $new_password_unsafe, $salt);
+            $provider_result = $provider->account_password_set_by_id($account_id, $new_password_unsafe, $salt);
             if($provider_result) {
 
               // TODO Логиним этого пользователя
@@ -844,7 +855,7 @@ class auth extends sn_module {
       }
 
       // TODO - эксэпшн при ошибке
-      static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, db_escape($confirmation['email']));
+      static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, static::$db->db_escape($confirmation['email']));
 
       sn_db_transaction_commit();
       sys_redirect('overview.php');
@@ -861,10 +872,7 @@ class auth extends sn_module {
    */
   // OK v4
   static function make_return_array() {
-    global $config, $sys_stop_log_hit, $is_watching;
-
-    // $ip = sec_player_ip();
-    // $ip_int_safe = self::$device->ip_v4_int;
+    global $config;
 
     $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
     // if(!empty($user_id) && !$user_impersonator) {
@@ -872,23 +880,7 @@ class auth extends sn_module {
     self::db_security_entry_insert();
 
     if($user_id && !self::$is_impersonating) {
-//      doquery(
-//        "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
-//        VALUES ({$user_id}," . self::$device->device_id . "," . self::$device->browser_id . "," . self::$device->ip_v4_int . ", '{$proxy_safe}');"
-//      );
-
       self::db_counter_insert();
-
-//      if(!$sys_stop_log_hit && $config->game_counter) {
-//        $is_watching = true;
-//        doquery(
-//          "INSERT INTO {{counter}}
-//          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
-//        VALUES
-//          ('" . SN_TIME_SQL. "', {$user_id}, " . self::$device->device_id . "," . self::$device->browser_id . ", " .
-//          self::$device->ip_v4_int . ", '{$proxy_safe}', " . self::$device->page_address_id . ", " . self::$device->page_url_id . ");");
-//        $is_watching = false;
-//      }
 
       $user = &self::$user;
 
@@ -905,11 +897,11 @@ class auth extends sn_module {
       self::$hidden[F_BANNED_STATUS] = $user['banaday'];
       self::$hidden[F_VACATION_STATUS] = $user['vacation'];
 
-      $proxy_safe = db_escape(self::$device->ip_v4_proxy_chain);
+      $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
 
       db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ",
-      `banaday` = " . db_escape($user['banaday']) . ", `vacation` = " . db_escape($user['vacation']) . ",
-      `user_lastip` = '" . db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$device->browser_id
+      `banaday` = " . static::$db->db_escape($user['banaday']) . ", `vacation` = " . static::$db->db_escape($user['vacation']) . ",
+      `user_lastip` = '" . static::$db->db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$device->browser_id
       );
     }
 
@@ -1037,62 +1029,5 @@ class auth extends sn_module {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//  static function db_confirmation_set($account_id_safe, $confirmation_type_safe, $email_safe) {
-//    $confirmation = $this->db_confirmation_by_account_id($account_id_safe, CONFIRM_PASSWORD_RESET);
-//    if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
-//      throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN);
-//    }
-//
-//    // TODO - уникальный индекс по id_user и type - и делать не INSERT, а REPLACE
-//    // Удаляем предыдущие записи продтверждения сброса пароля
-//    !empty($confirmation['id']) or doquery("DELETE FROM {{confirmations}} WHERE `id` = '{$confirmation['id']}' LIMIT 1;");
-//
-//    do {
-//      // Ну, если у нас > 999.999.999 подтверждений - тут нас ждут проблемы...
-//      $confirm_code_safe = db_escape($confirm_code_unsafe = sys_random_string(LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH, SN_SYS_SEC_CHARS_CONFIRMATION));
-//      $query = doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe}", true);
-//    } while($query);
-//    doquery(
-//      "REPLACE INTO {{confirmations}}
-//        SET `provider_id` = {$this->manifest['provider_id']}, `account_id` = '{$account_id_safe}',
-//        `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
-//    return $confirm_code_unsafe;
-//  }
-
-//  /**
-//   * Возвращает трансляцию аккаунта у провайдера в разрезе пользователь-провайдер
-//   *
-//   * @param $provider_id_safe
-//   * @param $provider_account_id_safe
-//   *
-//   * @return array
-//   */
-//  // OK v4
-//  // TODO - ФУНКЦИОНАЛЬНЫЙ ДУБЛИКАТ db_get_account_translation_from_account_list() ??
-//  protected static function db_translate_get_user_list_on_provider($provider_id_safe, $provider_account_id_safe) {
-//    $local_user_to_provider_list = array();
-//
-//    $query = doquery("SELECT * FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe}");
-//    while($row = db_fetch($query)) {
-//      $local_user_to_provider_list[$row['user_id']][$provider_id_safe] = $row;
-//    }
-//
-//    return $local_user_to_provider_list;
-//  }
-//
-
 
 }
