@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.6# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.15# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -48,6 +48,8 @@ class sn_module {
   );
 
   protected $config = array();
+
+  protected $module_full_class_path = __FILE__;
 
   function __assign_vars() {
     return array(

@@ -9,7 +9,7 @@ define("DEBUG_AUTH", true);
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.14#
+ * version #40a10.15#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.14# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.15# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -128,6 +128,13 @@ class auth extends sn_module {
    */
   static $is_password_reset_confirm = false;
 
+  /**
+   * Максимальный локальный уровень авторизации игрока
+   *
+   * @var int
+   */
+  static $auth_level_max_local = AUTH_LEVEL_ANONYMOUS;
+
 
 
   /**
@@ -182,6 +189,8 @@ class auth extends sn_module {
    */
   // OK v4.1
   // TODO - возможно, это должен делать провайдер - иметь свой транслятор. Наверное - кэширующий
+
+  // TODO - Здесь могут отсутствовать аккаунты - проверять провайдером
   static function db_get_account_translation_from_account_list($provider_id_unsafe, $account_list) {
     $provider_id_safe = intval($provider_id_unsafe);
     !is_array($account_list) ? $account_list = array($account_list) : false;
@@ -192,7 +201,7 @@ class auth extends sn_module {
 
       $query = static::$db->doquery("SELECT `user_id` FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe} FOR UPDATE");
       while($row = static::$db->db_fetch($query)) {
-        $account_translation[$row['user_id']][$provider_id_safe] = $row;
+        $account_translation[$row['user_id']][$provider_id_safe][$provider_account_id_unsafe] = true;
       }
     }
 
@@ -232,8 +241,13 @@ class auth extends sn_module {
 
 
   static function db_security_entry_insert() {
-    $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
+    // TODO $user_id = !empty(self::$user['id']) ? self::$user['id'] : 'NULL';
+    if(!($user_id = !empty(self::$user['id']) ? self::$user['id'] : 0)) {
+      self::flog('Нет ИД пользователя');
+      return true;
+    }
 
+    self::flog('Вставляем запись системы безопасности');
     return static::$db->doquery(
       "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
         VALUES ({$user_id}," . self::$device->device_id . "," . self::$device->browser_id . "," .
@@ -373,6 +387,9 @@ class auth extends sn_module {
   public static function register_player() {
     // Есть хотя бы один удачно залогинившийся аккаунт. Но у него/них нету ни одного связанного аккаунта
 
+    // TODO ВСЕГДА ПРЕДЛАГАТЬ РЕГАТЬ ИГРОКА ИЛИ ПОДКЛЮЧИТЬ ИМЕЮЩЕГОСЯ!
+    // TODO - НЕ РЕГАТЬ ИГРОКА ТОЛЬКО ЕСЛИ МЫ ТОЛЬКО ЧТО ЗАРЕГЕСТРИРОВАЛИ НОВЫЙ АККАУНТ! ДЛЯ ЭТОГО ДОЛЖЕН БЫТЬ СПЕЦИАЛЬНЫЙ ФЛАГ!
+
     // TODO Сначала пробовать зарегестрировать игрока с тем же именем - что бы избежать лишнего шага
     // TODO в auth_local делать проверку БД на существование имени игрока в локальной БД - что бы избежать лишнего шага (см.выше)
     // TODO Хотя тут может получится вечный цикл - ПОДУМАТЬ
@@ -430,12 +447,11 @@ class auth extends sn_module {
     global $lang, $config;
 
     // Максимальный уровень авторизации всех записей игроков, к которым аккаунты имеют доступ
-    $local_max_auth_level = AUTH_LEVEL_ANONYMOUS;
     $local_user_to_provider_list = array(); // Локальная переменная
 
     foreach(self::$providers as $provider_id => $provider) {
-      self::flog(($provider->manifest['name'] . '->' . 'login_try') . (empty($provider->data[F_ACCOUNT]['account_id']) ? $lang['sys_login_messages'][$provider->data[F_LOGIN_STATUS]] : dump($provider->data)));
       $login_status = $provider->login_try();
+      self::flog(($provider->manifest['name'] . '->' . 'login_try - ') . (empty($provider->data[F_ACCOUNT]['account_id']) ? $lang['sys_login_messages'][$provider->data[F_LOGIN_STATUS]] : dump($provider->data)));
       if($login_status == LOGIN_SUCCESS && $provider->data[F_ACCOUNT]['account_id']) {
         self::$providers_authorised[$provider_id] = &self::$providers[$provider_id];
 
@@ -481,7 +497,8 @@ class auth extends sn_module {
             unset($local_user_to_provider_list[$user_id]);
           } else {
             self::$accessible_user_row_list[$user['id']] = $user;
-            $local_max_auth_level = max($local_max_auth_level, $user['authlevel']);
+            // $local_max_auth_level = max($local_max_auth_level, $user['authlevel']);
+            self::$auth_level_max_local = max(self::$auth_level_max_local, $user['authlevel']);
           }
         }
         unset($user);
@@ -505,9 +522,9 @@ class auth extends sn_module {
             // Или есть доступ через имперсонейт
             || (
               // Максимальные права всех доступных записей игроков - не ниже администраторских
-              $local_max_auth_level >= AUTH_LEVEL_ADMINISTRATOR
+              self::$auth_level_max_local >= AUTH_LEVEL_ADMINISTRATOR
               // И права игрока, в которого пытаются зайти - меньше текущих максимальных прав
-              && self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]['authlevel'] < $local_max_auth_level
+              && self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]['authlevel'] < self::$auth_level_max_local
             )
           )
         ) {
@@ -524,6 +541,22 @@ class auth extends sn_module {
           self::$user = reset(self::$accessible_user_row_list);
         }
         // Тут ВСЕГДА есть self::$user
+
+        //Прописываем текущего игрока на все авторизированные аккаунты
+        if(!self::$is_impersonating) {
+          foreach(self::$providers_authorised as $provider_id => $provider) {
+            if(empty($local_user_to_provider_list[self::$user['id']][$provider_id])) {
+              self::db_translate_register_user($provider_id, $provider->data[F_ACCOUNT]['account_id'], self::$user['id']);
+              $local_user_to_provider_list[self::$user['id']][$provider_id][$provider->data[F_ACCOUNT]['account_id']] = true;
+            }
+//pdump(empty($local_user_to_provider_list[self::$user['id']][$provider_id]), $provider_id);
+            // static::db_get_account_translation_from_account_list($provider_id, $provider->data[F_ACCOUNT]['account_id'])
+
+          }
+//pdump(self::$providers_authorised);
+//pdump($local_user_to_provider_list);
+//die();
+        }
       } else {
         // Нет ни одного игрока ни на одном авторизированном аккаунте
         // Надо регать нового игрока
@@ -536,11 +569,7 @@ class auth extends sn_module {
     // IF ????????
     // ELSE Либо есть self::$user, либо идем на новый круг авторизации
 
-    // die('Before set cookie');
-
-    self::make_return_array();
-
-    return self::$hidden;
+    return self::make_return_array();
   }
 
   /**
@@ -663,7 +692,7 @@ class auth extends sn_module {
       }
       if($provider_result) {
         $account_translation = self::db_get_account_translation_from_account_list($provider_id, $provider->data[F_ACCOUNT]['account_id']);
-        foreach($account_translation as $user_id) {
+        foreach($account_translation as $user_id => $provider_info) {
           msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN,
             $lang['sys_administration'], $lang['sys_login_register_message_title'],
             sprintf($lang['sys_login_register_message_body'], $provider->data[F_ACCOUNT]['account_name'], $new_password_unsafe), false //true
@@ -796,7 +825,7 @@ class auth extends sn_module {
         throw new Exception(PASSWORD_RESET_ERROR_CODE_TOO_OLD, ERR_ERROR);
       }
 
-      $account_translation = array();
+      // $account_translation = array();
 
       $result = false;
       $new_password_unsafe = self::make_random_password();
@@ -809,10 +838,10 @@ class auth extends sn_module {
           $account_list = $provider->db_account_list_get_on_email($confirmation['email']);
 
           // Получаем список юзеров на этом аккаунте
-          $this_provider_translation = self::db_get_account_translation_from_account_list($provider_id, array_keys($account_list));
-          if(!empty($this_provider_translation)) {
-            $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
-          }
+          // $this_provider_translation = self::db_get_account_translation_from_account_list($provider_id, array_keys($account_list));
+          // if(!empty($this_provider_translation)) {
+            // $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
+          // }
 
           // TODO - это всё надо перенести в провайдера!
           // Меняем пароль на всех аккаунтах
@@ -927,6 +956,8 @@ class auth extends sn_module {
 
     //TODO Сол и Парол тоже вкинуть в хидден
     self::$hidden[F_ACCOUNTS_AUTHORISED] = self::$providers_authorised;
+
+    return self::$hidden;
   }
 
 

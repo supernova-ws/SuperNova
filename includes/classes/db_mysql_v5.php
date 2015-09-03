@@ -35,7 +35,7 @@ class db_mysql_v5 {
     }
 
     if(empty($settings) || !is_array($settings) || array_intersect($need_keys, array_keys($settings)) != $need_keys) {
-      $debug->error_fatal('There is missconfiguration in your config.php. Check it again', $this->mysql_error());
+      $debug->error_fatal('There is missconfiguration in your config.php. Check it again');
     }
 
 //    @$this->link = mysql_connect($settings['server'], $settings['user'], $settings['pass']);
@@ -63,6 +63,8 @@ class db_mysql_v5 {
   }
 
   function mysql_query($query_string) {
+if(!is_object($this->link))
+pdump(debug_backtrace());
     return $this->link->query($query_string);
   }
   function mysql_fetch_assoc(&$query) {

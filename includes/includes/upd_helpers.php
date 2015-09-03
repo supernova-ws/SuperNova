@@ -12,10 +12,10 @@ function upd_do_query($query, $no_log = false) {
     upd_log_message("Performing query '{$query}'");
   }
 
-  classSupernova::$db->sn_db_connect();
+  // classSupernova::$db->sn_db_connect();
   if(!(strpos($query, '{{') === false)) {
     foreach($update_tables as $tableName => $cork) {
-      $query = str_replace("{{{$tableName}}}", classSupernova::$db_prefix . $tableName, $query);
+      $query = str_replace("{{{$tableName}}}", classSupernova::$db->db_prefix . $tableName, $query);
     }
   }
   $result = classSupernova::$db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
@@ -161,7 +161,7 @@ function upd_create_table($table_name, $declaration) {
     }
     upd_do_query('set foreign_key_checks = 1;', true);
     upd_load_table_info($table_name, false);
-    sys_refresh_tablelist($config->db_prefix);
+    sys_refresh_tablelist();
   }
 
   return $result;

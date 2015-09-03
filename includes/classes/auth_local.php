@@ -7,9 +7,9 @@
 class auth_local extends sn_module {
   public $manifest = array(
     'package' => 'auth',
-    'name' => 'basic',
+    'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.14# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.15# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -20,6 +20,8 @@ class auth_local extends sn_module {
     'active' => true,
 
     'provider_id' => ACCOUNT_PROVIDER_LOCAL,
+
+    'class_path' => __FILE__,
   );
   public $login_methods_supported = array(
     // 'login_cookie' => 'login_cookie',
@@ -49,6 +51,7 @@ class auth_local extends sn_module {
   protected $input_language_unsafe = '';
   protected $input_language_safe = '';
 
+  // protected $module_full_class_path = __FILE__;
 
   /**
    * Флаг регистрации
@@ -69,7 +72,10 @@ class auth_local extends sn_module {
    */
   public $db;
 
-
+  protected $domain = null;
+  protected $sn_root_path = null;
+  protected $cookie_name = SN_COOKIE;
+  protected $secret_word = '';
 
 //  Пока не будем с этим заморачиваться. Будут юниттесты - будем плакать. А так - только лишний гемморой
 //  /**
@@ -93,14 +99,19 @@ class auth_local extends sn_module {
 //    $this->auth = $auth;
 //  }
 //
-  public function set_database($db) {
-    $this->db = $db;
+  public function set_database($db = null) {
+    $this->db = is_object($db) ? $db : classSupernova::$db;
   }
 
-  function __construct($db = null) {
-    parent::__construct(__FILE__);
+  function __construct($db = null, $filename = __FILE__) {
+    parent::__construct($filename);
 
     $this->db = is_object($db) ? $db : classSupernova::$db;
+
+    $this->domain = null;
+    $this->sn_root_path = SN_ROOT_RELATIVE;
+    $this->cookie_name = SN_COOKIE;
+    $this->secret_word = classSupernova::$sn_secret_word;
   }
 
 
@@ -389,20 +400,6 @@ class auth_local extends sn_module {
     $this->login_username();
     $this->login_cookie();
 
-//    switch($method_name) {
-//      // TODO - сделать workflow без break;
-//      case 'register':
-//        $this->register();
-//        break;
-//      case 'login_username':
-//        $this->login_username();
-//        break;
-//      case 'login_cookie':
-//        $this->login_cookie();
-//        break;
-//
-//    }
-
     return $this->data[F_LOGIN_STATUS];
   }
 
@@ -528,11 +525,11 @@ class auth_local extends sn_module {
   // OK v4.1
   function cookie_clear($only_impersonator = null) {
     // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
-    if(!empty($_COOKIE[SN_COOKIE_I])) {
-      sn_setcookie(SN_COOKIE, $_COOKIE[SN_COOKIE_I], SN_TIME_NOW + PERIOD_YEAR, SN_ROOT_RELATIVE);
-      sn_setcookie(SN_COOKIE_I, '', SN_TIME_NOW - PERIOD_WEEK, SN_ROOT_RELATIVE);
+    if(!empty($_COOKIE[$this->cookie_name . '_I'])) {
+      sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name . '_I'], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
+      sn_setcookie($this->cookie_name . '_I', '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
     } else {
-      sn_setcookie(SN_COOKIE, '', SN_TIME_NOW - PERIOD_WEEK, SN_ROOT_RELATIVE);
+      sn_setcookie($this->cookie_name, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
     }
   }
 
@@ -544,7 +541,7 @@ class auth_local extends sn_module {
    */
   // OK v4.1
   function cookie_get_account($check_impersonator = false, $is_impersonator = false) {
-    $cookie = $_COOKIE[$check_impersonator ? SN_COOKIE_I : SN_COOKIE];
+    $cookie = $_COOKIE[$this->cookie_name . ($check_impersonator ? '_I' : '')];
 
     if(empty($cookie)) {
       // Тут делать ничего не надо. Куки нет - и суда нет
@@ -585,11 +582,11 @@ class auth_local extends sn_module {
 //    $provider_impersonator = new auth_local();
 //    $this->data[F_IMPERSONATE_STATUS] = $provider_impersonator->impersonate_check_cookie($this);
     // Пытаемся войти по куке
-    if(empty($_COOKIE[SN_COOKIE])) {
+    if(empty($_COOKIE[$this->cookie_name])) {
       // Ошибка кукеса или не найден пользователь по кукесу
       $this->cookie_clear();
       // Если это был корректный имперсонатор - просто выходим и редиректимся в админку
-      if(!empty($_COOKIE[SN_COOKIE])) {
+      if(!empty($_COOKIE[$this->cookie_name])) {
         sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
       }
     } else {
@@ -675,7 +672,7 @@ class auth_local extends sn_module {
     $password_encoded = $this->password_encode_for_cookie($this->data[F_ACCOUNT]['account_password']);
     $cookie = $this->data[F_ACCOUNT]['account_id'] . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . $this->remember_me;
     $this->flog("cookie_set() - Устанавливаем куку {$cookie}");
-    return sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
+    return sn_setcookie($this->cookie_name, $cookie, $expire_time, $this->sn_root_path, $this->domain);
   }
 
   /**
@@ -756,7 +753,7 @@ class auth_local extends sn_module {
 
   // OK v4
   function password_encode_for_cookie($password) {
-    return md5("{$password}--" . classSupernova::$sn_secret_word);
+    return md5("{$password}--" . $this->secret_word);
   }
   // OK v4
   function password_encode($password, $salt) {
@@ -771,7 +768,27 @@ class auth_local extends sn_module {
     return auth::password_salt_generate();
   }
   function flog($message, $die = false) {
-    auth::flog($message, $die);
+    if(!defined('DEBUG_AUTH') || !DEBUG_AUTH) {
+      return;
+    }
+    list($called, $caller) = debug_backtrace(false);
+
+    $caller_name =
+      ((get_called_class()) ? get_called_class() : (!empty($caller['class']) ? $caller['class'] : '')) .
+      (!empty($caller['type']) ? $caller['type'] : '') .
+      (!empty($caller['function']) ? $caller['function'] : '') .
+      (!empty($called['line']) ? ':' . $called['line'] : '');
+
+//     $real_caller_class = get_called_class();
+
+    $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
+
+    classSupernova::log_file("$message - $caller_name");
+    if($die) {
+      // pdump($caller);
+      // pdump(debug_backtrace(false));
+      $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
+    }
   }
 
 }

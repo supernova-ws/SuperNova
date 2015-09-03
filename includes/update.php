@@ -34,9 +34,10 @@ global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $u
 
 $config->reset();
 $config->db_loadAll();
-$config->db_prefix = classSupernova::$db_prefix; // Оставить пока для совместимости
+$config->db_prefix = classSupernova::$db->db_prefix; // Оставить пока для совместимости
 $config->cache_prefix = classSupernova::$cache_prefix;
 $config->debug = 0;
+
 
 //$config->db_loadItem('db_version');
 if($config->db_version == DB_VERSION) {
@@ -1080,7 +1081,7 @@ if($user['authlevel'] >= 3) {
 }
 */
 unset($sn_cache->tables);
-sys_refresh_tablelist($config->db_prefix);
+sys_refresh_tablelist();
 
 upd_log_message('Restoring server status');
 $config->db_saveItem('game_disable', $old_server_status);

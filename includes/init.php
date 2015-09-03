@@ -262,6 +262,7 @@ if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > 
 }
 
 
+//pdump($sn_module);die();
 
 global $user;
 $result = auth::login();
@@ -369,7 +370,7 @@ if($sys_user_logged_in && INITIAL_PAGE == 'login') {
 
 if(!$allow_anonymous && !$sys_user_logged_in) {
 // die('Редирект на фход');
-  sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
+  // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 

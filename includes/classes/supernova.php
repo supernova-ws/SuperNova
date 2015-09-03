@@ -16,7 +16,7 @@ class classSupernova {
    * @var string
    */
   public static $cache_prefix = '';
-  public static $db_prefix = '';
+  // public static $db_prefix = '';
   public static $sn_secret_word = '';
 
   /**
@@ -1267,8 +1267,8 @@ class classSupernova {
     $dbsettings = array();
 
     require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
-    self::$db_prefix = $dbsettings['prefix'];
-    self::$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : self::$db_prefix;
+    //self::$db_prefix = $dbsettings['prefix'];
+    self::$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : $dbsettings['prefix'];
     self::$db_name = $dbsettings['name'];
     self::$sn_secret_word = $dbsettings['secretword'];
     unset($dbsettings);
@@ -1283,7 +1283,7 @@ class classSupernova {
 
     // Initializing global 'cacher' object
     $sn_cache = new classCache(classSupernova::$cache_prefix);
-    empty($sn_cache->tables) && sys_refresh_tablelist(classSupernova::$db_prefix);
+    empty($sn_cache->tables) && sys_refresh_tablelist();
     empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
 
     // Initializing global "config" object
