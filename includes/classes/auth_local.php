@@ -9,7 +9,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.15# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.16# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -23,11 +23,36 @@ class auth_local extends sn_module {
 
     'class_path' => __FILE__,
   );
-  public $login_methods_supported = array(
-    // 'login_cookie' => 'login_cookie',
-    // 'login_username' => 'login_username',
-    // 'register_username' => 'register_username',
-  );
+
+  /**
+   * Флаг регистрации
+   *
+   * @var bool
+   */
+  public $is_register = false;
+  /**
+   * Нужно ли запоминать креденшиался при выходе из браузера
+   *
+   * @var bool
+   */
+  public $remember_me = 1;
+  // TODO - private ??
+  public $user = null;
+
+  // TODO - должны быть PRIVATE
+  public $data = array();
+
+  /**
+   * Статус входа аккаунта в игру
+   *
+   * @var int
+   */
+  public $account_login_status = LOGIN_UNDEFINED;
+
+
+
+
+
   protected $features = array(
     AUTH_FEATURE_EMAIL_CHANGE => AUTH_FEATURE_EMAIL_CHANGE,
     AUTH_FEATURE_PASSWORD_RESET => AUTH_FEATURE_PASSWORD_RESET,
@@ -35,11 +60,11 @@ class auth_local extends sn_module {
     AUTH_FEATURE_HAS_PASSWORD => AUTH_FEATURE_HAS_PASSWORD,
   );
 
-  // TODO - private ??
-  public $user = null;
-
-  // TODO - должны быть PRIVATE
-  public $data = array();
+  /**
+   * @var db_mysql $db
+   */
+  // Should be PROTECTED
+  public $db;
 
   /**
    * @var string $input_login_unsafe
@@ -51,31 +76,16 @@ class auth_local extends sn_module {
   protected $input_language_unsafe = '';
   protected $input_language_safe = '';
 
-  // protected $module_full_class_path = __FILE__;
-
-  /**
-   * Флаг регистрации
-   *
-   * @var bool
-   */
-  public $is_register = false;
-
-  /**
-   * Нужно ли запоминать креденшиался при выходе из браузера
-   *
-   * @var bool
-   */
-  public $remember_me = 1;
-
-  /**
-   * @var db_mysql $db
-   */
-  public $db;
-
   protected $domain = null;
   protected $sn_root_path = null;
   protected $cookie_name = SN_COOKIE;
   protected $secret_word = '';
+
+//  public $login_methods_supported = array(
+//    // 'login_cookie' => 'login_cookie',
+//    // 'login_username' => 'login_username',
+//    // 'register_username' => 'register_username',
+//  );
 
 //  Пока не будем с этим заморачиваться. Будут юниттесты - будем плакать. А так - только лишний гемморой
 //  /**
@@ -364,7 +374,7 @@ class auth_local extends sn_module {
 
     $this->data = array(
       // F_PROVIDER_ID => $this->manifest['provider_id'],
-      F_LOGIN_STATUS => LOGIN_UNDEFINED,
+      // F_LOGIN_STATUS => LOGIN_UNDEFINED,
       F_IMPERSONATE_STATUS => LOGIN_UNDEFINED,
       F_IMPERSONATE_OPERATOR => null,
       // F_INPUT => array(
@@ -400,7 +410,7 @@ class auth_local extends sn_module {
     $this->login_username();
     $this->login_cookie();
 
-    return $this->data[F_LOGIN_STATUS];
+    return $this->account_login_status;
   }
 
 
@@ -410,16 +420,16 @@ class auth_local extends sn_module {
   // OK v4.1
   public function login_internal() {
     try {
-      $this->data[F_LOGIN_STATUS] = LOGIN_UNDEFINED;
+      $this->account_login_status = LOGIN_UNDEFINED;
       $this->remember_me = true;
       $this->account_cookie_set();
       $this->login_cookie();
     } catch(Exception $e) {
       // sn_db_transaction_rollback();
-      $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
+      $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
     }
 
-    return $this->data[F_LOGIN_STATUS];
+    return $this->account_login_status;
   }
 
 
@@ -456,7 +466,7 @@ class auth_local extends sn_module {
       $this->data[F_ACCOUNT] = $this->db_account_get_by_id($account_id);
 
       // Устанавливать не надо - мы дальше пойдем по workflow
-      $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
+      $this->account_login_status = LOGIN_SUCCESS;
       $this->account_cookie_set();
 
       // А вот это пока не нужно. Трансляцией аккаунтов в юзеров и созданием новых юзеров для новозашедших аккаунтов занимается Auth
@@ -464,10 +474,10 @@ class auth_local extends sn_module {
       sn_db_transaction_commit();
     } catch(Exception $e) {
       sn_db_transaction_rollback();
-      $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
+      $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
     }
 
-    return $this->data[F_LOGIN_STATUS];
+    return $this->account_login_status;
   }
 
 
@@ -498,7 +508,7 @@ class auth_local extends sn_module {
    */
   // TODO - ПЕРЕДЕЛАТЬ Должен работать со списком аккаунтов
   // OK v4.1
-  function real_password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
+  function password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
     if(!$this->account_password_check($old_password_unsafe)) {
       return false;
     }
@@ -523,47 +533,23 @@ class auth_local extends sn_module {
    * Очищает куку аккаунта - совсем или восстанавливая куку текущего имперсонатора
    */
   // OK v4.1
-  function cookie_clear($only_impersonator = null) {
+  function cookie_clear() {
     // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
     if(!empty($_COOKIE[$this->cookie_name . '_I'])) {
       sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name . '_I'], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
       sn_setcookie($this->cookie_name . '_I', '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
+      // Если это был корректный имперсонатор - просто выходим и редиректимся в админку
+      if(!empty($_COOKIE[$this->cookie_name])) {
+        sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
+      }
     } else {
+//print('<hr>');
+//pdump(get_called_class());
+//pdump($this->domain);
+//pdump($this->sn_root_path);
+//print('<hr>');
+// die();
       sn_setcookie($this->cookie_name, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
-    }
-  }
-
-  /**
-   * Получает аккаунт по данным куки
-   *
-   * @param bool|false $check_impersonator
-   * @param bool|false $is_impersonator
-   */
-  // OK v4.1
-  function cookie_get_account($check_impersonator = false, $is_impersonator = false) {
-    $cookie = $_COOKIE[$this->cookie_name . ($check_impersonator ? '_I' : '')];
-
-    if(empty($cookie)) {
-      // Тут делать ничего не надо. Куки нет - и суда нет
-      return;
-    }
-
-    if(count(explode("/%/", $cookie)) < 4) {
-      list($REAL_account_id_unsafe_was_user, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $cookie);
-    } else {
-      list($REAL_account_id_unsafe_was_user, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $cookie);
-    }
-    $this->remember_me = intval($user_remember_me);
-
-    $account = $this->db_account_get_by_id($REAL_account_id_unsafe_was_user);
-
-    if(!empty($account) && ($this->password_encode_for_cookie($account['account_password']) == $cookie_password_hash_salted)) {
-      $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
-
-      $this->data[F_ACCOUNT] = $account;
-      // $this->data[F_ACCOUNT_ID] = $this->data[F_ACCOUNT]['account_id'];
-    } else {
-      // А ничего не делать. Здесь невалидная кука - может позже будет валидной
     }
   }
 
@@ -572,28 +558,35 @@ class auth_local extends sn_module {
    *
    * @return int Результат попытки
    */
-  // OK v4.1
+  // OK v4.2
   function login_cookie() {
-    if($this->data[F_LOGIN_STATUS] != LOGIN_UNDEFINED) {
-      return $this->data[F_LOGIN_STATUS];
+    if($this->account_login_status != LOGIN_UNDEFINED) {
+      return $this->account_login_status;
     }
 
-//    global $provider_impersonator;
-//    $provider_impersonator = new auth_local();
-//    $this->data[F_IMPERSONATE_STATUS] = $provider_impersonator->impersonate_check_cookie($this);
     // Пытаемся войти по куке
-    if(empty($_COOKIE[$this->cookie_name])) {
-      // Ошибка кукеса или не найден пользователь по кукесу
-      $this->cookie_clear();
-      // Если это был корректный имперсонатор - просто выходим и редиректимся в админку
-      if(!empty($_COOKIE[$this->cookie_name])) {
-        sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
+    if(!empty($_COOKIE[$this->cookie_name])) {
+      if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
+        list($account_id_unsafe, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $_COOKIE[$this->cookie_name]);
+      } else {
+        list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
       }
-    } else {
-      $this->cookie_get_account();
+
+      $account = $this->db_account_get_by_id($account_id_unsafe);
+
+      if(!empty($account) && ($this->password_encode_for_cookie($account['account_password']) == $cookie_password_hash_salted)) {
+        $this->account_login_status = LOGIN_SUCCESS;
+        $this->remember_me = intval($user_remember_me);
+        $this->data[F_ACCOUNT] = $account;
+      }
     }
 
-    return $this->data[F_LOGIN_STATUS];
+    if($this->account_login_status != LOGIN_SUCCESS) {
+      // Невалидная кука - чистим
+      $this->cookie_clear();
+    }
+
+    return $this->account_login_status;
   }
 
 
@@ -632,12 +625,12 @@ class auth_local extends sn_module {
       $this->data[F_ACCOUNT] = $account;
 
       $this->account_cookie_set();
-      $this->data[F_LOGIN_STATUS] = LOGIN_SUCCESS;
+      $this->account_login_status = LOGIN_SUCCESS;
     } catch(Exception $e) {
-      $this->data[F_LOGIN_STATUS] == LOGIN_UNDEFINED ? $this->data[F_LOGIN_STATUS] = $e->getMessage() : false;
+      $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
     }
 
-    return $this->data[F_LOGIN_STATUS];
+    return $this->account_login_status;
   }
 
   function logout_do() {

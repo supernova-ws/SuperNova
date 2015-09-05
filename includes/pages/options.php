@@ -139,8 +139,7 @@ function sn_options_model() {
       sn_db_transaction_commit();
     }
 
-    $new_password = sys_get_param('newpass1');
-    if($new_password) {
+    if($new_password = sys_get_param('newpass1')) {
       try {
         if($new_password != sys_get_param('newpass2')) {
           throw new Exception($lang['opt_err_pass_unmatched'], ERR_WARNING);

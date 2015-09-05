@@ -273,12 +273,23 @@ db_get_account_translation_from_account_list() - может возвращать
 
 Переделать GeoIP под использование CENTRAL
 
+Нельзя транспортировать ресы на И-шки
 
-ИЗБАВИТЬСЯ ОТ auth::$hidden
 ИЗБАВИТЬСЯ ОТ auth_local->data
+
+На первом этапе - логгирование всех входов в админку
 
 
 #ctv
+
+
+2015-09-05 16:14:04 40a10.16 - authV4 Alpha 4.2 - auth_central
+[!] Авторизация
+    Избавились от F_LOGIN_STATUS в классах
+    Избавились от auth::$hidden
+    $user_id_to_provider теперь свойство auth
+    $auth_level_max_local теперь свойство auth
+    Почищен и немного переупорядочен код
 
 
 2015-09-03 21:28:08 40a10.15 - authV4 Альфа3.3 - подготовка к auth_central
