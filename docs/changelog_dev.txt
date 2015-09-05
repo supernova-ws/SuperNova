@@ -283,6 +283,11 @@ db_get_account_translation_from_account_list() - может возвращать
 #ctv
 
 
+2015-09-05 17:07:15 40a10.17
+[+] UBEv4
+    Добавлена поддержка Режима Рубилова в отчётах
+
+
 2015-09-05 16:14:04 40a10.16 - authV4 Alpha 4.2 - auth_central
 [!] Авторизация
     Избавились от F_LOGIN_STATUS в классах

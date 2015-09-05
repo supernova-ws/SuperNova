@@ -130,7 +130,9 @@ function sn_ube_report_save(&$combat_data)
 
       `ube_report_moon_reapers` = " . (int)$outcome[UBE_MOON_REAPERS] . ",
       `ube_report_moon_destroy_chance` = " . (int)$outcome[UBE_MOON_DESTROY_CHANCE] . ",
-      `ube_report_moon_reapers_die_chance` = " . (int)$outcome[UBE_MOON_REAPERS_DIE_CHANCE] . "
+      `ube_report_moon_reapers_die_chance` = " . (int)$outcome[UBE_MOON_REAPERS_DIE_CHANCE] . ",
+
+      `ube_report_capture_result` = " . (int)$outcome[UBE_CAPTURE_RESULT] . "
   ");
   $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
 
@@ -320,6 +322,8 @@ function sn_ube_report_load($report_cypher)
       UBE_MOON_REAPERS => $report_row['ube_report_moon_reapers'],
       UBE_MOON_DESTROY_CHANCE => $report_row['ube_report_moon_destroy_chance'],
       UBE_MOON_REAPERS_DIE_CHANCE => $report_row['ube_report_moon_reapers_die_chance'],
+
+      UBE_CAPTURE_RESULT => $report_row['ube_report_capture_result'],
 
       UBE_ATTACKERS => array(),
       UBE_DEFENDERS => array(),
@@ -655,6 +659,9 @@ function sn_ube_report_generate(&$combat_data, &$template_result)
     'UBE_MOON_REAPERS_NONE' => UBE_MOON_REAPERS_NONE,
     'UBE_MOON_DESTROY_SUCCESS' => UBE_MOON_DESTROY_SUCCESS,
     'UBE_MOON_REAPERS_RETURNED' => UBE_MOON_REAPERS_RETURNED,
+
+    'UBE_CAPTURE_RESULT' => $combat_data[UBE_OUTCOME][UBE_CAPTURE_RESULT],
+    'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$combat_data[UBE_OUTCOME][UBE_CAPTURE_RESULT]],
 
     'UBE_SFR' => $outcome[UBE_SFR],
     'UBE_COMBAT_RESULT' => $outcome[UBE_COMBAT_RESULT],

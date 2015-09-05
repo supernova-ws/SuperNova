@@ -1,6 +1,6 @@
 <table>
   <tr>
-    <td class="c_c transparent_cell" colspan="3">
+    <td class="c_c transparent_cell" colspan="3" style="padding-top: 1em;">
       <h2>{L_ube_report_info_main}</h2>
     </td>
   </tr>
@@ -122,12 +122,23 @@
   <!-- ENDIF -->
 
 
-
-
-
-<!-- IF .loot > 0 -->
+  <!-- IF UBE_CAPTURE_RESULT -->
   <tr>
-    <td class="c_c transparent_cell" colspan="3">
+    <td class="c_c transparent_cell" colspan="3" style="padding-top: 1em;">
+      <h2>{L_ube_report_capture}</h2>
+    </td>
+  </tr>
+  <tr style="padding-bottom: 1em;">
+    <td class="c_c" colspan="3">
+      <h3 style="word-wrap: normal;">{UBE_CAPTURE_RESULT_TEXT}</h3>
+    </td>
+  </tr>
+  <!-- ENDIF -->
+
+
+  <!-- IF .loot > 0 -->
+  <tr>
+    <td class="c_c transparent_cell" colspan="3" style="padding-top: 1em;">
       <h2>{L_ube_report_info_loot}</h2>
     </td>
   <tr>
@@ -181,7 +192,7 @@
 
 <!-- IF .loss > 1 -->
   <tr>
-    <td class="c_c transparent_cell" colspan="3">
+    <td class="c_c transparent_cell" colspan="3" style="padding-top: 1em;">
       <h2>{L_ube_report_info_loss}</h2>
     </td>
   <tr>

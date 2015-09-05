@@ -23,5 +23,3 @@ function sn_battle_report_view($template = null)
 
   return $template;
 }
-
-?>

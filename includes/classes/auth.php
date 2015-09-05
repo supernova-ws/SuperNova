@@ -1,6 +1,6 @@
 <?php
 
-define("DEBUG_AUTH", true);
+// define("DEBUG_AUTH", true);
 
 /**
  * Статический над-класс, который обеспечивает интерфейс авторизации для остального кода
@@ -9,7 +9,7 @@ define("DEBUG_AUTH", true);
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.16#
+ * version #40a10.17#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.16# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.17# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',

@@ -1058,6 +1058,9 @@ switch($new_version) {
     // 2015-08-31 12:34:21 40a10.8
     upd_do_query('UPDATE {{planets}} SET `diameter` = SQRT(`field_max`) * 1000 WHERE `diameter` > 1000000');
 
+    // 2015-09-05 17:07:15 40a10.17
+    upd_alter_table('ube_report', "ADD COLUMN `ube_report_capture_result` tinyint unsigned NOT NULL DEFAULT " . UBE_CAPTURE_DISABLED, empty($update_tables['ube_report']['ube_report_capture_result']));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

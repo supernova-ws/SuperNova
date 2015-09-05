@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a10.4#
+* @version #40a10.17#
 *
 */
 
@@ -875,6 +875,20 @@ $a_lang_array = (array(
   'ube_report_msg_body_common' => 'Бой состоялся %s на орбите %s [%d:%d:%d] %s<br />%s<br /><br />',
   'ube_report_msg_body_debris' => 'В результат боя на орбите планеты образовались обломки:<br />',
   'ube_report_msg_body_sfr' => 'Связь с флотом утеряна',
+
+  'ube_report_capture' => 'Захват планеты',
+  'ube_report_capture_result' => array(
+    UBE_CAPTURE_DISABLED => 'Захват планет отключён',
+    UBE_CAPTURE_NON_PLANET => 'Захватывать можно только планеты',
+    UBE_CAPTURE_NOT_A_WIN => 'Бой закончился не победой',
+    UBE_CAPTURE_TOO_MUCH_FLEETS => 'При захвате планеты в бою должен участвовать только флот-захватчик и планетарный флот',
+    UBE_CAPTURE_NO_ATTACKER_USER_ID => 'ВНУТРЕННЯЯ ОШИБКА - Нет ИД атакующего! Сообщите разработчику!',
+    UBE_CAPTURE_NO_DEFENDER_USER_ID => 'ВНУТРЕННЯЯ ОШИБКА - Нет ИД защитника! Сообщите разработчику!',
+    UBE_CAPTURE_CAPITAL => 'Нельзя захватывать столицу',
+    UBE_CAPTURE_TOO_LOW_POINTS => 'Можно захватывать планеты только у игроков, чье общее количество очков не менее чем в 2 раза больше количество очков у атакующего',
+    UBE_CAPTURE_NOT_ENOUGH_SLOTS => 'Больше нет слотов захвата планеты',
+    UBE_CAPTURE_SUCCESSFUL => 'Планета захвачена атакующим игроком',
+  ),
 
   'sys_kilometers_short' => 'км',
 

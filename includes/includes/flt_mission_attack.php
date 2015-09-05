@@ -38,11 +38,11 @@ function flt_mission_attack($mission_data, $save_report = true) {
 
   sn_ube_combat($combat_data);
 
+  flt_planet_capture($fleet_row, $combat_data);
+
   sn_ube_report_save($combat_data);
 
   ube_combat_result_apply($combat_data);
-
-  flt_planet_capture($fleet_row, $combat_data);
 
   sn_ube_message_send($combat_data);
 
