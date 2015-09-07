@@ -51,7 +51,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.17');
+define('SN_VERSION', '40a10.19');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1189,7 +1189,7 @@ define('UBE_DEBRIS_TOTAL', 'UBE_DEBRIS_TOTAL');
 define('UBE_CAPTURE_RESULT', 'UBE_CAPTURE_RESULT');
 define('UBE_CAPTURE_DISABLED', 0);
 define('UBE_CAPTURE_NON_PLANET', 1);
-define('UBE_CAPTURE_NOT_A_WIN', 2);
+define('UBE_CAPTURE_NOT_A_WIN_IN_1_ROUND', 2);
 define('UBE_CAPTURE_TOO_MUCH_FLEETS', 3);
 define('UBE_CAPTURE_NO_ATTACKER_USER_ID', 4);
 define('UBE_CAPTURE_NO_DEFENDER_USER_ID', 5);

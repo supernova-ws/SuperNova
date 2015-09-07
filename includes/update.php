@@ -1061,6 +1061,9 @@ switch($new_version) {
     // 2015-09-05 17:07:15 40a10.17
     upd_alter_table('ube_report', "ADD COLUMN `ube_report_capture_result` tinyint unsigned NOT NULL DEFAULT " . UBE_CAPTURE_DISABLED, empty($update_tables['ube_report']['ube_report_capture_result']));
 
+    // 2015-09-07 21:11:48 40a10.19
+    upd_alter_table('security_url', "MODIFY COLUMN `url_string` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''", empty($update_tables['security_url']['ube_report_capture_result']));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

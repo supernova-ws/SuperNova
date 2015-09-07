@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a10.17#
+* @version #40a10.19#
 *
 */
 
@@ -880,7 +880,7 @@ $a_lang_array = (array(
   'ube_report_capture_result' => array(
     UBE_CAPTURE_DISABLED => 'Захват планет отключён',
     UBE_CAPTURE_NON_PLANET => 'Захватывать можно только планеты',
-    UBE_CAPTURE_NOT_A_WIN => 'Бой закончился не победой',
+    UBE_CAPTURE_NOT_A_WIN_IN_1_ROUND => 'Для захвата планеты бой должен закончиться победой в первом раунде',
     UBE_CAPTURE_TOO_MUCH_FLEETS => 'При захвате планеты в бою должен участвовать только флот-захватчик и планетарный флот',
     UBE_CAPTURE_NO_ATTACKER_USER_ID => 'ВНУТРЕННЯЯ ОШИБКА - Нет ИД атакующего! Сообщите разработчику!',
     UBE_CAPTURE_NO_DEFENDER_USER_ID => 'ВНУТРЕННЯЯ ОШИБКА - Нет ИД защитника! Сообщите разработчику!',
