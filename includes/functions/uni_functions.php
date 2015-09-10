@@ -1,50 +1,6 @@
 <?php
 
-/**
- * @param int        $Galaxy
- * @param int        $System
- * @param int        $Position
- * @param int        $PlanetOwnerID
- * @param string     $planet_name_unsafe
- * @param bool|false $HomeWorld
- * @param array      $options
- *
- * @return bool
- */
-function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = array()) {
-  $Position = intval($Position);
-
-  if(!isset($options['skip_check']) && db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
-    return false;
-  }
-
-  $user_row = !empty($options['user_row']) && is_array($options['user_row']) ? $options['user_row'] : null;
-
-  global $lang, $config;
-
-  $planet_generator = sn_get_groups('planet_generator');
-  $planet_images = sn_get_groups('planet_images');
-
-  $position_data = $planet_generator[$Position >= UNIVERSE_RANDOM_PLANET_START || $Position < 1 ? UNIVERSE_RANDOM_PLANET_START : $Position];
-  if($HomeWorld) {
-    $position_data = $planet_generator[0];
-  } else {
-    if($Position >= UNIVERSE_RANDOM_PLANET_START) {
-      // Корректируем температуру для планеты-странника
-      $position_data['t_max_max'] -= UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE * ($Position - UNIVERSE_RANDOM_PLANET_START);
-    }
-  }
-
-  $planet_image = $position_data['planet_images'][mt_rand(0, count($position_data['planet_images']) - 1)];
-  $planet_image .= 'planet' . $planet_images[$planet_image][mt_rand(0, count($planet_images[$planet_image]) - 1)];
-
-  $t_max = sn_rand_gauss_range($position_data['t_max_min'], $position_data['t_max_max'], true, 1.3, true);
-  $t_min = $t_max - sn_rand_gauss_range($position_data['t_delta_min'], $position_data['t_delta_max'], true, 1.3, true);
-
-  $planet_sectors = sn_rand_gauss_range($position_data['size_min'], $position_data['size_max'], true, 1.7, true);
-//  $planet_diameter = round(pow($planet_sectors, 2) * 1000);
-  $planet_diameter = round(sqrt($planet_sectors) * 1000);
-
+function uni_create_planet_get_density($position_data, $user_row, $planet_sectors) {
   $density_list = sn_get_groups('planet_density');
   $density_min = reset($density_list);
   unset($density_list[PLANET_DENSITY_NONE]);
@@ -62,11 +18,12 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
       // Limit core type with planet sector count
       && $planet_sectors < $density_list[$possible_core_id][UNIT_PLANET_DENSITY_MAX_SECTORS]
       // Limit core type with player AstroTech level
-      && (!$user_row || mrc_get_level($user, null, TECH_ASTROTECH) >= $density_list[$possible_core_id][UNIT_PLANET_DENSITY_MIN_ASTROTECH])
+      && (empty($user_row) || mrc_get_level($user_row, null, TECH_ASTROTECH) >= $density_list[$possible_core_id][UNIT_PLANET_DENSITY_MIN_ASTROTECH])
     ) {
       // Фильтруем типы ядер, которые не подходят по размеру планеты
       $probability += $density_list[$possible_core_id][UNIT_PLANET_DENSITY_RARITY];
       $possible_cores[$possible_core_id] = array(
+        UNIT_PLANET_DENSITY_INDEX => $possible_core_id,
         UNIT_PLANET_DENSITY_RARITY => $probability,
         UNIT_PLANET_DENSITY => mt_rand($density_min[UNIT_PLANET_DENSITY], $density_list[$possible_core_id][UNIT_PLANET_DENSITY] - 1),
       );
@@ -75,14 +32,66 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   }
 
   $random = mt_rand(1, $probability);
+  $selected_core = null;
   foreach($possible_cores as $core_type => $core_info) {
-    if($random <= $core_info[UNIT_PLANET_DENSITY_RARITY]) break;
+    if($random <= $core_info[UNIT_PLANET_DENSITY_RARITY]) {
+      $selected_core = $core_info;
+      break;
+    }
   }
 
-  $density_info_resources = &$density_list[$core_type][UNIT_RESOURCES];
+  return $selected_core;
+}
 
-  $OwnerName = db_user_by_id($PlanetOwnerID, false, 'username');
-  $planet_name_unsafe = $OwnerName['username'] . ' ' . ($planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname']);
+/**
+ * @param int        $Galaxy
+ * @param int        $System
+ * @param int        $Position
+ * @param int        $PlanetOwnerID
+ * @param string     $planet_name_unsafe
+ * @param bool|false $HomeWorld
+ * @param array      $options
+ *
+ * @return bool
+ */
+function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = array()) {
+  global $lang, $config;
+
+  $Position = intval($Position);
+
+  if(!isset($options['skip_check']) && db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
+    return false;
+  }
+
+  $user_row = !empty($options['user_row']) && is_array($options['user_row']) ? $options['user_row'] : db_user_by_id($PlanetOwnerID);
+
+
+  $planet_generator = sn_get_groups('planet_generator');
+
+  if($HomeWorld) {
+    $position_data = $planet_generator[0];
+  } else {
+    $position_data = $planet_generator[$Position >= UNIVERSE_RANDOM_PLANET_START || $Position < 1 ? UNIVERSE_RANDOM_PLANET_START : $Position];
+    if($Position >= UNIVERSE_RANDOM_PLANET_START) {
+      // Корректируем температуру для планеты-странника
+      $position_data['t_max_max'] -= UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE * ($Position - UNIVERSE_RANDOM_PLANET_START);
+    }
+  }
+
+  $planet_images = sn_get_groups('planet_images');
+  $planet_image = $position_data['planet_images'][mt_rand(0, count($position_data['planet_images']) - 1)];
+  $planet_image .= 'planet' . $planet_images[$planet_image][mt_rand(0, count($planet_images[$planet_image]) - 1)];
+
+  $t_max = sn_rand_gauss_range($position_data['t_max_min'], $position_data['t_max_max'], true, 1.3, true);
+  $t_min = $t_max - sn_rand_gauss_range($position_data['t_delta_min'], $position_data['t_delta_max'], true, 1.3, true);
+
+  $planet_sectors = sn_rand_gauss_range($position_data['size_min'], $position_data['size_max'], true, 1.7, true);
+//  $planet_diameter = round(pow($planet_sectors, 2) * 1000);
+  $planet_diameter = round(sqrt($planet_sectors) * 1000);
+
+  $core_info = uni_create_planet_get_density($position_data, $user_row, $planet_sectors);
+
+  $planet_name_unsafe = $user_row['username'] . ' ' . ($planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname']);
 
   $planet['name'] = db_escape(strip_tags(trim($planet_name_unsafe)));
   $planet['id_owner']    = $PlanetOwnerID;
@@ -97,7 +106,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['diameter'] = $planet_diameter;
   $planet['field_max'] = $planet['field_max_original'] = $planet_sectors;
   $planet['density'] = $core_info[UNIT_PLANET_DENSITY];
-  $planet['density_index'] = $core_type;
+  $planet['density_index'] = $core_info[UNIT_PLANET_DENSITY_INDEX];
   $planet['temp_min'] = $planet['temp_min_original'] = $t_min;
   $planet['temp_max'] = $planet['temp_max_original'] = $t_max;
 
@@ -107,6 +116,8 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['metal_max']         = $config->eco_planet_storage_metal;
   $planet['crystal_max']       = $config->eco_planet_storage_crystal;
   $planet['deuterium_max']     = $config->eco_planet_storage_deuterium;
+
+  $density_info_resources = &$density_list[$core_info[UNIT_PLANET_DENSITY_INDEX]][UNIT_RESOURCES];
   $planet['metal_perhour']     = $config->metal_basic_income * $density_info_resources[RES_METAL];
   $planet['crystal_perhour']   = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
   $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
