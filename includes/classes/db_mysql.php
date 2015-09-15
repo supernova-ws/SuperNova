@@ -74,7 +74,6 @@ class db_mysql {
     }
 
     if(empty($this->dbsettings)) {
-      $this->db_disconnect();
       $this->load_db_settings();
     }
 

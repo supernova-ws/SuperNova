@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.17#
+ * version #40a10.21#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.17# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.21# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -40,6 +40,23 @@ class auth extends sn_module {
    * @var RequestInfo
    */
   static $device;
+  /**
+   * Аккаунт ????
+   *
+   * @var null|auth_local
+   */
+  static $account = null;
+  /**
+   * Запись текущего игрока из `users`
+   *
+   * @var null
+   */
+  static $user = null;
+
+  /**
+   * @var auth_local
+   */
+  public static $main_provider = null;
 
   /**
    * Статус инициализации
@@ -67,18 +84,6 @@ class auth extends sn_module {
    */
   static $player_suggested_name = '';
 
-  /**
-   * Аккаунт ????
-   *
-   * @var null|auth_local
-   */
-  static $account = null;
-  /**
-   * Запись текущего игрока из `users`
-   *
-   * @var null
-   */
-  static $user = null;
   /**
    * Список полностью авторизированных аккаунтов с LOGIN_SUCCESS
    *
@@ -130,6 +135,146 @@ class auth extends sn_module {
   static $auth_level_max_local = AUTH_LEVEL_ANONYMOUS;
 
 
+  /**
+   * @param string $filename
+   */
+  public function __construct($filename = __FILE__) {
+    parent::__construct($filename);
+
+    self::$main_provider = new auth_local();
+  }
+
+  /**
+   * Функция пытается залогиниться по всем известным провайдерам
+   *
+   * @param null $result
+   */
+  // OK v4.5
+  public static function login() {
+    global $lang;
+
+    !self::$is_init ? self::init() : false;
+
+    self::auth_reset(); // OK v4.5
+
+    !empty($_POST) ? self::flog(dump($_POST, '$_POST')) : false;
+    !empty($_GET) ? self::flog(dump($_GET, '$_GET')) : false;
+    !empty($_COOKIE) ? self::flog(dump($_COOKIE,'$_COOKIE')) : false;
+
+    foreach(self::$providers as $provider_id => $provider) {
+      $login_status = $provider->login(); // OK v4.5
+      self::flog(($provider->manifest['name'] . '->' . 'login_try - ') . (empty($provider->account->account_id) ? $lang['sys_login_messages'][$provider->account_login_status] : dump($provider)));
+      if($login_status == LOGIN_SUCCESS && $provider->account->account_id) {
+        self::$providers_authorised[$provider_id] = &self::$providers[$provider_id];
+
+        self::$user_id_to_provider = array_replace_recursive(
+          self::$user_id_to_provider,
+          static::db_translate_get_users_from_account_list($provider_id, $provider->account->account_id) // OK 4.5
+        );
+      } elseif($login_status != LOGIN_UNDEFINED) {
+        self::$account_error_list[$provider_id] = $login_status;
+      }
+    }
+
+    // TODO - 4.6 - Все провайдеры возвращают Account
+
+    if(empty(self::$providers_authorised)) {
+      // Ни один аккаунт не авторизирован
+      // Проверяем - есть ли у нас ошибки в аккаунтах?
+      if(!empty(self::$account_error_list)) {
+        // Если есть - выводим их
+        self::$login_status = reset(self::$account_error_list);
+      } else {
+        // Иначе - это первый запуск страницы. ИЛИ СПЕЦИАЛЬНОЕ ДЕЙСТВИЕ!
+        self::password_reset_send_code(); // 4.5
+        // TODO - Проверить. На этом этапе могут быть уже ошибки отсылки пароля!
+
+        self::password_reset_confirm(); // 4.5 // Если успешно - сюда мы не вернемся, а уйдём на редирект
+      }
+    } else {
+      self::user_check_access(); // 4.5
+
+      // Остались ли у нас в списке доступные игроки?
+      if(!empty(self::$accessible_user_row_list)) {
+        // Да, есть доступные игроки, которые так же прописаны в базе
+
+        // Проверяем куку "текущего игрока" из браузера
+        self::user_check_cookie(); // 4.5
+
+        // В куке нет валидного ИД записи игрока, доступной с текущих аккаунтов
+        if(empty(self::$user['id'])) {
+          // Берем первого из доступных
+          // TODO - default_user
+          self::$user = reset(self::$accessible_user_row_list);
+        }
+        // Тут ВСЕГДА есть self::$user
+
+        //Прописываем текущего игрока на все авторизированные аккаунты
+        // TODO - ИЛИ ВСЕХ ИГРОКОВ??
+        if(!self::$is_impersonating) {
+          foreach(self::$providers_authorised as $provider_id => $provider) {
+            if(empty(self::$user_id_to_provider[self::$user['id']][$provider_id])) {
+              self::db_translate_register_user($provider_id, $provider->account->account_id, self::$user['id']);
+              self::$user_id_to_provider[self::$user['id']][$provider_id][$provider->account->account_id] = true;
+            }
+          }
+        }
+
+      } else {
+        // Нет ни одного игрока ни на одном авторизированном аккаунте
+        // Надо регать нового игрока
+        self::register_player(); // OK 4.5
+        // Либо есть self::$user, либо идем на новый круг авторизации
+      }
+      // IF self::$user
+      // ELSE Либо есть self::$user, либо идем на новый круг авторизации
+    }
+    // IF ????????
+    // ELSE Либо есть self::$user, либо идем на новый круг авторизации
+
+    if(empty(self::$user['id'])) {
+      self::cookie_set(''); // OK 4.5
+    } elseif(self::$user['id'] != $_COOKIE[SN_COOKIE_U]) {
+      self::cookie_set(self::$user['id']); // OK 4.5
+    }
+
+    return self::make_return_array();
+  }
+
+  /**
+   * Логаут игрока и всех аккаунтов
+   *
+   * @param bool|string $redirect нужно ли сделать перенаправление после логаута
+   * <p><b>false</b> - не перенаправлять</p>
+   * <p><i><b>true</b></i> - перенаправить на главную страницу</p>
+   * <p><b>string</b> - перенаправить на указанный URL</p>
+   *
+   * @param bool $only_impersonator Если установлен - то логаут происходит только при имперсонации
+   */
+  // OK v4.2
+  static function logout($redirect = true) {
+    foreach(self::$providers as $provider_name => $provider) {
+      $provider->logout();
+    }
+    // TODO - IMPERSONATE - SN_COOKIE_U_I
+    if(!empty($_COOKIE[SN_COOKIE_U . '_I'])) {
+      // sn_setcookie(SN_COOKIE_U, $_COOKIE[SN_COOKIE_U . '_I'], SN_TIME_NOW + PERIOD_YEAR, SN_ROOT_RELATIVE);
+      self::cookie_set($_COOKIE[SN_COOKIE_U . '_I']);
+      // sn_setcookie(SN_COOKIE_U . '_I', '', SN_TIME_NOW - PERIOD_YEAR, SN_ROOT_RELATIVE);
+      self::cookie_set(0, true);
+    } else {
+      // sn_setcookie(SN_COOKIE_U, '', SN_TIME_NOW - PERIOD_YEAR, SN_ROOT_RELATIVE);
+      self::cookie_set(0);
+    }
+//die();
+
+    if($redirect === true) {
+      sys_redirect(SN_ROOT_RELATIVE . (empty($_COOKIE[SN_COOKIE_U]) ? 'login.php' : 'admin/overview.php'));
+    } elseif($redirect !== false) {
+      sys_redirect($redirect);
+    }
+  }
+
 
   /**
    * Функция проверяет наличие имени игрока в базе
@@ -149,7 +294,7 @@ class auth extends sn_module {
       throw new Exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
     }
   }
-  // OK v4.1
+  // OK v4.5
   static function db_player_get_max_id() {
     $max_user_id = static::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{user}}`", true);
     return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
@@ -166,7 +311,8 @@ class auth extends sn_module {
    *
    * @return array|resource
    */
-  // OK v4.0 - неправильные параметры
+  // OK v4.5
+  // TODO - неправильные параметры
   static function db_translate_register_user($provider_id_safe, $provider_account_id_safe, $user_id_safe) {
     return static::$db->doquery(
       "INSERT INTO `{{account_translate}}` (`provider_id`, `provider_account_id`, `user_id`) VALUES
@@ -175,17 +321,17 @@ class auth extends sn_module {
   }
   /**
    * Возвращает из `account_translate` список пользователей, которые прилинкованы к списку аккаунтов на указанном провайдере
+   * @version 4.5
    *
    * @param int $provider_id_unsafe Идентификатор провайдера авторизации
    * @param int|int[] $account_list
    *
    * @return array
    */
-  // OK v4.1
+  // OK v4.5
   // TODO - возможно, это должен делать провайдер - иметь свой транслятор. Наверное - кэширующий
-
-  // TODO - Здесь могут отсутствовать аккаунты - проверять провайдером
-  static function db_get_account_translation_from_account_list($provider_id_unsafe, $account_list) {
+  // TODO - protected
+  public static function db_translate_get_users_from_account_list($provider_id_unsafe, $account_list) {
     $account_translation = array();
 
     $provider_id_safe = intval($provider_id_unsafe);
@@ -194,9 +340,10 @@ class auth extends sn_module {
     foreach($account_list as $provider_account_id_unsafe) {
       $provider_account_id_safe = intval($provider_account_id_unsafe);
 
+      // TODO - Здесь могут отсутствовать аккаунты - проверять провайдером
       $query = static::$db->doquery("SELECT `user_id` FROM {{account_translate}} WHERE `provider_id` = {$provider_id_safe} AND `provider_account_id` = {$provider_account_id_safe} FOR UPDATE");
       while($row = static::$db->db_fetch($query)) {
-        $account_translation[$row['user_id']][$provider_id_safe][$provider_account_id_unsafe] = true;
+        $account_translation[$row['user_id']][$provider_id_unsafe][$provider_account_id_unsafe] = true;
       }
     }
 
@@ -205,72 +352,61 @@ class auth extends sn_module {
 
 
 
-  static function db_confirmation_get_latest_by_email_and_type($email_safe, $confirmation_type_safe) {
+  // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
+  // OK 4.5
+  protected static function db_confirmation_get_latest_by_type_and_email($confirmation_type_safe, $email_safe) {
     return static::$db->doquery(
       "SELECT * FROM {{confirmations}} WHERE
           `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}' ORDER BY create_time DESC LIMIT 1;", true);
   }
-  static function db_confirmation_delete_by_email_and_type($email_safe, $confirmation_type_safe) {
-    return static::$db->doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}';");
+  // OK 4.5
+  protected static function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_safe) {
+    return static::$db->doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'");
   }
-  static function db_confirmation_get_unique_code_by_type_on_email($confirmation_type_safe, $email_safe) {
+  // OK 4.5
+  protected static function db_confirmation_get_unique_code_by_type_and_email($confirmation_type_safe, $email_safe) {
     do {
-      // Ну, если у нас > 999.999.999 подтверждений - тут нас ждут проблемы...
+      // Ну, если у нас > 999.999 подтверждений - тут нас ждут проблемы...
       $confirm_code_safe = static::$db->db_escape($confirm_code_unsafe = self::make_password_reset_code());
-      $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
+      // $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
+      // Тип не нужен для проверки - код подтверждения должен быть уникален от слова "совсем"
+      $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE", true);
     } while($query);
 
     static::$db->doquery(
       "REPLACE INTO {{confirmations}}
         SET `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
+
+    return $confirm_code_unsafe;
   }
-  static function db_confirmation_get_by_type_and_code($confirmation_type_safe, $confirmation_code_safe) {
+  // OK 4.5
+  protected static function db_confirmation_get_by_type_and_code($confirmation_type_safe, $confirmation_code_safe) {
     return static::$db->doquery(
       "SELECT * FROM {{confirmations}} WHERE
           `type` = {$confirmation_type_safe} AND `code` = '{$confirmation_code_safe}' ORDER BY create_time DESC LIMIT 1;", true);
   }
-  static function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_safe) {
-    return static::$db->doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'");
+
+
+
+
+
+
+
+
+  /**
+   * Сбрасывает значения полей
+   */
+  // OK v4.5
+  protected static function auth_reset() {
+    self::$login_status = LOGIN_UNDEFINED;
+    self::$player_suggested_name = '';
+    self::$account = null;
+    self::$user = null;
+    self::$providers_authorised = array(); // Все аккаунты, которые успешно залогинились
+    self::$account_error_list = array(); // Статусы всех аккаунтов
+    self::$accessible_user_row_list = array();
+    self::$user_id_to_provider = array();
   }
-
-
-
-  static function db_security_entry_insert() {
-    // TODO $user_id = !empty(self::$user['id']) ? self::$user['id'] : 'NULL';
-    if(!($user_id = !empty(self::$user['id']) ? self::$user['id'] : 0)) {
-      self::flog('Нет ИД пользователя');
-      return true;
-    }
-
-    self::flog('Вставляем запись системы безопасности');
-    return static::$db->doquery(
-      "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
-        VALUES ({$user_id}," . self::$device->device_id . "," . self::$device->browser_id . "," .
-          self::$device->ip_v4_int . ", '" . static::$db->db_escape(self::$device->ip_v4_proxy_chain) . "');"
-    );
-  }
-
-
-
-  static function db_counter_insert() {
-    global $config, $sys_stop_log_hit, $is_watching;
-
-    if(!$sys_stop_log_hit && $config->game_counter) {
-      $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
-      $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
-
-      $is_watching = true;
-      static::$db->doquery(
-        "INSERT INTO {{counter}}
-          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
-        VALUES
-          ('" . SN_TIME_SQL. "', {$user_id}, " . self::$device->device_id . "," . self::$device->browser_id . ", " .
-        self::$device->ip_v4_int . ", '{$proxy_safe}', " . self::$device->page_address_id . ", " . self::$device->page_url_id . ");");
-      $is_watching = false;
-    }
-  }
-
-
 
   /**
    * Статическая инициализация
@@ -285,6 +421,9 @@ class auth extends sn_module {
     }
 
     self::$db = !is_object($db) ? classSupernova::$db : $db;
+
+//pdump(self::$main_provider);
+//pdump(array_keys($sn_module_list));
 
     if(empty($sn_module_list['auth'])) {
       die('{Не обнаружено ни одного провайдера авторизации!}');
@@ -301,7 +440,7 @@ class auth extends sn_module {
         // Провайдеры подготавливают для себя данные
         self::$providers[$module->manifest['provider_id']] = $module;
         // self::$providers[$module->manifest['provider_id']]->auth_manager_set(get_called_class());
-        self::$providers[$module->manifest['provider_id']]->prepare();
+        //self::$providers[$module->manifest['provider_id']]->prepare(); // protected method called in constructor
       }
     }
     self::$providers = array_reverse(self::$providers, true);
@@ -360,7 +499,8 @@ class auth extends sn_module {
 
       }
       // Установить куку игрока
-      sn_setcookie(SN_COOKIE_U, self::$user['id'], SN_TIME_NOW + PERIOD_YEAR);
+      // sn_setcookie(SN_COOKIE_U, self::$user['id'], SN_TIME_NOW + PERIOD_YEAR);
+      self::cookie_set(self::$user['id']);
 
       sn_db_transaction_commit();
       self::$login_status = LOGIN_SUCCESS;
@@ -397,7 +537,7 @@ class auth extends sn_module {
       self::$player_suggested_name = sys_get_param_str_unsafe('player_name');
     } else {
       foreach(self::$providers_authorised as $provider) {
-        if(self::$player_suggested_name = $provider->suggest_player_name()) {
+        if(self::$player_suggested_name = $provider->suggest_player_name()) { // OK 4.5
           break;
         }
       }
@@ -405,194 +545,84 @@ class auth extends sn_module {
 
     // Если у нас провайдеры не дают имени и пользователь не дал свой вариант - это у нас первый логин в игру
     if(!self::$player_suggested_name) {
-      $max_user_id = self::db_player_get_max_id();
+      $max_user_id = self::db_player_get_max_id(); // 4.5
       // TODO - предлагать имя игрока по локали
       self::$player_suggested_name = 'Emperor ' . mt_rand($max_user_id + 1, $max_user_id + 1000);
     } else {
-      self::register_player_db_create(self::$player_suggested_name);
+      self::register_player_db_create(self::$player_suggested_name); // OK 4.5
 //      if(self::$login_status != LOGIN_SUCCESS) {
 //        // TODO Ошибка при регистрации нового игрока под текущим именем
 //      }
     }
   }
 
-
   /**
-   * Функция пытается залогиниться по всем известным провайдерам
-   *
-   * @param null $result
+   * Проверяет доступ авторизированных аккаунтов к заявленным в трансляции юзерам
+   * @version 4.5
    */
-  // OK v4
-  public static function login() {
-    global $lang;
-
-    !self::$is_init ? self::init() : false;
-
-    self::$login_status = LOGIN_UNDEFINED;
-    self::$player_suggested_name = '';
-    self::$account = null;
-    self::$user = null;
-    self::$providers_authorised = array(); // Все аккаунты, которые успешно залогинились
-    self::$account_error_list = array(); // Статусы всех аккаунтов
-    self::$accessible_user_row_list = array();
-    self::$user_id_to_provider = array();
-
-    !empty($_POST) ? self::flog(dump($_POST, '$_POST')) : false;
-    !empty($_GET) ? self::flog(dump($_GET, '$_GET')) : false;
-    !empty($_COOKIE) ? self::flog(dump($_COOKIE,'$_COOKIE')) : false;
-
-    foreach(self::$providers as $provider_id => $provider) {
-      $login_status = $provider->login_try();
-      self::flog(($provider->manifest['name'] . '->' . 'login_try - ') . (empty($provider->data[F_ACCOUNT]['account_id']) ? $lang['sys_login_messages'][$provider->account_login_status] : dump($provider->data)));
-      if($login_status == LOGIN_SUCCESS && $provider->data[F_ACCOUNT]['account_id']) {
-        self::$providers_authorised[$provider_id] = &self::$providers[$provider_id];
-
-        self::$user_id_to_provider = array_replace_recursive(self::$user_id_to_provider,
-          static::db_get_account_translation_from_account_list($provider_id, $provider->data[F_ACCOUNT]['account_id'])
-        );
-      } elseif($login_status != LOGIN_UNDEFINED) {
-        self::$account_error_list[$provider_id] = $login_status;
-      }
+  // OK v4.5
+  protected static function user_check_access() {
+    if(empty(self::$user_id_to_provider)) {
+      return;
     }
 
-    if(empty(self::$providers_authorised)) {
-      // Ни один аккаунт не авторизирован
-      // Проверяем - есть ли у нас ошибки в аккаунтах?
-      if(!empty(self::$account_error_list)) {
-        // Если есть - выводим их
-        self::$login_status = reset(self::$account_error_list);
+    // Пробиваем все ИД игроков по базе - есть ли вообще такие записи. Вообще-то это не особо нужно - у нас по определению стоят констраинты
+    // Зато так мы узнаем максимальный authlevel и проверим права имперсонейта
+    foreach(self::$user_id_to_provider as $user_id => $cork) {
+      $user = db_user_by_id($user_id);
+      // Если записи игрока в БД не существует?
+      if(empty($user['id'])) {
+        // Удаляем этого и переходим к следующему
+        unset(self::$user_id_to_provider[$user_id]);
+        // TODO - де-регистрируем игрока из таблицы translate
       } else {
-        // Иначе - это первый запуск страницы. ИЛИ СПЕЦИАЛЬНОЕ ДЕЙСТВИЕ!
-        self::password_reset_send_code();
-        self::password_reset_confirm(); // Если успешно - сюда мы не вернемся, а уйдём на редирект
+        self::$accessible_user_row_list[$user['id']] = $user;
+        // $local_max_auth_level = max($local_max_auth_level, $user['authlevel']);
+        self::$auth_level_max_local = max(self::$auth_level_max_local, $user['authlevel']);
       }
-      // - значит у нас ошибка как минимум в локальном аккаунте - а то и в каком-то другом
-
-      // TODO - если в локальном аккаунте нет никаких данных - значит он должен возвращать LOGIN_UNDEFINED
-      // TODO - надо ли что-то делать?
-    } else {
-//pdump($local_user_to_provider_list, '$user_list');
-      if(!empty(self::$user_id_to_provider)) {
-        // $user_list не пустой
-
-        // Пробиваем все ИД игроков по базе - есть ли вообще такие записи. Вообще-то это не особо нужно - у нас по определению стоят констраинты
-        // Зато так мы узнаем максимальный authlevel и проверим права имперсонейта
-        foreach(self::$user_id_to_provider as $user_id => $cork) {
-          $user = db_user_by_id($user_id);
-          // Если записи игрока в БД не существует?
-          if(empty($user['id'])) {
-            // Удаляем этого и переходим к следующему
-            unset(self::$user_id_to_provider[$user_id]);
-            // TODO - де-регистрируем игрока из таблицы translate
-          } else {
-            self::$accessible_user_row_list[$user['id']] = $user;
-            // $local_max_auth_level = max($local_max_auth_level, $user['authlevel']);
-            self::$auth_level_max_local = max(self::$auth_level_max_local, $user['authlevel']);
-          }
-        }
-        unset($user);
-      }
-
-//pdump(self::$accessible_user_row_list,'self::$accessible_user_row_list');
-      // Остались ли у нас в списке доступные игроки?
-      if(!empty(self::$accessible_user_row_list)) {
-        // Да, есть доступные игроки, которые так же прописаны в базе
-
-        // Проверяем куку "текущего игрока" из браузера
-        if(
-          // Кука не пустая
-          ($_COOKIE[SN_COOKIE_U] = trim($_COOKIE[SN_COOKIE_U])) && !empty($_COOKIE[SN_COOKIE_U])
-          // И в куке находится ID
-          && is_id($_COOKIE[SN_COOKIE_U])
-          // И у аккаунтов есть права на данного игрока
-          && (
-            // Есть прямые права из `account_translate`
-            !empty(self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]])
-            // Или есть доступ через имперсонейт
-            || (
-              // Максимальные права всех доступных записей игроков - не ниже администраторских
-              self::$auth_level_max_local >= AUTH_LEVEL_ADMINISTRATOR
-              // И права игрока, в которого пытаются зайти - меньше текущих максимальных прав
-              && self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]['authlevel'] < self::$auth_level_max_local
-            )
-          )
-        ) {
-          // Берем текущим юзером юзера с ИД из куки
-          self::$is_impersonating = empty(self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]);
-          // self::$user = self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]];
-          self::$user = db_user_by_id($_COOKIE[SN_COOKIE_U]);
-        }
-
-        // В куке нет валидного ИД записи игрока, доступной с текущих аккаунтов
-        if(empty(self::$user['id'])) {
-          // Берем первого из доступных
-          // TODO - default_user
-          self::$user = reset(self::$accessible_user_row_list);
-        }
-        // Тут ВСЕГДА есть self::$user
-
-        //Прописываем текущего игрока на все авторизированные аккаунты
-        // TODO - ИЛИ ВСЕХ ИГРОКОВ??
-        if(!self::$is_impersonating) {
-          foreach(self::$providers_authorised as $provider_id => $provider) {
-            if(empty(self::$user_id_to_provider[self::$user['id']][$provider_id])) {
-              self::db_translate_register_user($provider_id, $provider->data[F_ACCOUNT]['account_id'], self::$user['id']);
-              self::$user_id_to_provider[self::$user['id']][$provider_id][$provider->data[F_ACCOUNT]['account_id']] = true;
-            }
-          }
-        }
-
-      } else {
-        // Нет ни одного игрока ни на одном авторизированном аккаунте
-        // Надо регать нового игрока
-        self::register_player();
-        // Либо есть self::$user, либо идем на новый круг авторизации
-      }
-      // IF self::$user
-      // ELSE Либо есть self::$user, либо идем на новый круг авторизации
     }
-    // IF ????????
-    // ELSE Либо есть self::$user, либо идем на новый круг авторизации
-
-    if(empty(self::$user['id']) || self::$user['id'] != $_COOKIE[SN_COOKIE_U]) {
-      sn_setcookie(SN_COOKIE_U, self::$user['id'], SN_TIME_NOW + PERIOD_YEAR);
-    }
-
-    return self::make_return_array();
   }
 
   /**
-   * Логаут игрока и всех аккаунтов
-   *
-   * @param bool|string $redirect нужно ли сделать перенаправление после логаута
-   * <p><b>false</b> - не перенаправлять</p>
-   * <p><i><b>true</b></i> - перенаправить на главную страницу</p>
-   * <p><b>string</b> - перенаправить на указанный URL</p>
-   *
-   * @param bool $only_impersonator Если установлен - то логаут происходит только при имперсонации
+   * Проверяем куку "текущего игрока" из браузера
+   * @version 4.5
    */
-  // OK v4.2
-  static function logout($redirect = true) {
-    foreach(self::$providers as $provider_name => $provider) {
-      $provider->logout_do();
-    }
-    // TODO - IMPERSONATE - SN_COOKIE_U_I
-    sn_setcookie(SN_COOKIE_U, '', SN_TIME_NOW - PERIOD_YEAR);
-//die();
-
-    if($redirect === true) {
-      sys_redirect(SN_ROOT_RELATIVE . (empty($_COOKIE[SN_COOKIE_U]) ? 'login.php' : 'admin/overview.php'));
-    } elseif($redirect !== false) {
-      sys_redirect($redirect);
+  // OK v4.5
+  protected static function user_check_cookie() {
+    // Проверяем куку "текущего игрока" из браузера
+    if(
+      // Кука не пустая
+      ($_COOKIE[SN_COOKIE_U] = trim($_COOKIE[SN_COOKIE_U])) && !empty($_COOKIE[SN_COOKIE_U])
+      // И в куке находится ID
+      && is_id($_COOKIE[SN_COOKIE_U])
+      // И у аккаунтов есть права на данного игрока
+      && (
+        // Есть прямые права из `account_translate`
+        !empty(self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]])
+        // Или есть доступ через имперсонейт
+        || (
+          // Максимальные права всех доступных записей игроков - не ниже администраторских
+          self::$auth_level_max_local >= AUTH_LEVEL_ADMINISTRATOR
+          // И права игрока, в которого пытаются зайти - меньше текущих максимальных прав
+          && self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]['authlevel'] < self::$auth_level_max_local
+        )
+      )
+    ) {
+      // Берем текущим юзером юзера с ИД из куки
+      self::$is_impersonating = empty(self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]);
+      // self::$user = self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]];
+      self::$user = db_user_by_id($_COOKIE[SN_COOKIE_U]);
     }
   }
+
+
 
   public static function impersonate($user_selected) {
-    if($_COOKIE[SN_COOKIE_I]) {
+    if($_COOKIE[SN_COOKIE_U . '_I']) {
       die('You already impersonating someone. Go back to living other\'s life! Or clear your cookies and try again'); // TODO: Log it
     }
 
-    if(self::$auth_level_max_local < 3) {
+    if(self::$auth_level_max_local < AUTH_LEVEL_ADMINISTRATOR) {
       die('You can\'t impersonate - too low level'); // TODO: Log it
     }
 
@@ -600,12 +630,16 @@ class auth extends sn_module {
       die('You can\'t impersonate this account - level is greater or equal to yours'); // TODO: Log it
     }
 
-    sn_setcookie(SN_COOKIE_I, $_COOKIE[SN_COOKIE], 0, SN_ROOT_RELATIVE);
+    // sn_setcookie(SN_COOKIE_U . '_I', $_COOKIE[SN_COOKIE_U], 0, SN_ROOT_RELATIVE);
+    self::cookie_set($_COOKIE[SN_COOKIE_U], true, 0);
 
-    $expire_time = SN_TIME_NOW + PERIOD_YEAR; // TODO - Имперсонейт - только на одну сессию
-    $password_encoded = md5("{$user_selected['password']}--" . classSupernova::$sn_secret_word);
-    $cookie = $user_selected['id'] . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . '1';
-    sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
+//    $expire_time = SN_TIME_NOW + PERIOD_YEAR;
+//    $password_encoded = md5("{$user_selected['password']}--" . classSupernova::$sn_secret_word);
+//    $cookie = $user_selected['id'] . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . '1';
+//    sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
+    // sn_setcookie(SN_COOKIE_U, $user_selected['id'], SN_TIME_NOW + PERIOD_YEAR, SN_ROOT_RELATIVE);
+    // TODO - Имперсонейт - только на одну сессию
+    self::cookie_set($user_selected['id']);
 
     // sec_set_cookie_by_user($user_selected, 0);
     sys_redirect(SN_ROOT_RELATIVE);
@@ -618,13 +652,14 @@ class auth extends sn_module {
    */
   // TODO v4
   static function email_set($new_email_unsafe) {
+    die('{Пока не работает}');
     // TODO - результаты работы
     // TODO - верфикация емейла
-    foreach(self::$providers_authorised as $provider) {
-      if($provider->is_feature_supported(AUTH_FEATURE_EMAIL_CHANGE)) {
-        $provider->db_account_set_email($new_email_unsafe);
-      }
-    }
+//    foreach(self::$providers_authorised as $provider) {
+//      if($provider->is_feature_supported(AUTH_FEATURE_EMAIL_CHANGE)) {
+//        $provider->db_account_set_email($new_email_unsafe);
+//      }
+//    }
   }
 
   /**
@@ -644,7 +679,7 @@ class auth extends sn_module {
     } else {
       foreach(self::$providers_authorised as $provider_id => $provider) {
         if($provider->is_feature_supported(AUTH_FEATURE_HAS_PASSWORD)) {
-          $result = $result || $provider->account_password_check($password_unsafe);
+          $result = $result || $provider->password_check($password_unsafe);
         }
       }
     }
@@ -686,7 +721,7 @@ class auth extends sn_module {
       }
 
       // Узнаем список игроков, которые прикреплены к этому аккаунту
-      $account_translation = self::db_get_account_translation_from_account_list($provider_id, $provider->data[F_ACCOUNT]['account_id']);
+      $account_translation = self::db_translate_get_users_from_account_list($provider_id, $provider->data[F_ACCOUNT]['account_id']);
 
       // Рассылаем уведомления о смене пароля в ЛС
       foreach($account_translation as $user_id => $provider_info) {
@@ -709,7 +744,7 @@ class auth extends sn_module {
    *
    * @return int|string
    */
-  // OK v4
+  // OK v4.5
   static function password_reset_send_code() {
     global $lang, $config;
 
@@ -726,35 +761,23 @@ class auth extends sn_module {
       if(!$provider->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
         continue;
       }
-      $account_list = $provider->db_account_list_get_on_email($email_unsafe);
+      $account_list = $provider->db_account_list_get_on_email($email_unsafe); // OK 4.5
       if(!empty($account_list)) {
-        $this_provider_translation = self::db_get_account_translation_from_account_list($provider_id, array_keys($account_list));
+        $providers_will_reset[$provider_id] = $provider;
+
+        $this_provider_translation = self::db_translate_get_users_from_account_list($provider_id, array_keys($account_list)); // OK 4.5
         if(!empty($this_provider_translation)) {
           $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
-          $providers_will_reset[$provider_id] = $provider;
         }
       }
-      // $password_reset_providers
-//      // if(method_exists($provider, $method_name))
-//      if($provider->data[F_INPUT][F_EMAIL_UNSAFE] && $provider->data[F_INPUT][F_IS_PASSWORD_RESET]) {
-//        $account = $provider->db_account_by_email($provider->data[F_INPUT][F_EMAIL_UNSAFE]);
-//        if($account) {
-//          $user = $provider->db_user_id_by_provider_account_id($account['account_id']);
-//
-//          if($user && $user['authlevel'] > 0) {
-//            throw new Exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT);
-//          }
-//          $found_provider = $provider;
-//          break;
-//        }
-//      }
     }
 
     try {
       $user_list = db_user_list_by_id(array_keys($account_translation));
-      if(empty($user_list)) {
-        throw new Exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL, ERR_ERROR);
-      }
+      //if(empty($user_list)) {
+        // TODO - НЕПРАВИЛЬНО! Таблица трансляций МОЖЕТ быть пустой! Когда аккаунт есть, но нет ни одного пользователя для него!
+        // throw new Exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL, ERR_ERROR);
+      //}
 
       // TODO - Проверять уровень доступа аккаунта!
       // Аккаунты с АУТЛЕВЕЛ больше 0 - НЕ СБРАСЫВАЮТ ПАРОЛИ!
@@ -766,16 +789,16 @@ class auth extends sn_module {
 
       $email_safe = static::$db->db_escape($email_unsafe);
 
-      $confirmation = static::db_confirmation_get_latest_by_email_and_type($email_safe, CONFIRM_PASSWORD_RESET);
+      $confirmation = static::db_confirmation_get_latest_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_safe); // OK 4.5
       if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
         throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN, ERR_ERROR);
       }
 
       // Удаляем предыдущие записи продтверждения сброса пароля
-      !empty($confirmation['id']) or static::db_confirmation_delete_by_email_and_type($email_safe, CONFIRM_PASSWORD_RESET);
+      !empty($confirmation['id']) or static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_safe); // OK 4.5
 
       sn_db_transaction_start();
-      $confirm_code_unsafe = self::db_confirmation_get_unique_code_by_type_on_email(CONFIRM_PASSWORD_RESET, $email_safe);
+      $confirm_code_unsafe = self::db_confirmation_get_unique_code_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_safe); // OK 4.5
       sn_db_transaction_commit();
 
       @$result = mymail($email_unsafe,
@@ -798,9 +821,9 @@ class auth extends sn_module {
    *
    * @return int|string
    */
-  // OK v4
+  // OK v4.5
   static function password_reset_confirm() {
-    global $lang, $config;
+    global $lang;
 
     if(!self::$is_password_reset_confirm) {
       return LOGIN_UNDEFINED;
@@ -810,7 +833,7 @@ class auth extends sn_module {
 
     try {
       sn_db_transaction_start();
-      $confirmation = self::db_confirmation_get_by_type_and_code(CONFIRM_PASSWORD_RESET, $code_safe);
+      $confirmation = self::db_confirmation_get_by_type_and_code(CONFIRM_PASSWORD_RESET, $code_safe); // OK 4.5
 
       if(empty($confirmation)) {
         throw new Exception(PASSWORD_RESET_ERROR_CODE_WRONG, ERR_ERROR);
@@ -820,48 +843,20 @@ class auth extends sn_module {
         throw new Exception(PASSWORD_RESET_ERROR_CODE_TOO_OLD, ERR_ERROR);
       }
 
-      // $account_translation = array();
-
       $result = false;
       $new_password_unsafe = self::make_random_password();
-      $salt = self::password_salt_generate();
-//      $providers_will_reset = array();
+      $salt_unsafe = self::password_salt_generate();
+
+      $users_translated = array();
       foreach(self::$providers as $provider_id => $provider) {
-        // Проверяем поддержку сброса пароля
-        if($provider->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
-          // Получаем список аккаунтов у провайдера по емейлу подтверждения
-          $account_list = $provider->db_account_list_get_on_email($confirmation['email']);
-
-          // Получаем список юзеров на этом аккаунте
-          // $this_provider_translation = self::db_get_account_translation_from_account_list($provider_id, array_keys($account_list));
-          // if(!empty($this_provider_translation)) {
-            // $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
-          // }
-
-          // TODO - это всё надо перенести в провайдера!
-          // Меняем пароль на всех аккаунтах
-          foreach($account_list as $account_id => $account_data) {
-            // TODO оно не меняет данных внутри аккаунта. Наверное, это верно...
-            $provider_result = $provider->account_password_set_by_id($account_id, $new_password_unsafe, $salt);
-            if($provider_result) {
-
-              // TODO Логиним этого пользователя
-              self::$login_status = $provider->login_internal();
-              $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $provider->data[F_ACCOUNT]['account_name'], $new_password_unsafe);
-
-              @$operation_result = mymail($confirmation['email'], sprintf($lang['log_lost_email_title'], $config->game_name), htmlspecialchars($message));
-              // TODO - При ошибке отправки емейла добавлять Global Message
-            }
-
-            $result = $result || $provider_result;
-          }
-        }
+        $this_provider_translation = $provider->password_change_on_email($confirmation['email'], $new_password_unsafe, $salt_unsafe); // OK 4.5
+        $users_translated = array_replace_recursive($users_translated, $this_provider_translation);
       }
 
-      if($result) {
+      if(!empty($users_translated)) {
         // Отправляем в лички письмо о сбросе пароля
 
-        // ПО ОПРЕДЕЛЕНИЮ в $account_translation только
+        // ПО ОПРЕДЕЛЕНИЮ в $users_translated только
         //    - аккаунты, поддерживающие сброс пароля
         //    - список аккаунтов, имеющих тот же емейл, что указан в Подтверждении
         //    - игроки, привязанные только к этим аккаунтам
@@ -870,16 +865,16 @@ class auth extends sn_module {
         $message = sys_bbcodeParse($message) . '<br><br>';
         // msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
 
-        foreach($account_translation as $user_id => $providers_list) {
+        foreach($users_translated as $user_id => $providers_list) {
           msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
         }
       } else {
-        // TODO Системная ошибка
-        throw new Exception(AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION, ERR_ERROR);
+        // Фигня - может быть и пустой, если у нас есть только аккаунт, но нет пользователей
+        // throw new Exception(AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION, ERR_ERROR);
       }
 
       // TODO - эксэпшн при ошибке
-      static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, static::$db->db_escape($confirmation['email']));
+      static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, static::$db->db_escape($confirmation['email'])); // OK 4.5
 
       sn_db_transaction_commit();
       sys_redirect('overview.php');
@@ -894,19 +889,21 @@ class auth extends sn_module {
   /**
    * Генерирует набор даннх для возврата в основной код
    */
-  // OK v4
+  // OK v4.5
   static function make_return_array() {
     global $config;
 
     $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
     // if(!empty($user_id) && !$user_impersonator) {
     // $user_id не может быть пустым из-за констраинтов в таблице SPE
-    self::db_security_entry_insert();
+    // self::db_security_entry_insert();
+    self::$device->db_security_entry_insert($user_id);
 
     $result = array();
 
     if($user_id && !self::$is_impersonating) {
-      self::db_counter_insert();
+      // self::db_counter_insert();
+      self::$device->db_counter_insert($user_id);
 
       $user = &self::$user;
 
@@ -1037,6 +1034,11 @@ class auth extends sn_module {
     return ''; // sys_random_string(16);
   }
 
+  // OK v4.5
+  // TODO - REMEMBER_ME
+  static protected function cookie_set($value, $impersonate = false, $period = null) {
+    sn_setcookie(SN_COOKIE_U . ($impersonate ? '_I' : ''), $value, $period === null ? SN_TIME_NOW + PERIOD_YEAR : $period, SN_ROOT_RELATIVE);
+  }
 
   static function flog($message, $die = false) {
     if(!defined('DEBUG_AUTH') || !DEBUG_AUTH) {
@@ -1058,5 +1060,38 @@ class auth extends sn_module {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }
+
+
+//  static function db_security_entry_insert() {
+//    // TODO $user_id = !empty(self::$user['id']) ? self::$user['id'] : 'NULL';
+//    if(!($user_id = !empty(self::$user['id']) ? self::$user['id'] : 0)) {
+//      self::flog('Нет ИД пользователя');
+//      return true;
+//    }
+//
+//    self::flog('Вставляем запись системы безопасности');
+//    return static::$db->doquery(
+//      "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
+//        VALUES ({$user_id}," . self::$device->device_id . "," . self::$device->browser_id . "," .
+//          self::$device->ip_v4_int . ", '" . static::$db->db_escape(self::$device->ip_v4_proxy_chain) . "');"
+//    );
+//  }
+//  static function db_counter_insert() {
+//    global $config, $sys_stop_log_hit, $is_watching;
+//
+//    if(!$sys_stop_log_hit && $config->game_counter) {
+//      $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
+//      $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
+//
+//      $is_watching = true;
+//      static::$db->doquery(
+//        "INSERT INTO {{counter}}
+//          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
+//        VALUES
+//          ('" . SN_TIME_SQL. "', {$user_id}, " . self::$device->device_id . "," . self::$device->browser_id . ", " .
+//        self::$device->ip_v4_int . ", '{$proxy_safe}', " . self::$device->page_address_id . ", " . self::$device->page_url_id . ");");
+//      $is_watching = false;
+//    }
+//  }
 
 }

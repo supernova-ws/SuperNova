@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a10.19#
+* @version #40a10.21#
 *
 */
 
@@ -962,7 +962,6 @@ $a_lang_array = (array(
     LOGIN_ERROR_PASSWORD_EMPTY => 'Пароль не может быть пустым',
     LOGIN_ERROR_PASSWORD_TRIMMED => 'Пароль не может начинаться или заканчиваться пробелом, табуляцией или символом перевода строки',
     LOGIN_ERROR_PASSWORD => 'Неправильный пароль',
-    LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION => 'СИСТЕМНАЯ ОШИБКА - СБОЙ В ТАБЛИЦЕ ТРАНСЛЯЦИИ ПРОВАЙДЕРОВ! Сообщите администрации сервера!',
   //    LOGIN_ERROR_COOKIE => '',
 
     REGISTER_SUCCESS => 'Регистрация успешно завершена',
@@ -975,29 +974,31 @@ $a_lang_array = (array(
     REGISTER_ERROR_EMAIL_EMPTY => 'Е-Мейл не может быть пустым',
     REGISTER_ERROR_EMAIL_WRONG => 'Введенный Е-Мейл не является допустимым адресом электронной почты. Проверьте написание Е-Мейла или используйте другой адрес почтового ящика',
     REGISTER_ERROR_EMAIL_EXISTS => 'Этот электронный адрес уже зарегестрирован. Если вы уже регистрировались в игре - попробуйте воспользоваться сбросом пароля. Иначе - используйте другой почтовый ящик',
-    REGISTER_ERROR_ACCOUNT_CREATE => 'Ошибка создания учётной записи! Пожалуйста, сообщите об этом Администрации!',
 
     PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'Нет игрока с таким основным емейлом',
-    PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Запрещено восстановление пароля для Команды сервера. Обратитесь к Администратору',
     PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'Запросить код восстановления можно только 1 раз в 10 минут. Если вы не получили письмо - проверьте папку СПАМа или напишите письмо Администрации сервера на email <span class="ok">' . $config->server_email . '</span> с адреса, который вы использовали при регистрации',
     PASSWORD_RESTORE_ERROR_SENDING => 'Ошибка отправки письма. Напишите письмо Администрации сервера на email <span class="ok">' . $config->server_email . '</span>',
-    PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS => 'Внутренняя ошибка - при смене пароля аккаунт не найден! Сообщите об этой ошибке Администрации!',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Письмо с кодом восстановления успешно отправлено',
 
     PASSWORD_RESET_ERROR_CODE_WRONG => 'Неправильный код восстановления',
     PASSWORD_RESET_ERROR_CODE_TOO_OLD => 'Код восстановления устарел. Получите новый',
-    PASSWORD_RESTORE_ERROR_CHANGE => 'Ошибка смены пароля. Обратитесь к Администрации сервера',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Пароль успешно сброшен. Вам отправлено письмо с новым паролем',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Ошибка отправки письма с новым паролем. Получите новый код восстановления и повторите попытку',
-
-    AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'ВНУТРЕННЯЯ ОШИБКА! Нет аккаунтов для сброса пароля при корректном коде подтверждения! Пожалуйста, сообщите об этой ошибке Администрации Вселенной!',
 
     REGISTER_ERROR_PLAYER_NAME_TRIMMED => 'Имя игрока не может начинаться или заканчиваться пробельными символами (символы "Пробел", "Табуляция", "Перенос строки" итд)',
     REGISTER_ERROR_PLAYER_NAME_EMPTY => 'Имя игрока не может быть пустым',
     REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS => 'Имя игрока не содержит запрещенные символы',
     REGISTER_ERROR_PLAYER_NAME_SHORT => 'Имя игрока не может быть короче ' . LOGIN_LENGTH_MIN . ' символов',
-    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'Это имя игрока уже занята. Пожалуйста, выберите другое',
+    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'Это имя игрока уже занято. Пожалуйста, выберите другое',
 
+    // Внутренние ошибки
+    PASSWORD_RESTORE_ERROR_CHANGE => 'Ошибка смены пароля. Обратитесь к Администрации сервера',
+    PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Запрещено восстановление пароля для Команды сервера. Обратитесь к Администратору',
+    REGISTER_ERROR_ACCOUNT_CREATE => 'Ошибка создания учётной записи! Пожалуйста, сообщите об этом Администрации!',
+    LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION => 'СИСТЕМНАЯ ОШИБКА - СБОЙ В ТАБЛИЦЕ ТРАНСЛЯЦИИ ПРОВАЙДЕРОВ! Сообщите администрации сервера!',
+    PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS => 'Внутренняя ошибка - при смене пароля аккаунт не найден! Сообщите об этой ошибке Администрации!',
+    AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'ВНУТРЕННЯЯ ОШИБКА! Нет аккаунтов для сброса пароля при корректном коде подтверждения! Пожалуйста, сообщите об этой ошибке Администрации Вселенной!',
+    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'ВНУТРЕННЯЯ ОШИБКА! СООБЩИТЕ АДМИНИСТРАЦИИ! Не установлен аккаунт при cookie_set()! Пожалуйста, сообщите об этой ошибке Администрации Вселенной!',
  ),
 
   'log_reg_email_title' => "Ваша регистрация на сервере %1\$s игры СуперНова",

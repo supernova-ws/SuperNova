@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a10.19
+* @version 40a10.21
 *
 */
 
@@ -955,7 +955,6 @@ $a_lang_array = (array(
     LOGIN_ERROR_PASSWORD_EMPTY => 'Пароль не может быть пустым',
     LOGIN_ERROR_PASSWORD_TRIMMED => 'Пароль не может начинаться или заканчиваться пробелом, табуляцией или символом перевода строки',
     LOGIN_ERROR_PASSWORD => 'Wrong password',
-    LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION => 'СИСТЕМНАЯ ОШИБКА - СБОЙ В ТАБЛИЦЕ ТРАНСЛЯЦИИ ПРОВАЙДЕРОВ! Сообщите администрации сервера!',
     //    LOGIN_ERROR_COOKIE => '',
 
     REGISTER_SUCCESS => 'Registration succesfully complete',
@@ -968,29 +967,33 @@ $a_lang_array = (array(
     REGISTER_ERROR_EMAIL_EMPTY => 'Е-Мейл не может быть пустым',
     REGISTER_ERROR_EMAIL_WRONG => 'Введенный Е-Мейл не является адресом электронной почты',
     REGISTER_ERROR_EMAIL_EXISTS => 'This email already registered. If you already registered try password reset option. Otherwise use other email address',
-    REGISTER_ERROR_ACCOUNT_CREATE => 'Error creating account! Please, message Administration about this error!',
 
     PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'There is no player with such base email',
-    PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Forbidden to restore password for member of Server Team. Contact Administrator directly',
     PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per 10 minutes. Check your SPAM folder for restoration code or contact server administration via email <span class="ok">' . $config->server_email . '</span> from your main email (email which you used for registration)',
     PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration via email <span class="ok">' . $config->server_email . '</span>',
-    PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS => 'Account not found! Contact server administration!',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Restoration code successfully sent',
 
     PASSWORD_RESET_ERROR_CODE_WRONG => 'Wrong restoration code',
     PASSWORD_RESET_ERROR_CODE_TOO_OLD => 'Restoration code is too old. Get new one',
-    PASSWORD_RESTORE_ERROR_CHANGE => 'Password change error. Contact server administration',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Email with new password successfully sent to your email',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
 
-    AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'Internal error - no account to change password on confirmation code. Report to Universe Administration!',
 
     REGISTER_ERROR_PLAYER_NAME_TRIMMED => 'Player name can not starts or ends with "empty characters" (characters like "Space", "Tabulation", "New line" etc)',
     REGISTER_ERROR_PLAYER_NAME_EMPTY => 'Player name can not be empty',
     REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS => 'Player name contains forbidden characters',
     REGISTER_ERROR_PLAYER_NAME_SHORT => 'Player name should have ' . LOGIN_LENGTH_MIN . ' characters at least',
-    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'This player name is owner by someone. Please choose another name',
+    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'This player name is already owned by someone. Please choose another name',
 
+
+    // Внутренние ошибки
+    PASSWORD_RESTORE_ERROR_CHANGE => 'Password change error. Contact server administration',
+    PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Forbidden to restore password for member of Server Team. Contact Administrator directly',
+    REGISTER_ERROR_ACCOUNT_CREATE => 'Error creating account! Please, message Administration about this error!',
+    LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION => 'СИСТЕМНАЯ ОШИБКА - СБОЙ В ТАБЛИЦЕ ТРАНСЛЯЦИИ ПРОВАЙДЕРОВ! Сообщите администрации сервера!',
+    PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS => 'Account not found! Contact server administration!',
+    AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'INTERNAL ERROR! No account to change password on confirmation code. Please, report to Universe Administration!',
+    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'INTERNAL ERROR! No account for cookie_set()! Please, report to Universe Administration!',
   ),
 
   'log_reg_email_title' => "Your registration on SuperNova game server %1\$s",

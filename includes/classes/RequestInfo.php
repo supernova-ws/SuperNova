@@ -124,4 +124,55 @@ class RequestInfo {
     $this->ip_v4_int = ip2longu($this->ip_v4_string);
     $this->ip_v4_proxy_chain = $ip['proxy_chain'];
   }
+
+  /**
+   * Вставляет запись системы безопасности
+   *
+   * @param $user_id_unsafe
+   *
+   * @return array|bool|mysqli_result|null
+   *
+   */
+  public function db_security_entry_insert($user_id_unsafe) {
+    // TODO $user_id = !empty(self::$user['id']) ? self::$user['id'] : 'NULL';
+    if(empty($user_id_unsafe)) {
+      // self::flog('Нет ИД пользователя');
+      return true;
+    }
+
+    $user_id_safe = round(floatval($user_id_unsafe));
+
+    // self::flog('Вставляем запись системы безопасности');
+    return doquery(
+      "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
+        VALUES ({$user_id_safe}," . $this->device_id . "," . $this->browser_id . "," .
+      $this->ip_v4_int . ", '" . db_escape($this->ip_v4_proxy_chain) . "');"
+    );
+  }
+
+  /**
+   * Вставляет данные в счётчик
+   *
+   * @param $user_id_unsafe
+   */
+  public function db_counter_insert($user_id_unsafe) {
+    global $config, $sys_stop_log_hit, $is_watching;
+
+    if($sys_stop_log_hit || !$config->game_counter) {
+      return;
+    }
+
+    $user_id_safe = db_escape($user_id_unsafe);
+    $proxy_safe = db_escape($this->ip_v4_proxy_chain);
+
+    $is_watching = true;
+    doquery(
+      "INSERT INTO {{counter}}
+          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
+        VALUES
+          ('" . SN_TIME_SQL. "', {$user_id_safe}, " . $this->device_id . "," . $this->browser_id . ", " .
+      $this->ip_v4_int . ", '{$proxy_safe}', " . $this->page_address_id . ", " . $this->page_url_id . ");");
+    $is_watching = false;
+  }
+
 }

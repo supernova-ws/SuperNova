@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.15# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.21# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -78,6 +78,8 @@ class sn_module {
   }
 
   function __construct($filename = __FILE__) {
+    global $sn_module;
+
     // Getting module PHP class name
     $class_module_name = get_class($this);
 
@@ -86,14 +88,21 @@ class sn_module {
 
     // TODO: Load configuration from DB. Manifest setting
     // Trying to load configuration from file
-    if(file_exists($config_filename = dirname($filename) . '/config.php')) {
+    $config_exists = false;
+    // Конфигурация может лежать в config_path в манифеста или в корне модуля
+    if(isset($this->manifest['config_path']) && file_exists($config_filename = $this->manifest['config_path'] . '/config.php')) {
+      $config_exists = true;
+    } elseif(file_exists($config_filename = dirname($filename) . '/config.php')) {
+      $config_exists = true;
+    }
+
+    if($config_exists) {
       include($config_filename);
       $module_config_array = $class_module_name . '_config';
       $this->config = $$module_config_array;
     }
 
     // Registering module
-    global $sn_module;
     $sn_module[$class_module_name] = $this;
   }
 

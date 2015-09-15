@@ -42,8 +42,8 @@ class db_mysql_v5 {
 //    if(!is_resource($this->link)) {
 //      $debug->error_fatal('DB Error - cannot connect to server', $this->mysql_error());
 //    }
-    $this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
-    if ($this->link->connect_error) {
+    @$this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
+    if (!is_object($this->link) || $this->link->connect_error) {
       $debug->error_fatal('DB Error - cannot connect to server error #' . $this->link->connect_errno, $this->link->connect_error);
     }
 

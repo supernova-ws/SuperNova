@@ -51,7 +51,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.20');
+define('SN_VERSION', '40a10.21');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -68,7 +68,7 @@ define('PREG_DATE_SQL', '/(20[1-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9])
 define('PREG_DATE_SQL_FULL', '/(20[1-9][0-9]|19[0-9][0-9])\-(1[0-2]|0[1-9])\-(3[01]|[12]\d|0[1-9]) (2[0-3]|[01][0-9]):([0-5][0-9]):([0-5][0-9])/');
 define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|[12]\d|0[1-9])(?: (2[0-3]|[01][0-9])(?::([0-5][0-9])(?::([0-5][0-9]))?)?)?)?)?/');
 
-define('LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH', 9);
+define('LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH', 6);
 define('SN_SYS_SEC_CHARS_CONFIRMATION', '0123456789');
 define('AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE', PERIOD_DAY);
 
@@ -452,6 +452,8 @@ define('REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS', 41);
 define('REGISTER_ERROR_PLAYER_NAME_SHORT', 42);
 define('REGISTER_ERROR_PLAYER_NAME_EXISTS', 43);
 
+define('LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET', 44);
+
 
 
 
@@ -475,6 +477,7 @@ define('AUTH_LEVEL_DEVELOPER', 4);
 define('ACCOUNT_PROVIDER_BASIC', 0);
 define('ACCOUNT_PROVIDER_LOCAL', 1);
 define('ACCOUNT_PROVIDER_CENTRAL', 2);
+define('ACCOUNT_PROVIDER_VKONTAKTE', 3);
 
 // F_INPUT - constants
 // define('F_INPUT',                      'F_INPUT');
