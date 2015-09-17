@@ -83,7 +83,7 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 /**
  * @var classConfig $config
  */
-global $supernova, $sn_cache, $config;
+global $supernova, $sn_cache, $config, $auth;
 
 classSupernova::init_global_objects();
 
@@ -140,7 +140,7 @@ $sn_module_list = array();
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // Здесь - потому что auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
 // TODO - переработать этот костыль
-new auth();
+classSupernova::$auth = new auth();
 // new auth_local();
 // pdump($sn_module);
 

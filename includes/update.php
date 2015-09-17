@@ -1019,9 +1019,10 @@ switch($new_version) {
           `account_email_verified` tinyint(1) unsigned NOT NULL DEFAULT 0,
           `account_register_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
           `account_language` varchar(5) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'ru',
-          -- `account_is_global` tinyint(1) unsigned NOT NULL DEFAULT 0,
+          `account_metamatter` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Metamatter amount',
+          `account_metamatter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Metamatter amount ever bought',
           PRIMARY KEY (`account_id`),
-          UNIQUE KEY `I_account_name_pass_salt` (`account_name`, `account_password`, `account_salt`), -- Если совпадают логин и сол-парол - это один и тот же аккаунт
+          UNIQUE KEY `I_account_name` (`account_name`),
           KEY `I_account_email` (`account_email`) -- Для поиска дубликатов по емейлу
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 

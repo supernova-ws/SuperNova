@@ -9,7 +9,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.21# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.22# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -407,9 +407,6 @@ class auth_local extends sn_module {
    */
   // OK v4.5
   protected function prepare() {
-    // $this->data = &$this->data[$this->manifest['provider_id']];
-    !is_array($this->data) ? $this->data = array() : false;
-
     $this->input_login_unsafe = sys_get_param_str_unsafe('username', sys_get_param_str_unsafe('login')); // TODO переделать эту порнографию
 
     $this->is_register = sys_get_param('register');
@@ -419,31 +416,6 @@ class auth_local extends sn_module {
     $this->input_email_unsafe = sys_get_param_str_unsafe('email');
     $this->input_language_unsafe = sys_get_param_str_unsafe('lang', DEFAULT_LANG);
     $this->input_language_safe = sys_get_param_str('lang', DEFAULT_LANG);
-
-
-    $this->data = array(
-      // F_PROVIDER_ID => $this->manifest['provider_id'],
-      // F_LOGIN_STATUS => LOGIN_UNDEFINED,
-      F_IMPERSONATE_STATUS => LOGIN_UNDEFINED,
-      F_IMPERSONATE_OPERATOR => null,
-      // F_INPUT => array(
-      // F_IS_REGISTER => $is_register = sys_get_param('register'),
-      // F_LOGIN_UNSAFE => sys_get_param_str_unsafe('username', sys_get_param_str_unsafe('login')),
-      // F_LOGIN_PASSWORD_RAW => sys_get_param('password'),
-      // F_LOGIN_PASSWORD_REPEAT_RAW => trim(sys_get_param('password_repeat')),
-      // F_EMAIL_UNSAFE => sys_get_param_str_unsafe('email'),
-      // F_LANGUAGE_SAFE => sys_get_param_str('lang', DEFAULT_LANG),
-
-      // F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
-      // F_IS_PASSWORD_RESET_CONFIRM => sys_get_param('password_reset_confirm'),
-      // F_PASSWORD_RESET_CODE_SAFE => sys_get_param_str('password_reset_code'),
-      // ),
-      // F_REMEMBER_ME_SAFE => intval(sys_get_param_int('rememberme') || $this->is_register),
-
-      // F_IS_PASSWORD_RESET => sys_get_param('password_reset'),
-      // F_IS_PASSWORD_RESET_CONFIRM => sys_get_param('password_reset_confirm'),
-      // F_PASSWORD_RESET_CODE_SAFE => sys_get_param_str('password_reset_code'),
-    );
   }
 
   /**
@@ -755,174 +727,5 @@ class auth_local extends sn_module {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }
-
-
-
-  // TODO - REMOVE UNUSED
-
-  //  /**
-//   * Возвращает аккаунт по имени
-//   *
-//   * @param $account_name_safe
-//   *
-//   * @return array|false
-//   */
-//  // OK v4.1
-//  function db_account_get_by_name($account_name_unsafe) {
-//    $account_name_safe = $this->db->db_escape($account_name_unsafe);
-//    // $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
-//    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
-//    if(!empty($account)) {
-//      $this->account_convert($account);
-//    }
-//
-//    return $account;
-//  }
-//  /**
-//   * Возвращает аккаунт по емейлу
-//   *
-//   * @param $email_unsafe
-//   *
-//   * @return array|bool|resource
-//   */
-//  // TODO NOT OK v4
-//  // TODO - надо возвращать список аккаунтов
-//  // TODO - DEPRECATED! Использовать db_account_list_get_on_email()
-//  // OK v4.1
-//  function db_account_by_email($email_unsafe) {
-////    TODO auth_account
-////    if($email_safe = db_escape(trim($email_unsafe))) {
-////      $result = doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}';", true);
-//    if($email_safe = $this->db->db_escape(trim($email_unsafe))) {
-//      $result = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}';", true);
-//    } else {
-//      return false;
-//    }
-////    if($account = db_user_by_email($email_unsafe, true)) {
-////      $this->db_account_convert($account);
-////    }
-//
-//    return $result;
-//  }
-//  /**
-//   * Создает аккаунт
-//   *
-//   * @throws Exception
-//   */
-//  // OK v4.1
-//  function db_account_create($account_name_unsafe, $password_raw, $email_unsafe, $language_unsafe = null, $salt_unsafe = null) {
-//    $account_name_safe = $this->db->db_escape($account_name_unsafe);
-//    $email_safe = $this->db->db_escape($email_unsafe);
-//    $language_safe = $this->db->db_escape($language_unsafe === null ? DEFAULT_LANG : $language_unsafe);
-//
-//    $salt_unsafe === null ? $salt_unsafe = $this->password_salt_generate() : false;
-//    $password_salted_safe = $this->db->db_escape($this->password_encode($password_raw, $salt_unsafe));
-//    $salt_safe = $this->db->db_escape($salt_unsafe);
-//
-//    $result = $this->db->doquery(
-//      "INSERT INTO {{account}} SET
-//        `account_name` = '{$account_name_safe}',
-//        `account_password` = '{$password_salted_safe}',
-//        `account_salt` = '{$salt_safe}',
-//        `account_email` = '{$email_safe}',
-//        `account_language` = '{$language_safe}'"
-//    );
-//    if(!$result) {
-//      throw new Exception(REGISTER_ERROR_ACCOUNT_CREATE, ERR_ERROR);
-//    }
-//
-//    if(!($account_id = $this->db->db_insert_id())) {
-//      throw new Exception(REGISTER_ERROR_ACCOUNT_CREATE, ERR_ERROR);
-//    }
-//
-//    return $account_id;
-//  }
-//  /**
-//   * Возвращает аккаунт по его ID
-//   *
-//   * @param $account_id_unsafe
-//   *
-//   * @return array|false
-//   */
-//  // OK v4.1
-//  protected function db_account_get_by_id($account_id_unsafe) {
-//    $account_id_safe = round(floatval($account_id_unsafe));
-//    // $account = doquery("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}", true);
-//    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}", true);
-//    !empty($account) ? $this->account_convert($account) : ($account = null);
-//    return $account;
-//  }
-//  /**
-//   * Физически меняет пароль аккаунта в БД
-//   *
-//   * @param $new_password_encoded_safe
-//   * @param $salt_safe
-//   *
-//   * @return array|resource
-//   */
-//  // OK v4.1
-//  protected function db_account_set_password_by_id($account_id_unsafe, $new_password_encoded_unsafe, $salt_unsafe) {
-//    $account_id_safe = $this->db->db_escape($account_id_unsafe);
-//    $new_password_encoded_safe = $this->db->db_escape($new_password_encoded_unsafe);
-//    $salt_safe = $this->db->db_escape($salt_unsafe);
-//
-//    return $this->db->doquery(
-//      "UPDATE {{account}} SET
-//        `account_password` = '{$new_password_encoded_safe}',
-//        `account_salt` = '{$salt_safe}'
-//      WHERE `account_id` = '{$account_id_safe}'"
-//    );
-//  }
-//  /**
-//   * Проверки в БД на возможность регистрации
-//   *
-//   * @throws Exception
-//   */
-//  // OK v4.5
-//  function account_check_duplicate_name_or_email($account_name_unsafe, $email_unsafe) {
-//    // $account_name_safe = $this->db->db_escape($account_name_unsafe);
-//
-//    if($this->provider_account->db_get_by_name($account_name_unsafe)) {
-//      throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
-//    }
-////    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}' FOR UPDATE", true);
-////    if(!empty($account)) {
-////      throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
-////    }
-//
-//
-//    // TODO - добавить ограничение при регистрации ??
-//    // Проверить - а вдруг чувак пытается зарегаться с тем же паролем?
-//    // НЕ НАДО! Многие регаются с логином = паролю
-////    if($this->db_account_by_name_safe($this->data[F_INPUT][F_LOGIN_UNSAFE])) {
-////      throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
-////    }
-//
-////    if($this->db_account_by_email($email_unsafe)) {
-////      throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
-////    }
-//    if($this->provider_account->db_get_by_email($email_unsafe)) {
-//      throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
-//    }
-//  }
-//  /**
-//   * Заполняет общие поля аккаунта из инфы, которую возвращает провайдер
-//   *
-//   * @param $account
-//   */
-//  // TODO DEPRECATED - это должен быть хелпер???? Или работать в геттере
-//  // OK v4.1
-//  protected function account_convert(&$account) {
-//    $account = array(
-//      'account_id' => $account['account_id'],
-//      'account_name' => $account['account_name'],
-//      'account_password' => $account['account_password'],
-//      'account_salt' => $account['account_salt'],
-//      'account_email' => $account['account_email'],
-//      'account_email_verified' => $account['account_email_verified'],
-//      'account_register_time' => $account['account_register_time'],
-//      'account_language' => $account['account_language'],
-//    );
-//  }
 
 }

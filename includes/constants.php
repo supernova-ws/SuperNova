@@ -51,7 +51,7 @@ define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.21');
+define('SN_VERSION', '40a10.22');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -517,7 +517,7 @@ define('F_ACCOUNT_IS_AUTHORIZED', 'F_ACCOUNT_IS_AUTHORIZED');
 
 
 // define('F_ACCOUNT_ID', 'F_ACCOUNT_ID');
-define('F_ACCOUNT', 'F_ACCOUNT');
+// define('F_ACCOUNT', 'F_ACCOUNT');
 define('F_ACCOUNTS_AUTHORISED', 'F_ACCOUNTS_AUTHORISED');
 // define('F_PASSWORD_MATCHED', 'F_ACCOUNT_PASSWORD_MATCH');
 

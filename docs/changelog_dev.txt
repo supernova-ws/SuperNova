@@ -308,6 +308,16 @@ db_get_account_translation_from_account_list() - может возвращать
 #ctv
 
 
+2015-09-17 09:16:45 40a10.22 - authV4 Alpha 4.51
+[!] Авторизация
+    Избавились от F_ACCOUNT
+    Избавились от $data в auth_local
+    Удалён неиспользуемый код в auth и auth_local
+
+[~] БД
+    `account_name` в `account` теперь уникальное
+    Добавлены поля для ЕММ в `account`
+
 
 2015-09-15 05:23:56 40a10.21 - authV4 Alpha 4.5
 [!] Авторизация

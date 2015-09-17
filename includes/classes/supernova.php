@@ -27,6 +27,10 @@ class classSupernova {
   public static $config;
 
 
+  /**
+   * @var auth $auth
+   */
+  public static $auth = null;
 
 
   public static $db_in_transaction = false;

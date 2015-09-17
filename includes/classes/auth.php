@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.21#
+ * version #40a10.22#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.21# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.22# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -473,11 +473,11 @@ class auth extends sn_module {
       $player_email = '';
       // TODO - порнография - работа должна происходить над списком аккаунтов, а не только на одном аккаунте...
       foreach(self::$providers_authorised as $provider) {
-        if(!$player_language && $provider->data[F_ACCOUNT]['account_language']) {
-          $player_language = $provider->data[F_ACCOUNT]['account_language'];
+        if(!$player_language && $provider->account->account_language) {
+          $player_language = $provider->account->account_language;
         }
-        if(!$player_email && $provider->data[F_ACCOUNT]['account_email']) {
-          $player_email = $provider->data[F_ACCOUNT]['account_email'];
+        if(!$player_email && $provider->account->account_email) {
+          $player_email = $provider->account->account_email;
         }
       }
       $player_language = sys_get_param_str('lang') ? sys_get_param_str('lang') : $player_language;
@@ -495,7 +495,7 @@ class auth extends sn_module {
       foreach(self::$providers_authorised as $provider) {
         // TODO - порнография. Должен быть отдельный класс трансляторов - в т.ч. и кэширующий транслятор
         // TODO - ну и работа должна происходить над списком аккаунтов, а не только на одном аккаунте...
-        self::db_translate_register_user($provider->manifest['provider_id'], $provider->data[F_ACCOUNT]['account_id'], $a_user['id']);
+        self::db_translate_register_user($provider->manifest['provider_id'], $provider->account->account_id, $a_user['id']);
 
       }
       // Установить куку игрока
@@ -721,14 +721,14 @@ class auth extends sn_module {
       }
 
       // Узнаем список игроков, которые прикреплены к этому аккаунту
-      $account_translation = self::db_translate_get_users_from_account_list($provider_id, $provider->data[F_ACCOUNT]['account_id']);
+      $account_translation = self::db_translate_get_users_from_account_list($provider_id, $provider->account->account_id);
 
       // Рассылаем уведомления о смене пароля в ЛС
       foreach($account_translation as $user_id => $provider_info) {
         // TODO - УКазывать тип аккаунта, на котором сменён пароль
         msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN,
           $lang['sys_administration'], $lang['sys_login_register_message_title'],
-          sprintf($lang['sys_login_register_message_body'], $provider->data[F_ACCOUNT]['account_name'], $new_password_unsafe), false //true
+          sprintf($lang['sys_login_register_message_body'], $provider->account->account_name, $new_password_unsafe), false //true
         );
       }
       $providers_changed_password[$provider_id] = $provider;
@@ -1060,38 +1060,5 @@ class auth extends sn_module {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }
-
-
-//  static function db_security_entry_insert() {
-//    // TODO $user_id = !empty(self::$user['id']) ? self::$user['id'] : 'NULL';
-//    if(!($user_id = !empty(self::$user['id']) ? self::$user['id'] : 0)) {
-//      self::flog('Нет ИД пользователя');
-//      return true;
-//    }
-//
-//    self::flog('Вставляем запись системы безопасности');
-//    return static::$db->doquery(
-//      "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
-//        VALUES ({$user_id}," . self::$device->device_id . "," . self::$device->browser_id . "," .
-//          self::$device->ip_v4_int . ", '" . static::$db->db_escape(self::$device->ip_v4_proxy_chain) . "');"
-//    );
-//  }
-//  static function db_counter_insert() {
-//    global $config, $sys_stop_log_hit, $is_watching;
-//
-//    if(!$sys_stop_log_hit && $config->game_counter) {
-//      $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
-//      $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
-//
-//      $is_watching = true;
-//      static::$db->doquery(
-//        "INSERT INTO {{counter}}
-//          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
-//        VALUES
-//          ('" . SN_TIME_SQL. "', {$user_id}, " . self::$device->device_id . "," . self::$device->browser_id . ", " .
-//        self::$device->ip_v4_int . ", '{$proxy_safe}', " . self::$device->page_address_id . ", " . self::$device->page_url_id . ");");
-//      $is_watching = false;
-//    }
-//  }
 
 }
