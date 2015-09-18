@@ -370,8 +370,8 @@ only screen and (min-device-pixel-ratio : 1.5) {
   text-align: center;
   align-content: center;
 }
-#unit_miniatures_wrapper {
-  margin: 0.25em auto;
+.unit_miniatures_wrapper {
+  margin: 0.3em 0.3em;
   display: inline-block;
   /*vertical-align: top;*/
   height: 10em;

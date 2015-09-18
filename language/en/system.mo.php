@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a10.21
+* @version 40a10.23
 *
 */
 
@@ -968,13 +968,15 @@ $a_lang_array = (array(
     REGISTER_ERROR_EMAIL_WRONG => 'Введенный Е-Мейл не является адресом электронной почты',
     REGISTER_ERROR_EMAIL_EXISTS => 'This email already registered. If you already registered try password reset option. Otherwise use other email address',
 
-    PASSWORD_RESTORE_ERROR_WRONG_EMAIL => 'There is no player with such base email',
+    PASSWORD_RESTORE_ERROR_EMAIL_NOT_EXISTS => 'There is no player with such base email',
     PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per 10 minutes. Check your SPAM folder for restoration code or contact server administration via email <span class="ok">' . $config->server_email . '</span> from your main email (email which you used for registration)',
     PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration via email <span class="ok">' . $config->server_email . '</span>',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Restoration code successfully sent',
 
-    PASSWORD_RESET_ERROR_CODE_WRONG => 'Wrong restoration code',
-    PASSWORD_RESET_ERROR_CODE_TOO_OLD => 'Restoration code is too old. Get new one',
+    PASSWORD_RESTORE_ERROR_CODE_EMPTY => 'Restoration code can not be empty',
+    PASSWORD_RESTORE_ERROR_CODE_WRONG => 'Wrong restoration code',
+    PASSWORD_RESTORE_ERROR_CODE_TOO_OLD => 'Restoration code is too old. Get new one',
+    PASSWORD_RESTORE_ERROR_CODE_OK_BUT_NO_ACCOUNT_FOR_EMAIL => 'Код восстановления указан верно, однако не найдено ни одного аккаунта с таким емейлом. Возможно, он был удалён или произошла внутренняя ошибка. Обратитесь к Администрации сервера',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT => 'Email with new password successfully sent to your email',
     PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR => 'Error sending new password. Get new restoration code and try again',
 
@@ -987,13 +989,13 @@ $a_lang_array = (array(
 
 
     // Внутренние ошибки
-    PASSWORD_RESTORE_ERROR_CHANGE => 'Password change error. Contact server administration',
+    AUTH_ERROR_INTERNAL_PASSWORD_CHANGE_ON_RESTORE => 'Password change error. Contact server administration',
     PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT => 'Forbidden to restore password for member of Server Team. Contact Administrator directly',
     REGISTER_ERROR_ACCOUNT_CREATE => 'Error creating account! Please, message Administration about this error!',
     LOGIN_ERROR_SYSTEM_ACCOUNT_TRANSLATION => 'СИСТЕМНАЯ ОШИБКА - СБОЙ В ТАБЛИЦЕ ТРАНСЛЯЦИИ ПРОВАЙДЕРОВ! Сообщите администрации сервера!',
     PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS => 'Account not found! Contact server administration!',
     AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION => 'INTERNAL ERROR! No account to change password on confirmation code. Please, report to Universe Administration!',
-    REGISTER_ERROR_PLAYER_NAME_EXISTS => 'INTERNAL ERROR! No account for cookie_set()! Please, report to Universe Administration!',
+    LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET => 'INTERNAL ERROR! No account for cookie_set()! Please, report to Universe Administration!',
   ),
 
   'log_reg_email_title' => "Your registration on SuperNova game server %1\$s",

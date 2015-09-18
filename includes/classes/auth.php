@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.22#
+ * version #40a10.23#
  */
 
 class auth extends sn_module {
@@ -17,7 +17,7 @@ class auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.22# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.23# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -26,6 +26,20 @@ class auth extends sn_module {
 
     'installed' => true,
     'active' => true,
+
+    'mvc' => array(
+      'model' => array(
+        'player_register' => array(
+          'callable' => 'player_register_model',
+        ),
+      ),
+
+      'view' => array(
+        'player_register' => array(
+          'callable' => 'player_register_view',
+        ),
+      ),
+    ),
   );
 
   /**
@@ -43,9 +57,9 @@ class auth extends sn_module {
   /**
    * Аккаунт ????
    *
-   * @var null|auth_local
+   * @var Account
    */
-  static $account = null;
+  public static $account = null;
   /**
    * Запись текущего игрока из `users`
    *
@@ -126,6 +140,11 @@ class auth extends sn_module {
    * @var bool
    */
   static $is_password_reset_confirm = false;
+  static $is_player_register = false;
+  /**
+   * @var int
+   */
+  static $register_status = LOGIN_UNDEFINED;
 
   /**
    * Максимальный локальный уровень авторизации игрока
@@ -134,6 +153,23 @@ class auth extends sn_module {
    */
   static $auth_level_max_local = AUTH_LEVEL_ANONYMOUS;
 
+  /**
+   * @var int
+   */
+  protected static $partner_id = 0;
+
+  /**
+   * @var string
+   */
+  protected static $server_name = '';
+
+  function __assign_vars() {
+    return array(
+      'sn_data[pages]' => array(
+        'player_register' => 'includes/classes/auth',
+      ),
+    );
+  }
 
   /**
    * @param string $filename
@@ -164,7 +200,7 @@ class auth extends sn_module {
     foreach(self::$providers as $provider_id => $provider) {
       $login_status = $provider->login(); // OK v4.5
       self::flog(($provider->manifest['name'] . '->' . 'login_try - ') . (empty($provider->account->account_id) ? $lang['sys_login_messages'][$provider->account_login_status] : dump($provider)));
-      if($login_status == LOGIN_SUCCESS && $provider->account->account_id) {
+      if($login_status == LOGIN_SUCCESS && is_object($provider->account) && $provider->account instanceof Account && $provider->account->account_id) {
         self::$providers_authorised[$provider_id] = &self::$providers[$provider_id];
 
         self::$user_id_to_provider = array_replace_recursive(
@@ -186,15 +222,22 @@ class auth extends sn_module {
         self::$login_status = reset(self::$account_error_list);
       } else {
         // Иначе - это первый запуск страницы. ИЛИ СПЕЦИАЛЬНОЕ ДЕЙСТВИЕ!
-        self::password_reset_send_code(); // 4.5
-        // TODO - Проверить. На этом этапе могут быть уже ошибки отсылки пароля!
-
-        self::password_reset_confirm(); // 4.5 // Если успешно - сюда мы не вернемся, а уйдём на редирект
+        // ...которые по факты должны обрабатываться в рамках provider->login()
       }
     } else {
+      $temp = reset(self::$providers_authorised);
+      self::$account = $temp->account;
+
       self::user_check_access(); // 4.5
 
       // Остались ли у нас в списке доступные игроки?
+      if(empty(self::$accessible_user_row_list)) {
+        // Нет ни одного игрока ни на одном авторизированном аккаунте
+        // Надо регать нового игрока
+        self::register_player(); // OK 4.5
+        // Либо есть self::$user, либо идем на новый круг авторизации
+      }
+
       if(!empty(self::$accessible_user_row_list)) {
         // Да, есть доступные игроки, которые так же прописаны в базе
 
@@ -221,10 +264,10 @@ class auth extends sn_module {
         }
 
       } else {
-        // Нет ни одного игрока ни на одном авторизированном аккаунте
-        // Надо регать нового игрока
-        self::register_player(); // OK 4.5
-        // Либо есть self::$user, либо идем на новый круг авторизации
+//        // Нет ни одного игрока ни на одном авторизированном аккаунте
+//        // Надо регать нового игрока
+//        self::register_player(); // OK 4.5
+//        // Либо есть self::$user, либо идем на новый круг авторизации
       }
       // IF self::$user
       // ELSE Либо есть self::$user, либо идем на новый круг авторизации
@@ -281,20 +324,23 @@ class auth extends sn_module {
    *
    * @param $player_name_unsafe
    *
-   * @throws Exception
+   * @return bool
    */
-  // OK v4.1
-  public static function db_player_name_check_existence($player_name_unsafe) {
+  // OK v4.6
+  public static function db_player_name_exists($player_name_unsafe) {
     sn_db_transaction_check(true);
 
     $player_name_safe = static::$db->db_escape($player_name_unsafe);
 
     $player_name_exists = static::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
-    if(!empty($player_name_exists)) {
-      throw new Exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
-    }
+    return !empty($player_name_exists);
   }
-  // OK v4.5
+  /**
+   * Получение максимального ID игрока
+   *
+   * @return int
+   */
+  // OK v4.6
   static function db_player_get_max_id() {
     $max_user_id = static::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{user}}`", true);
     return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
@@ -313,7 +359,7 @@ class auth extends sn_module {
    */
   // OK v4.5
   // TODO - неправильные параметры
-  static function db_translate_register_user($provider_id_safe, $provider_account_id_safe, $user_id_safe) {
+  protected static function db_translate_register_user($provider_id_safe, $provider_account_id_safe, $user_id_safe) {
     return static::$db->doquery(
       "INSERT INTO `{{account_translate}}` (`provider_id`, `provider_account_id`, `user_id`) VALUES
                   ({$provider_id_safe}, {$provider_account_id_safe}, {$user_id_safe});"
@@ -328,9 +374,7 @@ class auth extends sn_module {
    *
    * @return array
    */
-  // OK v4.5
-  // TODO - возможно, это должен делать провайдер - иметь свой транслятор. Наверное - кэширующий
-  // TODO - protected
+  // OK v4.6
   public static function db_translate_get_users_from_account_list($provider_id_unsafe, $account_list) {
     $account_translation = array();
 
@@ -349,49 +393,6 @@ class auth extends sn_module {
 
     return $account_translation;
   }
-
-
-
-  // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
-  // OK 4.5
-  protected static function db_confirmation_get_latest_by_type_and_email($confirmation_type_safe, $email_safe) {
-    return static::$db->doquery(
-      "SELECT * FROM {{confirmations}} WHERE
-          `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}' ORDER BY create_time DESC LIMIT 1;", true);
-  }
-  // OK 4.5
-  protected static function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_safe) {
-    return static::$db->doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'");
-  }
-  // OK 4.5
-  protected static function db_confirmation_get_unique_code_by_type_and_email($confirmation_type_safe, $email_safe) {
-    do {
-      // Ну, если у нас > 999.999 подтверждений - тут нас ждут проблемы...
-      $confirm_code_safe = static::$db->db_escape($confirm_code_unsafe = self::make_password_reset_code());
-      // $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
-      // Тип не нужен для проверки - код подтверждения должен быть уникален от слова "совсем"
-      $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE", true);
-    } while($query);
-
-    static::$db->doquery(
-      "REPLACE INTO {{confirmations}}
-        SET `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
-
-    return $confirm_code_unsafe;
-  }
-  // OK 4.5
-  protected static function db_confirmation_get_by_type_and_code($confirmation_type_safe, $confirmation_code_safe) {
-    return static::$db->doquery(
-      "SELECT * FROM {{confirmations}} WHERE
-          `type` = {$confirmation_type_safe} AND `code` = '{$confirmation_code_safe}' ORDER BY create_time DESC LIMIT 1;", true);
-  }
-
-
-
-
-
-
-
 
   /**
    * Сбрасывает значения полей
@@ -433,6 +434,9 @@ class auth extends sn_module {
     self::$device = new RequestInfo();
     self::$is_password_reset = sys_get_param('password_reset') ? true : false;
     self::$is_password_reset_confirm = sys_get_param('password_reset_confirm') ? true : false;
+    self::$is_player_register = sys_get_param('player_register') ? true : false;
+    self::$partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id'));
+    self::$server_name = sys_get_param_str_unsafe('server_name', SN_ROOT_VIRTUAL);
 
     self::$providers = array();
     foreach($sn_module_list['auth'] as $module_name => $module) {
@@ -466,7 +470,12 @@ class auth extends sn_module {
 
       sn_db_transaction_start();
       // Проверить наличие такого имени в истории имён
-      self::db_player_name_check_existence($player_name_unsafe);
+
+      if(self::db_player_name_exists($player_name_unsafe)) {
+        throw new Exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
+      }
+
+      ;
 
       // Узнаем язык и емейл игрока
       $player_language = '';
@@ -503,25 +512,20 @@ class auth extends sn_module {
       self::cookie_set(self::$user['id']);
 
       sn_db_transaction_commit();
-      self::$login_status = LOGIN_SUCCESS;
+      self::$register_status = LOGIN_SUCCESS;
     } catch(Exception $e) {
       sn_db_transaction_rollback();
 
       // Если старое имя занято
-      unset(self::$user);
+      // unset(self::$user);
+      self::$user = null;
 //      self::$player_suggested_name = $player_name_unsafe;
 //      $login_status = LOGIN_SUCCESS;
-      self::$login_status == LOGIN_UNDEFINED ? self::$login_status = $e->getMessage() : false;
+      self::$register_status == LOGIN_UNDEFINED ? self::$register_status = $e->getMessage() : false;
     }
   }
 
-  /**
-   * Функция управляет регистрацией нового игрока для существующих аккаунтов
-   */
-  // OK v4
-  public static function register_player() {
-    // Есть хотя бы один удачно залогинившийся аккаунт. Но у него/них нету ни одного связанного аккаунта
-
+  public function player_register_model() {
     // TODO ВСЕГДА ПРЕДЛАГАТЬ РЕГАТЬ ИГРОКА ИЛИ ПОДКЛЮЧИТЬ ИМЕЮЩЕГОСЯ!
     // TODO - НЕ РЕГАТЬ ИГРОКА ТОЛЬКО ЕСЛИ МЫ ТОЛЬКО ЧТО ЗАРЕГЕСТРИРОВАЛИ НОВЫЙ АККАУНТ! ДЛЯ ЭТОГО ДОЛЖЕН БЫТЬ СПЕЦИАЛЬНЫЙ ФЛАГ!
 
@@ -530,14 +534,19 @@ class auth extends sn_module {
     // TODO Хотя тут может получится вечный цикл - ПОДУМАТЬ
     // TODO Тут же можно пробовать провести попытку слияния аккаунтов - хотя это и очень небезопасно
 
+    if(sys_get_param('login_player_register_logout')) {
+      self::logout();
+    }
 
+    $original_suggest = '';
     // Смотрим - есть ли у нас данные от пользователя
-    if(($player_name_submitted = sys_get_param_int('submit_player_name'))) {
+    if(($player_name_submitted = sys_get_param('submit_player_name'))) {
       // Попытка регистрации нового игрока из данных, введенных пользователем
-      self::$player_suggested_name = sys_get_param_str_unsafe('player_name');
+      self::$player_suggested_name = sys_get_param_str_unsafe('player_suggested_name');
     } else {
       foreach(self::$providers_authorised as $provider) {
-        if(self::$player_suggested_name = $provider->suggest_player_name()) { // OK 4.5
+        if(self::$player_suggested_name = $provider->player_name_suggest()) { // OK 4.5
+          $original_suggest = $provider->player_name_suggest();
           break;
         }
       }
@@ -547,12 +556,83 @@ class auth extends sn_module {
     if(!self::$player_suggested_name) {
       $max_user_id = self::db_player_get_max_id(); // 4.5
       // TODO - предлагать имя игрока по локали
-      self::$player_suggested_name = 'Emperor ' . mt_rand($max_user_id + 1, $max_user_id + 1000);
-    } else {
+
+      // Проверить наличие такого имени в истории имён
+      do {
+        sn_db_transaction_rollback();
+        self::$player_suggested_name = 'Emperor ' . mt_rand($max_user_id + 1, $max_user_id + 1000);
+        sn_db_transaction_start();
+      } while(self::db_player_name_exists(self::$player_suggested_name));
+
+    }
+
+    if($player_name_submitted) {
       self::register_player_db_create(self::$player_suggested_name); // OK 4.5
+      if(self::$register_status == LOGIN_SUCCESS) {
+        sys_redirect(SN_ROOT_VIRTUAL . 'overview.php');
+      } elseif(self::$register_status == REGISTER_ERROR_PLAYER_NAME_EXISTS && $original_suggest == self::$player_suggested_name) {
+        // self::$player_suggested_name .=
+      }
 //      if(self::$login_status != LOGIN_SUCCESS) {
 //        // TODO Ошибка при регистрации нового игрока под текущим именем
 //      }
+    }
+
+//    pdump(self::$player_suggested_name);
+//    pdump('model');
+//    die('model');
+
+  }
+
+  public function player_register_view($template = null) {
+    global $template_result, $lang;
+
+    define('LOGIN_LOGOUT', true);
+
+    $template_result[F_PLAYER_REGISTER_MESSAGE] =
+      isset($template_result[F_PLAYER_REGISTER_MESSAGE]) && $template_result[F_PLAYER_REGISTER_MESSAGE]
+        ? $template_result[F_PLAYER_REGISTER_MESSAGE]
+        : (self::$register_status != LOGIN_UNDEFINED
+        ? $lang['sys_login_messages'][self::$register_status]
+        : false
+      );
+
+    if(self::$register_status == LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS) {
+      $prohibited_characters = array_map(function($value) {
+        return "'" . htmlentities($value, ENT_QUOTES, 'UTF-8') . "'";
+      }, str_split(LOGIN_REGISTER_CHARACTERS_PROHIBITED));
+      $template_result[F_PLAYER_REGISTER_MESSAGE] .= implode(', ', $prohibited_characters);
+    }
+
+//    pdump('view');
+//    die('view');
+    $template_result = array_merge($template_result, array(
+      'NAVBAR' => false,
+      'PLAYER_SUGGESTED_NAME' => sys_safe_output(self::$player_suggested_name),
+      'PARTNER_ID' => sys_safe_output(self::$partner_id),
+      'SERVER_NAME' => sys_safe_output(self::$server_name),
+      'PLAYER_REGISTER_STATUS' => self::$register_status,
+      'PLAYER_REGISTER_MESSAGE' => $template_result[F_PLAYER_REGISTER_MESSAGE],
+      'LOGIN_UNDEFINED' => LOGIN_UNDEFINED,
+    ));
+
+//    pdump(self::$register_status);
+
+    $template = gettemplate('login_player_register', $template);
+
+    return $template;
+  }
+
+  /**
+   * Функция управляет регистрацией нового игрока для существующих аккаунтов
+   */
+  // OK v4
+  public static function register_player() {
+    // Есть хотя бы один удачно залогинившийся аккаунт. Но у него/них нету ни одного связанного аккаунта
+
+    if(!self::$is_player_register) {
+      $partner_id = sys_get_param_int('id_ref', sys_get_param_int('partner_id'));
+      sys_redirect(SN_ROOT_VIRTUAL . 'index.php?page=player_register&player_register=1' . ($partner_id ? '&id_ref=' . $partner_id : ''));
     }
   }
 
@@ -669,8 +749,8 @@ class auth extends sn_module {
    *
    * @return bool
    */
-  // OK v4.2
-  static function password_check($password_unsafe) {
+  // OK v4.6
+  public static function password_check($password_unsafe) {
     $result = false;
 
     if(empty(self::$providers_authorised)) {
@@ -695,8 +775,8 @@ class auth extends sn_module {
    *
    * @return bool
    */
-  // OK v4.2
-  static function password_change($old_password_unsafe, $new_password_unsafe) {
+  // OK v4.6
+  public static function password_change($old_password_unsafe, $new_password_unsafe) {
     global $lang;
 
     if(empty(self::$providers_authorised)) {
@@ -737,153 +817,6 @@ class auth extends sn_module {
     // TODO - отсылать уведомление на емейл
 
     return !empty($providers_changed_password);
-  }
-
-  /**
-   * Отсылает письмо с кодом подтверждения для сброса пароля
-   *
-   * @return int|string
-   */
-  // OK v4.5
-  static function password_reset_send_code() {
-    global $lang, $config;
-
-    if(!self::$is_password_reset) {
-      return self::$login_status = LOGIN_UNDEFINED;
-    }
-
-    $account_translation = array();
-    $email_unsafe = sys_get_param_str_unsafe('email');
-
-    $providers_will_reset = array();
-    foreach(self::$providers as $provider_id => $provider) {
-      // Проверяем поддержку сброса пароля
-      if(!$provider->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
-        continue;
-      }
-      $account_list = $provider->db_account_list_get_on_email($email_unsafe); // OK 4.5
-      if(!empty($account_list)) {
-        $providers_will_reset[$provider_id] = $provider;
-
-        $this_provider_translation = self::db_translate_get_users_from_account_list($provider_id, array_keys($account_list)); // OK 4.5
-        if(!empty($this_provider_translation)) {
-          $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
-        }
-      }
-    }
-
-    try {
-      $user_list = db_user_list_by_id(array_keys($account_translation));
-      //if(empty($user_list)) {
-        // TODO - НЕПРАВИЛЬНО! Таблица трансляций МОЖЕТ быть пустой! Когда аккаунт есть, но нет ни одного пользователя для него!
-        // throw new Exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL, ERR_ERROR);
-      //}
-
-      // TODO - Проверять уровень доступа аккаунта!
-      // Аккаунты с АУТЛЕВЕЛ больше 0 - НЕ СБРАСЫВАЮТ ПАРОЛИ!
-      foreach($user_list as $user_id => $user_data) {
-        if($user_data['authlevel'] > AUTH_LEVEL_REGISTERED) {
-          throw new Exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT, ERR_ERROR);
-        }
-      }
-
-      $email_safe = static::$db->db_escape($email_unsafe);
-
-      $confirmation = static::db_confirmation_get_latest_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_safe); // OK 4.5
-      if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
-        throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN, ERR_ERROR);
-      }
-
-      // Удаляем предыдущие записи продтверждения сброса пароля
-      !empty($confirmation['id']) or static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_safe); // OK 4.5
-
-      sn_db_transaction_start();
-      $confirm_code_unsafe = self::db_confirmation_get_unique_code_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_safe); // OK 4.5
-      sn_db_transaction_commit();
-
-      @$result = mymail($email_unsafe,
-        sprintf($lang['log_lost_email_title'], $config->game_name),
-        sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . 'login.php', $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE), $config->game_name)
-      );
-
-      $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
-    } catch(Exception $e) {
-      sn_db_transaction_rollback();
-      $result = $e->getMessage();
-    }
-
-    return self::$login_status = $result;
-  }
-
-
-  /**
-   * Сброс пароля по введенному коду подтверждения
-   *
-   * @return int|string
-   */
-  // OK v4.5
-  static function password_reset_confirm() {
-    global $lang;
-
-    if(!self::$is_password_reset_confirm) {
-      return LOGIN_UNDEFINED;
-    }
-
-    $code_safe = sys_get_param_str('password_reset_code');
-
-    try {
-      sn_db_transaction_start();
-      $confirmation = self::db_confirmation_get_by_type_and_code(CONFIRM_PASSWORD_RESET, $code_safe); // OK 4.5
-
-      if(empty($confirmation)) {
-        throw new Exception(PASSWORD_RESET_ERROR_CODE_WRONG, ERR_ERROR);
-      }
-
-      if(SN_TIME_NOW - strtotime($confirmation['create_time']) > AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE) {
-        throw new Exception(PASSWORD_RESET_ERROR_CODE_TOO_OLD, ERR_ERROR);
-      }
-
-      $result = false;
-      $new_password_unsafe = self::make_random_password();
-      $salt_unsafe = self::password_salt_generate();
-
-      $users_translated = array();
-      foreach(self::$providers as $provider_id => $provider) {
-        $this_provider_translation = $provider->password_change_on_email($confirmation['email'], $new_password_unsafe, $salt_unsafe); // OK 4.5
-        $users_translated = array_replace_recursive($users_translated, $this_provider_translation);
-      }
-
-      if(!empty($users_translated)) {
-        // Отправляем в лички письмо о сбросе пароля
-
-        // ПО ОПРЕДЕЛЕНИЮ в $users_translated только
-        //    - аккаунты, поддерживающие сброс пароля
-        //    - список аккаунтов, имеющих тот же емейл, что указан в Подтверждении
-        //    - игроки, привязанные только к этим аккаунтам
-        // Значит им всем сразу скопом можно отправлять сообщения
-        $message = sprintf($lang['sys_password_reset_message_body'], $new_password_unsafe);
-        $message = sys_bbcodeParse($message) . '<br><br>';
-        // msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
-
-        foreach($users_translated as $user_id => $providers_list) {
-          msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
-        }
-      } else {
-        // Фигня - может быть и пустой, если у нас есть только аккаунт, но нет пользователей
-        // throw new Exception(AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION, ERR_ERROR);
-      }
-
-      // TODO - эксэпшн при ошибке
-      static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, static::$db->db_escape($confirmation['email'])); // OK 4.5
-
-      sn_db_transaction_commit();
-      sys_redirect('overview.php');
-    } catch (Exception $e) {
-      sn_db_transaction_rollback();
-      self::$login_status = $e->getMessage();
-    }
-
-    return self::$login_status;
   }
 
   /**
@@ -935,6 +868,7 @@ class auth extends sn_module {
     }
 
     $result[F_LOGIN_STATUS] = self::$login_status = empty(self::$providers_authorised) ? self::$login_status : LOGIN_SUCCESS;
+    $result[F_PLAYER_REGISTER_STATUS] = self::$register_status;
 //    self::$hidden[F_PROVIDER_ID] = $found_provider->manifest['provider_id'];
 //    self::$hidden[F_ACCOUNT_ID] = $found_provider->data[F_ACCOUNT_ID];
 //    self::$hidden[F_ACCOUNT] = $found_provider->data[F_ACCOUNT];
@@ -1060,5 +994,214 @@ class auth extends sn_module {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }
+
+//  /**
+//   * Отсылает письмо с кодом подтверждения для сброса пароля
+//   *
+//   * @return int|string
+//   */
+//  // OK v4.5
+//  static function password_reset_send_code() {
+//    global $lang, $config;
+//
+//    if(!self::$is_password_reset) {
+//      return self::$login_status = LOGIN_UNDEFINED;
+//    }
+//
+//    $account_translation = array();
+//    $email_unsafe = sys_get_param_str_unsafe('email');
+//
+//    $providers_will_reset = array();
+//    foreach(self::$providers as $provider_id => $provider) {
+//      // Проверяем поддержку сброса пароля
+//      if(!$provider->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
+//        continue;
+//      }
+//
+//      if($provider->account_get_by_email($email_unsafe)) {
+//        $providers_will_reset[$provider_id] = $provider;
+//
+//        $this_provider_translation = self::db_translate_get_users_from_account_list($provider_id, $provider->account->account_id); // OK 4.5
+//        if(!empty($this_provider_translation)) {
+//          $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
+//        }
+//      }
+////      $account_list = $provider->db_account_list_get_on_email($email_unsafe); // OK 4.5
+////      if(!empty($account_list)) {
+////        $providers_will_reset[$provider_id] = $provider;
+////
+////        $this_provider_translation = self::db_translate_get_users_from_account_list($provider_id, array_keys($account_list)); // OK 4.5
+////        if(!empty($this_provider_translation)) {
+////          $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
+////        }
+////      }
+//    }
+//
+//    try {
+//      $user_list = db_user_list_by_id(array_keys($account_translation));
+//      //if(empty($user_list)) {
+//      // TODO - НЕПРАВИЛЬНО! Таблица трансляций МОЖЕТ быть пустой! Когда аккаунт есть, но нет ни одного пользователя для него!
+//      // throw new Exception(PASSWORD_RESTORE_ERROR_WRONG_EMAIL, ERR_ERROR);
+//      //}
+//
+//      // TODO - Проверять уровень доступа аккаунта!
+//      // Аккаунты с АУТЛЕВЕЛ больше 0 - НЕ СБРАСЫВАЮТ ПАРОЛИ!
+//      foreach($user_list as $user_id => $user_data) {
+//        if($user_data['authlevel'] > AUTH_LEVEL_REGISTERED) {
+//          throw new Exception(PASSWORD_RESTORE_ERROR_ADMIN_ACCOUNT, ERR_ERROR);
+//        }
+//      }
+//
+//      $email_safe = static::$db->db_escape($email_unsafe);
+//
+//      $confirmation = static::db_confirmation_get_latest_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
+//      if(isset($confirmation['create_time']) && SN_TIME_NOW - strtotime($confirmation['create_time']) < PERIOD_MINUTE_10) {
+//        throw new Exception(PASSWORD_RESTORE_ERROR_TOO_OFTEN, ERR_ERROR);
+//      }
+//
+//      // Удаляем предыдущие записи продтверждения сброса пароля
+//      !empty($confirmation['id']) or static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
+//
+//      sn_db_transaction_start();
+//      $confirm_code_unsafe = self::db_confirmation_get_unique_code_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
+//      sn_db_transaction_commit();
+//
+//      @$result = mymail($email_unsafe,
+//        sprintf($lang['log_lost_email_title'], $config->game_name),
+//        sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . 'login.php', $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE), $config->game_name)
+//      );
+//
+//      $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
+//    } catch(Exception $e) {
+//      sn_db_transaction_rollback();
+//      $result = $e->getMessage();
+//    }
+//
+//    return self::$login_status = $result;
+//  }
+//
+//  /**
+//   * Сброс пароля по введенному коду подтверждения
+//   *
+//   * @return int|string
+//   */
+//  // OK v4.5
+//  static function password_reset_confirm() {
+//    global $lang;
+//
+//    if(!self::$is_password_reset_confirm) {
+//      return LOGIN_UNDEFINED;
+//    }
+//
+//    try {
+//      sn_db_transaction_start();
+//      $code_unsafe = sys_get_param_str_unsafe('password_reset_code');
+//      $confirmation = self::db_confirmation_get_by_type_and_code(CONFIRM_PASSWORD_RESET, $code_unsafe); // OK 4.5
+//
+//      if(empty($confirmation)) {
+//        throw new Exception(PASSWORD_RESTORE_ERROR_CODE_WRONG, ERR_ERROR);
+//      }
+//
+//      if(SN_TIME_NOW - strtotime($confirmation['create_time']) > AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE) {
+//        throw new Exception(PASSWORD_RESTORE_ERROR_CODE_TOO_OLD, ERR_ERROR);
+//      }
+//
+//      $result = false;
+//      $new_password_unsafe = self::make_random_password();
+//      $salt_unsafe = self::password_salt_generate();
+//
+//      $users_translated = array();
+//      foreach(self::$providers as $provider_id => $provider) {
+//        if($provider->password_change_on_email($confirmation['email'], $new_password_unsafe, $salt_unsafe) == LOGIN_SUCCESS) { // OK 4.5
+//          $this_provider_translation = self::db_translate_get_users_from_account_list($provider_id, $provider->account->account_id); // OK 4.5
+//          $users_translated = array_replace_recursive($users_translated, $this_provider_translation);
+//        }
+//      }
+//
+//      if(!empty($users_translated)) {
+//        // Отправляем в лички письмо о сбросе пароля
+//
+//        // ПО ОПРЕДЕЛЕНИЮ в $users_translated только
+//        //    - аккаунты, поддерживающие сброс пароля
+//        //    - список аккаунтов, имеющих тот же емейл, что указан в Подтверждении
+//        //    - игроки, привязанные только к этим аккаунтам
+//        // Значит им всем сразу скопом можно отправлять сообщения
+//        $message = sprintf($lang['sys_password_reset_message_body'], $new_password_unsafe);
+//        $message = sys_bbcodeParse($message) . '<br><br>';
+//        // msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
+//
+//        foreach($users_translated as $user_id => $providers_list) {
+//          msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
+//        }
+//      } else {
+//        // Фигня - может быть и пустой, если у нас есть только аккаунт, но нет пользователей
+//        // throw new Exception(AUTH_PASSWORD_RESET_INSIDE_ERROR_NO_ACCOUNT_FOR_CONFIRMATION, ERR_ERROR);
+//      }
+//
+//      // TODO - эксэпшн при ошибке
+//      static::db_confirmation_delete_by_type_and_email(CONFIRM_PASSWORD_RESET, $confirmation['email']); // OK 4.5
+//
+//      sn_db_transaction_commit();
+//      sys_redirect('overview.php');
+//    } catch (Exception $e) {
+//      sn_db_transaction_rollback();
+//      self::$login_status = $e->getMessage();
+//    }
+//
+//    return self::$login_status;
+//  }
+//
+//  // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
+//  // TODO - OK 4.6
+//  public static function db_confirmation_get_latest_by_type_and_email($confirmation_type_safe, $email_unsafe) {
+//    $email_safe = static::$db->db_escape($email_unsafe);
+//
+//    return static::$db->doquery(
+//      "SELECT * FROM {{confirmations}} WHERE
+//          `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}' ORDER BY create_time DESC LIMIT 1;", true);
+//  }
+//  // TODO - OK 4.6
+//  public static function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_unsafe) {
+//    $email_safe = static::$db->db_escape($email_unsafe);
+//
+//    return static::$db->doquery("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'");
+//  }
+//  // TODO - OK 4.6
+//  public static function db_confirmation_get_unique_code_by_type_and_email($confirmation_type_safe, $email_unsafe) {
+//    $email_safe = static::$db->db_escape($email_unsafe);
+//
+//    do {
+//      // Ну, если у нас > 999.999 подтверждений - тут нас ждут проблемы...
+//      $confirm_code_safe = static::$db->db_escape($confirm_code_unsafe = self::make_password_reset_code());
+//      // $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
+//      // Тип не нужен для проверки - код подтверждения должен быть уникален от слова "совсем"
+//      $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE", true);
+//    } while($query);
+//
+//    static::$db->doquery(
+//      "REPLACE INTO {{confirmations}}
+//        SET `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
+//
+//    return $confirm_code_unsafe;
+//  }
+//  // TODO - OK 4.6
+//  public static function db_confirmation_get_by_type_and_code($confirmation_type_safe, $confirmation_code_unsafe) {
+//    $confirmation_code_safe = static::$db->db_escape($confirmation_code_unsafe);
+//
+//    return static::$db->doquery(
+//      "SELECT * FROM {{confirmations}} WHERE
+//          `type` = {$confirmation_type_safe} AND `code` = '{$confirmation_code_safe}' ORDER BY create_time DESC LIMIT 1 FOR UPDATE", true);
+//  }
+  // OK v4.1
+//  public static function db_player_name_check_existence($player_name_unsafe) {
+//    sn_db_transaction_check(true);
+//
+//    $player_name_safe = static::$db->db_escape($player_name_unsafe);
+//
+//    $player_name_exists = static::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
+//    if(!empty($player_name_exists)) {
+//      throw new Exception(REGISTER_ERROR_PLAYER_NAME_EXISTS, ERR_ERROR);
+//    }
+//  }
 
 }

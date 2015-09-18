@@ -2,12 +2,15 @@
 
 defined('INSIDE') or die('Hacking attempt');
 
-/**
- * constants.php
- *
- * @version 1
- * @copyright 2008 By Chlorel for XNova
- */
+define('DB_VERSION', '39');
+define('SN_RELEASE', '39');
+define('SN_VERSION', '40a10.23');
+define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
+
+// Game type constants starts with GAME_
+define('GAME_SUPERNOVA', 0);
+define('GAME_OGAME'    , 1);
+define('GAME_BLITZ'    , 2);
 
 // Date & time range constants
 define('DATE_FOREVER', 2000000000);
@@ -27,7 +30,6 @@ define('PERIOD_DAY_3'    , PERIOD_DAY * 3);
 define('PERIOD_WEEK_2'   , PERIOD_WEEK * 2);
 define('PERIOD_MONTH_2'  , PERIOD_MONTH * 2);
 define('PERIOD_MONTH_3'  , PERIOD_MONTH * 3);
-
 
 define('FONT_SIZE_PERCENT_MIN', 56.25);
 define('FONT_SIZE_PERCENT_DEFAULT', 68.75);
@@ -49,16 +51,6 @@ define('UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE', 5); // Шаг тзмене
 
 define('PLANET_DENSITY_TO_DARK_MATTER_RATE', 10);
 
-define('DB_VERSION', '39');
-define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.22');
-define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
-
-// Game type constants starts with GAME_
-define('GAME_SUPERNOVA', 0);
-define('GAME_OGAME'    , 1);
-define('GAME_BLITZ'    , 2);
-
 // Pattern to parse planet coordinates like [1:123:14] - no expedition [x:x:16] will pass!
 define('PLANET_COORD_PREG', '/^\[([1-9]):([1-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5]):(1[0-5]|[1-9])\]$/i');
 // Pattern to parse scheduler '[[[[[YYYY-]MM-]DD ]HH:]MM:]SS'
@@ -71,6 +63,7 @@ define('PREG_DATE_SQL_RELAXED', '/(20[1-9][0-9])(?:\-(1[0-2]|0[1-9])(?:\-(3[01]|
 define('LOGIN_PASSWORD_RESET_CONFIRMATION_LENGTH', 6);
 define('SN_SYS_SEC_CHARS_CONFIRMATION', '0123456789');
 define('AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE', PERIOD_DAY);
+define('AUTH_PLAYER_NAME_LENGTH', 32);
 
 // define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', '/\\ |^&\'?"`<>[]{}()%');
 define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', "`'\"\\/ |^&?<>[]{}()%;\n\r\t\v\f\x00\x1a");
@@ -414,14 +407,14 @@ define('REGISTER_ERROR_ACCOUNT_NAME_EXISTS', 9);
 define('REGISTER_ERROR_PASSWORD_INSECURE', 10);
 define('REGISTER_SUCCESS', 11);
 
-define('PASSWORD_RESTORE_ERROR_WRONG_EMAIL', 12);
+define('PASSWORD_RESTORE_ERROR_EMAIL_NOT_EXISTS', 12);
 define('PASSWORD_RESTORE_ERROR_TOO_OFTEN', 13);
 define('PASSWORD_RESTORE_SUCCESS_CODE_SENT', 14);
 define('PASSWORD_RESTORE_ERROR_SENDING', 15);
-define('PASSWORD_RESET_ERROR_CODE_WRONG', 16);
-define('PASSWORD_RESET_ERROR_CODE_TOO_OLD', 17);
+define('PASSWORD_RESTORE_ERROR_CODE_WRONG', 16);
+define('PASSWORD_RESTORE_ERROR_CODE_TOO_OLD', 17);
 
-define('PASSWORD_RESTORE_ERROR_CHANGE', 18);
+define('AUTH_ERROR_INTERNAL_PASSWORD_CHANGE_ON_RESTORE', 18);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SENT', 19);
 define('PASSWORD_RESTORE_SUCCESS_PASSWORD_SEND_ERROR', 20);
 define('REGISTER_ERROR_PASSWORD_DIFFERENT', 21);
@@ -453,6 +446,8 @@ define('REGISTER_ERROR_PLAYER_NAME_SHORT', 42);
 define('REGISTER_ERROR_PLAYER_NAME_EXISTS', 43);
 
 define('LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET', 44);
+define('PASSWORD_RESTORE_ERROR_CODE_OK_BUT_NO_ACCOUNT_FOR_EMAIL', 45);
+define('PASSWORD_RESTORE_ERROR_CODE_EMPTY', 46);
 
 
 
@@ -509,6 +504,9 @@ define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
 
 define('F_LOGIN_STATUS',  'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');
+
+define('F_PLAYER_REGISTER_STATUS',  'F_PLAYER_REGISTER_STATUS');
+define('F_PLAYER_REGISTER_MESSAGE', 'F_PLAYER_REGISTER_MESSAGE');
 
 define('F_USER_ID', 'F_USER_ID');
 define('F_USER', 'F_USER');

@@ -87,12 +87,12 @@ only screen and (min-device-pixel-ratio : 1.5) {
 {
   body, form, table, input, select
   {
-    font-size: 13px;
+    font-size: 1.2em;
   }
 
   #log_skipper
   {
-    height: 200px;
+    height: 16em;
   }
 
   #log_title
@@ -102,15 +102,15 @@ only screen and (min-device-pixel-ratio : 1.5) {
 
   #log_description
   {
-    margin: 20px;
+    margin: 1.5em;
   }
 
   #log_register {
-    margin:20px;
+    margin: 1.5em;
   }
 
   #log_menu {
-    padding: 10px 0;
+    padding: 1em 0;
   }
 }
 
@@ -129,7 +129,7 @@ body {
   background-repeat: no-repeat;
 
   position: relative;
-  border:1px solid #FFFFFF;
+  border: 0.1em solid #FFFFFF;
 
   width: 450px;
   margin: auto;
@@ -152,7 +152,7 @@ body {
   color: #0a1c25;
   background-color     : #FFFFFF;
 
-  font-size: 10px;
+  font-size: 0.75em;
   font-weight: bold;
 
 }
@@ -238,10 +238,21 @@ body {
 }
 
 #login_container {
-  width: 430px;
-  font-size: 13px;
+  width: 33em;
+  font-size: 1em;
   display: none;
-  margin-top: 10px;
+  margin-top: 1em;
+}
+
+#player_register {
+  width: 33em;
+  font-size: 1em;
+/*  display: none;*/
+  margin: 1em 0;
+}
+
+#player_register_logout {
+  margin: 1em 0;
 }
 
 #login_container .ui-tabs-nav {
@@ -272,8 +283,8 @@ body {
 }
 
 #login_menu {
-  padding: 10px 0;
-  border-top: 1px solid white;
+  padding: 1em 0;
+  border-top: 0.1em solid white;
 }
 
 .menu_line :not(:last-child):after
@@ -282,5 +293,5 @@ body {
 }
 
 .password_show {
-  width: 130px;
+  width: 10em;
 }

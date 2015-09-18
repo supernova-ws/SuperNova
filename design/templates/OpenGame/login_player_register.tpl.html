@@ -1,0 +1,29 @@
+<form method="POST" action="">
+  <div id="log_main">
+    <div id="log_title">{L_sys_supernova}: {L_sys_universe} "{C_game_name}"</div>
+
+    <div id="log_description">
+      {L_login_player_register_description}
+    </div>
+
+    <!-- IF PLAYER_REGISTER_STATUS != LOGIN_UNDEFINED -->
+    <div id="log_error">
+      {PLAYER_REGISTER_MESSAGE}
+    </div>
+    <!-- ENDIF -->
+    <div id="player_register">
+      <input type="hidden" name="id_ref" value="{PARTNER_ID}" />
+      <input type="hidden" name="server_name" value="{SERVER_NAME}" />
+
+      {L_login_player_register_player_name} <input type="text" maxlength="{D_AUTH_PLAYER_NAME_LENGTH}" name="player_suggested_name" value="{PLAYER_SUGGESTED_NAME}" />
+      <input type="submit" name="submit_player_name" value="{L_login_player_register_do}" />
+    </div>
+
+    <div id="player_register_logout">
+      {L_login_player_register_logout_description}<br/>
+      <button type="submit" id="login_player_register_logout" name="login_player_register_logout">
+        {L_login_player_register_logout}
+      </button>
+    </div>
+  </div>
+</form>

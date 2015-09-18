@@ -59,13 +59,13 @@
     <div id="tab_login">
       <!-- <form action="login.php{LANG}{referral}#tab_login" method="post"> -->
       <form action="{FILENAME}{REQUEST_PARAMS}#tab_login" method="post">
-        <table width="340" align="center" class="c_c">
+        <table width="100%" align="center" class="c_c">
           <tr>
-            <td>
-              {L_User_name}
+            <td width="30%">
+              {L_login_account_name_or_email}
             </td>
             <td>
-              <input name="username" type="text" value="{USERNAME}" maxlength="32" class="log_input" />
+              <input name="username" type="text" value="{USERNAME}" maxlength="64" class="log_input" />
             </td>
           </tr>
           <tr>
@@ -94,7 +94,7 @@
     <div id="tab_register">
       <form name="registerForm" method="POST" action="{FILENAME}{REQUEST_PARAMS}#tab_register" onsubmit="changeAction('register');" >
         <input type="hidden" name="id_ref" value="{id_ref}">
-        <table width="340" align="center">
+        <table width="100%" align="center">
           <tbody>
           <tr style="margin-bottom: 10px;">
             <td colspan="2" class="markup c_j">
@@ -102,14 +102,14 @@
             </td>
           </tr>
 
-          <tr>
-            <th width="179">{L_User_name}</th>
-            <th width="161"><input name="username" type="text" value="{USERNAME}" size="20" maxlength="32" /></th>
-          </tr>
+          <!--<tr>-->
+            <!--<th width="50%">{L_User_name}</th>-->
+            <!--<th width="50%"><input name="username" type="text" value="{USERNAME}" size="20" maxlength="32" /></th>-->
+          <!--</tr>-->
 
           <tr>
-            <th width="179">{L_sys_email}</th>
-            <th width="161"><input name="email" type="text" value="{EMAIL}" size="20" maxlength="64" /></th>
+            <th width="50%">{L_sys_email}</th>
+            <th width="50%"><input name="email" type="text" value="{EMAIL}" size="20" maxlength="64" /></th>
           </tr>
           <tr>
             <th colspan="2">

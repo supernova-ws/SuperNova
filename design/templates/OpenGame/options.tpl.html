@@ -58,11 +58,21 @@
         <!-- ENDIF -->
         <tr>
           <th>
-            <!-- IF AUTH_PROVIDER -->
-            {L_opt_game_user_name}
-            <!-- ELSE -->
             {L_opt_account_name}
-            <!-- ENDIF -->
+          </th>
+          <th width=330 class="ok">
+            {ACCOUNT_NAME}
+          </th>
+        </tr>
+
+        <tr>
+          <th>
+            {L_opt_game_user_name}
+            <!--&lt;!&ndash; IF AUTH_PROVIDER &ndash;&gt;-->
+            <!--{L_opt_game_user_name}-->
+            <!--&lt;!&ndash; ELSE &ndash;&gt;-->
+            <!--{L_opt_account_name}-->
+            <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
           </th>
           <th width=330>
             <!-- IF SERVER_NAME_CHANGE -->

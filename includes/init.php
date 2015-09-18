@@ -72,6 +72,7 @@ require_once('classes/template.php');
 require_once('classes/functions_template.php');
 require_once('classes/module.php');
 require_once('classes/RequestInfo.php');
+require_once('classes/Confirmation.php');
 require_once('classes/Account.php');
 require_once('classes/auth.php');
 // require_once('auth_provider.php');
@@ -282,10 +283,8 @@ if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > 
 global $user;
 $result = auth::login();
 
-
-if(!empty(auth::$providers_authorised) && empty(auth::$user['id'])) {
-  die('{Тут должна быть ваша реклама. Точнее - ввод имени игрока}');
-}
+global $account_logged_in;
+$account_logged_in = !empty(auth::$account) && $result[F_LOGIN_STATUS] == LOGIN_SUCCESS;
 
 //pdump($result[F_LOGIN_STATUS], LOGIN_SUCCESS);
 // die();
@@ -381,10 +380,11 @@ $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) 
 
 if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'overview.php');
-}
-
-if(!$allow_anonymous && !$sys_user_logged_in) {
-// die('Редирект на фход');
+} elseif($account_logged_in && !$sys_user_logged_in) { // empty(auth::$user['id'])
+//  pdump($sn_page_name);
+//  pdump(INITIAL_PAGE);
+//  die('{Тут должна быть ваша реклама. Точнее - ввод имени игрока}');
+} elseif(!$allow_anonymous && !$sys_user_logged_in) {
   // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }

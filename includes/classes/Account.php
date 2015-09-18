@@ -85,22 +85,14 @@ class Account {
    *
    * @return bool
    */
-  // TODO - ПЕРЕДЕЛАТЬ Должен работать со списком аккаунтов
-  // OK v4.1
+  // OK v4.6
   public function password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
     if(!$this->password_check($old_password_unsafe)) {
       return false;
     }
 
-    $salt_unsafe === null ? $salt_unsafe = self::password_salt_generate() : false;
-
-    $salted_password_unsafe = self::password_encode($new_password_unsafe, $salt_unsafe);
-    $result = $this->db_set_password($salted_password_unsafe, $salt_unsafe);
-
-    if($result) {
-      $this->account_password = $salted_password_unsafe;
-      $this->account_salt = $salt_unsafe;
-    }
+    $salt_unsafe === null ? $salt_unsafe = $this->password_salt_generate() : false;
+    $result = $this->db_set_password($new_password_unsafe, $salt_unsafe);
 
     return $result;
   }
@@ -199,7 +191,7 @@ class Account {
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}' OR `account_email` = '{$email_safe}'", true);
+    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}' OR `account_name` = '{$email_safe}' OR `account_email` = '{$email_safe}'", true);
     return $this->assign_from_db_row($account);
   }
   /**
@@ -262,7 +254,7 @@ class Account {
     ) ? true : false;
 
     if($result) {
-      $this->db_get_by_id($this->account_id);
+      $result = $this->db_get_by_id($this->account_id);
     }
 
     return $result;

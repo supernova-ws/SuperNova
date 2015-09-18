@@ -377,7 +377,7 @@ function sn_options_view($template = null) {
     'USER_ID'        => $user['id'],
 
     // 'AUTH_PROVIDER' => $template_result[F_PROVIDER_ID],
-    'ACCOUNT_NAME' => '{ЭТО НАДО ЗАМЕНИТЬ НА ИМЯ АККАУНТА}', // sys_safe_output($template_result[F_ACCOUNT]['account_name']),
+    'ACCOUNT_NAME' => sys_safe_output(auth::$account->account_name),
 
 //    'ACCOUNT_NAME' => sys_safe_output($account['account_name']),
 
@@ -408,7 +408,7 @@ function sn_options_view($template = null) {
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => htmlspecialchars($user['username']),
     'opt_mail1_data' => $user['email'],
-    'opt_mail2_data' => '{ЭТО НАДО ЗАМЕНИТЬ НА ЕМЕЙЛ АККАУНТА}', // sys_safe_output($template_result[F_ACCOUNT]['account_email']),
+    'opt_mail2_data' => sys_safe_output(auth::$account->account_email),
     'OPT_DPATH_DATA' => $user['dpath'],
 
     'PLAYER_OPTION_PLANET_SORT_INVERSE' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE],

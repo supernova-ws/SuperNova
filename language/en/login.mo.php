@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a0.0
+* @version 40a10.23
 *
 */
 
@@ -135,4 +135,7 @@ $a_lang_array = (array(
 
   'login_register_email_hint' => 'Указывайте работающий e-mail - владельцем аккаунта считается владелец указанного e-mail<br />
     Постарайтесь не использовать ящики на mail.ru',
+
+  'login_account_name_or_email' => 'Account name or e-mail:',
+
 ));
