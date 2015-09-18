@@ -48,7 +48,7 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
 
       case ACTION_USE:
         // Impersonate
-        auth::impersonate($user_selected);
+        classSupernova::$auth->impersonate($user_selected);
       break;
     }
   } else {

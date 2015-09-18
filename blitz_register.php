@@ -92,7 +92,7 @@ pdump($system_step, '$system_step');
 //        'planet' => $planet,
 //      ), $create_result);
       $user_new = player_create($username_safe, sys_random_string(), array(
-        'password_encoded_unsafe' => auth::password_encode($string_data[1], ''),
+        'password_encoded_unsafe' => core_auth::password_encode($string_data[1], ''),
 
         'galaxy' => $galaxy,
         'system' => $system,

@@ -28,7 +28,7 @@ class classSupernova {
 
 
   /**
-   * @var auth $auth
+   * @var core_auth $auth
    */
   public static $auth = null;
 

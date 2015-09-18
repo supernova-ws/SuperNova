@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.23');
+define('SN_VERSION', '40a10.24');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -500,7 +500,7 @@ define('F_PROVIDER_ID',   'F_PROVIDER_ID');
 // define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
 
 define('F_IMPERSONATE_STATUS', 'F_IMPERSONATE_STATUS');
-define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
+// define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
 
 define('F_LOGIN_STATUS',  'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');

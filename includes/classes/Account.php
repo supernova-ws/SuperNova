@@ -39,6 +39,9 @@ class Account {
    */
   public $account_language = '';
 
+  public $account_metamatter = 0;
+  public $account_metamatter_total = 0;
+
   /**
    * @var int
    */
@@ -108,24 +111,27 @@ class Account {
   // OK v4.5
   public function assign_from_db_row($row) {
     $this->reset();
-    if(!empty($row) && is_array($row)) {
-      $this->account_id = $row['account_id'];
-      $this->account_name = $row['account_name'];
-      $this->account_password = $row['account_password'];
-      $this->account_salt = $row['account_salt'];
-      $this->account_email = $row['account_email'];
-      $this->account_email_verified = $row['account_email_verified'];
-      $this->account_register_time = $row['account_register_time'];
-      $this->account_language = $row['account_language'];
-
-      $this->is_exists = 1;
-      $this->is_loaded = 1;
-
-      return true;
-    } else {
+    if(empty($row) || !is_array($row)) {
       return false;
     }
+    $this->account_id = $row['account_id'];
+    $this->account_name = $row['account_name'];
+    $this->account_password = $row['account_password'];
+    $this->account_salt = $row['account_salt'];
+    $this->account_email = $row['account_email'];
+    $this->account_email_verified = $row['account_email_verified'];
+    $this->account_register_time = $row['account_register_time'];
+    $this->account_language = $row['account_language'];
+
+    $this->account_metamatter = $row['account_metamatter'];
+    $this->account_metamatter_total = $row['account_metamatter_total'];
+
+    $this->is_exists = 1;
+    $this->is_loaded = 1;
+
+    return true;
   }
+
   /**
    * Возвращает аккаунт по его ID
    *
@@ -154,7 +160,6 @@ class Account {
     $this->reset();
 
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
-    // $account = doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
 
     $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
     return $this->assign_from_db_row($account_row);
@@ -272,9 +277,7 @@ class Account {
    */
   // OK v4.5
   protected function password_encode($password, $salt) {
-//    $class_name = $this->auth;
-//    return $class_name::password_encode($password, $salt);
-    return auth::password_encode($password, $salt);
+    return core_auth::password_encode($password, $salt);
   }
   /**
    * Генерирует соль
@@ -283,9 +286,7 @@ class Account {
    */
   // OK v4.5
   protected function password_salt_generate() {
-//    $class_name = $this->auth;
-//    return $class_name::password_salt_generate();
-    return auth::password_salt_generate();
+    return core_auth::password_salt_generate();
   }
 
 
@@ -293,26 +294,26 @@ class Account {
 
   // ------ UNUSED -----------------------------------------------------------------------------------------------------
 
-  /**
-   * Физически меняет пароль аккаунта в БД
-   *
-   * @param $new_password_encoded_safe
-   * @param $salt_safe
-   *
-   * @return array|resource
-   */
-  // OK v4.1
-  public function db_set_password_by_id($account_id_unsafe, $new_password_encoded_unsafe, $salt_unsafe) {
-    $account_id_safe = $this->db->db_escape($account_id_unsafe);
-    $new_password_encoded_safe = $this->db->db_escape($new_password_encoded_unsafe);
-    $salt_safe = $this->db->db_escape($salt_unsafe);
-
-    return $this->db->doquery(
-      "UPDATE {{account}} SET
-        `account_password` = '{$new_password_encoded_safe}',
-        `account_salt` = '{$salt_safe}'
-      WHERE `account_id` = '{$account_id_safe}'"
-    );
-  }
+//  /**
+//   * Физически меняет пароль аккаунта в БД
+//   *
+//   * @param $new_password_encoded_safe
+//   * @param $salt_safe
+//   *
+//   * @return array|resource
+//   */
+//  // OK v4.1
+//  public function db_set_password_by_id($account_id_unsafe, $new_password_encoded_unsafe, $salt_unsafe) {
+//    $account_id_safe = $this->db->db_escape($account_id_unsafe);
+//    $new_password_encoded_safe = $this->db->db_escape($new_password_encoded_unsafe);
+//    $salt_safe = $this->db->db_escape($salt_unsafe);
+//
+//    return $this->db->doquery(
+//      "UPDATE {{account}} SET
+//        `account_password` = '{$new_password_encoded_safe}',
+//        `account_salt` = '{$salt_safe}'
+//      WHERE `account_id` = '{$account_id_safe}'"
+//    );
+//  }
 
 }

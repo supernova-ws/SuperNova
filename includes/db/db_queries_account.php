@@ -7,7 +7,7 @@
  */
 
 function    db_account_by_user_id($user_id_safe, &$result = null) {
-  die('db_account_by_user_id() должна быть реализована в класса auth!');
+  die('db_account_by_user_id() должна быть реализована в класса core_auth!');
   // return sn_function_call(__FUNCTION__, array($user_id_safe, &$result));
 }
 /*
@@ -22,7 +22,7 @@ function sn_db_account_by_user_id($user_id_safe, &$result = null) {
 */
 
 function    db_account_set_by_user_id($user_id_safe, $set, &$result = null) {
-  die('db_account_set_by_user_id() должна быть реализована в класса auth!');
+  die('db_account_set_by_user_id() должна быть реализована в класса core_auth!');
   // return sn_function_call(__FUNCTION__, array($user_id_safe, $set, &$result));
 }
 /*

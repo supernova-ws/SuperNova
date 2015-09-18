@@ -349,3 +349,31 @@ function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $d
 
   return $variable_id;
 }
+
+/**
+ * Функция проверяет наличие имени игрока в базе
+ *
+ * @param $player_name_unsafe
+ *
+ * @return bool
+ */
+// OK v4.7
+function db_player_name_exists($player_name_unsafe) {
+  sn_db_transaction_check(true);
+
+  $player_name_safe = classSupernova::$db->db_escape($player_name_unsafe);
+
+  $player_name_exists = classSupernova::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
+  return !empty($player_name_exists);
+}
+
+/**
+ * Получение максимального ID игрока
+ *
+ * @return int
+ */
+// OK v4.7
+function db_player_get_max_id() {
+  $max_user_id = classSupernova::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{user}}`", true);
+  return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
+}

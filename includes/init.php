@@ -72,9 +72,10 @@ require_once('classes/template.php');
 require_once('classes/functions_template.php');
 require_once('classes/module.php');
 require_once('classes/RequestInfo.php');
+require_once('classes/PlayerToAccountTranslate.php');
 require_once('classes/Confirmation.php');
 require_once('classes/Account.php');
-require_once('classes/auth.php');
+require_once('classes/core_auth.php');
 // require_once('auth_provider.php');
 require_once('classes/auth_local.php');
 require_once('classes/sn_module_payment.php');
@@ -139,9 +140,9 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 $sn_module = array();
 $sn_module_list = array();
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
-// Здесь - потому что auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
+// Здесь - потому что core_auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
 // TODO - переработать этот костыль
-classSupernova::$auth = new auth();
+classSupernova::$auth = new core_auth();
 // new auth_local();
 // pdump($sn_module);
 
@@ -270,21 +271,15 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
 }
 
 
-global $skip_fleet_update;
-$skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
-if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval) {
-  require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
-  flt_flying_fleet_handler($skip_fleet_update);
-}
-
 
 //pdump($sn_module);die();
 
 global $user;
-$result = auth::login();
+// $result = core_auth::login();
+$result = classSupernova::$auth->login();
 
 global $account_logged_in;
-$account_logged_in = !empty(auth::$account) && $result[F_LOGIN_STATUS] == LOGIN_SUCCESS;
+$account_logged_in = !empty(classSupernova::$auth->account) && $result[F_LOGIN_STATUS] == LOGIN_SUCCESS;
 
 //pdump($result[F_LOGIN_STATUS], LOGIN_SUCCESS);
 // die();
@@ -367,7 +362,7 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
   $bantime = date(FMT_DATE_TIME, $template_result[F_BANNED_STATUS]);
   // TODO: Add ban reason. Add vacation time. Add message window
   // sn_sys_logout(false, true);
-  // auth::logout(false, true);
+  // core_auth::logout(false, true);
   message("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
   die("{$lang['sys_banned_msg']} {$bantime}");
 }
@@ -380,7 +375,7 @@ $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) 
 
 if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'overview.php');
-} elseif($account_logged_in && !$sys_user_logged_in) { // empty(auth::$user['id'])
+} elseif($account_logged_in && !$sys_user_logged_in) { // empty(core_auth::$user['id'])
 //  pdump($sn_page_name);
 //  pdump(INITIAL_PAGE);
 //  die('{Тут должна быть ваша реклама. Точнее - ввод имени игрока}');
@@ -401,3 +396,10 @@ define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
 
 execute_hooks($sn_mvc['model'][''], $template);
+
+global $skip_fleet_update;
+$skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
+if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval) {
+  require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
+  flt_flying_fleet_handler($skip_fleet_update);
+}

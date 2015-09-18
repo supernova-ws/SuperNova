@@ -19,7 +19,7 @@ function sys_user_vacation($user) {
 
   if($user['vacation']) {
     // sn_sys_logout(false, true);
-    // auth::logout(false, true);
+    // core_auth::logout(false, true);
 
     $template = gettemplate('vacation', true);
 

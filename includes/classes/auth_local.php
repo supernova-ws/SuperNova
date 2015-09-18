@@ -9,7 +9,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.23# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a10.24# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -295,7 +295,8 @@ class auth_local extends sn_module {
         // return $this->account_login_status;
       }
 
-      $account_translation = classSupernova::$auth->db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
+      // $account_translation = classSupernova::$auth->db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
+      $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
       $user_list = db_user_list_by_id(array_keys($account_translation));
 
       // TODO - Проверять уровень доступа аккаунта!
@@ -395,7 +396,8 @@ class auth_local extends sn_module {
         $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $this->account->account_name, $new_password_unsafe);
         @$operation_result = mymail($confirmation['email'], $message_header, htmlspecialchars($message));
 
-        $users_translated = classSupernova::$auth->db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
+        // $users_translated = classSupernova::$auth->db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
+        $users_translated = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
         if(!empty($users_translated)) {
           // Отправляем в лички письмо о сбросе пароля
 
@@ -476,10 +478,10 @@ class auth_local extends sn_module {
 
       $this->account->db_get_by_name_or_email($this->input_login_unsafe, $this->input_email_unsafe);
       if($this->account->is_exists) {
-        if($this->account->account_name == $this->input_login_unsafe) {
-          throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
-        } else {
+        if($this->account->account_email == $this->input_email_unsafe) {
           throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
+        } else {
+          throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
         }
       }
 
@@ -729,13 +731,13 @@ class auth_local extends sn_module {
   protected function password_encode($password, $salt) {
 //    $class_name = $this->auth;
 //    return $class_name::password_encode($password, $salt);
-    return auth::password_encode($password, $salt);
+    return core_auth::password_encode($password, $salt);
   }
   // OK v4
   protected function password_salt_generate() {
-//    $class_name = $this->auth;
+//    $class_name = $this->core_auth;
 //    return $class_name::password_salt_generate();
-    return auth::password_salt_generate();
+    return core_auth::password_salt_generate();
   }
   /**
    * Генерирует случайный пароль
@@ -744,7 +746,7 @@ class auth_local extends sn_module {
    */
   // OK v4
   protected function make_random_password() {
-    return auth::make_random_password();
+    return core_auth::make_random_password();
   }
   protected function flog($message, $die = false) {
     if(!defined('DEBUG_AUTH') || !DEBUG_AUTH) {
@@ -824,7 +826,7 @@ class auth_local extends sn_module {
 //      return $this->account_login_status;
 //    }
 //
-//    // $account_translation = auth::db_translate_get_users_from_account_list($this->manifest['provider_id'], $account->account_id); // OK 4.5
+//    // $account_translation = core_auth::db_translate_get_users_from_account_list($this->manifest['provider_id'], $account->account_id); // OK 4.5
 //    // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
 //    $message_header = sprintf($lang['log_lost_email_title'], $config->game_name);
 //    $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $account->account_name, $new_password_unsafe);
@@ -860,7 +862,7 @@ class auth_local extends sn_module {
 ////
 ////      if($account->db_set_password($new_password_unsafe, $salt_unsafe)) { // OK 4.5
 ////        // Получаем список юзеров на этом аккаунте
-////        $this_provider_translation = auth::db_translate_get_users_from_account_list($this->manifest['provider_id'], $account->account_id); // OK 4.5
+////        $this_provider_translation = core_auth::db_translate_get_users_from_account_list($this->manifest['provider_id'], $account->account_id); // OK 4.5
 ////        if(!empty($this_provider_translation)) {
 ////          $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
 ////          // TODO - if !$this->account - тогда берем первый аккаунт и в него логиним
