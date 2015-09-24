@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a10.24');
+define('SN_VERSION', '40a10.25');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -223,10 +223,13 @@ define('ERR_HACK'               , 4); // Operation is qualified as hack attempt
 //define('RESULT_HACKING' , 3);
 //define('RESULT_PAYMENT_ERR_REQUEST_UNSUPPORTED', 5);
 
-define('PAYMENT_STATUS_TEST' , -1); // Test payment
-define('PAYMENT_STATUS_NONE' , 0); // No status
-define('PAYMENT_STATUS_COMPLETE' , 1); // Money received, DM sent to user
-define('PAYMENT_STATUS_CANCELED' , 2); // Payment cancelled, MM deduced from user
+// define('PAYMENT_STATUS_TEST' , -1); // Test payment
+define('PAYMENT_STATUS_NONE', 0); // No status
+define('PAYMENT_STATUS_COMPLETE', 1); // Money received, DM sent to user
+define('PAYMENT_STATUS_CANCELED', 2); // Payment cancelled, MM deduced from user
+define('PAYMENT_STATUS_EXPIRED', 3); // Payment cancelled, MM deduced from user
+
+define('PAYMENT_EXPIRE_TIME', 0);
 
 define('SN_PAYMENT_REQUEST_UNDEFINED_ERROR', -1);
 define('SN_PAYMENT_REQUEST_OK', 0);
@@ -250,6 +253,14 @@ define('SN_PAYMENT_REQUEST_INVOICE_ALREADY_CANCELLED', 17); // Ошибка от
 define('SN_PAYMENT_REQUEST_ORDER_NOT_FOUND', 18); // Ошибка 
 define('SN_PAYMENT_REQUEST_PAYMENT_NOT_COMPLETE', 19); // Ошибка отмены платежа - платеж еще не закончен
 // define('SN_PAYMENT_REQUEST_CANCEL_COMPLETE', 20); // 
+define('SN_PAYMENT_REQUEST_INTERNAL_CONFIG_ERROR', 21); // Ошибка конфигурации
+define('SN_PAYMENT_REQUEST_DB_ERROR_PAYMENT_CREATE', 22); // Ошибка создания платежа
+define('SN_PAYMENT_REQUEST_ERROR_TEST_PAYMENT', 23); // Ошибка - внешний статус платежа не совпадает с запомненным статусом платежа
+define('SN_PAYMENT_ERROR_INTERNAL_NO_EXTERNAL_CURRENCY_SET', 24); // Ошибка - не установлена внешняя валюта
+
+define('PAYMENT_DESCRIPTION_MAX', 0);
+define('PAYMENT_DESCRIPTION_100', 100);
+define('PAYMENT_DESCRIPTION_250', 250);
 
 
 define('PAYMENT_METHOD_EMONEY', 1000);
@@ -469,7 +480,7 @@ define('AUTH_LEVEL_OPERATOR', 2);
 define('AUTH_LEVEL_ADMINISTRATOR', 3);
 define('AUTH_LEVEL_DEVELOPER', 4);
 
-define('ACCOUNT_PROVIDER_BASIC', 0);
+define('ACCOUNT_PROVIDER_NONE', 0);
 define('ACCOUNT_PROVIDER_LOCAL', 1);
 define('ACCOUNT_PROVIDER_CENTRAL', 2);
 define('ACCOUNT_PROVIDER_VKONTAKTE', 3);

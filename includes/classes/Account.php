@@ -56,6 +56,11 @@ class Account {
    */
   public $db;
 
+  protected $table_check = array(
+    'account' => 'account',
+    'log_metamatter' => 'log_metamatter',
+  );
+
   public function reset() {
     $this->account_id = 0;
     $this->account_name = '';
@@ -72,6 +77,12 @@ class Account {
   public function __construct($db = null) {
     $this->reset();
     $this->db = is_object($db) ? $db : classSupernova::$db;
+
+    foreach($this->table_check as $table_name) {
+      if(empty($this->db->table_list[$table_name])) {
+        die('Не хватает таблиц для работы системы авторизации. Сообщите Администрации!');
+      }
+    }
   }
 
   // OK 4.5
@@ -289,31 +300,140 @@ class Account {
     return core_auth::password_salt_generate();
   }
 
+  /**
+   * Вставляет запись об изменении количества ММ в лог ММ
+   *
+   * @param $comment
+   * @param $change_type
+   * @param $metamatter
+   *
+   * @return int|string
+   */
+  // OK 4.8
+  protected function db_mm_log_insert($comment, $change_type, $metamatter) {
+    $provider_id_safe = intval(core_auth::$main_provider->manifest['provider_id']);
+    //$account_id_safe = $this->db->db_escape($this->account_id);
+    $account_id_safe = intval($this->account_id);
+    $account_name_safe = $this->db->db_escape($this->account_name);
 
+    // $user_id_safe = $this->db->db_escape(core_auth::$user['id']);
+    $user_id_safe = intval(core_auth::$user['id']);
+    $username_safe = $this->db->db_escape(core_auth::$user['username']);
+
+    $metamatter = round(floatval($metamatter));
+
+    $comment_safe = $this->db->db_escape($comment);
+
+    $server_name_safe = $this->db->db_escape(SN_ROOT_VIRTUAL);
+    $page_url_safe = $this->db->db_escape($_SERVER['SCRIPT_NAME']);
+
+    $this->db->doquery("INSERT INTO {{log_metamatter}} SET
+        `provider_id` = {$provider_id_safe},
+        `account_id` = {$account_id_safe},
+        `account_name` = '{$account_name_safe}',
+        `user_id` = {$user_id_safe},
+        `username` = '{$username_safe}',
+        `reason` = {$change_type},
+        `amount` = {$metamatter},
+        `comment` = '{$comment_safe}',
+        `server_name` = '{$server_name_safe}',
+        `page` = '{$page_url_safe}'
+      ;");
+    $result = $this->db->db_insert_id();
+
+    return $result;
+  }
+
+  // OK 4.8
+  public function metamatter_change($change_type, $metamatter, $comment = false, $already_changed = false) {
+    global $debug, $mm_change_legit, $config;
+
+    if(!$this->is_exists || !($metamatter = round(floatval($metamatter)))) {
+      $debug->error('Ошибка при попытке манипуляции с ММ');
+      return false;
+    }
+
+    $account_id_safe = $this->db->db_escape($this->account_id);
+
+    $mm_change_legit = true;
+    // $sn_data_metamatter_db_name = pname_resource_name(RES_METAMATTER);
+    if($already_changed) {
+      $metamatter_total_delta = 0;
+      $result = -1;
+    } else {
+      $metamatter_total_delta = $metamatter > 0 ? $metamatter : 0;
+
+      $result = $this->db->doquery(
+        "UPDATE {{account}}
+        SET
+          `account_metamatter` = `account_metamatter` + '{$metamatter}'" .
+          ($metamatter_total_delta ? ", `account_immortal` = IF(`account_metamatter_total` + '{$metamatter_total_delta}' >= {$config->player_metamatter_immortal}, NOW(), `account_immortal`), `account_metamatter_total` = `account_metamatter_total` + '{$metamatter_total_delta}'" : '') .
+        " WHERE `account_id` = {$account_id_safe}"
+      );
+      if(!$result) {
+        $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
+      }
+      $result = classSupernova::$db->db_affected_rows();
+    }
+
+    $user_id_safe = $this->db->db_escape(core_auth::$user['id']);
+
+    if(!$result) {
+      $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
+    }
+
+    if(!$already_changed) {
+      $this->account_metamatter += $metamatter;
+      $this->account_metamatter_total += $metamatter_total_delta;
+    }
+
+    if(is_array($comment)) {
+      $comment = call_user_func_array('sprintf', $comment);
+    }
+
+    $result = $this->db_mm_log_insert($comment, $change_type, $metamatter);
+
+//    $comment_safe = $this->db->db_escape($comment);
+//    $page_url_safe = $this->db->db_escape($_SERVER['SCRIPT_NAME']);
+////      $row = db_user_by_id($user_id, false, 'username');
+////      $row['username'] = db_escape($row['username']);
+//    $account_name_safe = $this->db->db_escape($this->account_name);
+//    $username_safe = $this->db->db_escape(core_auth::$user['username']);
+//    $provider_id_safe = intval(core_auth::$main_provider->manifest['provider_id']);
+//    $server_name_safe = $this->db->db_escape(SN_ROOT_VIRTUAL);
+//    $this->db->doquery("INSERT INTO {{log_metamatter}} SET
+//        `provider_id` = {$provider_id_safe},
+//        `account_id` = {$account_id_safe},
+//        `account_name` = '{$account_name_safe}',
+//        `user_id` = {$user_id_safe},
+//        `username` = '{$username_safe}',
+//        `reason` = {$change_type},
+//        `amount` = {$metamatter},
+//        `comment` = '{$comment_safe}',
+//        `server_name` = '{$server_name_safe}',
+//        `page` = '{$page_url_safe}'
+//      ;");
+//    $result = $this->db->db_insert_id();
+
+    if($metamatter > 0) {
+      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;", '', true);
+      if($old_referral['id']) {
+        $dark_matter_from_metamatter = $metamatter * AFFILIATE_MM_TO_REFERRAL_DM;
+        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter_from_metamatter}' WHERE `id` = {$user_id_safe} LIMIT 1;");
+        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1;", '', true);
+
+        $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
+        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {
+          rpg_points_change($new_referral['id_partner'], RPG_REFERRAL_BOUGHT_MM, $partner_bonus, "Incoming MM From Referral ID {$user_id_safe}");
+        }
+      }
+    }
+
+    $mm_change_legit = false;
+    return $result;
+  }
 
 
   // ------ UNUSED -----------------------------------------------------------------------------------------------------
-
-//  /**
-//   * Физически меняет пароль аккаунта в БД
-//   *
-//   * @param $new_password_encoded_safe
-//   * @param $salt_safe
-//   *
-//   * @return array|resource
-//   */
-//  // OK v4.1
-//  public function db_set_password_by_id($account_id_unsafe, $new_password_encoded_unsafe, $salt_unsafe) {
-//    $account_id_safe = $this->db->db_escape($account_id_unsafe);
-//    $new_password_encoded_safe = $this->db->db_escape($new_password_encoded_unsafe);
-//    $salt_safe = $this->db->db_escape($salt_unsafe);
-//
-//    return $this->db->doquery(
-//      "UPDATE {{account}} SET
-//        `account_password` = '{$new_password_encoded_safe}',
-//        `account_salt` = '{$salt_safe}'
-//      WHERE `account_id` = '{$account_id_safe}'"
-//    );
-//  }
 
 }

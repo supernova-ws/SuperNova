@@ -181,7 +181,10 @@ switch($mode = sys_get_param_str('mode')) {
           $query = '1';
         }
         db_planet_set_by_id($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
-        rpg_points_change($user['id'], RPG_GOVERNOR, -$build_data[BUILD_CREATE][RES_DARK_MATTER],
+        rpg_points_change(
+          $user['id'],
+          RPG_GOVERNOR,
+          -$build_data[BUILD_CREATE][RES_DARK_MATTER],
           sprintf($lang['ov_governor_purchase'], $lang['tech'][$hire], $hire, $planetrow['PLANET_GOVERNOR_LEVEL'], uni_render_planet_full($planetrow, '', false, true))
         );
 

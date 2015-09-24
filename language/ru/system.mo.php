@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a10.23#
+* @version #40a10.25#
 *
 */
 
@@ -947,7 +947,7 @@ $a_lang_array = (array(
   'sys_radio' => 'Радио "Космос"',
 
   'sys_auth_provider_list' => array(
-    ACCOUNT_PROVIDER_BASIC => 'Таблица USERS',
+    ACCOUNT_PROVIDER_NONE => 'Таблица USERS',
     ACCOUNT_PROVIDER_LOCAL => 'Таблица ACCOUNT',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральная таблица ACCOUNT',
   ),
@@ -989,7 +989,7 @@ $a_lang_array = (array(
 
     REGISTER_ERROR_PLAYER_NAME_TRIMMED => 'Имя игрока не может начинаться или заканчиваться пробельными символами (символы "Пробел", "Табуляция", "Перенос строки" итд)',
     REGISTER_ERROR_PLAYER_NAME_EMPTY => 'Имя игрока не может быть пустым',
-    REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS => 'Имя игрока не содержит запрещенные символы',
+    REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS => 'Имя игрока содержит запрещенные символы',
     REGISTER_ERROR_PLAYER_NAME_SHORT => 'Имя игрока не может быть короче ' . LOGIN_LENGTH_MIN . ' символов',
     REGISTER_ERROR_PLAYER_NAME_EXISTS => 'Это имя игрока уже занято. Пожалуйста, выберите другое',
 
@@ -1144,7 +1144,7 @@ $a_lang_array = (array(
   'sys_login_register_message_body' => "Ваше имя для входа в игру (логин)\r\n%1\$s\r\n\r\nВаш пароль для входа в игру\r\n%2\$s\r\n\r\nЗапишите или запомните эти данные!",
 
   'auth_provider_list' => array(
-    ACCOUNT_PROVIDER_BASIC => 'Таблица users',
+    ACCOUNT_PROVIDER_NONE => 'Таблица users',
     ACCOUNT_PROVIDER_LOCAL => 'Таблица account',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральное хранилище',
   ),

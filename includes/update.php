@@ -1004,7 +1004,7 @@ switch($new_version) {
     // 2015-08-27 19:14:05 40a10.0
 
     // Старая версия таблицы
-    if(!empty($update_tables['account']['account_is_global'])) {
+    if(!empty($update_tables['account']['account_is_global']) || empty($update_tables['account']['account_immortal'])) {
       upd_drop_table('account');
       upd_drop_table('account_translate');
     }
@@ -1021,6 +1021,7 @@ switch($new_version) {
           `account_language` varchar(5) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT 'ru',
           `account_metamatter` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Metamatter amount',
           `account_metamatter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Metamatter amount ever bought',
+          `account_immortal` TIMESTAMP NULL,
           PRIMARY KEY (`account_id`),
           UNIQUE KEY `I_account_name` (`account_name`),
           KEY `I_account_email` (`account_email`) -- Для поиска дубликатов по емейлу
@@ -1039,9 +1040,9 @@ switch($new_version) {
 
       upd_do_query(
         "INSERT IGNORE INTO {{account}}
-            (`account_id`, `account_name`, `account_register_time`, `account_password`, `account_salt`, `account_email`, `account_language`)
+            (`account_id`, `account_name`, `account_password`, `account_salt`, `account_email`, `account_register_time`, `account_language`, `account_metamatter`, `account_metamatter_total`, `account_immortal`)
           SELECT
-            `id`, `username`, FROM_UNIXTIME(register_time), `password`, `salt`, `email_2`, `lang`
+            `id`, `username`, `password`, `salt`, `email_2`, FROM_UNIXTIME(register_time), `lang`, `metamatter`, `metamatter_total`, `immortal`
           FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . ";"
       );
 
@@ -1065,8 +1066,27 @@ switch($new_version) {
     // 2015-09-07 21:11:48 40a10.19
     upd_alter_table('security_url', "MODIFY COLUMN `url_string` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''", empty($update_tables['security_url']['ube_report_capture_result']));
 
-    // #ctv
+    // 2015-09-24 11:39:37 40a10.25
+    if(empty($update_tables['log_metamatter']['provider_id'])) {
+      upd_alter_table('log_metamatter', array(
+        "ADD COLUMN `provider_id` tinyint unsigned NOT NULL DEFAULT " . ACCOUNT_PROVIDER_LOCAL . " COMMENT 'Account provider'",
+        "ADD COLUMN `account_id` bigint(20) unsigned NOT NULL DEFAULT 0",
+        "ADD COLUMN `account_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT ''",
+        "ADD COLUMN `server_name` varchar(128) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '" . SN_ROOT_VIRTUAL . "'",
+      ), empty($update_tables['log_metamatter']['provider_id']));
 
+      upd_do_query("UPDATE {{log_metamatter}} SET `account_id` = `user_id`, `account_name` = `username`");
+
+      upd_alter_table('payment', array(
+        "ADD COLUMN `payment_provider_id` tinyint unsigned NOT NULL DEFAULT " . ACCOUNT_PROVIDER_LOCAL . " COMMENT 'Payment account provider'",
+        "ADD COLUMN `payment_account_id` bigint(20) unsigned NOT NULL",
+        "ADD COLUMN `payment_account_name` varchar(32) CHARACTER SET utf8 NOT NULL DEFAULT ''",
+      ), !$update_tables['payment']['payment_account_id']);
+    }
+
+    upd_do_query("UPDATE {{log_metamatter}} SET `account_id` = `user_id`, `account_name` = `username`");
+
+    // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 40;
 }

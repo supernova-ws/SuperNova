@@ -29,37 +29,37 @@ $message = '';
 $message_status = ERR_ERROR;
 
 if($points = sys_get_param_float('points')) {
-  // If points not empty...
-  if($username = sys_get_param_str_unsafe('id_user')) {
-    $row = db_user_by_id($username, false, 'id, username', true, true);
-    if(!isset($row['id'])) {
-      $row = db_user_by_username($username, false, 'id, username', true, true);
+  try {
+    $username = sys_get_param_str_unsafe('id_user');
+    if(empty($username)) {
+      throw new Exception($lang['adm_mm_no_dest']);
     }
-    if(is_array($row) && isset($row['id'])) {
-      // Does anything post to DB?
-      if(mm_points_change($row['id'], RPG_ADMIN, $points, sprintf($lang['adm_matter_change_log_record'],
-        $row['id'], db_escape($row['username']),
-        $user['id'], db_escape($user['username']),
-        db_escape(sys_get_param_str('reason'))
-      ))) {
-        $message = sprintf($lang['adm_mm_user_added'], $row['username'], $row['id'], $points);
-        $isNoError = true;
-        $message_status = ERR_NONE;
-      } else {
-        // No? We will say it to user...
-        $message = $lang['adm_mm_add_err'];
-      }
+
+    $an_account = new Account(classSupernova::$auth->account->db);
+    if(!$an_account->db_get_by_id($username) && !$an_account->db_get_by_name($username) && !$an_account->db_get_by_email($username)) {
+      throw new Exception(sprintf($lang['adm_mm_user_none'], $username));
     }
-  } else {
-    // Points not empty but destination is not set - this means error
-    $message = $lang['adm_mm_no_dest'];
+
+    if(!$an_account->metamatter_change(RPG_ADMIN, $points, sprintf(
+      $lang['adm_matter_change_log_record'],
+      $an_account->account_id, db_escape($an_account->account_name),
+      $user['id'], db_escape($user['username']),
+      db_escape(sys_get_param_str('reason'))
+    ))) {
+      throw new Exception($lang['adm_mm_add_err']);
+    }
+    $message = sprintf($lang['adm_mm_user_added'], $an_account->account_name, $an_account->account_id, pretty_number($points));
+    $isNoError = true;
+    $message_status = ERR_NONE;
+  } catch (Exception $e) {
+    $message = $e->getMessage();
   }
-} elseif($id_user) {
-  // Points is empty but destination is set - this again means error
-  $message = $lang['adm_mm_no_quant'];
+//} elseif($id_user) {
+//  // Points is empty but destination is set - this again means error
+//  $message = $lang['adm_mm_no_quant'];
 }
 
-if(!$isNoError) {
+if($message_status == ERR_ERROR) {
   $template->assign_vars(array(
     'ID_USER' => $username,
     'POINTS' => $points,

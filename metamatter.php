@@ -1,5 +1,7 @@
 <?php
 
+global $debug;
+
 // Придумать какой статус должен быть у глобальных ответов, что бы не перекрывать статусы платежных систем
 // Может добавить спецстатус "Ответ системы платежа" и парсить дальше getMessage
 // см constants.php
@@ -25,41 +27,41 @@ empty($lang['pay_currency_list'][$player_currency]) ? ($player_currency =  $play
 // $player_currency_default != $player_currency ? player_save_option($user, PLAYER_OPTION_CURRENCY_DEFAULT, $player_currency) : false;
 $player_currency_default != $player_currency ? classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT] = $player_currency : false;
 
-// Конвертация ММ в ТМ
-if(sys_get_param('mm_convert_do')) {
-  try {
-    if(!($mm_convert = sys_get_param_id('mm_convert'))) {
-      throw new exception($lang['pay_msg_mm_convert_wrong_amount'], ERR_ERROR);
-    }
-
-    sn_db_transaction_start();
-    $user = db_user_by_id($user['id'], true);
-    if($mm_convert > mrc_get_level($user, null, RES_METAMATTER)) {
-      throw new exception($lang['pay_msg_mm_convert_not_enough'], ERR_ERROR);
-    }
-
-    $payment_comment = sprintf("Игрок сконвертировал %d Метаматерии в Тёмную Материю", $mm_convert);
-    if(!mm_points_change($user['id'], RPG_CONVERT_MM, -$mm_convert, $payment_comment)) {
-      throw new exception($lang['pay_msg_mm_convert_mm_error'], ERR_ERROR);
-    }
-    if(!rpg_points_change($user['id'], RPG_CONVERT_MM, $mm_convert, $payment_comment)) {
-      throw new exception($lang['pay_msg_mm_convert_dm_error'], ERR_ERROR);
-    }
-
-    $template->assign_block_vars('result', array(
-      'STATUS'  => ERR_NONE,
-      'MESSAGE' => sprintf('Конвертация %1$s единиц Метаматерии в %1$s единиц Тёмной Материи успешно произведена', pretty_number($mm_convert)),
-    ));
-
-    sn_db_transaction_commit();
-  } catch(exception $e) {
-    sn_db_transaction_rollback();
-    $template->assign_block_vars('result', $response = array(
-      'STATUS'  => $e->getCode(),
-      'MESSAGE' => $e->getMessage(),
-    ));
-  }
-}
+//// Конвертация ММ в ТМ
+//if(sys_get_param('mm_convert_do')) {
+//  try {
+//    if(!($mm_convert = sys_get_param_id('mm_convert'))) {
+//      throw new exception($lang['pay_msg_mm_convert_wrong_amount'], ERR_ERROR);
+//    }
+//
+//    sn_db_transaction_start();
+//    $user = db_user_by_id($user['id'], true);
+//    if($mm_convert > mrc_get_level($user, null, RES_METAMATTER)) {
+//      throw new exception($lang['pay_msg_mm_convert_not_enough'], ERR_ERROR);
+//    }
+//
+//    $payment_comment = sprintf("Игрок сконвертировал %d Метаматерии в Тёмную Материю", $mm_convert);
+//    if(!mm_points_change($user['id'], RPG_CONVERT_MM, -$mm_convert, $payment_comment)) {
+//      throw new exception($lang['pay_msg_mm_convert_mm_error'], ERR_ERROR);
+//    }
+//    if(!rpg_points_change($user['id'], RPG_CONVERT_MM, $mm_convert, $payment_comment)) {
+//      throw new exception($lang['pay_msg_mm_convert_dm_error'], ERR_ERROR);
+//    }
+//
+//    $template->assign_block_vars('result', array(
+//      'STATUS'  => ERR_NONE,
+//      'MESSAGE' => sprintf('Конвертация %1$s единиц Метаматерии в %1$s единиц Тёмной Материи успешно произведена', pretty_number($mm_convert)),
+//    ));
+//
+//    sn_db_transaction_commit();
+//  } catch(exception $e) {
+//    sn_db_transaction_rollback();
+//    $template->assign_block_vars('result', $response = array(
+//      'STATUS'  => $e->getCode(),
+//      'MESSAGE' => $e->getMessage(),
+//    ));
+//  }
+//}
 
 // Таблица скидок
 $prev_discount = 0;
@@ -81,7 +83,7 @@ if(isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus_
 if($payment_id = sys_get_param_id('payment_id')) {
   $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
   if($payment && $payment['payment_user_id'] == $user['id']) {
-    if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE || $payment['payment_status'] == PAYMENT_STATUS_TEST) {
+    if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
       $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['pay_msg_mm_purchase_complete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name'], $payment['payment_dark_matter_gained'])));
     }
     if($payment['payment_status'] == PAYMENT_STATUS_NONE) {
@@ -90,7 +92,7 @@ if($payment_id = sys_get_param_id('payment_id')) {
         'STATUS' => 1,
       ));
     }
-    if($payment['payment_status'] == PAYMENT_STATUS_TEST) {
+    if($payment['payment_test']) {
       $template->assign_block_vars('result', array(
         'MESSAGE' => sprintf($lang['pay_msg_mm_purchase_test']),
         'STATUS' => -1,
@@ -260,6 +262,7 @@ if($request['metamatter'] && $payment_module) {
       'STATUS'  => $e->getCode(),
       'MESSAGE' => $e->getMessage(),
     ));
+    $debug->warning('Результат операции: код ' . $e->getCode() . ' сообщение "' . $e->getMessage() . '"', 'Ошибка платежа', LOG_INFO_PAYMENT);
   }
 }
 

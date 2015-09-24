@@ -9,67 +9,67 @@
 */
 
 
-function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false){return sn_function_call('mm_points_change', array($user_id, $change_type, $metamatter, $comment, $already_changed, &$result));}
-function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false, &$result) {
-  global $debug, $mm_change_legit, $user, $config;
-
-  if(!$user_id || !($metamatter = floatval($metamatter))) {
-    return false;
-  }
-
-  $mm_change_legit = true;
-  $sn_data_metamatter_db_name = pname_resource_name(RES_METAMATTER);
-  if($already_changed) {
-    $result = -1;
-  } else {
-    $metamatter_total = $metamatter > 0 ? $metamatter : 0;
-    db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}'" .
-      ($metamatter > 0 ? ", `immortal` = IF(`metamatter_total` + '{$metamatter_total}' >= {$config->player_metamatter_immortal}, NOW(), `immortal`), `metamatter_total` = `metamatter_total` + '{$metamatter_total}'" : ''));
-    $result = classSupernova::$db->db_affected_rows();
-  }
-
-  if($result) {
-    $page_url = db_escape($_SERVER['SCRIPT_NAME']);
-    if(is_array($comment)) {
-      $comment = call_user_func_array('sprintf', $comment);
-    }
-    $comment = db_escape($comment);
-    $row = db_user_by_id($user_id, false, 'username');
-    $row['username'] = db_escape($row['username']);
-    doquery("INSERT INTO {{log_metamatter}} SET
-      `user_id` = {$user_id},
-      `username` = '{$row['username']}',
-      `reason` = {$change_type},
-      `amount` = {$metamatter},
-      `comment` = '{$comment}',
-      `page` = '{$page_url}'
-    ;");
-    $result = db_insert_id();
-
-    if($user['id'] == $user_id) {
-      $user['metamatter'] += $metamatter;
-    }
-
-    if($metamatter > 0) {
-      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", '', true);
-      if($old_referral['id']) {
-        $dark_matter_from_metamatter = $metamatter * AFFILIATE_MM_TO_REFERRAL_DM;
-        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter_from_metamatter}' WHERE `id` = {$user_id} LIMIT 1;");
-        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
-
-        $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
-        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {
-          rpg_points_change($new_referral['id_partner'], RPG_REFERRAL_BOUGHT_MM, $partner_bonus, "Incoming MM From Referral ID {$user_id}");
-        }
-      }
-    }
-  } else {
-    $debug->warning("Error adjusting Metamatter for player ID {$user_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
-  }
-
-  $mm_change_legit = false;
-  return $result;
-}
+//function mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false){return sn_function_call('mm_points_change', array($user_id, $change_type, $metamatter, $comment, $already_changed, &$result));}
+//function sn_mm_points_change($user_id, $change_type, $metamatter, $comment = false, $already_changed = false, &$result) {
+//  global $debug, $mm_change_legit, $user, $config;
+//
+//  if(!$user_id || !($metamatter = floatval($metamatter))) {
+//    return false;
+//  }
+//
+//  $mm_change_legit = true;
+//  $sn_data_metamatter_db_name = pname_resource_name(RES_METAMATTER);
+//  if($already_changed) {
+//    $result = -1;
+//  } else {
+//    $metamatter_total = $metamatter > 0 ? $metamatter : 0;
+//    db_user_set_by_id($user_id, "`{$sn_data_metamatter_db_name}` = `{$sn_data_metamatter_db_name}` + '{$metamatter}'" .
+//      ($metamatter > 0 ? ", `immortal` = IF(`metamatter_total` + '{$metamatter_total}' >= {$config->player_metamatter_immortal}, NOW(), `immortal`), `metamatter_total` = `metamatter_total` + '{$metamatter_total}'" : ''));
+//    $result = classSupernova::$db->db_affected_rows();
+//  }
+//
+//  if($result) {
+//    $page_url = db_escape($_SERVER['SCRIPT_NAME']);
+//    if(is_array($comment)) {
+//      $comment = call_user_func_array('sprintf', $comment);
+//    }
+//    $comment = db_escape($comment);
+//    $row = db_user_by_id($user_id, false, 'username');
+//    $row['username'] = db_escape($row['username']);
+//    doquery("INSERT INTO {{log_metamatter}} SET
+//      `user_id` = {$user_id},
+//      `username` = '{$row['username']}',
+//      `reason` = {$change_type},
+//      `amount` = {$metamatter},
+//      `comment` = '{$comment}',
+//      `page` = '{$page_url}'
+//    ;");
+//    $result = db_insert_id();
+//
+//    if($user['id'] == $user_id) {
+//      $user['metamatter'] += $metamatter;
+//    }
+//
+//    if($metamatter > 0) {
+//      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1 FOR UPDATE;", '', true);
+//      if($old_referral['id']) {
+//        $dark_matter_from_metamatter = $metamatter * AFFILIATE_MM_TO_REFERRAL_DM;
+//        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter_from_metamatter}' WHERE `id` = {$user_id} LIMIT 1;");
+//        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id} LIMIT 1;", '', true);
+//
+//        $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
+//        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {
+//          rpg_points_change($new_referral['id_partner'], RPG_REFERRAL_BOUGHT_MM, $partner_bonus, "Incoming MM From Referral ID {$user_id}");
+//        }
+//      }
+//    }
+//  } else {
+//    $debug->warning("Error adjusting Metamatter for player ID {$user_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
+//  }
+//
+//  $mm_change_legit = false;
+//  return $result;
+//}
 
 
 /**
@@ -91,6 +91,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
 
   $dm_change_legit = true;
   $sn_data_dark_matter_db_name = pname_resource_name(RES_DARK_MATTER);
+
   if($already_changed) {
     $rows_affected = 1;
   } else {
@@ -108,7 +109,8 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
         if(is_array($comment)) {
           $comment = call_user_func_array('sprintf', $comment);
         }
-        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
+//        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
+        classSupernova::$auth->account->metamatter_change($change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
         $dark_matter = -$dark_matter_exists;
       }
     } else {

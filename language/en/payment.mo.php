@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a9.0
+* @version 40a10.25
 *
 */
 
@@ -216,5 +216,9 @@ $a_lang_array = (array(
   'pay_msg_mm_request_amount_invalid' => 'Wrong <span class="metamatter">Metamatter</span> amount',
   'pay_msg_mm_request_config_invalid' => 'There is error in payment module configuration. Please contact server Administration',
   'pay_msg_mm_request_mm_adjust_error' => 'Error adjusting <span class="metamatter">Metamatter</span>',
+
+  'pay_msg_request_error_db_payment_create' => 'Ошибка создания платежа в БД',
+  'pay_msg_request_error_test_payment' => 'Статус платежа в БД не совпадает с информацией в запросе',
+  'pay_msg_error_internal_no_external_currency_set' => 'ВНУТРЕННЯЯ ОШИБКА или ОШИБКА КОНФИГУРАЦИИ ПЛАТЁЖНОГО МОДУЛЯ! Не установлена валюта платёжной системы! Пожалуйста, сообщите Администрации сервера!',
 
 ));

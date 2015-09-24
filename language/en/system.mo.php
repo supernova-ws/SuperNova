@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a10.23
+* @version 40a10.25
 *
 */
 
@@ -940,7 +940,7 @@ $a_lang_array = (array(
   'sys_radio' => '"Space" radio',
 
   'sys_auth_provider_list' => array(
-    ACCOUNT_PROVIDER_BASIC => 'Таблица USERS',
+    ACCOUNT_PROVIDER_NONE => 'Таблица USERS',
     ACCOUNT_PROVIDER_LOCAL => 'Таблица ACCOUNT',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральная таблица ACCOUNT',
   ),
@@ -1132,7 +1132,7 @@ $a_lang_array = (array(
   'sys_login_register_message_body' => "Ваше имя для входа в игру (логин)\r\n%1\$s\r\n\r\nВаш пароль для входа в игру\r\n%2\$s\r\n\r\nЗапишите или запомните эти данные!",
 
   'auth_provider_list' => array(
-    ACCOUNT_PROVIDER_BASIC => 'Таблица users',
+    ACCOUNT_PROVIDER_NONE => 'Таблица users',
     ACCOUNT_PROVIDER_LOCAL => 'Таблица account',
     ACCOUNT_PROVIDER_CENTRAL => 'Центральное хранилище',
   ),

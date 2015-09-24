@@ -454,9 +454,9 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   } elseif(in_array($unit_id, sn_get_groups('governors'))) {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
   } elseif($unit_id == RES_DARK_MATTER) {
-    $mercenary_level = $user[$unit_db_name] + ($plain ? 0 : $user[pname_resource_name(RES_METAMATTER)]);
+    $mercenary_level = $user[$unit_db_name] + ($plain ? 0 : classSupernova::$auth->account->account_metamatter);
   } elseif($unit_id == RES_METAMATTER) {
-    $mercenary_level = $user[$unit_db_name];
+    $mercenary_level = classSupernova::$auth->account->account_metamatter; //$user[$unit_db_name];
   } elseif(in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR) {
     $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
