@@ -310,15 +310,16 @@ class Account {
    * @return int|string
    */
   // OK 4.8
-  protected function db_mm_log_insert($comment, $change_type, $metamatter) {
+  protected function db_mm_log_insert($comment, $change_type, $metamatter, $user_id_unsafe) {
     $provider_id_safe = intval(core_auth::$main_provider->manifest['provider_id']);
     //$account_id_safe = $this->db->db_escape($this->account_id);
     $account_id_safe = intval($this->account_id);
     $account_name_safe = $this->db->db_escape($this->account_name);
 
     // $user_id_safe = $this->db->db_escape(core_auth::$user['id']);
-    $user_id_safe = intval(core_auth::$user['id']);
-    $username_safe = $this->db->db_escape(core_auth::$user['username']);
+    // $user_id_safe = intval(core_auth::$user['id']);
+    $user_id_safe = intval($user_id_unsafe);
+    $username_safe = !empty(core_auth::$user['username']) ? $this->db->db_escape(core_auth::$user['username']) : '';
 
     $metamatter = round(floatval($metamatter));
 
@@ -376,7 +377,14 @@ class Account {
       $result = classSupernova::$db->db_affected_rows();
     }
 
-    $user_id_safe = $this->db->db_escape(core_auth::$user['id']);
+    if(empty(core_auth::$user['id'])) {
+      $user_list = PlayerToAccountTranslate::db_translate_get_users_from_account_list(core_auth::$main_provider->manifest['provider_id'], $this->account_id);
+      reset($user_list);
+      $user_id_unsafe = key($user_list);
+    } else {
+      $user_id_unsafe = core_auth::$user['id'];
+    }
+    $user_id_safe = $this->db->db_escape($user_id_unsafe);
 
     if(!$result) {
       $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
@@ -391,31 +399,9 @@ class Account {
       $comment = call_user_func_array('sprintf', $comment);
     }
 
-    $result = $this->db_mm_log_insert($comment, $change_type, $metamatter);
+    $result = $this->db_mm_log_insert($comment, $change_type, $metamatter, $user_id_unsafe);
 
-//    $comment_safe = $this->db->db_escape($comment);
-//    $page_url_safe = $this->db->db_escape($_SERVER['SCRIPT_NAME']);
-////      $row = db_user_by_id($user_id, false, 'username');
-////      $row['username'] = db_escape($row['username']);
-//    $account_name_safe = $this->db->db_escape($this->account_name);
-//    $username_safe = $this->db->db_escape(core_auth::$user['username']);
-//    $provider_id_safe = intval(core_auth::$main_provider->manifest['provider_id']);
-//    $server_name_safe = $this->db->db_escape(SN_ROOT_VIRTUAL);
-//    $this->db->doquery("INSERT INTO {{log_metamatter}} SET
-//        `provider_id` = {$provider_id_safe},
-//        `account_id` = {$account_id_safe},
-//        `account_name` = '{$account_name_safe}',
-//        `user_id` = {$user_id_safe},
-//        `username` = '{$username_safe}',
-//        `reason` = {$change_type},
-//        `amount` = {$metamatter},
-//        `comment` = '{$comment_safe}',
-//        `server_name` = '{$server_name_safe}',
-//        `page` = '{$page_url_safe}'
-//      ;");
-//    $result = $this->db->db_insert_id();
-
-    if($metamatter > 0) {
+    if($metamatter > 0 && !empty($user_id_safe)) {
       $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;", '', true);
       if($old_referral['id']) {
         $dark_matter_from_metamatter = $metamatter * AFFILIATE_MM_TO_REFERRAL_DM;
