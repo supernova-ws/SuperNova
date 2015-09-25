@@ -908,6 +908,8 @@ abstract class sn_module_payment extends sn_module {
       $this->is_exists = true;
       $this->is_loaded = true;
 
+      $this->generate_description();
+
       return true;
     } else {
       return false;
@@ -917,7 +919,7 @@ abstract class sn_module_payment extends sn_module {
   protected function generate_description() {
     // TODO - системная локализация
     $this->description_generated = array(
-      PAYMENT_DESCRIPTION_100 => substr("{$this->payment_dark_matter_paid} ММ аккаунт [{$this->account->account_name}] ID {$this->account->account_id} на " . SN_ROOT_VIRTUAL, 0, 100),
+      PAYMENT_DESCRIPTION_100 => substr("{$this->payment_dark_matter_gained} ММ аккаунт [{$this->account->account_name}] ID {$this->account->account_id} на " . SN_ROOT_VIRTUAL, 0, 100),
       PAYMENT_DESCRIPTION_250 => substr("Оплата {$this->payment_dark_matter_gained} ММ для аккаунта [{$this->payment_user_name}] ID {$this->payment_user_id} на сервере " . SN_ROOT_VIRTUAL, 0, 250),
       PAYMENT_DESCRIPTION_MAX => ($this->payment_test ? "ТЕСТОВЫЙ ПЛАТЕЖ! " : '') .
         "Платеж от аккаунта '{$this->payment_account_name}' ID {$this->payment_account_id} игрока '{$this->payment_user_name}' ID {$this->payment_user_id} на сервере " . SN_ROOT_VIRTUAL .
