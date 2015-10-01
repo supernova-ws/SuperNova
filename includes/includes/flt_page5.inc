@@ -12,15 +12,13 @@
 *
 **/
 
-if(SN_IN_FLEET !== true)
-{
+if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
 function flt_build_gathering($resources_taken = '') {
-  sn_db_transaction_start();
-
   global $planetrow, $user, $lang;
+
   // Caching sn_data names for quick access
   $lang_sys_planet_type = $lang['sys_planet_type'];
   $lang_fl_attack_error = $lang['fl_attack_error'];
@@ -47,30 +45,13 @@ function flt_build_gathering($resources_taken = '') {
     if(!$query) {
       $resources_taken[$planet_db_data['id']] = 1;
     }
+    sn_db_transaction_start();
     // Вот тут надо посчитать - отработать очереди и выяснить, сколько ресов на каждой планете
     $planet_db_data = sys_o_get_updated($user, $planet_db_data, SN_TIME_NOW, true);
     $planet_db_data = $planet_db_data['planet'];
+    sn_db_transaction_commit();
 
     $planet_id = $planet_db_data['id'];
-
-    $planet_list[$planet_id] = array(
-      'ID'             => $planet_id,
-      'NAME'           => $planet_db_data['name'],
-      'GALAXY'         => $planet_db_data['galaxy'],
-      'SYSTEM'         => $planet_db_data['system'],
-      'PLANET'         => $planet_db_data['planet'],
-      'TYPE'           => $planet_db_data['planet_type'],
-      'TYPE_PRINT'     => $lang_sys_planet_type[$planet_db_data['planet_type']],
-      'METAL'          => floor($planet_db_data['metal']),
-      'CRYSTAL'        => floor($planet_db_data['crystal']),
-      'DEUTERIUM'      => floor($planet_db_data['deuterium']),
-      'METAL_TEXT'     => pretty_number($planet_db_data['metal']),
-      'CRYSTAL_TEXT'   => pretty_number($planet_db_data['crystal']),
-      'DEUTERIUM_TEXT' => pretty_number($planet_db_data['deuterium']),
-      'PLANET_DB_DATA' => $planet_db_data
-    );
-
-    $planet_data = &$planet_list[$planet_id];
 
     $planet_resources = 0;
     foreach(sn_get_groups('resources_loot') as $resource_id) {
@@ -78,8 +59,29 @@ function flt_build_gathering($resources_taken = '') {
         $planet_resources += floor(mrc_get_level($user, $planet_db_data, $resource_id, true, true)); // $planet_db_data[get_unit_param($resource_id, P_NAME)]);
       }
     }
-    $planet_data['RESOURCES'] = $planet_resources;
-    $planet_data['RESOURCES_TEXT'] = pretty_number($planet_resources);
+
+    $planet_list[$planet_id] = array(
+      'ID'              => $planet_id,
+      'NAME'            => $planet_db_data['name'],
+      'GALAXY'          => $planet_db_data['galaxy'],
+      'SYSTEM'          => $planet_db_data['system'],
+      'PLANET'          => $planet_db_data['planet'],
+      'TYPE'            => $planet_db_data['planet_type'],
+      'TYPE_PRINT'      => $lang_sys_planet_type[$planet_db_data['planet_type']],
+      'METAL'           => floor($planet_db_data['metal']),
+      'CRYSTAL'         => floor($planet_db_data['crystal']),
+      'DEUTERIUM'       => floor($planet_db_data['deuterium']),
+      'METAL_TEXT'      => pretty_number($planet_db_data['metal']),
+      'CRYSTAL_TEXT'    => pretty_number($planet_db_data['crystal']),
+      'DEUTERIUM_TEXT'  => pretty_number($planet_db_data['deuterium']),
+      'PLANET_DB_DATA'  => $planet_db_data,
+      'RESOURCES'       => $planet_resources,
+      'RESOURCES_TEXT'  => pretty_number($planet_resources),
+    );
+
+    $planet_data = &$planet_list[$planet_id];
+//    $planet_data['RESOURCES'] = $planet_resources;
+//    $planet_data['RESOURCES_TEXT'] = pretty_number($planet_resources);
 
     $fleet_capacity = 0;
     $ship_loadout = array();
@@ -148,8 +150,6 @@ function flt_build_gathering($resources_taken = '') {
     $planet_data['FLEET']   = $fleet;
   } // end planet loop
 
-  sn_db_transaction_commit();
-
   return $planet_list;
 }
 
@@ -157,24 +157,19 @@ $template = gettemplate('fleet5', true);
 
 $resources_taken = sys_get_param('resources');
 
-if(!empty($resources_taken))
-{ // begin processing parameters
+if(!empty($resources_taken))  { // begin processing parameters
   $planet_list = flt_build_gathering($resources_taken);
 
-  foreach($planet_list as $planet_id => $planet_data)
-  {
-    if($planet_data['RESULT'] == ATTACK_ALLOWED)
-    {
+  foreach($planet_list as $planet_id => $planet_data) {
+    if($planet_data['RESULT'] == ATTACK_ALLOWED) {
       $planet_data['RESULT'] = flt_t_send_fleet($user, $planet_data['PLANET_DB_DATA'], $planetrow, $planet_data['FLEET'], MT_TRANSPORT);
     }
 
     $planet_data['MESSAGE'] = $lang['fl_attack_error'][$planet_data['RESULT']];
 
     $template->assign_block_vars('results', $planet_data);
-    if(!empty($planet_data['FLEET']) && $planet_data['RESULT'] == ATTACK_ALLOWED)
-    {
-      foreach($planet_data['FLEET'] as $unit_id => $amount)
-      {
+    if(!empty($planet_data['FLEET']) && $planet_data['RESULT'] == ATTACK_ALLOWED) {
+      foreach($planet_data['FLEET'] as $unit_id => $amount) {
         $template->assign_block_vars('results.units', array(
           'ID'     => $unit_id,
           'NAME'   => $lang['tech'][$unit_id],
@@ -187,8 +182,7 @@ if(!empty($resources_taken))
 
 // Building list of own planets & moons
 $planet_list = flt_build_gathering();
-foreach($planet_list as $planet_data)
-{
+foreach($planet_list as $planet_data) {
   $planet_data['DURATION'] = $planet_data['DURATION'] ? pretty_time($planet_data['DURATION']) : $lang['flt_no_fuel'];
   $template->assign_block_vars('colonies', $planet_data);
 }

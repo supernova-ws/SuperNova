@@ -72,7 +72,7 @@ function get_game_speed(){return sn_function_call('get_game_speed', array(&$resu
 function sn_get_game_speed(&$result) {
   global $config;
 
-  return $result = $config->game_speed;
+  return $result = $config->game_speed ? $config->game_speed : 1;
 }
 
 function flt_server_flight_speed_multiplier(){return sn_function_call('flt_server_flight_speed_multiplier', array(&$result));}
