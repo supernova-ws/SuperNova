@@ -13,8 +13,7 @@
 
 $sn_mvc['view']['imperium'][] = 'sn_imperium_view';
 
-function sn_imperium_view($template = null)
-{
+function sn_imperium_view($template = null) {
   global $user, $lang;
 
   $planets = array();
@@ -23,44 +22,44 @@ function sn_imperium_view($template = null)
   $sn_group_factories = sn_get_groups('factories');
   $planet_density = sn_get_groups('planet_density');
 
-  if(sys_get_param('save_production'))
-  {
+  if(sys_get_param('save_production')) {
     $production = sys_get_param('percent');
-    if(is_array($production) && !empty($production))
-    {
-      sn_db_transaction_start();
+    if(is_array($production) && !empty($production)) {
+      // sn_db_transaction_start();
       $query = array();
       $planet_row_list = db_planet_list_sorted($user, false, '*');
       // while($planet = db_fetch($planet_row_list))
-      foreach($planet_row_list as $planet)
-      {
-        foreach($sn_group_factories as $factory_unit_id)
-        {
+      foreach($planet_row_list as $planet) {
+        foreach($sn_group_factories as $factory_unit_id) {
           $unit_db_name_porcent = pname_factory_production_field_name($factory_unit_id);
-          if(get_unit_param($factory_unit_id, P_MINING_IS_MANAGED) && isset($production[$factory_unit_id][$planet['id']]) && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >=0 && $actual_porcent <= 10 && $actual_porcent != $planet[$unit_db_name_porcent])
-          {
+          if(
+            get_unit_param($factory_unit_id, P_MINING_IS_MANAGED)
+            && isset($production[$factory_unit_id][$planet['id']])
+            && ($actual_porcent = intval($production[$factory_unit_id][$planet['id']] / 10)) >= 0
+            && $actual_porcent <= 10
+            && $actual_porcent != $planet[$unit_db_name_porcent]
+          ) {
             $query[$planet['id']][] = "{$unit_db_name_porcent} = {$actual_porcent}";
           }
         }
       }
-      foreach($query as $planet_id => $query_data)
-      {
+      foreach($query as $planet_id => $query_data) {
         db_planet_set_by_id($planet_id, implode(',', $query_data));
       }
-      sn_db_transaction_commit();
+      // sn_db_transaction_commit();
     }
   }
 
-  sn_db_transaction_start();
   $planet_row_list = db_planet_list_sorted($user);
   // while ($planet = db_fetch($planet_row_list))
   foreach($planet_row_list as $planet) {
+    sn_db_transaction_start();
     $global_data = sys_o_get_updated($user, $planet['id'], SN_TIME_NOW, false, true);
     $planets[$planet['id']] = $global_data['planet'];
     // $ques[$planet['id']] = que_get($user['id'], $planet['id'], false);
     $ques[$planet['id']] = $global_data['que'];
+    sn_db_transaction_commit();
   }
-  sn_db_transaction_commit();
 
   $template = gettemplate('imperium', $template);
   $template->assign_var('amount', count($planets) + 2);
@@ -75,8 +74,7 @@ function sn_imperium_view($template = null)
   $total['temp_min'] = 1000;
   $total['temp_max'] = -999;
 
-  foreach ($planets as $planet_index => &$planet)
-  {
+  foreach ($planets as $planet_index => &$planet) {
     $list_planet_que = $ques[$planet_index];
     $planet_template = tpl_parse_planet($planet);
 

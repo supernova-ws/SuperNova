@@ -287,10 +287,11 @@ switch($mode = sys_get_param_str('mode')) {
     $fleets = flt_parse_fleets_to_events($fleet_list);
 
     $planet_count = 0;
-    sn_db_transaction_start();
     $planets_query = db_planet_list_sorted($user, false, '*');
     foreach($planets_query as $an_id => $UserPlanet) {
+      sn_db_transaction_start();
       $UserPlanet = sys_o_get_updated($user, $UserPlanet['id'], SN_TIME_NOW, false, true);
+      sn_db_transaction_commit();
       $list_planet_que = $UserPlanet['que'];
       $UserPlanet = $UserPlanet['planet'];
 
@@ -328,7 +329,6 @@ switch($mode = sys_get_param_str('mode')) {
 
       $planet_count++;
     }
-    sn_db_transaction_commit();
 
     tpl_assign_fleet($template, $fleets_to_planet);
     tpl_assign_fleet($template, $fleets);
