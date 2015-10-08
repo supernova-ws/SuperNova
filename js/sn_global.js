@@ -38,7 +38,9 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   var x = "";
   var e = null;
 
-  jQuery(document).ready(function () {
+  //jQuery(document).ready(function () {
+  // Нельзя полагаться на document.ready() из-за возможных проблем с загрузкой скриптов со сторонних серверов!
+  function document_ready() {
     // Натягиваем скины на элементы ввода
     inputs = jQuery("input");
     inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
@@ -95,7 +97,8 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
 
       jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function(data) {});
     });
-  });
+  }
+  //);
 
 
   $(document).on('click', '.password_show', function(){

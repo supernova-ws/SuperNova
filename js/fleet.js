@@ -10,20 +10,27 @@ var C1_SHIP_NAME        = 0,
     C1_SHIP_CONSUMPTION = 2,
     C1_SHIP_CAPACITY    = 3;
 
-function changeMission(mission)
-{
-  // var element = document.getElementById('resTable');
+var prev_mission = 0;
 
-  switch(mission.value)
-  {
+function changeMission(mission) {
+  if($(mission).val() == prev_mission) {
+    return;
+  }
+
+  prev_mission = $(mission).val();
+
+  jQuery("img.mission_button_image:not(.mission_button_passive)").addClass('mission_button_passive');
+  jQuery("#mission_button" + prev_mission).removeClass('mission_button_passive');
+
+  switch(prev_mission) {
     case '1': // Attack
     case '2': // AKS
     case '5': // Hold
     case '6': // Spy
     case '8': // Recycle
     case '9': // Destroy
+    case '10': // Missile
     case '15':// Explore
-      // element.style.display = "none";
       jQuery('#resTable').hide();
       jQuery('#resource0').val(0).trigger('change');
       jQuery('#resource1').val(0).trigger('change');
@@ -31,9 +38,14 @@ function changeMission(mission)
     break;
 
     default:
-      // element.style.display = "inline";
       jQuery('#resTable').show();
     break;
+  }
+
+  if(prev_mission == 15) {
+    jQuery('.fleet_expedition_warning').show();
+  } else {
+    jQuery('.fleet_expedition_warning').hide();
   }
 }
 
@@ -234,16 +246,15 @@ function calculateTransportCapacity() {
   transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
 
   $("#remainingresources").html(sn_format_number(transportCapacity, 0, 'positive'));
-//  document.getElementById("remainingresources").innerHTML = sn_format_number(transportCapacity, 0, 'positive');
 
-  if(transportCapacity<0)
-  {
-    document.getElementById("fleet_page2_submit").disabled = true;
-  }
-  else
-  {
-    document.getElementById("fleet_page2_submit").disabled = false;
-  }
+  $("#fleet_page2_submit").prop('disabled', transportCapacity < 0);
+
+  // document.getElementById("fleet_page2_submit").disabled = transportCapacity < 0;
+  //if(transportCapacity < 0) {
+  //  document.getElementById("fleet_page2_submit").disabled = true;
+  //} else {
+  //  document.getElementById("fleet_page2_submit").disabled = false;
+  //}
   return transportCapacity;
 }
 
@@ -427,4 +438,43 @@ function fleet_table_make(fleet_id)
   }
 
   return(fleets[fleet_id][9]);
+}
+
+function fleet_page_2_loaded() {
+  mission_checked = 0;
+  $("[name='target_mission']:checked").each(function(){
+    mission_checked = $(this);
+  });
+
+  if(!mission_checked) {
+    mission_checked = $("[name='target_mission']:first");
+    mission_checked.attr('checked', 1);
+  }
+  changeMission(mission_checked);
+
+  calculateTransportCapacity();
+}
+
+function fleet_page_2_prepare_slider(resourceID, resourceOnPlanet, fleetCapacity) {
+  sn_ainput_make('resource' + resourceID, {max: Math.min(resourceOnPlanet, fleetCapacity), step: 1000, button_max: true, button_zero: true});
+
+  jQuery('#resource' + resourceID).on('keyup change', function(event, ui) {
+    calculateTransportCapacity();
+  });
+
+  jQuery('#resource' + resourceID + 'slide').on('slide slidechange', function(event, ui) {
+    if(fleet_slide_changing) {
+      return;
+    } else {
+      fleet_slide_changing = true;
+    }
+    var transportCapacity = fleetCapacity - check_resource(0) - check_resource(1) - check_resource(2);
+
+    for(i = 0; i < 3; i++) {
+      aSlider = jQuery('#resource' + i + 'slide');
+      aSlider.slider("option", "max", Math.min(aSlider.slider("value") + transportCapacity, resource_max[i]));
+      jQuery('#resource' + i).change();
+    }
+    fleet_slide_changing = false;
+  });
 }

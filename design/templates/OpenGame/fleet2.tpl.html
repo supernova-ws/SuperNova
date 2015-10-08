@@ -31,30 +31,45 @@ var fleet_slide_changing = false;
   <input type="hidden" name="speedallsmin"    value="{speedallsmin}" />
   <input type="hidden" name="speedfactor"     value="{speedfactor}" />
 
-  <table>
+  <table class="fleet_2_table">
+    <tr><th>
     <!-- BEGIN missions -->
-      <tr><th nowrap><div align=left>
-        <input id="target_mission{missions.ID}" type="radio" name="target_mission" class="frameless" value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);" <!-- IF missions.CHECKED -->checked <!-- ENDIF -->>
-        <label for="target_mission{missions.ID}">{missions.NAME}</label>
+      <div class="fleet_mission_button_container">
+        <label for="target_mission{missions.ID}">
+          <img src="design/images/mission_{missions.ID}.png" id="mission_button{missions.ID}" class="mission_button_image <!-- IF ! missions.CHECKED --> mission_button_passive<!-- ENDIF -->" /><br/>
+          <input id="target_mission{missions.ID}" mission_id="{missions.ID}" type="radio" name="target_mission"
+                 style="display: none"
+                 class="frameless" value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);" <!-- IF missions.CHECKED -->checked <!-- ENDIF -->>
+          {missions.NAME}
         <!-- IF missions.ID == 5 || missions.ID == 15 -->
           <!-- IF MAX_DURATION -->
-          - {L_flt_stay_duration}&nbsp;&nbsp;<select name="missiontime">
-          <!-- BEGIN !duration -->
-            <option value="{duration.ID}">{duration.TIME}</option>
-          <!-- END !duration -->
-          </select>&nbsp;&nbsp;
+            <br />{L_flt_stay_duration}&nbsp;<select name="missiontime">
+            <!-- BEGIN !duration -->
+              <option value="{duration.ID}">{duration.TIME}</option>
+            <!-- END !duration -->
+            </select>&nbsp;&nbsp;
           <!-- ELSE -->
             <!-- DEFINE $CANNOTSEND = 1 -->
             <span class="error">{L_flt_error_duration_wrong}</span>
           <!-- ENDIF -->
+        <!-- ELSEIF missions.ID == 7 -->
+          <!-- IF PLAYER_COLONIES_CURRENT > PLAYER_COLONIES_MAX -->
+            <!-- DEFINE $COLONY_STYLE = 'error' -->
+          <!-- ELSEIF PLAYER_COLONIES_CURRENT == PLAYER_COLONIES_MAX -->
+            <!-- DEFINE $COLONY_STYLE = 'warning' -->
+          <!-- ELSEIF PLAYER_COLONIES_MAX - PLAYER_COLONIES_CURRENT == 1  -->
+            <!-- DEFINE $COLONY_STYLE = 'notice' -->
+          <!-- ELSE -->
+            <!-- DEFINE $COLONY_STYLE = 'ok' -->
+          <!-- ENDIF -->
+          <br /><span class="{$COLONY_STYLE}">{L_sys_colonies}&nbsp;{PLAYER_COLONIES_CURRENT}/{PLAYER_COLONIES_MAX}</span>
         <!-- ENDIF -->
-      </div></th></tr>
-      <!-- IF missions.ID == 15 -->
-        <tr><th class="warning">{L_fl_expe_warning}</th></tr>
-      <!-- ENDIF -->
+        </label>
+      </div>
     <!-- BEGINELSE missions -->
-      <tr><th><font color="red">{L_fl_bad_mission}</font></th></tr>
+      <div class="error">{L_fl_bad_mission}</div>
     <!-- END missions -->
+    </th></tr>
 
     <!-- IF CAPTAIN_ID -->
     <tr>
@@ -68,6 +83,7 @@ var fleet_slide_changing = false;
     </tr>
     <!-- ENDIF -->
     <tr><th class="c_c">
+      <div class="warning fleet_expedition_warning">{L_fl_expe_warning}</div>
       <input id="fleet_page2_submit" value="{L_fl_continue}" type="submit"<!-- IF $CANNOTSEND --> disabled<!-- ENDIF -->/>
     </th></tr>
   </table>
@@ -88,30 +104,7 @@ var fleet_slide_changing = false;
         <td class="c_c">
           <!-- <ainput type="text" name="resource{resources.ID}" id="resource{resources.ID}" max="0" step="1">step="1000"</ainput> -->
           <script type="text/javascript">
-            // jQuery("#resource{resources.ID}").attr('max', Math.min(parseInt('{resources.ON_PLANET}'), parseInt('{fleet_capacity}')));
-            // sn_ainput_make_jquery();
-            sn_ainput_make('resource{resources.ID}', {max: Math.min({resources.ON_PLANET}, {fleet_capacity}), step: 1000, button_max: true, button_zero: true});
-
-          // jQuery(document).ready(function() {
-            jQuery('#resource{resources.ID}').on('keyup change', function(event, ui) {
-              var transportCapacity = calculateTransportCapacity();
-            });
-
-            jQuery('#resource{resources.ID}slide').on('slide slidechange', function(event, ui) {
-              if(fleet_slide_changing) {
-                return;
-              } else {
-                fleet_slide_changing = true;
-              }
-              var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
-              for(i = 0; i < 3; i++) {
-                // jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(parseInt(jQuery('#resource' + i + 'slide').slider("value")) + parseInt(transportCapacity), parseInt(resource_max[i])));
-                jQuery('#resource' + i + 'slide').slider("option", "max", Math.min(jQuery('#resource' + i + 'slide').slider("value") + transportCapacity, resource_max[i]));
-                jQuery('#resource' + i).change();
-              }
-              fleet_slide_changing = false;
-            });
-          // });
+            fleet_page_2_prepare_slider({resources.ID}, {resources.ON_PLANET}, {fleet_capacity});
           </script>
         </td>
         <td id="rest_res{resources.ID}" class="c_r">{resources.ON_PLANET}</td>
@@ -131,19 +124,6 @@ var fleet_slide_changing = false;
 
 </form>
 
-<script type="text/javascript"><!--
-  mission_checked = 0;
-  $("[name='target_mission']:checked").each(function(){
-    mission_checked = $(this).val();
-  });
-  if(!mission_checked) {
-    $("[name='target_mission']:first").attr('checked', 1);
-    mission_checked = $("[name='target_mission']:first").attr('checked', 1).val();
-  }
-  changeMission(mission_checked);
-
-  calculateTransportCapacity();
-//  tme = document.getElementsByName("target_mission");
-//  for(i = tme.length - 1; i > 0; i--) {if(tme[i].checked) break;}
-//  changeMission(tme[i]);tme[i].checked = true;calculateTransportCapacity();
---></script>
+<script type="text/javascript">
+  fleet_page_2_loaded();
+</script>

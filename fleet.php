@@ -153,6 +153,12 @@ switch ($fleet_page) {
       $target_mission = MT_ATTACK;
     }
 
+//    $sn_group_missions = sn_get_groups('missions');
+//    foreach($sn_group_missions as $mission_id => $cork) {
+//      $missiontype[$mission_id] = $lang['type_mission'][$mission_id];
+//    }
+//
+//
     ksort($missiontype);
 
     $speed_percent = sys_get_param_int('speed', 10);

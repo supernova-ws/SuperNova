@@ -22,6 +22,8 @@ var speed_factor   = {speed_factor};
   <h3>{TYPE_NAME} [{galaxy}:{system}:{planet}], {MISSION_NAME}<!-- IF IS_COLONIZATION -->, {L_sys_colonies} {COLONIES_CURRENT}/{COLONIES_MAX}<!-- ENDIF -->
   </h3>
 <!-- ENDIF -->
+
+<!-- IF .ships -->
 <form action="fleet.php?fleet_page=1" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
   <input type="hidden" name="thissystem"      value="{thissystem}" />
@@ -111,6 +113,11 @@ var speed_factor   = {speed_factor};
     <!-- ENDIF -->
   </table>
 </form>
+<!-- ELSE -->
+<h2 class="error">{L_fl_noships}</h2>
+<input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';" />
+<!-- ENDIF -->
+
 <!-- IF FLYING_FLEETS < MAX_FLEETS && .ships -->
   <br>
   <table>

@@ -6,6 +6,7 @@
 // @copyright 2008 by Chlorel for XNova
 
 if($fleet_ship_sort = sys_get_param_id('sort_elements')) {
+  define('IN_AJAX', true);
   if(!empty($lang['player_option_fleet_ship_sort'][$fleet_ship_sort])) {
     // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT, $fleet_ship_sort);
     // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE, sys_get_param_id('fleet_ship_sort_inverse', 0));

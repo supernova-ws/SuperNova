@@ -13,7 +13,8 @@ function sn_fleet_page2() {
   foreach ($missiontype as $key => $value) {
     $template->assign_block_vars('missions', array(
       'ID' => $key,
-      'NAME' => $value . ($key == MT_COLONIZE ? ' (' . $lang['sys_colonies'] . ' ' . get_player_current_colonies($user) . '/' . get_player_max_colonies($user) . ')' : ''),
+//      'NAME' => $value . ($key == MT_COLONIZE ? ' (' . $lang['sys_colonies'] . ' ' . get_player_current_colonies($user) . '/' . get_player_max_colonies($user) . ')' : ''),
+      'NAME' => $value,
       'CHECKED' => $target_mission == $key,
     ));
   };
@@ -68,14 +69,14 @@ function sn_fleet_page2() {
     }
   }
 
-  $temp = array(
-    'id' => $TargetPlanet['id'],
-    'galaxy' => $galaxy,
-    'system' => $system,
-    'planet' => $planet,
-    'planet_type' => $planet_type,
-    'name' => $TargetPlanet['name'] ? $TargetPlanet['name'] : $lang['type_mission'][$target_mission],
-  );
+//  $temp = array(
+//    'id' => $TargetPlanet['id'],
+//    'galaxy' => $galaxy,
+//    'system' => $system,
+//    'planet' => $planet,
+//    'planet_type' => $planet_type,
+//    'name' => $TargetPlanet['name'] ? $TargetPlanet['name'] : $lang['type_mission'][$target_mission],
+//  );
   // $TableTitle = uni_render_planet_full($planetrow) . '&nbsp;=&gt;&nbsp;' . uni_render_planet_full($temp);
 
   $sn_group_resources = sn_get_groups('resources');
@@ -118,6 +119,9 @@ function sn_fleet_page2() {
     'MAX_DURATION' => $max_duration,
 
     'IS_TRANSPORT_MISSIONS' => $is_transport_missions,
+
+    'PLAYER_COLONIES_CURRENT' => get_player_current_colonies($user),
+    'PLAYER_COLONIES_MAX' => get_player_max_colonies($user),
   ));
 
   $template->assign_recursive($template_result);

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a10.25#
+* @version #40a11.3#
 *
 */
 
@@ -357,7 +357,7 @@ $a_lang_array = (array(
   'sys_governor'        => 'Губернатор',
 
   'flt_error_duration_wrong' => 'Невозможно отправить флот - нет доступных интервалов для задержки. Изучите еще уровни Астрокартографии',
-  'flt_stay_duration' => 'выберите длительность',
+  'flt_stay_duration' => 'Время',
 
   'flt_mission_expedition' => array(
     'msg_sender' => 'Отчет экспедиции',
