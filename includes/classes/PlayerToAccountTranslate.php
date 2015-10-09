@@ -79,6 +79,25 @@ class PlayerToAccountTranslate {
     return $account_translation;
   }
 
+  public static function db_translate_get_account_by_user_id($user_id_unsafe, $provider_id_unsafe = 0) {
+    static::init();
+
+    $user_id_safe = static::$db->db_escape($user_id_unsafe);
+    $provider_id_safe = static::$db->db_escape($provider_id_unsafe);
+
+    $account_translation = array();
+
+    $query = static::$db->doquery(
+      "SELECT * FROM {{account_translate}} WHERE `user_id` = {$user_id_safe} " .
+      ($provider_id_unsafe ? "AND `provider_id` = {$provider_id_safe} " : '') .
+      "ORDER BY `timestamp` FOR UPDATE");
+    while($row = static::$db->db_fetch($query)) {
+      $account_translation[$row['user_id']][$row['provider_id']][$row['provider_account_id']] = $row;
+    }
+
+    return $account_translation;
+  }
+
   public static function db_translate_unregister_user($user_id_unsafe) {
     static::init();
 

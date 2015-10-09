@@ -104,11 +104,12 @@ $sn_page_name_original = isset($_GET['page'])
   : str_replace(DOT_PHP_EX, '', str_replace(SN_ROOT_RELATIVE, '', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])));
 define('INITIAL_PAGE', $sn_page_name_original);
 define('SN_COOKIE'        , ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
-define('SN_COOKIE_I'      , SN_COOKIE . '_I');
+define('SN_COOKIE_I'      , SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
 define('SN_COOKIE_D'      , SN_COOKIE . '_D');
 define('SN_COOKIE_T'      , SN_COOKIE . '_T'); // Time measure cookie
 define('SN_COOKIE_F'      , SN_COOKIE . '_F'); // Font size cookie
 define('SN_COOKIE_U'      , SN_COOKIE . '_U'); // Current user cookie aka user ID
+define('SN_COOKIE_U_I'    , SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
 define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
 define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . TEMPLATE_PATH);

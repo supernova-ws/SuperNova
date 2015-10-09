@@ -9,7 +9,7 @@ class auth_local extends sn_module {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.24# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a11.6# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -77,6 +77,7 @@ class auth_local extends sn_module {
    */
   public $account_login_status = LOGIN_UNDEFINED;
 
+  public $is_impersonating = false;
 
 
 
@@ -107,6 +108,7 @@ class auth_local extends sn_module {
   protected $domain = null;
   protected $sn_root_path = null;
   protected $cookie_name = SN_COOKIE;
+  protected $cookie_name_impersonate = SN_COOKIE_I;
   protected $secret_word = '';
 
 //  public $login_methods_supported = array(
@@ -183,6 +185,8 @@ class auth_local extends sn_module {
       $this->manifest['active'] = true;
     }
 
+    $this->cookie_name_impersonate = $this->cookie_name . AUTH_COOKIE_IMPERSONATE_SUFFIX;
+
     $this->account = new Account($this->db);
     $this->confirmation = new Confirmation($this->db);
   }
@@ -202,6 +206,8 @@ class auth_local extends sn_module {
     $this->register();
     $this->login_username();
     $this->login_cookie();
+
+    $this->is_impersonating = $this->account_login_status == LOGIN_SUCCESS && !empty($_COOKIE[$this->cookie_name_impersonate]);
 
     return $this->account_login_status;
   }
@@ -262,6 +268,10 @@ class auth_local extends sn_module {
     empty($name) && !empty($this->account->account_name) ? $name = $this->account->account_name : false;
 
     return $name;
+  }
+
+  public function impersonate($account_to_impersonate) {
+    $this->cookie_set($account_to_impersonate);
   }
 
 
@@ -613,21 +623,30 @@ class auth_local extends sn_module {
   /**
    * Устанавливает куку аккаунта по данным $this->data[F_ACCOUNT]
    *
+   * @param Account|null $account_to_impersonate
+   *
    * @return bool
+   * @throws Exception
+   *
    */
   // OK v4.5
   // TODO - должен устанавливать куку исходя из пользователя, что бы пользователь мог логинится
   // TODO - или ставить мультикуку - хотя нахуя, спрашивается
-  protected function cookie_set() {
-    if(!is_object($this->account) || !$this->account->is_exists) {
+  protected function cookie_set($account_to_impersonate = null) {
+    $this_account = is_object($account_to_impersonate) ? $account_to_impersonate : $this->account;
+
+    if(!is_object($this_account) || !$this_account->is_exists) {
       throw new Exception(LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET, ERR_ERROR);
     }
 
-    // $expire_time = $this->data[F_REMEMBER_ME_SAFE] ? SN_TIME_NOW + PERIOD_YEAR : 0;
+    if(is_object($account_to_impersonate) && $account_to_impersonate->is_exists) {
+      sn_setcookie($this->cookie_name_impersonate, $_COOKIE[$this->cookie_name], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
+    }
+
     $expire_time = $this->remember_me ? SN_TIME_NOW + PERIOD_YEAR : 0;
 
-    $password_encoded = $this->password_encode_for_cookie($this->account->account_password);
-    $cookie = $this->account->account_id . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . $this->remember_me;
+    $password_encoded = $this->password_encode_for_cookie($this_account->account_password);
+    $cookie = $this_account->account_id . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . $this->remember_me;
     $this->flog("cookie_set() - Устанавливаем куку {$cookie}");
     return sn_setcookie($this->cookie_name, $cookie, $expire_time, $this->sn_root_path, $this->domain);
   }
@@ -638,20 +657,10 @@ class auth_local extends sn_module {
   // OK v4.1
   protected function cookie_clear() {
     // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
-    if(!empty($_COOKIE[$this->cookie_name . '_I'])) {
-      sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name . '_I'], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
-      sn_setcookie($this->cookie_name . '_I', '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
-      // Если это был корректный имперсонатор - просто выходим и редиректимся в админку
-      if(!empty($_COOKIE[$this->cookie_name])) {
-        sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
-      }
+    if(!empty($_COOKIE[$this->cookie_name_impersonate])) {
+      sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name_impersonate], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
+      sn_setcookie($this->cookie_name_impersonate, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
     } else {
-//print('<hr>');
-//pdump(get_called_class());
-//pdump($this->domain);
-//pdump($this->sn_root_path);
-//print('<hr>');
-// die();
       sn_setcookie($this->cookie_name, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
     }
   }
@@ -771,215 +780,5 @@ class auth_local extends sn_module {
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }
-
-
-//  /**
-//   * Логин по выставленным полям
-//   */
-//  // OK v4.1
-//  // TODO - protected
-//  public function login_internal() {
-//    try {
-//      $this->account_login_status = LOGIN_UNDEFINED;
-//      $this->remember_me = true;
-//      $this->cookie_set();
-//      $this->login_cookie();
-//    } catch(Exception $e) {
-//      // sn_db_transaction_rollback();
-//      $this->account_login_status == LOGIN_UNDEFINED ? $this->account_login_status = $e->getMessage() : false;
-//    }
-//
-//    return $this->account_login_status;
-//  }
-//  /**
-//   * Меняет пароль на всех аккаунтах, у которых есть данный емейл
-//   *
-//   * @param $email_unsafe
-//   * @param $new_password_unsafe
-//   * @param $salt_unsafe
-//   *
-//   * @return array
-//   */
-//  // OK 4.6
-//  public function password_change_on_email($email_unsafe, $new_password_unsafe, $salt_unsafe) {
-//    global $lang, $config;
-//
-//    unset($this->account);
-//
-//    $this->account_login_status = LOGIN_UNDEFINED;
-//
-//    // Проверяем поддержку сброса пароля
-//    if(!$this->is_feature_supported(AUTH_FEATURE_PASSWORD_RESET)) {
-//      return $this->account_login_status;
-//    }
-//
-//    // Получаем аккаунт по емейлу - у нас в базе только уникальные емейлы!
-//    $account = new Account($this->db);
-//    if(!$account->db_get_by_email($email_unsafe)) {
-//      // TODO - exception ?
-//      return $this->account_login_status;
-//    }
-//
-//    if(!$account->db_set_password($new_password_unsafe, $salt_unsafe)) {
-//      // Ошибка смены аккаунта
-//      // TODO - exception ??
-//      return $this->account_login_status;
-//    }
-//
-//    // $account_translation = core_auth::db_translate_get_users_from_account_list($this->manifest['provider_id'], $account->account_id); // OK 4.5
-//    // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
-//    $message_header = sprintf($lang['log_lost_email_title'], $config->game_name);
-//    $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $account->account_name, $new_password_unsafe);
-//    @$operation_result = mymail($email_unsafe, $message_header, htmlspecialchars($message));
-//
-//    $this->remember_me = 1;
-//    $this->cookie_set();
-//    $this->login_cookie();
-//
-//    if($this->account_login_status == LOGIN_SUCCESS) {
-//      $this->account = $account;
-//    }
-//
-//    return $this->account_login_status;
-//
-//
-//
-////    // Получаем список аккаунтов у провайдера по емейлу подтверждения
-////    $account_list = $this->db_account_list_get_on_email($email_unsafe); // OK 4.5
-////
-////    // TODO - это всё надо перенести в провайдера!
-////    // Меняем пароль на всех аккаунтах
-////    foreach($account_list as $account_id_unsafe => $account_data) {
-////      // unset($account);
-////
-////      $account = new Account($this->db);
-////      // Если аккаунт не существует или пароль тот же самый
-////      if(!$account->db_get_by_id($account_id_unsafe) || $account->password_check($new_password_unsafe)) { // OK 4.5
-////        // Пропускаем смену пароля
-////        // TODO - Или меняем с новой солью?
-////        continue;
-////      }
-////
-////      if($account->db_set_password($new_password_unsafe, $salt_unsafe)) { // OK 4.5
-////        // Получаем список юзеров на этом аккаунте
-////        $this_provider_translation = core_auth::db_translate_get_users_from_account_list($this->manifest['provider_id'], $account->account_id); // OK 4.5
-////        if(!empty($this_provider_translation)) {
-////          $account_translation = array_replace_recursive($account_translation, $this_provider_translation);
-////          // TODO - if !$this->account - тогда берем первый аккаунт и в него логиним
-////          // TODO Логиним этого пользователя
-////          // self::$login_status = $provider->login_internal();
-////          // TODO - При ошибке отправки емейла добавлять Global Message
-////        }
-////
-////        // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
-////        $message_header = sprintf($lang['log_lost_email_title'], $config->game_name);
-////        $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $account->account_name, $new_password_unsafe);
-////        @$operation_result = mymail($email_unsafe, $message_header, htmlspecialchars($message));
-////      }
-////    }
-//
-//    // return $account_translation;
-//  }
-//  /**
-//   * Физически меняется пароль в БД
-//   *
-//   * @param int $account_id_unsafe
-//   * @param string $new_password_unsafe
-//   * @param null $new_salt_unsafe
-//   *
-//   * @return boolean
-//   * @throws Exception
-//   */
-//  // TODO - переделать! См. точку вызова
-//  // TODO - Должен работать со списками и без ID!
-//  // OK v4.1
-//  // TODO - protected
-//  public function password_set_by_account_id($account_id_unsafe, $new_password_unsafe, $new_salt_unsafe) {
-//    $account = new Account($this->db);
-//    if(!$account->db_get_by_id($account_id_unsafe)) {
-//      throw new Exception(PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS, ERR_ERROR);
-//    }
-//
-//    return $account->password_check($new_password_unsafe) || $account->db_set_password($new_password_unsafe, $new_salt_unsafe);
-//
-////    $account = $this->db_account_get_by_id($account_id_unsafe);
-////    if(empty($account['account_id'])) {
-////      // Внутренняя ошибка. Такого быть не должно!
-////      throw new Exception(PASSWORD_RESTORE_ERROR_ACCOUNT_NOT_EXISTS, ERR_ERROR);
-////    }
-//
-////    $new_salt_unsafe === null ? $new_salt_unsafe = $this->password_salt_generate() : false;
-//    // Проверка на тот же пароль
-////    if($account['account_password'] == $new_password_unsafe && $account['account_salt'] == $new_salt_unsafe) {
-////      return $account;
-////    }
-//
-//
-////    $salted_password_unsafe = $this->password_encode($new_password_unsafe, $new_salt_unsafe);
-////    $result = $this->db_account_set_password_by_id($account_id_unsafe, $salted_password_unsafe, $new_salt_unsafe);
-////    // $result = doquery("UPDATE {{account}} SET `account_password` = '{$salted_password_safe}', `account_salt` = '{$salt_safe}' WHERE `account_id` = '{$account_id_safe}'");
-////    if($result && $this->db->db_affected_rows()) {
-////      // Меняем данные аккаунта
-////      $account = $this->db_account_get_by_id($account_id_unsafe);
-////      $this->data[F_ACCOUNT] = $account;
-////      $result = true;
-////    } else {
-////      $result = false;
-////    }
-////    return $result;
-//  }
-//
-//  /**
-//   * @param $new_email_unsafe
-//   *
-//   * @return array|bool|resource
-//   */
-//  // TODO v4.1
-//  // TODO Должен работать со списками или с ID!
-//  // TODO - protected
-//  public function db_account_set_email($new_email_unsafe) {
-//    die('{Смена емейла пока не работает}');
-//    // return db_user_set_by_id($this->data[F_ACCOUNT_ID], "`email_2` = '" . db_escape($new_email_unsafe) . "'");
-//  }
-//  /**
-//   * Возвращает список аккаунтов, которые привязаны к указанному емейлу
-//   *
-//   * @param $email_unsafe
-//   *
-//   * @return array
-//   */
-//  // OK v4.5
-//  // TODO - вынести в отдельный объект
-//  protected function db_account_list_get_on_email($email_unsafe) {
-//    $email_safe = $this->db->db_escape($email_unsafe);
-//    $query = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}' FOR UPDATE;");
-//    $account_list = array();
-//    while($row = $this->db->db_fetch($query)) {
-//      $account_list[$row['account_id']] = $row;
-//    }
-//    return $account_list;
-//  }
-//  /**
-//   * Загружает в провайдера аккаунт по емейлу
-//   *
-//   * @param $email_unsafe
-//   *
-//   * @return bool
-//   */
-//  // OK v4.6
-//  public function account_get_by_email($email_unsafe) {
-//    unset($this->account);
-//    $this->account = new Account($this->db);
-//    return $this->account->db_get_by_email($email_unsafe);
-//
-////    $email_safe = $this->db->db_escape($email_unsafe);
-////    $query = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}' FOR UPDATE;");
-////    $account_list = array();
-////    while($row = $this->db->db_fetch($query)) {
-////      $account_list[$row['account_id']] = $row;
-////    }
-////    return $account_list;
-//  }
-//
 
 }

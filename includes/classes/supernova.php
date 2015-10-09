@@ -1234,9 +1234,7 @@ class classSupernova {
   }
 
   public static function init_1_constants() {
-    global $microtime;
-    global $phpEx;
-    global $phpbb_root_path; // Это нужно для работы PTL
+    global $microtime, $phpEx, $phpbb_root_path; // Это нужно для работы PTL
 
     $microtime = SN_TIME_MICRO;
 

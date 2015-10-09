@@ -280,7 +280,8 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
     'SOUND_ENABLED'            => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
 
-    'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
+    // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
+    'IMPERSONATING'            => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
   ));
   $template->assign_recursive($template_result);
   displayP(parsetemplate($template));

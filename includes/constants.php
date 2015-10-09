@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a11.3');
+define('SN_VERSION', '40a11.6');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -396,6 +396,7 @@ define('PASSWORD_LENGTH_MIN', 4);
 define('LOGIN_LENGTH_MIN', 4);
 
 define('AUTH_COOKIE_DELIMETER', '_');
+define('AUTH_COOKIE_IMPERSONATE_SUFFIX', '_I');
 
 define('AUTH_FEATURE_EMAIL_CHANGE', 1);
 define('AUTH_FEATURE_PASSWORD_RESET', 2);
@@ -511,7 +512,7 @@ define('F_PROVIDER_ID',   'F_PROVIDER_ID');
 // define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
 
 define('F_IMPERSONATE_STATUS', 'F_IMPERSONATE_STATUS');
-// define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
+define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
 
 define('F_LOGIN_STATUS',  'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');

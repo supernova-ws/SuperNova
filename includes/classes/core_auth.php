@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a10.28#
+ * version #40a11.6#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a10.28# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a11.6# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -127,6 +127,7 @@ class core_auth extends sn_module {
    * @var bool
    */
   protected $is_impersonating = false;
+  protected $impersonator_username = '';
 
   /**
    * Флаг регистрации пользователя
@@ -356,9 +357,15 @@ class core_auth extends sn_module {
         // Да, есть доступные игроки, которые так же прописаны в базе
         $this->get_active_user(); // 4.5
 
+        if($this->is_impersonating = !empty($_COOKIE[SN_COOKIE_U_I]) ? $_COOKIE[SN_COOKIE_U_I] : 0) {
+          $a_user = db_user_by_id($this->is_impersonating);
+          $this->impersonator_username = $a_user['username'];
+        }
+
+
         //Прописываем текущего игрока на все авторизированные аккаунты
         // TODO - ИЛИ ВСЕХ ИГРОКОВ??
-        if(!$this->is_impersonating) {
+        if(empty($this->is_impersonating)) {
           foreach($this->providers_authorised as $provider_id => $provider) {
             if(empty($this->user_id_to_provider[self::$user['id']][$provider_id])) {
               // self::db_translate_register_user($provider_id, $provider->account->account_id, self::$user['id']);
@@ -391,9 +398,10 @@ class core_auth extends sn_module {
    */
   // OK v4.7
   public function logout($redirect = true) {
-    if(!empty($_COOKIE[SN_COOKIE_U . '_I'])) {
-      self::cookie_set($_COOKIE[SN_COOKIE_U . '_I']);
+    if(!empty($_COOKIE[SN_COOKIE_U_I])) {
+      self::cookie_set($_COOKIE[SN_COOKIE_U_I]);
       self::cookie_set(0, true);
+      self::$main_provider->logout();
     } else {
       foreach($this->providers as $provider_name => $provider) {
         $provider->logout();
@@ -415,7 +423,7 @@ class core_auth extends sn_module {
    * @param $user_selected
    */
   public function impersonate($user_selected) {
-    if($_COOKIE[SN_COOKIE_U . '_I']) {
+    if($_COOKIE[SN_COOKIE_U_I]) {
       die('You already impersonating someone. Go back to living other\'s life! Or clear your cookies and try again'); // TODO: Log it
     }
 
@@ -427,14 +435,17 @@ class core_auth extends sn_module {
       die('You can\'t impersonate this account - level is greater or equal to yours'); // TODO: Log it
     }
 
-    // sn_setcookie(SN_COOKIE_U . '_I', $_COOKIE[SN_COOKIE_U], 0, SN_ROOT_RELATIVE);
+    $account_translate = PlayerToAccountTranslate::db_translate_get_account_by_user_id($user_selected['id'], self::$main_provider->manifest['provider_id']);
+    $account_translate = reset($account_translate[$user_selected['id']][self::$main_provider->manifest['provider_id']]);
+    $account_to_impersonate = new Account(self::$main_provider->db);
+    $account_to_impersonate->db_get_by_id($account_translate['provider_account_id']);
+    if(!$account_to_impersonate->is_exists) {
+      die('Какая-то ошибка - не могу найти аккаунт для имперсонации'); // TODO: Log it
+    }
+    self::$main_provider->impersonate($account_to_impersonate);
+
     self::cookie_set($_COOKIE[SN_COOKIE_U], true, 0);
 
-//    $expire_time = SN_TIME_NOW + PERIOD_YEAR;
-//    $password_encoded = md5("{$user_selected['password']}--" . classSupernova::$sn_secret_word);
-//    $cookie = $user_selected['id'] . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . '1';
-//    sn_setcookie(SN_COOKIE, $cookie, $expire_time, SN_ROOT_RELATIVE);
-    // sn_setcookie(SN_COOKIE_U, $user_selected['id'], SN_TIME_NOW + PERIOD_YEAR, SN_ROOT_RELATIVE);
     // TODO - Имперсонейт - только на одну сессию
     self::cookie_set($user_selected['id']);
 
@@ -654,7 +665,7 @@ class core_auth extends sn_module {
       )
     ) {
       // Берем текущим юзером юзера с ИД из куки
-      $this->is_impersonating = empty($this->accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]);
+//      $this->is_impersonating = empty($this->accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]);
       // self::$user = self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]];
       self::$user = db_user_by_id($_COOKIE[SN_COOKIE_U]);
     }
@@ -684,7 +695,7 @@ class core_auth extends sn_module {
 
     $result = array();
 
-    if($user_id && !$this->is_impersonating) {
+    if($user_id && empty($this->is_impersonating)) {
       // self::db_counter_insert();
       self::$device->db_counter_insert($user_id);
 
@@ -725,6 +736,7 @@ class core_auth extends sn_module {
     $result[AUTH_LEVEL] = $this->auth_level_max_local;
 
     $result[F_IMPERSONATE_STATUS] = $this->is_impersonating;
+    $result[F_IMPERSONATE_OPERATOR] = $this->impersonator_username;
     // TODO
 //    self::$hidden[F_IMPERSONATE_OPERATOR] = $found_provider->data[F_IMPERSONATE_OPERATOR];
 
@@ -816,7 +828,7 @@ class core_auth extends sn_module {
   // OK v4.5
   // TODO - REMEMBER_ME
   protected static function cookie_set($value, $impersonate = false, $period = null) {
-    sn_setcookie(SN_COOKIE_U . ($impersonate ? '_I' : ''), $value, $period === null ? SN_TIME_NOW + PERIOD_YEAR : $period, SN_ROOT_RELATIVE);
+    sn_setcookie($impersonate ? SN_COOKIE_U_I : SN_COOKIE_U, $value, $period === null ? SN_TIME_NOW + PERIOD_YEAR : $period, SN_ROOT_RELATIVE);
   }
 
   protected static function flog($message, $die = false) {

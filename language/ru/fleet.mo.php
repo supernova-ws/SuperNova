@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a4.11
+* @version 40a11.6
 *
 */
 
@@ -77,7 +77,7 @@ $a_lang_array = (array(
   'fl_moon' => 'Луна',
   'fl_dist' => 'Расстояние',
   'fl_fltime' => 'Продолжительность (в одну сторону)',
-  'fl_time_go' => 'Прибытие в точку назначение',
+  'fl_time_go' => 'Прибытие в точку назначения',
   'fl_time_back' => 'Возвращение в точку старта',
   'fl_deute_need' => 'Потребление топлива',
   'fl_speed_max' => 'Максимальная скорость',
