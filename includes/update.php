@@ -1087,6 +1087,11 @@ switch($new_version) {
     upd_do_query("UPDATE {{log_metamatter}} SET `account_id` = `user_id`, `account_name` = `username`");
 
     // #ctv
+
+    // 2015-10-10 10:19:29 40a11.8
+    upd_check_key('security_write_full_url_disabled', 1, empty($config->security_write_full_url_disabled));
+
+    // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 40;
 }

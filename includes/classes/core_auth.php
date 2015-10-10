@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a11.7#
+ * version #40a11.8#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a11.7# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a11.8# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -308,9 +308,7 @@ class core_auth extends sn_module {
       $this->providers[$module->provider_id] = $module;
     }
 
-//pdump(array_keys($sn_module_list['auth']));
-    $this->providers = array_reverse($this->providers, true);
-//pdump(array_keys($this->providers));die();
+    // $this->providers = array_reverse($this->providers, true); // НИНАДА! СН-аккаунт должен всегда авторизироваться первым!
 
     foreach($this->providers as $provider_id => $provider) {
       $login_status = $provider->login(); // OK v4.5

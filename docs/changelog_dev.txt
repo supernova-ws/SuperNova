@@ -416,6 +416,29 @@ TODO - Проверять не просто емейл - а LOWER(EMAIL)!!!!
 [16:30:54] Project "SuperNova.WS": Не забыть - акция на Хелловин по Пиле
 
 
+Андроид: http://www.mobilab.ru/androiddev/verifyingbackendcall.html Проверка источника в Андроид на сайте
+
+
+
+Правило №1. Делайте все авторизационные куки HttpOnly
+    Куки с флагом HttpOnly не видны браузерному коду, а отправляются только на сервер. На практике у вас почти никогда
+    нет необходимости получать их содержимое со стороны клиента (если такая необходимость почему-то у вас возникла —
+    пересмотрите архитектуру авторизации, скорее всего, там что-то не так). А вот злоумышленнику, нашедшему XSS —
+    а XSS так или иначе когда-нибудь где-нибудь найдется — отсутствие HttpOnly на авторизационных куках доставит
+    много радости.
+
+ВКОНТАКТЕ: // TODO - добавить ограничение на количество запросов в секунду
+
+
+Поменять везде utf8_general_ci на utf8_unicode_ci
+    The cost of utf8_unicode_ci is that it is a little bit slower than utf8_general_ci. But that’s the price you pay for correctness.
+    Either you can have a fast answer that’s wrong, or a very slightly slower answer that’s right. Your choice. It is very difficult
+    to ever justify giving wrong answers, so it’s best to assume that utf8_general_ci doesn’t exist and to always use utf8_unicode_ci.
+    Well, unless you want wrong answers.
+    ALTER DATABASE databasename CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+    ALTER TABLE tablename CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+
 Отключать все кнопки кроме ТМ/ММ и сообщений в навбаре
 
 При отправке флота - неправильное округление! 2 ЗС потребляют ОДИН дейтерий! Хотя менее 1 единицы - нельзя
@@ -425,7 +448,51 @@ TODO - Проверять не просто емейл - а LOWER(EMAIL)!!!!
 
 Флаг в провайдере IMPERSONATE_SUPPORT
 
+
+memory table
+    http://stackoverflow.com/questions/9842720/how-to-make-the-mysql-memory-engine-store-more-data
+
+Чат
+    Кэшировать в памяти по юзерам
+    Кэшировать только в памяти активность - в таблице она не нужна (?) - это если есть кэшер...
+    MEMORY включён по дефолту...
+
+$account_vkontakte = $this->db->doquery("SELECT * FROM {{account_vkontakte}} WHERE `account_vkontakte_user_id` = {$json_decoded['user_id']}", true);
+    account_vkontakte_id
+    account_vkontakte_user_id   bigint(20)
+    account_vkontakte_access_token  85 char latin1
+    account_vkontakte_access_token_expire
+    account_vkontakte_created
+
+    primary key account_vkontakte_id
+    key(account_vkontakte_user_id)
+
+$vkontakte_to_supernova_translation = $this->db->doquery("SELECT * FROM {{account_external}} WHERE `external_provider_id` = {$this->provider_id} AND `external_account_id` = {$account_vkontakte['account_vkontakte_id']}", true);
+    external_account_id
+    external_provider_id
+    internal_account_id
+
+    key(internal_account_id)
+    unique key по трём полям
+
+
+
+
 #ctv
+
+
+
+2015-10-10 10:19:29 40a11.8 - authV4 Alpha v4.8.7
+[!] Авторизация
+    Еще немного работы для поддержки auth_vkontakte
+
+[@] Код
+    Обсчёт статистики
+        - Теперь обсчёт статистики запускается не AJAX-запросом, а в ходе init.php. Это должно улучшить отзывчивость игры
+    По умолчанию - отключена запись полных УРЛов в таблицу счётчиков. Включить её можно в конфигурации, установив security_write_full_url_disabled в 0
+    Теперь в таблице `security_url` сохраняются пути без учета SN_ROOT_RELATIVE
+    Назначения констант вынесены из classSupernova - так опять будет нормально работать autocomplete в IDE по этим константам
+
 
 2015-10-10 03:56:31 40a11.7 - authV4 Alpha v4.8.6
 [!] Авторизация

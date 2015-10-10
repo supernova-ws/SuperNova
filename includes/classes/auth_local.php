@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a11.7# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a11.8# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -222,6 +222,15 @@ class auth_local extends auth_abstract {
     $this->cookie_set($account_to_impersonate);
   }
 
+  /**
+   * @param Account $account
+   */
+  public function login_with_account($account) {
+    $this->account = $account;
+    $this->cookie_set();
+    return $this->login_cookie();
+  }
+
 
   /**
    * Отсылает письмо с кодом подтверждения для сброса пароля
@@ -252,7 +261,6 @@ class auth_local extends auth_abstract {
         // return $this->account_login_status;
       }
 
-      // $account_translation = classSupernova::$auth->db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
       $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
       $user_list = db_user_list_by_id(array_keys($account_translation));
 

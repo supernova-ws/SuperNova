@@ -172,7 +172,7 @@ class Account {
 
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
 
-    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}'", true);
+    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE", true);
     return $this->assign_from_db_row($account_row);
   }
   /**
@@ -188,7 +188,7 @@ class Account {
 
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_email` = '{$email_safe}';", true);
+    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;", true);
     return $this->assign_from_db_row($account_row);
   }
   /**
@@ -207,7 +207,7 @@ class Account {
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_name` = '{$account_name_safe}' OR `account_name` = '{$email_safe}' OR `account_email` = '{$email_safe}'", true);
+    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') OR LOWER(`account_name`) = LOWER('{$email_safe}') OR LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE", true);
     return $this->assign_from_db_row($account);
   }
   /**
@@ -232,7 +232,7 @@ class Account {
         `account_name` = '{$account_name_safe}',
         `account_password` = '{$password_salted_safe}',
         `account_salt` = '{$salt_safe}',
-        `account_email` = '{$email_safe}',
+        `account_email` = LOWER('{$email_safe}'),
         `account_language` = '{$language_safe}'"
     );
     if(!$result) {

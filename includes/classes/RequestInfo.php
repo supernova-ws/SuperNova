@@ -81,7 +81,11 @@ class RequestInfo {
    */
   public $ip_v4_proxy_chain = '';
 
+  protected $write_full_url = false;
+
   public function __construct() {
+    $this->write_full_url = !classSupernova::$config->security_write_full_url_disabled;
+
     // Инфа об устройстве и браузере - общая для всех
     sn_db_transaction_start();
     $this->device_cypher = $_COOKIE[SN_COOKIE_D];
@@ -110,14 +114,19 @@ class RequestInfo {
     sn_db_transaction_commit();
 
     sn_db_transaction_start();
-    $this->page_address = $_SERVER['PHP_SELF'];
+    $this->page_address = substr($_SERVER['PHP_SELF'], strlen(SN_ROOT_RELATIVE));
     $this->page_address_id = db_get_set_unique_id_value($this->page_address, 'url_id', 'security_url', 'url_string');
     sn_db_transaction_commit();
 
-    sn_db_transaction_start();
-    $this->page_url = $_SERVER['REQUEST_URI'];
-    $this->page_url_id = db_get_set_unique_id_value($this->page_url, 'url_id', 'security_url', 'url_string');
-    sn_db_transaction_commit();
+    if($this->write_full_url) {
+      sn_db_transaction_start();
+      $this->page_url = substr($_SERVER['REQUEST_URI'], strlen(SN_ROOT_RELATIVE));
+      if(strpos($_SERVER['REQUEST_URI'], '/simulator.php') === 0) {
+        $this->page_url = '/simulator.php';
+      }
+      $this->page_url_id = db_get_set_unique_id_value($this->page_url, 'url_id', 'security_url', 'url_string');
+      sn_db_transaction_commit();
+    }
 
     $ip = sec_player_ip();
     $this->ip_v4_string = $ip['ip'];
@@ -166,12 +175,24 @@ class RequestInfo {
     $proxy_safe = db_escape($this->ip_v4_proxy_chain);
 
     $is_watching = true;
+//    doquery(
+//      "INSERT INTO {{counter}}
+//          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
+//        VALUES
+//          ('" . SN_TIME_SQL. "', {$user_id_safe}, " . $this->device_id . "," . $this->browser_id . ", " .
+//      $this->ip_v4_int . ", '{$proxy_safe}', " . $this->page_address_id . ", " . $this->page_url_id . ");");
     doquery(
-      "INSERT INTO {{counter}}
-          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
-        VALUES
-          ('" . SN_TIME_SQL. "', {$user_id_safe}, " . $this->device_id . "," . $this->browser_id . ", " .
-      $this->ip_v4_int . ", '{$proxy_safe}', " . $this->page_address_id . ", " . $this->page_url_id . ");");
+      "INSERT INTO {{counter}} SET
+        `visit_time` = '" . SN_TIME_SQL. "',
+        `user_id` = {$user_id_safe},
+        `device_id` = {$this->device_id},
+        `browser_id` = {$this->browser_id},
+        `user_ip` = {$this->ip_v4_int},
+        `user_proxy` = '{$proxy_safe}',
+        `page_url_id` = {$this->page_address_id}" .
+        ($this->write_full_url ? ", `plain_url_id` = {$this->page_url_id}" : '' ).
+      ";");
+
     $is_watching = false;
   }
 

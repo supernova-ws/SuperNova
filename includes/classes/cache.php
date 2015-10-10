@@ -582,6 +582,7 @@ class classConfig extends classPersistent {
     'rpg_scrape_metal'             => 0.75,
 
     'security_ban_extra'           => '',
+    'security_write_full_url_disabled' => 1, // Disables writing full URLs to counter table
 
     'server_log_online'            => 0, //
 
