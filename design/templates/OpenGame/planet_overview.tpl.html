@@ -200,14 +200,16 @@
           <tr>
             <th width=100 height=33%>
               <!-- IF ques.LENGTH -->
+                <div>{L_sys_total_time}</div>
+                <div id="ov_{ques.ID}_total" style="color: red"></div>
+
                 <div id="ov_{ques.ID}"></div>
                 <!-- DEFINE $QUE_ID = '{ques.ID}' -->
                 <!-- INCLUDE eco_queue -->
               <!-- ELSE -->
                 {ques.NAME}<br>
               <!-- ENDIF -->
-                <div id="ov_{ques.ID}_timer" style="color: lime"></div>
-                <div id="ov_{ques.ID}_total" style="color: red"></div>
+                <!--<div id="ov_{ques.ID}_timer" style="color: lime" class="ov_{ques.ID}_timer_0"></div>-->
             </th>
             <th colspan=4 id="ov_{ques.ID}_que">
               {L_eco_que_empty}

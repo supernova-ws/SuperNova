@@ -70,10 +70,11 @@
               <img style="position: absolute; left: 0; top: 0;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_research_standard.png" height="100%" alt="{L_Research}" title="{L_Research}">
               <!-- IF $QUE_NOT_EMPTY -->
               <span style="position: absolute; width: 100%; height: 100%;left: 0; top: 0;" class="alpha50">
-                <div id="topnav_{QUE_ID}"></div>
-                <div id="topnav_{QUE_ID}_timer" style="color: lime"></div>
                 <div>{L_sys_total_time}</div>
                 <div id="topnav_{QUE_ID}_total" style="color: red"></div>
+
+                <div id="topnav_{QUE_ID}"></div>
+                <div id="topnav_{QUE_ID}_timer" style="color: lime" class="topnav_{QUE_ID}_timer_0"></div>
                 <div style="display: none;" id="topnav_{QUE_ID}_que"></div>
               </span>
               <!-- ELSE -->
@@ -105,10 +106,11 @@
               <!-- IF $QUE_NOT_EMPTY -->
                 <span class="alpha50" style="position: absolute; width: 100%; height: 100%;left: 0; top: 0; vertical-align: middle; display: flex; align-items: center; justify-content: center;" >
                   <div>
-                    <div id="topnav_{$QUE_ID}"></div>
-                    <div id="topnav_{$QUE_ID}_timer" style="color: lime"></div>
                     <div>{L_sys_total_time_short}</div>
                     <div id="topnav_{$QUE_ID}_total" style="color: red"></div>
+                    <div id="topnav_{$QUE_ID}"></div>
+
+                    <div id="topnav_{$QUE_ID}_timer" style="color: lime" class="topnav_{$QUE_ID}_timer_0"></div>
                     <div style="display: none;" id="topnav_{$QUE_ID}_que"></div>
                   </div>
                 </span>

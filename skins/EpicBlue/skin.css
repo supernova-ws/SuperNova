@@ -15,65 +15,38 @@
                                   ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
 */
 
-body, form, table, input, select {
-  font-family : Tahoma, sans-serif;
-}
-
-form, table, tr, td, input, select {
-  font-size : 1em;
-}
-
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-  /* Styles */
 }
 
 /* Smartphones (landscape) ----------- */
-@media only screen
-and (min-width : 321px) {
-  /* Styles */
+@media only screen and (min-width : 321px) {
 }
 
 /* Smartphones (portrait) ----------- */
-@media only screen
-and (max-width : 320px) {
-  /* Styles */
+@media only screen and (max-width : 320px) {
 }
 
 /* iPads (portrait and landscape) ----------- */
-@media only screen
-and (min-device-width : 768px)
-and (max-device-width : 1024px) {
-  /* Styles */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
 }
 
 /* iPads (landscape) ----------- */
-@media only screen
-and (min-device-width : 768px)
-and (max-device-width : 1024px)
-and (orientation : landscape) {
-  /* Styles */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
 }
 
 /* iPads (portrait) ----------- */
-@media only screen
-and (min-device-width : 768px)
-and (max-device-width : 1024px)
-and (orientation : portrait) {
-  /* Styles */
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
 }
 
 /* iPhone 4+ ----------- */
-@media
-only screen and (-webkit-min-device-pixel-ratio : 1.5),
-only screen and (min-device-pixel-ratio : 1.5) {
-  /* Styles */
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
 }
 
 
 body {
   color                : #E6EBFB;
-/*  margin-top           : 5px;
-  margin-left          : 1px;*/
+  /*margin-top           : 5px;*/
+  /*margin-left          : 1px;*/
   background-color     : #132544;
   background-attachment: fixed;
   background-repeat    : no-repeat;
@@ -88,16 +61,8 @@ body {
   scrollbar-shadow-color: #465673;
 }
 
-img {
-  border               : 0px;
-}
-
 input, select, textarea, div.z {
  color                : #E6EBFB;
-}
-
-textarea {
-  width                : 98%;
 }
 
 th, td, input, select, textarea {
@@ -108,13 +73,11 @@ th, td, input, select, textarea {
   font-weight          : bold;
 }
 
-td.error_message
-{
+td.error_message {
   background-color     : #40557E;
 }
 
-td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th
-{
+td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
   font-weight          : bold;
   background-image     : url("images/table_th_background.png");
   background-repeat:  repeat-x;
@@ -127,18 +90,15 @@ td.l {
   background-image     : url("img/bg2.gif");
 }
 
-table table
-{
-  border               : 0px;
+table table {
+  border               : 0;
 }
 
-body form table th table input
-{
+body form table th table input {
   width: 60px;
 }
 
-div.z
-{
+div.z {
   font-weight          : bold;
 }
 
@@ -149,43 +109,33 @@ a {
   /* color                : #f2f2f2;*/
 }
 
-a:not(.nohover):hover
-{
-/*  color                : #CDD7F8;
-  text-decoration      : underline;
-*/
+a:not(.nohover):hover {
   background-color     : #415680;
   text-decoration      : none;
 }
 
-.style td
-{
+.style td {
   border-top           : 0px;
 }
 
-.style div a
-{
+.style div a {
 /*  color                : #f2f2f2;*/
 }
 
-.style div a:link
-{
+.style div a:link {
 /*  color                : #f2f2f2;*/
 }
 
-.style div a:visited
-{
+.style div a:visited {
 /*  color                : #f2f2f2;*/
 }
 
-.style div a:hover
-{
+.style div a:hover {
 /*  background-color     : #415680;
   text-decoration      : none;*/
 }
 
-h1
-{
+h1 {
   font-size            : 200%;
   border-bottom        : 0px #344566 solid;
 
@@ -196,17 +146,15 @@ h1
   text-align: justify;
 }
 
-.ov_user_total {color: #FF0000}
-.ov_user_rank {color: #FFFF00}
-
-#left_menu {
-  font-weight: bold;
-  width: 140px; /* 100% */
+.ov_user_total {
+  color: #FF0000
+}
+.ov_user_rank {
+  color: #FFFF00
 }
 
 #left_menu #server_name {
   color: #00FF00;
-  font-weight: bold;
 }
 
 #left_menu th, #menu_ally_overview {
@@ -218,27 +166,23 @@ h1
   text-align: center;
 }
 
-#menu_planet_overview, #menu_empire_overview, #menu_empire_mercenaries {
+#menu_planet_overview, #menu_empire_overview, #menu_empire_mercenaries, #menu_info_research, #menu_empire_techtree {
   color: #999933;
 }
 
-#menu_admin
-{
+#menu_admin, #menu_news {
   color: lime;
 }
 
-#menu_premium
-{
+#menu_premium {
   color: gold;
 }
 
-#menu_affiliates, #menu_planet_fleets, #menu_empire_fleets
-{
+#menu_affiliates, #menu_planet_fleets, #menu_empire_fleets {
   color: #CC3333;
 }
 
-#menu_rules
-{
+#menu_rules {
   color: orange;
 }
 
@@ -246,58 +190,41 @@ h1
   color: yellow;
 }
 
-#menu_news
-{
-  color: lime;
-}
-
-#menu_planet_structures
-{
+#menu_planet_structures {
   color: #669933;
 }
 
-#menu_planet_shipyard, #menu_planet_defense
-{
+#menu_planet_shipyard, #menu_planet_defense {
   color: #993399;
 }
 
-#menu_empire_emperor, #menu_dark_matter
-{
-  color: #c300c3;
-}
-
-#menu_info_research, #menu_empire_techtree /* .lm_techtree */
-{
-  color: #999933;
-}
-
-#menu_empire_universe /* .lm_universe */
+#menu_empire_universe
 {
   color: #999966;
 }
 
-#menu_ally_chat, #menu_comm_chat /* .lm_chatally, .lm_chat */
+#menu_ally_chat, #menu_comm_chat
 {
   color: #996699;
 }
 
-#menu_comm_forum /* .lm_forum */
-{
+#menu_empire_emperor, #menu_dark_matter {
+  color: #c300c3;
+}
+
+#menu_comm_forum {
   color: #0066CC;
 }
 
-#menu_utils_simulator /* .lm_simulator */
-{
+#menu_utils_simulator {
   color: #FF9966;
 }
 
-#menu_utils_search /* .lm_search */
-{
+#menu_utils_search {
   color: #887766;
 }
 
-#menu_options /* .lm_options */
-{
+#menu_options {
   color: #CCCC66;
 }
 
@@ -306,53 +233,18 @@ h1
   color: #993333;
 }
 
-.link {
-  text-decoration: underline;
-  font-weight: bold;
-  cursor: pointer;
-}
-
 .link:hover {
   background-color     : #415680;
 }
 
-/*  Patching this theme for ui-slider */
-.style .ui-slider a:link { width: 1.2em; height: 1.2em; }
-.style .ui-slider a:hover { width: 1.2em; height: 1.2em; }
-
 /* Setting popup table background color */
-div .ui-dialog-content table { background: #344055; }
-
-/* Icon file */
-.icons { background-image: url(images/icons.png) !important; }
-
-/* Que item */
-.que_item {
-  cursor: pointer;
-
-  border: 0;
-
-  position: relative;
-  height: 5.5em;
-  width: 5.5em;
-
-  margin-right: 0.2em;
-  margin-bottom: 0.2em;
-
-  font-size: 1em;
+div .ui-dialog-content table {
+  background: #344055;
 }
 
-/* Unit picture */
-.unit_picture
-{
-  border: 0px;
-
-  position: absolute;
-  left: 0px;
-  top: 0px;
-
-  width: 100%;
-  height: 100%;
+/* Icon file */
+.icons {
+  background-image: url(images/icons.png) !important;
 }
 
 /* Unit preview box on build pages */
@@ -360,32 +252,8 @@ div .ui-dialog-content table { background: #344055; }
   border-color: #344566;
 }
 
-.casino_roulette
-{
-  position: relative;
-
-  width: 687px;
-  height: 186px;
-}
-
-.casino_point
-{
-  cursor: pointer;
-
-  /*border: 3px solid #344566;*/
-
-  position: absolute;
-  height: 15px;
-  width: 15px;
-
-  background-image: url(../../images/casino_point.png);
-
-  font-size: 100%;
-}
-
 /* Pseudoelement to use colors from CSS in JS */
-#style_probe
-{
+#style_probe {
   border-top-color: #6B90D3;  /* Reserved for unit_preview border color */
 }
 
@@ -434,12 +302,10 @@ div .ui-dialog-content table { background: #344055; }
 }
 
 .inactive {
-/*  color: CCCCCC;*/
   font-weight: normal;
 }
 
 .longinactive {
-/*  color: 999999;*/
   font-weight: normal;
   font-style: italic;
 }
@@ -509,8 +375,7 @@ div .ui-dialog-content table { background: #344055; }
 
 .flight .ownattack a, .flight .owncolony a, .flight .owndeploy a, .flight .owndestroy a,
 .flight .ownespionage a, .flight .ownfederation a, .flight .ownharvest a, .flight .ownhold a,
-.flight .ownmissile a, .flight .owntransport a, .flight .ownexpedition a
-{
+.flight .ownmissile a, .flight .owntransport a, .flight .ownexpedition a {
   color: #E6EBFB;
 }
 
@@ -555,8 +420,7 @@ div .ui-dialog-content table { background: #344055; }
 }
 
 .flight .attack a, .flight .colony a, .flight .deploy a, .flight .destroy a, .flight .espionage a,
-.flight .federation a, .flight .harvest a, .flight .hold a, .flight .missile a, .flight .transport a
-{
+.flight .federation a, .flight .harvest a, .flight .hold a, .flight .missile a, .flight .transport a {
   color: #E6EBFB;
 }
 
@@ -572,49 +436,42 @@ div .ui-dialog-content table { background: #344055; }
   color: orange;
 }
 
-.mnl_outbox, .mnl_outbox *
-{
+.mnl_outbox, .mnl_outbox * {
   background-color: #000000;
 }
 
-.mnl_joueur, .mnl_joueur *
-{
+.mnl_joueur, .mnl_joueur * {
   background-color: #114444;
 }
 
-.mnl_exploit, .mnl_exploit *
-{
+.mnl_exploit, .mnl_exploit * {
 /*  background-color: #999999;*/
 }
 
-.mnl_buildlist, .mnl_buildlist *
-{
+.mnl_buildlist, .mnl_buildlist * {
   color: #000066;
 }
 
-.mnl_alliance, .mnl_alliance *
-{
+.mnl_alliance, .mnl_alliance * {
   background-color: #446666;
 }
 
-.msg_admin, .msg_admin *
-{
+.msg_admin, .msg_admin * {
   color: #9900ff !important;
   background-color: #ffffff;
 }
 
-.new_message, .new_message *
-{
+.new_message, .new_message * {
   color: #000000;
   background-color: #ffffff;
 }
 
 /* Resources color coding*/
-.metal{
+.metal {
   color: darkgrey;
 }
 
-.crystal{
+.crystal {
   color: cyan;
 }
 
@@ -642,17 +499,11 @@ div .ui-dialog-content table { background: #344055; }
   background-color: white;
 }
 
-.battle_report_link
-{
+.battle_report_link {
   color: black;
   background-color: white;
 }
 
-.menu_text_t, .menu_text_b
-{
+.menu_text_t, .menu_text_b {
   text-align: center;
-}
-
-#copyright, #copyright #supernova_ws {
-  padding-top: 2ex;
 }

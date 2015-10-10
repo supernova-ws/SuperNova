@@ -1,3 +1,30 @@
+body, form, table, input, select {
+  font-family : Tahoma, sans-serif;
+}
+
+form, table, tr, td, input, select {
+  font-size : 1em;
+}
+
+img {
+  border               : 0;
+}
+
+textarea {
+  width                : 98%;
+}
+
+.link {
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+/*  Patching this theme for ui-slider */
+.style .ui-slider a:link { width: 1.2em; height: 1.2em; }
+.style .ui-slider a:hover { width: 1.2em; height: 1.2em; }
+
+
 @media only screen
 and (min-device-width : 320px)
 and (max-device-width : 480px) {
@@ -576,6 +603,8 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   margin: 0.5em 1em 0 0.5em;
   text-align: left;
   z-index: 999;
+  font-weight: bold;
+  width: 13em; /* 100% */
 }
 
 #left_menu_show {
@@ -1111,4 +1140,69 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 .news_hide {
   display: none;
+}
+
+.que_item_0 {
+  color: lime;
+}
+
+/* Que item */
+.que_item {
+  cursor: pointer;
+
+  border: 0;
+
+  position: relative;
+  height: 5.5em;
+  width: 5.5em;
+
+  margin-right: 0.2em;
+  margin-bottom: 0.2em;
+
+  font-size: 1em;
+}
+
+/* Unit picture */
+.unit_picture {
+  border: 0px;
+
+  position: absolute;
+  left: 0px;
+  top: 0px;
+
+  width: 100%;
+  height: 100%;
+}
+
+.que_unit_level {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2ex;
+  font-size: 100%;
+}
+
+.que_unit_time {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2ex;
+  font-size: 100%;
+}
+
+.que_unit_time_seconds_0 {
+  position: absolute;
+  bottom: 2ex;
+  left: 0;
+  width: 100%;
+  height: 0.5ex;
+  font-size: 100%;
+
+  background-color: green;
+}
+
+#copyright, #copyright #supernova_ws {
+  padding-top: 2ex;
 }

@@ -41,7 +41,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
    'options'     - timer options
    'html_main'   - reserved for internal use (link to main HTML element)
    'html_timer'  - reserved for internal use (link to 'timer' HTML element)
-   'html_finish' - reserved for internal use (link to 'finish' HTML element)
+   'html_finish' - reserved for internal use (link to 'finish' HTML element) Дата окончания постройки текущего юнита. Пока не используется
    'html_que'    - reserved for internal use (link to 'que' HTML element)
    'html_total'  - reserved for internal use (link to 'total time' HTML element)
 
@@ -95,69 +95,166 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
   var sn_timers = new Array();
 
   function sn_timer_compile_que(timer_options) {
-    var compiled = '';
-    var unit_name = '';
-    var temp = '';
-    var total = 0;
     var que = timer_options['que'];
+    var compiled = '';
+    var total = 0;
+    var unit_count, que_id;
 
     for (que_id in que) {
-//    if(que_id != 0)
-      {
-        total += (que[que_id][UNIT_AMOUNT] - (que_id != 0 ? 0 : 1)) * que[que_id][UNIT_TIME_FULL]; // que[que_id][UNIT_TIME] +
-      }
+      total += (que[que_id][UNIT_AMOUNT] - (que_id == 0 ? 1 : 0)) * que[que_id][UNIT_TIME_FULL];
 
-      temp = timer_options['template'].replace('[UNIT_ID]', que[que_id][UNIT_ID]);
-      temp = temp.replace('[UNIT_TIME]', sn_timestampToString(que[que_id][UNIT_TIME]));
+      unit_count = que[que_id][que[que_id][UNIT_LEVEL] > 0 ? UNIT_LEVEL : UNIT_AMOUNT];
 
-      unit_name = que[que_id][UNIT_NAME];
-      if (que[que_id][UNIT_LEVEL] > 0) {
-        unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
-        temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
-      } else {
-        unit_name += ' (' + que[que_id][UNIT_AMOUNT] + ')';
-        temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_AMOUNT]);
-      }
-      temp = temp.replace('[UNIT_NAME]', unit_name);
-      compiled += temp;
+      compiled += timer_options['template']
+        .replace('[UNIT_ID]', que[que_id][UNIT_ID])
+        .replace('[UNIT_TIME]', sn_timestampToString(que[que_id][UNIT_TIME]))
+        .replace(/\[UNIT_LEVEL\]/gi, unit_count)
+        .replace(/\[UNIT_NAME\]/gi, que[que_id][UNIT_NAME])
+        .replace(/\[UNIT_QUE_PLACE\]/gi, que_id);
+
+      //unit_name = que[que_id][UNIT_NAME];
+
+      //temp = temp.replace('[UNIT_LEVEL]', unit_count);
+      //unit_name += ' (' + unit_count + ')';
+      //if (que[que_id][UNIT_LEVEL] > 0) {
+      //  unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
+      //  temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
+      //} else {
+      //  unit_name += ' (' + que[que_id][UNIT_AMOUNT] + ')';
+      //  temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_AMOUNT]);
+      //}
+      //temp = temp.replace('[UNIT_NAME]', unit_name);
+      //temp = temp.replace('[UNIT_NAME]', que[que_id][UNIT_NAME] + ' (' + unit_count + ')');
+      //temp = temp.replace(/\[UNIT_QUE_PLACE\]/gi, que_id);
+      //compiled += temp;
     }
     timer_options['total'] = total;
 
     return compiled;
   }
 
+
+  var timer_is_started = false;
+
   function sn_timer() {
-    var HTML, HTML_timer, HTML_finish;
+    if(timer_is_started) {
+      window.setTimeout("sn_timer();", 1000);
+      return;
+    }
+
+    timer_is_started = true;
+
+    var timer, timerID, que_item, should_break, infoText, timer_options, local_time_plus, timerText;
+    var activeTimers = 0, need_compile = false;
 
     var time_local_now = new Date();
     var time_passed = Math.round((time_local_now.valueOf() - localTime.valueOf()) / 1000);
     var timestamp_server = D_SN_TIME_NOW + time_passed;
-    var activeTimers = 0;
 
     for (timerID in sn_timers) {
-      if (!sn_timers[timerID]['active']) {
+      timer = sn_timers[timerID];
+      if (typeof timer['active'] === 'undefined') {
         continue;
       }
 
-      timer = sn_timers[timerID];
       if (!timer['html_main']) {
-        sn_timers[timerID]['html_main'] = document.getElementById(timer['id']);
-        sn_timers[timerID]['html_timer'] = document.getElementById(timer['id'] + '_timer');
-        sn_timers[timerID]['html_finish'] = document.getElementById(timer['id'] + '_finish');
-        sn_timers[timerID]['html_que'] = document.getElementById(timer['id'] + '_que');
-        sn_timers[timerID]['html_total'] = document.getElementById(timer['id'] + '_total');
-        timer = sn_timers[timerID];
+        //timer['html_main'] = document.getElementById(timer['id']);
+        timer['html_main'] = $("#" + timer['id']);
+        timer['html_timer'] = $("#" + timer['id'] + '_timer'); // document.getElementById(timer['id'] + '_timer');
+        //timer['html_timer'] = document.getElementById(timer['id'] + '_timer');
+        // timer['html_finish'] = document.getElementById(timer['id'] + '_finish');
+        // timer['html_finish'] = $("#" + timer['id'] + '_finish:visible'); // Дата окончания постройки текущего юнита. Пока не используется
+        timer['html_que_js'] = $("#" + timer['id'] + '_que');
+        timer['html_total_js'] = $("#" + timer['id'] + '_total:visible'); // document.getElementById(timer['id'] + '_total');
+        timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
       }
-      HTML = timer['html_main'];
-      HTML_timer = timer['html_timer'];
-      HTML_finish = timer['html_finish'];
-      HTML_que = timer['html_que'];
-      HTML_total = timer['html_total'];
 
       timer_options = timer['options'];
       switch (timer['type']) {
+        case 3: // new que display
+          if (timer_options['que'].length == 0) {
+            timer['active'] = false;
+            if (timer_options['url'] != undefined) {
+              document.location = timer_options['url'];
+            }
+            break;
+          }
+          que_item = timer_options['que'][0];
+
+
+          need_compile = false;
+          if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
+            que_item[UNIT_AMOUNT]--;
+            if (que_item[UNIT_AMOUNT] <= 0) {
+              timer_options['que'].shift();
+              que_item = timer_options['que'][0];
+              need_compile = true;
+            } else {
+              que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
+              timer['html_level_current'].text(que_item[UNIT_AMOUNT]);
+            }
+            timer['start_time'] = timestamp_server;
+          }
+
+          if (!timer['que_compiled'] || need_compile) { //  || timer['que_compiled'] != ''
+//console.log('compile ' + timer['id'] + ' because need_compile ' + need_compile);
+            timer['que_compiled'] = sn_timer_compile_que(timer_options);
+            if (timer['html_que_js'] != null && timer['html_que_js'].length > 0) {
+              timer['html_que_js'].html(timer['que_compiled']);
+              // timer['html_que'].innerHTML = timer['que_compiled'];
+            }
+            timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
+            timer['html_timer_current'] = $('.' + timer['id'] + '_timer_0:visible');
+            timer['html_timer_seconds'] = $('.' + timer['id'] + '_seconds_0:visible');
+          }
+
+          should_break = typeof que_item == 'undefined' || typeof que_item[UNIT_ID] == 'undefined' || !que_item[UNIT_ID];
+          if (timer_options['que'].length && !should_break) {
+            //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
+            timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
+            if(timer['html_timer_seconds'].length) {
+              timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%');
+            }
+            total_text = sn_timestampToString(timeLeft + timer_options['total']);
+            infoText = que_item[UNIT_NAME] + ' (' + que_item[que_item[UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
+            timerText = sn_timestampToString(timeLeft);
+          } else {
+            if (typeof timer_options['url'] != 'undefined') {
+              document.location = timer_options['url'];
+            }
+            timer['active'] = false;
+            infoText = timer_options['msg_done'];
+            timerText = '';
+            total_text = '00:00:00';
+          }
+
+          if (typeof timer['html_total_js'] != 'undefined' && timer['html_total_js'].length > 0) {
+            timer['html_total_js'].html(total_text);
+          } else {
+            timerText += '<br>' + total_text;
+          }
+
+          //timer['html_timer_current'].text(timerText);
+
+          if (typeof timer['html_timer_current'] != 'undefined' && timer['html_timer_current'].length > 0) {
+            timer['html_timer_current'].text(timerText);
+          } else {
+            infoText += (infoText != '' && timerText ? '<br>' : '') + timerText;
+          }
+
+          typeof timer['html_que_js'] == 'undefined' || timer['html_que_js'].length <= 0
+            ? infoText += timer['que_compiled'] : false;
+
+          //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
+
+          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : false;
+          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : false;
+
+        break;
+
+
         case 0: // old que display
-          var que_item = timer_options['que'][0];
+          que_item = timer_options['que'][0];
           if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
             que_item[UNIT_AMOUNT]--;
             if (que_item[UNIT_AMOUNT] <= 0) {
@@ -168,14 +265,9 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
           }
 
           if (timer_options['que'].length && que_item[UNIT_ID]) {
-            timeFinish = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]);
+            //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
             timeLeft = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]) - timestamp_server;
-            infoText = que_item[UNIT_NAME];
-            //if(que_item[UNIT_AMOUNT] > 1)
-            {
-              // infoText += ' (' + (que_item[UNIT_LEVEL] ? que_item[UNIT_LEVEL] : que_item[UNIT_AMOUNT]) + ')';
-              infoText += que_item[UNIT_LEVEL] ? ' (' + (que_item[UNIT_LEVEL]) + ')' : '';
-            }
+            infoText = que_item[UNIT_NAME] + (que_item[UNIT_LEVEL] ? ' (' + (que_item[UNIT_LEVEL]) + ')' : '');
             timerText = sn_timestampToString(timeLeft);
           } else {
             timer['active'] = false;
@@ -183,26 +275,22 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
             timerText = '';
           }
 
-          if (HTML_timer != null) {
-            HTML_timer.innerHTML = timerText;
+          if (typeof timer['html_timer'] != 'undefined' && timer['html_timer'].length) {
+            // timer['html_timer'].innerHTML = timerText;
+            timer['html_timer'].text(timerText);
           } else {
-            if (infoText != '' && timerText) {
-              infoText += '<br>';
-            }
-            infoText += timerText;
+            infoText += (infoText != '' && timerText ? '<br>' : '') + timerText;
           }
 
-          if (HTML_finish != null) {
-            HTML_finish.innerHTML = timeFinish;
-          }
+          //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
 
-          if (HTML != null) {
-            HTML.innerHTML = infoText;
-          }
+          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : false;
+          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : false;
         break;
 
         case 5:
-          var que_item = timer_options['que'][0];
+          que_item = timer_options['que'][0];
+          infoText = '';
 
           if (que_item[EVENT_TIME] <= timestamp_server - timer['start_time']) {
             timer_options['que'].shift();
@@ -225,14 +313,14 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
           if (!timer['options']['unchanged']) {
             timer['options']['unchanged'] = true;
 
-            if (HTML != null) {
-              HTML.innerHTML = infoText;
-            }
+            //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : false;
+            typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : false;
 
-            if (HTML_total != null) {
-              HTML_total.title = hintText;
+            if (timer['html_total_js'] != null && timer['html_total_js'].length > 0) {
+              timer['html_total_js'].prop('title', hintText);
             } else {
-              HTML.title = hintText;
+              //timer['html_main'].title = hintText;
+              timer['html_main'].prop('title', hintText);
             }
           }
         break;
@@ -246,167 +334,33 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
             new_value = 0;
             timer['active'] = false;
           }
-          printData = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
+          infoText = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
           if ((new_value >= timer_options['max_value'] && timer_options['per_second'] > 0) || (timer_options['per_second'] == 0)) {
             timer['active'] = false;
             new_value = timer_options['max_value'];
           }
 
-          if (HTML != null) {
-            HTML.innerHTML = printData;
-          } else {
-            timer['active'] = false;
-          }
+          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : (timer['active'] = false);
+          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : (timer['active'] = false);
         break;
 
-        case 2: // date&time // Unused
-          /*
-          printData = '';
-
-          if (timer['options'] & 1) {
-            printData += local_time.toLocaleDateString();
-          }
-
-          if (timer['options'] & 3) {
-            printData += '&nbsp;';
-          }
-
-          if (timer['options'] & 2) {
-            printData += local_time.toTimeString().substring(0, 8);
-          }
-
-          if (HTML != null) {
-            HTML.innerHTML = printData;
-          }
-          else {
-            timer['active'] = false;
-          }
-          break;
-          */
         case 4: // date&time with delta
-          printData = '';
+          infoText = '';
 
-          timer_options_delta = typeof timer['options']['delta'] == 'undefined' ? 0 : timer['options']['delta'];
-          timer_options_format = typeof timer['options']['format'] == 'undefined' ? timer['options'] : timer['options']['format'];
-          var local_time_plus = new Date();
+          timer_options_delta = typeof timer_options['delta'] == 'undefined' ? 0 : timer_options['delta'];
+          timer_options_format = typeof timer_options['format'] == 'undefined' ? timer_options : timer_options['format'];
+          local_time_plus = new Date();
           local_time_plus.setTime(time_local_now.valueOf() + (timer_options_delta * 1000));
 
-          timer_options_format & 1 ? printData += local_time_plus.toLocaleDateString() : false;
-          timer_options_format & 3 ? printData += '&nbsp;' : false;
-          timer_options_format & 2 ? printData += local_time_plus.toTimeString().substring(0, 8) : false;
+          timer_options_format & 1 ? infoText += local_time_plus.toLocaleDateString() : false;
+          timer_options_format & 3 ? infoText += '&nbsp;' : false;
+          timer_options_format & 2 ? infoText += local_time_plus.toTimeString().substring(0, 8) : false;
 
-          /*
-          var local_time_plus = new Date();
-          local_time_plus.setTime(local_time.valueOf() + (timer['options']['delta'] * 1000));
-          if (timer['options']['format'] & 1) {
-            printData += local_time_plus.toLocaleDateString();
-          }
-          if (timer['options']['format'] & 3) {
-            printData += '&nbsp;';
-          }
-          if (timer['options']['format'] & 2) {
-            printData += local_time_plus.toTimeString().substring(0, 8);
-          }
-          */
-
-          if (HTML != null) {
-            HTML.innerHTML = printData;
-          } else {
-            timer['active'] = false;
-          }
+          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : (timer['active'] = false);
+          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : (timer['active'] = false);
         break;
 
-        case 3: // new que display
-          if (timer_options['que'].length == 0) {
-            timer['active'] = false;
-            if (timer_options['url'] != undefined) {
-              document.location = timer_options['url'];
-            }
-            break;
-          }
-          var que_item = timer_options['que'][0];
-          var que_compiled = '';
-
-          if (!timer['que_compiled'] || timer['que_compiled'] != '') {
-            sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
-//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
-          }
-          que_compiled = sn_timers[timerID]['que_compiled'];
-
-          if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
-            que_item[UNIT_AMOUNT]--;
-            if (que_item[UNIT_AMOUNT] <= 0) {
-              timer_options['que'].shift();
-              que_item = timer_options['que'][0];
-            } else {
-              que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
-            }
-            timer['start_time'] = timestamp_server;
-            sn_timers[timerID]['que_compiled'] = sn_timer_compile_que(timer_options);
-//          HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
-            que_compiled = sn_timers[timerID]['que_compiled'];
-          }
-
-          var should_break = true;
-          if (que_item != undefined) {
-            if (que_item[UNIT_ID]) {
-              should_break = false;
-            }
-          }
-
-          if (timer_options['que'].length && !should_break) {
-            timeFinish = timer['start_time'] + que_item[UNIT_TIME];
-            timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
-            total_text = sn_timestampToString(timeLeft + timer_options['total']);
-            infoText = que_item[UNIT_NAME];
-            if (que_item[UNIT_LEVEL]) {
-              infoText += ' (' + que_item[UNIT_LEVEL] + ')';
-            } else
-            // if(que_item[UNIT_AMOUNT] > 1)
-            {
-              infoText += ' (' + que_item[UNIT_AMOUNT] + ')';
-            }
-            timerText = sn_timestampToString(timeLeft);
-          } else {
-            timer['active'] = false;
-            if (timer_options['url'] != undefined) {
-              document.location = timer_options['url'];
-            }
-            infoText = timer_options['msg_done'];
-            timerText = '';
-            total_text = '00:00:00';
-          }
-
-          if (HTML_total != null) {
-            HTML_total.innerHTML = total_text;
-          } else {
-            timerText += '<br>' + total_text;
-          }
-
-          if (HTML_timer != null) {
-            HTML_timer.innerHTML = timerText;
-          } else {
-            if (infoText != '' && timerText) {
-              infoText += '<br>';
-            }
-            infoText += timerText;
-          }
-
-          if (HTML_que != null) {
-            HTML_que.innerHTML = sn_timers[timerID]['que_compiled'];
-          } else {
-            infoText += sn_timers[timerID]['que_compiled'];
-          }
-
-          if (HTML_finish != null) {
-            HTML_finish.innerHTML = timeFinish;
-          }
-
-          if (HTML != null) {
-            HTML.innerHTML = infoText;
-          }
-        break;
-      }
+     }
 
       activeTimers++;
     }
@@ -414,5 +368,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
     if (activeTimers) {
       window.setTimeout("sn_timer();", 1000);
     }
+    timer_is_started = false;
   }
+
 }
