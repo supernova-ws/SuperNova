@@ -452,7 +452,7 @@ abstract class sn_module_payment extends sn_module {
     $this->db = $this->account->db;
     // pdump($this->db);
 
-    $this->payment_provider_id = core_auth::$main_provider->manifest['provider_id'];
+    $this->payment_provider_id = core_auth::$main_provider->provider_id;
     $this->payment_account_id = $this->account->account_id;
     $this->payment_account_name = $this->account->account_name;
     $this->payment_user_id = $user['id'];

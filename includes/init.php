@@ -71,12 +71,14 @@ require_once('classes/locale.php');
 require_once('classes/template.php');
 require_once('classes/functions_template.php');
 require_once('classes/module.php');
+
 require_once('classes/RequestInfo.php');
 require_once('classes/PlayerToAccountTranslate.php');
 require_once('classes/Confirmation.php');
 require_once('classes/Account.php');
 require_once('classes/core_auth.php');
 // require_once('auth_provider.php');
+require_once('classes/auth_abstract.php');
 require_once('classes/auth_local.php');
 require_once('classes/sn_module_payment.php');
 require_once('classes/user_options.php');
@@ -131,19 +133,18 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
 
 
-
-
-
 // Подключаем все модули
 // По нормальным делам тут надо подключать манифесты
 // И читать конфиги - вдруг модуль отключен?
 // Конфиг - часть манифеста?
 $sn_module = array();
 $sn_module_list = array();
+
+classSupernova::$auth = new core_auth();
+
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // Здесь - потому что core_auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
 // TODO - переработать этот костыль
-classSupernova::$auth = new core_auth();
 // new auth_local();
 // pdump($sn_module);
 

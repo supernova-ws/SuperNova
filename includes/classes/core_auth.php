@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a11.6#
+ * version #40a11.7#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a11.6# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a11.7# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -294,7 +294,7 @@ class core_auth extends sn_module {
 
     // !self::$is_init ? self::init() : false;
     if(empty($sn_module_list['auth'])) {
-      die('{Не обнаружено ни одного провайдера авторизации в core_auth::init()!}');
+      die('{Не обнаружено ни одного провайдера авторизации в core_auth::login()!}');
     }
 
     !empty($_POST) ? self::flog(dump($_POST, '$_POST')) : false;
@@ -305,9 +305,12 @@ class core_auth extends sn_module {
 
     $this->providers = array();
     foreach($sn_module_list['auth'] as $module_name => $module) {
-      $this->providers[$module->manifest['provider_id']] = $module;
+      $this->providers[$module->provider_id] = $module;
     }
+
+//pdump(array_keys($sn_module_list['auth']));
     $this->providers = array_reverse($this->providers, true);
+//pdump(array_keys($this->providers));die();
 
     foreach($this->providers as $provider_id => $provider) {
       $login_status = $provider->login(); // OK v4.5
@@ -435,8 +438,8 @@ class core_auth extends sn_module {
       die('You can\'t impersonate this account - level is greater or equal to yours'); // TODO: Log it
     }
 
-    $account_translate = PlayerToAccountTranslate::db_translate_get_account_by_user_id($user_selected['id'], self::$main_provider->manifest['provider_id']);
-    $account_translate = reset($account_translate[$user_selected['id']][self::$main_provider->manifest['provider_id']]);
+    $account_translate = PlayerToAccountTranslate::db_translate_get_account_by_user_id($user_selected['id'], self::$main_provider->provider_id);
+    $account_translate = reset($account_translate[$user_selected['id']][self::$main_provider->provider_id]);
     $account_to_impersonate = new Account(self::$main_provider->db);
     $account_to_impersonate->db_get_by_id($account_translate['provider_account_id']);
     if(!$account_to_impersonate->is_exists) {
@@ -461,6 +464,7 @@ class core_auth extends sn_module {
    * @return bool
    */
   // OK v4.6
+  // TODO - ПЕРЕДЕЛАТЬ!
   public function password_check($password_unsafe) {
     $result = false;
 
@@ -594,8 +598,8 @@ class core_auth extends sn_module {
       foreach($this->providers_authorised as $provider) {
         // TODO - порнография. Должен быть отдельный класс трансляторов - в т.ч. и кэширующий транслятор
         // TODO - ну и работа должна происходить над списком аккаунтов, а не только на одном аккаунте...
-        // self::db_translate_register_user($provider->manifest['provider_id'], $provider->account->account_id, $a_user['id']);
-        PlayerToAccountTranslate::db_translate_register_user($provider->manifest['provider_id'], $provider->account->account_id, $a_user['id']);
+        // self::db_translate_register_user($provider->provider_id, $provider->account->account_id, $a_user['id']);
+        PlayerToAccountTranslate::db_translate_register_user($provider->provider_id, $provider->account->account_id, $a_user['id']);
 
       }
       // Установить куку игрока

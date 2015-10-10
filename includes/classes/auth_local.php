@@ -4,12 +4,12 @@
  * Class auth_local
  */
 // Расширяет sn_module, потому что его потомки так же являются модулями
-class auth_local extends sn_module {
+class auth_local extends auth_abstract {
   public $manifest = array(
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a11.6# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a11.7# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -19,68 +19,57 @@ class auth_local extends sn_module {
     'installed' => true,
     'active' => true,
 
-    'provider_id' => ACCOUNT_PROVIDER_LOCAL,
+//    'provider_id' => ACCOUNT_PROVIDER_LOCAL,
 
     // 'class_path' => __FILE__,
     'config_path' => SN_ROOT_PHYSICAL,
   );
+
+  public $provider_id = ACCOUNT_PROVIDER_LOCAL;
+  // TODO - private ??
+  //public $user = null;
 
   /**
    * Флаг входа в игру
    *
    * @var bool
    */
-  public $is_login = false;
+  protected $is_login = false;
   /**
    * Флаг регистрации
    *
    * @var bool
    */
-  public $is_register = false;
+  protected $is_register = false;
   /**
    * Флаг запроса кода на сброс пароля
    *
    * @var bool
    */
-  public $is_password_reset = false;
+  protected $is_password_reset = false;
   /**
    * Флаг запроса на сброс пароля по коду
    *
    * @var bool
    */
-  public $is_password_reset_confirm = false;
+  protected $is_password_reset_confirm = false;
   /**
    * Нужно ли запоминать креденшиался при выходе из браузера
    *
    * @var bool
    */
-  public $remember_me = 1;
-  /**
-   * @var Account
-   */
-  public $account = null;
-  // TODO - private ??
-  //public $user = null;
+  protected $remember_me = 1;
 
   // TODO - должны быть PRIVATE
-  public $data = array();
+  // public $data = array();
 
   /**
    * @var Confirmation
    */
-  public $confirmation = null;
-
-  /**
-   * Статус входа аккаунта в игру
-   *
-   * @var int
-   */
-  public $account_login_status = LOGIN_UNDEFINED;
-
-  public $is_impersonating = false;
+  protected $confirmation = null;
 
 
-
+  // public $is_impersonating = false;
 
   protected $features = array(
     AUTH_FEATURE_EMAIL_CHANGE => AUTH_FEATURE_EMAIL_CHANGE,
@@ -88,12 +77,6 @@ class auth_local extends sn_module {
     AUTH_FEATURE_PASSWORD_CHANGE => AUTH_FEATURE_PASSWORD_CHANGE,
     AUTH_FEATURE_HAS_PASSWORD => AUTH_FEATURE_HAS_PASSWORD,
   );
-
-  /**
-   * @var db_mysql $db
-   */
-  // Should be PROTECTED
-  public $db;
 
   /**
    * @var string $input_login_unsafe
@@ -139,9 +122,9 @@ class auth_local extends sn_module {
 //  }
 //
 
-  public function set_database($db = null) {
-    $this->db = is_object($db) ? $db : classSupernova::$db;
-  }
+//  public function set_database($db = null) {
+//    $this->db = is_object($db) ? $db : classSupernova::$db;
+//  }
 
   /**
    * @param string $filename
@@ -159,7 +142,7 @@ class auth_local extends sn_module {
 
       $this->db->sn_db_connect($this->config['db']);
       if($this->manifest['active'] = $this->db->connected) {
-        $this->manifest['provider_id'] = ACCOUNT_PROVIDER_CENTRAL;
+        $this->provider_id = ACCOUNT_PROVIDER_CENTRAL;
 
         $this->domain = $this->config['domain'];
         $this->sn_root_path = $this->config['sn_root_path'];
@@ -175,7 +158,7 @@ class auth_local extends sn_module {
     if(!$this->manifest['active']) {
       $this->db = classSupernova::$db;
 
-      $this->manifest['provider_id'] = ACCOUNT_PROVIDER_LOCAL;
+      $this->provider_id = ACCOUNT_PROVIDER_LOCAL;
 
       $this->domain = null;
       $this->sn_root_path = SN_ROOT_RELATIVE;
@@ -207,19 +190,13 @@ class auth_local extends sn_module {
     $this->login_username();
     $this->login_cookie();
 
-    $this->is_impersonating = $this->account_login_status == LOGIN_SUCCESS && !empty($_COOKIE[$this->cookie_name_impersonate]);
+    // $this->is_impersonating = $this->account_login_status == LOGIN_SUCCESS && !empty($_COOKIE[$this->cookie_name_impersonate]);
 
     return $this->account_login_status;
   }
 
   public function logout() {
     $this->cookie_clear();
-  }
-
-  // TODO - переделать!
-  // TODO - NOT OK v4
-  public function password_check($password_unsafe) {
-    return $this->account->password_check($password_unsafe);
   }
 
   /**
@@ -233,7 +210,7 @@ class auth_local extends sn_module {
    */
   // OK v4.5
   public function password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
-    $result = $this->account->password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe);
+    $result = parent::password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe);
     if($result) {
       $this->cookie_set();
     }
@@ -241,39 +218,9 @@ class auth_local extends sn_module {
     return $result;
   }
 
-  /**
-   * Проверка на поддержку фичи
-   *
-   * @param $feature
-   *
-   * @return bool
-   */
-  // OK v4.6
-  public function is_feature_supported($feature) {
-    return !empty($this->features[$feature]);
-  }
-
-  /**
-   * Функция предлогает имя игрока (`users`) по данным аккаунта
-   *
-   * @return string
-   */
-  // OK 4.6
-  public function player_name_suggest() {
-    $name = '';
-    if(!empty($this->account->account_email)) {
-      list($name) = explode('@', $this->account->account_email);
-    }
-
-    empty($name) && !empty($this->account->account_name) ? $name = $this->account->account_name : false;
-
-    return $name;
-  }
-
   public function impersonate($account_to_impersonate) {
     $this->cookie_set($account_to_impersonate);
   }
-
 
 
   /**
@@ -305,8 +252,8 @@ class auth_local extends sn_module {
         // return $this->account_login_status;
       }
 
-      // $account_translation = classSupernova::$auth->db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
-      $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
+      // $account_translation = classSupernova::$auth->db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
+      $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
       $user_list = db_user_list_by_id(array_keys($account_translation));
 
       // TODO - Проверять уровень доступа аккаунта!
@@ -406,8 +353,8 @@ class auth_local extends sn_module {
         $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $this->account->account_name, $new_password_unsafe);
         @$operation_result = mymail($confirmation['email'], $message_header, htmlspecialchars($message));
 
-        // $users_translated = classSupernova::$auth->db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
-        $users_translated = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->manifest['provider_id'], $this->account->account_id); // OK 4.5
+        // $users_translated = classSupernova::$auth->db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
+        $users_translated = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
         if(!empty($users_translated)) {
           // Отправляем в лички письмо о сбросе пароля
 
@@ -472,7 +419,7 @@ class auth_local extends sn_module {
   // OK v4.5
   protected function register() {
     // TODO РЕГИСТРАЦИЯ ВСЕГДА ДОЛЖНА ЛОГИНИТЬ ПОЛЬЗОВАТЕЛЯ!
-    $this->flog('Регистрация: начинаем. Провайдер ' . $this->manifest['provider_id']);
+    $this->flog('Регистрация: начинаем. Провайдер ' . $this->provider_id);
 
     try {
       if(!$this->is_register) {

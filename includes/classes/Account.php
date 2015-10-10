@@ -311,7 +311,7 @@ class Account {
    */
   // OK 4.8
   protected function db_mm_log_insert($comment, $change_type, $metamatter, $user_id_unsafe) {
-    $provider_id_safe = intval(core_auth::$main_provider->manifest['provider_id']);
+    $provider_id_safe = intval(core_auth::$main_provider->provider_id);
     //$account_id_safe = $this->db->db_escape($this->account_id);
     $account_id_safe = intval($this->account_id);
     $account_name_safe = $this->db->db_escape($this->account_name);
@@ -378,7 +378,7 @@ class Account {
     }
 
     if(empty(core_auth::$user['id'])) {
-      $user_list = PlayerToAccountTranslate::db_translate_get_users_from_account_list(core_auth::$main_provider->manifest['provider_id'], $this->account_id);
+      $user_list = PlayerToAccountTranslate::db_translate_get_users_from_account_list(core_auth::$main_provider->provider_id, $this->account_id);
       reset($user_list);
       $user_id_unsafe = key($user_list);
     } else {
