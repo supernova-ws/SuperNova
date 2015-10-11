@@ -1,4 +1,4 @@
-if(typeof(window.LOADED_TIMER) === 'undefined') {
+if(window.LOADED_TIMER === undefined) {
   var LOADED_TIMER = true;
   /*
 
@@ -92,7 +92,12 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
   var EVENT_STRING = 1;
   var EVENT_HINT = 2;
 
-  var CONST_STR_UNDEFINED = 'undefined';
+  // var TIMER_UNSUPPORTED = -1;
+  var TIMER_BUILD_QUE_V1 = 0;
+  var TIMER_COUNTER = 1;
+  var TIMER_BUILD_QUE_V2 = 3;
+  var TIMER_CLOCK_REALTIME = 4;
+  var TIMER_EVENT_QUE = 5; // Event que in title (NavBar)
 
   var sn_timers = new Array();
   var timer_is_started = false;
@@ -110,14 +115,17 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
         continue;
       }
 
+
       timer = sn_timers[timerID];
-      if (typeof(timer) == CONST_STR_UNDEFINED || typeof(timer['active']) == CONST_STR_UNDEFINED || typeof(timer['type']) == CONST_STR_UNDEFINED) {
+      if (timer['active'] === undefined || timer['type'] === undefined) {
         timer['active'] = false;
       }
 
       if (!timer['active']) {
         continue;
       }
+
+      timer['start_time'] = new Date(D_SN_TIME_NOW * 1000 - timeDiff);
 
       // Кэшируем DOM-ики
       timer['html_main'] = $("#" + timer['id']);
@@ -127,52 +135,15 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
       timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
 
       // Если нет настроек - создаём пустой объект
-      typeof(timer['options']) == 'undefined' ? timer['options'] = {} : false;
+      timer['options'] === undefined ? timer['options'] = {} : false;
       timer_options = timer['options'];
 
+      timer['type'] = parseInt(timer['type']);
+
       switch (timer['type']) {
-        // OK v2
-        case 1: // time-independent counter
-// TODO - Проверка на is(':visible')
-          if (timer['html_main'].length <= 0) {
-            timer['active'] = false;
-            break;
-          }
-
-          timer_options['round'] = typeof(timer_options['round']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['round']);
-          timer_options['start_value'] = typeof(timer_options['start_value']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['start_value']);
-          timer_options['start_time'] = typeof(timer_options['start_time']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['start_time']);
-          timer_options['per_second'] = typeof(timer_options['per_second']) == CONST_STR_UNDEFINED ? 0 : parseFloat(timer_options['per_second']);
-        break;
-
-        // OK v2
-        case 4: // date&time with delta
-// TODO - Проверка на is(':visible')
-          if (timer['html_main'].length <= 0) {
-            timer['active'] = false;
-            break;
-          }
-
-          timer_options['format'] = parseInt(typeof(timer_options['format']) == CONST_STR_UNDEFINED ? timer_options : timer_options['format']);
-          timer_options['delta'] = typeof(timer_options['delta']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['delta']);
-        break;
-
-        // OK v2
-        case 5: // Event que in title (NavBar)
-          // Если нет ни основного элемента вывода, ни видимого элемента с подсказкой - тогда можно даже не начинать работу счётчика
-// TODO - Проверка на is(':visible')
-          if (!timer['html_main'].length && !timer['html_total_js'].length) {
-            timer['active'] = false;
-            break;
-          }
-
-          timer_options['changed'] = true;
-        break;
-
-        // OK v2
-        case 0: // old que display
+        case TIMER_BUILD_QUE_V1: {
           // Если нет ни основного элемента вывода, ни элемента таймера - тогда можно даже не начинать работу счётчика
-// TODO - Проверка на is(':visible')
+          // TODO - Проверка на is(':visible')
           if (!timer['html_main'].length && !timer['html_timer'].length) {
             timer['active'] = false;
             break;
@@ -182,13 +153,65 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
           timer_options['always_refresh'] = timer['html_main'].length && !timer['html_timer'].length;
           timer_options['changed'] = true;
 
-          timer_options['start_time'] = typeof(timer_options['start_time']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['start_time']);
-        break;
+          break;
+        }
 
-        case 3: // new que display
+        case TIMER_BUILD_QUE_V2: {
+          if (!timer_options['que'].length) {
+            if (timer_options['url'] !== undefined) {
+              document.location = timer_options['url'];
+            }
+            timer['active'] = false;
+            break;
+          }
+
           timer['que_compiled'] = '';
-//console.log(timer['html_que_js']);
-        break;
+          break;
+        }
+
+        case TIMER_EVENT_QUE: {
+          // Если нет ни основного элемента вывода, ни видимого элемента с подсказкой - тогда можно даже не начинать работу счётчика
+          // TODO - Проверка на is(':visible')
+          if (!timer['html_main'].length && !timer['html_total_js'].length) {
+            timer['active'] = false;
+            break;
+          }
+
+          timer_options['changed'] = true;
+          break;
+        }
+
+        case TIMER_COUNTER: {
+          // TODO - Проверка на is(':visible')
+          if (timer['html_main'].length <= 0) {
+            timer['active'] = false;
+            break;
+          }
+
+          timer_options['round'] = timer_options['round'] === undefined ? 0 : parseInt(timer_options['round']);
+          timer_options['start_value'] = timer_options['start_value'] === undefined ? 0 : parseInt(timer_options['start_value']);
+          timer_options['per_second'] = timer_options['per_second'] === undefined ? 0 : parseFloat(timer_options['per_second']);
+          break;
+        }
+
+        case TIMER_CLOCK_REALTIME: {
+          // TODO - Проверка на is(':visible')
+          if (timer['html_main'].length <= 0) {
+            timer['active'] = false;
+            break;
+          }
+
+          timer_options['format'] = parseInt(timer_options['format'] === undefined ? timer_options : timer_options['format']);
+          timer_options['delta'] = timer_options['delta'] === undefined ? 0 : parseInt(timer_options['delta']);
+          break;
+        }
+
+
+        default: {
+          timer['active'] = false;
+          break;
+        }
+
       }
     }
     timer_is_prepared = true;
@@ -205,8 +228,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
       if(!que.hasOwnProperty(que_id)) {
         continue;
       }
-console.log(que_id);
-console.log(que[que_id]);
+
       total += (que[que_id][UNIT_AMOUNT] - (que_id == 0 ? 1 : 0)) * que[que_id][UNIT_TIME_FULL];
 
       unit_count = que[que_id][que[que_id][UNIT_LEVEL] > 0 ? UNIT_LEVEL : UNIT_AMOUNT];
@@ -249,91 +271,116 @@ console.log(que[que_id]);
 
     sn_timer_prepare();
 
-    var timer, timerID, que_item, timeLeftTotalText, infoText, timer_options, local_time_plus, timeLeftText, new_value, hintText, timeLeft;
+    var timer, timerID, timeLeftTotalText, infoText, timer_options, local_time_plus, timeLeftText, new_value, hintText, timeLeft, timeSinceLastUpdate, que;
     var activeTimers = 0;
 
     var time_local_now = new Date();
-    var time_passed = Math.round((time_local_now.valueOf() - localTime.valueOf()) / 1000);
-    var timestamp_server = D_SN_TIME_NOW + time_passed;
 
     for (timerID in sn_timers) {
-      if(!sn_timers.hasOwnProperty(timerID)) {
+      if(!sn_timers.hasOwnProperty(timerID) || !sn_timers[timerID]['active']) {
         continue;
       }
+
+      infoText = '';
+      timeLeftText = '';
 
       timer = sn_timers[timerID];
-      if (timer === undefined || timer['active'] === undefined || !timer['active']) {
-        continue;
-      }
-
       timer_options = timer['options'];
-
-      //if (!timer['html_main']) {
-      //  timer['html_main'] = $("#" + timer['id']);
-      //  timer['html_timer'] = $("#" + timer['id'] + '_timer'); // document.getElementById(timer['id'] + '_timer');
-      //  timer['html_que_js'] = $("#" + timer['id'] + '_que');
-      //  timer['html_total_js'] = $("#" + timer['id'] + '_total:visible'); // document.getElementById(timer['id'] + '_total');
-      //  timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
-      //}
+      timeSinceLastUpdate = Math.round((time_local_now.valueOf() - timer['start_time'].valueOf()) / 1000);
 
       switch (timer['type']) {
-        case 3: // new que display
-          if (!timer_options['que'].length) {
-            if (timer_options['url'] !== undefined) {
-              document.location = timer_options['url'];
+        case TIMER_BUILD_QUE_V1: {
+          que = timer_options['que'];
+          if(que.length) {
+            if (que[0][UNIT_TIME] <= timeSinceLastUpdate) {
+              timer['start_time'] = time_local_now;
+              que[0][UNIT_AMOUNT]--;
+              if (que[0][UNIT_AMOUNT] <= 0) {
+                que.shift();
+                timer_options['changed'] = true;
+              }
             }
-            timer['active'] = false;
-            break;
           }
-          que_item = timer_options['que'][0];
 
-          if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
-            timer['start_time'] = timestamp_server;
-            que_item[UNIT_AMOUNT]--;
-            if (que_item[UNIT_AMOUNT] <= 0) {
-              timer_options['que'].shift();
-              // que_item = timer_options['que'][0];
+          if (que.length && que[0][UNIT_ID]) {
+            //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
+            // TODO - Нам не обязательно каждый раз обновлять html_main, если у нас есть html_timer
+            infoText = que[0][UNIT_NAME] + (que[0][UNIT_LEVEL] ? ' (' + (que[0][UNIT_LEVEL]) + ')' : '');
+            timeSinceLastUpdate = Math.round((time_local_now.valueOf() - timer['start_time'].valueOf()) / 1000);
+            timeLeftText = sn_timestampToString(- (timeSinceLastUpdate) + parseInt(que[0][UNIT_TIME]));
+          } else {
+            infoText = timer_options['msg_done'];
+            timer_options['changed'] = true;
+            timer['active'] = false;
+          }
+
+          if (timer['html_timer'].length) {
+            timer['html_timer'].text(timeLeftText);
+          } else {
+            infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
+          }
+          if((timer_options['always_refresh'] || timer_options['changed']) && timer['html_main'].length) {
+            timer['html_main'].html(infoText);
+          }
+
+          //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
+          break;
+        }
+
+        case TIMER_BUILD_QUE_V2: {
+          timer['start_time'] = time_local_now;
+
+          que = timer_options['que'];
+
+          que[0][UNIT_TIME] -= timeSinceLastUpdate;
+          if(que[0][UNIT_TIME] <= 0) {
+            timeSinceLastUpdate = -que[0][UNIT_TIME];
+            que[0][UNIT_AMOUNT]--;
+            if (que[0][UNIT_AMOUNT] <= 0) {
+              que.shift();
               timer['que_compiled'] = '';
             } else {
-              que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
-              timer['html_level_current'].text(que_item[UNIT_AMOUNT]);
+              que[0][UNIT_TIME] = que[0][UNIT_TIME_FULL];
+              timer_options['total'] -= que[0][UNIT_TIME_FULL];
+              timer['html_level_current'].text(que[0][UNIT_AMOUNT]);
             }
+          } else {
+            timeSinceLastUpdate = 0;
           }
 
           if (!timer['que_compiled']) {
-// TODO - проверка на timer['html_que_js'].length
+            // TODO - проверка на timer['html_que_js'].length
             timer['que_compiled'] = sn_timer_compile_que(timer_options);
 
             if (timer['html_que_js'].length) {
               timer['html_que_js'].html(timer['que_compiled']);
-              // timer['html_que'].innerHTML = timer['que_compiled'];
             }
             timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
             timer['html_timer_current'] = $('.' + timer['id'] + '_timer_0:visible');
             timer['html_timer_seconds'] = $('.' + timer['id'] + '_seconds_0:visible');
           }
 
-          if (timer_options['que'].length && (que_item = timer_options['que'][0]) && que_item[UNIT_ID]) {
+          if (que.length && que[0][UNIT_ID]) {
+            que[0][UNIT_TIME] -= timeSinceLastUpdate; // Вычитаем то, что могло остаться с прошлого юнита/стэка
             //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
-            timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
-            infoText = que_item[UNIT_NAME] + ' (' + que_item[que_item[UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
+            timeLeft = que[0][UNIT_TIME] < 0 ? 0 : que[0][UNIT_TIME];
+
+            infoText = que[0][UNIT_NAME] + ' (' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
             timeLeftText = sn_timestampToString(timeLeft);
             timeLeftTotalText = sn_timestampToString(timeLeft + timer_options['total']);
-
-            //if(timer['html_timer_seconds'].length) {
-            //  timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%');
-            //}
           } else {
             if (timer_options['url'] !== undefined) {
               document.location = timer_options['url'];
             }
+
             infoText = timer_options['msg_done'];
             timeLeftText = '';
             timeLeftTotalText = '00:00:00';
+
+            timeLeft = 0;
             timer['active'] = false;
           }
-
-
+          timer['html_timer_seconds'].length ? timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%') : false;
 
           if (timer['html_total_js'].length) {
             timer['html_total_js'].html(timeLeftTotalText);
@@ -352,82 +399,14 @@ console.log(que[que_id]);
           //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
 
           timer['html_main'].length ? timer['html_main'].html(infoText) : false;
-        break;
+          break;
+        }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // OK v2
-        case 0: // old que display
-          infoText = '';
-          timeLeftText = '';
-          if(timer_options['que'].length) {
-            que_item = timer_options['que'][0];
-            if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
-              timer['start_time'] = timestamp_server;
-              que_item[UNIT_AMOUNT]--;
-              if (que_item[UNIT_AMOUNT] <= 0) {
-                timer_options['que'].shift();
-                timer_options['changed'] = true;
-              }
-            }
-          }
-
-          if (timer_options['que'].length && (que_item = timer_options['que'][0]) && que_item[UNIT_ID]) {
-            //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
-            // TODO - Нам не обязательно каждый раз обновлять html_main, если у нас есть html_timer
-            infoText = que_item[UNIT_NAME] + (que_item[UNIT_LEVEL] ? ' (' + (que_item[UNIT_LEVEL]) + ')' : '');
-            timeLeftText = sn_timestampToString(timer['start_time'] + parseInt(que_item[UNIT_TIME]) - timestamp_server);
-          } else {
-            infoText = timer_options['msg_done'];
-            timer_options['changed'] = true;
-            timer['active'] = false;
-          }
-
-          if (timer['html_timer'].length) {
-            timer['html_timer'].text(timeLeftText);
-          } else {
-            infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
-          }
-          if((timer_options['always_refresh'] || timer_options['changed']) && timer['html_main'].length) {
-            timer['html_main'].html(infoText);
-          }
-
-          //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
-        break;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // OK v2
-        case 5: // Event que in title (NavBar for now)
-          infoText = '';
+        case TIMER_EVENT_QUE: {
+          // Event que in title (NavBar for now)
           hintText = '';
 
-          if (timer_options['que'].length && timer_options['que'][0][EVENT_TIME] <= timestamp_server - timer['start_time']) { // TODO - проверить. Может тут ошибка - генерятся длительности не от TIME_NOW, а дельты
+          if (timer_options['que'].length && timer_options['que'][0][EVENT_TIME] <= timeSinceLastUpdate) { // TODO - проверить. Может тут ошибка - генерятся длительности не от TIME_NOW, а дельты
             //timer['start_time'] = timestamp_server; // TODO - а вот это тогда всё исправит
             timer_options['que'].shift();
             timer_options['changed'] = true;
@@ -449,27 +428,16 @@ console.log(que[que_id]);
             // Если нет видимого элемента total - выводим подсказку в main. Уж один-то из них точно видимый!
             timer[timer['html_total_js'].length ? 'html_total_js' : 'html_main'].prop('title', hintText);
             timer_options['changed'] = false;
-
-            //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : false;
-
-            //if (timer['html_total_js'].length > 0) {
-            //  timer['html_total_js'].prop('title', hintText);
-            //} else {
-            //  timer['html_main'].prop('title', hintText);
-            //}
           }
-        break;
+          break;
+        }
 
-        // OK v2
-        case 1: // time-independent counter
-          //typeof(timer_options['round']) === 'undefined' ? timer_options['round'] = 0 : false;
-
-          //new_value = parseInt(timer_options['start_value']) + (timestamp_server - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
+        case TIMER_COUNTER: {
           if(timer_options['per_second'] == 0) {
             new_value = timer_options['start_value'];
             timer['active'] = false;
           } else {
-            new_value = timer_options['start_value'] + (timestamp_server - timer['start_time']) * timer_options['per_second'];
+            new_value = timer_options['start_value'] + timeSinceLastUpdate * timer_options['per_second'];
             if (new_value < 0) {
               new_value = 0;
               timer['active'] = false;
@@ -483,34 +451,21 @@ console.log(que[que_id]);
           infoText = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
 
           timer['html_main'].html(infoText);
-        break;
+          break;
+        }
 
-        // OK v2
-        case 4: // date&time with delta
-          //if(typeof timer['html_main'] === 'undefined' || timer['html_main'].length <= 0) {
-          //  timer['active'] = false;
-          //  break;
-          //}
-
-          //timer_options_format = typeof timer_options['format'] == 'undefined' ? timer_options : timer_options['format'];
-          //typeof timer_options['format'] == 'undefined' ? timer_options['format'] = timer_options : false;
-          //typeof timer_options['delta'] == 'undefined' ? timer_options['delta'] = 0 : false;
+        case TIMER_CLOCK_REALTIME: {
+          // date&time with delta
           local_time_plus = new Date(time_local_now.valueOf() + timer_options['delta'] * 1000);
 
-          timer['html_main'].text(
+          timer['html_main'].html(
             (timer_options['format'] & 1 ? local_time_plus.toLocaleDateString() : '') +
             (timer_options['format'] & 3 ? '&nbsp;' : '') +
             (timer_options['format'] & 2 ? local_time_plus.toTimeString().substring(0, 8) : '')
           );
-
-          //timer_options['format'] & 1 ? infoText += local_time_plus.toLocaleDateString() : false;
-          //timer_options['format'] & 3 ? infoText += '&nbsp;' : false;
-          //timer_options['format'] & 2 ? infoText += local_time_plus.toTimeString().substring(0, 8) : false;
-
-          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : (timer['active'] = false);
-        break;
-
-     }
+          break;
+        }
+      }
 
       activeTimers++;
     }
