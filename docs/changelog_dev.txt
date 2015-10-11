@@ -476,9 +476,15 @@ $vkontakte_to_supernova_translation = $this->db->doquery("SELECT * FROM {{accoun
     unique key по трём полям
 
 
-
+// TODO Поискать type 5 в модулях - поменять там unchanged на changed
 
 #ctv
+
+
+2015-10-11 07:58:53 40a12.1
+[!] JS/sn_timer
+    Промежуточный коммит для исправленной версии sn_timer
+
 
 2015-10-10 18:47:24 40a12.0
 [!] JS/sn_timer

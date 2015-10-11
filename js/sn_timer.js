@@ -78,7 +78,7 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
    [0] - time left for this event
    [1] - string for this event
    [2] - hint for this event
-   'unchanged' - reserved for internal use (flag that event text was not changed)
+   'changed' - reserved for internal use (flag that event text was changed)
    */
 
   var UNIT_ID = 0;
@@ -92,7 +92,108 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
   var EVENT_STRING = 1;
   var EVENT_HINT = 2;
 
+  var CONST_STR_UNDEFINED = 'undefined';
+
   var sn_timers = new Array();
+  var timer_is_started = false;
+  var timer_is_prepared = false;
+
+  function sn_timer_prepare() {
+    var timer, timerID, timer_options;
+
+    if(timer_is_prepared) {
+      return;
+    }
+
+    for (timerID in sn_timers) {
+      if (!sn_timers.hasOwnProperty(timerID)) {
+        continue;
+      }
+
+      timer = sn_timers[timerID];
+      if (typeof(timer) == CONST_STR_UNDEFINED || typeof(timer['active']) == CONST_STR_UNDEFINED || typeof(timer['type']) == CONST_STR_UNDEFINED) {
+        timer['active'] = false;
+      }
+
+      if (!timer['active']) {
+        continue;
+      }
+
+      // Кэшируем DOM-ики
+      timer['html_main'] = $("#" + timer['id']);
+      timer['html_timer'] = $("#" + timer['id'] + '_timer');
+      timer['html_que_js'] = $("#" + timer['id'] + '_que');
+      timer['html_total_js'] = $("#" + timer['id'] + '_total:visible');
+      timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
+
+      // Если нет настроек - создаём пустой объект
+      typeof(timer['options']) == 'undefined' ? timer['options'] = {} : false;
+      timer_options = timer['options'];
+
+      switch (timer['type']) {
+        // OK v2
+        case 1: // time-independent counter
+// TODO - Проверка на is(':visible')
+          if (timer['html_main'].length <= 0) {
+            timer['active'] = false;
+            break;
+          }
+
+          timer_options['round'] = typeof(timer_options['round']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['round']);
+          timer_options['start_value'] = typeof(timer_options['start_value']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['start_value']);
+          timer_options['start_time'] = typeof(timer_options['start_time']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['start_time']);
+          timer_options['per_second'] = typeof(timer_options['per_second']) == CONST_STR_UNDEFINED ? 0 : parseFloat(timer_options['per_second']);
+        break;
+
+        // OK v2
+        case 4: // date&time with delta
+// TODO - Проверка на is(':visible')
+          if (timer['html_main'].length <= 0) {
+            timer['active'] = false;
+            break;
+          }
+
+          timer_options['format'] = parseInt(typeof(timer_options['format']) == CONST_STR_UNDEFINED ? timer_options : timer_options['format']);
+          timer_options['delta'] = typeof(timer_options['delta']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['delta']);
+        break;
+
+        // OK v2
+        case 5: // Event que in title (NavBar)
+          // Если нет ни основного элемента вывода, ни видимого элемента с подсказкой - тогда можно даже не начинать работу счётчика
+// TODO - Проверка на is(':visible')
+          if (!timer['html_main'].length && !timer['html_total_js'].length) {
+            timer['active'] = false;
+            break;
+          }
+
+          timer_options['changed'] = true;
+        break;
+
+        // OK v2
+        case 0: // old que display
+          // Если нет ни основного элемента вывода, ни элемента таймера - тогда можно даже не начинать работу счётчика
+// TODO - Проверка на is(':visible')
+          if (!timer['html_main'].length && !timer['html_timer'].length) {
+            timer['active'] = false;
+            break;
+          }
+
+          // Если у нас только html_main, но нет html_timer - надо каждый шаг обновлять html_main, потому что в нём содержится и таймер
+          timer_options['always_refresh'] = timer['html_main'].length && !timer['html_timer'].length;
+          timer_options['changed'] = true;
+
+          timer_options['start_time'] = typeof(timer_options['start_time']) == CONST_STR_UNDEFINED ? 0 : parseInt(timer_options['start_time']);
+        break;
+
+        case 3: // new que display
+          timer['que_compiled'] = '';
+//console.log(timer['html_que_js']);
+        break;
+      }
+    }
+    timer_is_prepared = true;
+
+  }
 
   function sn_timer_compile_que(timer_options) {
     var que = timer_options['que'];
@@ -101,6 +202,11 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
     var unit_count, que_id;
 
     for (que_id in que) {
+      if(!que.hasOwnProperty(que_id)) {
+        continue;
+      }
+console.log(que_id);
+console.log(que[que_id]);
       total += (que[que_id][UNIT_AMOUNT] - (que_id == 0 ? 1 : 0)) * que[que_id][UNIT_TIME_FULL];
 
       unit_count = que[que_id][que[que_id][UNIT_LEVEL] > 0 ? UNIT_LEVEL : UNIT_AMOUNT];
@@ -133,9 +239,6 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
     return compiled;
   }
 
-
-  var timer_is_started = false;
-
   function sn_timer() {
     if(timer_is_started) {
       window.setTimeout("sn_timer();", 1000);
@@ -144,62 +247,64 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
 
     timer_is_started = true;
 
-    var timer, timerID, que_item, should_break, infoText, timer_options, local_time_plus, timerText;
-    var activeTimers = 0, need_compile = false;
+    sn_timer_prepare();
+
+    var timer, timerID, que_item, timeLeftTotalText, infoText, timer_options, local_time_plus, timeLeftText, new_value, hintText, timeLeft;
+    var activeTimers = 0;
 
     var time_local_now = new Date();
     var time_passed = Math.round((time_local_now.valueOf() - localTime.valueOf()) / 1000);
     var timestamp_server = D_SN_TIME_NOW + time_passed;
 
     for (timerID in sn_timers) {
-      timer = sn_timers[timerID];
-      if (typeof timer['active'] === 'undefined') {
+      if(!sn_timers.hasOwnProperty(timerID)) {
         continue;
       }
 
-      if (!timer['html_main']) {
-        //timer['html_main'] = document.getElementById(timer['id']);
-        timer['html_main'] = $("#" + timer['id']);
-        timer['html_timer'] = $("#" + timer['id'] + '_timer'); // document.getElementById(timer['id'] + '_timer');
-        //timer['html_timer'] = document.getElementById(timer['id'] + '_timer');
-        // timer['html_finish'] = document.getElementById(timer['id'] + '_finish');
-        // timer['html_finish'] = $("#" + timer['id'] + '_finish:visible'); // Дата окончания постройки текущего юнита. Пока не используется
-        timer['html_que_js'] = $("#" + timer['id'] + '_que');
-        timer['html_total_js'] = $("#" + timer['id'] + '_total:visible'); // document.getElementById(timer['id'] + '_total');
-        timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
+      timer = sn_timers[timerID];
+      if (timer === undefined || timer['active'] === undefined || !timer['active']) {
+        continue;
       }
 
       timer_options = timer['options'];
+
+      //if (!timer['html_main']) {
+      //  timer['html_main'] = $("#" + timer['id']);
+      //  timer['html_timer'] = $("#" + timer['id'] + '_timer'); // document.getElementById(timer['id'] + '_timer');
+      //  timer['html_que_js'] = $("#" + timer['id'] + '_que');
+      //  timer['html_total_js'] = $("#" + timer['id'] + '_total:visible'); // document.getElementById(timer['id'] + '_total');
+      //  timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
+      //}
+
       switch (timer['type']) {
         case 3: // new que display
-          if (timer_options['que'].length == 0) {
-            timer['active'] = false;
-            if (timer_options['url'] != undefined) {
+          if (!timer_options['que'].length) {
+            if (timer_options['url'] !== undefined) {
               document.location = timer_options['url'];
             }
+            timer['active'] = false;
             break;
           }
           que_item = timer_options['que'][0];
 
-
-          need_compile = false;
           if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
+            timer['start_time'] = timestamp_server;
             que_item[UNIT_AMOUNT]--;
             if (que_item[UNIT_AMOUNT] <= 0) {
               timer_options['que'].shift();
-              que_item = timer_options['que'][0];
-              need_compile = true;
+              // que_item = timer_options['que'][0];
+              timer['que_compiled'] = '';
             } else {
               que_item[UNIT_TIME] = que_item[UNIT_TIME_FULL];
               timer['html_level_current'].text(que_item[UNIT_AMOUNT]);
             }
-            timer['start_time'] = timestamp_server;
           }
 
-          if (!timer['que_compiled'] || need_compile) { //  || timer['que_compiled'] != ''
-//console.log('compile ' + timer['id'] + ' because need_compile ' + need_compile);
+          if (!timer['que_compiled']) {
+// TODO - проверка на timer['html_que_js'].length
             timer['que_compiled'] = sn_timer_compile_que(timer_options);
-            if (timer['html_que_js'] != null && timer['html_que_js'].length > 0) {
+
+            if (timer['html_que_js'].length) {
               timer['html_que_js'].html(timer['que_compiled']);
               // timer['html_que'].innerHTML = timer['que_compiled'];
             }
@@ -208,156 +313,201 @@ if(typeof(window.LOADED_TIMER) === 'undefined') {
             timer['html_timer_seconds'] = $('.' + timer['id'] + '_seconds_0:visible');
           }
 
-          should_break = typeof que_item == 'undefined' || typeof que_item[UNIT_ID] == 'undefined' || !que_item[UNIT_ID];
-          if (timer_options['que'].length && !should_break) {
+          if (timer_options['que'].length && (que_item = timer_options['que'][0]) && que_item[UNIT_ID]) {
             //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
             timeLeft = timer['start_time'] + que_item[UNIT_TIME] - timestamp_server;
-            if(timer['html_timer_seconds'].length) {
-              timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%');
-            }
-            total_text = sn_timestampToString(timeLeft + timer_options['total']);
             infoText = que_item[UNIT_NAME] + ' (' + que_item[que_item[UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
-            timerText = sn_timestampToString(timeLeft);
+            timeLeftText = sn_timestampToString(timeLeft);
+            timeLeftTotalText = sn_timestampToString(timeLeft + timer_options['total']);
+
+            //if(timer['html_timer_seconds'].length) {
+            //  timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%');
+            //}
           } else {
-            if (typeof timer_options['url'] != 'undefined') {
+            if (timer_options['url'] !== undefined) {
               document.location = timer_options['url'];
             }
-            timer['active'] = false;
             infoText = timer_options['msg_done'];
-            timerText = '';
-            total_text = '00:00:00';
+            timeLeftText = '';
+            timeLeftTotalText = '00:00:00';
+            timer['active'] = false;
           }
 
-          if (typeof timer['html_total_js'] != 'undefined' && timer['html_total_js'].length > 0) {
-            timer['html_total_js'].html(total_text);
+
+
+          if (timer['html_total_js'].length) {
+            timer['html_total_js'].html(timeLeftTotalText);
           } else {
-            timerText += '<br>' + total_text;
+            timeLeftText += (timeLeftText ? '<br>' : '') + timeLeftTotalText;
           }
 
-          //timer['html_timer_current'].text(timerText);
-
-          if (typeof timer['html_timer_current'] != 'undefined' && timer['html_timer_current'].length > 0) {
-            timer['html_timer_current'].text(timerText);
+          if (timer['html_timer_current'] !== undefined && timer['html_timer_current'].length) {
+            timer['html_timer_current'].text(timeLeftText);
           } else {
-            infoText += (infoText != '' && timerText ? '<br>' : '') + timerText;
+            infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
           }
 
-          typeof timer['html_que_js'] == 'undefined' || timer['html_que_js'].length <= 0
-            ? infoText += timer['que_compiled'] : false;
+          timer['html_que_js'] === undefined || !timer['html_que_js'].length ? infoText += timer['que_compiled'] : false;
 
           //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
 
-          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : false;
-          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : false;
-
+          timer['html_main'].length ? timer['html_main'].html(infoText) : false;
         break;
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // OK v2
         case 0: // old que display
-          que_item = timer_options['que'][0];
-          if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
-            que_item[UNIT_AMOUNT]--;
-            if (que_item[UNIT_AMOUNT] <= 0) {
-              timer_options['que'].shift();
-              que_item = timer_options['que'][0];
+          infoText = '';
+          timeLeftText = '';
+          if(timer_options['que'].length) {
+            que_item = timer_options['que'][0];
+            if (que_item[UNIT_TIME] <= timestamp_server - timer['start_time']) {
+              timer['start_time'] = timestamp_server;
+              que_item[UNIT_AMOUNT]--;
+              if (que_item[UNIT_AMOUNT] <= 0) {
+                timer_options['que'].shift();
+                timer_options['changed'] = true;
+              }
             }
-            timer['start_time'] = timestamp_server;
           }
 
-          if (timer_options['que'].length && que_item[UNIT_ID]) {
+          if (timer_options['que'].length && (que_item = timer_options['que'][0]) && que_item[UNIT_ID]) {
             //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
-            timeLeft = parseInt(timer['start_time']) + parseInt(que_item[UNIT_TIME]) - timestamp_server;
+            // TODO - Нам не обязательно каждый раз обновлять html_main, если у нас есть html_timer
             infoText = que_item[UNIT_NAME] + (que_item[UNIT_LEVEL] ? ' (' + (que_item[UNIT_LEVEL]) + ')' : '');
-            timerText = sn_timestampToString(timeLeft);
+            timeLeftText = sn_timestampToString(timer['start_time'] + parseInt(que_item[UNIT_TIME]) - timestamp_server);
           } else {
-            timer['active'] = false;
             infoText = timer_options['msg_done'];
-            timerText = '';
+            timer_options['changed'] = true;
+            timer['active'] = false;
           }
 
-          if (typeof timer['html_timer'] != 'undefined' && timer['html_timer'].length) {
-            // timer['html_timer'].innerHTML = timerText;
-            timer['html_timer'].text(timerText);
+          if (timer['html_timer'].length) {
+            timer['html_timer'].text(timeLeftText);
           } else {
-            infoText += (infoText != '' && timerText ? '<br>' : '') + timerText;
+            infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
+          }
+          if((timer_options['always_refresh'] || timer_options['changed']) && timer['html_main'].length) {
+            timer['html_main'].html(infoText);
           }
 
           //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
-
-          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : false;
-          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : false;
         break;
 
-        case 5:
-          que_item = timer_options['que'][0];
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // OK v2
+        case 5: // Event que in title (NavBar for now)
           infoText = '';
+          hintText = '';
 
-          if (que_item[EVENT_TIME] <= timestamp_server - timer['start_time']) {
+          if (timer_options['que'].length && timer_options['que'][0][EVENT_TIME] <= timestamp_server - timer['start_time']) { // TODO - проверить. Может тут ошибка - генерятся длительности не от TIME_NOW, а дельты
+            //timer['start_time'] = timestamp_server; // TODO - а вот это тогда всё исправит
             timer_options['que'].shift();
-            //timer['start_time'] = timestamp;
-            timer['options']['unchanged'] = false;
+            timer_options['changed'] = true;
           }
 
-          if (!timer['options']['unchanged']) {
-            infoText = que_item[EVENT_STRING];
-            hintText = que_item[EVENT_HINT];
-          }
-
-          if (!timer_options['que'].length) {
-            timer['active'] = false;
+          if (timer_options['que'].length) {
+            if(timer_options['changed']) {
+              infoText = timer_options['que'][0][EVENT_STRING];
+              hintText = timer_options['que'][0][EVENT_HINT];
+            }
+          } else {
             infoText = timer_options['msg_done'];
-            hintText = '';
-            timer['options']['unchanged'] = false;
+            timer['options']['changed'] = true;
+            timer['active'] = false;
           }
 
-          if (!timer['options']['unchanged']) {
-            timer['options']['unchanged'] = true;
+          if (timer_options['changed']) {
+            timer['html_main'].length ? timer['html_main'].html(infoText) : false;
+            // Если нет видимого элемента total - выводим подсказку в main. Уж один-то из них точно видимый!
+            timer[timer['html_total_js'].length ? 'html_total_js' : 'html_main'].prop('title', hintText);
+            timer_options['changed'] = false;
 
             //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : false;
-            typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : false;
 
-            if (timer['html_total_js'] != null && timer['html_total_js'].length > 0) {
-              timer['html_total_js'].prop('title', hintText);
+            //if (timer['html_total_js'].length > 0) {
+            //  timer['html_total_js'].prop('title', hintText);
+            //} else {
+            //  timer['html_main'].prop('title', hintText);
+            //}
+          }
+        break;
+
+        // OK v2
+        case 1: // time-independent counter
+          //typeof(timer_options['round']) === 'undefined' ? timer_options['round'] = 0 : false;
+
+          //new_value = parseInt(timer_options['start_value']) + (timestamp_server - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
+          if(timer_options['per_second'] == 0) {
+            new_value = timer_options['start_value'];
+            timer['active'] = false;
+          } else {
+            new_value = timer_options['start_value'] + (timestamp_server - timer['start_time']) * timer_options['per_second'];
+            if (new_value < 0) {
+              new_value = 0;
+              timer['active'] = false;
             } else {
-              //timer['html_main'].title = hintText;
-              timer['html_main'].prop('title', hintText);
+              if (new_value >= timer_options['max_value'] && timer_options['per_second'] > 0) {
+                new_value = Math.max(timer_options['start_value'], timer_options['max_value']);
+                timer['active'] = false;
+              }
             }
           }
-        break;
-
-        case 1: // time-independent counter
-          var new_value = parseInt(timer_options['start_value']) + (timestamp_server - parseInt(timer['start_time'])) * parseFloat(timer_options['per_second']);
-          if (timer_options['round'] === undefined) {
-            timer_options['round'] = 0;
-          }
-          if (new_value < 0) {
-            new_value = 0;
-            timer['active'] = false;
-          }
           infoText = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
-          if ((new_value >= timer_options['max_value'] && timer_options['per_second'] > 0) || (timer_options['per_second'] == 0)) {
-            timer['active'] = false;
-            new_value = timer_options['max_value'];
-          }
 
-          //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : (timer['active'] = false);
-          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : (timer['active'] = false);
+          timer['html_main'].html(infoText);
         break;
 
+        // OK v2
         case 4: // date&time with delta
-          infoText = '';
+          //if(typeof timer['html_main'] === 'undefined' || timer['html_main'].length <= 0) {
+          //  timer['active'] = false;
+          //  break;
+          //}
 
-          timer_options_delta = typeof timer_options['delta'] == 'undefined' ? 0 : timer_options['delta'];
-          timer_options_format = typeof timer_options['format'] == 'undefined' ? timer_options : timer_options['format'];
-          local_time_plus = new Date();
-          local_time_plus.setTime(time_local_now.valueOf() + (timer_options_delta * 1000));
+          //timer_options_format = typeof timer_options['format'] == 'undefined' ? timer_options : timer_options['format'];
+          //typeof timer_options['format'] == 'undefined' ? timer_options['format'] = timer_options : false;
+          //typeof timer_options['delta'] == 'undefined' ? timer_options['delta'] = 0 : false;
+          local_time_plus = new Date(time_local_now.valueOf() + timer_options['delta'] * 1000);
 
-          timer_options_format & 1 ? infoText += local_time_plus.toLocaleDateString() : false;
-          timer_options_format & 3 ? infoText += '&nbsp;' : false;
-          timer_options_format & 2 ? infoText += local_time_plus.toTimeString().substring(0, 8) : false;
+          timer['html_main'].text(
+            (timer_options['format'] & 1 ? local_time_plus.toLocaleDateString() : '') +
+            (timer_options['format'] & 3 ? '&nbsp;' : '') +
+            (timer_options['format'] & 2 ? local_time_plus.toTimeString().substring(0, 8) : '')
+          );
+
+          //timer_options['format'] & 1 ? infoText += local_time_plus.toLocaleDateString() : false;
+          //timer_options['format'] & 3 ? infoText += '&nbsp;' : false;
+          //timer_options['format'] & 2 ? infoText += local_time_plus.toTimeString().substring(0, 8) : false;
 
           //timer['html_main'] != null ? timer['html_main'].innerHTML = infoText : (timer['active'] = false);
-          typeof timer['html_main'] != 'undefined' && timer['html_main'].length ? timer['html_main'].html(infoText) : (timer['active'] = false);
         break;
 
      }
