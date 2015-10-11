@@ -125,7 +125,7 @@ if(window.LOADED_TIMER === undefined) {
         continue;
       }
 
-      timer['start_time'] = new Date(D_SN_TIME_NOW * 1000 - timeDiff);
+      timer['start_time'] = new Date((D_SN_TIME_NOW + timeDiff ) * 1000  );
 
       // Кэшируем DOM-ики
       timer['html_main'] = $("#" + timer['id']);
