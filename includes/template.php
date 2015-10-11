@@ -279,6 +279,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'LANG_DIRECTION'           => $lang['LANG_INFO']['LANG_DIRECTION'],
 
     'SOUND_ENABLED'            => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
+    'PLAYER_OPTION_ANIMATION_DISABLED'            => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
 
     // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
     'IMPERSONATING'            => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',

@@ -659,4 +659,22 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     return strTime;
   }
 
+  /**
+   *
+   *
+   * @param local_time
+   * @param format
+   * bit 1 - have date
+   * bit 2 - have time
+   * bit 3 - date in YYYY-MM-DD format - otherwise toLocalDateString() format
+   * @returns {string}
+   */
+  function snDateToString(local_time, format) {
+    format === undefined ? format = 3 : false;
+
+    return (format & 1 ? (format & 4 ? local_time.getFullYear() + '-' + ('0' + (local_time.getMonth() + 1)).slice(-2) + '-' + ('0' + local_time.getDate()).slice(-2) : local_time.toLocaleDateString()) : '') +
+      (format & 3 ? '&nbsp;' : '') +
+      (format & 2 ? local_time.toTimeString().substring(0, 8) : '');
+  }
+
 }

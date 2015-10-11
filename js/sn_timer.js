@@ -165,6 +165,8 @@ if(window.LOADED_TIMER === undefined) {
             break;
           }
 
+          timer['html_finish'] = $('#' + timer['id'] + '_finish:visible');
+
           timer['que_compiled'] = '';
           break;
         }
@@ -362,12 +364,20 @@ if(window.LOADED_TIMER === undefined) {
 
           if (que.length && que[0][UNIT_ID]) {
             que[0][UNIT_TIME] -= timeSinceLastUpdate; // Вычитаем то, что могло остаться с прошлого юнита/стэка
-            //completionDateTime = new Date((timer['start_time'] + que_item[UNIT_TIME]) * 1000); // Дата окончания постройки текущего юнита. Пока не используется
-            timeLeft = que[0][UNIT_TIME] < 0 ? 0 : que[0][UNIT_TIME];
+            timeLeft = que[0][UNIT_TIME] <= 0 ? 1 : que[0][UNIT_TIME];
 
             infoText = que[0][UNIT_NAME] + ' (' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
             timeLeftText = sn_timestampToString(timeLeft);
             timeLeftTotalText = sn_timestampToString(timeLeft + timer_options['total']);
+
+            if(!timer['html_finish'].already_tagged && timer['html_finish'].length) {
+              // Дата окончания постройки текущего юнита
+              timer['html_finish'].html(snDateToString(
+                new Date(localTime.valueOf() + (timeLeft + timer_options['total']) * 1000), 7
+              ));
+              timer['html_finish'].already_tagged = true;
+            }
+
           } else {
             if (timer_options['url'] !== undefined) {
               document.location = timer_options['url'];
@@ -376,6 +386,8 @@ if(window.LOADED_TIMER === undefined) {
             infoText = timer_options['msg_done'];
             timeLeftText = '';
             timeLeftTotalText = '00:00:00';
+
+            timer['html_finish'].hide();
 
             timeLeft = 0;
             timer['active'] = false;
@@ -389,14 +401,21 @@ if(window.LOADED_TIMER === undefined) {
           }
 
           if (timer['html_timer_current'] !== undefined && timer['html_timer_current'].length) {
-            timer['html_timer_current'].text(timeLeftText);
+            timer['html_timer_current'].html('<span>' + timeLeftText + '</span>');
           } else {
             infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
           }
 
-          timer['html_que_js'] === undefined || !timer['html_que_js'].length ? infoText += timer['que_compiled'] : false;
+          if(que.length && que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
+            // Анимация
+            $('.' + timer['id'] + '_container_0:visible').animate({opacity: 0}, que[0][UNIT_TIME] * 1000);
+          }
+          if(que.length && que[0][UNIT_TIME_FULL] == timeLeft) {
+            timer['html_timer_current'].children().animate({opacity: 0}, 50, function(){
+              $(this).animate({opacity: 1}, 300)});
+          }
 
-          //typeof timer['html_finish'] != 'undefined' && timer['html_finish'].length ? timer['html_finish'].text(completionDateTime) : false; // Дата окончания постройки текущего юнита. Пока не используется
+          timer['html_que_js'] === undefined || !timer['html_que_js'].length ? infoText += timer['que_compiled'] : false;
 
           timer['html_main'].length ? timer['html_main'].html(infoText) : false;
           break;
@@ -458,11 +477,10 @@ if(window.LOADED_TIMER === undefined) {
           // date&time with delta
           local_time_plus = new Date(time_local_now.valueOf() + timer_options['delta'] * 1000);
 
-          timer['html_main'].html(
-            (timer_options['format'] & 1 ? local_time_plus.toLocaleDateString() : '') +
-            (timer_options['format'] & 3 ? '&nbsp;' : '') +
-            (timer_options['format'] & 2 ? local_time_plus.toTimeString().substring(0, 8) : '')
-          );
+          timer['html_main'].html(snDateToString(local_time_plus, timer_options['format']));
+          //(timer_options['format'] & 1 ? local_time_plus.toLocaleDateString() : '') +
+          //(timer_options['format'] & 3 ? '&nbsp;' : '') +
+          //(timer_options['format'] & 2 ? local_time_plus.toTimeString().substring(0, 8) : '')
           break;
         }
       }

@@ -373,6 +373,7 @@ function sn_options_view($template = null) {
     'menu_customize_show_absolute' => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
     'menu_customize_items_as_buttons' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
     'sound_enabled' => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
+    'animation_disabled' => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => htmlspecialchars($user['username']),

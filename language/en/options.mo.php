@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a8.8
+* @version 40a12.4
 *
 */
 
@@ -170,6 +170,7 @@ $a_lang_array = (array(
   'opt_mail_permanent_description' => 'Your game account linked permanently to this e-mail. All system notices (like password change confirmation) will be sent to this address. You can enter this email only once',
 
   'opt_sound_enabled' => 'Включить звуки в игре',
+  'opt_animation_disabled' => 'Отключить эффекты анимации в игре',
 
   'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
   'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',

@@ -65,6 +65,8 @@ class userOptions extends oldArrayAccessNd {
       SUBQUE_FLEET => PLAYER_OPTION_SORT_ORDER_PLAIN,
       SUBQUE_DEFENSE => PLAYER_OPTION_SORT_ORDER_PLAIN,
     ),
+
+    PLAYER_OPTION_ANIMATION_DISABLED => 0,
   );
 
   public $data = array(); // Container // TODO - make protected
