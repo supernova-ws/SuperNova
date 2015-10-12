@@ -24,12 +24,20 @@
   var LEFT_MENU_SHOW_BUTTON_LEFT = 10;
 </script>
 
+<!-- DEFINE $MENU_TABLE_CLASS = '' -->
 <!-- IF PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS -->
-<style type="text/css">
-  #left_menu {
-    font-size: 150%;
-  }
-</style>
+  <!-- DEFINE $MENU_TABLE_CLASS = 'big_buttons' -->
+<!-- ENDIF -->
+
+<!-- TODO - REMOVE -->
+<!--<style type="text/css">-->
+  <!--#left_menu {-->
+    <!--font-size: 150%;-->
+  <!--}-->
+<!--</style>-->
+
+<!-- IF PLAYER_OPTION_MENU_OLD -->
+  <!-- DEFINE $MENU_TABLE_CLASS = 'old_style {$MENU_TABLE_CLASS}' -->
 <!-- ENDIF -->
 
 <!-- IF MENU_CUSTOMIZE -->
@@ -45,65 +53,41 @@
     <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' -->
     <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' -->
   <!-- ENDIF -->
+
+  <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 0 -->
   <style type="text/css">
-    <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 0 -->
     #left_menu_show {
       position: fixed;
-     /* float: left;*/
     }
-    /*
-    #left_menu {
-      margin-top: 28px;
-    }
-    */
-    <!-- ELSEIF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
-    /*
-    #left_menu_show {
-      float: left;
-      margin-bottom: 4px;
-    }
-    */
-    <!-- ELSE -->
+  </style>
+  <!-- ELSEIF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
+  <!-- ELSE -->
+  <style type="text/css">
     #left_menu_show, #menu_pin {
       display: none;
     }
-    <!-- ENDIF -->
+  </style>
+  <!-- ENDIF -->
 
-    <!-- IF PLAYER_OPTION_MENU_UNPIN_ABSOLUTE -->
+  <!-- IF PLAYER_OPTION_MENU_UNPIN_ABSOLUTE -->
+  <style type="text/css">
     #left_menu {
       position: absolute;
-      /*
-      <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
-        margin-top: 28px;
-      <!-- ENDIF -->
-      */
     }
-    <!-- ENDIF -->
   </style>
-
-  <!--<input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />-->
+  <!-- ENDIF -->
 <!-- ENDIF -->
-  <table cellspacing="0" cellpadding="0" id="left_menu">
-  <!-- BEGIN menu -->
+
+
+
+  <table cellspacing="0" cellpadding="0" id="left_menu" class="{DEFINE $MENU_TABLE_CLASS}"><!-- BEGIN menu -->
   <!-- IF (! menu.AUTH_LEVEL || menu.AUTH_LEVEL <= AUTH_LEVEL) && ! menu.DISABLED -->
 
-    <!-- IF menu.LEVEL == 'header' -->
-      <!-- DEFINE $TX = 'th' -->
-    <!-- ELSE -->
-      <!-- DEFINE $TX = 'td' -->
-    <!-- ENDIF -->
+    <!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
 
     <!-- IF menu.CLASS --><!-- DEFINE $MENU_CLASS = ' class="{menu.CLASS}"' --><!-- ELSE --><!-- DEFINE $MENU_CLASS = '' --><!-- ENDIF -->
     <!-- IF menu.STYLE --><!-- DEFINE $MENU_STYLE = ' style="{menu.STYLE}"' --><!-- ELSE --><!-- DEFINE $MENU_STYLE = '' --><!-- ENDIF -->
-    <!-- IF menu.TITLE -->
-      <!-- DEFINE $MENU_TITLE = 'title="{menu.TITLE}"' -->
-    <!-- ELSEIF menu.ALT -->
-      <!-- DEFINE $MENU_TITLE = 'title="{menu.ALT}"' -->
-    <!-- ELSE -->
-      <!-- DEFINE $MENU_TITLE = '' -->
-    <!-- ENDIF -->
-
-
+    <!-- IF menu.TITLE --><!-- DEFINE $MENU_TITLE = 'title="{menu.TITLE}"' --><!-- ELSEIF menu.ALT --><!-- DEFINE $MENU_TITLE = 'title="{menu.ALT}"' --><!-- ELSE --><!-- DEFINE $MENU_TITLE = '' --><!-- ENDIF -->
 
     <!-- IF menu.ICON -->
       <!-- DEFINE $MENU_ICON = '<img src="{D_DEFAULT_SKINPATH}icons/{menu.ICON}" class="menu_icon" />' -->
@@ -119,13 +103,10 @@
       <!-- DEFINE $ALT_TITLE = '' -->
     <!-- ENDIF -->
 
-    <!--TODO - REMOVE UNUSED $HEADER_PREFIX-->
-    <!-- DEFINE $HEADER_PREFIX = '' -->
-    <!-- DEFINE $HEADER_SUFFIX = '' -->
+    <!-- DEFINE $HEADER_PREFIX = '' --><!-- DEFINE $HEADER_SUFFIX = '' -->
     <!-- IF menu.LINK -->
       <!-- IF menu.LEVEL == 'header' -->
-        <!--DEFINE $HEADER_PREFIX = '[&nbsp;' -->
-        <!--DEFINE $HEADER_SUFFIX = '&nbsp;]' -->
+        <!--DEFINE $HEADER_PREFIX = '[&nbsp;' --><!--DEFINE $HEADER_SUFFIX = '&nbsp;]' -->
       <!-- ENDIF -->
       <!-- IF menu.BLANK -->
         <!-- DEFINE $LINK_BLANK = ' target="_blank"' -->
@@ -135,49 +116,24 @@
     <!-- ENDIF -->
 
 
-    <!-- DEFINE $LINK_CLOSE = '' -->
     <tr id="{menu.ID}"
       <!-- IF menu.HIDE && !menu.HIDE_LOCK --> is_hide="1" style="display: none"<!-- ELSEIF menu.HIDE_LOCK --> hide_lock="1"<!-- ENDIF -->
       <!-- IF menu.MOVEABLE && menu.MOVE_LOCK --> move_lock="1"<!-- ENDIF -->
     >
       <{$TX} nowrap{$MENU_CLASS}{$MENU_STYLE}{$MENU_TITLE}>
-        <!-- IF menu.WRAP_START -->{menu.WRAP_START}<!-- ENDIF -->
-          <!--&lt;!&ndash; IF PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS &ndash;&gt;-->
-            <!--{$MENU_ICON}-->
-            <!--&lt;!&ndash; IF menu.LINK &ndash;&gt;-->
-              <!--&lt;!&ndash; IF menu.TYPE == 'image' &ndash;&gt;-->
-                <!--&lt;!&ndash; DEFINE $LINK_CLOSE = '</a>' &ndash;&gt;-->
-                <!--<a href="{menu.LINK}" class="link"{$LINK_BLANK}>-->
-              <!--&lt;!&ndash; ELSE &ndash;&gt;-->
-                <!--&lt;!&ndash; DEFINE $LINK_CLOSE = '' &ndash;&gt;-->
-                <!--<input type="button" class="link ui-button ui-widget ui-state-default ui-corner-all ui-textfield" value="{$HEADER_PREFIX}{menu.ITEM}{$HEADER_SUFFIX}" go_url="{menu.LINK}"{$LINK_BLANK} />-->
-              <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-            <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-
-
-            <!--&lt;!&ndash; IF menu.TYPE == 'image' &ndash;&gt;-->
-              <!--<img class="left_menu_item_image" border="0" src="{menu.ITEM}" {$ALT_TITLE} />-->
-            <!--&lt;!&ndash; ELSEIF ! menu.LINK &ndash;&gt;-->
-              <!--{$HEADER_PREFIX}{menu.ITEM}{$HEADER_SUFFIX}-->
-            <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-
-          <!--&lt;!&ndash; ELSE &ndash;&gt;-->
-
-          <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-
-                  <!-- IF menu.LINK -->
-                  <!-- DEFINE $LINK_CLOSE = '</a>' -->
-                  <a href="{menu.LINK}" {$LINK_BLANK} <!-- IF menu.TYPE == 'image' -->class="lm_with_image"<!-- ENDIF -->>
-                  <!-- ENDIF -->
-                  {$MENU_ICON}
-                  <!-- IF menu.TYPE == 'image' -->
-                  <img style="display: inline-block" border="0" src="{menu.ITEM}" {$ALT_TITLE} />
-                  <!-- ELSE -->
-                  <span<!-- IF menu.LINK --> class="<!-- IF $LINK_BLANK && menu.TYPE != 'image' -->link_external<!-- ELSE -->link_b<!-- ENDIF -->"<!-- ENDIF -->>{$HEADER_PREFIX}{menu.ITEM}{$HEADER_SUFFIX}</span>
-                  <!-- ENDIF -->
-
-              {$LINK_CLOSE}
-        <!-- IF menu.WRAP_END -->{menu.WRAP_END}<!-- ENDIF -->
+        <!-- IF menu.LINK -->
+          <!-- DEFINE $LINK_CLOSE = '</a>' -->
+          <a href="{menu.LINK}" {$LINK_BLANK} <!-- IF menu.TYPE == 'image' -->class="lm_with_image"<!-- ENDIF -->>
+        <!-- ELSE -->
+          <!-- DEFINE $LINK_CLOSE = '' -->
+        <!-- ENDIF -->
+        {$MENU_ICON}
+        <!-- IF menu.TYPE == 'image' -->
+          <img style="display: inline-block" border="0" src="{menu.ITEM}" {$ALT_TITLE} />
+        <!-- ELSE -->
+          <span<!-- IF menu.LINK --> class="<!-- IF $LINK_BLANK && menu.TYPE != 'image' -->link_external<!-- ELSE -->link_b<!-- ENDIF -->"<!-- ENDIF -->>{$HEADER_PREFIX}{menu.ITEM}{$HEADER_SUFFIX}</span>
+        <!-- ENDIF -->
+        {$LINK_CLOSE}<!-- IF menu.WRAP_END -->{menu.WRAP_END}<!-- ENDIF -->
       </{$TX}>
     </tr>
   <!-- ENDIF -->
@@ -198,15 +154,9 @@
 <script type="text/javascript">
   jQuery(document).ready(function(){
     MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : (
-            // jQuery('#left_menu_show').offset().left < 50 ?
-            jQuery('#left_menu_show').offset({top: LEFT_MENU_SHOW_BUTTON_TOP, left: LEFT_MENU_SHOW_BUTTON_LEFT + jQuery('#left_menu').width()}).css('visibility', 'visible')
-            //        : false
+      jQuery('#left_menu_show').offset({top: LEFT_MENU_SHOW_BUTTON_TOP, left: LEFT_MENU_SHOW_BUTTON_LEFT + jQuery('#left_menu').width()}).css('visibility', 'visible')
     );
-//    if(MENU_HIDDEN) {
-//      jQuery('#left_menu').attr('menu_hidden', '1');
-//    }
   });
 </script><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
 <td width="100%" valign="top" align="center"><div style="margin: 0 auto">
 <!-- ENDIF -->
-
