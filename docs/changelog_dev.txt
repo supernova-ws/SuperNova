@@ -476,8 +476,27 @@ $vkontakte_to_supernova_translation = $this->db->doquery("SELECT * FROM {{accoun
     unique key по трём полям
 
 
+
+http://colorzilla.com/gradient-editor/#000000+0,2989d8+50,000000+100
+
+https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+
 // TODO Поискать type 5 в модулях - поменять там unchanged на changed
 
+
+Прогресс-бары на иконках юнитов через animate() ?
+
+// TODO СЕЙЧАС Запускать обработку флотов в отдельном треде
+// TODO СЕЙЧАС Запускать пересчёт статистики (шедулер) в отдельном треде
+// TODO СЕЙЧАС Вынести запуск флота в шедулер
+
+
+#ctv
+
+
+2015-10-12 01:07:26 40a12.6
+[+] Навбар
+    Если в почтовом ящике есть сообщения - общее количество соощений в навбаре мягко мерцает
 
 
 2015-10-11 22:34:54 40a12.5

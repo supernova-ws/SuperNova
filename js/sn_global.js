@@ -52,7 +52,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     calc_elements();
 
     // Запуск таймеров
-    if (typeof sn_timer === 'function') {
+    if (typeof(sn_timer) === 'function') {
       sn_timer();
     }
 
@@ -97,8 +97,17 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
 
       jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function(data) {});
     });
+
+    jQuery('.blink').each(function(){
+      sn_blink(this);
+    });
   }
   //);
+
+  function sn_blink(that) {
+    that = $(that);
+    that.animate({opacity: that.css('opacity') == 0 ? 1 : 0}, that.attr('duration') ? parseInt(that.attr('duration')) : 1000, function(){sn_blink(this)});
+  }
 
 
   $(document).on('click', '.password_show', function(){
