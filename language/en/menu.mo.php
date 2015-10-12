@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b11.6
+* @version 40a13.0
 *
 */
 
@@ -42,7 +42,7 @@ $a_lang_array = (array(
   'm_simulator' => 'Battle Simulator',
   'm_communication' => 'Link & Communication',
   'm_exchange' => 'Exchange resources',
-  'm_affilates' => '!!!Earn DM!!!',
+  'm_affilates' => 'Earn DM!',
   'Overview' => 'Overview',
   'Officiers' => 'Officers',
 //  'Buildings' => 'Construction',

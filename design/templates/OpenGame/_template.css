@@ -14,12 +14,6 @@ textarea {
   width                : 98%;
 }
 
-.link {
-  text-decoration: underline;
-  font-weight: bold;
-  cursor: pointer;
-}
-
 /*  Patching this theme for ui-slider */
 .style .ui-slider a:link { width: 1.2em; height: 1.2em; }
 .style .ui-slider a:hover { width: 1.2em; height: 1.2em; }
@@ -615,9 +609,35 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   z-index: 9999;
 }
 
-#left_menu tr, #left_menu td, #left_menu th {
-  height: 1.5em;
+#left_menu td, #left_menu th {
+  min-height: 1.5em;
+  padding: 0.25em 0.5em 0.25em 0.5em;
+  border: none;
 }
+
+#left_menu th {
+  font-size: 1.1em;
+}
+
+#left_menu th a {
+  width: 80%;
+}
+
+#left_menu > tbody > tr > td span, #left_menu > tbody > tr > th span {
+  display: inline-block;
+  vertical-align: top;
+}
+
+#left_menu a:not(.lm_with_image) {
+  background-color: rgba(35, 52, 82, 0.5); /*#233452;*/
+  padding: 0.2em 1em;
+  border: 1px solid #415680;
+  border-radius: 0.3em;
+
+  height: 100%;
+  display: inline-block;
+}
+
 
 #menu_show_hidden {
   color: yellow;
@@ -658,6 +678,12 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   background-repeat: no-repeat;
 }
 
+.menu_icon {
+  margin-right: 0.5em;
+  height: 1.3em;
+  width: 1.3em;
+  /*border: none;*/
+}
 
 /* Unit purchase --------------------------------------------------------------- */
 #unit_table {

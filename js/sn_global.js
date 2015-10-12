@@ -42,7 +42,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   // Нельзя полагаться на document.ready() из-за возможных проблем с загрузкой скриптов со сторонних серверов!
   function document_ready() {
     // Натягиваем скины на элементы ввода
-    inputs = jQuery("input");
+    inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
     inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
     inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
     inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");

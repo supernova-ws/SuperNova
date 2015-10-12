@@ -77,15 +77,9 @@ $sn_menu = array(
   ),
 
 
-/*
-  'menu_planet' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_planet',
-  ),
-*/
   'menu_faq' => array(
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
+//    'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'm_faq',
     'LINK'  => $config->url_faq,
@@ -138,13 +132,6 @@ $sn_menu = array(
     'ICON'  => true,
   ),
 
-/*
-  'menu_empire' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_empire',
-  ),
-*/
   'menu_empire_overview' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
@@ -173,29 +160,32 @@ $sn_menu = array(
     'LINK'  => 'flying_fleets.php',
     'ICON'  => true,
   ),
-  'menu_empire_quests' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'menu_quest_list',
-    'LINK'  => 'quest.php',
-    'ICON'  => true,
-  ),
+
   'menu_empire_universe' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'menu_universe_overview',
     'LINK'  => 'galaxy.php?mode=0',
   ),
-
-/*
-  'menu_stats' => array(
-    'LEVEL' => 'header',
+  'menu_empire_emperor' => array(
+    'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'Statistics',
+    'ITEM'  => 'imp_imperator',
+    'LINK'  => 'index.php?page=imperator',
+    'ICON'  => true,
   ),
-*/
+  'menu_ally' => array(
+//    'LEVEL' => 'header',
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'sys_alliance',
+    'LINK'  => 'alliance.php',
+    'ICON'  => true,
+    'LOCATION' => '+menu_empire_emperor',
+    'DISABLED' => $config->game_mode == GAME_BLITZ,
+  ),
   'menu_info_stats' => array(
-    'LEVEL' => 'header',
+    'LEVEL' => 'submenu', // header
     'TYPE'  => 'lang',
     'ITEM'  => 'menu_stat_players',
     'LINK'  => 'stat.php',
@@ -208,20 +198,14 @@ $sn_menu = array(
     'LINK'  => 'records.php',
     'ICON'  => true,
   ),
-  'menu_empire_emperor' => array(
+  'menu_empire_quests' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
-    'ITEM'  => 'imp_imperator',
-    'LINK'  => 'index.php?page=imperator',
+    'ITEM'  => 'menu_quest_list',
+    'LINK'  => 'quest.php',
     'ICON'  => true,
   ),
 
-//  'menu_dark_matter_h' => array(
-//    'LEVEL' => 'header',
-//    'TYPE'  => 'lang',
-//    'ITEM'  => 'sys_dark_matter',
-//    'ICON'  => true,
-//  ),
 //  'menu_metamatter' => !defined('SN_GOOGLE') ? array(
 //    'LEVEL' => 'header',
 //    'TYPE'  => 'lang',
@@ -269,42 +253,10 @@ $sn_menu = array(
     'LINK'  => 'affilates.php',
     'ICON'  => true,
   ),
-  // 'menu_ally' => $config->game_mode == GAME_BLITZ ? null : array(
-  'menu_ally' => array(
-    'LEVEL' => 'header',
-    //    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_alliance',
-    'LINK'  => 'alliance.php',
-    'ICON'  => true,
-    'LOCATION' => '+menu_affiliates',
-    'DISABLED' => $config->game_mode == GAME_BLITZ,
-  ),
-  // 'menu_ally_chat' => $config->game_mode == GAME_BLITZ ? null : array(
-  'menu_ally_chat' => array(
-    'LEVEL' => 'submenu',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'AllyChat',
-    'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
-    'ICON'  => true,
-    'DISABLED' => $config->game_mode == GAME_BLITZ,
-  ),
 
-/*
-  'menu_ally_overview' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'sys_alliance',
-  ),
-*/
-
-  'menu_comm' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_communication',
-  ),
   'menu_comm_messages' => array(
-    'LEVEL' => 'submenu',
+//    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'Messages',
     'LINK'  => 'messages.php',
@@ -317,7 +269,15 @@ $sn_menu = array(
     'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_COMMON,
     'ICON'  => true,
   ),
-  // 'menu_comm_forum' => !$config->url_forum ? array() : array(
+  'menu_ally_chat' => array(
+    'LEVEL' => 'submenu',
+    'TYPE'  => 'lang',
+    'ITEM'  => 'AllyChat',
+    'LINK'  => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
+    'ICON'  => true,
+    'DISABLED' => $config->game_mode == GAME_BLITZ,
+  ),
+
   'menu_comm_forum' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
@@ -328,14 +288,14 @@ $sn_menu = array(
     'DISABLED' => empty($config->url_forum),
   ),
 
-  'menu_utils' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'm_others',
-  ),
-  // 'menu_utils_search' => $config->game_mode == GAME_BLITZ ? array() : array(
+//  'menu_utils' => array(
+//    'LEVEL' => 'header',
+//    'TYPE'  => 'lang',
+//    'ITEM'  => 'm_others',
+//  ),
   'menu_utils_search' => array(
-    'LEVEL' => 'submenu',
+    'LEVEL' => 'header',
+//    'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
     'ITEM'  => 'Search',
     'LINK'  => 'search.php',
@@ -356,13 +316,6 @@ $sn_menu = array(
     'LINK'  => 'buddy.php',
     'ICON'  => true,
   ),
-//  'menu_utils_notes' => array(
-//    'LEVEL' => 'submenu',
-//    'TYPE'  => 'lang',
-//    'ITEM'  => 'Notes',
-//    'LINK'  => 'notes.php',
-//    'ICON'  => true,
-//  ),
   'menu_utils_reports' => array(
     'LEVEL' => 'submenu',
     'TYPE'  => 'lang',
@@ -377,7 +330,6 @@ $sn_menu = array(
     'LINK'  => 'simulator.php',
     'ICON'  => true,
   ),
-  // 'menu_rules' => !$config->url_rules ? array() : array(
   'menu_rules' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
@@ -388,13 +340,6 @@ $sn_menu = array(
     'DISABLED' => empty($config->url_rules),
   ),
 
-/*
-  'menu_info' => array(
-    'LEVEL' => 'header',
-    'TYPE'  => 'lang',
-    'ITEM'  => 'navig',
-  ),
-*/
   'menu_news' => array(
     'LEVEL' => 'submenu',
 //    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),

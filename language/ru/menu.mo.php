@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b11.6
+* @version 40a13.0
 *
 */
 
@@ -32,7 +32,7 @@ if (!defined('INSIDE')) die();
 $a_lang_array = (array(
   'Multiverse' => '<b>Сервер</b> Uni',
   'm_h_rules' => 'Правила',
-  'm_faq' => 'Как играть (ЧаВо)',
+  'm_faq' => 'Как играть?',
   'm_faq_hint' => 'Наиболее часто задаваемые вопросы пользователей и ответы на них',
   'm_h_control' => 'Управление',
   'm_forum' => 'Форум',
@@ -40,7 +40,7 @@ $a_lang_array = (array(
   'm_simulator' => 'Симулятор боя',
   'm_communication' => 'Коммуникации',
   'm_exchange' => 'Биржа ресурсов',
-  'm_affilates' => '!!!ЗАРАБОТАЙ ТМ!!!',
+  'm_affilates' => 'ЗАРАБОТАЙ ТМ!',
   'Overview' => 'Обзор планеты',
   'Officiers' => 'Офицеры',
 //  'Buildings' => 'Постройки',
@@ -109,7 +109,7 @@ $a_lang_array = (array(
   'lm_ifo_game' => 'Игра',
   'lm_ifo_fleet' => 'Флот',
   'lm_ifo_queue' => 'Очередь',
-  'lm_shortcuts' => 'Заметки/Закладки',
+  'lm_shortcuts' => 'Закладки',
   'lm_banned' => 'Список банов',
   'lm_announce_fresh' => 'СВЕЖИЕ',
   'lm_server_info' => 'О сервере',

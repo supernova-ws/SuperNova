@@ -372,6 +372,7 @@ function sn_options_view($template = null) {
     'menu_customize_hide_unpinned_on_exit' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
     'menu_customize_show_absolute' => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
     'menu_customize_items_as_buttons' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+    'menu_customize_white_text' => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
     'sound_enabled' => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
     'animation_disabled' => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
 

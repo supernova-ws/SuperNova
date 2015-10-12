@@ -179,7 +179,7 @@ h1 {
 }
 
 #menu_affiliates, #menu_planet_fleets, #menu_empire_fleets {
-  color: #CC3333;
+  color: #cc7567;
 }
 
 #menu_rules {
@@ -195,8 +195,12 @@ h1 {
 }
 
 #menu_planet_shipyard, #menu_planet_defense {
-  color: #993399;
+  color: #79c9ca;
 }
+#menu_empire_emperor, #menu_dark_matter {
+  color: #ca3aca;
+}
+
 
 #menu_empire_universe
 {
@@ -206,10 +210,6 @@ h1 {
 #menu_ally_chat, #menu_comm_chat
 {
   color: #996699;
-}
-
-#menu_empire_emperor, #menu_dark_matter {
-  color: #c300c3;
 }
 
 #menu_comm_forum {

@@ -186,6 +186,7 @@ function tpl_render_menu() {
       'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
       'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
       'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
+      'PLAYER_OPTION_MENU_WHITE_TEXT' => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
     ));
   }
 

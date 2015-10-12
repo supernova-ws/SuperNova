@@ -678,6 +678,13 @@ th.c_j, td.c_j
   cursor: pointer;
 }
 
+.link_b
+{
+  border-bottom: 1px solid;
+  font-weight: bold;
+  cursor: pointer;
+}
+
 .link_action {
   border-bottom: 1px dashed;
   font-weight: bold;
