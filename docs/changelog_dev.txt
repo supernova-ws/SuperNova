@@ -476,6 +476,7 @@ $vkontakte_to_supernova_translation = $this->db->doquery("SELECT * FROM {{accoun
     unique key по трём полям
 
 
+Лицензия на постройку не-расовых кораблей - по времени за ТМ
 
 http://colorzilla.com/gradient-editor/#000000+0,2989d8+50,000000+100
 
@@ -492,6 +493,12 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queri
 
 
 #ctv
+
+
+
+2015-10-12 15:20:11 40a12.8
+[~] JS/sn_timer
+    Дополнительные оптимизации по скорости для Хрома
 
 
 2015-10-12 02:34:59 40a12.7

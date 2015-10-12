@@ -98,9 +98,9 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function(data) {});
     });
 
-    jQuery('.blink').each(function(){
+    !jQuery.fx.off ? jQuery('.blink').each(function(){
       sn_blink(this);
-    });
+    }) : false;
   }
   //);
 

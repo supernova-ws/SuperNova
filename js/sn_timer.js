@@ -138,10 +138,6 @@ if(window.LOADED_TIMER === undefined) {
 
       // Кэшируем DOM-ики
       timer['html_main'] = $("#" + timer['id']);
-      timer['html_timer'] = $("#" + timer['id'] + '_timer');
-      timer['html_que_js'] = $("#" + timer['id'] + '_que');
-      timer['html_total_js'] = $("#" + timer['id'] + '_total:visible');
-      timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
 
       // Если нет настроек - создаём пустой объект
       timer['options'] === undefined ? timer['options'] = {} : false;
@@ -153,6 +149,7 @@ if(window.LOADED_TIMER === undefined) {
         case TIMER_BUILD_QUE_V1: {
           // Если нет ни основного элемента вывода, ни элемента таймера - тогда можно даже не начинать работу счётчика
           // TODO - Проверка на is(':visible')
+          timer['html_timer'] = $("#" + timer['id'] + '_timer');
           if (!timer['html_main'].length && !timer['html_timer'].length) {
             timer['active'] = false;
             break;
@@ -174,7 +171,10 @@ if(window.LOADED_TIMER === undefined) {
             break;
           }
 
+          timer['html_total_js'] = $("#" + timer['id'] + '_total:visible');
+          timer['html_que_js'] = $("#" + timer['id'] + '_que');
           timer['html_finish'] = $('#' + timer['id'] + '_finish:visible');
+          timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
 
           timer['que_compiled'] = '';
           break;
@@ -183,6 +183,7 @@ if(window.LOADED_TIMER === undefined) {
         case TIMER_EVENT_QUE: {
           // Если нет ни основного элемента вывода, ни видимого элемента с подсказкой - тогда можно даже не начинать работу счётчика
           // TODO - Проверка на is(':visible')
+          timer['html_total_js'] = $("#" + timer['id'] + '_total:visible');
           if (!timer['html_main'].length && !timer['html_total_js'].length) {
             timer['active'] = false;
             break;
@@ -399,16 +400,18 @@ if(window.LOADED_TIMER === undefined) {
             infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
           }
 
-          if(que.length && que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
+          //if(que.length && que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
+          if(!jQuery.fx.off && que.length && que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
             // Анимация
             $('.' + timer['id'] + '_container_0:visible').animate({opacity: 0}, que[0][UNIT_TIME] * 1000);
           }
-          if(que.length && que[0][UNIT_TIME_FULL] == timeLeft) {
+          //if(que.length && que[0][UNIT_TIME_FULL] == timeLeft) {
+          if(!jQuery.fx.off && que.length && que[0][UNIT_TIME_FULL] == timeLeft) {
             timer['html_timer_current'].children().animate({opacity: 0}, 50, function(){
               $(this).animate({opacity: 1}, 300)});
           }
 
-          timer['html_que_js'] === undefined || !timer['html_que_js'].length ? infoText += timer['que_compiled'] : false;
+          // timer['html_que_js'] === undefined || !timer['html_que_js'].length ? infoText += timer['que_compiled'] : false;
 
           timer['html_main'].length ? timer['html_main'].html(infoText) : false;
           break;
