@@ -110,6 +110,15 @@ if(window.LOADED_TIMER === undefined) {
       return;
     }
 
+    startTime = new Date();
+
+//console.log('start_time ' + startTime);
+//console.log('localTime ' + localTime);
+//
+//console.log('D_SN_TIME_NOW ' + D_SN_TIME_NOW);
+//console.log('timeDiff ' + timeDiff);
+//console.log('browser timeDiff ' + ((localTime.valueOf() - startTime.valueOf())/1000));
+//console.log('D_SN_TIME_NOW DATE ' + new Date(D_SN_TIME_NOW * 1000  ));
     for (timerID in sn_timers) {
       if (!sn_timers.hasOwnProperty(timerID)) {
         continue;
@@ -125,7 +134,7 @@ if(window.LOADED_TIMER === undefined) {
         continue;
       }
 
-      timer['start_time'] = new Date((D_SN_TIME_NOW + timeDiff ) * 1000  );
+      timer['start_time'] = startTime; // new Date((D_SN_TIME_NOW - timeDiff ) * 1000  );
 
       // Кэшируем DOM-ики
       timer['html_main'] = $("#" + timer['id']);
@@ -241,22 +250,6 @@ if(window.LOADED_TIMER === undefined) {
         .replace(/\[UNIT_LEVEL\]/gi, unit_count)
         .replace(/\[UNIT_NAME\]/gi, que[que_id][UNIT_NAME])
         .replace(/\[UNIT_QUE_PLACE\]/gi, que_id);
-
-      //unit_name = que[que_id][UNIT_NAME];
-
-      //temp = temp.replace('[UNIT_LEVEL]', unit_count);
-      //unit_name += ' (' + unit_count + ')';
-      //if (que[que_id][UNIT_LEVEL] > 0) {
-      //  unit_name += ' (' + que[que_id][UNIT_LEVEL] + ')';
-      //  temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_LEVEL]);
-      //} else {
-      //  unit_name += ' (' + que[que_id][UNIT_AMOUNT] + ')';
-      //  temp = temp.replace('[UNIT_LEVEL]', que[que_id][UNIT_AMOUNT]);
-      //}
-      //temp = temp.replace('[UNIT_NAME]', unit_name);
-      //temp = temp.replace('[UNIT_NAME]', que[que_id][UNIT_NAME] + ' (' + unit_count + ')');
-      //temp = temp.replace(/\[UNIT_QUE_PLACE\]/gi, que_id);
-      //compiled += temp;
     }
     timer_options['total'] = total;
 
