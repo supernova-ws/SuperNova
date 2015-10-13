@@ -24,63 +24,36 @@
   var LEFT_MENU_SHOW_BUTTON_LEFT = 10;
 </script>
 
-<!-- DEFINE $MENU_TABLE_CLASS = '' -->
 <!-- IF PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS -->
-  <!-- DEFINE $MENU_TABLE_CLASS = 'big_buttons' -->
+  <!-- DEFINE $MENU_BIG_BUTTONS = 'MENU_BIG_BUTTONS' -->
 <!-- ENDIF -->
 
-<!-- TODO - REMOVE -->
-<!--<style type="text/css">-->
-  <!--#left_menu {-->
-    <!--font-size: 150%;-->
-  <!--}-->
-<!--</style>-->
-
 <!-- IF PLAYER_OPTION_MENU_OLD -->
-  <!-- DEFINE $MENU_TABLE_CLASS = 'old_style {$MENU_TABLE_CLASS}' -->
+  <!-- DEFINE $MENU_NARROW_CELLS = 'MENU_NARROW_CELLS' -->
 <!-- ENDIF -->
 
 <!-- IF MENU_CUSTOMIZE -->
   <!-- IF MENU_START_HIDE -->
-    <style type="text/css">
-      #left_menu {
-        display: none;
-      }
-    </style>
     <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_pin}' -->
     <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_show}' -->
+    <!-- DEFINE $MENU_START_HIDDEN = 'MENU_START_HIDDEN' -->
   <!-- ELSE -->
     <!-- DEFINE $MENU_START_BUTTON_PIN = '{LA_menu_unpin}' -->
     <!-- DEFINE $MENU_START_BUTTON_SHOW = '{LA_menu_hide}' -->
   <!-- ENDIF -->
 
-  <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 0 -->
-  <style type="text/css">
-    #left_menu_show {
-      position: fixed;
-    }
-  </style>
-  <!-- ELSEIF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 1 -->
-  <!-- ELSE -->
-  <style type="text/css">
-    #left_menu_show, #menu_pin {
-      display: none;
-    }
-  </style>
+  <!-- IF PLAYER_OPTION_MENU_UNPIN_ABSOLUTE -->
+    <!-- DEFINE $MENU_ABSOLUTE = 'MENU_ABSOLUTE' -->
   <!-- ENDIF -->
 
-  <!-- IF PLAYER_OPTION_MENU_UNPIN_ABSOLUTE -->
-  <style type="text/css">
-    #left_menu {
-      position: absolute;
-    }
-  </style>
+  <!-- IF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 0 -->
+    <!-- DEFINE $MENU_SHOW_HIDE_CLASS = 'MENU_SHOW_HIDE_FIXED' -->
+  <!-- ELSEIF PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON == 2 -->
+    <!-- DEFINE $MENU_SHOW_HIDE_CLASS = 'MENU_SHOW_HIDE_HIDDEN' -->
   <!-- ENDIF -->
 <!-- ENDIF -->
 
-
-
-  <table cellspacing="0" cellpadding="0" id="left_menu" class="{DEFINE $MENU_TABLE_CLASS}"><!-- BEGIN menu -->
+  <table cellspacing="0" cellpadding="0" id="left_menu" class="{$MENU_BIG_BUTTONS} {$MENU_NARROW_CELLS} {$MENU_START_HIDDEN} {$MENU_ABSOLUTE}"><!-- BEGIN menu -->
   <!-- IF (! menu.AUTH_LEVEL || menu.AUTH_LEVEL <= AUTH_LEVEL) && ! menu.DISABLED -->
 
     <!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
@@ -103,11 +76,7 @@
       <!-- DEFINE $ALT_TITLE = '' -->
     <!-- ENDIF -->
 
-    <!-- DEFINE $HEADER_PREFIX = '' --><!-- DEFINE $HEADER_SUFFIX = '' -->
     <!-- IF menu.LINK -->
-      <!-- IF menu.LEVEL == 'header' -->
-        <!--DEFINE $HEADER_PREFIX = '[&nbsp;' --><!--DEFINE $HEADER_SUFFIX = '&nbsp;]' -->
-      <!-- ENDIF -->
       <!-- IF menu.BLANK -->
         <!-- DEFINE $LINK_BLANK = ' target="_blank"' -->
       <!-- ELSE -->
@@ -131,7 +100,7 @@
         <!-- IF menu.TYPE == 'image' -->
           <img style="display: inline-block" border="0" src="{menu.ITEM}" {$ALT_TITLE} />
         <!-- ELSE -->
-          <span<!-- IF menu.LINK --> class="<!-- IF $LINK_BLANK && menu.TYPE != 'image' -->link_external<!-- ELSE -->link_b<!-- ENDIF -->"<!-- ENDIF -->>{$HEADER_PREFIX}{menu.ITEM}{$HEADER_SUFFIX}</span>
+          <span<!-- IF menu.LINK --> class="<!-- IF $LINK_BLANK && menu.TYPE != 'image' -->link_external<!-- ELSE -->link_b<!-- ENDIF -->"<!-- ENDIF -->>{menu.ITEM}</span>
         <!-- ENDIF -->
         {$LINK_CLOSE}<!-- IF menu.WRAP_END -->{menu.WRAP_END}<!-- ENDIF -->
       </{$TX}>
@@ -144,19 +113,23 @@
     jQuery("#left_menu input, #left_menu button").addClass('do-not-skin');
   </script>
   <!-- ENDIF -->
+
   <!-- IF PLAYER_OPTION_MENU_WHITE_TEXT -->
   <script type="text/javascript">
     jQuery("#left_menu td a").css('color', 'white');
   </script>
   <!-- ENDIF -->
 </td>
-<td valign="top"><!-- IF MENU_CUSTOMIZE --><input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" />
-<script type="text/javascript">
-  jQuery(document).ready(function(){
-    MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : (
-      jQuery('#left_menu_show').offset({top: LEFT_MENU_SHOW_BUTTON_TOP, left: LEFT_MENU_SHOW_BUTTON_LEFT + jQuery('#left_menu').width()}).css('visibility', 'visible')
-    );
-  });
-</script><!-- ELSE -->&nbsp;<!-- ENDIF --></td>
+<td valign="top">
+  <!-- IF MENU_CUSTOMIZE -->
+    <input type="button" id="left_menu_show" value="{$MENU_START_BUTTON_SHOW}" class="{$MENU_SHOW_HIDE_CLASS}"/>
+    <script type="text/javascript">
+      jQuery(document).ready(function(){
+        MENU_HIDDEN ? jQuery('#left_menu').attr('menu_hidden', '1') : (
+          jQuery('#left_menu_show').offset({top: LEFT_MENU_SHOW_BUTTON_TOP, left: LEFT_MENU_SHOW_BUTTON_LEFT + jQuery('#left_menu').width()}).css('visibility', 'visible')
+        );
+      });
+    </script>
+  <!-- ELSE -->&nbsp;<!-- ENDIF --></td>
 <td width="100%" valign="top" align="center"><div style="margin: 0 auto">
 <!-- ENDIF -->

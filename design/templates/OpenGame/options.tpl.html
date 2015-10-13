@@ -26,15 +26,14 @@
     <ol>
       <li><a href="#tab_account">{L_opt_account}</a></li>
       <li><a href="#tab_interface">{L_opt_int_options}</a></li>
+      <!-- IF MENU_CUSTOMIZE -->
+      <li><a href="#tab_menu">{L_menu_customize_customization}</a></li>
+      <!-- ENDIF -->
       <li><a href="#tab_alerts">{L_opt_alerts}</a></li>
     </ol>
 
     <div id="tab_account">
       <table width="100%">
-        <!-- IF MENU_CUSTOMIZE -->
-          <!-- INCLUDE ../../../modules/menu_customize/design/templates/OpenGame/menu_customize_options -->
-        <!-- ENDIF -->
-
         <!-- IF ADM_PROTECT_PLANETS -->
         <tr class="c_c">
           <th colspan="2">
@@ -209,7 +208,6 @@
       </table>
     </div>
 
-
     <div id="tab_interface">
       <table>
         <tr>
@@ -371,6 +369,10 @@
 
       </table>
     </div>
+
+    <!-- IF MENU_CUSTOMIZE -->
+      <!-- INCLUDE ../../../modules/menu_customize/design/templates/OpenGame/menu_customize_options -->
+    <!-- ENDIF -->
 
     <div id="tab_alerts">
       <table>
