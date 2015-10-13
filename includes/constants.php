@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a13.7');
+define('SN_VERSION', '40a13.8');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1383,8 +1383,8 @@ define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_NORMAL', 1);
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_HIDDEN', 2);
 
-define('PLAYER_OPTION_TIME_DIFF', 0);
-define('PLAYER_OPTION_TIME_DIFF_UTC_OFFSET', 1);
+define('PLAYER_OPTION_TIME_DIFF', 0); // Чистая разница в ходе часов в секундах
+define('PLAYER_OPTION_TIME_DIFF_UTC_OFFSET', 1); // Разница между часовыми поясами в секундах
 define('PLAYER_OPTION_TIME_DIFF_FORCED', 2);
 define('PLAYER_OPTION_TIME_DIFF_MEASURE_TIME', 3);
 

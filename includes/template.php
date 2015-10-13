@@ -241,7 +241,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   isset($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page);
 
   // Global header
-  $user_time_diff = user_time_diff_get();
+  $user_time_diff = playerTimeDiff::user_time_diff_get();
   $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
   // $player_options = player_load_option($user);
   $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
@@ -337,7 +337,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
-  sn_benchmark();
+  // sn_benchmark();
 
   sn_db_disconnect();
 

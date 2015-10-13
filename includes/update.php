@@ -975,31 +975,9 @@ switch($new_version) {
       upd_check_key('game_maxPlanet', 16, $config->game_maxPlanet == 15);
     }
 
-    // 2015-08-04 05:28:26 40a6.2
-
-    upd_check_key('db_manual_lock_enabled', 1, empty($config->db_manual_lock_enabled));
-
-    // 2015-08-18 11:11:53 40a8.4
-
-    upd_check_key('eco_planet_starting_metal', 500, empty($config->eco_planet_starting_metal));
-    upd_check_key('eco_planet_starting_crystal', 500, empty($config->eco_planet_starting_crystal));
-    upd_check_key('eco_planet_starting_deuterium', 0, empty($config->eco_planet_starting_deuterium));
-
-    upd_check_key('eco_planet_storage_metal', 500000, empty($config->eco_planet_storage_metal));
-    upd_check_key('eco_planet_storage_crystal', 500000, empty($config->eco_planet_storage_crystal));
-    upd_check_key('eco_planet_storage_deuterium', 500000, empty($config->eco_planet_storage_deuterium));
-
     // 2015-08-19 04:41:57 40a8.10
 
     upd_do_query('UPDATE {{planets}} SET `image` = "normaltempplanet01" WHERE `image` = "planet" OR `image` = "normaltemp01"');
-
-    // 2015-08-19 05:17:35 40a8.11
-
-    // http://1whois.ru?url=
-    upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', empty($config->core_geoip_whois_url));
-
-    // 2015-08-22 18:24:26 40a9.10
-    upd_check_key('ube_capture_points_diff', 2, empty($config->ube_capture_points_diff));
 
     // 2015-08-27 19:14:05 40a10.0
 
@@ -1086,10 +1064,24 @@ switch($new_version) {
 
     upd_do_query("UPDATE {{log_metamatter}} SET `account_id` = `user_id`, `account_name` = `username`");
 
-    // #ctv
 
-    // 2015-10-10 10:19:29 40a11.8
-    upd_check_key('security_write_full_url_disabled', 1, empty($config->security_write_full_url_disabled));
+    // 2015-10-14 01:35:55 40a13.8
+    upd_check_key('db_manual_lock_enabled', 0, !isset($config->db_manual_lock_enabled));
+
+    upd_check_key('eco_planet_starting_metal', 500, !isset($config->eco_planet_starting_metal));
+    upd_check_key('eco_planet_starting_crystal', 500, !isset($config->eco_planet_starting_crystal));
+    upd_check_key('eco_planet_starting_deuterium', 0, !isset($config->eco_planet_starting_deuterium));
+
+    upd_check_key('eco_planet_storage_metal', 500000, !isset($config->eco_planet_storage_metal));
+    upd_check_key('eco_planet_storage_crystal', 500000, !isset($config->eco_planet_storage_crystal));
+    upd_check_key('eco_planet_storage_deuterium', 500000, !isset($config->eco_planet_storage_deuterium));
+
+    upd_check_key('security_write_full_url_disabled', 1, !isset($config->security_write_full_url_disabled));
+
+    // http://1whois.ru?url=
+    upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', !isset($config->core_geoip_whois_url));
+
+    upd_check_key('ube_capture_points_diff', 2, !isset($config->ube_capture_points_diff));
 
     // #ctv
     upd_do_query('COMMIT;', true);

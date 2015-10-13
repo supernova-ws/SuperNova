@@ -8,7 +8,6 @@ if(defined('INIT')) {
 // Замеряем начальные параметры
 define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
-define('INIT', true);
 
 version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3.2') : false;
 
@@ -26,6 +25,7 @@ register_shutdown_function(function() {
   }
 });
 
+define('INIT', true);
 !defined('INSIDE') ? define('INSIDE', true) : false;
 !defined('INSTALL') ? define('INSTALL', false) : false;
 !defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
@@ -39,6 +39,8 @@ define('SN_TIME_ZONE_OFFSET', date('Z'));
 
 define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
 define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
+
+define('SN_TIME_NOW_GMT_STRING', gmdate(DATE_ATOM, SN_TIME_NOW));
 
 if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
   define('SN_GOOGLE', true);
@@ -100,6 +102,8 @@ require_once('classes/locale.php');
 require_once('classes/template.php');
 require_once('classes/functions_template.php');
 require_once('classes/module.php');
+
+require_once('classes/playerTimeDiff.php');
 
 require_once('classes/RequestInfo.php');
 require_once('classes/PlayerToAccountTranslate.php');
@@ -415,10 +419,11 @@ if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 
-$user_time_diff = user_time_diff_get();
+$user_time_diff = playerTimeDiff::user_time_diff_get();
 global $time_diff;
 define('SN_CLIENT_TIME_DIFF', $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DIFF] + $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]);
 define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
+define('SN_CLIENT_TIME_DIFF_GMT', $user_time_diff[PLAYER_OPTION_TIME_DIFF]); // Разница в GMT-времени между клиентом и сервером. Реальная разница в ходе часов
 
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
 !empty($user) && sys_get_param_id('survey_vote') ? die(survey_vote($user)) : false;

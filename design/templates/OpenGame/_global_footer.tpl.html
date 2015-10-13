@@ -9,6 +9,9 @@
     <div id="debug" style="text-align: left"></div>
     <script type="application/javascript">
       document_ready();
+      jQuery(document).ready(function () {
+        jQuery('.benchmark').append(', JS run: ' + ((new Date().valueOf() - localTime.valueOf()) / 1000) + 's');
+      });
     </script>
   </body>
 </html>

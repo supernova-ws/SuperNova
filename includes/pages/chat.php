@@ -29,9 +29,9 @@ $sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
 */
 function sn_chat_model()
 {
-  global $config, $user, $microtime, $template_result, $lang, $supernova;
+  global $config, $user, $template_result, $lang, $supernova;
 
-  $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
+  $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   $config->array_set('users', $user['id'], 'chat_last_refresh', 0);
 
   $user_auth_level = isset($user['authlevel']) ? $user['authlevel'] : AUTH_LEVEL_ANONYMOUS;
@@ -76,12 +76,12 @@ function sn_chat_view($template = null)
 
 function sn_chat_add_model()
 {
-  global $skip_fleet_update, $config, $microtime, $user;
+  global $skip_fleet_update, $config, $user;
 
   define('IN_AJAX', true);
   $skip_fleet_update = true;
 
-  if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
+  if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
   {
     die();
   }
@@ -95,14 +95,14 @@ function sn_chat_add_model()
 
     doquery("INSERT INTO {{chat}} (chat_message_sender_id, user, ally_id, message, timestamp) VALUES ('{$user['id']}', '{$nick}', '{$ally_id}', '{$message}', " . SN_TIME_NOW . ");");
 
-    $config->array_set('users', $user['id'], 'chat_last_activity', $microtime);
+    $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   }
 
   die();
 }
 function sn_chat_msg_view($template = null)
 {
-  global $config, $skip_fleet_update, $microtime, $user, $lang;
+  global $config, $skip_fleet_update, $user, $lang;
 
   define('IN_AJAX', true);
   $skip_fleet_update = true;
@@ -110,14 +110,14 @@ function sn_chat_msg_view($template = null)
   $history = sys_get_param_str('history');
   if(!$history)
   {
-    $config->array_set('users', $user['id'], 'chat_last_refresh', $microtime);
+    $config->array_set('users', $user['id'], 'chat_last_refresh', SN_TIME_MICRO);
   }
 
   $page = 0;
   $last_message = '';
   $alliance = 0;
   $template_result['.']['chat'] = array();
-  if(!$history && $config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && $microtime - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
+  if(!$history && $config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
   {
     $result['disable'] = true;
     $template_result['.']['chat'][] = array(

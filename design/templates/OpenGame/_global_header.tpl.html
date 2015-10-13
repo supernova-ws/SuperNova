@@ -4,7 +4,10 @@
     <base href="{D_SN_ROOT_VIRTUAL}" />
 
     <!--<meta name="viewport" content="width=device-width, initial-scale=1" />-->
-    <meta name="viewport" content="target-densitydpi=device-dpi; width=device-width; initial-scale=0.6675" />
+    <!--<meta name="viewport" content="width=device-width, target-densitydpi=device-dpi, initial-scale=0.6675" />-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, target-densitydpi=device-dpi" />
+    <meta name="HandheldFriendly" content="True">
+    <!--<meta name="MobileOptimized" content="800">-->
 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta http-equiv="Cache-Control" content="no-cache" />
@@ -62,15 +65,25 @@
       }
 
       var serverTime = new Date(parseFloat('{D_SN_TIME_MICRO}') * 1000);
-      var TIME_NOW = {D_SN_TIME_NOW};
-      var D_SN_TIME_NOW = {D_SN_TIME_NOW};
+      var TIME_NOW = parseInt('{D_SN_TIME_NOW}') ? parseInt('{D_SN_TIME_NOW}') : (round(localTime.valueOf() / 1000));
+      var D_SN_TIME_NOW = parseInt('{D_SN_TIME_NOW}') ? parseInt('{D_SN_TIME_NOW}') : (round(localTime.valueOf() / 1000));
 //      var timeDiffSecondsMicro = localTime.valueOf() - serverTime.valueOf();
 //      var timeDiff = Math.round((localTime.valueOf()) / 1000 - '{D_SN_TIME_MICRO}')
 //              - localTime.getTimezoneOffset() * 60 - '{D_SN_TIME_ZONE_OFFSET}';
 
+      var timeTimerStart = localTime;
+
+//      var SN_TIME_NOW_GMT_STRING = '{SN_TIME_NOW_GMT_STRING}';
+//      var SN_CLIENT_TIME_DIFF_GMT = parseInt('{SN_CLIENT_TIME_DIFF_GMT}') ? parseInt('{SN_CLIENT_TIME_DIFF_GMT}') : 0;
+////      date = new Date(SN_TIME_NOW_GMT_STRING);
+////      date2 = new Date(date.valueOf() + SN_CLIENT_TIME_DIFF_GMT * 1000);
+////      timeTimerStart = date2;
+//
+//      timeTimerStart = new Date(new Date(SN_TIME_NOW_GMT_STRING).valueOf() + SN_CLIENT_TIME_DIFF_GMT * 1000);
+
       if(parseInt('{TIME_DIFF_MEASURE}') || timeDiff === false) {
         timeDiff = 0;
-        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utc_offset': -localTime.getTimezoneOffset() * 60}, function(data) {
+        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utc_offset': -localTime.getTimezoneOffset() * 60, 'client_gmt': localTime.toUTCString()}, function(data) {
           timeDiff = parseInt(data);
         });
       }

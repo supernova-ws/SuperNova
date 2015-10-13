@@ -110,15 +110,6 @@ if(window.LOADED_TIMER === undefined) {
       return;
     }
 
-    startTime = new Date();
-
-//console.log('start_time ' + startTime);
-//console.log('localTime ' + localTime);
-//
-//console.log('D_SN_TIME_NOW ' + D_SN_TIME_NOW);
-//console.log('timeDiff ' + timeDiff);
-//console.log('browser timeDiff ' + ((localTime.valueOf() - startTime.valueOf())/1000));
-//console.log('D_SN_TIME_NOW DATE ' + new Date(D_SN_TIME_NOW * 1000  ));
     for (timerID in sn_timers) {
       if (!sn_timers.hasOwnProperty(timerID)) {
         continue;
@@ -134,7 +125,7 @@ if(window.LOADED_TIMER === undefined) {
         continue;
       }
 
-      timer['start_time'] = startTime; // new Date((D_SN_TIME_NOW - timeDiff ) * 1000  );
+      timer['start_time'] = timeTimerStart; // new Date((D_SN_TIME_NOW - timeDiff ) * 1000  );
 
       // Кэшируем DOM-ики
       timer['html_main'] = $("#" + timer['id']);

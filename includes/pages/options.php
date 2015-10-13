@@ -238,16 +238,16 @@ function sn_options_model() {
     $avatar_upload_result = sys_avatar_upload($user['id'], $user['avatar']);
     $template_result['.']['result'][] = $avatar_upload_result;
 
-    $user_time_diff = user_time_diff_get();
+    $user_time_diff = playerTimeDiff::user_time_diff_get();
     if(sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED')) {
-      user_time_diff_set(array(
+      playerTimeDiff::user_time_diff_set(array(
         PLAYER_OPTION_TIME_DIFF => sys_get_param_int('PLAYER_OPTION_TIME_DIFF'),
         PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => 0,
         PLAYER_OPTION_TIME_DIFF_FORCED => 1,
         PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
       ));
     } elseif(sys_get_param_int('opt_time_diff_clear') || $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) {
-      user_time_diff_set(array(
+      playerTimeDiff::user_time_diff_set(array(
         PLAYER_OPTION_TIME_DIFF => '',
         PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => 0,
         PLAYER_OPTION_TIME_DIFF_FORCED => 0,
@@ -354,7 +354,7 @@ function sn_options_view($template = null) {
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($user['deltime']);
 
-  $user_time_diff = user_time_diff_get();
+  $user_time_diff = playerTimeDiff::user_time_diff_get();
   // $player_options = player_load_option($user);
   $template->assign_vars(array(
     'USER_ID'        => $user['id'],
