@@ -498,6 +498,12 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queri
 
 
 
+2015-10-13 04:15:35 40a13.7
+[%] BBCode
+    Исправлена ошибка парсинга строки, состоящей только из УРЛ и начинающейся с http://
+    Исправлена ошибка парсинга префикса sn:// в составе BBCode 'url'
+
+
 2015-10-13 04:02:45 40a13.6
 [#] menu_customize 0d5
     (!) Настройки/Меню
