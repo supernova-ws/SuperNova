@@ -80,9 +80,43 @@ only screen and (min-device-pixel-ratio : 1.5) {
 }
 
 
+/* Main pseudo button magic*/
+.button_pseudo {
+  cursor: pointer;
+  margin: 0.5em;
+  box-shadow: 0.3em 0.3em rgba(0,0,0,0.50);
+}
+.button_pseudo_pressed {
+  /*box-shadow: -0.3em -0.3em rgba(0,0,0,0);*/
+  box-shadow: none;
+  margin: 0.8em 0.2em 0.2em 0.8em;
+}
+
+/* Text pseudo button */
+.button_pseudo:not(img) {
+  background-color: rgba(0,0,0,0.35);
+  border-radius: 0.4em;
+  display: inline-block;
+  text-align: center;
+  padding: 0.7em 1em 0.7em 1em;
+}
+.button_pseudo:not(img):hover {
+  background-color: rgba(65,86,128,1); /* #415680 */
+}
 
 
-
+img.button_pseudo {
+  filter: alpha(Opacity=50);
+  opacity: 0.5;
+}
+img.button_pseudo:hover {
+  filter: alpha(Opacity=75);
+  opacity: 0.75;
+}
+img.button_pseudo.button_pseudo_pressed {
+  filter: alpha(Opacity=100);
+  opacity: 1;
+}
 
 
 
@@ -414,18 +448,6 @@ only screen and (min-device-pixel-ratio : 1.5) {
   margin: 0.5em;
 }
 
-.mission_button_image {
-  border: 0.2em solid #344566;
-  height: 5.818181818182rem;
-  width: 5.818181818182rem;
-}
-
-.mission_button_passive {
-  filter: alpha(Opacity=50);
-  opacity: 0.5;
-  border: 0;
-}
-
 
 #unit_info_extra_switch_wrapper {
   /*display: table-row-group;*/
@@ -625,6 +647,11 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   padding: 0.25em 0.5em 0.25em 0.5em;
   border: none;
 }
+
+#left_menu td a:hover, #left_menu th a:hover {
+  background-color: #415680;
+}
+
 #left_menu.MENU_NARROW_CELLS td, #left_menu.MENU_NARROW_CELLS th {
   min-height: 1.5em;
   padding: 0 0.5em;
@@ -1260,16 +1287,12 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   padding-top: 2ex;
 }
 
-.button_pseudo {
-  background-color: rgba(0,0,0,0.25);
-  border: 0.2em solid #415680;
-  border-radius: 0.3em;
-  margin: 0.3em;
-  padding: 0.5em 1em;
-  display: inline-block;
-  text-align: center;
+.mission_button_image {
+  height: 5.818181818182rem;
+  width: 5.818181818182rem;
 }
 
+/* Black market */
 .market_services {
   max-width: 20em;
   background-color: #344566;
@@ -1286,10 +1309,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   min-width: 15em;
 }
 
-.table_th {
-  background-color: #344566;
-}
-
-.table_td {
-  background-color: #344566;
+#market_trader .button_pseudo {
+  width: 10em;
 }

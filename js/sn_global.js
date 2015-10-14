@@ -49,7 +49,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     jQuery("button").button().addClass('ui-textfield');
     // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
 
-    calc_elements();
+    // calc_elements();
 
     // Запуск таймеров
     if (typeof(sn_timer) === 'function') {
@@ -534,23 +534,23 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     return false;
   }
 
-  var element_cache = new Object();
-
-  function calc_elements() {
-    if (element_cache['_IS_INIT']) {
-      return;
-    }
-
-    var all_elements = document.getElementsByTagName('*');
-
-    for (element in all_elements) {
-      if (all_elements[element].id != undefined) {
-        element_cache[all_elements[element].id] = all_elements[element];
-      }
-    }
-    element_cache['_IS_INIT'] = true;
-  }
-
+  //var element_cache = new Object();
+  //
+  //function calc_elements() {
+  //  if (element_cache['_IS_INIT']) {
+  //    return;
+  //  }
+  //
+  //  var all_elements = document.getElementsByTagName('*');
+  //
+  //  for (element in all_elements) {
+  //    if (all_elements[element].id != undefined) {
+  //      element_cache[all_elements[element].id] = all_elements[element];
+  //    }
+  //  }
+  //  element_cache['_IS_INIT'] = true;
+  //}
+  //
   var mouseX, mouseY;
   var clientX, clientY;
 

@@ -19,8 +19,8 @@ function changeMission(mission) {
 
   prev_mission = $(mission).val();
 
-  jQuery("img.mission_button_image:not(.mission_button_passive)").addClass('mission_button_passive');
-  jQuery("#mission_button" + prev_mission).removeClass('mission_button_passive');
+  jQuery("img.mission_button_image.button_pseudo_pressed").removeClass('button_pseudo_pressed');
+  jQuery("#mission_button" + prev_mission).addClass('button_pseudo_pressed');
 
   switch(prev_mission) {
     case '1': // Attack

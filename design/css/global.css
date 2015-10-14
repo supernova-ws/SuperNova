@@ -292,7 +292,7 @@ table {margin-left: auto; margin-right: auto}
 }
 
 .ok_bg, .success_bg, .positive_bg {
-  background-color: darkgreen;
+  background-color: #004400;
 }
 
 .notice_bg, .zero_bg, .neutral_bg {

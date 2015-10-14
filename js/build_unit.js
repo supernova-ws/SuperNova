@@ -118,7 +118,8 @@ jQuery(document).ready( function(e) {
     jQuery("[hide_no_fleet]").hide();
   }
 
-  eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
+  //eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
+  eco_bld_style_probe = $('#style_probe').css('border-top-color');
 
   production_id_first ? eco_struc_show_unit_info(production_id_first, true) : '';
 });

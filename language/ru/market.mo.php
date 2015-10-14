@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a13.11
+* @version 40a13.14
 * @condition clear
 *
 */
@@ -38,11 +38,12 @@ $a_lang_array = (array(
   'eco_mrk_trader_do' => 'Обменять ресурсы',
   'eco_mrk_trader' => 'Обмен ресурсов',
   'eco_mrk_trader_cost' => 'Стоимость обмена ресурсов',
-  'eco_mrk_trader_exchange' => 'Обмен',
+  'eco_mrk_trader_exchange' => 'Количество обмениваемых ресурсов',
   'eco_mrk_trader_to' => 'Обменять на',
   'eco_mrk_trader_course' => 'Курс',
-  'eco_mrk_trader_left' => 'Остаток',
+  'eco_mrk_trader_left' => 'Итог операции',
   'eco_mrk_trader_resources_all' => 'Все ресурсы',
+  'eco_mrk_trader_exchange_dm_confirm' => 'Вы точно хотите обменять {0} Тёмной Материи на ресурсы?',
 
   'eco_mrk_scraper_do' => 'Продать корабли скупщику',
   'eco_mrk_scraper' => 'Скупка кораблей',

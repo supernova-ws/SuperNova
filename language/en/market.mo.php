@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a13.11
+* @version 40a13.14
 * @condition clear
 *
 */
@@ -42,8 +42,9 @@ $a_lang_array = (array(
   'eco_mrk_trader_exchange' => 'Exchange',
   'eco_mrk_trader_to' => 'Exchanged for',
   'eco_mrk_trader_course' => 'Course',
-  'eco_mrk_trader_left' => 'Balance',
+  'eco_mrk_trader_left' => 'Exchange result',
   'eco_mrk_trader_resources_all' => 'All resources',
+  'eco_mrk_trader_exchange_dm_confirm' => 'Are you sure that you want to trade {0} Dark Matter for resources?',
 
   'eco_mrk_scraper_do' => 'Scrap ships for resources',
   'eco_mrk_scraper' => 'Scrap ships for resources',

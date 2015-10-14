@@ -1,12 +1,10 @@
 <?php
 
-if((!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) && (!defined('SN_IN_ALLY') || SN_IN_ALLY !== true))
-{
+if((!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) && (!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)) {
   $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
 }
 
-function eco_mrk_trader($user, $planetrow = null)
-{
+function eco_mrk_trader($user, $planetrow = null) {
   global $debug, $mode;
   // global $lang;
 
@@ -29,54 +27,41 @@ function eco_mrk_trader($user, $planetrow = null)
 
   // $dm_db_name = pname_resource_name(RES_DARK_MATTER);
   $exchangeTo = in_array($exchangeTo = sys_get_param_int('exchangeTo'), sn_get_groups('resources_trader')) ? $exchangeTo : 0;
-  if($exchangeTo && is_array($tradeList = $_POST['spend']))
-  {
+  if($exchangeTo && is_array($tradeList = $_POST['spend'])) {
     $value = 0;
     $qry = array();
 
     sn_db_transaction_start();
-    if($planetrow['id_owner'])
-    {
+    if($planetrow['id_owner']) {
       $global_data = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
       $planetrow = $global_data['planet'];
     }
-    else
-    {
+    else {
       // Locking user record
       $user = db_user_by_id($user['id'], true);
     }
 
-    foreach(sn_get_groups('resources_trader') as $resource_id)
-    {
+    foreach(sn_get_groups('resources_trader') as $resource_id) {
       $amount = floatval($tradeList[$resource_id]);
-      if($amount < 0)
-      {
+      if($amount < 0) {
         $debug->error('Trying to supply negative resource amount on Black Market Page', 'Hack Attempt', 305);
       }
 
-      if($resource_id == RES_DARK_MATTER && $exchangeTo == RES_DARK_MATTER)
-      {
+      if($resource_id == RES_DARK_MATTER && $exchangeTo == RES_DARK_MATTER) {
         continue;
       }
 
       $resource_db_name = pname_resource_name($resource_id);
-      if($exchangeTo == RES_DARK_MATTER)
-      {
+      if($exchangeTo == RES_DARK_MATTER) {
         $sign = '+';
         $amount = floor($tradeList[RES_DARK_MATTER] / 3 * $rates[RES_DARK_MATTER] / $rates[$resource_id]);
         $value += $amount;
-      }
-      else
-      {
+      } else {
         $value += floor($amount * $rates[$resource_id] / $rates[$exchangeTo]);
-        if($resource_id == RES_DARK_MATTER)
-        {
+        if($resource_id == RES_DARK_MATTER) {
           $amount = 0;
-        }
-        else
-        {
-          if(mrc_get_level($user, $planetrow, $resource_id, true) < $amount)
-          {
+        } else {
+          if(mrc_get_level($user, $planetrow, $resource_id, true) < $amount) {
             $intError = MARKET_NO_RESOURCES;
             break;
           }
@@ -85,14 +70,12 @@ function eco_mrk_trader($user, $planetrow = null)
         }
       }
 
-      if($amount)
-      {
+      if($amount) {
         $qry[] = "`{$resource_db_name}` = `{$resource_db_name}` {$sign} {$amount}";
       }
     }
 
-    if($exchangeTo != RES_DARK_MATTER)
-    {
+    if($exchangeTo != RES_DARK_MATTER) {
       $amount = floor($value);
       $exchange_to_db_name = pname_resource_name($exchangeTo);
       $qry[] = "`{$exchange_to_db_name}` = `{$exchange_to_db_name}` + {$amount}";
@@ -103,8 +86,7 @@ function eco_mrk_trader($user, $planetrow = null)
     $intError = $value <= 0 ? MARKET_ZERO_DEAL : $intError;
     $intError = mrc_get_level($user, null, RES_DARK_MATTER) < $operation_cost ? MARKET_NO_DM : $intError;
 
-    if($intError == MARKET_DEAL)
-    {
+    if($intError == MARKET_DEAL) {
       $qry = implode(', ', $qry);
       $table = $planetrow['id_owner'] ? 'planets' : 'users';
 
@@ -126,17 +108,13 @@ function eco_mrk_trader($user, $planetrow = null)
   }
 
   $template->assign_vars(array(
-    'exchangeTo' => $exchangeTo,
+    'EXCHANGE_TO_RESOURCE_ID' => $exchangeTo,
   ));
 
-  foreach(sn_get_groups('resources_trader') as $resource_id)
-  {
-    if($resource_id == RES_DARK_MATTER)
-    {
+  foreach(sn_get_groups('resources_trader') as $resource_id) {
+    if($resource_id == RES_DARK_MATTER) {
       $amount = floor(mrc_get_level($user, null, RES_DARK_MATTER) - $config->rpg_cost_trader);
-    }
-    else
-    {
+    } else {
       $amount = floor(mrc_get_level($user, $planetrow, $resource_id));
     }
 

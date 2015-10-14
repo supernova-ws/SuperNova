@@ -37,10 +37,10 @@ if($_POST['submit'] || $execute)
 
   $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
   sn_ube_combat($combat_data);
-  if(!sys_get_param_int('simulator') || sys_get_param_str('reload'))
-  {
-    sn_ube_report_save($combat_data);
-  }
+  // Это используется для тестов - отключено в стандартном режиме
+//  if(!sys_get_param_int('simulator') || sys_get_param_str('reload')) {
+//    sn_ube_report_save($combat_data);
+//  }
 
   if(sys_get_param_str('reload'))
   {
