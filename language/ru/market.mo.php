@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a3.9
+* @version 40a13.11
 * @condition clear
 *
 */
@@ -35,6 +35,7 @@ $a_lang_array = (array(
   'eco_mrk_service' => 'Услуга',
   'eco_mrk_service_cost' => 'Стоимость услуги',
 
+  'eco_mrk_trader_do' => 'Обменять ресурсы',
   'eco_mrk_trader' => 'Обмен ресурсов',
   'eco_mrk_trader_cost' => 'Стоимость обмена ресурсов',
   'eco_mrk_trader_exchange' => 'Обмен',
@@ -43,6 +44,7 @@ $a_lang_array = (array(
   'eco_mrk_trader_left' => 'Остаток',
   'eco_mrk_trader_resources_all' => 'Все ресурсы',
 
+  'eco_mrk_scraper_do' => 'Продать корабли скупщику',
   'eco_mrk_scraper' => 'Скупка кораблей',
   'eco_mrk_scraper_price' => 'Выход лома',
   'eco_mrk_scraper_perShip' => 'с корабля',
@@ -54,6 +56,7 @@ $a_lang_array = (array(
   'eco_mrk_scraper_ships' => 'Пущены на лом следующие корабли:',
   'eco_mrk_scraper_noShip' => 'На орбите нет кораблей',
 
+  'eco_mrk_stockman_do' => 'Купить корабли у скупщика',
   'eco_mrk_stockman' => 'Продавец б/у кораблей',
   'eco_mrk_stockman_price' => 'Цена',
   'eco_mrk_stockman_perShip' => 'корабля',
@@ -67,6 +70,7 @@ $a_lang_array = (array(
   'eco_mrk_banker'   => 'Банкир',
   'eco_mrk_pawnshop' => 'Ломбард',
 
+  'eco_mrk_info_do' => 'Купить информацию',
   'eco_mrk_info' => 'Продавец информации',
   'eco_mrk_info_description' => 'Во входящем почтовом ящике обнаружилось письмо со следующим содержанием:',
   'eco_mrk_info_description_2' => 'У меня есть доступ ко множеству интересной информации. Я могу поделиться ею с вами... за скромное вознаграждение. За один запрос - всего',

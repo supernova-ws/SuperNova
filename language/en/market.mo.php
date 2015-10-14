@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a3.9
+* @version 40a13.11
 * @condition clear
 *
 */
@@ -36,7 +36,8 @@ $a_lang_array = (array(
   'eco_mrk_service' => 'Service',
   'eco_mrk_service_cost' => 'Serivce cost',
 
-  'eco_mrk_trader' => 'Trade resources',
+  'eco_mrk_trader_do' => 'Exchange resources',
+  'eco_mrk_trader' => 'Exchange resources',
   'eco_mrk_trader_cost' => 'Cost sharing resources',
   'eco_mrk_trader_exchange' => 'Exchange',
   'eco_mrk_trader_to' => 'Exchanged for',
@@ -44,7 +45,8 @@ $a_lang_array = (array(
   'eco_mrk_trader_left' => 'Balance',
   'eco_mrk_trader_resources_all' => 'All resources',
 
-  'eco_mrk_scraper' => 'Reworked ships for scrap',
+  'eco_mrk_scraper_do' => 'Scrap ships for resources',
+  'eco_mrk_scraper' => 'Scrap ships for resources',
   'eco_mrk_scraper_price' => 'Scrap output',
   'eco_mrk_scraper_perShip' => 'from ship',
   'eco_mrk_scraper_total' => 'Total',
@@ -55,6 +57,7 @@ $a_lang_array = (array(
   'eco_mrk_scraper_ships' => 'Put the following ships for scrap:',
   'eco_mrk_scraper_noShip' => 'There spacecrafts in orbit',
 
+  'eco_mrk_stockman_do' => 'Buy s/h ships',
   'eco_mrk_stockman' => 'Buy s/h ships',
   'eco_mrk_stockman_price' => 'Price',
   'eco_mrk_stockman_perShip' => 'Ship',
@@ -68,6 +71,7 @@ $a_lang_array = (array(
   'eco_mrk_banker' => 'Banker',
   'eco_mrk_pawnshop' => 'Pawnshop',
 
+  'eco_mrk_info_do' => 'Buy information',
   'eco_mrk_info' => 'Infotrader',
   'eco_mrk_info_description' => 'You discover in your inbox letter from unknown source. It says exactly:',
   'eco_mrk_info_description_2' => 'I have access to plenty of interest information. I can share it with your... for a reward, of course. On request will cost you only',

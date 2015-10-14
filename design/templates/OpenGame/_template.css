@@ -1259,3 +1259,37 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #copyright, #copyright #supernova_ws {
   padding-top: 2ex;
 }
+
+.button_pseudo {
+  background-color: rgba(0,0,0,0.25);
+  border: 0.2em solid #415680;
+  border-radius: 0.3em;
+  margin: 0.3em;
+  padding: 0.5em 1em;
+  display: inline-block;
+  text-align: center;
+}
+
+.market_services {
+  max-width: 20em;
+  background-color: #344566;
+  width: 100%;
+  padding: 0.5em;
+}
+
+.market_services div:first-child {
+  text-align: justify;
+  margin-bottom: 1em;
+}
+
+.market_services .button_pseudo {
+  min-width: 15em;
+}
+
+.table_th {
+  background-color: #344566;
+}
+
+.table_td {
+  background-color: #344566;
+}
