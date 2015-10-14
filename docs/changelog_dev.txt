@@ -252,9 +252,6 @@ player_create()
 
 Почистить обращения к спецфункциям БД - и поубирать их нафиг
 
-Убрать переменную $microtime - это на самом деле SN_TIME_MICRO
-Убрать $phpEx - это либо PHP_EX либо DOT_PHP_EX
-
 
 Как мержить аккаунты - см. в описании
 
@@ -429,6 +426,8 @@ TODO - Проверять не просто емейл - а LOWER(EMAIL)!!!!
 
 ВКОНТАКТЕ: // TODO - добавить ограничение на количество запросов в секунду
 
+Javascript
+    D_переменные в JS - просто в переменные
 
 Поменять везде utf8_general_ci на utf8_unicode_ci
     The cost of utf8_unicode_ci is that it is a little bit slower than utf8_general_ci. But that’s the price you pay for correctness.
@@ -501,31 +500,34 @@ https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queri
 Вычесть одно GMT из другого - а затем просто прибавлять это число в JS - без коррекции пояса. Так мы получим GMT на клиенте из GMT на сервере
 А затем просто инициализируем JS с корректированной УТЦ-датой
 
-Javascript
-    localTime -> timeLocal
-    var TIME_NOW = {D_SN_TIME_NOW}; -> SN_TIME_NOW
-    var D_SN_TIME_NOW = {D_SN_TIME_NOW}; -> SN_TIME_NOW
-
-user_time_diff_probe -> class
-user_time_diff_get -> class
-user_time_diff_set -> class
-
 playerTimeDiff - доработать
-
-D_переменные в JS - просто в переменные
 
 time_probe - возвращать JSon, сделать запрос синхронным с паузой в браузере, инициировать все переменные заново
 
--localTime.getTimezoneOffset() * 60 - пофиксить
+-timeBrowser.getTimezoneOffset() * 60 - пофиксить
 
-$microtime - убрать
-sn_benchmark() - убрать
+Убрать $phpEx - это либо PHP_EX либо DOT_PHP_EX
 
-JS serverTime - убрать. Или переименовать в timeServer и высчитывать
+JS timeTimerStart - это на самом деле timeServerCorrected, т.е. сколько времени сейчас на сервере, но в часовом поясе браузера и с коррекцией хода часов!
 
-#ctv
+2015-10-14 03:06:41 40a13.10
+[#] chat_advanced 5c6
+    (@) Код
+        $microtime заменен на SN_TIME_MICRO
 
+[~] Таймеры
+    Объявление таймера в темплейте:
+        - Свойства таймера 'active' и 'start_time' теперь устанавливается в sn_timer_prepare() - соответственно они убраны из обновления
+        - Тип таймера объявляется через соответствующую константу TIMER_xxx
 
+[@] Код
+    PHP
+        - Во всём коде $microtime заменён на SN_TIME_MICRO
+    JavaScript
+        - localTime переименован в timeBrowser
+        - Убрана переменная TIME_NOW
+    Из темплейтов убрана переменная TIME_NOW
+    Почищен и упорядочен код
 
 2015-10-14 01:35:55 40a13.8
 [+] Таймеры

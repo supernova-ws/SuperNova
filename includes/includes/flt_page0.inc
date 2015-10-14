@@ -78,8 +78,6 @@ foreach($lang['player_option_fleet_ship_sort'] as $sort_id => $sort_text) {
 }
 
 $template->assign_vars(array(
-  'TIME_NOW'           => SN_TIME_NOW,
-
   'FLEET_SHIP_SORT' => $fleet_ship_sort,
   'FLEET_SHIP_SORT_INVERSE' => $fleet_ship_sort_inverse,
 

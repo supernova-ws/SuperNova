@@ -107,7 +107,6 @@ $template->assign_vars(array(
   'SURVEY_QUESTION' => $announce['survey_question'],
   'SURVEY_UNTIL' => $announce['survey_until'],
   'SURVEY_ANSWERS'  => $survey_answers,
-  'time_now'        => SN_TIME_NOW,
 ));
 
 display($template, $lang['news_title']);

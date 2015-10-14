@@ -1220,33 +1220,6 @@ function array_merge_recursive_numeric($array1, $array2) {
   return $array1;
 }
 
-/*
- * Простенький бенчмарк
- */
-function sn_benchmark($message = '', $commented = true)
-{
-  static $microtime, $memory;
-
-  if(!$microtime)
-  {
-    $microtime = SN_TIME_MICRO;
-    $memory = SN_MEM_START;
-  }
-
-  $microtime_now = microtime(true);
-  $memory_now = memory_get_usage();
-
-  print("\r\n");
-  if($commented)print("<!--\r\n");
-  print('!BENCHMARK! ' . $message . "\r\n");
-  print('Time: ' . round($microtime_now - $microtime, 5) . '/' . round($microtime_now - SN_TIME_MICRO, 5) . "\r\n");
-  print("Memory: " . number_format($memory_now - $memory) . '/' . number_format($memory_now - SN_MEM_START) . "\r\n");
-  if($commented)print("-->\r\n");
-
-  $microtime = $microtime_now;
-  $memory = $memory_now;
-}
-
 function sn_sys_array_cumulative_sum(&$array)
 {
   $accum = 0;
@@ -1628,53 +1601,3 @@ function sec_player_ip() {
 
   return array_map('db_escape', $ip);
 }
-
-
-
-//function user_time_diff_get() {
-//  $result = !empty($_COOKIE[SN_COOKIE_T]) ? explode(';', $_COOKIE[SN_COOKIE_T]) : null;
-//  $result = array(
-//    PLAYER_OPTION_TIME_DIFF => isset($result[PLAYER_OPTION_TIME_DIFF]) ? $result[PLAYER_OPTION_TIME_DIFF] : '',
-//    PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => isset($result[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]) ? $result[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET] : 0,
-//    PLAYER_OPTION_TIME_DIFF_FORCED => isset($result[PLAYER_OPTION_TIME_DIFF_FORCED]) ? $result[PLAYER_OPTION_TIME_DIFF_FORCED] : 0,
-//    PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => isset($result[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? $result[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME] : '2010-01-01',
-//  );
-//  return $result;
-//}
-//function user_time_diff_set($user_time_diff) {
-//  // Переопределяем массив, что бы элементы были в правильном порядке
-//  $user_time_diff = array(
-//    PLAYER_OPTION_TIME_DIFF => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF] : '',
-//    PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF_UTC_OFFSET] : 0,
-//    PLAYER_OPTION_TIME_DIFF_FORCED => isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED]) ? $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED] : 0,
-//    PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-//  );
-//
-//  $user_time_diff_str = implode(';', $user_time_diff);
-//  sn_setcookie(SN_COOKIE_T, $user_time_diff_str, SN_TIME_NOW + PERIOD_MONTH);
-//}
-//function user_time_diff_probe() {
-//  // Определяем время в браузере
-//  $client_time = strtotime(sys_get_param('client_gmt')); // Попытка определить по GMT-времени браузера. В нём будет часовой пояс (GMT), поэтому время будет автоматически преобразовано в часовой пояс сервера
-//  !$client_time ? $client_time = round(sys_get_param_float('localtime') / 1000) : false; // Попытка определить по Date.valueOf() - миллисекунды с начала эпохи UNIX_TIME
-//  !$client_time ? $client_time = SN_TIME_NOW : false; // Если все попытки провалились - тупо берем время сервера
-//
-////  TODO - REMOVE
-////  !($client_time = strtotime(sys_get_param('client_gmt'))) // Время в браузере определяется через GMT
-////    ? (!($client_time = sys_get_param_float('localtime') / 1000)
-////        ? $client_time = SN_TIME_NOW : false)
-////    : false;
-////  !($client_time = strtotime(sys_get_param('client_gmt'))) // Время в браузере определяется через GMT
-////    ? $client_time = SN_TIME_NOW
-////    : false;
-//
-//  $result = array(
-////    PLAYER_OPTION_TIME_DIFF => ($time_local = sys_get_param_float('localtime')) ? round($time_local / 1000 - SN_TIME_MICRO) : 0, // Работающий код при учете того, что в JS используется localTime
-//    PLAYER_OPTION_TIME_DIFF => $client_time - SN_TIME_NOW,
-//    PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => ($time_local_utc_offset = sys_get_param_int('utc_offset')) ? $time_local_utc_offset - date('Z') : 0,
-//    PLAYER_OPTION_TIME_DIFF_FORCED => sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),
-//    PLAYER_OPTION_TIME_DIFF_MEASURE_TIME => SN_TIME_SQL,
-//  );
-//
-//  return $result;
-//}

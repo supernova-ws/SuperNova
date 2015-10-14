@@ -30,10 +30,7 @@ define('INIT', true);
 !defined('INSTALL') ? define('INSTALL', false) : false;
 !defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
 
-global $microtime, $phpEx, $sn_root_physical, $phpbb_root_path; // Это нужно для работы PTL
-
-$microtime = SN_TIME_MICRO;
-
+global $phpEx, $sn_root_physical, $phpbb_root_path; // Это нужно для работы PTL
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
 define('SN_TIME_ZONE_OFFSET', date('Z'));
 

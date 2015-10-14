@@ -112,7 +112,6 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
       'GATE_JUMP_REST_TIME' => uni_get_time_to_jump($planetrow),
       'gate_start_name' => $planetrow['name'],
       'gate_start_link' => uni_render_coordinates_href($planetrow, '', 3),
-      'TIME_NOW' => SN_TIME_NOW,
     ));
 
     display($template, $lang['tech'][STRUC_MOON_GATE]);

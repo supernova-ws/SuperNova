@@ -1,7 +1,7 @@
 <?php
 
 // ------------------------------------------------------------------------------------------------------------------------------
-function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false) {
+function sn_sys_load_php_files($dir_name, $load_extension = 'php', $modules = false) {
   if(file_exists($dir_name)) {
     $dir = opendir($dir_name);
     while(($file = readdir($dir)) !== false) {
@@ -11,7 +11,7 @@ function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false) {
 
       $full_filename = $dir_name . $file;
       if($modules && is_dir($full_filename)) {
-        if(file_exists($full_filename = "{$full_filename}/{$file}.{$phpEx}")) {
+        if(file_exists($full_filename = "{$full_filename}/{$file}.{$load_extension}")) {
           require_once($full_filename);
           // Registering module
           if(class_exists($file)) {
@@ -19,8 +19,8 @@ function sn_sys_load_php_files($dir_name, $phpEx = 'php', $modules = false) {
           }
         }
       } else {
-        $extension = substr($full_filename, -strlen($phpEx));
-        if($extension == $phpEx) {
+        $extension = substr($full_filename, -strlen($load_extension));
+        if($extension == $load_extension) {
           require_once($full_filename);
         }
       }

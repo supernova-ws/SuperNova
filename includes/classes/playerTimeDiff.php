@@ -33,12 +33,12 @@ class playerTimeDiff {
   static function user_time_diff_probe() {
     // Определяем время в браузере
     $client_time = strtotime(sys_get_param('client_gmt')); // Попытка определить по GMT-времени браузера. В нём будет часовой пояс (GMT), поэтому время будет автоматически преобразовано в часовой пояс сервера
-    !$client_time ? $client_time = round(sys_get_param_float('localtime') / 1000) : false; // Попытка определить по Date.valueOf() - миллисекунды с начала эпохи UNIX_TIME
+    !$client_time ? $client_time = round(sys_get_param_float('timeBrowser') / 1000) : false; // Попытка определить по Date.valueOf() - миллисекунды с начала эпохи UNIX_TIME
     !$client_time ? $client_time = SN_TIME_NOW : false; // Если все попытки провалились - тупо берем время сервера
 
 //  TODO - REMOVE
 //  !($client_time = strtotime(sys_get_param('client_gmt'))) // Время в браузере определяется через GMT
-//    ? (!($client_time = sys_get_param_float('localtime') / 1000)
+//    ? (!($client_time = sys_get_param_float('timeBrowser') / 1000)
 //        ? $client_time = SN_TIME_NOW : false)
 //    : false;
 //  !($client_time = strtotime(sys_get_param('client_gmt'))) // Время в браузере определяется через GMT
@@ -47,7 +47,7 @@ class playerTimeDiff {
 
     $result = array(
 //    TODO - REMOVE
-//    PLAYER_OPTION_TIME_DIFF => ($time_local = sys_get_param_float('localtime')) ? round($time_local / 1000 - SN_TIME_MICRO) : 0, // Работающий код при учете того, что в JS используется localTime
+//    PLAYER_OPTION_TIME_DIFF => ($time_local = sys_get_param_float('timeBrowser')) ? round($time_local / 1000 - SN_TIME_MICRO) : 0, // Работающий код при учете того, что в JS используется timeBrowser
       PLAYER_OPTION_TIME_DIFF => $client_time - SN_TIME_NOW,
       PLAYER_OPTION_TIME_DIFF_UTC_OFFSET => ($browser_utc_offset = sys_get_param_int('utc_offset')) ? $browser_utc_offset - date('Z') : 0,
       PLAYER_OPTION_TIME_DIFF_FORCED => sys_get_param_int('PLAYER_OPTION_TIME_DIFF_FORCED'),

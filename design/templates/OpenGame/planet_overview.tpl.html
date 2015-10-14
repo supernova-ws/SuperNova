@@ -101,7 +101,7 @@
                 <!-- IF GATE_JUMP_REST_TIME -->
                   {L_ov_gate_time_left} <span  id="gate_jump_time" class="error"></span>
                   <script type="text/javascript"><!--
-                    sn_timers.unshift({id: 'gate_jump_time', type: 0, active: true, start_time: '{TIME_NOW}', options: {
+                    sn_timers.unshift({id: 'gate_jump_time', type: TIMER_BUILD_QUE_V1, options: {
                       msg_done: '{L_gate_ready}',
                       que: [
                         ['1', '', {GATE_JUMP_REST_TIME}, '1']

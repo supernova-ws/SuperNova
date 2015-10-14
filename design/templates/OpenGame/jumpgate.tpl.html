@@ -23,7 +23,7 @@ function max_fleet()
         <!-- IF GATE_JUMP_REST_TIME -->
           <span id="jump_gate_timer"></span>
           <script type="text/javascript"><!--
-            sn_timers.unshift({id: 'jump_gate_timer', type: 0, active: true, start_time: '{TIME_NOW}', options: {msg_done: '', que: [['1', '', {GATE_JUMP_REST_TIME}, '1']]}});
+            sn_timers.unshift({id: 'jump_gate_timer', type: TIMER_BUILD_QUE_V1, options: {msg_done: '', que: [['1', '', {GATE_JUMP_REST_TIME}, '1']]}});
           // --></script>
         <!-- ENDIF -->
       </td>

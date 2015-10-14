@@ -259,7 +259,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
     'FONT_SIZE'                => $font_size,
 
-    'TIME_NOW'                 => SN_TIME_NOW,
+    'SN_TIME_NOW'              => SN_TIME_NOW,
     'LOGIN_LOGOUT'             => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
     'GAME_MODE_CSS_PREFIX'     => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
     //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
@@ -330,14 +330,12 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $template = gettemplate('_global_footer', true);
   $template->assign_vars(array(
     'ADMIN_EMAIL' => $config->game_adminEmail,
-    'TIME_NOW' => SN_TIME_NOW,
+    'SN_TIME_NOW' => SN_TIME_NOW,
     'SN_VERSION'  => SN_VERSION,
   ));
   displayP(parsetemplate($template));
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
-
-  // sn_benchmark();
 
   sn_db_disconnect();
 
@@ -574,6 +572,12 @@ function displayP($template) {
   }
 }
 
+/**
+ * @param template $template
+ * @param bool|false $array
+ *
+ * @return mixed
+ */
 function parsetemplate($template, $array = false) {
   if(is_object($template)) {
     global $user;
@@ -588,7 +592,7 @@ function parsetemplate($template, $array = false) {
 
     $template->assign_vars(array(
       'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      'TIME_NOW'      => SN_TIME_NOW,
+      'SN_TIME_NOW'   => SN_TIME_NOW,
       'USER_AUTHLEVEL'=> isset($user['authlevel']) ? $user['authlevel'] : -1,
       'SN_GOOGLE'     => defined('SN_GOOGLE'),
     ));

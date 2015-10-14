@@ -60,8 +60,6 @@ if($MaxExpeditions) {
 $fleet_flying_amount = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}';", '', true);
 
 $template->assign_vars(array(
-  'TIME_NOW'           => SN_TIME_NOW,
-
   'FLEETS_FLYING'      => $fleet_flying_amount['flying_fleets'],
   'FLEETS_MAX'         => GetMaxFleets($user),
   'EXPEDITIONS_FLYING' => $FlyingExpeditions,

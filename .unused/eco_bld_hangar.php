@@ -137,7 +137,6 @@ function eco_bld_hangar($que_type, $user, &$planet)
     'MODE'       => $que_type,
 
     'QUE_ID'     => $que_type,
-    'TIME_NOW'   => SN_TIME_NOW,
     'HANGAR_BUSY' => eco_hangar_is_building($que),
     'QUE_HAS_PLACE' => empty($que) || count($que) < que_get_max_que_length($user, $planet, $que_type),
   ));

@@ -425,7 +425,7 @@ function sn_options_view($template = null) {
     'VACATION_NEXT' => $user['vacation_next'],
     'VACATION_NEXT_TEXT' => date(FMT_DATE_TIME, $user['vacation_next']),
     'VACATION_TIMEOUT' => $user['vacation_next'] - SN_TIME_NOW > 0 ? $user['vacation_next'] - SN_TIME_NOW : 0,
-    'TIME_NOW' => SN_TIME_NOW,
+    'SN_TIME_NOW' => SN_TIME_NOW,
 
     'SERVER_SEND_EMAIL' => $config->game_email_pm,
 

@@ -106,10 +106,10 @@ var ships = Array();
       </th>
     </tr>
     <script type="text/javascript"><!--
-      sn_timers.unshift({id: 'fleet_timer_start{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_fleet_arrived}', que: [
+      sn_timers.unshift({id: 'fleet_timer_start{fleets.ID}', type: TIMER_BUILD_QUE_V1, options: { msg_done: '{L_sys_fleet_arrived}', que: [
         ['{fleets.ID}', '', {fleets.START_LEFT}, '0']
       ]}});
-      sn_timers.unshift({id: 'fleet_timer_end{fleets.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_fleet_arrived}', que: [
+      sn_timers.unshift({id: 'fleet_timer_end{fleets.ID}', type: TIMER_BUILD_QUE_V1, options: { msg_done: '{L_sys_fleet_arrived}', que: [
         ['{fleets.ID}', '', {fleets.END_LEFT}, '0']
       ]}});
     --></script>

@@ -149,7 +149,7 @@
         <div id="ov_building{planet.ID}_timer" style="color: darkgrey;"></div>
 
         <script type='text/javascript'>
-          sn_timers.unshift({id: 'ov_building{planet.ID}', type: 0, active: true, start_time: {TIME_NOW}, options: { msg_done: '{L_sys_no_task}', que: [
+          sn_timers.unshift({id: 'ov_building{planet.ID}', type: TIMER_BUILD_QUE_V1, options: { msg_done: '{L_sys_no_task}', que: [
             <!-- BEGIN building_que -->['{building_que.ID}', '{building_que.NAME} ({building_que.LEVEL})', {building_que.TIME}, '{building_que.AMOUNT}'],<!-- END building_que -->
           ]}});
         </script>

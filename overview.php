@@ -402,8 +402,6 @@ switch($mode = sys_get_param_str('mode')) {
     $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
     $governor_level = $planetrow['PLANET_GOVERNOR_ID'] ? mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID'], false, true) : 0;
     $template->assign_vars(array(
-      'TIME_NOW'              => SN_TIME_NOW,
-
       'USER_ID'               => $user['id'],
       'user_username'         => $user['username'],
       'USER_AUTHLEVEL'        => $user['authlevel'],

@@ -1,7 +1,6 @@
 if(window.LOADED_TIMER === undefined) {
   var LOADED_TIMER = true;
   /*
-
    SuperNova JavaScript timer system
 
    1.6 - copyright (c) 2010-2011 by Gorlum for http://supernova.ws
@@ -115,17 +114,13 @@ if(window.LOADED_TIMER === undefined) {
         continue;
       }
 
-
       timer = sn_timers[timerID];
-      if (timer['active'] === undefined || timer['type'] === undefined) {
+      timer['start_time'] = timeTimerStart; // new Date((SN_TIME_NOW - timeDiff ) * 1000  );
+      if (timer['type'] === undefined) {
         timer['active'] = false;
-      }
-
-      if (!timer['active']) {
         continue;
       }
-
-      timer['start_time'] = timeTimerStart; // new Date((D_SN_TIME_NOW - timeDiff ) * 1000  );
+      timer['active'] = true;
 
       // Кэшируем DOM-ики
       timer['html_main'] = $("#" + timer['id']);
@@ -358,7 +353,7 @@ if(window.LOADED_TIMER === undefined) {
             if(!timer['html_finish'].already_tagged && timer['html_finish'].length) {
               // Дата окончания постройки текущего юнита
               timer['html_finish'].html(snDateToString(
-                new Date(localTime.valueOf() + (timeLeft + timer_options['total']) * 1000), 7
+                new Date(timeBrowser.valueOf() + (timeLeft + timer_options['total']) * 1000), 7
               ));
               timer['html_finish'].already_tagged = true;
             }
@@ -412,7 +407,7 @@ if(window.LOADED_TIMER === undefined) {
           // Event que in title (NavBar for now)
           hintText = '';
 
-          if (timer_options['que'].length && timer_options['que'][0][EVENT_TIME] <= timeSinceLastUpdate) { // TODO - проверить. Может тут ошибка - генерятся длительности не от TIME_NOW, а дельты
+          if (timer_options['que'].length && timer_options['que'][0][EVENT_TIME] <= timeSinceLastUpdate) { // TODO - проверить. Может тут ошибка - генерятся длительности не от SN_TIME_NOW, а дельты
             //timer['start_time'] = timestamp_server; // TODO - а вот это тогда всё исправит
             timer_options['que'].shift();
             timer_options['changed'] = true;

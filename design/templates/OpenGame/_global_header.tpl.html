@@ -44,7 +44,7 @@
   <body class="style" style="max-height: 10000000em">
     <script type="text/javascript">
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
-      var localTime = new Date();
+      var timeBrowser = new Date();
 
       var SN_SOUND_ENABLED = parseInt('{SOUND_ENABLED}') ? parseInt('{SOUND_ENABLED}') : 0;
       var PLAYER_OPTION_ANIMATION_DISABLED = parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') ? parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') : 0;
@@ -55,23 +55,17 @@
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
     <script type="text/javascript">
       jQuery.fx.off = PLAYER_OPTION_ANIMATION_DISABLED;
+
       // Корректировка по времени запроса - если доступно
-      // var localTime = window.performance ? localTime = new Date(window.performance.timing.requestStart) : new Date();
-      // var localTime = window.performance ? localTime = new Date(window.performance.timing.responseStart) : new Date();
-      var timeDiff;
+      // var timeBrowser = window.performance ? timeBrowser = new Date(window.performance.timing.requestStart) : new Date();
+      // var timeBrowser = window.performance ? timeBrowser = new Date(window.performance.timing.responseStart) : new Date();
+
       // С сервера ВСЕГДА должна передаваться РАЗНИЦА во времени - что бы корректно работали скрипты при навигации вперед-назад по страницам в браузерах!
-      if(!(timeDiff = parseInt('{D_SN_CLIENT_TIME_DIFF}'))) {
-        timeDiff = false;
-      }
+      var timeDiff = parseInt('{D_SN_CLIENT_TIME_DIFF}') ? parseInt('{D_SN_CLIENT_TIME_DIFF}') : false;
 
-      var serverTime = new Date(parseFloat('{D_SN_TIME_MICRO}') * 1000);
-      var TIME_NOW = parseInt('{D_SN_TIME_NOW}') ? parseInt('{D_SN_TIME_NOW}') : (round(localTime.valueOf() / 1000));
-      var D_SN_TIME_NOW = parseInt('{D_SN_TIME_NOW}') ? parseInt('{D_SN_TIME_NOW}') : (round(localTime.valueOf() / 1000));
-//      var timeDiffSecondsMicro = localTime.valueOf() - serverTime.valueOf();
-//      var timeDiff = Math.round((localTime.valueOf()) / 1000 - '{D_SN_TIME_MICRO}')
-//              - localTime.getTimezoneOffset() * 60 - '{D_SN_TIME_ZONE_OFFSET}';
+      var SN_TIME_NOW = parseInt('{D_SN_TIME_NOW}') ? parseInt('{D_SN_TIME_NOW}') : (round(timeBrowser.valueOf() / 1000));
 
-      var timeTimerStart = localTime;
+      var timeTimerStart = timeBrowser;
 
 //      var SN_TIME_NOW_GMT_STRING = '{SN_TIME_NOW_GMT_STRING}';
 //      var SN_CLIENT_TIME_DIFF_GMT = parseInt('{SN_CLIENT_TIME_DIFF_GMT}') ? parseInt('{SN_CLIENT_TIME_DIFF_GMT}') : 0;
@@ -83,7 +77,7 @@
 
       if(parseInt('{TIME_DIFF_MEASURE}') || timeDiff === false) {
         timeDiff = 0;
-        jQuery.post("time_probe.php", {'localtime': localTime.valueOf(), 'utc_offset': -localTime.getTimezoneOffset() * 60, 'client_gmt': localTime.toUTCString()}, function(data) {
+        jQuery.post("time_probe.php", {'timeBrowser': timeBrowser.valueOf(), 'utc_offset': -timeBrowser.getTimezoneOffset() * 60, 'client_gmt': timeBrowser.toUTCString()}, function(data) {
           timeDiff = parseInt(data);
         });
       }

@@ -70,8 +70,4 @@ $fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
 //int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE fleet_end_galaxy = {$scan_galaxy} AND fleet_end_system = {$scan_system} AND fleet_end_planet = {$scan_planet};");
 tpl_assign_fleet($template, $fleets);
 
-$template->assign_vars(array(
-  'TIME_NOW'             => SN_TIME_NOW,
-));
-
 display($template, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);

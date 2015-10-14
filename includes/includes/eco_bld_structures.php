@@ -348,7 +348,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     'PAGE_HEADER'         => $page_header,
 
-    'TIME_NOW'           => SN_TIME_NOW,
     'PLN_ID'             => $planet['id'],
 
     'METAL'              => $planet['metal'],
