@@ -39,10 +39,7 @@
             <input id="resource_{resources.ID}" type="radio" name="exchangeTo"
                    style="display: none;"
                    class="frameless" value="{resources.ID}" <!-- IF resources.ID == EXCHANGE_TO_RESOURCE_ID -->checked <!-- ENDIF -->>
-
-            <!--<label for="resource_{resources.ID}">-->
-              {resources.NAME}
-            <!--</label>-->
+            {resources.NAME}
           </div>
           <div class="notice">{L_eco_mrk_trader_course} <span id="course{resources.ID}"></span></div>
         </td>
@@ -60,16 +57,6 @@
     <!-- END resources -->
 
     <tr><th class="c_c" colspan=4 align=center>
-      <script type="text/javascript">
-      </script>
-
-     <!--<div>-->
-        <!--<select name="exchangeTo" id="exchangeTo" onChange="eco_mrk_trader_recourse();">-->
-          <!--&lt;!&ndash; BEGIN resources &ndash;&gt;-->
-          <!--<option value="{resources.ID}">&lt;!&ndash; IF resources.ID == 905 &ndash;&gt;{L_eco_mrk_trader_resources_all}&lt;!&ndash; ELSE &ndash;&gt;{resources.NAME}&lt;!&ndash; ENDIF &ndash;&gt;</option>-->
-          <!--&lt;!&ndash; END resources &ndash;&gt;-->
-        <!--</select>-->
-     <!--</div> <br /><br/>-->
       <input type="submit" id="submit_trade" name="exchange" value="{L_eco_mrk_trader_do}" />
     </th></tr>
   </table>

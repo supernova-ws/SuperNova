@@ -57,7 +57,9 @@ jQuery(document).ready( function(e) {
       eco_struc_show_unit_info(jQuery(this).attr('unit_id'));
     })
     .on("mouseleave", "*[unit_id]", function(event, ui) {
-      eco_struc_unborder_unit(jQuery(this).attr('unit_id'));
+      // eco_struc_unborder_unit(jQuery(this).attr('unit_id'));
+      //unit_selected != jQuery(this).attr('unit_id') ? $('#unit' + jQuery(this).attr('unit_id')).removeClass('unit_border_selected') : false;
+      unit_selected != jQuery(this).attr('unit_id') ? jQuery(this).removeClass('unit_border_selected') : false;
     })
     .on("click", "*[unit_id]", function(event, ui) {
       eco_struc_select_unit(jQuery(this).attr('unit_id'));
@@ -118,8 +120,7 @@ jQuery(document).ready( function(e) {
     jQuery("[hide_no_fleet]").hide();
   }
 
-  //eco_bld_style_probe = sn_probe_style(element_cache['style_probe'], 'border-top-color');
-  eco_bld_style_probe = $('#style_probe').css('border-top-color');
+  // eco_bld_style_probe = $('#style_probe').css('border-top-color');
 
   production_id_first ? eco_struc_show_unit_info(production_id_first, true) : '';
 });
@@ -151,7 +152,8 @@ var bld_unit_info_width = 0;
 
 function eco_struc_show_unit_info(unit_id, no_color) {
   if(!no_color) {
-    document.getElementById('unit' + unit_id).style.borderColor = eco_bld_style_probe;
+    $('#unit' + unit_id).addClass('unit_border_selected');
+    //document.getElementById('unit' + unit_id).style.borderColor = eco_bld_style_probe;
   }
 
   if(unit_selected) {
@@ -337,7 +339,9 @@ function eco_struc_select_unit(unit_id) {
     unit_selected = null;
   } else {
     if(unit_selected) {
-      document.getElementById('unit' + unit_selected).style.borderColor="";
+      //document.getElementById('unit' + unit_selected).style.borderColor="";
+      $('#unit' + unit_selected).removeClass('unit_border_selected');
+
       unit_selected = null;
       eco_struc_show_unit_info(unit_id);
     }
@@ -346,8 +350,6 @@ function eco_struc_select_unit(unit_id) {
   }
 }
 
-function eco_struc_unborder_unit(unit_id) {
-  if(unit_selected != unit_id) {
-    document.getElementById('unit' + unit_id).style.borderColor="";
-  }
-}
+//function eco_struc_unborder_unit(unit_id) {
+//  unit_selected != unit_id ? $('#unit' + unit_id).removeClass('unit_border_selected') : false;
+//}

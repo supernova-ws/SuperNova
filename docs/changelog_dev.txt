@@ -456,12 +456,13 @@ $vkontakte_to_supernova_translation = $this->db->doquery("SELECT * FROM {{accoun
 
 
 
-Избавитьс от element_cache, calc_elements
-
-
 #ctv
 
 [16:30:54] Project "SuperNova.WS": Не забыть - акция на Хелловин по Пиле
+
+2015-10-14 12:21:49 40a13.15
+[@] Код
+    Немного почищен и оптимизирован код
 
 
 2015-10-14 11:56:28 40a13.14

@@ -252,9 +252,13 @@ div .ui-dialog-content table {
   border-color: #344566;
 }
 
-/* Pseudoelement to use colors from CSS in JS */
-#style_probe {
-  border-top-color: #6B90D3;  /* Reserved for unit_preview border color */
+/*/!* Pseudoelement to use colors from CSS in JS *!/*/
+/*#style_probe {*/
+  /*border-top-color: #6B90D3;  /!* Reserved for unit_preview border color *!/*/
+/*}*/
+
+.unit_border_selected {
+  border-color: #6B90D3;  /* Reserved for unit_preview border color */
 }
 
 #sys_dark_matter_hint {

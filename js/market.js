@@ -18,7 +18,6 @@ function eco_mrk_trader_recalc() {
 
   var resource_increase = 0;
   var block_exchange = false;
-  //var selected_resource_id = parseInt($('#exchangeTo').val());
   var selected_input = $('#spend' + selected_resource_id);
   var selected_input_value = parseFloat(selected_input.val())
   !(selected_input_value) ? selected_input_value = 0 : false;
@@ -34,11 +33,9 @@ function eco_mrk_trader_recalc() {
 
     if((selected_resource_id != RES_DARK_MATTER && i == selected_resource_id) || (selected_resource_id == RES_DARK_MATTER && i != RES_DARK_MATTER)) {
       current_element.addClass('ok_bg');
-      //jQuery('[id^="' + 'spend' + i +'"]').attr('disabled', 1);
       jQuery('[id^="' + 'spend' + i +'"]').prop('disabled', true);
       jQuery('#' + 'spend' + i +'slide').slider('disable');
     } else {
-//      jQuery('[id^="' + 'spend' + i +'"]').removeAttr('disabled');
       jQuery('[id^="' + 'spend' + i +'"]').prop('disabled', false);
       jQuery('#' + 'spend' + i +'slide').slider('enable');
       if(input_value > eco_market_resources[i]['avail']) {
@@ -57,15 +54,12 @@ function eco_mrk_trader_recalc() {
       resource_increase += Math.floor(parseFloat(input_value * eco_market_resources[i]['rate'] / eco_market_resources[selected_resource_id]['rate']));
     }
     input_value = Math.floor(input_value);
-    // element_cache['res_left' + i].innerHTML = sn_format_number(eco_market_resources[i]['avail'] - input_value);
     $('#res_left' + i).html(sn_format_number(eco_market_resources[i]['avail'] - input_value));
-    // input_element.value = Math.abs(input_value);
     $('#res_delta' + i).html(sn_format_number(-input_value, 0, 'positive', 0, true));
     current_element.val(Math.abs(input_value));
   }
 
   if(selected_resource_id == RES_DARK_MATTER) {
-//    selected_input.val(selected_input_value);
     $('#res_delta' + selected_resource_id).html(sn_format_number(-selected_input_value, 0, 'positive', 0, true));
     $('#res_left' + selected_resource_id).html(sn_format_number(eco_market_resources[selected_resource_id]['avail'] - selected_input_value));
     block_exchange = block_exchange || !selected_input_value;
@@ -84,9 +78,6 @@ function eco_mrk_trader_recourse(selected_resource) {
   $('#market_trader .button_pseudo').removeClass('button_pseudo_pressed');
   $('[resource_id=' + selected_resource + ']').addClass('button_pseudo_pressed');
   $('input:radio[name=exchangeTo]').val([selected_resource]);
-  //$('#market_trader .button_pseudo').addClass('button_pseudo_passive');
-  //$('[resource_id=' + selected_resource + ']').removeClass('button_pseudo_passive');
-  //$('input:radio[name=exchangeTo]').val([selected_resource]);
 
   var rate_for_selected = eco_market_resources[selected_resource]['rate'];
 
@@ -100,20 +91,11 @@ function eco_mrk_trader_recourse(selected_resource) {
     current_rate = eco_market_resources[i]['rate'] / rate_for_selected;
     selected_resource == RES_DARK_MATTER ? current_rate = "1 : " + (1 / current_rate) : (current_rate += " : 1");
     $('#course' + i).html(current_rate);
-    //element_cache['course' + i].innerHTML = current_rate;
-    //if(selected_resource == RES_DARK_MATTER) {
-    //  element_cache['course' + i].innerHTML = "1 : " + rate_for_selected / eco_market_resources[i]['rate'];
-    //} else {
-    //  element_cache['course' + i].innerHTML = eco_market_resources[i]['rate'] / rate_for_selected + " : 1";
-    //}
     jQuery('#' + 'spend' + i +'slide').slider("value", 0);
   }
   operation_cost = C_rpg_cost_trader * (selected_resource == RES_DARK_MATTER ? 3 : 1);
   eco_market_resources[RES_DARK_MATTER]['avail'] = eco_market_resources[RES_DARK_MATTER]['start'] + 1 - operation_cost;
-  //eco_market_resources[RES_DARK_MATTER]['avail'] += parseFloat(element_cache['rpg_cost_trader'].innerHTML);
   $('#rpg_cost_trader').html(operation_cost);
-  //element_cache['rpg_cost_trader'].innerHTML = operation_cost;
-  //eco_market_resources[RES_DARK_MATTER]['avail'] -= parseFloat(element_cache['rpg_cost_trader'].innerHTML);
 
   eco_mrk_trader_recalc_lock = false;
 
@@ -141,7 +123,6 @@ jQuery(document).on('click', '#market_trader .button_pseudo', function() {
 jQuery(document).ready(function() {
   // Запускается только на странице обмена ресурсов
   if($('#market_trader').length) {
-    // $('#exchangeTo option' + (exchange_to_resource_id ? '[value=' + exchange_to_resource_id + ']' : ':first')).prop('selected', 'selected');
     eco_mrk_trader_recourse(exchange_to_resource_id ? exchange_to_resource_id : RES_METAL);
   }
 });

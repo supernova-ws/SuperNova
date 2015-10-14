@@ -20,7 +20,7 @@ var production = Array();
 var require = Array();
 var grants = Array();
 var unit_selected = null;
-var eco_bld_style_probe;
+// var eco_bld_style_probe;
 var STACKABLE = '{STACKABLE}';
 var TEMPORARY = parseInt('{TEMPORARY}');
 var CAN_AUTOCONVERT = parseInt('{CAN_AUTOCONVERT}') ? parseInt('{CAN_AUTOCONVERT}') : 0;
@@ -204,7 +204,7 @@ planet = {
             <tr>
               <th class="c_l">
                 {L_bld_theyare} {L_bld_cellfree} {FIELDS_FREE}
-                (<!-- IF FIELDS_QUE != 0 --><span style="color: yellow;">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
+                (<!-- IF FIELDS_QUE != 0 --><span class="zero">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
               </th>
               <th class="c_r">
                 <!-- IF PLANET_TYPE == 1 -->
@@ -242,13 +242,6 @@ planet = {
           <div id="unit_info">
             <div id="unit_balance_wrapper">
               <div id="unit_balance"></div>
-              <!--
-              <div id="unit_info_extra_switch_wrapper">
-                <button id="unit_info_extra_switch">
-                  {L_eco_bld_unit_info_extra_hide}
-                </button>
-              </div>
-              -->
             </div>
             <div id="unit_description_wrapper">
               <div id="unit_description_wrapper_cell">
@@ -259,26 +252,21 @@ planet = {
                     <div id="unit_info_level" class="a75"></div>
                   </div>
                 </div>
-                <!--display: block;-->
                 <div id="unit_description_wrapper_inner">
                   <div id="unit_info_description"></div>
                   <div id="unit_require_wrapper">
-                    <div class="c_l neutral" style="text-align: left;">{L_wiki_requrements}</div>
+                    <div class="c_l neutral">{L_wiki_requrements}</div>
                     <ul id="unit_require"></ul>
                   </div>
                   <div id="unit_grants_wrapper">
-                    <div class="c_l neutral" style="text-align: left;">{L_wiki_grants}</div>
+                    <div class="c_l neutral">{L_wiki_grants}</div>
                     <ul id="unit_grants"></ul>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        <!--</td>-->
-      <!--</tr>-->
 
-      <!--<tr>-->
-        <!--<td style="vertical-align: top;" class="c_c">-->
           <form action="buildings.php" method="post" id="form_unit">
             <input type="hidden" id="page_file_name" value="buildings.php">
 
@@ -321,7 +309,7 @@ planet = {
                 </tr>
               </table>
             </div>
-            <!--<div id="unit_action_container">-->
+
             <!-- IF STACKABLE -->
               <div id="unit_create" class="unit_create_stackable">
                 <div id="unit_max">{L_sys_maximum} <span id="unit_max_number"></span> / <span id="unit_max_number_autoconvert" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->"></span></div>
@@ -330,10 +318,6 @@ planet = {
                   sn_ainput_make_jquery();
                 </script>
 
-                <!--<button id="unit_create_button_auto" class="unit_create_autoconvert &lt;!&ndash; IF CAN_AUTOCONVERT &ndash;&gt;zero&lt;!&ndash; ELSE &ndash;&gt;negative&lt;!&ndash; ENDIF &ndash;&gt;">-->
-                  <!--{STRING_CREATE} <span id="unit_create_count_auto"></span><br />-->
-
-                <!--</button>-->
                 <input type="checkbox" value="1" name="auto_convert" id="auto_convert" />
                 <label for="auto_convert" id="auto_convert_label" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">{L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}</label>
 
@@ -346,8 +330,6 @@ planet = {
                 <button id="unit_create_button" class="unit_create positive">
                   {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
                 </button>
-              <!--</div>-->
-              <!--<div id="unit_create_autoconvert" class="unit_create_level">-->
                 <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
                 <button id="unit_create_button_auto" class="unit_create_autoconvert <!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">
                   {STRING_CREATE} {LA_level} <span id="unit_create_level_auto"></span><br />
@@ -361,7 +343,6 @@ planet = {
                 <div class="link negative unit_destroy">{LA_bld_destroy} {LA_level} <span id="unit_destroy_level"></span></div>
               </div>
             <!-- ENDIF -->
-            <!--</div>-->
           </form>
         </td>
       </tr>
@@ -449,6 +430,6 @@ planet = {
   <!-- ENDIF -->
 </tr>
 </table>
-<div id="style_probe"></div>
+<!--<div id="style_probe"></div>-->
 
 <!-- INCLUDE page_hint -->
