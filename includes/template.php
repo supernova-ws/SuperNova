@@ -436,8 +436,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   // while ($CurPlanet = db_fetch($ThisUsersPlanets))
   foreach($ThisUsersPlanets as $CurPlanet)
   {
-    if (!$CurPlanet['destruyed'])
-    {
+    if($CurPlanet['destruyed']) {
+      continue;
+    }
       $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
 
       $template->assign_block_vars('topnav_planets', array(
@@ -448,7 +449,6 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
         'COORDS' => uni_render_coordinates($CurPlanet),
         'SELECTED' => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
       ));
-    }
   }
 
   $fleet_flying_list = tpl_get_fleets_flying($user);
@@ -463,7 +463,8 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 
   if($config->game_news_overview) {
-    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user['news_lastread']}", $config->game_news_overview);
+    $user_last_read_safe = intval($user['news_lastread']);
+    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}", $config->game_news_overview);
   }
 
   $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");

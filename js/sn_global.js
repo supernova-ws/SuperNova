@@ -142,6 +142,17 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     $(this).remove();
   });
 
+  jQuery(document).on('click', '.survey_block [survey_id]', function() {
+    var survey_id = $(this).attr('survey_id');
+    $('.survey_block [survey_id=' + survey_id + ']').removeClass('button_pseudo_pressed');
+    $(this).addClass('button_pseudo_pressed');
+    $('input:radio[name="survey[' + survey_id + ']"]').val([$(this).attr('answer_id')]);
+  });
+
+  jQuery(document).on('click', '.button_pseudo', function () {
+    $(this).addClass('button_pseudo_pressed');
+  });
+
   jQuery(document).on('change', '#sort_elements,#sort_elements_inverse', function () {
     jQuery.post($('#page_file_name').val() + '?mode=' + $('#mode').val() + '&sort_elements=' + $('#sort_elements').val() + '&sort_elements_inverse=' + ($('#sort_elements_inverse').is(':checked') ? '1' : '0'), function(){
       sn_reload();

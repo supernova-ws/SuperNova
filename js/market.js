@@ -3,10 +3,11 @@
  */
 
 /* ---- Страница выбора услуги */
-jQuery(document).on('click', '.market_services a', function(){
-  $(this).addClass('button_pseudo_pressed');
-});
+//jQuery(document).on('click', '.market_services a', function(){
+//  $(this).addClass('button_pseudo_pressed');
+//});
 
+var eco_mrk_trader_recalc_lock = false;
 
 /* ---- Страница обмена ресурсов */
 function eco_mrk_trader_recalc() {
@@ -73,9 +74,11 @@ function eco_mrk_trader_recalc() {
 }
 
 function eco_mrk_trader_recourse(selected_resource) {
+  var operation_cost, current_rate;
+
   selected_resource = parseInt(selected_resource);
 
-  $('#market_trader .button_pseudo').removeClass('button_pseudo_pressed');
+  $('#market_trader').find('.button_pseudo').removeClass('button_pseudo_pressed');
   $('[resource_id=' + selected_resource + ']').addClass('button_pseudo_pressed');
   $('input:radio[name=exchangeTo]').val([selected_resource]);
 

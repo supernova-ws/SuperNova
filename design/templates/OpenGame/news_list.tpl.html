@@ -18,14 +18,15 @@
 
         <!-- DEFINE $CLOSE_DIV = false -->
         <!-- BEGIN paragraph -->
+        <!-- IF ! paragraph.S_FIRST_ROW --><br /><!-- ENDIF -->
           {paragraph.TEXT}
         <!-- IF paragraph.S_LAST_ROW --><!-- IF $CLOSE_DIV --></div><!-- ENDIF --><!-- ELSE --><br /><!-- ENDIF -->
 
         <!-- IF paragraph.S_FIRST_ROW && ! paragraph.S_LAST_ROW && ! $NEWS_FULL -->
           <!-- DEFINE $CLOSE_DIV = true -->
-          <button news_toggle="{announces.ID}">
+          <span news_toggle="{announces.ID}" class="button_pseudo">
             {L_news_show_rest}
-          </button>
+          </span>
           <div id="news_{announces.ID}" class="news_hide">
         <!-- ENDIF -->
 
@@ -47,9 +48,9 @@
         <!-- IF announces.SURVEY_CAN_VOTE -->
           <!-- BEGIN survey_answers -->
           <tr>
-            <td colspan="2">
+            <td colspan="2" class="button_pseudo" survey_id="{announces.SURVEY_ID}" answer_id="{survey_answers.ID}">
               <input type="radio" name="survey[{announces.SURVEY_ID}]" id="sa_{survey_answers.ID}" value="{survey_answers.ID}" />
-              <label for="sa_{survey_answers.ID}">{survey_answers.TEXT}</label><br />
+              {survey_answers.TEXT}
             </td>
           </tr>
           <!-- END survey_answers -->

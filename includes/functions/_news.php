@@ -33,7 +33,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       $survey_vote = !$survey_complete ? $survey_vote = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true) : array();
     }
 
-    $announce_exploded = explode("<br />", cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])));
+    $announce_exploded = explode("<br /><br />", cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])));
 
     $template->assign_block_vars('announces', array(
       'ID'              => $announce['idAnnounce'],
