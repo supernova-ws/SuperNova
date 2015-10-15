@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a13.12# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #40a13.17# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -505,11 +505,12 @@ class auth_local extends auth_abstract {
     // Пытаемся войти по куке
     if(!empty($_COOKIE[$this->cookie_name])) {
 // Кто хотел - уже сконвертировал старые куки в новые
-//      if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
+// Update оказывается - не все...
+      if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
         list($account_id_unsafe, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $_COOKIE[$this->cookie_name]);
-//      } else {
-//        list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
-//      }
+      } else {
+        list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
+      }
 
       // $account = $this->db_account_get_by_id($account_id_unsafe);
 
