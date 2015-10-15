@@ -13,6 +13,33 @@
                                  ███▒                                                  ███▒
                                  █████████████████████████████████████████████████████████▒
                                   ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+
+Color reference
+~~~~~~~~~~~~~~~
+
+JQ means "jQuery Theme Roller" http://jqueryui.com/themeroller/
+You can look at actual JQ link for theme in /design/css/jquery-ui.css
+
+#13233E
+  TH background
+  JQ Header-Toolbar text & icon
+#233452
+  Between TH and TD when you need mid-header in TD. Example - News header background and Survey header background
+#344566
+  TD background
+  JQ Content background
+#415680
+  Highlighted background
+  Active background
+  JQ Hover state background
+  JQ Active State background
+  JQ Highlight Background
+#222D42
+  Button default color
+  JQ Clickable: Default State
+#dfeafd
+  JQ Header/Toolbar background
+
 */
 
 @media only screen and (min-device-width : 320px) and (max-device-width : 480px) {

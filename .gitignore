@@ -42,6 +42,9 @@ t.*
 !.gitattributes
 !.htaccess
 
+# Ignoring all files started with "__" - it's a local or global test files
+__*
+
 # Ignore backups
 /admin/backup/*.gz
 /admin/backup/*.bz2

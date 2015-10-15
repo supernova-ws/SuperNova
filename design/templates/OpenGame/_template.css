@@ -80,11 +80,30 @@ only screen and (min-device-pixel-ratio : 1.5) {
 }
 
 
+.ui-button {
+  box-shadow: 0.3em 0.3em rgba(0,0,0,0.50);
+  margin: 0.3em 0.4em 0.4em 0.1em;
+}
+
+.ui-button-text-only .ui-button-text {
+  padding: 0.6em 1em;
+}
+
+.ui-state-active {
+  box-shadow: none;
+  margin: 0.6em 0.1em 0.1em 0.4em;
+}
+
+.ui-button.ui-input-text {
+  background-color: #415680;
+}
+
 /* Main pseudo button magic*/
 .button_pseudo {
   cursor: pointer;
   margin: 0.5em;
   box-shadow: 0.3em 0.3em rgba(0,0,0,0.50);
+  border: 0.1em solid #415680;
 }
 .button_pseudo_pressed {
   /*box-shadow: -0.3em -0.3em rgba(0,0,0,0);*/
@@ -101,6 +120,10 @@ only screen and (min-device-pixel-ratio : 1.5) {
   padding: 0.7em 1em 0.7em 1em;
 }
 .button_pseudo:not(img):hover {
+  background-color: rgba(65,86,128,1); /* #415680 */
+}
+.button_pseudo_pressed:not(img) {
+  /*background-color: rgba(65,86,128,1); /!* #415680 *!/*/
   background-color: rgba(65,86,128,1); /* #415680 */
 }
 
@@ -265,7 +288,7 @@ img.button_pseudo.button_pseudo_pressed {
   text-align: center;
 }
 #unit_create_button_auto {
-  margin-left: 5em;
+  /*margin-left: 5em;*/
 }
 
 #shoutbox td {
@@ -301,7 +324,17 @@ img.button_pseudo.button_pseudo_pressed {
     /*max-width: 15em;*/
     /*margin-top: 3em;*/
     /*margin-right: 5em;*/
-    margin: 2em 5em 1em;
+    /*margin: 2em 5em 1em;*/
+    /*margin-left: 5.1em;*/
+  }
+  #unit_create_button_auto.ui-state-active {
+    /*margin-left: 5.4em;*/
+  }
+  #unit_destroy_resources {
+    margin-top: 1em;
+  }
+  #unit_destroy .unit_destroy {
+    margin-bottom: 1em;
   }
   #unit_miniatures_container {
     max-width: 55em;
@@ -322,6 +355,23 @@ img.button_pseudo.button_pseudo_pressed {
   }
   #unit_miniatures_container {
     max-width: 66em;
+  }
+  #unit_create_button_auto {
+    /*display: block;*/
+    /*max-width: 15em;*/
+    /*margin-top: 3em;*/
+    /*margin-right: 5em;*/
+    /*margin: 2em 5em 1em;*/
+    margin-left: 5.1em;
+  }
+  #unit_create_button_auto.ui-state-active {
+    margin-left: 5.4em;
+  }
+  #unit_destroy_resources {
+    margin-top: 1em;
+  }
+  #unit_destroy .unit_destroy {
+    margin-bottom: 1em;
   }
   .fleet_2_table {
     max-width: 45em;
@@ -408,12 +458,29 @@ img.button_pseudo.button_pseudo_pressed {
   #unit_create_button_auto {
     /*display: table-cell;*/
     /*max-width: 15em;*/
-    margin-top: 3em;
-    margin-left: 0;
+    /*margin-top: 3em;*/
+    /*margin-left: 0;*/
+  }
+  #unit_create_button_auto {
+    /*display: block;*/
+    /*max-width: 15em;*/
+    /*margin-top: 3em;*/
+    /*margin-right: 5em;*/
+    /*margin: 2em 5em 1em;*/
+    margin-left: 0.1em;
+  }
+  #unit_create_button_auto.ui-state-active {
+    margin-left: 0.4em;
   }
   #unit_destroy {
     display: table-cell;
-    /*vertical-align: top;*/
+    vertical-align: middle;
+  }
+  #unit_destroy_resources {
+    margin-top: 0;
+  }
+  #unit_destroy .unit_destroy {
+    margin-bottom: 0;
   }
   #unit_miniatures_container {
     max-width: 88em;
@@ -845,7 +912,14 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   white-space: nowrap;
 }
 
-
+#unit_create_button, #unit_create_button_auto {
+  min-width: 17em;
+  min-height: 3.5em;
+  vertical-align: middle;
+}
+#unit_create_button {
+  min-height: 2em;
+}
 
 .unit_create {
   font-size: 1em;
@@ -1316,4 +1390,77 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 .survey_block [survey_id] {
   width: 93%;
   text-align: left;
+}
+
+/**
+ * Checkator jQuery Plugin
+ * A plugin for radio and checkbox elements
+ * version 1.1, Dec 20th, 2013
+ * by Ingi P. Jacobsen
+ */
+
+/* RESET */
+input[type=radio],
+input[type=checkbox] {
+  margin-bottom: 0;
+}
+
+/* SOURCE ELEMENT (when checkator is enabled on an element) */
+.checkator_source {
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+
+/* SHARED SETTING */
+.checkator_holder { /* Holder for the new element */
+  display: inline-block;
+  position: relative;
+}
+.checkator_element { /* New element */
+  border: 2px solid #abadb3;
+  /*background-color: #fff;*/
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+.checkator_source:checked+.checkator_element:after { /* Checked element dot */
+  /*background-color: #7fa92c;*/
+  background-color: lime;
+  display: block;
+  content: ' ';
+  top: 20%;
+  right: 20%;
+  bottom: 20%;
+  left: 20%;
+  position: absolute;
+}
+/*
+.checkator_source:focus+.checkator_element { /!* Focused element *!/
+  border: 2px solid #cc0;
+}
+*/
+.checkator_source:hover+.checkator_element { /* Hovered element */
+  /* Bug: There is a bug in chrome preventing this from working correctly */
+  /*background-color: #def;*/
+  /*border: 2px solid #79b;*/
+  border: 2px solid #dfeafd;
+}
+
+
+/* RADIO SETTINGS */
+.checkator_element.radio {
+  border-radius: 50% !important;
+}
+.checkator_element.radio:after {
+  border-radius: 50% !important;
+}
+
+/* CHECKBOX SETTINGS */
+.checkator_element.checkbox { /* New element */
+  border: 2px solid #abadb3;
 }

@@ -6,7 +6,8 @@ jQuery(document).ready( function(e) {
       return false;
     }
 
-    if($(this).hasClass('unit_create_autoconvert')) {
+    //if($(this).hasClass('unit_create_autoconvert')) {
+    if($(this).attr('id') == 'unit_create_button_auto') {
       if(DARK_MATTER < MARKET_AUTOCONVERT_COST) {
         alert(language['eco_bld_autoconvert_explain'] + language['eco_bld_autoconvert_dark_matter_none']);
         e.preventDefault();

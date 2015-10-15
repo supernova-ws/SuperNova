@@ -43,9 +43,12 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   function document_ready() {
     // Натягиваем скины на элементы ввода
     inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
-    inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
-    inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
-    inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
+    //inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
+    inputs.filter(':button, :submit, :reset').button();
+    //inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
+    inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text');
+    //inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
+    inputs.filter(':checkbox, :radio').checkator();
     jQuery("button").button().addClass('ui-textfield');
     // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
 
