@@ -45,21 +45,6 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
 
 */
 
-/* Desktops and laptops medium-res */
-@media only screen and (min-width : 760px) {
-  body {
-    /*background-image     : url(img/background_medium.jpg);*/
-  }
-}
-/* Desktops and laptops ----------- */
-@media only screen and (min-width : 1224px) {
-  body {
-    /*background-image     : url(img/background.jpg);*/
-  }
-}
-
-
-
 .ui-widget-content, .ui-widget-content a,
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus,
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active,
