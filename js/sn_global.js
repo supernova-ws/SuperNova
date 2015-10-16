@@ -62,6 +62,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     //inputs.filter(':checkbox, :radio').checkator();
     jQuery("button").button().addClass('ui-textfield');
     // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
+    jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield ui-input-text');
 
     // calc_elements();
 

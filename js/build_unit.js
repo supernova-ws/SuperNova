@@ -88,7 +88,7 @@ jQuery(document).ready( function(e) {
     $('#unit_max_number').html(sn_format_number(unit['can_build']));
 
     if(unit['autoconvert_amount']) {
-      $('#auto_convert').prop('disabled', false).button('enable');
+      $('#auto_convert').prop('disabled', false).button().button('enable');
     }
 
     if(unit['build_can'] != 0 && unit['build_result'] == 0) {

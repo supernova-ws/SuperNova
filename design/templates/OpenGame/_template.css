@@ -46,11 +46,11 @@ form, table, tr, td, input, select {
 }
 
 img {
-  border               : 0;
+  border: 0;
 }
 
 textarea {
-  width                : 98%;
+  width: 92%;
 }
 
 /*  Patching this theme for ui-slider */
@@ -1502,12 +1502,16 @@ input[type=checkbox] {
 
 
 
-th, td, input, select, textarea {
+th, td, input, select, textarea, textarea.ui-button {
   border               : 0.1em #415680 solid;
   background-color     : #344566;
   padding-left         : 0.3em;
   padding-right        : 0.3em;
   font-weight          : bold;
+}
+
+textarea.ui-button {
+  padding: 0.4em 1em;
 }
 
 td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
