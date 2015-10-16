@@ -15,22 +15,18 @@
   // var password, password2;
   var L_sys_login_password_show = '{LA_sys_login_password_show}';
   var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
-
-  //  $(document).ready(function(){
-  //    $("#login_container").tabs().show();
-  //  });
 </script>
 
 <form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
   <div id="tab_container" style="font-size: 1em; width: 50rem;display: none">
-    <ol>
+    <ul>
       <li><a href="#tab_account">{L_opt_account}</a></li>
       <li><a href="#tab_interface">{L_opt_int_options}</a></li>
       <!-- IF MENU_CUSTOMIZE -->
       <li><a href="#tab_menu">{L_menu_customize_customization}</a></li>
       <!-- ENDIF -->
       <li><a href="#tab_alerts">{L_opt_alerts}</a></li>
-    </ol>
+    </ul>
 
     <div id="tab_account">
       <table width="100%">
@@ -227,7 +223,7 @@
           <th>{L_skins_example}</th>
           <th><input name="design"{opt_sskin_data} style="display:none" type="checkbox" id="design" />
             <input name="dpath" style="display:none" maxlength="80" size="28" value="{OPT_DPATH_DATA}" type="text">&nbsp;
-            <select name="dpaths" size="1" onchange="document.fOptions.dpath.value='skins/'+this.value+'/';">
+            <select name="dpaths" size="1" onchange="document.fOptions.dpath.value = 'skins/' + this.value+'/';">
               <!-- BEGIN skin_list -->
               <option value="{skin_list.VALUE}"<!-- IF skin_list.SELECTED --> selected<!-- ENDIF -->>{skin_list.NAME}</option>
               <!-- END skin_list -->
@@ -410,7 +406,7 @@
 </form>
 
 <script type="text/javascript"><!--
-$("#tab_container").tabs().show();
+  $("#tab_container").tabs().show();
 // --></script>
 
 <script type="text/javascript"><!--

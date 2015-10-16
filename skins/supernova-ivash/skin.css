@@ -14,30 +14,36 @@
                                  ███▒                                                  ███▒
                                  █████████████████████████████████████████████████████████▒
                                   ▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒▒
+
+Color reference
+~~~~~~~~~~~~~~~
+
+JQ means "jQuery Theme Roller" http://jqueryui.com/themeroller/
+You can look at actual JQ link for theme in /design/css/jquery-ui.css
+
+#201410 - #13233E
+  TH background
+  JQ Header-Toolbar text & icon
+- #233452
+  Between TH and TD when you need mid-header in TD. Example - News header background and Survey header background
+#242424 - #344566
+  TD background
+  JQ Content background
+#483634 - #415680
+  Highlighted background
+  Active background
+  JQ Hover state background
+  JQ Active State background
+  JQ Highlight Background
+- #222D42
+  Button default color
+  JQ Clickable: Default State
+- #dfeafd
+  JQ Header/Toolbar background
+#D58000 - #E6EBFB
+  Input element color
+
 */
-
-@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-}
-
-/* Smartphones (landscape) ----------- */
-@media only screen and (min-width : 321px) {
-}
-
-/* Smartphones (portrait) ----------- */
-@media only screen and (max-width : 320px) {
-}
-
-/* iPads (portrait and landscape) ----------- */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
-}
-
-/* iPads (landscape) ----------- */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
-}
-
-/* iPads (portrait) ----------- */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
-}
 
 /* Desktops and laptops medium-res */
 @media only screen and (min-width : 760px) {
@@ -45,33 +51,15 @@
     background-image     : url(img/background_medium.jpg);
   }
 }
-
 /* Desktops and laptops ----------- */
 @media only screen and (min-width : 1224px) {
   body {
-    background-image     : url(img/background.jpg);
+    /*background-image     : url(img/background.jpg);*/
   }
-}
-
-/* Large screens ----------- */
-@media only screen and (min-width : 1824px) {
-  body {
-    background-image     : url(img/background.jpg);
-  }
-}
-
-/* iPhone 4+ ----------- */
-@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
 }
 
 body {
-  color                : #E6EBFB;
-  /*margin-top           : 5px;*/
-  /*margin-left          : 1px;*/
   background-color     : #80605D;
-  background-attachment: fixed;
-  background-repeat    : no-repeat;
-  background-position  : top;
   scrollbar-arrow-color: #80605D;
   scrollbar-base-color: #363636;
   scrollbar-track-color: #363636;
@@ -87,50 +75,22 @@ input, select, textarea, div.z {
 }
 
 th, td, input, select, textarea {
-  border               : 1px #483634 solid;
+  border-color         : #483634;
   background-color     : #242424;
-  padding-left         : 3px;
-  padding-right        : 3px;
-  font-weight          : bold;
 }
 
-th.c_l, th.c_r, th.c_c, tr.c_l th, tr.c_r th, tr.c_c th, td.c {
-  font-weight          : bold;
+/*th.c_l, th.c_r, th.c_c, tr.c_l th, tr.c_r th, tr.c_c th, td.c {*/
+td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
   background-image     : url("img/bg1.gif");
 }
 
-
-td.l
-{
-  vertical-align       : top;
-  padding              : 3px;
-  background-image     : url(img/bg2.gif);
-}
-
-table table {
-  border               : 0;
-}
-
-body form table th table input {
-  width: 60px;
-}
-
-div.z {
-  font-weight          : bold;
-}
-
-a {
-  text-decoration      : none;
-  font-weight          : bold;
+td.l {
+  background-image     : url("img/bg2.gif");
 }
 
 a:hover {
   color                : #80605D;
   text-decoration      : underline;
-}
-
-.style td {
-  border-top           : 0;
 }
 
 .style div a {
@@ -148,28 +108,6 @@ a:hover {
 .style div a:hover {
   background-color     : #415680;
   text-decoration      : none;
-}
-
-h1 {
-  font-size            : 200%;
-  border-bottom        : 0 #F9C749 solid;
-
-  margin-top: 16px;
-}
-
-.hint {
-  text-align: justify;
-}
-
-.ov_user_total {
-  color: #FF0000
-}
-.ov_user_rank {
-  color: #FFFF00
-}
-
-#left_menu #server_name {
-  color: #00FF00;
 }
 
 #left_menu th {

@@ -1,6 +1,17 @@
 if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   var LOADED_GLOBAL = true;
 
+  // Fix to jQuery-UI improper tab handling
+  $.fn.__tabs = $.fn.tabs;
+  $.fn.tabs = function (a, b, c, d, e, f) {
+    var base = window.location.href.replace(/#.*$/, '');
+    $('ul > li > a[href^="#"]', this).each(function () {
+      var href = $(this).attr('href');
+      $(this).attr('href', base + href);
+    });
+    return $(this).__tabs(a, b, c, d, e, f);
+  };
+
   var sn_inframe;
   function getFrameName(frame) {
     for (var i = 0; i < parent.frames.length; i++) {
@@ -48,7 +59,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     //inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
     inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text');
     //inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
-    inputs.filter(':checkbox, :radio').checkator();
+    //inputs.filter(':checkbox, :radio').checkator();
     jQuery("button").button().addClass('ui-textfield');
     // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
 
@@ -58,8 +69,6 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     if (typeof(sn_timer) === 'function') {
       sn_timer();
     }
-
-
 
     $(document).on('click', '#font_minus, #font_normal, #font_plus', function(){
       temp = FONT_SIZE;
