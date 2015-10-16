@@ -24,12 +24,12 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
 #201410 - #13233E
   TH background
   JQ Header-Toolbar text & icon
-- #233452
+#222222 - #233452 ?????????
   Between TH and TD when you need mid-header in TD. Example - News header background and Survey header background
 #242424 - #344566
   TD background
   JQ Content background
-#483634 - #415680
+#705955 - #415680
   Highlighted background
   Active background
   JQ Hover state background
@@ -38,7 +38,7 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
 - #222D42
   Button default color
   JQ Clickable: Default State
-- #dfeafd
+#786560 - #dfeafd
   JQ Header/Toolbar background
 #D58000 - #E6EBFB
   Input element color
@@ -56,6 +56,105 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
   body {
     /*background-image     : url(img/background.jpg);*/
   }
+}
+
+
+
+.ui-widget-content, .ui-widget-content a,
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus,
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active,
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default,
+.ui-state-default a, .ui-state-default a:link, .ui-state-default a:visited,
+.ui-state-hover a, .ui-state-hover a:hover, .ui-state-hover a:link, .ui-state-hover a:visited, .ui-state-focus a, .ui-state-focus a:hover, .ui-state-focus a:link, .ui-state-focus a:visited,
+.ui-state-active a, .ui-state-active a:link, .ui-state-active a:visited
+{
+  color: #e6ebfb;
+}
+
+
+.ui-widget-header, .ui-widget-header a
+{
+  color: #201410; /* #13233E;*/
+}
+
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight,
+.ui-state-highlight a, .ui-widget-content .ui-state-highlight a, .ui-widget-header .ui-state-highlight a
+{
+  color: #ecc504;
+}
+
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error,
+.ui-state-error a, .ui-widget-content .ui-state-error a, .ui-widget-header .ui-state-error a,
+.ui-state-error-text, .ui-widget-content .ui-state-error-text, .ui-widget-header .ui-state-error-text
+{
+  color: #ff0000;
+}
+
+
+
+
+
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
+{
+  /*background-color: #222D42;*/
+  /*background-color: #363636;*/
+  background-image: none;
+  background-color: #483634;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover,
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight,
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error
+{
+  /*background-color: #705955; /!* #415680; *!/*/
+  background-image: none;
+  background-color: #705955; /* #415680; */
+}
+
+.ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus,
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active
+{
+  /*background-color: #705955; /!* #415680; *!/*/
+  background-image: none;
+  background-color: #705955; /* #415680; */
+}
+
+.ui-widget-content {
+  background-image: none;
+  background-color: #242424; /* #344566; */
+}
+
+.ui-widget-header {
+  /*background-color: #ecc504; /!* #dfeafd;*!/*/
+  background-image: none;
+  background-color: #786560;
+}
+
+
+
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus,
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active,
+.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight
+{
+  border-color: #483634; /* #415680; */
+}
+
+.ui-state-error, .ui-widget-content .ui-state-error, .ui-widget-header .ui-state-error
+{
+  border-color: #ff0000;
+}
+
+
+.ui-widget-content,
+.ui-widget-header,
+.ui-state-default, .ui-widget-content .ui-state-default, .ui-widget-header .ui-state-default
+{
+  border-color: #483634; /* #415680; */
+}
+
+.ui-button.ui-input-text {
+  background-color: #786560;
 }
 
 body {
@@ -106,7 +205,8 @@ a:hover {
 }
 
 .style div a:hover {
-  background-color     : #415680;
+  /*background-color     : #415680;*/
+  background-color     : #705955;
   text-decoration      : none;
 }
 
@@ -152,4 +252,29 @@ div .ui-dialog-content table {
 
 .mnl_buildlist, .mnl_buildlist * {
   color: #00B7F3;
+}
+
+.button_pseudo {
+  border-color: #483634;
+}
+
+
+.button_pseudo:not(img):hover, .button_pseudo_pressed:not(img) {
+  background-color: #483634; /* rgba(65,86,128,1) */
+}
+
+#left_menu a:not(.lm_with_image) {
+  background-color: rgba(34, 34, 34, 0.5); /*#222222 - #233452;*/
+  border: 1px solid #483634;
+}
+#left_menu.MENU_NARROW_CELLS a:not(.lm_with_image) {
+  background-color: #222222; /*#222222 - #233452;*/
+}
+
+.market_services {
+  background-color: #242424; /* #344566 */
+}
+
+#left_menu td a:hover, #left_menu th a:hover {
+  background-color: #705955;
 }

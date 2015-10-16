@@ -158,12 +158,8 @@ only screen and (min-device-pixel-ratio : 1.5) {
   text-align: center;
   padding: 0.7em 1em 0.7em 1em;
 }
-.button_pseudo:not(img):hover {
-  background-color: rgba(65,86,128,1); /* #415680 */
-}
-.button_pseudo_pressed:not(img) {
-  /*background-color: rgba(65,86,128,1); /!* #415680 *!/*/
-  background-color: rgba(65,86,128,1); /* #415680 */
+.button_pseudo:not(img):hover, .button_pseudo_pressed:not(img) {
+  background-color: #415680; /* rgba(65,86,128,1) */
 }
 
 
@@ -203,13 +199,9 @@ img.button_pseudo.button_pseudo_pressed {
   height: 13em;
   vertical-align: top;
   margin: 0.5em;
-
-  /*border: solid 1px red;*/
 }
 #unit_description_wrapper_cell {
   display: table-cell;
-
-  /*border: solid 1px white;*/
 }
 #unit_info_image_outer {
   vertical-align: top;
@@ -866,6 +858,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   cursor: pointer;
 
   border: 0.3em solid;
+  border-radius: 0.3em;
 
   position: relative;
   height: 11em;
