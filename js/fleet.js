@@ -366,18 +366,15 @@ function max_resource(id) {
   }
 }
 
-function max_resources()
-{
-  for (i in resource_max)
-  {
+function max_resources() {
+  for (var i in resource_max) {
     max_resource(i);
   }
   calculateTransportCapacity();
 }
 
-function fleet_dialog_show(caller, fleet_id)
-{
-  popup_show(fleet_table_make(fleet_id));
+function fleet_dialog_show(caller, fleet_id) {
+  popup_show(fleet_table_make(fleet_id), 'auto', 0, 0, {my: 'left top', at: 'right top', of: caller});
 }
 
 function fleet_table_make(fleet_id)
