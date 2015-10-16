@@ -58,7 +58,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     inputs.filter(':button, :submit, :reset').button();
     //inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
     inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text');
-    //inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
+    inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
     //inputs.filter(':checkbox, :radio').checkator();
     jQuery("button").button().addClass('ui-textfield');
     // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
