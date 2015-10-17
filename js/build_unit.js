@@ -239,6 +239,10 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     if(planet['que_has_place'] != 0 && !unit['unit_busy']) {
       if(STACKABLE) {
         $("#auto_convert").change();
+        if(unit['build_can'] != 0 && unit['build_result'] == 0) {
+          $('#unit_create, #unit_create *').prop('disabled', false);
+          $('#unit_amountslide').slider({ max: unit['can_build']});
+        }
         //if(unit['build_can'] != 0 && unit['build_result'] == 0) {
         //  $('#unit_create, #unit_create *').prop('disabled', false);
         //  $('#unit_amountslide').slider({ max: unit['can_build']});
