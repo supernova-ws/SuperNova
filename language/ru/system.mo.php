@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a15.0#
+* @version #40a15.2#
 *
 */
 
@@ -1115,7 +1115,7 @@ $a_lang_array = (array(
   'survey_votes_total_none' => 'Еще никто не проголосовал... Проголосуй первым!',
   'survey_votes_total_voted' => 'Уже проголосовало:',
   'survey_votes_total_voted_join' => 'Голосуй - или проиграешь!',
-  'survey_votes_total_voted_has_answer' => 'Вы уже проголосовали. Вместе с вами проголосовавших стало ',
+  'survey_votes_total_voted_has_answer' => 'Вы уже проголосовали. Вместе с вами проголосовавших',
 
   'survey_lasts_until' => 'Опрос продлится до',
 
