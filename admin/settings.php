@@ -42,7 +42,7 @@ if(sys_get_param('save')) {
 
   $config->game_maxGalaxy          = sys_get_param_int('game_maxGalaxy', 5);
   $config->game_maxSystem          = sys_get_param_int('game_maxSystem', 199);
-  $config->game_maxPlanet          = sys_get_param_int('game_maxPlanet', 15);
+  $config->game_maxPlanet          = sys_get_param_int('game_maxPlanet', 16);
 
   $config->player_max_colonies     = sys_get_param_int('player_max_colonies', -1);
 

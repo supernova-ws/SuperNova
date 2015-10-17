@@ -1,19 +1,19 @@
-<h2>{L_adm_ul_title} ({USER_COUNT})</h2>
+<h2>{PAGE_HEADER} ({USER_COUNT})</h2>
 
 <table id="user_list">
   <tr class="c_c">
-    <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_ID}">{L_sys_id}</a></th>
-    <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_NAME}">{L_sys_user_name}</a></th>
+    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_ID}">{L_sys_id}</a></th>
+    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_NAME}">{L_sys_user_name}</a></th>
     <!-- IF METAMATTER -->
     <th rowspan="2">{L_sys_metamatter_sh}</th>
     <!-- ENDIF -->
     <th colspan="2">{L_adm_ul_referral}</th>
-    <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_REGISTERED}">{L_adm_ul_time_registered}</a></th>
-    <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_LAST_VISIT}">{L_adm_ul_time_played}</a></th>
+    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_TIME_REGISTERED}">{L_adm_ul_time_registered}</a></th>
+    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_TIME_LAST_VISIT}">{L_adm_ul_time_played}</a></th>
     <th rowspan="2">{L_adm_ov_activ}</th>
-    <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_TIME_BAN_UNTIL}">{L_adm_ul_time_banned}</a></th>
+    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_TIME_BAN_UNTIL}">{L_adm_ul_time_banned}</a></th>
     <!-- IF ! RESTRICTED -->
-    <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_IP}">{L_sys_ip}</a></th>
+    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_IP}">{L_sys_ip}</a></th>
     <!-- IF GEOIP -->
     <th rowspan="2">{L_geoip}</th>
     <!-- ENDIF -->
@@ -22,8 +22,8 @@
   </tr>
 
   <tr class="c_c">
-    <th><a href="admin/userlist.php?sort={D_SORT_REFERRAL_COUNT}">{L_adm_ul_players}</a></th>
-    <th><a href="admin/userlist.php?sort={D_SORT_REFERRAL_DM}">{L_adm_ul_dms}</a></th>
+    <th><a href="{PAGE_URL}?sort={D_SORT_REFERRAL_COUNT}">{L_adm_ul_players}</a></th>
+    <th><a href="{PAGE_URL}?sort={D_SORT_REFERRAL_DM}">{L_adm_ul_dms}</a></th>
   </tr>
 
   <script type="text/javascript">

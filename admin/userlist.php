@@ -14,14 +14,16 @@ define('INSTALL', false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $config, $lang, $user;
 if($user['authlevel'] < 3) {
   AdminMessage($lang['adm_err_denied']);
 }
 
-global $config;
 ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '256M');
 
 lng_include('admin');
+
+$is_players_online_page = defined('ADMIN_USER_OVERVIEW') && ADMIN_USER_OVERVIEW === true;
 
 $sort_fields = array(
   SORT_ID => 'id',
@@ -67,7 +69,7 @@ while($ip = db_fetch($ip_query)) {
 
 $geoip = geoip_status();
 
-$query = db_user_list_admin_sorted($sort_fields[$sort]);
+$query = db_user_list_admin_sorted($sort_fields[$sort], $is_players_online_page);
 while($user_row = db_fetch($query)) {
   if($user_row['banaday']) {
     $ban_details = doquery("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1", true);
@@ -82,11 +84,7 @@ while($user_row = db_fetch($query)) {
   $template->assign_block_vars('user', array(
     'ID' => $user_row['id'],
     'NAME' => $user_row['username'],
-//    'NAME_JS' => js_safe_string($user_row['username']),
     'NAME_HTML' => htmlentities($user_row['username'], ENT_QUOTES, 'UTF-8'),
-//    'EMAIL' => $user_row['email'],
-// <th rowspan="2"><a href="admin/userlist.php?sort={D_SORT_EMAIL}">{L_sys_email}</a></th>
-// <td>{user.EMAIL}</td>
     'IP' => $user_row['user_lastip'],
     'IP_MULTI' => intval($multi_ip[$user_row['user_lastip']]),
     'TIME_REGISTERED' => date(FMT_DATE_TIME_SQL, $user_row['register_time']),
@@ -110,6 +108,9 @@ $template->assign_vars(array(
   'GEOIP' => $geoip,
   'METAMATTER' => isset($sn_module['unit_res_metamatter']),
   'GEOIP_WHOIS_URL' => $config->geoip_whois_url,
+
+  'PAGE_URL' => $_SERVER['SCRIPT_NAME'],
+  'PAGE_HEADER' => $is_players_online_page ? $lang['adm_ul_title_online'] : $lang['adm_ul_title'],
 ));
 
-display($template, $lang['adm_ul_title'], false, '', true);
+display($template, '', false, '', true);

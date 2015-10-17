@@ -6,21 +6,19 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $config, $lang, $user;
+
 // if($user['authlevel'] < 1)
-if($user['authlevel'] < 3)
-{
+if($user['authlevel'] < 3) {
   AdminMessage($lang['adm_err_denied']);
 }
 
 $planet_active = sys_get_param_int('planet_active');
-if(!$planet_active)
-{
+if(!$planet_active) {
   $planet_type = sys_get_param_int('planet_type', 1);
   $planet_type = $planet_type == 3 ? 3 : 1;
-}
-else
-{
-  $active_time = SN_TIME_NOW - 15*60;
+} else {
+  $active_time = SN_TIME_NOW - $config->game_users_online_timeout;
 }
 $table_parent_columns = $planet_type == 3 || $planet_active;
 
@@ -56,5 +54,3 @@ $template->assign_vars(array(
 ));
 
 display($template, $page_title, false, '', true);
-
-?>

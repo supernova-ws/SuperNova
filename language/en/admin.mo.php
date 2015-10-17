@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a11.2
+* @version 40a15.5
 *
 */
 
@@ -112,6 +112,7 @@ $a_lang_array = (array(
 
 
   'adm_ul_title' => 'Player list',
+  'adm_ul_title_online' => 'Players online',
   'adm_ul_time_registered' => 'Register date',
   'adm_ul_time_played' => 'Last played',
   'adm_ul_time_banned' => 'Banned until',

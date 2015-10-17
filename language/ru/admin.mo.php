@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a11.2
+* @version 40a15.5
 *
 */
 
@@ -67,7 +67,6 @@ $a_lang_array = (array(
 
   'adm_pl_image' => 'Изображение планеты',
   'adm_pl_fields_max' => 'Максимум секторов',
-  'adm_pl_fields_busy' => 'Занято секторов',
   'adm_pl_temp_min' => 'Минимальная&nbsp;температура',
   'adm_pl_temp_max' => 'Максимальная&nbsp;температура',
   'adm_pl_fields_busy' => 'Занято секторов',
@@ -82,6 +81,7 @@ $a_lang_array = (array(
   'adm_opt_user_birthday_range_hint' => 'Как далеко в прошлом может располагаться день рождения для получения игроком подарка. Очевидно, не имеет практического смысла устанавливать это значение более чем в 364 дня',
 
   'adm_ul_title' => 'Список игроков',
+  'adm_ul_title_online' => 'Игроки онлайн',
   'adm_ul_time_registered' => 'Дата регистрации',
   'adm_ul_time_played' => 'Последний логин',
   'adm_ul_time_banned' => 'Срок блокировки',

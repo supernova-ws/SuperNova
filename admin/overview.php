@@ -8,6 +8,11 @@
  *
  */
 
+define('ADMIN_USER_OVERVIEW', true);
+
+require_once('userlist.php');
+die();
+
 define('INSIDE'  , true);
 define('INSTALL' , false);
 define('IN_ADMIN', true);

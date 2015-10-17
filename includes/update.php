@@ -1083,6 +1083,9 @@ switch($new_version) {
 
     upd_check_key('ube_capture_points_diff', 2, !isset($config->ube_capture_points_diff));
 
+    // 2015-10-17 14:46:32 40a15.5
+    upd_check_key('game_users_online_timeout', 15 * 60, !isset($config->game_users_online_timeout));
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 40;
