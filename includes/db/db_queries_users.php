@@ -100,7 +100,7 @@ function db_user_list_admin_sorted($sort, $online = false) {
     WHERE" .
     ($online ? " `onlinetime` >= ". (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .
     " GROUP BY u.id
-    ORDER BY {$sort} ASC");
+    ORDER BY user_as_ally, {$sort} ASC");
 }
 
 /**
