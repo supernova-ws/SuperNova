@@ -86,7 +86,9 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       } else {
         // Show result
         foreach($survey_vote_result as &$vote_result) {
-          $vote_result['PERCENT'] = $total_votes ? $vote_result['VOTES'] / $total_votes * 100 : 0;
+          $vote_percent = $total_votes ? $vote_result['VOTES'] / $total_votes * 100 : 0;
+          $vote_result['PERCENT'] = $vote_percent;
+          $vote_result['PERCENT_TEXT'] = round($vote_percent, 1);
           $vote_result['VOTES'] = pretty_number($vote_result['VOTES']);
           $template->assign_block_vars('announces.survey_votes', $vote_result);
         }
