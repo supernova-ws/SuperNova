@@ -331,9 +331,18 @@ table {margin-left: auto; margin-right: auto}
   color: green;
 }
 
-.nick_premium, .bonus, #menu_premium
-{
+.nick_premium, .bonus, #menu_premium {
   color: gold;
+}
+
+#menu_premium_level {
+  color: gold;
+  display: inline;
+  float: right;
+}
+
+#menu_premium .link_b, #menu_premium .menu_icon {
+  float: left;
 }
 
 .same_alliance, .same_player

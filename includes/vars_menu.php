@@ -27,6 +27,10 @@ $sn_menu = array(
 
     'HIDE'     => {0|1},                       // Should be this item hide?
 
+    'WRAP_START' => 'html',                    // HTML-code to put after Tx element - before menu render
+    'ITEM_FINISH => 'html',                    // HTML-code to put as last element before potential </a> tag close
+    'WRAP_END' => 'html',                      // HTML-code to put before /Tx element - after menu render
+
     'AUTH_LEVEL' => (int),                     // Меню будет видно только пользователям с уровнем доступа выше указанного
     'DISABLED'  => {0|1},                      // DISABLED == 1 - пункт не будет показан
 
@@ -70,7 +74,6 @@ $sn_menu = array(
     'TYPE'  => 'lang',
     'ITEM'  => 'sys_impersonate_done',
     'LINK'  => 'logout.php',
-    'SPAN'  => 'important',
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
     'DISABLED' => $template_result[F_IMPERSONATE_STATUS] == LOGIN_UNDEFINED,
@@ -344,7 +347,7 @@ $sn_menu = array(
     'LEVEL' => 'submenu',
 //    'ITEM'  => $lang['news_title'] . ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\">{$lang['lm_announce_fresh']}</span>" : ''),
     'ITEM'  => $lang['news_title'],
-    'WRAP_END' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important\" style='display:inline'>{$lang['lm_announce_fresh']}</span>" : ''),
+    'ITEM_FINISH' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"important fresh\">{$lang['lm_announce_fresh']}</span>" : ''),
     'LINK'  => 'announce.php',
     'ICON'  => true,
   ),

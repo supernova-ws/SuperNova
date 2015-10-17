@@ -260,6 +260,6 @@ div .ui-dialog-content table {
   background-color: #242424; /* #344566 */
 }
 
-#left_menu td a:hover, #left_menu th a:hover {
+#left_menu td a:hover, #left_menu th a:hover, #left_menu.MENU_NARROW_CELLS td a:hover, #left_menu.MENU_NARROW_CELLS th a:hover {
   background-color: #705955;
 }

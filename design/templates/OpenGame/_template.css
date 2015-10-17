@@ -730,28 +730,16 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   display: none;
 }
 
-#left_menu_show {
-  z-index: 9999;
-}
-#left_menu_show.MENU_SHOW_HIDE_FIXED {
-  position: fixed;
-}
-#left_menu_show.MENU_SHOW_HIDE_HIDDEN {
-  display: none;
-}
-
 #left_menu td, #left_menu th {
   min-height: 1.5em;
   padding: 0.25em 0.5em 0.25em 0.5em;
   border: none;
 }
-
-#left_menu td a:hover, #left_menu th a:hover {
-  background-color: #415680;
+#left_menu td
+{
+  padding-left: 1em;
 }
-
 #left_menu.MENU_NARROW_CELLS td, #left_menu.MENU_NARROW_CELLS th {
-  min-height: 1.5em;
   padding: 0 0.5em;
   border: 1px solid #415680;
   border-top: none;
@@ -759,20 +747,38 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 #left_menu th {
   font-size: 1.1em;
-}
 
+  color: goldenrod;/*#63698c;*/
+  background-color: #212c42;
+  background-repeat: repeat-x;
+  text-align: center;
+}
 #left_menu th a {
   width: 80%;
 }
-#left_menu.MENU_NARROW_CELLS th a {
-  width: 90%;
+#left_menu td a {
+  width: 83%;
 }
+#left_menu.MENU_NARROW_CELLS th a {
+  width: 100%;
+}
+#left_menu.MENU_NARROW_CELLS td a {
+  width: 100%;
+}
+
+#left_menu td a:hover, #left_menu th a:hover, #left_menu.MENU_NARROW_CELLS td a:hover, #left_menu.MENU_NARROW_CELLS th a:hover {
+  background-color: #415680;
+}
+
 
 #left_menu > tbody > tr > td span, #left_menu > tbody > tr > th span {
   display: inline-block;
   vertical-align: top;
 }
 
+#left_menu th a:not(.lm_with_image) {
+  min-height: 1.4em;
+}
 #left_menu a:not(.lm_with_image) {
   background-color: rgba(35, 52, 82, 0.5); /*#233452;*/
   padding: 0.2em 1em;
@@ -789,6 +795,21 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
   height: 100%;
   display: inline-block;
+}
+
+#left_menu #server_name {
+  color: #00FF00;
+}
+
+
+#left_menu_show {
+  z-index: 9999;
+}
+#left_menu_show.MENU_SHOW_HIDE_FIXED {
+  position: fixed;
+}
+#left_menu_show.MENU_SHOW_HIDE_HIDDEN {
+  display: none;
 }
 
 #menu_show_hidden {
@@ -816,6 +837,12 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   cursor: pointer;
   left: 0;
   background-size: contain !important;
+}
+
+#menu_news .fresh {
+  color: red;
+  display: inline;
+  float: right;
 }
 
 .i_icon_visible {
@@ -1562,17 +1589,6 @@ h1 {
 }
 .ov_user_rank {
   color: #FFFF00
-}
-
-#left_menu #server_name {
-  color: #00FF00;
-}
-
-#left_menu th {
-  color: goldenrod;/*#63698c;*/
-  background-color: #212c42;
-  background-repeat: repeat-x;
-  text-align: center;
 }
 
 /* Setting popup table background color */
