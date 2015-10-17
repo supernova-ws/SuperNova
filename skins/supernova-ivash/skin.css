@@ -24,7 +24,7 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
 #201410 - #13233E
   TH background
   JQ Header-Toolbar text & icon
-#222222 - #233452 ?????????
+#221C1A - #233452
   Between TH and TD when you need mid-header in TD. Example - News header background and Survey header background
 #242424 - #344566
   TD background
@@ -139,6 +139,7 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
 }
 
 .ui-button.ui-input-text {
+  background-image: none;
   background-color: #786560;
 }
 
@@ -249,11 +250,11 @@ div .ui-dialog-content table {
 }
 
 #left_menu a:not(.lm_with_image) {
-  background-color: rgba(34, 34, 34, 0.5); /*#222222 - #233452;*/
+  background-color: rgba(34, 28, 26, 0.5); /* #221C1A - #233452; */
   border: 1px solid #483634;
 }
 #left_menu.MENU_NARROW_CELLS a:not(.lm_with_image) {
-  background-color: #222222; /*#222222 - #233452;*/
+  background-color: #221C1A; /* - #233452;*/
 }
 
 .market_services {
@@ -262,4 +263,15 @@ div .ui-dialog-content table {
 
 #left_menu td a:hover, #left_menu th a:hover, #left_menu.MENU_NARROW_CELLS td a:hover, #left_menu.MENU_NARROW_CELLS th a:hover {
   background-color: #705955;
+}
+
+.news_header, .survey_confirm {
+  background-color: #221C1A; /*#233452;*/
+}
+.survey_header, .survey_voted {
+  background-color: #221C1A; /*#233452;*/
+}
+
+.survey_block {
+  border-color: #705955 /*#415680*/;
 }

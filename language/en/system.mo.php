@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a11.3
+* @version 40a15.0
 *
 */
 
@@ -1100,10 +1100,15 @@ $a_lang_array = (array(
   'survey_questions_hint_edit' => 'Редактированние опроса обнулит его результаты',
   'survey_until' => 'Длительность опроса (1 сутки по умолчанию)',
 
+  'survey_votes_total_none' => 'Еще никто не проголосовал... Проголосуй первым!',
+  'survey_votes_total_voted' => 'Уже проголосовало:',
+  'survey_votes_total_voted_join' => 'Голосуй - или проиграешь!',
+  'survey_votes_total_voted_has_answer' => 'Вы уже проголосовали. Вместе с вами проголосовавших стало ',
+
   'survey_lasts_until' => 'Опрос продлится до',
 
   'survey_select_one' => 'Выберите один вариант ответа и нажмите',
-  'survey_confirm' => 'Подтвердить',
+  'survey_confirm' => 'Проголосовать!',
   'survey_result_sent' => 'Ваш голос учтен. Обновите страницу или воспользуйтесь ссылкой <a class="link" href="announce.php">Новости</a> что бы увидеть текущие результаты опроса',
   'survey_complete' => 'Опрос завершен',
 

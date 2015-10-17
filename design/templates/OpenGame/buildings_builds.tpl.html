@@ -318,8 +318,10 @@ planet = {
                   sn_ainput_make_jquery();
                 </script>
 
+                <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
                 <input type="checkbox" value="1" name="auto_convert" id="auto_convert" />
                 <label for="auto_convert" id="auto_convert_label" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">{L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}</label>
+                <!-- ENDIF -->
 
                 <button id="unit_create_button" class="unit_create positive">
                   {STRING_CREATE}

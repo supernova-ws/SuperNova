@@ -97,7 +97,7 @@ function eco_mrk_trader_recourse(selected_resource) {
     jQuery('#' + 'spend' + i +'slide').slider("value", 0);
   }
   operation_cost = C_rpg_cost_trader * (selected_resource == RES_DARK_MATTER ? 3 : 1);
-  eco_market_resources[RES_DARK_MATTER]['avail'] = eco_market_resources[RES_DARK_MATTER]['start'] + 1 - operation_cost;
+  eco_market_resources[RES_DARK_MATTER]['avail'] = eco_market_resources[RES_DARK_MATTER]['start'] - operation_cost;
   $('#rpg_cost_trader').html(operation_cost);
 
   eco_mrk_trader_recalc_lock = false;

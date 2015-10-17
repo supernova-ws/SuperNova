@@ -59,6 +59,21 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     }
 
     if($announce['survey_id']) {
+      $survey_query = doquery(
+        "SELECT survey_answer_text AS `TEXT`, count(DISTINCT survey_vote_id) AS `VOTES`
+          FROM `{{survey_answers}}` AS sa
+            LEFT JOIN `{{survey_votes}}` AS sv ON sv.survey_parent_answer_id = sa.survey_answer_id
+          WHERE sa.survey_parent_id = {$announce['survey_id']}
+          GROUP BY survey_answer_id
+          ORDER BY survey_answer_id;"
+      );
+      $survey_vote_result = array();
+      $total_votes = 0;
+      while($row = db_fetch($survey_query)) {
+        $survey_vote_result[] = $row;
+        $total_votes += $row['VOTES'];
+      }
+
       if(empty($survey_vote) && !$survey_complete) {
         // Can vote
         $survey_query = doquery("SELECT * FROM {{survey_answers}} WHERE survey_parent_id  = {$announce['survey_id']} ORDER BY survey_answer_id;");
@@ -70,26 +85,16 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
         }
       } else {
         // Show result
-        $survey_query = doquery(
-          "SELECT survey_answer_text AS `TEXT`, count(DISTINCT survey_vote_id) AS `VOTES`
-          FROM `{{survey_answers}}` AS sa
-            LEFT JOIN `{{survey_votes}}` AS sv ON sv.survey_parent_answer_id = sa.survey_answer_id
-          WHERE sa.survey_parent_id = {$announce['survey_id']}
-          GROUP BY survey_answer_id
-          ORDER BY survey_answer_id;"
-        );
-        $survey_vote_result = array();
-        $total_votes = 0;
-        while($row = db_fetch($survey_query)) {
-          $survey_vote_result[] = $row;
-          $total_votes += $row['VOTES'];
-        }
         foreach($survey_vote_result as &$vote_result) {
           $vote_result['PERCENT'] = $total_votes ? $vote_result['VOTES'] / $total_votes * 100 : 0;
           $vote_result['VOTES'] = pretty_number($vote_result['VOTES']);
           $template->assign_block_vars('announces.survey_votes', $vote_result);
         }
       }
+      // Dirty hack
+      $template->assign_block_vars('announces.total_votes', array(
+        'TOTAL_VOTES' => $total_votes,
+      ));
     }
   }
 }

@@ -12,7 +12,11 @@
 
 <script type="text/javascript">
   <!-- BEGIN resources -->
-  eco_market_resources[parseInt('{resources.ID}')] = { avail: parseFloat('{resources.AVAIL}'), rate: parseFloat('{resources.RATE}'), start: parseFloat('{resources.AVAIL}') };
+  eco_market_resources[parseInt('{resources.ID}')] = {
+    avail: parseFloat('{resources.AVAIL}'),
+    rate: parseFloat('{resources.RATE}'),
+    start: parseFloat('{resources.AVAIL}') + (parseInt('{resources.ID}') == RES_DARK_MATTER ? C_rpg_cost_trader : 0)
+  };
   jQuery(document).on('keyup', '#spend{resources.ID}', eco_mrk_trader_recalc);
   jQuery(document).on('slide slidechange', '#spend{resources.ID}slide', eco_mrk_trader_recalc);
   <!-- END resources -->

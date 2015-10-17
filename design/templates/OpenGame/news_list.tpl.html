@@ -32,7 +32,6 @@
 
         <!-- END paragraph -->
 
-        <!--{announces.ANNOUNCE}-->
         <!-- IF announces.DETAIL_URL -->
          <a class="news_link" href="{announces.DETAIL_URL}">{L_news_more}</a>
         <!-- ENDIF -->
@@ -55,26 +54,52 @@
           </tr>
           <!-- END survey_answers -->
           <tr>
-            <th class="survey_header" colspan="2">
+            <th class="survey_confirm" colspan="2">
               {L_survey_select_one} <button name="survey_confirm" value="{announces.SURVEY_ID}">{L_survey_confirm}</button>
             </th>
           </tr>
         <!-- ELSE -->
           <!-- BEGIN survey_votes -->
           <tr>
-            <td class="survey_votes_text">{survey_votes.TEXT}</td>
-            <td>
-              <div class="bar_anchor_h">
-                &nbsp;
-                <div class="survey_bar" style="width: {survey_votes.PERCENT}%;">&nbsp;</div>
-                <div class="survey_bar_number">{survey_votes.VOTES}</div>
+            <td colspan="2">
+              <div class="survey_votes">
+                <div class="survey_votes_text">
+                  {survey_votes.TEXT}
+                </div>
+
+                <div class="survey_votes_bar ok_bg" style="width: {survey_votes.PERCENT}%;">
+                  &nbsp;
+                </div>
+                <div class="survey_votes_percent">
+                  {survey_votes.PERCENT}%
+                </div>
+                <div class="survey_votes_number">
+                  {survey_votes.VOTES}
+                </div>
               </div>
             </td>
           </tr>
           <!-- END survey_votes -->
         <!-- ENDIF -->
+          <!-- BEGIN total_votes -->
           <tr>
-            <th class="c_c" colspan="2">
+            <th class="survey_voted" colspan="2">
+              <span class="warning">
+              <!-- IF total_votes.TOTAL_VOTES -->
+                <!-- IF announces.SURVEY_CAN_VOTE -->
+                  {L_survey_votes_total_voted} {total_votes.TOTAL_VOTES}. {L_survey_votes_total_voted_join}
+                <!-- ELSE -->
+                  {L_survey_votes_total_voted_has_answer} {total_votes.TOTAL_VOTES}
+                <!-- ENDIF -->
+              <!-- ELSE -->
+                {L_survey_votes_total_none}
+              <!-- ENDIF -->
+              </span>
+            </th>
+          </tr>
+          <!-- END total_votes -->
+          <tr>
+            <th class="c_c survey_length" colspan="2">
               <!-- IF announces.SURVEY_COMPLETE -->
                 <span class="warning">{L_survey_complete}</span>
               <!-- ELSE -->
