@@ -558,23 +558,6 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     return false;
   }
 
-  //var element_cache = new Object();
-  //
-  //function calc_elements() {
-  //  if (element_cache['_IS_INIT']) {
-  //    return;
-  //  }
-  //
-  //  var all_elements = document.getElementsByTagName('*');
-  //
-  //  for (element in all_elements) {
-  //    if (all_elements[element].id != undefined) {
-  //      element_cache[all_elements[element].id] = all_elements[element];
-  //    }
-  //  }
-  //  element_cache['_IS_INIT'] = true;
-  //}
-  //
   var mouseX, mouseY;
   var clientX, clientY;
 
@@ -609,6 +592,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   }
 
   function sn_format_number(number, precission, style, max, plus_sign) {
+    var str_number, arr_int, nachkomma, Begriff, i, j, Extrakt, str_first, ret_val;
     if (!precission) {
       precission = 0;
     }
@@ -671,23 +655,25 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   }
 
   function sn_timestampToString(timestamp, useDays) {
-    strTime = '';
+    var strTime = '', tmp;
+
+    !(timestamp = parseInt(timestamp)) ? timestamp = 0 : false;
 
     if (useDays) {
       tmp = Math.floor(timestamp / (60 * 60 * 24));
       timestamp -= tmp * 60 * 60 * 24;
-      strTime += (tmp > 0 ? tmp + 'd ' : '');
+      strTime += (tmp > 0 ? tmp + 'd' : '');
     }
 
     tmp = Math.floor(timestamp / (60 * 60));
     timestamp -= tmp * 60 * 60;
-    strTime += (tmp <= 9 ? '0' + tmp : tmp) + ':';
+    strTime += (tmp <= 9 ? '0' : '') + tmp + ':';
 
     tmp = Math.floor(timestamp / 60);
     timestamp -= tmp * 60;
-    strTime += (tmp <= 9 ? '0' + tmp : tmp) + ':';
+    strTime += (tmp <= 9 ? '0' : '') + tmp + ':';
 
-    strTime += (timestamp <= 9 ? '0' + timestamp : timestamp);
+    strTime += (timestamp <= 9 ? '0' : '') + timestamp;
 
     return strTime;
   }
