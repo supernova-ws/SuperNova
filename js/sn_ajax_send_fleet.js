@@ -38,8 +38,7 @@ function addToTable(strInfo, CmdCode)
   jQuery('#ov_recycle').hide();
 }
 
-function doit(missionId, planet, planettype, shipcount)
-{
+function doit(missionId, planet, planettype, shipcount) {
   var uni_send_fleet_params = {
     "mission": missionId,
     "galaxy": uni_galaxy,
@@ -49,27 +48,23 @@ function doit(missionId, planet, planettype, shipcount)
     "fleet": Array(),
   };
 
-  if(missionId == MT_MISSILE)
-  {
+  if(missionId == MT_MISSILE) {
     jQuery.extend(uni_send_fleet_params,{
       "missiles": document.uni_missile_form.SendMI.value,
       "structures": document.uni_missile_form.Target.value,
     });
   }
 
-  jQuery.post("flotenajax.php?action=send",
-    uni_send_fleet_params,
-    function(data)
-    {
-      if(data.indexOf('|') === -1)
-      {
-        addToTable(data, 1);
-        return;
-      }
-      retVals   = data.split("|");
-      strInfo   = retVals[0];
-      addToTable(retVals[0], 0);
-      uni_set_ships(retVals[1]);
+  jQuery.post("flotenajax.php?action=send", uni_send_fleet_params, function(data) {
+    if(data.indexOf('|') === -1) {
+      addToTable(data, 1);
+      popup_show($('#message_template').html().replace(/\[MESSAGE\]/g, data).replace(/\[CLASS\]/g, 'error_bg'));
+      return;
     }
-  );
+    retVals   = data.split("|");
+    strInfo   = retVals[0];
+    addToTable(retVals[0], 0);
+    uni_set_ships(retVals[1]);
+    popup_show($('#message_template').html().replace(/\[MESSAGE\]/g, retVals[0]).replace(/\[CLASS\]/g, 'ok_bg'));
+  });
 }

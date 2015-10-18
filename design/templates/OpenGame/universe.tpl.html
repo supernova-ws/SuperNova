@@ -22,9 +22,12 @@ var opt_uni_tooltip_time = parseInt('{opt_uni_tooltip_time}') ? parseInt('{opt_u
 var uni_phalanx = '{PLANET_PHALANX}';
 var uni_spies = '{ACT_SPIO}';
 var uni_death_stars = '{deathStars}';
+var uni_missiles = parseInt('{MIPs}') ? parseInt('{MIPs}') : 0;
 var PLANET_RECYCLERS = {PLANET_RECYCLERS};
 
 var MT_MISSILE = {D_MT_MISSILE};
+var MT_RECYCLE = {D_MT_RECYCLE};
+var PT_DEBRIS = {D_PT_DEBRIS};
 
 jQuery.extend(language, {
   sys_ships: '{L_uni_incoming_fleets}',
@@ -313,7 +316,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <img onclick="uni_missile_planet={galaxyrow.PLANET_NUM};jQuery('#uni_missile_planet').html({galaxyrow.PLANET_NUM});jQuery('#uni_missile_form').show();" src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" />
+        <img planet_planet="{galaxyrow.PLANET_NUM}" class="missile_attack_prepare" src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" />
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
@@ -428,7 +431,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="planet_template">
-    <table>
+    <table class="planet_template">
       <tr>
         <th class="c_c" colspan="2">
           [{galaxy}:{system}:[PLANET_POS]]&nbsp;[PLANET_TYPE_TEXT_SHORT]&nbsp;[PLANET_NAME]
@@ -436,37 +439,18 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       </tr>
 
       <tr>
-      <td class="c_c"><img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" style="width: 7em; font-size: 1em;" /><div>[PLANET_DIAMETER]</div></td>
+        <td class="c_c"><img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" style="width: 7em; font-size: 1em;" /><div>[PLANET_DIAMETER]</div></td>
 
-      <td class="c_c">
-        <button style="[HIDE_PLANET_RELOCATE]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_RELOCATE}');">
-          <span class="owndeploy">{L_type_mission[4]}</span>
-        </button>
-        <br />
-        <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_TRANSPORT}');">
-          <span class="owntransport">{L_type_mission[3]}</span>
-        </button>
-        <br />
-        <button style="[HIDE_PLANET_HOLD]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_HOLD}');">
-          <span class="ownhold">{L_type_mission[5]}</span>
-        </button>
-        <br />
-        <button style="[HIDE_PLANET_DESTROY]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_DESTROY}');">
-          <span class="owndestroy">{L_type_mission[9]}</span>
-        </button>
-        <br />
-        <button style="[HIDE_PLANET_ATTACK]" onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]&target_mission={D_MT_ATTACK}');">
-          <span class="ownattack">{L_type_mission[1]}</span>
-        </button>
-        <br />
-        <button style="[HIDE_PLANET_SPY]" onclick="doit({D_MT_SPY}, [PLANET_POS], [PLANET_TYPE], {ACT_SPIO});">
-          <span class="ownespionage">{L_type_mission[6]}</span>
-        </button>
-        <br />
-        <button style="[HIDE_PLANET_PHALANX]" onclick=fenster("phalanx.php?galaxy={galaxy}&system={system}&planet=[PLANET_POS]&planettype=[PLANET_TYPE]")>
-          <span class="">{L_gl_phalanx}</span>
-        </button>
-      </td>
+        <td class="c_c" planet_planet="[PLANET_POS]" planet_type="[PLANET_TYPE]">
+          <div class="owndeploy button_pseudo" style="[HIDE_PLANET_RELOCATE]" go="fleet" mission="{D_MT_RELOCATE}">{L_type_mission[D_MT_RELOCATE]}</div>
+          <div class="owntransport button_pseudo" go="fleet" mission="{D_MT_TRANSPORT}">{L_type_mission[D_MT_TRANSPORT]}</div>
+          <div class="ownhold button_pseudo" style="[HIDE_PLANET_HOLD]" go="fleet" mission="{D_MT_HOLD}">{L_type_mission[D_MT_HOLD]}</div>
+          <div class="owndestroy button_pseudo" style="[HIDE_PLANET_DESTROY]" go="fleet" mission="{D_MT_DESTROY}">{L_type_mission[D_MT_DESTROY]}</div>
+          <div class="ownattack button_pseudo" style="[HIDE_PLANET_ATTACK]" go="fleet" mission="{D_MT_ATTACK}">{L_type_mission[D_MT_ATTACK]}</div>
+          <div class="ownespionage button_pseudo" style="[HIDE_PLANET_SPY]" onclick="doit({D_MT_SPY}, [PLANET_POS], [PLANET_TYPE], {ACT_SPIO});">{L_type_mission[D_MT_SPY]}</div>
+          <div class="ownmissile button_pseudo" style="[HIDE_PLANET_MISSILE]">{L_type_mission[D_MT_MISSILE]}</div>
+          <div class="button_pseudo" style="[HIDE_PLANET_PHALANX]" go="phalanx" target="_blank">{L_gl_phalanx}</div>
+        </td>
       </tr>
     </table>
 
@@ -474,7 +458,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="debris_template">
-    <table width=100%>
+    <table width=100% class="debris_template">
       <tr><th class="c_c" colspan="4">[{galaxy}:{system}:[CURRENT_PLANET]] {L_sys_planet_type[D_PT_DEBRIS]}</th></tr>
       <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" style="width: 7em; font-size: 1em;" /></td></tr>
 
@@ -512,12 +496,11 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 
       <tr class="link c_c" style="[HIDE_RECYCLER_LINK]" >
         <th colspan="4">
-          <button onclick="doit({D_MT_RECYCLE},[CURRENT_PLANET],{D_PT_DEBRIS});">
-            [ {L_uni_recyclers_send} ]
-          </button>
+          <div class="button_pseudo ownharvest" planet_planet="[CURRENT_PLANET]">
+            {L_uni_recyclers_send}
+          </div>
         </th>
       </tr>
-
     </table>
   </span>
 
@@ -592,6 +575,15 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     </table>
   </span>
 
+  <span id="message_template">
+    <table>
+      <tr>
+        <td class="c_c [CLASS]" style="padding: 0.5em 1em;">
+          [MESSAGE]
+        </td>
+      </tr>
+    </table>
+  </span>
 </span>
 
 <!-- INCLUDE page_hint -->

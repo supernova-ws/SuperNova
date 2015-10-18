@@ -265,11 +265,20 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
   });
 
+  function attr_on_me_or_parent(that, attr) {
+    return parseInt(jQuery(that).attr(attr) ? jQuery(that).attr(attr) : jQuery(that).parent().attr(attr));
+  }
+
   jQuery(document).on('click', "[go]", function () {
-    planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
-    unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
-    mode = jQuery(this).attr('mode');
-    switch (jQuery(this).attr('go')) {
+    //var planet_id, unit_id, mode, page, planet_planet, planet_type;
+    //planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
+    //unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
+    var location = [], planet_id, mode, unit_id;
+
+    var target = jQuery(this).attr('target');
+    var page = jQuery(this).attr('go');
+
+    switch (page) {
       case 'info':
         page = 'infos';
         break;
@@ -277,8 +286,14 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       case 'flying':
         page = 'flying_fleets';
         break;
+      case 'phalanx':
       case 'fleet':
-        page = 'fleet';
+        // planet_planet = (planet_planet = parseInt(jQuery(this).attr('planet_planet'))) ? planet_planet : parseInt(jQuery(this).parent().attr('planet_planet'));
+        location.push('galaxy=' + uni_galaxy);
+        location.push('system=' + uni_system);
+        location.push('planet=' + attr_on_me_or_parent(this, 'planet_planet'));
+        location.push('planettype=' + attr_on_me_or_parent(this, 'planet_type'));
+        location.push('target_mission=' + attr_on_me_or_parent(this, 'mission'));
         break;
       case 'build':
         page = 'buildings';
@@ -289,11 +304,29 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       default:
         page = 'overview';
     }
-    document.location = page + '.php?' + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
-    + (mode ? 'mode=' + mode : '')
-    + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '') : '')
-    ;
+    (planet_id = attr_on_me_or_parent(this, 'planet_id')) ? location.push('cp=' + planet_id) : false;
+    (mode = jQuery(this).attr('mode')) ? location.push('mode=' + mode) : false;
+    (unit_id = attr_on_me_or_parent(this, 'unit_id')) ? location.push('gid=' + unit_id) : false;
+
+    unit_id && window.ALLY_ID !== undefined && parseInt(ALLY_ID) ? location.push('ally_id=' + ALLY_ID) : false;
+
+    location = page + '.php?' + location.join('&');
+
+    // var location = page + '.php?' + location;
+
+    target ? window.open(location, target) : (document.location = location);
+
+    // document.location = ;
+    //console.log(page + '.php?' + location);
+
+
+    //document.location = page + '.php?'
+    //  + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
+    //  + (mode ? 'mode=' + mode : '')
+    //  + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '') : '')
+    //;
   });
+
 // Сбор ресурсов
   jQuery(document).on('click', ".gather_resources", function () {
     that = $(this);
@@ -529,7 +562,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   function popup_show(html, positioning, width) {
     popup_hide();
     popup.dialog("option", "width", width ? width : 'auto');
-    popup.dialog("option", "position", positioning ? positioning : {my: 'left-top', at: 'right bottom', of: this});
+    popup.dialog("option", "position", positioning ? positioning : {my: 'center', at: 'center', of: window});
     popup.html(html);
     popup.dialog("open");
     popupIsOpen = true;

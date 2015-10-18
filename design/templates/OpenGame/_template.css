@@ -1859,3 +1859,8 @@ div .ui-dialog-content table {
 td.error_message {
   background-color     : #415680;
 }
+
+.planet_template div {
+  display: block;
+  max-width: 11em;
+}

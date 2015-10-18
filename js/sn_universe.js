@@ -34,6 +34,7 @@ function sn_universe_show_planet(that) {
     .replace(/\[PLANET_DIAMETER\]/g, uni_row[planet_pos][planet_type_string + '_diameter'])
     .replace(/\[FLEET_TABLE\]/g, fleet_table_make(uni_row[planet_pos][planet_type_string + '_fleet_id']))
     .replace(/\[HIDE_PLANET_PHALANX\]/g, !user_is_planet_owner && uni_phalanx && planet_type == 1 ? '' : 'display: none;')
+    .replace(/\[HIDE_PLANET_MISSILE\]/g, !user_is_planet_owner && window.uni_missiles && planet_type == 1 ? '' : 'display: none;')
     .replace(/\[HIDE_PLANET_DESTROY\]/g, !user_is_planet_owner && parseFloat(uni_death_stars) && planet_type == 3 ? '' : 'display: none;')
     .replace(/\[HIDE_PLANET_RELOCATE\]/g, user_is_planet_owner ? '' : 'display: none;')
     .replace(/\[HIDE_PLANET_SPY\]/g, user_is_planet_owner ? 'display: none;' : '')
@@ -115,7 +116,6 @@ $(function(){
 
   $(document).on('mouseleave', '#universe_legend', function() {
     universe_popup = null;
-    //popup_hide();
   });
 
   $(document).on('mouseleave', '.uni_show_planet,.uni_show_debris,.uni_show_user,.uni_show_ally', function() {
@@ -149,4 +149,19 @@ $(function(){
       }
     }, event.type == 'mouseenter' ? opt_uni_tooltip_time : 1, that);
   });
+});
+
+$(document).on('click', '.planet_template .ownmissile, .missile_attack_prepare', function() {
+  popup_hide();
+  uni_missile_planet = attr_on_me_or_parent(this, 'planet_planet');
+  jQuery('#uni_missile_planet').html(uni_missile_planet);
+  jQuery('#uni_missile_form').show();
+  $('html, body').animate({
+    scrollTop: $("#uni_missile_form").offset().top
+  }, 2000);
+});
+
+$(document).on('click', '.debris_template .ownharvest', function() {
+  popup_hide();
+  doit(MT_RECYCLE, $(this).attr('planet_planet'), PT_DEBRIS);
 });
