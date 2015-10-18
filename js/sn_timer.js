@@ -142,8 +142,8 @@ if(window.LOADED_TIMER === undefined) {
           }
 
           // Если у нас только html_main, но нет html_timer - надо каждый шаг обновлять html_main, потому что в нём содержится и таймер
-          timer_options['always_refresh'] = timer['html_main'].length && !timer['html_timer'].length;
-          timer_options['changed'] = true;
+          timer['always_refresh'] = timer['html_main'].length && !timer['html_timer'].length;
+          timer['changed'] = true;
 
           break;
         }
@@ -176,7 +176,7 @@ if(window.LOADED_TIMER === undefined) {
             break;
           }
 
-          timer_options['changed'] = true;
+          timer['changed'] = true;
           break;
         }
 
@@ -280,7 +280,7 @@ if(window.LOADED_TIMER === undefined) {
               que[0][UNIT_AMOUNT]--;
               if (que[0][UNIT_AMOUNT] <= 0) {
                 que.shift();
-                timer_options['changed'] = true;
+                timer['changed'] = true;
               }
             }
           }
@@ -293,7 +293,7 @@ if(window.LOADED_TIMER === undefined) {
             timeLeftText = sn_timestampToString(- (timeSinceLastUpdate) + parseInt(que[0][UNIT_TIME]));
           } else {
             infoText = timer_options['msg_done'];
-            timer_options['changed'] = true;
+            timer['changed'] = true;
             timer['active'] = false;
           }
 
@@ -302,7 +302,7 @@ if(window.LOADED_TIMER === undefined) {
           } else {
             infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
           }
-          if((timer_options['always_refresh'] || timer_options['changed']) && timer['html_main'].length) {
+          if((timer['always_refresh'] || timer['changed']) && timer['html_main'].length) {
             timer['html_main'].html(infoText);
           }
 
@@ -408,25 +408,25 @@ if(window.LOADED_TIMER === undefined) {
           if (timer_options['que'].length && timer_options['que'][0][EVENT_TIME] <= timeSinceLastUpdate) { // TODO - проверить. Может тут ошибка - генерятся длительности не от SN_TIME_NOW, а дельты
             //timer['start_time'] = timestamp_server; // TODO - а вот это тогда всё исправит
             timer_options['que'].shift();
-            timer_options['changed'] = true;
+            timer['changed'] = true;
           }
 
           if (timer_options['que'].length) {
-            if(timer_options['changed']) {
+            if(timer['changed']) {
               infoText = timer_options['que'][0][EVENT_STRING];
               hintText = timer_options['que'][0][EVENT_HINT];
             }
           } else {
             infoText = timer_options['msg_done'];
-            timer['options']['changed'] = true;
+            timer['changed'] = true;
             timer['active'] = false;
           }
 
-          if (timer_options['changed']) {
+          if (timer['changed']) {
             timer['html_main'].length ? timer['html_main'].html(infoText) : false;
             // Если нет видимого элемента total - выводим подсказку в main. Уж один-то из них точно видимый!
             timer[timer['html_total_js'].length ? 'html_total_js' : 'html_main'].prop('title', hintText);
-            timer_options['changed'] = false;
+            timer['changed'] = false;
           }
           break;
         }
