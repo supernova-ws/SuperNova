@@ -25,7 +25,6 @@ $mode          = sys_get_param_str('mode');
 $announce = array();
 if ($user['authlevel'] >= 3) {
   if (!empty($text)) {
-    // $idAnnounce = sys_get_param_id('id');
     $announce_time = strtotime($announce_time, SN_TIME_NOW);
     $announce_time = $announce_time ? $announce_time : SN_TIME_NOW;
 
@@ -38,17 +37,15 @@ if ($user['authlevel'] >= 3) {
         `user_id` = {$user['id']}, `user_name` = '" . db_escape($user['username']) . "'");
       $announce_id = db_insert_id();
     }
-    if(($survey_question = sys_get_param_str('survey_question')) && ($survey_answers = sys_get_param_str('survey_answers'))) {
-      $survey_answers = explode('\r\n', $survey_answers);
-      if(count($survey_answers) > 1) {
-        $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW);
-        $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ? $survey_until : SN_TIME_NOW + PERIOD_DAY * 1);
-        doquery("INSERT INTO {{survey}} SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
-        $survey_id = db_insert_id();
-        foreach($survey_answers as $survey_answer) {
-          $survey_answer = db_escape(trim($survey_answer));
-          $survey_answer ? doquery("INSERT INTO {{survey_answers}} SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'") : false;
-        }
+    if(($survey_question = sys_get_param_str('survey_question')) && ($survey_answers = sys_get_param('survey_answers'))) {
+      $survey_answers = explode("\r\n", $survey_answers);
+      $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW);
+      $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ? $survey_until : SN_TIME_NOW + PERIOD_DAY * 1);
+      doquery("INSERT INTO {{survey}} SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
+      $survey_id = db_insert_id();
+      foreach($survey_answers as $survey_answer) {
+        $survey_answer = db_escape(trim($survey_answer));
+        $survey_answer ? doquery("INSERT INTO {{survey_answers}} SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'") : false;
       }
     }
 
@@ -92,7 +89,7 @@ if ($user['authlevel'] >= 3) {
     break;
   }
 } else {
-  $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`)<=' . SN_TIME_NOW;
+  $annQuery = 'WHERE UNIX_TIMESTAMP(`tsTimeStamp`) <= ' . SN_TIME_NOW;
 }
 
 nws_render($template, $annQuery, 20);
@@ -105,7 +102,7 @@ $template->assign_vars(array(
   'strAnnounce'     => $announce['strAnnounce'],
   'DETAIL_URL'      => $announce['detail_url'],
   'SURVEY_QUESTION' => $announce['survey_question'],
-  'SURVEY_UNTIL' => $announce['survey_until'],
+  'SURVEY_UNTIL'    => $announce['survey_until'],
   'SURVEY_ANSWERS'  => $survey_answers,
 ));
 
