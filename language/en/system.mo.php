@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a15.2
+* @version 40a15.8
 *
 */
 
@@ -1148,4 +1148,7 @@ $a_lang_array = (array(
 
   'wiki_requrements' => 'Requires',
   'wiki_grants' => 'Grants',
+
+  'que_slot_length' => 'Slots',
+
 ));

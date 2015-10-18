@@ -7,7 +7,7 @@ function universe_popup_show(popup) {
   if($(popup['of']).attr('popup_opened_here')) {
     popup_hide();
   } else {
-    popup_show(popup['html'], 'auto', 0, 0, popup);
+    popup_show(popup['html'], popup);
     $(popup['of']).attr('popup_opened_here', 1);
   }
 }
@@ -127,6 +127,15 @@ function sn_universe_show_ally(that) {
 }
 
 $(function(){
+  $(document).on('click mouseenter', '#universe_legend', function() {
+    popup_show(jQuery('#legend_template').html(), {my: 'right top', at: 'right bottom', of: this});
+  });
+
+  $(document).on('mouseleave', '#universe_legend', function() {
+    universe_popup = null;
+    popup_hide();
+  });
+
   $(document).on('mouseleave', '.uni_show_planet,.uni_show_debris,.uni_show_user,.uni_show_ally', function() {
     universe_popup = null;
   });

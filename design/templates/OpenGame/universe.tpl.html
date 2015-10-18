@@ -110,7 +110,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 <table width=595 id="universe_main"><tbody>
   <tr><th class="c_l" colspan="{COL_SPAN}">
     {L_sys_galaxy}&nbsp;{galaxy} <span class="ok">{GALAXY_NAME}</span>&nbsp;<a class="link" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a>
-    <span class="fr ok link_action" onmouseout='popup_hide();' onmouseover="popup_show(jQuery('#legend_template').html(), 'auto', 0, 0, {my: 'right top', at: 'right bottom', of: jQuery(this).parent()});">{L_Legend}</span>
+    <span class="fr ok link_action" id="universe_legend">{L_Legend}</span>
   </th></tr>
 
   <tr><th class="c_l" colspan="{COL_SPAN}">

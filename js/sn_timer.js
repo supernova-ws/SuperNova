@@ -161,6 +161,7 @@ if(window.LOADED_TIMER === undefined) {
           timer['html_que_js'] = $("#" + timer['id'] + '_que');
           timer['html_finish'] = $('#' + timer['id'] + '_finish:visible');
           timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
+          timer['html_slots_current'] = $('#' + timer['id'] + '_slots');
 
           timer['que_compiled'] = '';
           break;
@@ -334,9 +335,9 @@ if(window.LOADED_TIMER === undefined) {
             // TODO - проверка на timer['html_que_js'].length
             timer['que_compiled'] = sn_timer_compile_que(timer_options);
 
-            if (timer['html_que_js'].length) {
-              timer['html_que_js'].html(timer['que_compiled']);
-            }
+            timer['html_slots_current'].length ? timer['html_slots_current'].html(que.length) : false;
+            timer['html_que_js'].length ? timer['html_que_js'].html(timer['que_compiled']) : false;
+
             timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
             timer['html_timer_current'] = $('.' + timer['id'] + '_timer_0:visible');
             timer['html_timer_seconds'] = $('.' + timer['id'] + '_seconds_0:visible');
@@ -386,18 +387,15 @@ if(window.LOADED_TIMER === undefined) {
             infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
           }
 
-          //if(que.length && que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
           if(!jQuery.fx.off && que.length && que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
             // Анимация
             $('.' + timer['id'] + '_container_0:visible').animate({opacity: 0}, que[0][UNIT_TIME] * 1000);
           }
-          //if(que.length && que[0][UNIT_TIME_FULL] == timeLeft) {
+
           if(!jQuery.fx.off && que.length && que[0][UNIT_TIME_FULL] == timeLeft) {
-            timer['html_timer_current'].children().animate({opacity: 0}, 50, function(){
+            timer['html_timer_current'].children().animate({opacity: 0}, 50, function() {
               $(this).animate({opacity: 1}, 300)});
           }
-
-          // timer['html_que_js'] === undefined || !timer['html_que_js'].length ? infoText += timer['que_compiled'] : false;
 
           timer['html_main'].length ? timer['html_main'].html(infoText) : false;
           break;
@@ -460,9 +458,6 @@ if(window.LOADED_TIMER === undefined) {
           local_time_plus = new Date(time_local_now.valueOf() + timer_options['delta'] * 1000);
 
           timer['html_main'].html(snDateToString(local_time_plus, timer_options['format']));
-          //(timer_options['format'] & 1 ? local_time_plus.toLocaleDateString() : '') +
-          //(timer_options['format'] & 3 ? '&nbsp;' : '') +
-          //(timer_options['format'] & 2 ? local_time_plus.toTimeString().substring(0, 8) : '')
           break;
         }
       }

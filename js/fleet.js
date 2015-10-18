@@ -374,56 +374,46 @@ function max_resources() {
 }
 
 function fleet_dialog_show(caller, fleet_id) {
-  popup_show(fleet_table_make(fleet_id), 'auto', 0, 0, {my: 'left top', at: 'right top', of: caller});
+  popup_show(fleet_table_make(fleet_id), {my: 'left top', at: 'right top', of: caller});
 }
 
 function fleet_table_make(fleet_id)
 {
-  if(!fleets[fleet_id])
-  {
+  if(!fleets[fleet_id]) {
     return '';
   }
 
-  if(!fleets[fleet_id][9])
-  {
+  if(!fleets[fleet_id][9]) {
     var fleet_html = '<table><tr><td class=c colspan=2>' + language['sys_fleet_composition'] + '</td></tr>';
     var fleet = fleets[fleet_id][0];
     var resources = fleets[fleet_id][1];
 
-    var ship_id;
+    var ship_id, res_id;
     var fleet_capacity = 0;
 
-    for(ship_id in fleet)
-    {
-      //if(fleet[ship_id][C_SHIP_AMOUNT] != 0)
-      {
-        fleet_html += '<tr><td class="c_l">';
-        switch(fleet[ship_id][C_SHIP_NAME])
-        {
-          default:
-            fleet_html += fleet[ship_id][C_SHIP_NAME];
-          break;
-        }
-        fleet_html += '</td><td class="c_r">' + sn_format_number(parseInt(fleet[ship_id][C_SHIP_AMOUNT]));
-        fleet_html += '</td></tr>';
-        fleet_capacity += fleet[ship_id][C_SHIP_CAPACITY] * fleet[ship_id][C_SHIP_AMOUNT];
+    for(ship_id in fleet) {
+      if(!fleet.hasOwnProperty(ship_id)) {
+        continue;
       }
-    };
 
-    if(fleet_capacity)
-    {
+      fleet_html += '<tr><td class="c_l">';
+      fleet_html += fleet[ship_id][C_SHIP_NAME];
+      fleet_html += '</td><td class="c_r">' + sn_format_number(parseInt(fleet[ship_id][C_SHIP_AMOUNT]));
+      fleet_html += '</td></tr>';
+      fleet_capacity += fleet[ship_id][C_SHIP_CAPACITY] * fleet[ship_id][C_SHIP_AMOUNT];
+    }
+
+    if(fleet_capacity) {
       fleet_html += '<tr><td class="c">' + language['sys_capacity'] + '</td><td class="c" style="padding-right: 3px;">' + sn_format_number(fleet_capacity, 0, 'zero') + '</td></tr>';
     }
 
     var resources_total = parseInt(resources[0]) + parseInt(resources[1]) + parseInt(resources[2]);
-    if(resources_total > 0)
-    {
-      for(res_id in resources)
-      {
-        if(parseInt(resources[res_id]))
-        {
-          fleet_html += '<tr><th class=c><div style="text-align: left">' + res_names[res_id] + '</div></th><th><div style="text-align: right;">' + sn_format_number(parseInt(resources[res_id]), 0, 'zero') + '</div></th></tr>';
+    if(resources_total > 0) {
+      for(res_id in resources) {
+        if(!resources.hasOwnProperty(res_id) || !parseInt(resources[res_id])) {
+          continue;
         }
+        fleet_html += '<tr><th class=c><div style="text-align: left">' + res_names[res_id] + '</div></th><th><div style="text-align: right;">' + sn_format_number(parseInt(resources[res_id]), 0, 'zero') + '</div></th></tr>';
       }
 
       fleet_html += '<tr><td class=c>' + language['sys_resources'] + '</td><td class=c style="text-align: right; padding-right: 3px;">' + sn_format_number(resources_total, 0, 'zero') + '</td></tr>';

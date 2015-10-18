@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a15.2#
+* @version #40a15.8#
 *
 */
 
@@ -1160,4 +1160,7 @@ $a_lang_array = (array(
 
   'wiki_requrements' => 'Требуется',
   'wiki_grants' => 'Предоставляет',
+
+  'que_slot_length' => 'Слоты',
+
 ));

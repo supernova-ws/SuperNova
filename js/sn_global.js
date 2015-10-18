@@ -526,18 +526,10 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     popupIsOpen = false;
   }
 
-  function popup_show(html, width, aClientX, aClientY, positioning) {
+  function popup_show(html, positioning, width) {
     popup_hide();
-    if(width) {
-      popup.dialog("option", "width", width);
-    }
-    if(positioning) {
-      popup.dialog("option", "position", positioning);
-    } else {
-      aClientX = aClientX ? aClientX : clientX;
-      aClientY = aClientY ? aClientY : clientY;
-      popup.dialog("option", "position", [aClientX, aClientY]); // + 20
-    }
+    popup.dialog("option", "width", width ? width : 'auto');
+    popup.dialog("option", "position", positioning ? positioning : {my: 'left-top', at: 'right bottom', of: this});
     popup.html(html);
     popup.dialog("open");
     popupIsOpen = true;
@@ -558,9 +550,9 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     return false;
   }
 
+/*
   var mouseX, mouseY;
   var clientX, clientY;
-
   jQuery(document).mousemove(function (e) {
     mouseX = e.pageX;
     mouseY = e.pageY;
@@ -568,7 +560,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     clientX = e.clientX;
     clientY = e.clientY;
   });
-
+*/
 
   function sn_show_hide(element, element_name) {
     var element_to_hide = jQuery("#" + element_name);
