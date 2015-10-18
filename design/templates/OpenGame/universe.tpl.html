@@ -28,8 +28,10 @@ var MT_MISSILE = {D_MT_MISSILE};
 
 jQuery.extend(language, {
   sys_ships: '{L_uni_incoming_fleets}',
-  sys_moon: '{L_Moon}',
-  sys_planet: '{L_gl_planet}',
+  sys_planet: '{L_sys_planet_type[D_PT_PLANET]}',
+  sys_moon: '{L_sys_planet_type[D_PT_MOON]}',
+  sys_planet_short: '{L_sys_planet_type_sh[D_PT_PLANET]}',
+  sys_moon_short: '{L_sys_planet_type_sh[D_PT_MOON]}',
 });
 
 var users = new Array();
@@ -429,7 +431,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     <table>
       <tr>
         <th class="c_c" colspan="2">
-          [PLANET_TYPE_TEXT]&nbsp;[PLANET_NAME]&nbsp;[{galaxy}:{system}:[PLANET_POS]]
+          [{galaxy}:{system}:[PLANET_POS]]&nbsp;[PLANET_TYPE_TEXT_SHORT]&nbsp;[PLANET_NAME]
         </th>
       </tr>
 
@@ -473,7 +475,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 
   <span id="debris_template">
     <table width=100%>
-      <tr><th class="c_c" colspan="4">{L_Debris} [{galaxy}:{system}:[CURRENT_PLANET]]</th></tr>
+      <tr><th class="c_c" colspan="4">[{galaxy}:{system}:[CURRENT_PLANET]] {L_sys_planet_type[D_PT_DEBRIS]}</th></tr>
       <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" style="width: 7em; font-size: 1em;" /></td></tr>
 
       <tr>
