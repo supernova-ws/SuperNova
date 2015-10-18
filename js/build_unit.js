@@ -88,7 +88,7 @@ jQuery(document).ready( function(e) {
     $('#unit_max_number').html(sn_format_number(unit['can_build']));
 
     if(unit['autoconvert_amount']) {
-      $('#auto_convert').prop('disabled', false).button().button('enable');
+      $('#auto_convert').prop('disabled', false).not(':checkbox').button('enable');
     }
 
     if(unit['build_can'] != 0 && unit['build_result'] == 0) {
@@ -111,7 +111,7 @@ jQuery(document).ready( function(e) {
     }
 
     if(unit['autoconvert_amount']) {
-      $('#auto_convert').prop('disabled', false).button('enable');
+      $('#auto_convert').prop('disabled', false).not(':checkbox').button('enable');
     }
 
     $('#unit_amount').change();
@@ -272,6 +272,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     }
   }
   $('#unit_create_button_auto').button(unit['can_autoconvert'] ? 'enable' : 'disable').prop('disabled', unit['can_autoconvert'] ? false : true);
+  //$('#auto_convert').prop('disabled', unit['can_autoconvert'] ? false : true); // TODO - разобраться, почему не работает
   $('#unit_create_level, #unit_create_level_auto').html((parseInt(unit['level']) ? parseInt(unit['level']) : 0) + 1);
 
 //  $('#unit_create_button_auto').button(unit['can_autoconvert'] ? 'enable' : 'disable');

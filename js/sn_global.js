@@ -54,15 +54,13 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   function document_ready() {
     // Натягиваем скины на элементы ввода
     inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
-    //inputs.filter(':button, :submit, :reset').button().addClass('ui-textfield');
-    inputs.filter(':button, :submit, :reset').button();
-    //inputs.filter(':text, :password, :file').button().addClass('ui-textfield');
+    inputs.filter(':button, :submit, :reset').button(); // .addClass('ui-textfield');
     inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text');
     inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
-    //inputs.filter(':checkbox, :radio').checkator();
-    jQuery("button").button().addClass('ui-textfield');
-    // jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield');
+    jQuery("button:not(.do-not-skin)").button().addClass('ui-textfield');
     jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield ui-input-text');
+
+    //inputs.filter(':checkbox, :radio').checkator();
 
     // calc_elements();
 
@@ -270,9 +268,6 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   }
 
   jQuery(document).on('click', "[go]", function () {
-    //var planet_id, unit_id, mode, page, planet_planet, planet_type;
-    //planet_id = (planet_id = parseInt(jQuery(this).attr('planet_id'))) ? planet_id : parseInt(jQuery(this).parent().attr('planet_id'));
-    //unit_id = (unit_id = parseInt(jQuery(this).attr('unit_id'))) ? unit_id : parseInt(jQuery(this).parent().attr('unit_id'));
     var location = [], planet_id, mode, unit_id;
 
     var target = jQuery(this).attr('target');
@@ -288,7 +283,6 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
         break;
       case 'phalanx':
       case 'fleet':
-        // planet_planet = (planet_planet = parseInt(jQuery(this).attr('planet_planet'))) ? planet_planet : parseInt(jQuery(this).parent().attr('planet_planet'));
         location.push('galaxy=' + uni_galaxy);
         location.push('system=' + uni_system);
         location.push('planet=' + attr_on_me_or_parent(this, 'planet_planet'));
@@ -301,6 +295,24 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       case 'res':
         page = 'resources';
         break;
+      case 'stat':
+        (mode = attr_on_me_or_parent(this, 'who')) ? location.push('who=' + mode) : false;
+        location.push('range=' + attr_on_me_or_parent(this, 'rank') + '#' + attr_on_me_or_parent(this, 'rank'));
+        break;
+      case 'imperator':
+        page = 'index';
+        location.push('page=imperator');
+        location.push('int_user_id=' + attr_on_me_or_parent(this, 'user_id'));
+        break;
+      case 'messages':
+        location.push('id=' + attr_on_me_or_parent(this, 'user_id'));
+        break;
+      case 'buddy':
+        location.push('request_user_id=' + attr_on_me_or_parent(this, 'user_id'));
+        break;
+      case 'alliance':
+        location.push('a=' + attr_on_me_or_parent(this, 'ally_id'));
+        break;
       default:
         page = 'overview';
     }
@@ -312,19 +324,8 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
 
     location = page + '.php?' + location.join('&');
 
-    // var location = page + '.php?' + location;
-
     target ? window.open(location, target) : (document.location = location);
-
-    // document.location = ;
-    //console.log(page + '.php?' + location);
-
-
-    //document.location = page + '.php?'
-    //  + (planet_id ? 'cp=' + planet_id + (mode ? '&' : '') : '')
-    //  + (mode ? 'mode=' + mode : '')
-    //  + (unit_id ? 'gid=' + unit_id + (typeof ALLY_ID !== 'undefined' && parseInt(ALLY_ID) ? '&ally_id=' + ALLY_ID : '') : '')
-    //;
+    $(this).removeClass('button_pseudo_pressed');
   });
 
 // Сбор ресурсов

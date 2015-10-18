@@ -1864,3 +1864,13 @@ td.error_message {
   display: block;
   max-width: 11em;
 }
+
+.user_template div {
+  display: block;
+  max-width: 20em;
+}
+
+.ally_template div {
+  display: block;
+  max-width: 20em;
+}

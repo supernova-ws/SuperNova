@@ -358,7 +358,7 @@ $template->assign_vars(array(
      'rows'                => $Result,
      'userCount'           => $config->users_amount,
      'ALLY_COUNT'          => $ally_count['ally_count'],
-     'EXPIDITION'          => $config->game_maxPlanet + 1,
+     'PLANET_EXPEDITION'   => $config->game_maxPlanet + 1,
      'curPlanetID'         => $planetrow['id'],
      'curPlanetG'          => $planetrow['galaxy'],
      'curPlanetS'          => $planetrow['system'],

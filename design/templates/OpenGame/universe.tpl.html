@@ -198,14 +198,15 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
             <!-- ENDIF -->
 
             <!-- IF PLANET_PHALANX && galaxyrow.USER_ID != USER_ID-->
-            <button onclick=fenster('phalanx.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype={galaxyrow.PLANET_TYPE}') title="{L_gl_phalanx}">
+              <!-- DEFINE $PLANET_CLASS_BUTTON = ' button_pseudo' -->
+              <!-- DEFINE $PLANET_GO = ' go="phalanx" target="_blank"' -->
+            <!-- ELSE -->
+              <!-- DEFINE $PLANET_CLASS_BUTTON = '' -->
+              <!-- DEFINE $PLANET_GO = '' -->
             <!-- ENDIF -->
-              <span class="{$PLANET_CLASS}">
+              <span class="{$PLANET_CLASS}{$PLANET_CLASS_BUTTON}"{$PLANET_GO}>
                 {galaxyrow.PLANET_NAME}<!-- IF $PLANET_ACTIVITY -->&nbsp;({$PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF -->
               </span>
-            <!-- IF PLANET_PHALANX && galaxyrow.USER_ID != USER_ID-->
-            </button>
-            <!-- ENDIF -->
           <!-- ENDIF -->
         </div>
       <!-- ENDIF -->
@@ -294,9 +295,9 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
     </th>
     <!-- ELSE -->
     <td colspan="7" class="c_c">
-      <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7');">
+      <span class="button_pseudo" go="fleet" planet_planet="{galaxyrow.PLANET_NUM}" mission="{D_MT_COLONIZE}">
         {L_uni_colonize} {galaxyrow.PLANET_NUM}
-      </button>
+      </span>
     </td>
     <!-- ENDIF -->
 
@@ -352,9 +353,9 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 <!-- END galaxyrow -->
   <tr>
     <th colspan="{COL_SPAN}" class="subheader">
-      <button onclick="sn_redirect('fleet.php?galaxy={galaxy}&system={system}&planet={EXPIDITION}&planettype=1&target_mission={D_MT_EXPLORE}');">
+      <span class="button_pseudo ownexpedition" go="fleet" planet_planet="{PLANET_EXPEDITION}" mission="{D_MT_EXPLORE}">
         {L_gf_unknowsp}
-      </button>
+      </span>
     </th>
   </tr>
   <tr>
@@ -505,7 +506,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="user_template">
-    <table>
+    <table class="user_template">
       <tr>
         <th class="c_c" colspan="[USER_COLSPAN]">
           [USER_NAME]
@@ -521,29 +522,26 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
         <td class="c_c" style="[HIDE_USER_AVATAR]">
           <div><img src="{D_SN_ROOT_VIRTUAL}images/avatar/avatar_[USER_ID].png" style="width: 9em;" /></div>
         </td>
-        <td class="c_c">
-          <button onclick="sn_redirect('stat.php?who=1&range=[USER_RANK]#[USER_RANK]');">
+        <td class="c_c" user_id="[USER_ID]">
+          <div class="button_pseudo" go="stat" rank="[USER_RANK]">
             {L_gl_stats}: {L_Place} [USER_RANK]/{userCount}
-          </button>
-          <br />
-          <button onclick="sn_redirect('index.php?page=imperator&int_user_id=[USER_ID]');">
+          </div>
+          <div class="button_pseudo" go="imperator">
             {L_stat_details}
-          </button>
-          <br />
-          <button onclick="sn_redirect('messages.php?mode=write&id=[USER_ID]');">
+          </div>
+          <div class="button_pseudo" go="messages" mode="write">
             {L_gl_sendmess}
-          </button>
-          <br />
-          <button onclick="sn_redirect('buddy.php?request_user_id=[USER_ID]');">
+          </div>
+          <div class="button_pseudo" go="buddy">
             {L_gl_buddyreq}
-          </button>
+          </div>
         </td>
       </tr>
     </table>
   </span>
 
   <span id="ally_template">
-    <table>
+    <table class="ally_template">
       <tr>
         <th class="c_c" colspan="[ALLY_COLSPAN]">
           [ALLY_NAME]
@@ -558,20 +556,16 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
         </td>
       </tr>
       <tr>
-        <td class="c_c">
-          <button onclick="sn_redirect('stat.php?who=2&range=[ALLY_RANK]#[ALLY_RANK]');">
+        <td class="c_c" ally_id="[ALLY_ID]">
+          <div class="button_pseudo" go="stat" rank="[ALLY_RANK]" who="2">
             {L_gl_stats}: {L_Place}&nbsp;[ALLY_RANK]/{ALLY_COUNT}
-          </button>
-        </td>
-      </tr>
-      <tr>
-        <td class="c_c">
-          <button onclick="sn_redirect('alliance.php?mode=ainfo&a=[ALLY_ID]');">
+          </div>
+          <div class="button_pseudo" go="alliance" mode="ainfo">
             {L_gl_ally_internal}
-          </button>
+          </div>
+          <a class="link" style="[HIDE_ALLY_URL]" href="[ALLY_URL]" target="_new">{L_gl_ally_web}</a>
         </td>
       </tr>
-      <tr style="[HIDE_ALLY_URL]"><td class="c_c"><a class="link" href="[ALLY_URL]" target=_new>{L_gl_ally_web}</td></tr>
     </table>
   </span>
 
