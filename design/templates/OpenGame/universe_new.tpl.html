@@ -177,14 +177,6 @@
       &nbsp;
       <!-- ENDIF -->
     </th>
-  <!-- ELSE -->
-    <td colspan="{COL_SPAN_NEW_COLONIZE}" class="c_c">
-      <span class="button_pseudo" go="fleet" planet_planet="{galaxyrow.PLANET_NUM}" mission="{D_MT_COLONIZE}">
-        {L_uni_colonize} {galaxyrow.PLANET_NUM}
-      </span>
-    </td>
-  <!-- ENDIF -->
-
   <!-- IF $ACTION_PRESENT -->
   <td>
     <!-- IF $DIFFERENT_USER -->
@@ -211,6 +203,14 @@
       &nbsp;
     <!-- ENDIF -->
   </td>
+  <!-- ENDIF -->
+
+  <!-- ELSE -->
+    <td colspan="{COL_SPAN_NEW}" class="c_c">
+      <span class="button_pseudo" go="fleet" planet_planet="{galaxyrow.PLANET_NUM}" mission="{D_MT_COLONIZE}">
+        {L_uni_colonize} {galaxyrow.PLANET_NUM}
+      </span>
+    </td>
   <!-- ENDIF -->
 </tr>
 <!-- END galaxyrow -->
