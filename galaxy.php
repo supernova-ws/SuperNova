@@ -395,6 +395,8 @@ $template->assign_vars(array(
      'SYSTEM_NAME'         => $system_name['universe_name'],
      'COL_SPAN'            => $colspan + 9,
      'COL_SPAN_PLUS'       => $colspan + 3,
+
+     'PLAYER_OPTION_UNIVERSE_OLD' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
    )
 );
 

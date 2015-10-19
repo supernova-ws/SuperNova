@@ -301,10 +301,19 @@
           </td>
         </tr>
 
-        <!-- IF .options_2 -->
         <tr>
           <th class="c_c" colspan="2">{L_galaxyvision_options}</th>
         </tr>
+        <tr>
+          <td class="c_c">
+            <label for="PLAYER_OPTION_UNIVERSE_OLD">{L_PLAYER_OPTION_UNIVERSE_OLD}</label>
+          </td>
+          <td class="c_c">
+            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="1" id="PLAYER_OPTION_UNIVERSE_OLD" <!-- IF PLAYER_OPTION_UNIVERSE_OLD -->checked="checked" <!-- ENDIF -->/>
+          </td>
+        </tr>
+        <!-- IF .options_2 -->
         <!-- BEGIN options_2 -->
         <tr>
           <td class="c_c"><label for="{options_2.NAME}">{options_2.TEXT}</label></td>

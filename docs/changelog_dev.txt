@@ -522,13 +522,41 @@ Resolutions:
     $(this).removeClass('button_pseudo_pressed'); - делать это автоматически для всех-не-stuck-кнопок
 
 
+Светить ДР в Императоре?
+
+There is not really much difference between the three.
+gzencode() uses the fully self-contained gzip format, same as the gzip command line tool
+    gzdecode() is defined only for PHP 5.4.0 or newer
+    gzencode() - is OK
+gzcompress() uses the raw ZLIB format. It is similar to gzencode but with less header data, etc. I think it was intended for streaming.
+gzdeflate() uses the raw DEFLATE algorithm on its own, which is the basis for both the other formats.
+
+basically gzcompress follows rfc1951 which contains a bunch of other data along with the compressed data that is used when decompressing. It includes an ADLER32 checksum, compression level, compression method, dictionary, the compressed data, and a bunch of other data used to decompress the data.
+gzdeflate is rfc1950 which is only the compression data.
+gzcompress is probably better to use, as it can verify the integrity of the data, and is more portable.
+
+NOT gzencode
+gzdefalte() !
+
+This is what PHP functions return:
+gzencode() == gzip
+gzcompress() == zlib (aka. HTTP deflate)
+gzdeflate()  == *raw* deflate encoding
+
+
+
+2015-10-19 10:42:39 40a16.0 - Вселенная - Phase 0
+[!] Вселенная
+    Возможность выбора старого и нового вида Вселенной
+    Доработки старого интерфейса
+
 
 2015-10-18 22:42:01 40a15.13
 [+] Вселенная
     Переработаны попапы игрока и Альянса аналогично кнопкам миссий
 
 [~] Верфь/Оборона
-    Чекбокс автоконвертации больше не скиннится, как кнопка
+    Чекбокс автоконвертации больше не скиннится как кнопка
 
 
 2015-10-18 21:12:08 40a15.12

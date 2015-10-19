@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a12.4
+* @version 40a16.0
 *
 */
 
@@ -82,6 +82,7 @@ $a_lang_array = (array(
   'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => 'Disable Planet button',
   'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Disable Hangar button',
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Disable Quest button',
+  'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид вселенной',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',

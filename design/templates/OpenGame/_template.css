@@ -1641,10 +1641,6 @@ div .ui-dialog-content table {
   color: #ffa0a0;
 }
 
-.vacation {
-  color: skyblue;
-}
-
 .player_active {
   font-weight: bold;
 }
@@ -1874,3 +1870,21 @@ td.error_message {
   display: block;
   max-width: 20em;
 }
+
+.birthday:before {
+  content: url(../../images/birthday.png);
+}
+
+/*
+.vacation {
+  color: skyblue;
+}
+*/
+
+.vacation:before { /* Replaces .birthday ! */
+  content: url(../../images/icon_vacation.png);
+}
+
+/*
+.vacation.birthday:before ???????????
+*/
