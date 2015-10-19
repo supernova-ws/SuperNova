@@ -277,21 +277,20 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       case 'info':
         page = 'infos';
         break;
-      // case 'galaxy': page = 'galaxy'; break;
       case 'flying':
         page = 'flying_fleets';
         break;
       case 'phalanx':
       case 'fleet':
-        location.push('galaxy=' + uni_galaxy);
-        location.push('system=' + uni_system);
-        location.push('planet=' + attr_on_me_or_parent(this, 'planet_planet'));
-        location.push('planettype=' + attr_on_me_or_parent(this, 'planet_type'));
-        location.push('target_mission=' + attr_on_me_or_parent(this, 'mission'));
+        window.uni_galaxy ? location.push('galaxy=' + window.uni_galaxy) : false;
+        window.uni_system ? location.push('system=' + window.uni_system) : false;
+        (planet_planet = attr_on_me_or_parent(this, 'planet_planet')) ? location.push('planet=' + planet_planet) : false;
+        (planet_type = attr_on_me_or_parent(this, 'planet_type')) ? location.push('planettype=' + planet_type) : false;
+        (mission = attr_on_me_or_parent(this, 'mission')) ? location.push('target_mission=' + mission) : false;
         break;
       case 'galaxy':
-        location.push('galaxy=' + uni_galaxy);
-        location.push('system=' + attr_on_me_or_parent(this, 'planet_system'));
+        window.uni_galaxy ? location.push('galaxy=' + window.uni_galaxy) : false;
+        (planet_system = attr_on_me_or_parent(this, 'planet_system')) ? location.push('system=' + planet_system) : false;
         break;
       case 'build':
         page = 'buildings';
