@@ -595,69 +595,6 @@ input, textarea, button {
   color: #80a0C0;
 }
 
-/* Universe/Galaxy ---------------------------------------------------------------------------------------------------*/
-.universe_main > tbody > tr > td, .universe_main > tbody > tr > th {
-  white-space: nowrap;
-  vertical-align: middle;
-}
-
-.uni_show_planet, .uni_show_debris, .uni_show_user, .uni_show_ally {
-  cursor: pointer;
-}
-
-.uni_show_user {
-  min-width: 12em;
-}
-
-.uni_show_planet {
-  width: 2.75em;
-  max-width: 2.75em;
-}
-.uni_show_planet > div {
-  position: relative;
-  width: 2.75em;
-  max-width: 2.75em;
-}
-.uni_show_planet > div > :first-child {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 2.75em;
-  max-width: 2.75em;
-}
-.uni_show_planet > div > :nth-child(2) {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-}
-
-.uni_show_debris {
-  background-image: none;
-  max-width: 5.5em;
-  width: 5.5em;
-  height: 100%;
-}
-.uni_show_debris > div {
-  margin:auto;
-  position: relative;
-  height: 2.75em;
-  width: 2.75em;
-}
-.uni_show_debris > div > :first-child {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 2.75em;
-  width: 2.75em;
-}
-.uni_show_debris > div > :nth-child(2) {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-}
-
 /* Empire overview -------------------------------------------------------------- */
 [go] {
   cursor: pointer;
@@ -1889,3 +1826,100 @@ td.error_message {
 /*
 .vacation.birthday:before ???????????
 */
+
+/* Universe/Galaxy ---------------------------------------------------------------------------------------------------*/
+.universe_main > tbody > tr > td, .universe_main > tbody > tr > th {
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.uni_show_planet, .uni_show_debris, .uni_show_user, .uni_show_ally {
+  cursor: pointer;
+}
+
+.uni_show_planet, .uni_show_debris {
+}
+
+.uni_show_planet > div, .uni_show_debris > div { /* DIV holder for old view */
+  position: relative;
+  display: inline-block;
+  width: 2.75em;
+  height: 2.75em;
+  margin: auto;
+}
+.uni_show_planet img:first-child, .uni_show_debris img:first-child { /* First image is planet/debris/moon image */
+  position: absolute;
+  top:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.uni_show_debris .uni_debris_percent  { /* % on debris icon - in span inside element */
+  position: absolute;
+  bottom:0;
+  right: 0;
+}
+.uni_own_fleet {
+  position: absolute;
+  bottom:0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.uni_show_user {
+  min-width: 12em;
+}
+
+.uni_planet_row .uni_object_type { /* Тип объекта - планета/луна/обломки */
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 1.1em;
+  background-color: rgba(0,0,0,0.5);
+}
+.uni_show_planet_new, .uni_show_debris_new { /* Overwrites styles for new Universe look*/
+  position: relative;
+  display: inline-block;
+  width: 6em;
+  height: 6em;
+  max-width: 6em;
+  margin: 0.25em; /* Overwrites auto margin */
+}
+.uni_show_planet_new .uni_own_fleet { /* Overwrites size of own fleet icon */
+  width: 50%;
+  height: 50%;
+}
+
+.universe_main_new .uni_show_user, .universe_main .uni_show_ally {
+  display: block;
+}
+
+.planet_template .uni_popup_planet {
+  width: 7em;
+  height: 7em;
+  position: relative;
+  display: inline-block;
+}
+
+.planet_template .uni_popup_planet img {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+
+  font-size: 1em;
+}
+
+.planet_template .uni_popup_planet div {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+
+  text-align:center;
+  background-color: rgba(0,0,0,0.50);
+}

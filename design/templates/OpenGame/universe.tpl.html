@@ -28,6 +28,7 @@ var PLANET_RECYCLERS = {PLANET_RECYCLERS};
 var MT_MISSILE = {D_MT_MISSILE};
 var MT_RECYCLE = {D_MT_RECYCLE};
 var PT_DEBRIS = {D_PT_DEBRIS};
+var PLAYER_OPTION_UNIVERSE_OLD = parseInt('{PLAYER_OPTION_UNIVERSE_OLD}') ? parseInt('{PLAYER_OPTION_UNIVERSE_OLD}') : 0;
 
 jQuery.extend(language, {
   sys_ships: '{L_uni_incoming_fleets}',
@@ -122,7 +123,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 
 <form id="uni_missile_form" style="display: none;" name="uni_missile_form" method=POST>
   <br>
-  <table border=0>
+  <table style="border: 2em solid red">
     <tr>
       <td class=c colspan=3>
          <span class="fl">{L_gm_launch} [{galaxy}:{system}:<span id="uni_missile_planet">{planet}</span>]</span>
@@ -188,7 +189,12 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       </tr>
 
       <tr>
-        <td class="c_c"><img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" style="width: 7em; font-size: 1em;" /><div>[PLANET_DIAMETER]</div></td>
+        <td class="c_c">
+          <div class="uni_popup_planet">
+            <img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" />
+            <div>&empty; [PLANET_DIAMETER]</div>
+          </div>
+        </td>
 
         <td class="c_c" planet_planet="[PLANET_POS]" planet_type="[PLANET_TYPE]">
           <div class="owndeploy button_pseudo" style="[HIDE_PLANET_RELOCATE]" go="fleet" mission="{D_MT_RELOCATE}">{L_type_mission[D_MT_RELOCATE]}</div>

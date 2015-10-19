@@ -15,7 +15,8 @@ function universe_popup_show(popup) {
 var universe_popup;
 
 function sn_universe_show_planet(that) {
-  var planet_pos = that.parent().attr('planet_pos');
+  var a_parent = that.parents('.uni_planet_row');
+  var planet_pos = a_parent.attr('planet_pos');
   var planet_type = that.attr('planet_type');
   if(!uni_row[planet_pos] || !planet_type || (planet_type == 3 && !parseInt(uni_row[planet_pos]['moon_diameter'])) || parseInt(uni_row[planet_pos]['planet_destroyed'])) {
     return;
@@ -41,11 +42,12 @@ function sn_universe_show_planet(that) {
     .replace(/\[HIDE_PLANET_ATTACK\]/g, user_is_planet_owner ? 'display: none;' : '')
     .replace(/\[HIDE_PLANET_HOLD\]/g, user_is_planet_owner ? 'display: none;' : '');
 
-  return {html: result, my: planet_type == 3 ? 'right top' : 'left top', at: planet_type == 3 ? 'left top' : 'right top', of: that};
+  return {html: result, my: planet_type == 3 ? 'left middle' : 'right middle', at: planet_type == 3 ? 'right middle' : 'left middle', of: that};
 }
 
 function sn_universe_show_debris(that) {
-  var planet_pos = that.parent().attr('planet_pos');
+  var a_parent = that.parents('.uni_planet_row');
+  var planet_pos = a_parent.attr('planet_pos');
   if(!uni_row[planet_pos] || !parseFloat(uni_row[planet_pos]['debris'])) {
     return;
   }
@@ -71,7 +73,8 @@ function sn_universe_show_debris(that) {
 }
 
 function sn_universe_show_user(that) {
-  var user_id = that.parent().attr('user_id');
+  var a_parent = that.parents('.uni_planet_row');
+  var user_id = a_parent.attr('user_id');
   if(!user_id || !users[user_id]) {
     return;
   }
@@ -87,11 +90,12 @@ function sn_universe_show_user(that) {
     .replace(/\[USER_ALLY_TITLE\]/g, users[user_id]['ally_title'])
     .replace(/\[HIDE_USER_ALLY\]/g, users[user_id]['ally_title'] && users[user_id]['ally_title'] !== undefined ? '' : 'display: none;');
 
-  return {html: result, my: 'right top', at: 'left top', of: that};
+  return {html: result, my: 'left middle', at: 'right middle', of: that};
 }
 
 function sn_universe_show_ally(that) {
-  var ally_id = that.parent().attr('ally_id');
+  var a_parent = that.parents('.uni_planet_row');
+  var ally_id = a_parent.attr('ally_id');
   if(!ally_id || !allies[ally_id]) {
     return;
   }
@@ -106,7 +110,7 @@ function sn_universe_show_ally(that) {
     .replace(/\[ALLY_URL\]/g, allies[ally_id]['url'])
     .replace(/\[HIDE_ALLY_URL\]/g, allies[ally_id]['url'] ? '' : 'display: none');
 
-  return {html: result, my: 'right top', at: 'left top', of: that};
+  return {html: result, my: 'left top', at: 'right top', of: that};
 }
 
 $(function(){

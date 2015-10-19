@@ -1,39 +1,26 @@
-<table width=595 id="universe_main"><tbody>
-<tr><th class="c_l" colspan="{COL_SPAN}">
+<!-- IF ACT_SPY || ACT_MISSILE || ACT_WRITE || ACT_STATISTICS || ACT_INFO || ACT_FRIEND -->
+  <!-- DEFINE $ACTION_PRESENT = '1' -->
+<!-- ENDIF -->
+
+<table id="universe_main" class="universe_main_new"><tbody>
+<tr><th class="c_l" colspan="{COL_SPAN_NEW}">
   {L_sys_galaxy}&nbsp;[{galaxy}]&nbsp;<span class="ok">{GALAXY_NAME}</span>&nbsp;<span class="button_pseudo" go="galaxy" planet_system="0" mode="name"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></span>
   <span class="fr notice link_action button_pseudo" id="universe_legend">{L_Legend}</span>
 </th></tr>
 
-<tr><th class="c_l" colspan="{COL_SPAN}">
+<tr><th class="c_l" colspan="{COL_SPAN_NEW}">
   <span>{L_sys_system}&nbsp;[{galaxy}:{system}] <span class="ok">{SYSTEM_NAME}</span>&nbsp;<a class="link button_pseudo" href="galaxy.php?mode=name&galaxy={galaxy}&system={system}"><!-- IF SYSTEM_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a></span>
   <div style="height: 100%; display: inline-block; vertical-align: middle;"><!-- IF planets -->{L_gal_planets} {planets}<!-- ELSE -->{L_gal_planetNone}<!-- ENDIF --></div>
 </th></tr>
 
 <tr class="c_c">
-  <th>{L_Pos}</th>
-  <th>{L_Planet}</th>
   <th>{L_Name}</th>
-  <th>{L_Moon}</th>
-  <th>{L_uni_debris}</th>
-  <th>{L_Player}</th>
-  <th>{L_sys_alliance}</th>
-  <!-- IF ACT_SPY -->
-  <th><img src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" style="height: 1.5em" /></th>
-  <!-- ENDIF -->
-  <!-- IF ACT_MISSILE -->
-  <th><img src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" /></th>
-  <!-- ENDIF -->
-  <!-- IF ACT_WRITE -->
-  <th><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></th>
-  <!-- ENDIF -->
-  <!-- IF ACT_STATISTICS -->
-  <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 style="height: 1.5em" /></th>
-  <!-- ENDIF -->
-  <!-- IF ACT_INFO -->
-  <th><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></th>
-  <!-- ENDIF -->
-  <!-- IF ACT_FRIEND -->
-  <th><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></th>
+  <th>
+    {L_Player}<br />
+    {L_sys_alliance}
+  </th>
+  <!-- IF $ACTION_PRESENT -->
+  <th>{L_Actions}</th>
   <!-- ENDIF -->
 </tr>
 
@@ -45,32 +32,62 @@
   <!-- DEFINE $DIFFERENT_USER = 0 -->
 <!-- ENDIF -->
 
-<tr user_id="{galaxyrow.USER_ID}" ally_id="{galaxyrow.ALLY_ID}" planet_pos="{galaxyrow.PLANET_NUM}">
+<!--TODO - styling by class -->
+<!-- IF galaxyrow.DEBRIS >= 10000000 -->
+<!-- DEFINE $DEBRIS_BKG = 'rgb(100, 0, 0)' -->
+<!-- ELSEIF galaxyrow.DEBRIS >= 1000000 -->
+<!-- DEFINE $DEBRIS_BKG = 'rgb(100, 100, 0)' -->
+<!-- ELSEIF galaxyrow.DEBRIS >= 100000 -->
+<!-- DEFINE $DEBRIS_BKG = 'rgb(0, 100, 0)' -->
+<!-- ELSE -->
+<!-- DEFINE $DEBRIS_BKG = '' -->
+<!-- ENDIF -->
+
+
+<tr class="uni_planet_row" user_id="{galaxyrow.USER_ID}" ally_id="{galaxyrow.ALLY_ID}" planet_pos="{galaxyrow.PLANET_NUM}">
   <!-- IF galaxyrow.PLANET_ID -->
-    <th width=30>
-      <!-- IF galaxyrow.PLANET_TYPE -->
-        {galaxyrow.PLANET_NUM}
-      <!-- ELSE -->
-        <a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7">{galaxyrow.PLANET_NUM}</a>
+    <td class="c_c" nowrap>
+      <div class="uni_show_planet uni_show_planet_new" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}" style="position: relative;">
+        <img src="{dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg" />
+        <!-- IF galaxyrow.PLANET_FLEET_ID -->
+          <img class="alpha50 uni_own_fleet" src="design/images/icon_fleet_own.png" />
+        <!-- ENDIF -->
+        <div class="uni_object_type">{L_sys_planet_type[D_PT_PLANET]}</div>
+      </div>
+
+      <!-- IF galaxyrow.MOON_DIAMETER -->
+      <div class="uni_show_planet uni_show_planet_new" planet_type="{D_PT_MOON}">
+        <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg />
+        <!-- IF galaxyrow.MOON_FLEET_ID -->
+          <img class="alpha50 uni_own_fleet" src=design/images/icon_fleet_own.png />
+        <!-- ENDIF -->
+        <div class="uni_object_type">{L_sys_planet_type[D_PT_MOON]}</div>
+        <!--<div style="position: absolute; left: 0; top: 0; width: 100%;">Луна</div>-->
+      </div>
       <!-- ENDIF -->
-    </th>
-    <th class="uni_show_planet" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}">
-      <!-- IF galaxyrow.PLANET_ID -->
-        <div style="height: 2.75em; width: 2.75em">
-            <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg style="height: 2.75em; width: 2.75em" />
-          <!-- IF galaxyrow.PLANET_FLEET_ID -->
-            <img class="alpha25" src=design/images/icon_fleet_own.png style="height: 2.75em; width: 2.75em" />
-          <!-- ENDIF -->
-        </div>
-      <!-- ELSE -->
-        &nbsp;
+
+      <!-- IF galaxyrow.DEBRIS -->
+      <!--style="background-color: {$DEBRIS_BKG};"      -->
+      <div class="uni_show_debris uni_show_debris_new" >
+        <img src="{dpath}planeten/small/s_debris.jpg" />
+        <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
+        <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
+        <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
+        <!-- DEFINE $DEBRIS_FONT_CLASS = 'ok' -->
+        <!-- ELSEIF galaxyrow.DEBRIS_GATHER_TOTAL_PERCENT == 100 -->
+        <!-- DEFINE $DEBRIS_FONT_CLASS = 'notice' -->
+        <!-- ELSE -->
+        <!-- DEFINE $DEBRIS_FONT_CLASS = 'warning' -->
+        <!-- ENDIF -->
+        <span class="icon_alpha uni_debris_percent {$DEBRIS_FONT_CLASS}">{galaxyrow.DEBRIS_RESERVED_PERCENT}%</span>
+        <div class="uni_object_type">{L_uni_debris}</div>
+        <!--<div style="position: absolute; left: 0; top: 0; width: 100%;">Обломки</div>-->
+      </div>
       <!-- ENDIF -->
-    </th>
-    <th nowrap>
-      <!-- IF galaxyrow.PLANET_ID -->
+
       <div class="g_galaxy_row">
         <!-- IF galaxyrow.PLANET_DESTROYED -->
-          {L_gl_destroyedplanet}
+         [{galaxy}:{system}:{galaxyrow.PLANET_NUM}] {L_gl_destroyedplanet}
         <!-- ELSE -->
           <!-- DEFINE $PLANET_ACTIVITY = '' -->
           <!-- IF ! $DIFFERENT_USER -->
@@ -99,54 +116,10 @@
             <!-- DEFINE $PLANET_GO = '' -->
           <!-- ENDIF -->
           <span class="{$PLANET_CLASS}{$PLANET_CLASS_BUTTON}"{$PLANET_GO}>
-            {galaxyrow.PLANET_NAME}<!-- IF $PLANET_ACTIVITY -->&nbsp;({$PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF -->
+            [{galaxy}:{system}:{galaxyrow.PLANET_NUM}] {galaxyrow.PLANET_NAME}<!-- IF $PLANET_ACTIVITY -->&nbsp;({$PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF -->
           </span>
         <!-- ENDIF -->
       </div>
-      <!-- ENDIF -->
-    </th>
-    <th class="uni_show_planet" planet_type="{D_PT_MOON}">
-      <!-- IF galaxyrow.MOON_DIAMETER -->
-      <div style="height: 2.75em; width: 2.75em">
-        <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg style="height: 2.75em; width: 2.75em" />
-        <!-- IF galaxyrow.MOON_FLEET_ID -->
-        <img class="alpha25" src=design/images/icon_fleet_own.png style="height: 2.75em; width: 2.75em" />
-        <!-- ENDIF -->
-      </div>
-      <!-- ELSE -->
-      &nbsp;
-      <!-- ENDIF -->
-    </th>
-
-    <!--TODO - styling by class -->
-    <!-- IF galaxyrow.DEBRIS >= 10000000 -->
-      <!-- DEFINE $DEBRIS_BKG = 'rgb(100, 0, 0)' -->
-    <!-- ELSEIF galaxyrow.DEBRIS >= 1000000 -->
-      <!-- DEFINE $DEBRIS_BKG = 'rgb(100, 100, 0)' -->
-    <!-- ELSEIF galaxyrow.DEBRIS >= 100000 -->
-      <!-- DEFINE $DEBRIS_BKG = 'rgb(0, 100, 0)' -->
-    <!-- ELSE -->
-      <!-- DEFINE $DEBRIS_BKG = '' -->
-    <!-- ENDIF -->
-
-    <td class="c_c uni_show_debris" style="background-color: {$DEBRIS_BKG};">
-      <!-- IF galaxyrow.DEBRIS -->
-      <div style="height: 2.75em; width: 2.75em">
-        <img src="{dpath}planeten/debris.jpg" style="height: 100%; width: 100%" />
-        <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
-          <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
-        <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
-          <!-- DEFINE $DEBRIS_FONT_CLASS = 'ok' -->
-        <!-- ELSEIF galaxyrow.DEBRIS_GATHER_TOTAL_PERCENT == 100 -->
-          <!-- DEFINE $DEBRIS_FONT_CLASS = 'notice' -->
-        <!-- ELSE -->
-          <!-- DEFINE $DEBRIS_FONT_CLASS = 'warning' -->
-        <!-- ENDIF -->
-        <span class="icon_alpha {$DEBRIS_FONT_CLASS}">{galaxyrow.DEBRIS_RESERVED_PERCENT}%</span>
-      </div>
-      <!-- ELSE -->
-      &nbsp;
-      <!-- ENDIF -->
     </td>
 
     <!-- IF galaxyrow.USER_ACTIVITY >= 28 -->
@@ -191,92 +164,79 @@
       <!-- DEFINE $USER_CLASS_ACTION = '' -->
     <!-- ENDIF -->
 
-    <th width=150 align=center nowrap class="uni_show_user">
+    <th width=150 align=center nowrap>
       <!-- IF galaxyrow.USER_ID -->
-      <span class="{$USER_CLASS_ACTION} {$USER_CLASS_BIRTHDAY} {$USER_CLASS_VACATION} {$USER_CLASS_BANNED}">
+      <div class="button_pseudo uni_show_user {$USER_CLASS_ACTION} {$USER_CLASS_BIRTHDAY} {$USER_CLASS_VACATION} {$USER_CLASS_BANNED}">
         <span class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
-      </span>
-      <!-- ELSE -->
-      &nbsp;
-      <!-- ENDIF -->
-    </th>
+      </div>
 
-    <th width=80 nowrap class="uni_show_ally">
       <!-- IF galaxyrow.ALLY_ID -->
-      <span class="link_action<!-- IF ALLY_ID == galaxyrow.ALLY_ID --> allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</span>
+        <div class="button_pseudo uni_show_ally link_action<!-- IF ALLY_ID == galaxyrow.ALLY_ID --> allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</div>
+      <!-- ENDIF -->
       <!-- ELSE -->
       &nbsp;
       <!-- ENDIF -->
     </th>
   <!-- ELSE -->
-    <td colspan="7" class="c_c">
+    <td colspan="{COL_SPAN_NEW_COLONIZE}" class="c_c">
       <span class="button_pseudo" go="fleet" planet_planet="{galaxyrow.PLANET_NUM}" mission="{D_MT_COLONIZE}">
         {L_uni_colonize} {galaxyrow.PLANET_NUM}
       </span>
     </td>
   <!-- ENDIF -->
 
-  <!-- IF ACT_SPY -->
-  <td class="c_c">
-    <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-    <img onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" style="height: 1.5em" />
-    <!-- ENDIF -->
-  </td>
-  <!-- ENDIF -->
-  <!-- IF ACT_MISSILE -->
-  <td class="c_c">
-    <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-    <img planet_planet="{galaxyrow.PLANET_NUM}" class="missile_attack_prepare" src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" />
-    <!-- ENDIF -->
-  </td>
-  <!-- ENDIF -->
-  <!-- IF ACT_WRITE -->
-  <td class="c_c">
+  <!-- IF $ACTION_PRESENT -->
+  <td>
     <!-- IF $DIFFERENT_USER -->
-    <a href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
-    <!-- ENDIF -->
-  </td>
-  <!-- ENDIF -->
-  <!-- IF ACT_STATISTICS -->
-  <td class="c_c">
-    <!-- IF $DIFFERENT_USER && galaxyrow.USER_RANK != '-' -->
-    <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" style="height: 1.5em" /></a>
-    <!-- ENDIF -->
-  </td>
-  <!-- ENDIF -->
-  <!-- IF ACT_INFO -->
-  <td class="c_c">
-    <!-- IF $DIFFERENT_USER -->
-    <a href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
-    <!-- ENDIF -->
-  </td>
-  <!-- ENDIF -->
-  <!-- IF ACT_FRIEND -->
-  <td class="c_c">
-    <!-- IF $DIFFERENT_USER -->
-    <a href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></a>
+      <!-- IF ACT_SPY && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
+        <a class="button_pseudo" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img src="design/images/icon_espionage.png" style="height: 1.5em" /></a>
+      <!-- ENDIF -->
+      <!-- IF ACT_MISSILE && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
+        <a class="button_pseudo" planet_planet="{galaxyrow.PLANET_NUM}" class="missile_attack_prepare" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" ><img src="design/images/icon_missile.png" style="height: 1.5em" /></a>
+      <!-- ENDIF -->
+      <br />
+      <!-- IF ACT_WRITE -->
+        <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
+      <!-- ENDIF -->
+      <!--&lt;!&ndash; IF ACT_STATISTICS && galaxyrow.USER_RANK != '-' &ndash;&gt;-->
+        <!--<a class="button_pseudo" href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" style="height: 1.5em" /></a>-->
+      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+      <!-- IF ACT_INFO -->
+        <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
+      <!-- ENDIF -->
+      <!--&lt;!&ndash; IF ACT_FRIEND &ndash;&gt;-->
+        <!--<a class="button_pseudo" href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></a>-->
+      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+    <!-- ELSE -->
+      &nbsp;
     <!-- ENDIF -->
   </td>
   <!-- ENDIF -->
 </tr>
 <!-- END galaxyrow -->
 <tr>
-  <th colspan="{COL_SPAN}" class="subheader">
-      <span class="button_pseudo ownexpedition" go="fleet" planet_planet="{PLANET_EXPEDITION}" mission="{D_MT_EXPLORE}">
-        {L_gf_unknowsp}
-      </span>
+  <th colspan="{COL_SPAN_NEW}" class="subheader">
+    <span class="button_pseudo ownexpedition" go="fleet" planet_planet="{PLANET_EXPEDITION}" mission="{D_MT_EXPLORE}">
+      {L_gf_unknowsp}
+    </span>
   </th>
 </tr>
 <tr>
-  <td class=c colspan=3>
-    <span id="missile">{MIPs}</span> {L_gf_mi_title}
-  </td>
-  <td class=c colspan=3>
-    <span id="flt_recyclers">{PLANET_RECYCLERS_TEXT}</span> {L_gf_rc_title}
-  </td>
-  <td class=c colspan="{COL_SPAN_PLUS}">
-    <span id="flt_spies">{SPs}</span> {L_gf_sp_title}
+  <td colspan="{COL_SPAN_NEW}">
+    <table width="100%">
+      <tr>
+        <td class=c width="33%">
+          <span id="missile">{MIPs}</span> {L_gf_mi_title}
+        </td>
+        <td class=c width="33%">
+          <span id="flt_recyclers">{PLANET_RECYCLERS_TEXT}</span> {L_gf_rc_title}
+        </td>
+        <td class=c>
+          <span id="flt_spies">{SPs}</span> {L_gf_sp_title}
+        </td>
+      </tr>
+    </table>
   </td>
 </tr>
-<tr style="display: none;" id="fleetstatusrow"><th class=c colspan="{COL_SPAN}"><table width="100%" id="fleetstatustable"></table></th></tr>
+<tr style="display: none;" id="fleetstatusrow"><th class=c colspan="{COL_SPAN_NEW}"><table width="100%" id="fleetstatustable"></table></th></tr>
 </tbody></table>

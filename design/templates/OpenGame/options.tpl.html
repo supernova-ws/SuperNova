@@ -334,25 +334,33 @@
         <tr>
           <th>{L_shortcut}</th>
           <td class="c_c" nowrap>
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="1" id="settings_esp" <!-- IF user_settings_esp -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_esp"><img height="14px" src="design/images/icon_espionage.png" alt="{L_spy}" />&nbsp;{L_spy}</label>
+            <table class="markup">
+              <tr class="c_l">
+                <td>
+                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="0" />
+                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="1" id="settings_esp" <!-- IF user_settings_esp -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_esp"><img height="14px" src="design/images/icon_espionage.png" alt="{L_spy}" />&nbsp;{L_spy}</label>
+                </td>
+                <td>
+                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="0" />
+                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="1" id="settings_mis" <!-- IF user_settings_mis -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_mis"><img height="14px" src="design/images/icon_missile.png" alt="{L_attack_with_missile}" />&nbsp;{L_attack_with_missile}</label>
+                </td>
+              </tr>
+              <tr class="c_l">
+                <td>
+                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="0" />
+                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="1" id="settings_wri" <!-- IF user_settings_wri -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_wri"><img height="14px" src="design/images/icon_mail.gif" alt="{L_write_a_messege}" />&nbsp;{L_write_a_messege}</label>
+                </td>
+                <td>
+                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="0" />
+                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="1" id="settings_info" <!-- IF user_settings_info -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_info"><img height="14px" src="{dpath}icons/menu_empire_emperor.png" alt="{L_opt_settings_info}" />&nbsp;{L_opt_settings_info}</label>
+                </td>
+              </tr>
+            </table>
+            <!--<input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="0" />-->
+            <!--<input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="1" id="settings_statistics" &lt;!&ndash; IF user_settings_statistics &ndash;&gt;checked="checked" &lt;!&ndash; ENDIF &ndash;&gt;/>&nbsp;<label for="settings_statistics"><img height="14px" src="design/images/icon_statistics.png" alt="{L_opt_settings_statistics}" />&nbsp;{L_opt_settings_statistics}</label>-->
 
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="1" id="settings_mis" <!-- IF user_settings_mis -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_mis"><img height="14px" src="design/images/icon_missile.png" alt="{L_attack_with_missile}" />&nbsp;{L_attack_with_missile}</label>
-            <br />
-
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="1" id="settings_wri" <!-- IF user_settings_wri -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_wri"><img height="14px" src="design/images/icon_mail.gif" alt="{L_write_a_messege}" />&nbsp;{L_write_a_messege}</label>
-
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="1" id="settings_statistics" <!-- IF user_settings_statistics -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_statistics"><img height="14px" src="design/images/icon_statistics.png" alt="{L_opt_settings_statistics}" />&nbsp;{L_opt_settings_statistics}</label>
-            <br />
-
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="1" id="settings_info" <!-- IF user_settings_info -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_info"><img height="14px" src="{dpath}icons/menu_empire_emperor.png" alt="{L_opt_settings_info}" />&nbsp;{L_opt_settings_info}</label>
-
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="1" id="settings_bud" <!-- IF user_settings_bud -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{L_add_to_buddylist}" />&nbsp;{L_add_to_buddylist}</label>
+            <!--<input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="0" />-->
+            <!--<input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="1" id="settings_bud" &lt;!&ndash; IF user_settings_bud &ndash;&gt;checked="checked" &lt;!&ndash; ENDIF &ndash;&gt;/>&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{L_add_to_buddylist}" />&nbsp;{L_add_to_buddylist}</label>-->
           </td>
         </tr>
 

@@ -26,15 +26,15 @@
   <!-- IF ACT_WRITE -->
   <th><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></th>
   <!-- ENDIF -->
-  <!-- IF ACT_STATISTICS -->
-  <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 style="height: 1.5em" /></th>
-  <!-- ENDIF -->
+  <!--&lt;!&ndash; IF ACT_STATISTICS &ndash;&gt;-->
+  <!--<th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 style="height: 1.5em" /></th>-->
+  <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
   <!-- IF ACT_INFO -->
   <th><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></th>
   <!-- ENDIF -->
-  <!-- IF ACT_FRIEND -->
-  <th><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></th>
-  <!-- ENDIF -->
+  <!--&lt;!&ndash; IF ACT_FRIEND &ndash;&gt;-->
+  <!--<th><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></th>-->
+  <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
 </tr>
 
 <!-- BEGIN galaxyrow -->
@@ -45,29 +45,20 @@
   <!-- DEFINE $DIFFERENT_USER = 0 -->
 <!-- ENDIF -->
 
-<tr user_id="{galaxyrow.USER_ID}" ally_id="{galaxyrow.ALLY_ID}" planet_pos="{galaxyrow.PLANET_NUM}">
+<tr class="uni_planet_row" user_id="{galaxyrow.USER_ID}" ally_id="{galaxyrow.ALLY_ID}" planet_pos="{galaxyrow.PLANET_NUM}">
   <!-- IF galaxyrow.PLANET_ID -->
     <th width=30>
-      <!-- IF galaxyrow.PLANET_TYPE -->
-        {galaxyrow.PLANET_NUM}
-      <!-- ELSE -->
-        <a href="fleet.php?galaxy={galaxy}&system={system}&planet={galaxyrow.PLANET_NUM}&planettype=1&target_mission=7">{galaxyrow.PLANET_NUM}</a>
-      <!-- ENDIF -->
+      {galaxyrow.PLANET_NUM}
     </th>
     <th class="uni_show_planet" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}">
-      <!-- IF galaxyrow.PLANET_ID -->
-        <div style="height: 2.75em; width: 2.75em">
-            <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg style="height: 2.75em; width: 2.75em" />
-          <!-- IF galaxyrow.PLANET_FLEET_ID -->
-            <img class="alpha25" src=design/images/icon_fleet_own.png style="height: 2.75em; width: 2.75em" />
-          <!-- ENDIF -->
-        </div>
-      <!-- ELSE -->
-        &nbsp;
-      <!-- ENDIF -->
+      <div>
+        <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg />
+        <!-- IF galaxyrow.PLANET_FLEET_ID -->
+          <img class="alpha25 uni_own_fleet" src=design/images/icon_fleet_own.png />
+        <!-- ENDIF -->
+      </div>
     </th>
     <th nowrap>
-      <!-- IF galaxyrow.PLANET_ID -->
       <div class="g_galaxy_row">
         <!-- IF galaxyrow.PLANET_DESTROYED -->
           {L_gl_destroyedplanet}
@@ -103,14 +94,13 @@
           </span>
         <!-- ENDIF -->
       </div>
-      <!-- ENDIF -->
     </th>
     <th class="uni_show_planet" planet_type="{D_PT_MOON}">
       <!-- IF galaxyrow.MOON_DIAMETER -->
-      <div style="height: 2.75em; width: 2.75em">
-        <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg style="height: 2.75em; width: 2.75em" />
+      <div>
+        <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg />
         <!-- IF galaxyrow.MOON_FLEET_ID -->
-        <img class="alpha25" src=design/images/icon_fleet_own.png style="height: 2.75em; width: 2.75em" />
+        <img class="alpha25 uni_own_fleet" src=design/images/icon_fleet_own.png />
         <!-- ENDIF -->
       </div>
       <!-- ELSE -->
@@ -131,8 +121,8 @@
 
     <td class="c_c uni_show_debris" style="background-color: {$DEBRIS_BKG};">
       <!-- IF galaxyrow.DEBRIS -->
-      <div style="height: 2.75em; width: 2.75em">
-        <img src="{dpath}planeten/debris.jpg" style="height: 100%; width: 100%" />
+      <div>
+        <img src="{dpath}planeten/small/s_debris.jpg" />
         <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
           <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
         <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
@@ -142,7 +132,7 @@
         <!-- ELSE -->
           <!-- DEFINE $DEBRIS_FONT_CLASS = 'warning' -->
         <!-- ENDIF -->
-        <span class="icon_alpha {$DEBRIS_FONT_CLASS}">{galaxyrow.DEBRIS_RESERVED_PERCENT}%</span>
+        <span class="icon_alpha uni_debris_percent {$DEBRIS_FONT_CLASS}">{galaxyrow.DEBRIS_RESERVED_PERCENT}%</span>
       </div>
       <!-- ELSE -->
       &nbsp;
@@ -219,45 +209,45 @@
   <!-- IF ACT_SPY -->
   <td class="c_c">
     <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-    <img onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});" src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" style="height: 1.5em" />
+    <a class="button_pseudo" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img src="design/images/icon_espionage.png" style="height: 1.5em" /></a>
     <!-- ENDIF -->
   </td>
   <!-- ENDIF -->
   <!-- IF ACT_MISSILE -->
   <td class="c_c">
     <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-    <img planet_planet="{galaxyrow.PLANET_NUM}" class="missile_attack_prepare" src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" />
+    <a class="button_pseudo" planet_planet="{galaxyrow.PLANET_NUM}" class="missile_attack_prepare" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" ><img src="design/images/icon_missile.png" style="height: 1.5em" /></a>
     <!-- ENDIF -->
   </td>
   <!-- ENDIF -->
   <!-- IF ACT_WRITE -->
   <td class="c_c">
     <!-- IF $DIFFERENT_USER -->
-    <a href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
+    <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
     <!-- ENDIF -->
   </td>
   <!-- ENDIF -->
-  <!-- IF ACT_STATISTICS -->
-  <td class="c_c">
-    <!-- IF $DIFFERENT_USER && galaxyrow.USER_RANK != '-' -->
-    <a href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" style="height: 1.5em" /></a>
-    <!-- ENDIF -->
-  </td>
-  <!-- ENDIF -->
+  <!--&lt;!&ndash; IF ACT_STATISTICS &ndash;&gt;-->
+  <!--<td class="c_c">-->
+    <!--&lt;!&ndash; IF $DIFFERENT_USER && galaxyrow.USER_RANK != '-' &ndash;&gt;-->
+    <!--<a class="button_pseudo" href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" style="height: 1.5em" /></a>-->
+    <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+  <!--</td>-->
+  <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
   <!-- IF ACT_INFO -->
   <td class="c_c">
     <!-- IF $DIFFERENT_USER -->
-    <a href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
+    <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
     <!-- ENDIF -->
   </td>
   <!-- ENDIF -->
-  <!-- IF ACT_FRIEND -->
-  <td class="c_c">
-    <!-- IF $DIFFERENT_USER -->
-    <a href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></a>
-    <!-- ENDIF -->
-  </td>
-  <!-- ENDIF -->
+  <!--&lt;!&ndash; IF ACT_FRIEND &ndash;&gt;-->
+  <!--<td class="c_c">-->
+    <!--&lt;!&ndash; IF $DIFFERENT_USER &ndash;&gt;-->
+    <!--<a class="button_pseudo" href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></a>-->
+    <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+  <!--</td>-->
+  <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
 </tr>
 <!-- END galaxyrow -->
 <tr>
