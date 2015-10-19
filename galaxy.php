@@ -387,6 +387,7 @@ $template->assign_vars(array(
      'COL_SPAN_NEW_COLONIZE' => $colspan - 2,
 
      'PLAYER_OPTION_UNIVERSE_OLD' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
+     'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
    )
 );
 

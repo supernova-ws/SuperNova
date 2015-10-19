@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a16.2
+* @version 40a16.6
 *
 */
 
@@ -83,6 +83,7 @@ $a_lang_array = (array(
   'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Disable Hangar button',
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Disable Quest button',
   'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид "Обзора Вселенной"',
+  'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a16.2
+* @version 40a16.6
 *
 */
 
@@ -80,6 +80,7 @@ $a_lang_array = (array(
   'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Отключить кнопку верфи',
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Отключить кнопку квестов',
   'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид "Обзора Вселенной"',
+  'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
 
   'opt_chk_skin' => 'Использовать оформление',
   'opt_adm_title' => 'Опции администрирования',

@@ -375,6 +375,7 @@ function sn_options_view($template = null) {
     'PLAYER_OPTION_MENU_WHITE_TEXT' => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
     'PLAYER_OPTION_MENU_OLD' => classSupernova::$user_options[PLAYER_OPTION_MENU_OLD],
     'PLAYER_OPTION_UNIVERSE_OLD' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_OLD],
+    'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
     'sound_enabled' => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
     'animation_disabled' => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
 

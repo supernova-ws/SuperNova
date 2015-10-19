@@ -207,9 +207,13 @@
 
   <!-- ELSE -->
     <td colspan="{COL_SPAN_NEW}" class="c_c">
+      <!-- IF ! PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE -->
       <span class="button_pseudo" go="fleet" planet_planet="{galaxyrow.PLANET_NUM}" mission="{D_MT_COLONIZE}">
         {L_uni_colonize} {galaxyrow.PLANET_NUM}
       </span>
+      <!-- ELSE -->
+        [{galaxy}:{system}:{galaxyrow.PLANET_NUM}]
+      <!-- ENDIF -->
     </td>
   <!-- ENDIF -->
 </tr>
