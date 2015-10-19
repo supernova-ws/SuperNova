@@ -115,7 +115,7 @@
             <!-- DEFINE $PLANET_CLASS_BUTTON = '' -->
             <!-- DEFINE $PLANET_GO = '' -->
           <!-- ENDIF -->
-          <span class="{$PLANET_CLASS}{$PLANET_CLASS_BUTTON}"{$PLANET_GO}>
+          <span class="{$PLANET_CLASS}{$PLANET_CLASS_BUTTON}"{$PLANET_GO} planet_type="{galaxyrow.PLANET_TYPE}" planet_planet="{galaxyrow.PLANET_NUM}">
             [{galaxy}:{system}:{galaxyrow.PLANET_NUM}] {galaxyrow.PLANET_NAME}<!-- IF $PLANET_ACTIVITY -->&nbsp;({$PLANET_ACTIVITY}&nbsp;{L_sys_min_short})<!-- ENDIF -->
           </span>
         <!-- ENDIF -->

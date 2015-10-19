@@ -167,7 +167,7 @@ function tpl_render_menu() {
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
 //    'USER_IMPERSONATOR'   => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED,
     'PAYMENT'             => sn_module_get_active_count('payment'),
-    'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']),
+    'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
 //    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
 
 //    'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON]: 0,
@@ -180,7 +180,7 @@ function tpl_render_menu() {
 
   if(isset($template_result['MENU_CUSTOMIZE'])) {
     $template->assign_vars(array(
-      'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON],
+      'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !defined('SN_GOOGLE') ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
       'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
       'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
       'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],

@@ -52,8 +52,7 @@
     <!-- DEFINE $MENU_SHOW_HIDE_CLASS = 'MENU_SHOW_HIDE_HIDDEN' -->
   <!-- ENDIF -->
 <!-- ENDIF -->
-
-  <table cellspacing="0" cellpadding="0" id="left_menu" class="{$MENU_BIG_BUTTONS} {$MENU_NARROW_CELLS} {$MENU_START_HIDDEN} {$MENU_ABSOLUTE}"><!-- BEGIN menu -->
+  <table cellspacing="0" cellpadding="0" id="left_menu" class="{$MENU_BIG_BUTTONS} {$MENU_NARROW_CELLS} {$MENU_START_HIDDEN} {$MENU_ABSOLUTE}"<!-- IF $MENU_START_HIDDEN --> style="display:none"<!-- ENDIF -->><!-- BEGIN menu -->
   <!-- IF (! menu.AUTH_LEVEL || menu.AUTH_LEVEL <= AUTH_LEVEL) && ! menu.DISABLED -->
 
     <!-- IF menu.LEVEL == 'header' --><!-- DEFINE $TX = 'th' --><!-- ELSE --><!-- DEFINE $TX = 'td' --><!-- ENDIF -->
