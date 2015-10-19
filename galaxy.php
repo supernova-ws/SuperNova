@@ -19,6 +19,8 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $config;
+
 lng_include('universe');
 lng_include('stat');
 
@@ -27,8 +29,7 @@ $uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
 $uni_system = sys_get_param_int('system', $planetrow['system']);
 $planet     = sys_get_param_int('planet', $planetrow['planet']);
 
-if($mode == 'name')
-{
+if($mode == 'name') {
   require_once('includes/includes/uni_rename.php');
 }
 
@@ -51,18 +52,7 @@ $maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}}
 $maxfleet_count = $maxfleet['flying_fleet_count'];
 
 if ($mode == 1) {
-  if ($POST_galaxyLeft)
-    $uni_galaxy--;
-  elseif ($POST_galaxyRight)
-    $uni_galaxy++;
-
-  if ($POST_systemLeft)
-    $uni_system--;
-  elseif ($POST_systemRight)
-    $uni_system++;
 } elseif ($mode == 2 || $mode == 3) {
-  $uni_galaxy = $uni_galaxy;
-  $uni_system = $uni_system;
   $planet = $planetrow['planet'];
 } else {
   $uni_galaxy = $planetrow['galaxy'];
@@ -70,12 +60,9 @@ if ($mode == 1) {
   $planet = $planetrow['planet'];
 }
 
-if ($uni_galaxy < 1) $uni_galaxy = 1;
-if ($uni_galaxy > $config->game_maxGalaxy) $uni_galaxy = $config->game_maxGalaxy;
-if ($uni_system < 1) $uni_system = 1;
-if ($uni_system > $config->game_maxSystem) $uni_system = $config->game_maxSystem;
-if ($planet < 1) $planet = 1;
-if ($planet > $config->game_maxPlanet + 1) $planet = $config->game_maxPlanet + 1;
+$uni_galaxy = $uni_galaxy < 1 ? 1 : ($uni_galaxy > $config->game_maxGalaxy ? $config->game_maxGalaxy : $uni_galaxy);
+$uni_system = $uni_system < 1 ? 1 : ($uni_system > $config->game_maxSystem ? $config->game_maxSystem : $uni_system);
+$planet = $planet < 1 ? 1 : ($planet > $config->game_maxPlanet + 1 ? $config->game_maxPlanet + 1 : $planet);
 
 $planetcount = 0;
 $lunacount   = 0;

@@ -156,7 +156,8 @@ only screen and (min-device-pixel-ratio : 1.5) {
   border-radius: 0.4em;
   display: inline-block;
   text-align: center;
-  padding: 0.7em 1em 0.7em 1em;
+  /*padding: 0.475em 1em 0.475em 1em;*/
+  padding: 0.5em 1em;
 }
 .button_pseudo:not(img):hover, .button_pseudo_pressed:not(img) {
   background-color: #415680; /* rgba(65,86,128,1) */

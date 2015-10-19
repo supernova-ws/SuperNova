@@ -93,21 +93,23 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 <form action="galaxy.php?mode=1" method="post" id="galaxy_form">
   <table><tbody>
     <tr>
-      <td class="c" colspan="3">{L_Galaxy}</td>
-      <td class="c" colspan="3">{L_Solar_system}</td>
-      <th class="c markup" rowspan="2" align="center">
+      <td class="c" colspan="3"><label for="galaxy">{L_Galaxy}</label></td>
+      <td class="c" colspan="3"><label for="system">{L_Solar_system}</label></td>
+    </tr>
+    <tr>
+      <th class="c"><span class="button_pseudo" id="galaxyLeft">&lt;-</span></th>
+      <th class="c"><input name="galaxy" id="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text" /></th>
+      <th class="c"><span class="button_pseudo" id="galaxyRight">-&gt;</span></th>
+
+      <th class="c"><span class="button_pseudo" id="systemLeft">&lt;-</span></th>
+      <th class="c"><input name="system" id="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text" /></th>
+      <th class="c"><span class="button_pseudo" id="systemRight">-&gt;</span></th>
+    </tr>
+    <tr>
+      <th class="c_c" colspan="6" align="center">
         <input value="{L_sys_goto}" type="submit">
         <input type="hidden" id="auto" value="dr" >
       </th>
-    </tr>
-    <tr>
-      <th class="c"><input name="galaxyLeft" value="&lt;-" type="button" onClick="this.form.galaxy.value--;this.form.submit();"></th>
-      <th class="c"><input name="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text"></th>
-      <th class="c"><input name="galaxyRight" value="-&gt;" type="button" onClick="this.form.galaxy.value++;this.form.submit();"></th>
-
-      <th class="c"><input name="systemLeft" value="&lt;-" type="button" onClick="this.form.system.value--;this.form.submit();"></th>
-      <th class="c"><input name="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text"></th>
-      <th class="c"><input name="systemRight" value="-&gt;" type="button" onClick="this.form.system.value++;this.form.submit();"></th>
     </tr>
   </tbody></table>
 </form>

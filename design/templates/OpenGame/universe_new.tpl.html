@@ -1,7 +1,7 @@
 <table width=595 id="universe_main"><tbody>
 <tr><th class="c_l" colspan="{COL_SPAN}">
-  {L_sys_galaxy}&nbsp;{galaxy} <span class="ok">{GALAXY_NAME}</span>&nbsp;<a class="link button_pseudo" href="galaxy.php?mode=name&galaxy={galaxy}&system=0"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a>
-  <span class="fr ok link_action button_pseudo" id="universe_legend">{L_Legend}</span>
+  {L_sys_galaxy}&nbsp;[{galaxy}]&nbsp;<span class="ok">{GALAXY_NAME}</span>&nbsp;<span class="button_pseudo" go="galaxy" planet_system="0" mode="name"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></span>
+  <span class="fr notice link_action button_pseudo" id="universe_legend">{L_Legend}</span>
 </th></tr>
 
 <tr><th class="c_l" colspan="{COL_SPAN}">
@@ -162,10 +162,7 @@
     <!-- ELSE -->
       <!-- DEFINE $USER_CLASS_BANNED = '' -->
     <!-- ENDIF -->
-<!--
-    &lt;!&ndash; ELSEIF galaxyrow.USER_VACATION &ndash;&gt;
-      &lt;!&ndash; DEFINE $USER_CLASS = 'vacation' &ndash;&gt;
--->
+
     <!-- IF galaxyrow.USER_PROTECTED -->
       <!-- DEFINE $USER_CLASS = 'protected' -->
     <!-- ELSEIF galaxyrow.USER_NOOB -->

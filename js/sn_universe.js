@@ -165,3 +165,23 @@ $(document).on('click', '.debris_template .ownharvest', function() {
   popup_hide();
   doit(MT_RECYCLE, $(this).attr('planet_planet'), PT_DEBRIS);
 });
+
+$(document).on('click', '#galaxyLeft', function() {
+  $('#galaxy').val((parseInt($('#galaxy').val()) ? parseInt($('#galaxy').val()) : 0) - 1);
+  $('#galaxy_form').submit();
+});
+
+$(document).on('click', '#galaxyRight', function() {
+  $('#galaxy').val((parseInt($('#galaxy').val()) ? parseInt($('#galaxy').val()) : 0) + 1);
+  $('#galaxy_form').submit();
+});
+
+$(document).on('click', '#systemLeft', function() {
+  $('#system').val((parseInt($('#system').val()) ? parseInt($('#system').val()) : 0) - 1);
+  $('#galaxy_form').submit();
+});
+
+$(document).on('click', '#systemRight', function() {
+  $('#system').val((parseInt($('#system').val()) ? parseInt($('#system').val()) : 0) + 1);
+  $('#galaxy_form').submit();
+});

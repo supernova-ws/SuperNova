@@ -289,6 +289,10 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
         location.push('planettype=' + attr_on_me_or_parent(this, 'planet_type'));
         location.push('target_mission=' + attr_on_me_or_parent(this, 'mission'));
         break;
+      case 'galaxy':
+        location.push('galaxy=' + uni_galaxy);
+        location.push('system=' + attr_on_me_or_parent(this, 'planet_system'));
+        break;
       case 'build':
         page = 'buildings';
         break;
