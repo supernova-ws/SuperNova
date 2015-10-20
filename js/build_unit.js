@@ -335,7 +335,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     result ? result = (balance_header ? '<tr>' + balance_header + '</tr>' : '') + result : false;
   }
   !result ? result = '<tr><th class="c_c">' + language['eco_bld_unit_info_extra_none'] + '</th></tr>' : false;
-  $('#unit_balance').html('<table>' + result + '</table>');
+  $('#unit_balance').html('<table class="no_border_image">' + result + '</table>');
   $('<style></style>').appendTo($(document.body)).remove();
 }
 

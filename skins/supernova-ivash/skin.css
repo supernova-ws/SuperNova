@@ -257,10 +257,6 @@ div .ui-dialog-content table {
   background-color: #221C1A; /* - #233452;*/
 }
 
-.market_services {
-  background-color: #242424; /* #344566 */
-}
-
 #left_menu td a:hover, #left_menu th a:hover, #left_menu.MENU_NARROW_CELLS td a:hover, #left_menu.MENU_NARROW_CELLS th a:hover {
   background-color: #705955;
 }
@@ -274,4 +270,54 @@ div .ui-dialog-content table {
 
 .survey_block {
   border-color: #705955 /*#415680*/;
+}
+
+table:not(.markup):not(.noborder):not(.no_border_image), div#tab_container, div.market_services {
+  border: solid 10px red;
+  /*-o-border-image: url("images/border.png") 27 round stretch;*/
+/*
+  border-image: url("images/border.png") 50 23 38 51 round round;
+  -o-border-image: url("images/border.png") 50 23 38 51 round round;
+  border-top: 50px;
+  border-right: 23px;
+  border-bottom: 38px;
+  border-left: 51px;
+*/
+  border-radius: 6px;
+
+  border-image: url("images/border.png") 22 9 24 23 round round;
+  -o-border-image: url("images/border.png") 22 9 24 23 round round;
+  border-top: 22px;
+  border-right: 9px;
+  border-bottom: 24px;
+  border-left: 23px;
+
+}
+
+div#tab_container {
+  background-color: transparent;
+}
+
+div#tab_container > div {
+  background-color: #242424;
+}
+
+div.market_services {
+  background-color: transparent;
+  padding: 0em;
+}
+
+.market_services div:first-child {
+  background-color: #242424; /* #344566 */
+  padding: 0.5em;
+  margin-bottom: 0;
+}
+
+.ui-widget-header {
+  background-color: #242424; /* #344566 */
+  border: none;
+}
+
+.ui-tabs-active.ui-state-active {
+  background-color: #242424; /* #344566 */
 }
