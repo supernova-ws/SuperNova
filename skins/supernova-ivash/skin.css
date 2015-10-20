@@ -274,28 +274,22 @@ div .ui-dialog-content table {
 
 table:not(.markup):not(.noborder):not(.no_border_image), div#tab_container, div.market_services {
   border: solid 10px red;
-  /*-o-border-image: url("images/border.png") 27 round stretch;*/
-/*
-  border-image: url("images/border.png") 50 23 38 51 round round;
-  -o-border-image: url("images/border.png") 50 23 38 51 round round;
-  border-top: 50px;
-  border-right: 23px;
-  border-bottom: 38px;
-  border-left: 51px;
-*/
   border-radius: 6px;
 
-  border-image: url("images/border.png") 22 9 24 23 round round;
+  -moz-border-image: url("images/border.png") 22 9 24 23 round round;
   -o-border-image: url("images/border.png") 22 9 24 23 round round;
+  -webkit-border-image: url("images/border.png") 22 9 24 23 round round;
+  border-image: url("images/border.png") 22 9 24 23 round round;
+
   border-top: 22px;
   border-right: 9px;
   border-bottom: 24px;
   border-left: 23px;
-
 }
 
 div#tab_container {
   background-color: transparent;
+  background-image: none;
 }
 
 div#tab_container > div {
