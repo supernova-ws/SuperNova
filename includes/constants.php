@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a17.0');
+define('SN_VERSION', '40a17.2');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -624,6 +624,18 @@ define('ATTACK_SHIP_COUNT_WRONG'  , 40);
 define('ATTACK_RESOURCE_COUNT_WRONG', 41);
 define('ATTACK_MORATORIUM', 42);
 define('ATTACK_CHILD_PROTECTION', 43);
+
+
+// *** Races - Homeworlds
+define('RACE_NONE'    , 0);
+define('RACE_EARTH'   , 1);
+define('RACE_MOON'    , 2);
+define('RACE_MERCURY' , 3);
+define('RACE_VENUS'   , 4);
+define('RACE_MARS'    , 5);
+define('RACE_ASTEROID', 6);
+// define('MARKET_INFO'         , 7);
+
 
 
 // *** Market variables
