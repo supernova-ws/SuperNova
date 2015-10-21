@@ -4,7 +4,7 @@ if(!defined('INSIDE')) {
   die('Hack attempt!');
 }
 
-//lng_include('menu');
+lng_include('menu');
 
 $active_payment_modules = sn_module_get_active_count('payment') > 0;
 
