@@ -10,6 +10,13 @@ class classLocale implements ArrayAccess {
   protected $stat_usage_new = array();
 
   /**
+   * Порядок проверки языков
+   *
+   * @var array $fallback
+   */
+  protected $fallback = array();
+
+  /**
    * @var classCache $cache
    */
   protected $cache = null;
@@ -24,7 +31,7 @@ class classLocale implements ArrayAccess {
     if(classSupernova::$cache->_MODE != CACHER_NO_CACHE) {
       $this->cache = classSupernova::$cache;
       classSupernova::log_file('locale.__constructor: Cache is present');
-//$this->cache->unset_by_prefix($this->cache_prefix); // TODO - remove
+//$this->cache->unset_by_prefix($this->cache_prefix); // TODO - remove? 'cause debug!
     }
 
     if($enable_stat_usage && empty($this->stat_usage)) {
@@ -40,19 +47,42 @@ class classLocale implements ArrayAccess {
     classSupernova::log_file("locale.__constructor: Complete - EXIT", -1);
   }
 
+  /**
+   * Фоллбэк для строки на другие локали
+   *
+   * @param array|string $offset
+   */
   protected function locale_string_fallback($offset) {
 global $locale_cache_statistic;
-    if(!isset($this->container[$this->active][$offset]) && $this->cache) {
-      $this->container[$this->active][$offset] = $this->cache->__get($this->cache_prefix_lang . $offset);
-$locale_cache_statistic['queries']++;
-isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits']++ : $locale_cache_statistic['misses']++;
-!isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['missed_str'][] = $offset : false;
-    }
+    // Фоллбэк вызывается только если мы не нашли нужную строку в массиве...
+    $fallback = $this->fallback;
+    // ...поэтому $offset в активном языке заведомо нет
+    unset($fallback[$this->active]);
 
-    // TODO - language fallback
+    // Проходим по оставшимся локалям
+    foreach($fallback as $try_language) {
+      // Если нет такой строки - пытаемся вытащить из кэша
+      if(!isset($this->container[$try_language][$offset]) && $this->cache) {
+        $this->container[$try_language][$offset] = $this->cache->__get($this->cache_prefix . $try_language . '_' . $offset);
+// Записываем результат работы кэша
+$locale_cache_statistic['queries']++;
+isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits']++ : $locale_cache_statistic['misses']++;
+!isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['missed_str'][] = $this->cache_prefix . $try_language . '_' . $offset : false;
+      }
+
+      // Если мы как-то где-то нашли строку...
+      if(isset($this->container[$try_language][$offset])) {
+        // ...значит она получена в результате фоллбэка и записываем её в кэш и контейнер
+        $this[$offset] = $this->container[$try_language][$offset];
+        $locale_cache_statistic['fallbacks']++;
+        break;
+      }
+    }
   }
 
   public function offsetSet($offset, $value) {
+//pdump('set', $this->cache_prefix_lang . $offset);
+//pdump($this->container[$this->active][$offset]);
     if (is_null($offset)) {
       $this->container[$this->active][] = $value;
     } else {
@@ -63,8 +93,14 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
     }
   }
   public function offsetExists($offset) {
+    // Шорткат если у нас уже есть строка в памяти PHP
     if(!isset($this->container[$this->active][$offset])) {
-      $this->locale_string_fallback($offset);
+//        pdump($this->cache_prefix_lang . $offset);
+      if(!$this->cache || !($this->container[$this->active][$offset] = $this->cache->__get($this->cache_prefix_lang . $offset))) {
+//        pdump($this->cache_prefix_lang . $offset);
+        // Если нету такой строки - делаем фоллбэк
+        $this->locale_string_fallback($offset);
+      }
 //pdump($offset);
       return isset($this->container[$this->active][$offset]);
     } else {
@@ -83,39 +119,31 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
   }
 
 
-  public function merge($array)
-  {
+  public function merge($array) {
     $this->container[$this->active] = is_array($this->container[$this->active]) ? $this->container[$this->active] : array();
     // $this->container[$this->active] = array_merge($this->container[$this->active], $array);
     $this->container[$this->active] = array_replace_recursive($this->container[$this->active], $array);
   }
 
 
-  public function usage_stat_load()
-  {
+  public function usage_stat_load() {
     global $sn_cache;
 
     $this->stat_usage = $sn_cache->lng_stat_usage  = array(); // TODO for debug
-    if(empty($this->stat_usage))
-    {
+    if(empty($this->stat_usage)) {
       $query = doquery("SELECT * FROM {{lng_usage_stat}}");
-      while($row = db_fetch($query))
-      {
+      while($row = db_fetch($query)) {
         $this->stat_usage[$row['lang_code'] . ':' . $row['string_id'] . ':' . $row['file'] . ':' . $row['line']] = $row['is_empty'];
       }
     }
   }
-  public function usage_stat_save()
-  {
-    if(!empty($this->stat_usage_new))
-    {
+  public function usage_stat_save() {
+    if(!empty($this->stat_usage_new)) {
       global $sn_cache;
       $sn_cache->lng_stat_usage = $this->stat_usage;
       doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
-      foreach($this->stat_usage_new as &$value)
-      {
-        foreach($value as &$value2)
-        {
+      foreach($this->stat_usage_new as &$value) {
+        foreach($value as &$value2) {
           $value2 = '"' . db_escape($value2) . '"';
         }
         $value = '(' . implode(',', $value) .')';
@@ -123,25 +151,15 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
       doquery("REPLACE INTO {{lng_usage_stat}} (lang_code,string_id,`file`,line,is_empty,locale) VALUES " . implode(',', $this->stat_usage_new));
     }
   }
-  public function usage_stat_log(&$offset, &$value)
-  {
+  public function usage_stat_log(&$offset, &$value) {
     $trace = debug_backtrace();
     unset($trace[0]);
     unset($trace[1]['object']);
 
-//    pdump($trace, $offset);
-//    pdump(SN_ROOT_PHYSICAL );
     $file = str_replace('\\', '/', substr($trace[1]['file'], strlen(SN_ROOT_PHYSICAL) - 1));
-/*
-    if(strpos($file, '/includes/classes/template.php') !== false)
-    {
 
-    }
-*/
-//    pdump($file);
     $string_id = $this->active . ':' . $offset . ':' . $file . ':' . $trace[1]['line'];
-    if(!isset($this->stat_usage[$string_id]) || $this->stat_usage[$string_id] != $empty)
-    {
+    if(!isset($this->stat_usage[$string_id]) || $this->stat_usage[$string_id] != $empty) {
       $this->stat_usage[$string_id] = empty($value);
       $this->stat_usage_new[] = array(
         'lang_code' => $this->active,
@@ -152,20 +170,29 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
         'locale' => '' . $value,
       );
     }
-    // $this->stat_usage[$this->active . ':' . $offset . ':' . $file . ':' . $trace[1]['line']] = 1;
-//    pdump($string_id);
-//    die();
   }
 
 
-  protected function lng_try_filepath($path, $file_path_relative)
-  {
+  protected function lng_try_filepath($path, $file_path_relative) {
     $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
     return file_exists($file_path) ? $file_path : false;
   }
 
+  protected function make_fallback($language = '') {
+    global $user;
+
+    $this->fallback = array();
+    $language ? $this->fallback[$language] = $language : false; // Desired language
+    $this->active ? $this->fallback[$this->active] = $this->active : false; // Active language
+    // TODO - account_language
+    !empty($user['lang']) ? $this->fallback[$user['lang']] = $user['lang'] : false; // Player language
+    $this->fallback[DEFAULT_LANG] = DEFAULT_LANG; // Server default language
+    $this->fallback['ru'] = 'ru'; // Russian
+    $this->fallback['en'] = 'en'; // English
+  }
+
   public function lng_include($filename, $path = '', $ext = '.mo.php') {
-    global $language, $user;
+    global $language;
 
     classSupernova::log_file("locale.include: Loading data from domain '{$filename}'", 1);
 
@@ -187,57 +214,29 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
     $ext = $ext ? $ext : '.mo.php';
     $filename_ext = "{$filename}{$ext}";
 
-    $language_fallback = array(
-      $language => $language,          // Current language
-      $user['lang'] => $user['lang'],  // User language
-      DEFAULT_LANG => DEFAULT_LANG,    // Server default language
-      'ru' => 'ru',                    // Russian
-      'en' => 'en',                    // English
-    );
+    $this->make_fallback($language);
 
-    // $language_tried = array();
     $file_path = '';
-    foreach($language_fallback as $lang_try)
-    {
-      if(!$lang_try /* || isset($language_tried[$lang_try]) */)
-      {
+    foreach($this->fallback as $lang_try) {
+      if(!$lang_try /* || isset($language_tried[$lang_try]) */) {
         continue;
       }
 
-      if($file_path = $this->lng_try_filepath($path, "language/{$lang_try}/{$filename_ext}"))
-      {
+      if($file_path = $this->lng_try_filepath($path, "language/{$lang_try}/{$filename_ext}")) {
         break;
       }
 
-      if($file_path = $this->lng_try_filepath($path, "language/{$filename}_{$lang_try}{$ext}"))
-      {
+      if($file_path = $this->lng_try_filepath($path, "language/{$filename}_{$lang_try}{$ext}")) {
         break;
       }
-      /*
-          $file_path_relative = "language/{$lang_try}/{$filename_ext}";
-          $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
-          if(file_exists($file_path))
-          {
-            break;
-          }
 
-          $file_path_relative = "language/{$filename_ext}_{$lang_try}";
-          $file_path = SN_ROOT_PHYSICAL . ($path && file_exists(SN_ROOT_PHYSICAL . $path . $file_path_relative) ? $path : '') . $file_path_relative;
-          if(file_exists($file_path))
-          {
-            break;
-          }
-      */
       $file_path = '';
-      // $language_tried[$lang_try] = $lang_try;
     }
 
-    if($file_path)
-    {
+    if($file_path) {
       include($file_path);
 
-      if(!empty($a_lang_array))
-      {
+      if(!empty($a_lang_array)) {
         $this->merge($a_lang_array);
 
         // Загрузка данных из файла в кэш
@@ -258,8 +257,6 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
       }
 
       if($this->cache) {
-        // TODO - Раскомментировать
-//        $this->cache->__set($this->cache_prefix_lang . '__' . $filename, true);
         $this->cache->__set($cache_file_key, true);
       }
 
@@ -271,20 +268,16 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
     return null;
   }
 
-  public function lng_load_i18n($i18n)
-  {
-    if(isset($i18n))
-    {
-      foreach($i18n as $i18n_data)
-      {
-        if(is_string($i18n_data))
-        {
-          $this->lng_include($i18n_data);
-        }
-        elseif(is_array($i18n_data))
-        {
-          $this->lng_include($i18n_data['file'], $i18n_data['path']);
-        }
+  public function lng_load_i18n($i18n) {
+    if(!isset($i18n)) {
+      return;
+    }
+
+    foreach($i18n as $i18n_data) {
+      if(is_string($i18n_data)) {
+        $this->lng_include($i18n_data);
+      } elseif(is_array($i18n_data)) {
+        $this->lng_include($i18n_data['file'], $i18n_data['path']);
       }
     }
 
@@ -310,6 +303,7 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
     $this->cache_prefix_lang = $this->cache_prefix . $this->active . '_';
 
     $this['LANG_INFO'] = $this->lng_get_info($this->active);
+    $this->make_fallback($this->active);
 
     if($this->cache) {
       $cache_lang_init_status = $this->cache->__get($this->cache_prefix_lang . '__INIT');
@@ -324,6 +318,7 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
     }
 
     $this->lng_include('system');
+//    $this->lng_include('menu');
     $this->lng_include('tech');
     $this->lng_include('payment');
     // Loading global language files
@@ -340,36 +335,26 @@ isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits'
   }
 
 
-
-
-
-  public function lng_get_info($entry)
-  {
+  public function lng_get_info($entry) {
     $file_name = SN_ROOT_PHYSICAL . 'language/' . $entry . '/language.mo.php';
     $lang_info = array();
-    if(file_exists($file_name))
-    {
+    if(file_exists($file_name)) {
       include($file_name);
     }
 
     return($lang_info);
   }
 
-  public function lng_get_list()
-  {
-    if(empty($this->lang_list))
-    {
+  public function lng_get_list() {
+    if(empty($this->lang_list)) {
       $this->lang_list = array();
 
       $path = SN_ROOT_PHYSICAL . 'language/';
       $dir = dir($path);
-      while(false !== ($entry = $dir->read()))
-      {
-        if(is_dir($path . $entry) && $entry[0] != '.')
-        {
+      while(false !== ($entry = $dir->read())) {
+        if(is_dir($path . $entry) && $entry[0] != '.') {
           $lang_info = $this->lng_get_info($entry);
-          if($lang_info['LANG_NAME_ISO2'] == $entry)
-          {
+          if($lang_info['LANG_NAME_ISO2'] == $entry) {
             $this->lang_list[$lang_info['LANG_NAME_ISO2']] = $lang_info;
           }
         }

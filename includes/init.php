@@ -19,7 +19,7 @@ register_shutdown_function(function() {
     return;
   }
 
-  global $user, $lang;
+  global $user;
 
   global $locale_cache_statistic;
 
@@ -27,7 +27,7 @@ register_shutdown_function(function() {
     (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .
     '</div>');
   if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
-    echo '<a href="badqrys.txt" target="_blank" style="color:red">', $lang['ov_hack_alert'], '</a>';
+    echo '<a href="badqrys.txt" target="_blank" style="color:red">', 'HACK ALERT!', '</a>';
   }
 
   if(!empty($locale_cache_statistic['misses'])) {
