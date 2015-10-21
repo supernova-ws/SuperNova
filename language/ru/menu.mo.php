@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a13.0
+* @version 40a17.0
 *
 */
 
@@ -26,9 +26,6 @@
 
 if (!defined('INSIDE')) die();
 
-
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'Multiverse' => '<b>Сервер</b> Uni',
   'm_h_rules' => 'Правила',

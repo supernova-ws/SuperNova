@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a15.8
+* @version 40a17.0
 *
 */
 
@@ -29,17 +29,6 @@
 if (!defined('INSIDE')) {
 	die('Hack attempt!');
 }
-
-//if (empty($lang) || !is_array($lang)) {
-//  $lang = array();
-//}
-
-empty($lang) || !is_array($lang) ? $lang = array() : false;
-
-// System-wide localization
-
-//$lang = array_merge($lang,
-//$lang->merge(
 
 global $config;
 

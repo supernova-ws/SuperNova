@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a1.11
+* @version 40a17.0
 *
 */
 
@@ -27,8 +27,6 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'ov_hack_alert' => 'Попытка взлома БД!!!',
   'ov_you_have' => 'У вас',

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a15.6
+* @version 40a17.0
 *
 */
 
@@ -29,8 +29,6 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'adm_tool_md5_header' => 'Password encoding (MD5)',
   'adm_tool_md5_hash' => 'MD5 hash',
@@ -48,22 +46,18 @@ $a_lang_array = (array(
       'TABLE_HEADER'  => 'SQL server',
       'COLUMN_NAME_1' => 'Parameter',
       'COLUMN_NAME_2' => 'Value',
-//      'TABLE_FOOTER'  => '',
-//      'TABLE_EMPTY'   => '',
     ),
 
     'status' => array(
       'TABLE_HEADER'  => 'SQL status',
       'COLUMN_NAME_1' => 'Parameter',
       'COLUMN_NAME_2' => 'Value',
-//      'TABLE_FOOTER'  => '',
     ),
 
     'params' => array(
       'TABLE_HEADER'  => 'SQL settings',
       'COLUMN_NAME_1' => 'Parameter',
       'COLUMN_NAME_2' => 'Value',
-//      'TABLE_FOOTER'  => '',
     ),
   ),
 

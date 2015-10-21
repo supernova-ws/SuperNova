@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a11.6
+* @version 40a17.0
 *
 */
 
@@ -26,8 +26,6 @@
 
 if (!defined('INSIDE')) die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'flt_page2_title' => 'Выбор задания',
   'fl_title' => 'Флоты',

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a13.0
+* @version 40a17.0
 *
 */
 
@@ -29,8 +29,6 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'Multiverse' => '<b>Sever</b> Uni',
   'm_h_rules' => 'Rules',
@@ -45,7 +43,6 @@ $a_lang_array = (array(
   'm_affilates' => 'Earn DM!',
   'Overview' => 'Overview',
   'Officiers' => 'Officers',
-//  'Buildings' => 'Construction',
   'Building' => 'Construction',
   'Research' => 'Research',
   'Shipyard' => 'Shipyard',

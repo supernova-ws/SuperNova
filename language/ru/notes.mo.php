@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b3.0
+* @version 40a17.0
 *
 */
 
@@ -25,16 +25,12 @@
 
 !defined('INSIDE') && die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'note_page_header' => 'Заметки',
   'note_date' => 'Дата',
   'note_note' => 'Заметка',
   'note_priority' => 'Важность',
   'note_sticky' => 'Прилепленная',
-//  'note_title' => 'Заголовок',
-//  'note_text' => 'Текст',
   'note_new_title' => 'Заголовок новой заметки',
   'note_new_text' => 'Текст новой заметки',
   'note_stick_it' => 'Прилепить заметку под навбар на каждой странице',

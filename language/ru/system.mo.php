@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a15.8#
+* @version #40a17.0#
 *
 */
 
@@ -28,17 +28,8 @@ if (!defined('INSIDE'))
 {
   exit;
 }
-/*
-//pdump($lang);
-if (!isset($lang) || (!is_array($lang) && !is_object($lang)))
-{
-  $lang = array();
-}
-*/
-// System-wide localization
 
-//$lang = array_merge($lang,
-//$lang->merge(
+// System-wide localization
 
 global $config;
 

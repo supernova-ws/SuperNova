@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b3.0
+* @version 40a17.0
 *
 */
 
@@ -25,16 +25,12 @@
 
 !defined('INSIDE') && die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
-$a_lang_array = (array(
+$a_lang_array = array(
   'note_page_header' => 'Notes',
   'note_date' => 'Date',
   'note_note' => 'Note',
   'note_priority' => 'Priority',
   'note_sticky' => 'Sticky',
-//  'note_title' => 'Title',
-//  'note_text' => 'Text',
   'note_new_title' => 'New note title',
   'note_new_text' => 'New note text',
   'note_stick_it' => 'Stick this note under navbar on each page',
@@ -54,4 +50,4 @@ $a_lang_array = (array(
   'note_warn_no_range' => 'You did not select range - nothing to delete',
   'note_err_none_selected' => 'There are no notes selected - nothing to delete. To delete all notes at once select range "All notes"',
 
-));
+);

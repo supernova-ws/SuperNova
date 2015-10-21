@@ -149,7 +149,11 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
 }
 
 function tpl_render_menu() {
-  global $user, $lang, $template_result; // $config,
+  global $user, $lang, $template_result;
+  global $sn_menu_admin_extra, $sn_menu_admin;
+  global $sn_menu, $sn_menu_extra;
+
+  lng_include('admin');
 
   //$template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
   //$template = gettemplate($template_name, true);
@@ -200,15 +204,10 @@ function tpl_render_menu() {
     //));
     //$template = gettemplate('menu', $template);
 
-    global $sn_menu_admin_extra, $sn_menu_admin;
-
-    lng_include('admin');
 
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
   } else {
-    global $sn_menu, $sn_menu_extra;
-
     tpl_menu_merge_extra($sn_menu, $sn_menu_extra);
     tpl_menu_assign_to_template($sn_menu, $template);
   }

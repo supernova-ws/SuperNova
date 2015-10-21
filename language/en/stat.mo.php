@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b4.0
+* @version 40a17.0
 *
 */
 
@@ -28,8 +28,6 @@
 
 if (!defined('INSIDE')) die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'stat_header' => 'Statistics',
   'stat_refresh_last' => 'Last update on',

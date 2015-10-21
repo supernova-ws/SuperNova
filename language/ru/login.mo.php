@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a13.12
+* @version 40a17.0
 *
 */
 
@@ -28,14 +28,10 @@ if (!defined('INSIDE')) die();
 
 global $config;
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'Login' => 'Логин',
   'User_name' => 'Имя:',
   'Authorization' => 'Авторизация',
-//  'Password' => 'Пароль:',
-//  'neededpass' => 'Пароль',
   'Please_Login' => 'Пожалуйста <a href="login.php" target="_main">войдите...</a>',
   'Please_Wait' => 'Подождите',
   'Remember_me' => 'Запомнить меня',

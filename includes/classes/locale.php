@@ -9,20 +9,47 @@ class classLocale implements ArrayAccess {
   protected $stat_usage = array();
   protected $stat_usage_new = array();
 
-  // protected $cache = null;
+  /**
+   * @var classCache $cache
+   */
+  protected $cache = null;
+  protected $cache_prefix = 'lng_';
+  protected $cache_prefix_lang = '';
 
-  public function __construct($language = DEFAULT_LANG, $enable_stat_usage = false) {
-    $this->active = $language;
-    $this->container = array($this->active => array());
-    // $this->cache = classCache::getInstance();
+  public function __construct($enable_stat_usage = false) {
+    classSupernova::log_file('locale.__constructor: Starting', 1);
 
-    if($enable_stat_usage && empty($this->stat_usage))
-    {
+    $this->container = array();
+
+    if(classSupernova::$cache->_MODE != CACHER_NO_CACHE) {
+      $this->cache = classSupernova::$cache;
+      classSupernova::log_file('locale.__constructor: Cache is present');
+//$this->cache->unset_by_prefix($this->cache_prefix); // TODO - remove
+    }
+
+    if($enable_stat_usage && empty($this->stat_usage)) {
       $this->enable_stat_usage = $enable_stat_usage;
       $this->usage_stat_load();
       // TODO shutdown function
       register_shutdown_function(array($this, 'usage_stat_save'));
     }
+
+    classSupernova::log_file("locale.__constructor: Switching language to default");
+    $this->lng_switch(DEFAULT_LANG);
+
+    classSupernova::log_file("locale.__constructor: Complete - EXIT", -1);
+  }
+
+  protected function locale_string_fallback($offset) {
+global $locale_cache_statistic;
+    if(!isset($this->container[$this->active][$offset]) && $this->cache) {
+      $this->container[$this->active][$offset] = $this->cache->__get($this->cache_prefix_lang . $offset);
+$locale_cache_statistic['queries']++;
+isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['hits']++ : $locale_cache_statistic['misses']++;
+!isset($this->container[$this->active][$offset]) ? $locale_cache_statistic['missed_str'][] = $offset : false;
+    }
+
+    // TODO - language fallback
   }
 
   public function offsetSet($offset, $value) {
@@ -30,18 +57,26 @@ class classLocale implements ArrayAccess {
       $this->container[$this->active][] = $value;
     } else {
       $this->container[$this->active][$offset] = $value;
+      if($this->cache) {
+        $this->cache->__set($this->cache_prefix_lang . $offset, $value);
+      }
     }
   }
   public function offsetExists($offset) {
-    return isset($this->container[$this->active][$offset]);
+    if(!isset($this->container[$this->active][$offset])) {
+      $this->locale_string_fallback($offset);
+//pdump($offset);
+      return isset($this->container[$this->active][$offset]);
+    } else {
+      return true;
+    }
   }
   public function offsetUnset($offset) {
     unset($this->container[$this->active][$offset]);
   }
   public function offsetGet($offset) {
-    $value = isset($this->container[$this->active][$offset]) ? $this->container[$this->active][$offset] : null;
-    if($this->enable_stat_usage)
-    {
+    $value = $this->offsetExists($offset) ? $this->container[$this->active][$offset] : null;
+    if($this->enable_stat_usage) {
       $this->usage_stat_log($offset, $value);
     }
     return $value;
@@ -129,11 +164,25 @@ class classLocale implements ArrayAccess {
     return file_exists($file_path) ? $file_path : false;
   }
 
-  public function lng_include($filename, $path = '', $ext = '.mo.php')
-  {
+  public function lng_include($filename, $path = '', $ext = '.mo.php') {
     global $language, $user;
 
-    $lang = $this;
+    classSupernova::log_file("locale.include: Loading data from domain '{$filename}'", 1);
+
+    $cache_file_key = $this->cache_prefix_lang . '__' . $filename;
+
+    // Подключен ли внешний кэш?
+    if($this->cache) {
+      // Загружен ли уже данный файл?
+      $cache_file_status = $this->cache->__get($cache_file_key);
+      classSupernova::log_file("locale.include: Cache - '{$filename}' has key '{$cache_file_key}' and is " . ($cache_file_status ? 'already loaded - EXIT' : 'EMPTY'), $cache_file_status ? -1 : 0);
+      if($cache_file_status) {
+        // Если да - повторять загрузку нет смысла
+        return null;
+      }
+    }
+
+    // У нас нет внешнего кэша или в кэш не загружена данная локализация текущего файла
 
     $ext = $ext ? $ext : '.mo.php';
     $filename_ext = "{$filename}{$ext}";
@@ -190,9 +239,34 @@ class classLocale implements ArrayAccess {
       if(!empty($a_lang_array))
       {
         $this->merge($a_lang_array);
-        unset($a_lang_array);
+
+        // Загрузка данных из файла в кэш
+        if($this->cache) {
+          classSupernova::log_file("Locale: loading '{$filename}' into cache");
+          foreach($a_lang_array as $key => $value) {
+            $value_cache_key = $this->cache_prefix_lang . $key;
+            if($this->cache->__isset($value_cache_key)) {
+              if(is_array($value)) {
+                $alt_value = $this->cache->__get($value_cache_key);
+                $value = array_replace_recursive($alt_value, $value);
+                // pdump($alt_value, $alt_value);
+              }
+            }
+            $this->cache->__set($this->cache_prefix_lang . $key, $value);
+          }
+        }
       }
+
+      if($this->cache) {
+        // TODO - Раскомментировать
+//        $this->cache->__set($this->cache_prefix_lang . '__' . $filename, true);
+        $this->cache->__set($cache_file_key, true);
+      }
+
+      unset($a_lang_array);
     }
+
+    classSupernova::log_file("locale.include: Complete - EXIT", -1);
 
     return null;
   }
@@ -217,31 +291,52 @@ class classLocale implements ArrayAccess {
     return null;
   }
 
-  public function lng_switch($language_new)
-  {
+  public function lng_switch($language_new) {
     global $language, $user, $sn_mvc;
 
+    classSupernova::log_file("locale.switch: Request for switch to '{$language_new}'", 1);
+
     $language_new = str_replace(array('?', '&', 'lang='), '', $language_new);
+    $language_new = $language_new ? $language_new : (!empty($user['lang']) ? $user['lang'] : DEFAULT_LANG);
 
-    $language_new = $language_new ? $language_new : (isset($user['lang']) && $user['lang'] ? $user['lang'] : DEFAULT_LANG);
+    classSupernova::log_file("locale.switch: Trying to switch language to '{$language_new}'");
 
-    $result = false;
-    if($language_new != $language)
-    {
-      $language = $language_new;
-      $this->active = $language_new;
-      $lang['LANG_INFO'] = $this->lng_get_info($language_new);
-
-      $this->lng_include('system');
-      $this->lng_include('tech');
-      $this->lng_include('payment');
-      // Loading global language files
-      $this->lng_load_i18n($sn_mvc['i18n']['']);
-      $result = true;
-      
+    if($language_new == $this->active) {
+      classSupernova::log_file("locale.switch: New language '{$language_new}' is equal to current language '{$this->active}' - EXIT", -1);
+      return false;
     }
 
-    return $result;
+    $this->active = $language = $language_new;
+    $this->cache_prefix_lang = $this->cache_prefix . $this->active . '_';
+
+    $this['LANG_INFO'] = $this->lng_get_info($this->active);
+
+    if($this->cache) {
+      $cache_lang_init_status = $this->cache->__get($this->cache_prefix_lang . '__INIT');
+      classSupernova::log_file("locale.switch: Cache for '{$this->active}' prefixed '{$this->cache_prefix_lang}' is " . ($cache_lang_init_status ? 'already loaded. Doing nothing - EXIT' : 'EMPTY'), $cache_lang_init_status ? -1 : 0);
+      if($cache_lang_init_status) {
+        return false;
+      }
+
+      // Чистим текущие локализации из кэша. Достаточно почистить только флаги инициализации языкового кэша и загрузки файлов - они начинаются с '__'
+      classSupernova::log_file("locale.switch: Cache - invalidating data");
+      $this->cache->unset_by_prefix($this->cache_prefix_lang . '__');
+    }
+
+    $this->lng_include('system');
+    $this->lng_include('tech');
+    $this->lng_include('payment');
+    // Loading global language files
+    $this->lng_load_i18n($sn_mvc['i18n']['']);
+
+    if($this->cache) {
+      classSupernova::log_file("locale.switch: Cache - setting flag " . $this->cache_prefix_lang . '__INIT');
+      $this->cache->__set($this->cache_prefix_lang . '__INIT', true);
+    }
+
+    classSupernova::log_file("locale.switch: Complete - EXIT");
+
+    return true;
   }
 
 

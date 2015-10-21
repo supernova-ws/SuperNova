@@ -433,7 +433,7 @@ $sn_menu = array(
 );
 
 
-$sn_menu_admin = array(
+$sn_menu_admin = defined('IN_ADMIN') && IN_ADMIN === true ?array(
   'menu_admin_server_name' => array(
     'LEVEL' => 'header',
     'TYPE' => 'text',
@@ -626,4 +626,4 @@ $sn_menu_admin = array(
     'ITEM'  => 'adm_back',
     'LINK'  => 'index.php',
   ),
-);
+) : array();

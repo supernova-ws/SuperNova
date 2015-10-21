@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a10.25
+* @version 40a17.0
 *
 */
 
@@ -25,17 +25,12 @@
 
 if (!defined('INSIDE')) die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   // Metamatter
   'sys_metamatter_what_header' => 'What is <span class="metamatter">Metamatter</span>',
   'sys_metamatter_what_description' => '<span class="metamatter">Metamatter</span> (shortly <span class="metamatter">MM</span>) - это весьма условное название для особого состояния Вселенной. Фактически - это даже не материя, а факторизируемая вероятность.<br /><br />
   У <span class="metamatter">Метаматерии</span> нет состояния - и в то же время она находится во всех состояних. <span class="metamatter">Метаматерия</span> нигде не находится - и в то же время находится везде. Потенциально метаматерия может стать чем угодно и где угодно - если правильно актуализировать вероятность.',
   'sys_metamatter_what_purchase' => 'Basically <span class="metamatter">Metamatter</span> is a "Buyable <span class="dark_matter">Dark Matter</span>" - when there is lack of <span class="metamatter">DM</span> for purchase of something <span class="metamatter">MM</span> would be <span class="ok">automatically converted</span> to necessary amount of <span class="dark_matter">DM</span> as <span class="dark_matter">1 DM</span> = <span class="metamatter">1 MM</span>',
-//  'Увы, свойства Метаматерии и методы её актуализации еще исследованы слабо. Поэтому на сегодня доступен весьма узкий спектр применения ММ:<ul>
-//  <li>Метаматерию можно сконвертировать в Тёмную Материю по курсу 1 ММ = 1 ТМ без дополнительных затрат</li>
-//  </ul>',
 
   'pay_mm_convert_header' => 'Конвертация Метаматерии в Тёмную Материю',
   'pay_mm_convert_text' => 'Метаматерия конвертируется в Тёмную Материю по курсу 1 к 1',

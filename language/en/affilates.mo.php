@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b3.0
+* @version 40a17.0
 *
 */
 
@@ -28,8 +28,6 @@
 
 !defined('INSIDE') && die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'aff_title' => 'Affiliate program',
   'aff_text1' => 'Place a personal link, banner or userbar on forum or site and each coming under the link will be your Invited. You will have 1 DM for every',

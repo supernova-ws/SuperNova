@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a13.14
+* @version 40a17.0
 * @condition clear
 *
 */
@@ -26,9 +26,6 @@
 
 if (!defined('INSIDE')) die();
 
-
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'eco_mrk_title' => 'Чёрный Рынок',
   'eco_mrk_description' => 'Странно, но в описании к интерфейсу управления Империей не было такого пункта... Интересно, откуда он взялся?',

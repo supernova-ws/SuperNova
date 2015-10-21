@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a3.9
+* @version 40a17.0
 *
 * @clean - all constants is used
 *
@@ -29,16 +29,8 @@ if (!defined('INSIDE'))
 {
   exit;
 }
-/*
-if (empty($lang) || !is_array($lang))
-{
-  $lang = array();
-}
-*/
-// Officers/mercenaries
-//$lang = array_merge($lang,
-//$lang->merge(
-$a_lang_array = (array(
+
+$a_lang_array = array(
   'mrc_up_to' => 'up to',
   'mrc_hire' => 'Hire',
   'mrc_hire_for' => 'Hire for',
@@ -57,4 +49,4 @@ $a_lang_array = (array(
   'mrc_mercenary_hired_log' => 'Hired Mercenary "%1$s" ID %2$d for %3$d DM for %4$d days',
   'mrc_mercenary_dismissed_log' => 'LOST %7$d hire days and %8$d DM (current prices)! Dismissed Mercenary "%1$s" ID %2$d, hired for %4$d days (from %5$s to %6$s) which costs now %3$d DM',
   'mrc_plan_bought_log' => 'Purchased Plan "%1$s" ID %2$d for %3$d DM',
-));
+);

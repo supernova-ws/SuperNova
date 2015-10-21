@@ -20,6 +20,15 @@ $sn_mvc['i18n']['options'] = array(
 function sn_options_model() {
   global $user, $user_option_list, $lang, $template_result, $config;
 
+  $language_new = sys_get_param_str('langer', $user['lang']);
+
+  if($language_new != $user['lang']) {
+    $lang->lng_switch($language_new);
+  }
+
+  lng_include('options');
+  lng_include('messages');
+
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
   if(sys_get_param_str('mode') == 'change') {
@@ -165,10 +174,10 @@ function sn_options_model() {
     $user['dpath'] = sys_get_param_str('dpath');
     $user['lang']  = sys_get_param_str('langer', $user['lang']);
 
-    if($lang->lng_switch($user['lang'])) {
-      lng_include('options');
-      lng_include('messages');
-    }
+//    if($lang->lng_switch($user['lang'])) {
+//      lng_include('options');
+//      lng_include('messages');
+//    }
 
     $user['design'] = sys_get_param_int('design');
     $user['noipcheck'] = sys_get_param_int('noipcheck');

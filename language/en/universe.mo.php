@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 39b4.0
+* @version 40a17.0
 *
 */
 
@@ -29,9 +29,7 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
-$a_lang_array = (array(
+$a_lang_array = array(
   'Galaxy' => 'Galaxy',
   'Solar_system' => 'Solar System',
   'Show' => 'Show',
@@ -185,4 +183,4 @@ $a_lang_array = (array(
   'uni_msg_admin_rename' => 'Player ID %d [%s] for %d DM gives to %s at [%s%s] new name: %s',
 
   'uni_colonize' => 'Send colonizer ship to make a Colony on position',
-));
+);

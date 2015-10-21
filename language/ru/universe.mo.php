@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a16.0
+* @version 40a17.0
 *
 */
 
@@ -27,8 +27,6 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'Galaxy' => 'Галактика',
   'Solar_system' => 'Солнечная система',

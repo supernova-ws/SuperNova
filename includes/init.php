@@ -5,6 +5,8 @@ if(defined('INIT')) {
   return;
 }
 
+// define('SN_DEBUG_LOG', true);
+
 // Замеряем начальные параметры
 define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
@@ -19,9 +21,19 @@ register_shutdown_function(function() {
 
   global $user, $lang;
 
-  print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) . '</div>');
+  global $locale_cache_statistic;
+
+  print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
+    (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .
+    '</div>');
   if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
     echo '<a href="badqrys.txt" target="_blank" style="color:red">', $lang['ov_hack_alert'], '</a>';
+  }
+
+  if(!empty($locale_cache_statistic['misses'])) {
+    print('<!--');
+    pdump($locale_cache_statistic);
+    print('-->');
   }
 });
 
@@ -281,7 +293,7 @@ if(!isset($sn_data['pages'][$sn_page_name])) {
 // classSupernova::$db->sn_db_connect(); // Не нужно. Делаем раньше
 
 global $lang;
-$lang = new classLocale(DEFAULT_LANG, $config->server_locale_log_usage);
+$lang = new classLocale($config->server_locale_log_usage);
 $lang->lng_switch(sys_get_param_str('lang'));
 
 

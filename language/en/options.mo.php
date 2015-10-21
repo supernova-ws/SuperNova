@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a16.6
+* @version 40a17.0
 *
 */
 
@@ -28,9 +28,7 @@
 
 if (!defined('INSIDE')) die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
-$a_lang_array = (array(
+$a_lang_array = array(
   'opt_account' => 'Account',
   'opt_int_options' => 'Interface',
   'opt_settings_statistics' => 'Player\'s statistics',
@@ -179,4 +177,4 @@ $a_lang_array = (array(
 
   'opt_build_autoconvert_hide' => 'Hide autoconvert button',
 
-));
+);

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a10.23
+* @version 40a17.0
 *
 */
 
@@ -30,8 +30,6 @@ if (!defined('INSIDE')) die();
 
 global $config;
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'Login' => 'Login',
   'User_name' => 'Username:',

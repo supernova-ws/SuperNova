@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a8.8
+* @version 40a17.0
 *
 */
 
@@ -28,10 +28,7 @@
 
 if (!defined('INSIDE')) die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
-//  'tech_storage_max' => 'Storage',
   'tech_storage_max' => 'Max. storage capacity',
   'tech_storage' => 'In storage',
   'Tech' => 'Technology',

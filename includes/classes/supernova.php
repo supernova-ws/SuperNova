@@ -28,6 +28,14 @@ class classSupernova {
 
 
   /**
+   * Кэш игры
+   *
+   * @var classCache $cache
+   */
+  public static $cache;
+
+
+  /**
    * @var core_auth $auth
    */
   public static $auth = null;
@@ -174,9 +182,9 @@ class classSupernova {
   }
 
 
-  public static function log_file($message) {
+  public static function log_file($message, $spaces = 0) {
     if(self::$debug_handler) {
-      self::$debug_handler->log_file($message);
+      self::$debug_handler->log_file($message, $spaces);
     }
   }
   public static function debug_set_handler(&$debug) {
@@ -1282,7 +1290,8 @@ class classSupernova {
     $supernova = new classSupernova();
 
     // Initializing global 'cacher' object
-    $sn_cache = new classCache(classSupernova::$cache_prefix);
+    static::$cache = new classCache(classSupernova::$cache_prefix);
+    $sn_cache = static::$cache;
     empty($sn_cache->tables) && sys_refresh_tablelist();
     empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
 

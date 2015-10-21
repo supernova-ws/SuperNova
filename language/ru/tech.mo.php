@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a8.8
+* @version 40a17.0
 *
 */
 
@@ -27,10 +27,7 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
-//  'tech_storage_max' => 'Хранилища',
   'tech_storage_max' => 'Макс. емкость хранилища',
   'tech_storage' => 'В хранилищах',
   'Tech' => 'Технология',

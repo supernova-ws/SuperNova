@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 39b3.0
+* @version 40a17.0
 *
 */
 
@@ -26,8 +26,6 @@
 
 !defined('INSIDE') && die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'aff_title' => 'Партнерская программа',
   'aff_text1' => 'Разместите личную ссылку, баннер или юзербар на форуме или сайте и каждый пришедший по ссылке станет вашим Приглашенным. Вы будете получать по 1 ТМ за каждые',

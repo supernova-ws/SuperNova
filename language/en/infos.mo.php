@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a9.0
+* @version 40a17.0
 *
 */
 
@@ -29,9 +29,7 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
-$a_lang_array = (array(
+$a_lang_array = array(
   'wiki_title' => 'Novapedia',
 
   'wiki_char_nominal' => 'Nominal',
@@ -53,14 +51,8 @@ $a_lang_array = (array(
   'wiki_combat_volley_header' => 'Volley',
   'wiki_combat_volley_to' => 'Will destroy',
   'wiki_combat_volley_from' => 'Will lost',
-));
 
-if(!is_array($lang['info']))
-{
-  $lang['info'] = array();
-}
-
-$lang['info'] = (array(
+  'info' => array(
     STRUC_MINE_METAL => array(
       'description' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships. Metal is the most inexpensive raw material, but takes more than everything else. For production of metal requires less total energy. Than mines more deeper. on most planets metal is at great depths, deeper mines you can obtain more metals, production increases. At the same time, larger mines require more energy.',
       'description_short' => 'The main supplier of raw materials for the construction of load-bearing structures of buildings and ships.',
@@ -729,88 +721,7 @@ $lang['info'] = (array(
         <li><span class="warning">Редкий</span> - не меньше 150%, но менее 250% от базовой добычи. Включает в себя ядра типа "Оливин", "Силикат" и "Метановый лёд". Как не сложно понять из названия класса - встречается редко;</li>
         <li><span class="error">Раритет</span> - не меньше 250% от базовой добычи. Включает в себя ядра типа "Металл", "Кристалл" и "Водородный лёд". Встречается ОЧЕНЬ редко - менее 5% планет содержат ядра этого класса.</li>
       </ul><br />
-
-
 ',
-      /*
-            '<ul>
-              <li>
-                Базовый класс включает один тип ядра. Планеты с ядрами такого класса встречаются <span class="ok">очень часто</span> - почти треть пригодных к колонизации планет обладают ядрами такого типа
-                <ul>
-                  <li>
-                    Плотность ядра типа "Стандарт" <span class="zero">более 4750, но менее 5750</span> кг/м&sup3;
-                  </li>
-                  <li>
-                    По химическому составу планеты с таким ядром сильно похожи на Землю
-                  </li>
-                  <li>
-                    Своё название этот тип получил из-за того, что полезные ископаемые распределены на ней стандартно - нормальная добыча металлов, нормальная добыча кристаллов и нормальная добыча дейтерия.
-                  </li>
-                </ul>
-                . Все стартовые планеты имеют стандартные ядра.
-                (плотность )
-                <br />
-                Из-за обилия водно-метанового льда и большого количества водорода в различных состояних, на ледяных планетах <span class="ok">очень высокая добыча дейтерия</span>.
-                Есть и обратная сторона - из-за маленького количества более плотного вещества <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча металла</span>. Ледяные планеты встречаются <span class="error">очень редко</span>.
-              </li>
-              <li>
-                <span class="ok">Силикатные планеты</span> (плотность <span class="zero">более 2000, но менее 3250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>. На них
-                <span class="error">очень низкая добыча металлов</span>, <span class="ok">очень высокая добыча кристаллов</span> и чуть более низкая, чем обычно, но всё еще <span class="zero">хорошая добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Каменные планеты</span> (плотность <span class="zero">более 3250, но менее 4500 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>. На них
-                слегка пониженная, но <span class="zero">хорошая добыча металлов</span>, <span class="ok">высокая добыча кристаллов</span> и <span class="warning">пониженная добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Стандарнтые планеты</span> (плотность <span class="zero">более 4500, но менее 5750 </span> кг/м&sup3;) встречаются <span class="ok">очень часто</span>.
-
-              </li>
-              <li>
-                <span class="ok">Железнорудные планеты</span> (плотность <span class="zero">более 5750, но менее 7000 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>.
-                На них <span class="ok">очень хорошая добыча металлов</span>, <span class="warning">пониженная добыча кристаллов</span> и <span class="zero">пониженная добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Металлические планеты</span> (плотность <span class="zero">более 7000, но менее 8250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>.
-                На них <span class="ok">отличная добыча металлов</span>, <span class="warning">низкая добыча кристаллов</span> и <span class="zero">низкая добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Тяжелометаллические планеты</span> (плотность <span class="zero">более 8250 </span> кг/м&sup3;) встречаются <span class="error">очень редко</span>.
-                На них <span class="ok">великолепная добыча металлов</span>, <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча дейтерия</span>.
-              </li>
-            </ul>
-
-            <ul>
-              <li>
-                <span class="ok">Ледяные планеты</span> (плотность <span class="zero">менее 2000</span> кг/м&sup3;).
-                Из-за обилия водно-метанового льда и большого количества водорода в различных состояних, на ледяных планетах <span class="ok">очень высокая добыча дейтерия</span>.
-                Есть и обратная сторона - из-за маленького количества более плотного вещества <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча металла</span>. Ледяные планеты встречаются <span class="error">очень редко</span>.
-              </li>
-              <li>
-                <span class="ok">Силикатные планеты</span> (плотность <span class="zero">более 2000, но менее 3250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>. На них
-                <span class="error">очень низкая добыча металлов</span>, <span class="ok">очень высокая добыча кристаллов</span> и чуть более низкая, чем обычно, но всё еще <span class="zero">хорошая добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Каменные планеты</span> (плотность <span class="zero">более 3250, но менее 4500 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>. На них
-                слегка пониженная, но <span class="zero">хорошая добыча металлов</span>, <span class="ok">высокая добыча кристаллов</span> и <span class="warning">пониженная добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Стандарнтые планеты</span> (плотность <span class="zero">более 4500, но менее 5750 </span> кг/м&sup3;) встречаются <span class="ok">очень часто</span>. По химическому составу они сильно похожи на Землю.
-                Полезные ископаемые распределены на ней стандартно - <span class="zero">хорошая добыча металлов</span>, <span class="zero">хорошая добыча кристаллов</span> и <span class="zero">хорошая добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Железнорудные планеты</span> (плотность <span class="zero">более 5750, но менее 7000 </span> кг/м&sup3;) встречаются <span class="zero">часто</span>.
-                На них <span class="ok">очень хорошая добыча металлов</span>, <span class="warning">пониженная добыча кристаллов</span> и <span class="zero">пониженная добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Металлические планеты</span> (плотность <span class="zero">более 7000, но менее 8250 </span> кг/м&sup3;) встречаются <span class="warning">редко</span>.
-                На них <span class="ok">отличная добыча металлов</span>, <span class="warning">низкая добыча кристаллов</span> и <span class="zero">низкая добыча дейтерия</span>.
-              </li>
-              <li>
-                <span class="ok">Тяжелометаллические планеты</span> (плотность <span class="zero">более 8250 </span> кг/м&sup3;) встречаются <span class="error">очень редко</span>.
-                На них <span class="ok">великолепная добыча металлов</span>, <span class="error">очень низкая добыча кристаллов</span> и <span class="error">очень низкая добыча дейтерия</span>.
-              </li>
-            </ul>',
-      */
     ),
   )
-) + $lang['info'];
+);

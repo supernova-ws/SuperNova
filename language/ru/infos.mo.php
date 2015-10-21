@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a9.0
+* @version 40a17.0
 *
 */
 
@@ -26,9 +26,7 @@
 
 if (!defined('INSIDE')) die();
 
-//$lang = array_merge($lang,
-//$lang->merge(
-$a_lang_array = (array(
+$a_lang_array = array(
   'wiki_title' => 'Новапедия',
 
   'wiki_char_nominal' => 'Паспортные',
@@ -50,16 +48,7 @@ $a_lang_array = (array(
   'wiki_combat_volley_header' => 'Залповый огонь',
   'wiki_combat_volley_to' => 'Поражает единиц',
   'wiki_combat_volley_from' => 'Теряет единиц',
-
-//  'wiki_combat_volley_text' => 'Одним залпом поражает',
-));
-
-if(!is_array($lang['info']))
-{
-  $lang['info'] = array();
-}
-
-$lang['info'] = (array(
+  'info' => array(
     STRUC_MINE_METAL => array(
       'description' => 'Основной поставщик сырья для строительства несущих структур построек и кораблей. Металл - самое дешёвое сырьё, но зато его требуется больше, чем всего остального. Для производства металла требуется меньше всего энергии. Чем рудники больше, тем они глубже. На большинстве планет металл находится на больших глубинах, в этих более глубоких рудниках можно добывать больше металлов, производство растёт. В тоже время более крупные рудники требуют больше энергии.',
       'description_short' => 'Основной поставщик сырья для строительства несущих структур построек и кораблей.',
@@ -814,4 +803,4 @@ $lang['info'] = (array(
 */
     ),
   )
-) + $lang['info'];
+);

@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a3.9
+* @version 40a17.0
 *
 * @clean - all constants is used
 *
@@ -29,15 +29,7 @@ if (!defined('INSIDE'))
 {
   exit;
 }
-/*
-if (empty($lang) || !is_array($lang))
-{
-  $lang = array();
-}
-*/
-// Officers/mercenaries
-//$lang = array_merge($lang,
-//$lang->merge(
+
 $a_lang_array = (array(
   'mrc_up_to' => 'до',
   'mrc_hire' => 'Нанять',

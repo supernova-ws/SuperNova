@@ -34,14 +34,22 @@ class debug {
 
   private $log_file_handler = null;
 
-  function log_file($message) {
+  function log_file($message, $ident_change = 0) {
+    static $ident = 0;
+
+    if(!defined('SN_DEBUG_LOG')) {
+      return;
+    }
+
     if($this->log_file_handler === null) {
       $this->log_file_handler = @fopen(SN_ROOT_PHYSICAL . '/.logs/supernova.log', 'a+');
       @fwrite($this->log_file_handler, "\r\n\r\n");
     }
+    $ident_change < 0 ? $ident += $ident_change * 2 : false;
     if($this->log_file_handler) {
-      fwrite($this->log_file_handler, date(FMT_DATE_TIME_SQL, time()) . ' ' . $message . "\r\n");
+      @fwrite($this->log_file_handler, date(FMT_DATE_TIME_SQL, time()) . str_repeat(' ', $ident + 1) . $message . "\r\n");
     }
+    $ident_change > 0 ? $ident += $ident_change * 2 : false;
   }
 
   function debug() {

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a4.3
+* @version 40a17.0
 *
 */
 
@@ -28,9 +28,6 @@
 
 if (!defined('INSIDE')) die();
 
-
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'flt_page2_title' => 'Mission selection',
   'fl_title' => 'Fleets',

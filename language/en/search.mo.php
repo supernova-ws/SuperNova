@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version #40a3.9#
+* @version #40a17.0#
 *
 */
 
@@ -29,8 +29,6 @@
 if (!defined('INSIDE')) die();
 
 
-//$lang = array_merge($lang,
-//$lang->merge(
 $a_lang_array = (array(
   'srch_title' => 'Server search',
   'srch_search_do' => 'Search',
