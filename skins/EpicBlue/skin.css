@@ -194,7 +194,7 @@ div.ui-slider-range {
   border-color: #6B90D3;  /* Reserved for unit_preview border color */
 }
 
-body:not(.no_border_image) table:not(.markup):not(.noborder):not(.no_border_image),
+body:not(.no_border_image) table:not(.markup):not(.noborder):not(.no_border_image):not(.border_image_small),
 body:not(.no_border_image) div#tab_container,
 body:not(.no_border_image) div.market_services
 {
@@ -207,6 +207,28 @@ body:not(.no_border_image) div.market_services
   -o-border-image:      url("images/border.png") 24 11 25 25 round round;
   -webkit-border-image: url("images/border.png") 24 11 25 25 round round;
   border-image:         url("images/border.png") 24 11 25 25 round round;
+}
+
+body:not(.no_border_image) .border_image_small
+{
+  border: solid transparent;
+  border-radius: 0.5em;
+
+  border-width: 1em 1em 1em 1em;
+
+  -moz-border-image:    url("images/border_small.png") 11 11 11 11 round round;
+  -o-border-image:      url("images/border_small.png") 11 11 11 11 round round;
+  -webkit-border-image: url("images/border_small.png") 11 11 11 11 round round;
+  /*  border-image:         url("images/border_small.png") 11 11 11 11 round round;*/
+  border-image:         url("images/border_small.png") 11 11 11 11 round round;
+}
+
+#navbar_resources {
+  margin-top: 1em;
+}
+
+#build_sort {
+  margin-bottom: 0.5em;
 }
 
 div#tab_container {

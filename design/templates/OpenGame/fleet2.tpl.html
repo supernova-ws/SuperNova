@@ -40,7 +40,7 @@ var fleet_slide_changing = false;
           <input id="target_mission{missions.ID}" mission_id="{missions.ID}" type="radio" name="target_mission"
                  style="display: none"
                  value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);" <!-- IF missions.CHECKED -->checked <!-- ENDIF -->>
-          {missions.NAME}
+          <span id="mission_name">{missions.NAME}</span>
         <!-- IF missions.ID == 5 || missions.ID == 15 -->
           <!-- IF MAX_DURATION -->
             <br />{L_flt_stay_duration}&nbsp;<select name="missiontime">

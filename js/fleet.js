@@ -23,8 +23,10 @@ function changeMission(mission) {
   var button_pressed = jQuery("#mission_button" + prev_mission);
   button_pressed.addClass('button_pseudo_pressed');
 
+  //var mini_mission = $('#fleet_mini_mission');
+  //mini_mission.length ? mini_mission.html('<img src="design/images/mission_pointer_' + prev_mission + '.png" /><br />' + button_pressed.parent().text()) : false;
   var mini_mission = $('#fleet_mini_mission');
-  mini_mission.length ? mini_mission.html('<img src="' + button_pressed.attr('src') + '" />') : false;
+  mini_mission.length ? mini_mission.find('span').text(button_pressed.parent().find('#mission_name').text()) : false;
 
   switch(prev_mission) {
     case '1': // Attack

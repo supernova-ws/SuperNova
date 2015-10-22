@@ -194,6 +194,8 @@ $template_result += array(
   'system' => $system,
   'planet' => $planet,
   'planet_type' => $planet_type,
+  'target_mission'  => $target_mission ? $target_mission : 0,
+  'MISSION_NAME'		=> $target_mission ? $lang['type_mission'][$target_mission] : '',
 );
 
 $is_transport_missions = false;

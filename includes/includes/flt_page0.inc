@@ -91,8 +91,8 @@ $template->assign_vars(array(
   'COLONIES_MAX' => get_player_max_colonies($user),
   'IS_COLONIZATION' => $target_mission == MT_COLONIZE,
 
-  'target_mission'     => $target_mission,
-  'MISSION_NAME'		  => $lang['type_mission'][$target_mission],
+//  'target_mission'     => $target_mission,
+//  'MISSION_NAME'		  => $lang['type_mission'][$target_mission],
   'TYPE_NAME'		     => $lang['fl_planettype'][$planet_type],
 
   'ShipList'           => $ShipList,

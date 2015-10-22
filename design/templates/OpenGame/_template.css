@@ -898,8 +898,11 @@ img.button_pseudo.button_pseudo_pressed {
 }
 
 @media only screen and (max-width : 51.9375em) { /* 831px and less*/
-  #unit_table { /* 3 preview */
+  body.no_border_image #unit_table { /* 3 preview */
     width: 37em;
+  }
+  body:not(.no_border_image) #unit_table { /* 3 preview */
+    width: 40.3em;
   }
   #unit_destroy_resources {
     margin-top: 1em;
@@ -909,8 +912,11 @@ img.button_pseudo.button_pseudo_pressed {
   }
 }
 @media only screen and (min-width : 52em) { /* 832px */
-  #unit_table { /* 4 preview */
+  body.no_border_image #unit_table { /* 4 preview */
     width: 48.5em;
+  }
+  body:not(.no_border_image) #unit_table { /* 4 preview */
+    width: 51.8em;
   }
   #unit_create_button_auto {
     margin-left: 5.1em;
@@ -927,8 +933,11 @@ img.button_pseudo.button_pseudo_pressed {
 
 }
 @media only screen and (min-width : 60em) { /* 960px */
-  #unit_table { /* 5 preview */
+  body.no_border_image #unit_table { /* 5 preview */
     width: 60.5em;
+  }
+  body:not(.no_border_image) #unit_table { /* 5 preview */
+    width: 63.8em;
   }
   #unit_cost_container.unit_create_stackable {
     display: table-cell;
@@ -940,9 +949,13 @@ img.button_pseudo.button_pseudo_pressed {
   }
 }
 @media only screen and (min-width : 68em) { /* 1088px */
-  #unit_table { /* 6 preview */
+  body.no_border_image #unit_table { /* 6 preview */
     width: 72.5em;
   }
+  body:not(.no_border_image) #unit_table { /* 6 preview */
+    width: 75.8em;
+  }
+
   #unit_info {
     display: block;
   }
@@ -992,8 +1005,11 @@ img.button_pseudo.button_pseudo_pressed {
   }
 }
 @media only screen and (min-width : 76.5em) { /* 1224px */
-  #unit_table { /* 7 preview */
+  body.no_border_image #unit_table { /* 7 preview */
     width: 84.5em;
+  }
+  body:not(.no_border_image) #unit_table { /* 7 preview */
+    width: 88em;
   }
 }
 
@@ -1007,16 +1023,22 @@ img.button_pseudo.button_pseudo_pressed {
   #fleet_unit_miniatures_container {
     max-width: 55em;
   }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
+  body.no_border_image .fleet_2_table { /* Table on Fleet Mission Select*/
     max-width: 34em;
+  }
+  body:not(.no_border_image) .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 37.3em;
   }
 }
 @media only screen and (min-width : 52em) { /* 832px */
   #fleet_unit_miniatures_container {
     max-width: 66em;
   }
-  .fleet_2_table {
+  body.no_border_image .fleet_2_table {
     max-width: 45em;
+  }
+  body:not(.no_border_image) .fleet_2_table {
+    max-width: 48.3em;
   }
 }
 @media only screen and (min-width : 60em) { /* 960px */
@@ -1024,24 +1046,58 @@ img.button_pseudo.button_pseudo_pressed {
   {
     max-width: 77em;
   }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
+  body.no_border_image .fleet_2_table { /* Table on Fleet Mission Select*/
     max-width: 56em;
+  }
+  body:not(.no_border_image) .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 59.3em;
   }
 }
 @media only screen and (min-width : 68em) { /* 1088px */
   #fleet_unit_miniatures_container {
     max-width: 88em;
   }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
-    max-width: 66em;
+  body.no_border_image .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 67em;
+  }
+  body:not(.no_border_image) .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 70.3em;
   }
 }
 @media only screen and (min-width : 76.5em) { /* 1224px */
   #fleet_unit_miniatures_container {
+    max-width: 99em;
+  }
+  body.no_border_image .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 78em;
+  }
+  body:not(.no_border_image) .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 81.3em;
+  }
+}
+@media only screen and (min-width : 82em) { /* 1312px */
+  #fleet_unit_miniatures_container {
     max-width: 110em;
   }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
-    max-width: 77em;
+}
+@media only screen and (min-width : 88em) { /* 1408px */
+  #fleet_unit_miniatures_container {
+    max-width: 121em;
+  }
+}
+@media only screen and (min-width : 94em) { /* 1504px */
+  #fleet_unit_miniatures_container {
+    max-width: 132em;
+  }
+}
+@media only screen and (min-width : 100em) { /* 1600px */
+  #fleet_unit_miniatures_container {
+    max-width: 143em;
+  }
+}
+@media only screen and (min-width : 106em) { /* 1696px */
+  #fleet_unit_miniatures_container {
+    max-width: 154em;
   }
 }
 
@@ -1355,6 +1411,13 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
     display: block;
   }
 }
+@media only screen and (min-width : 64em) { /* 1024px */
+  #chat_show_extra {
+    display:none;
+  }
+}
+
+
 
 .chat_online, #onlinebox td {
   background-color: black;

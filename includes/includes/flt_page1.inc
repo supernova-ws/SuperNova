@@ -122,7 +122,7 @@ $template->assign_vars(array(
   'speed_factor'     => flt_server_flight_speed_multiplier(),
   "t{$planet_type}" => 'SELECTED',
 
-  'target_mission'  => $target_mission,
+//  'target_mission'  => $target_mission,
 
   'ships'           => str_rot13(base64_encode(serialize($ships))),
 
