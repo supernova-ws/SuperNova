@@ -40,7 +40,11 @@
     <title>{title}</title>
   </head>
 
-  <body class="style" style="max-height: 10000000em">
+  <!-- IF PLAYER_OPTION_DESIGN_DISABLE_BORDERS -->
+    <!-- DEFINE $PLAYER_OPTION_DESIGN_DISABLE_BORDERS = 'no_border_image' -->
+  <!-- ENDIF -->
+
+  <body class="style {$PLAYER_OPTION_DESIGN_DISABLE_BORDERS}" style="max-height: 10000000em">
     <script type="text/javascript">
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
       var timeBrowser = new Date();

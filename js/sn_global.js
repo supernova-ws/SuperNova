@@ -55,10 +55,10 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     // Натягиваем скины на элементы ввода
     inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
     inputs.filter(':button, :submit, :reset').button(); // .addClass('ui-textfield');
-    inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text');
+    inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text').off('keydown');
     inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
     jQuery("button:not(.do-not-skin)").button().addClass('ui-textfield');
-    jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield ui-input-text');
+    jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield ui-input-text').off('keydown');
 
     //inputs.filter(':checkbox, :radio').checkator();
 
@@ -395,7 +395,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
         col_span++;
       }
       new_element += '</tr>';
-      new_element += '<tr><td colspan="' + col_span + '"><div style="margin: 0.75em; width: auto; height: 1em;" parent_id="' + field_name + '" id="' + slider_name + '"></div></td></tr>'; // slider container
+      new_element += '<tr><td colspan="' + col_span + '"><div parent_id="' + field_name + '" id="' + slider_name + '"></div></td></tr>'; // slider container
       new_element += '</table>'; // main container
 
       jQuery(new_element).insertBefore(old);
@@ -449,7 +449,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       col_span++;
     }
     document.write('</tr>');
-    document.write('<tr><td colspan="' + col_span + '"><div style="margin: 6px; width: auto" id="' + field_name + 'slide"></div></td></tr>'); // slider container
+    document.write('<tr><td colspan="' + col_span + '"><div id="' + field_name + 'slide"></div></td></tr>'); // slider container
     document.write('</table>'); // main container
 
 

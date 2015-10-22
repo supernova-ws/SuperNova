@@ -193,9 +193,6 @@ table table {
 /* Hack: Setting no background and border for dialogs */
 body .ui-dialog, div .ui-dialog-content { background: transparent; border: none; }
 
-/* Coloring Slider Range */
-.ui-slider-range { background: #f6a828; }
-
 .ui-textfield {
   font: inherit;
   color: inherit;
@@ -225,8 +222,8 @@ input[type=text].coordinate {
 
 
 /*  Patching this theme for ui-slider */
-.style .ui-slider a:link { width: 1.2em; height: 1.2em; }
-.style .ui-slider a:hover { width: 1.2em; height: 1.2em; }
+/*.style .ui-slider a:link { width: 1.2em; height: 1.2em; }*/
+/*.style .ui-slider a:hover { width: 1.2em; height: 1.2em; }*/
 
 .ui-button {
   box-shadow: 0.3em 0.3em rgba(0,0,0,0.50);
@@ -237,6 +234,7 @@ input[type=text].coordinate {
   padding: 0.6em 1em;
 }
 
+/*.ui-state-active:not(.ui-slider-handler) {*/
 .ui-state-active {
   box-shadow: none;
   margin: 0.6em 0.1em 0.1em 0.4em;
@@ -264,6 +262,30 @@ div .ui-dialog-content table {
   color: white;
 }
 
+/* jQuery-UI slider patches */
+.ui-slider { /* Embedding slider to page */
+  font-size: 125%;
+  margin: 0.75em;
+  padding-right: 4.4em;
+  width: auto;
+  height: 1em;
+}
+
+.ui-slider-range { /* Coloring Slider Range */
+  background: #f6a828;
+}
+
+.ui-slider .ui-slider-handle { /* Increasing slider a bit */
+  width: 1.4em;
+  height: 1.4em;
+}
+
+.ui-state-active.ui-slider-handle {
+  box-shadow: none;
+  margin-top: 0;
+  margin-right: 0;
+  margin-bottom: 0;
+}
 
 /* Pseudo button  ********************************************************************************************* */
 /* Main pseudo button magic*/

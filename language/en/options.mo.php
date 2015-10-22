@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 40a17.6
 *
 */
 
@@ -82,6 +82,7 @@ $a_lang_array = array(
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Disable Quest button',
   'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид "Обзора Вселенной"',
   'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
+  'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Disable table borders (if any)',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',
