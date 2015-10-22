@@ -70,7 +70,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
 
     $(document).on('click', '#font_minus, #font_normal, #font_plus', function(){
-      temp = FONT_SIZE;
+      var temp = FONT_SIZE;
       $(this).attr('id') == 'font_plus' ? FONT_SIZE += FONT_SIZE_PERCENT_STEP :
         ($(this).attr('id') == 'font_minus' ? FONT_SIZE -= FONT_SIZE_PERCENT_STEP : FONT_SIZE = FONT_SIZE_PERCENT_DEFAULT);
       FONT_SIZE > FONT_SIZE_PERCENT_MAX ? FONT_SIZE = FONT_SIZE_PERCENT_MAX :

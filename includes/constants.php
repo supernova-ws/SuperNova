@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a17.6');
+define('SN_VERSION', '40a17.7');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -33,8 +33,16 @@ define('PERIOD_MONTH_3'  , PERIOD_MONTH * 3);
 
 define('FONT_SIZE_PERCENT_MIN', 56.25);
 define('FONT_SIZE_PERCENT_DEFAULT', 68.75);
+define('FONT_SIZE_PERCENT_MAX', 131.25);
 define('FONT_SIZE_PERCENT_STEP', 12.5);
-define('FONT_SIZE_PERCENT_MAX', 118.75);
+define('FONT_SIZE_PERCENT_DEFAULT_STRING', FONT_SIZE_PERCENT_DEFAULT . '%');
+
+define('FONT_SIZE_PIXELS_BROWSER_BASE', 16);
+define('FONT_SIZE_PIXELS_MIN', 9);
+define('FONT_SIZE_PIXELS_DEFAULT', 11);
+define('FONT_SIZE_PIXELS_MAX', 21);
+define('FONT_SIZE_PIXELS_STEP', 1);
+define('FONT_SIZE_PIXELS_DEFAULT_STRING', FONT_SIZE_PIXELS_DEFAULT . 'px');
 
 // ****************************************************************************************************************
 // SHOULD BE REPLACED WITH CONFIG!

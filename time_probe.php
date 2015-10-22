@@ -13,10 +13,23 @@ $time_diff   = $time_local  - $time_server
 $time_server = $time_local  - $time_diff
 */
 
-if($font_size = sys_get_param_str('font_size')) {
-  empty($font_size) ? $font_size = FONT_SIZE_PERCENT_DEFAULT . '%' :
-    (floatval($font_size) < FONT_SIZE_PERCENT_MIN ? $font_size = FONT_SIZE_PERCENT_MIN :
-      (floatval($font_size) > FONT_SIZE_PERCENT_MAX ? $font_size = FONT_SIZE_PERCENT_MAX : false));
+if($font_size = sys_get_param_float('font_size', FONT_SIZE_PERCENT_DEFAULT)) {
+//  empty($font_size_percent) ? $font_size_percent = FONT_SIZE_PERCENT_DEFAULT : false;
+//  floatval($font_size_percent) < FONT_SIZE_PERCENT_MIN ? $font_size_percent = FONT_SIZE_PERCENT_MIN : false;
+//  floatval($font_size_percent) > FONT_SIZE_PERCENT_MAX ? $font_size_percent = FONT_SIZE_PERCENT_MAX : false;
+//
+//  $font_size_percent .= '%';
+
+  if(strpos($font_size, '%') !== false) {
+    // Размер шрифта в процентах
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
+  } elseif(strpos($font_size, 'px') !== false) {
+    // Размер шрифта в пикселях
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PIXELS_MIN), FONT_SIZE_PIXELS_MAX) . 'px';
+  } else {
+    // Не мышонка, не лягушка...
+    $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;
+  }
 
   sn_setcookie(SN_COOKIE_F, $font_size, SN_TIME_NOW + PERIOD_YEAR);
   classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE] = $font_size;

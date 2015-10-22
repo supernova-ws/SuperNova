@@ -901,10 +901,6 @@ img.button_pseudo.button_pseudo_pressed {
   #unit_table { /* 3 preview */
     width: 37em;
   }
-  #unit_create_button_auto {
-  }
-  #unit_create_button_auto.ui-state-active {
-  }
   #unit_destroy_resources {
     margin-top: 1em;
   }
@@ -968,30 +964,17 @@ img.button_pseudo.button_pseudo_pressed {
     display: inline-block;
   }
   #form_unit {
-    /*display: table;*/
   }
   #unit_cost_container {
     display: table-cell;
   }
-  /*#unit_action_container {*/
-  /*display: table-cell;*/
-  /*}*/
   #unit_create.unit_create_level {
     display: table-cell;
     max-width: 15em;
   }
   #unit_create_button_auto {
-    /*display: table-cell;*/
-    /*max-width: 15em;*/
-    /*margin-top: 3em;*/
-    /*margin-left: 0;*/
   }
   #unit_create_button_auto {
-    /*display: block;*/
-    /*max-width: 15em;*/
-    /*margin-top: 3em;*/
-    /*margin-right: 5em;*/
-    /*margin: 2em 5em 1em;*/
     margin-left: 0.1em;
   }
   #unit_create_button_auto.ui-state-active {
@@ -1007,7 +990,6 @@ img.button_pseudo.button_pseudo_pressed {
   #unit_destroy .unit_destroy {
     margin-bottom: 0;
   }
-
 }
 @media only screen and (min-width : 76.5em) { /* 1224px */
   #unit_table { /* 7 preview */

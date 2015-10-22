@@ -242,21 +242,33 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   // Global header
   $user_time_diff = playerTimeDiff::user_time_diff_get();
   $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
-  // $player_options = player_load_option($user);
+
   $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
-  if(!empty($font_size) && $font_size == intval($font_size)) {
-    $font_size < 9 ? $font_size = 9 : false;
-    $font_size > 19 ? $font_size = 19 : false;
-    $font_size = ($font_size/16 * 100) . '%';
+  if(strpos($font_size, '%') !== false) {
+    // Размер шрифта в процентах
+//    $font_size < FONT_SIZE_PERCENT_MIN ? $font_size = FONT_SIZE_PERCENT_MIN : false;
+    // $font_size > FONT_SIZE_PERCENT_MAX ? $font_size = FONT_SIZE_PERCENT_MAX : false;
+//    $font_size .= '%';
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
+  } elseif(strpos($font_size, 'px') !== false) {
+    // Размер шрифта в пикселях
+//    $font_size = floatval($font_size);
+//    $font_size < FONT_SIZE_PIXELS_MIN ? $font_size = FONT_SIZE_PIXELS_MIN : false;
+//    $font_size > FONT_SIZE_PIXELS_MAX ? $font_size = FONT_SIZE_PIXELS_MAX : false;
+//    $font_size .= 'px';
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PIXELS_MIN), FONT_SIZE_PIXELS_MAX) . 'px';
+//    $font_size = ($font_size/16 * 100) . '%';
+  } else {
+    // Не мышонка, не лягушка...
+    $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;
   }
-  empty($font_size) ? $font_size = FONT_SIZE_PERCENT_DEFAULT . '%' :
-    (floatval($font_size) < FONT_SIZE_PERCENT_MIN ? $font_size = FONT_SIZE_PERCENT_MIN :
-      (floatval($font_size) > FONT_SIZE_PERCENT_MAX ? $font_size = FONT_SIZE_PERCENT_MAX : false));
+
   $template = gettemplate('_global_header', true);
   $template->assign_vars(array(
     'USER_AUTHLEVEL'           => intval($user['authlevel']),
 
     'FONT_SIZE'                => $font_size,
+    'FONT_SIZE_PERCENT_DEFAULT_STRING'                => FONT_SIZE_PERCENT_DEFAULT_STRING,
 
     'SN_TIME_NOW'              => SN_TIME_NOW,
     'LOGIN_LOGOUT'             => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
