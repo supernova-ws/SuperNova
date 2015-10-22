@@ -287,6 +287,20 @@ body:not(.no_border_image) div.market_services
   border-image:         url("images/border.png") 24 11 25 25 round round;
 }
 
+body:not(.no_border_image) .border_image_small
+{
+  border: solid transparent;
+  border-radius: 0.5em;
+
+  border-width: 1em 1em 1em 1em;
+
+  -moz-border-image:    url("images/border_small.png") 11 11 11 11 round round;
+  -o-border-image:      url("images/border_small.png") 11 11 11 11 round round;
+  -webkit-border-image: url("images/border_small.png") 11 11 11 11 round round;
+  /*  border-image:         url("images/border_small.png") 11 11 11 11 round round;*/
+  border-image:         url("images/border_small.png") 11 11 11 11 round round;
+}
+
 div#tab_container {
   background-color: transparent;
   background-image: none;
