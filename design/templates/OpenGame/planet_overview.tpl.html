@@ -48,7 +48,7 @@
 
 <table align="center" class="markup">
   <tr>
-    <th valign=top class="tr">
+    <th valign=top>
       <!-- IF NEW_MESSAGES || NEW_LEVEL_MINER || NEW_LEVEL_RAID -->
         <table width="522">
           <!-- IF NEW_MESSAGES > 0 -->
@@ -149,7 +149,7 @@
             <!-- IF PLANET_RECYCLERS -->
               <!--<br><span id="ov_recycle" style="cursor: pointer" onclick="doit(MT_RECYCLE, {PLANET_PLANET}, {PLANET_TYPE});">[ {L_type_mission[8]} ]</span>-->
               <br><button id="ov_recycle" style="cursor: pointer" onclick="doit(MT_RECYCLE, {PLANET_PLANET}, {PLANET_TYPE});"<!-- IF ! PLANET_DEBRIS --> disabled="disabled"<!-- ENDIF -->><span>[ {L_type_mission[8]} ]</span></button>
-              <table id="fleetstatustable" cellspacing="0" cellpadding="0"></table>
+              <table id="fleetstatustable" class="no_border_image" cellspacing="0" cellpadding="0"></table>
             <!-- ENDIF -->
           </th>
         </tr>
@@ -223,7 +223,7 @@
       <!-- INCLUDE planet_fleet_list -->
     </th>
 
-    <th valign=top class="tr">
+    <th valign=top>
       <table border="0" cellspacing=0 cellpadding=0 width="200" class="markup">
         <!-- INCLUDE planet_list -->
       </table>

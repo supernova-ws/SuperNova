@@ -522,6 +522,8 @@ class classConfig extends classPersistent {
     'LastSettedPlanetPos'          => 1,
     'LastSettedSystemPos'          => 1,
 
+    'locale_cache_disable'         => 0, // Disable locale caching
+
     'metal_basic_income'           => 40,
 
     'payment_currency_default'      => 'USD',

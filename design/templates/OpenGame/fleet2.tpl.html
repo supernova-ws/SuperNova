@@ -39,7 +39,7 @@ var fleet_slide_changing = false;
           <img src="design/images/mission_{missions.ID}.png" id="mission_button{missions.ID}" class="mission_button_image button_image button_pseudo <!-- IF missions.CHECKED --> button_pseudo_pressed<!-- ENDIF -->" /><br/>
           <input id="target_mission{missions.ID}" mission_id="{missions.ID}" type="radio" name="target_mission"
                  style="display: none"
-                 class="frameless" value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);" <!-- IF missions.CHECKED -->checked <!-- ENDIF -->>
+                 value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);" <!-- IF missions.CHECKED -->checked <!-- ENDIF -->>
           {missions.NAME}
         <!-- IF missions.ID == 5 || missions.ID == 15 -->
           <!-- IF MAX_DURATION -->

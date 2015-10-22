@@ -41,7 +41,7 @@
           <div class="button_pseudo <!-- IF resources.ID == EXCHANGE_TO_RESOURCE_ID -->button_pseudo_pressed<!-- ENDIF -->" resource_id="{resources.ID}" >
             <input id="resource_{resources.ID}" type="radio" name="exchangeTo"
                    style="display: none;"
-                   class="frameless" value="{resources.ID}" <!-- IF resources.ID == EXCHANGE_TO_RESOURCE_ID -->checked <!-- ENDIF -->>
+                   value="{resources.ID}" <!-- IF resources.ID == EXCHANGE_TO_RESOURCE_ID -->checked <!-- ENDIF -->>
             {resources.NAME}
           </div>
           <div class="notice">{L_eco_mrk_trader_course} <span id="course{resources.ID}"></span></div>

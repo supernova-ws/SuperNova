@@ -1086,6 +1086,9 @@ switch($new_version) {
     // 2015-10-17 14:46:32 40a15.5
     upd_check_key('game_users_online_timeout', 15 * 60, !isset($config->game_users_online_timeout));
 
+    // 2015-10-22 14:37:58 40a17.5
+    upd_check_key('locale_cache_disable', 0, !isset($config->locale_cache_disable));
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 40;
@@ -1093,6 +1096,8 @@ switch($new_version) {
 upd_log_message('Upgrade complete.');
 
 upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
+
+classSupernova::$cache->unset_by_prefix('lng_');
 
 if($new_version) {
   $config->db_saveItem('db_version', $new_version);

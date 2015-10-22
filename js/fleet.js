@@ -20,7 +20,11 @@ function changeMission(mission) {
   prev_mission = $(mission).val();
 
   jQuery("img.mission_button_image.button_pseudo_pressed").removeClass('button_pseudo_pressed');
-  jQuery("#mission_button" + prev_mission).addClass('button_pseudo_pressed');
+  var button_pressed = jQuery("#mission_button" + prev_mission);
+  button_pressed.addClass('button_pseudo_pressed');
+
+  var mini_mission = $('#fleet_mini_mission');
+  mini_mission.length ? mini_mission.html('<img src="' + button_pressed.attr('src') + '" />') : false;
 
   switch(prev_mission) {
     case '1': // Attack

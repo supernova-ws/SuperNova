@@ -1,35 +1,34 @@
-@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-}
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {  }
 /* Smartphones (landscape) ----------- */
-@media only screen and (min-width : 321px) {
-}
+@media only screen and (min-width : 321px) {  }
 /* Smartphones (portrait) ----------- */
-@media only screen and (max-width : 320px) {
-}
+@media only screen and (max-width : 320px) {  }
 /* iPads (portrait and landscape) ----------- */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {
-}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) {  }
 /* iPads (landscape) ----------- */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {
-}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : landscape) {  }
 /* iPads (portrait) ----------- */
-@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {
-}
+@media only screen and (min-device-width : 768px) and (max-device-width : 1024px) and (orientation : portrait) {  }
 /* Desktops and laptops medium-res */
-@media only screen and (min-width : 760px) {
-}
+@media only screen and (min-width : 760px) {  }
 /* Desktops and laptops ----------- */
-@media only screen and (min-width : 1224px) {
-}
+@media only screen and (min-width : 1224px) {  }
 /* Large screens ----------- */
-@media only screen and (min-width : 1824px) {
-}
+@media only screen and (min-width : 1824px) {  }
 /* iPhone 4+ ----------- */
-@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {
-}
+@media only screen and (-webkit-min-device-pixel-ratio : 1.5), only screen and (min-device-pixel-ratio : 1.5) {  }
 
+
+
+/* TEMPLATE BOILERPLATE ********************************************************************************************* */
+html {
+  font-size: 68.75%;
+  /*font-size: 100%;*/
+}
 
 body {
+  font-size: 1rem;
+  line-height: 1.1;
   color                : #E6EBFB;
   background-attachment: fixed;
   background-repeat    : no-repeat;
@@ -39,6 +38,13 @@ body {
 
 body, form, table, input, select {
   font-family : Tahoma, sans-serif;
+}
+
+h1 {
+  font-size            : 200%;
+  border-bottom        : none; /* 0 #344566 solid */
+
+  margin-top: 1em;
 }
 
 form, table, tr, td, input, select {
@@ -51,73 +57,176 @@ img {
 
 textarea {
   width: 92%;
+  -o-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
+  -khtml-border-radius: 0.4em;
+  border-radius: 0.4em;
 }
+
+input.button {
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+  padding-top: 0.1em;
+  padding-bottom: 0.1em;
+}
+
+input, textarea, button {
+  font-weight: bold !important;
+}
+
+body form table th table input {
+  width: 5.5em;
+}
+
+input, select, textarea {
+  border               : 0.1em #415680 solid;
+  background-color     : #344566;
+  padding-left         : 0.3em;
+  padding-right        : 0.3em;
+  font-weight          : bold;
+}
+
+a {
+  text-decoration      : none;
+  font-weight          : bold;
+  color: inherit;
+}
+
+ul { /* Unmarked list */
+  margin: 0;
+  padding-left: 1.8em;
+  text-align: left;
+}
+li {
+  padding-top: 0.3em;
+}
+
+/* Table ======================================================================================================== */
+table {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+th, td {
+  border               : 0.1em #415680 solid;
+  background-color     : #344566;
+  padding-left         : 0.3em;
+  padding-right        : 0.3em;
+  font-weight          : bold;
+}
+
+.table th, .table tr, .table td {
+  vertical-align: top;
+  text-align: left;
+}
+
+th.c_l, td.c_l {
+  text-align: left;
+}
+th.c_r, td.c_r {
+  text-align: right;
+}
+th.c_c, td.c_c, td.c {
+  text-align: center;
+}
+th.c_j, td.c_j {
+  text-align: justify;
+}
+
+.cell_left, .c_l {
+  text-align: left;
+}
+.cell_right, .c_r {
+  text-align: right;
+}
+.cell_center, .c_c {
+  text-align: center;
+}
+
+.cell_justify, .c_j {
+  text-align: justify;
+}
+
+.noborder, .noborder tr, .noborder th {
+  border: 0;
+}
+
+.markup, .markup > tbody > tr, .markup > tbody > tr > th, .markup > tbody > tr > td {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  border: 0;
+}
+
+td.error_message {
+  background-color     : #415680;
+}
+
+td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
+  font-weight          : bold;
+  background-repeat:  repeat-x;
+}
+
+td.l {
+  vertical-align       : top;
+  padding              : 0.3em;
+}
+
+.subheader, tr.subheader > td, tr.subheader > th {
+  background: #233452;
+}
+
+table table {
+  border               : 0;
+}
+
+
+/* jQuery-UI patches ********************************************************************************************* */
+/* Turning off headers in dialogs */
+.ui-dialog .ui-dialog-titlebar { display: none; }
+/* Turning off resize grapplers */
+.ui-dialog .ui-resizable-se { display: none; }
+/* Setting no-padding to content inside dialog */
+.ui-dialog .ui-dialog-content { padding: 0; }
+
+/* Hack: Setting no background and border for dialogs */
+body .ui-dialog, div .ui-dialog-content { background: transparent; border: none; }
+
+/* Coloring Slider Range */
+.ui-slider-range { background: #f6a828; }
+
+.ui-textfield {
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+
+input[type=button].ui-textfield, input[type=submit].ui-textfield {
+  text-align: inherit;
+}
+
+input[type=text].ui-textfield, input[type=password].ui-textfield, input[type=file].ui-textfield, textarea.ui-textfield {
+  text-align: left;
+  background-image: none;
+  cursor: text;
+}
+
+input[type=checkbox].ui-textfield {
+  width: 1.8181818181818em;
+  height: 1.8181818181818em;
+  background-image: none;
+}
+
+input[type=text].coordinate {
+  max-width: 3em;
+  padding: 0.363636363636em;
+}
+
 
 /*  Patching this theme for ui-slider */
 .style .ui-slider a:link { width: 1.2em; height: 1.2em; }
 .style .ui-slider a:hover { width: 1.2em; height: 1.2em; }
-
-
-@media only screen
-and (min-device-width : 320px)
-and (max-device-width : 480px) {
-  /* Styles */
-}
-
-/* Smartphones (landscape) ----------- */
-@media only screen
-and (min-width : 321px) {
-  /* Styles */
-}
-
-/* Smartphones (portrait) ----------- */
-@media only screen
-and (max-width : 320px) {
-  /* Styles */
-}
-
-/* iPads (portrait and landscape) ----------- */
-@media only screen
-and (min-device-width : 768px)
-and (max-device-width : 1024px) {
-  /* Styles */
-}
-
-/* iPads (landscape) ----------- */
-@media only screen
-and (min-device-width : 768px)
-and (max-device-width : 1024px)
-and (orientation : landscape) {
-  /* Styles */
-}
-
-/* iPads (portrait) ----------- */
-@media only screen
-and (min-device-width : 768px)
-and (max-device-width : 1024px)
-and (orientation : portrait) {
-  /* Styles */
-}
-
-/* Desktops and laptops ----------- */
-@media only screen
-and (min-width : 1224px) { /* 76.5em*/
-  /* Styles */
-}
-
-/* Large screens ----------- */
-@media only screen
-and (min-width : 1824px) {
-  /* Styles */
-}
-
-/* iPhone 4+ ----------- */
-@media
-only screen and (-webkit-min-device-pixel-ratio : 1.5),
-only screen and (min-device-pixel-ratio : 1.5) {
-  /* Styles */
-}
-
 
 .ui-button {
   box-shadow: 0.3em 0.3em rgba(0,0,0,0.50);
@@ -137,6 +246,26 @@ only screen and (min-device-pixel-ratio : 1.5) {
   background-color: #415680;
 }
 
+
+textarea.ui-button {
+  border               : 0.1em #415680 solid;
+  background-color     : #344566;
+  font-weight          : bold;
+  padding: 0.4em 1em;
+}
+
+
+/* Setting popup table background color */
+div .ui-dialog-content table {
+  background: #344055;
+}
+
+.ui-widget-content {
+  color: white;
+}
+
+
+/* Pseudo button  ********************************************************************************************* */
 /* Main pseudo button magic*/
 .button_pseudo {
   cursor: pointer;
@@ -163,7 +292,6 @@ only screen and (min-device-pixel-ratio : 1.5) {
   background-color: #415680; /* rgba(65,86,128,1) */
 }
 
-
 img.button_pseudo {
   filter: alpha(Opacity=50);
   opacity: 0.5;
@@ -178,479 +306,8 @@ img.button_pseudo.button_pseudo_pressed {
 }
 
 
-
-
-
-
-
-
-
-#unit_info {
-  display: table;
-
-  vertical-align: top;
-  text-align: left;
-
-  width: 100%;
-}
-
-#unit_description_wrapper {
-  display: table-header-group;
-
-  height: 13em;
-  vertical-align: top;
-  margin: 0.5em;
-}
-#unit_description_wrapper_cell {
-  display: table-cell;
-}
-#unit_info_image_outer {
-  vertical-align: top;
-  width: 13em;
-  height: 13em;
-  margin-right: 0.5em;
-  float: left;
-
-  /*border: 1px solid orange;*/
-}
-#unit_info_image_wrapper {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-#unit_info_image {
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  width: 100%;
-  height: 100%;
-  border: 0;
-}
-#unit_info_name {
-  position: absolute;
-  left: 0;
-  top: 0;
-
-  font-size: 1em;
-  vertical-align: top;
-  text-align: center;
-  width: 100%;
-}
-#unit_info_level {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-
-  font-size: 1em;
-  width: 100%;
-  text-align: center;
-}
-/*#unit_description_wrapper:before {*/
-/*content: "";*/
-/*width: 20em;*/
-/*display: block;*/
-/*overflow: hidden;*/
-/* For Demonstration */
-/*border: 1px solid green;*/
-/*}*/
-#unit_description_wrapper_inner {
-  vertical-align: top;
-  margin-right: 0.5em;
-
-  /*border: solid 1px green;*/
-}
-#unit_info_description {
-  text-align: justify;
-
-  /*border: solid 1px blue;*/
-}
-#unit_require_wrapper, #unit_grants_wrapper {
-  font-size: 0.8em;
-}
-#unit_require, #unit_grants {
-  overflow: hidden;
-}
-
-#unit_balance_wrapper {
-  display: table-footer-group;
-
-  vertical-align: top;
-  text-align: center;
-  /*height: 13em;*/
-
-  /*border: 1px solid yellow;*/
-}
-#unit_balance {
-  display: table-cell;
-
-  font-size: 0.8em;
-  height: 13em;
-}
-#unit_balance table {
-  border-spacing: 0.2em;
-}
-#unit_balance td {
-  border-spacing: 0.2em;
-  padding: 0;
-}
-#unit_balance tr > td:not(:first-child) {
-  width: 7em;
-}
-#unit_max {
-  display: none;
-}
-
-
-#form_unit {
-  display: table;
-  width: 100%;
-}
-#unit_cost_container {
-  display: table-header-group;
-  text-align: center;
-}
-#unit_create {
-  display: table-row;
-  text-align: center;
-  vertical-align: top;
-}
-#unit_destroy {
-  display: table-footer-group;
-  text-align: center;
-}
-#unit_create_button_auto {
-  /*margin-left: 5em;*/
-}
-
-#shoutbox td {
-  display: block;
-}
-#shoutbox tr  {
-  border-top: 0.1em dashed #233452;
-}
-#shoutbox tr > td:first-child {
-  margin-top: 0.4em;
-}
-#shoutbox tr > td:last-child {
-  margin-bottom: 0.25em;
-  margin-left: 1em;
-}
-
-#chat_message_inputs #send {
-  float: right;
-}
-#chat_smile_point {
-  display: inline-block;
-}
-#chat_msg_wrapper {
-  width: 100%;
-}
-
-@media only screen and (max-width : 51.9375em) { /* 831px and less*/
-  #unit_table { /* 3 preview */
-    width: 37em;
-  }
-  #unit_create_button_auto {
-    /*display: block;*/
-    /*max-width: 15em;*/
-    /*margin-top: 3em;*/
-    /*margin-right: 5em;*/
-    /*margin: 2em 5em 1em;*/
-    /*margin-left: 5.1em;*/
-  }
-  #unit_create_button_auto.ui-state-active {
-    /*margin-left: 5.4em;*/
-  }
-  #unit_destroy_resources {
-    margin-top: 1em;
-  }
-  #unit_destroy .unit_destroy {
-    margin-bottom: 1em;
-  }
-  #unit_miniatures_container {
-    max-width: 55em;
-  }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
-    max-width: 34em;
-  }
-}
-@media only screen and (min-width : 52em) { /* 832px */
-  #unit_table { /* 4 preview */
-    width: 48.5em;
-  }
-  #shoutbox tr > td:first-child {
-    float: left;
-  }
-  #shoutbox tr > td:nth-child(2) {
-    margin-top: 0.4em;
-  }
-  #unit_miniatures_container {
-    max-width: 66em;
-  }
-  #unit_create_button_auto {
-    /*display: block;*/
-    /*max-width: 15em;*/
-    /*margin-top: 3em;*/
-    /*margin-right: 5em;*/
-    /*margin: 2em 5em 1em;*/
-    margin-left: 5.1em;
-  }
-  #unit_create_button_auto.ui-state-active {
-    margin-left: 5.4em;
-  }
-  #unit_destroy_resources {
-    margin-top: 1em;
-  }
-  #unit_destroy .unit_destroy {
-    margin-bottom: 1em;
-  }
-  .fleet_2_table {
-    max-width: 45em;
-  }
-}
-@media only screen and (min-width : 60em) { /* 960px */
-  #unit_table { /* 5 preview */
-    width: 60.5em;
-  }
-  #unit_cost_container.unit_create_stackable {
-    display: table-cell;
-    width: 60%;
-  }
-  #unit_create.unit_create_stackable {
-    display: table-cell;
-    width: 40%;
-  }
-
-  #shoutbox td {
-    float: none ;
-    display: table-cell;
-  }
-  #shoutbox tr  {
-    border-top: 0;
-  }
-  #shoutbox td {
-    margin: 0;
-  }
-  #chat_message_inputs {
-    text-align: center;
-  }
-  #chat_msg_wrapper {
-    width: auto;
-  }
-  #chat_smile_point {
-    float: left;
-    display: block;
-  }
-  #unit_miniatures_container {
-    max-width: 77em;
-  }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
-    max-width: 56em;
-  }
-}
-@media only screen and (min-width : 68em) { /* 1088px */
-  #unit_table { /* 6 preview */
-    width: 72.5em;
-  }
-  #unit_info {
-    display: block;
-  }
-  #unit_description_wrapper {
-    display: block;
-  }
-  #unit_description_wrapper_inner {
-    margin-right: 0;
-  }
-  #unit_description_wrapper_cell {
-    display: block;
-  }
-  #unit_balance_wrapper {
-    display: block;
-    float: right;
-    margin: 0 0.5em;
-  }
-  #unit_balance {
-    display: inline-block;
-  }
-
-  #form_unit {
-    /*display: table;*/
-  }
-  #unit_cost_container {
-    display: table-cell;
-  }
-  /*#unit_action_container {*/
-    /*display: table-cell;*/
-  /*}*/
-  #unit_create.unit_create_level {
-    display: table-cell;
-    max-width: 15em;
-  }
-  #unit_create_button_auto {
-    /*display: table-cell;*/
-    /*max-width: 15em;*/
-    /*margin-top: 3em;*/
-    /*margin-left: 0;*/
-  }
-  #unit_create_button_auto {
-    /*display: block;*/
-    /*max-width: 15em;*/
-    /*margin-top: 3em;*/
-    /*margin-right: 5em;*/
-    /*margin: 2em 5em 1em;*/
-    margin-left: 0.1em;
-  }
-  #unit_create_button_auto.ui-state-active {
-    margin-left: 0.4em;
-  }
-  #unit_destroy {
-    display: table-cell;
-    vertical-align: middle;
-  }
-  #unit_destroy_resources {
-    margin-top: 0;
-  }
-  #unit_destroy .unit_destroy {
-    margin-bottom: 0;
-  }
-  #unit_miniatures_container {
-    max-width: 88em;
-  }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
-    max-width: 66em;
-  }
-}
-@media only screen and (min-width : 76.5em) { /* 1224px */
-  #unit_table { /* 7 preview */
-    width: 84.5em;
-  }
-  #unit_miniatures_container {
-    max-width: 110em;
-  }
-  .fleet_2_table { /* Table on Fleet Mission Select*/
-    max-width: 77em;
-  }
-}
-
-.fleet_mission_button_container {
-  display: inline-block;
-  vertical-align: top;
-  margin: 0.2em;
-  /*border: 1px solid white;*/
-  width: 10em;
-  height: 9em;
-}
-
-.fleet_expedition_warning {
-  font-size: 1.5em;
-  margin: 0.5em;
-}
-
-
-#unit_info_extra_switch_wrapper {
-  /*display: table-row-group;*/
-}
-
-#unit_miniatures_container {
-  display: inline-block;
-  /*max-width: 53em;*/
-  font-size: 0.8em;
-  text-align: center;
-  align-content: center;
-}
-.unit_miniatures_wrapper {
-  margin: 0.3em 0.3em;
-  display: inline-block;
-  /*vertical-align: top;*/
-  height: 10em;
-  width: 10em;
-  position: relative;
-  /*margin: 0.2em;*/
-  /*float: left;*/
-}
-
-
-
-textarea {
-  -moz-border-radius: 0.4em;
-  -webkit-border-radius: 0.4em;
-  -khtml-border-radius: 0.4em;
-  border-radius: 0.4em;
-}
-
-input, textarea, button {
-  font-weight: bold !important;
-}
-
-.subheader, tr.subheader > td, tr.subheader > th {
-  background: #233452;
-}
-
-.note_coordinates {
-  color: #00B7F3;
-}
-
-.income_with_fleet {
-  color: #80a0C0;
-}
-
-/* Empire overview -------------------------------------------------------------- */
-[go] {
-  cursor: pointer;
-}
-
-td[go]:hover { /* Skin specific */
-  background-color: #415680;
-}
-
-[name=save_production] {
-  float: right;
-}
-
-tr[prod_mode] > th:first-child {
-  text-align: left;
-  position: relative;
-}
-
-tr[prod_mode] > td:first-child {
-  text-align: center;
-}
-
-tr[prod_mode] > th:first-child > span  {
-  position: absolute;
-  top: 0.5em;
-}
-
-tr[prod_mode] > :not(:first-child) {
-  text-align: center;
-  position: relative;
-  z-index: 100;
-}
-/* Production builder filler - i.e. production % for mine etc */
-tr[prod_mode] > :not(:first-child) > span[style] {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  z-index: 200;
-}
-
-tr[prod_mode] > [ecs]:not(:first-child) {
-/* Standard single-height empire cell */
-  height: 1.181818em;
-}
-/* Double-height empire cell - i.e. for Mines */
-tr[prod_mode] > [ecd]:not(:first-child), tr[prod_mode] > [ecd]:not(:first-child) > span[style] {
-  height: 3.181818em;
-}
-tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire cell */
-  z-index: 300;
-  position: relative;
-}
-
-
-/* Menu ------------------------------------------------------------------------- */
+/* Page layout  ********************************************************************************************* */
+/* Left menu ======================================================================================================== */
 #left_menu {
   margin: 0.5em 1em 0 0.5em;
   text-align: left;
@@ -679,7 +336,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 #left_menu.MENU_NARROW_CELLS td, #left_menu.MENU_NARROW_CELLS th {
   padding: 0 0.5em;
-  border: 1px solid #415680;
+  border: 0.1em solid #415680;
   border-top: none;
 }
 
@@ -720,7 +377,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #left_menu a:not(.lm_with_image) {
   background-color: rgba(35, 52, 82, 0.5); /*#233452;*/
   padding: 0.2em 1em;
-  border: 1px solid #415680;
+  border: 0.1em solid #415680;
   border-radius: 0.3em;
 
   height: 100%;
@@ -802,6 +459,697 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   /*border: none;*/
 }
 
+
+
+.menu_text_t, .menu_text_b {
+  text-align: center;
+}
+
+#menu_premium .link_b, #menu_premium .menu_icon {
+  float: left;
+}
+
+#menu_admin_exit {
+  color: red;
+}
+
+#menu_admin_server_time, #menu_admin_version_info {
+  text-align: center;
+}
+
+#menu_premium {
+  color: gold;
+}
+
+#menu_premium_level {
+  color: gold;
+  display: inline;
+  float: right;
+}
+
+
+/* NavBar ======================================================================================================== */
+#navbar {
+  margin: auto;
+}
+
+/* Page Body ======================================================================================================== */
+#page_body {
+  margin-left: 14em;
+  padding-left: 1em;
+  padding-right: 1em;
+  width: auto;
+}
+
+
+
+/* Copyright ======================================================================================================== */
+#copyright {
+  text-align: center;
+}
+#copyright #supernova_ws {
+  font-weight: normal;
+}
+#copyright, #copyright #supernova_ws {
+  padding-top: 2ex;
+}
+
+
+
+
+
+/* Service Classes  ********************************************************************************************* */
+.link
+{
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.link_b
+{
+  border-bottom: 0.1em solid;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.link_action {
+  border-bottom: 0.1em dashed;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.link_external {
+  border-bottom: 0.3em double;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.pointer
+{
+  cursor: pointer;
+}
+
+/* TODO DEPRECATED  ======================================================================================================== */
+.left {
+  position: absolute;
+  left: 0;
+}
+.right {
+  position: absolute;
+  right: 0;
+}
+.bottom {
+  position: absolute;
+  bottom: 0;
+}
+.left_top
+{
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+.left_bottom
+{
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+.right_top {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.right_bottom {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}
+.icon_25per_left_1 {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25%;
+  height: 25%
+}
+.icon_25per_left_2 {
+  position: absolute;
+  top: 25%;
+  left: 0;
+  width: 25%;
+  height: 25%
+}
+.icon_25per_left_3 {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 25%;
+  height: 25%;
+}
+.icon_25per_left_4 {
+  position: absolute;
+  top: 75%;
+  left: 0;
+  width: 25%;
+  height: 25%;
+}
+.icon_25per_right_4 {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 25%;
+  height: 25%;
+}
+.icon_25per_top_2 {
+  position: absolute;
+  top: 0;
+  left: 25%;
+  width: 25%;
+  height: 25%;
+}
+.icon_fill {
+  height: 100%;
+  width: 100%;
+  border-style: none;
+  cursor: pointer;
+}
+.fill_parent {
+  height: 100%;
+  width: 100%;
+}
+.va_m {
+  vertical-align: middle;
+}
+.transparent_cell {
+  background-color: transparent;
+  border: 0;
+}
+
+.global_admin_warning{
+  text-align: center;
+  width: 100%;
+  font-size: 2em;
+  font-weight: bold;
+  color:red;
+}
+
+
+
+
+/* News and Surveys ================================================================================================= */
+.news_header {
+  background-color: #233452;
+  padding: 0.6em 1em;
+  margin: 0.2em;
+}
+.news_date {
+  color: yellow;
+}
+.news_publisher {
+}
+.news_fresh, .news_future {
+  color: red;
+  font-weight: bold;
+}
+.news_text {
+  text-align: justify;
+  padding: 0.6em 1em;
+}
+.news_link {
+  color: green;
+  text-decoration: underline;
+  font-weight: bold;
+  cursor: pointer;
+}
+.news_hide {
+  display: none;
+}
+
+.survey_block {
+  text-align: left;
+  margin: 0 1em;
+  /*padding: 0.6em 0.5em;*/
+  /*border: 1px solid #415680;*/
+}
+.survey_block [survey_id] {
+  width: 93%;
+  text-align: left;
+}
+.survey_header, .survey_voted {
+  padding: 0.6em 1em;
+  background-color: #233452;
+  border: none;
+}
+.survey_voted {
+  text-align: center;
+}
+.survey_confirm {
+  padding: 0 1em;
+  background-color: #233452;
+  border: none;
+}
+
+.survey_votes {
+  position: relative;
+}
+.survey_votes_text {
+  position: relative;
+  z-index: 999;
+  padding: 0.6em 10em 0.6em 1em;
+}
+.survey_votes_bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+
+  z-index: 998;
+
+  background-color: darkgreen;
+}
+.survey_votes_number, .survey_votes_percent {
+  position: absolute;
+  right: 1em;
+  top: 0.6em;
+  text-align: right;
+  width: 100%;
+  height: 100%;
+  z-index: 999;
+}
+.survey_votes_number {
+  right: 5em;
+}
+
+.survey_length {
+  padding: 0.6em 1em;
+  border: none;
+}
+
+
+/* Build page ================================================================================================= */
+#unit_require li, #unit_grants li {
+  margin: 0;
+  padding: 0;
+}
+
+#unit_info {
+  display: table;
+
+  vertical-align: top;
+  text-align: left;
+
+  width: 100%;
+}
+
+#unit_description_wrapper {
+  display: table-header-group;
+
+  height: 13em;
+  vertical-align: top;
+  margin: 0.5em;
+}
+#unit_description_wrapper_cell {
+  display: table-cell;
+}
+#unit_info_image_outer {
+  vertical-align: top;
+  width: 13em;
+  height: 13em;
+  margin-right: 0.5em;
+  float: left;
+
+  /*border: 1px solid orange;*/
+}
+#unit_info_image_wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+#unit_info_image {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+#unit_info_name {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  font-size: 1em;
+  vertical-align: top;
+  text-align: center;
+  width: 100%;
+}
+#unit_info_level {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  font-size: 1em;
+  width: 100%;
+  text-align: center;
+}
+#unit_description_wrapper_inner {
+  vertical-align: top;
+  margin-right: 0.5em;
+}
+#unit_info_description {
+  text-align: justify;
+}
+#unit_require_wrapper, #unit_grants_wrapper {
+  font-size: 0.8em;
+}
+#unit_require, #unit_grants {
+  overflow: hidden;
+}
+
+#unit_balance_wrapper {
+  display: table-footer-group;
+
+  vertical-align: top;
+  text-align: center;
+}
+#unit_balance {
+  display: table-cell;
+
+  font-size: 0.8em;
+  height: 13em;
+}
+#unit_balance table {
+  border-spacing: 0.2em;
+}
+#unit_balance td {
+  border-spacing: 0.2em;
+  padding: 0;
+}
+#unit_balance tr > td:not(:first-child) {
+  width: 7em;
+}
+#unit_max {
+  display: none;
+}
+
+
+#form_unit {
+  display: table;
+  width: 100%;
+}
+#unit_cost_container {
+  display: table-header-group;
+  text-align: center;
+}
+#unit_create {
+  display: table-row;
+  text-align: center;
+  vertical-align: top;
+}
+#unit_destroy {
+  display: table-footer-group;
+  text-align: center;
+}
+#unit_create_button_auto {
+  /*margin-left: 5em;*/
+}
+
+@media only screen and (max-width : 51.9375em) { /* 831px and less*/
+  #unit_table { /* 3 preview */
+    width: 37em;
+  }
+  #unit_create_button_auto {
+  }
+  #unit_create_button_auto.ui-state-active {
+  }
+  #unit_destroy_resources {
+    margin-top: 1em;
+  }
+  #unit_destroy .unit_destroy {
+    margin-bottom: 1em;
+  }
+}
+@media only screen and (min-width : 52em) { /* 832px */
+  #unit_table { /* 4 preview */
+    width: 48.5em;
+  }
+  #unit_create_button_auto {
+    margin-left: 5.1em;
+  }
+  #unit_create_button_auto.ui-state-active {
+    margin-left: 5.4em;
+  }
+  #unit_destroy_resources {
+    margin-top: 1em;
+  }
+  #unit_destroy .unit_destroy {
+    margin-bottom: 1em;
+  }
+
+}
+@media only screen and (min-width : 60em) { /* 960px */
+  #unit_table { /* 5 preview */
+    width: 60.5em;
+  }
+  #unit_cost_container.unit_create_stackable {
+    display: table-cell;
+    width: 60%;
+  }
+  #unit_create.unit_create_stackable {
+    display: table-cell;
+    width: 40%;
+  }
+}
+@media only screen and (min-width : 68em) { /* 1088px */
+  #unit_table { /* 6 preview */
+    width: 72.5em;
+  }
+  #unit_info {
+    display: block;
+  }
+  #unit_description_wrapper {
+    display: block;
+  }
+  #unit_description_wrapper_inner {
+    margin-right: 0;
+  }
+  #unit_description_wrapper_cell {
+    display: block;
+  }
+  #unit_balance_wrapper {
+    display: block;
+    float: right;
+    margin: 0 0.5em;
+  }
+  #unit_balance {
+    display: inline-block;
+  }
+  #form_unit {
+    /*display: table;*/
+  }
+  #unit_cost_container {
+    display: table-cell;
+  }
+  /*#unit_action_container {*/
+  /*display: table-cell;*/
+  /*}*/
+  #unit_create.unit_create_level {
+    display: table-cell;
+    max-width: 15em;
+  }
+  #unit_create_button_auto {
+    /*display: table-cell;*/
+    /*max-width: 15em;*/
+    /*margin-top: 3em;*/
+    /*margin-left: 0;*/
+  }
+  #unit_create_button_auto {
+    /*display: block;*/
+    /*max-width: 15em;*/
+    /*margin-top: 3em;*/
+    /*margin-right: 5em;*/
+    /*margin: 2em 5em 1em;*/
+    margin-left: 0.1em;
+  }
+  #unit_create_button_auto.ui-state-active {
+    margin-left: 0.4em;
+  }
+  #unit_destroy {
+    display: table-cell;
+    vertical-align: middle;
+  }
+  #unit_destroy_resources {
+    margin-top: 0;
+  }
+  #unit_destroy .unit_destroy {
+    margin-bottom: 0;
+  }
+
+}
+@media only screen and (min-width : 76.5em) { /* 1224px */
+  #unit_table { /* 7 preview */
+    width: 84.5em;
+  }
+}
+
+#off_get_dark_matter {
+  color: #ff8900;
+  font-weight: bold;
+}
+
+/* Fleet send page -------------------------------------------------------------- */
+@media only screen and (max-width : 51.9375em) { /* 831px and less*/
+  #fleet_unit_miniatures_container {
+    max-width: 55em;
+  }
+  .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 34em;
+  }
+}
+@media only screen and (min-width : 52em) { /* 832px */
+  #fleet_unit_miniatures_container {
+    max-width: 66em;
+  }
+  .fleet_2_table {
+    max-width: 45em;
+  }
+}
+@media only screen and (min-width : 60em) { /* 960px */
+  #fleet_unit_miniatures_container
+  {
+    max-width: 77em;
+  }
+  .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 56em;
+  }
+}
+@media only screen and (min-width : 68em) { /* 1088px */
+  #fleet_unit_miniatures_container {
+    max-width: 88em;
+  }
+  .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 66em;
+  }
+}
+@media only screen and (min-width : 76.5em) { /* 1224px */
+  #fleet_unit_miniatures_container {
+    max-width: 110em;
+  }
+  .fleet_2_table { /* Table on Fleet Mission Select*/
+    max-width: 77em;
+  }
+}
+
+.fleet_mission_button_container {
+  display: inline-block;
+  vertical-align: top;
+  margin: 0.2em;
+  /*border: 1px solid white;*/
+  width: 10em;
+  height: 9em;
+}
+
+.fleet_expedition_warning {
+  font-size: 1.5em;
+  margin: 0.5em;
+}
+
+#fleet_unit_miniatures_container {
+  display: inline-block;
+  /*max-width: 53em;*/
+  font-size: 0.8em;
+  text-align: center;
+  align-content: center;
+}
+
+.unit_miniatures_wrapper {
+  margin: 0.3em 0.3em;
+  display: inline-block;
+  /*vertical-align: top;*/
+  height: 10em;
+  width: 10em;
+  position: relative;
+  /*margin: 0.2em;*/
+  /*float: left;*/
+}
+
+.income_with_fleet {
+  color: #80a0C0;
+}
+
+.mission_button_image {
+  height: 5.818181818182rem;
+  width: 5.818181818182rem;
+}
+
+.flt-mini-mission {
+  display: inline-flex;
+  align-items: center;
+}
+.flt-mini-mission div {
+  display: inline-block;
+}
+#fleet_mini_mission {
+  padding: 0 0.5em;
+}
+
+
+/* Empire overview -------------------------------------------------------------- */
+[go] {
+  cursor: pointer;
+}
+
+td[go]:hover { /* Skin specific */
+  background-color: #415680;
+}
+
+[name=save_production] {
+  float: right;
+}
+
+tr[prod_mode] > th:first-child {
+  text-align: left;
+  position: relative;
+}
+
+tr[prod_mode] > td:first-child {
+  text-align: center;
+}
+
+tr[prod_mode] > th:first-child > span  {
+  position: absolute;
+  top: 0.5em;
+}
+
+tr[prod_mode] > :not(:first-child) {
+  text-align: center;
+  position: relative;
+  z-index: 100;
+}
+/* Production builder filler - i.e. production % for mine etc */
+tr[prod_mode] > :not(:first-child) > span[style] {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  z-index: 200;
+}
+
+tr[prod_mode] > [ecs]:not(:first-child) {
+/* Standard single-height empire cell */
+  height: 1.181818em;
+}
+/* Double-height empire cell - i.e. for Mines */
+tr[prod_mode] > [ecd]:not(:first-child), tr[prod_mode] > [ecd]:not(:first-child) > span[style] {
+  height: 3.181818em;
+}
+tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire cell */
+  z-index: 300;
+  position: relative;
+}
+
+
 /* Unit purchase --------------------------------------------------------------- */
 #unit_table {
   /*width: 533px; /* == 48.2em */ /* 46.4em + 0.3em*2(padding)*/
@@ -819,6 +1167,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
    /*width: 48.5em;*/
 }
 
+/* Unit preview box on build pages */
 .unit_preview {
   cursor: pointer;
 
@@ -830,9 +1179,9 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 11em;
 
   font-size: 100%;
+
+  border-color: #344566;
 }
-
-
 .unit_preview .unit_preview_image {
   position: absolute;
   left: 0;
@@ -844,7 +1193,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   border: 0;
   vertical-align: top;
 }
-
 .unit_preview .level, .unit_preview .count {
   position: absolute;
   top: 0;
@@ -864,7 +1212,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   left: 0;
   width: 100%;
 }
-
 .unit_preview .name {
   position: absolute;
   left: 0;
@@ -876,7 +1223,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   font-size: 1.0em;
   text-align: center;
 }
-
 .unit_preview .resource_container {
   position: absolute;
   left: 0;
@@ -884,7 +1230,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 100%;
   text-align: left;
 }
-
 .unit_preview .restrict {
   position: absolute;
   left: 0;
@@ -926,6 +1271,9 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   position: relative; width: 100%; height: 1.3em; border: 0.1em solid rgb(153, 153, 255);
 }
 
+.unit_border_selected {
+  border-color: #6B90D3;  /* Reserved for unit_preview border color */
+}
 
 /* Admin interface - userlist ------------------------------------------------ */
 #user_list {
@@ -940,26 +1288,86 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #user_list tr td:first-child, #user_list tr td:nth-child(2), #user_list tr td:last-child {
   cursor: pointer;
 }
-/*
-#user_list tr td:first-child:hover, #user_list tr td:nth-child(2):hover {
-  background-color: yellow;
-}
-*/
 #user_list tr:hover {
   color: yellow;
 }
 
-
-
-
-
-
-/* Chat ---------------------------------------------------------------- */
-/*
-#chat_command_menu div:not(:first-child):not(:last-child):hover {
-  background-color: darkgoldenrod;
+/* Chat ************************************************************************************************************* */
+#chat_box {
+  width: 100%;
+  padding-right: 1.25em;
 }
-*/
+
+#shoutbox td {
+  display: block;
+}
+#shoutbox tr  {
+  border-top: 0.1em dashed #233452;
+}
+#shoutbox tr > td:first-child {
+  margin-top: 0.4em;
+}
+#shoutbox tr > td:last-child {
+  margin-bottom: 0.25em;
+  margin-left: 1em;
+}
+
+#chat_message_inputs #send {
+  float: right;
+}
+#chat_smile_point {
+  display: inline-block;
+}
+#chat_msg_wrapper {
+  width: 100%;
+}
+@media only screen and (min-width : 52em) { /* 832px */
+  #shoutbox tr > td:first-child {
+    float: left;
+  }
+  #shoutbox tr > td:nth-child(2) {
+    margin-top: 0.4em;
+  }
+}
+@media only screen and (min-width : 60em) { /* 960px */
+  #shoutbox td {
+    float: none ;
+    display: table-cell;
+  }
+  #shoutbox tr  {
+    border-top: 0;
+  }
+  #shoutbox td {
+    margin: 0;
+  }
+  #chat_message_inputs {
+    text-align: center;
+  }
+  #chat_msg_wrapper {
+    width: auto;
+  }
+  #chat_smile_point {
+    float: left;
+    display: block;
+  }
+}
+
+.chat_online, #onlinebox td {
+  background-color: black;
+  border: 0;
+  white-space: nowrap;
+  text-align: left;
+  vertical-align: top;
+  font-weight: bold;
+}
+
+.chat_message {
+  text-align: left;
+  background-color:black;
+  color:white;
+  font-weight: normal;
+}
+
 /* Shoutbox */
 #shoutbox {
   background-color: black;
@@ -1158,6 +1566,12 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   color: white;
 }
 
+.battle_report_link {
+  color: black;
+  background-color: white;
+}
+
+/* Statistics page ************************************************************************************************************* */
 #stat_cell_min_max {
   position: relative;
 }
@@ -1212,10 +1626,12 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   bottom: 0;
 }
 
+/* Blitz admin page ************************************************************************************************************* */
 .blitz_admin > div {
   margin-top: 1.8em;
 }
 
+/* Batch operations ************************************************************************************************************* */
 #batch_fleet_table {
   width: 10em;
   border: 0;
@@ -1273,7 +1689,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   color: #80a0C0;
 }
 
-
 .batch_unit_holder {
   width: 2em;
   white-space: nowrap;
@@ -1289,16 +1704,12 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   float: left;
 }
 
-.news_hide {
-  display: none;
-}
 
+/* Que list ===================================================================================================== */
 .que_item_0 {
   color: lime;
 }
-
-/* Que item */
-.que_item {
+.que_item { /* Que item */
   cursor: pointer;
 
   border: 0;
@@ -1312,19 +1723,16 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
   font-size: 1em;
 }
-
-/* Unit picture */
-.unit_picture {
-  border: 0px;
+.que_unit_picture { /* Unit picture */
+  border: 0;
 
   position: absolute;
-  left: 0px;
-  top: 0px;
+  left: 0;
+  top: 0;
 
   width: 100%;
   height: 100%;
 }
-
 .que_unit_level {
   position: absolute;
   top: 0;
@@ -1333,7 +1741,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   height: 2ex;
   font-size: 100%;
 }
-
 .que_unit_time {
   position: absolute;
   bottom: 0;
@@ -1342,7 +1749,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   height: 2ex;
   font-size: 100%;
 }
-
 .que_unit_time_seconds_0 {
   position: absolute;
   bottom: 2ex;
@@ -1354,492 +1760,191 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   background-color: green;
 }
 
-#copyright, #copyright #supernova_ws {
-  padding-top: 2ex;
-}
-
-.mission_button_image {
-  height: 5.818181818182rem;
-  width: 5.818181818182rem;
-}
-
-/* Black market */
+/* Black market ===================================================================================================== */
 .market_services {
   max-width: 20em;
   background-color: #344566;
   width: 100%;
   padding: 0.5em;
 }
-
 .market_services div:first-child {
   text-align: justify;
   margin-bottom: 1em;
 }
-
 .market_services .button_pseudo {
   min-width: 15em;
 }
-
 #market_trader .button_pseudo {
   width: 10em;
 }
 
-.survey_block [survey_id] {
-  width: 93%;
-  text-align: left;
+
+
+
+
+
+
+/* Planet List ===================================================================================================== */
+.element_fill_wrap {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%
 }
-
-/**
- * Checkator jQuery Plugin
- * A plugin for radio and checkbox elements
- * version 1.1, Dec 20th, 2013
- * by Ingi P. Jacobsen
- */
-
-/* RESET */
-input[type=radio],
-input[type=checkbox] {
-  margin-bottom: 0;
-}
-
-/* SOURCE ELEMENT (when checkator is enabled on an element) */
-.checkator_source {
+.planet_list_wrap {
   position: relative;
-  z-index: 2;
-  display: block;
+  border: 0 solid blue;
+  width: inherit;
 }
-
-/* SHARED SETTING */
-.checkator_holder { /* Holder for the new element */
-  display: inline-block;
-  position: relative;
-}
-.checkator_element { /* New element */
-  border: 2px solid #abadb3;
-  /*background-color: #fff;*/
-  display: block;
+.planet_list_wrap > .res_bar {
   position: absolute;
   top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  z-index: 1;
+
+  overflow: hidden;
+
+  width: 0.25em;
+  height: 100%;
 }
-.checkator_source:checked+.checkator_element:after { /* Checked element dot */
-  /*background-color: #7fa92c;*/
-  background-color: lime;
-  display: block;
-  content: ' ';
-  top: 20%;
-  right: 20%;
-  bottom: 20%;
-  left: 20%;
+
+.planet_list_top87 {
+  width: 7.75em;  /* 87/11 = 7,909090909091 */
+}
+.planet_list_top87 > .planet_list_wrap {
+  height: 7em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .images {
+  height: 100%;
+  width: 7em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .metal_bar {
+  left: 7em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .crystal_bar {
+  left: 7.25em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .deuterium_bar {
+  left: 7.50em; /* 75/11 = 6,818181818182 */
+}
+.planet_list_top87 > .planet_list_wrap > .images > .icon-gather-wrapper {
+  height: 25%; width: 25%;
+  bottom: 0; right: 0;
   position: absolute;
 }
-/*
-.checkator_source:focus+.checkator_element { /!* Focused element *!/
-  border: 2px solid #cc0;
+
+.planet_list_top112 {
+  width: 9.75em;
 }
-*/
-.checkator_source:hover+.checkator_element { /* Hovered element */
-  /* Bug: There is a bug in chrome preventing this from working correctly */
-  /*background-color: #def;*/
-  /*border: 2px solid #79b;*/
-  border: 2px solid #dfeafd;
+.planet_list_top112 > .planet_list_wrap {
+  height: 9em;
 }
-
-
-/* RADIO SETTINGS */
-.checkator_element.radio {
-  border-radius: 50% !important;
+.planet_list_top112 > .planet_list_wrap > .images {
+  height: 100%;
+  width: 9em;
 }
-.checkator_element.radio:after {
-  border-radius: 50% !important;
+.planet_list_top112 > .planet_list_wrap > .metal_bar {
+  left: 9em;
 }
-
-/* CHECKBOX SETTINGS */
-.checkator_element.checkbox { /* New element */
-  border: 2px solid #abadb3;
+.planet_list_top112 > .planet_list_wrap > .crystal_bar {
+  left: 9.25em;
 }
-
-
-
-
-
-
-th, td, input, select, textarea, textarea.ui-button {
-  border               : 0.1em #415680 solid;
-  background-color     : #344566;
-  padding-left         : 0.3em;
-  padding-right        : 0.3em;
-  font-weight          : bold;
+.planet_list_top112 > .planet_list_wrap > .deuterium_bar {
+  left: 9.50em;
+}
+.planet_list_top112 > .planet_list_wrap > .images > .icon-gather-wrapper {
+  height: 2.25em; width: 2.25em;
+  bottom: 0; right: 0;
+  position: absolute;
 }
 
-textarea.ui-button {
-  padding: 0.4em 1em;
-}
+.planet_list_fields {
+  position: relative;
 
-td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
-  font-weight          : bold;
-  background-repeat:  repeat-x;
-}
+  width: 100%;
+  height: 1.1em;
 
-td.l {
-  vertical-align       : top;
-  padding              : 0.3em;
-}
+  overflow: hidden;
 
-table table {
-  border               : 0;
+  background-color: #344566;
 }
+.planet_list_fields > .numbers {
+  position: absolute;
+  left: 0;
+  top: 0;
 
-body form table th table input {
-  width: 5.5em;
-}
+  width: 100%;
+  height: 100%;
 
-div.z {
-  font-weight          : bold;
-}
-
-a {
-  text-decoration      : none;
-  font-weight          : bold;
-  color: inherit;
-}
-
-.style td {
-  border-top           : 0;
-}
-
-h1 {
-  font-size            : 200%;
-  border-bottom        : none; /* 0 #344566 solid */
-
-  margin-top: 1em;
-}
-
-.hint {
-  text-align: justify;
-}
-
-.ov_user_total {
-  color: #FF0000
-}
-.ov_user_rank {
-  color: #FFFF00
-}
-
-/* Setting popup table background color */
-div .ui-dialog-content table {
-  background: #344055;
-}
-
-/* Unit preview box on build pages */
-.unit_preview {
-  border-color: #344566;
-}
-
-.unit_border_selected {
-  border-color: #6B90D3;  /* Reserved for unit_preview border color */
-}
-
-#sys_dark_matter_hint {
-  color: #00CCFF;
+  font-size: 0.9em;
   font-weight: bold;
-  float: left;
 }
+.planet_list_fields > .bar {
+  position: absolute;
+  left: 0;
+  top: 0;
 
-#off_get_dark_matter {
-  color: #ff8900;
+  /*width: 100%;*/
+  height: 100%;
+
+  /*font-size: 1.1em;*/
   font-weight: bold;
 }
 
-.ui-widget-content {
-  color: white;
+.planet_list_bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+}
+
+.ov_struc_timer {
+  white-space: normal;
+  background-color: #344566;
+}
+
+.planet_list_moon_attack {
+  position: absolute;
+  top: 15%;
+  left: 15%;
+  width: 70%;
+  height: 70%;
+  cursor: pointer;
+}
+.planet_list_submoon_fields {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  top: 100%;
+  height: 10%;
+  overflow: hidden;
+  background-color: #344566;
+}
+.planet_list_submoon_filler {
+  position: relative;
+  left: 0;
+  height: 100%;
+}
+.planet_list_submoon_attack {
+  position: absolute;
+  top: 26%;
+  left: 26%;
+  width: 48%;
+  height: 48%;
+}
+
+/* Universe/Galaxy ===================================================================================================== */
+#universe_main img {
+  border: 0;
+  cursor: pointer;
 }
 
-/* Universe status styles */
-.allymember {
-  color: lime;
-}
-
-.myplanet {
-  color: red;
-}
-
-.noob {
-  color: #a0ffa0;
-}
-
-.protected {
-  color: yellow;
-}
-
-.strong {
-  color: #ffa0a0;
-}
-
-.player_active {
-  font-weight: bold;
-}
-
-.inactive {
-  font-weight: normal;
-}
-
-.longinactive {
-  font-weight: normal;
-  font-style: italic;
-}
-
-.banned {
-  text-decoration: line-through;
-}
-
-.admin {
-  text-decoration: blink;
-  color: purple;
-}
-
-/* Flying fleet & message color coding */
-.flight {
-}
-
-.return {
-}
-
-.holding {
-}
-
-*.ownattack, .mnl_attaque {
-  color: yellow;
-}
-
-*.ownfederation {
-  color: #33CC00;
-}
-
-*.owndestroy {
-  color: gold;
-}
-
-*.ownhold {
-  color: #80a0C0;
-}
-
-*.ownmissile {
-  color: sienna;
-}
-
-*.ownespionage, *.mnl_spy, .mnl_spy td {
-  color: orange;
-}
-
-*.owntransport, .mnl_transport {
-  color: lime;
-}
-
-*.owndeploy {
-  color: lightgreen;
-}
-
-*.ownharvest, .mnl_exploit {
-  color: green;
-}
-
-*.owncolony {
-  color: blue;
-}
-
-.flight .ownattack a, .flight .owncolony a, .flight .owndeploy a, .flight .owndestroy a,
-.flight .ownespionage a, .flight .ownfederation a, .flight .ownharvest a, .flight .ownhold a,
-.flight .ownmissile a, .flight .owntransport a, .flight .ownexpedition a {
-  color: #E6EBFB;
-}
-
-*.attack {
-  color: red;
-}
-
-*.colony {
-  color: lime;
-}
-
-*.deploy {
-  color: lime;
-}
-
-*.destroy {
-  color: gold;
-}
-
-*.espionage {
-  color: red;
-}
-
-*.federation {
-  color: #CC0000;
-}
-
-*.harvest {
-  color: lime;
-}
-
-*.hold {
-  color: #80a0C0;
-}
-
-*.missile {
-  color: red;
-}
-
-*.transport {
-  color: lime;
-}
-
-.flight .attack a, .flight .colony a, .flight .deploy a, .flight .destroy a, .flight .espionage a,
-.flight .federation a, .flight .harvest a, .flight .hold a, .flight .missile a, .flight .transport a {
-  color: #E6EBFB;
-}
-
-.combatreport {
-  color: red;
-}
-
-.espionagereport {
-  color: orange;
-}
-
-.timeremaining {
-  color: orange;
-}
-
-.mnl_outbox, .mnl_outbox * {
-  background-color: #000000;
-}
-
-.mnl_joueur, .mnl_joueur * {
-  background-color: #114444;
-}
-
-.mnl_exploit, .mnl_exploit * {
-  /*  background-color: #999999;*/
-}
-
-*.ownexpedition, .mnl_expedition {
-  color: lightblue;
-}
-
-.mnl_buildlist, .mnl_buildlist * {
-  color: #000066;
-}
-
-.mnl_alliance, .mnl_alliance * {
-  background-color: #446666;
-}
-
-.msg_admin, .msg_admin * {
-  color: #9900ff !important;
-  background-color: #ffffff;
-}
-
-.new_message, .new_message * {
-  color: #000000;
-  background-color: #ffffff;
-}
-
-/* Resources color coding*/
-.metal {
-  color: darkgrey;
-}
-
-.crystal {
-  color: cyan;
-}
-
-.deuterium{
-  color: #B000B0;
-}
-
-.overall{
-  color: white;
-}
-
-.metal_bg{
-  background-color: darkgrey;
-}
-
-.crystal_bg{
-  background-color: cyan;
-}
-
-.deuterium_bg {
-  background-color: #800080;
-}
-
-.overall_ng {
-  background-color: white;
-}
-
-.battle_report_link {
-  color: black;
-  background-color: white;
-}
-
-.menu_text_t, .menu_text_b {
-  text-align: center;
-}
-
-td.error_message {
-  background-color     : #415680;
-}
-
-.planet_template div {
-  display: block;
-  max-width: 11em;
-}
-
-.user_template div {
-  display: block;
-  max-width: 20em;
-}
-
-.ally_template div {
-  display: block;
-  max-width: 20em;
-}
-
-.birthday:before {
-  content: url(../../images/birthday.png);
-}
-
-/*
-.vacation {
-  color: skyblue;
-}
-*/
-
-.vacation:before { /* Replaces .birthday ! */
-  content: url(../../images/icon_vacation.png);
-}
-
-/*
-.vacation.birthday:before ???????????
-*/
-
-/* Universe/Galaxy ---------------------------------------------------------------------------------------------------*/
 .universe_main > tbody > tr > td, .universe_main > tbody > tr > th {
   white-space: nowrap;
   vertical-align: middle;
 }
-
 .uni_show_planet, .uni_show_debris, .uni_show_user, .uni_show_ally {
   cursor: pointer;
 }
-
-.uni_show_planet, .uni_show_debris {
-}
-
 .uni_show_planet > div, .uni_show_debris > div { /* DIV holder for old view */
   position: relative;
   display: inline-block;
@@ -1896,13 +2001,16 @@ td.error_message {
   display: block;
 }
 
+.planet_template div {
+  display: block;
+  max-width: 11em;
+}
 .planet_template .uni_popup_planet {
   width: 7em;
   height: 7em;
   position: relative;
   display: inline-block;
 }
-
 .planet_template .uni_popup_planet img {
   position: absolute;
   left: 0;
@@ -1912,7 +2020,6 @@ td.error_message {
 
   font-size: 1em;
 }
-
 .planet_template .uni_popup_planet div {
   position: absolute;
   left: 0;
@@ -1922,4 +2029,402 @@ td.error_message {
 
   text-align:center;
   background-color: rgba(0,0,0,0.50);
+}
+
+.user_template div {
+  display: block;
+  max-width: 20em;
+}
+
+.ally_template div {
+  display: block;
+  max-width: 20em;
+}
+
+/* Note/Bookmark page ===================================================================================================== */
+.note_coordinates {
+  color: #00B7F3;
+}
+
+/* Emperor page ===================================================================================================== */
+.ov_user_total {
+  color: #FF0000
+}
+.ov_user_rank {
+  color: #FFFF00
+}
+
+/* Payment page ===================================================================================================== */
+.payment_mm_amount, .payment_mm_method, .payment_mm_module {
+  display: inline-block;
+  width: 13.63636363636em; /*150px;*/
+  /* border: 1px solid white;*/
+  margin: 0.3em;
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* TEMPLATE BOILERPLATE ********************************************************************************************* */
+/*
+.affiliates {
+  color: #993333;
+}
+*/
+
+/* Message & numbers color coding */
+/*.disabled {*/
+/*color: grey;*/
+/*}*/
+
+.ok, .success, .positive, button.positive, button.ok {
+  color: lime;
+}
+.notice, .zero, .neutral, button.neutral, button.zero {
+  color: yellow;
+}
+.warning, button.warning {
+  color: orange;
+}
+.error, .negative, button.negative, button.error {
+  color: red;
+}
+.ok_bg, .success_bg, .positive_bg {
+  background-color: #004400;
+}
+.notice_bg, .zero_bg, .neutral_bg {
+  background-color: #AAAA00 !important;
+}
+.warning_bg {
+  background-color: #924200;
+}
+.error_bg, .negative_bg {
+  background-color: darkred;
+}
+.errormessage a, .success a, .notice a, .warning a, .error a {
+  text-decoration: underline;
+}
+
+/* Resources color coding*/
+.metal {
+  color: darkgrey;
+}
+.crystal {
+  color: cyan;
+}
+.deuterium{
+  color: #B000B0;
+}
+.overall{
+  color: white;
+}
+.metamatter {
+  /*color: #cf95ff;*/
+  color: #CC99FF;
+}
+.dark_matter {
+  color: dodgerblue;
+}
+
+.metal_bg{
+  background-color: darkgrey;
+}
+.crystal_bg{
+  background-color: cyan;
+}
+.deuterium_bg {
+  background-color: #800080;
+}
+.overall_bg {
+  background-color: white;
+}
+
+.nick_developer {
+  /*color: purple;*/
+  color: #9900ff;
+}
+.nick_admin {
+  color: #0066FF;
+}
+.nick_operator {
+  color: red;
+}
+.nick_moderator {
+  color: green;
+}
+.nick_premium {
+  color: gold;
+}
+
+.bonus {
+  color: gold;
+}
+
+.same_alliance, .same_player {
+  color: #33CCFF;
+}
+
+
+/* Universe status styles */
+.allymember {
+  color: lime;
+}
+.myplanet {
+  color: red;
+}
+.noob {
+  color: #a0ffa0;
+}
+.protected {
+  color: yellow;
+}
+.strong {
+  color: #ffa0a0;
+}
+.player_active {
+  font-weight: bold;
+}
+.inactive {
+  font-weight: normal;
+}
+.longinactive {
+  font-weight: normal;
+  font-style: italic;
+}
+.banned {
+  text-decoration: line-through;
+}
+.admin {
+  text-decoration: blink;
+  /*color: purple;*/
+  color: #9900ff;
+}
+.birthday:before {
+  content: url(../../images/birthday.png);
+}
+.vacation:before { /* Replaces .birthday ! */
+  content: url(../../images/icon_vacation.png);
+}
+.vacation {
+  color: cyan;
+}
+
+/* Flying fleet & message color coding */
+.flight {
+}
+.return {
+}
+.holding {
+}
+*.ownattack, .mnl_attaque {
+  color: yellow;
+}
+*.ownfederation {
+  color: #33CC00;
+}
+*.owndestroy {
+  color: gold;
+}
+*.ownhold {
+  color: #80a0C0;
+}
+*.ownmissile {
+  color: sienna;
+}
+*.ownespionage, *.mnl_spy, .mnl_spy td {
+  color: orange;
+}
+*.owntransport, .mnl_transport {
+  color: lime;
+}
+*.owndeploy {
+  color: lightgreen;
+}
+*.ownharvest, .mnl_exploit {
+  color: green;
+}
+*.owncolony {
+  color: blue;
+}
+
+.flight .ownattack a, .flight .owncolony a, .flight .owndeploy a, .flight .owndestroy a,
+.flight .ownespionage a, .flight .ownfederation a, .flight .ownharvest a, .flight .ownhold a,
+.flight .ownmissile a, .flight .owntransport a, .flight .ownexpedition a {
+  color: #E6EBFB;
+}
+
+*.attack {
+  color: red;
+}
+*.colony {
+  color: lime;
+}
+*.deploy {
+  color: lime;
+}
+*.destroy {
+  color: gold;
+}
+*.espionage {
+  color: red;
+}
+*.federation {
+  color: #CC0000;
+}
+*.harvest {
+  color: lime;
+}
+*.hold {
+  color: #80a0C0;
+}
+*.missile {
+  color: red;
+}
+*.transport {
+  color: lime;
+}
+
+.flight .attack a, .flight .colony a, .flight .deploy a, .flight .destroy a, .flight .espionage a,
+.flight .federation a, .flight .harvest a, .flight .hold a, .flight .missile a, .flight .transport a {
+  color: #E6EBFB;
+}
+
+.combatreport {
+  color: red;
+}
+
+.espionagereport {
+  color: orange;
+}
+
+.timeremaining {
+  color: orange;
+}
+
+.mnl_outbox, .mnl_outbox * {
+  background-color: #000000;
+}
+.mnl_joueur, .mnl_joueur * {
+  background-color: #114444;
+}
+.mnl_exploit, .mnl_exploit * {
+  /*  background-color: #999999;*/
+}
+*.ownexpedition, .mnl_expedition {
+  color: lightblue;
+}
+.mnl_buildlist, .mnl_buildlist * {
+  color: #000066;
+}
+.mnl_alliance, .mnl_alliance * {
+  background-color: #446666;
+}
+.msg_admin, .msg_admin * {
+  color: #9900ff !important;
+  background-color: #ffffff;
+}
+.new_message, .new_message * {
+  color: #000000;
+  background-color: #ffffff;
+}
+
+
+.hint {
+  text-align: justify;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * Checkator jQuery Plugin
+ * A plugin for radio and checkbox elements
+ * version 1.1, Dec 20th, 2013
+ * by Ingi P. Jacobsen
+ */
+/* RESET */
+input[type=radio],
+input[type=checkbox] {
+  margin-bottom: 0;
+}
+/* SOURCE ELEMENT (when checkator is enabled on an element) */
+.checkator_source {
+  position: relative;
+  z-index: 2;
+  display: block;
+}
+/* SHARED SETTING */
+.checkator_holder { /* Holder for the new element */
+  display: inline-block;
+  position: relative;
+}
+.checkator_element { /* New element */
+  border: 0.2em solid #abadb3;
+  /*background-color: #fff;*/
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+.checkator_source:checked+.checkator_element:after { /* Checked element dot */
+  /*background-color: #7fa92c;*/
+  background-color: lime;
+  display: block;
+  content: ' ';
+  top: 20%;
+  right: 20%;
+  bottom: 20%;
+  left: 20%;
+  position: absolute;
+}
+/*
+.checkator_source:focus+.checkator_element { /!* Focused element *!/
+  border: 0.2em solid #cc0;
+}
+*/
+.checkator_source:hover+.checkator_element { /* Hovered element */
+  /* Bug: There is a bug in chrome preventing this from working correctly */
+  /*background-color: #def;*/
+  /*border: 0.2em solid #79b;*/
+  border: 0.2em solid #dfeafd;
+}
+/* RADIO SETTINGS */
+.checkator_element.radio {
+  border-radius: 50% !important;
+}
+.checkator_element.radio:after {
+  border-radius: 50% !important;
+}
+/* CHECKBOX SETTINGS */
+.checkator_element.checkbox { /* New element */
+  border: 0.2em solid #abadb3;
 }

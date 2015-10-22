@@ -28,7 +28,7 @@ class classLocale implements ArrayAccess {
 
     $this->container = array();
 
-    if(classSupernova::$cache->_MODE != CACHER_NO_CACHE) {
+    if(classSupernova::$cache->_MODE != CACHER_NO_CACHE && !classSupernova::$config->locale_cache_disable) {
       $this->cache = classSupernova::$cache;
       classSupernova::log_file('locale.__constructor: Cache is present');
 //$this->cache->unset_by_prefix($this->cache_prefix); // TODO - remove? 'cause debug!

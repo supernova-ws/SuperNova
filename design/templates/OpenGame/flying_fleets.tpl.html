@@ -78,15 +78,15 @@ var ships = Array();
     <tr height=20 class="own{$OV_FLEET_STYLE}">
       <th>{fleets.NUMBER}</th>
       <th>{fleets.MISSION_NAME}<br>
-        <div class="z"><!-- IF fleets.MESSAGE -->{L_ov_fleet_return}<!-- ELSE -->{L_ov_fleet_arrive}<!-- ENDIF --></div>
+        <div><!-- IF fleets.MESSAGE -->{L_ov_fleet_return}<!-- ELSE -->{L_ov_fleet_arrive}<!-- ENDIF --></div>
       </th>
       <th style="cursor: pointer;" onmouseover='fleet_dialog_show(this, {fleets.ID})' onmouseout='popup_hide()'>{fleets.AMOUNT}</th>
       <th>{fleets.END_URL} {fleets.END_TYPE_TEXT_SH}</th>
-      <th><!-- IF fleets.MESSAGE == 0 --><div class="z" id="fleet_timer_end{fleets.ID}"></div>{fleets.END_TIME_TEXT}<!-- ELSE -->-<!-- ENDIF --></th>
+      <th><!-- IF fleets.MESSAGE == 0 --><div id="fleet_timer_end{fleets.ID}"></div>{fleets.END_TIME_TEXT}<!-- ELSE -->-<!-- ENDIF --></th>
       <th>{fleets.START_URL} {fleets.START_TYPE_TEXT_SH}</th>
       <th>
         <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
-        <div class="z" id="fleet_timer_start{fleets.ID}"></div>{fleets.START_TIME_TEXT}
+        <div id="fleet_timer_start{fleets.ID}"></div>{fleets.START_TIME_TEXT}
         <!-- ELSE -->-<!-- ENDIF -->
       </th>
       <th>
