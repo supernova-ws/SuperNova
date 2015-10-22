@@ -152,3 +152,16 @@ textarea {
   opacity: 0.25;
   filter: alpha(opacity=25); /* For IE8 and earlier */
 }
+
+.percent33 {
+  width: 33%;
+  height: 33%;
+}
+.percent66 {
+  width: 66%;
+  height: 66%;
+}
+.percent100 {
+  width: 100%;
+  height: 100%;
+}
