@@ -246,18 +246,10 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
   if(strpos($font_size, '%') !== false) {
     // Размер шрифта в процентах
-//    $font_size < FONT_SIZE_PERCENT_MIN ? $font_size = FONT_SIZE_PERCENT_MIN : false;
-    // $font_size > FONT_SIZE_PERCENT_MAX ? $font_size = FONT_SIZE_PERCENT_MAX : false;
-//    $font_size .= '%';
     $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
   } elseif(strpos($font_size, 'px') !== false) {
     // Размер шрифта в пикселях
-//    $font_size = floatval($font_size);
-//    $font_size < FONT_SIZE_PIXELS_MIN ? $font_size = FONT_SIZE_PIXELS_MIN : false;
-//    $font_size > FONT_SIZE_PIXELS_MAX ? $font_size = FONT_SIZE_PIXELS_MAX : false;
-//    $font_size .= 'px';
     $font_size = min(max(floatval($font_size), FONT_SIZE_PIXELS_MIN), FONT_SIZE_PIXELS_MAX) . 'px';
-//    $font_size = ($font_size/16 * 100) . '%';
   } else {
     // Не мышонка, не лягушка...
     $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;

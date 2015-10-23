@@ -13,13 +13,7 @@ $time_diff   = $time_local  - $time_server
 $time_server = $time_local  - $time_diff
 */
 
-if($font_size = sys_get_param_float('font_size', FONT_SIZE_PERCENT_DEFAULT)) {
-//  empty($font_size_percent) ? $font_size_percent = FONT_SIZE_PERCENT_DEFAULT : false;
-//  floatval($font_size_percent) < FONT_SIZE_PERCENT_MIN ? $font_size_percent = FONT_SIZE_PERCENT_MIN : false;
-//  floatval($font_size_percent) > FONT_SIZE_PERCENT_MAX ? $font_size_percent = FONT_SIZE_PERCENT_MAX : false;
-//
-//  $font_size_percent .= '%';
-
+if($font_size = sys_get_param_str('font_size')) {
   if(strpos($font_size, '%') !== false) {
     // Размер шрифта в процентах
     $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
