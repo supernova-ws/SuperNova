@@ -23,7 +23,7 @@
     <th><a href="alliance.php?mode={mode}&sort1=4&sort2={s}">{L_ali_sys_joined}</a></th>
     <th><a href="alliance.php?mode={mode}&sort1=5&sort2={s}">{onlineMessage}</a></th>
     <!-- IF ADMIN_MODE -->
-    <th><img src="{dpath}pic/abort.gif" border=0 alt="{L_ali_adm_kick}" title="{L_ali_adm_kick}"></th>
+    <th><img src="{I_abort}" border=0 alt="{L_ali_adm_kick}" title="{L_ali_adm_kick}"></th>
     <!-- ENDIF -->
   </tr>
 
@@ -41,7 +41,7 @@
         <th>
           <!-- IF member.SHOW_KICK -->
             <a href="alliance.php?mode=admin&edit=members&kick={member.USER_ID}" alt="{L_ali_adm_kick}" title="{L_ali_adm_kick}"
-              onclick="return confirm('{L_ali_adm_kick_confirm}');"><img src="{dpath}pic/abort.gif" border=0 ></a>
+              onclick="return confirm('{L_ali_adm_kick_confirm}');"><img src="{I_abort}" border=0 ></a>
           <!-- ELSE -->
             &nbsp;
           <!-- ENDIF -->

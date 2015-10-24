@@ -2068,6 +2068,13 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   display: block;
 }
 
+div .ui-dialog-content table.legend_template  {
+  background-color: transparent;
+}
+
+div .ui-dialog-content table.planet_template  {
+  background-color: transparent;
+}
 .planet_template div {
   display: block;
   max-width: 11em;
@@ -2098,14 +2105,24 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   background-color: rgba(0,0,0,0.50);
 }
 
+div .ui-dialog-content table.debris_template  {
+  background-color: transparent;
+}
+
 .user_template div {
   display: block;
   max-width: 20em;
+}
+div .ui-dialog-content table.user_template {
+  background-color: transparent;
 }
 
 .ally_template div {
   display: block;
   max-width: 20em;
+}
+div .ui-dialog-content table.ally_template {
+  background-color: transparent;
 }
 
 /* Note/Bookmark page ===================================================================================================== */

@@ -19,7 +19,10 @@ INI-файл:
 Вызов в темплейте
    {I_<id>|парам1|парам2|...} - {I_abort|html}
    {I_<путь к картинке от корня скина>|парам1|парам2|...} - {I_img/e.jpg|html}
-   {I_[<значение в темлпейте>]} - поддерживаются как корневые значения, так и значения в блоках, например: {I_[UNIT_ID]} или {I_[unit.ID]}
+   {I_[<имя переменной в темплейте>]} - будет подставлено имя соответствующей переменной в момент выполнения. Поддерживаются:
+       - Корневые значения, например {I_[UNIT_ID]}
+       - Значения в блоках, например {I_[production.ID]}
+       - Корневые значения DEFINE, например {I_[$PLANET_GOVERNOR_ID]}
    Параметры:
       html - отрендерить обрамление HTML-тэгом IMG: <img src="" />
 */
@@ -174,13 +177,17 @@ class skin {
       preg_match_all('#(\[.+?\])#', $image_name, $matches);
       foreach($matches[0] as &$match) {
         $var_name = str_replace(array('[', ']'), '', $match);
-        if(strpos($var_name, '.') === false) {
-          // Корневая переменная темплейта
-          isset($template->_rootref[$var_name]) ? $image_name = str_replace($match, $template->_rootref[$var_name], $image_name) : false;
-        } else {
+        if(strpos($var_name, '.') !== false) {
           // Вложенная переменная темплейта
           list($block_name, $block_var) = explode('.', $var_name);
           isset($template->_block_value[$block_name][$block_var]) ? $image_name = str_replace($match, $template->_block_value[$block_name][$block_var], $image_name) : false;
+        } elseif(strpos($var_name, '$') !== false) {
+          // Корневой DEFINE
+          $define_name = substr($var_name, 1);
+          isset($template->_tpldata['DEFINE']['.'][$define_name]) ? $image_name = str_replace($match, $template->_tpldata['DEFINE']['.'][$define_name], $image_name) : false;
+        } else {
+          // Корневая переменная темплейта
+          isset($template->_rootref[$var_name]) ? $image_name = str_replace($match, $template->_rootref[$var_name], $image_name) : false;
         }
       }
     }

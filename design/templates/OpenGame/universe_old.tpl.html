@@ -30,7 +30,7 @@
   <!--<th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 style="height: 1.5em" /></th>-->
   <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
   <!-- IF ACT_INFO -->
-  <th><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></th>
+  <th><img src="{I_menu_empire_emperor}" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></th>
   <!-- ENDIF -->
   <!--&lt;!&ndash; IF ACT_FRIEND &ndash;&gt;-->
   <!--<th><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></th>-->
@@ -52,7 +52,7 @@
     </th>
     <th class="uni_show_planet" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}">
       <div>
-        <img src={dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg />
+        <img src="{I_s_[galaxyrow.PLANET_IMAGE]}" />
         <!-- IF galaxyrow.PLANET_FLEET_ID -->
           <img class="alpha25 uni_own_fleet" src=design/images/icon_fleet_own.png />
         <!-- ENDIF -->
@@ -98,7 +98,7 @@
     <th class="uni_show_planet" planet_type="{D_PT_MOON}">
       <!-- IF galaxyrow.MOON_DIAMETER -->
       <div>
-        <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg />
+        <img src="{I_s_[galaxyrow.MOON_IMAGE]}" />
         <!-- IF galaxyrow.MOON_FLEET_ID -->
         <img class="alpha25 uni_own_fleet" src=design/images/icon_fleet_own.png />
         <!-- ENDIF -->
@@ -122,7 +122,7 @@
     <td class="c_c uni_show_debris" style="background-color: {$DEBRIS_BKG};">
       <!-- IF galaxyrow.DEBRIS -->
       <div>
-        <img src="{dpath}planeten/small/s_debris.jpg" />
+        <img src="{I_s_debris}" />
         <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
           <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
         <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
@@ -229,7 +229,7 @@
     <!-- IF ACT_INFO -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
+      <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{I_menu_empire_emperor}" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->

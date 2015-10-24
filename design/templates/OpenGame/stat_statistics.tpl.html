@@ -53,7 +53,7 @@
     <!-- IF SUBJECT == 1 -->
       <th class ="c_c">{L_sys_player}</th>
       <!-- IF ! SOURCE -->
-      <th class ="c_c"><img src="{dpath}icons/menu_empire_emperor.png" border="0" alt="{L_stat_details}" title="{L_stat_details}" /></th>
+      <th class ="c_c"><img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" title="{L_stat_details}" /></th>
       <th class ="c_c">{L_sys_alliance}</th>
       <!-- ENDIF -->
     <!-- ELSE -->
@@ -89,7 +89,7 @@
         <!-- IF ! SOURCE -->
         <td class ="c_c">
           <a href="index.php?page=imperator&int_user_id={stat.ID}<!-- IF SOURCE -->&source={SOURCE}<!-- ENDIF -->">
-            <img src="{dpath}icons/menu_empire_emperor.png" border="0" alt="{L_stat_details}" title="{L_stat_details}"  />
+            <img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" title="{L_stat_details}"  />
           </a>
         </td>
         <td class="c_l" nowrap><!-- IF stat.ALLY_ID --><a href="alliance.php?mode=ainfo&a={stat.ALLY_ID}"><span class="<!-- IF USER_ALLY == stat.ALLY_ID -->same_alliance<!-- ENDIF -->">{stat.ALLY_NAME}</span></a><!-- ELSE -->&nbsp;<!-- ENDIF --></td>

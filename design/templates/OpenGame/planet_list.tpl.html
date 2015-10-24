@@ -39,9 +39,12 @@
 
       <div class="planet_list_wrap">
         <div class="left_top images" planet_id="{planet.ID}">
-          <!--style="height: {$PLANET_IMG_SIZE}px; width: {$PLANET_IMG_SIZE}px;"-->
-
-          <img src="{dpath}planeten/<!-- IF $PLANET_IMG_SIZE == 75 -->small/s_<!-- ENDIF -->{planet.IMAGE}.jpg" class="element_fill_wrap" go="" />
+          <!-- IF $PLANET_IMG_SIZE == 75 -->
+            <!-- DEFINE $PLANET_IMG_SIZE_PREFIX = 's_' -->
+          <!-- ELSE -->
+            <!-- DEFINE $PLANET_IMG_SIZE_PREFIX = '' -->
+          <!-- ENDIF -->
+          <img src="{I_[$PLANET_IMG_SIZE_PREFIX][planet.IMAGE]}" class="element_fill_wrap" go="" />
 
 
           <img src="{D_SN_ROOT_VIRTUAL}design/images/build_building.png" class="<!-- IF .planet.building_que -->a75<!-- ELSE -->a50 o50<!-- ENDIF --> icon_25per_left_1" title="{planet.STRUCTURE}" go="build"/>
@@ -71,7 +74,7 @@
 
           <!-- IF planet.MOON_ID -->
             <div class="right_top percent{$MOON_IMG_SIZE}" planet_id="{planet.MOON_ID}">
-              <img src="{dpath}planeten/small/s_{planet.MOON_IMG}.jpg" class="icon_fill" go="" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]" />
+              <img src="{I_s_[planet.MOON_IMG]}" class="icon_fill" go="" title="{planet.MOON_NAME} [{planet.GALAXY}:{planet.SYSTEM}:{planet.PLANET}]" />
 
               <!-- IF $MOON_IMG_SIZE == '66' -->
               <span title="{L_flt_gather_all}" class="a75 icon_25per_right_4" go="fleet" mode="5">

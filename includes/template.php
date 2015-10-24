@@ -140,7 +140,11 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
 
       if(!empty($menu_item['ICON']))
       {
-        $menu_item['ICON'] = !is_string($menu_item['ICON']) ? $menu_item_id . '.png' : $menu_item['ICON'];
+        if(is_string($menu_item['ICON'])) {
+          $menu_item['ICON_PATH'] = $menu_item['ICON'];
+        } else {
+          $menu_item['ICON'] = $menu_item_id;
+        }
       }
 
       $template->assign_block_vars('menu', $menu_item);
@@ -510,7 +514,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
     'TOPNAV_CURRENT_PLANET' => $user['current_planet'],
     'TOPNAV_CURRENT_PLANET_NAME' => uni_render_planet_full($planetrow), // htmlspecialchars($planetrow['name']),
-    'TOPNAV_CURRENT_PLANET_IMAGE' => ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'planeten/small/s_' . $planetrow['image'] . '.jpg',
+    'TOPNAV_CURRENT_PLANET_IMAGE' => $planetrow['image'],
     'TOPNAV_COLONIES_CURRENT' => get_player_current_colonies($user),
     'TOPNAV_COLONIES_MAX' => get_player_max_colonies($user),
     'TOPNAV_MODE' => $GET_mode,

@@ -149,7 +149,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 
 <span style="display: none">
   <span id="legend_template">
-    <table>
+    <table class="legend_template border_image_small">
       <tr><th class="c_l" colspan=2>{L_sys_planet}</th></tr>
       <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>
       <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>
@@ -173,7 +173,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       <tr><th class="c_l" colspan=2>{L_Actions}</th></tr>
       <tr><td>{L_gl_espionner}</td><td><img src="design/images/icon_espionage.png" border=0 style="height: 1.5em" /> </td></tr>
       <tr><td>{L_gl_mipattack}</td><td><img src="design/images/icon_missile.png" border=0 style="height: 1.5em" /></td></tr>
-      <tr><td>{L_stat_details}</td><td><img src="{dpath}icons/menu_empire_emperor.png" border=0 style="height: 1.5em" /></td></tr>
+      <tr><td>{L_stat_details}</td><td><img src="{I_menu_empire_emperor}" border=0 style="height: 1.5em" /></td></tr>
       <tr><td>{L_gl_sendmess}</td><td><img src="design/images/icon_mail.gif" border=0 style="height: 1.5em" /></td></tr>
       <tr><td>{L_gl_buddyreq}</td><td><img src="{dpath}img/b.gif" border=0 style="height: 1.5em" /></td></tr>
       <tr><td>{L_gl_stats}</td><td><img src="design/images/icon_statistics.png" border=0  style="height: 1.5em" /></td></tr>
@@ -181,7 +181,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="planet_template">
-    <table class="planet_template">
+    <table class="planet_template border_image_small">
       <tr>
         <th class="c_c" colspan="2">
           [{galaxy}:{system}:[PLANET_POS]]&nbsp;[PLANET_TYPE_TEXT_SHORT]&nbsp;[PLANET_NAME]
@@ -191,7 +191,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
       <tr>
         <td class="c_c">
           <div class="uni_popup_planet">
-            <img src="{dpath}planeten/small/s_[PLANET_IMAGE].jpg" />
+            <img src="{I_PLANET_IMAGE_SMALL}" />
             <div>&empty; [PLANET_DIAMETER]</div>
           </div>
         </td>
@@ -213,9 +213,9 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="debris_template">
-    <table width=100% class="debris_template">
+    <table width=100% class="debris_template border_image_small">
       <tr><th class="c_c" colspan="4">[{galaxy}:{system}:[CURRENT_PLANET]] {L_sys_planet_type[D_PT_DEBRIS]}</th></tr>
-      <tr><td class="c_c" rowspan="7"><img src="{dpath}planeten/debris.jpg" style="width: 7em; font-size: 1em;" /></td></tr>
+      <tr><td class="c_c" rowspan="7"><img src="{I_debris}" style="width: 7em; font-size: 1em;" /></td></tr>
 
       <tr>
         <th class="c_l">{L_gl_ressource}</th>
@@ -260,7 +260,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="user_template">
-    <table class="user_template">
+    <table class="user_template border_image_small">
       <tr>
         <th class="c_c" colspan="[USER_COLSPAN]">
           [USER_NAME]
@@ -295,7 +295,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="ally_template">
-    <table class="ally_template">
+    <table class="ally_template border_image_small">
       <tr>
         <th class="c_c" colspan="[ALLY_COLSPAN]">
           [ALLY_NAME]

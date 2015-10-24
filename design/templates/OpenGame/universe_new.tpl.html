@@ -48,7 +48,7 @@
   <!-- IF galaxyrow.PLANET_ID -->
     <td class="c_c" nowrap>
       <div class="uni_show_planet uni_show_planet_new" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}" style="position: relative;">
-        <img src="{dpath}planeten/small/s_{galaxyrow.PLANET_IMAGE}.jpg" />
+        <img src="{I_s_[galaxyrow.PLANET_IMAGE]}" />
         <!-- IF galaxyrow.PLANET_FLEET_ID -->
           <img class="alpha50 uni_own_fleet" src="design/images/icon_fleet_own.png" />
         <!-- ENDIF -->
@@ -57,7 +57,7 @@
 
       <!-- IF galaxyrow.MOON_DIAMETER -->
       <div class="uni_show_planet uni_show_planet_new" planet_type="{D_PT_MOON}">
-        <img src={dpath}planeten/small/s_{galaxyrow.MOON_IMAGE}.jpg />
+        <img src="{I_s_[galaxyrow.MOON_IMAGE]}" />
         <!-- IF galaxyrow.MOON_FLEET_ID -->
           <img class="alpha50 uni_own_fleet" src=design/images/icon_fleet_own.png />
         <!-- ENDIF -->
@@ -69,7 +69,7 @@
       <!-- IF galaxyrow.DEBRIS -->
       <!--style="background-color: {$DEBRIS_BKG};"      -->
       <div class="uni_show_debris uni_show_debris_new" >
-        <img src="{dpath}planeten/small/s_debris.jpg" />
+        <img src="{I_s_debris}" />
         <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
         <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->
         <!-- ELSEIF galaxyrow.DEBRIS_RESERVED_PERCENT == 100 -->
@@ -194,7 +194,7 @@
         <!--<a class="button_pseudo" href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" style="height: 1.5em" /></a>-->
       <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
       <!-- IF ACT_INFO -->
-        <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{dpath}icons/menu_empire_emperor.png" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
+        <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{I_menu_empire_emperor}" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
       <!--&lt;!&ndash; IF ACT_FRIEND &ndash;&gt;-->
         <!--<a class="button_pseudo" href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></a>-->

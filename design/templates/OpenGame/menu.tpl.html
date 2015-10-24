@@ -63,12 +63,6 @@
     <!-- IF menu.STYLE --><!-- DEFINE $MENU_STYLE = ' style="{menu.STYLE}"' --><!-- ELSE --><!-- DEFINE $MENU_STYLE = '' --><!-- ENDIF -->
     <!-- IF menu.TITLE --><!-- DEFINE $MENU_TITLE = 'title="{menu.TITLE}"' --><!-- ELSEIF menu.ALT --><!-- DEFINE $MENU_TITLE = 'title="{menu.ALT}"' --><!-- ELSE --><!-- DEFINE $MENU_TITLE = '' --><!-- ENDIF -->
 
-    <!-- IF menu.ICON -->
-      <!-- DEFINE $MENU_ICON = '<img src="{D_DEFAULT_SKINPATH}icons/{menu.ICON}" class="menu_icon" />' -->
-    <!-- ELSE -->
-      <!-- DEFINE $MENU_ICON = '' -->
-    <!-- ENDIF -->
-
     <!-- IF menu.ALT -->
       <!-- DEFINE $ALT_TITLE = 'alt="{menu.ALT}"' -->
     <!-- ELSEIF menu.TITLE -->
@@ -114,7 +108,13 @@
         <!-- ELSE -->
           <!-- DEFINE $LINK_CLOSE = '' -->
         <!-- ENDIF -->
-        {$MENU_ICON}
+
+        <!-- IF menu.ICON_PATH -->
+          <img src="{menu.ICON_PATH}" class="menu_icon" />
+        <!-- ELSEIF menu.ICON  -->
+          <img src="{I_[menu.ICON]}" class="menu_icon" />
+        <!-- ENDIF -->
+
         <!-- IF menu.TYPE == 'image' -->
           <img style="display: inline-block" border="0" src="{menu.ITEM}" {$ALT_TITLE} />
         <!-- ELSE -->
