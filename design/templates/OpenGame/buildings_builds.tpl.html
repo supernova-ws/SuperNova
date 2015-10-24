@@ -247,7 +247,7 @@ planet = {
               <div id="unit_description_wrapper_cell">
                 <div id="unit_info_image_outer">
                   <div id="unit_info_image_wrapper">
-                    <img id="unit_info_image" />
+                    <img id="unit_info_image" src_base="{I_UNIT_ID}" />
                     <div id="unit_info_name" class="a75"></div>
                     <div id="unit_info_level" class="a75"></div>
                   </div>
@@ -353,7 +353,7 @@ planet = {
         <td class="c_c">
         <!-- BEGIN production -->
             <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}" style="display: inline-block">
-              <img src="{dpath}gebaeude/{production.ID}.gif" class="unit_preview_image">
+              <img src="{I_[production.ID]}" class="unit_preview_image">
 
               <!-- IF production.TIME_SECONDS -->
                 <span class="a75 time">
@@ -432,6 +432,5 @@ planet = {
   <!-- ENDIF -->
 </tr>
 </table>
-<!--<div id="style_probe"></div>-->
 
 <!-- INCLUDE page_hint -->

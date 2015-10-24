@@ -314,6 +314,12 @@ class template_compile
 
     // This will handle the remaining root-level varrefs
 
+    // transform vars prefixed by I_ into skin-specific images with context
+    if (strpos($text_blocks, '{I_') !== false && is_callable(array('skin', 'image_url')))
+    {
+      $text_blocks = preg_replace('#\{I_([a-zA-Z0-9\-_\|\/\.\{\}\[\]]+)\}#', "<?php echo skin::image_url('\\1', \$this); ?>", $text_blocks);
+    }
+
     // transform vars prefixed by C_ into global config value
     if (strpos($text_blocks, '{C_') !== false)
     {
@@ -446,7 +452,9 @@ class template_compile
     */
 
     $tag_template_php .= 'for ($_' . $tag_args . '_i = ' . $loop_start . '; $_' . $tag_args . '_i < ' . $loop_end . '; ++$_' . $tag_args . '_i){';
+//    $tag_template_php .= '$this->_block_counter["'. $tag_args . '"] = $_' . $tag_args . '_i;';
     $tag_template_php .= '$_'. $tag_args . '_val = &' . $varref . '[$_'. $tag_args. '_i];';
+    $tag_template_php .= '$this->_block_value["'. $tag_args . '"] = &' . $varref . '[$_'. $tag_args. '_i];';
 
     return $tag_template_php;
   }
@@ -882,5 +890,3 @@ class template_compile
   // Gorlum's minifier EOF
 
 }
-
-?>

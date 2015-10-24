@@ -110,6 +110,7 @@ require_once('classes/cache.php');
 require_once('classes/locale.php');
 require_once('classes/template.php');
 require_once('classes/functions_template.php');
+require_once('classes/skin.php');
 require_once('classes/module.php');
 
 require_once('classes/playerTimeDiff.php');

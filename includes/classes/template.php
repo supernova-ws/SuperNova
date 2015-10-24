@@ -32,6 +32,8 @@ class template
   */
   var $_tpldata = array('.' => array(0 => array()));
   var $_rootref;
+//  var $_block_counter = array();
+  var $_block_value = array();
 
   // Root dir and hash of filenames for each template handle.
   var $root = '';
