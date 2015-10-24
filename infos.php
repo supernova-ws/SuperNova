@@ -128,15 +128,6 @@ if($unit_data['bonus'])
   $template_result['UNIT_BONUS'] = $unit_bonus;
 }
 
-//$unit_image_path = "{$dpath}gebaeude/{$unit_id}.";
-//foreach($sn_image_allowed_extensions as $image_ext)
-//{
-//  if(file_exists($unit_image_path . $image_ext))
-//  {
-//    break;
-//  }
-//}
-
 $template_result += array(
   'PAGE_HEADER' => $lang['wiki_title'],
 
@@ -145,7 +136,6 @@ $template_result += array(
   'UNIT_TYPE' => $unit_type,
   'UNIT_TYPE_NAME' => $lang['tech'][$unit_type],
   'UNIT_DESCRIPTION' => $lang['info'][$unit_id]['description'],
-//  'UNIT_IMAGE_EXT' => $image_ext,
 );
 
 $template_result['.']['require'] = unit_requirements_render($user, $planetrow, $unit_id);

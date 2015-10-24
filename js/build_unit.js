@@ -169,8 +169,6 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   var result = '';
   var unit_destroy_link = '';
 
-  //document.getElementById('unit_info_image').src = dpath + 'gebaeude/' + unit['id'] +'.gif';
-  //$('#unit_info_image').attr('src_base').replace('[UNIT_ID]', unit['id']);
   var unit_info_image = $('#unit_info_image');
   unit_info_image.attr('src', unit_info_image.attr('src_base').replace('[UNIT_ID]', unit['id']));
   document.getElementById('unit_info_description').innerHTML = unit['description'];

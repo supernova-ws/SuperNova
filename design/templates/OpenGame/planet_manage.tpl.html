@@ -81,12 +81,12 @@
         <!-- INCLUDE planet_governor -->
       </th>
       <th class="c" colspan=3>
-        <table>
+        <table class="border_image_small">
           <tr>
             <!-- BEGIN governors -->
               <th valign="top">
                 {governors.NAME}<br />
-                <a href="infos.php?gid={governors.ID}"><img src="{dpath}gebaeude/{governors.ID}.jpg" align="top" style="font-size: 1em; width: 11em; height: auto;" /></a><br />
+                <a href="infos.php?gid={governors.ID}"><img src="{I_[governors.ID]}" align="top" style="font-size: 1em; width: 11em; height: auto;" /></a><br />
                 <!-- IF governors.MAX && governors.LEVEL >= governors.MAX -->
                   <span class="negative">{L_sys_maximum_level}</span>
                 <!-- ELSEIF governors.COST <= DARK_MATTER -->
