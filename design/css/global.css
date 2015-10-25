@@ -104,6 +104,32 @@ textarea {
   background-position: -64px 0;
   display: inline-block; vertical-align: middle;
 }
+
+.icon_plus:after, .icon_minus:after, .icon_info:after, .icon_gather:after {
+  content: " ";
+
+  display: inline-block;
+
+  position: absolute;
+  top:0;
+  left:0;
+
+  width: 100%;
+  height:100%;
+
+  background-size: contain;
+  background-image: url("../images/icon_plus.png");
+}
+.icon_minus:after {
+  background-image: url("../images/icon_minus.png");
+}
+.icon_info:after {
+  background-image: url("../images/icon_info.png");
+}
+.icon_gather:after {
+  background-image: url("../images/icon_gather.png");
+}
+
 .i_icon_mail, .i_icon_mail_userlist {
   background-image: url(../images/icon_mail.gif);
   background-size: contain;

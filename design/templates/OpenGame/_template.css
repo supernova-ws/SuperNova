@@ -1308,16 +1308,19 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Unit preview box on build pages */
 .unit_preview {
-  cursor: pointer;
-
-  border: 0.3em solid;
-  border-radius: 0.3em;
+  display: inline-block;
 
   position: relative;
   height: 11em;
   width: 11em;
 
-  font-size: 100%;
+  font-size: inherit;
+
+  cursor: pointer;
+
+  border: 0.3em solid;
+  border-radius: 0.3em;
+
 
   border-color: #344566;
 }
@@ -1336,7 +1339,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   position: absolute;
   top: 0;
 
-  height: 1.23em;
+  height: 1.45rem;
 
   font-size: 1.0em;
 
@@ -1354,18 +1357,19 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 .unit_preview .name {
   position: absolute;
   left: 0;
-  top: 1.23rem;
+  top: 1.45rem;
 
   width: 100%;
-  height: 2.46rem;
+  height: 2.9rem;
 
   font-size: 1.0em;
   text-align: center;
+  vertical-align: middle;
 }
 .unit_preview .resource_container {
   position: absolute;
   left: 0;
-  top: 3.67rem;
+  top: 4.34rem;
   width: 100%;
   text-align: left;
 }
@@ -1381,7 +1385,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 .unit_preview .time {
   position: absolute;
-  right: 1.63em;
+  right: 15%;
   bottom: 0;
 
   height: 1.2em;
@@ -1391,6 +1395,10 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
   text-align: right;
   white-space: nowrap;
+}
+.unit_preview .icon_plus, .unit_preview .icon_minus, .unit_preview .icon_info, .unit_preview .icon_gather {
+  width: 1.46em;
+  height: 1.46em;
 }
 
 #unit_create_button, #unit_create_button_auto {
@@ -2136,7 +2144,8 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 6em;
   height: 6em;
   max-width: 6em;
-  margin: 0.25em; /* Overwrites auto margin */
+  margin: 0; /* Overwrites auto margin */
+  border: 0.5em solid transparent;
 }
 .uni_show_planet_new .uni_own_fleet { /* Overwrites size of own fleet icon */
   width: 50%;

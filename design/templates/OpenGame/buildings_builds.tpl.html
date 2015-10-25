@@ -344,7 +344,7 @@ planet = {
       <tr>
         <td class="c_c">
         <!-- BEGIN production -->
-            <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}" style="display: inline-block">
+            <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}">
               <img src="{I_[production.ID]}" class="unit_preview_image">
 
               <!-- IF production.TIME_SECONDS -->
@@ -359,9 +359,7 @@ planet = {
 
               <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY && ! STACKABLE && ! TEMPORARY -->
                 <!-- IF QUE_HAS_FIELDS && production.BUILD_CAN && production.BUILD_RESULT == 0 -->
-                  <div class="right_top a75 unit_create" style="width: 1.23em; height: 1.23em;">
-                    <div class="icons icon-plus"></div>
-                  </div>
+                  <div class="right_top a75 unit_create icon_plus"></div>
                 <!-- ENDIF -->
               <!-- ENDIF -->
 
@@ -392,25 +390,22 @@ planet = {
 
               <!-- IF QUE_HAS_PLACE && ! production.UNIT_BUSY && ! STACKABLE && ! TEMPORARY -->
                 <!-- IF production.LEVEL && production.DESTROY_CAN && production.DESTROY_RESULT == 0 -->
-                  <span class="left_top a75 unit_destroy" style="width: 1.23em; height: 1.23em;" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}">
-                    <div class="icons icon-minus"></div>
-                  </span>
+                  <span class="left_top a75 unit_destroy icon_minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></span>
                 <!-- ENDIF -->
               <!-- ENDIF -->
 
               <!-- IF ! ALLY_ID && ! production.DARK_MATTER_ONLY -->
-              <span class="a75 right_bottom gather_resources" title="{L_flt_gather_all}" style="width: 1.23em; height: 1.23em;"
+              <span class="a75 right_bottom icon_gather" title="{L_flt_gather_all}"
               <!-- IF production.METAL_REST_NUM < 0 -->metal="{production.METAL_REST_NUM}"<!-- ENDIF -->
                 <!-- IF production.CRYSTAL_REST_NUM < 0 -->crystal="{production.CRYSTAL_REST_NUM}"<!-- ENDIF -->
                 <!-- IF production.DEUTERIUM_REST_NUM < 0 -->deuterium="{production.DEUTERIUM_REST_NUM}"<!-- ENDIF -->
-              >
-                <div class="icons icon-gather"></div>
-              </span>
+              ></span>
               <!-- ENDIF -->
 
-              <span class="a75 left_bottom" go="info" style="width: 1.23em; height: 1.23em;">
-                <div class="icons icon-info_empire"></div>
-              </span>
+              <span class="a75 left_bottom icon_info" go="info"></span>
+              <!--<span class="unit_preview_info a75 left_bottom" go="info">-->
+                <!--<div class="icons icon-info_empire"></div>-->
+              <!--</span>-->
             </div>
         <!-- END production -->
         </td>

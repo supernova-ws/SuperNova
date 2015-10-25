@@ -32,15 +32,16 @@
   <!-- DEFINE $DIFFERENT_USER = 0 -->
 <!-- ENDIF -->
 
-<!--TODO - styling by class -->
-<!-- IF galaxyrow.DEBRIS >= 10000000 -->
-<!-- DEFINE $DEBRIS_BKG = 'rgb(100, 0, 0)' -->
+<!-- IF     galaxyrow.DEBRIS >= 1000000000000 -->
+  <!-- DEFINE $DEBRIS_BG_CLASS = 'error_bg' -->
+<!-- ELSEIF galaxyrow.DEBRIS >= 1000000000 -->
+  <!-- DEFINE $DEBRIS_BG_CLASS = 'warning_bg' -->
 <!-- ELSEIF galaxyrow.DEBRIS >= 1000000 -->
-<!-- DEFINE $DEBRIS_BKG = 'rgb(100, 100, 0)' -->
-<!-- ELSEIF galaxyrow.DEBRIS >= 100000 -->
-<!-- DEFINE $DEBRIS_BKG = 'rgb(0, 100, 0)' -->
+  <!-- DEFINE $DEBRIS_BG_CLASS = 'notice_bg' -->
+<!-- ELSEIF galaxyrow.DEBRIS >= 1000 -->
+  <!-- DEFINE $DEBRIS_BG_CLASS = 'ok_bg' -->
 <!-- ELSE -->
-<!-- DEFINE $DEBRIS_BKG = '' -->
+  <!-- DEFINE $DEBRIS_BG_CLASS = '' -->
 <!-- ENDIF -->
 
 
@@ -67,8 +68,7 @@
       <!-- ENDIF -->
 
       <!-- IF galaxyrow.DEBRIS -->
-      <!--style="background-color: {$DEBRIS_BKG};"      -->
-      <div class="uni_show_debris uni_show_debris_new" >
+      <div class="uni_show_debris uni_show_debris_new {$DEBRIS_BG_CLASS}">
         <img src="{I_s_debris}" />
         <!-- IF ! galaxyrow.DEBRIS_RESERVED_PERCENT -->
         <!-- DEFINE $DEBRIS_FONT_CLASS = 'error' -->

@@ -108,18 +108,19 @@
       <!-- ENDIF -->
     </th>
 
-    <!--TODO - styling by class -->
-    <!-- IF galaxyrow.DEBRIS >= 10000000 -->
-      <!-- DEFINE $DEBRIS_BKG = 'rgb(100, 0, 0)' -->
+    <!-- IF     galaxyrow.DEBRIS >= 1000000000000 -->
+      <!-- DEFINE $DEBRIS_BG_CLASS = 'error_bg' -->
+    <!-- ELSEIF galaxyrow.DEBRIS >= 1000000000 -->
+      <!-- DEFINE $DEBRIS_BG_CLASS = 'warning_bg' -->
     <!-- ELSEIF galaxyrow.DEBRIS >= 1000000 -->
-      <!-- DEFINE $DEBRIS_BKG = 'rgb(100, 100, 0)' -->
-    <!-- ELSEIF galaxyrow.DEBRIS >= 100000 -->
-      <!-- DEFINE $DEBRIS_BKG = 'rgb(0, 100, 0)' -->
+      <!-- DEFINE $DEBRIS_BG_CLASS = 'notice_bg' -->
+    <!-- ELSEIF galaxyrow.DEBRIS >= 1000 -->
+      <!-- DEFINE $DEBRIS_BG_CLASS = 'ok_bg' -->
     <!-- ELSE -->
-      <!-- DEFINE $DEBRIS_BKG = '' -->
+      <!-- DEFINE $DEBRIS_BG_CLASS = '' -->
     <!-- ENDIF -->
 
-    <td class="c_c uni_show_debris" style="background-color: {$DEBRIS_BKG};">
+    <td class="c_c uni_show_debris {$DEBRIS_BG_CLASS}">
       <!-- IF galaxyrow.DEBRIS -->
       <div>
         <img src="{I_s_debris}" />

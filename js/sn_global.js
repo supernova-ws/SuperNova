@@ -332,8 +332,8 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     $(this).removeClass('button_pseudo_pressed');
   });
 
-// Сбор ресурсов
-  jQuery(document).on('click', ".gather_resources", function () {
+  // Сбор ресурсов
+  jQuery(document).on('click', ".unit_preview .icon_gather", function () {
     that = $(this);
     document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
     + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
