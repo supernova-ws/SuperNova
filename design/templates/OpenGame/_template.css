@@ -2243,6 +2243,8 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 #dialog-sector-buy {
   text-align: center;
+  display: none;
+  padding: 1em;
 }
 
 

@@ -46,6 +46,7 @@
       </th>
     </tr>
     <!-- ENDIF -->
+</form>
     <tr>
       <th>{L_buildings_on_planet}</th>
       <td colspan="2" class="c_c" style="position: relative; padding: 0px; height: 100%;">
@@ -61,17 +62,11 @@
           <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
           &nbsp;
         </div>
-        <!-- IF PLANET_TYPE == 1 -->
-        <!-- IF SECTOR_CAN_BUY -->
-                    <a href="overview.php?mode=manage&sector_buy=1"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></a>
-        <!--<button onclick="document.location.href = 'overview.php?sector_buy=1&mode=manage';"><span class="positive">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span></button>-->
-        <!-- ELSE -->
-        <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
-        <!-- ENDIF -->
-        <!-- ENDIF -->
+        <!-- INCLUDE planet_sector_buy -->
       </td>
     </tr>
 
+    <form action="overview.php?mode=manage" method="POST">
     <tr>
       <th style="white-space: nowrap;" class="c_l" colspan=4>{L_sys_governor}</th>
     </tr>

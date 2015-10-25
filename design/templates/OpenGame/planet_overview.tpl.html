@@ -43,7 +43,8 @@
             var element = $(this).parent();
             element.find('input[name=cp]').val($('#navbar_planet_select').find('option:selected').val());
             element.find(':button:not(.ui-dialog-titlebar-close)').button('disable');
-            element.find('form').submit();
+            //element.find('form').submit();
+            jQuery('#dialog-rename-planet-form').submit();
 //            $(this).dialog("close");
           }
         },

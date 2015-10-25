@@ -50,23 +50,18 @@
   });
 
 </script>
-<style>
-</style>
 
-<div id="dialog-sector-buy" title="{L_sys_purchase_confirm}" style="display: none;">
-  <form action="" method="POST" id="dialog-sector-buy-form" style="margin: 10px;">
+<div id="dialog-sector-buy" title="{L_sys_purchase_confirm}">
+  <form action="" method="POST" id="dialog-sector-buy-form">
     <div>{L_sys_buy_doing} 1 {L_sys_planet_sector} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh} {L_sys_planet_on}</div>
     <div id="dialog-sector-buy-planet-name"></div>
-    <input type="hidden" name="mode" value="{D_QUE_STRUCTURES}" />
+    <!--<input type="hidden" name="mode" value="{D_QUE_STRUCTURES}" />-->
     <input type="hidden" name="sector_buy" value="1" />
     <input type="hidden" name="cp" />
   </form>
 </div>
 
-<!--<a class="positive link" href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</a>-->
-<span class="positive button_pseudo planet_sector_buy" href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
-<!--<button>{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</button>-->
-<!--<input type="button" value="{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}" />-->
+<span class="positive button_pseudo planet_sector_buy">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
 <!-- ELSE -->
 <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}
 <!-- ENDIF -->
