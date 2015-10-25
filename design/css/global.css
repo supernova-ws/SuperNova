@@ -31,6 +31,11 @@ textarea {
   float: right;
 }
 
+.c_l { text-align: left; }
+.c_r { text-align: right; }
+.c_c { text-align: center; }
+.c_j { text-align: justify; }
+
 .hide { /* Hide */
   display: none;
 }

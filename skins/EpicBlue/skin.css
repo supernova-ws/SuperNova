@@ -209,7 +209,7 @@ body:not(.no_border_image) div.market_services
   border-image:         url("images/border.png") 24 11 25 25 round round;
 }
 
-body:not(.no_border_image) .border_image_small
+body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-dialog
 {
   border: solid transparent;
   border-radius: 0.5em;
@@ -246,7 +246,7 @@ div.market_services {
 }
 
 .market_services div:first-child {
-  background-color: #222D42; /* #344566 */
+  background-color: #344566; /* #344566 */
   padding: 0.5em;
   margin-bottom: 0;
 }

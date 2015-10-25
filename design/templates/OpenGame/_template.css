@@ -27,69 +27,34 @@ html {
 }
 
 body {
+  font-family: Tahoma, sans-serif;
   font-size: 1rem;
+  font-weight: bold;
   line-height: 1.1;
-  color                : #E6EBFB;
+
+  color: #E6EBFB;
+
   background-attachment: fixed;
-  background-repeat    : no-repeat;
-  background-position  : top;
+  background-repeat: no-repeat;
+  background-position: top;
   background-size: cover;
 }
 
-body, form, table, input, select {
-  font-family : Tahoma, sans-serif;
-}
+/*form, table, input, select {*/
+  /*font-family : Tahoma, sans-serif;*/
+/*}*/
 
-h1 {
-  font-size            : 200%;
-  border-bottom        : none; /* 0 #344566 solid */
-
-  margin-top: 1em;
-}
-
-form, table, tr, td, input, select {
-  font-size : 1em;
-}
+/*form, table, tr, td, input, select {*/
+  /*font-size : 1em;*/
+/*}*/
 
 img {
   border: 0;
 }
 
-textarea {
-  width: 92%;
-  -o-border-radius: 0.4em;
-  -moz-border-radius: 0.4em;
-  -webkit-border-radius: 0.4em;
-  -khtml-border-radius: 0.4em;
-  border-radius: 0.4em;
-}
-
-input.button {
-  padding-left: 0.3em;
-  padding-right: 0.3em;
-  padding-top: 0.1em;
-  padding-bottom: 0.1em;
-}
-
-input, textarea, button {
-  font-weight: bold !important;
-}
-
-body form table th table input {
-  width: 5.5em;
-}
-
-input, select, textarea {
-  border               : 0.1em #415680 solid;
-  background-color     : #344566;
-  padding-left         : 0.3em;
-  padding-right        : 0.3em;
-  font-weight          : bold;
-}
-
 a {
-  text-decoration      : none;
-  font-weight          : bold;
+  text-decoration: none;
+  font-weight: bold;
   color: inherit;
 }
 
@@ -102,21 +67,73 @@ li {
   padding-top: 0.3em;
 }
 
+h1 {
+  font-size            : 200%;
+  border-bottom        : none; /* 0 #344566 solid */
+
+  margin-top: 1em;
+}
+
+input, select, textarea {
+  font-weight: inherit;
+  font-size: inherit;
+
+  padding-left: 0.3em;
+  padding-right: 0.3em;
+
+  border: 0.1em solid;
+  -o-border-radius: 0.4em;
+  -moz-border-radius: 0.4em;
+  -webkit-border-radius: 0.4em;
+  -khtml-border-radius: 0.4em;
+  border-radius: 0.4em;
+  border-color: #415680;
+  background-color: #344566;
+}
+
+textarea {
+  width: 92%;
+  padding: 0;
+}
+textarea.ui-button {
+  /*font-weight: bold;*/
+
+  padding: 0.4em 1em;
+
+  border: 0.1em solid;
+  border-color: #415680;
+  background-color: #344566;
+}
+
+input.button {
+  padding: 0.1em 0.3em;
+}
+
+/*body form table th table input {*/
+  /*width: 5.5em;*/
+/*}*/
+
+
 /* Table ======================================================================================================== */
 table {
+  font-weight: inherit;
+  font-size: inherit;
+
   margin-left: auto;
   margin-right: auto;
 }
 
 th, td {
-  border               : 0.1em #415680 solid;
-  background-color     : #344566;
-  padding-left         : 0.3em;
-  padding-right        : 0.3em;
-  font-weight          : bold;
+  /*font-weight          : bold;*/
+  padding: 0.3em;
+
+  border: 0.1em solid;
+  border-color: #415680;
+  background-color: #344566;
 }
 
-.table th, .table tr, .table td {
+/*
+.table tr, .table th, .table td {
   vertical-align: top;
   text-align: left;
 }
@@ -141,12 +158,12 @@ th.c_j, td.c_j {
   text-align: right;
 }
 .cell_center, .c_c {
-  text-align: center;
+text-align: center;
 }
-
 .cell_justify, .c_j {
   text-align: justify;
 }
+*/
 
 .noborder, .noborder tr, .noborder th {
   border: 0;
@@ -158,108 +175,128 @@ th.c_j, td.c_j {
   margin: 0;
   border: 0;
 }
-
-td.error_message {
-  background-color     : #415680;
-}
-
+/*
 td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
-  font-weight          : bold;
-  background-repeat:  repeat-x;
+  font-weight: bold;
+  background-repeat: repeat-x;
 }
-
+*/
 td.l {
   vertical-align       : top;
   padding              : 0.3em;
-}
-
-.subheader, tr.subheader > td, tr.subheader > th {
-  background: #233452;
 }
 
 table table {
   border               : 0;
 }
 
+.subheader, tr.subheader > td, tr.subheader > th {
+  background-color: #233452;
+}
 
 /* jQuery-UI patches ********************************************************************************************* */
 /* Turning off headers in dialogs */
-.ui-dialog .ui-dialog-titlebar { display: none; }
+.ui-dialog .ui-dialog-titlebar {
+  display: none;
+}
+
+.ui-dialog-titlebar.ui-widget-header {
+  color: #E6EBFB;
+}
+
 /* Turning off resize grapplers */
 .ui-dialog .ui-resizable-se { display: none; }
 /* Setting no-padding to content inside dialog */
 .ui-dialog .ui-dialog-content { padding: 0; }
 
 /* Hack: Setting no background and border for dialogs */
-body .ui-dialog, div .ui-dialog-content { background: transparent; border: none; }
+body .ui-dialog {
+  background: transparent;
+  border: none;
+  padding: 0.2em; /* Original */
+}
 
+.ui-dialog .ui-dialog-buttonpane {
+  padding: 0.3em 1em 0.5em 0.4em;  /* Original */
+}
+
+/*div .ui-dialog-content*/
+/*{*/
+  /*background: transparent;*/
+  /*border: none;*/
+/*}*/
+
+.ui-button,
+.ui-button .ui-button-text
+{
+  line-height: inherit;
+}
 .ui-textfield {
   font: inherit;
   color: inherit;
   outline: none;
 }
-
 input[type=button].ui-textfield, input[type=submit].ui-textfield {
   text-align: inherit;
 }
-
 input[type=text].ui-textfield, input[type=password].ui-textfield, input[type=file].ui-textfield, textarea.ui-textfield {
   text-align: left;
   background-image: none;
   cursor: text;
 }
 
-input[type=checkbox].ui-textfield {
+/*input[type=checkbox].ui-textfield {*/
+  /*width: 1.8181818181818em;*/
+  /*height: 1.8181818181818em;*/
+  /*background-image: none;*/
+/*}*/
+
+input[type=checkbox] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+
   width: 1.8181818181818em;
   height: 1.8181818181818em;
   background-image: none;
+  background-color: #222D42; /*rgba(0,0,0,0.35);*/
+  color: #222D42;
+
+  border-radius: 0.4em;
 }
 
-input[type=text].coordinate {
-  max-width: 3em;
-  padding: 0.363636363636em;
+input[type=checkbox]:checked {
+  background-color: green;
+  color: green;
 }
-
 
 /*  Patching this theme for ui-slider */
 /*.style .ui-slider a:link { width: 1.2em; height: 1.2em; }*/
 /*.style .ui-slider a:hover { width: 1.2em; height: 1.2em; }*/
 
-.ui-button {
-  box-shadow: 0.3em 0.3em rgba(0,0,0,0.50);
-  margin: 0.3em 0.4em 0.4em 0.1em;
-}
-
 .ui-button-text-only .ui-button-text {
   padding: 0.6em 1em;
-}
-
-/*.ui-state-active:not(.ui-slider-handler) {*/
-.ui-state-active {
-  box-shadow: none;
-  margin: 0.6em 0.1em 0.1em 0.4em;
 }
 
 .ui-button.ui-input-text {
   background-color: #415680;
 }
 
-
-textarea.ui-button {
-  border               : 0.1em #415680 solid;
-  background-color     : #344566;
-  font-weight          : bold;
-  padding: 0.4em 1em;
+input.ui-button {
+  padding: 0.6em 1em;
 }
 
-
 /* Setting popup table background color */
-div .ui-dialog-content table {
-  background: #344055;
+/*div .ui-dialog-content table {*/
+/*}*/
+
+/* Setting dialog content background - which is 'transparent' in jQuery-UI */
+.ui-dialog .ui-dialog-content {
+  background: #344566;
 }
 
 .ui-widget-content {
-  color: white;
+  color: #E6EBFB;
 }
 
 /* jQuery-UI slider patches */
@@ -289,31 +326,62 @@ div .ui-dialog-content table {
 
 /* Pseudo button  ********************************************************************************************* */
 /* Main pseudo button magic*/
+.ui-button,
+.button_pseudo
+{
+  box-shadow: 0.3em 0.3em rgba(0,0,0,0.750);
+  margin: 0.5em;
+  /*margin: 0.3em 0.4em 0.4em 0.1em;*/
+}
+
+.ui-state-active,
+.button_pseudo_pressed
+{
+  box-shadow: none;
+  margin: 0.8em 0.2em 0.2em 0.8em;
+  /*margin: 0.6em 0.1em 0.1em 0.4em;*/
+}
+
+/*.button_pseudo*/
+/*{*/
+  /*box-shadow: 0.3em 0.3em rgba(0,0,0,0.750);*/
+  /*margin: 0.5em;*/
+  /*/!*margin: 0.3em 0.4em 0.4em 0.1em;*!/*/
+/*}*/
+/*.button_pseudo:not(img) {*/
+/*}*/
+/*.button_pseudo_pressed:not(img)*/
+/*{*/
+  /*box-shadow: none;*/
+  /*/!*box-shadow: 0.3em 0.3em rgba(0,0,0,0);*!/*/
+  /*/!*margin: 0.8em 0.2em 0.2em 0.8em;*!/*/
+  /*/!*margin: 0.6em 0.1em 0.1em 0.4em;*!/*/
+  /*padding: 0.6em 1em 0.6em 1em;*/
+  /*margin: 0.8em 0.5em 0.2em 0.5em;*/
+/*}*/
+
 .button_pseudo {
   cursor: pointer;
-  margin: 0.5em;
-  box-shadow: 0.3em 0.3em rgba(0,0,0,0.50);
   border: 0.1em solid #415680;
 }
 .button_pseudo_pressed {
-  /*box-shadow: -0.3em -0.3em rgba(0,0,0,0);*/
-  box-shadow: none;
-  margin: 0.8em 0.2em 0.2em 0.8em;
 }
 
 /* Text pseudo button */
 .button_pseudo:not(img) {
-  background-color: rgba(0,0,0,0.35);
+  background-color: #222D42; /*rgba(0,0,0,0.35);*/
   border-radius: 0.4em;
   display: inline-block;
   text-align: center;
+  vertical-align: middle;
   /*padding: 0.475em 1em 0.475em 1em;*/
-  padding: 0.5em 1em;
+  padding: 0.6em 1em;
 }
 .button_pseudo:not(img):hover, .button_pseudo_pressed:not(img) {
   background-color: #415680; /* rgba(65,86,128,1) */
 }
 
+/* Image pseudo button */
 img.button_pseudo {
   filter: alpha(Opacity=50);
   opacity: 0.5;
@@ -327,6 +395,17 @@ img.button_pseudo.button_pseudo_pressed {
   opacity: 1;
 }
 
+
+
+input[type=text].coordinate {
+  max-width: 3em;
+  padding: 0.363636363636em;
+}
+
+
+
+.no_border_image { /* Just placeholder for phpstorm autocomplete*/ }
+.border_image_small { /* Just placeholder for phpstorm autocomplete*/ }
 
 /* Page layout  ********************************************************************************************* */
 /* Left menu ======================================================================================================== */
@@ -2068,13 +2147,13 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   display: block;
 }
 
-div .ui-dialog-content table.legend_template  {
-  background-color: transparent;
-}
+/*div .ui-dialog-content table.legend_template  {*/
+  /*background-color: transparent;*/
+/*}*/
 
-div .ui-dialog-content table.planet_template  {
-  background-color: transparent;
-}
+/*div .ui-dialog-content table.planet_template  {*/
+  /*background-color: transparent;*/
+/*}*/
 .planet_template div {
   display: block;
   max-width: 11em;
@@ -2105,25 +2184,25 @@ div .ui-dialog-content table.planet_template  {
   background-color: rgba(0,0,0,0.50);
 }
 
-div .ui-dialog-content table.debris_template  {
-  background-color: transparent;
-}
+/*div .ui-dialog-content table.debris_template  {*/
+  /*background-color: transparent;*/
+/*}*/
 
 .user_template div {
   display: block;
   max-width: 20em;
 }
-div .ui-dialog-content table.user_template {
-  background-color: transparent;
-}
+/*div .ui-dialog-content table.user_template {*/
+  /*background-color: transparent;*/
+/*}*/
 
 .ally_template div {
   display: block;
   max-width: 20em;
 }
-div .ui-dialog-content table.ally_template {
-  background-color: transparent;
-}
+/*div .ui-dialog-content table.ally_template {*/
+  /*background-color: transparent;*/
+/*}*/
 
 /* Note/Bookmark page ===================================================================================================== */
 .note_coordinates {
@@ -2149,6 +2228,17 @@ div .ui-dialog-content table.ally_template {
 }
 
 /* TEMPLATE BOILERPLATE ********************************************************************************************* */
+.hint {
+  text-align: justify;
+}
+
+#dialog-sector-buy {
+  text-align: center;
+}
+
+
+
+
 /*
 .affiliates {
   color: #993333;
@@ -2160,7 +2250,7 @@ div .ui-dialog-content table.ally_template {
 /*color: grey;*/
 /*}*/
 
-.ok, .success, .positive, button.positive, button.ok {
+.ok, .success, .positive, button.positive, button.ok, .ui-button.ok {
   color: lime;
 }
 .notice, .zero, .neutral, button.neutral, button.zero {
@@ -2412,11 +2502,9 @@ div .ui-dialog-content table.ally_template {
 }
 
 
-.hint {
-  text-align: justify;
+td.error_message {
+  background-color: #415680;
 }
-
-
 
 
 
@@ -2512,3 +2600,4 @@ input[type=checkbox] {
 .checkator_element.checkbox { /* New element */
   border: 0.2em solid #abadb3;
 }
+

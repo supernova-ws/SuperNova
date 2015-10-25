@@ -7,40 +7,63 @@
   var MT_MISSILE = {D_MT_MISSILE};
   var uni_galaxy = "{PLANET_GALAXY}";
   var uni_system = "{PLANET_SYSTEM}";
+  jQuery.extend(language, {
+    ov_rename: '{LA_ov_rename}',
+    sys_confirm: '{LA_sys_confirm}',
+    sys_cancel: '{LA_sys_cancel}',
+  });
 </script>
 
 <script type="text/javascript">
   jQuery("#density_type").change(function(){
-    selected = jQuery("#density_type option:selected");
+    selected = jQuery("#density_type").find("option:selected");
     $("#transmute_button").button({disabled: parseInt(selected.attr("rest")) <= 0 || selected.attr("current") == '1'});
     $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
+  });
+
+  jQuery(document).on('click', "#planet_rename", function () {
+    $('#dialog-rename-planet').dialog('open');
   });
 
   $(function() {
     $( "#dialog-rename-planet" ).dialog({
       autoOpen: false,
       resizable: false,
-      height: 100,
+      // height: 100,
       // width: 330,
       modal: true,
-      buttons: {
-        "{L_ov_rename}": function() {
-          $("#dialog-rename-planet-form").submit();
-          $( this ).dialog( "close" );
+      open: function() {
+        var element = $(this).parent();
+        element.find('.ui-dialog-titlebar').css('display', 'block');
+      },
+      buttons: [
+        {
+          text: language['ov_rename'],
+          click: function(){
+            var element = $(this).parent();
+            element.find('input[name=cp]').val($('#navbar_planet_select').find('option:selected').val());
+            element.find(':button:not(.ui-dialog-titlebar-close)').button('disable');
+            element.find('form').submit();
+//            $(this).dialog("close");
+          }
         },
-        "{L_sys_cancel}": function() {
-          $( this ).dialog( "close" );
+        {
+          text: language['sys_cancel'],
+          click: function(){
+            $(this).dialog("close");
+          }
         }
-      }
+      ]
     });
   });
 </script>
 
-<div id="dialog-rename-planet" title="{ov_planet_rename_dialog_title}" style="display: none; background-color: #344566;">
-  <form action="overview.php" method="POST" id="dialog-rename-planet-form" style="margin: 10px;">
-    <label for="planet_new_name">{L_ov_new_name}</label>
-    <input type="text" name="new_name" id="planet_new_name" size=20 maxlength=20 value="{PLANET_NAME}" />
+<div id="dialog-rename-planet" title="{L_ov_planet_rename_dialog_title}" style="display: none; background-color: #344566;">
+  <form action="overview.php" method="POST" id="dialog-rename-planet-form" style="margin: 1em; text-align: center;">
+    <label for="planet_new_name">{L_ov_new_name}</label><br/><br/>
+    <input type="text" name="new_name" id="planet_new_name" size=32 maxlength=32 value="{PLANET_NAME}" />
     <input type="hidden" name="rename" value="1" />
+    <input type="hidden" name="cp" />
   </form>
 </div>
 
@@ -81,7 +104,7 @@
                   <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"</a>
                 </th>
                 <th class="c_r" nowrap width="11em">
-                  <input type="button" name="rename" value="{L_ov_rename}" onclick="$('#dialog-rename-planet').dialog('open');"/>
+                  <input type="button" name="rename" id="planet_rename" value="{L_ov_rename}" />
                 </th>
                 <th class="c_r" nowrap width="11em">
                   <button  go="" mode="manage">
@@ -134,13 +157,7 @@
               <div class="left_top {$BAR_COLOR}" style="height:100%; width: {PLANET_FILL_BAR}%;">&nbsp;</div>
               <div class="left_top fill_parent va_m">{L_buildings_on_planet} {planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
             </div>
-            <!-- IF PLANET_TYPE == 1 -->
-              <!-- IF SECTOR_CAN_BUY -->
-                <a href="overview.php?sector_buy=1" class="positive link">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</a>
-              <!-- ELSE -->
-                <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
-              <!-- ENDIF -->
-            <!-- ENDIF -->
+            <!-- INCLUDE planet_sector_buy -->
           </th>
         </tr>
 

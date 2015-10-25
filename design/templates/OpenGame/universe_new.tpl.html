@@ -158,20 +158,14 @@
       <!-- DEFINE $USER_CLASS_VACATION = '' -->
     <!-- ENDIF -->
 
-    <!-- IF $DIFFERENT_USER -->
-      <!-- DEFINE $USER_CLASS_ACTION = 'link_action' -->
-    <!-- ELSE -->
-      <!-- DEFINE $USER_CLASS_ACTION = '' -->
-    <!-- ENDIF -->
-
     <th width=150 align=center nowrap>
       <!-- IF galaxyrow.USER_ID -->
-      <div class="button_pseudo uni_show_user {$USER_CLASS_ACTION} {$USER_CLASS_BIRTHDAY} {$USER_CLASS_VACATION} {$USER_CLASS_BANNED}">
+      <div class="button_pseudo uni_show_user {$USER_CLASS_BIRTHDAY} {$USER_CLASS_VACATION} {$USER_CLASS_BANNED}">
         <span class="{$USER_CLASS} {$FONT_TYPE}">{galaxyrow.USER_NAME}</span>&nbsp;(<!-- IF SHOW_ADMIN && galaxyrow.USER_AUTH && galaxyrow.USER_ADMIN --><span class="admin">{galaxyrow.USER_ADMIN}</span><!-- ENDIF --><!-- IF galaxyrow.USER_BANNED --><span class="banned">{L_banned_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_ACTIVITY >= 28 --><span class="longinactive">{L_inactif_28_shortcut}</span><!-- ELSEIF galaxyrow.USER_ACTIVITY >= 7 --><span class="inactive">{L_inactif_7_shortcut}</span><!-- ELSE -->{L_active_shortcut}<!-- ENDIF --><!-- IF galaxyrow.USER_PROTECTED --><span class="protected">{L_uni_protected_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_NOOB --><span class="noob">{L_weak_player_shortcut}</span><!-- ENDIF --><!-- IF galaxyrow.USER_STRONG --><span class="strong">{L_strong_player_shortcut}</span><!-- ENDIF -->)
       </div>
 
       <!-- IF galaxyrow.ALLY_ID -->
-        <div class="button_pseudo uni_show_ally link_action<!-- IF ALLY_ID == galaxyrow.ALLY_ID --> allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</div>
+        <div class="button_pseudo uni_show_ally <!-- IF ALLY_ID == galaxyrow.ALLY_ID --> allymember<!-- ENDIF -->">[{galaxyrow.ALLY_TAG}]</div>
       <!-- ENDIF -->
       <!-- ELSE -->
       &nbsp;
@@ -190,15 +184,9 @@
       <!-- IF ACT_WRITE -->
         <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
-      <!--&lt;!&ndash; IF ACT_STATISTICS && galaxyrow.USER_RANK != '-' &ndash;&gt;-->
-        <!--<a class="button_pseudo" href="stat.php?who=1&range={galaxyrow.USER_RANK}#{galaxyrow.USER_RANK}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_Place} {galaxyrow.USER_RANK}/{userCount}" title="{L_Place} {galaxyrow.USER_RANK}/{userCount}" style="height: 1.5em" /></a>-->
-      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
       <!-- IF ACT_INFO -->
         <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{I_menu_empire_emperor}" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
-      <!--&lt;!&ndash; IF ACT_FRIEND &ndash;&gt;-->
-        <!--<a class="button_pseudo" href="buddy.php?request_user_id={galaxyrow.USER_ID}"><img src="{dpath}img/b.gif" alt="{L_gl_buddyreq}" title="{L_gl_buddyreq}" style="height: 1.5em" /></a>-->
-      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
     <!-- ELSE -->
       &nbsp;
     <!-- ENDIF -->
@@ -227,7 +215,7 @@
 </tr>
 <tr>
   <td colspan="{COL_SPAN_NEW}">
-    <table width="100%">
+    <table width="100%" class="no_border_image">
       <tr>
         <td class=c width="33%">
           <span id="missile">{MIPs}</span> {L_gf_mi_title}
@@ -242,5 +230,5 @@
     </table>
   </td>
 </tr>
-<tr style="display: none;" id="fleetstatusrow"><th class=c colspan="{COL_SPAN_NEW}"><table width="100%" id="fleetstatustable"></table></th></tr>
+<tr style="display: none;" id="fleetstatusrow"><th class=c colspan="{COL_SPAN_NEW}"><table width="100%" id="fleetstatustable" class="no_border_image"></table></th></tr>
 </tbody></table>

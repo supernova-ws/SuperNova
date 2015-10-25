@@ -1,0 +1,75 @@
+<!-- IF PLANET_TYPE == 1 -->
+<!-- IF SECTOR_CAN_BUY -->
+<script type="text/javascript">
+  jQuery.extend(language, {
+    sys_confirm: '{LA_sys_confirm}',
+    sys_cancel: '{LA_sys_cancel}',
+  });
+//  console.log(language);
+</script>
+<script type="text/javascript">
+  jQuery(document).on('click', ".planet_sector_buy", function () {
+    $('#dialog-sector-buy').dialog('open');
+  });
+
+  $(function() {
+    $( "#dialog-sector-buy" ).dialog({
+      autoOpen: false,
+      resizable: false,
+      // height: 100,
+      // width: 330,
+      modal: true,
+      open: function() {
+        var element = $(this).parent();
+        var selected_planet = $('#navbar_planet_select').find('option:selected');
+        element.find('.ui-dialog-titlebar').css('display', 'block');
+        element.find('.ui-dialog-buttonpane button:last').focus();
+        element.find('input[name=cp]').val(selected_planet.val());
+        $('#dialog-sector-buy-planet-name').text(selected_planet.text());
+      },
+      buttons: [
+        {
+          text: language['sys_confirm'],
+          class: "ok",
+          click: function () {
+            var element = $(this).parent();
+            // Отключаем все кнопки кроме крестика закрытия в тайтл-баре
+            element.find(':button:not(.ui-dialog-titlebar-close)').button('disable');
+            element.find("form").submit();
+            // $( this ).dialog( "close" );
+          }
+        },
+        {
+          text: language['sys_cancel'],
+          click: function() {
+            $(this).dialog("close");
+          }
+        }
+      ]
+    });
+  });
+
+</script>
+<style>
+</style>
+
+<div id="dialog-sector-buy" title="{L_sys_purchase_confirm}" style="display: none;">
+  <form action="" method="POST" id="dialog-sector-buy-form" style="margin: 10px;">
+    <div>{L_sys_buy_doing} 1 {L_sys_planet_sector} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh} {L_sys_planet_on}</div>
+    <div id="dialog-sector-buy-planet-name"></div>
+    <input type="hidden" name="mode" value="{D_QUE_STRUCTURES}" />
+    <input type="hidden" name="sector_buy" value="1" />
+    <input type="hidden" name="cp" />
+  </form>
+</div>
+
+<!--<a class="positive link" href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</a>-->
+<span class="positive button_pseudo planet_sector_buy" href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
+<!--<button>{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</button>-->
+<!--<input type="button" value="{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}" />-->
+<!-- ELSE -->
+<span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}
+<!-- ENDIF -->
+<!-- ELSE -->
+&nbsp;
+<!-- ENDIF -->

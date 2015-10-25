@@ -48,7 +48,7 @@ switch($mode = sys_get_param_str('mode')) {
 
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
-      $new_name = db_escape($new_name);
+//      $new_name = db_escape($new_name);
       db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
     } elseif(sys_get_param_str('capital')) {
       try {

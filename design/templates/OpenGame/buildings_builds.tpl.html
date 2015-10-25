@@ -207,15 +207,7 @@ planet = {
                 (<!-- IF FIELDS_QUE != 0 --><span class="zero">{FIELDS_QUE}</span>/<!-- ENDIF --><span class="negative">{FIELDS_CURRENT}</span>/<span class="positive">{FIELDS_MAX}</span>)
               </th>
               <th class="c_r">
-                <!-- IF PLANET_TYPE == 1 -->
-                  <!-- IF SECTOR_CAN_BUY -->
-                    <a class="positive link" href="buildings.php?mode={D_QUE_STRUCTURES}&sector_buy=1">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</a>
-                  <!-- ELSE -->
-                    <span class="negative">{L_sys_sector_buy} {L_sys_for} {SECTOR_COST_TEXT} {L_sys_dark_matter_sh}</span>
-                  <!-- ENDIF -->
-                <!-- ELSE -->
-                  &nbsp;
-                <!-- ENDIF -->
+                <!-- INCLUDE planet_sector_buy -->
               </th>
             </tr>
           </table>

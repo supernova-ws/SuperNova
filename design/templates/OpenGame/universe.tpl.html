@@ -92,7 +92,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 
 <br />
 <form action="galaxy.php?mode=1" method="post" id="galaxy_form">
-  <table><tbody>
+  <table class="border_image_small" style="margin-bottom: 1em;"><tbody>
     <tr>
       <td class="c" colspan="3"><label for="galaxy">{L_Galaxy}</label></td>
       <td class="c" colspan="3"><label for="system">{L_Solar_system}</label></td>
@@ -149,7 +149,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 
 <span style="display: none">
   <span id="legend_template">
-    <table class="legend_template border_image_small">
+    <table class="legend_template no_border_image">
       <tr><th class="c_l" colspan=2>{L_sys_planet}</th></tr>
       <tr class=myplanet><td colspan=2>{L_uni_legend_myplanet}</td></tr>
       <tr class=allymember><td colspan=2>{L_uni_legend_allyplanet}</td></tr>
@@ -181,7 +181,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="planet_template">
-    <table class="planet_template border_image_small">
+    <table class="planet_template no_border_image">
       <tr>
         <th class="c_c" colspan="2">
           [{galaxy}:{system}:[PLANET_POS]]&nbsp;[PLANET_TYPE_TEXT_SHORT]&nbsp;[PLANET_NAME]
@@ -213,7 +213,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="debris_template">
-    <table width=100% class="debris_template border_image_small">
+    <table width=100% class="debris_template no_border_image">
       <tr><th class="c_c" colspan="4">[{galaxy}:{system}:[CURRENT_PLANET]] {L_sys_planet_type[D_PT_DEBRIS]}</th></tr>
       <tr><td class="c_c" rowspan="7"><img src="{I_debris}" style="width: 7em; font-size: 1em;" /></td></tr>
 
@@ -260,7 +260,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="user_template">
-    <table class="user_template border_image_small">
+    <table class="user_template no_border_image">
       <tr>
         <th class="c_c" colspan="[USER_COLSPAN]">
           [USER_NAME]
@@ -295,7 +295,7 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 
   <span id="ally_template">
-    <table class="ally_template border_image_small">
+    <table class="ally_template no_border_image">
       <tr>
         <th class="c_c" colspan="[ALLY_COLSPAN]">
           [ALLY_NAME]

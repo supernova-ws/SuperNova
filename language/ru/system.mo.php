@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a17.0#
+* @version #40a18.6#
 *
 */
 
@@ -1153,5 +1153,11 @@ $a_lang_array = (array(
   'wiki_grants' => 'Предоставляет',
 
   'que_slot_length' => 'Слоты',
+
+  'sys_buy_doing' => 'Вы покупаете',
+  'sys_planet_sector' => 'сектор',
+  'sys_planet_on' => 'на',
+
+  'sys_purchase_confirm' => 'Подвердите покупку',
 
 ));
