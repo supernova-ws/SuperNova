@@ -247,3 +247,7 @@ div.market_services {
 .ui-tabs-active.ui-state-active {
   background-color: #222D42; /* #344566 */
 }
+
+.ui-tabs .ui-tabs-panel {
+  background-color: #222D42;
+}
