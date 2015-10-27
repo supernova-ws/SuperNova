@@ -72,6 +72,7 @@ class userOptions extends oldArrayAccessNd {
 
     PLAYER_OPTION_ANIMATION_DISABLED => 0,
     PLAYER_OPTION_DESIGN_DISABLE_BORDERS => 0,
+    PLAYER_OPTION_TECH_TREE_TABLE => 0,
   );
 
   public $data = array(); // Container // TODO - make protected
@@ -231,6 +232,7 @@ class userOptionsOld implements ArrayAccess {
     PLAYER_OPTION_UNIVERSE_OLD => 0,
     PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE => 0,
     PLAYER_OPTION_DESIGN_DISABLE_BORDERS => 0,
+    PLAYER_OPTION_TECH_TREE_TABLE => 1,
 
     PLAYER_OPTION_PLANET_SORT => 0,
     PLAYER_OPTION_PLANET_SORT_INVERSE => 0,

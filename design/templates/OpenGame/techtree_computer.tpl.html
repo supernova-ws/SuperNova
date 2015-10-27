@@ -1,0 +1,42 @@
+<table>
+<!-- BEGIN techtree -->
+  <tr>
+    <!-- IF ! techtree.ID -->
+   <th class="c_l" colspan="2">
+     {techtree.NAME}
+   </th>
+   <!-- ELSE -->
+   <td class="c_l">
+     <a href="infos.php?gid={techtree.ID}">{techtree.NAME}</a><!-- IF techtree.LEVEL -->&nbsp;({techtree.LEVEL_BASIC}<!-- IF techtree.LEVEL_BONUS --><span class="bonus">+{techtree.LEVEL_BONUS}</span><!-- ENDIF --><!-- IF techtree.LEVEL_MAX -->/{techtree.LEVEL_MAX}<!-- ENDIF -->)<!-- ENDIF -->
+   </td>
+
+   <td class="c_l"><ul>
+     <!-- DEFINE $REQUIRE_PRINTED = 0 -->
+     <!-- BEGIN require -->
+     <!-- IF ! $REQUIRE_PRINTED -->
+     <!-- DEFINE $REQUIRE_PRINTED = 1 -->
+     {L_wiki_requrements}:
+     <!-- ENDIF -->
+     <li style="margin: 0; padding: 0;"><span class="<!-- IF require.REQUEREMENTS_MET -->positive<!-- ELSE -->negative<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
+     <!-- END require -->
+
+     <!-- DEFINE $GRANTS_PRINTED = 0 -->
+     <!-- BEGIN grants -->
+     <!-- IF ! $GRANTS_PRINTED -->
+     <!-- DEFINE $GRANTS_PRINTED = 1 -->
+     <!-- IF $REQUIRE_PRINTED -->
+     <br />
+     <!-- ENDIF -->
+     {L_wiki_grants}:
+     <!-- ENDIF -->
+     <li style="margin: 0; padding: 0;"><span class="<!-- IF grants.REQUEREMENTS_MET -->positive<!-- ELSE -->negative<!-- ENDIF -->">{grants.NAME}</span><!-- IF grants.LEVEL_REQUIRE -->&nbsp;{grants.LEVEL_BASIC}<!-- IF grants.LEVEL_BONUS --><span class="bonus">+{grants.LEVEL_BONUS}</span><!-- ENDIF -->/{grants.LEVEL_REQUIRE}<!-- ENDIF --></li>
+     <!-- END grants -->
+     <!-- IF ! $REQUIRE_PRINTED && ! $GRANTS_PRINTED -->
+     &nbsp;
+     <!-- ENDIF -->
+     </ul>
+   </td>
+   <!-- ENDIF -->
+  </tr>
+<!-- END techtree -->
+</table>

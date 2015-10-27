@@ -12,7 +12,6 @@
 <!-- INCLUDE _result_message -->
 
 <script type="text/javascript">
-  // var password, password2;
   var L_sys_login_password_show = '{LA_sys_login_password_show}';
   var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
 </script>
@@ -63,11 +62,6 @@
         <tr>
           <th>
             {L_opt_game_user_name}
-            <!--&lt;!&ndash; IF AUTH_PROVIDER &ndash;&gt;-->
-            <!--{L_opt_game_user_name}-->
-            <!--&lt;!&ndash; ELSE &ndash;&gt;-->
-            <!--{L_opt_account_name}-->
-            <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
           </th>
           <th width=330>
             <!-- IF SERVER_NAME_CHANGE -->
@@ -113,12 +107,6 @@
         <tr>
           <th>{L_permanentemaildir}</th>
           <th>
-            <!-- IF ! opt_mail2_data -->
-            <!--<input name="db_email2" maxlength="64" size="20" value="{opt_mail2_data}" type="text"><br />-->
-            <!--{L_opt_mail_permanent_description}-->
-            <!-- ELSE -->
-            <!--{opt_mail2_data}-->
-            <!-- ENDIF -->
             {opt_mail2_data}
           </th>
         </tr>
@@ -232,39 +220,22 @@
         </tr>
 
         <tr>
-          <td class="c_c">
-            <label for="PLAYER_OPTION_DESIGN_DISABLE_BORDERS">{L_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}</label>
-          </td>
-          <td class="c_c">
+          <td class="c_l" colspan="2">
             <input type="hidden" name="options[{D_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}]" value="0" />
             <input type="checkbox" name="options[{D_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}]" value="1" id="PLAYER_OPTION_DESIGN_DISABLE_BORDERS" <!-- IF PLAYER_OPTION_DESIGN_DISABLE_BORDERS -->checked="checked" <!-- ENDIF -->/>
+            <label for="PLAYER_OPTION_DESIGN_DISABLE_BORDERS">{L_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}</label>
           </td>
         </tr>
 
-        <!-- IF .options_3 -->
-        <!-- BEGIN options_3 -->
         <tr>
-          <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
-          <td class="c_c">
-            <!-- IF options_3.TYPE == 'integer' -->
-            <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
-            <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
-            <!-- ELSE -->
-            <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
-            <!-- ENDIF -->
+          <td class="c_l" colspan="2">
+            <input type="hidden" name="options[{D_PLAYER_OPTION_TECH_TREE_TABLE}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_TECH_TREE_TABLE}]" value="1" id="PLAYER_OPTION_TECH_TREE_TABLE" <!-- IF PLAYER_OPTION_TECH_TREE_TABLE -->checked="checked" <!-- ENDIF -->/>
+
+            <label for="PLAYER_OPTION_TECH_TREE_TABLE">{L_PLAYER_OPTION_TECH_TREE_TABLE}</label>
           </td>
         </tr>
-        <!-- END options_3 -->
-        <!-- ENDIF -->
-        <tr>
-          <td class="c_c">
-            <label for="build_autoconvert_hide">{L_opt_build_autoconvert_hide}</label>
-          </td>
-          <td class="c_c">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="1" id="build_autoconvert_hide" <!-- IF PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->checked="checked" <!-- ENDIF -->/>
-          </td>
-        </tr>
+
         <tr>
           <th colspan="2" nowrap>
             {L_opt_planet_sort_title}
@@ -279,35 +250,76 @@
             <input type="checkbox" name="options[{D_PLAYER_OPTION_PLANET_SORT_INVERSE}]" value="1" id="planet_sort_inverse" <!-- IF PLAYER_OPTION_PLANET_SORT_INVERSE -->checked="checked" <!-- ENDIF -->/>
           </th>
         </tr>
+        <!-- IF .options_3 -->
+        <!-- BEGIN options_3 -->
+        <!-- IF options_3.NAME != 'opt_int_navbar_resource_force' -->
+        <tr>
+          <!-- IF options_3.TYPE == 'integer' -->
+          <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
+          <td class="c_c">
+            <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
+            <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
+          </td>
+          <!-- ELSE -->
+          <td class="c_l" colspan="2">
+            <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
+            <label for="{options_3.NAME}">{options_3.TEXT}</label>
+          </td>
+          <!-- ENDIF -->
+        </tr>
+        <!-- ENDIF -->
+        <!-- END options_3 -->
+        <!-- ENDIF -->
+        <tr>
+          <td class="c_l" colspan="2">
+            <input type="hidden" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="0" />
+            <input type="checkbox" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="1" id="build_autoconvert_hide" <!-- IF PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->checked="checked" <!-- ENDIF -->/>
+            <label for="build_autoconvert_hide">{L_opt_build_autoconvert_hide}</label>
+          </td>
+        </tr>
 
         <tr>
           <th class="c_c" colspan="2">{L_PLAYER_OPTION_NAVBAR}</th>
         </tr>
+        <!-- IF .options_3 -->
+        <!-- BEGIN options_3 -->
+        <!-- IF options_3.NAME == 'opt_int_navbar_resource_force' -->
         <tr>
+          <!-- IF options_3.TYPE == 'integer' -->
+          <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
           <td class="c_c">
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_PLANET">{L_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}</label>
+            <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
+            <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
           </td>
-          <td class="c_c">
+          <!-- ELSE -->
+          <td class="c_l" colspan="2">
+            <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
+            <label for="{options_3.NAME}">{options_3.TEXT}</label>
+          </td>
+          <!-- ENDIF -->
+        </tr>
+        <!-- ENDIF -->
+        <!-- END options_3 -->
+        <!-- ENDIF -->
+        <tr>
+          <td class="c_l" colspan="2">
             <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}]" value="0" />
             <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_PLANET" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_PLANET -->checked="checked" <!-- ENDIF -->/>
+            <label for="PLAYER_OPTION_NAVBAR_DISABLE_PLANET">{L_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}</label>
           </td>
         </tr>
         <tr>
-          <td class="c_c">
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_HANGAR">{L_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}</label>
-          </td>
-          <td class="c_c">
+          <td class="c_l" colspan="2">
             <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}]" value="0" />
             <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_HANGAR" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_HANGAR -->checked="checked" <!-- ENDIF -->/>
+            <label for="PLAYER_OPTION_NAVBAR_DISABLE_HANGAR">{L_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}</label>
           </td>
         </tr>
         <tr>
-          <td class="c_c">
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_QUESTS">{L_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}</label>
-          </td>
-          <td class="c_c">
+          <td class="c_l" colspan="2">
             <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}]" value="0" />
             <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_QUESTS" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_QUESTS -->checked="checked" <!-- ENDIF -->/>
+            <label for="PLAYER_OPTION_NAVBAR_DISABLE_QUESTS">{L_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}</label>
           </td>
         </tr>
 
@@ -315,29 +327,25 @@
           <th class="c_c" colspan="2">{L_galaxyvision_options}</th>
         </tr>
         <tr>
-          <td class="c_c">
-            <label for="PLAYER_OPTION_UNIVERSE_OLD">{L_PLAYER_OPTION_UNIVERSE_OLD}</label>
-          </td>
-          <td class="c_c">
+          <td class="c_l" colspan="2">
             <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="0" />
             <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="1" id="PLAYER_OPTION_UNIVERSE_OLD" <!-- IF PLAYER_OPTION_UNIVERSE_OLD -->checked="checked" <!-- ENDIF -->/>
+            <label for="PLAYER_OPTION_UNIVERSE_OLD">{L_PLAYER_OPTION_UNIVERSE_OLD}</label>
           </td>
         </tr>
         <tr>
-          <td class="c_c">
-            <label for="PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE">{L_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}</label>
-          </td>
-          <td class="c_c">
+          <td class="c_l" colspan="2">
             <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}]" value="0" />
             <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}]" value="1" id="PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE" <!-- IF PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE -->checked="checked" <!-- ENDIF -->/>
+            <label for="PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE">{L_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}</label>
           </td>
         </tr>
         <!-- IF .options_2 -->
         <!-- BEGIN options_2 -->
         <tr>
-          <td class="c_c"><label for="{options_2.NAME}">{options_2.TEXT}</label></td>
-          <td class="c_c">
+          <td class="c_l" colspan="2">
             <input type="checkbox" id="{options_2.NAME}" name="{options_2.NAME}" value="1" <!-- IF options_2.VALUE --> checked<!-- ENDIF -->>
+            <label for="{options_2.NAME}">{options_2.TEXT}</label>
           </td>
         </tr>
         <!-- END options_2 -->
@@ -375,11 +383,6 @@
                 </td>
               </tr>
             </table>
-            <!--<input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="0" />-->
-            <!--<input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_STATS}]" value="1" id="settings_statistics" &lt;!&ndash; IF user_settings_statistics &ndash;&gt;checked="checked" &lt;!&ndash; ENDIF &ndash;&gt;/>&nbsp;<label for="settings_statistics"><img height="14px" src="design/images/icon_statistics.png" alt="{L_opt_settings_statistics}" />&nbsp;{L_opt_settings_statistics}</label>-->
-
-            <!--<input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="0" />-->
-            <!--<input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_BUDDY}]" value="1" id="settings_bud" &lt;!&ndash; IF user_settings_bud &ndash;&gt;checked="checked" &lt;!&ndash; ENDIF &ndash;&gt;/>&nbsp;<label for="settings_bud"><img height="14px" src="{dpath}img/b.gif" alt="{L_add_to_buddylist}" />&nbsp;{L_add_to_buddylist}</label>-->
           </td>
         </tr>
 

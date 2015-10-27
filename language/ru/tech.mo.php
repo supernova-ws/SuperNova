@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 40a18.11
 *
 */
 
@@ -76,7 +76,7 @@ $a_lang_array = (array(
     STRUC_ALLY_DEPOSIT => 'Склад альянса',
     STRUC_LABORATORY_NANO => 'Нанолаборатория',
 
-    UNIT_STRUCTURES_SPECIAL => 'Особые постройки',
+    UNIT_STRUCTURES_SPECIAL => 'Лунные постройки',
     STRUC_MOON_STATION => 'Лунная база',
     STRUC_MOON_PHALANX => 'Сенсорная фаланга',
     STRUC_MOON_GATE => 'Межгалактические врата',

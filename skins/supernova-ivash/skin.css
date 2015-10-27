@@ -164,7 +164,6 @@ th, td, input, select, textarea {
   background-color     : #242424;
 }
 
-/*th.c_l, th.c_r, th.c_c, tr.c_l th, tr.c_r th, tr.c_c th, td.c {*/
 td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
   background-image     : url("img/bg1.gif");
 }
@@ -222,6 +221,10 @@ div .ui-dialog-content table {
   background-image: url(images/icons.png) !important;
 }
 
+div.ui-slider-range {
+  background: #f6a828; !important;
+}
+
 /* Unit preview box on build pages */
 .unit_preview {
   border-color: #483634;
@@ -274,7 +277,8 @@ div .ui-dialog-content table {
 
 body:not(.no_border_image) table:not(.markup):not(.noborder):not(.no_border_image):not(.border_image_small),
 body:not(.no_border_image) div#tab_container,
-body:not(.no_border_image) div.market_services
+body:not(.no_border_image) div.market_services,
+body:not(.no_border_image) .border_image_large
 {
   border: solid transparent;
   border-radius: 0.5em;
@@ -287,7 +291,7 @@ body:not(.no_border_image) div.market_services
   border-image:         url("images/border.png") 24 11 25 25 round round;
 }
 
-body:not(.no_border_image) .border_image_small
+body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-dialog
 {
   border: solid transparent;
   border-radius: 0.5em;
@@ -301,18 +305,13 @@ body:not(.no_border_image) .border_image_small
   border-image:         url("images/border_small.png") 11 11 11 11 round round;
 }
 
-div#tab_container {
-  background-color: transparent;
-  background-image: none;
-}
-
 div#tab_container > div {
   background-color: #242424;
 }
 
 div.market_services {
   background-color: transparent;
-  padding: 0em;
+  padding: 0;
 }
 
 .market_services div:first-child {
@@ -324,8 +323,17 @@ div.market_services {
 .ui-widget-header {
   background-color: #242424; /* #344566 */
   border: none;
+  background-image: none;
 }
 
 .ui-tabs-active.ui-state-active {
   background-color: #242424; /* #344566 */
+}
+
+.ui-tabs .ui-tabs-panel {
+  background-color: #242424;
+}
+
+#tab_tech_tree .tech_container {
+  border-color: #483634;
 }

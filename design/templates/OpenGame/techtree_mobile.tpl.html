@@ -1,0 +1,51 @@
+<!-- DEFINE $PREV_GROUP_CLOSING_TAG = '' -->
+<div id="tab_tech_tree" class="border_image_large" table_title="TEST">
+  <ul>
+    <!-- BEGIN techtree -->
+    <!-- IF ! techtree.ID -->
+    <li><a href="#tab_tech_tree_{techtree.GROUP_ID}">{techtree.NAME}</a></li>
+    <!-- ENDIF -->
+    <!-- END techtree -->
+  </ul>
+  <!-- BEGIN techtree -->
+
+  <!-- IF ! techtree.ID  -->
+  {$PREV_GROUP_CLOSING_TAG}
+  <!-- DEFINE $PREV_GROUP_CLOSING_TAG = '</div>' -->
+  <div id="tab_tech_tree_{techtree.GROUP_ID}">
+    <!-- ELSE -->
+    <div class="tech_container">
+      <div class="tech_image button_pseudo" go="info" unit_id="{techtree.ID}">
+        <img src="{I_[techtree.ID]}" />
+        <span class="a75">{techtree.NAME}<!-- IF techtree.LEVEL -->&nbsp;({techtree.LEVEL_BASIC}<!-- IF techtree.LEVEL_BONUS --><span class="bonus">+{techtree.LEVEL_BONUS}</span><!-- ENDIF --><!-- IF techtree.LEVEL_MAX -->/{techtree.LEVEL_MAX}<!-- ENDIF -->)<!-- ENDIF --></span>
+      </div>
+      <!-- IF .techtree.require || .techtree.grants -->
+      <div class="tech_require">
+        <!-- IF .techtree.require -->
+        {L_wiki_requrements}:
+        <ul>
+          <!-- BEGIN require -->
+          <li style="margin: 0; padding: 0;"><span go="info" unit_id="{require.ID}" class="link <!-- IF require.REQUEREMENTS_MET -->positive<!-- ELSE -->negative<!-- ENDIF -->">{require.NAME}</span><!-- IF require.LEVEL_REQUIRE -->&nbsp;{require.LEVEL_BASIC}<!-- IF require.LEVEL_BONUS --><span class="bonus">+{require.LEVEL_BONUS}</span><!-- ENDIF -->/{require.LEVEL_REQUIRE}<!-- ENDIF --></li>
+          <!-- END require -->
+        </ul>
+        <!-- ENDIF -->
+
+        <!-- IF .techtree.grants -->
+        {L_wiki_grants}:
+        <ul>
+          <!-- BEGIN grants -->
+          <li style="margin: 0; padding: 0;"><span class="<!-- IF grants.REQUEREMENTS_MET -->positive<!-- ELSE -->negative<!-- ENDIF -->">{grants.NAME}</span><!-- IF grants.LEVEL_REQUIRE -->&nbsp;{grants.LEVEL_BASIC}<!-- IF grants.LEVEL_BONUS --><span class="bonus">+{grants.LEVEL_BONUS}</span><!-- ENDIF -->/{grants.LEVEL_REQUIRE}<!-- ENDIF --></li>
+          <!-- END grants -->
+        </ul>
+        <!-- ENDIF -->
+      </div>
+      <!-- ENDIF -->
+    </div>
+    <!-- ENDIF -->
+    <!-- END techtree -->
+  {$PREV_GROUP_CLOSING_TAG}
+</div>
+
+<script type="text/javascript">
+  $("#tab_tech_tree").tabs().show();
+</script>

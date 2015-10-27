@@ -18,6 +18,7 @@ function sn_techtree_view($template = null)
   {
     $tech_tree[] = array(
       'NAME' => $lang['tech'][$unit_group_id],
+      'GROUP_ID' => $unit_group_id,
     );
 
     foreach($unit_list as $unit_id)
@@ -44,6 +45,10 @@ function sn_techtree_view($template = null)
   $template = gettemplate('techtree', $template);
   $template_result['.']['techtree'] = $tech_tree;
   $template->assign_recursive($template_result);
+
+  $template->assign_vars(array(
+    'PLAYER_OPTION_TECH_TREE_TABLE' => classSupernova::$user_options[PLAYER_OPTION_TECH_TREE_TABLE],
+  ));
 
   return $template;
 }
