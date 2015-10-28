@@ -38,22 +38,13 @@ body {
   background-size: cover;
 }
 
-
-/*form, table, input, select {*/
-  /*font-family : Tahoma, sans-serif;*/
-/*}*/
-
-/*form, table, tr, td, input, select {*/
-  /*font-size : 1em;*/
-/*}*/
-
 img {
   border: 0;
 }
 
 a {
   text-decoration: none;
-  font-weight: bold;
+  font: inherit;
   color: inherit;
 }
 
@@ -67,15 +58,13 @@ li {
 }
 
 h1 {
-  /*font-size            : 200%;*/
-  border-bottom        : none; /* 0 #344566 solid */
-
-  /*margin-top: 1em;*/
+  font-size: 2em;
+  border-bottom: none; /* 0 #344566 solid */
 }
 
 input, select, textarea {
-  font-weight: inherit;
-  font-size: inherit;
+  font: inherit;
+  color: inherit;
 
   padding-left: 0.3em;
   padding-right: 0.3em;
@@ -87,77 +76,42 @@ input, select, textarea {
   -khtml-border-radius: 0.4em;
   border-radius: 0.4em;
 }
-
+input.button {
+  padding: 0.1em 0.3em;
+}
 textarea {
   width: 92%;
   padding: 0;
 }
-textarea.ui-button
-{
-  /*font-weight: bold;*/
-
+textarea.ui-button {
   padding: 0.4em 1em;
 
   border: 0.1em solid;
 }
 
-input.button {
-  padding: 0.1em 0.3em;
-}
-
-/*body form table th table input {*/
-  /*width: 5.5em;*/
-/*}*/
-
-
 /* Table ======================================================================================================== */
 table {
-  font-weight: inherit;
-  font-size: inherit;
+  font: inherit;
+  color: inherit;
 
   margin-left: auto;
   margin-right: auto;
 }
 
 th, td {
-  /*font-weight          : bold;*/
   padding: 0.3em;
 
   border: 0.1em solid;
 }
 
-/*
-.table tr, .table th, .table td {
+td.l {
   vertical-align: top;
-  text-align: left;
+  padding: 0.3em;
 }
 
-th.c_l, td.c_l {
-  text-align: left;
+table table {
+  border: 0;
 }
-th.c_r, td.c_r {
-  text-align: right;
-}
-th.c_c, td.c_c, td.c {
-  text-align: center;
-}
-th.c_j, td.c_j {
-  text-align: justify;
-}
-
-.cell_left, .c_l {
-  text-align: left;
-}
-.cell_right, .c_r {
-  text-align: right;
-}
-.cell_center, .c_c {
-text-align: center;
-}
-.cell_justify, .c_j {
-  text-align: justify;
-}
-*/
 
 .noborder, .noborder tr, .noborder th {
   border: 0;
@@ -169,49 +123,31 @@ text-align: center;
   margin: 0;
   border: 0;
 }
-/*
-td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
-  font-weight: bold;
-  background-repeat: repeat-x;
-}
-*/
-td.l {
-  vertical-align       : top;
-  padding              : 0.3em;
-}
-
-table table {
-  border               : 0;
-}
-
 
 /* jQuery-UI patches ********************************************************************************************* */
-/* Turning off headers in dialogs */
-.ui-dialog .ui-dialog-titlebar {
-  display: none;
-}
 
-/* Turning off resize grapplers */
-.ui-dialog .ui-resizable-se { display: none; }
-/* Setting no-padding to content inside dialog */
-.ui-dialog .ui-dialog-content { padding: 0; }
-
+/* jQuery-UI Dialogs ================================================================================================ */
 /* Hack: Setting no background and border for dialogs */
 body .ui-dialog {
   background: transparent;
   border: none;
   padding: 0.2em; /* Original */
 }
-
+/* Turning off headers in dialogs */
+.ui-dialog .ui-dialog-titlebar {
+  display: none;
+}
+/* Turning off resize grapplers */
+.ui-dialog .ui-resizable-se {
+  display: none;
+}
+/* Setting no-padding to content inside dialog */
+.ui-dialog .ui-dialog-content {
+  padding: 0;
+}
 .ui-dialog .ui-dialog-buttonpane {
   padding: 0.3em 1em 0.5em 0.4em;  /* Original */
 }
-
-/*div .ui-dialog-content*/
-/*{*/
-  /*background: transparent;*/
-  /*border: none;*/
-/*}*/
 
 .ui-button,
 .ui-button .ui-button-text
@@ -232,12 +168,6 @@ input[type=text].ui-textfield, input[type=password].ui-textfield, input[type=fil
   cursor: text;
 }
 
-/*input[type=checkbox].ui-textfield {*/
-  /*width: 1.8181818181818em;*/
-  /*height: 1.8181818181818em;*/
-  /*background-image: none;*/
-/*}*/
-
 input[type=checkbox] {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -257,16 +187,11 @@ input[type=checkbox] {
   padding: 0.6em 1em;
 }
 
-
 input.ui-button {
   padding: 0.6em 1em;
 }
 
-/* Setting popup table background color */
-/*div .ui-dialog-content table {*/
-/*}*/
-
-/* jQuery-UI slider patches */
+/* jQuery-UI slider patches ========================================================================================= */
 .ui-slider { /* Embedding slider to page */
   font-size: 125%;
   margin: 0.75em;
@@ -274,12 +199,10 @@ input.ui-button {
   width: auto;
   height: 1em;
 }
-
 .ui-slider .ui-slider-handle { /* Increasing slider a bit */
   width: 1.4em;
   height: 1.4em;
 }
-
 .ui-state-active.ui-slider-handle {
   box-shadow: none;
   margin-top: 0;
@@ -309,24 +232,6 @@ input.ui-button {
   background-color: transparent;
   background-image: none;
 }
-
-/*.button_pseudo*/
-/*{*/
-  /*box-shadow: 0.3em 0.3em rgba(0,0,0,0.750);*/
-  /*margin: 0.5em;*/
-  /*/!*margin: 0.3em 0.4em 0.4em 0.1em;*!/*/
-/*}*/
-/*.button_pseudo:not(img) {*/
-/*}*/
-/*.button_pseudo_pressed:not(img)*/
-/*{*/
-  /*box-shadow: none;*/
-  /*/!*box-shadow: 0.3em 0.3em rgba(0,0,0,0);*!/*/
-  /*/!*margin: 0.8em 0.2em 0.2em 0.8em;*!/*/
-  /*/!*margin: 0.6em 0.1em 0.1em 0.4em;*!/*/
-  /*padding: 0.6em 1em 0.6em 1em;*/
-  /*margin: 0.8em 0.5em 0.2em 0.5em;*/
-/*}*/
 
 .button_pseudo {
   cursor: pointer;
@@ -360,8 +265,6 @@ img.button_pseudo.button_pseudo_pressed {
   opacity: 1;
 }
 
-
-
 input[type=text].coordinate {
   max-width: 3em;
   padding: 0.363636363636em;
@@ -369,16 +272,17 @@ input[type=text].coordinate {
 
 
 
-.no_border_image { /* Just placeholder for phpstorm autocomplete*/ }
-.border_image_small { /* Just placeholder for phpstorm autocomplete*/ }
+.no_border_image { /* Just placeholder for phpstorm autocomplete */ }
+.border_image_small { /* Just placeholder for phpstorm autocomplete */ }
 
 /* Page layout  ********************************************************************************************* */
+
 /* Left menu ======================================================================================================== */
 #left_menu {
   margin: 0.5em 1em 0 0.5em;
   text-align: left;
   z-index: 999;
-  font-weight: bold;
+  /*font-weight: bold;*/
   width: 13em; /* 100% */
 }
 #left_menu.MENU_BIG_BUTTONS {
@@ -396,8 +300,7 @@ input[type=text].coordinate {
   padding: 0.25em 0.5em 0.25em 0.5em;
   border: none;
 }
-#left_menu td
-{
+#left_menu td {
   padding-left: 1em;
 }
 #left_menu.MENU_NARROW_CELLS td, #left_menu.MENU_NARROW_CELLS th {
@@ -435,27 +338,20 @@ input[type=text].coordinate {
   min-height: 1.4em;
 }
 #left_menu a:not(.lm_with_image) {
-  background-color: rgba(35, 52, 82, 0.5); /*#233452;*/
   padding: 0.2em 1em;
-  border: 0.1em solid #415680;
+  border: 0.1em solid;
   border-radius: 0.3em;
 
   height: 100%;
   display: inline-block;
 }
 #left_menu.MENU_NARROW_CELLS a:not(.lm_with_image) {
-  background-color: rgba(35, 52, 82, 0); /*#233452;*/
   padding: 0;
   border: none;
 
   height: 100%;
   display: inline-block;
 }
-
-#left_menu #server_name {
-  color: #00FF00;
-}
-
 
 #left_menu_show {
   z-index: 9999;
@@ -468,7 +364,6 @@ input[type=text].coordinate {
 }
 
 #menu_show_hidden {
-  color: yellow;
   cursor: pointer;
 }
 
@@ -495,7 +390,6 @@ input[type=text].coordinate {
 }
 
 #menu_news .fresh {
-  color: red;
   display: inline;
   float: right;
 }
@@ -529,20 +423,11 @@ input[type=text].coordinate {
   float: left;
 }
 
-#menu_admin_exit {
-  color: red;
-}
-
 #menu_admin_server_time, #menu_admin_version_info {
   text-align: center;
 }
 
-#menu_premium {
-  color: gold;
-}
-
 #menu_premium_level {
-  color: gold;
   display: inline;
   float: right;
 }
@@ -566,7 +451,6 @@ input[type=text].coordinate {
 }
 
 
-
 /* Copyright ======================================================================================================== */
 #copyright {
   text-align: center;
@@ -579,19 +463,14 @@ input[type=text].coordinate {
 }
 
 
-
-
-
 /* Service Classes  ********************************************************************************************* */
-.link
-{
+.link {
   text-decoration: underline;
   font-weight: bold;
   cursor: pointer;
 }
 
-.link_b
-{
+.link_b {
   border-bottom: 0.1em solid;
   font-weight: bold;
   cursor: pointer;
@@ -609,8 +488,7 @@ input[type=text].coordinate {
   cursor: pointer;
 }
 
-.pointer
-{
+.pointer {
   cursor: pointer;
 }
 
@@ -714,25 +592,15 @@ input[type=text].coordinate {
   width: 100%;
   font-size: 2em;
   font-weight: bold;
-  color:red;
 }
-
-
 
 
 /* News and Surveys ================================================================================================= */
 .news_header {
-  background-color: #233452;
   padding: 0.6em 1em;
   margin: 0.2em;
 }
-.news_date {
-  color: yellow;
-}
-.news_publisher {
-}
 .news_fresh, .news_future {
-  color: red;
   font-weight: bold;
 }
 .news_text {
@@ -740,7 +608,6 @@ input[type=text].coordinate {
   padding: 0.6em 1em;
 }
 .news_link {
-  color: green;
   text-decoration: underline;
   font-weight: bold;
   cursor: pointer;
@@ -761,7 +628,6 @@ input[type=text].coordinate {
 }
 .survey_header, .survey_voted {
   padding: 0.6em 1em;
-  background-color: #233452;
   border: none;
 }
 .survey_voted {
@@ -769,7 +635,6 @@ input[type=text].coordinate {
 }
 .survey_confirm {
   padding: 0 1em;
-  background-color: #233452;
   border: none;
 }
 
@@ -788,8 +653,6 @@ input[type=text].coordinate {
   height: 100%;
 
   z-index: 998;
-
-  background-color: darkgreen;
 }
 .survey_votes_number, .survey_votes_percent {
   position: absolute;
@@ -845,8 +708,6 @@ input[type=text].coordinate {
   height: 13em;
   margin-right: 0.5em;
   float: left;
-
-  /*border: 1px solid orange;*/
 }
 #unit_info_image_wrapper {
   position: relative;
@@ -1180,10 +1041,6 @@ input[type=text].coordinate {
   /*float: left;*/
 }
 
-.income_with_fleet {
-  color: #80a0C0;
-}
-
 .mission_button_image {
   height: 5.818181818182rem;
   width: 5.818181818182rem;
@@ -1204,10 +1061,6 @@ input[type=text].coordinate {
 /* Empire overview -------------------------------------------------------------- */
 [go] {
   cursor: pointer;
-}
-
-td[go]:hover { /* Skin specific */
-  background-color: #415680;
 }
 
 [name=save_production] {
@@ -1287,9 +1140,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
   border: 0.3em solid;
   border-radius: 0.3em;
-
-
-  border-color: #344566;
 }
 .unit_preview .unit_preview_image {
   position: absolute;
@@ -1382,11 +1232,10 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 .ov_planet_fill_bar {
-  position: relative; width: 100%; height: 1.3em; border: 0.1em solid rgb(153, 153, 255);
-}
-
-.unit_border_selected {
-  border-color: #6B90D3;  /* Reserved for unit_preview border color */
+  position: relative;
+  width: 100%;
+  height: 1.3em;
+  border: 0.1em solid;
 }
 
 /* Admin interface - userlist ------------------------------------------------ */
@@ -1402,9 +1251,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #user_list tr td:first-child, #user_list tr td:nth-child(2), #user_list tr td:last-child {
   cursor: pointer;
 }
-#user_list tr:hover {
-  color: yellow;
-}
 
 /* Chat ************************************************************************************************************* */
 #chat_box {
@@ -1416,7 +1262,8 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   display: block;
 }
 #shoutbox tr  {
-  border-top: 0.1em dashed #233452;
+  border: none;
+  border-top: 0.1em dashed;
 }
 #shoutbox tr > td:first-child {
   margin-top: 0.4em;
@@ -1471,10 +1318,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   }
 }
 
-
-
 .chat_online, #onlinebox td {
-  background-color: black;
   border: 0;
   white-space: nowrap;
   text-align: left;
@@ -1484,14 +1328,11 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 .chat_message {
   text-align: left;
-  background-color:black;
-  color:white;
   font-weight: normal;
 }
 
 /* Shoutbox */
 #shoutbox {
-  background-color: black;
   overflow-y: hidden;
 }
 #shoutbox img {
@@ -1499,7 +1340,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   margin: 0 0.1em 0 0;
 }
 #shoutbox .chat_private {
-  color: lightblue; font-style: italic;
+  font-style: italic;
 }
 #shoutbox span {
   vertical-align: top;
@@ -1508,18 +1349,13 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 #shoutbox > table {
   border: 0;
   padding: 0;
-  background-color: black;
   margin: 0.25em 0;
   border-collapse: collapse;
   width: 100%;
 }
-#shoutbox > table > tbody > tr {
-  background-color: black;
-}
 #shoutbox > table > tbody > tr > td {
   border: 0;
   padding: 0;
-  background-color: black;
   text-align: left;
   vertical-align: top;
 }
@@ -1588,7 +1424,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 #chat_msg_wrapper #msg {
-  background-color: black;
   width: 100%;
 }
 
@@ -1604,7 +1439,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 /* Popups - color select, smile select, tooltip and admin command menu */
 #chat_color_select, #chat_message_smiles2, #chat_command_menu, #chat_muted_tooltip {
   display: none;
-  background-color: #233452;
   vertical-align: top;
   text-align: center;
   padding: 0.4em;
@@ -1685,11 +1519,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 #chat_color_select div:nth-child(7), #chat_color_button div:nth-child(7) {
   color: white;
-}
-
-.battle_report_link {
-  color: black;
-  background-color: white;
 }
 
 /* Statistics page ************************************************************************************************************* */
@@ -1806,10 +1635,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   display: none;
 }
 
-.unit_change {
-  color: #80a0C0;
-}
-
 .batch_unit_holder {
   width: 2em;
   white-space: nowrap;
@@ -1827,9 +1652,6 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 
 /* Que list ===================================================================================================== */
-.que_item_0 {
-  color: lime;
-}
 .que_item { /* Que item */
   cursor: pointer;
 
@@ -1877,14 +1699,11 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 100%;
   height: 0.5ex;
   font-size: 100%;
-
-  background-color: green;
 }
 
 /* Black market ===================================================================================================== */
 .market_services {
   max-width: 20em;
-  background-color: #344566;
   width: 100%;
   padding: 0.5em;
 }
@@ -1956,9 +1775,6 @@ body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-d
 
   text-align: center;
 
-  /*border: 1px solid red;*/
-  /*background-color: rgba(0, 50, 0, 0.5);*/
-
   position: absolute;
 
   top: -2em;
@@ -1966,63 +1782,11 @@ body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-d
 }
 
 body:not(.no_border_image) [table_title] {
-  /*position: relative;*/
-
-  /*/!*border: 1px solid blue;*!/*/
-
-  /*margin-top: 6em;*/
 }
 
 body:not(.no_border_image) [table_title]:before {
-  /*content: attr(table_title);*/
-
-  /*font-size: 2em;*/
-
-  /*/!*display: block;*!/*/
-  /*width: 100%;*/
-  /*/!*height: 5em;*!/*/
-
-  /*/!*margin: 5em;*!/*/
-
-  /*z-index: 0;*/
-
-  /*/!*border: 1px solid red;*!/*/
-  /*/!*background-color: rgba(0, 50, 0, 0.5);*!/*/
-
-  /*position: absolute;*/
-
   top: -3em;
-  /*left: 0;*/
 }
-
-/*body:not(.no_border_image) [table_title] {*/
-  /*border: 1px solid blue;*/
-
-  /*margin-top: 10em;*/
-/*}*/
-
-/*body:not(.no_border_image) [table_title]:before {*/
-  /*/!*content: 'CONTENT';*!/*/
-  /*content: attr(table_title);*/
-
-  /*display: inline-block;*/
-  /*width: 100%;*/
-  /*height: 5em;*/
-
-  /*/!*margin: 5em;*!/*/
-
-  /*z-index: 999999;*/
-
-  /*border: 1px solid red;*/
-
-
-  /*background-color: rgba(0, 50, 0, 0.5);*/
-
-  /*position: absolute;*/
-
-  /*top: -5em;*/
-  /*left: 0;*/
-/*}*/
 
 
 /* Planet List ===================================================================================================== */
@@ -2035,7 +1799,7 @@ body:not(.no_border_image) [table_title]:before {
 }
 .planet_list_wrap {
   position: relative;
-  border: 0 solid blue;
+  border: none;
   width: inherit;
 }
 .planet_list_wrap > .res_bar {
@@ -2068,8 +1832,10 @@ body:not(.no_border_image) [table_title]:before {
   left: 7.50em; /* 75/11 = 6,818181818182 */
 }
 .planet_list_top87 > .planet_list_wrap > .images > .icon-gather-wrapper {
-  height: 25%; width: 25%;
-  bottom: 0; right: 0;
+  height: 25%;
+  width: 25%;
+  bottom: 0;
+  right: 0;
   position: absolute;
 }
 
@@ -2093,8 +1859,10 @@ body:not(.no_border_image) [table_title]:before {
   left: 9.50em;
 }
 .planet_list_top112 > .planet_list_wrap > .images > .icon-gather-wrapper {
-  height: 2.25em; width: 2.25em;
-  bottom: 0; right: 0;
+  height: 2.25em;
+  width: 2.25em;
+  bottom: 0;
+  right: 0;
   position: absolute;
 }
 
@@ -2106,7 +1874,6 @@ body:not(.no_border_image) [table_title]:before {
 
   overflow: hidden;
 
-  background-color: #344566;
 }
 .planet_list_fields > .numbers {
   position: absolute;
@@ -2140,7 +1907,6 @@ body:not(.no_border_image) [table_title]:before {
 
 .ov_struc_timer {
   white-space: normal;
-  background-color: #344566;
 }
 
 .planet_list_moon_attack {
@@ -2158,7 +1924,6 @@ body:not(.no_border_image) [table_title]:before {
   top: 100%;
   height: 10%;
   overflow: hidden;
-  background-color: #344566;
 }
 .planet_list_submoon_filler {
   position: relative;
@@ -2316,7 +2081,7 @@ body:not(.no_border_image) [table_title]:before {
 
   vertical-align: top;
 
-  border: 0.1em solid #415680;
+  border: 0.1em solid;
   border-radius: 0.4em;
 }
 
@@ -2348,19 +2113,6 @@ body:not(.no_border_image) [table_title]:before {
   font-size: 0.9em;
 }
 
-/* Note/Bookmark page ===================================================================================================== */
-.note_coordinates {
-  color: #00B7F3;
-}
-
-/* Emperor page ===================================================================================================== */
-.ov_user_total {
-  color: #FF0000
-}
-.ov_user_rank {
-  color: #FFFF00
-}
-
 /* Payment page ===================================================================================================== */
 .payment_mm_amount, .payment_mm_method, .payment_mm_module {
   display: inline-block;
@@ -2385,16 +2137,7 @@ body:not(.no_border_image) [table_title]:before {
 
 
 
-/*
-.affiliates {
-  color: #993333;
-}
-*/
-
 /* Message & numbers color coding */
-/*.disabled {*/
-/*color: grey;*/
-/*}*/
 
 .ok, .success, .positive, button.positive, button.ok, .ui-button.ok {
   color: lime;
@@ -2647,10 +2390,33 @@ body:not(.no_border_image) [table_title]:before {
   background-color: #ffffff;
 }
 
-
-td.error_message {
-  background-color: #415680;
+.battle_report_link {
+  color: black;
+  background-color: white;
 }
+
+/* Que list ===================================================================================================== */
+.que_item_0 {
+  color: lime;
+}
+.que_unit_time_seconds_0 {
+  background-color: green;
+}
+
+/* Note/Bookmark page ===================================================================================================== */
+.note_coordinates {
+  color: #00B7F3;
+}
+
+/* Emperor page ===================================================================================================== */
+.ov_user_total {
+  color: #FF0000
+}
+.ov_user_rank {
+  color: #FFFF00
+}
+
+
 
 
 
@@ -2763,32 +2529,41 @@ input[type=checkbox] {
 body {
   color: #E6EBFB;
 }
-input, select, textarea {
-  border-color: #415680;
-  background-color: #344566;
-}
-textarea.ui-button {
-  border-color: #415680;
-  background-color: #344566;
-}
-th, td {
-  border-color: #415680;
-  background-color: #344566;
-}
-.subheader, tr.subheader > td, tr.subheader > th {
-  background-color: #233452;
-}
 .ui-dialog-titlebar.ui-widget-header {
   color: #E6EBFB;
+}
+.ui-widget-content {
+  color: #E6EBFB;
+}
+
+input[type=checkbox]:checked {
+  background-color: green;
+  color: green;
+}
+
+.ui-slider-range { /* Coloring Slider Range */
+  background-image: none;
+  background: #f6a828;
+}
+
+input,
+select,
+textarea,
+textarea.ui-button,
+th,
+td
+{
+  border-color: #415680;
+  background-color: #344566;
+}
+
+.subheader, tr.subheader > td, tr.subheader > th {
+  background-color: #233452;
 }
 input[type=checkbox] {
   background-image: none;
   background-color: #222D42; /*rgba(0,0,0,0.35);*/
   color: #222D42;
-}
-input[type=checkbox]:checked {
-  background-color: green;
-  color: green;
 }
 .ui-button.ui-input-text {
   background-color: #415680;
@@ -2798,15 +2573,6 @@ input[type=checkbox]:checked {
 .ui-dialog .ui-dialog-content {
   background-image: none;
   background-color: #344566;
-}
-
-.ui-widget-content {
-  color: #E6EBFB;
-}
-
-.ui-slider-range { /* Coloring Slider Range */
-  background-image: none;
-  background: #f6a828;
 }
 
 .button_pseudo {
@@ -2826,5 +2592,145 @@ input[type=checkbox]:checked {
   background-color: #212c42;
 }
 #left_menu td a:hover, #left_menu th a:hover, #left_menu.MENU_NARROW_CELLS td a:hover, #left_menu.MENU_NARROW_CELLS th a:hover {
+  background-color: #415680;
+}
+#left_menu a:not(.lm_with_image) {
+  background-color: rgba(35, 52, 82, 0.5); /*#233452;*/
+  border-color: #415680;
+}
+
+#left_menu.MENU_NARROW_CELLS a:not(.lm_with_image)
+{
+  background-color: rgba(35, 52, 82, 0); /*#233452;*/
+}
+#left_menu #server_name {
+  color: #00FF00;
+}
+#menu_show_hidden {
+  color: yellow;
+}
+#menu_news .fresh {
+  color: red;
+}
+#menu_admin_exit {
+  color: red;
+}
+#menu_premium {
+  color: gold;
+}
+
+#menu_premium_level {
+  color: gold;
+}
+.global_admin_warning {
+  color:red;
+}
+/* News and Surveys ================================================================================================= */
+.news_header {
+  background-color: #233452;
+}
+.news_date {
+  color: yellow;
+}
+.news_publisher {
+}
+.news_fresh, .news_future {
+  color: red;
+}
+.news_link {
+  color: green;
+}
+.survey_header, .survey_voted {
+  background-color: #233452;
+}
+.survey_confirm {
+  background-color: #233452;
+}
+.survey_votes_bar {
+  background-color: darkgreen;
+}
+
+.income_with_fleet {
+  color: #80a0C0;
+}
+
+td[go]:hover { /* Skin specific */
+  background-color: #415680;
+}
+
+
+/* Unit purchase --------------------------------------------------------------- */
+.unit_preview {
+  border-color: #344566;
+}
+.ov_planet_fill_bar {
+  border-color: rgb(153, 153, 255);
+}
+.unit_border_selected {
+  border-color: #6B90D3;  /* Reserved for unit_preview border color */
+}
+#user_list tr:hover {
+  color: yellow;
+}
+
+/* Chat ************************************************************************************************************* */
+#shoutbox tr  {
+  border-color:  #233452;
+}
+.chat_online, #onlinebox td {
+  background-color: black;
+}
+.chat_message {
+  background-color: black;
+  color:white;
+}
+#shoutbox {
+  background-color: black;
+}
+#shoutbox .chat_private {
+  color: lightblue;
+}
+#shoutbox > table {
+  background-color: black;
+}
+#shoutbox > table > tbody > tr {
+  background-color: black;
+}
+#shoutbox > table > tbody > tr > td {
+  background-color: black;
+}
+#chat_msg_wrapper #msg {
+  background-color: black;
+}
+#chat_color_select, #chat_message_smiles2, #chat_command_menu, #chat_muted_tooltip {
+  background-color: #233452;
+}
+/* Batch operations ************************************************************************************************************* */
+.unit_change {
+  color: #80a0C0;
+}
+
+/* Black market ===================================================================================================== */
+.market_services {
+  background-color: #344566;
+}
+
+/* Planet List ===================================================================================================== */
+.planet_list_fields {
+  background-color: #344566;
+}
+.ov_struc_timer {
+  background-color: #344566;
+}
+.planet_list_submoon_fields {
+  background-color: #344566;
+}
+
+/* Technology/TechTree page  ===================================================================================================== */
+#tab_tech_tree .tech_container {
+  border-color: #415680;
+}
+
+td.error_message {
   background-color: #415680;
 }
