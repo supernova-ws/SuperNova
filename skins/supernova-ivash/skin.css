@@ -118,6 +118,7 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
 
 
 
+.ui-button.ui-state-active, /* Hack */
 .ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus,
 .ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active,
 .ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight
@@ -249,7 +250,7 @@ div.ui-slider-range {
 
 
 .button_pseudo:not(img):hover, .button_pseudo_pressed:not(img) {
-  background-color: #483634; /* rgba(65,86,128,1) */
+  background-color: #705955; /* rgba(65,86,128,1) */
 }
 
 #left_menu a:not(.lm_with_image) {
@@ -335,4 +336,27 @@ div.market_services {
 
 #tab_tech_tree .tech_container {
   border-color: #483634;
+}
+
+.button_pseudo:not(img) {
+  background-color: #483634;
+}
+input[type=checkbox] {
+  background-image: none;
+  background-color: #483634;
+  color: #483634;
+}
+input[type=checkbox]:hover:not(:checked) {
+  background-image: none;
+  background-color: #786560;
+  color: #786560;
+}
+.subheader, tr.subheader > td, tr.subheader > th {
+  background-color: #221C1A;
+}
+.planet_list_fields {
+  background-color: #242424;
+}
+.ov_struc_timer {
+  background-color: #242424;
 }

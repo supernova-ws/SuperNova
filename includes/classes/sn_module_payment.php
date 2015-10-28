@@ -87,26 +87,32 @@ abstract class sn_module_payment extends sn_module {
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMR => array(
         'currency' => 'WMR',
         'image' => 'design/images/payments/emoney/webmoney_wmr.gif',
+        'button' => true,
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMZ => array(
         'currency' => 'WMZ',
         'image' => 'design/images/payments/emoney/webmoney_wmz.gif',
+        'button' => true,
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMU => array(
         'currency' => 'WMU',
         'image' => 'design/images/payments/emoney/webmoney_wmu.gif',
+        'button' => true,
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WME => array(
         'currency' => 'WME',
         'image' => 'design/images/payments/emoney/webmoney_wme.gif',
+        'button' => true,
       ),
       PAYMENT_METHOD_EMONEY_WEBMONEY_WMB => array(
         'currency' => 'WMB',
         'image' => 'design/images/payments/emoney/webmoney_wmb.gif',
+        'button' => true,
       ),
       PAYMENT_METHOD_EMONEY_TELEMONEY => array(
         'currency' => 'RUB',
         'image' => 'design/images/payments/emoney/telemoney.gif',
+        'button' => true,
       ),
       PAYMENT_METHOD_EMONEY_ELECSNET => array(
         'currency' => 'RUB',

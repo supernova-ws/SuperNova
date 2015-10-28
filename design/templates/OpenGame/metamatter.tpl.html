@@ -2,7 +2,7 @@
 
 
 <!-- IF ! $TABLE_WIDTH -->
-  <!-- DEFINE $TABLE_WIDTH = '519px' -->
+  <!-- DEFINE $TABLE_WIDTH = '90%' -->
   <h1>{PAGE_HEADER}</h1>
 <!-- ENDIF -->
 
@@ -64,7 +64,7 @@
 
 </table>
 
-<table width="{$TABLE_WIDTH}">
+<table width="{$TABLE_WIDTH}" id="payment_metamatter">
   <tr class="c_j">
     <th>
       <span style="font-size: 1.8em">{L_sys_metamatter_what_header}</span>
@@ -79,27 +79,6 @@
       </div>
     </td>
   </tr>
-
-  <!--<tr class="c_j">-->
-    <!--<th>-->
-      <!--{L_pay_mm_convert_header}-->
-    <!--</th>-->
-  <!--</tr>-->
-  <!--<tr class="c_j">-->
-    <!--<td valign="middle">-->
-      <!--{L_pay_mm_convert_text}<br />-->
-      <!--&lt;!&ndash; IF METAMATTER == 0 &ndash;&gt;-->
-        <!--{L_pay_mm_convert_no_mm}-->
-      <!--&lt;!&ndash; ELSE &ndash;&gt;-->
-        <!--<form action="metamatter.php" method="POST">-->
-          <!--{L_pay_mm_convert_prefix}-->
-          <!--<input type="text" name="mm_convert" value="0" />-->
-          <!--{L_pay_mm_convert_suffix}-->
-          <!--<input type="submit" name="mm_convert_do" value="{L_pay_mm_convert_do}"/>-->
-        <!--</form>-->
-      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-    <!--</td>-->
-  <!--</tr>-->
 
   <!-- IF FALSE && (.exchange || .discount) -->
   <tr class="c_j">
@@ -242,7 +221,7 @@
           <!-- IF ! PAYMENT_METHOD -->
             {L_pay_mm_buy_payment_method_select}
             <!-- BEGIN payment -->
-            <table align="left" width="100%">
+            <table align="left" width="100%" class="border_image_small">
               <tr>
                 <th class="c_l">{payment.NAME}</th>
               </tr>
@@ -253,7 +232,7 @@
                   <div>
                     {L_pay_mm_buy_payment_method_more}<br />
                     <!--<span class="link_action fr" onclick="sn_show_hide(this, 'hide_payment_id_{payment.ID}');">{L_sys_show}</span>-->
-                    <button onclick="sn_show_hide(this, 'hide_payment_id_{payment.ID}');"><span class="link_action">{L_sys_show}</span></button>
+                    <button onclick="sn_show_hide(this, 'hide_payment_id_{payment.ID}'); return false;"><span class="link_action">{L_sys_show}</span></button>
                   </div>
                   <div id="hide_payment_id_{payment.ID}" style="display: none; clear: both;">
                   <!-- ENDIF -->

@@ -1109,6 +1109,11 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 
+/* DarkMatter/MetaMatter --------------------------------------------------------------- */
+#payment_metamatter .border_image_small {
+  margin-top: 1em;
+}
+
 /* Unit purchase --------------------------------------------------------------- */
 #unit_table {
   /*width: 533px; /* == 48.2em */ /* 46.4em + 0.3em*2(padding)*/
