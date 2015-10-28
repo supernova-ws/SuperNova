@@ -47,6 +47,7 @@ function sn_techtree_view($template = null)
   $template->assign_recursive($template_result);
 
   $template->assign_vars(array(
+    'PAGE_HEADER' => $lang['tech'][UNIT_TECHNOLOGIES],
     'PLAYER_OPTION_TECH_TREE_TABLE' => classSupernova::$user_options[PLAYER_OPTION_TECH_TREE_TABLE],
   ));
 

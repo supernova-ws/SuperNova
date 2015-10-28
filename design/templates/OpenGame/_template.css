@@ -28,17 +28,16 @@ html {
 
 body {
   font-family: Tahoma, sans-serif;
-  font-size: 1rem;
+  font-size: 1em;
   font-weight: bold;
   line-height: 1.1;
-
-  color: #E6EBFB;
 
   background-attachment: fixed;
   background-repeat: no-repeat;
   background-position: top;
   background-size: cover;
 }
+
 
 /*form, table, input, select {*/
   /*font-family : Tahoma, sans-serif;*/
@@ -68,10 +67,10 @@ li {
 }
 
 h1 {
-  font-size            : 200%;
+  /*font-size            : 200%;*/
   border-bottom        : none; /* 0 #344566 solid */
 
-  margin-top: 1em;
+  /*margin-top: 1em;*/
 }
 
 input, select, textarea {
@@ -87,22 +86,19 @@ input, select, textarea {
   -webkit-border-radius: 0.4em;
   -khtml-border-radius: 0.4em;
   border-radius: 0.4em;
-  border-color: #415680;
-  background-color: #344566;
 }
 
 textarea {
   width: 92%;
   padding: 0;
 }
-textarea.ui-button {
+textarea.ui-button
+{
   /*font-weight: bold;*/
 
   padding: 0.4em 1em;
 
   border: 0.1em solid;
-  border-color: #415680;
-  background-color: #344566;
 }
 
 input.button {
@@ -128,8 +124,6 @@ th, td {
   padding: 0.3em;
 
   border: 0.1em solid;
-  border-color: #415680;
-  background-color: #344566;
 }
 
 /*
@@ -190,18 +184,11 @@ table table {
   border               : 0;
 }
 
-.subheader, tr.subheader > td, tr.subheader > th {
-  background-color: #233452;
-}
 
 /* jQuery-UI patches ********************************************************************************************* */
 /* Turning off headers in dialogs */
 .ui-dialog .ui-dialog-titlebar {
   display: none;
-}
-
-.ui-dialog-titlebar.ui-widget-header {
-  color: #E6EBFB;
 }
 
 /* Turning off resize grapplers */
@@ -258,16 +245,8 @@ input[type=checkbox] {
 
   width: 1.8181818181818em;
   height: 1.8181818181818em;
-  background-image: none;
-  background-color: #222D42; /*rgba(0,0,0,0.35);*/
-  color: #222D42;
 
   border-radius: 0.4em;
-}
-
-input[type=checkbox]:checked {
-  background-color: green;
-  color: green;
 }
 
 /*  Patching this theme for ui-slider */
@@ -278,9 +257,6 @@ input[type=checkbox]:checked {
   padding: 0.6em 1em;
 }
 
-.ui-button.ui-input-text {
-  background-color: #415680;
-}
 
 input.ui-button {
   padding: 0.6em 1em;
@@ -290,15 +266,6 @@ input.ui-button {
 /*div .ui-dialog-content table {*/
 /*}*/
 
-/* Setting dialog content background - which is 'transparent' in jQuery-UI */
-.ui-dialog .ui-dialog-content {
-  background: #344566;
-}
-
-.ui-widget-content {
-  color: #E6EBFB;
-}
-
 /* jQuery-UI slider patches */
 .ui-slider { /* Embedding slider to page */
   font-size: 125%;
@@ -306,10 +273,6 @@ input.ui-button {
   padding-right: 4.4em;
   width: auto;
   height: 1em;
-}
-
-.ui-slider-range { /* Coloring Slider Range */
-  background: #f6a828;
 }
 
 .ui-slider .ui-slider-handle { /* Increasing slider a bit */
@@ -344,6 +307,7 @@ input.ui-button {
 
 .ui-tabs.ui-widget-content {
   background-color: transparent;
+  background-image: none;
 }
 
 /*.button_pseudo*/
@@ -366,23 +330,20 @@ input.ui-button {
 
 .button_pseudo {
   cursor: pointer;
-  border: 0.1em solid #415680;
+  border: 0.1em solid;
 }
+
 .button_pseudo_pressed {
 }
 
 /* Text pseudo button */
 .button_pseudo:not(img) {
-  background-color: #222D42; /*rgba(0,0,0,0.35);*/
   border-radius: 0.4em;
   display: inline-block;
   text-align: center;
   vertical-align: middle;
   /*padding: 0.475em 1em 0.475em 1em;*/
   padding: 0.6em 1em;
-}
-.button_pseudo:not(img):hover, .button_pseudo_pressed:not(img) {
-  background-color: #415680; /* rgba(65,86,128,1) */
 }
 
 /* Image pseudo button */
@@ -441,15 +402,12 @@ input[type=text].coordinate {
 }
 #left_menu.MENU_NARROW_CELLS td, #left_menu.MENU_NARROW_CELLS th {
   padding: 0 0.5em;
-  border: 0.1em solid #415680;
+  border: 0.1em solid;
   border-top: none;
 }
 
 #left_menu th {
   font-size: 1.1em;
-
-  color: goldenrod;/*#63698c;*/
-  background-color: #212c42;
   background-repeat: repeat-x;
   text-align: center;
 }
@@ -466,9 +424,6 @@ input[type=text].coordinate {
   width: 100%;
 }
 
-#left_menu td a:hover, #left_menu th a:hover, #left_menu.MENU_NARROW_CELLS td a:hover, #left_menu.MENU_NARROW_CELLS th a:hover {
-  background-color: #415680;
-}
 
 
 #left_menu > tbody > tr > td span, #left_menu > tbody > tr > th span {
@@ -1944,25 +1899,129 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 10em;
 }
 
+/* Border magic ===================================================================================================== */
+body:not(.no_border_image) table:not(.markup):not(.noborder):not(.no_border_image):not(.border_image_small),
+body:not(.no_border_image) div#tab_container,
+body:not(.no_border_image) div.market_services,
+body:not(.no_border_image) .border_image_large
+{
+  border: solid transparent;
+  border-radius: 0.5em;
+
+  border-width: 2.181818181818em 1em 2.272727272727em 2.272727272727em;
+
+  -moz-border-image:    url("../../../design/images/border.png") 24 11 25 25 round round;
+  -o-border-image:      url("../../../design/images/border.png") 24 11 25 25 round round;
+  -webkit-border-image: url("../../../design/images/border.png") 24 11 25 25 round round;
+  border-image:         url("../../../design/images/border.png") 24 11 25 25 round round;
+}
+
+body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-dialog
+{
+  border: solid transparent;
+  border-radius: 0.5em;
+
+  border-width: 1em 1em 1em 1em;
+
+  -moz-border-image:    url("../../../design/images/border_small.png") 11 11 11 11 round round;
+  -o-border-image:      url("../../../design/images/border_small.png") 11 11 11 11 round round;
+  -webkit-border-image: url("../../../design/images/border_small.png") 11 11 11 11 round round;
+  border-image:         url("../../../design/images/border_small.png") 11 11 11 11 round round;
+}
 
 
+/* Title/Black magic ===================================================================================================== */
+/*body.no_border_image [table_title] {*/
+[table_title] {
+  position: relative;
 
+  /*border: 1px solid blue;*/
 
+  margin-top: 6em;
+}
 
+/*body.no_border_image [table_title]:before {*/
+[table_title]:before {
+  content: attr(table_title);
 
-/*/!* Title/Black magic ===================================================================================================== *!/*/
-/*body:not(.no_border_image) [table_title]:before {*/
-  /*content: 'CONTENT';*/
-  /*position: absolute;*/
+  font-size: 2em;
 
-  /*top: 0;*/
-  /*left: 0;*/
+  /*display: block;*/
+  width: 100%;
+  /*height: 5em;*/
+
+  /*margin: 5em;*/
+
+  z-index: 0;
+
+  text-align: center;
+
+  /*border: 1px solid red;*/
+  /*background-color: rgba(0, 50, 0, 0.5);*/
+
+  position: absolute;
+
+  top: -2em;
+  left: 0;
+}
+
+body:not(.no_border_image) [table_title] {
+  /*position: relative;*/
+
+  /*/!*border: 1px solid blue;*!/*/
+
+  /*margin-top: 6em;*/
+}
+
+body:not(.no_border_image) [table_title]:before {
+  /*content: attr(table_title);*/
+
+  /*font-size: 2em;*/
 
   /*/!*display: block;*!/*/
-  /*/!*width: 20em;*!/*/
-  /*/!*height:20em;*!/*/
+  /*width: 100%;*/
+  /*/!*height: 5em;*!/*/
+
+  /*/!*margin: 5em;*!/*/
+
+  /*z-index: 0;*/
+
+  /*/!*border: 1px solid red;*!/*/
+  /*/!*background-color: rgba(0, 50, 0, 0.5);*!/*/
+
+  /*position: absolute;*/
+
+  top: -3em;
+  /*left: 0;*/
+}
+
+/*body:not(.no_border_image) [table_title] {*/
+  /*border: 1px solid blue;*/
+
+  /*margin-top: 10em;*/
+/*}*/
+
+/*body:not(.no_border_image) [table_title]:before {*/
+  /*/!*content: 'CONTENT';*!/*/
+  /*content: attr(table_title);*/
+
+  /*display: inline-block;*/
+  /*width: 100%;*/
+  /*height: 5em;*/
+
+  /*/!*margin: 5em;*!/*/
 
   /*z-index: 999999;*/
+
+  /*border: 1px solid red;*/
+
+
+  /*background-color: rgba(0, 50, 0, 0.5);*/
+
+  /*position: absolute;*/
+
+  /*top: -5em;*/
+  /*left: 0;*/
 /*}*/
 
 
@@ -2688,3 +2747,84 @@ input[type=checkbox] {
   border: 0.2em solid #abadb3;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+/* Skinnable items ************************************************************************************************** */
+body {
+  color: #E6EBFB;
+}
+input, select, textarea {
+  border-color: #415680;
+  background-color: #344566;
+}
+textarea.ui-button {
+  border-color: #415680;
+  background-color: #344566;
+}
+th, td {
+  border-color: #415680;
+  background-color: #344566;
+}
+.subheader, tr.subheader > td, tr.subheader > th {
+  background-color: #233452;
+}
+.ui-dialog-titlebar.ui-widget-header {
+  color: #E6EBFB;
+}
+input[type=checkbox] {
+  background-image: none;
+  background-color: #222D42; /*rgba(0,0,0,0.35);*/
+  color: #222D42;
+}
+input[type=checkbox]:checked {
+  background-color: green;
+  color: green;
+}
+.ui-button.ui-input-text {
+  background-color: #415680;
+}
+
+/* Setting dialog content background - which is 'transparent' in jQuery-UI */
+.ui-dialog .ui-dialog-content {
+  background-image: none;
+  background-color: #344566;
+}
+
+.ui-widget-content {
+  color: #E6EBFB;
+}
+
+.ui-slider-range { /* Coloring Slider Range */
+  background-image: none;
+  background: #f6a828;
+}
+
+.button_pseudo {
+  border-color: #415680;
+}
+.button_pseudo:not(img) {
+  background-color: #222D42; /*rgba(0,0,0,0.35);*/
+}
+.button_pseudo:not(img):hover, .button_pseudo_pressed:not(img) {
+  background-color: #415680; /* rgba(65,86,128,1) */
+}
+#left_menu.MENU_NARROW_CELLS td, #left_menu.MENU_NARROW_CELLS th {
+  border-color: #415680;
+}
+#left_menu th {
+  color: goldenrod;/*#63698c;*/
+  background-color: #212c42;
+}
+#left_menu td a:hover, #left_menu th a:hover, #left_menu.MENU_NARROW_CELLS td a:hover, #left_menu.MENU_NARROW_CELLS th a:hover {
+  background-color: #415680;
+}

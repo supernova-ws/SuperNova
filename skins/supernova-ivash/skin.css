@@ -280,10 +280,10 @@ body:not(.no_border_image) div#tab_container,
 body:not(.no_border_image) div.market_services,
 body:not(.no_border_image) .border_image_large
 {
-  border: solid transparent;
-  border-radius: 0.5em;
+  /*border: solid transparent;*/
+  /*border-radius: 0.5em;*/
 
-  border-width: 2.181818181818em 1em 2.272727272727em 2.272727272727em;
+  /*border-width: 2.181818181818em 1em 2.272727272727em 2.272727272727em;*/
 
   -moz-border-image:    url("images/border.png") 24 11 25 25 round round;
   -o-border-image:      url("images/border.png") 24 11 25 25 round round;
@@ -293,15 +293,14 @@ body:not(.no_border_image) .border_image_large
 
 body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-dialog
 {
-  border: solid transparent;
-  border-radius: 0.5em;
+  /*border: solid transparent;*/
+  /*border-radius: 0.5em;*/
 
-  border-width: 1em 1em 1em 1em;
+  /*border-width: 1em 1em 1em 1em;*/
 
   -moz-border-image:    url("images/border_small.png") 11 11 11 11 round round;
   -o-border-image:      url("images/border_small.png") 11 11 11 11 round round;
   -webkit-border-image: url("images/border_small.png") 11 11 11 11 round round;
-  /*  border-image:         url("images/border_small.png") 11 11 11 11 round round;*/
   border-image:         url("images/border_small.png") 11 11 11 11 round round;
 }
 
