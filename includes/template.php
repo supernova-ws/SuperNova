@@ -437,7 +437,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     return '';
   }
 
-  global $lang, $config;
+  global $lang, $config, $sn_module_list;
 
   $GET_mode = sys_get_param_str('mode');
 
@@ -493,8 +493,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   }
 
   $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
-
   $template->assign_vars(array(
+    'HALLOWEEN' => !empty($sn_module_list['event']['event_halloween_2015']) && $sn_module_list['event']['event_halloween_2015']->manifest['active'],
+
     'QUE_ID'             => QUE_RESEARCH,
     'QUE_HTML'           => 'topnav',
 
