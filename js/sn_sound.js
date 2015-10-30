@@ -15,6 +15,16 @@ $(document).ready(function() {
         alias: "key_press",
         name: "snap",
       },
+      {
+        alias: "halloween_success",
+        name: "bell_ring",
+        volume: 0.2,
+      },
+      {
+        alias: "halloween_fail",
+        name: "light_bulb_breaking",
+        volume: 0.05,
+      },
     ],
     path: "sounds/",
     multiplay: true,

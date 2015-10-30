@@ -22,7 +22,6 @@
     <!-- IF LOGIN_LOGOUT -->
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/login.css?{C_var_db_update}" />
     <!-- ENDIF -->
-    <!--<link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_server.css?{C_var_db_update}" />-->
     <!--[if IE]>
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global-ie.css?{C_var_db_update}" />
     <![endif]-->
@@ -35,7 +34,7 @@
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}{GAME_MODE_CSS_PREFIX}skin_background.css?{C_var_db_update}" />
     <!-- ENDIF -->
     <!--<link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin_server.css?{C_var_db_update}" />-->
-
+    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_override.css?{C_var_db_update}" />
 
     <title>{title}</title>
   </head>
@@ -101,10 +100,15 @@
       html {
         font-size: {FONT_SIZE} !important;
       }
-      /*html, body, form, table, input, select {*/
-      /*font-size: {FONT_SIZE}px !important;*/
-      /*}*/
     </style>
+    <!-- ENDIF -->
+
+    <!-- IF HALLOWEEN_CODE -->
+    <script type="text/javascript">
+      var HALLOWEEN_CODE = "{HALLOWEEN_CODE}";
+      var HALLOWEEN_IMAGE = "{HALLOWEEN_IMAGE}";
+    </script>
+    <span class="halloween"></span>
     <!-- ENDIF -->
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery-ui.js?{C_var_db_update}"></script>
@@ -117,6 +121,15 @@
     <!-- BEGIN js -->
       <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{js.FILE}?{C_var_db_update}"></script>
     <!-- END js -->
+
+    <!-- BEGIN javascript -->
+      <!-- IF javascript.CONTENT -->
+        <script type="text/javascript">{javascript.CONTENT}</script>
+      <!-- ELSE -->
+        <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{javascript.FILE}?{C_var_db_update}"></script>
+      <!-- ENDIF -->
+    <!-- END javascript -->
+
 
     <!-- IF IMPERSONATING -->
       <div style="text-align: center" class="warning">{IMPERSONATING}</div>

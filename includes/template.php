@@ -222,7 +222,7 @@ function tpl_render_menu() {
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
-  global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc;
+  global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
 
   if(!$user || !isset($user['id']) || !is_numeric($user['id']))
   {
@@ -260,6 +260,18 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   }
 
   $template = gettemplate('_global_header', true);
+
+  foreach($sn_mvc['javascript'] as $page_name => $script_list) {
+    if(empty($page_name) || $page_name == $sn_page_name) {
+      foreach($script_list as $filename => $content) {
+        $template->assign_block_vars('javascript', array(
+          'FILE' => $filename,
+          'CONTENT' => $content,
+        ));
+      }
+    }
+  }
+
   $template->assign_vars(array(
     'USER_AUTHLEVEL'           => intval($user['authlevel']),
 

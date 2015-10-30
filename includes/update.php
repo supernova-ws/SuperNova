@@ -1089,6 +1089,25 @@ switch($new_version) {
     // 2015-10-22 14:37:58 40a17.5
     upd_check_key('locale_cache_disable', 0, !isset($config->locale_cache_disable));
 
+    // 2015-10-30 19:09:01 40a19.5
+    upd_check_key('event_halloween_2015_lock', 0, !isset($config->event_halloween_2015_lock));
+    upd_check_key('event_halloween_2015_unit', 0, !isset($config->event_halloween_2015_unit));
+    upd_check_key('event_halloween_2015_code', '', !isset($config->event_halloween_2015_code));
+    upd_check_key('event_halloween_2015_timestamp', SN_TIME_SQL, !isset($config->event_halloween_2015_timestamp));
+    upd_check_key('event_halloween_2015_units_used', serialize(array()), !isset($config->event_halloween_2015_units_used));
+    if(empty($update_tables['log_halloween_2015'])) {
+      upd_create_table('log_halloween_2015', " (
+      `log_hw2015_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `player_id` bigint(20) unsigned NOT NULL COMMENT 'User ID',
+      `player_name` varchar(32) NOT NULL DEFAULT '',
+      `unit_snid` bigint(20) unsigned NOT NULL DEFAULT 0,
+      `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+      PRIMARY KEY (`log_hw2015_id`),
+      KEY (`player_id`, `log_hw2015_id` DESC) -- For list on Imperator page
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
+    }
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 40;

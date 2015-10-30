@@ -2739,3 +2739,33 @@ td[go]:hover { /* Skin specific */
 td.error_message {
   background-color: #415680;
 }
+
+.halloween {
+  position: absolute;
+
+  display: none;
+  width: 32px;
+  height: 32px;
+
+  /*background-image: url("../../../design/images/halloween/1.png");*/
+  /*background-color: red;*/
+
+  /*top: 100000em;*/
+  /*left: 100000em;*/
+
+  z-index: 10000;
+}
+
+.halloween_result {
+  display: none;
+  width: 32px;
+  height: 32px;
+  /*background-color: white;*/
+
+  position: absolute;
+  z-index: 10001;
+
+  left: 0;
+  top: 0;
+
+}
