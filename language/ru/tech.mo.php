@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a18.11
+* @version 40a19.9
 *
 */
 
@@ -28,8 +28,8 @@ if (!defined('INSIDE')) die();
 
 
 $a_lang_array = (array(
-  'tech_storage_max' => 'Макс. емкость хранилища',
-  'tech_storage' => 'В хранилищах',
+  'tech_storage_max' => 'Размер склада',
+  'tech_storage' => 'На складе',
   'Tech' => 'Технология',
   'Requirements' => 'Требуется',
   'No_requirements' => 'Нет требований',
@@ -68,8 +68,8 @@ $a_lang_array = (array(
     STRUC_FACTORY_ROBOT => 'Фабрика роботов',
     STRUC_FACTORY_NANO => 'Нанофабрика',
     STRUC_FACTORY_HANGAR => 'Верфь',
-    STRUC_STORE_METAL => 'Хранилище металла',
-    STRUC_STORE_CRYSTAL => 'Хранилище кристаллов',
+    STRUC_STORE_METAL => 'Склад металла',
+    STRUC_STORE_CRYSTAL => 'Склад кристаллов',
     STRUC_STORE_DEUTERIUM => 'Емкость для дейтерия',
     STRUC_LABORATORY => 'Лаборатория',
     STRUC_TERRAFORMER => 'Терраформер',

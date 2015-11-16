@@ -786,15 +786,27 @@ input[type=text].coordinate {
 #form_unit {
   display: table;
   width: 100%;
+
+  margin-top: 1em;
 }
+
 #unit_cost_container {
   display: table-header-group;
-  text-align: center;
 }
+#unit_cost_container > .wrap {
+  display: inline-block;
+}
+#unit_time_div {
+  margin: 1em 0;
+}
+
 #unit_create {
   display: table-row;
   text-align: center;
-  vertical-align: top;
+  vertical-align: middle;
+}
+#unit_create_stackable_autoconvert {
+  margin-bottom: 1em;
 }
 #unit_destroy {
   display: table-footer-group;
@@ -878,7 +890,7 @@ input[type=text].coordinate {
   #unit_balance_wrapper {
     display: block;
     float: right;
-    margin: 0 0.5em;
+    margin-left: 1em;
   }
   #unit_balance {
     display: inline-block;

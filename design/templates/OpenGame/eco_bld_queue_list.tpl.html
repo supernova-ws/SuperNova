@@ -1,5 +1,5 @@
   <!-- IF $QUE_NOT_EMPTY -->
-        <table class="noborder" width=100%>
+        <table class="markup" width=100%>
           <tr>
             <th width="11em">
               <div>{L_sys_total_time}</div>
@@ -14,7 +14,7 @@
           </tr>
           <tr>
             <th class="c_c"<!-- IF ! U_opt_int_struc_vertical --> colspan="5"<!-- ENDIF -->>
-              <div class="fl"><a class="link" href="buildings.php?mode={QUE_ID}&action=clear&ally_id={ALLY_ID}">{L_eco_que_clear}</a></div>
+              <div class="fl"><a class="button_pseudo" href="buildings.php?mode={QUE_ID}&action=clear&ally_id={ALLY_ID}">{L_eco_que_clear}</a></div>
 <!-- IF U_opt_int_struc_vertical -->
             </th>
           </tr>
@@ -23,7 +23,7 @@
 <!-- ENDIF -->
 
         <!-- IF ARTIFACT_LEVEL -->
-        <a class="link" href="artifacts.php?action={D_ACTION_USE}&unit_id={ARTIFACT_ID}&REQUEST_URI=buildings.php?mode={QUE_ID}">{ARTIFACT_NAME}</a>
+        <a class="button_pseudo" href="artifacts.php?action={D_ACTION_USE}&unit_id={ARTIFACT_ID}&REQUEST_URI=buildings.php?mode={QUE_ID}">{ARTIFACT_NAME}</a>
         <!-- ENDIF -->
 
 <!-- IF U_opt_int_struc_vertical -->
@@ -32,7 +32,7 @@
           <tr>
             <th class="c_c">
 <!-- ENDIF -->
-              <div class="fr"><a class="link" href="buildings.php?mode={QUE_ID}&action=trim&ally_id={ALLY_ID}">{L_eco_que_trim}</a></div>
+              <div class="fr"><a class="button_pseudo" href="buildings.php?mode={QUE_ID}&action=trim&ally_id={ALLY_ID}">{L_eco_que_trim}</a></div>
             </th>
           </tr>
         </table>

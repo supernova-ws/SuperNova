@@ -1,20 +1,5 @@
 <h1>{PAGE_HEADER}</h1>
 
-<table class="border_image_small" id="build_sort">
-<tr class="c_c">
-  <th colspan="4">
-    {L_sys_sort}
-    <select name="sort_elements" id="sort_elements">
-      <!-- BEGIN sort_values -->
-      <option value="{sort_values.VALUE}"<!-- IF sort_values.VALUE == SORT_OPTION --> selected<!-- ENDIF -->>{sort_values.TEXT}</option>
-      <!-- END sort_values -->
-    </select>
-    {L_sys_sort_inverse} <input type="checkbox" name="sort_elements_inverse" id="sort_elements_inverse" value="1"<!-- IF SORT_OPTION_INVERSE --> checked<!-- ENDIF -->/>
-  </th>
-</tr>
-</table>
-
-
 <script type="text/javascript">
 var production = Array();
 var require = Array();
@@ -197,6 +182,26 @@ planet = {
 <tr>
   <td align="center" valign="top">
     <table id="unit_table">
+      <tr class="c_c">
+        <th>
+          {L_sys_sort}
+          <select name="sort_elements" id="sort_elements">
+            <!-- BEGIN sort_values -->
+            <option value="{sort_values.VALUE}"<!-- IF sort_values.VALUE == SORT_OPTION --> selected<!-- ENDIF -->>{sort_values.TEXT}</option>
+            <!-- END sort_values -->
+          </select>
+          {L_sys_sort_inverse} <input type="checkbox" name="sort_elements_inverse" id="sort_elements_inverse" value="1"<!-- IF SORT_OPTION_INVERSE --> checked<!-- ENDIF -->/>
+        </th>
+      </tr>
+
+      <!-- IF ! U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
+      <tr>
+        <td class="c_c">
+          <!-- INCLUDE eco_bld_queue_list -->
+        </td>
+      </tr>
+      <!-- ENDIF -->
+
       <!-- IF SHOW_SECTORS -->
       <tr>
         <th class="c_c">
@@ -212,14 +217,6 @@ planet = {
             </tr>
           </table>
         </th>
-      </tr>
-      <!-- ENDIF -->
-
-      <!-- IF ! U_opt_int_struc_vertical && $QUE_NOT_EMPTY -->
-      <tr>
-        <td class="c_c">
-          <!-- INCLUDE eco_bld_queue_list -->
-        </td>
       </tr>
       <!-- ENDIF -->
 
@@ -266,54 +263,64 @@ planet = {
             <input type="hidden" name="ally_id" value="{ALLY_ID}" />
             <input type="hidden" name="unit_id" id="unit_id" />
             <input type="hidden" name="action" />
-            <div id="unit_cost_container"<!-- IF STACKABLE --> class="unit_create_stackable"<!-- ENDIF -->>
-              <div id="unit_time_div" align="center">{STRING_BUILD_TIME}<span id="unit_time"></span></div>
-              <table style="font-size: {$FONT_SIZE};" id="unit_cost_table" class="border_image_small">
-                <tr class="c_c">
-                  <th width=45px>{L_sys_resources}</th>
-                  <th width=65>{L_eco_price}</th>
-                  <th width=65>{L_eco_left}</th>
-                  <th width=65 hide_no_fleet="yes">{L_sys_fleet_and}</th>
-                </tr>
-                <tr id="unit_metal" class="c_r">
-                  <td width=45px class="c_c">{L_sys_metal}</td>
-                  <td id="metal_price">0</td>
-                  <td id="metal_left">0</td>
-                  <td id="metal_fleet" hide_no_fleet="yes">0</td>
-                </tr>
-                <tr id="unit_crystal" class="c_r">
-                  <td width=45px class="c_c">{L_sys_crystal}</td>
-                  <td id="crystal_price">0</td>
-                  <td id="crystal_left">0</td>
-                  <td id="crystal_fleet" hide_no_fleet="yes">0</td>
-                </tr>
-                <tr id="unit_deuterium" class="c_r">
-                  <td width=45px class="c_c">{L_sys_deuterium}</td>
-                  <td id="deuterium_price">0</td>
-                  <td id="deuterium_left">0</td>
-                  <td id="deuterium_fleet" hide_no_fleet="yes">0</td>
-                </tr>
-                <tr id="unit_dark_matter" class="c_r">
-                  <td width=45px class="c_c" nowrap style="font-size: 80%">{L_sys_dark_matter}</td>
-                  <td id="dark_matter_price">0</td>
-                  <td id="dark_matter_left">0</td>
-                  <td id="dark_matter_fleet" hide_no_fleet="yes">0</td>
-                </tr>
-              </table>
+
+            <!-- IF STACKABLE -->
+              <!-- DEFINE $CLASS_COST_CONTAINER = ' class="unit_create_stackable"' -->
+            <!-- ELSE -->
+              <!-- DEFINE $CLASS_COST_CONTAINER = '' -->
+            <!-- ENDIF -->
+            <div id="unit_cost_container" $CLASS_COST_CONTAINER align="left">
+              <div class="wrap">
+                <div id="unit_time_div" align="center">{STRING_BUILD_TIME}<span id="unit_time"></span></div>
+                <table style="font-size: {$FONT_SIZE};" id="unit_cost_table" class="border_image_small">
+                  <tr class="c_c">
+                    <th width=45px>{L_sys_resources}</th>
+                    <th width=65>{L_eco_price}</th>
+                    <th width=65>{L_eco_left}</th>
+                    <th width=65 hide_no_fleet="yes">{L_sys_fleet_and}</th>
+                  </tr>
+                  <tr id="unit_metal" class="c_r">
+                    <td width=45px class="c_c">{L_sys_metal}</td>
+                    <td id="metal_price">0</td>
+                    <td id="metal_left">0</td>
+                    <td id="metal_fleet" hide_no_fleet="yes">0</td>
+                  </tr>
+                  <tr id="unit_crystal" class="c_r">
+                    <td width=45px class="c_c">{L_sys_crystal}</td>
+                    <td id="crystal_price">0</td>
+                    <td id="crystal_left">0</td>
+                    <td id="crystal_fleet" hide_no_fleet="yes">0</td>
+                  </tr>
+                  <tr id="unit_deuterium" class="c_r">
+                    <td width=45px class="c_c">{L_sys_deuterium}</td>
+                    <td id="deuterium_price">0</td>
+                    <td id="deuterium_left">0</td>
+                    <td id="deuterium_fleet" hide_no_fleet="yes">0</td>
+                  </tr>
+                  <tr id="unit_dark_matter" class="c_r">
+                    <td width=45px class="c_c" nowrap style="font-size: 80%">{L_sys_dark_matter}</td>
+                    <td id="dark_matter_price">0</td>
+                    <td id="dark_matter_left">0</td>
+                    <td id="dark_matter_fleet" hide_no_fleet="yes">0</td>
+                  </tr>
+                </table>
+              </div>
             </div>
 
             <!-- IF STACKABLE -->
               <div id="unit_create" class="unit_create_stackable">
+                <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
+                <div id="unit_create_stackable_autoconvert">
+                  <input type="checkbox" value="1" name="auto_convert" id="auto_convert" />
+                  <label for="auto_convert" id="auto_convert_label" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">{L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}</label>
+                </div>
+                <!-- ENDIF -->
+
                 <div id="unit_max">{L_sys_maximum} <span id="unit_max_number"></span> / <span id="unit_max_number_autoconvert" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->"></span></div>
                 <ainput type="text" name="unit_amount" id="unit_amount" max="0"></ainput>
                 <script type="text/javascript">
                   sn_ainput_make_jquery();
                 </script>
-
-                <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
-                <input type="checkbox" value="1" name="auto_convert" id="auto_convert" />
-                <label for="auto_convert" id="auto_convert_label" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">{L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}</label>
-                <!-- ENDIF -->
 
                 <button id="unit_create_button" class="unit_create positive">
                   {STRING_CREATE}
