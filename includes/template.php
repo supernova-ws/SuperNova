@@ -159,31 +159,15 @@ function tpl_render_menu() {
 
   lng_include('admin');
 
-  //$template_name = IN_ADMIN === true ? 'admin/menu' : 'menu';
-  //$template = gettemplate($template_name, true);
   $template = gettemplate('menu', true);
   $template->assign_recursive($template_result);
 
-//  player_load_option($user, array(PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON, PLAYER_OPTION_MENU_SHOW_ON_BUTTON,
-//    PLAYER_OPTION_MENU_HIDE_ON_BUTTON, PLAYER_OPTION_MENU_HIDE_ON_LEAVE, PLAYER_OPTION_MENU_UNPIN_ABSOLUTE,
-//    PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS,
-//  ));
-
-//  $is_menu_customize = isset($template_result['MENU_CUSTOMIZE']);
   $template->assign_vars(array(
     'USER_AUTHLEVEL'      => $user['authlevel'],
     'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
 //    'USER_IMPERSONATOR'   => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED,
     'PAYMENT'             => sn_module_get_active_count('payment'),
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
-//    'MENU_START_HIDE'     => isset($_COOKIE[SN_COOKIE . '_menu_hidden']) && $_COOKIE[SN_COOKIE . '_menu_hidden'],
-
-//    'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON]: 0,
-//    'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON] : 0,
-//    'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON] : 0,
-//    'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE] : 0,
-//    'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE] : 0,
-//    'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => $is_menu_customize ? classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS] : 0,
   ));
 
   if(isset($template_result['MENU_CUSTOMIZE'])) {
@@ -200,15 +184,6 @@ function tpl_render_menu() {
   }
 
   if(IN_ADMIN === true && $user['authlevel'] > 0) {
-    //global $sn_version_check_class;
-    //$template->assign_vars(array(
-    //  'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : 0,
-    //  'CHECK_RESULT' => $lang['adm_opt_ver_response_short'][$config->server_updater_check_result],
-    //  'CHECK_CLASS' => $sn_version_check_class[$config->server_updater_check_result],
-    //));
-    //$template = gettemplate('menu', $template);
-
-
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
   } else {
@@ -261,13 +236,15 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
   $template = gettemplate('_global_header', true);
 
-  foreach($sn_mvc['javascript'] as $page_name => $script_list) {
-    if(empty($page_name) || $page_name == $sn_page_name) {
-      foreach($script_list as $filename => $content) {
-        $template->assign_block_vars('javascript', array(
-          'FILE' => $filename,
-          'CONTENT' => $content,
-        ));
+  if(!empty($sn_mvc['javascript'])) {
+    foreach($sn_mvc['javascript'] as $page_name => $script_list) {
+      if(empty($page_name) || $page_name == $sn_page_name) {
+        foreach($script_list as $filename => $content) {
+          $template->assign_block_vars('javascript', array(
+            'FILE' => $filename,
+            'CONTENT' => $content,
+          ));
+        }
       }
     }
   }
@@ -364,8 +341,6 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
 function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count)
 {
-  global $lang;
-
   $fleet_flying_sorter[$fleet_event_count] = $time;
   $fleet_flying_events[$fleet_event_count] = array(
     'ROW'  => $fleet_flying_row,

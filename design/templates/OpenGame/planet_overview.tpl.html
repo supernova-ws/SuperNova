@@ -69,32 +69,33 @@
 </div>
 
 <br />
+<h2>[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}] {PLANET_TYPE_TEXT} "{PLANET_NAME}"</h2>
 
 <table align="center" class="markup">
   <tr>
-    <th valign=top>
-      <!-- IF NEW_MESSAGES || NEW_LEVEL_MINER || NEW_LEVEL_RAID -->
-        <table width="522">
-          <!-- IF NEW_MESSAGES > 0 -->
-            <tr><th colspan=2><a href=messages.php>
-              {L_ov_you_have}
-              <!-- IF NEW_MESSAGES == 1 -->
-                {L_ov_new_message}
-              <!-- ELSE -->
-                {NEW_MESSAGES} {L_ov_new_messages}
-              <!-- ENDIF -->
-            </a></th></tr>
-          <!-- ENDIF -->
+    <th valign="top">
+      <!--&lt;!&ndash; IF NEW_MESSAGES || NEW_LEVEL_MINER || NEW_LEVEL_RAID &ndash;&gt;-->
+        <!--<table class="border_image_small planet_overview-info">-->
+          <!--&lt;!&ndash; IF NEW_MESSAGES > 0 &ndash;&gt;-->
+            <!--<tr><th colspan="2"><a href="messages.php" class="link">-->
+              <!--{L_ov_you_have}-->
+              <!--&lt;!&ndash; IF NEW_MESSAGES == 1 &ndash;&gt;-->
+                <!--{L_ov_new_message}-->
+              <!--&lt;!&ndash; ELSE &ndash;&gt;-->
+                <!--{NEW_MESSAGES} {L_ov_new_messages}-->
+              <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+            <!--</a></th></tr>-->
+          <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
 
-          <!-- IF NEW_LEVEL_MINER -->
-            <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_miner}</a></th></tr>
-          <!-- ENDIF -->
+          <!--&lt;!&ndash; IF NEW_LEVEL_MINER &ndash;&gt;-->
+            <!--<tr><th colspan=2><a href="dark_matter.php" class="link">{L_ov_rpg_new_level_miner}</a></th></tr>-->
+          <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
 
-          <!-- IF NEW_LEVEL_RAID -->
-            <tr><th colspan=2><a href=officer.php>{L_ov_rpg_new_level_raid}</a></th></tr>
-          <!-- ENDIF -->
-        </table>
-      <!-- ENDIF -->
+          <!--&lt;!&ndash; IF NEW_LEVEL_RAID &ndash;&gt;-->
+            <!--<tr><th colspan=2><a href="dark_matter.php" class="link">{L_ov_rpg_new_level_raid}</a></th></tr>-->
+          <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+        <!--</table>-->
+      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
 
       <table width="522">
         <tr>

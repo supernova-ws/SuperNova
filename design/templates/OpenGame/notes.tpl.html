@@ -9,13 +9,27 @@
 <form action="notes.php" name="note_form" id="note_form" method="POST">
 <input type="hidden" name="note_id_edit" id="note_id_edit" value="{NOTE_ID_EDIT}">
 <table width="519px">
+  <!-- IF .note > 0 -->
+  <tr>
+    <th class="c_c" colspan="5">
+      {L_sys_delete}
+      <select name="note_delete_range" onchange="jQuery('#note_delete').prop('disabled', jQuery(this).val() ? '' : 'disabled');">
+        <option value="">{L_note_range_select}</option>
+        <option value="marked">{L_note_range_marked}</option>
+        <option value="marked_not">{L_note_range_marked_not}</option>
+        <option value="all">{L_note_range_all}</option>
+      </select>
+      <input type="submit" value="{L_note_delete}" name="note_delete" id="note_delete" disabled/>
+    </th>
+  </tr>
+  <!-- ENDIF -->
   <tr>
     <th class="c_c" width="20px"><input type="checkbox" name="note_select" id="note_select_all" onclick="note_select_do(undefined);"></th>
     <th class="c_l">{L_note_note}</th>
     <th class="c_c" width="20px">Action</th>
   </tr>
   <!-- INCLUDE note_list -->
-  <!-- IF .note > 1 -->
+  <!-- IF .note > 0 -->
   <tr>
     <th class="c_c" colspan="5">
       {L_sys_delete}

@@ -2128,6 +2128,36 @@ body:not(.no_border_image) [table_title]:before {
   vertical-align: middle;
 }
 
+/* Event Halloween */
+.halloween {
+  position: absolute;
+
+  display: none;
+  width: 32px;
+  height: 32px;
+
+  z-index: 10000;
+}
+
+.halloween_result {
+  display: none;
+  width: 32px;
+  height: 32px;
+  /*background-color: white;*/
+
+  position: absolute;
+  z-index: 10001;
+
+  left: 0;
+  top: 0;
+}
+
+/* Planet overview */
+.planet_overview-info {
+  width: 100%;
+  margin-bottom: 1em;
+}
+
 /* TEMPLATE BOILERPLATE ********************************************************************************************* */
 .hint {
   text-align: justify;
@@ -2740,32 +2770,3 @@ td.error_message {
   background-color: #415680;
 }
 
-.halloween {
-  position: absolute;
-
-  display: none;
-  width: 32px;
-  height: 32px;
-
-  /*background-image: url("../../../design/images/halloween/1.png");*/
-  /*background-color: red;*/
-
-  /*top: 100000em;*/
-  /*left: 100000em;*/
-
-  z-index: 10000;
-}
-
-.halloween_result {
-  display: none;
-  width: 32px;
-  height: 32px;
-  /*background-color: white;*/
-
-  position: absolute;
-  z-index: 10001;
-
-  left: 0;
-  top: 0;
-
-}
