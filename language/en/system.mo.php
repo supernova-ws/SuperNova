@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 40a19.12
 *
 */
 
@@ -1139,5 +1139,8 @@ $a_lang_array = (array(
   'wiki_grants' => 'Grants',
 
   'que_slot_length' => 'Slots',
+
+  'sys_confirm_action_title' => 'Подтвердите ваше действие',
+  'sys_confirm_action' => 'Вы действительно хотите сделать это?',
 
 ));

@@ -12,10 +12,10 @@
   <div id="ov_{$QUE_ID}_que" class="bld_que_items {$ECO_QUE_VERTICAL}"></div>
 
   <div class="bld_que_buttons">
-    <a class="button_pseudo" href="buildings.php?mode={$QUE_ID}&action=clear&ally_id={ALLY_ID}">{L_eco_que_clear}</a>
+    <a id="eco_que_clear" class="button_pseudo" href="buildings.php?mode={$QUE_ID}&action=clear&ally_id={ALLY_ID}">{L_eco_que_clear}</a>
 
     <!-- IF ARTIFACT_LEVEL -->
-    <a class="button_pseudo" href="artifacts.php?action={D_ACTION_USE}&unit_id={ARTIFACT_ID}&REQUEST_URI=buildings.php?mode={$QUE_ID}">{ARTIFACT_NAME}</a>
+    <a id="eco_que_artifact" class="button_pseudo" href="artifacts.php?action={D_ACTION_USE}&unit_id={ARTIFACT_ID}&REQUEST_URI=buildings.php?mode={$QUE_ID}">{ARTIFACT_NAME}</a>
     <!-- ENDIF -->
 
     <a class="button_pseudo" href="buildings.php?mode={$QUE_ID}&action=trim&ally_id={ALLY_ID}">{L_eco_que_trim}</a>

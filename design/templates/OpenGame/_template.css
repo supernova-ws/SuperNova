@@ -469,6 +469,10 @@ input[type=text].coordinate {
   position: absolute; width: 100%; height: 100%;left: 0; top: 0; vertical-align: middle; display: flex; align-items: center; justify-content: center;
 }
 
+.sn-dialog-confirm {
+  padding: 1em;
+}
+
 /* Page Body ======================================================================================================== */
 #page_body {
   margin-left: 14em;

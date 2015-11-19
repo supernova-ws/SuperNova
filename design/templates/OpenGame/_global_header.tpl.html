@@ -47,17 +47,17 @@
     <script type="text/javascript">
       // Этот скрипт находится здесь, потому что он должен быть выполнен максимально быстро
       var timeBrowser = new Date();
+    </script>
 
+    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
+    <!--<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/fm.checkator.jquery.js?{C_var_db_update}"></script>-->
+    <script type="text/javascript">
       var SN_SOUND_ENABLED = parseInt('{SOUND_ENABLED}') ? parseInt('{SOUND_ENABLED}') : 0;
       var PLAYER_OPTION_ANIMATION_DISABLED = parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') ? parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') : 0;
       var PLAYER_OPTION_PROGRESS_BARS_DISABLED = parseInt('{PLAYER_OPTION_PROGRESS_BARS_DISABLED}') ? parseInt('{PLAYER_OPTION_PROGRESS_BARS_DISABLED}') : 0;
       var SN_ROOT_VIRTUAL = '{D_SN_ROOT_VIRTUAL}';
       var sn_path_prefix = '{D_SN_ROOT_VIRTUAL}';
-    </script>
 
-    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
-    <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/fm.checkator.jquery.js?{C_var_db_update}"></script>
-    <script type="text/javascript">
       jQuery.fx.off = PLAYER_OPTION_ANIMATION_DISABLED;
 
       // Корректировка по времени запроса - если доступно
@@ -131,6 +131,14 @@
       <!-- ENDIF -->
     <!-- END javascript -->
 
+    <script type="text/javascript">
+      $.extend(language, {
+        sys_confirm: '{LA_sys_confirm}',
+        sys_cancel: '{LA_sys_cancel}',
+        sys_confirm_action: '{LA_sys_confirm_action}',
+        sys_confirm_action_title: '{LA_sys_confirm_action_title}',
+      });
+    </script>
 
     <!-- IF IMPERSONATING -->
       <div style="text-align: center" class="warning">{IMPERSONATING}</div>

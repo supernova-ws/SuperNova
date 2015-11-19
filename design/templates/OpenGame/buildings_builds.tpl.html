@@ -17,7 +17,18 @@ var PLANET_ID = isNaN(PLANET_ID = parseInt('{PLN_ID}')) ? 0 : PLANET_ID;
 
 var que_id = '{QUE_ID}';
 
-language = {
+$.extend(language, {
+//  sys_confirm: '{LA_sys_confirm}',
+//  sys_cancel: '{LA_sys_cancel}',
+//  sys_confirm_action: '{LA_sys_confirm_action}',
+//  sys_confirm_action_title: '{LA_sys_confirm_action_title}',
+
+  eco_que_clear_dialog_title: '{LA_eco_que_clear_dialog_title}',
+  eco_que_clear_dialog_text: '{LA_eco_que_clear_dialog_text}',
+
+  eco_que_artifact_dialog_title: '{LA_eco_que_artifact_dialog_title}',
+  eco_que_artifact_dialog_text: '{LA_eco_que_artifact_dialog_text}',
+
   level: '{LA_level}',
   level_short: '{LA_sys_level_short}',
   bld_create: '{LA_bld_create}',
@@ -53,7 +64,7 @@ language = {
   'eco_bld_autoconvert_explain': '{LA_eco_bld_autoconvert_explain}'.replace(/\\r\\n/g, '\r\n'),
   'eco_bld_autoconvert_dark_matter_none': '{LA_eco_bld_autoconvert_dark_matter_none}'.replace(/\\r\\n/g, '\r\n').format(sn_format_number(MARKET_AUTOCONVERT_COST - DARK_MATTER)),
   'eco_bld_autoconvert_confirm': '{LA_eco_bld_autoconvert_confirm}'.replace(/\\r\\n/g, '\r\n').format(sn_format_number(MARKET_AUTOCONVERT_COST, 0)),
-};
+});
 
 planet = {
   fleet_own: '{FLEET_OWN_COUNT}',

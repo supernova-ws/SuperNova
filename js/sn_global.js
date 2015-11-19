@@ -752,3 +752,67 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   }
 
 }
+
+function snConfirm(params) {
+  !params ? params = {} : false;
+  // , message, title
+  var that = $(params.that);
+  var d = $.Deferred();
+  $('<div><div class="sn-dialog-confirm">' + (params.message ? params.message : language.sys_confirm_action) + '</div></div>').dialog({
+    modal: true,
+    autoOpen: true,
+    resizable: false,
+    width: params.width ? params.width : '40em',
+    title: params.title ? params.title : language.sys_confirm_action_title,
+    open: function() {
+      var element = $(this).parent();
+      //var selected_planet = $('#navbar_planet_select').find('option:selected');
+      element.find('.ui-dialog-titlebar').css('display', 'block');
+      element.find('.ui-dialog-buttonpane button:last').focus();
+      //element.find('input[name=cp]').val(selected_planet.val());
+      //$('#dialog-sector-buy-planet-name').text(selected_planet.text());
+    },
+    buttons: {
+      ok: {
+        text: language.sys_confirm,
+        class: 'ok',
+        click: function () {
+          var element = $(this).parent();
+          // Отключаем все кнопки кроме крестика закрытия в тайтл-баре
+          element.find(':button:not(.ui-dialog-titlebar-close)').button('disable');
+          //var form = element.find("form");
+          //if(form) {
+          //  form.submit();
+          //} else {
+          //  $(this).dialog("close");
+          //
+          //  d.resolve(true);
+          //
+          //  //return true;
+          //}
+          $(this).dialog("close");
+
+          d.resolve(true);
+        }
+      },
+      cancel: {
+        text: language.sys_cancel,
+        click: function() {
+          $(this).dialog("close");
+          d.resolve(false);
+
+          //return false;
+        }
+      }
+    }
+  });
+
+  d.promise().then(function (result) {
+    !result ? that.removeClass('button_pseudo_pressed') : false;;
+    if(result && that.attr('href')) {
+      sn_redirect(that.attr('href'));
+    }
+  });
+
+  return false;
+}

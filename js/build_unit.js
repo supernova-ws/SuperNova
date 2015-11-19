@@ -357,6 +357,20 @@ function eco_struc_select_unit(unit_id) {
   }
 }
 
-//function eco_struc_unborder_unit(unit_id) {
-//  unit_selected != unit_id ? $('#unit' + unit_id).removeClass('unit_border_selected') : false;
-//}
+$(document).on('click', '#eco_que_clear', function(e) {
+  snConfirm({
+    that: $(this),
+    message: language.eco_que_clear_dialog_text,
+    title: language.eco_que_clear_dialog_title}
+  );
+  return false;
+});
+
+$(document).on('click', '#eco_que_artifact', function(e) {
+  snConfirm({
+    that: $(this),
+    message: language.eco_que_artifact_dialog_text.format($(this).text()),
+    title: language.eco_que_artifact_dialog_title.format($(this).text())
+  });
+  return false;
+});

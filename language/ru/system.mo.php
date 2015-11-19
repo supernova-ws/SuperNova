@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a19.10#
+* @version #40a19.12#
 *
 */
 
@@ -1161,5 +1161,8 @@ $a_lang_array = (array(
   'sys_planet_on' => 'на',
 
   'sys_purchase_confirm' => 'Подвердите покупку',
+
+  'sys_confirm_action_title' => 'Подтвердите ваше действие',
+  'sys_confirm_action' => 'Вы действительно хотите сделать это?',
 
 ));
