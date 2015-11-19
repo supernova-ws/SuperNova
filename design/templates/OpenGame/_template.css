@@ -442,6 +442,33 @@ input[type=text].coordinate {
   margin-top: 1em;
 }
 
+.navbar_button {
+  display: inline-block;
+
+  position: relative;
+
+  width: 5.818181818182em;
+  height: 5.818181818182em;
+
+  margin-right: 0.25em;
+
+  text-align: center;
+}
+.navbar_button.wide {
+  width: 11.63636363636em;
+}
+
+.navbar_button_image {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  height: 100%;
+}
+.navbar_button_que {
+  position: absolute; width: 100%; height: 100%;left: 0; top: 0; vertical-align: middle; display: flex; align-items: center; justify-content: center;
+}
+
 /* Page Body ======================================================================================================== */
 #page_body {
   margin-left: 14em;

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a18.11
+* @version 40a19.11
 *
 */
 
@@ -84,6 +84,8 @@ $a_lang_array = array(
   'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
   'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Disable table borders (if any)',
   'PLAYER_OPTION_TECH_TREE_TABLE' => 'View Technology Tree as table (old view)',
+  'PLAYER_OPTION_ANIMATION_DISABLED' => 'Disable animation effects',
+  'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => 'Disable progress bars',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',
@@ -172,7 +174,6 @@ $a_lang_array = array(
   'opt_mail_permanent_description' => 'Your game account linked permanently to this e-mail. All system notices (like password change confirmation) will be sent to this address. You can enter this email only once',
 
   'opt_sound_enabled' => 'Включить звуки в игре',
-  'opt_animation_disabled' => 'Отключить эффекты анимации в игре',
 
   'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
   'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',

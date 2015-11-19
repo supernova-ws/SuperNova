@@ -73,6 +73,8 @@ class userOptions extends oldArrayAccessNd {
     PLAYER_OPTION_ANIMATION_DISABLED => 0,
     PLAYER_OPTION_DESIGN_DISABLE_BORDERS => 0,
     PLAYER_OPTION_TECH_TREE_TABLE => 0,
+
+    PLAYER_OPTION_PROGRESS_BARS_DISABLED => 0,
   );
 
   public $data = array(); // Container // TODO - make protected

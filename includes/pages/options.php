@@ -388,7 +388,8 @@ function sn_options_view($template = null) {
     'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
     'PLAYER_OPTION_TECH_TREE_TABLE' => classSupernova::$user_options[PLAYER_OPTION_TECH_TREE_TABLE],
     'sound_enabled' => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
-    'animation_disabled' => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+    'PLAYER_OPTION_ANIMATION_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+    'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data' => htmlspecialchars($user['username']),

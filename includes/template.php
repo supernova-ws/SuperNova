@@ -278,6 +278,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
     'SOUND_ENABLED'            => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
     'PLAYER_OPTION_ANIMATION_DISABLED'            => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+    'PLAYER_OPTION_PROGRESS_BARS_DISABLED'            => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
 
     // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
     'IMPERSONATING'            => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
@@ -541,6 +542,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
 
     'SUBQUE_FLEET'              => SUBQUE_FLEET,
+    'QUE_RESEARCH'              => QUE_RESEARCH,
   ));
 
   if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false))

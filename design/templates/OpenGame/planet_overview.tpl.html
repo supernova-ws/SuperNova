@@ -219,16 +219,16 @@
           <tr class="c_l">
             <td class="c_c" width="9em" height=33%>
               <!-- IF ques.LENGTH -->
-                <div>{L_sys_total_time}</div>
-                <div id="ov_{ques.ID}_total" style="color: red"></div>
-                <div id="ov_{ques.ID}_finish" style="color: yellow"></div>
-                <div id="ov_{ques.ID}"></div>
+                <!-- DEFINE $QUE_ID = '{ques.ID}' -->
+                <div class="bld_que_container {$ECO_QUE_VERTICAL}">
+                  <!-- INCLUDE que_total -->
+                </div>
+
                 <!-- DEFINE $QUE_ID = '{ques.ID}' -->
                 <!-- INCLUDE eco_queue -->
               <!-- ELSE -->
                 {ques.NAME}<br>
               <!-- ENDIF -->
-                <!--<div id="ov_{ques.ID}_timer" style="color: lime" class="ov_{ques.ID}_timer_0"></div>-->
             </td>
             <td class="c_l" colspan="4" id="ov_{ques.ID}_que">
               {L_eco_que_empty}

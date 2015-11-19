@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a19.10
+* @version 40a19.11
 *
 */
 
@@ -81,6 +81,8 @@ $a_lang_array = (array(
   'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
   'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Отключить рамки-картинки у таблиц',
   'PLAYER_OPTION_TECH_TREE_TABLE' => 'Страница Технологий в виде таблицы (старый вид)',
+  'PLAYER_OPTION_ANIMATION_DISABLED' => 'Отключить эффекты анимации',
+  'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => 'Отключить прогресс-бары',
 
   'opt_chk_skin' => 'Использовать оформление',
   'opt_adm_title' => 'Опции администрирования',
@@ -170,11 +172,9 @@ $a_lang_array = (array(
   'opt_mail_permanent_description' => 'К этому почтовому адресу привязывается игровой аккаунт. Ввести его можно только один раз. Все системные уведомления (например, о смене пароля) отправляются именно на этот адрес',
 
   'opt_sound_enabled' => 'Включить звуки в игре',
-  'opt_animation_disabled' => 'Отключить эффекты анимации в игре',
 
   'opt_account_name' => 'Ваш логин<br />Это имя надо вводить при входе в игру',
   'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
 
   'opt_build_autoconvert_hide' => 'Скрыть кнопку автоконвертации',
-
 ));
