@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a18.11
+* @version 40a19.10
 *
 */
 
@@ -79,7 +79,7 @@ $a_lang_array = (array(
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Отключить кнопку квестов',
   'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид "Обзора Вселенной"',
   'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
-  'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Отключить бордюры у таблиц',
+  'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Отключить рамки-картинки у таблиц',
   'PLAYER_OPTION_TECH_TREE_TABLE' => 'Страница Технологий в виде таблицы (старый вид)',
 
   'opt_chk_skin' => 'Использовать оформление',

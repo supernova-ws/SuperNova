@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a19.9#
+* @version #40a19.10#
 *
 */
 
@@ -493,6 +493,7 @@ $a_lang_array = (array(
   'sys_banned_msg' => 'Вы забанены. Для получения информации зайдите <a href="banned.php">сюда</a>. Срок окончания блокировки аккаунта: ',
   'sys_total_time' => 'Общее время',
   'sys_total_time_short' => 'Очередь',
+  'eco_que_finish' => 'Завершение',
 
   // Universe
   'uni_moon_of_planet' => 'планеты',
@@ -1153,6 +1154,7 @@ $a_lang_array = (array(
   'wiki_grants' => 'Предоставляет',
 
   'que_slot_length' => 'Слоты',
+  'que_slot_length_long' => 'Слоты очереди',
 
   'sys_buy_doing' => 'Вы покупаете',
   'sys_planet_sector' => 'сектор',

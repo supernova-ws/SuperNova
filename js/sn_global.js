@@ -12,6 +12,31 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     return $(this).__tabs(a, b, c, d, e, f);
   };
 
+  /**
+   * Вычисление процента с масштабированием (улучшенной точностью)
+   *
+   * @param {number} number1 - первое число
+   * @param {number} number2 - второе число
+   * @param {number} scale - масштаб/точность. Например, при scale = 10 - точность будет 0.1%
+   * @returns {number}
+   */
+  Math.percent = function (number1, number2, scale) {
+    //!(scale = Math.round(scale)) ? scale = 1 : false;
+    !scale ? scale = 1 : false;
+    return number2 ? Math.round((number1 / number2 * 100 * scale) / scale) : 0;
+  };
+  /**
+   * Ширина в процентных пикселях
+   *
+   * @param {number} number1 - первое число
+   * @param {number} number2 - второе число
+   * @param {number} pixels - оригинальная ширина в пикселях. Если отрицательная - возвращается дополнение до ширины (pixels - %pixels)
+   * @returns {number|string}
+   */
+  Math.percentPixels = function (number1, number2, pixels) {
+    return number2 ? Math.round((pixels < 0 ? -pixels : 0) + (number1 / number2 * pixels)) + 'px' : 0;
+  };
+
   var sn_inframe;
   function getFrameName(frame) {
     for (var i = 0; i < parent.frames.length; i++) {

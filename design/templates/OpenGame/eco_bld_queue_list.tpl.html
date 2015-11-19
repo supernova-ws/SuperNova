@@ -1,41 +1,39 @@
+<!-- IF U_opt_int_struc_vertical -->
+  <!-- DEFINE $ECO_QUE_VERTICAL = 'vertical' -->
+<!-- ELSE -->
+  <!-- DEFINE $ECO_QUE_VERTICAL = '' -->
+<!-- ENDIF -->
+
+<div class="bld_que_container {$ECO_QUE_VERTICAL}">
   <!-- IF $QUE_NOT_EMPTY -->
-        <table class="markup" width=100%>
-          <tr>
-            <th width="11em">
-              <div>{L_sys_total_time}</div>
-              <div id="ov_{QUE_ID}_total" style="color: red"></div>
-              <div id="ov_{QUE_ID}"></div>
-            </th>
-<!-- IF U_opt_int_struc_vertical -->
-          </tr>
-          <tr>
-<!-- ENDIF -->
-            <th id="ov_{QUE_ID}_que"></th>
-          </tr>
-          <tr>
-            <th class="c_c"<!-- IF ! U_opt_int_struc_vertical --> colspan="5"<!-- ENDIF -->>
-              <div class="fl"><a class="button_pseudo" href="buildings.php?mode={QUE_ID}&action=clear&ally_id={ALLY_ID}">{L_eco_que_clear}</a></div>
-<!-- IF U_opt_int_struc_vertical -->
-            </th>
-          </tr>
-          <tr>
-            <th class="c_c">
-<!-- ENDIF -->
+  <div class="bld_que_total">
+    <div class="bld_que_total_time_text">{L_que_slot_length_long}&nbsp;<span id="ov_{QUE_ID}_slots"></span></div>
+    <div id="ov_{QUE_ID}_finish" class="bld_que_total_finish" style="color: yellow"></div>
+    <div class="bld_que_total_bar">
+      <div id="ov_{QUE_ID}_progress_bar" class="bld_que_total_progress_bar"></div>
+      <div id="ov_{QUE_ID}_total" class="bld_que_total_timer"></div>
+    </div>
+    <!--<div>{L_sys_total_time}</div>-->
+    <!--<div id="ov_{QUE_ID}_total" style="color: red"></div>-->
+    <!--<div style="width: 100%">-->
+      <!--<div id="ov_{QUE_ID}_progress_bar" style="background-color: green; width: 100%;">&nbsp;</div>-->
+    <!--</div>-->
+    <div id="ov_{QUE_ID}" class="bld_que_total_item"></div>
+  </div>
 
-        <!-- IF ARTIFACT_LEVEL -->
-        <a class="button_pseudo" href="artifacts.php?action={D_ACTION_USE}&unit_id={ARTIFACT_ID}&REQUEST_URI=buildings.php?mode={QUE_ID}">{ARTIFACT_NAME}</a>
-        <!-- ENDIF -->
+  <div id="ov_{QUE_ID}_que" class="bld_que_items {$ECO_QUE_VERTICAL}"></div>
 
-<!-- IF U_opt_int_struc_vertical -->
-            </th>
-          </tr>
-          <tr>
-            <th class="c_c">
-<!-- ENDIF -->
-              <div class="fr"><a class="button_pseudo" href="buildings.php?mode={QUE_ID}&action=trim&ally_id={ALLY_ID}">{L_eco_que_trim}</a></div>
-            </th>
-          </tr>
-        </table>
+  <div class="bld_que_buttons">
+    <a class="button_pseudo" href="buildings.php?mode={QUE_ID}&action=clear&ally_id={ALLY_ID}">{L_eco_que_clear}</a>
+
+    <!-- IF ARTIFACT_LEVEL -->
+    <a class="button_pseudo" href="artifacts.php?action={D_ACTION_USE}&unit_id={ARTIFACT_ID}&REQUEST_URI=buildings.php?mode={QUE_ID}">{ARTIFACT_NAME}</a>
+    <!-- ENDIF -->
+
+    <a class="button_pseudo" href="buildings.php?mode={QUE_ID}&action=trim&ally_id={ALLY_ID}">{L_eco_que_trim}</a>
+  </div>
   <!-- ELSE -->
-        {L_eco_que_empty}
+  {L_eco_que_empty}
   <!-- ENDIF -->
+
+</div>

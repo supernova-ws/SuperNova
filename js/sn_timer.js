@@ -122,8 +122,11 @@ if(window.LOADED_TIMER === undefined) {
       }
       timer['active'] = true;
 
+      timer.prefixClass = '.' + timer['id'];
+      timer.prefixId = '#' + timer['id'];
+
       // Кэшируем DOM-ики
-      timer['html_main'] = $("#" + timer['id']);
+      timer['html_main'] = $(timer.prefixId);
 
       // Если нет настроек - создаём пустой объект
       timer['options'] === undefined ? timer['options'] = {} : false;
@@ -135,7 +138,7 @@ if(window.LOADED_TIMER === undefined) {
         case TIMER_BUILD_QUE_V1: {
           // Если нет ни основного элемента вывода, ни элемента таймера - тогда можно даже не начинать работу счётчика
           // TODO - Проверка на is(':visible')
-          timer['html_timer'] = $("#" + timer['id'] + '_timer');
+          timer['html_timer'] = $(timer.prefixId + '_timer');
           if (!timer['html_main'].length && !timer['html_timer'].length) {
             timer['active'] = false;
             break;
@@ -157,11 +160,22 @@ if(window.LOADED_TIMER === undefined) {
             break;
           }
 
-          timer['html_total_js'] = $("#" + timer['id'] + '_total:visible');
-          timer['html_que_js'] = $("#" + timer['id'] + '_que');
-          timer['html_finish'] = $('#' + timer['id'] + '_finish:visible');
-          timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
-          timer['html_slots_current'] = $('#' + timer['id'] + '_slots');
+          timer['slotAmountBarWidthLast'] = 0;
+          timer['unit_amount_original'] = timer_options['que'][0][UNIT_AMOUNT];
+
+          timer['html_total_js'] = $(timer.prefixId + '_total:visible');
+          timer['html_que_js'] = $(timer.prefixId + '_que');
+          timer['html_finish'] = $(timer.prefixId + '_finish:visible');
+          timer['html_slots_current'] = $(timer.prefixId + '_slots');
+          timer['html_queProgressBar'] = $(timer.prefixId + '_progress_bar');
+          timer.queProgressBarWidth = timer['html_queProgressBar'].width() ? timer['html_queProgressBar'].width() : 0;
+
+          timer['html_level_current'] = $(timer.prefixClass + '_level_0:visible');
+          timer['html_slotUnitTimeBar'] = $(timer.prefixClass + '_unit_bar_0:visible');
+          timer.slotUnitTimeBarWidth = timer['html_slotUnitTimeBar'].width() ? timer['html_slotUnitTimeBar'].width() : 0;
+
+          timer['html_timer_current'] = $(timer.prefixClass + '_timer_0:visible');
+          // timer.barTotalWidthPixeld = timer['html_timer_current'].width() ? timer['html_timer_current'].width() : 0;
 
           timer['que_compiled'] = '';
           break;
@@ -170,7 +184,7 @@ if(window.LOADED_TIMER === undefined) {
         case TIMER_EVENT_QUE: {
           // Если нет ни основного элемента вывода, ни видимого элемента с подсказкой - тогда можно даже не начинать работу счётчика
           // TODO - Проверка на is(':visible')
-          timer['html_total_js'] = $("#" + timer['id'] + '_total:visible');
+          timer['html_total_js'] = $(timer.prefixId + '_total:visible');
           if (!timer['html_main'].length && !timer['html_total_js'].length) {
             timer['active'] = false;
             break;
@@ -240,6 +254,7 @@ if(window.LOADED_TIMER === undefined) {
         .replace(/\[UNIT_QUE_PLACE\]/gi, que_id);
     }
     timer_options['total'] = total;
+    !timer_options['total_original'] ? timer_options['total_original'] = timer_options['total'] : false;
 
     return compiled;
   }
@@ -254,7 +269,8 @@ if(window.LOADED_TIMER === undefined) {
 
     sn_timer_prepare();
 
-    var timer, timerID, timeLeftTotalText, infoText, timer_options, local_time_plus, timeLeftText, new_value, hintText, timeLeft, timeSinceLastUpdate, que;
+    var timer, timerID, timeLeftTotalText, infoText, timer_options, local_time_plus, timeLeftText, new_value, hintText,
+      timeLeft, timeSinceLastUpdate, que, slotAmountBarWidth, slotUnitTimeBarWidth, queProgressBarWidthCurrent;
     var activeTimers = 0;
 
     var time_local_now = new Date();
@@ -326,6 +342,7 @@ if(window.LOADED_TIMER === undefined) {
               que[0][UNIT_TIME] = que[0][UNIT_TIME_FULL];
               timer_options['total'] -= que[0][UNIT_TIME_FULL];
               timer['html_level_current'].text(que[0][UNIT_AMOUNT]);
+              slotAmountBarWidth = Math.percentPixels(que[0][UNIT_AMOUNT], timer['unit_amount_original'], timer.slotUnitTimeBarWidth);
             }
           } else {
             timeSinceLastUpdate = 0;
@@ -338,9 +355,13 @@ if(window.LOADED_TIMER === undefined) {
             timer['html_slots_current'].length ? timer['html_slots_current'].html(que.length) : false;
             timer['html_que_js'].length ? timer['html_que_js'].html(timer['que_compiled']) : false;
 
-            timer['html_level_current'] = $('.' + timer['id'] + '_level_0:visible');
-            timer['html_timer_current'] = $('.' + timer['id'] + '_timer_0:visible');
-            timer['html_timer_seconds'] = $('.' + timer['id'] + '_seconds_0:visible');
+            timer['html_level_current'] = $(timer.prefixClass + '_level_0:visible');
+            timer['html_timer_seconds'] = $(timer.prefixClass + '_seconds_0:visible');
+            timer['html_timer_current'] = $(timer.prefixClass + '_timer_0:visible');
+
+            timer['html_slotUnitTimeBar'] = $(timer.prefixClass + '_unit_bar_0:visible');
+            timer.slotUnitTimeBarWidth = timer['html_slotUnitTimeBar'].width() ? timer['html_slotUnitTimeBar'].width() : 0;
+            timer['html_slotAmountBar'] = $(timer.prefixClass + '_slot_bar_0:visible');
           }
 
           if (que.length && que[0][UNIT_ID]) {
@@ -359,45 +380,62 @@ if(window.LOADED_TIMER === undefined) {
               timer['html_finish'].already_tagged = true;
             }
 
+            slotUnitTimeBarWidth = Math.percentPixels(timeLeft, que[0][UNIT_TIME_FULL], -timer.slotUnitTimeBarWidth);
+            queProgressBarWidthCurrent = Math.percentPixels(timeLeft + timer_options['total'], que[0][UNIT_TIME_FULL] + timer_options['total_original'], timer.queProgressBarWidth);
           } else {
             if (timer_options['url'] !== undefined) {
               document.location = timer_options['url'];
             }
+
+            timeLeft = 0;
 
             infoText = timer_options['msg_done'];
             timeLeftText = '';
             timeLeftTotalText = '00:00:00';
 
             timer['html_finish'].hide();
-
-            timeLeft = 0;
             timer['active'] = false;
-          }
-          timer['html_timer_seconds'].length ? timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%') : false;
 
+            slotUnitTimeBarWidth = 0;
+            queProgressBarWidthCurrent = 0;
+          }
+
+          // Вывод строковых значений
+          timer['html_timer_seconds'].length ? timer['html_timer_seconds'].width(Math.round((timeLeft % 60 + 1) / 60 * 100) + '%') : false;
           if (timer['html_total_js'].length) {
             timer['html_total_js'].html(timeLeftTotalText);
           } else {
             timeLeftText += (timeLeftText ? '<br>' : '') + timeLeftTotalText;
           }
-
-          if (timer['html_timer_current'] !== undefined && timer['html_timer_current'].length) {
+          if (timer['html_timer_current'].length) {
             timer['html_timer_current'].html('<span>' + timeLeftText + '</span>');
           } else {
             infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
           }
 
-          if(!jQuery.fx.off && que.length && que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
-            // Анимация
-            $('.' + timer['id'] + '_container_0:visible').animate({opacity: 0}, que[0][UNIT_TIME] * 1000);
+          // ProgressBars
+          if (timer['html_queProgressBar'].length && queProgressBarWidthCurrent != timer.queProgressBarWidthLast) {
+            timer['html_queProgressBar'].css('width', timer.queProgressBarWidthLast = queProgressBarWidthCurrent);
+          }
+          if (timer['html_slotUnitTimeBar'].length && slotUnitTimeBarWidth != timer.slotUnitTimeBarWidthLast) {
+            timer['html_slotUnitTimeBar'].css('width', timer.slotUnitTimeBarWidthLast = slotUnitTimeBarWidth);
+          }
+          if (timer['html_slotAmountBar'].length && slotAmountBarWidth != timer.slotAmountBarWidthLast) {
+            timer['html_slotAmountBar'].css('width', timer.slotAmountBarWidthLast = slotAmountBarWidth);
           }
 
-          if(!jQuery.fx.off && que.length && que[0][UNIT_TIME_FULL] == timeLeft) {
-            timer['html_timer_current'].children().animate({opacity: 0}, 50, function() {
-              $(this).animate({opacity: 1}, 300)});
+          // Анимация
+          if(!jQuery.fx.off && que.length){
+            if(que[0][UNIT_TIME] == 1 && que[0][UNIT_AMOUNT] == 1) {
+              $(timer.prefixClass + '_container_0:visible').animate({opacity: 0}, que[0][UNIT_TIME] * 1000);
+            }
+            if(que[0][UNIT_TIME_FULL] == timeLeft) {
+              timer['html_timer_current'].children().animate({opacity: 0}, 50, function() {
+                $(this).animate({opacity: 1}, 300)});
+            }
           }
 
-          timer['html_main'].length ? timer['html_main'].html(infoText) : false;
+          timer['html_main'].length && infoText != timer.infoText ? timer['html_main'].html(timer.infoText = infoText) : false;
           break;
         }
 

@@ -459,7 +459,7 @@ input[type=text].coordinate {
   font-weight: normal;
 }
 #copyright, #copyright #supernova_ws {
-  padding-top: 2ex;
+  padding-top: 1em;
 }
 
 
@@ -812,17 +812,17 @@ input[type=text].coordinate {
   display: table-footer-group;
   text-align: center;
 }
-#unit_create_button_auto {
+/*#unit_create_button_auto {*/
   /*margin-left: 5em;*/
-}
+/*}*/
 
 @media only screen and (max-width : 51.9375em) { /* 831px and less*/
-  body.no_border_image #unit_table { /* 3 preview */
-    width: 37em;
-  }
-  body:not(.no_border_image) #unit_table { /* 3 preview */
-    width: 40.3em;
-  }
+  /*body.no_border_image #unit_table { /!* 3 preview *!/*/
+    /*width: 37em;*/
+  /*}*/
+  /*body:not(.no_border_image) #unit_table { /!* 3 preview *!/*/
+    /*width: 40.3em;*/
+  /*}*/
   #unit_destroy_resources {
     margin-top: 1em;
   }
@@ -831,12 +831,12 @@ input[type=text].coordinate {
   }
 }
 @media only screen and (min-width : 52em) { /* 832px */
-  body.no_border_image #unit_table { /* 4 preview */
-    width: 48.5em;
-  }
-  body:not(.no_border_image) #unit_table { /* 4 preview */
-    width: 51.8em;
-  }
+  /*body.no_border_image #unit_table { /!* 4 preview *!/*/
+    /*width: 48.5em;*/
+  /*}*/
+  /*body:not(.no_border_image) #unit_table { /!* 4 preview *!/*/
+    /*width: 51.8em;*/
+  /*}*/
   #unit_create_button_auto {
     margin-left: 5.1em;
   }
@@ -852,12 +852,12 @@ input[type=text].coordinate {
 
 }
 @media only screen and (min-width : 60em) { /* 960px */
-  body.no_border_image #unit_table { /* 5 preview */
-    width: 60.5em;
-  }
-  body:not(.no_border_image) #unit_table { /* 5 preview */
-    width: 63.8em;
-  }
+  /*body.no_border_image #unit_table { /!* 5 preview *!/*/
+    /*width: 60.5em;*/
+  /*}*/
+  /*body:not(.no_border_image) #unit_table { /!* 5 preview *!/*/
+    /*width: 63.8em;*/
+  /*}*/
   #unit_cost_container.unit_create_stackable {
     display: table-cell;
     width: 60%;
@@ -868,12 +868,12 @@ input[type=text].coordinate {
   }
 }
 @media only screen and (min-width : 68em) { /* 1088px */
-  body.no_border_image #unit_table { /* 6 preview */
-    width: 72.5em;
-  }
-  body:not(.no_border_image) #unit_table { /* 6 preview */
-    width: 75.8em;
-  }
+  /*body.no_border_image #unit_table { /!* 6 preview *!/*/
+    /*width: 72.5em;*/
+  /*}*/
+  /*body:not(.no_border_image) #unit_table { /!* 6 preview *!/*/
+    /*width: 75.8em;*/
+  /*}*/
 
   #unit_info {
     display: block;
@@ -923,14 +923,14 @@ input[type=text].coordinate {
     margin-bottom: 0;
   }
 }
-@media only screen and (min-width : 76.5em) { /* 1224px */
-  body.no_border_image #unit_table { /* 7 preview */
-    width: 84.5em;
-  }
-  body:not(.no_border_image) #unit_table { /* 7 preview */
-    width: 88em;
-  }
-}
+/*@media only screen and (min-width : 76.5em) { /!* 1224px *!/*/
+  /*body.no_border_image #unit_table { /!* 7 preview *!/*/
+    /*width: 84.5em;*/
+  /*}*/
+  /*body:not(.no_border_image) #unit_table { /!* 7 preview *!/*/
+    /*width: 88em;*/
+  /*}*/
+/*}*/
 
 #off_get_dark_matter {
   color: #ff8900;
@@ -1672,14 +1672,18 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 .que_item { /* Que item */
   cursor: pointer;
 
-  border: 0;
+  display: inline-block;
+
+  border: solid 0.2em transparent;
+  /*border: 0;*/
 
   position: relative;
-  height: 5.5em;
-  width: 5.5em;
+  height: 6em;
+  width: 6em;
 
-  margin-right: 0.2em;
-  margin-bottom: 0.2em;
+  /*margin-right: 0.2em;*/
+  /*margin-bottom: 0.2em;*/
+  margin: 0.2em;
 
   font-size: 1em;
 }
@@ -1697,25 +1701,163 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   position: absolute;
   top: 0;
   left: 0;
+
   width: 100%;
-  height: 2ex;
+  height: 1em;
+
   font-size: 100%;
+
+  text-align: center;
 }
+.que_unit_slot_bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  height: 1em;
+
+  background-color: rgba(0,0,255,0.75);
+}
+
+.que_slot_time_container {
+  position: relative;
+
+  width: 100%;
+  height: 1em;
+}
+
 .que_unit_time {
   position: absolute;
   bottom: 0;
   left: 0;
+
   width: 100%;
-  height: 2ex;
+  height: 1em;
+
   font-size: 100%;
+
+  text-align: center;
+}
+.que_item_0 > .que_unit_progress_bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  height: 1em;
+  background-color: rgba(0,255,0,0.75);
 }
 .que_unit_time_seconds_0 {
   position: absolute;
-  bottom: 2ex;
+  bottom: 1em;
   left: 0;
   width: 100%;
   height: 0.5ex;
   font-size: 100%;
+}
+
+
+.bld_que_container {
+  display: flex;
+  text-align: left;
+  flex-wrap: wrap;
+}
+
+.bld_que_total {
+  /*display: flex;*/
+  /*flex-wrap: wrap;*/
+  /*justify-content: center;*/
+  /*align-content: center;*/
+
+  position: relative;
+
+  width: 11em;
+  /*height: 5.5em;*/
+
+  text-align: center;
+  vertical-align: top;
+}
+.bld_que_total_time_text {
+  /*position: absolute;*/
+  /*left: 0;*/
+  /*top: 0;*/
+  /*height: 50%;*/
+  width: 100%;
+}
+.bld_que_total_bar {
+  width: 100%;
+  position: relative;
+  height: 1em;
+}
+.bld_que_total_progress_bar {
+  position: absolute;
+  left:0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background-color: rgba(197, 201, 9, 0.75);
+}
+.bld_que_total_timer {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+
+  color: red;
+
+  background-color: rgba(0,0,0,0.5);
+}
+.bld_que_total_finish {
+  /*position: absolute;*/
+  /*left: 0;*/
+  /*top: 2em;*/
+
+  color: yellow;
+  /*height: 50%;*/
+  /*width: 100%;*/
+}
+.bld_que_total_item {
+  /*position: relative;*/
+  /*display: block;*/
+  /*color: red;*/
+  /*position: absolute;*/
+  /*left: 0;*/
+  /*bottom: 0;*/
+
+  /*width: inherit;*/
+
+  /*text-align: center;*/
+  /*height: 2.5em;*/
+  /*width: 100%;*/
+}
+
+.bld_que_items {
+  display: inline-block;
+  text-align: left;
+}
+.bld_que_buttons {
+  display: flex;
+  justify-content: space-between;
+
+  width: 100%;
+}
+
+.bld_que_container.vertical {
+  max-width: 11em;
+}
+.bld_que_items.vertical {
+  width: 100%;
+  flex-wrap: wrap;
+  justify-content: center;
+  text-align: center;
+}
+.bld_que_container.vertical .bld_que_buttons {
+  flex-wrap: wrap;
+
+  max-width: 11em;
 }
 
 /* Black market ===================================================================================================== */
@@ -2443,7 +2585,7 @@ body:not(.no_border_image) [table_title]:before {
 }
 
 /* Que list ===================================================================================================== */
-.que_item_0 {
+.que_item_0 > .que_unit_time {
   color: lime;
 }
 .que_unit_time_seconds_0 {

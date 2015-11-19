@@ -117,13 +117,25 @@
               <img style="position: absolute; left: 0; top: 0;" src="{D_SN_ROOT_RELATIVE}design/images/navbar_hangar.png" height="100%" alt="{L_Shipyard}" title="{L_Shipyard}">
               <!-- IF $QUE_NOT_EMPTY -->
                 <span class="alpha50" style="position: absolute; width: 100%; height: 100%;left: 0; top: 0; vertical-align: middle; display: flex; align-items: center; justify-content: center;" >
-                  <div>
-                    <div>{L_que_slot_length}&nbsp;<span id="topnav_{$QUE_ID}_slots"></span></div>
-                    <div id="topnav_{$QUE_ID}_total" style="color: red"></div>
+                  <div class="bld_que_total">
+                    <div class="bld_que_total_time_text">{L_que_slot_length}&nbsp;<span id="topnav_{$QUE_ID}_slots"></span></div>
+
+                    <div class="bld_que_total_bar">
+                      <div id="topnav_{$QUE_ID}_progress_bar" class="bld_que_total_progress_bar"></div>
+                      <div id="topnav_{$QUE_ID}_total" class="bld_que_total_timer"></div>
+                    </div>
+                    <!--<div id="topnav_{$QUE_ID}_total" style="color: red"></div>-->
                     <div id="topnav_{$QUE_ID}"></div>
 
-                    <div id="topnav_{$QUE_ID}_timer" style="color: lime" class="topnav_{$QUE_ID}_timer_0"></div>
-                    <div style="display: none;" id="topnav_{$QUE_ID}_que"></div>
+                    <!--<div id="topnav_{$QUE_ID}_timer" style="color: lime" class="topnav_{$QUE_ID}_timer_0"></div>-->
+                    <div class="que_slot_time_container que_item_0">
+                      <div class="que_unit_time que_unit_progress_bar topnav_{$QUE_ID}_unit_bar_0"></div>
+                      <!--<div id="topnav_{QUE_ID}_progress_bar" class="bld_que_total_progress_bar"></div>-->
+                      <div class="que_unit_time topnav_{$QUE_ID}_timer_0 a50"></div>
+                    </div>
+
+
+                    <div id="topnav_{$QUE_ID}_que" style="display: none;" ></div>
                   </div>
                 </span>
               <!-- ELSE -->
