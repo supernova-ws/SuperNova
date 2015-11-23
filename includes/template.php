@@ -24,11 +24,7 @@ function gettemplatename($u_dpath) {
  * @param int    $time
  */
 function AdminMessage($mes, $title = 'Error', $dest = '', $time = 3) {
-//  $parse['color'] = $color;
-  $parse['title'] = $title;
-  $parse['mes'] = $mes;
-
-  $page = parsetemplate(gettemplate('admin/message_body'), $parse);
+  $page = parsetemplate(gettemplate('admin/message_body'), array('title' => $title, 'mes' => $mes,));
 
   display($page, $title, false, ($dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL=javascript:self.location='{$dest}';\">" : ''), true);
 }
@@ -61,13 +57,13 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
   }
 
   foreach($sn_menu_extra as $menu_item_id => $menu_item) {
-    $item_location = $menu_item['LOCATION'];
-    unset($menu_item['LOCATION']);
-
-    if(!$item_location) {
+    if(empty($menu_item['LOCATION'])) {
       $sn_menu[$menu_item_id] = $menu_item;
       continue;
     }
+
+    $item_location = $menu_item['LOCATION'];
+    unset($menu_item['LOCATION']);
 
     $is_positioned = $item_location[0];
     if($is_positioned == '+' || $is_positioned == '-') {
@@ -91,6 +87,7 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
     $insert_position += $is_positioned == '+' ? 1 : 0;
     $spliced = array_splice($sn_menu, $insert_position, count($sn_menu) - $insert_position);
     $sn_menu[$menu_item_id] = $menu_item;
+
     if(!$is_positioned && $item_location) {
       unset($spliced[$item_location]);
     }
@@ -107,42 +104,44 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
 function tpl_menu_assign_to_template(&$sn_menu, &$template) {
   global $lang;
 
-  if($sn_menu) {
-    foreach($sn_menu as $menu_item_id => $menu_item) {
-      if(!$menu_item) {
-        continue;
-      }
+  if(empty($sn_menu) || !is_array($sn_menu)) {
+    return;
+  }
 
-      if(is_string($menu_item_id)) {
-        $menu_item['ID'] = $menu_item_id;
-      }
-
-      if($menu_item['TYPE'] == 'lang') {
-        $lang_string = &$lang;
-        if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1) {
-          for($i = 1; $i < count($matches); $i++) {
-            if(defined($matches[$i])) {
-              $matches[$i] = constant($matches[$i]);
-            }
-            $lang_string = &$lang_string[$matches[$i]];
-          }
-        }
-        $menu_item['ITEM'] = $lang_string && is_string($lang_string) ? $lang_string : "{L_{$menu_item['ITEM']}}";
-      }
-
-      $menu_item['ALT'] = htmlentities($menu_item['ALT']);
-      $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
-
-      if(!empty($menu_item['ICON'])) {
-        if(is_string($menu_item['ICON'])) {
-          $menu_item['ICON_PATH'] = $menu_item['ICON'];
-        } else {
-          $menu_item['ICON'] = $menu_item_id;
-        }
-      }
-
-      $template->assign_block_vars('menu', $menu_item);
+  foreach($sn_menu as $menu_item_id => $menu_item) {
+    if(!$menu_item) {
+      continue;
     }
+
+    if(is_string($menu_item_id)) {
+      $menu_item['ID'] = $menu_item_id;
+    }
+
+    if($menu_item['TYPE'] == 'lang') {
+      $lang_string = &$lang;
+      if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1) {
+        for($i = 1; $i < count($matches); $i++) {
+          if(defined($matches[$i])) {
+            $matches[$i] = constant($matches[$i]);
+          }
+          $lang_string = &$lang_string[$matches[$i]];
+        }
+      }
+      $menu_item['ITEM'] = $lang_string && is_string($lang_string) ? $lang_string : "{L_{$menu_item['ITEM']}}";
+    }
+
+    $menu_item['ALT'] = htmlentities($menu_item['ALT']);
+    $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
+
+    if(!empty($menu_item['ICON'])) {
+      if(is_string($menu_item['ICON'])) {
+        $menu_item['ICON_PATH'] = $menu_item['ICON'];
+      } else {
+        $menu_item['ICON'] = $menu_item_id;
+      }
+    }
+
+    $template->assign_block_vars('menu', $menu_item);
   }
 }
 
@@ -150,9 +149,7 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template) {
  * @return template
  */
 function tpl_render_menu() {
-  global $user, $lang, $template_result;
-  global $sn_menu_admin_extra, $sn_menu_admin;
-  global $sn_menu, $sn_menu_extra;
+  global $user, $lang, $template_result, $sn_menu_admin_extra, $sn_menu_admin, $sn_menu, $sn_menu_extra;
 
   lng_include('admin');
 
@@ -169,7 +166,6 @@ function tpl_render_menu() {
 
   if(isset($template_result['MENU_CUSTOMIZE'])) {
     $template->assign_vars(array(
-      'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !defined('SN_GOOGLE') ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
       'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
       'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
       'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'    => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
@@ -177,10 +173,12 @@ function tpl_render_menu() {
       'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
       'PLAYER_OPTION_MENU_WHITE_TEXT'       => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
       'PLAYER_OPTION_MENU_OLD'              => classSupernova::$user_options[PLAYER_OPTION_MENU_OLD],
+      'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !defined('SN_GOOGLE')
+        ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
     ));
   }
 
-  if(defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] > 0) {
+  if(defined('IN_ADMIN') && IN_ADMIN === true && !empty($user['authlevel']) && $user['authlevel'] > 0) {
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
   } else {
@@ -607,8 +605,8 @@ function displayP($template) {
 }
 
 /**
- * @param template   $template
- * @param bool|false $array
+ * @param template|string $template
+ * @param array|bool      $array
  *
  * @return mixed
  */
@@ -616,7 +614,7 @@ function parsetemplate($template, $array = false) {
   if(is_object($template)) {
     global $user;
 
-    if($array) {
+    if(!empty($array) && is_array($array)) {
       foreach($array as $key => $data) {
         $template->assign_var($key, $data);
       }
