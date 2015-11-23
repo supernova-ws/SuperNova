@@ -1159,6 +1159,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
 /* Unit purchase --------------------------------------------------------------- */
 #unit_table {
+  max-width: 100em;
   /*width: 533px; /* == 48.2em */ /* 46.4em + 0.3em*2(padding)*/
   /*
     Opera, FF: 529px
@@ -2954,4 +2955,3 @@ td[go]:hover { /* Skin specific */
 td.error_message {
   background-color: #415680;
 }
-
