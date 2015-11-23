@@ -1,6 +1,12 @@
 <?php
 
 // Wrappers for functions
+
+/**
+ * @param $u_dpath
+ *
+ * @return mixed
+ */
 function gettemplatename($u_dpath)
 {
   static $template_names = array();
@@ -13,10 +19,12 @@ function gettemplatename($u_dpath)
   return $template_names[$u_dpath];
 }
 
-// ----------------------------------------------------------------------------------------------------------------
-//
-// Routine Affichage d'un message administrateur avec saut vers une autre page si souhaité
-//
+/**
+ * @param        $mes
+ * @param string $title
+ * @param string $dest
+ * @param int    $time
+ */
 function AdminMessage ($mes, $title = 'Error', $dest = '', $time = 3) {
 //  $parse['color'] = $color;
   $parse['title'] = $title;
@@ -27,10 +35,13 @@ function AdminMessage ($mes, $title = 'Error', $dest = '', $time = 3) {
   display ($page, $title, false, ($dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL=javascript:self.location='{$dest}';\">" : ''), true);
 }
 
-// ----------------------------------------------------------------------------------------------------------------
-//
-// Routine Affichage d'un message avec saut vers une autre page si souhaité
-//
+/**
+ * @param           $mes
+ * @param string    $title
+ * @param string    $dest
+ * @param int       $time
+ * @param bool|true $show_header
+ */
 function message ($mes, $title = 'Error', $dest = '', $time = 5, $show_header = true)
 {
   $template = gettemplate('message_body', true);
@@ -41,20 +52,12 @@ function message ($mes, $title = 'Error', $dest = '', $time = 5, $show_header = 
   ));
 
   display($template, $title, $show_header, (($dest != '') ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
-/*
-  global $lang;
-
-  $parse['title'] = $title;
-  $parse['mes']   = $mes;
-  $parse['DEST']  = $dest;
-  $parse['L_sys_continue']  = $lang['sys_continue'];
-
-  $page .= parsetemplate(, $parse);
-
-  display($page, $title, $show_header, (($dest != "") ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
-*/
 }
 
+/**
+ * @param $sn_menu
+ * @param $sn_menu_extra
+ */
 function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
   if(empty($sn_menu) || empty($sn_menu_extra)) {
     return;
@@ -100,9 +103,13 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
   $sn_menu_extra = array();
 }
 
+/**
+ * @param array $sn_menu
+ * @param template $template
+ */
 function tpl_menu_assign_to_template(&$sn_menu, &$template)
 {
-  global $lang, $user;
+  global $lang;
 
   if($sn_menu)
   {
@@ -152,6 +159,9 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
   }
 }
 
+/**
+ * @return template
+ */
 function tpl_render_menu() {
   global $user, $lang, $template_result;
   global $sn_menu_admin_extra, $sn_menu_admin;
@@ -194,7 +204,27 @@ function tpl_render_menu() {
   return $template;
 }
 
+/**
+ * @param template|string $page
+ * @param string     $title
+ * @param bool|true  $topnav
+ * @param string     $metatags
+ * @param bool|false $AdminPage
+ * @param bool|true  $isDisplayMenu
+ *
+ * @return mixed
+ */
 function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
+
+/**
+ * @param template|string $page
+ * @param string     $title
+ * @param bool|true  $topnav
+ * @param string     $metatags
+ * @param bool|false $AdminPage
+ * @param bool|true  $isDisplayMenu
+ * @param bool|true  $die
+ */
 function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
 {
   global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
@@ -340,8 +370,18 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $die ? die($die === true ? 0 : $die) : false;
 }
 
-function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count)
-{
+/**
+ * @param $time
+ * @param $event
+ * @param $msg
+ * @param $prefix
+ * @param $is_decrease
+ * @param $fleet_flying_row
+ * @param $fleet_flying_sorter
+ * @param $fleet_flying_events
+ * @param $fleet_event_count
+ */
+function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count) {
   $fleet_flying_sorter[$fleet_event_count] = $time;
   $fleet_flying_events[$fleet_event_count] = array(
     'ROW'  => $fleet_flying_row,
@@ -355,10 +395,13 @@ function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decreas
   $fleet_event_count++;
 }
 
-function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
-{
-  if(empty($fleet_flying_list))
-  {
+/**
+ * @param template $template
+ * @param array $fleet_flying_list
+ * @param string $type
+ */
+function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet') {
+  if(empty($fleet_flying_list)) {
     return;
   }
 
@@ -367,47 +410,52 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
   $fleet_flying_events = array();
-  foreach($fleet_flying_list as &$fleet_flying_row)
-  {
+  foreach($fleet_flying_list as &$fleet_flying_row) {
     $will_return = true;
-    if($fleet_flying_row['fleet_mess'] == 0)
-    {
-      if($fleet_flying_row['fleet_start_time'] >= SN_TIME_NOW) // cut fleets on Hold and Expedition
-      {
-        if($fleet_flying_row['fleet_mission'] == MT_RELOCATE)
-        {
+    if($fleet_flying_row['fleet_mess'] == 0) {
+      // cut fleets on Hold and Expedition
+      if($fleet_flying_row['fleet_start_time'] >= SN_TIME_NOW) {
+        if($fleet_flying_row['fleet_mission'] == MT_RELOCATE) {
           $will_return = false;
         }
         tpl_topnav_event_build_helper($fleet_flying_row['fleet_start_time'], EVENT_FLEET_ARRIVE, $lang['sys_event_arrive'], 'fleet_end_', !$will_return, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
-      if($fleet_flying_row['fleet_end_stay'])
-      {
+      if($fleet_flying_row['fleet_end_stay']) {
         tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_stay'], EVENT_FLEET_STAY, $lang['sys_event_stay'], 'fleet_end_', false, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
     }
-    if($will_return)
-    {
+    if($will_return) {
       tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_time'], EVENT_FLEET_RETURN, $lang['sys_event_return'], 'fleet_start_', true, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
     }
   }
   asort($fleet_flying_sorter);
   $fleet_flying_count = count($fleet_flying_list);
-  foreach($fleet_flying_sorter as $fleet_event_id => $fleet_time)
-  {
+  foreach($fleet_flying_sorter as $fleet_event_id => $fleet_time) {
     $fleet_event = &$fleet_flying_events[$fleet_event_id];
     $template->assign_block_vars("flying_{$type}s", array(
       'TIME' => max(0, $fleet_time - SN_TIME_NOW),
       'TEXT' => $fleet_flying_count,
       'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
     ));
-    if($fleet_event['DECREASE'])
-    {
+    if($fleet_event['DECREASE']) {
       $fleet_flying_count--;
     }
   }
 }
 
+/**
+ * @param array $user
+ * @param array $planetrow
+ *
+ * @return string|template
+ */
 function tpl_render_topnav(&$user, $planetrow){return sn_function_call('tpl_render_topnav', array(&$user, $planetrow));}
+/**
+ * @param array $user
+ * @param array $planetrow
+ *
+ * @return string|template
+ */
 function sn_tpl_render_topnav(&$user, $planetrow) {
   if (!is_array($user)) {
     return '';
@@ -435,16 +483,17 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     if($CurPlanet['destruyed']) {
       continue;
     }
-      $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
 
-      $template->assign_block_vars('topnav_planets', array(
-        'ID'     => $CurPlanet['id'],
-        'NAME'   => $CurPlanet['name'],
-        'PLIMAGE'  => $CurPlanet['image'],
-        'FLEET_ENEMY'   => $fleet_listx['enemy']['count'],
-        'COORDS' => uni_render_coordinates($CurPlanet),
-        'SELECTED' => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
-      ));
+    $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
+
+    $template->assign_block_vars('topnav_planets', array(
+      'ID'     => $CurPlanet['id'],
+      'NAME'   => $CurPlanet['name'],
+      'PLIMAGE'  => $CurPlanet['image'],
+      'FLEET_ENEMY'   => $fleet_listx['enemy']['count'],
+      'COORDS' => uni_render_coordinates($CurPlanet),
+      'SELECTED' => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
+    ));
   }
 
   $fleet_flying_list = tpl_get_fleets_flying($user);
@@ -545,8 +594,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'QUE_RESEARCH'              => QUE_RESEARCH,
   ));
 
-  if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false))
-  {
+  if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false)) {
     tpl_set_resource_info($template, $planetrow);
     $template->assign_vars(array(
       'SN_RENDER_NAVBAR_PLANET' => true,
@@ -557,6 +605,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   return $template;
 }
 
+/**
+ * @param template|string $template
+ */
 function displayP($template) {
   if(is_object($template)) {
     if(!$template->parsed) {
@@ -621,14 +672,12 @@ function parsetemplate($template, $array = false) {
  *
  * @return template
  */
-function gettemplate($files, $template = false, $template_path = false)
-{
+function gettemplate($files, $template = false, $template_path = false) {
   global $user;
 
   $template_ex = '.tpl.html';
 
-  if($template === false)
-  {
+  if($template === false) {
     return sys_file_read(TEMPLATE_DIR . '/' . $files . $template_ex);
   }
 
@@ -663,8 +712,10 @@ function gettemplate($files, $template = false, $template_path = false)
   return $template;
 }
 
-function tpl_login_lang(&$template)
-{
+/**
+ * @param template $template
+ */
+function tpl_login_lang(&$template) {
   global $language;
 
   $url_params = array();
@@ -685,45 +736,47 @@ function tpl_login_lang(&$template)
     'FILENAME' => basename($_SERVER['PHP_SELF']),
   ));
 
-  foreach(lng_get_list() as $lng_id => $lng_data)
-  {
-    if(isset($lng_data['LANG_VARIANTS']) && is_array($lng_data['LANG_VARIANTS']))
-    {
-      foreach($lng_data['LANG_VARIANTS'] as $lang_variant)
-      {
+  foreach(lng_get_list() as $lng_id => $lng_data) {
+    if(isset($lng_data['LANG_VARIANTS']) && is_array($lng_data['LANG_VARIANTS'])) {
+      foreach($lng_data['LANG_VARIANTS'] as $lang_variant) {
         $lng_data1 = $lng_data;
         $lng_data1 = array_merge($lng_data1, $lang_variant);
         $template->assign_block_vars('language', $lng_data1);
       }
-    }
-    else
-    {
+    } else {
       $template->assign_block_vars('language', $lng_data);
     }
   }
 }
 
-function tpl_get_fleets_flying(&$user)
-{
+/**
+ * @param array $user
+ *
+ * @return array
+ */
+function tpl_get_fleets_flying(&$user) {
   $fleet_flying_list = array();
   $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
-  while($fleet_flying_row = db_fetch($fleet_flying_query))
-  {
+  while($fleet_flying_row = db_fetch($fleet_flying_query)) {
     $fleet_flying_list[0][] = $fleet_flying_row;
     $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list)-1];
   }
   return $fleet_flying_list;
 }
 
-function tpl_assign_hangar(&$template, $planet, $que_type)
-{
+/**
+ * @param template $template
+ * @param array $planet
+ * @param int $que_type
+ *
+ * @return int
+ */
+function tpl_assign_hangar(&$template, $planet, $que_type) {
   $que = que_get($planet['id_owner'], $planet['id'], $que_type);
   $que = $que['ques'][$que_type][$planet['id_owner']][$planet['id']];
   $que_length = 0;
-  if(!empty($que))
-  {
-    foreach($que as $que_item)
-    {
+  if(!empty($que)) {
+    foreach($que as $que_item) {
       $template->assign_block_vars('que', que_tpl_parse_element($que_item));
     }
     $que_length = count($que);
@@ -732,11 +785,16 @@ function tpl_assign_hangar(&$template, $planet, $que_type)
   return $que_length;
 }
 
+/**
+ * @param template $template
+ * @param array $density_price_chart
+ * @param int $user_dark_matter
+ */
 function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter) {
   global $lang;
 
-  $density_base_cost = get_unit_param(UNIT_PLANET_DENSITY, P_COST);
-  $density_base_cost = $density_base_cost[RES_DARK_MATTER];
+//  $density_base_cost = get_unit_param(UNIT_PLANET_DENSITY, P_COST);
+//  $density_base_cost = $density_base_cost[RES_DARK_MATTER];
 
   foreach($density_price_chart as $density_price_index => &$density_price_data) {
     //$density_number_style = pretty_number($density_cost = $density_base_cost * $density_price_data, true, $user_dark_matter, false, false);
@@ -756,10 +814,13 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
   }
 }
 
-function tpl_assign_select(&$template, $name, $values)
-{
-  foreach($values as $key => $value)
-  {
+/**
+ * @param template $template
+ * @param string $name
+ * @param array $values
+ */
+function tpl_assign_select(&$template, $name, $values) {
+  foreach($values as $key => $value) {
     $template->assign_block_vars($name, array(
       'KEY' => htmlentities($key, ENT_COMPAT, 'UTF-8'),
       'VALUE' => htmlentities($value, ENT_COMPAT, 'UTF-8'),
