@@ -192,44 +192,47 @@ function tpl_render_menu() {
 /**
  * @param template|string $page
  * @param string          $title
- * @param bool|true       $topnav
+ * @param bool|true       $isDisplayTopNav
  * @param string          $metatags
  * @param bool|false      $AdminPage
  * @param bool|true       $isDisplayMenu
  *
  * @return mixed
  */
-function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true) {
-  $func_args = func_get_args();
-
-  return sn_function_call('display', $func_args);
+function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $exitStatus = true) {
+  return sn_function_call('display', array($page, $title, $isDisplayTopNav, $metatags, $isDisplayMenu, $exitStatus));
 }
 
 /**
  * @param template|string $page
  * @param string          $title
- * @param bool|true       $topnav
+ * @param bool|true       $isDisplayTopNav
  * @param string          $metatags
  * @param bool|false      $AdminPage
  * @param bool|true       $isDisplayMenu
- * @param bool|true       $die
+ * @param bool|int|string $exitStatus - Код или сообщение выхода
  */
-function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true) {
+function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $isDisplayMenu = true, $exitStatus = true) {
   global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
 
-  if(!$user || !isset($user['id']) || !is_numeric($user['id'])) {
-    $isDisplayMenu = false;
-    $topnav = false;
+//  $isDisplayMenu = is_object($page) && isset($page->_rootref['MENU']) ? $page->_rootref['MENU'] : $isDisplayMenu;
+//  $topnav = is_object($page) && isset($page->_rootref['NAVBAR']) ? $page->_rootref['NAVBAR'] : $topnav;
+//  $title = $title ? $title : (is_object($page) && isset($page->_rootref['PAGE_HEADER']) ? $page->_rootref['PAGE_HEADER'] : '');
+//  if(is_object($page) && !isset($page->_rootref['PAGE_HEADER']) && $title) {
+//    $page->assign_var('PAGE_HEADER', $title);
+//  }
+
+  if(is_object($page)) {
+    isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
+    isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
+
+    !$title && !empty($page->_rootref['PAGE_HEADER']) ? $title = $page->_rootref['PAGE_HEADER'] : false;
+    !isset($page->_rootref['PAGE_HEADER']) && $title ? $page->assign_var('PAGE_HEADER', $title) : false;
   }
 
-//  $template->assign_recursive($template_result);
-
-  $isDisplayMenu = is_object($page) && isset($page->_rootref['MENU']) ? $page->_rootref['MENU'] : $isDisplayMenu;
-  $topnav = is_object($page) && isset($page->_rootref['NAVBAR']) ? $page->_rootref['NAVBAR'] : $topnav;
-
-  $title = $title ? $title : (is_object($page) && isset($page->_rootref['PAGE_HEADER']) ? $page->_rootref['PAGE_HEADER'] : '');
-  if(is_object($page) && !isset($page->_rootref['PAGE_HEADER']) && $title) {
-    $page->assign_var('PAGE_HEADER', $title);
+  if(empty($user['id']) || !is_numeric($user['id'])) {
+    $isDisplayMenu = false;
+    $isDisplayTopNav = false;
   }
 
   isset($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page);
@@ -308,15 +311,13 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     displayP(parsetemplate(tpl_render_menu()));
   }
 
-  if($topnav) {
+  if($isDisplayTopNav) {
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
   }
 
   displayP(parsetemplate(gettemplate('_content_header', true)));
 
-  if(!is_array($page)) {
-    $page = array($page);
-  }
+  !is_array($page) ? $page = array($page) : false;
   $result_added = false;
   foreach($page as $page_item) {
     if(!$result_added && is_object($page_item) && isset($page_item->_tpldata['result'])) {
@@ -330,10 +331,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     }
     displayP($page_item);
   }
-//  echo '</center>';
-  if($isDisplayMenu) {
-//    echo '</div>';
-  }
+
   displayP(parsetemplate(gettemplate('_content_footer', true)));
 
   // Global footer
@@ -349,7 +347,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
   sn_db_disconnect();
 
-  $die ? die($die === true ? 0 : $die) : false;
+  $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
 }
 
 /**
@@ -397,9 +395,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
     if($fleet_flying_row['fleet_mess'] == 0) {
       // cut fleets on Hold and Expedition
       if($fleet_flying_row['fleet_start_time'] >= SN_TIME_NOW) {
-        if($fleet_flying_row['fleet_mission'] == MT_RELOCATE) {
-          $will_return = false;
-        }
+        $fleet_flying_row['fleet_mission'] == MT_RELOCATE ? $will_return = false : false;
         tpl_topnav_event_build_helper($fleet_flying_row['fleet_start_time'], EVENT_FLEET_ARRIVE, $lang['sys_event_arrive'], 'fleet_end_', !$will_return, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
       if($fleet_flying_row['fleet_end_stay']) {
@@ -410,7 +406,9 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
       tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_time'], EVENT_FLEET_RETURN, $lang['sys_event_return'], 'fleet_start_', true, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
     }
   }
+
   asort($fleet_flying_sorter);
+
   $fleet_flying_count = count($fleet_flying_list);
   foreach($fleet_flying_sorter as $fleet_event_id => $fleet_time) {
     $fleet_event = &$fleet_flying_events[$fleet_event_id];
@@ -419,9 +417,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
       'TEXT' => $fleet_flying_count,
       'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
     ));
-    if($fleet_event['DECREASE']) {
-      $fleet_flying_count--;
-    }
+    $fleet_event['DECREASE'] ? $fleet_flying_count-- : false;
   }
 }
 
@@ -620,8 +616,6 @@ function parsetemplate($template, $array = false) {
       }
     }
 
-//    $tmpl_name = gettemplatename($user['dpath']);
-
     $template->assign_vars(array(
       'dpath'          => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
       'SN_TIME_NOW'    => SN_TIME_NOW,
@@ -637,7 +631,6 @@ function parsetemplate($template, $array = false) {
     $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'{L_\1[\2]}\');';
 
     $search[] = '#\{L_([a-z0-9\-_]*?)\}#Ssie';
-//    $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'\{L_\}\');';
     $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'{L_\1}\');';
 
     $search[] = '#\{([a-z0-9\-_]*?)\}#Ssie';
@@ -648,14 +641,14 @@ function parsetemplate($template, $array = false) {
 }
 
 /**
- * @param            $files
- * @param bool|false $template
- * @param bool|false $template_path
+ * @param array|string  $files
+ * @param template|bool $template
+ * @param string|bool   $template_path
  *
  * @return template
  */
 function gettemplate($files, $template = false, $template_path = false) {
-  global $user;
+  global $sn_mvc, $sn_page_name, $user;
 
   $template_ex = '.tpl.html';
 
@@ -663,14 +656,9 @@ function gettemplate($files, $template = false, $template_path = false) {
     return sys_file_read(TEMPLATE_DIR . '/' . $files . $template_ex);
   }
 
-  if(is_string($files)) {
-//    $files = array('body' => $files);
-    $files = array(basename($files) => $files);
-  }
+  is_string($files) ? $files = array(basename($files) => $files) : false;
 
-  if(!is_object($template)) {
-    $template = new template();
-  }
+  !is_object($template) ? $template = new template() : false;
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
   $tmpl_name = gettemplatename($user['dpath']);
@@ -681,7 +669,6 @@ function gettemplate($files, $template = false, $template_path = false) {
   //  - затем по ходу дела ОСНОВНОЙ языковой пакет может перезаписать данные из МОДУЛЬНОГО языкового пакета
   // Поэтому и нужен этот грязный хак
   // В норме же - страницы заявляют сами, какие им пакеты нужны. Так что сначала всегда должны грузится основные языковые пакеты, а уже ПОВЕРХ них - пакеты модулей
-  global $sn_mvc, $sn_page_name;
   !empty($sn_mvc['i18n']['']) ? lng_load_i18n($sn_mvc['i18n']['']) : false;
   $sn_page_name ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
 
@@ -702,15 +689,11 @@ function tpl_login_lang(&$template) {
 
   $url_params = array();
 
-  if($language) {
-    $url_params[] = "lang={$language}";
-  }
-  if($id_ref = sys_get_param_id('id_ref')) {
-    $url_params[] = "id_ref={$id_ref}";
-  }
+  $language ? $url_params[] = "lang={$language}" : false;
+
+  ($id_ref = sys_get_param_id('id_ref')) ? $url_params[] = "id_ref={$id_ref}" : false;
 
   $template->assign_vars($q = array(
-//    'LANG' => $language ? '?lang=' . $language : '',
     'LANG'     => $language ? $language : '',
     'referral' => $id_ref ? '&id_ref=' . $id_ref : '',
 
@@ -738,6 +721,7 @@ function tpl_login_lang(&$template) {
  */
 function tpl_get_fleets_flying(&$user) {
   $fleet_flying_list = array();
+
   $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
   while($fleet_flying_row = db_fetch($fleet_flying_query)) {
     $fleet_flying_list[0][] = $fleet_flying_row;
@@ -757,6 +741,7 @@ function tpl_get_fleets_flying(&$user) {
 function tpl_assign_hangar(&$template, $planet, $que_type) {
   $que = que_get($planet['id_owner'], $planet['id'], $que_type);
   $que = $que['ques'][$que_type][$planet['id_owner']][$planet['id']];
+
   $que_length = 0;
   if(!empty($que)) {
     foreach($que as $que_item) {
@@ -776,12 +761,7 @@ function tpl_assign_hangar(&$template, $planet, $que_type) {
 function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter) {
   global $lang;
 
-//  $density_base_cost = get_unit_param(UNIT_PLANET_DENSITY, P_COST);
-//  $density_base_cost = $density_base_cost[RES_DARK_MATTER];
-
   foreach($density_price_chart as $density_price_index => &$density_price_data) {
-    //$density_number_style = pretty_number($density_cost = $density_base_cost * $density_price_data, true, $user_dark_matter, false, false);
-    // $density_cost = ceil($density_base_cost * $density_price_data);
     $density_cost = $density_price_data;
     $density_number_style = pretty_number($density_cost, true, $user_dark_matter, false, false);
 
@@ -800,9 +780,11 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
 /**
  * @param template $template
  * @param string   $name
- * @param array    $values
+ * @param mixed    $values
  */
 function tpl_assign_select(&$template, $name, $values) {
+  !is_array($values) ? $values = array($values => $values) : false;
+
   foreach($values as $key => $value) {
     $template->assign_block_vars($name, array(
       'KEY'   => htmlentities($key, ENT_COMPAT, 'UTF-8'),
