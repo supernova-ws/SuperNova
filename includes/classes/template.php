@@ -53,6 +53,13 @@ class template
   var $parse = array();
 
   /**
+   * Is template already parsed with SN code?
+   *
+   * @var bool $parsed
+   */
+  var $parsed = false;
+
+  /**
   * Set template location
   * @access public
   */

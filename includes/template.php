@@ -7,12 +7,10 @@
  *
  * @return mixed
  */
-function gettemplatename($u_dpath)
-{
+function gettemplatename($u_dpath) {
   static $template_names = array();
 
-  if(!isset($template_names[$u_dpath]))
-  {
+  if(!isset($template_names[$u_dpath])) {
     $template_names[$u_dpath] = file_exists(SN_ROOT_PHYSICAL . $u_dpath . 'tmpl.ini') ? sys_file_read(SN_ROOT_PHYSICAL . $u_dpath . 'tmpl.ini') : TEMPLATE_NAME;
   }
 
@@ -25,14 +23,14 @@ function gettemplatename($u_dpath)
  * @param string $dest
  * @param int    $time
  */
-function AdminMessage ($mes, $title = 'Error', $dest = '', $time = 3) {
+function AdminMessage($mes, $title = 'Error', $dest = '', $time = 3) {
 //  $parse['color'] = $color;
   $parse['title'] = $title;
-  $parse['mes']   = $mes;
+  $parse['mes'] = $mes;
 
   $page = parsetemplate(gettemplate('admin/message_body'), $parse);
 
-  display ($page, $title, false, ($dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL=javascript:self.location='{$dest}';\">" : ''), true);
+  display($page, $title, false, ($dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL=javascript:self.location='{$dest}';\">" : ''), true);
 }
 
 /**
@@ -42,8 +40,7 @@ function AdminMessage ($mes, $title = 'Error', $dest = '', $time = 3) {
  * @param int       $time
  * @param bool|true $show_header
  */
-function message ($mes, $title = 'Error', $dest = '', $time = 5, $show_header = true)
-{
+function message($mes, $title = 'Error', $dest = '', $time = 5, $show_header = true) {
   $template = gettemplate('message_body', true);
   $template->assign_vars(array(
     'title' => $title,
@@ -83,7 +80,7 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
       $menu_keys = array_keys($sn_menu);
       $insert_position = array_search($item_location, $menu_keys);
       if($insert_position === false) {
-        $insert_position = count($sn_menu)-1;
+        $insert_position = count($sn_menu) - 1;
         $is_positioned = '+';
         $item_location = '';
       }
@@ -104,36 +101,27 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
 }
 
 /**
- * @param array $sn_menu
+ * @param array    $sn_menu
  * @param template $template
  */
-function tpl_menu_assign_to_template(&$sn_menu, &$template)
-{
+function tpl_menu_assign_to_template(&$sn_menu, &$template) {
   global $lang;
 
-  if($sn_menu)
-  {
-    foreach($sn_menu as $menu_item_id => $menu_item)
-    {
-      if(!$menu_item)
-      {
+  if($sn_menu) {
+    foreach($sn_menu as $menu_item_id => $menu_item) {
+      if(!$menu_item) {
         continue;
       }
 
-      if(is_string($menu_item_id))
-      {
+      if(is_string($menu_item_id)) {
         $menu_item['ID'] = $menu_item_id;
       }
 
-      if($menu_item['TYPE'] == 'lang')
-      {
+      if($menu_item['TYPE'] == 'lang') {
         $lang_string = &$lang;
-        if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1)
-        {
-          for($i = 1; $i < count($matches); $i++)
-          {
-            if(defined($matches[$i]))
-            {
+        if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1) {
+          for($i = 1; $i < count($matches); $i++) {
+            if(defined($matches[$i])) {
               $matches[$i] = constant($matches[$i]);
             }
             $lang_string = &$lang_string[$matches[$i]];
@@ -145,8 +133,7 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template)
       $menu_item['ALT'] = htmlentities($menu_item['ALT']);
       $menu_item['TITLE'] = htmlentities($menu_item['TITLE']);
 
-      if(!empty($menu_item['ICON']))
-      {
+      if(!empty($menu_item['ICON'])) {
         if(is_string($menu_item['ICON'])) {
           $menu_item['ICON_PATH'] = $menu_item['ICON'];
         } else {
@@ -183,17 +170,17 @@ function tpl_render_menu() {
   if(isset($template_result['MENU_CUSTOMIZE'])) {
     $template->assign_vars(array(
       'PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON' => empty($_COOKIE[SN_COOKIE . '_menu_hidden']) && !defined('SN_GOOGLE') ? classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON] : 1,
-      'PLAYER_OPTION_MENU_SHOW_ON_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
-      'PLAYER_OPTION_MENU_HIDE_ON_BUTTON' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
-      'PLAYER_OPTION_MENU_HIDE_ON_LEAVE' => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
-      'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE' => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
+      'PLAYER_OPTION_MENU_SHOW_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_SHOW_ON_BUTTON],
+      'PLAYER_OPTION_MENU_HIDE_ON_BUTTON'   => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_BUTTON],
+      'PLAYER_OPTION_MENU_HIDE_ON_LEAVE'    => classSupernova::$user_options[PLAYER_OPTION_MENU_HIDE_ON_LEAVE],
+      'PLAYER_OPTION_MENU_UNPIN_ABSOLUTE'   => classSupernova::$user_options[PLAYER_OPTION_MENU_UNPIN_ABSOLUTE],
       'PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS' => classSupernova::$user_options[PLAYER_OPTION_MENU_ITEMS_AS_BUTTONS],
-      'PLAYER_OPTION_MENU_WHITE_TEXT' => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
-      'PLAYER_OPTION_MENU_OLD' => classSupernova::$user_options[PLAYER_OPTION_MENU_OLD],
+      'PLAYER_OPTION_MENU_WHITE_TEXT'       => classSupernova::$user_options[PLAYER_OPTION_MENU_WHITE_TEXT],
+      'PLAYER_OPTION_MENU_OLD'              => classSupernova::$user_options[PLAYER_OPTION_MENU_OLD],
     ));
   }
 
-  if(IN_ADMIN === true && $user['authlevel'] > 0) {
+  if(defined('IN_ADMIN') && IN_ADMIN === true && $user['authlevel'] > 0) {
     tpl_menu_merge_extra($sn_menu_admin, $sn_menu_admin_extra);
     tpl_menu_assign_to_template($sn_menu_admin, $template);
   } else {
@@ -206,31 +193,33 @@ function tpl_render_menu() {
 
 /**
  * @param template|string $page
- * @param string     $title
- * @param bool|true  $topnav
- * @param string     $metatags
- * @param bool|false $AdminPage
- * @param bool|true  $isDisplayMenu
+ * @param string          $title
+ * @param bool|true       $topnav
+ * @param string          $metatags
+ * @param bool|false      $AdminPage
+ * @param bool|true       $isDisplayMenu
  *
  * @return mixed
  */
-function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true){$func_args = func_get_args();return sn_function_call('display', $func_args);}
+function display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true) {
+  $func_args = func_get_args();
+
+  return sn_function_call('display', $func_args);
+}
 
 /**
  * @param template|string $page
- * @param string     $title
- * @param bool|true  $topnav
- * @param string     $metatags
- * @param bool|false $AdminPage
- * @param bool|true  $isDisplayMenu
- * @param bool|true  $die
+ * @param string          $title
+ * @param bool|true       $topnav
+ * @param string          $metatags
+ * @param bool|false      $AdminPage
+ * @param bool|true       $isDisplayMenu
+ * @param bool|true       $die
  */
-function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true)
-{
+function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $die = true) {
   global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
 
-  if(!$user || !isset($user['id']) || !is_numeric($user['id']))
-  {
+  if(!$user || !isset($user['id']) || !is_numeric($user['id'])) {
     $isDisplayMenu = false;
     $topnav = false;
   }
@@ -241,8 +230,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   $topnav = is_object($page) && isset($page->_rootref['NAVBAR']) ? $page->_rootref['NAVBAR'] : $topnav;
 
   $title = $title ? $title : (is_object($page) && isset($page->_rootref['PAGE_HEADER']) ? $page->_rootref['PAGE_HEADER'] : '');
-  if(is_object($page) && !isset($page->_rootref['PAGE_HEADER']) && $title)
-  {
+  if(is_object($page) && !isset($page->_rootref['PAGE_HEADER']) && $title) {
     $page->assign_var('PAGE_HEADER', $title);
   }
 
@@ -271,7 +259,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
       if(empty($page_name) || $page_name == $sn_page_name) {
         foreach($script_list as $filename => $content) {
           $template->assign_block_vars('javascript', array(
-            'FILE' => $filename,
+            'FILE'    => $filename,
             'CONTENT' => $content,
           ));
         }
@@ -280,16 +268,16 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
   }
 
   $template->assign_vars(array(
-    'USER_AUTHLEVEL'           => intval($user['authlevel']),
+    'USER_AUTHLEVEL' => intval($user['authlevel']),
 
-    'FONT_SIZE'                => $font_size,
-    'FONT_SIZE_PERCENT_DEFAULT_STRING'                => FONT_SIZE_PERCENT_DEFAULT_STRING,
+    'FONT_SIZE'                        => $font_size,
+    'FONT_SIZE_PERCENT_DEFAULT_STRING' => FONT_SIZE_PERCENT_DEFAULT_STRING,
 
-    'SN_TIME_NOW'              => SN_TIME_NOW,
-    'LOGIN_LOGOUT'             => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
-    'GAME_MODE_CSS_PREFIX'     => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
+    'SN_TIME_NOW'          => SN_TIME_NOW,
+    'LOGIN_LOGOUT'         => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
+    'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
     //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
-    'TIME_DIFF_MEASURE'        => intval(
+    'TIME_DIFF_MEASURE'    => intval(
       empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
       &&
       (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
@@ -302,24 +290,24 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
     'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
 
-    'LANG_LANGUAGE'            => $lang['LANG_INFO']['LANG_NAME_ISO2'],
-    'LANG_ENCODING'            => 'utf-8',
-    'LANG_DIRECTION'           => $lang['LANG_INFO']['LANG_DIRECTION'],
+    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+    'LANG_ENCODING'  => 'utf-8',
+    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
 
-    'SOUND_ENABLED'            => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
-    'PLAYER_OPTION_ANIMATION_DISABLED'            => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
-    'PLAYER_OPTION_PROGRESS_BARS_DISABLED'            => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
+    'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
+    'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+    'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
 
     // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
-    'IMPERSONATING'            => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
+    'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
     'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
   ));
   $template->assign_recursive($template_result);
   displayP(parsetemplate($template));
 
   if($isDisplayMenu && !isset($_COOKIE['menu_disable'])) {
-    $AdminPage = $AdminPage ? $user['authlevel'] : 0;
-    displayP(parsetemplate(tpl_render_menu($AdminPage)));
+    // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
+    displayP(parsetemplate(tpl_render_menu()));
   }
 
   if($topnav) {
@@ -328,15 +316,12 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 
   displayP(parsetemplate(gettemplate('_content_header', true)));
 
-  if(!is_array($page))
-  {
+  if(!is_array($page)) {
     $page = array($page);
   }
   $result_added = false;
-  foreach($page as $page_item)
-  {
-    if(!$result_added && is_object($page_item) && isset($page_item->_tpldata['result']))
-    {
+  foreach($page as $page_item) {
+    if(!$result_added && is_object($page_item) && isset($page_item->_tpldata['result'])) {
       $page_item = gettemplate('_result_message', $page_item);
       $temp = $page_item->files['_result_message'];
       unset($page_item->files['_result_message']);
@@ -348,8 +333,7 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
     displayP($page_item);
   }
 //  echo '</center>';
-  if($isDisplayMenu)
-  {
+  if($isDisplayMenu) {
 //    echo '</div>';
   }
   displayP(parsetemplate(gettemplate('_content_footer', true)));
@@ -384,21 +368,21 @@ function sn_display($page, $title = '', $topnav = true, $metatags = '', $AdminPa
 function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count) {
   $fleet_flying_sorter[$fleet_event_count] = $time;
   $fleet_flying_events[$fleet_event_count] = array(
-    'ROW'  => $fleet_flying_row,
-    'FLEET_ID' => $fleet_flying_row['fleet_id'],
-    'EVENT' => $event,
-    'COORDINATES' => uni_render_coordinates($fleet_flying_row, $prefix),
+    'ROW'              => $fleet_flying_row,
+    'FLEET_ID'         => $fleet_flying_row['fleet_id'],
+    'EVENT'            => $event,
+    'COORDINATES'      => uni_render_coordinates($fleet_flying_row, $prefix),
     'COORDINATES_TYPE' => $fleet_flying_row["{$prefix}type"],
-    'TEXT' => "{$msg}",
-    'DECREASE' => $is_decrease,
+    'TEXT'             => "{$msg}",
+    'DECREASE'         => $is_decrease,
   );
   $fleet_event_count++;
 }
 
 /**
  * @param template $template
- * @param array $fleet_flying_list
- * @param string $type
+ * @param array    $fleet_flying_list
+ * @param string   $type
  */
 function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet') {
   if(empty($fleet_flying_list)) {
@@ -449,7 +433,8 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
  *
  * @return string|template
  */
-function tpl_render_topnav(&$user, $planetrow){return sn_function_call('tpl_render_topnav', array(&$user, $planetrow));}
+function tpl_render_topnav(&$user, $planetrow) { return sn_function_call('tpl_render_topnav', array(&$user, $planetrow)); }
+
 /**
  * @param array $user
  * @param array $planetrow
@@ -457,7 +442,7 @@ function tpl_render_topnav(&$user, $planetrow){return sn_function_call('tpl_rend
  * @return string|template
  */
 function sn_tpl_render_topnav(&$user, $planetrow) {
-  if (!is_array($user)) {
+  if(!is_array($user)) {
     return '';
   }
 
@@ -465,7 +450,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
   $GET_mode = sys_get_param_str('mode');
 
-  $template       = gettemplate('topnav', true);
+  $template = gettemplate('topnav', true);
 
   /*
   $planetrow = $planetrow ? $planetrow : $user['current_planet'];
@@ -476,10 +461,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   $planetrow = $planetrow['planet'];
   */
 
-  $ThisUsersPlanets = db_planet_list_sorted ( $user );
+  $ThisUsersPlanets = db_planet_list_sorted($user);
   // while ($CurPlanet = db_fetch($ThisUsersPlanets))
-  foreach($ThisUsersPlanets as $CurPlanet)
-  {
+  foreach($ThisUsersPlanets as $CurPlanet) {
     if($CurPlanet['destruyed']) {
       continue;
     }
@@ -487,12 +471,12 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
 
     $template->assign_block_vars('topnav_planets', array(
-      'ID'     => $CurPlanet['id'],
-      'NAME'   => $CurPlanet['name'],
-      'PLIMAGE'  => $CurPlanet['image'],
-      'FLEET_ENEMY'   => $fleet_listx['enemy']['count'],
-      'COORDS' => uni_render_coordinates($CurPlanet),
-      'SELECTED' => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
+      'ID'          => $CurPlanet['id'],
+      'NAME'        => $CurPlanet['name'],
+      'PLIMAGE'     => $CurPlanet['image'],
+      'FLEET_ENEMY' => $fleet_listx['enemy']['count'],
+      'COORDS'      => uni_render_coordinates($CurPlanet),
+      'SELECTED'    => $CurPlanet['id'] == $user['current_planet'] ? ' selected' : '',
     ));
   }
 
@@ -521,84 +505,84 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   $template->assign_vars(array(
     'HALLOWEEN' => !empty($sn_module_list['event']['event_halloween_2015']) && $sn_module_list['event']['event_halloween_2015']->manifest['active'],
 
-    'QUE_ID'             => QUE_RESEARCH,
-    'QUE_HTML'           => 'topnav',
+    'QUE_ID'   => QUE_RESEARCH,
+    'QUE_HTML' => 'topnav',
 
-    'RESEARCH_ONGOING'   => (boolean)$user['que'],
+    'RESEARCH_ONGOING' => (boolean)$user['que'],
 
-    'TIME_TEXT'          => sprintf($str_date_format, $time_now_parsed['year'], $lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
+    'TIME_TEXT'       => sprintf($str_date_format, $time_now_parsed['year'], $lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
       $time_now_parsed['hours'], $time_now_parsed['minutes'], $time_now_parsed['seconds']
     ),
-    'TIME_TEXT_LOCAL'          => sprintf($str_date_format, $time_local_parsed['year'], $lang['months'][$time_local_parsed['mon']], $time_local_parsed['mday'],
+    'TIME_TEXT_LOCAL' => sprintf($str_date_format, $time_local_parsed['year'], $lang['months'][$time_local_parsed['mon']], $time_local_parsed['mday'],
       $time_local_parsed['hours'], $time_local_parsed['minutes'], $time_local_parsed['seconds']
     ),
 
-    'GAME_BLITZ_REGISTER'      => $config->game_blitz_register,
-    'GAME_BLITZ_REGISTER_TEXT'      => $lang['sys_blitz_registration_mode_list'][$config->game_blitz_register],
-    'BLITZ_REGISTER_OPEN'      => $config->game_blitz_register == BLITZ_REGISTER_OPEN,
-    'BLITZ_REGISTER_CLOSED'      => $config->game_blitz_register == BLITZ_REGISTER_CLOSED,
-    'BLITZ_REGISTER_SHOW_LOGIN'      => $config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
-    'BLITZ_REGISTER_DISCLOSURE_NAMES'      => $config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
-    'GAME_BLITZ'               => $config->game_mode == GAME_BLITZ,
+    'GAME_BLITZ_REGISTER'             => $config->game_blitz_register,
+    'GAME_BLITZ_REGISTER_TEXT'        => $lang['sys_blitz_registration_mode_list'][$config->game_blitz_register],
+    'BLITZ_REGISTER_OPEN'             => $config->game_blitz_register == BLITZ_REGISTER_OPEN,
+    'BLITZ_REGISTER_CLOSED'           => $config->game_blitz_register == BLITZ_REGISTER_CLOSED,
+    'BLITZ_REGISTER_SHOW_LOGIN'       => $config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
+    'BLITZ_REGISTER_DISCLOSURE_NAMES' => $config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
+    'GAME_BLITZ'                      => $config->game_mode == GAME_BLITZ,
 
-    'USERS_ONLINE'         => $config->var_online_user_count,
-    'USERS_TOTAL'          => $config->users_amount,
-    'USER_RANK'            => $user['total_rank'],
-    'USER_NICK'            => $user['username'],
-    'USER_AVATAR'          => $user['avatar'],
-    'USER_AVATARID'        => $user['id'],
-    'USER_PREMIUM'         => $premium_lvl,
-    'USER_RACE'        	   => $user['player_race'],
+    'USERS_ONLINE'  => $config->var_online_user_count,
+    'USERS_TOTAL'   => $config->users_amount,
+    'USER_RANK'     => $user['total_rank'],
+    'USER_NICK'     => $user['username'],
+    'USER_AVATAR'   => $user['avatar'],
+    'USER_AVATARID' => $user['id'],
+    'USER_PREMIUM'  => $premium_lvl,
+    'USER_RACE'     => $user['player_race'],
 
-    'TOPNAV_CURRENT_PLANET' => $user['current_planet'],
-    'TOPNAV_CURRENT_PLANET_NAME' => uni_render_planet_full($planetrow), // htmlspecialchars($planetrow['name']),
+    'TOPNAV_CURRENT_PLANET'       => $user['current_planet'],
+    'TOPNAV_CURRENT_PLANET_NAME'  => uni_render_planet_full($planetrow), // htmlspecialchars($planetrow['name']),
     'TOPNAV_CURRENT_PLANET_IMAGE' => $planetrow['image'],
-    'TOPNAV_COLONIES_CURRENT' => get_player_current_colonies($user),
-    'TOPNAV_COLONIES_MAX' => get_player_max_colonies($user),
-    'TOPNAV_MODE' => $GET_mode,
+    'TOPNAV_COLONIES_CURRENT'     => get_player_current_colonies($user),
+    'TOPNAV_COLONIES_MAX'         => get_player_max_colonies($user),
+    'TOPNAV_MODE'                 => $GET_mode,
 
-    'TOPNAV_DARK_MATTER' => mrc_get_level($user, '', RES_DARK_MATTER),
-    'TOPNAV_DARK_MATTER_TEXT' => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER)),
-    'TOPNAV_DARK_MATTER_PLAIN' => mrc_get_level($user, '', RES_DARK_MATTER, false, true),
+    'TOPNAV_DARK_MATTER'            => mrc_get_level($user, '', RES_DARK_MATTER),
+    'TOPNAV_DARK_MATTER_TEXT'       => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER)),
+    'TOPNAV_DARK_MATTER_PLAIN'      => mrc_get_level($user, '', RES_DARK_MATTER, false, true),
     'TOPNAV_DARK_MATTER_PLAIN_TEXT' => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER, false, true)),
-    'TOPNAV_METAMATTER'  => mrc_get_level($user, '', RES_METAMATTER),
-    'TOPNAV_METAMATTER_TEXT'  => pretty_number(mrc_get_level($user, '', RES_METAMATTER)),
+    'TOPNAV_METAMATTER'             => mrc_get_level($user, '', RES_METAMATTER),
+    'TOPNAV_METAMATTER_TEXT'        => pretty_number(mrc_get_level($user, '', RES_METAMATTER)),
 
     // TODO ГРЯЗНЫЙ ХАК!!!
-    'TOPNAV_PAYMENT' => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
+    'TOPNAV_PAYMENT'                => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
 
-    'TOPNAV_MESSAGES_ADMIN'     => $user['msg_admin'],
-    'TOPNAV_MESSAGES_PLAYER'    => $user['mnl_joueur'],
-    'TOPNAV_MESSAGES_ALLIANCE'  => $user['mnl_alliance'],
-    'TOPNAV_MESSAGES_ATTACK'    => $user['mnl_attaque'],
-    'TOPNAV_MESSAGES_ALL'       => $user['new_message'],
+    'TOPNAV_MESSAGES_ADMIN'    => $user['msg_admin'],
+    'TOPNAV_MESSAGES_PLAYER'   => $user['mnl_joueur'],
+    'TOPNAV_MESSAGES_ALLIANCE' => $user['mnl_alliance'],
+    'TOPNAV_MESSAGES_ATTACK'   => $user['mnl_attaque'],
+    'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
     'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
     'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
     'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
     'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
-    'TOPNAV_QUEST_COMPLETE'     => get_quest_amount_complete($user['id']),
+    'TOPNAV_QUEST_COMPLETE' => get_quest_amount_complete($user['id']),
 
-    'GAME_NEWS_OVERVIEW'        => $config->game_news_overview,
-    'GAME_RESEARCH_DISABLED'    => defined('GAME_RESEARCH_DISABLED') && GAME_RESEARCH_DISABLED,
-    'GAME_DEFENSE_DISABLED'     => defined('GAME_DEFENSE_DISABLED') && GAME_DEFENSE_DISABLED,
-    'GAME_STRUCTURES_DISABLED'  => defined('GAME_STRUCTURES_DISABLED') && GAME_STRUCTURES_DISABLED,
-    'GAME_HANGAR_DISABLED'      => defined('GAME_HANGAR_DISABLED') && GAME_HANGAR_DISABLED,
+    'GAME_NEWS_OVERVIEW'       => $config->game_news_overview,
+    'GAME_RESEARCH_DISABLED'   => defined('GAME_RESEARCH_DISABLED') && GAME_RESEARCH_DISABLED,
+    'GAME_DEFENSE_DISABLED'    => defined('GAME_DEFENSE_DISABLED') && GAME_DEFENSE_DISABLED,
+    'GAME_STRUCTURES_DISABLED' => defined('GAME_STRUCTURES_DISABLED') && GAME_STRUCTURES_DISABLED,
+    'GAME_HANGAR_DISABLED'     => defined('GAME_HANGAR_DISABLED') && GAME_HANGAR_DISABLED,
 
     'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
     'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
     'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
 
-    'SUBQUE_FLEET'              => SUBQUE_FLEET,
-    'QUE_RESEARCH'              => QUE_RESEARCH,
+    'SUBQUE_FLEET' => SUBQUE_FLEET,
+    'QUE_RESEARCH' => QUE_RESEARCH,
   ));
 
   if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false)) {
     tpl_set_resource_info($template, $planetrow);
     $template->assign_vars(array(
       'SN_RENDER_NAVBAR_PLANET' => true,
-      'SN_NAVBAR_HIDE_FLEETS' => true,
+      'SN_NAVBAR_HIDE_FLEETS'   => true,
     ));
   }
 
@@ -610,7 +594,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
  */
 function displayP($template) {
   if(is_object($template)) {
-    if(!$template->parsed) {
+    if(empty($template->parsed)) {
       parsetemplate($template);
     }
 
@@ -623,7 +607,7 @@ function displayP($template) {
 }
 
 /**
- * @param template $template
+ * @param template   $template
  * @param bool|false $array
  *
  * @return mixed
@@ -638,13 +622,13 @@ function parsetemplate($template, $array = false) {
       }
     }
 
-    $tmpl_name = gettemplatename($user['dpath']);
+//    $tmpl_name = gettemplatename($user['dpath']);
 
     $template->assign_vars(array(
-      'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
-      'SN_TIME_NOW'   => SN_TIME_NOW,
-      'USER_AUTHLEVEL'=> isset($user['authlevel']) ? $user['authlevel'] : -1,
-      'SN_GOOGLE'     => defined('SN_GOOGLE'),
+      'dpath'          => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
+      'SN_TIME_NOW'    => SN_TIME_NOW,
+      'USER_AUTHLEVEL' => isset($user['authlevel']) ? $user['authlevel'] : -1,
+      'SN_GOOGLE'      => defined('SN_GOOGLE'),
     ));
 
     $template->parsed = true;
@@ -729,11 +713,11 @@ function tpl_login_lang(&$template) {
 
   $template->assign_vars($q = array(
 //    'LANG' => $language ? '?lang=' . $language : '',
-    'LANG' => $language ? $language : '',
+    'LANG'     => $language ? $language : '',
     'referral' => $id_ref ? '&id_ref=' . $id_ref : '',
 
     'REQUEST_PARAMS' => !empty($url_params) ? '?' . implode('&', $url_params) : '',// "?lang={$language}" . ($id_ref ? "&id_ref={$id_ref}" : ''),
-    'FILENAME' => basename($_SERVER['PHP_SELF']),
+    'FILENAME'       => basename($_SERVER['PHP_SELF']),
   ));
 
   foreach(lng_get_list() as $lng_id => $lng_data) {
@@ -759,15 +743,16 @@ function tpl_get_fleets_flying(&$user) {
   $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
   while($fleet_flying_row = db_fetch($fleet_flying_query)) {
     $fleet_flying_list[0][] = $fleet_flying_row;
-    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list)-1];
+    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list) - 1];
   }
+
   return $fleet_flying_list;
 }
 
 /**
  * @param template $template
- * @param array $planet
- * @param int $que_type
+ * @param array    $planet
+ * @param int      $que_type
  *
  * @return int
  */
@@ -787,8 +772,8 @@ function tpl_assign_hangar(&$template, $planet, $que_type) {
 
 /**
  * @param template $template
- * @param array $density_price_chart
- * @param int $user_dark_matter
+ * @param array    $density_price_chart
+ * @param int      $user_dark_matter
  */
 function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter) {
   global $lang;
@@ -803,12 +788,12 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
     $density_number_style = pretty_number($density_cost, true, $user_dark_matter, false, false);
 
     $density_price_data = array(
-      'COST' => $density_cost,
-      'COST_TEXT' => $density_number_style['text'],
+      'COST'            => $density_cost,
+      'COST_TEXT'       => $density_number_style['text'],
       'COST_TEXT_CLASS' => $density_number_style['class'],
-      'REST' => $user_dark_matter - $density_cost,
-      'ID' => $density_price_index,
-      'TEXT' => $lang['uni_planet_density_types'][$density_price_index],
+      'REST'            => $user_dark_matter - $density_cost,
+      'ID'              => $density_price_index,
+      'TEXT'            => $lang['uni_planet_density_types'][$density_price_index],
     );
     $template->assign_block_vars('densities', $density_price_data);
   }
@@ -816,13 +801,13 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
 
 /**
  * @param template $template
- * @param string $name
- * @param array $values
+ * @param string   $name
+ * @param array    $values
  */
 function tpl_assign_select(&$template, $name, $values) {
   foreach($values as $key => $value) {
     $template->assign_block_vars($name, array(
-      'KEY' => htmlentities($key, ENT_COMPAT, 'UTF-8'),
+      'KEY'   => htmlentities($key, ENT_COMPAT, 'UTF-8'),
       'VALUE' => htmlentities($value, ENT_COMPAT, 'UTF-8'),
     ));
   }
