@@ -24,8 +24,11 @@ $template->assign_vars(array(
   'GAME_MULTIACCOUNT_ENABLED' => $config->game_multiaccount_enabled,
 
   'GAME_SPEED' => get_game_speed(),
+  'GAME_SPEED_PLAIN' => get_game_speed(true),
   'FLEET_SPEED' => flt_server_flight_speed_multiplier(),
+  'FLEET_SPEED_PLAIN' => flt_server_flight_speed_multiplier(true),
   'RESOURCE_MULTIPLIER' => game_resource_multiplier(),
+  'RESOURCE_MULTIPLIER_PLAIN' => game_resource_multiplier(true),
 ));
 
 display(parsetemplate($template));

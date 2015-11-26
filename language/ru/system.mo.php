@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a19.12#
+* @version #40a19.20#
 *
 */
 
@@ -1164,5 +1164,8 @@ $a_lang_array = (array(
 
   'sys_confirm_action_title' => 'Подтвердите ваше действие',
   'sys_confirm_action' => 'Вы действительно хотите сделать это?',
+
+  'sys_system_speed_original' => 'Оригинальная скорость',
+  'sys_system_speed_for_action' => 'В рамках акции',
 
 ));

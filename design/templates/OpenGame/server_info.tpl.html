@@ -38,15 +38,38 @@
   </tr>
   <tr>
     <th>{L_adm_opt_speed} {L_adm_opt_game_gspeed}</th>
-    <th>x&nbsp;{GAME_SPEED}</th>
+    <!--<th>x&nbsp;{GAME_SPEED}</th>-->
+    <th>
+      <!-- IF GAME_SPEED != GAME_SPEED_PLAIN -->
+      <span class="ok">{L_sys_system_speed_for_action} x&nbsp;{GAME_SPEED}</span><br/>
+      <span class="warning">{L_sys_system_speed_original} x {GAME_SPEED_PLAIN}</span>
+      <!-- ELSE  -->
+      x&nbsp;{GAME_SPEED}
+      <!-- ENDIF -->
+    </th>
   </tr>
   <tr>
     <th>{L_adm_opt_speed} {L_adm_opt_game_fspeed}</th>
-    <th>x&nbsp;{FLEET_SPEED}</th>
+    <!--<th>x&nbsp;{FLEET_SPEED}</th>-->
+    <th>
+      <!-- IF FLEET_SPEED != FLEET_SPEED_PLAIN -->
+      <span class="ok">{L_sys_system_speed_for_action} x&nbsp;{FLEET_SPEED}</span><br/>
+      <span class="warning">{L_sys_system_speed_original} x {FLEET_SPEED_PLAIN}</span>
+      <!-- ELSE  -->
+      x&nbsp;{FLEET_SPEED}
+      <!-- ENDIF -->
+    </th>
   </tr>
   <tr>
     <th>{L_adm_opt_speed} {L_adm_opt_game_pspeed}</th>
-    <th>x&nbsp;{RESOURCE_MULTIPLIER}</th>
+    <th>
+      <!-- IF RESOURCE_MULTIPLIER != RESOURCE_MULTIPLIER_PLAIN -->
+      <span class="ok">{L_sys_system_speed_for_action} x&nbsp;{RESOURCE_MULTIPLIER}</span><br/>
+      <span class="warning">{L_sys_system_speed_original} x {RESOURCE_MULTIPLIER_PLAIN}</span>
+      <!-- ELSE  -->
+      x&nbsp;{RESOURCE_MULTIPLIER}
+      <!-- ENDIF -->
+    </th>
   </tr>
   <tr>
     <th class="c">{L_adm_opt_galaxies}</th>

@@ -68,22 +68,22 @@ function sys_file_write($filename, $content)
   return @file_put_contents($filename, $content, FILE_APPEND);
 }
 
-function get_game_speed(){return sn_function_call('get_game_speed', array(&$result));}
-function sn_get_game_speed(&$result) {
+function get_game_speed($plain = false){return sn_function_call('get_game_speed', array($plain, &$result));}
+function sn_get_game_speed($plain = false, &$result) {
   global $config;
 
   return $result = $config->game_speed ? $config->game_speed : 1;
 }
 
-function flt_server_flight_speed_multiplier(){return sn_function_call('flt_server_flight_speed_multiplier', array(&$result));}
-function sn_flt_server_flight_speed_multiplier(&$result) {
+function flt_server_flight_speed_multiplier($plain = false){return sn_function_call('flt_server_flight_speed_multiplier', array($plain, &$result));}
+function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
   global $config;
 
   return $result = $config->fleet_speed;
 }
 
-function game_resource_multiplier(){return sn_function_call('game_resource_multiplier', array(&$result));}
-function sn_game_resource_multiplier(&$result) {
+function game_resource_multiplier($plain = false){return sn_function_call('game_resource_multiplier', array($plain,&$result));}
+function sn_game_resource_multiplier($plain = false, &$result) {
   global $config;
 
   return $result = $config->resource_multiplier;

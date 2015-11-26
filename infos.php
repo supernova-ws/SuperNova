@@ -12,19 +12,16 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $unit_id = sys_get_param_id('gid');
-if($unit_id == RES_DARK_MATTER)
-{
+if($unit_id == RES_DARK_MATTER) {
   sys_redirect('dark_matter.php');
 }
 
-if($unit_id == RES_METAMATTER)
-{
+if($unit_id == RES_METAMATTER) {
   sys_redirect('metamatter.php');
 }
 
 lng_include('infos');
-if(!$unit_id || (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id])))
-{
+if(!$unit_id || (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id]))) {
   sys_redirect('index.php?page=techtree');
 }
 
@@ -33,34 +30,32 @@ $template = gettemplate('novapedia', true);
 $unit_data = get_unit_param($unit_id);
 $unit_type = $unit_data['type'];
 
-if($unit_type == UNIT_SHIPS)
-{
+if($unit_type == UNIT_SHIPS) {
   $template_result['UNIT_IS_SHIP'] = true;
 
   $ship_data = get_ship_data($unit_id, $user);
 
   $template_result += array(
-    'BASE_SPEED' => pretty_number($ship_data['speed_base']),
-    'ACTUAL_SPEED' => pretty_number($ship_data['speed']),
-    'BASE_CONSUMPTION' => pretty_number($ship_data['consumption_base']),
+    'BASE_SPEED'         => pretty_number($ship_data['speed_base']),
+    'ACTUAL_SPEED'       => pretty_number($ship_data['speed']),
+    'BASE_CONSUMPTION'   => pretty_number($ship_data['consumption_base']),
     'ACTUAL_CONSUMPTION' => pretty_number($ship_data['consumption']),
 
-    'BASE_CAPACITY' => pretty_number($unit_data['capacity']),
+    'BASE_CAPACITY'   => pretty_number($unit_data['capacity']),
     'ACTUAL_CAPACITY' => pretty_number($ship_data['capacity']),
   );
 
   $engine_template_info = array();
-  foreach($unit_data['engine'] as $unit_engine_data)
-  {
+  foreach($unit_data['engine'] as $unit_engine_data) {
     $unit_engine_data = get_engine_data($user, $unit_engine_data);
 
     $engine_template_info[] = array(
-      'NAME' => $lang['tech'][$unit_engine_data['tech']],
-      'MIN_LEVEL' => $unit_engine_data['min_level'],
-      'USER_TECH_LEVEL' => mrc_get_level($user, null, $unit_engine_data['tech']),
-      'BASE_SPEED' => pretty_number($unit_engine_data['speed_base']),
-      'BASE_CONSUMPTION' => pretty_number($unit_engine_data['consumption_base']),
-      'ACTUAL_SPEED' => pretty_number($unit_engine_data['speed']),
+      'NAME'               => $lang['tech'][$unit_engine_data['tech']],
+      'MIN_LEVEL'          => $unit_engine_data['min_level'],
+      'USER_TECH_LEVEL'    => mrc_get_level($user, null, $unit_engine_data['tech']),
+      'BASE_SPEED'         => pretty_number($unit_engine_data['speed_base']),
+      'BASE_CONSUMPTION'   => pretty_number($unit_engine_data['consumption_base']),
+      'ACTUAL_SPEED'       => pretty_number($unit_engine_data['speed']),
       'ACTUAL_CONSUMPTION' => pretty_number($unit_engine_data['consumption']),
     );
   }
@@ -70,8 +65,7 @@ if($unit_type == UNIT_SHIPS)
 
 
 $sn_data_group_combat = sn_get_groups('combat');
-if(in_array($unit_id, $sn_data_group_combat))
-{
+if(in_array($unit_id, $sn_data_group_combat)) {
   $template_result['UNIT_IS_COMBAT'] = true;
 
   $unit_durability = $unit_data['shield'] + $unit_data['armor'];
@@ -79,49 +73,43 @@ if(in_array($unit_id, $sn_data_group_combat))
   $volley_arr = $rapid_to = $rapid_from = array();
   $str_rapid_from = '';
   $str_rapid_to = '';
-  foreach($sn_data_group_combat as $enemy_id)
-  {
+  foreach($sn_data_group_combat as $enemy_id) {
     $enemy_data = get_unit_param($enemy_id);
     $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
 
     $rapid = $unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability;
-    if($rapid >= 1)
-    {
+    if($rapid >= 1) {
       $volley_arr[$enemy_id]['TO'] = floor($rapid);
     }
 
     $rapid = $enemy_data['attack'] * (isset($enemy_data['amplify'][$unit_id]) ? $enemy_data['amplify'][$unit_id] : 1) / $unit_durability;
-    if($rapid >= 1)
-    {
+    if($rapid >= 1) {
       $volley_arr[$enemy_id]['FROM'] = floor($rapid);
     }
   }
-  foreach($volley_arr as $enemy_id => &$rapid)
-  {
+  foreach($volley_arr as $enemy_id => &$rapid) {
     $rapid['ENEMY_ID'] = $enemy_id;
     $rapid['ENEMY_NAME'] = $lang['tech'][$enemy_id];
   }
   $template_result['.']['volley'] = $volley_arr;
 
   $template_result += array(
-    'BASE_ARMOR' => pretty_number($unit_data['armor']),
+    'BASE_ARMOR'  => pretty_number($unit_data['armor']),
     'BASE_SHIELD' => pretty_number($unit_data['shield']),
     'BASE_WEAPON' => pretty_number($unit_data['attack']),
 
-    'ACTUAL_ARMOR' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_data['armor'])),
+    'ACTUAL_ARMOR'  => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_data['armor'])),
     'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_data['shield'])),
     'ACTUAL_WEAPON' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_data['attack'])),
   );
 
 }
 
-if($lang['info'][$unit_id]['effect'])
-{
+if($lang['info'][$unit_id]['effect']) {
   $template_result['UNIT_EFFECT'] = $lang['info'][$unit_id]['effect'];
 }
 
-if($unit_data['bonus'])
-{
+if($unit_data['bonus']) {
   $unit_bonus = !$unit_data['bonus'] || $unit_data['bonus_type'] == BONUS_ABILITY ? '' : (
     ($unit_data['bonus'] >= 0 ? '+' : '') . $unit_data['bonus'] . ($unit_data['bonus_type'] == BONUS_PERCENT ? '%' : '')
   );
@@ -131,10 +119,10 @@ if($unit_data['bonus'])
 $template_result += array(
   'PAGE_HEADER' => $lang['wiki_title'],
 
-  'UNIT_ID' => $unit_id,
-  'UNIT_NAME' => $lang['tech'][$unit_id],
-  'UNIT_TYPE' => $unit_type,
-  'UNIT_TYPE_NAME' => $lang['tech'][$unit_type],
+  'UNIT_ID'          => $unit_id,
+  'UNIT_NAME'        => $lang['tech'][$unit_id],
+  'UNIT_TYPE'        => $unit_type,
+  'UNIT_TYPE_NAME'   => $lang['tech'][$unit_type],
   'UNIT_DESCRIPTION' => $lang['info'][$unit_id]['description'],
 );
 
@@ -150,106 +138,110 @@ display($template);
 // Tient compte du parametrage de la planete (si la production n'est pas affectée a 100% par exemple
 // Tient compte aussi du multiplicateur de ressources
 //
-function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
-{
-//  global $config;
-
-//  $unit_data = get_unit_param($BuildID);
-
+function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template) {
   $config_resource_multiplier = game_resource_multiplier();
+  $config_resource_multiplier_plain = game_resource_multiplier(true);
 
-//  $BuildLevelFactor = $CurrentPlanet[pname_factory_production_field_name($BuildID)];
-//  $BuildTemp = $CurrentPlanet['temp_max'];
-//  $BuildEnergyTech = $CurrentUser['energy_tech'];
   $CurrentBuildtLvl = mrc_get_level($CurrentUser, $CurrentPlanet, $BuildID);
 
   $BuildLevel = ($CurrentBuildtLvl > 0) ? $CurrentBuildtLvl : 1;
 
   $modifiers = sn_get_groups('modifiers');
 
-  $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
-  $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
-  $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
-  $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+  $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value(
+    $CurrentUser,
+    $CurrentPlanet,
+    $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+  ));
+  $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value(
+    $CurrentUser,
+    $CurrentPlanet,
+    $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+  ));
+  $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value(
+    $CurrentUser,
+    $CurrentPlanet,
+    $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+    $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+  ));
+  $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value(
+    $CurrentUser,
+    $CurrentPlanet,
+    $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+    $config_resource_multiplier_plain * $unit_data[P_UNIT_PRODUCTION][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+  ));
 
   $ActualProd = floor($Prod[$BuildID]);
-  if ($BuildID != STRUC_MINE_FUSION)
-  {
+  if($BuildID != STRUC_MINE_FUSION) {
     $ActualNeed = floor($Prod[STRUC_MINE_SOLAR]);
-  }
-  else
-  {
+  } else {
     $ActualNeed = floor($Prod[STRUC_MINE_DEUTERIUM]);
   }
 
   $BuildStartLvl = $CurrentBuildtLvl - 2;
-  if ($BuildStartLvl < 1)
-  {
+  if($BuildStartLvl < 1) {
     $BuildStartLvl = 1;
   }
   $Table = '';
   $ProdFirst = 0;
-  for ($BuildLevel = $BuildStartLvl; $BuildLevel < $BuildStartLvl + 10; $BuildLevel++)
-  {
-    if ($BuildID != STRUC_MOON_PHALANX)
-    {
-      $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
-      $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
-      $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
-      $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value($CurrentUser, $CurrentPlanet, $modifiers[MODIFIER_RESOURCE_PRODUCTION],
-        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)));
+  for($BuildLevel = $BuildStartLvl; $BuildLevel < $BuildStartLvl + 10; $BuildLevel++) {
+    if($BuildID != STRUC_MOON_PHALANX) {
+      $Prod[STRUC_MINE_METAL] = floor(mrc_modify_value(
+        $CurrentUser,
+        $CurrentPlanet,
+        $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_METAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+      ));
+      $Prod[STRUC_MINE_CRYSTAL] = floor(mrc_modify_value(
+        $CurrentUser,
+        $CurrentPlanet,
+        $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_CRYSTAL]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+      ));
+      $Prod[STRUC_MINE_DEUTERIUM] = floor(mrc_modify_value(
+        $CurrentUser,
+        $CurrentPlanet,
+        $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+        $config_resource_multiplier * $unit_data[P_UNIT_PRODUCTION][RES_DEUTERIUM]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+      ));
+      $Prod[STRUC_MINE_SOLAR] = floor(mrc_modify_value(
+        $CurrentUser,
+        $CurrentPlanet,
+        $modifiers[MODIFIER_RESOURCE_PRODUCTION],
+        $config_resource_multiplier_plain * $unit_data[P_UNIT_PRODUCTION][RES_ENERGY]($BuildLevel, 100, $CurrentUser, $CurrentPlanet)
+      ));
 
       $bloc['build_lvl'] = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">" . $BuildLevel . "</font>" : $BuildLevel;
-      if ($ProdFirst > 0)
-      {
-        if ($BuildID != STRUC_MINE_FUSION)
-        {
+      if($ProdFirst > 0) {
+        if($BuildID != STRUC_MINE_FUSION) {
           $bloc['build_gain'] = "<font color=\"lime\">(" . pretty_number(floor($Prod[$BuildID] - $ProdFirst)) . ")</font>";
-        }
-        else
-        {
+        } else {
           $bloc['build_gain'] = "<font color=\"lime\">(" . pretty_number(floor($Prod[STRUC_MINE_SOLAR] - $ProdFirst)) . ")</font>";
         }
-      }
-      else
-      {
+      } else {
         $bloc['build_gain'] = '';
       }
-      if ($BuildID != STRUC_MINE_FUSION)
-      {
+      if($BuildID != STRUC_MINE_FUSION) {
         $bloc['build_prod'] = pretty_number(floor($Prod[$BuildID]));
         $bloc['build_prod_diff'] = pretty_number(floor($Prod[$BuildID] - $ActualProd), true, true);
         $bloc['build_need'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR]), true, true);
         $bloc['build_need_diff'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR] - $ActualNeed), true, true);
-      }
-      else
-      {
+      } else {
         $bloc['build_prod'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR]));
         $bloc['build_prod_diff'] = pretty_number(floor($Prod[STRUC_MINE_SOLAR] - $ActualProd), true, true);
         $bloc['build_need'] = pretty_number(floor($Prod[STRUC_MINE_DEUTERIUM]), true, true);
         $bloc['build_need_diff'] = pretty_number(floor($Prod[STRUC_MINE_DEUTERIUM] - $ActualNeed), true, true);
       }
-      if ($ProdFirst == 0)
-      {
-        if ($BuildID != STRUC_MINE_FUSION)
-        {
+      if($ProdFirst == 0) {
+        if($BuildID != STRUC_MINE_FUSION) {
           $ProdFirst = floor($Prod[$BuildID]);
-        }
-        else
-        {
+        } else {
           $ProdFirst = floor($Prod[STRUC_MINE_SOLAR]);
         }
       }
-    }
-    else
-    {
+    } else {
       // Cas particulier de la phalange
       $bloc['build_lvl'] = ($CurrentBuildtLvl == $BuildLevel) ? "<font color=\"#ff0000\">" . $BuildLevel . "</font>" : $BuildLevel;
       $bloc['build_range'] = ($BuildLevel * $BuildLevel) - 1;
@@ -260,8 +252,7 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template)
   return $Table;
 }
 
-function eco_render_rapid_fire($unit_id)
-{
+function eco_render_rapid_fire($unit_id) {
   global $lang;
 
   $unit_data = get_unit_param($unit_id);
@@ -269,26 +260,22 @@ function eco_render_rapid_fire($unit_id)
 
   $str_rapid_from = '';
   $str_rapid_to = '';
-  foreach(sn_get_groups(array('fleet', 'defense_active')) as $enemy_id)
-  {
+  foreach(sn_get_groups(array('fleet', 'defense_active')) as $enemy_id) {
     $enemy_data = get_unit_param($enemy_id);
     $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
 
     $rapid = floor($unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability);
-    if ($rapid >= 1)
-    {
+    if($rapid >= 1) {
       $str_rapid_to .= "{$lang['nfo_rf_again']} {$lang['tech'][$enemy_id]} <font color=\"#00ff00\">{$rapid}</font><br>";
     }
 
     $rapid = floor($enemy_data['attack'] * (isset($enemy_data['amplify'][$unit_id]) ? $enemy_data['amplify'][$unit_id] : 1) / $unit_durability);
-    if ($rapid >= 1)
-    {
+    if($rapid >= 1) {
       $str_rapid_from .= "{$lang['tech'][$enemy_id]} {$lang['nfo_rf_from']} <font color=\"#ff0000\">{$rapid}</font><br>";
     }
   }
 
-  if ($str_rapid_to && $str_rapid_from)
-  {
+  if($str_rapid_to && $str_rapid_from) {
     $str_rapid_to .= '<hr>';
   }
 
@@ -317,85 +304,60 @@ $parse['description'] = $lang['info'][$unit_id]['description'];
 
 $unit_info = get_unit_param($unit_id);
 
-if ($unit_id >= 1 && $unit_id <= 3)
-{
+if($unit_id >= 1 && $unit_id <= 3) {
   // Cas des mines
   $PageTPL = gettemplate('info_buildings_table');
   $DestroyTPL = gettemplate('info_buildings_destroy');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_p_hour}</td><td class=\"c\">{nfo_difference}</td><td class=\"c\">{nfo_used_energy}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th><th>{build_need}</th><th>{build_need_diff}</th></tr>";
-}
-elseif ($unit_id == 4)
-{
+} elseif($unit_id == 4) {
   // Centrale Solaire
   $PageTPL = gettemplate('info_buildings_table');
   $DestroyTPL = gettemplate('info_buildings_destroy');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th></tr>";
-}
-elseif ($unit_id == STRUC_MINE_FUSION)
-{
+} elseif($unit_id == STRUC_MINE_FUSION) {
   // Centrale Fusion
   $PageTPL = gettemplate('info_buildings_table');
   $DestroyTPL = gettemplate('info_buildings_destroy');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td><td class=\"c\">{nfo_used_deuter}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th><th>{build_need}</th><th>{build_need_diff}</th></tr>";
-}
-elseif ($unit_id >= STRUC_FACTORY_ROBOT && $unit_id <= 32)
-{
+} elseif($unit_id >= STRUC_FACTORY_ROBOT && $unit_id <= 32) {
   // Batiments Generaux
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
-}
-elseif ($unit_id == STRUC_TERRAFORMER)
-{
+} elseif($unit_id == STRUC_TERRAFORMER) {
   // Batiments Terraformer
   $PageTPL = gettemplate('info_buildings_general');
-}
-elseif ($unit_id == STRUC_ALLY_DEPOSIT)
-{
+} elseif($unit_id == STRUC_ALLY_DEPOSIT) {
   // Dépot d'alliance
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
-}
-elseif ($unit_id == STRUC_LABORATORY_NANO)
-{
+} elseif($unit_id == STRUC_LABORATORY_NANO) {
   // nano
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
-}
-elseif ($unit_id == STRUC_SILO)
-{
+} elseif($unit_id == STRUC_SILO) {
   // Silo de missiles
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
-}
-elseif ($unit_id == STRUC_MOON_STATION)
-{
+} elseif($unit_id == STRUC_MOON_STATION) {
   // Batiments lunaires
   $PageTPL = gettemplate('info_buildings_general');
-}
-elseif ($unit_id == STRUC_MOON_PHALANX)
-{
+} elseif($unit_id == STRUC_MOON_PHALANX) {
   // Phalange
   $PageTPL = gettemplate('info_buildings_table');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_range}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_range}</th></tr>";
   $DestroyTPL = gettemplate('info_buildings_destroy');
-}
-elseif($unit_id == STRUC_MOON_GATE)
-{
+} elseif($unit_id == STRUC_MOON_GATE) {
   // Porte de Saut
   $PageTPL = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
-}
-elseif(in_array($unit_id, sn_get_groups('tech')))
-{
+} elseif(in_array($unit_id, sn_get_groups('tech'))) {
   // Laboratoire
   $PageTPL = gettemplate('info_buildings_general');
-}
-elseif(in_array($unit_id, sn_get_groups('fleet')))
-{
+} elseif(in_array($unit_id, sn_get_groups('fleet'))) {
   // Flotte
 
   $PageTPL = gettemplate('info_buildings_fleet');
@@ -420,14 +382,11 @@ elseif(in_array($unit_id, sn_get_groups('fleet')))
   $parse['ACTUAL_CAPACITY'] = pretty_number($ship_data['capacity']);
   $parse['ACTUAL_SPEED'] = pretty_number($ship_data['speed']);
   $parse['ACTUAL_CONSUMPTION'] = pretty_number($ship_data['consumption']);
-  if(count($unit_info['engine']) > 1)
-  {
+  if(count($unit_info['engine']) > 1) {
     $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($unit_info['engine'][1]['speed']) . ")</font>";       // Vitesse rééquipée
     $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($unit_info['engine'][1]['consumption']) . ")</font>"; // Consommation apres rééquipement
   }
-}
-elseif(in_array($unit_id, sn_get_groups('defense_active')))
-{
+} elseif(in_array($unit_id, sn_get_groups('defense_active'))) {
   // Defenses
   $PageTPL = gettemplate('info_buildings_defense');
   $parse['element_typ'] = $lang['tech'][UNIT_DEFENCE];
@@ -439,26 +398,21 @@ elseif(in_array($unit_id, sn_get_groups('defense_active')))
   $parse['hull_pt'] = pretty_number(($unit_info['metal'] + $unit_info['crystal']) / 10); // Points de Structure
   $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
-}
-elseif(in_array($unit_id, sn_get_groups('missile')))
-{
+} elseif(in_array($unit_id, sn_get_groups('missile'))) {
   // Misilles
   $PageTPL = gettemplate('info_buildings_defense');
   $parse['element_typ'] = $lang['tech'][UNIT_DEFENCE];
   $parse['hull_pt'] = pretty_number($unit_info['metal'] + $unit_info['crystal']); // Points de Structure
   $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
-}
-elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artifacts', 'resources_all'))))
-{
+} elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artifacts', 'resources_all')))) {
   // Officiers
   $PageTPL = gettemplate('info_officiers_general');
 
   $mercenary = $unit_info;
   $mercenary_bonus = $mercenary['bonus'];
   $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
-  switch ($mercenary['bonus_type'])
-  {
+  switch($mercenary['bonus_type']) {
     case BONUS_PERCENT:
       $mercenary_bonus = "{$mercenary_bonus}%";
       break;
@@ -476,17 +430,15 @@ elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artif
 
   $parse['EFFECT'] = $lang['info'][$unit_id]['effect'];
   $parse['mercenary_bonus'] = $mercenary_bonus;
-  if(!in_array($unit_id, sn_get_groups(array('artifacts', 'resources_all'))))
-  {
-    $parse['max_level'] = $lang['sys_level'] . ' ' . 
-    (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? mrc_get_level($user, null, $unit_id) : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
-    . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
+  if(!in_array($unit_id, sn_get_groups(array('artifacts', 'resources_all')))) {
+    $parse['max_level'] = $lang['sys_level'] . ' ' .
+      (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? mrc_get_level($user, null, $unit_id) : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
+      . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
   }
 }
 
 // ---- Tableau d'evolution
-if ($TableHeadTPL != '')
-{
+if($TableHeadTPL != '') {
   $parse['table_head'] = parsetemplate($TableHeadTPL, $lang);
   $parse['table_data'] = ShowProductionTable($user, $planetrow, $unit_id, $TableTPL);
 }
