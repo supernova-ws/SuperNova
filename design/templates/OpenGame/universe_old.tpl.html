@@ -18,13 +18,13 @@
   <th>{L_Player}</th>
   <th>{L_sys_alliance}</th>
   <!-- IF ACT_SPY -->
-  <th><img src="design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" style="height: 1.5em" /></th>
+  <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_espionage.png" alt="{L_gl_espionner}" title="{L_gl_espionner}" style="height: 1.5em" /></th>
   <!-- ENDIF -->
   <!-- IF ACT_MISSILE -->
-  <th><img src="design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" /></th>
+  <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_missile.png" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" style="height: 1.5em" /></th>
   <!-- ENDIF -->
   <!-- IF ACT_WRITE -->
-  <th><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></th>
+  <th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></th>
   <!-- ENDIF -->
   <!--&lt;!&ndash; IF ACT_STATISTICS &ndash;&gt;-->
   <!--<th><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_statistics.png" alt="{L_gl_stats}" title="{L_gl_stats}" border=0 style="height: 1.5em" /></th>-->
@@ -54,7 +54,7 @@
       <div>
         <img src="{I_s_[galaxyrow.PLANET_IMAGE]}" />
         <!-- IF galaxyrow.PLANET_FLEET_ID -->
-          <img class="alpha25 uni_own_fleet" src=design/images/icon_fleet_own.png />
+          <img class="alpha25 uni_own_fleet" src="{D_SN_ROOT_VIRTUAL}design/images/icon_fleet_own.png" />
         <!-- ENDIF -->
       </div>
     </th>
@@ -100,7 +100,7 @@
       <div>
         <img src="{I_s_[galaxyrow.MOON_IMAGE]}" />
         <!-- IF galaxyrow.MOON_FLEET_ID -->
-        <img class="alpha25 uni_own_fleet" src=design/images/icon_fleet_own.png />
+        <img class="alpha25 uni_own_fleet" src="{D_SN_ROOT_VIRTUAL}design/images/icon_fleet_own.png" />
         <!-- ENDIF -->
       </div>
       <!-- ELSE -->
@@ -202,21 +202,21 @@
     <!-- IF ACT_SPY -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-        <a class="button_pseudo" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img src="design/images/icon_espionage.png" style="height: 1.5em" /></a>
+        <a class="button_pseudo" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_espionage.png" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <a class="button_pseudo missile_attack_prepare" planet_planet="{galaxyrow.PLANET_NUM}" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" ><img src="design/images/icon_missile.png" style="height: 1.5em" /></a>
+      <a class="button_pseudo missile_attack_prepare" planet_planet="{galaxyrow.PLANET_NUM}" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" ><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_missile.png" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_WRITE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
+      <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->

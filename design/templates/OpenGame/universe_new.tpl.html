@@ -51,7 +51,7 @@
       <div class="uni_show_planet uni_show_planet_new" planet_type="{galaxyrow.PLANET_TYPE}" id="planet_{galaxyrow.PLANET_ID}" style="position: relative;">
         <img src="{I_s_[galaxyrow.PLANET_IMAGE]}" />
         <!-- IF galaxyrow.PLANET_FLEET_ID -->
-          <img class="alpha50 uni_own_fleet" src="design/images/icon_fleet_own.png" />
+          <img class="alpha50 uni_own_fleet" src="{D_SN_ROOT_VIRTUAL}design/images/icon_fleet_own.png" />
         <!-- ENDIF -->
         <div class="uni_object_type">{L_sys_planet_type[D_PT_PLANET]}</div>
       </div>
@@ -60,7 +60,7 @@
       <div class="uni_show_planet uni_show_planet_new" planet_type="{D_PT_MOON}">
         <img src="{I_s_[galaxyrow.MOON_IMAGE]}" />
         <!-- IF galaxyrow.MOON_FLEET_ID -->
-          <img class="alpha50 uni_own_fleet" src=design/images/icon_fleet_own.png />
+          <img class="alpha50 uni_own_fleet" src="{D_SN_ROOT_VIRTUAL}design/images/icon_fleet_own.png" />
         <!-- ENDIF -->
         <div class="uni_object_type">{L_sys_planet_type[D_PT_MOON]}</div>
         <!--<div style="position: absolute; left: 0; top: 0; width: 100%;">Луна</div>-->
@@ -175,14 +175,18 @@
   <td>
     <!-- IF $DIFFERENT_USER -->
       <!-- IF ACT_SPY && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-        <a class="button_pseudo" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img src="design/images/icon_espionage.png" style="height: 1.5em" /></a>
+        <a class="button_pseudo" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});">
+          <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_espionage.png" style="height: 1.5em" />
+        </a>
       <!-- ENDIF -->
       <!-- IF ACT_MISSILE && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-        <a class="button_pseudo missile_attack_prepare" planet_planet="{galaxyrow.PLANET_NUM}" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" ><img src="design/images/icon_missile.png" style="height: 1.5em" /></a>
+        <a class="button_pseudo missile_attack_prepare" planet_planet="{galaxyrow.PLANET_NUM}" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" >
+          <img src="{D_SN_ROOT_VIRTUAL}design/images/icon_missile.png" style="height: 1.5em" />
+        </a>
       <!-- ENDIF -->
       <br />
       <!-- IF ACT_WRITE -->
-        <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
+        <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
       <!-- IF ACT_INFO -->
         <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{I_menu_empire_emperor}" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
