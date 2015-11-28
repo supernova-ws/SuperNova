@@ -4,6 +4,8 @@
 // Записывает боевой отчет в БД
 function sn_ube_report_save(&$combat_data)
 {
+  global $config;
+
   // Если уже есть ИД репорта - значит репорт был взят из таблицы. С таким мы не работаем
   if($combat_data[UBE_REPORT_CYPHER])
   {
@@ -101,6 +103,10 @@ function sn_ube_report_save(&$combat_data)
 
   // Сохраняем общую информацию о бое
   $outcome = &$combat_data[UBE_OUTCOME];
+  $ube_report_debris_total_in_metal = (
+      floatval($outcome[UBE_DEBRIS][RES_METAL])
+      + floatval($outcome[UBE_DEBRIS][RES_CRYSTAL]) * floatval($config->rpg_exchange_crystal)
+    ) / (floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1);
   doquery("INSERT INTO `{{ube_report}}`
     SET
       `ube_report_cypher` = '{$combat_data[UBE_REPORT_CYPHER]}',
@@ -113,8 +119,9 @@ function sn_ube_report_save(&$combat_data)
       `ube_report_combat_result` = {$outcome[UBE_COMBAT_RESULT]},
       `ube_report_combat_sfr` = " . (int)$outcome[UBE_SFR] .",
 
-      `ube_report_debris_metal` = " . (float)$outcome[UBE_DEBRIS][RES_METAL] .",
-      `ube_report_debris_crystal` = " . (float)$outcome[UBE_DEBRIS][RES_CRYSTAL] .",
+      `ube_report_debris_metal` = " . (float)$outcome[UBE_DEBRIS][RES_METAL] . ",
+      `ube_report_debris_crystal` = " . (float)$outcome[UBE_DEBRIS][RES_CRYSTAL] . ",
+      `ube_report_debris_total_in_metal` = " . $ube_report_debris_total_in_metal . ",
 
       `ube_report_planet_id`          = " . (int)$outcome[UBE_PLANET][PLANET_ID] . ",
       `ube_report_planet_name`        = '" . db_escape($outcome[UBE_PLANET][PLANET_NAME]) . "',
@@ -477,6 +484,7 @@ function sn_ube_report_round_fleet(&$combat_data, $round)
 {
   global $lang;
 
+  $fleets_info = &$combat_data[UBE_FLEETS];
   $round_template = array();
   $round_data = &$combat_data[UBE_ROUNDS][$round];
   foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $side)
@@ -489,7 +497,7 @@ function sn_ube_report_round_fleet(&$combat_data, $round)
       $fleet_template = array(
         'ID' => $fleet_id,
         'IS_ATTACKER' => $side == UBE_ATTACKERS,
-        'PLAYER_NAME' => htmlentities($combat_data[UBE_PLAYERS][$fleet_data[UBE_FLEET_INFO][UBE_OWNER]][UBE_NAME], ENT_COMPAT, 'UTF-8'),
+        'PLAYER_NAME' => htmlentities($combat_data[UBE_PLAYERS][$fleets_info[$fleet_id][UBE_OWNER]][UBE_NAME], ENT_COMPAT, 'UTF-8'),
       );
 
       if(is_array($combat_data[UBE_FLEETS][$fleet_id][UBE_PLANET]))

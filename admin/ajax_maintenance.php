@@ -17,6 +17,17 @@ lng_include('admin');
 $totaltime = microtime(true);
 $pack_until = date("Y-m-01 00:00:00", SN_TIME_NOW - PERIOD_MONTH * 3);
 
+// [#] info_best_battles 1b0
+$best_reports = array();
+if(defined(MODULE_INFO_BEST_BATTLES_QUERY)) {
+  $query = doquery(MODULE_INFO_BEST_BATTLES_QUERY);
+  while($row = db_fetch($query)) {
+    $best_reports[] = $row['ube_report_id'];
+  }
+}
+$best_reports = !empty($best_reports) ? ' AND ube_report_id NOT IN (' . implode(',', $best_reports) . ')' : '';
+
+
 $ques = array(
 //  'DELETE {{users}}.* FROM {{users}} WHERE `user_as_ally` IS NULL and `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and metamatter_total <= 0;',
 
@@ -85,7 +96,7 @@ $ques = array(
   'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});', // TODO Переписать на джоине
 
   // UBE reports
-  'DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(now(), INTERVAL 60 day);', // TODO Настройка
+  "DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(NOW(), INTERVAL 60 DAY) {$best_reports};", // TODO Настройка
 
   // Чистка сообщений
   'DELETE FROM `{{messages}}`  WHERE `message_owner`  not in (select id from {{users}});', // TODO NO FK

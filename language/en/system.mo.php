@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a19.20
+* @version 40a19.21
 *
 */
 
@@ -806,6 +806,8 @@ $a_lang_array = (array(
   'sys_perte_defenseur' 		=> 'The Defender lost',
 
 
+  'ube_report_info_page_header' => 'Battle report',
+  'ube_report_info_page_header_cypher' => 'Access code',
   'ube_report_info_main' => 'Main battle info',
   'ube_report_info_date' => 'Date and time',
   'ube_report_info_location' => 'Location',
@@ -1145,5 +1147,7 @@ $a_lang_array = (array(
 
   'sys_system_speed_original' => 'Original speed',
   'sys_system_speed_for_action' => 'Speed while action/event',
+
+  'menu_info_best_battles' => 'Best battles',
 
 ));

@@ -1108,6 +1108,21 @@ switch($new_version) {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
     }
 
+    // 2015-11-28 06:30:27 40a19.21
+    if(!isset($update_tables['ube_report']['ube_report_debris_total_in_metal'])) {
+      upd_alter_table('ube_report', array(
+        "ADD COLUMN `ube_report_debris_total_in_metal` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Total debris in metal'",
+//        "ADD KEY `I_ube_report_debris_id` (`ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC)", // For Best Battles module
+        "ADD KEY `I_ube_report_time_debris_id` (`ube_report_time_process` DESC, `ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC)", // For Best Battles module
+      ), !isset($update_tables['ube_report']['ube_report_debris_total_in_metal']));
+
+      $config_rpg_exchange_metal = floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1;
+      $config_rpg_exchange_crystal = floatval($config->rpg_exchange_crystal) ? floatval($config->rpg_exchange_crystal) : 1;
+
+      upd_do_query("UPDATE `{{ube_report}}`
+        SET `ube_report_debris_total_in_metal` = (`ube_report_debris_metal` + `ube_report_debris_crystal` * {$config_rpg_exchange_crystal}) / {$config_rpg_exchange_metal}");
+    }
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 40;

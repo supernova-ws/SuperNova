@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40a19.20');
+define('SN_VERSION', '40a19.21');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1224,6 +1224,7 @@ define('UBE_MOON_REAPERS_DIED', 6);
 define('UBE_MOON_REAPERS_RETURNED', 7);
 
 
+define('UBE_REPORT_NOT_FOUND', 'UBE_REPORT_NOT_FOUND');
 
 define('UBE_REPORT_CYPHER', 'UBE_REPORT_CYPHER');
 define('UBE_REPORT_ID', 'UBE_REPORT_ID');

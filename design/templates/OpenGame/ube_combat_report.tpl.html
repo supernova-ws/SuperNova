@@ -1,6 +1,9 @@
-<table>
+<h1>{PAGE_HEADER}</h1>
+<div>{L_ube_report_info_page_header_cypher} {UBE_REPORT_CYPHER}</div>
+
+<table style="margin-top: 1em;">
   <tr>
-    <td class="c_c transparent_cell" colspan="3" style="padding-top: 1em;">
+    <td class="c_c transparent_cell" colspan="3">
       <h2>{L_ube_report_info_main}</h2>
     </td>
   </tr>
@@ -22,7 +25,7 @@
         {L_ube_report_info_location}
       </td>
       <td colspan="2" class="c_c">
-        <a href="galaxy.php?mode=3&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">{PLANET_TYPE_TEXT}&nbsp;[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]&nbsp;{PLANET_NAME}</a>
+        <a class="link" href="galaxy.php?mode=3&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]&nbsp;{PLANET_TYPE_TEXT}&nbsp;{PLANET_NAME}</a>
       </td>
     </tr>
   <!-- ENDIF -->
@@ -56,7 +59,7 @@
         {L_ube_report_info_link}
       </td>
       <td colspan="2" class="c_c">
-        <a href="index.php?page=battle_report&cypher={UBE_REPORT_CYPHER}">{UBE_REPORT_CYPHER}</a>
+        <a class="link battle_report_link" href="index.php?page=battle_report&cypher={UBE_REPORT_CYPHER}">{UBE_REPORT_CYPHER}</a>
       </td>
     </tr>
   <!-- ENDIF -->
@@ -234,22 +237,22 @@
 </table>
 
 <!-- BEGIN round -->
-<table>
+<table class="border_image_small" style="margin-top: 1em">
   <tr>
-    <td colspan="8" class="c_c transparent_cell">
-      <h2>{L_ube_report_round} {round.NUMBER}</h2>
+    <td colspan="8" class="c_c markup">
+      <h3 style="margin-bottom: 0">{L_ube_report_round} {round.NUMBER}</h3>
     </td>
   </tr>
   <!-- BEGIN fleet -->
   <!-- IF .round.fleet.ship -->
     <tr>
       <td colspan="8" class="c_c transparent_cell">
-        <h3>
+        <h4>
           <!-- IF fleet.IS_ATTACKER -->{L_ube_report_side_attacker}<!-- ELSE -->{L_ube_report_side_defender}<!-- ENDIF -->
           <!-- IF fleet.PLAYER_NAME -->&nbsp;{fleet.PLAYER_NAME}<!-- ENDIF -->
-          <!-- IF fleet.PLANET_TYPE_TEXT -->&nbsp;{fleet.PLANET_TYPE_TEXT}<!-- ENDIF -->
           <!-- IF fleet.PLANET_GALAXY -->&nbsp;<a href="galaxy.php?mode=3&galaxy={fleet.PLANET_GALAXY}&system={fleet.PLANET_SYSTEM}">[{fleet.PLANET_GALAXY}:{fleet.PLANET_SYSTEM}:{fleet.PLANET_PLANET}]</a><!-- ENDIF -->
-        </h3>
+          <!-- IF fleet.PLANET_TYPE_TEXT -->&nbsp;{fleet.PLANET_TYPE_TEXT}<!-- ENDIF -->
+        </h4>
       </td>
     </tr>
     <tr class="c_l">

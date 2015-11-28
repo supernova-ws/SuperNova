@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a19.20#
+* @version #40a19.21#
 *
 */
 
@@ -813,6 +813,8 @@ $a_lang_array = (array(
 
 
 
+  'ube_report_info_page_header' => 'Боевой отчёт',
+  'ube_report_info_page_header_cypher' => 'Код допуска',
   'ube_report_info_main' => 'Основная информация о бое',
   'ube_report_info_date' => 'Дата и время',
   'ube_report_info_location' => 'Место',
@@ -1167,5 +1169,7 @@ $a_lang_array = (array(
 
   'sys_system_speed_original' => 'Оригинальная скорость',
   'sys_system_speed_for_action' => 'В рамках акции',
+
+  'menu_info_best_battles' => 'Лучшие бои',
 
 ));
