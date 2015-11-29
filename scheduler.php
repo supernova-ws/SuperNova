@@ -28,4 +28,7 @@ if(($result = scheduler_process()) && !defined('IN_ADMIN')) {
   $result = htmlspecialchars($result, ENT_QUOTES, 'UTF-8');
   print(json_encode($result));
 }
-die();
+
+if(!defined('IN_ADMIN')) {
+  die();
+}

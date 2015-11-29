@@ -19,7 +19,7 @@ $pack_until = date("Y-m-01 00:00:00", SN_TIME_NOW - PERIOD_MONTH * 3);
 
 // [#] info_best_battles 1b0
 $best_reports = array();
-if(defined(MODULE_INFO_BEST_BATTLES_QUERY)) {
+if(defined('MODULE_INFO_BEST_BATTLES_QUERY')) {
   $query = doquery(MODULE_INFO_BEST_BATTLES_QUERY);
   while($row = db_fetch($query)) {
     $best_reports[] = $row['ube_report_id'];
@@ -92,7 +92,15 @@ $ques = array(
   WHERE unit_location_type = ' . LOC_PLANET . ' AND pl.id IS NULL;',
   // Удаляем пустые юниты с 0 уровнем (кроме Капитана)
   'DELETE FROM {{unit}} WHERE unit_location_type = ' . LOC_PLANET . ' AND unit_level = 0 AND unit_type <> ' . UNIT_CAPTAIN,
+  // Удаляем очереди на ничьих планетах
+  'DELETE q FROM {{que}} AS q
+    LEFT JOIN {{planets}} AS p ON p.id = q.que_planet_id
+  WHERE
+    que_type IN (' . QUE_STRUCTURES . ', ' . QUE_HANGAR . ', ' . SUBQUE_FLEET . ', ' . SUBQUE_DEFENSE . ')
+    AND
+    (p.id_owner = 0 OR p.id_owner IS NULL);',
 
+  // Удаляем пустые САБы
   'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});', // TODO Переписать на джоине
 
   // UBE reports
