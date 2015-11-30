@@ -330,3 +330,7 @@ function pc($prePrint = false) {
   }
   print($_PRINT_COUNT_VALUE . "<br>");
 }
+
+function prep($message) {
+  print('<pre>' . $message . '</pre>');
+}

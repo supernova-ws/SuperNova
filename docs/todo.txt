@@ -1,5 +1,36 @@
 Stay out of my shed
 
+Сжимать счётчик
+
+Собирать статистику по онлайну игроков по дням каждый маинтенанс. Подумать какую (см. ToDo)
+
+История отпусков
+Динамический срок отпуска - vacation_history
+
+Антишпионская сеть - на время, за ТМ? Сбивает всех шпионов, так что игрок не получает инфы о планете
+
+
+There is not really much difference between the three.
+gzencode() uses the fully self-contained gzip format, same as the gzip command line tool
+    gzdecode() is defined only for PHP 5.4.0 or newer
+    gzencode() - is OK
+gzcompress() uses the raw ZLIB format. It is similar to gzencode but with less header data, etc. I think it was intended for streaming.
+gzdeflate() uses the raw DEFLATE algorithm on its own, which is the basis for both the other formats.
+
+basically gzcompress follows rfc1951 which contains a bunch of other data along with the compressed data that is used when decompressing. It includes an ADLER32 checksum, compression level, compression method, dictionary, the compressed data, and a bunch of other data used to decompress the data.
+gzdeflate is rfc1950 which is only the compression data.
+gzcompress is probably better to use, as it can verify the integrity of the data, and is more portable.
+
+NOT gzencode
+gzdefalte() !
+
+This is what PHP functions return:
+gzencode() == gzip
+gzcompress() == zlib (aka. HTTP deflate)
+gzdeflate()  == *raw* deflate encoding
+
+Светить ДР в Императоре?
+
 
 Админка по ивенту:
 SELECT username, game_unit.* FROM `game_unit`
@@ -823,7 +854,7 @@ xsolla - передавать описание платежа
 ======================
 
 
-Текущий билд #40a3.7#
+Текущий билд #40b0.0#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять fleet_update_last
