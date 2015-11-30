@@ -142,7 +142,7 @@
                   {L_eco_que_empty}
                 </span>
 
-              <span id="topnav_colonies_counter_total" class="a75 posRB w100">
+              <span id="topnav_colonies_counter_total" class="a50 posRB w100">
                 <span id='topnav_colonies_counter'>{TOPNAV_COLONIES_CURRENT}</span>/{TOPNAV_COLONIES_MAX}
               </span>
             <!-- ENDIF -->
@@ -190,7 +190,7 @@
         <div class="navbar_button">
           <a href="fleet.php">
             <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_expedition_standard.png" alt="{L_sys_expeditions}" title="{L_sys_expeditions}">
-              <span id="topnav_expedition_counter_total" class="a75 posRB w100">
+              <span id="topnav_expedition_counter_total" class="a50 posRB w100">
                 <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}
               </span>
           </a>
@@ -201,7 +201,7 @@
         <div class="navbar_button">
           <a href="flying_fleets.php">
             <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_fleet_own_standard.png" alt="{L_sys_fleets}" title="{L_sys_fleets}">
-              <span id="topnav_fleet_counter_total" class="a75 posRB w100">
+              <span id="topnav_fleet_counter_total" class="a50 posRB w100">
                 <span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}
               </span>
           </a>
@@ -212,7 +212,7 @@
         <div class="navbar_button">
           <a href="quest.php">
             <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_quest_standard.png" alt="{L_qst_quests}" title="{L_qst_quests}">
-              <span class="a75 posRB w100">
+              <span class="a50 posRB w100">
                 {TOPNAV_QUEST_COMPLETE}/{C_quest_total}
               </span>
           </a>
@@ -247,12 +247,12 @@
           <a href="dark_matter.php">
             <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_dark_matter_standard.png" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}">
             <!-- IF TOPNAV_METAMATTER -->
-            <span id="navbar_button_dm_mm" class="a75 metamatter posRB">{TOPNAV_METAMATTER_TEXT}</span>
-            <span id="navbar_button_dm_dm" class="a75 dark_matter posRB">{TOPNAV_DARK_MATTER_PLAIN_TEXT}</span>
-            <span id="navbar_button_dm_plus" class="a75 ok posLB">+</span>
+            <span id="navbar_button_dm_mm" class="a50 metamatter posRB">{TOPNAV_METAMATTER_TEXT}</span>
+            <span id="navbar_button_dm_dm" class="a50 dark_matter posRB">{TOPNAV_DARK_MATTER_PLAIN_TEXT}</span>
+            <span id="navbar_button_dm_plus" class="a50 ok posLB">+</span>
             <!-- DEFINE $NAVBAR_DEBIT_LINE_CLASS = 'navbar_button_dm_debit_line' -->
             <!-- ENDIF -->
-            <span class="a75 ok posRB {$NAVBAR_DEBIT_LINE_CLASS}">{TOPNAV_DARK_MATTER_TEXT}</span>
+            <span class="a50 ok posRB {$NAVBAR_DEBIT_LINE_CLASS}">{TOPNAV_DARK_MATTER_TEXT}</span>
           </a>
         </div>
 
@@ -260,7 +260,7 @@
         <div class="navbar_button">
           <a href="metamatter.php">
             <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_metamatter_standard.png" alt="{L_sys_metamatte}" title="{L_sys_metamatter}">
-            <span class="a75 posRB metamatter">{TOPNAV_METAMATTER_TEXT}</span>
+            <span class="a50 posRB metamatter">{TOPNAV_METAMATTER_TEXT}</span>
           </a>
         </div>
         <!-- ENDIF -->
@@ -279,14 +279,14 @@
 <!-- IF .announces && GAME_NEWS_OVERVIEW -->
 <table width=519 id="fresh_news_table" align="center" class="border_image_small">
   <tr>
-    <th colspan=2 class="c_c">
+    <th class="c_c">
       {L_news_fresh}
       <img class="fr pointer" onclick="jQuery.post('announce.php?only_hide_news=1');jQuery('#fresh_news_table').css('display', 'none');" src="design/images/r1.png" alt="{L_sys_close}" title="{L_sys_close}" style="width: 1.454545em; height: 1.454545em;" />
     </th>
   </tr>
   <!-- INCLUDE news_list -->
   <tr>
-    <th colspan=2 class="c_c">
+    <th class="c_c">
       <a class="link" href="announce.php">{L_news_all}</a>
     </th>
   </tr>

@@ -923,6 +923,20 @@ input[type=text].coordinate {
   margin: 1em 0;
 }
 
+#unit_cost_table {
+  border-spacing: 0.5em;
+}
+
+#unit_balance > table {
+  border-spacing: 0.5em;
+}
+
+#unit_balance > table tr:nth-child(odd) td {
+  /*background-color: #233452;*/
+  background-color: rgba(0,0,0,0.5);
+}
+
+
 #unit_create {
   display: table-row;
   text-align: center;
