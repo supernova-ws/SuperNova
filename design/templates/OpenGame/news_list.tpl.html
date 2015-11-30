@@ -38,7 +38,7 @@
       </div>
       <!-- IF announces.SURVEY_TEXT -->
       <div class="survey_block" survey_id="{announces.SURVEY_ID}">
-        <table width="100%" class="c_l">
+        <table width="100%" class="c_l border_image_small">
           <tr>
             <th class="survey_header" colspan="2">
               {L_survey}: {announces.SURVEY_TEXT}
@@ -92,7 +92,9 @@
                   {L_survey_votes_total_voted_has_answer} {total_votes.TOTAL_VOTES}
                 <!-- ENDIF -->
               <!-- ELSE -->
+                <!-- IF announces.SURVEY_CAN_VOTE -->
                 {L_survey_votes_total_none}
+                <!-- ENDIF -->
               <!-- ENDIF -->
               </span>
             </th>
@@ -110,12 +112,14 @@
         </table>
       </div>
       <!-- ENDIF -->
+      <!-- IF AUTHLEVEL >= 3 -->
+      <div class="c_r subheader">
+        <a href="announce.php?mode=edit&id={announces.ID}" class="button_pseudo"><img src="design/images/icon_edit.png"></a>
+        <a href="announce.php?mode=copy&id={announces.ID}" class="button_pseudo"><img src="design/images/icon_copy.gif"></a>
+        <a href="announce.php?mode=del&id={announces.ID}" class="button_pseudo"><img src="design/images/r1.png"></a>
+      </div>
+      <!-- ENDIF -->
     </td>
-    <!-- IF AUTHLEVEL >= 3 -->
-      <td><a href="announce.php?mode=edit&id={announces.ID}"><img src="design/images/icon_edit.png"></a></td>
-      <td><a href="announce.php?mode=copy&id={announces.ID}"><img src="design/images/icon_copy.gif"></a></td>
-      <td><a href="announce.php?mode=del&id={announces.ID}"><img src="design/images/r1.png"></a></td>
-    <!-- ENDIF -->
   </tr>
 <!-- BEGINELSE announces -->
   <tr><th class="c">{L_news_none}</th></tr>
