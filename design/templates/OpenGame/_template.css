@@ -715,6 +715,10 @@ input[type=text].coordinate {
 
 
 /* News and Surveys ================================================================================================= */
+#fresh_news_table {
+  margin-top: 1em;
+}
+
 .news_header {
   padding: 0.6em 1em;
   margin: 0.2em;
