@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a19.11
+* @version 40b0.1
 *
 */
 
@@ -74,9 +74,14 @@ $a_lang_array = (array(
   ),
 
   'PLAYER_OPTION_NAVBAR' => 'Панель навигации (вверху экрана)',
+  'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Широкая кнопка исследований (старый вид)',
+  'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Отключить кнопку экспедиций',
+  'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Отключить кнопку летящих флотов',
+  'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH' => 'Отключить кнопку исследований',
   'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => 'Отключить кнопку планеты',
   'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Отключить кнопку верфи',
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Отключить кнопку квестов',
+
   'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид "Обзора Вселенной"',
   'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
   'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Отключить рамки-картинки у таблиц',

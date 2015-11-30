@@ -196,3 +196,35 @@ textarea {
   width: 100%;
   height: 100%;
 }
+
+.w100 {
+  width: 100%;
+}
+
+.h100 {
+  height: 100%;
+}
+
+.posLT {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
+
+.posRT {
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+
+.posLB {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+}
+
+.posRB {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+}

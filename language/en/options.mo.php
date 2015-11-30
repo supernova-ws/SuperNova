@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a19.11
+* @version 40b0.1
 *
 */
 
@@ -77,6 +77,10 @@ $a_lang_array = array(
   ),
 
   'PLAYER_OPTION_NAVBAR' => 'Navigation Panel (on top of the screen)',
+  'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Wide Research button (old look)',
+  'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Disable Expeditions button',
+  'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Disable Flying Fleets button',
+  'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH' => 'Disable Research button',
   'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => 'Disable Planet button',
   'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Disable Hangar button',
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Disable Quest button',

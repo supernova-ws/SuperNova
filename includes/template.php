@@ -467,6 +467,8 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     $template->assign_block_vars('topnav_planets', array(
       'ID'          => $CurPlanet['id'],
       'NAME'        => $CurPlanet['name'],
+      'TYPE'        => $CurPlanet['planet_type'],
+      'TYPE_TEXT'   => $lang['sys_planet_type_sh'][$CurPlanet['planet_type']],
       'PLIMAGE'     => $CurPlanet['image'],
       'FLEET_ENEMY' => $fleet_listx['enemy']['count'],
       'COORDS'      => uni_render_coordinates($CurPlanet),
@@ -478,7 +480,8 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
-  que_tpl_parse($template, QUE_RESEARCH, $user);
+  que_tpl_parse($template, QUE_STRUCTURES, $user, $planetrow, null, true);
+  que_tpl_parse($template, QUE_RESEARCH, $user, array(), null, !classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE]);
   que_tpl_parse($template, SUBQUE_FLEET, $user, $planetrow, null, true);
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
@@ -564,12 +567,17 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'GAME_STRUCTURES_DISABLED' => defined('GAME_STRUCTURES_DISABLED') && GAME_STRUCTURES_DISABLED,
     'GAME_HANGAR_DISABLED'     => defined('GAME_HANGAR_DISABLED') && GAME_HANGAR_DISABLED,
 
-    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
-    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
-    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
+    'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
+    'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS'   => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS],
+    'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'      => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
+    'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
+    'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
+    'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_QUESTS],
 
     'SUBQUE_FLEET' => SUBQUE_FLEET,
     'QUE_RESEARCH' => QUE_RESEARCH,
+    'QUE_STRUCTURES' => QUE_STRUCTURES,
   ));
 
   if((defined('SN_RENDER_NAVBAR_PLANET') && SN_RENDER_NAVBAR_PLANET === true) || ($user['option_list'][OPT_INTERFACE]['opt_int_navbar_resource_force'] && SN_RENDER_NAVBAR_PLANET !== false)) {
