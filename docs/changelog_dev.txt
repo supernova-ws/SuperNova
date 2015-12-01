@@ -33,6 +33,17 @@ Changelog
 =========
 
 
+Even and odd columns
+
+The same works for table columns, too, but then there has to be an element in the document that corresponds to the column. HTML provides COL for that. The table has to start with one COL for every column:
+<table>
+<col><col><col><col><col><col><col><col><col><col>
+<tr><th>Month<th>'94<th>'95<th>'96...
+
+(COL can be used for other things than style, but in this case all we need is that the COL elements are present.) The following rules give the first column a yellow background, and then every second column starting from column 3 a gray one:
+
+
+
 [*] Навбар
     [*] Широкий мессадж - добавить по бокам мини-кнопки
     [*] Время - выводить средствами СН
