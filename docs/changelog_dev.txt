@@ -43,6 +43,9 @@ The same works for table columns, too, but then there has to be an element in th
 (COL can be used for other things than style, but in this case all we need is that the COL elements are present.) The following rules give the first column a yellow background, and then every second column starting from column 3 a gray one:
 
 
+select count(*) from game_counter where visit_time < DATE_SUB(now(),INTERVAL 14 DAY)
+
+Обслуживание БД - писать время, когда оно выполнено
 
 [*] Навбар
     [*] Широкий мессадж - добавить по бокам мини-кнопки
@@ -57,6 +60,16 @@ The same works for table columns, too, but then there has to be an element in th
 [*] Квесты
     Переверстать страницу, добавить иконки
 
+
+2015-12-01 09:25:55 40b0.6
+[+] Дизайн/Скины/
+    EpicBlue: Прописаны пути для плашек в навбаре
+    supernova-ivash: Плашки в навбаре заменены на подходящие по тону (кроме плашки ММ)
+[+] skin.ini
+    Добавлена поддержка HTTP-пути от корня СН, например - '/design/images/navbar_hangar.png' станет 'http://localhost/supernova/design/images/navbar_hangar.png' если HTTP-корень СН в 'http://localhost/supernova/'
+
+[~] Дизайн/Вёрстка
+    Навбар: Адреса картинок (src) заменены с путей на имена {I_xxx}
 
 
 2015-11-30 21:16:51 40b0.4

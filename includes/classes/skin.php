@@ -218,26 +218,12 @@ class skin {
       return $this->image_path_list[$image_name];
     }
 
-    /*
-        if(strpos($image_name, '[') !== false) {
-          preg_match_all('#(\[.+?\])#', $image_name, $matches);
-          foreach($matches[0] as &$match) {
-            $var_name = str_replace(array('[', ']'), '', $match);
-            if(strpos($var_name, '.') === false) {
-              // Корневая переменная темплейта
-              isset($template->_rootref[$var_name]) ? $image_name = str_replace($match, $template->_rootref[$var_name], $image_name) : false;
-            } else {
-              // Вложенная переменная темплейта
-              list($block_name, $block_var) = explode('.', $var_name);
-              isset($template->_block_value[$block_name][$block_var]) ? $image_name = str_replace($match, $template->_block_value[$block_name][$block_var], $image_name) : false;
-            }
-          }
-        }
-    */
     // Здесь у нас $image_name уже хранит прямой ключ для картинки - без всяких переменных
 
     // Теперь парсим конфигурацию
     if(empty($this->config[$image_name])) {
+      // Нет пути для данного изображения
+
       // Фоллбэк на родителя если - он есть
       if($this->parent) {
         $this->image_path_list[$image_name] = $this->parent->compile_image($image_name, $template);
@@ -249,35 +235,20 @@ class skin {
       // Все еще не найдена картинка ни в одном из скинов - тогда используем переданное имя как относительный путь к картинке
       $this->image_path_list[$image_name] = $this->root_http . $image_name . (strpos($image_name, '.') === false ? DEFAULT_PICTURE_EXTENSION : '');
     } else {
-      $this->image_path_list[$image_name] = $this->root_http . $this->config[$image_name];
+      // Есть путь для данного изображения
+      $temp_image_path = $this->config[$image_name];
+
+      // Если первый символ пути '/' - значит это путь от HTTP-корня. Откусываем его и пользуем остальное
+      $this->image_path_list[$image_name] = (strpos($temp_image_path, '/') === 0 ? SN_ROOT_VIRTUAL . substr($temp_image_path, 1) : ($this->root_http . $temp_image_path));
+
+//      $this->image_path_list[$image_name] = $this->root_http . $this->config[$image_name];
     }
-
-
-
-
-// pdump($this->config[$image_name]);die();
-
-//    $full_path = false;
-//    if(empty($this->config[$image_name]) && $this->parent) { // TODO - Или empty() ??
-//      // Не найдена картинка с указанным именем в конфигурации скина. ФОЛЛБЭК!
-//      $this->config[$image_name] = $this->parent->compile_image($image_name, $template);
-//      if($this->config[$image_name]) {
-//        $full_path = true;
-//      }
-//    }
-//
-//    // По итогу тут всегда должен быть $this->config[$image_name]
-//    // TODO - Проверка на существование файла
-//
-//    $image_url = ($full_path ? '' : $this->root_http) . $this->config[$image_name];
 
     $image_url = $this->image_path_list[$image_name];
 
     if(in_array('html', $parse)) {
       $image_url = '<img src="' . $image_url . '" />';
     }
-
-//    return $image_url . '-compile_image';
 
     return $image_url;
   }

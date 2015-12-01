@@ -77,9 +77,9 @@
           <div class="navbar_button {$NAVBAR_BUTTON_RESEARCH_CLASS}">
             <a href="buildings.php?mode={D_QUE_RESEARCH}">
               <!-- IF PLAYER_OPTION_NAVBAR_RESEARCH_WIDE -->
-              <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_research_standard.png" alt="{L_Research}" title="{L_Research}" />
+              <img class="navbar_button_image" src="{I_navbar_research_wide}" alt="{L_Research}" title="{L_Research}" />
               <!-- ELSE -->
-              <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_research_64x64.png" alt="{L_Research}" title="{L_Research}" />
+              <img class="navbar_button_image" src="{I_navbar_research}" alt="{L_Research}" title="{L_Research}" />
               <!-- ENDIF -->
               <!-- IF $QUE_NOT_EMPTY -->
                 <span class="a50 navbar_button_que">
@@ -156,7 +156,7 @@
         <!-- INCLUDE eco_queue -->
         <div class="navbar_button">
           <a href="buildings.php?mode={D_SUBQUE_FLEET}">
-            <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_hangar.png" alt="{L_Shipyard}" title="{L_Shipyard}" />
+            <img class="navbar_button_image" src="{I_navbar_hangar}" alt="{L_Shipyard}" title="{L_Shipyard}" />
             <!-- IF $QUE_NOT_EMPTY -->
                 <span class="a50 navbar_button_que" >
                   <div class="bld_que_total">
@@ -189,7 +189,7 @@
         <!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS -->
         <div class="navbar_button">
           <a href="fleet.php">
-            <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_expedition_standard.png" alt="{L_sys_expeditions}" title="{L_sys_expeditions}">
+            <img class="navbar_button_image" src="{I_navbar_expedition}" alt="{L_sys_expeditions}" title="{L_sys_expeditions}">
               <span id="topnav_expedition_counter_total" class="a50 posRB w100">
                 <span id='topnav_expedition_counter'>{TOPNAV_EXPEDITIONS_FLYING}</span>/{TOPNAV_EXPEDITIONS_TOTAL}
               </span>
@@ -200,7 +200,7 @@
         <!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS -->
         <div class="navbar_button">
           <a href="flying_fleets.php">
-            <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_fleet_own_standard.png" alt="{L_sys_fleets}" title="{L_sys_fleets}">
+            <img class="navbar_button_image" src="{I_navbar_fleet_own}" alt="{L_sys_fleets}" title="{L_sys_fleets}">
               <span id="topnav_fleet_counter_total" class="a50 posRB w100">
                 <span id='topnav_fleet_counter'>{TOPNAV_FLEETS_FLYING}</span>/{TOPNAV_FLEETS_TOTAL}
               </span>
@@ -211,7 +211,7 @@
         <!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_QUESTS && ! GAME_QUESTS_DISABLED -->
         <div class="navbar_button">
           <a href="quest.php">
-            <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_quest_standard.png" alt="{L_qst_quests}" title="{L_qst_quests}">
+            <img class="navbar_button_image" src="{I_navbar_quest}" alt="{L_qst_quests}" title="{L_qst_quests}">
               <span class="a50 posRB w100">
                 {TOPNAV_QUEST_COMPLETE}/{C_quest_total}
               </span>
@@ -221,7 +221,7 @@
 
         <div class="navbar_button">
           <a href="messages.php">
-            <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_mail_standard.png" alt="{L_Message}" title="{L_Message}">
+            <img class="navbar_button_image" src="{I_navbar_mail}" alt="{L_Message}" title="{L_Message}">
             <div class="posRB">
               <!-- IF TOPNAV_MESSAGES_ALL --><span class="blink" duration="2000">[&nbsp;{TOPNAV_MESSAGES_ALL}&nbsp;]</span><!-- ELSE -->0<!-- ENDIF -->
             </div>
@@ -245,7 +245,7 @@
 
         <div class="navbar_button">
           <a href="dark_matter.php">
-            <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_dark_matter_standard.png" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}">
+            <img class="navbar_button_image" src="{I_navbar_dark_matter}" alt="{L_sys_dark_matter}" title="{L_sys_dark_matter}">
             <!-- IF TOPNAV_METAMATTER -->
             <span id="navbar_button_dm_mm" class="a50 metamatter posRB">{TOPNAV_METAMATTER_TEXT}</span>
             <span id="navbar_button_dm_dm" class="a50 dark_matter posRB">{TOPNAV_DARK_MATTER_PLAIN_TEXT}</span>
@@ -259,7 +259,7 @@
         <!-- IF TOPNAV_PAYMENT -->
         <div class="navbar_button">
           <a href="metamatter.php">
-            <img class="navbar_button_image" src="{D_SN_ROOT_RELATIVE}design/images/navbar_metamatter_standard.png" alt="{L_sys_metamatte}" title="{L_sys_metamatter}">
+            <img class="navbar_button_image" src="{I_navbar_metamatter}" alt="{L_sys_metamatte}" title="{L_sys_metamatter}">
             <span class="a50 posRB metamatter">{TOPNAV_METAMATTER_TEXT}</span>
           </a>
         </div>
@@ -281,7 +281,7 @@
   <tr>
     <th class="c_c">
       {L_news_fresh}
-      <img class="fr pointer" onclick="jQuery.post('announce.php?only_hide_news=1');jQuery('#fresh_news_table').css('display', 'none');" src="design/images/r1.png" alt="{L_sys_close}" title="{L_sys_close}" style="width: 1.454545em; height: 1.454545em;" />
+      <img class="fr pointer" onclick="jQuery.post('announce.php?only_hide_news=1');jQuery('#fresh_news_table').css('display', 'none');" src="{I_r1}" alt="{L_sys_close}" title="{L_sys_close}" style="width: 1.454545em; height: 1.454545em;" />
     </th>
   </tr>
   <!-- INCLUDE news_list -->
