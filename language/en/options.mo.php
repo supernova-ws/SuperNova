@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40b0.10
+* @version 40b0.11
 *
 */
 
@@ -34,7 +34,7 @@ $a_lang_array = array(
   'opt_settings_statistics' => 'Player\'s statistics',
   'opt_settings_info' => 'Player\'s info',
   'opt_alerts' => 'Alerts',
-  'opt_common' => 'Common settings',
+  'opt_common' => 'Common',
 
   'opt_birthday' => 'Birthday',
 
@@ -76,7 +76,8 @@ $a_lang_array = array(
     SORT_DESCENDING => 'Descending',
   ),
 
-  'PLAYER_OPTION_NAVBAR' => 'Navigation Panel (on top of the screen)',
+  'opt_navbar_title' => 'Navigation Panel',
+  'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
   'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Wide Research button (old look)',
   'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Disable Expeditions button',
   'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Disable Flying Fleets button',
@@ -184,5 +185,7 @@ $a_lang_array = array(
   'opt_game_user_name' => 'Имя в игре<br />По этим именем вы будете видны другим игрокам сервера',
 
   'opt_build_autoconvert_hide' => 'Hide autoconvert button',
+
+  'opt_universe_title' => 'Universe',
 
 );

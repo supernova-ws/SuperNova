@@ -17,13 +17,10 @@
 </script>
 
 <form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
-  <div id="tab_container" style="font-size: 1em; width: 50rem;display: none">
+  <div id="tab_container" style="font-size: 1em; width: 50rem;display: none" class="tabs">
     <ul>
       <li><a href="#tab_account">{L_opt_account}</a></li>
       <li><a href="#tab_interface">{L_opt_int_options}</a></li>
-      <!-- IF MENU_CUSTOMIZE -->
-      <li><a href="#tab_menu">{L_menu_customize_customization}</a></li>
-      <!-- ENDIF -->
       <li><a href="#tab_alerts">{L_opt_alerts}</a></li>
     </ul>
 
@@ -192,265 +189,286 @@
       </table>
     </div>
 
-    <div id="tab_interface">
-      <table class="no_border_image">
-        <tr>
-          <th class="c_c" colspan="2">{L_opt_common}</th>
-        </tr>
-        <tr>
-          <th>{L_opt_language}</th>
-          <th>
-            <select name="langer">
-              <!-- BEGIN languages -->
-              <option value="{languages.VALUE}"<!-- IF languages.SELECTED --> selected<!-- ENDIF -->>[{languages.VALUE}] {languages.NAME}</option>
-              <!-- END languages -->
-            </select>
-          </th>
-        </tr>
-        <tr>
-          <th>{L_skins_example}</th>
-          <th><input name="design"{opt_sskin_data} style="display:none" type="checkbox" id="design" />
-            <input name="dpath" style="display:none" maxlength="80" size="28" value="{OPT_DPATH_DATA}" type="text">&nbsp;
-            <select name="dpaths" size="1" onchange="document.fOptions.dpath.value = 'skins/' + this.value+'/';">
-              <!-- BEGIN skin_list -->
-              <option value="{skin_list.VALUE}"<!-- IF skin_list.SELECTED --> selected<!-- ENDIF -->>{skin_list.NAME}</option>
-              <!-- END skin_list -->
-            </select>
-          </th>
-        </tr>
+    <div id="tab_interface" class="tabs">
+      <ul id="tabs_interface-subtabs">
+        <li><a href="#tab_interface-common">{L_opt_common}</a></li>
+        <!-- IF MENU_CUSTOMIZE -->
+        <li><a href="#tab_interface-menu">{L_menu_customize_customization}</a></li>
+        <!-- ENDIF -->
+        <li><a href="#tab_interface-navbar">{L_opt_navbar_title}</a></li>
+        <li><a href="#tab_interface-universe">{L_opt_universe_title}</a></li>
+      </ul>
 
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}]" value="1" id="PLAYER_OPTION_DESIGN_DISABLE_BORDERS" <!-- IF PLAYER_OPTION_DESIGN_DISABLE_BORDERS -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_DESIGN_DISABLE_BORDERS">{L_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}</label>
-          </td>
-        </tr>
+      <div id="tab_interface-common">
+        <table class="no_border_image">
+          <tr class="c_c">
+            <th colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_SOUND_ENABLED}]" value="0" />
+              <input type="checkbox" id="sound_enabled" name="options[{D_PLAYER_OPTION_SOUND_ENABLED}]" value="1"<!-- IF sound_enabled --> checked<!-- ENDIF --> />
+              <label for="sound_enabled">{L_opt_sound_enabled}</label>
+            </th>
+          </tr>
 
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_TECH_TREE_TABLE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_TECH_TREE_TABLE}]" value="1" id="PLAYER_OPTION_TECH_TREE_TABLE" <!-- IF PLAYER_OPTION_TECH_TREE_TABLE -->checked="checked" <!-- ENDIF -->/>
+          <tr class="c_c">
+            <th colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_ANIMATION_DISABLED}]" value="0" />
+              <input type="checkbox" id="PLAYER_OPTION_ANIMATION_DISABLED" name="options[{D_PLAYER_OPTION_ANIMATION_DISABLED}]" value="1"<!-- IF PLAYER_OPTION_ANIMATION_DISABLED --> checked<!-- ENDIF --> />
+              <label for="PLAYER_OPTION_ANIMATION_DISABLED">{L_PLAYER_OPTION_ANIMATION_DISABLED}</label>
+            </th>
+          </tr>
 
-            <label for="PLAYER_OPTION_TECH_TREE_TABLE">{L_PLAYER_OPTION_TECH_TREE_TABLE}</label>
-          </td>
-        </tr>
+          <tr class="c_c">
+            <th colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_PROGRESS_BARS_DISABLED}]" value="0" />
+              <input type="checkbox" id="PLAYER_OPTION_PROGRESS_BARS_DISABLED" name="options[{D_PLAYER_OPTION_PROGRESS_BARS_DISABLED}]" value="1"<!-- IF PLAYER_OPTION_PROGRESS_BARS_DISABLED --> checked<!-- ENDIF --> />
+              <label for="PLAYER_OPTION_PROGRESS_BARS_DISABLED">{L_PLAYER_OPTION_PROGRESS_BARS_DISABLED}</label>
+            </th>
+          </tr>
+          <tr>
+            <th class="c_c" colspan="2">{L_opt_common}</th>
+          </tr>
+          <tr>
+            <th>{L_opt_language}</th>
+            <th>
+              <select name="langer">
+                <!-- BEGIN languages -->
+                <option value="{languages.VALUE}"<!-- IF languages.SELECTED --> selected<!-- ENDIF -->>[{languages.VALUE}] {languages.NAME}</option>
+                <!-- END languages -->
+              </select>
+            </th>
+          </tr>
+          <tr>
+            <th>{L_skins_example}</th>
+            <th><input name="design"{opt_sskin_data} style="display:none" type="checkbox" id="design" />
+              <input name="dpath" style="display:none" maxlength="80" size="28" value="{OPT_DPATH_DATA}" type="text">&nbsp;
+              <select name="dpaths" size="1" onchange="document.fOptions.dpath.value = 'skins/' + this.value+'/';">
+                <!-- BEGIN skin_list -->
+                <option value="{skin_list.VALUE}"<!-- IF skin_list.SELECTED --> selected<!-- ENDIF -->>{skin_list.NAME}</option>
+                <!-- END skin_list -->
+              </select>
+            </th>
+          </tr>
 
-        <tr>
-          <th colspan="2" nowrap>
-            {L_opt_planet_sort_title}
-            <select name="options[{D_PLAYER_OPTION_PLANET_SORT}]">
-              <!-- BEGIN planet_sort_options -->
-              <option value="{planet_sort_options.VALUE}"<!-- IF planet_sort_options.SELECTED --> selected<!-- ENDIF -->>{planet_sort_options.NAME}</option>
-              <!-- END planet_sort_options -->
-            </select>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}]" value="1" id="PLAYER_OPTION_DESIGN_DISABLE_BORDERS" <!-- IF PLAYER_OPTION_DESIGN_DISABLE_BORDERS -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_DESIGN_DISABLE_BORDERS">{L_PLAYER_OPTION_DESIGN_DISABLE_BORDERS}</label>
+            </td>
+          </tr>
 
-            <label for="planet_sort_inverse">{L_sys_sort_inverse}</label>
-            <input type="hidden" name="options[{D_PLAYER_OPTION_PLANET_SORT_INVERSE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_PLANET_SORT_INVERSE}]" value="1" id="planet_sort_inverse" <!-- IF PLAYER_OPTION_PLANET_SORT_INVERSE -->checked="checked" <!-- ENDIF -->/>
-          </th>
-        </tr>
-        <!-- IF .options_3 -->
-        <!-- BEGIN options_3 -->
-        <!-- IF options_3.NAME != 'opt_int_navbar_resource_force' -->
-        <tr>
-          <!-- IF options_3.TYPE == 'integer' -->
-          <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
-          <td class="c_c">
-            <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
-            <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
-          </td>
-          <!-- ELSE -->
-          <td class="c_l" colspan="2">
-            <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
-            <label for="{options_3.NAME}">{options_3.TEXT}</label>
-          </td>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_TECH_TREE_TABLE}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_TECH_TREE_TABLE}]" value="1" id="PLAYER_OPTION_TECH_TREE_TABLE" <!-- IF PLAYER_OPTION_TECH_TREE_TABLE -->checked="checked" <!-- ENDIF -->/>
+
+              <label for="PLAYER_OPTION_TECH_TREE_TABLE">{L_PLAYER_OPTION_TECH_TREE_TABLE}</label>
+            </td>
+          </tr>
+
+          <tr>
+            <th colspan="2" nowrap>
+              {L_opt_planet_sort_title}
+              <select name="options[{D_PLAYER_OPTION_PLANET_SORT}]">
+                <!-- BEGIN planet_sort_options -->
+                <option value="{planet_sort_options.VALUE}"<!-- IF planet_sort_options.SELECTED --> selected<!-- ENDIF -->>{planet_sort_options.NAME}</option>
+                <!-- END planet_sort_options -->
+              </select>
+
+              <label for="planet_sort_inverse">{L_sys_sort_inverse}</label>
+              <input type="hidden" name="options[{D_PLAYER_OPTION_PLANET_SORT_INVERSE}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_PLANET_SORT_INVERSE}]" value="1" id="planet_sort_inverse" <!-- IF PLAYER_OPTION_PLANET_SORT_INVERSE -->checked="checked" <!-- ENDIF -->/>
+            </th>
+          </tr>
+          <!-- IF .options_3 -->
+          <!-- BEGIN options_3 -->
+          <!-- IF options_3.NAME != 'opt_int_navbar_resource_force' -->
+          <tr>
+            <!-- IF options_3.TYPE == 'integer' -->
+            <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
+            <td class="c_c">
+              <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
+              <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
+            </td>
+            <!-- ELSE -->
+            <td class="c_l" colspan="2">
+              <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
+              <label for="{options_3.NAME}">{options_3.TEXT}</label>
+            </td>
+            <!-- ENDIF -->
+          </tr>
           <!-- ENDIF -->
-        </tr>
-        <!-- ENDIF -->
-        <!-- END options_3 -->
-        <!-- ENDIF -->
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="1" id="build_autoconvert_hide" <!-- IF PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->checked="checked" <!-- ENDIF -->/>
-            <label for="build_autoconvert_hide">{L_opt_build_autoconvert_hide}</label>
-          </td>
-        </tr>
-
-        <tr>
-          <th class="c_c" colspan="2">{L_PLAYER_OPTION_NAVBAR}</th>
-        </tr>
-        <!-- IF .options_3 -->
-        <!-- BEGIN options_3 -->
-        <!-- IF options_3.NAME == 'opt_int_navbar_resource_force' -->
-        <tr>
-          <!-- IF options_3.TYPE == 'integer' -->
-          <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
-          <td class="c_c">
-            <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
-            <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
-          </td>
-          <!-- ELSE -->
-          <td class="c_l" colspan="2">
-            <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
-            <label for="{options_3.NAME}">{options_3.TEXT}</label>
-          </td>
+          <!-- END options_3 -->
           <!-- ENDIF -->
-        </tr>
-        <!-- ENDIF -->
-        <!-- END options_3 -->
-        <!-- ENDIF -->
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_RESEARCH_WIDE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_RESEARCH_WIDE}]" value="1" id="PLAYER_OPTION_NAVBAR_RESEARCH_WIDE" <!-- IF PLAYER_OPTION_NAVBAR_RESEARCH_WIDE -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_RESEARCH_WIDE">{L_PLAYER_OPTION_NAVBAR_RESEARCH_WIDE}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH">{L_PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_PLANET" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_PLANET -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_PLANET">{L_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_HANGAR" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_HANGAR -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_HANGAR">{L_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS">{L_PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS">{L_PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_QUESTS" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_QUESTS -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_QUESTS">{L_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER">{L_PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER}</label>
-          </td>
-        </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE}]" value="1" id="build_autoconvert_hide" <!-- IF PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->checked="checked" <!-- ENDIF -->/>
+              <label for="build_autoconvert_hide">{L_opt_build_autoconvert_hide}</label>
+            </td>
+          </tr>
 
-        <tr>
-          <th class="c_c" colspan="2">{L_galaxyvision_options}</th>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="1" id="PLAYER_OPTION_UNIVERSE_OLD" <!-- IF PLAYER_OPTION_UNIVERSE_OLD -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_UNIVERSE_OLD">{L_PLAYER_OPTION_UNIVERSE_OLD}</label>
-          </td>
-        </tr>
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}]" value="0" />
-            <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}]" value="1" id="PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE" <!-- IF PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE -->checked="checked" <!-- ENDIF -->/>
-            <label for="PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE">{L_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}</label>
-          </td>
-        </tr>
-        <!-- IF .options_2 -->
-        <!-- BEGIN options_2 -->
-        <tr>
-          <td class="c_l" colspan="2">
-            <input type="checkbox" id="{options_2.NAME}" name="{options_2.NAME}" value="1" <!-- IF options_2.VALUE --> checked<!-- ENDIF -->>
-            <label for="{options_2.NAME}">{options_2.TEXT}</label>
-          </td>
-        </tr>
-        <!-- END options_2 -->
-        <!-- ENDIF -->
-        <tr title="{L_spy_cant_tip}">
-          <th>{L_spy_cant}</th>
-          <th><input name="options[{D_PLAYER_OPTION_FLEET_SPY_DEFAULT}]" maxlength="2" size="2" value="{PLAYER_OPTION_FLEET_SPY_DEFAULT}" type="text"></th>
-        </tr>
-        <tr>
-          <th>{L_tooltip_time}</th>
-          <th><input name="options[{D_PLAYER_OPTION_TOOLTIP_DELAY}]" maxlength="4" size="4" value="{PLAYER_OPTION_TOOLTIP_DELAY}" type="text"> {L_sys_milliseconds} (0 - по умолчанию)</th>
-        </tr>
-        <tr>
-          <th>{L_shortcut}</th>
-          <td class="c_c" nowrap>
-            <table class="markup">
-              <tr class="c_l">
-                <td>
-                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="0" />
-                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="1" id="settings_esp" <!-- IF user_settings_esp -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_esp"><img height="14px" src="design/images/icon_espionage.png" alt="{L_spy}" />&nbsp;{L_spy}</label>
-                </td>
-                <td>
-                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="0" />
-                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="1" id="settings_mis" <!-- IF user_settings_mis -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_mis"><img height="14px" src="design/images/icon_missile.png" alt="{L_attack_with_missile}" />&nbsp;{L_attack_with_missile}</label>
-                </td>
-              </tr>
-              <tr class="c_l">
-                <td>
-                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="0" />
-                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="1" id="settings_wri" <!-- IF user_settings_wri -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_wri"><img height="14px" src="design/images/icon_mail.gif" alt="{L_write_a_messege}" />&nbsp;{L_write_a_messege}</label>
-                </td>
-                <td>
-                  <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="0" />
-                  <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="1" id="settings_info" <!-- IF user_settings_info -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_info"><img height="14px" src="{I_menu_empire_emperor}" alt="{L_opt_settings_info}" />&nbsp;{L_opt_settings_info}</label>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
+        </table>
+      </div>
 
-        <tr class="c_c">
-          <th colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_SOUND_ENABLED}]" value="0" />
-            <input type="checkbox" id="sound_enabled" name="options[{D_PLAYER_OPTION_SOUND_ENABLED}]" value="1"<!-- IF sound_enabled --> checked<!-- ENDIF --> />
-            <label for="sound_enabled">{L_opt_sound_enabled}</label>
-          </th>
-        </tr>
+      <!-- IF MENU_CUSTOMIZE -->
+      <div id="tab_interface-menu">
+        <!-- INCLUDE ../../../modules/menu_customize/design/templates/OpenGame/menu_customize_options -->
+      </div>
+      <!-- ENDIF -->
 
-        <tr class="c_c">
-          <th colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_ANIMATION_DISABLED}]" value="0" />
-            <input type="checkbox" id="PLAYER_OPTION_ANIMATION_DISABLED" name="options[{D_PLAYER_OPTION_ANIMATION_DISABLED}]" value="1"<!-- IF PLAYER_OPTION_ANIMATION_DISABLED --> checked<!-- ENDIF --> />
-            <label for="PLAYER_OPTION_ANIMATION_DISABLED">{L_PLAYER_OPTION_ANIMATION_DISABLED}</label>
-          </th>
-        </tr>
+      <div id="tab_interface-navbar">
+        <table class="no_border_image">
+          <tr>
+            <th class="c_j" colspan="2">{L_opt_navbar_description}</th>
+          </tr>
+          <!-- IF .options_3 -->
+          <!-- BEGIN options_3 -->
+          <!-- IF options_3.NAME == 'opt_int_navbar_resource_force' -->
+          <tr>
+            <!-- IF options_3.TYPE == 'integer' -->
+            <td class="c_c"><label for="{options_3.NAME}">{options_3.TEXT}</label></td>
+            <td class="c_c">
+              <input type="text" id="{options_3.NAME}" name="{options_3.NAME}" value="{options_3.VALUE}" />
+              <!-- IF options_3.HINT --><br />{options_3.HINT}<!-- ENDIF -->
+            </td>
+            <!-- ELSE -->
+            <td class="c_l" colspan="2">
+              <input type="checkbox" id="{options_3.NAME}" name="{options_3.NAME}" value="1" <!-- IF options_3.VALUE --> checked<!-- ENDIF --> />
+              <label for="{options_3.NAME}">{options_3.TEXT}</label>
+            </td>
+            <!-- ENDIF -->
+          </tr>
+          <!-- ENDIF -->
+          <!-- END options_3 -->
+          <!-- ENDIF -->
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_RESEARCH_WIDE}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_RESEARCH_WIDE}]" value="1" id="PLAYER_OPTION_NAVBAR_RESEARCH_WIDE" <!-- IF PLAYER_OPTION_NAVBAR_RESEARCH_WIDE -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_RESEARCH_WIDE">{L_PLAYER_OPTION_NAVBAR_RESEARCH_WIDE}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH">{L_PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_PLANET" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_PLANET -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_DISABLE_PLANET">{L_PLAYER_OPTION_NAVBAR_DISABLE_PLANET}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_HANGAR" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_HANGAR -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_DISABLE_HANGAR">{L_PLAYER_OPTION_NAVBAR_DISABLE_HANGAR}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS">{L_PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS">{L_PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_QUESTS" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_QUESTS -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_DISABLE_QUESTS">{L_PLAYER_OPTION_NAVBAR_DISABLE_QUESTS}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER}]" value="1" id="PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER" <!-- IF PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER">{L_PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER}</label>
+            </td>
+          </tr>
+        </table>
+      </div>
 
-        <tr class="c_c">
-          <th colspan="2">
-            <input type="hidden" name="options[{D_PLAYER_OPTION_PROGRESS_BARS_DISABLED}]" value="0" />
-            <input type="checkbox" id="PLAYER_OPTION_PROGRESS_BARS_DISABLED" name="options[{D_PLAYER_OPTION_PROGRESS_BARS_DISABLED}]" value="1"<!-- IF PLAYER_OPTION_PROGRESS_BARS_DISABLED --> checked<!-- ENDIF --> />
-            <label for="PLAYER_OPTION_PROGRESS_BARS_DISABLED">{L_PLAYER_OPTION_PROGRESS_BARS_DISABLED}</label>
-          </th>
-        </tr>
+      <div id="tab_interface-universe">
+        <table class="no_border_image">
+          <tr>
+            <th class="c_c" colspan="2">{L_galaxyvision_options}</th>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_OLD}]" value="1" id="PLAYER_OPTION_UNIVERSE_OLD" <!-- IF PLAYER_OPTION_UNIVERSE_OLD -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_UNIVERSE_OLD">{L_PLAYER_OPTION_UNIVERSE_OLD}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}]" value="1" id="PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE" <!-- IF PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE">{L_PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE}</label>
+            </td>
+          </tr>
+          <!-- IF .options_2 -->
+          <!-- BEGIN options_2 -->
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="checkbox" id="{options_2.NAME}" name="{options_2.NAME}" value="1" <!-- IF options_2.VALUE --> checked<!-- ENDIF -->>
+              <label for="{options_2.NAME}">{options_2.TEXT}</label>
+            </td>
+          </tr>
+          <!-- END options_2 -->
+          <!-- ENDIF -->
+          <tr title="{L_spy_cant_tip}">
+            <th>{L_spy_cant}</th>
+            <th><input name="options[{D_PLAYER_OPTION_FLEET_SPY_DEFAULT}]" maxlength="2" size="2" value="{PLAYER_OPTION_FLEET_SPY_DEFAULT}" type="text"></th>
+          </tr>
+          <tr>
+            <th>{L_tooltip_time}</th>
+            <th><input name="options[{D_PLAYER_OPTION_TOOLTIP_DELAY}]" maxlength="4" size="4" value="{PLAYER_OPTION_TOOLTIP_DELAY}" type="text"> {L_sys_milliseconds} (0 - по умолчанию)</th>
+          </tr>
+          <tr>
+            <th>{L_shortcut}</th>
+            <td class="c_c" nowrap>
+              <table class="markup">
+                <tr class="c_l">
+                  <td>
+                    <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="0" />
+                    <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_SPYING}]" value="1" id="settings_esp" <!-- IF user_settings_esp -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_esp"><img height="14px" src="design/images/icon_espionage.png" alt="{L_spy}" />&nbsp;{L_spy}</label>
+                  </td>
+                  <td>
+                    <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="0" />
+                    <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_MISSILE}]" value="1" id="settings_mis" <!-- IF user_settings_mis -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_mis"><img height="14px" src="design/images/icon_missile.png" alt="{L_attack_with_missile}" />&nbsp;{L_attack_with_missile}</label>
+                  </td>
+                </tr>
+                <tr class="c_l">
+                  <td>
+                    <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="0" />
+                    <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PM}]" value="1" id="settings_wri" <!-- IF user_settings_wri -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_wri"><img height="14px" src="design/images/icon_mail.gif" alt="{L_write_a_messege}" />&nbsp;{L_write_a_messege}</label>
+                  </td>
+                  <td>
+                    <input type="hidden" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="0" />
+                    <input type="checkbox" name="options[{D_PLAYER_OPTION_UNIVERSE_ICON_PROFILE}]" value="1" id="settings_info" <!-- IF user_settings_info -->checked="checked" <!-- ENDIF -->/>&nbsp;<label for="settings_info"><img height="14px" src="{I_menu_empire_emperor}" alt="{L_opt_settings_info}" />&nbsp;{L_opt_settings_info}</label>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </div>
 
-      </table>
     </div>
-
-    <!-- IF MENU_CUSTOMIZE -->
-      <!-- INCLUDE ../../../modules/menu_customize/design/templates/OpenGame/menu_customize_options -->
-    <!-- ENDIF -->
 
     <div id="tab_alerts">
       <table class="no_border_image">
@@ -478,7 +496,6 @@
         <!-- ENDIF -->
       </table>
     </div>
-
   </div>
 
   <br/>
@@ -488,7 +505,9 @@
 </form>
 
 <script type="text/javascript"><!--
-  $("#tab_container").tabs().show();
+//  $("#tab_container").tabs().show();
+  $(".tabs").tabs();
+  $(".tabs").show();
 // --></script>
 
 <script type="text/javascript"><!--
