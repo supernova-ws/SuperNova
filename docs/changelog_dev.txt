@@ -61,6 +61,8 @@ select count(*) from game_counter where visit_time < DATE_SUB(now(),INTERVAL 14 
     Переверстать страницу, добавить иконки
 
 
+Дать отключать иконку ММ
+
 2015-12-01 10:20:15 40b0.7
 [+] Дизайн/Скины
     supernova-ivash: Добавлена плашка навбара ММ
