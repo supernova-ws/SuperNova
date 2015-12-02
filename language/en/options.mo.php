@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40b0.1
+* @version 40b0.10
 *
 */
 
@@ -84,6 +84,7 @@ $a_lang_array = array(
   'PLAYER_OPTION_NAVBAR_DISABLE_PLANET' => 'Disable Planet button',
   'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR' => 'Disable Hangar button',
   'PLAYER_OPTION_NAVBAR_DISABLE_QUESTS' => 'Disable Quest button',
+  'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER' => 'Disable MetaMatter button',
   'PLAYER_OPTION_UNIVERSE_OLD' => 'Использовать старый вид "Обзора Вселенной"',
   'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => 'Отключить кнопку колонизации',
   'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => 'Disable table borders (if any)',
