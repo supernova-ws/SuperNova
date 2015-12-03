@@ -341,7 +341,7 @@ abstract class sn_module_payment extends sn_module {
 
       PAYMENT_METHOD_GENERIC_ROBOKASSA => array(
         'currency' => 'RUB',
-        'image' => 'design/images/payments/generic/robokassa.jpeg',
+        'image' => 'design/images/payments/generic/robokassa.jpg',
         // 'name' => true,
         'button' => true,
       ),
