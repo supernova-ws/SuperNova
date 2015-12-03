@@ -775,7 +775,7 @@ function snConfirm(params) {
     buttons: {
       ok: {
         text: language.sys_confirm,
-        class: 'ok',
+        'class': 'ok',
         click: function () {
           var element = $(this).parent();
           // Отключаем все кнопки кроме крестика закрытия в тайтл-баре
