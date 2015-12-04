@@ -97,13 +97,15 @@ $supernova->design['smiles'] = array(
 );
 
 function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
-  global $supernova;
+  global $supernova, $config;
 
   // $user_auth_level = isset($user['authlevel']) ? $user['authlevel'] : AUTH_LEVEL_ANONYMOUS;
 
   $msg = htmlentities($msg, ENT_COMPAT, 'UTF-8');
 
   $msg = str_replace('sn://', SN_ROOT_VIRTUAL, $msg);
+
+  !empty($config->url_faq) ? $msg = str_replace('faq://', $config->url_faq, $msg) : false;
 
   foreach($supernova->design['bbcodes'] as $auth_level => $replaces) {
     if($auth_level > $author_auth) {
