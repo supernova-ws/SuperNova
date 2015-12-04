@@ -1,12 +1,10 @@
 jQuery(document).ready( function(e) {
   $(".unit_create,.unit_destroy,#unit_create_button_auto").on('click', function(e){
-    //if(!$(this).is("[disabled]") && $(this).attr("aria-disabled") != 'true') {
     if($(this).is(":disabled") || $(this).attr("aria-disabled") == 'true') {
       e.preventDefault();
       return false;
     }
 
-    //if($(this).hasClass('unit_create_autoconvert')) {
     if($(this).attr('id') == 'unit_create_button_auto') {
       if(DARK_MATTER < MARKET_AUTOCONVERT_COST) {
         alert(language['eco_bld_autoconvert_explain'] + language['eco_bld_autoconvert_dark_matter_none']);
@@ -17,13 +15,6 @@ jQuery(document).ready( function(e) {
         e.preventDefault();
         return false;
       }
-      //if(!confirm(language['eco_bld_autoconvert_confirm'])) {
-      //  return false;
-      //}
-      //if(!confirm('{Недостающие на постройку/исследование ресурсы будут автоматически сконвертированы из наличных ресурсов (металл, кристалл, дейтерий). ' +
-      //  '\r\n\r\nЭта операция будет стоить {0} ТМ.\r\n\r\nПродолжать?}'.format(MARKET_AUTOCONVERT_COST))) {
-      //  return false;
-      //}
     }
 
     $('[name=action]').val($(this).hasClass('unit_create') ? 'create' : ($(this).hasClass('unit_destroy') ? 'destroy' : 'create_autoconvert'));
@@ -58,8 +49,6 @@ jQuery(document).ready( function(e) {
       eco_struc_show_unit_info(jQuery(this).attr('unit_id'));
     })
     .on("mouseleave", "*[unit_id]", function(event, ui) {
-      // eco_struc_unborder_unit(jQuery(this).attr('unit_id'));
-      //unit_selected != jQuery(this).attr('unit_id') ? $('#unit' + jQuery(this).attr('unit_id')).removeClass('unit_border_selected') : false;
       unit_selected != jQuery(this).attr('unit_id') ? jQuery(this).removeClass('unit_border_selected') : false;
     })
     .on("click", "*[unit_id]", function(event, ui) {
@@ -69,11 +58,9 @@ jQuery(document).ready( function(e) {
   $("#unit_info_extra_switch").on('click', function() {
     if($('#unit_balance').is(':visible')) {
       $(this).children().html(language['eco_bld_unit_info_extra_show']);
-      // $(this).innerHTML = language['eco_bld_unit_info_extra_show'];
       $('#unit_balance').hide();
     } else {
       $(this).children().html(language['eco_bld_unit_info_extra_hide']);
-      //$(this).innerHTML = language['eco_bld_unit_info_extra_hide'];
       $('#unit_balance').show();
     }
   });
@@ -137,7 +124,6 @@ function eco_struc_make_resource_row(resource_name, value, value_destroy, value_
     document.getElementById(resource_name + '_left').innerHTML = sn_format_number(parseFloat(planet[resource_name]) - parseFloat(value), 0, 'positive');
     if(planet['fleet_own']) {
       document.getElementById(resource_name + '_fleet').innerHTML = sn_format_number(parseFloat(planet[resource_name]) + parseFloat(planet[resource_name + '_incoming']) - parseFloat(value), 0, 'positive');
-      // document.getElementById('fleet_res').style.display = "block";
       jQuery('#fleet_res').css('display', "block");
     } else {
       document.getElementById(resource_name + '_fleet').style.display = "none";
@@ -154,7 +140,6 @@ var bld_unit_info_width = 0;
 function eco_struc_show_unit_info(unit_id, no_color) {
   if(!no_color) {
     $('#unit' + unit_id).addClass('unit_border_selected');
-    //document.getElementById('unit' + unit_id).style.borderColor = eco_bld_style_probe;
   }
 
   if(unit_selected) {
@@ -170,7 +155,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   var unit_destroy_link = '';
 
   var unit_info_image = $('#unit_info_image');
-  unit_info_image.attr('src', unit_info_image.attr('src_base').replace('[UNIT_ID]', unit['id']));
+  unit_info_image.attr('src', unit['image']);
   document.getElementById('unit_info_description').innerHTML = unit['description'];
 
   document.getElementById('unit_time').innerHTML = unit['time'];
@@ -186,7 +171,6 @@ function eco_struc_show_unit_info(unit_id, no_color) {
 
   if(STACKABLE) {
     $('#unit_max').show();
-//alert($('#auto_convert').is(":checked"));
     $('#unit_max_number').html(sn_format_number(unit['can_build']));
     $('#unit_max_number_autoconvert').html(sn_format_number(unit['autoconvert_amount']));
   }
@@ -244,15 +228,6 @@ function eco_struc_show_unit_info(unit_id, no_color) {
           $('#unit_create, #unit_create *').prop('disabled', false);
           $('#unit_amountslide').slider({ max: unit['can_build']});
         }
-        //if(unit['build_can'] != 0 && unit['build_result'] == 0) {
-        //  $('#unit_create, #unit_create *').prop('disabled', false);
-        //  $('#unit_amountslide').slider({ max: unit['can_build']});
-        //} else if(!$('#auto_convert').is(":disabled") && $('#auto_convert').attr("aria-disabled") != 'true' && $('#auto_convert').is(":checked")) {
-        //  //if($(this).is(":disabled") || $(this).attr("aria-disabled") == 'true') {
-        //  $('#unit_create, #unit_create *').prop('disabled', false);
-        //  $('#unit_amountslide').slider({ max: unit['autoconvert_amount']});
-        //  $('#unit_max_number').html(unit['autoconvert_amount']);
-        //}
       } else {
         if(unit['level'] > 0 && unit['destroy_can'] != 0 && unit['destroy_result'] == 0) {
           $('#unit_destroy').css('visibility', 'visible');
@@ -273,10 +248,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
     }
   }
   $('#unit_create_button_auto').button(unit['can_autoconvert'] ? 'enable' : 'disable').prop('disabled', unit['can_autoconvert'] ? false : true);
-  //$('#auto_convert').prop('disabled', unit['can_autoconvert'] ? false : true); // TODO - разобраться, почему не работает
   $('#unit_create_level, #unit_create_level_auto').html((parseInt(unit['level']) ? parseInt(unit['level']) : 0) + 1);
-
-//  $('#unit_create_button_auto').button(unit['can_autoconvert'] ? 'enable' : 'disable');
 
   result = '';
   if(unit['resource_map']) {

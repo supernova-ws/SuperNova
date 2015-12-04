@@ -86,6 +86,7 @@ if(window.LOADED_TIMER === undefined) {
   var UNIT_AMOUNT = 3;
   var UNIT_LEVEL = 4;
   var UNIT_TIME_FULL = 5;
+  var UNIT_IMAGE = 6;
 
   var EVENT_TIME = 0;
   var EVENT_STRING = 1;
@@ -261,6 +262,7 @@ if(window.LOADED_TIMER === undefined) {
         .replace(/\[UNIT_TIME\]/gi, sn_timestampToString(que[que_id][UNIT_TIME]))
         .replace(/\[UNIT_LEVEL\]/gi, unit_count)
         .replace(/\[UNIT_NAME\]/gi, que[que_id][UNIT_NAME])
+        .replace(/\[UNIT_IMAGE\]/gi, que[que_id][UNIT_IMAGE])
         .replace(/\[UNIT_QUE_PLACE\]/gi, que_id);
     }
     timer_options['total'] = total;

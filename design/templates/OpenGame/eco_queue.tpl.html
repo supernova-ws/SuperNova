@@ -19,7 +19,7 @@ sn_timers.unshift({'id': '{$QUE_HTML}_{$QUE_ID}', 'type': TIMER_BUILD_QUE_V2, 'o
   'msg_done': '{LA_eco_que_empty}',
   // 'url': document.location.href,
   'template': '<div class="que_item {$QUE_HTML}_{$QUE_ID}_container_[UNIT_QUE_PLACE] que_item_[UNIT_QUE_PLACE]" title="[UNIT_NAME] ([UNIT_LEVEL])">\
-    <span class="que_unit_picture"><img src="{I_UNIT_ID}" align="top" width="100%" height="100%"></span>\
+    <span class="que_unit_picture"><img src="[UNIT_IMAGE]" align="top" width="100%" height="100%"></span>\
     \
     <span class="que_unit_level que_unit_slot_bar {$QUE_HTML}_{$QUE_ID}_slot_bar_[UNIT_QUE_PLACE]"></span>\
     <span class="a50 que_unit_level {$QUE_HTML}_{$QUE_ID}_level_[UNIT_QUE_PLACE]">[UNIT_LEVEL]</span>\
@@ -27,9 +27,8 @@ sn_timers.unshift({'id': '{$QUE_HTML}_{$QUE_ID}', 'type': TIMER_BUILD_QUE_V2, 'o
     <span class="que_unit_time que_unit_progress_bar {$QUE_HTML}_{$QUE_ID}_unit_bar_[UNIT_QUE_PLACE]"></span>\
     <span class="a50 que_unit_time {$QUE_HTML}_{$QUE_ID}_timer_[UNIT_QUE_PLACE]">[UNIT_TIME]</span>\
   </div>',
-//<span class="icon_alpha {$QUE_HTML}_{$QUE_ID}_seconds_[UNIT_QUE_PLACE] que_unit_time_seconds_[UNIT_QUE_PLACE]"></span>\
   'que': [<!-- BEGIN que --><!-- IF $QUE_ID == que.QUE  -->
-    ['{que.ID}', '{que.NAME}', {que.TIME}, {que.AMOUNT}, {que.LEVEL}, {que.TIME_FULL}],
+    ['{que.ID}', '{que.NAME}', {que.TIME}, {que.AMOUNT}, {que.LEVEL}, {que.TIME_FULL}, '{I_[que.ID]}'],
   <!-- ENDIF --><!-- END que -->]
 }});
 --></script>
