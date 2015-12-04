@@ -380,7 +380,7 @@ if(window.LOADED_TIMER === undefined) {
             que[0][UNIT_TIME] -= timeSinceLastUpdate; // Вычитаем то, что могло остаться с прошлого юнита/стэка
             timeLeft = que[0][UNIT_TIME] <= 0 ? 1 : que[0][UNIT_TIME];
 
-            infoText = que[0][UNIT_NAME] + ' (' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
+            infoText = que[0][UNIT_NAME] + '<br />(' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
             timeLeftText = sn_timestampToString(timeLeft);
             timeLeftTotalText = sn_timestampToString(timeLeft + timer_options['total']);
 
