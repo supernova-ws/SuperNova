@@ -91,7 +91,7 @@ class skin {
    *
    * @var string[]
    */
-  protected $image_path_list = array();
+  protected $container = array();
 
   /**
    * Название скина
@@ -157,6 +157,84 @@ class skin {
 //      pdump($this->config);
     }
 
+    // $this->container[$image_id] = $this->compile_try_path($image_id, $this->config[SKIN_IMAGE_MISSED_FIELD])
+
+//    pdump($this->container, $this->name);
+
+//    pdump($this->compile_image(SKIN_IMAGE_MISSED_FIELD, null));
+
+//    pdump(й);
+
+//    pdump($this->container, $this->name . '1');
+
+    // Пытаемся скомпилировать _no_image заранее
+    if(!empty($this->config[SKIN_IMAGE_MISSED_FIELD])) {
+      $this->container[SKIN_IMAGE_MISSED_FIELD] = $this->compile_try_path(SKIN_IMAGE_MISSED_FIELD, $this->config[SKIN_IMAGE_MISSED_FIELD]);
+    }
+
+//    pdump($this->container, $this->name . '2');
+
+    // Если нет заглушки
+    if(empty($this->container[SKIN_IMAGE_MISSED_FIELD])) {
+      $this->container[SKIN_IMAGE_MISSED_FIELD] = empty($this->parent)
+        // Если есть парент - берем у парента. У предков всегда всё есть
+        ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
+        // Если нет парента - берем хардкод
+        : $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null);
+//      if(empty($this->parent)) {
+//        // Если есть парент - берем у парента
+//        $this->container[SKIN_IMAGE_MISSED_FIELD] = $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null);
+//      } else {
+//        // Если нет у парента - берем хардкод
+//        $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH;
+//      }
+    }
+
+
+//    // Ну, а если нету заглушки - возьмем родительскую
+//    empty($this->container[SKIN_IMAGE_MISSED_FIELD]) && !empty($this->parent)
+//      // Может быть когда-нибудь переделать, что бы каждый скин возвращал индивидуальную заглушку
+//      ? $this->container[SKIN_IMAGE_MISSED_FIELD] = $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null)
+//      : false;
+//
+//    pdump($this->container, $this->name . '3');
+//
+//
+//    empty($this->config[SKIN_IMAGE_MISSED_FIELD])
+//      ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
+//      : false;
+////    empty($this->config[SKIN_IMAGE_MISSED_FIELD])
+////      ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
+////      : false;
+
+//    pdump($this->container, $this->name . 'final');
+
+
+
+
+
+
+
+//    pdump($this->container, $this->name . '2');
+//
+//    // Ну, а если нету заглушки - возьмем родительскую
+//    empty($this->container[SKIN_IMAGE_MISSED_FIELD]) && !empty($this->parent)
+//      // Может быть когда-нибудь переделать, что бы каждый скин возвращал индивидуальную заглушку
+//      ? $this->container[SKIN_IMAGE_MISSED_FIELD] = $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null)
+//      : false;
+//
+//    pdump($this->container, $this->name . '3');
+//
+//
+//    empty($this->config[SKIN_IMAGE_MISSED_FIELD])
+//      ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
+//      : false;
+////    empty($this->config[SKIN_IMAGE_MISSED_FIELD])
+////      ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
+////      : false;
+//
+//    pdump($this->container, $this->name . 'final');
+
     return $this;
   }
 
@@ -191,44 +269,60 @@ class skin {
   }
 
   /**
+   * Ресолвит переменные и парсит тэг
+   *
    * @param string   $image_tag
    * @param template $template
    *
    * @return string
    */
-  protected function resolve_PTL_tags($image_tag, $template) {
+  protected function image_tag_parse($image_tag, $template) {
+    $image_tag_ptl_resolved = $image_tag;
     // Есть переменные из темплейта ?
-    if(strpos($image_tag, '[') === false) {
+    if(strpos($image_tag_ptl_resolved, '[') !== false && is_object($template)) {
       // Что бы лишний раз не запускать регексп
-      return $image_tag;
-    }
-
-    // TODO - многоуровневые вложения ?! Надо ли и где их можно применить
-
-    preg_match_all('#(\[.+?\])#', $image_tag, $matches);
-    foreach($matches[0] as &$match) {
-      $var_name = str_replace(array('[', ']'), '', $match);
-      if(strpos($var_name, '.') !== false) {
-        // Вложенная переменная темплейта - на текущем уровне
-        // TODO Вложенная переменная из корня через "!"
-        list($block_name, $block_var) = explode('.', $var_name);
-        isset($template->_block_value[$block_name][$block_var]) ? $image_tag = str_replace($match, $template->_block_value[$block_name][$block_var], $image_tag) : false;
-      } elseif(strpos($var_name, '$') !== false) {
-        // Корневой DEFINE
-        $define_name = substr($var_name, 1);
-        isset($template->_tpldata['DEFINE']['.'][$define_name]) ? $image_tag = str_replace($match, $template->_tpldata['DEFINE']['.'][$define_name], $image_tag) : false;
-      } else {
-        // Корневая переменная темплейта
-        isset($template->_rootref[$var_name]) ? $image_tag = str_replace($match, $template->_rootref[$var_name], $image_tag) : false;
+      // TODO - многоуровневые вложения ?! Надо ли и где их можно применить
+      preg_match_all('#(\[.+?\])#', $image_tag_ptl_resolved, $matches);
+      foreach($matches[0] as &$match) {
+        $var_name = str_replace(array('[', ']'), '', $match);
+        if(strpos($var_name, '.') !== false) {
+          // Вложенная переменная темплейта - на текущем уровне
+          // TODO Вложенная переменная из корня через "!"
+          list($block_name, $block_var) = explode('.', $var_name);
+          isset($template->_block_value[$block_name][$block_var]) ? $image_tag_ptl_resolved = str_replace($match, $template->_block_value[$block_name][$block_var], $image_tag_ptl_resolved) : false;
+        } elseif(strpos($var_name, '$') !== false) {
+          // Корневой DEFINE
+          $define_name = substr($var_name, 1);
+          isset($template->_tpldata['DEFINE']['.'][$define_name]) ? $image_tag_ptl_resolved = str_replace($match, $template->_tpldata['DEFINE']['.'][$define_name], $image_tag_ptl_resolved) : false;
+        } else {
+          // Корневая переменная темплейта
+          isset($template->_rootref[$var_name]) ? $image_tag_ptl_resolved = str_replace($match, $template->_rootref[$var_name], $image_tag_ptl_resolved) : false;
+        }
       }
     }
 
-    return $image_tag;
+    if(strpos($image_tag_ptl_resolved, '|') !== false) {
+      $params = explode('|', $image_tag_ptl_resolved);
+      $image_id = $params[0];
+      unset($params[0]);
+      $params = $this->reorder_params($params);
+      $image_tag_ptl_resolved = implode('|', array_merge(array($image_tag_ptl_resolved), $params));
+    } else {
+      $params = array();
+      $image_id = $image_tag_ptl_resolved;
+    }
+
+    return array(
+      SKIN_IMAGE_TAG_RAW      => $image_tag,
+      SKIN_IMAGE_TAG_RESOLVED => $image_tag_ptl_resolved,
+      SKIN_IMAGE_TAG_IMAGE_ID => $image_id,
+      SKIN_IMAGE_TAG_PARAMS   => $params,
+    );
   }
 
   protected function apply_params($ini_image_id_plain, $params) {
     $image_tag = $ini_image_id_plain;
-    $image_string = $this->image_path_list[$image_tag];
+    $image_string = $this->container[$image_tag];
 
     // Нет параметров - просто возвращаем значение по $image_name из контейнера
     if(!empty($params) && is_array($params)) {
@@ -238,7 +332,7 @@ class skin {
       if(in_array('html', $params)) {
         $image_tag = $image_tag . '|html';
         $image_string = '<img src="' . $image_string . '" />';
-        $this->image_path_list[$image_tag] = $image_string;
+        $this->container[$image_tag] = $image_string;
       }
     }
 
@@ -275,90 +369,78 @@ class skin {
 //      return $this->image_path_list[$image_tag];
 //    }
 
-    // Ресолвим PTL-тэги в $image_tag - получаем Resolved Image Tag (RIT)
-    $image_id_with_params = $this->resolve_PTL_tags($image_tag, $template); // Ресолвим текущие значения темплейта - их названия в квадратных скобочках типа [ID] или даже [production.ID]
+    // Ресолвим переменные template в $image_tag - получаем Resolved Image Tag (RIT)
+    // Их названия - в квадратных скобочках типа [ID] или даже [production.ID]
+    $image_tag = $this->image_tag_parse($image_tag, $template);
 
-    // RIT содержит ini_image_id с параметрами
-
-    // Проверяем наличие ключа для RIT в хранилище
-    // В нём заведомо не может быть отсутствующих файлов по построению
-    if(!empty($this->image_path_list[$image_id_with_params])) {
-      return $this->image_path_list[$image_id_with_params];
+    // Проверяем наличие ключа RIT в хранилища. В нём не может быть несуществующих файлов по построению
+    if(!empty($this->container[$image_tag[SKIN_IMAGE_TAG_RESOLVED]])) {
+      return $this->container[$image_tag[SKIN_IMAGE_TAG_RESOLVED]];
     }
 
-    // TODO - Проверка на параметры в тэге - есть ли они у нас вообще. Если нету - это просто image_name
-
-    // Нет ключа RIT в хранилище - парсим тэг, что бы получить ID изображения
-    $params = explode('|', $image_id_with_params);
-    $image_id = $params[0];
-    unset($params[0]);
-    $params = $this->reorder_params($params);
-
-    if(!empty($this->image_path_list[$image_id])) {
-      // Есть такой ключ - значит у нас есть абсолютный HTTP-путь к файлу и файл существует, ведь все проверки осуществлялись раньше ниже по коду
-      // Просто применяем параметры
-//      return $this->apply_params($image_id, $params);
-    }
+    $image_id = $image_tag[SKIN_IMAGE_TAG_IMAGE_ID];
 
     // На текущий момент мы убедились в отсутствии в контейнере строк записей с ключами $ini_image_id_with_params и $ini_image_id_plain
     // Пора переходить к обсчёту конфигурации
-//    if(!empty($this->config[$image_id])) {
-//      $result = $this->compile_path_try($image_id, $this->config[$image_id], $params);
-//      if($result) {
-//        return $result;
-//      }
-//    }
-    if(empty($this->image_path_list[$image_id]) && !empty($this->config[$image_id]) && $this->compile_path_try($image_id, $this->config[$image_id], $params)) {
-//      return $this->apply_params($image_id, $params);
-    }
+    empty($this->container[$image_id]) && !empty($this->config[$image_id])
+      ? $this->compile_try_path($image_id, $this->config[$image_id])
+      : false;
 
-    // Мы проверили теперь и конфигурацию. Однако и в ней не нашлось ID изображения
     // Может у нас не image ID, а просто путь к файлу?
-    if(empty($this->image_path_list[$image_id]) && $this->compile_path_try($image_id, $image_id, $params)) {
-//      return $this->apply_params($image_id, $params);
+    empty($this->container[$image_id]) ? $this->compile_try_path($image_id, $image_id) : false;
+
+    // Нет - image ID не является путём к файлу. Пора обратиться к предкам за помощью...
+    // Пытаемся вытащить путь из родителя и применить к нему свои параметры
+    // Тащим по ID изображения, а не по ТЭГУ - мало ли что там делает с путём родитель и как преобразовывает его в строку?
+    // Если у родителя нет картинки - он вернет путь к заглушке NO_IMAGE
+    if(empty($this->container[$image_id]) && !empty($this->parent)) {
+      // Может быть когда-нибудь переделать, что бы каждый скин возвращал индивидуальную заглушку
+      $this->container[$image_id] = $this->parent->compile_image($image_id, $template);
+      empty($this->container[$image_id]) ? $this->container[$image_id] = $this->compile_image(SKIN_IMAGE_MISSED_FIELD, $template) : false;
     }
 
-    // Нет - image ID не является путём к файлу
-    // Пора обратиться к предкам...
-    if(empty($this->image_path_list[$image_id]) && $this->parent) {
-      // Фоллбэк на родителя если - он есть
 
-      // Пытаемся вытащить путь из родителя и применить к нему свои параметры - мало ли что там делает с путём родитель и как преобразовывает его в строку?
-      // Так что тащим по ID изображения, а не по ТЭГУ
-      // Если у родителя нет картинки - он вернет заглушку
-      $this->image_path_list[$image_id] = $this->parent->compile_image($image_id, $template);
+    // Упс! А я и есть родитель... А изображения нету. Возвращаем заглушку. У меня-то она всегда есть...
+//    empty($this->container[$image_id]) ? $image_id = SKIN_IMAGE_MISSED_FIELD : false;
+//    empty($this->container[$image_id])
+//      ? $this->container[$image_id] = $this->compile_try_path($image_id, $this->config[SKIN_IMAGE_MISSED_FIELD])
+//      : false;
+//
+//    // Ну, а если нету - возьмем хардкод
+//    empty($this->container[$image_id])
+//      ? $this->container[$image_id] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
+//      : false;
 
-//      if(!empty($this->image_path_list[$image_id])) {
-//        return $this->apply_params($image_id, $params);
-//      }
-    }
+    // Упс! А я и есть родитель... А изображения нету. Возвращаем заглушку. У меня-то она всегда есть...
+//    empty($this->container[$image_id])
+//      ? $this->container[$image_id] = $this->container[SKIN_IMAGE_MISSED_FIELD]
+////      ? $this->container[$image_id] = $this->compile_image(SKIN_IMAGE_MISSED_FIELD, null)
+//      : false;
 
-    if(empty($this->image_path_list[$image_id])) {
-      // Упс! А я и есть родитель... Возвращаем заглушку. У меня-то она всегда есть...
-      $image_id = '_no_image';
-      $this->image_path_list[$image_id] = $this->compile_path_try($image_id, $this->config[$image_id], $params);
-      if(empty($this->image_path_list[$image_id])) {
-        $this->image_path_list[$image_id] = SN_ROOT_VIRTUAL . 'design/images/_no_image.png';
-      }
-    }
+    return
+      empty($this->container[$image_id]) ? '' :
 
-    return $this->apply_params($image_id, $params);
+      $this->apply_params($image_id, $image_tag[SKIN_IMAGE_TAG_PARAMS]);
   }
 
-  protected function compile_path_try($image_id, $ini_file_path, $params) {
-    $image_file_relative_path =
-      // Если первый символ пути '/' - значит это путь от HTTP-корня
-      strpos($ini_file_path, '/') !== 0
-        // Откусываем его и пользуем остальное
-        ? $this->root_http_relative . $ini_file_path
-        : substr($ini_file_path, 1);
+  /**
+   * Проверка физического наличия файла с картинкой
+   *
+   * @param string $image_id
+   * @param string $file_path
+   *
+   * @return string
+   */
+  protected function compile_try_path($image_id, $file_path) {
+    // Если первый символ пути '/' - значит это путь от HTTP-корня
+    // Откусываем его и пользуем остальное
+    $relative_path = strpos($file_path, '/') !== 0
+      ? $this->root_http_relative . $file_path
+      : substr($file_path, 1);
 
-    if(is_file(SN_ROOT_PHYSICAL . $image_file_relative_path)) {
-      $this->image_path_list[$image_id] = SN_ROOT_VIRTUAL . $image_file_relative_path;
-      return $this->apply_params($image_id, $params);
-    }
-
-    return '';
+    return is_file(SN_ROOT_PHYSICAL . $relative_path)
+      ? $this->container[$image_id] = SN_ROOT_VIRTUAL . $relative_path
+      : '';
   }
 
   /**

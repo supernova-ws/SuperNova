@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '39');
 define('SN_RELEASE', '39');
-define('SN_VERSION', '40b0.25');
+define('SN_VERSION', '40b0.26');
 define('SN_RELEASE_STABLE', '39d2'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1484,3 +1484,23 @@ define('BLITZ_REGISTER_DISCLOSURE_NAMES', 4);
 
 define('EVENT_HALLOWEEN_LOCKED', 1);
 define('EVENT_HALLOWEEN_CODE', 2);
+
+define('SKIN_IMAGE_MISSED_FIELD', '_no_image');
+define('SKIN_IMAGE_MISSED_FILE_PATH', 'design/images/_no_image.png');
+/**
+ * Оригинальный вид тэга из темплейта без ведущей I_
+ */
+define('SKIN_IMAGE_TAG_RAW', 0);
+/**
+ * Тэг, в котором отресолвлены зависимости, а так же отсотированы и переупорядочены опции
+ * Этот вид тэга будет использоваться как ключ для поиска в контейнере компилированных строк
+ */
+define('SKIN_IMAGE_TAG_RESOLVED', 1);
+/**
+ * ID изображения для адресации через skin.ini
+ */
+define('SKIN_IMAGE_TAG_IMAGE_ID', 2);
+/**
+ * Параметры тэга в массиве - отсортированные и переупорядоченные
+ */
+define('SKIN_IMAGE_TAG_PARAMS', 3);
