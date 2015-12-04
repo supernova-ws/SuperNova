@@ -5,7 +5,6 @@
  * Date: 23.10.2015
  * Time: 19:54
  */
-
 /*
 
 INI-файл:
@@ -23,7 +22,7 @@ INI-файл:
        - Корневые значения, например {I_[UNIT_ID]}
        - Значения в блоках, например {I_[production.ID]}
        - Корневые значения DEFINE, например {I_[$PLANET_GOVERNOR_ID]}
-   Параметры:
+   Параметры вывода:
       html - отрендерить обрамление HTML-тэгом IMG: <img src="" />
 */
 
@@ -37,8 +36,9 @@ class skin {
   protected static $is_init = false;
   /**
    * Список скинов
+   * TODO Переделать под контейнер
    *
-   * @var skin[]
+   * @var skin[] $skin_list
    */
   protected static $skin_list = array();
   /**
@@ -49,17 +49,17 @@ class skin {
   protected static $active = null;
 
   /**
-   * HTTP-путь к файлам скина
+   * HTTP-путь к файлам скина относительно корня движка
    *
    * @var string
    */
-  protected $root_http = '';
+  protected $root_http_relative = '';
   /**
-   * Физический путь к директории скина
+   * Абсолютный физический путь к директории скина
    *
    * @var string
    */
-  protected $root_folder = '';
+  protected $root_physical_absolute = '';
   /**
    * Флаг присутсвия конфигурации
    *
@@ -79,7 +79,18 @@ class skin {
    */
   protected $config = array();
 
+  /**
+   * Список полностью отрендеренных путей
+   *
+   * @var string[]
+   */
   protected $image_path_list = array();
+
+  /**
+   * Название скина
+   *
+   * @var mixed|null|string
+   */
   public $name = '';
 
   /*
@@ -103,9 +114,9 @@ class skin {
     strpos($skin_path, 'skins/') !== false ? $skin_path = substr($skin_path, 6) : false;
     strpos($skin_path, '/') !== false ? $skin_path = str_replace('/', '', $skin_path) : false;
 
-    // $this->root_http = SN_ROOT_VIRTUAL . $skin_path;
-    $this->root_http = 'skins/' . $skin_path . '/'; // Пока стоит base="" в body SN_ROOT_VIRTUAL - не нужен
-    $this->root_folder = SN_ROOT_PHYSICAL . 'skins/' . $skin_path . '/';
+    $this->root_http_relative = 'skins/' . $skin_path . '/'; // Пока стоит base="" в body SN_ROOT_VIRTUAL - не нужен
+//    $this->root_http = SN_ROOT_VIRTUAL . 'skins/' . $skin_path . '/'; // Всегда абсолютный путь от корня сайта
+    $this->root_physical_absolute = SN_ROOT_PHYSICAL . 'skins/' . $skin_path . '/';
     $this->name = $skin_path;
 //    pdump($this->root_folder);
     // Искать скин среди пользовательских - когда будет конструктор скинов
@@ -113,11 +124,11 @@ class skin {
 
     $this->is_ini_present = false;
     // Проверка на корректность и существование пути
-    if(file_exists($this->root_folder . 'skin.ini')) {
+    if(file_exists($this->root_physical_absolute . 'skin.ini')) {
       // Пытаемся распарсить файл
 
       // По секциям? images и config? Что бы не копировать конфигурацию? Или просто unset(__inherit) а затем заново записать
-      $this->config = parse_ini_file($this->root_folder . 'skin.ini');
+      $this->config = parse_ini_file($this->root_physical_absolute . 'skin.ini');
       if(!empty($this->config)) {
 
         $this->is_ini_present = true;
@@ -171,30 +182,38 @@ class skin {
     static::$is_init = true;
   }
 
+  /**
+   * @param string   $image_name
+   * @param template $template
+   */
   protected function resolve_ptl_tags(&$image_name, $template) {
     // Есть переменные из темплейта ?
-    if(strpos($image_name, '[') !== false) {
-      preg_match_all('#(\[.+?\])#', $image_name, $matches);
-      foreach($matches[0] as &$match) {
-        $var_name = str_replace(array('[', ']'), '', $match);
-        if(strpos($var_name, '.') !== false) {
-          // Вложенная переменная темплейта
-          list($block_name, $block_var) = explode('.', $var_name);
-          isset($template->_block_value[$block_name][$block_var]) ? $image_name = str_replace($match, $template->_block_value[$block_name][$block_var], $image_name) : false;
-        } elseif(strpos($var_name, '$') !== false) {
-          // Корневой DEFINE
-          $define_name = substr($var_name, 1);
-          isset($template->_tpldata['DEFINE']['.'][$define_name]) ? $image_name = str_replace($match, $template->_tpldata['DEFINE']['.'][$define_name], $image_name) : false;
-        } else {
-          // Корневая переменная темплейта
-          isset($template->_rootref[$var_name]) ? $image_name = str_replace($match, $template->_rootref[$var_name], $image_name) : false;
-        }
+    if(strpos($image_name, '[') === false) {
+      // Что бы лишний раз не запускать регексп
+      return;
+    }
+
+    preg_match_all('#(\[.+?\])#', $image_name, $matches);
+    foreach($matches[0] as &$match) {
+      $var_name = str_replace(array('[', ']'), '', $match);
+      if(strpos($var_name, '.') !== false) {
+        // Вложенная переменная темплейта - на текущем уровне
+        // TODO Вложенная переменная из корня через "!"
+        list($block_name, $block_var) = explode('.', $var_name);
+        isset($template->_block_value[$block_name][$block_var]) ? $image_name = str_replace($match, $template->_block_value[$block_name][$block_var], $image_name) : false;
+      } elseif(strpos($var_name, '$') !== false) {
+        // Корневой DEFINE
+        $define_name = substr($var_name, 1);
+        isset($template->_tpldata['DEFINE']['.'][$define_name]) ? $image_name = str_replace($match, $template->_tpldata['DEFINE']['.'][$define_name], $image_name) : false;
+      } else {
+        // Корневая переменная темплейта
+        isset($template->_rootref[$var_name]) ? $image_name = str_replace($match, $template->_rootref[$var_name], $image_name) : false;
       }
     }
   }
 
   /**
-   * @param string $image_tag
+   * @param string   $image_tag
    * @param template $template
    *
    * @return string
@@ -204,48 +223,88 @@ class skin {
     if(!empty($this->image_path_list[$image_tag])) {
       return $this->image_path_list[$image_tag];
     }
+
     $parse = explode('|', $image_tag);
     $image_name = $parse[0];
+    // Здесь у нас $image_name уже хранит прямой ключ для картинки - без всяких переменных
 
+    // Уже есть прямой путь для данной картинки - возвращаем его
     if(!empty($this->image_path_list[$image_name])) {
       // TODO - неверно! Игнорируются параметры через |
       return $this->image_path_list[$image_name];
     }
 
+    // Нет прямого пути
     // Ресолвим текущие значения темплейта - их названия в квадратных скобочках типа [ID] или даже [production.ID]
     $this->resolve_ptl_tags($image_name, $template);
     if(!empty($this->image_path_list[$image_name])) {
       return $this->image_path_list[$image_name];
     }
 
-    // Здесь у нас $image_name уже хранит прямой ключ для картинки - без всяких переменных
-
     // Теперь парсим конфигурацию
-    if(empty($this->config[$image_name])) {
+    if(!empty($this->config[$image_name])) {
+      // Есть путь для данного изображения
+      $temp_image_path = $this->config[$image_name];
+
+//      $temp_image_path =
+//        // Если первый символ пути '/' - значит это путь от HTTP-корня
+//        strpos($temp_image_path, '/') === 0
+//          // Откусываем его и пользуем остальное
+//          ? SN_ROOT_VIRTUAL . substr($temp_image_path, 1)
+//          : ($this->root_http_relative . $temp_image_path);
+
+//      $is_path_from_sn_root = strpos($temp_image_path, '/') === 0;
+//      if($is_path_from_sn_root) {
+//        $file_exists = file_exists(SN_ROOT_PHYSICAL . substr($temp_image_path, 1));
+//        if($file_exists) {
+//          $temp_image_path = SN_ROOT_VIRTUAL . substr($temp_image_path, 1);
+//        }
+//      } else {
+//        $file_exists = file_exists(SN_ROOT_PHYSICAL . $this->root_http_relative . $temp_image_path);
+//        if($file_exists) {
+//          $temp_image_path = SN_ROOT_VIRTUAL . $this->root_http_relative . $temp_image_path;
+//        }
+//      }
+//
+//      if($file_exists) {
+//        $this->image_path_list[$image_name] = $temp_image_path;
+//      }
+
+      $temp_image_path =
+        // Если первый символ пути '/' - значит это путь от HTTP-корня
+        strpos($temp_image_path, '/') !== 0
+          // Откусываем его и пользуем остальное
+          ? $this->root_http_relative . $temp_image_path
+          : substr($temp_image_path, 1);
+
+      if(file_exists(SN_ROOT_PHYSICAL . $temp_image_path)) {
+        $this->image_path_list[$image_name] = SN_ROOT_VIRTUAL . $temp_image_path;
+      }
+//if(!$file_exists) {
+//pdump(SN_ROOT_PHYSICAL . $this->root_http_relative . $temp_image_path, 'file not found RELATIVE' . ($is_path_from_sn_root ? 'root' : 'relative'));
+//}
+    }
+
+    if(empty($this->image_path_list[$image_name])) {
       // Нет пути для данного изображения
 
       // Фоллбэк на родителя если - он есть
       if($this->parent) {
+        // TODO - Неправильно! $image_tag на самом деле
         $this->image_path_list[$image_name] = $this->parent->compile_image($image_name, $template);
+
         if(!empty($this->image_path_list[$image_name])) {
           return $this->image_path_list[$image_name];
         }
       }
 
       // Все еще не найдена картинка ни в одном из скинов - тогда используем переданное имя как относительный путь к картинке
-      $this->image_path_list[$image_name] = $this->root_http . $image_name . (strpos($image_name, '.') === false ? DEFAULT_PICTURE_EXTENSION : '');
-    } else {
-      // Есть путь для данного изображения
-      $temp_image_path = $this->config[$image_name];
-
-      // Если первый символ пути '/' - значит это путь от HTTP-корня. Откусываем его и пользуем остальное
-      $this->image_path_list[$image_name] = (strpos($temp_image_path, '/') === 0 ? SN_ROOT_VIRTUAL . substr($temp_image_path, 1) : ($this->root_http . $temp_image_path));
-
-//      $this->image_path_list[$image_name] = $this->root_http . $this->config[$image_name];
+      $this->image_path_list[$image_name] = SN_ROOT_VIRTUAL . $this->root_http_relative . $image_name . (strpos($image_name, '.') === false ? DEFAULT_PICTURE_EXTENSION_DOTTED : '');
     }
 
     $image_url = $this->image_path_list[$image_name];
 
+    // Параметр 'html' - выводить изображение в виде HTML-тэга
     if(in_array('html', $parse)) {
       $image_url = '<img src="' . $image_url . '" />';
     }
@@ -258,21 +317,12 @@ class skin {
    *
    * @param string $image_tag
    *
-   *
-   *
    * @return string
    */
   public static function image_url($image_tag, $template) {
-
     // Инициализируем текущий скин
     !static::$is_init ? static::init() : false;
 
-    // Тут идёт собственно парсинг того, что нам дали на фходе
-
-    // Тут делать фоллбэк? Или при ините?
-
-
-//    return static::$active->compile_image($image_tag, $template) . '-image_url';
     return static::$active->compile_image($image_tag, $template);
   }
 
