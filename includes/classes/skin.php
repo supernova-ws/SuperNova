@@ -211,6 +211,11 @@ class skin {
         $this->is_ini_present = true;
 
         if(!empty($this->config['_inherit'])) {
+          // Если скин наследует себя...
+          if($this->config['_inherit'] == $skin_path) {
+            // TODO - определять более сложные случаи циклических ссылок в _inherit
+            die('">circular skin inheritance!');
+          }
           if(empty(static::$skin_list[$this->config['_inherit']])) {
             static::$skin_list[$this->config['_inherit']] = new skin($this->config['_inherit']);
           }
