@@ -78,8 +78,50 @@ select count(*) from game_counter where visit_time < DATE_SUB(now(),INTERVAL 14 
 [*] Добавить проверку на физическое существование файла
 
 
+[*] Скины - Подумать
+    Картинки - автозамена при изменении размеров картинки ?
+    Плясать от картинок? На больших экранах - большие картинки, на маленьких - маленькие?
+    Так это понадобится всё в CCSы запихнуть...
+    Компилируемые CSS-ы из skin.ini?
+    Рендерить яваскриптом?
+    Или давать PHP-коду текущее разрешение, ориентацию и прочую чухню - и уже на PHP выбирать нужное изображение?
+    alert($('#probe_1rem').height())
+        - ЗАВИСИТ от встроенного масштабирования (через кнопки Шрифт+-)
+        - НЕ ЗАВИСИТ от масштабирования браузера, бля!
+    flex-box корректно переносят элементы при масштабировании и кнопки
 
-TODO skin.php - сохранять картинки по имеджтагу - что бы каждый раз не рендерить '|html' например
+    ОКАК! При зуме - меняется "разрешение" экрана!
+        Так что можно пользоваться меди-кверис! Идет отсечка и по px и по em
+
+    Код для тестов
+        <div id="probe_1rem" style="height: 1rem;">test</div>
+        <div id="probe_1em" style="height: 1em;">test</div>
+
+        <style type="text/css">
+          @media only screen and (max-width : 118.0001em) {
+            #probe_1rem {
+              border: 1px solid green;
+            }
+          }
+
+          @media only screen and (min-width : 118em) {
+            #probe_1rem {
+              border: 1px solid red;
+            }
+          }
+
+        </style>
+
+        <script type="text/javascript">
+          // alert($('#probe_1rem').height());
+        </script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> <!--320-->
+
+
+
+[*] Класс skin
+        [*] Поддержка модулей
 
 
 Оптимизировать и потестить
@@ -111,6 +153,10 @@ TODO skin.php - сохранять картинки по имеджтагу - ч
     ? Корневой
 
 Оптимизировать noimage.png
+
+2015-12-04 15:46:39 40b0.27
+[@] Класс skin
+    Оптимизация-2
 
 
 2015-12-04 14:46:52 40b0.26
