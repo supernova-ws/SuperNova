@@ -297,28 +297,30 @@ class skin {
     if(!empty($this->image_path_list[$image_id])) {
       // Есть такой ключ - значит у нас есть абсолютный HTTP-путь к файлу и файл существует, ведь все проверки осуществлялись раньше ниже по коду
       // Просто применяем параметры
-      return $this->apply_params($image_id, $params);
+//      return $this->apply_params($image_id, $params);
     }
 
     // На текущий момент мы убедились в отсутствии в контейнере строк записей с ключами $ini_image_id_with_params и $ini_image_id_plain
     // Пора переходить к обсчёту конфигурации
-    if(!empty($this->config[$image_id])) {
-      $result = $this->compile_path_try($image_id, $this->config[$image_id], $params);
-      if($result) {
-        return $result;
-      }
+//    if(!empty($this->config[$image_id])) {
+//      $result = $this->compile_path_try($image_id, $this->config[$image_id], $params);
+//      if($result) {
+//        return $result;
+//      }
+//    }
+    if(empty($this->image_path_list[$image_id]) && !empty($this->config[$image_id]) && $this->compile_path_try($image_id, $this->config[$image_id], $params)) {
+//      return $this->apply_params($image_id, $params);
     }
 
     // Мы проверили теперь и конфигурацию. Однако и в ней не нашлось ID изображения
     // Может у нас не image ID, а просто путь к файлу?
-    $result = $this->compile_path_try($image_id, $image_id, $params);
-    if($result) {
-      return $result;
+    if(empty($this->image_path_list[$image_id]) && $this->compile_path_try($image_id, $image_id, $params)) {
+//      return $this->apply_params($image_id, $params);
     }
 
     // Нет - image ID не является путём к файлу
     // Пора обратиться к предкам...
-    if($this->parent) {
+    if(empty($this->image_path_list[$image_id]) && $this->parent) {
       // Фоллбэк на родителя если - он есть
 
       // Пытаемся вытащить путь из родителя и применить к нему свои параметры - мало ли что там делает с путём родитель и как преобразовывает его в строку?
@@ -326,17 +328,20 @@ class skin {
       // Если у родителя нет картинки - он вернет заглушку
       $this->image_path_list[$image_id] = $this->parent->compile_image($image_id, $template);
 
-      if(!empty($this->image_path_list[$image_id])) {
-        return $this->apply_params($image_id, $params);
+//      if(!empty($this->image_path_list[$image_id])) {
+//        return $this->apply_params($image_id, $params);
+//      }
+    }
+
+    if(empty($this->image_path_list[$image_id])) {
+      // Упс! А я и есть родитель... Возвращаем заглушку. У меня-то она всегда есть...
+      $image_id = '_no_image';
+      $this->image_path_list[$image_id] = $this->compile_path_try($image_id, $this->config[$image_id], $params);
+      if(empty($this->image_path_list[$image_id])) {
+        $this->image_path_list[$image_id] = SN_ROOT_VIRTUAL . 'design/images/_no_image.png';
       }
     }
 
-    // Упс! А я и есть родитель... Возвращаем заглушку. У меня-то она всегда есть...
-    $image_id = '_no_image';
-    $this->image_path_list[$image_id] = $this->compile_path_try($image_id, $this->config[$image_id], $params);
-    if(empty($this->image_path_list[$image_id])) {
-      $this->image_path_list[$image_id] = SN_ROOT_VIRTUAL . 'design/images/_no_image.png';
-    }
     return $this->apply_params($image_id, $params);
   }
 
