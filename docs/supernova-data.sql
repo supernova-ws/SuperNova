@@ -1,4 +1,6 @@
-﻿-- ----------------------------
+﻿SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
 -- Default server configuration
 -- ----------------------------
 REPLACE INTO `sn_config` VALUES ('advGoogleLeftMenuCode',
@@ -211,7 +213,8 @@ REPLACE INTO `sn_account_translate`
 SET
   `provider_id`         = 1,
   `provider_account_id` = 1,
-  `user_id`             = 1;
+  `user_id`             = 1,
+  `timestamp`           = NOW();
 
 -- ----------------------------
 -- Administrator's user record
