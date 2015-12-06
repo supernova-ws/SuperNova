@@ -1123,9 +1123,74 @@ switch($new_version) {
         SET `ube_report_debris_total_in_metal` = (`ube_report_debris_metal` + `ube_report_debris_crystal` * {$config_rpg_exchange_crystal}) / {$config_rpg_exchange_metal}");
     }
 
+    // 2015-12-06 15:10:58 40b1.0
+    if(!empty($update_indexes['planets']['I_metal_mine'])) {
+      upd_alter_table('planets', "DROP KEY `I_metal`", $update_indexes['planets']['I_metal']);
+      upd_alter_table('planets', "DROP KEY `I_ship_sattelite_sloth`", $update_indexes['planets']['I_ship_sattelite_sloth']);
+      upd_alter_table('planets', "DROP KEY `I_ship_bomber_envy`", $update_indexes['planets']['I_ship_bomber_envy']);
+      upd_alter_table('planets', "DROP KEY `I_ship_recycler_gluttony`", $update_indexes['planets']['I_ship_recycler_gluttony']);
+      upd_alter_table('planets', "DROP KEY `I_ship_fighter_wrath`", $update_indexes['planets']['I_ship_fighter_wrath']);
+      upd_alter_table('planets', "DROP KEY `I_ship_battleship_pride`", $update_indexes['planets']['I_ship_battleship_pride']);
+      upd_alter_table('planets', "DROP KEY `I_ship_cargo_greed`", $update_indexes['planets']['I_ship_cargo_greed']);
+      upd_alter_table('planets', "DROP KEY `I_metal_mine`", $update_indexes['planets']['I_metal_mine']);
+      upd_alter_table('planets', "DROP KEY `I_crystal_mine`", $update_indexes['planets']['I_crystal_mine']);
+      upd_alter_table('planets', "DROP KEY `I_deuterium_sintetizer`", $update_indexes['planets']['I_deuterium_sintetizer']);
+      upd_alter_table('planets', "DROP KEY `I_solar_plant`", $update_indexes['planets']['I_solar_plant']);
+      upd_alter_table('planets', "DROP KEY `I_fusion_plant`", $update_indexes['planets']['I_fusion_plant']);
+      upd_alter_table('planets', "DROP KEY `I_robot_factory`", $update_indexes['planets']['I_robot_factory']);
+      upd_alter_table('planets', "DROP KEY `I_hangar`", $update_indexes['planets']['I_hangar']);
+      upd_alter_table('planets', "DROP KEY `I_nano_factory`", $update_indexes['planets']['I_nano_factory']);
+      upd_alter_table('planets', "DROP KEY `I_laboratory`", $update_indexes['planets']['I_laboratory']);
+      upd_alter_table('planets', "DROP KEY `I_nano`", $update_indexes['planets']['I_nano']);
+      upd_alter_table('planets', "DROP KEY `I_silo`", $update_indexes['planets']['I_silo']);
+      upd_alter_table('planets', "DROP KEY `I_metal_store`", $update_indexes['planets']['I_metal_store']);
+      upd_alter_table('planets', "DROP KEY `I_crystal_store`", $update_indexes['planets']['I_crystal_store']);
+      upd_alter_table('planets', "DROP KEY `I_deuterium_store`", $update_indexes['planets']['I_deuterium_store']);
+      upd_alter_table('planets', "DROP KEY `I_ally_deposit`", $update_indexes['planets']['I_ally_deposit']);
+      upd_alter_table('planets', "DROP KEY `I_terraformer`", $update_indexes['planets']['I_terraformer']);
+      upd_alter_table('planets', "DROP KEY `I_mondbasis`", $update_indexes['planets']['I_mondbasis']);
+      upd_alter_table('planets', "DROP KEY `I_phalanx`", $update_indexes['planets']['I_phalanx']);
+      upd_alter_table('planets', "DROP KEY `I_sprungtor`", $update_indexes['planets']['I_sprungtor']);
+      upd_alter_table('planets', "DROP KEY `I_light_hunter`", $update_indexes['planets']['I_light_hunter']);
+      upd_alter_table('planets', "DROP KEY `I_heavy_hunter`", $update_indexes['planets']['I_heavy_hunter']);
+      upd_alter_table('planets', "DROP KEY `I_crusher`", $update_indexes['planets']['I_crusher']);
+      upd_alter_table('planets', "DROP KEY `I_battle_ship`", $update_indexes['planets']['I_battle_ship']);
+      upd_alter_table('planets', "DROP KEY `I_bomber_ship`", $update_indexes['planets']['I_bomber_ship']);
+      upd_alter_table('planets', "DROP KEY `I_battleship`", $update_indexes['planets']['I_battleship']);
+      upd_alter_table('planets', "DROP KEY `I_destructor`", $update_indexes['planets']['I_destructor']);
+      upd_alter_table('planets', "DROP KEY `I_dearth_star`", $update_indexes['planets']['I_dearth_star']);
+      upd_alter_table('planets', "DROP KEY `I_supernova`", $update_indexes['planets']['I_supernova']);
+      upd_alter_table('planets', "DROP KEY `I_small_ship_cargo`", $update_indexes['planets']['I_small_ship_cargo']);
+      upd_alter_table('planets', "DROP KEY `I_big_ship_cargo`", $update_indexes['planets']['I_big_ship_cargo']);
+      upd_alter_table('planets', "DROP KEY `I_supercargo`", $update_indexes['planets']['I_supercargo']);
+      upd_alter_table('planets', "DROP KEY `I_planet_cargo_hyper`", $update_indexes['planets']['I_planet_cargo_hyper']);
+      upd_alter_table('planets', "DROP KEY `I_recycler`", $update_indexes['planets']['I_recycler']);
+      upd_alter_table('planets', "DROP KEY `I_colonizer`", $update_indexes['planets']['I_colonizer']);
+      upd_alter_table('planets', "DROP KEY `I_spy_sonde`", $update_indexes['planets']['I_spy_sonde']);
+      upd_alter_table('planets', "DROP KEY `I_solar_satelit`", $update_indexes['planets']['I_solar_satelit']);
+      upd_alter_table('planets', "DROP KEY `I_misil_launcher`", $update_indexes['planets']['I_misil_launcher']);
+      upd_alter_table('planets', "DROP KEY `I_small_laser`", $update_indexes['planets']['I_small_laser']);
+      upd_alter_table('planets', "DROP KEY `I_big_laser`", $update_indexes['planets']['I_big_laser']);
+      upd_alter_table('planets', "DROP KEY `I_gauss_canyon`", $update_indexes['planets']['I_gauss_canyon']);
+      upd_alter_table('planets', "DROP KEY `I_ionic_canyon`", $update_indexes['planets']['I_ionic_canyon']);
+      upd_alter_table('planets', "DROP KEY `I_buster_canyon`", $update_indexes['planets']['I_buster_canyon']);
+      upd_alter_table('planets', "DROP KEY `I_small_protection_shield`", $update_indexes['planets']['I_small_protection_shield']);
+      upd_alter_table('planets', "DROP KEY `I_big_protection_shield`", $update_indexes['planets']['I_big_protection_shield']);
+      upd_alter_table('planets', "DROP KEY `I_planet_protector`", $update_indexes['planets']['I_planet_protector']);
+      upd_alter_table('planets', "DROP KEY `I_interceptor_misil`", $update_indexes['planets']['I_interceptor_misil']);
+      upd_alter_table('planets', "DROP KEY `I_interplanetary_misil`", $update_indexes['planets']['I_interplanetary_misil']);
+    }
+
     // #ctv
+
     upd_do_query('COMMIT;', true);
-    // $new_version = 40;
+    $new_version = 40;
+
+  case 40:
+    upd_log_version_update();
+    upd_do_query('COMMIT;', true);
+//    $new_version = 41;
+
 }
 upd_log_message('Upgrade complete.');
 

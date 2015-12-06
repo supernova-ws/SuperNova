@@ -107,10 +107,15 @@ todo.actual.txt
 [*] Очередь построек
     Сделать для уровня Ур.Х без скобок
 
+// TODO - определять более сложные случаи циклических ссылок в _inherit
 
 
 [*] Все настройки пользователей - в отдельную таблицу
 [*] Настройки производящих юнитов из planets в unit
+
+[*] Новая система ивентов
+
+В скине immi нет выделение рамкой юнита при строительстве
 
 
 Changelog
@@ -118,17 +123,6 @@ Changelog
 
 
 [*] ??? Использовать везде картинки планет, а не PLANET_IMAGE_SMALL = "planeten/small/s_[PLANET_IMAGE].png"
-
-Оптимизировать и потестить
-
-{I_navbar_research|html}
-
-{I_/design/images/banners/_triolan.gif|html}
-{I_/design/images/banners/_triolan.gif}
-
-{I_/design/images/banners/_triolan2.gif|skin|test|html}
-{I_/design/images/banners/_triolan2.gif}
-
 
 
 TODO РЕЛИЗ 40
@@ -140,9 +134,13 @@ TODO РЕЛИЗ 40
 [*] Сделать supernova.sql
 
 
-            // TODO - определять более сложные случаи циклических ссылок в _inherit
-
-В скине immi нет выделение рамкой юнита при строительстве
+2015-12-06 15:10:58 40b1.0
+[!] Апдейтер
+    Обновлен файл docs/supernova.sql
+    Обновлен файл docs/supernova-data.sql
+    Добавлено удаление лишних индексов из таблицы `planets`
+    Версия БД увеличена до 40-й
+    Версия релиза увеличена до 40-й
 
 
 2015-12-04 23:07:47 40b0.36
