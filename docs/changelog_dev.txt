@@ -15,123 +15,13 @@ Stay out of my shed
 todo.actual.txt
 ===============
 
-[*] sn_timer.js
-    Переделать очереди на классы, а не на массивы
-    Убрать темплейт из JS - оставить как опцию, а так использовать какой-нибудь кусок HTML
-
-
-[*] Even and odd columns
-    The same works for table columns, too, but then there has to be an element in the document that corresponds to the column. HTML provides COL for that. The table has to start with one COL for every column:
-    <table>
-    <col><col><col><col><col><col><col><col><col><col>
-    <tr><th>Month<th>'94<th>'95<th>'96...
-    (COL can be used for other things than style, but in this case all we need is that the COL elements are present.) The following rules give the first column a yellow background, and then every second column starting from column 3 a gray one:
-
-[*] select count(*) from game_counter where visit_time < DATE_SUB(now(),INTERVAL 14 DAY)
-
-[*] Обслуживание БД - писать время, когда оно выполнено
-
-[*] Навбар
-    [*] Широкий мессадж - добавить по бокам мини-кнопки
-    [*] Время
-            - выводить средствами СН
-            Надписи "Время у..." заменить иконками
-                Игрока - монитор
-                Компьютера - ХАЛ9000
-    [*] Настраивать порядок и видимость кнопок
-    [*] Настройки отключения кнопок шрифта
-    [*] !!! Затенять кнопки, если функция недоступна
-    [*] Подписать кнопки очередей - "Наука", "Планета", "Верфь". Добавить кнопку обороны?
-
-
-[*] Квесты
-    Переверстать страницу, добавить иконки
-
-[*] Отправка флотов
-    На последней странице - плохо выводится дата прибытия и таймер
-    Выводить на всех страницах?
-
-
-[*] Очереди
-    Отдельно отрендерить мелкие картинки юнитов ?
-
-
-[*] Скины - Подумать
-    Картинки - автозамена при изменении размеров картинки ?
-    Плясать от картинок? На больших экранах - большие картинки, на маленьких - маленькие?
-    Так это понадобится всё в CCSы запихнуть...
-    Компилируемые CSS-ы из skin.ini?
-    Рендерить яваскриптом?
-    Или давать PHP-коду текущее разрешение, ориентацию и прочую чухню - и уже на PHP выбирать нужное изображение?
-    alert($('#probe_1rem').height())
-        - ЗАВИСИТ от встроенного масштабирования (через кнопки Шрифт+-)
-        - НЕ ЗАВИСИТ от масштабирования браузера, бля!
-    flex-box корректно переносят элементы при масштабировании и кнопки
-
-    ОКАК! При зуме - меняется "разрешение" экрана!
-        Так что можно пользоваться меди-кверис! Идет отсечка и по px и по em
-
-    Код для тестов
-        <div id="probe_1rem" style="height: 1rem;">test</div>
-        <div id="probe_1em" style="height: 1em;">test</div>
-
-        <style type="text/css">
-          @media only screen and (max-width : 118.0001em) {
-            #probe_1rem {
-              border: 1px solid green;
-            }
-          }
-
-          @media only screen and (min-width : 118em) {
-            #probe_1rem {
-              border: 1px solid red;
-            }
-          }
-
-        </style>
-
-        <script type="text/javascript">
-          // alert($('#probe_1rem').height());
-        </script>
-
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/> <!--320-->
-
-[*] BBCode
-    сворачивать FAQ-ссылки в faq:// и разворачивать с в линкед УРЛ
-        Дать доступ обычным игрокам
-
-[*] Класс skin
-    [*] Поддержка модулей
-    [*] Параметр 'empty' - добавляет пустую картинку (1х1, прозрачный фон) ?
-
-[*] Очередь построек
-    Сделать для уровня Ур.Х без скобок
-
-// TODO - определять более сложные случаи циклических ссылок в _inherit
-
-
-[*] Все настройки пользователей - в отдельную таблицу
-[*] Настройки производящих юнитов из planets в unit
-
-[*] Новая система ивентов
-
-В скине immi нет выделение рамкой юнита при строительстве
-
 
 Changelog
 =========
 
-
-[*] ??? Использовать везде картинки планет, а не PLANET_IMAGE_SMALL = "planeten/small/s_[PLANET_IMAGE].png"
-
-
-TODO РЕЛИЗ 40
-
-[*] Добавить настройки в config
-    - Реклама не показывается игрокам, которые играют меньше недели
-    - Реклама не показывается игрокам, которые взяли Премиум-аккаунт
-
-[*] Сделать supernova.sql
+2015-12-06 16:05:00 40c0.0 Project "SuperNova.WS" Release Candidate 40RC0
+[!] Project "SuperNova.WS" Release Candidate 40RC0 "RD auth planet universe que sn_timer"
+    Обновлён файл docs/changelog.txt
 
 
 2015-12-06 15:26:44 40b1.2
