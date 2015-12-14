@@ -3,6 +3,14 @@
 class classSupernova {
 
   /**
+   * @var array[] $design
+   */
+  public $design = array(
+    'bbcodes' => array(),
+    'smiles' => array(),
+  );
+
+  /**
    * Основная БД для доступа к данным
    *
    * @var db_mysql $db
@@ -1283,10 +1291,16 @@ class classSupernova {
   }
 
   public static function init_global_objects() {
+    /**
+     * @var classSupernova $supernova
+     */
     global $supernova, $sn_cache, $config;
 
     self::$user_options = new userOptions(0);
 
+    /**
+     * @var classSupernova $supernova
+     */
     $supernova = new classSupernova();
 
     // Initializing global 'cacher' object

@@ -271,7 +271,8 @@ function dump($value, $varname = null, $level = 0, $dumper = '') {
     return strtr(htmlspecialchars($value), $trans);
   }
   if($level == 0) {
-    $dumper = '<pre>' . mt_rand(10, 99) . '|' . $varname;
+//    $dumper = '<pre>' . mt_rand(10, 99) . '|' . $varname;
+    $dumper = mt_rand(10, 99) . '|' . $varname;
   }
 
   $type = gettype($value);
@@ -299,19 +300,39 @@ function dump($value, $varname = null, $level = 0, $dumper = '') {
     $value = '';
   }
   $dumper .= " <b>$value</b>";
-  if($level == 0) {
-    $dumper .= '</pre>';
-  }
+//  if($level == 0) {
+//    $dumper .= '</pre>';
+//  }
 
   return $dumper;
 }
 
 function pdump($value, $varname = null) {
-  print('<div style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1px 0; font-weight: 800; font-size: 14px;">' . dump($value, $varname) . '</div>');
+  $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+//  print_rr($backtrace);
+//  $backtrace = $backtrace[1];
+
+  $caller = (!empty($backtrace[1]['class']) ? $backtrace[1]['class'] : '') .
+    (!empty($backtrace[1]['type']) ? $backtrace[1]['type'] : '') .
+    $backtrace[1]['function'] .
+    (!empty($backtrace[0]['file'])
+      ? (
+        ' (' . substr($backtrace[0]['file'], SN_ROOT_PHYSICAL_STR_LEN) .
+        (!empty($backtrace[0]['line']) ? ':' . $backtrace[0]['line'] : '') .
+        ')'
+      )
+      : ''
+    );
+
+  print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">' .
+    dump($value, $varname) .
+    "\r\n" . $caller .
+    '</pre>'
+  );
 }
 
 function debug($value, $varname = null) {
-  return pdump($value, $varname);
+  pdump($value, $varname);
 }
 
 function pr($prePrint = false) {

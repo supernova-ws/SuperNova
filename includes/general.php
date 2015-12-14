@@ -1206,15 +1206,17 @@ function ally_get_ranks(&$ally)
 
 function sys_player_new_adjust($user_id, $planet_id){return sn_function_call('sys_player_new_adjust', array($user_id, $planet_id, &$result));}
 function sn_sys_player_new_adjust($user_id, $planet_id, &$result) {
+  return $result;
 }
 
 function array_merge_recursive_numeric($array1, $array2) {
   foreach($array2 as $key => $value) {
-    if(!isset($array1[$key]) || !is_array($array1[$key])) {
-      $array1[$key] = $value;
-    } else {
-      $array1[$key] = array_merge_recursive_numeric($array1[$key], $value);
-    }
+//    if(!isset($array1[$key]) || !is_array($array1[$key])) {
+//      $array1[$key] = $value;
+//    } else {
+//      $array1[$key] = array_merge_recursive_numeric($array1[$key], $value);
+//    }
+    $array1[$key] = !isset($array1[$key]) || !is_array($array1[$key]) ? $value : array_merge_recursive_numeric($array1[$key], $value);
   }
 
   return $array1;

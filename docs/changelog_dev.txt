@@ -16,8 +16,28 @@ todo.actual.txt
 ===============
 
 
+[*] Закладки
+    Отдельные иконки на "Заметки", "Закладки" и "Полётные задания"
+        - Так же отдельные вкладки "Все" + см. выше
+
+[*] Модули
+        - Поле autoinit - для автоматической инициализации модуля
+            - Для упрощения работы суб-модулей - которые будут иницилизироваться самими модулями
+                - Например - Highspot и HighspotAction инициализируются в Festival, который грузится в core_festival
+
+
+$supernova->design -> classSupernova::$design;
+
+payment_currency_exchange_mm_ -> get_mm_cost();
+
 Changelog
 =========
+
+2015-12-14 04:20:27 40c0.2
+[@] Отладка
+    Добавлен подсчёт времени, затраченный движком на query и fetch_assoc
+    Добавлен вывод точки вызова в pdump - для лучшей отладки и поиска, кто же это срёт в вывод
+
 
 2015-12-06 16:05:00 40c0.0 Project "SuperNova.WS" Release Candidate 40RC0
 [!] Project "SuperNova.WS" Release Candidate 40RC0 "RD auth planet universe que sn_timer"

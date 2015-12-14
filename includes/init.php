@@ -25,6 +25,7 @@ register_shutdown_function(function() {
 
   print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
     (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .
+    (class_exists('classSupernova') && is_object(classSupernova::$db) ? ', DB time: ' . classSupernova::$db->time_mysql_total . 'ms' : '') .
     '</div>');
   if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
     echo '<a href="badqrys.txt" target="_blank" style="color:red">', 'HACK ALERT!', '</a>';
@@ -59,6 +60,7 @@ if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
 $sn_root_physical = str_replace('\\', '/', __FILE__);
 $sn_root_physical = str_replace('includes/init.php', '', $sn_root_physical);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
+define('SN_ROOT_PHYSICAL_STR_LEN', mb_strlen($sn_root_physical));
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
 $sn_root_relative = str_replace('\\', '/', getcwd());
@@ -129,6 +131,7 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 /**
  * @var classConfig $config
+ * @var classSupernova $supernova
  */
 global $supernova, $sn_cache, $config, $auth;
 

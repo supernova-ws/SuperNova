@@ -50,6 +50,13 @@ class db_mysql {
    */
   public $driver = null;
 
+  /**
+   * Общее время запросов
+   *
+   * @var float $time_mysql_total
+   */
+  public $time_mysql_total = 0.0;
+
   public function __construct() {
 //    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
 //
@@ -279,10 +286,18 @@ class db_mysql {
 
 
   function db_sql_query($query_string) {
-    return $this->driver->mysql_query($query_string);
+    $microtime = microtime(true);
+    $result = $this->driver->mysql_query($query_string);
+    $this->time_mysql_total += microtime(true) - $microtime;
+    return $result;
+//    return $this->driver->mysql_query($query_string);
   }
   function db_fetch(&$query) {
-    return $this->driver->mysql_fetch_assoc($query);
+    $microtime = microtime(true);
+    $result = $this->driver->mysql_fetch_assoc($query);
+    $this->time_mysql_total += microtime(true) - $microtime;
+    return $result;
+//    return $this->driver->mysql_fetch_assoc($query);
   }
   function db_fetch_row(&$query) {
     return $this->driver->mysql_fetch_row($query);
