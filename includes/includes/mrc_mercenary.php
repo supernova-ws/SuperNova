@@ -189,6 +189,7 @@ function mrc_mercenary_render($user) {
       $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
       $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
       $mercenary_unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+      $mercenary_time_start = strtotime($mercenary_unit['unit_time_start']);
       $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
       $template->assign_block_vars('officer', array(
         'ID'          => $mercenary_id,
@@ -203,6 +204,9 @@ function mrc_mercenary_render($user) {
         'BONUS'       => $mercenary_bonus,
         'BONUS_TYPE'  => $mercenary['bonus_type'],
         'HIRE_END'    => $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW ? date(FMT_DATE_TIME, $mercenary_time_finish) : '',
+        'HIRE_LEFT_PERCENT'    => $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW
+          ? round(($mercenary_time_finish - SN_TIME_NOW)/($mercenary_time_finish - $mercenary_time_start) * 100, 1)
+          : 0,
         'CAN_BUY'     => mrc_officer_accessible($user, $mercenary_id),
       ));
 

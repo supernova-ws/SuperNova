@@ -1321,7 +1321,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 
   height: 1.45rem;
 
-  font-size: 1.0em;
+  font-size: 1em;
 
   text-align: center;
   white-space: nowrap;
@@ -1342,7 +1342,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   width: 100%;
   height: 2.9rem;
 
-  font-size: 1.0em;
+  font-size: 1em;
   text-align: center;
   vertical-align: middle;
 }
@@ -1371,7 +1371,7 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
   height: 1.2em;
   width: 70%;
 
-  font-size: 1.0em;
+  font-size: 1em;
 
   text-align: right;
   white-space: nowrap;

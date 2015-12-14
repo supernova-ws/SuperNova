@@ -50,8 +50,43 @@ function mrc_change(mercenary_id)
 
     <tr>
       <th width=120>
-        {officer.NAME}<br>
-        <img src="{I_[officer.ID]}" align="top" width="120" height="120" /><br>
+        <div style="width: 11em; height: 11em; position: relative;">
+          <img src="{I_[officer.ID]}" class="posLT w100" />
+          <span class="posLT w100 a50">{officer.NAME}</span>
+          <!-- !IF officer.LEVEL || officer.LEVEL_BONUS -->
+
+          <div class="ok w100 posLB a50">&nbsp;</div>
+
+          <!-- IF officer.HIRE_END -->
+            <!-- IF officer.HIRE_LEFT_PERCENT >= 50 -->
+            <!-- DEFINE $OFFICER_CLASS_BG = 'positive_bg' -->
+            <!-- ELSEIF officer.HIRE_LEFT_PERCENT >= 25 -->
+            <!-- DEFINE $OFFICER_CLASS_BG = 'neutral_bg' -->
+            <!-- ELSEIF officer.HIRE_LEFT_PERCENT >= 10 -->
+            <!-- DEFINE $OFFICER_CLASS_BG = 'warning_bg' -->
+            <!-- ELSE -->
+            <!-- DEFINE $OFFICER_CLASS_BG = 'negative_bg' -->
+            <!-- ENDIF -->
+            <div class="ok w100 posLB {$OFFICER_CLASS_BG}" style="width: {officer.HIRE_LEFT_PERCENT}%">&nbsp;</div>
+          <!-- ENDIF -->
+
+          <div class="posLB w100">
+            {L_sys_level}
+            {officer.LEVEL}<!-- IF officer.LEVEL_BONUS --><span class="bonus">+{officer.LEVEL_BONUS}</span><!-- ENDIF -->/{officer.LEVEL_MAX}
+
+            <!--&lt;!&ndash; IF officer.HIRE_END &ndash;&gt;-->
+            <!--{L_mrc_up_to} {officer.HIRE_END}-->
+            <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+
+          </div>
+
+          <!-- IF officer.LEVEL >= officer.LEVEL_MAX -->
+          <div class="ok w100 a75 posLB" style="bottom: 1em;">{L_sys_maximum_level}</div>
+          <!-- ENDIF -->
+
+
+          <!-- !ENDIF -->
+        </div>
       </th>
 
       <th align=justify>
@@ -64,11 +99,12 @@ function mrc_change(mercenary_id)
 
             <!-- IF officer.LEVEL -->
               <!-- IF officer.LEVEL >= officer.LEVEL_MAX -->
-              <div class="neutral">{L_sys_maximum_level}
+                <div class="neutral">{L_sys_maximum_level}
               <!-- ELSE -->
-              <div>{L_sys_level}
+                <div>{L_sys_level}
               <!-- ENDIF -->
-                {officer.LEVEL}<!-- IF officer.LEVEL_BONUS --><span class="bonus">+{officer.LEVEL_BONUS}</span><!-- ENDIF -->/{officer.LEVEL_MAX}
+
+              {officer.LEVEL}<!-- IF officer.LEVEL_BONUS --><span class="bonus">+{officer.LEVEL_BONUS}</span><!-- ENDIF -->/{officer.LEVEL_MAX}
               <!-- IF officer.HIRE_END -->
                 {L_mrc_up_to} {officer.HIRE_END}
                 <input type="submit" value="{L_mrc_dismiss}" onclick="return confirm('{LA_mrc_dismiss_confirm}');"><br />
