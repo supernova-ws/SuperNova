@@ -529,15 +529,15 @@ class classConfig extends classPersistent {
     'payment_currency_default'      => 'USD',
     'payment_currency_exchange_dm_' => 20000,
     'payment_currency_exchange_mm_' => 20000,
-    'payment_currency_exchange_eur' => 0.80,
-    'payment_currency_exchange_rub' => 32,
-    'payment_currency_exchange_uah' => 13.333333333333,
+    'payment_currency_exchange_eur' => 0.90,
+    'payment_currency_exchange_rub' => 60,
+    'payment_currency_exchange_uah' => 30,
     'payment_currency_exchange_usd' => 1,
-    'payment_currency_exchange_wmb' => 11764.70588235,
-    'payment_currency_exchange_wme' => 0.7692307692308,
-    'payment_currency_exchange_wmr' => 33.333333333333,
-    'payment_currency_exchange_wmu' => 14.28571428571,
-    'payment_currency_exchange_wmz' => 1.052631578947,
+    'payment_currency_exchange_wmb' => 18000,
+    'payment_currency_exchange_wme' => 0.9,
+    'payment_currency_exchange_wmr' => 60,
+    'payment_currency_exchange_wmu' => 30,
+    'payment_currency_exchange_wmz' => 1,
 
     'payment_lot_price'             => 1,     // Lot price in default currency
     'payment_lot_size'              => 2500,  // Lot size. Also service as minimum amount of DM that could be bought with one transaction

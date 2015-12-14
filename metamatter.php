@@ -200,8 +200,7 @@ if($payment_type_selected && $payment_method_selected) {
 }
 
 foreach($lang['pay_currency_list'] as $key => $value) {
-  $var_name = 'payment_currency_exchange_' . strtolower($key);
-  $course = $config->$var_name;
+  $course = get_exchange_rate($key);
 //  if(!$course || $key == $config->payment_currency_default) {
   if(!$course) {
     continue;
@@ -212,7 +211,7 @@ foreach($lang['pay_currency_list'] as $key => $value) {
     'COURSE_DIRECT' => pretty_number($course, 4),
     'COURSE_REVERSE' => pretty_number(1 / $course, 4),
     'MM_PER_CURRENCY' => pretty_number(sn_module_payment::currency_convert(1, $key, 'MM_')),
-    'LOT_PRICE' => sn_module_payment::currency_convert($config->payment_currency_exchange_mm_, 'MM_', $key),
+    'LOT_PRICE' => sn_module_payment::currency_convert(get_mm_cost(), 'MM_', $key),
     'DEFAULT' => $key == $config->payment_currency_default,
     // 'UNIT_PER_LOT' => sn_module_payment::currency_convert(2500, 'MM_', $key),
   ));
@@ -300,8 +299,6 @@ $template->assign_vars(array(
   'PAYMENT_MODULE_DESCRIPTION' => $lang["module_{$payment_module}_description"],
 
   'PLAYER_CURRENCY' => $player_currency,
-  // 'PLAYER_CURRENCY_LOT_PRICE' => sn_module_payment::currency_convert($config->payment_currency_exchange_mm_, 'MM_', $player_currency),
-  //'PLAYER_CURRENCY_EXCHANGE_DEFAULT' => sn_module_payment::currency_convert(1, $config->payment_currency_default, $player_currency),
   'PLAYER_CURRENCY_PRICE_PER_MM' => sn_module_payment::currency_convert(1, $player_currency, 'MM_', 10),
 
   'UNIT_AMOUNT' => (float)$request['metamatter'],
@@ -310,7 +307,7 @@ $template->assign_vars(array(
   'UNIT_AMOUNT_TEXT_DISCOUNTED' => $income_metamatter_text,
   'UNIT_AMOUNT_TEXT_COST_BASE' => pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
 
-  'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number($config->payment_currency_exchange_mm_, true, true),
+  'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number(get_mm_cost(), true, true),
   'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['pay_currency_list'][$config->payment_currency_default],
 
   'METAMATTER' => mrc_get_level($user, '', RES_METAMATTER),

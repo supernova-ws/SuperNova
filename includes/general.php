@@ -90,6 +90,39 @@ function sn_game_resource_multiplier($plain = false, &$result) {
 }
 
 /**
+ * Получение стоимости ММ в валюте сервера
+ *
+ * @param bool|false $plain
+ *
+ * @return mixed
+ */
+function get_mm_cost($plain = false){return sn_function_call('get_mm_cost', array($plain, &$result));}
+function sn_get_mm_cost($plain = false, &$result) {
+  global $config;
+
+  return $result = $config->payment_currency_exchange_mm_ ? $config->payment_currency_exchange_mm_ : 20000;
+}
+
+/**
+ * Получение курса обмены валюты в серверную валюту
+ *
+ * @param $currency_symbol
+ *
+ * @return float
+ */
+function get_exchange_rate($currency_symbol) {
+  global $config;
+
+  $currency_symbol = strtolower($currency_symbol);
+  $config_field = 'payment_currency_exchange_' . $currency_symbol;
+
+  // Заворачиваем получение стоимости ММ через перекрываемую процедуру
+  $exchange_rate = floatval($currency_symbol == 'mm_' ? get_mm_cost() : $config->$config_field);
+
+  return $exchange_rate;
+}
+
+/**
  pretty_number implementation for SuperNova
 
  $n - number to format

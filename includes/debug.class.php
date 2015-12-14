@@ -312,21 +312,25 @@ function pdump($value, $varname = null) {
 //  print_rr($backtrace);
 //  $backtrace = $backtrace[1];
 
-  $caller = (!empty($backtrace[1]['class']) ? $backtrace[1]['class'] : '') .
-    (!empty($backtrace[1]['type']) ? $backtrace[1]['type'] : '') .
-    $backtrace[1]['function'] .
-    (!empty($backtrace[0]['file'])
-      ? (
-        ' (' . substr($backtrace[0]['file'], SN_ROOT_PHYSICAL_STR_LEN) .
-        (!empty($backtrace[0]['line']) ? ':' . $backtrace[0]['line'] : '') .
-        ')'
-      )
-      : ''
-    );
+  $caller = '';
+  if(defined('SN_DEBUG_PDUMP_CALLER') && SN_DEBUG_PDUMP_CALLER) {
+    $caller = (!empty($backtrace[1]['class']) ? $backtrace[1]['class'] : '') .
+      (!empty($backtrace[1]['type']) ? $backtrace[1]['type'] : '') .
+      $backtrace[1]['function'] .
+      (!empty($backtrace[0]['file'])
+        ? (
+          ' (' . substr($backtrace[0]['file'], SN_ROOT_PHYSICAL_STR_LEN) .
+          (!empty($backtrace[0]['line']) ? ':' . $backtrace[0]['line'] : '') .
+          ')'
+        )
+        : ''
+      );
+    $caller = "\r\n" . $caller;
+  }
 
   print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">' .
     dump($value, $varname) .
-    "\r\n" . $caller .
+    $caller .
     '</pre>'
   );
 }

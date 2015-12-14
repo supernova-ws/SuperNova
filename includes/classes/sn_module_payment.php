@@ -675,11 +675,20 @@ abstract class sn_module_payment extends sn_module {
    * @return float|int
    */
   public static function currency_convert($value, $currency_from = '', $currency_to = '', $round = 2) {
-    global $config;
+//    global $config;
 
-    if(strtolower($currency_from) != strtolower($currency_to)) {
-      $exchange_from = ($exchange_from = $config->__get('payment_currency_exchange_' . strtolower($currency_from))) ? $exchange_from : 0;
-      $exchange_to = ($exchange_to = $config->__get('payment_currency_exchange_' . strtolower($currency_to))) ? $exchange_to : 0;
+    $currency_from = strtolower($currency_from);
+    $currency_to = strtolower($currency_to);
+
+    if($currency_from != $currency_to) {
+//      $config_currency_from_name = 'payment_currency_exchange_' . $currency_from;
+//      $config_currency_to_name = 'payment_currency_exchange_' . $currency_to;
+
+//      $exchange_from = floatval($currency_from == 'mm_' ? get_mm_cost() : $config->$config_currency_from_name);
+//      $exchange_to = floatval($currency_to == 'mm_' ? get_mm_cost() : $config->$config_currency_to_name);
+
+      $exchange_from = get_exchange_rate($currency_from);
+      $exchange_to = get_exchange_rate($currency_to);
 
       $value = $exchange_from ? $value / $exchange_from * $exchange_to * pow(10, $round) : 0;
       $value = ceil($value) / pow(10, $round);
@@ -703,20 +712,20 @@ abstract class sn_module_payment extends sn_module {
     $dark_matter_new = $dark_matter;
     if(!empty(self::$bonus_table) && $dark_matter >= self::$bonus_table[0]) {
       if($direct) {
-        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer) {
+        foreach(self::$bonus_table as $dm_for_bonus => $multiplier) {
           if($dm_for_bonus <= $dark_matter) {
-            $dark_matter_new = $dark_matter * (1 + $multiplyer);
-            $bonus = $multiplyer;
+            $dark_matter_new = $dark_matter * (1 + $multiplier);
+            $bonus = $multiplier;
           } else {
             break;
           }
         }
       } else {
-        foreach(self::$bonus_table as $dm_for_bonus => $multiplyer) {
-          $temp = $dm_for_bonus * (1 + $multiplyer);
+        foreach(self::$bonus_table as $dm_for_bonus => $multiplier) {
+          $temp = $dm_for_bonus * (1 + $multiplier);
           if($dark_matter >= $temp) {
-            $dark_matter_new = round($dark_matter / (1 + $multiplyer));
-            $bonus = $multiplyer;
+            $dark_matter_new = round($dark_matter / (1 + $multiplier));
+            $bonus = $multiplier;
           } else {
             break;
           }
@@ -766,7 +775,7 @@ abstract class sn_module_payment extends sn_module {
 
       'payment_comment' => $this->description_generated[PAYMENT_DESCRIPTION_MAX],
 
-      'payment_external_lots' => $this->payment_dark_matter_paid / $config->payment_currency_exchange_mm_,
+      'payment_external_lots' => $this->payment_dark_matter_paid / get_mm_cost(),
     );
 
     $replace = false;
