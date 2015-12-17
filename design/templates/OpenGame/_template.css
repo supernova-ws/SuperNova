@@ -149,6 +149,13 @@ body .ui-dialog {
   padding: 0.3em 1em 0.5em 0.4em;  /* Original */
 }
 
+.ui-dialog .ui-dialog-titlebar {
+  margin-bottom: 0.2em;
+}
+.ui-dialog .ui-dialog-buttonpane {
+  margin-top: 0.2em;
+}
+
 .ui-button,
 .ui-button .ui-button-text
 {
@@ -2458,6 +2465,21 @@ body:not(.no_border_image) [table_title]:before {
   margin-bottom: 1em;
 }
 
+/* Planet manage */
+.planet-manage-governor-hire-container {
+  width: 30%;
+  display: inline-block;
+  padding: 1%;
+  /*border: 1px solid;*/
+}
+
+.planet-manage-governor-hire-image-container {
+  width: 100%;
+  display: inline-block;
+  position: relative;
+  /*border: 1px solid green;*/
+}
+
 /* TEMPLATE BOILERPLATE ********************************************************************************************* */
 .hint {
   text-align: justify;
@@ -3063,6 +3085,10 @@ td[go]:hover { /* Skin specific */
 
 /* Technology/TechTree page  ===================================================================================================== */
 #tab_tech_tree .tech_container {
+  border-color: #415680;
+}
+
+.planet-manage-governor-hire-container {
   border-color: #415680;
 }
 

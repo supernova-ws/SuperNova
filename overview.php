@@ -50,7 +50,7 @@ switch($mode = sys_get_param_str('mode')) {
       $planetrow['name'] = $new_name;
 //      $new_name = db_escape($new_name);
       db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
-    } elseif(sys_get_param_str('capital')) {
+    } elseif(sys_get_param_str('action') == 'make_capital') {
       try {
         sn_db_transaction_start();
         $user = db_user_by_id($user['id'], true, '*');
@@ -91,7 +91,7 @@ switch($mode = sys_get_param_str('mode')) {
           'MESSAGE' => $e->getMessage(),
         );
       }
-    } elseif(sys_get_param_str('teleport')) {
+    } elseif(sys_get_param_str('action') == 'planet_teleport') {
       try {
         if(!uni_coordinates_valid($new_coordinates = array(
           'galaxy' => sys_get_param_int('new_galaxy'),
@@ -141,7 +141,7 @@ switch($mode = sys_get_param_str('mode')) {
           'MESSAGE' => $e->getMessage(),
         );
       }
-    } elseif(sys_get_param_str('abandon')) {
+    } elseif(sys_get_param_str('action') == 'planet_abandon') {
       // if(sec_password_check($user['id'], sys_get_param('abandon_confirm'))) {
       if(classSupernova::$auth->password_check(sys_get_param('abandon_confirm'))) {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id) {

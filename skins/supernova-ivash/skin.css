@@ -338,6 +338,10 @@ div.market_services {
   border-color: #483634;
 }
 
+.planet-manage-governor-hire-container {
+  border-color: #483634;
+}
+
 .button_pseudo:not(img) {
   background-color: #483634;
 }
@@ -359,4 +363,10 @@ input[type=checkbox]:hover:not(:checked) {
 }
 .ov_struc_timer {
   background-color: #242424;
+}
+
+/* Setting dialog content background - which is 'transparent' in jQuery-UI */
+.ui-dialog .ui-dialog-content {
+  background-image: none;
+  background-color: #705955;
 }

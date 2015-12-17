@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a19.21
+* @version 40c1.0
 *
 */
 
@@ -1149,5 +1149,8 @@ $a_lang_array = (array(
   'sys_system_speed_for_action' => 'Speed while action/event',
 
   'menu_info_best_battles' => 'Best battles',
+
+  'sys_cost' => 'Cost',
+  'sys_price' => 'Price',
 
 ));

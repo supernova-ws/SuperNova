@@ -1,4 +1,4 @@
-if(typeof(window.LOADED_GLOBAL) === 'undefined') {
+if (typeof(window.LOADED_GLOBAL) === 'undefined') {
   var LOADED_GLOBAL = true;
 
   // Fix to jQuery-UI improper tab handling
@@ -38,6 +38,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   };
 
   var sn_inframe;
+
   function getFrameName(frame) {
     for (var i = 0; i < parent.frames.length; i++) {
       if (parent.frames[i] === frame) {
@@ -55,16 +56,22 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   //alert(sn_inframe);
   //alert(top === self);
 
-  var sn_delay = function(func, wait) {
+  var sn_delay = function (func, wait) {
     var args = Array.prototype.slice.call(arguments, 2);
-    return setTimeout(function(){ return func.apply(null, args); }, wait);
+    return setTimeout(function () {
+      return func.apply(null, args);
+    }, wait);
   };
 
   String.prototype.format = function () {
     var args = arguments;
     return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {
-      if (m == "{{") { return "{"; }
-      if (m == "}}") { return "}"; }
+      if (m == "{{") {
+        return "{";
+      }
+      if (m == "}}") {
+        return "}";
+      }
       return args[n];
     });
   };
@@ -95,7 +102,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       sn_timer();
     }
 
-    $(document).on('click', '#font_minus, #font_normal, #font_plus', function(){
+    $(document).on('click', '#font_minus, #font_normal, #font_plus', function () {
       var temp = FONT_SIZE;
       $(this).attr('id') == 'font_plus' ? FONT_SIZE += FONT_SIZE_PERCENT_STEP :
         ($(this).attr('id') == 'font_minus' ? FONT_SIZE -= FONT_SIZE_PERCENT_STEP : FONT_SIZE = FONT_SIZE_PERCENT_DEFAULT);
@@ -105,7 +112,6 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       new_size = (parseFloat($('body').css('font-size')) * FONT_SIZE / temp);
       //console.log('old ' + $('body').css('font-size'));
       //$('html').css('font-size', new_size + 'px');
-
 
 
       //temp != FONT_SIZE ? $('*').css('font-size', new_size + 'px') : false;
@@ -132,33 +138,38 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
       //console.log('new ' + $('html').css('font-size'));
 
 
-      jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function(data) {});
+      jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function (data) {
+      });
     });
 
-    !jQuery.fx.off ? jQuery('.blink').each(function(){
+    !jQuery.fx.off ? jQuery('.blink').each(function () {
       sn_blink(this);
     }) : false;
   }
+
   //);
 
   function sn_blink(that) {
     that = $(that);
-    that.animate({opacity: that.css('opacity') == 0 ? 1 : 0}, that.attr('duration') ? parseInt(that.attr('duration')) : 1000, function(){sn_blink(this)});
+    that.animate({opacity: that.css('opacity') == 0 ? 1 : 0}, that.attr('duration') ? parseInt(that.attr('duration')) : 1000, function () {
+      sn_blink(this)
+    });
   }
 
 
-  $(document).on('click', '.password_show', function(){
+  $(document).on('click', '.password_show', function () {
     input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
-    if(input.attr('type') == 'password') {
+    if (input.attr('type') == 'password') {
       type = 'text';
       button_value = L_sys_login_password_hide;
     }
-    else{
+    else {
       type = 'password';
       button_value = L_sys_login_password_show;
     }
 
-    var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);;
+    var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
+    ;
     rep.attr("id", input.attr("id"));
 
     input.remove();
@@ -179,7 +190,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     $(this).remove();
   });
 
-  jQuery(document).on('click', '.survey_block [survey_id]', function() {
+  jQuery(document).on('click', '.survey_block [survey_id]', function () {
     var survey_id = $(this).attr('survey_id');
     $('.survey_block [survey_id=' + survey_id + ']').removeClass('button_pseudo_pressed');
     $(this).addClass('button_pseudo_pressed');
@@ -191,7 +202,7 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
   });
 
   jQuery(document).on('change', '#sort_elements,#sort_elements_inverse', function () {
-    jQuery.post($('#page_file_name').val() + '?mode=' + $('#mode').val() + '&sort_elements=' + $('#sort_elements').val() + '&sort_elements_inverse=' + ($('#sort_elements_inverse').is(':checked') ? '1' : '0'), function(){
+    jQuery.post($('#page_file_name').val() + '?mode=' + $('#mode').val() + '&sort_elements=' + $('#sort_elements').val() + '&sort_elements_inverse=' + ($('#sort_elements_inverse').is(':checked') ? '1' : '0'), function () {
       sn_reload();
     });
   });
@@ -357,13 +368,14 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     $(this).removeClass('button_pseudo_pressed');
   });
 
+
   // Сбор ресурсов
   jQuery(document).on('click', ".unit_preview .icon_gather", function () {
     that = $(this);
     document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
-    + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
-    + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
-    + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
+      + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
+      + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
+      + (parseFloat(that.attr('deuterium')) ? '&deuterium=' + parseFloat(that.attr('deuterium')) : '')
     ;
   });
 
@@ -542,12 +554,12 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
         sn_ainput_mouselerate();
       })
       .bind('mouseup', function (event, ui) {
-        if (accelerated) {
-          clearTimeout(accelerated['timeout']);
-          accelerated = undefined;
+          if (accelerated) {
+            clearTimeout(accelerated['timeout']);
+            accelerated = undefined;
+          }
         }
-      }
-    ).button();
+      ).button();
 
     //jQuery('#' + field_name).button().addClass('ui-textfield');
     //jQuery('#' + field_name + 'zero').button();
@@ -613,17 +625,17 @@ if(typeof(window.LOADED_GLOBAL) === 'undefined') {
     return false;
   }
 
-/*
-  var mouseX, mouseY;
-  var clientX, clientY;
-  jQuery(document).mousemove(function (e) {
-    mouseX = e.pageX;
-    mouseY = e.pageY;
+  /*
+   var mouseX, mouseY;
+   var clientX, clientY;
+   jQuery(document).mousemove(function (e) {
+   mouseX = e.pageX;
+   mouseY = e.pageY;
 
-    clientX = e.clientX;
-    clientY = e.clientY;
-  });
-*/
+   clientX = e.clientX;
+   clientY = e.clientY;
+   });
+   */
 
   function sn_show_hide(element, element_name) {
     var element_to_hide = jQuery("#" + element_name);
@@ -758,13 +770,13 @@ function snConfirm(params) {
   // , message, title
   var that = $(params.that);
   var d = $.Deferred();
-  $('<div><div class="sn-dialog-confirm">' + (params.message ? params.message : language.sys_confirm_action) + '</div></div>').dialog({
+  $('<div><div class="sn-dialog-confirm">' + (params.message ? params.message : (that.attr('message') ? that.attr('message') : language.sys_confirm_action)) + '</div></div>').dialog({
     modal: true,
     autoOpen: true,
     resizable: false,
     width: params.width ? params.width : '40em',
-    title: params.title ? params.title : language.sys_confirm_action_title,
-    open: function() {
+    title: params.title ? params.title : (that.attr('title') ? that.attr('title') : language.sys_confirm_action_title),
+    open: function () {
       var element = $(this).parent();
       //var selected_planet = $('#navbar_planet_select').find('option:selected');
       element.find('.ui-dialog-titlebar').css('display', 'block');
@@ -797,7 +809,7 @@ function snConfirm(params) {
       },
       cancel: {
         text: language.sys_cancel,
-        click: function() {
+        click: function () {
           $(this).dialog("close");
           d.resolve(false);
 
@@ -808,9 +820,14 @@ function snConfirm(params) {
   });
 
   d.promise().then(function (result) {
-    !result ? that.removeClass('button_pseudo_pressed') : false;;
-    if(result && that.attr('href')) {
+    !result ? that.removeClass('button_pseudo_pressed') : false;
+
+    if (result && that.attr('href')) {
       sn_redirect(that.attr('href'));
+    }
+
+    if (result && that.prop('tagName') == 'FORM') {
+      that.prop('submitted', true).submit();
     }
   });
 

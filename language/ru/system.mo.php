@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40a19.21#
+* @version #40c1.0#
 *
 */
 
@@ -1171,5 +1171,8 @@ $a_lang_array = (array(
   'sys_system_speed_for_action' => 'В рамках акции',
 
   'menu_info_best_battles' => 'Лучшие бои',
+
+  'sys_cost' => 'Стоимость',
+  'sys_price' => 'Цена',
 
 ));
