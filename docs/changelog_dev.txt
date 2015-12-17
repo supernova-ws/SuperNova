@@ -53,6 +53,20 @@ getElementById - убрать
 Changelog
 =========
 
+
+#ctv
+
+
+2015-12-18 01:35:35 41a0.0
+[%] Настройки
+    Исправлена ошибка появления подвкладки с настройками интерфейса при первом открытии страницы
+
+
+2015-12-18 00:32:57 40d0 Project "SuperNova.WS" Release 40
+[!] Project "SuperNova.WS" Release 40 "RD auth planet universe que sn_timer"
+    Release
+
+
 2015-12-17 23:51:12 40c1.3
 [!] Планета
     Прогресс застройки:
