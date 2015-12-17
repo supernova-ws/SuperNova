@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40c1.0
+* @version 40c1.3
 *
 */
 
@@ -634,8 +634,6 @@ $a_lang_array = (array(
   'sys_planets' => 'Planets',
   'sys_moons' => 'Moons',
 
-  'sys_no_governor' => 'Hire governor',
-
   'sys_quantity' => 'Quantity',
   'sys_quantity_maximum' => 'Maximum quantity',
   'sys_qty' => 'Qty',
@@ -1152,5 +1150,9 @@ $a_lang_array = (array(
 
   'sys_cost' => 'Cost',
   'sys_price' => 'Price',
+
+  'sys_governor_none' => 'Governor not hired',
+  'sys_governor_hire' => 'Hire Governor',
+  'sys_governor_upgrade_or_change' => 'Upgrade or change Governor',
 
 ));

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40c1.0#
+* @version #40c1.3#
 *
 */
 
@@ -641,8 +641,6 @@ $a_lang_array = (array(
   'sys_planets' => 'Планеты',
   'sys_moons' => 'Луны',
 
-  'sys_no_governor' => 'Нанять губернатора',
-
   'sys_quantity' => 'Количество',
   'sys_quantity_maximum' => 'Максимальное количество',
   'sys_qty' => 'К-во',
@@ -1174,5 +1172,9 @@ $a_lang_array = (array(
 
   'sys_cost' => 'Стоимость',
   'sys_price' => 'Цена',
+
+  'sys_governor_none' => 'Губернатор не нанят',
+  'sys_governor_hire' => 'Нанять Губернатора',
+  'sys_governor_upgrade_or_change' => 'Улучшить или сменить Губернатора',
 
 ));

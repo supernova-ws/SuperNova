@@ -78,6 +78,17 @@ textarea {
   border-color: blue;
 }
 
+
+.icon-info-cover {
+  display: inline-block;
+
+  width: 100%; /* 1.454545454545em; */
+  height: 100%; /* 1.454545454545em; */
+
+  background-image: url(../images/icon_help_32x32.png);
+  background-size: cover;
+}
+
 .icons {
   width: 16px; /* 1.454545454545em; */
   height: 16px; /* 1.454545454545em; */
@@ -205,6 +216,29 @@ textarea {
   height: 100%;
 }
 
+/* Absolute Positioning */
+
+/* Fill container - usually images */
+.posFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+  height: 100%;
+}
+/* Top of container, full width, centered */
+.posT {
+  position: absolute;
+  left: 0;
+  top: 0;
+
+  width: 100%;
+
+  text-align: center;
+  vertical-align: middle;
+}
+
 .posLT {
   position: absolute;
   left: 0;
@@ -215,6 +249,18 @@ textarea {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+/* Bottom of container, full width, centered */
+.posB {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+
+  width: 100%;
+
+  text-align: center;
+  vertical-align: middle;
 }
 
 .posLB {
@@ -228,3 +274,31 @@ textarea {
   right: 0;
   bottom: 0;
 }
+
+/* Containers ======================================================================================================= */
+/* Container Flex - Base Flex Container */
+/* One-line vertically centered, space distributed non-wrapping  */
+.contF,
+.contFJ
+{
+  display: flex;
+
+  justify-content: space-around;
+  align-content: space-around;
+
+  align-items: center;
+}
+
+/* Container Flex Justify */
+/* Replacement for float-left + float-right: Flex, non-wrapping, one-line vertically centered, item justified  */
+.contFJ {
+
+  justify-content: space-between;
+
+  /*align-content: space-around;*/
+  /*align-items: center;*/
+}
+
+/*.FW {*/
+  /*flex-wrap: wrap;*/
+/*}*/

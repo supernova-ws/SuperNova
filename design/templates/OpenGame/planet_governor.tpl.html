@@ -1,52 +1,48 @@
-<!-- IF PLANET_GOVERNOR_LEVEL > 0 && (PLANET_GOVERNOR_ID || $PLANET_GOVERNOR_ID) -->
-  <!-- IF ! $PLANET_GOVERNOR_ID -->
-    <!-- DEFINE $PLANET_GOVERNOR_ID = '{PLANET_GOVERNOR_ID}'-->
-  <!-- ENDIF -->
-  <div class="unit_preview" style="" id="unit{production.ID}" unit_id="{production.ID}">
+<!-- IF ! $PLANET_GOVERNOR_ID -->
+  <!-- DEFINE $PLANET_GOVERNOR_ID = '{PLANET_GOVERNOR_ID}'-->
+<!-- ELSE -->
+  <!-- DEFINE $PLANET_GOVERNOR_ID = ''-->
+<!-- ENDIF -->
+<!-- IF ! $PLANET_GOVERNOR_LEVEL -->
+  <!-- DEFINE $PLANET_GOVERNOR_LEVEL = '{PLANET_GOVERNOR_LEVEL}'-->
+<!-- ELSE -->
+  <!-- DEFINE $PLANET_GOVERNOR_LEVEL = ''-->
+<!-- ENDIF -->
+
+<!-- IF PLANET_GOVERNOR_LEVEL > 0 && $PLANET_GOVERNOR_ID -->
+  <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}">
     <div onclick="document.location='overview.php?mode=manage&cp={$PLANET_ID}'">
-      <span style="position: absolute; left: 0px; top: 0px; width: 100%; height: 100%">
-        <img style="border-style: none;" src="{I_[$PLANET_GOVERNOR_ID]}" height="100%" width="100%">
+      <span class="posFill">
+        <img src="{I_[$PLANET_GOVERNOR_ID]}" height="100%">
       </span>
 
-      <span style="position: absolute; bottom: 0px; left: 0px; width: 100%; height: 3ex; font-size: 100%;" class="icon_alpha">
+      <span class="posT icon_alpha">
         <!-- IF $PLANET_GOVERNOR_NAME -->{$PLANET_GOVERNOR_NAME}<!-- ELSE -->{PLANET_GOVERNOR_NAME}<!-- ENDIF -->
       </span>
 
-      <!-- IF PLANET_GOVERNOR_CAN_BUILD -->
-        <span style="position: absolute; top: 0px; right: 0px;" class="icon_alpha" onclick="document.location='?cmd=insert&building={production.ID}'">
-          <div class="icons icon-plus"></div>
-        </span>
-      <!-- ENDIF -->
-
-      <!-- IF PLANET_GOVERNOR_LEVEL && 0 -->
-        <span style="position: absolute; top: 0px; left: 0px;" class="icon_alpha" onclick="document.location='?cmd=destroy&building={production.ID}'">
-          <div class="icons icon-minus" title="{L_bld_destroy}: {L_sys_metal} {production.DESTROY_METAL}; {L_sys_crystal} {production.DESTROY_CRYSTAL}; {L_sys_deuterium} {production.DESTROY_DEUTERIUM}; {L_sys_time} {production.DESTROY_TIME}"></div>
-        </span>
-      <!-- ENDIF -->
-
-      <span style="position: absolute; top: 0; left: 20%; width: 60%; height: 1.1em; text-align: center; font-size: 1.2em;" class="icon_alpha">
-        <!-- IF PLANET_GOVERNOR_LEVEL -->{PLANET_GOVERNOR_LEVEL}<!-- IF PLANET_GOVERNOR_LEVEL_PLUS --><span class="zero">+{PLANET_GOVERNOR_LEVEL_PLUS}</span><!-- ENDIF --><!-- ENDIF --><!-- IF $PLANET_GOVERNOR_LEVEL -->{$PLANET_GOVERNOR_LEVEL}<!-- ENDIF --><!-- IF PLANET_GOVERNOR_LEVEL_MAX -->/{PLANET_GOVERNOR_LEVEL_MAX}<!-- ENDIF --><!-- IF $PLANET_GOVERNOR_LEVEL_MAX -->/{$PLANET_GOVERNOR_LEVEL_MAX}<!-- ENDIF -->
-      </span>
-
-      <!-- IF production.METAL_REST > 99999999999 || production.CRYSTAL_REST > 9999999999 || production.DEUTERIUM_REST_NUM > 9999999999 -->
-        <!-- DEFINE $FONT_SIZE = '80%' -->
-      <!-- ELSE -->
-        <!-- DEFINE $FONT_SIZE = '100%' -->
-      <!-- ENDIF -->
-
-      <span style="position: absolute; top: 45px; left: 0px; width: 100%; font-size: {$FONT_SIZE}; text-align: left;" class="icon_alpha">
-        <!-- IF production.METAL --><div><div style="left: 0px; position: absolute;">{L_sys_metal}</div><div style="right: 0px; position:absolute;">{production.METAL_REST}</div></div><br><!-- ENDIF -->
-      </span>
-
-      <span style="position: absolute; bottom: 2px; right: 18px; width: 84%; font-size: 100%; text-align: left;" class="icon_alpha">
-        <div class="fr">{production.TIME}</div>
+      <span class="posB icon_alpha">
+        <!-- IF $PLANET_GOVERNOR_LEVEL -->
+          {$PLANET_GOVERNOR_LEVEL}<!-- IF PLANET_GOVERNOR_LEVEL_PLUS --><span class="zero"><!-- IF PLANET_GOVERNOR_LEVEL_PLUS > 0 -->+<!-- ENDIF -->{PLANET_GOVERNOR_LEVEL_PLUS}</span><!-- ENDIF -->
+        <!-- ENDIF -->
+        <!-- IF PLANET_GOVERNOR_LEVEL_MAX --> / {PLANET_GOVERNOR_LEVEL_MAX}<!-- ENDIF -->
       </span>
     </div>
 
-    <span style="position: absolute; bottom: 0px; right: 0px;" class="icon_alpha" onclick="document.location='infos.php?gid={$PLANET_GOVERNOR_ID}'">
-      <div class="icons icon-info"></div>
+    <span class="unit-icon-info-container" onclick="document.location='infos.php?gid={$PLANET_GOVERNOR_ID}'">
+      <div class="icon-info-cover">&nbsp;</div>
     </span>
   </div>
 <!-- ELSE -->
-  <a href="overview.php?mode=manage&cp={$PLANET_ID}">{L_sys_no_governor}</a>
+  {L_sys_governor_none}
+<!-- ENDIF -->
+
+
+<!-- IF $IS_PLANET_OVERVIEW -->
+<a class="button_pseudo" href="overview.php?mode=manage&cp={$PLANET_ID}">
+  <!-- IF PLANET_GOVERNOR_LEVEL > 0 && $PLANET_GOVERNOR_ID -->
+  {L_sys_governor_upgrade_or_change}
+  <!-- ELSE -->
+  {L_sys_governor_hire}
+  <!-- ENDIF -->
+</a>
 <!-- ENDIF -->

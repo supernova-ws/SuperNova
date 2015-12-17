@@ -2480,6 +2480,53 @@ body:not(.no_border_image) [table_title]:before {
   /*border: 1px solid green;*/
 }
 
+.planet-manage-sectors-container {
+  font-size: 1.5em;
+
+  position: relative;
+
+  width: 100%;
+  height: 1.3em;
+
+  border: 1px solid rgb(153, 153, 255);
+}
+
+.planet-manage-sectors-text {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  text-align: center;
+  vertical-align: middle;
+
+  text-shadow:
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000,
+    1px 1px 0 #000;
+}
+
+.unit-icon-info-container {
+  position: absolute;
+  right: 0;
+  bottom: 1em;
+
+  width: 4em;
+  height: 4em;
+}
+
+.unit_preview_image_icon {
+  /*position: absolute;*/
+  /*right: 0;*/
+  /*bottom: 1em;*/
+
+  width: 1.45454545em;
+  height: 1.45454545em;
+}
+
 /* TEMPLATE BOILERPLATE ********************************************************************************************* */
 .hint {
   text-align: justify;

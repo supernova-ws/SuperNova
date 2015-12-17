@@ -7,7 +7,7 @@
 <table width=519 style="max-width: 33em">
   <tr>
     <th class="c_c" nowrap>
-      <div style="display: flex; align-items: center; justify-content: space-between;">
+      <div class="contFJ">
         <div>
           <a href="galaxy.php?mode=0&galaxy={PLANET_GALAXY}&system={PLANET_SYSTEM}" class="link">[{PLANET_GALAXY}:{PLANET_SYSTEM}:{PLANET_PLANET}]</a>
           {PLANET_TYPE_TEXT}
@@ -19,8 +19,9 @@
   </tr>
   <tr>
     <th>
-      <form action="overview.php?mode=manage" method="POST" style="display: flex; justify-content: space-around; align-content: space-around; align-items: center;">
+      <form action="overview.php?mode=manage" method="POST" class="contF">
         <input type="hidden" name="planet_id" value="{PLANET_ID}">
+
         <div style="min-width: 11em;">{L_ov_new_name}</div>
         <input type="text" name="new_name" size=25 maxlength=20 value="{PLANET_NAME}">
 
@@ -33,14 +34,12 @@
     <th>
       <form action="overview.php?mode=manage" method="POST">
         <input type="hidden" name="planet_id" value="{PLANET_ID}">
-        <div style="display: flex; justify-content: space-around; align-content: space-around; align-items: center;">
+        <div class="contF">
           <div>
-            {L_sys_planet_density_core}
-            <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div>
+            <img src="{I_icon_help_32}" class="link" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'" />
           </div>
-          <div style="display: flex; justify-content: space-around; align-content: space-around; flex-wrap: wrap; max-width: 22em; ">
-            <div>{L_ov_core_type_current}: "{PLANET_CORE_TEXT}"</div>
-            <div>
+          <div>
+            {L_ov_core_type_current}: "{PLANET_CORE_TEXT}"<br />
               <label for="density_type">{L_ov_core_change_to}</label>
               <select name="density_type" id="density_type">
                 <!-- BEGIN densities -->
@@ -54,7 +53,6 @@
                 </option>
                 <!-- END densities -->
               </select>
-            </div>
           </div>
           <button type="submit" id="transmute_button" name="transmute" value="transmute" disabled="disabled">
             {L_sys_change}<br />
@@ -66,25 +64,14 @@
   </tr>
   <!-- ENDIF -->
   <tr>
-    <td class="c_c" style="position: relative; padding: 0; height: 100%;">
-      <div style="position: relative; width: 100%; font-size: 1.5em; height: 1.2em; border: 1px solid rgb(153, 153, 255); ">
-        <!-- IF PLANET_FILL >= 100 -->
-        <!-- DEFINE $BAR_COLOR = '#C00000' -->
-        <!-- ELSEIF PLANET_FILL >= 80 -->
-        <!-- DEFINE $BAR_COLOR = '#C0C000' -->
-        <!-- ELSE -->
-        <!-- DEFINE $BAR_COLOR = '#00C000' -->
-        <!-- ENDIF -->
-        <div style="position: absolute; top: 0; left: 0; width: {PLANET_FILL_BAR}%; background-color: {$BAR_COLOR}; height:100%;">&nbsp;</div>
-        <div style="position: absolute; top: 0px; left: 0px; width: 100%; height: 100%; vertical-align: middle;">{L_buildings_on_planet} {planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
-        &nbsp;
-      </div>
+    <td class="c_c">
+      <!-- INCLUDE planet_sector_bar -->
       <!-- INCLUDE planet_sector_buy -->
     </td>
   </tr>
 
   <tr>
-    <th style="white-space: nowrap;" class="c_l" colspan=4>{L_sys_governor}</th>
+    <th class="c_l" colspan=4>{L_sys_governor}</th>
   </tr>
   <tr>
     <td class="c_c">
@@ -97,9 +84,16 @@
           <td>
             <!-- BEGIN governors -->
             <div class="planet-manage-governor-hire-container">
-              <div class="planet-manage-governor-hire-image-container">
+              <div class="planet-manage-governor-hire-image-container link" onclick="document.location='infos.php?gid={governors.ID}'">
                 <img src="{I_[governors.ID]}" align="top" class="w100" />
-                <span class="w100 posLB a75">{governors.NAME}</span>
+                <span class="posT a75">{governors.NAME}</span>
+                <span class="posB a75">
+                  {governors.LEVEL}<!-- IF governors.LEVEL_PLUS --><span class="zero"><!-- IF governors.LEVEL_PLUS > 0 -->+<!-- ENDIF -->{governors.LEVEL_PLUS}</span><!-- ENDIF -->
+                  <!-- IF governors.MAX --> / {governors.MAX}<!-- ENDIF -->
+                </span>
+                <span class="unit-icon-info-container">
+                  <div class="icon-info-cover">&nbsp;</div>
+                </span>
               </div>
               <br />
               <a href="infos.php?gid={governors.ID}"></a><br />
@@ -125,7 +119,7 @@
 
 
   <tr>
-    <th style="white-space: nowrap;" class="c_l" colspan=4>{L_ov_manage_special}</th>
+    <th class="c_l" colspan=4>{L_ov_manage_special}</th>
   </tr>
   <!-- IF PLANET_TYPE == 1 -->
   <!-- IF ! IS_CAPITAL -->
@@ -158,7 +152,8 @@
     <th nowrap colspan="3">
       <form action="overview.php?mode=manage&action=planet_teleport" method="POST" id="planet_teleport_form">
         <input type="hidden" name="planet_id" value="{PLANET_ID}">
-        <div style="display: flex; justify-content: space-around; align-content: space-around;">
+        <!--<div style="display: flex; justify-content: space-around; align-content: space-around;">-->
+        <div class="contF">
           <div>
             {L_ov_teleport_new_coordinates}<br/>
             <input type="text" name="new_galaxy" maxlength=3 value="{PLANET_GALAXY}" class="coordinate"> :
@@ -191,16 +186,13 @@
     <th colspan="3">
       <form action="overview.php?mode=manage&action=planet_abandon" method="POST" id="planet_abandon_form">
         <input type="hidden" name="planet_id" value="{PLANET_ID}">
-        <div style="display: flex; justify-content: space-around; align-content: space-around;">
+        <div class="contF">
           <div>
             {L_ov_password}<br />
             <input type="password" name="abandon_confirm" maxlength="32" value="" />
           </div>
 
-          <div style="display: inline-flex; align-content: space-around;">
-            <input type="submit" name="abandon" value="{L_colony_abandon}" />
-
-          </div>
+          <input type="submit" name="abandon" value="{L_colony_abandon}" class="h100"/>
         </div>
       </form>
     </th>

@@ -1,5 +1,5 @@
 <!-- DEFINE $OVERVIEW = true -->
-<script type="text/javascript" xmlns="http://www.w3.org/1999/html" src="js/sn_ajax_send_fleet.js?{C_var_db_update}"></script>
+<script type="text/javascript" src="js/sn_ajax_send_fleet.min.js?{C_var_db_update}"></script>
 <script type="text/javascript">
   var MT_SPY = {D_MT_SPY};
   var MT_COLONIZE = {D_MT_COLONIZE};
@@ -14,50 +14,7 @@
   });
 </script>
 
-<script type="text/javascript">
-  jQuery("#density_type").change(function(){
-    selected = jQuery("#density_type").find("option:selected");
-    $("#transmute_button").button({disabled: parseInt(selected.attr("rest")) <= 0 || selected.attr("current") == '1'});
-    $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
-  });
-
-  jQuery(document).on('click', "#planet_rename", function () {
-    $('#dialog-rename-planet').dialog('open');
-  });
-
-  $(function() {
-    $( "#dialog-rename-planet" ).dialog({
-      autoOpen: false,
-      resizable: false,
-      // height: 100,
-      // width: 330,
-      modal: true,
-      open: function() {
-        var element = $(this).parent();
-        element.find('.ui-dialog-titlebar').css('display', 'block');
-      },
-      buttons: [
-        {
-          text: language['ov_rename'],
-          click: function(){
-            var element = $(this).parent();
-            element.find('input[name=cp]').val($('#navbar_planet_select').find('option:selected').val());
-            element.find(':button:not(.ui-dialog-titlebar-close)').button('disable');
-            //element.find('form').submit();
-            jQuery('#dialog-rename-planet-form').submit();
-//            $(this).dialog("close");
-          }
-        },
-        {
-          text: language['sys_cancel'],
-          click: function(){
-            $(this).dialog("close");
-          }
-        }
-      ]
-    });
-  });
-</script>
+<script type="text/javascript" src="js/planet_manage.min.js?{C_var_db_update}"></script>
 
 <div id="dialog-rename-planet" title="{L_ov_planet_rename_dialog_title}" style="display: none; background-color: #344566;">
   <form action="overview.php" method="POST" id="dialog-rename-planet-form" style="margin: 1em; text-align: center;">
@@ -144,21 +101,12 @@
         <tr>
           <td class="c_c" width="11em" rowspan="5">
             <!-- DEFINE $PLANET_ID = '{PLANET_ID}' -->
+            <!-- DEFINE $IS_PLANET_OVERVIEW = 1 -->
             <!-- INCLUDE planet_governor -->
           </td>
 
-          <th colspan="4" style="padding: 0 2px;">
-            <div class="ov_planet_fill_bar">
-              <!-- IF PLANET_FILL >= 100 -->
-                <!-- DEFINE $BAR_COLOR = 'negative_bg' -->
-              <!-- ELSEIF PLANET_FILL >= 80 -->
-                <!-- DEFINE $BAR_COLOR = 'neutral_bg' -->
-              <!-- ELSE -->
-                <!-- DEFINE $BAR_COLOR = 'positive_bg' -->
-              <!-- ENDIF -->
-              <div class="left_top {$BAR_COLOR}" style="height:100%; width: {PLANET_FILL_BAR}%;">&nbsp;</div>
-              <div class="left_top fill_parent va_m">{L_buildings_on_planet} {planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
-            </div>
+          <th colspan="4">
+            <!-- INCLUDE planet_sector_bar -->
             <!-- INCLUDE planet_sector_buy -->
           </th>
         </tr>
@@ -166,7 +114,6 @@
         <tr>
           <th colspan="4" id="fleetstatusrow">{L_orb}: {L_sys_metal}: {metal_debris} / {L_sys_crystal}: {crystal_debris}
             <!-- IF PLANET_RECYCLERS -->
-              <!--<br><span id="ov_recycle" style="cursor: pointer" onclick="doit(MT_RECYCLE, {PLANET_PLANET}, {PLANET_TYPE});">[ {L_type_mission[8]} ]</span>-->
               <br><button id="ov_recycle" style="cursor: pointer" onclick="doit(MT_RECYCLE, {PLANET_PLANET}, {PLANET_TYPE});"<!-- IF ! PLANET_DEBRIS --> disabled="disabled"<!-- ENDIF -->><span>[ {L_type_mission[8]} ]</span></button>
               <table id="fleetstatustable" class="no_border_image" cellspacing="0" cellpadding="0"></table>
             <!-- ENDIF -->
@@ -186,8 +133,15 @@
         <tr>
           <th colspan="4" nowrap>
             <form action="overview.php" method="POST">
-              <div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div> {L_ov_core_type_current} "{PLANET_CORE_TEXT}"<br/>
-              <div style="display: inline-block;">
+              <input type="hidden" name="planet_id" value="{PLANET_ID}">
+
+              <div class="contF">
+              <div>
+                <img src="{I_icon_help_32}" class="link" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'" />
+              </div>
+              <!--<div class="icons icon-info link" style="display: inline-block; vertical-align: middle;" onclick="document.location='infos.php?gid={D_UNIT_PLANET_DENSITY}'"></div> {L_ov_core_type_current} "{PLANET_CORE_TEXT}"<br/>-->
+                <div>
+                  {L_ov_core_type_current}: "{PLANET_CORE_TEXT}"<br />
                 <label for="density_type">{L_ov_core_change_to}</label>
                 <select name="density_type" id="density_type">
                   <!-- BEGIN densities -->
@@ -201,13 +155,7 @@
                   {L_sys_for} <span id="transmutation_cost" class="zero">0</span> {L_sys_dark_matter_sh}
                 </button>
 
-                <script type="text/javascript">
-                  jQuery("#density_type").change(function(){
-                    selected = jQuery("#density_type option:selected");
-                    $("#transmute_button").button({disabled: parseInt(selected.attr("rest")) <= 0 || selected.attr("current") == '1'});
-                    $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
-                  });
-                </script>
+              </div>
               </div>
             </form>
           </th>
@@ -252,15 +200,3 @@
 </table>
 
 <div id="admin_message"></div>
-
-<script type="text/javascript">
-//  jQuery(document).bind("ready", function() {
-//    // send requests
-//    jQuery.post("scheduler.php", {rating: jQuery(this).html()}, function(xml) {
-//      // format result
-//      var result = [ jQuery("message", xml).text() ];
-//      // output result
-//      jQuery("#admin_message").html(result.join(""));
-//    } );
-//  });
-</script>

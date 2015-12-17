@@ -156,17 +156,18 @@ function eco_struc_show_unit_info(unit_id, no_color) {
 
   var unit_info_image = $('#unit_info_image');
   unit_info_image.attr('src', unit['image']);
-  document.getElementById('unit_info_description').innerHTML = unit['description'];
+  $('#unit_info_wiki').attr('unit_id', unit_id);
+  $('#unit_info_description').html(unit['description']);
 
-  document.getElementById('unit_time').innerHTML = unit['time'];
-  document.getElementById('unit_time_div').style.display = unit['time_seconds'] ? "block" : "none";
+  $('#unit_time').html(unit['time']);
+  $('#unit_time_div').css('display', unit['time_seconds'] ? "block" : "none");
 
-  document.getElementById('unit_info_name').innerHTML = unit['name'];
+  $('#unit_info_name').html(unit['name']);
   if(unit['level'] > 0 || STACKABLE) {
-    document.getElementById('unit_info_level').innerHTML = (!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : '');
-    unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
+    $('#unit_info_level').html((!STACKABLE ? language['level'] + ' ' : '') + unit['level'] + (parseInt(unit['level_bonus']) > 0 ? '<span class="bonus">+' + unit['level_bonus'] + '</span>' : ''));
+    //unit_destroy_link = language['bld_destroy'] + ' ' + language['level'] + ' ' + unit['level'];
   } else {
-    document.getElementById('unit_info_level').innerHTML = '&nbsp;';
+    $('#unit_info_level').html('&nbsp;');
   }
 
   if(STACKABLE) {
@@ -212,9 +213,9 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   }
 
   if(TEMPORARY) {
-    jQuery("#unit_cost_table").hide();//css.display = "none";
+    $("#unit_cost_table").hide();
   } else {
-    jQuery("#unit_cost_table").css.display = "table";
+    $("#unit_cost_table").css('display', 'table');
 
     eco_struc_make_resource_row('metal', unit['metal'], unit['destroy_metal'], unit['dark_matter'], STACKABLE);
     eco_struc_make_resource_row('crystal', unit['crystal'], unit['destroy_crystal'], unit['dark_matter'], STACKABLE);

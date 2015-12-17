@@ -206,11 +206,12 @@ switch($mode = sys_get_param_str('mode')) {
       $governor_level = $planetrow['PLANET_GOVERNOR_ID'] == $governor_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0;
       $build_data = eco_get_build_data($user, $planetrow, $governor_id, $governor_level);
       $template->assign_block_vars('governors', array(
-        'ID'   => $governor_id,
-        'NAME' => $lang['tech'][$governor_id],
-        'COST' => $build_data[BUILD_CREATE][RES_DARK_MATTER],
-        'MAX'  => get_unit_param($governor_id, P_MAX_STACK),
-        'LEVEL' => $governor_level,
+        'ID'         => $governor_id,
+        'NAME'       => $lang['tech'][$governor_id],
+        'COST'       => $build_data[BUILD_CREATE][RES_DARK_MATTER],
+        'MAX'        => get_unit_param($governor_id, P_MAX_STACK),
+        'LEVEL'      => $governor_level,
+        'LEVEL_PLUS' => mrc_get_level($user, $planetrow, $governor_id) - $governor_level,
       ));
     }
 
@@ -434,7 +435,7 @@ switch($mode = sys_get_param_str('mode')) {
       'PLANET_GOVERNOR_ID'    => $planetrow['PLANET_GOVERNOR_ID'],
 //      'PLANET_GOVERNOR_LEVEL' => $planetrow['PLANET_GOVERNOR_LEVEL'] mrc_get_level($user, $planetrow,),
       'PLANET_GOVERNOR_LEVEL' => $governor_level,
-      'PLANET_GOVERNOR_LEVEL_PLUS' => $governor_level ? mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID']) - $governor_level : 0,
+      'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID']) - $governor_level,
       'PLANET_GOVERNOR_NAME'  => $lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
 
       'LIST_ROW_COUNT'        => $overview_planet_rows,

@@ -1,0 +1,13 @@
+<div class="planet-manage-sectors-container">
+  <!-- IF PLANET_FILL <= 50 -->
+  <!-- DEFINE $BAR_COLOR = 'ok_bg' -->
+  <!-- ELSEIF PLANET_FILL <= 75 -->
+  <!-- DEFINE $BAR_COLOR = 'notice_bg' -->
+  <!-- ELSEIF PLANET_FILL <= 90 -->
+  <!-- DEFINE $BAR_COLOR = 'warning_bg' -->
+  <!-- ELSE -->
+  <!-- DEFINE $BAR_COLOR = 'error_bg' -->
+  <!-- ENDIF -->
+  <div class="posLT h100 {$BAR_COLOR}" style="width: {PLANET_FILL_BAR}%;">&nbsp;</div>
+  <div class="planet-manage-sectors-text">{L_buildings_on_planet} {planet_field_current}/{planet_field_max} ({PLANET_FILL}%)</div>
+</div>

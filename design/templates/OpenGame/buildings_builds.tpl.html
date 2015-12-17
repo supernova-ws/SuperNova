@@ -244,6 +244,9 @@ planet = {
                   <div id="unit_info_image_wrapper">
                     <img id="unit_info_image" />
                     <div id="unit_info_name" class="a75"></div>
+                    <span class="unit-icon-info-container link" go="info" unit_id="" id="unit_info_wiki">
+                      <div class="icon-info-cover">&nbsp;</div>
+                    </span>
                     <div id="unit_info_level" class="a75"></div>
                   </div>
                 </div>
@@ -408,17 +411,15 @@ planet = {
               <!-- ENDIF -->
 
               <!-- IF ! ALLY_ID && ! production.DARK_MATTER_ONLY -->
-              <span class="a75 right_bottom icon_gather" title="{L_flt_gather_all}"
-              <!-- IF production.METAL_REST_NUM < 0 -->metal="{production.METAL_REST_NUM}"<!-- ENDIF -->
-                <!-- IF production.CRYSTAL_REST_NUM < 0 -->crystal="{production.CRYSTAL_REST_NUM}"<!-- ENDIF -->
-                <!-- IF production.DEUTERIUM_REST_NUM < 0 -->deuterium="{production.DEUTERIUM_REST_NUM}"<!-- ENDIF -->
-              ></span>
-              <!-- ENDIF -->
+                <!-- IF production.METAL_REST_NUM < 0 --><!-- DEFINE $METAL_REST_NUM = 'metal="{production.METAL_REST_NUM}"' --><!-- ELSE --><!-- DEFINE $METAL_REST_NUM = '' --><!-- ENDIF -->
+                <!-- IF production.CRYSTAL_REST_NUM < 0 --><!-- DEFINE $CRYSTAL_REST_NUM = 'crystal="{production.CRYSTAL_REST_NUM}' --><!-- ELSE --><!-- DEFINE $CRYSTAL_REST_NUM = '' --><!-- ENDIF -->
+                <!-- IF production.DEUTERIUM_REST_NUM < 0 --><!-- DEFINE $DEUTERIUM_REST_NUM = 'deuterium="{production.DEUTERIUM_REST_NUM}' --><!-- ELSE --><!-- DEFINE $DEUTERIUM_REST_NUM = '' --><!-- ENDIF -->
+                <span class="posRB a75 icon_gather" title="{L_flt_gather_all}" {$METAL_REST_NUM} {$CRYSTAL_REST_NUM} {DEUTERIUM_REST_NUM}></span>
+                <!-- ENDIF -->
 
-              <span class="a75 left_bottom icon_info" go="info"></span>
-              <!--<span class="unit_preview_info a75 left_bottom" go="info">-->
-                <!--<div class="icons icon-info_empire"></div>-->
-              <!--</span>-->
+              <span class="posLB a75 unit_preview_image_icon" go="info">
+                <span class="icon-info-cover"></span>
+              </span>
             </div>
         <!-- END production -->
         </td>

@@ -187,9 +187,10 @@ function flt_register_fleet_event($fleet, $ov_label, $planet_end_type)
 
 function int_planet_pretemplate($planetrow, &$template)
 {
-  global $lang;
+  global $lang, $user;
 
   $governor_id = $planetrow['PLANET_GOVERNOR_ID'];
+  $governor_level_plain = mrc_get_level($user, $planetrow, $governor_id, false, true);
 
   $template->assign_vars(array(
     'PLANET_ID'          => $planetrow['id'],
@@ -202,9 +203,10 @@ function int_planet_pretemplate($planetrow, &$template)
     'PLANET_TYPE_TEXT'   => $lang['sys_planet_type'][$planetrow['planet_type']],
     'PLANET_DEBRIS'      => $planetrow['debris_metal'] + $planetrow['debris_crystal'],
 
-    'PLANET_GOVERNOR_ID'        => $governor_id,
-    'PLANET_GOVERNOR_NAME'      => $lang['tech'][$governor_id],
-    'PLANET_GOVERNOR_LEVEL'     => $planetrow['PLANET_GOVERNOR_LEVEL'],
-    'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($governor_id, P_MAX_STACK),
+    'PLANET_GOVERNOR_ID'         => $governor_id,
+    'PLANET_GOVERNOR_NAME'       => $lang['tech'][$governor_id],
+    'PLANET_GOVERNOR_LEVEL'      => $governor_level_plain,
+    'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $governor_id, false, false) - $governor_level_plain,
+    'PLANET_GOVERNOR_LEVEL_MAX'  => get_unit_param($governor_id, P_MAX_STACK),
   ));
 }
