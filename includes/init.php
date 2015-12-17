@@ -62,7 +62,8 @@ if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
 $sn_root_physical = str_replace('\\', '/', __FILE__);
 $sn_root_physical = str_replace('includes/init.php', '', $sn_root_physical);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
-define('SN_ROOT_PHYSICAL_STR_LEN', mb_strlen($sn_root_physical));
+// define('SN_ROOT_PHYSICAL_STR_LEN', mb_strlen($sn_root_physical));
+define('SN_ROOT_PHYSICAL_STR_LEN', strlen($sn_root_physical));
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
 $sn_root_relative = str_replace('\\', '/', getcwd());
