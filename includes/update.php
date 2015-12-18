@@ -1188,6 +1188,48 @@ switch($new_version) {
 
   case 40:
     upd_log_version_update();
+
+    if(empty($update_tables['festival'])) {
+      upd_create_table('festival', " (
+          `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
+          `start` datetime NOT NULL COMMENT 'Festival start datetime',
+          `finish` datetime NOT NULL COMMENT 'Festival end datetime',
+          `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Название акции/ивента',
+          PRIMARY KEY (`id`),
+          KEY `I_festival_date_range` (`start`,`finish`,`id`) USING BTREE
+        ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      );
+
+      upd_create_table('festival_highspot', " (
+          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+          `festival_id` smallint(5) unsigned DEFAULT NULL,
+          `class` tinyint(3) unsigned NOT NULL DEFAULT '0' COMMENT 'Highspot class',
+          `start` datetime NOT NULL COMMENT 'Highspot start datetime',
+          `finish` datetime NOT NULL COMMENT 'Highspot end datetime',
+          `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+          PRIMARY KEY (`id`),
+          KEY `I_highspot_order` (`start`,`finish`,`id`),
+          KEY `I_highspot_festival_id` (`festival_id`,`start`,`finish`,`id`) USING BTREE,
+          CONSTRAINT `FK_highspot_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `lh_festival` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      );
+
+      upd_create_table('festival_highspot_activity', " (
+          `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+          `highspot_id` int(10) unsigned DEFAULT NULL,
+          `class` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Класс события - ID модуля события',
+          `type` tinyint(1) unsigned NOT NULL DEFAULT '0' COMMENT 'Тип активити: 1 - триггер, 2 - хук',
+          `start` datetime NOT NULL COMMENT 'Запланированное время запуска',
+          `finish` datetime DEFAULT NULL COMMENT 'Реальное время запуска',
+          `params` text COLLATE utf8_unicode_ci NOT NULL COMMENT 'Параметры активити в виде сериализованного архива',
+          PRIMARY KEY (`id`),
+          KEY `I_festival_activity_order` (`start`,`finish`,`id`) USING BTREE,
+          KEY `I_festival_activity_highspot_id` (`highspot_id`,`start`,`finish`,`id`) USING BTREE,
+          CONSTRAINT `FK_festival_activity_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `lh_festival_highspot` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB AUTO_INCREMENT=500 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      );
+    }
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 41;
 
