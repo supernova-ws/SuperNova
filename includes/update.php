@@ -1210,7 +1210,7 @@ switch($new_version) {
           PRIMARY KEY (`id`),
           KEY `I_highspot_order` (`start`,`finish`,`id`),
           KEY `I_highspot_festival_id` (`festival_id`,`start`,`finish`,`id`) USING BTREE,
-          CONSTRAINT `FK_highspot_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `lh_festival` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          CONSTRAINT `FK_highspot_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `{{festival}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
       );
 
@@ -1225,7 +1225,7 @@ switch($new_version) {
           PRIMARY KEY (`id`),
           KEY `I_festival_activity_order` (`start`,`finish`,`id`) USING BTREE,
           KEY `I_festival_activity_highspot_id` (`highspot_id`,`start`,`finish`,`id`) USING BTREE,
-          CONSTRAINT `FK_festival_activity_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `lh_festival_highspot` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          CONSTRAINT `FK_festival_activity_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB AUTO_INCREMENT=500 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
       );
     }
