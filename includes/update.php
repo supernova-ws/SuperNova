@@ -1230,6 +1230,22 @@ switch($new_version) {
       );
     }
 
+    if(empty($update_tables['festival_unit'])) {
+      upd_create_table('festival_unit', " (
+          `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+          `highspot_id` int(10) unsigned DEFAULT NULL,
+          `player_id` bigint(20) unsigned DEFAULT NULL,
+          `unit_id` bigint(20) NOT NULL DEFAULT '0',
+          `unit_level` bigint(20) unsigned NOT NULL DEFAULT '0',
+          PRIMARY KEY (`id`),
+          KEY `I_festival_unit_player_id` (`player_id`,`highspot_id`) USING BTREE,
+          KEY `I_festival_unit_highspot_id` (`highspot_id`,`unit_id`,`player_id`) USING BTREE,
+          CONSTRAINT `FK_festival_unit_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+          CONSTRAINT `FK_festival_unit_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+      );
+    }
+
     upd_do_query('COMMIT;', true);
 //    $new_version = 41;
 

@@ -436,15 +436,17 @@ function tpl_render_topnav(&$user, $planetrow) { return sn_function_call('tpl_re
  * @return string|template
  */
 function sn_tpl_render_topnav(&$user, $planetrow) {
+  global $lang, $config, $sn_module_list, $template_result;
+
   if(!is_array($user)) {
     return '';
   }
 
-  global $lang, $config, $sn_module_list;
-
   $GET_mode = sys_get_param_str('mode');
 
   $template = gettemplate('topnav', true);
+
+  $template->assign_recursive($template_result);
 
   /*
   $planetrow = $planetrow ? $planetrow : $user['current_planet'];
