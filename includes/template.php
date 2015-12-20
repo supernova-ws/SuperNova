@@ -222,6 +222,8 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 //    $page->assign_var('PAGE_HEADER', $title);
 //  }
 
+  $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
+
   if(is_object($page)) {
     isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
     isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
@@ -235,7 +237,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     $isDisplayTopNav = false;
   }
 
-  isset($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page);
+  isset($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page, 'view', '');
 
   // Global header
   $user_time_diff = playerTimeDiff::user_time_diff_get();
@@ -306,12 +308,12 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   $template->assign_recursive($template_result);
   displayP(parsetemplate($template));
 
-  if($isDisplayMenu && !isset($_COOKIE['menu_disable'])) {
+  if(($isDisplayMenu || $in_admin) && !isset($_COOKIE['menu_disable'])) {
     // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
     displayP(parsetemplate(tpl_render_menu()));
   }
 
-  if($isDisplayTopNav) {
+  if($isDisplayTopNav && !$in_admin) {
     displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
   }
 

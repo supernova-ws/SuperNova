@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #40a19.5# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a0.7# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -51,6 +51,14 @@ class sn_module {
 
   protected $module_full_class_path = __FILE__;
 
+  /**
+   * Динамическое назначение переменных
+   *
+   * Актуально, когда записываемые данные зависят от статуса игры
+   * Например - назначаются константы внутри модуля
+   *
+   * @return array
+   */
   function __assign_vars() {
     return array(
 /*

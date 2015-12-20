@@ -9,6 +9,7 @@ lng_include('menu');
 $active_payment_modules = sn_module_get_active_count('payment') > 0;
 
 global $sn_version_check_class, $template_result, $user, $config, $lang; // , $sn_menu_admin_extra
+global $sn_menu, $sn_menu_admin;
 
 $sn_menu = array(
   /*
@@ -438,7 +439,8 @@ $sn_menu = array(
 );
 
 
-$sn_menu_admin = defined('IN_ADMIN') && IN_ADMIN === true ? array(
+//$sn_menu_admin = defined('IN_ADMIN') && IN_ADMIN === true ? array(
+$sn_menu_admin = array(
   'menu_admin_server_name' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'text',
@@ -631,4 +633,4 @@ $sn_menu_admin = defined('IN_ADMIN') && IN_ADMIN === true ? array(
     'ITEM'  => 'adm_back',
     'LINK'  => 'index.php',
   ),
-) : array();
+);

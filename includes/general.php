@@ -46,11 +46,17 @@ function sn_function_call($func_name, $func_arg = array())
   return $result;
 }
 
-function execute_hooks(&$hook_list, &$template) {
+/**
+ * @param        $hook_list
+ * @param        $template
+ * @param string $hook_type - тип хука 'model' или 'view'
+ * @param string $page_name - имя страницы, для которого должен был быть выполнен хук
+ */
+function execute_hooks(&$hook_list, &$template, $hook_type = null, $page_name = null) {
   if(!empty($hook_list)) {
     foreach($hook_list as $hook) {
       if(is_callable($hook_call = (is_string($hook) ? $hook : (is_array($hook) ? $hook['callable'] : $hook->callable)))) {
-        $template = call_user_func($hook_call, $template);
+        $template = call_user_func($hook_call, $template, $hook_type, $page_name);
       }
     }
   }

@@ -11,7 +11,7 @@ if(defined('INIT')) {
 define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
 
-define('SN_DEBUG_PDUMP_CALLER', false);
+//define('SN_DEBUG_PDUMP_CALLER', true);
 
 version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3.2') : false;
 
@@ -447,7 +447,7 @@ define('SN_CLIENT_TIME_DIFF_GMT', $user_time_diff[PLAYER_OPTION_TIME_DIFF]); // 
 !empty($sn_mvc['i18n']['']) ? lng_load_i18n($sn_mvc['i18n']['']) : false;
 $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
 
-execute_hooks($sn_mvc['model'][''], $template);
+execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
 global $skip_fleet_update;
 $skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
