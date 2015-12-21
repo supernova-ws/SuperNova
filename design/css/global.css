@@ -293,6 +293,7 @@ textarea {
 /* Container Flex Justify */
 /* Replacement for float-left + float-right: Flex, non-wrapping, one-line vertically centered, item justified  */
 .contFJ {
+  text-align: left;
   justify-content: space-between;
 }
 .contFS {

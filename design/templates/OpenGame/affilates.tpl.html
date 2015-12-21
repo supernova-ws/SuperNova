@@ -1,65 +1,93 @@
 <h1>{L_aff_title}</h1>
+
 <table width="519">
-  <tr><td class="c">{L_aff_title}</td></tr>
-  <tr><th>
-    {L_aff_text1} {C_rpg_bonus_divisor} {L_aff_text2}<br />
-    <span class="notice">{L_aff_text3} {C_rpg_bonus_minimum} {L_sys_dark_matter_sh}</span>
-  </th></tr>
-  <tr><th>
-    <h2>{L_aff_link}</h2>
-    {L_aff_link_direct}<br>
-    <input name="htmlbbcode" type="text" id="htmlbbcode" value="{D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register" size="80" /><br /><br />
+  <tr>
+    <th class="c_c">{L_aff_title}</th>
+  </tr>
+  <tr>
+    <td>
+      {L_aff_text1} {C_rpg_bonus_divisor} {L_aff_text2}<br/>
+      <span class="notice">{L_aff_text3} {C_rpg_bonus_minimum} {L_sys_dark_matter_sh}</span>
+    </td>
+  </tr>
+  <tr>
+    <th>
+      <h2>{L_aff_link}</h2>
+      {L_aff_link_direct}<br>
+      <input name="htmlbbcode" type="text" id="htmlbbcode"
+             value="{D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register" size="80"/><br/><br/>
 
-    {L_aff_link_bb}<br>
-    <input name="htmlbbcode" type="text" id="htmlbbcode" value="[url={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register]{C_game_name}[/url]" size="80" /><br /><br />
+      {L_aff_link_bb}<br>
+      <input name="htmlbbcode" type="text" id="htmlbbcode"
+             value="[url={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register]{C_game_name}[/url]"
+             size="80"/><br/><br/>
 
-    {L_aff_link_html}<br>
-    <input name="htmllink" type="text" id="htmllink" value="<a href={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register>{C_game_name}</a>" size="80">
-  </th></tr>
-  <tr><th>
-    <h2>{L_aff_banner}</h2>
-    <img src="{bannerURL}"><br><br>
+      {L_aff_link_html}<br>
+      <input name="htmllink" type="text" id="htmllink"
+             value="<a href={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register>{C_game_name}</a>"
+             size="80">
+    </th>
+  </tr>
+  <tr>
+    <th>
+      <h2>{L_aff_banner}</h2>
+      <img src="{bannerURL}"><br><br>
 
-    {L_aff_banner_bb}<br>
-    <input name="bannerbbcode" type="text" id="bannerbbcode" value="[url={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register][img]{bannerURL}[/img][/url]" size="80"><br><br>
+      {L_aff_banner_bb}<br>
+      <input name="bannerbbcode" type="text" id="bannerbbcode"
+             value="[url={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register][img]{bannerURL}[/img][/url]"
+             size="80"><br><br>
 
-    {L_aff_banner_html}<br>
-    <input name="bannerlink" type="text" id="bannerlink" value="<a href={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register><img src={bannerURL}></a>" size="80">
-  </th></tr>
-  <tr><th>
-    <h2>{L_aff_userbar}</h2>
-    <img src="{userbarURL}"><br><br>
+      {L_aff_banner_html}<br>
+      <input name="bannerlink" type="text" id="bannerlink"
+             value="<a href={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register><img src={bannerURL}></a>"
+             size="80">
+    </th>
+  </tr>
+  <tr>
+    <th>
+      <h2>{L_aff_userbar}</h2>
+      <img src="{userbarURL}"><br><br>
 
-    {L_aff_userbar_bb}<br>
-    <input name="userbarbbcode" type="text" id="userbarbbcode" value="[url={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register][img]{userbarURL}[/img][/url]" size="80"><br><br>
+      {L_aff_userbar_bb}<br>
+      <input name="userbarbbcode" type="text" id="userbarbbcode"
+             value="[url={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register][img]{userbarURL}[/img][/url]"
+             size="80"><br><br>
 
-    {L_aff_userbar_html}<br>
-    <input name="userbarlink" type="text" id="userbarlink" value="<a href={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register><img src={userbarURL}></a>" size="80">
-  </th></tr>
+      {L_aff_userbar_html}<br>
+      <input name="userbarlink" type="text" id="userbarlink"
+             value="<a href={D_SN_ROOT_VIRTUAL_PARENT}login.php?id_ref={user_id}#tab_register><img src={userbarURL}></a>"
+             size="80">
+    </th>
+  </tr>
 </table>
 
 <h2>{L_aff_list}</h2>
 <table>
-  <tr>
-    <td class="c" >{L_sys_player}</td>
-    <td class="c" >{L_sys_register_date}</td>
-    <td class="c" >{L_aff_gained}</td>
-    <td class="c" >{L_aff_your_bonus}</td>
+  <tr class="c_c">
+    <th>{L_sys_player}</th>
+    <th>{L_sys_register_date}</th>
+    <th>{L_aff_gained}</th>
+    <th>{L_aff_your_bonus}</th>
   </tr>
+
   <!-- IF .affilates -->
     <!-- BEGIN affilates -->
-      <tr>
-        <td class="c_l">{affilates.USERNAME}</td>
-        <td class="c_c">{affilates.REGISTERED}</td>
-        <td class="c_r">{affilates.DARK_MATTER}</td>
-        <td class="c_r">{affilates.GAINED}</td>
-      </tr>
+    <tr class="c_r">
+      <td class="c_l">{affilates.USERNAME}</td>
+      <td class="c_c">{affilates.REGISTERED}</td>
+      <td>{affilates.DARK_MATTER}</td>
+      <td>{affilates.GAINED}</td>
+    </tr>
     <!-- END affilates -->
-    <tr>
-      <th colspan=3 class="c_l">{L_sys_total}</th>
-      <th class="c_r" align="center">{GAINED}</th>
+
+    <tr class="c_l">
+      <th colspan=3>{L_sys_total}</th>
+      <th class="c_r">{GAINED}</th>
     </tr>
   <!-- ELSE -->
-    <tr><th colspan=4>{L_aff_none}</th></tr>
+    <tr class="c_c">
+      <td colspan=4>{L_aff_none}</td>
+    </tr>
   <!-- ENDIF -->
 </table>

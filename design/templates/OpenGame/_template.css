@@ -443,6 +443,7 @@ input[type=text].coordinate {
 /* NavBar ======================================================================================================== */
 #navbar {
   margin: auto;
+  background-color: transparent;
 }
 
 .navbar-container {

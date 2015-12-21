@@ -1,21 +1,37 @@
-<br />
+<br/>
 <form action="" method="POST" enctype="multipart/form-data">
   <table width=519>
-    <tr><td class=c colspan=2><span class="fl">{L_ali_adm_options}</span><span class="fr"><a href="alliance.php">{L_ali_sys_main_page}</a></span></td></tr>
-    <tr><th>{L_Name}</th><th><input type=text name="name" value="{ally_name}" size="70"></th></tr>
-    <tr><th>{L_Tag}</th><th><input type=text name="tag" value="{ally_tag}" size="70"></th></tr>
-    <tr><th>{L_Main_Page}</th><th><input type=text name="web" value="{ally_web}" size="70"></th></tr>
+    <tr class="c_l">
+      <th colspan=2>
+        <div class="contFJ">
+          {L_ali_adm_options}
+          <a class="link button_pseudo" href="alliance.php">{L_ali_sys_main_page}</a>
+        </div>
+      </th>
+    </tr>
+    <tr>
+      <th>{L_Name}</th>
+      <th><input type=text name="name" value="{ally_name}" size="70"></th>
+    </tr>
+    <tr>
+      <th>{L_Tag}</th>
+      <th><input type=text name="tag" value="{ally_tag}" size="70"></th>
+    </tr>
+    <tr>
+      <th>{L_Main_Page}</th>
+      <th><input type=text name="web" value="{ally_web}" size="70"></th>
+    </tr>
     <tr>
       <th>{L_Alliance_logo}</th>
       <td class="c_l">
         <!-- IF AVATAR_UPLOAD_MESSAGE -->
-          <span class="<!-- IF AVATAR_UPLOAD_STATUS == 0 -->success<!-- ELSEIF AVATAR_UPLOAD_STATUS == 1 -->warning<!-- ELSE -->error<!-- ENDIF -->">{AVATAR_UPLOAD_MESSAGE}</span><br />
+        <span class="<!-- IF AVATAR_UPLOAD_STATUS == 0 -->success<!-- ELSEIF AVATAR_UPLOAD_STATUS == 1 -->warning<!-- ELSE -->error<!-- ENDIF -->">{AVATAR_UPLOAD_MESSAGE}</span><br/>
         <!-- ENDIF -->
-        <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="50"><br />
+        <label for="avatar">{L_opt_upload}</label>&nbsp;<input type="file" name="avatar" size="50"><br/>
         <span class="fl">
           <!-- IF ALLY_IMAGE -->
-            <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ALLY_ID}.png"><br />
-            <input name="avatar_remove" type="checkbox" id="avatar_remove" /><label for="avatar_remove">{L_opt_avatar_remove}</label>
+            <img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ALLY_ID}.png"><br/>
+            <input name="avatar_remove" type="checkbox" id="avatar_remove"/><label for="avatar_remove">{L_opt_avatar_remove}</label>
           <!-- ELSE -->
             <a href="http://www.google.com.ar/imghp" target="_blank">{L_opt_avatar_search}</a>
           <!-- ENDIF -->
@@ -25,55 +41,72 @@
     <tr>
       <th>{L_ali_adm_requests}</th>
       <th>
-        <span class="fl"><select name="request_notallow"><option value=1{ally_request_notallow_0}>{L_not_allow_request}</option>
-        <option value=0{ally_request_notallow_1}>{L_Allow_request}</option></select></span>
+        <span class="fl"><select name="request_notallow">
+          <option value=1{ally_request_notallow_0}>{L_not_allow_request}</option>
+          <option value=0{ally_request_notallow_1}>{L_Allow_request}</option>
+        </select></span>
         <span class="fr"><a href="alliance.php?mode=admin&edit=requests">{request_count}</a></span>
       </th>
     </tr>
-    <tr><th>{L_Founder_name}</th><th><input type="text" name="owner_range" value="{ally_owner_range}" size=30></th></tr>
-    <tr><th colspan=2><input type="submit" name="isSaveOptions" value="{L_sys_save}"></th></tr>
+    <tr>
+      <th>{L_Founder_name}</th>
+      <th><input type="text" name="owner_range" value="{ally_owner_range}" size=30></th>
+    </tr>
+    <tr>
+      <th colspan=2><input type="submit" name="isSaveOptions" value="{L_sys_save}"></th>
+    </tr>
   </table>
 </form>
 
 <form action="" method="POST">
   <table width=519>
-    <tr><td class="c" colspan=3>{L_Texts}</td></tr>
-    <tr>
-      <th><a href="alliance.php?mode=admin&edit=ally&t=1">{L_External_text}</a></th>
-      <th><a href="alliance.php?mode=admin&edit=ally&t=2">{L_Internal_text}</a></th>
-      <th><a href="alliance.php?mode=admin&edit=ally&t=3">{L_Request_text}</a></th>
+    <tr class="c_c">
+      <th colspan=3>{L_Texts}</th>
     </tr>
-    <tr><td class=c colspan=3>{request_type} (<span id="cntChars">0</span> / 5000)</td></tr>
-    <tr><th colspan=3><textarea name="text" id="ally_text" cols=70 rows=15 onkeyup="cntchar(5000)">{text}</textarea></th></tr>
+    <tr class="c_c">
+      <td><a class="link" href="alliance.php?mode=admin&edit=ally&t=1">{L_External_text}</a></td>
+      <td><a class="link" href="alliance.php?mode=admin&edit=ally&t=2">{L_Internal_text}</a></td>
+      <td><a class="link" href="alliance.php?mode=admin&edit=ally&t=3">{L_Request_text}</a></td>
+    </tr>
+    <tr>
+      <th class="c_c" colspan=3>{request_type} (<span id="cntChars">0</span> / 5000)</th>
+    </tr>
+    <tr>
+      <th colspan=3>
+        <textarea name="text" id="ally_text" cols=70 rows=15 onkeyup="cntchar(5000)">{text}</textarea>
+      </th>
+    </tr>
     <tr>
       <th colspan=3>
         <input type="hidden" name="t" value="{t}">
-        <input type="reset"  value="{L_ali_sys_clear}">
+        <input type="reset" value="{L_ali_sys_clear}">
         <input type="submit" name="isSaveText" value="{L_sys_save}">
       </th>
     </tr>
   </table>
 </form>
 
-<form action="" method="POST">
-  <table width=519>
-    <tr><td class=c colspan=2>{L_ally_admin}</td></tr>
-    <!-- BEGIN admin_actions -->
-    <tr><th colspan=2><a href="alliance.php?mode=admin&edit={admin_actions.ACTION}">{admin_actions.LOCALE}</a></th></tr>
-    <!-- END admin_actions -->
-    <tr{hideNotOwner}>
-      <th>
-        {L_ali_adm_transfer}&nbsp;&nbsp;&nbsp;
-        <select name="idNewLeader">
-          <option disabled selected>{L_ali_adm_newLeader}</option>
-          {adminMembers}
-        </select>
-      </th>
-      <th><input type="submit" name="isTransfer" value="{L_ali_confirm}"></th>
-    </tr>
-    <tr{hideNotOwner}>
-      <th>{L_ali_adm_disband}&nbsp;&nbsp;&nbsp;<input type="checkbox" name="isConfirmDisband" value="1"></th>
-      <th><input type="submit" name="isDisband" value="{L_ali_confirm}"></th>
-    </tr>
-  </table>
+<form action="" method="POST" style="width:48em;margin-top:1em;">
+  <div class="header">{L_ally_admin}</div>
+  <!-- BEGIN admin_actions -->
+  <div class="cell"><a class="button_pseudo" href="alliance.php?mode=admin&edit={admin_actions.ACTION}">{admin_actions.LOCALE}</a>
+  </div>
+  <!-- END admin_actions -->
+  <div class="cell contFJ" style="padding: 0 1em; {hideNotOwner}">
+    <div>
+      {L_ali_adm_transfer}&nbsp;&nbsp;&nbsp;
+      <select name="idNewLeader">
+        <option disabled selected>{L_ali_adm_newLeader}</option>
+        {adminMembers}
+      </select>
+    </div>
+    <input type="submit" name="isTransfer" value="{L_ali_confirm}">
+  </div>
+  <div class="cell contFJ" style="padding: 0 1em; {hideNotOwner}">
+    <div>
+      <input type="checkbox" name="isConfirmDisband" value="1" id="isConfirmDisband">
+      <label for="isConfirmDisband">{L_ali_adm_disband}</label>
+    </div>
+    <input type="submit" name="isDisband" value="{L_ali_confirm}">
+  </div>
 </form>

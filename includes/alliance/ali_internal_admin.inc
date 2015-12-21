@@ -153,7 +153,7 @@ $template->assign_vars(array(
   'ally_request_notallow_0' => (( $ally['ally_request_notallow']) ? ' SELECTED' : ''),
   'ally_request_notallow_1' => ((!$ally['ally_request_notallow']) ? ' SELECTED' : ''),
   'ally_owner_range' => htmlspecialchars($ally['ally_owner_range']),
-  'hideNotOwner' => $ally['ally_owner'] != $user['id'] ? ' style="hide"' : '',
+  'hideNotOwner' => $ally['ally_owner'] != $user['id'] ? 'display: hide;' : '',
 ));
 /*
 unset($tmp);
