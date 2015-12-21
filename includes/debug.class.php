@@ -359,3 +359,9 @@ function pc($prePrint = false) {
 function prep($message) {
   print('<pre>' . $message . '</pre>');
 }
+
+function backtrace_no_arg() {
+  $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+  array_shift($trace);
+  return $trace;
+}

@@ -6,8 +6,8 @@ if(isset($sn_page_name) || ($sn_page_name = isset($_GET['page']) ? trim(strip_ta
   if($sn_page_name) {
     // Loading page-specific language files
     global $template;
-    isset($sn_mvc['model'][$sn_page_name]) and execute_hooks($sn_mvc['model'][$sn_page_name], $template, 'model', $sn_page_name);
-    isset($sn_mvc['view'][$sn_page_name]) and execute_hooks($sn_mvc['view'][$sn_page_name], $template, 'view', $sn_page_name);
+    !empty($sn_mvc['model'][$sn_page_name]) and execute_hooks($sn_mvc['model'][$sn_page_name], $template, 'model', $sn_page_name);
+    !empty($sn_mvc['view'][$sn_page_name]) and execute_hooks($sn_mvc['view'][$sn_page_name], $template, 'view', $sn_page_name);
 /*
     if($sn_mvc['model'][$sn_page_name]) {
       foreach($sn_mvc['model'][$sn_page_name] as $hook) {

@@ -237,7 +237,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     $isDisplayTopNav = false;
   }
 
-  isset($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page, 'view', '');
+  !empty($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page, 'view', '');
 
   // Global header
   $user_time_diff = playerTimeDiff::user_time_diff_get();

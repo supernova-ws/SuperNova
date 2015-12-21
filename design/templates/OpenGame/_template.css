@@ -446,28 +446,28 @@ input[type=text].coordinate {
 }
 
 .navbar-container {
-  display: flex;
-  flex-wrap: wrap;
+  /*display: flex;*/
+  /*flex-wrap: wrap;*/
 
-  justify-content: space-between;
-  align-items: center;
-  align-content: space-between;
+  /*justify-content: space-between;*/
+  /*align-items: center;*/
+  /*align-content: space-between;*/
 }
 
-#navbar-halloween {
-  justify-content: space-around;
-}
+/*#navbar-halloween {*/
+  /*justify-content: space-around;*/
+/*}*/
 
 #navbar-blitz-button {
   margin: 0.5em 0;
 }
 
-#navbar-container-time {
-  justify-content: space-around;
-}
-.navbar-container-time-item {
-  flex-grow: 1;
-}
+/*#navbar-container-time {*/
+  /*flex-wrap: wrap;*/
+/*}*/
+/*.navbar-container-time-item {*/
+  /*flex-grow: 1;*/
+/*}*/
 
 
 #navbar-container-button {

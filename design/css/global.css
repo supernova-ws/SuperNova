@@ -279,7 +279,8 @@ textarea {
 /* Container Flex - Base Flex Container */
 /* One-line vertically centered, space distributed non-wrapping  */
 .contF,
-.contFJ
+.contFJ,
+.contFS
 {
   display: flex;
 
@@ -292,11 +293,10 @@ textarea {
 /* Container Flex Justify */
 /* Replacement for float-left + float-right: Flex, non-wrapping, one-line vertically centered, item justified  */
 .contFJ {
-
   justify-content: space-between;
-
-  /*align-content: space-around;*/
-  /*align-items: center;*/
+}
+.contFS {
+  justify-content: flex-start;
 }
 
 /*.FW {*/

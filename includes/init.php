@@ -5,6 +5,8 @@ if(defined('INIT')) {
   return;
 }
 
+define('INIT', true);
+
 // define('SN_DEBUG_LOG', true);
 
 // Замеряем начальные параметры
@@ -40,7 +42,6 @@ register_shutdown_function(function() {
   }
 });
 
-define('INIT', true);
 !defined('INSIDE') ? define('INSIDE', true) : false;
 !defined('INSTALL') ? define('INSTALL', false) : false;
 !defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
