@@ -296,7 +296,12 @@ textarea {
   justify-content: space-between;
 }
 .contFS {
+  text-align: left;
   justify-content: flex-start;
+}
+
+.flexW {
+  flex-wrap: wrap;
 }
 
 /*.FW {*/

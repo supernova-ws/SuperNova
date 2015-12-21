@@ -1265,6 +1265,9 @@ switch($new_version) {
       );
     }
 
+    // 2015-12-22 00:00:32 41a0.17
+    upd_alter_table('festival_unit_log', "ADD COLUMN `unit_image` varchar(255) NOT NULL DEFAULT ''", empty($update_tables['festival_unit_log']['unit_image']));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);
