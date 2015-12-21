@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a0.10');
+define('SN_VERSION', '41a0.12');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1048,41 +1048,36 @@ define('UNIT_EVENT_HALLOWEEN_2015_CANDY', 3059);
 define('UNIT_EVENT_HALLOWEEN_2015_KRUEGER', 3060);
 define('UNIT_EVENT_HALLOWEEN_2015_VOORHEES', 3061);
 
-// 3070
 define('UNIT_HIGHSPOT_GATHER_CHRISTMAS', 3100); // SuperNova Christmas Gather Units
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_DED', 3100); // 01 - Дед Мороз 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SNEGURKA', 3100); // 02 - Снегурочка 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_GOOD_FELLAS', 3100); // 03 - Список Хороших Детей 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_DED_HAT', 3100); // 06 - Настоящая шапка деда мороза 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SACK_GIFT', 3100); // 07 - Мешок с подарками 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_CALENDAR', 3100); // 08 - 31 декабря календаря 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_RUDOLPH', 3100); // 04 - Рудольф 1 "Рудольф всегда отличался от других оленей..."
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_DEER', 3100); // 45 - Олени 6
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_TREE_EMPIRE', 3100); // 10 - Имперская ёлка 2
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_MORGUROCHKA', 3100); // 13 - Моргурочка - мутантный дед-мороз 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_HOBO', 3100); // 20 - Безработный наёмник (Дед у холодильника, Дед с подарками) 2
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SACK_TRICK', 3100); // 80 - Мешок с новогодними фокусами 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_KITTEN', 3100); // 30 - Новогодний котёнок 2
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_DED', 3102); // 01 - Дед Мороз 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SNEGURKA', 3103); // 02 - Снегурочка 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_GOOD_FELLAS', 3104); // 03 - Список Хороших Детей 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SANTA_HAT', 3105); // 06 - Настоящая шапка деда мороза 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SACK_GIFT', 3106); // 07 - Мешок с подарками 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_CALENDAR', 3107); // 08 - 31 декабря календаря 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_RUDOLPH', 3108); // 04 - Рудольф 1 "Рудольф всегда отличался от других оленей..."
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_DEER', 3109); // 45 - Олени 6
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_TREE_EMPIRE', 3110); // 10 - Имперская ёлка 2
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_MORGUROCHKA', 3111); // 13 - Моргурочка - мутантный дед-мороз 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_HOBO', 3112); // 20 - Безработный наёмник (Дед у холодильника, Дед с подарками) 2
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SACK_TRICK', 3113); // 80 - Мешок с новогодними фокусами 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_KITTEN', 3114); // 30 - Новогодний котёнок 2
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SANTA_MASK', 3115); // 55 - Маска деда-мороза 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SANTA_COSTUME', 3116); // 57 - Игоровой Костюм деда-мороза 2
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SACK_EMPTY', 3117); // 95 - Пустой мешок от подарков 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BLIZZARD_BALL', 3118); // 05 - Метель в шарике 7
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BEVERAGE', 3119); // 15 - Новогодний напиток 7
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_GINGER', 3120); // 70 - Пряничный человечек - 1
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_CANDY', 3121); // 96 - Конфета 5 // Трость для пряничного человечка
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_POSTCARD', 3122); // 40 - Новогодняя открытка 2
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BELLS', 3123); // 93 - Джингл белл 3
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_GIFT_EMPTY', 3124); // 97 - Коробка для подарка  11
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_WREATH', 3125); // 50 - Новогодний венок 10 wreath
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_CANDLE', 3126); // 60 - Новогодние свечи 10
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BALL', 3127); // 98 - Ёлочные шары 7
+define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SNOWFLAKE', 3128); // 99 - Снежинка 10
 
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BLIZZARD_BALL', 3100); // 05 - Метель в шарике 1
-
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SANTA_MASK', 3100); // 55 - Маска деда-мороза 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SANTA_COSTUME', 3100); // 57 - Игоровой Костюм деда-мороза 2
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SACK_EMPTY', 3100); // 95 - Пустой мешок от подарков 1
-
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_GINGER', 3100); // 70 - Пряничный человечек - 1
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_CANDY', 3100); // 96 - Конфета 5 // Трость для пряничного человечка
-
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BEVERAGE', 3100); // 15 - Новогодний напиток 1 Шелдон: Леонард, в правилах этикета сказано, когда ваш друг расстроен, ему нужно предложить горячий напиток, например, чай.
-
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_POSTCARD', 3100); // 40 - Новогодняя открытка 2
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BELLS', 3100); // 93 - Джингл белл 3
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_GIFT_EMPTY', 3100); // 97 - Коробка для подарка  11
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_WREATH', 3100); // 50 - Новогодний венок 10 wreath
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_CANDLE', 3100); // 60 - Новогодние свечи 10
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_BALL', 3100); // 98 - Ёлочные шары 7
-define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SNOWFLAKE', 3100); // 99 - Снежинка 10
-
+// Шелдон: Леонард, в правилах этикета сказано, когда ваш друг расстроен, ему нужно предложить горячий напиток, например, чай.
 
 // 3200
 

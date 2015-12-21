@@ -1197,7 +1197,7 @@ switch($new_version) {
           `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Название акции/ивента',
           PRIMARY KEY (`id`),
           KEY `I_festival_date_range` (`start`,`finish`,`id`) USING BTREE
-        ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
       );
 
       upd_create_table('festival_highspot', " (
@@ -1211,7 +1211,7 @@ switch($new_version) {
           KEY `I_highspot_order` (`start`,`finish`,`id`),
           KEY `I_highspot_festival_id` (`festival_id`,`start`,`finish`,`id`) USING BTREE,
           CONSTRAINT `FK_highspot_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `{{festival}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
       );
 
       upd_create_table('festival_highspot_activity', " (
@@ -1226,7 +1226,7 @@ switch($new_version) {
           KEY `I_festival_activity_order` (`start`,`finish`,`id`) USING BTREE,
           KEY `I_festival_activity_highspot_id` (`highspot_id`,`start`,`finish`,`id`) USING BTREE,
           CONSTRAINT `FK_festival_activity_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=500 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
       );
     }
 
@@ -1242,9 +1242,30 @@ switch($new_version) {
           KEY `I_festival_unit_highspot_id` (`highspot_id`,`unit_id`,`player_id`) USING BTREE,
           CONSTRAINT `FK_festival_unit_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
           CONSTRAINT `FK_festival_unit_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;"
       );
     }
+
+    // 2015-12-21 06:06:09 41a0.12
+    if(empty($update_tables['festival_unit_log'])) {
+      upd_create_table('festival_unit_log', " (
+          `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+          `highspot_id` int(10) unsigned DEFAULT NULL,
+          `player_id` bigint(20) unsigned NOT NULL COMMENT 'User ID',
+          `player_name` varchar(32) NOT NULL DEFAULT '',
+          `unit_id` bigint(20) unsigned NOT NULL DEFAULT '0',
+          `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `unit_level` int(11) NOT NULL DEFAULT '0',
+          PRIMARY KEY (`id`),
+          KEY `I_festival_unit_log_player_id` (`player_id`,`highspot_id`,`id`) USING BTREE,
+          KEY `I_festival_unit_log_highspot_id` (`highspot_id`,`unit_id`,`player_id`) USING BTREE,
+          CONSTRAINT `FK_festival_unit_log_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `{{festival_highspot}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+          CONSTRAINT `FK_festival_unit_log_player` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    }
+
+    // #ctv
 
     upd_do_query('COMMIT;', true);
 //    $new_version = 41;

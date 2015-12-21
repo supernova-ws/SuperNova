@@ -256,6 +256,8 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   }
 
   $template = gettemplate('_global_header', true);
+//  $template->assign_recursive($template_result);
+//pdump($template_result);
 
   if(!empty($sn_mvc['javascript'])) {
     foreach($sn_mvc['javascript'] as $page_name => $script_list) {
