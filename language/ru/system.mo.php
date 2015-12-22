@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #40c1.3#
+* @version #41a0.31#
 *
 */
 
@@ -243,6 +243,14 @@ $a_lang_array = (array(
     SUBQUE_DEFENSE => 'Оборона',
     QUE_RESEARCH   => 'Исследования',
   ),
+
+  'navbar_button_expeditions_short' => 'Экспа',
+  'navbar_button_fleets' => 'Флоты',
+  'navbar_button_quests' => 'Квесты',
+  'sys_que_structures' => 'Здания',
+  'sys_que_hangar' => 'Верфь',
+  'sys_que_research' => 'Исследования',
+  'sys_que_research_short' => 'Наука',
 
   'eco_que' => 'Очередь',
   'eco_que_empty' => 'Очередь пуста',

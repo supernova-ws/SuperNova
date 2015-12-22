@@ -3,10 +3,10 @@
     <!-- IF result.MESSAGE -->
       <!-- IF ! $RESULT_TABLE_EXISTS -->
         <!-- DEFINE $RESULT_TABLE_EXISTS = 'true' -->
-        <br />
-        <table width="519px">
-          <tr><th class="c_l">{L_sys_result_operation}</th></tr>
-          <tr><td class="c_l"><ul style="text-align: justify">
+        <div class="border_image_small" id="global_status_window">
+          <div class="header">{L_sys_result_operation}</div>
+          <div class="cell">
+            <ul id="global_status_list">
       <!-- ENDIF -->
         <!-- IF result.STATUS == 0 -->
           <!-- DEFINE $RESULT_CLASS = 'positive' -->
@@ -18,8 +18,10 @@
             <li class="{$RESULT_CLASS}">{result.MESSAGE}</li>
     <!-- ENDIF -->
   <!-- END result -->
+
   <!-- IF $RESULT_TABLE_EXISTS -->
-            </ul></td></tr>
-          </table>
+            </ul>
+          </div>
+        </div>
   <!-- ENDIF -->
 <!-- ENDIF -->

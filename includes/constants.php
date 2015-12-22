@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a0.26');
+define('SN_VERSION', '41a0.31');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1467,6 +1467,7 @@ define('PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS', 40);
 define('PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS', 41);
 define('PLAYER_OPTION_NAVBAR_RESEARCH_WIDE', 42);
 define('PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER', 43);
+define('PLAYER_OPTION_NAVBAR_PLANET_VERTICAL', 44);
 
 // -------------------
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);

@@ -279,9 +279,6 @@ input[type=text].coordinate {
 
 
 
-.no_border_image { /* Just placeholder for phpstorm autocomplete */ }
-.border_image_small { /* Just placeholder for phpstorm autocomplete */ }
-
 /* Page layout  ********************************************************************************************* */
 
 /* Left menu ======================================================================================================== */
@@ -439,8 +436,32 @@ input[type=text].coordinate {
   float: right;
 }
 
+#global_status_window {
+  max-width: 50em;
+  margin: 0.5em;
+}
+
+#global_status_list {
+  text-align: justify;
+  padding: 0.5em;
+}
+
+#global_status_list > li {
+  margin-left: 1.5em;
+}
 
 /* NavBar ======================================================================================================== */
+
+#navbar_container {
+  display: inline-block;
+}
+
+#navbar_container.vertical {
+  display: inline-flex;
+
+  flex-wrap: wrap;
+}
+
 #navbar {
   margin: auto;
   background-color: transparent;
@@ -449,68 +470,39 @@ input[type=text].coordinate {
   margin-bottom: 0.5em;
 }
 
-.navbar-container {
-  /*display: flex;*/
-  /*flex-wrap: wrap;*/
-
-  /*justify-content: space-between;*/
-  /*align-items: center;*/
-  /*align-content: space-between;*/
-}
-
-/*#navbar-halloween {*/
-  /*justify-content: space-around;*/
-/*}*/
-
 #navbar-blitz-button {
   margin: 0.5em 0;
 }
 
-/*#navbar-container-time {*/
-  /*flex-wrap: wrap;*/
-/*}*/
-/*.navbar-container-time-item {*/
-  /*flex-grow: 1;*/
-/*}*/
+#navbar_planet_select {
+  margin: 0.5em 0.5em;
+  flex-grow: 10;
+  font-size: 125%;
+}
 
+#navbar_player_count {
+  margin: 0.5em 0.5em;
+  font-size: 125%;
+}
+
+#navbar-container-time-item {
+  flex-grow: 10;
+}
 
 #navbar-container-button {
-  /*display: flex;*/
-  /*flex-wrap: wrap;*/
-
   justify-content: flex-start;
-  /*justify-content: space-around;*/
-  /*align-items: left;*/
   align-content: space-around;
 }
 .navbar-container-button-que-empty {
   position: absolute;
   left: 0;
-  top: 40%;
+  top: 33.3%;
 
   width: 100%;
 }
 
-/*@media only screen and (max-width : 51.9375em) { !* 831px and less*!*/
-  /*#navbar-container-button.navbar-container {*/
-    /*!*display: flex;*!*/
-    /*!*flex-wrap: wrap;*!*/
-
-    /*justify-content: flex-start;*/
-    /*!*align-items: left;*!*/
-    /*!*align-content: space-around;*!*/
-
-    /*border: 1px solid red !important;*/
-  /*}*/
-
-  /*!*.navbar_button {*!*/
-    /*!*flex-grow: 1;*!*/
-  /*!*}*!*/
-/*}*/
-
-
 #navbar_resources {
-  margin-top: 1em;
+  margin: 0.5em;
 }
 
 .navbar_button {
@@ -2035,6 +2027,10 @@ tr[prod_mode] > :not(:first-child) > span:not([style]) { /* Content of empire ce
 }
 
 /* Border magic ===================================================================================================== */
+.no_border_image { /* Just placeholder for phpstorm autocomplete */ }
+.border_image_small { /* Just placeholder for phpstorm autocomplete */ }
+.border_image_large { /* Just placeholder for phpstorm autocomplete */ }
+
 body:not(.no_border_image) table:not(.markup):not(.noborder):not(.no_border_image):not(.border_image_small),
 body:not(.no_border_image) div#tab_container,
 body:not(.no_border_image) div.market_services,

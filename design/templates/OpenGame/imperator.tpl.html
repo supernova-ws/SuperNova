@@ -1,23 +1,25 @@
-<div class="border_image_small" style="display: inline-block; margin: 0.5em; ">
-  <div class="a50" style="padding: 1em;">
-  <h2>{L_imp_imperator} {user_username}</h2>
+<div>
+  <div class="border_image_small" style="display: inline-block; margin: 0.5em; ">
+    <div class="a50" style="padding: 1em;">
+      <h2>{L_imp_imperator} {user_username}</h2>
 
-  <h3>{L_sys_from} {REGISTRATION_DATE}</h3>
+      <h3>{L_sys_from} {REGISTRATION_DATE}</h3>
 
-  <!-- IF USER_AVATAR --><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><!-- ENDIF -->
-  <h2 class="link">
-    <a href="stat.php?start={user_rank}">
-      {L_ov_rank}:
-      <span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>
-      /
-      <span class="ov_user_total">{USERS_TOTAL}</span>
-    </a>
-  </h2>
+      <!-- IF USER_AVATAR --><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><!-- ENDIF -->
+      <h2 class="link">
+        <a href="stat.php?start={user_rank}">
+          {L_ov_rank}:
+          <span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>
+          /
+          <span class="ov_user_total">{USERS_TOTAL}</span>
+        </a>
+      </h2>
 
-  <h3>{L_sys_gender} {GENDER_TEXT}</h3>
-  <!-- IF VACATION -->
-  <h3>{L_sys_vacation_in}</h3>
-  <!-- ENDIF -->
+      <h3>{L_sys_gender} {GENDER_TEXT}</h3>
+      <!-- IF VACATION -->
+      <h3>{L_sys_vacation_in}</h3>
+      <!-- ENDIF -->
+    </div>
   </div>
 </div>
 <!-- IF SAME_USER && NEW_MESSAGES -->

@@ -17,7 +17,7 @@
 </script>
 
 <form action="index.php?page=options&mode=change" method="post" name="fOptions" enctype="multipart/form-data">
-  <div id="tab_container" style="font-size: 1em; width: 50rem;display: none" class="tabs">
+  <div id="tab_container" style="font-size: 1em; width: 50em; display: none" class="tabs">
     <ul>
       <li><a href="#tab_account">{L_opt_account}</a></li>
       <li><a href="#tab_interface">{L_opt_int_options}</a></li>
@@ -342,6 +342,13 @@
           <!-- ENDIF -->
           <!-- END options_3 -->
           <!-- ENDIF -->
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}]" value="1" id="PLAYER_OPTION_NAVBAR_PLANET_VERTICAL" <!-- IF PLAYER_OPTION_NAVBAR_PLANET_VERTICAL -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_NAVBAR_PLANET_VERTICAL">{L_PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}</label>
+            </td>
+          </tr>
           <tr>
             <td class="c_l" colspan="2">
               <input type="hidden" name="options[{D_PLAYER_OPTION_NAVBAR_RESEARCH_WIDE}]" value="0" />

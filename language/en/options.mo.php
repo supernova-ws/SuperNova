@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40b0.11
+* @version 41a0.31
 *
 */
 
@@ -78,6 +78,7 @@ $a_lang_array = array(
 
   'opt_navbar_title' => 'Navigation Panel',
   'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
+  'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Vertical Resource Navbar',
   'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Wide Research button (old look)',
   'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Disable Expeditions button',
   'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Disable Flying Fleets button',
