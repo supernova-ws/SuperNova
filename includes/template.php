@@ -272,6 +272,19 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     }
   }
 
+  if(!empty($sn_mvc['css'])) {
+    foreach($sn_mvc['css'] as $page_name => $script_list) {
+      if(empty($page_name) || $page_name == $sn_page_name) {
+        foreach($script_list as $filename => $content) {
+          $template->assign_block_vars('css', array(
+            'FILE'    => $filename,
+            'CONTENT' => $content,
+          ));
+        }
+      }
+    }
+  }
+
   $template->assign_vars(array(
     'USER_AUTHLEVEL' => intval($user['authlevel']),
 

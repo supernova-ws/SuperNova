@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a0.7# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a0.26# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -209,6 +209,15 @@ class sn_module {
         !isset($sn_mvc['javascript'][$javascript_page_name]) ? $sn_mvc['javascript'][$javascript_page_name] = array() : false;
         foreach($javascript_list as $script_name => &$script_content) {
           $sn_mvc['javascript'][$javascript_page_name][$script_name] = $script_content;
+        }
+      }
+    }
+
+    if(!empty($this->manifest['css']) && is_array($this->manifest['css'])) {
+      foreach($this->manifest['css'] as $javascript_page_name => &$javascript_list) {
+        !isset($sn_mvc['css'][$javascript_page_name]) ? $sn_mvc['css'][$javascript_page_name] = array() : false;
+        foreach($javascript_list as $script_name => &$script_content) {
+          $sn_mvc['css'][$javascript_page_name][$script_name] = $script_content;
         }
       }
     }

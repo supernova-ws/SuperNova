@@ -444,6 +444,9 @@ input[type=text].coordinate {
 #navbar {
   margin: auto;
   background-color: transparent;
+  background-image: none;
+  margin-top: 0.5em;
+  margin-bottom: 0.5em;
 }
 
 .navbar-container {
@@ -2917,68 +2920,6 @@ input[type=checkbox] {
 .checkator_element.checkbox { /* New element */
   border: 0.2em solid #abadb3;
 }
-
-
-
-
-.highspot_gather_unit_log {
-  max-width: 78em;
-}
-.highspot_gather_unit_container {
-  position: relative;
-
-  width: 12em;
-  height: 12em;
-
-  margin: 0.5em;
-
-  text-align: center;
-}
-
-
-.highspot_gather_treats {
-  max-width: 45em;
-}
-/*.highspot_gather_unit_list_container */
-.highspot_gather_treats > div {
-  margin-bottom: 1em;
-}
-.highspot_gather_treats_text
-{
-  align-items: flex-start;
-  align-content: flex-start;
-}
-.highspot_gather_treats_name
-{
-  margin-bottom: 0.2em;
-  padding: 0.4em;
-  font-size: 125%;
-}
-.highspot_gather_treats_description
-{
-  padding: 0.4em;
-}
-.highspot_gather_treats_images
-{
-  text-align: left;
-  /*align-items: flex-start;*/
-  /*align-content: flex-start;*/
-}
-.highspot_gather_treats_image_container
-{
-  width: 8em;
-  height: 8em;
-
-  margin: 0.5em;
-}
-
-
-
-
-
-
-
-
 
 /* Skinnable items ************************************************************************************************** */
 body {

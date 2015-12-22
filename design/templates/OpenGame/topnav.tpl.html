@@ -1,10 +1,10 @@
 <!-- NAVBAR START -->
 
-<table cellpadding="3" cellspacing="0" class="header c_c" id="navbar"><tbody>
+<table cellpadding="3" cellspacing="0" class="header c_c border_image_small" id="navbar"><tbody>
   <!-- IF HIGHSPOT_GATHER -->
   <tr>
     <td class="c_r markup">
-      <div class="navbar-container contFJ" id="navbar-halloween">
+      <div class="navbar-container contFJ a50" id="navbar-halloween">
         <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}index.php?page=highspot_gather');">
           {L_highspot_gather_navbar_treats_counter}
         </button>
@@ -18,7 +18,7 @@
   <!-- IF CHRISTMAS -->
   <tr>
     <td class="c_r markup">
-      <div class="navbar-container contFJ" id="navbar-christmas">
+      <div class="navbar-container contFJ a50" id="navbar-christmas">
         <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}index.php?page=christmas');">
           {L_event_christmas_tree_imperator_look_universe}
         </button>
@@ -31,7 +31,7 @@
   <!-- ENDIF -->
   <!-- IF GAME_BLITZ_REGISTER && ! GAME_BLITZ -->
   <tr>
-    <td class="c_r markup">
+    <td class="c_r markup a50">
       <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}blitz_register.php');" id="navbar-blitz-button">
         {L_sys_blitz_global_button}:
         <span class="<!-- IF BLITZ_REGISTER_OPEN -->positive<!-- ELSEIF BLITZ_REGISTER_CLOSED -->negative<!-- ELSEIF BLITZ_REGISTER_SHOW_LOGIN -->zero<!-- ELSEIF BLITZ_REGISTER_DISCLOSURE_NAMES --><!-- ENDIF -->">
@@ -42,8 +42,8 @@
   </tr>
   <!-- ENDIF -->
   <tr>
-    <td class="c_l noborder">
-      <div class="contFJ">
+    <td class="c_l markup">
+      <div class="contFJ a50">
         <div>
           <select size="1" onchange="changePlanet(this);" id="navbar_planet_select">
             <!-- BEGIN topnav_planets -->
@@ -75,8 +75,8 @@
   </tr>
 
   <tr>
-    <td>
-      <div class="navbar-container" id="navbar-container-button">
+    <td class="markup">
+      <div class="navbar-container a75" id="navbar-container-button">
         <!-- IF ! GAME_RESEARCH_DISABLED && ! PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH -->
 
           <!-- DEFINE $QUE_ID = '{QUE_RESEARCH}' -->

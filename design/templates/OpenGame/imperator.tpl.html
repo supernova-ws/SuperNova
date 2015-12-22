@@ -1,22 +1,35 @@
-<!-- IF USER_AVATAR --><br /><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><!-- ENDIF -->
-<h2>{L_imp_imperator} {user_username} <strong>{L_ov_rank}: <a href="stat.php?start={user_rank}"><span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>/<span class="ov_user_total">{USERS_TOTAL}</span></strong></a></strong></h2>
-<h3>{L_sys_from} {REGISTRATION_DATE}</h3>
-<h3>{L_sys_gender} {GENDER_TEXT}</h3>
-<!-- IF VACATION -->
-<h3>{L_sys_vacation_in}</h3>
-<!-- ENDIF -->
+<div class="border_image_small" style="display: inline-block; margin: 0.5em; ">
+  <div class="a50" style="padding: 1em;">
+  <h2>{L_imp_imperator} {user_username}</h2>
 
+  <h3>{L_sys_from} {REGISTRATION_DATE}</h3>
+
+  <!-- IF USER_AVATAR --><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/avatar_{USER_ID}.png"><!-- ENDIF -->
+  <h2 class="link">
+    <a href="stat.php?start={user_rank}">
+      {L_ov_rank}:
+      <span class="ov_user_rank">{user_rank} ({RANK_DIFF})</span>
+      /
+      <span class="ov_user_total">{USERS_TOTAL}</span>
+    </a>
+  </h2>
+
+  <h3>{L_sys_gender} {GENDER_TEXT}</h3>
+  <!-- IF VACATION -->
+  <h3>{L_sys_vacation_in}</h3>
+  <!-- ENDIF -->
+  </div>
+</div>
 <!-- IF SAME_USER && NEW_MESSAGES -->
-<table width=519>
-  <tr>
-    <th class="c_c">
-      <a href=messages.php>{L_ov_you_have} <!-- IF NEW_MESSAGES == 1 -->{L_ov_new_message}<!-- ELSE -->{NEW_MESSAGES} {L_ov_new_messages}<!-- ENDIF --></a>
-    </th>
-  </tr>
-</table>
+<div style="width: 50em; display: block; margin: 1em;" class="border_image_small">
+  <a href="messages.php" class="a50 h100" style="padding: 0.5em; display: block">
+    {L_ov_you_have} <!-- IF NEW_MESSAGES == 1 -->{L_ov_new_message}<!-- ELSE -->{NEW_MESSAGES} {L_ov_new_messages}
+    <!-- ENDIF -->
+  </a>
+</div>
 <!-- ENDIF -->
 
-<table width=519>
+<table style="width: 50em">
   <tr class="c_c">
     <th rowspan="2">{L_imp_statistics}</th>
     <th rowspan="2">{L_ov_points}</th>
@@ -54,13 +67,16 @@
     <td colspan="1" align="center">
       <table width=100% class="markup">
         <tr>
-          <td class="c_l">{L_NumberOfRaids}</td><td class="c_r">{raids}</td>
+          <td class="c_l">{L_NumberOfRaids}</td>
+          <td class="c_r">{raids}</td>
         </tr>
         <tr>
-          <td class="c_l">{L_RaidsWin}</td><td class="c_r">{raidswin}</td>
+          <td class="c_l">{L_RaidsWin}</td>
+          <td class="c_r">{raidswin}</td>
         </tr>
         <tr>
-          <td class="c_l">{L_RaidsLoose}</td><td class="c_r">{raidsloose}</td>
+          <td class="c_l">{L_RaidsLoose}</td>
+          <td class="c_r">{raidsloose}</td>
         </tr>
       </table>
     </td>
@@ -89,29 +105,29 @@
 
 <script type="text/javascript">
   var stat = {
-  <!-- BEGIN stat -->
-  '{stat.TYPE}': {
-    'MIN': '{stat.MIN}',
-    'MAX': '{stat.MAX}',
-    'AVG': '{stat.AVG}',
-    'DATA': {
-      <!-- BEGIN entry -->
-      {entry.ID}: {
-        // 'ID': '{entry.ID}',
-        'VALUE': '{entry.VALUE}',
-        'DELTA': '{entry.DELTA}',
-        'PERCENT': '{entry.PERCENT}',
+    <!-- BEGIN stat -->
+    '{stat.TYPE}': {
+      'MIN': '{stat.MIN}',
+      'MAX': '{stat.MAX}',
+      'AVG': '{stat.AVG}',
+      'DATA': {
+        <!-- BEGIN entry -->
+        '{entry.ID}': {
+          // 'ID': '{entry.ID}',
+          'VALUE': '{entry.VALUE}',
+          'DELTA': '{entry.DELTA}',
+          'PERCENT': '{entry.PERCENT}',
+        },
+        <!-- END entry -->
       },
-      <!-- END entry -->
     },
-  },
-  <!-- END stat -->
+    <!-- END stat -->
   };
   var STAT_COUNT = parseInt('{STAT_COUNT}') ? parseInt('{STAT_COUNT}') : 0;
 
   var stat_date = {
     <!-- BEGIN stat_date -->
-    {stat_date.ID}: {
+    '{stat_date.ID}': {
       // 'ID': '{entry.ID}',
       'VALUE': '{stat_date.VALUE}',
       'TEXT': '{stat_date.TEXT}',
@@ -123,15 +139,15 @@
 </script>
 
 <script type="text/javascript">
-  $(document).ready(function() {
-    $(document).on('change', '#stat_type_select', function(){
+  $(document).ready(function () {
+    $(document).on('change', '#stat_type_select', function () {
       stat_type = $(this).val();
-      $('#stat_cell_min_max').find('.stat_min').each(function(){
+      $('#stat_cell_min_max').find('.stat_min').each(function () {
         $(this).text(sn_format_number(stat[stat_type]['MIN']));
         $(this).parent().find('.stat_max').text(sn_format_number(stat[stat_type]['MAX']));
         $(this).parent().find('.stat_avg').text(sn_format_number(stat[stat_type]['AVG']));
       });
-      $('.stat_cell').each(function(){
+      $('.stat_cell').each(function () {
         that = $(this);
         stat_id = that.attr('stat_id');
         // that.find('.stat_bar').height(stat[stat_type]['DATA'][stat_id]['PERCENT'] + '%');
@@ -150,81 +166,87 @@
 </script>
 
 <!-- IF .stat -->
-<h3>
-  {L_imp_stat_header}
-  <select id="stat_type_select" name="stat_type_select">
-    <!-- BEGIN stat -->
+<div class="border_image_large" style="display: inline-block; margin: 1em;">
+  <div class="a50 h100" style="font-size: 125%; padding: 0.5em;">
+    {L_imp_stat_header}
+    <select id="stat_type_select" name="stat_type_select">
+      <!-- BEGIN stat -->
       <option value="{stat.TYPE}">{stat.TEXT}</option>
-    <!-- END stat -->
-  </select>
-</h3>
+      <!-- END stat -->
+    </select>
+  </div>
 
-<table>
-  <tr class="c_c">
-    <th>{L_sys_date}</th>
-    <!-- BEGIN stat_date -->
-    <th class="stat_date_cell">
-      {stat_date.TEXT}
-    </th>
-    <!-- END stat_date -->
-  </tr>
-  <tr>
-    <td id="stat_cell_min_max">
-      <div class="stat_max positive">
-      </div>
+  <table class="no_border_image">
+    <tr class="c_c">
+      <th>{L_sys_date}</th>
+      <!-- BEGIN stat_date -->
+      <th class="stat_date_cell">
+        {stat_date.TEXT}
+      </th>
+      <!-- END stat_date -->
+    </tr>
+    <tr>
+      <td id="stat_cell_min_max">
+        <div class="stat_max positive">
+        </div>
 
-      <div class="stat_avg neutral">
-      </div>
+        <div class="stat_avg neutral">
+        </div>
 
-      <div class="stat_min negative">
-      </div>
+        <div class="stat_min negative">
+        </div>
 
-      <div style="visibility: hidden;">
-        <div class="stat_min"></div>
-        <div class="stat_max"></div>
-      </div>
-    </td>
-    <!-- BEGIN stat_date -->
-    <td stat_id="{stat_date.ID}" class="stat_cell">
-      <div class="ok_bg stat_bar">
-      </div>
+        <div style="visibility: hidden;">
+          <div class="stat_min"></div>
+          <div class="stat_max"></div>
+        </div>
+      </td>
+      <!-- BEGIN stat_date -->
+      <td stat_id="{stat_date.ID}" class="stat_cell">
+        <div class="ok_bg stat_bar">
+        </div>
 
-      <div class="stat_value"></div>
-      <div class="stat_delta"></div>
-      <div style="visibility: hidden;">
         <div class="stat_value"></div>
         <div class="stat_delta"></div>
-      </div>
-    </td>
-    <!-- END stat_date -->
-  </tr>
-</table>
+        <div style="visibility: hidden;">
+          <div class="stat_value"></div>
+          <div class="stat_delta"></div>
+        </div>
+      </td>
+      <!-- END stat_date -->
+    </tr>
+  </table>
+</div>
 <!-- ENDIF -->
 
 <!-- IF SAME_USER -->
   <!-- IF BANNER_URL -->
-    <table width="519" align="center">
-      <tr><td class="c">{L_aff_banner}</td></tr>
-      <tr>
-        <th>
-          <img src="{BANNER_URL}"><br><br>
-          {L_aff_banner_bb}<br>
-          <input type="text" value="[img]{BANNER_URL}[/img]" size="55">
-        </th>
-      </tr>
-    </table>
+  <table width="519" align="center">
+    <tr>
+      <td class="c">{L_aff_banner}</td>
+    </tr>
+    <tr>
+      <th>
+        <img src="{BANNER_URL}"><br><br>
+        {L_aff_banner_bb}<br>
+        <input type="text" value="[img]{BANNER_URL}[/img]" size="55">
+      </th>
+    </tr>
+  </table>
   <!-- ENDIF -->
 
   <!-- IF USERBAR_URL -->
-    <table width="519" align="center">
-      <tr><td class="c">{L_aff_userbar}</td></tr>
-      <tr>
-        <th>
-          <img src="{USERBAR_URL}"><br><br>
-          {L_aff_userbar_bb}<br>
-          <input type="text" value="[img]{USERBAR_URL}[/img]" size="55">
-        </th>
-      </tr>
-    </table>
+  <table width="519" align="center">
+    <tr>
+      <td class="c">{L_aff_userbar}</td>
+    </tr>
+    <tr>
+      <th>
+        <img src="{USERBAR_URL}"><br><br>
+        {L_aff_userbar_bb}<br>
+        <input type="text" value="[img]{USERBAR_URL}[/img]" size="55">
+      </th>
+    </tr>
+  </table>
   <!-- ENDIF -->
 <!-- ENDIF -->

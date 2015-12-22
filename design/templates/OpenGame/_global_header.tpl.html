@@ -36,6 +36,14 @@
     <!--<link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin_server.css?{C_var_db_update}" />-->
     <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_override.css?{C_var_db_update}" />
 
+    <!-- BEGIN css -->
+      <!-- IF css.CONTENT -->
+        <style type="text/css">{css.CONTENT}</style>
+      <!-- ELSEIF css.FILE -->
+        <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{css.FILE}?{C_var_db_update}" />
+      <!-- ENDIF -->
+    <!-- END css -->
+
     <title>{title}</title>
   </head>
 
