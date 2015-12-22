@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a0.33');
+define('SN_VERSION', '41a0.34');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 // Game type constants starts with GAME_
