@@ -453,7 +453,7 @@ function tpl_render_topnav(&$user, $planetrow) { return sn_function_call('tpl_re
  * @return string|template
  */
 function sn_tpl_render_topnav(&$user, $planetrow) {
-  global $lang, $config, $sn_module_list, $template_result;
+  global $lang, $config, $sn_module_list, $template_result, $sn_mvc;
 
   if(!is_array($user)) {
     return '';
@@ -502,6 +502,17 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   que_tpl_parse($template, QUE_STRUCTURES, $user, $planetrow, null, true);
   que_tpl_parse($template, QUE_RESEARCH, $user, array(), null, !classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE]);
   que_tpl_parse($template, SUBQUE_FLEET, $user, $planetrow, null, true);
+
+  if(!empty($sn_mvc['navbar_prefix_button']) && is_array($sn_mvc['navbar_prefix_button'])) {
+    foreach($sn_mvc['navbar_prefix_button'] as $navbar_button_image => $navbar_button_url) {
+      $template->assign_block_vars('navbar_prefix_button', array(
+        'IMAGE' => $navbar_button_image,
+        'URL_RELATIVE' => $navbar_button_url,
+      ));
+    }
+  }
+
+  $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array($sn_mvc['navbar_prefix_button']) ? count($sn_mvc['navbar_prefix_button']) : 0);
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate(SN_TIME_NOW);

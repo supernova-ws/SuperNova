@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a0.26# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a0.37# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -219,6 +219,12 @@ class sn_module {
         foreach($javascript_list as $script_name => &$script_content) {
           $sn_mvc['css'][$javascript_page_name][$script_name] = $script_content;
         }
+      }
+    }
+
+    if(!empty($this->manifest['navbar_prefix_button']) && is_array($this->manifest['navbar_prefix_button'])) {
+      foreach($this->manifest['navbar_prefix_button'] as $button_image => $button_url_relative) {
+        $sn_mvc['navbar_prefix_button'][$button_image] = $button_url_relative;
       }
     }
   }

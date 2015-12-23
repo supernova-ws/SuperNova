@@ -8,25 +8,12 @@
 
 <div id="navbar_container" class="{$NAVBAR_CLASS}">
   <div class="header c_c border_image_small" id="navbar">
-    <!-- IF HIGHSPOT_GATHER -->
-    <div class="contFJ a50 flexW" id="navbar-halloween">
-      <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}index.php?page=highspot_gather');">
-        {L_highspot_gather_navbar_treats_counter}
-      </button>
-      <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}index.php?page=highspot_gather_player');">
-        {L_highspot_gather_navbar_treats_players}
-      </button>
-    </div>
-    <!-- ENDIF -->
-
-    <!-- IF CHRISTMAS -->
-    <div class="contFJ a50 flexW" id="navbar-christmas">
-      <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}index.php?page=christmas');">
-        {L_event_christmas_tree_imperator_look_universe}
-      </button>
-      <button onclick="sn_redirect('{D_SN_ROOT_VIRTUAL}index.php?page=imperator#christmas');">
-        {L_event_christmas_tree_topnav_look_own}
-      </button>
+    <!-- IF NAVBAR_PREFIX_BUTTONS -->
+    <div class="contF a50 flexW">
+      <!-- BEGIN navbar_prefix_button -->
+      <a href="{navbar_prefix_button.URL_RELATIVE}" style="margin: 0.5em; width: 5.818181818182em;">
+        <img class="w100" src="{navbar_prefix_button.IMAGE}" />
+      </a>
     </div>
     <!-- ENDIF -->
 
