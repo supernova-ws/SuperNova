@@ -470,6 +470,19 @@ input[type=text].coordinate {
   margin-bottom: 0.5em;
 }
 
+.navbar-festival_button {
+  display: inline-block;
+
+  margin: 0.5em;
+  width: 5.818181818182em;
+  height: 5.818181818182em;
+}
+
+.navbar-festival_button:hover > a,
+.navbar-festival_button > a:hover {
+  background-color: transparent;
+}
+
 #navbar-blitz-button {
   margin: 0.5em 0;
 }
