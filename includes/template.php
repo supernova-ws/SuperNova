@@ -215,14 +215,8 @@ function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $A
 function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $isDisplayMenu = true, $exitStatus = true) {
   global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
 
-//  $isDisplayMenu = is_object($page) && isset($page->_rootref['MENU']) ? $page->_rootref['MENU'] : $isDisplayMenu;
-//  $topnav = is_object($page) && isset($page->_rootref['NAVBAR']) ? $page->_rootref['NAVBAR'] : $topnav;
-//  $title = $title ? $title : (is_object($page) && isset($page->_rootref['PAGE_HEADER']) ? $page->_rootref['PAGE_HEADER'] : '');
-//  if(is_object($page) && !isset($page->_rootref['PAGE_HEADER']) && $title) {
-//    $page->assign_var('PAGE_HEADER', $title);
-//  }
-
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
+  $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
 
   if(is_object($page)) {
     isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
@@ -255,32 +249,55 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;
   }
 
+  $template_result['LOGIN_LOGOUT'] = $is_login;
+
   $template = gettemplate('_global_header', true);
-//  $template->assign_recursive($template_result);
-//pdump($template_result);
 
   if(!empty($sn_mvc['javascript'])) {
     foreach($sn_mvc['javascript'] as $page_name => $script_list) {
       if(empty($page_name) || $page_name == $sn_page_name) {
         foreach($script_list as $filename => $content) {
-          $template->assign_block_vars('javascript', array(
+          $template_result['.']['javascript'][] = array(
             'FILE'    => $filename,
             'CONTENT' => $content,
-          ));
+          );
         }
       }
     }
   }
 
-  if(!empty($sn_mvc['css'])) {
-    foreach($sn_mvc['css'] as $page_name => $script_list) {
-      if(empty($page_name) || $page_name == $sn_page_name) {
-        foreach($script_list as $filename => $content) {
-          $template->assign_block_vars('css', array(
-            'FILE'    => $filename,
-            'CONTENT' => $content,
-          ));
-        }
+
+
+//    <!-- IF LOGIN_LOGOUT -->
+//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/{GAME_MODE_CSS_PREFIX}login_background.min.css?{C_var_db_update}" />
+//    <!-- ELSE -->
+//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}{GAME_MODE_CSS_PREFIX}skin_background.min.css?{C_var_db_update}" />
+//    <!-- ENDIF -->
+//    <!--<link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin_server.css?{C_var_db_update}" />-->
+//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_override.css?{C_var_db_update}" />
+  empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
+  $standard_css = array(
+    'design/css/jquery-ui.css' => '',
+    'design/css/global.min.css' => '',
+  );
+  $is_login ? $standard_css['design/css/login.min.css'] = '': false;
+  $standard_css += array(
+//    'design/css/design/css/global-ie.min.css' => '', // TODO
+    TEMPLATE_PATH . '/_template.min.css' => '',
+    ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin.min.css' => '',
+  );
+
+  // Prepending standard CSS files
+  $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
+
+
+  foreach($sn_mvc['css'] as $page_name => $script_list) {
+    if(empty($page_name) || $page_name == $sn_page_name) {
+      foreach($script_list as $filename => $content) {
+        $template_result['.']['css'][] = array(
+          'FILE'    => $filename,
+          'CONTENT' => $content,
+        );
       }
     }
   }
@@ -292,7 +309,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     'FONT_SIZE_PERCENT_DEFAULT_STRING' => FONT_SIZE_PERCENT_DEFAULT_STRING,
 
     'SN_TIME_NOW'          => SN_TIME_NOW,
-    'LOGIN_LOGOUT'         => defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true,
+    'LOGIN_LOGOUT'         => $is_login,
     'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
     //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
     'TIME_DIFF_MEASURE'    => intval(

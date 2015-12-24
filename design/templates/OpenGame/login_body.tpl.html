@@ -1,31 +1,20 @@
-<style type="text/css">
-/* @import url(./design/css/login.css);*/
-</style>
-
 <script type="text/javascript">
   // var password, password2;
   var L_sys_login_password_show = '{LA_sys_login_password_show}';
   var L_sys_login_password_hide = '{LA_sys_login_password_hide}';
-
-  //  $(document).ready(function(){
-  //    $("#login_container").tabs().show();
-  //  });
 </script>
 
 <div id="log_main">
   <div id="log_title">{L_sys_supernova}: {L_sys_universe} "{C_game_name}"</div>
-  <!--<div id="log_status">-->
   <div>
     {L_adm_opt_galaxies}: <font color="red">{C_game_maxGalaxy}</font> - {L_adm_opt_systems}: <font color="red">{C_game_maxSystem}</font> - {L_adm_opt_planets}: <font color="red">{C_game_maxPlanet}</font>
   </div>
-  <!--<div id="log_status">-->
   <div>
     {L_adm_opt_speed}:
     {L_adm_opt_game_gspeed} <font color="red">x{C_game_speed}</font> -
     {L_adm_opt_game_fspeed} <font color="red">x{C_fleet_speed}</font> -
     {L_adm_opt_game_pspeed} <font color="red">x{C_resource_multiplier}</font>
   </div>
-  <!--<div id="log_status">-->
   <div>
     {L_log_online}: <font color="red">{online_users}</font> - {L_log_lastreg}: <font color="red">{last_user}</font> - {L_log_numbreg}: <font color="red">{C_users_amount}</font><br>
   </div>
@@ -57,9 +46,8 @@
     </ul>
 
     <div id="tab_login">
-      <!-- <form action="login.php{LANG}{referral}#tab_login" method="post"> -->
       <form action="{FILENAME}{REQUEST_PARAMS}#tab_login" method="post">
-        <table width="100%" align="center" class="c_c">
+        <table width="100%" align="center" class="c_c no_border_image">
           <tr>
             <td width="30%">
               {L_login_account_name_or_email}
@@ -94,18 +82,13 @@
     <div id="tab_register">
       <form name="registerForm" method="POST" action="{FILENAME}{REQUEST_PARAMS}#tab_register" onsubmit="changeAction('register');" >
         <input type="hidden" name="id_ref" value="{id_ref}">
-        <table width="100%" align="center">
+        <table width="100%" align="center" class="no_border_image">
           <tbody>
           <tr style="margin-bottom: 10px;">
             <td colspan="2" class="markup c_j">
               {L_log_reg_text0} <!-- IF URL_RULES --><a href="{URL_RULES}" target="_blank" style="color: red; text-decoration: underline; font-face: bold;"><!-- ENDIF -->{L_reg_with_rules}<!-- IF URL_RULES --></a><!-- ENDIF -->. {L_log_reg_text1}
             </td>
           </tr>
-
-          <!--<tr>-->
-            <!--<th width="50%">{L_User_name}</th>-->
-            <!--<th width="50%"><input name="username" type="text" value="{USERNAME}" size="20" maxlength="32" /></th>-->
-          <!--</tr>-->
 
           <tr>
             <th width="50%">{L_sys_email}</th>
@@ -132,50 +115,6 @@
               <input class="password_show" type="button" value="{L_sys_login_password_show}" show_element="password_repeat" />
             </th>
           </tr>
-          <!--
-          <tr>
-            <th>{L_E-Mail}</th>
-            <th><input name="email" type="text" size="20" maxlength="64" /></th>
-          </tr>
-
-          <tr>
-            <th>{L_MainPlanet}</th>
-            <th><input name="planet_name" type="text" size="20" maxlength="20" /></th>
-          </tr>
-
-          <tr>
-            <th>{L_Sex}</th>
-
-            <th>
-              <select name="gender">
-                <option value="M" selected="selected">{L_Male}</option>
-                <option value="F">{L_Female}</option>
-              </select>
-            </th>
-          </tr>
-          -->
-          <!--
-          <tr>
-            <th>{L_Languese}:</th>
-            <th>
-              <select name="language">
-                <option value="ru" selected="selected">{ru}</option>
-              </select>
-            </th>
-          </tr>
-
-          <tr>
-            <th><img src="captcha.php" /></th>
-            <th><input name="captcha" type="text" size="20" maxlength="20" /></th>
-          </tr>
-          -->
-          <!--
-          <tr>
-            <th colspan=2>
-              <input name="register" type="checkbox" value="1" /> {L_reg_i_agree} !-- IF URL_RULES --<a href="{URL_RULES}" style="color: red; text-decoration: underline; font-face: bold;">!-- ENDIF --{L_reg_with_rules}!-- IF URL_RULES --</a>!-- ENDIF --
-            </th>
-          </tr>
-          -->
           <tr>
             <th colspan="2">
               <input name="lang" type="hidden" value="{LANG}" />
@@ -184,23 +123,13 @@
           </tr>
           </tbody>
         </table>
-        <!-- <input type="hidden" name="language" value="ru"> -->
       </form>
-      <!--
-      <br>
-      {L_log_reg_already} <a href="login.php{LANG}{referral}" class="link">{L_log_login_page}</a><br>
-      {L_log_reg_already_lost} <a href="lostpassword.php{LANG}{referral}" class="link">{L_PasswordLost}</a><br>
-      <br>
-      -->
     </div>
     <!-- ENDIF -->
 
     <div id="tab_password_reset">
-<!--
-      <form action="login.php{LANG}{referral}#tab_password_reset" method="post">
--->
       <form action="{FILENAME}{REQUEST_PARAMS}#tab_password_reset" method="post">
-        <table width="340" align="center">
+        <table width="340" align="center" class="no_border_image">
           <tbody>
           <tr>
             <td colspan="2" class="markup c_j">{L_log_lost_description1}</td>
@@ -216,7 +145,7 @@
         </table>
       </form>
       <form action="{FILENAME}{REQUEST_PARAMS}#tab_password_reset" method="post">
-        <table width="340" align="center">
+        <table width="340" align="center" class="no_border_image">
           <tbody>
           <tr>
             <td colspan="2" class="markup c_j">{L_log_lost_description2}</td>
@@ -238,7 +167,7 @@
 
   <!-- IF .language -->
   <div id="log_menu">
-    <table class="markup c_c"><tr>
+    <table class="markup c_c no_border_image"><tr>
       <!-- BEGIN language -->
       <td style="padding: 0px 8px">
         <a href="{FILENAME}?lang={language.LANG_NAME_ISO2}&id_ref={id_ref}">

@@ -222,3 +222,60 @@ div.market_services {
 .ui-tabs .ui-tabs-panel {
   background-color: #222D42;
 }
+
+/*
+Break points:
+< 480 - slow mobile devices
+  No background at all
+>= 480 - still slow mobile devices or portrait orientation
+  Depends on size. 40kb - OK, 100kb - no background
+>= 760 - Desktops and laptops medium-res
+  800px background
+>= 950 - Desktops and laptops medium-res, includes 960, 1024 width
+  1024 background
+>= 1224 - Desktops and laptops normal res
+  1280 background
+>= 1550 - Desktops and laptops above normal res. I.e. 1600x
+  1600 background
+>= 1824 - Desktops and laptops high res
+  1920 background
+*/
+
+@media only screen and (min-width: 480px) {
+  body {
+    background-image: url(img/background_0800.jpg);
+  }
+}
+
+/* Desktops and laptops medium-res */
+/*@media only screen and (min-width: 760px) {*/
+/*body {*/
+/*background-image: url(img/background_0800.jpg);*/
+/*}*/
+/*}*/
+
+/* Desktops and laptops ----------- */
+@media only screen and (min-width: 950px) {
+  body {
+    background-image: url(img/background_1024.jpg);
+  }
+}
+
+@media only screen and (min-width: 1224px) {
+  body {
+    background-image: url(img/background_1280.jpg);
+  }
+}
+
+/* Large screens ----------- */
+@media only screen and (min-width: 1550px) {
+  body {
+    background-image: url(img/background_1600.jpg);
+  }
+}
+
+@media only screen and (min-width: 1824px) {
+  body {
+    background-image: url(img/background_1920.jpg);
+  }
+}
