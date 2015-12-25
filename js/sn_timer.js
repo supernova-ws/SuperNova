@@ -512,7 +512,7 @@ if(window.LOADED_TIMER === undefined) {
           // date&time with delta
           local_time_plus = new Date(time_local_now.valueOf() + timer_options['delta'] * 1000);
 
-          timer['html_main'].html(snDateToString(local_time_plus, timer_options['format']));
+          timer['html_main'].text(snDateToString(local_time_plus, timer_options['format']));
           break;
         }
       }
