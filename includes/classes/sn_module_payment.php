@@ -333,7 +333,7 @@ abstract class sn_module_payment extends sn_module {
 
     PAYMENT_METHOD_GENERIC => array(
       PAYMENT_METHOD_GENERIC_XSOLLA => array(
-        'currency' => 'USD',
+        'currency' => 'UAH',
         'image' => 'design/images/payments/generic/xsolla.png',
         'name' => true,
         'button' => true,
