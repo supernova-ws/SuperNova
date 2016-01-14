@@ -375,7 +375,7 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
 //    if(!empty($incoming['incoming'])) {
 //      throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
 //    }
-    if(!fleet_count_incoming($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'])) {
+    if(fleet_count_incoming($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'])) {
       throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
     }
 
