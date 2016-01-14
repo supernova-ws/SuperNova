@@ -41,7 +41,7 @@ function db_set_make_safe_string($set, $delta = false) {
       $new_value = '"' . db_escape($value) . '"';
     } elseif($delta) {
       // float and DELTA-set
-      $new_value = "`{$field}` + ({$new_value})";
+      $new_value = "{$field} + ({$new_value})";
     }
     $set_safe[] = "{$field} = {$new_value}";
   }
