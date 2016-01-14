@@ -33,6 +33,7 @@ function db_set_make_safe_string($set, $delta = false) {
     }
 
     $field = '`' . db_escape($field) . '`';
+    $new_value = $value;
     if($value === null) {
       $new_value = 'NULL';
     } elseif(is_string($value) && (string)($new_value = floatval($value)) != (string)$value) {
