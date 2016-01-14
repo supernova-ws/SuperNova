@@ -284,7 +284,7 @@ switch($mode = sys_get_param_str('mode')) {
 
     $fleet_id = 1;
 
-    $fleet_list = flt_get_fleets($user['id']);
+    $fleet_list = fleet_and_missiles_list_incoming($user['id']);
     $fleets = flt_parse_fleets_to_events($fleet_list);
 
     $planet_count = 0;

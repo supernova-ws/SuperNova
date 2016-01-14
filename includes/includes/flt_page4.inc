@@ -1,7 +1,4 @@
 <?php
-// verband.php
-// @version 1.0
-// @copyright 2008 by ??????? for XNova
 
 if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
@@ -14,12 +11,17 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
   exit();
 }
 
-$query = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = '{$fleetid}'");
-if(db_num_rows($query) != 1) {
+$fleet = db_fleet_get($fleetid);
+if(!$fleet) {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
+//$query = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = '{$fleetid}'");
+//if(db_num_rows($query) != 1) {
+//  message($lang['fl_fleet_not_exists'], $lang['fl_error']);
+//}
+//
+//$fleet = db_fetch($query);
 
-$fleet = db_fetch($query);
 if ($fleet['fleet_start_time'] <= SN_TIME_NOW || $fleet['fleet_end_time'] < SN_TIME_NOW || $fleet['fleet_mess'] == 1) {
   message($lang['fl_isback'], $lang['fl_error']);
 }
@@ -60,10 +62,15 @@ if($userToAdd_unsafe) {
           `eingeladen` = '" . $user['id'] . "',
           `fleet_end_time` = '" . $fleet['fleet_end_time']. "'");
 
-        $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
+        $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
 
-        doquery("UPDATE {{fleets}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'");
+//        doquery("UPDATE {{fleets}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'");
+        fleet_update_set($fleetid, array(
+          'fleet_group' => $aks['id'],
+          'fleet_mission' => MT_AKS,
+        ));
         $fleet['fleet_group'] = $aks['id'];
+        $fleet['fleet_mission'] = MT_AKS;
       } else {
         message($lang['fl_aks_already_in_aks'], $lang['fl_error']);
       }
@@ -100,6 +107,8 @@ $template = gettemplate('fleet_aks_invite', true);
 $template->assign_vars(array(
   'FLEET_ID' => $fleetid,
   'MESSAGE' => $add_user_message_mr,
+  'PAGE_HEADER' => "{$lang['fl_associate']} '{$aks['name']}'",
+  'MISSION_NAME' => $lang['type_mission'][MT_AKS],
 ));
 
 if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(LOC_USER, "`id` in ({$aks['eingeladen']})")) && !empty($members)) {
@@ -110,22 +119,35 @@ if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(
   }
 }
 
-$fleet_query = doquery(
-  "SELECT f.*, ps.name AS fleet_start_name, pe.name AS fleet_end_name
-  FROM {{fleets}} AS f
-    LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id
-    LEFT JOIN {{planets}} AS pe ON pe.id = f.fleet_end_planet_id
-  WHERE fleet_id = {$fleetid}"
-);
-while ($fleet_row = db_fetch($fleet_query)) {
-  $i++;
-  $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
+//$fleet_query = doquery(
+//  "SELECT f.*, ps.name AS fleet_start_name, pe.name AS fleet_end_name
+//  FROM {{fleets}} AS f
+//    LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id
+//    LEFT JOIN {{planets}} AS pe ON pe.id = f.fleet_end_planet_id
+//  WHERE fleet_id = {$fleetid}"
+//);
+//while ($fleet_row = db_fetch($fleet_query)) {
+//  $i++;
+//  $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
+//
+//  $template->assign_block_vars('fleets', $fleet_data['fleet']);
+//
+//  foreach($fleet_data['ships'] as $ship_data) {
+//    $template->assign_block_vars('fleets.ships', $ship_data);
+//  }
+//}
 
-  $template->assign_block_vars('fleets', $fleet_data['fleet']);
+$i++;
+$fleet_row = db_fleet_get($fleetid);
+$planet_start = db_planet_by_id($fleet_row['fleet_start_planet_id']);
+$fleet_row['fleet_start_name'] = !empty($planet_start['name']) ? $planet_start['name'] : '';
+$planet_end = db_planet_by_id($fleet_row['fleet_end_planet_id']);
+$fleet_row['fleet_end_name'] = !empty($planet_end['name']) ? $planet_end['name'] : '';
 
-  foreach($fleet_data['ships'] as $ship_data) {
-    $template->assign_block_vars('fleets.ships', $ship_data);
-  }
+$fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
+$template->assign_block_vars('fleets', $fleet_data['fleet']);
+foreach($fleet_data['ships'] as $ship_data) {
+  $template->assign_block_vars('fleets.ships', $ship_data);
 }
 
 display($template, $lang['fl_title']);

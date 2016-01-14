@@ -260,7 +260,7 @@ function sn_imperium_view($template = null) {
     'COLONIES_CURRENT' => get_player_current_colonies($user),
     'COLONIES_MAX' => get_player_max_colonies($user),
 
-    'EXPEDITIONS_CURRENT' => get_player_current_expeditions($user),
+    'EXPEDITIONS_CURRENT' => fleet_count_flying($user['id'], MT_EXPLORE),
     'EXPEDITIONS_MAX' => get_player_max_expeditons($user),
 
     'PLANET_DENSITY_RICHNESS_NORMAL' => PLANET_DENSITY_RICHNESS_NORMAL,

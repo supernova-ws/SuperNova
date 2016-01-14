@@ -65,7 +65,8 @@ function flt_mission_spy(&$mission_data)
 
   if(!isset($target_user_row['id']) || !isset($target_planet_row['id']) || !isset($spying_user_row['id']))
   {
-    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+//    doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
+    fleet_send_back($fleet_row);
     return;
   }
 
@@ -154,7 +155,8 @@ function flt_mission_spy(&$mission_data)
 
     if($spy_detected)
     {
-      doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+//      doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+      db_fleet_delete($fleet_row['fleet_id']);
 
       $debris_planet_id = $target_planet_row['planet_type'] == PT_PLANET ? $target_planet_row['id'] : $target_planet_row['parent_planet'];
 
@@ -176,7 +178,8 @@ function flt_mission_spy(&$mission_data)
 
   if(!$spy_detected)
   {
-    doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+//    doquery("UPDATE {{fleets}} SET `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+    fleet_send_back($fleet_row);
   }
 
   return $result;

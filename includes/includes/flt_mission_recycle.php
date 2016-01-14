@@ -20,7 +20,7 @@ function flt_mission_recycle(&$mission_data)
   if(!isset($destination_planet['id']))
   {
     // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
-    flt_send_back($mission_data['fleet']);
+    fleet_send_back($mission_data['fleet']);
     return CACHE_FLEET;
   }
 
@@ -103,9 +103,17 @@ function flt_mission_recycle(&$mission_data)
   $Message = sprintf($lang['sys_recy_gotten'], pretty_number($RecycledGoods["metal"]), $lang['Metal'], pretty_number($RecycledGoods["crystal"]), $lang['Crystal']);
   msg_send_simple_message ( $fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_RECYCLE, $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message);
 
-  $QryUpdateFleet  = "UPDATE {{fleets}} SET `fleet_mess` = 1,`fleet_resource_metal` = '{$NewCargo['Metal']}',`fleet_resource_crystal` = '{$NewCargo['Crystal']}',`fleet_resource_deuterium` = '{$NewCargo['Deuterium']}' ";
-  $QryUpdateFleet .= "WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;";
-  doquery( $QryUpdateFleet);
+//  $QryUpdateFleet  = "UPDATE {{fleets}} SET `fleet_mess` = 1,`fleet_resource_metal` = '{$NewCargo['Metal']}',`fleet_resource_crystal` = '{$NewCargo['Crystal']}',`fleet_resource_deuterium` = '{$NewCargo['Deuterium']}' ";
+//  $QryUpdateFleet .= "WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;";
+//  doquery( $QryUpdateFleet);
+
+  $fleet_set = array(
+    'fleet_mess' => 1,
+    'fleet_resource_metal' => $NewCargo['Metal'],
+    'fleet_resource_crystal' => $NewCargo['Crystal'],
+    'fleet_resource_deuterium' => $NewCargo['Deuterium'],
+  );
+  fleet_update_set($fleet_row['fleet_id'], $fleet_set);
 
   return CACHE_FLEET | CACHE_PLANET_DST;
 }

@@ -159,19 +159,28 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   $bashing_list = array(SN_TIME_NOW);
 
   // Retrieving flying fleets
-  $flying_fleets = array();
-  $query = doquery("SELECT fleet_group, fleet_start_time FROM {{fleets}} WHERE
-  fleet_end_galaxy = {$planet_dst['galaxy']} AND
-  fleet_end_system = {$planet_dst['system']} AND
-  fleet_end_planet = {$planet_dst['planet']} AND
-  fleet_end_type   = {$planet_dst['planet_type']} AND
-  fleet_owner = {$user['id']} AND fleet_mission IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ") AND fleet_mess = 0;");
-  while($bashing_fleets = db_fetch($query)) {
+//  $flying_fleets = array();
+//  $query = doquery("SELECT fleet_group, fleet_start_time FROM {{fleets}} WHERE
+//  fleet_end_galaxy = {$planet_dst['galaxy']} AND
+//  fleet_end_system = {$planet_dst['system']} AND
+//  fleet_end_planet = {$planet_dst['planet']} AND
+//  fleet_end_type   = {$planet_dst['planet_type']} AND
+//  fleet_owner = {$user['id']} AND fleet_mission IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ") AND fleet_mess = 0;");
+//  while($bashing_fleets = db_fetch($query)) {
+//    // Checking for ACS - each ACS count only once
+//    if($bashing_fleets['fleet_group']) {
+//      $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_start_time'];
+//    } else {
+//      $bashing_list[] = $bashing_fleets['fleet_start_time'];
+//    }
+//  }
+  $bashing_fleet_list = fleet_list_bashing($user['id'], $planet_dst);
+  foreach($bashing_fleet_list as $fleet_row) {
     // Checking for ACS - each ACS count only once
-    if($bashing_fleets['fleet_group']) {
-      $bashing_list["{$user['id']}_{$bashing_fleets['fleet_group']}"] = $bashing_fleets['fleet_start_time'];
+    if($fleet_row['fleet_group']) {
+      $bashing_list["{$user['id']}_{$fleet_row['fleet_group']}"] = $fleet_row['fleet_start_time'];
     } else {
-      $bashing_list[] = $bashing_fleets['fleet_start_time'];
+      $bashing_list[] = $fleet_row['fleet_start_time'];
     }
   }
 
@@ -327,8 +336,9 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
 
   $flying_fleets = $options['flying_fleets'];
   if(!$flying_fleets) {
-    $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
-    $flying_fleets = $flying_fleets['flying_fleets'];
+//    $flying_fleets = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
+//    $flying_fleets = $flying_fleets['flying_fleets'];
+    $flying_fleets = fleet_count_flying($user['id']);
   }
   if(GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE) {
     return $result = ATTACK_NO_SLOTS;
@@ -531,37 +541,68 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   $to['id_owner'] = intval($to['id_owner']);
 
-  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
-  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
-  $QryInsertFleet .= "`fleet_mission` = '{$mission}', ";
-  $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
-  $QryInsertFleet .= "`fleet_array` = '{$fleet_string}', ";
-  $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
-  if($from['id'])
-  {
-    $QryInsertFleet .= "`fleet_start_planet_id` = '{$from['id']}', ";
-  }
-  $QryInsertFleet .= "`fleet_start_galaxy` = '{$from['galaxy']}', ";
-  $QryInsertFleet .= "`fleet_start_system` = '{$from['system']}', ";
-  $QryInsertFleet .= "`fleet_start_planet` = '{$from['planet']}', ";
-  $QryInsertFleet .= "`fleet_start_type` = '{$from['planet_type']}', ";
-  $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
-  $QryInsertFleet .= "`fleet_end_stay` = '{$stay_time}', ";
-  if($to['id'])
-  {
-    $QryInsertFleet .= "`fleet_end_planet_id` = '{$to['id']}', ";
-  }
-  $QryInsertFleet .= "`fleet_end_galaxy` = '{$to['galaxy']}', ";
-  $QryInsertFleet .= "`fleet_end_system` = '{$to['system']}', ";
-  $QryInsertFleet .= "`fleet_end_planet` = '{$to['planet']}', ";
-  $QryInsertFleet .= "`fleet_end_type` = '{$to['planet_type']}', ";
-  $QryInsertFleet .= "`fleet_resource_metal` = " . floatval($fleet[RES_METAL]) . ", ";
-  $QryInsertFleet .= "`fleet_resource_crystal` = " . floatval($fleet[RES_CRYSTAL]) . ", ";
-  $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
-  $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
-  $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
-  $QryInsertFleet .= "`start_time` = " . SN_TIME_NOW . ";";
-  doquery( $QryInsertFleet);
+//  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
+//  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
+//  $QryInsertFleet .= "`fleet_mission` = '{$mission}', ";
+//  $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
+//  $QryInsertFleet .= "`fleet_array` = '{$fleet_string}', ";
+//  $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
+//  if($from['id'])
+//  {
+//    $QryInsertFleet .= "`fleet_start_planet_id` = '{$from['id']}', ";
+//  }
+//  $QryInsertFleet .= "`fleet_start_galaxy` = '{$from['galaxy']}', ";
+//  $QryInsertFleet .= "`fleet_start_system` = '{$from['system']}', ";
+//  $QryInsertFleet .= "`fleet_start_planet` = '{$from['planet']}', ";
+//  $QryInsertFleet .= "`fleet_start_type` = '{$from['planet_type']}', ";
+//  $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
+//  $QryInsertFleet .= "`fleet_end_stay` = '{$stay_time}', ";
+//  if($to['id'])
+//  {
+//    $QryInsertFleet .= "`fleet_end_planet_id` = '{$to['id']}', ";
+//  }
+//  $QryInsertFleet .= "`fleet_end_galaxy` = '{$to['galaxy']}', ";
+//  $QryInsertFleet .= "`fleet_end_system` = '{$to['system']}', ";
+//  $QryInsertFleet .= "`fleet_end_planet` = '{$to['planet']}', ";
+//  $QryInsertFleet .= "`fleet_end_type` = '{$to['planet_type']}', ";
+//  $QryInsertFleet .= "`fleet_resource_metal` = " . floatval($fleet[RES_METAL]) . ", ";
+//  $QryInsertFleet .= "`fleet_resource_crystal` = " . floatval($fleet[RES_CRYSTAL]) . ", ";
+//  $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
+//  $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
+//  $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
+//  $QryInsertFleet .= "`start_time` = " . SN_TIME_NOW . ";";
+//  doquery( $QryInsertFleet);
+
+  $fleet_set = array(
+    'fleet_owner' => $user['id'],
+    'fleet_mission' => $mission,
+    'fleet_amount' => $fleet_ship_count,
+    'fleet_array' => $fleet_string,
+
+    'fleet_start_time' => $fleet_start_time,
+    'fleet_start_planet_id' => intval($from['id']) ? $from['id'] : null,
+    'fleet_start_galaxy' => $from['galaxy'],
+    'fleet_start_system' => $from['system'],
+    'fleet_start_planet' => $from['planet'],
+    'fleet_start_type' => $from['planet_type'],
+
+    'fleet_end_time' => $fleet_end_time,
+    'fleet_end_stay' => $stay_time,
+    'fleet_end_planet_id' => intval($to['id']) ? $to['id'] : null,
+    'fleet_end_galaxy' => $to['galaxy'],
+    'fleet_end_system' => $to['system'],
+    'fleet_end_planet' => $to['planet'],
+    'fleet_end_type' => $to['planet_type'],
+    'fleet_target_owner' => intval($to['id_owner']) ? $to['id_owner'] : 0,
+
+    'fleet_resource_metal' => floatval($fleet[RES_METAL]),
+    'fleet_resource_crystal' => floatval($fleet[RES_CRYSTAL]),
+    'fleet_resource_deuterium' => floatval($fleet[RES_DEUTERIUM]),
+
+    'fleet_group' => $fleet_group,
+    'start_time' => SN_TIME_NOW,
+  );
+  fleet_insert_set($fleet_set);
 
   $planet_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
   $db_changeset['planets'][] = array(

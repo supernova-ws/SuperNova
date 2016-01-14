@@ -47,9 +47,12 @@ function sn_options_model() {
           die();
         }
 
-        $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", true);
-
-        if($is_building) {
+//        $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", true);
+//        if($is_building) {
+//          message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
+//          die();
+//        }
+        if(fleet_count_flying($user['id'])) {
           message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }

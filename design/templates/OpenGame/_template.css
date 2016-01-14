@@ -1212,14 +1212,23 @@ input[type=text].coordinate {
 }
 
 .flt-mini-mission {
-  display: inline-flex;
+  display: flex;
+  justify-content: center;
   align-items: center;
+  font-size: 125%;
+  flex-wrap: wrap;
+  text-align: left;
 }
 .flt-mini-mission div {
-  display: inline-block;
+  margin: 0.5em 0;
+  text-align: center;
+}
+.flt-mini-mission-planet {
+  flex-shrink: 0;
 }
 #fleet_mini_mission {
-  padding: 0 0.5em;
+  padding: 0 1em;
+  flex-shrink: 1;
 }
 
 

@@ -16,7 +16,7 @@ function flt_mission_relocate($mission_data)
   if(!$destination_planet || !is_array($destination_planet) || $fleet_row['fleet_owner'] != $destination_planet['id_owner'])
   {
     // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
-    flt_send_back($mission_data['fleet']);
+    fleet_send_back($mission_data['fleet']);
     return CACHE_FLEET;
   }
 

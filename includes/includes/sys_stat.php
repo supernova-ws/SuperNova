@@ -131,7 +131,7 @@ function sys_stat_calculate() {
   // Calculation of Fleet-In-Flight
   sta_set_time_limit('calculating flying fleets stats');
   $i = 0;
-  $query = doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM {{fleets}};");
+  $query = db_fleet_list_query_all_stat();
   $row_num = db_num_rows($query);
   while($fleet_row = db_fetch($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);

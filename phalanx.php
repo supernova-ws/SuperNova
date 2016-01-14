@@ -65,7 +65,7 @@ db_planet_set_by_id($user['current_planet'], "deuterium = deuterium - {$cost}");
 
 $template = gettemplate('planet_fleet_list', true);
 
-$fleet_list = flt_get_fleets($planet_scanned, true);
+$fleet_list = fleet_and_missiles_list_by_coordinates($planet_scanned, true);
 $fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
 //int_get_missile_to_planet("SELECT * FROM `{{iraks}}` WHERE fleet_end_galaxy = {$scan_galaxy} AND fleet_end_system = {$scan_system} AND fleet_end_planet = {$scan_planet};");
 tpl_assign_fleet($template, $fleets);

@@ -32,6 +32,10 @@ gzdeflate()  == *raw* deflate encoding
 Светить ДР в Императоре?
 
 
+http://pouchdb.com/learn.html - PouchDB is an in-browser database that allows applications to save data locally, so that users can enjoy all the features of an app even when they're offline. Plus, the data is synchronized between clients, so users can stay up-to-date wherever they go.
+http://nparashuram.com/IndexedDBShim/ - IndexedDB Polyfill over WebSql
+
+
 Админка по ивенту:
 SELECT username, game_unit.* FROM `game_unit`
 left join game_users on id = unit_player_id
@@ -854,7 +858,7 @@ xsolla - передавать описание платежа
 ======================
 
 
-Текущий билд #40b0.0#
+Текущий билд #41a1.0#
 ~~~~~~~~~~~~~~~~~~~~~
 
 // НА ЛОКАЛХОСТЕ ФЛОТЫ ЛЕТАЮТ !!!! Поменять fleet_update_last

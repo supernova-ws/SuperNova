@@ -1,45 +1,3 @@
-<!-- BEGIN fleets -->
-  <!-- IF fleets.START_COORDS -->
-  <h3>
-  <div class="flt-mini-mission">
-    <div>
-      {fleets.START_COORDS} {fleets.START_TYPE_TEXT_SH}<br />{fleets.START_NAME}
-      <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
-      <div id="fleet_timer_start{fleets.ID}"></div>
-      {fleets.START_TIME_TEXT}
-      <!-- ELSE -->
-      -
-      <!-- ENDIF -->
-    </div>
-    <div id="fleet_mini_mission" class="notice">
-      <img src="design/images/mission_pointer.png" />
-      <!-- IF MISSION_NAME -->
-      <br /><span>{MISSION_NAME}</span>
-      <!-- ENDIF -->
-    </div>
-    <div>
-      <span id="end_coords">{fleets.END_COORDS}</span> <span id="end_planet_type">{fleets.END_TYPE_TEXT_SH}</span><br /><span id="end_name">{fleets.END_NAME}</span>
-      <!-- IF fleets.MESSAGE == 0 -->
-      <div id="fleet_timer_end{fleets.ID}"></div>
-      {fleets.END_TIME_TEXT}
-      <!-- ELSE -->
-      -
-      <!-- ENDIF -->
-    </div>
-  </div>
-  </h3>
-  <!-- ENDIF -->
-
-  <div id="fleet_unit_miniatures_container"><!-- BEGIN ships -->
-    <div class="unit_miniatures_wrapper">
-      <img src="{I_[ships.ID]}" style="width: 100%; height: 100%;"/>
-      <!--<img id="unit_info_image" />-->
-      <div id="unit_info_name" class="a75">{ships.NAME}</div>
-      <div id="unit_info_level" class="a75">{ships.AMOUNT_TEXT}</div>
-    </div>
-  <!-- END ships --></div>
-<!-- END fleets -->
-
 <script type="text/javascript">
   <!-- BEGIN fleets -->
   <!-- IF fleets.START_LEFT -->
@@ -54,3 +12,52 @@
   <!-- ENDIF -->
   <!-- END fleets -->
 </script>
+
+<!-- BEGIN fleets -->
+  <!-- IF fleets.START_COORDS -->
+  <div class="flt-mini-mission">
+    <div class="flt-mini-mission-planet">
+      {fleets.START_COORDS} {fleets.START_TYPE_TEXT_SH} {fleets.START_NAME}
+      <!-- IF ((fleets.MISSION == 7 || fleets.MISSION == 4) && fleets.MESSAGE == 1) || (fleets.MISSION != 7 && fleets.MISSION != 4) -->
+      <div id="fleet_timer_start{fleets.ID}"></div>
+      {fleets.START_TIME_TEXT}
+      <!-- ELSE -->
+      -
+      <!-- ENDIF -->
+    </div>
+
+    <div id="fleet_mini_mission" class="notice">
+      <img src="design/images/mission_pointer.png" />
+      <!-- IF MISSION_NAME -->
+      <br /><span>{MISSION_NAME}</span>
+      <!-- ENDIF -->
+    </div>
+
+    <div>
+      <div class="flt-mini-mission-planet">
+        <span id="end_coords">{fleets.END_COORDS}</span>
+        <span id="end_planet_type">{fleets.END_TYPE_TEXT_SH}</span> <span id="end_name">{fleets.END_NAME}</span>
+      </div>
+      <!-- IF fleets.MESSAGE == 0 -->
+      <div id="fleet_timer_end{fleets.ID}"></div>
+      <div>
+        {fleets.END_TIME_TEXT}
+      </div>
+      <!-- ELSE -->
+      -
+      <!-- ENDIF -->
+    </div>
+  </div>
+  <!-- ENDIF -->
+
+  <div id="fleet_unit_miniatures_container">
+    <!-- BEGIN ships -->
+    <div class="unit_miniatures_wrapper">
+      <img src="{I_[ships.ID]}" style="width: 100%; height: 100%;"/>
+      <!--<img id="unit_info_image" />-->
+      <div id="unit_info_name" class="a75">{ships.NAME}</div>
+      <div id="unit_info_level" class="a75">{ships.AMOUNT_TEXT}</div>
+    </div>
+    <!-- END ships -->
+  </div>
+<!-- END fleets -->

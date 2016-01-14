@@ -930,20 +930,20 @@ class classSupernova {
 
 
 
-  public static function db_unit_list_in_fleet_by_user($user_id, $location_id, $for_update)
-  {
-    return doquery(
-      "SELECT *
-      FROM {{fleets}} AS f
-        JOIN {{unit}} AS u ON u.`unit_location_id` = f.fleet_id
-      WHERE
-        f.fleet_owner = {$user_id} AND
-        (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
-        AND u.`unit_location_type` = " . LOC_FLEET .
-      " AND " . static::db_unit_time_restrictions() .
-      ($for_update ? ' FOR UPDATE' : '')
-      , true);
-  }
+//  public static function db_unit_list_in_fleet_by_user($user_id, $location_id, $for_update)
+//  {
+//    return doquery(
+//      "SELECT *
+//      FROM {{fleets}} AS f
+//        JOIN {{unit}} AS u ON u.`unit_location_id` = f.fleet_id
+//      WHERE
+//        f.fleet_owner = {$user_id} AND
+//        (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
+//        AND u.`unit_location_type` = " . LOC_FLEET .
+//      " AND " . static::db_unit_time_restrictions() .
+//      ($for_update ? ' FOR UPDATE' : '')
+//      , true);
+//  }
 
 
 

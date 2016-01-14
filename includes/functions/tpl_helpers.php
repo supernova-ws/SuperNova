@@ -132,6 +132,7 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result) {
 
   $ship_list = explode(';', $fleet['fleet_array']);
 
+  $ship_id = 0;
   if($spy_level >= 6) {
     foreach($ship_list as $ship_record) {
       if($ship_record) {
@@ -261,7 +262,7 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
 
   if($fleet_db_list === 0)
   {
-    $fleet_db_list = flt_get_fleets($planet);
+    $fleet_db_list = fleet_and_missiles_list_by_coordinates($planet);
   }
 
   foreach($fleet_db_list as $fleet)

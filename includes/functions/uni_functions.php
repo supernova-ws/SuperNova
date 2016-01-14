@@ -368,11 +368,14 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
     }
 
     // TODO: Replace quick-check with using gathered flying fleet data
-    $incoming = doquery("SELECT COUNT(*) AS incoming FROM {{fleets}} WHERE 
-      (fleet_start_galaxy = {$planetrow['galaxy']} and fleet_start_system = {$planetrow['system']} and fleet_start_planet = {$planetrow['planet']})
-      or
-      (fleet_end_galaxy = {$planetrow['galaxy']} and fleet_end_system = {$planetrow['system']} and fleet_end_planet = {$planetrow['planet']})", true);
-    if(!empty($incoming['incoming'])) {
+//    $incoming = doquery("SELECT COUNT(*) AS incoming FROM {{fleets}} WHERE
+//      (fleet_start_galaxy = {$planetrow['galaxy']} and fleet_start_system = {$planetrow['system']} and fleet_start_planet = {$planetrow['planet']})
+//      or
+//      (fleet_end_galaxy = {$planetrow['galaxy']} and fleet_end_system = {$planetrow['system']} and fleet_end_planet = {$planetrow['planet']})", true);
+//    if(!empty($incoming['incoming'])) {
+//      throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
+//    }
+    if(!fleet_count_incoming($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'])) {
       throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
     }
 

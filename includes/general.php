@@ -1179,6 +1179,12 @@ function sn_sn_get_groups($groups, &$result)
 }
 
 // Format $value to ID
+/**
+ * @param     $value
+ * @param int $default
+ *
+ * @return float|int
+ */
 function idval($value, $default = 0)
 {
   $value = floatval($value);
@@ -1433,11 +1439,6 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL)
   return $metal_cost;
 }
 
-function get_player_current_expeditions(&$user) {
-  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", true);
-  return $FlyingExpeditions['expedi'];
-}
-
 function get_player_max_expeditons(&$user, $astrotech = -1){return sn_function_call('get_player_max_expeditons', array(&$user, $astrotech, &$result));}
 function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0)
 {
@@ -1485,26 +1486,6 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
 function get_player_current_colonies(&$user)
 {
   return $user[UNIT_PLAYER_COLONIES_CURRENT] = isset($user[UNIT_PLAYER_COLONIES_CURRENT]) ? $user[UNIT_PLAYER_COLONIES_CURRENT] : max(0, db_planet_count_by_type($user['id']) - 1);
-}
-
-function flt_send_back(&$fleet_row)
-{
-  $fleet_id = round(isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
-  if(!$fleet_id)
-  {
-    return false;
-  }
-
-  return doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
-}
-
-function flt_destroy(&$fleet_row) {
-  $fleet_id = round(isset($fleet_row['fleet_id']) && $fleet_row['fleet_id'] ? $fleet_row['fleet_id'] : $fleet_row);
-  if(!$fleet_id) {
-    return false;
-  }
-
-  return doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1;");
 }
 
 function str_raw2unsafe($raw) {

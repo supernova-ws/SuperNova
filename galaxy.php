@@ -48,8 +48,9 @@ $HavePhalanx   = mrc_get_level($user, $planetrow, STRUC_MOON_PHALANX);
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
 
-$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
-$maxfleet_count = $maxfleet['flying_fleet_count'];
+//$maxfleet       = doquery("SELECT COUNT(*) AS flying_fleet_count FROM {{fleets}} WHERE `fleet_owner` = '{$user['id']}';", '', true);
+//$maxfleet_count = $maxfleet['flying_fleet_count'];
+$flying_fleet_count = fleet_count_flying($user['id']);
 
 if ($mode == 1) {
 } elseif ($mode == 2 || $mode == 3) {
@@ -86,14 +87,20 @@ foreach($planet_precache_query as $planet_row)
 }
 
 
-$fleet_precache_query = doquery(
-  "SELECT * FROM {{fleets}} WHERE
-    (fleet_start_galaxy = {$uni_galaxy} AND fleet_start_system = {$uni_system} AND fleet_mess = 1)
-    OR
-    (fleet_end_galaxy = {$uni_galaxy} AND fleet_end_system = {$uni_system} AND fleet_mess = 0);"
-);
-while($fleet_row = db_fetch($fleet_precache_query))
-{
+//$fleet_precache_query = doquery(
+//  "SELECT * FROM {{fleets}} WHERE
+//    (fleet_start_galaxy = {$uni_galaxy} AND fleet_start_system = {$uni_system} AND fleet_mess = 1)
+//    OR
+//    (fleet_end_galaxy = {$uni_galaxy} AND fleet_end_system = {$uni_system} AND fleet_mess = 0);"
+//);
+//while($fleet_row = db_fetch($fleet_precache_query))
+//{
+//  $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
+//  $fleet_type   = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];
+//  $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
+//}
+$system_fleet_list = fleet_list_by_planet_coords($uni_galaxy, $uni_system);
+foreach($system_fleet_list as $fleet_row) {
   $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
   $fleet_type   = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];
   $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
@@ -360,7 +367,7 @@ $template->assign_vars(array(
      'planets'             => $planetcount,
      'SPs'                 => pretty_number(mrc_get_level($user, $planetrow, SHIP_SPY, false, true)),
      'SHOW_ADMIN'          => SHOW_ADMIN,
-     'fleet_count'         => $maxfleet_count,
+     'fleet_count'         => $flying_fleet_count,
      'fleet_max'           => $fleetmax,
      'ALLY_ID'             => $user['ally_id'],
      'USER_ID'             => $user['id'],

@@ -230,23 +230,31 @@ function ube_attack_prepare(&$mission_data) {
   ube_attack_prepare_planet($combat_data, $destination_planet);
 
   // Готовим инфу по удержанию
-  $fleets = doquery("SELECT * FROM {{fleets}}
-    WHERE
-      `fleet_end_galaxy` = {$fleet_row['fleet_end_galaxy']} AND `fleet_end_system` = {$fleet_row['fleet_end_system']} AND `fleet_end_planet` = {$fleet_row['fleet_end_planet']} AND `fleet_end_type` = {$fleet_row['fleet_end_type']}
-      AND `fleet_start_time` <= {$ube_time} AND `fleet_end_stay` >= {$ube_time}
-      AND `fleet_mess` = 0 FOR UPDATE"
-  );
-  while($fleet = db_fetch($fleets))
-  {
+//  $fleets = doquery("SELECT * FROM {{fleets}}
+//    WHERE
+//      `fleet_end_galaxy` = {$fleet_row['fleet_end_galaxy']} AND `fleet_end_system` = {$fleet_row['fleet_end_system']} AND `fleet_end_planet` = {$fleet_row['fleet_end_planet']} AND `fleet_end_type` = {$fleet_row['fleet_end_type']}
+//      AND `fleet_start_time` <= {$ube_time} AND `fleet_end_stay` >= {$ube_time}
+//      AND `fleet_mess` = 0 FOR UPDATE"
+//  );
+//  while($fleet = db_fetch($fleets))
+//  {
+//    ube_attack_prepare_fleet($combat_data, $fleet, false);
+//  }
+  $fleet_list_on_hold = fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $ube_time);
+  foreach($fleet_list_on_hold as $fleet) {
     ube_attack_prepare_fleet($combat_data, $fleet, false);
   }
 
   // Готовим инфу по атакующим
   if($fleet_row['fleet_group'])
   {
-    $fleets = doquery("SELECT * FROM {{fleets}} WHERE fleet_group= {$fleet_row['fleet_group']} FOR UPDATE");
-    while($fleet = db_fetch($fleets))
-    {
+//    $fleets = doquery("SELECT * FROM {{fleets}} WHERE fleet_group = {$fleet_row['fleet_group']} FOR UPDATE");
+//    while($fleet = db_fetch($fleets))
+//    {
+//      ube_attack_prepare_fleet($combat_data, $fleet, true);
+//    }
+    $acs_fleet_list = fleet_list_by_group($fleet_row['fleet_group']);
+    foreach($acs_fleet_list as $fleet) {
       ube_attack_prepare_fleet($combat_data, $fleet, true);
     }
   }
@@ -1159,11 +1167,15 @@ function sn_ube_combat_result_apply(&$combat_data)
       if($fleet_id)
       {
         // Для флотов перегенерируем массив как одно вхождение в SET SQL-запроса
-        $fleet_query = implode(';', $fleet_query);
-        $fleet_query = array("`fleet_array` = '{$fleet_query}'");
+//        $fleet_query = implode(';', $fleet_query);
+//        $fleet_query = array("`fleet_array` = '{$fleet_query}'");
+        $fleet_query = array(
+          'fleet_array' => implode(';', $fleet_query),
+        );
       }
     }
 
+    $fleet_delta = array();
     // Если во флоте остались юниты или это планета - генерируем изменение ресурсов
     if($new_fleet_count || !$fleet_id)
     {
@@ -1173,7 +1185,8 @@ function sn_ube_combat_result_apply(&$combat_data)
         if($resource_change)
         {
           $resource_db_name = ($fleet_id ? 'fleet_resource_' : '') . pname_resource_name($resource_id);
-          $fleet_query[] = "`{$resource_db_name}` = `{$resource_db_name}` - ({$resource_change})";
+//          $fleet_query[] = "`{$resource_db_name}` = `{$resource_db_name}` - ({$resource_change})";
+          $fleet_delta[$resource_db_name] = - ($resource_change);
         }
       }
     }
@@ -1188,7 +1201,8 @@ function sn_ube_combat_result_apply(&$combat_data)
       // Если защитник и не РМФ - отправляем флот назад
       if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS)
       {
-        $fleet_query[] = '`fleet_mess` = 1';
+//        $fleet_query[] = '`fleet_mess` = 1';
+        $fleet_query['fleet_mess'] = 1;
       }
 
       // Если флот в группе - помечаем нулем
@@ -1199,7 +1213,7 @@ function sn_ube_combat_result_apply(&$combat_data)
     }
 
 //global $debug;
-    $fleet_query = implode(',', $fleet_query);
+//    $fleet_query = implode(',', $fleet_query);
     if($fleet_id) // Не планета
     {
       if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED)
@@ -1209,24 +1223,32 @@ function sn_ube_combat_result_apply(&$combat_data)
 
       if($new_fleet_count)
       {
-        if($fleet_query)
+        if(!empty($fleet_query) || !empty($fleet_delta))
         {
-          doquery("UPDATE {{fleets}} SET {$fleet_query}, `fleet_amount` = '{$new_fleet_count}' WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+//          doquery("UPDATE {{fleets}} SET {$fleet_query}, `fleet_amount` = '{$new_fleet_count}' WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+//          db_fleet_update_set_safe_string($fleet_id, "{$fleet_query}, `fleet_amount` = '{$new_fleet_count}'");
+          $fleet_query['fleet_amount'] = $new_fleet_count;
+          fleet_update_set($fleet_id, $fleet_query, $fleet_delta);
         }
       }
       else
       {
         // Удаляем пустые флоты
-        doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+        // doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
+        db_fleet_delete($fleet_id);
         db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
       }
     }
     else // Планета
     {
       // Сохраняем изменения ресурсов - если они есть
-      if($fleet_query)
+      if(!empty($fleet_delta))
       {
-        db_planet_set_by_id($planet_id, $fleet_query);
+        $temp = array();
+        foreach($fleet_delta as $resource_db_name => $resource_amount) {
+          $temp[] = "`{$resource_db_name}` = `{$resource_db_name}` + ({$resource_amount})";
+        }
+        db_planet_set_by_id($planet_id, implode(',', $temp));
       }
       if(!empty($db_changeset)) // Сохраняем изменения юнитов на планете - если они есть
       {
