@@ -30,7 +30,7 @@ define('IN_UPDATE', true);
 
 require('includes/upd_helpers.php');
 
-global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_foreigns;
+global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
 $config->reset();
 $config->db_loadAll();
@@ -1268,8 +1268,21 @@ switch($new_version) {
     // 2015-12-22 00:00:32 41a0.17
     upd_alter_table('festival_unit_log', "ADD COLUMN `unit_image` varchar(255) NOT NULL DEFAULT ''", empty($update_tables['festival_unit_log']['unit_image']));
 
+    // 2016-01-15 10:57:17 41a1.4
+    upd_alter_table(
+      'security_browser',
+      "MODIFY COLUMN `browser_user_agent` VARCHAR(250) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT ''",
+      $update_tables['security_browser']['browser_user_agent']['Collation'] == 'latin1_bin'
+    );
+
+    if($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
+//      pdump($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type']);
+      upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
+      upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
+    }
     // #ctv
 
+//    pdump($update_indexes_full['security_browser']['I_browser_user_agent']);
     upd_do_query('COMMIT;', true);
 //    $new_version = 41;
 

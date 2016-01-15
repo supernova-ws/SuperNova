@@ -82,14 +82,14 @@ function upd_unset_table_info($table_name) {
 }
 
 function upd_load_table_info($prefix_table_name, $prefixed = true) {
-  global $config, $update_tables, $update_indexes, $update_foreigns;
+  global $config, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
   $tableName = $prefixed ? str_replace($config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
   $prefix_table_name = $prefixed ? $prefix_table_name : $config->db_prefix . $prefix_table_name;
 
   upd_unset_table_info($tableName);
 
-  $q1 = upd_do_query("SHOW COLUMNS FROM {$prefix_table_name};", true);
+  $q1 = upd_do_query("SHOW FULL COLUMNS FROM {$prefix_table_name};", true);
   while($r1 = db_fetch($q1)) {
     $update_tables[$tableName][$r1['Field']] = $r1;
   }
@@ -97,6 +97,7 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
   $q1 = upd_do_query("SHOW INDEX FROM {$prefix_table_name};", true);
   while($r1 = db_fetch($q1)) {
     $update_indexes[$tableName][$r1['Key_name']] .= "{$r1['Column_name']},";
+    $update_indexes_full[$tableName][$r1['Key_name']][$r1['Column_name']] = $r1;
   }
 
   $q1 = upd_do_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name). "' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
