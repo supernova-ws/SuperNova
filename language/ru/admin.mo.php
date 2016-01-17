@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 41a2.0
 *
 */
 
@@ -228,14 +228,15 @@ $a_lang_array = array(
   'adm_tools_reloadConfig' => 'Пересчитать конфигурацию',
   'adm_reason' => 'Причина',
   'adm_opt_title' => 'Настройки Вселенной',
-  'adm_opt_game_settings' => 'Параметры Вселенной',
+  'adm_opt_game_settings' => 'Параметры игры',
   'adm_opt_game_name' => 'Название Вселенной',
   'adm_opt_multiaccount_enabled' => 'Разрешить взаимодействие аккаунтов с 1 IP',
   'adm_opt_speed' => 'Скорость',
   'adm_opt_game_gspeed' => 'Игры',
   'adm_opt_game_fspeed' => 'Флота',
   'adm_opt_game_pspeed' => 'Добычи ресурсов',
-  'adm_opt_main_not_counted' => '(не считая главную планету; -1 - нет ограничений)',
+  'adm_opt_colonies_not_counted' => '(без учёта Столицы)',
+  'adm_opt_colonies_no_restrictions' => '(-1 - нет ограничений)',
   'adm_opt_game_speed_normal' => '(1&nbsp;-&nbsp;нормальная)',
   'adm_opt_game_faq' => 'Ссылка на ЧаВо',
   'adm_opt_game_forum' => 'Адрес форума',
@@ -244,15 +245,16 @@ $a_lang_array = array(
   'adm_opt_game_online' => 'Отключить игру. Пользователи увидят следующее сообщение:',
   'adm_opt_game_offreaso' => 'Сообщение',
   'adm_opt_plan_settings' => 'Параметры планет',
-  'adm_opt_plan_initial' => 'Размер главной планеты',
+  'adm_opt_plan_initial' => 'Размер стартовой планеты',
   'adm_opt_plan_base_inc' => 'Базовая добыча',
   'adm_opt_game_debugmod' => 'Включить режим отладки',
-  'adm_opt_geoip_whois_url' => 'URL сервиса WHOIS<br />(например "http://1whois.ru/?ip=")',
+  'adm_opt_geoip_whois_url' => 'URL сервиса WHOIS',
+  'adm_opt_geoip_whois_url_example' => '(например "http://1whois.ru/?ip=")',
   'adm_opt_game_counter' => 'Включить счетчик посещений',
   'adm_opt_game_oth_info' => 'Прочие параметры',
   'adm_opt_int_news_count' => 'Количество новостей',
-  'adm_opt_int_page_imperor' => 'На странице &quot;Император&quot;:',
-  'adm_opt_game_zero_dsiable' => '(0&nbsp;-&nbsp;отключить)',
+  'adm_opt_int_page_imperor' => 'На странице &quot;Император&quot;',
+  'adm_opt_game_zero_disable' => '(0&nbsp;-&nbsp;отключить)',
   'adm_opt_game_advertise' => 'Рекламные блоки',
   'adm_opt_game_oth_adds' => 'Включить рекламный блок в левом меню. Код баннера:',
   'adm_opt_game_oth_gala' => 'Галактика',
@@ -265,7 +267,7 @@ $a_lang_array = array(
   'adm_opt_saved' => 'Настройки игры сохранены успешно',
   'adm_opt_players_online' => 'Игроков на сервере',
   'adm_opt_vacation_mode_is' => 'Режим отпуска',
-  'adm_opt_maintenance' => 'Обслуживание сервера',
+  'adm_opt_game_status' => 'Состояние игры',
   'adm_opt_links' => 'Ссылки и баннеры',
   'adm_opt_universe_size' => 'Размер Вселенной',
   'adm_opt_galaxies' => 'Галактик',
@@ -282,7 +284,7 @@ $a_lang_array = array(
   'adm_opt_allow_buffing' => 'Разрешить прокачку',
   'adm_opt_ally_help_weak' => 'Разрешить удержание на слабом соаловце',
   'adm_opt_email_pm' => 'Разрешить пересылку ЛС на e-mail',
-  'adm_opt_game_defaults' => 'Настройки игры по умолчанию',
+  'adm_opt_player_defaults' => 'Настройки игрока по умолчанию',
   'adm_opt_game_default_language' => 'Язык интерфейса',
   'adm_opt_game_default_skin' => 'Оформление/Шкурка',
   'adm_opt_game_default_template' => 'Шаблон',
@@ -582,4 +584,15 @@ $a_lang_array = array(
 
   'adm_log_delete_update_info' => 'Удалить информацию об обслуживании БД, обновлениях статистики и движка',
 
+  'admin_tab_status' => 'Статус',
+  'admin_tab_game' => 'Игра',
+  'admin_tab_universe' => 'Вселенная',
+  'admin_tab_planets' => 'Планеты',
+  'admin_tab_stats_and_records' => 'Статистика',
+  'admin_tab_urls' => 'Ссылки',
+  'admin_tab_players' => 'Игроки',
+  'admin_tab_UBE' => 'Бой',
+  'admin_tab_advertise' => 'Реклама',
+
+  'admin_tab_universe_main' => 'Вселенная',
 );

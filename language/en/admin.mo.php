@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 41a2.0
 *
 */
 
@@ -206,14 +206,15 @@ $a_lang_array = (array(
   'adm_tools_reloadConfig' => 'Recalculate configuration',
   'adm_reason' => 'The reason for',
   'adm_opt_title' => 'Configuration of the universe',
-  'adm_opt_game_settings' => 'Universe Parameters',
+  'adm_opt_game_settings' => 'Game parameters',
   'adm_opt_game_name' => 'Universe name',
   'adm_opt_multiaccount_enabled' => 'Enable multiaccounts',
   'adm_opt_speed' => 'Speed',
   'adm_opt_game_gspeed' => 'Games',
   'adm_opt_game_fspeed' => 'Fleet',
   'adm_opt_game_pspeed' => 'Resource',
-  'adm_opt_main_not_counted' => '(Apart from home planet; -1 - unlimited)',
+  'adm_opt_colonies_not_counted' => '(apart from Capital)',
+  'adm_opt_colonies_no_restrictions' => '(-1 - no restrictions)',
   'adm_opt_game_speed_normal' => '(1&nbsp;-&nbsp;normal)',
   'adm_opt_game_faq' => 'Link to FAQ',
   'adm_opt_game_forum' => 'Forum address',
@@ -222,15 +223,16 @@ $a_lang_array = (array(
   'adm_opt_game_online' => 'Turn off the game. Users will see the following message:',
   'adm_opt_game_offreaso' => 'Turn off reason',
   'adm_opt_plan_settings' => 'Planet settings',
-  'adm_opt_plan_initial' => 'Size of main planet',
+  'adm_opt_plan_initial' => 'Size of start planet',
   'adm_opt_plan_base_inc' => 'Basic production',
   'adm_opt_game_debugmod' => 'Enable debug mode',
   'adm_opt_game_counter' => 'Add game counter',
-  'adm_opt_geoip_whois_url' => 'WHOIS provider URL<br />(i.e. "http://1whois.ru/?ip=")',
+  'adm_opt_geoip_whois_url' => 'WHOIS provider URL',
+  'adm_opt_geoip_whois_url_example' => '(i.e. "http://1whois.ru/?ip=")',
   'adm_opt_game_oth_info' => 'Other options',
   'adm_opt_int_news_count' => 'News count',
-  'adm_opt_int_page_imperor' => 'On the page &quot;Emperor&quot;:',
-  'adm_opt_game_zero_dsiable' => '(0&nbsp;-&nbsp;Disable)',
+  'adm_opt_int_page_imperor' => 'On the page &quot;Emperor&quot;',
+  'adm_opt_game_zero_disable' => '(0&nbsp;-&nbsp;Disable)',
   'adm_opt_game_advertise' => 'Ad units',
   'adm_opt_game_oth_adds' => 'Enable the ad block in the left menu. Banner code:',
   'adm_opt_game_oth_gala' => 'Galaxy',
@@ -243,7 +245,7 @@ $a_lang_array = (array(
   'adm_opt_saved' => 'Game settings saved successfully',
   'adm_opt_players_online' => 'Players on the server',
   'adm_opt_vacation_mode_is' => 'Vacation mode',
-  'adm_opt_maintenance' => 'Maintenance and debugging',
+  'adm_opt_game_status' => 'Game status',
   'adm_opt_links' => 'Links and banners',
   'adm_opt_universe_size' => 'Universe size',
   'adm_opt_galaxies' => 'Galaxies',
@@ -260,7 +262,7 @@ $a_lang_array = (array(
   'adm_opt_allow_buffing' => 'Allow buffing',
   'adm_opt_ally_help_weak' => 'Allow HOLD on weak co-ally',
   'adm_opt_email_pm' => 'Enables sending PM to e-mail',
-  'adm_opt_game_defaults' => 'Configuring default Game setting',
+  'adm_opt_player_defaults' => 'Default player setting',
   'adm_opt_game_default_language' => 'Default language',
   'adm_opt_game_default_skin' => 'Skin',
   'adm_opt_game_default_template' => 'Template',

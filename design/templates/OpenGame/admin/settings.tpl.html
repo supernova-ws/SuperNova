@@ -3,418 +3,509 @@
 {MESSAGE}<br>
 <!-- ENDIF -->
 
+<script type="text/javascript">
+  var SNC_MODE_REGISTER = '{D_SNC_MODE_REGISTER}';
+  var SNC_MODE_VERSION_CHECK = '{D_SNC_MODE_VERSION_CHECK}';
+  var SNC_VER_ERROR_CONNECT = '{D_SNC_VER_ERROR_CONNECT}';
+  var SNC_VER_ERROR_SERVER = '{D_SNC_VER_ERROR_SERVER}';
+
+  var lang = Array();
+  <!-- BEGIN ver_response -->
+  lang[{ver_response.ID}] = '{ver_response.NAME}';
+  <!-- END ver_response -->
+</script>
+
+<script type="text/javascript">
+  jQuery(document).on('click', "#version_check_button", function () {
+    // send requests
+    jQuery.post("ajax_version_check.php", {mode: SNC_MODE_VERSION_CHECK, ajax: 1},function (data) {
+      // output result
+      console.log(data);
+      data = !data ? SNC_VER_ERROR_CONNECT : (isNaN(data) || lang[data] == undefined ? SNC_VER_ERROR_SERVER : data);
+      $("#version_check_result").html(lang[data]);
+    });
+  });
+
+  jQuery(document).on('click', "#server_update_register", function () {
+    // send requests
+    jQuery.post("ajax_version_check.php", {ajax: 1,mode: SNC_MODE_REGISTER,url: SN_ROOT_VIRTUAL}, function (data) {
+      // output result
+      data = !data ? SNC_VER_ERROR_CONNECT : (isNaN(data) || lang[data] == undefined ? SNC_VER_ERROR_SERVER : data);
+      $("#register_result").html(lang[data]);
+    });
+  });
+</script>
+
 <form action="" method="post">
-  <table style="color:#FFFFFF;"><tbody>
-    <tr><th class="c_l" colspan="2">{L_adm_opt_ver_check}</th></tr>
-    <tr>
-      <td class="c_c" colspan="2">
-        <div class="c_l" style="width: 670px">{L_adm_opt_ver_check_hint}</div>
-        <input type="button" value="{LA_adm_opt_ver_check_do}" id="version_check_button">
-        <script type="text/javascript">
-          var lang = Array();
-          <!-- BEGIN ver_response -->
-            lang[{ver_response.ID}] = '{ver_response.NAME}';
-          <!-- END ver_response -->
-        </script>
+  <div id="tab_admin_settings" class="tabs">
+    <ul>
+      <li><a href="#tab_admin_status">{L_admin_tab_status}</a></li>
+      <li><a href="#tab_admin_game">{L_admin_tab_game}</a></li>
+      <li><a href="#tab_admin_urls">{L_admin_tab_urls}</a></li>
+      <li><a href="#tab_admin_universe">{L_admin_tab_universe}</a></li>
+      <li><a href="#tab_admin_players">{L_admin_tab_players}</a></li>
+      <li><a href="#tab_admin_UBE">{L_admin_tab_UBE}</a></li>
+      <li><a href="#tab_admin_stats">{L_admin_tab_stats_and_records}</a></li>
+      <!--<li><a href="#tab_admin_planets">{L_admin_tab_planets}</a></li>-->
+      <li><a href="#tab_admin_advertise">{L_admin_tab_advertise}</a></li>
+    </ul>
 
-        <script type="text/javascript">
-          jQuery("#version_check_button").click(
-            function()
-            {
-              // send requests
-              jQuery.post("ajax_version_check.php", {mode: {D_SNC_MODE_VERSION_CHECK}, ajax: 1},
-                function(data)
-                {
-                  // output result
-//                  $("#version_check_result").html(data);return;
-                  data = !data ? {D_SNC_VER_ERROR_CONNECT} : (isNaN(data) || lang[data] == undefined ? {D_SNC_VER_ERROR_SERVER} : data);
-                  $("#version_check_result").html(lang[data]);
-                }
-              );
-            }
-          );
-        </script>
-        <div class="c_c" id="version_check_result" style="width: 670px">
-          <!-- IF CHECK_DATE -->{L_adm_opt_ver_check_last}&nbsp;{CHECK_DATE}<!-- ENDIF -->
-          <div class="{CHECK_CLASS}">{CHECK_RESULT}</div>
-        </div>
-      </td>
-    </tr>
-    <tr>
-      <td class="c_l" colspan="2">
-        <input name="server_updater_check_auto" id="server_updater_check_auto" type="checkbox" value="1"<!-- IF SERVER_UPDATE_CHECK_AUTO --> checked<!-- ENDIF -->/>&nbsp;<label for="server_updater_check_auto">{L_adm_opt_ver_check_auto}</label><br />
-        <div style="width: 670px">{L_adm_opt_ver_check_auto_hint}</div>
-      </td>
-    </tr>
-
-    <tr><th class="c_l" colspan="2">{L_adm_upd_register}</th></tr>
-    <tr>
-      <td class="c_c" colspan="2">
-        <!-- IF SERVER_UPDATE_KEY -->
-          <div class="c_l"  id="register_result" style="width: 670px">
-            {L_adm_upd_register_already}<br />
-            {L_adm_upd_register_id}&nbsp;<span class="ok">{C_server_updater_id}</span><br />
-            {L_adm_upd_register_key}&nbsp;<span class="ok">{C_server_updater_key}</span>
-          </div>
-        <!-- ELSE -->
-          <div class="c_l" style="width: 670px">{L_adm_upd_register_hint}</div>
-
-          <div class="c_c" id="register_result" style="width: 670px">
-            <input type="button" value="{LA_adm_upd_register_do}" id="server_update_register"><br />
-            {L_adm_opt_ver_response[D_SNC_VER_REGISTER_UNREGISTERED]}
-          </div>
-
-          <script type="text/javascript">
-            jQuery("#server_update_register").click(
-              function()
-              {
-                // send requests
-                jQuery.post("ajax_version_check.php", {ajax: 1, mode: {D_SNC_MODE_REGISTER}, url: '{SN_ROOT_VIRTUAL}'},
-                  function(data)
-                  {
-                    // output result
-//                    $("#register_result").html(data);return;
-                    data = !data ? {D_SNC_VER_ERROR_CONNECT} : (isNaN(data) || lang[data] == undefined ? {D_SNC_VER_ERROR_SERVER} : data);
-                    $("#register_result").html(lang[data]);
-                  }
-                );
-              }
-            );
-          </script>
-        <!-- ENDIF -->
-      </td>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_adm_opt_maintenance}</td></tr>
-    <tr>
-      <th colspan=2>
-        <!-- <label for="game_disable">{L_adm_opt_game_online}</label><br /> -->
-        {L_adm_game_status} <select name="game_disable" id="game_disable">
+    <div id="tab_admin_status">
+      <div class="header">{L_adm_opt_game_status}</div>
+      <div class="cell">
+        <label for="game_disable">{L_adm_game_status}</label>
+        <select name="game_disable" id="game_disable">
           <!-- BEGIN sys_game_disable_reason -->
-            <!-- IF sys_game_disable_reason.ID == GAME_DISABLE -->
-              <!-- DEFINE $GAME_MODE = ' selected' -->
-            <!-- ELSE -->
-              <!-- DEFINE $GAME_MODE = '' -->
-            <!-- ENDIF -->
-            <option value="{sys_game_disable_reason.ID}"{$GAME_MODE}>{sys_game_disable_reason.NAME}
-          <!-- END sys_game_disable_reason -->
-        </select><br />
-        <input name="game_disable_reason" size="82" value="{C_game_disable_reason}" type="text">
+          <!-- IF sys_game_disable_reason.ID == GAME_DISABLE -->
+          <!-- DEFINE $GAME_MODE = ' selected' -->
+          <!-- ELSE -->
+          <!-- DEFINE $GAME_MODE = '' -->
+          <!-- ENDIF -->
+          <option value="{sys_game_disable_reason.ID}" {$GAME_MODE}>{sys_game_disable_reason.NAME}
+            <!-- END sys_game_disable_reason -->
+        </select>
+        <br/>
+        <input name="game_disable_reason" id="game_disable_reason" value="{C_game_disable_reason}" type="text" />
         <!--
         <textarea name="game_disable_reason" cols="50" rows="2" size="50" >{C_game_disable_reason}</textarea>
         -->
-      </th>
-    </tr>
+      </div>
 
-    <tr><td class="c" colspan="2">{L_adm_opt_game_settings}</td></tr>
-    <tr>
-      <th>{L_adm_opt_game_name}</th>
-      <th><input name="game_name" size="40" value="{C_game_name}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_mode}</th>
-      <th>
-        <select name="game_mode">
-        <!-- BEGIN game_modes -->
-          <!-- IF game_modes.ID == game_mode -->
-            <!-- DEFINE $GAME_MODE = 'selected' -->
-          <!-- ELSE -->
-            <!-- DEFINE $GAME_MODE = '' -->
-          <!-- ENDIF -->
-          <option value="{game_modes.ID}" {$GAME_MODE}>{game_modes.NAME}
-        <!-- END game_mode -->
-        </select>
-      </th>
-    </tr>
-    <tr>
-      <th colspan="2">
-        <div style="width: 670px">
-          <input name="empire_mercenary_temporary" id="empire_mercenary_temporary" type="checkbox" value="1"<!-- IF EMPIRE_MERCENARY_TEMPORARY --> checked<!-- ENDIF -->/> <label for="empire_mercenary_temporary">{L_adm_opt_empire_mercenary_temporary}</label><br />
-          {L_adm_opt_empire_mercenary_temporary_base} <input type="text" name="empire_mercenary_base_period" value="{C_empire_mercenary_base_period}"><br />
-          {L_adm_opt_empire_mercenary_temporary_hint}
+      <div class="header">
+        {L_adm_opt_ver_check}
+      </div>
+      <div class="cell">
+        <div class="c_l">
+          {L_adm_opt_ver_check_hint}
         </div>
-      </th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_speed} {L_adm_opt_game_speed_normal}</th>
-      <th>
-        {L_adm_opt_game_gspeed}&nbsp;&nbsp;&nbsp;<input name="game_speed" size="4" maxlength="9" value="{C_game_speed}" type="text">&nbsp;&nbsp;&nbsp;&nbsp;
-        {L_adm_opt_game_fspeed}&nbsp;&nbsp;&nbsp;<input name="fleet_speed" size="4" maxlength="9" value="{C_fleet_speed}" type="text">&nbsp;&nbsp;&nbsp;
-        {L_adm_opt_game_pspeed}&nbsp;&nbsp;&nbsp;<input name="resource_multiplier" size="4" maxlength="9" value="{C_resource_multiplier}" type="text">
-      </th>
-    </tr>
+        <div class="c_c">
+          <input type="button" value="{LA_adm_opt_ver_check_do}" id="version_check_button">
+        </div>
 
-    <tr>
-      <th>{L_adm_opt_universe_size}</th>
-      <th>
-        {L_adm_opt_galaxies}&nbsp;&nbsp;&nbsp;<input name="game_maxGalaxy" maxlength="5" size="5" value="{C_game_maxGalaxy}" type="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {L_adm_opt_systems}&nbsp;&nbsp;&nbsp;<input name="game_maxSystem" maxlength="5" size="5" value="{C_game_maxSystem}" type="text">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        {L_adm_opt_planets}&nbsp;&nbsp;&nbsp;<input name="game_maxPlanet" maxlength="5" size="5" value="{C_game_maxPlanet}" type="text">
-      </th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_max_colonies}</th>
-      <th><input name="player_max_colonies" maxlength="80" size="10" value="{C_player_max_colonies}" type="text"> {L_adm_opt_main_not_counted}</th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_exchange}</th>
-      <th>
-        {L_sys_metal} <input name="rpg_exchange_metal" maxlength="10" size="2" value="{C_rpg_exchange_metal}" type="text"> :
-        {L_sys_crystal} <input name="rpg_exchange_crystal" maxlength="10" size="2" value="{C_rpg_exchange_crystal}" type="text"> :
-        {L_sys_deuterium} <input name="rpg_exchange_deuterium" maxlength="10" size="2" value="{C_rpg_exchange_deuterium}" type="text"> :
-        {L_sys_dark_matter_sh} <input name="rpg_exchange_darkMatter" maxlength="10" size="8" value="{C_rpg_exchange_darkMatter}" type="text">
-      </th>
-    </tr>
-    <tr>
-      <th>{L_adm_uni_price_galaxy}</th>
-      <th><input name="uni_price_galaxy" maxlength="20" size="20" value="{C_uni_price_galaxy}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_adm_uni_price_system}</th>
-      <th><input name="uni_price_system" maxlength="20" size="20" value="{C_uni_price_system}" type="text"></th>
-    </tr>
+        <div class="c_c" id="version_check_result">
+          <!-- IF CHECK_DATE -->{L_adm_opt_ver_check_last}&nbsp;{CHECK_DATE}<!-- ENDIF -->
+          <div class="{CHECK_CLASS}">{CHECK_RESULT}</div>
+        </div>
+      </div>
+      <div class="cell">
+        <input name="server_updater_check_auto" id="server_updater_check_auto" type="checkbox" value="1"
+        <!-- IF SERVER_UPDATE_CHECK_AUTO --> checked<!-- ENDIF -->/>&nbsp;<label for="server_updater_check_auto">{L_adm_opt_ver_check_auto}</label><br/>
+        <div>{L_adm_opt_ver_check_auto_hint}</div>
+      </div>
 
-    <tr><td class="c" colspan="2">{L_adm_opt_plan_settings}</td></tr>
-    <tr>
-      <th>{L_adm_opt_plan_initial}</th>
-      <th><input name="initial_fields" maxlength="80" size="10" value="{C_initial_fields}" type="text"> {L_adm_opt_sectors}</th>
-    </tr>
-    <tr>
-      <th>{L_res_basic_starting_resources}</th>
-      <th>
-        <table class="markup">
-          <tr>
-            <td>{L_sys_metal}</td>
-            <td><input name="eco_planet_starting_metal" maxlength="10" size="9" value="{C_eco_planet_starting_metal}" type="text"></td>
-            <td>{L_sys_crystal}</td>
-            <td><input name="eco_planet_starting_crystal" maxlength="10" size="9" value="{C_eco_planet_starting_crystal}" type="text"></td>
-          </tr>
-          <tr>
-            <td>{L_sys_deuterium}</td>
-            <td><input name="eco_planet_starting_deuterium" maxlength="10" size="9" value="{C_eco_planet_starting_deuterium}" type="text"></td>
-            <td colspan="2">&nbsp;</td>
-          </tr>
-        </table>
-      </th>
-    </tr>
-    <tr>
-      <th>{L_res_basic_income}</th>
-      <th>
-        <table class="markup">
-          <tr>
-            <td>{L_sys_metal}</td>
-            <td><input name="metal_basic_income" maxlength="10" size="9" value="{C_metal_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
-            <td>{L_sys_crystal}</td>
-            <td><input name="crystal_basic_income" maxlength="10" size="9" value="{C_crystal_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
-          </tr>
-          <tr>
-            <td>{L_sys_deuterium}</td>
-            <td><input name="deuterium_basic_income" maxlength="10" size="9" value="{C_deuterium_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
-            <td>{L_sys_energy}</td>
-            <td><input name="energy_basic_income" maxlength="10" size="9" value="{C_energy_basic_income}" type="text"> {L_adm_opt_per_hour}</td>
-          </tr>
-        </table>
-        <!--
-        <div class="fl" style="width: 5em;">{L_sys_metal}</div>
-        <div class="fl" style="width: 10.5em;"><input name="metal_basic_income" maxlength="10" size="9" value="{C_metal_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
-        <div class="fl" style="width: 5.5em;">{L_sys_crystal}</div>
-        <div><input name="crystal_basic_income" maxlength="10" size="9" value="{C_crystal_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
-        <div class="fl" style="width: 5em;">{L_sys_deuterium}</div>
-        <div class="fl" style="width: 10.5em;"><input name="deuterium_basic_income" maxlength="10" size="9" value="{C_deuterium_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
-        <div class="fl" style="width: 5.5em;">{L_sys_energy}</div>
-        <div><input name="energy_basic_income" maxlength="10" size="9" value="{C_energy_basic_income}" type="text"> {L_adm_opt_per_hour}</div>
-        -->
-      </th>
-    </tr>
-    <tr>
-      <th>{L_res_basic_storage_size}</th>
-      <th>
-        <table class="markup">
-          <tr>
-            <td>{L_sys_metal}</td>
-            <td><input name="eco_planet_storage_metal" maxlength="10" size="9" value="{C_eco_planet_storage_metal}" type="text"></td>
-            <td>{L_sys_crystal}</td>
-            <td><input name="eco_planet_storage_crystal" maxlength="10" size="9" value="{C_eco_planet_storage_crystal}" type="text"></td>
-          </tr>
-          <tr>
-            <td>{L_sys_deuterium}</td>
-            <td><input name="eco_planet_storage_deuterium" maxlength="10" size="9" value="{C_eco_planet_storage_deuterium}" type="text"></td>
-            <td colspan="2">&nbsp;</td>
-          </tr>
-        </table>
-      </th>
-    </tr>
+      <div class="header">
+        {L_adm_upd_register}
+      </div>
+      <div class="cell c_l" id="register_result">
+        <!-- IF SERVER_UPDATE_KEY -->
+          {L_adm_upd_register_already}<br/>
+          {L_adm_upd_register_id}&nbsp;<span class="ok">{C_server_updater_id}</span><br/>
+          {L_adm_upd_register_key}&nbsp;<span class="ok">{C_server_updater_key}</span>
+        <!-- ELSE -->
+          <div class="c_c">
+            {L_adm_opt_ver_response[D_SNC_VER_REGISTER_UNREGISTERED]}<br/>
+            <input type="button" value="{LA_adm_upd_register_do}" id="server_update_register">
+          </div>
+          <div>{L_adm_upd_register_hint}</div>
+        <!-- ENDIF -->
+      </div>
+    </div>
 
-    <tr><td class="c" colspan="2">{L_adm_opt_links}</td></tr>
-    <tr>
-      <th>{L_adm_opt_game_rules}</th>
-      <th><input name="url_rules" size="53" maxlength="254" value="{C_url_rules}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_faq}<br></th>
-      <th><input name="url_faq" size="53" maxlength="254" value="{C_url_faq}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_forum}<br></th>
-      <th><input name="url_forum" size="53" maxlength="254" value="{C_url_forum}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_metamatter}<br></th>
-      <th><input name="url_purchase_metamatter" size="53" maxlength="254" value="{C_url_purchase_metamatter}" type="text"></th>
-    </tr>
+    <div id="tab_admin_game">
+      <div class="header">{L_adm_opt_game_settings}</div>
+      <div class="cell contFJ">
+        <label for="game_name" style="flex-shrink: 0;">{L_adm_opt_game_name}</label>
+        <input id="game_name" name="game_name" value="{C_game_name}" type="text" style="width: 100%;" />
+        <div class="cell" style="flex-shrink: 0;">
+          <label for="game_mode">{L_adm_opt_game_mode}</label>
+          <select id="game_mode" name="game_mode"><!-- BEGIN game_modes -->
+            <!-- IF game_modes.ID == game_mode -->
+            <!-- DEFINE $GAME_MODE = 'selected' -->
+            <!-- ELSE -->
+            <!-- DEFINE $GAME_MODE = '' -->
+            <!-- ENDIF -->
+            <option value="{game_modes.ID}" {$GAME_MODE}>{game_modes.NAME}</option>
+            <!-- END game_modes --></select>
+        </div>
+      </div>
 
-    <tr><td class="c" colspan="2">{L_adm_opt_game_defaults}</td></tr>
-    <tr>
-      <th>{L_adm_opt_game_default_language}</th>
-      <th>
-        <select name="game_default_language">
-        <!-- BEGIN game_languages -->
-          <!-- IF game_languages.ID == game_language -->
-            <!-- DEFINE $GAME_LANGUAGE = 'selected' -->
-          <!-- ELSE -->
-            <!-- DEFINE $GAME_LANGUAGE = '' -->
-          <!-- ENDIF -->
-          <option value="{game_languages.ID}" {$GAME_LANGUAGE}>{game_languages.NAME}
-        <!-- END game_languages -->
-        </select>
-      </th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_default_skin}</th>
-      <th><input name="game_default_skin" size="40" maxlength="254" value="{C_game_default_skin}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_game_default_template}</th>
-      <th><input name="game_default_template" size="40" maxlength="254" value="{C_game_default_template}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_int_news_count}<br>{L_adm_opt_game_zero_dsiable}</th>
-      <th>{L_adm_opt_int_page_imperor} <input name="game_news_overview" type="text" size=3 maxlength=3 value="{C_game_news_overview}" /></th>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_adm_opt_user_settings}</td></tr>
-    <tr>
-      <th>
-        {L_adm_opt_user_birthday_gift}<br />
-        {L_adm_opt_user_birthday_gift_disable}
-      </th>
-      <th>
-        {L_sys_dark_matter} <input name="user_birthday_gift" size="20" maxlength="20" value="{C_user_birthday_gift}" type="text">
-      </th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_user_birthday_range}</th>
-      <th>
-        <input name="user_birthday_range" size="20" maxlength="20" value="{C_user_birthday_range}" type="text">
-        <div class="c_l" style="width: 350px">{L_adm_opt_user_birthday_range_hint}</div>
-      </th>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_sys_opt_bash_info}</td></tr>
-    <tr>
-      <th>{L_sys_opt_bash_attacks}</th>
-      <th><input name="fleet_bashing_attacks" maxlength="10" size="10" value="{C_fleet_bashing_attacks}" type="text"> {L_adm_opt_game_zero_dsiable}</th>
-    </tr>
-    <tr>
-      <th>{L_sys_opt_bash_waves}</th>
-      <th><input name="fleet_bashing_waves" maxlength="10" size="10" value="{C_fleet_bashing_waves}" type="text"></th>
-    </tr>
-    <tr>
-      <th>{L_sys_opt_bash_interval}</th>
-      <th><input name="fleet_bashing_interval" maxlength="10" size="10" value="{C_fleet_bashing_interval}" type="text"> {L_sys_sec}</th>
-    </tr>
-    <tr>
-      <th>{L_sys_opt_bash_scope}</th>
-      <th><input name="fleet_bashing_scope" maxlength="10" size="10" value="{C_fleet_bashing_scope}" type="text"> {L_sys_sec}</th>
-    </tr>
-    <tr>
-      <th>{L_sys_opt_bash_war_delay}</th>
-      <th><input name="fleet_bashing_war_delay" maxlength="10" size="10" value="{C_fleet_bashing_war_delay}" type="text"> {L_sys_sec}</th>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_adm_opt_stats_and_records}</td></tr>
-    <tr>
-      <th><label for="stats_hide_pm_link">{L_adm_opt_stats_hide_pm_link}</label></th>
-      <th><input name="stats_hide_pm_link" id="stats_hide_pm_link" type="checkbox" value="1"<!-- IF STATS_HIDE_PM_LINK --> checked<!-- ENDIF --> /></th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_stats_schedule}</th>
-      <th>
-        <input name="stats_schedule" size="40" maxlength="254" value="{C_stats_schedule}" type="text"><br />
-        {L_adm_opt_stats_schedule_detail}
-      </th>
-    </tr>
-    <tr>
-      <th><label for="stats_hide_admins">{L_adm_opt_stats_hide_admins}</label></th>
-      <th>
-        <input name="stats_hide_admins" id="stats_hide_admins" type="checkbox" value="1"<!-- IF STATS_HIDE_ADMINS --> checked<!-- ENDIF -->/>
-        {L_adm_opt_stats_hide_admins_detail}
-      </th>
-    </tr>
-    <tr>
-      <th>{L_adm_opt_stats_hide_player_list}</th>
-      <th>
-        <input name="stats_hide_player_list" size="40" maxlength="254" value="{C_stats_hide_player_list}" type="text"><br />
-        {L_adm_opt_stats_hide_player_list_detail}
-      </th>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_adm_opt_game_oth_info}</td></tr>
-    <tr>
-      <th><label for="user_vacation_disable">{L_adm_opt_vacation_mode}</label></th>
-      <th><input name="user_vacation_disable" id="user_vacation_disable" type="checkbox" value="1"<!-- IF USER_VACATION_DISABLE --> checked<!-- ENDIF -->/></th> 
-    </tr>
-    <tr>
-      <th><label for="eco_scale_storage">{L_adm_opt_eco_scale_storage}</label></th>
-      <th><input name="eco_scale_storage" id="eco_scale_storage" type="checkbox" value="1"<!-- IF ECO_SCALE_STORAGE --> checked<!-- ENDIF -->/></th> 
-    </tr>
-    <tr>
-      <th><label for="allow_buffing">{L_adm_opt_allow_buffing}</label></th>
-      <th><input name="allow_buffing" id="allow_buffing" type="checkbox" value="1" <!-- IF ALLOW_BUFFING -->checked<!-- ENDIF --> /></th> 
-    </tr>
-    <tr>
-      <th><label for="ally_help_weak">{L_adm_opt_ally_help_weak}</label></th>
-      <th><input name="ally_help_weak" id="ally_help_weak" type="checkbox" value="1" <!-- IF ALLY_HELP_WEAK -->checked<!-- ENDIF --> /></th> 
-    </tr>
-    <tr>
-      <th><label for="game_email_pm">{L_adm_opt_email_pm}</label></th>
-      <th><input name="game_email_pm" id="game_email_pm" type="checkbox" value="1" <!-- IF GAME_EMAIL_PM -->checked<!-- ENDIF --> /></th> 
-    </tr>
-    <tr>
-      <th><label for="debug">{L_adm_opt_game_debugmod}</label></th>
-      <th><input name="debug" id="debug" type="checkbox" value="1"<!-- IF GAME_DEBUG --> checked<!-- ENDIF --> /></th>
-    </tr>
-    <tr>
-      <th><label for="game_counter">{L_adm_opt_game_counter}</label></th>
-      <th><input name="game_counter" id="game_counter" type="checkbox" value="1"<!-- IF GAME_COUNTER --> checked<!-- ENDIF --> /></th>
-    </tr>
-    <tr>
-      <th><label for="geoip_whois_url">{L_adm_opt_geoip_whois_url}</label></th>
-      <th><input name="geoip_whois_url" id="geoip_whois_url" size="53" maxlength="254" value="{C_geoip_whois_url}" type="text"></th>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_adm_opt_chat}</td></tr>
-    <tr>
-      <th>{L_adm_opt_chat_timeout}</th>
-      <th><input name="chat_timeout" maxlength="80" size="10" value="{C_chat_timeout}" type="text"> {L_sys_sec} {L_adm_opt_game_zero_dsiable}</th>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_adm_opt_game_advertise}</td></tr>
-    <tr>
-      <th colspan=2>
-        <input name="advGoogleLeftMenuIsOn" id="advGoogleLeftMenuIsOn" type="checkbox" value="1"<!-- IF ADV_LEFT_MENU --> checked<!-- ENDIF -->/> <label for="advGoogleLeftMenuIsOn">{L_adm_opt_game_oth_adds}</label>
-        <textarea name="advGoogleLeftMenuCode" rows="10">{C_advGoogleLeftMenuCode}</textarea>
-      </th>
-    </tr>
-
-    <tr><td class="c" colspan="2">{L_adm_opt_experimental}</td></tr>
-    <th colspan="2">
-      <div style="width: 670px">
-        <input name="tpl_minifier" id="tpl_minifier" type="checkbox" value="1"<!-- IF TPL_MINIFIER --> checked<!-- ENDIF --> />&nbsp;<label for="tpl_minifier">{L_adm_opt_tpl_minifier}</label><br />
+      <!--<div class="header">-->
+        <!--{L_adm_opt_game_oth_info}-->
+      <!--</div>-->
+      <div class="cell">
+        <input name="user_vacation_disable" id="user_vacation_disable" type="checkbox" value="1"<!-- IF USER_VACATION_DISABLE --> checked<!-- ENDIF -->/>
+        <label for="user_vacation_disable">{L_adm_opt_vacation_mode}</label>
+      </div>
+      <div class="cell">
+        <input name="allow_buffing" id="allow_buffing" type="checkbox" value="1" <!-- IF ALLOW_BUFFING -->checked<!-- ENDIF --> />
+        <label for="allow_buffing">{L_adm_opt_allow_buffing}</label>
+      </div>
+      <div class="cell">
+        <input name="ally_help_weak" id="ally_help_weak" type="checkbox" value="1" <!-- IF ALLY_HELP_WEAK -->checked<!-- ENDIF --> />
+        <label for="ally_help_weak">{L_adm_opt_ally_help_weak}</label>
+      </div>
+      <div class="cell">
+        <input name="game_email_pm" id="game_email_pm" type="checkbox" value="1" <!-- IF GAME_EMAIL_PM -->checked<!-- ENDIF --> />
+        <label for="game_email_pm">{L_adm_opt_email_pm}</label>
+      </div>
+      <div class="cell">
+        <input name="debug" id="debug" type="checkbox" value="1"<!-- IF GAME_DEBUG --> checked<!-- ENDIF --> />
+        <label for="debug">{L_adm_opt_game_debugmod}</label>
+      </div>
+      <div class="cell">
+        <input name="game_counter" id="game_counter" type="checkbox" value="1"<!-- IF GAME_COUNTER --> checked<!-- ENDIF --> />
+        <label for="game_counter">{L_adm_opt_game_counter}</label>
+      </div>
+      <div class="cell">
+        <input name="tpl_minifier" id="tpl_minifier" type="checkbox" value="1"<!-- IF TPL_MINIFIER --> checked<!-- ENDIF --> />
+        <label for="tpl_minifier">{L_adm_opt_tpl_minifier}</label><br />
         <label for="tpl_minifier">{L_adm_opt_tpl_minifier_hint}</label>
       </div>
-    </th>
 
-    <tr><td class="c" colspan="2"><center><input name="save" value="{L_adm_opt_btn_save}" type="submit"></center></td></tr>
-  </tbody></table>
+      <div class="header">{L_adm_opt_empire_mercenary_temporary}</div>
+      <div class="cell">
+        <input name="empire_mercenary_temporary" id="empire_mercenary_temporary" type="checkbox" value="1"<!-- IF EMPIRE_MERCENARY_TEMPORARY --> checked<!-- ENDIF -->/>
+        <label for="empire_mercenary_temporary">{L_adm_opt_empire_mercenary_temporary}</label><br />
+        <label for="empire_mercenary_base_period">{L_adm_opt_empire_mercenary_temporary_base}</label> <input type="text" id="empire_mercenary_base_period" name="empire_mercenary_base_period" value="{C_empire_mercenary_base_period}"><br />
+        {L_adm_opt_empire_mercenary_temporary_hint}
+      </div>
+
+      <div class="header c_l">
+        {L_adm_opt_chat}
+      </div>
+      <div class="cell c_l">
+        <label for="chat_timeout">{L_adm_opt_chat_timeout}</label>
+        <input id="chat_timeout" name="chat_timeout" maxlength="80" size="10" value="{C_chat_timeout}" type="text"> {L_sys_sec} {L_adm_opt_game_zero_disable}
+      </div>
+
+      <!--<div class="header c_l">-->
+        <!--{L_adm_opt_experimental}-->
+      <!--</div>-->
+    </div>
+
+    <div id="tab_admin_universe">
+      <div class="header">
+        {L_adm_opt_speed} {L_adm_opt_game_speed_normal}
+      </div>
+      <div class="cell contFJ">
+        <div>
+          {L_adm_opt_game_gspeed}
+          <input type="text" name="game_speed" size="4" maxlength="9" value="{C_game_speed}" />
+        </div>
+        <div>
+          {L_adm_opt_game_fspeed}
+          <input type="text" name="fleet_speed" size="4" maxlength="9" value="{C_fleet_speed}" />
+        </div>
+        <div>
+          {L_adm_opt_game_pspeed}
+          <input type="text" name="resource_multiplier" size="4" maxlength="9" value="{C_resource_multiplier}" />&nbsp;
+        </div>
+      </div>
+
+
+      <div class="header">
+        {L_adm_opt_exchange}
+      </div>
+      <div class="cell contFJ">
+        <div>
+          {L_sys_metal} <input name="rpg_exchange_metal" maxlength="10" size="2" value="{C_rpg_exchange_metal}" type="text">
+        </div>
+        <div>
+          :
+        </div>
+        <div>
+          {L_sys_crystal} <input name="rpg_exchange_crystal" maxlength="10" size="2" value="{C_rpg_exchange_crystal}" type="text">
+        </div>
+        <div>
+          :
+        </div>
+        <div>
+          {L_sys_deuterium} <input name="rpg_exchange_deuterium" maxlength="10" size="2" value="{C_rpg_exchange_deuterium}" type="text">
+        </div>
+        <div>
+          :
+        </div>
+        <div>
+          {L_sys_dark_matter_sh} <input name="rpg_exchange_darkMatter" maxlength="10" size="8" value="{C_rpg_exchange_darkMatter}" type="text">
+        </div>
+      </div>
+
+      <div class="header">{L_admin_tab_universe_main}</div>
+      <div class="cell contFS">
+        <div>{L_adm_opt_universe_size}</div>
+        <div>
+          <input id="game_maxGalaxy" name="game_maxGalaxy" maxlength="5" size="5" value="{C_game_maxGalaxy}" type="text">
+          <label for="game_maxGalaxy">{L_adm_opt_galaxies}</label>
+        </div>
+        <div>
+          <input id="game_maxSystem" name="game_maxSystem" maxlength="5" size="5" value="{C_game_maxSystem}" type="text">
+          <label for="game_maxSystem">{L_adm_opt_systems}</label>
+        </div>
+        <div>
+          <input id="game_maxPlanet" name="game_maxPlanet" maxlength="5" size="5" value="{C_game_maxPlanet}" type="text">&nbsp;
+          <label for="game_maxPlanet">{L_adm_opt_planets}</label>
+        </div>
+      </div>
+      <div class="cell contFJ">
+        <label for="uni_price_galaxy">{L_adm_uni_price_galaxy}</label>
+        <input id="uni_price_galaxy" name="uni_price_galaxy" maxlength="20" size="20" value="{C_uni_price_galaxy}" type="text"/>
+      </div>
+      <div class="cell contFJ">
+        <label for="uni_price_system">{L_adm_uni_price_system}</label>
+        <input id="uni_price_system" name="uni_price_system" maxlength="20" size="20" value="{C_uni_price_system}" type="text"/>
+      </div>
+
+    <!--</div>-->
+
+    <!--<div id="tab_admin_planets">-->
+      <div class="header c_l">
+        {L_adm_opt_plan_settings}
+      </div>
+
+      <div class="cell c_l">
+        <label for="initial_fields">{L_adm_opt_plan_initial}</label>
+        <input id="initial_fields" name="initial_fields" maxlength="10" size="10" value="{C_initial_fields}" type="text"> {L_adm_opt_sectors}
+      </div>
+
+      <div class="cell contFS">
+        <div>
+          {L_adm_opt_max_colonies} {L_adm_opt_colonies_not_counted}
+        </div>
+        <div>
+          <input name="player_max_colonies" maxlength="80" size="10" value="{C_player_max_colonies}" type="text">
+          {L_adm_opt_colonies_no_restrictions}
+        </div>
+      </div>
+
+      <div class="header c_l">
+        {L_res_basic_starting_resources}
+      </div>
+      <div class="cell contFJ">
+        <div>
+          {L_sys_metal}
+          <input name="eco_planet_starting_metal" maxlength="10" size="9" value="{C_eco_planet_starting_metal}" type="text">
+        </div>
+        <div>
+          {L_sys_crystal}
+          <input name="eco_planet_starting_crystal" maxlength="10" size="9" value="{C_eco_planet_starting_crystal}" type="text">
+        </div>
+
+        <div>
+          {L_sys_deuterium}
+          <input name="eco_planet_starting_deuterium" maxlength="10" size="9" value="{C_eco_planet_starting_deuterium}" type="text">
+        </div>
+      </div>
+
+      <div class="header c_l">
+        {L_res_basic_income} ({L_adm_opt_per_hour})
+      </div>
+      <div class="cell contFJ">
+        <div>
+          {L_sys_metal}
+          <input type="text" name="metal_basic_income" maxlength="10" size="5" value="{C_metal_basic_income}" />
+        </div>
+        <div>
+          {L_sys_crystal}
+          <input type="text" name="crystal_basic_income" maxlength="10" size="5" value="{C_crystal_basic_income}">
+        </div>
+        <div>
+          {L_sys_deuterium}
+          <input type="text" name="deuterium_basic_income" maxlength="10" size="5" value="{C_deuterium_basic_income}">
+        </div>
+        <div>
+          {L_sys_energy}
+          <input type="text" name="energy_basic_income" maxlength="10" size="5" value="{C_energy_basic_income}">
+        </div>
+      </div>
+
+      <div class="header c_l">{L_res_basic_storage_size}</div>
+      <div class="cell contFJ">
+        <div>
+          {L_sys_metal}
+          <input name="eco_planet_storage_metal" maxlength="10" size="9" value="{C_eco_planet_storage_metal}" type="text">
+        </div>
+        <div>
+          {L_sys_crystal}
+          <input name="eco_planet_storage_crystal" maxlength="10" size="9" value="{C_eco_planet_storage_crystal}" type="text">
+        </div>
+        <div>
+          {L_sys_deuterium}
+          <input name="eco_planet_storage_deuterium" maxlength="10" size="9" value="{C_eco_planet_storage_deuterium}" type="text">
+        </div>
+      </div>
+      <div class="cell c_l">
+        <input name="eco_scale_storage" id="eco_scale_storage" type="checkbox" value="1"<!-- IF ECO_SCALE_STORAGE --> checked<!-- ENDIF -->/>
+        <label for="eco_scale_storage">{L_adm_opt_eco_scale_storage}</label>
+      </div>
+
+    </div>
+
+    <div id="tab_admin_players">
+      <div class="header">
+        {L_adm_opt_player_defaults}
+      </div>
+      <div class="cell">
+        {L_adm_opt_game_default_language}
+        <select name="game_default_language">
+          <!-- BEGIN game_languages -->
+          <!-- IF game_languages.ID == game_language -->
+          <!-- DEFINE $GAME_LANGUAGE = 'selected' -->
+          <!-- ELSE -->
+          <!-- DEFINE $GAME_LANGUAGE = '' -->
+          <!-- ENDIF -->
+          <option value="{game_languages.ID}" {$GAME_LANGUAGE}>{game_languages.NAME}
+            <!-- END game_languages -->
+        </select>
+      </div>
+      <div class="cell">
+        {L_adm_opt_game_default_skin}
+        <input name="game_default_skin" size="40" maxlength="254" value="{C_game_default_skin}" type="text">
+      </div>
+      <div class="cell">
+        {L_adm_opt_game_default_template}
+        <input name="game_default_template" size="40" maxlength="254" value="{C_game_default_template}" type="text">
+      </div>
+      <div class="cell contFS">
+        <label for="game_news_overview">
+          {L_adm_opt_int_news_count} {L_adm_opt_int_page_imperor}
+        </label>
+        <input id="game_news_overview" name="game_news_overview" type="text" size=3 maxlength=3 value="{C_game_news_overview}" />
+        {L_adm_opt_game_zero_disable}
+      </div>
+
+      <div class="header">
+        {L_adm_opt_user_birthday_gift}
+      </div>
+      <div class="cell">
+        <label for="user_birthday_gift">{L_adm_opt_user_birthday_gift}</label>
+        <input id="user_birthday_gift" name="user_birthday_gift" size="10" maxlength="20" value="{C_user_birthday_gift}" type="text">
+        {L_sys_dark_matter_sh}
+        {L_adm_opt_game_zero_disable}
+      </div>
+      <div class="cell">
+        <div>
+          <label for="user_birthday_range">{L_adm_opt_user_birthday_range}</label>
+          <input id="user_birthday_range" name="user_birthday_range" size="20" maxlength="20" value="{C_user_birthday_range}" type="text">
+        </div>
+        <div>
+          {L_adm_opt_user_birthday_range_hint}
+        </div>
+      </div>
+    </div>
+
+    <div id="tab_admin_UBE">
+      <div class="header c_l">
+        {L_sys_opt_bash_info}
+      </div>
+
+      <div class="cell">
+        <label for="fleet_bashing_attacks">{L_sys_opt_bash_attacks}</label>
+        <input id="fleet_bashing_attacks" name="fleet_bashing_attacks" maxlength="10" size="10" value="{C_fleet_bashing_attacks}" type="text" />
+        {L_adm_opt_game_zero_disable}
+      </div>
+      <div class="cell">
+        <label for="fleet_bashing_waves">{L_sys_opt_bash_waves}</label>
+        <input id="fleet_bashing_waves" name="fleet_bashing_waves" maxlength="10" size="10" value="{C_fleet_bashing_waves}" type="text">
+      </div>
+      <div class="cell">
+        <label for="fleet_bashing_interval">{L_sys_opt_bash_interval}</label>
+        <input id="fleet_bashing_interval" name="fleet_bashing_interval" maxlength="10" size="10" value="{C_fleet_bashing_interval}" type="text"> {L_sys_sec}
+      </div>
+      <div class="cell">
+        <label for="fleet_bashing_scope">{L_sys_opt_bash_scope}</label>
+        <input id="fleet_bashing_scope" name="fleet_bashing_scope" maxlength="10" size="10" value="{C_fleet_bashing_scope}" type="text"> {L_sys_sec}
+      </div>
+      <div class="cell">
+        <label for="fleet_bashing_war_delay">{L_sys_opt_bash_war_delay}</label>
+        <input id="fleet_bashing_war_delay" name="fleet_bashing_war_delay" maxlength="10" size="10" value="{C_fleet_bashing_war_delay}" type="text"> {L_sys_sec}
+      </div>
+
+    </div>
+
+    <div id="tab_admin_urls">
+      <div class="header c_l">
+        {L_adm_opt_links}
+      </div>
+
+      <div class="cell contFJ">
+        <label for="url_rules">{L_adm_opt_game_rules}</label>
+        <input id="url_rules" name="url_rules" maxlength="254" value="{C_url_rules}" type="text">
+      </div>
+
+      <div class="cell contFJ">
+        <label for="url_faq">{L_adm_opt_game_faq}</label>
+        <input id="url_faq" name="url_faq" maxlength="254" value="{C_url_faq}" type="text">
+      </div>
+
+      <div class="cell contFJ">
+        <label for="url_forum">{L_adm_opt_game_forum}</label>
+        <input id="url_forum" name="url_forum" maxlength="254" value="{C_url_forum}" type="text">
+      </div>
+
+      <div class="cell contFJ">
+        <label for="url_purchase_metamatter">{L_adm_opt_game_metamatter}</label>
+        <input id="url_purchase_metamatter" name="url_purchase_metamatter" maxlength="254" value="{C_url_purchase_metamatter}" type="text">
+      </div>
+
+      <div class="cell contFJ">
+        <label for="geoip_whois_url">{L_adm_opt_geoip_whois_url}</label>
+        <div class="c_c">
+          <input name="geoip_whois_url" id="geoip_whois_url" size="60" maxlength="254" value="{C_geoip_whois_url}" type="text" />
+          <div>{L_adm_opt_geoip_whois_url_example}</div>
+        </div>
+      </div>
+
+    </div>
+
+    <div id="tab_admin_stats">
+      <div class="header">
+        {L_adm_opt_stats_and_records}
+      </div>
+
+      <div class="cell">
+        <input name="stats_hide_pm_link" id="stats_hide_pm_link" type="checkbox" value="1"<!-- IF STATS_HIDE_PM_LINK --> checked<!-- ENDIF --> />
+        <label for="stats_hide_pm_link">{L_adm_opt_stats_hide_pm_link}</label>
+      </div>
+
+      <div class="cell">
+        <input name="stats_hide_admins" id="stats_hide_admins" type="checkbox" value="1"<!-- IF STATS_HIDE_ADMINS --> checked<!-- ENDIF -->/>
+        <label for="stats_hide_admins">{L_adm_opt_stats_hide_admins} ({L_adm_opt_stats_hide_admins_detail})</label>
+      </div>
+
+      <div class="cell contFJ">
+        <label for="stats_hide_player_list">{L_adm_opt_stats_hide_player_list}</label>
+        <div class="c_c" style="flex-grow: 1">
+          <input id="stats_hide_player_list" name="stats_hide_player_list" maxlength="254" value="{C_stats_hide_player_list}" type="text">
+          <div>{L_adm_opt_stats_hide_player_list_detail}</div>
+        </div>
+      </div>
+
+      <div class="cell contFJ">
+        <label for="stats_schedule">{L_adm_opt_stats_schedule}</label>
+        <div style="flex-grow: 1">
+          <input id="stats_schedule" name="stats_schedule" maxlength="254" value="{C_stats_schedule}" type="text"><br />
+          {L_adm_opt_stats_schedule_detail}
+        </div>
+      </div>
+
+    </div>
+
+    <div id="tab_admin_advertise">
+      <div class="header">
+        {L_adm_opt_game_advertise}
+      </div>
+
+      <div>
+        <input name="advGoogleLeftMenuIsOn" id="advGoogleLeftMenuIsOn" type="checkbox" value="1"<!-- IF ADV_LEFT_MENU --> checked<!-- ENDIF -->/> <label for="advGoogleLeftMenuIsOn">{L_adm_opt_game_oth_adds}</label>
+        <textarea name="advGoogleLeftMenuCode" rows="10">{C_advGoogleLeftMenuCode}</textarea>
+      </div>
+    </div>
+
+  </div>
+  <input name="save" value="{L_adm_opt_btn_save}" type="submit" />
 </form>
+
+<script type="text/javascript"><!--
+  $(".tabs").tabs();
+  $("#tab_admin_settings").show();
+// --></script>

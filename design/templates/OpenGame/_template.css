@@ -2846,9 +2846,38 @@ body:not(.no_border_image) [table_title]:before {
 
 
 
+#tab_admin_settings {
+  font-size: 1em;
+  max-width: 60em;
+  display: none;
+}
 
+#tab_admin_settings > div {
+  text-align: left;
+}
 
+#game_disable_reason {
+  width: 96%;
+  margin-left: 0;
+}
 
+#tab_admin_urls label {
+  flex-shrink: 0;
+}
+
+#tab_admin_urls input {
+  width: 100%;
+  max-width: 40em;
+}
+
+#tab_admin_advertise textarea {
+  width: 100%;
+}
+
+#stats_hide_player_list, #stats_schedule {
+  margin-left: 0;
+  width: 95%;
+}
 
 
 
@@ -2979,6 +3008,15 @@ td,
 }
 .th, .header {
   background-color:  #132544; /*rgba(0,0,0,0.35);*/
+}
+
+div.header {
+  padding: 0.5em 0.5em;
+  font-size: 110%;
+}
+
+div.cell {
+  padding: 0.1em 0.5em;
 }
 
 
