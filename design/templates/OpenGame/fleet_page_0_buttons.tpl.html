@@ -1,0 +1,24 @@
+<!-- IF FLYING_FLEETS < MAX_FLEETS -->
+<!-- DEFINE $SHIP_COLSPAN = '1' -->
+<tr class="c_c">
+  <th>
+    {L_fl_fleet_typ}
+  </th>
+  <th style="padding-right: 0; border-right: 0" class="c_l" >
+    <div id="fleet_page0_footer" class="contFJ">
+      <input type="button" value="{L_fl_unselectall}" onclick="zero_fleet();" />
+      <!-- IF MAX_EXPEDITIONS > 1 -->
+      <input type="button" value="1/{MAX_EXPEDITIONS}" onclick="expe_fleet({MAX_EXPEDITIONS});" />
+      <!-- ENDIF -->
+
+      <!-- IF FREE_EXPEDITIONS > 1 && MAX_EXPEDITIONS > 1 && FREE_EXPEDITIONS != MAX_EXPEDITIONS -->
+      <input type="button" value="1/{FREE_EXPEDITIONS}" onclick="expe_fleet({FREE_EXPEDITIONS});" />
+      <!-- ENDIF -->
+      <input type="button" value="{L_fl_selectall}" onclick="max_fleet();" />
+    </div>
+  </th>
+</tr>
+<!-- ELSE -->
+<!-- DEFINE $SHIP_COLSPAN = '2' -->
+<!-- DEFINE $SHIP_NO_SLOTS_SIZE_CLASS = 'no_slots' -->
+<!-- ENDIF -->

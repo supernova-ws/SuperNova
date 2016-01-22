@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 41a3.0
 *
 */
 
@@ -228,4 +228,10 @@ $a_lang_array = (array(
   'flt_return_fleet' => 'Вернуть флот',
 
   'flt_acs_prefix' => 'САБ ',
+
+  'ship_consumption_short' => 'Расход',
+  'ship_capacity_short' => 'Трюм',
+
+  'ship_is_satellite' => 'Спутник',
+
 ));

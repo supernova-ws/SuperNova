@@ -155,6 +155,7 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result) {
             'AMOUNT'      => $ship_data[1],
             'AMOUNT_TEXT' => pretty_number($ship_data[1]),
             'CONSUMPTION' => 0,
+            'CONSUMPTION_TEXT' => '0',
             'SPEED'       => 0,
             'CAPACITY'    => 0,
           );

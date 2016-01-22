@@ -40,76 +40,72 @@ var speed_factor   = {speed_factor};
 
   <table border="0" cellpadding="0" cellspacing="1">
     <tr class="c_c">
-      <th>{L_fl_fleet_typ}</th>
-      <th>{L_fl_orbiting}</th>
-      <th colspan=3>{L_fl_to_fly}</th>
+      <td colspan="2">
+        <div>
+          {L_sys_sort}
+          <select name="sort_elements" id="sort_elements">
+            <!-- BEGIN ship_sort_list -->
+            <option value="{ship_sort_list.VALUE}"<!-- IF ship_sort_list.VALUE == FLEET_SHIP_SORT --> selected<!-- ENDIF -->>{ship_sort_list.TEXT}</option>
+            <!-- END ship_sort_list -->
+          </select>
+          {L_sys_sort_inverse} <input type="checkbox" name="sort_elements_inverse" id="sort_elements_inverse" value="1"<!-- IF FLEET_SHIP_SORT_INVERSE --> checked<!-- ENDIF -->/>
+        </div>
+      </td>
     </tr>
+    <!-- INCLUDE fleet_page_0_buttons_action -->
+    <!-- INCLUDE fleet_page_0_buttons -->
+    <!--<tr class="c_c">-->
+      <!--<th colspan="{$SHIP_COLSPAN}"></th>-->
+      <!--&lt;!&ndash; IF $SHIP_COLSPAN == '1' &ndash;&gt;-->
+      <!--<th>{L_fl_to_fly}</th>-->
+      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
+    <!--</tr>-->
 
     <!-- IF .ships -->
       <!-- BEGIN ships -->
         <tr>
-          <th>
-            <div>
-              <a href="infos.php?gid={ships.ID}">{ships.NAME}
+          <th class="fleet_page_0_unit_container {$SHIP_NO_SLOTS_SIZE_CLASS}" colspan="{$SHIP_COLSPAN}">
+            <a href="infos.php?gid={ships.ID}" class="unit_miniatures_wrapper">
+              <img src="{I_[ships.ID]}" style="width: 100%; height: 100%;"/>
+              <!--<img id="unit_info_image" />-->
+              <div class="a75 unit_info_name">{ships.NAME}</div>
+              <div class="a75 unit_info_level">{ships.AMOUNT_TEXT}</div>
+
               <!-- IF ships.SPEED != 0 -->
-                <br />{L_fl_fleetspeed}{ships.SPEED_TEXT}
+              <div class="a75 unit_info_speed_title">{L_fl_fleetspeed}</div>
+              <div class="a75 unit_info_speed_value">{ships.SPEED_TEXT}</div>
+
+              <div class="a75 unit_info_consumption_text">{L_ship_consumption_short}:</div>
+              <div class="a75 unit_info_consumption_value">{ships.CONSUMPTION_TEXT}</div>
+
+              <div class="a75 unit_info_capacity_text">{L_ship_capacity_short}:</div>
+              <div class="a75 unit_info_capacity_value">{ships.CAPACITY_TEXT}</div>
+              <!-- ELSE -->
+              <div class="a75 unit_info_is_satellite">{L_ship_is_satellite}</div>
               <!-- ENDIF -->
-              </a>
-            </div>
+            </a>
+
           </th>
-          <th>{ships.AMOUNT_TEXT}</th>
-          <th colspan=3>
+          <!-- IF $SHIP_COLSPAN == '1' -->
+          <th>
             <!-- IF (ships.SPEED == 0) || (FLYING_FLEETS >= MAX_FLEETS) -->
               &nbsp;
             <!-- ELSE -->
               <ainput type="text" name="ships[{ships.ID}]" id="ships{ships.ID}" max="{ships.AMOUNT}"></ainput>
               <script type="text/javascript">
                 sn_ainput_make_jquery();
-//                sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}][0], button_max: true, button_zero: true});
-
                 jQuery('#ships{ships.ID}slide').on('slide slidechange', fl_calc_stats);
               </script>
             <!-- ENDIF -->
           </th>
+          <!-- ENDIF -->
         </tr>
       <!-- END ships -->
-      <!-- IF FLYING_FLEETS < MAX_FLEETS -->
-        <tr class="c_c">
-          <th><input type="button" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';"></th>
-          <th style="padding-right: 0; border-right: 0" class="c_l" ><input type="button" value="{L_fl_unselectall}" onclick="zero_fleet();"></th>
-          <th class="c_c">
-            <!-- IF MAX_EXPEDITIONS > 1 -->
-            <input type="button" value="1/{MAX_EXPEDITIONS}" onclick="expe_fleet({MAX_EXPEDITIONS});">
-            <!-- ENDIF -->
-            &nbsp;&nbsp;&nbsp;
-            <!-- IF FREE_EXPEDITIONS > 1 && MAX_EXPEDITIONS > 1 && FREE_EXPEDITIONS != MAX_EXPEDITIONS -->
-            <input type="button" value="1/{FREE_EXPEDITIONS}" onclick="expe_fleet({FREE_EXPEDITIONS});">
-            <!-- ENDIF -->
-          </th>
-          <th  style="padding-left: 0; border-left: 0" class="c_r">
-            <input type="button" value="{L_fl_selectall}" onclick="max_fleet();">
-          </th>
-        </tr>
-        <tr class="c_c">
-          <th colspan="4">
-            <div class="fl">
-              {L_sys_sort}
-              <select name="sort_elements" id="sort_elements">
-                <!-- BEGIN ship_sort_list -->
-                <option value="{ship_sort_list.VALUE}"<!-- IF ship_sort_list.VALUE == FLEET_SHIP_SORT --> selected<!-- ENDIF -->>{ship_sort_list.TEXT}</option>
-                <!-- END ship_sort_list -->
-              </select>
-              {L_sys_sort_inverse} <input type="checkbox" name="sort_elements_inverse" id="sort_elements_inverse" value="1"<!-- IF FLEET_SHIP_SORT_INVERSE --> checked<!-- ENDIF -->/>
-            </div>
-            <input class="fr" type="submit" value="{L_fl_continue}" /></th>
-        </tr>
-      <!-- ELSE -->
-        <tr>
-          <th colspan="5" class="error">{L_fl_noslotfree}</th>
-        </tr>
-      <!-- ENDIF -->
+
+      <!-- INCLUDE fleet_page_0_buttons -->
+      <!-- INCLUDE fleet_page_0_buttons_action -->
     <!-- ELSE -->
-      <tr><th colspan="5">{L_fl_noships}</th></tr>
+      <tr><th colspan="2">{L_fl_noships}</th></tr>
     <!-- ENDIF -->
   </table>
 </form>

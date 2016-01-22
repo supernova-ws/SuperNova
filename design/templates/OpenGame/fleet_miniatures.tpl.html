@@ -53,10 +53,12 @@
   <div id="fleet_unit_miniatures_container">
     <!-- BEGIN ships -->
     <div class="unit_miniatures_wrapper">
-      <img src="{I_[ships.ID]}" style="width: 100%; height: 100%;"/>
+      <img src="{I_[ships.ID]}" style="width: 100%; height: 100%;" />
       <!--<img id="unit_info_image" />-->
-      <div id="unit_info_name" class="a75">{ships.NAME}</div>
-      <div id="unit_info_level" class="a75">{ships.AMOUNT_TEXT}</div>
+      <div style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+        <div id="unit_info_name" class="a75">{ships.NAME}</div>
+        <div id="unit_info_level" class="a75">{ships.AMOUNT_TEXT}</div>
+      </div>
     </div>
     <!-- END ships -->
   </div>

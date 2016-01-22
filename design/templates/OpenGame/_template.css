@@ -881,6 +881,60 @@ input[type=text].coordinate {
   width: 100%;
   text-align: center;
 }
+.unit_info_level,
+.unit_info_name,
+.unit_info_speed_title,
+.unit_info_speed_value,
+.unit_info_consumption_text,
+.unit_info_consumption_value,
+.unit_info_capacity_text,
+.unit_info_capacity_value,
+.unit_info_is_satellite
+{
+  position: absolute;
+  left: 0;
+
+  font-size: 1em;
+  width: 100%;
+  text-align: left;
+}
+.unit_info_level {
+  bottom: 0;
+  text-align: center;
+}
+.unit_info_name {
+  top: 0;
+  text-align: center;
+}
+.unit_info_is_satellite {
+  top: 5em;
+  text-align: center;
+}
+.unit_info_speed_title {
+  top: 2.5em;
+  text-align: left;
+}
+.unit_info_speed_value {
+  top: 3.5em;
+  text-align: right;
+}
+.unit_info_consumption_text {
+  top: 4.5em;
+  text-align: left;
+}
+.unit_info_consumption_value {
+  top: 5.5em;
+  text-align: right;
+}
+.unit_info_capacity_text {
+  top: 6.5em;
+  text-align: left;
+}
+.unit_info_capacity_value {
+  top: 7.5em;
+  text-align: right;
+}
+
 #unit_description_wrapper_inner {
   vertical-align: top;
   margin-right: 0.5em;
@@ -1189,10 +1243,20 @@ input[type=text].coordinate {
 
 #fleet_unit_miniatures_container {
   display: inline-block;
-  /*max-width: 53em;*/
   font-size: 0.8em;
   text-align: center;
   align-content: center;
+}
+
+.fleet_page_0_unit_container {
+  display: inline-block;
+  font-size: 0.8em;
+  text-align: center;
+  align-content: center;
+}
+
+.fleet_page_0_unit_container.no_slots {
+  font-size: 100%;
 }
 
 .unit_miniatures_wrapper {
