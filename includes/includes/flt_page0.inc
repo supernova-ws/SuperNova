@@ -103,6 +103,11 @@ $template->assign_vars(array(
 
   'PLANET_RESOURCES'   => pretty_number($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium']),
   'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
+
+  'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
 ));
 
 $template->assign_recursive($template_result);

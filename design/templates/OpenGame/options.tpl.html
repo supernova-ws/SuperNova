@@ -197,6 +197,7 @@
         <!-- ENDIF -->
         <li><a href="#tab_interface-navbar">{L_opt_navbar_title}</a></li>
         <li><a href="#tab_interface-universe">{L_opt_universe_title}</a></li>
+        <li><a href="#tab_interface-fleet">{L_option_fleets}</a></li>
       </ul>
 
       <div id="tab_interface-common">
@@ -475,7 +476,44 @@
         </table>
       </div>
 
+      <div id="tab_interface-fleet">
+        <table class="no_border_image">
+          <tr>
+            <th class="c_c" colspan="2">{L_option_fleet_send}</th>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_FLEET_SHIP_SELECT_OLD}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_FLEET_SHIP_SELECT_OLD}]" value="1" id="PLAYER_OPTION_FLEET_SHIP_SELECT_OLD" <!-- IF PLAYER_OPTION_FLEET_SHIP_SELECT_OLD -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_FLEET_SHIP_SELECT_OLD">{L_PLAYER_OPTION_FLEET_SHIP_SELECT_OLD}</label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION}]" value="1" id="PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION" <!-- IF PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION">{L_PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION} <img src="{I_icon_ship_consumption_16}" class="icon_1em" /></label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED}]" value="1" id="PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED" <!-- IF PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED">{L_PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED} <img src="{I_icon_ship_speed_16}" class="icon_1em" /></label>
+            </td>
+          </tr>
+          <tr>
+            <td class="c_l" colspan="2">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY}]" value="0" />
+              <input type="checkbox" name="options[{D_PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY}]" value="1" id="PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY" <!-- IF PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY -->checked="checked" <!-- ENDIF -->/>
+              <label for="PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY">{L_PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY} <img src="{I_icon_ship_capacity_16}" class="icon_1em" /></label>
+            </td>
+          </tr>
+        </table>
+      </div>
+
     </div>
+
 
     <div id="tab_alerts">
       <table class="no_border_image">

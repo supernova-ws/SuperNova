@@ -23,6 +23,25 @@ var speed_factor   = {speed_factor};
   </h3>
 <!-- ENDIF -->
 
+<!-- IF PLAYER_OPTION_FLEET_SHIP_SELECT_OLD -->
+  <!-- DEFINE $FLEET_SHIP_SELECT_OLD = 'old' -->
+  <!-- DEFINE $FLEET_SHIP_SELECT_MAIN_COL_SPAN = '3' -->
+<!-- ELSE -->
+  <!-- DEFINE $FLEET_SHIP_SELECT_MAIN_COL_SPAN = '2' -->
+<!-- ENDIF -->
+
+<!-- IF PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION -->
+  <!-- DEFINE $PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION_CLASS = 'hide' -->
+<!-- ENDIF -->
+
+<!-- IF PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY -->
+  <!-- DEFINE $PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY_CLASS = 'hide' -->
+<!-- ENDIF -->
+
+<!-- IF PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED -->
+  <!-- DEFINE $PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED_CLASS = 'hide' -->
+<!-- ENDIF -->
+
 <!-- IF .ships -->
 <form action="fleet.php?fleet_page=1" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
@@ -40,7 +59,7 @@ var speed_factor   = {speed_factor};
 
   <table border="0" cellpadding="0" cellspacing="1">
     <tr class="c_c">
-      <td colspan="2">
+      <td colspan="{$FLEET_SHIP_SELECT_MAIN_COL_SPAN}">
         <div>
           {L_sys_sort}
           <select name="sort_elements" id="sort_elements">
@@ -52,40 +71,56 @@ var speed_factor   = {speed_factor};
         </div>
       </td>
     </tr>
+
     <!-- INCLUDE fleet_page_0_buttons_action -->
     <!-- INCLUDE fleet_page_0_buttons -->
-    <!--<tr class="c_c">-->
-      <!--<th colspan="{$SHIP_COLSPAN}"></th>-->
-      <!--&lt;!&ndash; IF $SHIP_COLSPAN == '1' &ndash;&gt;-->
-      <!--<th>{L_fl_to_fly}</th>-->
-      <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-    <!--</tr>-->
 
     <!-- IF .ships -->
       <!-- BEGIN ships -->
         <tr>
-          <th class="fleet_page_0_unit_container {$SHIP_NO_SLOTS_SIZE_CLASS}" colspan="{$SHIP_COLSPAN}">
-            <a href="infos.php?gid={ships.ID}" class="unit_miniatures_wrapper">
-              <img src="{I_[ships.ID]}" style="width: 100%; height: 100%;"/>
-              <!--<img id="unit_info_image" />-->
-              <div class="a75 unit_info_name zero">{ships.NAME}</div>
-              <div class="a75 unit_info_level positive">{ships.AMOUNT_TEXT}</div>
+          <th class="{$SHIP_NO_SLOTS_SIZE_CLASS}" colspan="{$SHIP_COLSPAN}">
+            <div class="ship_miniature_container {$FLEET_SHIP_SELECT_OLD}" style="background-image: url({I_[ships.ID]})" go="info" unit_id="{ships.ID}">
+              <div class="a75 ship_miniature_name">
+                {ships.NAME}
+              </div>
 
-              <!-- IF ships.SPEED != 0 -->
-              <div class="a75 unit_info_speed_title">{L_fl_fleetspeed}</div>
-              <div class="a75 unit_info_speed_value">{ships.SPEED_TEXT}</div>
+              <div class="ship_miniature_data">
+                <!-- IF ships.SPEED != 0 -->
+                <div class="ship_miniature_consumption {$PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION_CLASS}">
+                  <span class="a75">
+                  <img src="{I_icon_ship_consumption_16}" class="icon_1em" />
+                  {ships.CONSUMPTION_TEXT}
+                  </span>
+                </div>
 
-              <div class="a75 unit_info_consumption_text">{L_ship_consumption_short}:</div>
-              <div class="a75 unit_info_consumption_value">{ships.CONSUMPTION_TEXT}</div>
+                <div class="ship_miniature_capacity {$PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY_CLASS}">
+                  <span class="a75">
+                  <img src="{I_icon_ship_capacity_16}" class="icon_1em" />
+                  {ships.CAPACITY_TEXT}
+                  </span>
+                </div>
 
-              <div class="a75 unit_info_capacity_text">{L_ship_capacity_short}:</div>
-              <div class="a75 unit_info_capacity_value">{ships.CAPACITY_TEXT}</div>
-              <!-- ELSE -->
-              <div class="a75 unit_info_is_satellite">{L_ship_is_satellite}</div>
-              <!-- ENDIF -->
-            </a>
+                <div class="ship_miniature_speed {$PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED_CLASS}">
+                  <span class="a75">
+                  <img src="{I_icon_ship_speed_16}" class="icon_1em" />
+                  {ships.SPEED_TEXT}
+                  </span>
+                </div>
+                <!-- ENDIF -->
 
+                <div class="a75 ship_miniature_amount positive">
+                  {ships.AMOUNT_TEXT}
+                </div>
+              </div>
+            </div>
           </th>
+
+          <!-- IF PLAYER_OPTION_FLEET_SHIP_SELECT_OLD -->
+          <td class="c_r positive">
+            {ships.AMOUNT_TEXT}
+          </td>
+          <!-- ENDIF -->
+
           <!-- IF $SHIP_COLSPAN == '1' -->
           <th>
             <!-- IF (ships.SPEED == 0) || (FLYING_FLEETS >= MAX_FLEETS) -->
@@ -104,6 +139,7 @@ var speed_factor   = {speed_factor};
 
       <!-- INCLUDE fleet_page_0_buttons -->
       <!-- INCLUDE fleet_page_0_buttons_action -->
+
     <!-- ELSE -->
       <tr><th colspan="2">{L_fl_noships}</th></tr>
     <!-- ENDIF -->

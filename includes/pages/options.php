@@ -384,6 +384,10 @@ function sn_options_view($template = null) {
     'sound_enabled'                           => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
     'PLAYER_OPTION_ANIMATION_DISABLED'        => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
     'PLAYER_OPTION_PROGRESS_BARS_DISABLED'    => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
+    'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
+    'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],
+    'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
+    'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data'      => htmlspecialchars($user['username']),

@@ -1,6 +1,6 @@
 <!-- IF FLYING_FLEETS < MAX_FLEETS -->
 <tr class="c_c">
-  <th colspan="2">
+  <th colspan="{$FLEET_SHIP_SELECT_MAIN_COL_SPAN}">
     <input type="button" class="fl" value="{L_flt_gather_all}" onclick="document.location = 'fleet.php?fleet_page=5';" />
     <input class="fr" type="submit" value="{L_fl_continue}" />
   </th>
@@ -8,6 +8,6 @@
 <!-- ELSEIF ! $FLEET_PAGE_0_ACTION -->
 <!-- DEFINE $FLEET_PAGE_0_ACTION = '1' -->
 <tr>
-  <th colspan="2" class="error">{L_fl_noslotfree}</th>
+  <th colspan="{$FLEET_SHIP_SELECT_MAIN_COL_SPAN}" class="error">{L_fl_noslotfree}</th>
 </tr>
 <!-- ENDIF -->

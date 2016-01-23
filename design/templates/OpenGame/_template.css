@@ -881,59 +881,6 @@ input[type=text].coordinate {
   width: 100%;
   text-align: center;
 }
-.unit_info_level,
-.unit_info_name,
-.unit_info_speed_title,
-.unit_info_speed_value,
-.unit_info_consumption_text,
-.unit_info_consumption_value,
-.unit_info_capacity_text,
-.unit_info_capacity_value,
-.unit_info_is_satellite
-{
-  position: absolute;
-  left: 0;
-
-  font-size: 1em;
-  width: 100%;
-  text-align: left;
-}
-.unit_info_level {
-  bottom: 0;
-  text-align: center;
-}
-.unit_info_name {
-  top: 0;
-  text-align: center;
-}
-.unit_info_is_satellite {
-  top: 5em;
-  text-align: center;
-}
-.unit_info_speed_title {
-  top: 2.5em;
-  text-align: left;
-}
-.unit_info_speed_value {
-  top: 3.5em;
-  text-align: right;
-}
-.unit_info_consumption_text {
-  top: 4.5em;
-  text-align: left;
-}
-.unit_info_consumption_value {
-  top: 5.5em;
-  text-align: right;
-}
-.unit_info_capacity_text {
-  top: 6.5em;
-  text-align: left;
-}
-.unit_info_capacity_value {
-  top: 7.5em;
-  text-align: right;
-}
 
 #unit_description_wrapper_inner {
   vertical-align: top;
@@ -1248,16 +1195,124 @@ input[type=text].coordinate {
   align-content: center;
 }
 
-.fleet_page_0_unit_container {
-  display: inline-block;
-  font-size: 0.8em;
-  text-align: center;
-  align-content: center;
+.ship_miniature_container
+{
+  /*display: inline-flex;*/
+  /*font-size: 0.8em;*/
+  /*text-align: center;*/
+  /*align-content: center;*/
+  height: 10em;
+  width: 10em;
+  margin: 0.3em 0.3em;
+
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-content: space-between;
 }
 
-.fleet_page_0_unit_container.no_slots {
-  font-size: 100%;
+.ship_miniature_container.no_slots {
+  /*font-size: 100%;*/
 }
+
+.ship_miniature_image {
+  height: 1em;
+  width: 1em;
+}
+
+.ship_miniature_name,
+.ship_miniature_amount,
+.ship_miniature_capacity,
+.ship_miniature_consumption,
+.ship_miniature_speed,
+.ship_miniature_data
+{
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.ship_miniature_name {
+  color: #12A3EB;
+}
+.ship_miniature_capacity,
+.ship_miniature_consumption,
+.ship_miniature_speed
+{
+  text-align: right;
+}
+
+.ship_miniature_container.old {
+  background: none !important;
+  display: flex;
+  height: auto;
+  /*width: auto;*/
+  /*flex-wrap: nowrap;*/
+}
+
+.ship_miniature_container.old .ship_miniature_amount
+{
+  display: none;
+}
+
+.icon_1em {
+  height: 1em;
+  width: 1em;
+}
+
+
+.unit_info_level,
+.unit_info_name,
+.unit_info_speed_title,
+.unit_info_speed_value,
+.unit_info_consumption_text,
+.unit_info_consumption_value,
+.unit_info_capacity_text,
+.unit_info_capacity_value,
+.unit_info_is_satellite
+{
+  position: absolute;
+  left: 0;
+
+  font-size: 1em;
+  width: 100%;
+  text-align: left;
+}
+.unit_info_level {
+  bottom: 0;
+  text-align: center;
+}
+.unit_info_name {
+  top: 0;
+  text-align: center;
+}
+.unit_info_is_satellite {
+  top: 5em;
+  text-align: center;
+}
+.unit_info_speed_title {
+  top: 2.5em;
+  text-align: left;
+}
+.unit_info_speed_value {
+  top: 3.5em;
+  text-align: right;
+}
+.unit_info_consumption_text {
+  top: 4.5em;
+  text-align: left;
+}
+.unit_info_consumption_value {
+  top: 5.5em;
+  text-align: right;
+}
+.unit_info_capacity_text {
+  top: 6.5em;
+  text-align: left;
+}
+.unit_info_capacity_value {
+  top: 7.5em;
+  text-align: right;
+}
+
 
 .unit_miniatures_wrapper {
   margin: 0.3em 0.3em;
