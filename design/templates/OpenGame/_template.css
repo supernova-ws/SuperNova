@@ -577,6 +577,15 @@ input[type=text].coordinate {
   text-align: center;
 }
 
+#note_table {
+  margin: 0.5em 0;
+  max-width: 70em;
+}
+
+#note_main_table {
+  max-width: 70em;
+}
+
 /* Page Body ======================================================================================================== */
 #page_body {
   margin-left: 14em;
@@ -2696,6 +2705,9 @@ body:not(.no_border_image) [table_title]:before {
 .error, .negative, button.negative, button.error {
   color: red;
 }
+.white {
+  color: white;
+}
 .ok_bg, .success_bg, .positive_bg {
   background-color: #004400;
 }
@@ -2951,6 +2963,15 @@ body:not(.no_border_image) [table_title]:before {
 /* Note/Bookmark page ===================================================================================================== */
 .note_coordinates {
   color: #00B7F3;
+}
+
+.note_header {
+  padding: 0.2em;
+  flex-wrap: wrap;
+}
+
+#note_text, #note_title {
+  width: 95%;
 }
 
 /* Emperor page ===================================================================================================== */

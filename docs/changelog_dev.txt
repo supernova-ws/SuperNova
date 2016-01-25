@@ -137,8 +137,34 @@ Jerrycan icon
 http://www.flaticon.com/free-icon/oil_85805#term=fuel&page=1&position=28
 <div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
+Post it note+pin icon
+http://www.flaticon.com/free-icon/post-it_14489#term=pin&page=1&position=37
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Pin icon
+http://www.flaticon.com/free-icon/push-pin_69667#term=pin&page=1&position=57
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+
 
 #ctv
+
+
+
+2016-01-25 22:41:42 41a3.3
+[+] Заметки/Закладки
+    Исправлена ошибка, делающая удаление Закладок невозможным при выборе некоторых диапазонов
+    Изменения на основной странице Закладок:
+        - Заголовок и текст закладки выделяется цветом важности. Отдельный словесный маркер важности убран за ненадобностью;
+        - Название объекта в космосе, на который указывает закладка, отображается сокращённо - (П) для Планеты, (Л) для Луны и (О) для Поля обломков
+        - Статус "прилепленной" закладки показывается иконкой, а не надписью "Прилеплена";
+        - Дата в списке закладок перенесена в заголовок;
+        - Увеличена максимальная ширина таблицы с закладками - для обладателей широкоформатных мониторов;
+        - На маленьких экранах если заголовок не влазит по ширине - он будет разнесен на нужное количество строк;
+        - Диапазоны выбора какие закладки удалять в верхней и нижней части синхронизированы. Т.е. выбор диапазона в верхнем элементе приводит к изменению диапазона в нижнем элементе - и наоборот
+    Редактирование/создание закладки:
+        - При выборе важности закладки меняется цвет заголовка, текста и самого выбранного элемента;
+        - Если в закладке пустой текст и заголовок, но указана хотя бы одна координата (галактика, система или планета) - закладка будет сохранена;
 
 
 2016-01-23 19:52:52 41a3.2

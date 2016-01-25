@@ -9,22 +9,24 @@
     <!-- ENDIF -->
 
     <td class="c_l">
-      <div class="subheader">
-        <!-- IF note.GALAXY || note.SYSTEM || note.PLANET -->
-        <a class="link subheader note_coordinates" href="galaxy.php?mode=2&galaxy={note.GALAXY}&system={note.SYSTEM}">
-          [{note.GALAXY}:{note.SYSTEM}:{note.PLANET}] <!-- IF NOTE_FULL_RENDER -->{note.PLANET_TYPE_TEXT}<!-- ELSE -->{note.PLANET_TYPE_TEXT_SHORT}<!-- ENDIF -->
-        </a>
+      <div class="subheader contFJ {note.PRIORITY_CLASS} note_header">
+        <div>
+          <!-- IF note.STICKY && NOTE_FULL_RENDER --><img src="{I_icon_note_pinned_16}" class="icon_1em" />&nbsp;<!-- ENDIF -->
+
+          <!-- IF note.GALAXY || note.SYSTEM || note.PLANET -->
+          <a class="link subheader note_coordinates" href="galaxy.php?mode=2&galaxy={note.GALAXY}&system={note.SYSTEM}">[{note.GALAXY}:{note.SYSTEM}:{note.PLANET}] {note.PLANET_TYPE_TEXT_SHORT}</a>
+          <!-- ENDIF -->
+          <span class="">{note.TITLE}</span>
+        </div>
+
+        <!-- IF NOTE_FULL_RENDER -->
+        <div>{note.TIME_TEXT}</div>
         <!-- ENDIF -->
-        <span<!-- IF ! NOTE_FULL_RENDER --> class="{note.PRIORITY_CLASS}"<!-- ENDIF -->>{note.TITLE}</span>
       </div>
-      <div style="font-weight: normal; text-align: justify;"<!-- IF ! NOTE_FULL_RENDER --> class="{note.PRIORITY_CLASS}"<!-- ENDIF -->>{note.TEXT}</div>
-      <!-- IF NOTE_FULL_RENDER -->
-      <div class="subheader" style="text-align: center;">
-        <span class="fl">{L_note_priority}: <span class="{note.PRIORITY_CLASS}">{note.PRIORITY_TEXT}</span></span>
-        &nbsp;<!-- IF note.STICKY -->{L_note_sticky}<!-- ENDIF -->&nbsp;
-        <span class="fr">{note.TIME_TEXT}</span>
+
+      <div style="font-weight: normal; text-align: justify;" class="{note.PRIORITY_CLASS}">
+        {note.TEXT}
       </div>
-      <!-- ENDIF -->
     </td>
     <!-- IF NOTE_FULL_RENDER -->
     <td class="c_c">
@@ -40,7 +42,7 @@
     <!-- IF NOTE_ID_EDIT --><a name="a{note.ID}"></a><!-- ENDIF -->
     <span class="fl">
       {L_note_priority}
-      <select name="note_priority">
+      <select name="note_priority" id="note_priority">
         <!-- BEGIN !note_priority -->
         <option value="{note_priority.ID}" class="{note_priority.CLASS}"<!-- IF note_priority.ID == note.PRIORITY --> selected<!-- ENDIF -->>{note_priority.TEXT}</option>
         <!-- END !note_priority -->

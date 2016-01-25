@@ -40,7 +40,7 @@ $note_priority_classes = array(
   3 => 'warning',
   2 => 'notice',
   1 => 'ok',
-  0 => '',
+  0 => 'white',
 );
 
 $sn_ali_admin_internal = array(
