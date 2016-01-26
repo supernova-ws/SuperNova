@@ -3,6 +3,9 @@
   {
     $template = gettemplate('universe_rename', true);
 
+    $uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
+    $uni_system = sys_get_param_int('system');
+
     if($uni_galaxy < 1 || $uni_galaxy > $config->game_maxGalaxy)
     {
       throw new exception($lang['uni_msg_error_wrong_galaxy'], ERR_ERROR);
