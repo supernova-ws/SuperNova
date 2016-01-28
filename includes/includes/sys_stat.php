@@ -137,7 +137,8 @@ function sys_stat_calculate() {
     if($i++ % 100 == 0) sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
     if(array_key_exists($user_id = $fleet_row['fleet_owner'], $user_skip_list)) continue;
 
-    $fleet = sys_unit_str2arr($fleet_row['fleet_array']);
+    $fleet = fleet_parse_fleet_row_string_to_real_array($fleet_row);
+//    $fleet = sys_unit_str2arr($fleet_row['_fleet_array']);
     foreach($fleet as $unit_id => $unit_amount) {
       $counts[$user_id][UNIT_SHIPS] += $unit_amount;
 

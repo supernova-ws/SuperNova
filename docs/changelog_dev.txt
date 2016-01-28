@@ -147,7 +147,21 @@ http://www.flaticon.com/free-icon/push-pin_69667#term=pin&page=1&position=57
 
 
 
+fleet_array:
+      fleet_insert_set($fleet_set);
+
+
+
+fleet_amount => sum($fleet_real_array) - ВСЕГДА И ВЕЗДЕ!
+
+fleet_set - совсем переделать! Потому что он не set - а по параметрам - $from, $to, $mission_type итд
+
 #ctv
+
+
+2016-01-28 20:57:23 41a4.0 - Изоляция поля `fleet_array` в таблице `fleets`
+[!] Код
+    Изолирован код, обращающийся к полю `fleet_array` в таблице `fleets`
 
 
 2016-01-26 21:56:35 41a3.4

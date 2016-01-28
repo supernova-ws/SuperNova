@@ -512,3 +512,5 @@ function fleet_and_missiles_list_incoming($owner_id) {
 function db_fleet_aks_purge() {
   doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
 }
+
+require_once('db_queries_fleet_array.php');

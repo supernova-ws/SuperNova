@@ -60,7 +60,7 @@ function flt_mission_explore(&$mission_data) {
     '$found_dark_matter' => 0,
     '$fleet_metal_points' => 0,
   );
-  $fleet = &$result['$fleet'];
+  $fleet_real_array = &$result['$fleet'];
 //  $fleet_left = &$result['$fleet_left'];
   $fleet_lost = &$result['$fleet_lost'];
   $outcome_mission_sub = &$result['$outcome_mission_sub'];
@@ -83,10 +83,11 @@ function flt_mission_explore(&$mission_data) {
   }
 
   $fleet_row = $mission_data['fleet'];
-  $fleet = sys_unit_str2arr($fleet_row['fleet_array']);
+//  $fleet = sys_unit_str2arr($fleet_row['_fleet_array']);
+  $fleet_real_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
   $fleet_capacity = 0;
   $fleet_metal_points = 0;
-  foreach($fleet as $ship_id => $ship_amount) {
+  foreach($fleet_real_array as $ship_id => $ship_amount) {
     $unit_info = get_unit_param($ship_id);
     $fleet_capacity += $ship_amount * $unit_info[P_CAPACITY];
     $fleet_metal_points += $ship_amount * $ship_data[$ship_id][P_COST_METAL];
@@ -131,6 +132,7 @@ function flt_mission_explore(&$mission_data) {
   $found_dark_matter = 0;
 //  $outcome_mission_sub = -1;
 
+  $fleet_found = array();
   switch($mission_outcome) {
 //  switch(FLT_EXPEDITION_OUTCOME_LOST_FLEET) { // TODO DEBUG!
     case FLT_EXPEDITION_OUTCOME_LOST_FLEET:
@@ -166,7 +168,7 @@ function flt_mission_explore(&$mission_data) {
 
       // Рассчитываем стоимость самого дорого корабля в металле
       $max_metal_cost = 0;
-      foreach($fleet as $ship_id => $ship_amount) {
+      foreach($fleet_real_array as $ship_id => $ship_amount) {
         $max_metal_cost = max($max_metal_cost, $ship_data[$ship_id]['metal_cost']);
       }
 
@@ -181,7 +183,6 @@ function flt_mission_explore(&$mission_data) {
       unset($can_be_found[SHIP_COLONIZER]);
       unset($can_be_found[SHIP_SPY]);
 
-      $fleet_found = array();
       while(count($can_be_found) && $found_in_metal >= max($can_be_found)) {
         $found_index = mt_rand(1, count($can_be_found)) - 1;
         $found_ship = array_slice($can_be_found, $found_index, 1, true);
@@ -201,7 +202,7 @@ function flt_mission_explore(&$mission_data) {
         $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
       } else {
         foreach($fleet_found as $unit_id => $unit_amount) {
-          $fleet[$unit_id] += $unit_amount;
+          $fleet_real_array[$unit_id] += $unit_amount;
         }
       }
     break;
@@ -263,8 +264,8 @@ function flt_mission_explore(&$mission_data) {
     }
   }
 
-  $fleet_row['fleet_amount'] = array_sum($fleet);
-  if(!empty($fleet) && $fleet_row['fleet_amount']) {
+  $fleet_row['fleet_amount'] = array_sum($fleet_real_array);
+  if(!empty($fleet_real_array) && $fleet_row['fleet_amount']) {
     if(!empty($fleet_found)) {
       $msg_text_addon = $lang['flt_mission_expedition']['found_fleet'];
       foreach($fleet_found as $ship_id => $ship_amount) {
@@ -287,32 +288,25 @@ function flt_mission_explore(&$mission_data) {
       $query_delta['fleet_resource_deuterium'] = $resources_found[RES_DEUTERIUM];
     }
 
-    $query_data = array();
-    if(!empty($fleet_lost) || !empty($fleet_found)) {
-      $fleet_row['fleet_array'] = sys_unit_arr2str($fleet);
+//    $query_data = array();
+//    if(!empty($fleet_lost) || !empty($fleet_found)) {
+////      $fleet_row['_fleet_array'] = sys_unit_arr2str($fleet_real_array);
+//      fleet_row_set_array_string_from_real_array(&$fleet_row, $fleet_real_array);
+//
+//      $query_data['fleet_amount'] = $fleet_row['fleet_amount'];
+//      $query_data['_fleet_array'] = $fleet_row['_fleet_array'];
+//    }
 
-//      $query_data[] = "`fleet_amount` = {$fleet_row['fleet_amount']}";
-//      $query_data[] = "`fleet_array` = '{$fleet_row['fleet_array']}'";
-      $query_data['fleet_amount'] = $fleet_row['fleet_amount'];
-      $query_data['fleet_array'] = $fleet_row['fleet_array'];
-    }
-
-//    $query_data[] = '`fleet_mess` = 1';
+    $query_data = !empty($fleet_lost) || !empty($fleet_found)
+      ? fleet_extract_update_data_from_row($fleet_row, $fleet_real_array)
+      : array();
     $query_data['fleet_mess'] = 1;
 
-//    $query_data = "UPDATE {{fleets}} SET " . implode(',', $query_data);
-//    $query_data .=  " WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1";
-//    doquery($query_data);
-//    db_fleet_update_set_safe_string($fleet_row['fleet_id'], implode(',', $query_data));
     fleet_update_set($fleet_row['fleet_id'], $query_data, $query_delta);
   } else {
     // Удалить флот
-//    $query_data = "DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1";
-//    doquery($query_data);
     db_fleet_delete($fleet_row['fleet_id']);
   }
-//  $query_data .=  " WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1";
-//  doquery($query_data);
 
   db_user_set_by_id($fleet_row['fleet_owner'], "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
 

@@ -183,20 +183,12 @@ function sn_fleet_page3() {
   }
 
   $FleetStorage        = 0;
-  $FleetShipCount      = 0;
-//pdump($fleetarray );
+
   $db_changeset = array();
   foreach ($fleetarray as $Ship => $Count) {
     $FleetStorage    += get_unit_param($Ship, P_CAPACITY) * $Count;
-//    $fleet_array     .= "{$Ship},{$Count};";
-//    $ship_db_name = get_unit_param($Ship, P_NAME);
-//    $FleetSubQRY     .= "`{$ship_db_name}` = `{$ship_db_name}` - {$Count} , ";
     $db_changeset['unit'][] = sn_db_unit_changeset_prepare($Ship, -$Count, $user, $planetrow['id']);
   }
-  $fleet_array = sys_unit_arr2str($fleetarray);
-  $FleetShipCount  += array_sum($fleetarray);
-//pdump($fleet_array);
-//pdump($db_changeset);
   $FleetStorage        -= $consumption;
 
   if ( $StorageNeeded > $FleetStorage) {
@@ -209,31 +201,17 @@ function sn_fleet_page3() {
     message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
-//  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
-//  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', `fleet_mission` = '{$target_mission}', ";
-//  $QryInsertFleet .= "`fleet_amount` = '{$FleetShipCount}', `fleet_array` = '{$fleet_array}', `fleet_start_time` = '{$fleet['start_time']}', ";
-//  if($planetrow['id']) {
-//    $QryInsertFleet .= "`fleet_start_planet_id` = '{$planetrow['id']}', ";
-//  }
-//  $QryInsertFleet .= "`fleet_start_galaxy` = '". intval($planetrow['galaxy']) ."', ";
-//  $QryInsertFleet .= "`fleet_start_system` = '". intval($planetrow['system']) ."', ";
-//  $QryInsertFleet .= "`fleet_start_planet` = '". intval($planetrow['planet']) ."', ";
-//  $QryInsertFleet .= "`fleet_start_type` = '". intval($planetrow['planet_type']) ."', ";
-//  $QryInsertFleet .= "`fleet_end_time` = '{$fleet['end_time']}', `fleet_end_stay` = '{$StayTime}', ";
-//  if($TargetPlanet['id']) {
-//    $QryInsertFleet .= "`fleet_end_planet_id` = '{$TargetPlanet['id']}', ";
-//  }
-//  $QryInsertFleet .= "`fleet_end_galaxy` = '{$galaxy}', `fleet_end_system` = '{$system}', `fleet_end_planet` = '{$planet}', `fleet_end_type` = '{$planet_type}', ";
-//  $QryInsertFleet .= "`fleet_resource_metal` = '{$TransMetal}', `fleet_resource_crystal` = '{$TransCrystal}', `fleet_resource_deuterium` = '{$TransDeuterium}', ";
-//  $QryInsertFleet .= "`fleet_target_owner` = '{$TargetPlanet['id_owner']}', `fleet_group` = '{$fleet_group}', `start_time` = " . SN_TIME_NOW . ";";
-//  doquery( $QryInsertFleet);
-//  $fleet_id = db_insert_id();
+//  $fleet_array_string = sys_unit_arr2str($fleetarray);
+//  $FleetShipCount  = array_sum($fleetarray);
 
-  $fleet_set = array(
+//  $fleet_pre_set = fleet_send_from_planet($fleetarray, $planet_fields_UNUSED, $db_changeset_UNUSED);
+  $fleet_pre_set = fleet_pre_set_from_array($fleetarray);
+
+  $fleet_set = $fleet_pre_set + array(
     'fleet_owner' => $user['id'],
     'fleet_mission' => $target_mission,
-    'fleet_amount' => $FleetShipCount,
-    'fleet_array' => $fleet_array,
+//    'fleet_amount' => $FleetShipCount,
+//    '_fleet_array' => $fleet_array_string,
     'fleet_start_time' => $fleet['start_time'],
     'fleet_start_planet_id' => !empty($planetrow['id']) ? $planetrow['id'] : null,
     'fleet_start_galaxy' => $planetrow['galaxy'],

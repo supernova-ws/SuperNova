@@ -484,7 +484,7 @@ $fleet - array of records $unit_id -> $amount
 $mission - fleet mission
 */
 
-function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array()) {
+function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $options = array()) {
 //ini_set('error_reporting', E_ALL);
 
   $internal_transaction = !sn_db_transaction_check(false) ? sn_db_transaction_start() : false;
@@ -495,7 +495,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
   $from = $from['planet'];
 
-  $can_attack = flt_can_attack($from, $to, $fleet, $mission, $options);
+  $can_attack = flt_can_attack($from, $to, $fleet_REAL_array, $mission, $options);
   if($can_attack != ATTACK_ALLOWED) {
     $internal_transaction ? sn_db_transaction_rollback() : false;
     return $can_attack;
@@ -503,7 +503,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 
   $fleet_group = isset($options['fleet_group']) ? floatval($options['fleet_group']) : 0;
 
-  $travel_data  = flt_travel_data($user, $from, $to, $fleet, $options['fleet_speed_percent']);
+  $travel_data  = flt_travel_data($user, $from, $to, $fleet_REAL_array, $options['fleet_speed_percent']);
 
   $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
 
@@ -516,68 +516,37 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   }
   $fleet_end_time = $fleet_start_time + $travel_data['duration'] + $stay_duration;
 
-  $fleet_ship_count  = 0;
-  $fleet_string      = '';
-  $db_changeset = array();
-  $planet_fields = array();
-  foreach($fleet as $unit_id => $amount)
-  {
-    if(!$amount || !$unit_id)
-    {
-      continue;
-    }
-
-    if(in_array($unit_id, sn_get_groups('fleet')))
-    {
-      $fleet_ship_count += $amount;
-      $fleet_string     .= "{$unit_id},{$amount};";
-      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$amount, $user, $from['id']);
-    }
-    elseif(in_array($unit_id, sn_get_groups('resources_loot')))
-    {
-      $planet_fields[pname_resource_name($unit_id)]['delta'] -= $amount;
-    }
-  }
+//  $fleet_ship_count  = 0;
+//  $fleet_string      = '';
+//  $db_changeset = array();
+//  $planet_fields = array();
+//  foreach($fleet as $unit_id => $amount)
+//  {
+//    if(!$amount || !$unit_id)
+//    {
+//      continue;
+//    }
+//
+//    if(in_array($unit_id, sn_get_groups('fleet')))
+//    {
+//      $fleet_ship_count += $amount;
+//      $fleet_string     .= "{$unit_id},{$amount};";
+//      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$amount, $user, $from['id']);
+//    }
+//    elseif(in_array($unit_id, sn_get_groups('resources_loot')))
+//    {
+//      $planet_fields[pname_resource_name($unit_id)]['delta'] -= $amount;
+//    }
+//  }
 
   $to['id_owner'] = intval($to['id_owner']);
 
-//  $QryInsertFleet  = "INSERT INTO {{fleets}} SET ";
-//  $QryInsertFleet .= "`fleet_owner` = '{$user['id']}', ";
-//  $QryInsertFleet .= "`fleet_mission` = '{$mission}', ";
-//  $QryInsertFleet .= "`fleet_amount` = '{$fleet_ship_count}', ";
-//  $QryInsertFleet .= "`fleet_array` = '{$fleet_string}', ";
-//  $QryInsertFleet .= "`fleet_start_time` = '{$fleet_start_time}', ";
-//  if($from['id'])
-//  {
-//    $QryInsertFleet .= "`fleet_start_planet_id` = '{$from['id']}', ";
-//  }
-//  $QryInsertFleet .= "`fleet_start_galaxy` = '{$from['galaxy']}', ";
-//  $QryInsertFleet .= "`fleet_start_system` = '{$from['system']}', ";
-//  $QryInsertFleet .= "`fleet_start_planet` = '{$from['planet']}', ";
-//  $QryInsertFleet .= "`fleet_start_type` = '{$from['planet_type']}', ";
-//  $QryInsertFleet .= "`fleet_end_time` = '{$fleet_end_time}', ";
-//  $QryInsertFleet .= "`fleet_end_stay` = '{$stay_time}', ";
-//  if($to['id'])
-//  {
-//    $QryInsertFleet .= "`fleet_end_planet_id` = '{$to['id']}', ";
-//  }
-//  $QryInsertFleet .= "`fleet_end_galaxy` = '{$to['galaxy']}', ";
-//  $QryInsertFleet .= "`fleet_end_system` = '{$to['system']}', ";
-//  $QryInsertFleet .= "`fleet_end_planet` = '{$to['planet']}', ";
-//  $QryInsertFleet .= "`fleet_end_type` = '{$to['planet_type']}', ";
-//  $QryInsertFleet .= "`fleet_resource_metal` = " . floatval($fleet[RES_METAL]) . ", ";
-//  $QryInsertFleet .= "`fleet_resource_crystal` = " . floatval($fleet[RES_CRYSTAL]) . ", ";
-//  $QryInsertFleet .= "`fleet_resource_deuterium` = " . floatval($fleet[RES_DEUTERIUM]) . ", ";
-//  $QryInsertFleet .= "`fleet_target_owner` = '{$to['id_owner']}', ";
-//  $QryInsertFleet .= "`fleet_group` = '{$fleet_group}', ";
-//  $QryInsertFleet .= "`start_time` = " . SN_TIME_NOW . ";";
-//  doquery( $QryInsertFleet);
-
-  $fleet_set = array(
+  $fleet_pre_set = fleet_send_from_planet($fleet_REAL_array, $planet_row_changed_fields, $db_changeset);
+  $fleet_set = $fleet_pre_set + array(
     'fleet_owner' => $user['id'],
     'fleet_mission' => $mission,
-    'fleet_amount' => $fleet_ship_count,
-    'fleet_array' => $fleet_string,
+//    'fleet_amount' => $fleet_ship_count,
+//    '_fleet_array' => $fleet_string,
 
     'fleet_start_time' => $fleet_start_time,
     'fleet_start_planet_id' => intval($from['id']) ? $from['id'] : null,
@@ -595,23 +564,23 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     'fleet_end_type' => $to['planet_type'],
     'fleet_target_owner' => intval($to['id_owner']) ? $to['id_owner'] : 0,
 
-    'fleet_resource_metal' => floatval($fleet[RES_METAL]),
-    'fleet_resource_crystal' => floatval($fleet[RES_CRYSTAL]),
-    'fleet_resource_deuterium' => floatval($fleet[RES_DEUTERIUM]),
+    'fleet_resource_metal' => floatval($fleet_REAL_array[RES_METAL]),
+    'fleet_resource_crystal' => floatval($fleet_REAL_array[RES_CRYSTAL]),
+    'fleet_resource_deuterium' => floatval($fleet_REAL_array[RES_DEUTERIUM]),
 
     'fleet_group' => $fleet_group,
     'start_time' => SN_TIME_NOW,
   );
   fleet_insert_set($fleet_set);
 
-  $planet_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
+  $planet_row_changed_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
   $db_changeset['planets'][] = array(
     'action' => SQL_OP_UPDATE,
     P_VERSION => 1,
     'where' => array(
       'id' => $from['id'],
     ),
-    'fields' => $planet_fields,
+    'fields' => $planet_row_changed_fields,
   );
 
   db_changeset_apply($db_changeset);

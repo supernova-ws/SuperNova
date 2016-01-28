@@ -130,39 +130,70 @@ function sn_tpl_parse_fleet_db($fleet, $index, $user_data = false, &$result) {
     'OV_THIS_PLANET'     => $fleet['ov_this_planet'],
   );
 
-  $ship_list = explode(';', $fleet['fleet_array']);
+  $ship_list_fully_parsed = fleet_parse_fleet_row_string_to_real_array($fleet);
 
   $ship_id = 0;
   if($spy_level >= 6) {
-    foreach($ship_list as $ship_record) {
-      if($ship_record) {
-        $ship_data = explode(',', $ship_record);
-        if($spy_level >= 10) {
-          $single_ship_data = get_ship_data($ship_data[0], $user_data);
-          $result['ships'][$ship_data[0]] = array(
-            'ID'          => $ship_data[0],
-            'NAME'        => $lang['tech'][$ship_data[0]],
-            'AMOUNT'      => $ship_data[1],
-            'AMOUNT_TEXT' => pretty_number($ship_data[1]),
-            'CONSUMPTION' => $single_ship_data['consumption'],
-            'SPEED'       => $single_ship_data['speed'],
-            'CAPACITY'    => $single_ship_data['capacity'],
-          );
-        } else {
-          $result['ships'][$ship_data[0]] = array(
-            'ID'          => $ship_id++,
-            'NAME'        => $lang['tech'][UNIT_SHIPS],
-            'AMOUNT'      => $ship_data[1],
-            'AMOUNT_TEXT' => pretty_number($ship_data[1]),
-            'CONSUMPTION' => 0,
-            'CONSUMPTION_TEXT' => '0',
-            'SPEED'       => 0,
-            'CAPACITY'    => 0,
-          );
-        }
+    foreach($ship_list_fully_parsed as $ship_sn_id => $ship_amount) {
+      if($spy_level >= 10) {
+        $single_ship_data = get_ship_data($ship_sn_id, $user_data);
+        $result['ships'][$ship_sn_id] = array(
+          'ID'          => $ship_sn_id,
+          'NAME'        => $lang['tech'][$ship_sn_id],
+          'AMOUNT'      => $ship_amount,
+          'AMOUNT_TEXT' => pretty_number($ship_amount),
+          'CONSUMPTION' => $single_ship_data['consumption'],
+          'SPEED'       => $single_ship_data['speed'],
+          'CAPACITY'    => $single_ship_data['capacity'],
+        );
+      } else {
+        $result['ships'][$ship_sn_id] = array(
+          'ID'               => $ship_id++,
+          'NAME'             => $lang['tech'][UNIT_SHIPS],
+          'AMOUNT'           => $ship_amount,
+          'AMOUNT_TEXT'      => pretty_number($ship_amount),
+          'CONSUMPTION'      => 0,
+          'CONSUMPTION_TEXT' => '0',
+          'SPEED'            => 0,
+          'CAPACITY'         => 0,
+        );
       }
     }
   }
+
+//  $ship_list = explode(';', $fleet['_fleet_array']);
+//
+//  $ship_id = 0;
+//  if($spy_level >= 6) {
+//    foreach($ship_list as $ship_record) {
+//      if($ship_record) {
+//        $ship_data = explode(',', $ship_record);
+//        if($spy_level >= 10) {
+//          $single_ship_data = get_ship_data($ship_data[0], $user_data);
+//          $result['ships'][$ship_data[0]] = array(
+//            'ID'          => $ship_data[0],
+//            'NAME'        => $lang['tech'][$ship_data[0]],
+//            'AMOUNT'      => $ship_data[1],
+//            'AMOUNT_TEXT' => pretty_number($ship_data[1]),
+//            'CONSUMPTION' => $single_ship_data['consumption'],
+//            'SPEED'       => $single_ship_data['speed'],
+//            'CAPACITY'    => $single_ship_data['capacity'],
+//          );
+//        } else {
+//          $result['ships'][$ship_data[0]] = array(
+//            'ID'          => $ship_id++,
+//            'NAME'        => $lang['tech'][UNIT_SHIPS],
+//            'AMOUNT'      => $ship_data[1],
+//            'AMOUNT_TEXT' => pretty_number($ship_data[1]),
+//            'CONSUMPTION' => 0,
+//            'CONSUMPTION_TEXT' => '0',
+//            'SPEED'       => 0,
+//            'CAPACITY'    => 0,
+//          );
+//        }
+//      }
+//    }
+//  }
 
   return $result;
 }
@@ -298,8 +329,8 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
 
     if($fleet['fleet_mess'] == 1 || ($fleet['fleet_mess'] == 0 && $fleet['fleet_mission'] == MT_RELOCATE) || ($fleet['fleet_target_owner'] != $user['id']))
     {
-//      $fleet_sn = flt_expand($fleet);
-      $fleet_sn = sys_unit_str2arr($fleet['fleet_array']);
+      $fleet_sn = fleet_parse_fleet_row_string_to_real_array($fleet);
+//      $fleet_sn = sys_unit_str2arr($fleet['_fleet_array']);
       foreach($fleet_sn as $ship_id => $ship_amount)
       {
         if(in_array($ship_id, sn_get_groups('fleet')))

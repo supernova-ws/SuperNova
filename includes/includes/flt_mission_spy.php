@@ -70,7 +70,8 @@ function flt_mission_spy(&$mission_data)
     return;
   }
 
-  $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
+//  $fleet_array = sys_unit_str2arr($fleet_row['_fleet_array']);
+  $fleet_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
   if($fleet_array[SHIP_SPY] > 0)
   {
     $TargetSpyLvl      = GetSpyLevel($target_user_row);

@@ -210,10 +210,11 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++)
     if($fleet_list[$Planet][PT_DEBRIS]) {
       foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row) {
         if($fleet_row['fleet_owner'] == $user['id']) {
-          $fleet_data = sys_unit_str2arr($fleet_row['fleet_array']);
-          foreach($recycler_info as $recycler_id => $recycler_data) {
-            $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
-          }
+          $recyclers_incoming_capacity += fleet_recyclers_capacity($fleet_row, $recycler_info);
+//          $fleet_data = sys_unit_str2arr($fleet_row['_fleet_array']);
+//          foreach($recycler_info as $recycler_id => $recycler_data) {
+//            $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
+//          }
         }
       }
     }

@@ -28,7 +28,8 @@ function flt_mission_recycle(&$mission_data)
 
   $RecyclerCapacity    = 0;
   $OtherFleetCapacity  = 0;
-  $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
+//  $fleet_array = sys_unit_str2arr($fleet_row['_fleet_array']);
+  $fleet_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
   foreach($fleet_array as $unit_id => $unit_count)
   {
     if(in_array($unit_id, sn_get_groups('fleet')))
