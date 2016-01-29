@@ -27,11 +27,10 @@ function flt_mission_explore_outcome_lost_fleet(&$result) {
 function flt_mission_explore_outcome_lost_fleet_all(&$result) {
   $result['$fleet_lost'] = $result['$fleet'];
   $result['$fleet'] = array();
-//  $fleet_lost = $fleet;
-//  $fleet = array();
 }
 
-function flt_mission_explore_addon(&$result){return sn_function_call('flt_mission_explore_addon', array(&$result));}
+function flt_mission_explore_addon(&$result) { return sn_function_call('flt_mission_explore_addon', array(&$result)); }
+
 function sn_flt_mission_explore_addon(&$result) {
   return $result;
 }
@@ -47,17 +46,17 @@ function flt_mission_explore(&$mission_data) {
   static $ship_data, $rates;
 
   $result = array(
-    '$mission_data' => $mission_data,
-    '$outcome_list' => array(),
-    '$mission_outcome' => FLT_EXPEDITION_OUTCOME_NONE,
-    '$outcome_value' => 0,
-    '$outcome_percent' => 0,
+    '$mission_data'        => $mission_data,
+    '$outcome_list'        => array(),
+    '$mission_outcome'     => FLT_EXPEDITION_OUTCOME_NONE,
+    '$outcome_value'       => 0,
+    '$outcome_percent'     => 0,
     '$outcome_mission_sub' => -1,
 
-    '$fleet' => array(),
-    '$fleet_lost' => array(),
+    '$fleet'              => array(),
+    '$fleet_lost'         => array(),
 //    '$fleet_left' => 0,
-    '$found_dark_matter' => 0,
+    '$found_dark_matter'  => 0,
     '$fleet_metal_points' => 0,
   );
   $fleet_real_array = &$result['$fleet'];
@@ -83,7 +82,6 @@ function flt_mission_explore(&$mission_data) {
   }
 
   $fleet_row = $mission_data['fleet'];
-//  $fleet = sys_unit_str2arr($fleet_row['_fleet_array']);
   $fleet_real_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
   $fleet_capacity = 0;
   $fleet_metal_points = 0;
@@ -97,7 +95,7 @@ function flt_mission_explore(&$mission_data) {
   $flt_stay_hours = ($fleet_row['fleet_end_stay'] - $fleet_row['fleet_start_time']) / 3600 * ($config->game_speed_expedition ? $config->game_speed_expedition : 1);
 
   $outcome_list = sn_get_groups('mission_explore_outcome_list');
-  $outcome_list[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil(200 / pow($flt_stay_hours, 1/1.7));
+  $outcome_list[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil(200 / pow($flt_stay_hours, 1 / 1.7));
 
   $chance_max = 0;
   foreach($outcome_list as $key => &$value) {
@@ -137,23 +135,10 @@ function flt_mission_explore(&$mission_data) {
 //  switch(FLT_EXPEDITION_OUTCOME_LOST_FLEET) { // TODO DEBUG!
     case FLT_EXPEDITION_OUTCOME_LOST_FLEET:
       flt_mission_explore_outcome_lost_fleet($result);
-//      // $fleet_left = 1 - mt_rand(1, 3) * 0.25;// * 0.25;
-//      $fleet_left = 1 - mt_rand(1, 3) * mt_rand(200000, 300000) / 1000000;
-//      $fleet_lost = array();
-//      foreach($fleet as $unit_id => &$unit_amount) {
-//        $ships_left = floor($unit_amount * $fleet_left);
-//        $fleet_lost[$unit_id] = $unit_amount - $ships_left;
-//        $unit_amount = $ships_left;
-//        if(!$unit_amount) {
-//          unset($fleet[$unit_id]);
-//        }
-//      }
     break;
 
     case FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL:
       flt_mission_explore_outcome_lost_fleet_all($result);
-//      $fleet_lost = $fleet;
-//      $fleet = array();
     break;
 
     case FLT_EXPEDITION_OUTCOME_FOUND_FLEET:
@@ -280,22 +265,10 @@ function flt_mission_explore(&$mission_data) {
         $msg_text_addon .= $lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
       }
 
-//      $query_data[] = "`fleet_resource_metal` = `fleet_resource_metal` + {$resources_found[RES_METAL]}";
-//      $query_data[] = "`fleet_resource_crystal` = `fleet_resource_crystal` + {$resources_found[RES_CRYSTAL]}";
-//      $query_data[] = "`fleet_resource_deuterium` = `fleet_resource_deuterium` + {$resources_found[RES_DEUTERIUM]}";
       $query_delta['fleet_resource_metal'] = $resources_found[RES_METAL];
       $query_delta['fleet_resource_crystal'] = $resources_found[RES_CRYSTAL];
       $query_delta['fleet_resource_deuterium'] = $resources_found[RES_DEUTERIUM];
     }
-
-//    $query_data = array();
-//    if(!empty($fleet_lost) || !empty($fleet_found)) {
-////      $fleet_row['_fleet_array'] = sys_unit_arr2str($fleet_real_array);
-//      fleet_row_set_array_string_from_real_array(&$fleet_row, $fleet_real_array);
-//
-//      $query_data['fleet_amount'] = $fleet_row['fleet_amount'];
-//      $query_data['_fleet_array'] = $fleet_row['_fleet_array'];
-//    }
 
     $query_data = !empty($fleet_lost) || !empty($fleet_found)
       ? fleet_extract_update_data_from_row($fleet_row, $fleet_real_array)
@@ -320,7 +293,7 @@ function flt_mission_explore(&$mission_data) {
       (is_array($messages) ? $messages[mt_rand(0, count($messages) - 1)] : '');
   }
   $msg_text = sprintf($msg_text, $fleet_row['fleet_id'], uni_render_coordinates($fleet_row, 'fleet_end_')) .
-    ($msg_text_addon ? "\r\n" . $msg_text_addon: '');
+    ($msg_text_addon ? "\r\n" . $msg_text_addon : '');
 
   msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_end_stay'], MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
 

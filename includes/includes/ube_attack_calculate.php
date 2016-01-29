@@ -51,8 +51,7 @@ require_once('ube_report.php');
 
 */
 
-if(BE_DEBUG === true)
-{
+if(BE_DEBUG === true) {
   require_once('ube_zi_helpers.php');
 }
 
@@ -79,12 +78,10 @@ $ube_convert_to_techs = array(
 
 // ------------------------------------------------------------------------------------------------
 // Заполняет данные по игроку
-function ube_attack_prepare_player(&$combat_data, $player_id, $is_attacker)
-{
+function ube_attack_prepare_player(&$combat_data, $player_id, $is_attacker) {
   global $ube_convert_techs;
 
-  if(!isset($combat_data[UBE_PLAYERS][$player_id]))
-  {
+  if(!isset($combat_data[UBE_PLAYERS][$player_id])) {
     $combat_data[UBE_PLAYERS][$player_id] = array(UBE_ATTACKER => $is_attacker);
     $player_info = &$combat_data[UBE_PLAYERS][$player_id];
 
@@ -95,22 +92,19 @@ function ube_attack_prepare_player(&$combat_data, $player_id, $is_attacker)
     $player_info[UBE_PLAYER_DATA] = $player_data;
 
     $admiral_bonus = mrc_get_level($player_data, false, MRC_ADMIRAL) * get_unit_param(MRC_ADMIRAL, P_BONUS_VALUE) / 100;
-    foreach($ube_convert_techs as $unit_id => $ube_id)
-    {
+    foreach($ube_convert_techs as $unit_id => $ube_id) {
       $player_info[UBE_BONUSES][$ube_id] += mrc_get_level($player_data, false, $unit_id) * get_unit_param($unit_id, P_BONUS_VALUE) / 100 + $admiral_bonus;
     }
-  }
-  else
-  {
+  } else {
     $combat_data[UBE_PLAYERS][$player_id][UBE_ATTACKER] = $combat_data[UBE_PLAYERS][$player_id][UBE_ATTACKER] || $is_attacker;
   }
 }
 
 // ------------------------------------------------------------------------------------------------
 // Заполняет данные по флоту
-function ube_attack_prepare_fleet(&$combat_data, &$fleet, $is_attacker){return sn_function_call('ube_attack_prepare_fleet', array(&$combat_data, &$fleet, $is_attacker));}
-function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet_row, $is_attacker)
-{
+function ube_attack_prepare_fleet(&$combat_data, &$fleet, $is_attacker) { return sn_function_call('ube_attack_prepare_fleet', array(&$combat_data, &$fleet, $is_attacker)); }
+
+function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet_row, $is_attacker) {
   $fleet_owner_id = $fleet_row['fleet_owner'];
   $fleet_id = $fleet_row['fleet_id'];
 
@@ -122,23 +116,20 @@ function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet_row, $is_attacker)
   $combat_data[UBE_FLEETS][$fleet_id][UBE_OWNER] = $fleet_owner_id;
   $fleet_info = &$combat_data[UBE_FLEETS][$fleet_id];
   $fleet_info[UBE_FLEET_GROUP] = $fleet_row['fleet_group'];
-  foreach($fleet_data as $unit_id => $unit_count)
-  {
-    if(!$unit_count)
-    {
+  foreach($fleet_data as $unit_id => $unit_count) {
+    if(!$unit_count) {
       continue;
     }
 
     $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
-    if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE)
-    {
+    if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
       $fleet_info[UBE_COUNT][$unit_id] = $unit_count;
     }
   }
 
   $fleet_info[UBE_RESOURCES] = array(
-    RES_METAL => $fleet_row['fleet_resource_metal'],
-    RES_CRYSTAL => $fleet_row['fleet_resource_crystal'],
+    RES_METAL     => $fleet_row['fleet_resource_metal'],
+    RES_CRYSTAL   => $fleet_row['fleet_resource_crystal'],
     RES_DEUTERIUM => $fleet_row['fleet_resource_deuterium'],
   );
 
@@ -149,12 +140,13 @@ function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet_row, $is_attacker)
     PLANET_GALAXY => $fleet_row['fleet_start_galaxy'],
     PLANET_SYSTEM => $fleet_row['fleet_start_system'],
     PLANET_PLANET => $fleet_row['fleet_start_planet'],
-    PLANET_TYPE => $fleet_row['fleet_start_type'],
+    PLANET_TYPE   => $fleet_row['fleet_start_type'],
   );
 }
 
 /**
  * Заполняет данные по планете
+ *
  * @param $combat_data
  * @param $planet
  */
@@ -170,24 +162,19 @@ function ube_attack_prepare_planet(&$combat_data, &$planet) {
   $combat_data[UBE_FLEETS][0] = array(UBE_OWNER => $player_id);
   $fleet_info = &$combat_data[UBE_FLEETS][0];
 
-  foreach(sn_get_groups('combat') as $unit_id)
-  {
-    if($unit_count = mrc_get_level($player, $planet, $unit_id))
-    {
+  foreach(sn_get_groups('combat') as $unit_id) {
+    if($unit_count = mrc_get_level($player, $planet, $unit_id)) {
       $fleet_info[UBE_COUNT][$unit_id] = $unit_count;
     }
   }
 
-  foreach(sn_get_groups('resources_loot') as $resource_id)
-  {
+  foreach(sn_get_groups('resources_loot') as $resource_id) {
     $fleet_info[UBE_RESOURCES][$resource_id] = floor(mrc_get_level($player, $planet, $resource_id));
   }
 
-  if($fortifier_level = mrc_get_level($player, $planet, MRC_FORTIFIER))
-  {
+  if($fortifier_level = mrc_get_level($player, $planet, MRC_FORTIFIER)) {
     $fortifier_bonus = $fortifier_level * get_unit_param(MRC_FORTIFIER, P_BONUS_VALUE) / 100;
-    foreach($ube_combat_bonus_list as $ube_id)
-    {
+    foreach($ube_combat_bonus_list as $ube_id) {
       $fleet_info[UBE_BONUSES][$ube_id] += $fortifier_bonus;
     }
   }
@@ -202,7 +189,7 @@ function ube_attack_prepare_planet(&$combat_data, &$planet) {
     PLANET_SIZE   => $planet['diameter'],
   );
 
-  $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $combat_data[UBE_TIME] - 60*60*24*7;
+  $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $combat_data[UBE_TIME] - 60 * 60 * 24 * 7;
 }
 
 
@@ -221,7 +208,7 @@ function ube_attack_prepare(&$mission_data) {
   UBE_OPTIONS[UBE_MOON_WAS]
   */
 
-  $fleet_row          = &$mission_data['fleet'];
+  $fleet_row = &$mission_data['fleet'];
   $destination_planet = &$mission_data['dst_planet'];
 
   $ube_time = $fleet_row['fleet_start_time'];
@@ -247,8 +234,7 @@ function ube_attack_prepare(&$mission_data) {
   }
 
   // Готовим инфу по атакующим
-  if($fleet_row['fleet_group'])
-  {
+  if($fleet_row['fleet_group']) {
 //    $fleets = doquery("SELECT * FROM {{fleets}} WHERE fleet_group = {$fleet_row['fleet_group']} FOR UPDATE");
 //    while($fleet = db_fetch($fleets))
 //    {
@@ -258,9 +244,7 @@ function ube_attack_prepare(&$mission_data) {
     foreach($acs_fleet_list as $fleet) {
       ube_attack_prepare_fleet($combat_data, $fleet, true);
     }
-  }
-  else
-  {
+  } else {
     ube_attack_prepare_fleet($combat_data, $fleet_row, true);
   }
 
@@ -274,20 +258,17 @@ function ube_attack_prepare(&$mission_data) {
 }
 
 // ------------------------------------------------------------------------------------------------
-function sn_ube_combat_prepare_first_round(&$combat_data)
-{
+function sn_ube_combat_prepare_first_round(&$combat_data) {
   global $ube_combat_bonus_list, $ube_convert_to_techs;
 
   // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
   $first_round_data = array();
-  foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info)
-  {
+  foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info) {
     $fleet_info[UBE_COUNT] = is_array($fleet_info[UBE_COUNT]) ? $fleet_info[UBE_COUNT] : array();
     $player_data = &$combat_data[UBE_PLAYERS][$fleet_info[UBE_OWNER]];
     $fleet_info[UBE_FLEET_TYPE] = $player_data[UBE_ATTACKER] ? UBE_ATTACKERS : UBE_DEFENDERS;
 
-    foreach($ube_combat_bonus_list as $bonus_id => $bonus_value)
-    {
+    foreach($ube_combat_bonus_list as $bonus_id => $bonus_value) {
       // Вычисляем бонус игрока
       $bonus_value = isset($player_data[UBE_BONUSES][$bonus_id]) ? $player_data[UBE_BONUSES][$bonus_id] : 0;
       // Добавляем к бонусам флота бонусы игрока
@@ -295,17 +276,14 @@ function sn_ube_combat_prepare_first_round(&$combat_data)
     }
 
     $first_round_data[$fleet_id][UBE_COUNT] = $fleet_info[UBE_PRICE] = array();
-    foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count)
-    {
-      if($unit_count <= 0)
-      {
+    foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
+      if($unit_count <= 0) {
         continue;
       }
 
       $unit_info = get_unit_param($unit_id);
       // Заполняем информацию о кораблях в информации флота
-      foreach($ube_combat_bonus_list as $bonus_id => $bonus_value)
-      {
+      foreach($ube_combat_bonus_list as $bonus_id => $bonus_value) {
         $fleet_info[$bonus_id][$unit_id] = floor($unit_info[$ube_convert_to_techs[$bonus_id]] * (1 + $fleet_info[UBE_BONUSES][$bonus_id]));
       }
       $fleet_info[UBE_AMPLIFY][$unit_id] = $unit_info[P_AMPLIFY];
@@ -335,29 +313,26 @@ function sn_ube_combat_prepare_first_round(&$combat_data)
  * @copyright copyright (c) 2012 by Gorlum for http://supernova.ws/
  *
  * @param array $combat_data
+ *
  * @return array
  */
 
 // ------------------------------------------------------------------------------------------------
 // Вычисление дополнительной информации для расчета раунда
-function sn_ube_combat_round_prepare(&$combat_data, $round)
-{
+function sn_ube_combat_round_prepare(&$combat_data, $round) {
   global $ube_combat_bonus_list;
 
   $is_simulator = $combat_data[UBE_OPTIONS][UBE_SIMULATOR];
 
   $round_data = &$combat_data[UBE_ROUNDS][$round];
-  foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data)
-  {
+  foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
     // Кэшируем переменные для легкого доступа к подмассивам
     $fleet_info = &$combat_data[UBE_FLEETS][$fleet_id];
     $fleet_data[UBE_FLEET_INFO] = &$fleet_info;
     $fleet_type = $fleet_info[UBE_FLEET_TYPE];
 
-    foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count)
-    {
-      if($unit_count <= 0)
-      {
+    foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
+      if($unit_count <= 0) {
         continue;
       }
 
@@ -366,7 +341,7 @@ function sn_ube_combat_round_prepare(&$combat_data, $round)
       // Для не-симулятора - рандомизируем каждый раунд значения атаки и щитов
       $fleet_data[UBE_ATTACK_BASE][$unit_id] = floor($fleet_info[UBE_ATTACK][$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
       $fleet_data[UBE_SHIELD_BASE][$unit_id] = floor($fleet_info[UBE_SHIELD][$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
-      $fleet_data[UBE_ARMOR_BASE][$unit_id]  = floor($fleet_info[UBE_ARMOR][$unit_id]);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
+      $fleet_data[UBE_ARMOR_BASE][$unit_id] = floor($fleet_info[UBE_ARMOR][$unit_id]);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
 
       $fleet_data[UBE_ATTACK][$unit_id] = $fleet_data[UBE_ATTACK_BASE][$unit_id] * $unit_count;
       $fleet_data[UBE_SHIELD][$unit_id] = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $unit_count;
@@ -376,25 +351,21 @@ function sn_ube_combat_round_prepare(&$combat_data, $round)
     }
 
     // Суммируем данные по флоту
-    foreach($ube_combat_bonus_list as $bonus_id)
-    {
+    foreach($ube_combat_bonus_list as $bonus_id) {
       $round_data[$fleet_type][$bonus_id][$fleet_id] += is_array($fleet_data[$bonus_id]) ? array_sum($fleet_data[$bonus_id]) : 0;
     }
   }
 
   // Суммируем данные по атакующим и защитникам
-  foreach($ube_combat_bonus_list as $bonus_id)
-  {
+  foreach($ube_combat_bonus_list as $bonus_id) {
     $round_data[UBE_TOTAL][UBE_DEFENDERS][$bonus_id] = array_sum($round_data[UBE_DEFENDERS][$bonus_id]);
     $round_data[UBE_TOTAL][UBE_ATTACKERS][$bonus_id] = array_sum($round_data[UBE_ATTACKERS][$bonus_id]);
   }
 
   // Высчитываем долю атаки, приходящейся на юнит равную отношению брони юнита к общей броне - крупные цели атакуют чаще
-  foreach($round_data[UBE_FLEETS] as &$fleet_data)
-  {
+  foreach($round_data[UBE_FLEETS] as &$fleet_data) {
     $fleet_type = $fleet_data[UBE_FLEET_INFO][UBE_FLEET_TYPE];
-    foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count)
-    {
+    foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
       $fleet_data[UBE_DAMAGE_PERCENT][$unit_id] = $fleet_data[UBE_ARMOR][$unit_id] / $round_data[UBE_TOTAL][$fleet_type][UBE_ARMOR];
     }
   }
@@ -402,27 +373,21 @@ function sn_ube_combat_round_prepare(&$combat_data, $round)
 
 // ------------------------------------------------------------------------------------------------
 // Рассчитывает результат столкновения флотов ака раунд
-function sn_ube_combat_round_crossfire_fleet(&$combat_data, $round)
-{
-  if(BE_DEBUG === true)
-  {
+function sn_ube_combat_round_crossfire_fleet(&$combat_data, $round) {
+  if(BE_DEBUG === true) {
     // sn_ube_combat_helper_round_header($round);
   }
 
   $round_data = &$combat_data[UBE_ROUNDS][$round];
   // Проводим бой. Сталкиваем каждый корабль атакующего с каждым кораблем атакуемого
-  foreach($round_data[UBE_ATTACKERS][UBE_ATTACK] as $attack_fleet_id => $temp)
-  {
+  foreach($round_data[UBE_ATTACKERS][UBE_ATTACK] as $attack_fleet_id => $temp) {
     $attack_fleet_data = &$round_data[UBE_FLEETS][$attack_fleet_id];
-    foreach($round_data[UBE_DEFENDERS][UBE_ATTACK] as $defend_fleet_id => $temp2)
-    {
+    foreach($round_data[UBE_DEFENDERS][UBE_ATTACK] as $defend_fleet_id => $temp2) {
       $defend_fleet_data = &$round_data[UBE_FLEETS][$defend_fleet_id];
 
-      foreach($attack_fleet_data[UBE_COUNT] as $attack_unit_id => $attack_unit_count)
-      {
+      foreach($attack_fleet_data[UBE_COUNT] as $attack_unit_id => $attack_unit_count) {
         // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
-        foreach($defend_fleet_data[UBE_COUNT] as $defend_unit_id => $defend_unit_count)
-        {
+        foreach($defend_fleet_data[UBE_COUNT] as $defend_unit_id => $defend_unit_count) {
           sn_ube_combat_round_crossfire_unit2($attack_fleet_data, $defend_fleet_data, $attack_unit_id, $defend_unit_id, $combat_data[UBE_OPTIONS]);
           sn_ube_combat_round_crossfire_unit2($defend_fleet_data, $attack_fleet_data, $defend_unit_id, $attack_unit_id, $combat_data[UBE_OPTIONS]);
         }
@@ -430,16 +395,14 @@ function sn_ube_combat_round_crossfire_fleet(&$combat_data, $round)
     }
   }
 
-  if(BE_DEBUG === true)
-  {
+  if(BE_DEBUG === true) {
     // sn_ube_combat_helper_round_footer();
   }
 }
 
 // ------------------------------------------------------------------------------------------------
 // Рассчитывает результат столкновения двух юнитов ака ход
-function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id, &$combat_options)
-{
+function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id, &$combat_options) {
   $attack_fleet_info = &$attack_fleet_data[UBE_FLEET_INFO];
   $defend_fleet_info = &$defend_fleet_data[UBE_FLEET_INFO];
   $defend_unit_armor = $defend_fleet_info[UBE_ARMOR][$defend_unit_id];
@@ -478,8 +441,7 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
   $boom = 0;
   $boom_limit = 75;
   $random = $combat_options[UBE_SIMULATOR] ? $boom_limit / 2 : mt_rand(0, 100);
-  if($armor_damage && $units_left > 0 && $last_unit_percent <= $boom_limit && $last_unit_percent <= $random)
-  {
+  if($armor_damage && $units_left > 0 && $last_unit_percent <= $boom_limit && $last_unit_percent <= $random) {
     $boom = 1;
     $units_left--;
     $defend_fleet_data[UBE_ARMOR][$defend_unit_id] = $units_left * $defend_unit_armor;
@@ -488,11 +450,10 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
 
   $defend_fleet_data[UBE_COUNT][$defend_unit_id] = $units_left;
 
-  if(BE_DEBUG === true)
-  {
+  if(BE_DEBUG === true) {
     $debug_unit_crossfire_result = array(
-      'attack_unit_id' => $attack_unit_id,
-      'defend_unit_id' => $defend_unit_id,
+      'attack_unit_id'    => $attack_unit_id,
+      'defend_unit_id'    => $defend_unit_id,
       $attack_fleet_data[UBE_ATTACK][$attack_unit_id],
       $defend_fleet_data[UBE_DAMAGE_PERCENT][$defend_unit_id],
       $direct_damage,
@@ -519,8 +480,7 @@ function sn_ube_combat_round_crossfire_unit(&$attack_fleet_data, &$defend_fleet_
   }
 }
 
-function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, $defend_unit_id, &$amplified_damage, &$units_lost, &$units_boomed, &$combat_options)
-{
+function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, $defend_unit_id, &$amplified_damage, &$units_lost, &$units_boomed, &$combat_options) {
   $unit_is_lost = false;
 
   $units_boomed = $units_boomed ? $units_boomed : 0;
@@ -529,8 +489,7 @@ function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, 
   // $damage_to_shield = 0;
   // $damage_to_armor = 0;
   $boom_limit = 75; // Взрываемся на 75% прочности
-  if($defend_fleet_data[UBE_COUNT][$defend_unit_id] > 0 && $amplified_damage)
-  {
+  if($defend_fleet_data[UBE_COUNT][$defend_unit_id] > 0 && $amplified_damage) {
     // $defend_fleet_info = &$defend_fleet_data[UBE_FLEET_INFO];
 
     $damage_to_shield = min($amplified_damage, $defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id]);
@@ -546,15 +505,12 @@ function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, 
 //pdump($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id], 'Осталось брони');
 
     // Если брони не осталось - юнит потерян
-    if($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] <= 0)
-    {
+    if($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] <= 0) {
 //pdump($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id], 'Юнит потерян - не осталось брони');
 //pdump($amplified_damage, 'Осталось дамаджа');
       $unit_is_lost = true;
-    }
-    // Если броня осталось, но не осталось щитов - прошел дамадж по броне и надо проверить - не взорвался ли корабль
-    elseif($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] <= 0)
-    {
+    } // Если броня осталось, но не осталось щитов - прошел дамадж по броне и надо проверить - не взорвался ли корабль
+    elseif($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] <= 0) {
 //pdump($defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id], 'Щитов не осталось');
 //pdump($defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id], 'Осталась броня');
       $last_unit_hp = $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id];
@@ -562,8 +518,7 @@ function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, 
 
       $random = $combat_options[UBE_SIMULATOR] ? $boom_limit / 2 : mt_rand(0, 100);
 //pdump($random, '$random');
-      if($last_unit_percent <= $boom_limit && $last_unit_percent <= $random)
-      {
+      if($last_unit_percent <= $boom_limit && $last_unit_percent <= $random) {
 //pdump($last_unit_percent, 'Юнит взорвался');
         $unit_is_lost = true;
         $units_boomed++;
@@ -576,13 +531,11 @@ function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, 
     $defend_fleet_data[UBE_ARMOR][$defend_unit_id] -= $damage_to_armor;
     $defend_fleet_data[UBE_SHIELD][$defend_unit_id] -= $damage_to_shield;
 
-    if($unit_is_lost)
-    {
+    if($unit_is_lost) {
 //pdump($defend_fleet_data[UBE_COUNT][$defend_unit_id], 'Отрабатываем потерю юнита');
       $units_lost++;
       $defend_fleet_data[UBE_COUNT][$defend_unit_id]--;
-      if($defend_fleet_data[UBE_COUNT][$defend_unit_id])
-      {
+      if($defend_fleet_data[UBE_COUNT][$defend_unit_id]) {
 //pdump($defend_fleet_data[UBE_COUNT][$defend_unit_id], 'Еще остались юниты');
         $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id] = $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id];
         $defend_fleet_data[UBE_SHIELD_REST][$defend_unit_id] = $defend_fleet_data[UBE_SHIELD_BASE][$defend_unit_id];
@@ -595,10 +548,8 @@ function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, 
 
 // ------------------------------------------------------------------------------------------------
 // Рассчитывает результат столкновения двух юнитов ака ход
-function sn_ube_combat_round_crossfire_unit2(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id, &$combat_options)
-{
-  if($defend_fleet_data[UBE_COUNT][$defend_unit_id] <= 0)
-  {
+function sn_ube_combat_round_crossfire_unit2(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id, &$combat_options) {
+  if($defend_fleet_data[UBE_COUNT][$defend_unit_id] <= 0) {
     return;
   }
 
@@ -641,24 +592,19 @@ function sn_ube_combat_round_crossfire_unit2(&$attack_fleet_data, &$defend_fleet
 
 // ------------------------------------------------------------------------------------------------
 // Анализирует результаты раунда и генерирует данные для следующего раунда
-function sn_ube_combat_round_analyze(&$combat_data, $round)
-{
+function sn_ube_combat_round_analyze(&$combat_data, $round) {
   $round_data = &$combat_data[UBE_ROUNDS][$round];
   $round_data[UBE_OUTCOME] = UBE_COMBAT_RESULT_DRAW;
 
   $outcome = array();
   $next_round_fleet = array();
-  foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data)
-  {
-    if(array_sum($fleet_data[UBE_COUNT]) <= 0)
-    {
+  foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
+    if(array_sum($fleet_data[UBE_COUNT]) <= 0) {
       continue;
     }
 
-    foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count)
-    {
-      if($unit_count <= 0)
-      {
+    foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
+      if($unit_count <= 0) {
         continue;
       }
       $next_round_fleet[$fleet_id][UBE_COUNT][$unit_id] = $unit_count;
@@ -669,36 +615,28 @@ function sn_ube_combat_round_analyze(&$combat_data, $round)
   }
 
   // Проверяем - если кого-то не осталось или не осталось обоих - заканчиваем цикл
-  if(count($outcome) == 0 || $round == 10)
-  {
+  if(count($outcome) == 0 || $round == 10) {
     $round_data[UBE_OUTCOME] = UBE_COMBAT_RESULT_DRAW_END;
-  }
-  elseif(count($outcome) == 1)
-  {
+  } elseif(count($outcome) == 1) {
     $round_data[UBE_OUTCOME] = isset($outcome[UBE_ATTACKERS]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
-  }
-  elseif(count($outcome) == 2)
-  {
-    if($round < 10)
-    {
+  } elseif(count($outcome) == 2) {
+    if($round < 10) {
       $combat_data[UBE_ROUNDS][$round + 1][UBE_FLEETS] = $next_round_fleet;
     }
   }
 
-  return($round_data[UBE_OUTCOME]);
+  return ($round_data[UBE_OUTCOME]);
 }
 
 // ------------------------------------------------------------------------------------------------
 // Общий алгоритм расчета боя
-function sn_ube_combat(&$combat_data)
-{
+function sn_ube_combat(&$combat_data) {
   // TODO: Сделать атаку по типам,  когда они будут
 
   $start = microtime(true);
   sn_ube_combat_prepare_first_round($combat_data);
 
-  for($round = 1; $round <= 10; $round++)
-  {
+  for($round = 1; $round <= 10; $round++) {
     // Готовим данные для раунда
     sn_ube_combat_round_prepare($combat_data, $round);
 
@@ -706,8 +644,7 @@ function sn_ube_combat(&$combat_data)
     sn_ube_combat_round_crossfire_fleet($combat_data, $round);
 
     // Анализируем итоги текущего раунда и готовим данные для следующего
-    if(sn_ube_combat_round_analyze($combat_data, $round) != UBE_COMBAT_RESULT_DRAW)
-    {
+    if(sn_ube_combat_round_analyze($combat_data, $round) != UBE_COMBAT_RESULT_DRAW) {
       break;
     }
   }
@@ -719,16 +656,14 @@ function sn_ube_combat(&$combat_data)
 
 // ------------------------------------------------------------------------------------------------
 // Разбирает данные боя для генерации отчета
-function sn_ube_combat_analyze(&$combat_data)
-{
+function sn_ube_combat_analyze(&$combat_data) {
   global $config;
 
 //  $combat_data[UBE_OUTCOME] = array();
   $combat_data[UBE_OPTIONS][UBE_EXCHANGE] = array(RES_METAL => $config->rpg_exchange_metal);
 
   $exchange = &$combat_data[UBE_OPTIONS][UBE_EXCHANGE];
-  foreach(array(RES_CRYSTAL => 'rpg_exchange_crystal', RES_DEUTERIUM => 'rpg_exchange_deuterium', RES_DARK_MATTER => 'rpg_exchange_darkMatter') as $resource_id => $resource_name)
-  {
+  foreach(array(RES_CRYSTAL => 'rpg_exchange_crystal', RES_DEUTERIUM => 'rpg_exchange_deuterium', RES_DARK_MATTER => 'rpg_exchange_darkMatter') as $resource_id => $resource_name) {
     $exchange[$resource_id] = $config->$resource_name * $exchange[RES_METAL];
   }
 //  $total_resources_value = array_sum($exchange);
@@ -741,8 +676,7 @@ function sn_ube_combat_analyze(&$combat_data)
   $outcome[UBE_DEBRIS] = array();
 
   // Генерируем результат боя
-  foreach($fleets_info as $fleet_id => &$fleet_info)
-  {
+  foreach($fleets_info as $fleet_id => &$fleet_info) {
     $fleet_type = $fleet_info[UBE_FLEET_TYPE];
     // Инициализируем массив результатов для флота
     $outcome[UBE_FLEETS][$fleet_id] = array(UBE_UNITS_LOST => array());
@@ -752,33 +686,23 @@ function sn_ube_combat_analyze(&$combat_data)
     $fleet_outcome = &$outcome[UBE_FLEETS][$fleet_id];
     $fleet_data = &$last_round_data[UBE_FLEETS][$fleet_id];
 
-    foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count)
-    {
+    foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
       // Вычисляем сколько юнитов осталось и сколько потеряно
       $units_left = $fleet_data[UBE_COUNT][$unit_id];
 
       // Восстановление обороны - 75% от уничтоженной
-      if($fleet_info[UBE_TYPE][$unit_id] == UNIT_DEFENCE)
-      {
+      if($fleet_info[UBE_TYPE][$unit_id] == UNIT_DEFENCE) {
         $giveback_chance = 75; // TODO Configure
         $units_lost = $unit_count - $units_left;
-        if($combat_data[UBE_OPTIONS][UBE_SIMULATOR])
-        { // for simulation just return 75% of loss
+        if($combat_data[UBE_OPTIONS][UBE_SIMULATOR]) { // for simulation just return 75% of loss
           $units_giveback = round($units_lost * $giveback_chance / 100);
-        }
-        else
-        {
-          if($unit_count > 10)
-          { // if there were more then 10 defense elements - mass-calculating giveback
+        } else {
+          if($unit_count > 10) { // if there were more then 10 defense elements - mass-calculating giveback
             $units_giveback = round($units_lost * mt_rand($giveback_chance * 0.8, $giveback_chance * 1.2) / 100);
-          }
-          else
-          { //if there were less then 10 defense elements - calculating giveback per element
+          } else { //if there were less then 10 defense elements - calculating giveback per element
             $units_giveback = 0;
-            for($i = 1; $i <= $units_lost; $i++)
-            {
-              if(mt_rand(1,100) <= $giveback_chance)
-              {
+            for($i = 1; $i <= $units_lost; $i++) {
+              if(mt_rand(1, 100) <= $giveback_chance) {
                 $units_giveback++;
               }
             }
@@ -796,14 +720,11 @@ function sn_ube_combat_analyze(&$combat_data)
       $outcome[$fleet_type][UBE_CAPACITY][$fleet_id] += $fleet_info[UBE_CAPACITY][$unit_id] * $units_left;
 
       // Вычисляем потери в ресурсах
-      if($units_lost)
-      {
+      if($units_lost) {
         $fleet_outcome[UBE_UNITS_LOST][$unit_id] = $units_lost;
 
-        foreach($fleet_info[UBE_PRICE] as $resource_id => $unit_prices)
-        {
-          if(!$unit_prices[$unit_id])
-          {
+        foreach($fleet_info[UBE_PRICE] as $resource_id => $unit_prices) {
+          if(!$unit_prices[$unit_id]) {
             continue;
           }
 
@@ -812,8 +733,7 @@ function sn_ube_combat_analyze(&$combat_data)
           $fleet_outcome[UBE_RESOURCES_LOST][$resource_id] += $resources_lost;
 
           // Если это корабль - прибавляем потери к обломкам на орбите
-          if($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS)
-          {
+          if($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS) {
             $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
           }
 
@@ -825,30 +745,25 @@ function sn_ube_combat_analyze(&$combat_data)
     }
 
     // На планете ($fleet_id = 0) ресурсы в космос не выбрасываются
-    if($fleet_id == 0)
-    {
+    if($fleet_id == 0) {
       continue;
     }
 
     // Количество ресурсов флота
     $fleet_total_resources = empty($fleet_info[UBE_RESOURCES]) ? 0 : array_sum($fleet_info[UBE_RESOURCES]);
     // Если на борту нет ресурсов - зачем нам все это?
-    if($fleet_total_resources == 0)
-    {
+    if($fleet_total_resources == 0) {
       continue;
     }
 
     // Емкость трюмов флота
     $fleet_capacity = $outcome[$fleet_type][UBE_CAPACITY][$fleet_id];
     // Если емкость трюмов меньше количество ресурсов - часть ресов выбрасываем нахуй
-    if($fleet_capacity < $fleet_total_resources)
-    {
+    if($fleet_capacity < $fleet_total_resources) {
       $left_percent = $fleet_capacity / $fleet_total_resources; // Сколько ресурсов будет оставлено
-      foreach($fleet_info[UBE_RESOURCES] as $resource_id => $resource_amount)
-      {
+      foreach($fleet_info[UBE_RESOURCES] as $resource_id => $resource_amount) {
         // Не просчитываем ресурсы, которых нет на борту кораблей флота
-        if(!$resource_amount)
-        {
+        if(!$resource_amount) {
           continue;
         }
 
@@ -870,23 +785,17 @@ function sn_ube_combat_analyze(&$combat_data)
   // SFR - Small Fleet Reconnaissance ака РМФ
   $outcome[UBE_SFR] = count($combat_data[UBE_ROUNDS]) == 2 && $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_LOSS;
 
-  if(!$combat_data[UBE_OPTIONS][UBE_LOADED])
-  {
-    if($combat_data[UBE_OPTIONS][UBE_MOON_WAS])
-    {
+  if(!$combat_data[UBE_OPTIONS][UBE_LOADED]) {
+    if($combat_data[UBE_OPTIONS][UBE_MOON_WAS]) {
       $outcome[UBE_MOON] = UBE_MOON_WAS;
-    }
-    else
-    {
+    } else {
       sn_ube_combat_analyze_moon($outcome, $combat_data[UBE_OPTIONS][UBE_SIMULATOR]);
     }
 
     // Лутаем ресурсы - если аттакер выиграл
-    if($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN)
-    {
+    if($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN) {
       sn_ube_combat_analyze_loot($combat_data);
-      if($combat_data[UBE_OPTIONS][UBE_MOON_WAS] && $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_DESTROY)
-      {
+      if($combat_data[UBE_OPTIONS][UBE_MOON_WAS] && $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_DESTROY) {
         sn_ube_combat_analyze_moon_destroy($combat_data);
       }
     }
@@ -895,8 +804,7 @@ function sn_ube_combat_analyze(&$combat_data)
 }
 
 // ------------------------------------------------------------------------------------------------
-function sn_ube_combat_analyze_loot(&$combat_data)
-{
+function sn_ube_combat_analyze_loot(&$combat_data) {
   $exchange = &$combat_data[UBE_OPTIONS][UBE_EXCHANGE];
   $planet_resource_list = &$combat_data[UBE_FLEETS][0][UBE_RESOURCES];
   $outcome = &$combat_data[UBE_OUTCOME];
@@ -904,8 +812,7 @@ function sn_ube_combat_analyze_loot(&$combat_data)
   $planet_looted_in_metal = 0;
   $planet_resource_looted = array();
   $planet_resource_total = is_array($planet_resource_list) ? array_sum($planet_resource_list) : 0;
-  if($planet_resource_total && ($total_capacity = array_sum($outcome[UBE_ATTACKERS][UBE_CAPACITY])))
-  {
+  if($planet_resource_total && ($total_capacity = array_sum($outcome[UBE_ATTACKERS][UBE_CAPACITY]))) {
     // Можно вывести только половину ресурсов, но не больше, чем общая вместимость флотов атакующих
     $planet_lootable = min($planet_resource_total / 2, $total_capacity);
     // Вычисляем процент вывоза. Каждого ресурса будет вывезено в одинаковых пропорциях
@@ -915,12 +822,10 @@ function sn_ube_combat_analyze_loot(&$combat_data)
     $total_lootable = min($planet_lootable, $total_capacity);
 
     // Вычисляем сколько ресурсов вывезено
-    foreach($outcome[UBE_ATTACKERS][UBE_CAPACITY] as $fleet_id => $fleet_capacity)
-    {
+    foreach($outcome[UBE_ATTACKERS][UBE_CAPACITY] as $fleet_id => $fleet_capacity) {
       $looted_in_metal = 0;
       $fleet_loot_data = array();
-      foreach($planet_resource_list as $resource_id => $resource_amount)
-      {
+      foreach($planet_resource_list as $resource_id => $resource_amount) {
         // TODO Восстанавливаем ошибку округления - придумать нормальный алгоритм - вроде round() должно быть достаточно. Проверить
         $fleet_lootable_percent = $fleet_capacity / $total_capacity;
         $looted = round($resource_amount * $planet_lootable_percent * $fleet_lootable_percent);
@@ -939,34 +844,27 @@ function sn_ube_combat_analyze_loot(&$combat_data)
 }
 
 // ------------------------------------------------------------------------------------------------
-function sn_ube_combat_analyze_moon(&$outcome, $is_simulator)
-{
+function sn_ube_combat_analyze_moon(&$outcome, $is_simulator) {
   $outcome[UBE_DEBRIS_TOTAL] = 0;
   foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) // TODO via array
   {
     $outcome[UBE_DEBRIS_TOTAL] += $outcome[UBE_DEBRIS][$resource_id];
   }
 
-  if($outcome[UBE_DEBRIS_TOTAL])
-  {
+  if($outcome[UBE_DEBRIS_TOTAL]) {
     // TODO uni_calculate_moon_chance
     $moon_chance = min($outcome[UBE_DEBRIS_TOTAL] / 1000000, 30); // TODO Configure
     $moon_chance = $moon_chance >= 1 ? $moon_chance : 0;
     $outcome[UBE_MOON_CHANCE] = $moon_chance;
-    if($moon_chance)
-    {
-      if($is_simulator || mt_rand(1, 100) <= $moon_chance)
-      {
+    if($moon_chance) {
+      if($is_simulator || mt_rand(1, 100) <= $moon_chance) {
         $outcome[UBE_MOON_SIZE] = round($is_simulator ? $moon_chance * 150 + 1999 : mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999));
         $outcome[UBE_MOON] = UBE_MOON_CREATE_SUCCESS;
 
-        if($outcome[UBE_DEBRIS_TOTAL] <= 30000000)
-        {
+        if($outcome[UBE_DEBRIS_TOTAL] <= 30000000) {
           $outcome[UBE_DEBRIS_TOTAL] = 0;
           $outcome[UBE_DEBRIS] = array();
-        }
-        else
-        {
+        } else {
           $moon_debris_spent = 30000000;
           $moon_debris_left_percent = ($outcome[UBE_DEBRIS_TOTAL] - $moon_debris_spent) / $outcome[UBE_DEBRIS_TOTAL];
 
@@ -977,30 +875,22 @@ function sn_ube_combat_analyze_moon(&$outcome, $is_simulator)
             $outcome[UBE_DEBRIS_TOTAL] += $outcome[UBE_DEBRIS][$resource_id];
           }
         }
-      }
-      else
-      {
+      } else {
         $outcome[UBE_MOON] = UBE_MOON_CREATE_FAILED;
       }
     }
-  }
-  else
-  {
+  } else {
     $outcome[UBE_MOON] = UBE_MOON_NONE;
   }
 }
 
 // ------------------------------------------------------------------------------------------------
-function sn_ube_combat_analyze_moon_destroy(&$combat_data)
-{
+function sn_ube_combat_analyze_moon_destroy(&$combat_data) {
   // TODO: $is_simulator
   $reapers = 0;
-  foreach($combat_data[UBE_ROUNDS][count($combat_data[UBE_ROUNDS])-1][UBE_FLEETS] as $fleet_data)
-  {
-    if($fleet_data[UBE_FLEET_INFO][UBE_FLEET_TYPE] == UBE_ATTACKERS)
-    {
-      foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count)
-      {
+  foreach($combat_data[UBE_ROUNDS][count($combat_data[UBE_ROUNDS]) - 1][UBE_FLEETS] as $fleet_data) {
+    if($fleet_data[UBE_FLEET_INFO][UBE_FLEET_TYPE] == UBE_ATTACKERS) {
+      foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
         // TODO: Работа по группам - группа "Уничтожители лун"
         $reapers += ($unit_id == SHIP_HUGE_DEATH_STAR) ? $unit_count : 0;
       }
@@ -1008,25 +898,21 @@ function sn_ube_combat_analyze_moon_destroy(&$combat_data)
   }
 
   $moon_size = $combat_data[UBE_OUTCOME][UBE_PLANET][PLANET_SIZE];
-  if($reapers)
-  {
+  if($reapers) {
     $random = mt_rand(1, 100);
     $combat_data[UBE_OUTCOME][UBE_MOON_DESTROY_CHANCE] = max(1, min(99, round((100 - sqrt($moon_size)) * sqrt($reapers))));
     $combat_data[UBE_OUTCOME][UBE_MOON_REAPERS_DIE_CHANCE] = round(sqrt($moon_size) / 2 + sqrt($reapers));
     $combat_data[UBE_OUTCOME][UBE_MOON] = $random <= $combat_data[UBE_OUTCOME][UBE_MOON_DESTROY_CHANCE] ? UBE_MOON_DESTROY_SUCCESS : UBE_MOON_DESTROY_FAILED;
     $random = mt_rand(1, 100);
     $combat_data[UBE_OUTCOME][UBE_MOON_REAPERS] = $random <= $combat_data[UBE_OUTCOME][UBE_MOON_REAPERS_DIE_CHANCE] ? UBE_MOON_REAPERS_DIED : UBE_MOON_REAPERS_RETURNED;
-  }
-  else
-  {
+  } else {
     $combat_data[UBE_OUTCOME][UBE_MOON_REAPERS] = UBE_MOON_REAPERS_NONE;
   }
 }
 
 // ------------------------------------------------------------------------------------------------
 // Рассылает письма всем участникам боя
-function sn_ube_message_send(&$combat_data)
-{
+function sn_ube_message_send(&$combat_data) {
   global $lang;
 
   // TODO: Отсылать каждому игроку сообщение на его языке!
@@ -1043,42 +929,31 @@ function sn_ube_message_send(&$combat_data)
     $planet_info[PLANET_PLANET],
     htmlentities($planet_info[PLANET_NAME], ENT_COMPAT, 'UTF-8'),
     $lang[$outcome['UBE_COMBAT_RESULT'] == UBE_COMBAT_RESULT_WIN ? 'ube_report_info_outcome_win' :
-      ($outcome['UBE_COMBAT_RESULT'] == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')
-    ]
+      ($outcome['UBE_COMBAT_RESULT'] == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')]
   );
 
   $text_defender = '';
-  foreach($outcome[UBE_DEBRIS] as $resource_id => $resource_amount)
-  {
-    if($resource_id == RES_DEUTERIUM)
-    {
+  foreach($outcome[UBE_DEBRIS] as $resource_id => $resource_amount) {
+    if($resource_id == RES_DEUTERIUM) {
       continue;
     }
 
     $text_defender .= "{$lang['tech'][$resource_id]}: " . pretty_number($resource_amount) . '<br />';
   }
-  if($text_defender)
-  {
+  if($text_defender) {
     $text_defender = "{$lang['ube_report_msg_body_debris']}{$text_defender}<br />";
   }
 
-  if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS)
-  {
+  if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
     $text_defender .= "{$lang['ube_report_moon_created']} {$outcome[UBE_MOON_SIZE]} {$lang['sys_kilometers_short']}<br /><br />";
-  }
-  elseif($outcome[UBE_MOON] == UBE_MOON_CREATE_FAILED)
-  {
+  } elseif($outcome[UBE_MOON] == UBE_MOON_CREATE_FAILED) {
     $text_defender .= "{$lang['ube_report_moon_chance']} {$outcome[UBE_MOON_CHANCE]}%<br /><br />";
   }
 
-  if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_DESTROY)
-  {
-    if($outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_NONE)
-    {
+  if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_DESTROY) {
+    if($outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_NONE) {
       $text_defender .= $lang['ube_report_moon_reapers_none'];
-    }
-    else
-    {
+    } else {
       $text_defender .= "{$lang['ube_report_moon_reapers_wave']}. {$lang['ube_report_moon_reapers_chance']} {$outcome[UBE_MOON_DESTROY_CHANCE]}%. ";
       $text_defender .= $lang[$outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";
 
@@ -1091,8 +966,7 @@ function sn_ube_message_send(&$combat_data)
   $text_defender .= "{$lang['ube_report_info_link']}: <a href=\"index.php?page=battle_report&cypher={$combat_data[UBE_REPORT_CYPHER]}\">{$combat_data[UBE_REPORT_CYPHER]}</a>";
 
   // TODO: Оптимизировать отсылку сообщений - отсылать пакетами
-  foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info)
-  {
+  foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
     $message = $text_common . ($outcome[UBE_SFR] && $player_info[UBE_ATTACKER] ? $lang['ube_report_msg_body_sfr'] : $text_defender);
     msg_send_simple_message($player_id, '', $combat_data[UBE_TIME], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $message);
   }
@@ -1103,9 +977,9 @@ function sn_ube_message_send(&$combat_data)
 // ------------------------------------------------------------------------------------------------
 // Записывает результат боя в БД
 /** @noinspection SpellCheckingInspection */
-function ube_combat_result_apply(&$combat_data){return sn_function_call('ube_combat_result_apply', array(&$combat_data));}
-function sn_ube_combat_result_apply(&$combat_data)
-{
+function ube_combat_result_apply(&$combat_data) { return sn_function_call('ube_combat_result_apply', array(&$combat_data)); }
+
+function sn_ube_combat_result_apply(&$combat_data) {
 // TODO: Поменять все отладки на запросы
   $destination_user_id = $combat_data[UBE_FLEETS][0][UBE_OWNER];
 
@@ -1113,8 +987,7 @@ function sn_ube_combat_result_apply(&$combat_data)
   $planet_info = &$outcome[UBE_PLANET];
   $planet_id = $planet_info[PLANET_ID];
   // Обновляем поле обломков на планете
-  if(!$combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] && !empty($outcome[UBE_DEBRIS]))
-  {
+  if(!$combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] && !empty($outcome[UBE_DEBRIS])) {
     db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
       "`debris_metal` = `debris_metal` + " . floor($outcome[UBE_DEBRIS][RES_METAL]) . ", `debris_crystal` = `debris_crystal` + " . floor($outcome[UBE_DEBRIS][RES_CRYSTAL])
     );
@@ -1125,10 +998,8 @@ function sn_ube_combat_result_apply(&$combat_data)
   );
 
   $fleets_outcome = &$outcome[UBE_FLEETS];
-  foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info)
-  {
-    if($fleet_info[UBE_FLEET_GROUP])
-    {
+  foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info) {
+    if($fleet_info[UBE_FLEET_GROUP]) {
       $db_save[UBE_FLEET_GROUP][$fleet_info[UBE_FLEET_GROUP]] = $fleet_info[UBE_FLEET_GROUP];
     }
 
@@ -1140,23 +1011,18 @@ function sn_ube_combat_result_apply(&$combat_data)
     $old_fleet_count = array_sum($fleet_info[UBE_COUNT]);
     $new_fleet_count = $old_fleet_count - array_sum($fleets_outcome[$fleet_id][UBE_UNITS_LOST]);
     // Перебираем юниты если во время боя количество юнитов изменилось и при этом во флоту остались юниты или это планета
-    if($new_fleet_count != $old_fleet_count && (!$fleet_id || $new_fleet_count))
-    {
+    if($new_fleet_count != $old_fleet_count && (!$fleet_id || $new_fleet_count)) {
       // Просматриваем результаты изменения флотов
-      foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count)
-      {
+      foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
         // Перебираем аутком на случай восстановления юнитов
         $units_lost = (float)$fleets_outcome[$fleet_id][UBE_UNITS_LOST][$unit_id];
 
         $units_left = $unit_count - $units_lost;
-        if($fleet_id)
-        {
+        if($fleet_id) {
           // Не планета - всегда сразу записываем строку итогов флота
 //          $fleet_set[$unit_id] = "{$unit_id},{$units_left}";
           $fleet_real_array[$unit_id] = $units_left;
-        }
-        elseif($units_lost)
-        {
+        } elseif($units_lost) {
           // Планета - записываем в ИД юнита его потери только если есть потери
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA], $planet_id);
         }
@@ -1166,15 +1032,12 @@ function sn_ube_combat_result_apply(&$combat_data)
 
     $resource_delta = array();
     // Если во флоте остались юниты или это планета - генерируем изменение ресурсов
-    if($new_fleet_count || !$fleet_id)
-    {
-      foreach(sn_get_groups('resources_loot') as $resource_id)
-      {
+    if($new_fleet_count || !$fleet_id) {
+      foreach(sn_get_groups('resources_loot') as $resource_id) {
         $resource_change = (float)$fleets_outcome[$fleet_id][UBE_RESOURCES_LOOTED][$resource_id] + (float)$fleets_outcome[$fleet_id][UBE_CARGO_DROPPED][$resource_id];
-        if($resource_change)
-        {
+        if($resource_change) {
           $resource_db_name = ($fleet_id ? 'fleet_resource_' : '') . pname_resource_name($resource_id);
-          $resource_delta[$resource_db_name] = - ($resource_change);
+          $resource_delta[$resource_db_name] = -($resource_change);
         }
       }
     }
@@ -1185,40 +1048,32 @@ function sn_ube_combat_result_apply(&$combat_data)
       $fleet_set = array();
 
       // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
-      if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED)
-      {
+      if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED) {
         // TODO - Вынести это повыше, что бы не делать лишних телодвижений с обсчётом ресурсов и прочего
         $new_fleet_count = 0;
       } else {
         fleet_row_set_array_string_from_real_array($fleet_set, $fleet_real_array);
       }
 
-      if($new_fleet_count)
-      {
+      if($new_fleet_count) {
         // Если защитник и не РМФ - отправляем флот назад
-        if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS)
-        {
+        if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS) {
           $fleet_set['fleet_mess'] = 1;
         }
 
-        if(!empty($fleet_set) || !empty($resource_delta))
-        {
+        if(!empty($fleet_set) || !empty($resource_delta)) {
           $fleet_set['fleet_amount'] = $new_fleet_count;
           fleet_update_set($fleet_id, $fleet_set, $resource_delta);
         }
-      }
-      else
-      {
+      } else {
         // Удаляем пустые флоты
         db_fleet_delete($fleet_id);
         db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
       }
-    }
-    else // Планета
+    } else // Планета
     {
       // Сохраняем изменения ресурсов - если они есть
-      if(!empty($resource_delta))
-      {
+      if(!empty($resource_delta)) {
         $temp = array();
         foreach($resource_delta as $resource_db_name => $resource_amount) {
           $temp[] = "`{$resource_db_name}` = `{$resource_db_name}` + ({$resource_amount})";
@@ -1234,43 +1089,34 @@ function sn_ube_combat_result_apply(&$combat_data)
 
   // TODO: Связать сабы с флотами констраинтами ON DELETE SET NULL
   // $db_save[UBE_FLEET_GROUP][$fleet_info[UBE_FLEET_GROUP]] = $fleet_info[UBE_FLEET_GROUP];
-  if(!empty($db_save[UBE_FLEET_GROUP]))
-  {
+  if(!empty($db_save[UBE_FLEET_GROUP])) {
     $db_save[UBE_FLEET_GROUP] = implode(',', $db_save[UBE_FLEET_GROUP]);
     doquery("DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
   }
 
-  if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS)
-  {
+  if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
     $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $outcome[UBE_MOON_SIZE], '', false);
     $outcome[UBE_MOON_NAME] = $moon_row['name'];
     unset($moon_row);
-  }
-  elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS)
-  {
+  } elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS) {
     db_planet_delete_by_id($planet_id);
   }
 
   {
     $bashing_list = array();
-    foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info)
-    {
-      if($player_info[UBE_ATTACKER])
-      {
-        if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS)
-        {
+    foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
+      if($player_info[UBE_ATTACKER]) {
+        if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
           $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
         }
-        if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE])
-        {
+        if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE]) {
           $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
           db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
         }
       }
     }
     $bashing_list = implode(',', $bashing_list);
-    if($bashing_list)
-    {
+    if($bashing_list) {
       doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
     }
   }

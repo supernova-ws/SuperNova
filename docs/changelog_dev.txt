@@ -15,6 +15,23 @@ Stay out of my shed
 todo.actual.txt
 ===============
 
+speedometer icon
+http://www.flaticon.com/free-icon/speedometer_52166#term=speed&page=1&position=11
+<div>Icons made by <a href="http://www.flaticon.com/authors/robin-kylander" title="Robin Kylander">Robin Kylander</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Jerrycan icon
+http://www.flaticon.com/free-icon/oil_85805#term=fuel&page=1&position=28
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Post it note+pin icon
+http://www.flaticon.com/free-icon/post-it_14489#term=pin&page=1&position=37
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Pin icon
+http://www.flaticon.com/free-icon/push-pin_69667#term=pin&page=1&position=57
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+
 [*] Покупка ММ - 15% бонус. Округлять вверх до тысяч
 
 [*] Закладки
@@ -129,26 +146,7 @@ fleet_aks_invite (page4) - выставить список игроков-дру
 [22.01.2016 23:53:01] 	Сингулярность[БАС]>	В принципе - понятно, что сделать. Заменить надписи иконками и прописать цветовое кодирование для скорости. И сразу попустит
 
 
-speedometer icon
-http://www.flaticon.com/free-icon/speedometer_52166#term=speed&page=1&position=11
-<div>Icons made by <a href="http://www.flaticon.com/authors/robin-kylander" title="Robin Kylander">Robin Kylander</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
-Jerrycan icon
-http://www.flaticon.com/free-icon/oil_85805#term=fuel&page=1&position=28
-<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-
-Post it note+pin icon
-http://www.flaticon.com/free-icon/post-it_14489#term=pin&page=1&position=37
-<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-
-Pin icon
-http://www.flaticon.com/free-icon/push-pin_69667#term=pin&page=1&position=57
-<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-
-
-
-fleet_array:
-      fleet_insert_set($fleet_set);
 
 
 
@@ -157,9 +155,13 @@ fleet_array:
 
 fleet_amount => sum($fleet_real_array) - ВСЕГДА И ВЕЗДЕ!
 
-fleet_set - совсем переделать! Потому что он не set - а по параметрам - $from, $to, $mission_type итд
 
 #ctv
+
+
+2016-01-29 20:58:22 41a4.2
+[~] Код
+    Переформатирован код в нескольких файлах, а так же удалены комментарии
 
 
 2016-01-29 20:46:20 41a4.1

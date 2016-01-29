@@ -19,7 +19,8 @@ returns         = bitmask for recaching
 */
 
 // ------------------------------------------------------------------
-function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false){return sn_function_call('RestoreFleetToPlanet', array(&$fleet_row, $start, $only_resources, $safe_fleet, &$result));}
+function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false) { return sn_function_call('RestoreFleetToPlanet', array(&$fleet_row, $start, $only_resources, $safe_fleet, &$result)); }
+
 function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result) {
   sn_db_transaction_check(true);
 
@@ -54,6 +55,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
   if($start && $fleet_row['fleet_mess'] == 1 && $planet_arrival['id_owner'] != $fleet_row['fleet_owner']) {
 //    doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
     db_fleet_delete($fleet_row['fleet_id']);
+
     return $result;
   }
 
@@ -74,13 +76,11 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
       return CACHE_NOTHING;
     }
   } else {
-    // fleet_send_back($fleet_row);
-//    doquery("UPDATE {{fleets}} SET fleet_resource_metal = 0, fleet_resource_crystal = 0, fleet_resource_deuterium = 0, fleet_mess = 1 WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
     $fleet_set = array(
-      'fleet_resource_metal' => 0,
-      'fleet_resource_crystal' => 0,
+      'fleet_resource_metal'     => 0,
+      'fleet_resource_crystal'   => 0,
       'fleet_resource_deuterium' => 0,
-      'fleet_mess' => 1,
+      'fleet_mess'               => 1,
     );
     fleet_update_set($fleet_row['fleet_id'], $fleet_set);
   }
@@ -110,7 +110,7 @@ function flt_flyingFleetsSort($a, $b) {
           // Если нет флотов, закончивших задание - остались возвращающиеся флоты, которые равны между собой
           // TODO: Добавить еще проверку по ID флота и/или времени запуска - что бы обсчитывать их в порядке запуска
           (
-            0 // Вообще сюда доходить не должно - будет отсекаться на равенстве событий
+          0 // Вообще сюда доходить не должно - будет отсекаться на равенстве событий
           )
         ))
       ))
@@ -125,7 +125,7 @@ function log_file($msg) {
     $handler = fopen('event.log', 'a+');
   }
 
-  fwrite($handler, date(FMT_DATE_TIME_SQL, time()) .' ' . $msg . "\r\n");
+  fwrite($handler, date(FMT_DATE_TIME_SQL, time()) . ' ' . $msg . "\r\n");
 }
 
 // ------------------------------------------------------------------
@@ -166,6 +166,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   sn_db_transaction_start();
   if($config->db_loadItem('game_disable') != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_last')) <= $config->fleet_update_interval) {
     sn_db_transaction_rollback();
+
     return;
   }
 
@@ -173,6 +174,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   if($config->db_loadItem('fleet_update_lock')) {
     if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(240, 300)) {
       sn_db_transaction_rollback();
+
       return;
     } else {
       $debug->warning('Flying fleet handler was locked too long - watchdog unlocked', 'FFH Error', 504);
@@ -202,25 +204,24 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     $missions_used[$fleet_row['fleet_mission']] = 1;
     if($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
       $fleet_event_list[] = array(
-        'fleet_row' => &$fleet_list[$fleet_row['fleet_id']],
-        'fleet_time' => $fleet_list[$fleet_row['fleet_id']]['fleet_start_time'],
+        'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
+        'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_start_time'],
         'fleet_event' => EVENT_FLT_ARRIVE,
       );
     }
 
     if($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
       $fleet_event_list[] = array(
-        'fleet_row' => &$fleet_list[$fleet_row['fleet_id']],
-        'fleet_time' => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
+        'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
+        'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
         'fleet_event' => EVENT_FLT_ACOMPLISH,
       );
     }
 
-    if($fleet_row['fleet_end_time'] <= SN_TIME_NOW)
-    {
+    if($fleet_row['fleet_end_time'] <= SN_TIME_NOW) {
       $fleet_event_list[] = array(
-        'fleet_row' => &$fleet_list[$fleet_row['fleet_id']],
-        'fleet_time' => $fleet_list[$fleet_row['fleet_id']]['fleet_end_time'],
+        'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
+        'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_end_time'],
         'fleet_event' => EVENT_FLT_RETURN,
       );
     }
@@ -232,24 +233,22 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
 // TODO: Грузить только используемые модули из $missions_used
   $mission_files = array(
-    MT_ATTACK => 'flt_mission_attack',
-    MT_AKS => 'flt_mission_attack',
-    // MT_DESTROY => 'flt_mission_destroy.php',
+    MT_ATTACK  => 'flt_mission_attack',
+    MT_AKS     => 'flt_mission_attack',
     MT_DESTROY => 'flt_mission_attack',
 
     MT_TRANSPORT => 'flt_mission_transport',
-    MT_RELOCATE => 'flt_mission_relocate',
-    MT_HOLD => 'flt_mission_hold',
-    MT_SPY => 'flt_mission_spy',
-    MT_COLONIZE => 'flt_mission_colonize',
-    MT_RECYCLE => 'flt_mission_recycle',
+    MT_RELOCATE  => 'flt_mission_relocate',
+    MT_HOLD      => 'flt_mission_hold',
+    MT_SPY       => 'flt_mission_spy',
+    MT_COLONIZE  => 'flt_mission_colonize',
+    MT_RECYCLE   => 'flt_mission_recycle',
 //    MT_MISSILE => 'flt_mission_missile.php',
-    MT_EXPLORE => 'flt_mission_explore',
+    MT_EXPLORE   => 'flt_mission_explore',
   );
   foreach($missions_used as $mission_id => $cork) {
     require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
   }
-
 
 
 //log_file('Обработка миссий');
@@ -273,7 +272,6 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
     db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data);
 
-//    $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = {$fleet_row['fleet_id']} FOR UPDATE", true);
     $fleet_row = db_fleet_get($fleet_row['fleet_id']);
     if(!$fleet_row || empty($fleet_row)) {
       // Fleet was destroyed in course of previous actions
@@ -301,18 +299,17 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
     // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
     $mission_data = array(
-      'fleet'      => &$fleet_row,
-      'dst_user'   => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
+      'fleet'       => &$fleet_row,
+      'dst_user'    => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
       // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
-      'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
-      'src_user'   => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true)  : null,
+      'dst_planet'  => $mission_data['dst_planet'] ? db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
+      'src_user'    => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true) : null,
       // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
-      'src_planet' => $mission_data['src_planet'] ? db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
+      'src_planet'  => $mission_data['src_planet'] ? db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
       'fleet_event' => $fleet_event['fleet_event'],
     );
 
     if($mission_data['dst_planet']) {
-      // $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_user'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
       if($mission_data['dst_planet']['id_owner']) {
         $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
       }
@@ -328,13 +325,6 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
         $attack_result = flt_mission_attack($mission_data);
         $mission_result = CACHE_COMBAT;
       break;
-
-      /*
-      case MT_DESTROY:
-        $attack_result = flt_mission_destroy($mission_data);
-        $mission_result = CACHE_COMBAT;
-      break;
-      */
 
       case MT_TRANSPORT:
         $mission_result = flt_mission_transport($mission_data);

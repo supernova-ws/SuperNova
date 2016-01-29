@@ -51,7 +51,9 @@ function sta_set_time_limit($sta_update_msg = 'updating something', $next_step =
 }
 
 function sys_stat_calculate_flush(&$data, $force = false) {
-  if(count($data) < 25 && !$force) return;
+  if(count($data) < 25 && !$force) {
+    return;
+  }
 
   if(!empty($data)) {
     doquery('REPLACE INTO {{statpoints}}
@@ -94,8 +96,12 @@ function sys_stat_calculate() {
   $row_num = count($user_list);
   // while($player = db_fetch($query))
   foreach($user_list as $player) {
-    if($i++ % 100 == 0) sta_set_time_limit("calculating players stats (player {$i}/{$row_num})", false);
-    if(array_key_exists($user_id = $player['id'], $user_skip_list)) continue;
+    if($i++ % 100 == 0) {
+      sta_set_time_limit("calculating players stats (player {$i}/{$row_num})", false);
+    }
+    if(array_key_exists($user_id = $player['id'], $user_skip_list)) {
+      continue;
+    }
 
     $resources = $player['metal'] * $rate[RES_METAL] + $player['crystal'] * $rate[RES_CRYSTAL] +
       $player['deuterium'] * $rate[RES_DEUTERIUM] + $player['dark_matter'] * $rate[RES_DARK_MATTER];
@@ -113,14 +119,17 @@ function sys_stat_calculate() {
   //pdump(classSupernova::$locks[LOC_USER]);
 
 
-
   sta_set_time_limit('calculating planets stats');
   $i = 0;
   $query = db_planet_list_resources_by_owner();
   $row_num = db_num_rows($query);
   while($planet = db_fetch($query)) {
-    if($i++ % 100 == 0) sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
-    if(array_key_exists($user_id = $planet['id_owner'], $user_skip_list)) continue;
+    if($i++ % 100 == 0) {
+      sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
+    }
+    if(array_key_exists($user_id = $planet['id_owner'], $user_skip_list)) {
+      continue;
+    }
 
     $resources = $planet['metal'] * $rate[RES_METAL] + $planet['crystal'] * $rate[RES_CRYSTAL] +
       $planet['deuterium'] * $rate[RES_DEUTERIUM];
@@ -134,11 +143,14 @@ function sys_stat_calculate() {
   $query = db_fleet_list_query_all_stat();
   $row_num = db_num_rows($query);
   while($fleet_row = db_fetch($query)) {
-    if($i++ % 100 == 0) sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
-    if(array_key_exists($user_id = $fleet_row['fleet_owner'], $user_skip_list)) continue;
+    if($i++ % 100 == 0) {
+      sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
+    }
+    if(array_key_exists($user_id = $fleet_row['fleet_owner'], $user_skip_list)) {
+      continue;
+    }
 
     $fleet = fleet_parse_fleet_row_string_to_real_array($fleet_row);
-//    $fleet = sys_unit_str2arr($fleet_row['_fleet_array']);
     foreach($fleet as $unit_id => $unit_amount) {
       $counts[$user_id][UNIT_SHIPS] += $unit_amount;
 
@@ -160,8 +172,12 @@ function sys_stat_calculate() {
   $query = db_unit_list_stat_calculate();
   $row_num = db_num_rows($query);
   while($unit = db_fetch($query)) {
-    if($i++ % 100 == 0) sta_set_time_limit("calculating unit stats (unit {$i}/{$row_num})", false);
-    if(array_key_exists($user_id = $unit['unit_player_id'], $user_skip_list)) continue;
+    if($i++ % 100 == 0) {
+      sta_set_time_limit("calculating unit stats (unit {$i}/{$row_num})", false);
+    }
+    if(array_key_exists($user_id = $unit['unit_player_id'], $user_skip_list)) {
+      continue;
+    }
 
     $counts[$user_id][$unit['unit_type']] += $unit['unit_level'] * $unit['unit_amount'];
     $total_cost = eco_get_total_cost($unit['unit_snid'], $unit['unit_level']);
@@ -174,8 +190,12 @@ function sys_stat_calculate() {
   $query = db_que_list_stat();
   $row_num = db_num_rows($query);
   while($que_item = db_fetch($query)) {
-    if($i++ % 100 == 0) sta_set_time_limit("calculating ques stats (que item {$i}/{$row_num})", false);
-    if(array_key_exists($user_id = $que_item['que_player_id'], $user_skip_list)) continue;
+    if($i++ % 100 == 0) {
+      sta_set_time_limit("calculating ques stats (que item {$i}/{$row_num})", false);
+    }
+    if(array_key_exists($user_id = $que_item['que_player_id'], $user_skip_list)) {
+      continue;
+    }
     $que_unit_amount = $que_item['que_unit_amount'];
     $que_item = sys_unit_str2arr($que_item['que_unit_price']);
     $resources = ($que_item[RES_METAL] * $rate[RES_METAL] + $que_item[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $que_item[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $que_unit_amount;
@@ -228,10 +248,10 @@ function sys_stat_calculate() {
         SUM(u.`res_points`)+aus.`res_points`, SUM(u.`res_count`)+aus.`res_count`, SUM(u.`total_points`)+aus.`total_points`, SUM(u.`total_count`)+aus.`total_count`,
         " . SN_TIME_NOW . ", NULL, u.`id_ally`, 2, 1,
         a.tech_rank, a.build_rank, a.defs_rank, a.fleet_rank, a.res_rank, a.total_rank
-      FROM {{statpoints}} as u
-        join {{alliance}} as al on al.id = u.id_ally
-        left join {{statpoints}} as aus on aus.id_owner = al.ally_user_id and aus.stat_type = 1 AND aus.stat_code = 1
-        LEFT JOIN {{statpoints}} as a ON a.id_ally = u.id_ally AND a.stat_code = 2 AND a.stat_type = 2
+      FROM {{statpoints}} AS u
+        JOIN {{alliance}} AS al ON al.id = u.id_ally
+        LEFT JOIN {{statpoints}} AS aus ON aus.id_owner = al.ally_user_id AND aus.stat_type = 1 AND aus.stat_code = 1
+        LEFT JOIN {{statpoints}} AS a ON a.id_ally = u.id_ally AND a.stat_code = 2 AND a.stat_type = 2
       WHERE u.`stat_type` = 1 AND u.stat_code = 1 AND u.id_ally<>0
       GROUP BY u.`id_ally`"
   );
@@ -263,8 +283,8 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('setting previous user stats from archive');
   doquery(
-    "UPDATE {{statpoints}} as new
-      LEFT JOIN {{statpoints}} as old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = new.stat_type
+    "UPDATE {{statpoints}} AS new
+      LEFT JOIN {{statpoints}} AS old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
       new.tech_old_rank = old.tech_rank,
       new.build_old_rank = old.build_rank,
@@ -277,8 +297,8 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('setting previous allies stats from archive');
   doquery(
-    "UPDATE {{statpoints}} as new
-      LEFT JOIN {{statpoints}} as old ON old.id_ally = new.id_ally AND old.stat_code = 2 AND old.stat_type = new.stat_type
+    "UPDATE {{statpoints}} AS new
+      LEFT JOIN {{statpoints}} AS old ON old.id_ally = new.id_ally AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
       new.tech_old_rank = old.tech_rank,
       new.build_old_rank = old.build_rank,

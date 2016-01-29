@@ -12,7 +12,7 @@
  * @version 1.1 Security checks by Gorlum for http://supernova.ws
  * @version 1
  * @copyright 2008 By Chlorel for XNova
-**/
+ **/
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
@@ -29,15 +29,13 @@ $target_coord = array(
   'planet' => $target_planet = sys_get_param_int('planet'),
 );
 
-if(!uni_coordinates_valid($target_coord))
-{
+if(!uni_coordinates_valid($target_coord)) {
   die($lang['gs_c02']);
 }
 
 $target_mission = sys_get_param_int('mission');
 $sn_group_missions = sn_get_groups('missions');
-if(!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$target_mission]['AJAX'])
-{
+if(!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$target_mission]['AJAX']) {
   die($lang['gs_c00']);
 }
 
@@ -52,31 +50,26 @@ $target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_pl
 $target_coord['planet_type'] = $target_planet_check;
 $target_row = db_planet_by_vector($target_coord);
 
-if(empty($target_row))
-{
+if(empty($target_row)) {
   $target_row = array(
-    'galaxy' => $target_coord['galaxy'],
-    'system' => $target_coord['system'],
-    'planet' => $target_coord['planet'],
+    'galaxy'      => $target_coord['galaxy'],
+    'system'      => $target_coord['system'],
+    'planet'      => $target_coord['planet'],
     'planet_type' => $target_planet_check,
-    'id_owner' => 0
+    'id_owner'    => 0
   );
 }
 
 $fleet_array = array();
-switch($target_mission)
-{
+switch($target_mission) {
   case MT_SPY:
-    // $fleet_array[SHIP_SPY] = min(mrc_get_level($user, $planetrow, SHIP_SPY), abs($user['spio_anz']));
     $fleet_array[SHIP_SPY] = min(mrc_get_level($user, $planetrow, SHIP_SPY), abs(classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT]));
     $unit_group = 'flt_spies';
   break;
 
   case MT_RECYCLE:
-    foreach(sn_get_groups('flt_recyclers') as $unit_id)
-    {
-      if($unit_count = mrc_get_level($user, $planetrow, $unit_id))
-      {
+    foreach(sn_get_groups('flt_recyclers') as $unit_id) {
+      if($unit_count = mrc_get_level($user, $planetrow, $unit_id)) {
         $fleet_array[$unit_id] = $unit_count;
       }
     }
@@ -96,22 +89,19 @@ $options = array('target_structure' => $target_structure = sys_get_param_int('st
 $cant_attack = flt_can_attack($planetrow, $target_row, $fleet_array, $target_mission, $options);
 
 
-if($cant_attack != ATTACK_ALLOWED)
-{
+if($cant_attack != ATTACK_ALLOWED) {
   die($lang['fl_attack_error'][$cant_attack]);
 }
 
 $db_changeset = array();
-foreach($fleet_array as $unit_id => $unit_count)
-{
+foreach($fleet_array as $unit_id => $unit_count) {
   $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
 }
 
 
 $fleet_ship_count = array_sum($fleet_array);
 
-if($target_mission == MT_MISSILE)
-{
+if($target_mission == MT_MISSILE) {
   $distance = abs($target_coord['system'] - $planetrow['system']);
   $duration = round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
   $arrival = SN_TIME_NOW + $duration;
@@ -123,34 +113,21 @@ if($target_mission == MT_MISSILE)
      `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',
      `fleet_end_time` = '{$arrival}', `fleet_amount` = '{$fleet_ship_count}', `primaer` = '{$target_structure}';"
   );
-}
-else
-{
+} else {
   $travel_data = flt_travel_data($user, $planetrow, $target_coord, $fleet_array, 10);
 
-  if($planetrow['deuterium'] < $travel_data['consumption'])
-  {
+  if($planetrow['deuterium'] < $travel_data['consumption']) {
     die($lang['gs_c13']);
   }
 
   $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
-  $fleet_end_time   = $fleet_start_time + $travel_data['duration'];
-
-//  $fleet_array_string   = array();
-//  foreach($fleet_array as $unit_id => $unit_count)
-//  {
-//    $fleet_array_string[] = "{$unit_id},{$unit_count}";
-//  }
-//  $fleet_array_string = implode(';', $fleet_array_string);
-//  $fleet_ship_count = array_sum($fleet_array);
+  $fleet_end_time = $fleet_start_time + $travel_data['duration'];
 
   $target_coord['id'] = !empty($target_row['id']) ? $target_row['id'] : null;
   $target_coord['planet_type'] = $target_planet_type;
   $target_coord['id_owner'] = $target_row['id_owner'];
 
-//  $fleet_set = fleet_pre_set_from_array($fleet_array);
   $fleet_id = fleet_insert_set_advanced($user['id'], $fleet_array, $target_mission, $planetrow, $target_coord, $fleet_start_time, $fleet_end_time);
-//  $fleet_id = fleet_insert_set($fleet_set);
 }
 
 db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
@@ -158,17 +135,14 @@ db_changeset_apply($db_changeset);
 sn_db_transaction_commit();
 
 $ships_sent = array();
-//$ships_sent_js = array();
 $ships_sent_js = 0;
-foreach($fleet_array as $unit_id => $unit_count)
-{
+foreach($fleet_array as $unit_id => $unit_count) {
   $ships_sent[] = "{$unit_count} {$lang['tech'][$unit_id]}";
   $ships_sent_js += mrc_get_level($user, $planetrow, $unit_id, false, true);
 }
 $ships_sent = implode(', ', $ships_sent);
-//$ships_sent_js = implode(',', $ships_sent_js);
 $ships_sent_js = "{$unit_group}={$ships_sent_js}";
 
-$ResultMessage  = "{$lang['gs_sending']} {$ships_sent} {$lang['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
+$ResultMessage = "{$lang['gs_sending']} {$ships_sent} {$lang['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
 
 die($ResultMessage);

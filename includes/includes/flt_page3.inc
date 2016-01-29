@@ -18,28 +18,34 @@ function sn_fleet_page3() {
 
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = '';
-  if (!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1)
+  if(!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1) {
     $errorlist .= $lang['fl_limit_galaxy'];
-  if (!$system || $system > $config->game_maxSystem || $system < 1)
+  }
+  if(!$system || $system > $config->game_maxSystem || $system < 1) {
     $errorlist .= $lang['fl_limit_system'];
-  if (!$planet || $planet < 1 || ($planet > $config->game_maxPlanet && $target_mission != MT_EXPLORE ))
+  }
+  if(!$planet || $planet < 1 || ($planet > $config->game_maxPlanet && $target_mission != MT_EXPLORE)) {
     $errorlist .= $lang['fl_limit_planet'];
-  if ($planetrow['galaxy'] == $galaxy && $planetrow['system'] == $system && $planetrow['planet'] == $planet && $planetrow['planet_type'] == $planet_type)
+  }
+  if($planetrow['galaxy'] == $galaxy && $planetrow['system'] == $system && $planetrow['planet'] == $planet && $planetrow['planet_type'] == $planet_type) {
     $errorlist .= $lang['fl_ownpl_err'];
-  if (!$planet_type)
+  }
+  if(!$planet_type) {
     $errorlist .= $lang['fl_no_planettype'];
-  if ($planet_type != PT_PLANET && $planet_type != PT_DEBRIS && $planet_type != PT_MOON)
+  }
+  if($planet_type != PT_PLANET && $planet_type != PT_DEBRIS && $planet_type != PT_MOON) {
     $errorlist .= $lang['fl_fleet_err_pl'];
-  if (empty($missiontype[$target_mission])) {
+  }
+  if(empty($missiontype[$target_mission])) {
     $errorlist .= $lang['fl_bad_mission'];
   }
 
-  $TransMetal      = max(0, sys_get_param_float('resource0'));
-  $TransCrystal    = max(0, sys_get_param_float('resource1'));
-  $TransDeuterium  = max(0, sys_get_param_float('resource2'));
-  $StorageNeeded   = $TransMetal + $TransCrystal + $TransDeuterium;
+  $TransMetal = max(0, sys_get_param_float('resource0'));
+  $TransCrystal = max(0, sys_get_param_float('resource1'));
+  $TransDeuterium = max(0, sys_get_param_float('resource2'));
+  $StorageNeeded = $TransMetal + $TransCrystal + $TransDeuterium;
 
-  if (!$StorageNeeded && $target_mission == MT_TRANSPORT) {
+  if(!$StorageNeeded && $target_mission == MT_TRANSPORT) {
     $errorlist .= $lang['fl_noenoughtgoods'];
   }
 
@@ -48,37 +54,43 @@ function sn_fleet_page3() {
   $user = db_user_by_id($user['id'], true);
   $planetrow = db_planet_by_id($planetrow['id'], true);
 
-  if ($target_mission == MT_EXPLORE) {
-    if ($MaxExpeditions == 0 ) {
+  if($target_mission == MT_EXPLORE) {
+    if($MaxExpeditions == 0) {
       $errorlist .= $lang['fl_expe_notech'];
-    } elseif ($FlyingExpeditions >= $MaxExpeditions ) {
+    } elseif($FlyingExpeditions >= $MaxExpeditions) {
       $errorlist .= $lang['fl_expe_max'];
     }
   } else {
-    if ($TargetPlanet['id_owner']){
-      if ($target_mission == MT_COLONIZE)
+    if($TargetPlanet['id_owner']) {
+      if($target_mission == MT_COLONIZE) {
         $errorlist .= $lang['fl_colonized'];
-
-      if ($TargetPlanet['id_owner'] == $planetrow['id_owner']){
-        if ($target_mission == MT_ATTACK)
-          $errorlist .= $lang['fl_no_self_attack'];
-
-        if ($target_mission == MT_SPY)
-          $errorlist .= $lang['fl_no_self_spy'];
-      }else{
-        if ($target_mission == MT_RELOCATE)
-          $errorlist .= $lang['fl_only_stay_at_home'];
       }
-    }else{
-      if ($target_mission < MT_COLONIZE){
-        $errorlist .= $lang['fl_unknow_target'];
-      }else{
-        if ($target_mission == MT_DESTROY)
-          $errorlist .= $lang['fl_nomoon'];
 
-        if ($target_mission == MT_RECYCLE){
-          if($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0)
+      if($TargetPlanet['id_owner'] == $planetrow['id_owner']) {
+        if($target_mission == MT_ATTACK) {
+          $errorlist .= $lang['fl_no_self_attack'];
+        }
+
+        if($target_mission == MT_SPY) {
+          $errorlist .= $lang['fl_no_self_spy'];
+        }
+      } else {
+        if($target_mission == MT_RELOCATE) {
+          $errorlist .= $lang['fl_only_stay_at_home'];
+        }
+      }
+    } else {
+      if($target_mission < MT_COLONIZE) {
+        $errorlist .= $lang['fl_unknow_target'];
+      } else {
+        if($target_mission == MT_DESTROY) {
+          $errorlist .= $lang['fl_nomoon'];
+        }
+
+        if($target_mission == MT_RECYCLE) {
+          if($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0) {
             $errorlist .= $lang['fl_nodebris'];
+          }
         }
       }
     }
@@ -99,15 +111,15 @@ function sn_fleet_page3() {
     }
   }
 
-  if ($errorlist) {
+  if($errorlist) {
     sn_db_transaction_rollback();
-    message ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
+    message("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
-  foreach ($fleetarray as $Ship => $Count) {
-    if ($Count > mrc_get_level($user, $planetrow, $Ship)) {
-      message ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+  foreach($fleetarray as $Ship => $Count) {
+    if($Count > mrc_get_level($user, $planetrow, $Ship)) {
+      message("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
     }
   }
 
@@ -124,11 +136,9 @@ function sn_fleet_page3() {
     if($_POST['acs_target_mr'] == $target) {
       //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
       $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", true);
-      if (!$aks) {
+      if(!$aks) {
         $fleet_group = 0;
-      }
-      else
-      {
+      } else {
         $galaxy = $aks['galaxy'];
         $system = $aks['system'];
         $planet = $aks['planet'];
@@ -141,7 +151,7 @@ function sn_fleet_page3() {
     $target_mission = MT_ATTACK;
   }
 
-  if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
+  if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
     $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);
   }
   $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group, 'resources' => $StorageNeeded);
@@ -152,8 +162,8 @@ function sn_fleet_page3() {
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
-  if (!in_array($speed_percent, $speed_possible)) {
-    message ("<span class='error'><b>". $lang['fl_cheat_speed'] ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+  if(!in_array($speed_percent, $speed_possible)) {
+    message("<span class='error'><b>" . $lang['fl_cheat_speed'] . "</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $fleet['start_time'] = $duration + SN_TIME_NOW;
@@ -167,50 +177,47 @@ function sn_fleet_page3() {
       die();
     }
     $StayDuration = ceil($StayDuration * 3600 / ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1));
-    $StayTime     = $fleet['start_time'] + $StayDuration;
+    $StayTime = $fleet['start_time'] + $StayDuration;
   } else {
     $StayDuration = 0;
-    $StayTime     = 0;
+    $StayTime = 0;
   }
-  $fleet['end_time']   = $StayDuration + (2 * $duration) + SN_TIME_NOW;
+  $fleet['end_time'] = $StayDuration + (2 * $duration) + SN_TIME_NOW;
 
   if($aks && $target_mission == MT_AKS) {
-    if ($fleet['start_time']>$aks['ankunft']) {
-      message ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
+    if($fleet['start_time'] > $aks['ankunft']) {
+      message($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $fleet['start_time']) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), $lang['fl_error']);
     }
     $fleet['start_time'] = $aks['ankunft'];
     $fleet['end_time'] = $aks['ankunft'] + $duration;
   }
 
-  $FleetStorage        = 0;
+  $FleetStorage = 0;
 
   $db_changeset = array();
-  foreach ($fleetarray as $Ship => $Count) {
-    $FleetStorage    += get_unit_param($Ship, P_CAPACITY) * $Count;
+  foreach($fleetarray as $Ship => $Count) {
+    $FleetStorage += get_unit_param($Ship, P_CAPACITY) * $Count;
     $db_changeset['unit'][] = sn_db_unit_changeset_prepare($Ship, -$Count, $user, $planetrow['id']);
   }
-  $FleetStorage        -= $consumption;
+  $FleetStorage -= $consumption;
 
-  if ( $StorageNeeded > $FleetStorage) {
-    message ("<span class='error'><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+  if($StorageNeeded > $FleetStorage) {
+    message("<span class='error'><b>" . $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
-  if ($planetrow['deuterium'] < $TransDeuterium + $consumption) {
-    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+  if($planetrow['deuterium'] < $TransDeuterium + $consumption) {
+    message("<font color=\"red\"><b>" . $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) . "</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
-  if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
-    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+  if(($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
+    message("<font color=\"red\"><b>" . $lang['fl_no_resources'] . "</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
-
-//  $fleet_array_string = sys_unit_arr2str($fleetarray);
-//  $FleetShipCount  = array_sum($fleetarray);
 
   $to = array(
-    'id' => !empty($TargetPlanet['id']) ? $TargetPlanet['id'] : null,
-    'galaxy' => !empty($galaxy) ? $galaxy : 0,
-    'system' => !empty($system) ? $system : 0,
-    'planet' => !empty($planet) ? $planet : 0,
+    'id'          => !empty($TargetPlanet['id']) ? $TargetPlanet['id'] : null,
+    'galaxy'      => !empty($galaxy) ? $galaxy : 0,
+    'system'      => !empty($system) ? $system : 0,
+    'planet'      => !empty($planet) ? $planet : 0,
     'planet_type' => !empty($planet_type) ? $planet_type : 0,
-    'id_owner' => $TargetPlanet['id_owner'],
+    'id_owner'    => $TargetPlanet['id_owner'],
   );
 
   $fleetarray[RES_METAL] = $TransMetal;
@@ -223,13 +230,6 @@ function sn_fleet_page3() {
   db_changeset_apply($db_changeset);
 
   $template = gettemplate('fleet3', true);
-
-//  foreach($fleetarray as $Ship => $Count) {
-//    $template->assign_block_vars('ships', array(
-//      'NAME'  => $lang['tech'][$Ship],
-//      'COUNT' => pretty_number($Count),
-//    ));
-//  }
 
   if(is_array($captain)) {
     db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id}");
@@ -272,14 +272,14 @@ function sn_fleet_page3() {
   }
 
   $template->assign_vars(array(
-    'mission' => $lang['type_mission'][$target_mission] . ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD ? ' ' . pretty_time($StayDuration) : ''),
-    'dist' => pretty_number($distance),
-    'speed' => pretty_number($fleet_speed),
-    'deute_need' => pretty_number($consumption),
-    'from' => "{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}",
-    'time_go' => date(FMT_DATE_TIME, $fleet['start_time']),
-    'time_go_local' => date(FMT_DATE_TIME, $fleet['start_time'] + SN_CLIENT_TIME_DIFF),
-    'time_back' => date(FMT_DATE_TIME, $fleet['end_time']),
+    'mission'         => $lang['type_mission'][$target_mission] . ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD ? ' ' . pretty_time($StayDuration) : ''),
+    'dist'            => pretty_number($distance),
+    'speed'           => pretty_number($fleet_speed),
+    'deute_need'      => pretty_number($consumption),
+    'from'            => "{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}",
+    'time_go'         => date(FMT_DATE_TIME, $fleet['start_time']),
+    'time_go_local'   => date(FMT_DATE_TIME, $fleet['start_time'] + SN_CLIENT_TIME_DIFF),
+    'time_back'       => date(FMT_DATE_TIME, $fleet['end_time']),
     'time_back_local' => date(FMT_DATE_TIME, $fleet['end_time'] + SN_CLIENT_TIME_DIFF),
   ));
 

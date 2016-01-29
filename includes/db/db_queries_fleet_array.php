@@ -98,7 +98,6 @@ function fleet_send_from_planet($fleet_REAL_array, &$planet_row_changed_fields, 
  */
 function fleet_extract_update_data_from_row(&$fleet_row, $fleet_real_array) {
   $query_data = array();
-//      $fleet_row['_fleet_array'] = sys_unit_arr2str($fleet_real_array);
   fleet_row_set_array_string_from_real_array($fleet_row, $fleet_real_array);
 
   $query_data['fleet_amount'] = $fleet_row['fleet_amount'];
