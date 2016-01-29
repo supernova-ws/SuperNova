@@ -144,33 +144,13 @@ else
 //  $fleet_array_string = implode(';', $fleet_array_string);
 //  $fleet_ship_count = array_sum($fleet_array);
 
-  $fleet_pre_set = fleet_pre_set_from_array($fleet_array);
+  $target_coord['id'] = !empty($target_row['id']) ? $target_row['id'] : null;
+  $target_coord['planet_type'] = $target_planet_type;
+  $target_coord['id_owner'] = $target_row['id_owner'];
 
-  $fleet_set = $fleet_pre_set + array(
-    'fleet_owner' => $user['id'],
-    'fleet_mission' => $target_mission,
-//    'fleet_amount' => $fleet_ship_count,
-//    '_fleet_array' => $fleet_array_string,
-    'fleet_start_time' => $fleet_start_time,
-
-    'fleet_start_planet_id' => !empty($planetrow['id']) ? $planetrow['id'] : null,
-    'fleet_start_galaxy' => $planetrow['galaxy'],
-    'fleet_start_system' => $planetrow['system'],
-    'fleet_start_planet' => $planetrow['planet'],
-    'fleet_start_type'   => $planetrow['planet_type'],
-
-    'fleet_end_time' => $fleet_end_time,
-
-    'fleet_end_planet_id' => !empty($target_row['id']) ? $target_row['id'] : null,
-    'fleet_end_galaxy' => $target_coord['galaxy'],
-    'fleet_end_system' => $target_coord['system'],
-    'fleet_end_planet' => $target_coord['planet'],
-    'fleet_end_type' => $target_planet_type,
-    'fleet_target_owner' => $target_row['id_owner'],
-
-    'start_time' => SN_TIME_NOW,
-  );
-  fleet_insert_set($fleet_set);
+//  $fleet_set = fleet_pre_set_from_array($fleet_array);
+  $fleet_id = fleet_insert_set_advanced($user['id'], $fleet_array, $target_mission, $planetrow, $target_coord, $fleet_start_time, $fleet_end_time);
+//  $fleet_id = fleet_insert_set($fleet_set);
 }
 
 db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");

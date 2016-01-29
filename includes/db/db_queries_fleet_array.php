@@ -84,8 +84,6 @@ function fleet_send_from_planet($fleet_REAL_array, &$planet_row_changed_fields, 
       $planet_row_changed_fields[pname_resource_name($unit_id)]['delta'] -= $amount;
     }
   }
-
-  return fleet_pre_set_from_array($fleet_REAL_array);
 }
 
 

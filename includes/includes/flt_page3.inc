@@ -204,35 +204,20 @@ function sn_fleet_page3() {
 //  $fleet_array_string = sys_unit_arr2str($fleetarray);
 //  $FleetShipCount  = array_sum($fleetarray);
 
-//  $fleet_pre_set = fleet_send_from_planet($fleetarray, $planet_fields_UNUSED, $db_changeset_UNUSED);
-  $fleet_pre_set = fleet_pre_set_from_array($fleetarray);
-
-  $fleet_set = $fleet_pre_set + array(
-    'fleet_owner' => $user['id'],
-    'fleet_mission' => $target_mission,
-//    'fleet_amount' => $FleetShipCount,
-//    '_fleet_array' => $fleet_array_string,
-    'fleet_start_time' => $fleet['start_time'],
-    'fleet_start_planet_id' => !empty($planetrow['id']) ? $planetrow['id'] : null,
-    'fleet_start_galaxy' => $planetrow['galaxy'],
-    'fleet_start_system' => $planetrow['system'],
-    'fleet_start_planet' => $planetrow['planet'],
-    'fleet_start_type'   => $planetrow['planet_type'],
-    'fleet_end_time' => $fleet['end_time'],
-    'fleet_end_stay' => $StayTime,
-    'fleet_end_planet_id' => !empty($TargetPlanet['id']) ? $TargetPlanet['id'] : null,
-    'fleet_end_galaxy' => !empty($galaxy) ? $galaxy : 0,
-    'fleet_end_system' => !empty($system) ? $system : 0,
-    'fleet_end_planet' => !empty($planet) ? $planet : 0,
-    'fleet_end_type' => !empty($planet_type) ? $planet_type : 0,
-    'fleet_target_owner' => $TargetPlanet['id_owner'],
-    'fleet_group' => $fleet_group,
-    'fleet_resource_metal' => $TransMetal,
-    'fleet_resource_crystal' => $TransCrystal,
-    'fleet_resource_deuterium' => $TransDeuterium,
-    'start_time' => SN_TIME_NOW,
+  $to = array(
+    'id' => !empty($TargetPlanet['id']) ? $TargetPlanet['id'] : null,
+    'galaxy' => !empty($galaxy) ? $galaxy : 0,
+    'system' => !empty($system) ? $system : 0,
+    'planet' => !empty($planet) ? $planet : 0,
+    'planet_type' => !empty($planet_type) ? $planet_type : 0,
+    'id_owner' => $TargetPlanet['id_owner'],
   );
-  $fleet_id = fleet_insert_set($fleet_set);
+
+  $fleetarray[RES_METAL] = $TransMetal;
+  $fleetarray[RES_CRYSTAL] = $TransCrystal;
+  $fleetarray[RES_DEUTERIUM] = $TransDeuterium;
+
+  $fleet_id = fleet_insert_set_advanced($user['id'], $fleetarray, $target_mission, $planetrow, $to, $fleet['start_time'], $fleet['end_time'], $StayTime, $fleet_group);
 
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);
