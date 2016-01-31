@@ -453,25 +453,36 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
     return $can_attack;
   }
 
+  $to['id_owner'] = idval($to['id_owner']);
+
   $travel_data = flt_travel_data($user, $from, $to, $fleet_REAL_array, $options['fleet_speed_percent']);
 
-  $fleet_start_time = SN_TIME_NOW + $travel_data['duration'];
-
+  $time_on_mission = 0;
   if($mission == MT_EXPLORE || $mission == MT_HOLD) {
-    $stay_duration = $options['stay_time'] * 3600;
-    $stay_time = $fleet_start_time + $stay_duration;
-  } else {
-    $stay_duration = 0;
-    $stay_time = 0;
+    // TODO - include some checks about maximum and minumum stay_duration
+    $time_on_mission = $options['stay_time'] * 3600;
   }
-  $fleet_end_time = $fleet_start_time + $travel_data['duration'] + $stay_duration;
 
-  $fleet_group = isset($options['fleet_group']) ? floatval($options['fleet_group']) : 0;
-  $to['id_owner'] = intval($to['id_owner']);
+  $options['fleet_group'] = !empty($options['fleet_group']) ? idval($options['fleet_group']) : 0;
+  $objFleet = new Fleet();
+  $objFleet->set_times($travel_data['duration'], $time_on_mission);
+  $fleet_id = $objFleet->create_and_send($user['id'], $fleet_REAL_array, $mission, $from, $to, $options['fleet_group']);
 
-  fleet_send_from_planet($fleet_REAL_array, $planet_row_changed_fields, $db_changeset);
+  $sn_group_fleet = sn_get_groups('fleet');
+  $sn_group_resources_loot = sn_get_groups('resources_loot');
+  $db_changeset = array();
+  $planet_row_changed_fields = array();
+  foreach($fleet_REAL_array as $unit_id => $amount) {
+    if(!$amount || !$unit_id) {
+      continue;
+    }
 
-  $fleet_id = fleet_insert_set_advanced($user['id'], $fleet_REAL_array, $mission, $from, $to, $fleet_start_time, $fleet_end_time, $stay_time, $fleet_group);
+    if(in_array($unit_id, $sn_group_fleet)) {
+      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$amount, $user, $from['id']);
+    } elseif(in_array($unit_id, $sn_group_resources_loot)) {
+      $planet_row_changed_fields[pname_resource_name($unit_id)]['delta'] -= $amount;
+    }
+  }
 
   $planet_row_changed_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
   $db_changeset['planets'][] = array(
@@ -527,4 +538,22 @@ function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $
   }
 
   return array('fleet' => $fleet_array, 'ship_data' => $ship_data, 'capacity' => $fleet_capacity, 'consumption' => $fuel_total - $fuel_left);
+}
+
+/**
+ * Возвращает ёмкость переработчиков во флоте
+ *
+ * @param $fleet_row
+ * @param $recycler_info
+ *
+ * @return int
+ */
+function fleet_recyclers_capacity($fleet_row, $recycler_info) {
+  $recyclers_incoming_capacity = 0;
+  $fleet_data = Fleet::proxy_string_to_array($fleet_row);
+  foreach($recycler_info as $recycler_id => $recycler_data) {
+    $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
+  }
+
+  return $recyclers_incoming_capacity;
 }

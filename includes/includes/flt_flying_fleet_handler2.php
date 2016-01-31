@@ -65,8 +65,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
     db_fleet_delete($fleet_row['fleet_id']);
 
     if($fleet_row['fleet_owner'] == $planet_arrival['id_owner']) {
-      $fleet_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
-//      $fleet_array = sys_unit_str2arr($fleet_row['_fleet_array']);
+      $fleet_array = Fleet::proxy_string_to_array($fleet_row);
       foreach($fleet_array as $ship_id => $ship_count) {
         if($ship_count) {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);

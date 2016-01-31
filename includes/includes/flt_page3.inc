@@ -7,12 +7,14 @@ if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
-function sn_fleet_page3() {
+function sn_fleet_page3($time_to_travel) {
   global $missiontype, $target_mission, $fleetarray, $planetrow, $lang;
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
-  global $duration, $sn_module;
+  global $sn_module;
+
+  $adjusted_travel_time = $time_to_travel;
 
   $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
 
@@ -124,30 +126,27 @@ function sn_fleet_page3() {
   }
 
   //Normally... unless its acs...
-  $fleet_group = max(0, intval($_POST['fleet_group']));
+  $aks = 0;
+  $fleet_group = sys_get_param_int('fleet_group');
   //But is it acs??
   //Well all acs fleets must have a fleet code.
-  if($fleet_group) {
-    //Also it must be mission type 2
-    $target_mission = MT_AKS;
+  //The co-ords must be the same as where the acs fleet is going.
+  if($fleet_group && sys_get_param_str('acs_target_mr') == "g{$galaxy}s{$system}p{$planet}t{$planet_type}") {
+    //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
+    $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", true);
+    if(!$aks) {
+      $fleet_group = 0;
+    } else {
+      //Also it must be mission type 2
+      $target_mission = MT_AKS;
 
-    //The co-ords must be the same as where the acs fleet is going.
-    $target = "g{$galaxy}s{$system}p{$planet}t{$planet_type}";
-    if($_POST['acs_target_mr'] == $target) {
-      //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-      $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", true);
-      if(!$aks) {
-        $fleet_group = 0;
-      } else {
-        $galaxy = $aks['galaxy'];
-        $system = $aks['system'];
-        $planet = $aks['planet'];
-        $planet_type = $aks['planet_type'];
-      }
+      $galaxy = $aks['galaxy'];
+      $system = $aks['system'];
+      $planet = $aks['planet'];
+      $planet_type = $aks['planet_type'];
     }
-  }
-  //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
-  if(!$fleet_group && $target_mission == MT_AKS) {
+  } elseif($target_mission == MT_AKS) {
+    //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
     $target_mission = MT_ATTACK;
   }
 
@@ -166,30 +165,32 @@ function sn_fleet_page3() {
     message("<span class='error'><b>" . $lang['fl_cheat_speed'] . "</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
-  $fleet['start_time'] = $duration + SN_TIME_NOW;
-
-  $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :
-    ($target_mission == MT_HOLD ? 12 : 0);
-  if($max_duration) {
-    $StayDuration = sys_get_param_id('missiontime');
-    if($StayDuration > $max_duration || $StayDuration < 1) {
-      $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
-      die();
+  $mission_time_in_seconds = 0;
+  $arrival_time = SN_TIME_NOW + $time_to_travel;
+  if($target_mission == MT_AKS && $aks) {
+//    if($fleet_start_time > $aks['ankunft']) {
+    if($arrival_time > $aks['ankunft']) {
+      message($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $arrival_time) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), $lang['fl_error']);
     }
-    $StayDuration = ceil($StayDuration * 3600 / ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1));
-    $StayTime = $fleet['start_time'] + $StayDuration;
+    $group_sync_delta_time = $aks['ankunft'] - $arrival_time;
+    // Set arrival time to ACS arrival time
+    $arrival_time = $aks['ankunft'];
+    // Set return time to ACS return time + fleet's time to travel
+    $return_time = $aks['ankunft'] + $time_to_travel;
   } else {
-    $StayDuration = 0;
-    $StayTime = 0;
-  }
-  $fleet['end_time'] = $StayDuration + (2 * $duration) + SN_TIME_NOW;
-
-  if($aks && $target_mission == MT_AKS) {
-    if($fleet['start_time'] > $aks['ankunft']) {
-      message($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $fleet['start_time']) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), $lang['fl_error']);
+    if($target_mission == MT_EXPLORE || $target_mission == MT_HOLD) {
+      $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) : ($target_mission == MT_HOLD ? 12 : 0);
+      if($max_duration) {
+        $mission_time_in_hours = sys_get_param_id('missiontime');
+        if($mission_time_in_hours > $max_duration || $mission_time_in_hours < 1) {
+          $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
+          die();
+        }
+        $mission_time_in_seconds = ceil($mission_time_in_hours * 3600 / ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1));
+      }
     }
-    $fleet['start_time'] = $aks['ankunft'];
-    $fleet['end_time'] = $aks['ankunft'] + $duration;
+    $return_time = $arrival_time + $mission_time_in_seconds + $time_to_travel;
+    $group_sync_delta_time = 0;
   }
 
   $FleetStorage = 0;
@@ -224,7 +225,10 @@ function sn_fleet_page3() {
   $fleetarray[RES_CRYSTAL] = $TransCrystal;
   $fleetarray[RES_DEUTERIUM] = $TransDeuterium;
 
-  $fleet_id = fleet_insert_set_advanced($user['id'], $fleetarray, $target_mission, $planetrow, $to, $fleet['start_time'], $fleet['end_time'], $StayTime, $fleet_group);
+  $objFleet = new Fleet();
+  $objFleet->set_times($time_to_travel, $mission_time_in_seconds, $group_sync_delta_time);
+  $fleet_id = $objFleet->create_and_send($user['id'], $fleetarray, $target_mission, $planetrow, $to, $fleet_group);
+//  $fleet_id = fleet_insert_set_advanced($user['id'], $fleetarray, $target_mission, $planetrow, $to, $fleet_start_time, $fleet_end_time, $StayTime, $fleet_group);
 
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);
@@ -240,8 +244,8 @@ function sn_fleet_page3() {
     'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$planetrow['planet_type']],
     'START_COORDS'       => uni_render_coordinates($planetrow),
     'START_NAME'         => $planetrow['name'],
-    'START_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['end_time'] + SN_CLIENT_TIME_DIFF),
-    'START_LEFT'         => floor($fleet['end_time'] + 1 - SN_TIME_NOW),
+    'START_TIME_TEXT'    => date(FMT_DATE_TIME, $return_time + SN_CLIENT_TIME_DIFF),
+    'START_LEFT'         => floor($return_time + 1 - SN_TIME_NOW),
   );
 
   if(!empty($TargetPlanet)) {
@@ -249,8 +253,8 @@ function sn_fleet_page3() {
       'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
       'END_COORDS'       => uni_render_coordinates($TargetPlanet),
       'END_NAME'         => $TargetPlanet['name'],
-      'END_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet['start_time'] + SN_CLIENT_TIME_DIFF),
-      'END_LEFT'         => floor($fleet['start_time'] + 1 - SN_TIME_NOW),
+      'END_TIME_TEXT'    => date(FMT_DATE_TIME, $arrival_time + SN_CLIENT_TIME_DIFF),
+      'END_LEFT'         => floor($arrival_time + 1 - SN_TIME_NOW),
     );
   }
 
@@ -272,15 +276,15 @@ function sn_fleet_page3() {
   }
 
   $template->assign_vars(array(
-    'mission'         => $lang['type_mission'][$target_mission] . ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD ? ' ' . pretty_time($StayDuration) : ''),
+    'mission'         => $lang['type_mission'][$target_mission] . ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD ? ' ' . pretty_time($mission_time_in_seconds) : ''),
     'dist'            => pretty_number($distance),
     'speed'           => pretty_number($fleet_speed),
     'deute_need'      => pretty_number($consumption),
     'from'            => "{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}",
-    'time_go'         => date(FMT_DATE_TIME, $fleet['start_time']),
-    'time_go_local'   => date(FMT_DATE_TIME, $fleet['start_time'] + SN_CLIENT_TIME_DIFF),
-    'time_back'       => date(FMT_DATE_TIME, $fleet['end_time']),
-    'time_back_local' => date(FMT_DATE_TIME, $fleet['end_time'] + SN_CLIENT_TIME_DIFF),
+    'time_go'         => date(FMT_DATE_TIME, $arrival_time),
+    'time_go_local'   => date(FMT_DATE_TIME, $arrival_time + SN_CLIENT_TIME_DIFF),
+    'time_back'       => date(FMT_DATE_TIME, $return_time),
+    'time_back_local' => date(FMT_DATE_TIME, $return_time + SN_CLIENT_TIME_DIFF),
   ));
 
   sn_db_transaction_commit();

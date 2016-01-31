@@ -24,7 +24,7 @@ function flt_mission_relocate($mission_data) {
       $mission_data['src_planet']['name'], uni_render_coordinates_href($fleet_row, 'fleet_start_', 3, ''), $destination_planet['name'], uni_render_coordinates_href($fleet_row, 'fleet_end_', 3, ''),
       $fleet_row['fleet_resource_metal'], $lang['Metal'], $fleet_row['fleet_resource_crystal'], $lang['Crystal'], $fleet_row['fleet_resource_deuterium'], $lang['Deuterium']) .
     '<br />' . $lang['sys_relocate_mess_user'];
-  $fleet_real_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
+  $fleet_real_array = Fleet::proxy_string_to_array($fleet_row);
   foreach($fleet_real_array as $ship_id => $ship_count) {
     $Message .= $lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
   }

@@ -135,7 +135,6 @@ fleet_aks_invite (page4) - выставить список игроков-дру
 
 Перевод ресов между планетами - 0.8% от суммы перевода в ТМ. Типа - вебмани, кошельки WMD, WMC, WMM
 
-ФлитПейдж0 - сделать общую информацию о флоте флексбоксом
 
 
 [22.01.2016 23:50:12] 	Сингулярность[БАС]>	Еще надо добавить цветовое кодирование по скорости корабля - и вообще будет зашибись
@@ -145,18 +144,96 @@ fleet_aks_invite (page4) - выставить список игроков-дру
 [22.01.2016 23:52:00] 	Сингулярность[БАС]>	По большему количеству критериев новый интерфейс - удобнее. Единственный минус - теряется видение скорости кораблей и подбора по скорости во флот
 [22.01.2016 23:53:01] 	Сингулярность[БАС]>	В принципе - понятно, что сделать. Заменить надписи иконками и прописать цветовое кодирование для скорости. И сразу попустит
 
-
-
-
-
+ФлитПейдж0 - сделать общую информацию о флоте флексбоксом
 
 Выводить объём ресурсов на последней странице отправки флота
+
+
+
+
+
+
+
+
+
+//$objFleet = new Fleet();
+//
+//$objFleet->fleet_insert_set_advanced(
+//  $user['id'],
+//  array(
+//    SHIP_CARGO_BIG => 5,
+//    SHIP_CARGO_SMALL => 10,
+//    RES_METAL => 222,
+//    RES_CRYSTAL => 333,
+//    RES_DEUTERIUM => 444,
+//  ),
+//  MT_TRANSPORT,
+//  array(
+//    'id' => 1,
+//    'galaxy' => 1,
+//    'system' => 1,
+//    'planet' => 1,
+//    'planet_type' => PT_PLANET,
+//  ),
+//  array(
+//    'id' => 2,
+//    'galaxy' => 1,
+//    'system' => 2,
+//    'planet' => 5,
+//    'planet_type' => PT_PLANET,
+//    'id_owner' => $user['id'],
+//  ),
+//  SN_TIME_NOW + PERIOD_DAY,
+//  SN_TIME_NOW + PERIOD_DAY + PERIOD_DAY,
+//  0,
+//  11
+//);
+//
+//die();
+//
+
 
 
 fleet_amount => sum($fleet_real_array) - ВСЕГДА И ВЕЗДЕ!
 
 
+Модули - Проверить на использование
+    - Fleet CRUD
+        - db_fleet_insert_set_safe_string
+        - db_fleet_get
+        - db_fleet_update_set_safe_string
+
+    ? fleet_parse_fleet_row_string_to_real_array
+    ? fleet_extract_update_data_from_row
+
+    ? fleet_insert_set_advanced
+    ? fleet_pre_set_from_array
+    ? fleet_update_set - позаменять и в основном коде
+
+    ? ube_combat_result_apply - кто-то перехватывает. Проверить
+
+
+NOW PATCHING: flt_mission_colonize FOR fleet_row_set_array_string_from_real_array
+
+FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
+
+Заменить проверки:
+    - sn_get_groups('fleet') -> Ship::is_ship($unit_id)
+    - sn_get_groups('resources_loot') -> ResourceLoot::is_resource($unit_id)
+
+
+Сделать класс DBRow:
+    - Хранить поля в контейнере
+    - get/set
+    - ArrayAccess
+
 #ctv
+
+
+2016-01-31 05:11:32 41a4.3 - Альфа-версия класса Fleet
+[!] Код
+    Добавлена альфа-версия класса Fleet
+    Множество других архитектурных изменений в системе флотов
 
 
 2016-01-29 20:58:22 41a4.2

@@ -220,7 +220,7 @@ switch($fleet_page) {
 
   case 3:
     require_once('includes/includes/flt_page3.inc');
-    sn_fleet_page3();
+    sn_fleet_page3($duration);
   break;
 
   case 4:

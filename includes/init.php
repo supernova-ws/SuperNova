@@ -119,6 +119,12 @@ require_once('classes/functions_template.php');
 require_once('classes/skin.php');
 require_once('classes/module.php');
 
+require_once('classes/DBRow.php');
+require_once('classes/UnitBasic.php');
+require_once('classes/ResourceLoot.php');
+require_once('classes/Ship.php');
+require_once('classes/Fleet.php');
+
 require_once('classes/playerTimeDiff.php');
 
 require_once('classes/RequestInfo.php');

@@ -150,7 +150,7 @@ function sys_stat_calculate() {
       continue;
     }
 
-    $fleet = fleet_parse_fleet_row_string_to_real_array($fleet_row);
+    $fleet = Fleet::proxy_string_to_array($fleet_row);
     foreach($fleet as $unit_id => $unit_amount) {
       $counts[$user_id][UNIT_SHIPS] += $unit_amount;
 

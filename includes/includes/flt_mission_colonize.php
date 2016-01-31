@@ -18,7 +18,7 @@ function flt_mission_colonize(&$mission_data) {
 
   $TargetAdress = sprintf($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
 
-  $fleet_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
+  $fleet_array = Fleet::proxy_string_to_array($fleet_row);
 
   $TheMessage = $lang['sys_colo_no_colonizer'];
   if($fleet_array[SHIP_COLONIZER] >= 1) {
@@ -39,10 +39,7 @@ function flt_mission_colonize(&$mission_data) {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
           msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
-          $fleet_array[SHIP_COLONIZER]--;
-          $fleet_row['fleet_amount']--;
-
-          fleet_row_set_array_string_from_real_array($fleet_row, $fleet_array);
+          Fleet::proxy_update_units($fleet_row, array(SHIP_COLONIZER => -1));
 
           return RestoreFleetToPlanet($fleet_row, false);
         }

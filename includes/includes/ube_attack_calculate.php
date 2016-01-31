@@ -111,7 +111,7 @@ function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet_row, $is_attacker) {
   ube_attack_prepare_player($combat_data, $fleet_owner_id, $is_attacker);
 
 //  $fleet_data = sys_unit_str2arr($fleet['_fleet_array']);
-  $fleet_data = fleet_parse_fleet_row_string_to_real_array($fleet_row);
+  $fleet_data = Fleet::proxy_string_to_array($fleet_row);
 
   $combat_data[UBE_FLEETS][$fleet_id][UBE_OWNER] = $fleet_owner_id;
   $fleet_info = &$combat_data[UBE_FLEETS][$fleet_id];
@@ -973,15 +973,41 @@ function sn_ube_message_send(&$combat_data) {
 
 }
 
+/**
+ * Расчёт изменения ресурсов во флоте/на планете
+ *
+ * @param $fleet_outcome
+ *
+ * @return array
+ */
+function ube_combat_result_calculate_resources(&$fleet_outcome) {
+  $resource_delta_fleet = array();
+  // Если во флоте остались юниты или это планета - генерируем изменение ресурсов
+  foreach(sn_get_groups('resources_loot') as $resource_id) {
+    $resource_change = (float)$fleet_outcome[UBE_RESOURCES_LOOTED][$resource_id] + (float)$fleet_outcome[UBE_CARGO_DROPPED][$resource_id];
+    if($resource_change) {
+      $resource_delta_fleet[$resource_id] = -($resource_change);
+    }
+  }
+
+  return $resource_delta_fleet;
+}
+
 
 // ------------------------------------------------------------------------------------------------
-// Записывает результат боя в БД
-/** @noinspection SpellCheckingInspection */
+/**
+ * Записывает результат боя в БД
+ *
+ * @param $combat_data
+ *
+ * @return mixed
+ */
 function ube_combat_result_apply(&$combat_data) { return sn_function_call('ube_combat_result_apply', array(&$combat_data)); }
 
 function sn_ube_combat_result_apply(&$combat_data) {
 // TODO: Поменять все отладки на запросы
   $destination_user_id = $combat_data[UBE_FLEETS][0][UBE_OWNER];
+  $destination_user_db_row = &$combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA];
 
   $outcome = &$combat_data[UBE_OUTCOME];
   $planet_info = &$outcome[UBE_PLANET];
@@ -993,105 +1019,84 @@ function sn_ube_combat_result_apply(&$combat_data) {
     );
   }
 
-  $db_save = array(
-    UBE_FLEET_GROUP => array(), // Для САБов
-  );
+  $fleet_group_id_list = array(); // Для САБов
 
   $fleets_outcome = &$outcome[UBE_FLEETS];
   foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info) {
-    if($fleet_info[UBE_FLEET_GROUP]) {
-      $db_save[UBE_FLEET_GROUP][$fleet_info[UBE_FLEET_GROUP]] = $fleet_info[UBE_FLEET_GROUP];
-    }
+    $fleet_info[UBE_FLEET_GROUP] ? $fleet_group_id_list[$fleet_info[UBE_FLEET_GROUP]] = $fleet_info[UBE_FLEET_GROUP] : false;
 
-    $fleet_info[UBE_COUNT] = $fleet_info[UBE_COUNT] ? $fleet_info[UBE_COUNT] : array();
-    $fleets_outcome[$fleet_id][UBE_UNITS_LOST] = $fleets_outcome[$fleet_id][UBE_UNITS_LOST] ? $fleets_outcome[$fleet_id][UBE_UNITS_LOST] : array();
+    $this_fleet_outcome = &$fleets_outcome[$fleet_id];
 
-    $fleet_real_array = array();
-    $db_changeset = array();
-    $old_fleet_count = array_sum($fleet_info[UBE_COUNT]);
-    $new_fleet_count = $old_fleet_count - array_sum($fleets_outcome[$fleet_id][UBE_UNITS_LOST]);
-    // Перебираем юниты если во время боя количество юнитов изменилось и при этом во флоту остались юниты или это планета
-    if($new_fleet_count != $old_fleet_count && (!$fleet_id || $new_fleet_count)) {
-      // Просматриваем результаты изменения флотов
-      foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
-        // Перебираем аутком на случай восстановления юнитов
-        $units_lost = (float)$fleets_outcome[$fleet_id][UBE_UNITS_LOST][$unit_id];
+    empty($fleet_info[UBE_COUNT]) ? $fleet_info[UBE_COUNT] = array() : false;
+    empty($this_fleet_outcome[UBE_UNITS_LOST]) ? $this_fleet_outcome[UBE_UNITS_LOST] = array() : false;
 
-        $units_left = $unit_count - $units_lost;
-        if($fleet_id) {
-          // Не планета - всегда сразу записываем строку итогов флота
-//          $fleet_set[$unit_id] = "{$unit_id},{$units_left}";
-          $fleet_real_array[$unit_id] = $units_left;
-        } elseif($units_lost) {
-          // Планета - записываем в ИД юнита его потери только если есть потери
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA], $planet_id);
-        }
-      }
+    $ship_count_initial = array_sum($fleet_info[UBE_COUNT]);
+    $ship_count_lost = array_sum($this_fleet_outcome[UBE_UNITS_LOST]); // Если будет сделано восстановлении более, чем начальное число - тут надо сделать сумму по модулю
 
-    }
-
-    $resource_delta = array();
-    // Если во флоте остались юниты или это планета - генерируем изменение ресурсов
-    if($new_fleet_count || !$fleet_id) {
-      foreach(sn_get_groups('resources_loot') as $resource_id) {
-        $resource_change = (float)$fleets_outcome[$fleet_id][UBE_RESOURCES_LOOTED][$resource_id] + (float)$fleets_outcome[$fleet_id][UBE_CARGO_DROPPED][$resource_id];
-        if($resource_change) {
-          $resource_db_name = ($fleet_id ? 'fleet_resource_' : '') . pname_resource_name($resource_id);
-          $resource_delta[$resource_db_name] = -($resource_change);
-        }
-      }
-    }
-
-    if($fleet_id) // Не планета
-    {
-      // Для флотов перегенерируем массив как одно вхождение в SET SQL-запроса
-      $fleet_set = array();
+    if($fleet_id) {
+      // Флот
+      $objFleet = new Fleet();
+      $objFleet->set_db_id($fleet_id);
 
       // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
       if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED) {
-        // TODO - Вынести это повыше, что бы не делать лишних телодвижений с обсчётом ресурсов и прочего
-        $new_fleet_count = 0;
-      } else {
-        fleet_row_set_array_string_from_real_array($fleet_set, $fleet_real_array);
+        $ship_count_lost = $ship_count_initial;
       }
 
-      if($new_fleet_count) {
+      if($ship_count_lost == $ship_count_initial) {
+        $objFleet->method_db_fleet_delete();
+      } else {
+        if($ship_count_lost) {
+          $fleet_real_array = array();
+          // Просматриваем результаты изменения флотов
+          foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
+            // Перебираем аутком на случай восстановления юнитов
+            if($units_left = $unit_count - (float)$this_fleet_outcome[UBE_UNITS_LOST][$unit_id]) {
+              $fleet_real_array[$unit_id] = $units_left;
+            };
+          }
+          $objFleet->replace_ships($fleet_real_array);
+        }
+
+        $resource_delta_fleet = ube_combat_result_calculate_resources($this_fleet_outcome);
+        $objFleet->update_resources($resource_delta_fleet);
+
         // Если защитник и не РМФ - отправляем флот назад
         if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS) {
-          $fleet_set['fleet_mess'] = 1;
+          $objFleet->mark_fleet_as_returned();
         }
-
-        if(!empty($fleet_set) || !empty($resource_delta)) {
-          $fleet_set['fleet_amount'] = $new_fleet_count;
-          fleet_update_set($fleet_id, $fleet_set, $resource_delta);
-        }
-      } else {
-        // Удаляем пустые флоты
-        db_fleet_delete($fleet_id);
-        db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
+        $objFleet->method_fleet_update();
       }
-    } else // Планета
-    {
+
+      unset($objFleet);
+    } else {
+      // Планета
+
       // Сохраняем изменения ресурсов - если они есть
+      $resource_delta = ube_combat_result_calculate_resources($this_fleet_outcome);
       if(!empty($resource_delta)) {
         $temp = array();
-        foreach($resource_delta as $resource_db_name => $resource_amount) {
+        foreach($resource_delta as $resource_id => $resource_amount) {
+          $resource_db_name = pname_resource_name($resource_id);
           $temp[] = "`{$resource_db_name}` = `{$resource_db_name}` + ({$resource_amount})";
         }
         db_planet_set_by_id($planet_id, implode(',', $temp));
       }
-      if(!empty($db_changeset)) // Сохраняем изменения юнитов на планете - если они есть
-      {
+
+      if($ship_count_lost) {
+        $db_changeset = array();
+        foreach($this_fleet_outcome[UBE_UNITS_LOST] as $unit_id => $units_lost) {
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $destination_user_db_row, $planet_id);
+        }
         db_changeset_apply($db_changeset);
       }
     }
   }
 
   // TODO: Связать сабы с флотами констраинтами ON DELETE SET NULL
-  // $db_save[UBE_FLEET_GROUP][$fleet_info[UBE_FLEET_GROUP]] = $fleet_info[UBE_FLEET_GROUP];
-  if(!empty($db_save[UBE_FLEET_GROUP])) {
-    $db_save[UBE_FLEET_GROUP] = implode(',', $db_save[UBE_FLEET_GROUP]);
-    doquery("DELETE FROM {{aks}} WHERE `id` IN ({$db_save[UBE_FLEET_GROUP]})");
+  if(!empty($fleet_group_id_list)) {
+    $fleet_group_id_list = implode(',', $fleet_group_id_list);
+    doquery("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
   }
 
   if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
@@ -1102,22 +1107,21 @@ function sn_ube_combat_result_apply(&$combat_data) {
     db_planet_delete_by_id($planet_id);
   }
 
-  {
-    $bashing_list = array();
-    foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
-      if($player_info[UBE_ATTACKER]) {
-        if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
-          $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
-        }
-        if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE]) {
-          $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
-          db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
-        }
-      }
+  $bashing_list = array();
+  foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
+    if(!$player_info[UBE_ATTACKER]) {
+      continue;
     }
+    if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
+      $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
+    }
+    if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE]) {
+      $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
+      db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
+    }
+  }
+  if(!empty($bashing_list)) {
     $bashing_list = implode(',', $bashing_list);
-    if($bashing_list) {
-      doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
-    }
+    doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
   }
 }

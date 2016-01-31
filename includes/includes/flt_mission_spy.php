@@ -47,7 +47,7 @@ function flt_mission_spy(&$mission_data) {
     return;
   }
 
-  $fleet_array = fleet_parse_fleet_row_string_to_real_array($fleet_row);
+  $fleet_array = Fleet::proxy_string_to_array($fleet_row);
   if($fleet_array[SHIP_SPY] > 0) {
     $TargetSpyLvl = GetSpyLevel($target_user_row);
     $CurrentSpyLvl = GetSpyLevel($spying_user_row);

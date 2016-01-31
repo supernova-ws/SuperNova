@@ -13,14 +13,7 @@
  * @return int|string
  */
 function db_fleet_insert_set_safe_string($set_safe_string) {
-  if(!empty($set_safe_string)) {
-    doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
-    $fleet_id = db_insert_id();
-  } else {
-    $fleet_id = 0;
-  }
-
-  return $fleet_id;
+  return Fleet::db_fleet_insert_set_safe_string($set_safe_string);
 }
 
 /**
@@ -31,10 +24,7 @@ function db_fleet_insert_set_safe_string($set_safe_string) {
  * @return array|false
  */
 function db_fleet_get($fleet_id) {
-  $fleet_id_safe = idval($fleet_id);
-  $result = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
-
-  return is_array($result) ? $result : false;
+  return Fleet::db_fleet_get($fleet_id);
 }
 
 /**
@@ -46,14 +36,7 @@ function db_fleet_get($fleet_id) {
  * @return array|bool|mysqli_result|null
  */
 function db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
-  $fleet_id_safe = idval($fleet_id);
-  if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
-    $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-  } else {
-    $result = false;
-  }
-
-  return $result;
+  return Fleet::db_fleet_update_set_safe_string($fleet_id, $set_safe_string);
 }
 
 /**
@@ -64,14 +47,7 @@ function db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
  * @return array|bool|mysqli_result|null
  */
 function db_fleet_delete($fleet_id) {
-  $fleet_id_safe = idval($fleet_id);
-  if(!empty($fleet_id_safe)) {
-    $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-  } else {
-    $result = false;
-  }
-
-  return $result;
+  return Fleet::db_fleet_delete($fleet_id);
 }
 
 /**
@@ -173,75 +149,9 @@ function db_fleet_list_query_all_stat() {
  *
  * @return array|bool|mysqli_result|null
  */
+// TODO - deprecated. REMOVE PROXY
 function fleet_update_set($fleet_id, $set, $delta = array()) {
-  $result = false;
-
-  $fleet_id_safe = idval($fleet_id);
-  $set_string_safe = db_set_make_safe_string($set);
-  !empty($delta) ? $set_string_safe = implode(',', array($set_string_safe, db_set_make_safe_string($delta, true))) : false;
-  if(!empty($fleet_id_safe) && !empty($set_string_safe)) {
-    $result = db_fleet_update_set_safe_string($fleet_id, $set_string_safe);
-  }
-
-  return $result;
-}
-
-/**
- * @param     $fleet_owner
- * @param     $fleet_REAL_array
- * @param     $fleet_mission
- * @param     $from
- * @param     $to
- * @param     $fleet_start_time
- * @param     $fleet_end_time
- * @param int $fleet_end_stay
- * @param int $fleet_group
- *
- * @return int|string
- */
-function fleet_insert_set_advanced($fleet_owner, $fleet_REAL_array, $fleet_mission, $from, $to, $fleet_start_time, $fleet_end_time, $fleet_end_stay = 0, $fleet_group = 0) {
-  $fleet_ship_count = 0;
-
-  $sn_groups_fleet = sn_get_groups('fleet');
-  foreach($fleet_REAL_array as $ship_id => $ship_count) {
-    if(in_array($ship_id, $sn_groups_fleet) && !empty($ship_count)) {
-      $fleet_ship_count += floor($ship_count);
-    }
-  }
-
-  $fleet_set = array(
-    'fleet_owner'   => $fleet_owner,
-    'fleet_group'   => $fleet_group,
-    'fleet_mission' => $fleet_mission,
-    'fleet_array'   => sys_unit_arr2str($fleet_REAL_array),
-    'fleet_amount'  => $fleet_ship_count, // array_sum($fleet_REAL_array),
-
-    'fleet_start_time' => $fleet_start_time,
-    'fleet_end_time'   => $fleet_end_time,
-    'fleet_end_stay'   => $fleet_end_stay,
-    'start_time'       => SN_TIME_NOW,
-
-    'fleet_start_planet_id' => intval($from['id']) ? $from['id'] : null, //      'fleet_start_planet_id' => !empty($planetrow['id']) ? $planetrow['id'] : null,
-    'fleet_start_galaxy'    => $from['galaxy'],
-    'fleet_start_system'    => $from['system'],
-    'fleet_start_planet'    => $from['planet'],
-    'fleet_start_type'      => $from['planet_type'],
-
-    'fleet_end_planet_id' => intval($to['id']) ? $to['id'] : null,
-    'fleet_end_galaxy'    => $to['galaxy'],
-    'fleet_end_system'    => $to['system'],
-    'fleet_end_planet'    => $to['planet'],
-    'fleet_end_type'      => $to['planet_type'],
-    'fleet_target_owner'  => intval($to['id_owner']) ? $to['id_owner'] : 0,
-
-    'fleet_resource_metal'     => !empty($fleet_REAL_array[RES_METAL]) ? floatval($fleet_REAL_array[RES_METAL]) : 0,
-    'fleet_resource_crystal'   => !empty($fleet_REAL_array[RES_METAL]) ? floatval($fleet_REAL_array[RES_CRYSTAL]) : 0,
-    'fleet_resource_deuterium' => !empty($fleet_REAL_array[RES_DEUTERIUM]) ? floatval($fleet_REAL_array[RES_DEUTERIUM]) : 0,
-  );
-//  $fleet_id = fleet_insert_set($fleet_set);
-  $fleet_id = db_fleet_insert_set_safe_string(db_set_make_safe_string($fleet_set));
-
-  return $fleet_id;
+  return Fleet::fleet_update_set($fleet_id, $set, $delta);
 }
 
 /* FLEET FUNCTIONS ===================================================================================================*/
@@ -540,5 +450,3 @@ function fleet_and_missiles_list_incoming($owner_id) {
 function db_fleet_aks_purge() {
   doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
 }
-
-require_once('db_queries_fleet_array.php');
