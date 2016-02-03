@@ -13,7 +13,7 @@ function flt_mission_relocate($mission_data) {
   $destination_planet = &$mission_data['dst_planet'];
 
   if(!$destination_planet || !is_array($destination_planet) || $fleet_row['fleet_owner'] != $destination_planet['id_owner']) {
-    fleet_send_back($mission_data['fleet']);
+    Fleet::fleet_send_back($mission_data['fleet']);
 
     return CACHE_FLEET;
   }

@@ -42,7 +42,7 @@ function flt_mission_spy(&$mission_data) {
   $spying_planet_row = &$mission_data['src_planet'];
 
   if(!isset($target_user_row['id']) || !isset($target_planet_row['id']) || !isset($spying_user_row['id'])) {
-    fleet_send_back($fleet_row);
+    Fleet::fleet_send_back($fleet_row);
 
     return;
   }
@@ -123,7 +123,7 @@ function flt_mission_spy(&$mission_data) {
     $target_user_id = $fleet_row['fleet_target_owner'];
 
     if($spy_detected) {
-      db_fleet_delete($fleet_row['fleet_id']);
+      Fleet::db_fleet_delete($fleet_row['fleet_id']);
 
       $debris_planet_id = $target_planet_row['planet_type'] == PT_PLANET ? $target_planet_row['id'] : $target_planet_row['parent_planet'];
 
@@ -142,7 +142,7 @@ function flt_mission_spy(&$mission_data) {
   }
 
   if(!$spy_detected) {
-    fleet_send_back($fleet_row);
+    Fleet::fleet_send_back($fleet_row);
   }
 
   return $result;

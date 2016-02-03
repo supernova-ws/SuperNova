@@ -287,7 +287,7 @@ function flt_mission_explore(&$mission_data) {
     $objFleet->method_fleet_update();
   } else {
     // Удалить флот
-    db_fleet_delete($fleet_row['fleet_id']);
+    Fleet::db_fleet_delete($fleet_row['fleet_id']);
   }
 
   db_user_set_by_id($fleet_row['fleet_owner'], "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");

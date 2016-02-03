@@ -7,7 +7,7 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
     if($fleet_id = idval($fleet_id)) {
       sn_db_transaction_start();
 //      $FleetRow = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_id}' LIMIT 1 FOR UPDATE;", true);
-      $FleetRow = db_fleet_get($fleet_id);
+      $FleetRow = Fleet::db_fleet_get($fleet_id);
 
       if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0) {
 //        $ReturnFlyingTime = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < SN_TIME_NOW ? $FleetRow['fleet_start_time'] : SN_TIME_NOW) - $FleetRow['start_time'] + SN_TIME_NOW + 1;
@@ -17,7 +17,7 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
 //          // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
 //          doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
 //        }
-        fleet_return_forced($FleetRow, $user);
+        Fleet::fleet_return_forced($FleetRow, $user);
       } elseif ($FleetRow['fleet_id'] && $FleetRow['fleet_owner'] != $user['id']) {
         $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array('base_dump' => true, 'fleet_row' => $FleetRow));
         sn_db_transaction_rollback();

@@ -269,7 +269,8 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
       return $result = ATTACK_WRONG_MISSION;
     };
 
-    $acs = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
+//    $acs_ = doquery("SELECT * FROM {{aks_}} WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
+    $acs = db_acs_get_by_group_id($fleet_group);
     if(!$acs['id']) {
       return $result = ATTACK_NO_ACS;
     }

@@ -198,22 +198,8 @@ fleet_amount => sum($fleet_real_array) - ВСЕГДА И ВЕЗДЕ!
 
 
 Модули - Проверить на использование
-    - Fleet CRUD
-        - db_fleet_insert_set_safe_string
-        - db_fleet_get
-        - db_fleet_update_set_safe_string
-
-    ? fleet_parse_fleet_row_string_to_real_array
-    ? fleet_extract_update_data_from_row
-
-    ? fleet_insert_set_advanced
-    ? fleet_pre_set_from_array
-    ? fleet_update_set - позаменять и в основном коде
-
     ? ube_combat_result_apply - кто-то перехватывает. Проверить
 
-
-NOW PATCHING: flt_mission_colonize FOR fleet_row_set_array_string_from_real_array
 
 FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 
@@ -221,13 +207,20 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
     - sn_get_groups('fleet') -> Ship::is_ship($unit_id)
     - sn_get_groups('resources_loot') -> ResourceLoot::is_resource($unit_id)
 
-
 Сделать класс DBRow:
     - Хранить поля в контейнере
     - get/set
     - ArrayAccess
 
 #ctv
+
+
+2016-02-03 21:55:40 41a4.5
+[!] Код
+    Все функции, оперирующие с одним флотом, внесены в класс Fleet
+    Часть запросов ACS вынесены в db_queries_fleet.php
+    Проверены модули на НЕиспользование функций fleet и acs
+    Врапперы заменены на прямое обращение к статическим методам класса Fleet
 
 
 2016-02-03 21:12:04 41a4.4

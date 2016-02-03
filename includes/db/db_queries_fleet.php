@@ -3,83 +3,7 @@
  * DB fleet, missile and ACS functions
  */
 
-/* FLEET **************************************************************************************************************/
-/* FLEET CRUD ========================================================================================================*/
-/**
- * CREATE - Inserts fleet record by ID with SET safe string
- *
- * @param string $set_safe_string
- *
- * @return int|string
- */
-function db_fleet_insert_set_safe_string($set_safe_string) {
-  return Fleet::db_fleet_insert_set_safe_string($set_safe_string);
-}
-
-/**
- * READ - Gets fleet record by ID
- *
- * @param int $fleet_id
- *
- * @return array|false
- */
-function db_fleet_get($fleet_id) {
-  return Fleet::db_fleet_get($fleet_id);
-}
-
-/**
- * UPDATE - Updates fleet record by ID with SET
- *
- * @param int    $fleet_id
- * @param string $set_safe_string
- *
- * @return array|bool|mysqli_result|null
- */
-function db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
-  return Fleet::db_fleet_update_set_safe_string($fleet_id, $set_safe_string);
-}
-
-/**
- * DELETE
- *
- * @param $fleet_id
- *
- * @return array|bool|mysqli_result|null
- */
-function db_fleet_delete($fleet_id) {
-  return Fleet::db_fleet_delete($fleet_id);
-}
-
-/**
- * LOCK - Lock all records which can be used with mission
- *
- * @param $mission_data
- * @param $fleet_id
- *
- * @return array|bool|mysqli_result|null
- */
-function db_fleet_lock_flying($fleet_id, &$mission_data) {
-//  // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
-//  // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
-
-  $fleet_id_safe = idval($fleet_id);
-
-  return doquery(
-    "SELECT 1 FROM {{fleets}} AS f " .
-    ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
-    ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
-
-    // Блокировка всех прилетающих и улетающих флотов, если нужно
-    ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
-
-    ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
-    ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
-
-    "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
-  );
-}
-
-
+/* FLEET LIST & COUNT *************************************************************************************************/
 /* FLEET LIST & COUNT CRUD ===========================================================================================*/
 /**
  * COUNT - Get fleet count by condition
@@ -139,70 +63,9 @@ function db_fleet_list_query_all_stat() {
 }
 
 
-/* FLEET HELPERS =====================================================================================================*/
-/**
- * Updates fleet record by ID with SET
- *
- * @param int   $fleet_id
- * @param array $set - REPLACE-set, i.e. replacement of existing values
- * @param array $delta - DELTA-set, i.e. changes to existing values
- *
- * @return array|bool|mysqli_result|null
- */
-// TODO - deprecated. REMOVE PROXY
-function fleet_update_set($fleet_id, $set, $delta = array()) {
-  return Fleet::fleet_update_set($fleet_id, $set, $delta);
-}
+/* FLEET LIST & COUNT HELPERS ========================================================================================*/
 
-/* FLEET FUNCTIONS ===================================================================================================*/
-/**
- * Forcibly returns fleet before time outs
- *
- * @param array $fleet_row
- * @param array $user
- */
-function fleet_return_forced($fleet_row, $user) {
-  $fleet_id = idval($fleet_row['fleet_id']);
-
-  $ReturnFlyingTime = ($fleet_row['fleet_end_stay'] != 0 && $fleet_row['fleet_start_time'] < SN_TIME_NOW ? $fleet_row['fleet_start_time'] : SN_TIME_NOW) - $fleet_row['start_time'] + SN_TIME_NOW + 1;
-  $fleet_set_update = array(
-    'fleet_start_time'   => SN_TIME_NOW,
-    'fleet_group'        => 0,
-    'fleet_end_stay'     => 0,
-    'fleet_end_time'     => $ReturnFlyingTime,
-    'fleet_target_owner' => $user['id'],
-    'fleet_mess'         => 1,
-  );
-  fleet_update_set($fleet_id, $fleet_set_update);
-
-  if($fleet_row['fleet_group']) {
-    // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
-    db_fleet_aks_purge();
-  }
-}
-
-/**
- * Sends fleet back
- *
- * @param $fleet_row
- *
- * @return array|bool|mysqli_result|null
- */
-function fleet_send_back(&$fleet_row) {
-  $fleet_id = round(!empty($fleet_row['fleet_id']) ? $fleet_row['fleet_id'] : $fleet_row);
-  if(!$fleet_id) {
-    return false;
-  }
-
-  $result = fleet_update_set($fleet_id, array(
-    'fleet_mess' => 1,
-  ));
-
-  return $result;
-}
-
-
-/* FLEET COUNT FUNCTIONS =============================================================================================*/
+/* FLEET COUNT FUNCTIONS ---------------------------------------------------------------------------------------------*/
 /**
  * Get flying fleet count
  *
@@ -245,7 +108,7 @@ function fleet_count_incoming($galaxy, $system, $planet) {
 }
 
 
-/* FLEET LIST FUNCTIONS =============================================================================================*/
+/* FLEET LIST FUNCTIONS ----------------------------------------------------------------------------------------------*/
 /**
  * Get fleet list by owner
  *
@@ -358,6 +221,7 @@ function fleet_list_by_group($group_id) {
 }
 
 
+
 /* MISSILE CRUD *******************************************************************************************************/
 /* MISSILE LIST & COUNT CRUD =========================================================================================*/
 /**
@@ -444,6 +308,16 @@ function fleet_and_missiles_list_incoming($owner_id) {
 
 
 /* ACS ****************************************************************************************************************/
+/**
+ * @param $aks_id
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_acs_get_by_group_id($aks_id) {
+  // TODO - safe
+  return doquery("SELECT * FROM {{aks}} WHERE id = '{$aks_id}' LIMIT 1;", true);
+}
+
 /**
  * Purges AKS list
  */

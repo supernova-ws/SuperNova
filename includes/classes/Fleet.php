@@ -145,6 +145,81 @@ class Fleet {
     return sys_unit_str2arr($fleet_row['fleet_array']);
   }
 
+  /**
+   * LOCK - Lock all records which can be used with mission
+   *
+   * @param $mission_data
+   * @param $fleet_id
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function db_fleet_lock_flying($fleet_id, &$mission_data) {
+//  // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
+//  // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
+
+    $fleet_id_safe = idval($fleet_id);
+
+    return doquery(
+      "SELECT 1 FROM {{fleets}} AS f " .
+      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
+      ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
+
+      // Блокировка всех прилетающих и улетающих флотов, если нужно
+      ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
+
+      ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
+      ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
+
+      "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
+    );
+  }
+
+  /**
+   * Forcibly returns fleet before time outs
+   *
+   * @param array $fleet_row
+   * @param array $user
+   */
+  public static function fleet_return_forced($fleet_row, &$user) {
+    $fleet_id = idval($fleet_row['fleet_id']);
+
+    $ReturnFlyingTime = ($fleet_row['fleet_end_stay'] != 0 && $fleet_row['fleet_start_time'] < SN_TIME_NOW ? $fleet_row['fleet_start_time'] : SN_TIME_NOW) - $fleet_row['start_time'] + SN_TIME_NOW + 1;
+    $fleet_set_update = array(
+      'fleet_start_time'   => SN_TIME_NOW,
+      'fleet_group'        => 0,
+      'fleet_end_stay'     => 0,
+      'fleet_end_time'     => $ReturnFlyingTime,
+      'fleet_target_owner' => $user['id'],
+      'fleet_mess'         => 1,
+    );
+    Fleet::fleet_update_set($fleet_id, $fleet_set_update);
+
+    if($fleet_row['fleet_group']) {
+      // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
+      db_fleet_aks_purge();
+    }
+  }
+
+  /**
+   * Sends fleet back
+   *
+   * @param $fleet_row
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function fleet_send_back(&$fleet_row) {
+    $fleet_id = round(!empty($fleet_row['fleet_id']) ? $fleet_row['fleet_id'] : $fleet_row);
+    if(!$fleet_id) {
+      return false;
+    }
+
+    $result = Fleet::fleet_update_set($fleet_id, array(
+      'fleet_mess' => 1,
+    ));
+
+    return $result;
+  }
+
 
   /* FLEET HELPERS =====================================================================================================*/
   /**
