@@ -29,7 +29,7 @@ function flt_mission_attack($mission_data, $save_report = true) {
     ($fleet_row['fleet_mission'] == MT_DESTROY && $destination_planet['planet_type'] != PT_MOON)
   ) {
     // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = {$fleet_row['fleet_id']} LIMIT 1;");
-    Fleet::fleet_send_back($fleet_row);
+    Fleet::static_fleet_send_back($fleet_row);
 
     return null;
   }

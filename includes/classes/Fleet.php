@@ -72,27 +72,27 @@ class Fleet {
   /**
    * `start_time` - Время отправления - таймштамп взлёта флота из точки отправления
    *
-   * @var int
+   * @var int $time_launch
    */
-  public $time_departure = 0; // `start_time` = SN_TIME_NOW
+  public $time_launch = 0; // `start_time` = SN_TIME_NOW
   /**
    * `fleet_start_time` - Время прибытия в точку миссии/время начала выполнения миссии
    *
-   * @var int
+   * @var int $time_arrive_to_target
    */
-  public $time_arrive = 0; // `fleet_start_time` = SN_TIME_NOW + $time_travel
+  public $time_arrive_to_target = 0; // `fleet_start_time` = SN_TIME_NOW + $time_travel
   /**
    * `fleet_end_stay` - Время окончания миссии в точке назначения
    *
-   * @var int
+   * @var int $time_mission_job_complete
    */
-  public $time_mission_end = 0; // `fleet_end_stay`
+  public $time_mission_job_complete = 0; // `fleet_end_stay`
   /**
    * `fleet_end_time` - Время возвращения флота после окончания миссии
    *
-   * @var int
+   * @var int $time_return_to_source
    */
-  public $time_return = 0; // `fleet_end_time`
+  public $time_return_to_source = 0; // `fleet_end_time`
 
 
   public $fleet_start_planet_id = null;
@@ -134,6 +134,10 @@ class Fleet {
    */
   protected $core_field_set_list = array();
 
+//
+//
+
+
   /**
    * Парсит строку юнитов в array(ID => AMOUNT)
    *
@@ -141,9 +145,160 @@ class Fleet {
    *
    * @return array
    */
-  public static function proxy_string_to_array($fleet_row) {
+  public static function static_proxy_string_to_array($fleet_row) {
     return sys_unit_str2arr($fleet_row['fleet_array']);
   }
+
+  /**
+   * Sends fleet back
+   *
+   * @param $fleet_row
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  // TODO - заменять на mark_fleet_as_returned()
+  public static function static_fleet_send_back(&$fleet_row) {
+    $fleet_id = round(!empty($fleet_row['fleet_id']) ? $fleet_row['fleet_id'] : $fleet_row);
+    if(!$fleet_id) {
+      return false;
+    }
+
+    $result = Fleet::static_fleet_update_set($fleet_id, array(
+      'fleet_mess' => 1,
+    ));
+
+    $fleet_row['fleet_mess'] = 1;
+
+    return $result;
+  }
+
+  /**
+   * ПРОКСИ: Изменение fleet_array и fleet_amount методами Fleet
+   *
+   * @param $fleet_row
+   * @param $unit_delta_list
+   */
+  public static function static_proxy_update_units(&$fleet_row, $unit_delta_list) {
+    $objFleet = new Fleet();
+    $objFleet->parse_db_row($fleet_row);
+    $objFleet->update_units($unit_delta_list);
+    $fleet_row = $objFleet->make_db_row();
+  }
+
+  /* FLEET CRUD ========================================================================================================*/
+
+  /**
+   * READ - Gets fleet record by ID
+   *
+   * @param int $fleet_id
+   *
+   * @return array|false
+   */
+  public static function db_fleet_get($fleet_id) {
+    $fleet_id_safe = idval($fleet_id);
+    $result = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
+
+    return is_array($result) ? $result : false;
+  }
+  /* FLEET HELPERS =====================================================================================================*/
+
+  /**
+   * Forcibly returns fleet before time outs
+   */
+  public function fleet_command_return() {
+    $fleet_id = idval($this->db_id);
+
+    $ReturnFlyingTime = ($this->time_mission_job_complete != 0 && $this->time_arrive_to_target < SN_TIME_NOW ? $this->time_arrive_to_target : SN_TIME_NOW) - $this->time_launch + SN_TIME_NOW + 1;
+
+    $this->time_arrive_to_target = SN_TIME_NOW;
+    $this->fleet_group = 0;
+    $this->time_mission_job_complete = 0;
+    $this->time_return_to_source = $ReturnFlyingTime;
+    $this->is_returning = 1;
+
+    $fleet_set_update = array(
+      'fleet_start_time' => $this->time_arrive_to_target,
+      'fleet_group'      => $this->fleet_group,
+      'fleet_end_stay'   => $this->time_mission_job_complete,
+      'fleet_end_time'   => $this->time_return_to_source,
+      'fleet_mess'       => $this->is_returning,
+//      'fleet_target_owner' => $this->owner_id, // $user['id'],
+    );
+    Fleet::static_fleet_update_set($fleet_id, $fleet_set_update);
+
+    if($this->fleet_group) {
+      // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
+      db_fleet_aks_purge();
+    }
+  }
+  /**
+   * @return array
+   */
+  public function extract_end_coordinates_without_type() {
+    return array(
+      'galaxy' => $this->fleet_end_galaxy,
+      'system' => $this->fleet_end_system,
+      'planet' => $this->fleet_end_planet,
+    );
+  }
+
+
+//
+//
+//
+
+
+  /**
+   * UPDATE - Updates fleet record by ID with SET
+   *
+   * @param int    $fleet_id
+   * @param string $set_safe_string
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  protected static function static_db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
+    $fleet_id_safe = idval($fleet_id);
+    if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
+      $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
+    } else {
+      $result = false;
+    }
+
+    return $result;
+  }
+
+  /**
+   * Updates fleet record by ID with SET
+   *
+   * @param int   $fleet_id
+   * @param array $set - REPLACE-set, i.e. replacement of existing values
+   * @param array $delta - DELTA-set, i.e. changes to existing values
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  // TODO - REDO AS METHOD!
+  protected static function static_fleet_update_set($fleet_id, $set, $delta = array()) {
+    $result = false;
+
+    $fleet_id_safe = idval($fleet_id);
+    $set_string_safe = db_set_make_safe_string($set);
+    !empty($delta) ? $set_string_safe = implode(',', array($set_string_safe, db_set_make_safe_string($delta, true))) : false;
+    if(!empty($fleet_id_safe) && !empty($set_string_safe)) {
+      $result = static::static_db_fleet_update_set_safe_string($fleet_id, $set_string_safe);
+    }
+
+    return $result;
+  }
+
+
+  /**
+   * Sets object fields for fleet return
+   */
+  public function method_fleet_send_back() {
+    $this->core_field_set_list['fleet_mess'] = 1;
+    $this->is_returning = 1;
+  }
+
 
   /**
    * LOCK - Lock all records which can be used with mission
@@ -153,11 +308,11 @@ class Fleet {
    *
    * @return array|bool|mysqli_result|null
    */
-  public static function db_fleet_lock_flying($fleet_id, &$mission_data) {
+  public function method_db_fleet_lock_flying(&$mission_data) {
 //  // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
 //  // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
 
-    $fleet_id_safe = idval($fleet_id);
+    $fleet_id_safe = idval($this->db_id);
 
     return doquery(
       "SELECT 1 FROM {{fleets}} AS f " .
@@ -174,78 +329,87 @@ class Fleet {
     );
   }
 
-  /**
-   * Forcibly returns fleet before time outs
-   *
-   * @param array $fleet_row
-   * @param array $user
-   */
-  public static function fleet_return_forced($fleet_row, &$user) {
-    $fleet_id = idval($fleet_row['fleet_id']);
-
-    $ReturnFlyingTime = ($fleet_row['fleet_end_stay'] != 0 && $fleet_row['fleet_start_time'] < SN_TIME_NOW ? $fleet_row['fleet_start_time'] : SN_TIME_NOW) - $fleet_row['start_time'] + SN_TIME_NOW + 1;
-    $fleet_set_update = array(
-      'fleet_start_time'   => SN_TIME_NOW,
-      'fleet_group'        => 0,
-      'fleet_end_stay'     => 0,
-      'fleet_end_time'     => $ReturnFlyingTime,
-      'fleet_target_owner' => $user['id'],
-      'fleet_mess'         => 1,
-    );
-    Fleet::fleet_update_set($fleet_id, $fleet_set_update);
-
-    if($fleet_row['fleet_group']) {
-      // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
-      db_fleet_aks_purge();
-    }
-  }
 
   /**
-   * Sends fleet back
+   * READ - Gets fleet record by ID
    *
-   * @param $fleet_row
+   * @param int $fleet_id
    *
-   * @return array|bool|mysqli_result|null
+   * @return array|false
    */
-  public static function fleet_send_back(&$fleet_row) {
-    $fleet_id = round(!empty($fleet_row['fleet_id']) ? $fleet_row['fleet_id'] : $fleet_row);
-    if(!$fleet_id) {
-      return false;
-    }
-
-    $result = Fleet::fleet_update_set($fleet_id, array(
-      'fleet_mess' => 1,
-    ));
-
-    return $result;
-  }
-
-
-  /* FLEET HELPERS =====================================================================================================*/
-  /**
-   * Updates fleet record by ID with SET
-   *
-   * @param int   $fleet_id
-   * @param array $set - REPLACE-set, i.e. replacement of existing values
-   * @param array $delta - DELTA-set, i.e. changes to existing values
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  // TODO - REDO AS METHOD!
-  static function fleet_update_set($fleet_id, $set, $delta = array()) {
-    $result = false;
-
+  public function method_db_fleet_get($fleet_id) {
+    $this->_reset();
     $fleet_id_safe = idval($fleet_id);
-    $set_string_safe = db_set_make_safe_string($set);
-    !empty($delta) ? $set_string_safe = implode(',', array($set_string_safe, db_set_make_safe_string($delta, true))) : false;
-    if(!empty($fleet_id_safe) && !empty($set_string_safe)) {
-      $result = static::db_fleet_update_set_safe_string($fleet_id, $set_string_safe);
+    $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
+    if(is_array($fleet_row)) {
+      $this->parse_db_row($fleet_row);
     }
+
+    return is_array($fleet_row) ? $fleet_row : false;
+  }
+
+
+  /**
+   * DELETE
+   *
+   * @param $fleet_id
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function method_db_delete_this_fleet() {
+    $fleet_id_safe = idval($this->db_id);
+    if(!empty($fleet_id_safe)) {
+      $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
+    } else {
+      $result = false;
+    }
+
+    $this->_reset();
 
     return $result;
   }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
-  public function method_fleet_update() {
+
+  /**
+   * @param $acs_id
+   * @param $mission_id
+   */
+  // TODO - safe IDs with check via possible fleets
+  public function group_acs_set($acs_id, $mission_id) {
+    $this->fleet_group = $acs_id;
+    $this->mission_type = $mission_id;
+
+    $this->core_field_set_list['fleet_group'] = $this->fleet_group;
+    $this->core_field_set_list['fleet_mission'] = $this->mission_type;
+  }
+
+  public function ship_count_by_id($ship_id) {
+    return !empty($this->ship_list[$ship_id]) ? $this->ship_list[$ship_id] : 0;
+  }
+
+  /**
+   * Saves all changes in object to DB
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function flush_changes_to_db() {
     $result_changeset = array();
 
     // Готовим дельту. ДЕЛЬТА ВСЕГДА ДОЛЖНА ИДТИ ПЕРВОЙ И ЧТО БЫ В СЛУЧАЕ ДУБЛИКАТОВ БЫТЬ ПЕРЕЗАПИСАНОЙ СЕТОМ!!!
@@ -282,7 +446,7 @@ class Fleet {
     !empty($field_replace_string_safe) ? $result_changeset[] = $field_replace_string_safe : false;
 
     $result_changeset_string_safe = implode(',', $result_changeset);
-    $result = static::db_fleet_update_set_safe_string($this->db_id, $result_changeset_string_safe);
+    $result = static::static_db_fleet_update_set_safe_string($this->db_id, $result_changeset_string_safe);
 
     // if($result) // TODO - Вставить обработку ошибок
     $this->_reset_update();
@@ -305,6 +469,11 @@ class Fleet {
     // TODO - Проверка - а не возвращается ли уже флот?
     $this->is_returning = 1;
     $this->core_field_set_list['fleet_mess'] = 1;
+  }
+
+  public function mark_fleet_as_returned_and_save() {
+    $this->mark_fleet_as_returned();
+    $this->flush_changes_to_db();
   }
 
   /**
@@ -417,6 +586,14 @@ class Fleet {
     }
   }
 
+  public function set_zero_cargo() {
+    $this->replace_resources(array(
+      RES_METAL     => 0,
+      RES_CRYSTAL   => 0,
+      RES_DEUTERIUM => 0,
+    ));
+  }
+
 
   /**
    * Parses extended unit_array which can include not only ships but resources, captains etc
@@ -447,11 +624,11 @@ class Fleet {
    * @param int $flight_departure - fleet departure from source planet timestamp. Allows to send fleet in future or in past
    */
   public function set_times($time_to_travel, $time_on_mission = 0, $group_sync_delta_time = 0, $flight_departure = SN_TIME_NOW) {
-    $this->time_departure = $flight_departure;
+    $this->time_launch = $flight_departure;
 
-    $this->time_arrive = $this->time_departure + $time_to_travel + $group_sync_delta_time;
-    $this->time_mission_end = $time_on_mission ? $this->time_arrive + $time_on_mission : 0;
-    $this->time_return = ($this->time_mission_end ? $this->time_mission_end : $this->time_arrive) + $time_to_travel;
+    $this->time_arrive_to_target = $this->time_launch + $time_to_travel + $group_sync_delta_time;
+    $this->time_mission_job_complete = $time_on_mission ? $this->time_arrive_to_target + $time_on_mission : 0;
+    $this->time_return_to_source = ($this->time_mission_job_complete ? $this->time_mission_job_complete : $this->time_arrive_to_target) + $time_to_travel;
   }
 
   /**
@@ -491,7 +668,7 @@ class Fleet {
     $this->fleet_end_type = $to['planet_type'];
 
     // WARNING! MISSION TIMES MUST BE SET WITH set_times() method!
-    if(empty($this->time_departure)) {
+    if(empty($this->time_launch)) {
       die('Fleet time not set!');
     }
 
@@ -506,103 +683,38 @@ class Fleet {
    * @return int|string
    */
   protected function db_insert() {
-    $fleet_set = $this->make_db_insert_set();
-    if($this->db_id = static::db_fleet_insert_set_safe_string(db_set_make_safe_string($fleet_set))) {
-      $fleet_row = static::db_fleet_get($this->db_id);
-      if(!empty($fleet_row) && is_array($fleet_row)) {
-        $this->parse_db_row($fleet_row);
-      } else {
-        $this->db_id = 0;
+    $set_safe_string = db_set_make_safe_string($this->make_db_insert_set());
+
+    $db_fleet_id = 0;
+    if(!empty($set_safe_string)) {
+      doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
+      if($db_fleet_id = db_insert_id()) {
+        $fleet_row = static::db_fleet_get($db_fleet_id);
+        if(!empty($fleet_row) && is_array($fleet_row)) {
+          $this->parse_db_row($fleet_row);
+        } else {
+          $db_fleet_id = 0;
+        }
       }
-    } else {
-      $this->db_id = 0;
     }
+
+    $this->db_id = !empty($db_fleet_id) ? $db_fleet_id : 0;
 
     return $this->db_id;
   }
 
   /**
-   * ПРОКСИ: Изменение fleet_array и fleet_amount методами Fleet
-   *
-   * @param $fleet_row
-   * @param $unit_delta_list
+   * Returns ship list in fleet
    */
-  public static function proxy_update_units(&$fleet_row, $unit_delta_list) {
-    $objFleet = new Fleet();
-    $objFleet->parse_db_row($fleet_row);
-    $objFleet->update_units($unit_delta_list);
-    $fleet_row = $objFleet->make_db_row();
-  }
-
-  /* FLEET CRUD ========================================================================================================*/
-  // TODO - REWORK TO WORK AS CLASS METHODS
-  /**
-   * CREATE - Inserts fleet record by ID with SET safe string
-   *
-   * @param string $set_safe_string
-   *
-   * @return int|string
-   */
-  public static function db_fleet_insert_set_safe_string($set_safe_string) {
-    if(!empty($set_safe_string)) {
-      doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
-      $fleet_id = db_insert_id();
-    } else {
-      $fleet_id = 0;
-    }
-
-    return $fleet_id;
+  public function get_ship_list() {
+    return $this->ship_list;
   }
 
   /**
-   * READ - Gets fleet record by ID
-   *
-   * @param int $fleet_id
-   *
-   * @return array|false
+   * Returns resource list in fleet
    */
-  public static function db_fleet_get($fleet_id) {
-    $fleet_id_safe = idval($fleet_id);
-    $result = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
-
-    return is_array($result) ? $result : false;
-  }
-
-  /**
-   * UPDATE - Updates fleet record by ID with SET
-   *
-   * @param int    $fleet_id
-   * @param string $set_safe_string
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public static function db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
-    $fleet_id_safe = idval($fleet_id);
-    if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
-      $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-    } else {
-      $result = false;
-    }
-
-    return $result;
-  }
-
-  /**
-   * DELETE
-   *
-   * @param $fleet_id
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public static function db_fleet_delete($fleet_id) {
-    $fleet_id_safe = idval($fleet_id);
-    if(!empty($fleet_id_safe)) {
-      $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-    } else {
-      $result = false;
-    }
-
-    return $result;
+  public function get_resource_list() {
+    return $this->resource_list;
   }
 
   /**
@@ -625,7 +737,6 @@ class Fleet {
     return $result;
   }
 
-
   /**
    * Compiles object for INSERT DB command
    *
@@ -641,10 +752,10 @@ class Fleet {
       'fleet_group'        => $this->fleet_group,
       'fleet_mess'         => empty($this->is_returning) ? 0 : 1,
 
-      'start_time'       => $this->time_departure,
-      'fleet_start_time' => $this->time_arrive,
-      'fleet_end_stay'   => $this->time_mission_end,
-      'fleet_end_time'   => $this->time_return,
+      'start_time'       => $this->time_launch,
+      'fleet_start_time' => $this->time_arrive_to_target,
+      'fleet_end_stay'   => $this->time_mission_job_complete,
+      'fleet_end_time'   => $this->time_return_to_source,
 
       'fleet_start_planet_id' => !empty($this->fleet_start_planet_id) ? $this->fleet_start_planet_id : null,
       'fleet_start_galaxy'    => $this->fleet_start_galaxy,
@@ -669,10 +780,6 @@ class Fleet {
     return $db_set;
   }
 
-
-  // OK ****************************************************************************************************************
-
-
   /**
    * Parses record from `fleet` table to object
    *
@@ -682,14 +789,14 @@ class Fleet {
     $this->db_id = $fleet_row['fleet_id'];
     $this->owner_id = $fleet_row['fleet_owner'];
     $this->mission_type = $fleet_row['fleet_mission'];
-    $this->time_arrive = $fleet_row['fleet_start_time'];
+    $this->time_arrive_to_target = $fleet_row['fleet_start_time'];
     $this->fleet_start_planet_id = !empty($fleet_row['fleet_start_planet_id']) ? $fleet_row['fleet_start_planet_id'] : null;
     $this->fleet_start_galaxy = $fleet_row['fleet_start_galaxy'];
     $this->fleet_start_system = $fleet_row['fleet_start_system'];
     $this->fleet_start_planet = $fleet_row['fleet_start_planet'];
     $this->fleet_start_type = $fleet_row['fleet_start_type'];
-    $this->time_return = $fleet_row['fleet_end_time'];
-    $this->time_mission_end = $fleet_row['fleet_end_stay'];
+    $this->time_return_to_source = $fleet_row['fleet_end_time'];
+    $this->time_mission_job_complete = $fleet_row['fleet_end_stay'];
 
     $this->fleet_end_planet_id = $fleet_row['fleet_end_planet_id'];
     $this->fleet_end_galaxy = $fleet_row['fleet_end_galaxy'];
@@ -700,7 +807,7 @@ class Fleet {
     $this->target_owner_id = $fleet_row['fleet_target_owner'];
     $this->fleet_group = $fleet_row['fleet_group'];
     $this->is_returning = intval($fleet_row['fleet_mess']);
-    $this->time_departure = $fleet_row['start_time'];
+    $this->time_launch = $fleet_row['start_time'];
 
     $this->ship_list = $this->parse_fleet_string($fleet_row['fleet_array']);
 //    $this->ship_count = $this->get_ship_count(); // $fleet_row['fleet_amount'];
@@ -723,6 +830,10 @@ class Fleet {
     return array_sum($this->ship_list);
   }
 
+  public function get_resources_amount() {
+    return array_sum($this->resource_list);
+  }
+
   public function parse_fleet_string($fleet_string) {
     return sys_unit_str2arr($fleet_string);
   }
@@ -740,10 +851,10 @@ class Fleet {
     $this->fleet_group = 0;
     $this->is_returning = 0;
 
-    $this->time_departure = 0; // SN_TIME_NOW
-    $this->time_arrive = 0; // SN_TIME_NOW + $time_travel
-    $this->time_mission_end = 0;
-    $this->time_return = 0;
+    $this->time_launch = 0; // SN_TIME_NOW
+    $this->time_arrive_to_target = 0; // SN_TIME_NOW + $time_travel
+    $this->time_mission_job_complete = 0;
+    $this->time_return_to_source = 0;
 
     $this->fleet_start_planet_id = null;
     $this->fleet_start_galaxy = 0;
@@ -804,14 +915,14 @@ class Fleet {
     $fleet_row['fleet_id'] = $this->db_id;
     $fleet_row['fleet_owner'] = $this->owner_id;
     $fleet_row['fleet_mission'] = $this->mission_type;
-    $fleet_row['fleet_start_time'] = $this->time_arrive;
+    $fleet_row['fleet_start_time'] = $this->time_arrive_to_target;
     $fleet_row['fleet_start_planet_id'] = $this->fleet_start_planet_id;
     $fleet_row['fleet_start_galaxy'] = $this->fleet_start_galaxy;
     $fleet_row['fleet_start_system'] = $this->fleet_start_system;
     $fleet_row['fleet_start_planet'] = $this->fleet_start_planet;
     $fleet_row['fleet_start_type'] = $this->fleet_start_type;
-    $fleet_row['fleet_end_time'] = $this->time_return;
-    $fleet_row['fleet_end_stay'] = $this->time_mission_end;
+    $fleet_row['fleet_end_time'] = $this->time_return_to_source;
+    $fleet_row['fleet_end_stay'] = $this->time_mission_job_complete;
     $fleet_row['fleet_end_planet_id'] = $this->fleet_end_planet_id;
     $fleet_row['fleet_end_galaxy'] = $this->fleet_end_galaxy;
     $fleet_row['fleet_end_system'] = $this->fleet_end_system;
@@ -820,7 +931,7 @@ class Fleet {
     $fleet_row['fleet_target_owner'] = $this->target_owner_id;
     $fleet_row['fleet_group'] = $this->fleet_group;
     $fleet_row['fleet_mess'] = $this->is_returning;
-    $fleet_row['start_time'] = $this->time_departure;
+    $fleet_row['start_time'] = $this->time_launch;
 
 
     $fleet_row['fleet_array'] = $this->make_fleet_string();

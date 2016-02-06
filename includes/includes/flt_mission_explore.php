@@ -55,12 +55,10 @@ function flt_mission_explore(&$mission_data) {
 
     '$fleet'              => array(),
     '$fleet_lost'         => array(),
-//    '$fleet_left' => 0,
     '$found_dark_matter'  => 0,
     '$fleet_metal_points' => 0,
   );
   $fleet_real_array = &$result['$fleet'];
-//  $fleet_left = &$result['$fleet_left'];
   $fleet_lost = &$result['$fleet_lost'];
   $outcome_mission_sub = &$result['$outcome_mission_sub'];
   $outcome_percent = &$result['$outcome_percent'];
@@ -82,7 +80,7 @@ function flt_mission_explore(&$mission_data) {
   }
 
   $fleet_row = $mission_data['fleet'];
-  $fleet_real_array = Fleet::proxy_string_to_array($fleet_row);
+  $fleet_real_array = Fleet::static_proxy_string_to_array($fleet_row);
   $fleet_capacity = 0;
   $fleet_metal_points = 0;
   foreach($fleet_real_array as $ship_id => $ship_amount) {
@@ -106,7 +104,6 @@ function flt_mission_explore(&$mission_data) {
     $value['value'] = $chance_max = $value['chance'] + $chance_max;
   }
   $outcome_value = mt_rand(0, $chance_max);
-// $outcome_value = 409;
   $outcome_description = &$outcome_list[$mission_outcome = FLT_EXPEDITION_OUTCOME_NONE];
   foreach($outcome_list as $key => &$value) {
     if(!$value['chance']) {
@@ -132,7 +129,6 @@ function flt_mission_explore(&$mission_data) {
 
   $fleet_found = array();
   switch($mission_outcome) {
-//  switch(FLT_EXPEDITION_OUTCOME_LOST_FLEET) { // TODO DEBUG!
     case FLT_EXPEDITION_OUTCOME_LOST_FLEET:
       flt_mission_explore_outcome_lost_fleet($result);
     break;
@@ -249,48 +245,19 @@ function flt_mission_explore(&$mission_data) {
     }
   }
 
-  $fleet_row['fleet_amount'] = array_sum($fleet_real_array);
-  if(!empty($fleet_real_array) && $fleet_row['fleet_amount']) {
-    if(!empty($fleet_found)) {
-      $msg_text_addon = $lang['flt_mission_expedition']['found_fleet'];
-      foreach($fleet_found as $ship_id => $ship_amount) {
-        $msg_text_addon .= $lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
-      }
+  if(!empty($fleet_found)) {
+    $msg_text_addon = $lang['flt_mission_expedition']['found_fleet'];
+    foreach($fleet_found as $ship_id => $ship_amount) {
+      $msg_text_addon .= $lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
     }
-
-    $objFleet = new Fleet();
-    $objFleet->parse_db_row($fleet_row);
-
-//    $query_delta = array();
-    if(!empty($resources_found) && array_sum($resources_found) > 0) {
-      $msg_text_addon = $lang['flt_mission_expedition']['found_resources'];
-      foreach($resources_found as $ship_id => $ship_amount) {
-        $msg_text_addon .= $lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
-      }
-
-//      $query_delta['fleet_resource_metal'] = $resources_found[RES_METAL];
-//      $query_delta['fleet_resource_crystal'] = $resources_found[RES_CRYSTAL];
-//      $query_delta['fleet_resource_deuterium'] = $resources_found[RES_DEUTERIUM];
-      $objFleet->replace_resources($resources_found); // TODO - проверить, что бы не терялись ресурсы в трюме
-    }
-
-//    $query_data = array();
-    if(!empty($fleet_lost) || !empty($fleet_found)) {
-//      $query_data = fleet_extract_update_data_from_row($fleet_row, $fleet_real_array);
-      $objFleet->replace_ships($fleet_real_array);
-    }
-//    $query_data['fleet_mess'] = 1;
-    $objFleet->mark_fleet_as_returned();
-
-
-//    fleet_update_set($fleet_row['fleet_id'], $query_data, $query_delta);
-    $objFleet->method_fleet_update();
-  } else {
-    // Удалить флот
-    Fleet::db_fleet_delete($fleet_row['fleet_id']);
   }
 
-  db_user_set_by_id($fleet_row['fleet_owner'], "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
+  if(!empty($resources_found) && array_sum($resources_found) > 0) {
+    $msg_text_addon = $lang['flt_mission_expedition']['found_resources'];
+    foreach($resources_found as $resource_id => $resource_amount) {
+      $msg_text_addon .= $lang['tech'][$resource_id] . ' - ' . $resource_amount . "\r\n";
+    }
+  }
 
   if(!$msg_text) {
     $messages = &$lang['flt_mission_expedition']['outcomes'][$mission_outcome]['messages'];
@@ -301,10 +268,36 @@ function flt_mission_explore(&$mission_data) {
     $msg_text = is_string($messages) ? $messages :
       (is_array($messages) ? $messages[mt_rand(0, count($messages) - 1)] : '');
   }
-  $msg_text = sprintf($msg_text, $fleet_row['fleet_id'], uni_render_coordinates($fleet_row, 'fleet_end_')) .
+
+  $objFleet = new Fleet();
+  $objFleet->parse_db_row($fleet_row);
+
+  $fleet_row_end_coordinates_without_type = $objFleet->extract_end_coordinates_without_type();
+
+  $msg_text = sprintf($msg_text, $objFleet->db_id, uni_render_coordinates($fleet_row_end_coordinates_without_type)) .
     ($msg_text_addon ? "\r\n" . $msg_text_addon : '');
 
-  msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_end_stay'], MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
+  msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
+
+  db_user_set_by_id($objFleet->owner_id, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
+
+  if(!empty($fleet_real_array) && $objFleet->get_ship_count() >= 1) {
+    // ПОКА НЕ НУЖНО - мы уже выше посчитали суммарные ресурсы (те, что были до отправку в экспу плюс найденное) и обновили $fleet_row
+    // НО МОЖЕТ ПРИГОДИТЬСЯ, когда будем работать напрямую с $objFleet
+//    if(!empty($resources_found) && array_sum($resources_found) > 0) {
+//      $objFleet->update_resources($resources_found); // TODO - проверить, что бы не терялись ресурсы в трюме
+//    }
+
+    if(!empty($fleet_lost) || !empty($fleet_found)) {
+      $objFleet->replace_ships($fleet_real_array);
+    }
+    $objFleet->mark_fleet_as_returned();
+    $objFleet->flush_changes_to_db();
+  } else {
+    // Удалить флот
+    $objFleet->method_db_delete_this_fleet();
+    // From this point $fleet_row is useless - all data are put in local variables
+  }
 
   return CACHE_FLEET | CACHE_USER_SRC;
 }

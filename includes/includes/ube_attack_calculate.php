@@ -111,7 +111,7 @@ function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet_row, $is_attacker) {
   ube_attack_prepare_player($combat_data, $fleet_owner_id, $is_attacker);
 
 //  $fleet_data = sys_unit_str2arr($fleet['_fleet_array']);
-  $fleet_data = Fleet::proxy_string_to_array($fleet_row);
+  $fleet_data = Fleet::static_proxy_string_to_array($fleet_row);
 
   $combat_data[UBE_FLEETS][$fleet_id][UBE_OWNER] = $fleet_owner_id;
   $fleet_info = &$combat_data[UBE_FLEETS][$fleet_id];
@@ -1065,7 +1065,7 @@ function sn_ube_combat_result_apply(&$combat_data) {
         if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS) {
           $objFleet->mark_fleet_as_returned();
         }
-        $objFleet->method_fleet_update();
+        $objFleet->flush_changes_to_db();
       }
 
       unset($objFleet);

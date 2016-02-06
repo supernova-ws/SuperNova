@@ -35,25 +35,29 @@ function flt_spy_scan($target_planet, $group_name, $section_title, $target_user 
 function flt_mission_spy(&$mission_data) {
   global $lang;
 
-  $fleet_row = &$mission_data['fleet'];
+  $result = CACHE_NONE;
+  $spy_detected = false;
+
   $target_user_row = &$mission_data['dst_user'];
   $target_planet_row = &$mission_data['dst_planet'];
   $spying_user_row = &$mission_data['src_user'];
   $spying_planet_row = &$mission_data['src_planet'];
 
-  if(!isset($target_user_row['id']) || !isset($target_planet_row['id']) || !isset($spying_user_row['id'])) {
-    Fleet::fleet_send_back($fleet_row);
+  $objFleet = new Fleet();
+  $objFleet->parse_db_row($mission_data['fleet']);
 
-    return;
+  if(empty($target_user_row['id']) || empty($target_planet_row['id']) || empty($spying_user_row['id'])) {
+    $objFleet->mark_fleet_as_returned_and_save();
+
+    return $result;
   }
 
-  $fleet_array = Fleet::proxy_string_to_array($fleet_row);
-  if($fleet_array[SHIP_SPY] > 0) {
+  $spy_probes = $objFleet->ship_count_by_id(SHIP_SPY);
+  if($spy_probes > 0) {
     $TargetSpyLvl = GetSpyLevel($target_user_row);
     $CurrentSpyLvl = GetSpyLevel($spying_user_row);
     $spy_diff_empire = $CurrentSpyLvl - $TargetSpyLvl;
 
-    $spy_probes = $fleet_array[SHIP_SPY];
     $spy_diff = $spy_diff_empire + sqrt($spy_probes) - 1;
 
     $combat_pack[0] = array(
@@ -65,7 +69,7 @@ function flt_mission_spy(&$mission_data) {
     $spy_message = "<table width=\"440\" cellspacing = \"1\"><tr><td class=\"c\" colspan=\"4\">{$lang['sys_spy_maretials']} {$target_planet_row['name']} ";
     $spy_message .= uni_render_coordinates_href($target_planet_row, '', 3);
     $spy_message .= " ({$lang['Player_']} '{$target_user_row['username']}') {$lang['On_']} ";
-    $spy_message .= date(FMT_DATE_TIME, $fleet_row['fleet_end_time']);
+    $spy_message .= date(FMT_DATE_TIME, $objFleet->time_arrive_to_target);
     $spy_message .= "</td></tr><tr>";
     $spy_message .= "<td width=220>{$lang['sys_metal']}</td><td width=220 align=right>" . pretty_number($target_planet_row['metal']) . "</td>";
     $spy_message .= "<td width=220>{$lang['sys_crystal']}</td></td><td width=220 align=right>" . pretty_number($target_planet_row['crystal']) . "</td>";
@@ -110,21 +114,17 @@ function flt_mission_spy(&$mission_data) {
 
     $spy_message .= "<tr><th class=\"c_c\" colspan=4>";
     $spy_message .= "{$spy_outcome_str}<br />";
-    $spy_message .= "<a href=\"fleet.php?target_mission=1&planet_type={$fleet_row['fleet_end_type']}&galaxy={$fleet_row['fleet_end_galaxy']}&system={$fleet_row['fleet_end_system']}&planet={$fleet_row['fleet_end_planet']} \">{$lang['type_mission'][1]}</a><br />";
+    $spy_message .= "<a href=\"fleet.php?target_mission=1&planet_type={$target_planet_row['planet_type']}&galaxy={$target_planet_row['galaxy']}&system={$target_planet_row['system']}&planet={$target_planet_row['planet']} \">{$lang['type_mission'][1]}</a><br />";
     $spy_message .= "<a href=\"simulator.php?replay={$simulator_link}\">{$lang['COE_combatSimulator']}</a><br />";
     $spy_message .= "</th></tr></table>";
     // End of link generation
 
-    msg_send_simple_message($spying_user_row['id'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'], $spy_message);
+    msg_send_simple_message($spying_user_row['id'], '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'], $spy_message);
 
     $target_message = "{$lang['sys_mess_spy_ennemyfleet']} {$spying_planet_row['name']} " . uni_render_coordinates_href($spying_planet_row, '', 3);
     $target_message .= " {$lang['sys_mess_spy_seen_at']} {$target_planet_row['name']} " . uni_render_coordinates($target_planet_row);
 
-    $target_user_id = $fleet_row['fleet_target_owner'];
-
     if($spy_detected) {
-      Fleet::db_fleet_delete($fleet_row['fleet_id']);
-
       $debris_planet_id = $target_planet_row['planet_type'] == PT_PLANET ? $target_planet_row['id'] : $target_planet_row['parent_planet'];
 
       $spy_cost = get_unit_param(SHIP_SPY, P_COST);
@@ -138,11 +138,13 @@ function flt_mission_spy(&$mission_data) {
     } else {
       $result = CACHE_FLEET;
     }
-    msg_send_simple_message($target_user_id, '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $target_message);
+    msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $target_message);
   }
 
-  if(!$spy_detected) {
-    Fleet::fleet_send_back($fleet_row);
+  if($spy_detected) {
+    $objFleet->method_db_delete_this_fleet();
+  } else {
+    $objFleet->mark_fleet_as_returned_and_save();
   }
 
   return $result;

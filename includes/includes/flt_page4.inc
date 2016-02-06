@@ -50,6 +50,8 @@ if($userToAdd_unsafe) {
     if(!$aks) {
       // No AСS exists - making one
       if(!$fleet['fleet_group']) {
+        $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
+
         doquery("INSERT INTO {{aks}} SET
           `name` = '" . db_escape($lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $user['id'] . "',
@@ -62,15 +64,13 @@ if($userToAdd_unsafe) {
           `eingeladen` = '" . $user['id'] . "',
           `fleet_end_time` = '" . $fleet['fleet_end_time']. "'");
 
-        $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
-
+// 1st iteration
 //        doquery("UPDATE {{fleets}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'");
-        Fleet::fleet_update_set($fleetid, array(
-          'fleet_group' => $aks['id'],
-          'fleet_mission' => MT_AKS,
-        ));
-        $fleet['fleet_group'] = $aks['id'];
-        $fleet['fleet_mission'] = MT_AKS;
+// 3rd iteration
+        $objFleet = new Fleet();
+        $objFleet->parse_db_row($fleet);
+        $objFleet->group_acs_set($aks['id'], MT_AKS);
+        $objFleet->flush_changes_to_db();
       } else {
         message($lang['fl_aks_already_in_aks'], $lang['fl_error']);
       }

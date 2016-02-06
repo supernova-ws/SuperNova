@@ -37,10 +37,9 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 //  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
   // Узнаем ИД владельца планеты - без блокировки
   // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
-  $user_id = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
-  $user_id = $user_id['id_owner'];
+  $user_row = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
   // Блокируем пользователя
-  $user = db_user_by_id($user_id, true);
+  $user = db_user_by_id($user_row['id_owner'], true);
   // Блокируем планету
   $planet_arrival = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", true);
   // Блокируем флот
@@ -51,37 +50,45 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
     return $result;
   }
 
+  $objFleet = new Fleet();
+  $objFleet->parse_db_row($fleet_row);
+
+  // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
+
   // Флот, который возвращается на захваченную планету, пропадает
   if($start && $fleet_row['fleet_mess'] == 1 && $planet_arrival['id_owner'] != $fleet_row['fleet_owner']) {
-//    doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
-    Fleet::db_fleet_delete($fleet_row['fleet_id']);
+    $objFleet->method_db_delete_this_fleet();
 
     return $result;
   }
 
 //pdump($planet_arrival);
+  $fleet_row_resources_current = array(
+    RES_METAL     => $fleet_row['fleet_resource_metal'],
+    RES_CRYSTAL   => $fleet_row['fleet_resource_crystal'],
+    RES_DEUTERIUM => $fleet_row['fleet_resource_deuterium'],
+  );
+
   $db_changeset = array();
   if(!$only_resources) {
-    Fleet::db_fleet_delete($fleet_row['fleet_id']);
-
-    if($fleet_row['fleet_owner'] == $planet_arrival['id_owner']) {
-      $fleet_array = Fleet::proxy_string_to_array($fleet_row);
+    if($objFleet->owner_id == $planet_arrival['id_owner']) {
+      $fleet_array = $objFleet->get_ship_list();
       foreach($fleet_array as $ship_id => $ship_count) {
         if($ship_count) {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
         }
       }
+      $objFleet->method_db_delete_this_fleet();
     } else {
+      $objFleet->method_db_delete_this_fleet();
       return CACHE_NOTHING;
     }
   } else {
-    $fleet_set = array(
-      'fleet_resource_metal'     => 0,
-      'fleet_resource_crystal'   => 0,
-      'fleet_resource_deuterium' => 0,
-      'fleet_mess'               => 1,
-    );
-    Fleet::fleet_update_set($fleet_row['fleet_id'], $fleet_set);
+    $objFleet->set_zero_cargo();
+    $objFleet->method_fleet_send_back();
+    $objFleet->flush_changes_to_db();
+    // Unused TODO - REMOVE
+    $fleet_row = $objFleet->make_db_row();
   }
 
   if(!empty($db_changeset)) {
@@ -89,7 +96,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
   }
 
   db_planet_set_by_id($planet_arrival['id'],
-    "`metal` = `metal` + '{$fleet_row['fleet_resource_metal']}', `crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}', `deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}'");
+    "`metal` = `metal` + '{$fleet_row_resources_current[RES_METAL]}', `crystal` = `crystal` + '{$fleet_row_resources_current[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_row_resources_current[RES_DEUTERIUM]}'");
   $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 
   return $result;
@@ -269,7 +276,10 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
     // Формируем запрос, блокирующий сразу все нужные записи
 
-    Fleet::db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data);
+//    Fleet::db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data);
+    $objFleet = new Fleet();
+    $objFleet->parse_db_row($fleet_row);
+    $objFleet->method_db_fleet_lock_flying($mission_data);
 
     $fleet_row = Fleet::db_fleet_get($fleet_row['fleet_id']);
     if(!$fleet_row || empty($fleet_row)) {

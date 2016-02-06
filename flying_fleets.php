@@ -2,25 +2,20 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $debug, $lang, $user, $planetrow;
+
 if(!empty($_POST['return']) && is_array($_POST['return'])) {
   foreach($_POST['return'] as $fleet_id) {
     if($fleet_id = idval($fleet_id)) {
       sn_db_transaction_start();
-//      $FleetRow = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id` = '{$fleet_id}' LIMIT 1 FOR UPDATE;", true);
-      $FleetRow = Fleet::db_fleet_get($fleet_id);
+      $objFleet = new Fleet();
+      $objFleet->method_db_fleet_get($fleet_id);
 
-      if ($FleetRow['fleet_owner'] == $user['id'] && $FleetRow['fleet_mess'] == 0) {
-//        $ReturnFlyingTime = ($FleetRow['fleet_end_stay'] != 0 && $FleetRow['fleet_start_time'] < SN_TIME_NOW ? $FleetRow['fleet_start_time'] : SN_TIME_NOW) - $FleetRow['start_time'] + SN_TIME_NOW + 1;
-//        doquery("UPDATE {{fleets}} SET `fleet_start_time` = " . SN_TIME_NOW . ", `fleet_group` = 0, `fleet_end_stay` = '0', `fleet_end_time` = '{$ReturnFlyingTime}', `fleet_target_owner` = '{$user['id']}', `fleet_mess` = '1' WHERE `fleet_id` = '{$fleet_id}' LIMIT 1;");
-
-//        if($FleetRow['fleet_group']) {
-//          // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
-//          doquery('DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});');
-//        }
-        Fleet::fleet_return_forced($FleetRow, $user);
-      } elseif ($FleetRow['fleet_id'] && $FleetRow['fleet_owner'] != $user['id']) {
-        $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array('base_dump' => true, 'fleet_row' => $FleetRow));
+      if ($objFleet->owner_id == $user['id'] && $objFleet->is_returning == 0) {
+        $objFleet->fleet_command_return();
+      } elseif ($objFleet->db_id && $objFleet->owner_id != $user['id']) {
         sn_db_transaction_rollback();
+        $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array('base_dump' => true, 'fleet_row' => $objFleet->make_db_row()));
         die('Hack attempt 302');
       }
       sn_db_transaction_commit();

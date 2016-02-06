@@ -551,7 +551,7 @@ function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $
  */
 function fleet_recyclers_capacity($fleet_row, $recycler_info) {
   $recyclers_incoming_capacity = 0;
-  $fleet_data = Fleet::proxy_string_to_array($fleet_row);
+  $fleet_data = Fleet::static_proxy_string_to_array($fleet_row);
   foreach($recycler_info as $recycler_id => $recycler_data) {
     $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
   }

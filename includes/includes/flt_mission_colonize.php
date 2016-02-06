@@ -11,17 +11,19 @@
 // Mission Case 9: -> Coloniser
 //
 function flt_mission_colonize(&$mission_data) {
+  global $lang;
+
   $fleet_row = &$mission_data['fleet'];
   $src_user_row = &$mission_data['src_user'];
 
-  global $lang;
+  $objFleet = new Fleet();
+  $objFleet->parse_db_row($fleet_row);
+  $fleet_end_coordinates = $objFleet->extract_end_coordinates_without_type();
 
-  $TargetAdress = sprintf($lang['sys_adress_planet'], $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet']);
-
-  $fleet_array = Fleet::proxy_string_to_array($fleet_row);
+  $TargetAddress = sprintf($lang['sys_adress_planet'], $fleet_end_coordinates['galaxy'], $fleet_end_coordinates['system'], $fleet_end_coordinates['planet']);
 
   $TheMessage = $lang['sys_colo_no_colonizer'];
-  if($fleet_array[SHIP_COLONIZER] >= 1) {
+  if($objFleet->ship_count_by_id(SHIP_COLONIZER) >= 1) {
     $TheMessage = $lang['sys_colo_notfree'];
     if(!$mission_data['dst_planet'] || empty($mission_data['dst_planet'])) {
       $iPlanetCount = get_player_current_colonies($src_user_row);
@@ -31,15 +33,17 @@ function flt_mission_colonize(&$mission_data) {
       if($iPlanetCount < get_player_max_colonies($src_user_row)) {
         // Yes, we can colonize
         $TheMessage = $lang['sys_colo_badpos'];
+
         $NewOwnerPlanet = uni_create_planet(
-          $fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'],
-          $fleet_row['fleet_owner'], "{$lang['sys_colo_defaultname']} {$iPlanetCount}", false,
+          $fleet_end_coordinates['galaxy'], $fleet_end_coordinates['system'], $fleet_end_coordinates['planet'],
+          $objFleet->owner_id, "{$lang['sys_colo_defaultname']} {$iPlanetCount}", false,
           array('user_row' => $src_user_row));
         if($NewOwnerPlanet) {
-          $TheMessage = $lang['sys_colo_arrival'] . $TargetAdress . $lang['sys_colo_allisok'];
-          msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
+          $TheMessage = $lang['sys_colo_arrival'] . $TargetAddress . $lang['sys_colo_allisok'];
+          msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
-          Fleet::proxy_update_units($fleet_row, array(SHIP_COLONIZER => -1));
+          $objFleet->update_units(array(SHIP_COLONIZER => -1));
+          $fleet_row = $objFleet->make_db_row();
 
           return RestoreFleetToPlanet($fleet_row, false);
         }
@@ -47,8 +51,9 @@ function flt_mission_colonize(&$mission_data) {
     }
   }
 
-  Fleet::fleet_send_back($fleet_row);
-  msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$TargetAdress}{$TheMessage}");
+  $objFleet->method_fleet_send_back();
+  $objFleet->flush_changes_to_db();
+  msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$TargetAddress}{$TheMessage}");
 
   return CACHE_FLEET;
 }

@@ -13,7 +13,7 @@ function flt_mission_relocate($mission_data) {
   $destination_planet = &$mission_data['dst_planet'];
 
   if(!$destination_planet || !is_array($destination_planet) || $fleet_row['fleet_owner'] != $destination_planet['id_owner']) {
-    Fleet::fleet_send_back($mission_data['fleet']);
+    Fleet::static_fleet_send_back($mission_data['fleet']);
 
     return CACHE_FLEET;
   }
@@ -24,7 +24,7 @@ function flt_mission_relocate($mission_data) {
       $mission_data['src_planet']['name'], uni_render_coordinates_href($fleet_row, 'fleet_start_', 3, ''), $destination_planet['name'], uni_render_coordinates_href($fleet_row, 'fleet_end_', 3, ''),
       $fleet_row['fleet_resource_metal'], $lang['Metal'], $fleet_row['fleet_resource_crystal'], $lang['Crystal'], $fleet_row['fleet_resource_deuterium'], $lang['Deuterium']) .
     '<br />' . $lang['sys_relocate_mess_user'];
-  $fleet_real_array = Fleet::proxy_string_to_array($fleet_row);
+  $fleet_real_array = Fleet::static_proxy_string_to_array($fleet_row);
   foreach($fleet_real_array as $ship_id => $ship_count) {
     $Message .= $lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
   }

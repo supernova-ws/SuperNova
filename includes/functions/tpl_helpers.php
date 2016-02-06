@@ -120,7 +120,7 @@ function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result)
     'OV_THIS_PLANET'  => $fleet_row['ov_this_planet'],
   );
 
-  $ship_list_fully_parsed = Fleet::proxy_string_to_array($fleet_row);
+  $ship_list_fully_parsed = Fleet::static_proxy_string_to_array($fleet_row);
 
   $ship_id = 0;
   if($spy_level >= 6) {
@@ -267,7 +267,7 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0) {
     $fleet_list[$fleet_ownage]['fleets'][$fleet_row['fleet_id']] = $fleet_row;
 
     if($fleet_row['fleet_mess'] == 1 || ($fleet_row['fleet_mess'] == 0 && $fleet_row['fleet_mission'] == MT_RELOCATE) || ($fleet_row['fleet_target_owner'] != $user['id'])) {
-      $fleet_sn = Fleet::proxy_string_to_array($fleet_row);
+      $fleet_sn = Fleet::static_proxy_string_to_array($fleet_row);
       foreach($fleet_sn as $ship_id => $ship_amount) {
         if(in_array($ship_id, sn_get_groups('fleet'))) {
           $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
