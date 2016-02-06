@@ -160,7 +160,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   return ($wave > $config->fleet_bashing_waves ? $bashing_result : ATTACK_ALLOWED);
 }
 
-function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false) { return sn_function_call('flt_can_attack', array($planet_src, $planet_dst, $fleet, $mission, $options, &$result)); }
+function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false) { return sn_function_call(__FUNCTION__, array($planet_src, $planet_dst, $fleet, $mission, $options, &$result)); }
 
 function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false, &$result) {
   //TODO: try..catch

@@ -29,7 +29,7 @@ function flt_mission_explore_outcome_lost_fleet_all(&$result) {
   $result['$fleet'] = array();
 }
 
-function flt_mission_explore_addon(&$result) { return sn_function_call('flt_mission_explore_addon', array(&$result)); }
+function flt_mission_explore_addon(&$result) { return sn_function_call(__FUNCTION__, array(&$result)); }
 
 function sn_flt_mission_explore_addon(&$result) {
   return $result;
@@ -272,7 +272,7 @@ function flt_mission_explore(&$mission_data) {
   $objFleet = new Fleet();
   $objFleet->parse_db_row($fleet_row);
 
-  $fleet_row_end_coordinates_without_type = $objFleet->extract_end_coordinates_without_type();
+  $fleet_row_end_coordinates_without_type = $objFleet->target_coordinates_without_type();
 
   $msg_text = sprintf($msg_text, $objFleet->db_id, uni_render_coordinates($fleet_row_end_coordinates_without_type)) .
     ($msg_text_addon ? "\r\n" . $msg_text_addon : '');

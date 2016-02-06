@@ -170,7 +170,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   return $cost;
 }
 
-function eco_can_build_unit($user, $planet, $unit_id){return sn_function_call('eco_can_build_unit', array($user, $planet, $unit_id, &$result));}
+function eco_can_build_unit($user, $planet, $unit_id){return sn_function_call(__FUNCTION__, array($user, $planet, $unit_id, &$result));}
 function sn_eco_can_build_unit($user, $planet, $unit_id, &$result) {
   global $config;
 
@@ -215,7 +215,7 @@ function eco_is_builds_in_que($planet_que, $unit_list)
   return $eco_is_builds_in_que;
 }
 
-function eco_unit_busy(&$user, &$planet, $unit_id){return sn_function_call('eco_unit_busy', array(&$user, &$planet, $unit_id, &$result));}
+function eco_unit_busy(&$user, &$planet, $unit_id){return sn_function_call(__FUNCTION__, array(&$user, &$planet, $unit_id, &$result));}
 function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result)
 {
   global $config;

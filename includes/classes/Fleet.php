@@ -194,7 +194,7 @@ class Fleet {
    *
    * @return array|false
    */
-  public static function db_fleet_get($fleet_id) {
+  public static function static_db_fleet_get($fleet_id) {
     $fleet_id_safe = idval($fleet_id);
     $result = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
 
@@ -231,14 +231,39 @@ class Fleet {
       db_fleet_aks_purge();
     }
   }
+
   /**
    * @return array
    */
-  public function extract_end_coordinates_without_type() {
+  public function target_coordinates_without_type() {
     return array(
       'galaxy' => $this->fleet_end_galaxy,
       'system' => $this->fleet_end_system,
       'planet' => $this->fleet_end_planet,
+    );
+  }
+
+  /**
+   * @return array
+   */
+  public function target_coordinates_typed() {
+    return array(
+      'galaxy' => $this->fleet_end_galaxy,
+      'system' => $this->fleet_end_system,
+      'planet' => $this->fleet_end_planet,
+      'type'   => $this->fleet_end_type,
+    );
+  }
+
+  /**
+   * @return array
+   */
+  public function launch_coordinates_typed() {
+    return array(
+      'galaxy' => $this->fleet_start_galaxy,
+      'system' => $this->fleet_start_system,
+      'planet' => $this->fleet_start_planet,
+      'type'   => $this->fleet_start_type,
     );
   }
 
@@ -315,12 +340,17 @@ class Fleet {
     $fleet_id_safe = idval($this->db_id);
 
     return doquery(
+      // Блокировка самого флота
       "SELECT 1 FROM {{fleets}} AS f " .
-      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
-      ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
+
+      // Блокировка всех юнитов, принадлежащих этому флоту
+      "LEFT JOIN {{unit}} as unit ON unit.unit_location_type = " . LOC_FLEET . " AND unit.unit_location_id = f.fleet_id " .
 
       // Блокировка всех прилетающих и улетающих флотов, если нужно
       ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
+
+      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
+      ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
 
       ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
       ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
@@ -331,17 +361,105 @@ class Fleet {
 
 
   /**
+   * Restores fleet or resources to planet
+   *
+   * @param      $fleet_row
+   * @param bool $start
+   * @param bool $only_resources
+   * @param bool $safe_fleet
+   * @param      $result
+   *
+   * @return int
+   */
+  // TODO - split to functions
+  public function RestoreFleetToPlanet($start = true, $only_resources = false, $safe_fleet = false, &$result) {
+    sn_db_transaction_check(true);
+
+    $result = CACHE_NOTHING;
+    // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
+    if(!$this->db_id || ($this->is_returning == 1 && $only_resources)) {
+      return $result;
+    }
+
+    $coordinates = $start ? $this->launch_coordinates_typed() : $this->target_coordinates_typed();
+
+    // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
+    // TODO Проеверить от многократного срабатывания !!!
+    // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
+//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
+    // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
+    // Узнаем ИД владельца планеты - без блокировки
+    $planet_arrival = db_planet_by_vector($coordinates, '', false, 'id_owner');
+    // Блокируем пользователя
+    $user = db_user_by_id($planet_arrival['id_owner'], true);
+    // Блокируем планету
+    $planet_arrival = db_planet_by_vector($coordinates, '', true);
+    // Блокируем флот
+//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
+
+    // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
+    // Флот, который возвращается на захваченную планету, пропадает
+    if($start && $this->is_returning == 1 && $planet_arrival['id_owner'] != $this->owner_id) {
+      $this->method_db_delete_this_fleet();
+
+      return $result;
+    }
+
+//pdump($planet_arrival);
+    if(!$only_resources) {
+      // Landing ships
+      $db_changeset = array();
+
+      if($this->owner_id == $planet_arrival['id_owner']) {
+        $fleet_array = $this->get_ship_list();
+        foreach($fleet_array as $ship_id => $ship_count) {
+          if($ship_count) {
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
+          }
+        }
+
+        // Adjusting ship amount on planet
+        if(!empty($db_changeset)) {
+          db_changeset_apply($db_changeset);
+        }
+      }
+    } else {
+      $this->set_zero_cargo();
+      $this->method_fleet_send_back();
+      $this->flush_changes_to_db();
+    }
+
+    // Restoring resources to planet
+    if($this->get_resources_amount() != 0) {
+      $fleet_resources = $this->get_resource_list();
+      db_planet_set_by_id($planet_arrival['id'],
+        "`metal` = `metal` + '{$fleet_resources[RES_METAL]}', `crystal` = `crystal` + '{$fleet_resources[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_resources[RES_DEUTERIUM]}'");
+    }
+
+    if(!$only_resources) {
+      $this->method_db_delete_this_fleet();
+    }
+
+    $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
+
+    return RestoreFleetToPlanet($this, $start, $only_resources, $result);
+  }
+
+
+  /**
    * READ - Gets fleet record by ID
    *
    * @param int $fleet_id
    *
    * @return array|false
    */
-  public function method_db_fleet_get($fleet_id) {
+  public function db_fleet_get_by_id($fleet_id) {
     $this->_reset();
+
     $fleet_id_safe = idval($fleet_id);
+
     $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
-    if(is_array($fleet_row)) {
+    if(!empty($fleet['fleet_id'])) {
       $this->parse_db_row($fleet_row);
     }
 
@@ -689,7 +807,7 @@ class Fleet {
     if(!empty($set_safe_string)) {
       doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
       if($db_fleet_id = db_insert_id()) {
-        $fleet_row = static::db_fleet_get($db_fleet_id);
+        $fleet_row = static::static_db_fleet_get($db_fleet_id);
         if(!empty($fleet_row) && is_array($fleet_row)) {
           $this->parse_db_row($fleet_row);
         } else {
@@ -786,17 +904,30 @@ class Fleet {
    * @param array $fleet_row - `fleets` DB record
    */
   public function parse_db_row($fleet_row) {
+    $this->_reset();
+
+    if(empty($fleet_row) || !is_array($fleet_row)) {
+      return;
+    }
+
     $this->db_id = $fleet_row['fleet_id'];
     $this->owner_id = $fleet_row['fleet_owner'];
     $this->mission_type = $fleet_row['fleet_mission'];
+
+    $this->target_owner_id = $fleet_row['fleet_target_owner'];
+    $this->fleet_group = $fleet_row['fleet_group'];
+    $this->is_returning = intval($fleet_row['fleet_mess']);
+
+    $this->time_launch = $fleet_row['start_time'];
     $this->time_arrive_to_target = $fleet_row['fleet_start_time'];
+    $this->time_mission_job_complete = $fleet_row['fleet_end_stay'];
+    $this->time_return_to_source = $fleet_row['fleet_end_time'];
+
     $this->fleet_start_planet_id = !empty($fleet_row['fleet_start_planet_id']) ? $fleet_row['fleet_start_planet_id'] : null;
     $this->fleet_start_galaxy = $fleet_row['fleet_start_galaxy'];
     $this->fleet_start_system = $fleet_row['fleet_start_system'];
     $this->fleet_start_planet = $fleet_row['fleet_start_planet'];
     $this->fleet_start_type = $fleet_row['fleet_start_type'];
-    $this->time_return_to_source = $fleet_row['fleet_end_time'];
-    $this->time_mission_job_complete = $fleet_row['fleet_end_stay'];
 
     $this->fleet_end_planet_id = $fleet_row['fleet_end_planet_id'];
     $this->fleet_end_galaxy = $fleet_row['fleet_end_galaxy'];
@@ -804,22 +935,13 @@ class Fleet {
     $this->fleet_end_planet = $fleet_row['fleet_end_planet'];
     $this->fleet_end_type = $fleet_row['fleet_end_type'];
 
-    $this->target_owner_id = $fleet_row['fleet_target_owner'];
-    $this->fleet_group = $fleet_row['fleet_group'];
-    $this->is_returning = intval($fleet_row['fleet_mess']);
-    $this->time_launch = $fleet_row['start_time'];
-
     $this->ship_list = $this->parse_fleet_string($fleet_row['fleet_array']);
-//    $this->ship_count = $this->get_ship_count(); // $fleet_row['fleet_amount'];
 
     $this->resource_list = array(
-      RES_METAL     => floatval($fleet_row['fleet_resource_metal']),
-      RES_CRYSTAL   => floatval($fleet_row['fleet_resource_crystal']),
-      RES_DEUTERIUM => floatval($fleet_row['fleet_resource_deuterium']),
+      RES_METAL     => ceil($fleet_row['fleet_resource_metal']),
+      RES_CRYSTAL   => ceil($fleet_row['fleet_resource_crystal']),
+      RES_DEUTERIUM => ceil($fleet_row['fleet_resource_deuterium']),
     );
-//    $this->fleet_resource_metal = $fleet_row['fleet_resource_metal'];
-//    $this->fleet_resource_crystal = $fleet_row['fleet_resource_crystal'];
-//    $this->fleet_resource_deuterium = $fleet_row['fleet_resource_deuterium'];
   }
 
   public function make_fleet_string() {

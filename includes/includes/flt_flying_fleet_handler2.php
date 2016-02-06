@@ -19,88 +19,8 @@ returns         = bitmask for recaching
 */
 
 // ------------------------------------------------------------------
-function RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false) { return sn_function_call('RestoreFleetToPlanet', array(&$fleet_row, $start, $only_resources, $safe_fleet, &$result)); }
-
-function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = false, $safe_fleet = false, &$result) {
-  sn_db_transaction_check(true);
-
-  $result = CACHE_NOTHING;
-  if(!is_array($fleet_row)) {
-    return $result;
-  }
-
-  $prefix = $start ? 'start' : 'end';
-
-  // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
-  // TODO Проеверить от многократного срабатывания !!!
-  // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
-//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
-  // Узнаем ИД владельца планеты - без блокировки
-  // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
-  $user_row = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
-  // Блокируем пользователя
-  $user = db_user_by_id($user_row['id_owner'], true);
-  // Блокируем планету
-  $planet_arrival = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", true);
-  // Блокируем флот
-//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
-
-  // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-  if(!$fleet_row || !is_array($fleet_row) || ($fleet_row['fleet_mess'] == 1 && $only_resources)) {
-    return $result;
-  }
-
-  $objFleet = new Fleet();
-  $objFleet->parse_db_row($fleet_row);
-
-  // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
-
-  // Флот, который возвращается на захваченную планету, пропадает
-  if($start && $fleet_row['fleet_mess'] == 1 && $planet_arrival['id_owner'] != $fleet_row['fleet_owner']) {
-    $objFleet->method_db_delete_this_fleet();
-
-    return $result;
-  }
-
-//pdump($planet_arrival);
-  $fleet_row_resources_current = array(
-    RES_METAL     => $fleet_row['fleet_resource_metal'],
-    RES_CRYSTAL   => $fleet_row['fleet_resource_crystal'],
-    RES_DEUTERIUM => $fleet_row['fleet_resource_deuterium'],
-  );
-
-  $db_changeset = array();
-  if(!$only_resources) {
-    if($objFleet->owner_id == $planet_arrival['id_owner']) {
-      $fleet_array = $objFleet->get_ship_list();
-      foreach($fleet_array as $ship_id => $ship_count) {
-        if($ship_count) {
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
-        }
-      }
-      $objFleet->method_db_delete_this_fleet();
-    } else {
-      $objFleet->method_db_delete_this_fleet();
-      return CACHE_NOTHING;
-    }
-  } else {
-    $objFleet->set_zero_cargo();
-    $objFleet->method_fleet_send_back();
-    $objFleet->flush_changes_to_db();
-    // Unused TODO - REMOVE
-    $fleet_row = $objFleet->make_db_row();
-  }
-
-  if(!empty($db_changeset)) {
-    db_changeset_apply($db_changeset);
-  }
-
-  db_planet_set_by_id($planet_arrival['id'],
-    "`metal` = `metal` + '{$fleet_row_resources_current[RES_METAL]}', `crystal` = `crystal` + '{$fleet_row_resources_current[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_row_resources_current[RES_DEUTERIUM]}'");
-  $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
-
-  return $result;
-}
+// unit_captain overrides
+function RestoreFleetToPlanet(&$objFleet, $start = true, $only_resources = false, $result = null) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start, $only_resources, &$result)); }
 
 // ------------------------------------------------------------------
 function flt_flyingFleetsSort($a, $b) {
@@ -268,34 +188,36 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       continue;
     }
 
-//log_file('Миссия');
+    $objFleet = new Fleet();
+    $objFleet->parse_db_row($fleet_row);
+
     // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
     sn_db_transaction_start();
     $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
 
-    $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
-    // Формируем запрос, блокирующий сразу все нужные записи
 
-//    Fleet::db_fleet_lock_flying($fleet_row['fleet_id'], $mission_data);
-    $objFleet = new Fleet();
-    $objFleet->parse_db_row($fleet_row);
+    $mission_data = $sn_groups_mission[$objFleet->mission_type];
+
+    // Формируем запрос, блокирующий сразу все нужные записи
     $objFleet->method_db_fleet_lock_flying($mission_data);
 
-    $fleet_row = Fleet::db_fleet_get($fleet_row['fleet_id']);
-    if(!$fleet_row || empty($fleet_row)) {
+    $objFleet->db_fleet_get_by_id($objFleet->db_id);
+
+    if(!$objFleet->db_id) {
       // Fleet was destroyed in course of previous actions
       sn_db_transaction_commit();
       continue;
     }
 
+    $fleet_row2 = $objFleet->make_db_row();
     if($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
       // Fleet returns to planet
-      RestoreFleetToPlanet($fleet_row, true, false, true);
+      $objFleet->RestoreFleetToPlanet(true, false, true);
       sn_db_transaction_commit();
       continue;
     }
 
-    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $fleet_row['fleet_mess'] != 0) {
+    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $objFleet->mission_type != 0) {
       // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
       // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
       sn_db_transaction_commit();
@@ -308,25 +230,26 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
     // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
     $mission_data = array(
-      'fleet'       => &$fleet_row,
-      'dst_user'    => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
-      // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
-      'dst_planet'  => $mission_data['dst_planet'] ? db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
-      'src_user'    => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true) : null,
+      'fleet'        => &$fleet_row2,
+      'fleet_object' => $objFleet,
+      'src_user'     => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($objFleet->owner_id, true) : null,
       // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
-      'src_planet'  => $mission_data['src_planet'] ? db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
-      'fleet_event' => $fleet_event['fleet_event'],
+      'src_planet'   => $mission_data['src_planet'] ? db_planet_by_vector($objFleet->launch_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null,
+      'dst_user'     => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($objFleet->target_owner_id, true) : null,
+      // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
+      'dst_planet'   => $mission_data['dst_planet'] ? db_planet_by_vector($objFleet->target_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null,
+      'fleet_event'  => $fleet_event['fleet_event'],
     );
 
     if($mission_data['dst_planet']) {
       if($mission_data['dst_planet']['id_owner']) {
-        $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $fleet_row['fleet_start_time']);
+        $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $objFleet->time_arrive_to_target);
       }
       $mission_data['dst_user'] = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
       $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
     }
 
-    switch($fleet_row['fleet_mission']) {
+    switch($objFleet->mission_type) {
       // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
       case MT_AKS:
       case MT_ATTACK:

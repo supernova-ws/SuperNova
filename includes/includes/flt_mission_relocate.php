@@ -9,26 +9,35 @@
  * @copyright 2008 by Chlorel for XNova
  */
 function flt_mission_relocate($mission_data) {
-  $fleet_row = &$mission_data['fleet'];
+  $objFleet = new Fleet();
+  $objFleet->parse_db_row($mission_data['fleet']);
+
   $destination_planet = &$mission_data['dst_planet'];
 
-  if(!$destination_planet || !is_array($destination_planet) || $fleet_row['fleet_owner'] != $destination_planet['id_owner']) {
-    Fleet::static_fleet_send_back($mission_data['fleet']);
+  if(empty($destination_planet['id_owner']) || $objFleet->owner_id != $destination_planet['id_owner']) {
+    $objFleet->mark_fleet_as_returned_and_save();
 
     return CACHE_FLEET;
   }
 
   global $lang;
 
+  $fleet_resources = $objFleet->get_resource_list();
   $Message = sprintf($lang['sys_tran_mess_user'],
-      $mission_data['src_planet']['name'], uni_render_coordinates_href($fleet_row, 'fleet_start_', 3, ''), $destination_planet['name'], uni_render_coordinates_href($fleet_row, 'fleet_end_', 3, ''),
-      $fleet_row['fleet_resource_metal'], $lang['Metal'], $fleet_row['fleet_resource_crystal'], $lang['Crystal'], $fleet_row['fleet_resource_deuterium'], $lang['Deuterium']) .
-    '<br />' . $lang['sys_relocate_mess_user'];
-  $fleet_real_array = Fleet::static_proxy_string_to_array($fleet_row);
+      $mission_data['src_planet']['name'], uni_render_coordinates_href($objFleet->launch_coordinates_typed(), '', 3),
+      $destination_planet['name'], uni_render_coordinates_href($objFleet->target_coordinates_typed(), '', 3),
+      $fleet_resources[RES_METAL], $lang['Metal'],
+      $fleet_resources[RES_CRYSTAL], $lang['Crystal'],
+      $fleet_resources[RES_DEUTERIUM], $lang['Deuterium']
+    ) . '<br />' . $lang['sys_relocate_mess_user'];
+  $fleet_real_array = $objFleet->get_ship_list();
   foreach($fleet_real_array as $ship_id => $ship_count) {
     $Message .= $lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
   }
-  msg_send_simple_message($fleet_row['fleet_owner'], '', $fleet_row['fleet_start_time'], MSG_TYPE_TRANSPORT, $lang['sys_mess_qg'], $lang['sys_stay_mess_stay'], $Message);
+  msg_send_simple_message(
+    $objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT,
+    $lang['sys_mess_qg'], $lang['sys_stay_mess_stay'], $Message
+  );
 
-  return RestoreFleetToPlanet($fleet_row, false);
+  return $objFleet->RestoreFleetToPlanet(false);
 }

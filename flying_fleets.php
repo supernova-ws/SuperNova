@@ -9,7 +9,7 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
     if($fleet_id = idval($fleet_id)) {
       sn_db_transaction_start();
       $objFleet = new Fleet();
-      $objFleet->method_db_fleet_get($fleet_id);
+      $objFleet->db_fleet_get_by_id($fleet_id);
 
       if ($objFleet->owner_id == $user['id'] && $objFleet->is_returning == 0) {
         $objFleet->fleet_command_return();

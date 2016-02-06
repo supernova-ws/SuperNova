@@ -18,7 +18,7 @@ function flt_mission_colonize(&$mission_data) {
 
   $objFleet = new Fleet();
   $objFleet->parse_db_row($fleet_row);
-  $fleet_end_coordinates = $objFleet->extract_end_coordinates_without_type();
+  $fleet_end_coordinates = $objFleet->target_coordinates_without_type();
 
   $TargetAddress = sprintf($lang['sys_adress_planet'], $fleet_end_coordinates['galaxy'], $fleet_end_coordinates['system'], $fleet_end_coordinates['planet']);
 
@@ -43,9 +43,7 @@ function flt_mission_colonize(&$mission_data) {
           msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
           $objFleet->update_units(array(SHIP_COLONIZER => -1));
-          $fleet_row = $objFleet->make_db_row();
-
-          return RestoreFleetToPlanet($fleet_row, false);
+          return $objFleet->RestoreFleetToPlanet(false);
         }
       }
     }

@@ -62,7 +62,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id) {
   return $return;
 }
 
-function tpl_parse_fleet_db($fleet_row, $index, $user_data = false) { return sn_function_call('tpl_parse_fleet_db', array($fleet_row, $index, $user_data, &$result)); }
+function tpl_parse_fleet_db($fleet_row, $index, $user_data = false) { return sn_function_call(__FUNCTION__, array($fleet_row, $index, $user_data, &$result)); }
 
 function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result) {
   global $lang, $user;

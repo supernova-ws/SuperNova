@@ -200,7 +200,7 @@ function tpl_render_menu() {
  * @return mixed
  */
 function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $exitStatus = true) {
-  return sn_function_call('display', array($page, $title, $isDisplayTopNav, $metatags, $isDisplayMenu, $exitStatus));
+  return sn_function_call(__FUNCTION__, array($page, $title, $isDisplayTopNav, $metatags, $isDisplayMenu, $exitStatus));
 }
 
 /**
@@ -461,7 +461,7 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
  *
  * @return string|template
  */
-function tpl_render_topnav(&$user, $planetrow) { return sn_function_call('tpl_render_topnav', array(&$user, $planetrow)); }
+function tpl_render_topnav(&$user, $planetrow) { return sn_function_call(__FUNCTION__, array(&$user, $planetrow)); }
 
 /**
  * @param array $user

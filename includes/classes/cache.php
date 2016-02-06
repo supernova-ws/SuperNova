@@ -527,8 +527,8 @@ class classConfig extends classPersistent {
     'metal_basic_income'           => 40,
 
     'payment_currency_default'      => 'USD',
-    'payment_currency_exchange_dm_' => 20000,
-    'payment_currency_exchange_mm_' => 20000,
+    'payment_currency_exchange_dm_' => METAMATTER_DEFAULT_LOT_SIZE,
+    'payment_currency_exchange_mm_' => METAMATTER_DEFAULT_LOT_SIZE,
     'payment_currency_exchange_eur' => 0.90,
     'payment_currency_exchange_rub' => 60,
     'payment_currency_exchange_uah' => 30,

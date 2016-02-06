@@ -74,21 +74,21 @@ function sys_file_write($filename, $content)
   return @file_put_contents($filename, $content, FILE_APPEND);
 }
 
-function get_game_speed($plain = false){return sn_function_call('get_game_speed', array($plain, &$result));}
+function get_game_speed($plain = false){return sn_function_call(__FUNCTION__, array($plain, &$result));}
 function sn_get_game_speed($plain = false, &$result) {
   global $config;
 
   return $result = $config->game_speed ? $config->game_speed : 1;
 }
 
-function flt_server_flight_speed_multiplier($plain = false){return sn_function_call('flt_server_flight_speed_multiplier', array($plain, &$result));}
+function flt_server_flight_speed_multiplier($plain = false){return sn_function_call(__FUNCTION__, array($plain, &$result));}
 function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
   global $config;
 
   return $result = $config->fleet_speed;
 }
 
-function game_resource_multiplier($plain = false){return sn_function_call('game_resource_multiplier', array($plain,&$result));}
+function game_resource_multiplier($plain = false){return sn_function_call(__FUNCTION__, array($plain,&$result));}
 function sn_game_resource_multiplier($plain = false, &$result) {
   global $config;
 
@@ -102,11 +102,11 @@ function sn_game_resource_multiplier($plain = false, &$result) {
  *
  * @return mixed
  */
-function get_mm_cost($plain = false){return sn_function_call('get_mm_cost', array($plain, &$result));}
+function get_mm_cost($plain = false){return sn_function_call(__FUNCTION__, array($plain, &$result));}
 function sn_get_mm_cost($plain = false, &$result) {
   global $config;
 
-  return $result = $config->payment_currency_exchange_mm_ ? $config->payment_currency_exchange_mm_ : 20000;
+  return $result = $config->payment_currency_exchange_mm_ ? $config->payment_currency_exchange_mm_ : METAMATTER_DEFAULT_LOT_SIZE;
 }
 
 /**
@@ -503,7 +503,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   return $result = $mercenary_level;
 }
 
-function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value) {return sn_function_call('mrc_modify_value', array(&$user, $planet, $mercenaries, $value));}
+function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value) {return sn_function_call(__FUNCTION__, array(&$user, $planet, $mercenaries, $value));}
 function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $base_value = null)
 {
   if(!is_array($mercenaries))
@@ -730,7 +730,7 @@ function sys_redirect($url)
 }
 
 // TODO Для полноценного функионирования апдейтера пакет функций, включая эту должен быть вынесен раньше - или грузить general.php до апдейтера
-function sys_get_unit_location($user, $planet, $unit_id){return sn_function_call('sys_get_unit_location', array($user, $planet, $unit_id));}
+function sys_get_unit_location($user, $planet, $unit_id){return sn_function_call(__FUNCTION__, array($user, $planet, $unit_id));}
 function sn_sys_get_unit_location($user, $planet, $unit_id)
 {
   return get_unit_param($unit_id, 'location');
@@ -970,7 +970,7 @@ function player_nick_uncompact($nick_string) {
   return $result;
 }
 
-function player_nick_render_array_to_html($nick_array){return sn_function_call('player_nick_render_array_to_html', array($nick_array, &$result));}
+function player_nick_render_array_to_html($nick_array){return sn_function_call(__FUNCTION__, array($nick_array, &$result));}
 function sn_player_nick_render_array_to_html($nick_array, &$result) {
   global $config, $user;
 
@@ -1031,7 +1031,7 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   return $result;
 }
 
-function player_nick_render_current_to_array($render_user, $options = false){return sn_function_call('player_nick_render_current_to_array', array($render_user, $options, &$result));}
+function player_nick_render_current_to_array($render_user, $options = false){return sn_function_call(__FUNCTION__, array($render_user, $options, &$result));}
 function sn_player_nick_render_current_to_array($render_user, $options = false, &$result) {
   /*
   $options = $options !== true ? $options :
@@ -1151,7 +1151,7 @@ function sys_stat_get_user_skip_list() {
 // function player_nick_render_to_html($render_user, $options = false){return sn_function_call('player_nick_render_to_html', array($render_user, $options, &$result));}
 // function sn_render_player_nick($render_user, $options = false, &$result)
 
-function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null){return sn_function_call('get_unit_param', array($unit_id, $param_name, $user, $planet, &$result));}
+function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null){return sn_function_call(__FUNCTION__, array($unit_id, $param_name, $user, $planet, &$result));}
 function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet = null, &$result)
 {
   global $sn_data;
@@ -1166,7 +1166,7 @@ function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet =
   return $result;
 }
 
-function sn_get_groups($groups){return sn_function_call('sn_get_groups', array($groups, &$result));}
+function sn_get_groups($groups){return sn_function_call(__FUNCTION__, array($groups, &$result));}
 function sn_sn_get_groups($groups, &$result)
 {
   $result = is_array($result) ? $result : array();
@@ -1191,7 +1191,7 @@ function idval($value, $default = 0)
   return preg_match('#^(\d*)#', $value, $matches) && $matches[1] ? floatval($matches[1]) : $default;
 }
 
-function unit_requirements_render($user, $planetrow, $unit_id, $field = 'require'){return sn_function_call('unit_requirements_render', array($user, $planetrow, $unit_id, $field, &$result));}
+function unit_requirements_render($user, $planetrow, $unit_id, $field = 'require'){return sn_function_call(__FUNCTION__, array($user, $planetrow, $unit_id, $field, &$result));}
 function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'require', &$result)
 {
   global $lang, $config;
@@ -1249,7 +1249,7 @@ function ally_get_ranks(&$ally)
   return $ranks;
 }
 
-function sys_player_new_adjust($user_id, $planet_id){return sn_function_call('sys_player_new_adjust', array($user_id, $planet_id, &$result));}
+function sys_player_new_adjust($user_id, $planet_id){return sn_function_call(__FUNCTION__, array($user_id, $planet_id, &$result));}
 function sn_sys_player_new_adjust($user_id, $planet_id, &$result) {
   return $result;
 }
@@ -1439,7 +1439,7 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL)
   return $metal_cost;
 }
 
-function get_player_max_expeditons(&$user, $astrotech = -1){return sn_function_call('get_player_max_expeditons', array(&$user, $astrotech, &$result));}
+function get_player_max_expeditons(&$user, $astrotech = -1){return sn_function_call(__FUNCTION__, array(&$user, $astrotech, &$result));}
 function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0)
 {
   if($astrotech == -1) {
@@ -1497,7 +1497,7 @@ function ip2longu($ip) {
 }
 
 
-function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false){return sn_function_call('sn_powerup_get_price_matrix', array($powerup_id, $powerup_unit, $level_max, $plain, &$result));}
+function sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false){return sn_function_call(__FUNCTION__, array($powerup_id, $powerup_unit, $level_max, $plain, &$result));}
 function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $level_max = null, $plain = false, &$result) {
   global $sn_powerup_buy_discounts;
 
@@ -1598,7 +1598,7 @@ function print_rr($var, $capture = false) {
   }
 }
 
-function can_capture_planet(){return sn_function_call('can_capture_planet', array(&$result));}
+function can_capture_planet(){return sn_function_call(__FUNCTION__, array(&$result));}
 function sn_can_capture_planet(&$result) {
   return $result = false;
 }

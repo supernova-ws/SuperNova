@@ -1,6 +1,6 @@
 <?php
 
-function admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list){return sn_function_call('admin_planet_edit_mode', array(&$template, &$admin_planet_edit_mode_list));}
+function admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list){return sn_function_call(__FUNCTION__, array(&$template, &$admin_planet_edit_mode_list));}
 function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
 {
   global $lang;
@@ -19,7 +19,7 @@ function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
   return $mode;
 }
 
-function admin_planet_edit_template(&$template, $edit_planet_row, $mode){return sn_function_call('admin_planet_edit_template', array(&$template, $edit_planet_row, $mode));}
+function admin_planet_edit_template(&$template, $edit_planet_row, $mode){return sn_function_call(__FUNCTION__, array(&$template, $edit_planet_row, $mode));}
 function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
 {
   global $lang;
@@ -42,7 +42,7 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
   }
 }
 
-function admin_planet_edit_query_string($unit_id, $unit_amount, $mode){return sn_function_call('admin_planet_edit_query_string', array($unit_id, $unit_amount, $mode));}
+function admin_planet_edit_query_string($unit_id, $unit_amount, $mode){return sn_function_call(__FUNCTION__, array($unit_id, $unit_amount, $mode));}
 function sn_admin_planet_edit_query_string($unit_id, $unit_amount, $mode)
 {
   if($unit_amount && in_array($unit_id, sn_get_groups($mode)))

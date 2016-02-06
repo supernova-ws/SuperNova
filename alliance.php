@@ -135,6 +135,4 @@ switch($mode)
   default:             require('includes/alliance/ali_info.inc'); break;
 }
 
-function ally_pre_call(){$func_args = func_get_args();return sn_function_call('ally_pre_call', $func_args);}
-
-?>
+function ally_pre_call(){$func_args = func_get_args();return sn_function_call(__FUNCTION__, $func_args);}

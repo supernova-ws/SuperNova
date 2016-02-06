@@ -11,7 +11,7 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
   exit();
 }
 
-$fleet = Fleet::db_fleet_get($fleetid);
+$fleet = Fleet::static_db_fleet_get($fleetid);
 if(!$fleet) {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
@@ -138,7 +138,7 @@ if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(
 //}
 
 $i++;
-$fleet_row = Fleet::db_fleet_get($fleetid);
+$fleet_row = Fleet::static_db_fleet_get($fleetid);
 $planet_start = db_planet_by_id($fleet_row['fleet_start_planet_id']);
 $fleet_row['fleet_start_name'] = !empty($planet_start['name']) ? $planet_start['name'] : '';
 $planet_end = db_planet_by_id($fleet_row['fleet_end_planet_id']);

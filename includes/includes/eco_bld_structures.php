@@ -13,7 +13,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-function eco_build($que_type, &$user, &$planet) { return sn_function_call('eco_build', array($que_type, &$user, &$planet)); }
+function eco_build($que_type, &$user, &$planet) { return sn_function_call(__FUNCTION__, array($que_type, &$user, &$planet)); }
 
 function sn_eco_build($que_type, &$auser, &$planet) {
   global $lang, $config, $template_result;
