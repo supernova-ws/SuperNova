@@ -1,18 +1,20 @@
 <?php
 
-// ----------------------------------------------------------------------------------------------------------------
 /**
- * MissionCaseStay.php
+ * Fleet mission "Relocate"
  *
- * version 2.0 returns results for new fleet handler
- * @version 1.1
- * @copyright 2008 by Chlorel for XNova
+ * @param $mission_data Mission
+ *
+ * @return int
+ *
+ * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_relocate($mission_data) {
-  $objFleet = new Fleet();
-  $objFleet->parse_db_row($mission_data['fleet']);
+  global $lang;
 
-  $destination_planet = &$mission_data['dst_planet'];
+  $objFleet = $mission_data->fleet;
+
+  $destination_planet = &$mission_data->dst_planet;
 
   if(empty($destination_planet['id_owner']) || $objFleet->owner_id != $destination_planet['id_owner']) {
     $objFleet->mark_fleet_as_returned_and_save();
@@ -20,11 +22,9 @@ function flt_mission_relocate($mission_data) {
     return CACHE_FLEET;
   }
 
-  global $lang;
-
   $fleet_resources = $objFleet->get_resource_list();
   $Message = sprintf($lang['sys_tran_mess_user'],
-      $mission_data['src_planet']['name'], uni_render_coordinates_href($objFleet->launch_coordinates_typed(), '', 3),
+      $mission_data->src_planet['name'], uni_render_coordinates_href($objFleet->launch_coordinates_typed(), '', 3),
       $destination_planet['name'], uni_render_coordinates_href($objFleet->target_coordinates_typed(), '', 3),
       $fleet_resources[RES_METAL], $lang['Metal'],
       $fleet_resources[RES_CRYSTAL], $lang['Crystal'],

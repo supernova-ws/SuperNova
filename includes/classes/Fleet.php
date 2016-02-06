@@ -400,6 +400,8 @@ class Fleet {
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
     // Флот, который возвращается на захваченную планету, пропадает
     if($start && $this->is_returning == 1 && $planet_arrival['id_owner'] != $this->owner_id) {
+      $result = RestoreFleetToPlanet($this, $start, $only_resources, $result);
+
       $this->method_db_delete_this_fleet();
 
       return $result;

@@ -1,13 +1,5 @@
 <?php
 
-/**
- * MissionCaseExpedition.php
- *
- * version 2.0 returns results for new fleet handler
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
- */
-
 function flt_mission_explore_outcome_lost_fleet(&$result) {
   $fleet = &$result['$fleet'];
   $fleet_lost = &$result['$fleet_lost'];
@@ -30,20 +22,29 @@ function flt_mission_explore_outcome_lost_fleet_all(&$result) {
 }
 
 function flt_mission_explore_addon(&$result) { return sn_function_call(__FUNCTION__, array(&$result)); }
-
 function sn_flt_mission_explore_addon(&$result) {
   return $result;
 }
 
 
+/**
+ * Fleet mission "Relocate"
+ *
+ * @param $mission_data Mission
+ *
+ * @return int
+ *
+ * @copyright 2008 by Gorlum for Project "SuperNova.WS"
+ */
 function flt_mission_explore(&$mission_data) {
-  if(!isset($mission_data['fleet_event']) || $mission_data['fleet_event'] != EVENT_FLT_ACOMPLISH) {
+  global $lang, $config;
+  static $ship_data, $rates;
+
+  if(empty($mission_data->fleet_event) || $mission_data->fleet_event != EVENT_FLT_ACOMPLISH) {
     return CACHE_NONE;
   }
 
-  global $lang, $config;
-
-  static $ship_data, $rates;
+  $objFleet = $mission_data->fleet;
 
   $result = array(
     '$mission_data'        => $mission_data,
@@ -79,18 +80,19 @@ function flt_mission_explore(&$mission_data) {
     $rates = get_resource_exchange();
   }
 
-  $fleet_row = $mission_data['fleet'];
-  $fleet_real_array = Fleet::static_proxy_string_to_array($fleet_row);
+
   $fleet_capacity = 0;
   $fleet_metal_points = 0;
+
+  $fleet_real_array = $objFleet->get_ship_list();
   foreach($fleet_real_array as $ship_id => $ship_amount) {
     $unit_info = get_unit_param($ship_id);
     $fleet_capacity += $ship_amount * $unit_info[P_CAPACITY];
     $fleet_metal_points += $ship_amount * $ship_data[$ship_id][P_COST_METAL];
   }
-  $fleet_capacity = max(0, $fleet_capacity - $fleet_row['fleet_resource_metal'] + $fleet_row['fleet_resource_crystal'] + $fleet_row['fleet_resource_deuterium']);
+  $fleet_capacity = max(0, $fleet_capacity - $objFleet->get_resources_amount());
 
-  $flt_stay_hours = ($fleet_row['fleet_end_stay'] - $fleet_row['fleet_start_time']) / 3600 * ($config->game_speed_expedition ? $config->game_speed_expedition : 1);
+  $flt_stay_hours = ($objFleet->time_mission_job_complete - $objFleet->time_arrive_to_target) / 3600 * ($config->game_speed_expedition ? $config->game_speed_expedition : 1);
 
   $outcome_list = sn_get_groups('mission_explore_outcome_list');
   $outcome_list[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil(200 / pow($flt_stay_hours, 1 / 1.7));
@@ -204,9 +206,7 @@ function flt_mission_explore(&$mission_data) {
 
       $resources_found[RES_DEUTERIUM] = $found_in_metal;
 
-      $fleet_row['fleet_resource_metal'] += $resources_found[RES_METAL];
-      $fleet_row['fleet_resource_crystal'] += $resources_found[RES_CRYSTAL];
-      $fleet_row['fleet_resource_deuterium'] += $resources_found[RES_DEUTERIUM];
+      $objFleet->update_resources($resources_found);
 
       if(array_sum($resources_found) == 0) {
         $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
@@ -234,7 +234,7 @@ function flt_mission_explore(&$mission_data) {
   flt_mission_explore_addon($result);
 
   if($found_dark_matter) {
-    rpg_points_change($fleet_row['fleet_owner'], RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
+    rpg_points_change($objFleet->owner_id, RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
     $msg_text_addon = sprintf($lang['flt_mission_expedition']['found_dark_matter'], $found_dark_matter);
   }
 
@@ -268,9 +268,6 @@ function flt_mission_explore(&$mission_data) {
     $msg_text = is_string($messages) ? $messages :
       (is_array($messages) ? $messages[mt_rand(0, count($messages) - 1)] : '');
   }
-
-  $objFleet = new Fleet();
-  $objFleet->parse_db_row($fleet_row);
 
   $fleet_row_end_coordinates_without_type = $objFleet->target_coordinates_without_type();
 

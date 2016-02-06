@@ -1,23 +1,20 @@
 <?php
 
 /**
- * MissionCaseColonisation.php
+ * Fleet mission "Recycle"
  *
- * @version 1
- * @copyright 2008
+ * @param $mission_data Mission
+ *
+ * @return int
+ *
+ * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
-
-// ----------------------------------------------------------------------------------------------------------------
-// Mission Case 9: -> Coloniser
-//
 function flt_mission_colonize(&$mission_data) {
   global $lang;
 
-  $fleet_row = &$mission_data['fleet'];
-  $src_user_row = &$mission_data['src_user'];
+  $objFleet = $mission_data->fleet;
+  $src_user_row = &$mission_data->src_user;
 
-  $objFleet = new Fleet();
-  $objFleet->parse_db_row($fleet_row);
   $fleet_end_coordinates = $objFleet->target_coordinates_without_type();
 
   $TargetAddress = sprintf($lang['sys_adress_planet'], $fleet_end_coordinates['galaxy'], $fleet_end_coordinates['system'], $fleet_end_coordinates['planet']);
@@ -25,7 +22,7 @@ function flt_mission_colonize(&$mission_data) {
   $TheMessage = $lang['sys_colo_no_colonizer'];
   if($objFleet->ship_count_by_id(SHIP_COLONIZER) >= 1) {
     $TheMessage = $lang['sys_colo_notfree'];
-    if(!$mission_data['dst_planet'] || empty($mission_data['dst_planet'])) {
+    if(empty($mission_data->dst_planet)) {
       $iPlanetCount = get_player_current_colonies($src_user_row);
 
       // Can we colonize more planets?

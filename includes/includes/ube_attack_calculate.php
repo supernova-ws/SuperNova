@@ -196,11 +196,12 @@ function ube_attack_prepare_planet(&$combat_data, &$planet) {
 /**
  * Заполняет начальные данные по данным миссии
  *
- * @param $mission_data
+ * @param Mission $objMission
+ * @param         $mission_data
  *
  * @return array
  */
-function ube_attack_prepare(&$mission_data) {
+function ube_attack_prepare(&$objMission) {
   /*
   UBE_OPTIONS[UBE_LOADED]
   UBE_OPTIONS[UBE_SIMULATOR]
@@ -208,49 +209,36 @@ function ube_attack_prepare(&$mission_data) {
   UBE_OPTIONS[UBE_MOON_WAS]
   */
 
-  $fleet_row = &$mission_data['fleet'];
-  $destination_planet = &$mission_data['dst_planet'];
+  $objFleet = $objMission->fleet;
 
-  $ube_time = $fleet_row['fleet_start_time'];
+  $destination_planet = &$objMission->dst_planet;
+
+  $ube_time = $objFleet->time_arrive_to_target;
   $combat_data = array(UBE_TIME => $ube_time);
 // TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
   // Готовим инфу по атакуемой планете
   ube_attack_prepare_planet($combat_data, $destination_planet);
 
   // Готовим инфу по удержанию
-//  $fleets = doquery("SELECT * FROM {{fleets}}
-//    WHERE
-//      `fleet_end_galaxy` = {$fleet_row['fleet_end_galaxy']} AND `fleet_end_system` = {$fleet_row['fleet_end_system']} AND `fleet_end_planet` = {$fleet_row['fleet_end_planet']} AND `fleet_end_type` = {$fleet_row['fleet_end_type']}
-//      AND `fleet_start_time` <= {$ube_time} AND `fleet_end_stay` >= {$ube_time}
-//      AND `fleet_mess` = 0 FOR UPDATE"
-//  );
-//  while($fleet = db_fetch($fleets))
-//  {
-//    ube_attack_prepare_fleet($combat_data, $fleet, false);
-//  }
-  $fleet_list_on_hold = fleet_list_on_hold($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], $fleet_row['fleet_end_type'], $ube_time);
+  $target_coordinates = $objFleet->target_coordinates_typed();
+  $fleet_list_on_hold = fleet_list_on_hold($target_coordinates['galaxy'], $target_coordinates['system'], $target_coordinates['planet'], $target_coordinates['type'], $ube_time);
   foreach($fleet_list_on_hold as $fleet) {
     ube_attack_prepare_fleet($combat_data, $fleet, false);
   }
 
   // Готовим инфу по атакующим
-  if($fleet_row['fleet_group']) {
-//    $fleets = doquery("SELECT * FROM {{fleets}} WHERE fleet_group = {$fleet_row['fleet_group']} FOR UPDATE");
-//    while($fleet = db_fetch($fleets))
-//    {
-//      ube_attack_prepare_fleet($combat_data, $fleet, true);
-//    }
-    $acs_fleet_list = fleet_list_by_group($fleet_row['fleet_group']);
+  if($objFleet->fleet_group) {
+    $acs_fleet_list = fleet_list_by_group($objFleet->fleet_group);
     foreach($acs_fleet_list as $fleet) {
       ube_attack_prepare_fleet($combat_data, $fleet, true);
     }
   } else {
-    ube_attack_prepare_fleet($combat_data, $fleet_row, true);
+    ube_attack_prepare_fleet($combat_data, $objFleet->make_db_row(), true);
   }
 
   // Готовим опции
   $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
-  $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
+  $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $objFleet->mission_type;
   global $config;
   $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
 

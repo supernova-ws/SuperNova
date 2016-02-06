@@ -1,23 +1,24 @@
 <?php
 
 /**
- * MissionCaseRecycling.php
+ * Fleet mission "Recycle"
  *
- * @version 1.0
- * @copyright 2008 By Chlorel for XNova
+ * @param $mission_data Mission
+ *
+ * @return int
+ *
+ * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
-
-function flt_mission_recycle(&$mission_data) {
+function flt_mission_recycle($mission_data) {
   global $lang;
 
-  if(empty($mission_data['fleet'])) {
-    return CACHE_NOTHING;
-  }
+//  if(empty($mission_data->fleet)) {
+//    return CACHE_NOTHING;
+//  }
+//
+  $objFleet = $mission_data->fleet;
 
-  $objFleet = new Fleet();
-  $objFleet->parse_db_row($mission_data['fleet']);
-
-  $destination_planet = &$mission_data['dst_planet'];
+  $destination_planet = &$mission_data->dst_planet;
 
   if(empty($destination_planet['id'])) {
     $objFleet->mark_fleet_as_returned();

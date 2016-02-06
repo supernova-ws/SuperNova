@@ -32,19 +32,27 @@ function flt_spy_scan($target_planet, $group_name, $section_title, $target_user 
   return $result;
 }
 
+/**
+ * Fleet mission "Espionage"
+ *
+ * @param Mission $mission_data
+ *
+ * @return int
+ *
+ * @copyright 2008 by Gorlum for Project "SuperNova.WS"
+ */
 function flt_mission_spy(&$mission_data) {
   global $lang;
 
   $result = CACHE_NONE;
   $spy_detected = false;
 
-  $target_user_row = &$mission_data['dst_user'];
-  $target_planet_row = &$mission_data['dst_planet'];
-  $spying_user_row = &$mission_data['src_user'];
-  $spying_planet_row = &$mission_data['src_planet'];
+  $target_user_row = &$mission_data->dst_user;
+  $target_planet_row = &$mission_data->dst_planet;
+  $spying_user_row = &$mission_data->src_user;
+  $spying_planet_row = &$mission_data->src_planet;
 
-  $objFleet = new Fleet();
-  $objFleet->parse_db_row($mission_data['fleet']);
+  $objFleet = $mission_data->fleet;
 
   if(empty($target_user_row['id']) || empty($target_planet_row['id']) || empty($spying_user_row['id'])) {
     $objFleet->mark_fleet_as_returned_and_save();

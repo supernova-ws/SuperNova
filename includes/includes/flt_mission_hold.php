@@ -1,11 +1,18 @@
 <?php
 
-function flt_mission_hold(&$mission_data)
-{
-  if($mission_data['fleet']['fleet_end_stay'] < SN_TIME_NOW)
-  {
-    Fleet::static_fleet_send_back($mission_data['fleet']);
-    // doquery("UPDATE {{fleets}} SET `fleet_mess` = 1 WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+/**
+ * Fleet mission "Hold"
+ *
+ * @param $mission_data Mission
+ *
+ * @return int
+ *
+ * @copyright 2008 by Gorlum for Project "SuperNova.WS"
+ */
+function flt_mission_hold($mission_data) {
+  if($mission_data->fleet->time_mission_job_complete < SN_TIME_NOW) {
+    $mission_data->fleet->mark_fleet_as_returned_and_save();
+
     return CACHE_FLEET;
   }
 

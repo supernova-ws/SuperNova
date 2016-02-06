@@ -20,6 +20,19 @@ returns         = bitmask for recaching
 
 // ------------------------------------------------------------------
 // unit_captain overrides
+/**
+ * Handled by:
+ *    - unit_captain
+ * Overriden by:
+ *    - none
+ *
+ * @param Fleet $objFleet
+ * @param bool  $start
+ * @param bool  $only_resources
+ * @param null  $result
+ *
+ * @return mixed
+ */
 function RestoreFleetToPlanet(&$objFleet, $start = true, $only_resources = false, $result = null) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start, $only_resources, &$result)); }
 
 // ------------------------------------------------------------------
@@ -228,25 +241,19 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     // TODO: Кэширование
     // TODO: Выбирать только нужные поля
 
+    $objMission = new Mission();
+    $objMission->fleet = $objFleet;
+    $objMission->src_user = $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($objFleet->owner_id, true) : null;
+    $objMission->src_planet = $mission_data['src_planet'] ? db_planet_by_vector($objFleet->launch_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
+    $objMission->dst_user = $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($objFleet->target_owner_id, true) : null;
     // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
-    $mission_data = array(
-      'fleet'        => &$fleet_row2,
-      'fleet_object' => $objFleet,
-      'src_user'     => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($objFleet->owner_id, true) : null,
-      // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
-      'src_planet'   => $mission_data['src_planet'] ? db_planet_by_vector($objFleet->launch_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null,
-      'dst_user'     => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($objFleet->target_owner_id, true) : null,
-      // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
-      'dst_planet'   => $mission_data['dst_planet'] ? db_planet_by_vector($objFleet->target_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null,
-      'fleet_event'  => $fleet_event['fleet_event'],
-    );
+    $objMission->dst_planet = $mission_data['dst_planet'] ? db_planet_by_vector($objFleet->target_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
+    $objMission->fleet_event = $fleet_event['fleet_event'];
 
-    if($mission_data['dst_planet']) {
-      if($mission_data['dst_planet']['id_owner']) {
-        $mission_data['dst_planet'] = sys_o_get_updated($mission_data['dst_planet']['id_owner'], $mission_data['dst_planet']['id'], $objFleet->time_arrive_to_target);
-      }
-      $mission_data['dst_user'] = $mission_data['dst_user'] ? $mission_data['dst_planet']['user'] : null;
-      $mission_data['dst_planet'] = $mission_data['dst_planet']['planet'];
+    if($objMission->dst_planet && $objMission->dst_planet['id_owner']) {
+      $update_result = sys_o_get_updated($objMission->dst_planet['id_owner'], $objMission->dst_planet['id'], $objFleet->time_arrive_to_target);
+      $objMission->dst_user = !empty($objMission->dst_user) ? $update_result['user'] : null;
+      $objMission->dst_planet = $update_result['planet'];
     }
 
     switch($objFleet->mission_type) {
@@ -254,36 +261,36 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       case MT_AKS:
       case MT_ATTACK:
       case MT_DESTROY:
-        $attack_result = flt_mission_attack($mission_data);
+        $attack_result = flt_mission_attack($objMission); // Partially
         $mission_result = CACHE_COMBAT;
       break;
 
       case MT_TRANSPORT:
-        $mission_result = flt_mission_transport($mission_data);
+        $mission_result = flt_mission_transport($objMission); // OK
       break;
 
       case MT_HOLD:
-        $mission_result = flt_mission_hold($mission_data);
+        $mission_result = flt_mission_hold($objMission); // OK
       break;
 
       case MT_RELOCATE:
-        $mission_result = flt_mission_relocate($mission_data);
+        $mission_result = flt_mission_relocate($objMission); // OK
       break;
 
       case MT_EXPLORE:
-        $mission_result = flt_mission_explore($mission_data);
+        $mission_result = flt_mission_explore($objMission); // OK
       break;
 
       case MT_RECYCLE:
-        $mission_result = flt_mission_recycle($mission_data);
+        $mission_result = flt_mission_recycle($objMission); // OK
       break;
 
       case MT_COLONIZE:
-        $mission_result = flt_mission_colonize($mission_data);
+        $mission_result = flt_mission_colonize($objMission); // OK
       break;
 
       case MT_SPY:
-        $mission_result = flt_mission_spy($mission_data);
+        $mission_result = flt_mission_spy($objMission); // OK
       break;
 
       case MT_MISSILE:  // Missiles !!
