@@ -273,12 +273,19 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
         - is_deleted
 
 
-flt_mission_attack() - переписать
 
-UBE - сделать объектом
 
 
 Функции миссий НЕ ДОЛЖНЫ НИЧЕГО ПИСАТЬ В БД! Только менять свойства объекта! Всю запись должен производить fleet_handler()
+
+
+Избавиться от $objFleet->make_db_row()
+
+
+flt_mission_attack() - переписать
+
+
+UBE - сделать объектом
 
 Посмотреть, кто использует
     - flt_mission_explore_addon(&$result)
@@ -288,7 +295,6 @@ UBE - сделать объектом
 flt_planet_capture() - кто использует
     - Переписать вместе с пользователем
 
-Избавиться от $objFleet->make_db_row()
 
 
 2016-02-07 00:42:05 41a4.8 - Класс Fleet, Alpha-4
