@@ -34,73 +34,8 @@ function reCalcGathering()
     return;
   }
   reCalcGatheringStarted = true;
-  /*
-  var resourceGrid = Array();
-  resourceGrid[{D_RES_METAL}] = 0;
-  resourceGrid[{D_RES_CRYSTAL}] = 0;
-  resourceGrid[{D_RES_DEUTERIUM}] = 0;
-  resourceGrid[0] = 0;
-  for(colony in colonies)
-  {
-    colonyValue = 0;
-    maxColonyValue = 0;
-    freeCapacity = colonies[colony][3];
-    if(document.getElementsByName('resources[' + colony + '][{D_RES_METAL}]')[0].checked)
-    {
-      // addedValue = colonies[colony][0];
-      // addedValue = Math.min(freeCapacity, colonies[colony][0]);
-      addedValue = freeCapacity < colonies[colony][0] ? freeCapacity : colonies[colony][0];
-      freeCapacity -= addedValue;
-
-      resourceGrid[{D_RES_METAL}] += addedValue;
-      colonyValue += addedValue;
-      maxColonyValue += colonies[colony][0];
-    }
-    if(document.getElementsByName('resources[' + colony + '][{D_RES_CRYSTAL}]')[0].checked)
-    {
-      // addedValue = colonies[colony][1];
-      // addedValue = Math.min(freeCapacity, colonies[colony][1]);
-      addedValue = freeCapacity < colonies[colony][1] ? freeCapacity : colonies[colony][1];
-      freeCapacity -= addedValue;
-
-      resourceGrid[{D_RES_CRYSTAL}] += addedValue;
-      colonyValue += addedValue;
-      maxColonyValue += colonies[colony][1];
-
-      // resourceGrid[{D_RES_CRYSTAL}] += colonies[colony][1];
-      // colonyValue += colonies[colony][1];
-    }
-    if(document.getElementsByName('resources[' + colony + '][{D_RES_DEUTERIUM}]')[0].checked)
-    {
-      // addedValue = colonies[colony][2];
-      // addedValue = Math.min(freeCapacity, colonies[colony][2]);
-      addedValue = freeCapacity < colonies[colony][2] ? freeCapacity : colonies[colony][2];
-      freeCapacity -= addedValue;
-
-      resourceGrid[{D_RES_DEUTERIUM}] += addedValue;
-      colonyValue += addedValue;
-      maxColonyValue += colonies[colony][2];
-
-      // resourceGrid[{D_RES_DEUTERIUM}] += colonies[colony][2];
-      // colonyValue += colonies[colony][2];
-    }
-    document.getElementById('ga_' + colony + '_0').innerHTML = '<span class="' + (colonyValue < maxColonyValue ? (colonies[colony][3] ? 'negative' : 'zero') : 'positive') + '">' + sn_format_number(colonyValue) + '</span>';
-    // document.getElementById('ga_' + colony + '_0').innerHTML = sn_format_number(colonyValue);
-  }
-  document.getElementById('ga_0_{D_RES_METAL}').innerHTML = sn_format_number(resourceGrid[{D_RES_METAL}]);
-  document.getElementById('ga_0_{D_RES_CRYSTAL}').innerHTML = sn_format_number(resourceGrid[{D_RES_CRYSTAL}]);
-  document.getElementById('ga_0_{D_RES_DEUTERIUM}').innerHTML = sn_format_number(resourceGrid[{D_RES_DEUTERIUM}]);
-  document.getElementById('ga_0_0').innerHTML = sn_format_number(resourceGrid[{D_RES_METAL}] + resourceGrid[{D_RES_CRYSTAL}] + resourceGrid[{D_RES_DEUTERIUM}]);
-  */
 
   resourceGrid = [0,0,0];
-/*
-  resourceIDs = [{D_RES_METAL}, {D_RES_CRYSTAL}, {D_RES_DEUTERIUM}];
-  resourceGrid[{D_RES_METAL}] = 0;
-  resourceGrid[{D_RES_CRYSTAL}] = 0;
-  resourceGrid[{D_RES_DEUTERIUM}] = 0;
-  resourceGrid[0] = 0;
-*/
   for(colony in colonies)
   {
     colonyValue = 0;
@@ -120,42 +55,9 @@ function reCalcGathering()
         maxColonyValue += colonies[colony][resourceID];
       }
     }
-/*
-    if(document.getElementsByName('resources[' + colony + '][{D_RES_METAL}]')[0].checked)
-    {
-      addedValue = Math.min(freeCapacity, colonies[colony][0]);
-      freeCapacity -= addedValue;
-
-      resourceGrid[0] += addedValue;
-      colonyValue += addedValue;
-      maxColonyValue += colonies[colony][0];
-    }
-    if(document.getElementsByName('resources[' + colony + '][{D_RES_CRYSTAL}]')[0].checked)
-    {
-      addedValue = Math.min(freeCapacity, colonies[colony][1]);
-      freeCapacity -= addedValue;
-
-      resourceGrid[1] += addedValue;
-      colonyValue += addedValue;
-      maxColonyValue += colonies[colony][1];
-    }
-    if(document.getElementsByName('resources[' + colony + '][{D_RES_DEUTERIUM}]')[0].checked)
-    {
-      addedValue = Math.min(freeCapacity, colonies[colony][2]);
-      freeCapacity -= addedValue;
-
-      resourceGrid[2] += addedValue;
-      colonyValue += addedValue;
-      maxColonyValue += colonies[colony][2];
-    }
-*/
     jQuery('#ga_' + colony + '_a').html('<span class="' + (colonyValue < maxColonyValue ? (colonies[colony][3] ? 'negative' : 'zero') : 'positive') + '">' + sn_format_number(colonyValue) + '</span>');
     // document.getElementById('ga_' + colony + '_all').innerHTML = '<span class="' + (colonyValue < maxColonyValue ? (colonies[colony][3] ? 'negative' : 'zero') : 'positive') + '">' + sn_format_number(colonyValue) + '</span>';
   }
-  // document.getElementById('ga_0_{D_RES_METAL}').innerHTML = sn_format_number(resourceGrid[0]);
-  // document.getElementById('ga_0_{D_RES_CRYSTAL}').innerHTML = sn_format_number(resourceGrid[1]);
-  // document.getElementById('ga_0_{D_RES_DEUTERIUM}').innerHTML = sn_format_number(resourceGrid[2]);
-  // document.getElementById('ga_0_all').innerHTML = sn_format_number(resourceGrid[0] + resourceGrid[1] + resourceGrid[2]);
   jQuery('#ga_a_0').html(sn_format_number(resourceGrid[0]));
   jQuery('#ga_a_1').html(sn_format_number(resourceGrid[1]));
   jQuery('#ga_a_2').html(sn_format_number(resourceGrid[2]));
