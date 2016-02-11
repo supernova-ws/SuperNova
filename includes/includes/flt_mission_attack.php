@@ -7,6 +7,7 @@ require_once('includes/includes/ube_attack_calculate.php');
 */
 
 
+// Used by game_skirmish
 function flt_planet_capture(&$fleet_row, &$combat_data) { return sn_function_call(__FUNCTION__, array(&$fleet_row, &$combat_data, &$result)); }
 
 function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) {
