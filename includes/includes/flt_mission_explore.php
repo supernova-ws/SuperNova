@@ -21,8 +21,9 @@ function flt_mission_explore_outcome_lost_fleet_all(&$result) {
   $result['$fleet'] = array();
 }
 
-function flt_mission_explore_addon(&$result) { return sn_function_call(__FUNCTION__, array(&$result)); }
-function sn_flt_mission_explore_addon(&$result) {
+// Used by Festival
+function mission_expedition_result_adjust(&$result) { return sn_function_call(__FUNCTION__, array(&$result)); }
+function sn_mission_expedition_result_adjust(&$result) {
   return $result;
 }
 
@@ -231,7 +232,7 @@ function flt_mission_explore(&$mission_data) {
     break;
   }
 
-  flt_mission_explore_addon($result);
+  mission_expedition_result_adjust($result);
 
   if($found_dark_matter) {
     rpg_points_change($objFleet->owner_id, RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
