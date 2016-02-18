@@ -4,8 +4,6 @@
   copyright © 2009-2016 Gorlum for http://supernova.ws
 */
 
-require_once('ube_attack_calculate.php');
-
 // Used by game_skirmish
 function flt_planet_capture(&$fleet_row, &$combat_data) { return sn_function_call(__FUNCTION__, array(&$fleet_row, &$combat_data, &$result)); }
 function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) { return $result; }
@@ -41,24 +39,6 @@ function flt_mission_attack($objMission) {
   }
 
   require_once('includes/classes/UBE/UBE.php');
-  if(class_exists('UBE', false)) {
-    return UBE::flt_mission_attack($objMission, $fleet_row);
-  }
 
-  $combat_data = ube_attack_prepare($objMission);
-
-  sn_ube_combat($combat_data);
-
-  flt_planet_capture($fleet_row, $combat_data);
-
-  sn_ube_report_save($combat_data);
-
-  ube_combat_result_apply($combat_data);
-
-  sn_ube_message_send($combat_data);
-
-  // global $config;sn_db_transaction_rollback();$config->db_saveItem('fleet_update_lock', '');die();
-
-
-  return $combat_data;
+  return UBE::flt_mission_attack($objMission, $fleet_row);
 }

@@ -7,7 +7,6 @@ if(sys_get_param_int('BE_DEBUG') && !defined('BE_DEBUG'))
   define('BE_DEBUG', true);
 }
 
-require_once("includes/includes/ube_attack_calculate.php");
 require_once('includes/includes/coe_simulator_helpers.php');
 
 $replay = $_GET['replay'] ? $_GET['replay'] : $_POST['replay'];
@@ -34,33 +33,7 @@ if($_POST['submit'] || $execute)
   $replay .= sn_ube_simulator_encode_replay($sym_attacker, 'A');
 
   require_once('includes/classes/UBE/UBE.php');
-  if(class_exists('UBE', false)) {
-    UBE::display_simulator($sym_attacker, $sym_defender);
-  }
-
-  $combat_data = sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
-
-  $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
-  sn_ube_combat($combat_data);
-  // Это используется для тестов - отключено в стандартном режиме
-//  if(!sys_get_param_int('simulator') || sys_get_param_str('reload')) {
-//    sn_ube_report_save($combat_data);
-//  }
-
-  if(sys_get_param_str('reload'))
-  {
-    $combat_data = sn_ube_report_load($combat_data[UBE_REPORT_CYPHER]);
-  }
-
-//debug($combat_data);
-  // Рендерим их в темплейт
-  sn_ube_report_generate($combat_data, $template_result);
-
-  $template_result['MICROTIME'] = $combat_data[UBE_TIME_SPENT];
-
-  $template = gettemplate('ube_combat_report', true);
-  $template->assign_recursive($template_result);
-  display($template, '', false, '', false, false, true);
+  UBE::display_simulator($sym_attacker, $sym_defender);
 }
 else
 {
