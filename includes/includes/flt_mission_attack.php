@@ -1,18 +1,15 @@
 <?php
 
-require_once('includes/includes/ube_attack_calculate.php');
-
 /*
-  copyright © 2009-2014 Gorlum for http://supernova.ws
+  copyright © 2009-2016 Gorlum for http://supernova.ws
 */
 
+require_once('ube_attack_calculate.php');
+// require_once('includes/classes/UBEv4_2.php');
 
 // Used by game_skirmish
 function flt_planet_capture(&$fleet_row, &$combat_data) { return sn_function_call(__FUNCTION__, array(&$fleet_row, &$combat_data, &$result)); }
-
-function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) {
-  return $result;
-}
+function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) { return $result; }
 
 /**
  * @param Mission $objMission

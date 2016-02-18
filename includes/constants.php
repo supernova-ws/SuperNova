@@ -4,10 +4,15 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.17');
+define('SN_VERSION', '41a4.18');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
+
+define('UBE_DEFENDER_ACTIVE_TIMEOUT', 60 * 60 * 24 * 7);
+define('UBE_SHIP_BOOM_COEFFICIENT', 0.2);
+define('UBE_RANDOMIZE_FROM', 80); // 80
+define('UBE_RANDOMIZE_TO', 120); // 120
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -118,6 +123,7 @@ define('QUEST_STATUS_COMPLETE'    , 2);
 
 // *** Combat-related constants
 // *** Mission Type constants starts with MT_
+define('MT_NONE'     ,  0);
 define('MT_ATTACK'   ,  1);
 define('MT_AKS'      ,  2);
 define('MT_TRANSPORT',  3);
@@ -131,6 +137,7 @@ define('MT_MISSILE'  , 10);
 define('MT_EXPLORE'  , 15);
 
 // *** Planet Target constants starts with PT_
+define('PT_NONE', 0);
 define('PT_ALL', 0);
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
@@ -1241,6 +1248,8 @@ define('BUDDY_REQUEST_DENIED', 2);
 define('REQUIRE_MET_NOT', 0);
 define('REQUIRE_MET', 1);
 
+define('UBE_PLAYER_IS_ATTACKER', true);
+define('UBE_PLAYER_IS_DEFENDER', false);
 
 define('UBE_COMBAT_RESULT_DRAW_END', -1);
 define('UBE_COMBAT_RESULT_DRAW', 0);
@@ -1323,6 +1332,7 @@ define('UBE_BONUSES', 'UBE_BONUSES');
 define('UBE_ATTACK', 'UBE_ATTACK');
 define('UBE_SHIELD', 'UBE_SHIELD');
 define('UBE_ARMOR', 'UBE_ARMOR');
+define('UBE_DEFENCE', 'UBE_DEFENCE');
 define('UBE_SHIELD_REST', 'UBE_SHIELD_REST');
 define('UBE_ARMOR_REST', 'UBE_ARMOR_REST');
 

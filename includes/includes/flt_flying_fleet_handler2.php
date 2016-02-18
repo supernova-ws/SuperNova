@@ -111,7 +111,10 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
   // Watchdog timer
   if($config->db_loadItem('fleet_update_lock')) {
+
+// TODO UNCOMMENT!
     if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(240, 300)) {
+//    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(2, 3)) {
       sn_db_transaction_rollback();
 
       return;
@@ -189,7 +192,6 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
   }
 
-
 //log_file('Обработка миссий');
   $sn_groups_mission = sn_get_groups('missions');
   foreach($fleet_event_list as $fleet_event) {
@@ -230,7 +232,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       continue;
     }
 
-    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $objFleet->mission_type != 0) {
+    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $objFleet->is_returning) {
       // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
       // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
       sn_db_transaction_commit();

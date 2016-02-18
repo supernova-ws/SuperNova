@@ -189,7 +189,7 @@ function ube_attack_prepare_planet(&$combat_data, &$planet) {
     PLANET_SIZE   => $planet['diameter'],
   );
 
-  $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $combat_data[UBE_TIME] - 60 * 60 * 24 * 7;
+  $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $combat_data[UBE_TIME] - UBE_DEFENDER_ACTIVE_TIMEOUT;
 }
 
 
@@ -197,7 +197,6 @@ function ube_attack_prepare_planet(&$combat_data, &$planet) {
  * Заполняет начальные данные по данным миссии
  *
  * @param Mission $objMission
- * @param         $mission_data
  *
  * @return array
  */
@@ -208,6 +207,8 @@ function ube_attack_prepare(&$objMission) {
   UBE_OPTIONS[UBE_EXCHANGE]
   UBE_OPTIONS[UBE_MOON_WAS]
   */
+
+  global $config;
 
   $objFleet = $objMission->fleet;
 
@@ -239,7 +240,6 @@ function ube_attack_prepare(&$objMission) {
   // Готовим опции
   $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
   $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $objFleet->mission_type;
-  global $config;
   $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
 
   return $combat_data;

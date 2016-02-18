@@ -365,3 +365,9 @@ function backtrace_no_arg() {
   array_shift($trace);
   return $trace;
 }
+
+function pvar_dump($expression) {
+  print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">');
+  var_dump($expression);
+  print('</pre>');
+}

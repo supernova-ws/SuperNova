@@ -461,7 +461,7 @@ class Fleet {
     $fleet_id_safe = idval($fleet_id);
 
     $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
-    if(!empty($fleet['fleet_id'])) {
+    if(!empty($fleet_row['fleet_id'])) {
       $this->parse_db_row($fleet_row);
     }
 
@@ -764,7 +764,7 @@ class Fleet {
    * @return int|string
    */
   public function create_and_send($owner_id, $unit_array, $mission_type, $from, $to, $fleet_group = 0) {
-    $this->_reset();
+//    $this->_reset();
 
     $this->mission_type = $mission_type;
     $this->fleet_group = $fleet_group;
