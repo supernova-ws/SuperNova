@@ -11,6 +11,11 @@ $sn_mvc['view']['battle_report'][] = 'sn_battle_report_view';
 function sn_battle_report_view($template = null) {
   global $template_result, $lang;
 
+  require_once('includes/classes/UBE/UBE.php');
+  if(class_exists('UBE', false)) {
+    return UBE::sn_battle_report_view($template);
+  }
+
   require_once('includes/includes/ube_report.php');
 
   $combat_data = sn_ube_report_load(sys_get_param_str('cypher'));

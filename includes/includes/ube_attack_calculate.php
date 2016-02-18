@@ -103,7 +103,6 @@ function ube_attack_prepare_player(&$combat_data, $player_id, $is_attacker) {
 // ------------------------------------------------------------------------------------------------
 // Заполняет данные по флоту
 function ube_attack_prepare_fleet(&$combat_data, &$fleet, $is_attacker) { return sn_function_call(__FUNCTION__, array(&$combat_data, &$fleet, $is_attacker)); }
-
 function sn_ube_attack_prepare_fleet(&$combat_data, &$fleet_row, $is_attacker) {
   $fleet_owner_id = $fleet_row['fleet_owner'];
   $fleet_id = $fleet_row['fleet_id'];

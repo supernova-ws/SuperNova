@@ -33,6 +33,11 @@ if($_POST['submit'] || $execute)
   $replay = sn_ube_simulator_encode_replay($sym_defender, 'D');
   $replay .= sn_ube_simulator_encode_replay($sym_attacker, 'A');
 
+  require_once('includes/classes/UBE/UBE.php');
+  if(class_exists('UBE', false)) {
+    UBE::display_simulator($sym_attacker, $sym_defender);
+  }
+
   $combat_data = sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 
   $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;

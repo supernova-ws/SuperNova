@@ -5,7 +5,6 @@
 */
 
 require_once('ube_attack_calculate.php');
-// require_once('includes/classes/UBEv4_2.php');
 
 // Used by game_skirmish
 function flt_planet_capture(&$fleet_row, &$combat_data) { return sn_function_call(__FUNCTION__, array(&$fleet_row, &$combat_data, &$result)); }
@@ -39,6 +38,11 @@ function flt_mission_attack($objMission) {
     $objFleet->mark_fleet_as_returned_and_save();
 
     return null;
+  }
+
+  require_once('includes/classes/UBE/UBE.php');
+  if(class_exists('UBE', false)) {
+    return UBE::flt_mission_attack($objMission, $fleet_row);
   }
 
   $combat_data = ube_attack_prepare($objMission);

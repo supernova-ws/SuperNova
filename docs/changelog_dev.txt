@@ -287,28 +287,34 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 Избавиться от $objFleet->make_db_row()
 
 
-
-
-Боевой порядок
-    - Стандартный
-    - Легкие - впереди
-    - Тяжелые - впереди
-    - Сферическая оборона - участвуют только корабли одного типа друг за другом - только для планет
-    - Охватывающая атака - участвуют все корабли (стандартный?!)
-
-
-
 UBE_DEFENDER_ACTIVE_TIMEOUT - синхронизировать с остальными таймаутами по i и I
 
 
-TODO - НЕ РАБОТАЕТ КАПИТАН! Сделать его через бонусы флота
+TODO - НЕ РАБОТАЕТ КАПИТАН! Сделать его через бонусы флота Вызывается через function ube_attack_prepare_fleet(&$fleet_row, $is_attacker) {
 
 
-Фортификатор должен распространяться только на ОБОРОНУ!
+  // TODO - Используется модулем skirmish! Переписать! flt_planet_capture($fleet_row, $combat_data);
+
+
+// TODO - Где-то используется!
+  function ube_combat_result_apply(&$combat_data) { return sn_function_call(__FUNCTION__, array(&$combat_data)); }
+  function sn_ube_combat_result_apply(&$combat_data) {
+
+
+
+// TODO - СИМУЛЯТОР НЕ БУДЕТ РАБОТАТЬ С НОВЫМ UBE!
+
+// TODO ТАК ЖЕ НЕ БУДЕТ РАБОТАТЬ ПРОСМОТР ЛОГОВ БОЯ!!!
+
+
 
 #ctv
 
 
+
+2016-02-19 01:49:45 41a4.19 UBE4.2
+[!] Код
+    Код UBE засунут в классы
 
 
 2016-02-11 21:34:59 41a4.15

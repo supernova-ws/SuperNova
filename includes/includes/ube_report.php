@@ -678,5 +678,3 @@ function sn_ube_report_generate(&$combat_data, &$template_result)
   );
   $template_result['.']['debris'] = $debris;
 }
-
-?>
