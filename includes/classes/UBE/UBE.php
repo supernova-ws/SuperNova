@@ -63,6 +63,8 @@ class UBE {
 
   public $options = array();
 
+  public $is_simulator = false;
+
   /**
    * Заполняет начальные данные по данным миссии
    *
@@ -72,7 +74,6 @@ class UBE {
   function ube_attack_prepare(&$objMission) {
     /*
     UBE_OPTIONS[UBE_LOADED]
-    UBE_OPTIONS[UBE_SIMULATOR]
     UBE_OPTIONS[UBE_EXCHANGE]
     UBE_OPTIONS[UBE_MOON_WAS]
     */
@@ -365,8 +366,6 @@ class UBE {
 
     global $ube_combat_bonus_list;
 
-    $is_simulator = $this->options[UBE_SIMULATOR];
-
     $round_data = &$combat_data[UBE_ROUNDS][$round];
     foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
       // Кэшируем переменные для легкого доступа к подмассивам
@@ -382,8 +381,8 @@ class UBE {
 // TODO:  Добавить процент регенерации щитов
 
         // Для не-симулятора - рандомизируем каждый раунд значения атаки и щитов
-        $fleet_data[UBE_ATTACK_BASE][$unit_id] = floor($fleet_info[UBE_ATTACK][$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
-        $fleet_data[UBE_SHIELD_BASE][$unit_id] = floor($fleet_info[UBE_SHIELD][$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
+        $fleet_data[UBE_ATTACK_BASE][$unit_id] = floor($fleet_info[UBE_ATTACK][$unit_id] * ($this->is_simulator ? 1 : mt_rand(80, 120) / 100));
+        $fleet_data[UBE_SHIELD_BASE][$unit_id] = floor($fleet_info[UBE_SHIELD][$unit_id] * ($this->is_simulator ? 1 : mt_rand(80, 120) / 100));
         $fleet_data[UBE_ARMOR_BASE][$unit_id] = floor($fleet_info[UBE_ARMOR][$unit_id]);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
 
         $fleet_data[UBE_ATTACK][$unit_id] = $fleet_data[UBE_ATTACK_BASE][$unit_id] * $unit_count;
@@ -433,8 +432,8 @@ class UBE {
         foreach($attack_fleet_data[UBE_COUNT] as $attack_unit_id => $attack_unit_count) {
           // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
           foreach($defend_fleet_data[UBE_COUNT] as $defend_unit_id => $defend_unit_count) {
-            $this->sn_ube_combat_round_crossfire_unit2($attack_fleet_data, $defend_fleet_data, $attack_unit_id, $defend_unit_id, $this->options);
-            $this->sn_ube_combat_round_crossfire_unit2($defend_fleet_data, $attack_fleet_data, $defend_unit_id, $attack_unit_id, $this->options);
+            $this->sn_ube_combat_round_crossfire_unit2($attack_fleet_data, $defend_fleet_data, $attack_unit_id, $defend_unit_id);
+            $this->sn_ube_combat_round_crossfire_unit2($defend_fleet_data, $attack_fleet_data, $defend_unit_id, $attack_unit_id);
           }
         }
       }
@@ -448,7 +447,7 @@ class UBE {
   // ------------------------------------------------------------------------------------------------
   // Рассчитывает результат столкновения двух юнитов ака ход
   // OK0
-  function sn_ube_combat_round_crossfire_unit2(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id, &$combat_options) {
+  function sn_ube_combat_round_crossfire_unit2(&$attack_fleet_data, &$defend_fleet_data, $attack_unit_id, $defend_unit_id) {
     if($defend_fleet_data[UBE_COUNT][$defend_unit_id] <= 0) {
       return;
     }
@@ -462,7 +461,7 @@ class UBE {
     $amplified_damage = floor($direct_damage * $amplify);
 
     // Проверяем - не взорвался ли текущий юнит
-    $this->sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed, $combat_options);
+    $this->sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed);
 
     $defend_unit_base_defence = $defend_fleet_data[UBE_SHIELD_BASE][$defend_unit_id] + $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id];
 
@@ -479,11 +478,11 @@ class UBE {
     $defend_fleet_data[UBE_SHIELD][$defend_unit_id] -= $units_lost_full * $defend_fleet_data[UBE_SHIELD_BASE][$defend_unit_id];
 
     // Проверяем - не взорвался ли текущий юнит
-    $this->sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed, $combat_options);
+    $this->sn_ube_combat_round_crossfire_unit_damage_current($defend_fleet_data, $defend_unit_id, $amplified_damage, $units_lost, $units_boomed);
   }
 
   // OK0
-  function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, $defend_unit_id, &$amplified_damage, &$units_lost, &$units_boomed, &$combat_options) {
+  function sn_ube_combat_round_crossfire_unit_damage_current(&$defend_fleet_data, $defend_unit_id, &$amplified_damage, &$units_lost, &$units_boomed) {
     $unit_is_lost = false;
 
     $units_boomed = $units_boomed ? $units_boomed : 0;
@@ -507,7 +506,7 @@ class UBE {
         $last_unit_hp = $defend_fleet_data[UBE_ARMOR_REST][$defend_unit_id];
         $last_unit_percent = $last_unit_hp / $defend_fleet_data[UBE_ARMOR_BASE][$defend_unit_id] * 100;
 
-        $random = $combat_options[UBE_SIMULATOR] ? $boom_limit / 2 : mt_rand(0, 100);
+        $random = $this->is_simulator ? $boom_limit / 2 : mt_rand(0, 100);
         if($last_unit_percent <= $boom_limit && $last_unit_percent <= $random) {
 //pdump($last_unit_percent, 'Юнит взорвался');
           $unit_is_lost = true;
@@ -651,7 +650,7 @@ class UBE {
         if($fleet_info[UBE_TYPE][$unit_id] == UNIT_DEFENCE) {
           $giveback_chance = 75; // TODO Configure
           $units_lost = $unit_count - $units_left;
-          if($this->options[UBE_SIMULATOR]) { // for simulation just return 75% of loss
+          if($this->is_simulator) { // for simulation just return 75% of loss
             $units_giveback = round($units_lost * $giveback_chance / 100);
           } else {
             if($unit_count > 10) { // if there were more then 10 defense elements - mass-calculating giveback
@@ -691,7 +690,7 @@ class UBE {
 
             // Если это корабль - прибавляем потери к обломкам на орбите
             if($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS) {
-              $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($this->options[UBE_SIMULATOR] ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
+              $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($this->is_simulator ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
             }
 
             // ...в металле
@@ -729,7 +728,7 @@ class UBE {
           $resource_dropped = $resource_amount - $fleet_outcome[UBE_RESOURCES][$resource_id];
           $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
-          $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($this->options[UBE_SIMULATOR] ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
+          $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
           $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $exchange[$resource_id];
         }
         $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
@@ -746,7 +745,7 @@ class UBE {
       if($this->options[UBE_MOON_WAS]) {
         $outcome[UBE_MOON] = UBE_MOON_WAS;
       } else {
-        $this->sn_ube_combat_analyze_moon($outcome, $this->options[UBE_SIMULATOR]);
+        $this->sn_ube_combat_analyze_moon($outcome, $this->is_simulator);
       }
 
       // Лутаем ресурсы - если аттакер выиграл
@@ -1149,8 +1148,9 @@ class UBE {
   function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender) {
     $combat_data = &$this->combat_data;
 
+    $this->is_simulator = sys_get_param_int('simulator');
+    $this->is_simulator = !empty($this->is_simulator);
     $this->options = array(
-      UBE_SIMULATOR    => sys_get_param_int('simulator'),
       UBE_MISSION_TYPE => MT_ATTACK,
     );
 
