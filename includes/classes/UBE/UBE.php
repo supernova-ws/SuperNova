@@ -1079,14 +1079,14 @@ class UBE {
 
     // Генерируем текст письма
     $text_common = sprintf($lang['ube_report_msg_body_common'],
-      date(FMT_DATE_TIME, $combat_data['UBE_TIME']),
+      date(FMT_DATE_TIME, $combat_data[UBE_TIME]),
       $lang['sys_planet_type_sh'][$planet_info[PLANET_TYPE]],
       $planet_info[PLANET_GALAXY],
       $planet_info[PLANET_SYSTEM],
       $planet_info[PLANET_PLANET],
       htmlentities($planet_info[PLANET_NAME], ENT_COMPAT, 'UTF-8'),
-      $lang[$outcome['UBE_COMBAT_RESULT'] == UBE_COMBAT_RESULT_WIN ? 'ube_report_info_outcome_win' :
-        ($outcome['UBE_COMBAT_RESULT'] == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')]
+      $lang[$outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'ube_report_info_outcome_win' :
+        ($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')]
     );
 
     $text_defender = '';
