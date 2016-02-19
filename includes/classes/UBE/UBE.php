@@ -14,7 +14,6 @@ require_once('UBEReport.php');
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
-
 // ------------------------------------------------------------------------------------------------
 // Заполняет данные по флоту
 /**
@@ -25,8 +24,6 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  * @return mixed
  */
 function ube_attack_prepare_fleet_from_object($ube, &$fleet, $is_attacker) { return sn_function_call(__FUNCTION__, array($ube, &$fleet, $is_attacker)); }
-
-
 
 
 /**
@@ -63,6 +60,8 @@ class UBE {
    * @var int
    */
   public $combat_timestamp = 0;
+
+  public $options = array();
 
   /**
    * Заполняет начальные данные по данным миссии
@@ -111,9 +110,9 @@ class UBE {
     }
 
     // Готовим опции
-    $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
-    $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $objFleet->mission_type;
-    $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
+    $this->options[UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
+    $this->options[UBE_MISSION_TYPE] = $objFleet->mission_type;
+    $this->options[UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
   }
 
   /**
@@ -163,7 +162,7 @@ class UBE {
       PLANET_SIZE   => $planet['diameter'],
     );
 
-    $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
+    $this->options[UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
   }
 
   // ------------------------------------------------------------------------------------------------
@@ -180,7 +179,7 @@ class UBE {
       $player_data = db_user_by_id($player_id, true);
       $player_info[UBE_NAME] = $player_data['username'];
       $player_info[UBE_AUTH_LEVEL] = $player_data['authlevel'];
-      $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] = $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] || $player_data['authlevel']; // Участвует ли админ в бою?
+      $this->options[UBE_COMBAT_ADMIN] = $this->options[UBE_COMBAT_ADMIN] || $player_data['authlevel']; // Участвует ли админ в бою?
       $player_info[UBE_PLAYER_DATA] = $player_data;
 
       $admiral_bonus = mrc_get_level($player_data, false, MRC_ADMIRAL) * get_unit_param(MRC_ADMIRAL, P_BONUS_VALUE) / 100;
@@ -366,7 +365,7 @@ class UBE {
 
     global $ube_combat_bonus_list;
 
-    $is_simulator = $combat_data[UBE_OPTIONS][UBE_SIMULATOR];
+    $is_simulator = $this->options[UBE_SIMULATOR];
 
     $round_data = &$combat_data[UBE_ROUNDS][$round];
     foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
@@ -434,8 +433,8 @@ class UBE {
         foreach($attack_fleet_data[UBE_COUNT] as $attack_unit_id => $attack_unit_count) {
           // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
           foreach($defend_fleet_data[UBE_COUNT] as $defend_unit_id => $defend_unit_count) {
-            $this->sn_ube_combat_round_crossfire_unit2($attack_fleet_data, $defend_fleet_data, $attack_unit_id, $defend_unit_id, $combat_data[UBE_OPTIONS]);
-            $this->sn_ube_combat_round_crossfire_unit2($defend_fleet_data, $attack_fleet_data, $defend_unit_id, $attack_unit_id, $combat_data[UBE_OPTIONS]);
+            $this->sn_ube_combat_round_crossfire_unit2($attack_fleet_data, $defend_fleet_data, $attack_unit_id, $defend_unit_id, $this->options);
+            $this->sn_ube_combat_round_crossfire_unit2($defend_fleet_data, $attack_fleet_data, $defend_unit_id, $attack_unit_id, $this->options);
           }
         }
       }
@@ -619,9 +618,9 @@ class UBE {
 
     global $config;
 
-    $combat_data[UBE_OPTIONS][UBE_EXCHANGE] = array(RES_METAL => $config->rpg_exchange_metal);
+    $this->options[UBE_EXCHANGE] = array(RES_METAL => $config->rpg_exchange_metal);
 
-    $exchange = &$combat_data[UBE_OPTIONS][UBE_EXCHANGE];
+    $exchange = &$this->options[UBE_EXCHANGE];
     foreach(array(RES_CRYSTAL => 'rpg_exchange_crystal', RES_DEUTERIUM => 'rpg_exchange_deuterium', RES_DARK_MATTER => 'rpg_exchange_darkMatter') as $resource_id => $resource_name) {
       $exchange[$resource_id] = $config->$resource_name * $exchange[RES_METAL];
     }
@@ -652,7 +651,7 @@ class UBE {
         if($fleet_info[UBE_TYPE][$unit_id] == UNIT_DEFENCE) {
           $giveback_chance = 75; // TODO Configure
           $units_lost = $unit_count - $units_left;
-          if($combat_data[UBE_OPTIONS][UBE_SIMULATOR]) { // for simulation just return 75% of loss
+          if($this->options[UBE_SIMULATOR]) { // for simulation just return 75% of loss
             $units_giveback = round($units_lost * $giveback_chance / 100);
           } else {
             if($unit_count > 10) { // if there were more then 10 defense elements - mass-calculating giveback
@@ -692,7 +691,7 @@ class UBE {
 
             // Если это корабль - прибавляем потери к обломкам на орбите
             if($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS) {
-              $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
+              $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($this->options[UBE_SIMULATOR] ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
             }
 
             // ...в металле
@@ -730,7 +729,7 @@ class UBE {
           $resource_dropped = $resource_amount - $fleet_outcome[UBE_RESOURCES][$resource_id];
           $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
-          $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($combat_data[UBE_OPTIONS][UBE_SIMULATOR] ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
+          $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($this->options[UBE_SIMULATOR] ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
           $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $exchange[$resource_id];
         }
         $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
@@ -743,17 +742,17 @@ class UBE {
     // SFR - Small Fleet Reconnaissance ака РМФ
     $outcome[UBE_SFR] = count($combat_data[UBE_ROUNDS]) == 2 && $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_LOSS;
 
-    if(!$combat_data[UBE_OPTIONS][UBE_LOADED]) {
-      if($combat_data[UBE_OPTIONS][UBE_MOON_WAS]) {
+    if(!$this->options[UBE_LOADED]) {
+      if($this->options[UBE_MOON_WAS]) {
         $outcome[UBE_MOON] = UBE_MOON_WAS;
       } else {
-        $this->sn_ube_combat_analyze_moon($outcome, $combat_data[UBE_OPTIONS][UBE_SIMULATOR]);
+        $this->sn_ube_combat_analyze_moon($outcome, $this->options[UBE_SIMULATOR]);
       }
 
       // Лутаем ресурсы - если аттакер выиграл
       if($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN) {
         $this->sn_ube_combat_analyze_loot();
-        if($combat_data[UBE_OPTIONS][UBE_MOON_WAS] && $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_DESTROY) {
+        if($this->options[UBE_MOON_WAS] && $this->options[UBE_MISSION_TYPE] == MT_DESTROY) {
           $this->sn_ube_combat_analyze_moon_destroy();
         }
       }
@@ -806,7 +805,7 @@ class UBE {
   function sn_ube_combat_analyze_loot() {
     $combat_data = &$this->combat_data;
 
-    $exchange = &$combat_data[UBE_OPTIONS][UBE_EXCHANGE];
+    $exchange = &$this->options[UBE_EXCHANGE];
     $planet_resource_list = &$combat_data[UBE_FLEETS][0][UBE_RESOURCES];
     $outcome = &$combat_data[UBE_OUTCOME];
 
@@ -926,7 +925,7 @@ class UBE {
     $planet_info = &$outcome[UBE_PLANET];
     $planet_id = $planet_info[PLANET_ID];
     // Обновляем поле обломков на планете
-    if(!$combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] && !empty($outcome[UBE_DEBRIS])) {
+    if(!$this->options[UBE_COMBAT_ADMIN] && !empty($outcome[UBE_DEBRIS])) {
       db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
         "`debris_metal` = `debris_metal` + " . floor($outcome[UBE_DEBRIS][RES_METAL]) . ", `debris_crystal` = `debris_crystal` + " . floor($outcome[UBE_DEBRIS][RES_CRYSTAL])
       );
@@ -1028,7 +1027,7 @@ class UBE {
       if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
         $bashing_list[] = "({$player_id}, {$planet_id}, {$this->combat_timestamp})";
       }
-      if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE]) {
+      if($this->options[UBE_MISSION_TYPE] == MT_ATTACK && $this->options[UBE_DEFENDER_ACTIVE]) {
         $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
         db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
       }
@@ -1122,7 +1121,7 @@ class UBE {
       $text_defender .= "{$lang['ube_report_moon_chance']} {$outcome[UBE_MOON_CHANCE]}%<br /><br />";
     }
 
-    if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_DESTROY) {
+    if($this->options[UBE_MISSION_TYPE] == MT_DESTROY) {
       if($outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_NONE) {
         $text_defender .= $lang['ube_report_moon_reapers_none'];
       } else {
@@ -1150,12 +1149,12 @@ class UBE {
   function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender) {
     $combat_data = &$this->combat_data;
 
-    $combat_data = array(
-      UBE_OPTIONS => array(
-        UBE_SIMULATOR    => sys_get_param_int('simulator'),
-        UBE_MISSION_TYPE => MT_ATTACK,
-      ),
+    $this->options = array(
+      UBE_SIMULATOR    => sys_get_param_int('simulator'),
+      UBE_MISSION_TYPE => MT_ATTACK,
+    );
 
+    $combat_data = array(
       UBE_PLAYERS => array(),
 
       UBE_FLEETS => array(),
@@ -1215,7 +1214,7 @@ class UBE {
 
   function set_option_from_config() {
     global $config;
-    $this->combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
+    $this->options[UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
   }
 
   function get_time_spent() {
@@ -1278,7 +1277,7 @@ class UBE {
     global $template_result;
 
     $ube = new UBE();
-    $ube->sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender); //  $combat_data = sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
+    $ube->sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender); //  $combat_data = UNUSED_sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 
     $ube->set_option_from_config(); //  $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
     $ube->sn_ube_combat(); //  sn_ube_combat($combat_data);

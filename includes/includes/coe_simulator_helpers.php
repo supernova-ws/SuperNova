@@ -58,7 +58,7 @@ function sn_ube_simulator_decode_replay($str_data)
 
 // ------------------------------------------------------------------------------------------------
 // Преобразовывает данные симулятора в данные для расчета боя
-function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $player_id = -1)
+function UNUSED_sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $player_id = -1)
 {
   global $ube_convert_techs;
 
@@ -115,7 +115,7 @@ function sn_ube_simulator_fill_side(&$combat_data, $side_info, $attacker, $playe
   }
 }
 
-function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender)
+function UNUSED_sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender)
 {
   $combat_data = array(
     UBE_OPTIONS => array(
@@ -130,8 +130,8 @@ function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender)
     ),
   );
 
-  sn_ube_simulator_fill_side($combat_data, $sym_defender, false);
-  sn_ube_simulator_fill_side($combat_data, $sym_attacker, true);
+  UNUSED_sn_ube_simulator_fill_side($combat_data, $sym_defender, false);
+  UNUSED_sn_ube_simulator_fill_side($combat_data, $sym_attacker, true);
 
   return($combat_data);
 }
