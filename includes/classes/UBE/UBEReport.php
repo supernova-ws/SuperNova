@@ -15,14 +15,14 @@ class UBEReport {
     global $config;
 
     // Если уже есть ИД репорта - значит репорт был взят из таблицы. С таким мы не работаем
-    if($combat_data[UBE_REPORT_CYPHER]) {
+    if($ube->get_cypher()) {
       return false;
     }
 
     // Генерируем уникальный секретный ключ и проверяем наличие в базе
     do {
-      $combat_data[UBE_REPORT_CYPHER] = sys_random_string(32);
-    } while(doquery("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$combat_data[UBE_REPORT_CYPHER]}' LIMIT 1 FOR UPDATE", true));
+      $ube->report_cypher = sys_random_string(32);
+    } while(doquery("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$ube->report_cypher}' LIMIT 1 FOR UPDATE", true));
 
     // Инициализация таблицы для пакетной вставки информации
     $sql_perform = array(
@@ -114,8 +114,8 @@ class UBEReport {
       ) / (floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1);
     doquery("INSERT INTO `{{ube_report}}`
     SET
-      `ube_report_cypher` = '{$combat_data[UBE_REPORT_CYPHER]}',
-      `ube_report_time_combat` = '" . date(FMT_DATE_TIME_SQL, $combat_data[UBE_TIME]) . "',
+      `ube_report_cypher` = '{$ube->report_cypher}',
+      `ube_report_time_combat` = '" . date(FMT_DATE_TIME_SQL, $ube->combat_timestamp) . "',
       `ube_report_time_spent` = {$combat_data[UBE_TIME_SPENT]},
 
       `ube_report_combat_admin` = " . (int)$combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] . ",
@@ -146,7 +146,8 @@ class UBEReport {
 
       `ube_report_capture_result` = " . (int)$outcome[UBE_CAPTURE_RESULT] . "
   ");
-    $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
+//    $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
+    $ube_report_id = db_insert_id();
 
     // Сохраняем общую информацию по игрокам
     foreach($combat_data[UBE_PLAYERS] as $player_id => &$player_info) {
@@ -271,7 +272,7 @@ class UBEReport {
       doquery("INSERT INTO {{{$table_name}}} {$fields} VALUES " . implode(',', $table_data));
     }
 
-    return $combat_data[UBE_REPORT_CYPHER];
+    return $ube->report_cypher;
   }
 
 
@@ -293,6 +294,8 @@ class UBEReport {
     $ube = new UBE();
     $combat_data = &$ube->combat_data;
 
+    $ube->report_cypher = $report_cypher;
+
     $combat_data = array(
       UBE_OPTIONS => array(
         UBE_LOADED       => true,
@@ -300,10 +303,8 @@ class UBEReport {
         UBE_MISSION_TYPE => $report_row['ube_report_mission_type'],
       ),
 
-      UBE_TIME          => strtotime($report_row['ube_report_time_combat']),
+      $ube->combat_timestamp          => strtotime($report_row['ube_report_time_combat']),
       UBE_TIME_SPENT    => $report_row['ube_report_time_spent'],
-      UBE_REPORT_CYPHER => $report_cypher,
-      UBE_REPORT_ID     => $report_row['ube_report_id'],
 
       UBE_OUTCOME => array(
         UBE_COMBAT_RESULT => $report_row['ube_report_combat_result'],
@@ -552,12 +553,12 @@ class UBEReport {
     /** @noinspection SpellCheckingInspection */
     $template_result += array(
       'MICROTIME' => $combat_data[UBE_TIME_SPENT],
-      'COMBAT_TIME' => $combat_data[UBE_TIME] ? $combat_data[UBE_TIME] + SN_CLIENT_TIME_DIFF : 0,
-      'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $combat_data[UBE_TIME] + SN_CLIENT_TIME_DIFF),
+      'COMBAT_TIME' => $ube->combat_timestamp ? $ube->combat_timestamp + SN_CLIENT_TIME_DIFF : 0,
+      'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $ube->combat_timestamp + SN_CLIENT_TIME_DIFF),
       'COMBAT_ROUNDS' => count($combat_data[UBE_ROUNDS]) - 1,
       'UBE_MISSION_TYPE' => $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE],
       'MT_DESTROY' => MT_DESTROY,
-      'UBE_REPORT_CYPHER' => $combat_data[UBE_REPORT_CYPHER],
+      'UBE_REPORT_CYPHER' => $ube->get_cypher(),
 
       'PLANET_TYPE_TEXT' => $lang['sys_planet_type_sh'][$template_result['PLANET_TYPE']],
 

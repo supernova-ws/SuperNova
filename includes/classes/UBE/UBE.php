@@ -51,6 +51,20 @@ class UBE {
   public $combat_data = array();
 
   /**
+   * Кодовая строка для доступа к отчёту
+   *
+   * @var string
+   */
+  public $report_cypher = '';
+
+  /**
+   * Время, когда произошел бой - НЕ ВРЕМЯ, КОГДА ОН ОБСЧИТАН!
+   *
+   * @var int
+   */
+  public $combat_timestamp = 0;
+
+  /**
    * Заполняет начальные данные по данным миссии
    *
    * @param Mission $objMission
@@ -72,15 +86,16 @@ class UBE {
 
     $destination_planet = &$objMission->dst_planet;
 
-    $ube_time = $objFleet->time_arrive_to_target;
-    $combat_data = array(UBE_TIME => $ube_time);
+    $combat_data = array();
+    $this->combat_timestamp = $objFleet->time_arrive_to_target;
+
 // TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
     // Готовим инфу по атакуемой планете
     $this->ube_attack_prepare_planet($destination_planet);
 
     // Готовим инфу по удержанию
     $target_coordinates = $objFleet->target_coordinates_typed();
-    $fleet_list_on_hold = fleet_list_on_hold($target_coordinates['galaxy'], $target_coordinates['system'], $target_coordinates['planet'], $target_coordinates['type'], $ube_time);
+    $fleet_list_on_hold = fleet_list_on_hold($target_coordinates['galaxy'], $target_coordinates['system'], $target_coordinates['planet'], $target_coordinates['type'], $this->combat_timestamp);
     foreach($fleet_list_on_hold as $fleet) {
       $this->ube_attack_prepare_fleet($fleet, false);
     }
@@ -148,7 +163,7 @@ class UBE {
       PLANET_SIZE   => $planet['diameter'],
     );
 
-    $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $combat_data[UBE_TIME] - UBE_DEFENDER_ACTIVE_TIMEOUT;
+    $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
   }
 
   // ------------------------------------------------------------------------------------------------
@@ -1011,7 +1026,7 @@ class UBE {
         continue;
       }
       if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
-        $bashing_list[] = "({$player_id}, {$planet_id}, {$combat_data[UBE_TIME]})";
+        $bashing_list[] = "({$player_id}, {$planet_id}, {$this->combat_timestamp})";
       }
       if($combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] == MT_ATTACK && $combat_data[UBE_OPTIONS][UBE_DEFENDER_ACTIVE]) {
         $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
@@ -1079,7 +1094,7 @@ class UBE {
 
     // Генерируем текст письма
     $text_common = sprintf($lang['ube_report_msg_body_common'],
-      date(FMT_DATE_TIME, $combat_data[UBE_TIME]),
+      date(FMT_DATE_TIME, $this->combat_timestamp),
       $lang['sys_planet_type_sh'][$planet_info[PLANET_TYPE]],
       $planet_info[PLANET_GALAXY],
       $planet_info[PLANET_SYSTEM],
@@ -1120,12 +1135,12 @@ class UBE {
       $text_defender .= '<br /><br />';
     }
 
-    $text_defender .= "{$lang['ube_report_info_link']}: <a href=\"index.php?page=battle_report&cypher={$combat_data[UBE_REPORT_CYPHER]}\">{$combat_data[UBE_REPORT_CYPHER]}</a>";
+    $text_defender .= "{$lang['ube_report_info_link']}: <a href=\"index.php?page=battle_report&cypher=$this->report_cypher\">{$this->report_cypher}</a>";
 
     // TODO: Оптимизировать отсылку сообщений - отсылать пакетами
     foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
       $message = $text_common . ($outcome[UBE_SFR] && $player_info[UBE_ATTACKER] ? $lang['ube_report_msg_body_sfr'] : $text_defender);
-      msg_send_simple_message($player_id, '', $combat_data[UBE_TIME], MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $message);
+      msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $message);
     }
 
   }
@@ -1208,7 +1223,7 @@ class UBE {
   }
 
   function get_cypher() {
-    return $this->combat_data[UBE_REPORT_CYPHER];
+    return $this->report_cypher;
   }
 
 
