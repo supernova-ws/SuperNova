@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.24');
+define('SN_VERSION', '41a4.25');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1280,9 +1280,8 @@ define('UBE_DEFENDER_ACTIVE', 'UBE_DEFENDER_ACTIVE');
 define('UBE_MISSION_TYPE', 'UBE_MISSION_TYPE');
 define('UBE_LOADED', 'UBE_LOADED');
 //define('UBE_SIMULATOR', 'UBE_SIMULATOR');
-define('UBE_EXCHANGE', 'UBE_EXCHANGE');
+//define('UBE_EXCHANGE', 'UBE_EXCHANGE');
 define('UBE_METHOD', 'UBE_METHOD');
-
 
 define('UBE_OUTCOME', 'UBE_OUTCOME');
 define('UBE_COMBAT_RESULT', 'UBE_COMBAT_RESULT');

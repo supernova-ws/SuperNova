@@ -66,6 +66,13 @@ class UBE {
   public $is_simulator = false;
 
   /**
+   * [$resource_id] => $rate
+   *
+   * @var array
+   */
+  public $resource_exchange_rates = array();
+
+  /**
    * Заполняет начальные данные по данным миссии
    *
    * @param Mission $objMission
@@ -81,6 +88,8 @@ class UBE {
     $combat_data = &$this->combat_data;
 
     global $config;
+
+    $this->resource_exchange_rates = get_resource_exchange();
 
     $objFleet = $objMission->fleet;
 
@@ -615,15 +624,6 @@ class UBE {
   function sn_ube_combat_analyze() {
     $combat_data = &$this->combat_data;
 
-    global $config;
-
-    $this->options[UBE_EXCHANGE] = array(RES_METAL => $config->rpg_exchange_metal);
-
-    $exchange = &$this->options[UBE_EXCHANGE];
-    foreach(array(RES_CRYSTAL => 'rpg_exchange_crystal', RES_DEUTERIUM => 'rpg_exchange_deuterium', RES_DARK_MATTER => 'rpg_exchange_darkMatter') as $resource_id => $resource_name) {
-      $exchange[$resource_id] = $config->$resource_name * $exchange[RES_METAL];
-    }
-
     // Переменные для быстрого доступа к подмассивам
     $outcome = &$combat_data[UBE_OUTCOME];
     $fleets_info = &$combat_data[UBE_FLEETS];
@@ -694,7 +694,7 @@ class UBE {
             }
 
             // ...в металле
-            $resources_lost_in_metal = $resources_lost * $exchange[$resource_id];
+            $resources_lost_in_metal = $resources_lost * $this->resource_exchange_rates[$resource_id];
             $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resources_lost_in_metal;
           }
         }
@@ -729,7 +729,7 @@ class UBE {
           $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
           $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
-          $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $exchange[$resource_id];
+          $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $this->resource_exchange_rates[$resource_id];
         }
         $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
       }
@@ -804,7 +804,6 @@ class UBE {
   function sn_ube_combat_analyze_loot() {
     $combat_data = &$this->combat_data;
 
-    $exchange = &$this->options[UBE_EXCHANGE];
     $planet_resource_list = &$combat_data[UBE_FLEETS][0][UBE_RESOURCES];
     $outcome = &$combat_data[UBE_OUTCOME];
 
@@ -830,7 +829,7 @@ class UBE {
           $looted = round($resource_amount * $planet_lootable_percent * $fleet_lootable_percent);
           $fleet_loot_data[$resource_id] = -$looted;
           $planet_resource_looted[$resource_id] += $looted;
-          $looted_in_metal -= $looted * $exchange[$resource_id];
+          $looted_in_metal -= $looted * $this->resource_exchange_rates[$resource_id];
         }
         $outcome[UBE_FLEETS][$fleet_id][UBE_RESOURCES_LOOTED] = $fleet_loot_data;
         $outcome[UBE_FLEETS][$fleet_id][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $looted_in_metal;
