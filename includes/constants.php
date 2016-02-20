@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.28');
+define('SN_VERSION', '41a4.29');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1272,7 +1272,7 @@ define('UBE_REPORT_NOT_FOUND', 'UBE_REPORT_NOT_FOUND');
 //define('UBE_REPORT_CYPHER', 'UBE_REPORT_CYPHER');
 //define('UBE_REPORT_ID', 'UBE_REPORT_ID');
 //define('UBE_TIME', 'UBE_TIME');
-define('UBE_TIME_SPENT', 'UBE_TIME_SPENT');
+//define('UBE_TIME_SPENT', 'UBE_TIME_SPENT');
 
 define('UBE_OPTIONS', 'UBE_OPTIONS');
 define('UBE_COMBAT_ADMIN', 'UBE_COMBAT_ADMIN');

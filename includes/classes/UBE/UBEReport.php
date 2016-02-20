@@ -116,7 +116,7 @@ class UBEReport {
     SET
       `ube_report_cypher` = '{$ube->report_cypher}',
       `ube_report_time_combat` = '" . date(FMT_DATE_TIME_SQL, $ube->combat_timestamp) . "',
-      `ube_report_time_spent` = {$combat_data[UBE_TIME_SPENT]},
+      `ube_report_time_spent` = {$ube->time_spent},
 
       `ube_report_combat_admin` = " . (int)$ube->options[UBE_COMBAT_ADMIN] . ",
       `ube_report_mission_type` = {$ube->options[UBE_MISSION_TYPE]},
@@ -292,8 +292,8 @@ class UBEReport {
     }
 
     $ube = new UBE();
-    $combat_data = &$ube->combat_data;
-
+    $ube->combat_timestamp = strtotime($report_row['ube_report_time_combat']);
+    $ube->time_spent = $report_row['ube_report_time_spent'];
     $ube->report_cypher = $report_cypher;
 
     $ube->options = array(
@@ -333,10 +333,6 @@ class UBEReport {
 
       UBE_ATTACKERS => array(),
       UBE_DEFENDERS => array(),
-    );
-    $ube->combat_timestamp = strtotime($report_row['ube_report_time_combat']);
-    $combat_data = array(
-      UBE_TIME_SPENT    => $report_row['ube_report_time_spent'],
     );
 
     $outcome = &$ube->outcome;
@@ -549,7 +545,7 @@ class UBEReport {
 
     /** @noinspection SpellCheckingInspection */
     $template_result += array(
-      'MICROTIME' => $ube->combat_data[UBE_TIME_SPENT],
+      'MICROTIME' => $ube->get_time_spent(),
       'COMBAT_TIME' => $ube->combat_timestamp ? $ube->combat_timestamp + SN_CLIENT_TIME_DIFF : 0,
       'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $ube->combat_timestamp + SN_CLIENT_TIME_DIFF),
       'COMBAT_ROUNDS' => count($ube->rounds) - 1,

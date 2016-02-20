@@ -61,6 +61,13 @@ class UBE {
    */
   public $combat_timestamp = 0;
 
+  /**
+   * Время, потраченное на обсчёт
+   *
+   * @var int
+   */
+  public $time_spent = 0;
+
   public $options = array();
 
   public $is_simulator = false;
@@ -334,7 +341,7 @@ class UBE {
         break;
       }
     }
-    $combat_data[UBE_TIME_SPENT] = microtime(true) - $start;
+    $this->time_spent = microtime(true) - $start;
 
     // Делать это всегда - нам нужны результаты боя: луна->обломки->количество осташихся юнитов
     $this->sn_ube_combat_analyze();
@@ -1231,7 +1238,7 @@ class UBE {
   }
 
   function get_time_spent() {
-    return $this->combat_data[UBE_TIME_SPENT];
+    return $this->time_spent;
   }
 
   function get_cypher() {
