@@ -632,21 +632,20 @@ class UBE {
   // OK0
   function sn_ube_combat_analyze() {
     // Переменные для быстрого доступа к подмассивам
-    $outcome = &$this->outcome_obj->outcome;
     $fleets_info = &$this->fleets_obj->fleets;
     $last_round_data = &$this->rounds[count($this->rounds) - 1];
 
-    $outcome[UBE_DEBRIS] = array();
+    $this->outcome_obj->debris_reset();
 
     // Генерируем результат боя
     foreach($fleets_info as $fleet_id => &$fleet_info) {
       $fleet_type = $fleet_info[UBE_FLEET_TYPE];
       // Инициализируем массив результатов для флота
-      $outcome[UBE_FLEETS][$fleet_id] = array(UBE_UNITS_LOST => array());
-      $outcome[$fleet_type][UBE_FLEETS][$fleet_id] = &$outcome[UBE_FLEETS][$fleet_id];
+      $this->outcome_obj->outcome[UBE_FLEETS][$fleet_id] = array(UBE_UNITS_LOST => array());
+      $this->outcome_obj->outcome[$fleet_type][UBE_FLEETS][$fleet_id] = &$this->outcome_obj->outcome[UBE_FLEETS][$fleet_id];
 
       // Переменные для быстрого доступа к подмассивам
-      $fleet_outcome = &$outcome[UBE_FLEETS][$fleet_id];
+      $fleet_outcome = &$this->outcome_obj->outcome[UBE_FLEETS][$fleet_id];
       $fleet_data = &$last_round_data[UBE_FLEETS][$fleet_id];
 
       foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
@@ -680,7 +679,7 @@ class UBE {
         $units_lost = $unit_count - $units_left;
 
         // Вычисляем емкость трюмов оставшихся кораблей
-        $outcome[$fleet_type][UBE_CAPACITY][$fleet_id] += $fleet_info[UBE_CAPACITY][$unit_id] * $units_left;
+        $this->outcome_obj->outcome[$fleet_type][UBE_CAPACITY][$fleet_id] += $fleet_info[UBE_CAPACITY][$unit_id] * $units_left;
 
         // Вычисляем потери в ресурсах
         if($units_lost) {
@@ -697,7 +696,7 @@ class UBE {
 
             // Если это корабль - прибавляем потери к обломкам на орбите
             if($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS) {
-              $outcome[UBE_DEBRIS][$resource_id] += floor($resources_lost * ($this->is_simulator ? 30 : mt_rand(20, 40)) / 100); // TODO: Configurize
+              $this->outcome_obj->debris_add_resource($resource_id, floor($resources_lost * ($this->is_simulator ? 30 : mt_rand(20, 40)) / 100)); // TODO: Configurize
             }
 
             // ...в металле
@@ -720,7 +719,7 @@ class UBE {
       }
 
       // Емкость трюмов флота
-      $fleet_capacity = $outcome[$fleet_type][UBE_CAPACITY][$fleet_id];
+      $fleet_capacity = $this->outcome_obj->outcome[$fleet_type][UBE_CAPACITY][$fleet_id];
       // Если емкость трюмов меньше количество ресурсов - часть ресов выбрасываем нахуй
       if($fleet_capacity < $fleet_total_resources) {
         $left_percent = $fleet_capacity / $fleet_total_resources; // Сколько ресурсов будет оставлено
@@ -735,28 +734,29 @@ class UBE {
           $resource_dropped = $resource_amount - $fleet_outcome[UBE_RESOURCES][$resource_id];
           $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
-          $outcome[UBE_DEBRIS][$resource_id] += round($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100); // TODO: Configurize
+          $this->outcome_obj->debris_add_resource($resource_id, floor($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100)); // TODO: Configurize
+
           $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $this->resource_exchange_rates[$resource_id];
         }
         $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
       }
 
-      $outcome[$fleet_type][UBE_CAPACITY][$fleet_id] = $fleet_capacity - $fleet_total_resources;
+      $this->outcome_obj->outcome[$fleet_type][UBE_CAPACITY][$fleet_id] = $fleet_capacity - $fleet_total_resources;
     }
 
-    $outcome[UBE_COMBAT_RESULT] = !isset($last_round_data[UBE_OUTCOME]) || $last_round_data[UBE_OUTCOME] == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $last_round_data[UBE_OUTCOME];
+    $this->outcome_obj->combat_result = !isset($last_round_data[UBE_OUTCOME]) || $last_round_data[UBE_OUTCOME] == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $last_round_data[UBE_OUTCOME];
     // SFR - Small Fleet Reconnaissance ака РМФ
-    $outcome[UBE_SFR] = count($this->rounds) == 2 && $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_LOSS;
+    $this->outcome_obj->outcome[UBE_SFR] = count($this->rounds) == 2 && $this->outcome_obj->combat_result == UBE_COMBAT_RESULT_LOSS;
 
     if(!$this->is_ube_loaded) {
       if($this->is_moon_exists) {
-        $outcome[UBE_MOON] = UBE_MOON_WAS;
+        $this->outcome_obj->outcome[UBE_MOON] = UBE_MOON_WAS;
       } else {
-        $this->sn_ube_combat_analyze_moon($outcome, $this->is_simulator);
+        $this->outcome_obj->moon_create_try($this->is_simulator);
       }
 
       // Лутаем ресурсы - если аттакер выиграл
-      if($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN) {
+      if($this->outcome_obj->combat_result == UBE_COMBAT_RESULT_WIN) {
         $this->sn_ube_combat_analyze_loot();
         if($this->is_moon_exists && $this->mission_type_id == MT_DESTROY) {
           $this->sn_ube_combat_analyze_moon_destroy();
@@ -768,54 +768,13 @@ class UBE {
 
   // ------------------------------------------------------------------------------------------------
   // OK0
-  function sn_ube_combat_analyze_moon(&$outcome, $is_simulator) {
-    $outcome[UBE_DEBRIS_TOTAL] = 0;
-    foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) {
-      $outcome[UBE_DEBRIS_TOTAL] += $outcome[UBE_DEBRIS][$resource_id];
-    }
-
-    if($outcome[UBE_DEBRIS_TOTAL]) {
-      // TODO uni_calculate_moon_chance
-      $moon_chance = min($outcome[UBE_DEBRIS_TOTAL] / 1000000, 30); // TODO Configure
-      $moon_chance = $moon_chance >= 1 ? $moon_chance : 0;
-      $outcome[UBE_MOON_CHANCE] = $moon_chance;
-      if($moon_chance) {
-        if($is_simulator || mt_rand(1, 100) <= $moon_chance) {
-          $outcome[UBE_MOON_SIZE] = round($is_simulator ? $moon_chance * 150 + 1999 : mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999));
-          $outcome[UBE_MOON] = UBE_MOON_CREATE_SUCCESS;
-
-          if($outcome[UBE_DEBRIS_TOTAL] <= 30000000) {
-            $outcome[UBE_DEBRIS_TOTAL] = 0;
-            $outcome[UBE_DEBRIS] = array();
-          } else {
-            $moon_debris_spent = 30000000;
-            $moon_debris_left_percent = ($outcome[UBE_DEBRIS_TOTAL] - $moon_debris_spent) / $outcome[UBE_DEBRIS_TOTAL];
-
-            $outcome[UBE_DEBRIS_TOTAL] = 0;
-            foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) {
-              $outcome[UBE_DEBRIS][$resource_id] = floor($outcome[UBE_DEBRIS][$resource_id] * $moon_debris_left_percent);
-              $outcome[UBE_DEBRIS_TOTAL] += $outcome[UBE_DEBRIS][$resource_id];
-            }
-          }
-        } else {
-          $outcome[UBE_MOON] = UBE_MOON_CREATE_FAILED;
-        }
-      }
-    } else {
-      $outcome[UBE_MOON] = UBE_MOON_NONE;
-    }
-  }
-
-  // ------------------------------------------------------------------------------------------------
-  // OK0
   function sn_ube_combat_analyze_loot() {
     $planet_resource_list = &$this->fleets_obj->fleets[0][UBE_RESOURCES];
-    $outcome = &$this->outcome_obj->outcome;
 
     $planet_looted_in_metal = 0;
     $planet_resource_looted = array();
     $planet_resource_total = is_array($planet_resource_list) ? array_sum($planet_resource_list) : 0;
-    if($planet_resource_total && ($total_capacity = array_sum($outcome[UBE_ATTACKERS][UBE_CAPACITY]))) {
+    if($planet_resource_total && ($total_capacity = array_sum($this->outcome_obj->outcome[UBE_ATTACKERS][UBE_CAPACITY]))) {
       // Можно вывести только половину ресурсов, но не больше, чем общая вместимость флотов атакующих
       $planet_lootable = min($planet_resource_total / 2, $total_capacity);
       // Вычисляем процент вывоза. Каждого ресурса будет вывезено в одинаковых пропорциях
@@ -825,7 +784,7 @@ class UBE {
       $total_lootable = min($planet_lootable, $total_capacity);
 
       // Вычисляем сколько ресурсов вывезено
-      foreach($outcome[UBE_ATTACKERS][UBE_CAPACITY] as $fleet_id => $fleet_capacity) {
+      foreach($this->outcome_obj->outcome[UBE_ATTACKERS][UBE_CAPACITY] as $fleet_id => $fleet_capacity) {
         $looted_in_metal = 0;
         $fleet_loot_data = array();
         foreach($planet_resource_list as $resource_id => $resource_amount) {
@@ -836,14 +795,14 @@ class UBE {
           $planet_resource_looted[$resource_id] += $looted;
           $looted_in_metal -= $looted * $this->resource_exchange_rates[$resource_id];
         }
-        $outcome[UBE_FLEETS][$fleet_id][UBE_RESOURCES_LOOTED] = $fleet_loot_data;
-        $outcome[UBE_FLEETS][$fleet_id][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $looted_in_metal;
+        $this->outcome_obj->outcome[UBE_FLEETS][$fleet_id][UBE_RESOURCES_LOOTED] = $fleet_loot_data;
+        $this->outcome_obj->outcome[UBE_FLEETS][$fleet_id][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $looted_in_metal;
         $planet_looted_in_metal += $looted_in_metal;
       }
     }
 
-    $outcome[UBE_FLEETS][0][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] -= $planet_looted_in_metal;
-    $outcome[UBE_FLEETS][0][UBE_RESOURCES_LOOTED] = $planet_resource_looted;
+    $this->outcome_obj->outcome[UBE_FLEETS][0][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] -= $planet_looted_in_metal;
+    $this->outcome_obj->outcome[UBE_FLEETS][0][UBE_RESOURCES_LOOTED] = $planet_resource_looted;
   }
 
 
@@ -919,19 +878,18 @@ class UBE {
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleets_obj->fleets[0][UBE_OWNER];
 
-    $outcome = &$this->outcome_obj->outcome;
-    $planet_info = &$outcome[UBE_PLANET];
+    $planet_info = &$this->outcome_obj->outcome[UBE_PLANET];
     $planet_id = $planet_info[PLANET_ID];
     // Обновляем поле обломков на планете
-    if(!$this->is_admin_in_combat && !empty($outcome[UBE_DEBRIS])) {
+    if(!$this->is_admin_in_combat && $this->outcome_obj->debris_total() > 0) {
       db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
-        "`debris_metal` = `debris_metal` + " . floor($outcome[UBE_DEBRIS][RES_METAL]) . ", `debris_crystal` = `debris_crystal` + " . floor($outcome[UBE_DEBRIS][RES_CRYSTAL])
+        "`debris_metal` = `debris_metal` + " . $this->outcome_obj->debris_get_resource(RES_METAL) . ", `debris_crystal` = `debris_crystal` + " . $this->outcome_obj->debris_get_resource(RES_CRYSTAL)
       );
     }
 
     $fleet_group_id_list = array(); // Для САБов
 
-    $fleets_outcome = &$outcome[UBE_FLEETS];
+    $fleets_outcome = &$this->outcome_obj->outcome[UBE_FLEETS];
     foreach($this->fleets_obj->fleets as $fleet_id => &$fleet_info) {
       $fleet_info[UBE_FLEET_GROUP] ? $fleet_group_id_list[$fleet_info[UBE_FLEET_GROUP]] = $fleet_info[UBE_FLEET_GROUP] : false;
 
@@ -949,7 +907,7 @@ class UBE {
         $objFleet->set_db_id($fleet_id);
 
         // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
-        if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED) {
+        if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $this->outcome_obj->outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED) {
           $ship_count_lost = $ship_count_initial;
         }
 
@@ -972,7 +930,7 @@ class UBE {
           $objFleet->update_resources($resource_delta_fleet);
 
           // Если защитник и не РМФ - отправляем флот назад
-          if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS) {
+          if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$this->outcome_obj->outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS) {
             $objFleet->mark_fleet_as_returned();
           }
           $objFleet->flush_changes_to_db();
@@ -1009,11 +967,11 @@ class UBE {
       doquery("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
     }
 
-    if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
-      $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $outcome[UBE_MOON_SIZE], '', false);
-      $outcome[UBE_MOON_NAME] = $moon_row['name'];
+    if($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
+      $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $this->outcome_obj->outcome[UBE_MOON_SIZE], '', false);
+      $this->outcome_obj->outcome[UBE_MOON_NAME] = $moon_row['name'];
       unset($moon_row);
-    } elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS) {
+    } elseif($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS) {
       db_planet_delete_by_id($planet_id);
     }
 
@@ -1023,11 +981,11 @@ class UBE {
       if($player_side != UBE_PLAYER_IS_ATTACKER) {
         continue;
       }
-      if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
+      if($this->outcome_obj->outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
         $bashing_list[] = "({$player_id}, {$planet_id}, {$this->combat_timestamp})";
       }
       if($this->mission_type_id == MT_ATTACK && $this->is_defender_active_player) {
-        $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
+        $str_loose_or_win = $this->outcome_obj->combat_result == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
         db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
       }
     }
@@ -1085,8 +1043,7 @@ class UBE {
 
     // TODO: Отсылать каждому игроку сообщение на его языке!
 
-    $outcome = &$this->outcome_obj->outcome;
-    $planet_info = &$outcome[UBE_PLANET];
+    $planet_info = &$this->outcome_obj->outcome[UBE_PLANET];
 
     // Генерируем текст письма
     $text_common = sprintf($lang['ube_report_msg_body_common'],
@@ -1096,12 +1053,13 @@ class UBE {
       $planet_info[PLANET_SYSTEM],
       $planet_info[PLANET_PLANET],
       htmlentities($planet_info[PLANET_NAME], ENT_COMPAT, 'UTF-8'),
-      $lang[$outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'ube_report_info_outcome_win' :
-        ($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')]
+      $lang[$this->outcome_obj->combat_result == UBE_COMBAT_RESULT_WIN ? 'ube_report_info_outcome_win' :
+        ($this->outcome_obj->combat_result == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')]
     );
 
     $text_defender = '';
-    foreach($outcome[UBE_DEBRIS] as $resource_id => $resource_amount) {
+    $debrises = $this->outcome_obj->debris_get();
+    foreach($debrises as $resource_id => $resource_amount) {
       if($resource_id == RES_DEUTERIUM) {
         continue;
       }
@@ -1112,21 +1070,21 @@ class UBE {
       $text_defender = "{$lang['ube_report_msg_body_debris']}{$text_defender}<br />";
     }
 
-    if($outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
-      $text_defender .= "{$lang['ube_report_moon_created']} {$outcome[UBE_MOON_SIZE]} {$lang['sys_kilometers_short']}<br /><br />";
-    } elseif($outcome[UBE_MOON] == UBE_MOON_CREATE_FAILED) {
-      $text_defender .= "{$lang['ube_report_moon_chance']} {$outcome[UBE_MOON_CHANCE]}%<br /><br />";
+    if($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
+      $text_defender .= "{$lang['ube_report_moon_created']} {$this->outcome_obj->outcome[UBE_MOON_SIZE]} {$lang['sys_kilometers_short']}<br /><br />";
+    } elseif($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_CREATE_FAILED) {
+      $text_defender .= "{$lang['ube_report_moon_chance']} {$this->outcome_obj->outcome[UBE_MOON_CHANCE]}%<br /><br />";
     }
 
     if($this->mission_type_id == MT_DESTROY) {
-      if($outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_NONE) {
+      if($this->outcome_obj->outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_NONE) {
         $text_defender .= $lang['ube_report_moon_reapers_none'];
       } else {
-        $text_defender .= "{$lang['ube_report_moon_reapers_wave']}. {$lang['ube_report_moon_reapers_chance']} {$outcome[UBE_MOON_DESTROY_CHANCE]}%. ";
-        $text_defender .= $lang[$outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";
+        $text_defender .= "{$lang['ube_report_moon_reapers_wave']}. {$lang['ube_report_moon_reapers_chance']} {$this->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE]}%. ";
+        $text_defender .= $lang[$this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";
 
-        $text_defender .= "{$lang['ube_report_moon_reapers_outcome']} {$outcome[UBE_MOON_REAPERS_DIE_CHANCE]}%. ";
-        $text_defender .= $lang[$outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_RETURNED ? 'ube_report_moon_reapers_survive' : 'ube_report_moon_reapers_died'];
+        $text_defender .= "{$lang['ube_report_moon_reapers_outcome']} {$this->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE]}%. ";
+        $text_defender .= $lang[$this->outcome_obj->outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_RETURNED ? 'ube_report_moon_reapers_survive' : 'ube_report_moon_reapers_died'];
       }
       $text_defender .= '<br /><br />';
     }
@@ -1136,7 +1094,7 @@ class UBE {
     // TODO: Оптимизировать отсылку сообщений - отсылать пакетами
     $player_sides = $this->players_obj->get_player_sides();
     foreach($player_sides as $player_id => $player_side) {
-      $message = $text_common . ($outcome[UBE_SFR] && ($player_side == UBE_PLAYER_IS_ATTACKER) ? $lang['ube_report_msg_body_sfr'] : $text_defender);
+      $message = $text_common . ($this->outcome_obj->outcome[UBE_SFR] && ($player_side == UBE_PLAYER_IS_ATTACKER) ? $lang['ube_report_msg_body_sfr'] : $text_defender);
       msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $message);
     }
 

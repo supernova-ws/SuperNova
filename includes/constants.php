@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.35');
+define('SN_VERSION', '41a4.36');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -13,6 +13,11 @@ define('UBE_DEFENDER_ACTIVE_TIMEOUT', 60 * 60 * 24 * 7);
 define('UBE_SHIP_BOOM_COEFFICIENT', 0.2);
 define('UBE_RANDOMIZE_FROM', 80); // 80
 define('UBE_RANDOMIZE_TO', 120); // 120
+
+define('UBE_MOON_PERCENT_MIN', 1); // Minimum percent for moon creation during combat
+define('UBE_MOON_PERCENT_MAX', 30); // Maximum percent for moon creation during combat
+define('UBE_MOON_DEBRIS_PER_PERCENT', 1000000); // Resources amount for 1% of moon creation
+define('UBE_MOON_DEBRIS_MAX_SPENT', UBE_MOON_PERCENT_MAX * UBE_MOON_DEBRIS_PER_PERCENT); // Maximum resource amount that can be spent on moon creation
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -1286,8 +1291,8 @@ define('UBE_REPORT_NOT_FOUND', 'UBE_REPORT_NOT_FOUND');
 define('UBE_OUTCOME', 'UBE_OUTCOME');
 define('UBE_COMBAT_RESULT', 'UBE_COMBAT_RESULT');
 define('UBE_SFR', 'UBE_SFR');
-define('UBE_DEBRIS', 'UBE_DEBRIS');
-define('UBE_DEBRIS_TOTAL', 'UBE_DEBRIS_TOTAL');
+//define('UBE_DEBRIS', 'UBE_DEBRIS');
+//define('UBE_DEBRIS_TOTAL', 'UBE_DEBRIS_TOTAL');
 
 define('UBE_CAPTURE_RESULT', 'UBE_CAPTURE_RESULT');
 define('UBE_CAPTURE_DISABLED', 0);

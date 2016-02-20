@@ -105,11 +105,12 @@ class UBEReport {
     );
 
     // Сохраняем общую информацию о бое
-    $outcome = &$ube->outcome_obj->outcome;
-    $ube_report_debris_total_in_metal = (
-        floatval($outcome[UBE_DEBRIS][RES_METAL])
-        + floatval($outcome[UBE_DEBRIS][RES_CRYSTAL]) * floatval($config->rpg_exchange_crystal)
+    $ube_report_debris_total_in_metal =
+      (
+        floatval($ube->outcome_obj->debris_get_resource(RES_METAL))
+        + floatval($ube->outcome_obj->debris_get_resource(RES_CRYSTAL)) * floatval($config->rpg_exchange_crystal)
       ) / (floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1);
+
     doquery("INSERT INTO `{{ube_report}}`
     SET
       `ube_report_cypher` = '{$ube->report_cypher}',
@@ -119,30 +120,30 @@ class UBEReport {
       `ube_report_combat_admin` = " . (int)$ube->is_admin_in_combat . ",
       `ube_report_mission_type` = {$ube->mission_type_id},
 
-      `ube_report_combat_result` = {$outcome[UBE_COMBAT_RESULT]},
-      `ube_report_combat_sfr` = " . (int)$outcome[UBE_SFR] . ",
+      `ube_report_combat_result` = {$ube->outcome_obj->combat_result},
+      `ube_report_combat_sfr` = " . (int)$ube->outcome_obj->outcome[UBE_SFR] . ",
 
-      `ube_report_debris_metal` = " . (float)$outcome[UBE_DEBRIS][RES_METAL] . ",
-      `ube_report_debris_crystal` = " . (float)$outcome[UBE_DEBRIS][RES_CRYSTAL] . ",
+      `ube_report_debris_metal` = " . (float)$ube->outcome_obj->debris_get_resource(RES_METAL) . ",
+      `ube_report_debris_crystal` = " . (float)$ube->outcome_obj->debris_get_resource(RES_CRYSTAL) . ",
       `ube_report_debris_total_in_metal` = " . $ube_report_debris_total_in_metal . ",
 
-      `ube_report_planet_id`          = " . (int)$outcome[UBE_PLANET][PLANET_ID] . ",
-      `ube_report_planet_name`        = '" . db_escape($outcome[UBE_PLANET][PLANET_NAME]) . "',
-      `ube_report_planet_size`        = " . (int)$outcome[UBE_PLANET][PLANET_SIZE] . ",
-      `ube_report_planet_galaxy`      = " . (int)$outcome[UBE_PLANET][PLANET_GALAXY] . ",
-      `ube_report_planet_system`      = " . (int)$outcome[UBE_PLANET][PLANET_SYSTEM] . ",
-      `ube_report_planet_planet`      = " . (int)$outcome[UBE_PLANET][PLANET_PLANET] . ",
-      `ube_report_planet_planet_type` = " . (int)$outcome[UBE_PLANET][PLANET_TYPE] . ",
+      `ube_report_planet_id`          = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_ID] . ",
+      `ube_report_planet_name`        = '" . db_escape($ube->outcome_obj->outcome[UBE_PLANET][PLANET_NAME]) . "',
+      `ube_report_planet_size`        = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_SIZE] . ",
+      `ube_report_planet_galaxy`      = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_GALAXY] . ",
+      `ube_report_planet_system`      = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_SYSTEM] . ",
+      `ube_report_planet_planet`      = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_PLANET] . ",
+      `ube_report_planet_planet_type` = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_TYPE] . ",
 
-      `ube_report_moon` = " . (int)$outcome[UBE_MOON] . ",
-      `ube_report_moon_chance` = " . (int)$outcome[UBE_MOON_CHANCE] . ",
-      `ube_report_moon_size` = " . (float)$outcome[UBE_MOON_SIZE] . ",
+      `ube_report_moon` = " . (int)$ube->outcome_obj->outcome[UBE_MOON] . ",
+      `ube_report_moon_chance` = " . (int)$ube->outcome_obj->outcome[UBE_MOON_CHANCE] . ",
+      `ube_report_moon_size` = " . (float)$ube->outcome_obj->outcome[UBE_MOON_SIZE] . ",
 
-      `ube_report_moon_reapers` = " . (int)$outcome[UBE_MOON_REAPERS] . ",
-      `ube_report_moon_destroy_chance` = " . (int)$outcome[UBE_MOON_DESTROY_CHANCE] . ",
-      `ube_report_moon_reapers_die_chance` = " . (int)$outcome[UBE_MOON_REAPERS_DIE_CHANCE] . ",
+      `ube_report_moon_reapers` = " . (int)$ube->outcome_obj->outcome[UBE_MOON_REAPERS] . ",
+      `ube_report_moon_destroy_chance` = " . (int)$ube->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE] . ",
+      `ube_report_moon_reapers_die_chance` = " . (int)$ube->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE] . ",
 
-      `ube_report_capture_result` = " . (int)$outcome[UBE_CAPTURE_RESULT] . "
+      `ube_report_capture_result` = " . (int)$ube->outcome_obj->outcome[UBE_CAPTURE_RESULT] . "
   ");
 //    $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
     $ube_report_id = db_insert_id();
@@ -189,7 +190,7 @@ class UBEReport {
       );
 
       // Сохраняем итоговую информацию по ресурсам флота - потеряно, выброшено, увезено
-      $fleet_outcome_data = &$outcome[UBE_FLEETS][$fleet_id];
+      $fleet_outcome_data = &$ube->outcome_obj->outcome[UBE_FLEETS][$fleet_id];
       $sql_perform['ube_report_outcome_fleet'][] = array(
         $ube_report_id,
         $fleet_id,
@@ -299,40 +300,7 @@ class UBEReport {
     $ube->is_admin_in_combat = $report_row['ube_report_combat_admin'];
     $ube->mission_type_id = $report_row['ube_report_mission_type'];
 
-    $ube->outcome_obj->outcome = array(
-      UBE_COMBAT_RESULT => $report_row['ube_report_combat_result'],
-      UBE_SFR           => $report_row['ube_report_combat_sfr'],
-
-      UBE_PLANET => array(
-        PLANET_ID     => $report_row['ube_report_planet_id'],
-        PLANET_NAME   => $report_row['ube_report_planet_name'],
-        PLANET_SIZE   => $report_row['ube_report_planet_size'],
-        PLANET_GALAXY => $report_row['ube_report_planet_galaxy'],
-        PLANET_SYSTEM => $report_row['ube_report_planet_system'],
-        PLANET_PLANET => $report_row['ube_report_planet_planet'],
-        PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
-      ),
-
-      UBE_DEBRIS => array(
-        RES_METAL   => $report_row['ube_report_debris_metal'],
-        RES_CRYSTAL => $report_row['ube_report_debris_crystal'],
-      ),
-
-      UBE_MOON        => $report_row['ube_report_moon'],
-      UBE_MOON_CHANCE => $report_row['ube_report_moon_chance'],
-      UBE_MOON_SIZE   => $report_row['ube_report_moon_size'],
-
-      UBE_MOON_REAPERS            => $report_row['ube_report_moon_reapers'],
-      UBE_MOON_DESTROY_CHANCE     => $report_row['ube_report_moon_destroy_chance'],
-      UBE_MOON_REAPERS_DIE_CHANCE => $report_row['ube_report_moon_reapers_die_chance'],
-
-      UBE_CAPTURE_RESULT => $report_row['ube_report_capture_result'],
-
-      UBE_ATTACKERS => array(),
-      UBE_DEFENDERS => array(),
-    );
-
-    $outcome = &$ube->outcome_obj->outcome;
+    $ube->outcome_obj->load_from_report_row($report_row);
 
     $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($player_row = db_fetch($query)) {
@@ -403,7 +371,7 @@ class UBEReport {
     while($row = db_fetch($query)) {
       $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
 
-      $outcome[UBE_FLEETS][$fleet_id] = array(
+      $ube->outcome_obj->outcome[UBE_FLEETS][$fleet_id] = array(
         UBE_RESOURCES_LOST => array(
           RES_METAL     => $row['ube_report_outcome_fleet_resource_lost_metal'],
           RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_lost_crystal'],
@@ -429,15 +397,15 @@ class UBEReport {
 
       $side = $ube->fleets_obj->fleets[$fleet_id][UBE_FLEET_TYPE];
 
-      $outcome[$side][UBE_FLEETS][$fleet_id] = &$outcome[UBE_FLEETS][$fleet_id];
+      $ube->outcome_obj->outcome[$side][UBE_FLEETS][$fleet_id] = &$ube->outcome_obj->outcome[UBE_FLEETS][$fleet_id];
     }
 
     $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
     while($row = db_fetch($query)) {
       $fleet_id = $row['ube_report_outcome_unit_fleet_id'];
       $side = $ube->fleets_obj->fleets[$fleet_id][UBE_FLEET_TYPE];
-      $outcome[$side][UBE_FLEETS][$fleet_id][UBE_UNITS_LOST][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_lost'];
-      $outcome[$side][UBE_FLEETS][$fleet_id][UBE_DEFENCE_RESTORE][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_restored'];
+      $ube->outcome_obj->outcome[$side][UBE_FLEETS][$fleet_id][UBE_UNITS_LOST][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_lost'];
+      $ube->outcome_obj->outcome[$side][UBE_FLEETS][$fleet_id][UBE_DEFENCE_RESTORE][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_restored'];
     }
 
     return $ube;
@@ -460,7 +428,6 @@ class UBEReport {
     global $lang;
 
     // Обсчитываем результаты боя из начальных данных
-    $outcome = &$ube->outcome_obj->outcome;
     // Генерируем отчет по флотам
     for($round = 1; $round <= count($ube->rounds) - 1; $round++)
     {
@@ -476,14 +443,14 @@ class UBEReport {
     // Боевые потери флотов
     foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $side)
     {
-      if(!is_array($outcome[$side][UBE_FLEETS]))
+      if(!is_array($ube->outcome_obj->outcome[$side][UBE_FLEETS]))
       {
         continue;
       }
-      foreach($outcome[$side][UBE_FLEETS] as $fleet_id => $temp)
+      foreach($ube->outcome_obj->outcome[$side][UBE_FLEETS] as $fleet_id => $temp)
       {
         $fleet_owner_id = $ube->fleets_obj->fleets[$fleet_id][UBE_OWNER];
-        $fleet_outcome = &$outcome[UBE_FLEETS][$fleet_id];
+        $fleet_outcome = &$ube->outcome_obj->outcome[UBE_FLEETS][$fleet_id];
 
         $template_result['.']['loss'][] = array(
           'ID' => $fleet_id,
@@ -507,7 +474,7 @@ class UBEReport {
     $debris = array();
     foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id)
     {
-      if($resource_amount = $outcome[UBE_DEBRIS][$resource_id])
+      if($resource_amount = $ube->outcome_obj->debris_get_resource($resource_id))
       {
         $debris[] = array(
           'NAME' => $lang['tech'][$resource_id],
@@ -538,12 +505,12 @@ class UBEReport {
 
       'PLANET_TYPE_TEXT' => $lang['sys_planet_type_sh'][$template_result['PLANET_TYPE']],
 
-      'UBE_MOON' => $outcome[UBE_MOON],
-      'UBE_MOON_CHANCE' => round($outcome[UBE_MOON_CHANCE], 2),
-      'UBE_MOON_SIZE' => $outcome[UBE_MOON_SIZE],
-      'UBE_MOON_REAPERS' => $outcome[UBE_MOON_REAPERS],
-      'UBE_MOON_DESTROY_CHANCE' => $outcome[UBE_MOON_DESTROY_CHANCE],
-      'UBE_MOON_REAPERS_DIE_CHANCE' => $outcome[UBE_MOON_REAPERS_DIE_CHANCE],
+      'UBE_MOON' => $ube->outcome_obj->outcome[UBE_MOON],
+      'UBE_MOON_CHANCE' => round($ube->outcome_obj->outcome[UBE_MOON_CHANCE], 2),
+      'UBE_MOON_SIZE' => $ube->outcome_obj->outcome[UBE_MOON_SIZE],
+      'UBE_MOON_REAPERS' => $ube->outcome_obj->outcome[UBE_MOON_REAPERS],
+      'UBE_MOON_DESTROY_CHANCE' => $ube->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE],
+      'UBE_MOON_REAPERS_DIE_CHANCE' => $ube->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE],
 
       'UBE_MOON_WAS' => UBE_MOON_WAS,
       'UBE_MOON_NONE' => UBE_MOON_NONE,
@@ -556,8 +523,8 @@ class UBEReport {
       'UBE_CAPTURE_RESULT' => $ube->outcome_obj->outcome[UBE_CAPTURE_RESULT],
       'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$ube->outcome_obj->outcome[UBE_CAPTURE_RESULT]],
 
-      'UBE_SFR' => $outcome[UBE_SFR],
-      'UBE_COMBAT_RESULT' => $outcome[UBE_COMBAT_RESULT],
+      'UBE_SFR' => $ube->outcome_obj->outcome[UBE_SFR],
+      'UBE_COMBAT_RESULT' => $ube->outcome_obj->combat_result,
       'UBE_COMBAT_RESULT_WIN' => UBE_COMBAT_RESULT_WIN,
       'UBE_COMBAT_RESULT_LOSS' => UBE_COMBAT_RESULT_LOSS,
     );
