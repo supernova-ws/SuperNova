@@ -60,13 +60,13 @@ class UBEMoonCalculator {
   }
 
   /**
-   * @param bool       $is_simulator
-   * @param UBEOutcome $outcome
+   * @param UBEDebris $debris
+   * @param bool      $is_simulator
    */
-  protected function moon_create_try($is_simulator, $outcome) {
+  protected function moon_create_try(UBEDebris $debris, $is_simulator = false) {
     $this->status = UBE_MOON_NONE;
 
-    $debris_for_moon = $outcome->debris_total();
+    $debris_for_moon = $debris->debris_total();
 
     if(!$debris_for_moon) {
       return;
@@ -82,10 +82,10 @@ class UBEMoonCalculator {
         $this->moon_diameter = round($is_simulator ? $moon_chance * 150 + 1999 : mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999));
 
         if($debris_for_moon <= UBE_MOON_DEBRIS_MAX_SPENT) {
-          $outcome->debris_reset();
+          $debris->debris_reset();
         } else {
           $moon_debris_left_percent = ($debris_for_moon - UBE_MOON_DEBRIS_MAX_SPENT) / $debris_for_moon;
-          $outcome->debris_adjust_proportional($moon_debris_left_percent);
+          $debris->debris_adjust_proportional($moon_debris_left_percent);
         }
       } else {
         $this->status = UBE_MOON_CREATE_FAILED;
@@ -131,7 +131,7 @@ class UBEMoonCalculator {
         $this->moon_destroy_try($this->calculate_reapers($ube));
       }
     } else {
-      $this->moon_create_try($ube->is_simulator, $ube->outcome_obj);
+      $this->moon_create_try($ube->debris, $ube->is_simulator);
     }
   }
 
@@ -220,7 +220,7 @@ class UBEMoonCalculator {
       $this->moon_diameter = $destination_planet['diameter'];
       $this->reapers_status = UBE_MOON_REAPERS_NONE;
     } else {
-      // По умолчанию - нет луны итд
+      // По умолчанию: нет луны итд
     }
   }
 

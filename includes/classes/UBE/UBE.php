@@ -3,6 +3,7 @@
 require_once('UBEReport.php');
 require_once('UBEPlayerList.php');
 require_once('UBEMoonCalculator.php');
+require_once('UBEDebris.php');
 
 
 // ------------------------------------------------------------------------------------------------
@@ -118,11 +119,17 @@ class UBE {
    */
   public $moon_calculator = null;
 
+  /**
+   * @var UBEDebris
+   */
+  public $debris = null;
+
   public function __construct() {
     $this->players_obj = new UBEPlayerList();
     $this->fleets_obj = new UBEFleetList();
     $this->outcome_obj = new UBEOutcome();
     $this->moon_calculator = new UBEMoonCalculator();
+    $this->debris = new UBEDebris();
   }
 
   /**
@@ -640,7 +647,7 @@ class UBE {
     $fleets_info = &$this->fleets_obj->fleets;
     $last_round_data = &$this->rounds[count($this->rounds) - 1];
 
-    $this->outcome_obj->debris_reset();
+    $this->debris->debris_reset();
 
     // Генерируем результат боя
     foreach($fleets_info as $fleet_id => &$fleet_info) {
@@ -701,7 +708,7 @@ class UBE {
 
             // Если это корабль - прибавляем потери к обломкам на орбите
             if($fleet_info[UBE_TYPE][$unit_id] == UNIT_SHIPS) {
-              $this->outcome_obj->debris_add_resource($resource_id, floor($resources_lost * ($this->is_simulator ? 30 : mt_rand(20, 40)) / 100)); // TODO: Configurize
+              $this->debris->debris_add_resource($resource_id, floor($resources_lost * ($this->is_simulator ? 30 : mt_rand(20, 40)) / 100)); // TODO: Configurize
             }
 
             // ...в металле
@@ -739,7 +746,7 @@ class UBE {
           $resource_dropped = $resource_amount - $fleet_outcome[UBE_RESOURCES][$resource_id];
           $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
-          $this->outcome_obj->debris_add_resource($resource_id, floor($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100)); // TODO: Configurize
+          $this->debris->debris_add_resource($resource_id, floor($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100)); // TODO: Configurize
 
           $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $this->resource_exchange_rates[$resource_id];
         }
@@ -851,9 +858,9 @@ class UBE {
     $planet_info = &$this->outcome_obj->outcome[UBE_PLANET];
     $planet_id = $planet_info[PLANET_ID];
     // Обновляем поле обломков на планете
-    if(!$this->is_admin_in_combat && $this->outcome_obj->debris_total() > 0) {
+    if(!$this->is_admin_in_combat && $this->debris->debris_total() > 0) {
       db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
-        "`debris_metal` = `debris_metal` + " . $this->outcome_obj->debris_get_resource(RES_METAL) . ", `debris_crystal` = `debris_crystal` + " . $this->outcome_obj->debris_get_resource(RES_CRYSTAL)
+        "`debris_metal` = `debris_metal` + " . $this->debris->debris_get_resource(RES_METAL) . ", `debris_crystal` = `debris_crystal` + " . $this->debris->debris_get_resource(RES_CRYSTAL)
       );
     }
 
@@ -1022,8 +1029,8 @@ class UBE {
     );
 
     $text_defender = '';
-    $debrises = $this->outcome_obj->debris_get();
-    foreach($debrises as $resource_id => $resource_amount) {
+    $debris = $this->debris->debris_get();
+    foreach($debris as $resource_id => $resource_amount) {
       if($resource_id == RES_DEUTERIUM) {
         continue;
       }
@@ -1215,6 +1222,11 @@ class UBE {
     $this->moon_calculator->load_from_report($report_row);
 
     $this->outcome_obj->load_from_report_row($report_row);
+
+    $this->debris->debris_reset();
+    $this->debris->debris_add_resource(RES_METAL, $report_row['ube_report_debris_metal']);
+    $this->debris->debris_add_resource(RES_CRYSTAL, $report_row['ube_report_debris_crystal']);
+
 
     $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($player_row = db_fetch($query)) {

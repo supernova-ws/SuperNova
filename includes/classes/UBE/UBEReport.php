@@ -105,13 +105,6 @@ class UBEReport {
     );
 
     // Сохраняем общую информацию о бое
-    $ube_report_debris_total_in_metal =
-      (
-        floatval($ube->outcome_obj->debris_get_resource(RES_METAL))
-        + floatval($ube->outcome_obj->debris_get_resource(RES_CRYSTAL)) * floatval($config->rpg_exchange_crystal)
-      ) / (floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1);
-
-
     $sql_str = "INSERT INTO `{{ube_report}}`
     SET
       `ube_report_cypher` = '{$ube->report_cypher}',
@@ -124,10 +117,6 @@ class UBEReport {
       `ube_report_combat_result` = {$ube->outcome_obj->combat_result},
       `ube_report_combat_sfr` = " . (int)$ube->outcome_obj->is_small_fleet_recce . ",
 
-      `ube_report_debris_metal` = " . (float)$ube->outcome_obj->debris_get_resource(RES_METAL) . ",
-      `ube_report_debris_crystal` = " . (float)$ube->outcome_obj->debris_get_resource(RES_CRYSTAL) . ",
-      `ube_report_debris_total_in_metal` = " . $ube_report_debris_total_in_metal . ",
-
       `ube_report_planet_id`          = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_ID] . ",
       `ube_report_planet_name`        = '" . db_escape($ube->outcome_obj->outcome[UBE_PLANET][PLANET_NAME]) . "',
       `ube_report_planet_size`        = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_SIZE] . ",
@@ -136,8 +125,9 @@ class UBEReport {
       `ube_report_planet_planet`      = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_PLANET] . ",
       `ube_report_planet_planet_type` = " . (int)$ube->outcome_obj->outcome[UBE_PLANET][PLANET_TYPE] . ",
 
-      `ube_report_capture_result` = " . (int)$ube->outcome_obj->outcome[UBE_CAPTURE_RESULT] . ",
-    " . $ube->moon_calculator->report_generate_sql();
+      `ube_report_capture_result` = " . (int)$ube->outcome_obj->outcome[UBE_CAPTURE_RESULT] . ", "
+      . $ube->debris->report_generate_sql($config)
+      . $ube->moon_calculator->report_generate_sql();
 
     doquery($sql_str);
 //    $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
@@ -355,7 +345,7 @@ class UBEReport {
     $debris = array();
     foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id)
     {
-      if($resource_amount = $ube->outcome_obj->debris_get_resource($resource_id))
+      if($resource_amount = $ube->debris->debris_get_resource($resource_id))
       {
         $debris[] = array(
           'NAME' => $lang['tech'][$resource_id],
