@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.36');
+define('SN_VERSION', '41a4.37');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1289,8 +1289,8 @@ define('UBE_REPORT_NOT_FOUND', 'UBE_REPORT_NOT_FOUND');
 //define('UBE_METHOD', 'UBE_METHOD');
 
 define('UBE_OUTCOME', 'UBE_OUTCOME');
-define('UBE_COMBAT_RESULT', 'UBE_COMBAT_RESULT');
-define('UBE_SFR', 'UBE_SFR');
+//define('UBE_COMBAT_RESULT', 'UBE_COMBAT_RESULT');
+//define('UBE_SFR', 'UBE_SFR');
 //define('UBE_DEBRIS', 'UBE_DEBRIS');
 //define('UBE_DEBRIS_TOTAL', 'UBE_DEBRIS_TOTAL');
 

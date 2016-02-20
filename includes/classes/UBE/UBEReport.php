@@ -121,7 +121,7 @@ class UBEReport {
       `ube_report_mission_type` = {$ube->mission_type_id},
 
       `ube_report_combat_result` = {$ube->outcome_obj->combat_result},
-      `ube_report_combat_sfr` = " . (int)$ube->outcome_obj->outcome[UBE_SFR] . ",
+      `ube_report_combat_sfr` = " . (int)$ube->outcome_obj->is_small_fleet_recce . ",
 
       `ube_report_debris_metal` = " . (float)$ube->outcome_obj->debris_get_resource(RES_METAL) . ",
       `ube_report_debris_crystal` = " . (float)$ube->outcome_obj->debris_get_resource(RES_CRYSTAL) . ",
@@ -523,7 +523,7 @@ class UBEReport {
       'UBE_CAPTURE_RESULT' => $ube->outcome_obj->outcome[UBE_CAPTURE_RESULT],
       'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$ube->outcome_obj->outcome[UBE_CAPTURE_RESULT]],
 
-      'UBE_SFR' => $ube->outcome_obj->outcome[UBE_SFR],
+      'UBE_SFR' => $ube->outcome_obj->is_small_fleet_recce,
       'UBE_COMBAT_RESULT' => $ube->outcome_obj->combat_result,
       'UBE_COMBAT_RESULT_WIN' => UBE_COMBAT_RESULT_WIN,
       'UBE_COMBAT_RESULT_LOSS' => UBE_COMBAT_RESULT_LOSS,

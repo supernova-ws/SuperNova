@@ -16,6 +16,13 @@ class UBEOutcome {
    */
   public $debris = array();
 
+  /**
+   * Флаг РМФ
+   *
+   * @var int
+   */
+  public $is_small_fleet_recce = 0;
+
   public function __construct() {
     $this->debris_reset();
   }
@@ -57,9 +64,9 @@ class UBEOutcome {
     $this->debris_add_resource(RES_METAL, $report_row['ube_report_debris_metal']);
     $this->debris_add_resource(RES_CRYSTAL, $report_row['ube_report_debris_crystal']);
 
-    $this->outcome = array(
-      UBE_SFR => $report_row['ube_report_combat_sfr'],
+    $this->is_small_fleet_recce = intval($report_row['ube_report_combat_sfr']);
 
+    $this->outcome = array(
       UBE_PLANET => array(
         PLANET_ID     => $report_row['ube_report_planet_id'],
         PLANET_NAME   => $report_row['ube_report_planet_name'],

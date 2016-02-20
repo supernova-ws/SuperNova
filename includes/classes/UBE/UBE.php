@@ -746,7 +746,7 @@ class UBE {
 
     $this->outcome_obj->combat_result = !isset($last_round_data[UBE_OUTCOME]) || $last_round_data[UBE_OUTCOME] == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $last_round_data[UBE_OUTCOME];
     // SFR - Small Fleet Reconnaissance ака РМФ
-    $this->outcome_obj->outcome[UBE_SFR] = count($this->rounds) == 2 && $this->outcome_obj->combat_result == UBE_COMBAT_RESULT_LOSS;
+    $this->outcome_obj->is_small_fleet_recce = count($this->rounds) == 2 && $this->outcome_obj->combat_result == UBE_COMBAT_RESULT_LOSS;
 
     if(!$this->is_ube_loaded) {
       if($this->is_moon_exists) {
@@ -930,7 +930,7 @@ class UBE {
           $objFleet->update_resources($resource_delta_fleet);
 
           // Если защитник и не РМФ - отправляем флот назад
-          if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$this->outcome_obj->outcome[UBE_SFR]) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS) {
+          if(($fleet_info[UBE_FLEET_TYPE] == UBE_DEFENDERS && !$this->outcome_obj->is_small_fleet_recce) || $fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS) {
             $objFleet->mark_fleet_as_returned();
           }
           $objFleet->flush_changes_to_db();
@@ -1094,7 +1094,7 @@ class UBE {
     // TODO: Оптимизировать отсылку сообщений - отсылать пакетами
     $player_sides = $this->players_obj->get_player_sides();
     foreach($player_sides as $player_id => $player_side) {
-      $message = $text_common . ($this->outcome_obj->outcome[UBE_SFR] && ($player_side == UBE_PLAYER_IS_ATTACKER) ? $lang['ube_report_msg_body_sfr'] : $text_defender);
+      $message = $text_common . ($this->outcome_obj->is_small_fleet_recce && ($player_side == UBE_PLAYER_IS_ATTACKER) ? $lang['ube_report_msg_body_sfr'] : $text_defender);
       msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $message);
     }
 
