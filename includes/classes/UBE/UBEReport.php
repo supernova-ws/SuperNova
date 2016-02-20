@@ -116,8 +116,8 @@ class UBEReport {
       `ube_report_time_combat` = '" . date(FMT_DATE_TIME_SQL, $ube->combat_timestamp) . "',
       `ube_report_time_spent` = {$ube->time_spent},
 
-      `ube_report_combat_admin` = " . (int)$ube->options[UBE_COMBAT_ADMIN] . ",
-      `ube_report_mission_type` = {$ube->options[UBE_MISSION_TYPE]},
+      `ube_report_combat_admin` = " . (int)$ube->is_admin_in_combat . ",
+      `ube_report_mission_type` = {$ube->mission_type_id},
 
       `ube_report_combat_result` = {$outcome[UBE_COMBAT_RESULT]},
       `ube_report_combat_sfr` = " . (int)$outcome[UBE_SFR] . ",
@@ -294,11 +294,9 @@ class UBEReport {
     $ube->time_spent = $report_row['ube_report_time_spent'];
     $ube->report_cypher = $report_cypher;
 
-    $ube->options = array(
-      UBE_LOADED       => true,
-      UBE_COMBAT_ADMIN => $report_row['ube_report_combat_admin'],
-      UBE_MISSION_TYPE => $report_row['ube_report_mission_type'],
-    );
+    $ube->is_ube_loaded = true;
+    $ube->is_admin_in_combat = $report_row['ube_report_combat_admin'];
+    $ube->mission_type_id = $report_row['ube_report_mission_type'];
 
     $ube->outcome = array(
       UBE_COMBAT_RESULT => $report_row['ube_report_combat_result'],
@@ -542,7 +540,7 @@ class UBEReport {
       'COMBAT_TIME' => $ube->combat_timestamp ? $ube->combat_timestamp + SN_CLIENT_TIME_DIFF : 0,
       'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $ube->combat_timestamp + SN_CLIENT_TIME_DIFF),
       'COMBAT_ROUNDS' => count($ube->rounds) - 1,
-      'UBE_MISSION_TYPE' => $ube->options[UBE_MISSION_TYPE],
+      'UBE_MISSION_TYPE' => $ube->mission_type_id,
       'MT_DESTROY' => MT_DESTROY,
       'UBE_REPORT_CYPHER' => $ube->get_cypher(),
 

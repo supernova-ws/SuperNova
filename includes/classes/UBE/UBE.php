@@ -65,11 +65,20 @@ class UBE {
    */
   public $time_spent = 0;
 
-  public $options = array();
+
   public $options_method = 0;
   public $is_moon_exists = 0;
-
+  /**
+   * Является ли этот экземпляр боя загруженным из БД
+   *
+   * @var bool
+   */
+  public $is_ube_loaded = false;
+  public $is_admin_in_combat = false;
+  public $is_defender_active_player = true;
   public $is_simulator = false;
+
+  public $mission_type_id = MT_NONE;
 
   /**
    * [$resource_id] => $rate
@@ -113,14 +122,6 @@ class UBE {
    */
   // OK0
   function ube_attack_prepare(&$objMission) {
-    /*
-    UBE_OPTIONS[UBE_LOADED]
-    UBE_OPTIONS[UBE_EXCHANGE]
-    UBE_OPTIONS[UBE_MOON_WAS]
-    */
-
-    global $config;
-
     $this->resource_exchange_rates = get_resource_exchange();
 
     $objFleet = $objMission->fleet;
@@ -152,7 +153,7 @@ class UBE {
 
     // Готовим опции
     $this->is_moon_exists = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
-    $this->options[UBE_MISSION_TYPE] = $objFleet->mission_type;
+    $this->mission_type_id = $objFleet->mission_type;
     $this->set_option_from_config();
   }
 
@@ -202,7 +203,7 @@ class UBE {
       PLANET_SIZE   => $planet['diameter'],
     );
 
-    $this->options[UBE_DEFENDER_ACTIVE] = $player['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
+    $this->is_defender_active_player = $player['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
   }
 
   // ------------------------------------------------------------------------------------------------
@@ -218,7 +219,7 @@ class UBE {
       $player_data = db_user_by_id($player_id, true);
       $player_info[UBE_NAME] = $player_data['username'];
       $player_info[UBE_AUTH_LEVEL] = $player_data['authlevel'];
-      $this->options[UBE_COMBAT_ADMIN] = $this->options[UBE_COMBAT_ADMIN] || $player_data['authlevel']; // Участвует ли админ в бою?
+      $this->is_admin_in_combat = $this->is_admin_in_combat || $player_data['authlevel']; // Участвует ли админ в бою?
       $player_info[UBE_PLAYER_DATA] = $player_data;
 
       $admiral_bonus = mrc_get_level($player_data, false, MRC_ADMIRAL) * get_unit_param(MRC_ADMIRAL, P_BONUS_VALUE) / 100;
@@ -757,7 +758,7 @@ class UBE {
     // SFR - Small Fleet Reconnaissance ака РМФ
     $outcome[UBE_SFR] = count($this->rounds) == 2 && $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_LOSS;
 
-    if(!$this->options[UBE_LOADED]) {
+    if(!$this->is_ube_loaded) {
       if($this->is_moon_exists) {
         $outcome[UBE_MOON] = UBE_MOON_WAS;
       } else {
@@ -767,7 +768,7 @@ class UBE {
       // Лутаем ресурсы - если аттакер выиграл
       if($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN) {
         $this->sn_ube_combat_analyze_loot();
-        if($this->is_moon_exists && $this->options[UBE_MISSION_TYPE] == MT_DESTROY) {
+        if($this->is_moon_exists && $this->mission_type_id == MT_DESTROY) {
           $this->sn_ube_combat_analyze_moon_destroy();
         }
       }
@@ -933,7 +934,7 @@ class UBE {
     $planet_info = &$outcome[UBE_PLANET];
     $planet_id = $planet_info[PLANET_ID];
     // Обновляем поле обломков на планете
-    if(!$this->options[UBE_COMBAT_ADMIN] && !empty($outcome[UBE_DEBRIS])) {
+    if(!$this->is_admin_in_combat && !empty($outcome[UBE_DEBRIS])) {
       db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
         "`debris_metal` = `debris_metal` + " . floor($outcome[UBE_DEBRIS][RES_METAL]) . ", `debris_crystal` = `debris_crystal` + " . floor($outcome[UBE_DEBRIS][RES_CRYSTAL])
       );
@@ -1035,7 +1036,7 @@ class UBE {
       if($outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
         $bashing_list[] = "({$player_id}, {$planet_id}, {$this->combat_timestamp})";
       }
-      if($this->options[UBE_MISSION_TYPE] == MT_ATTACK && $this->options[UBE_DEFENDER_ACTIVE]) {
+      if($this->mission_type_id == MT_ATTACK && $this->is_defender_active_player) {
         $str_loose_or_win = $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
         db_user_set_by_id($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
       }
@@ -1127,7 +1128,7 @@ class UBE {
       $text_defender .= "{$lang['ube_report_moon_chance']} {$outcome[UBE_MOON_CHANCE]}%<br /><br />";
     }
 
-    if($this->options[UBE_MISSION_TYPE] == MT_DESTROY) {
+    if($this->mission_type_id == MT_DESTROY) {
       if($outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_NONE) {
         $text_defender .= $lang['ube_report_moon_reapers_none'];
       } else {
@@ -1155,9 +1156,7 @@ class UBE {
   function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender) {
     $this->is_simulator = sys_get_param_int('simulator');
     $this->is_simulator = !empty($this->is_simulator);
-    $this->options = array(
-      UBE_MISSION_TYPE => MT_ATTACK,
-    );
+    $this->mission_type_id = MT_ATTACK;
 
     $this->players = array();
     $this->fleets = array();
