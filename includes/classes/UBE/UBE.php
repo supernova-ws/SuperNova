@@ -109,15 +109,14 @@ class UBE {
   public $rounds = array();
 
   /**
-   * [UBE_xxx]
-   *
-   * @var array
+   * @var UBEOutcome
    */
-  public $outcome = array();
+  public $outcome_obj = array();
 
   public function __construct() {
     $this->players_obj = new UBEPlayerList();
     $this->fleets_obj = new UBEFleetList();
+    $this->outcome_obj = new UBEOutcome();
   }
 
   /**
@@ -197,7 +196,7 @@ class UBE {
       }
     }
 
-    $this->outcome[UBE_PLANET] = $fleet_info[UBE_PLANET] = array(
+    $this->outcome_obj->outcome[UBE_PLANET] = $fleet_info[UBE_PLANET] = array(
       PLANET_ID     => $planet['id'],
       PLANET_NAME   => $planet['name'],
       PLANET_GALAXY => $planet['galaxy'],
@@ -633,7 +632,7 @@ class UBE {
   // OK0
   function sn_ube_combat_analyze() {
     // Переменные для быстрого доступа к подмассивам
-    $outcome = &$this->outcome;
+    $outcome = &$this->outcome_obj->outcome;
     $fleets_info = &$this->fleets_obj->fleets;
     $last_round_data = &$this->rounds[count($this->rounds) - 1];
 
@@ -811,7 +810,7 @@ class UBE {
   // OK0
   function sn_ube_combat_analyze_loot() {
     $planet_resource_list = &$this->fleets_obj->fleets[0][UBE_RESOURCES];
-    $outcome = &$this->outcome;
+    $outcome = &$this->outcome_obj->outcome;
 
     $planet_looted_in_metal = 0;
     $planet_resource_looted = array();
@@ -862,16 +861,16 @@ class UBE {
       }
     }
 
-    $moon_size = $this->outcome[UBE_PLANET][PLANET_SIZE];
+    $moon_size = $this->outcome_obj->outcome[UBE_PLANET][PLANET_SIZE];
     if($reapers) {
       $random = mt_rand(1, 100);
-      $this->outcome[UBE_MOON_DESTROY_CHANCE] = max(1, min(99, round((100 - sqrt($moon_size)) * sqrt($reapers))));
-      $this->outcome[UBE_MOON_REAPERS_DIE_CHANCE] = round(sqrt($moon_size) / 2 + sqrt($reapers));
-      $this->outcome[UBE_MOON] = $random <= $this->outcome[UBE_MOON_DESTROY_CHANCE] ? UBE_MOON_DESTROY_SUCCESS : UBE_MOON_DESTROY_FAILED;
+      $this->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE] = max(1, min(99, round((100 - sqrt($moon_size)) * sqrt($reapers))));
+      $this->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE] = round(sqrt($moon_size) / 2 + sqrt($reapers));
+      $this->outcome_obj->outcome[UBE_MOON] = $random <= $this->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE] ? UBE_MOON_DESTROY_SUCCESS : UBE_MOON_DESTROY_FAILED;
       $random = mt_rand(1, 100);
-      $this->outcome[UBE_MOON_REAPERS] = $random <= $this->outcome[UBE_MOON_REAPERS_DIE_CHANCE] ? UBE_MOON_REAPERS_DIED : UBE_MOON_REAPERS_RETURNED;
+      $this->outcome_obj->outcome[UBE_MOON_REAPERS] = $random <= $this->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE] ? UBE_MOON_REAPERS_DIED : UBE_MOON_REAPERS_RETURNED;
     } else {
-      $this->outcome[UBE_MOON_REAPERS] = UBE_MOON_REAPERS_NONE;
+      $this->outcome_obj->outcome[UBE_MOON_REAPERS] = UBE_MOON_REAPERS_NONE;
     }
   }
 
@@ -920,7 +919,7 @@ class UBE {
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleets_obj->fleets[0][UBE_OWNER];
 
-    $outcome = &$this->outcome;
+    $outcome = &$this->outcome_obj->outcome;
     $planet_info = &$outcome[UBE_PLANET];
     $planet_id = $planet_info[PLANET_ID];
     // Обновляем поле обломков на планете
@@ -1086,7 +1085,7 @@ class UBE {
 
     // TODO: Отсылать каждому игроку сообщение на его языке!
 
-    $outcome = &$this->outcome;
+    $outcome = &$this->outcome_obj->outcome;
     $planet_info = &$outcome[UBE_PLANET];
 
     // Генерируем текст письма

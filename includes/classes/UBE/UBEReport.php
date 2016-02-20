@@ -105,7 +105,7 @@ class UBEReport {
     );
 
     // Сохраняем общую информацию о бое
-    $outcome = &$ube->outcome;
+    $outcome = &$ube->outcome_obj->outcome;
     $ube_report_debris_total_in_metal = (
         floatval($outcome[UBE_DEBRIS][RES_METAL])
         + floatval($outcome[UBE_DEBRIS][RES_CRYSTAL]) * floatval($config->rpg_exchange_crystal)
@@ -299,7 +299,7 @@ class UBEReport {
     $ube->is_admin_in_combat = $report_row['ube_report_combat_admin'];
     $ube->mission_type_id = $report_row['ube_report_mission_type'];
 
-    $ube->outcome = array(
+    $ube->outcome_obj->outcome = array(
       UBE_COMBAT_RESULT => $report_row['ube_report_combat_result'],
       UBE_SFR           => $report_row['ube_report_combat_sfr'],
 
@@ -332,7 +332,7 @@ class UBEReport {
       UBE_DEFENDERS => array(),
     );
 
-    $outcome = &$ube->outcome;
+    $outcome = &$ube->outcome_obj->outcome;
 
     $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($player_row = db_fetch($query)) {
@@ -460,7 +460,7 @@ class UBEReport {
     global $lang;
 
     // Обсчитываем результаты боя из начальных данных
-    $outcome = &$ube->outcome;
+    $outcome = &$ube->outcome_obj->outcome;
     // Генерируем отчет по флотам
     for($round = 1; $round <= count($ube->rounds) - 1; $round++)
     {
@@ -520,9 +520,9 @@ class UBEReport {
 
     // Координаты, тип и название планеты - если есть
 //R  $planet_owner_id = $combat_data[UBE_FLEETS][0][UBE_OWNER];
-    if(isset($ube->outcome[UBE_PLANET]))
+    if(isset($ube->outcome_obj->outcome[UBE_PLANET]))
     {
-      $template_result += $ube->outcome[UBE_PLANET];
+      $template_result += $ube->outcome_obj->outcome[UBE_PLANET];
       $template_result[PLANET_NAME] = str_replace(' ', '&nbsp;', htmlentities($template_result[PLANET_NAME], ENT_COMPAT, 'UTF-8'));
     }
 
@@ -553,8 +553,8 @@ class UBEReport {
       'UBE_MOON_DESTROY_SUCCESS' => UBE_MOON_DESTROY_SUCCESS,
       'UBE_MOON_REAPERS_RETURNED' => UBE_MOON_REAPERS_RETURNED,
 
-      'UBE_CAPTURE_RESULT' => $ube->outcome[UBE_CAPTURE_RESULT],
-      'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$ube->outcome[UBE_CAPTURE_RESULT]],
+      'UBE_CAPTURE_RESULT' => $ube->outcome_obj->outcome[UBE_CAPTURE_RESULT],
+      'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$ube->outcome_obj->outcome[UBE_CAPTURE_RESULT]],
 
       'UBE_SFR' => $outcome[UBE_SFR],
       'UBE_COMBAT_RESULT' => $outcome[UBE_COMBAT_RESULT],
