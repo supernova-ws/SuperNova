@@ -66,6 +66,8 @@ class UBE {
   public $time_spent = 0;
 
   public $options = array();
+  public $options_method = 0;
+  public $is_moon_exists = 0;
 
   public $is_simulator = false;
 
@@ -149,9 +151,9 @@ class UBE {
     }
 
     // Готовим опции
-    $this->options[UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
+    $this->is_moon_exists = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
     $this->options[UBE_MISSION_TYPE] = $objFleet->mission_type;
-    $this->options[UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
+    $this->set_option_from_config();
   }
 
   /**
@@ -756,7 +758,7 @@ class UBE {
     $outcome[UBE_SFR] = count($this->rounds) == 2 && $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_LOSS;
 
     if(!$this->options[UBE_LOADED]) {
-      if($this->options[UBE_MOON_WAS]) {
+      if($this->is_moon_exists) {
         $outcome[UBE_MOON] = UBE_MOON_WAS;
       } else {
         $this->sn_ube_combat_analyze_moon($outcome, $this->is_simulator);
@@ -765,7 +767,7 @@ class UBE {
       // Лутаем ресурсы - если аттакер выиграл
       if($outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_WIN) {
         $this->sn_ube_combat_analyze_loot();
-        if($this->options[UBE_MOON_WAS] && $this->options[UBE_MISSION_TYPE] == MT_DESTROY) {
+        if($this->is_moon_exists && $this->options[UBE_MISSION_TYPE] == MT_DESTROY) {
           $this->sn_ube_combat_analyze_moon_destroy();
         }
       }
@@ -1211,7 +1213,7 @@ class UBE {
 
   function set_option_from_config() {
     global $config;
-    $this->options[UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
+    $this->options_method = $config->game_ube_method ? $config->game_ube_method : 0;
   }
 
   function get_time_spent() {
