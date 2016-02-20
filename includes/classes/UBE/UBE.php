@@ -44,9 +44,6 @@ function sn_flt_planet_capture_from_object(&$fleet_row, $ube, &$result) { return
 
 
 class UBE {
-
-  public $combat_data = array();
-
   /**
    * Кодовая строка для доступа к отчёту
    *
@@ -120,8 +117,6 @@ class UBE {
     UBE_OPTIONS[UBE_MOON_WAS]
     */
 
-    $combat_data = &$this->combat_data;
-
     global $config;
 
     $this->resource_exchange_rates = get_resource_exchange();
@@ -130,7 +125,6 @@ class UBE {
 
     $destination_planet = &$objMission->dst_planet;
 
-    $combat_data = array();
     $this->combat_timestamp = $objFleet->time_arrive_to_target;
 
 // TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
@@ -168,7 +162,6 @@ class UBE {
    */
   // OK0
   function ube_attack_prepare_planet(&$planet) {
-    $combat_data = &$this->combat_data;
     global $ube_combat_bonus_list;
 
     $player_id = $planet['id_owner'];
@@ -214,7 +207,6 @@ class UBE {
   // Заполняет данные по игроку
   // OK0
   function ube_attack_prepare_player($player_id, $is_attacker) {
-    $combat_data = &$this->combat_data;
     global $ube_convert_techs;
 
     if(!isset($this->players[$player_id])) {
@@ -322,8 +314,6 @@ class UBE {
   // Общий алгоритм расчета боя
   // OK0
   function sn_ube_combat() {
-    $combat_data = &$this->combat_data;
-
     // TODO: Сделать атаку по типам,  когда они будут
 
     $start = microtime(true);
@@ -350,8 +340,6 @@ class UBE {
   // ------------------------------------------------------------------------------------------------
   // OK0
   function sn_ube_combat_prepare_first_round() {
-    $combat_data = &$this->combat_data;
-
     global $ube_combat_bonus_list, $ube_convert_to_techs;
 
     // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
@@ -869,8 +857,6 @@ class UBE {
   // ------------------------------------------------------------------------------------------------
   // OK0
   function sn_ube_combat_analyze_moon_destroy() {
-    $combat_data = &$this->combat_data;
-
     // TODO: $is_simulator
     $reapers = 0;
     foreach($this->rounds[count($this->rounds) - 1][UBE_FLEETS] as $fleet_data) {
@@ -1102,8 +1088,6 @@ class UBE {
   // ------------------------------------------------------------------------------------------------
   // Рассылает письма всем участникам боя
   function sn_ube_message_send() {
-    $combat_data = &$this->combat_data;
-
     global $lang;
 
     // TODO: Отсылать каждому игроку сообщение на его языке!
@@ -1167,8 +1151,6 @@ class UBE {
 
   // OK0
   function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender) {
-    $combat_data = &$this->combat_data;
-
     $this->is_simulator = sys_get_param_int('simulator');
     $this->is_simulator = !empty($this->is_simulator);
     $this->options = array(
@@ -1178,19 +1160,14 @@ class UBE {
     $this->players = array();
     $this->fleets = array();
 
-    $combat_data = array();
-
     $this->sn_ube_simulator_fill_side($sym_defender, false);
     $this->sn_ube_simulator_fill_side($sym_attacker, true);
-
-    return ($combat_data);
   }
 
   // ------------------------------------------------------------------------------------------------
   // Преобразовывает данные симулятора в данные для расчета боя
   // OK0
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
-    $combat_data = &$this->combat_data;
     global $ube_convert_techs;
 
     $player_id = $player_id == -1 ? count($this->players) : $player_id;

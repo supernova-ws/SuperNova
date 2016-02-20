@@ -10,8 +10,6 @@ class UBEReport {
    * @return bool|string
    */
   function sn_ube_report_save($ube) {
-    $combat_data = $ube->combat_data;
-
     global $config;
 
     // Если уже есть ИД репорта - значит репорт был взят из таблицы. С таким мы не работаем
@@ -465,11 +463,6 @@ class UBEReport {
   function sn_ube_report_generate(UBE $ube, &$template_result)
   {
     if(!is_object($ube))
-    {
-      return;
-    }
-
-    if(!is_array($ube->combat_data))
     {
       return;
     }
