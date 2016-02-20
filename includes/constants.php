@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.37');
+define('SN_VERSION', '41a4.38');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1261,7 +1261,7 @@ define('UBE_COMBAT_RESULT_DRAW', 0);
 define('UBE_COMBAT_RESULT_WIN', 1);
 define('UBE_COMBAT_RESULT_LOSS', 2);
 
-define('UBE_MOON_WAS', -1);
+define('UBE_MOON_EXISTS', -1);
 define('UBE_MOON_NONE', 0);
 define('UBE_MOON_CREATE_SUCCESS', 1);
 define('UBE_MOON_CREATE_FAILED', 2);
@@ -1316,13 +1316,13 @@ define('PLANET_SYSTEM', 'PLANET_SYSTEM');
 define('PLANET_PLANET', 'PLANET_PLANET');
 define('PLANET_TYPE', 'PLANET_TYPE');
 
-define('UBE_MOON', 'UBE_MOON');
-define('UBE_MOON_NAME', 'UBE_MOON_NAME');
-define('UBE_MOON_CHANCE', 'UBE_MOON_CHANCE');
-define('UBE_MOON_SIZE', 'UBE_MOON_SIZE');
-define('UBE_MOON_REAPERS', 'UBE_MOON_REAPERS');
-define('UBE_MOON_DESTROY_CHANCE', 'UBE_MOON_DESTROY_CHANCE');
-define('UBE_MOON_REAPERS_DIE_CHANCE', 'UBE_MOON_REAPERS_DIE_CHANCE');
+//define('UBE_MOON', 'UBE_MOON');
+//define('UBE_MOON_NAME', 'UBE_MOON_NAME');
+//define('UBE_MOON_CHANCE', 'UBE_MOON_CHANCE');
+//define('UBE_MOON_SIZE', 'UBE_MOON_SIZE');
+//define('UBE_MOON_REAPERS', 'UBE_MOON_REAPERS');
+//define('UBE_MOON_DESTROY_CHANCE', 'UBE_MOON_DESTROY_CHANCE');
+//define('UBE_MOON_REAPERS_DIE_CHANCE', 'UBE_MOON_REAPERS_DIE_CHANCE');
 
 
 //define('UBE_PLAYERS', 'UBE_PLAYERS');

@@ -2,7 +2,7 @@
 
 require_once('UBEReport.php');
 require_once('UBEPlayerList.php');
-
+require_once('UBEMoonCalculator.php');
 
 
 // ------------------------------------------------------------------------------------------------
@@ -34,6 +34,7 @@ function ube_attack_prepare_fleet_from_object($ube, &$fleet, $is_attacker) { ret
  * @return mixed
  */
 function flt_planet_capture_from_object(&$fleet_row, $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
+
 /**
  * @param array $fleet_row
  * @param UBE   $ube
@@ -68,7 +69,6 @@ class UBE {
 
 
   public $options_method = 0;
-  public $is_moon_exists = 0;
   /**
    * Является ли этот экземпляр боя загруженным из БД
    *
@@ -113,10 +113,16 @@ class UBE {
    */
   public $outcome_obj = array();
 
+  /**
+   * @var UBEMoonCalculator
+   */
+  public $moon_calculator = null;
+
   public function __construct() {
     $this->players_obj = new UBEPlayerList();
     $this->fleets_obj = new UBEFleetList();
     $this->outcome_obj = new UBEOutcome();
+    $this->moon_calculator = new UBEMoonCalculator();
   }
 
   /**
@@ -126,13 +132,16 @@ class UBE {
    */
   // OK0
   function ube_attack_prepare(&$objMission) {
-    $this->resource_exchange_rates = get_resource_exchange();
-
     $objFleet = $objMission->fleet;
-
     $destination_planet = &$objMission->dst_planet;
 
+    // Готовим опции
     $this->combat_timestamp = $objFleet->time_arrive_to_target;
+    $this->resource_exchange_rates = get_resource_exchange();
+    $this->mission_type_id = $objFleet->mission_type;
+    $this->set_option_from_config();
+
+    $this->moon_calculator->load_status($destination_planet);
 
 // TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
     // Готовим инфу по атакуемой планете
@@ -155,10 +164,6 @@ class UBE {
       $this->ube_attack_prepare_fleet($objFleet->make_db_row(), true);
     }
 
-    // Готовим опции
-    $this->is_moon_exists = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
-    $this->mission_type_id = $objFleet->mission_type;
-    $this->set_option_from_config();
   }
 
   /**
@@ -213,7 +218,7 @@ class UBE {
   // Заполняет данные по игроку
   // OK0
   /**
-   * @param int $player_id
+   * @param int  $player_id
    * @param bool $is_attacker
    */
   function ube_attack_prepare_player($player_id, $is_attacker) {
@@ -225,7 +230,7 @@ class UBE {
 
   /**
    * @param array $fleet_row
-   * @param bool $is_attacker
+   * @param bool  $is_attacker
    */
   // ------------------------------------------------------------------------------------------------
   // Заполняет данные по флоту
@@ -749,18 +754,11 @@ class UBE {
     $this->outcome_obj->is_small_fleet_recce = count($this->rounds) == 2 && $this->outcome_obj->combat_result == UBE_COMBAT_RESULT_LOSS;
 
     if(!$this->is_ube_loaded) {
-      if($this->is_moon_exists) {
-        $this->outcome_obj->outcome[UBE_MOON] = UBE_MOON_WAS;
-      } else {
-        $this->outcome_obj->moon_create_try($this->is_simulator);
-      }
+      $this->moon_calculator->calculate_moon($this);
 
       // Лутаем ресурсы - если аттакер выиграл
       if($this->outcome_obj->combat_result == UBE_COMBAT_RESULT_WIN) {
         $this->sn_ube_combat_analyze_loot();
-        if($this->is_moon_exists && $this->mission_type_id == MT_DESTROY) {
-          $this->sn_ube_combat_analyze_moon_destroy();
-        }
       }
     }
 
@@ -803,34 +801,6 @@ class UBE {
 
     $this->outcome_obj->outcome[UBE_FLEETS][0][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] -= $planet_looted_in_metal;
     $this->outcome_obj->outcome[UBE_FLEETS][0][UBE_RESOURCES_LOOTED] = $planet_resource_looted;
-  }
-
-
-  // ------------------------------------------------------------------------------------------------
-  // OK0
-  function sn_ube_combat_analyze_moon_destroy() {
-    // TODO: $is_simulator
-    $reapers = 0;
-    foreach($this->rounds[count($this->rounds) - 1][UBE_FLEETS] as $fleet_data) {
-      if($fleet_data[UBE_FLEET_INFO][UBE_FLEET_TYPE] == UBE_ATTACKERS) {
-        foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
-          // TODO: Работа по группам - группа "Уничтожители лун"
-          $reapers += ($unit_id == SHIP_HUGE_DEATH_STAR) ? $unit_count : 0;
-        }
-      }
-    }
-
-    $moon_size = $this->outcome_obj->outcome[UBE_PLANET][PLANET_SIZE];
-    if($reapers) {
-      $random = mt_rand(1, 100);
-      $this->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE] = max(1, min(99, round((100 - sqrt($moon_size)) * sqrt($reapers))));
-      $this->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE] = round(sqrt($moon_size) / 2 + sqrt($reapers));
-      $this->outcome_obj->outcome[UBE_MOON] = $random <= $this->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE] ? UBE_MOON_DESTROY_SUCCESS : UBE_MOON_DESTROY_FAILED;
-      $random = mt_rand(1, 100);
-      $this->outcome_obj->outcome[UBE_MOON_REAPERS] = $random <= $this->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE] ? UBE_MOON_REAPERS_DIED : UBE_MOON_REAPERS_RETURNED;
-    } else {
-      $this->outcome_obj->outcome[UBE_MOON_REAPERS] = UBE_MOON_REAPERS_NONE;
-    }
   }
 
 
@@ -907,7 +877,7 @@ class UBE {
         $objFleet->set_db_id($fleet_id);
 
         // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
-        if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $this->outcome_obj->outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_DIED) {
+        if($fleet_info[UBE_FLEET_TYPE] == UBE_ATTACKERS && $this->moon_calculator->get_reapers_status() == UBE_MOON_REAPERS_DIED) {
           $ship_count_lost = $ship_count_initial;
         }
 
@@ -967,13 +937,7 @@ class UBE {
       doquery("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
     }
 
-    if($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
-      $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $this->outcome_obj->outcome[UBE_MOON_SIZE], '', false);
-      $this->outcome_obj->outcome[UBE_MOON_NAME] = $moon_row['name'];
-      unset($moon_row);
-    } elseif($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS) {
-      db_planet_delete_by_id($planet_id);
-    }
+    $this->moon_calculator->db_apply_result($planet_info, $destination_user_id, $planet_id);
 
     $bashing_list = array();
     $players_sides = $this->players_obj->get_player_sides();
@@ -981,7 +945,7 @@ class UBE {
       if($player_side != UBE_PLAYER_IS_ATTACKER) {
         continue;
       }
-      if($this->outcome_obj->outcome[UBE_MOON] != UBE_MOON_DESTROY_SUCCESS) {
+      if($this->moon_calculator->get_status() != UBE_MOON_DESTROY_SUCCESS) {
         $bashing_list[] = "({$player_id}, {$planet_id}, {$this->combat_timestamp})";
       }
       if($this->mission_type_id == MT_ATTACK && $this->is_defender_active_player) {
@@ -1070,24 +1034,7 @@ class UBE {
       $text_defender = "{$lang['ube_report_msg_body_debris']}{$text_defender}<br />";
     }
 
-    if($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_CREATE_SUCCESS) {
-      $text_defender .= "{$lang['ube_report_moon_created']} {$this->outcome_obj->outcome[UBE_MOON_SIZE]} {$lang['sys_kilometers_short']}<br /><br />";
-    } elseif($this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_CREATE_FAILED) {
-      $text_defender .= "{$lang['ube_report_moon_chance']} {$this->outcome_obj->outcome[UBE_MOON_CHANCE]}%<br /><br />";
-    }
-
-    if($this->mission_type_id == MT_DESTROY) {
-      if($this->outcome_obj->outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_NONE) {
-        $text_defender .= $lang['ube_report_moon_reapers_none'];
-      } else {
-        $text_defender .= "{$lang['ube_report_moon_reapers_wave']}. {$lang['ube_report_moon_reapers_chance']} {$this->outcome_obj->outcome[UBE_MOON_DESTROY_CHANCE]}%. ";
-        $text_defender .= $lang[$this->outcome_obj->outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";
-
-        $text_defender .= "{$lang['ube_report_moon_reapers_outcome']} {$this->outcome_obj->outcome[UBE_MOON_REAPERS_DIE_CHANCE]}%. ";
-        $text_defender .= $lang[$this->outcome_obj->outcome[UBE_MOON_REAPERS] == UBE_MOON_REAPERS_RETURNED ? 'ube_report_moon_reapers_survive' : 'ube_report_moon_reapers_died'];
-      }
-      $text_defender .= '<br /><br />';
-    }
+    $text_defender .= $this->moon_calculator->message_generate($this);
 
     $text_defender .= "{$lang['ube_report_info_link']}: <a href=\"index.php?page=battle_report&cypher=$this->report_cypher\">{$this->report_cypher}</a>";
 
@@ -1158,7 +1105,6 @@ class UBE {
   }
 
 
-
   function set_option_from_config() {
     global $config;
     $this->options_method = $config->game_ube_method ? $config->game_ube_method : 0;
@@ -1177,7 +1123,7 @@ class UBE {
    * Статик кусок из flt_mission_attack()
    *
    * @param Mission $objMission
-   * @param array $fleet_row
+   * @param array   $fleet_row
    *
    * @return bool
    */
@@ -1205,9 +1151,9 @@ class UBE {
     global $template_result, $lang;
 
     $ube_report = new UBEReport();
-    $ube = $ube_report->sn_ube_report_load(sys_get_param_str('cypher')); //  $combat_data = sn_ube_report_load(sys_get_param_str('cypher'));
-    if($ube != UBE_REPORT_NOT_FOUND) { //  if($combat_data != UBE_REPORT_NOT_FOUND) {
-      $ube_report->sn_ube_report_generate($ube, $template_result); //    sn_ube_report_generate($combat_data, $template_result);
+    $ube = $ube_report->sn_ube_report_load(sys_get_param_str('cypher'));
+    if($ube != UBE_REPORT_NOT_FOUND) {
+      $ube_report->sn_ube_report_generate($ube, $template_result);
 
       $template = gettemplate('ube_combat_report', $template);
       $template->assign_vars(array(
@@ -1235,8 +1181,7 @@ class UBE {
 //    sn_ube_report_save($combat_data);
 //  }
 
-    if(sys_get_param_str('reload'))
-    {
+    if(sys_get_param_str('reload')) {
       $ube_new = $ube_report->sn_ube_report_load($ube->get_cypher()); // $combat_data = sn_ube_report_load($combat_data[UBE_REPORT_CYPHER]);
       if($ube_new != UBE_REPORT_NOT_FOUND && is_object($ube_new)) {
         $ube = $ube_new;
@@ -1251,6 +1196,130 @@ class UBE {
     $template = gettemplate('ube_combat_report', true);
     $template->assign_recursive($template_result);
     display($template, '', false, '', false, false, true);
+  }
+
+  /**
+   * @param array  $report_row
+   * @param string $report_cypher
+   */
+  public function load_from_report_row($report_row, $report_cypher) {
+    $this->is_ube_loaded = true;
+
+    $this->report_cypher = $report_cypher;
+
+    $this->combat_timestamp = strtotime($report_row['ube_report_time_combat']);
+    $this->time_spent = $report_row['ube_report_time_spent'];
+    $this->is_admin_in_combat = $report_row['ube_report_combat_admin'];
+    $this->mission_type_id = $report_row['ube_report_mission_type'];
+
+    $this->moon_calculator->load_from_report($report_row);
+
+    $this->outcome_obj->load_from_report_row($report_row);
+
+    $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+    while($player_row = db_fetch($query)) {
+      $this->players_obj->init_player_from_report_info($player_row);
+    }
+
+    $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+    while($fleet_row = db_fetch($query)) {
+      $this->fleets_obj->fleets[$fleet_row['ube_report_fleet_fleet_id']] = array(
+        UBE_OWNER => $fleet_row['ube_report_fleet_player_id'],
+
+        UBE_FLEET_TYPE => $this->players_obj->get_player_side($fleet_row['ube_report_fleet_player_id']) ? UBE_ATTACKERS : UBE_DEFENDERS,
+
+        UBE_PLANET => array(
+          PLANET_ID     => $fleet_row['ube_report_fleet_planet_id'],
+          PLANET_NAME   => $fleet_row['ube_report_fleet_planet_name'],
+          PLANET_GALAXY => $fleet_row['ube_report_fleet_planet_galaxy'],
+          PLANET_SYSTEM => $fleet_row['ube_report_fleet_planet_system'],
+          PLANET_PLANET => $fleet_row['ube_report_fleet_planet_planet'],
+          PLANET_TYPE   => $fleet_row['ube_report_fleet_planet_planet_type'],
+        ),
+
+        UBE_BONUSES => array(
+          UBE_ATTACK => $player_row['ube_report_fleet_bonus_attack'],
+          UBE_SHIELD => $player_row['ube_report_fleet_bonus_shield'],
+          UBE_ARMOR  => $player_row['ube_report_fleet_bonus_armor'],
+        ),
+
+        UBE_RESOURCES => array(
+          RES_METAL     => $player_row['ube_report_fleet_resource_metal'],
+          RES_CRYSTAL   => $player_row['ube_report_fleet_resource_crystal'],
+          RES_DEUTERIUM => $player_row['ube_report_fleet_resource_deuterium'],
+        ),
+      );
+    }
+
+    $this->rounds = array();
+    $query = doquery("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_sort_order`");
+    while($round_row = db_fetch($query)) {
+      $round = $round_row['ube_report_unit_round'];
+      $fleet_id = $round_row['ube_report_unit_fleet_id'];
+
+      $side = $this->fleets_obj->fleets[$fleet_id][UBE_FLEET_TYPE];
+      $this->rounds[$round][$side][UBE_ATTACK][$fleet_id] = 0;
+
+      if(!isset($this->rounds[$round][UBE_FLEETS][$fleet_id])) {
+        $this->rounds[$round][UBE_FLEETS][$fleet_id] = array();
+      }
+
+      $round_fleet_data = &$this->rounds[$round][UBE_FLEETS][$fleet_id];
+      $unit_id = $round_row['ube_report_unit_unit_id'];
+      $round_fleet_data[UBE_COUNT][$unit_id] = $round_row['ube_report_unit_count'];
+      $round_fleet_data[UBE_UNITS_BOOM][$unit_id] = $round_row['ube_report_unit_boom'];
+
+      $round_fleet_data[UBE_ATTACK][$unit_id] = $round_row['ube_report_unit_attack'];
+      $round_fleet_data[UBE_SHIELD][$unit_id] = $round_row['ube_report_unit_shield'];
+      $round_fleet_data[UBE_ARMOR][$unit_id] = $round_row['ube_report_unit_armor'];
+
+      $round_fleet_data[UBE_ATTACK_BASE][$unit_id] = $round_row['ube_report_unit_attack_base'];
+      $round_fleet_data[UBE_SHIELD_BASE][$unit_id] = $round_row['ube_report_unit_shield_base'];
+      $round_fleet_data[UBE_ARMOR_BASE][$unit_id] = $round_row['ube_report_unit_armor_base'];
+    }
+
+
+    $query = doquery("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+    while($row = db_fetch($query)) {
+      $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
+
+      $this->outcome_obj->outcome[UBE_FLEETS][$fleet_id] = array(
+        UBE_RESOURCES_LOST => array(
+          RES_METAL     => $row['ube_report_outcome_fleet_resource_lost_metal'],
+          RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_lost_crystal'],
+          RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_lost_deuterium'],
+        ),
+
+        UBE_CARGO_DROPPED => array(
+          RES_METAL     => $row['ube_report_outcome_fleet_resource_dropped_metal'],
+          RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_dropped_crystal'],
+          RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_dropped_deuterium'],
+        ),
+
+        UBE_RESOURCES_LOOTED => array(
+          RES_METAL     => $row['ube_report_outcome_fleet_resource_loot_metal'],
+          RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_loot_crystal'],
+          RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_loot_deuterium'],
+        ),
+
+        UBE_RESOURCES_LOST_IN_METAL => array(
+          RES_METAL => $row['ube_report_outcome_fleet_resource_lost_in_metal'],
+        ),
+      );
+
+      $side = $this->fleets_obj->fleets[$fleet_id][UBE_FLEET_TYPE];
+
+      $this->outcome_obj->outcome[$side][UBE_FLEETS][$fleet_id] = &$this->outcome_obj->outcome[UBE_FLEETS][$fleet_id];
+    }
+
+    $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
+    while($row = db_fetch($query)) {
+      $fleet_id = $row['ube_report_outcome_unit_fleet_id'];
+      $side = $this->fleets_obj->fleets[$fleet_id][UBE_FLEET_TYPE];
+      $this->outcome_obj->outcome[$side][UBE_FLEETS][$fleet_id][UBE_UNITS_LOST][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_lost'];
+      $this->outcome_obj->outcome[$side][UBE_FLEETS][$fleet_id][UBE_DEFENCE_RESTORE][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_restored'];
+    }
+
   }
 
 }

@@ -14,7 +14,7 @@ class UBEOutcome {
   /**
    * @var array [$resource_id] => (int)$resource_amount
    */
-  public $debris = array();
+  protected $debris = array();
 
   /**
    * Флаг РМФ
@@ -25,36 +25,6 @@ class UBEOutcome {
 
   public function __construct() {
     $this->debris_reset();
-  }
-
-  public function moon_create_try($is_simulator) {
-    $this->outcome[UBE_MOON] = UBE_MOON_NONE;
-
-    $debris_for_moon = $this->debris_total();
-
-    if(!$debris_for_moon) {
-      return;
-    }
-
-    // TODO uni_calculate_moon_chance
-    $moon_chance = min($debris_for_moon / UBE_MOON_DEBRIS_PER_PERCENT, UBE_MOON_PERCENT_MAX); // TODO Configure
-    $moon_chance = $moon_chance >= UBE_MOON_PERCENT_MIN ? $moon_chance : 0;
-    $this->outcome[UBE_MOON_CHANCE] = $moon_chance;
-    if($moon_chance) {
-      if($is_simulator || mt_rand(1, 100) <= $moon_chance) {
-        $this->outcome[UBE_MOON] = UBE_MOON_CREATE_SUCCESS;
-        $this->outcome[UBE_MOON_SIZE] = round($is_simulator ? $moon_chance * 150 + 1999 : mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999));
-
-        if($debris_for_moon <= UBE_MOON_DEBRIS_MAX_SPENT) {
-          $this->debris_reset();
-        } else {
-          $moon_debris_left_percent = ($debris_for_moon - UBE_MOON_DEBRIS_MAX_SPENT) / $debris_for_moon;
-          $this->debris_adjust_proportional($moon_debris_left_percent);
-        }
-      } else {
-        $this->outcome[UBE_MOON] = UBE_MOON_CREATE_FAILED;
-      }
-    }
   }
 
   public function load_from_report_row($report_row) {
@@ -76,14 +46,6 @@ class UBEOutcome {
         PLANET_PLANET => $report_row['ube_report_planet_planet'],
         PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
       ),
-
-      UBE_MOON        => $report_row['ube_report_moon'],
-      UBE_MOON_CHANCE => $report_row['ube_report_moon_chance'],
-      UBE_MOON_SIZE   => $report_row['ube_report_moon_size'],
-
-      UBE_MOON_REAPERS            => $report_row['ube_report_moon_reapers'],
-      UBE_MOON_DESTROY_CHANCE     => $report_row['ube_report_moon_destroy_chance'],
-      UBE_MOON_REAPERS_DIE_CHANCE => $report_row['ube_report_moon_reapers_die_chance'],
 
       UBE_CAPTURE_RESULT => $report_row['ube_report_capture_result'],
 
@@ -135,7 +97,7 @@ class UBEOutcome {
     $this->debris[$resource_id] += $resource_amount;
   }
 
-  protected function debris_adjust_proportional($moon_debris_left_percent) {
+  public function debris_adjust_proportional($moon_debris_left_percent) {
     foreach($this->debris as $resource_id => &$resource_amount) {
       $resource_amount = floor($resource_amount * $moon_debris_left_percent);
     }
