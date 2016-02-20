@@ -140,12 +140,12 @@ class UBEReport {
         $ube_report_id,
         $player_id,
 
-        "'" . db_escape($ube->players->get_player_name($player_id)) . "'",
-        (int)$ube->players->get_player_side($player_id),
+        "'" . db_escape($ube->players[$player_id]->player_name_get()) . "'",
+        $ube->players[$player_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? 1 : 0,
 
-        (float)$ube->players->get_player_bonus_single($player_id, UBE_ATTACK),
-        (float)$ube->players->get_player_bonus_single($player_id, UBE_SHIELD),
-        (float)$ube->players->get_player_bonus_single($player_id, UBE_ARMOR),
+        (float)$ube->players[$player_id]->player_bonus_get(UBE_ATTACK),
+        (float)$ube->players[$player_id]->player_bonus_get(UBE_SHIELD),
+        (float)$ube->players[$player_id]->player_bonus_get(UBE_ARMOR),
       );
     }
 
@@ -319,15 +319,15 @@ class UBEReport {
 
         $template_result['.']['loss'][] = array(
           'ID'          => $fleet_id,
-          'NAME'        => $ube->players->get_player_name($fleet_owner_id),
-          'IS_ATTACKER' => $ube->players->get_player_side($fleet_owner_id),
+          'NAME'        => $ube->players[$fleet_owner_id]->player_name_get(),
+          'IS_ATTACKER' => $ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER,
           '.'           => array(
             'param' => array_merge(
               $this->sn_ube_report_table_render($fleet_outcome[UBE_DEFENCE_RESTORE], $lang['ube_report_info_restored']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_UNITS_LOST], $lang['ube_report_info_loss_final']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST], $lang['ube_report_info_loss_resources']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_CARGO_DROPPED], $lang['ube_report_info_loss_dropped']),
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $lang[$ube->players->get_player_side($fleet_owner_id) ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained']),
+              $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $lang[$ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST_IN_METAL], $lang['ube_report_info_loss_in_metal'])
             ),
           ),
@@ -395,7 +395,7 @@ class UBEReport {
         $fleet_template = array(
           'ID'          => $fleet_id,
           'IS_ATTACKER' => $side == UBE_ATTACKERS,
-          'PLAYER_NAME' => $ube->players->get_player_name($ube->fleets_obj->fleets[$fleet_id][UBE_OWNER], true),
+          'PLAYER_NAME' => $ube->players[$ube->fleets_obj->fleets[$fleet_id][UBE_OWNER]]->player_name_get(true),
         );
 
         if(is_array($ube->fleets_obj->fleets[$fleet_id][UBE_PLANET])) {
