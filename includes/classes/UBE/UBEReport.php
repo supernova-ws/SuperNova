@@ -148,17 +148,18 @@ class UBEReport {
     $ube_report_id = db_insert_id();
 
     // Сохраняем общую информацию по игрокам
-    foreach($ube->players as $player_id => &$player_info) {
+    $player_sides = $ube->players_obj->get_player_sides();
+    foreach($player_sides as $player_id => $player_side) {
       $sql_perform['ube_report_player'][] = array(
         $ube_report_id,
         $player_id,
 
-        "'" . db_escape($player_info[UBE_NAME]) . "'",
-        (int)$player_info[UBE_ATTACKER],
+        "'" . db_escape($ube->players_obj->get_player_name($player_id)) . "'",
+        (int)$ube->players_obj->get_player_side($player_id),
 
-        (float)$player_info[UBE_BONUSES][UBE_ATTACK],
-        (float)$player_info[UBE_BONUSES][UBE_SHIELD],
-        (float)$player_info[UBE_BONUSES][UBE_ARMOR],
+        (float)$ube->players_obj->get_player_bonus_single($player_id, UBE_ATTACK),
+        (float)$ube->players_obj->get_player_bonus_single($player_id, UBE_SHIELD),
+        (float)$ube->players_obj->get_player_bonus_single($player_id, UBE_ARMOR),
       );
     }
 
@@ -335,16 +336,7 @@ class UBEReport {
 
     $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($player_row = db_fetch($query)) {
-      $ube->players[$player_row['ube_report_player_player_id']] = array(
-        UBE_NAME     => $player_row['ube_report_player_name'],
-        UBE_ATTACKER => $player_row['ube_report_player_attacker'],
-
-        UBE_BONUSES => array(
-          UBE_ATTACK => $player_row['ube_report_player_bonus_attack'],
-          UBE_SHIELD => $player_row['ube_report_player_bonus_shield'],
-          UBE_ARMOR  => $player_row['ube_report_player_bonus_armor'],
-        ),
-      );
+      $ube->players_obj->init_player_from_report_info($player_row);
     }
 
     $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
@@ -352,7 +344,7 @@ class UBEReport {
       $ube->fleets[$fleet_row['ube_report_fleet_fleet_id']] = array(
         UBE_OWNER => $fleet_row['ube_report_fleet_player_id'],
 
-        UBE_FLEET_TYPE => $ube->players[$fleet_row['ube_report_fleet_player_id']][UBE_ATTACKER] ? UBE_ATTACKERS : UBE_DEFENDERS,
+        UBE_FLEET_TYPE => $ube->players_obj->get_player_side($fleet_row['ube_report_fleet_player_id']) ? UBE_ATTACKERS : UBE_DEFENDERS,
 
         UBE_PLANET => array(
           PLANET_ID     => $fleet_row['ube_report_fleet_planet_id'],
@@ -490,20 +482,20 @@ class UBEReport {
       }
       foreach($outcome[$side][UBE_FLEETS] as $fleet_id => $temp)
       {
-        $player_info = &$ube->players[$ube->fleets[$fleet_id][UBE_OWNER]];
+        $fleet_owner_id = $ube->fleets[$fleet_id][UBE_OWNER];
         $fleet_outcome = &$outcome[UBE_FLEETS][$fleet_id];
 
         $template_result['.']['loss'][] = array(
           'ID' => $fleet_id,
-          'NAME' => $player_info[UBE_NAME],
-          'IS_ATTACKER' => $player_info[UBE_ATTACKER],
+          'NAME' => $ube->players_obj->get_player_name($fleet_owner_id),
+          'IS_ATTACKER' => $ube->players_obj->get_player_side($fleet_owner_id),
           '.' => array(
             'param' => array_merge(
               $this->sn_ube_report_table_render($fleet_outcome[UBE_DEFENCE_RESTORE], $lang['ube_report_info_restored']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_UNITS_LOST], $lang['ube_report_info_loss_final']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST], $lang['ube_report_info_loss_resources']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_CARGO_DROPPED], $lang['ube_report_info_loss_dropped']),
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $lang[$player_info[UBE_ATTACKER] ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained']),
+              $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $lang[$ube->players_obj->get_player_side($fleet_owner_id) ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained']),
               $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST_IN_METAL], $lang['ube_report_info_loss_in_metal'])
             ),
           ),
@@ -590,7 +582,7 @@ class UBEReport {
         $fleet_template = array(
           'ID' => $fleet_id,
           'IS_ATTACKER' => $side == UBE_ATTACKERS,
-          'PLAYER_NAME' => htmlentities($ube->players[$ube->fleets[$fleet_id][UBE_OWNER]][UBE_NAME], ENT_COMPAT, 'UTF-8'),
+          'PLAYER_NAME' => $ube->players_obj->get_player_name($ube->fleets[$fleet_id][UBE_OWNER], true),
         );
 
         if(is_array($ube->fleets[$fleet_id][UBE_PLANET]))
