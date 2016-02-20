@@ -150,7 +150,7 @@ class UBEReport {
     $ube_report_id = db_insert_id();
 
     // Сохраняем общую информацию по игрокам
-    foreach($combat_data[UBE_PLAYERS] as $player_id => &$player_info) {
+    foreach($ube->players as $player_id => &$player_info) {
       $sql_perform['ube_report_player'][] = array(
         $ube_report_id,
         $player_id,
@@ -166,7 +166,7 @@ class UBEReport {
 
     // Всякая информация по флотам
     $unit_sort_order = 0;
-    foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info) {
+    foreach($ube->fleets as $fleet_id => &$fleet_info) {
       // Сохраняем общую информацию по флотам
       $sql_perform['ube_report_fleet'][] = array(
         $ube_report_id,
@@ -344,7 +344,7 @@ class UBEReport {
 
     $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($player_row = db_fetch($query)) {
-      $combat_data[UBE_PLAYERS][$player_row['ube_report_player_player_id']] = array(
+      $ube->players[$player_row['ube_report_player_player_id']] = array(
         UBE_NAME     => $player_row['ube_report_player_name'],
         UBE_ATTACKER => $player_row['ube_report_player_attacker'],
 
@@ -358,10 +358,10 @@ class UBEReport {
 
     $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($fleet_row = db_fetch($query)) {
-      $combat_data[UBE_FLEETS][$fleet_row['ube_report_fleet_fleet_id']] = array(
+      $ube->fleets[$fleet_row['ube_report_fleet_fleet_id']] = array(
         UBE_OWNER => $fleet_row['ube_report_fleet_player_id'],
 
-        UBE_FLEET_TYPE => $combat_data[UBE_PLAYERS][$fleet_row['ube_report_fleet_player_id']][UBE_ATTACKER] ? UBE_ATTACKERS : UBE_DEFENDERS,
+        UBE_FLEET_TYPE => $ube->players[$fleet_row['ube_report_fleet_player_id']][UBE_ATTACKER] ? UBE_ATTACKERS : UBE_DEFENDERS,
 
         UBE_PLANET => array(
           PLANET_ID     => $fleet_row['ube_report_fleet_planet_id'],
@@ -394,7 +394,7 @@ class UBEReport {
       $round = $round_row['ube_report_unit_round'];
       $fleet_id = $round_row['ube_report_unit_fleet_id'];
 
-      $side = $combat_data[UBE_FLEETS][$fleet_id][UBE_FLEET_TYPE];
+      $side = $ube->fleets[$fleet_id][UBE_FLEET_TYPE];
       $rounds_data[$round][$side][UBE_ATTACK][$fleet_id] = 0;
 
       if(!isset($rounds_data[$round][UBE_FLEETS][$fleet_id])) {
@@ -444,7 +444,7 @@ class UBEReport {
         ),
       );
 
-      $side = $combat_data[UBE_FLEETS][$fleet_id][UBE_FLEET_TYPE];
+      $side = $ube->fleets[$fleet_id][UBE_FLEET_TYPE];
 
       $outcome[$side][UBE_FLEETS][$fleet_id] = &$outcome[UBE_FLEETS][$fleet_id];
     }
@@ -452,7 +452,7 @@ class UBEReport {
     $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
     while($row = db_fetch($query)) {
       $fleet_id = $row['ube_report_outcome_unit_fleet_id'];
-      $side = $combat_data[UBE_FLEETS][$fleet_id][UBE_FLEET_TYPE];
+      $side = $ube->fleets[$fleet_id][UBE_FLEET_TYPE];
       $outcome[$side][UBE_FLEETS][$fleet_id][UBE_UNITS_LOST][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_lost'];
       $outcome[$side][UBE_FLEETS][$fleet_id][UBE_DEFENCE_RESTORE][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_restored'];
     }
@@ -473,8 +473,8 @@ class UBEReport {
     {
       return;
     }
-    $combat_data = &$ube->combat_data;
-    if(!is_array($combat_data))
+
+    if(!is_array($ube->combat_data))
     {
       return;
     }
@@ -482,16 +482,14 @@ class UBEReport {
     global $lang;
 
     // Обсчитываем результаты боя из начальных данных
-    $players_info = &$combat_data[UBE_PLAYERS];
-    $fleets_info = &$combat_data[UBE_FLEETS];
-    $outcome = &$combat_data[UBE_OUTCOME];
+    $outcome = &$ube->combat_data[UBE_OUTCOME];
     // Генерируем отчет по флотам
-    for($round = 1; $round <= count($combat_data[UBE_ROUNDS]) - 1; $round++)
+    for($round = 1; $round <= count($ube->combat_data[UBE_ROUNDS]) - 1; $round++)
     {
       $round_template = array(
         'NUMBER' => $round,
         '.' => array(
-          'fleet' => $this->sn_ube_report_round_fleet($combat_data, $round),
+          'fleet' => $this->sn_ube_report_round_fleet($ube, $round),
         ),
       );
       $template_result['.']['round'][] = $round_template;
@@ -506,7 +504,7 @@ class UBEReport {
       }
       foreach($outcome[$side][UBE_FLEETS] as $fleet_id => $temp)
       {
-        $player_info = &$players_info[$fleets_info[$fleet_id][UBE_OWNER]];
+        $player_info = &$ube->players[$ube->fleets[$fleet_id][UBE_OWNER]];
         $fleet_outcome = &$outcome[UBE_FLEETS][$fleet_id];
 
         $template_result['.']['loss'][] = array(
@@ -544,18 +542,18 @@ class UBEReport {
 
     // Координаты, тип и название планеты - если есть
 //R  $planet_owner_id = $combat_data[UBE_FLEETS][0][UBE_OWNER];
-    if(isset($combat_data[UBE_OUTCOME][UBE_PLANET]))
+    if(isset($ube->combat_data[UBE_OUTCOME][UBE_PLANET]))
     {
-      $template_result += $combat_data[UBE_OUTCOME][UBE_PLANET];
+      $template_result += $ube->combat_data[UBE_OUTCOME][UBE_PLANET];
       $template_result[PLANET_NAME] = str_replace(' ', '&nbsp;', htmlentities($template_result[PLANET_NAME], ENT_COMPAT, 'UTF-8'));
     }
 
     /** @noinspection SpellCheckingInspection */
     $template_result += array(
-      'MICROTIME' => $combat_data[UBE_TIME_SPENT],
+      'MICROTIME' => $ube->combat_data[UBE_TIME_SPENT],
       'COMBAT_TIME' => $ube->combat_timestamp ? $ube->combat_timestamp + SN_CLIENT_TIME_DIFF : 0,
       'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $ube->combat_timestamp + SN_CLIENT_TIME_DIFF),
-      'COMBAT_ROUNDS' => count($combat_data[UBE_ROUNDS]) - 1,
+      'COMBAT_ROUNDS' => count($ube->combat_data[UBE_ROUNDS]) - 1,
       'UBE_MISSION_TYPE' => $ube->options[UBE_MISSION_TYPE],
       'MT_DESTROY' => MT_DESTROY,
       'UBE_REPORT_CYPHER' => $ube->get_cypher(),
@@ -577,8 +575,8 @@ class UBEReport {
       'UBE_MOON_DESTROY_SUCCESS' => UBE_MOON_DESTROY_SUCCESS,
       'UBE_MOON_REAPERS_RETURNED' => UBE_MOON_REAPERS_RETURNED,
 
-      'UBE_CAPTURE_RESULT' => $combat_data[UBE_OUTCOME][UBE_CAPTURE_RESULT],
-      'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$combat_data[UBE_OUTCOME][UBE_CAPTURE_RESULT]],
+      'UBE_CAPTURE_RESULT' => $ube->combat_data[UBE_OUTCOME][UBE_CAPTURE_RESULT],
+      'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$ube->combat_data[UBE_OUTCOME][UBE_CAPTURE_RESULT]],
 
       'UBE_SFR' => $outcome[UBE_SFR],
       'UBE_COMBAT_RESULT' => $outcome[UBE_COMBAT_RESULT],
@@ -590,11 +588,11 @@ class UBEReport {
 
   // ------------------------------------------------------------------------------------------------
 // Парсит инфу о раунде для темплейта
-  function sn_ube_report_round_fleet(&$combat_data, $round)
+  function sn_ube_report_round_fleet(UBE $ube, $round)
   {
     global $lang;
+    $combat_data = &$ube->combat_data;
 
-    $fleets_info = &$combat_data[UBE_FLEETS];
     $round_template = array();
     $round_data = &$combat_data[UBE_ROUNDS][$round];
     foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $side)
@@ -607,12 +605,12 @@ class UBEReport {
         $fleet_template = array(
           'ID' => $fleet_id,
           'IS_ATTACKER' => $side == UBE_ATTACKERS,
-          'PLAYER_NAME' => htmlentities($combat_data[UBE_PLAYERS][$fleets_info[$fleet_id][UBE_OWNER]][UBE_NAME], ENT_COMPAT, 'UTF-8'),
+          'PLAYER_NAME' => htmlentities($ube->players[$ube->fleets[$fleet_id][UBE_OWNER]][UBE_NAME], ENT_COMPAT, 'UTF-8'),
         );
 
-        if(is_array($combat_data[UBE_FLEETS][$fleet_id][UBE_PLANET]))
+        if(is_array($ube->fleets[$fleet_id][UBE_PLANET]))
         {
-          $fleet_template += $combat_data[UBE_FLEETS][$fleet_id][UBE_PLANET];
+          $fleet_template += $ube->fleets[$fleet_id][UBE_PLANET];
           $fleet_template[PLANET_NAME] = $fleet_template[PLANET_NAME] ? htmlentities($fleet_template[PLANET_NAME], ENT_COMPAT, 'UTF-8') : '';
           $fleet_template['PLANET_TYPE_TEXT'] = $lang['sys_planet_type_sh'][$fleet_template['PLANET_TYPE']];
         }

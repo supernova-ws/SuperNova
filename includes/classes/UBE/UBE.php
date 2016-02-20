@@ -73,6 +73,20 @@ class UBE {
   public $resource_exchange_rates = array();
 
   /**
+   * [$player_id]
+   *
+   * @var array
+   */
+  public $players = array();
+
+  /**
+   * [$player_id]
+   *
+   * @var array
+   */
+  public $fleets = array();
+
+  /**
    * Заполняет начальные данные по данным миссии
    *
    * @param Mission $objMission
@@ -140,10 +154,10 @@ class UBE {
 
     $this->ube_attack_prepare_player($player_id, false);
 
-    $player = &$combat_data[UBE_PLAYERS][$player_id][UBE_PLAYER_DATA];
+    $player = &$this->players[$player_id][UBE_PLAYER_DATA];
 
-    $combat_data[UBE_FLEETS][0] = array(UBE_OWNER => $player_id);
-    $fleet_info = &$combat_data[UBE_FLEETS][0];
+    $this->fleets[0] = array(UBE_OWNER => $player_id);
+    $fleet_info = &$this->fleets[0];
 
     foreach(sn_get_groups('combat') as $unit_id) {
       if($unit_count = mrc_get_level($player, $planet, $unit_id)) {
@@ -182,9 +196,9 @@ class UBE {
     $combat_data = &$this->combat_data;
     global $ube_convert_techs;
 
-    if(!isset($combat_data[UBE_PLAYERS][$player_id])) {
-      $combat_data[UBE_PLAYERS][$player_id] = array(UBE_ATTACKER => $is_attacker);
-      $player_info = &$combat_data[UBE_PLAYERS][$player_id];
+    if(!isset($this->players[$player_id])) {
+      $this->players[$player_id] = array(UBE_ATTACKER => $is_attacker);
+      $player_info = &$this->players[$player_id];
 
       $player_data = db_user_by_id($player_id, true);
       $player_info[UBE_NAME] = $player_data['username'];
@@ -197,7 +211,7 @@ class UBE {
         $player_info[UBE_BONUSES][$ube_id] += mrc_get_level($player_data, false, $unit_id) * get_unit_param($unit_id, P_BONUS_VALUE) / 100 + $admiral_bonus;
       }
     } else {
-      $combat_data[UBE_PLAYERS][$player_id][UBE_ATTACKER] = $combat_data[UBE_PLAYERS][$player_id][UBE_ATTACKER] || $is_attacker;
+      $this->players[$player_id][UBE_ATTACKER] = $this->players[$player_id][UBE_ATTACKER] || $is_attacker;
     }
   }
 
@@ -209,7 +223,6 @@ class UBE {
   // Заполняет данные по флоту
   // OK0
   function ube_attack_prepare_fleet(&$fleet_row, $is_attacker) {
-    $combat_data = &$this->combat_data;
     $fleet_owner_id = $fleet_row['fleet_owner'];
     $fleet_id = $fleet_row['fleet_id'];
 
@@ -218,8 +231,8 @@ class UBE {
 //  $fleet_data = sys_unit_str2arr($fleet['_fleet_array']);
     $fleet_data = Fleet::static_proxy_string_to_array($fleet_row);
 
-    $combat_data[UBE_FLEETS][$fleet_id][UBE_OWNER] = $fleet_owner_id;
-    $fleet_info = &$combat_data[UBE_FLEETS][$fleet_id];
+    $this->fleets[$fleet_id][UBE_OWNER] = $fleet_owner_id;
+    $fleet_info = &$this->fleets[$fleet_id];
     $fleet_info[UBE_FLEET_GROUP] = $fleet_row['fleet_group'];
     foreach($fleet_data as $unit_id => $unit_count) {
       if(!$unit_count) {
@@ -322,9 +335,9 @@ class UBE {
 
     // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
     $first_round_data = array();
-    foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info) {
+    foreach($this->fleets as $fleet_id => &$fleet_info) {
       $fleet_info[UBE_COUNT] = is_array($fleet_info[UBE_COUNT]) ? $fleet_info[UBE_COUNT] : array();
-      $player_data = &$combat_data[UBE_PLAYERS][$fleet_info[UBE_OWNER]];
+      $player_data = &$this->players[$fleet_info[UBE_OWNER]];
       $fleet_info[UBE_FLEET_TYPE] = $player_data[UBE_ATTACKER] ? UBE_ATTACKERS : UBE_DEFENDERS;
 
       foreach($ube_combat_bonus_list as $bonus_id => $bonus_value) {
@@ -378,7 +391,7 @@ class UBE {
     $round_data = &$combat_data[UBE_ROUNDS][$round];
     foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
       // Кэшируем переменные для легкого доступа к подмассивам
-      $fleet_info = &$combat_data[UBE_FLEETS][$fleet_id];
+      $fleet_info = &$this->fleets[$fleet_id];
       $fleet_data[UBE_FLEET_INFO] = &$fleet_info;
       $fleet_type = $fleet_info[UBE_FLEET_TYPE];
 
@@ -626,7 +639,7 @@ class UBE {
 
     // Переменные для быстрого доступа к подмассивам
     $outcome = &$combat_data[UBE_OUTCOME];
-    $fleets_info = &$combat_data[UBE_FLEETS];
+    $fleets_info = &$this->fleets;
     $last_round_data = &$combat_data[UBE_ROUNDS][count($combat_data[UBE_ROUNDS]) - 1];
 
     $outcome[UBE_DEBRIS] = array();
@@ -804,7 +817,7 @@ class UBE {
   function sn_ube_combat_analyze_loot() {
     $combat_data = &$this->combat_data;
 
-    $planet_resource_list = &$combat_data[UBE_FLEETS][0][UBE_RESOURCES];
+    $planet_resource_list = &$this->fleets[0][UBE_RESOURCES];
     $outcome = &$combat_data[UBE_OUTCOME];
 
     $planet_looted_in_metal = 0;
@@ -916,8 +929,8 @@ class UBE {
   function ube_combat_result_apply() {
     $combat_data = &$this->combat_data;
 
-    $destination_user_id = $combat_data[UBE_FLEETS][0][UBE_OWNER];
-    $destination_user_db_row = &$combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA];
+    $destination_user_id = $this->fleets[0][UBE_OWNER];
+    $destination_user_db_row = &$this->players[$destination_user_id][UBE_PLAYER_DATA];
 
     $outcome = &$combat_data[UBE_OUTCOME];
     $planet_info = &$outcome[UBE_PLANET];
@@ -932,7 +945,7 @@ class UBE {
     $fleet_group_id_list = array(); // Для САБов
 
     $fleets_outcome = &$outcome[UBE_FLEETS];
-    foreach($combat_data[UBE_FLEETS] as $fleet_id => &$fleet_info) {
+    foreach($this->fleets as $fleet_id => &$fleet_info) {
       $fleet_info[UBE_FLEET_GROUP] ? $fleet_group_id_list[$fleet_info[UBE_FLEET_GROUP]] = $fleet_info[UBE_FLEET_GROUP] : false;
 
       $this_fleet_outcome = &$fleets_outcome[$fleet_id];
@@ -1018,7 +1031,7 @@ class UBE {
     }
 
     $bashing_list = array();
-    foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
+    foreach($this->players as $player_id => $player_info) {
       if(!$player_info[UBE_ATTACKER]) {
         continue;
       }
@@ -1135,7 +1148,7 @@ class UBE {
     $text_defender .= "{$lang['ube_report_info_link']}: <a href=\"index.php?page=battle_report&cypher=$this->report_cypher\">{$this->report_cypher}</a>";
 
     // TODO: Оптимизировать отсылку сообщений - отсылать пакетами
-    foreach($combat_data[UBE_PLAYERS] as $player_id => $player_info) {
+    foreach($this->players as $player_id => $player_info) {
       $message = $text_common . ($outcome[UBE_SFR] && $player_info[UBE_ATTACKER] ? $lang['ube_report_msg_body_sfr'] : $text_defender);
       msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $message);
     }
@@ -1153,11 +1166,10 @@ class UBE {
       UBE_MISSION_TYPE => MT_ATTACK,
     );
 
-    $combat_data = array(
-      UBE_PLAYERS => array(),
+    $this->players = array();
+    $this->fleets = array();
 
-      UBE_FLEETS => array(),
-    );
+    $combat_data = array();
 
     $this->sn_ube_simulator_fill_side($sym_defender, false);
     $this->sn_ube_simulator_fill_side($sym_attacker, true);
@@ -1172,13 +1184,13 @@ class UBE {
     $combat_data = &$this->combat_data;
     global $ube_convert_techs;
 
-    $player_id = $player_id == -1 ? count($combat_data[UBE_PLAYERS]) : $player_id;
+    $player_id = $player_id == -1 ? count($this->players) : $player_id;
 
     foreach($side_info as $fleet_data) {
-      $combat_data[UBE_PLAYERS][$player_id][UBE_NAME] = $attacker ? 'Attacker' : 'Defender';
-      $combat_data[UBE_PLAYERS][$player_id][UBE_ATTACKER] = $attacker;
+      $this->players[$player_id][UBE_NAME] = $attacker ? 'Attacker' : 'Defender';
+      $this->players[$player_id][UBE_ATTACKER] = $attacker;
 
-      $combat_data[UBE_FLEETS][$player_id][UBE_OWNER] = $player_id;
+      $this->fleets[$player_id][UBE_OWNER] = $player_id;
       foreach($fleet_data as $unit_id => $unit_count) {
         if(!$unit_count) {
           continue;
@@ -1187,21 +1199,21 @@ class UBE {
         $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
 
         if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-          $combat_data[UBE_FLEETS][$player_id][UBE_COUNT][$unit_id] = $unit_count;
+          $this->fleets[$player_id][UBE_COUNT][$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_RESOURCES) {
-          $combat_data[UBE_FLEETS][$player_id][UBE_RESOURCES][$unit_id] = $unit_count;
+          $this->fleets[$player_id][UBE_RESOURCES][$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
-          $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_convert_techs[$unit_id]] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
+          $this->players[$player_id][UBE_BONUSES][$ube_convert_techs[$unit_id]] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
         } elseif($unit_type == UNIT_GOVERNORS) {
           if($unit_id == MRC_FORTIFIER) {
             foreach($ube_convert_techs as $ube_id) {
-              $combat_data[UBE_FLEETS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
+              $this->fleets[$player_id][UBE_BONUSES][$ube_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
             }
           }
         } elseif($unit_type == UNIT_MERCENARIES) {
           if($unit_id == MRC_ADMIRAL) {
             foreach($ube_convert_techs as $ube_id) {
-              $combat_data[UBE_PLAYERS][$player_id][UBE_BONUSES][$ube_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
+              $this->players[$player_id][UBE_BONUSES][$ube_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
             }
           }
         }
