@@ -11,46 +11,6 @@ spl_autoload_register(function($class) {
 //require_once('UBEOutcome.php');
 
 
-// ------------------------------------------------------------------------------------------------
-/**
- * Записывает результат боя в БД
- *
- * @param UBE $ube
- *
- * @return mixed
- */
-function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
-
-// ------------------------------------------------------------------------------------------------
-// Заполняет данные по флоту
-/**
- * @param UBE   $ube
- * @param array $fleet
- * @param bool  $is_attacker
- *
- * @return mixed
- */
-function ube_attack_prepare_fleet_from_object($ube, &$fleet, $is_attacker) { return sn_function_call(__FUNCTION__, array($ube, &$fleet, $is_attacker)); }
-
-
-/**
- * @param array $fleet_row
- * @param UBE   $ube
- *
- * @return mixed
- */
-function flt_planet_capture_from_object(&$fleet_row, $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
-
-/**
- * @param array $fleet_row
- * @param UBE   $ube
- * @param mixed $result
- *
- * @return mixed
- */
-function sn_flt_planet_capture_from_object(&$fleet_row, $ube, &$result) { return $result; }
-
-
 class UBE {
   /**
    * Кодовая строка для доступа к отчёту
@@ -1339,3 +1299,43 @@ class UBE {
   }
 
 }
+
+// ------------------------------------------------------------------------------------------------
+/**
+ * Записывает результат боя в БД
+ *
+ * @param UBE $ube
+ *
+ * @return mixed
+ */
+function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
+
+// ------------------------------------------------------------------------------------------------
+// Заполняет данные по флоту
+/**
+ * @param UBE   $ube
+ * @param array $fleet
+ * @param bool  $is_attacker
+ *
+ * @return mixed
+ */
+function ube_attack_prepare_fleet_from_object(UBE $ube, &$fleet, $is_attacker) { return sn_function_call(__FUNCTION__, array($ube, &$fleet, $is_attacker)); }
+
+
+/**
+ * @param array $fleet_row
+ * @param UBE   $ube
+ *
+ * @return mixed
+ */
+function flt_planet_capture_from_object(&$fleet_row, UBE $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
+
+/**
+ * @param array $fleet_row
+ * @param UBE   $ube
+ * @param mixed $result
+ *
+ * @return mixed
+ */
+function sn_flt_planet_capture_from_object(&$fleet_row, UBE $ube, &$result) { return $result; }
+
