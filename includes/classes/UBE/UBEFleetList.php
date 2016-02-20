@@ -5,5 +5,4 @@ class UBEFleetList {
   public $fleets = array();
 
 
-
 }
