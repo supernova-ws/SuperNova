@@ -87,6 +87,14 @@ class UBE {
   public $fleets = array();
 
   /**
+   * [$round_id]
+   *
+   * @var array
+   */
+  public $rounds = array();
+
+
+  /**
    * Заполняет начальные данные по данным миссии
    *
    * @param Mission $objMission
@@ -375,8 +383,8 @@ class UBE {
         $first_round_data[$fleet_id][UBE_SHIELD_REST][$unit_id] = $fleet_info[UBE_SHIELD][$unit_id];
       }
     }
-    $combat_data[UBE_ROUNDS][0][UBE_FLEETS] = $first_round_data;
-    $combat_data[UBE_ROUNDS][1][UBE_FLEETS] = $first_round_data;
+    $this->rounds[0][UBE_FLEETS] = $first_round_data;
+    $this->rounds[1][UBE_FLEETS] = $first_round_data;
     $this->sn_ube_combat_round_prepare(0);
   }
 
@@ -384,11 +392,9 @@ class UBE {
   // Вычисление дополнительной информации для расчета раунда
   // OK0
   function sn_ube_combat_round_prepare($round) {
-    $combat_data = &$this->combat_data;
-
     global $ube_combat_bonus_list;
 
-    $round_data = &$combat_data[UBE_ROUNDS][$round];
+    $round_data = &$this->rounds[$round];
     foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
       // Кэшируем переменные для легкого доступа к подмассивам
       $fleet_info = &$this->fleets[$fleet_id];
@@ -438,13 +444,11 @@ class UBE {
   // Рассчитывает результат столкновения флотов ака раунд
   // OK0
   function sn_ube_combat_round_crossfire_fleet($round) {
-    $combat_data = &$this->combat_data;
-
     if(BE_DEBUG === true) {
       // sn_ube_combat_helper_round_header($round);
     }
 
-    $round_data = &$combat_data[UBE_ROUNDS][$round];
+    $round_data = &$this->rounds[$round];
     // Проводим бой. Сталкиваем каждый корабль атакующего с каждым кораблем атакуемого
     foreach($round_data[UBE_ATTACKERS][UBE_ATTACK] as $attack_fleet_id => $temp) {
       $attack_fleet_data = &$round_data[UBE_FLEETS][$attack_fleet_id];
@@ -582,7 +586,7 @@ class UBE {
   function sn_ube_combat_round_analyze($round) {
     $combat_data = &$this->combat_data;
 
-    $round_data = &$combat_data[UBE_ROUNDS][$round];
+    $round_data = &$this->rounds[$round];
     $round_data[UBE_OUTCOME] = UBE_COMBAT_RESULT_DRAW;
 
     $outcome = array();
@@ -610,7 +614,7 @@ class UBE {
       $round_data[UBE_OUTCOME] = isset($outcome[UBE_ATTACKERS]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
     } elseif(count($outcome) == 2) {
       if($round < 10) {
-        $combat_data[UBE_ROUNDS][$round + 1][UBE_FLEETS] = $next_round_fleet;
+        $this->rounds[$round + 1][UBE_FLEETS] = $next_round_fleet;
       }
     }
 
@@ -640,7 +644,7 @@ class UBE {
     // Переменные для быстрого доступа к подмассивам
     $outcome = &$combat_data[UBE_OUTCOME];
     $fleets_info = &$this->fleets;
-    $last_round_data = &$combat_data[UBE_ROUNDS][count($combat_data[UBE_ROUNDS]) - 1];
+    $last_round_data = &$this->rounds[count($this->rounds) - 1];
 
     $outcome[UBE_DEBRIS] = array();
 
@@ -752,7 +756,7 @@ class UBE {
 
     $outcome[UBE_COMBAT_RESULT] = !isset($last_round_data[UBE_OUTCOME]) || $last_round_data[UBE_OUTCOME] == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $last_round_data[UBE_OUTCOME];
     // SFR - Small Fleet Reconnaissance ака РМФ
-    $outcome[UBE_SFR] = count($combat_data[UBE_ROUNDS]) == 2 && $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_LOSS;
+    $outcome[UBE_SFR] = count($this->rounds) == 2 && $outcome[UBE_COMBAT_RESULT] == UBE_COMBAT_RESULT_LOSS;
 
     if(!$this->options[UBE_LOADED]) {
       if($this->options[UBE_MOON_WAS]) {
@@ -862,7 +866,7 @@ class UBE {
 
     // TODO: $is_simulator
     $reapers = 0;
-    foreach($combat_data[UBE_ROUNDS][count($combat_data[UBE_ROUNDS]) - 1][UBE_FLEETS] as $fleet_data) {
+    foreach($this->rounds[count($this->rounds) - 1][UBE_FLEETS] as $fleet_data) {
       if($fleet_data[UBE_FLEET_INFO][UBE_FLEET_TYPE] == UBE_ATTACKERS) {
         foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
           // TODO: Работа по группам - группа "Уничтожители лун"

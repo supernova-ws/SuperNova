@@ -230,7 +230,7 @@ class UBEReport {
 
     // Сохраняем информацию о раундах
     $unit_sort_order = 0;
-    foreach($combat_data[UBE_ROUNDS] as $round => &$round_data) {
+    foreach($ube->rounds as $round => &$round_data) {
       foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
         foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
           $unit_sort_order++;
@@ -386,8 +386,8 @@ class UBEReport {
       );
     }
 
-    $combat_data[UBE_ROUNDS] = array();
-    $rounds_data = &$combat_data[UBE_ROUNDS];
+    $ube->rounds = array();
+    $rounds_data = &$ube->rounds;
 
     $query = doquery("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_sort_order`");
     while($round_row = db_fetch($query)) {
@@ -484,7 +484,7 @@ class UBEReport {
     // Обсчитываем результаты боя из начальных данных
     $outcome = &$ube->combat_data[UBE_OUTCOME];
     // Генерируем отчет по флотам
-    for($round = 1; $round <= count($ube->combat_data[UBE_ROUNDS]) - 1; $round++)
+    for($round = 1; $round <= count($ube->rounds) - 1; $round++)
     {
       $round_template = array(
         'NUMBER' => $round,
@@ -553,7 +553,7 @@ class UBEReport {
       'MICROTIME' => $ube->combat_data[UBE_TIME_SPENT],
       'COMBAT_TIME' => $ube->combat_timestamp ? $ube->combat_timestamp + SN_CLIENT_TIME_DIFF : 0,
       'COMBAT_TIME_TEXT' => date(FMT_DATE_TIME, $ube->combat_timestamp + SN_CLIENT_TIME_DIFF),
-      'COMBAT_ROUNDS' => count($ube->combat_data[UBE_ROUNDS]) - 1,
+      'COMBAT_ROUNDS' => count($ube->rounds) - 1,
       'UBE_MISSION_TYPE' => $ube->options[UBE_MISSION_TYPE],
       'MT_DESTROY' => MT_DESTROY,
       'UBE_REPORT_CYPHER' => $ube->get_cypher(),
@@ -591,17 +591,16 @@ class UBEReport {
   function sn_ube_report_round_fleet(UBE $ube, $round)
   {
     global $lang;
-    $combat_data = &$ube->combat_data;
 
     $round_template = array();
-    $round_data = &$combat_data[UBE_ROUNDS][$round];
+    $round_data = &$ube->rounds[$round];
     foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $side)
     {
       $round_data[$side][UBE_ATTACK] = $round_data[$side][UBE_ATTACK] ? $round_data[$side][UBE_ATTACK] : array();
       foreach($round_data[$side][UBE_ATTACK] as $fleet_id => $temp)
       {
         $fleet_data = &$round_data[UBE_FLEETS][$fleet_id];
-        $fleet_data_prev = &$combat_data[UBE_ROUNDS][$round - 1][UBE_FLEETS][$fleet_id];
+        $fleet_data_prev = &$ube->rounds[$round - 1][UBE_FLEETS][$fleet_id];
         $fleet_template = array(
           'ID' => $fleet_id,
           'IS_ATTACKER' => $side == UBE_ATTACKERS,
