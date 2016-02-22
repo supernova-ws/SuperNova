@@ -151,28 +151,9 @@ class UBEReport {
 
     // Всякая информация по флотам
     $unit_sort_order = 0;
-    foreach($ube->fleets_obj->fleets as $fleet_id => &$fleet_info) {
+    foreach($ube->fleet_list as $fleet_id => $UBEFleet) {
       // Сохраняем общую информацию по флотам
-      $sql_perform['ube_report_fleet'][] = array(
-        $ube_report_id,
-        $fleet_info[UBE_OWNER],
-        $fleet_id,
-
-        (float)$fleet_info[UBE_PLANET][PLANET_ID],
-        "'" . db_escape($fleet_info[UBE_PLANET][PLANET_NAME]) . "'",
-        (int)$fleet_info[UBE_PLANET][PLANET_GALAXY],
-        (int)$fleet_info[UBE_PLANET][PLANET_SYSTEM],
-        (int)$fleet_info[UBE_PLANET][PLANET_PLANET],
-        (int)$fleet_info[UBE_PLANET][PLANET_TYPE],
-
-        (float)$fleet_info[UBE_RESOURCES][RES_METAL],
-        (float)$fleet_info[UBE_RESOURCES][RES_CRYSTAL],
-        (float)$fleet_info[UBE_RESOURCES][RES_DEUTERIUM],
-
-        (float)$fleet_info[UBE_BONUSES][UBE_ATTACK],
-        (float)$fleet_info[UBE_BONUSES][UBE_SHIELD],
-        (float)$fleet_info[UBE_BONUSES][UBE_ARMOR],
-      );
+      $sql_perform['ube_report_fleet'][] = $UBEFleet->sql_generate_array($ube_report_id);
 
       // Сохраняем итоговую информацию по ресурсам флота - потеряно, выброшено, увезено
       $fleet_outcome_data = &$ube->outcome->outcome[UBE_FLEETS][$fleet_id];
@@ -196,7 +177,7 @@ class UBEReport {
       );
 
       // Сохраняем результаты по юнитам - потеряно и восстановлено
-      foreach($fleet_info[UBE_COUNT] as $unit_id => $unit_count) {
+      foreach($UBEFleet->UBE_COUNT as $unit_id => $unit_count) {
         if($fleet_outcome_data[UBE_UNITS_LOST][$unit_id] || $fleet_outcome_data[UBE_DEFENCE_RESTORE][$unit_id]) {
           $unit_sort_order++;
           $sql_perform['ube_report_outcome_unit'][] = array(
@@ -213,6 +194,7 @@ class UBEReport {
       }
     }
 
+
     // Сохраняем информацию о раундах
     $unit_sort_order = 0;
     foreach($ube->rounds->_container as $round => &$round_data) {
@@ -222,7 +204,8 @@ class UBEReport {
 
           $sql_perform['ube_report_unit'][] = array(
             $ube_report_id,
-            $fleet_data[UBE_FLEET_INFO][UBE_OWNER],
+            // $ube->rounds[$round]->fleet_info[$fleet_id]->UBE_OWNER
+            $ube->fleet_list[$fleet_id]->UBE_OWNER,
             $fleet_id,
             $round,
 
@@ -315,7 +298,7 @@ class UBEReport {
         continue;
       }
       foreach($ube->outcome->outcome[$side][UBE_FLEETS] as $fleet_id => $temp) {
-        $fleet_owner_id = $ube->fleets_obj->fleets[$fleet_id][UBE_OWNER];
+        $fleet_owner_id = $ube->fleet_list[$fleet_id]->UBE_OWNER;
         $fleet_outcome = &$ube->outcome->outcome[UBE_FLEETS][$fleet_id];
 
         $template_result['.']['loss'][] = array(
@@ -396,11 +379,11 @@ class UBEReport {
         $fleet_template = array(
           'ID'          => $fleet_id,
           'IS_ATTACKER' => $side == UBE_ATTACKERS,
-          'PLAYER_NAME' => $ube->players[$ube->fleets_obj->fleets[$fleet_id][UBE_OWNER]]->player_name_get(true),
+          'PLAYER_NAME' => $ube->players[$ube->fleet_list[$fleet_id]->UBE_OWNER]->player_name_get(true),
         );
 
-        if(is_array($ube->fleets_obj->fleets[$fleet_id][UBE_PLANET])) {
-          $fleet_template += $ube->fleets_obj->fleets[$fleet_id][UBE_PLANET];
+        if(is_array($ube->fleet_list[$fleet_id]->UBE_PLANET)) {
+          $fleet_template += $ube->fleet_list[$fleet_id]->UBE_PLANET;
           $fleet_template[PLANET_NAME] = $fleet_template[PLANET_NAME] ? htmlentities($fleet_template[PLANET_NAME], ENT_COMPAT, 'UTF-8') : '';
           $fleet_template['PLANET_TYPE_TEXT'] = $lang['sys_planet_type_sh'][$fleet_template['PLANET_TYPE']];
         }
