@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.46');
+define('SN_VERSION', '41a4.47');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1307,7 +1307,7 @@ define('UBE_CAPTURE_NOT_ENOUGH_SLOTS', 8);
 
 define('UBE_CAPTURE_SUCCESSFUL', 100);
 
-define('UBE_PLANET', 'UBE_PLANET');
+//define('UBE_PLANET', 'UBE_PLANET');
 define('PLANET_ID', 'PLANET_ID');
 define('PLANET_NAME', 'PLANET_NAME');
 define('PLANET_SIZE', 'PLANET_SIZE');

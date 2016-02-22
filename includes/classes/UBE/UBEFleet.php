@@ -78,4 +78,37 @@ class UBEFleet {
     );
   }
 
+  public function read_from_row($fleet_row) {
+    $this->fleet_id = $fleet_row['fleet_id'];
+    $this->UBE_OWNER = $fleet_row['fleet_owner'];
+    $this->UBE_FLEET_GROUP = $fleet_row['fleet_group'];
+
+    $fleet_unit_list = Fleet::static_proxy_string_to_array($fleet_row);
+    foreach($fleet_unit_list as $unit_id => $unit_count) {
+      if(!$unit_count) {
+        continue;
+      }
+
+      $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
+      if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
+        $this->UBE_COUNT[$unit_id] = $unit_count;
+      }
+    }
+
+    $this->UBE_RESOURCES = array(
+      RES_METAL     => $fleet_row['fleet_resource_metal'],
+      RES_CRYSTAL   => $fleet_row['fleet_resource_crystal'],
+      RES_DEUTERIUM => $fleet_row['fleet_resource_deuterium'],
+    );
+
+    $this->UBE_PLANET = array(
+//    PLANET_ID => $fleet['fleet_start_id'],
+//    PLANET_NAME => $fleet['fleet_start_name'],
+      PLANET_GALAXY => $fleet_row['fleet_start_galaxy'],
+      PLANET_SYSTEM => $fleet_row['fleet_start_system'],
+      PLANET_PLANET => $fleet_row['fleet_start_planet'],
+      PLANET_TYPE   => $fleet_row['fleet_start_type'],
+    );
+  }
+
 }

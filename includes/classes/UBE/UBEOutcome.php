@@ -27,16 +27,6 @@ class UBEOutcome {
     $this->is_small_fleet_recce = intval($report_row['ube_report_combat_sfr']);
 
     $this->outcome = array(
-      UBE_PLANET => array(
-        PLANET_ID     => $report_row['ube_report_planet_id'],
-        PLANET_NAME   => $report_row['ube_report_planet_name'],
-        PLANET_SIZE   => $report_row['ube_report_planet_size'],
-        PLANET_GALAXY => $report_row['ube_report_planet_galaxy'],
-        PLANET_SYSTEM => $report_row['ube_report_planet_system'],
-        PLANET_PLANET => $report_row['ube_report_planet_planet'],
-        PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
-      ),
-
       UBE_CAPTURE_RESULT => $report_row['ube_report_capture_result'],
 
       UBE_ATTACKERS => array(),

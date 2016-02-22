@@ -77,6 +77,19 @@ class UBE {
    */
   public $debris = null;
 
+  /**
+   * @var array
+   */
+  public $ube_planet_info = array(
+//    PLANET_ID     => $report_row['ube_report_planet_id'],
+//    PLANET_NAME   => $report_row['ube_report_planet_name'],
+//    PLANET_SIZE   => $report_row['ube_report_planet_size'],
+//    PLANET_GALAXY => $report_row['ube_report_planet_galaxy'],
+//    PLANET_SYSTEM => $report_row['ube_report_planet_system'],
+//    PLANET_PLANET => $report_row['ube_report_planet_planet'],
+//    PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
+  );
+
   public function __construct() {
     $this->players = new UBEPlayerList();
     $this->fleet_list = new UBEFleetList();
@@ -171,7 +184,7 @@ class UBE {
       PLANET_TYPE   => $planet['planet_type'],
       PLANET_SIZE   => $planet['diameter'],
     );
-    $this->outcome->outcome[UBE_PLANET] = $this->fleet_list[0]->UBE_PLANET;
+    $this->ube_planet_info = $this->fleet_list[0]->UBE_PLANET;
 
     $this->is_defender_active_player = $player_db_row['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
   }
@@ -198,41 +211,12 @@ class UBE {
   // Заполняет данные по флоту
   // OK0
   function ube_attack_prepare_fleet(&$fleet_row, $is_attacker) {
-    $fleet_owner_id = $fleet_row['fleet_owner'];
-    $fleet_id = $fleet_row['fleet_id'];
+    $UBEFleet = new UBEFleet();
+    $UBEFleet->read_from_row($fleet_row);
 
-    $this->ube_attack_prepare_player($fleet_owner_id, $is_attacker);
+    $this->fleet_list[$UBEFleet->fleet_id] = $UBEFleet;
 
-//  $fleet_data = sys_unit_str2arr($fleet['_fleet_array']);
-    $fleet_data = Fleet::static_proxy_string_to_array($fleet_row);
-
-    $this->fleet_list[$fleet_id]->UBE_OWNER = $fleet_owner_id;
-    $this->fleet_list[$fleet_id]->UBE_FLEET_GROUP = $fleet_row['fleet_group'];
-    foreach($fleet_data as $unit_id => $unit_count) {
-      if(!$unit_count) {
-        continue;
-      }
-
-      $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
-      if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-        $this->fleet_list[$fleet_id]->UBE_COUNT[$unit_id] = $unit_count;
-      }
-    }
-
-    $this->fleet_list[$fleet_id]->UBE_RESOURCES = array(
-      RES_METAL     => $fleet_row['fleet_resource_metal'],
-      RES_CRYSTAL   => $fleet_row['fleet_resource_crystal'],
-      RES_DEUTERIUM => $fleet_row['fleet_resource_deuterium'],
-    );
-
-    $this->fleet_list[$fleet_id]->UBE_PLANET = array(
-//    PLANET_ID => $fleet['fleet_start_id'],
-//    PLANET_NAME => $fleet['fleet_start_name'],
-      PLANET_GALAXY => $fleet_row['fleet_start_galaxy'],
-      PLANET_SYSTEM => $fleet_row['fleet_start_system'],
-      PLANET_PLANET => $fleet_row['fleet_start_planet'],
-      PLANET_TYPE   => $fleet_row['fleet_start_type'],
-    );
+    $this->ube_attack_prepare_player($UBEFleet->UBE_OWNER, $is_attacker);
 
     // TODO - Вызов основной функции!!!
     ube_attack_prepare_fleet_from_object($this, $fleet_row, $is_attacker);
@@ -631,7 +615,7 @@ class UBE {
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->UBE_OWNER;
 
-    $planet_info = &$this->outcome->outcome[UBE_PLANET];
+    $planet_info = &$this->ube_planet_info;
     $planet_id = $planet_info[PLANET_ID];
     // Обновляем поле обломков на планете
     if(!$this->is_admin_in_combat && $this->debris->debris_total() > 0) {
@@ -790,7 +774,7 @@ class UBE {
 
     // TODO: Отсылать каждому игроку сообщение на его языке!
 
-    $planet_info = &$this->outcome->outcome[UBE_PLANET];
+    $planet_info = &$this->ube_planet_info;
 
     // Генерируем текст письма
     $text_common = sprintf($lang['ube_report_msg_body_common'],
@@ -1007,6 +991,16 @@ class UBE {
     $this->moon_calculator->load_from_report($report_row);
 
     $this->outcome->load_from_report_row($report_row);
+    $this->ube_planet_info = array(
+      PLANET_ID     => $report_row['ube_report_planet_id'],
+      PLANET_NAME   => $report_row['ube_report_planet_name'],
+      PLANET_SIZE   => $report_row['ube_report_planet_size'],
+      PLANET_GALAXY => $report_row['ube_report_planet_galaxy'],
+      PLANET_SYSTEM => $report_row['ube_report_planet_system'],
+      PLANET_PLANET => $report_row['ube_report_planet_planet'],
+      PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
+    );
+
 
     $this->debris->debris_reset();
     $this->debris->debris_add_resource(RES_METAL, $report_row['ube_report_debris_metal']);

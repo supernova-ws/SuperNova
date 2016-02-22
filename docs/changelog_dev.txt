@@ -335,9 +335,9 @@ TODO - бонусы должны оперировать техами, а не UB
 OK3 Текущий  2016-02-22 23:07:16 41a4.46
 OK4 Следующий
 
-Round
-  public $fleet_info = array(); // [UBE_FLEET_INFO]
-UBE_FLEET_INFO
+$UBE_PLANET
+$planet_info
+
 
 #ctv
 

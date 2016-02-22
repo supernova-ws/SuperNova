@@ -117,13 +117,13 @@ class UBEReport {
       `ube_report_combat_result` = {$ube->outcome->combat_result},
       `ube_report_combat_sfr` = " . (int)$ube->outcome->is_small_fleet_recce . ",
 
-      `ube_report_planet_id`          = " . (int)$ube->outcome->outcome[UBE_PLANET][PLANET_ID] . ",
-      `ube_report_planet_name`        = '" . db_escape($ube->outcome->outcome[UBE_PLANET][PLANET_NAME]) . "',
-      `ube_report_planet_size`        = " . (int)$ube->outcome->outcome[UBE_PLANET][PLANET_SIZE] . ",
-      `ube_report_planet_galaxy`      = " . (int)$ube->outcome->outcome[UBE_PLANET][PLANET_GALAXY] . ",
-      `ube_report_planet_system`      = " . (int)$ube->outcome->outcome[UBE_PLANET][PLANET_SYSTEM] . ",
-      `ube_report_planet_planet`      = " . (int)$ube->outcome->outcome[UBE_PLANET][PLANET_PLANET] . ",
-      `ube_report_planet_planet_type` = " . (int)$ube->outcome->outcome[UBE_PLANET][PLANET_TYPE] . ",
+      `ube_report_planet_id`          = " . (int)$ube->ube_planet_info[PLANET_ID] . ",
+      `ube_report_planet_name`        = '" . db_escape($ube->ube_planet_info[PLANET_NAME]) . "',
+      `ube_report_planet_size`        = " . (int)$ube->ube_planet_info[PLANET_SIZE] . ",
+      `ube_report_planet_galaxy`      = " . (int)$ube->ube_planet_info[PLANET_GALAXY] . ",
+      `ube_report_planet_system`      = " . (int)$ube->ube_planet_info[PLANET_SYSTEM] . ",
+      `ube_report_planet_planet`      = " . (int)$ube->ube_planet_info[PLANET_PLANET] . ",
+      `ube_report_planet_planet_type` = " . (int)$ube->ube_planet_info[PLANET_TYPE] . ",
 
       `ube_report_capture_result` = " . (int)$ube->outcome->outcome[UBE_CAPTURE_RESULT] . ", "
       . $ube->debris->report_generate_sql($config)
@@ -334,8 +334,8 @@ class UBEReport {
 
     // Координаты, тип и название планеты - если есть
 //R  $planet_owner_id = $combat_data[UBE_FLEETS][0][UBE_OWNER];
-    if(isset($ube->outcome->outcome[UBE_PLANET])) {
-      $template_result += $ube->outcome->outcome[UBE_PLANET];
+    if(isset($ube->ube_planet_info)) {
+      $template_result += $ube->ube_planet_info;
       $template_result[PLANET_NAME] = str_replace(' ', '&nbsp;', htmlentities($template_result[PLANET_NAME], ENT_COMPAT, 'UTF-8'));
     }
 
