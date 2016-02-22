@@ -268,6 +268,36 @@ class UBEReport {
 
 // ------------------------------------------------------------------------------------------------
 // Генерирует данные для отчета из разобранных данных боя
+
+  function ube_report_generate_side($side_fleet, UBE $ube, &$template_result) {
+    global $lang;
+
+    if(empty($side_fleet) || !is_array($side_fleet)) {
+      return;
+    }
+
+    foreach($side_fleet as $fleet_id => $temp) {
+      $fleet_owner_id = $ube->fleet_list[$fleet_id]->UBE_OWNER;
+      $fleet_outcome = &$ube->outcome->outcome_fleets[$fleet_id];
+
+      $template_result['.']['loss'][] = array(
+        'ID'          => $fleet_id,
+        'NAME'        => $ube->players[$fleet_owner_id]->player_name_get(),
+        'IS_ATTACKER' => $ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER,
+        '.'           => array(
+          'param' => array_merge(
+            $this->sn_ube_report_table_render($fleet_outcome[UBE_DEFENCE_RESTORE], 'ube_report_info_restored'),
+            $this->sn_ube_report_table_render($fleet_outcome[UBE_UNITS_LOST], 'ube_report_info_loss_final'),
+            $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST], 'ube_report_info_loss_resources'),
+            $this->sn_ube_report_table_render($fleet_outcome[UBE_CARGO_DROPPED], 'ube_report_info_loss_dropped'),
+            $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained'),
+            $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST_IN_METAL], 'ube_report_info_loss_in_metal')
+          ),
+        ),
+      );
+    }
+  }
+
   /**
    * @param UBE $ube
    * @param     $template_result
@@ -293,31 +323,8 @@ class UBEReport {
     }
 
     // Боевые потери флотов
-    foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $ube_side) {
-      if(!is_array($ube->outcome->outcome[$ube_side][UBE_FLEETS])) {
-        continue;
-      }
-      foreach($ube->outcome->outcome[$ube_side][UBE_FLEETS] as $fleet_id => $temp) {
-        $fleet_owner_id = $ube->fleet_list[$fleet_id]->UBE_OWNER;
-        $fleet_outcome = &$ube->outcome->outcome_fleets[$fleet_id];
-
-        $template_result['.']['loss'][] = array(
-          'ID'          => $fleet_id,
-          'NAME'        => $ube->players[$fleet_owner_id]->player_name_get(),
-          'IS_ATTACKER' => $ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER,
-          '.'           => array(
-            'param' => array_merge(
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_DEFENCE_RESTORE], $lang['ube_report_info_restored']),
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_UNITS_LOST], $lang['ube_report_info_loss_final']),
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST], $lang['ube_report_info_loss_resources']),
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_CARGO_DROPPED], $lang['ube_report_info_loss_dropped']),
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $lang[$ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained']),
-              $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST_IN_METAL], $lang['ube_report_info_loss_in_metal'])
-            ),
-          ),
-        );
-      }
-    }
+    $this->ube_report_generate_side($ube->outcome->fleet_attackers, $ube, $template_result);
+    $this->ube_report_generate_side($ube->outcome->fleet_defenders, $ube, $template_result);
 
     // Обломки
     $debris = array();
@@ -415,7 +422,7 @@ class UBEReport {
 
 // ------------------------------------------------------------------------------------------------
 // Рендерит таблицу общего результата боя
-  function sn_ube_report_table_render(&$array, $header) {
+  function sn_ube_report_table_render(&$array, $lang_header_index) {
     global $lang;
 
     $result = array();
@@ -428,8 +435,8 @@ class UBEReport {
           );
         }
       }
-      if($header && count($result)) {
-        array_unshift($result, array('NAME' => $header));
+      if($lang_header_index && count($result)) {
+        array_unshift($result, array('NAME' => $lang[$lang_header_index]));
       }
     }
 
