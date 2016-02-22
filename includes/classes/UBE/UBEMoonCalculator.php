@@ -112,8 +112,9 @@ class UBEMoonCalculator {
 
 
   protected function calculate_reapers(UBE $ube) {
+    $objRound = $ube->rounds->get_last_element();
     $reapers = 0;
-    foreach($ube->rounds[count($ube->rounds) - 1][UBE_FLEETS] as $fleet_data) {
+    foreach($objRound->round_fleets as $fleet_data) {
       if($fleet_data[UBE_FLEET_INFO][UBE_FLEET_TYPE] == UBE_ATTACKERS) {
         foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
           // TODO: Работа по группам - группа "Уничтожители лун"

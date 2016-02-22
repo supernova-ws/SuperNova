@@ -215,8 +215,8 @@ class UBEReport {
 
     // Сохраняем информацию о раундах
     $unit_sort_order = 0;
-    foreach($ube->rounds as $round => &$round_data) {
-      foreach($round_data[UBE_FLEETS] as $fleet_id => &$fleet_data) {
+    foreach($ube->rounds->_container as $round => &$round_data) {
+      foreach($ube->rounds[$round]->round_fleets as $fleet_id => &$fleet_data) {
         foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
           $unit_sort_order++;
 
@@ -298,7 +298,8 @@ class UBEReport {
 
     // Обсчитываем результаты боя из начальных данных
     // Генерируем отчет по флотам
-    for($round = 1; $round <= count($ube->rounds) - 1; $round++) {
+    $round_count = $ube->rounds->count();
+    for($round = 1; $round <= $round_count - 1; $round++) {
       $round_template = array(
         'NUMBER' => $round,
         '.'      => array(
@@ -359,7 +360,7 @@ class UBEReport {
       'MICROTIME'         => $ube->get_time_spent(),
       'COMBAT_TIME'       => $ube->combat_timestamp ? $ube->combat_timestamp + SN_CLIENT_TIME_DIFF : 0,
       'COMBAT_TIME_TEXT'  => date(FMT_DATE_TIME, $ube->combat_timestamp + SN_CLIENT_TIME_DIFF),
-      'COMBAT_ROUNDS'     => count($ube->rounds) - 1,
+      'COMBAT_ROUNDS'     => $round_count - 1,
       'UBE_MISSION_TYPE'  => $ube->mission_type_id,
       'UBE_REPORT_CYPHER' => $ube->get_cypher(),
 
@@ -386,12 +387,12 @@ class UBEReport {
     global $lang;
 
     $round_template = array();
-    $round_data = &$ube->rounds[$round];
+    $objRound = $ube->rounds[$round];
     foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $side) {
-      $round_data[$side][UBE_ATTACK] = $round_data[$side][UBE_ATTACK] ? $round_data[$side][UBE_ATTACK] : array();
-      foreach($round_data[$side][UBE_ATTACK] as $fleet_id => $temp) {
-        $fleet_data = &$round_data[UBE_FLEETS][$fleet_id];
-        $fleet_data_prev = &$ube->rounds[$round - 1][UBE_FLEETS][$fleet_id];
+      $side_array = $side == UBE_ATTACKERS ? $objRound->UBE_ATTACKERS : $objRound->UBE_ATTACKERS;
+      empty($side_array) ? $objRound->UBE_ATTACKERS = array() : false;
+      foreach($side_array[UBE_ATTACK] as $fleet_id => $temp) {
+        $fleet_data = &$objRound->round_fleets[$fleet_id];
         $fleet_template = array(
           'ID'          => $fleet_id,
           'IS_ATTACKER' => $side == UBE_ATTACKERS,
@@ -405,17 +406,17 @@ class UBEReport {
         }
 
         foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
-          $shields_original = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $fleet_data_prev[UBE_COUNT][$unit_id];
+          $shields_original = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_COUNT][$unit_id];
           $ship_template = array(
             'ID'          => $unit_id,
             'NAME'        => $lang['tech'][$unit_id],
             'ATTACK'      => pretty_number($fleet_data[UBE_ATTACK][$unit_id]),
             'SHIELD'      => pretty_number($shields_original),
             'SHIELD_LOST' => pretty_number($shields_original - $fleet_data[UBE_SHIELD][$unit_id]),
-            'ARMOR'       => pretty_number($fleet_data_prev[UBE_ARMOR][$unit_id]),
-            'ARMOR_LOST'  => pretty_number($fleet_data_prev[UBE_ARMOR][$unit_id] - $fleet_data[UBE_ARMOR][$unit_id]),
-            'UNITS'       => pretty_number($fleet_data_prev[UBE_COUNT][$unit_id]),
-            'UNITS_LOST'  => pretty_number($fleet_data_prev[UBE_COUNT][$unit_id] - $fleet_data[UBE_COUNT][$unit_id]),
+            'ARMOR'       => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_ARMOR][$unit_id]),
+            'ARMOR_LOST'  => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_ARMOR][$unit_id] - $fleet_data[UBE_ARMOR][$unit_id]),
+            'UNITS'       => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_COUNT][$unit_id]),
+            'UNITS_LOST'  => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_COUNT][$unit_id] - $fleet_data[UBE_COUNT][$unit_id]),
             'UNITS_BOOM'  => pretty_number($fleet_data[UBE_UNITS_BOOM][$unit_id]),
           );
 

@@ -4,13 +4,9 @@
  * Class UBEPlayerList
  *
  * @method UBEPlayer offsetGet($offset)
+ * @property UBEPlayer[] $_container
  */
 class UBEPlayerList extends ArrayAccessV2 {
-
-  /**
-   * @var UBEPlayer[]
-   */
-  protected $_container = array();
 
   // TODO - автоматически определять плеера в аттакеры или дефендеры (?) НЕ ЗАБЫВАТЬ О ВОЗМОЖНОСТИ СМЕНИТЬ СТОРОНУ ПРИ САБЕ!
 
