@@ -1010,9 +1010,6 @@ class UBE {
     $this->time_spent = $report_row['ube_report_time_spent'];
     $this->is_admin_in_combat = $report_row['ube_report_combat_admin'];
     $this->mission_type_id = $report_row['ube_report_mission_type'];
-
-    $this->moon_calculator->load_from_report($report_row);
-
     $this->combat_result = $report_row['ube_report_combat_result'];
 
     $this->is_small_fleet_recce = intval($report_row['ube_report_combat_sfr']);
@@ -1028,11 +1025,11 @@ class UBE {
       PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
     );
 
+    $this->moon_calculator->load_from_report($report_row);
 
     $this->debris->debris_reset();
     $this->debris->debris_add_resource(RES_METAL, $report_row['ube_report_debris_metal']);
     $this->debris->debris_add_resource(RES_CRYSTAL, $report_row['ube_report_debris_crystal']);
-
 
     $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($player_row = db_fetch($query)) {

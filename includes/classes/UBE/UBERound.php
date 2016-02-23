@@ -4,16 +4,6 @@ class UBERound {
 
   public $round_number = 0;
 
-//  /**
-//   * [$fleet_id][$unit_id]
-//   *
-//   * @var array[]
-//   */
-//  public $fleet_unit_count = array(); // [UBE_COUNT]
-//  public $fleet_unit_armor = array(); // [UBE_ARMOR]
-//  public $fleet_unit_armor_rest = array(); // [UBE_ARMOR_REST]
-//  public $fleet_unit_shield_rest = array(); // [UBE_SHIELD_REST]
-
   /**
    * [$fleet_id][UBE_COUNT/UBE_ARMOR/UBE_ARMOR_REST/...] [$unit_id]
    *
@@ -255,8 +245,8 @@ class UBERound {
     return $unit_is_lost;
   }
 
-// ------------------------------------------------------------------------------------------------
-// Анализирует результаты раунда и генерирует данные для следующего раунда
+  // ------------------------------------------------------------------------------------------------
+  // Анализирует результаты раунда и генерирует данные для следующего раунда
   // OK0
   function sn_ube_combat_round_analyze($round) {
     $this->UBE_OUTCOME = UBE_COMBAT_RESULT_DRAW;
@@ -330,31 +320,96 @@ class UBERound {
 
   }
 
-  public function generate_report_fleet_ship_list($fleet_id, UBERound $previousRound) {
-    global $lang;
 
-    $ship_list_template = array();
 
-    $fleet_data = &$this->round_fleets[$fleet_id];
-    foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
-      $shields_original = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $previousRound->round_fleets[$fleet_id][UBE_COUNT][$unit_id];
-      $ship_template = array(
-        'ID'          => $unit_id,
-        'NAME'        => $lang['tech'][$unit_id],
-        'ATTACK'      => pretty_number($fleet_data[UBE_ATTACK][$unit_id]),
-        'SHIELD'      => pretty_number($shields_original),
-        'SHIELD_LOST' => pretty_number($shields_original - $fleet_data[UBE_SHIELD][$unit_id]),
-        'ARMOR'       => pretty_number($previousRound->round_fleets[$fleet_id][UBE_ARMOR][$unit_id]),
-        'ARMOR_LOST'  => pretty_number($previousRound->round_fleets[$fleet_id][UBE_ARMOR][$unit_id] - $fleet_data[UBE_ARMOR][$unit_id]),
-        'UNITS'       => pretty_number($previousRound->round_fleets[$fleet_id][UBE_COUNT][$unit_id]),
-        'UNITS_LOST'  => pretty_number($previousRound->round_fleets[$fleet_id][UBE_COUNT][$unit_id] - $fleet_data[UBE_COUNT][$unit_id]),
-        'UNITS_BOOM'  => pretty_number($fleet_data[UBE_UNITS_BOOM][$unit_id]),
+  // REPORT RENDER *****************************************************************************************************
+  /**
+   * @param UBE      $ube
+   * @param UBERound $previousRound
+   *
+   * @return array
+   */
+  public function report_render_round($ube, $previousRound) {
+    $fleet_list_template = array(
+      true  => array(),
+      false => array(),
+    );
+
+    foreach($this->round_fleets[UBE_ATTACK] as $fleet_id => $temp) {
+      $fleet_owner_id = $ube->fleet_list[$fleet_id]->UBE_OWNER;
+
+      $fleet_template = $this->report_render_round_fleet(
+        $fleet_id,
+        $previousRound,
+        $ube->players[$fleet_owner_id],
+        $ube->fleet_list[$fleet_id]->UBE_PLANET
       );
 
-      $ship_list_template[] = $ship_template;
+      $fleet_list_template[$fleet_template['IS_ATTACKER']][] = $fleet_template;
     }
 
-    return $ship_list_template;
+    // Здесь аттакеры и дефендеры вперемешку. Сортируем аттакер->дефендер
+    return array_merge($fleet_list_template[true], $fleet_list_template[false]);
+  }
+
+  /**
+   * @param           $fleet_id
+   * @param UBERound  $previousRound
+   * @param UBEPlayer $UBEPlayer
+   * @param           $planet_ube_row
+   *
+   * @return array
+   */
+  protected function report_render_round_fleet($fleet_id, UBERound $previousRound, UBEPlayer $UBEPlayer, $planet_ube_row) {
+    global $lang;
+
+    $side = $UBEPlayer->player_side_get();
+
+    $template_fleet = array(
+      'ID'          => $fleet_id,
+      'IS_ATTACKER' => $side == UBE_PLAYER_IS_ATTACKER,
+      'PLAYER_NAME' => $UBEPlayer->player_name_get(true),
+    );
+
+    if(is_array($planet_ube_row)) {
+      $template_fleet += $planet_ube_row;
+      $template_fleet[PLANET_NAME] = $template_fleet[PLANET_NAME] ? htmlentities($template_fleet[PLANET_NAME], ENT_COMPAT, 'UTF-8') : '';
+      $template_fleet['PLANET_TYPE_TEXT'] = $lang['sys_planet_type_sh'][$template_fleet['PLANET_TYPE']];
+    }
+
+    $template_fleet['.']['ship'] = $this->report_render_round_fleet_ships($this->round_fleets[$fleet_id], $previousRound->round_fleets[$fleet_id]);
+
+    return $template_fleet;
+  }
+
+  /**
+   * @param $current_data
+   * @param $previous_data
+   *
+   * @return array
+   */
+  protected function report_render_round_fleet_ships($current_data, $previous_data) {
+    global $lang;
+
+    $template_ships = array();
+    foreach($current_data[UBE_COUNT] as $unit_id => $unit_count) {
+      $shields_original = $current_data[UBE_SHIELD_BASE][$unit_id] * $previous_data[UBE_COUNT][$unit_id];
+
+      $template_ships[] = array(
+        'ID'          => $unit_id,
+        'NAME'        => $lang['tech'][$unit_id],
+        'ATTACK'      => pretty_number($current_data[UBE_ATTACK][$unit_id]),
+        'SHIELD'      => pretty_number($shields_original),
+        'SHIELD_LOST' => pretty_number($shields_original - $current_data[UBE_SHIELD][$unit_id]),
+        'ARMOR'       => pretty_number($previous_data[UBE_ARMOR][$unit_id]),
+        'ARMOR_LOST'  => pretty_number($previous_data[UBE_ARMOR][$unit_id] - $current_data[UBE_ARMOR][$unit_id]),
+        'UNITS'       => pretty_number($previous_data[UBE_COUNT][$unit_id]),
+        'UNITS_LOST'  => pretty_number($previous_data[UBE_COUNT][$unit_id] - $current_data[UBE_COUNT][$unit_id]),
+        'UNITS_BOOM'  => pretty_number($current_data[UBE_UNITS_BOOM][$unit_id]),
+      );
+    }
+
+    return $template_ships;
   }
 
 }

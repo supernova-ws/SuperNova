@@ -145,7 +145,7 @@ class UBEMoonCalculator {
       `ube_report_moon_reapers_die_chance` = " . (int)$this->reaper_die_chance;
   }
 
-  public function template_generate_array() {
+  public function report_render_moon() {
     return array(
       // Data
       'UBE_MOON' => $this->status,

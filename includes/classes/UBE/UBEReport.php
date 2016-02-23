@@ -246,10 +246,10 @@ class UBEReport {
 
     // Обсчитываем результаты боя из начальных данных
     // Генерируем отчет по флотам
-    $ube->rounds->round_list_generate_report($template_result, $ube);
+    $ube->rounds->report_render_rounds($template_result, $ube);
 
     // Боевые потери флотов
-    $ube->outcome->render_outcome_side_report($ube, $template_result);
+    $ube->outcome->report_render_outcome($ube, $template_result);
 
 // TODO: $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] - если админский бой не генерировать осколки и не делать луну. Сделать серверную опцию
 
@@ -259,6 +259,20 @@ class UBEReport {
       $template_result += $ube->ube_planet_info;
       $template_result[PLANET_NAME] = str_replace(' ', '&nbsp;', htmlentities($template_result[PLANET_NAME], ENT_COMPAT, 'UTF-8'));
     }
+
+    // Обломки
+    $debris = array();
+    foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) {
+      if($resource_amount = $ube->debris->debris_get_resource($resource_id)) {
+        $debris[] = array(
+          'NAME'   => $lang['tech'][$resource_id],
+          'AMOUNT' => pretty_number($resource_amount),
+        );
+      }
+    }
+    $template_result['.']['debris'] = $debris;
+
+    $template_result += $ube->moon_calculator->report_render_moon();
 
     $template_result += array(
       'MICROTIME'         => $ube->get_time_spent(),
@@ -280,21 +294,7 @@ class UBEReport {
       'UBE_COMBAT_RESULT_WIN'  => UBE_COMBAT_RESULT_WIN,
       'UBE_COMBAT_RESULT_LOSS' => UBE_COMBAT_RESULT_LOSS,
     );
-    $template_result += $ube->moon_calculator->template_generate_array();
 
-    // Обломки
-    $debris = array();
-    foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) {
-      if($resource_amount = $ube->debris->debris_get_resource($resource_id)) {
-        $debris[] = array(
-          'NAME'   => $lang['tech'][$resource_id],
-          'AMOUNT' => pretty_number($resource_amount),
-        );
-      }
-    }
-    $template_result['.']['debris'] = $debris;
   }
-
-
 
 }
