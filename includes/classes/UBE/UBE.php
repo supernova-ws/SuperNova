@@ -299,7 +299,7 @@ class UBE {
     $first_round = new UBERound();
     foreach($this->fleet_list->_container as $fleet_id => $objFleet) {
       $objFleet->UBE_COUNT = is_array($objFleet->UBE_COUNT) ? $objFleet->UBE_COUNT : array();
-      $objFleet->UBE_FLEET_TYPE = $this->players[$objFleet->UBE_OWNER]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? UBE_ATTACKERS : UBE_DEFENDERS;
+      $objFleet->is_attacker = $this->players[$objFleet->UBE_OWNER]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER;
 
       foreach($ube_combat_bonus_list as $bonus_id => $bonus_value) {
         // Вычисляем бонус игрока и добавляем его к бонусам флота
@@ -422,7 +422,7 @@ class UBE {
     // Генерируем результат боя
     foreach($this->fleet_list->_container as $fleet_id => $fleet_info) {
       // Инициализируем массив результатов для флота
-      $this->outcome->init_fleet($fleet_id, $this->fleet_list[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS);
+      $this->outcome->init_fleet($fleet_id, $this->fleet_list[$fleet_id]->is_attacker == UBE_PLAYER_IS_ATTACKER);
 
       // Переменные для быстрого доступа к подмассивам
       $fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
@@ -457,7 +457,7 @@ class UBE {
         $units_lost = $unit_count - $units_left;
 
         // Вычисляем емкость трюмов оставшихся кораблей
-        if(UBE_ATTACKERS == $this->fleet_list[$fleet_id]->UBE_FLEET_TYPE) {
+        if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
           $this->outcome->capacity_attackers[$fleet_id] += $this->fleet_list[$fleet_id]->UBE_CAPACITY[$unit_id] * $units_left;
         } else {
           $this->outcome->capacity_defenders[$fleet_id] += $this->fleet_list[$fleet_id]->UBE_CAPACITY[$unit_id] * $units_left;
@@ -501,7 +501,7 @@ class UBE {
       }
 
       // Емкость трюмов флота
-      if(UBE_ATTACKERS == $this->fleet_list[$fleet_id]->UBE_FLEET_TYPE) {
+      if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
         $fleet_capacity = $this->outcome->capacity_attackers[$fleet_id];
       } else {
         $fleet_capacity = $this->outcome->capacity_defenders[$fleet_id];
@@ -528,7 +528,7 @@ class UBE {
         $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
       }
 
-      if(UBE_ATTACKERS == $this->fleet_list[$fleet_id]->UBE_FLEET_TYPE) {
+      if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
         $this->outcome->capacity_attackers[$fleet_id] = $fleet_capacity - $fleet_total_resources;
       } else {
         $this->outcome->capacity_defenders[$fleet_id] = $fleet_capacity - $fleet_total_resources;
@@ -662,7 +662,7 @@ class UBE {
         $objFleet2->set_db_id($fleet_id);
 
         // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
-        if($UBEFleet->UBE_FLEET_TYPE == UBE_ATTACKERS && $this->moon_calculator->get_reapers_status() == UBE_MOON_REAPERS_DIED) {
+        if($UBEFleet->is_attacker == UBE_PLAYER_IS_ATTACKER && $this->moon_calculator->get_reapers_status() == UBE_MOON_REAPERS_DIED) {
           $ship_count_lost = $ship_count_initial;
         }
 
@@ -685,7 +685,7 @@ class UBE {
           $objFleet2->update_resources($resource_delta_fleet);
 
           // Если защитник и не РМФ - отправляем флот назад
-          if(($UBEFleet->UBE_FLEET_TYPE == UBE_DEFENDERS && !$this->is_small_fleet_recce) || $UBEFleet->UBE_FLEET_TYPE == UBE_ATTACKERS) {
+          if(($UBEFleet->is_attacker == UBE_PLAYER_IS_DEFENDER && !$this->is_small_fleet_recce) || $UBEFleet->is_attacker == UBE_PLAYER_IS_ATTACKER) {
             $objFleet2->mark_fleet_as_returned();
           }
           $objFleet2->flush_changes_to_db();
@@ -1043,7 +1043,7 @@ class UBE {
       $fleet_id = $round_row['ube_report_unit_fleet_id'];
 
       $objRound = new UBERound();
-      $objRound->load_from_report($round_row, $this->fleet_list[$fleet_id]->UBE_FLEET_TYPE);
+      $objRound->load_from_report($round_row, $this->fleet_list[$fleet_id]->is_attacker);
       $this->rounds[$objRound->round_number] = $objRound;
     }
 

@@ -41,7 +41,7 @@ class UBEOutcome {
     $query = doquery("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($row = db_fetch($query)) {
       $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
-      $this->load_fleet_from_row($row, $ube->fleet_list[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS);
+      $this->load_fleet_from_row($row, $ube->fleet_list[$fleet_id]->is_attacker == UBE_PLAYER_IS_ATTACKER);
     }
 
     $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");

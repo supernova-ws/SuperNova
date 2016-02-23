@@ -41,9 +41,9 @@ class UBERound {
    *
    * @var array
    */
-  public $UBE_ATTACKERS = array(); // [$fleet_type] // $fleets[$fleet_id][UBE_FLEET_TYPE]
+  public $fleet_stat_list_attackers = array(); // [$fleet_type] // $fleets[$fleet_id][UBE_FLEET_TYPE]
   // [$bonus_id][$fleet_id]
-  public $UBE_DEFENDERS = array(); // [$fleet_type] // $fleets[$fleet_id][UBE_FLEET_TYPE]
+  public $fleet_stat_list_defenders = array(); // [$fleet_type] // $fleets[$fleet_id][UBE_FLEET_TYPE]
 
   public $UBE_TOTAL = array(); // [UBE_FLEET_INFO][UBE_ASA]
 
@@ -94,14 +94,14 @@ class UBERound {
       }
 
       // Суммируем данные по флоту
-      if($this->fleet_info[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS) {
-        $this->UBE_ATTACKERS[UBE_ATTACK][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ATTACK]) ? array_sum($this->round_fleets[$fleet_id][UBE_ATTACK]) : 0;
-        $this->UBE_ATTACKERS[UBE_SHIELD][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_SHIELD]) ? array_sum($this->round_fleets[$fleet_id][UBE_SHIELD]) : 0;
-        $this->UBE_ATTACKERS[UBE_ARMOR] [$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ARMOR]) ? array_sum($this->round_fleets[$fleet_id][UBE_ARMOR]) : 0;
+      if($this->fleet_info[$fleet_id]->is_attacker == UBE_PLAYER_IS_ATTACKER) {
+        $this->fleet_stat_list_attackers[UBE_ATTACK][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ATTACK]) ? array_sum($this->round_fleets[$fleet_id][UBE_ATTACK]) : 0;
+        $this->fleet_stat_list_attackers[UBE_SHIELD][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_SHIELD]) ? array_sum($this->round_fleets[$fleet_id][UBE_SHIELD]) : 0;
+        $this->fleet_stat_list_attackers[UBE_ARMOR] [$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ARMOR]) ? array_sum($this->round_fleets[$fleet_id][UBE_ARMOR]) : 0;
       } else {
-        $this->UBE_DEFENDERS[UBE_ATTACK][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ATTACK]) ? array_sum($this->round_fleets[$fleet_id][UBE_ATTACK]) : 0;
-        $this->UBE_DEFENDERS[UBE_SHIELD][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_SHIELD]) ? array_sum($this->round_fleets[$fleet_id][UBE_SHIELD]) : 0;
-        $this->UBE_DEFENDERS[UBE_ARMOR] [$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ARMOR]) ? array_sum($this->round_fleets[$fleet_id][UBE_ARMOR]) : 0;
+        $this->fleet_stat_list_defenders[UBE_ATTACK][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ATTACK]) ? array_sum($this->round_fleets[$fleet_id][UBE_ATTACK]) : 0;
+        $this->fleet_stat_list_defenders[UBE_SHIELD][$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_SHIELD]) ? array_sum($this->round_fleets[$fleet_id][UBE_SHIELD]) : 0;
+        $this->fleet_stat_list_defenders[UBE_ARMOR] [$fleet_id] += is_array($this->round_fleets[$fleet_id][UBE_ARMOR]) ? array_sum($this->round_fleets[$fleet_id][UBE_ARMOR]) : 0;
       }
     }
 
@@ -110,17 +110,17 @@ class UBERound {
 //      $this->rounds_old[$round][UBE_TOTAL][UBE_DEFENDERS][$bonus_id] = array_sum($this->rounds_old[$round][UBE_DEFENDERS][$bonus_id]);
 //      $this->rounds_old[$round][UBE_TOTAL][UBE_ATTACKERS][$bonus_id] = array_sum($this->rounds_old[$round][UBE_ATTACKERS][$bonus_id]);
 //    }
-    $this->UBE_TOTAL[UBE_DEFENDERS][UBE_ATTACK] = array_sum($this->UBE_DEFENDERS[UBE_ATTACK]);
-    $this->UBE_TOTAL[UBE_DEFENDERS][UBE_SHIELD] = array_sum($this->UBE_DEFENDERS[UBE_SHIELD]);
-    $this->UBE_TOTAL[UBE_DEFENDERS][UBE_ARMOR] = array_sum($this->UBE_DEFENDERS[UBE_ARMOR]);
+    $this->UBE_TOTAL[UBE_PLAYER_IS_DEFENDER][UBE_ATTACK] = array_sum($this->fleet_stat_list_defenders[UBE_ATTACK]);
+    $this->UBE_TOTAL[UBE_PLAYER_IS_DEFENDER][UBE_SHIELD] = array_sum($this->fleet_stat_list_defenders[UBE_SHIELD]);
+    $this->UBE_TOTAL[UBE_PLAYER_IS_DEFENDER][UBE_ARMOR] = array_sum($this->fleet_stat_list_defenders[UBE_ARMOR]);
 
-    $this->UBE_TOTAL[UBE_ATTACKERS][UBE_ATTACK] = array_sum($this->UBE_ATTACKERS[UBE_ATTACK]);
-    $this->UBE_TOTAL[UBE_ATTACKERS][UBE_SHIELD] = array_sum($this->UBE_ATTACKERS[UBE_SHIELD]);
-    $this->UBE_TOTAL[UBE_ATTACKERS][UBE_ARMOR] = array_sum($this->UBE_ATTACKERS[UBE_ARMOR]);
+    $this->UBE_TOTAL[UBE_PLAYER_IS_ATTACKER][UBE_ATTACK] = array_sum($this->fleet_stat_list_attackers[UBE_ATTACK]);
+    $this->UBE_TOTAL[UBE_PLAYER_IS_ATTACKER][UBE_SHIELD] = array_sum($this->fleet_stat_list_attackers[UBE_SHIELD]);
+    $this->UBE_TOTAL[UBE_PLAYER_IS_ATTACKER][UBE_ARMOR] = array_sum($this->fleet_stat_list_attackers[UBE_ARMOR]);
 
     // Высчитываем долю атаки, приходящейся на юнит равную отношению брони юнита к общей броне - крупные цели атакуют чаще
     foreach($this->round_fleets as $fleet_id => &$fleet_data) {
-      $fleet_type = $this->fleet_info[$fleet_id]->UBE_FLEET_TYPE;
+      $fleet_type = $this->fleet_info[$fleet_id]->is_attacker;
       foreach($this->round_fleets[$fleet_id][UBE_COUNT] as $unit_id => $unit_count) {
         $this->round_fleets[$fleet_id][UBE_DAMAGE_PERCENT][$unit_id] = $this->round_fleets[$fleet_id][UBE_ARMOR][$unit_id] / $this->UBE_TOTAL[$fleet_type][UBE_ARMOR];
       }
@@ -135,9 +135,9 @@ class UBERound {
     }
 
     // Проводим бой. Сталкиваем каждый корабль атакующего с каждым кораблем атакуемого
-    foreach($this->UBE_ATTACKERS[UBE_ATTACK] as $attack_fleet_id => $temp) {
+    foreach($this->fleet_stat_list_attackers[UBE_ATTACK] as $attack_fleet_id => $temp) {
       $attack_fleet_data = &$this->round_fleets[$attack_fleet_id];
-      foreach($this->UBE_DEFENDERS[UBE_ATTACK] as $defend_fleet_id => $temp2) {
+      foreach($this->fleet_stat_list_defenders[UBE_ATTACK] as $defend_fleet_id => $temp2) {
         $defend_fleet_data = &$this->round_fleets[$defend_fleet_id];
 
         foreach($attack_fleet_data[UBE_COUNT] as $attack_unit_id => $attack_unit_count) {
@@ -266,7 +266,7 @@ class UBERound {
         $next_round_fleet[$fleet_id][UBE_COUNT][$unit_id] = $unit_count;
         $next_round_fleet[$fleet_id][UBE_ARMOR][$unit_id] = $fleet_data[UBE_ARMOR][$unit_id];
         $next_round_fleet[$fleet_id][UBE_ARMOR_REST][$unit_id] = $fleet_data[UBE_ARMOR_REST][$unit_id];
-        $outcome[$this->fleet_info[$fleet_id]->UBE_FLEET_TYPE] = 1;
+        $outcome[$this->fleet_info[$fleet_id]->is_attacker] = 1;
       }
     }
 
@@ -276,7 +276,7 @@ class UBERound {
       $round_data[UBE_OUTCOME] = UBE_COMBAT_RESULT_DRAW_END;
     } elseif(count($outcome) == 1) {
       // Если осталась одна сторона - она и выиграла
-      $round_data[UBE_OUTCOME] = isset($outcome[UBE_ATTACKERS]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
+      $round_data[UBE_OUTCOME] = isset($outcome[UBE_PLAYER_IS_ATTACKER]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
     } elseif(count($outcome) == 2) {
       if($round < 10) {
         $nextRound = new UBERound();
@@ -290,16 +290,16 @@ class UBERound {
 
   /**
    * @param $round_row
-   * @param $ube_side
+   * @param $is_attacker
    */
-  public function load_from_report($round_row, $ube_side) {
+  public function load_from_report($round_row, $is_attacker) {
     $this->round_number = $round_row['ube_report_unit_round'];
     $fleet_id = $round_row['ube_report_unit_fleet_id'];
 
-    if($ube_side == UBE_ATTACKERS) {
-      $this->UBE_ATTACKERS[UBE_ATTACK][$fleet_id] = 0;
+    if($is_attacker == UBE_PLAYER_IS_ATTACKER) {
+      $this->fleet_stat_list_attackers[UBE_ATTACK][$fleet_id] = 0;
     } else {
-      $this->UBE_DEFENDERS[UBE_ATTACK][$fleet_id] = 0;
+      $this->fleet_stat_list_defenders[UBE_ATTACK][$fleet_id] = 0;
     }
 
     if(!isset($this->round_fleets[$fleet_id])) {

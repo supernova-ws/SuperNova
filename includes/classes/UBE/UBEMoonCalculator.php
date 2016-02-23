@@ -115,7 +115,7 @@ class UBEMoonCalculator {
     $objRound = $ube->rounds->get_last_element();
     $reapers = 0;
     foreach($objRound->round_fleets as $fleet_id => $fleet_data) {
-      if($objRound->fleet_info[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS) {
+      if($objRound->fleet_info[$fleet_id]->is_attacker == UBE_PLAYER_IS_ATTACKER) {
         foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
           // TODO: Работа по группам - группа "Уничтожители лун"
           $reapers += ($unit_id == SHIP_HUGE_DEATH_STAR) ? $unit_count : 0;

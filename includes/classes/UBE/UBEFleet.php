@@ -9,7 +9,7 @@ class UBEFleet {
   public $UBE_OWNER = 0;
   public $UBE_FLEET_GROUP = 0;
 
-  public $UBE_FLEET_TYPE = UBE_DEFENDERS; // UBE_ATTACKERS : UBE_DEFENDERS
+  public $is_attacker = UBE_PLAYER_IS_DEFENDER;
   public $UBE_PLANET = array();
   public $UBE_BONUSES = array(); // [UBE_ATTACK]
   public $UBE_RESOURCES = array();
@@ -30,7 +30,7 @@ class UBEFleet {
   public function load_from_report($fleet_row, UBE $ube) {
     $this->fleet_id = $fleet_row['ube_report_fleet_fleet_id'];
     $this->UBE_OWNER = $fleet_row['ube_report_fleet_player_id'];
-    $this->UBE_FLEET_TYPE = $ube->players[$fleet_row['ube_report_fleet_player_id']]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? UBE_ATTACKERS : UBE_DEFENDERS;
+    $this->is_attacker = $ube->players[$fleet_row['ube_report_fleet_player_id']]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER;
 
 
     $this->UBE_PLANET = array(
