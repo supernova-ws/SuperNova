@@ -17,7 +17,7 @@ class UBEPlayerList extends ArrayAccessV2 {
   public function init_player_from_report_info($report_player_row) {
     $UBEPlayer = new UBEPlayer();
     $UBEPlayer->load_from_report_player_row($report_player_row);
-    $this->_container[$UBEPlayer->player_id_get()] = $UBEPlayer;
+    $this[$UBEPlayer->player_id_get()] = $UBEPlayer;
   }
 
   /**
@@ -31,7 +31,7 @@ class UBEPlayerList extends ArrayAccessV2 {
 
     $UBEPlayer = new UBEPlayer();
     $UBEPlayer->db_load_by_id($player_id);
-    $this->_container[$player_id] = $UBEPlayer;
+    $this[$player_id] = $UBEPlayer;
   }
 
   /**

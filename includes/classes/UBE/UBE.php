@@ -11,22 +11,18 @@ class UBE {
    * @var string
    */
   public $report_cypher = '';
-
   /**
    * Время, когда произошел бой - НЕ ВРЕМЯ, КОГДА ОН ОБСЧИТАН!
    *
    * @var int
    */
   public $combat_timestamp = 0;
-
   /**
    * Время, потраченное на обсчёт
    *
    * @var int
    */
   public $time_spent = 0;
-
-
   public $options_method = 0;
   /**
    * Является ли этот экземпляр боя загруженным из БД
@@ -39,13 +35,22 @@ class UBE {
   public $is_simulator = false;
 
   public $mission_type_id = MT_NONE;
-
+  public $combat_result = UBE_COMBAT_RESULT_DRAW;
+  /**
+   * Флаг РМФ
+   *
+   * @var int
+   */
+  public $is_small_fleet_recce = 0;
+  public $capture_result = UBE_CAPTURE_DISABLED;
   /**
    * [$resource_id] => $rate
    *
    * @var array
    */
   public $resource_exchange_rates = array();
+
+
 
   /**
    * @var UBEPlayerList
@@ -65,7 +70,7 @@ class UBE {
   /**
    * @var UBEOutcome
    */
-  public $outcome = array();
+  public $outcome = null;
 
   /**
    * @var UBEMoonCalculator
@@ -90,16 +95,6 @@ class UBE {
 //    PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
   );
 
-  public $combat_result = UBE_COMBAT_RESULT_DRAW;
-
-  /**
-   * Флаг РМФ
-   *
-   * @var int
-   */
-  public $is_small_fleet_recce = 0;
-
-  public $capture_result = UBE_CAPTURE_DISABLED;
 
   // [UBE_CAPTURE_RESULT]
 
