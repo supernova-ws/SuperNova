@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #41a0.31#
+* @version #41a4.51#
 *
 */
 
@@ -867,8 +867,8 @@ $a_lang_array = (array(
   'ube_report_info_loss_final' => 'Итоговые потери боевых единиц',
   'ube_report_info_loss_resources' => 'Потери в пересчете на ресурсы',
   'ube_report_info_loss_dropped' => 'Потери ресурсов из-за уменьшения трюмов',
-  'ube_report_info_loot_lost' => 'Увезено ресурсов со складов планеты',
-  'ube_report_info_loss_gained' => 'Потери из-за вывоза ресурсов с планеты',
+  'ube_report_info_loot_gained' => 'Увезено ресурсов со складов планеты',
+  'ube_report_info_loss_looted' => 'Потери из-за вывоза ресурсов с планеты',
   'ube_report_info_loss_in_metal' => 'Общие потери в пересчете на металл',
 
 

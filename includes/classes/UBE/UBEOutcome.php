@@ -136,4 +136,76 @@ class UBEOutcome {
     }
   }
 
+
+  public function render_fleet_report_table($fleet_id, $is_attacker) {
+    $fleet_outcome = &$this->outcome_fleets[$fleet_id];
+    return array_merge(
+      $this->sn_ube_report_table_render($fleet_outcome[UBE_DEFENCE_RESTORE], 'ube_report_info_restored'),
+      $this->sn_ube_report_table_render($fleet_outcome[UBE_UNITS_LOST], 'ube_report_info_loss_final'),
+      $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST], 'ube_report_info_loss_resources'),
+      $this->sn_ube_report_table_render($fleet_outcome[UBE_CARGO_DROPPED], 'ube_report_info_loss_dropped'),
+      $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $is_attacker ? 'ube_report_info_loot_gained' : 'ube_report_info_loss_looted'),
+      $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST_IN_METAL], 'ube_report_info_loss_in_metal')
+    );
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // Рендерит таблицу общего результата боя
+  protected function sn_ube_report_table_render(&$array, $lang_header_index) {
+    global $lang;
+
+    $result = array();
+    if(!empty($array)) {
+      foreach($array as $unit_id => $unit_count) {
+        if($unit_count) {
+          $result[] = array(
+            'NAME' => $lang['tech'][$unit_id],
+            'LOSS' => pretty_number($unit_count),
+          );
+        }
+      }
+      if($lang_header_index && count($result)) {
+        array_unshift($result, array('NAME' => $lang[$lang_header_index]));
+      }
+    }
+
+    return $result;
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // Генерирует данные для отчета из разобранных данных боя
+  /**
+   * @param     $side_fleet
+   * @param UBE $ube
+   * @param     $template_result
+   */
+  public function generate_report_per_side($side_fleet, UBE $ube, &$template_result) {
+    if(empty($side_fleet) || !is_array($side_fleet)) {
+      return;
+    }
+
+    foreach($side_fleet as $fleet_id => $temp) {
+      $fleet_owner_id = $ube->fleet_list[$fleet_id]->UBE_OWNER;
+      $fleet_is_attacker = $ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER;
+
+      $template_result['.']['loss'][] = array(
+        'ID'          => $fleet_id,
+        'NAME'        => $ube->players[$fleet_owner_id]->player_name_get(),
+        'IS_ATTACKER' => $fleet_is_attacker,
+        '.'           => array(
+          'param' => $this->render_fleet_report_table($fleet_id, $fleet_is_attacker),
+        ),
+      );
+    }
+  }
+
+  /**
+   * @param UBE $ube
+   * @param     $template_result
+   */
+  public function render_outcome_side_report(UBE $ube, &$template_result) {
+    $this->generate_report_per_side($this->fleet_attackers, $ube, $template_result);
+    $this->generate_report_per_side($this->fleet_defenders, $ube, $template_result);
+  }
+
 }

@@ -233,38 +233,6 @@ class UBEReport {
   }
 
 
-// ------------------------------------------------------------------------------------------------
-// Генерирует данные для отчета из разобранных данных боя
-
-  function ube_report_generate_side($side_fleet, UBE $ube, &$template_result) {
-    global $lang;
-
-    if(empty($side_fleet) || !is_array($side_fleet)) {
-      return;
-    }
-
-    foreach($side_fleet as $fleet_id => $temp) {
-      $fleet_owner_id = $ube->fleet_list[$fleet_id]->UBE_OWNER;
-      $fleet_outcome = &$ube->outcome->outcome_fleets[$fleet_id];
-
-      $template_result['.']['loss'][] = array(
-        'ID'          => $fleet_id,
-        'NAME'        => $ube->players[$fleet_owner_id]->player_name_get(),
-        'IS_ATTACKER' => $ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER,
-        '.'           => array(
-          'param' => array_merge(
-            $this->sn_ube_report_table_render($fleet_outcome[UBE_DEFENCE_RESTORE], 'ube_report_info_restored'),
-            $this->sn_ube_report_table_render($fleet_outcome[UBE_UNITS_LOST], 'ube_report_info_loss_final'),
-            $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST], 'ube_report_info_loss_resources'),
-            $this->sn_ube_report_table_render($fleet_outcome[UBE_CARGO_DROPPED], 'ube_report_info_loss_dropped'),
-            $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOOTED], $ube->players[$fleet_owner_id]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? 'ube_report_info_loot_lost' : 'ube_report_info_loss_gained'),
-            $this->sn_ube_report_table_render($fleet_outcome[UBE_RESOURCES_LOST_IN_METAL], 'ube_report_info_loss_in_metal')
-          ),
-        ),
-      );
-    }
-  }
-
   /**
    * @param UBE $ube
    * @param     $template_result
@@ -290,19 +258,7 @@ class UBEReport {
     }
 
     // Боевые потери флотов
-    $this->ube_report_generate_side($ube->outcome->fleet_attackers, $ube, $template_result);
-    $this->ube_report_generate_side($ube->outcome->fleet_defenders, $ube, $template_result);
-
-    // Обломки
-    $debris = array();
-    foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) {
-      if($resource_amount = $ube->debris->debris_get_resource($resource_id)) {
-        $debris[] = array(
-          'NAME'   => $lang['tech'][$resource_id],
-          'AMOUNT' => pretty_number($resource_amount),
-        );
-      }
-    }
+    $ube->outcome->render_outcome_side_report($ube, $template_result);
 
 // TODO: $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] - если админский бой не генерировать осколки и не делать луну. Сделать серверную опцию
 
@@ -335,6 +291,16 @@ class UBEReport {
     );
     $template_result += $ube->moon_calculator->template_generate_array();
 
+    // Обломки
+    $debris = array();
+    foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) {
+      if($resource_amount = $ube->debris->debris_get_resource($resource_id)) {
+        $debris[] = array(
+          'NAME'   => $lang['tech'][$resource_id],
+          'AMOUNT' => pretty_number($resource_amount),
+        );
+      }
+    }
     $template_result['.']['debris'] = $debris;
   }
 
@@ -344,12 +310,11 @@ class UBEReport {
     global $lang;
 
     $round_template = array();
-    $objRound = $ube->rounds[$round];
+    $lastRound = $ube->rounds[$round];
     foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $side) {
-      $side_array = $side == UBE_ATTACKERS ? $objRound->UBE_ATTACKERS : $objRound->UBE_ATTACKERS;
-      empty($side_array) ? $objRound->UBE_ATTACKERS = array() : false;
+      $side_array = $side == UBE_ATTACKERS ? $lastRound->UBE_ATTACKERS : $lastRound->UBE_DEFENDERS;
+      empty($side_array) ? $side_array = array(UBE_ATTACK => array()) : false;
       foreach($side_array[UBE_ATTACK] as $fleet_id => $temp) {
-        $fleet_data = &$objRound->round_fleets[$fleet_id];
         $fleet_template = array(
           'ID'          => $fleet_id,
           'IS_ATTACKER' => $side == UBE_ATTACKERS,
@@ -362,6 +327,7 @@ class UBEReport {
           $fleet_template['PLANET_TYPE_TEXT'] = $lang['sys_planet_type_sh'][$fleet_template['PLANET_TYPE']];
         }
 
+        $fleet_data = &$lastRound->round_fleets[$fleet_id];
         foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
           $shields_original = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_COUNT][$unit_id];
           $ship_template = array(
@@ -387,27 +353,5 @@ class UBEReport {
     return $round_template;
   }
 
-// ------------------------------------------------------------------------------------------------
-// Рендерит таблицу общего результата боя
-  function sn_ube_report_table_render(&$array, $lang_header_index) {
-    global $lang;
-
-    $result = array();
-    if(!empty($array)) {
-      foreach($array as $unit_id => $unit_count) {
-        if($unit_count) {
-          $result[] = array(
-            'NAME' => $lang['tech'][$unit_id],
-            'LOSS' => pretty_number($unit_count),
-          );
-        }
-      }
-      if($lang_header_index && count($result)) {
-        array_unshift($result, array('NAME' => $lang[$lang_header_index]));
-      }
-    }
-
-    return $result;
-  }
 
 }

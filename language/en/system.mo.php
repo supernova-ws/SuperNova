@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40c1.3
+* @version 41a4.51
 *
 */
 
@@ -851,8 +851,8 @@ $a_lang_array = (array(
   'ube_report_info_loss_final' => 'Total unit loss',
   'ube_report_info_loss_resources' => 'Loss in resources',
   'ube_report_info_loss_dropped' => 'Resource loss due reduced cargo capacity',
-  'ube_report_info_loot_lost' => 'Resources looted from planet',
-  'ube_report_info_loss_gained' => 'Resource loss due planet loot',
+  'ube_report_info_loot_gained' => 'Resources looted from planet',
+  'ube_report_info_loss_looted' => 'Resource loss due planet loot',
   'ube_report_info_loss_in_metal' => 'Total resources lost in metal',
 
   'ube_report_msg_body_common' => 'Battle on %s on orbit of %s [%d:%d:%d] %s<br />%s<br /><br />',
