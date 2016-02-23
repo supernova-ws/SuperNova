@@ -150,48 +150,15 @@ class UBEReport {
     }
 
     // Всякая информация по флотам
-    $unit_sort_order = 0;
     foreach($ube->fleet_list as $fleet_id => $UBEFleet) {
       // Сохраняем общую информацию по флотам
       $sql_perform['ube_report_fleet'][] = $UBEFleet->sql_generate_array($ube_report_id);
 
       // Сохраняем итоговую информацию по ресурсам флота - потеряно, выброшено, увезено
-      $fleet_outcome_data = &$ube->outcome->outcome_fleets[$fleet_id];
-      $sql_perform['ube_report_outcome_fleet'][] = array(
-        $ube_report_id,
-        $fleet_id,
-
-        (float)$fleet_outcome_data[UBE_RESOURCES_LOST][RES_METAL],
-        (float)$fleet_outcome_data[UBE_RESOURCES_LOST][RES_CRYSTAL],
-        (float)$fleet_outcome_data[UBE_RESOURCES_LOST][RES_DEUTERIUM],
-
-        (float)$fleet_outcome_data[UBE_CARGO_DROPPED][RES_METAL],
-        (float)$fleet_outcome_data[UBE_CARGO_DROPPED][RES_CRYSTAL],
-        (float)$fleet_outcome_data[UBE_CARGO_DROPPED][RES_DEUTERIUM],
-
-        (float)$fleet_outcome_data[UBE_RESOURCES_LOOTED][RES_METAL],
-        (float)$fleet_outcome_data[UBE_RESOURCES_LOOTED][RES_CRYSTAL],
-        (float)$fleet_outcome_data[UBE_RESOURCES_LOOTED][RES_DEUTERIUM],
-
-        (float)$fleet_outcome_data[UBE_RESOURCES_LOST_IN_METAL][RES_METAL],
-      );
+      $sql_perform['ube_report_outcome_fleet'][] = $ube->outcome->sql_generate_fleet_array($fleet_id, $ube_report_id);
 
       // Сохраняем результаты по юнитам - потеряно и восстановлено
-      foreach($UBEFleet->UBE_COUNT as $unit_id => $unit_count) {
-        if($fleet_outcome_data[UBE_UNITS_LOST][$unit_id] || $fleet_outcome_data[UBE_DEFENCE_RESTORE][$unit_id]) {
-          $unit_sort_order++;
-          $sql_perform['ube_report_outcome_unit'][] = array(
-            $ube_report_id,
-            $fleet_id,
-
-            $unit_id,
-            (float)$fleet_outcome_data[UBE_DEFENCE_RESTORE][$unit_id],
-            (float)$fleet_outcome_data[UBE_UNITS_LOST][$unit_id],
-
-            $unit_sort_order,
-          );
-        }
-      }
+      $ube->outcome->sql_generate_unit_array($UBEFleet, $sql_perform['ube_report_outcome_unit'], $ube_report_id);
     }
 
 

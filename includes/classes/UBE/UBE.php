@@ -427,12 +427,7 @@ class UBE {
     // Генерируем результат боя
     foreach($this->fleet_list->_container as $fleet_id => $fleet_info) {
       // Инициализируем массив результатов для флота
-      $this->outcome->outcome_fleets[$fleet_id] = array(UBE_UNITS_LOST => array());
-      if($this->fleet_list[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS) {
-        $this->outcome->fleet_attackers[$fleet_id] = &$this->outcome->outcome_fleets[$fleet_id];
-      } else {
-        $this->outcome->fleet_defenders[$fleet_id] = &$this->outcome->outcome_fleets[$fleet_id];
-      }
+      $this->outcome->init_fleet($fleet_id, $this->fleet_list[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS);
 
       // Переменные для быстрого доступа к подмассивам
       $fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
@@ -1020,7 +1015,6 @@ class UBE {
 
     $this->combat_result = $report_row['ube_report_combat_result'];
 
-    $this->outcome->load_from_report_row($report_row);
     $this->is_small_fleet_recce = intval($report_row['ube_report_combat_sfr']);
     $this->capture_result = $report_row['ube_report_capture_result'];
 
@@ -1062,53 +1056,7 @@ class UBE {
     }
 
 
-    $query = doquery("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
-    while($row = db_fetch($query)) {
-      $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
-
-      $this->outcome->outcome_fleets[$fleet_id] = array(
-        UBE_RESOURCES_LOST => array(
-          RES_METAL     => $row['ube_report_outcome_fleet_resource_lost_metal'],
-          RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_lost_crystal'],
-          RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_lost_deuterium'],
-        ),
-
-        UBE_CARGO_DROPPED => array(
-          RES_METAL     => $row['ube_report_outcome_fleet_resource_dropped_metal'],
-          RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_dropped_crystal'],
-          RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_dropped_deuterium'],
-        ),
-
-        UBE_RESOURCES_LOOTED => array(
-          RES_METAL     => $row['ube_report_outcome_fleet_resource_loot_metal'],
-          RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_loot_crystal'],
-          RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_loot_deuterium'],
-        ),
-
-        UBE_RESOURCES_LOST_IN_METAL => array(
-          RES_METAL => $row['ube_report_outcome_fleet_resource_lost_in_metal'],
-        ),
-      );
-
-      if($this->fleet_list[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS) {
-        $this->outcome->fleet_attackers[$fleet_id] = &$this->outcome->outcome_fleets[$fleet_id];
-      } else {
-        $this->outcome->fleet_defenders[$fleet_id] = &$this->outcome->outcome_fleets[$fleet_id];
-      }
-    }
-
-    $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
-    while($row = db_fetch($query)) {
-      $fleet_id = $row['ube_report_outcome_unit_fleet_id'];
-      if($this->fleet_list[$fleet_id]->UBE_FLEET_TYPE == UBE_ATTACKERS) {
-        $this->outcome->fleet_attackers[$fleet_id][UBE_UNITS_LOST][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_lost'];
-        $this->outcome->fleet_attackers[$fleet_id][UBE_DEFENCE_RESTORE][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_restored'];
-      } else {
-        $this->outcome->fleet_defenders[$fleet_id][UBE_UNITS_LOST][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_lost'];
-        $this->outcome->fleet_defenders[$fleet_id][UBE_DEFENCE_RESTORE][$row['ube_report_outcome_unit_unit_id']] = $row['ube_report_outcome_unit_restored'];
-      }
-    }
-
+    $this->outcome->db_load_from_report_row($report_row, $this);
   }
 
 }

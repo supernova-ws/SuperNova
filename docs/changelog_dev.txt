@@ -341,6 +341,10 @@ $planet_info
 
 В таблице unit_outcome не хватает поля для UNIT_BOOM
 
+
+??? Перекинуть данные из
+    UBEOutcome->$outcome_fleets в $UBE->fleets (?????)
+
 #ctv
 
 2016-02-19 02:20:37 41a4.22 UBEv4.2
