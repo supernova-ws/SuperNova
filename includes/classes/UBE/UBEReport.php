@@ -246,16 +246,7 @@ class UBEReport {
 
     // Обсчитываем результаты боя из начальных данных
     // Генерируем отчет по флотам
-    $round_count = $ube->rounds->count();
-    for($round = 1; $round <= $round_count - 1; $round++) {
-      $round_template = array(
-        'NUMBER' => $round,
-        '.'      => array(
-          'fleet' => $this->sn_ube_report_round_fleet($ube, $round),
-        ),
-      );
-      $template_result['.']['round'][] = $round_template;
-    }
+    $ube->rounds->round_list_generate_report($template_result, $ube);
 
     // Боевые потери флотов
     $ube->outcome->render_outcome_side_report($ube, $template_result);
@@ -304,54 +295,6 @@ class UBEReport {
     $template_result['.']['debris'] = $debris;
   }
 
-  // ------------------------------------------------------------------------------------------------
-// Парсит инфу о раунде для темплейта
-  function sn_ube_report_round_fleet(UBE $ube, $round) {
-    global $lang;
-
-    $round_template = array();
-    $lastRound = $ube->rounds[$round];
-    foreach(array(UBE_ATTACKERS, UBE_DEFENDERS) as $side) {
-      $side_array = $side == UBE_ATTACKERS ? $lastRound->UBE_ATTACKERS : $lastRound->UBE_DEFENDERS;
-      empty($side_array) ? $side_array = array(UBE_ATTACK => array()) : false;
-      foreach($side_array[UBE_ATTACK] as $fleet_id => $temp) {
-        $fleet_template = array(
-          'ID'          => $fleet_id,
-          'IS_ATTACKER' => $side == UBE_ATTACKERS,
-          'PLAYER_NAME' => $ube->players[$ube->fleet_list[$fleet_id]->UBE_OWNER]->player_name_get(true),
-        );
-
-        if(is_array($ube->fleet_list[$fleet_id]->UBE_PLANET)) {
-          $fleet_template += $ube->fleet_list[$fleet_id]->UBE_PLANET;
-          $fleet_template[PLANET_NAME] = $fleet_template[PLANET_NAME] ? htmlentities($fleet_template[PLANET_NAME], ENT_COMPAT, 'UTF-8') : '';
-          $fleet_template['PLANET_TYPE_TEXT'] = $lang['sys_planet_type_sh'][$fleet_template['PLANET_TYPE']];
-        }
-
-        $fleet_data = &$lastRound->round_fleets[$fleet_id];
-        foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
-          $shields_original = $fleet_data[UBE_SHIELD_BASE][$unit_id] * $ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_COUNT][$unit_id];
-          $ship_template = array(
-            'ID'          => $unit_id,
-            'NAME'        => $lang['tech'][$unit_id],
-            'ATTACK'      => pretty_number($fleet_data[UBE_ATTACK][$unit_id]),
-            'SHIELD'      => pretty_number($shields_original),
-            'SHIELD_LOST' => pretty_number($shields_original - $fleet_data[UBE_SHIELD][$unit_id]),
-            'ARMOR'       => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_ARMOR][$unit_id]),
-            'ARMOR_LOST'  => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_ARMOR][$unit_id] - $fleet_data[UBE_ARMOR][$unit_id]),
-            'UNITS'       => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_COUNT][$unit_id]),
-            'UNITS_LOST'  => pretty_number($ube->rounds[$round - 1]->round_fleets[$fleet_id][UBE_COUNT][$unit_id] - $fleet_data[UBE_COUNT][$unit_id]),
-            'UNITS_BOOM'  => pretty_number($fleet_data[UBE_UNITS_BOOM][$unit_id]),
-          );
-
-          $fleet_template['.']['ship'][] = $ship_template;
-        }
-
-        $round_template[] = $fleet_template;
-      }
-    }
-
-    return $round_template;
-  }
 
 
 }
