@@ -161,38 +161,9 @@ class UBEReport {
       $ube->outcome->sql_generate_unit_array($UBEFleet, $sql_perform['ube_report_outcome_unit'], $ube_report_id);
     }
 
-
     // Сохраняем информацию о раундах
-    $unit_sort_order = 0;
-    foreach($ube->rounds->_container as $round => &$round_data) {
-      foreach($ube->rounds[$round]->round_fleets as $fleet_id => &$fleet_data) {
-        foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
-          $unit_sort_order++;
-
-          $sql_perform['ube_report_unit'][] = array(
-            $ube_report_id,
-            // $ube->rounds[$round]->fleet_info[$fleet_id]->UBE_OWNER
-            $ube->fleet_list[$fleet_id]->UBE_OWNER,
-            $fleet_id,
-            $round,
-
-            $unit_id,
-            $unit_count,
-            (int)$fleet_data[UBE_UNITS_BOOM][$unit_id],
-
-            $fleet_data[UBE_ATTACK][$unit_id],
-            $fleet_data[UBE_SHIELD][$unit_id],
-            $fleet_data[UBE_ARMOR][$unit_id],
-
-            $fleet_data[UBE_ATTACK_BASE][$unit_id],
-            $fleet_data[UBE_SHIELD_BASE][$unit_id],
-            $fleet_data[UBE_ARMOR_BASE][$unit_id],
-
-            $unit_sort_order,
-          );
-        }
-      }
-    }
+    // OK3
+    $ube->rounds->sql_generate_unit_array($ube_report_id, $sql_perform['ube_report_unit']);
 
     // Пакетная вставка данных
     foreach($sql_perform as $table_name => $table_data) {
@@ -246,7 +217,7 @@ class UBEReport {
 
     // Обсчитываем результаты боя из начальных данных
     // Генерируем отчет по флотам
-    $ube->rounds->report_render_rounds($template_result, $ube);
+    $ube->rounds->report_render_rounds($template_result, $ube); // OK3
 
     // Боевые потери флотов
     $ube->outcome->report_render_outcome($ube, $template_result);

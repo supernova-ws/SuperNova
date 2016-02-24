@@ -110,26 +110,13 @@ class UBEMoonCalculator {
     $this->reapers_status = $random <= $this->reaper_die_chance ? UBE_MOON_REAPERS_DIED : UBE_MOON_REAPERS_RETURNED;
   }
 
-
-  protected function calculate_reapers(UBE $ube) {
-    $objRound = $ube->rounds->get_last_element();
-    $reapers = 0;
-    foreach($objRound->round_fleets as $fleet_id => $fleet_data) {
-      if($objRound->fleet_info[$fleet_id]->is_attacker == UBE_PLAYER_IS_ATTACKER) {
-        foreach($fleet_data[UBE_COUNT] as $unit_id => $unit_count) {
-          // TODO: Работа по группам - группа "Уничтожители лун"
-          $reapers += ($unit_id == SHIP_HUGE_DEATH_STAR) ? $unit_count : 0;
-        }
-      }
-    }
-
-    return $reapers;
-  }
-
   public function calculate_moon(UBE $ube) {
     if(UBE_MOON_EXISTS == $this->status) {
       if($ube->mission_type_id == MT_DESTROY && $ube->combat_result == UBE_COMBAT_RESULT_WIN) {
-        $this->moon_destroy_try($this->calculate_reapers($ube));
+        $objRound = $ube->rounds->get_last_element();
+        $reapers = $objRound->fleet_combat_data->calculate_attack_reapers();
+
+        $this->moon_destroy_try($reapers);
       }
     } else {
       $this->moon_create_try($ube->debris, $ube->is_simulator);

@@ -135,6 +135,7 @@ class UBE {
     foreach($fleet_list_on_hold as $fleet) {
       $this->ube_attack_prepare_fleet($fleet, false);
     }
+    // TODO - НАДО ВЫНЕСТИ РАБОТУ С ПЛЕЕРАМИ ИЗ PREPARE FLEET! ПОтому что могут поменятся статы - АТТАКЕР/ДЕФЕНДЕР И, СООТВЕТСТВЕННО, БОНУСЫ!!!
 
     // Готовим инфу по атакующим
     if($objFleet->fleet_group) {
@@ -270,14 +271,22 @@ class UBE {
     // TODO: Сделать атаку по типам,  когда они будут
 
     $start = microtime(true);
-    $this->sn_ube_combat_prepare_first_round();
+    // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
+    $zero_round = new UBERound();
+    $zero_round->init_zero_round($this->fleet_list, $this->players);
+    $this->rounds[0] = $zero_round;
+
+    $this->rounds[1] = clone $zero_round; // TODO - фииииииииигня - надо готовить нулевой раунд по-особому, а дальше - станадртно
+    $this->rounds[1]->round_number = 1;
+
+    $this->rounds[0]->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
 
     for($round = 1; $round <= 10; $round++) {
       // Готовим данные для раунда
-      $this->sn_ube_combat_round_prepare($round);
+      $this->rounds[$round]->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
 
       // Проводим раунд
-      $this->sn_ube_combat_round_crossfire_fleet($round);
+      $this->rounds[$round]->fleet_combat_data->calculate_attack_results($this); // OK3
 
       // Анализируем итоги текущего раунда и готовим данные для следующего
       if($this->sn_ube_combat_round_analyze($round) != UBE_COMBAT_RESULT_DRAW) {
@@ -290,76 +299,6 @@ class UBE {
     $this->sn_ube_combat_analyze();
   }
 
-  // ------------------------------------------------------------------------------------------------
-  // OK0
-  function sn_ube_combat_prepare_first_round() {
-    global $ube_combat_bonus_list, $ube_convert_to_techs;
-
-    // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
-    $first_round = new UBERound();
-    foreach($this->fleet_list->_container as $fleet_id => $objFleet) {
-      $objFleet->UBE_COUNT = is_array($objFleet->UBE_COUNT) ? $objFleet->UBE_COUNT : array();
-      $objFleet->is_attacker = $this->players[$objFleet->UBE_OWNER]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER;
-
-      foreach($ube_combat_bonus_list as $bonus_id => $bonus_value) {
-        // Вычисляем бонус игрока и добавляем его к бонусам флота
-        $objFleet->UBE_BONUSES[$bonus_id] += $this->players[$objFleet->UBE_OWNER]->player_bonus_get($bonus_id);
-      }
-
-      $objFleet->UBE_PRICE = array();
-      $first_round->round_fleets[$fleet_id][UBE_COUNT] = array(); // $first_round_data[$fleet_id][UBE_COUNT] = array();
-      foreach($objFleet->UBE_COUNT as $unit_id => $unit_count) {
-        if($unit_count <= 0) {
-          continue;
-        }
-
-        $unit_info = get_unit_param($unit_id);
-        // Заполняем информацию о кораблях в информации флота
-        $objFleet->UBE_ATTACK[$unit_id] = floor($unit_info[$ube_convert_to_techs[UBE_ATTACK]] * (1 + $objFleet->UBE_BONUSES[UBE_ATTACK]));
-        $objFleet->UBE_SHIELD[$unit_id] = floor($unit_info[$ube_convert_to_techs[UBE_SHIELD]] * (1 + $objFleet->UBE_BONUSES[UBE_SHIELD]));
-        $objFleet->UBE_ARMOR[$unit_id] = floor($unit_info[$ube_convert_to_techs[UBE_ARMOR]] * (1 + $objFleet->UBE_BONUSES[UBE_ARMOR]));
-
-        $objFleet->UBE_AMPLIFY[$unit_id] = $unit_info[P_AMPLIFY];
-        // TODO: Переделать через get_ship_data()
-        $objFleet->UBE_CAPACITY[$unit_id] = $unit_info[P_CAPACITY];
-        $objFleet->UBE_TYPE[$unit_id] = $unit_info[P_UNIT_TYPE];
-        // TODO: Переделать через список ресурсов
-        $objFleet->UBE_PRICE[RES_METAL]    [$unit_id] = $unit_info[P_COST][RES_METAL];
-        $objFleet->UBE_PRICE[RES_CRYSTAL]  [$unit_id] = $unit_info[P_COST][RES_CRYSTAL];
-        $objFleet->UBE_PRICE[RES_DEUTERIUM][$unit_id] = $unit_info[P_COST][RES_DEUTERIUM];
-        $objFleet->UBE_PRICE[RES_DARK_MATTER][$unit_id] = $unit_info[P_COST][RES_DARK_MATTER];
-
-        // Копируем её в информацию о первом раунде
-        $first_round->set_first_round($fleet_id, $unit_id, $objFleet);
-      }
-    }
-    $this->rounds[0] = $first_round;
-    $this->rounds[1] = clone $first_round;
-    $this->sn_ube_combat_round_prepare(0);
-  }
-
-  // ------------------------------------------------------------------------------------------------
-  // Вычисление дополнительной информации для расчета раунда
-  // OK0
-  function sn_ube_combat_round_prepare($round) {
-    $objRound = $this->rounds[$round];
-    $objRound->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
-  }
-
-  // Рассчитывает результат столкновения флотов ака раунд
-  // OK0
-  function sn_ube_combat_round_crossfire_fleet($round) {
-    if(BE_DEBUG === true) {
-      // sn_ube_combat_helper_round_header($round);
-    }
-
-    $objRound = $this->rounds[$round];
-    $objRound->sn_ube_combat_round_crossfire_fleet($this);
-
-    if(BE_DEBUG === true) {
-      // sn_ube_combat_helper_round_footer();
-    }
-  }
 
 
 
@@ -428,7 +367,7 @@ class UBE {
       $fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
       foreach($this->fleet_list[$fleet_id]->UBE_COUNT as $unit_id => $unit_count) {
         // Вычисляем сколько юнитов осталось и сколько потеряно
-        $units_left = $last_round_data->round_fleets[$fleet_id][UBE_COUNT][$unit_id];
+        $units_left = $last_round_data->fleet_combat_data[$fleet_id][$unit_id]->count;
 
         // Восстановление обороны - 75% от уничтоженной
         if($this->fleet_list[$fleet_id]->UBE_TYPE[$unit_id] == UNIT_DEFENCE) {
@@ -936,7 +875,7 @@ class UBE {
 
 
     $ube->sn_ube_message_send(); //  sn_ube_message_send($combat_data);
-    die(__FILE__ . ' ' . __LINE__);
+    die('DIE at ' . __FILE__ . ' ' . __LINE__);
 
     return false;
   }
@@ -1033,20 +972,12 @@ class UBE {
 
     $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($fleet_row = db_fetch($query)) {
-      $objFleet = new UBEFleet();
+      $objFleet = new UBEFleet(); // TODO ХУУУУУУУУУУУУУУУЙЙЙЙЙЙЙЙЙЙЙЙНЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ
       $objFleet->load_from_report($fleet_row, $this);
       $this->fleet_list[$objFleet->fleet_id] = $objFleet;
     }
 
-    $query = doquery("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_sort_order`");
-    while($round_row = db_fetch($query)) {
-      $fleet_id = $round_row['ube_report_unit_fleet_id'];
-
-      $objRound = new UBERound();
-      $objRound->load_from_report($round_row, $this->fleet_list[$fleet_id]->is_attacker);
-      $this->rounds[$objRound->round_number] = $objRound;
-    }
-
+    $this->rounds->db_load_round_list_from_report_row($report_row, $this);
 
     $this->outcome->db_load_from_report_row($report_row, $this);
   }

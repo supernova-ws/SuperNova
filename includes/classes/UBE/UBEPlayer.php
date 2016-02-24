@@ -91,7 +91,7 @@ class UBEPlayer {
   /**
    * @return bool
    */
-  // OK1 - правильно используется через UBE_PLAYER_IS_ATTACKER
+  // OK3 - правильно используется через UBE_PLAYER_IS_ATTACKER
   public function player_side_get() {
     return $this->is_attacker;
   }
@@ -111,7 +111,7 @@ class UBEPlayer {
    *
    * @return string
    */
-  // OK1
+  // OK3
   public function player_name_get($html_encoded = false) {
     $player_name = $this->name;
 
@@ -173,7 +173,7 @@ class UBEPlayer {
    *
    * @return int
    */
-  // OK1
+  // OK3
   public function player_bonus_get($ube_bonus_id) {
     return
       isset($this->ube_bonuses[$ube_bonus_id])

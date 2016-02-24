@@ -6,7 +6,7 @@
 class UBEFleet {
 
   public $fleet_id = 0;
-  public $UBE_OWNER = 0;
+  public $UBE_OWNER = 0; // REPLACE WITH LINK TO OWNER!
   public $UBE_FLEET_GROUP = 0;
 
   public $is_attacker = UBE_PLAYER_IS_DEFENDER;
@@ -25,6 +25,60 @@ class UBEFleet {
   public $UBE_SHIELD = array();
 
   public $UBE_CAPTAIN = array();
+
+
+  /**
+   * @param UBEPlayer $player
+   */
+  // OK3
+  public function copy_stats_from_player(UBEPlayer $player) {
+    $this->is_attacker = $player->player_side_get();
+  }
+
+  /**
+   * @param UBEPlayer $player
+   */
+  // OK3
+  public function add_player_bonuses(UBEPlayer $player) {
+    // Вычисляем бонус игрока и добавляем его к бонусам флота
+//      foreach($ube_combat_bonus_list as $bonus_id => $bonus_value) {
+//        $objFleet->UBE_BONUSES[$bonus_id] += $players[$objFleet->UBE_OWNER]->player_bonus_get($bonus_id);
+//      }
+    $this->UBE_BONUSES[UBE_ATTACK] += $player->player_bonus_get(UBE_ATTACK);
+    $this->UBE_BONUSES[UBE_SHIELD] += $player->player_bonus_get(UBE_SHIELD);
+    $this->UBE_BONUSES[UBE_ARMOR] += $player->player_bonus_get(UBE_ARMOR);
+
+  }
+
+  // OK3
+  public function calculate_battle_stats() {
+    global $ube_convert_to_techs;
+
+    $this->UBE_PRICE = array();
+    foreach($this->UBE_COUNT as $unit_id => $unit_count) {
+      if($unit_count <= 0) {
+        continue;
+      }
+
+      $unit_info = get_unit_param($unit_id);
+      // Заполняем информацию о кораблях в информации флота
+      $this->UBE_ATTACK[$unit_id] = floor($unit_info[$ube_convert_to_techs[UBE_ATTACK]] * (1 + $this->UBE_BONUSES[UBE_ATTACK]));
+      $this->UBE_SHIELD[$unit_id] = floor($unit_info[$ube_convert_to_techs[UBE_SHIELD]] * (1 + $this->UBE_BONUSES[UBE_SHIELD]));
+      $this->UBE_ARMOR[$unit_id] = floor($unit_info[$ube_convert_to_techs[UBE_ARMOR]] * (1 + $this->UBE_BONUSES[UBE_ARMOR]));
+
+      $this->UBE_AMPLIFY[$unit_id] = $unit_info[P_AMPLIFY];
+      // TODO: Переделать через get_ship_data()
+      $this->UBE_CAPACITY[$unit_id] = $unit_info[P_CAPACITY];
+      $this->UBE_TYPE[$unit_id] = $unit_info[P_UNIT_TYPE];
+      // TODO: Переделать через список ресурсов
+      $this->UBE_PRICE[RES_METAL]    [$unit_id] = $unit_info[P_COST][RES_METAL];
+      $this->UBE_PRICE[RES_CRYSTAL]  [$unit_id] = $unit_info[P_COST][RES_CRYSTAL];
+      $this->UBE_PRICE[RES_DEUTERIUM][$unit_id] = $unit_info[P_COST][RES_DEUTERIUM];
+      $this->UBE_PRICE[RES_DARK_MATTER][$unit_id] = $unit_info[P_COST][RES_DARK_MATTER];
+
+    }
+  }
+
 
 
   public function load_from_report($fleet_row, UBE $ube) {

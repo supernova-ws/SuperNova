@@ -2,12 +2,41 @@
 
 class ArrayAccessV2 implements ArrayAccess {
 
+  const CLONE_NONE = 0;
+  const CLONE_SHALLOW = 1;
+  const CLONE_DEEP = 2;
+
+  /**
+   * If container data need to be additionally cloned
+   *
+   * @var int
+   */
+  public static $_clonable = ArrayAccessV2::CLONE_DEEP;
+
   /**
    * Data container
    *
    * @var array
    */
   public $_container = array();
+
+  public function __clone() {
+    if(static::$_clonable == ArrayAccessV2::CLONE_NONE) {
+      return;
+    }
+
+    self::_deep_clone($this->_container);
+  }
+
+  protected static function _deep_clone(&$array) {
+    foreach($array as &$value) {
+      if(is_object($value)) {
+        $value = clone $value;
+      } elseif(is_array($value) && static::$_clonable == ArrayAccessV2::CLONE_DEEP) {
+        self::_deep_clone($value);
+      }
+    }
+  }
 
   /**
    * Whether a offset exists
