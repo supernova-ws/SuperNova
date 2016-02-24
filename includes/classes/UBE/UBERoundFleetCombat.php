@@ -65,14 +65,14 @@ class UBERoundFleetCombat {
     $this->owner_id = $UBEFleet->UBE_OWNER;
 
     $this->unit_list = array();
-    foreach($UBEFleet->UBE_COUNT as $unit_id => $unit_count) {
+
+    foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
       // Копируем информацию о кораблях в первый раунд
       $this->unit_list[$unit_id][UBE_UNIT_SNID] = $unit_id;
-      $this->unit_list[$unit_id][UBE_COUNT] = $UBEFleet->UBE_COUNT [$unit_id]; // $first_round_data[$fleet_id][UBE_COUNT][$unit_id] = $unit_count;
-      $this->unit_list[$unit_id][UBE_ARMOR] = $UBEFleet->UBE_ARMOR [$unit_id] * $UBEFleet->UBE_COUNT[$unit_id]; // $first_round_data[$fleet_id][UBE_ARMOR][$unit_id] = $fleet_info[UBE_ARMOR][$unit_id] * $unit_count;
-      $this->unit_list[$unit_id][UBE_ARMOR_REST] = $UBEFleet->UBE_ARMOR [$unit_id]; // $first_round_data[$fleet_id][UBE_ARMOR_REST][$unit_id] = $fleet_info[UBE_ARMOR][$unit_id];
-      $this->unit_list[$unit_id][UBE_SHIELD_REST] = $UBEFleet->UBE_SHIELD[$unit_id]; // $first_round_data[$fleet_id][UBE_SHIELD_REST][$unit_id] = $fleet_info[UBE_SHIELD][$unit_id];
-
+      $this->unit_list[$unit_id][UBE_COUNT] = $UBEFleetUnit->count;
+      $this->unit_list[$unit_id][UBE_ARMOR] = $UBEFleetUnit->armor * $UBEFleetUnit->count;
+      $this->unit_list[$unit_id][UBE_ARMOR_REST] = $UBEFleetUnit->armor;
+      $this->unit_list[$unit_id][UBE_SHIELD_REST] = $UBEFleetUnit->shield;
     }
   }
 
@@ -122,9 +122,9 @@ class UBERoundFleetCombat {
       // TODO:  Добавить процент регенерации щитов
 
       // Для не-симулятора - рандомизируем каждый раунд значения атаки и щитов
-      $unit_data_array[UBE_ATTACK_BASE] = floor($fleet_info->UBE_ATTACK[$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
-      $unit_data_array[UBE_SHIELD_BASE] = floor($fleet_info->UBE_SHIELD[$unit_id] * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
-      $unit_data_array[UBE_ARMOR_BASE] = floor($fleet_info->UBE_ARMOR[$unit_id]);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
+      $unit_data_array[UBE_ATTACK_BASE] = floor($fleet_info->unit_list[$unit_id]->attack * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
+      $unit_data_array[UBE_SHIELD_BASE] = floor($fleet_info->unit_list[$unit_id]->shield * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
+      $unit_data_array[UBE_ARMOR_BASE] = floor($fleet_info->unit_list[$unit_id]->armor);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
 
       $unit_data_array[UBE_ATTACK] = $unit_data_array[UBE_ATTACK_BASE] * $unit_data_array[UBE_COUNT];
       $unit_data_array[UBE_SHIELD] = $unit_data_array[UBE_SHIELD_BASE] * $unit_data_array[UBE_COUNT];
@@ -317,17 +317,17 @@ class UBERoundFleetCombat {
    */
   // OK3
   public function attack_fleet(UBERoundFleetCombat &$defend_fleet_data, UBE $ube) {
-    $attacker_amplify_array = &$ube->fleet_list[$this->fleet_id]->UBE_AMPLIFY;
-
     foreach($this->unit_list as $attack_unit_id => &$attacking_pool) {
+      $attacker_amplify_array = &$ube->fleet_list[$this->fleet_id]->unit_list[$attack_unit_id]->amplify;
+
       // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
       foreach($defend_fleet_data->unit_list as $defend_unit_id => &$defending_pool) {
         // Вычисляем прямой дамадж от атакующего юнита с учетом размера атакуемого
         // TODO - это можно высчитывать и в начале раунда!
         $direct_attack = $attacking_pool[UBE_ATTACK] * $defending_pool[UBE_SHARE_OF_SIDE_ARMOR];
         // TODO - ...и это
-        $attacker_amplify = !empty($attacker_amplify_array[$attack_unit_id][$defend_unit_id])
-          ? $attacker_amplify_array[$attack_unit_id][$defend_unit_id]
+        $attacker_amplify = !empty($attacker_amplify_array[$defend_unit_id])
+          ? $attacker_amplify_array[$defend_unit_id]
           : 1;
         // TODO - ...и это тоже
         // Применяем амплифай, если есть

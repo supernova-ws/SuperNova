@@ -169,7 +169,7 @@ class UBE {
 
     foreach(sn_get_groups('combat') as $unit_id) {
       if($unit_count = mrc_get_level($player_db_row, $planet, $unit_id)) {
-        $this->fleet_list[0]->UBE_COUNT[$unit_id] = $unit_count;
+        $this->fleet_list[0]->unit_list[$unit_id]->count = $unit_count;
       }
     }
 
@@ -368,18 +368,18 @@ class UBE {
 
       // Переменные для быстрого доступа к подмассивам
       $fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
-      foreach($this->fleet_list[$fleet_id]->UBE_COUNT as $unit_id => $unit_count) {
+      foreach($this->fleet_list[$fleet_id]->unit_list->_container as $unit_id => $UBEFleetUnit) {
         // Вычисляем сколько юнитов осталось и сколько потеряно
         $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_list[$unit_id][UBE_COUNT];
 
         // Восстановление обороны - 75% от уничтоженной
-        if($this->fleet_list[$fleet_id]->UBE_TYPE[$unit_id] == UNIT_DEFENCE) {
+        if($this->fleet_list[$fleet_id]->unit_list[$unit_id]->type == UNIT_DEFENCE) {
           $giveback_chance = 75; // TODO Configure
-          $units_lost = $unit_count - $units_left;
+          $units_lost = $UBEFleetUnit->count - $units_left;
           if($this->is_simulator) { // for simulation just return 75% of loss
             $units_giveback = round($units_lost * $giveback_chance / 100);
           } else {
-            if($unit_count > 10) { // if there were more then 10 defense elements - mass-calculating giveback
+            if($UBEFleetUnit->count > 10) { // if there were more then 10 defense elements - mass-calculating giveback
               $units_giveback = round($units_lost * mt_rand($giveback_chance * 0.8, $giveback_chance * 1.2) / 100);
             } else { //if there were less then 10 defense elements - calculating giveback per element
               $units_giveback = 0;
@@ -396,30 +396,30 @@ class UBE {
 
         // TODO: Сбор металла/кристалла от обороны
 
-        $units_lost = $unit_count - $units_left;
+        $units_lost = $UBEFleetUnit->count - $units_left;
 
         // Вычисляем емкость трюмов оставшихся кораблей
         if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
-          $this->outcome->capacity_attackers[$fleet_id] += $this->fleet_list[$fleet_id]->UBE_CAPACITY[$unit_id] * $units_left;
+          $this->outcome->capacity_attackers[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
         } else {
-          $this->outcome->capacity_defenders[$fleet_id] += $this->fleet_list[$fleet_id]->UBE_CAPACITY[$unit_id] * $units_left;
+          $this->outcome->capacity_defenders[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
         }
 
         // Вычисляем потери в ресурсах
         if($units_lost) {
           $fleet_outcome[UBE_UNITS_LOST][$unit_id] = $units_lost;
 
-          foreach($this->fleet_list[$fleet_id]->UBE_PRICE as $resource_id => $unit_prices) {
-            if(!$unit_prices[$unit_id]) {
+          foreach($this->fleet_list[$fleet_id]->unit_list[$unit_id]->price as $resource_id => $unit_resource_price) {
+            if(!$unit_resource_price) {
               continue;
             }
 
             // ...чистыми
-            $resources_lost = $units_lost * $unit_prices[$unit_id];
+            $resources_lost = $units_lost * $unit_resource_price;
             $fleet_outcome[UBE_RESOURCES_LOST][$resource_id] += $resources_lost;
 
             // Если это корабль - прибавляем потери к обломкам на орбите
-            if($this->fleet_list[$fleet_id]->UBE_TYPE[$unit_id] == UNIT_SHIPS) {
+            if($this->fleet_list[$fleet_id]->unit_list[$unit_id]->type == UNIT_SHIPS) {
               $this->debris->debris_add_resource($resource_id, floor($resources_lost * ($this->is_simulator ? 30 : mt_rand(20, 40)) / 100)); // TODO: Configurize
             }
 
@@ -590,10 +590,9 @@ class UBE {
 
       $this_fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
 
-      empty($UBEFleet->UBE_COUNT) ? $UBEFleet->UBE_COUNT = array() : false;
       empty($this_fleet_outcome[UBE_UNITS_LOST]) ? $this_fleet_outcome[UBE_UNITS_LOST] = array() : false;
 
-      $ship_count_initial = array_sum($UBEFleet->UBE_COUNT);
+      $ship_count_initial = $UBEFleet->unit_list->get_unit_count();
       $ship_count_lost = array_sum($this_fleet_outcome[UBE_UNITS_LOST]); // Если будет сделано восстановлении более, чем начальное число - тут надо сделать сумму по модулю
 
       if($fleet_id) {
@@ -612,9 +611,9 @@ class UBE {
           if($ship_count_lost) {
             $fleet_real_array = array();
             // Просматриваем результаты изменения флотов
-            foreach($UBEFleet->UBE_COUNT as $unit_id => $unit_count) {
+            foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
               // Перебираем аутком на случай восстановления юнитов
-              if($units_left = $unit_count - (float)$this_fleet_outcome[UBE_UNITS_LOST][$unit_id]) {
+              if(($units_left = $UBEFleetUnit->count - (float)$this_fleet_outcome[UBE_UNITS_LOST][$unit_id]) > 0) {
                 $fleet_real_array[$unit_id] = $units_left;
               };
             }
@@ -809,10 +808,12 @@ class UBE {
           continue;
         }
 
+        $this->fleet_list[$fleet_id]->unit_list[$unit_id] = new UBEFleetUnit();
+
         $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
 
         if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-          $this->fleet_list[$fleet_id]->UBE_COUNT[$unit_id] = $unit_count;
+          $this->fleet_list[$fleet_id]->unit_list[$unit_id]->count = $unit_count;
         } elseif($unit_type == UNIT_RESOURCES) {
           $this->fleet_list[$fleet_id]->UBE_RESOURCES[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {

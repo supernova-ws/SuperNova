@@ -25,7 +25,7 @@ class ArrayAccessV2 implements ArrayAccess {
       return;
     }
 
-    self::_deep_clone($this->_container);
+    static::_deep_clone($this->_container);
   }
 
   protected static function _deep_clone(&$array) {
@@ -33,7 +33,7 @@ class ArrayAccessV2 implements ArrayAccess {
       if(is_object($value)) {
         $value = clone $value;
       } elseif(is_array($value) && static::$_clonable == ArrayAccessV2::CLONE_DEEP) {
-        self::_deep_clone($value);
+        static::_deep_clone($value);
       }
     }
   }

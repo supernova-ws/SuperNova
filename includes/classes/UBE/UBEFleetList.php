@@ -15,8 +15,12 @@ class UBEFleetList extends ArrayAccessV2 {
       $objFleet->copy_stats_from_player($players[$objFleet->UBE_OWNER]);
 
       // Вычисляем бонус игрока и добавляем его к бонусам флота
-      $objFleet->add_player_bonuses($players[$objFleet->UBE_OWNER]);
-//      $objFleet->add_planet_bonuses(); // TODO
+      $objFleet->bonuses_add_float($players[$objFleet->UBE_OWNER]->player_bonus_get_all());
+      // TODO
+//      $objFleet->add_planet_bonuses();
+//      $objFleet->add_fleet_bonuses();
+//      $objFleet->add_ship_bonuses();
+
       $objFleet->calculate_battle_stats();
     }
   }

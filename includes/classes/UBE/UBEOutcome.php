@@ -119,7 +119,7 @@ class UBEOutcome {
     $fleet_id = $UBEFleet->fleet_id;
 
     $unit_sort_order = 0;
-    foreach($UBEFleet->UBE_COUNT as $unit_id => $unit_count) {
+    foreach($UBEFleet->unit_list->_container as $unit_id => $unit_count) {
       if($this->outcome_fleets[$fleet_id][UBE_UNITS_LOST][$unit_id] || $this->outcome_fleets[$fleet_id][UBE_DEFENCE_RESTORE][$unit_id]) {
         $unit_sort_order++;
         $sql_perform_report_unit[] = array(

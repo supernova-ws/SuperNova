@@ -181,4 +181,9 @@ class UBEPlayer {
         : 0;
   }
 
+  // OK5
+  public function player_bonus_get_all() {
+    return $this->ube_bonuses;
+  }
+
 }
