@@ -158,13 +158,13 @@ class UBEMoonCalculator {
    * @param $destination_user_id
    * @param $planet_id
    */
-  public function db_apply_result($planet_info, $destination_user_id, $planet_id) {
+  public function db_apply_result($planet_info, $destination_user_id) {
     if($this->status == UBE_MOON_CREATE_SUCCESS) {
       $moon_row = uni_create_moon($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], $destination_user_id, $this->moon_diameter, '', false);
       $this->moon_name = $moon_row['name'];
       unset($moon_row);
     } elseif($this->status == UBE_MOON_DESTROY_SUCCESS) {
-      db_planet_delete_by_id($planet_id);
+      db_planet_delete_by_id($planet_info[PLANET_ID]);
     }
   }
 

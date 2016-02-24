@@ -29,6 +29,7 @@ class UBERoundFleetCombat {
    * [UBE_SHIELD_BASE]
    * [UBE_ARMOR_BASE]
    *
+   * [UBE_SHARE_OF_SIDE_ARMOR]
    *
    */
 
@@ -158,7 +159,7 @@ class UBERoundFleetCombat {
     $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $total_side_stats;
 
     foreach($this->unit_list as &$unit_data_array) {
-      $unit_data_array[UBE_DAMAGE_PERCENT] = $unit_data_array[UBE_ARMOR] / $total_side_stats;
+      $unit_data_array[UBE_SHARE_OF_SIDE_ARMOR] = $unit_data_array[UBE_ARMOR] / $total_side_stats;
     }
   }
 
@@ -337,7 +338,7 @@ class UBERoundFleetCombat {
       foreach($defend_fleet_data->unit_list as $defend_unit_id => &$defending_pool) {
         // Вычисляем прямой дамадж от атакующего юнита с учетом размера атакуемого
         // TODO - это можно высчитывать и в начале раунда!
-        $direct_attack = floor($attacking_pool[UBE_ATTACK] * $defending_pool[UBE_DAMAGE_PERCENT]);
+        $direct_attack = $attacking_pool[UBE_ATTACK] * $defending_pool[UBE_SHARE_OF_SIDE_ARMOR];
         // TODO - ...и это
         $attacker_amplify = !empty($attacker_amplify_array[$attack_unit_id][$defend_unit_id])
           ? $attacker_amplify_array[$attack_unit_id][$defend_unit_id]

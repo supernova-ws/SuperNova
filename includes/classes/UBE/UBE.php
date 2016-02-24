@@ -354,7 +354,7 @@ class UBE {
   // OK0
   function sn_ube_combat_analyze() {
     // Переменные для быстрого доступа к подмассивам
-    $last_round_data = $this->rounds->get_last_element();
+    $lastRound = $this->rounds->get_last_element();
 
     $this->debris->debris_reset();
 
@@ -367,7 +367,7 @@ class UBE {
       $fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
       foreach($this->fleet_list[$fleet_id]->UBE_COUNT as $unit_id => $unit_count) {
         // Вычисляем сколько юнитов осталось и сколько потеряно
-        $units_left = $last_round_data->fleet_combat_data[$fleet_id][$unit_id]->count;
+        $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_list[$unit_id][UBE_COUNT];
 
         // Восстановление обороны - 75% от уничтоженной
         if($this->fleet_list[$fleet_id]->UBE_TYPE[$unit_id] == UNIT_DEFENCE) {
@@ -474,7 +474,7 @@ class UBE {
       }
     }
 
-    $this->combat_result = !isset($last_round_data->UBE_OUTCOME) || $last_round_data->UBE_OUTCOME == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $last_round_data->UBE_OUTCOME;
+    $this->combat_result = !isset($lastRound->UBE_OUTCOME) || $lastRound->UBE_OUTCOME == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $lastRound->UBE_OUTCOME;
     // SFR - Small Fleet Reconnaissance ака РМФ
     $this->is_small_fleet_recce = $this->rounds->count() == 2 && $this->combat_result == UBE_COMBAT_RESULT_LOSS;
 
@@ -573,11 +573,9 @@ class UBE {
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->UBE_OWNER;
 
-    $planet_info = &$this->ube_planet_info;
-    $planet_id = $planet_info[PLANET_ID];
     // Обновляем поле обломков на планете
     if(!$this->is_admin_in_combat && $this->debris->debris_total() > 0) {
-      db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
+      db_planet_set_by_gspt($this->ube_planet_info[PLANET_GALAXY], $this->ube_planet_info[PLANET_SYSTEM], $this->ube_planet_info[PLANET_PLANET], PT_PLANET,
         "`debris_metal` = `debris_metal` + " . $this->debris->debris_get_resource(RES_METAL) . ", `debris_crystal` = `debris_crystal` + " . $this->debris->debris_get_resource(RES_CRYSTAL)
       );
     }
@@ -642,13 +640,14 @@ class UBE {
             $resource_db_name = pname_resource_name($resource_id);
             $temp[] = "`{$resource_db_name}` = `{$resource_db_name}` + ({$resource_amount})";
           }
-          db_planet_set_by_id($planet_id, implode(',', $temp));
+          db_planet_set_by_id($this->ube_planet_info[PLANET_ID], implode(',', $temp));
         }
 
         if($ship_count_lost) {
           $db_changeset = array();
+          $planet_row_cache = $this->players[$destination_user_id]->player_db_row_get();
           foreach($this_fleet_outcome[UBE_UNITS_LOST] as $unit_id => $units_lost) {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $this->players[$destination_user_id]->player_db_row_get(), $planet_id);
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
           db_changeset_apply($db_changeset);
         }
@@ -661,7 +660,7 @@ class UBE {
       doquery("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
     }
 
-    $this->moon_calculator->db_apply_result($planet_info, $destination_user_id, $planet_id);
+    $this->moon_calculator->db_apply_result($this->ube_planet_info, $destination_user_id);
 
     $bashing_list = array();
     $players_sides = $this->players->get_player_sides();
@@ -670,7 +669,7 @@ class UBE {
         continue;
       }
       if($this->moon_calculator->get_status() != UBE_MOON_DESTROY_SUCCESS) {
-        $bashing_list[] = "({$player_id}, {$planet_id}, {$this->combat_timestamp})";
+        $bashing_list[] = "({$player_id}, {$this->ube_planet_info[PLANET_ID]}, {$this->combat_timestamp})";
       }
       if($this->mission_type_id == MT_ATTACK && $this->is_defender_active_player) {
         $str_loose_or_win = $this->combat_result == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
@@ -1012,7 +1011,7 @@ function ube_attack_prepare_fleet_from_object(UBE $ube, &$fleet, $is_attacker) {
  *
  * @return mixed
  */
-function flt_planet_capture_from_object(&$fleet_row, UBE $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
+function flt_planet_capture_from_object(array &$fleet_row, UBE $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
 
 /**
  * @param array $fleet_row
