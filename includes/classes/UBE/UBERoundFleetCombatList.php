@@ -104,10 +104,7 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
     $reapers = 0;
     foreach($this->_container as $fleet_id => $UBERoundFleetCombat) {
       if($UBERoundFleetCombat->is_attacker == UBE_PLAYER_IS_ATTACKER) {
-        foreach($UBERoundFleetCombat->unit_list as $unit_id => $unit_array_record) {
-          // TODO: Работа по группам - группа "Уничтожители лун"
-          $reapers += ($unit_id == SHIP_HUGE_DEATH_STAR) ? $unit_array_record[UBE_COUNT] : 0;
-        }
+        $reapers += $UBERoundFleetCombat->unit_combat->get_reapers();
       }
     }
 
@@ -136,15 +133,15 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
   // REPORT ************************************************************************************************************
   //    REPORT SAVE ====================================================================================================
   /**
-   * Сохраняем информацию о юнитах в раундах
-   *
-   * @param $ube_report_id
-   * @param $sql_perform_ube_report_unit
+   * @param array $sql_perform_ube_report_unit
+   * @param int   $ube_report_id
+   * @param int   $round_number
+   * @param int   $unit_sort_order
    */
-  // OK3
-  public function sql_generate_unit_array($ube_report_id, &$sql_perform_ube_report_unit, &$unit_sort_order, $round_number) {
+  // OK6
+  public function sql_generate_unit_array(array &$sql_perform_ube_report_unit, $ube_report_id, $round_number, &$unit_sort_order) {
     foreach($this->_container as $fleet_id => $UBERoundFleetCombat) {
-      $UBERoundFleetCombat->sql_generate_unit_array($ube_report_id, $sql_perform_ube_report_unit, $unit_sort_order, $round_number);
+      $UBERoundFleetCombat->sql_generate_unit_array($sql_perform_ube_report_unit, $ube_report_id, $round_number, $unit_sort_order);
     }
   }
 
@@ -181,7 +178,7 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
       }
 
       $template_fleet['.']['ship'] = $UBERoundFleetCombat->report_render_ship_list(
-        $previousRound->fleet_combat_data[$fleet_id]->unit_list
+        $previousRound->fleet_combat_data[$fleet_id]->unit_combat
       );
 
       $fleet_list_template[$UBERoundFleetCombat->is_attacker][] = $template_fleet;

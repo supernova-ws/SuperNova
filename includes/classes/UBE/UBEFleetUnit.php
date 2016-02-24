@@ -5,7 +5,7 @@
  */
 class UBEFleetUnit {
 
-  public $id = 0;
+  public $unit_id = 0;
   public $type = 0;
 
   public $count = 0;
@@ -23,7 +23,7 @@ class UBEFleetUnit {
   public function fill_unit_info($bonus_list) {
     global $ube_convert_to_techs;
 
-    $unit_info = get_unit_param($this->id);
+    $unit_info = get_unit_param($this->unit_id);
     // Заполняем информацию о кораблях в информации флота
     $this->attack = floor($unit_info[$ube_convert_to_techs[UBE_ATTACK]] * (1 + $bonus_list[UBE_ATTACK]));
     $this->shield = floor($unit_info[$ube_convert_to_techs[UBE_SHIELD]] * (1 + $bonus_list[UBE_SHIELD]));

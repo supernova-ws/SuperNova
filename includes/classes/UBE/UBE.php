@@ -370,7 +370,7 @@ class UBE {
       $fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
       foreach($this->fleet_list[$fleet_id]->unit_list->_container as $unit_id => $UBEFleetUnit) {
         // Вычисляем сколько юнитов осталось и сколько потеряно
-        $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_list[$unit_id][UBE_COUNT];
+        $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_combat[$unit_id]->count;
 
         // Восстановление обороны - 75% от уничтоженной
         if($this->fleet_list[$fleet_id]->unit_list[$unit_id]->type == UNIT_DEFENCE) {

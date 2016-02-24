@@ -115,7 +115,6 @@ class UBEMoonCalculator {
       if($ube->mission_type_id == MT_DESTROY && $ube->combat_result == UBE_COMBAT_RESULT_WIN) {
         $objRound = $ube->rounds->get_last_element();
         $reapers = $objRound->fleet_combat_data->calculate_attack_reapers();
-
         $this->moon_destroy_try($reapers);
       }
     } else {

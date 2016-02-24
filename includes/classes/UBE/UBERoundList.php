@@ -53,7 +53,7 @@ class UBERoundList extends ArrayAccessV2 {
   public function sql_generate_unit_array($ube_report_id, &$sql_perform_ube_report_unit) {
     $unit_sort_order = 1;
     foreach($this->_container as $round_number => $UBERound) {
-      $UBERound->fleet_combat_data->sql_generate_unit_array($ube_report_id, $sql_perform_ube_report_unit, $unit_sort_order, $round_number);
+      $UBERound->fleet_combat_data->sql_generate_unit_array($sql_perform_ube_report_unit, $ube_report_id, $round_number, $unit_sort_order);
     }
   }
 
