@@ -150,15 +150,16 @@ class UBEReport {
     }
 
     // Всякая информация по флотам
-    foreach($ube->fleet_list as $fleet_id => $UBEFleet) {
+    foreach($ube->fleet_list->_container as $fleet_id => $UBEFleet) {
       // Сохраняем общую информацию по флотам
       $sql_perform['ube_report_fleet'][] = $UBEFleet->sql_generate_array($ube_report_id);
 
       // Сохраняем итоговую информацию по ресурсам флота - потеряно, выброшено, увезено
-      $sql_perform['ube_report_outcome_fleet'][] = $ube->outcome->sql_generate_fleet_array($fleet_id, $ube_report_id);
+//      $sql_perform['ube_report_outcome_fleet'][] = $ube->outcome->sql_generate_fleet_array($ube_report_id, $UBEFleet);
+      $sql_perform['ube_report_outcome_fleet'][] = $UBEFleet->sql_generate_outcome_fleet_array($ube_report_id);
 
       // Сохраняем результаты по юнитам - потеряно и восстановлено
-      $ube->outcome->sql_generate_unit_array($UBEFleet, $sql_perform['ube_report_outcome_unit'], $ube_report_id);
+      $UBEFleet->sql_generate_outcome_unit_array($sql_perform['ube_report_outcome_unit'], $ube_report_id);
     }
 
     // Сохраняем информацию о раундах
@@ -220,7 +221,7 @@ class UBEReport {
     $ube->rounds->report_render_rounds($template_result, $ube); // OK3
 
     // Боевые потери флотов
-    $ube->outcome->report_render_outcome($ube, $template_result);
+    $ube->fleet_list->report_render_fleets_outcome($ube, $template_result);
 
 // TODO: $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] - если админский бой не генерировать осколки и не делать луну. Сделать серверную опцию
 

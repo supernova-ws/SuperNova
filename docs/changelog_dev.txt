@@ -351,11 +351,19 @@ $planet_info
     // TODO - НАДО ВЫНЕСТИ РАБОТУ С ПЛЕЕРАМИ ИЗ PREPARE FLEET! ПОтому что могут поменятся статы - АТТАКЕР/ДЕФЕНДЕР И, СООТВЕТСТВЕННО, БОНУСЫ!!!
 
 
-OK6 Текущий     2016-02-24 21:41:10 41a4.60
-OK7 Следующий
+OK7 Текущий     #ctv
+OK8 Следующий
 
 
-// TODO - СЕЙЧАС UBEFleet
+// TODO - СЕЙЧАС
+
+    Убрать UBEFleetList
+        public $fleet_attackers = array();
+        public $fleet_defenders = array();
+
+        public $capacity_attackers = array();
+        public $capacity_defenders = array();
+
 
 
 

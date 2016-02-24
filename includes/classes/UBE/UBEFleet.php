@@ -26,6 +26,19 @@ class UBEFleet {
   public $unit_list = null;
 
   /**
+   * @var array
+   */
+  // TODO - перенести в юниты, что ли?
+  public $outcome = array(
+//[UBE_DEFENCE_RESTORE]
+//[UBE_UNITS_LOST]
+//[UBE_RESOURCES_LOST]
+//[UBE_CARGO_DROPPED]
+//[UBE_RESOURCES_LOOTED]
+//[UBE_RESOURCES_LOST_IN_METAL]
+  );
+
+  /**
    * UBEFleet constructor.
    */
   // OK5
@@ -148,6 +161,129 @@ class UBEFleet {
       PLANET_PLANET => $fleet_row['fleet_start_planet'],
       PLANET_TYPE   => $fleet_row['fleet_start_type'],
     );
+  }
+
+
+  public function load_outcome_from_report_row(array $row) {
+    $this->outcome = array(
+      UBE_RESOURCES_LOST => array(
+        RES_METAL     => $row['ube_report_outcome_fleet_resource_lost_metal'],
+        RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_lost_crystal'],
+        RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_lost_deuterium'],
+      ),
+
+      UBE_CARGO_DROPPED => array(
+        RES_METAL     => $row['ube_report_outcome_fleet_resource_dropped_metal'],
+        RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_dropped_crystal'],
+        RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_dropped_deuterium'],
+      ),
+
+      UBE_RESOURCES_LOOTED => array(
+        RES_METAL     => $row['ube_report_outcome_fleet_resource_loot_metal'],
+        RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_loot_crystal'],
+        RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_loot_deuterium'],
+      ),
+
+      UBE_RESOURCES_LOST_IN_METAL => array(
+        RES_METAL => $row['ube_report_outcome_fleet_resource_lost_in_metal'],
+      ),
+    );
+  }
+
+  /**
+   * @param $row
+   */
+  public function load_unit_outcome_from_row($row) {
+    $unit_id = $row['ube_report_outcome_unit_unit_id'];
+    // fleet_attackers[$fleet_id] и fleet_defenders[$fleet_id] содержат ССЫЛКИ на outcome_fleets[$fleet_id] - поэтому можно сразу писать в outcome_fleets
+    $this->outcome[UBE_UNITS_LOST][$unit_id] = $row['ube_report_outcome_unit_lost'];
+    $this->outcome[UBE_DEFENCE_RESTORE][$unit_id] = $row['ube_report_outcome_unit_restored'];
+  }
+
+
+  /**
+   * @param $ube_report_id
+   *
+   * @return array
+   */
+  public function sql_generate_outcome_fleet_array($ube_report_id) {
+    return array(
+      $ube_report_id,
+      $this->fleet_id,
+
+      (float)$this->outcome[UBE_RESOURCES_LOST][RES_METAL],
+      (float)$this->outcome[UBE_RESOURCES_LOST][RES_CRYSTAL],
+      (float)$this->outcome[UBE_RESOURCES_LOST][RES_DEUTERIUM],
+      (float)$this->outcome[UBE_CARGO_DROPPED][RES_METAL],
+      (float)$this->outcome[UBE_CARGO_DROPPED][RES_CRYSTAL],
+      (float)$this->outcome[UBE_CARGO_DROPPED][RES_DEUTERIUM],
+      (float)$this->outcome[UBE_RESOURCES_LOOTED][RES_METAL],
+      (float)$this->outcome[UBE_RESOURCES_LOOTED][RES_CRYSTAL],
+      (float)$this->outcome[UBE_RESOURCES_LOOTED][RES_DEUTERIUM],
+      (float)$this->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL],
+    );
+  }
+
+  public function report_render_outcome_side_fleet() {
+    return array_merge(
+      $this->report_render_outcome_side_fleet_line($this->outcome[UBE_DEFENCE_RESTORE], 'ube_report_info_restored'),
+      $this->report_render_outcome_side_fleet_line($this->outcome[UBE_UNITS_LOST], 'ube_report_info_loss_final'),
+      $this->report_render_outcome_side_fleet_line($this->outcome[UBE_RESOURCES_LOST], 'ube_report_info_loss_resources'),
+      $this->report_render_outcome_side_fleet_line($this->outcome[UBE_CARGO_DROPPED], 'ube_report_info_loss_dropped'),
+      $this->report_render_outcome_side_fleet_line($this->outcome[UBE_RESOURCES_LOOTED], $this->is_attacker == UBE_PLAYER_IS_ATTACKER ? 'ube_report_info_loot_gained' : 'ube_report_info_loss_looted'),
+      $this->report_render_outcome_side_fleet_line($this->outcome[UBE_RESOURCES_LOST_IN_METAL], 'ube_report_info_loss_in_metal')
+    );
+  }
+
+  // ------------------------------------------------------------------------------------------------
+  // Рендерит таблицу общего результата боя
+  /**
+   * @param $array
+   * @param $lang_header_index
+   *
+   * @return array
+   */
+  protected function report_render_outcome_side_fleet_line(&$array, $lang_header_index) {
+    global $lang;
+
+    $result = array();
+    if(!empty($array)) {
+      foreach($array as $unit_id => $unit_count) {
+        if($unit_count) {
+          $result[] = array(
+            'NAME' => $lang['tech'][$unit_id],
+            'LOSS' => pretty_number($unit_count),
+          );
+        }
+      }
+      if($lang_header_index && count($result)) {
+        array_unshift($result, array('NAME' => $lang[$lang_header_index]));
+      }
+    }
+
+    return $result;
+  }
+
+
+  public function sql_generate_outcome_unit_array(&$sql_perform_report_unit, $ube_report_id) {
+    $fleet_id = $this->fleet_id;
+
+    $unit_sort_order = 0;
+    foreach($this->unit_list->_container as $unit_id => $unit_count) {
+      if($this->outcome[UBE_UNITS_LOST][$unit_id] || $this->outcome[UBE_DEFENCE_RESTORE][$unit_id]) {
+        $unit_sort_order++;
+        $sql_perform_report_unit[] = array(
+          $ube_report_id,
+          $fleet_id,
+
+          $unit_id,
+          (float)$this->outcome[UBE_DEFENCE_RESTORE][$unit_id],
+          (float)$this->outcome[UBE_UNITS_LOST][$unit_id],
+
+          $unit_sort_order,
+        );
+      }
+    }
   }
 
 }

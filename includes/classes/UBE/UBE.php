@@ -364,10 +364,9 @@ class UBE {
     // Генерируем результат боя
     foreach($this->fleet_list->_container as $fleet_id => $fleet_info) {
       // Инициализируем массив результатов для флота
-      $this->outcome->init_fleet($fleet_id, $this->fleet_list[$fleet_id]->is_attacker == UBE_PLAYER_IS_ATTACKER);
+      $this->fleet_list->init_fleet($fleet_info, $this);
 
       // Переменные для быстрого доступа к подмассивам
-      $fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
       foreach($this->fleet_list[$fleet_id]->unit_list->_container as $unit_id => $UBEFleetUnit) {
         // Вычисляем сколько юнитов осталось и сколько потеряно
         $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_combat[$unit_id]->count;
@@ -391,7 +390,7 @@ class UBE {
             }
           }
           $units_left += $units_giveback;
-          $fleet_outcome[UBE_DEFENCE_RESTORE][$unit_id] = $units_giveback;
+          $fleet_info->outcome[UBE_DEFENCE_RESTORE][$unit_id] = $units_giveback;
         }
 
         // TODO: Сбор металла/кристалла от обороны
@@ -400,14 +399,14 @@ class UBE {
 
         // Вычисляем емкость трюмов оставшихся кораблей
         if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
-          $this->outcome->capacity_attackers[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
+          $this->fleet_list->capacity_attackers[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
         } else {
-          $this->outcome->capacity_defenders[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
+          $this->fleet_list->capacity_defenders[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
         }
 
         // Вычисляем потери в ресурсах
         if($units_lost) {
-          $fleet_outcome[UBE_UNITS_LOST][$unit_id] = $units_lost;
+          $fleet_info->outcome[UBE_UNITS_LOST][$unit_id] = $units_lost;
 
           foreach($this->fleet_list[$fleet_id]->unit_list[$unit_id]->price as $resource_id => $unit_resource_price) {
             if(!$unit_resource_price) {
@@ -416,7 +415,7 @@ class UBE {
 
             // ...чистыми
             $resources_lost = $units_lost * $unit_resource_price;
-            $fleet_outcome[UBE_RESOURCES_LOST][$resource_id] += $resources_lost;
+            $fleet_info->outcome[UBE_RESOURCES_LOST][$resource_id] += $resources_lost;
 
             // Если это корабль - прибавляем потери к обломкам на орбите
             if($this->fleet_list[$fleet_id]->unit_list[$unit_id]->type == UNIT_SHIPS) {
@@ -425,7 +424,7 @@ class UBE {
 
             // ...в металле
             $resources_lost_in_metal = $resources_lost * $this->resource_exchange_rates[$resource_id];
-            $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resources_lost_in_metal;
+            $fleet_info->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resources_lost_in_metal;
           }
         }
       }
@@ -444,9 +443,9 @@ class UBE {
 
       // Емкость трюмов флота
       if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
-        $fleet_capacity = $this->outcome->capacity_attackers[$fleet_id];
+        $fleet_capacity = $this->fleet_list->capacity_attackers[$fleet_id];
       } else {
-        $fleet_capacity = $this->outcome->capacity_defenders[$fleet_id];
+        $fleet_capacity = $this->fleet_list->capacity_defenders[$fleet_id];
       }
 
       // Если емкость трюмов меньше количество ресурсов - часть ресов выбрасываем нахуй
@@ -459,21 +458,21 @@ class UBE {
           }
 
           // TODO Восстанавливаем ошибку округления - придумать нормальный алгоритм - вроде round() должно быть достаточно. Проверить
-          $fleet_outcome[UBE_RESOURCES][$resource_id] = round($left_percent * $resource_amount);
-          $resource_dropped = $resource_amount - $fleet_outcome[UBE_RESOURCES][$resource_id];
-          $fleet_outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
+          $fleet_info->outcome[UBE_RESOURCES][$resource_id] = round($left_percent * $resource_amount);
+          $resource_dropped = $resource_amount - $fleet_info->outcome[UBE_RESOURCES][$resource_id];
+          $fleet_info->outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
 
           $this->debris->debris_add_resource($resource_id, floor($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100)); // TODO: Configurize
 
-          $fleet_outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $this->resource_exchange_rates[$resource_id];
+          $fleet_info->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $this->resource_exchange_rates[$resource_id];
         }
-        $fleet_total_resources = array_sum($fleet_outcome[UBE_RESOURCES]);
+        $fleet_total_resources = array_sum($fleet_info->outcome[UBE_RESOURCES]);
       }
 
       if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
-        $this->outcome->capacity_attackers[$fleet_id] = $fleet_capacity - $fleet_total_resources;
+        $this->fleet_list->capacity_attackers[$fleet_id] = $fleet_capacity - $fleet_total_resources;
       } else {
-        $this->outcome->capacity_defenders[$fleet_id] = $fleet_capacity - $fleet_total_resources;
+        $this->fleet_list->capacity_defenders[$fleet_id] = $fleet_capacity - $fleet_total_resources;
       }
     }
 
@@ -500,7 +499,7 @@ class UBE {
     $planet_looted_in_metal = 0;
     $planet_resource_looted = array();
     $planet_resource_total = is_array($planet_resource_list) ? array_sum($planet_resource_list) : 0;
-    if($planet_resource_total && ($total_capacity = array_sum($this->outcome->capacity_attackers))) {
+    if($planet_resource_total && ($total_capacity = array_sum($this->fleet_list->capacity_attackers))) {
       // Можно вывести только половину ресурсов, но не больше, чем общая вместимость флотов атакующих
       $planet_lootable = min($planet_resource_total / 2, $total_capacity);
       // Вычисляем процент вывоза. Каждого ресурса будет вывезено в одинаковых пропорциях
@@ -510,7 +509,8 @@ class UBE {
       $total_lootable = min($planet_lootable, $total_capacity);
 
       // Вычисляем сколько ресурсов вывезено
-      foreach($this->outcome->capacity_attackers as $fleet_id => $fleet_capacity) {
+      foreach($this->fleet_list->_container as $fleet_id => $fleet) {
+        $fleet_capacity = $this->fleet_list->capacity_attackers[$fleet_id];
         $looted_in_metal = 0;
         $fleet_loot_data = array();
         foreach($planet_resource_list as $resource_id => $resource_amount) {
@@ -521,14 +521,14 @@ class UBE {
           $planet_resource_looted[$resource_id] += $looted;
           $looted_in_metal -= $looted * $this->resource_exchange_rates[$resource_id];
         }
-        $this->outcome->outcome_fleets[$fleet_id][UBE_RESOURCES_LOOTED] = $fleet_loot_data;
-        $this->outcome->outcome_fleets[$fleet_id][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $looted_in_metal;
+        $fleet->outcome[UBE_RESOURCES_LOOTED] = $fleet_loot_data;
+        $fleet->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $looted_in_metal;
         $planet_looted_in_metal += $looted_in_metal;
       }
     }
 
-    $this->outcome->outcome_fleets[0][UBE_RESOURCES_LOST_IN_METAL][RES_METAL] -= $planet_looted_in_metal;
-    $this->outcome->outcome_fleets[0][UBE_RESOURCES_LOOTED] = $planet_resource_looted;
+    $this->fleet_list[0]->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] -= $planet_looted_in_metal;
+    $this->fleet_list[0]->outcome[UBE_RESOURCES_LOOTED] = $planet_resource_looted;
   }
 
 
@@ -588,12 +588,10 @@ class UBE {
     foreach($this->fleet_list->_container as $fleet_id => $UBEFleet) {
       $UBEFleet->UBE_FLEET_GROUP ? $fleet_group_id_list[$UBEFleet->UBE_FLEET_GROUP] = $UBEFleet->UBE_FLEET_GROUP : false;
 
-      $this_fleet_outcome = &$this->outcome->outcome_fleets[$fleet_id];
-
-      empty($this_fleet_outcome[UBE_UNITS_LOST]) ? $this_fleet_outcome[UBE_UNITS_LOST] = array() : false;
+      empty($UBEFleet->outcome[UBE_UNITS_LOST]) ? $UBEFleet->outcome[UBE_UNITS_LOST] = array() : false;
 
       $ship_count_initial = $UBEFleet->unit_list->get_unit_count();
-      $ship_count_lost = array_sum($this_fleet_outcome[UBE_UNITS_LOST]); // Если будет сделано восстановлении более, чем начальное число - тут надо сделать сумму по модулю
+      $ship_count_lost = array_sum($UBEFleet->outcome[UBE_UNITS_LOST]); // Если будет сделано восстановлении более, чем начальное число - тут надо сделать сумму по модулю
 
       if($fleet_id) {
         // Флот
@@ -613,14 +611,14 @@ class UBE {
             // Просматриваем результаты изменения флотов
             foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
               // Перебираем аутком на случай восстановления юнитов
-              if(($units_left = $UBEFleetUnit->count - (float)$this_fleet_outcome[UBE_UNITS_LOST][$unit_id]) > 0) {
+              if(($units_left = $UBEFleetUnit->count - (float)$UBEFleet->outcome[UBE_UNITS_LOST][$unit_id]) > 0) {
                 $fleet_real_array[$unit_id] = $units_left;
               };
             }
             $objFleet2->replace_ships($fleet_real_array);
           }
 
-          $resource_delta_fleet = $this->ube_combat_result_calculate_resources($this_fleet_outcome);
+          $resource_delta_fleet = $this->ube_combat_result_calculate_resources($UBEFleet->outcome);
           $objFleet2->update_resources($resource_delta_fleet);
 
           // Если защитник и не РМФ - отправляем флот назад
@@ -635,7 +633,7 @@ class UBE {
         // Планета
 
         // Сохраняем изменения ресурсов - если они есть
-        $resource_delta = $this->ube_combat_result_calculate_resources($this_fleet_outcome);
+        $resource_delta = $this->ube_combat_result_calculate_resources($UBEFleet->outcome);
         if(!empty($resource_delta)) {
           $temp = array();
           foreach($resource_delta as $resource_id => $resource_amount) {
@@ -648,7 +646,7 @@ class UBE {
         if($ship_count_lost) {
           $db_changeset = array();
           $planet_row_cache = $this->players[$destination_user_id]->player_db_row_get();
-          foreach($this_fleet_outcome[UBE_UNITS_LOST] as $unit_id => $units_lost) {
+          foreach($UBEFleet->outcome[UBE_UNITS_LOST] as $unit_id => $units_lost) {
             $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
           db_changeset_apply($db_changeset);
@@ -982,10 +980,12 @@ class UBE {
 
     $this->rounds->db_load_round_list_from_report_row($report_row, $this);
 
-    $this->outcome->db_load_from_report_row($report_row, $this);
+    $this->fleet_list->db_load_fleets_outcome($report_row, $this);
   }
 
 }
+
+
 
 // ------------------------------------------------------------------------------------------------
 /**
