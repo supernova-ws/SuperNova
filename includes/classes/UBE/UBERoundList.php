@@ -15,6 +15,14 @@ class UBERoundList extends ArrayAccessV2 {
     return end($this->_container);
   }
 
+  /**
+   * @param UBEFleetList $fleets
+   * @param bool         $is_simulator
+   */
+  public function prepare_zero_round(UBEFleetList $fleets, $is_simulator) {
+    $this[0] = new UBERound();
+    $this[0]->prepare_zero_round($fleets, $is_simulator);
+  }
 
   // REPORT RENDER *****************************************************************************************************
   // Генерируем отчет по флотам

@@ -41,15 +41,15 @@ class UBEFleet {
   // OK3
   public function add_player_bonuses(UBEPlayer $player) {
     // Вычисляем бонус игрока и добавляем его к бонусам флота
-//      foreach($ube_combat_bonus_list as $bonus_id => $bonus_value) {
-//        $objFleet->UBE_BONUSES[$bonus_id] += $players[$objFleet->UBE_OWNER]->player_bonus_get($bonus_id);
-//      }
     $this->UBE_BONUSES[UBE_ATTACK] += $player->player_bonus_get(UBE_ATTACK);
     $this->UBE_BONUSES[UBE_SHIELD] += $player->player_bonus_get(UBE_SHIELD);
     $this->UBE_BONUSES[UBE_ARMOR] += $player->player_bonus_get(UBE_ARMOR);
 
   }
 
+  /**
+   *
+   */
   // OK3
   public function calculate_battle_stats() {
     global $ube_convert_to_techs;

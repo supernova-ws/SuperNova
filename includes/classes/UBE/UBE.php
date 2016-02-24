@@ -271,27 +271,30 @@ class UBE {
     // TODO: Сделать атаку по типам,  когда они будут
 
     $start = microtime(true);
-    // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
-    $zero_round = new UBERound();
-    $zero_round->init_zero_round($this->fleet_list, $this->players);
-    $this->rounds[0] = $zero_round;
 
-    $this->rounds[1] = clone $zero_round; // TODO - фииииииииигня - надо готовить нулевой раунд по-особому, а дальше - станадртно
+    $this->fleet_list->load_from_players($this->players);
+
+    // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
+    $this->rounds->prepare_zero_round($this->fleet_list, $this->is_simulator);
+
+    $this->rounds[1] = clone $this->rounds[0];
     $this->rounds[1]->round_number = 1;
 
-    $this->rounds[0]->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
-
     for($round = 1; $round <= 10; $round++) {
-      // Готовим данные для раунда
-      $this->rounds[$round]->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
-
       // Проводим раунд
       $this->rounds[$round]->fleet_combat_data->calculate_attack_results($this); // OK3
 
       // Анализируем итоги текущего раунда и готовим данные для следующего
-      if($this->sn_ube_combat_round_analyze($round) != UBE_COMBAT_RESULT_DRAW) {
+      $nextRound = $this->rounds[$round]->sn_ube_combat_round_analyze($round);
+
+      if($this->rounds[$round]->UBE_OUTCOME != UBE_COMBAT_RESULT_DRAW) {
         break;
       }
+
+      $this->rounds[$round + 1] = $nextRound;
+
+      // Готовим данные для раунда
+      $nextRound->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
     }
     $this->time_spent = microtime(true) - $start;
 

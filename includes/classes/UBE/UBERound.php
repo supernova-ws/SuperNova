@@ -11,12 +11,6 @@ class UBERound {
    */
   public $fleet_combat_data = null; // UBERoundFleetCombatList
 
-  /**
-   * @var UBEFleet[]
-   */
-  // TODO - переместить внутрь UBEFleetCombat!!!!!
-  public $fleet_info = array(); // [UBE_FLEET_INFO] // TODO - UBEFleetList
-
   public $UBE_OUTCOME = UBE_COMBAT_RESULT_DRAW;
 
   public function __construct() {
@@ -24,28 +18,7 @@ class UBERound {
   }
 
   public function __clone() {
-// TODO !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// $fleet_info - клонировать? Инициализировать?
     $this->fleet_combat_data = clone $this->fleet_combat_data;
-  }
-
-  /**
-   * @param UBEFleetList  $fleets
-   * @param UBEPlayerList $players
-   */
-  // OK3
-  public function init_zero_round(UBEFleetList $fleets, UBEPlayerList $players) {
-    foreach($fleets->_container as $fleet_id => $objFleet) {
-      // TODO - эта последовательность должна быть при загрузке флота (?)
-//      $objFleet->UBE_COUNT = is_array($objFleet->UBE_COUNT) ? $objFleet->UBE_COUNT : array();
-      $objFleet->copy_stats_from_player($players[$objFleet->UBE_OWNER]);
-      // Вычисляем бонус игрока и добавляем его к бонусам флота
-      $objFleet->add_player_bonuses($players[$objFleet->UBE_OWNER]);
-//      $objFleet->add_planet_bonuses(); // TODO
-      $objFleet->calculate_battle_stats();
-
-      $this->fleet_combat_data->insert_from_UBEFleet($objFleet); // $first_round->round_fleets[$fleet_id][UBE_COUNT] = array();
-    }
   }
 
   /**
@@ -53,15 +26,9 @@ class UBERound {
    * @param bool         $is_simulator
    */
   // OK3
-  public function sn_ube_combat_round_prepare(UBEFleetList $fleets, $is_simulator) {
-    foreach($fleets as $fleet_id => $temp) {
-      // Кэшируем переменные для легкого доступа к подмассивам
-      $this->fleet_info[$fleet_id] = $fleets[$fleet_id];
-    }
-
-    // Суммируем данные по атакующим и защитникам
-    // Высчитываем долю атаки, приходящейся на юнит равную отношению брони юнита к общей броне - крупные цели атакуют чаще
-    $this->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_info, $is_simulator);
+  public function prepare_zero_round(UBEFleetList $fleets, $is_simulator) {
+    $this->fleet_combat_data->init_from_UBEFleetList($fleets);
+    $this->fleet_combat_data->sn_ube_combat_round_prepare($fleets, $is_simulator);
   }
 
   // ------------------------------------------------------------------------------------------------

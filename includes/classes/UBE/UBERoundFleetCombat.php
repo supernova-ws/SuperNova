@@ -90,6 +90,7 @@ class UBERoundFleetCombat {
       if(empty($source_data_array[UBE_COUNT]) || $source_data_array[UBE_COUNT] <= 0) {
         continue;
       }
+      $this->unit_list[$unit_id][UBE_UNIT_SNID] = $unit_id;
       $this->unit_list[$unit_id][UBE_COUNT] = $source_data_array[UBE_COUNT];
       $this->unit_list[$unit_id][UBE_ARMOR] = $source_data_array[UBE_ARMOR];
       $this->unit_list[$unit_id][UBE_ARMOR_REST] = $source_data_array[UBE_ARMOR_REST];
@@ -104,21 +105,6 @@ class UBERoundFleetCombat {
     }
 
     return $unit_count;
-  }
-
-
-  public function get_actual_fleet_list() {
-    $unit_list = array();
-    foreach($this->unit_list as $unit_id => $unit_data_array) {
-      if(empty($unit_data_array[UBE_COUNT]) || $unit_data_array[UBE_COUNT] <= 0) {
-        continue;
-      }
-      $unit_list[$unit_id][UBE_COUNT] = $unit_data_array[UBE_COUNT];
-      $unit_list[$unit_id][UBE_ARMOR] = $unit_data_array[UBE_ARMOR];
-      $unit_list[$unit_id][UBE_ARMOR_REST] = $unit_data_array[UBE_ARMOR_REST];
-    }
-
-    return $unit_list;
   }
 
 
@@ -152,14 +138,14 @@ class UBERoundFleetCombat {
   }
 
   /**
-   * @param array $total_side_stats
+   * @param UBEASA $side_ASA
    */
-  // OK3
-  public function calculate_unit_partial_data($total_side_stats) {
-    $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $total_side_stats;
+  // OK4
+  public function calculate_unit_partial_data(UBEASA $side_ASA) {
+    $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $side_ASA->armor;
 
     foreach($this->unit_list as &$unit_data_array) {
-      $unit_data_array[UBE_SHARE_OF_SIDE_ARMOR] = $unit_data_array[UBE_ARMOR] / $total_side_stats;
+      $unit_data_array[UBE_SHARE_OF_SIDE_ARMOR] = $unit_data_array[UBE_ARMOR] / $side_ASA->armor;
     }
   }
 
