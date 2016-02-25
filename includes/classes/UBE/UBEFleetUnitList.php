@@ -39,4 +39,8 @@ class UBEFleetUnitList extends ArrayAccessV2 {
     }
   }
 
+
+  public function analyze_fleet_units() {
+
+  }
 }

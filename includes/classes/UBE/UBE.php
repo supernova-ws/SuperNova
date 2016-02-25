@@ -359,126 +359,13 @@ class UBE {
     // Переменные для быстрого доступа к подмассивам
     $lastRound = $this->rounds->get_last_element();
 
-    $this->debris->debris_reset();
-
-    // Генерируем результат боя
-    foreach($this->fleet_list->_container as $fleet_id => $fleet_info) {
-      // Инициализируем массив результатов для флота
-      $this->fleet_list->init_fleet($fleet_info, $this);
-
-      // Переменные для быстрого доступа к подмассивам
-      foreach($this->fleet_list[$fleet_id]->unit_list->_container as $unit_id => $UBEFleetUnit) {
-        // Вычисляем сколько юнитов осталось и сколько потеряно
-        $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_combat[$unit_id]->count;
-
-        // Восстановление обороны - 75% от уничтоженной
-        if($this->fleet_list[$fleet_id]->unit_list[$unit_id]->type == UNIT_DEFENCE) {
-          $giveback_chance = 75; // TODO Configure
-          $units_lost = $UBEFleetUnit->count - $units_left;
-          if($this->is_simulator) { // for simulation just return 75% of loss
-            $units_giveback = round($units_lost * $giveback_chance / 100);
-          } else {
-            if($UBEFleetUnit->count > 10) { // if there were more then 10 defense elements - mass-calculating giveback
-              $units_giveback = round($units_lost * mt_rand($giveback_chance * 0.8, $giveback_chance * 1.2) / 100);
-            } else { //if there were less then 10 defense elements - calculating giveback per element
-              $units_giveback = 0;
-              for($i = 1; $i <= $units_lost; $i++) {
-                if(mt_rand(1, 100) <= $giveback_chance) {
-                  $units_giveback++;
-                }
-              }
-            }
-          }
-          $units_left += $units_giveback;
-          $fleet_info->outcome[UBE_DEFENCE_RESTORE][$unit_id] = $units_giveback;
-        }
-
-        // TODO: Сбор металла/кристалла от обороны
-
-        $units_lost = $UBEFleetUnit->count - $units_left;
-
-        // Вычисляем емкость трюмов оставшихся кораблей
-        if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
-          $this->fleet_list->capacity_attackers[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
-        } else {
-          $this->fleet_list->capacity_defenders[$fleet_id] += $this->fleet_list[$fleet_id]->unit_list[$unit_id]->capacity * $units_left;
-        }
-
-        // Вычисляем потери в ресурсах
-        if($units_lost) {
-          $fleet_info->outcome[UBE_UNITS_LOST][$unit_id] = $units_lost;
-
-          foreach($this->fleet_list[$fleet_id]->unit_list[$unit_id]->price as $resource_id => $unit_resource_price) {
-            if(!$unit_resource_price) {
-              continue;
-            }
-
-            // ...чистыми
-            $resources_lost = $units_lost * $unit_resource_price;
-            $fleet_info->outcome[UBE_RESOURCES_LOST][$resource_id] += $resources_lost;
-
-            // Если это корабль - прибавляем потери к обломкам на орбите
-            if($this->fleet_list[$fleet_id]->unit_list[$unit_id]->type == UNIT_SHIPS) {
-              $this->debris->debris_add_resource($resource_id, floor($resources_lost * ($this->is_simulator ? 30 : mt_rand(20, 40)) / 100)); // TODO: Configurize
-            }
-
-            // ...в металле
-            $resources_lost_in_metal = $resources_lost * $this->resource_exchange_rates[$resource_id];
-            $fleet_info->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resources_lost_in_metal;
-          }
-        }
-      }
-
-      // На планете ($fleet_id = 0) ресурсы в космос не выбрасываются
-      if($fleet_id == 0) {
-        continue;
-      }
-
-      // Количество ресурсов флота
-      $fleet_total_resources = empty($this->fleet_list[$fleet_id]->UBE_RESOURCES) ? 0 : array_sum($this->fleet_list[$fleet_id]->UBE_RESOURCES);
-      // Если на борту нет ресурсов - зачем нам все это?
-      if($fleet_total_resources == 0) {
-        continue;
-      }
-
-      // Емкость трюмов флота
-      if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
-        $fleet_capacity = $this->fleet_list->capacity_attackers[$fleet_id];
-      } else {
-        $fleet_capacity = $this->fleet_list->capacity_defenders[$fleet_id];
-      }
-
-      // Если емкость трюмов меньше количество ресурсов - часть ресов выбрасываем нахуй
-      if($fleet_capacity < $fleet_total_resources) {
-        $left_percent = $fleet_capacity / $fleet_total_resources; // Сколько ресурсов будет оставлено
-        foreach($this->fleet_list[$fleet_id]->UBE_RESOURCES as $resource_id => $resource_amount) {
-          // Не просчитываем ресурсы, которых нет на борту кораблей флота
-          if(!$resource_amount) {
-            continue;
-          }
-
-          // TODO Восстанавливаем ошибку округления - придумать нормальный алгоритм - вроде round() должно быть достаточно. Проверить
-          $fleet_info->outcome[UBE_RESOURCES][$resource_id] = round($left_percent * $resource_amount);
-          $resource_dropped = $resource_amount - $fleet_info->outcome[UBE_RESOURCES][$resource_id];
-          $fleet_info->outcome[UBE_CARGO_DROPPED][$resource_id] = $resource_dropped;
-
-          $this->debris->debris_add_resource($resource_id, floor($resource_dropped * ($this->is_simulator ? 50 : mt_rand(30, 70)) / 100)); // TODO: Configurize
-
-          $fleet_info->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $resource_dropped * $this->resource_exchange_rates[$resource_id];
-        }
-        $fleet_total_resources = array_sum($fleet_info->outcome[UBE_RESOURCES]);
-      }
-
-      if(UBE_PLAYER_IS_ATTACKER == $this->fleet_list[$fleet_id]->is_attacker) {
-        $this->fleet_list->capacity_attackers[$fleet_id] = $fleet_capacity - $fleet_total_resources;
-      } else {
-        $this->fleet_list->capacity_defenders[$fleet_id] = $fleet_capacity - $fleet_total_resources;
-      }
-    }
-
     $this->combat_result = !isset($lastRound->UBE_OUTCOME) || $lastRound->UBE_OUTCOME == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $lastRound->UBE_OUTCOME;
     // SFR - Small Fleet Reconnaissance ака РМФ
     $this->is_small_fleet_recce = $this->rounds->count() == 2 && $this->combat_result == UBE_COMBAT_RESULT_LOSS;
+
+    $this->debris->_reset();
+    // Генерируем результат боя
+    $this->fleet_list->sn_ube_combat_analyze($lastRound, $this->is_simulator, $this->debris, $this->resource_exchange_rates);
 
     if(!$this->is_ube_loaded) {
       $this->moon_calculator->calculate_moon($this);
@@ -962,7 +849,7 @@ class UBE {
 
     $this->moon_calculator->load_from_report($report_row);
 
-    $this->debris->debris_reset();
+    $this->debris->_reset();
     $this->debris->debris_add_resource(RES_METAL, $report_row['ube_report_debris_metal']);
     $this->debris->debris_add_resource(RES_CRYSTAL, $report_row['ube_report_debris_crystal']);
 

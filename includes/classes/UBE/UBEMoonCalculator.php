@@ -82,7 +82,7 @@ class UBEMoonCalculator {
         $this->moon_diameter = round($is_simulator ? $moon_chance * 150 + 1999 : mt_rand($moon_chance * 100 + 1000, $moon_chance * 200 + 2999));
 
         if($debris_for_moon <= UBE_MOON_DEBRIS_MAX_SPENT) {
-          $debris->debris_reset();
+          $debris->_reset();
         } else {
           $moon_debris_left_percent = ($debris_for_moon - UBE_MOON_DEBRIS_MAX_SPENT) / $debris_for_moon;
           $debris->debris_adjust_proportional($moon_debris_left_percent);

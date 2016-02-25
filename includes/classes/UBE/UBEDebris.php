@@ -14,10 +14,10 @@ class UBEDebris {
   protected $debris = array();
 
   public function __construct() {
-    $this->debris_reset();
+    $this->_reset();
   }
 
-  public function debris_reset() {
+  public function _reset() {
     $this->debris = array(
       RES_METAL   => 0,
       RES_CRYSTAL => 0,
