@@ -68,11 +68,6 @@ class UBE {
   public $rounds = null;
 
   /**
-   * @var UBEOutcome
-   */
-  public $outcome = null;
-
-  /**
    * @var UBEMoonCalculator
    */
   public $moon_calculator = null;
@@ -101,7 +96,6 @@ class UBE {
   public function __construct() {
     $this->players = new UBEPlayerList();
     $this->fleet_list = new UBEFleetList();
-    $this->outcome = new UBEOutcome();
     $this->moon_calculator = new UBEMoonCalculator();
     $this->debris = new UBEDebris();
     $this->rounds = new UBERoundList();
@@ -174,7 +168,7 @@ class UBE {
     }
 
     foreach(sn_get_groups('resources_loot') as $resource_id) {
-      $this->fleet_list[0]->UBE_RESOURCES[$resource_id] = floor(mrc_get_level($player_db_row, $planet, $resource_id));
+      $this->fleet_list[0]->resources[$resource_id] = floor(mrc_get_level($player_db_row, $planet, $resource_id));
     }
 
     if($fortifier_level = mrc_get_level($player_db_row, $planet, MRC_FORTIFIER)) {
@@ -287,7 +281,7 @@ class UBE {
       // Анализируем итоги текущего раунда и готовим данные для следующего
       $nextRound = $this->rounds[$round]->sn_ube_combat_round_analyze($round);
 
-      if($this->rounds[$round]->UBE_OUTCOME != UBE_COMBAT_RESULT_DRAW) {
+      if($this->rounds[$round]->round_outcome != UBE_COMBAT_RESULT_DRAW) {
         break;
       }
 
@@ -331,11 +325,11 @@ class UBE {
     $objRound = $this->rounds[$round];
     $nextRound = $objRound->sn_ube_combat_round_analyze($round);
 
-    if($objRound->UBE_OUTCOME == UBE_COMBAT_RESULT_DRAW) {
+    if($objRound->round_outcome == UBE_COMBAT_RESULT_DRAW) {
       $this->rounds[$round + 1] = $nextRound;
     }
 
-    return $objRound->UBE_OUTCOME;
+    return $objRound->round_outcome;
   }
 
 
@@ -359,7 +353,7 @@ class UBE {
     // Переменные для быстрого доступа к подмассивам
     $lastRound = $this->rounds->get_last_element();
 
-    $this->combat_result = !isset($lastRound->UBE_OUTCOME) || $lastRound->UBE_OUTCOME == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $lastRound->UBE_OUTCOME;
+    $this->combat_result = !isset($lastRound->round_outcome) || $lastRound->round_outcome == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $lastRound->round_outcome;
     // SFR - Small Fleet Reconnaissance ака РМФ
     $this->is_small_fleet_recce = $this->rounds->count() == 2 && $this->combat_result == UBE_COMBAT_RESULT_LOSS;
 
@@ -381,12 +375,12 @@ class UBE {
   // ------------------------------------------------------------------------------------------------
   // OK0
   function sn_ube_combat_analyze_loot() {
-    $planet_resource_list = $this->fleet_list[0]->UBE_RESOURCES;
+    $planet_resource_list = $this->fleet_list[0]->resources;
 
     $planet_looted_in_metal = 0;
     $planet_resource_looted = array();
     $planet_resource_total = is_array($planet_resource_list) ? array_sum($planet_resource_list) : 0;
-    if($planet_resource_total && ($total_capacity = array_sum($this->fleet_list->capacity_attackers))) {
+    if($planet_resource_total && ($total_capacity = $this->fleet_list->get_capacity_attackers())) {
       // Можно вывести только половину ресурсов, но не больше, чем общая вместимость флотов атакующих
       $planet_lootable = min($planet_resource_total / 2, $total_capacity);
       // Вычисляем процент вывоза. Каждого ресурса будет вывезено в одинаковых пропорциях
@@ -397,25 +391,23 @@ class UBE {
 
       // Вычисляем сколько ресурсов вывезено
       foreach($this->fleet_list->_container as $fleet_id => $fleet) {
-        $fleet_capacity = $this->fleet_list->capacity_attackers[$fleet_id];
         $looted_in_metal = 0;
         $fleet_loot_data = array();
         foreach($planet_resource_list as $resource_id => $resource_amount) {
-          // TODO Восстанавливаем ошибку округления - придумать нормальный алгоритм - вроде round() должно быть достаточно. Проверить
-          $fleet_lootable_percent = $fleet_capacity / $total_capacity;
+          $fleet_lootable_percent = $fleet->fleet_capacity / $total_capacity;
           $looted = round($resource_amount * $planet_lootable_percent * $fleet_lootable_percent);
           $fleet_loot_data[$resource_id] = -$looted;
           $planet_resource_looted[$resource_id] += $looted;
           $looted_in_metal -= $looted * $this->resource_exchange_rates[$resource_id];
         }
-        $fleet->outcome[UBE_RESOURCES_LOOTED] = $fleet_loot_data;
-        $fleet->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] += $looted_in_metal;
+        $fleet->resources_looted = $fleet_loot_data;
+        $fleet->resources_lost_in_metal[RES_METAL] += $looted_in_metal;
         $planet_looted_in_metal += $looted_in_metal;
       }
     }
 
-    $this->fleet_list[0]->outcome[UBE_RESOURCES_LOST_IN_METAL][RES_METAL] -= $planet_looted_in_metal;
-    $this->fleet_list[0]->outcome[UBE_RESOURCES_LOOTED] = $planet_resource_looted;
+    $this->fleet_list[0]->resources_looted = $planet_resource_looted;
+    $this->fleet_list[0]->resources_lost_in_metal[RES_METAL] -= $planet_looted_in_metal;
   }
 
 
@@ -470,15 +462,9 @@ class UBE {
       );
     }
 
-    $fleet_group_id_list = array(); // Для САБов
-
     foreach($this->fleet_list->_container as $fleet_id => $UBEFleet) {
-      $UBEFleet->group_id ? $fleet_group_id_list[$UBEFleet->group_id] = $UBEFleet->group_id : false;
-
-      empty($UBEFleet->outcome[UBE_UNITS_LOST]) ? $UBEFleet->outcome[UBE_UNITS_LOST] = array() : false;
-
-      $ship_count_initial = $UBEFleet->unit_list->get_unit_count();
-      $ship_count_lost = array_sum($UBEFleet->outcome[UBE_UNITS_LOST]); // Если будет сделано восстановлении более, чем начальное число - тут надо сделать сумму по модулю
+      $ship_count_initial = $UBEFleet->unit_list->get_units_count();
+      $ship_count_lost = $UBEFleet->unit_list->get_units_lost();
 
       if($fleet_id) {
         // Флот
@@ -487,10 +473,8 @@ class UBE {
 
         // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
         if($UBEFleet->is_attacker == UBE_PLAYER_IS_ATTACKER && $this->moon_calculator->get_reapers_status() == UBE_MOON_REAPERS_DIED) {
-          $ship_count_lost = $ship_count_initial;
-        }
-
-        if($ship_count_lost == $ship_count_initial) {
+          $objFleet2->method_db_fleet_delete();
+        } elseif($ship_count_lost == $ship_count_initial) {
           $objFleet2->method_db_fleet_delete();
         } else {
           if($ship_count_lost) {
@@ -498,14 +482,14 @@ class UBE {
             // Просматриваем результаты изменения флотов
             foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
               // Перебираем аутком на случай восстановления юнитов
-              if(($units_left = $UBEFleetUnit->count - (float)$UBEFleet->outcome[UBE_UNITS_LOST][$unit_id]) > 0) {
+              if(($units_left = $UBEFleetUnit->count - (float)$UBEFleetUnit->units_lost) > 0) {
                 $fleet_real_array[$unit_id] = $units_left;
               };
             }
             $objFleet2->replace_ships($fleet_real_array);
           }
 
-          $resource_delta_fleet = $this->ube_combat_result_calculate_resources($UBEFleet->outcome);
+          $resource_delta_fleet = $UBEFleet->ube_combat_result_calculate_resources();
           $objFleet2->update_resources($resource_delta_fleet);
 
           // Если защитник и не РМФ - отправляем флот назад
@@ -520,7 +504,7 @@ class UBE {
         // Планета
 
         // Сохраняем изменения ресурсов - если они есть
-        $resource_delta = $this->ube_combat_result_calculate_resources($UBEFleet->outcome);
+        $resource_delta = $UBEFleet->ube_combat_result_calculate_resources();
         if(!empty($resource_delta)) {
           $temp = array();
           foreach($resource_delta as $resource_id => $resource_amount) {
@@ -533,8 +517,8 @@ class UBE {
         if($ship_count_lost) {
           $db_changeset = array();
           $planet_row_cache = $this->players[$destination_user_id]->player_db_row_get();
-          foreach($UBEFleet->outcome[UBE_UNITS_LOST] as $unit_id => $units_lost) {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
+          foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$UBEFleetUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
           db_changeset_apply($db_changeset);
         }
@@ -542,6 +526,8 @@ class UBE {
     }
 
     // TODO: Связать сабы с флотами констраинтами ON DELETE SET NULL
+    // Для САБов
+    $fleet_group_id_list = $this->fleet_list->get_groups();
     if(!empty($fleet_group_id_list)) {
       $fleet_group_id_list = implode(',', $fleet_group_id_list);
       doquery("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
@@ -571,26 +557,6 @@ class UBE {
     ube_combat_result_apply_from_object($this);
   }
 
-  /**
-   * Расчёт изменения ресурсов во флоте/на планете
-   *
-   * @param $fleet_outcome
-   *
-   * @return array
-   */
-  // OK0
-  function ube_combat_result_calculate_resources(&$fleet_outcome) {
-    $resource_delta_fleet = array();
-    // Если во флоте остались юниты или это планета - генерируем изменение ресурсов
-    foreach(sn_get_groups('resources_loot') as $resource_id) {
-      $resource_change = (float)$fleet_outcome[UBE_RESOURCES_LOOTED][$resource_id] + (float)$fleet_outcome[UBE_CARGO_DROPPED][$resource_id];
-      if($resource_change) {
-        $resource_delta_fleet[$resource_id] = -($resource_change);
-      }
-    }
-
-    return $resource_delta_fleet;
-  }
 
 
 
@@ -700,7 +666,7 @@ class UBE {
         if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
           $this->fleet_list[$fleet_id]->unit_list[$unit_id]->count = $unit_count;
         } elseif($unit_type == UNIT_RESOURCES) {
-          $this->fleet_list[$fleet_id]->UBE_RESOURCES[$unit_id] = $unit_count;
+          $this->fleet_list[$fleet_id]->resources[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
           $this->players[$player_id]->player_bonus_add($unit_id, $unit_count, $ube_convert_techs[$unit_id]);
         } elseif($unit_type == UNIT_GOVERNORS) {

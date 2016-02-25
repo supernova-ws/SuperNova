@@ -21,10 +21,18 @@ class UBEFleetUnitList extends ArrayAccessV2 {
     }
   }
 
-  public function get_unit_count() {
+  public function get_units_count() {
     $result = 0;
     foreach($this->_container as $UBEFleetUnit) {
       $result += $UBEFleetUnit->count;
+    }
+    return $result;
+  }
+
+  public function get_units_lost() {
+    $result = 0;
+    foreach($this->_container as $UBEFleetUnit) {
+      $result += $UBEFleetUnit->units_lost; // Если будет сделано восстановлении более, чем начальное число - тут надо сделать сумму по модулю
     }
     return $result;
   }

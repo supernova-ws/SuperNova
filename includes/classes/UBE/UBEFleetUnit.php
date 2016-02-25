@@ -14,6 +14,9 @@ class UBEFleetUnit {
 
   public $type = 0;
 
+  public $defence_restored = 0;
+  public $units_lost = 0;
+
   public $capacity = 0;
   public $price = array();
   public $amplify = array();

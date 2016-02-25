@@ -11,7 +11,7 @@ class UBERound {
    */
   public $fleet_combat_data = null; // UBERoundFleetCombatList
 
-  public $UBE_OUTCOME = UBE_COMBAT_RESULT_DRAW;
+  public $round_outcome = UBE_COMBAT_RESULT_DRAW;
 
   public function __construct() {
     $this->fleet_combat_data = new UBERoundFleetCombatList();
@@ -35,7 +35,7 @@ class UBERound {
   // Анализирует результаты раунда и генерирует данные для следующего раунда
   // OK3
   function sn_ube_combat_round_analyze($round) {
-    $this->UBE_OUTCOME = UBE_COMBAT_RESULT_DRAW;
+    $this->round_outcome = UBE_COMBAT_RESULT_DRAW;
 
     $nextRound = new UBERound();
     $nextRound->init_from_previous_round($this);
@@ -45,10 +45,10 @@ class UBERound {
     // Проверяем результат боя
     if(count($outcome) == 0 || $round >= 10) {
       // Если кого-то не осталось или не осталось обоих - заканчиваем цикл
-      $round_data[UBE_OUTCOME] = UBE_COMBAT_RESULT_DRAW_END;
+      $this->round_outcome = UBE_COMBAT_RESULT_DRAW_END;
     } elseif(count($outcome) == 1) {
       // Если осталась одна сторона - она и выиграла
-      $round_data[UBE_OUTCOME] = isset($outcome[UBE_PLAYER_IS_ATTACKER]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
+      $this->round_outcome = isset($outcome[UBE_PLAYER_IS_ATTACKER]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
     }
 
     return $nextRound;
