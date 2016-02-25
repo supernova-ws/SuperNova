@@ -8,6 +8,8 @@ class UBEReport {
    * @param UBE $ube
    *
    * @return bool|string
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   function sn_ube_report_save($ube) {
     global $config;
@@ -87,9 +89,9 @@ class UBEReport {
       'ube_report_unit' => array(
         array(
           '`ube_report_id`',
+          '`ube_report_unit_round`',
           '`ube_report_unit_player_id`',
           '`ube_report_unit_fleet_id`',
-          '`ube_report_unit_round`',
           '`ube_report_unit_unit_id`',
           '`ube_report_unit_count`',
           '`ube_report_unit_boom`',
@@ -130,7 +132,6 @@ class UBEReport {
       . $ube->moon_calculator->report_generate_sql();
 
     doquery($sql_str);
-//    $ube_report_id = $combat_data[UBE_REPORT_ID] = db_insert_id();
     $ube_report_id = db_insert_id();
 
     // Сохраняем общую информацию по игрокам
@@ -163,8 +164,8 @@ class UBEReport {
     }
 
     // Сохраняем информацию о раундах
-    // OK3
-    $ube->rounds->sql_generate_unit_array($ube_report_id, $sql_perform['ube_report_unit']);
+    // TODO = СЕЙЧАС!
+    $ube->rounds->sql_generate_unit_array($sql_perform['ube_report_unit'], $ube_report_id, $ube->fleet_list);
 
     // Пакетная вставка данных
     foreach($sql_perform as $table_name => $table_data) {

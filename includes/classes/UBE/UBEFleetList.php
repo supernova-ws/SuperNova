@@ -5,9 +5,40 @@
  *
  * @method UBEFleet offsetGet($offset)
  * @property UBEFleet[] $_container
+ *
+ * @version 2016-02-25 23:42:45 41a4.68
  */
 class UBEFleetList extends ArrayAccessV2 {
 
+  /**
+   * @var UBEASA[]
+   */
+  public $UBE_TOTAL = array();
+
+  /**
+   * Какие стороны присутствуют. ТОЛЬКО ДЛЯ ИСПОЛЬЗОВАНИЯ в next_round_fleet_array()!!!!
+   *
+   * @var array
+   */
+  public $side_present_at_round_start = array();
+
+  /**
+   * UBEFleetList constructor.
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function __construct() {
+    $this->UBE_TOTAL = array(
+      UBE_PLAYER_IS_ATTACKER => new UBEASA(),
+      UBE_PLAYER_IS_DEFENDER => new UBEASA(),
+    );
+  }
+
+  /**
+   * @param UBEPlayerList $players
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
   public function load_from_players(UBEPlayerList $players) {
     foreach($this->_container as $fleet_id => $objFleet) {
       // TODO - эта последовательность должна быть при загрузке флота (?)
@@ -15,7 +46,7 @@ class UBEFleetList extends ArrayAccessV2 {
       $objFleet->copy_stats_from_player($players[$objFleet->owner_id]);
 
       // Вычисляем бонус игрока и добавляем его к бонусам флота
-      $objFleet->bonuses_add_float($players[$objFleet->owner_id]->player_bonus_get_all());
+      $objFleet->bonuses_add_player($players[$objFleet->owner_id]->player_bonus_get_all());
       // TODO
 //      $objFleet->add_planet_bonuses();
 //      $objFleet->add_fleet_bonuses();
@@ -76,6 +107,8 @@ class UBEFleetList extends ArrayAccessV2 {
    * @param bool      $is_simulator
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   public function ube_analyze_fleets(UBERound $lastRound, $is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя
@@ -83,8 +116,8 @@ class UBEFleetList extends ArrayAccessV2 {
       // Инициализируем массив результатов для флота
 //      $this->init_fleet_outcome_and_link_to_side($UBEFleet);
 
-      foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
-        $UBEFleetUnit->ube_analyze_unit($lastRound->fleet_combat_data[$fleet_id], $is_simulator);
+      foreach($UBEFleet->unit_list->_container as $unit_id => $UBEUnit) {
+        $UBEUnit->ube_analyze_unit($is_simulator);
       }
 
       // Вычисляем ёмкость трюмов оставшихся кораблей
@@ -149,6 +182,78 @@ class UBEFleetList extends ArrayAccessV2 {
       $this[$objFleet->fleet_id] = $objFleet;
     }
 
+  }
+
+  /**
+   * @param bool $is_simulator
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function prepare_for_next_round($is_simulator) {
+    foreach($this->_container as $fleet_id => $UBEFleet) {
+      $UBEFleet->prepare_for_next_round($is_simulator);
+    }
+
+    // Суммируем данные по атакующим и защитникам
+    foreach($this->_container as $fleet_id => $UBEFleet) {
+      $this->UBE_TOTAL[$UBEFleet->is_attacker]->add_unit_stats_array($UBEFleet->total_stats);
+    }
+
+    // Высчитываем долю атаки, приходящейся на юнит равную отношению брони юнита к общей броне - крупные цели атакуют чаще
+    foreach($this->_container as $fleet_id => $UBEFleet) {
+      $UBEFleet->calculate_unit_partial_data($this->UBE_TOTAL[$UBEFleet->is_attacker]);
+    }
+  }
+
+  /**
+   * Рассчитывает результат столкновения флотов ака раунд
+   *
+   * @param UBE $ube
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function calculate_attack_results(UBE $ube) {
+    if(BE_DEBUG === true) {
+      // sn_ube_combat_helper_round_header($round);
+    }
+
+    // Каждый флот атакует все
+    foreach($this->_container as $attack_fleet_data) {
+      $attack_fleet_data->attack_fleets($this, $ube->is_simulator);
+    }
+
+    if(BE_DEBUG === true) {
+      // sn_ube_combat_helper_round_footer();
+    }
+  }
+
+  /**
+   *
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function actualize_sides() {
+    foreach($this->_container as $UBEFleet) {
+      if($UBEFleet->get_unit_count() > 0) {
+        $this->side_present_at_round_start[$UBEFleet->is_attacker] = 1;
+      }
+    }
+  }
+
+  /**
+   * @return int
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function calculate_attack_reapers() {
+    $reapers = 0;
+    foreach($this->_container as $fleet_id => $UBERoundFleetCombat) {
+      if($UBERoundFleetCombat->is_attacker == UBE_PLAYER_IS_ATTACKER) {
+        $reapers += $UBERoundFleetCombat->unit_list->get_reapers();
+      }
+    }
+
+    return $reapers;
   }
 
 }

@@ -368,8 +368,6 @@ OK7 Текущий     #ctv
 OK8 Следующий
 
 
-// TODO - СЕЙЧАС
-
 
     // TODO - вынести на уровень FleetList
     $debris->debris_add_wrecks($this->resources_lost_on_ships, $is_simulator);
@@ -377,6 +375,28 @@ OK8 Следующий
 
 
 
+pvar_dump($this->fleet_list);
+die(__FILE__ . ':' . __LINE__);
+
+
+flying_fleet_handler @ 115
+// TODO UNCOMMENT!
+    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(240, 300)) {
+//    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(2, 3)) {
+
+Повставлять @version
+
+$this->fleet_list[0]->resources_looted
+    Расшить раздельно на resources_lost_to_looting И resources_looted_from_planet
+
+$round - должен быть свойством, а не передаваться через параметры методов
+
+
+// TODO - СЕЙЧАС
+    Мерджим UBEFleetListCombat и $fleet_list
+        - $ube->rounds->sql_generate_unit_array($ube_report_id, $sql_perform['ube_report_unit']);
+            - и далее по тексту
+        А потом загрузка из репорта
 
 
 #ctv

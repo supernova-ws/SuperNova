@@ -62,6 +62,8 @@ class UBEMoonCalculator {
   /**
    * @param UBEDebris $debris
    * @param bool      $is_simulator
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   protected function moon_create_try(UBEDebris $debris, $is_simulator = false) {
     $this->status = UBE_MOON_NONE;
@@ -95,6 +97,8 @@ class UBEMoonCalculator {
 
   /**
    * @param int $reapers
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   protected function moon_destroy_try($reapers) {
     // TODO: $is_simulator
@@ -110,11 +114,15 @@ class UBEMoonCalculator {
     $this->reapers_status = $random <= $this->reaper_die_chance ? UBE_MOON_REAPERS_DIED : UBE_MOON_REAPERS_RETURNED;
   }
 
+  /**
+   * @param UBE $ube
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
   public function calculate_moon(UBE $ube) {
     if(UBE_MOON_EXISTS == $this->status) {
       if($ube->mission_type_id == MT_DESTROY && $ube->combat_result == UBE_COMBAT_RESULT_WIN) {
-        $objRound = $ube->rounds->get_last_element();
-        $reapers = $objRound->fleet_combat_data->calculate_attack_reapers();
+        $reapers = $ube->fleet_list->calculate_attack_reapers();
         $this->moon_destroy_try($reapers);
       }
     } else {
@@ -201,10 +209,15 @@ class UBEMoonCalculator {
     return $this->reapers_status;
   }
 
+  /**
+   * @param $destination_planet
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
   public function load_status($destination_planet) {
-    if($destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'))) {
+    if($destination_planet['planet_type'] == PT_MOON || is_array($moon = db_planet_by_parent($destination_planet['id'], true, '`id`'))) {
       $this->status = UBE_MOON_EXISTS;
-      $this->moon_diameter = $destination_planet['diameter'];
+      $this->moon_diameter = !empty($moon['planet_type']) && $moon['planet_type'] == PT_MOON ? $moon['diameter'] : $destination_planet['diameter'];
       $this->reapers_status = UBE_MOON_REAPERS_NONE;
     } else {
       // По умолчанию: нет луны итд

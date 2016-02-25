@@ -135,16 +135,16 @@ class UBE {
     } else {
       $this->ube_attack_prepare_fleet($objFleet->make_db_row(), true);
     }
-
   }
 
   /**
    * Заполняет данные по планете
    *
-   * @param $combat_data
-   * @param $planet
+   * @param array $planet
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
-  function ube_attack_prepare_planet(&$planet) {
+  function ube_attack_prepare_planet(array &$planet) {
     global $ube_combat_bonus_list;
 
     $player_id = $planet['id_owner'];
@@ -157,7 +157,7 @@ class UBE {
 
     foreach(sn_get_groups('combat') as $unit_id) {
       if($unit_count = mrc_get_level($player_db_row, $planet, $unit_id)) {
-        $this->fleet_list[0]->unit_list[$unit_id]->count = $unit_count;
+        $this->fleet_list[0]->unit_list->insert_unit($unit_id, $unit_count);
       }
     }
 
@@ -218,40 +218,10 @@ class UBE {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   /**
    * Общий алгоритм расчета боя
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -259,19 +229,32 @@ class UBE {
     $start = microtime(true);
 
     $this->fleet_list->load_from_players($this->players);
+    $this->fleet_list->prepare_for_next_round($this->is_simulator);
 
     // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
-    $this->rounds->prepare_zero_round($this->fleet_list, $this->is_simulator);
+    $this->rounds[0] = new UBERound();
+    $this->rounds[0]->make_snapshot($this->fleet_list);
+//    $this->rounds[0]->fleet_combat_data->init_from_UBEFleetList($this->fleet_list);
+
+
+//    $this->rounds[0]->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
+
+
+//pvar_dump($this->fleet_list);
+//die(__FILE__ . ':' . __LINE__);
+
 
     $this->rounds[1] = clone $this->rounds[0];
     $this->rounds[1]->round_number = 1;
 
     for($round = 1; $round <= 10; $round++) {
       // Проводим раунд
-      $this->rounds[$round]->fleet_combat_data->calculate_attack_results($this); // OK3
+//      $this->rounds[$round]->fleet_combat_data->calculate_attack_results($this);
+      $this->fleet_list->calculate_attack_results($this);
+      $this->rounds[$round]->make_snapshot($this->fleet_list);
 
       // Анализируем итоги текущего раунда и готовим данные для следующего
-      $nextRound = $this->rounds[$round]->sn_ube_combat_round_analyze($round);
+      $nextRound = $this->rounds[$round]->sn_ube_combat_round_analyze($round, $this->fleet_list);
 
       if($this->rounds[$round]->round_outcome != UBE_COMBAT_RESULT_DRAW) {
         break;
@@ -280,7 +263,8 @@ class UBE {
       $this->rounds[$round + 1] = $nextRound;
 
       // Готовим данные для раунда
-      $nextRound->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
+      // $nextRound->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
+      $this->fleet_list->prepare_for_next_round($this->is_simulator);
     }
     $this->time_spent = microtime(true) - $start;
 
@@ -310,40 +294,29 @@ class UBE {
 
 
 
-  /**
-   * Анализирует результаты раунда и генерирует данные для следующего раунда
-   *
-   * @param $round
-   *
-   * @return int
-   */
-  function sn_ube_combat_round_analyze($round) {
-    $objRound = $this->rounds[$round];
-    $nextRound = $objRound->sn_ube_combat_round_analyze($round);
-
-    if($objRound->round_outcome == UBE_COMBAT_RESULT_DRAW) {
-      $this->rounds[$round + 1] = $nextRound;
-    }
-
-    return $objRound->round_outcome;
-  }
-
-
-
-
-
-
-
-
-
-
-
-
-
+//  /**
+//   * Анализирует результаты раунда и генерирует данные для следующего раунда
+//   *
+//   * @param $round
+//   *
+//   * @return int
+//   */
+//  function sn_ube_combat_round_analyze($round) {
+//    $objRound = $this->rounds[$round];
+//    $nextRound = $objRound->sn_ube_combat_round_analyze($round);
+//
+//    if($objRound->round_outcome == UBE_COMBAT_RESULT_DRAW) {
+//      $this->rounds[$round + 1] = $nextRound;
+//    }
+//
+//    return $objRound->round_outcome;
+//  }
 
 
   /**
    * Разбирает данные боя для генерации отчета
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   function sn_ube_combat_analyze() {
     // Переменные для быстрого доступа к подмассивам
@@ -370,35 +343,42 @@ class UBE {
 
   /**
    *
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   function sn_ube_combat_analyze_loot() {
-    $planet_resource_list = $this->fleet_list[0]->resources;
-
     $planet_looted_in_metal = 0;
-    $planet_resource_looted = array();
-    $planet_resource_total = is_array($planet_resource_list) ? array_sum($planet_resource_list) : 0;
-    if($planet_resource_total && ($total_capacity = $this->fleet_list->get_capacity_attackers())) {
+    $planet_resource_looted = array(
+      RES_METAL     => 0,
+      RES_CRYSTAL   => 0,
+      RES_DEUTERIUM => 0,
+    );
+
+    if(
+      (($planet_resource_total = $this->fleet_list[0]->get_resources_total()) > 0)
+      &&
+      (($total_capacity = $this->fleet_list->get_capacity_attackers()) > 0)
+    ) {
       // Можно вывести только половину ресурсов, но не больше, чем общая вместимость флотов атакующих
       $planet_lootable = min($planet_resource_total / 2, $total_capacity);
+
       // Вычисляем процент вывоза. Каждого ресурса будет вывезено в одинаковых пропорциях
       $planet_lootable_percent = $planet_lootable / $planet_resource_total;
-
-      // Вычисляем какой процент общей емкости трюмов атакующих будет задействован
-      $total_lootable = min($planet_lootable, $total_capacity);
 
       // Вычисляем сколько ресурсов вывезено
       foreach($this->fleet_list->_container as $fleet_id => $fleet) {
         $looted_in_metal = 0;
-        $fleet_loot_data = array();
-        foreach($planet_resource_list as $resource_id => $resource_amount) {
+        foreach($this->fleet_list[0]->resources as $resource_id => $resource_amount) {
+          // Вычисляем какой процент общей емкости трюмов атакующих будет задействован
           $fleet_lootable_percent = $fleet->fleet_capacity / $total_capacity;
-          $looted = round($resource_amount * $planet_lootable_percent * $fleet_lootable_percent);
-          $fleet_loot_data[$resource_id] = -$looted;
+          $looted = floor($resource_amount * $planet_lootable_percent * $fleet_lootable_percent);
+
+          $fleet->resources_looted[$resource_id] = -$looted;
           $planet_resource_looted[$resource_id] += $looted;
           $looted_in_metal -= $looted * $this->resource_exchange_rates[$resource_id];
         }
-        $fleet->resources_looted = $fleet_loot_data;
         $fleet->resources_lost_in_metal[RES_METAL] += $looted_in_metal;
+
         $planet_looted_in_metal += $looted_in_metal;
       }
     }
@@ -448,7 +428,6 @@ class UBE {
    *
    * @return mixed
    */
-  // OK0
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
 
@@ -831,7 +810,7 @@ function ube_attack_prepare_fleet_from_object(UBE $ube, &$fleet, $is_attacker) {
  *
  * @return mixed
  */
-function flt_planet_capture_from_object(array &$fleet_row, UBE $ube) {return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
+function flt_planet_capture_from_object(array &$fleet_row, UBE $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
 
 ///**
 // * @param array $fleet_row

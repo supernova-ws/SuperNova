@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class UBEASA
+ */
 class UBEASA {
   public $attack = 0;
   public $shield = 0;

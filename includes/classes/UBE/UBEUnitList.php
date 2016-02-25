@@ -48,7 +48,33 @@ class UBEUnitList extends ArrayAccessV2 {
   }
 
 
-  public function analyze_fleet_units() {
-
+  /**
+   * @param bool     $is_simulator
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function prepare_for_next_round($is_simulator) {
+    foreach($this->_container as $unit_id => $UBEUnit) {
+      $UBEUnit->prepare_for_next_round($is_simulator);
+    }
   }
+
+  /**
+   * @return int
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function get_reapers() {
+    $reapers = 0;
+
+    foreach($this->_container as $unit_id => $UBEUnit) {
+      // TODO: Работа по группам - группа "Уничтожители лун"
+      if($UBEUnit->unit_id == SHIP_HUGE_DEATH_STAR) {
+        $reapers += $UBEUnit->count;
+      }
+    }
+
+    return $reapers;
+  }
+
 }

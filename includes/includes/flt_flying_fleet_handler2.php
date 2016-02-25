@@ -109,12 +109,13 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     return;
   }
 
+
   // Watchdog timer
   if($config->db_loadItem('fleet_update_lock')) {
 
 // TODO UNCOMMENT!
-    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(240, 300)) {
-//    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(2, 3)) {
+//    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(240, 300)) {
+    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(2, 3)) {
       sn_db_transaction_rollback();
 
       return;

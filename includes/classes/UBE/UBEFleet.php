@@ -58,11 +58,24 @@ class UBEFleet {
     RES_DEUTERIUM => 0,
   );
 
+  /**
+   * [UBE_ATTACK/UBE_ARMOR/UBE_SHIELD]
+   *
+   * @var array[]
+   */
+  public $total_stats = array();
+
+  /**
+   * Доля флота в общем вкладе в броню стороны (Аттакера/Дефендера)
+   *
+   * @var float
+   */
+  public $fleet_share_of_side_armor = 0.0;
+
 
   /**
    * UBEFleet constructor.
    */
-  // OK5
   public function __construct() {
     $this->unit_list = new UBEUnitList();
     $this->resources_lost_in_metal = array(
@@ -76,17 +89,19 @@ class UBEFleet {
 
   /**
    * @param UBEPlayer $player
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
-  // OK3
   public function copy_stats_from_player(UBEPlayer $player) {
     $this->is_attacker = $player->player_side_get();
   }
 
   /**
    * @param array $player_bonuses
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
-  // OK5
-  public function bonuses_add_float(array $player_bonuses) {
+  public function bonuses_add_player(array $player_bonuses) {
     // Вычисляем бонус игрока и добавляем его к бонусам флота
     $this->UBE_BONUSES[UBE_ATTACK] += $player_bonuses[UBE_ATTACK];
     $this->UBE_BONUSES[UBE_SHIELD] += $player_bonuses[UBE_SHIELD];
@@ -96,8 +111,9 @@ class UBEFleet {
 
   /**
    *
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
-  // OK5
   public function calculate_battle_stats() {
     $this->unit_list->fill_unit_info($this->UBE_BONUSES);
   }
@@ -320,7 +336,6 @@ class UBEFleet {
    *
    * @return array
    */
-  // OK0
   function ube_combat_result_calculate_resources() {
     $resource_delta_fleet = array();
     // Если во флоте остались юниты или это планета - генерируем изменение ресурсов
@@ -335,7 +350,11 @@ class UBEFleet {
   }
 
   /**
+   * // Вычисляем ёмкость трюмов оставшихся кораблей
+   * // Вычисляем потери в ресурсах
    *
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
    */
   public function calc_fleet_stats() {
     $this->resources_lost_on_units = array(
@@ -395,7 +414,6 @@ class UBEFleet {
     }
 
     $this->fleet_capacity -= $fleet_total_resources;
-
   }
 
 
@@ -435,6 +453,129 @@ class UBEFleet {
     }
 
     unset($objFleet2);
+  }
+
+
+  /**
+   * @param string $stat_name UBE_ATTACK/UBE_SHIELD/UBE_ARMOR...etc
+   *
+   * @return int
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function get_fleet_total_stat($stat_name) {
+    $result = 0;
+
+    foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
+      switch($stat_name) {
+        case UBE_ATTACK:
+          $result += $UBERoundCombatUnit->pool_attack;
+        break;
+
+        case UBE_SHIELD:
+          $result += $UBERoundCombatUnit->pool_shield;
+        break;
+
+        case UBE_ARMOR:
+          $result += $UBERoundCombatUnit->pool_armor;
+        break;
+      }
+    }
+
+    return $result;
+  }
+
+
+  /**
+   * @param bool $is_simulator
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function prepare_for_next_round($is_simulator) {
+    $this->unit_list->prepare_for_next_round($is_simulator);
+
+    $this->total_stats[UBE_ATTACK] = $this->get_fleet_total_stat(UBE_ATTACK);
+    $this->total_stats[UBE_SHIELD] = $this->get_fleet_total_stat(UBE_SHIELD);
+    $this->total_stats[UBE_ARMOR] = $this->get_fleet_total_stat(UBE_ARMOR);
+  }
+
+  /**
+   * @param UBEASA $side_ASA
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function calculate_unit_partial_data(UBEASA $side_ASA) {
+    $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $side_ASA->armor;
+
+    foreach($this->unit_list->_container as $UBEUnit) {
+      $UBEUnit->share_of_side_armor = $UBEUnit->pool_armor / $side_ASA->armor;
+    }
+  }
+
+  /**
+   * @param UBEFleetList $fleet_list
+   * @param              $is_simulator
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function attack_fleets(UBEFleetList $fleet_list, $is_simulator) {
+    foreach($fleet_list->_container as $defending_fleet) {
+      // Не атакуются флоты на своей стороне
+      if($this->is_attacker == $defending_fleet->is_attacker) {
+        continue;
+      }
+      $this->attack_fleet($defending_fleet, $is_simulator);
+    }
+  }
+
+  /**
+   * @param UBEFleet $defending_fleet
+   * @param          $is_simulator
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
+    foreach($this->unit_list->_container as $attack_unit_id => $attacking_unit_pool) {
+      // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
+      foreach($defending_fleet->unit_list->_container as $defend_unit_id => $defending_unit_pool) {
+        if($defending_unit_pool->count <= 0) {
+          continue;
+        }
+
+        // Вычисляем прямой дамадж от атакующего юнита с учетом размера атакуемого
+        $direct_attack = $attacking_unit_pool->pool_attack * $defending_unit_pool->share_of_side_armor;
+        $attacker_amplify = !empty($attacking_unit_pool->amplify[$defend_unit_id])
+          ? $attacking_unit_pool->amplify[$defend_unit_id]
+          : 1;
+        // Применяем амплифай, если есть
+        $defending_unit_pool->attack_income = floor($direct_attack * $attacker_amplify);
+
+        $defending_unit_pool->receive_damage($is_simulator);
+      }
+    }
+  }
+
+  /**
+   * @return int
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function get_unit_count() {
+    $result = 0;
+    foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
+      $result += $UBERoundCombatUnit->count;
+    }
+
+    return $result;
+  }
+
+  /**
+   * @return int|number
+   *
+   * @version 2016-02-25 23:42:45 41a4.68
+   */
+  public function get_resources_total() {
+    return empty($this->resources) || !is_array($this->resources) ? 0 : array_sum($this->resources);
   }
 
 }
