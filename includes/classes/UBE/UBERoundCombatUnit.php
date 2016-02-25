@@ -26,6 +26,7 @@ class UBERoundCombatUnit {
   public $share_of_side_armor = 0;
 
   public $attack_income = 0;
+  public $unit_destroyed_by_income = 0;
 
   /**
    * @param UBEFleetUnit $UBEFleetUnit
@@ -56,8 +57,8 @@ class UBERoundCombatUnit {
     // TODO:  Добавить процент регенерации щитов
 
     // Для не-симулятора - рандомизируем каждый раунд значения атаки и щитов
-    $this->attack_base = floor($UBEFleetUnit->attack * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
-    $this->shield_base = floor($UBEFleetUnit->shield * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
+    $this->attack_base = floor($UBEFleetUnit->attack * ($is_simulator ? 1 : mt_rand(UBE_RANDOMIZE_FROM, UBE_RANDOMIZE_TO) / 100));
+    $this->shield_base = floor($UBEFleetUnit->shield * ($is_simulator ? 1 : mt_rand(UBE_RANDOMIZE_FROM, UBE_RANDOMIZE_TO) / 100));
     $this->armor_base = floor($UBEFleetUnit->armor);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
 
     $this->attack = $this->attack_base * $this->count;
@@ -88,86 +89,109 @@ class UBERoundCombatUnit {
    */
   // OK6
   public function receive_damage($is_simulator) {
+    // TODO - Добавить взрывы от полуповрежденных юнитов - т.е. заранее вычислить из убитых юнитов еще количество убитых умножить на вероятность от структуры
     if($this->count <= 0) {
       return;
     }
 
     $start_count = $this->count;
 
-    // Проверяем - не взорвался ли текущий юнит
-    $this->attack_damaged_unit($is_simulator);
+//    // Проверяем - не взорвался ли текущий юнит
+//    $this->attack_damaged_unit($is_simulator);
 
-    $defend_unit_base_defence = $this->shield_base + $this->armor_base;
+    // Общая защита одного юнита
+    $pool_base_defence = $this->shield_base + $this->armor_base;
 
-    // todo Добавить взрывы от полуповрежденных юнитов - т.е. заранее вычислить из убитых юнитов еще количество убитых умножить на вероятность от структуры
+    // Вычисляем, сколько юнитов взорвалось полностью, но не больше, чем их осталось во флоте
+    $units_lost = min(floor($this->attack_income / $pool_base_defence), $this->count); // $units_lost_full всегда не больше $this->count
 
-    // Вычисляем, сколько юнитов взорвалось полностью
-    $units_lost_full = floor($this->attack_income / $defend_unit_base_defence);
     // Уменьшаем дамадж на ту же сумму
-    $this->attack_income -= $units_lost_full * $defend_unit_base_defence;
-    // Вычисляем, сколько юнитов осталось
-    $this->count = max(0, $this->count - $units_lost_full);
-    // Уменьшаем броню подразделения на броню потерянных юнитов
-    $this->armor -= $units_lost_full * $this->armor_base;
-    $this->shield -= $units_lost_full * $this->shield_base;
+    $this->attack_income -= $units_lost * $pool_base_defence;
+
+    // Уменьшаем общие щиты на щиты уничтоженных юнитов, но не больше, чем есть
+    $this->shield -= min($units_lost * $this->shield_base, $this->shield);
+    // Уменьшаем общую броню на броню уничтоженных юнитов, но не больше, чем есть
+    $this->armor -= min($units_lost * $this->armor_base, $this->armor);
+    // Вычитаем уничтоженные юниты из общего количества юнитов
+    $this->count -= $units_lost;
 
     // Проверяем - не взорвался ли текущий юнит
-    $this->attack_damaged_unit($is_simulator);
+    while($this->count > 0 && $this->attack_income > 0) {
+      $this->attack_damaged_unit($is_simulator);
+    }
 
     $this->unit_destroyed += $start_count - $this->count;
   }
 
   /**
    * @param bool $is_simulator
-   *
-   * @return bool
    */
   // OK6
   function attack_damaged_unit($is_simulator) {
-    $unit_is_lost = false;
+//    // Нет юнитов или не осталось атак - ничего не делаем
+//    // Не нужно???????
+//    if($this->count <= 0 || $this->attack_income <= 0) {
+//      return;
+//    }
 
-    $boom_limit = 75; // Взрываемся на 75% прочности
-    if($this->count > 0 && $this->attack_income) {
-
-      $damage_to_shield = min($this->attack_income, $this->shield_rest);
-      $this->attack_income -= $damage_to_shield;
-      $this->shield_rest -= $damage_to_shield;
-
-      $damage_to_armor = min($this->attack_income, $this->armor_rest);
-      $this->attack_income -= $damage_to_armor;
-      $this->armor_rest -= $damage_to_armor;
-
-      // Если брони не осталось - юнит потерян
-      if($this->armor_rest <= 0) {
-        $unit_is_lost = true;
-      } elseif($this->shield_rest <= 0) {
-        // Если броня осталось, но не осталось щитов - прошел дамадж по броне и надо проверить - не взорвался ли корабль
-        $last_unit_hp = $this->armor_rest;
-        $last_unit_percent = $last_unit_hp / $this->armor_base * 100;
-
-        $random = $is_simulator ? $boom_limit / 2 : mt_rand(0, 100);
-        if($last_unit_percent <= $boom_limit && $last_unit_percent <= $random) {
-          $unit_is_lost = true;
-          $damage_to_armor += $this->armor_rest;
-          $this->unit_count_boom++;
-          $this->armor_rest = 0;
-        }
-      }
-
-      $this->armor -= $damage_to_armor;
-      $this->shield -= $damage_to_shield;
-
-      if($unit_is_lost) {
-        $this->count--;
-        if($this->count) {
-          $this->armor_rest = $this->armor_base;
-          $this->shield_rest = $this->shield_base;
-        }
-      }
+    // Вычисляем остаток щитов на текущем корабле
+    $shield_left = $this->shield % $this->shield_base;
+    // Вычисляем остаток брони
+    $armor_left = $this->armor % $this->armor_base;
+    // Проверка - не атакуем ли мы целый корабль
+    // Такое может быть, если на прошлой итерации поврежденный корабль был взорван и еще осталась входящяя атака
+    if($shield_left == 0 && $armor_left == 0) {
+      $shield_left = $this->shield_base;
+      $armor_left = $this->armor_base;
     }
 
-    return $unit_is_lost;
+    // Сколько прошло дамаджа по щитам
+    $damage_to_shield = min($shield_left, $this->attack_income);
+
+    // Уменьшаем атаку на дамадж, поглощенный щитами
+    $this->attack_income -= $damage_to_shield;
+
+    // Вычитаем этот дамадж из щитов пула
+    $this->shield -= $damage_to_shield;
+    // Если весь дамадж был поглощён щитами - выходим
+    if($this->attack_income <= 0) {
+      return;
+    }
+
+
+    // Сколько прошло дамаджа по броне
+    $damage_to_armor = min($armor_left, $this->attack_income);
+
+    // Уменьшаем атаку на дамадж, поглощенный бронёй
+    $this->attack_income -= $damage_to_armor;
+
+    // Вычитаем этот дамадж из брони пула
+    $this->armor -= $damage_to_armor;
+    // Вычитаем дамадж из брони текущего корабля
+    $armor_left -= $damage_to_armor;
+
+    // Проверяем - осталась ли броня на текущем корабле и вааще
+    if($this->armor <= 0 || $armor_left <= 0) {
+      // Не осталось - корабль уничтожен
+      $this->count--;
+      return;
+    }
+
+    // Броня осталась. Проверяем - не взорвался ли корабль
+    $armor_left_percent = $armor_left / $this->armor_base * 100;
+    // Проверяем % здоровья
+    // TODO - сделать динамический процент для каждого вида юнитов
+    if($armor_left_percent <= UBE_CRITICAL_DAMAGE_THRESHOLD) {
+      // Дамадж пошёл по структуре. Чем более поврежден юнит - тем больше шансов у него взорваться
+      $random = $is_simulator ? UBE_CRITICAL_DAMAGE_THRESHOLD / 2 : mt_rand(0, 100);
+      if(mt_rand(0, 100) >= $armor_left_percent) {
+        $this->count--;
+        $this->unit_count_boom++;
+        return;
+      }
+    }
   }
+
 
   /**
    * @param UBERoundCombatUnit $prev_unit_state
@@ -212,5 +236,62 @@ class UBERoundCombatUnit {
       $this->armor_base,
     );
   }
+
+
+
+
+
+
+//  /**
+//   * @param bool $is_simulator
+//   *
+//   * @return bool
+//   */
+//  // OK6
+//  function attack_damaged_unit_old($is_simulator) {
+//    $unit_is_lost = false;
+//
+//    $boom_limit = UBE_CRITICAL_DAMAGE_TRESHOLD; // Взрываемся на 75% прочности
+//    if($this->count > 0 && $this->attack_income) {
+//
+//      $damage_to_shield = min($this->attack_income, $this->shield_rest);
+//      $this->attack_income -= $damage_to_shield;
+//      $this->shield_rest -= $damage_to_shield;
+//
+//      $damage_to_armor = min($this->attack_income, $this->armor_rest);
+//      $this->attack_income -= $damage_to_armor;
+//      $this->armor_rest -= $damage_to_armor;
+//
+//      // Если брони не осталось - юнит потерян
+//      if($this->armor_rest <= 0) {
+//        $unit_is_lost = true;
+//      } elseif($this->shield_rest <= 0) {
+//        // Если броня осталось, но не осталось щитов - прошел дамадж по броне и надо проверить - не взорвался ли корабль
+//        $last_unit_hp = $this->armor_rest;
+//        $last_unit_percent = $last_unit_hp / $this->armor_base * 100;
+//
+//        $random = $is_simulator ? $boom_limit / 2 : mt_rand(0, 100);
+//        if($last_unit_percent <= $boom_limit && $last_unit_percent <= $random) {
+//          $unit_is_lost = true;
+//          $damage_to_armor += $this->armor_rest;
+//          $this->unit_count_boom++;
+//          $this->armor_rest = 0;
+//        }
+//      }
+//
+//      $this->armor -= $damage_to_armor;
+//      $this->shield -= $damage_to_shield;
+//
+//      if($unit_is_lost) {
+//        $this->count--;
+//        if($this->count) {
+//          $this->armor_rest = $this->armor_base;
+//          $this->shield_rest = $this->shield_base;
+//        }
+//      }
+//    }
+//
+//    return $unit_is_lost;
+//  }
 
 }

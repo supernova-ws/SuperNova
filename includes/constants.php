@@ -4,13 +4,12 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.62');
+define('SN_VERSION', '41a4.63');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
 
 define('UBE_DEFENDER_ACTIVE_TIMEOUT', 60 * 60 * 24 * 7);
-define('UBE_SHIP_BOOM_COEFFICIENT', 0.2);
 define('UBE_RANDOMIZE_FROM', 80); // 80
 define('UBE_RANDOMIZE_TO', 120); // 120
 
@@ -23,6 +22,8 @@ define('UBE_DEFENCE_RESTORATION_CHANCE_MAX', UBE_DEFENCE_RESTORATION_CHANCE_AVG 
 define('UBE_CARGO_DROPPED_TO_DEBRIS_MIN', 30);
 define('UBE_CARGO_DROPPED_TO_DEBRIS_MAX', 70);
 define('UBE_CARGO_DROPPED_TO_DEBRIS_AVG', round((UBE_CARGO_DROPPED_TO_DEBRIS_MIN + UBE_CARGO_DROPPED_TO_DEBRIS_MAX) / 2));
+
+define('UBE_CRITICAL_DAMAGE_THRESHOLD', 75); // % of unit armor after which unit can die from any attack (aka "make boom")
 
 // UBE percent of ship wrecks converted to debris
 define('UBE_SHIP_WRECKS_TO_DEBRIS_MIN', 20);
