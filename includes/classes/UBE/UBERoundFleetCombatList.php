@@ -104,7 +104,7 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
     $reapers = 0;
     foreach($this->_container as $fleet_id => $UBERoundFleetCombat) {
       if($UBERoundFleetCombat->is_attacker == UBE_PLAYER_IS_ATTACKER) {
-        $reapers += $UBERoundFleetCombat->unit_combat->get_reapers();
+        $reapers += $UBERoundFleetCombat->unit_list->get_reapers();
       }
     }
 
@@ -178,7 +178,7 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
       }
 
       $template_fleet['.']['ship'] = $UBERoundFleetCombat->report_render_ship_list(
-        $previousRound->fleet_combat_data[$fleet_id]->unit_combat
+        $previousRound->fleet_combat_data[$fleet_id]->unit_list
       );
 
       $fleet_list_template[$UBERoundFleetCombat->is_attacker][] = $template_fleet;

@@ -5,13 +5,13 @@
  */
 class UBERoundFleetCombat {
   public $fleet_id = 0;
-  public $is_attacker = UBE_PLAYER_IS_ATTACKER;
   public $owner_id = 0;
+  public $is_attacker = UBE_PLAYER_IS_ATTACKER;
 
   /**
    * @var UBERoundCombatUnitList
    */
-  public $unit_combat = null;
+  public $unit_list = null;
 
   /**
    * [UBE_ATTACK/UBE_ARMOR/UBE_SHIELD]
@@ -28,11 +28,11 @@ class UBERoundFleetCombat {
   public $fleet_share_of_side_armor = 0.0;
 
   public function __construct() {
-    $this->unit_combat = new UBERoundCombatUnitList();
+    $this->unit_list = new UBERoundCombatUnitList();
   }
 
   public function __clone() {
-    $this->unit_combat = clone $this->unit_combat;
+    $this->unit_list = clone $this->unit_list;
   }
 
   /**
@@ -42,9 +42,9 @@ class UBERoundFleetCombat {
   public function init_from_UBEFleet(UBEFleet $UBEFleet) {
     $this->fleet_id = $UBEFleet->fleet_id;
     $this->is_attacker = $UBEFleet->is_attacker;
-    $this->owner_id = $UBEFleet->UBE_OWNER;
+    $this->owner_id = $UBEFleet->owner_id;
 
-    $this->unit_combat->init_from_UBEFleet($UBEFleet);
+    $this->unit_list->init_from_UBEFleet($UBEFleet);
   }
 
   /**
@@ -56,13 +56,13 @@ class UBERoundFleetCombat {
     $this->is_attacker = $source->is_attacker;
     $this->owner_id = $source->owner_id;
 
-    $this->unit_combat->init_from_UBERoundFleetCombat($source);
+    $this->unit_list->init_from_UBERoundFleetCombat($source);
   }
 
 
   public function get_unit_count() {
     $result = 0;
-    foreach($this->unit_combat->_container as $unit_id => $UBERoundCombatUnit) {
+    foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
       $result += $UBERoundCombatUnit->count;
     }
 
@@ -76,7 +76,7 @@ class UBERoundFleetCombat {
    */
   // OK3
   public function load_unit_info_from_UBEFleet(UBEFleet $fleet_info, $is_simulator) {
-    $this->unit_combat->load_unit_info_from_UBEFleet($fleet_info, $is_simulator);
+    $this->unit_list->load_unit_info_from_UBEFleet($fleet_info, $is_simulator);
 
     $this->total_stats[UBE_ATTACK] = $this->get_fleet_total_stat(UBE_ATTACK);
     $this->total_stats[UBE_SHIELD] = $this->get_fleet_total_stat(UBE_SHIELD);
@@ -90,8 +90,8 @@ class UBERoundFleetCombat {
   public function calculate_unit_partial_data(UBEASA $side_ASA) {
     $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $side_ASA->armor;
 
-    foreach($this->unit_combat->_container as $UBERoundCombatUnit) {
-      $UBERoundCombatUnit->share_of_side_armor = $UBERoundCombatUnit->armor / $side_ASA->armor;
+    foreach($this->unit_list->_container as $UBERoundCombatUnit) {
+      $UBERoundCombatUnit->share_of_side_armor = $UBERoundCombatUnit->pool_armor / $side_ASA->armor;
     }
   }
 
@@ -105,18 +105,18 @@ class UBERoundFleetCombat {
   public function get_fleet_total_stat($stat_name) {
     $result = 0;
 
-    foreach($this->unit_combat->_container as $unit_id => $UBERoundCombatUnit) {
+    foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
       switch($stat_name) {
         case UBE_ATTACK:
-          $result += $UBERoundCombatUnit->attack;
+          $result += $UBERoundCombatUnit->pool_attack;
         break;
 
         case UBE_SHIELD:
-          $result += $UBERoundCombatUnit->shield;
+          $result += $UBERoundCombatUnit->pool_shield;
         break;
 
         case UBE_ARMOR:
-          $result += $UBERoundCombatUnit->armor;
+          $result += $UBERoundCombatUnit->pool_armor;
         break;
       }
     }
@@ -148,7 +148,7 @@ class UBERoundFleetCombat {
       $round_number,
     );
 
-    $this->unit_combat->sql_generate_unit_array($sql_perform_ube_report_unit, $unit_sort_order, $prefix);
+    $this->unit_list->sql_generate_unit_array($sql_perform_ube_report_unit, $unit_sort_order, $prefix);
   }
 
 
@@ -163,7 +163,7 @@ class UBERoundFleetCombat {
   public function report_render_ship_list(UBERoundCombatUnitList $prev_unit_combat) {
     $template_ships = array();
 
-    foreach($this->unit_combat->_container as $unit_id => $UBERoundCombatUnit) {
+    foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
       $template_ships[] = $UBERoundCombatUnit->report_render_unit($prev_unit_combat[$unit_id]);
     }
 
@@ -188,8 +188,8 @@ class UBERoundFleetCombat {
   // OK3
   public function load_fleet_from_report_unit_row(array $report_unit_row) {
     $unit_id = $report_unit_row['ube_report_unit_unit_id'];
-    $this->unit_combat[$unit_id] = new UBERoundCombatUnit();
-    $this->unit_combat[$unit_id]->load_unit_from_report_unit_row($report_unit_row);
+    $this->unit_list[$unit_id] = new UBERoundCombatUnit();
+    $this->unit_list[$unit_id]->load_unit_from_report_unit_row($report_unit_row);
   }
 
   /**
@@ -213,13 +213,13 @@ class UBERoundFleetCombat {
    */
   // OK6
   public function attack_fleet(UBERoundFleetCombat $defend_fleet_data, UBE $ube) {
-    foreach($this->unit_combat->_container as $attack_unit_id => $attacking_unit_pool) {
+    foreach($this->unit_list->_container as $attack_unit_id => $attacking_unit_pool) {
       $attacker_amplify_array = &$ube->fleet_list[$this->fleet_id]->unit_list[$attack_unit_id]->amplify;
       // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
-      foreach($defend_fleet_data->unit_combat->_container as $defend_unit_id => $defending_unit_pool) {
+      foreach($defend_fleet_data->unit_list->_container as $defend_unit_id => $defending_unit_pool) {
         // Вычисляем прямой дамадж от атакующего юнита с учетом размера атакуемого
         // TODO - это можно высчитывать и в начале раунда!
-        $direct_attack = $attacking_unit_pool->attack * $defending_unit_pool->share_of_side_armor;
+        $direct_attack = $attacking_unit_pool->pool_attack * $defending_unit_pool->share_of_side_armor;
         // TODO - ...и это
         $attacker_amplify = !empty($attacker_amplify_array[$defend_unit_id])
           ? $attacker_amplify_array[$defend_unit_id]

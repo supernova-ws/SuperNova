@@ -4,14 +4,15 @@
  * Class UBEFleetUnit
  */
 class UBEFleetUnit {
-
   public $unit_id = 0;
-  public $type = 0;
 
   public $count = 0;
+
   public $attack = 0;
   public $shield = 0;
   public $armor = 0;
+
+  public $type = 0;
 
   public $capacity = 0;
   public $price = array();

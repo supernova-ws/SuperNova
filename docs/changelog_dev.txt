@@ -362,13 +362,17 @@ OK8 Следующий
 
 
 // TODO - СЕЙЧАС
-
     Убрать UBEFleetList
         public $fleet_attackers = array();
         public $fleet_defenders = array();
 
         public $capacity_attackers = array();
         public $capacity_defenders = array();
+
+    Расшить массив
+        $UBEFleet->outcome[UBE_UNITS_LOST]
+
+
 
 
 

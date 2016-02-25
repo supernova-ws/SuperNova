@@ -28,7 +28,7 @@ class UBERoundCombatUnitList extends ArrayAccessV2 {
    * @param UBERoundFleetCombat $source
    */
   public function init_from_UBERoundFleetCombat(UBERoundFleetCombat $source) {
-    foreach($source->unit_combat->_container as $unit_id => $UBERoundCombatUnit) {
+    foreach($source->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
       if(empty($UBERoundCombatUnit->count) || $UBERoundCombatUnit->count <= 0) {
         continue;
       }

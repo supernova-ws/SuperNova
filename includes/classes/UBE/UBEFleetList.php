@@ -20,10 +20,10 @@ class UBEFleetList extends ArrayAccessV2 {
     foreach($this->_container as $fleet_id => $objFleet) {
       // TODO - эта последовательность должна быть при загрузке флота (?)
 
-      $objFleet->copy_stats_from_player($players[$objFleet->UBE_OWNER]);
+      $objFleet->copy_stats_from_player($players[$objFleet->owner_id]);
 
       // Вычисляем бонус игрока и добавляем его к бонусам флота
-      $objFleet->bonuses_add_float($players[$objFleet->UBE_OWNER]->player_bonus_get_all());
+      $objFleet->bonuses_add_float($players[$objFleet->owner_id]->player_bonus_get_all());
       // TODO
 //      $objFleet->add_planet_bonuses();
 //      $objFleet->add_fleet_bonuses();
@@ -89,7 +89,7 @@ class UBEFleetList extends ArrayAccessV2 {
     }
 
     foreach($side_fleet as $fleet_id => $temp) {
-      $fleet_owner_id = $this[$fleet_id]->UBE_OWNER;
+      $fleet_owner_id = $this[$fleet_id]->owner_id;
 
       $template_result['.']['loss'][] = array(
         'ID'          => $fleet_id,
@@ -111,7 +111,7 @@ class UBEFleetList extends ArrayAccessV2 {
 
       foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
         // Вычисляем сколько юнитов осталось и сколько потеряно
-        $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_combat[$unit_id]->count;
+        $units_left = $lastRound->fleet_combat_data[$fleet_id]->unit_list[$unit_id]->count;
 
         // Восстановление обороны - 75% от уничтоженной
         if($UBEFleetUnit->type == UNIT_DEFENCE) {

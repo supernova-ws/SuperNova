@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.63');
+define('SN_VERSION', '41a4.64');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);

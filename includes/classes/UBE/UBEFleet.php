@@ -4,12 +4,16 @@
  * Class UBEFleet
  */
 class UBEFleet {
-
   public $fleet_id = 0;
-  public $UBE_OWNER = 0; // REPLACE WITH LINK TO OWNER!
-  public $UBE_FLEET_GROUP = 0;
-
+  public $owner_id = 0; // REPLACE WITH LINK TO OWNER!
   public $is_attacker = UBE_PLAYER_IS_DEFENDER;
+
+  /**
+   * @var UBEFleetUnitList
+   */
+  public $unit_list = null;
+
+  public $group_id = 0;
 
   public $UBE_PLANET = array();
 
@@ -20,10 +24,6 @@ class UBEFleet {
   public $UBE_CAPTAIN = array();
 
 
-  /**
-   * @var UBEFleetUnitList
-   */
-  public $unit_list = null;
 
   /**
    * @var array
@@ -81,7 +81,7 @@ class UBEFleet {
 
   public function load_from_report($fleet_row, UBE $ube) {
     $this->fleet_id = $fleet_row['ube_report_fleet_fleet_id'];
-    $this->UBE_OWNER = $fleet_row['ube_report_fleet_player_id'];
+    $this->owner_id = $fleet_row['ube_report_fleet_player_id'];
     $this->is_attacker = $ube->players[$fleet_row['ube_report_fleet_player_id']]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER;
 
 
@@ -110,7 +110,7 @@ class UBEFleet {
   public function sql_generate_array($ube_report_id) {
     return array(
       $ube_report_id,
-      $this->UBE_OWNER,
+      $this->owner_id,
       $this->fleet_id,
 
       (float)$this->UBE_PLANET[PLANET_ID],
@@ -132,8 +132,8 @@ class UBEFleet {
 
   public function read_from_row($fleet_row) {
     $this->fleet_id = $fleet_row['fleet_id'];
-    $this->UBE_OWNER = $fleet_row['fleet_owner'];
-    $this->UBE_FLEET_GROUP = $fleet_row['fleet_group'];
+    $this->owner_id = $fleet_row['fleet_owner'];
+    $this->group_id = $fleet_row['fleet_group'];
 
     $fleet_unit_list = Fleet::static_proxy_string_to_array($fleet_row);
     foreach($fleet_unit_list as $unit_id => $unit_count) {

@@ -4,21 +4,17 @@
  * Class UBERoundCombatUnit
  */
 class UBERoundCombatUnit {
-
   public $unit_id = 0;
+
+  public $count = 0;
 
   public $attack_base = 0;
   public $shield_base = 0;
   public $armor_base = 0;
 
-  public $count = 0;
-
-  public $attack = 0;
-  public $shield = 0;
-  public $armor = 0;
-
-  public $armor_rest = 0;
-  public $shield_rest = 0;
+  public $pool_attack = 0;
+  public $pool_shield = 0;
+  public $pool_armor = 0;
 
   public $unit_count_boom = 0;
   public $unit_destroyed = 0;
@@ -34,9 +30,7 @@ class UBERoundCombatUnit {
   public function init_from_UBEFleetUnit(UBEFleetUnit $UBEFleetUnit) {
     $this->unit_id = $UBEFleetUnit->unit_id;
     $this->count = $UBEFleetUnit->count;
-    $this->armor = $UBEFleetUnit->armor * $UBEFleetUnit->count;
-    $this->armor_rest = $UBEFleetUnit->armor;
-    $this->shield_rest = $UBEFleetUnit->shield;
+    $this->pool_armor = $UBEFleetUnit->armor * $UBEFleetUnit->count;
   }
 
   /**
@@ -45,8 +39,7 @@ class UBERoundCombatUnit {
   public function init_from_UBERoundCombatUnit(UBERoundCombatUnit $UBERoundCombatUnit) {
     $this->unit_id = $UBERoundCombatUnit->unit_id;
     $this->count = $UBERoundCombatUnit->count;
-    $this->armor = $UBERoundCombatUnit->armor;
-    $this->armor_rest = $UBERoundCombatUnit->armor_rest;
+    $this->pool_armor = $UBERoundCombatUnit->pool_armor;
   }
 
   /**
@@ -61,9 +54,8 @@ class UBERoundCombatUnit {
     $this->shield_base = floor($UBEFleetUnit->shield * ($is_simulator ? 1 : mt_rand(UBE_RANDOMIZE_FROM, UBE_RANDOMIZE_TO) / 100));
     $this->armor_base = floor($UBEFleetUnit->armor);// * ($is_simulator ? 1 : mt_rand(80, 120) / 100));
 
-    $this->attack = $this->attack_base * $this->count;
-    $this->shield = $this->shield_base * $this->count;
-    $this->shield_rest = $this->shield_base;
+    $this->pool_attack = $this->attack_base * $this->count;
+    $this->pool_shield = $this->shield_base * $this->count;
   }
 
 
@@ -75,9 +67,9 @@ class UBERoundCombatUnit {
     $this->count = $report_unit_row['ube_report_unit_count'];
     $this->unit_count_boom = $report_unit_row['ube_report_unit_boom'];
 
-    $this->attack = $report_unit_row['ube_report_unit_attack'];
-    $this->shield = $report_unit_row['ube_report_unit_shield'];
-    $this->armor = $report_unit_row['ube_report_unit_armor'];
+    $this->pool_attack = $report_unit_row['ube_report_unit_attack'];
+    $this->pool_shield = $report_unit_row['ube_report_unit_shield'];
+    $this->pool_armor = $report_unit_row['ube_report_unit_armor'];
 
     $this->attack_base = $report_unit_row['ube_report_unit_attack_base'];
     $this->shield_base = $report_unit_row['ube_report_unit_shield_base'];
@@ -109,9 +101,9 @@ class UBERoundCombatUnit {
     $this->attack_income -= $units_lost * $pool_base_defence;
 
     // Уменьшаем общие щиты на щиты уничтоженных юнитов, но не больше, чем есть
-    $this->shield -= min($units_lost * $this->shield_base, $this->shield);
+    $this->pool_shield -= min($units_lost * $this->shield_base, $this->pool_shield);
     // Уменьшаем общую броню на броню уничтоженных юнитов, но не больше, чем есть
-    $this->armor -= min($units_lost * $this->armor_base, $this->armor);
+    $this->pool_armor -= min($units_lost * $this->armor_base, $this->pool_armor);
     // Вычитаем уничтоженные юниты из общего количества юнитов
     $this->count -= $units_lost;
 
@@ -135,9 +127,9 @@ class UBERoundCombatUnit {
 //    }
 
     // Вычисляем остаток щитов на текущем корабле
-    $shield_left = $this->shield % $this->shield_base;
+    $shield_left = $this->pool_shield % $this->shield_base;
     // Вычисляем остаток брони
-    $armor_left = $this->armor % $this->armor_base;
+    $armor_left = $this->pool_armor % $this->armor_base;
     // Проверка - не атакуем ли мы целый корабль
     // Такое может быть, если на прошлой итерации поврежденный корабль был взорван и еще осталась входящяя атака
     if($shield_left == 0 && $armor_left == 0) {
@@ -152,7 +144,7 @@ class UBERoundCombatUnit {
     $this->attack_income -= $damage_to_shield;
 
     // Вычитаем этот дамадж из щитов пула
-    $this->shield -= $damage_to_shield;
+    $this->pool_shield -= $damage_to_shield;
     // Если весь дамадж был поглощён щитами - выходим
     if($this->attack_income <= 0) {
       return;
@@ -166,12 +158,12 @@ class UBERoundCombatUnit {
     $this->attack_income -= $damage_to_armor;
 
     // Вычитаем этот дамадж из брони пула
-    $this->armor -= $damage_to_armor;
+    $this->pool_armor -= $damage_to_armor;
     // Вычитаем дамадж из брони текущего корабля
     $armor_left -= $damage_to_armor;
 
     // Проверяем - осталась ли броня на текущем корабле и вааще
-    if($this->armor <= 0 || $armor_left <= 0) {
+    if($this->pool_armor <= 0 || $armor_left <= 0) {
       // Не осталось - корабль уничтожен
       $this->count--;
       return;
@@ -207,11 +199,11 @@ class UBERoundCombatUnit {
     return array(
       'ID'          => $this->unit_id,
       'NAME'        => $lang['tech'][$this->unit_id],
-      'ATTACK'      => pretty_number($this->attack),
+      'ATTACK'      => pretty_number($this->pool_attack),
       'SHIELD'      => pretty_number($shields_original),
-      'SHIELD_LOST' => pretty_number($shields_original - $this->shield),
-      'ARMOR'       => pretty_number($prev_unit_state->armor),
-      'ARMOR_LOST'  => pretty_number($prev_unit_state->armor - $this->armor),
+      'SHIELD_LOST' => pretty_number($shields_original - $this->pool_shield),
+      'ARMOR'       => pretty_number($prev_unit_state->pool_armor),
+      'ARMOR_LOST'  => pretty_number($prev_unit_state->pool_armor - $this->pool_armor),
       'UNITS'       => pretty_number($prev_unit_state->count),
       'UNITS_LOST'  => pretty_number($prev_unit_state->count - $this->count),
       'UNITS_BOOM'  => pretty_number($this->unit_count_boom),
@@ -227,9 +219,9 @@ class UBERoundCombatUnit {
       $this->count,
       (int)$this->unit_count_boom,
 
-      $this->attack,
-      $this->shield,
-      $this->armor,
+      $this->pool_attack,
+      $this->pool_shield,
+      $this->pool_armor,
 
       $this->attack_base,
       $this->shield_base,

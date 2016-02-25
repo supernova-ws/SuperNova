@@ -165,7 +165,7 @@ class UBE {
     $player_db_row = $this->players[$player_id]->player_db_row_get();
 
     $this->fleet_list[0] = new UBEFleet();
-    $this->fleet_list[0]->UBE_OWNER = $player_id;
+    $this->fleet_list[0]->owner_id = $player_id;
 
     foreach(sn_get_groups('combat') as $unit_id) {
       if($unit_count = mrc_get_level($player_db_row, $planet, $unit_id)) {
@@ -225,7 +225,7 @@ class UBE {
 
     $this->fleet_list[$UBEFleet->fleet_id] = $UBEFleet;
 
-    $this->ube_attack_prepare_player($UBEFleet->UBE_OWNER, $is_attacker);
+    $this->ube_attack_prepare_player($UBEFleet->owner_id, $is_attacker);
 
     // TODO - Вызов основной функции!!!
     ube_attack_prepare_fleet_from_object($this, $fleet_row, $is_attacker);
@@ -461,7 +461,7 @@ class UBE {
    */
   // OK0
   function ube_combat_result_apply() {
-    $destination_user_id = $this->fleet_list[0]->UBE_OWNER;
+    $destination_user_id = $this->fleet_list[0]->owner_id;
 
     // Обновляем поле обломков на планете
     if(!$this->is_admin_in_combat && $this->debris->debris_total() > 0) {
@@ -473,7 +473,7 @@ class UBE {
     $fleet_group_id_list = array(); // Для САБов
 
     foreach($this->fleet_list->_container as $fleet_id => $UBEFleet) {
-      $UBEFleet->UBE_FLEET_GROUP ? $fleet_group_id_list[$UBEFleet->UBE_FLEET_GROUP] = $UBEFleet->UBE_FLEET_GROUP : false;
+      $UBEFleet->group_id ? $fleet_group_id_list[$UBEFleet->group_id] = $UBEFleet->group_id : false;
 
       empty($UBEFleet->outcome[UBE_UNITS_LOST]) ? $UBEFleet->outcome[UBE_UNITS_LOST] = array() : false;
 
@@ -687,7 +687,7 @@ class UBE {
       $objFleet = new UBEFleet();
       $this->fleet_list[$fleet_id] = $objFleet;
 
-      $this->fleet_list[$fleet_id]->UBE_OWNER = $player_id;
+      $this->fleet_list[$fleet_id]->owner_id = $player_id;
       foreach($fleet_data as $unit_id => $unit_count) {
         if(!$unit_count) {
           continue;
