@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class UBERoundCombatUnit
+ * Class UBEUnitCombat
  */
-class UBERoundCombatUnit {
+class UBEUnitCombat {
   public $unit_id = 0;
 
   public $count = 0;
@@ -25,28 +25,28 @@ class UBERoundCombatUnit {
   public $unit_destroyed_by_income = 0;
 
   /**
-   * @param UBEFleetUnit $UBEFleetUnit
+   * @param UBEUnit $UBEFleetUnit
    */
-  public function init_from_UBEFleetUnit(UBEFleetUnit $UBEFleetUnit) {
+  public function init_from_UBEFleetUnit(UBEUnit $UBEFleetUnit) {
     $this->unit_id = $UBEFleetUnit->unit_id;
     $this->count = $UBEFleetUnit->count;
     $this->pool_armor = $UBEFleetUnit->armor * $UBEFleetUnit->count;
   }
 
   /**
-   * @param UBERoundCombatUnit $UBERoundCombatUnit
+   * @param UBEUnitCombat $UBERoundCombatUnit
    */
-  public function init_from_UBERoundCombatUnit(UBERoundCombatUnit $UBERoundCombatUnit) {
+  public function init_from_UBERoundCombatUnit(UBEUnitCombat $UBERoundCombatUnit) {
     $this->unit_id = $UBERoundCombatUnit->unit_id;
     $this->count = $UBERoundCombatUnit->count;
     $this->pool_armor = $UBERoundCombatUnit->pool_armor;
   }
 
   /**
-   * @param UBEFleetUnit $UBEFleetUnit
+   * @param UBEUnit      $UBEFleetUnit
    * @param              $is_simulator
    */
-  public function load_unit_info_from_UBEFleet(UBEFleetUnit $UBEFleetUnit, $is_simulator) {
+  public function load_unit_info_from_UBEFleet(UBEUnit $UBEFleetUnit, $is_simulator) {
     // TODO:  Добавить процент регенерации щитов
 
     // Для не-симулятора - рандомизируем каждый раунд значения атаки и щитов
@@ -186,12 +186,12 @@ class UBERoundCombatUnit {
 
 
   /**
-   * @param UBERoundCombatUnit $prev_unit_state
+   * @param UBEUnitCombat $prev_unit_state
    *
    * @return array
    */
   // OK6
-  public function report_render_unit(UBERoundCombatUnit $prev_unit_state) {
+  public function report_render_unit(UBEUnitCombat $prev_unit_state) {
     global $lang;
 
     $shields_original = $this->shield_base * $prev_unit_state->count;

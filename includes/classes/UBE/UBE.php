@@ -89,9 +89,6 @@ class UBE {
 //    PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
   );
 
-
-  // [UBE_CAPTURE_RESULT]
-
   public function __construct() {
     $this->players = new UBEPlayerList();
     $this->fleet_list = new UBEFleetList();
@@ -616,7 +613,7 @@ class UBE {
           continue;
         }
 
-        $this->fleet_list[$fleet_id]->unit_list[$unit_id] = new UBEFleetUnit();
+        $this->fleet_list[$fleet_id]->unit_list[$unit_id] = new UBEUnit();
 
         $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
 

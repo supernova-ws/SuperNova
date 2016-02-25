@@ -1,12 +1,12 @@
 <?php
 
 /**
- * Class UBERoundFleetCombatList
+ * Class UBEFleetCombatList
  *
- * @method UBERoundFleetCombat offsetGet($offset)
- * @property UBERoundFleetCombat[] $_container
+ * @method UBEFleetCombat offsetGet($offset)
+ * @property UBEFleetCombat[] $_container
  */
-class UBERoundFleetCombatList extends ArrayAccessV2 {
+class UBEFleetCombatList extends ArrayAccessV2 {
 
   /**
    * Какие стороны присутствуют. ТОЛЬКО ДЛЯ ИСПОЛЬЗОВАНИЯ в next_round_fleet_array()!!!!
@@ -32,11 +32,11 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
   }
 
   /**
-   * @param UBERoundFleetCombat $source
+   * @param UBEFleetCombat $source
    */
   // OK3
-  public function insert_from_UBERoundFleetCombat(UBERoundFleetCombat $source) {
-    $destination = new UBERoundFleetCombat();
+  public function insert_from_UBERoundFleetCombat(UBEFleetCombat $source) {
+    $destination = new UBEFleetCombat();
     $destination->init_from_UBERoundFleetCombat($source);
     $this[$destination->fleet_id] = $destination;
 
@@ -50,7 +50,7 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
    */
   // OK3
   public function insert_from_UBEFleet(UBEFleet $source) {
-    $destination = new UBERoundFleetCombat();
+    $destination = new UBEFleetCombat();
     $destination->init_from_UBEFleet($source);
     $this[$destination->fleet_id] = $destination;
 
@@ -113,12 +113,12 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
 
 
   /**
-   * Copies data to other UBERoundFleetCombatList object
+   * Copies data to other UBEFleetCombatList object
    *
-   * @param UBERoundFleetCombatList $destination
+   * @param UBEFleetCombatList $destination
    */
   // OK3
-  public function copy_active_data_to_other(UBERoundFleetCombatList $destination) {
+  public function copy_active_data_to_other(UBEFleetCombatList $destination) {
     foreach($this->_container as $fleet_id => $UBERoundFleetCombat) {
       if($UBERoundFleetCombat->get_unit_count() <= 0) {
         continue;
@@ -196,7 +196,7 @@ class UBERoundFleetCombatList extends ArrayAccessV2 {
   public function load_fleet_from_report_unit_row($report_unit_row, $player_side) {
     $fleet_id = $report_unit_row['ube_report_unit_fleet_id'];
     if(!isset($this[$fleet_id])) {
-      $this[$fleet_id] = new UBERoundFleetCombat();
+      $this[$fleet_id] = new UBEFleetCombat();
       $this[$fleet_id]->init_fleet_from_report_unit_row($report_unit_row, $player_side);
     }
 

@@ -7,14 +7,14 @@ class UBERound {
   /**
    * [$fleet_id][$unit_id]
    *
-   * @var UBERoundFleetCombatList
+   * @var UBEFleetCombatList
    */
-  public $fleet_combat_data = null; // UBERoundFleetCombatList
+  public $fleet_combat_data = null; // UBEFleetCombatList
 
   public $round_outcome = UBE_COMBAT_RESULT_DRAW;
 
   public function __construct() {
-    $this->fleet_combat_data = new UBERoundFleetCombatList();
+    $this->fleet_combat_data = new UBEFleetCombatList();
   }
 
   public function __clone() {

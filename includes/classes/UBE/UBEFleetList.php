@@ -73,7 +73,7 @@ class UBEFleetList extends ArrayAccessV2 {
 
   /**
    * @param UBERound  $lastRound
-   * @param           $is_simulator
+   * @param bool      $is_simulator
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    */

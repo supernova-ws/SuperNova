@@ -1,15 +1,15 @@
 <?php
 
 /**
- * Class UBERoundFleetCombat
+ * Class UBEFleetCombat
  */
-class UBERoundFleetCombat {
+class UBEFleetCombat {
   public $fleet_id = 0;
   public $owner_id = 0;
   public $is_attacker = UBE_PLAYER_IS_ATTACKER;
 
   /**
-   * @var UBERoundCombatUnitList
+   * @var UBEUnitCombatList
    */
   public $unit_list = null;
 
@@ -28,7 +28,7 @@ class UBERoundFleetCombat {
   public $fleet_share_of_side_armor = 0.0;
 
   public function __construct() {
-    $this->unit_list = new UBERoundCombatUnitList();
+    $this->unit_list = new UBEUnitCombatList();
   }
 
   public function __clone() {
@@ -48,10 +48,10 @@ class UBERoundFleetCombat {
   }
 
   /**
-   * @param UBERoundFleetCombat $source
+   * @param UBEFleetCombat $source
    */
   // OK3
-  public function init_from_UBERoundFleetCombat(UBERoundFleetCombat $source) {
+  public function init_from_UBERoundFleetCombat(UBEFleetCombat $source) {
     $this->fleet_id = $source->fleet_id;
     $this->is_attacker = $source->is_attacker;
     $this->owner_id = $source->owner_id;
@@ -160,7 +160,7 @@ class UBERoundFleetCombat {
    * @return array
    */
   // OK6
-  public function report_render_ship_list(UBERoundCombatUnitList $prev_unit_combat) {
+  public function report_render_ship_list(UBEUnitCombatList $prev_unit_combat) {
     $template_ships = array();
 
     foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
@@ -188,16 +188,16 @@ class UBERoundFleetCombat {
   // OK3
   public function load_fleet_from_report_unit_row(array $report_unit_row) {
     $unit_id = $report_unit_row['ube_report_unit_unit_id'];
-    $this->unit_list[$unit_id] = new UBERoundCombatUnit();
+    $this->unit_list[$unit_id] = new UBEUnitCombat();
     $this->unit_list[$unit_id]->load_unit_from_report_unit_row($report_unit_row);
   }
 
   /**
-   * @param UBERoundFleetCombatList $fleet_list
-   * @param UBE                     $ube
+   * @param UBEFleetCombatList $fleet_list
+   * @param UBE                $ube
    */
   // OK3
-  public function attack_fleets(UBERoundFleetCombatList $fleet_list, UBE $ube) {
+  public function attack_fleets(UBEFleetCombatList $fleet_list, UBE $ube) {
     foreach($fleet_list->_container as &$defending_fleet) {
       // Не атакуются флоты на своей стороне
       if($this->is_attacker == $defending_fleet->is_attacker) {
@@ -208,11 +208,11 @@ class UBERoundFleetCombat {
   }
 
   /**
-   * @param UBERoundFleetCombat $defend_fleet_data
-   * @param UBE                 $ube
+   * @param UBEFleetCombat $defend_fleet_data
+   * @param UBE            $ube
    */
   // OK6
-  public function attack_fleet(UBERoundFleetCombat $defend_fleet_data, UBE $ube) {
+  public function attack_fleet(UBEFleetCombat $defend_fleet_data, UBE $ube) {
     foreach($this->unit_list->_container as $attack_unit_id => $attacking_unit_pool) {
       $attacker_amplify_array = &$ube->fleet_list[$this->fleet_id]->unit_list[$attack_unit_id]->amplify;
       // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."

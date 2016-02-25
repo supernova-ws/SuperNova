@@ -1,9 +1,9 @@
 <?php
 
 /**
- * Class UBEFleetUnit
+ * Class UBEUnit
  */
-class UBEFleetUnit {
+class UBEUnit {
   public $unit_id = 0;
 
   public $count = 0;
@@ -46,10 +46,10 @@ class UBEFleetUnit {
 
 
   /**
-   * @param UBERoundFleetCombat $UBERoundFleetCombat
-   * @param bool                $is_simulator
+   * @param UBEFleetCombat $UBERoundFleetCombat
+   * @param bool           $is_simulator
    */
-  public function ube_analyze_unit(UBERoundFleetCombat $UBERoundFleetCombat, $is_simulator) {
+  public function ube_analyze_unit(UBEFleetCombat $UBERoundFleetCombat, $is_simulator) {
     // Вычисляем сколько юнитов осталось и сколько потеряно
     $this->units_lost = $this->count - $UBERoundFleetCombat->unit_list[$this->unit_id]->count;
 

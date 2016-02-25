@@ -9,7 +9,7 @@ class UBEFleet {
   public $is_attacker = UBE_PLAYER_IS_DEFENDER;
 
   /**
-   * @var UBEFleetUnitList
+   * @var UBEUnitList
    */
   public $unit_list = null;
 
@@ -64,7 +64,7 @@ class UBEFleet {
    */
   // OK5
   public function __construct() {
-    $this->unit_list = new UBEFleetUnitList();
+    $this->unit_list = new UBEUnitList();
     $this->resources_lost_in_metal = array(
       RES_METAL => 0,
     );
