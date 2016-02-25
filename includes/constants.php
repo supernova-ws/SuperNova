@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a4.65');
+define('SN_VERSION', '41a4.66');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -13,23 +13,24 @@ define('UBE_DEFENDER_ACTIVE_TIMEOUT', 60 * 60 * 24 * 7);
 define('UBE_RANDOMIZE_FROM', 80); // 80
 define('UBE_RANDOMIZE_TO', 120); // 120
 
-define('UBE_DEFENCE_RESTORATION_CHANCE_AVG', 75); // UBE average defence unit restoration chance // TODO Configure
-define('UBE_DEFENCE_RESTORATION_MASS_COUNT', 10); // Count to trigger mass-restore of defence // TODO Configure
-define('UBE_DEFENCE_RESTORATION_CHANCE_MIN', UBE_DEFENCE_RESTORATION_CHANCE_AVG * 0.8); // UBE defence unit minimum restoration chance for mass-restore // TODO Configure
-define('UBE_DEFENCE_RESTORATION_CHANCE_MAX', UBE_DEFENCE_RESTORATION_CHANCE_AVG * 1.2); // UBE defence unit maximum restoration chance for mass-restore // TODO Configure
+define('UBE_CRITICAL_DAMAGE_THRESHOLD', 75); // % of unit armor after which unit can die from any attack (aka "make boom")
+
+define('UBE_DEFENCE_RESTORATION_CHANCE_AVG', 75); // UBE average defence unit restoration chance
+define('UBE_DEFENCE_RESTORATION_MASS_COUNT', 10); // Count of destroyed units to trigger mass-restore of defence
+define('UBE_DEFENCE_RESTORATION_CHANCE_MIN', UBE_DEFENCE_RESTORATION_CHANCE_AVG * 0.8); // UBE defence unit minimum restoration chance for mass-restore
+define('UBE_DEFENCE_RESTORATION_CHANCE_MAX', UBE_DEFENCE_RESTORATION_CHANCE_AVG * 1.2); // UBE defence unit maximum restoration chance for mass-restore
 
 // UBE percent of dropped resources from cargo (when dropped fleet capacity due to ship destruction) that converts to debris
 define('UBE_CARGO_DROPPED_TO_DEBRIS_MIN', 30);
 define('UBE_CARGO_DROPPED_TO_DEBRIS_MAX', 70);
 define('UBE_CARGO_DROPPED_TO_DEBRIS_AVG', round((UBE_CARGO_DROPPED_TO_DEBRIS_MIN + UBE_CARGO_DROPPED_TO_DEBRIS_MAX) / 2));
 
-define('UBE_CRITICAL_DAMAGE_THRESHOLD', 75); // % of unit armor after which unit can die from any attack (aka "make boom")
-
 // UBE percent of ship wrecks converted to debris
 define('UBE_SHIP_WRECKS_TO_DEBRIS_MIN', 20);
 define('UBE_SHIP_WRECKS_TO_DEBRIS_MAX', 40);
 define('UBE_SHIP_WRECKS_TO_DEBRIS_AVG', round((UBE_SHIP_WRECKS_TO_DEBRIS_MIN + UBE_SHIP_WRECKS_TO_DEBRIS_MAX) / 2));
 
+// Moon creation constants
 define('UBE_MOON_PERCENT_MIN', 1); // Minimum percent for moon creation during combat
 define('UBE_MOON_PERCENT_MAX', 30); // Maximum percent for moon creation during combat
 define('UBE_MOON_DEBRIS_PER_PERCENT', 1000000); // Resources amount for 1% of moon creation

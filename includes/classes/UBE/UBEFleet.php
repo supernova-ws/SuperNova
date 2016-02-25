@@ -19,19 +19,13 @@ class UBEFleet {
 
   public $UBE_BONUSES = array(); // [UBE_ATTACK]
 
-  public $UBE_CAPTAIN = array();
+  public $captain_row = array();
 
   public $fleet_capacity = 0;
 
   /**
    * @var array
    */
-  public $resources_lost_in_metal = array(
-    RES_METAL     => 0,
-    RES_CRYSTAL   => 0,
-    RES_DEUTERIUM => 0,
-  );
-
   public $resources_looted = array(
     RES_METAL     => 0,
     RES_CRYSTAL   => 0,
@@ -44,10 +38,18 @@ class UBEFleet {
     RES_DEUTERIUM => 0,
   );
 
-  public $resources_lost = array(
+  public $resources_lost_on_units = array(
     RES_METAL     => 0,
     RES_CRYSTAL   => 0,
     RES_DEUTERIUM => 0,
+  );
+  public $resources_lost_on_ships = array(
+    RES_METAL     => 0,
+    RES_CRYSTAL   => 0,
+    RES_DEUTERIUM => 0,
+  );
+  public $resources_lost_in_metal = array(
+    RES_METAL => 0,
   );
 
   public $resources = array(
@@ -64,9 +66,7 @@ class UBEFleet {
   public function __construct() {
     $this->unit_list = new UBEFleetUnitList();
     $this->resources_lost_in_metal = array(
-      RES_METAL     => 0,
-      RES_CRYSTAL   => 0,
-      RES_DEUTERIUM => 0,
+      RES_METAL => 0,
     );
   }
 
@@ -198,7 +198,7 @@ class UBEFleet {
       RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_loot_crystal'],
       RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_loot_deuterium'],
     );
-    $this->resources_lost = array(
+    $this->resources_lost_on_units = array(
       RES_METAL     => $row['ube_report_outcome_fleet_resource_lost_metal'],
       RES_CRYSTAL   => $row['ube_report_outcome_fleet_resource_lost_crystal'],
       RES_DEUTERIUM => $row['ube_report_outcome_fleet_resource_lost_deuterium'],
@@ -215,7 +215,7 @@ class UBEFleet {
     $unit_id = $row['ube_report_outcome_unit_unit_id'];
     // fleet_attackers[$fleet_id] и fleet_defenders[$fleet_id] содержат ССЫЛКИ на outcome_fleets[$fleet_id] - поэтому можно сразу писать в outcome_fleets
     $this->unit_list[$unit_id]->units_lost = $row['ube_report_outcome_unit_lost'];
-    $this->unit_list[$unit_id]->defence_restored = $row['ube_report_outcome_unit_restored'];
+    $this->unit_list[$unit_id]->units_restored = $row['ube_report_outcome_unit_restored'];
   }
 
 
@@ -229,9 +229,9 @@ class UBEFleet {
       $ube_report_id,
       $this->fleet_id,
 
-      (float)$this->resources_lost[RES_METAL],
-      (float)$this->resources_lost[RES_CRYSTAL],
-      (float)$this->resources_lost[RES_DEUTERIUM],
+      (float)$this->resources_lost_on_units[RES_METAL],
+      (float)$this->resources_lost_on_units[RES_CRYSTAL],
+      (float)$this->resources_lost_on_units[RES_DEUTERIUM],
       (float)$this->cargo_dropped[RES_METAL],
       (float)$this->cargo_dropped[RES_CRYSTAL],
       (float)$this->cargo_dropped[RES_DEUTERIUM],
@@ -246,8 +246,8 @@ class UBEFleet {
     $UBE_DEFENCE_RESTORE = array();
     $UBE_UNITS_LOST = array();
     foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
-      if($UBEFleetUnit->defence_restored) {
-        $UBE_DEFENCE_RESTORE[$unit_id] = $UBEFleetUnit->defence_restored;
+      if($UBEFleetUnit->units_restored) {
+        $UBE_DEFENCE_RESTORE[$unit_id] = $UBEFleetUnit->units_restored;
       }
       if($UBEFleetUnit->units_lost) {
         $UBE_UNITS_LOST[$unit_id] = $UBEFleetUnit->units_lost;
@@ -257,7 +257,7 @@ class UBEFleet {
     return array_merge(
       $this->report_render_outcome_side_fleet_line($UBE_DEFENCE_RESTORE, 'ube_report_info_restored'),
       $this->report_render_outcome_side_fleet_line($UBE_UNITS_LOST, 'ube_report_info_loss_final'),
-      $this->report_render_outcome_side_fleet_line($this->resources_lost, 'ube_report_info_loss_resources'),
+      $this->report_render_outcome_side_fleet_line($this->resources_lost_on_units, 'ube_report_info_loss_resources'),
       $this->report_render_outcome_side_fleet_line($this->cargo_dropped, 'ube_report_info_loss_dropped'),
       $this->report_render_outcome_side_fleet_line($this->resources_looted, $this->is_attacker == UBE_PLAYER_IS_ATTACKER ? 'ube_report_info_loot_gained' : 'ube_report_info_loss_looted'),
       $this->report_render_outcome_side_fleet_line($this->resources_lost_in_metal, 'ube_report_info_loss_in_metal')
@@ -299,14 +299,14 @@ class UBEFleet {
 
     $unit_sort_order = 0;
     foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
-      if($UBEFleetUnit->units_lost || $UBEFleetUnit->defence_restored) {
+      if($UBEFleetUnit->units_lost || $UBEFleetUnit->units_restored) {
         $unit_sort_order++;
         $sql_perform_report_unit[] = array(
           $ube_report_id,
           $fleet_id,
 
           $unit_id,
-          (float)$UBEFleetUnit->defence_restored,
+          (float)$UBEFleetUnit->units_restored,
           (float)$UBEFleetUnit->units_lost,
 
           $unit_sort_order,
@@ -332,6 +332,109 @@ class UBEFleet {
     }
 
     return $resource_delta_fleet;
+  }
+
+  /**
+   *
+   */
+  public function calc_fleet_stats() {
+    $this->resources_lost_on_units = array(
+      RES_METAL     => 0,
+      RES_CRYSTAL   => 0,
+      RES_DEUTERIUM => 0,
+    );
+    $this->resources_lost_on_ships = array(
+      RES_METAL     => 0,
+      RES_CRYSTAL   => 0,
+      RES_DEUTERIUM => 0,
+    );
+    $this->cargo_dropped = array(
+      RES_METAL     => 0,
+      RES_CRYSTAL   => 0,
+      RES_DEUTERIUM => 0,
+    );
+
+    $this->fleet_capacity = 0;
+    foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
+      $this->fleet_capacity += $UBEFleetUnit->capacity * $UBEFleetUnit->count;
+
+      if($UBEFleetUnit->units_lost) {
+        foreach($UBEFleetUnit->price as $resource_id => $unit_resource_price) {
+          if(!$unit_resource_price) {
+            continue;
+          }
+
+          $resources_lost = $UBEFleetUnit->units_lost * $unit_resource_price;
+          $this->resources_lost_on_units[$resource_id] += $resources_lost;
+          // Если это корабль - прибавляем потери к обломкам на орбите
+          // TODO - опция выбрасывания обороны в обломки
+          if($UBEFleetUnit->type == UNIT_SHIPS) {
+            $this->resources_lost_on_ships[$resource_id] += $resources_lost;
+          }
+        }
+      }
+    }
+
+    // Количество ресурсов флота
+    $fleet_total_resources = array_sum($this->resources);
+
+    // Если емкость трюмов меньше количество ресурсов - часть ресов выбрасываем нахуй
+    // На планете ($fleet_id = 0) ресурсы в космос не выбрасываются
+    if($this->fleet_id != 0 && $this->fleet_capacity < $fleet_total_resources) {
+      $drop_share = 1 - $this->fleet_capacity / $fleet_total_resources; // Какая часть ресурсов выброшена
+      foreach($this->resources as $resource_id => &$resource_amount) {
+        // Не просчитываем ресурсы, которых нет на борту кораблей флота
+        if(!$resource_amount) {
+          continue;
+        }
+
+        $this->cargo_dropped[$resource_id] = ceil($resource_amount * $drop_share);
+        $resource_amount -= $this->cargo_dropped[$resource_id];
+      }
+      $fleet_total_resources = array_sum($this->resources);
+    }
+
+    $this->fleet_capacity -= $fleet_total_resources;
+
+  }
+
+
+  public function db_save_combat_result_fleet($is_small_fleet_recce, $reapers_status) {
+    $ship_count_initial = $this->unit_list->get_units_count();
+    $ship_count_lost = $this->unit_list->get_units_lost();
+
+    $objFleet2 = new Fleet();
+    $objFleet2->set_db_id($this->fleet_id);
+
+    // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
+    if($this->is_attacker == UBE_PLAYER_IS_ATTACKER && $reapers_status == UBE_MOON_REAPERS_DIED) {
+      $objFleet2->method_db_fleet_delete();
+    } elseif($ship_count_initial == 0) { // $ship_count_lost == $ship_count_initial ||
+      $objFleet2->method_db_fleet_delete();
+    } else {
+      if($ship_count_lost) {
+        $fleet_real_array = array();
+        // Просматриваем результаты изменения флотов
+        foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
+          // Перебираем аутком на случай восстановления юнитов
+          if(($units_left = $UBEFleetUnit->count - (float)$UBEFleetUnit->units_lost) > 0) {
+            $fleet_real_array[$unit_id] = $units_left;
+          };
+        }
+        $objFleet2->replace_ships($fleet_real_array);
+      }
+
+      $resource_delta_fleet = $this->ube_combat_result_calculate_resources();
+      $objFleet2->update_resources($resource_delta_fleet);
+
+      // Если защитник и не РМФ - отправляем флот назад
+      if($this->is_attacker == UBE_PLAYER_IS_ATTACKER || ($this->is_attacker == UBE_PLAYER_IS_DEFENDER && !$is_small_fleet_recce)) {
+        $objFleet2->mark_fleet_as_returned();
+      }
+      $objFleet2->flush_changes_to_db();
+    }
+
+    unset($objFleet2);
   }
 
 }

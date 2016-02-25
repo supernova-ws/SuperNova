@@ -51,7 +51,6 @@ class UBE {
   public $resource_exchange_rates = array();
 
 
-
   /**
    * @var UBEPlayerList
    */
@@ -106,7 +105,6 @@ class UBE {
    *
    * @param Mission $objMission
    */
-  // OK0
   function ube_attack_prepare(&$objMission) {
     $objFleet = $objMission->fleet;
     $destination_planet = &$objMission->dst_planet;
@@ -149,7 +147,6 @@ class UBE {
    * @param $combat_data
    * @param $planet
    */
-  // OK0
   function ube_attack_prepare_planet(&$planet) {
     global $ube_combat_bonus_list;
 
@@ -192,10 +189,9 @@ class UBE {
     $this->is_defender_active_player = $player_db_row['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
   }
 
-  // ------------------------------------------------------------------------------------------------
-  // Заполняет данные по игроку
-  // OK0
   /**
+   * Заполняет данные по игроку
+   *
    * @param int  $player_id
    * @param bool $is_attacker
    */
@@ -207,13 +203,12 @@ class UBE {
   }
 
   /**
+   * Заполняет данные по флоту
+   *
    * @param array $fleet_row
    * @param bool  $is_attacker
    */
-  // ------------------------------------------------------------------------------------------------
-  // Заполняет данные по флоту
-  // OK0
-  function ube_attack_prepare_fleet(&$fleet_row, $is_attacker) {
+  function ube_attack_prepare_fleet(array &$fleet_row, $is_attacker) {
     $UBEFleet = new UBEFleet();
     $UBEFleet->read_from_row($fleet_row);
 
@@ -258,9 +253,9 @@ class UBE {
 
 
 
-  // ------------------------------------------------------------------------------------------------
-  // Общий алгоритм расчета боя
-  // OK0
+  /**
+   * Общий алгоритм расчета боя
+   */
   function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
 
@@ -318,9 +313,13 @@ class UBE {
 
 
 
-// ------------------------------------------------------------------------------------------------
-// Анализирует результаты раунда и генерирует данные для следующего раунда
-  // OK0
+  /**
+   * Анализирует результаты раунда и генерирует данные для следующего раунда
+   *
+   * @param $round
+   *
+   * @return int
+   */
   function sn_ube_combat_round_analyze($round) {
     $objRound = $this->rounds[$round];
     $nextRound = $objRound->sn_ube_combat_round_analyze($round);
@@ -346,9 +345,9 @@ class UBE {
 
 
 
-  // ------------------------------------------------------------------------------------------------
-  // Разбирает данные боя для генерации отчета
-  // OK0
+  /**
+   * Разбирает данные боя для генерации отчета
+   */
   function sn_ube_combat_analyze() {
     // Переменные для быстрого доступа к подмассивам
     $lastRound = $this->rounds->get_last_element();
@@ -359,7 +358,7 @@ class UBE {
 
     $this->debris->_reset();
     // Генерируем результат боя
-    $this->fleet_list->sn_ube_combat_analyze($lastRound, $this->is_simulator, $this->debris, $this->resource_exchange_rates);
+    $this->fleet_list->ube_analyze_fleets($lastRound, $this->is_simulator, $this->debris, $this->resource_exchange_rates);
 
     if(!$this->is_ube_loaded) {
       $this->moon_calculator->calculate_moon($this);
@@ -372,8 +371,9 @@ class UBE {
 
   }
 
-  // ------------------------------------------------------------------------------------------------
-  // OK0
+  /**
+   *
+   */
   function sn_ube_combat_analyze_loot() {
     $planet_resource_list = $this->fleet_list[0]->resources;
 
@@ -463,43 +463,11 @@ class UBE {
     }
 
     foreach($this->fleet_list->_container as $fleet_id => $UBEFleet) {
-      $ship_count_initial = $UBEFleet->unit_list->get_units_count();
       $ship_count_lost = $UBEFleet->unit_list->get_units_lost();
 
       if($fleet_id) {
         // Флот
-        $objFleet2 = new Fleet();
-        $objFleet2->set_db_id($fleet_id);
-
-        // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
-        if($UBEFleet->is_attacker == UBE_PLAYER_IS_ATTACKER && $this->moon_calculator->get_reapers_status() == UBE_MOON_REAPERS_DIED) {
-          $objFleet2->method_db_fleet_delete();
-        } elseif($ship_count_lost == $ship_count_initial) {
-          $objFleet2->method_db_fleet_delete();
-        } else {
-          if($ship_count_lost) {
-            $fleet_real_array = array();
-            // Просматриваем результаты изменения флотов
-            foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
-              // Перебираем аутком на случай восстановления юнитов
-              if(($units_left = $UBEFleetUnit->count - (float)$UBEFleetUnit->units_lost) > 0) {
-                $fleet_real_array[$unit_id] = $units_left;
-              };
-            }
-            $objFleet2->replace_ships($fleet_real_array);
-          }
-
-          $resource_delta_fleet = $UBEFleet->ube_combat_result_calculate_resources();
-          $objFleet2->update_resources($resource_delta_fleet);
-
-          // Если защитник и не РМФ - отправляем флот назад
-          if(($UBEFleet->is_attacker == UBE_PLAYER_IS_DEFENDER && !$this->is_small_fleet_recce) || $UBEFleet->is_attacker == UBE_PLAYER_IS_ATTACKER) {
-            $objFleet2->mark_fleet_as_returned();
-          }
-          $objFleet2->flush_changes_to_db();
-        }
-
-        unset($objFleet2);
+        $UBEFleet->db_save_combat_result_fleet($this->is_small_fleet_recce, $this->moon_calculator->get_reapers_status());
       } else {
         // Планета
 
@@ -558,26 +526,9 @@ class UBE {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // ------------------------------------------------------------------------------------------------
-  // Рассылает письма всем участникам боя
+  /**
+   * Рассылает письма всем участникам боя
+   */
   function sn_ube_message_send() {
     global $lang;
 
@@ -598,7 +549,7 @@ class UBE {
     );
 
     $text_defender = '';
-    $debris = $this->debris->debris_get();
+    $debris = $this->debris->get_debris();
     foreach($debris as $resource_id => $resource_amount) {
       if($resource_id == RES_DEUTERIUM) {
         continue;
@@ -623,8 +574,10 @@ class UBE {
 
   }
 
-
-  // OK0
+  /**
+   * @param $sym_attacker
+   * @param $sym_defender
+   */
   function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender) {
     $this->is_simulator = sys_get_param_int('simulator');
     $this->is_simulator = !empty($this->is_simulator);
@@ -637,9 +590,13 @@ class UBE {
     $this->sn_ube_simulator_fill_side($sym_attacker, true);
   }
 
-  // ------------------------------------------------------------------------------------------------
-  // Преобразовывает данные симулятора в данные для расчета боя
-  // OK0
+  /**
+   * Преобразовывает данные симулятора в данные для расчета боя
+   *
+   * @param     $side_info
+   * @param     $attacker
+   * @param int $player_id
+   */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     global $ube_convert_techs;
 
@@ -691,15 +648,24 @@ class UBE {
   }
 
 
+  /**
+   *
+   */
   function set_option_from_config() {
     global $config;
     $this->options_method = $config->game_ube_method ? $config->game_ube_method : 0;
   }
 
+  /**
+   * @return int
+   */
   function get_time_spent() {
     return $this->time_spent;
   }
 
+  /**
+   * @return string
+   */
   function get_cypher() {
     return $this->report_cypher;
   }
@@ -734,6 +700,11 @@ class UBE {
     return false;
   }
 
+  /**
+   * @param $template
+   *
+   * @return template
+   */
   static function sn_battle_report_view(&$template) {
     global $template_result, $lang;
 
@@ -753,6 +724,10 @@ class UBE {
     return $template;
   }
 
+  /**
+   * @param $sym_attacker
+   * @param $sym_defender
+   */
   static function display_simulator(&$sym_attacker, &$sym_defender) {
     global $template_result;
 
@@ -815,29 +790,21 @@ class UBE {
 
     $this->moon_calculator->load_from_report($report_row);
 
-    $this->debris->_reset();
-    $this->debris->debris_add_resource(RES_METAL, $report_row['ube_report_debris_metal']);
-    $this->debris->debris_add_resource(RES_CRYSTAL, $report_row['ube_report_debris_crystal']);
+    $this->debris->load_from_report_row($report_row);
 
     $query = doquery("SELECT * FROM {{ube_report_player}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($player_row = db_fetch($query)) {
       $this->players->init_player_from_report_info($player_row);
     }
 
-    $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
-    while($fleet_row = db_fetch($query)) {
-      $objFleet = new UBEFleet(); // TODO ХУУУУУУУУУУУУУУУЙЙЙЙЙЙЙЙЙЙЙЙНЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯЯ
-      $objFleet->load_from_report($fleet_row, $this);
-      $this->fleet_list[$objFleet->fleet_id] = $objFleet;
-    }
+    $this->fleet_list->db_load_from_report_row($report_row, $this);
 
     $this->rounds->db_load_round_list_from_report_row($report_row, $this);
 
-    $this->fleet_list->db_load_fleets_outcome($report_row, $this);
+    $this->fleet_list->db_load_fleets_outcome($report_row);
   }
 
 }
-
 
 
 // ------------------------------------------------------------------------------------------------
@@ -850,9 +817,9 @@ class UBE {
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
-// ------------------------------------------------------------------------------------------------
-// Заполняет данные по флоту
 /**
+ * Заполняет данные по флоту
+ *
  * @param UBE   $ube
  * @param array $fleet
  * @param bool  $is_attacker
@@ -861,23 +828,22 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  */
 function ube_attack_prepare_fleet_from_object(UBE $ube, &$fleet, $is_attacker) { return sn_function_call(__FUNCTION__, array($ube, &$fleet, $is_attacker)); }
 
-
 /**
  * @param array $fleet_row
  * @param UBE   $ube
  *
  * @return mixed
  */
-function flt_planet_capture_from_object(array &$fleet_row, UBE $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
+function flt_planet_capture_from_object(array &$fleet_row, UBE $ube) {return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
 
-/**
- * @param array $fleet_row
- * @param UBE   $ube
- * @param mixed $result
- *
- * @return mixed
- */
-function sn_flt_planet_capture_from_object(&$fleet_row, UBE $ube, &$result) { return $result; }
+///**
+// * @param array $fleet_row
+// * @param UBE   $ube
+// * @param mixed $result
+// *
+// * @return mixed
+// */
+//function sn_flt_planet_capture_from_object(&$fleet_row, UBE $ube, &$result) { return $result; }
 
 global $ube_combat_bonus_list, $ube_convert_techs, $ube_convert_to_techs;
 

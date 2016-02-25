@@ -669,7 +669,7 @@ class Fleet {
       // Check for negative unit value
       if($this->resource_list[$resource_id] < 0) {
         // TODO
-        die('$unit_delta is less then resource amount  in ' . __FUNCTION__);
+        die('$unit_delta is less then resource amount in ' . __FILE__ . ' ' . __FUNCTION__ . ' ' . __LINE__);
       }
 
       // Preparing changes

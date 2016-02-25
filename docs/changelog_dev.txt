@@ -285,6 +285,10 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 К КАЖДОМУ МЕТОДУ, КОТОРЫЙ ПЕРЕКРЫВАЕТСЯ МОДУЛЕМ, ДОБАВИТЬ, КАКОЙ МОДУЛЬ ЕГО ПЕРЕКРЫВАЕТ! Искать по __FUNCTION__
 
 
+Склад Альянса - высокий уровень даёт бонус Фортификатора и на флоты в Удержании!
+    - ПАТЧАМИ/ПРОШИВКАМИ?!
+
+
 Функции миссий НЕ ДОЛЖНЫ НИЧЕГО ПИСАТЬ В БД! Только менять свойства объекта! Всю запись должен производить fleet_handler()
 
 
@@ -354,6 +358,9 @@ $UBE_PLANET
 $planet_info
 
 
+magic_method __call на коллекции xxxxList - вызывает метод на каждом элементе коллекции
+
+
     // TODO - НАДО ВЫНЕСТИ РАБОТУ С ПЛЕЕРАМИ ИЗ PREPARE FLEET! ПОтому что могут поменятся статы - АТТАКЕР/ДЕФЕНДЕР И, СООТВЕТСТВЕННО, БОНУСЫ!!!
 
 
@@ -362,15 +369,10 @@ OK8 Следующий
 
 
 // TODO - СЕЙЧАС
-    Убрать UBEFleetList
-        public $fleet_attackers = array();
-        public $fleet_defenders = array();
 
-        public $capacity_attackers = array();
-        public $capacity_defenders = array();
 
-    Расшить массив
-        $UBEFleet->outcome[UBE_UNITS_LOST]
+    // TODO - вынести на уровень FleetList
+    $debris->debris_add_wrecks($this->resources_lost_on_ships, $is_simulator);
 
 
 
