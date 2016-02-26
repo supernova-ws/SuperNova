@@ -97,18 +97,8 @@ class UBERound {
         $sql_perform_ube_report_unit[] = array_merge(
           $outer_prefix,
           $inner_prefix,
+          $unit_snapshot->sql_generate_array(),
           array(
-            $unit_snapshot->unit_id,
-            $unit_snapshot->count,
-            $unit_snapshot->unit_count_boom,
-
-            $unit_snapshot->pool_attack,
-            $unit_snapshot->pool_shield,
-            $unit_snapshot->pool_armor,
-
-            $unit_snapshot->unit_randomized_attack,
-            $unit_snapshot->unit_randomized_shield,
-            $unit_snapshot->unit_randomized_armor,
             $unit_sort_order++,
           )
         );

@@ -4,9 +4,13 @@
  * Class UBEASA
  */
 class UBEASA {
-  public $attack = 0;
-  public $shield = 0;
-  public $armor = 0;
+  protected $attack = 0;
+  protected $shield = 0;
+  protected $armor = 0;
+
+  public function getArmor() {
+    return $this->armor;
+  }
 
   public function _reset() {
     $this->attack = 0;

@@ -213,7 +213,7 @@ class UBE {
 
     $this->ube_attack_prepare_player($UBEFleet->owner_id, $is_attacker);
 
-    // TODO - Вызов основной функции!!!
+    // Вызов основной функции!!!
     ube_attack_prepare_fleet_from_object($this, $fleet_row, $is_attacker);
   }
 
@@ -238,10 +238,6 @@ class UBE {
 
 
 //    $this->rounds[0]->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
-
-
-//pvar_dump($this->fleet_list);
-//die(__FILE__ . ':' . __LINE__);
 
 
     $this->rounds[1] = clone $this->rounds[0];
@@ -292,25 +288,6 @@ class UBE {
 
 
 
-
-
-//  /**
-//   * Анализирует результаты раунда и генерирует данные для следующего раунда
-//   *
-//   * @param $round
-//   *
-//   * @return int
-//   */
-//  function sn_ube_combat_round_analyze($round) {
-//    $objRound = $this->rounds[$round];
-//    $nextRound = $objRound->sn_ube_combat_round_analyze($round);
-//
-//    if($objRound->round_outcome == UBE_COMBAT_RESULT_DRAW) {
-//      $this->rounds[$round + 1] = $nextRound;
-//    }
-//
-//    return $objRound->round_outcome;
-//  }
 
 
   /**
@@ -592,21 +569,16 @@ class UBE {
           continue;
         }
 
-        $this->fleet_list[$fleet_id]->unit_list[$unit_id] = new UBEUnit();
-
         $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
 
         if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-          $this->fleet_list[$fleet_id]->unit_list[$unit_id]->count = $unit_count;
+          $this->fleet_list[$fleet_id]->unit_list->insert_unit($unit_id, $unit_count);
         } elseif($unit_type == UNIT_RESOURCES) {
           $this->fleet_list[$fleet_id]->resources[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
           $this->players[$player_id]->player_bonus_add($unit_id, $unit_count, $ube_convert_techs[$unit_id]);
         } elseif($unit_type == UNIT_GOVERNORS) {
           if($unit_id == MRC_FORTIFIER) {
-//            foreach($ube_convert_techs as $ube_id) {
-//              $this->fleet_list[$fleet_id]->UBE_BONUSES[$ube_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
-//            }
             // Фортифаер даёт бонус ко всему
             $this->fleet_list[$fleet_id]->UBE_BONUSES[UBE_ATTACK] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
             $this->fleet_list[$fleet_id]->UBE_BONUSES[UBE_SHIELD] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
@@ -671,7 +643,8 @@ class UBE {
 
 
     $ube->sn_ube_message_send(); //  sn_ube_message_send($combat_data);
-    die('DIE at ' . __FILE__ . ' ' . __LINE__);
+
+die('DIE at ' . __FILE__ . ' ' . __LINE__);
 
     return false;
   }

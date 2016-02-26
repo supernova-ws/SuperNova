@@ -4,15 +4,19 @@
  * Class UBESnapshotUnit
  */
 class UBESnapshotUnit {
-  public $unit_id = 0;
-  public $count = 0;
-  public $unit_count_boom = 0;
-  public $pool_attack = 0;
-  public $pool_shield = 0;
-  public $pool_armor = 0;
-  public $unit_randomized_attack = 0;
-  public $unit_randomized_shield = 0;
-  public $unit_randomized_armor = 0;
+  protected $unit_id = 0;
+  protected $count = 0;
+  protected $unit_count_boom = 0;
+  protected $pool_attack = 0;
+  protected $pool_shield = 0;
+  protected $pool_armor = 0;
+  protected $unit_randomized_attack = 0;
+  protected $unit_randomized_shield = 0;
+  protected $unit_randomized_armor = 0;
+
+  public function getUnitId() {
+    return $this->unit_id;
+  }
 
   /**
    * UBESnapshotUnit constructor.
@@ -80,6 +84,22 @@ class UBESnapshotUnit {
       'UNITS'       => pretty_number($prev_unit_snapshot->count), //
       'UNITS_LOST'  => pretty_number($prev_unit_snapshot->count - $this->count), //
       'UNITS_BOOM'  => pretty_number($this->unit_count_boom), //
+    );
+  }
+
+  public function sql_generate_array() {
+    return array(
+      $this->unit_id,
+      $this->count,
+      $this->unit_count_boom,
+
+      $this->pool_attack,
+      $this->pool_shield,
+      $this->pool_armor,
+
+      $this->unit_randomized_attack,
+      $this->unit_randomized_shield,
+      $this->unit_randomized_armor,
     );
   }
 

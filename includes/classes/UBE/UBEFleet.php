@@ -505,10 +505,10 @@ class UBEFleet {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function calculate_unit_partial_data(UBEASA $side_ASA) {
-    $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $side_ASA->armor;
+    $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $side_ASA->getArmor();
 
     foreach($this->unit_list->_container as $UBEUnit) {
-      $UBEUnit->share_of_side_armor = $UBEUnit->pool_armor / $side_ASA->armor;
+      $UBEUnit->share_of_side_armor = $UBEUnit->pool_armor / $side_ASA->getArmor();
     }
   }
 

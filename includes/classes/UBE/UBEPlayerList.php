@@ -13,7 +13,6 @@ class UBEPlayerList extends ArrayAccessV2 {
   /**
    * @param array $report_player_row
    */
-  // OK1
   public function init_player_from_report_info($report_player_row) {
     $UBEPlayer = new UBEPlayer();
     $UBEPlayer->load_from_report_player_row($report_player_row);
@@ -23,7 +22,6 @@ class UBEPlayerList extends ArrayAccessV2 {
   /**
    * @param int $player_id
    */
-  // OK1
   public function db_load_player_by_id($player_id) {
     if(isset($this[$player_id])) {
       return;
@@ -37,7 +35,6 @@ class UBEPlayerList extends ArrayAccessV2 {
   /**
    * @return array[][] [UBE_PLAYER_IS_ATTACKER][$player_id] => (array)$planet_db_records
    */
-  // OK1
   public function get_player_rows_by_side() {
     $result = array(
       UBE_PLAYER_IS_ATTACKER => array(),
@@ -52,9 +49,11 @@ class UBEPlayerList extends ArrayAccessV2 {
   }
 
   /**
+   *
+   * правильно используется через UBE_PLAYER_IS_ATTACKER
+   *
    * @return array [$player_id] => (bool)UBE_PLAYER_IS_ATTACKER
    */
-  // OK1 - правильно используется через UBE_PLAYER_IS_ATTACKER
   public function get_player_sides() {
     $result = array();
     foreach($this->_container as $player_id => $UBEPlayer) {
