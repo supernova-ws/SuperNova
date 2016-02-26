@@ -13,14 +13,14 @@ class UBEFleetList extends ArrayAccessV2 {
   /**
    * @var UBEASA[]
    */
-  public $UBE_TOTAL = array();
+  protected $UBE_TOTAL = array();
 
   /**
    * Какие стороны присутствуют. ТОЛЬКО ДЛЯ ИСПОЛЬЗОВАНИЯ в next_round_fleet_array()!!!!
    *
    * @var array
    */
-  public $side_present_at_round_start = array();
+  protected $side_present_at_round_start = array();
 
   /**
    * UBEFleetList constructor.
@@ -254,6 +254,26 @@ class UBEFleetList extends ArrayAccessV2 {
     }
 
     return $reapers;
+  }
+
+  public function get_sides_count() {
+    return count($this->side_present_at_round_start);
+  }
+
+  public function calculate_outcome($current_outcome) {
+    $this->actualize_sides();
+
+    $result = $current_outcome;
+    // Проверяем результат боя
+    if($this->get_sides_count() == 0 || $round >= 10) {
+      // Если кого-то не осталось или не осталось обоих - заканчиваем цикл
+      $result = UBE_COMBAT_RESULT_DRAW_END;
+    } elseif($this->get_sides_count() == 1) {
+      // Если осталась одна сторона - она и выиграла
+      $result = isset($this->side_present_at_round_start[UBE_PLAYER_IS_ATTACKER]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
+    }
+
+    return $result;
   }
 
 }

@@ -63,18 +63,8 @@ class UBERound {
     // $nextRound->init_from_previous_round($this);
     $nextRound->round_number = $this->round_number + 1;
 
-    // $nextRound->fleet_combat_data->init_from_UBEFleetCombatList($this->fleet_combat_data, $UBEFleetList);
-//    $outcome = $nextRound->fleet_combat_data->side_present_at_round_start;
-    $UBEFleetList->actualize_sides();
 
-    // Проверяем результат боя
-    if(count($UBEFleetList->side_present_at_round_start) == 0 || $round >= 10) {
-      // Если кого-то не осталось или не осталось обоих - заканчиваем цикл
-      $this->round_outcome = UBE_COMBAT_RESULT_DRAW_END;
-    } elseif(count($UBEFleetList->side_present_at_round_start) == 1) {
-      // Если осталась одна сторона - она и выиграла
-      $this->round_outcome = isset($UBEFleetList->side_present_at_round_start[UBE_PLAYER_IS_ATTACKER]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
-    }
+    $this->round_outcome = $UBEFleetList->calculate_outcome($this->round_outcome);
 
     return $nextRound;
   }
