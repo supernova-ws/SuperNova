@@ -7,6 +7,7 @@ if(defined('INIT')) {
 
 define('INIT', true);
 
+// define('DEBUG_UBE', true);
 // define('SN_DEBUG_LOG', true);
 
 // Замеряем начальные параметры
@@ -23,9 +24,7 @@ register_shutdown_function(function() {
     return;
   }
 
-  global $user;
-
-  global $locale_cache_statistic;
+  global $user, $locale_cache_statistic;
 
   print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
     (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .

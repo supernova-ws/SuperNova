@@ -251,7 +251,7 @@ class UBEReport {
       'MICROTIME'         => $ube->get_time_spent(),
       'COMBAT_TIME'       => $ube->combat_timestamp ? $ube->combat_timestamp + SN_CLIENT_TIME_DIFF : 0,
       'COMBAT_TIME_TEXT'  => date(FMT_DATE_TIME, $ube->combat_timestamp + SN_CLIENT_TIME_DIFF),
-      'COMBAT_ROUNDS'     => $round_count - 1,
+      'COMBAT_ROUNDS'     => $ube->rounds->count() - 1,
       'UBE_MISSION_TYPE'  => $ube->mission_type_id,
       'UBE_REPORT_CYPHER' => $ube->get_cypher(),
 

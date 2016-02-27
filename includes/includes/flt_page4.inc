@@ -15,12 +15,6 @@ $fleet = Fleet::static_db_fleet_get($fleetid);
 if(!$fleet) {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
-//$query = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = '{$fleetid}'");
-//if(db_num_rows($query) != 1) {
-//  message($lang['fl_fleet_not_exists'], $lang['fl_error']);
-//}
-//
-//$fleet = db_fetch($query);
 
 if ($fleet['fleet_start_time'] <= SN_TIME_NOW || $fleet['fleet_end_time'] < SN_TIME_NOW || $fleet['fleet_mess'] == 1) {
   message($lang['fl_isback'], $lang['fl_error']);
@@ -50,8 +44,6 @@ if($userToAdd_unsafe) {
     if(!$aks) {
       // No AСS exists - making one
       if(!$fleet['fleet_group']) {
-        $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
-
         doquery("INSERT INTO {{aks}} SET
           `name` = '" . db_escape($lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $user['id'] . "',
@@ -64,9 +56,8 @@ if($userToAdd_unsafe) {
           `eingeladen` = '" . $user['id'] . "',
           `fleet_end_time` = '" . $fleet['fleet_end_time']. "'");
 
-// 1st iteration
-//        doquery("UPDATE {{fleets}} SET fleet_group = '{$aks['id']}', fleet_mission = '" . MT_AKS . "' WHERE fleet_id = '{$fleetid}'");
-// 3rd iteration
+        $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
+
         $objFleet = new Fleet();
         $objFleet->parse_db_row($fleet);
         $objFleet->group_acs_set($aks['id'], MT_AKS);
@@ -118,24 +109,6 @@ if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(
     ));
   }
 }
-
-//$fleet_query = doquery(
-//  "SELECT f.*, ps.name AS fleet_start_name, pe.name AS fleet_end_name
-//  FROM {{fleets}} AS f
-//    LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id
-//    LEFT JOIN {{planets}} AS pe ON pe.id = f.fleet_end_planet_id
-//  WHERE fleet_id = {$fleetid}"
-//);
-//while ($fleet_row = db_fetch($fleet_query)) {
-//  $i++;
-//  $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
-//
-//  $template->assign_block_vars('fleets', $fleet_data['fleet']);
-//
-//  foreach($fleet_data['ships'] as $ship_data) {
-//    $template->assign_block_vars('fleets.ships', $ship_data);
-//  }
-//}
 
 $i++;
 $fleet_row = Fleet::static_db_fleet_get($fleetid);

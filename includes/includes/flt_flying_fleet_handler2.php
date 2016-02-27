@@ -69,6 +69,7 @@ function log_file($msg) {
 
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler($skip_fleet_update = false) {
+//return;
   /*
 
   [*] Нужно ли заворачивать ВСЕ в одну транзакцию?
@@ -112,10 +113,13 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
   // Watchdog timer
   if($config->db_loadItem('fleet_update_lock')) {
+    if(defined('DEBUG_UBE')) {
+      $random = 0;
+    } else {
+      $random = mt_rand(240, 300);
+    }
 
-// TODO UNCOMMENT!
-//    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(240, 300)) {
-    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= mt_rand(2, 3)) {
+    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= $random) {
       sn_db_transaction_rollback();
 
       return;
@@ -225,7 +229,6 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       continue;
     }
 
-    $fleet_row2 = $objFleet->make_db_row();
     if($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
       // Fleet returns to planet
       $objFleet->RestoreFleetToPlanet(true, false, true);

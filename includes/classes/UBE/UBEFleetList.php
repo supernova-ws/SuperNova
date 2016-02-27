@@ -219,7 +219,13 @@ class UBEFleetList extends ArrayAccessV2 {
 
     // Каждый флот атакует все
     foreach($this->_container as $attack_fleet_data) {
+      if(defined('DEBUG_UBE')) {
+        print("Fleet {$attack_fleet_data->fleet_id} attacks<br /><div style='margin-left: 30px;'>");
+      }
       $attack_fleet_data->attack_fleets($this, $ube->is_simulator);
+      if(defined('DEBUG_UBE')) {
+        print('</div>');
+      }
     }
 
     if(BE_DEBUG === true) {

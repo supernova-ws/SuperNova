@@ -246,7 +246,13 @@ class UBE {
     for($round = 1; $round <= 10; $round++) {
       // Проводим раунд
 //      $this->rounds[$round]->fleet_combat_data->calculate_attack_results($this);
+      if(defined('DEBUG_UBE')) {
+        print("Round {$round}<br>");
+      }
       $this->fleet_list->calculate_attack_results($this);
+      if(defined('DEBUG_UBE')) {
+        print('<hr>');
+      }
       $this->rounds[$round]->make_snapshot($this->fleet_list);
 
       // Анализируем итоги текущего раунда и готовим данные для следующего
@@ -267,27 +273,6 @@ class UBE {
     // Делать это всегда - нам нужны результаты боя: луна->обломки->количество осташихся юнитов
     $this->sn_ube_combat_analyze();
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   /**
@@ -644,7 +629,9 @@ class UBE {
 
     $ube->sn_ube_message_send(); //  sn_ube_message_send($combat_data);
 
-die('DIE at ' . __FILE__ . ' ' . __LINE__);
+    if(defined('DEBUG_UBE')) {
+      die('DIE at ' . __FILE__ . ' ' . __LINE__);
+    }
 
     return false;
   }
@@ -814,3 +801,77 @@ $ube_convert_to_techs = array(
   UBE_SHIELD => 'shield',
 );
 
+function unit_dump_header() {
+  print('<table border="1">');
+  print('<tr>');
+  print('<th>desc</th>');
+  print('<th>unit_id</th>');
+  print('<th colspan="2">count</th>');
+//  print('<th>type</th>');
+//  print('<th>attack_bonus</th>');
+//  print('<th>shield_bonus</th>');
+//  print('<th>armor_bonus</th>');
+//  print('<th>unit_randomized_attack</th>');
+//  print('<th>unit_randomized_shield</th>');
+//  print('<th>unit_randomized_armor</th>');
+  print('<th colspan="2">units_destroyed</th>');
+//  print('<th>pool_attack</th>');
+  print('<th colspan="2">pool_shield</th>');
+  print('<th colspan="2">pool_armor</th>');
+  print('<th colspan="2">boom</th>');
+  print('<th colspan="2">attack_income</th>');
+//  print('<th>units_lost</th>');
+//  print('<th>units_restored</th>');
+//  print('<th>capacity</th>');
+  print('<th>armor_share</th>');
+  print('</tr>');
+}
+
+/**
+ * @param UBEUnit      $current
+ * @param string       $field
+ * @param UBEUnit|null $before
+ */
+function unit_dump_delta(UBEUnit $current, $field, UBEUnit $before = null) {
+//  print("<td" . ($before != null ? ' colspan=2' : '') . ">");
+  print("<td>");
+  print(pretty_number($current->$field));
+  print("</td>");
+  print("<td>");
+  if(!empty($before)) {
+    print('' . pretty_number($current->$field - $before->$field) . '');
+  }
+  print("</td>");
+}
+
+function unit_dump(UBEUnit $current, $desc = '', UBEUnit $before = null) {
+  global $lang;
+
+  print('<tr align="right">');
+  print("<td>{$desc}</td>");
+  print("<td>[{$current->unit_id}]{$lang['tech_short'][$current->unit_id]}</td>");
+//  print("<td>" . unit_dump_delta($current, 'count', $before) . "</td>");
+  unit_dump_delta($current, 'count', $before);
+//  print("<td>" . $UBEUnit->type . "</td>");
+//  print("<td>" . $UBEUnit->attack_bonus . "</td>");
+//  print("<td>" . $UBEUnit->shield_bonus . "</td>");
+//  print("<td>" . $UBEUnit->armor_bonus . "</td>");
+//  print("<td>" . $UBEUnit->unit_randomized_attack . "</td>");
+//  print("<td>" . $UBEUnit->unit_randomized_shield . "</td>");
+//  print("<td>" . $UBEUnit->unit_randomized_armor . "</td>");
+  unit_dump_delta($current, 'units_destroyed', $before);
+//  unit_dump_delta($current, 'pool_attack', $before);
+  unit_dump_delta($current, 'pool_shield', $before);
+  unit_dump_delta($current, 'pool_armor', $before);
+  unit_dump_delta($current, 'unit_count_boom', $before);
+  unit_dump_delta($current, 'attack_income', $before);
+//  print("<td>" . $UBEUnit->units_lost . "</td>");
+//  print("<td>" . $UBEUnit->units_restored . "</td>");
+//  print("<td>" . $UBEUnit->capacity . "</td>");
+  print("<td>" . round($current->share_of_side_armor, 4) . "</td>");
+  print('</tr>');
+}
+
+function unit_dump_footer() {
+  print('</table><br>');
+}

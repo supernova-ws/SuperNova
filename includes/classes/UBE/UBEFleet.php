@@ -535,7 +535,13 @@ class UBEFleet {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
+    if(defined('DEBUG_UBE')) {
+      unit_dump_header();
+    }
     foreach($this->unit_list->_container as $attack_unit_id => $attacking_unit_pool) {
+      if(defined('DEBUG_UBE')) {
+        unit_dump($attacking_unit_pool, 'attacker');
+      }
       // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
       foreach($defending_fleet->unit_list->_container as $defend_unit_id => $defending_unit_pool) {
         if($defending_unit_pool->count <= 0) {
@@ -549,9 +555,27 @@ class UBEFleet {
           : 1;
         // Применяем амплифай, если есть
         $defending_unit_pool->attack_income = floor($direct_attack * $attacker_amplify);
+        if(defined('DEBUG_UBE')) {
+          global $lang;
+
+          print("[{$attacking_unit_pool->unit_id}]{$lang['tech'][$attacking_unit_pool->unit_id]}" .
+            ' attacks ' .
+            $defending_fleet->fleet_id . '@' . "[{$defending_unit_pool->unit_id}]{$lang['tech'][$defending_unit_pool->unit_id]}" .
+            ' with ' . pretty_number($defending_unit_pool->attack_income) .
+            '<br>'
+          );
+          $before = clone $defending_unit_pool;
+          unit_dump($defending_unit_pool, 'before');
+        }
 
         $defending_unit_pool->receive_damage($is_simulator);
+        if(defined('DEBUG_UBE')) {
+          unit_dump($defending_unit_pool, 'after', $before);
+        }
       }
+    }
+    if(defined('DEBUG_UBE')) {
+      unit_dump_footer();
     }
   }
 

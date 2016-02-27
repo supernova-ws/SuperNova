@@ -90,7 +90,7 @@ function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result)
     'MESSAGE'      => $fleet_row['fleet_mess'],
     'MISSION'      => $fleet_row['fleet_mission'],
     'MISSION_NAME' => $lang['type_mission'][$fleet_row['fleet_mission']],
-    'ACS'          => $aks['name'],
+    'ACS'          => !empty($aks['name']) ? $aks['name'] : (!empty($fleet_row['fleet_group']) ? $fleet_row['fleet_group'] : ''),
     'AMOUNT'       => $spy_level >= 4 ? (pretty_number($fleet_row['fleet_amount']) . ($fleet_row['fleet_resource_metal'] + $fleet_row['fleet_resource_crystal'] + $fleet_row['fleet_resource_deuterium'] ? '+' : '')) : '?',
 
     'METAL'     => $spy_level >= 8 ? $fleet_row['fleet_resource_metal'] : 0,
