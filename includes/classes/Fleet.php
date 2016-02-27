@@ -372,10 +372,9 @@ class Fleet {
    * @return int
    */
   // TODO - split to functions
-  public function RestoreFleetToPlanet($start = true, $only_resources = false, $safe_fleet = false, &$result) {
+  public function RestoreFleetToPlanet($start = true, $only_resources = false, $safe_fleet = false, &$result = CACHE_NOTHING) {
     sn_db_transaction_check(true);
 
-    $result = CACHE_NOTHING;
     // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
     if(!$this->db_id || ($this->is_returning == 1 && $only_resources)) {
       return $result;
