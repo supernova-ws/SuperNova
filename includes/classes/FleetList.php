@@ -29,7 +29,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.1
+   * @version 41a5.2
    */
   public static function dbGetFleetList($where_safe = '') {
     $fleetList = new static();
@@ -59,7 +59,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.1
+   * @version 41a5.2
    */
   public static function dbGetFleetListByGroup($group_id) {
     return static::dbGetFleetList("`fleet_group` = {$group_id}");
@@ -72,7 +72,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.1
+   * @version 41a5.2
    */
   public static function dbGetFleetListOnHoldAtTarget(Fleet $objFleet) {
     return static::dbGetFleetList(
@@ -91,7 +91,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.1
+   * @version 41a5.2
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -111,7 +111,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.1
+   * @version 41a5.2
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -125,23 +125,10 @@ class FleetList extends ArrayAccessV2 {
     );
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   /**
    * @param $fleet_owner_id
    *
-   * @return FleetList|null
+   * @return static
    */
   public static function dbGetFleetListByOwnerId($fleet_owner_id) {
     $fleet_owner_id_safe = idval($fleet_owner_id);
@@ -149,19 +136,18 @@ class FleetList extends ArrayAccessV2 {
     return $fleet_owner_id_safe ? static::dbGetFleetList("`fleet_owner` = {$fleet_owner_id_safe}") : null;
   }
 
-  /**
-   * Get fleet list by owner
-   *
-   * @param int $fleet_owner_id - Fleet owner record/ID. Can't be empty
-   *
-   * @return array[]
-   */
-  // TODO - заменить на dbGetFleetListByOwnerId
-  public static function fleet_list_by_owner_id($fleet_owner_id) {
-    $fleet_owner_id_safe = idval($fleet_owner_id);
 
-    return $fleet_owner_id_safe ? static::db_fleet_list("`fleet_owner` = {$fleet_owner_id_safe}") : array();
-  }
+
+
+
+
+
+
+
+
+
+
+
 
   /**
    * Get fleet list flying/returning to planet/system coordinates
@@ -224,14 +210,6 @@ class FleetList extends ArrayAccessV2 {
   }
 
 
-
-
-
-
-
-
-  /* FLEET LIST & COUNT ***********************************************************************************************/
-  /* FLEET LIST & COUNT CRUD =========================================================================================*/
   /**
    * LIST - Get fleet list by condition
    *
@@ -254,6 +232,14 @@ class FleetList extends ArrayAccessV2 {
     return $row_list;
 
   }
+
+
+
+
+
+
+  /* FLEET LIST & COUNT ***********************************************************************************************/
+  /* FLEET LIST & COUNT CRUD =========================================================================================*/
 
   /**
    * LIST DELETE

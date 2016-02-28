@@ -267,7 +267,6 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   }
 
 
-
 //    <!-- IF LOGIN_LOGOUT -->
 //    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/{GAME_MODE_CSS_PREFIX}login_background.min.css?{C_var_db_update}" />
 //    <!-- ELSE -->
@@ -277,13 +276,13 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 //    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_override.css?{C_var_db_update}" />
   empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
   $standard_css = array(
-    'design/css/jquery-ui.css' => '',
+    'design/css/jquery-ui.css'  => '',
     'design/css/global.min.css' => '',
   );
-  $is_login ? $standard_css['design/css/login.min.css'] = '': false;
+  $is_login ? $standard_css['design/css/login.min.css'] = '' : false;
   $standard_css += array(
 //    'design/css/design/css/global-ie.min.css' => '', // TODO
-    TEMPLATE_PATH . '/_template.min.css' => '',
+    TEMPLATE_PATH . '/_template.min.css'                                  => '',
     ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin.min.css' => '',
   );
 
@@ -385,37 +384,37 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 }
 
 /**
- * @param $time
- * @param $event
- * @param $msg
- * @param $prefix
- * @param $is_decrease
- * @param $fleet_flying_row
- * @param $fleet_flying_sorter
- * @param $fleet_flying_events
- * @param $fleet_event_count
+ * @param       $time
+ * @param       $event
+ * @param       $msg
+ * @param       $coordinates
+ * @param       $is_decrease
+ * @param Fleet $objFleet
+ * @param       $fleet_flying_sorter
+ * @param       $fleet_flying_events
+ * @param       $fleet_event_count
  */
-function tpl_topnav_event_build_helper($time, $event, $msg, $prefix, $is_decrease, $fleet_flying_row, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count) {
+function tpl_topnav_event_build_helper($time, $event, $msg, $coordinates, $is_decrease, Fleet $objFleet, &$fleet_flying_sorter, &$fleet_flying_events, &$fleet_event_count) {
   $fleet_flying_sorter[$fleet_event_count] = $time;
   $fleet_flying_events[$fleet_event_count] = array(
-    'ROW'              => $fleet_flying_row,
-    'FLEET_ID'         => $fleet_flying_row['fleet_id'],
+    'OBJECT'           => $objFleet,
+    'FLEET_ID'         => $objFleet->db_id,
     'EVENT'            => $event,
-    'COORDINATES'      => uni_render_coordinates($fleet_flying_row, $prefix),
-    'COORDINATES_TYPE' => $fleet_flying_row["{$prefix}type"],
-    'TEXT'             => "{$msg}",
+    'COORDINATES'      => uni_render_coordinates($coordinates, ''),
+    'COORDINATES_TYPE' => $coordinates['type'],
+    'TEXT'             => $msg,
     'DECREASE'         => $is_decrease,
   );
   $fleet_event_count++;
 }
 
 /**
- * @param template $template
- * @param array    $fleet_flying_list
- * @param string   $type
+ * @param template  $template
+ * @param FleetList $FleetList
+ * @param string    $type
  */
-function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet') {
-  if(empty($fleet_flying_list)) {
+function tpl_topnav_event_build(&$template, FleetList $FleetList, $type = 'fleet') {
+  if(empty($FleetList)) {
     return;
   }
 
@@ -424,32 +423,32 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
   $fleet_flying_events = array();
-  foreach($fleet_flying_list as &$fleet_flying_row) {
+  foreach($FleetList->_container as $objFleet) {
     $will_return = true;
-    if($fleet_flying_row['fleet_mess'] == 0) {
+    if($objFleet->is_returning == 0) {
       // cut fleets on Hold and Expedition
-      if($fleet_flying_row['fleet_start_time'] >= SN_TIME_NOW) {
-        $fleet_flying_row['fleet_mission'] == MT_RELOCATE ? $will_return = false : false;
-        tpl_topnav_event_build_helper($fleet_flying_row['fleet_start_time'], EVENT_FLEET_ARRIVE, $lang['sys_event_arrive'], 'fleet_end_', !$will_return, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
+      if($objFleet->time_arrive_to_target >= SN_TIME_NOW) {
+        $objFleet->mission_type == MT_RELOCATE ? $will_return = false : false;
+        tpl_topnav_event_build_helper($objFleet->time_arrive_to_target, EVENT_FLEET_ARRIVE, $lang['sys_event_arrive'], $objFleet->target_coordinates_typed(), !$will_return, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
-      if($fleet_flying_row['fleet_end_stay']) {
-        tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_stay'], EVENT_FLEET_STAY, $lang['sys_event_stay'], 'fleet_end_', false, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
+      if($objFleet->time_mission_job_complete) {
+        tpl_topnav_event_build_helper($objFleet->time_mission_job_complete, EVENT_FLEET_STAY, $lang['sys_event_stay'], $objFleet->target_coordinates_typed(), false, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
     }
     if($will_return) {
-      tpl_topnav_event_build_helper($fleet_flying_row['fleet_end_time'], EVENT_FLEET_RETURN, $lang['sys_event_return'], 'fleet_start_', true, $fleet_flying_row, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
+      tpl_topnav_event_build_helper($objFleet->time_return_to_source, EVENT_FLEET_RETURN, $lang['sys_event_return'], $objFleet->launch_coordinates_typed(), true, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
     }
   }
 
   asort($fleet_flying_sorter);
 
-  $fleet_flying_count = count($fleet_flying_list);
+  $fleet_flying_count = $FleetList->count();
   foreach($fleet_flying_sorter as $fleet_event_id => $fleet_time) {
     $fleet_event = &$fleet_flying_events[$fleet_event_id];
     $template->assign_block_vars("flying_{$type}s", array(
       'TIME' => max(0, $fleet_time - SN_TIME_NOW),
       'TEXT' => $fleet_flying_count,
-      'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['ROW']['fleet_mission']]}",
+      'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['OBJECT']->mission_type]}",
     ));
     $fleet_event['DECREASE'] ? $fleet_flying_count-- : false;
   }
@@ -512,10 +511,16 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     ));
   }
 
+  /**
+   * @var FleetList[] $fleet_flying_list
+   */
   $fleet_flying_list = array();
-  $fleet_flying_list[0] = FleetList::fleet_list_by_owner_id($user['id']);
-  foreach($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {
-    $fleet_flying_list[$fleet_flying_row['fleet_mission']][$fleet_id] = &$fleet_flying_list[0][$fleet_id];
+  $fleet_flying_list[0] = FleetList::dbGetFleetListByOwnerId($user['id']);
+  foreach($fleet_flying_list[0]->_container as $fleet_id => $objFleet) {
+    if(empty($fleet_flying_list[$objFleet->mission_type])) {
+      $fleet_flying_list[$objFleet->mission_type] = new FleetList();
+    }
+    $fleet_flying_list[$objFleet->mission_type][$fleet_id] = $objFleet;
   }
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
@@ -527,7 +532,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   if(!empty($sn_mvc['navbar_prefix_button']) && is_array($sn_mvc['navbar_prefix_button'])) {
     foreach($sn_mvc['navbar_prefix_button'] as $navbar_button_image => $navbar_button_url) {
       $template->assign_block_vars('navbar_prefix_button', array(
-        'IMAGE' => $navbar_button_image,
+        'IMAGE'        => $navbar_button_image,
         'URL_RELATIVE' => $navbar_button_url,
       ));
     }
@@ -605,9 +610,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'TOPNAV_MESSAGES_ATTACK'   => $user['mnl_attaque'],
     'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
-    'TOPNAV_FLEETS_FLYING'      => count($fleet_flying_list[0]),
+    'TOPNAV_FLEETS_FLYING'      => $fleet_flying_list[0]->count(),
     'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
-    'TOPNAV_EXPEDITIONS_FLYING' => count($fleet_flying_list[MT_EXPLORE]),
+    'TOPNAV_EXPEDITIONS_FLYING' => $fleet_flying_list[MT_EXPLORE]->count(),
     'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
     'TOPNAV_QUEST_COMPLETE' => get_quest_amount_complete($user['id']),
@@ -628,8 +633,8 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'   => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
     'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
 
-    'SUBQUE_FLEET' => SUBQUE_FLEET,
-    'QUE_RESEARCH' => QUE_RESEARCH,
+    'SUBQUE_FLEET'   => SUBQUE_FLEET,
+    'QUE_RESEARCH'   => QUE_RESEARCH,
     'QUE_STRUCTURES' => QUE_STRUCTURES,
   ));
 
