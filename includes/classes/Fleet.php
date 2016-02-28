@@ -95,6 +95,16 @@ class Fleet {
   public $fleet_end_planet = 0;
   public $fleet_end_type = PT_ALL;
 
+  // Missile properties
+  public $missile_target = 0;
+
+  // Fleet event properties
+  public $fleet_start_name = '';
+  public $fleet_end_name = '';
+  public $ov_label = '';
+  public $ov_this_planet = '';
+  public $event_time = 0;
+
 //  public $fleet_resource_metal = 0;
 //  public $fleet_resource_crystal = 0;
 //  public $fleet_resource_deuterium = 0;
@@ -924,6 +934,52 @@ class Fleet {
     );
   }
 
+  public function parse_missile_db_row($missile_db_row) {
+    $this->_reset();
+
+    if(empty($missile_db_row) || !is_array($missile_db_row)) {
+      return;
+    }
+
+//      $planet_start = db_planet_by_vector($irak_original, 'fleet_start_', false, 'name');
+//      $irak_original['fleet_start_name'] = $planet_start['name'];
+    $this->missile_target = $missile_db_row['primaer'];
+
+    $this->db_id = -$missile_db_row['id'];
+    $this->owner_id = $missile_db_row['fleet_owner'];
+    $this->mission_type = MT_MISSILE;
+
+    $this->target_owner_id = $missile_db_row['fleet_target_owner'];
+
+    $this->group_id = 0;
+    $this->is_returning = 0;
+
+    $this->time_launch = 0; // $irak['start_time'];
+    $this->time_arrive_to_target = 0; // $irak['fleet_start_time'];
+    $this->time_mission_job_complete = 0; // $irak['fleet_end_stay'];
+    $this->time_return_to_source = $missile_db_row['fleet_end_time'];
+
+    $this->fleet_start_planet_id = !empty($missile_db_row['fleet_start_planet_id']) ? $missile_db_row['fleet_start_planet_id'] : null;
+    $this->fleet_start_galaxy = $missile_db_row['fleet_start_galaxy'];
+    $this->fleet_start_system = $missile_db_row['fleet_start_system'];
+    $this->fleet_start_planet = $missile_db_row['fleet_start_planet'];
+    $this->fleet_start_type = $missile_db_row['fleet_start_type'];
+
+    $this->fleet_end_planet_id = !empty($missile_db_row['fleet_end_planet_id']) ? $missile_db_row['fleet_end_planet_id'] : null;
+    $this->fleet_end_galaxy = $missile_db_row['fleet_end_galaxy'];
+    $this->fleet_end_system = $missile_db_row['fleet_end_system'];
+    $this->fleet_end_planet = $missile_db_row['fleet_end_planet'];
+    $this->fleet_end_type = $missile_db_row['fleet_end_type'];
+
+    $this->unit_list = array(UNIT_DEF_MISSILE_INTERPLANET => $missile_db_row['fleet_amount']);
+
+//    $this->resource_list = array(
+//      RES_METAL     => ceil($irak['fleet_resource_metal']),
+//      RES_CRYSTAL   => ceil($irak['fleet_resource_crystal']),
+//      RES_DEUTERIUM => ceil($irak['fleet_resource_deuterium']),
+//    );
+  }
+
   /**
    * Возвращает ёмкость переработчиков во флоте
    *
@@ -931,7 +987,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.3
+   * @version 41a5.4
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;

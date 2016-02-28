@@ -1,5 +1,126 @@
 <?php
 
+function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scanned = false) {
+  global $config, $user, $fleet_number, $lang;
+
+  $fleet_events = array();
+  $fleet_number = 0;
+
+  if($objFleetList->count() <= 0) {
+    return;
+  }
+
+  foreach($objFleetList->_container as $objFleet) {
+    $planet_start_type = $objFleet->fleet_start_type == PT_MOON ? PT_MOON : PT_PLANET;
+    $planet_start = db_planet_by_gspt($objFleet->fleet_start_galaxy, $objFleet->fleet_start_system, $objFleet->fleet_start_planet, $planet_start_type, false, 'name');
+    $objFleet->fleet_start_name = $planet_start['name'];
+
+    $planet_end_type = $objFleet->fleet_end_type == PT_MOON ? PT_MOON : PT_PLANET;
+    if($objFleet->fleet_end_planet > $config->game_maxPlanet) {
+      $objFleet->fleet_end_name = $lang['ov_fleet_exploration'];
+    } elseif($objFleet->mission_type == MT_COLONIZE) {
+      $objFleet->fleet_end_name = $lang['ov_fleet_colonization'];
+    } else {
+      $planet_end = db_planet_by_gspt($objFleet->fleet_end_galaxy, $objFleet->fleet_end_system, $objFleet->fleet_end_planet, $planet_end_type, false, 'name');
+      $objFleet->fleet_end_name = $planet_end['name'];
+    }
+
+    if($objFleet->time_arrive_to_target > SN_TIME_NOW && $objFleet->is_returning == 0 && $objFleet->mission_type != MT_MISSILE &&
+      ($planet_scanned === false
+        ||
+        (
+          $planet_scanned !== false
+          && $planet_scanned['galaxy'] == $objFleet->fleet_end_galaxy && $planet_scanned['system'] == $objFleet->fleet_end_system && $planet_scanned['planet'] == $objFleet->fleet_end_planet && $planet_scanned['planet_type'] == $planet_end_type
+          && $planet_start_type != PT_MOON
+          && $objFleet->mission_type != MT_HOLD
+        )
+      )
+    ) {
+      $fleet_events[] = flt_register_event_objFleet($objFleet, 0, $planet_end_type);
+    }
+
+    if($objFleet->time_mission_job_complete > SN_TIME_NOW && $objFleet->is_returning == 0 && $planet_scanned === false && $objFleet->mission_type != MT_MISSILE) {
+      $fleet_events[] = flt_register_event_objFleet($objFleet, 1, $planet_end_type);
+    }
+
+    if(
+      $objFleet->time_return_to_source > SN_TIME_NOW && $objFleet->mission_type != MT_MISSILE && ($objFleet->is_returning == 1 || ($objFleet->mission_type != MT_RELOCATE && $objFleet->mission_type != MT_COLONIZE)) &&
+      (
+        ($planet_scanned === false && $objFleet->owner_id == $user['id'])
+        ||
+        (
+          $planet_scanned !== false
+          && $objFleet->mission_type != MT_RELOCATE
+          && $planet_start_type != PT_MOON
+          && $planet_scanned['galaxy'] == $objFleet->fleet_start_galaxy && $planet_scanned['system'] == $objFleet->fleet_start_system && $planet_scanned['planet'] == $objFleet->fleet_start_planet && $planet_scanned['planet_type'] == $planet_start_type
+        )
+      )
+    ) {
+      $fleet_events[] = flt_register_event_objFleet($objFleet, 2, $planet_end_type);
+    }
+
+    if($objFleet->mission_type == MT_MISSILE) {
+      $fleet_events[] = flt_register_event_objFleet($objFleet, 3, $planet_end_type);
+    }
+  }
+
+  return $fleet_events;
+}
+
+/**
+ * @param Fleet $objFleet
+ * @param       $ov_label
+ * @param       $planet_end_type
+ *
+ * @return mixed
+ */
+function flt_register_event_objFleet(Fleet $objFleet, $ov_label, $planet_end_type) {
+  global $user, $planetrow, $fleet_number;
+
+  $is_this_planet = false;
+
+  switch($objFleet->ov_label = $ov_label) {
+    case 0:
+      $objFleet->event_time = $objFleet->time_arrive_to_target;
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $objFleet->fleet_end_galaxy) AND
+        ($planetrow['system'] == $objFleet->fleet_end_system) AND
+        ($planetrow['planet'] == $objFleet->fleet_end_planet) AND
+        ($planetrow['planet_type'] == $planet_end_type));
+    break;
+
+    case 1:
+      $objFleet->event_time = $objFleet->time_mission_job_complete;
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $objFleet->fleet_end_galaxy) AND
+        ($planetrow['system'] == $objFleet->fleet_end_system) AND
+        ($planetrow['planet'] == $objFleet->fleet_end_planet) AND
+        ($planetrow['planet_type'] == $planet_end_type));
+    break;
+
+    case 2:
+    case 3:
+      $objFleet->event_time = $objFleet->time_return_to_source;
+      $is_this_planet = (
+        ($planetrow['galaxy'] == $objFleet->fleet_start_galaxy) AND
+        ($planetrow['system'] == $objFleet->fleet_start_system) AND
+        ($planetrow['planet'] == $objFleet->fleet_start_planet) AND
+        ($planetrow['planet_type'] == $objFleet->fleet_start_type));
+    break;
+
+  }
+
+  $objFleet->ov_this_planet = $is_this_planet;// || $planet_scanned != false;
+
+  if($objFleet->owner_id == $user['id']) {
+    $user_data = $user;
+  } else {
+    $user_data = db_user_by_id($objFleet->owner_id);
+  }
+
+  return tplParseFleetObject($objFleet, ++$fleet_number, $user_data);
+}
+
 
 function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
 {

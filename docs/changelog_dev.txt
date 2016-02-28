@@ -453,6 +453,20 @@ fleet.php
     return sys_unit_str2arr($fleet_string);
   }
 
+Сделать объект FleetMissile от Fleet - со своим методом парсинга дброу и допполями
+
+
+// TODO function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scanned = false) {
+    function tplParseFleetObject(Fleet $objFleet, $index, $user_data = false) { return sn_function_call(__FUNCTION__, array($objFleet, $index, $user_data, &$result)); }
+    Добавить отдельный параметр для ЭКСТРАИНФО - той инфы, что не нужна нигде, кроме рендеринга
+          // Fleet event properties
+          public $fleet_start_name = '';
+          public $fleet_end_name = '';
+          public $ov_label = '';
+          public $ov_this_planet = '';
+          public $event_time = 0;
+
+
 
 // TODO - СЕЙЧАС
 phalanx.php - сделать версии для FleetList

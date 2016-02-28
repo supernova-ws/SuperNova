@@ -50,24 +50,3 @@ function db_set_make_safe_string($set, $delta = false) {
 
   return $set_safe;
 }
-
-/**
- * Converts IRAK table record to FLEET one
- *
- * @param array $missile_db_list
- * @param array $fleet_db_list
- */
-function missile_list_convert_to_fleet(&$missile_db_list, &$fleet_db_list) {
-  // Missile attack
-  foreach($missile_db_list as $irak) {
-    if($irak['fleet_end_time'] >= SN_TIME_NOW) {
-      $irak['fleet_start_type'] = PT_PLANET;
-      $planet_start = db_planet_by_vector($irak, 'fleet_start_', false, 'name');
-      $irak['fleet_id'] = -$irak['id'];
-      $irak['fleet_mission'] = MT_MISSILE;
-      $irak['fleet_array'] = UNIT_DEF_MISSILE_INTERPLANET . ",{$irak['fleet_amount']};";
-      $irak['fleet_start_name'] = $planet_start['name'];
-    }
-    $fleet_db_list[] = $irak;
-  }
-}

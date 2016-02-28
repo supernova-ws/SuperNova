@@ -29,7 +29,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.2
+   * @version 41a5.4
    */
   public static function dbGetFleetList($where_safe = '') {
     $fleetList = new static();
@@ -59,7 +59,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.2
+   * @version 41a5.4
    */
   public static function dbGetFleetListByGroup($group_id) {
     return static::dbGetFleetList("`fleet_group` = {$group_id}");
@@ -72,7 +72,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.2
+   * @version 41a5.4
    */
   public static function dbGetFleetListOnHoldAtTarget(Fleet $objFleet) {
     return static::dbGetFleetList(
@@ -91,7 +91,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.2
+   * @version 41a5.4
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -111,7 +111,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.2
+   * @version 41a5.4
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -140,6 +140,71 @@ class FleetList extends ArrayAccessV2 {
 
 
 
+  /**
+   * Get fleet and missile list by coordinates
+   *
+   * @param array $coordinates
+   * @param bool  $for_phalanx - If true - this is phalanx scan so limiting output with fleet_mess
+   *
+   * @return static
+   */
+  public static function dbGetFleetListAndMissileByCoordinates($coordinates, $for_phalanx = false) {
+    if(empty($coordinates) || !is_array($coordinates)) {
+      return array();
+    }
+
+    $objFleetList = FleetList::dbGetFleetListByCoordinates($coordinates['galaxy'], $coordinates['system'], $coordinates['planet'], $coordinates['planet_type'], $for_phalanx);
+    $objFleetList->dbMergeMissileList("(
+      fleet_start_galaxy = {$coordinates['galaxy']}
+      AND fleet_start_system = {$coordinates['system']}
+      AND fleet_start_planet = {$coordinates['planet']}
+      AND fleet_start_type = {$coordinates['planet_type']}
+    )
+    OR
+    (
+      fleet_end_galaxy = {$coordinates['galaxy']}
+      AND fleet_end_system = {$coordinates['system']}
+      AND fleet_end_planet = {$coordinates['planet']}
+      AND fleet_end_type = {$coordinates['planet_type']}
+    )");
+
+    return $objFleetList;
+  }
+  /**
+   * Get fleet and missile list by coordinates
+   *
+   * @param array $coordinates
+   * @param bool  $for_phalanx - If true - this is phalanx scan so limiting output with fleet_mess
+   *
+   * @return array
+   */
+  public static function fleet_and_missiles_list_by_coordinates($coordinates, $for_phalanx = false) {
+    if(empty($coordinates) || !is_array($coordinates)) {
+      return array();
+    }
+
+    $fleet_db_list = FleetList::fleet_list_by_planet_coords($coordinates['galaxy'], $coordinates['system'], $coordinates['planet'], $coordinates['planet_type'], $for_phalanx);
+
+    $missile_db_list = FleetList::db_missile_list(
+      "(
+      fleet_start_galaxy = {$coordinates['galaxy']}
+      AND fleet_start_system = {$coordinates['system']}
+      AND fleet_start_planet = {$coordinates['planet']}
+      AND fleet_start_type = {$coordinates['planet_type']}
+    )
+    OR
+    (
+      fleet_end_galaxy = {$coordinates['galaxy']}
+      AND fleet_end_system = {$coordinates['system']}
+      AND fleet_end_planet = {$coordinates['planet']}
+      AND fleet_end_type = {$coordinates['planet_type']}
+    )"
+    );
+
+    FleetList::missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
+
+    return $fleet_db_list;
+  }
 
 
 
@@ -177,6 +242,34 @@ class FleetList extends ArrayAccessV2 {
       ")"
     );
   }
+
+
+  /**
+   * LIST - Get missile attack list by condition
+   *
+   * @param string $where
+   */
+  public function dbMergeMissileList($where) {
+    $query = doquery(
+      "SELECT * FROM `{{iraks}}`" .
+      (!empty($where) ? " WHERE {$where}" : '') .
+      " FOR UPDATE;");
+    while($missile_db_row = db_fetch($query)) {
+      /**
+       * @var Fleet $objFleet
+       */
+      $objFleet = $this->_createElement();
+      $objFleet->parse_missile_db_row($missile_db_row);
+
+      $this[$objFleet->db_id] = $objFleet;
+    }
+  }
+
+
+
+
+
+
 
   /**
    * Get fleet list flying/returning to planet/system coordinates
@@ -233,7 +326,70 @@ class FleetList extends ArrayAccessV2 {
 
   }
 
+  /**
+   * LIST - Get missile attack list by condition
+   *
+   * @param string $where
+   *
+   * @return array
+   */
+  public static function db_missile_list($where) {
+    $row_list = array();
 
+    $query = doquery(
+      "SELECT * FROM `{{iraks}}`" .
+      (!empty($where) ? " WHERE {$where}" : '') .
+      " FOR UPDATE;");
+    while($row = db_fetch($query)) {
+      $row_list[$row['id']] = $row;
+    }
+
+    return $row_list;
+
+  }
+
+  /**
+   * Get fleet and missile list by that flies from player's planets OR to player's planets
+   *
+   * @param int $owner_id
+   *
+   * @return array
+   */
+  public static function fleet_and_missiles_list_incoming($owner_id) {
+    $owner_id_safe = idval($owner_id);
+    if(empty($owner_id_safe)) {
+      return array();
+    }
+
+    $where = "`fleet_owner` = '{$owner_id_safe}' OR `fleet_target_owner` = '{$owner_id_safe}'";
+    $fleet_db_list = FleetList::db_fleet_list($where);
+    $missile_db_list = FleetList::db_missile_list($where);
+
+    FleetList::missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
+
+    return $fleet_db_list;
+  }
+
+  /**
+   * Converts IRAK table record to FLEET one
+   *
+   * @param array $missile_db_list
+   * @param array $fleet_db_list
+   */
+  public static function missile_list_convert_to_fleet(&$missile_db_list, &$fleet_db_list) {
+    // Missile attack
+    foreach($missile_db_list as $irak) {
+      if($irak['fleet_end_time'] >= SN_TIME_NOW) {
+        $irak['fleet_start_type'] = PT_PLANET;
+        $planet_start = db_planet_by_vector($irak, 'fleet_start_', false, 'name');
+        $irak['fleet_id'] = -$irak['id'];
+        $irak['fleet_mission'] = MT_MISSILE;
+        $irak['fleet_array'] = UNIT_DEF_MISSILE_INTERPLANET . ",{$irak['fleet_amount']};";
+        $irak['fleet_start_name'] = $planet_start['name'];
+      }
+      $fleet_db_list[] = $irak;
+    }
+  }
 
 
 

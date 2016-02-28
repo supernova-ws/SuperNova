@@ -65,8 +65,8 @@ db_planet_set_by_id($user['current_planet'], "deuterium = deuterium - {$cost}");
 
 $template = gettemplate('planet_fleet_list', true);
 
-$fleet_list = fleet_and_missiles_list_by_coordinates($planet_scanned, true);
-$fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
-tpl_assign_fleet($template, $fleets);
+$objFleetList = FleetList::dbGetFleetListAndMissileByCoordinates($planet_scanned, true);
+$fleet_events = flt_parse_objFleetList_to_events($objFleetList, $planet_scanned);
+tpl_assign_fleet($template, $fleet_events);
 
 display($template, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);

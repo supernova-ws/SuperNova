@@ -160,10 +160,27 @@ function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result)
 }
 
 // Used in UNIT_CAPTAIN
+/**
+ * @param Fleet $objFleet
+ * @param       $index
+ * @param bool  $user_data
+ *
+ * @return array
+ */
 function tplParseFleetObject(Fleet $objFleet, $index, $user_data = false) { return sn_function_call(__FUNCTION__, array($objFleet, $index, $user_data, &$result)); }
 
+/**
+ * @param Fleet $objFleet
+ * @param       $index
+ * @param bool  $user_data
+ * @param       $result
+ *
+ * @return array
+ */
 function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$result) {
   global $lang, $user;
+
+  $result = array();
 
   if(!$user_data) {
     $user_data = $user;
@@ -347,7 +364,7 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0) {
   $fleet_list = array();
 
   if($fleet_db_list === 0) {
-    $fleet_db_list = fleet_and_missiles_list_by_coordinates($planet);
+    $fleet_db_list = FleetList::fleet_and_missiles_list_by_coordinates($planet);
   }
 
   foreach($fleet_db_list as $fleet_row) {
