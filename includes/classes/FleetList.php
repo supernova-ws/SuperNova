@@ -13,22 +13,225 @@ class FleetList extends ArrayAccessV2 {
   }
 
 
-  // STATICS ***********************************************************************************************************
-  /* FLEET LIST & COUNT *************************************************************************************************/
-  /* FLEET LIST & COUNT CRUD ===========================================================================================*/
   /**
-   * COUNT - Get fleet count by condition
+   * @return Fleet
+   */
+  public function _createElement() {
+    return new Fleet();
+  }
+
+  // STATICS ***********************************************************************************************************
+  /* FLEET LIST FUNCTIONS ----------------------------------------------------------------------------------------------*/
+  /**
+   * LIST - Get fleet list by condition
    *
    * @param string $where_safe
    *
-   * @return int
+   * @return static
+   *
+   * @version 41a5.1
    */
-  public static function db_fleet_count($where_safe) {
-    $result = doquery("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe} FOR UPDATE", true);
+  public static function dbGetFleetList($where_safe = '') {
+    $fleetList = new static();
 
-    return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
+    $query = doquery(
+      "SELECT * FROM `{{fleets}}`" .
+      (!empty($where_safe) ? " WHERE {$where_safe}" : '') .
+      " FOR UPDATE;"
+    );
+    while($row = db_fetch($query)) {
+      /**
+       * @var Fleet $objFleet
+       */
+      $objFleet = $fleetList->_createElement();
+      $objFleet->parse_db_row($row);
+
+      $fleetList[$objFleet->db_id] = $objFleet;
+    }
+
+    return $fleetList;
   }
 
+  /**
+   * Get fleets in group
+   *
+   * @param int $group_id
+   *
+   * @return static
+   *
+   * @version 41a5.1
+   */
+  public static function dbGetFleetListByGroup($group_id) {
+    return static::dbGetFleetList("`fleet_group` = {$group_id}");
+  }
+
+  /**
+   * Fleets on hold on planet orbit
+   *
+   * @param Fleet $objFleet
+   *
+   * @return static
+   *
+   * @version 41a5.1
+   */
+  public static function dbGetFleetListOnHoldAtTarget(Fleet $objFleet) {
+    return static::dbGetFleetList(
+      "`fleet_end_galaxy` = {$objFleet->fleet_end_galaxy}
+    AND `fleet_end_system` = {$objFleet->fleet_end_system}
+    AND `fleet_end_planet` = {$objFleet->fleet_end_planet}
+    AND `fleet_end_type` = {$objFleet->fleet_end_type}
+    AND `fleet_start_time` <= {$objFleet->time_arrive_to_target}
+    AND `fleet_end_stay` >= {$objFleet->time_arrive_to_target}
+    AND `fleet_mess` = 0"
+    );
+  }
+
+  /**
+   * Gets active fleets on current tick for Flying Fleet Handler
+   *
+   * @return static
+   *
+   * @version 41a5.1
+   */
+  public static function dbGetFleetListCurrentTick() {
+    return static::dbGetFleetList(
+      "
+    (`fleet_start_time` <= " . SN_TIME_NOW . " AND `fleet_mess` = 0)
+    OR
+    (`fleet_end_stay` <= " . SN_TIME_NOW . " AND `fleet_end_stay` > 0 AND `fleet_mess` = 0)
+    OR
+    (`fleet_end_time` <= " . SN_TIME_NOW . ")");
+  }
+
+  /**
+   *  Get aggressive fleet list of chosen player on selected planet
+   *
+   * @param int   $fleet_owner_id
+   * @param array $planet_row
+   *
+   * @return static
+   *
+   * @version 41a5.1
+   */
+  public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
+    return static::dbGetFleetList(
+      "`fleet_end_galaxy` = {$planet_row['galaxy']}
+    AND `fleet_end_system` = {$planet_row['system']}
+    AND `fleet_end_planet` = {$planet_row['planet']}
+    AND `fleet_end_type`   = {$planet_row['planet_type']}
+    AND `fleet_owner` = {$fleet_owner_id}
+    AND `fleet_mission` IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ")
+    AND `fleet_mess` = 0"
+    );
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * @param $fleet_owner_id
+   *
+   * @return FleetList|null
+   */
+  public static function dbGetFleetListByOwnerId($fleet_owner_id) {
+    $fleet_owner_id_safe = idval($fleet_owner_id);
+
+    return $fleet_owner_id_safe ? static::dbGetFleetList("`fleet_owner` = {$fleet_owner_id_safe}") : null;
+  }
+
+  /**
+   * Get fleet list by owner
+   *
+   * @param int $fleet_owner_id - Fleet owner record/ID. Can't be empty
+   *
+   * @return array[]
+   */
+  // TODO - заменить на dbGetFleetListByOwnerId
+  public static function fleet_list_by_owner_id($fleet_owner_id) {
+    $fleet_owner_id_safe = idval($fleet_owner_id);
+
+    return $fleet_owner_id_safe ? static::db_fleet_list("`fleet_owner` = {$fleet_owner_id_safe}") : array();
+  }
+
+  /**
+   * Get fleet list flying/returning to planet/system coordinates
+   *
+   * @param int $galaxy
+   * @param int $system
+   * @param int $planet - planet position. "0" means "any"
+   * @param int $planet_type - planet type. "PT_ALL" means "any type"
+   *
+   * @return static
+   */
+  // TODO - ОСТАВЛЯЕМ НА ВТОРОЙ ЗАХОД - МНОГО ВСЕГО НАДО МЕНЯТЬ В ОКРУГЕ
+  public static function dbGetFleetListByCoordinates($galaxy, $system, $planet = 0, $planet_type = PT_ALL, $for_phalanx = false) {
+    return static::dbGetFleetList(
+      "(
+      fleet_start_galaxy = {$galaxy}
+      AND fleet_start_system = {$system}" .
+      ($planet ? " AND fleet_start_planet = {$planet}" : '') .
+      ($planet_type != PT_ALL ? " AND fleet_start_type = {$planet_type}" : '') .
+      ($for_phalanx ? '' : " AND fleet_mess = 1") .
+      ") OR (
+      fleet_end_galaxy = {$galaxy}
+      AND fleet_end_system = {$system}" .
+      ($planet ? " AND fleet_end_planet = {$planet}" : '') .
+      ($planet_type != PT_ALL ? " AND fleet_end_type = {$planet_type} " : '') .
+      ($for_phalanx ? '' : " AND fleet_mess = 0") .
+      ")"
+    );
+  }
+
+  /**
+   * Get fleet list flying/returning to planet/system coordinates
+   *
+   * @param int $galaxy
+   * @param int $system
+   * @param int $planet - planet position. "0" means "any"
+   * @param int $planet_type - planet type. "PT_ALL" means "any type"
+   *
+   * @return array
+   */
+  // TODO - ОСТАВЛЯЕМ НА ВТОРОЙ ЗАХОД - МНОГО ВСЕГО НАДО МЕНЯТЬ В ОКРУГЕ
+  public static function fleet_list_by_planet_coords($galaxy, $system, $planet = 0, $planet_type = PT_ALL, $for_phalanx = false) {
+    return static::db_fleet_list(
+      "(
+    fleet_start_galaxy = {$galaxy}
+    AND fleet_start_system = {$system}" .
+      ($planet ? " AND fleet_start_planet = {$planet}" : '') .
+      ($planet_type != PT_ALL ? " AND fleet_start_type = {$planet_type}" : '') .
+      ($for_phalanx ? '' : " AND fleet_mess = 1") .
+      ")
+    OR
+    (
+    fleet_end_galaxy = {$galaxy}
+    AND fleet_end_system = {$system}" .
+      ($planet ? " AND fleet_end_planet = {$planet}" : '') .
+      ($planet_type != PT_ALL ? " AND fleet_end_type = {$planet_type} " : '') .
+      ($for_phalanx ? '' : " AND fleet_mess = 0") .
+      ")"
+    );
+  }
+
+
+
+
+
+
+
+
+  /* FLEET LIST & COUNT ***********************************************************************************************/
+  /* FLEET LIST & COUNT CRUD =========================================================================================*/
   /**
    * LIST - Get fleet list by condition
    *
@@ -73,120 +276,22 @@ class FleetList extends ArrayAccessV2 {
     return doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM {{fleets}};");
   }
 
-  /* FLEET LIST FUNCTIONS ----------------------------------------------------------------------------------------------*/
-  /**
-   * Get fleet list by owner
-   *
-   * @param int $fleet_owner_id - Fleet owner record/ID. Can't be empty
-   *
-   * @return array[]
-   */
-  public static function fleet_list_by_owner_id($fleet_owner_id) {
-    $fleet_owner_id_safe = idval($fleet_owner_id);
-
-    return $fleet_owner_id_safe ? static::db_fleet_list("`fleet_owner` = {$fleet_owner_id_safe}") : array();
-  }
-
-  /**
-   * Get fleet list flying/returning to planet/system coordinates
-   *
-   * @param int $galaxy
-   * @param int $system
-   * @param int $planet - planet position. "0" means "any"
-   * @param int $planet_type - planet type. "PT_ALL" means "any type"
-   *
-   * @return array
-   */
-// TODO - safe params
-  public static function fleet_list_by_planet_coords($galaxy, $system, $planet = 0, $planet_type = PT_ALL, $for_phalanx = false) {
-    return static::db_fleet_list(
-      "(
-    fleet_start_galaxy = {$galaxy}
-    AND fleet_start_system = {$system}" .
-      ($planet ? " AND fleet_start_planet = {$planet}" : '') .
-      ($planet_type != PT_ALL ? " AND fleet_start_type = {$planet_type}" : '') .
-      ($for_phalanx ? '' : " AND fleet_mess = 1") .
-      ")
-    OR
-    (
-    fleet_end_galaxy = {$galaxy}
-    AND fleet_end_system = {$system}" .
-      ($planet ? " AND fleet_end_planet = {$planet}" : '') .
-      ($planet_type != PT_ALL ? " AND fleet_end_type = {$planet_type} " : '') .
-      ($for_phalanx ? '' : " AND fleet_mess = 0") .
-      ")"
-    );
-  }
-
-  /**
-   * Fleets on hold on planet orbit
-   *
-   * @param $fleet_row
-   * @param $ube_time
-   *
-   * @return array
-   */
-// TODO - safe params
-  public static function fleet_list_on_hold($galaxy, $system, $planet, $planet_type, $ube_time) {
-    return static::db_fleet_list(
-      "`fleet_end_galaxy` = {$galaxy}
-    AND `fleet_end_system` = {$system}
-    AND `fleet_end_planet` = {$planet}
-    AND `fleet_end_type` = {$planet_type}
-    AND `fleet_start_time` <= {$ube_time}
-    AND `fleet_end_stay` >= {$ube_time}
-    AND `fleet_mess` = 0"
-    );
-  }
-
-  /**
-   * Get aggressive fleet list of chosen player on selected planet
-   *
-   * @param $fleet_owner_id
-   * @param $planet_row
-   *
-   * @return array
-   */
-  public static function fleet_list_bashing($fleet_owner_id, $planet_row) {
-    return static::db_fleet_list(
-      "`fleet_end_galaxy` = {$planet_row['galaxy']}
-    AND `fleet_end_system` = {$planet_row['system']}
-    AND `fleet_end_planet` = {$planet_row['planet']}
-    AND `fleet_end_type`   = {$planet_row['planet_type']}
-    AND `fleet_owner` = {$fleet_owner_id}
-    AND `fleet_mission` IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ")
-    AND `fleet_mess` = 0"
-    );
-  }
-
-  /**
-   * Gets active fleets on current tick for Flying Fleet Handler
-   *
-   * @return array
-   */
-  public static function fleet_list_current_tick() {
-    return static::db_fleet_list(
-      "
-    (`fleet_start_time` <= " . SN_TIME_NOW . " AND `fleet_mess` = 0)
-    OR
-    (`fleet_end_stay` <= " . SN_TIME_NOW . " AND `fleet_end_stay` > 0 AND `fleet_mess` = 0)
-    OR
-    (`fleet_end_time` <= " . SN_TIME_NOW . ")");
-  }
-
-  /**
-   * Get fleets in group
-   *
-   * @param $group_id
-   *
-   * @return array[]
-   */
-  public static function fleet_list_by_group($group_id) {
-    return static::db_fleet_list("`fleet_group` = {$group_id}");
-  }
 
   /* FLEET LIST & COUNT HELPERS ========================================================================================*/
   /* FLEET COUNT FUNCTIONS ---------------------------------------------------------------------------------------------*/
+  /**
+   * COUNT - Get fleet count by condition
+   *
+   * @param string $where_safe
+   *
+   * @return int
+   */
+  public static function db_fleet_count($where_safe) {
+    $result = doquery("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe} FOR UPDATE", true);
+
+    return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
+  }
+
   /**
    * Get flying fleet count
    *
@@ -219,7 +324,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return int
    */
-// TODO - Через fleet_list_by_planet_coords() ????
+  // TODO - Через fleet_list_by_planet_coords() ????
   public static function fleet_count_incoming($galaxy, $system, $planet) {
     return static::db_fleet_count(
       "(`fleet_start_galaxy` = {$galaxy} AND `fleet_start_system` = {$system} AND `fleet_start_planet` = {$planet})

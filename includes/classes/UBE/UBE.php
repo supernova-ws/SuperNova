@@ -119,27 +119,23 @@ class UBE {
     $this->ube_attack_prepare_planet($destination_planet);
 
     // Готовим инфу по удержанию
-    $target_coordinates = $objFleet->target_coordinates_typed();
-    $fleet_list_on_hold = FleetList::fleet_list_on_hold($target_coordinates['galaxy'], $target_coordinates['system'], $target_coordinates['planet'], $target_coordinates['type'], $this->combat_timestamp);
-    foreach($fleet_list_on_hold as $fleet_row) {
-      $objFleetHold = new Fleet();
-      $objFleetHold->parse_db_row($fleet_row);
-
-      $this->ube_attack_prepare_fleet($objFleetHold, UBE_PLAYER_IS_DEFENDER);
+    $holdingFleetList = FleetList::dbGetFleetListOnHoldAtTarget($objFleet);
+    foreach($holdingFleetList->_container as $objFleetHold) {
+      $this->fleet_list->ube_insert_from_Fleet($objFleetHold);
+      $this->ube_attack_prepare_player($objFleetHold->owner_id, UBE_PLAYER_IS_DEFENDER);
     }
     // TODO - НАДО ВЫНЕСТИ РАБОТУ С ПЛЕЕРАМИ ИЗ PREPARE FLEET! ПОтому что могут поменятся статы - АТТАКЕР/ДЕФЕНДЕР И, СООТВЕТСТВЕННО, БОНУСЫ!!!
 
     // Готовим инфу по атакующим
     if($objFleet->group_id) {
-      $acs_fleet_list = FleetList::fleet_list_by_group($objFleet->group_id);
-      foreach($acs_fleet_list as $fleet_row) {
-        $objFleetACS = new Fleet();
-        $objFleetACS->parse_db_row($fleet_row);
-
-        $this->ube_attack_prepare_fleet($objFleetACS, UBE_PLAYER_IS_ATTACKER);
+      $acsFleetList = FleetList::dbGetFleetListByGroup($objFleet->group_id);
+      foreach($acsFleetList->_container as $objFleetACS) {
+        $this->fleet_list->ube_insert_from_Fleet($objFleetACS);
+        $this->ube_attack_prepare_player($objFleetACS->owner_id, UBE_PLAYER_IS_ATTACKER);
       }
     } else {
-      $this->ube_attack_prepare_fleet($objFleet, UBE_PLAYER_IS_ATTACKER);
+      $this->fleet_list->ube_insert_from_Fleet($objFleet);
+      $this->ube_attack_prepare_player($objFleet->owner_id, UBE_PLAYER_IS_ATTACKER);
     }
   }
 
@@ -209,15 +205,12 @@ class UBE {
    * Заполняет данные по флоту
    *
    * @param Fleet $objFleet
-   * @param bool  $is_attacker
    */
-  function ube_attack_prepare_fleet(Fleet $objFleet, $is_attacker) {
+  function ube_attack_prepare_fleet(Fleet $objFleet) {
     $UBEFleet = new UBEFleet();
     $UBEFleet->read_from_fleet_object($objFleet);
 
     $this->fleet_list[$UBEFleet->db_id] = $UBEFleet;
-
-    $this->ube_attack_prepare_player($UBEFleet->owner_id, $is_attacker);
 
     // Вызов основной функции!!!
     ube_attack_prepare_fleet_from_object($UBEFleet); // Used by UNIT_CAPTAIN

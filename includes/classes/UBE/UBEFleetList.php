@@ -25,7 +25,7 @@ class UBEFleetList extends FleetList {
   /**
    * UBEFleetList constructor.
    *
-   * @version 41a4.74
+   * @version 41a5.1
    */
   public function __construct() {
     parent::__construct();
@@ -37,6 +37,31 @@ class UBEFleetList extends FleetList {
 
     $this->ube_side_present_at_round_start = array();
   }
+
+  /**
+   * @return UBEFleet
+   *
+   * @version 41a5.1
+   */
+  public function _createElement() {
+    return new UBEFleet();
+  }
+
+  /**
+   * @param Fleet $objFleet
+   *
+   * @version 41a5.1
+   */
+  public function ube_insert_from_Fleet(Fleet $objFleet) {
+    $UBEFleet = new UBEFleet();
+    $UBEFleet->read_from_fleet_object($objFleet);
+
+    $this[$UBEFleet->db_id] = $UBEFleet;
+
+    // Вызов основной функции!!!
+    ube_attack_prepare_fleet_from_object($UBEFleet); // Used by UNIT_CAPTAIN
+  }
+
 
   /**
    * @param UBEPlayerList $players
@@ -110,7 +135,7 @@ class UBEFleetList extends FleetList {
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    *
-   * @version 41a4.74
+   * @version 41a5.1
    */
   public function ube_analyze_fleets($is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя

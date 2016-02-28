@@ -512,7 +512,11 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     ));
   }
 
-  $fleet_flying_list = tpl_get_fleets_flying($user);
+  $fleet_flying_list = array();
+  $fleet_flying_list[0] = FleetList::fleet_list_by_owner_id($user['id']);
+  foreach($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {
+    $fleet_flying_list[$fleet_flying_row['fleet_mission']][$fleet_id] = &$fleet_flying_list[0][$fleet_id];
+  }
   tpl_topnav_event_build($template, $fleet_flying_list[0]);
   tpl_topnav_event_build($template, $fleet_flying_list[MT_EXPLORE], 'expedition');
 
@@ -769,28 +773,6 @@ function tpl_login_lang(&$template) {
       $template->assign_block_vars('language', $lng_data);
     }
   }
-}
-
-/**
- * @param array $user
- *
- * @return array
- */
-function tpl_get_fleets_flying(&$user) {
-  $fleet_flying_list = array();
-
-//  $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
-//  while($fleet_flying_row = db_fetch($fleet_flying_query)) {
-//    $fleet_flying_list[0][] = $fleet_flying_row;
-//    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list) - 1];
-//  }
-
-  $fleet_flying_list[0] = FleetList::fleet_list_by_owner_id($user['id']);
-  foreach($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {
-    $fleet_flying_list[$fleet_flying_row['fleet_mission']][$fleet_id] = &$fleet_flying_list[0][$fleet_id];
-  }
-
-  return $fleet_flying_list;
 }
 
 /**

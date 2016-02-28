@@ -139,36 +139,34 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   coe_o_missile_calculate();
   sn_db_transaction_commit();
 
-  $fleet_list = array();
   $fleet_event_list = array();
   $missions_used = array();
 
-  $fleet_list_current_tick = FleetList::fleet_list_current_tick();
-  foreach($fleet_list_current_tick as $fleet_row) {
+  $objFleetList = FleetList::dbGetFleetListCurrentTick();
+  foreach($objFleetList->_container as $objFleet) {
     set_time_limit(15);
     // TODO - Унифицировать код с темплейтным разбором эвентов на планете!
-    $fleet_list[$fleet_row['fleet_id']] = $fleet_row;
-    $missions_used[$fleet_row['fleet_mission']] = 1;
-    if($fleet_row['fleet_start_time'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
+    $missions_used[$objFleet->mission_type] = 1;
+    if($objFleet->time_arrive_to_target <= SN_TIME_NOW && $objFleet->is_returning == 0) {
       $fleet_event_list[] = array(
-        'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
-        'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_start_time'],
+        'object'      => $objFleet,
+        'fleet_time'  => $objFleet->time_arrive_to_target,
         'fleet_event' => EVENT_FLT_ARRIVE,
       );
     }
 
-    if($fleet_row['fleet_end_stay'] > 0 && $fleet_row['fleet_end_stay'] <= SN_TIME_NOW && $fleet_row['fleet_mess'] == 0) {
+    if($objFleet->time_mission_job_complete > 0 && $objFleet->time_mission_job_complete <= SN_TIME_NOW && $objFleet->is_returning == 0) {
       $fleet_event_list[] = array(
-        'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
-        'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_end_stay'],
+        'object'      => $objFleet,
+        'fleet_time'  => $objFleet->time_mission_job_complete,
         'fleet_event' => EVENT_FLT_ACOMPLISH,
       );
     }
 
-    if($fleet_row['fleet_end_time'] <= SN_TIME_NOW) {
+    if($objFleet->time_return_to_source <= SN_TIME_NOW) {
       $fleet_event_list[] = array(
-        'fleet_row'   => &$fleet_list[$fleet_row['fleet_id']],
-        'fleet_time'  => $fleet_list[$fleet_row['fleet_id']]['fleet_end_time'],
+        'object'      => $objFleet,
+        'fleet_time'  => $objFleet->time_return_to_source,
         'fleet_event' => EVENT_FLT_RETURN,
       );
     }
@@ -176,14 +174,12 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
 //log_file('Сортировка и подгрузка модулей');
   uasort($fleet_event_list, 'flt_flyingFleetsSort');
-//  unset($fleets_query);
 
 // TODO: Грузить только используемые модули из $missions_used
   $mission_files = array(
-    MT_ATTACK  => 'flt_mission_attack',
-    MT_AKS     => 'flt_mission_attack',
-    MT_DESTROY => 'flt_mission_attack',
-
+    MT_ATTACK    => 'flt_mission_attack',
+    MT_AKS       => 'flt_mission_attack',
+    MT_DESTROY   => 'flt_mission_attack',
     MT_TRANSPORT => 'flt_mission_transport',
     MT_RELOCATE  => 'flt_mission_relocate',
     MT_HOLD      => 'flt_mission_hold',
@@ -203,13 +199,17 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     // TODO: Указатель тут потом сделать
     // TODO: СЕЙЧАС НАДО ПРОВЕРЯТЬ ПО БАЗЕ - А ЖИВОЙ ЛИ ФЛОТ?!
     $fleet_row = $fleet_event['fleet_row'];
-    if(!$fleet_row) {
+    if(empty($fleet_event['object'])) {
       // Fleet was destroyed in course of previous actions
       continue;
     }
 
-    $objFleet = new Fleet();
-    $objFleet->parse_db_row($fleet_row);
+    /**
+     * @var Fleet $objFleet
+     */
+    $objFleet = $fleet_event['object'];
+//    $objFleet = new Fleet();
+//    $objFleet->parse_db_row($fleet_row);
 
     // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
     sn_db_transaction_start();

@@ -37,27 +37,17 @@ if(!$planetrow) {
 $template = gettemplate('flying_fleets', true);
 
 $i = 0;
-//$fleet_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner={$user['id']};");
-//while ($fleet_row = db_fetch($fleet_query)) {
-//  $i++;
-//  $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
-//
-//  $template->assign_block_vars('fleets', $fleet_data['fleet']);
-//
-//  foreach($fleet_data['ships'] as $ship_data) {
-//    $template->assign_block_vars('fleets.ships', $ship_data);
-//  }
-//}
+$objFleetList = FleetList::dbGetFleetListByOwnerId($user['id']);
+if(!empty($objFleetList)) {
+  foreach($objFleetList->_container as $fleet_id => $objFleet) {
+    $i++;
+    $fleet_data = tplParseFleetObject($objFleet, $i, $user);
 
-$fleet_list = FleetList::fleet_list_by_owner_id($user['id']);
-foreach($fleet_list as $fleet_id => $fleet_row) {
-  $i++;
-  $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
+    $template->assign_block_vars('fleets', $fleet_data['fleet']);
 
-  $template->assign_block_vars('fleets', $fleet_data['fleet']);
-
-  foreach($fleet_data['ships'] as $ship_data) {
-    $template->assign_block_vars('fleets.ships', $ship_data);
+    foreach($fleet_data['ships'] as $ship_data) {
+      $template->assign_block_vars('fleets.ships', $ship_data);
+    }
   }
 }
 

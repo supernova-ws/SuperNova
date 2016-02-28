@@ -435,6 +435,23 @@ $round - должен быть свойством, а не передавать�
 
 
 // TODO - СЕЙЧАС
+        Переделываем статики под FleetList
+
+        Сделать Unit
+            Сделать UnitList
+                Сделать Fleet
+                    Сделать FleetList
+                        Сделать полиморфизм FleetList/UBEFleetList
+
+
+fleet.php
+  public static function static_proxy_string_to_array($fleet_row) {
+    return sys_unit_str2arr($fleet_row['fleet_array']);
+  }
+
+  public function parse_fleet_string($fleet_string) {
+    return sys_unit_str2arr($fleet_string);
+  }
 
 
 #ctv

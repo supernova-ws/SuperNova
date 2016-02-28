@@ -62,8 +62,8 @@ function tpl_parse_fleet_sn($fleet, $fleet_id) {
   return $return;
 }
 
+// Used in UNIT_CAPTAIN
 function tpl_parse_fleet_db($fleet_row, $index, $user_data = false) { return sn_function_call(__FUNCTION__, array($fleet_row, $index, $user_data, &$result)); }
-
 function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result) {
   global $lang, $user;
 
@@ -120,6 +120,101 @@ function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result)
   );
 
   $ship_list_fully_parsed = Fleet::static_proxy_string_to_array($fleet_row);
+
+  $ship_id = 0;
+  if($spy_level >= 6) {
+    foreach($ship_list_fully_parsed as $ship_sn_id => $ship_amount) {
+      if($spy_level >= 10) {
+        $single_ship_data = get_ship_data($ship_sn_id, $user_data);
+        $result['ships'][$ship_sn_id] = array(
+          'ID'          => $ship_sn_id,
+          'NAME'        => $lang['tech'][$ship_sn_id],
+          'AMOUNT'      => $ship_amount,
+          'AMOUNT_TEXT' => pretty_number($ship_amount),
+          'CONSUMPTION' => $single_ship_data['consumption'],
+          'SPEED'       => $single_ship_data['speed'],
+          'CAPACITY'    => $single_ship_data['capacity'],
+        );
+      } else {
+        $result['ships'][$ship_sn_id] = array(
+          'ID'               => $ship_id++,
+          'NAME'             => $lang['tech'][UNIT_SHIPS],
+          'AMOUNT'           => $ship_amount,
+          'AMOUNT_TEXT'      => pretty_number($ship_amount),
+          'CONSUMPTION'      => 0,
+          'CONSUMPTION_TEXT' => '0',
+          'SPEED'            => 0,
+          'CAPACITY'         => 0,
+        );
+      }
+    }
+  }
+
+  return $result;
+}
+
+// Used in UNIT_CAPTAIN
+function tplParseFleetObject(Fleet $objFleet, $index, $user_data = false) { return sn_function_call(__FUNCTION__, array($objFleet, $index, $user_data, &$result)); }
+function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$result) {
+  global $lang, $user;
+
+  if(!$user_data) {
+    $user_data = $user;
+  }
+
+  if($objFleet->is_returning == 0 && $objFleet->mission_type == MT_AKS) {
+    $aks = db_acs_get_by_group_id($objFleet->group_id);
+  }
+
+  $spy_level = $user['id'] == $objFleet->owner_id ? 100 : GetSpyLevel($user);
+
+  $fleet_resources = $objFleet->get_resource_list();
+  $result['fleet'] = isset($result['fleet']) ? $result['fleet'] : array();
+  $result['fleet'] = array(
+    'NUMBER' => $index,
+
+    'ID'           => $objFleet->db_id,
+    'OWNER'        => $objFleet->owner_id,
+    'TARGET_OWNER' => $objFleet->target_owner_id,
+
+    'MESSAGE'      => $objFleet->is_returning,
+    'MISSION'      => $objFleet->mission_type,
+    'MISSION_NAME' => $lang['type_mission'][$objFleet->mission_type],
+    'ACS'          => !empty($aks['name']) ? $aks['name'] : (!empty($objFleet->group_id) ? $objFleet->group_id : ''),
+    'AMOUNT'       => $spy_level >= 4 ? (pretty_number($objFleet->get_ship_count()) . ($fleet_resources[RES_METAL] + $fleet_resources[RES_CRYSTAL] + $fleet_resources[RES_DEUTERIUM] ? '+' : '')) : '?',
+
+    'METAL'     => $spy_level >= 8 ? $fleet_resources[RES_METAL] : 0,
+    'CRYSTAL'   => $spy_level >= 8 ? $fleet_resources[RES_CRYSTAL] : 0,
+    'DEUTERIUM' => $spy_level >= 8 ? $fleet_resources[RES_DEUTERIUM] : 0,
+
+    'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$objFleet->fleet_start_type],
+    'START_COORDS'       => "[{$objFleet->fleet_start_galaxy}:{$objFleet->fleet_start_system}:{$objFleet->fleet_start_planet}]",
+    'START_TIME_TEXT'    => date(FMT_DATE_TIME, $objFleet->time_return_to_source + SN_CLIENT_TIME_DIFF),
+    'START_LEFT'         => floor($objFleet->time_return_to_source + 1 - SN_TIME_NOW),
+    'START_URL'          => uni_render_coordinates_href($objFleet->launch_coordinates_typed(), '', 3),
+    'START_NAME'         => property_exists($objFleet, 'fleet_start_name') ? $objFleet->fleet_start_name : '',
+
+    'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$objFleet->fleet_end_type],
+    'END_COORDS'       => "[{$objFleet->fleet_end_galaxy}:{$objFleet->fleet_end_system}:{$objFleet->fleet_end_planet}]",
+    'END_TIME_TEXT'    => date(FMT_DATE_TIME, $objFleet->time_arrive_to_target + SN_CLIENT_TIME_DIFF),
+    'END_LEFT'         => floor($objFleet->time_arrive_to_target + 1 - SN_TIME_NOW),
+    'END_URL'          => uni_render_coordinates_href($objFleet->target_coordinates_typed(), '', 3),
+    'END_NAME'         => property_exists($objFleet, 'fleet_end_name') ? $objFleet->fleet_end_name : '',
+
+    'STAY_TIME' => date(FMT_DATE_TIME, $objFleet->time_mission_job_complete + SN_CLIENT_TIME_DIFF),
+    'STAY_LEFT' => floor($objFleet->time_mission_job_complete + 1 - SN_TIME_NOW),
+  );
+
+  if(property_exists($objFleet, 'event_time')) {
+    $result['fleet'] = array_merge($result['fleet'], array(
+      'OV_LABEL'        => $objFleet->ov_label,
+      'EVENT_TIME_TEXT' => property_exists($objFleet, 'event_time') ? date(FMT_DATE_TIME, $objFleet->event_time + SN_CLIENT_TIME_DIFF) : '',
+      'OV_LEFT'         => floor($objFleet->event_time + 1 - SN_TIME_NOW),
+      'OV_THIS_PLANET'  => $objFleet->ov_this_planet,
+    ));
+  }
+
+  $ship_list_fully_parsed = $objFleet->get_unit_list();
 
   $ship_id = 0;
   if($spy_level >= 6) {

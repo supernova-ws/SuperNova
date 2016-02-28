@@ -122,13 +122,13 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   $bashing_list = array(SN_TIME_NOW);
 
   // Retrieving flying fleets
-  $bashing_fleet_list = FleetList::fleet_list_bashing($user['id'], $planet_dst);
-  foreach($bashing_fleet_list as $fleet_row) {
+  $objFleetsBashing = FleetList::dbGetFleetListBashing($user['id'], $planet_dst);
+  foreach($objFleetsBashing->_container as $fleetBashing) {
     // Checking for ACS - each ACS count only once
-    if($fleet_row['fleet_group']) {
-      $bashing_list["{$user['id']}_{$fleet_row['fleet_group']}"] = $fleet_row['fleet_start_time'];
+    if($fleetBashing->group_id) {
+      $bashing_list["{$user['id']}_{$fleetBashing->group_id}"] = $fleetBashing->time_arrive_to_target;
     } else {
-      $bashing_list[] = $fleet_row['fleet_start_time'];
+      $bashing_list[] = $fleetBashing->time_arrive_to_target;
     }
   }
 
