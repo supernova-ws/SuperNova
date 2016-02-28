@@ -120,7 +120,7 @@ class UBE {
 
     // Готовим инфу по удержанию
     $target_coordinates = $objFleet->target_coordinates_typed();
-    $fleet_list_on_hold = fleet_list_on_hold($target_coordinates['galaxy'], $target_coordinates['system'], $target_coordinates['planet'], $target_coordinates['type'], $this->combat_timestamp);
+    $fleet_list_on_hold = FleetList::fleet_list_on_hold($target_coordinates['galaxy'], $target_coordinates['system'], $target_coordinates['planet'], $target_coordinates['type'], $this->combat_timestamp);
     foreach($fleet_list_on_hold as $fleet_row) {
       $objFleetHold = new Fleet();
       $objFleetHold->parse_db_row($fleet_row);
@@ -131,7 +131,7 @@ class UBE {
 
     // Готовим инфу по атакующим
     if($objFleet->group_id) {
-      $acs_fleet_list = fleet_list_by_group($objFleet->group_id);
+      $acs_fleet_list = FleetList::fleet_list_by_group($objFleet->group_id);
       foreach($acs_fleet_list as $fleet_row) {
         $objFleetACS = new Fleet();
         $objFleetACS->parse_db_row($fleet_row);

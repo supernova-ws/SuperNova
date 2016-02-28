@@ -37,7 +37,7 @@ $HavePhalanx = mrc_get_level($user, $planetrow, STRUC_MOON_PHALANX);
 $CurrentSystem = $planetrow['system'];
 $CurrentGalaxy = $planetrow['galaxy'];
 
-$flying_fleet_count = fleet_count_flying($user['id']);
+$flying_fleet_count = FleetList::fleet_count_flying($user['id']);
 
 if($mode == 1) {
 } elseif($mode == 2 || $mode == 3) {
@@ -73,7 +73,7 @@ if(!empty($planet_precache_query)) {
 }
 
 
-$system_fleet_list = fleet_list_by_planet_coords($uni_galaxy, $uni_system);
+$system_fleet_list = FleetList::fleet_list_by_planet_coords($uni_galaxy, $uni_system);
 foreach($system_fleet_list as $fleet_row) {
   $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
   $fleet_type = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];

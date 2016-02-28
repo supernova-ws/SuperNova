@@ -21,7 +21,7 @@ $template = gettemplate('admin/adm_flying_fleets', true);
 //$FlyingFleets = db_fleet_list_all();
 //while($CurrentFleet = db_fetch($FlyingFleets))
 
-$all_flying_fleets = db_fleet_list('');
+$all_flying_fleets = FleetList::db_fleet_list();
 foreach($all_flying_fleets as $fleet_id => $CurrentFleet) {
   $FleetOwner = db_user_by_id($CurrentFleet['fleet_owner']);
   $TargetOwner = db_user_by_id($CurrentFleet['fleet_target_owner']);

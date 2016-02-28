@@ -140,7 +140,7 @@ function sys_stat_calculate() {
   // Calculation of Fleet-In-Flight
   sta_set_time_limit('calculating flying fleets stats');
   $i = 0;
-  $query = db_fleet_list_query_all_stat();
+  $query = FleetList::db_fleet_list_query_all_stat();
   $row_num = db_num_rows($query);
   while($fleet_row = db_fetch($query)) {
     if($i++ % 100 == 0) {

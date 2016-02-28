@@ -49,7 +49,7 @@ $i = 0;
 //  }
 //}
 
-$fleet_list = fleet_list_by_owner_id($user['id']);
+$fleet_list = FleetList::fleet_list_by_owner_id($user['id']);
 foreach($fleet_list as $fleet_id => $fleet_row) {
   $i++;
   $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
@@ -62,17 +62,8 @@ foreach($fleet_list as $fleet_id => $fleet_row) {
 }
 
 $MaxExpeditions = get_player_max_expeditons($user);
-$FlyingExpeditions = fleet_count_flying($user['id'], MT_EXPLORE);
-//if($MaxExpeditions) {
-//  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
-//  $FlyingExpeditions  = $FlyingExpeditions['expedi'];
-//} else {
-//  $FlyingExpeditions = 0;
-//};
-
-//$fleet_flying_amount = doquery("SELECT COUNT(fleet_id) AS `flying_fleets` FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}';", '', true);
-//$fleet_flying_amount = $fleet_flying_amount['flying_fleets'];
-$fleet_flying_amount = fleet_count_flying($user['id'], MT_EXPLORE);
+$FlyingExpeditions = FleetList::fleet_count_flying($user['id'], MT_EXPLORE);
+$fleet_flying_amount = FleetList::fleet_count_flying($user['id'], MT_EXPLORE);
 
 $template->assign_vars(array(
   'FLEETS_FLYING'      => $fleet_flying_amount,

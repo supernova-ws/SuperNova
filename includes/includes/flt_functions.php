@@ -122,7 +122,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
   $bashing_list = array(SN_TIME_NOW);
 
   // Retrieving flying fleets
-  $bashing_fleet_list = fleet_list_bashing($user['id'], $planet_dst);
+  $bashing_fleet_list = FleetList::fleet_list_bashing($user['id'], $planet_dst);
   foreach($bashing_fleet_list as $fleet_row) {
     // Checking for ACS - each ACS count only once
     if($fleet_row['fleet_group']) {
@@ -286,7 +286,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
 
   $flying_fleets = $options['flying_fleets'];
   if(!$flying_fleets) {
-    $flying_fleets = fleet_count_flying($user['id']);
+    $flying_fleets = FleetList::fleet_count_flying($user['id']);
   }
   if(GetMaxFleets($user) <= $flying_fleets && $mission != MT_MISSILE) {
     return $result = ATTACK_NO_SLOTS;

@@ -52,7 +52,7 @@ function sn_options_model() {
 //          message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
 //          die();
 //        }
-        if(fleet_count_flying($user['id'])) {
+        if(FleetList::fleet_count_flying($user['id'])) {
           message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }

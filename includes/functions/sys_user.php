@@ -66,7 +66,7 @@ function DeleteSelectedUser($UserID) {
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
-  db_fleet_list_delete_by_owner($UserID);
+  FleetList::db_fleet_list_delete_by_owner($UserID);
 //  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
 //  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");

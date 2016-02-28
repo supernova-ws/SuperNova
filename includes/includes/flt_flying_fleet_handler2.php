@@ -143,7 +143,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   $fleet_event_list = array();
   $missions_used = array();
 
-  $fleet_list_current_tick = fleet_list_current_tick();
+  $fleet_list_current_tick = FleetList::fleet_list_current_tick();
   foreach($fleet_list_current_tick as $fleet_row) {
     set_time_limit(15);
     // TODO - Унифицировать код с темплейтным разбором эвентов на планете!

@@ -56,18 +56,14 @@ $options = array();
 $options['fleets_max'] = GetMaxFleets($user);
 
 $MaxFleets = GetMaxFleets($user);
-//$FlyingFleets = doquery("SELECT COUNT(fleet_id) as Number FROM {{fleets}} WHERE `fleet_owner`='{$user['id']}'", true);
-//$FlyingFleets = $FlyingFleets['Number'];
-$FlyingFleets = fleet_count_flying($user['id']);
+$FlyingFleets = FleetList::fleet_count_flying($user['id']);
 if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
   message($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
 }
 
 $MaxExpeditions = get_player_max_expeditons($user);
 if($MaxExpeditions) {
-//  $FlyingExpeditions  = doquery("SELECT COUNT(fleet_owner) AS `expedi` FROM {{fleets}} WHERE `fleet_owner` = {$user['id']} AND `fleet_mission` = '" . MT_EXPLORE . "';", '', true);
-//  $FlyingExpeditions  = $FlyingExpeditions['expedi'];
-  $FlyingExpeditions  = fleet_count_flying($user['id'], MT_EXPLORE);
+  $FlyingExpeditions  = FleetList::fleet_count_flying($user['id'], MT_EXPLORE);
 } else {
   $FlyingExpeditions = 0;
 }
