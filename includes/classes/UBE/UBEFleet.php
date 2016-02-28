@@ -123,7 +123,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a4.73
+   * @version 41a4.74
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -157,7 +157,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a4.73
+   * @version 41a4.74
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -185,7 +185,7 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a4.73
+   * @version 41a4.74
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->db_id;
@@ -549,7 +549,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a4.73
+   * @version 41a4.74
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     if(defined('DEBUG_UBE')) {
@@ -615,7 +615,7 @@ class UBEFleet {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function get_resources_total() {
+  public function get_resources_amount() {
     return empty($this->resource_list) || !is_array($this->resource_list) ? 0 : array_sum($this->resource_list);
   }
 

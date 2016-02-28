@@ -72,7 +72,6 @@ function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result)
   }
 
   if($fleet_row['fleet_mess'] == 0 && $fleet_row['fleet_mission'] == MT_AKS) {
-//    $aks = doquery("SELECT * FROM {{aks}} WHERE id={$fleet_row['fleet_group']} LIMIT 1;", true);
     $aks = db_acs_get_by_group_id($fleet_row['fleet_group']);
   }
 
@@ -232,11 +231,13 @@ function tpl_parse_planet($planet) {
 }
 
 function flt_get_fleets_to_planet($planet, $fleet_db_list = 0) {
+  global $user;
+
   if(!($planet && $planet['id']) && !$fleet_db_list) {
     return $planet;
   }
 
-  global $user;
+  $fleet_list = array();
 
   if($fleet_db_list === 0) {
     $fleet_db_list = fleet_and_missiles_list_by_coordinates($planet);
@@ -285,36 +286,36 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0) {
   return $fleet_list;
 }
 
-function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array(), $round = 0) {
+function tpl_set_resource_info(template &$template, $planet_row, $fleets_to_planet = array(), $round = 0) {
   $template->assign_vars(array(
     'RESOURCE_ROUNDING' => $round,
 
-    'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, true),
-    'ENERGY_MAX'     => pretty_number($planetrow['energy_max'], true, -$planetrow['energy_used']),
-    'ENERGY_FILL'    => round(($planetrow["energy_used"] / ($planetrow["energy_max"] + 1)) * 100, 0),
+    'ENERGY_BALANCE' => pretty_number($planet_row['energy_max'] - $planet_row['energy_used'], true, true),
+    'ENERGY_MAX'     => pretty_number($planet_row['energy_max'], true, -$planet_row['energy_used']),
+    'ENERGY_FILL'    => round(($planet_row["energy_used"] / ($planet_row["energy_max"] + 1)) * 100, 0),
 
-    'PLANET_METAL'            => round($planetrow["metal"], $round),
-    'PLANET_METAL_TEXT'       => pretty_number($planetrow["metal"], $round, $planetrow["metal_max"]),
-    'PLANET_METAL_MAX'        => round($planetrow["metal_max"], $round),
-    'PLANET_METAL_MAX_TEXT'   => pretty_number($planetrow["metal_max"], $round, -$planetrow["metal"]),
-    'PLANET_METAL_FILL'       => round(($planetrow["metal"] / ($planetrow["metal_max"] + 1)) * 100, 0),
-    'PLANET_METAL_PERHOUR'    => round($planetrow["metal_perhour"], 5),
-    'PLANET_METAL_FLEET_TEXT' => pretty_number($fleets_to_planet[$planetrow['id']]['fleet']['METAL'], $round, true),
+    'PLANET_METAL'            => round($planet_row["metal"], $round),
+    'PLANET_METAL_TEXT'       => pretty_number($planet_row["metal"], $round, $planet_row["metal_max"]),
+    'PLANET_METAL_MAX'        => round($planet_row["metal_max"], $round),
+    'PLANET_METAL_MAX_TEXT'   => pretty_number($planet_row["metal_max"], $round, -$planet_row["metal"]),
+    'PLANET_METAL_FILL'       => round(($planet_row["metal"] / ($planet_row["metal_max"] + 1)) * 100, 0),
+    'PLANET_METAL_PERHOUR'    => round($planet_row["metal_perhour"], 5),
+    'PLANET_METAL_FLEET_TEXT' => pretty_number($fleets_to_planet[$planet_row['id']]['fleet']['METAL'], $round, true),
 
-    'PLANET_CRYSTAL'            => round($planetrow["crystal"], $round),
-    'PLANET_CRYSTAL_TEXT'       => pretty_number($planetrow["crystal"], $round, $planetrow["crystal_max"]),
-    'PLANET_CRYSTAL_MAX'        => round($planetrow["crystal_max"], $round),
-    'PLANET_CRYSTAL_MAX_TEXT'   => pretty_number($planetrow["crystal_max"], $round, -$planetrow["crystal"]),
-    'PLANET_CRYSTAL_FILL'       => round(($planetrow["crystal"] / ($planetrow["crystal_max"] + 1)) * 100, 0),
-    'PLANET_CRYSTAL_PERHOUR'    => round($planetrow["crystal_perhour"], 5),
-    'PLANET_CRYSTAL_FLEET_TEXT' => pretty_number($fleets_to_planet[$planetrow['id']]['fleet']['CRYSTAL'], $round, true),
+    'PLANET_CRYSTAL'            => round($planet_row["crystal"], $round),
+    'PLANET_CRYSTAL_TEXT'       => pretty_number($planet_row["crystal"], $round, $planet_row["crystal_max"]),
+    'PLANET_CRYSTAL_MAX'        => round($planet_row["crystal_max"], $round),
+    'PLANET_CRYSTAL_MAX_TEXT'   => pretty_number($planet_row["crystal_max"], $round, -$planet_row["crystal"]),
+    'PLANET_CRYSTAL_FILL'       => round(($planet_row["crystal"] / ($planet_row["crystal_max"] + 1)) * 100, 0),
+    'PLANET_CRYSTAL_PERHOUR'    => round($planet_row["crystal_perhour"], 5),
+    'PLANET_CRYSTAL_FLEET_TEXT' => pretty_number($fleets_to_planet[$planet_row['id']]['fleet']['CRYSTAL'], $round, true),
 
-    'PLANET_DEUTERIUM'            => round($planetrow["deuterium"], $round),
-    'PLANET_DEUTERIUM_TEXT'       => pretty_number($planetrow["deuterium"], $round, $planetrow["deuterium_max"]),
-    'PLANET_DEUTERIUM_MAX'        => round($planetrow["deuterium_max"], $round),
-    'PLANET_DEUTERIUM_MAX_TEXT'   => pretty_number($planetrow["deuterium_max"], $round, -$planetrow["deuterium"]),
-    'PLANET_DEUTERIUM_FILL'       => round(($planetrow["deuterium"] / ($planetrow["deuterium_max"] + 1)) * 100, 0),
-    'PLANET_DEUTERIUM_PERHOUR'    => round($planetrow["deuterium_perhour"], 5),
-    'PLANET_DEUTERIUM_FLEET_TEXT' => pretty_number($fleets_to_planet[$planetrow['id']]['fleet']['DEUTERIUM'], $round, true),
+    'PLANET_DEUTERIUM'            => round($planet_row["deuterium"], $round),
+    'PLANET_DEUTERIUM_TEXT'       => pretty_number($planet_row["deuterium"], $round, $planet_row["deuterium_max"]),
+    'PLANET_DEUTERIUM_MAX'        => round($planet_row["deuterium_max"], $round),
+    'PLANET_DEUTERIUM_MAX_TEXT'   => pretty_number($planet_row["deuterium_max"], $round, -$planet_row["deuterium"]),
+    'PLANET_DEUTERIUM_FILL'       => round(($planet_row["deuterium"] / ($planet_row["deuterium_max"] + 1)) * 100, 0),
+    'PLANET_DEUTERIUM_PERHOUR'    => round($planet_row["deuterium_perhour"], 5),
+    'PLANET_DEUTERIUM_FLEET_TEXT' => pretty_number($fleets_to_planet[$planet_row['id']]['fleet']['DEUTERIUM'], $round, true),
   ));
 }

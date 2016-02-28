@@ -122,7 +122,7 @@ class UBEMoonCalculator {
   public function calculate_moon(UBE $ube) {
     if(UBE_MOON_EXISTS == $this->status) {
       if($ube->mission_type_id == MT_DESTROY && $ube->combat_result == UBE_COMBAT_RESULT_WIN) {
-        $reapers = $ube->fleet_list->calculate_attack_reapers();
+        $reapers = $ube->fleet_list->ube_calculate_attack_reapers();
         $this->moon_destroy_try($reapers);
       }
     } else {

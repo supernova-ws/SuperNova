@@ -64,7 +64,7 @@ class UBERound {
     $nextRound->round_number = $this->round_number + 1;
 
 
-    $this->round_outcome = $UBEFleetList->calculate_outcome($this->round_outcome);
+    $this->round_outcome = $UBEFleetList->ube_calculate_outcome($this->round_outcome);
 
     return $nextRound;
   }

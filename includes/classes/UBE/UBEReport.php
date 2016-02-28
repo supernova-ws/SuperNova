@@ -222,7 +222,7 @@ class UBEReport {
     $ube->rounds->report_render_rounds($template_result, $ube); // OK3
 
     // Боевые потери флотов
-    $template_result['.']['loss'] = $ube->fleet_list->report_render_fleets_outcome($ube);
+    $template_result['.']['loss'] = $ube->fleet_list->ube_report_render_fleets_outcome($ube);
 
 // TODO: $combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] - если админский бой не генерировать осколки и не делать луну. Сделать серверную опцию
 

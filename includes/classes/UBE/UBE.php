@@ -234,8 +234,8 @@ class UBE {
 
     $start = microtime(true);
 
-    $this->fleet_list->load_from_players($this->players);
-    $this->fleet_list->prepare_for_next_round($this->is_simulator);
+    $this->fleet_list->ube_load_from_players($this->players);
+    $this->fleet_list->ube_prepare_for_next_round($this->is_simulator);
 
     // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
     $this->rounds[0] = new UBERound();
@@ -255,7 +255,7 @@ class UBE {
       if(defined('DEBUG_UBE')) {
         print("Round {$round}<br>");
       }
-      $this->fleet_list->calculate_attack_results($this);
+      $this->fleet_list->ube_calculate_attack_results($this);
       if(defined('DEBUG_UBE')) {
         print('<hr>');
       }
@@ -272,7 +272,7 @@ class UBE {
 
       // Готовим данные для раунда
       // $nextRound->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
-      $this->fleet_list->prepare_for_next_round($this->is_simulator);
+      $this->fleet_list->ube_prepare_for_next_round($this->is_simulator);
     }
     $this->time_spent = microtime(true) - $start;
 
@@ -296,7 +296,7 @@ class UBE {
 
     $this->debris->_reset();
     // Генерируем результат боя
-    $this->fleet_list->ube_analyze_fleets($lastRound, $this->is_simulator, $this->debris, $this->resource_exchange_rates);
+    $this->fleet_list->ube_analyze_fleets($this->is_simulator, $this->debris, $this->resource_exchange_rates);
 
     if(!$this->is_ube_loaded) {
       $this->moon_calculator->calculate_moon($this);
@@ -323,9 +323,9 @@ class UBE {
     );
 
     if(
-      (($planet_resource_total = $this->fleet_list[0]->get_resources_total()) > 0)
+      (($planet_resource_total = $this->fleet_list[0]->get_resources_amount()) > 0)
       &&
-      (($total_capacity = $this->fleet_list->get_capacity_attackers()) > 0)
+      (($total_capacity = $this->fleet_list->ube_get_capacity_attackers()) > 0)
     ) {
       // Можно вывести только половину ресурсов, но не больше, чем общая вместимость флотов атакующих
       $planet_lootable = min($planet_resource_total / 2, $total_capacity);
@@ -439,7 +439,7 @@ class UBE {
 
     // TODO: Связать сабы с флотами констраинтами ON DELETE SET NULL
     // Для САБов
-    $fleet_group_id_list = $this->fleet_list->get_groups();
+    $fleet_group_id_list = $this->fleet_list->ube_get_groups();
     if(!empty($fleet_group_id_list)) {
       $fleet_group_id_list = implode(',', $fleet_group_id_list);
       doquery("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
@@ -738,11 +738,11 @@ class UBE {
       $this->players->init_player_from_report_info($player_row);
     }
 
-    $this->fleet_list->db_load_from_report_row($report_row, $this);
+    $this->fleet_list->ube_db_load_from_report_row($report_row, $this);
 
     $this->rounds->db_load_round_list_from_report_row($report_row, $this);
 
-    $this->fleet_list->db_load_fleets_outcome($report_row);
+    $this->fleet_list->ube_db_load_fleets_outcome($report_row);
   }
 
 }

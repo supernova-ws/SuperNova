@@ -1,9 +1,7 @@
 <?php
 
 /**
- * User: Gorlum
- * Date: 27.01.2016
- * Time: 21:12
+ * Class Fleet
  */
 class Fleet {
   /**
@@ -51,14 +49,6 @@ class Fleet {
     RES_CRYSTAL   => 0,
     RES_DEUTERIUM => 0,
   );
-
-
-  /**
-   * `fleet_array`
-   *
-   * @var string
-   */
-//  public $db_string = '';
 
 
   /**
@@ -150,6 +140,11 @@ class Fleet {
   public static function static_proxy_string_to_array($fleet_row) {
     return sys_unit_str2arr($fleet_row['fleet_array']);
   }
+
+  public function parse_fleet_string($fleet_string) {
+    return sys_unit_str2arr($fleet_string);
+  }
+
 
   /**
    * Sends fleet back
@@ -255,11 +250,6 @@ class Fleet {
       'type'   => $this->fleet_start_type,
     );
   }
-
-
-//
-//
-//
 
 
   /**
@@ -943,11 +933,7 @@ class Fleet {
   }
 
   public function get_resources_amount() {
-    return array_sum($this->resource_list);
-  }
-
-  public function parse_fleet_string($fleet_string) {
-    return sys_unit_str2arr($fleet_string);
+    return empty($this->resource_list) || !is_array($this->resource_list) ? 0 : array_sum($this->resource_list);
   }
 
   protected function _reset() {

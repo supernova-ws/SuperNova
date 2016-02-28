@@ -8,30 +8,34 @@
  *
  * @version 2016-02-25 23:42:45 41a4.68
  */
-class UBEFleetList extends ArrayAccessV2 {
+class UBEFleetList extends FleetList {
 
   /**
    * @var UBEASA[]
    */
-  protected $UBE_TOTAL = array();
+  protected $ube_total = array();
 
   /**
    * Какие стороны присутствуют. ТОЛЬКО ДЛЯ ИСПОЛЬЗОВАНИЯ в next_round_fleet_array()!!!!
    *
    * @var array
    */
-  protected $side_present_at_round_start = array();
+  protected $ube_side_present_at_round_start = array();
 
   /**
    * UBEFleetList constructor.
    *
-   * @version 2016-02-25 23:42:45 41a4.68
+   * @version 41a4.74
    */
   public function __construct() {
-    $this->UBE_TOTAL = array(
+    parent::__construct();
+
+    $this->ube_total = array(
       UBE_PLAYER_IS_ATTACKER => new UBEASA(),
       UBE_PLAYER_IS_DEFENDER => new UBEASA(),
     );
+
+    $this->ube_side_present_at_round_start = array();
   }
 
   /**
@@ -39,7 +43,7 @@ class UBEFleetList extends ArrayAccessV2 {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function load_from_players(UBEPlayerList $players) {
+  public function ube_load_from_players(UBEPlayerList $players) {
     foreach($this->_container as $fleet_id => $objFleet) {
       // TODO - эта последовательность должна быть при загрузке флота (?)
 
@@ -59,7 +63,7 @@ class UBEFleetList extends ArrayAccessV2 {
   /**
    * @param $report_row
    */
-  public function db_load_fleets_outcome($report_row) {
+  public function ube_db_load_fleets_outcome($report_row) {
     $query = doquery("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($row = db_fetch($query)) {
       $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
@@ -81,7 +85,7 @@ class UBEFleetList extends ArrayAccessV2 {
    *
    * @return array
    */
-  public function report_render_fleets_outcome(UBE $ube) {
+  public function ube_report_render_fleets_outcome(UBE $ube) {
     $result = array(
       UBE_PLAYER_IS_ATTACKER => array(),
       UBE_PLAYER_IS_DEFENDER => array(),
@@ -101,16 +105,14 @@ class UBEFleetList extends ArrayAccessV2 {
     return array_merge($result[UBE_PLAYER_IS_ATTACKER], $result[UBE_PLAYER_IS_DEFENDER]);
   }
 
-
   /**
-   * @param UBERound  $lastRound
    * @param bool      $is_simulator
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    *
-   * @version 2016-02-25 23:42:45 41a4.68
+   * @version 41a4.74
    */
-  public function ube_analyze_fleets(UBERound $lastRound, $is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
+  public function ube_analyze_fleets($is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя
     foreach($this->_container as $fleet_id => $UBEFleet) {
       // Инициализируем массив результатов для флота
@@ -145,7 +147,7 @@ class UBEFleetList extends ArrayAccessV2 {
   /**
    * @return array
    */
-  public function get_groups() {
+  public function ube_get_groups() {
     $result = array();
     foreach($this->_container as $UBEFleet) {
       if($UBEFleet->group_id) {
@@ -159,7 +161,7 @@ class UBEFleetList extends ArrayAccessV2 {
   /**
    * @return int
    */
-  public function get_capacity_attackers() {
+  public function ube_get_capacity_attackers() {
     $result = 0;
     foreach($this->_container as $UBEFleet) {
       if($UBEFleet->is_attacker) {
@@ -174,7 +176,7 @@ class UBEFleetList extends ArrayAccessV2 {
    * @param array $report_row
    * @param UBE   $ube
    */
-  public function db_load_from_report_row(array $report_row, UBE $ube) {
+  public function ube_db_load_from_report_row(array $report_row, UBE $ube) {
     $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($fleet_row = db_fetch($query)) {
       $objFleet = new UBEFleet();
@@ -189,19 +191,19 @@ class UBEFleetList extends ArrayAccessV2 {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function prepare_for_next_round($is_simulator) {
+  public function ube_prepare_for_next_round($is_simulator) {
     foreach($this->_container as $fleet_id => $UBEFleet) {
       $UBEFleet->prepare_for_next_round($is_simulator);
     }
 
     // Суммируем данные по атакующим и защитникам
     foreach($this->_container as $fleet_id => $UBEFleet) {
-      $this->UBE_TOTAL[$UBEFleet->is_attacker]->add_unit_stats_array($UBEFleet->total_stats);
+      $this->ube_total[$UBEFleet->is_attacker]->add_unit_stats_array($UBEFleet->total_stats);
     }
 
     // Высчитываем долю атаки, приходящейся на юнит равную отношению брони юнита к общей броне - крупные цели атакуют чаще
     foreach($this->_container as $fleet_id => $UBEFleet) {
-      $UBEFleet->calculate_unit_partial_data($this->UBE_TOTAL[$UBEFleet->is_attacker]);
+      $UBEFleet->calculate_unit_partial_data($this->ube_total[$UBEFleet->is_attacker]);
     }
   }
 
@@ -212,7 +214,7 @@ class UBEFleetList extends ArrayAccessV2 {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function calculate_attack_results(UBE $ube) {
+  public function ube_calculate_attack_results(UBE $ube) {
     if(BE_DEBUG === true) {
       // sn_ube_combat_helper_round_header($round);
     }
@@ -238,10 +240,10 @@ class UBEFleetList extends ArrayAccessV2 {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function actualize_sides() {
+  public function ube_actualize_sides() {
     foreach($this->_container as $UBEFleet) {
       if($UBEFleet->get_unit_count() > 0) {
-        $this->side_present_at_round_start[$UBEFleet->is_attacker] = 1;
+        $this->ube_side_present_at_round_start[$UBEFleet->is_attacker] = 1;
       }
     }
   }
@@ -251,7 +253,7 @@ class UBEFleetList extends ArrayAccessV2 {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function calculate_attack_reapers() {
+  public function ube_calculate_attack_reapers() {
     $reapers = 0;
     foreach($this->_container as $fleet_id => $UBERoundFleetCombat) {
       if($UBERoundFleetCombat->is_attacker == UBE_PLAYER_IS_ATTACKER) {
@@ -262,21 +264,21 @@ class UBEFleetList extends ArrayAccessV2 {
     return $reapers;
   }
 
-  public function get_sides_count() {
-    return count($this->side_present_at_round_start);
+  public function ube_get_sides_count() {
+    return count($this->ube_side_present_at_round_start);
   }
 
-  public function calculate_outcome($current_outcome) {
-    $this->actualize_sides();
+  public function ube_calculate_outcome($current_outcome) {
+    $this->ube_actualize_sides();
 
     $result = $current_outcome;
     // Проверяем результат боя
-    if($this->get_sides_count() == 0 || $round >= 10) {
+    if($this->ube_get_sides_count() == 0 || $round >= 10) {
       // Если кого-то не осталось или не осталось обоих - заканчиваем цикл
       $result = UBE_COMBAT_RESULT_DRAW_END;
-    } elseif($this->get_sides_count() == 1) {
+    } elseif($this->ube_get_sides_count() == 1) {
       // Если осталась одна сторона - она и выиграла
-      $result = isset($this->side_present_at_round_start[UBE_PLAYER_IS_ATTACKER]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
+      $result = isset($this->ube_side_present_at_round_start[UBE_PLAYER_IS_ATTACKER]) ? UBE_COMBAT_RESULT_WIN : UBE_COMBAT_RESULT_LOSS;
     }
 
     return $result;

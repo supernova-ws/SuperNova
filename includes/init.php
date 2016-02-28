@@ -184,6 +184,7 @@ require_once('classes/ResourceLoot.php');
 require_once('classes/Ship.php');
 require_once('classes/Mission.php');
 require_once('classes/Fleet.php');
+require_once('classes/FleetList.php');
 
 
 // Подключаем все модули
