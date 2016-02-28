@@ -924,6 +924,26 @@ class Fleet {
     );
   }
 
+  /**
+   * Возвращает ёмкость переработчиков во флоте
+   *
+   * @param array $recycler_info
+   *
+   * @return int
+   *
+   * @version 41a5.3
+   */
+  public function fleet_recyclers_capacity(array $recycler_info) {
+    $recyclers_incoming_capacity = 0;
+    $fleet_data = $this->get_unit_list();
+    foreach($recycler_info as $recycler_id => $recycler_data) {
+      $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
+    }
+
+    return $recyclers_incoming_capacity;
+  }
+
+
   public function make_fleet_string() {
     return sys_unit_arr2str($this->unit_list);
   }

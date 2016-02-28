@@ -522,9 +522,8 @@ function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $
   foreach($ship_list as $transport_id => $cork) {
     $ship_data[$transport_id] = flt_travel_data($user, $from, $to, array($transport_id => 1), 10);
   }
-  uasort($ship_data, flt_calculate_ship_to_transport_sort);
+  uasort($ship_data, 'flt_calculate_ship_to_transport_sort');
 
-  $fleet_hold = 0;
   $fleet_capacity = 0;
   $fuel_total = $fuel_left = mrc_get_level($user, $from, RES_DEUTERIUM);
   foreach($ship_data as $transport_id => &$ship_info) {
@@ -539,22 +538,4 @@ function flt_calculate_fleet_to_transport($ship_list, $resource_amount, $from, $
   }
 
   return array('fleet' => $fleet_array, 'ship_data' => $ship_data, 'capacity' => $fleet_capacity, 'consumption' => $fuel_total - $fuel_left);
-}
-
-/**
- * Возвращает ёмкость переработчиков во флоте
- *
- * @param $fleet_row
- * @param $recycler_info
- *
- * @return int
- */
-function fleet_recyclers_capacity($fleet_row, $recycler_info) {
-  $recyclers_incoming_capacity = 0;
-  $fleet_data = Fleet::static_proxy_string_to_array($fleet_row);
-  foreach($recycler_info as $recycler_id => $recycler_data) {
-    $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
-  }
-
-  return $recyclers_incoming_capacity;
 }

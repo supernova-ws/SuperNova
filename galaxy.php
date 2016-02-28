@@ -73,11 +73,27 @@ if(!empty($planet_precache_query)) {
 }
 
 
-$system_fleet_list = FleetList::fleet_list_by_planet_coords($uni_galaxy, $uni_system);
-foreach($system_fleet_list as $fleet_row) {
-  $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
-  $fleet_type = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];
-  $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
+//$system_fleet_list = FleetList::fleet_list_by_planet_coords($uni_galaxy, $uni_system);
+//foreach($system_fleet_list as $fleet_row) {
+//  $fleet_planet = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_planet'] : $fleet_row['fleet_start_planet'];
+//  $fleet_type = $fleet_row['fleet_mess'] == 0 ? $fleet_row['fleet_end_type'] : $fleet_row['fleet_start_type'];
+//  $fleet_list[$fleet_planet][$fleet_type][] = $fleet_row;
+//}
+
+$system_fleet_list = FleetList::dbGetFleetListByCoordinates($uni_galaxy, $uni_system);
+/**
+ * @var Fleet[][][] $fleet_list
+ */
+$fleet_list = array();
+foreach($system_fleet_list->_container as $objFleetSystem) {
+  if($objFleetSystem->is_returning == 0) {
+    $fleet_planet = $objFleetSystem->fleet_end_planet;
+    $fleet_type = $objFleetSystem->fleet_end_type;
+  } else {
+    $fleet_planet = $objFleetSystem->fleet_start_planet;
+    $fleet_type = $objFleetSystem->fleet_start_type;
+  }
+  $fleet_list[$fleet_planet][$fleet_type][] = $objFleetSystem;
 }
 
 $time_now_parsed = getdate(SN_TIME_NOW);
@@ -133,7 +149,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
         }
       }
 
-      $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_PLANET]);
+      $fleets_to_planet = flt_get_fleets_to_planet_by_array_of_Fleet(false, $fleet_list[$Planet][PT_PLANET]);
       if(!empty($fleets_to_planet['own']['count'])) {
         $planet_fleet_id = $fleet_id;
         $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
@@ -145,7 +161,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
         CheckAbandonPlanetState($uni_galaxyRowMoon);
       } else {
         $moon_fleet_id = 0;
-        $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_MOON]);
+        $fleets_to_planet = flt_get_fleets_to_planet_by_array_of_Fleet(false, $fleet_list[$Planet][PT_MOON]);
         if(!empty($fleets_to_planet['own']['count'])) {
           $moon_fleet_id = $fleet_id;
           $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
@@ -158,10 +174,10 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   $recyclers_incoming_capacity = 0;
   $uni_galaxyRowPlanet['debris'] = $uni_galaxyRowPlanet['debris_metal'] + $uni_galaxyRowPlanet['debris_crystal'];
   if($uni_galaxyRowPlanet['debris']) {
-    if($fleet_list[$Planet][PT_DEBRIS]) {
-      foreach($fleet_list[$Planet][PT_DEBRIS] as $fleet_row) {
-        if($fleet_row['fleet_owner'] == $user['id']) {
-          $recyclers_incoming_capacity += fleet_recyclers_capacity($fleet_row, $recycler_info);
+    if(!empty($fleet_list[$Planet][PT_DEBRIS])) {
+      foreach($fleet_list[$Planet][PT_DEBRIS] as $objFleetToDebris) {
+        if($objFleetToDebris->owner_id == $user['id']) {
+          $recyclers_incoming_capacity += $objFleetToDebris->fleet_recyclers_capacity($recycler_info);
         }
       }
     }

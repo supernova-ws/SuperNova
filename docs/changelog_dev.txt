@@ -454,6 +454,14 @@ fleet.php
   }
 
 
+// TODO - СЕЙЧАС
+phalanx.php - сделать версии для FleetList
+
+$fleet_list = fleet_and_missiles_list_by_coordinates($planet_scanned, true);
+$fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
+tpl_assign_fleet($template, $fleets);
+
+
 #ctv
 
 

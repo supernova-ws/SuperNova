@@ -410,10 +410,10 @@ function tpl_topnav_event_build_helper($time, $event, $msg, $coordinates, $is_de
 
 /**
  * @param template  $template
- * @param FleetList $FleetList
+ * @param FleetList|null $FleetList
  * @param string    $type
  */
-function tpl_topnav_event_build(&$template, FleetList $FleetList, $type = 'fleet') {
+function tpl_topnav_event_build(&$template, $FleetList, $type = 'fleet') {
   if(empty($FleetList)) {
     return;
   }
@@ -610,9 +610,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'TOPNAV_MESSAGES_ATTACK'   => $user['mnl_attaque'],
     'TOPNAV_MESSAGES_ALL'      => $user['new_message'],
 
-    'TOPNAV_FLEETS_FLYING'      => $fleet_flying_list[0]->count(),
+    'TOPNAV_FLEETS_FLYING'      => is_object($fleet_flying_list[0]) ? $fleet_flying_list[0]->count() : 0,
     'TOPNAV_FLEETS_TOTAL'       => GetMaxFleets($user),
-    'TOPNAV_EXPEDITIONS_FLYING' => $fleet_flying_list[MT_EXPLORE]->count(),
+    'TOPNAV_EXPEDITIONS_FLYING' => is_object($fleet_flying_list[MT_EXPLORE]) ? $fleet_flying_list[MT_EXPLORE]->count() : 0,
     'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
     'TOPNAV_QUEST_COMPLETE' => get_quest_amount_complete($user['id']),

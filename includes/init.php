@@ -177,14 +177,23 @@ $template_result = array('.' => array('result' => array()));
 
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
+spl_autoload_register(function ($class) {
+  if(file_exists('includes/classes/' . $class . '.php')) {
+    require_once 'includes/classes/' . $class . '.php';
+  } elseif(file_exists('includes/classes/UBE/' . $class . '.php')) {
+    require_once 'includes/classes/UBE/' . $class . '.php';
+  } else {
+//    die("Can't find {$class} class");
+  }
+});
 
-require_once('classes/DBRow.php');
-require_once('classes/UnitBasic.php');
-require_once('classes/ResourceLoot.php');
-require_once('classes/Ship.php');
-require_once('classes/Mission.php');
-require_once('classes/Fleet.php');
-require_once('classes/FleetList.php');
+//require_once('classes/DBRow.php');
+//require_once('classes/UnitBasic.php');
+//require_once('classes/ResourceLoot.php');
+//require_once('classes/Ship.php');
+//require_once('classes/Mission.php');
+//require_once('classes/Fleet.php');
+//require_once('classes/FleetList.php');
 
 
 // Подключаем все модули
