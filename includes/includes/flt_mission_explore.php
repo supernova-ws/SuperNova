@@ -85,7 +85,7 @@ function flt_mission_explore(&$mission_data) {
   $fleet_capacity = 0;
   $fleet_metal_points = 0;
 
-  $fleet_real_array = $objFleet->get_ship_list();
+  $fleet_real_array = $objFleet->get_unit_list();
   foreach($fleet_real_array as $ship_id => $ship_amount) {
     $unit_info = get_unit_param($ship_id);
     $fleet_capacity += $ship_amount * $unit_info[P_CAPACITY];

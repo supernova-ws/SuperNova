@@ -179,7 +179,7 @@ class UBEFleetList extends ArrayAccessV2 {
     while($fleet_row = db_fetch($query)) {
       $objFleet = new UBEFleet();
       $objFleet->load_from_report($fleet_row, $ube);
-      $this[$objFleet->fleet_id] = $objFleet;
+      $this[$objFleet->db_id] = $objFleet;
     }
 
   }
@@ -220,7 +220,7 @@ class UBEFleetList extends ArrayAccessV2 {
     // Каждый флот атакует все
     foreach($this->_container as $attack_fleet_data) {
       if(defined('DEBUG_UBE')) {
-        print("Fleet {$attack_fleet_data->fleet_id} attacks<br /><div style='margin-left: 30px;'>");
+        print("Fleet {$attack_fleet_data->db_id} attacks<br /><div style='margin-left: 30px;'>");
       }
       $attack_fleet_data->attack_fleets($this, $ube->is_simulator);
       if(defined('DEBUG_UBE')) {

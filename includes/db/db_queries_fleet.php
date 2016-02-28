@@ -214,7 +214,7 @@ function fleet_list_current_tick() {
  *
  * @param $group_id
  *
- * @return array
+ * @return array[]
  */
 function fleet_list_by_group($group_id) {
   return db_fleet_list("`fleet_group` = {$group_id}");

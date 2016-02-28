@@ -12,6 +12,18 @@ class Fleet {
    * @var int
    */
   public $db_id = 0;
+  /**
+   * `fleet_owner`
+   *
+   * @var int
+   */
+  public $owner_id = 0;
+  /**
+   * `fleet_group`
+   *
+   * @var int
+   */
+  public $group_id = 0;
 
   /**
    * `fleet_mission`
@@ -19,19 +31,7 @@ class Fleet {
    * @var int
    */
   public $mission_type = 0;
-  /**
-   * `fleet_group`
-   *
-   * @var int
-   */
-  public $fleet_group = 0;
 
-  /**
-   * `fleet_owner`
-   *
-   * @var int
-   */
-  public $owner_id = 0;
   /**
    * `fleet_target_owner`
    *
@@ -42,17 +42,15 @@ class Fleet {
   /**
    * @var array
    */
-  protected $ship_list = array();
-  /**
-   * `fleet_amount`
-   *
-   * @var int
-   */
-//  public $ship_count = 0;
+  protected $unit_list = array();
   /**
    * @var array
    */
-  protected $resource_list = array();
+  protected $resource_list = array(
+    RES_METAL     => 0,
+    RES_CRYSTAL   => 0,
+    RES_DEUTERIUM => 0,
+  );
 
 
   /**
@@ -137,6 +135,10 @@ class Fleet {
 //
 //
 
+  public function __construct() {
+    $this->_reset();
+  }
+
 
   /**
    * Парсит строку юнитов в array(ID => AMOUNT)
@@ -172,19 +174,6 @@ class Fleet {
     return $result;
   }
 
-  /**
-   * ПРОКСИ: Изменение fleet_array и fleet_amount методами Fleet
-   *
-   * @param $fleet_row
-   * @param $unit_delta_list
-   */
-  public static function static_proxy_update_units(&$fleet_row, $unit_delta_list) {
-    $objFleet = new Fleet();
-    $objFleet->parse_db_row($fleet_row);
-    $objFleet->update_units($unit_delta_list);
-    $fleet_row = $objFleet->make_db_row();
-  }
-
   /* FLEET CRUD ========================================================================================================*/
 
   /**
@@ -211,14 +200,14 @@ class Fleet {
     $ReturnFlyingTime = ($this->time_mission_job_complete != 0 && $this->time_arrive_to_target < SN_TIME_NOW ? $this->time_arrive_to_target : SN_TIME_NOW) - $this->time_launch + SN_TIME_NOW + 1;
 
     $this->time_arrive_to_target = SN_TIME_NOW;
-    $this->fleet_group = 0;
+    $this->group_id = 0;
     $this->time_mission_job_complete = 0;
     $this->time_return_to_source = $ReturnFlyingTime;
     $this->is_returning = 1;
 
     $fleet_set_update = array(
       'fleet_start_time' => $this->time_arrive_to_target,
-      'fleet_group'      => $this->fleet_group,
+      'fleet_group'      => $this->group_id,
       'fleet_end_stay'   => $this->time_mission_job_complete,
       'fleet_end_time'   => $this->time_return_to_source,
       'fleet_mess'       => $this->is_returning,
@@ -226,7 +215,7 @@ class Fleet {
     );
     Fleet::static_fleet_update_set($fleet_id, $fleet_set_update);
 
-    if($this->fleet_group) {
+    if($this->group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
       db_fleet_aks_purge();
     }
@@ -340,7 +329,7 @@ class Fleet {
     $fleet_id_safe = idval($this->db_id);
 
     return doquery(
-      // Блокировка самого флота
+    // Блокировка самого флота
       "SELECT 1 FROM {{fleets}} AS f " .
 
       // Блокировка всех юнитов, принадлежащих этому флоту
@@ -412,7 +401,7 @@ class Fleet {
       $db_changeset = array();
 
       if($this->owner_id == $planet_arrival['id_owner']) {
-        $fleet_array = $this->get_ship_list();
+        $fleet_array = $this->get_unit_list();
         foreach($fleet_array as $ship_id => $ship_count) {
           if($ship_count) {
             $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
@@ -512,15 +501,15 @@ class Fleet {
    */
   // TODO - safe IDs with check via possible fleets
   public function group_acs_set($acs_id, $mission_id) {
-    $this->fleet_group = $acs_id;
+    $this->group_id = $acs_id;
     $this->mission_type = $mission_id;
 
-    $this->core_field_set_list['fleet_group'] = $this->fleet_group;
+    $this->core_field_set_list['fleet_group'] = $this->group_id;
     $this->core_field_set_list['fleet_mission'] = $this->mission_type;
   }
 
   public function ship_count_by_id($ship_id) {
-    return !empty($this->ship_list[$ship_id]) ? $this->ship_list[$ship_id] : 0;
+    return !empty($this->unit_list[$ship_id]) ? $this->unit_list[$ship_id] : 0;
   }
 
   /**
@@ -609,9 +598,9 @@ class Fleet {
         continue;
       }
 
-      $this->ship_list[$unit_id] += $unit_delta; //      empty($this->ship_list[$unit_id]) ? $this->ship_list[$unit_id] = 0 : false;
+      $this->unit_list[$unit_id] += $unit_delta; //      empty($this->ship_list[$unit_id]) ? $this->ship_list[$unit_id] = 0 : false;
       // Check for negative unit value
-      if($this->ship_list[$unit_id] < 0) { //      if($unit_delta < 0 && $this->ship_list[$unit_id] < 0) {
+      if($this->unit_list[$unit_id] < 0) { //      if($unit_delta < 0 && $this->ship_list[$unit_id] < 0) {
         // TODO
         die('$unit_delta is less then ship amount  in ' . __FUNCTION__);
       }
@@ -642,7 +631,7 @@ class Fleet {
         // TODO
         die('$unit_count can not be negative in ' . __FUNCTION__);
       }
-      $this->ship_list[$unit_id] = $unit_count;
+      $this->unit_list[$unit_id] = $unit_count;
       // Pending REPLACE changes
       $this->ship_replace[$unit_id] = $unit_count;
     }
@@ -727,7 +716,7 @@ class Fleet {
       }
 
       if(Ship::is_in_group($unit_id)) {
-        $this->ship_list[$unit_id] = $unit_count;
+        $this->unit_list[$unit_id] = $unit_count;
       } elseif(ResourceLoot::is_in_group($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
       }
@@ -766,7 +755,7 @@ class Fleet {
 //    $this->_reset();
 
     $this->mission_type = $mission_type;
-    $this->fleet_group = $fleet_group;
+    $this->group_id = $fleet_group;
 
     $this->owner_id = $owner_id;
     $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
@@ -825,8 +814,8 @@ class Fleet {
   /**
    * Returns ship list in fleet
    */
-  public function get_ship_list() {
-    return $this->ship_list;
+  public function get_unit_list() {
+    return $this->unit_list;
   }
 
   /**
@@ -868,7 +857,7 @@ class Fleet {
       'fleet_mission' => $this->mission_type,
 
       'fleet_target_owner' => !empty($this->target_owner_id) ? $this->target_owner_id : null,
-      'fleet_group'        => $this->fleet_group,
+      'fleet_group'        => $this->group_id,
       'fleet_mess'         => empty($this->is_returning) ? 0 : 1,
 
       'start_time'       => $this->time_launch,
@@ -916,7 +905,7 @@ class Fleet {
     $this->mission_type = $fleet_row['fleet_mission'];
 
     $this->target_owner_id = $fleet_row['fleet_target_owner'];
-    $this->fleet_group = $fleet_row['fleet_group'];
+    $this->group_id = $fleet_row['fleet_group'];
     $this->is_returning = intval($fleet_row['fleet_mess']);
 
     $this->time_launch = $fleet_row['start_time'];
@@ -936,7 +925,7 @@ class Fleet {
     $this->fleet_end_planet = $fleet_row['fleet_end_planet'];
     $this->fleet_end_type = $fleet_row['fleet_end_type'];
 
-    $this->ship_list = $this->parse_fleet_string($fleet_row['fleet_array']);
+    $this->unit_list = $this->parse_fleet_string($fleet_row['fleet_array']);
 
     $this->resource_list = array(
       RES_METAL     => ceil($fleet_row['fleet_resource_metal']),
@@ -946,11 +935,11 @@ class Fleet {
   }
 
   public function make_fleet_string() {
-    return sys_unit_arr2str($this->ship_list);
+    return sys_unit_arr2str($this->unit_list);
   }
 
   public function get_ship_count() {
-    return array_sum($this->ship_list);
+    return array_sum($this->unit_list);
   }
 
   public function get_resources_amount() {
@@ -961,17 +950,13 @@ class Fleet {
     return sys_unit_str2arr($fleet_string);
   }
 
-  public function __construct() {
-    $this->_reset();
-  }
-
   protected function _reset() {
     $this->db_id = 0;
     $this->owner_id = 0;
     $this->target_owner_id = null;
     $this->mission_type = 0;
 //    $this->db_string = '';
-    $this->fleet_group = 0;
+    $this->group_id = 0;
     $this->is_returning = 0;
 
     $this->time_launch = 0; // SN_TIME_NOW
@@ -1002,7 +987,7 @@ class Fleet {
   }
 
   protected function _reset_ships() {
-    $this->ship_list = array();
+    $this->unit_list = array();
     $this->ship_delta = array();
     $this->ship_replace = array();
   }
@@ -1025,46 +1010,6 @@ class Fleet {
 
     $this->resource_delta = array();
     $this->resource_replace = array();
-  }
-
-  /**
-   * Compiles object to `fleet` DB record
-   *
-   * @return array
-   */
-  // TODO - DO NOT USE!!!!!!!!!!
-  public function make_db_row() {
-    $fleet_row = array();
-    $fleet_row['fleet_id'] = $this->db_id;
-    $fleet_row['fleet_owner'] = $this->owner_id;
-    $fleet_row['fleet_mission'] = $this->mission_type;
-    $fleet_row['fleet_start_time'] = $this->time_arrive_to_target;
-    $fleet_row['fleet_start_planet_id'] = $this->fleet_start_planet_id;
-    $fleet_row['fleet_start_galaxy'] = $this->fleet_start_galaxy;
-    $fleet_row['fleet_start_system'] = $this->fleet_start_system;
-    $fleet_row['fleet_start_planet'] = $this->fleet_start_planet;
-    $fleet_row['fleet_start_type'] = $this->fleet_start_type;
-    $fleet_row['fleet_end_time'] = $this->time_return_to_source;
-    $fleet_row['fleet_end_stay'] = $this->time_mission_job_complete;
-    $fleet_row['fleet_end_planet_id'] = $this->fleet_end_planet_id;
-    $fleet_row['fleet_end_galaxy'] = $this->fleet_end_galaxy;
-    $fleet_row['fleet_end_system'] = $this->fleet_end_system;
-    $fleet_row['fleet_end_planet'] = $this->fleet_end_planet;
-    $fleet_row['fleet_end_type'] = $this->fleet_end_type;
-    $fleet_row['fleet_target_owner'] = $this->target_owner_id;
-    $fleet_row['fleet_group'] = $this->fleet_group;
-    $fleet_row['fleet_mess'] = $this->is_returning;
-    $fleet_row['start_time'] = $this->time_launch;
-
-
-    $fleet_row['fleet_array'] = $this->make_fleet_string();
-    $fleet_row['fleet_amount'] = $this->get_ship_count();
-
-    $fleet_row['fleet_resource_metal'] = $this->resource_list[RES_METAL];
-    $fleet_row['fleet_resource_crystal'] = $this->resource_list[RES_CRYSTAL];
-    $fleet_row['fleet_resource_deuterium'] = $this->resource_list[RES_DEUTERIUM];
-
-    return $fleet_row;
   }
 
 }

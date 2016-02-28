@@ -16,9 +16,8 @@ function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) { return $r
  */
 function flt_mission_attack($objMission) {
   $objFleet = $objMission->fleet;
-  $fleet_row = $objFleet->make_db_row();
 
-  if(!$fleet_row) {
+  if($objFleet->get_ship_count() <= 0) {
     return null;
   }
 
@@ -40,5 +39,5 @@ function flt_mission_attack($objMission) {
 
   require_once('includes/classes/UBE/UBE.php');
 
-  return UBE::flt_mission_attack($objMission, $fleet_row);
+  return UBE::flt_mission_attack($objMission);
 }

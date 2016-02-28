@@ -245,4 +245,97 @@ class UBEUnit {
     }
   }
 
+  // DEBUG FUNCTIONS ***************************************************************************************************
+  /**
+   *
+   *
+   * @version 41a4.73
+   */
+  public static function unit_dump_footer() {
+    print('</table><br>');
+  }
+
+  /**
+   *
+   *
+   * @version 41a4.73
+   */
+  public static function unit_dump_header() {
+    print('<table border="1">');
+    print('<tr>');
+    print('<th>desc</th>');
+    print('<th>unit_id</th>');
+    print('<th colspan="2">count</th>');
+//  print('<th>type</th>');
+//  print('<th>attack_bonus</th>');
+//  print('<th>shield_bonus</th>');
+//  print('<th>armor_bonus</th>');
+//  print('<th>unit_randomized_attack</th>');
+//  print('<th>unit_randomized_shield</th>');
+//  print('<th>unit_randomized_armor</th>');
+    print('<th colspan="2">units_destroyed</th>');
+//  print('<th>pool_attack</th>');
+    print('<th colspan="2">pool_shield</th>');
+    print('<th colspan="2">pool_armor</th>');
+    print('<th colspan="2">boom</th>');
+    print('<th colspan="2">attack_income</th>');
+//  print('<th>units_lost</th>');
+//  print('<th>units_restored</th>');
+//  print('<th>capacity</th>');
+    print('<th>armor_share</th>');
+    print('</tr>');
+  }
+
+  /**
+   * @param string       $field
+   * @param UBEUnit|null $before
+   *
+   * @version 41a4.73
+   */
+  function unit_dump_delta($field, UBEUnit $before = null) {
+//  print("<td" . ($before != null ? ' colspan=2' : '') . ">");
+    print("<td>");
+    print(pretty_number($this->$field));
+    print("</td>");
+    print("<td>");
+    if(!empty($before)) {
+      print('' . pretty_number($this->$field - $before->$field) . '');
+    }
+    print("</td>");
+  }
+
+  /**
+   * @param string       $desc
+   * @param UBEUnit|null $before
+   *
+   * @version 41a4.73
+   */
+  function unit_dump($desc = '', UBEUnit $before = null) {
+    global $lang;
+
+    print('<tr align="right">');
+    print("<td>{$desc}</td>");
+    print("<td>[{$this->unit_id}]{$lang['tech_short'][$this->unit_id]}</td>");
+//  print("<td>" . unit_dump_delta($current, 'count', $before) . "</td>");
+    $this->unit_dump_delta('count', $before);
+//  print("<td>" . $this->type . "</td>");
+//  print("<td>" . $this->attack_bonus . "</td>");
+//  print("<td>" . $this->shield_bonus . "</td>");
+//  print("<td>" . $this->armor_bonus . "</td>");
+//  print("<td>" . $this->unit_randomized_attack . "</td>");
+//  print("<td>" . $this->unit_randomized_shield . "</td>");
+//  print("<td>" . $this->unit_randomized_armor . "</td>");
+    $this->unit_dump_delta('units_destroyed', $before);
+//  $this->unit_dump_delta($this, 'pool_attack', $before);
+    $this->unit_dump_delta('pool_shield', $before);
+    $this->unit_dump_delta('pool_armor', $before);
+    $this->unit_dump_delta('unit_count_boom', $before);
+    $this->unit_dump_delta('attack_income', $before);
+//  print("<td>" . $this->units_lost . "</td>");
+//  print("<td>" . $this->units_restored . "</td>");
+//  print("<td>" . $this->capacity . "</td>");
+    print("<td>" . round($this->share_of_side_armor, 4) . "</td>");
+    print('</tr>');
+  }
+
 }

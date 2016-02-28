@@ -30,7 +30,7 @@ function flt_mission_recycle($mission_data) {
   $RecyclerCapacity = 0;
   $OtherFleetCapacity = 0;
 
-  $fleet_array = $objFleet->get_ship_list();
+  $fleet_array = $objFleet->get_unit_list();
   foreach($fleet_array as $unit_id => $unit_count) {
     if(in_array($unit_id, sn_get_groups('fleet'))) {
       $capacity = get_unit_param($unit_id, P_CAPACITY) * $unit_count;

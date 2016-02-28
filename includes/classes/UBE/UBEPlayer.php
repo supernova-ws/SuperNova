@@ -46,6 +46,60 @@ class UBEPlayer {
   }
 
   /**
+   *
+   */
+  public function getCapitalPlanetId() {
+    return $this->db_row['id_planet'];
+  }
+
+  public function getStatTotalPoints() {
+    return $this->db_row['total_points'];
+  }
+
+  /**
+   * Меняет активную планету игрока на столицу, если активная планета равна $captured_planet_id
+   *
+   * @param int $captured_planet_id
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function db_user_change_active_planet_to_capital($captured_planet_id) {
+    $user_id = $this->getDbId();
+    return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet_id};");
+  }
+
+  public function getColonyCount() {
+    return $this->db_row[UNIT_PLAYER_COLONIES_CURRENT] = isset($this->db_row[UNIT_PLAYER_COLONIES_CURRENT]) ? $this->db_row[UNIT_PLAYER_COLONIES_CURRENT] : max(0, db_planet_count_by_type($this->db_row['id']) - 1);
+  }
+
+  /**
+   * @param int $astrotech
+   *
+   * @return int|mixed
+   */
+  public function getColonyMaxCount($astrotech = -1) {
+    global $config;
+
+    if($astrotech == -1) {
+      if(!isset($this->db_row[UNIT_PLAYER_COLONIES_MAX])) {
+
+        $expeditions = get_player_max_expeditons($this->db_row);
+        $astrotech = mrc_get_level($this->db_row, false, TECH_ASTROTECH);
+        $colonies = $astrotech - $expeditions;
+
+        $this->db_row[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+      }
+
+      return $this->db_row[UNIT_PLAYER_COLONIES_MAX];
+    } else {
+      $expeditions = get_player_max_expeditons($this->db_row, $astrotech);
+      $colonies = $astrotech - $expeditions;
+
+      return $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+    }
+  }
+
+  /**
    * @param array $report_player_row
    */
   public function load_from_report_player_row($report_player_row) {
@@ -118,7 +172,7 @@ class UBEPlayer {
   /**
    * @return int
    */
-  public function player_id_get() {
+  public function getDbId() {
     return $this->db_row['id'];
   }
 

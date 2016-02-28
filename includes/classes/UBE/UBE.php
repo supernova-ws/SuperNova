@@ -121,19 +121,25 @@ class UBE {
     // Готовим инфу по удержанию
     $target_coordinates = $objFleet->target_coordinates_typed();
     $fleet_list_on_hold = fleet_list_on_hold($target_coordinates['galaxy'], $target_coordinates['system'], $target_coordinates['planet'], $target_coordinates['type'], $this->combat_timestamp);
-    foreach($fleet_list_on_hold as $fleet) {
-      $this->ube_attack_prepare_fleet($fleet, false);
+    foreach($fleet_list_on_hold as $fleet_row) {
+      $objFleetHold = new Fleet();
+      $objFleetHold->parse_db_row($fleet_row);
+
+      $this->ube_attack_prepare_fleet($objFleetHold, UBE_PLAYER_IS_DEFENDER);
     }
     // TODO - НАДО ВЫНЕСТИ РАБОТУ С ПЛЕЕРАМИ ИЗ PREPARE FLEET! ПОтому что могут поменятся статы - АТТАКЕР/ДЕФЕНДЕР И, СООТВЕТСТВЕННО, БОНУСЫ!!!
 
     // Готовим инфу по атакующим
-    if($objFleet->fleet_group) {
-      $acs_fleet_list = fleet_list_by_group($objFleet->fleet_group);
-      foreach($acs_fleet_list as $fleet) {
-        $this->ube_attack_prepare_fleet($fleet, true);
+    if($objFleet->group_id) {
+      $acs_fleet_list = fleet_list_by_group($objFleet->group_id);
+      foreach($acs_fleet_list as $fleet_row) {
+        $objFleetACS = new Fleet();
+        $objFleetACS->parse_db_row($fleet_row);
+
+        $this->ube_attack_prepare_fleet($objFleetACS, UBE_PLAYER_IS_ATTACKER);
       }
     } else {
-      $this->ube_attack_prepare_fleet($objFleet->make_db_row(), true);
+      $this->ube_attack_prepare_fleet($objFleet, UBE_PLAYER_IS_ATTACKER);
     }
   }
 
@@ -162,7 +168,7 @@ class UBE {
     }
 
     foreach(sn_get_groups('resources_loot') as $resource_id) {
-      $this->fleet_list[0]->resources[$resource_id] = floor(mrc_get_level($player_db_row, $planet, $resource_id));
+      $this->fleet_list[0]->resource_list[$resource_id] = floor(mrc_get_level($player_db_row, $planet, $resource_id));
     }
 
     if($fortifier_level = mrc_get_level($player_db_row, $planet, MRC_FORTIFIER)) {
@@ -202,19 +208,19 @@ class UBE {
   /**
    * Заполняет данные по флоту
    *
-   * @param array $fleet_row
+   * @param Fleet $objFleet
    * @param bool  $is_attacker
    */
-  function ube_attack_prepare_fleet(array &$fleet_row, $is_attacker) {
+  function ube_attack_prepare_fleet(Fleet $objFleet, $is_attacker) {
     $UBEFleet = new UBEFleet();
-    $UBEFleet->read_from_row($fleet_row);
+    $UBEFleet->read_from_fleet_object($objFleet);
 
-    $this->fleet_list[$UBEFleet->fleet_id] = $UBEFleet;
+    $this->fleet_list[$UBEFleet->db_id] = $UBEFleet;
 
     $this->ube_attack_prepare_player($UBEFleet->owner_id, $is_attacker);
 
     // Вызов основной функции!!!
-    ube_attack_prepare_fleet_from_object($this, $fleet_row, $is_attacker);
+    ube_attack_prepare_fleet_from_object($UBEFleet); // Used by UNIT_CAPTAIN
   }
 
 
@@ -330,7 +336,7 @@ class UBE {
       // Вычисляем сколько ресурсов вывезено
       foreach($this->fleet_list->_container as $fleet_id => $fleet) {
         $looted_in_metal = 0;
-        foreach($this->fleet_list[0]->resources as $resource_id => $resource_amount) {
+        foreach($this->fleet_list[0]->resource_list as $resource_id => $resource_amount) {
           // Вычисляем какой процент общей емкости трюмов атакующих будет задействован
           $fleet_lootable_percent = $fleet->fleet_capacity / $total_capacity;
           $looted = floor($resource_amount * $planet_lootable_percent * $fleet_lootable_percent);
@@ -559,7 +565,7 @@ class UBE {
         if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
           $this->fleet_list[$fleet_id]->unit_list->insert_unit($unit_id, $unit_count);
         } elseif($unit_type == UNIT_RESOURCES) {
-          $this->fleet_list[$fleet_id]->resources[$unit_id] = $unit_count;
+          $this->fleet_list[$fleet_id]->resource_list[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
           $this->players[$player_id]->player_bonus_add($unit_id, $unit_count, $ube_convert_techs[$unit_id]);
         } elseif($unit_type == UNIT_GOVERNORS) {
@@ -608,18 +614,17 @@ class UBE {
    * Статик кусок из flt_mission_attack()
    *
    * @param Mission $objMission
-   * @param array   $fleet_row
    *
    * @return bool
+   *
    */
-  static function flt_mission_attack($objMission, $fleet_row) {
+  static function flt_mission_attack($objMission) {
     $ube = new UBE();
     $ube->ube_attack_prepare($objMission); //  $combat_data = ube_attack_prepare($objMission);
 
     $ube->sn_ube_combat(); //  sn_ube_combat($combat_data);
 
-    // TODO - Используется модулем skirmish! Переписать!
-    flt_planet_capture_from_object($fleet_row, $ube); //  flt_planet_capture($fleet_row, $combat_data);
+    flt_planet_capture_from_object($ube); //   Used by game_skirmish
 
     $ube_report = new UBEReport();
     $ube_report->sn_ube_report_save($ube); //  sn_ube_report_save($combat_data);
@@ -756,21 +761,22 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
 /**
  * Заполняет данные по флоту
  *
- * @param UBE   $ube
- * @param array $fleet
- * @param bool  $is_attacker
+ * @param UBEFleet $UBEFleet
  *
  * @return mixed
+ *
+ * Used by UNIT_CAPTAIN
  */
-function ube_attack_prepare_fleet_from_object(UBE $ube, &$fleet, $is_attacker) { return sn_function_call(__FUNCTION__, array($ube, &$fleet, $is_attacker)); }
+function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
 /**
- * @param array $fleet_row
  * @param UBE   $ube
  *
  * @return mixed
+ *
+ * Used by game_skirmish
  */
-function flt_planet_capture_from_object(array &$fleet_row, UBE $ube) { return sn_function_call(__FUNCTION__, array(&$fleet_row, $ube, &$result)); }
+function flt_planet_capture_from_object(UBE $ube) {return sn_function_call(__FUNCTION__, array($ube, &$result));}
 
 ///**
 // * @param array $fleet_row
@@ -801,77 +807,3 @@ $ube_convert_to_techs = array(
   UBE_SHIELD => 'shield',
 );
 
-function unit_dump_header() {
-  print('<table border="1">');
-  print('<tr>');
-  print('<th>desc</th>');
-  print('<th>unit_id</th>');
-  print('<th colspan="2">count</th>');
-//  print('<th>type</th>');
-//  print('<th>attack_bonus</th>');
-//  print('<th>shield_bonus</th>');
-//  print('<th>armor_bonus</th>');
-//  print('<th>unit_randomized_attack</th>');
-//  print('<th>unit_randomized_shield</th>');
-//  print('<th>unit_randomized_armor</th>');
-  print('<th colspan="2">units_destroyed</th>');
-//  print('<th>pool_attack</th>');
-  print('<th colspan="2">pool_shield</th>');
-  print('<th colspan="2">pool_armor</th>');
-  print('<th colspan="2">boom</th>');
-  print('<th colspan="2">attack_income</th>');
-//  print('<th>units_lost</th>');
-//  print('<th>units_restored</th>');
-//  print('<th>capacity</th>');
-  print('<th>armor_share</th>');
-  print('</tr>');
-}
-
-/**
- * @param UBEUnit      $current
- * @param string       $field
- * @param UBEUnit|null $before
- */
-function unit_dump_delta(UBEUnit $current, $field, UBEUnit $before = null) {
-//  print("<td" . ($before != null ? ' colspan=2' : '') . ">");
-  print("<td>");
-  print(pretty_number($current->$field));
-  print("</td>");
-  print("<td>");
-  if(!empty($before)) {
-    print('' . pretty_number($current->$field - $before->$field) . '');
-  }
-  print("</td>");
-}
-
-function unit_dump(UBEUnit $current, $desc = '', UBEUnit $before = null) {
-  global $lang;
-
-  print('<tr align="right">');
-  print("<td>{$desc}</td>");
-  print("<td>[{$current->unit_id}]{$lang['tech_short'][$current->unit_id]}</td>");
-//  print("<td>" . unit_dump_delta($current, 'count', $before) . "</td>");
-  unit_dump_delta($current, 'count', $before);
-//  print("<td>" . $UBEUnit->type . "</td>");
-//  print("<td>" . $UBEUnit->attack_bonus . "</td>");
-//  print("<td>" . $UBEUnit->shield_bonus . "</td>");
-//  print("<td>" . $UBEUnit->armor_bonus . "</td>");
-//  print("<td>" . $UBEUnit->unit_randomized_attack . "</td>");
-//  print("<td>" . $UBEUnit->unit_randomized_shield . "</td>");
-//  print("<td>" . $UBEUnit->unit_randomized_armor . "</td>");
-  unit_dump_delta($current, 'units_destroyed', $before);
-//  unit_dump_delta($current, 'pool_attack', $before);
-  unit_dump_delta($current, 'pool_shield', $before);
-  unit_dump_delta($current, 'pool_armor', $before);
-  unit_dump_delta($current, 'unit_count_boom', $before);
-  unit_dump_delta($current, 'attack_income', $before);
-//  print("<td>" . $UBEUnit->units_lost . "</td>");
-//  print("<td>" . $UBEUnit->units_restored . "</td>");
-//  print("<td>" . $UBEUnit->capacity . "</td>");
-  print("<td>" . round($current->share_of_side_armor, 4) . "</td>");
-  print('</tr>');
-}
-
-function unit_dump_footer() {
-  print('</table><br>');
-}

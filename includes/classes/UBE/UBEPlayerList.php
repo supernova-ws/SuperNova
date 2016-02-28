@@ -16,7 +16,7 @@ class UBEPlayerList extends ArrayAccessV2 {
   public function init_player_from_report_info($report_player_row) {
     $UBEPlayer = new UBEPlayer();
     $UBEPlayer->load_from_report_player_row($report_player_row);
-    $this[$UBEPlayer->player_id_get()] = $UBEPlayer;
+    $this[$UBEPlayer->getDbId()] = $UBEPlayer;
   }
 
   /**
@@ -43,6 +43,24 @@ class UBEPlayerList extends ArrayAccessV2 {
 
     foreach($this->_container as $player_id => $UBEPlayer) {
       $result[$UBEPlayer->player_side() ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER][$player_id] = $UBEPlayer->player_db_row_get();
+    }
+
+    return $result;
+  }
+
+
+  /**
+   * @param bool $side UBE_PLAYER_IS_ATTACKER|UBE_PLAYER_IS_DEFENDER
+   *
+   * @return UBEPlayer
+   */
+  public function get_first_player_on_side($side) {
+    $result = null;
+    foreach($this->_container as $player_id => $UBEPlayer) {
+      if($UBEPlayer->player_side() == $side) {
+        $result = $UBEPlayer;
+        break;
+      }
     }
 
     return $result;

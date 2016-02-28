@@ -30,7 +30,7 @@ function flt_mission_relocate($mission_data) {
       $fleet_resources[RES_CRYSTAL], $lang['Crystal'],
       $fleet_resources[RES_DEUTERIUM], $lang['Deuterium']
     ) . '<br />' . $lang['sys_relocate_mess_user'];
-  $fleet_real_array = $objFleet->get_ship_list();
+  $fleet_real_array = $objFleet->get_unit_list();
   foreach($fleet_real_array as $ship_id => $ship_count) {
     $Message .= $lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
   }
