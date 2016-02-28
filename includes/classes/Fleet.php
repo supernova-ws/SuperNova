@@ -456,6 +456,21 @@ class Fleet {
     return is_array($fleet_row) ? $fleet_row : false;
   }
 
+  /**
+   * Получить запись из $fleet_row без дополнительной инициализации
+   * Это бывает полезго когда данные о флотах читаются потоково, что бы не хранить все флоты в памяти
+   * Например - расчёт статистики флотов на сейчас. Когда юниты будут вынесены из записей флотов - это будет не нужно
+   *
+   * @param array $fleet_row
+   */
+  public function db_get_by_only_id($fleet_row) {
+    if(empty($fleet_row['fleet_id'])) {
+      $this->_reset();
+    } else {
+      $this->db_fleet_get_by_id($fleet_row['fleet_id']);
+    }
+  }
+
 
   /**
    * DELETE
@@ -826,6 +841,18 @@ class Fleet {
   }
 
   /**
+   * @param array $rate
+   *
+   * @return float
+   */
+  public function get_resources_amount_in_metal(array $rate) {
+    return
+      $this->resource_list[RES_METAL] * $rate[RES_METAL]
+      + $this->resource_list[RES_CRYSTAL] * $rate[RES_CRYSTAL] / $rate[RES_METAL]
+      + $this->resource_list[RES_DEUTERIUM] * $rate[RES_DEUTERIUM] / $rate[RES_METAL];
+  }
+
+  /**
    * Удаляет текущий флот из базы
    *
    * @return array|bool|mysqli_result|null
@@ -987,7 +1014,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.4
+   * @version 41a5.7
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;

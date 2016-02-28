@@ -139,18 +139,20 @@ function sys_stat_calculate() {
 
   // Calculation of Fleet-In-Flight
   sta_set_time_limit('calculating flying fleets stats');
+  $objFleet = new Fleet();
   $i = 0;
-  $query = FleetList::db_fleet_list_query_all_stat();
+  $query = FleetList::dbQueryAllId();
   $row_num = db_num_rows($query);
   while($fleet_row = db_fetch($query)) {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
     }
-    if(array_key_exists($user_id = $fleet_row['fleet_owner'], $user_skip_list)) {
+    $objFleet->db_get_by_only_id($fleet_row);
+    if(array_key_exists($user_id = $objFleet->owner_id, $user_skip_list)) {
       continue;
     }
 
-    $fleet = Fleet::static_proxy_string_to_array($fleet_row);
+    $fleet = $objFleet->get_unit_list();
     foreach($fleet as $unit_id => $unit_amount) {
       $counts[$user_id][UNIT_SHIPS] += $unit_amount;
 
@@ -160,7 +162,8 @@ function sys_stat_calculate() {
       $unit_cost_data = &$unit_cost_cache[$unit_id][0];
       $points[$user_id][UNIT_SHIPS] += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
     }
-    $resources = $fleet_row['fleet_resource_metal'] * $rate[RES_METAL] + $fleet_row['fleet_resource_crystal'] * $rate[RES_CRYSTAL] + $fleet_row['fleet_resource_deuterium'] * $rate[RES_DEUTERIUM];
+//    $resources = $fleet_resources[RES_METAL] * $rate[RES_METAL] + $fleet_resources[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $fleet_resources[RES_DEUTERIUM] * $rate[RES_DEUTERIUM];
+    $resources = $objFleet->get_resources_amount_in_metal($rate);
 
     $counts[$user_id][UNIT_RESOURCES] += $resources;
     // $points[$user_id][UNIT_RESOURCES] += $resources;

@@ -28,7 +28,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.5
+   * @version 41a5.7
    */
   public static function dbGetFleetList($where_safe = '') {
     $fleetList = new static();
@@ -58,7 +58,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.5
+   * @version 41a5.7
    */
   public static function dbGetFleetListByGroup($group_id) {
     return static::dbGetFleetList("`fleet_group` = {$group_id}");
@@ -71,7 +71,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.5
+   * @version 41a5.7
    */
   public static function dbGetFleetListOnHoldAtTarget(Fleet $objFleet) {
     return static::dbGetFleetList(
@@ -90,7 +90,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.5
+   * @version 41a5.7
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -110,7 +110,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.5
+   * @version 41a5.7
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -279,9 +279,9 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return array|bool|mysqli_result|null
    */
-// TODO - deprecated
-  public static function db_fleet_list_query_all_stat() {
-    return doquery("SELECT fleet_owner, fleet_array, fleet_resource_metal, fleet_resource_crystal, fleet_resource_deuterium FROM {{fleets}};");
+  // Для потокового чтения данных
+  public static function dbQueryAllId() {
+    return doquery("SELECT `fleet_id` FROM {{fleets}};");
   }
 
 
