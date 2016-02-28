@@ -110,7 +110,7 @@ onhover или онклик - посмотреть полную картинку
 fleet_array
 {{fleets }}
 {{iraks}}
-tpl_parse_fleet_db - унифицировать окружающий код при вызове
+tplParseFleetObject - унифицировать окружающий код при вызове
 
 
 db_normalize_id - REMOVE!
@@ -469,11 +469,10 @@ fleet.php
 
 
 // TODO - СЕЙЧАС
-phalanx.php - сделать версии для FleetList
 
-$fleet_list = fleet_and_missiles_list_by_coordinates($planet_scanned, true);
-$fleets = flt_parse_fleets_to_events($fleet_list, $planet_scanned);
-tpl_assign_fleet($template, $fleets);
+
+
+
 
 
 #ctv

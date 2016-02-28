@@ -111,13 +111,22 @@ if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(
 }
 
 $i++;
-$fleet_row = Fleet::static_db_fleet_get($fleetid);
-$planet_start = db_planet_by_id($fleet_row['fleet_start_planet_id']);
-$fleet_row['fleet_start_name'] = !empty($planet_start['name']) ? $planet_start['name'] : '';
-$planet_end = db_planet_by_id($fleet_row['fleet_end_planet_id']);
-$fleet_row['fleet_end_name'] = !empty($planet_end['name']) ? $planet_end['name'] : '';
 
-$fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
+//$fleet_row = Fleet::static_db_fleet_get($fleetid);
+//$planet_start = db_planet_by_id($fleet_row['fleet_start_planet_id']);
+//$fleet_row['fleet_start_name'] = !empty($planet_start['name']) ? $planet_start['name'] : '';
+//$planet_end = db_planet_by_id($fleet_row['fleet_end_planet_id']);
+//$fleet_row['fleet_end_name'] = !empty($planet_end['name']) ? $planet_end['name'] : '';
+//$fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
+
+$objFleet = new Fleet();
+$objFleet->db_fleet_get_by_id($fleetid);
+$planet_start = db_planet_by_id($objFleet->fleet_start_planet_id);
+$objFleet->fleet_start_name = !empty($planet_start['name']) ? $planet_start['name'] : '';
+$planet_end = db_planet_by_id($objFleet->fleet_end_planet_id);
+$objFleet->fleet_end_name = !empty($planet_end['name']) ? $planet_end['name'] : '';
+$fleet_data = tplParseFleetObject($objFleet, $i, $user);
+
 $template->assign_block_vars('fleets', $fleet_data['fleet']);
 foreach($fleet_data['ships'] as $ship_data) {
   $template->assign_block_vars('fleets.ships', $ship_data);
