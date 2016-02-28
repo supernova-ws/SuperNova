@@ -284,8 +284,10 @@ switch($mode = sys_get_param_str('mode')) {
 
     $fleet_id = 1;
 
-    $fleet_and_missiles_list = FleetList::fleet_and_missiles_list_incoming($user['id']);
-    $fleets = flt_parse_fleets_to_events($fleet_and_missiles_list);
+//    $fleet_and_missiles_list = FleetList::fleet_and_missiles_list_incoming($user['id']);
+//    $fleets = flt_parse_fleets_to_events($fleet_and_missiles_list);
+    $fleet_and_missiles_list = FleetList::dbGetFleetListAndMissileINCOMING($user['id']);
+    $fleets = flt_parse_objFleetList_to_events($fleet_and_missiles_list);
 
     $planet_count = 0;
     $planets_query = db_planet_list_sorted($user, false, '*');
@@ -315,7 +317,21 @@ switch($mode = sys_get_param_str('mode')) {
         $moon_fill = 0;
       }
 
-      $moon_fleets = flt_get_fleets_to_planet($moon);
+//      $moon_fleets = flt_get_fleets_to_planet($moon);
+      $moon_fleets = FleetList::EMULATE_flt_get_fleets_to_planet($moon);
+//      $moon_fleets = array();
+//      $fleet_db_list = FleetList::dbGetFleetListAndMissileByCoordinates($moon);
+//      /**
+//       * @var Fleet[] $array_of_Fleet
+//       */
+//      $array_of_Fleet = array();
+//      if(!empty($fleet_db_list) && $fleet_db_list->count()) {
+//        foreach($fleet_db_list->_container as $fleet_id => $objFleet) {
+//          $array_of_Fleet[$fleet_id] = $objFleet;
+//        }
+//        $moon_fleets = flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet);
+//      }
+
       $template->assign_block_vars('planet', array_merge($template_planet, array(
         'PLANET_FLEET_ID'  => $planet_fleet_id,
 
@@ -323,7 +339,7 @@ switch($mode = sys_get_param_str('mode')) {
         'MOON_NAME'    => $moon['name'],
         'MOON_IMG'     => $moon['image'],
         'MOON_FILL'    => min(100, $moon_fill),
-        'MOON_ENEMY'   => $moon_fleets['enemy']['count'],
+        'MOON_ENEMY'   => !empty($moon_fleets['enemy']['count']) ? $moon_fleets['enemy']['count'] : 0,
 
         'MOON_PLANET'  => $moon['parent_planet'],
       )));

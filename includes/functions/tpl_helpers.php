@@ -293,7 +293,8 @@ function tpl_parse_planet_que($que, $planet, $que_id) {
 function tpl_parse_planet($planet) {
   global $lang;
 
-  $fleet_list = flt_get_fleets_to_planet($planet);
+//  $fleet_list = flt_get_fleets_to_planet($planet);
+  $fleet_list = FleetList::EMULATE_flt_get_fleets_to_planet($planet);
 
   $que = que_get($planet['id_owner'], $planet['id'], false);
 
@@ -354,73 +355,16 @@ function tpl_parse_planet($planet) {
   return $result;
 }
 
-function flt_get_fleets_to_planet($planet, $fleet_db_list = 0) {
-  global $user;
-
-  if(!($planet && $planet['id']) && !$fleet_db_list) {
-    return $planet;
-  }
-
-  $fleet_list = array();
-
-  if($fleet_db_list === 0) {
-    $fleet_db_list = FleetList::fleet_and_missiles_list_by_coordinates($planet);
-  }
-
-  foreach($fleet_db_list as $fleet_row) {
-    if($fleet_row['fleet_owner'] == $user['id']) {
-      if($fleet_row['fleet_mission'] == MT_MISSILE) {
-        continue;
-      }
-      $fleet_ownage = 'own';
-    } else {
-      switch($fleet_row['fleet_mission']) {
-        case MT_ATTACK:
-        case MT_AKS:
-        case MT_DESTROY:
-        case MT_MISSILE:
-          $fleet_ownage = 'enemy';
-        break;
-
-        default:
-          $fleet_ownage = 'neutral';
-        break;
-
-      }
-    }
-
-    $fleet_list[$fleet_ownage]['fleets'][$fleet_row['fleet_id']] = $fleet_row;
-
-    if($fleet_row['fleet_mess'] == 1 || ($fleet_row['fleet_mess'] == 0 && $fleet_row['fleet_mission'] == MT_RELOCATE) || ($fleet_row['fleet_target_owner'] != $user['id'])) {
-      $fleet_sn = Fleet::static_proxy_string_to_array($fleet_row);
-      foreach($fleet_sn as $ship_id => $ship_amount) {
-        if(in_array($ship_id, sn_get_groups('fleet'))) {
-          $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
-        }
-      }
-    }
-
-    $fleet_list[$fleet_ownage]['count']++;
-    $fleet_list[$fleet_ownage]['amount'] += $fleet_row['fleet_amount'];
-    $fleet_list[$fleet_ownage]['total'][RES_METAL] += $fleet_row['fleet_resource_metal'];
-    $fleet_list[$fleet_ownage]['total'][RES_CRYSTAL] += $fleet_row['fleet_resource_crystal'];
-    $fleet_list[$fleet_ownage]['total'][RES_DEUTERIUM] += $fleet_row['fleet_resource_deuterium'];
-  }
-
-  return $fleet_list;
-}
-
 /**
- * @param $planet
  * @param Fleet[] $array_of_Fleet
  *
  * @return array
  */
-function flt_get_fleets_to_planet_by_array_of_Fleet($planet, $array_of_Fleet) {
+function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
   global $user;
 
-  if(!($planet && $planet['id']) && empty($array_of_Fleet)) {
-    return $planet;
+  if(empty($array_of_Fleet)) {
+    return false;
   }
 
   $fleet_list = array();
@@ -501,3 +445,72 @@ function tpl_set_resource_info(template &$template, $planet_row, $fleets_to_plan
     'PLANET_DEUTERIUM_FLEET_TEXT' => pretty_number($fleets_to_planet[$planet_row['id']]['fleet']['DEUTERIUM'], $round, true),
   ));
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//function flt_get_fleets_to_planet($planet) {
+//  global $user;
+//
+//  if(!($planet && $planet['id'])) {
+//    return $planet;
+//  }
+//
+//  $fleet_list = array();
+//
+//  $fleet_db_list = FleetList::fleet_and_missiles_list_by_coordinates($planet);
+//
+//  foreach($fleet_db_list as $fleet_row) {
+//    if($fleet_row['fleet_owner'] == $user['id']) {
+//      if($fleet_row['fleet_mission'] == MT_MISSILE) {
+//        continue;
+//      }
+//      $fleet_ownage = 'own';
+//    } else {
+//      switch($fleet_row['fleet_mission']) {
+//        case MT_ATTACK:
+//        case MT_AKS:
+//        case MT_DESTROY:
+//        case MT_MISSILE:
+//          $fleet_ownage = 'enemy';
+//        break;
+//
+//        default:
+//          $fleet_ownage = 'neutral';
+//        break;
+//
+//      }
+//    }
+//
+//    $fleet_list[$fleet_ownage]['fleets'][$fleet_row['fleet_id']] = $fleet_row;
+//
+//    if($fleet_row['fleet_mess'] == 1 || ($fleet_row['fleet_mess'] == 0 && $fleet_row['fleet_mission'] == MT_RELOCATE) || ($fleet_row['fleet_target_owner'] != $user['id'])) {
+//      $fleet_sn = Fleet::static_proxy_string_to_array($fleet_row);
+//      foreach($fleet_sn as $ship_id => $ship_amount) {
+//        if(in_array($ship_id, sn_get_groups('fleet'))) {
+//          $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
+//        }
+//      }
+//    }
+//
+//    $fleet_list[$fleet_ownage]['count']++;
+//    $fleet_list[$fleet_ownage]['amount'] += $fleet_row['fleet_amount'];
+//    $fleet_list[$fleet_ownage]['total'][RES_METAL] += $fleet_row['fleet_resource_metal'];
+//    $fleet_list[$fleet_ownage]['total'][RES_CRYSTAL] += $fleet_row['fleet_resource_crystal'];
+//    $fleet_list[$fleet_ownage]['total'][RES_DEUTERIUM] += $fleet_row['fleet_resource_deuterium'];
+//  }
+//
+//  return $fleet_list;
+//}
+//
+

@@ -120,7 +120,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $que_length = count($que);
   $can_que_element = $que_length < que_get_max_que_length($user, $planet, $que_type);
 
-  $fleet_list = flt_get_fleets_to_planet($planet);
+//  $fleet_list = flt_get_fleets_to_planet($planet);
+  $fleet_list = FleetList::EMULATE_flt_get_fleets_to_planet($planet);
 
   $planet_fields_max = eco_planet_fields_max($planet);
   $planet_fields_current = $planet['field_current'];

@@ -497,7 +497,8 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
       continue;
     }
 
-    $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
+//    $fleet_listx = flt_get_fleets_to_planet($CurPlanet);
+    $fleet_listx = FleetList::EMULATE_flt_get_fleets_to_planet($CurPlanet);
 
     $template->assign_block_vars('topnav_planets', array(
       'ID'          => $CurPlanet['id'],

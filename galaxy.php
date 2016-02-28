@@ -149,7 +149,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
         }
       }
 
-      $fleets_to_planet = flt_get_fleets_to_planet_by_array_of_Fleet(false, $fleet_list[$Planet][PT_PLANET]);
+      $fleets_to_planet = flt_get_fleets_to_planet_by_array_of_Fleet($fleet_list[$Planet][PT_PLANET]);
       if(!empty($fleets_to_planet['own']['count'])) {
         $planet_fleet_id = $fleet_id;
         $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);
@@ -161,7 +161,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
         CheckAbandonPlanetState($uni_galaxyRowMoon);
       } else {
         $moon_fleet_id = 0;
-        $fleets_to_planet = flt_get_fleets_to_planet_by_array_of_Fleet(false, $fleet_list[$Planet][PT_MOON]);
+        $fleets_to_planet = flt_get_fleets_to_planet_by_array_of_Fleet($fleet_list[$Planet][PT_MOON]);
         if(!empty($fleets_to_planet['own']['count'])) {
           $moon_fleet_id = $fleet_id;
           $fleets[] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $fleet_id);

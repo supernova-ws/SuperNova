@@ -12,7 +12,6 @@ class FleetList extends ArrayAccessV2 {
 
   }
 
-
   /**
    * @return Fleet
    */
@@ -29,7 +28,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.4
+   * @version 41a5.5
    */
   public static function dbGetFleetList($where_safe = '') {
     $fleetList = new static();
@@ -59,7 +58,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.4
+   * @version 41a5.5
    */
   public static function dbGetFleetListByGroup($group_id) {
     return static::dbGetFleetList("`fleet_group` = {$group_id}");
@@ -72,7 +71,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.4
+   * @version 41a5.5
    */
   public static function dbGetFleetListOnHoldAtTarget(Fleet $objFleet) {
     return static::dbGetFleetList(
@@ -91,7 +90,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.4
+   * @version 41a5.5
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -111,7 +110,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.4
+   * @version 41a5.5
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -135,10 +134,6 @@ class FleetList extends ArrayAccessV2 {
 
     return $fleet_owner_id_safe ? static::dbGetFleetList("`fleet_owner` = {$fleet_owner_id_safe}") : null;
   }
-
-
-
-
 
   /**
    * Get fleet and missile list by coordinates
@@ -170,48 +165,23 @@ class FleetList extends ArrayAccessV2 {
 
     return $objFleetList;
   }
-  /**
-   * Get fleet and missile list by coordinates
-   *
-   * @param array $coordinates
-   * @param bool  $for_phalanx - If true - this is phalanx scan so limiting output with fleet_mess
-   *
-   * @return array
-   */
-  public static function fleet_and_missiles_list_by_coordinates($coordinates, $for_phalanx = false) {
-    if(empty($coordinates) || !is_array($coordinates)) {
-      return array();
+
+  public static function EMULATE_flt_get_fleets_to_planet($planet) {
+    $planet_fleets = array();
+    $fleet_db_list = FleetList::dbGetFleetListAndMissileByCoordinates($planet);
+    /**
+     * @var Fleet[] $array_of_Fleet
+     */
+    $array_of_Fleet = array();
+    if(!empty($fleet_db_list) && $fleet_db_list->count()) {
+      foreach($fleet_db_list->_container as $fleet_id => $objFleet) {
+        $array_of_Fleet[$fleet_id] = $objFleet;
+      }
+      $planet_fleets = flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet);
     }
 
-    $fleet_db_list = FleetList::fleet_list_by_planet_coords($coordinates['galaxy'], $coordinates['system'], $coordinates['planet'], $coordinates['planet_type'], $for_phalanx);
-
-    $missile_db_list = FleetList::db_missile_list(
-      "(
-      fleet_start_galaxy = {$coordinates['galaxy']}
-      AND fleet_start_system = {$coordinates['system']}
-      AND fleet_start_planet = {$coordinates['planet']}
-      AND fleet_start_type = {$coordinates['planet_type']}
-    )
-    OR
-    (
-      fleet_end_galaxy = {$coordinates['galaxy']}
-      AND fleet_end_system = {$coordinates['system']}
-      AND fleet_end_planet = {$coordinates['planet']}
-      AND fleet_end_type = {$coordinates['planet_type']}
-    )"
-    );
-
-    FleetList::missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
-
-    return $fleet_db_list;
+    return $planet_fleets;
   }
-
-
-
-
-
-
-
 
 
   /**
@@ -243,7 +213,6 @@ class FleetList extends ArrayAccessV2 {
     );
   }
 
-
   /**
    * LIST - Get missile attack list by condition
    *
@@ -267,128 +236,25 @@ class FleetList extends ArrayAccessV2 {
 
 
 
-
-
-
-
   /**
-   * Get fleet list flying/returning to planet/system coordinates
-   *
-   * @param int $galaxy
-   * @param int $system
-   * @param int $planet - planet position. "0" means "any"
-   * @param int $planet_type - planet type. "PT_ALL" means "any type"
-   *
-   * @return array
-   */
-  // TODO - ОСТАВЛЯЕМ НА ВТОРОЙ ЗАХОД - МНОГО ВСЕГО НАДО МЕНЯТЬ В ОКРУГЕ
-  public static function fleet_list_by_planet_coords($galaxy, $system, $planet = 0, $planet_type = PT_ALL, $for_phalanx = false) {
-    return static::db_fleet_list(
-      "(
-    fleet_start_galaxy = {$galaxy}
-    AND fleet_start_system = {$system}" .
-      ($planet ? " AND fleet_start_planet = {$planet}" : '') .
-      ($planet_type != PT_ALL ? " AND fleet_start_type = {$planet_type}" : '') .
-      ($for_phalanx ? '' : " AND fleet_mess = 1") .
-      ")
-    OR
-    (
-    fleet_end_galaxy = {$galaxy}
-    AND fleet_end_system = {$system}" .
-      ($planet ? " AND fleet_end_planet = {$planet}" : '') .
-      ($planet_type != PT_ALL ? " AND fleet_end_type = {$planet_type} " : '') .
-      ($for_phalanx ? '' : " AND fleet_mess = 0") .
-      ")"
-    );
-  }
-
-
-  /**
-   * LIST - Get fleet list by condition
-   *
-   * @param string $where_safe
-   *
-   * @return array
-   */
-  public static function db_fleet_list($where_safe = '') {
-    $row_list = array();
-
-    $query = doquery(
-      "SELECT * FROM `{{fleets}}`" .
-      (!empty($where_safe) ? " WHERE {$where_safe}" : '') .
-      " FOR UPDATE;"
-    );
-    while($row = db_fetch($query)) {
-      $row_list[$row['fleet_id']] = $row;
-    }
-
-    return $row_list;
-
-  }
-
-  /**
-   * LIST - Get missile attack list by condition
-   *
-   * @param string $where
-   *
-   * @return array
-   */
-  public static function db_missile_list($where) {
-    $row_list = array();
-
-    $query = doquery(
-      "SELECT * FROM `{{iraks}}`" .
-      (!empty($where) ? " WHERE {$where}" : '') .
-      " FOR UPDATE;");
-    while($row = db_fetch($query)) {
-      $row_list[$row['id']] = $row;
-    }
-
-    return $row_list;
-
-  }
-
-  /**
-   * Get fleet and missile list by that flies from player's planets OR to player's planets
+   * Get fleet and missile list by coordinates
    *
    * @param int $owner_id
    *
-   * @return array
+   * @return static
    */
-  public static function fleet_and_missiles_list_incoming($owner_id) {
+  public static function dbGetFleetListAndMissileINCOMING($owner_id) {
     $owner_id_safe = idval($owner_id);
     if(empty($owner_id_safe)) {
       return array();
     }
 
     $where = "`fleet_owner` = '{$owner_id_safe}' OR `fleet_target_owner` = '{$owner_id_safe}'";
-    $fleet_db_list = FleetList::db_fleet_list($where);
-    $missile_db_list = FleetList::db_missile_list($where);
 
-    FleetList::missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
+    $objFleetList = FleetList::dbGetFleetList($where);
+    $objFleetList->dbMergeMissileList($where);
 
-    return $fleet_db_list;
-  }
-
-  /**
-   * Converts IRAK table record to FLEET one
-   *
-   * @param array $missile_db_list
-   * @param array $fleet_db_list
-   */
-  public static function missile_list_convert_to_fleet(&$missile_db_list, &$fleet_db_list) {
-    // Missile attack
-    foreach($missile_db_list as $irak) {
-      if($irak['fleet_end_time'] >= SN_TIME_NOW) {
-        $irak['fleet_start_type'] = PT_PLANET;
-        $planet_start = db_planet_by_vector($irak, 'fleet_start_', false, 'name');
-        $irak['fleet_id'] = -$irak['id'];
-        $irak['fleet_mission'] = MT_MISSILE;
-        $irak['fleet_array'] = UNIT_DEF_MISSILE_INTERPLANET . ",{$irak['fleet_amount']};";
-        $irak['fleet_start_name'] = $planet_start['name'];
-      }
-      $fleet_db_list[] = $irak;
-    }
+    return $objFleetList;
   }
 
 
@@ -475,5 +341,130 @@ class FleetList extends ArrayAccessV2 {
     );
   }
 
+
+//
+//  /**
+//   * LIST - Get fleet list by condition
+//   *
+//   * @param string $where_safe
+//   *
+//   * @return array
+//   */
+//  public static function db_fleet_list($where_safe = '') {
+//    $row_list = array();
+//
+//    $query = doquery(
+//      "SELECT * FROM `{{fleets}}`" .
+//      (!empty($where_safe) ? " WHERE {$where_safe}" : '') .
+//      " FOR UPDATE;"
+//    );
+//    while($row = db_fetch($query)) {
+//      $row_list[$row['fleet_id']] = $row;
+//    }
+//
+//    return $row_list;
+//
+//  }
+//
+//  /**
+//   * Get fleet and missile list by coordinates
+//   *
+//   * @param array $coordinates
+//   * @param bool  $for_phalanx - If true - this is phalanx scan so limiting output with fleet_mess
+//   *
+//   * @return array
+//   */
+//  public static function fleet_and_missiles_list_by_coordinates($coordinates, $for_phalanx = false) {
+//    if(empty($coordinates) || !is_array($coordinates)) {
+//      return array();
+//    }
+//
+//    $fleet_db_list = FleetList::fleet_list_by_planet_coords($coordinates['galaxy'], $coordinates['system'], $coordinates['planet'], $coordinates['planet_type'], $for_phalanx);
+//
+//    $missile_db_list = FleetList::db_missile_list(
+//      "(
+//      fleet_start_galaxy = {$coordinates['galaxy']}
+//      AND fleet_start_system = {$coordinates['system']}
+//      AND fleet_start_planet = {$coordinates['planet']}
+//      AND fleet_start_type = {$coordinates['planet_type']}
+//    )
+//    OR
+//    (
+//      fleet_end_galaxy = {$coordinates['galaxy']}
+//      AND fleet_end_system = {$coordinates['system']}
+//      AND fleet_end_planet = {$coordinates['planet']}
+//      AND fleet_end_type = {$coordinates['planet_type']}
+//    )"
+//    );
+//
+//    FleetList::missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
+//
+//    return $fleet_db_list;
+//  }
+//  /**
+//   * Get fleet and missile list by that flies from player's planets OR to player's planets
+//   *
+//   * @param int $owner_id
+//   *
+//   * @return array
+//   */
+//  public static function fleet_and_missiles_list_incoming($owner_id) {
+//    $owner_id_safe = idval($owner_id);
+//    if(empty($owner_id_safe)) {
+//      return array();
+//    }
+//
+//    $where = "`fleet_owner` = '{$owner_id_safe}' OR `fleet_target_owner` = '{$owner_id_safe}'";
+//    $fleet_db_list = FleetList::db_fleet_list($where);
+//    $missile_db_list = FleetList::db_missile_list($where);
+//
+//    FleetList::missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
+//
+//    return $fleet_db_list;
+//  }
+//
+//  /**
+//   * Converts IRAK table record to FLEET one
+//   *
+//   * @param array $missile_db_list
+//   * @param array $fleet_db_list
+//   */
+//  public static function missile_list_convert_to_fleet(&$missile_db_list, &$fleet_db_list) {
+//    // Missile attack
+//    foreach($missile_db_list as $irak) {
+//      if($irak['fleet_end_time'] >= SN_TIME_NOW) {
+//        $irak['fleet_start_type'] = PT_PLANET;
+//        $planet_start = db_planet_by_vector($irak, 'fleet_start_', false, 'name');
+//        $irak['fleet_id'] = -$irak['id'];
+//        $irak['fleet_mission'] = MT_MISSILE;
+//        $irak['fleet_array'] = UNIT_DEF_MISSILE_INTERPLANET . ",{$irak['fleet_amount']};";
+//        $irak['fleet_start_name'] = $planet_start['name'];
+//      }
+//      $fleet_db_list[] = $irak;
+//    }
+//  }
+//
+//  /**
+//   * LIST - Get missile attack list by condition
+//   *
+//   * @param string $where
+//   *
+//   * @return array
+//   */
+//  public static function db_missile_list($where) {
+//    $row_list = array();
+//
+//    $query = doquery(
+//      "SELECT * FROM `{{iraks}}`" .
+//      (!empty($where) ? " WHERE {$where}" : '') .
+//      " FOR UPDATE;");
+//    while($row = db_fetch($query)) {
+//      $row_list[$row['id']] = $row;
+//    }
+//
+//    return $row_list;
+//
+//  }
+//
 
 }
