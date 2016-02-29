@@ -5,8 +5,15 @@
  */
 class UBEUnit {
   public $unit_id = 0;
-
   public $count = 0;
+  public $type = 0;
+
+  public $capacity = 0; // UnitShip
+  public $price = array(); // UnitBuildable
+  public $amplify = array(); // UnitUBE ????
+
+
+
 
   public $attack_bonus = 0;
   public $shield_bonus = 0;
@@ -19,13 +26,6 @@ class UBEUnit {
   public $units_lost = 0; // Количество ПОТЕРЯННЫХ юнитов, т.е. уничтоженных и невосстановленных юнитов
   public $units_destroyed = 0; // Количество реально уничтоженных юнитов
   public $units_restored = 0;
-
-  public $type = 0;
-
-  public $capacity = 0;
-  public $price = array();
-  public $amplify = array();
-
 
   public $pool_attack = 0;
   public $pool_shield = 0;
@@ -249,7 +249,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a4.73
+   * @version 41a5.9
    */
   public static function unit_dump_footer() {
     print('</table><br>');
@@ -258,7 +258,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a4.73
+   * @version 41a5.9
    */
   public static function unit_dump_header() {
     print('<table border="1">');
@@ -290,7 +290,7 @@ class UBEUnit {
    * @param string       $field
    * @param UBEUnit|null $before
    *
-   * @version 41a4.73
+   * @version 41a5.9
    */
   function unit_dump_delta($field, UBEUnit $before = null) {
 //  print("<td" . ($before != null ? ' colspan=2' : '') . ">");
@@ -308,7 +308,7 @@ class UBEUnit {
    * @param string       $desc
    * @param UBEUnit|null $before
    *
-   * @version 41a4.73
+   * @version 41a5.9
    */
   function unit_dump($desc = '', UBEUnit $before = null) {
     global $lang;

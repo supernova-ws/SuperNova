@@ -207,8 +207,8 @@ fleet_amount => sum($fleet_real_array) - ВСЕГДА И ВЕЗДЕ!
 FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 
 Заменить проверки:
-    - sn_get_groups('fleet') -> Ship::is_ship($unit_id)
-    - sn_get_groups('resources_loot') -> ResourceLoot::is_resource($unit_id)
+    - sn_get_groups('fleet') -> UnitShip::is_ship($unit_id)
+    - sn_get_groups('resources_loot') -> UnitResourceLoot::is_resource($unit_id)
 
 Сделать класс DBRow:
     - Хранить поля в контейнере
@@ -466,12 +466,17 @@ fleet.php
           public $ov_this_planet = '';
           public $event_time = 0;
 
+  // TODO - LOCK UNITS!
+  public function method_db_fleet_lock_flying(&$mission_data) {
 
 
 // TODO - СЕЙЧАС
+    Делаем структуру юнитов
+        !!! Избавляемся от fleet_array
+            !!!!!!!! make_fleet_string();
+            !!!!!!!! parse_fleet_string()
 
-  // TODO - LOCK UNITS!
-  public function method_db_fleet_lock_flying(&$mission_data) {
+        UnitFleet (?)
 
 
 

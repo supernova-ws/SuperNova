@@ -278,7 +278,8 @@ class Fleet {
    *
    * @return array
    */
-  public function parse_fleet_string($fleet_string) {
+  public function load_unit_list($fleet_string) {
+//    db_unit_by_location(0, LOC_FLEET, $this->db_id);
     return sys_unit_str2arr($fleet_string);
   }
 
@@ -546,7 +547,7 @@ class Fleet {
     // Сейчас это у нас только ресурсы
     $field_delta_changes = array_merge(
       $field_delta_changes,
-      ResourceLoot::convert_id_to_field_name($this->resource_delta, 'fleet_resource_')
+      UnitResourceLoot::convert_id_to_field_name($this->resource_delta, 'fleet_resource_')
     );
     $field_delta_string_safe = db_set_make_safe_string($field_delta_changes, true);
     !empty($field_delta_string_safe) ? $result_changeset[] = $field_delta_string_safe : false;
@@ -567,7 +568,7 @@ class Fleet {
     if(!empty($this->resource_replace)) {
       $field_replace_changes = array_merge(
         $field_replace_changes,
-        ResourceLoot::convert_id_to_field_name($this->resource_replace, 'fleet_resource_')
+        UnitResourceLoot::convert_id_to_field_name($this->resource_replace, 'fleet_resource_')
       );
     }
 
@@ -614,7 +615,7 @@ class Fleet {
     !is_array($unit_delta_list) ? $unit_delta_list = array() : false;
 
     foreach($unit_delta_list as $unit_id => $unit_delta) {
-      if(!Ship::is_in_group($unit_id) || !($unit_delta = floor($unit_delta))) {
+      if(!UnitShip::is_in_group($unit_id) || !($unit_delta = floor($unit_delta))) {
         // Not a ship - continuing
         continue;
       }
@@ -642,7 +643,7 @@ class Fleet {
     !is_array($unit_list) ? $unit_list = array() : false;
 
     foreach($unit_list as $unit_id => $unit_count) {
-      if(!Ship::is_in_group($unit_id) || !($unit_count = floor($unit_count))) {
+      if(!UnitShip::is_in_group($unit_id) || !($unit_count = floor($unit_count))) {
         // Not a ship - continuing
         continue;
       }
@@ -668,7 +669,7 @@ class Fleet {
     !is_array($resource_delta_list) ? $resource_delta_list = array() : false;
 
     foreach($resource_delta_list as $resource_id => $unit_delta) {
-      if(!ResourceLoot::is_in_group($resource_id) || !($unit_delta = floor($unit_delta))) {
+      if(!UnitResourceLoot::is_in_group($resource_id) || !($unit_delta = floor($unit_delta))) {
         // Not a resource or no resources - continuing
         continue;
       }
@@ -698,7 +699,7 @@ class Fleet {
     !is_array($resource_list) ? $resource_list = array() : false;
 
     foreach($resource_list as $resource_id => $unit_count) {
-      if(!ResourceLoot::is_in_group($resource_id) || !($unit_count = floor($unit_count))) {
+      if(!UnitResourceLoot::is_in_group($resource_id) || !($unit_count = floor($unit_count))) {
         // Not a resource or zero resource - continuing
         continue;
       }
@@ -736,9 +737,9 @@ class Fleet {
         continue;
       }
 
-      if(Ship::is_in_group($unit_id)) {
+      if(UnitShip::is_in_group($unit_id)) {
         $this->unit_list[$unit_id] = $unit_count;
-      } elseif(ResourceLoot::is_in_group($unit_id)) {
+      } elseif(UnitResourceLoot::is_in_group($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
       }
     }
@@ -912,7 +913,7 @@ class Fleet {
     $this->fleet_end_planet = $fleet_row['fleet_end_planet'];
     $this->fleet_end_type = $fleet_row['fleet_end_type'];
 
-    $this->unit_list = $this->parse_fleet_string($fleet_row['fleet_array']);
+    $this->unit_list = $this->load_unit_list($fleet_row['fleet_array']);
 
     $this->resource_list = array(
       RES_METAL     => ceil($fleet_row['fleet_resource_metal']),
@@ -974,7 +975,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.8
+   * @version 41a5.9
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;

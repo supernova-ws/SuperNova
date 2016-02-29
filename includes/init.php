@@ -188,9 +188,9 @@ spl_autoload_register(function ($class) {
 });
 
 //require_once('classes/DBRow.php');
-//require_once('classes/UnitBasic.php');
-//require_once('classes/ResourceLoot.php');
-//require_once('classes/Ship.php');
+//require_once('classes/Unit.php');
+//require_once('classes/UnitResourceLoot.php');
+//require_once('classes/UnitShip.php');
 //require_once('classes/Mission.php');
 //require_once('classes/Fleet.php');
 //require_once('classes/FleetList.php');
