@@ -140,6 +140,137 @@ class Fleet {
   }
 
 
+
+
+  /* FLEET DB ACCESS =================================================================================================*/
+  /**
+   * UPDATE - Updates fleet record by ID with SET
+   *
+   * @param int    $fleet_id
+   * @param string $set_safe_string
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  protected static function static_db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
+    $fleet_id_safe = idval($fleet_id);
+    if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
+      $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
+    } else {
+      $result = false;
+    }
+
+    return $result;
+  }
+
+  /**
+   * LOCK - Lock all records which can be used with mission
+   *
+   * @param $mission_data
+   * @param $fleet_id
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  // TODO - LOCK UNITS!
+  public function db_fleet_lock_flying(&$mission_data) {
+//  // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
+//  // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
+
+    $fleet_id_safe = idval($this->db_id);
+
+    return doquery(
+    // Блокировка самого флота
+      "SELECT 1 FROM {{fleets}} AS f " .
+
+      // Блокировка всех юнитов, принадлежащих этому флоту
+      "LEFT JOIN {{unit}} as unit ON unit.unit_location_type = " . LOC_FLEET . " AND unit.unit_location_id = f.fleet_id " .
+
+      // Блокировка всех прилетающих и улетающих флотов, если нужно
+      ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
+
+      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
+      ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
+
+      ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
+      ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
+
+      "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
+    );
+  }
+
+  /**
+   * READ - Gets fleet record by ID
+   *
+   * @param int $fleet_id
+   *
+   * @return array|false
+   */
+  public function db_fleet_get_by_id($fleet_id) {
+    $this->_reset();
+
+    $fleet_id_safe = idval($fleet_id);
+
+    $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
+    if(!empty($fleet_row['fleet_id'])) {
+      $this->parse_db_row($fleet_row);
+    }
+
+    return is_array($fleet_row) ? $fleet_row : false;
+  }
+
+  /**
+   * DELETE - Удаляет текущий флот из базы
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function method_db_delete_this_fleet() {
+    $fleet_id_safe = idval($this->db_id);
+    if(!empty($fleet_id_safe)) {
+      $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
+    } else {
+      $result = false;
+    }
+
+    db_unit_list_delete(0, LOC_FLEET, $this->db_id, 0);
+
+    $this->_reset();
+
+    return $result;
+  }
+
+  /**
+   * Insert fleet into DB
+   *
+   * @return int|string
+   */
+  protected function db_insert() {
+    $set_safe_string = db_set_make_safe_string($this->make_db_insert_set());
+
+    $db_fleet_id = 0;
+    if(!empty($set_safe_string)) {
+      doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
+      if($db_fleet_id = db_insert_id()) {
+        $this->db_fleet_get_by_id($db_fleet_id);
+        if(!$this->db_id || !$db_fleet_id) {
+          // TODO - error log
+          die('Can not reload just created fleet at ' . __FILE__ . ':' . __LINE__);
+        }
+      }
+    }
+
+    $this->db_id = !empty($db_fleet_id) ? $db_fleet_id : 0;
+
+    return $this->db_id;
+  }
+
+
+
+
+
+
+
+
+
+
   /**
    * Парсит строку юнитов в array(ID => AMOUNT)
    *
@@ -147,10 +278,6 @@ class Fleet {
    *
    * @return array
    */
-  public static function static_proxy_string_to_array($fleet_row) {
-    return sys_unit_str2arr($fleet_row['fleet_array']);
-  }
-
   public function parse_fleet_string($fleet_string) {
     return sys_unit_str2arr($fleet_string);
   }
@@ -179,21 +306,6 @@ class Fleet {
     return $result;
   }
 
-  /* FLEET CRUD ========================================================================================================*/
-
-  /**
-   * READ - Gets fleet record by ID
-   *
-   * @param int $fleet_id
-   *
-   * @return array|false
-   */
-  public static function static_db_fleet_get($fleet_id) {
-    $fleet_id_safe = idval($fleet_id);
-    $result = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
-
-    return is_array($result) ? $result : false;
-  }
   /* FLEET HELPERS =====================================================================================================*/
 
   /**
@@ -263,25 +375,6 @@ class Fleet {
 
 
   /**
-   * UPDATE - Updates fleet record by ID with SET
-   *
-   * @param int    $fleet_id
-   * @param string $set_safe_string
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  protected static function static_db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
-    $fleet_id_safe = idval($fleet_id);
-    if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
-      $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-    } else {
-      $result = false;
-    }
-
-    return $result;
-  }
-
-  /**
    * Updates fleet record by ID with SET
    *
    * @param int   $fleet_id
@@ -314,40 +407,6 @@ class Fleet {
   }
 
 
-  /**
-   * LOCK - Lock all records which can be used with mission
-   *
-   * @param $mission_data
-   * @param $fleet_id
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function method_db_fleet_lock_flying(&$mission_data) {
-//  // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
-//  // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
-
-    $fleet_id_safe = idval($this->db_id);
-
-    return doquery(
-    // Блокировка самого флота
-      "SELECT 1 FROM {{fleets}} AS f " .
-
-      // Блокировка всех юнитов, принадлежащих этому флоту
-      "LEFT JOIN {{unit}} as unit ON unit.unit_location_type = " . LOC_FLEET . " AND unit.unit_location_id = f.fleet_id " .
-
-      // Блокировка всех прилетающих и улетающих флотов, если нужно
-      ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
-
-      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
-      ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
-
-      ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
-      ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
-
-      "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
-    );
-  }
-
 
   /**
    * Restores fleet or resources to planet
@@ -374,7 +433,6 @@ class Fleet {
     // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
     // TODO Проеверить от многократного срабатывания !!!
     // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
-//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
     // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
     // Узнаем ИД владельца планеты - без блокировки
     $planet_arrival = db_planet_by_vector($coordinates, '', false, 'id_owner');
@@ -383,7 +441,6 @@ class Fleet {
     // Блокируем планету
     $planet_arrival = db_planet_by_vector($coordinates, '', true);
     // Блокируем флот
-//  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
 
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
     // Флот, который возвращается на захваченную планету, пропадает
@@ -437,26 +494,6 @@ class Fleet {
 
 
   /**
-   * READ - Gets fleet record by ID
-   *
-   * @param int $fleet_id
-   *
-   * @return array|false
-   */
-  public function db_fleet_get_by_id($fleet_id) {
-    $this->_reset();
-
-    $fleet_id_safe = idval($fleet_id);
-
-    $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
-    if(!empty($fleet_row['fleet_id'])) {
-      $this->parse_db_row($fleet_row);
-    }
-
-    return is_array($fleet_row) ? $fleet_row : false;
-  }
-
-  /**
    * Получить запись из $fleet_row без дополнительной инициализации
    * Это бывает полезго когда данные о флотах читаются потоково, что бы не хранить все флоты в памяти
    * Например - расчёт статистики флотов на сейчас. Когда юниты будут вынесены из записей флотов - это будет не нужно
@@ -472,42 +509,11 @@ class Fleet {
   }
 
 
-  /**
-   * DELETE
-   *
-   * @param $fleet_id
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function method_db_delete_this_fleet() {
-    $fleet_id_safe = idval($this->db_id);
-    if(!empty($fleet_id_safe)) {
-      $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-    } else {
-      $result = false;
-    }
 
-    $this->_reset();
 
-    return $result;
-  }
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+
+
 
 
   /**
@@ -801,32 +807,6 @@ class Fleet {
   }
 
   /**
-   * Insert fleet into DB
-   *
-   * @return int|string
-   */
-  protected function db_insert() {
-    $set_safe_string = db_set_make_safe_string($this->make_db_insert_set());
-
-    $db_fleet_id = 0;
-    if(!empty($set_safe_string)) {
-      doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
-      if($db_fleet_id = db_insert_id()) {
-        $fleet_row = static::static_db_fleet_get($db_fleet_id);
-        if(!empty($fleet_row) && is_array($fleet_row)) {
-          $this->parse_db_row($fleet_row);
-        } else {
-          $db_fleet_id = 0;
-        }
-      }
-    }
-
-    $this->db_id = !empty($db_fleet_id) ? $db_fleet_id : 0;
-
-    return $this->db_id;
-  }
-
-  /**
    * Returns ship list in fleet
    */
   public function get_unit_list() {
@@ -850,26 +830,6 @@ class Fleet {
       $this->resource_list[RES_METAL] * $rate[RES_METAL]
       + $this->resource_list[RES_CRYSTAL] * $rate[RES_CRYSTAL] / $rate[RES_METAL]
       + $this->resource_list[RES_DEUTERIUM] * $rate[RES_DEUTERIUM] / $rate[RES_METAL];
-  }
-
-  /**
-   * Удаляет текущий флот из базы
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function method_db_fleet_delete() {
-    $fleet_id_safe = idval($this->db_id);
-    if(!empty($fleet_id_safe)) {
-      $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-    } else {
-      $result = false;
-    }
-
-    db_unit_list_delete(0, LOC_FLEET, $this->db_id, 0);
-
-    $this->_reset();
-
-    return $result;
   }
 
   /**
@@ -1014,7 +974,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.7
+   * @version 41a5.8
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;

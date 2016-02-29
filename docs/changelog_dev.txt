@@ -470,6 +470,8 @@ fleet.php
 
 // TODO - СЕЙЧАС
 
+  // TODO - LOCK UNITS!
+  public function method_db_fleet_lock_flying(&$mission_data) {
 
 
 

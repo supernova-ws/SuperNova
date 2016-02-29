@@ -123,7 +123,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a4.74
+   * @version 41a5.8
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -157,7 +157,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a4.74
+   * @version 41a5.8
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -185,7 +185,7 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a4.74
+   * @version 41a5.8
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->db_id;
@@ -445,9 +445,9 @@ class UBEFleet {
 
     // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
     if($this->is_attacker == UBE_PLAYER_IS_ATTACKER && $reapers_status == UBE_MOON_REAPERS_DIED) {
-      $objFleet2->method_db_fleet_delete();
+      $objFleet2->method_db_delete_this_fleet();
     } elseif($ship_count_initial == 0) { // $ship_count_lost == $ship_count_initial ||
-      $objFleet2->method_db_fleet_delete();
+      $objFleet2->method_db_delete_this_fleet();
     } else {
       if($ship_count_lost) {
         $fleet_real_array = array();
@@ -549,7 +549,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a4.74
+   * @version 41a5.8
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     if(defined('DEBUG_UBE')) {

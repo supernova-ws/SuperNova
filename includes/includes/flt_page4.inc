@@ -11,16 +11,17 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
   exit();
 }
 
-$fleet = Fleet::static_db_fleet_get($fleetid);
-if(!$fleet) {
+$objFleet = new Fleet();
+$objFleet->db_fleet_get_by_id($fleetid);
+if(!$objFleet->db_id) {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
 
-if ($fleet['fleet_start_time'] <= SN_TIME_NOW || $fleet['fleet_end_time'] < SN_TIME_NOW || $fleet['fleet_mess'] == 1) {
+if ($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to_source < SN_TIME_NOW || $objFleet->is_returning == 1) {
   message($lang['fl_isback'], $lang['fl_error']);
 }
 
-if($fleet['fleet_owner'] != $user['id']) {
+if($objFleet->owner_id != $user['id']) {
   $debug->warning($lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
   message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
 }
@@ -36,30 +37,30 @@ if($userToAdd_unsafe) {
   $userToAddID = db_user_by_username($userToAdd_unsafe, false, 'id', true, true);
   $userToAddID = $userToAddID['id'];
 
-  if($fleet['fleet_target_owner'] == $userToAddID) {
+  if($objFleet->target_owner_id == $userToAddID) {
     message($lang['flt_aks_player_same'], $lang['fl_error']);
   }
 
   if($userToAddID) {
     if(!$aks) {
       // No AСS exists - making one
-      if(!$fleet['fleet_group']) {
+      if(!$objFleet->group_id) {
         doquery("INSERT INTO {{aks}} SET
           `name` = '" . db_escape($lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $user['id'] . "',
           `flotten` = '" . $fleetid . "',
-          `ankunft` = '" . $fleet['fleet_start_time'] . "',
-          `galaxy` = '" . $fleet['fleet_end_galaxy'] . "',
-          `system` = '" . $fleet['fleet_end_system'] . "',
-          `planet` = '" . $fleet['fleet_end_planet'] . "',
-          `planet_type` = '" . $fleet['fleet_end_type'] . "',
+          `ankunft` = '" . $objFleet->time_arrive_to_target . "',
+          `galaxy` = '" . $objFleet->fleet_end_galaxy . "',
+          `system` = '" . $objFleet->fleet_end_system . "',
+          `planet` = '" . $objFleet->fleet_end_planet . "',
+          `planet_type` = '" . $objFleet->fleet_end_type . "',
           `eingeladen` = '" . $user['id'] . "',
-          `fleet_end_time` = '" . $fleet['fleet_end_time']. "'");
+          `fleet_end_time` = '" . $objFleet->time_return_to_source . "'");
 
         $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
 
-        $objFleet = new Fleet();
-        $objFleet->parse_db_row($fleet);
+//        $objFleet = new Fleet();
+//        $objFleet->parse_db_row($fleet);
         $objFleet->group_acs_set($aks['id'], MT_AKS);
         $objFleet->flush_changes_to_db();
       } else {

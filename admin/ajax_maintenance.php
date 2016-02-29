@@ -101,7 +101,7 @@ $ques = array(
     (p.id_owner = 0 OR p.id_owner IS NULL);',
 
   // Удаляем пустые САБы
-  'DELETE FROM {{aks}} WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM {{fleets}});', // TODO Переписать на джоине
+  'db_fleet_aks_purge', // CALLABLE
 
   // UBE reports
   "DELETE FROM `{{ube_report}}` WHERE `ube_report_time_combat` < DATE_SUB(NOW(), INTERVAL 60 DAY) {$best_reports};", // TODO Настройка
@@ -215,7 +215,11 @@ foreach($ques as $que_transaction) {
   !is_array($que_transaction) ? $que_transaction = array($que_transaction) : false;
   foreach($que_transaction as $que) {
     set_time_limit(120);
-    $QryResult = doquery($que);
+    if(is_callable($que)) {
+      $QryResult = call_user_func($que);
+    } else {
+      $QryResult = doquery($que);
+    }
     //$msg .= '<hr>' . $que . '<hr>';
     $que = str_replace(array('{{', '}}'), '', $que);
     //$que = str_replace('{{', '', $que);

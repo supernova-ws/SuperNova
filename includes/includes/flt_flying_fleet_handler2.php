@@ -219,7 +219,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     $mission_data = $sn_groups_mission[$objFleet->mission_type];
 
     // Формируем запрос, блокирующий сразу все нужные записи
-    $objFleet->method_db_fleet_lock_flying($mission_data);
+    $objFleet->db_fleet_lock_flying($mission_data);
 
     $objFleet->db_fleet_get_by_id($objFleet->db_id);
 
@@ -303,7 +303,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       break;
 
 //      default:
-//        doquery("DELETE FROM `{{fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+//        doquery("DELETE FROM `{{_fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
 //      break;
     }
     sn_db_transaction_commit();
