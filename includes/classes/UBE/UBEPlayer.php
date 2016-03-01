@@ -118,17 +118,23 @@ class UBEPlayer {
    * @param $player_id
    */
   public function db_load_by_id($player_id) {
-    global $ube_convert_techs;
-
     $this->db_row = db_user_by_id($player_id, true);
 
     $this->admiral_level = mrc_get_level($this->db_row, false, MRC_ADMIRAL);
 
     $this->admiral_bonus = $this->admiral_level * get_unit_param(MRC_ADMIRAL, P_BONUS_VALUE) / 100;
-    foreach($ube_convert_techs as $unit_id => $ube_id) {
-      // Вытаскиваем уровень техи, получаем нормированный бонус (НЕ В %!) и прибавляем бонус Адмирала
-      $this->ube_bonuses[$ube_id] += mrc_get_level($this->db_row, false, $unit_id) * get_unit_param($unit_id, P_BONUS_VALUE) / 100 + $this->admiral_bonus;
-    }
+
+//    foreach($ube_convert_techs as $unit_id => $ube_id) {
+//      // Вытаскиваем уровень техи, получаем нормированный бонус (НЕ В %!) и прибавляем бонус Адмирала
+//      $this->ube_bonuses[$ube_id] += mrc_get_level($this->db_row, false, $unit_id) * get_unit_param($unit_id, P_BONUS_VALUE) / 100 + $this->admiral_bonus;
+//    }
+    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, UBE_ATTACK);
+    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, UBE_SHIELD);
+    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, UBE_ARMOR);
+
+    $this->player_bonus_add(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON), UBE_ATTACK);
+    $this->player_bonus_add(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD), UBE_SHIELD);
+    $this->player_bonus_add(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR), UBE_ARMOR);
 
   }
 

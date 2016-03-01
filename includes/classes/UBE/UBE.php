@@ -147,8 +147,6 @@ class UBE {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   function ube_attack_prepare_planet(array &$planet) {
-    global $ube_combat_bonus_list;
-
     $player_id = $planet['id_owner'];
 
     $this->ube_attack_prepare_player($player_id, false);
@@ -169,9 +167,9 @@ class UBE {
 
     if($fortifier_level = mrc_get_level($player_db_row, $planet, MRC_FORTIFIER)) {
       $fortifier_bonus = $fortifier_level * get_unit_param(MRC_FORTIFIER, P_BONUS_VALUE) / 100;
-      foreach($ube_combat_bonus_list as $ube_id) {
-        $this->fleet_list[0]->UBE_BONUSES[$ube_id] += $fortifier_bonus;
-      }
+      $this->fleet_list[0]->UBE_BONUSES[UBE_ATTACK] += $fortifier_bonus;
+      $this->fleet_list[0]->UBE_BONUSES[UBE_SHIELD] += $fortifier_bonus;
+      $this->fleet_list[0]->UBE_BONUSES[UBE_ARMOR] += $fortifier_bonus;
     }
 
     $this->fleet_list[0]->UBE_PLANET = array(
@@ -535,8 +533,6 @@ class UBE {
    * @param int $player_id
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
-    global $ube_convert_techs;
-
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
     $fleet_id = $player_id; // FOR SIMULATOR!
 
@@ -560,7 +556,14 @@ class UBE {
         } elseif($unit_type == UNIT_RESOURCES) {
           $this->fleet_list[$fleet_id]->resource_list[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
-          $this->players[$player_id]->player_bonus_add($unit_id, $unit_count, $ube_convert_techs[$unit_id]);
+          // $this->players[$player_id]->player_bonus_add($unit_id, $unit_count, $ube_convert_techs[$unit_id]);
+          if($unit_id == TECH_WEAPON) {
+            $this->players[$player_id]->player_bonus_add(TECH_WEAPON, $unit_count, UBE_ATTACK);
+          } elseif($unit_id == TECH_SHIELD) {
+            $this->players[$player_id]->player_bonus_add(TECH_SHIELD, $unit_count, UBE_SHIELD);
+          } elseif($unit_id == TECH_ARMOR) {
+            $this->players[$player_id]->player_bonus_add(TECH_ARMOR, $unit_count, UBE_ARMOR);
+          }
         } elseif($unit_type == UNIT_GOVERNORS) {
           if($unit_id == MRC_FORTIFIER) {
             // Фортифаер даёт бонус ко всему
@@ -570,9 +573,9 @@ class UBE {
           }
         } elseif($unit_type == UNIT_MERCENARIES) {
           if($unit_id == MRC_ADMIRAL) {
-            foreach($ube_convert_techs as $ube_id) {
-              $this->players[$player_id]->player_bonus_add($unit_id, $unit_count, $ube_id);
-            }
+            $this->players[$player_id]->player_bonus_add(MRC_ADMIRAL, $unit_count, UBE_ATTACK);
+            $this->players[$player_id]->player_bonus_add(MRC_ADMIRAL, $unit_count, UBE_SHIELD);
+            $this->players[$player_id]->player_bonus_add(MRC_ADMIRAL, $unit_count, UBE_ARMOR);
           }
         }
       }
@@ -779,24 +782,3 @@ function flt_planet_capture_from_object(UBE $ube) {return sn_function_call(__FUN
 // * @return mixed
 // */
 //function sn_flt_planet_capture_from_object(&$fleet_row, UBE $ube, &$result) { return $result; }
-
-global $ube_combat_bonus_list, $ube_convert_techs, $ube_convert_to_techs;
-
-$ube_combat_bonus_list = array(
-  UBE_ATTACK => UBE_ATTACK,
-  UBE_ARMOR  => UBE_ARMOR,
-  UBE_SHIELD => UBE_SHIELD,
-);
-
-$ube_convert_techs = array(
-  TECH_WEAPON => UBE_ATTACK,
-  TECH_ARMOR  => UBE_ARMOR,
-  TECH_SHIELD => UBE_SHIELD,
-);
-
-$ube_convert_to_techs = array(
-  UBE_ATTACK => 'attack',
-  UBE_ARMOR  => 'armor',
-  UBE_SHIELD => 'shield',
-);
-
