@@ -19,10 +19,11 @@ function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_s
   return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid, $for_update, $fields);
 }
 
-function db_unit_count_by_user_and_type($user_id, $unit_type = 0) {
+function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {
   $query = doquery(
     "SELECT unit_snid, sum(unit_level) as `qty`  FROM {{unit}} WHERE `unit_player_id` = {$user_id} " .
-    ($unit_type ? "AND `unit_type` = {$unit_type} " : false) .
+    ($unit_type ? "AND `unit_type` = {$unit_type} " : '') .
+    ($unit_snid ? "AND `unit_snid` = {$unit_snid} " : '') .
     'GROUP BY `unit_snid`'
   );
   $result = array();

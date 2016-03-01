@@ -700,7 +700,12 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
             $quest_trigger_list = array_keys($quest_triggers, $unit_id);
             if(is_array($quest_trigger_list)) {
               foreach($quest_trigger_list as $quest_id) {
-                if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new) {
+                $quest_unit_level = $unit_level_new;
+                if(get_unit_param($unit_id, P_UNIT_TYPE) == UNIT_SHIPS) {
+                  $quest_unit_level = db_unit_count_by_user_and_type_and_snid($user_id, 0, $unit_id);
+                  $quest_unit_level = $quest_unit_level[$unit_id]['qty'];
+                }
+                if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $quest_unit_level) {
                   $quest_rewards[$quest_id][$user_id][$planet_id] = $quest_list[$quest_id]['quest_rewards_list'];
                   $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
                 }

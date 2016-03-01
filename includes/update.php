@@ -1281,7 +1281,7 @@ switch($new_version) {
       upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
 
-    // 2016-03-01 02:33:54 41a5.10
+    // #ctv№
     if(!empty($update_tables['fleets']['fleet_array'])) {
       $query = upd_do_query("SELECT * FROM {{fleets}}");
       while($row = db_fetch($query)) {
@@ -1294,6 +1294,8 @@ switch($new_version) {
           );
         }
       }
+
+      upd_alter_table('fleets', "DROP COLUMN `fleet_array`", isset($update_tables['fleets']['fleet_array']));
     }
 
     // #ctv
