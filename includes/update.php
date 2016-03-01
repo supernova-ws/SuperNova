@@ -1280,6 +1280,22 @@ switch($new_version) {
       upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
       upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
+
+    // 2016-03-01 02:33:54 41a5.10
+    if(!empty($update_tables['fleets']['fleet_array'])) {
+      $query = upd_do_query("SELECT * FROM {{fleets}}");
+      while($row = db_fetch($query)) {
+        $unit_list = sys_unit_str2arr($row['fleet_array']);
+        foreach($unit_list as $unit_id => $unit_count) {
+          upd_do_query(
+            "REPLACE INTO {{unit}} (`unit_player_id`,`unit_location_type`,`unit_location_id`,`unit_type`,`unit_snid`,`unit_level`) VALUES
+              ({$row['fleet_owner']}, " . LOC_FLEET . ", {$row['fleet_id']}, " . get_unit_param($unit_id, P_UNIT_TYPE) . ", {$unit_id}, {$unit_count});",
+            true
+          );
+        }
+      }
+    }
+
     // #ctv
 
 //    pdump($update_indexes_full['security_browser']['I_browser_user_agent']);

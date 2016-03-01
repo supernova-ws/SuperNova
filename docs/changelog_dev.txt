@@ -449,10 +449,6 @@ fleet.php
     return sys_unit_str2arr($fleet_row['fleet_array']);
   }
 
-  public function parse_fleet_string($fleet_string) {
-    return sys_unit_str2arr($fleet_string);
-  }
-
 Сделать объект FleetMissile от Fleet - со своим методом парсинга дброу и допполями
 
 
@@ -466,23 +462,39 @@ fleet.php
           public $ov_this_planet = '';
           public $event_time = 0;
 
-  // TODO - LOCK UNITS!
-  public function method_db_fleet_lock_flying(&$mission_data) {
-
 
 // TODO - СЕЙЧАС
+// TODO - LOCK UNITS!
+public function method_db_fleet_lock_flying(&$mission_data) {
+
+УДАЛЕНИЕ ФЛОТОВ!!!!!!!!!!
+
     Делаем структуру юнитов
         !!! Избавляемся от fleet_array
-            !!!!!!!! make_fleet_string();
-            !!!!!!!! parse_fleet_string()
 
         UnitFleet (?)
 
+        Конвертация данных
 
 
-
+// Здесь уже можно будет считать Рекорды и Статистику по таблицам UNIT
+    - Считать рекорды по таблице unit - автоматически! Рекорды теперь будут учитывать флоты в полёте
+    - Считать статистику по таблице UNIT
 
 #ctv
+
+git commit -a -m "FLT-misc: 'fleet_array' field is now unused - fleet units are held in `unit` table. Also FFM blocks all units that can potentially be changed in fleet calculations"
+
+
+2016-03-01 02:33:54 41a5.10 Fleets
+[!] Флоты
+    Теперь при обсчёте флота блокируются все юниты:
+        - Принадлежащие обсчитываемому флоту;
+        - Принадлежащие всем прилетающим и улетающим флотам;
+        - Принадлежащие владельцу флота;
+        - Принадлежащие хозяину планеты-цели, если у миссии есть планета-цель;
+    Поле `fleet_array` таблицы `fleets` больше не используется - теперь юниты флотов хранятся в таблице `unit`
+        - Данные из поля `fleet_array` перенесены в таблицу `unit`, а само поле удалено из таблицы
 
 
 2016-02-27 21:18:47 41a4.71 UBEv4.2

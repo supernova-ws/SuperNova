@@ -513,6 +513,13 @@ class classSupernova {
     }
   }
 
+  /**
+   * @param int    $location_type
+   * @param int    $record_id
+   * @param string $set - SQL SET structure
+   *
+   * @return array|bool|mysqli_result|null
+   */
   public static function db_upd_record_by_id($location_type, $record_id, $set) {
     //if(!($record_id = intval($record_id)) || !($set = trim($set))) return false;
     if(!($record_id = idval($record_id)) || !($set = trim($set))) return false;

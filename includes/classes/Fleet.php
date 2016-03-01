@@ -52,7 +52,20 @@ class Fleet {
 
 
   /**
-   * `fleet_mess` - Флаг возвращающегося флота
+   * Список unit_db_row
+   *
+   * @var array
+   */
+  protected $db_units_row = array();
+  /**
+   * Таблица трансляции ID юнита в DB_ID - ссылка [UNIT_SNID] на $unit_db_row
+   *
+   * @var array
+   */
+  protected $snid_to_db_translation = array();
+
+  /**
+   * `fleet__mess` - Флаг возвращающегося флота
    *
    * @var int
    */
@@ -146,13 +159,13 @@ class Fleet {
   /**
    * UPDATE - Updates fleet record by ID with SET
    *
-   * @param int    $fleet_id
    * @param string $set_safe_string
    *
    * @return array|bool|mysqli_result|null
    */
-  protected static function static_db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
-    $fleet_id_safe = idval($fleet_id);
+  // TODO - унести куда-то глубоко. Например в DBAware или даже в БД-драйвер
+  protected function db_fleet_update_set_safe_string($set_safe_string) {
+    $fleet_id_safe = idval($this->db_id);
     if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
       $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
@@ -170,10 +183,9 @@ class Fleet {
    *
    * @return array|bool|mysqli_result|null
    */
-  // TODO - LOCK UNITS!
   public function db_fleet_lock_flying(&$mission_data) {
-//  // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
-//  // Что бы делать это умно - надо учитывать fleet_mess во $fleet_row и в таблице fleets
+    // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
+    // Что бы делать это умно - надо учитывать fleet__mess во $fleet_row и в таблице fleets
 
     $fleet_id_safe = idval($this->db_id);
 
@@ -185,13 +197,27 @@ class Fleet {
       "LEFT JOIN {{unit}} as unit ON unit.unit_location_type = " . LOC_FLEET . " AND unit.unit_location_id = f.fleet_id " .
 
       // Блокировка всех прилетающих и улетающих флотов, если нужно
+      // TODO - lock fleets by COORDINATES
       ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
+      // Блокировка всех юнитов, принадлежащих прилетающим и улетающим флотам - ufd = unit_fleet_destination
+      ($mission_data['dst_fleets'] ? "LEFT JOIN {{units}} AS ufd ON ufd.unit_location_type = " . LOC_FLEET . " AND ufd.unit_location_id = fd.fleet_id " : '') .
 
       ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
+      // Блокировка всех юнитов, принадлежащих владельцу планеты-цели
+      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{units}} AS unit_player_dest ON unit_player_dest.unit_player_id = ud.id " : '') .
+      // Блокировка планеты-цели
       ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
+      // Блокировка всех юнитов, принадлежащих планете-цели - НЕ НУЖНО. Уже залочили ранее, как принадлежащие игроку-цели
+//      ($mission_data['dst_planet'] ? "LEFT JOIN {{units}} AS upd ON upd.unit_location_type = " . LOC_PLANET . " AND upd.unit_location_id = pd.id " : '') .
+
 
       ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
+      // Блокировка всех юнитов, принадлежащих владельцу флота
+      ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{units}} AS unit_player_src ON unit_player_src.unit_player_id = us.id " : '') .
+      // Блокировка планеты отправления
       ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
+      // Блокировка всех юнитов, принадлежащих планете с которой юниты были отправлены - НЕ НУЖНО. Уже залочили ранее, как принадлежащие владельцу флота
+//      ($mission_data['src_planet'] ? "LEFT JOIN {{units}} AS ups ON ups.unit_location_type = " . LOC_PLANET . " AND ups.unit_location_id = ps.id " : '') .
 
       "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
     );
@@ -222,7 +248,7 @@ class Fleet {
    *
    * @return array|bool|mysqli_result|null
    */
-  public function method_db_delete_this_fleet() {
+  public function db_delete_this_fleet() {
     $fleet_id_safe = idval($this->db_id);
     if(!empty($fleet_id_safe)) {
       $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
@@ -258,6 +284,9 @@ class Fleet {
     }
 
     $this->db_id = !empty($db_fleet_id) ? $db_fleet_id : 0;
+    if($this->db_id) {
+      $this->db_insert_units($this->db_id);
+    }
 
     return $this->db_id;
   }
@@ -271,73 +300,44 @@ class Fleet {
 
 
 
-  /**
-   * Парсит строку юнитов в array(ID => AMOUNT)
-   *
-   * @param array $fleet_row
-   *
-   * @return array
-   */
-  public function load_unit_list($fleet_string) {
-//    db_unit_by_location(0, LOC_FLEET, $this->db_id);
-    return sys_unit_str2arr($fleet_string);
-  }
 
-
-  /**
-   * Sends fleet back
-   *
-   * @param $fleet_row
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  // TODO - заменять на mark_fleet_as_returned()
-  public static function static_fleet_send_back(&$fleet_row) {
-    $fleet_id = round(!empty($fleet_row['fleet_id']) ? $fleet_row['fleet_id'] : $fleet_row);
-    if(!$fleet_id) {
-      return false;
-    }
-
-    $result = Fleet::static_fleet_update_set($fleet_id, array(
-      'fleet_mess' => 1,
-    ));
-
-    $fleet_row['fleet_mess'] = 1;
-
-    return $result;
-  }
 
   /* FLEET HELPERS =====================================================================================================*/
-
   /**
    * Forcibly returns fleet before time outs
    */
   public function fleet_command_return() {
-    $fleet_id = idval($this->db_id);
-
     $ReturnFlyingTime = ($this->time_mission_job_complete != 0 && $this->time_arrive_to_target < SN_TIME_NOW ? $this->time_arrive_to_target : SN_TIME_NOW) - $this->time_launch + SN_TIME_NOW + 1;
 
-    $this->time_arrive_to_target = SN_TIME_NOW;
-    $this->group_id = 0;
-    $this->time_mission_job_complete = 0;
-    $this->time_return_to_source = $ReturnFlyingTime;
-    $this->is_returning = 1;
+    $this->mark_fleet_as_returned();
 
-    $fleet_set_update = array(
-      'fleet_start_time' => $this->time_arrive_to_target,
-      'fleet_group'      => $this->group_id,
-      'fleet_end_stay'   => $this->time_mission_job_complete,
-      'fleet_end_time'   => $this->time_return_to_source,
-      'fleet_mess'       => $this->is_returning,
-//      'fleet_target_owner' => $this->owner_id, // $user['id'],
-    );
-    Fleet::static_fleet_update_set($fleet_id, $fleet_set_update);
+    // Считаем, что флот уже долетел TODO
+    $this->core_field_set_list['fleet_start_time'] = $this->time_arrive_to_target = SN_TIME_NOW;
+    // Убираем флот из группы
+    $this->core_field_set_list['fleet_group'] = $this->group_id = 0;
+    // Отменяем работу в точке назначения
+    $this->core_field_set_list['fleet_end_stay'] = $this->time_mission_job_complete = 0;
+    // TODO - правильно вычслять время возвращения - по проделанному пути, а не по старому времени возвращения
+    $this->core_field_set_list['fleet_end_time'] = $this->time_return_to_source = $ReturnFlyingTime;
+
+    // Записываем изменения в БД
+    $this->flush_changes_to_db();
 
     if($this->group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
       db_fleet_aks_purge();
     }
   }
+
+  /**
+   * Sets object fields for fleet return
+   */
+  public function mark_fleet_as_returned() {
+    // TODO - Проверка - а не возвращается ли уже флот?
+    $this->is_returning = 1;
+    $this->core_field_set_list['fleet_mess'] = 1;
+  }
+
 
   /**
    * @return array
@@ -373,40 +373,6 @@ class Fleet {
       'type'   => $this->fleet_start_type,
     );
   }
-
-
-  /**
-   * Updates fleet record by ID with SET
-   *
-   * @param int   $fleet_id
-   * @param array $set - REPLACE-set, i.e. replacement of existing values
-   * @param array $delta - DELTA-set, i.e. changes to existing values
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  // TODO - REDO AS METHOD!
-  protected static function static_fleet_update_set($fleet_id, $set, $delta = array()) {
-    $result = false;
-
-    $fleet_id_safe = idval($fleet_id);
-    $set_string_safe = db_set_make_safe_string($set);
-    !empty($delta) ? $set_string_safe = implode(',', array($set_string_safe, db_set_make_safe_string($delta, true))) : false;
-    if(!empty($fleet_id_safe) && !empty($set_string_safe)) {
-      $result = static::static_db_fleet_update_set_safe_string($fleet_id, $set_string_safe);
-    }
-
-    return $result;
-  }
-
-
-  /**
-   * Sets object fields for fleet return
-   */
-  public function method_fleet_send_back() {
-    $this->core_field_set_list['fleet_mess'] = 1;
-    $this->is_returning = 1;
-  }
-
 
 
   /**
@@ -448,7 +414,7 @@ class Fleet {
     if($start && $this->is_returning == 1 && $planet_arrival['id_owner'] != $this->owner_id) {
       $result = RestoreFleetToPlanet($this, $start, $only_resources, $result);
 
-      $this->method_db_delete_this_fleet();
+      $this->db_delete_this_fleet();
 
       return $result;
     }
@@ -473,7 +439,7 @@ class Fleet {
       }
     } else {
       $this->set_zero_cargo();
-      $this->method_fleet_send_back();
+      $this->mark_fleet_as_returned();
       $this->flush_changes_to_db();
     }
 
@@ -485,7 +451,7 @@ class Fleet {
     }
 
     if(!$only_resources) {
-      $this->method_db_delete_this_fleet();
+      $this->db_delete_this_fleet();
     }
 
     $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
@@ -501,7 +467,7 @@ class Fleet {
    *
    * @param array $fleet_row
    */
-  public function db_get_by_only_id($fleet_row) {
+  public function get_by_id_in_fleet_row($fleet_row) {
     if(empty($fleet_row['fleet_id'])) {
       $this->_reset();
     } else {
@@ -561,7 +527,7 @@ class Fleet {
     // Добавляем их только, если у нас что-то изменилось в дельте или сете
     // И добавляем их по вышеуказанной причине именно в REPLACE
     if(!empty($this->ship_delta) || !empty($this->ship_replace)) {
-      $field_replace_changes['fleet_array'] = $this->make_fleet_string();
+      $this->flush_changes_to_db_units();
     }
 
     // Добавляем REPLACE ресурсов
@@ -575,12 +541,13 @@ class Fleet {
     $field_replace_string_safe = db_set_make_safe_string($field_replace_changes);
     !empty($field_replace_string_safe) ? $result_changeset[] = $field_replace_string_safe : false;
 
-    $result_changeset_string_safe = implode(',', $result_changeset);
-    $result = static::static_db_fleet_update_set_safe_string($this->db_id, $result_changeset_string_safe);
+    $set_safe_string = implode(',', $result_changeset);
+    $result = $this->db_fleet_update_set_safe_string($set_safe_string);
 
     // if($result) // TODO - Вставить обработку ошибок
     $this->_reset_update();
 
+    // TODO - пересчитать статистику флота
     return $result;
   }
 
@@ -594,12 +561,6 @@ class Fleet {
     $this->db_id = idval($fleet_id);
   }
 
-
-  public function mark_fleet_as_returned() {
-    // TODO - Проверка - а не возвращается ли уже флот?
-    $this->is_returning = 1;
-    $this->core_field_set_list['fleet_mess'] = 1;
-  }
 
   public function mark_fleet_as_returned_and_save() {
     $this->mark_fleet_as_returned();
@@ -865,7 +826,6 @@ class Fleet {
       'fleet_end_planet'    => $this->fleet_end_planet,
       'fleet_end_type'      => $this->fleet_end_type,
 
-      'fleet_array'  => $this->make_fleet_string(),
       'fleet_amount' => $this->get_ship_count(),
 
       'fleet_resource_metal'     => $this->resource_list[RES_METAL],
@@ -913,7 +873,7 @@ class Fleet {
     $this->fleet_end_planet = $fleet_row['fleet_end_planet'];
     $this->fleet_end_type = $fleet_row['fleet_end_type'];
 
-    $this->unit_list = $this->load_unit_list($fleet_row['fleet_array']);
+    $this->load_unit_list();
 
     $this->resource_list = array(
       RES_METAL     => ceil($fleet_row['fleet_resource_metal']),
@@ -975,7 +935,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.9
+   * @version 41a5.10
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -987,10 +947,6 @@ class Fleet {
     return $recyclers_incoming_capacity;
   }
 
-
-  public function make_fleet_string() {
-    return sys_unit_arr2str($this->unit_list);
-  }
 
   public function get_ship_count() {
     return array_sum($this->unit_list);
@@ -1060,6 +1016,66 @@ class Fleet {
 
     $this->resource_delta = array();
     $this->resource_replace = array();
+  }
+
+
+
+
+
+
+
+
+
+  // TODO - в юниты!
+  /**
+   *
+   */
+  public function load_unit_list() {
+    $this->db_units_row = db_unit_by_location(0, LOC_FLEET, $this->db_id);
+    empty($this->db_units_row) ? $this->db_units_row = array() : false;
+
+    foreach($this->db_units_row as $unit_db_id => $unit_db_row) {
+      $this->unit_list[$unit_db_row['unit_snid']] = $unit_db_row['unit_level'];
+      $this->snid_to_db_translation[$unit_db_row['unit_snid']] = &$this->db_units_row[$unit_db_id];
+    }
+  }
+
+  // TODO - batch operations
+  // TODO - flush only changes
+  public function flush_changes_to_db_units() {
+    foreach($this->unit_list as $unit_id => $unit_count) {
+      $unit_db_id_safe = idval($this->snid_to_db_translation[$unit_id]['unit_id']);
+      if(!$unit_count) {
+        // Удаляем юнит
+        classSupernova::db_del_record_by_id(LOC_FLEET, $unit_db_id_safe);
+        unset($this->unit_list[$unit_id]);
+        unset($this->snid_to_db_translation[$unit_id]);
+      } else {
+        classSupernova::db_upd_record_by_id(LOC_FLEET, $unit_db_id_safe, "`unit_level` = {$unit_count}");
+        $this->snid_to_db_translation[$unit_id]['unit_level'] = $unit_count;
+      }
+    }
+  }
+
+  public function db_insert_units($fleet_id) {
+    // Вставляем юниты из флота в БД
+    foreach($this->unit_list as $unit_id => $unit_count) {
+      // Только юниты, чьё количество больше нуля
+      if($unit_count) {
+        $set = "`unit_player_id`` = {$this->owner_id},
+            `unit_location_type` = " . LOC_FLEET . "
+            `unit_location_id` = {$fleet_id},
+            `unit_type` = " . get_unit_param($unit_id, P_UNIT_TYPE) . ",
+            `unit_snid` = {$unit_id},
+            `unit_level` = {$unit_count}";
+
+        $unit_db_row = db_unit_set_insert($set);
+        $unit_db_id = $unit_db_row['unit_id'];
+
+        $this->db_units_row[$unit_db_id] = $unit_db_row;
+        $this->snid_to_db_translation[$unit_id] = &$this->db_units_row[$unit_db_id];
+      }
+    }
   }
 
 }

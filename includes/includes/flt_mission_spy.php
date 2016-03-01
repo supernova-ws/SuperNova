@@ -150,7 +150,7 @@ function flt_mission_spy(&$mission_data) {
   }
 
   if($spy_detected) {
-    $objFleet->method_db_delete_this_fleet();
+    $objFleet->db_delete_this_fleet();
   } else {
     $objFleet->mark_fleet_as_returned_and_save();
   }

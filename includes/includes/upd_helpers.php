@@ -19,6 +19,7 @@ function upd_do_query($query, $no_log = false) {
     }
   }
   $result = classSupernova::$db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
+
   return $result;
 }
 
@@ -56,8 +57,7 @@ function upd_add_more_time($time = 0) {
 function upd_log_message($message) {
   global $sys_log_disabled, $upd_log, $debug;
 
-  if($sys_log_disabled)
-  {
+  if($sys_log_disabled) {
 //    print("{$message}<br />");
   } else {
     $upd_log .= "{$message}\r\n";
@@ -100,7 +100,7 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
     $update_indexes_full[$tableName][$r1['Key_name']][$r1['Column_name']] = $r1;
   }
 
-  $q1 = upd_do_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name). "' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
+  $q1 = upd_do_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name) . "' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
   while($r1 = db_fetch($q1)) {
     $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
@@ -108,8 +108,15 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
   }
 }
 
+/**
+ * @param string       $table
+ * @param string|array $alters
+ * @param bool         $condition
+ *
+ * @return bool|mysqli_result|void
+ */
 function upd_alter_table($table, $alters, $condition = true) {
-  global $config, $update_tables;
+  global $config;
 
   if(!$condition) {
     return;
@@ -209,7 +216,7 @@ function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id 
     // update
     $db_changeset = array(
       'action' => SQL_OP_UPDATE,
-      'where' => array(
+      'where'  => array(
         "`unit_id` = {$temp['unit_id']}",
       ),
       'fields' => array(
@@ -223,22 +230,22 @@ function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id 
     $db_changeset = array(
       'action' => SQL_OP_INSERT,
       'fields' => array(
-        'unit_player_id' => array(
+        'unit_player_id'     => array(
           'set' => $user['id'],
         ),
         'unit_location_type' => array(
           'set' => $unit_location,
         ),
-        'unit_location_id' => array(
+        'unit_location_id'   => array(
           'set' => $unit_location == LOC_USER ? $user['id'] : $planet_id,
         ),
-        'unit_type' => array(
+        'unit_type'          => array(
           'set' => get_unit_param($unit_id, P_UNIT_TYPE),
         ),
-        'unit_snid' => array(
+        'unit_snid'          => array(
           'set' => $unit_id,
         ),
-        'unit_level' => array(
+        'unit_level'         => array(
           'set' => $unit_value,
         ),
       ),
@@ -247,7 +254,6 @@ function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id 
 
   return $db_changeset;
 }
-
 
 
 function upd_db_changeset_apply($db_changeset) {
@@ -270,7 +276,7 @@ function upd_db_changeset_apply($db_changeset) {
           if($field_data['delta']) {
             $value = "`{$field_name}`" . ($field_data['delta'] >= 0 ? '+' : '') . $field_data['delta'];
           } elseif($field_data['set']) {
-            $value = (is_string($field_data['set']) ? "'{$field_data['set']}'": $field_data['set']);
+            $value = (is_string($field_data['set']) ? "'{$field_data['set']}'" : $field_data['set']);
           }
           if($value) {
             $fields[] = $condition . $value;
@@ -282,7 +288,7 @@ function upd_db_changeset_apply($db_changeset) {
       switch($conditions['action']) {
         case SQL_OP_DELETE:
           upd_do_query("DELETE FROM {{{$table_name}}} {$where}");
-          break;
+        break;
 
         case SQL_OP_UPDATE:
           if($fields) {
@@ -293,19 +299,19 @@ function upd_db_changeset_apply($db_changeset) {
             }*/
             upd_do_query("UPDATE {{{$table_name}}} SET {$fields} {$where}");
           }
-          break;
+        break;
 
         case SQL_OP_INSERT:
           if($fields) {
             upd_do_query("INSERT INTO {{{$table_name}}} SET {$fields}");
           }
-          break;
+        break;
 
         case SQL_OP_REPLACE:
           if($fields) {
             upd_do_query("REPLACE INTO {{{$table_name}}} SET {$fields}");
           }
-          break;
+        break;
 
       }
     }

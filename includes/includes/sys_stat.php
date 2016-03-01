@@ -147,7 +147,7 @@ function sys_stat_calculate() {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
     }
-    $objFleet->db_get_by_only_id($fleet_row);
+    $objFleet->get_by_id_in_fleet_row($fleet_row);
     if(array_key_exists($user_id = $objFleet->owner_id, $user_skip_list)) {
       continue;
     }

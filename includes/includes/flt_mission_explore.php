@@ -293,7 +293,7 @@ function flt_mission_explore(&$mission_data) {
     $objFleet->flush_changes_to_db();
   } else {
     // Удалить флот
-    $objFleet->method_db_delete_this_fleet();
+    $objFleet->db_delete_this_fleet();
     // From this point $fleet_row is useless - all data are put in local variables
   }
 
