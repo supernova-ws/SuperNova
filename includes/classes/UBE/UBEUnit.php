@@ -45,9 +45,9 @@ class UBEUnit {
   public function fill_unit_info(array $bonus_list) {
     $unit_info = get_unit_param($this->unit_id);
     // Заполняем информацию о кораблях в информации флота
-    $this->attack_bonus = floor($unit_info[P_ATTACK] * (1 + $bonus_list[UBE_ATTACK]));
-    $this->shield_bonus = floor($unit_info[P_SHIELD] * (1 + $bonus_list[UBE_SHIELD]));
-    $this->armor_bonus = floor($unit_info[P_ARMOR] * (1 + $bonus_list[UBE_ARMOR]));
+    $this->attack_bonus = floor($unit_info[P_ATTACK] * (1 + $bonus_list[P_ATTACK]));
+    $this->shield_bonus = floor($unit_info[P_SHIELD] * (1 + $bonus_list[P_SHIELD]));
+    $this->armor_bonus = floor($unit_info[P_ARMOR] * (1 + $bonus_list[P_ARMOR]));
 
     $this->pool_armor = $this->armor_bonus * $this->count;
 
@@ -247,7 +247,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a5.12
+   * @version 41a5.13
    */
   public static function unit_dump_footer() {
     print('</table><br>');
@@ -256,7 +256,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a5.12
+   * @version 41a5.13
    */
   public static function unit_dump_header() {
     print('<table border="1">');
@@ -288,7 +288,7 @@ class UBEUnit {
    * @param string       $field
    * @param UBEUnit|null $before
    *
-   * @version 41a5.12
+   * @version 41a5.13
    */
   function unit_dump_delta($field, UBEUnit $before = null) {
 //  print("<td" . ($before != null ? ' colspan=2' : '') . ">");
@@ -306,7 +306,7 @@ class UBEUnit {
    * @param string       $desc
    * @param UBEUnit|null $before
    *
-   * @version 41a5.12
+   * @version 41a5.13
    */
   function unit_dump($desc = '', UBEUnit $before = null) {
     global $lang;

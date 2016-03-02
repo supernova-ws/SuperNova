@@ -33,9 +33,9 @@ class UBEASA {
    */
   // OK0
   public function apply_ube_bonuses($ube_bonus_list) {
-    $this->attack *= $ube_bonus_list[UBE_ATTACK];
-    $this->shield *= $ube_bonus_list[UBE_SHIELD];
-    $this->armor *= $ube_bonus_list[UBE_ARMOR];
+    $this->attack *= $ube_bonus_list[P_ATTACK];
+    $this->shield *= $ube_bonus_list[P_SHIELD];
+    $this->armor *= $ube_bonus_list[P_ARMOR];
   }
 
   /**
@@ -52,9 +52,9 @@ class UBEASA {
    */
   // OK4
   public function add_unit_stats_array(array $unit_stats_array) {
-    $this->attack += $unit_stats_array[UBE_ATTACK];
-    $this->shield += $unit_stats_array[UBE_SHIELD];
-    $this->armor += $unit_stats_array[UBE_ARMOR];
+    $this->attack += $unit_stats_array[P_ATTACK];
+    $this->shield += $unit_stats_array[P_SHIELD];
+    $this->armor += $unit_stats_array[P_ARMOR];
   }
 
   public function randomize_base_attack($is_simulator = false, $from_percent = UBE_RANDOMIZE_FROM, $to_percent = UBE_RANDOMIZE_TO) {

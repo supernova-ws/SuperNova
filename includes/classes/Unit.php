@@ -10,6 +10,10 @@ class Unit {
   public $type = 0;
 
 
+  /**
+   * @var array
+   */
+  protected $bonus = array();
 
 
   /**
@@ -39,7 +43,7 @@ class Unit {
 
     if(static::$_sn_group_name) {
       static::$_group_unit_id_list = sn_get_groups(static::$_sn_group_name);
-      static::$_group_unit_id_list === null ? static::$_group_unit_id_list = array() : false;
+      empty(static::$_group_unit_id_list) ? static::$_group_unit_id_list = array() : false;
     }
 
   }

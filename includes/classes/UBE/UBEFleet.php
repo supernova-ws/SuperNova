@@ -59,7 +59,7 @@ class UBEFleet {
 
 
   /**
-   * [UBE_ATTACK/UBE_ARMOR/UBE_SHIELD]
+   * [UBE_ATTACK/P_ARMOR/P_SHIELD]
    *
    * @var array[]
    */
@@ -103,9 +103,9 @@ class UBEFleet {
    */
   public function bonuses_add_player(array $player_bonuses) {
     // Вычисляем бонус игрока и добавляем его к бонусам флота
-    $this->UBE_BONUSES[UBE_ATTACK] += $player_bonuses[UBE_ATTACK];
-    $this->UBE_BONUSES[UBE_SHIELD] += $player_bonuses[UBE_SHIELD];
-    $this->UBE_BONUSES [UBE_ARMOR] += $player_bonuses [UBE_ARMOR];
+    $this->UBE_BONUSES[P_ATTACK] += $player_bonuses[P_ATTACK];
+    $this->UBE_BONUSES[P_SHIELD] += $player_bonuses[P_SHIELD];
+    $this->UBE_BONUSES [P_ARMOR] += $player_bonuses [P_ARMOR];
 
   }
 
@@ -123,7 +123,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a5.10
+   * @version 41a5.13
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -140,9 +140,9 @@ class UBEFleet {
     );
 
     $this->UBE_BONUSES = array(
-      UBE_ATTACK => $fleet_row['ube_report_fleet_bonus_attack'],
-      UBE_SHIELD => $fleet_row['ube_report_fleet_bonus_shield'],
-      UBE_ARMOR  => $fleet_row['ube_report_fleet_bonus_armor'],
+      P_ATTACK => $fleet_row['ube_report_fleet_bonus_attack'],
+      P_SHIELD => $fleet_row['ube_report_fleet_bonus_shield'],
+      P_ARMOR  => $fleet_row['ube_report_fleet_bonus_armor'],
     );
 
     $this->resource_list = array(
@@ -157,7 +157,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a5.10
+   * @version 41a5.13
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -176,16 +176,16 @@ class UBEFleet {
       (float)$this->resource_list[RES_CRYSTAL],
       (float)$this->resource_list[RES_DEUTERIUM],
 
-      (float)$this->UBE_BONUSES[UBE_ATTACK],
-      (float)$this->UBE_BONUSES[UBE_SHIELD],
-      (float)$this->UBE_BONUSES[UBE_ARMOR],
+      (float)$this->UBE_BONUSES[P_ATTACK],
+      (float)$this->UBE_BONUSES[P_SHIELD],
+      (float)$this->UBE_BONUSES[P_ARMOR],
     );
   }
 
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a5.10
+   * @version 41a5.13
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->db_id;
@@ -475,7 +475,7 @@ class UBEFleet {
   }
 
   /**
-   * @param string $stat_name UBE_ATTACK/UBE_SHIELD/UBE_ARMOR...etc
+   * @param string $stat_name UBE_ATTACK/P_SHIELD/P_ARMOR...etc
    *
    * @return int
    *
@@ -486,15 +486,15 @@ class UBEFleet {
 
     foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
       switch($stat_name) {
-        case UBE_ATTACK:
+        case P_ATTACK:
           $result += $UBERoundCombatUnit->pool_attack;
         break;
 
-        case UBE_SHIELD:
+        case P_SHIELD:
           $result += $UBERoundCombatUnit->pool_shield;
         break;
 
-        case UBE_ARMOR:
+        case P_ARMOR:
           $result += $UBERoundCombatUnit->pool_armor;
         break;
       }
@@ -511,9 +511,9 @@ class UBEFleet {
   public function prepare_for_next_round($is_simulator) {
     $this->unit_list->prepare_for_next_round($is_simulator);
 
-    $this->total_stats[UBE_ATTACK] = $this->get_fleet_total_stat(UBE_ATTACK);
-    $this->total_stats[UBE_SHIELD] = $this->get_fleet_total_stat(UBE_SHIELD);
-    $this->total_stats[UBE_ARMOR] = $this->get_fleet_total_stat(UBE_ARMOR);
+    $this->total_stats[P_ATTACK] = $this->get_fleet_total_stat(P_ATTACK);
+    $this->total_stats[P_SHIELD] = $this->get_fleet_total_stat(P_SHIELD);
+    $this->total_stats[P_ARMOR] = $this->get_fleet_total_stat(P_ARMOR);
   }
 
   /**
@@ -522,7 +522,7 @@ class UBEFleet {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function calculate_unit_partial_data(UBEASA $side_ASA) {
-    $this->fleet_share_of_side_armor = $this->total_stats[UBE_ARMOR] / $side_ASA->getArmor();
+    $this->fleet_share_of_side_armor = $this->total_stats[P_ARMOR] / $side_ASA->getArmor();
 
     foreach($this->unit_list->_container as $UBEUnit) {
       $UBEUnit->share_of_side_armor = $UBEUnit->pool_armor / $side_ASA->getArmor();
@@ -549,7 +549,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a5.10
+   * @version 41a5.13
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     if(defined('DEBUG_UBE')) {

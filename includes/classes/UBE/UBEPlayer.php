@@ -39,9 +39,9 @@ class UBEPlayer {
    */
   public function __construct() {
     $this->ube_bonuses = array(
-      UBE_ATTACK => 0,
-      UBE_SHIELD => 0,
-      UBE_ARMOR  => 0,
+      P_ATTACK => 0,
+      P_SHIELD => 0,
+      P_ARMOR  => 0,
     );
   }
 
@@ -108,9 +108,9 @@ class UBEPlayer {
     $this->is_attacker = empty($report_player_row['ube_report_player_attacker']); // TODO - ПРАВИЛЬНО ВЫСТАВЛЯТЬ!
 
     $this->ube_bonuses = array(
-      UBE_ATTACK => $report_player_row['ube_report_player_bonus_attack'],
-      UBE_SHIELD => $report_player_row['ube_report_player_bonus_shield'],
-      UBE_ARMOR  => $report_player_row['ube_report_player_bonus_armor'],
+      P_ATTACK => $report_player_row['ube_report_player_bonus_attack'],
+      P_SHIELD => $report_player_row['ube_report_player_bonus_shield'],
+      P_ARMOR => $report_player_row['ube_report_player_bonus_armor'],
     );
   }
 
@@ -128,13 +128,13 @@ class UBEPlayer {
 //      // Вытаскиваем уровень техи, получаем нормированный бонус (НЕ В %!) и прибавляем бонус Адмирала
 //      $this->ube_bonuses[$ube_id] += mrc_get_level($this->db_row, false, $unit_id) * get_unit_param($unit_id, P_BONUS_VALUE) / 100 + $this->admiral_bonus;
 //    }
-    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, UBE_ATTACK);
-    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, UBE_SHIELD);
-    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, UBE_ARMOR);
+    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, P_ATTACK);
+    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, P_SHIELD);
+    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, P_ARMOR);
 
-    $this->player_bonus_add(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON), UBE_ATTACK);
-    $this->player_bonus_add(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD), UBE_SHIELD);
-    $this->player_bonus_add(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR), UBE_ARMOR);
+    $this->player_bonus_add(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON), P_ATTACK);
+    $this->player_bonus_add(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD), P_SHIELD);
+    $this->player_bonus_add(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR), P_ARMOR);
 
   }
 
