@@ -89,12 +89,18 @@ class UBE {
 //    PLANET_TYPE   => $report_row['ube_report_planet_planet_type'],
   );
 
+  /**
+   * @var Bonus $planet_bonus
+   */
+  public $planet_bonus = null;
+
   public function __construct() {
     $this->players = new UBEPlayerList();
     $this->fleet_list = new UBEFleetList();
     $this->moon_calculator = new UBEMoonCalculator();
     $this->debris = new UBEDebris();
     $this->rounds = new UBERoundList();
+    $this->planet_bonus = new Bonus();
   }
 
   /**
@@ -166,6 +172,7 @@ class UBE {
     }
 
     if($fortifier_level = mrc_get_level($player_db_row, $planet, MRC_FORTIFIER)) {
+      $this->planet_bonus->add_unit(MRC_FORTIFIER, $fortifier_level);
       $fortifier_bonus = $fortifier_level * get_unit_param(MRC_FORTIFIER, P_BONUS_VALUE) / 100;
       $this->fleet_list[0]->UBE_BONUSES[P_ATTACK] += $fortifier_bonus;
       $this->fleet_list[0]->UBE_BONUSES[P_SHIELD] += $fortifier_bonus;
