@@ -514,8 +514,9 @@ class UBE {
    * @param $sym_defender
    */
   function sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender) {
-    $this->is_simulator = sys_get_param_int('simulator');
-    $this->is_simulator = !empty($this->is_simulator);
+//    $this->is_simulator = sys_get_param_int('simulator');
+//    $this->is_simulator = !empty($this->is_simulator);
+    $this->is_simulator = true;
     $this->mission_type_id = MT_ATTACK;
 
     $this->players = new UBEPlayerList();
@@ -536,8 +537,12 @@ class UBE {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
     $fleet_id = $player_id; // FOR SIMULATOR!
 
+    if(empty($this->players[$player_id])) {
+      $this->players[$player_id] = new UBEPlayer();
+    }
+
     foreach($side_info as $fleet_data) {
-      $this->players[$player_id]->player_name_set($attacker ? 'Attacker' : 'Defender');
+      $this->players[$player_id]->player_name_set($player_id);
       $this->players[$player_id]->player_side_switch($attacker);
 
       $objFleet = new UBEFleet();

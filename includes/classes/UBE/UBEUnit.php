@@ -130,6 +130,8 @@ class UBEUnit {
 
     $this->pool_attack = $this->unit_randomized_attack * $this->count;
     $this->pool_shield = $this->unit_randomized_shield * $this->count;
+
+    $this->unit_count_boom = 0;
   }
 
   /**
@@ -245,7 +247,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a5.16
+   * @version 41a5.18
    */
   public static function unit_dump_footer() {
     print('</table><br>');
@@ -254,7 +256,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a5.16
+   * @version 41a5.18
    */
   public static function unit_dump_header() {
     print('<table border="1">');
@@ -286,7 +288,7 @@ class UBEUnit {
    * @param string       $field
    * @param UBEUnit|null $before
    *
-   * @version 41a5.16
+   * @version 41a5.18
    */
   function unit_dump_delta($field, UBEUnit $before = null) {
 //  print("<td" . ($before != null ? ' colspan=2' : '') . ">");
@@ -304,7 +306,7 @@ class UBEUnit {
    * @param string       $desc
    * @param UBEUnit|null $before
    *
-   * @version 41a5.16
+   * @version 41a5.18
    */
   function unit_dump($desc = '', UBEUnit $before = null) {
     global $lang;
