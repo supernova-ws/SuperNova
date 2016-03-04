@@ -1,5 +1,13 @@
 <?php
 
+/**
+ * Class ArrayAccessV2
+ *
+ * Access to object container as to array by index
+ * Features:
+ * - clone options: deep, shallow, none;
+ * - applying predefined functions to container content;
+ */
 class ArrayAccessV2 implements ArrayAccess {
 
   const CLONE_NONE = 0;
@@ -20,12 +28,43 @@ class ArrayAccessV2 implements ArrayAccess {
    */
   public $_container = array();
 
+  /**
+   * Method list that should support applying to container content
+   *
+   * @var string[]
+   */
+  protected static $_call = array();
+
+  /**
+   * Contained object property list that supported by property summarizer
+   *
+   * @var string[]
+   */
+  protected static $_sum_property = array();
+
   public function __clone() {
     if(static::$_clonable == ArrayAccessV2::CLONE_NONE) {
       return;
     }
 
     static::_deep_clone($this->_container);
+  }
+
+  /**
+   * Automatically apply all non-exist function from static::$_call list to $_container content
+   *
+   * @param string $method_name
+   * @param array  $arguments
+   */
+  public function __call($method_name, array $arguments) {
+    if(in_array($method_name, static::$_call)) {
+      $object_first = reset($this->_container);
+      if($object_first !== false && method_exists($object_first, $method_name)) {
+        foreach($this->_container as $unit_id => $object) {
+          call_user_func_array(array($object, $method_name), $arguments);
+        }
+      }
+    }
   }
 
   protected static function _deep_clone(&$array) {
@@ -36,6 +75,27 @@ class ArrayAccessV2 implements ArrayAccess {
         static::_deep_clone($value);
       }
     }
+  }
+
+  /**
+   * Summarize property values of contained objects
+   *
+   * @param string $property_name
+   *
+   * @return float
+   */
+  public function getSumProperty($property_name) {
+    $result = 0.0;
+    if(in_array($property_name, static::$_sum_property)) {
+      $object_first = reset($this->_container);
+      if($object_first !== false && property_exists($object_first, $property_name)) {
+        foreach($this->_container as $object) {
+          $result += $object->$property_name;
+        }
+      }
+    }
+
+    return $result;
   }
 
   /**
@@ -111,7 +171,6 @@ class ArrayAccessV2 implements ArrayAccess {
    *
    * @return int
    */
-  // OK1
   public function count() {
     return count($this->_container);
   }
