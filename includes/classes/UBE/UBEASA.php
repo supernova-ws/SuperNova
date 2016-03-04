@@ -29,7 +29,7 @@ class UBEASA {
   }
 
   /**
-   * @param float[] $ube_bonus_list - array[UBE_ATTACK] => $stat_multiplier
+   * @param float[] $ube_bonus_list - array[P_ATTACK/P_SHIELD/P_ARMOR] => $stat_multiplier
    */
   // OK0
   public function apply_ube_bonuses($ube_bonus_list) {

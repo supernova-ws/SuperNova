@@ -15,11 +15,11 @@ class UBEPlayer {
   protected $is_attacker = false;
 
   /**
-   * [UBE_BONUS]
-   *
-   * @var array
+   * @var Bonus $player_bonus
    */
-  protected $ube_bonuses = array();
+  public $player_bonus = null;
+
+
   /**
    * @var int
    */
@@ -38,11 +38,7 @@ class UBEPlayer {
    * UBEPlayer constructor.
    */
   public function __construct() {
-    $this->ube_bonuses = array(
-      P_ATTACK => 0,
-      P_SHIELD => 0,
-      P_ARMOR  => 0,
-    );
+    $this->player_bonus = new Bonus();
   }
 
   /**
@@ -65,6 +61,7 @@ class UBEPlayer {
    */
   public function db_user_change_active_planet_to_capital($captured_planet_id) {
     $user_id = $this->getDbId();
+
     return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet_id};");
   }
 
@@ -107,11 +104,17 @@ class UBEPlayer {
     $this->db_row['username'] = $report_player_row['ube_report_player_name'];
     $this->is_attacker = empty($report_player_row['ube_report_player_attacker']); // TODO - ПРАВИЛЬНО ВЫСТАВЛЯТЬ!
 
-    $this->ube_bonuses = array(
-      P_ATTACK => $report_player_row['ube_report_player_bonus_attack'],
-      P_SHIELD => $report_player_row['ube_report_player_bonus_shield'],
-      P_ARMOR => $report_player_row['ube_report_player_bonus_armor'],
-    );
+    $this->player_bonus->setBonusList(array(
+      P_ATTACK => array(
+        UNIT_REPORT_PLAYER => $report_player_row['ube_report_player_bonus_attack'],
+      ),
+      P_SHIELD => array(
+        UNIT_REPORT_PLAYER => $report_player_row['ube_report_player_bonus_shield'],
+      ),
+      P_ARMOR  => array(
+        UNIT_REPORT_PLAYER => $report_player_row['ube_report_player_bonus_armor'],
+      ),
+    ));
   }
 
   /**
@@ -128,14 +131,10 @@ class UBEPlayer {
 //      // Вытаскиваем уровень техи, получаем нормированный бонус (НЕ В %!) и прибавляем бонус Адмирала
 //      $this->ube_bonuses[$ube_id] += mrc_get_level($this->db_row, false, $unit_id) * get_unit_param($unit_id, P_BONUS_VALUE) / 100 + $this->admiral_bonus;
 //    }
-    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, P_ATTACK);
-    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, P_SHIELD);
-    $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, P_ARMOR);
-
-    $this->player_bonus_add(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON), P_ATTACK);
-    $this->player_bonus_add(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD), P_SHIELD);
-    $this->player_bonus_add(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR), P_ARMOR);
-
+    $this->player_bonus->add_unit(MRC_ADMIRAL, $this->admiral_level);
+    $this->player_bonus->add_unit(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON));
+    $this->player_bonus->add_unit(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD));
+    $this->player_bonus->add_unit(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR));
   }
 
   /**
@@ -201,31 +200,6 @@ class UBEPlayer {
    */
   public function player_name_set($name) {
     $this->db_row['username'] = $name;
-  }
-
-  /**
-   * @param int $unit_id Real unit SNID
-   * @param int $unit_count
-   * @param int $ube_bonus_id UBE_ATTACK/...
-   */
-  public function player_bonus_add($unit_id, $unit_count, $ube_bonus_id) {
-    $this->ube_bonuses[$ube_bonus_id] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
-  }
-
-  /**
-   * @param int $ube_bonus_id UBE_ATTACK/...
-   *
-   * @return int
-   */
-  public function player_bonus_get($ube_bonus_id) {
-    return
-      isset($this->ube_bonuses[$ube_bonus_id])
-        ? $this->ube_bonuses[$ube_bonus_id]
-        : 0;
-  }
-
-  public function player_bonus_get_all() {
-    return $this->ube_bonuses;
   }
 
 }

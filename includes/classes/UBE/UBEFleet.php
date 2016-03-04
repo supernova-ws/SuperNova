@@ -22,7 +22,10 @@ class UBEFleet {
 
   public $UBE_PLANET = array();
 
-  public $UBE_BONUSES = array(); // [UBE_ATTACK]
+  /**
+   * @var Bonus $fleet_bonus
+   */
+  public $fleet_bonus = null;
 
   public $captain_row = array();
 
@@ -59,7 +62,7 @@ class UBEFleet {
 
 
   /**
-   * [UBE_ATTACK/P_ARMOR/P_SHIELD]
+   * [P_ATTACK/P_ARMOR/P_SHIELD]
    *
    * @var array[]
    */
@@ -81,6 +84,7 @@ class UBEFleet {
     $this->resources_lost_in_metal = array(
       RES_METAL => 0,
     );
+    $this->fleet_bonus = new Bonus();
   }
 
   public function __clone() {
@@ -97,25 +101,12 @@ class UBEFleet {
   }
 
   /**
-   * @param array $player_bonuses
-   *
-   * @version 2016-02-25 23:42:45 41a4.68
-   */
-  public function bonuses_add_player(array $player_bonuses) {
-    // Вычисляем бонус игрока и добавляем его к бонусам флота
-    $this->UBE_BONUSES[P_ATTACK] += $player_bonuses[P_ATTACK];
-    $this->UBE_BONUSES[P_SHIELD] += $player_bonuses[P_SHIELD];
-    $this->UBE_BONUSES [P_ARMOR] += $player_bonuses [P_ARMOR];
-
-  }
-
-  /**
    *
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function calculate_battle_stats() {
-    $this->unit_list->fill_unit_info($this->UBE_BONUSES);
+    $this->unit_list->fill_unit_info($this->fleet_bonus);
   }
 
 
@@ -123,7 +114,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a5.13
+   * @version 41a5.16
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -139,11 +130,17 @@ class UBEFleet {
       PLANET_TYPE   => $fleet_row['ube_report_fleet_planet_planet_type'],
     );
 
-    $this->UBE_BONUSES = array(
-      P_ATTACK => $fleet_row['ube_report_fleet_bonus_attack'],
-      P_SHIELD => $fleet_row['ube_report_fleet_bonus_shield'],
-      P_ARMOR  => $fleet_row['ube_report_fleet_bonus_armor'],
-    );
+    $this->fleet_bonus->setBonusList(array(
+      P_ATTACK => array(
+        UNIT_REPORT_FLEET => $fleet_row['ube_report_fleet_bonus_attack'],
+      ),
+      P_SHIELD => array(
+        UNIT_REPORT_FLEET => $fleet_row['ube_report_fleet_bonus_shield'],
+      ),
+      P_ARMOR  => array(
+        UNIT_REPORT_FLEET => $fleet_row['ube_report_fleet_bonus_armor'],
+      ),
+    ));
 
     $this->resource_list = array(
       RES_METAL     => $fleet_row['ube_report_fleet_resource_metal'],
@@ -157,7 +154,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a5.13
+   * @version 41a5.16
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -176,16 +173,16 @@ class UBEFleet {
       (float)$this->resource_list[RES_CRYSTAL],
       (float)$this->resource_list[RES_DEUTERIUM],
 
-      (float)$this->UBE_BONUSES[P_ATTACK],
-      (float)$this->UBE_BONUSES[P_SHIELD],
-      (float)$this->UBE_BONUSES[P_ARMOR],
+      (float)$this->fleet_bonus->calcBonus(P_ATTACK),
+      (float)$this->fleet_bonus->calcBonus(P_SHIELD),
+      (float)$this->fleet_bonus->calcBonus(P_ARMOR),
     );
   }
 
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a5.13
+   * @version 41a5.16
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->db_id;
@@ -475,7 +472,7 @@ class UBEFleet {
   }
 
   /**
-   * @param string $stat_name UBE_ATTACK/P_SHIELD/P_ARMOR...etc
+   * @param string $stat_name P_ATTACK/P_SHIELD/P_ARMOR...etc
    *
    * @return int
    *
@@ -549,7 +546,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a5.13
+   * @version 41a5.16
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     if(defined('DEBUG_UBE')) {

@@ -173,10 +173,7 @@ class UBE {
 
     if($fortifier_level = mrc_get_level($player_db_row, $planet, MRC_FORTIFIER)) {
       $this->planet_bonus->add_unit(MRC_FORTIFIER, $fortifier_level);
-      $fortifier_bonus = $fortifier_level * get_unit_param(MRC_FORTIFIER, P_BONUS_VALUE) / 100;
-      $this->fleet_list[0]->UBE_BONUSES[P_ATTACK] += $fortifier_bonus;
-      $this->fleet_list[0]->UBE_BONUSES[P_SHIELD] += $fortifier_bonus;
-      $this->fleet_list[0]->UBE_BONUSES[P_ARMOR] += $fortifier_bonus;
+      $this->fleet_list[0]->fleet_bonus->add_unit(MRC_FORTIFIER, $fortifier_level);
     }
 
     $this->fleet_list[0]->UBE_PLANET = array(
@@ -563,26 +560,21 @@ class UBE {
         } elseif($unit_type == UNIT_RESOURCES) {
           $this->fleet_list[$fleet_id]->resource_list[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
-          // $this->players[$player_id]->player_bonus_add($unit_id, $unit_count, $ube_convert_techs[$unit_id]);
           if($unit_id == TECH_WEAPON) {
-            $this->players[$player_id]->player_bonus_add(TECH_WEAPON, $unit_count, P_ATTACK);
+            $this->players[$player_id]->player_bonus->add_unit(TECH_WEAPON, $unit_count);
           } elseif($unit_id == TECH_SHIELD) {
-            $this->players[$player_id]->player_bonus_add(TECH_SHIELD, $unit_count, P_SHIELD);
+            $this->players[$player_id]->player_bonus->add_unit(TECH_SHIELD, $unit_count);
           } elseif($unit_id == TECH_ARMOR) {
-            $this->players[$player_id]->player_bonus_add(TECH_ARMOR, $unit_count, P_ARMOR);
+            $this->players[$player_id]->player_bonus->add_unit(TECH_ARMOR, $unit_count);
           }
         } elseif($unit_type == UNIT_GOVERNORS) {
           if($unit_id == MRC_FORTIFIER) {
             // Фортифаер даёт бонус ко всему
-            $this->fleet_list[$fleet_id]->UBE_BONUSES[P_ATTACK] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
-            $this->fleet_list[$fleet_id]->UBE_BONUSES[P_SHIELD] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
-            $this->fleet_list[$fleet_id]->UBE_BONUSES[P_ARMOR] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
+            $this->planet_bonus->add_unit(MRC_FORTIFIER, $unit_count);
           }
         } elseif($unit_type == UNIT_MERCENARIES) {
           if($unit_id == MRC_ADMIRAL) {
-            $this->players[$player_id]->player_bonus_add(MRC_ADMIRAL, $unit_count, P_ATTACK);
-            $this->players[$player_id]->player_bonus_add(MRC_ADMIRAL, $unit_count, P_SHIELD);
-            $this->players[$player_id]->player_bonus_add(MRC_ADMIRAL, $unit_count, P_ARMOR);
+            $this->players[$player_id]->player_bonus->add_unit(MRC_ADMIRAL, $unit_count);
           }
         }
       }

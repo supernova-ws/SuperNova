@@ -448,7 +448,7 @@ $sn_data += array(
     ),
     'max' => 30,
     'bonus' => 10,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   MRC_ADMIRAL => array(
@@ -461,7 +461,7 @@ $sn_data += array(
     ),
     'max' => 20,
     'bonus' => 5,
-    'bonus_type' => BONUS_PERCENT,
+    P_BONUS_TYPE => BONUS_PERCENT,
   ),
 
   MRC_COORDINATOR => array(
@@ -475,7 +475,7 @@ $sn_data += array(
     ),
     'max' => 5,
     'bonus' => 1,
-    'bonus_type' => BONUS_ADD,
+    P_BONUS_TYPE => BONUS_ADD,
   ),
 
   MRC_NAVIGATOR => array(

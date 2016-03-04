@@ -386,6 +386,18 @@ OK8 Следующий
         Патчи/Прошивки
     Из Капитана в бонусы флотов расшивать
 
+Свойство корабля Scout (Stealth?) - участвовать в нулевом раунде, когда по флотам работает оборона
+
+Иерархия бонусов - бонусы с верхнего уровня опускаются на подуровни. Примеры:
+    P_RESOURCE_PRODUCTION
+        P_RESOURCE_PRODUCTION_METAL
+        P_RESOURCE_PRODUCTION_CRYSTAL
+        P_RESOURCE_PRODUCTION_DEUTERIUM
+    P_COMBAT
+        P_COMBAT_ATTACK
+        P_COMBAT_SHIELD
+        P_COMBAT_ARMOR
+
 
 pvar_dump($this->fleet_list);
 die(__FILE__ . ':' . __LINE__);
@@ -465,18 +477,30 @@ fleet.php
 
 
 // TODO - СЕЙЧАС
+Переделать под
+    define('P_BONUS_TABLE', 'bonus_table');
+
+define('P_BONUS_VALUE', 'bonus');
+define('P_BONUS_TYPE', 'bonus_type');
+    // *** Mercenary/talent bonus types
+    define('BONUS_NONE'    ,            0);  // No bonus
+    define('BONUS_PERCENT' ,            1);  // Percent on base value
+    define('BONUS_ADD'     ,            2);  // Add
+    define('BONUS_ABILITY' ,            3);  // Some ability
+UNUSED    define('BONUS_MULTIPLY',            4);  // Multiply by value
+UNUSED    define('BONUS_PERCENT_CUMULATIVE' , 5);  // Cumulative percent on base value
+UNUSED    define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
+UNUSED    define('BONUS_SPEED',               7);  // Speed bonus
+
     Делаем структуру юнитов
         UnitFleet (?)
 
-    Избавиться от UBE_ATTACK и прочего - заменить на P_ATTACK
-        UBE function ube_attack_prepare_planet(array &$planet) {
-              $fortifier_bonus = $fortifier_level * get_unit_param(MRC_FORTIFIER, P_BONUS_VALUE) / 100;
-              $this->fleet_list[0]->UBE_BONUSES[UBE_ATTACK] += $fortifier_bonus;
-        UBE function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
-              if($unit_id == MRC_FORTIFIER) {
-                // Фортифаер даёт бонус ко всему
-                $this->fleet_list[$fleet_id]->UBE_BONUSES[UBE_ATTACK] += $unit_count * get_unit_param($unit_id, P_BONUS_VALUE) / 100;
-        $this->player_bonus_add(MRC_ADMIRAL, $this->admiral_level, UBE_ATTACK);
+    // TODO - СЕЙЧАС НЕПРАВИЛЬНО СОХРАНЯЮТСЯ И ВОССТАНАВЛИВАЮТСЯ БОНУСЫ ИЗ РЕПОРТА! СЕЙЧАС ОНИ СОХРАНЯЮТСЯ, КАК ДРОБНЫЕ ФИНАЛЬНЫЕ ЗНАЧЕНИЯ - А ДОЛЖНЫ СОХРАНЯТСЯ КАК ЛЕВЕЛЫ,.. НАВЕРНОЕ
+            ПОДУМАТЬ! ОБЕСПЕЧИТЬ ОБРАТНУЮ СОВМЕСТИМОСТЬ
+                А зачем? Если вдруг бонусы поменяются - поменяется и расчёт бонусов
+                    Нужны ли ВООБЩЕ бонусы в репортах?
+                        Только для отладки, в общем-то. Так-то в репортах везде должны использоваться финальные рассчитанные значения брони/атаки/итд
+                            Так что их смело можно удалить и не сохранять
 
 #ctv
 

@@ -6,7 +6,7 @@
  * @method UBEFleet offsetGet($offset)
  * @property UBEFleet[] $_container
  *
- * @version 2016-02-25 23:42:45 41a4.68
+ * @version 41a5.16
  */
 class UBEFleetList extends FleetList {
 
@@ -25,7 +25,7 @@ class UBEFleetList extends FleetList {
   /**
    * UBEFleetList constructor.
    *
-   * @version 41a5.1
+   * @version 41a5.16
    */
   public function __construct() {
     parent::__construct();
@@ -41,7 +41,7 @@ class UBEFleetList extends FleetList {
   /**
    * @return UBEFleet
    *
-   * @version 41a5.1
+   * @version 41a5.16
    */
   public function _createElement() {
     return new UBEFleet();
@@ -50,7 +50,7 @@ class UBEFleetList extends FleetList {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a5.1
+   * @version 41a5.16
    */
   public function ube_insert_from_Fleet(Fleet $objFleet) {
     $UBEFleet = new UBEFleet();
@@ -66,7 +66,7 @@ class UBEFleetList extends FleetList {
   /**
    * @param UBEPlayerList $players
    *
-   * @version 2016-02-25 23:42:45 41a4.68
+   * @version 41a5.16
    */
   public function ube_load_from_players(UBEPlayerList $players) {
     foreach($this->_container as $fleet_id => $objFleet) {
@@ -75,7 +75,7 @@ class UBEFleetList extends FleetList {
       $objFleet->copy_stats_from_player($players[$objFleet->owner_id]);
 
       // Вычисляем бонус игрока и добавляем его к бонусам флота
-      $objFleet->bonuses_add_player($players[$objFleet->owner_id]->player_bonus_get_all());
+      $objFleet->fleet_bonus->mergeBonus($players[$objFleet->owner_id]->player_bonus);
       // TODO
 //      $objFleet->add_planet_bonuses();
 //      $objFleet->add_fleet_bonuses();
@@ -135,7 +135,7 @@ class UBEFleetList extends FleetList {
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    *
-   * @version 41a5.1
+   * @version 41a5.16
    */
   public function ube_analyze_fleets($is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя
@@ -293,7 +293,7 @@ class UBEFleetList extends FleetList {
     return count($this->ube_side_present_at_round_start);
   }
 
-  public function ube_calculate_outcome($current_outcome) {
+  public function ube_calculate_outcome($current_outcome, $round) {
     $this->ube_actualize_sides();
 
     $result = $current_outcome;

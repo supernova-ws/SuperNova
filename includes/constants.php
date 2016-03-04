@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a5.14');
+define('SN_VERSION', '41a5.16');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1154,10 +1154,16 @@ define('P_STORAGE', 'storage');
 define('P_STACKABLE', 'stackable'); // COMPLETE
 define('P_DEPLOY', 'deploy');
 define('P_BONUS_VALUE', 'bonus');
+define('P_BONUS_TYPE', 'bonus_type');
+define('P_BONUS_TABLE', 'bonus_table');
 define('P_CAPACITY', 'capacity');
 define('P_UNIT_SIZE', 'size');
 define('P_SPEED', 'speed');
 define('P_UNIT_PRODUCTION', 'production');
+
+define('UNIT_REPORT_PLAYER', -1); // Special meta-unit - report player bonus
+define('UNIT_REPORT_PLANET', -2); // Special meta-unit - report planet bonus
+define('UNIT_REPORT_FLEET', -3); // Special meta-unit - report fleet bonus
 
 define('P_CHAT', 'chat');
 define('P_CHAT_COMMANDS', 'commands');
