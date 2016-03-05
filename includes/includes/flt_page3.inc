@@ -199,7 +199,7 @@ function sn_fleet_page3($time_to_travel) {
   $db_changeset = array();
   foreach($fleetarray as $Ship => $Count) {
     $FleetStorage += get_unit_param($Ship, P_CAPACITY) * $Count;
-    $db_changeset['unit'][] = sn_db_unit_changeset_prepare($Ship, $Count, $user, $planetrow['id']);
+    $db_changeset['unit'][] = sn_db_unit_changeset_prepare($Ship, -$Count, $user, $planetrow['id']);
   }
   $FleetStorage -= $consumption;
 
