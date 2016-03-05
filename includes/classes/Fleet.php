@@ -200,24 +200,24 @@ class Fleet {
       // TODO - lock fleets by COORDINATES
       ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
       // Блокировка всех юнитов, принадлежащих прилетающим и улетающим флотам - ufd = unit_fleet_destination
-      ($mission_data['dst_fleets'] ? "LEFT JOIN {{units}} AS ufd ON ufd.unit_location_type = " . LOC_FLEET . " AND ufd.unit_location_id = fd.fleet_id " : '') .
+      ($mission_data['dst_fleets'] ? "LEFT JOIN {{unit}} AS ufd ON ufd.unit_location_type = " . LOC_FLEET . " AND ufd.unit_location_id = fd.fleet_id " : '') .
 
       ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
       // Блокировка всех юнитов, принадлежащих владельцу планеты-цели
-      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{units}} AS unit_player_dest ON unit_player_dest.unit_player_id = ud.id " : '') .
+      ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{unit}} AS unit_player_dest ON unit_player_dest.unit_player_id = ud.id " : '') .
       // Блокировка планеты-цели
       ($mission_data['dst_planet'] ? "LEFT JOIN {{planets}} AS pd ON pd.id = f.fleet_end_planet_id " : '') .
       // Блокировка всех юнитов, принадлежащих планете-цели - НЕ НУЖНО. Уже залочили ранее, как принадлежащие игроку-цели
-//      ($mission_data['dst_planet'] ? "LEFT JOIN {{units}} AS upd ON upd.unit_location_type = " . LOC_PLANET . " AND upd.unit_location_id = pd.id " : '') .
+//      ($mission_data['dst_planet'] ? "LEFT JOIN {{unit}} AS upd ON upd.unit_location_type = " . LOC_PLANET . " AND upd.unit_location_id = pd.id " : '') .
 
 
       ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{users}} AS us ON us.id = f.fleet_owner " : '') .
       // Блокировка всех юнитов, принадлежащих владельцу флота
-      ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{units}} AS unit_player_src ON unit_player_src.unit_player_id = us.id " : '') .
+      ($mission_data['src_user'] || $mission_data['src_planet'] ? "LEFT JOIN {{unit}} AS unit_player_src ON unit_player_src.unit_player_id = us.id " : '') .
       // Блокировка планеты отправления
       ($mission_data['src_planet'] ? "LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id " : '') .
       // Блокировка всех юнитов, принадлежащих планете с которой юниты были отправлены - НЕ НУЖНО. Уже залочили ранее, как принадлежащие владельцу флота
-//      ($mission_data['src_planet'] ? "LEFT JOIN {{units}} AS ups ON ups.unit_location_type = " . LOC_PLANET . " AND ups.unit_location_id = ps.id " : '') .
+//      ($mission_data['src_planet'] ? "LEFT JOIN {{unit}} AS ups ON ups.unit_location_type = " . LOC_PLANET . " AND ups.unit_location_id = ps.id " : '') .
 
       "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
     );
@@ -935,7 +935,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.10
+   * @version 41a5.20
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
