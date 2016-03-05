@@ -1298,6 +1298,11 @@ switch($new_version) {
       upd_alter_table('fleets', "DROP COLUMN `fleet_array`", isset($update_tables['fleets']['fleet_array']));
     }
 
+    // 2016-03-05 22:01:30 41a5.21
+    upd_alter_table('fleets', array(
+      "MODIFY COLUMN `fleet_target_owner` bigint(20) unsigned DEFAULT NULL",
+    ), $update_tables['fleets']['fleet_target_owner']['Null'] == 'NO');
+
     // #ctv
 
 //    pdump($update_indexes_full['security_browser']['I_browser_user_agent']);
