@@ -274,12 +274,8 @@ class Fleet {
     $db_fleet_id = 0;
     if(!empty($set_safe_string)) {
       doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
-      if($db_fleet_id = db_insert_id()) {
-        $this->db_fleet_get_by_id($db_fleet_id);
-        if(!$this->db_id || !$db_fleet_id) {
-          // TODO - error log
-          die('Can not reload just created fleet at ' . __FILE__ . ':' . __LINE__);
-        }
+      if(!($db_fleet_id = db_insert_id())) {
+        die('Can not save fleet at ' . __FILE__ . ':' . __LINE__);
       }
     }
 
@@ -287,6 +283,8 @@ class Fleet {
     if($this->db_id) {
       $this->db_insert_units($this->db_id);
     }
+
+    $this->db_fleet_get_by_id($db_fleet_id);
 
     return $this->db_id;
   }
@@ -935,7 +933,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.20
+   * @version 41a5.23
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -1062,8 +1060,8 @@ class Fleet {
     foreach($this->unit_list as $unit_id => $unit_count) {
       // Только юниты, чьё количество больше нуля
       if($unit_count) {
-        $set = "`unit_player_id`` = {$this->owner_id},
-            `unit_location_type` = " . LOC_FLEET . "
+        $set = "`unit_player_id` = {$this->owner_id},
+            `unit_location_type` = " . LOC_FLEET . ",
             `unit_location_id` = {$fleet_id},
             `unit_type` = " . get_unit_param($unit_id, P_UNIT_TYPE) . ",
             `unit_snid` = {$unit_id},

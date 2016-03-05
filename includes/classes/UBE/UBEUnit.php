@@ -4,6 +4,7 @@
  * Class UBEUnit
  */
 class UBEUnit {
+//  public $db_id = 0;
   public $unit_id = 0;
   public $count = 0;
   public $type = 0;
@@ -247,7 +248,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a5.18
+   * @version 41a5.23
    */
   public static function unit_dump_footer() {
     print('</table><br>');
@@ -256,7 +257,7 @@ class UBEUnit {
   /**
    *
    *
-   * @version 41a5.18
+   * @version 41a5.23
    */
   public static function unit_dump_header() {
     print('<table border="1">');
@@ -288,7 +289,7 @@ class UBEUnit {
    * @param string       $field
    * @param UBEUnit|null $before
    *
-   * @version 41a5.18
+   * @version 41a5.23
    */
   function unit_dump_delta($field, UBEUnit $before = null) {
 //  print("<td" . ($before != null ? ' colspan=2' : '') . ">");
@@ -306,7 +307,7 @@ class UBEUnit {
    * @param string       $desc
    * @param UBEUnit|null $before
    *
-   * @version 41a5.18
+   * @version 41a5.23
    */
   function unit_dump($desc = '', UBEUnit $before = null) {
     global $lang;

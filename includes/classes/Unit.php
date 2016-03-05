@@ -4,7 +4,7 @@
  * Class Unit
  */
 class Unit {
-  public $db_id = 0;
+//  public $db_id = 0;
   public $unit_id = 0;
   public $count = 0;
   public $type = 0;
