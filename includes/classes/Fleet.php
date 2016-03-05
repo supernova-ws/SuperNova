@@ -933,7 +933,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.23
+   * @version 41a5.25
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -1045,11 +1045,11 @@ class Fleet {
       $unit_db_id_safe = idval($this->snid_to_db_translation[$unit_id]['unit_id']);
       if(!$unit_count) {
         // Удаляем юнит
-        classSupernova::db_del_record_by_id(LOC_FLEET, $unit_db_id_safe);
+        classSupernova::db_del_record_by_id(LOC_UNIT, $unit_db_id_safe);
         unset($this->unit_list[$unit_id]);
         unset($this->snid_to_db_translation[$unit_id]);
       } else {
-        classSupernova::db_upd_record_by_id(LOC_FLEET, $unit_db_id_safe, "`unit_level` = {$unit_count}");
+        classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_db_id_safe, "`unit_level` = {$unit_count}");
         $this->snid_to_db_translation[$unit_id]['unit_level'] = $unit_count;
       }
     }
