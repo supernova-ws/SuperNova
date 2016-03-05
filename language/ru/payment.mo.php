@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 41a5.22
 *
 */
 
@@ -107,7 +107,7 @@ $a_lang_array = (array(
     PAYMENT_METHOD_EMONEY_ELECSNET => 'Кошелек Элекснет',
     PAYMENT_METHOD_EMONEY_MAILRU => 'Деньги@Mail.Ru',
     PAYMENT_METHOD_EMONEY_EASYPAY => 'EasyPay',
-    PAYMENT_METHOD_EMONEY_RUR_W1R => 'RUR Единый Кошелек',
+    PAYMENT_METHOD_EMONEY_RUR_W1R => 'RUB Единый Кошелек',
     PAYMENT_METHOD_EMONEY_TELEMONEY => 'TeleMoney',
 
     PAYMENT_METHOD_BANK_CARD => 'Платежная карта (VISA, MasterCard итд)',

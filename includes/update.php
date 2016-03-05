@@ -1303,6 +1303,11 @@ switch($new_version) {
       "MODIFY COLUMN `fleet_target_owner` bigint(20) unsigned DEFAULT NULL",
     ), $update_tables['fleets']['fleet_target_owner']['Null'] == 'NO');
 
+    // 2016-03-05 22:26:23 41a5.22
+    // Fix to old accounts where stored RUR default currency instead of RUB
+    upd_do_query("UPDATE `{{player_options}}` SET `value` = 'RUB' where option_id = 11 and `value` = 'RUR';");
+
+
     // #ctv
 
 //    pdump($update_indexes_full['security_browser']['I_browser_user_agent']);
