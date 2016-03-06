@@ -113,7 +113,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
   // Watchdog timer
   if($config->db_loadItem('fleet_update_lock')) {
-    if(defined('DEBUG_UBE')) {
+    if(defined('DEBUG_FLYING_FLEETS')) {
       $random = 0;
     } else {
       $random = mt_rand(240, 300);

@@ -77,7 +77,7 @@ class UBERound {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function sql_generate_unit_array(array $sql_perform_ube_report_unit, $unit_sort_order, UBEFleetList $UBEFleetList, array $outer_prefix) {
+  public function sql_generate_unit_array(array &$sql_perform_ube_report_unit, &$unit_sort_order, UBEFleetList $UBEFleetList, array $outer_prefix) {
     foreach($this->snapshot as $fleet_id => $fleet_snapshot) {
       $inner_prefix = array(
         $UBEFleetList[$fleet_id]->owner_id,

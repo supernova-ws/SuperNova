@@ -164,7 +164,6 @@ class UBEReport {
     }
 
     // Сохраняем информацию о раундах
-    // TODO = СЕЙЧАС!
     $ube->rounds->sql_generate_unit_array($sql_perform['ube_report_unit'], $ube_report_id, $ube->fleet_list);
 
     // Пакетная вставка данных

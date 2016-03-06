@@ -116,7 +116,7 @@ class UBE {
 
     $this->moon_calculator->load_status($destination_planet);
 
-// TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
+    // TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
     // Готовим инфу по атакуемой планете
     $this->ube_attack_prepare_planet($destination_planet);
 
@@ -146,18 +146,26 @@ class UBE {
    *
    * @param array $planet
    *
-   * @version 2016-02-25 23:42:45 41a4.68
+   * @version 41a5.27
    */
   function ube_attack_prepare_planet(array &$planet) {
     $player_id = $planet['id_owner'];
 
-    $this->ube_attack_prepare_player($player_id, false);
+    $this->ube_attack_prepare_player($player_id, UBE_PLAYER_IS_DEFENDER);
     $player_db_row = $this->players[$player_id]->player_db_row_get();
 
     $this->fleet_list[0] = new UBEFleet();
     $this->fleet_list[0]->owner_id = $player_id;
 
-    foreach(sn_get_groups('combat') as $unit_id) {
+    $sn_group_combat = sn_get_groups('combat');
+//    $planet_unit_list = db_unit_by_location($player_id, LOC_PLANET, $planet['id']);
+//    foreach($planet_unit_list as $unit_db_row) {
+//      if(in_array($unit_db_row['unit_snid'], $sn_group_combat)) {
+//        $this->fleet_list[0]->unit_list->insert_unit($unit_db_row['unit_snid'], $unit_db_row['unit_level']);
+//      }
+//    }
+
+    foreach($sn_group_combat as $unit_id) {
       if($unit_count = mrc_get_level($player_db_row, $planet, $unit_id)) {
         $this->fleet_list[0]->unit_list->insert_unit($unit_id, $unit_count);
       }
@@ -191,6 +199,8 @@ class UBE {
    *
    * @param int  $player_id
    * @param bool $is_attacker
+   *
+   * @version 41a5.27
    */
   function ube_attack_prepare_player($player_id, $is_attacker) {
     $this->players->db_load_player_by_id($player_id);
@@ -222,7 +232,7 @@ class UBE {
    */
   function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
-
+//$this->is_simulator = true;
     $start = microtime(true);
 
     $this->fleet_list->ube_load_from_players($this->players);
@@ -625,6 +635,7 @@ class UBE {
     $ube_report = new UBEReport();
     $ube_report->sn_ube_report_save($ube); //  sn_ube_report_save($combat_data);
 
+//die();
     $ube->ube_combat_result_apply(); //  ube_combat_result_apply($combat_data);
 
 

@@ -8,6 +8,7 @@ if(defined('INIT')) {
 define('INIT', true);
 
 // define('DEBUG_UBE', true);
+// define('DEBUG_FLYING_FLEETS', true);
 // define('SN_DEBUG_LOG', true);
 
 // Замеряем начальные параметры
