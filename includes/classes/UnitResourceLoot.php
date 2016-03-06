@@ -6,6 +6,14 @@
 class UnitResourceLoot extends Unit {
 
   /**
+   * @var string
+   */
+  protected static $_sn_group_name = 'resources_loot';
+  /**
+   * @var array
+   */
+  protected static $_group_unit_id_list = array();
+  /**
    * @var array
    */
   protected static $_group_pnames = array();
@@ -55,4 +63,4 @@ class UnitResourceLoot extends Unit {
 
 }
 
-UnitResourceLoot::_init('resources_loot');
+UnitResourceLoot::_init();

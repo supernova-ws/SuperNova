@@ -39,7 +39,9 @@ class Unit {
       return;
     }
 
-    static::$_sn_group_name = $group_name;
+    if($group_name) {
+      static::$_sn_group_name = $group_name;
+    }
 
     if(static::$_sn_group_name) {
       static::$_group_unit_id_list = sn_get_groups(static::$_sn_group_name);
