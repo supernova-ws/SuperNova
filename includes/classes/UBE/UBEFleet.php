@@ -92,21 +92,21 @@ class UBEFleet {
   }
 
   /**
-   * @param UBEPlayer $player
+   * @param UBEPlayerList $players
    *
-   * @version 2016-02-25 23:42:45 41a4.68
+   * @version 41a6.0
    */
-  public function copy_stats_from_player(UBEPlayer $player) {
-    $this->is_attacker = $player->player_side_get();
-  }
+  public function ube_load_from_players(UBEPlayerList $players) {
+    $this->is_attacker = $players[$this->owner_id]->getSide();
 
-  /**
-   *
-   *
-   * @version 2016-02-25 23:42:45 41a4.68
-   */
-  public function calculate_battle_stats() {
-    $this->unit_list->fill_unit_info($this->fleet_bonus);
+    // Вычисляем бонус игрока и добавляем его к бонусам флота
+    $this->fleet_bonus->mergeBonus($players[$this->owner_id]->player_bonus);
+    // TODO
+//      $objFleet->add_planet_bonuses();
+//      $objFleet->add_fleet_bonuses();
+//      $objFleet->add_ship_bonuses();
+
+    $this->unit_list->addBonus($this->fleet_bonus);
   }
 
 
@@ -114,12 +114,12 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a5.16
+   * @version 41a6.0
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
     $this->owner_id = $fleet_row['ube_report_fleet_player_id'];
-    $this->is_attacker = $ube->players[$fleet_row['ube_report_fleet_player_id']]->player_side_get() == UBE_PLAYER_IS_ATTACKER ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER;
+    $this->is_attacker = $ube->players[$fleet_row['ube_report_fleet_player_id']]->getSide() == UBE_PLAYER_IS_ATTACKER ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER;
 
     $this->UBE_PLANET = array(
       PLANET_ID     => $fleet_row['ube_report_fleet_planet_id'],
@@ -154,7 +154,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a5.16
+   * @version 41a6.0
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -182,7 +182,7 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a5.16
+   * @version 41a6.0
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->db_id;
@@ -217,6 +217,41 @@ class UBEFleet {
       PLANET_PLANET => $launch_coordinates['planet'],
       PLANET_TYPE   => $launch_coordinates['type'],
     );
+  }
+
+  public function read_from_planet_row(array &$planet_row, UBEPlayer $player) {
+    $player_db_row = $player->player_db_row_get();
+
+    $this->owner_id = $planet_row['id_owner'];
+
+    $sn_group_combat = sn_get_groups('combat');
+//    $planet_unit_list = db_unit_by_location($player_id, LOC_PLANET, $planet['id']);
+//    foreach($planet_unit_list as $unit_db_row) {
+//      if(in_array($unit_db_row['unit_snid'], $sn_group_combat)) {
+//        $this->fleet_list[0]->unit_list->insert_unit($unit_db_row['unit_snid'], $unit_db_row['unit_level']);
+//      }
+//    }
+
+    foreach($sn_group_combat as $unit_id) {
+      if($unit_count = mrc_get_level($player_db_row, $planet_row, $unit_id)) {
+        $this->unit_list->insert_unit($unit_id, $unit_count);
+      }
+    }
+
+    foreach(sn_get_groups('resources_loot') as $resource_id) {
+      $this->resource_list[$resource_id] = floor(mrc_get_level($player_db_row, $planet_row, $resource_id));
+    }
+
+    $this->UBE_PLANET = array(
+      PLANET_ID     => $planet_row['id'],
+      PLANET_NAME   => $planet_row['name'],
+      PLANET_GALAXY => $planet_row['galaxy'],
+      PLANET_SYSTEM => $planet_row['system'],
+      PLANET_PLANET => $planet_row['planet'],
+      PLANET_TYPE   => $planet_row['planet_type'],
+      PLANET_SIZE   => $planet_row['diameter'],
+    );
+
   }
 
 
@@ -278,12 +313,12 @@ class UBEFleet {
   public function report_render_outcome_side_fleet() {
     $UBE_DEFENCE_RESTORE = array();
     $UBE_UNITS_LOST = array();
-    foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
-      if($UBEFleetUnit->units_restored) {
-        $UBE_DEFENCE_RESTORE[$unit_id] = $UBEFleetUnit->units_restored;
+    foreach($this->unit_list->_container as $UBEUnit) {
+      if($UBEUnit->units_restored) {
+        $UBE_DEFENCE_RESTORE[$UBEUnit->unitId] = $UBEUnit->units_restored;
       }
-      if($UBEFleetUnit->units_lost) {
-        $UBE_UNITS_LOST[$unit_id] = $UBEFleetUnit->units_lost;
+      if($UBEUnit->units_lost) {
+        $UBE_UNITS_LOST[$UBEUnit->unitId] = $UBEUnit->units_lost;
       }
     }
 
@@ -331,16 +366,16 @@ class UBEFleet {
     $fleet_id = $this->db_id;
 
     $unit_sort_order = 0;
-    foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
-      if($UBEFleetUnit->units_lost || $UBEFleetUnit->units_restored) {
+    foreach($this->unit_list->_container as $UBEUnit) {
+      if($UBEUnit->units_lost || $UBEUnit->units_restored) {
         $unit_sort_order++;
         $sql_perform_report_unit[] = array(
           $ube_report_id,
           $fleet_id,
 
-          $unit_id,
-          (float)$UBEFleetUnit->units_restored,
-          (float)$UBEFleetUnit->units_lost,
+          $UBEUnit->unitId,
+          (float)$UBEUnit->units_restored,
+          (float)$UBEUnit->units_lost,
 
           $unit_sort_order,
         );
@@ -391,20 +426,20 @@ class UBEFleet {
     );
 
     $this->fleet_capacity = 0;
-    foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
-      $this->fleet_capacity += $UBEFleetUnit->capacity * $UBEFleetUnit->count;
+    foreach($this->unit_list->_container as $UBEUnit) {
+      $this->fleet_capacity += $UBEUnit->capacity * $UBEUnit->count;
 
-      if($UBEFleetUnit->units_lost) {
-        foreach($UBEFleetUnit->price as $resource_id => $unit_resource_price) {
+      if($UBEUnit->units_lost) {
+        foreach($UBEUnit->price as $resource_id => $unit_resource_price) {
           if(!$unit_resource_price) {
             continue;
           }
 
-          $resources_lost = $UBEFleetUnit->units_lost * $unit_resource_price;
+          $resources_lost = $UBEUnit->units_lost * $unit_resource_price;
           $this->resources_lost_on_units[$resource_id] += $resources_lost;
           // Если это корабль - прибавляем потери к обломкам на орбите
           // TODO - опция выбрасывания обороны в обломки
-          if($UBEFleetUnit->type == UNIT_SHIPS) {
+          if($UBEUnit->type == UNIT_SHIPS) {
             $this->resources_lost_on_ships[$resource_id] += $resources_lost;
           }
         }
@@ -434,8 +469,8 @@ class UBEFleet {
   }
 
   public function db_save_combat_result_fleet($is_small_fleet_recce, $reapers_status) {
-    $ship_count_initial = $this->unit_list->get_units_count();
-    $ship_count_lost = $this->unit_list->get_units_lost();
+    $ship_count_initial = $this->unit_list->countUnits();
+    $ship_count_lost = $this->unit_list->countUnitsLost();
 
     $objFleet2 = new Fleet();
     $objFleet2->set_db_id($this->db_id);
@@ -449,10 +484,10 @@ class UBEFleet {
       if($ship_count_lost) {
         $fleet_real_array = array();
         // Просматриваем результаты изменения флотов
-        foreach($this->unit_list->_container as $unit_id => $UBEFleetUnit) {
+        foreach($this->unit_list->_container as $UBEUnit) {
           // Перебираем аутком на случай восстановления юнитов
-          if(($units_left = $UBEFleetUnit->count - (float)$UBEFleetUnit->units_lost) > 0) {
-            $fleet_real_array[$unit_id] = $units_left;
+          if(($units_left = $UBEUnit->count - (float)$UBEUnit->units_lost) > 0) {
+            $fleet_real_array[$UBEUnit->unitId] = $units_left;
           };
         }
         $objFleet2->replace_ships($fleet_real_array);
@@ -472,35 +507,6 @@ class UBEFleet {
   }
 
   /**
-   * @param string $stat_name P_ATTACK/P_SHIELD/P_ARMOR...etc
-   *
-   * @return int
-   *
-   * @version 2016-02-25 23:42:45 41a4.68
-   */
-  public function get_fleet_total_stat($stat_name) {
-    $result = 0;
-
-    foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
-      switch($stat_name) {
-        case P_ATTACK:
-          $result += $UBERoundCombatUnit->pool_attack;
-        break;
-
-        case P_SHIELD:
-          $result += $UBERoundCombatUnit->pool_shield;
-        break;
-
-        case P_ARMOR:
-          $result += $UBERoundCombatUnit->pool_armor;
-        break;
-      }
-    }
-
-    return $result;
-  }
-
-  /**
    * @param bool $is_simulator
    *
    * @version 2016-02-25 23:42:45 41a4.68
@@ -508,9 +514,9 @@ class UBEFleet {
   public function prepare_for_next_round($is_simulator) {
     $this->unit_list->prepare_for_next_round($is_simulator);
 
-    $this->total_stats[P_ATTACK] = $this->get_fleet_total_stat(P_ATTACK);
-    $this->total_stats[P_SHIELD] = $this->get_fleet_total_stat(P_SHIELD);
-    $this->total_stats[P_ARMOR] = $this->get_fleet_total_stat(P_ARMOR);
+    $this->total_stats[P_ATTACK] = $this->unit_list->getSumProperty('pool_attack');
+    $this->total_stats[P_SHIELD] = $this->unit_list->getSumProperty('pool_shield');
+    $this->total_stats[P_ARMOR] = $this->unit_list->getSumProperty('pool_armor');
   }
 
   /**
@@ -546,51 +552,37 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a5.16
+   * @version 41a6.0
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
-    if(defined('DEBUG_UBE')) {
-      UBEUnit::unit_dump_header();
-    }
-    foreach($this->unit_list->_container as $attack_unit_id => $attacking_unit_pool) {
-      if(defined('DEBUG_UBE')) {
-        $attacking_unit_pool->unit_dump('attacker');
-      }
+    UBEDebug::unit_dump_header();
+
+    foreach($this->unit_list->_container as $attacking_unit_pool) {
+      UBEDebug::unit_dump($attacking_unit_pool, 'attacker');
+
       // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
-      foreach($defending_fleet->unit_list->_container as $defend_unit_id => $defending_unit_pool) {
+      foreach($defending_fleet->unit_list->_container as $defending_unit_pool) {
         if($defending_unit_pool->count <= 0) {
           continue;
         }
 
         // Вычисляем прямой дамадж от атакующего юнита с учетом размера атакуемого
         $direct_attack = $attacking_unit_pool->pool_attack * $defending_unit_pool->share_of_side_armor;
-        $attacker_amplify = !empty($attacking_unit_pool->amplify[$defend_unit_id])
-          ? $attacking_unit_pool->amplify[$defend_unit_id]
+        $attacker_amplify = !empty($attacking_unit_pool->amplify[$defending_unit_pool->unitId])
+          ? $attacking_unit_pool->amplify[$defending_unit_pool->unitId]
           : 1;
         // Применяем амплифай, если есть
         $defending_unit_pool->attack_income = floor($direct_attack * $attacker_amplify);
-        if(defined('DEBUG_UBE')) {
-          global $lang;
 
-          print("[{$attacking_unit_pool->unit_id}]{$lang['tech'][$attacking_unit_pool->unit_id]}" .
-            ' attacks ' .
-            $defending_fleet->db_id . '@' . "[{$defending_unit_pool->unit_id}]{$lang['tech'][$defending_unit_pool->unit_id]}" .
-            ' with ' . pretty_number($defending_unit_pool->attack_income) .
-            '<br>'
-          );
-          $before = clone $defending_unit_pool;
-          $defending_unit_pool->unit_dump('before');
-        }
+        $before = UBEDebug::unit_dump_defender($attacking_unit_pool, $defending_unit_pool, $defending_fleet->db_id);
 
         $defending_unit_pool->receive_damage($is_simulator);
-        if(defined('DEBUG_UBE')) {
-          $defending_unit_pool->unit_dump('after', $before);
-        }
+
+        UBEDebug::unit_dump($defending_unit_pool, 'after', $before);
       }
     }
-    if(defined('DEBUG_UBE')) {
-      UBEUnit::unit_dump_footer();
-    }
+
+    UBEDebug::unit_dump_footer();
   }
 
   /**
@@ -600,8 +592,8 @@ class UBEFleet {
    */
   public function get_unit_count() {
     $result = 0;
-    foreach($this->unit_list->_container as $unit_id => $UBERoundCombatUnit) {
-      $result += $UBERoundCombatUnit->count;
+    foreach($this->unit_list->_container as $UBEUnit) {
+      $result += $UBEUnit->count;
     }
 
     return $result;

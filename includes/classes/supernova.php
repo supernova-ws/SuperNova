@@ -58,9 +58,9 @@ class classSupernova {
   public static $user_options;
 
   /**
-   * @var debug $debug_handler
+   * @var debug $debug
    */
-  private static $debug_handler = null;
+  public static $debug = null;
 
 
   public $options = array();
@@ -191,12 +191,12 @@ class classSupernova {
 
 
   public static function log_file($message, $spaces = 0) {
-    if(self::$debug_handler) {
-      self::$debug_handler->log_file($message, $spaces);
+    if(self::$debug) {
+      self::$debug->log_file($message, $spaces);
     }
   }
   public static function debug_set_handler(&$debug) {
-    self::$debug_handler = $debug;
+    self::$debug = $debug;
   }
 
   // Перепаковывает массив на заданную глубину, убирая поля с null
@@ -563,6 +563,12 @@ class classSupernova {
     return $result;
   }
 
+  /**
+   * @param int $location_type
+   * @param string $set
+   *
+   * @return array|bool|false|mysqli_result|null
+   */
   public static function db_ins_record($location_type, $set) {
     $set = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
@@ -798,6 +804,13 @@ class classSupernova {
     return $unit;
   }
 
+  /**
+   * @param int $user_id
+   * @param     $location_type
+   * @param     $location_id
+   *
+   * @return array|bool
+   */
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
   {
     //if(!($location_type = intval($location_type)) || !($location_id = intval($location_id))) return false;

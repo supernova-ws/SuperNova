@@ -214,7 +214,7 @@ class UBEMoonCalculator {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function load_status($destination_planet) {
+  public function ubeInitLoadStatis($destination_planet) {
     if($destination_planet['planet_type'] == PT_MOON || is_array($moon = db_planet_by_parent($destination_planet['id'], true, '`id`'))) {
       $this->status = UBE_MOON_EXISTS;
       $this->moon_diameter = !empty($moon['planet_type']) && $moon['planet_type'] == PT_MOON ? $moon['diameter'] : $destination_planet['diameter'];

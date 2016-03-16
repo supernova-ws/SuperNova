@@ -6,8 +6,6 @@
 class UBERound {
   public $round_number = 0;
 
-  public $round_outcome = UBE_COMBAT_RESULT_DRAW;
-
   /**
    * @var UBESnapshotUnit[][]
    */
@@ -18,7 +16,8 @@ class UBERound {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  public function __construct() {
+  public function __construct($round_number = 0) {
+    $this->round_number = $round_number;
   }
 
   /**
@@ -38,35 +37,11 @@ class UBERound {
    */
   public function make_snapshot(UBEFleetList $UBEFleetList) {
     foreach($UBEFleetList->_container as $fleet_id => $UBEFleet) {
-      foreach($UBEFleet->unit_list->_container as $unit_id => $UBEUnit) {
-        $this->snapshot[$fleet_id][$unit_id] = new UBESnapshotUnit();
-        $this->snapshot[$fleet_id][$unit_id]->init_from_UBEUnit($UBEUnit);
+      foreach($UBEFleet->unit_list->_container as $UBEUnit) {
+        $this->snapshot[$fleet_id][$UBEUnit->unitId] = new UBESnapshotUnit();
+        $this->snapshot[$fleet_id][$UBEUnit->unitId]->init_from_UBEUnit($UBEUnit);
       }
     }
-  }
-
-
-  /**
-   * Анализирует результаты раунда и генерирует данные для следующего раунда
-   *
-   * @param              $round
-   * @param UBEFleetList $UBEFleetList
-   *
-   * @return UBERound
-   *
-   * @version 2016-02-25 23:42:45 41a4.68
-   */
-  function sn_ube_combat_round_analyze($round, UBEFleetList $UBEFleetList) {
-    $this->round_outcome = UBE_COMBAT_RESULT_DRAW;
-
-    $nextRound = new UBERound();
-    // $nextRound->init_from_previous_round($this);
-    $nextRound->round_number = $this->round_number + 1;
-
-
-    $this->round_outcome = $UBEFleetList->ube_calculate_outcome($this->round_outcome, $round);
-
-    return $nextRound;
   }
 
   /**

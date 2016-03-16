@@ -25,12 +25,12 @@ class FleetList extends ArrayAccessV2 {
    *
    * @param string $where_safe
    *
-   * @return static
+   * @return array - ID of added fleets
    *
-   * @version 41a5.10
+   * @version 41a6.0
    */
-  public static function dbGetFleetList($where_safe = '') {
-    $fleetList = new static();
+  public function dbLoadWhere($where_safe = '') {
+    $fleets_added = array();
 
     $query = doquery(
       "SELECT * FROM `{{fleets}}`" .
@@ -39,13 +39,35 @@ class FleetList extends ArrayAccessV2 {
     );
     while($row = db_fetch($query)) {
       /**
-       * @var Fleet $objFleet
+       * @var Fleet $fleet
        */
-      $objFleet = $fleetList->_createElement();
-      $objFleet->parse_db_row($row);
+      $fleet = $this->_createElement();
+      $fleet->parse_db_row($row);
 
-      $fleetList[$objFleet->db_id] = $objFleet;
+      if(isset($this[$fleet->db_id])) {
+        // Нужно ли ????
+        classSupernova::$debug->error('Fleet list already set');
+      }
+
+      $this[$fleet->db_id] = $fleet;
+      $fleets_added[$fleet->db_id] = $fleet->db_id;
     }
+
+    return $fleets_added;
+  }
+  /**
+   * LIST - Get fleet list by condition
+   *
+   * @param string $where_safe
+   *
+   * @return static
+   *
+   * @version 41a6.0
+   */
+  // DEPRECATED
+  public static function dbGetFleetList($where_safe = '') {
+    $fleetList = new static();
+    $fleetList->dbLoadWhere($where_safe);
 
     return $fleetList;
   }
@@ -90,45 +112,11 @@ class FleetList extends ArrayAccessV2 {
   /* FLEET LIST FUNCTIONS ----------------------------------------------------------------------------------------------*/
 
   /**
-   * Get fleets in group
-   *
-   * @param int $group_id
-   *
-   * @return static
-   *
-   * @version 41a5.10
-   */
-  public static function dbGetFleetListByGroup($group_id) {
-    return static::dbGetFleetList("`fleet_group` = {$group_id}");
-  }
-
-  /**
-   * Fleets on hold on planet orbit
-   *
-   * @param Fleet $objFleet
-   *
-   * @return static
-   *
-   * @version 41a5.10
-   */
-  public static function dbGetFleetListOnHoldAtTarget(Fleet $objFleet) {
-    return static::dbGetFleetList(
-      "`fleet_end_galaxy` = {$objFleet->fleet_end_galaxy}
-    AND `fleet_end_system` = {$objFleet->fleet_end_system}
-    AND `fleet_end_planet` = {$objFleet->fleet_end_planet}
-    AND `fleet_end_type` = {$objFleet->fleet_end_type}
-    AND `fleet_start_time` <= {$objFleet->time_arrive_to_target}
-    AND `fleet_end_stay` >= {$objFleet->time_arrive_to_target}
-    AND `fleet_mess` = 0"
-    );
-  }
-
-  /**
    * Gets active fleets on current tick for Flying Fleet Handler
    *
    * @return static
    *
-   * @version 41a5.10
+   * @version 41a6.0
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -148,7 +136,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a5.10
+   * @version 41a6.0
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(

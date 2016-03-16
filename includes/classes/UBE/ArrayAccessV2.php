@@ -6,7 +6,9 @@
  * Access to object container as to array by index
  * Features:
  * - clone options: deep, shallow, none;
- * - applying predefined functions to container content;
+ * - applying predefined functions to container content via __call();
+ * - get sum of specified property of containing objects;
+ * - aggregate value of property of containing objects;
  */
 class ArrayAccessV2 implements ArrayAccess {
 
@@ -28,19 +30,29 @@ class ArrayAccessV2 implements ArrayAccess {
    */
   public $_container = array();
 
-  /**
-   * Method list that should support applying to container content
-   *
-   * @var string[]
-   */
-  protected static $_call = array();
+//  /**
+//   * Method list that should support applying to container content
+//   *
+//   * @var string[]
+//   */
+//  protected static $_call = array();
+
+//  /**
+//   * Contained object property list that supported by property summarizer
+//   *
+//   * @var string[]
+//   */
+//  protected static $_sum_property = array();
 
   /**
-   * Contained object property list that supported by property summarizer
+   * @return stdClass
    *
-   * @var string[]
+   * @version 41a6.0
    */
-  protected static $_sum_property = array();
+  public function _createElement() {
+    return new stdClass();
+  }
+
 
   public function __clone() {
     if(static::$_clonable == ArrayAccessV2::CLONE_NONE) {
@@ -48,23 +60,6 @@ class ArrayAccessV2 implements ArrayAccess {
     }
 
     static::_deep_clone($this->_container);
-  }
-
-  /**
-   * Automatically apply all non-exist function from static::$_call list to $_container content
-   *
-   * @param string $method_name
-   * @param array  $arguments
-   */
-  public function __call($method_name, array $arguments) {
-    if(in_array($method_name, static::$_call)) {
-      $object_first = reset($this->_container);
-      if($object_first !== false && method_exists($object_first, $method_name)) {
-        foreach($this->_container as $unit_id => $object) {
-          call_user_func_array(array($object, $method_name), $arguments);
-        }
-      }
-    }
   }
 
   protected static function _deep_clone(&$array) {
@@ -78,6 +73,24 @@ class ArrayAccessV2 implements ArrayAccess {
   }
 
   /**
+   * Automatically apply all non-exist function from static::$_call list to $_container content
+   *
+   * @param string $method_name
+   * @param array  $arguments
+   */
+  public function __call($method_name, array $arguments) {
+//    if(in_array($method_name, static::$_call))
+    {
+      $object_first = reset($this->_container);
+      if($object_first !== false && method_exists($object_first, $method_name)) {
+        foreach($this->_container as $unit_id => $object) {
+          call_user_func_array(array($object, $method_name), $arguments);
+        }
+      }
+    }
+  }
+
+  /**
    * Summarize property values of contained objects
    *
    * @param string $property_name
@@ -86,16 +99,28 @@ class ArrayAccessV2 implements ArrayAccess {
    */
   public function getSumProperty($property_name) {
     $result = 0.0;
-    if(in_array($property_name, static::$_sum_property)) {
-      $object_first = reset($this->_container);
-      if($object_first !== false && property_exists($object_first, $property_name)) {
-        foreach($this->_container as $object) {
-          $result += $object->$property_name;
-        }
+    foreach($this->_container as $object) {
+      if(is_object($object) && property_exists($object, $property_name)) {
+        $result += $object->$property_name;
       }
     }
 
     return $result;
+  }
+
+  /**
+   * Aggregate value of $property_name in containing object by $method_name
+   *
+   * @param string $method_name
+   *
+   * @return mixed
+   */
+  public function aggregateByMethod($method_name, &$result) {
+    foreach($this->_container as $object) {
+      if(is_object($object) && method_exists($object, $method_name)) {
+        call_user_func(array($object, $method_name), $result);
+      }
+    }
   }
 
   /**
@@ -128,7 +153,6 @@ class ArrayAccessV2 implements ArrayAccess {
    * @since 5.0.0
    */
   public function offsetGet($offset) {
-    // TODO: Implement offsetGet() method.
     return $this->_container[$offset];
   }
 

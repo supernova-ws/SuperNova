@@ -1625,3 +1625,15 @@ function sec_player_ip() {
 
   return array_map('db_escape', $ip);
 }
+
+/**
+ * Converts unix timestamp to SQL DateTime
+ *
+ * @param int $value
+ *
+ * @return bool|string
+ */
+function unixTimeStampToSqlString($value) {
+  $result = date(FMT_DATE_TIME_SQL, $value);
+  return $result ? $result : 0;
+}

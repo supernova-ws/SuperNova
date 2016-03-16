@@ -151,9 +151,9 @@ class debug {
 
     if($base_dump) {
       if(is_array($this->log_array) && count($this->log_array) > 0) {
-        ;
-      }
-      {
+//        ;
+//      }
+//      {
         foreach($this->log_array as $log) {
           $error_backtrace['queries'][] = $log;
         }
@@ -370,4 +370,9 @@ function pvar_dump($expression) {
   print('<pre style="text-align: left; background-color: #111111; color: #0A0; font-family: Courier, monospace !important; padding: 1em 0; font-weight: 800; font-size: 14px;">');
   var_dump($expression);
   print('</pre>');
+}
+
+function pdie($message = '') {
+  $backtrace = debug_backtrace();
+  die('<hr />' . ($message ? $message . ' @ ' : '') . $backtrace[0]['file'] . ':' . $backtrace[0]['line']);
 }

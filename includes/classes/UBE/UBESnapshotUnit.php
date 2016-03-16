@@ -32,15 +32,15 @@ class UBESnapshotUnit {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function init_from_UBEUnit(UBEUnit $UBEUnit) {
-    $this->unit_id = $UBEUnit->unit_id;
+    $this->unit_id = $UBEUnit->unitId;
     $this->count = $UBEUnit->count;
     $this->unit_count_boom = $UBEUnit->unit_count_boom;
     $this->pool_attack = $UBEUnit->pool_attack;
     $this->pool_shield = $UBEUnit->pool_shield;
     $this->pool_armor = $UBEUnit->pool_armor;
-    $this->unit_randomized_attack = $UBEUnit->unit_randomized_attack;
-    $this->unit_randomized_shield = $UBEUnit->unit_randomized_shield;
-    $this->unit_randomized_armor = $UBEUnit->unit_randomized_armor;
+    $this->unit_randomized_attack = $UBEUnit->randomized_attack;
+    $this->unit_randomized_shield = $UBEUnit->randomized_shield;
+    $this->unit_randomized_armor = $UBEUnit->randomized_armor;
   }
 
   /**

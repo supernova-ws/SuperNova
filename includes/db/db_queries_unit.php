@@ -65,6 +65,11 @@ function db_unit_set_by_id($unit_id, $set)
   return classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_id, $set);
 }
 
+/**
+ * @param string $set
+ *
+ * @return array|bool|false|mysqli_result|null
+ */
 function db_unit_set_insert($set)
 {
   return classSupernova::db_ins_record(LOC_UNIT, $set);

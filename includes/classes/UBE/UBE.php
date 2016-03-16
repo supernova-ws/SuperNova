@@ -46,6 +46,11 @@ class UBE {
    */
   public $resource_exchange_rates = array();
 
+  /**
+   * @var Mission $combatMission
+   */
+  public $combatMission = null;
+
 
   /**
    * @var UBEPlayerList
@@ -103,176 +108,95 @@ class UBE {
    * Заполняет начальные данные по данным миссии
    *
    * @param Mission $objMission
+   *
+   * @version 41a6.0
    */
-  function ube_attack_prepare(&$objMission) {
-    $objFleet = $objMission->fleet;
-    $destination_planet = &$objMission->dst_planet;
+  function loadDataFromMission(&$objMission) {
+    $this->combatMission = $objMission;
 
     // Готовим опции
-    $this->combat_timestamp = $objFleet->time_arrive_to_target;
     $this->resource_exchange_rates = get_resource_exchange();
-    $this->mission_type_id = $objFleet->mission_type;
     $this->set_option_from_config();
 
-    $this->moon_calculator->load_status($destination_planet);
-
-    // TODO: Не допускать атаки игроком своих же флотов - т.е. холд против атаки
-    // Готовим инфу по атакуемой планете
-    $this->ube_attack_prepare_planet($destination_planet);
-
-    // Готовим инфу по удержанию
-    $holdingFleetList = FleetList::dbGetFleetListOnHoldAtTarget($objFleet);
-    foreach($holdingFleetList->_container as $objFleetHold) {
-      $this->fleet_list->ube_insert_from_Fleet($objFleetHold);
-      $this->ube_attack_prepare_player($objFleetHold->owner_id, UBE_PLAYER_IS_DEFENDER);
-    }
-    // TODO - НАДО ВЫНЕСТИ РАБОТУ С ПЛЕЕРАМИ ИЗ PREPARE FLEET! ПОтому что могут поменятся статы - АТТАКЕР/ДЕФЕНДЕР И, СООТВЕТСТВЕННО, БОНУСЫ!!!
+    $this->combat_timestamp = $this->combatMission->fleet->time_arrive_to_target;
+    $this->mission_type_id = $this->combatMission->fleet->mission_type;
 
     // Готовим инфу по атакующим
-    if($objFleet->group_id) {
-      $acsFleetList = FleetList::dbGetFleetListByGroup($objFleet->group_id);
-      foreach($acsFleetList->_container as $objFleetACS) {
-        $this->fleet_list->ube_insert_from_Fleet($objFleetACS);
-        $this->ube_attack_prepare_player($objFleetACS->owner_id, UBE_PLAYER_IS_ATTACKER);
-      }
-    } else {
-      $this->fleet_list->ube_insert_from_Fleet($objFleet);
-      $this->ube_attack_prepare_player($objFleet->owner_id, UBE_PLAYER_IS_ATTACKER);
-    }
+    $this->fleet_list->ubeInitGetAttackers($this->combatMission->fleet, $this->players);
+
+    // Готовим инфу по удержанию
+    $this->fleet_list->ubeInitGetFleetsOnHold($this->combatMission->fleet, $this->players);
+
+    // Готовим инфу по атакуемой планете
+    $this->ubeInitPreparePlanet();
+
+    $this->moon_calculator->ubeInitLoadStatis($this->combatMission->dst_planet);
+    $this->is_admin_in_combat = $this->players->authLevelMax > 0; // Участвует ли админ в бою?
   }
 
   /**
    * Заполняет данные по планете
    *
-   * @param array $planet
+   * @internal param array $planet
    *
-   * @version 41a5.27
+   * @version 41a6.0
    */
-  function ube_attack_prepare_planet(array &$planet) {
-    $player_id = $planet['id_owner'];
+  function ubeInitPreparePlanet() {
+    $player_id = $this->combatMission->dst_planet['id_owner'];
 
-    $this->ube_attack_prepare_player($player_id, UBE_PLAYER_IS_DEFENDER);
+    $this->players->db_ube_load_player_by_id($player_id, UBE_PLAYER_IS_DEFENDER);
+
     $player_db_row = $this->players[$player_id]->player_db_row_get();
-
-    $this->fleet_list[0] = new UBEFleet();
-    $this->fleet_list[0]->owner_id = $player_id;
-
-    $sn_group_combat = sn_get_groups('combat');
-//    $planet_unit_list = db_unit_by_location($player_id, LOC_PLANET, $planet['id']);
-//    foreach($planet_unit_list as $unit_db_row) {
-//      if(in_array($unit_db_row['unit_snid'], $sn_group_combat)) {
-//        $this->fleet_list[0]->unit_list->insert_unit($unit_db_row['unit_snid'], $unit_db_row['unit_level']);
-//      }
-//    }
-
-    foreach($sn_group_combat as $unit_id) {
-      if($unit_count = mrc_get_level($player_db_row, $planet, $unit_id)) {
-        $this->fleet_list[0]->unit_list->insert_unit($unit_id, $unit_count);
-      }
-    }
-
-    foreach(sn_get_groups('resources_loot') as $resource_id) {
-      $this->fleet_list[0]->resource_list[$resource_id] = floor(mrc_get_level($player_db_row, $planet, $resource_id));
-    }
-
-    if($fortifier_level = mrc_get_level($player_db_row, $planet, MRC_FORTIFIER)) {
+    if($fortifier_level = mrc_get_level($player_db_row, $this->combatMission->dst_planet, MRC_FORTIFIER)) {
       $this->planet_bonus->add_unit(MRC_FORTIFIER, $fortifier_level);
-      $this->fleet_list[0]->fleet_bonus->add_unit(MRC_FORTIFIER, $fortifier_level);
     }
 
-    $this->fleet_list[0]->UBE_PLANET = array(
-      PLANET_ID     => $planet['id'],
-      PLANET_NAME   => $planet['name'],
-      PLANET_GALAXY => $planet['galaxy'],
-      PLANET_SYSTEM => $planet['system'],
-      PLANET_PLANET => $planet['planet'],
-      PLANET_TYPE   => $planet['planet_type'],
-      PLANET_SIZE   => $planet['diameter'],
-    );
-    $this->ube_planet_info = $this->fleet_list[0]->UBE_PLANET;
+    $this->fleet_list->ube_insert_from_planet_row($this->combatMission->dst_planet, $this->players[$player_id], $this->planet_bonus);
 
+    $this->fleet_list->ube_load_from_players($this->players);
+
+    $this->ube_planet_info = $this->fleet_list[0]->UBE_PLANET;
     $this->is_defender_active_player = $player_db_row['onlinetime'] >= $this->combat_timestamp - UBE_DEFENDER_ACTIVE_TIMEOUT;
   }
 
   /**
-   * Заполняет данные по игроку
-   *
-   * @param int  $player_id
-   * @param bool $is_attacker
-   *
-   * @version 41a5.27
-   */
-  function ube_attack_prepare_player($player_id, $is_attacker) {
-    $this->players->db_load_player_by_id($player_id);
-
-    $this->players[$player_id]->player_side_switch($is_attacker);
-    $this->is_admin_in_combat = $this->is_admin_in_combat || $this->players[$player_id]->player_auth_level_get(); // Участвует ли админ в бою?
-  }
-
-  /**
-   * Заполняет данные по флоту
-   *
-   * @param Fleet $objFleet
-   */
-  function ube_attack_prepare_fleet(Fleet $objFleet) {
-    $UBEFleet = new UBEFleet();
-    $UBEFleet->read_from_fleet_object($objFleet);
-
-    $this->fleet_list[$UBEFleet->db_id] = $UBEFleet;
-
-    // Вызов основной функции!!!
-    ube_attack_prepare_fleet_from_object($UBEFleet); // Used by UNIT_CAPTAIN
-  }
-
-
-  /**
    * Общий алгоритм расчета боя
    *
-   * @version 2016-02-25 23:42:45 41a4.68
+   * @version 41a6.0
    */
-  function sn_ube_combat() {
+  protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
 //$this->is_simulator = true;
     $start = microtime(true);
 
-    $this->fleet_list->ube_load_from_players($this->players);
-    $this->fleet_list->ube_prepare_for_next_round($this->is_simulator);
-
     // Готовим информацию для первого раунда - проводим все нужные вычисления из исходных данных
-    $this->rounds[0] = new UBERound();
+pvar_dump($this->fleet_list[79]);
+    // TODO - тут уже должна быть подсчитана вся инфа для боя, откуда бы не пришли данные - из симулятора или из миссии
+    $this->fleet_list->ube_prepare_for_next_round($this->is_simulator);
+pvar_dump($this->fleet_list[79]);
+pdie();
+
+    $this->rounds[0] = new UBERound(0);
     $this->rounds[0]->make_snapshot($this->fleet_list);
-//    $this->rounds[0]->fleet_combat_data->init_from_UBEFleetList($this->fleet_list);
-
-
-//    $this->rounds[0]->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
-
-
-    $this->rounds[1] = clone $this->rounds[0];
-    $this->rounds[1]->round_number = 1;
 
     for($round = 1; $round <= 10; $round++) {
       // Проводим раунд
-//      $this->rounds[$round]->fleet_combat_data->calculate_attack_results($this);
-      if(defined('DEBUG_UBE')) {
-        print("Round {$round}<br>");
-      }
+      defined('DEBUG_UBE') ? print("Round {$round}<br>") : false;
+
       $this->fleet_list->ube_calculate_attack_results($this);
-      if(defined('DEBUG_UBE')) {
-        print('<hr>');
-      }
+
+      defined('DEBUG_UBE') ? print('<hr>') : false;
+
+      $this->rounds[$round] = new UBERound($round);
       $this->rounds[$round]->make_snapshot($this->fleet_list);
 
       // Анализируем итоги текущего раунда и готовим данные для следующего
-      $nextRound = $this->rounds[$round]->sn_ube_combat_round_analyze($round, $this->fleet_list);
-
-      if($this->rounds[$round]->round_outcome != UBE_COMBAT_RESULT_DRAW) {
+      $this->combat_result = $this->fleet_list->ubeAnalyzeFleetOutcome($round);
+      if($this->combat_result != UBE_COMBAT_RESULT_DRAW) {
         break;
       }
 
-      $this->rounds[$round + 1] = $nextRound;
-
       // Готовим данные для раунда
-      // $nextRound->fleet_combat_data->sn_ube_combat_round_prepare($this->fleet_list, $this->is_simulator);
       $this->fleet_list->ube_prepare_for_next_round($this->is_simulator);
     }
     $this->time_spent = microtime(true) - $start;
@@ -288,10 +212,8 @@ class UBE {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   function sn_ube_combat_analyze() {
-    // Переменные для быстрого доступа к подмассивам
-    $lastRound = $this->rounds->get_last_element();
-
-    $this->combat_result = !isset($lastRound->round_outcome) || $lastRound->round_outcome == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $lastRound->round_outcome;
+//    $lastRound = $this->rounds->get_last_element();
+//    $this->combat_result = !isset($lastRound->round_outcome) || $lastRound->round_outcome == UBE_COMBAT_RESULT_DRAW_END ? UBE_COMBAT_RESULT_DRAW : $lastRound->round_outcome;
     // SFR - Small Fleet Reconnaissance ака РМФ
     $this->is_small_fleet_recce = $this->rounds->count() == 2 && $this->combat_result == UBE_COMBAT_RESULT_LOSS;
 
@@ -396,6 +318,8 @@ class UBE {
    * Записывает результат боя в БД
    *
    * @return mixed
+   *
+   * @version 41a6.0
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -408,7 +332,7 @@ class UBE {
     }
 
     foreach($this->fleet_list->_container as $fleet_id => $UBEFleet) {
-      $ship_count_lost = $UBEFleet->unit_list->get_units_lost();
+      $ship_count_lost = $UBEFleet->unit_list->countUnitsLost();
 
       if($fleet_id) {
         // Флот
@@ -430,8 +354,8 @@ class UBE {
         if($ship_count_lost) {
           $db_changeset = array();
           $planet_row_cache = $this->players[$destination_user_id]->player_db_row_get();
-          foreach($UBEFleet->unit_list->_container as $unit_id => $UBEFleetUnit) {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$UBEFleetUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
+          foreach($UBEFleet->unit_list->_container as $UBEUnit) {
+            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($UBEUnit->unitId, -$UBEUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
           db_changeset_apply($db_changeset);
         }
@@ -542,6 +466,8 @@ class UBE {
    * @param     $side_info
    * @param     $attacker
    * @param int $player_id
+   *
+   * @version 41a6.0
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -553,7 +479,7 @@ class UBE {
 
     foreach($side_info as $fleet_data) {
       $this->players[$player_id]->player_name_set($player_id);
-      $this->players[$player_id]->player_side_switch($attacker);
+      $this->players[$player_id]->setSide($attacker);
 
       $objFleet = new UBEFleet();
       $this->fleet_list[$fleet_id] = $objFleet;
@@ -623,27 +549,24 @@ class UBE {
    *
    * @return bool
    *
+   * @version 41a6.0
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
-    $ube->ube_attack_prepare($objMission); //  $combat_data = ube_attack_prepare($objMission);
+    $ube->loadDataFromMission($objMission);
 
-    $ube->sn_ube_combat(); //  sn_ube_combat($combat_data);
+    $ube->sn_ube_combat();
 
-    flt_planet_capture_from_object($ube); //   Used by game_skirmish
+    flt_planet_capture_from_object($ube);
 
     $ube_report = new UBEReport();
-    $ube_report->sn_ube_report_save($ube); //  sn_ube_report_save($combat_data);
+    $ube_report->sn_ube_report_save($ube);
 
-//die();
-    $ube->ube_combat_result_apply(); //  ube_combat_result_apply($combat_data);
+    $ube->ube_combat_result_apply();
 
+    $ube->sn_ube_message_send();
 
-    $ube->sn_ube_message_send(); //  sn_ube_message_send($combat_data);
-
-    if(defined('DEBUG_UBE')) {
-      die('DIE at ' . __FILE__ . ' ' . __LINE__);
-    }
+    defined('DEBUG_UBE') ? die('DIE at ' . __FILE__ . ' ' . __LINE__) : false;
 
     return false;
   }
@@ -758,38 +681,35 @@ class UBE {
 // ------------------------------------------------------------------------------------------------
 /**
  * Записывает результат боя в БД
+ * @see unit_captain::ube_combat_result_apply_from_object
  *
  * @param UBE $ube
  *
  * @return mixed
+ *
+ * @version 41a6.0
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
 /**
  * Заполняет данные по флоту
+ * @see unit_captain::ube_attack_prepare_fleet_from_object
  *
  * @param UBEFleet $UBEFleet
  *
  * @return mixed
  *
- * Used by UNIT_CAPTAIN
+ * @version 41a6.0
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
 /**
- * @param UBE   $ube
+ * @see game_skirmish::flt_planet_capture_from_object
+ *
+ * @param UBE $ube
  *
  * @return mixed
  *
- * Used by game_skirmish
+ * @version 41a6.0
  */
-function flt_planet_capture_from_object(UBE $ube) {return sn_function_call(__FUNCTION__, array($ube, &$result));}
-
-///**
-// * @param array $fleet_row
-// * @param UBE   $ube
-// * @param mixed $result
-// *
-// * @return mixed
-// */
-//function sn_flt_planet_capture_from_object(&$fleet_row, UBE $ube, &$result) { return $result; }
+function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

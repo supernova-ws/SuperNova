@@ -3,13 +3,25 @@
 /**
  * Class Fleet
  */
-class Fleet {
+class Fleet extends UnitContainer {
+  /**
+   * Type of this location
+   *
+   * @var int $locationType
+   */
+  public static $locationType = LOC_FLEET;
   /**
    * `fleet_id`
    *
    * @var int
    */
   public $db_id = 0;
+  /**
+   * @var UnitList $unitList
+   */
+  public $unitList = null;
+
+
   /**
    * `fleet_owner`
    *
@@ -40,29 +52,12 @@ class Fleet {
   /**
    * @var array
    */
-  protected $unit_list = array();
-  /**
-   * @var array
-   */
   protected $resource_list = array(
     RES_METAL     => 0,
     RES_CRYSTAL   => 0,
     RES_DEUTERIUM => 0,
   );
 
-
-  /**
-   * Список unit_db_row
-   *
-   * @var array
-   */
-  protected $db_units_row = array();
-  /**
-   * Таблица трансляции ID юнита в DB_ID - ссылка [UNIT_SNID] на $unit_db_row
-   *
-   * @var array
-   */
-  protected $snid_to_db_translation = array();
 
   /**
    * `fleet__mess` - Флаг возвращающегося флота
@@ -118,23 +113,6 @@ class Fleet {
   public $ov_this_planet = '';
   public $event_time = 0;
 
-//  public $fleet_resource_metal = 0;
-//  public $fleet_resource_crystal = 0;
-//  public $fleet_resource_deuterium = 0;
-
-  /**
-   * Delta unit changes for DB
-   *
-   * @var array $ship_delta
-   */
-  protected $ship_delta = array();
-  /**
-   * Direct changes to unit - without any DELTAs
-   *
-   * @var array
-   */
-  protected $ship_replace = array();
-
   protected $resource_delta = array();
   protected $resource_replace = array();
 
@@ -148,7 +126,11 @@ class Fleet {
 //
 //
 
+  /**
+   * Fleet constructor.
+   */
   public function __construct() {
+    parent::__construct();
     $this->_reset();
   }
 
@@ -194,13 +176,13 @@ class Fleet {
       "SELECT 1 FROM {{fleets}} AS f " .
 
       // Блокировка всех юнитов, принадлежащих этому флоту
-      "LEFT JOIN {{unit}} as unit ON unit.unit_location_type = " . LOC_FLEET . " AND unit.unit_location_id = f.fleet_id " .
+      "LEFT JOIN {{unit}} as unit ON unit.unit_location_type = " . static::$locationType . " AND unit.unit_location_id = f.fleet_id " .
 
       // Блокировка всех прилетающих и улетающих флотов, если нужно
       // TODO - lock fleets by COORDINATES
       ($mission_data['dst_fleets'] ? "LEFT JOIN {{fleets}} AS fd ON fd.fleet_end_planet_id = f.fleet_end_planet_id OR fd.fleet_start_planet_id = f.fleet_end_planet_id " : '') .
       // Блокировка всех юнитов, принадлежащих прилетающим и улетающим флотам - ufd = unit_fleet_destination
-      ($mission_data['dst_fleets'] ? "LEFT JOIN {{unit}} AS ufd ON ufd.unit_location_type = " . LOC_FLEET . " AND ufd.unit_location_id = fd.fleet_id " : '') .
+      ($mission_data['dst_fleets'] ? "LEFT JOIN {{unit}} AS ufd ON ufd.unit_location_type = " . static::$locationType . " AND ufd.unit_location_id = fd.fleet_id " : '') .
 
       ($mission_data['dst_user'] || $mission_data['dst_planet'] ? "LEFT JOIN {{users}} AS ud ON ud.id = f.fleet_target_owner " : '') .
       // Блокировка всех юнитов, принадлежащих владельцу планеты-цели
@@ -256,7 +238,7 @@ class Fleet {
       $result = false;
     }
 
-    db_unit_list_delete(0, LOC_FLEET, $this->db_id, 0);
+    db_unit_list_delete(0, static::$locationType, $this->db_id, 0);
 
     $this->_reset();
 
@@ -281,7 +263,8 @@ class Fleet {
 
     $this->db_id = !empty($db_fleet_id) ? $db_fleet_id : 0;
     if($this->db_id) {
-      $this->db_insert_units($this->db_id);
+//      $this->db_insert_units($this->db_id);
+      $this->unitList->dbSave($this->owner_id, static::$locationType, $this->db_id);
     }
 
     $this->db_fleet_get_by_id($db_fleet_id);
@@ -495,7 +478,7 @@ class Fleet {
   }
 
   public function ship_count_by_id($ship_id) {
-    return !empty($this->unit_list[$ship_id]) ? $this->unit_list[$ship_id] : 0;
+    return $this->unitList->getUnitCount($ship_id);
   }
 
   /**
@@ -521,11 +504,9 @@ class Fleet {
     // Берем все изменения основных полей
     $field_replace_changes = $this->core_field_set_list;
 
-    // Добавляем изменения в кораблях. Поскольку у нас корабли сейчас хранятся одной строкой и в списке кораблей - всегда актуальные данные, то берем именно их
-    // Добавляем их только, если у нас что-то изменилось в дельте или сете
-    // И добавляем их по вышеуказанной причине именно в REPLACE
-    if(!empty($this->ship_delta) || !empty($this->ship_replace)) {
-      $this->flush_changes_to_db_units();
+//    if(!empty($this->ship_delta) || !empty($this->ship_replace))
+    {
+      $this->unitList->dbSave($this->owner_id, static::$locationType, $this->db_id);
     }
 
     // Добавляем REPLACE ресурсов
@@ -579,14 +560,9 @@ class Fleet {
         continue;
       }
 
-      $this->unit_list[$unit_id] += $unit_delta; //      empty($this->ship_list[$unit_id]) ? $this->ship_list[$unit_id] = 0 : false;
-      // Check for negative unit value
-      if($this->unit_list[$unit_id] < 0) { //      if($unit_delta < 0 && $this->ship_list[$unit_id] < 0) {
-        // TODO
-        die('$unit_delta is less then ship amount  in ' . __FUNCTION__);
-      }
+      $this->unitList->adjustUnitCount($unit_id, $unit_delta);
       // Pending DELTA changes
-      $this->ship_delta[$unit_id] += $unit_delta;
+//      $this->ship_delta[$unit_id] += $unit_delta;
     }
   }
 
@@ -597,24 +573,27 @@ class Fleet {
    */
   public function replace_ships($unit_list) {
     // TODO - Resets also delta and changes?!
-    $this->_reset_ships();
+    $this->unitList->_reset();
 
     !is_array($unit_list) ? $unit_list = array() : false;
 
     foreach($unit_list as $unit_id => $unit_count) {
-      if(!UnitShip::is_in_group($unit_id) || !($unit_count = floor($unit_count))) {
-        // Not a ship - continuing
-        continue;
-      }
+      // TODO - проверка на допустимые корабли
+//      if(!UnitShip::is_in_group($unit_id) || !($unit_count = floor($unit_count))) {
+//        // Not a ship - continuing
+//        continue;
+//      }
 
       // Check for negative unit value
       if($unit_count < 0) {
-        // TODO
-        die('$unit_count can not be negative in ' . __FUNCTION__);
+        classSupernova::$debug->error('$unit_count can not be negative in ' . __FUNCTION__);
       }
-      $this->unit_list[$unit_id] = $unit_count;
+
+      $this->unitList->setUnitCount($unit_id, $unit_count);
+
+//      $this->unit_list[$unit_id] = $unit_count;
       // Pending REPLACE changes
-      $this->ship_replace[$unit_id] = $unit_count;
+//      $this->ship_replace[$unit_id] = $unit_count;
     }
   }
 
@@ -696,12 +675,23 @@ class Fleet {
         continue;
       }
 
-      if(UnitShip::is_in_group($unit_id)) {
-        $this->unit_list[$unit_id] = $unit_count;
-      } elseif(UnitResourceLoot::is_in_group($unit_id)) {
+      if($this->isUnit($unit_id)) {
+        $this->unitList->setUnitCount($unit_id, $unit_count);
+      } elseif($this->isResource($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
+      } else {
+
       }
     }
+  }
+
+  // TODO - перекрывать пожже - для миссайл-флотов и дефенс-флотов
+  protected function isUnit($unit_id) {
+    return UnitShip::is_in_group($unit_id);
+  }
+
+  protected function isResource($unit_id) {
+    return UnitResourceLoot::is_in_group($unit_id);
   }
 
   /**
@@ -770,7 +760,7 @@ class Fleet {
    * Returns ship list in fleet
    */
   public function get_unit_list() {
-    return $this->unit_list;
+    return $this->unitList->getUnitListArray();
   }
 
   /**
@@ -871,7 +861,7 @@ class Fleet {
     $this->fleet_end_planet = $fleet_row['fleet_end_planet'];
     $this->fleet_end_type = $fleet_row['fleet_end_type'];
 
-    $this->load_unit_list();
+    $this->unitList->loadByLocation($this);
 
     $this->resource_list = array(
       RES_METAL     => ceil($fleet_row['fleet_resource_metal']),
@@ -917,13 +907,7 @@ class Fleet {
     $this->fleet_end_planet = $missile_db_row['fleet_end_planet'];
     $this->fleet_end_type = $missile_db_row['fleet_end_type'];
 
-    $this->unit_list = array(UNIT_DEF_MISSILE_INTERPLANET => $missile_db_row['fleet_amount']);
-
-//    $this->resource_list = array(
-//      RES_METAL     => ceil($irak['fleet_resource_metal']),
-//      RES_CRYSTAL   => ceil($irak['fleet_resource_crystal']),
-//      RES_DEUTERIUM => ceil($irak['fleet_resource_deuterium']),
-//    );
+    $this->unitList->setUnitCount(UNIT_DEF_MISSILE_INTERPLANET, $missile_db_row['fleet_amount']);
   }
 
   /**
@@ -933,7 +917,7 @@ class Fleet {
    *
    * @return int
    *
-   * @version 41a5.25
+   * @version 41a6.0
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -947,7 +931,7 @@ class Fleet {
 
 
   public function get_ship_count() {
-    return array_sum($this->unit_list);
+    return $this->unitList->getSumProperty('count');
   }
 
   public function get_resources_amount() {
@@ -985,15 +969,10 @@ class Fleet {
 
 //    $this->ship_count = 0;
 
-    $this->_reset_ships();
+    $this->unitList->_reset();
+
     $this->_reset_resources();
     $this->core_field_set_list = array();
-  }
-
-  protected function _reset_ships() {
-    $this->unit_list = array();
-    $this->ship_delta = array();
-    $this->ship_replace = array();
   }
 
   protected function _reset_resources() {
@@ -1009,9 +988,6 @@ class Fleet {
   protected function _reset_update() {
     $this->core_field_set_list = array();
 
-    $this->ship_delta = array();
-    $this->ship_replace = array();
-
     $this->resource_delta = array();
     $this->resource_replace = array();
   }
@@ -1024,56 +1000,62 @@ class Fleet {
 
 
 
-  // TODO - в юниты!
-  /**
-   *
-   */
-  public function load_unit_list() {
-    $this->db_units_row = db_unit_by_location(0, LOC_FLEET, $this->db_id);
-    empty($this->db_units_row) ? $this->db_units_row = array() : false;
+//  // TODO - в юниты!
+//  /**
+//   * @version 41a6.0
+//   */
+//  protected function load_unit_list() {
+//    if($this->trueFleetUnits->count() <= 0) {
+//      return;
+//    }
+//
+//    foreach($this->db_units_row as $unit_db_id => $unit_db_row) {
+//      $this->unit_list[$unit_db_row['unit_snid']] = $unit_db_row['unit_level'];
+//      $this->snid_to_db_translation[$unit_db_row['unit_snid']] = &$this->db_units_row[$unit_db_id];
+//    }
+//
+//    foreach($this->trueFleetUnits->_container as $unit) {
+//      $this->trueFleetUnits->mapUnitIdToDb[$unit->unitId] = $unit;
+//    }
+//
+//  }
 
-    foreach($this->db_units_row as $unit_db_id => $unit_db_row) {
-      $this->unit_list[$unit_db_row['unit_snid']] = $unit_db_row['unit_level'];
-      $this->snid_to_db_translation[$unit_db_row['unit_snid']] = &$this->db_units_row[$unit_db_id];
-    }
-  }
+//  // TODO - batch operations
+//  // TODO - flush only changes
+//  public function flush_changes_to_db_units() {
+//    foreach($this->unit_list as $unit_id => $unit_count) {
+//      $unit_db_id_safe = idval($this->snid_to_db_translation[$unit_id]['unit_id']);
+//      if(!$unit_count) {
+//        // Удаляем юнит
+//        classSupernova::db_del_record_by_id(LOC_UNIT, $unit_db_id_safe);
+//        unset($this->unit_list[$unit_id]);
+//        unset($this->snid_to_db_translation[$unit_id]);
+//      } else {
+//        classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_db_id_safe, "`unit_level` = {$unit_count}");
+//        $this->snid_to_db_translation[$unit_id]['unit_level'] = $unit_count;
+//      }
+//    }
+//  }
 
-  // TODO - batch operations
-  // TODO - flush only changes
-  public function flush_changes_to_db_units() {
-    foreach($this->unit_list as $unit_id => $unit_count) {
-      $unit_db_id_safe = idval($this->snid_to_db_translation[$unit_id]['unit_id']);
-      if(!$unit_count) {
-        // Удаляем юнит
-        classSupernova::db_del_record_by_id(LOC_UNIT, $unit_db_id_safe);
-        unset($this->unit_list[$unit_id]);
-        unset($this->snid_to_db_translation[$unit_id]);
-      } else {
-        classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_db_id_safe, "`unit_level` = {$unit_count}");
-        $this->snid_to_db_translation[$unit_id]['unit_level'] = $unit_count;
-      }
-    }
-  }
-
-  public function db_insert_units($fleet_id) {
-    // Вставляем юниты из флота в БД
-    foreach($this->unit_list as $unit_id => $unit_count) {
-      // Только юниты, чьё количество больше нуля
-      if($unit_count) {
-        $set = "`unit_player_id` = {$this->owner_id},
-            `unit_location_type` = " . LOC_FLEET . ",
-            `unit_location_id` = {$fleet_id},
-            `unit_type` = " . get_unit_param($unit_id, P_UNIT_TYPE) . ",
-            `unit_snid` = {$unit_id},
-            `unit_level` = {$unit_count}";
-
-        $unit_db_row = db_unit_set_insert($set);
-        $unit_db_id = $unit_db_row['unit_id'];
-
-        $this->db_units_row[$unit_db_id] = $unit_db_row;
-        $this->snid_to_db_translation[$unit_id] = &$this->db_units_row[$unit_db_id];
-      }
-    }
-  }
+//  public function db_insert_units($fleet_id) {
+//    // Вставляем юниты из флота в БД
+//    foreach($this->unit_list as $unit_id => $unit_count) {
+//      // Только юниты, чьё количество больше нуля
+//      if($unit_count) {
+//        $set = "`unit_player_id` = {$this->owner_id},
+//            `unit_location_type` = " . static::$locationType . ",
+//            `unit_location_id` = {$fleet_id},
+//            `unit_type` = " . get_unit_param($unit_id, P_UNIT_TYPE) . ",
+//            `unit_snid` = {$unit_id},
+//            `unit_level` = {$unit_count}";
+//
+//        $unit_db_row = db_unit_set_insert($set);
+//        $unit_db_id = $unit_db_row['unit_id'];
+//
+//        $this->db_units_row[$unit_db_id] = $unit_db_row;
+//        $this->snid_to_db_translation[$unit_id] = &$this->db_units_row[$unit_db_id];
+//      }
+//    }
+//  }
 
 }

@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a5.27');
+define('SN_VERSION', '41a6.0');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1141,6 +1141,11 @@ define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 // Unit params
 // define('GROUP_PARAMS', 1000000000);
 // Зарезервировано для параметров: 1.000.000.000-2.000.000.000
+define('P_DB_FIELD', 'dbField'); // Field name in DB
+define('P_FUNC_INPUT', 'funcInput'); // Name of function to DB field value to property value
+define('P_FUNC_OUTPUT', 'funcOutput'); // Name of function which will inject value of property TO $db_row
+define('P_VALUE', 'value');
+
 define('P_MAX_STACK', 'max');
 // Все просто 'name' и "name" заменены на P_NAME
 define('P_NAME', 'name'); // Вот тут будет следующая фаза - избавится вообще от обращения к P_NAME и перевести все обращения к UNIT_ID
