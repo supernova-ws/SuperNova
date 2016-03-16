@@ -46,7 +46,7 @@ function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scann
     if(
       $objFleet->time_return_to_source > SN_TIME_NOW && $objFleet->mission_type != MT_MISSILE && ($objFleet->is_returning == 1 || ($objFleet->mission_type != MT_RELOCATE && $objFleet->mission_type != MT_COLONIZE)) &&
       (
-        ($planet_scanned === false && $objFleet->owner_id == $user['id'])
+        ($planet_scanned === false && $objFleet->playerOwnerId == $user['id'])
         ||
         (
           $planet_scanned !== false
@@ -112,10 +112,10 @@ function flt_register_event_objFleet(Fleet $objFleet, $ov_label, $planet_end_typ
 
   $objFleet->ov_this_planet = $is_this_planet;// || $planet_scanned != false;
 
-  if($objFleet->owner_id == $user['id']) {
+  if($objFleet->playerOwnerId == $user['id']) {
     $user_data = $user;
   } else {
-    $user_data = db_user_by_id($objFleet->owner_id);
+    $user_data = db_user_by_id($objFleet->playerOwnerId);
   }
 
   return tplParseFleetObject($objFleet, ++$fleet_number, $user_data);

@@ -109,7 +109,7 @@ class UBE {
    *
    * @param Mission $objMission
    *
-   * @version 41a6.0
+   * @version 41a6.2
    */
   function loadDataFromMission(&$objMission) {
     $this->combatMission = $objMission;
@@ -139,16 +139,16 @@ class UBE {
    *
    * @internal param array $planet
    *
-   * @version 41a6.0
+   * @version 41a6.2
    */
   function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];
 
     $this->players->db_ube_load_player_by_id($player_id, UBE_PLAYER_IS_DEFENDER);
 
-    $player_db_row = $this->players[$player_id]->player_db_row_get();
+    $player_db_row = $this->players[$player_id]->getDbRow();
     if($fortifier_level = mrc_get_level($player_db_row, $this->combatMission->dst_planet, MRC_FORTIFIER)) {
-      $this->planet_bonus->add_unit(MRC_FORTIFIER, $fortifier_level);
+      $this->planet_bonus->add_unit_by_snid(MRC_FORTIFIER, $fortifier_level);
     }
 
     $this->fleet_list->ube_insert_from_planet_row($this->combatMission->dst_planet, $this->players[$player_id], $this->planet_bonus);
@@ -162,7 +162,7 @@ class UBE {
   /**
    * Общий алгоритм расчета боя
    *
-   * @version 41a6.0
+   * @version 41a6.2
    */
   protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -319,7 +319,7 @@ pdie();
    *
    * @return mixed
    *
-   * @version 41a6.0
+   * @version 41a6.2
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -353,7 +353,7 @@ pdie();
 
         if($ship_count_lost) {
           $db_changeset = array();
-          $planet_row_cache = $this->players[$destination_user_id]->player_db_row_get();
+          $planet_row_cache = $this->players[$destination_user_id]->getDbRow();
           foreach($UBEFleet->unit_list->_container as $UBEUnit) {
             $db_changeset['unit'][] = sn_db_unit_changeset_prepare($UBEUnit->unitId, -$UBEUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
@@ -467,7 +467,7 @@ pdie();
    * @param     $attacker
    * @param int $player_id
    *
-   * @version 41a6.0
+   * @version 41a6.2
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -478,7 +478,7 @@ pdie();
     }
 
     foreach($side_info as $fleet_data) {
-      $this->players[$player_id]->player_name_set($player_id);
+      $this->players[$player_id]->setName($player_id);
       $this->players[$player_id]->setSide($attacker);
 
       $objFleet = new UBEFleet();
@@ -498,20 +498,20 @@ pdie();
           $this->fleet_list[$fleet_id]->resource_list[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
           if($unit_id == TECH_WEAPON) {
-            $this->players[$player_id]->player_bonus->add_unit(TECH_WEAPON, $unit_count);
+            $this->players[$player_id]->player_bonus->add_unit_by_snid(TECH_WEAPON, $unit_count);
           } elseif($unit_id == TECH_SHIELD) {
-            $this->players[$player_id]->player_bonus->add_unit(TECH_SHIELD, $unit_count);
+            $this->players[$player_id]->player_bonus->add_unit_by_snid(TECH_SHIELD, $unit_count);
           } elseif($unit_id == TECH_ARMOR) {
-            $this->players[$player_id]->player_bonus->add_unit(TECH_ARMOR, $unit_count);
+            $this->players[$player_id]->player_bonus->add_unit_by_snid(TECH_ARMOR, $unit_count);
           }
         } elseif($unit_type == UNIT_GOVERNORS) {
           if($unit_id == MRC_FORTIFIER) {
             // Фортифаер даёт бонус ко всему
-            $this->planet_bonus->add_unit(MRC_FORTIFIER, $unit_count);
+            $this->planet_bonus->add_unit_by_snid(MRC_FORTIFIER, $unit_count);
           }
         } elseif($unit_type == UNIT_MERCENARIES) {
           if($unit_id == MRC_ADMIRAL) {
-            $this->players[$player_id]->player_bonus->add_unit(MRC_ADMIRAL, $unit_count);
+            $this->players[$player_id]->player_bonus->add_unit_by_snid(MRC_ADMIRAL, $unit_count);
           }
         }
       }
@@ -549,7 +549,7 @@ pdie();
    *
    * @return bool
    *
-   * @version 41a6.0
+   * @version 41a6.2
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
@@ -687,7 +687,7 @@ pdie();
  *
  * @return mixed
  *
- * @version 41a6.0
+ * @version 41a6.2
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
@@ -699,7 +699,7 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  *
  * @return mixed
  *
- * @version 41a6.0
+ * @version 41a6.2
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
@@ -710,6 +710,6 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  *
  * @return mixed
  *
- * @version 41a6.0
+ * @version 41a6.2
  */
 function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

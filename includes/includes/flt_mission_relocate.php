@@ -16,7 +16,7 @@ function flt_mission_relocate($mission_data) {
 
   $destination_planet = &$mission_data->dst_planet;
 
-  if(empty($destination_planet['id_owner']) || $objFleet->owner_id != $destination_planet['id_owner']) {
+  if(empty($destination_planet['id_owner']) || $objFleet->playerOwnerId != $destination_planet['id_owner']) {
     $objFleet->mark_fleet_as_returned_and_save();
 
     return CACHE_FLEET;
@@ -35,7 +35,7 @@ function flt_mission_relocate($mission_data) {
     $Message .= $lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
   }
   msg_send_simple_message(
-    $objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT,
+    $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT,
     $lang['sys_mess_qg'], $lang['sys_stay_mess_stay'], $Message
   );
 

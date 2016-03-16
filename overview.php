@@ -32,6 +32,16 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+
+$player = new Player();
+$player->db_load_by_id(2);
+$player->unitList->_dump();
+pvar_dump($player->player_bonus);
+
+//pvar_dump($player);
+
+die(__LINE__ . __FILE__ . ' disabled for debug purposes');
+
 lng_include('overview');
 
 $result = array();

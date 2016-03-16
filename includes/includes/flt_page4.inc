@@ -21,7 +21,7 @@ if ($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to
   message($lang['fl_isback'], $lang['fl_error']);
 }
 
-if($objFleet->owner_id != $user['id']) {
+if($objFleet->playerOwnerId != $user['id']) {
   $debug->warning($lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
   message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
 }

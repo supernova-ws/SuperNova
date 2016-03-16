@@ -141,7 +141,7 @@ class UBEReport {
         $ube_report_id,
         $player_id,
 
-        "'" . db_escape($ube->players[$player_id]->player_name_get()) . "'",
+        "'" . db_escape($ube->players[$player_id]->getName()) . "'",
         $ube->players[$player_id]->getSide() == UBE_PLAYER_IS_ATTACKER ? 1 : 0,
 
         (float)$ube->players[$player_id]->player_bonus->calcBonus(P_ATTACK),

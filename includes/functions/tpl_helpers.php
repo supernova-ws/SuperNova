@@ -98,7 +98,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     $aks = db_acs_get_by_group_id($objFleet->group_id);
   }
 
-  $spy_level = $user['id'] == $objFleet->owner_id ? 100 : GetSpyLevel($user);
+  $spy_level = $user['id'] == $objFleet->playerOwnerId ? 100 : GetSpyLevel($user);
 
   $fleet_resources = $objFleet->get_resource_list();
   $result['fleet'] = isset($result['fleet']) ? $result['fleet'] : array();
@@ -106,7 +106,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     'NUMBER' => $index,
 
     'ID'           => $objFleet->getDbId(),
-    'OWNER'        => $objFleet->owner_id,
+    'OWNER'        => $objFleet->playerOwnerId,
     'TARGET_OWNER' => $objFleet->target_owner_id,
 
     'MESSAGE'      => $objFleet->is_returning,
@@ -277,7 +277,7 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
 
   $fleet_list = array();
   foreach($array_of_Fleet as $fleet) {
-    if($fleet->owner_id == $user['id']) {
+    if($fleet->playerOwnerId == $user['id']) {
       if($fleet->mission_type == MT_MISSILE) {
         continue;
       }

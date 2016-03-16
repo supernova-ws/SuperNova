@@ -61,12 +61,12 @@ class Unit extends DBRow {
 //    ),
     'timeStart'    => array(
       P_DB_FIELD    => 'unit_time_start',
-      P_FUNC_INPUT  => 'strtotime',
+      P_FUNC_INPUT  => 'sqlStringToUnixTimeStamp',
       P_FUNC_OUTPUT => 'unixTimeStampToSqlString',
     ),
     'timeFinish'   => array(
       P_DB_FIELD    => 'unit_time_finish',
-      P_FUNC_INPUT  => 'strtotime',
+      P_FUNC_INPUT  => 'sqlStringToUnixTimeStamp',
       P_FUNC_OUTPUT => 'unixTimeStampToSqlString',
     ),
   );
@@ -89,9 +89,13 @@ class Unit extends DBRow {
   public $count = 0;
   public $type = 0;
 
-  public $ownerId = 0;
+  public $playerOwnerId = 0;
+  /**
+   * @var Player|Fleet $location
+   */
+  public $location = null;
   public $locationType = LOC_NONE;
-  public $locationId = 0;
+  public $locationDbId = 0;
 
   public $timeStart = 0;
   public $timeFinish = 0;
@@ -221,6 +225,7 @@ class Unit extends DBRow {
       classSupernova::$debug->error('Can not set Unit::$count to negative value');
     }
     $this->count = $value;
+
     return $this->getCount();
   }
 
@@ -234,14 +239,21 @@ class Unit extends DBRow {
       classSupernova::$debug->error('Can not let Unit::$count value be less then a zero - adjustCount with negative greater then $count');
     }
     $this->count += $value;
+
     return $this->getCount();
   }
 
 
-  public function setLocationAndOwner($ownerId, $locationType, $locationId) {
-    $this->ownerId = $ownerId;
-    $this->locationType = $locationType;
-    $this->locationId = $locationId;
+  /**
+   * @param int          $ownerId
+   * @param Player|Fleet $location
+   */
+  public function setLocationAndOwner($ownerId, $location) {
+    $this->location = $location;
+    $this->locationType = $location::$locationType;
+    $this->locationDbId = $location->getDbId();
+
+    $this->playerOwnerId = $ownerId;
   }
 
 }

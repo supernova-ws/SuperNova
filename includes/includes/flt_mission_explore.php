@@ -235,7 +235,7 @@ function flt_mission_explore(&$mission_data) {
   mission_expedition_result_adjust($result);
 
   if($found_dark_matter) {
-    rpg_points_change($objFleet->owner_id, RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
+    rpg_points_change($objFleet->playerOwnerId, RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
     $msg_text_addon = sprintf($lang['flt_mission_expedition']['found_dark_matter'], $found_dark_matter);
   }
 
@@ -275,9 +275,9 @@ function flt_mission_explore(&$mission_data) {
   $msg_text = sprintf($msg_text, $objFleet->getDbId(), uni_render_coordinates($fleet_row_end_coordinates_without_type)) .
     ($msg_text_addon ? "\r\n" . $msg_text_addon : '');
 
-  msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
+  msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
 
-  db_user_set_by_id($objFleet->owner_id, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
+  db_user_set_by_id($objFleet->playerOwnerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
 
   if(!empty($fleet_real_array) && $objFleet->get_ship_count() >= 1) {
     // ПОКА НЕ НУЖНО - мы уже выше посчитали суммарные ресурсы (те, что были до отправку в экспу плюс найденное) и обновили $fleet_row

@@ -11,14 +11,13 @@
  *
  */
 class UnitList extends ArrayAccessV2 {
-//  /**
-//   * @var Player|Fleet
-//   */
-//  public $location = null;
-
-  public $ownerId = 0;
-  public $locationType = LOC_NONE;
-  public $locationId = 0;
+  public $playerOwnerId = 0;
+  /**
+   * @var Player|Fleet $locatedAt
+   */
+  public $locatedAt = null;
+  public $locatedAtType = LOC_NONE;
+  public $locatedAtDbId = 0;
 
   /**
    * @var Unit[] $mapUnitIdToDb
@@ -31,7 +30,7 @@ class UnitList extends ArrayAccessV2 {
   /**
    * @return Unit
    *
-   * @version 41a6.1
+   * @version 41a6.2
    */
   public function _createElement() {
     return new Unit();
@@ -46,7 +45,7 @@ class UnitList extends ArrayAccessV2 {
       // If unit not exists - creating one and setting all attributes
       $this->mapUnitIdToDb[$unit_id] = $this->_createElement();
       $this->mapUnitIdToDb[$unit_id]->setUnitId($unit_id);
-      $this->mapUnitIdToDb[$unit_id]->setLocationAndOwner($this->ownerId, $this->locationType, $this->locationId);
+      $this->mapUnitIdToDb[$unit_id]->setLocationAndOwner($this->playerOwnerId, $this->locatedAt);
     }
 
     if($replace_value) {
@@ -62,17 +61,21 @@ class UnitList extends ArrayAccessV2 {
   public function loadByLocation($location) {
     $this->_reset();
 //    $this->location = $location;
-    $this->locationType = $location::$locationType;
-    $this->locationId = $location->db_id;
+    $this->locatedAtType = $location::$locationType;
+    $this->locatedAtDbId = $location->getLocationDbId();
 
-    $unit_array = classSupernova::db_get_unit_list_by_location(0, $this->locationType, $this->locationId);
+
+    $unit_array = classSupernova::db_get_unit_list_by_location(0, $this->locatedAtType, $this->locatedAtDbId);
     if(!is_array($unit_array)) {
       return;
     }
 
     foreach($unit_array as $unit_db_row) {
       $unit = $this->_createElement();
+      $unit->setLocationAndOwner($location->getPlayerOwnerId(), $location);
       $unit->dbRowParse($unit_db_row);
+
+      // TODO - сюда вставить разборку бонусов данного юнитлиста - тех бонусов, которые Grants данный юнит добавить в список бонусов юнит-листа
 
       if(!empty($this[$unit->db_id])) {
         classSupernova::$debug->error('Unit is already exists in _container');
@@ -83,6 +86,8 @@ class UnitList extends ArrayAccessV2 {
     }
 
     // TODO - Применить бонусы от location
+    // Точнее - опустить бонусы с юнитлиста (те, которые Grants) на каждый юнит (те, которые receives)
+    // Вообще-то Receives это будут параметры каждого юнита
   }
 
   public function getUnitListArray() {
@@ -106,15 +111,18 @@ class UnitList extends ArrayAccessV2 {
   }
 
 
-  public function dbSave($ownerId, $locationType, $locationId) {
-    $this->ownerId = $ownerId;
-    $this->locationType = $locationType;
-    $this->locationId = $locationId;
+  /**
+   * @param int          $playerOwnerId
+   * @param Player|Fleet $location
+   */
+  public function dbSave($playerOwnerId, $location) {
+    $this->playerOwnerId = $playerOwnerId;
+    $this->locatedAt = $location;
+    $this->locatedAtType = $location::$locationType;
+    $this->locatedAtDbId = $location->getDbId();
 
     foreach($this->mapUnitIdToDb as $unit) {
-      $unit->ownerId = $ownerId;
-      $unit->locationType = $locationType;
-      $unit->locationId = $locationId;
+      $unit->setLocationAndOwner($this->playerOwnerId, $location);
       $unit_db_id = $unit->db_id;
       $unit->dbSave();
 
@@ -147,6 +155,103 @@ class UnitList extends ArrayAccessV2 {
         unset($this->_container[$unit_db_id]);
       }
     }
+  }
+
+  public function _dump() {
+    global $lang;
+
+    print(__FILE__ . ':' . __LINE__ . "<br />");
+    print('<table border="1">');
+    print('<tr>');
+
+    print('<th>');
+    print('dbId');
+    print('</th>');
+
+    print('<th>');
+    print('type');
+    print('</th>');
+
+    print('<th>');
+    print('unitId');
+    print('</th>');
+
+    print('<th>');
+    print('count');
+    print('</th>');
+
+    print('<th>');
+    print('playerOwnerId');
+    print('</th>');
+
+    print('<th>');
+    print('location');
+    print('</th>');
+
+    print('<th>');
+    print('locationType');
+    print('</th>');
+
+    print('<th>');
+    print('locationDbId');
+    print('</th>');
+
+    print('<th>');
+    print('timeStart');
+    print('</th>');
+
+    print('<th>');
+    print('timeFinish');
+    print('</th>');
+
+    print('</tr>');
+
+    foreach($this->mapUnitIdToDb as $unit) {
+      print('<tr>');
+
+      print('<td>');
+      print($unit->db_id);
+      print('</td>');
+
+      print('<td>');
+      print("[{$unit->type}] {$lang['tech'][$unit->type]}");
+      print('</td>');
+
+      print('<td>');
+      print("[{$unit->unitId}] {$lang['tech'][$unit->unitId]}");
+      print('</td>');
+
+      print('<td>');
+      print($unit->count);
+      print('</td>');
+
+      print('<td>');
+      print($unit->playerOwnerId);
+      print('</td>');
+
+      print('<td>');
+//      print($unit->location);
+      print('</td>');
+
+      print('<td>');
+      print($unit->locationType);
+      print('</td>');
+
+      print('<td>');
+      print($unit->locationDbId);
+      print('</td>');
+
+      print('<td>');
+      print($unit->timeStart);
+      print('</td>');
+
+      print('<td>');
+      print($unit->timeFinish);
+      print('</td>');
+
+      print('</tr>');
+    }
+    print('</table>');
   }
 
 }

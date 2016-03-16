@@ -1637,3 +1637,15 @@ function unixTimeStampToSqlString($value) {
   $result = date(FMT_DATE_TIME_SQL, $value);
   return $result ? $result : 0;
 }
+
+/**
+ * Converts SQL DateTime to unix timestamp
+ *
+ * @param $value
+ *
+ * @return int
+ */
+function sqlStringToUnixTimeStamp($value) {
+  $result = strtotime($value);
+  return $result ? $result : 0;
+}

@@ -16,9 +16,9 @@ class Bonus {
   }
 
   public function __construct() {
-    foreach(static::$_bonus_group as $param_name => $unit_list) {
-      $this->grants[$param_name][0] = 1; // Базовое значение
-    }
+//    foreach(static::$_bonus_group as $param_name => $unit_list) {
+//      $this->grants[$param_name][0] = 1; // Базовое значение
+//    }
   }
 
   /**
@@ -27,7 +27,7 @@ class Bonus {
    * @param $unit_id
    * @param $unit_level
    */
-  public function add_unit($unit_id, $unit_level) {
+  public function add_unit_by_snid($unit_id, $unit_level) {
     if(!$unit_level) {
       return;
     }
@@ -74,13 +74,13 @@ class Bonus {
   public function calcBonus($param, $base_value = null) {
     /**
      * Сортируем бонусы
-     *    - первый - базовый с индексом 0
-     *    - затем - мультипликаторы по базе
+     *    - BONUS_SET - первый - базовый
+     *    - BONUS_ADD - куда-то вставить аддитивные бонусы - +левел от према, например
+     *    - BONUS_PERCENT - затем - мультипликаторы по базе
      *    - затем - мультипликаторы кумулятивные
-     *    - куда-то вставить аддитивные бонусы - +левел от према, например
      */
 //    $this->grants[$param_name][$unit_id] = $unit_level * get_unit_param($unit_id, P_BONUS_VALUE) / 100;;
-    $value_add = $base_value;
+    $value_add = floatval($base_value);
     $cumulative = 1.0; // Для случая BONUS_PERCENT
     if(!empty($this->grants[$param]) && is_array($this->grants[$param])) {
       foreach($this->grants[$param] as $unit_id => $unit_level) {
@@ -102,6 +102,7 @@ class Bonus {
             break;
 
             case BONUS_ABILITY:
+              $value_add += $unit_level;
             break;
 
             // UNUSED    define('BONUS_MULTIPLY',            4);  // Multiply by value
@@ -113,13 +114,13 @@ class Bonus {
       }
     }
 
-    if($base_value === null) {
-      $result = $cumulative;
-    } else {
-      $result = $base_value * $cumulative;
-    }
+//    if($base_value === null) {
+//      $result = $cumulative;
+//    } else {
+//      $result = $base_value * $cumulative;
+//    }
 
-    return $result;
+    return $value_add * $cumulative;
   }
 
   /**

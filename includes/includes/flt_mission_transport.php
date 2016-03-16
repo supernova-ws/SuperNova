@@ -31,8 +31,8 @@ function flt_mission_transport($mission_data) {
     $fleet_resources[RES_DEUTERIUM], $lang['Deuterium']);
   msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
 
-  if($objFleet->target_owner_id <> $objFleet->owner_id) {
-    msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
+  if($objFleet->target_owner_id <> $objFleet->playerOwnerId) {
+    msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
   }
 
   return $objFleet->RestoreFleetToPlanet(false, true);

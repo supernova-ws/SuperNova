@@ -11,13 +11,13 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
       $objFleet = new Fleet();
       $objFleet->db_fleet_get_by_id($fleet_id);
 
-      if ($objFleet->owner_id == $user['id'] && $objFleet->is_returning == 0) {
+      if ($objFleet->playerOwnerId == $user['id'] && $objFleet->is_returning == 0) {
         $objFleet->fleet_command_return();
-      } elseif ($objFleet->getDbId() && $objFleet->owner_id != $user['id']) {
+      } elseif ($objFleet->getDbId() && $objFleet->playerOwnerId != $user['id']) {
         sn_db_transaction_rollback();
         $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(
           'base_dump' => true,
-          'fleet_owner_id' => $objFleet->owner_id,
+          'fleet_owner_id' => $objFleet->playerOwnerId,
           'user_id' => $user['id'])
         );
         die('Hack attempt 302');

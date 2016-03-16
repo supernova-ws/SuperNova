@@ -27,7 +27,7 @@ class Fleet extends UnitContainer {
    *
    * @var int
    */
-  public $owner_id = 0;
+  public $playerOwnerId = 0;
   /**
    * `fleet_group`
    *
@@ -135,7 +135,14 @@ class Fleet extends UnitContainer {
   }
 
 
+  public function isEmpty() {
+    // TODO: Implement isEmpty() method.
+    return false;
+  }
 
+  public function getPlayerOwnerId() {
+    return $this->playerOwnerId;
+  }
 
   /* FLEET DB ACCESS =================================================================================================*/
   /**
@@ -264,7 +271,7 @@ class Fleet extends UnitContainer {
     $this->db_id = !empty($db_fleet_id) ? $db_fleet_id : 0;
     if($this->db_id) {
 //      $this->db_insert_units($this->db_id);
-      $this->unitList->dbSave($this->owner_id, static::$locationType, $this->db_id);
+      $this->unitList->dbSave($this->playerOwnerId, $this);
     }
 
     $this->db_fleet_get_by_id($db_fleet_id);
@@ -392,7 +399,7 @@ class Fleet extends UnitContainer {
 
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
     // Флот, который возвращается на захваченную планету, пропадает
-    if($start && $this->is_returning == 1 && $planet_arrival['id_owner'] != $this->owner_id) {
+    if($start && $this->is_returning == 1 && $planet_arrival['id_owner'] != $this->playerOwnerId) {
       $result = RestoreFleetToPlanet($this, $start, $only_resources, $result);
 
       $this->db_delete_this_fleet();
@@ -405,7 +412,7 @@ class Fleet extends UnitContainer {
       // Landing ships
       $db_changeset = array();
 
-      if($this->owner_id == $planet_arrival['id_owner']) {
+      if($this->playerOwnerId == $planet_arrival['id_owner']) {
         $fleet_array = $this->get_unit_list();
         foreach($fleet_array as $ship_id => $ship_count) {
           if($ship_count) {
@@ -506,7 +513,7 @@ class Fleet extends UnitContainer {
 
 //    if(!empty($this->ship_delta) || !empty($this->ship_replace))
     {
-      $this->unitList->dbSave($this->owner_id, static::$locationType, $this->db_id);
+      $this->unitList->dbSave($this->playerOwnerId, $this);
     }
 
     // Добавляем REPLACE ресурсов
@@ -699,7 +706,7 @@ class Fleet extends UnitContainer {
     $this->mission_type = $mission_type;
     $this->group_id = $fleet_group;
 
-    $this->owner_id = $owner_id;
+    $this->playerOwnerId = $owner_id;
     $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
 
     // Filling $ship_list and $resource_list, also fills $amount
@@ -761,7 +768,7 @@ class Fleet extends UnitContainer {
   public function make_db_insert_set() {
     $db_set = array(
 //      'fleet_id'              => $this->id,
-      'fleet_owner'   => $this->owner_id,
+      'fleet_owner'   => $this->playerOwnerId,
       'fleet_mission' => $this->mission_type,
 
       'fleet_target_owner' => !empty($this->target_owner_id) ? $this->target_owner_id : null,
@@ -808,7 +815,7 @@ class Fleet extends UnitContainer {
     }
 
     $this->db_id = $fleet_row['fleet_id'];
-    $this->owner_id = $fleet_row['fleet_owner'];
+    $this->playerOwnerId = $fleet_row['fleet_owner'];
     $this->mission_type = $fleet_row['fleet_mission'];
 
     $this->target_owner_id = $fleet_row['fleet_target_owner'];
@@ -853,7 +860,7 @@ class Fleet extends UnitContainer {
     $this->missile_target = $missile_db_row['primaer'];
 
     $this->db_id = -$missile_db_row['id'];
-    $this->owner_id = $missile_db_row['fleet_owner'];
+    $this->playerOwnerId = $missile_db_row['fleet_owner'];
     $this->mission_type = MT_MISSILE;
 
     $this->target_owner_id = $missile_db_row['fleet_target_owner'];
@@ -888,7 +895,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.1
+   * @version 41a6.2
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -911,7 +918,7 @@ class Fleet extends UnitContainer {
 
   protected function _reset() {
     $this->db_id = 0;
-    $this->owner_id = 0;
+    $this->playerOwnerId = 0;
     $this->target_owner_id = null;
     $this->mission_type = 0;
 //    $this->db_string = '';

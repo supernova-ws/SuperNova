@@ -176,7 +176,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   if($uni_galaxyRowPlanet['debris']) {
     if(!empty($fleet_list[$Planet][PT_DEBRIS])) {
       foreach($fleet_list[$Planet][PT_DEBRIS] as $objFleetToDebris) {
-        if($objFleetToDebris->owner_id == $user['id']) {
+        if($objFleetToDebris->playerOwnerId == $user['id']) {
           $recyclers_incoming_capacity += $objFleetToDebris->fleet_recyclers_capacity($recycler_info);
         }
       }

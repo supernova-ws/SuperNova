@@ -19,7 +19,7 @@ class UBEPlayerList extends PlayerList {
   /**
    * @return UBEPlayer
    *
-   * @version 41a6.0
+   * @version 41a6.2
    */
   public function _createElement() {
     return new UBEPlayer();
@@ -36,7 +36,7 @@ class UBEPlayerList extends PlayerList {
     $UBEPlayer->load_from_report_player_row($report_player_row);
     $this[$UBEPlayer->getDbId()] = $UBEPlayer;
 
-    $this->authLevelMax = max($this->authLevelMax, $UBEPlayer->player_auth_level_get());
+    $this->authLevelMax = max($this->authLevelMax, $UBEPlayer->getAuthLevel());
   }
 
 
@@ -56,7 +56,7 @@ class UBEPlayerList extends PlayerList {
     );
 
     foreach($this->_container as $player_id => $UBEPlayer) {
-      $result[$UBEPlayer->getSide() ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER][$player_id] = $UBEPlayer->player_db_row_get();
+      $result[$UBEPlayer->getSide() ? UBE_PLAYER_IS_ATTACKER : UBE_PLAYER_IS_DEFENDER][$player_id] = $UBEPlayer->getDbRow();
     }
 
     return $result;

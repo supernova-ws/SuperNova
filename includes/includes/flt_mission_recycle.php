@@ -88,7 +88,7 @@ function flt_mission_recycle($mission_data) {
     pretty_number($resources_recycled[RES_CRYSTAL]), $lang['Crystal']
   );
   msg_send_simple_message(
-    $objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_RECYCLE,
+    $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_RECYCLE,
     $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message
   );
 

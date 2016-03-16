@@ -8,21 +8,67 @@
  * $auth_level  => db_row['authlevel']
  */
 class Player extends UnitContainer {
+  // Inherited from DBRow
+  protected $db_id = 0;
+  /**
+   * Table name in DB
+   *
+   * @var string
+   */
+  protected static $_table = 'users';
+  /**
+   * Name of ID field in DB
+   *
+   * @var string
+   */
+  protected static $_dbIdFieldName = 'id';
+  /**
+   * DB_ROW to Class translation scheme
+   *
+   * @var array
+   */
+  protected static $_scheme = array(
+    'db_id'     => array(
+      P_DB_FIELD => 'id',
+//      P_FUNC_INPUT => 'floatval',
+    ),
+    'name' => array(
+      P_DB_FIELD   => 'username',
+    ),
+    'authLevel' => array(
+      P_DB_FIELD   => 'authlevel',
+      P_FUNC_INPUT => 'intval',
+    ),
+    'statPointsTotal' => array(
+      P_DB_FIELD   => 'total_points',
+      P_FUNC_INPUT => 'floatval',
+    ),
+    'capitalPlanetId' => array(
+      P_DB_FIELD   => 'id_planet',
+//      P_FUNC_INPUT => 'floatval',
+    ),
+//    'timeFinish'   => array(
+//      P_DB_FIELD    => 'unit_time_finish',
+//      P_FUNC_INPUT  => 'strtotime',
+//      P_FUNC_OUTPUT => 'unixTimeStampToSqlString',
+//    ),
+  );
+
+  // Inherited from UnitContainer
   /**
    * Type of this location
    *
    * @var int $locationType
    */
   public static $locationType = LOC_USER;
-  /**
-   * @var int $db_id
-   */
-  protected $db_id = 0;
+//  /**
+//   * @var int $db_id
+//   */
+//  protected $db_id = 0;
   /**
    * @var UnitList $unitList
    */
   public $unitList = null;
-
 
   /**
    * @var Bonus $player_bonus
@@ -33,6 +79,85 @@ class Player extends UnitContainer {
    */
   protected $db_row = array();
 
+  public $name = '';
+  public $authLevel = AUTH_LEVEL_REGISTERED;
+  public $capitalPlanetId = 0;
+  public $statPointsTotal = 0;
+
+//  public $avatar = 0;
+//  public $vacation = 0;
+//  public $banaday = 0;
+//  public $dark_matter = 0;
+//  public $dark_matter_total = 0;
+//  public $player_rpg_explore_xp = 0;
+//  public $player_rpg_explore_level = 0;
+//  public $ally_id = 0;
+//  public $ally_tag = 0;
+//  public $ally_name = 0;
+//  public $ally_register_time = 0;
+//  public $ally_rank_id = 0;
+//  public $lvl_minier = 0;
+//  public $xpminier = 0;
+//  public $player_rpg_tech_xp = 0;
+//  public $player_rpg_tech_level = 0;
+//  public $lvl_raid = 0;
+//  public $xpraid = 0;
+//  public $raids = 0;
+//  public $raidsloose = 0;
+//  public $raidswin = 0;
+//  public $new_message = 0;
+//  public $mnl_alliance = 0;
+//  public $mnl_joueur = 0;
+//  public $mnl_attaque = 0;
+//  public $mnl_spy = 0;
+//  public $mnl_exploit = 0;
+//  public $mnl_transport = 0;
+//  public $mnl_expedition = 0;
+//  public $mnl_buildlist = 0;
+//  public $msg_admin = 0;
+//  public $deltime = 0;
+//  public $news_lastread = 0;
+//  public $total_rank = 0;
+//  public $password = 0;
+//  public $salt = 0;
+//  public $email = 0;
+//  public $email_2 = 0;
+//  public $lang = 0;
+//  public $sign = 0;
+//  public $galaxy = 0;
+//  public $system = 0;
+//  public $planet = 0;
+//  public $current_planet = 0;
+//  public $user_lastip = 0;
+//  public $user_last_proxy = 0;
+//  public $user_last_browser_id = 0;
+//  public $register_time = 0;
+//  public $onlinetime = 0;
+//  public $que_processed = 0;
+//  public $dpath = 0;
+//  public $design = 0;
+//  public $noipcheck = 0;
+//  public $options = 0;
+//  public $user_as_ally = 0;
+//  public $metal = 0;
+//  public $crystal = 0;
+//  public $deuterium = 0;
+//  public $user_birthday = 0;
+//  public $user_birthday_celebrated = 0;
+//  public $player_race = 0;
+//  public $vacation_next = 0;
+//  public $metamatter = 0;
+//  public $metamatter_total = 0;
+//  public $admin_protection = 0;
+//  public $ip_int = 0;
+//  public $user_bot = 0;
+//  public $gender = 0;
+//  public $immortal = 0;
+//  public $parent_account_id = 0;
+//  public $server_name = 0;
+//  public $parent_account_global = 0;
+
+
   /**
    * Player constructor.
    */
@@ -41,21 +166,25 @@ class Player extends UnitContainer {
     $this->player_bonus = new Bonus();
   }
 
+  public function isEmpty() {
+    return false;
+  }
+
   /**
    * @param $player_id
    */
   public function db_load_by_id($player_id) {
     $this->db_row = db_user_by_id($player_id, true);
-    $this->db_id = $player_id;
+    $this->dbRowParse($this->db_row);
 
     // Загружаем юниты
     $this->unitList->loadByLocation($this);
 
     // Высчитываем бонусы
-    $this->player_bonus->add_unit(MRC_ADMIRAL, mrc_get_level($this->db_row, false, MRC_ADMIRAL));
-    $this->player_bonus->add_unit(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON));
-    $this->player_bonus->add_unit(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD));
-    $this->player_bonus->add_unit(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR));
+    $this->player_bonus->add_unit_by_snid(MRC_ADMIRAL, mrc_get_level($this->db_row, false, MRC_ADMIRAL));
+    $this->player_bonus->add_unit_by_snid(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON));
+    $this->player_bonus->add_unit_by_snid(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD));
+    $this->player_bonus->add_unit_by_snid(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR));
   }
 
   /**
@@ -71,7 +200,7 @@ class Player extends UnitContainer {
     return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet_id};");
   }
 
-  public function getColonyCount() {
+  public function calcColonyCount() {
     return $this->db_row[UNIT_PLAYER_COLONIES_CURRENT] = isset($this->db_row[UNIT_PLAYER_COLONIES_CURRENT]) ? $this->db_row[UNIT_PLAYER_COLONIES_CURRENT] : max(0, db_planet_count_by_type($this->db_row['id']) - 1);
   }
 
@@ -80,7 +209,7 @@ class Player extends UnitContainer {
    *
    * @return int|mixed
    */
-  public function getColonyMaxCount($astrotech = -1) {
+  public function calcColonyMaxCount($astrotech = -1) {
     global $config;
 
     if($astrotech == -1) {
@@ -102,53 +231,60 @@ class Player extends UnitContainer {
     }
   }
 
+
   /**
    * @param int $player_id
    *
    * @return mixed
    */
-  public function player_db_row_get() {
+  public function getDbRow() {
     return $this->db_row;
   }
 
-  /**
-   * @param string $name
-   */
-  public function player_name_set($name) {
-    $this->db_row['username'] = $name;
-  }
+//  /**
+//   * @return int
+//   */
+//  public function getDbId() {
+//    return $this->db_row['id'];
+//  }
+
 
   /**
    * @param bool $html_encoded
    *
    * @return string
    */
-  public function player_name_get($html_encoded = false) {
+  public function getName($html_encoded = false) {
     $player_name = $this->db_row['username'];
 
     return $html_encoded ? htmlentities($player_name, ENT_COMPAT, 'UTF-8') : $player_name;
   }
-
   /**
-   * @return int
+   * @param string $name
    */
-  public function player_auth_level_get() {
-    return $this->db_row['authlevel'];
+  public function setName($name) {
+    $this->db_row['username'] = $name;
+    $this->name = $name;
   }
 
-  /**
-   * @return int
-   */
-  public function getDbId() {
-    return $this->db_row['id'];
+  public function getPlayerOwnerId() {
+    return $this->getDbId();
   }
 
-  public function getCapitalPlanetId() {
-    return $this->db_row['id_planet'];
-  }
 
-  public function getStatTotalPoints() {
-    return $this->db_row['total_points'];
-  }
+//  /**
+//   * @return int
+//   */
+//  public function getAuthLevel() {
+//    return $this->authLevel;
+//  }
+//
+//  public function getCapitalPlanetId() {
+//    return $this->capitalPlanetId;
+//  }
+//
+//  public function getStatTotalPoints() {
+//    return $this->statPointsTotal;
+//  }
 
 }

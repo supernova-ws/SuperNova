@@ -4,7 +4,7 @@
  * Class DBRow
  */
 abstract class DBRow {
-  public $db_id = 0;
+  protected $db_id = 0;
   /**
    * Table name in DB
    *
@@ -25,6 +25,26 @@ abstract class DBRow {
   protected static $_scheme = array();
 
   public function __construct() {
+  }
+
+  /**
+   * Getter with support of protected methods
+   *
+   * @param $name
+   *
+   * @return mixed
+   */
+  public function __get($name) {
+    // TODO: Implement __get() method.
+    if(!property_exists($this, $name)) {
+      classSupernova::$debug->error('Property ' . $name . ' not exists in class ' . get_called_class());
+    }
+
+    if(method_exists($this, 'get' . ucfirst($name))) {
+      return call_user_func(array($this, 'get' . ucfirst($name)), $name);
+    } else {
+      return $this->$name;
+    }
   }
 
   /**

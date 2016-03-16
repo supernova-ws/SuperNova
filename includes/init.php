@@ -478,7 +478,10 @@ execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
 global $skip_fleet_update;
 $skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
-if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval) {
+if(
+  !$skip_fleet_update
+  && !(defined('IN_AJAX') && IN_AJAX === true)
+  && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($skip_fleet_update);
 }

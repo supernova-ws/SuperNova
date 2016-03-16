@@ -69,7 +69,8 @@ function log_file($msg) {
 
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler($skip_fleet_update = false) {
-//return;
+print('<div style="color: red; font-size: 300%">Fleet handler is disabled</div>');
+return;
   /*
 
   [*] Нужно ли заворачивать ВСЕ в одну транзакцию?
@@ -249,7 +250,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
     $objMission = new Mission();
     $objMission->fleet = $objFleet;
-    $objMission->src_user = $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($objFleet->owner_id, true) : null;
+    $objMission->src_user = $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($objFleet->playerOwnerId, true) : null;
     $objMission->src_planet = $mission_data['src_planet'] ? db_planet_by_vector($objFleet->launch_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
     $objMission->dst_user = $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($objFleet->target_owner_id, true) : null;
     // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'

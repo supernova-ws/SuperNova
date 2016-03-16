@@ -33,11 +33,11 @@ function flt_mission_colonize(&$mission_data) {
 
         $NewOwnerPlanet = uni_create_planet(
           $fleet_end_coordinates['galaxy'], $fleet_end_coordinates['system'], $fleet_end_coordinates['planet'],
-          $objFleet->owner_id, "{$lang['sys_colo_defaultname']} {$iPlanetCount}", false,
+          $objFleet->playerOwnerId, "{$lang['sys_colo_defaultname']} {$iPlanetCount}", false,
           array('user_row' => $src_user_row));
         if($NewOwnerPlanet) {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAddress . $lang['sys_colo_allisok'];
-          msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
+          msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
           $objFleet->unitList->unitAdjustCount(SHIP_COLONIZER, -1, false);
           return $objFleet->RestoreFleetToPlanet(false);
@@ -48,7 +48,7 @@ function flt_mission_colonize(&$mission_data) {
 
   $objFleet->mark_fleet_as_returned();
   $objFleet->flush_changes_to_db();
-  msg_send_simple_message($objFleet->owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$TargetAddress}{$TheMessage}");
+  msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$TargetAddress}{$TheMessage}");
 
   return CACHE_FLEET;
 }

@@ -596,6 +596,10 @@ UNUSED    define('BONUS_SPEED',               7);  // Speed bonus
 Заменить все die() на pdie() а еще лучше на debug->error()
 
 
+ПАТЧИ - см patches.txt
+
+
+
 // TODO - СЕЙЧАС
     Отключаем UBE
         Переделываем структуру объектов
@@ -609,8 +613,15 @@ UNUSED    define('BONUS_SPEED',               7);  // Speed bonus
     Отрицательное db_id - пропустить, не записывать. Это - служебная инфа
     Флот с планеты сделать -1
 
+// TODO - СЕЙЧАС
+    Player->unitlist
+        $this->player_bonus->add_unit_by_snid - перенести на UnitList: бонусы всегда живут на списках юнитов или на самих юнитах
+
 #ctv
 
+BONUS_ABILITY - deprecated ???
+
+Теперь flying_fleet_handler не вызывается, если установлен флаг IN_AJAX
 
 
 2016-03-05 22:26:23 41a5.22
