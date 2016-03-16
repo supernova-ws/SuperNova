@@ -15,7 +15,7 @@ class Fleet extends UnitContainer {
    *
    * @var int
    */
-  public $db_id = 0;
+  protected $db_id = 0;
   /**
    * @var UnitList $unitList
    */
@@ -379,7 +379,7 @@ class Fleet extends UnitContainer {
     $coordinates = $start ? $this->launch_coordinates_typed() : $this->target_coordinates_typed();
 
     // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
-    // TODO Проеверить от многократного срабатывания !!!
+    // TODO Проверить от многократного срабатывания !!!
     // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
     // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
     // Узнаем ИД владельца планеты - без блокировки
@@ -547,26 +547,6 @@ class Fleet extends UnitContainer {
   }
 
   /**
-   * Updates ship list with deltas
-   *
-   * @param array $unit_delta_list
-   */
-  public function update_units($unit_delta_list) {
-    !is_array($unit_delta_list) ? $unit_delta_list = array() : false;
-
-    foreach($unit_delta_list as $unit_id => $unit_delta) {
-      if(!UnitShip::is_in_group($unit_id) || !($unit_delta = floor($unit_delta))) {
-        // Not a ship - continuing
-        continue;
-      }
-
-      $this->unitList->adjustUnitCount($unit_id, $unit_delta);
-      // Pending DELTA changes
-//      $this->ship_delta[$unit_id] += $unit_delta;
-    }
-  }
-
-  /**
    * Replaces current unit list from array of units
    *
    * @param array $unit_list
@@ -584,16 +564,7 @@ class Fleet extends UnitContainer {
 //        continue;
 //      }
 
-      // Check for negative unit value
-      if($unit_count < 0) {
-        classSupernova::$debug->error('$unit_count can not be negative in ' . __FUNCTION__);
-      }
-
-      $this->unitList->setUnitCount($unit_id, $unit_count);
-
-//      $this->unit_list[$unit_id] = $unit_count;
-      // Pending REPLACE changes
-//      $this->ship_replace[$unit_id] = $unit_count;
+      $this->unitList->unitSetCount($unit_id, $unit_count);
     }
   }
 
@@ -676,7 +647,7 @@ class Fleet extends UnitContainer {
       }
 
       if($this->isUnit($unit_id)) {
-        $this->unitList->setUnitCount($unit_id, $unit_count);
+        $this->unitList->unitSetCount($unit_id, $unit_count);
       } elseif($this->isResource($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
       } else {
@@ -907,7 +878,7 @@ class Fleet extends UnitContainer {
     $this->fleet_end_planet = $missile_db_row['fleet_end_planet'];
     $this->fleet_end_type = $missile_db_row['fleet_end_type'];
 
-    $this->unitList->setUnitCount(UNIT_DEF_MISSILE_INTERPLANET, $missile_db_row['fleet_amount']);
+    $this->unitList->unitSetCount(UNIT_DEF_MISSILE_INTERPLANET, $missile_db_row['fleet_amount']);
   }
 
   /**
@@ -917,7 +888,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -963,11 +934,6 @@ class Fleet extends UnitContainer {
     $this->fleet_end_system = 0;
     $this->fleet_end_planet = 0;
     $this->fleet_end_type = PT_ALL;
-//    $this->fleet_resource_metal = 0;
-//    $this->fleet_resource_crystal = 0;
-//    $this->fleet_resource_deuterium = 0;
-
-//    $this->ship_count = 0;
 
     $this->unitList->_reset();
 
@@ -1000,62 +966,5 @@ class Fleet extends UnitContainer {
 
 
 
-//  // TODO - в юниты!
-//  /**
-//   * @version 41a6.0
-//   */
-//  protected function load_unit_list() {
-//    if($this->trueFleetUnits->count() <= 0) {
-//      return;
-//    }
-//
-//    foreach($this->db_units_row as $unit_db_id => $unit_db_row) {
-//      $this->unit_list[$unit_db_row['unit_snid']] = $unit_db_row['unit_level'];
-//      $this->snid_to_db_translation[$unit_db_row['unit_snid']] = &$this->db_units_row[$unit_db_id];
-//    }
-//
-//    foreach($this->trueFleetUnits->_container as $unit) {
-//      $this->trueFleetUnits->mapUnitIdToDb[$unit->unitId] = $unit;
-//    }
-//
-//  }
-
-//  // TODO - batch operations
-//  // TODO - flush only changes
-//  public function flush_changes_to_db_units() {
-//    foreach($this->unit_list as $unit_id => $unit_count) {
-//      $unit_db_id_safe = idval($this->snid_to_db_translation[$unit_id]['unit_id']);
-//      if(!$unit_count) {
-//        // Удаляем юнит
-//        classSupernova::db_del_record_by_id(LOC_UNIT, $unit_db_id_safe);
-//        unset($this->unit_list[$unit_id]);
-//        unset($this->snid_to_db_translation[$unit_id]);
-//      } else {
-//        classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_db_id_safe, "`unit_level` = {$unit_count}");
-//        $this->snid_to_db_translation[$unit_id]['unit_level'] = $unit_count;
-//      }
-//    }
-//  }
-
-//  public function db_insert_units($fleet_id) {
-//    // Вставляем юниты из флота в БД
-//    foreach($this->unit_list as $unit_id => $unit_count) {
-//      // Только юниты, чьё количество больше нуля
-//      if($unit_count) {
-//        $set = "`unit_player_id` = {$this->owner_id},
-//            `unit_location_type` = " . static::$locationType . ",
-//            `unit_location_id` = {$fleet_id},
-//            `unit_type` = " . get_unit_param($unit_id, P_UNIT_TYPE) . ",
-//            `unit_snid` = {$unit_id},
-//            `unit_level` = {$unit_count}";
-//
-//        $unit_db_row = db_unit_set_insert($set);
-//        $unit_db_id = $unit_db_row['unit_id'];
-//
-//        $this->db_units_row[$unit_db_id] = $unit_db_row;
-//        $this->snid_to_db_translation[$unit_id] = &$this->db_units_row[$unit_db_id];
-//      }
-//    }
-//  }
 
 }

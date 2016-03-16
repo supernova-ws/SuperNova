@@ -27,7 +27,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -44,13 +44,13 @@ class FleetList extends ArrayAccessV2 {
       $fleet = $this->_createElement();
       $fleet->parse_db_row($row);
 
-      if(isset($this[$fleet->db_id])) {
+      if(isset($this[$fleet->getDbId()])) {
         // Нужно ли ????
         classSupernova::$debug->error('Fleet list already set');
       }
 
-      $this[$fleet->db_id] = $fleet;
-      $fleets_added[$fleet->db_id] = $fleet->db_id;
+      $this[$fleet->getDbId()] = $fleet;
+      $fleets_added[$fleet->getDbId()] = $fleet->getDbId();
     }
 
     return $fleets_added;
@@ -62,7 +62,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -116,7 +116,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -256,7 +256,7 @@ class FleetList extends ArrayAccessV2 {
       $objFleet = $this->_createElement();
       $objFleet->parse_missile_db_row($missile_db_row);
 
-      $this[$objFleet->db_id] = $objFleet;
+      $this[$objFleet->getDbId()] = $objFleet;
     }
   }
 

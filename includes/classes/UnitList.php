@@ -17,8 +17,8 @@ class UnitList extends ArrayAccessV2 {
 //  public $location = null;
 
   public $ownerId = 0;
-  public $locationId = 0;
   public $locationType = LOC_NONE;
+  public $locationId = 0;
 
   /**
    * @var Unit[] $mapUnitIdToDb
@@ -31,42 +31,29 @@ class UnitList extends ArrayAccessV2 {
   /**
    * @return Unit
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function _createElement() {
     return new Unit();
   }
 
-  public function adjustUnitCount($unit_id, $unit_count = 0) {
-    if(empty($this->mapUnitIdToDb[$unit_id])) {
-      // Нет такого юнита - добавляем с 0 ДБ_ИД
-      $this->insertNewUnit($unit_id, $unit_count);
-    } else {
-      if($this->mapUnitIdToDb[$unit_id]->count + $unit_count < 0) {
-        classSupernova::$debug->error('Can not adjust unit with unit_count value lesser then unit exists');
-      }
-
-      $this->mapUnitIdToDb[$unit_id]->count += $unit_count;
-    }
+  public function unitSetCount($unit_id, $unit_count = 0) {
+    $this->unitAdjustCount($unit_id, $unit_count, true);
   }
 
-  public function setUnitCount($unit_id, $unit_count = 0) {
+  public function unitAdjustCount($unit_id, $unit_count = 0, $replace_value = false) {
     if(empty($this->mapUnitIdToDb[$unit_id])) {
-      // Нет такого юнита - добавляем с 0 ДБ_ИД
-      $this->insertNewUnit($unit_id, $unit_count);
-    } else {
-      $this->mapUnitIdToDb[$unit_id]->count = $unit_count;
+      // If unit not exists - creating one and setting all attributes
+      $this->mapUnitIdToDb[$unit_id] = $this->_createElement();
+      $this->mapUnitIdToDb[$unit_id]->setUnitId($unit_id);
+      $this->mapUnitIdToDb[$unit_id]->setLocationAndOwner($this->ownerId, $this->locationType, $this->locationId);
     }
-  }
 
-  protected function insertNewUnit($unit_id, $unit_count = 0) {
-    if($unit_count < 0) {
-      classSupernova::$debug->error('Can not insert unit with negative unit_count');
+    if($replace_value) {
+      $this->mapUnitIdToDb[$unit_id]->setCount($unit_count);
+    } else {
+      $this->mapUnitIdToDb[$unit_id]->adjustCount($unit_count);
     }
-    $unit = $this->_createElement();
-    $unit->unitId = $unit_id;
-    $unit->count = $unit_count;
-    $this->mapUnitIdToDb[$unit_id] = $unit;
   }
 
   /**
@@ -100,7 +87,7 @@ class UnitList extends ArrayAccessV2 {
 
   public function getUnitListArray() {
     $result = array();
-    foreach($this->_container as $unit) {
+    foreach($this->mapUnitIdToDb as $unit) {
       $result[$unit->unitId] = $unit->count;
     }
 
@@ -109,7 +96,7 @@ class UnitList extends ArrayAccessV2 {
 
   public function getUnitCount($unit_id) {
     $result = 0;
-    foreach($this->_container as $unit) {
+    foreach($this->mapUnitIdToDb as $unit) {
       if($unit->unitId == $unit_id) {
         $result += $unit->count;
       }
@@ -153,8 +140,8 @@ class UnitList extends ArrayAccessV2 {
       foreach($this->mapUnitIdToDb as $unit_id => $object) {
         unset($this->mapUnitIdToDb[$unit_id]);
       }
-
     }
+
     if(!empty($this->_container)) {
       foreach($this->_container as $unit_db_id => $object) {
         unset($this->_container[$unit_db_id]);

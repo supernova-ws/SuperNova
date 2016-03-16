@@ -15,7 +15,7 @@ abstract class UnitContainer {
    *
    * @var int
    */
-  public $db_id = 0;
+  protected $db_id = 0;
   /**
    * @var UnitList $unitList
    */
@@ -23,6 +23,13 @@ abstract class UnitContainer {
 
   public function __construct() {
     $this->unitList = new UnitList();
+  }
+
+  /**
+   * @return int
+   */
+  public function getDbId() {
+    return $this->db_id;
   }
 
 }

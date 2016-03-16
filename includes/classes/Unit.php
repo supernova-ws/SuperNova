@@ -46,6 +46,7 @@ class Unit extends DBRow {
     ),
     'unitId'       => array(
       P_DB_FIELD => 'unit_snid',
+      P_FUNC_SET => 'setUnitId',
 //      P_FUNC_INPUT => 'floatval',
     ),
     'count'        => array(
@@ -190,15 +191,15 @@ class Unit extends DBRow {
     return $this->count <= 0;
   }
 
-  public function dbRowParse($db_row) {
-    parent::dbRowParse($db_row);
-
-    // TODO - делать лукап по локейшену ?
-
-    // Unit specific
-    $this->info = get_unit_param($this->unitId);
-  }
-
+//  public function dbRowParse($db_row) {
+//    parent::dbRowParse($db_row);
+//
+//    // TODO - делать лукап по локейшену ?
+//
+//    // Unit specific
+//    $this->info = get_unit_param($this->unitId);
+//  }
+//
   public function setUnitId($unitId) {
     // TODO - Reset combat stats??
     $this->unitId = $unitId;
@@ -208,6 +209,39 @@ class Unit extends DBRow {
     } else {
       $this->info = array();
     }
+  }
+
+  public function getCount() {
+    return $this->count;
+  }
+
+  public function setCount($value) {
+    // TODO - Reset combat stats??
+    if($value < 0) {
+      classSupernova::$debug->error('Can not set Unit::$count to negative value');
+    }
+    $this->count = $value;
+    return $this->getCount();
+  }
+
+  /**
+   * @param int $value
+   *
+   * @return int
+   */
+  public function adjustCount($value) {
+    if($this->count + $value < 0) {
+      classSupernova::$debug->error('Can not let Unit::$count value be less then a zero - adjustCount with negative greater then $count');
+    }
+    $this->count += $value;
+    return $this->getCount();
+  }
+
+
+  public function setLocationAndOwner($ownerId, $locationType, $locationId) {
+    $this->ownerId = $ownerId;
+    $this->locationType = $locationType;
+    $this->locationId = $locationId;
   }
 
 }

@@ -221,9 +221,9 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     // Формируем запрос, блокирующий сразу все нужные записи
     $objFleet->db_fleet_lock_flying($mission_data);
 
-    $objFleet->db_fleet_get_by_id($objFleet->db_id);
+    $objFleet->db_fleet_get_by_id($objFleet->getDbId());
 
-    if(!$objFleet->db_id) {
+    if(!$objFleet->getDbId()) {
       // Fleet was destroyed in course of previous actions
       sn_db_transaction_commit();
       continue;

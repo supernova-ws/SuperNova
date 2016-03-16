@@ -17,7 +17,7 @@ class Player extends UnitContainer {
   /**
    * @var int $db_id
    */
-  public $db_id = 0;
+  protected $db_id = 0;
   /**
    * @var UnitList $unitList
    */
@@ -38,8 +38,6 @@ class Player extends UnitContainer {
    */
   public function __construct() {
     parent::__construct();
-//    $this->unitList = new UnitList();
-
     $this->player_bonus = new Bonus();
   }
 

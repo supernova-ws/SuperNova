@@ -73,7 +73,11 @@ abstract class DBRow {
       }
       !empty($property_data[P_FUNC_INPUT]) && is_callable($property_data[P_FUNC_INPUT]) ? $value = call_user_func($property_data[P_FUNC_INPUT], $value) : false;
 
-      $this->{$property_name} = $value;
+      if(!empty($property_data[P_FUNC_SET]) && is_callable($property_data[P_FUNC_SET])) {
+        call_user_func($property_data[P_FUNC_SET], $value);
+      } else {
+        $this->{$property_name} = $value;
+      }
     }
   }
 
@@ -95,7 +99,15 @@ abstract class DBRow {
   }
 
   public function dbInsertSet() {
-    $this->db_id = db_field_set_create(static::$_table, $this->dbMakeFieldSet());
+    $this->db_id = $this->db_field_set_create($this->dbMakeFieldSet());
+  }
+
+  public function dbUpdate() {
+    // TODO - Update
+    if($this->isNew()) {
+      classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbUpdate');
+    }
+    $this->db_field_update($this->dbMakeFieldSet());
   }
 
   public function dbDelete() {
@@ -107,12 +119,42 @@ abstract class DBRow {
     // Обо всём остальном должен позаботиться контейнер
   }
 
-  public function dbUpdate() {
-    // TODO - Update
-    if($this->isNew()) {
-      classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbUpdate');
+  /**
+   * @param array $field_set
+   *
+   * @return int|string
+   */
+  protected function db_field_set_create(array $field_set) {
+    !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
+    sn_db_field_set_safe_flag_clear($field_set);
+
+    $values = implode(',', $field_set);
+    $fields = implode(',', array_keys($field_set));
+
+    $result = 0;
+    if(classSupernova::db_query("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
+      $result = db_insert_id();
     }
-    db_field_update(static::$_table, $this->dbMakeFieldSet(), static::$_dbIdFieldName);
+
+    return $result;
+  }
+
+  /**
+   * @param array $field_set
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  protected function db_field_update(array $field_set) {
+    !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
+    sn_db_field_set_safe_flag_clear($field_set);
+
+    $set = array();
+    foreach($field_set as $key => $value) {
+      $set[] = "{$key} = $value";
+    }
+    $set_string = implode(',', $set);
+
+    return classSupernova::db_query("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->db_id);
   }
 
 }

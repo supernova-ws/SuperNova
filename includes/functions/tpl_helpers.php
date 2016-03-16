@@ -105,7 +105,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
   $result['fleet'] = array(
     'NUMBER' => $index,
 
-    'ID'           => $objFleet->db_id,
+    'ID'           => $objFleet->getDbId(),
     'OWNER'        => $objFleet->owner_id,
     'TARGET_OWNER' => $objFleet->target_owner_id,
 
@@ -298,7 +298,7 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
       }
     }
 
-    $fleet_list[$fleet_ownage]['fleets'][$fleet->db_id] = $fleet;
+    $fleet_list[$fleet_ownage]['fleets'][$fleet->getDbId()] = $fleet;
 
     if($fleet->is_returning == 1 || ($fleet->is_returning == 0 && $fleet->mission_type == MT_RELOCATE) || ($fleet->target_owner_id != $user['id'])) {
       $fleet_sn = $fleet->get_unit_list();

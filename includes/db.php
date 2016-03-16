@@ -151,32 +151,32 @@ function sn_db_field_set_make_safe($field_set, $serialize = false) {
 
   return $result;
 }
-function db_field_set_create($table_name, $field_set) {
-  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
-  sn_db_field_set_safe_flag_clear($field_set);
-
-  $values = implode(',', $field_set);
-  $fields = implode(',', array_keys($field_set));
-
-  $result = 0;
-  if(classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
-    $result = db_insert_id();
-  }
-
-  return $result;
-}
-function db_field_update($table_name, $field_set, $db_id_field_name) {
-  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
-  sn_db_field_set_safe_flag_clear($field_set);
-
-  $set = array();
-  foreach($field_set as $key => $value) {
-    $set[] = "{$key} = $value";
-  }
-  $set_string = implode(',', $set);
-
-  return classSupernova::db_query("UPDATE `{{{$table_name}}}` SET {$set_string} WHERE {$db_id_field_name} = {$field_set[$db_id_field_name]};");
-}
+//function db_field_set_create($table_name, $field_set) {
+//  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
+//  sn_db_field_set_safe_flag_clear($field_set);
+//
+//  $values = implode(',', $field_set);
+//  $fields = implode(',', array_keys($field_set));
+//
+//  $result = 0;
+//  if(classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
+//    $result = db_insert_id();
+//  }
+//
+//  return $result;
+//}
+//function db_field_update($table_name, $field_set, $db_id_field_name) {
+//  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
+//  sn_db_field_set_safe_flag_clear($field_set);
+//
+//  $set = array();
+//  foreach($field_set as $key => $value) {
+//    $set[] = "{$key} = $value";
+//  }
+//  $set_string = implode(',', $set);
+//
+//  return classSupernova::db_query("UPDATE `{{{$table_name}}}` SET {$set_string} WHERE {$db_id_field_name} = {$field_set[$db_id_field_name]};");
+//}
 
 
 function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {

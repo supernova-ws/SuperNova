@@ -9,7 +9,7 @@
  * @method UBEFleet offsetGet($offset)
  * @property UBEFleet[] $_container
  *
- * @version 41a6.0
+ * @version 41a6.1
  */
 class UBEFleetList extends FleetList {
 
@@ -35,7 +35,7 @@ class UBEFleetList extends FleetList {
   /**
    * UBEFleetList constructor.
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function __construct() {
     parent::__construct();
@@ -51,7 +51,7 @@ class UBEFleetList extends FleetList {
   /**
    * @return UBEFleet
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function _createElement() {
     return new UBEFleet();
@@ -60,14 +60,14 @@ class UBEFleetList extends FleetList {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function ube_insert_from_Fleet(Fleet $objFleet) {
-    $this[$objFleet->db_id] = new UBEFleet();
-    $this[$objFleet->db_id]->read_from_fleet_object($objFleet);
+    $this[$objFleet->getDbId()] = new UBEFleet();
+    $this[$objFleet->getDbId()]->read_from_fleet_object($objFleet);
 
     // Вызов основной функции!!!
-    ube_attack_prepare_fleet_from_object($this[$objFleet->db_id]); // Used by UNIT_CAPTAIN
+    ube_attack_prepare_fleet_from_object($this[$objFleet->getDbId()]); // Used by UNIT_CAPTAIN
   }
 
   public function ube_insert_from_planet_row(array &$planet_row, UBEPlayer $player, Bonus $planet_bonus) {
@@ -127,7 +127,7 @@ class UBEFleetList extends FleetList {
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function ube_analyze_fleets($is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя
@@ -300,14 +300,15 @@ class UBEFleetList extends FleetList {
    * @param Fleet         $objFleet
    * @param UBEPlayerList $players
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function ubeInitGetAttackers(Fleet $objFleet, UBEPlayerList $players) {
     if($objFleet->group_id) {
       $fleets_added = $this->dbLoadWhere("`fleet_group` = {$objFleet->group_id}");
     } else {
       $this->ube_insert_from_Fleet($objFleet);
-      $fleets_added = array($objFleet->db_id => $objFleet->db_id);
+      $fleet_db_id = $objFleet->getDbId();
+      $fleets_added = array($fleet_db_id => $fleet_db_id);
     }
 
     $players->ubeLoadPlayersAndSetSideFromFleetIdList($fleets_added, $this, UBE_PLAYER_IS_ATTACKER);
@@ -318,7 +319,7 @@ class UBEFleetList extends FleetList {
    *
    * @param Fleet $objFleet
    *
-   * @version 41a6.0
+   * @version 41a6.1
    */
   public function ubeInitGetFleetsOnHold(Fleet $objFleet, UBEPlayerList $players) {
     $fleets_added = $this->dbLoadWhere(

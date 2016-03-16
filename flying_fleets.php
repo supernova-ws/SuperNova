@@ -13,7 +13,7 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
 
       if ($objFleet->owner_id == $user['id'] && $objFleet->is_returning == 0) {
         $objFleet->fleet_command_return();
-      } elseif ($objFleet->db_id && $objFleet->owner_id != $user['id']) {
+      } elseif ($objFleet->getDbId() && $objFleet->owner_id != $user['id']) {
         sn_db_transaction_rollback();
         $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(
           'base_dump' => true,
