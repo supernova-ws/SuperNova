@@ -6,6 +6,10 @@
  * $player_id   => $db_row['id']
  * $name        => $this->db_row['username']
  * $auth_level  => db_row['authlevel']
+ *
+ * @method int getAuthLevel()
+ * @method int getCapitalPlanetId()
+ * @method float getStatTotalPoints()
  */
 class Player extends UnitContainer {
   // Inherited from DBRow
@@ -233,20 +237,11 @@ class Player extends UnitContainer {
 
 
   /**
-   * @param int $player_id
-   *
-   * @return mixed
+   * @return array
    */
   public function getDbRow() {
     return $this->db_row;
   }
-
-//  /**
-//   * @return int
-//   */
-//  public function getDbId() {
-//    return $this->db_row['id'];
-//  }
 
 
   /**
@@ -270,21 +265,5 @@ class Player extends UnitContainer {
   public function getPlayerOwnerId() {
     return $this->getDbId();
   }
-
-
-//  /**
-//   * @return int
-//   */
-//  public function getAuthLevel() {
-//    return $this->authLevel;
-//  }
-//
-//  public function getCapitalPlanetId() {
-//    return $this->capitalPlanetId;
-//  }
-//
-//  public function getStatTotalPoints() {
-//    return $this->statPointsTotal;
-//  }
 
 }

@@ -4,18 +4,129 @@
  * Class Fleet
  */
 class Fleet extends UnitContainer {
+  // Inherited from DBRow
+  /**
+   * Table name in DB
+   *
+   * @var string
+   */
+  protected static $_table = 'fleets';
+  /**
+   * Name of ID field in DB
+   *
+   * @var string
+   */
+  protected static $_dbIdFieldName = 'fleet_id';
+  /**
+   * DB_ROW to Class translation scheme
+   *
+   * @var array
+   */
+  protected static $_scheme = array(
+    'db_id'         => array(
+      P_DB_FIELD => 'fleet_id',
+    ),
+    'playerOwnerId' => array(
+      P_DB_FIELD => 'fleet_owner',
+    ),
+    'mission_type'  => array(
+      P_DB_FIELD   => 'fleet_mission',
+      P_FUNC_INPUT => 'intval',
+    ),
+
+    'target_owner_id' => array(
+      P_DB_FIELD => 'fleet_target_owner',
+    ),
+    'group_id'        => array(
+      P_DB_FIELD => 'fleet_group',
+    ),
+    'is_returning'    => array(
+      P_DB_FIELD   => 'fleet_mess',
+      P_FUNC_INPUT => 'intval',
+    ),
+
+
+    'time_launch' => array(
+      P_DB_FIELD => 'start_time',
+    ),
+
+
+    'time_arrive_to_target'     => array(
+      P_DB_FIELD => 'fleet_start_time',
+    ),
+    'time_mission_job_complete' => array(
+      P_DB_FIELD => 'fleet_end_stay',
+    ),
+    'time_return_to_source'     => array(
+      P_DB_FIELD => 'fleet_end_time',
+    ),
+
+    'fleet_start_planet_id' => array(
+      P_DB_FIELD => 'fleet_start_planet_id',
+      P_FUNC_INPUT => 'nullIfEmpty',
+    ),
+
+
+    'fleet_start_galaxy' => array(
+      P_DB_FIELD => 'fleet_start_galaxy',
+    ),
+    'fleet_start_system' => array(
+      P_DB_FIELD => 'fleet_start_system',
+    ),
+    'fleet_start_planet' => array(
+      P_DB_FIELD => 'fleet_start_planet',
+    ),
+    'fleet_start_type'   => array(
+      P_DB_FIELD => 'fleet_start_type',
+    ),
+
+    'fleet_end_planet_id' => array(
+      P_DB_FIELD => 'fleet_end_planet_id',
+      P_FUNC_INPUT => 'nullIfEmpty',
+    ),
+    'fleet_end_galaxy'    => array(
+      P_DB_FIELD => 'fleet_end_galaxy',
+    ),
+    'fleet_end_system'    => array(
+      P_DB_FIELD => 'fleet_end_system',
+    ),
+    'fleet_end_planet'    => array(
+      P_DB_FIELD => 'fleet_end_planet',
+    ),
+    'fleet_end_type'      => array(
+      P_DB_FIELD => 'fleet_end_type',
+    ),
+
+
+    'resource_list' => array(
+      P_FUNC_EXTRACT => 'static::extractResources',
+    ),
+  );
+
+  /**
+   * Extracts resources value from db_row
+   *
+   * @param Fleet $that
+   * @param array $db_row
+   */
+  protected static function extractResources(Fleet $that, array &$db_row) {
+    $that->resource_list = array(
+      RES_METAL     => ceil($db_row['fleet_resource_metal']),
+      RES_CRYSTAL   => ceil($db_row['fleet_resource_crystal']),
+      RES_DEUTERIUM => ceil($db_row['fleet_resource_deuterium']),
+    );
+  }
+
+  protected $db_id = 0;
+
+
+  // Inherited from UnitContainer
   /**
    * Type of this location
    *
    * @var int $locationType
    */
   public static $locationType = LOC_FLEET;
-  /**
-   * `fleet_id`
-   *
-   * @var int
-   */
-  protected $db_id = 0;
   /**
    * @var UnitList $unitList
    */
@@ -895,7 +1006,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.2
+   * @version 41a6.9
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -964,14 +1075,6 @@ class Fleet extends UnitContainer {
     $this->resource_delta = array();
     $this->resource_replace = array();
   }
-
-
-
-
-
-
-
-
 
 
 }

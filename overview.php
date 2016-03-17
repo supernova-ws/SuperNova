@@ -33,14 +33,27 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 
-$player = new Player();
-$player->db_load_by_id(2);
-$player->unitList->_dump();
-pvar_dump($player->player_bonus);
+//$player = new Player();
+//$player->db_load_by_id(2);
+//$player->unitList->_dump();
+//pvar_dump($player->player_bonus);
 
-//pvar_dump($player);
+$fleet = new Fleet();
+$fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 80;", true);
+//$fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 8;", true);
+//pdump($fleet_row);
+$fleet->dbRowParse($fleet_row);
+//pdie('disabled for debug purposes');
 
-die(__LINE__ . __FILE__ . ' disabled for debug purposes');
+
+
+pvar_dump($fleet);
+
+pdie('disabled for debug purposes');
+
+
+
+
 
 lng_include('overview');
 

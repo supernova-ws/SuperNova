@@ -4,7 +4,6 @@
  * Class DBRow
  */
 abstract class DBRow {
-  protected $db_id = 0;
   /**
    * Table name in DB
    *
@@ -23,6 +22,13 @@ abstract class DBRow {
    * @var array
    */
   protected static $_scheme = array();
+
+
+  /**
+   * @var int
+   */
+  protected $db_id = 0;
+
 
   public function __construct() {
   }
@@ -46,6 +52,8 @@ abstract class DBRow {
       return $this->$name;
     }
   }
+
+  // TODO - сеттер должен параллельно изменять значение db_row - for now...
 
   /**
    * Является ли запись новой - т.е. не имеет своей записи в БД
@@ -87,6 +95,11 @@ abstract class DBRow {
   public function dbRowParse($db_row) {
     // Пока - простейший вариант. В более сложном - нужно конвертеры ИЗ db_row и В db_row - с преобразованием типов
     foreach(static::$_scheme as $property_name => &$property_data) {
+      if(!empty($property_data[P_FUNC_EXTRACT])) {
+        call_user_func($property_data[P_FUNC_EXTRACT], $this, &$db_row);
+        continue;
+      }
+
       $value = null;
       if(!empty($property_data[P_DB_FIELD])) {
         $value = $db_row[$property_data[P_DB_FIELD]];

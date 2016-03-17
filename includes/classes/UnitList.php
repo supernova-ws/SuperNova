@@ -30,7 +30,7 @@ class UnitList extends ArrayAccessV2 {
   /**
    * @return Unit
    *
-   * @version 41a6.2
+   * @version 41a6.9
    */
   public function _createElement() {
     return new Unit();
@@ -56,7 +56,7 @@ class UnitList extends ArrayAccessV2 {
   }
 
   /**
-   * @param Player|Fleet $location
+   * @param UnitContainer $location
    */
   public function loadByLocation($location) {
     $this->_reset();
@@ -161,6 +161,8 @@ class UnitList extends ArrayAccessV2 {
     global $lang;
 
     print(__FILE__ . ':' . __LINE__ . "<br />");
+    print("Located at {$this->locatedAtDbId} type {$this->locatedAtType}<br />");
+
     print('<table border="1">');
     print('<tr>');
 

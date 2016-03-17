@@ -1649,3 +1649,12 @@ function sqlStringToUnixTimeStamp($value) {
   $result = strtotime($value);
   return $result ? $result : 0;
 }
+
+/**
+ * @param mixed $value
+ *
+ * @return mixed|null
+ */
+function nullIfEmpty($value) {
+  return !empty($value) ? $value : null;
+}

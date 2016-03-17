@@ -617,12 +617,41 @@ UNUSED    define('BONUS_SPEED',               7);  // Speed bonus
     Player->unitlist
         $this->player_bonus->add_unit_by_snid - перенести на UnitList: бонусы всегда живут на списках юнитов или на самих юнитах
 
+
+* @method int borp() borp(int $int1, int $int2) multiply two integers
+
+
+UnitList - фильтрация по типам хранимых объектов через $CLASS_NAME::is_in_group()
+    - соответственно переделать Fleet::$resource_list на UnitList
+    - выделить shipList в Fleet
+    - выделить combatList в UBEFleet
+
+object(Fleet)#110 (31) {
+  ["db_id":protected]=>
+  string(2) "80"
+  ["unitList"]=>
+  object(UnitList)#111 (6) {
+    ["playerOwnerId"]=>
+    int(0)
+    ["locatedAt"]=>
+    NULL
+    ["locatedAtType"]=>
+    int(5)
+    ["locatedAtDbId"]=>
+    string(2) "80"
+
+Добавить флоту или даже UnitContainer поля locatedAt locatedAtType locatedAtDbId
+    - Избавиться от locatedAtType locatedAtDbId - завернуть в методы на случай если locatedAt
+
+
 #ctv
 
 BONUS_ABILITY - deprecated ???
 
 Теперь flying_fleet_handler не вызывается, если установлен флаг IN_AJAX
 
+
+На новых наградах 8 марта-2106 не отображается надписи
 
 2016-03-17 21:43:16 41a6.5
 [@] Константы

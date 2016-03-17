@@ -245,8 +245,8 @@ class Unit extends DBRow {
 
 
   /**
-   * @param int          $ownerId
-   * @param Player|Fleet $location
+   * @param int                        $ownerId
+   * @param UnitContainer|Player|Fleet $location
    */
   public function setLocationAndOwner($ownerId, $location) {
     $this->location = $location;

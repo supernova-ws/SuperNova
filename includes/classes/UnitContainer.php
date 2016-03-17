@@ -10,15 +10,10 @@ abstract class UnitContainer extends DBRow {
    * @var int $locationType
    */
   public static $locationType = LOC_NONE;
-//  /**
-//   * @var int
-//   */
-//  protected $db_id = 0;
   /**
    * @var UnitList $unitList
    */
   public $unitList = null;
-
 
 
   public function __construct() {
@@ -37,5 +32,10 @@ abstract class UnitContainer extends DBRow {
   }
 
   abstract public function getPlayerOwnerId();
+
+  public function dbRowParse($db_row) {
+    parent::dbRowParse($db_row);
+    $this->unitList->loadByLocation($this);
+  }
 
 }
