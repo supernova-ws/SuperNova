@@ -45,9 +45,13 @@ $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 80;", true);
 $fleet->dbRowParse($fleet_row);
 //pdie('disabled for debug purposes');
 
+$fleet->setDbId(81);
 
+foreach($fleet->unitList->mapUnitIdToDb as $unit) {
+  $unit->dbId = 0;
+}
 
-pvar_dump($fleet);
+$fleet->dbInsert();
 
 pdie('disabled for debug purposes');
 

@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.9');
+define('SN_VERSION', '41a6.10');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1151,6 +1151,7 @@ define('P_FUNC_INJECT', 'funcInject'); // Name of function that receives $db_row
 define('P_FUNC_SET', 'funcSet'); // Setter name
 define('P_FUNC_GET', 'funcGet'); // Getter name
 define('P_VALUE', 'value');
+define('P_READ_ONLY', 'READ-ONLY');
 
 define('P_MAX_STACK', 'max');
 // Все просто 'name' и "name" заменены на P_NAME

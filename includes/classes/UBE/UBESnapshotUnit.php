@@ -33,7 +33,7 @@ class UBESnapshotUnit {
    */
   public function init_from_UBEUnit(UBEUnit $UBEUnit) {
     $this->unit_id = $UBEUnit->unitId;
-    $this->count = $UBEUnit->count;
+    $this->count = $UBEUnit->getCount();
     $this->unit_count_boom = $UBEUnit->unit_count_boom;
     $this->pool_attack = $UBEUnit->pool_attack;
     $this->pool_shield = $UBEUnit->pool_shield;

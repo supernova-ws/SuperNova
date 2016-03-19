@@ -23,7 +23,7 @@ class Fleet extends UnitContainer {
    * @var array
    */
   protected static $_scheme = array(
-    'db_id'         => array(
+    'dbId'         => array(
       P_DB_FIELD => 'fleet_id',
     ),
     'playerOwnerId' => array(
@@ -102,22 +102,14 @@ class Fleet extends UnitContainer {
       P_FUNC_EXTRACT => 'static::extractResources',
     ),
   );
-
   /**
-   * Extracts resources value from db_row
+   * Fleet ID in DB
    *
-   * @param Fleet $that
-   * @param array $db_row
+   * @var int $dbId
    */
-  protected static function extractResources(Fleet $that, array &$db_row) {
-    $that->resource_list = array(
-      RES_METAL     => ceil($db_row['fleet_resource_metal']),
-      RES_CRYSTAL   => ceil($db_row['fleet_resource_crystal']),
-      RES_DEUTERIUM => ceil($db_row['fleet_resource_deuterium']),
-    );
-  }
+//  protected $dbId = 0;
 
-  protected $db_id = 0;
+
 
 
   // Inherited from UnitContainer
@@ -265,7 +257,7 @@ class Fleet extends UnitContainer {
    */
   // TODO - унести куда-то глубоко. Например в DBAware или даже в БД-драйвер
   protected function db_fleet_update_set_safe_string($set_safe_string) {
-    $fleet_id_safe = idval($this->db_id);
+    $fleet_id_safe = idval($this->dbId);
     if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
       $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
@@ -287,7 +279,7 @@ class Fleet extends UnitContainer {
     // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
     // Что бы делать это умно - надо учитывать fleet__mess во $fleet_row и в таблице fleets
 
-    $fleet_id_safe = idval($this->db_id);
+    $fleet_id_safe = idval($this->dbId);
 
     return doquery(
     // Блокировка самого флота
@@ -337,7 +329,7 @@ class Fleet extends UnitContainer {
 
     $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
     if(!empty($fleet_row['fleet_id'])) {
-      $this->parse_db_row($fleet_row);
+      $this->dbRowParse($fleet_row);
     }
 
     return is_array($fleet_row) ? $fleet_row : false;
@@ -349,14 +341,14 @@ class Fleet extends UnitContainer {
    * @return array|bool|mysqli_result|null
    */
   public function db_delete_this_fleet() {
-    $fleet_id_safe = idval($this->db_id);
+    $fleet_id_safe = idval($this->dbId);
     if(!empty($fleet_id_safe)) {
       $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
       $result = false;
     }
 
-    db_unit_list_delete(0, static::$locationType, $this->db_id, 0);
+    db_unit_list_delete(0, static::$locationType, $this->dbId, 0);
 
     $this->_reset();
 
@@ -368,26 +360,19 @@ class Fleet extends UnitContainer {
    *
    * @return int|string
    */
-  protected function db_insert() {
-    $set_safe_string = db_set_make_safe_string($this->make_db_insert_set());
-
-    $db_fleet_id = 0;
-    if(!empty($set_safe_string)) {
-      doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
-      if(!($db_fleet_id = db_insert_id())) {
-        die('Can not save fleet at ' . __FILE__ . ':' . __LINE__);
-      }
+  public function dbInsert() {
+    $this->dbId = parent::dbInsert();
+    if(empty($this->dbId)) {
+      die('Can not save fleet at ' . __FILE__ . ':' . __LINE__);
     }
 
-    $this->db_id = !empty($db_fleet_id) ? $db_fleet_id : 0;
-    if($this->db_id) {
-//      $this->db_insert_units($this->db_id);
-      $this->unitList->dbSave($this->playerOwnerId, $this);
-    }
+    $this->unitList->setLocatedAt($this);
+    $this->unitList->dbSave();
 
-    $this->db_fleet_get_by_id($db_fleet_id);
+    // TODO - НЕ НУЖНО???????
+    $this->db_fleet_get_by_id($this->dbId);
 
-    return $this->db_id;
+    return $this->dbId;
   }
 
 
@@ -490,7 +475,7 @@ class Fleet extends UnitContainer {
     sn_db_transaction_check(true);
 
     // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-    if(!$this->db_id || ($this->is_returning == 1 && $only_resources)) {
+    if(!$this->dbId || ($this->is_returning == 1 && $only_resources)) {
       return $result;
     }
 
@@ -622,10 +607,8 @@ class Fleet extends UnitContainer {
     // Берем все изменения основных полей
     $field_replace_changes = $this->core_field_set_list;
 
-//    if(!empty($this->ship_delta) || !empty($this->ship_replace))
-    {
-      $this->unitList->dbSave($this->playerOwnerId, $this);
-    }
+    $this->unitList->setLocatedAt($this);
+    $this->unitList->dbSave();
 
     // Добавляем REPLACE ресурсов
     if(!empty($this->resource_replace)) {
@@ -646,16 +629,6 @@ class Fleet extends UnitContainer {
 
     // TODO - пересчитать статистику флота
     return $result;
-  }
-
-  /**
-   * Временная функция, устанавливающая DB_ID текущего флота
-   *
-   * @param $fleet_id
-   */
-  // TODO - НЕЛЬЗЯ ТАК ДЕЛАТЬ! ЛИБО ФЛОТ УЖЕ СУЩЕСТВУЕТ - И ЕСТЬ ИД ЗАПИСИ, ЛИБО ЕГО ЕЩЕ НЕТ - И ТОГДА ИД РАВНО НУЛЮ!
-  public function set_db_id($fleet_id) {
-    $this->db_id = idval($fleet_id);
   }
 
 
@@ -840,9 +813,9 @@ class Fleet extends UnitContainer {
       die('Fleet time not set!');
     }
 
-    $this->db_insert();
+    $this->dbInsert();
 
-    return $this->db_id;
+    return $this->dbId;
   }
 
   /**
@@ -913,52 +886,6 @@ class Fleet extends UnitContainer {
     return $db_set;
   }
 
-  /**
-   * Parses record from `fleet` table to object
-   *
-   * @param array $fleet_row - `fleets` DB record
-   */
-  public function parse_db_row($fleet_row) {
-    $this->_reset();
-
-    if(empty($fleet_row) || !is_array($fleet_row)) {
-      return;
-    }
-
-    $this->db_id = $fleet_row['fleet_id'];
-    $this->playerOwnerId = $fleet_row['fleet_owner'];
-    $this->mission_type = $fleet_row['fleet_mission'];
-
-    $this->target_owner_id = $fleet_row['fleet_target_owner'];
-    $this->group_id = $fleet_row['fleet_group'];
-    $this->is_returning = intval($fleet_row['fleet_mess']);
-
-    $this->time_launch = $fleet_row['start_time'];
-    $this->time_arrive_to_target = $fleet_row['fleet_start_time'];
-    $this->time_mission_job_complete = $fleet_row['fleet_end_stay'];
-    $this->time_return_to_source = $fleet_row['fleet_end_time'];
-
-    $this->fleet_start_planet_id = !empty($fleet_row['fleet_start_planet_id']) ? $fleet_row['fleet_start_planet_id'] : null;
-    $this->fleet_start_galaxy = $fleet_row['fleet_start_galaxy'];
-    $this->fleet_start_system = $fleet_row['fleet_start_system'];
-    $this->fleet_start_planet = $fleet_row['fleet_start_planet'];
-    $this->fleet_start_type = $fleet_row['fleet_start_type'];
-
-    $this->fleet_end_planet_id = $fleet_row['fleet_end_planet_id'];
-    $this->fleet_end_galaxy = $fleet_row['fleet_end_galaxy'];
-    $this->fleet_end_system = $fleet_row['fleet_end_system'];
-    $this->fleet_end_planet = $fleet_row['fleet_end_planet'];
-    $this->fleet_end_type = $fleet_row['fleet_end_type'];
-
-    $this->unitList->loadByLocation($this);
-
-    $this->resource_list = array(
-      RES_METAL     => ceil($fleet_row['fleet_resource_metal']),
-      RES_CRYSTAL   => ceil($fleet_row['fleet_resource_crystal']),
-      RES_DEUTERIUM => ceil($fleet_row['fleet_resource_deuterium']),
-    );
-  }
-
   public function parse_missile_db_row($missile_db_row) {
     $this->_reset();
 
@@ -970,7 +897,7 @@ class Fleet extends UnitContainer {
 //      $irak_original['fleet_start_name'] = $planet_start['name'];
     $this->missile_target = $missile_db_row['primaer'];
 
-    $this->db_id = -$missile_db_row['id'];
+    $this->dbId = -$missile_db_row['id'];
     $this->playerOwnerId = $missile_db_row['fleet_owner'];
     $this->mission_type = MT_MISSILE;
 
@@ -1006,7 +933,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.9
+   * @version 41a6.10
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -1028,7 +955,7 @@ class Fleet extends UnitContainer {
   }
 
   protected function _reset() {
-    $this->db_id = 0;
+    $this->dbId = 0;
     $this->playerOwnerId = 0;
     $this->target_owner_id = null;
     $this->mission_type = 0;
@@ -1077,4 +1004,23 @@ class Fleet extends UnitContainer {
   }
 
 
+
+
+
+
+  /**
+   * Extracts resources value from db_row
+   *
+   * @param Fleet $that
+   * @param array $db_row
+   *
+   * @version 41a6.10
+   */
+  protected static function extractResources(Fleet $that, array &$db_row) {
+    $that->resource_list = array(
+      RES_METAL     => !empty($db_row['fleet_resource_metal']) ? floor($db_row['fleet_resource_metal']) : 0,
+      RES_CRYSTAL   => !empty($db_row['fleet_resource_crystal']) ? floor($db_row['fleet_resource_crystal']) : 0,
+      RES_DEUTERIUM => !empty($db_row['fleet_resource_deuterium']) ? floor($db_row['fleet_resource_deuterium']) : 0,
+    );
+  }
 }

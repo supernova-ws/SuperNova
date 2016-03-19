@@ -53,7 +53,6 @@ class UBEUnit extends Unit {
     if($this->unitId) {
       $this->amplify = $this->info[P_AMPLIFY];
       $this->capacity = $this->info[P_CAPACITY];
-      $this->type = $this->info[P_UNIT_TYPE];
       $this->price[RES_METAL] = $this->info[P_COST][RES_METAL];
       $this->price[RES_CRYSTAL] = $this->info[P_COST][RES_CRYSTAL];
       $this->price[RES_DEUTERIUM] = $this->info[P_COST][RES_DEUTERIUM];
@@ -93,13 +92,13 @@ class UBEUnit extends Unit {
 
   /**
    *
-   * @version 41a6.0
+   * @version 41a6.10
    */
   public function calc_pool_stats() {
     // Заполняем информацию о кораблях в информации флота
-    $this->pool_attack = $this->randomized_attack * $this->count;
-    $this->pool_shield = $this->randomized_shield * $this->count;
-    $this->pool_armor = $this->randomized_armor * $this->count;
+    $this->pool_attack = $this->randomized_attack * $this->getCount();
+    $this->pool_shield = $this->randomized_shield * $this->getCount();
+    $this->pool_armor = $this->randomized_armor * $this->getCount();
   }
 
   /**
@@ -120,8 +119,8 @@ class UBEUnit extends Unit {
     $this->randomized_attack = floor($this->bonus_attack * ($is_simulator ? 1 : mt_rand(UBE_RANDOMIZE_FROM, UBE_RANDOMIZE_TO) / 100));
     $this->randomized_shield = floor($this->bonus_shield * ($is_simulator ? 1 : mt_rand(UBE_RANDOMIZE_FROM, UBE_RANDOMIZE_TO) / 100));
 
-    $this->pool_attack = $this->randomized_attack * $this->count;
-    $this->pool_shield = $this->randomized_shield * $this->count;
+    $this->pool_attack = $this->randomized_attack * $this->getCount();
+    $this->pool_shield = $this->randomized_shield * $this->getCount();
 
     $this->unit_count_boom = 0;
   }
@@ -133,7 +132,7 @@ class UBEUnit extends Unit {
    *
    * @param Bonus $bonus
    *
-   * @version 41a6.0
+   * @version 41a6.10
    */
   public function addBonus(Bonus $bonus) {
     $this->unit_bonus->mergeBonus($bonus);
@@ -144,7 +143,7 @@ class UBEUnit extends Unit {
   /**
    * @param bool $is_simulator
    *
-   * @version 41a6.0
+   * @version 41a6.10
    */
   public function ube_analyze_unit($is_simulator) {
     // Вычисляем сколько юнитов осталось и сколько потеряно
@@ -160,7 +159,7 @@ class UBEUnit extends Unit {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function restore_unit($is_simulator) {
-    if($this->type != UNIT_DEFENCE || $this->units_lost <= 0) {
+    if($this->getType() != UNIT_DEFENCE || $this->units_lost <= 0) {
       return;
     }
 
@@ -184,7 +183,7 @@ class UBEUnit extends Unit {
 
     $this->units_restored = $units_giveback;
     $this->units_lost -= $units_giveback;
-    $this->count += $units_giveback;
+    $this->adjustCount($units_giveback);
   }
 
   /**
@@ -194,17 +193,17 @@ class UBEUnit extends Unit {
    */
   public function receive_damage($is_simulator) {
     // TODO - Добавить взрывы от полуповрежденных юнитов - т.е. заранее вычислить из убитых юнитов еще количество убитых умножить на вероятность от структуры
-    if($this->count <= 0) {
+    if($this->getCount() <= 0) {
       return;
     }
 
-    $start_count = $this->count;
+    $start_count = $this->getCount();
 
     // Общая защита одного юнита
     $pool_base_defence = $this->randomized_shield + $this->randomized_armor;
 
     // Вычисляем, сколько юнитов взорвалось полностью, но не больше, чем их осталось во флоте
-    $units_lost = min(floor($this->attack_income / $pool_base_defence), $this->count); // $units_lost_full всегда не больше $this->count
+    $units_lost = min(floor($this->attack_income / $pool_base_defence), $this->getCount()); // $units_lost_full всегда не больше $this->count
 
     // Уменьшаем дамадж на ту же сумму
     $this->attack_income -= $units_lost * $pool_base_defence;
@@ -214,14 +213,14 @@ class UBEUnit extends Unit {
     // Уменьшаем общую броню на броню уничтоженных юнитов, но не больше, чем есть
     $this->pool_armor -= min($units_lost * $this->randomized_armor, $this->pool_armor);
     // Вычитаем уничтоженные юниты из общего количества юнитов
-    $this->count -= $units_lost;
+    $this->adjustCount(-$units_lost);
 
     // Проверяем - не взорвался ли текущий юнит
-    while($this->count > 0 && $this->attack_income > 0) {
+    while($this->getCount() > 0 && $this->attack_income > 0) {
       $this->attack_damaged_unit($is_simulator);
     }
 
-    $this->units_destroyed += $start_count - $this->count;
+    $this->units_destroyed += $start_count - $this->getCount();
   }
 
   /**
@@ -275,7 +274,7 @@ class UBEUnit extends Unit {
     // Проверяем - осталась ли броня на текущем корабле и вааще
     if($this->pool_armor <= 0 || $armor_left <= 0) {
       // Не осталось - корабль уничтожен
-      $this->count--;
+      $this->adjustCount(-1);
 
       return;
     }
@@ -287,8 +286,8 @@ class UBEUnit extends Unit {
     if($armor_left_percent <= UBE_CRITICAL_DAMAGE_THRESHOLD) {
       // Дамадж пошёл по структуре. Чем более поврежден юнит - тем больше шансов у него взорваться
       $random = $is_simulator ? UBE_CRITICAL_DAMAGE_THRESHOLD / 2 : mt_rand(0, 100);
-      if(mt_rand(0, 100) >= $armor_left_percent) {
-        $this->count--;
+      if($random >= $armor_left_percent) {
+        $this->adjustCount(-1);
         $this->unit_count_boom++;
 
         return;

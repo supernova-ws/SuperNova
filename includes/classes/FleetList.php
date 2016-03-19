@@ -27,7 +27,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a6.1
+   * @version 41a6.10
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -42,7 +42,7 @@ class FleetList extends ArrayAccessV2 {
        * @var Fleet $fleet
        */
       $fleet = $this->_createElement();
-      $fleet->parse_db_row($row);
+      $fleet->dbRowParse($row);
 
       if(isset($this[$fleet->getDbId()])) {
         // Нужно ли ????
@@ -62,7 +62,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.1
+   * @version 41a6.10
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -116,7 +116,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.1
+   * @version 41a6.10
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.1
+   * @version 41a6.10
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(

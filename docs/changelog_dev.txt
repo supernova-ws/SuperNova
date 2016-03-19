@@ -621,6 +621,8 @@ UNUSED    define('BONUS_SPEED',               7);  // Speed bonus
 * @method int borp() borp(int $int1, int $int2) multiply two integers
 
 
+ILocatedAt - проапгрейдится до 5.4 и использовать traits
+
 UnitList - фильтрация по типам хранимых объектов через $CLASS_NAME::is_in_group()
     - соответственно переделать Fleet::$resource_list на UnitList
     - выделить shipList в Fleet
@@ -644,14 +646,23 @@ object(Fleet)#110 (31) {
     - Избавиться от locatedAtType locatedAtDbId - завернуть в методы на случай если locatedAt
 
 
+// TODO - СЕЙЧАС
+? DBRow
+?   - Unit
+?   - UnitContainer
+?   - UnitList
+
 #ctv
 
 BONUS_ABILITY - deprecated ???
 
-Теперь flying_fleet_handler не вызывается, если установлен флаг IN_AJAX
-
 
 На новых наградах 8 марта-2106 не отображается надписи
+
+
+#ctv
+Теперь flying_fleet_handler не вызывается, если установлен флаг IN_AJAX
+
 
 2016-03-17 21:43:16 41a6.5
 [@] Константы

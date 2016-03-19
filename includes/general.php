@@ -1631,11 +1631,11 @@ function sec_player_ip() {
  *
  * @param int $value
  *
- * @return bool|string
+ * @return string|null
  */
 function unixTimeStampToSqlString($value) {
-  $result = date(FMT_DATE_TIME_SQL, $value);
-  return $result ? $result : 0;
+  $result = !empty($value) ? date(FMT_DATE_TIME_SQL, $value) : null;
+  return $result ? $result : null;
 }
 
 /**
@@ -1646,7 +1646,7 @@ function unixTimeStampToSqlString($value) {
  * @return int
  */
 function sqlStringToUnixTimeStamp($value) {
-  $result = strtotime($value);
+  $result = !empty($value) ? strtotime($value) : 0;
   return $result ? $result : 0;
 }
 

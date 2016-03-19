@@ -13,7 +13,6 @@
  */
 class Player extends UnitContainer {
   // Inherited from DBRow
-  protected $db_id = 0;
   /**
    * Table name in DB
    *
@@ -32,7 +31,7 @@ class Player extends UnitContainer {
    * @var array
    */
   protected static $_scheme = array(
-    'db_id'     => array(
+    'dbId'     => array(
       P_DB_FIELD => 'id',
 //      P_FUNC_INPUT => 'floatval',
     ),
@@ -65,15 +64,12 @@ class Player extends UnitContainer {
    * @var int $locationType
    */
   public static $locationType = LOC_USER;
-//  /**
-//   * @var int $db_id
-//   */
-//  protected $db_id = 0;
   /**
    * @var UnitList $unitList
    */
   public $unitList = null;
 
+  // Innate properties
   /**
    * @var Bonus $player_bonus
    */
@@ -182,7 +178,8 @@ class Player extends UnitContainer {
     $this->dbRowParse($this->db_row);
 
     // Загружаем юниты
-    $this->unitList->loadByLocation($this);
+    $this->unitList->setLocatedAt($this);
+    $this->unitList->dbLoad($this->dbId);
 
     // Высчитываем бонусы
     $this->player_bonus->add_unit_by_snid(MRC_ADMIRAL, mrc_get_level($this->db_row, false, MRC_ADMIRAL));

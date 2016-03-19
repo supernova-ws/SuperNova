@@ -41,7 +41,7 @@ class UBEUnitList extends ArrayAccessV2 {
   /**
    * @return UBEUnit
    *
-   * @version 41a6.0
+   * @version 41a6.10
    */
   public function _createElement() {
     return new UBEUnit();
@@ -79,7 +79,7 @@ class UBEUnitList extends ArrayAccessV2 {
     foreach($this->_container as $UBEUnit) {
       // TODO: Работа по группам - группа "Уничтожители лун"
       if($UBEUnit->unitId == SHIP_HUGE_DEATH_STAR) {
-        $reapers += $UBEUnit->count;
+        $reapers += $UBEUnit->getCount();
       }
     }
 

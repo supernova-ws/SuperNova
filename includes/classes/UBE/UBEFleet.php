@@ -94,7 +94,7 @@ class UBEFleet {
   /**
    * @param UBEPlayerList $players
    *
-   * @version 41a6.2
+   * @version 41a6.10
    */
   public function ube_load_from_players(UBEPlayerList $players) {
     $this->is_attacker = $players[$this->owner_id]->getSide();
@@ -114,7 +114,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a6.2
+   * @version 41a6.10
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -154,7 +154,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a6.2
+   * @version 41a6.10
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -182,7 +182,7 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.2
+   * @version 41a6.10
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->getDbId();
@@ -427,7 +427,7 @@ class UBEFleet {
 
     $this->fleet_capacity = 0;
     foreach($this->unit_list->_container as $UBEUnit) {
-      $this->fleet_capacity += $UBEUnit->capacity * $UBEUnit->count;
+      $this->fleet_capacity += $UBEUnit->capacity * $UBEUnit->getCount();
 
       if($UBEUnit->units_lost) {
         foreach($UBEUnit->price as $resource_id => $unit_resource_price) {
@@ -439,7 +439,7 @@ class UBEFleet {
           $this->resources_lost_on_units[$resource_id] += $resources_lost;
           // Если это корабль - прибавляем потери к обломкам на орбите
           // TODO - опция выбрасывания обороны в обломки
-          if($UBEUnit->type == UNIT_SHIPS) {
+          if($UBEUnit->getType() == UNIT_SHIPS) {
             $this->resources_lost_on_ships[$resource_id] += $resources_lost;
           }
         }
@@ -473,7 +473,7 @@ class UBEFleet {
     $ship_count_lost = $this->unit_list->countUnitsLost();
 
     $objFleet2 = new Fleet();
-    $objFleet2->set_db_id($this->db_id);
+    $objFleet2->setDbId($this->db_id);
 
     // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
     if($this->is_attacker == UBE_PLAYER_IS_ATTACKER && $reapers_status == UBE_MOON_REAPERS_DIED) {
@@ -486,7 +486,7 @@ class UBEFleet {
         // Просматриваем результаты изменения флотов
         foreach($this->unit_list->_container as $UBEUnit) {
           // Перебираем аутком на случай восстановления юнитов
-          if(($units_left = $UBEUnit->count - (float)$UBEUnit->units_lost) > 0) {
+          if(($units_left = $UBEUnit->getCount() - (float)$UBEUnit->units_lost) > 0) {
             $fleet_real_array[$UBEUnit->unitId] = $units_left;
           };
         }
@@ -552,7 +552,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a6.2
+   * @version 41a6.10
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     UBEDebug::unit_dump_header();
@@ -562,7 +562,7 @@ class UBEFleet {
 
       // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
       foreach($defending_fleet->unit_list->_container as $defending_unit_pool) {
-        if($defending_unit_pool->count <= 0) {
+        if($defending_unit_pool->getCount() <= 0) {
           continue;
         }
 
@@ -593,7 +593,7 @@ class UBEFleet {
   public function get_unit_count() {
     $result = 0;
     foreach($this->unit_list->_container as $UBEUnit) {
-      $result += $UBEUnit->count;
+      $result += $UBEUnit->getCount();
     }
 
     return $result;

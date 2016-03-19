@@ -2,10 +2,20 @@
 
 /**
  * Class Unit
+ *
+ * @method int getCount()
+ * @method int getUnitId()
+ * @method int getType()
+ * @method int getTimeStart()
+ * @method int getTimeFinish()
+ * @see Unit::__get()
+ *
  */
-class Unit extends DBRow {
-  // Inherited from DBRow
-  public $db_id = 0;
+class Unit extends DBRowLocatedAtParent {
+
+
+  // DBRow inheritance *************************************************************************************************
+
   /**
    * Table name in DB
    *
@@ -24,54 +34,69 @@ class Unit extends DBRow {
    * @var array
    */
   protected static $_scheme = array(
-    'db_id'        => array(
+    'dbId'          => array(
       P_DB_FIELD => 'unit_id',
-//      P_FUNC_INPUT => 'floatval',
     ),
-    'ownerId'      => array(
-      P_DB_FIELD => 'unit_player_id',
-//      P_FUNC_INPUT => 'floatval',
+
+    // Location data is taken from container
+    'playerOwnerId' => array(
+      P_DB_FIELD    => 'unit_player_id',
+      P_FUNC_INJECT => 'static::injectLocation',
+      P_READ_ONLY   => true,
     ),
-    'locationType' => array(
-      P_DB_FIELD   => 'unit_location_type',
-      P_FUNC_INPUT => 'intval',
+    'locatedAtType' => array(
+      P_DB_FIELD  => 'unit_location_type',
+      P_READ_ONLY => true,
     ),
-    'locationId'   => array(
-      P_DB_FIELD => 'unit_location_id',
-//      P_FUNC_INPUT => 'floatval',
+    'locatedAtDbId' => array(
+      P_DB_FIELD  => 'unit_location_id',
+      P_READ_ONLY => true,
     ),
-    'type'         => array(
+
+    'type'   => array(
       P_DB_FIELD   => 'unit_type',
       P_FUNC_INPUT => 'intval',
     ),
-    'unitId'       => array(
+    'unitId' => array(
       P_DB_FIELD => 'unit_snid',
       P_FUNC_SET => 'setUnitId',
 //      P_FUNC_INPUT => 'floatval',
     ),
-    'count'        => array(
+    'count'  => array(
       P_DB_FIELD   => 'unit_level',
       P_FUNC_INPUT => 'floatval',
     ),
-//    'timeStartSql'  => array(
-//      P_DB_FIELD => 'unit_time_start',
-//    ),
-//    'timeFinishSql' => array(
-//      P_DB_FIELD => 'unit_time_finish',
-//    ),
-    'timeStart'    => array(
+
+    'timeStart'  => array(
       P_DB_FIELD    => 'unit_time_start',
       P_FUNC_INPUT  => 'sqlStringToUnixTimeStamp',
       P_FUNC_OUTPUT => 'unixTimeStampToSqlString',
     ),
-    'timeFinish'   => array(
+    'timeFinish' => array(
       P_DB_FIELD    => 'unit_time_finish',
       P_FUNC_INPUT  => 'sqlStringToUnixTimeStamp',
       P_FUNC_OUTPUT => 'unixTimeStampToSqlString',
     ),
   );
 
-  // Innate statics
+  public function __construct() {
+    parent::__construct();
+    $this->unit_bonus = new Bonus();
+  }
+
+  /**
+   * Является ли юнит пустым - т.е. при исполнении _dbSave должен быть удалён
+   *
+   * @return bool
+   */
+  public function isEmpty() {
+    return $this->count <= 0 || $this->getDbId() == 0;
+  }
+
+
+
+  // New statics *******************************************************************************************************
+
   /**
    * @var bool
    */
@@ -84,37 +109,6 @@ class Unit extends DBRow {
    * @var array
    */
   protected static $_group_unit_id_list = array();
-
-  public $unitId = 0;
-  public $count = 0;
-  public $type = 0;
-
-  public $playerOwnerId = 0;
-  /**
-   * @var Player|Fleet $location
-   */
-  public $location = null;
-  public $locationType = LOC_NONE;
-  public $locationDbId = 0;
-
-  public $timeStart = 0;
-  public $timeFinish = 0;
-
-  /**
-   * Passport info per unit
-   *
-   * @var array $info
-   */
-  public $info = array();
-
-//  /**
-//   * @var array
-//   */
-//  protected $bonus = array();
-  /**
-   * @var Bonus $unit_bonus
-   */
-  public $unit_bonus = null;
 
   /**
    * Статический иницилизатор. ДОЛЖЕН БЫТЬ ВЫЗВАН ПЕРЕД ИСПОЛЬЗВОАНИЕМ КЛАССА!
@@ -148,76 +142,27 @@ class Unit extends DBRow {
     return isset(static::$_group_unit_id_list[$unit_id]);
   }
 
-  public function __construct() {
-    parent::__construct();
-    $this->unit_bonus = new Bonus();
-  }
 
-  // TODO - __GET, __SET, __IS_NULL, __EMPTY - короче, магметоды
-  // А еще нужны методы для вытаскивания ЧИСТОГО и БОНУСНОГО значений
-  // Магметоды вытаскивают чистые значения. А если нам нужны бонусные - вытаскивают их спецметоды ??? Хотя бонусные вроде используются чаще...
-  // Наоборот - для совместимости с MRC_GET_LEVEL()
+  // Properties from fields ********************************************************************************************
 
-//  /**
-//   * @param $name
-//   */
-//  public function __get($name) {
-//    // TODO: Implement __get() method.
-//  }
-//
-//  public function __set($name, $value) {
-//    // TODO: Implement __set() method.
-//  }
-//
-//  public function __isset($name) {
-//    // TODO: Implement __isset() method.
-//  }
-//
-//  public function __unset($name) {
-//    // TODO: Implement __unset() method.
-//  }
+  public $unitId = 0;
+  // TODO - Type is extracted on-the-fly from $info
+  protected $type = 0;
 
-//  /**
-//   * Является ли юнит новым - т.е. не имеет своей записи в БД
-//   *
-//   * @return bool
-//   */
-//  public function isNew() {
-//    return $this->db_id == 0;
-//  }
-
-  /**
-   * Является ли юнит пустым - т.е. при исполнении _dbSave должен быть удалён
-   *
-   * @return bool
-   */
-  public function isEmpty() {
-    return $this->count <= 0;
-  }
-
-//  public function dbRowParse($db_row) {
-//    parent::dbRowParse($db_row);
-//
-//    // TODO - делать лукап по локейшену ?
-//
-//    // Unit specific
-//    $this->info = get_unit_param($this->unitId);
-//  }
-//
   public function setUnitId($unitId) {
     // TODO - Reset combat stats??
     $this->unitId = $unitId;
 
     if($this->unitId) {
       $this->info = get_unit_param($this->unitId);
+      $this->type = $this->info[P_UNIT_TYPE];
     } else {
       $this->info = array();
     }
   }
 
-  public function getCount() {
-    return $this->count;
-  }
+
+  protected $count = 0;
 
   public function setCount($value) {
     // TODO - Reset combat stats??
@@ -226,7 +171,7 @@ class Unit extends DBRow {
     }
     $this->count = $value;
 
-    return $this->getCount();
+    return $this->count;
   }
 
   /**
@@ -234,26 +179,53 @@ class Unit extends DBRow {
    *
    * @return int
    */
+  // TODO - some calcs ??????
   public function adjustCount($value) {
     if($this->count + $value < 0) {
       classSupernova::$debug->error('Can not let Unit::$count value be less then a zero - adjustCount with negative greater then $count');
     }
     $this->count += $value;
 
-    return $this->getCount();
+    return $this->count;
   }
-
 
   /**
-   * @param int                        $ownerId
-   * @param UnitContainer|Player|Fleet $location
+   * Extracts resources value from db_row
+   *
+   * @param Unit  $that
+   * @param array $db_row
+   *
+   * @version 41a6.10
    */
-  public function setLocationAndOwner($ownerId, $location) {
-    $this->location = $location;
-    $this->locationType = $location::$locationType;
-    $this->locationDbId = $location->getDbId();
-
-    $this->playerOwnerId = $ownerId;
+  protected static function injectLocation(Unit $that, array &$db_row) {
+    $db_row['unit_player_id'] = $that->getPlayerOwnerId();
+    $db_row['unit_location_type'] = $that->getLocationType();
+    $db_row['unit_location_id'] = $that->getLocationDbId();
   }
+
+
+  protected $timeStart = 0;
+  protected $timeFinish = 0;
+
+
+  // Internal properties ***********************************************************************************************
+
+  /**
+   * Passport info per unit
+   *
+   * @var array $info
+   */
+  public $info = array();
+
+  /**
+   * @var Bonus $unit_bonus
+   */
+  public $unit_bonus = null;
+
+
+  // TODO - __GET, __SET, __IS_NULL, __EMPTY - короче, магметоды
+  // А еще нужны методы для вытаскивания ЧИСТОГО и БОНУСНОГО значений
+  // Магметоды вытаскивают чистые значения. А если нам нужны бонусные - вытаскивают их спецметоды ??? Хотя бонусные вроде используются чаще...
+  // Наоборот - для совместимости с MRC_GET_LEVEL()
 
 }

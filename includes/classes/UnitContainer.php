@@ -1,15 +1,23 @@
 <?php
 
 /**
- * Object that have attached units via locationType/dbId
+ * Object that have attached UnitList via locationType/dbId
  */
-abstract class UnitContainer extends DBRow {
+abstract class UnitContainer extends DBRowLocatedAt {
+
+
+  // ILocation implementation ******************************************************************************************
+
   /**
-   * Type of this location
+   * Type of this location - READ ONLY!
    *
    * @var int $locationType
    */
-  public static $locationType = LOC_NONE;
+  public static $locationType = LOC_NONE; // READ ONLY!
+
+
+  // UnitContainer implementation **************************************************************************************
+
   /**
    * @var UnitList $unitList
    */
@@ -21,21 +29,21 @@ abstract class UnitContainer extends DBRow {
   }
 
   /**
-   * @return int
+   * Временная функция, устанавливающая DB_ID текущего флота
+   *
+   * @param $fleet_id
    */
-  public function getDbId() {
-    return $this->db_id;
+  // TODO - НЕЛЬЗЯ ТАК ДЕЛАТЬ! ЛИБО ФЛОТ УЖЕ СУЩЕСТВУЕТ - И ЕСТЬ ИД ЗАПИСИ, ЛИБО ЕГО ЕЩЕ НЕТ - И ТОГДА ИД РАВНО НУЛЮ!
+  public function setDbId($fleet_id) {
+    $this->dbId = idval($fleet_id);
+    $this->unitList->setLocatedAt($this);
   }
 
-  public function getLocationDbId() {
-    return $this->getDbId();
-  }
-
-  abstract public function getPlayerOwnerId();
 
   public function dbRowParse($db_row) {
     parent::dbRowParse($db_row);
-    $this->unitList->loadByLocation($this);
+    $this->unitList->setLocatedAt($this);
+    $this->unitList->dbLoad($this->dbId);
   }
 
 }
