@@ -660,8 +660,12 @@ BONUS_ABILITY - deprecated ???
 На новых наградах 8 марта-2106 не отображается надписи
 
 
-#ctv
-Теперь flying_fleet_handler не вызывается, если установлен флаг IN_AJAX
+2016-03-19 18:18:50 41a6.11
+[@] Код
+    Теперь flying_fleet_handler не вызывается, если установлен флаг IN_AJAX
+    Удалёны неиспользуемые JS библиотеки:
+        - jquery.bpopup.js
+        - jquery.grayscale.js
 
 
 2016-03-17 21:43:16 41a6.5
