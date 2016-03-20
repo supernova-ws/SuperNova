@@ -252,9 +252,9 @@ class Fleet extends UnitContainer {
     return false;
   }
 
-  public function getPlayerOwnerId() {
-    return $this->playerOwnerId;
-  }
+//  public function getPlayerOwnerId() {
+//    return $this->playerOwnerId;
+//  }
 
   
   
@@ -903,7 +903,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.14
+   * @version 41a6.15
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -980,7 +980,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.14
+   * @version 41a6.15
    */
   protected function extractResources(array &$db_row) {
     $this->resource_list = array(

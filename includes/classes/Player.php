@@ -12,6 +12,38 @@
  * @method float getStatTotalPoints()
  */
 class Player extends UnitContainer {
+
+  /**
+   * Type of this location
+   *
+   * @var int $locationType
+   */
+  public static $locationType = LOC_USER;
+
+
+  /**
+   * Returns location's player owner ID
+   *
+   * @return int
+   */
+  public function getPlayerOwnerId() {
+    return $this->dbId;
+  }
+
+
+  public function setLocatedAt($location) {
+     // Doing nothing ?????????
+     // $this->locatedAt = $this;
+  }
+
+
+
+
+
+
+
+
+
   // Inherited from DBRow
   /**
    * Table name in DB
@@ -50,24 +82,19 @@ class Player extends UnitContainer {
       P_DB_FIELD   => 'id_planet',
 //      P_FUNC_INPUT => 'floatval',
     ),
-//    'timeFinish'   => array(
-//      P_DB_FIELD    => 'unit_time_finish',
-//      P_FUNC_INPUT  => 'strtotime',
-//      P_FUNC_OUTPUT => 'unixTimeStampToSqlString',
-//    ),
   );
 
-  // Inherited from UnitContainer
-  /**
-   * Type of this location
-   *
-   * @var int $locationType
-   */
-  public static $locationType = LOC_USER;
-//  /**
-//   * @var UnitList $unitList
-//   */
-//  protected $unitList = null;
+
+
+
+
+
+
+
+
+
+
+
 
   // Innate properties
   /**
@@ -163,6 +190,7 @@ class Player extends UnitContainer {
    */
   public function __construct() {
     parent::__construct();
+    $this->locatedAt = $this;
     $this->player_bonus = new Bonus();
   }
 
@@ -263,8 +291,5 @@ class Player extends UnitContainer {
     $this->name = $name;
   }
 
-  public function getPlayerOwnerId() {
-    return $this->dbId;
-  }
 
 }

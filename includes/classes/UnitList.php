@@ -12,31 +12,50 @@
  * @property Unit[] $_container
  *
  */
-class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
+class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
 
-  // ILocation from ILocatedAt implementation **************************************************************************
+  // Properties ********************************************************************************************************
+
+  // ILocation implementation ==========================================================================================
+
+  /**
+   * Type of this location
+   *
+   * @var int $locationType
+   */
+  protected static $locationType = LOC_UNIT_LIST;
+  /**
+   * @var ILocation $locatedAt
+   */
+  protected $locatedAt = null;
+
+
+  // New properties ====================================================================================================
+
+  /**
+   * @var Unit[] $mapUnitIdToDb
+   */
+  // Нужно для корректного сохранения новых юнитов. Их db_id = 0, поэтому при добавлении в контейнер они будут перезаписывать друг друга
+  // Соответственно - при сохраненнии флота надо проходить dbSave именно по $mapUnitIdToDb
+  protected $mapUnitIdToDb = array();
+
+
+  // Methods ***********************************************************************************************************
+
+  // ILocation implementation ==========================================================================================
 
   public function getPlayerOwnerId() {
     return is_object($this->locatedAt) ? $this->locatedAt->getPlayerOwnerId() : null;
   }
 
   public function getLocationType() {
-    return is_object($this->locatedAt) ? $this->locatedAt->getLocationType() : 0;
+    return is_object($this->locatedAt) ? $this->locatedAt->getLocationType() : LOC_NONE;
   }
 
   public function getLocationDbId() {
     return is_object($this->locatedAt) ? $this->locatedAt->getLocationDbId() : null;
   }
-
-
-
-  // ILocatedAt implementation ***************************************************************************************
-
-  /**
-   * @var ILocation $locatedAt
-   */
-  protected $locatedAt = null;
 
   // TODO - достаточно установить один раз Unit::LocatedAt на UnitList, что бы затем все юниты автоматически брали наиболее актуальный locatedAt
   public function setLocatedAt($location) {
@@ -51,9 +70,16 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
     return $this->locatedAt;
   }
 
+  public function getLocatedAtType() {
+    return is_object($this->locatedAt) ? $this->locatedAt->getLocationType() : LOC_NONE;
+  }
+
+  public function getLocatedAtDbId() {
+    return is_object($this->locatedAt) ? $this->locatedAt->getLocationDbId() : 0;
+  }
 
 
-  // ArrayAccessV2 inheritance *****************************************************************************************
+  // ArrayAccessV2 inheritance =========================================================================================
 
   /**
    * Adds link to unit object also to mapUnitIdToDb
@@ -77,15 +103,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
   }
 
 
-
-  // IDbRow implementation *********************************************************************************************
-
-  /**
-   * @var Unit[] $mapUnitIdToDb
-   */
-  // Нужно для корректного сохранения новых юнитов. Их db_id = 0, поэтому при добавлении в контейнер они будут перезаписывать друг друга
-  // Соответственно - при сохраненнии флота надо проходить dbSave именно по $mapUnitIdToDb
-  protected $mapUnitIdToDb = array();
+  // IDbRow implementation =============================================================================================
 
   /**
    * Loading object from DB by primary ID
@@ -155,12 +173,12 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
 
 
 
-  // Other *************************************************************************************************************
+  // Other =============================================================================================================
 
   /**
    * @return Unit
    *
-   * @version 41a6.14
+   * @version 41a6.15
    */
   // TODO - Factory
   public function _createElement() {
@@ -255,6 +273,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
   }
 
 
+  // TODO - DEBUG - REMOVE =============================================================================================
   public function _dump() {
     global $lang;
 
@@ -356,7 +375,6 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
   }
 
 
-  // TODO - DEBUG
   public function unitZeroDbId() {
     foreach($this->mapUnitIdToDb as $unit) {
       $unit->zeroDbId();

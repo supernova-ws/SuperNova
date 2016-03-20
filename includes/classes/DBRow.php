@@ -380,12 +380,12 @@ abstract class DBRow implements IDbRow {
 
     $set = array();
 //pdump($field_set);
-    pdump($this->propertiesAdjusted);
+//pdump($this->propertiesAdjusted);
     foreach($field_set as $fieldName => $value) {
       if(!($changedProperty = $this->isFieldChanged($fieldName))) {
         continue;
       }
-      pdump($changedProperty);
+//pdump($changedProperty);
       // TODO - separate sets from adjusts
       if(array_key_exists($changedProperty, $this->propertiesAdjusted)) {
         $value = "`{$fieldName}` + ($value)"; // braces for negative values
@@ -394,7 +394,7 @@ abstract class DBRow implements IDbRow {
       $set[] = "`{$fieldName}` = $value";
     }
     $set_string = implode(',', $set);
-    pdump($set_string, get_called_class());
+//pdump($set_string, get_called_class());
 
     return empty($set_string)
       ? true

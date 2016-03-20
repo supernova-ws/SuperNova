@@ -13,7 +13,14 @@
  * @see Unit::__get()
  *
  */
-class Unit extends DBRowLocatedAtParent {
+class Unit extends DBRowLocation {
+
+  /**
+   * Type of this location
+   *
+   * @var int $locationType
+   */
+  protected static $locationType = LOC_UNIT_NUMERIC;
 
 
   // DBRow inheritance *************************************************************************************************
@@ -42,9 +49,9 @@ class Unit extends DBRowLocatedAtParent {
 
     // Location data is taken from container
     'playerOwnerId' => array(
-      P_DB_FIELD    => 'unit_player_id',
+      P_DB_FIELD      => 'unit_player_id',
       P_METHOD_INJECT => 'injectLocation',
-      P_READ_ONLY   => true,
+      P_READ_ONLY     => true,
     ),
 //    'locationType' => array(
 //      P_DB_FIELD  => 'unit_location_type',
@@ -122,7 +129,6 @@ class Unit extends DBRowLocatedAtParent {
   public $unit_bonus = null;
 
 
-
   // DBRow inheritance *************************************************************************************************
 
   public function __construct() {
@@ -130,12 +136,12 @@ class Unit extends DBRowLocatedAtParent {
     $this->unit_bonus = new Bonus();
   }
 
+  // TODO - пустой так же если нет locatedAt
+  // или DBID
+  // или locationType == LOC_NONE
   public function isEmpty() {
     return $this->count <= 0;
   }
-
-
-
 
 
 
@@ -176,7 +182,6 @@ class Unit extends DBRowLocatedAtParent {
 
   // Properties from fields ********************************************************************************************
 
-
   public function setUnitId($unitId) {
     // TODO - Reset combat stats??
     $this->unitId = $unitId;
@@ -189,8 +194,6 @@ class Unit extends DBRowLocatedAtParent {
     }
   }
 
-
-
   public function setCount($value) {
 //pdump(debug_backtrace());
 //pdie('setCount');
@@ -199,6 +202,7 @@ class Unit extends DBRowLocatedAtParent {
       classSupernova::$debug->error('Can not set Unit::$count to negative value');
     }
     $this->_count = $value;
+
 //    $this->propertiesChanged['count'] = true;
 
     return $this->_count;
@@ -227,15 +231,13 @@ class Unit extends DBRowLocatedAtParent {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.14
+   * @version 41a6.15
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();
-    $db_row['unit_location_type'] = $this->getLocationType();
-    $db_row['unit_location_id'] = $this->getLocationDbId();
+    $db_row['unit_location_type'] = $this->getLocatedAtType();
+    $db_row['unit_location_id'] = $this->getLocatedAtDbId();
   }
-
-
 
   // TODO - __GET, __SET, __IS_NULL, __EMPTY - короче, магметоды
   // А еще нужны методы для вытаскивания ЧИСТОГО и БОНУСНОГО значений

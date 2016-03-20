@@ -3,17 +3,7 @@
 /**
  * Object that have attached UnitList via locationType/dbId
  */
-abstract class UnitContainer extends DBRowLocatedAt {
-
-
-  // ILocation implementation ******************************************************************************************
-
-  /**
-   * Type of this location - READ ONLY!
-   *
-   * @var int $locationType
-   */
-  public static $locationType = LOC_NONE; // READ ONLY!
+abstract class UnitContainer extends DBRowLocation {
 
 
   // UnitContainer implementation **************************************************************************************

@@ -25,4 +25,24 @@ interface ILocation {
    */
   public function getLocationDbId();
 
+
+  /**
+   * Set parent location object to use by location functions
+   *
+   * @param ILocation|null $location
+   */
+  public function setLocatedAt($location);
+
+  /**
+   * Returns parent location object
+   *
+   * @return ILocation|null
+   */
+  public function getLocatedAt();
+
+
+  public function getLocatedAtType();
+
+  public function getLocatedAtDbId();
+
 }

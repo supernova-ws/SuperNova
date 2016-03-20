@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.14');
+define('SN_VERSION', '41a6.15');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -175,6 +175,8 @@ define('LOC_MOON',     3); // Translates to `planets` table planet_type = 3
 define('LOC_USER',     4);
 define('LOC_FLEET',    5);
 define('LOC_ALLY',     6);
+define('LOC_UNIT_NUMERIC',     7);
+define('LOC_UNIT_LIST',     8);
 
 // ТОЛЬКО ВНУТРЕНЕЕ!!!
 define('LOC_UNIT',    'LOC_UNIT');

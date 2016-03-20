@@ -621,7 +621,7 @@ UNUSED    define('BONUS_SPEED',               7);  // Speed bonus
 * @method int borp() borp(int $int1, int $int2) multiply two integers
 
 
-ILocatedAt - проапгрейдится до 5.4 и использовать traits
+ILocation - проапгрейдится до 5.4 и использовать traits
 
 UnitList - фильтрация по типам хранимых объектов через $CLASS_NAME::is_in_group()
     - соответственно переделать Fleet::$resource_list на UnitList
@@ -686,12 +686,15 @@ L3 - helper - simplifies some routine operations
     - где-то наверное оно используется - в запосах, например?
 
 
-Уважать P_DB_READ_ONLY в сеттере ?
 
 ?????? Еще один слой трансляции для UnitCount для доступа к UnitList по SNID через map ????????????
     - Ведь это же самый распространённый случай - доступ к юниту по его
     - UnitContainerTranslator
 
+
+Уважать P_DB_READ_ONLY в сеттере ?
+    + Новая опция P_DB_READ_RESTRICTED - для тех методов, которые всё-таки нельзя через получить снаружи
+        - А это просто переписать геттер только для поддержки $_property свойств - с подчёркиванием. Остальные - либо открыты, либо закрыты, либо через геттер
 
 #ctv
 
