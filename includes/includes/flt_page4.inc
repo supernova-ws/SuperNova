@@ -13,7 +13,7 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
 
 $objFleet = new Fleet();
 $objFleet->db_fleet_get_by_id($fleetid);
-if(!$objFleet->getDbId()) {
+if(!$objFleet->dbId) {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
 

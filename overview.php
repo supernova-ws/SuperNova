@@ -39,17 +39,17 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 //pvar_dump($player->player_bonus);
 
 $fleet = new Fleet();
-$fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 80;", true);
+$fleet->dbLoad(80);
+
+//$fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 80;", true);
 //$fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 8;", true);
 //pdump($fleet_row);
-$fleet->dbRowParse($fleet_row);
+//$fleet->dbRowParse($fleet_row);
 //pdie('disabled for debug purposes');
 
-$fleet->setDbId(81);
-
-foreach($fleet->unitList->mapUnitIdToDb as $unit) {
-  $unit->dbId = 0;
-}
+$fleet->setDbId(0);
+$fleet->unitList->unitZeroDbId();
+pvar_dump($fleet->unitList);
 
 $fleet->dbInsert();
 

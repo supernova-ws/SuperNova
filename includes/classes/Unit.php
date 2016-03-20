@@ -3,7 +3,9 @@
 /**
  * Class Unit
  *
- * @method int getCount()
+ * @property int $unitId
+ * @property int $count
+ * @method int getCount() - TODO - DEPRECATED - не существует, но используется в UBE
  * @method int getUnitId()
  * @method int getType()
  * @method int getTimeStart()
@@ -41,26 +43,26 @@ class Unit extends DBRowLocatedAtParent {
     // Location data is taken from container
     'playerOwnerId' => array(
       P_DB_FIELD    => 'unit_player_id',
-      P_FUNC_INJECT => 'static::injectLocation',
+      P_METHOD_INJECT => 'injectLocation',
       P_READ_ONLY   => true,
     ),
-    'locatedAtType' => array(
-      P_DB_FIELD  => 'unit_location_type',
-      P_READ_ONLY => true,
-    ),
-    'locatedAtDbId' => array(
-      P_DB_FIELD  => 'unit_location_id',
-      P_READ_ONLY => true,
-    ),
+//    'locationType' => array(
+//      P_DB_FIELD  => 'unit_location_type',
+//      P_READ_ONLY => true,
+//    ),
+//    'locationDbId' => array(
+//      P_DB_FIELD  => 'unit_location_id',
+//      P_READ_ONLY => true,
+//    ),
 
     'type'   => array(
       P_DB_FIELD   => 'unit_type',
       P_FUNC_INPUT => 'intval',
     ),
     'unitId' => array(
-      P_DB_FIELD => 'unit_snid',
-      P_FUNC_SET => 'setUnitId',
-//      P_FUNC_INPUT => 'floatval',
+      P_DB_FIELD   => 'unit_snid',
+      P_METHOD_SET => 'setUnitId',
+      P_FUNC_INPUT => 'intval',
     ),
     'count'  => array(
       P_DB_FIELD   => 'unit_level',
@@ -85,12 +87,12 @@ class Unit extends DBRowLocatedAtParent {
   }
 
   /**
-   * Является ли юнит пустым - т.е. при исполнении _dbSave должен быть удалён
+   * Является ли юнит пустым - т.е. при исполнении dbSave должен быть удалён
    *
    * @return bool
    */
   public function isEmpty() {
-    return $this->count <= 0 || $this->getDbId() == 0;
+    return $this->count <= 0;
   }
 
 
@@ -145,7 +147,7 @@ class Unit extends DBRowLocatedAtParent {
 
   // Properties from fields ********************************************************************************************
 
-  public $unitId = 0;
+  protected $unitId = 0;
   // TODO - Type is extracted on-the-fly from $info
   protected $type = 0;
 
@@ -192,15 +194,15 @@ class Unit extends DBRowLocatedAtParent {
   /**
    * Extracts resources value from db_row
    *
-   * @param Unit  $that
    * @param array $db_row
    *
-   * @version 41a6.10
+   * @internal param Unit $that
+   * @version 41a6.12
    */
-  protected static function injectLocation(Unit $that, array &$db_row) {
-    $db_row['unit_player_id'] = $that->getPlayerOwnerId();
-    $db_row['unit_location_type'] = $that->getLocationType();
-    $db_row['unit_location_id'] = $that->getLocationDbId();
+  protected function injectLocation(array &$db_row) {
+    $db_row['unit_player_id'] = $this->getPlayerOwnerId();
+    $db_row['unit_location_type'] = $this->getLocationType();
+    $db_row['unit_location_id'] = $this->getLocationDbId();
   }
 
 
@@ -228,4 +230,9 @@ class Unit extends DBRowLocatedAtParent {
   // Магметоды вытаскивают чистые значения. А если нам нужны бонусные - вытаскивают их спецметоды ??? Хотя бонусные вроде используются чаще...
   // Наоборот - для совместимости с MRC_GET_LEVEL()
 
+
+  // TODO - DEBUG
+  public function zeroDbId() {
+    $this->dbId = 0;
+  }
 }

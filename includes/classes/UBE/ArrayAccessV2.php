@@ -30,24 +30,11 @@ class ArrayAccessV2 implements ArrayAccess {
    */
   public $_container = array();
 
-//  /**
-//   * Method list that should support applying to container content
-//   *
-//   * @var string[]
-//   */
-//  protected static $_call = array();
-
-//  /**
-//   * Contained object property list that supported by property summarizer
-//   *
-//   * @var string[]
-//   */
-//  protected static $_sum_property = array();
 
   /**
    * @return stdClass
    *
-   * @version 41a6.0
+   * @version 41a6.12
    */
   public function _createElement() {
     return new stdClass();
@@ -79,13 +66,10 @@ class ArrayAccessV2 implements ArrayAccess {
    * @param array  $arguments
    */
   public function __call($method_name, array $arguments) {
-//    if(in_array($method_name, static::$_call))
-    {
-      $object_first = reset($this->_container);
-      if($object_first !== false && method_exists($object_first, $method_name)) {
-        foreach($this->_container as $unit_id => $object) {
-          call_user_func_array(array($object, $method_name), $arguments);
-        }
+    $object_first = reset($this->_container);
+    if($object_first !== false && method_exists($object_first, $method_name)) {
+      foreach($this->_container as $unit_id => $object) {
+        call_user_func_array(array($object, $method_name), $arguments);
       }
     }
   }

@@ -222,9 +222,9 @@ return;
     // Формируем запрос, блокирующий сразу все нужные записи
     $objFleet->db_fleet_lock_flying($mission_data);
 
-    $objFleet->db_fleet_get_by_id($objFleet->getDbId());
+    $objFleet->db_fleet_get_by_id($objFleet->dbId);
 
-    if(!$objFleet->getDbId()) {
+    if(!$objFleet->dbId) {
       // Fleet was destroyed in course of previous actions
       sn_db_transaction_commit();
       continue;

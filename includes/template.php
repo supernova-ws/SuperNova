@@ -398,7 +398,7 @@ function tpl_topnav_event_build_helper($time, $event, $msg, $coordinates, $is_de
   $fleet_flying_sorter[$fleet_event_count] = $time;
   $fleet_flying_events[$fleet_event_count] = array(
     'OBJECT'           => $objFleet,
-    'FLEET_ID'         => $objFleet->getDbId(),
+    'FLEET_ID'         => $objFleet->dbId,
     'EVENT'            => $event,
     'COORDINATES'      => uni_render_coordinates($coordinates, ''),
     'COORDINATES_TYPE' => $coordinates['type'],

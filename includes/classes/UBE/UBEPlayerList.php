@@ -19,7 +19,7 @@ class UBEPlayerList extends PlayerList {
   /**
    * @return UBEPlayer
    *
-   * @version 41a6.2
+   * @version 41a6.12
    */
   public function _createElement() {
     return new UBEPlayer();
@@ -34,7 +34,7 @@ class UBEPlayerList extends PlayerList {
   public function init_player_from_report_info($report_player_row) {
     $UBEPlayer = new UBEPlayer();
     $UBEPlayer->load_from_report_player_row($report_player_row);
-    $this[$UBEPlayer->getDbId()] = $UBEPlayer;
+    $this[$UBEPlayer->dbId] = $UBEPlayer;
 
     $this->authLevelMax = max($this->authLevelMax, $UBEPlayer->getAuthLevel());
   }

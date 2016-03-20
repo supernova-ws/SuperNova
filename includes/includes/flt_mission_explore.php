@@ -272,7 +272,7 @@ function flt_mission_explore(&$mission_data) {
 
   $fleet_row_end_coordinates_without_type = $objFleet->target_coordinates_without_type();
 
-  $msg_text = sprintf($msg_text, $objFleet->getDbId(), uni_render_coordinates($fleet_row_end_coordinates_without_type)) .
+  $msg_text = sprintf($msg_text, $objFleet->dbId, uni_render_coordinates($fleet_row_end_coordinates_without_type)) .
     ($msg_text_addon ? "\r\n" . $msg_text_addon : '');
 
   msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);

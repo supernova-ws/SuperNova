@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.11');
+define('SN_VERSION', '41a6.12');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1146,9 +1146,11 @@ define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 define('P_DB_FIELD', 'dbField'); // Field name in DB
 define('P_FUNC_INPUT', 'funcInput'); // Name of function to DB field value to property value
 define('P_FUNC_OUTPUT', 'funcOutput'); // Name of function which will inject value of property TO $db_row
-define('P_FUNC_EXTRACT', 'funcExtract'); // Name of function that receives $db_row and $this as parameters to extract info from $db_row to $this
+define('P_METHOD_OUTPUT', 'methodOutput'); // Name of function which will inject value of property TO $db_row
+define('P_METHOD_EXTRACT', 'funcExtract'); // Name of function that receives $db_row and $this as parameters to extract info from $db_row to $this
 define('P_FUNC_INJECT', 'funcInject'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
-define('P_FUNC_SET', 'funcSet'); // Setter name
+define('P_METHOD_INJECT', 'methodInject'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
+define('P_METHOD_SET', 'funcSet'); // Setter name
 define('P_FUNC_GET', 'funcGet'); // Getter name
 define('P_VALUE', 'value');
 define('P_READ_ONLY', 'READ-ONLY');

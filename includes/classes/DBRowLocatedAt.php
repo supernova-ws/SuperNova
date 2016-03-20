@@ -32,12 +32,15 @@ abstract class DBRowLocatedAt extends DBRowLocation implements ILocatedAt {
   protected $locatedAt = null;
 
   /**
-   * @param ILocation|null $location
+   * @param ILocation $location
    */
   public function setLocatedAt($location) {
     $this->locatedAt = $location;
   }
 
+  /**
+   * @return ILocation
+   */
   public function getLocatedAt() {
     return $this->locatedAt;
   }

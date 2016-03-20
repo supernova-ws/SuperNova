@@ -4,7 +4,10 @@
  * Class Fleet
  */
 class Fleet extends UnitContainer {
-  // Inherited from DBRow
+
+
+  // DBRow inheritance *************************************************************************************************
+
   /**
    * Table name in DB
    *
@@ -23,7 +26,7 @@ class Fleet extends UnitContainer {
    * @var array
    */
   protected static $_scheme = array(
-    'dbId'         => array(
+    'dbId'          => array(
       P_DB_FIELD => 'fleet_id',
     ),
     'playerOwnerId' => array(
@@ -45,6 +48,12 @@ class Fleet extends UnitContainer {
       P_FUNC_INPUT => 'intval',
     ),
 
+    'shipCount' => array(
+      P_DB_FIELD  => 'fleet_amount',
+// TODO - CHECK !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//      P_FUNC_OUTPUT => 'get_ship_count',
+      P_READ_ONLY => true,
+    ),
 
     'time_launch' => array(
       P_DB_FIELD => 'start_time',
@@ -62,7 +71,7 @@ class Fleet extends UnitContainer {
     ),
 
     'fleet_start_planet_id' => array(
-      P_DB_FIELD => 'fleet_start_planet_id',
+      P_DB_FIELD   => 'fleet_start_planet_id',
       P_FUNC_INPUT => 'nullIfEmpty',
     ),
 
@@ -81,7 +90,7 @@ class Fleet extends UnitContainer {
     ),
 
     'fleet_end_planet_id' => array(
-      P_DB_FIELD => 'fleet_end_planet_id',
+      P_DB_FIELD   => 'fleet_end_planet_id',
       P_FUNC_INPUT => 'nullIfEmpty',
     ),
     'fleet_end_galaxy'    => array(
@@ -99,20 +108,14 @@ class Fleet extends UnitContainer {
 
 
     'resource_list' => array(
-      P_FUNC_EXTRACT => 'static::extractResources',
+      P_METHOD_EXTRACT => 'extractResources',
+      P_METHOD_INJECT => 'injectResources',
     ),
   );
-  /**
-   * Fleet ID in DB
-   *
-   * @var int $dbId
-   */
-//  protected $dbId = 0;
 
 
+  // UnitContainer inheritance *****************************************************************************************
 
-
-  // Inherited from UnitContainer
   /**
    * Type of this location
    *
@@ -124,6 +127,29 @@ class Fleet extends UnitContainer {
    */
   public $unitList = null;
 
+  /**
+   * READ - Gets fleet record by ID
+   *
+   * @param int $fleet_id
+   *
+   * @return array|false
+   */
+  public function db_fleet_get_by_id($fleet_id) {
+    $this->_reset();
+
+    $fleet_id_safe = idval($fleet_id);
+
+    $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
+    if(!empty($fleet_row['fleet_id'])) {
+      $this->dbRowParse($fleet_row);
+    }
+
+    return is_array($fleet_row) ? $fleet_row : false;
+  }
+
+
+
+  // New properties ****************************************************************************************************
 
   /**
    * `fleet_owner`
@@ -316,26 +342,6 @@ class Fleet extends UnitContainer {
   }
 
   /**
-   * READ - Gets fleet record by ID
-   *
-   * @param int $fleet_id
-   *
-   * @return array|false
-   */
-  public function db_fleet_get_by_id($fleet_id) {
-    $this->_reset();
-
-    $fleet_id_safe = idval($fleet_id);
-
-    $fleet_row = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1 FOR UPDATE;", true);
-    if(!empty($fleet_row['fleet_id'])) {
-      $this->dbRowParse($fleet_row);
-    }
-
-    return is_array($fleet_row) ? $fleet_row : false;
-  }
-
-  /**
    * DELETE - Удаляет текущий флот из базы
    *
    * @return array|bool|mysqli_result|null
@@ -366,7 +372,7 @@ class Fleet extends UnitContainer {
       die('Can not save fleet at ' . __FILE__ . ':' . __LINE__);
     }
 
-    $this->unitList->setLocatedAt($this);
+//    $this->unitList->setLocatedAt($this);
     $this->unitList->dbSave();
 
     // TODO - НЕ НУЖНО???????
@@ -581,7 +587,7 @@ class Fleet extends UnitContainer {
   }
 
   public function ship_count_by_id($ship_id) {
-    return $this->unitList->getUnitCount($ship_id);
+    return $this->unitList->unitCountById($ship_id);
   }
 
   /**
@@ -822,7 +828,7 @@ class Fleet extends UnitContainer {
    * Returns ship list in fleet
    */
   public function get_unit_list() {
-    return $this->unitList->getUnitListArray();
+    return $this->unitList->unitArrayGet();
   }
 
   /**
@@ -933,7 +939,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.10
+   * @version 41a6.12
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -946,7 +952,12 @@ class Fleet extends UnitContainer {
   }
 
 
+  // TODO - DEPRECATED
   public function get_ship_count() {
+    return $this->unitList->getSumProperty('count');
+  }
+
+  public function getShipCount() {
     return $this->unitList->getSumProperty('count');
   }
 
@@ -1004,23 +1015,26 @@ class Fleet extends UnitContainer {
   }
 
 
-
-
-
-
   /**
    * Extracts resources value from db_row
    *
-   * @param Fleet $that
    * @param array $db_row
    *
-   * @version 41a6.10
+   * @internal param Fleet $that
+   * @version 41a6.12
    */
-  protected static function extractResources(Fleet $that, array &$db_row) {
-    $that->resource_list = array(
+  protected function extractResources(array &$db_row) {
+    $this->resource_list = array(
       RES_METAL     => !empty($db_row['fleet_resource_metal']) ? floor($db_row['fleet_resource_metal']) : 0,
       RES_CRYSTAL   => !empty($db_row['fleet_resource_crystal']) ? floor($db_row['fleet_resource_crystal']) : 0,
       RES_DEUTERIUM => !empty($db_row['fleet_resource_deuterium']) ? floor($db_row['fleet_resource_deuterium']) : 0,
     );
   }
+
+  protected function injectResources(array &$db_row) {
+    $db_row['fleet_resource_metal'] = $this->resource_list[RES_METAL];
+    $db_row['fleet_resource_crystal'] = $this->resource_list[RES_CRYSTAL];
+    $db_row['fleet_resource_deuterium'] = $this->resource_list[RES_DEUTERIUM];
+  }
+
 }
