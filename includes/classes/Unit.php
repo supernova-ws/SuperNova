@@ -81,22 +81,6 @@ class Unit extends DBRowLocatedAtParent {
     ),
   );
 
-  public function __construct() {
-    parent::__construct();
-    $this->unit_bonus = new Bonus();
-  }
-
-  /**
-   * Является ли юнит пустым - т.е. при исполнении dbSave должен быть удалён
-   *
-   * @return bool
-   */
-  public function isEmpty() {
-    return $this->count <= 0;
-  }
-
-
-
   // New statics *******************************************************************************************************
 
   /**
@@ -111,6 +95,51 @@ class Unit extends DBRowLocatedAtParent {
    * @var array
    */
   protected static $_group_unit_id_list = array();
+
+
+  // Properties from fields ********************************************************************************************
+  protected $unitId = 0;
+  // TODO - Type is extracted on-the-fly from $info
+  protected $type = 0;
+
+  protected $_count = 0;
+
+  // Internal properties ***********************************************************************************************
+
+  protected $timeStart = 0;
+  protected $timeFinish = 0;
+
+  /**
+   * Passport info per unit
+   *
+   * @var array $info
+   */
+  public $info = array();
+
+  /**
+   * @var Bonus $unit_bonus
+   */
+  public $unit_bonus = null;
+
+
+
+  // DBRow inheritance *************************************************************************************************
+
+  public function __construct() {
+    parent::__construct();
+    $this->unit_bonus = new Bonus();
+  }
+
+  public function isEmpty() {
+    return $this->count <= 0;
+  }
+
+
+
+
+
+
+  // New statics *******************************************************************************************************
 
   /**
    * Статический иницилизатор. ДОЛЖЕН БЫТЬ ВЫЗВАН ПЕРЕД ИСПОЛЬЗВОАНИЕМ КЛАССА!
@@ -147,9 +176,6 @@ class Unit extends DBRowLocatedAtParent {
 
   // Properties from fields ********************************************************************************************
 
-  protected $unitId = 0;
-  // TODO - Type is extracted on-the-fly from $info
-  protected $type = 0;
 
   public function setUnitId($unitId) {
     // TODO - Reset combat stats??
@@ -164,16 +190,18 @@ class Unit extends DBRowLocatedAtParent {
   }
 
 
-  protected $count = 0;
 
   public function setCount($value) {
+//pdump(debug_backtrace());
+//pdie('setCount');
     // TODO - Reset combat stats??
     if($value < 0) {
       classSupernova::$debug->error('Can not set Unit::$count to negative value');
     }
-    $this->count = $value;
+    $this->_count = $value;
+//    $this->propertiesChanged['count'] = true;
 
-    return $this->count;
+    return $this->_count;
   }
 
   /**
@@ -183,12 +211,14 @@ class Unit extends DBRowLocatedAtParent {
    */
   // TODO - some calcs ??????
   public function adjustCount($value) {
-    if($this->count + $value < 0) {
+    if($this->_count + $value < 0) {
       classSupernova::$debug->error('Can not let Unit::$count value be less then a zero - adjustCount with negative greater then $count');
     }
-    $this->count += $value;
+    $this->_count += $value;
+//    $this->propertiesChanged['count'] = true;
+    $this->propertiesAdjusted['count'] += $value;
 
-    return $this->count;
+    return $this->_count;
   }
 
   /**
@@ -197,7 +227,7 @@ class Unit extends DBRowLocatedAtParent {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.12
+   * @version 41a6.14
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();
@@ -205,24 +235,6 @@ class Unit extends DBRowLocatedAtParent {
     $db_row['unit_location_id'] = $this->getLocationDbId();
   }
 
-
-  protected $timeStart = 0;
-  protected $timeFinish = 0;
-
-
-  // Internal properties ***********************************************************************************************
-
-  /**
-   * Passport info per unit
-   *
-   * @var array $info
-   */
-  public $info = array();
-
-  /**
-   * @var Bonus $unit_bonus
-   */
-  public $unit_bonus = null;
 
 
   // TODO - __GET, __SET, __IS_NULL, __EMPTY - короче, магметоды

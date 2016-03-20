@@ -19,6 +19,6 @@ interface IDbRow {
    * - if object is empty - it deleted from DB. Usually governed by isEmpty() method;
    * - otherwise object is updated in DB;
    */
-  public function dBSave();
+  public function dbSave();
 
 }

@@ -39,7 +39,7 @@ function flt_mission_colonize(&$mission_data) {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAddress . $lang['sys_colo_allisok'];
           msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
-          $objFleet->unitList->unitAdjustCount(SHIP_COLONIZER, -1, false);
+          $objFleet->unitAdjustCount(SHIP_COLONIZER, -1);
           return $objFleet->RestoreFleetToPlanet(false);
         }
       }

@@ -279,7 +279,7 @@ function flt_mission_explore(&$mission_data) {
 
   db_user_set_by_id($objFleet->playerOwnerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
 
-  if(!empty($fleet_real_array) && $objFleet->get_ship_count() >= 1) {
+  if(!empty($fleet_real_array) && $objFleet->getShipCount() >= 1) {
     // ПОКА НЕ НУЖНО - мы уже выше посчитали суммарные ресурсы (те, что были до отправку в экспу плюс найденное) и обновили $fleet_row
     // НО МОЖЕТ ПРИГОДИТЬСЯ, когда будем работать напрямую с $objFleet
 //    if(!empty($resources_found) && array_sum($resources_found) > 0) {

@@ -9,7 +9,7 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
     if($fleet_id = idval($fleet_id)) {
       sn_db_transaction_start();
       $objFleet = new Fleet();
-      $objFleet->db_fleet_get_by_id($fleet_id);
+      $objFleet->dbLoad($fleet_id);
 
       if ($objFleet->playerOwnerId == $user['id'] && $objFleet->is_returning == 0) {
         $objFleet->fleet_command_return();

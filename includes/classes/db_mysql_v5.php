@@ -62,9 +62,24 @@ class db_mysql_v5 {
     return true;
   }
 
+  /**
+   * L0 perform the query
+   * 
+   * @param $query_string
+   *
+   * @return bool|mysqli_result
+   */
   function mysql_query($query_string) {
     return $this->link->query($query_string);
   }
+
+  /**
+   * L0 fetch assoc array
+   *
+   * @param $query
+   *
+   * @return array|null
+   */
   function mysql_fetch_assoc(&$query) {
     return mysqli_fetch_assoc($query);
   }

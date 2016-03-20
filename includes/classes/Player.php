@@ -64,10 +64,10 @@ class Player extends UnitContainer {
    * @var int $locationType
    */
   public static $locationType = LOC_USER;
-  /**
-   * @var UnitList $unitList
-   */
-  public $unitList = null;
+//  /**
+//   * @var UnitList $unitList
+//   */
+//  protected $unitList = null;
 
   // Innate properties
   /**

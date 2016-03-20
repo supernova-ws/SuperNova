@@ -155,13 +155,12 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
 
 
 
-
   // Other *************************************************************************************************************
 
   /**
    * @return Unit
    *
-   * @version 41a6.12
+   * @version 41a6.14
    */
   // TODO - Factory
   public function _createElement() {
@@ -363,4 +362,12 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocatedAt {
       $unit->zeroDbId();
     }
   }
+
+
+  public function unitZeroCount() {
+    foreach($this->mapUnitIdToDb as $unit) {
+      $unit->count = 0;
+    }
+  }
+
 }

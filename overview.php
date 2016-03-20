@@ -38,8 +38,9 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 //$player->unitList->_dump();
 //pvar_dump($player->player_bonus);
 
+sn_db_transaction_start();
 $fleet = new Fleet();
-$fleet->dbLoad(80);
+$fleet->dbLoad(103);
 
 //$fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 80;", true);
 //$fleet_row = doquery("SELECT * FROM {{fleets}} WHERE fleet_id = 8;", true);
@@ -47,12 +48,26 @@ $fleet->dbLoad(80);
 //$fleet->dbRowParse($fleet_row);
 //pdie('disabled for debug purposes');
 
-$fleet->setDbId(0);
-$fleet->unitList->unitZeroDbId();
+//$fleet->setDbId(0);
+//$fleet->unitList->unitZeroDbId();
+//pvar_dump($fleet->unitList[1131268]);
+//pdie('disabled for debug purposes');
+
+
+
+pdump(property_exists($fleet->unitList[1131268], 'count'), 'count exists');
+pdump($fleet->unitList[1131268]->count);
+$fleet->unitList[1131268]->adjustCount(-1);
+pdump($fleet->unitList[1131268]->count);
+
+$fleet->dbSave();
+
 pvar_dump($fleet->unitList);
 
-$fleet->dbInsert();
+//$fleet->unitList->unitZeroCount();
+//$fleet->dbSave();
 
+sn_db_transaction_commit();
 pdie('disabled for debug purposes');
 
 

@@ -285,19 +285,32 @@ class db_mysql {
   }
 
 
+  /**
+   * L1 perform the query
+   *
+   * @param $query_string
+   *
+   * @return bool|mysqli_result
+   */
   function db_sql_query($query_string) {
     $microtime = microtime(true);
     $result = $this->driver->mysql_query($query_string);
     $this->time_mysql_total += microtime(true) - $microtime;
     return $result;
-//    return $this->driver->mysql_query($query_string);
   }
+
+  /**
+   * L1 fetch assoc array
+   *
+   * @param $query
+   *
+   * @return array|null
+   */
   function db_fetch(&$query) {
     $microtime = microtime(true);
     $result = $this->driver->mysql_fetch_assoc($query);
     $this->time_mysql_total += microtime(true) - $microtime;
     return $result;
-//    return $this->driver->mysql_fetch_assoc($query);
   }
   function db_fetch_row(&$query) {
     return $this->driver->mysql_fetch_row($query);

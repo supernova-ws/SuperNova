@@ -113,7 +113,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     'MISSION'      => $objFleet->mission_type,
     'MISSION_NAME' => $lang['type_mission'][$objFleet->mission_type],
     'ACS'          => !empty($aks['name']) ? $aks['name'] : (!empty($objFleet->group_id) ? $objFleet->group_id : ''),
-    'AMOUNT'       => $spy_level >= 4 ? (pretty_number($objFleet->get_ship_count()) . (array_sum($fleet_resources) ? '+' : '')) : '?',
+    'AMOUNT'       => $spy_level >= 4 ? (pretty_number($objFleet->getShipCount()) . (array_sum($fleet_resources) ? '+' : '')) : '?',
 
     'METAL'     => $spy_level >= 8 ? $fleet_resources[RES_METAL] : 0,
     'CRYSTAL'   => $spy_level >= 8 ? $fleet_resources[RES_CRYSTAL] : 0,
@@ -310,7 +310,7 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
     }
 
     $fleet_list[$fleet_ownage]['count']++;
-    $fleet_list[$fleet_ownage]['amount'] += $fleet->get_ship_count();
+    $fleet_list[$fleet_ownage]['amount'] += $fleet->getShipCount();
     $fleet_resources = $fleet->get_resource_list();
     $fleet_list[$fleet_ownage]['total'][RES_METAL] += $fleet_resources[RES_METAL];
     $fleet_list[$fleet_ownage]['total'][RES_CRYSTAL] += $fleet_resources[RES_CRYSTAL];
@@ -353,163 +353,3 @@ function tpl_set_resource_info(template &$template, $planet_row, $fleets_to_plan
     'PLANET_DEUTERIUM_FLEET_TEXT' => pretty_number($fleets_to_planet[$planet_row['id']]['fleet']['DEUTERIUM'], $round, true),
   ));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-//// Used in UNIT_CAPTAIN
-//function tpl_parse_fleet_db($fleet_row, $index, $user_data = false) { return sn_function_call(__FUNCTION__, array($fleet_row, $index, $user_data, &$result)); }
-//
-//function sn_tpl_parse_fleet_db($fleet_row, $index, $user_data = false, &$result) {
-//  global $lang, $user;
-//
-//  if(!$user_data) {
-//    $user_data = $user;
-//  }
-//
-//  if($fleet_row['fleet_mess'] == 0 && $fleet_row['fleet_mission'] == MT_AKS) {
-//    $aks = db_acs_get_by_group_id($fleet_row['fleet_group']);
-//  }
-//
-//  $spy_level = $user['id'] == $fleet_row['fleet_owner'] ? 100 : GetSpyLevel($user);
-//
-//  $result['fleet'] = isset($result['fleet']) ? $result['fleet'] : array();
-//
-//  $result['fleet'] = array(
-//    'NUMBER' => $index,
-//
-//    'ID'           => $fleet_row['fleet_id'],
-//    'OWNER'        => $fleet_row['fleet_owner'],
-//    'TARGET_OWNER' => $fleet_row['fleet_target_owner'],
-//
-//    'MESSAGE'      => $fleet_row['fleet_mess'],
-//    'MISSION'      => $fleet_row['fleet_mission'],
-//    'MISSION_NAME' => $lang['type_mission'][$fleet_row['fleet_mission']],
-//    'ACS'          => !empty($aks['name']) ? $aks['name'] : (!empty($fleet_row['fleet_group']) ? $fleet_row['fleet_group'] : ''),
-//    'AMOUNT'       => $spy_level >= 4 ? (pretty_number($fleet_row['fleet_amount']) . ($fleet_row['fleet_resource_metal'] + $fleet_row['fleet_resource_crystal'] + $fleet_row['fleet_resource_deuterium'] ? '+' : '')) : '?',
-//
-//    'METAL'     => $spy_level >= 8 ? $fleet_row['fleet_resource_metal'] : 0,
-//    'CRYSTAL'   => $spy_level >= 8 ? $fleet_row['fleet_resource_crystal'] : 0,
-//    'DEUTERIUM' => $spy_level >= 8 ? $fleet_row['fleet_resource_deuterium'] : 0,
-//
-//    'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$fleet_row['fleet_start_type']],
-//    'START_COORDS'       => "[{$fleet_row['fleet_start_galaxy']}:{$fleet_row['fleet_start_system']}:{$fleet_row['fleet_start_planet']}]",
-//    'START_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet_row['fleet_end_time'] + SN_CLIENT_TIME_DIFF),
-//    'START_LEFT'         => floor($fleet_row['fleet_end_time'] + 1 - SN_TIME_NOW),
-//    'START_URL'          => uni_render_coordinates_href($fleet_row, 'fleet_start_', 3),
-//    'START_NAME'         => $fleet_row['fleet_start_name'],
-//
-//    'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$fleet_row['fleet_end_type']],
-//    'END_COORDS'       => "[{$fleet_row['fleet_end_galaxy']}:{$fleet_row['fleet_end_system']}:{$fleet_row['fleet_end_planet']}]",
-//    'END_TIME_TEXT'    => date(FMT_DATE_TIME, $fleet_row['fleet_start_time'] + SN_CLIENT_TIME_DIFF),
-//    'END_LEFT'         => floor($fleet_row['fleet_start_time'] + 1 - SN_TIME_NOW),
-//    'END_URL'          => uni_render_coordinates_href($fleet_row, 'fleet_end_', 3),
-//    'END_NAME'         => $fleet_row['fleet_end_name'],
-//
-//    'STAY_TIME' => date(FMT_DATE_TIME, $fleet_row['fleet_end_stay'] + SN_CLIENT_TIME_DIFF),
-//    'STAY_LEFT' => floor($fleet_row['fleet_end_stay'] + 1 - SN_TIME_NOW),
-//
-//    'OV_LABEL'        => $fleet_row['ov_label'],
-//    'EVENT_TIME_TEXT' => date(FMT_DATE_TIME, $fleet_row['event_time'] + SN_CLIENT_TIME_DIFF),
-//    'OV_LEFT'         => floor($fleet_row['event_time'] + 1 - SN_TIME_NOW),
-//    'OV_THIS_PLANET'  => $fleet_row['ov_this_planet'],
-//  );
-//
-//  $ship_list_fully_parsed = Fleet::static_proxy_string_to_array($fleet_row);
-//
-//  $ship_id = 0;
-//  if($spy_level >= 6) {
-//    foreach($ship_list_fully_parsed as $ship_sn_id => $ship_amount) {
-//      if($spy_level >= 10) {
-//        $single_ship_data = get_ship_data($ship_sn_id, $user_data);
-//        $result['ships'][$ship_sn_id] = array(
-//          'ID'          => $ship_sn_id,
-//          'NAME'        => $lang['tech'][$ship_sn_id],
-//          'AMOUNT'      => $ship_amount,
-//          'AMOUNT_TEXT' => pretty_number($ship_amount),
-//          'CONSUMPTION' => $single_ship_data['consumption'],
-//          'SPEED'       => $single_ship_data['speed'],
-//          'CAPACITY'    => $single_ship_data['capacity'],
-//        );
-//      } else {
-//        $result['ships'][$ship_sn_id] = array(
-//          'ID'               => $ship_id++,
-//          'NAME'             => $lang['tech'][UNIT_SHIPS],
-//          'AMOUNT'           => $ship_amount,
-//          'AMOUNT_TEXT'      => pretty_number($ship_amount),
-//          'CONSUMPTION'      => 0,
-//          'CONSUMPTION_TEXT' => '0',
-//          'SPEED'            => 0,
-//          'CAPACITY'         => 0,
-//        );
-//      }
-//    }
-//  }
-//
-//  return $result;
-//}
-
-//function flt_get_fleets_to_planet($planet) {
-//  global $user;
-//
-//  if(!($planet && $planet['id'])) {
-//    return $planet;
-//  }
-//
-//  $fleet_list = array();
-//
-//  $fleet_db_list = FleetList::fleet_and_missiles_list_by_coordinates($planet);
-//
-//  foreach($fleet_db_list as $fleet_row) {
-//    if($fleet_row['fleet_owner'] == $user['id']) {
-//      if($fleet_row['fleet_mission'] == MT_MISSILE) {
-//        continue;
-//      }
-//      $fleet_ownage = 'own';
-//    } else {
-//      switch($fleet_row['fleet_mission']) {
-//        case MT_ATTACK:
-//        case MT_AKS:
-//        case MT_DESTROY:
-//        case MT_MISSILE:
-//          $fleet_ownage = 'enemy';
-//        break;
-//
-//        default:
-//          $fleet_ownage = 'neutral';
-//        break;
-//
-//      }
-//    }
-//
-//    $fleet_list[$fleet_ownage]['fleets'][$fleet_row['fleet_id']] = $fleet_row;
-//
-//    if($fleet_row['fleet_mess'] == 1 || ($fleet_row['fleet_mess'] == 0 && $fleet_row['fleet_mission'] == MT_RELOCATE) || ($fleet_row['fleet_target_owner'] != $user['id'])) {
-//      $fleet_sn = Fleet::static_proxy_string_to_array($fleet_row);
-//      foreach($fleet_sn as $ship_id => $ship_amount) {
-//        if(in_array($ship_id, sn_get_groups('fleet'))) {
-//          $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
-//        }
-//      }
-//    }
-//
-//    $fleet_list[$fleet_ownage]['count']++;
-//    $fleet_list[$fleet_ownage]['amount'] += $fleet_row['fleet_amount'];
-//    $fleet_list[$fleet_ownage]['total'][RES_METAL] += $fleet_row['fleet_resource_metal'];
-//    $fleet_list[$fleet_ownage]['total'][RES_CRYSTAL] += $fleet_row['fleet_resource_crystal'];
-//    $fleet_list[$fleet_ownage]['total'][RES_DEUTERIUM] += $fleet_row['fleet_resource_deuterium'];
-//  }
-//
-//  return $fleet_list;
-//}
-//
-

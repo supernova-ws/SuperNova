@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.12');
+define('SN_VERSION', '41a6.14');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1144,6 +1144,7 @@ define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 // define('GROUP_PARAMS', 1000000000);
 // Зарезервировано для параметров: 1.000.000.000-2.000.000.000
 define('P_DB_FIELD', 'dbField'); // Field name in DB
+define('P_DB_FIELDS_LINKED', 'dbFieldsLinked'); // List of fields which should consider changed/updated on property change/update
 define('P_FUNC_INPUT', 'funcInput'); // Name of function to DB field value to property value
 define('P_FUNC_OUTPUT', 'funcOutput'); // Name of function which will inject value of property TO $db_row
 define('P_METHOD_OUTPUT', 'methodOutput'); // Name of function which will inject value of property TO $db_row

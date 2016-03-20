@@ -12,7 +12,7 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
 }
 
 $objFleet = new Fleet();
-$objFleet->db_fleet_get_by_id($fleetid);
+$objFleet->dbLoad($fleetid);
 if(!$objFleet->dbId) {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
@@ -59,8 +59,6 @@ if($userToAdd_unsafe) {
 
         $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
 
-//        $objFleet = new Fleet();
-//        $objFleet->parse_db_row($fleet);
         $objFleet->group_acs_set($aks['id'], MT_AKS);
         $objFleet->flush_changes_to_db();
       } else {
@@ -121,7 +119,7 @@ $i++;
 //$fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
 
 $objFleet = new Fleet();
-$objFleet->db_fleet_get_by_id($fleetid);
+$objFleet->dbLoad($fleetid);
 $planet_start = db_planet_by_id($objFleet->fleet_start_planet_id);
 $objFleet->fleet_start_name = !empty($planet_start['name']) ? $planet_start['name'] : '';
 $planet_end = db_planet_by_id($objFleet->fleet_end_planet_id);

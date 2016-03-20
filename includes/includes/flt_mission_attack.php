@@ -17,7 +17,7 @@ function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) { return $r
 function flt_mission_attack($objMission) {
   $objFleet = $objMission->fleet;
 
-  if($objFleet->get_ship_count() <= 0) {
+  if($objFleet->getShipCount() <= 0) {
     return null;
   }
 

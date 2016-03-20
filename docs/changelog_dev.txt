@@ -665,6 +665,33 @@ UBE - генерить репорт, который совсем не имеет
         - однако, надо внимательно посмотреть, что бы грузились будущие юниты - это будет нужно для фестивалей!
 
 
+Levels of DB functions:
+L0 - DB driver - directly calls PHP function : db_mysql_v5, db_mysql_v4
+L1 - SN abstraction layer - translates and unifies function names : db_mysql
+L2 - SN security layer - makes query sanity and security checks and replaces table name placeholders with actual table names: db_mysql::doQuery
+L3 - helper - simplifies some routine operations
+
+
+// TODO - СЕЙЧАС
+Сеттер и геттер в DBRow должны кидать эксепшны
+    - а их потомки - ловить эксепшны
+    - Так можно будет сделать дополнительный функционал на __set и __get в потомках
+    - то же самое и по __call ???
+
+Поднять во Fleet и UnitList методы из Unit - в частности adjustCount - может даже в UnitContainer. Это будет нужно для адрресации юнитов по их SNID а не по DBID
+    - а затем закрыть unitlist protected
+
+А еще Fleet не меняет значение fleet_amount
+    - Может это поле вообще не нужно? Юниты во флоте всё равно всегда грузятся полностью...
+    - где-то наверное оно используется - в запосах, например?
+
+
+Уважать P_DB_READ_ONLY в сеттере ?
+
+?????? Еще один слой трансляции для UnitCount для доступа к UnitList по SNID через map ????????????
+    - Ведь это же самый распространённый случай - доступ к юниту по его
+    - UnitContainerTranslator
+
 
 #ctv
 

@@ -8,6 +8,12 @@
  */
 abstract class DBRow implements IDbRow {
   /**
+   * БД для доступа к данным
+   *
+   * @var db_mysql $db
+   */
+  protected static $db = null;
+  /**
    * Table name in DB
    *
    * @var string
@@ -24,16 +30,41 @@ abstract class DBRow implements IDbRow {
    *
    * @var array
    */
-  protected static $_scheme = array();
+  protected static $_scheme = array(
+    'dbId' => array(
+      P_DB_FIELD => 'id',
+    ),
+  );
+
+  /**
+   * Object list that should mimic object DB operations - i.e. units on fleet
+   *
+   * @var IDbRow[]
+   */
+  protected $triggerDbOperationOn = array(); // Not a static - because it's an object array
+  /**
+   * List of property names that was changed since last DB operation
+   *
+   * @var string[]
+   */
+  protected $propertiesChanged = array();
+  /**
+   * List of property names->$delta that was adjusted since last DB operation - and then need to be processed as Deltas
+   *
+   * @var string[]
+   */
+  protected $propertiesAdjusted = array();
 
   /**
    * @var int
    */
-  protected $dbId = 0;
+  protected $_dbId = 0;
 
 
   // Some magic ********************************************************************************************************
+
   public function __construct() {
+    static::$db = classSupernova::$db;
   }
 
   /**
@@ -50,16 +81,47 @@ abstract class DBRow implements IDbRow {
       return call_user_func(array($this, 'get' . ucfirst($name)));
     } else {
       // Checking for property
-      if(!property_exists($this, $name)) {
-        classSupernova::$debug->error('Property ' . $name . ' not exists in class ' . get_called_class());
+      if(property_exists($this, '_' . $name)) {
+        return $this->{'_' . $name};
+      } elseif(!property_exists($this, $name)) {
+        classSupernova::$debug->error('Property [' . $name . '] not exists in class ' . get_called_class() . '::__get');
       }
+
       return $this->$name;
     }
   }
+
+  /**
+   * Setter with support of protected properties/methods
+   *
+   * @param $name
+   * @param $value
+   */
   // TODO - сеттер должен параллельно изменять значение db_row - for now...
+  public function __set($name, $value) {
+    // Property value can be get from protected property or getter
+    if(method_exists($this, 'set' . ucfirst($name))) {
+      // Checking for getter
+      call_user_func(array($this, 'set' . ucfirst($name)), $value);
+    } else {
+      // Checking for hidden property existence
+      if(property_exists($this, '_' . $name)) {
+        $this->{'_' . $name} = $value;
+      } else {
+        // Checking for property existence
+        if(!property_exists($this, $name)) {
+          classSupernova::$debug->error('Property ' . $name . ' not exists in class ' . get_called_class() . '::__set');
+        }
+        $this->$name = $value;
+      }
+    }
+    $this->propertiesChanged[$name] = true;
+  }
+
 
 
   // IDBrow Implementation *********************************************************************************************
+
   /**
    * Loading object from DB by primary ID
    *
@@ -71,6 +133,7 @@ abstract class DBRow implements IDbRow {
     $dbId = idval($dbId);
     if($dbId <= 0) {
       classSupernova::$debug->error(get_called_class() . '::dbLoad $dbId not positive = ' . $dbId);
+
       return;
     }
 
@@ -89,6 +152,7 @@ abstract class DBRow implements IDbRow {
    * - if object is empty - it deleted from DB;
    * - otherwise object is updated in DB;
    */
+  // TODO - perform operations only if properties was changed
   public function dbSave() {
     if($this->isNew()) {
       // No DB_ID - new unit
@@ -101,30 +165,59 @@ abstract class DBRow implements IDbRow {
       if($this->isEmpty()) {
         $this->dbDelete();
       } else {
+        if(!sn_db_transaction_check(false)) {
+          classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - transaction should always be started on ' . get_called_class() . '::dbUpdate');
+        }
         $this->dbUpdate();
       }
     }
+
+    if(!empty($this->triggerDbOperationOn)) {
+      foreach($this->triggerDbOperationOn as $item) {
+        $item->dbSave();
+      }
+    }
+
+    $this->propertiesChanged = array();
+    $this->propertiesAdjusted = array();
   }
 
+
+
   // CRUD **************************************************************************************************************
+
   /**
+   * Inserts record to DB
+   *
    * @return int|string
    */
   public function dbInsert() {
     if(!$this->isNew()) {
-      classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is not empty on ' . get_called_class() . '::dbInsert');
+      classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - record db_id is not empty on ' . get_called_class() . '::dbInsert');
     }
-    return $this->dbId = $this->db_field_set_create($this->dbMakeFieldSet());
+    $this->dbId = $this->db_field_set_create($this->dbMakeFieldSet());
+
+    if(empty($this->dbId)) {
+      classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - error saving record ' . get_called_class() . '::dbInsert');
+    }
+
+    return $this->dbId;
   }
 
+  /**
+   * Updates record in DB
+   */
   public function dbUpdate() {
     // TODO - Update
     if($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbUpdate');
     }
-    $this->db_field_update($this->dbMakeFieldSet());
+    $this->db_field_update($this->dbMakeFieldSet(true));
   }
 
+  /**
+   * Deletes record from DB
+   */
   public function dbDelete() {
     if($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbDelete');
@@ -185,12 +278,16 @@ abstract class DBRow implements IDbRow {
   /**
    * Делает из свойств класса массив db_field_name => db_field_value
    *
+   *
+   *
    * @return array
    */
-  protected function dbMakeFieldSet() {
+  protected function dbMakeFieldSet($isUpdate = false) {
     $array = array();
 
     foreach(static::$_scheme as $property_name => &$property_data) {
+      // TODO - on isUpdate add only changed/adjusted properties
+
       if(!empty($property_data[P_METHOD_INJECT]) && is_callable(array($this, $property_data[P_METHOD_INJECT]))) {
         call_user_func_array(array($this, $property_data[P_METHOD_INJECT]), array(&$array));
         continue;
@@ -201,8 +298,15 @@ abstract class DBRow implements IDbRow {
         continue;
       }
 
-      // Getting property value. Optionally getter is invoked by __get()
-      $value = $this->{$property_name};
+      // Checking - is property was adjusted or changed
+      if($isUpdate && array_key_exists($property_name, $this->propertiesAdjusted)) {
+        // For adjusted property - take value from propertiesAdjusted array
+        // TODO - differ how treated conversion to string for changed and adjusted properties
+        $value = $this->propertiesAdjusted[$property_name];
+      } else {
+        // Getting property value. Optionally getter is invoked by __get()
+        $value = $this->{$property_name};
+      }
 
       // If need some conversion to DB format - doing it
       !empty($property_data[P_FUNC_OUTPUT]) && is_callable($property_data[P_FUNC_OUTPUT])
@@ -237,6 +341,34 @@ abstract class DBRow implements IDbRow {
   }
 
   /**
+   * Check if DB field changed on property change and if it changed - returns name of property which triggered change
+   *
+   * @param string $fieldName
+   *
+   * @return string|false
+   */
+  protected function isFieldChanged($fieldName) {
+    $isFieldChanged = false;
+    foreach($this->propertiesChanged as $propertyName => $cork) {
+      $propertyScheme = static::$_scheme[$propertyName];
+      if(!empty($propertyScheme[P_DB_FIELDS_LINKED])) {
+        foreach($propertyScheme[P_DB_FIELDS_LINKED] as $linkedFieldName) {
+          if($linkedFieldName == $fieldName) {
+            $isFieldChanged = $propertyName;
+            break 2;
+          }
+        }
+      }
+      if(!empty($propertyScheme[P_DB_FIELD]) && $propertyScheme[P_DB_FIELD] == $fieldName) {
+        $isFieldChanged = $propertyName;
+        break;
+      }
+    }
+
+    return $isFieldChanged;
+  }
+
+  /**
    * @param array $field_set
    *
    * @return array|bool|mysqli_result|null
@@ -247,12 +379,26 @@ abstract class DBRow implements IDbRow {
     sn_db_field_set_safe_flag_clear($field_set);
 
     $set = array();
-    foreach($field_set as $key => $value) {
-      $set[] = "{$key} = $value";
+//pdump($field_set);
+    pdump($this->propertiesAdjusted);
+    foreach($field_set as $fieldName => $value) {
+      if(!($changedProperty = $this->isFieldChanged($fieldName))) {
+        continue;
+      }
+      pdump($changedProperty);
+      // TODO - separate sets from adjusts
+      if(array_key_exists($changedProperty, $this->propertiesAdjusted)) {
+        $value = "`{$fieldName}` + ($value)"; // braces for negative values
+      }
+
+      $set[] = "`{$fieldName}` = $value";
     }
     $set_string = implode(',', $set);
+    pdump($set_string, get_called_class());
 
-    return classSupernova::db_query("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->dbId);
+    return empty($set_string)
+      ? true
+      : classSupernova::db_query("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->dbId);
   }
 
   /**
