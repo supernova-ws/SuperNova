@@ -106,7 +106,7 @@ function db_message_list_outbox_by_user_id($user_id)
 
 function db_ally_count()
 {
-  $result = doquery('SELECT COUNT(`id`) AS ally_count FROM {{alliance}}', true);
+  $result = doquery('SELECT COUNT(`id`) AS ally_count FROM `{{alliance}}`', true);
   return isset($result['ally_count']) ? $result['ally_count'] : 0;
 }
 
@@ -212,17 +212,17 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = 
 
 function db_stat_list_update_user_stats()
 {
-  return doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
+  return doquery("UPDATE `{{users}}` AS u JOIN `{{statpoints}}` AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
 }
 
 function db_stat_list_update_ally_stats()
 {
-  return doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+  return doquery("UPDATE `{{alliance}}` AS a JOIN `{{statpoints}}` AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 }
 
 function db_stat_list_delete_ally_player()
 {
-  return doquery('DELETE s FROM {{statpoints}} AS s JOIN {{users}} AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL');
+  return doquery('DELETE s FROM `{{statpoints}}` AS s JOIN `{{users}}` AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL');
 }
 
 
@@ -269,7 +269,7 @@ LIMIT
 
 function db_ally_list_recalc_counts()
 {
-  return doquery("UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}}
+  return doquery("UPDATE `{{alliance}}` as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM `{{users}}`
       WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;");
 }
 
@@ -338,3 +338,98 @@ function db_player_get_max_id() {
   $max_user_id = classSupernova::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{user}}`", true);
   return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
 }
+
+
+function db_ally_request_get_by_user_id($player_id) {
+  return doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$player_id}' LIMIT 1;", true);
+}
+
+
+// ANNONCE *************************************************************************************************************
+function db_ANNONCE_insert_set($users, $metalvendre, $cristalvendre, $deutvendre, $metalsouhait, $cristalsouhait, $deutsouhait) {
+  return doquery("INSERT INTO {{annonce}} SET 
+    `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', 
+    `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
+}
+
+function db_ANNONCE_delete_by_id($GET_id) {
+  return doquery("DELETE FROM `{{annonce}}` WHERE `id` = {$GET_id}");
+}
+
+function db_ANNONCE_LIST_select_all() {
+  return doquery("SELECT * FROM `{{annonce}}` ORDER BY `id` DESC");
+}
+
+// News & surveys ******************************************************************************************************
+function db_news_update_set($announce_time, $text, $detail_url, $announce_id) {
+  doquery("UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
+}
+
+function db_survey_delete_by_id($announce_id) {
+  doquery("DELETE FROM {{survey}} WHERE `survey_announce_id` = {$announce_id};");
+}
+
+function db_news_insert_set($announce_time, $text, $detail_url, $user) {
+  doquery("INSERT INTO {{announce}}
+        SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}',
+        `user_id` = {$user['id']}, `user_name` = '" . db_escape($user['username']) . "'");
+}
+
+function db_survey_insert($announce_id, $survey_question, $survey_until) {
+  doquery("INSERT INTO {{survey}} SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
+}
+
+function db_survey_answer_insert($survey_id, $survey_answer) {
+  doquery("INSERT INTO {{survey_answers}} SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'");
+}
+
+function db_news_delete_by_id($announce_id) {
+  doquery( "DELETE FROM {{announce}} WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
+}
+
+function db_news_with_survey_select_by_id($announce_id) {
+  return doquery(
+    "SELECT a.*, s.survey_id, s.survey_question, s.survey_until
+        FROM {{announce}} AS a
+        LEFT JOIN {{survey}} AS s ON s.survey_announce_id = a.idAnnounce
+        WHERE `idAnnounce` = {$announce_id} LIMIT 1;", true);
+}
+
+function db_survey_answer_text_select_by_news($announce) {
+  return doquery("SELECT survey_answer_text FROM {{survey_answers}} WHERE survey_parent_id = {$announce['survey_id']};");
+}
+
+// BANNED *************************************************************************************************************
+function db_banned_list_select() {
+  return doquery("SELECT * FROM `{{banned}}` ORDER BY `ban_id` DESC;");
+}
+
+// BLITZ ***************************************************************************************************************
+function db_blitz_reg_get_id_by_player_and_round($user, $current_round) {
+  return doquery("SELECT `id` FROM `{{blitz_registrations}}` WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
+}
+
+function db_blitz_reg_insert($user, $current_round) {
+  doquery("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
+}
+
+function db_blitz_reg_delete($user, $current_round) {
+  doquery("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
+}
+
+function db_blitz_reg_count($current_round) {
+  return doquery("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
+}
+
+function db_blitz_reg_get_random_id($current_round) {
+  return doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY RAND();");
+}
+
+function db_blitz_reg_update_with_name_and_password($blitz_name, $blitz_password, $row, $current_round) {
+  doquery("UPDATE {{blitz_registrations}} SET blitz_name = '{$blitz_name}', blitz_password = '{$blitz_password}' WHERE `id` = {$row['id']} AND `round_number` = {$current_round};");
+}
+
+function db_blitz_reg_delete_current_players() {
+  doquery("DELETE FROM `{{users}}` WHERE username like 'Игрок%';");
+}
+

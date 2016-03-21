@@ -55,7 +55,8 @@ switch($action)
 
     if(($metalvendre!=0 && $metalsouhait==0) ||($cristalvendre!=0 && $cristalsouhait==0) || ($deutvendre!=0 && $deutsouhait==0))
     {
-      doquery("INSERT INTO {{annonce}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
+//      doquery("INSERT INTO {{annonce}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
+      db_ANNONCE_insert_set($users, $metalvendre, $cristalvendre, $deutvendre, $metalsouhait, $cristalsouhait, $deutsouhait);
       message ($lang['Your_announce_was_recorded'], $lang['announce_status'],"annonce.php");
     }
     else
@@ -65,12 +66,14 @@ switch($action)
   break;
 
   case 3://Suppression d'annonce
-    doquery("DELETE FROM {{annonce}} WHERE `id` = {$GET_id}");
+//    doquery("DELETE FROM {{annonce}} WHERE `id` = {$GET_id}");
+    db_ANNONCE_delete_by_id($GET_id);
     message ($lang['Your_announce_was_deleted'], $lang['announce_status'],"annonce.php");
   break;
 
   default://Sinon on affiche la liste des annonces
-    $annonce = doquery("SELECT * FROM {{annonce}} ORDER BY `id` DESC ");
+//    $annonce = doquery("SELECT * FROM {{annonce}} ORDER BY `id` DESC ");
+    $annonce = db_ANNONCE_LIST_select_all();
 
     $page2 = "<HTML><center><br>
     <table width=\"600\">

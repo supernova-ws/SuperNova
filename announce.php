@@ -29,23 +29,31 @@ if ($user['authlevel'] >= 3) {
     $announce_time = $announce_time ? $announce_time : SN_TIME_NOW;
 
     if ($mode == 'edit') {
-      doquery("UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
-      doquery("DELETE FROM {{survey}} WHERE `survey_announce_id` = {$announce_id};");
+//      doquery("UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
+//      doquery("DELETE FROM {{survey}} WHERE `survey_announce_id` = {$announce_id};");
+      db_news_update_set($announce_time, $text, $detail_url, $announce_id);
+      db_survey_delete_by_id($announce_id);
     } else {
-      doquery("INSERT INTO {{announce}}
-        SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}',
-        `user_id` = {$user['id']}, `user_name` = '" . db_escape($user['username']) . "'");
+//      doquery("INSERT INTO {{announce}}
+//        SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}',
+//        `user_id` = {$user['id']}, `user_name` = '" . db_escape($user['username']) . "'");
+      db_news_insert_set($announce_time, $text, $detail_url, $user);
       $announce_id = db_insert_id();
     }
     if(($survey_question = sys_get_param_str('survey_question')) && ($survey_answers = sys_get_param('survey_answers'))) {
       $survey_answers = explode("\r\n", $survey_answers);
       $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW);
       $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ? $survey_until : SN_TIME_NOW + PERIOD_DAY * 1);
-      doquery("INSERT INTO {{survey}} SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
+      // doquery("INSERT INTO {{survey}} SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
+      db_survey_insert($announce_id, $survey_question, $survey_until);
       $survey_id = db_insert_id();
       foreach($survey_answers as $survey_answer) {
         $survey_answer = db_escape(trim($survey_answer));
-        $survey_answer ? doquery("INSERT INTO {{survey_answers}} SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'") : false;
+        if(empty($survey_answer)) {
+          continue;
+        }
+        // $survey_answer ? doquery("INSERT INTO {{survey_answers}} SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'") : false;
+        db_survey_answer_insert($survey_id, $survey_answer);
       }
     }
 
@@ -67,20 +75,23 @@ if ($user['authlevel'] >= 3) {
   $survey_answers = '';
   switch($mode) {
     case 'del':
-      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
+//      doquery( "DELETE FROM {{announce}} WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
+      db_news_delete_by_id($announce_id);
       $mode = '';
     break;
 
     case 'edit':
       $template->assign_var('ID', $announce_id);
     case 'copy':
-      $announce = doquery(
-        "SELECT a.*, s.survey_id, s.survey_question, s.survey_until
-        FROM {{announce}} AS a
-        LEFT JOIN {{survey}} AS s ON s.survey_announce_id = a.idAnnounce
-        WHERE `idAnnounce` = {$announce_id} LIMIT 1;", true);
+//      $announce = doquery(
+//        "SELECT a.*, s.survey_id, s.survey_question, s.survey_until
+//        FROM {{announce}} AS a
+//        LEFT JOIN {{survey}} AS s ON s.survey_announce_id = a.idAnnounce
+//        WHERE `idAnnounce` = {$announce_id} LIMIT 1;", true);
+      $announce = db_news_with_survey_select_by_id($announce_id);
       if($announce['survey_id']) {
-        $query = doquery("SELECT survey_answer_text FROM {{survey_answers}} WHERE survey_parent_id = {$announce['survey_id']};");
+//        $query = doquery("SELECT survey_answer_text FROM {{survey_answers}} WHERE survey_parent_id = {$announce['survey_id']};");
+        $query = db_survey_answer_text_select_by_news($announce);
         while($row = db_fetch($query)) {
           $survey_answers[] = $row['survey_answer_text'];
         }

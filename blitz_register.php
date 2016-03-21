@@ -29,19 +29,23 @@ $current_price = intval($config->db_loadItem('game_blitz_register_price'));
 if($config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_get_param_str('register_me') || sys_get_param_str('register_me_not'))) {
   sn_db_transaction_start();
   $user = db_user_by_id($user['id'], true);
-  $is_registered = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
+//  $is_registered = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;", true);
+  $is_registered = db_blitz_reg_get_id_by_player_and_round($user, $current_round);
   if(sys_get_param_str('register_me')) {
     if(empty($is_registered) && mrc_get_level($user, null, RES_METAMATTER) >= $current_price) {
-      doquery("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
+//      doquery("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
+      db_blitz_reg_insert($user, $current_round);
       //mm_points_change($user['id'], RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
       classSupernova::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
     }
   } elseif (sys_get_param_str('register_me_not') && !empty($is_registered)) {
-    doquery("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
+//    doquery("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
+    db_blitz_reg_delete($user, $current_round);
     // mm_points_change($user['id'], RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
     classSupernova::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
   }
-  $registered_count = doquery("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
+//  $registered_count = doquery("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};", true);
+  $registered_count = db_blitz_reg_count($current_round);
   $config->db_saveItem('game_blitz_register_users', $registered_count['count']);
   sn_db_transaction_commit();
 }
@@ -55,17 +59,21 @@ $blitz_prize_places = 0;
 if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
   if(sys_get_param_str('generate')) {
     $next_id = 0;
-    $query = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY RAND();");
+//    $query = doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY RAND();");
+    $query = db_blitz_reg_get_random_id($current_round);
     while($row = db_fetch($query)) {
       $next_id++;
       $blitz_name = 'Игрок' . $next_id;
       $blitz_password = sys_random_string(8);
-      doquery("UPDATE {{blitz_registrations}} SET blitz_name = '{$blitz_name}', blitz_password = '{$blitz_password}' WHERE `id` = {$row['id']} AND `round_number` = {$current_round};");
+//      doquery("UPDATE {{blitz_registrations}} SET blitz_name = '{$blitz_name}', blitz_password = '{$blitz_password}' WHERE `id` = {$row['id']} AND `round_number` = {$current_round};");
+      db_blitz_reg_update_with_name_and_password($blitz_name, $blitz_password, $row, $current_round);
     }
   } elseif(sys_get_param_str('import_generated')) {
     // ЭТО НА БЛИЦЕ!!!
-    doquery("DELETE FROM {{users}} WHERE username like 'Игрок%';");
-    doquery("DELETE FROM {{planets}} WHERE id_owner not in (SELECT `id` FROM {{users}});");
+//    doquery("DELETE FROM {{users}} WHERE username like 'Игрок%';");
+//    doquery("DELETE FROM {{planets}} WHERE id_owner not in (SELECT `id` FROM {{users}});");
+    db_blitz_reg_delete_current_players();
+    db_planets_purge();
 
     $imported_string = explode(';', sys_get_param_str('generated_string'));
     shuffle($imported_string);

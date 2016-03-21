@@ -1,5 +1,10 @@
 <?php
 
+function db_planets_purge() {
+  doquery("DELETE FROM {{planets}} WHERE id_owner not in (SELECT `id` FROM {{users}});");
+}
+
+
 function db_planet_by_id($planet_id, $for_update = false, $fields = '*')
 {
   return classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id, $for_update, $fields);

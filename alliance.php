@@ -21,7 +21,8 @@ if($mode == 'ainfo')
 
 if(!$user['ally_id'])
 {
-  $user_request = doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
+//  $user_request = doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
+  $user_request = db_ally_request_get_by_user_id($user['id']);
   if($user_request['id_user'])
   {
     require('includes/alliance/ali_external_request.inc');
