@@ -94,7 +94,7 @@ class UBEFleet {
   /**
    * @param UBEPlayerList $players
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function ube_load_from_players(UBEPlayerList $players) {
     $this->is_attacker = $players[$this->owner_id]->getSide();
@@ -114,7 +114,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -154,7 +154,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -182,7 +182,7 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->dbId;
@@ -197,7 +197,7 @@ class UBEFleet {
 
       $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
       if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-        $this->unit_list->insert_unit($unit_id, $unit_count);
+        $this->unit_list->unitAdjustCount($unit_id, $unit_count);
       }
     }
 
@@ -234,7 +234,7 @@ class UBEFleet {
 
     foreach($sn_group_combat as $unit_id) {
       if($unit_count = mrc_get_level($player_db_row, $planet_row, $unit_id)) {
-        $this->unit_list->insert_unit($unit_id, $unit_count);
+        $this->unit_list->unitAdjustCount($unit_id, $unit_count);
       }
     }
 
@@ -469,8 +469,8 @@ class UBEFleet {
   }
 
   public function db_save_combat_result_fleet($is_small_fleet_recce, $reapers_status) {
-    $ship_count_initial = $this->unit_list->countUnits();
-    $ship_count_lost = $this->unit_list->countUnitsLost();
+    $ship_count_initial = $this->unit_list->unitsCount();
+    $ship_count_lost = $this->unit_list->unitCountLost();
 
     $objFleet2 = new Fleet();
     $objFleet2->setDbId($this->db_id);
@@ -552,7 +552,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     UBEDebug::unit_dump_header();
@@ -562,7 +562,7 @@ class UBEFleet {
 
       // if($attack_unit_count <= 0) continue; // TODO: Это пока нельзя включать - вот если будут "боевые порядки юнитов..."
       foreach($defending_fleet->unit_list->_container as $defending_unit_pool) {
-        if($defending_unit_pool->getCount() <= 0) {
+        if($defending_unit_pool->isEmpty()) {
           continue;
         }
 
@@ -591,12 +591,7 @@ class UBEFleet {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function get_unit_count() {
-    $result = 0;
-    foreach($this->unit_list->_container as $UBEUnit) {
-      $result += $UBEUnit->getCount();
-    }
-
-    return $result;
+    return $this->unit_list->unitsCount();
   }
 
   /**

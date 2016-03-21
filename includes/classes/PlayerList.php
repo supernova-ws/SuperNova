@@ -11,7 +11,7 @@ class PlayerList extends ArrayAccessV2 {
   /**
    * @return Player
    *
-   * @version 41a6.0
+   * @version 41a6.16
    */
   public function _createElement() {
     return new Player();
@@ -20,7 +20,7 @@ class PlayerList extends ArrayAccessV2 {
   /**
    * @param int $player_id
    *
-   * @version 41a6.0
+   * @version 41a6.16
    */
   protected function db_load_player_by_id($player_id) {
     if(isset($this[$player_id])) {
@@ -28,7 +28,7 @@ class PlayerList extends ArrayAccessV2 {
     }
 
     $this[$player_id] = $this->_createElement();
-    $this[$player_id]->db_load_by_id($player_id);
+    $this[$player_id]->dbLoad($player_id);
   }
 
 

@@ -97,6 +97,9 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
   public function offsetUnset($offset) {
     if(!empty($this[$offset]->unitId)) {
+//      $unit_id = $this[$offset]->unitId;
+//      $this->mapUnitIdToDb[$unit_id] = null;
+//      unset($this->mapUnitIdToDb[$unit_id]);
       unset($this->mapUnitIdToDb[$this[$offset]->unitId]);
     }
     parent::offsetUnset($offset);
@@ -113,7 +116,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    */
   // TODO: Implement dbLoad() method.
   public function dbLoad($dbId) {
-    $this->_reset();
+//    $this->_reset();
 
     if($dbId <= 0) {
       return;
@@ -150,13 +153,13 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
     foreach($this->mapUnitIdToDb as $unit) {
       $unit_db_id = $unit->dbId;
-      $unit->setLocatedAt($this->locatedAt);
       $unit->dbSave();
 
-      if($unit->count == 0) {
+      if($unit->isEmpty()) {
         // Removing unit object
-        unset($this[$unit_db_id]);
         // TODO - change when there will be common bus for all objects
+        // ...or should I? If COUNT is empty - it means that object does not exists in DB. So it should be deleted from PHP memory and cache too
+        unset($this[$unit_db_id]);
       } else {
         if($unit->dbId <= 0) {
           classSupernova::$debug->error('Error writing unit to DB');
@@ -178,7 +181,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.15
+   * @version 41a6.16
    */
   // TODO - Factory
   public function _createElement() {
@@ -209,16 +212,15 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
       // If unit not exists - creating one and setting all attributes
       $this->mapUnitIdToDb[$unit_id] = $this->_createElement();
       $this->mapUnitIdToDb[$unit_id]->setUnitId($unit_id);
-      $this->mapUnitIdToDb[$unit_id]->setLocatedAt($this->locatedAt);
+      $this->mapUnitIdToDb[$unit_id]->setLocatedAt($this);
     }
 
     if($replace_value) {
-      $this->mapUnitIdToDb[$unit_id]->setCount($unit_count);
+      $this->mapUnitIdToDb[$unit_id]->count = $unit_count;
     } else {
       $this->mapUnitIdToDb[$unit_id]->adjustCount($unit_count);
     }
   }
-
 
   /**
    * Get unit list in array as $unit_id => $unit_count
@@ -232,6 +234,10 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     }
 
     return $result;
+  }
+
+  public function unitsCount() {
+    return $this->getSumProperty('count');
   }
 
   /**
@@ -253,24 +259,24 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
 
-  // TODO - revise it later
-  public function _reset() {
-    //if(!empty($this->mapUnitIdToDb)) {
-    //  foreach($this->mapUnitIdToDb as $unit_id => $object) {
-    //    unset($this->mapUnitIdToDb[$unit_id]);
-    //  }
-    //}
-    unset($this->mapUnitIdToDb);
-    $this->mapUnitIdToDb = array();
-
-    //if(!empty($this->_container)) {
-    //  foreach($this->_container as $unit_db_id => $object) {
-    //    unset($this->_container[$unit_db_id]);
-    //  }
-    //}
-    unset($this->_container);
-    $this->_container = array();
-  }
+//  // TODO - revise it later
+//  public function _reset() {
+//    //if(!empty($this->mapUnitIdToDb)) {
+//    //  foreach($this->mapUnitIdToDb as $unit_id => $object) {
+//    //    unset($this->mapUnitIdToDb[$unit_id]);
+//    //  }
+//    //}
+//    unset($this->mapUnitIdToDb);
+//    $this->mapUnitIdToDb = array();
+//
+//    //if(!empty($this->_container)) {
+//    //  foreach($this->_container as $unit_db_id => $object) {
+//    //    unset($this->_container[$unit_db_id]);
+//    //  }
+//    //}
+//    unset($this->_container);
+//    $this->_container = array();
+//  }
 
 
   // TODO - DEBUG - REMOVE =============================================================================================

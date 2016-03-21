@@ -1,12 +1,37 @@
 <?php
 
 /**
- * Class DBRow
+ * Handles DB operations on row level
+ *
+ * Class screens ordinary CRUD tasks providing high-level IDBRow interface.
+ * - advanced DB data parsing to class properties with type conversion;
+ * - safe storing with string escape function;
+ * - smart class self-storing procedures;
+ * - smart DB row partial update;
+ * - delta updates for numeric DB fields on demand;
+ * - managed external access to properties - READ/WRITE, READ-ONLY, READ-PROHIBITED;
+ * - virtual properties - with only setter/getter and no corresponding real property;
+ * - dual external access to protected data via property name or via getter/setter - including access to virtual properties;
+ *
+ *
+ * No properties should be directly exposed to public
+ * All property modifications should pass through __call() method to made partial update feature work;
+ * All declared internal properties should start with '_' following by one of the indexes from $_properties static
  *
  * method int getDbId()
  * @property int dbId
  */
 abstract class DBRow implements IDbRow {
+  // TODO
+  /**
+   * Should be this object - (!) not class - cached
+   * There exists tables that didn't need to cache rows - logs as example
+   * And there can be special needs to not cache some class instances when stream-reading many rows i.e. fleets in stat calculation
+   *
+   * @var bool $_cacheable
+   */
+  public $_cacheable = true; //
+  // TODO
   /**
    * БД для доступа к данным
    *
@@ -30,7 +55,7 @@ abstract class DBRow implements IDbRow {
    *
    * @var array
    */
-  protected static $_scheme = array(
+  protected static $_properties = array(
     'dbId' => array(
       P_DB_FIELD => 'id',
     ),
@@ -75,20 +100,27 @@ abstract class DBRow implements IDbRow {
    * @return mixed
    */
   public function __get($name) {
-    // Property value can be get from protected property or getter
-    if(method_exists($this, 'get' . ucfirst($name))) {
-      // Checking for getter
-      return call_user_func(array($this, 'get' . ucfirst($name)));
-    } else {
-      // Checking for property
-      if(property_exists($this, '_' . $name)) {
-        return $this->{'_' . $name};
-      } elseif(!property_exists($this, $name)) {
-        classSupernova::$debug->error('Property [' . $name . '] not exists in class ' . get_called_class() . '::__get');
-      }
+    // Redirecting inaccessible get to __call which will handle the rest
+//    return call_user_func(array($this, 'get' . ucfirst($name)));
+    return $this->__call('get' . ucfirst($name), array());
 
-      return $this->$name;
-    }
+//    // Property value can be get from protected property or getter
+//
+//    // Checking for getter
+//    if(method_exists($this, 'get' . ucfirst($name))) {
+//      // Getter exists
+//      return call_user_func(array($this, 'get' . ucfirst($name)));
+//    } else {
+//      // Checking for property
+//      if(property_exists($this, '_' . $name)) {
+//        // Property exists
+//        return $this->{'_' . $name};
+//      } elseif(!property_exists($this, $name)) {
+//        classSupernova::$debug->error('Property [' . $name . '] not exists in class ' . get_called_class() . '::__get');
+//      }
+//
+//      return $this->$name;
+//    }
   }
 
   /**
@@ -99,26 +131,71 @@ abstract class DBRow implements IDbRow {
    */
   // TODO - сеттер должен параллельно изменять значение db_row - for now...
   public function __set($name, $value) {
-    // Property value can be get from protected property or getter
-    if(method_exists($this, 'set' . ucfirst($name))) {
-      // Checking for getter
-      call_user_func(array($this, 'set' . ucfirst($name)), $value);
-    } else {
-      // Checking for hidden property existence
-      if(property_exists($this, '_' . $name)) {
-        $this->{'_' . $name} = $value;
-      } else {
-        // Checking for property existence
-        if(!property_exists($this, $name)) {
-          classSupernova::$debug->error('Property ' . $name . ' not exists in class ' . get_called_class() . '::__set');
-        }
-        $this->$name = $value;
-      }
-    }
-    $this->propertiesChanged[$name] = true;
+    // Redirecting inaccessible set to __call which will handle the rest
+//    call_user_func(array($this, 'set' . ucfirst($name)), $value);
+    $this->__call('set' . ucfirst($name), array($value));
+//    // Property value can be get from protected property or getter
+//    if(method_exists($this, 'set' . ucfirst($name))) {
+//      // Checking for getter
+//      call_user_func(array($this, 'set' . ucfirst($name)), $value);
+//    } else {
+//      // Checking for hidden property existence
+//      if(property_exists($this, '_' . $name)) {
+//        $this->{'_' . $name} = $value;
+//      } else {
+//        // Checking for property existence
+//        if(!property_exists($this, $name)) {
+//          classSupernova::$debug->error('Property ' . $name . ' not exists in class ' . get_called_class() . '::__set');
+//        }
+//        $this->$name = $value;
+//      }
+//    }
+//    $this->propertiesChanged[$name] = true;
   }
 
+  /**
+   * Handles getters and setters
+   *
+   * @param string $name
+   * @param array  $arguments
+   *
+   * @return mixed
+   * @throws ExceptionPropertyNotExists
+   */
+  public function __call($name, $arguments) {
+    $left3 = substr($name, 0, 3);
+    $propertyName = lcfirst(substr($name, 3));
 
+    // If method is not getter or setter OR property name not exists in $_properties - raising exception
+    // Descendants can catch this Exception to make own __call magic
+    if(($left3 != 'get' && $left3 != 'set') || empty(static::$_properties[$propertyName])) {
+      throw new ExceptionPropertyNotExists('Property ' . $propertyName . ' not exists when calling getter/setter ' . get_called_class() . '::' . $name, ERR_ERROR);
+    }
+
+    // TODO check for read-only
+
+    if($left3 == 'set') {
+      $this->propertiesChanged[$propertyName] = 1;
+    }
+
+    // Now deciding - will we call a protected setter or will we work with protected property
+
+    // If method exists - just calling it
+    if(method_exists($this, $name)) {
+      return call_user_func_array($name, $arguments);
+    }
+    // No getter/setter exists - works directly with protected property
+
+    // Is it getter?
+    if($left3 === 'get') {
+      return $this->{'_' . $propertyName};
+    }
+
+    // Not getter? Then it's setter
+    $this->{'_' . $propertyName} = $arguments[0];
+
+    return null;
+  }
 
   // IDBrow Implementation *********************************************************************************************
 
@@ -128,7 +205,7 @@ abstract class DBRow implements IDbRow {
    * @param int $dbId
    */
   public function dbLoad($dbId) {
-    $this->_reset();
+//    $this->_reset();
 
     $dbId = idval($dbId);
     if($dbId <= 0) {
@@ -195,13 +272,13 @@ abstract class DBRow implements IDbRow {
     if(!$this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - record db_id is not empty on ' . get_called_class() . '::dbInsert');
     }
-    $this->dbId = $this->db_field_set_create($this->dbMakeFieldSet());
+    $this->_dbId = $this->db_field_set_create($this->dbMakeFieldSet());
 
-    if(empty($this->dbId)) {
+    if(empty($this->_dbId)) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - error saving record ' . get_called_class() . '::dbInsert');
     }
 
-    return $this->dbId;
+    return $this->_dbId;
   }
 
   /**
@@ -222,22 +299,22 @@ abstract class DBRow implements IDbRow {
     if($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbDelete');
     }
-    doquery("DELETE FROM {{" . static::$_table . "}} WHERE `" . static::$_dbIdFieldName . "` = " . $this->dbId);
-    $this->dbId = 0;
+    doquery("DELETE FROM {{" . static::$_table . "}} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
+    $this->_dbId = 0;
     // Обо всём остальном должен позаботиться контейнер
   }
 
   // Other Methods *****************************************************************************************************
 
-  /**
-   * Resets object to zero state
-   * @see DBRow::dbLoad()
-   *
-   * @return void
-   */
-  protected function _reset() {
-    $this->dbRowParse(array());
-  }
+//  /**
+//   * Resets object to zero state
+//   * @see DBRow::dbLoad()
+//   *
+//   * @return void
+//   */
+//  protected function _reset() {
+//    $this->dbRowParse(array());
+//  }
 
   /**
    * Парсит запись из БД в поля объекта
@@ -245,9 +322,8 @@ abstract class DBRow implements IDbRow {
    * @param array $db_row
    */
   public function dbRowParse(array $db_row) {
-    // Пока - простейший вариант. В более сложном - нужно конвертеры ИЗ db_row и В db_row - с преобразованием типов
-    foreach(static::$_scheme as $property_name => &$property_data) {
-      // Advanced values extraction procedure. Used when at least one of following rules is matched:
+    foreach(static::$_properties as $property_name => &$property_data) {
+      // Advanced values extraction procedure. Should be used when at least one of following rules is matched:
       // - one field should translate to several properties;
       // - one property should be filled according to several fields;
       // - property filling requires some lookup in object values;
@@ -261,12 +337,13 @@ abstract class DBRow implements IDbRow {
         continue;
       }
 
-      // Getting field value as base only if $_scheme has 1-to-1 relation to object property
+      // Getting field value as base only if $_properties has 1-to-1 relation to object property
       $value = !empty($property_data[P_DB_FIELD]) && isset($db_row[$property_data[P_DB_FIELD]]) ? $db_row[$property_data[P_DB_FIELD]] : null;
+
       // Making format conversion from string ($db_row default type) to property type
       !empty($property_data[P_FUNC_INPUT]) && is_callable($property_data[P_FUNC_INPUT]) ? $value = call_user_func($property_data[P_FUNC_INPUT], $value) : false;
 
-      // If there is setter for this field - using it. Setters is always a methos of THIS
+      // If there is setter for this field - using it. Setters is always a methods of $THIS
       if(!empty($property_data[P_METHOD_SET]) && is_callable(array($this, $property_data[P_METHOD_SET]))) {
         call_user_func(array($this, $property_data[P_METHOD_SET]), $value);
       } else {
@@ -278,14 +355,12 @@ abstract class DBRow implements IDbRow {
   /**
    * Делает из свойств класса массив db_field_name => db_field_value
    *
-   *
-   *
    * @return array
    */
   protected function dbMakeFieldSet($isUpdate = false) {
     $array = array();
 
-    foreach(static::$_scheme as $property_name => &$property_data) {
+    foreach(static::$_properties as $property_name => &$property_data) {
       // TODO - on isUpdate add only changed/adjusted properties
 
       if(!empty($property_data[P_METHOD_INJECT]) && is_callable(array($this, $property_data[P_METHOD_INJECT]))) {
@@ -350,7 +425,7 @@ abstract class DBRow implements IDbRow {
   protected function isFieldChanged($fieldName) {
     $isFieldChanged = false;
     foreach($this->propertiesChanged as $propertyName => $cork) {
-      $propertyScheme = static::$_scheme[$propertyName];
+      $propertyScheme = static::$_properties[$propertyName];
       if(!empty($propertyScheme[P_DB_FIELDS_LINKED])) {
         foreach($propertyScheme[P_DB_FIELDS_LINKED] as $linkedFieldName) {
           if($linkedFieldName == $fieldName) {
@@ -394,11 +469,12 @@ abstract class DBRow implements IDbRow {
       $set[] = "`{$fieldName}` = $value";
     }
     $set_string = implode(',', $set);
+
 //pdump($set_string, get_called_class());
 
     return empty($set_string)
       ? true
-      : classSupernova::db_query("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->dbId);
+      : classSupernova::db_query("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
   }
 
   /**
@@ -407,7 +483,7 @@ abstract class DBRow implements IDbRow {
    * @return bool
    */
   public function isNew() {
-    return $this->dbId == 0;
+    return $this->_dbId == 0;
   }
 
   /**

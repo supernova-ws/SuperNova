@@ -9,7 +9,7 @@
  * @method UBEFleet offsetGet($offset)
  * @property UBEFleet[] $_container
  *
- * @version 41a6.12
+ * @version 41a6.16
  */
 class UBEFleetList extends FleetList {
 
@@ -35,7 +35,7 @@ class UBEFleetList extends FleetList {
   /**
    * UBEFleetList constructor.
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function __construct() {
     parent::__construct();
@@ -51,7 +51,7 @@ class UBEFleetList extends FleetList {
   /**
    * @return UBEFleet
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function _createElement() {
     return new UBEFleet();
@@ -60,7 +60,7 @@ class UBEFleetList extends FleetList {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function ube_insert_from_Fleet(Fleet $objFleet) {
     $this[$objFleet->dbId] = new UBEFleet();
@@ -111,7 +111,7 @@ class UBEFleetList extends FleetList {
     foreach($this->_container as $fleet_id => $UBEFleet) {
       $result[$UBEFleet->is_attacker][] = array(
         'ID'          => $fleet_id,
-        'NAME'        => $ube->players[$UBEFleet->owner_id]->getName(),
+        'NAME'        => $ube->players[$UBEFleet->owner_id]->name,
         'IS_ATTACKER' => $UBEFleet->is_attacker == UBE_PLAYER_IS_ATTACKER,
         '.'           => array(
           'param' => $UBEFleet->report_render_outcome_side_fleet(),
@@ -127,7 +127,7 @@ class UBEFleetList extends FleetList {
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function ube_analyze_fleets($is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя
@@ -267,7 +267,7 @@ class UBEFleetList extends FleetList {
     $reapers = 0;
     foreach($this->_container as $fleet_id => $UBERoundFleetCombat) {
       if($UBERoundFleetCombat->is_attacker == UBE_PLAYER_IS_ATTACKER) {
-        $reapers += $UBERoundFleetCombat->unit_list->countReapers();
+        $reapers += $UBERoundFleetCombat->unit_list->unitCountReapers();
       }
     }
 
@@ -300,7 +300,7 @@ class UBEFleetList extends FleetList {
    * @param Fleet         $objFleet
    * @param UBEPlayerList $players
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function ubeInitGetAttackers(Fleet $objFleet, UBEPlayerList $players) {
     if($objFleet->group_id) {
@@ -319,7 +319,7 @@ class UBEFleetList extends FleetList {
    *
    * @param Fleet $objFleet
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function ubeInitGetFleetsOnHold(Fleet $objFleet, UBEPlayerList $players) {
     $fleets_added = $this->dbLoadWhere(

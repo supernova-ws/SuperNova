@@ -13,24 +13,12 @@ abstract class UnitContainer extends DBRowLocation {
    */
   protected $unitList = null;
 
-
   public function __construct() {
     parent::__construct();
     $this->unitList = new UnitList();
     $this->unitList->setLocatedAt($this);
     $this->triggerDbOperationOn[] = $this->unitList;
   }
-
-//  /**
-//   * Временная функция, устанавливающая DB_ID текущего флота
-//   *
-//   * @param $fleet_id
-//   */
-//  // TODO - НЕЛЬЗЯ ТАК ДЕЛАТЬ! ЛИБО ФЛОТ УЖЕ СУЩЕСТВУЕТ - И ЕСТЬ ИД ЗАПИСИ, ЛИБО ЕГО ЕЩЕ НЕТ - И ТОГДА ИД РАВНО НУЛЮ!
-//  public function setDbId($fleet_id) {
-//    $this->dbId = idval($fleet_id);
-//  }
-
 
   public function dbRowParse($db_row) {
     parent::dbRowParse($db_row);

@@ -19,7 +19,7 @@ class UBEPlayerList extends PlayerList {
   /**
    * @return UBEPlayer
    *
-   * @version 41a6.12
+   * @version 41a6.16
    */
   public function _createElement() {
     return new UBEPlayer();
@@ -36,11 +36,11 @@ class UBEPlayerList extends PlayerList {
     $UBEPlayer->load_from_report_player_row($report_player_row);
     $this[$UBEPlayer->dbId] = $UBEPlayer;
 
-    $this->authLevelMax = max($this->authLevelMax, $UBEPlayer->getAuthLevel());
+    $this->authLevelMax = max($this->authLevelMax, $UBEPlayer->authLevel);
   }
 
 
-  public function db_ube_load_player_by_id($player_id, $is_attacker) {
+  public function db_load_player_by_id($player_id, $is_attacker) {
     parent::db_load_player_by_id($player_id);
 
     $this[$player_id]->setSide($is_attacker);
@@ -97,7 +97,7 @@ class UBEPlayerList extends PlayerList {
 
   public function ubeLoadPlayersAndSetSideFromFleetIdList(array $added_fleets, UBEFleetList $fleetList, $side = UBE_PLAYER_IS_DEFENDER) {
     foreach($added_fleets as $fleet_id) {
-      $this->db_ube_load_player_by_id($fleetList[$fleet_id]->owner_id, $side);
+      $this->db_load_player_by_id($fleetList[$fleet_id]->owner_id, $side);
     }
   }
 

@@ -109,7 +109,7 @@ class UBE {
    *
    * @param Mission $objMission
    *
-   * @version 41a6.2
+   * @version 41a6.16
    */
   function loadDataFromMission(&$objMission) {
     $this->combatMission = $objMission;
@@ -139,12 +139,12 @@ class UBE {
    *
    * @internal param array $planet
    *
-   * @version 41a6.2
+   * @version 41a6.16
    */
   function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];
 
-    $this->players->db_ube_load_player_by_id($player_id, UBE_PLAYER_IS_DEFENDER);
+    $this->players->db_load_player_by_id($player_id, UBE_PLAYER_IS_DEFENDER);
 
     $player_db_row = $this->players[$player_id]->getDbRow();
     if($fortifier_level = mrc_get_level($player_db_row, $this->combatMission->dst_planet, MRC_FORTIFIER)) {
@@ -162,7 +162,7 @@ class UBE {
   /**
    * Общий алгоритм расчета боя
    *
-   * @version 41a6.2
+   * @version 41a6.16
    */
   protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -217,7 +217,7 @@ pdie();
     // SFR - Small Fleet Reconnaissance ака РМФ
     $this->is_small_fleet_recce = $this->rounds->count() == 2 && $this->combat_result == UBE_COMBAT_RESULT_LOSS;
 
-    $this->debris->_reset();
+//    $this->debris->_reset();
     // Генерируем результат боя
     $this->fleet_list->ube_analyze_fleets($this->is_simulator, $this->debris, $this->resource_exchange_rates);
 
@@ -319,7 +319,7 @@ pdie();
    *
    * @return mixed
    *
-   * @version 41a6.2
+   * @version 41a6.16
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -332,7 +332,7 @@ pdie();
     }
 
     foreach($this->fleet_list->_container as $fleet_id => $UBEFleet) {
-      $ship_count_lost = $UBEFleet->unit_list->countUnitsLost();
+      $ship_count_lost = $UBEFleet->unit_list->unitCountLost();
 
       if($fleet_id) {
         // Флот
@@ -467,7 +467,7 @@ pdie();
    * @param     $attacker
    * @param int $player_id
    *
-   * @version 41a6.2
+   * @version 41a6.16
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -478,7 +478,7 @@ pdie();
     }
 
     foreach($side_info as $fleet_data) {
-      $this->players[$player_id]->setName($player_id);
+      $this->players[$player_id]->name = $player_id;
       $this->players[$player_id]->setSide($attacker);
 
       $objFleet = new UBEFleet();
@@ -493,7 +493,7 @@ pdie();
         $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
 
         if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-          $this->fleet_list[$fleet_id]->unit_list->insert_unit($unit_id, $unit_count);
+          $this->fleet_list[$fleet_id]->unit_list->unitAdjustCount($unit_id, $unit_count);
         } elseif($unit_type == UNIT_RESOURCES) {
           $this->fleet_list[$fleet_id]->resource_list[$unit_id] = $unit_count;
         } elseif($unit_type == UNIT_TECHNOLOGIES) {
@@ -549,7 +549,7 @@ pdie();
    *
    * @return bool
    *
-   * @version 41a6.2
+   * @version 41a6.16
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
@@ -687,7 +687,7 @@ pdie();
  *
  * @return mixed
  *
- * @version 41a6.2
+ * @version 41a6.16
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
@@ -699,7 +699,7 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  *
  * @return mixed
  *
- * @version 41a6.2
+ * @version 41a6.16
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
@@ -710,6 +710,6 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  *
  * @return mixed
  *
- * @version 41a6.2
+ * @version 41a6.16
  */
 function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

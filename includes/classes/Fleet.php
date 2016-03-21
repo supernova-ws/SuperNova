@@ -2,6 +2,31 @@
 
 /**
  * Class Fleet
+ *
+ * @property int dbId
+ * @property int playerOwnerId
+ * @property int group_id
+ * @property int mission_type
+ * @property int target_owner_id
+ * @property int is_returning
+ *
+ * @property int time_launch
+ * @property int time_arrive_to_target
+ * @property int time_mission_job_complete
+ * @property int time_return_to_source
+ *
+ * @property int fleet_start_planet_id
+ * @property int fleet_start_galaxy
+ * @property int fleet_start_system
+ * @property int fleet_start_planet
+ * @property int fleet_start_type
+ *
+ * @property int fleet_end_planet_id
+ * @property int fleet_end_galaxy
+ * @property int fleet_end_system
+ * @property int fleet_end_planet
+ * @property int fleet_end_type
+ *
  */
 class Fleet extends UnitContainer {
 
@@ -25,7 +50,7 @@ class Fleet extends UnitContainer {
    *
    * @var array
    */
-  protected static $_scheme = array(
+  protected static $_properties = array(
     'dbId'          => array(
       P_DB_FIELD => 'fleet_id',
     ),
@@ -123,47 +148,41 @@ class Fleet extends UnitContainer {
 
 
   // UnitContainer inheritance *****************************************************************************************
-
   /**
    * Type of this location
    *
    * @var int $locationType
    */
-  public static $locationType = LOC_FLEET;
-//  /**
-//   * @var UnitList $unitList
-//   */
-//  public $unitList = null;
+  protected static $locationType = LOC_FLEET;
 
 
   // New properties ****************************************************************************************************
-
   /**
    * `fleet_owner`
    *
    * @var int
    */
-  public $playerOwnerId = 0;
+  protected $_playerOwnerId = 0;
   /**
    * `fleet_group`
    *
    * @var int
    */
-  public $group_id = 0;
+  protected $_group_id = 0;
 
   /**
    * `fleet_mission`
    *
    * @var int
    */
-  public $mission_type = 0;
+  protected $_mission_type = 0;
 
   /**
    * `fleet_target_owner`
    *
    * @var int
    */
-  public $target_owner_id = null;
+  protected $_target_owner_id = null;
 
   /**
    * @var array
@@ -180,44 +199,44 @@ class Fleet extends UnitContainer {
    *
    * @var int
    */
-  public $is_returning = 0;
+  protected $_is_returning = 0;
   /**
    * `start_time` - Время отправления - таймштамп взлёта флота из точки отправления
    *
-   * @var int $time_launch
+   * @var int $_time_launch
    */
-  public $time_launch = 0; // `start_time` = SN_TIME_NOW
+  protected $_time_launch = 0; // `start_time` = SN_TIME_NOW
   /**
    * `fleet_start_time` - Время прибытия в точку миссии/время начала выполнения миссии
    *
-   * @var int $time_arrive_to_target
+   * @var int $_time_arrive_to_target
    */
-  public $time_arrive_to_target = 0; // `fleet_start_time` = SN_TIME_NOW + $time_travel
+  protected $_time_arrive_to_target = 0; // `fleet_start_time` = SN_TIME_NOW + $time_travel
   /**
    * `fleet_end_stay` - Время окончания миссии в точке назначения
    *
-   * @var int $time_mission_job_complete
+   * @var int $_time_mission_job_complete
    */
-  public $time_mission_job_complete = 0; // `fleet_end_stay`
+  protected $_time_mission_job_complete = 0; // `fleet_end_stay`
   /**
    * `fleet_end_time` - Время возвращения флота после окончания миссии
    *
-   * @var int $time_return_to_source
+   * @var int $_time_return_to_source
    */
-  public $time_return_to_source = 0; // `fleet_end_time`
+  protected $_time_return_to_source = 0; // `fleet_end_time`
 
 
-  public $fleet_start_planet_id = null;
-  public $fleet_start_galaxy = 0;
-  public $fleet_start_system = 0;
-  public $fleet_start_planet = 0;
-  public $fleet_start_type = PT_ALL;
+  protected $_fleet_start_planet_id = null;
+  protected $_fleet_start_galaxy = 0;
+  protected $_fleet_start_system = 0;
+  protected $_fleet_start_planet = 0;
+  protected $_fleet_start_type = PT_ALL;
 
-  public $fleet_end_planet_id = null;
-  public $fleet_end_galaxy = 0;
-  public $fleet_end_system = 0;
-  public $fleet_end_planet = 0;
-  public $fleet_end_type = PT_ALL;
+  protected $_fleet_end_planet_id = null;
+  protected $_fleet_end_galaxy = 0;
+  protected $_fleet_end_system = 0;
+  protected $_fleet_end_planet = 0;
+  protected $_fleet_end_type = PT_ALL;
 
   // Missile properties
   public $missile_target = 0;
@@ -256,10 +275,9 @@ class Fleet extends UnitContainer {
 //    return $this->playerOwnerId;
 //  }
 
-  
-  
+
   /* FLEET DB ACCESS =================================================================================================*/
-  
+
   /**
    * UPDATE - Updates fleet record by ID with SET
    *
@@ -269,7 +287,7 @@ class Fleet extends UnitContainer {
    */
   // TODO - унести куда-то глубоко. Например в DBAware или даже в БД-драйвер
   protected function db_fleet_update_set_safe_string($set_safe_string) {
-    $fleet_id_safe = idval($this->dbId);
+    $fleet_id_safe = idval($this->_dbId);
     if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
       $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
@@ -291,7 +309,7 @@ class Fleet extends UnitContainer {
     // Тупо лочим всех юзеров, чьи флоты летят или улетают с координат отбытия/прибытия $fleet_row
     // Что бы делать это умно - надо учитывать fleet__mess во $fleet_row и в таблице fleets
 
-    $fleet_id_safe = idval($this->dbId);
+    $fleet_id_safe = idval($this->_dbId);
 
     return doquery(
     // Блокировка самого флота
@@ -333,16 +351,16 @@ class Fleet extends UnitContainer {
    * @return array|bool|mysqli_result|null
    */
   public function db_delete_this_fleet() {
-    $fleet_id_safe = idval($this->dbId);
+    $fleet_id_safe = idval($this->_dbId);
     if(!empty($fleet_id_safe)) {
       $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
     } else {
       $result = false;
     }
 
-    db_unit_list_delete(0, static::$locationType, $this->dbId, 0);
+    db_unit_list_delete(0, static::$locationType, $this->_dbId, 0);
 
-    $this->_reset();
+//    $this->_reset();
 
     return $result;
   }
@@ -361,23 +379,23 @@ class Fleet extends UnitContainer {
    * Forcibly returns fleet before time outs
    */
   public function fleet_command_return() {
-    $ReturnFlyingTime = ($this->time_mission_job_complete != 0 && $this->time_arrive_to_target < SN_TIME_NOW ? $this->time_arrive_to_target : SN_TIME_NOW) - $this->time_launch + SN_TIME_NOW + 1;
+    $ReturnFlyingTime = ($this->_time_mission_job_complete != 0 && $this->_time_arrive_to_target < SN_TIME_NOW ? $this->_time_arrive_to_target : SN_TIME_NOW) - $this->_time_launch + SN_TIME_NOW + 1;
 
     $this->mark_fleet_as_returned();
 
     // Считаем, что флот уже долетел TODO
-    $this->core_field_set_list['fleet_start_time'] = $this->time_arrive_to_target = SN_TIME_NOW;
+    $this->core_field_set_list['fleet_start_time'] = $this->_time_arrive_to_target = SN_TIME_NOW;
     // Убираем флот из группы
-    $this->core_field_set_list['fleet_group'] = $this->group_id = 0;
+    $this->core_field_set_list['fleet_group'] = $this->_group_id = 0;
     // Отменяем работу в точке назначения
-    $this->core_field_set_list['fleet_end_stay'] = $this->time_mission_job_complete = 0;
+    $this->core_field_set_list['fleet_end_stay'] = $this->_time_mission_job_complete = 0;
     // TODO - правильно вычслять время возвращения - по проделанному пути, а не по старому времени возвращения
-    $this->core_field_set_list['fleet_end_time'] = $this->time_return_to_source = $ReturnFlyingTime;
+    $this->core_field_set_list['fleet_end_time'] = $this->_time_return_to_source = $ReturnFlyingTime;
 
     // Записываем изменения в БД
     $this->flush_changes_to_db();
 
-    if($this->group_id) {
+    if($this->_group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
       db_fleet_aks_purge();
     }
@@ -388,7 +406,7 @@ class Fleet extends UnitContainer {
    */
   public function mark_fleet_as_returned() {
     // TODO - Проверка - а не возвращается ли уже флот?
-    $this->is_returning = 1;
+    $this->_is_returning = 1;
     $this->core_field_set_list['fleet_mess'] = 1;
   }
 
@@ -398,9 +416,9 @@ class Fleet extends UnitContainer {
    */
   public function target_coordinates_without_type() {
     return array(
-      'galaxy' => $this->fleet_end_galaxy,
-      'system' => $this->fleet_end_system,
-      'planet' => $this->fleet_end_planet,
+      'galaxy' => $this->_fleet_end_galaxy,
+      'system' => $this->_fleet_end_system,
+      'planet' => $this->_fleet_end_planet,
     );
   }
 
@@ -409,10 +427,10 @@ class Fleet extends UnitContainer {
    */
   public function target_coordinates_typed() {
     return array(
-      'galaxy' => $this->fleet_end_galaxy,
-      'system' => $this->fleet_end_system,
-      'planet' => $this->fleet_end_planet,
-      'type'   => $this->fleet_end_type,
+      'galaxy' => $this->_fleet_end_galaxy,
+      'system' => $this->_fleet_end_system,
+      'planet' => $this->_fleet_end_planet,
+      'type'   => $this->_fleet_end_type,
     );
   }
 
@@ -421,10 +439,10 @@ class Fleet extends UnitContainer {
    */
   public function launch_coordinates_typed() {
     return array(
-      'galaxy' => $this->fleet_start_galaxy,
-      'system' => $this->fleet_start_system,
-      'planet' => $this->fleet_start_planet,
-      'type'   => $this->fleet_start_type,
+      'galaxy' => $this->_fleet_start_galaxy,
+      'system' => $this->_fleet_start_system,
+      'planet' => $this->_fleet_start_planet,
+      'type'   => $this->_fleet_start_type,
     );
   }
 
@@ -445,7 +463,7 @@ class Fleet extends UnitContainer {
     sn_db_transaction_check(true);
 
     // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-    if(!$this->dbId || ($this->is_returning == 1 && $only_resources)) {
+    if(!$this->_dbId || ($this->_is_returning == 1 && $only_resources)) {
       return $result;
     }
 
@@ -465,7 +483,7 @@ class Fleet extends UnitContainer {
 
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
     // Флот, который возвращается на захваченную планету, пропадает
-    if($start && $this->is_returning == 1 && $planet_arrival['id_owner'] != $this->playerOwnerId) {
+    if($start && $this->_is_returning == 1 && $planet_arrival['id_owner'] != $this->_playerOwnerId) {
       $result = RestoreFleetToPlanet($this, $start, $only_resources, $result);
 
       $this->db_delete_this_fleet();
@@ -478,7 +496,7 @@ class Fleet extends UnitContainer {
       // Landing ships
       $db_changeset = array();
 
-      if($this->playerOwnerId == $planet_arrival['id_owner']) {
+      if($this->_playerOwnerId == $planet_arrival['id_owner']) {
         $fleet_array = $this->get_unit_list();
         foreach($fleet_array as $ship_id => $ship_count) {
           if($ship_count) {
@@ -514,20 +532,6 @@ class Fleet extends UnitContainer {
   }
 
 
-  /**
-   * Получить запись из $fleet_row без дополнительной инициализации
-   * Это бывает полезго когда данные о флотах читаются потоково, что бы не хранить все флоты в памяти
-   * Например - расчёт статистики флотов на сейчас. Когда юниты будут вынесены из записей флотов - это будет не нужно
-   *
-   * @param array $fleet_row
-   */
-  public function get_by_id_in_fleet_row($fleet_row) {
-    if(empty($fleet_row['fleet_id'])) {
-      $this->_reset();
-    } else {
-      $this->dbLoad($fleet_row['fleet_id']);
-    }
-  }
 
 
 
@@ -543,11 +547,11 @@ class Fleet extends UnitContainer {
    */
   // TODO - safe IDs with check via possible fleets
   public function group_acs_set($acs_id, $mission_id) {
-    $this->group_id = $acs_id;
-    $this->mission_type = $mission_id;
+    $this->_group_id = $acs_id;
+    $this->_mission_type = $mission_id;
 
-    $this->core_field_set_list['fleet_group'] = $this->group_id;
-    $this->core_field_set_list['fleet_mission'] = $this->mission_type;
+    $this->core_field_set_list['fleet_group'] = $this->_group_id;
+    $this->core_field_set_list['fleet_mission'] = $this->_mission_type;
   }
 
   public function ship_count_by_id($ship_id) {
@@ -614,8 +618,8 @@ class Fleet extends UnitContainer {
    */
   public function replace_ships($unit_list) {
     // TODO - Resets also delta and changes?!
-    $this->unitList->_reset();
-
+//    $this->unitList->_reset();
+pdie('Replace_ships should be rewritten! Deletes ships by setting their count to 0, adding ship with UnitList standard procedure');
     !is_array($unit_list) ? $unit_list = array() : false;
 
     foreach($unit_list as $unit_id => $unit_count) {
@@ -735,11 +739,11 @@ class Fleet extends UnitContainer {
    * @param int $flight_departure - fleet departure from source planet timestamp. Allows to send fleet in future or in past
    */
   public function set_times($time_to_travel, $time_on_mission = 0, $group_sync_delta_time = 0, $flight_departure = SN_TIME_NOW) {
-    $this->time_launch = $flight_departure;
+    $this->_time_launch = $flight_departure;
 
-    $this->time_arrive_to_target = $this->time_launch + $time_to_travel + $group_sync_delta_time;
-    $this->time_mission_job_complete = $time_on_mission ? $this->time_arrive_to_target + $time_on_mission : 0;
-    $this->time_return_to_source = ($this->time_mission_job_complete ? $this->time_mission_job_complete : $this->time_arrive_to_target) + $time_to_travel;
+    $this->_time_arrive_to_target = $this->_time_launch + $time_to_travel + $group_sync_delta_time;
+    $this->_time_mission_job_complete = $time_on_mission ? $this->_time_arrive_to_target + $time_on_mission : 0;
+    $this->_time_return_to_source = ($this->_time_mission_job_complete ? $this->_time_mission_job_complete : $this->_time_arrive_to_target) + $time_to_travel;
   }
 
   /**
@@ -757,35 +761,35 @@ class Fleet extends UnitContainer {
   public function create_and_send($owner_id, $unit_array, $mission_type, $from, $to, $fleet_group = 0) {
 //    $this->_reset();
 
-    $this->mission_type = $mission_type;
-    $this->group_id = $fleet_group;
+    $this->_mission_type = $mission_type;
+    $this->_group_id = $fleet_group;
 
-    $this->playerOwnerId = $owner_id;
-    $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
+    $this->_playerOwnerId = $owner_id;
+    $this->_target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
 
     // Filling $ship_list and $resource_list, also fills $amount
     $this->parse_unit_array($unit_array);
 
-    $this->fleet_start_planet_id = intval($from['id']) ? $from['id'] : null;
-    $this->fleet_start_galaxy = $from['galaxy'];
-    $this->fleet_start_system = $from['system'];
-    $this->fleet_start_planet = $from['planet'];
-    $this->fleet_start_type = $from['planet_type'];
+    $this->_fleet_start_planet_id = intval($from['id']) ? $from['id'] : null;
+    $this->_fleet_start_galaxy = $from['galaxy'];
+    $this->_fleet_start_system = $from['system'];
+    $this->_fleet_start_planet = $from['planet'];
+    $this->_fleet_start_type = $from['planet_type'];
 
-    $this->fleet_end_planet_id = intval($to['id']) ? $to['id'] : null;
-    $this->fleet_end_galaxy = $to['galaxy'];
-    $this->fleet_end_system = $to['system'];
-    $this->fleet_end_planet = $to['planet'];
-    $this->fleet_end_type = $to['planet_type'];
+    $this->_fleet_end_planet_id = intval($to['id']) ? $to['id'] : null;
+    $this->_fleet_end_galaxy = $to['galaxy'];
+    $this->_fleet_end_system = $to['system'];
+    $this->_fleet_end_planet = $to['planet'];
+    $this->_fleet_end_type = $to['planet_type'];
 
     // WARNING! MISSION TIMES MUST BE SET WITH set_times() method!
-    if(empty($this->time_launch)) {
+    if(empty($this->_time_launch)) {
       die('Fleet time not set!');
     }
 
     $this->dbInsert();
 
-    return $this->dbId;
+    return $this->_dbId;
   }
 
   /**
@@ -822,29 +826,29 @@ class Fleet extends UnitContainer {
   public function make_db_insert_set() {
     $db_set = array(
 //      'fleet_id'              => $this->id,
-      'fleet_owner'   => $this->playerOwnerId,
-      'fleet_mission' => $this->mission_type,
+      'fleet_owner'   => $this->_playerOwnerId,
+      'fleet_mission' => $this->_mission_type,
 
-      'fleet_target_owner' => !empty($this->target_owner_id) ? $this->target_owner_id : null,
-      'fleet_group'        => $this->group_id,
-      'fleet_mess'         => empty($this->is_returning) ? 0 : 1,
+      'fleet_target_owner' => !empty($this->_target_owner_id) ? $this->_target_owner_id : null,
+      'fleet_group'        => $this->_group_id,
+      'fleet_mess'         => empty($this->_is_returning) ? 0 : 1,
 
-      'start_time'       => $this->time_launch,
-      'fleet_start_time' => $this->time_arrive_to_target,
-      'fleet_end_stay'   => $this->time_mission_job_complete,
-      'fleet_end_time'   => $this->time_return_to_source,
+      'start_time'       => $this->_time_launch,
+      'fleet_start_time' => $this->_time_arrive_to_target,
+      'fleet_end_stay'   => $this->_time_mission_job_complete,
+      'fleet_end_time'   => $this->_time_return_to_source,
 
-      'fleet_start_planet_id' => !empty($this->fleet_start_planet_id) ? $this->fleet_start_planet_id : null,
-      'fleet_start_galaxy'    => $this->fleet_start_galaxy,
-      'fleet_start_system'    => $this->fleet_start_system,
-      'fleet_start_planet'    => $this->fleet_start_planet,
-      'fleet_start_type'      => $this->fleet_start_type,
+      'fleet_start_planet_id' => !empty($this->_fleet_start_planet_id) ? $this->_fleet_start_planet_id : null,
+      'fleet_start_galaxy'    => $this->_fleet_start_galaxy,
+      'fleet_start_system'    => $this->_fleet_start_system,
+      'fleet_start_planet'    => $this->_fleet_start_planet,
+      'fleet_start_type'      => $this->_fleet_start_type,
 
-      'fleet_end_planet_id' => !empty($this->fleet_end_planet_id) ? $this->fleet_end_planet_id : null,
-      'fleet_end_galaxy'    => $this->fleet_end_galaxy,
-      'fleet_end_system'    => $this->fleet_end_system,
-      'fleet_end_planet'    => $this->fleet_end_planet,
-      'fleet_end_type'      => $this->fleet_end_type,
+      'fleet_end_planet_id' => !empty($this->_fleet_end_planet_id) ? $this->_fleet_end_planet_id : null,
+      'fleet_end_galaxy'    => $this->_fleet_end_galaxy,
+      'fleet_end_system'    => $this->_fleet_end_system,
+      'fleet_end_planet'    => $this->_fleet_end_planet,
+      'fleet_end_type'      => $this->_fleet_end_type,
 
       'fleet_amount' => $this->getShipCount(),
 
@@ -857,7 +861,7 @@ class Fleet extends UnitContainer {
   }
 
   public function parse_missile_db_row($missile_db_row) {
-    $this->_reset();
+//    $this->_reset();
 
     if(empty($missile_db_row) || !is_array($missile_db_row)) {
       return;
@@ -867,31 +871,31 @@ class Fleet extends UnitContainer {
 //      $irak_original['fleet_start_name'] = $planet_start['name'];
     $this->missile_target = $missile_db_row['primaer'];
 
-    $this->dbId = -$missile_db_row['id'];
-    $this->playerOwnerId = $missile_db_row['fleet_owner'];
-    $this->mission_type = MT_MISSILE;
+    $this->_dbId = -$missile_db_row['id'];
+    $this->_playerOwnerId = $missile_db_row['fleet_owner'];
+    $this->_mission_type = MT_MISSILE;
 
-    $this->target_owner_id = $missile_db_row['fleet_target_owner'];
+    $this->_target_owner_id = $missile_db_row['fleet_target_owner'];
 
-    $this->group_id = 0;
-    $this->is_returning = 0;
+    $this->_group_id = 0;
+    $this->_is_returning = 0;
 
-    $this->time_launch = 0; // $irak['start_time'];
-    $this->time_arrive_to_target = 0; // $irak['fleet_start_time'];
-    $this->time_mission_job_complete = 0; // $irak['fleet_end_stay'];
-    $this->time_return_to_source = $missile_db_row['fleet_end_time'];
+    $this->_time_launch = 0; // $irak['start_time'];
+    $this->_time_arrive_to_target = 0; // $irak['fleet_start_time'];
+    $this->_time_mission_job_complete = 0; // $irak['fleet_end_stay'];
+    $this->_time_return_to_source = $missile_db_row['fleet_end_time'];
 
-    $this->fleet_start_planet_id = !empty($missile_db_row['fleet_start_planet_id']) ? $missile_db_row['fleet_start_planet_id'] : null;
-    $this->fleet_start_galaxy = $missile_db_row['fleet_start_galaxy'];
-    $this->fleet_start_system = $missile_db_row['fleet_start_system'];
-    $this->fleet_start_planet = $missile_db_row['fleet_start_planet'];
-    $this->fleet_start_type = $missile_db_row['fleet_start_type'];
+    $this->_fleet_start_planet_id = !empty($missile_db_row['fleet_start_planet_id']) ? $missile_db_row['fleet_start_planet_id'] : null;
+    $this->_fleet_start_galaxy = $missile_db_row['fleet_start_galaxy'];
+    $this->_fleet_start_system = $missile_db_row['fleet_start_system'];
+    $this->_fleet_start_planet = $missile_db_row['fleet_start_planet'];
+    $this->_fleet_start_type = $missile_db_row['fleet_start_type'];
 
-    $this->fleet_end_planet_id = !empty($missile_db_row['fleet_end_planet_id']) ? $missile_db_row['fleet_end_planet_id'] : null;
-    $this->fleet_end_galaxy = $missile_db_row['fleet_end_galaxy'];
-    $this->fleet_end_system = $missile_db_row['fleet_end_system'];
-    $this->fleet_end_planet = $missile_db_row['fleet_end_planet'];
-    $this->fleet_end_type = $missile_db_row['fleet_end_type'];
+    $this->_fleet_end_planet_id = !empty($missile_db_row['fleet_end_planet_id']) ? $missile_db_row['fleet_end_planet_id'] : null;
+    $this->_fleet_end_galaxy = $missile_db_row['fleet_end_galaxy'];
+    $this->_fleet_end_system = $missile_db_row['fleet_end_system'];
+    $this->_fleet_end_planet = $missile_db_row['fleet_end_planet'];
+    $this->_fleet_end_type = $missile_db_row['fleet_end_type'];
 
     $this->unitList->unitSetCount(UNIT_DEF_MISSILE_INTERPLANET, $missile_db_row['fleet_amount']);
   }
@@ -903,7 +907,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.15
+   * @version 41a6.16
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -924,37 +928,37 @@ class Fleet extends UnitContainer {
     return empty($this->resource_list) || !is_array($this->resource_list) ? 0 : array_sum($this->resource_list);
   }
 
-  protected function _reset() {
-    $this->dbId = 0;
-    $this->playerOwnerId = 0;
-    $this->target_owner_id = null;
-    $this->mission_type = 0;
-//    $this->db_string = '';
-    $this->group_id = 0;
-    $this->is_returning = 0;
-
-    $this->time_launch = 0; // SN_TIME_NOW
-    $this->time_arrive_to_target = 0; // SN_TIME_NOW + $time_travel
-    $this->time_mission_job_complete = 0;
-    $this->time_return_to_source = 0;
-
-    $this->fleet_start_planet_id = null;
-    $this->fleet_start_galaxy = 0;
-    $this->fleet_start_system = 0;
-    $this->fleet_start_planet = 0;
-    $this->fleet_start_type = PT_ALL;
-
-    $this->fleet_end_planet_id = null;
-    $this->fleet_end_galaxy = 0;
-    $this->fleet_end_system = 0;
-    $this->fleet_end_planet = 0;
-    $this->fleet_end_type = PT_ALL;
-
-    $this->unitList->_reset();
-
-    $this->_reset_resources();
-    $this->core_field_set_list = array();
-  }
+//  protected function _reset() {
+//    $this->_dbId = 0;
+//    $this->_playerOwnerId = 0;
+//    $this->_target_owner_id = null;
+//    $this->_mission_type = 0;
+////    $this->db_string = '';
+//    $this->_group_id = 0;
+//    $this->_is_returning = 0;
+//
+//    $this->_time_launch = 0; // SN_TIME_NOW
+//    $this->_time_arrive_to_target = 0; // SN_TIME_NOW + $time_travel
+//    $this->_time_mission_job_complete = 0;
+//    $this->_time_return_to_source = 0;
+//
+//    $this->_fleet_start_planet_id = null;
+//    $this->_fleet_start_galaxy = 0;
+//    $this->_fleet_start_system = 0;
+//    $this->_fleet_start_planet = 0;
+//    $this->_fleet_start_type = PT_ALL;
+//
+//    $this->_fleet_end_planet_id = null;
+//    $this->_fleet_end_galaxy = 0;
+//    $this->_fleet_end_system = 0;
+//    $this->_fleet_end_planet = 0;
+//    $this->_fleet_end_type = PT_ALL;
+//
+//    $this->unitList->_reset();
+//
+//    $this->_reset_resources();
+//    $this->core_field_set_list = array();
+//  }
 
   protected function _reset_resources() {
     $this->resource_list = array(
@@ -980,7 +984,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.15
+   * @version 41a6.16
    */
   protected function extractResources(array &$db_row) {
     $this->resource_list = array(

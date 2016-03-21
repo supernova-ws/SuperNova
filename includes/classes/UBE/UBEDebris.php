@@ -14,7 +14,7 @@ class UBEDebris {
   protected $debris = array();
 
   public function __construct() {
-    $this->_reset();
+//    $this->_reset();
   }
 
   public function _reset() {
@@ -130,7 +130,7 @@ class UBEDebris {
    * @param array $report_row
    */
   public function load_from_report_row(array $report_row) {
-    $this->_reset();
+//    $this->_reset();
     $this->debris_add_resource(RES_METAL, $report_row['ube_report_debris_metal']);
     $this->debris_add_resource(RES_CRYSTAL, $report_row['ube_report_debris_crystal']);
   }

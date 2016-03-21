@@ -42,7 +42,7 @@ class Unit extends DBRowLocation {
    *
    * @var array
    */
-  protected static $_scheme = array(
+  protected static $_properties = array(
     'dbId'          => array(
       P_DB_FIELD => 'unit_id',
     ),
@@ -105,16 +105,16 @@ class Unit extends DBRowLocation {
 
 
   // Properties from fields ********************************************************************************************
-  protected $unitId = 0;
+  protected $_unitId = 0;
   // TODO - Type is extracted on-the-fly from $info
-  protected $type = 0;
+  protected $_type = 0;
 
   protected $_count = 0;
 
   // Internal properties ***********************************************************************************************
 
-  protected $timeStart = 0;
-  protected $timeFinish = 0;
+  protected $_timeStart = 0;
+  protected $_timeFinish = 0;
 
   /**
    * Passport info per unit
@@ -139,8 +139,9 @@ class Unit extends DBRowLocation {
   // TODO - пустой так же если нет locatedAt
   // или DBID
   // или locationType == LOC_NONE
+  // Но тогда оверврайт в UBEUnit наверное
   public function isEmpty() {
-    return $this->count <= 0;
+    return $this->_count <= 0;
   }
 
 
@@ -184,25 +185,23 @@ class Unit extends DBRowLocation {
 
   public function setUnitId($unitId) {
     // TODO - Reset combat stats??
-    $this->unitId = $unitId;
+    $this->_unitId = $unitId;
 
-    if($this->unitId) {
-      $this->info = get_unit_param($this->unitId);
-      $this->type = $this->info[P_UNIT_TYPE];
+    if($this->_unitId) {
+      $this->info = get_unit_param($this->_unitId);
+      $this->_type = $this->info[P_UNIT_TYPE];
     } else {
       $this->info = array();
+      $this->_type = 0;
     }
   }
 
-  public function setCount($value) {
-//pdump(debug_backtrace());
-//pdie('setCount');
+  protected function setCount($value) {
     // TODO - Reset combat stats??
     if($value < 0) {
       classSupernova::$debug->error('Can not set Unit::$count to negative value');
     }
     $this->_count = $value;
-
 //    $this->propertiesChanged['count'] = true;
 
     return $this->_count;
@@ -231,7 +230,7 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.15
+   * @version 41a6.16
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();

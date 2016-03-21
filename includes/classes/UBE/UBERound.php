@@ -108,7 +108,7 @@ class UBERound {
       $template_fleet = array(
         'ID'          => $fleet_id,
         'IS_ATTACKER' => $ube->fleet_list[$fleet_id]->is_attacker == UBE_PLAYER_IS_ATTACKER,
-        'PLAYER_NAME' => $ube->players[$fleet_owner_id]->getName(true),
+        'PLAYER_NAME' => htmlentities($ube->players[$fleet_owner_id]->name, ENT_COMPAT, 'UTF-8'),
       );
 
       if(is_array($planet_ube_row)) {

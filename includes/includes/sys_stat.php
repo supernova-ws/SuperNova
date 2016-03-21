@@ -139,7 +139,6 @@ function sys_stat_calculate() {
 
   // Calculation of Fleet-In-Flight
   sta_set_time_limit('calculating flying fleets stats');
-  $objFleet = new Fleet();
   $i = 0;
   $query = FleetList::dbQueryAllId();
   $row_num = db_num_rows($query);
@@ -147,7 +146,11 @@ function sys_stat_calculate() {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
     }
-    $objFleet->get_by_id_in_fleet_row($fleet_row);
+    $objFleet = new Fleet();
+    // TODO - без дополнительной инициализации и перераспределений памяти на каждый new Fleet()/unset($fleet)
+    // К тому же при включённом кэшировании это быстро забъёт кэш холодными данными
+    // $objFleet->_reset();
+    $objFleet->dbRowParse($fleet_row);
     if(array_key_exists($user_id = $objFleet->playerOwnerId, $user_skip_list)) {
       continue;
     }
@@ -167,6 +170,8 @@ function sys_stat_calculate() {
 
     $counts[$user_id][UNIT_RESOURCES] += $resources;
     // $points[$user_id][UNIT_RESOURCES] += $resources;
+
+    unset($objFleet);
   }
 
 
