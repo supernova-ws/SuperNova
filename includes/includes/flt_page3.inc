@@ -227,8 +227,8 @@ function sn_fleet_page3($time_to_travel) {
 
   $objFleet = new Fleet();
   $objFleet->set_times($time_to_travel, $mission_time_in_seconds, $group_sync_delta_time);
-  $fleet_id = $objFleet->create_and_send($user['id'], $fleetarray, $target_mission, $planetrow, $to, $fleet_group);
-//  $fleet_id = fleet_insert_set_advanced($user['id'], $fleetarray, $target_mission, $planetrow, $to, $fleet_start_time, $fleet_end_time, $StayTime, $fleet_group);
+  $objFleet->unitsSetFromArray($fleetarray);
+  $fleet_id = $objFleet->create_and_send($user['id'], $target_mission, $planetrow, $to, $fleet_group);
 
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);

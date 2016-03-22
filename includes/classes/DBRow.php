@@ -182,7 +182,7 @@ abstract class DBRow implements IDbRow {
 
     // If method exists - just calling it
     if(method_exists($this, $name)) {
-      return call_user_func_array($name, $arguments);
+      return call_user_func_array(array($this, $name), $arguments);
     }
     // No getter/setter exists - works directly with protected property
 

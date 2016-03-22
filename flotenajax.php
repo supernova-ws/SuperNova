@@ -124,7 +124,8 @@ if($target_mission == MT_MISSILE) {
 
   $objFleet = new Fleet();
   $objFleet->set_times($travel_data['duration']);
-  $fleet_id = $objFleet->create_and_send($user['id'], $fleet_array, $target_mission, $planetrow, $target_coord);
+  $objFleet->unitsSetFromArray($fleet_array);
+  $fleet_id = $objFleet->create_and_send($user['id'], $target_mission, $planetrow, $target_coord);
 //  $fleet_id = fleet_insert_set_advanced($user['id'], $fleet_array, $target_mission, $planetrow, $target_coord, $fleet_start_time, $fleet_end_time);
 }
 

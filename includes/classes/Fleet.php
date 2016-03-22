@@ -378,22 +378,23 @@ class Fleet extends UnitContainer {
   /**
    * Forcibly returns fleet before time outs
    */
-  public function fleet_command_return() {
+  public function commandReturn() {
     $ReturnFlyingTime = ($this->_time_mission_job_complete != 0 && $this->_time_arrive_to_target < SN_TIME_NOW ? $this->_time_arrive_to_target : SN_TIME_NOW) - $this->_time_launch + SN_TIME_NOW + 1;
 
     $this->mark_fleet_as_returned();
 
     // Считаем, что флот уже долетел TODO
-    $this->core_field_set_list['fleet_start_time'] = $this->_time_arrive_to_target = SN_TIME_NOW;
+    $this->core_field_set_list['fleet_start_time'] = $this->time_arrive_to_target = SN_TIME_NOW;
     // Убираем флот из группы
-    $this->core_field_set_list['fleet_group'] = $this->_group_id = 0;
+    $this->core_field_set_list['fleet_group'] = $this->group_id = 0;
     // Отменяем работу в точке назначения
-    $this->core_field_set_list['fleet_end_stay'] = $this->_time_mission_job_complete = 0;
+    $this->core_field_set_list['fleet_end_stay'] = $this->time_mission_job_complete = 0;
     // TODO - правильно вычслять время возвращения - по проделанному пути, а не по старому времени возвращения
-    $this->core_field_set_list['fleet_end_time'] = $this->_time_return_to_source = $ReturnFlyingTime;
+    $this->core_field_set_list['fleet_end_time'] = $this->time_return_to_source = $ReturnFlyingTime;
 
     // Записываем изменения в БД
     $this->flush_changes_to_db();
+//    $this->dbSave();
 
     if($this->_group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
@@ -406,8 +407,7 @@ class Fleet extends UnitContainer {
    */
   public function mark_fleet_as_returned() {
     // TODO - Проверка - а не возвращается ли уже флот?
-    $this->_is_returning = 1;
-    $this->core_field_set_list['fleet_mess'] = 1;
+    $this->core_field_set_list['fleet_mess'] = $this->is_returning = 1;
   }
 
 
@@ -547,14 +547,11 @@ class Fleet extends UnitContainer {
    */
   // TODO - safe IDs with check via possible fleets
   public function group_acs_set($acs_id, $mission_id) {
-    $this->_group_id = $acs_id;
-    $this->_mission_type = $mission_id;
-
-    $this->core_field_set_list['fleet_group'] = $this->_group_id;
-    $this->core_field_set_list['fleet_mission'] = $this->_mission_type;
+    $this->core_field_set_list['fleet_group'] = $this->group_id = $acs_id;
+    $this->core_field_set_list['fleet_mission'] = $this->mission_type = $mission_id;
   }
 
-  public function ship_count_by_id($ship_id) {
+  public function shipCountById($ship_id) {
     return $this->unitList->unitCountById($ship_id);
   }
 
@@ -609,6 +606,7 @@ class Fleet extends UnitContainer {
   public function mark_fleet_as_returned_and_save() {
     $this->mark_fleet_as_returned();
     $this->flush_changes_to_db();
+//    $this->dbSave();
   }
 
   /**
@@ -619,7 +617,7 @@ class Fleet extends UnitContainer {
   public function replace_ships($unit_list) {
     // TODO - Resets also delta and changes?!
 //    $this->unitList->_reset();
-pdie('Replace_ships should be rewritten! Deletes ships by setting their count to 0, adding ship with UnitList standard procedure');
+    pdie('Replace_ships should be rewritten! Deletes ships by setting their count to 0, adding ship with UnitList standard procedure');
     !is_array($unit_list) ? $unit_list = array() : false;
 
     foreach($unit_list as $unit_id => $unit_count) {
@@ -704,7 +702,7 @@ pdie('Replace_ships should be rewritten! Deletes ships by setting their count to
    *
    * @param $unit_array
    */
-  protected function parse_unit_array($unit_array) {
+  public function unitsSetFromArray($unit_array) {
     foreach($unit_array as $unit_id => $unit_count) {
       $unit_count = floatval($unit_count);
       if(!$unit_count) {
@@ -716,7 +714,7 @@ pdie('Replace_ships should be rewritten! Deletes ships by setting their count to
       } elseif($this->isResource($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
       } else {
-
+        throw new Exception('Trying to pass to fleet non-resource and non-ship ' . var_export($unit_array, true), ERR_ERROR);
       }
     }
   }
@@ -750,7 +748,6 @@ pdie('Replace_ships should be rewritten! Deletes ships by setting their count to
    * Initializes Fleet from user params and posts it to DB
    *
    * @param     $owner_id
-   * @param     $unit_array
    * @param     $mission_type
    * @param     $from
    * @param     $to
@@ -758,29 +755,27 @@ pdie('Replace_ships should be rewritten! Deletes ships by setting their count to
    *
    * @return int|string
    */
-  public function create_and_send($owner_id, $unit_array, $mission_type, $from, $to, $fleet_group = 0) {
-//    $this->_reset();
+  public function create_and_send($owner_id, $mission_type, $from, $to, $fleet_group = 0) {
+    $this->mission_type = $mission_type;
+    $this->group_id = $fleet_group;
 
-    $this->_mission_type = $mission_type;
-    $this->_group_id = $fleet_group;
-
-    $this->_playerOwnerId = $owner_id;
-    $this->_target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
+    $this->playerOwnerId = $owner_id;
+    $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
 
     // Filling $ship_list and $resource_list, also fills $amount
-    $this->parse_unit_array($unit_array);
+//    $this->unitsSetFromArray($unit_array);
 
-    $this->_fleet_start_planet_id = intval($from['id']) ? $from['id'] : null;
-    $this->_fleet_start_galaxy = $from['galaxy'];
-    $this->_fleet_start_system = $from['system'];
-    $this->_fleet_start_planet = $from['planet'];
-    $this->_fleet_start_type = $from['planet_type'];
+    $this->fleet_start_planet_id = intval($from['id']) ? $from['id'] : null;
+    $this->fleet_start_galaxy = $from['galaxy'];
+    $this->fleet_start_system = $from['system'];
+    $this->fleet_start_planet = $from['planet'];
+    $this->fleet_start_type = $from['planet_type'];
 
-    $this->_fleet_end_planet_id = intval($to['id']) ? $to['id'] : null;
-    $this->_fleet_end_galaxy = $to['galaxy'];
-    $this->_fleet_end_system = $to['system'];
-    $this->_fleet_end_planet = $to['planet'];
-    $this->_fleet_end_type = $to['planet_type'];
+    $this->fleet_end_planet_id = intval($to['id']) ? $to['id'] : null;
+    $this->fleet_end_galaxy = $to['galaxy'];
+    $this->fleet_end_system = $to['system'];
+    $this->fleet_end_planet = $to['planet'];
+    $this->fleet_end_type = $to['planet_type'];
 
     // WARNING! MISSION TIMES MUST BE SET WITH set_times() method!
     if(empty($this->_time_launch)) {
@@ -907,7 +902,7 @@ pdie('Replace_ships should be rewritten! Deletes ships by setting their count to
    *
    * @return int
    *
-   * @version 41a6.16
+   * @version 41a6.24
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -984,7 +979,7 @@ pdie('Replace_ships should be rewritten! Deletes ships by setting their count to
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.16
+   * @version 41a6.24
    */
   protected function extractResources(array &$db_row) {
     $this->resource_list = array(

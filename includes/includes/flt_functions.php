@@ -466,7 +466,8 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
   $options['fleet_group'] = !empty($options['fleet_group']) ? idval($options['fleet_group']) : 0;
   $objFleet = new Fleet();
   $objFleet->set_times($travel_data['duration'], $time_on_mission);
-  $fleet_id = $objFleet->create_and_send($user['id'], $fleet_REAL_array, $mission, $from, $to, $options['fleet_group']);
+  $objFleet->unitsSetFromArray($fleet_REAL_array);
+  $fleet_id = $objFleet->create_and_send($user['id'], $mission, $from, $to, $options['fleet_group']);
 
   $sn_group_fleet = sn_get_groups('fleet');
   $sn_group_resources_loot = sn_get_groups('resources_loot');

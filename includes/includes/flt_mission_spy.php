@@ -60,7 +60,7 @@ function flt_mission_spy(&$mission_data) {
     return $result;
   }
 
-  $spy_probes = $objFleet->ship_count_by_id(SHIP_SPY);
+  $spy_probes = $objFleet->shipCountById(SHIP_SPY);
   if($spy_probes > 0) {
     $TargetSpyLvl = GetSpyLevel($target_user_row);
     $CurrentSpyLvl = GetSpyLevel($spying_user_row);

@@ -20,7 +20,7 @@ function flt_mission_colonize(&$mission_data) {
   $TargetAddress = sprintf($lang['sys_adress_planet'], $fleet_end_coordinates['galaxy'], $fleet_end_coordinates['system'], $fleet_end_coordinates['planet']);
 
   $TheMessage = $lang['sys_colo_no_colonizer'];
-  if($objFleet->ship_count_by_id(SHIP_COLONIZER) >= 1) {
+  if($objFleet->shipCountById(SHIP_COLONIZER) >= 1) {
     $TheMessage = $lang['sys_colo_notfree'];
     if(empty($mission_data->dst_planet)) {
       $iPlanetCount = get_player_current_colonies($src_user_row);
