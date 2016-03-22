@@ -57,3 +57,13 @@ function db_note_insert($user, $note_priority, $note_title, $note_text, $note_ga
 
 
 
+/**
+ * @param $user
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_note_list_select_by_owner_and_planet($user) {
+  $query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
+
+  return $query;
+}

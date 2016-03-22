@@ -114,3 +114,102 @@ function db_chat_message_get_last_25() {
 
   return $query;
 }
+
+
+/**
+ * @param $player_id
+ * @param $fields
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_chat_player_get($player_id, $fields) {
+  return $result = doquery("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true);
+}
+
+
+/**
+ * @param $player_id
+ */
+function db_chat_player_insert($player_id) {
+  doquery("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$player_id}");
+}
+
+
+/**
+ * @param $user
+ */
+function db_chat_player_update($user) {
+  doquery("UPDATE {{chat_player}} SET `chat_player_refresh_last` = " . SN_TIME_NOW . " WHERE `chat_player_player_id` = {$user['id']} LIMIT 1;");
+}
+
+
+/**
+ * @param $alliance
+ * @param $user
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_chat_list_select_advanced($alliance, $user) {
+  $rows = doquery("SELECT count(1) AS CNT
+          FROM {{chat}}
+          WHERE
+          (
+            (ally_id = '{$alliance}' AND `chat_message_recipient_id` IS NULL) OR
+            (ally_id = 0 AND `chat_message_recipient_id` = {$user['id']}) OR
+            (ally_id = 0 AND `chat_message_sender_id` = {$user['id']} AND `chat_message_recipient_id` IS NOT NULL) OR
+            (ally_id = 0 AND `chat_message_sender_id` IS NULL AND `chat_message_recipient_id` IS NULL)
+          )
+        ", true);
+
+  return $rows;
+}
+
+
+/**
+ * @param $alliance
+ * @param $user
+ * @param $where_add
+ * @param $start_row
+ * @param $page_limit
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_chat_list_get_with_users($alliance, $user, $where_add, $start_row, $page_limit) {
+  $query = doquery(
+    "SELECT c.*, u.authlevel
+        FROM
+          {{chat}} AS c
+          LEFT JOIN {{users}} AS u ON u.id = c.chat_message_sender_id
+        WHERE
+          (
+            (c.ally_id = '{$alliance}' AND `chat_message_recipient_id` IS NULL) OR
+            (c.ally_id = 0 AND `chat_message_recipient_id` = {$user['id']}) OR
+            (c.ally_id = 0 AND `chat_message_sender_id` = {$user['id']} AND `chat_message_recipient_id` IS NOT NULL) OR
+            (c.ally_id = 0 AND `chat_message_sender_id` IS NULL AND `chat_message_recipient_id` IS NULL)
+          )
+          {$where_add}
+        ORDER BY messageid DESC
+        LIMIT {$start_row}, {$page_limit}");
+
+  return $query;
+}
+
+/**
+ * @param $user
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_chat_player_select_id($user) {
+  $activity_row = doquery("SELECT `chat_player_id` FROM {{chat_player}} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1", true);
+
+  return $activity_row;
+}
+
+
+
+/**
+ * @param $user
+ */
+function db_chat_player_update_activity($user) {
+  doquery("UPDATE {{chat_player}} SET `chat_player_activity` = '" . classSupernova::$db->db_escape(SN_TIME_SQL) . "' WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+}

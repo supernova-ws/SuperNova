@@ -105,7 +105,7 @@ function sn_options_model() {
     if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm') && !strpbrk($username, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
       // проверка на корректность
       sn_db_transaction_start();
-      $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
+      $name_check = db_player_name_history_get_name_by_name($username_safe);
       if(!$name_check || $name_check['player_id'] == $user['id']) {
         $user = db_user_by_id($user['id'], true);
         switch($config->game_user_changename) {
@@ -121,7 +121,7 @@ function sn_options_model() {
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
             db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
-            doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+            db_player_name_history_replace($user, $username_safe);
             // TODO: Change cookie to not force user relogin
             // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
             $template_result['.']['result'][] = array(

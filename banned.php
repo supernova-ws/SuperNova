@@ -18,7 +18,6 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 $template = gettemplate('banned_body', true);
 
-//$query = doquery("SELECT * FROM {{banned}} ORDER BY `ban_id` DESC;");
 $query = db_banned_list_select();
 $i = 0;
 while($ban_row = db_fetch($query)) {

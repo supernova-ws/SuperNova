@@ -127,13 +127,6 @@ switch($mode) {
       $template->assign_block_vars('result', $error_message);
     }
 
-//    $message_query = doquery(
-//      "SELECT * FROM {{messages}}
-//        WHERE
-//          `message_type` = '" . MSG_TYPE_PLAYER . "' AND
-//          ((`message_owner` = '{$user['id']}' AND `message_sender` = '{$recipient_id}')
-//          OR
-//          (`message_sender` = '{$user['id']}' AND `message_owner` = '{$recipient_id}')) ORDER BY `message_time` DESC LIMIT 20;");
     $message_query = db_message_list_get_last_20($user, $recipient_id);
     while($message_row = db_fetch($message_query)) {
       $template->assign_block_vars('messages', array(
@@ -182,7 +175,6 @@ switch($mode) {
 
     if($query_add) {
       $query_add = $query_add === true ? '' : $query_add;
-//      doquery("DELETE FROM `{{messages}}` WHERE `message_owner` = '{$user['id']}'{$query_add};");
       db_message_list_delete($user, $query_add);
     }
 
@@ -208,8 +200,6 @@ switch($mode) {
       }
 
       db_user_set_by_id($user['id'], $SubUpdateQry);
-//      $message_query = "SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;";
-//      $message_query = doquery($message_query);
       $message_query = db_message_list_by_owner_and_string($user, $SubSelectQry);
     }
 
@@ -245,15 +235,12 @@ switch($mode) {
 if(!$template) {
   $template = gettemplate('msg_message_class', true);
 
-//  $query = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
   $query = db_message_count_by_owner_and_type($user);
   while($message_row = db_fetch($query)) {
     $messages_total[$message_row['message_type']] = $message_row['message_count'];
     $messages_total[MSG_TYPE_NEW] += $message_row['message_count'];
   }
 
-//  $query = doquery("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '{$user['id']}' AND message_type = 1 GROUP BY message_sender;", '', true);
-//  $messages_total[MSG_TYPE_OUTBOX] = intval($query['message_count']);
   $messages_total[MSG_TYPE_OUTBOX] = db_message_count_outbox($user);
 
   foreach($sn_message_class_list as $message_class_id => $message_class) {

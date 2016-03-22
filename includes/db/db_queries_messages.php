@@ -89,3 +89,10 @@ function db_message_list_delete_by_date($delete_date, $int_type_selected) {
   doquery("DELETE FROM {{messages}} WHERE message_time <= UNIX_TIMESTAMP('{$delete_date}')" . ($int_type_selected >= 0 ? " AND `message_type` = {$int_type_selected}" : ''));
 }
 
+/**
+ * @param $insert_values
+ */
+function db_message_insert($insert_values) {
+  doquery('INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
+    'VALUES ' . implode(',', $insert_values));
+}

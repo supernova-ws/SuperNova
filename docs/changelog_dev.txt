@@ -704,8 +704,6 @@ attribute - свойства юнитов
 
 
 
-
-
 #ctv
 
 BONUS_ABILITY - deprecated ???

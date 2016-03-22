@@ -218,6 +218,26 @@ function db_player_name_exists($player_name_unsafe) {
   return !empty($player_name_exists);
 }
 
+/**
+ * @param $user
+ * @param $username_safe
+ */
+function db_player_name_history_replace($user, $username_safe) {
+  doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+}
+
+
+/**
+ * @param $username_safe
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_player_name_history_get_name_by_name($username_safe) {
+  $name_check = doquery("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;", true);
+
+  return $name_check;
+}
+
 
 // ANNONCE *************************************************************************************************************
 function db_ANNONCE_insert_set($users, $metalvendre, $cristalvendre, $deutvendre, $metalsouhait, $cristalsouhait, $deutsouhait) {
@@ -315,6 +335,28 @@ function db_universe_get_name($uni_galaxy, $uni_system = 0) {
 
   return $db_row['universe_name'];
 }
+
+/**
+ * @param $uni_galaxy
+ * @param $uni_system
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_universe_get($uni_galaxy, $uni_system) {
+  $uni_row = doquery("select * from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", '', true);
+
+  return $uni_row;
+}
+
+/**
+ * @param $uni_galaxy
+ * @param $uni_system
+ * @param $uni_row
+ */
+function db_universe_rename($uni_galaxy, $uni_system, $uni_row) {
+  doquery("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
+}
+
 
 
 // Payment *************************************************************************************************************
@@ -425,7 +467,7 @@ function db_core_show_status() {
  * @return array|bool|mysqli_result|null
  */
 function db_counter_list_by_week() {
-  $query = doquery("SELECT `visit_time`, user_id FROM `{{counter}}` where user_id <> 0 and visit_time > UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 DAY)) order by user_id, visit_time;");
+  $query = doquery("SELECT `visit_time`, user_id FROM `{{counter}}` WHERE user_id <> 0 AND visit_time > UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 DAY)) ORDER BY user_id, visit_time;");
 
   return $query;
 }
@@ -441,3 +483,239 @@ function db_browser_agent_get_by_id($user_last_browser_id) {
   return $temp['browser_user_agent'];
 }
 
+
+/**
+ * @param $user_id
+ * @param $change_type
+ * @param $dark_matter
+ * @param $comment
+ * @param $row
+ * @param $page_url
+ */
+function db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment, $row, $page_url) {
+  doquery(
+    "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
+        `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
+      VALUES (
+        '{$row['username']}', {$change_type},
+        {$dark_matter}, '{$comment}', '{$page_url}', {$user_id}
+      );");
+}
+
+// REFERRALS ***********************************************************************************************************
+/**
+ * @param $user_id_safe
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_referral_get_by_id($user_id_safe) {
+  $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;", true);
+
+  return $old_referral;
+}
+
+/**
+ * @param $user_id_safe
+ * @param $dark_matter
+ */
+function db_referral_update_dm($user_id_safe, $dark_matter) {
+  doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id_safe} LIMIT 1;");
+}
+
+
+/**
+ * @param $options
+ * @param $user_new
+ */
+function db_referral_insert($options, $user_new) {
+  doquery("INSERT INTO {{referrals}} SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
+}
+
+
+// Quests ***********************************************************************************************************
+/**
+ * @param $query_add_select
+ * @param $query_add_from
+ * @param $query_add_where
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_quest_list_get($query_add_select, $query_add_from, $query_add_where) {
+  $query = doquery(
+    "SELECT q.* {$query_add_select}
+      FROM {{quest}} AS q {$query_add_from}
+      WHERE 1 {$query_add_where}
+    ;"
+  );
+
+  return $query;
+}
+
+
+/**
+ * @return array|bool|mysqli_result|null
+ */
+function db_quest_count() {
+  $query = doquery("SELECT count(*) AS count FROM {{quest}};", '', true);
+
+  return $query;
+}
+
+/**
+ * @param $quest_id
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_quest_get($quest_id) {
+  $quest = doquery("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
+
+  return $quest;
+}
+
+/**
+ * @param $quest_id
+ */
+function db_quest_delete($quest_id) {
+  doquery("DELETE FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
+}
+
+/**
+ * @param $quest_name
+ * @param $quest_type
+ * @param $quest_description
+ * @param $quest_conditions
+ * @param $quest_rewards
+ * @param $quest_id
+ */
+function db_quest_update($quest_name, $quest_type, $quest_description, $quest_conditions, $quest_rewards, $quest_id) {
+  doquery(
+    "UPDATE {{quest}} SET
+              `quest_name` = '{$quest_name}',
+              `quest_type` = '{$quest_type}',
+              `quest_description` = '{$quest_description}',
+              `quest_conditions` = '$quest_conditions',
+              `quest_rewards` = '{$quest_rewards}'
+            WHERE `quest_id` = {$quest_id} LIMIT 1;"
+  );
+}
+
+
+
+
+
+
+/**
+ * @param $banner
+ * @param $banned
+ * @param $reason
+ * @param $ban_until
+ */
+function db_ban_insert($banner, $banned, $reason, $ban_until) {
+  doquery(
+    "INSERT INTO
+      {{banned}}
+    SET
+      `ban_user_id` = '{$banned['id']}',
+      `ban_user_name` = '{$banned['username']}',
+      `ban_reason` = '{$reason}',
+      `ban_time` = " . SN_TIME_NOW . ",
+      `ban_until` = {$ban_until},
+      `ban_issuer_id` = '{$banner['id']}',
+      `ban_issuer_name` = '{$banner['username']}',
+      `ban_issuer_email` = '{$banner['email']}'
+  ");
+}
+
+
+/**
+ * @param $banner
+ * @param $banned
+ * @param $reason
+ */
+function db_ban_insert_unset($banner, $banned, $reason) {
+  doquery(
+    "INSERT INTO {{banned}}
+    SET
+      `ban_user_id` = '{$banned['id']}',
+      `ban_user_name` = '{$banned['username']}',
+      `ban_reason` = '{$reason}',
+      `ban_time` = 0,
+      `ban_until` = " . SN_TIME_NOW . ",
+      `ban_issuer_id` = '{$banner['id']}',
+      `ban_issuer_name` = '{$banner['username']}',
+      `ban_issuer_email` = '{$banner['email']}'
+  ");
+}
+
+
+
+/**
+ * @param $user_id
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_stat_get_by_user($user_id) {
+  $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};", true);
+
+  return $StatRecord;
+}
+
+/**
+ * @param $user_id
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_stat_get_by_user2($user_id) {
+  $query = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
+
+  return $query;
+}
+
+/**
+ * @param $options
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_payment_get_something($options) {
+  $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_external_id` = '{$options['payment_external_id']}' LIMIT 1 FOR UPDATE;", true);
+
+  return $payment;
+}
+
+/**
+ * @param $payment_external_id
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_payment_get_something2($payment_external_id) {
+  $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_external_id` = '{$payment_external_id}' LIMIT 1 FOR UPDATE;", true);
+  
+  return $payment;
+}
+
+
+/**
+ * @return array|bool|mysqli_result|null
+ */
+function db_ube_report_get_best_battles() {
+  $query = doquery("SELECT *
+      FROM {{ube_report}}
+      WHERE `ube_report_time_process` <  DATE(DATE_SUB(NOW(), INTERVAL " . MODULE_INFO_BEST_BATTLES_LOCK_DAYS . " DAY))
+      ORDER BY `ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC
+      LIMIT " . MODULE_INFO_BEST_BATTLES_REPORT_VIEW . ";");
+
+  return $query;
+}
+
+function db_config_get_stockman_fleet() {
+  doquery("SELECT * FROM {{config}} WHERE `config_name` = 'eco_stockman_fleet' LIMIT 1 FOR UPDATE;");
+}
+
+
+/**
+ * @param $payment
+ * @param $safe_comment
+ */
+function db_payment_update(&$payment, $safe_comment) {
+  doquery("UPDATE {{payment}} SET payment_status = {$payment['payment_status']}, payment_comment = '{$safe_comment}' WHERE payment_id = {$payment['payment_id']};");
+}

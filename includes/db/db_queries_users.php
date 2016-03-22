@@ -168,3 +168,19 @@ function db_user_list_by_id($user_id_list) {
 
   return $user_list;
 }
+
+
+
+function db_user_lock_all() {
+  doquery("SELECT 1 FROM {{users}} FOR UPDATE;");
+}
+
+
+/**
+ * @return array|bool|mysqli_result|null
+ */
+function db_user_list_non_bots() {
+  $query = doquery("SELECT `id` FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . " FOR UPDATE;");
+
+  return $query;
+}

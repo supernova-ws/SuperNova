@@ -1,5 +1,7 @@
 <?php
-  try
+
+
+try
   {
     $template = gettemplate('universe_rename', true);
 
@@ -16,7 +18,7 @@
       throw new exception($lang['uni_msg_error_wrong_system'], ERR_ERROR);
     }
 
-    $uni_row = doquery("select * from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", '', true);
+    $uni_row = db_universe_get($uni_galaxy, $uni_system);
     $uni_row['universe_price'] += $uni_system ? $config->uni_price_system : $config->uni_price_galaxy;
     $uni_row['universe_name'] = strip_tags($uni_row['universe_name'] ? $uni_row['universe_name'] : ($uni_system ? "{$lang['sys_system']} [{$uni_galaxy}:{$uni_system}]" : "{$lang['sys_galaxy']} {$uni_galaxy}"));
 
@@ -44,7 +46,7 @@
         throw new exception($lang['sys_msg_err_update_dm'], ERR_ERROR);
       }
 
-      doquery("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
+      db_universe_rename($uni_galaxy, $uni_system, $uni_row);
       $debug->warning(sprintf($lang['uni_msg_admin_rename'], $user['id'], $user['username'], $uni_price, $uni_system ? $lang['uni_system_of'] : $lang['uni_galaxy_of'], $uni_galaxy, $uni_system ? ":{$uni_system}" : '', strip_tags(sys_get_param_str_unsafe('uni_name'))), $lang['uni_naming'], LOG_INFO_UNI_RENAME);
       sn_db_transaction_commit();
       sys_redirect("galaxy.php?mode=name&galaxy={$uni_galaxy}&system={$uni_system}");

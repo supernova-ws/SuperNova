@@ -19,8 +19,9 @@ $pack_until = date("Y-m-01 00:00:00", SN_TIME_NOW - PERIOD_MONTH * 3);
 
 // [#] info_best_battles 1b0
 $best_reports = array();
+
 if(defined('MODULE_INFO_BEST_BATTLES_QUERY')) {
-  $query = doquery(MODULE_INFO_BEST_BATTLES_QUERY);
+  $query = db_ube_report_get_best_battles();
   while($row = db_fetch($query)) {
     $best_reports[] = $row['ube_report_id'];
   }

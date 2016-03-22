@@ -66,15 +66,7 @@ function qst_render_page()
         {
           $quest_name        = db_escape($quest_name);
           $quest_description = db_escape($quest_description);
-          doquery(
-            "UPDATE {{quest}} SET
-              `quest_name` = '{$quest_name}',
-              `quest_type` = '{$quest_type}',
-              `quest_description` = '{$quest_description}',
-              `quest_conditions` = '$quest_conditions',
-              `quest_rewards` = '{$quest_rewards}'
-            WHERE `quest_id` = {$quest_id} LIMIT 1;"
-          );
+          db_quest_update($quest_name, $quest_type, $quest_description, $quest_conditions, $quest_rewards, $quest_id);
         }
         else
         {
@@ -106,7 +98,7 @@ function qst_render_page()
     switch($mode)
     {
       case 'del':
-        doquery("DELETE FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
+        db_quest_delete($quest_id);
         $mode = '';
       break;
 
@@ -114,10 +106,10 @@ function qst_render_page()
         $template->assign_var('QUEST_ID', $quest_id);
 
       case 'copy':
-        $quest = doquery("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
+        $quest = db_quest_get($quest_id);
       break;
     }
-    $query = doquery("SELECT count(*) AS count FROM {{quest}};", '', true);
+    $query = db_quest_count();
     $config->db_saveItem('quest_total', $query['count']);
   }
   elseif(!$user_id)
@@ -180,7 +172,6 @@ function qst_render_page()
     ));
   }
 }
-
 function qst_get_quests($user_id = false, $status = false)
 {
   $quest_list = array();
@@ -203,12 +194,7 @@ function qst_get_quests($user_id = false, $status = false)
     $query_add_from = "LEFT JOIN {{quest_status}} AS qs ON qs.quest_status_quest_id = q.quest_id AND qs.quest_status_user_id = {$user_id}";
   }
 
-  $query = doquery(
-    "SELECT q.* {$query_add_select}
-      FROM {{quest}} AS q {$query_add_from}
-      WHERE 1 {$query_add_where}
-    ;"
-  );
+  $query = db_quest_list_get($query_add_select, $query_add_from, $query_add_where);
 
   while($quest = db_fetch($query))
   {

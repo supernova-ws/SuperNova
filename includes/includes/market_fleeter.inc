@@ -24,7 +24,7 @@ if(is_array($shipList)) {
 //  $planetrow = $global_data['planet'];
 
   // Блокируем запись о запасах кораблей у трейдера
-  doquery("SELECT * FROM {{config}} WHERE `config_name` = 'eco_stockman_fleet' LIMIT 1 FOR UPDATE;");
+  db_config_get_stockman_fleet();
 
   $message .= $lang["eco_mrk_{$submode}_ships"] . '<ul>';
   $qry = array();

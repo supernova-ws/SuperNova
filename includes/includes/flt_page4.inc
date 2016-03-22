@@ -26,7 +26,7 @@ if($objFleet->playerOwnerId != $user['id']) {
   message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
 }
 
-$aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
+$aks = db_acs_get_by_fleet($fleetid);
 // If we got a message to add some1 to attack (MadnessRed code)
 $userToAdd_unsafe = sys_get_param_str_unsafe('addtogroup');
 
@@ -45,19 +45,9 @@ if($userToAdd_unsafe) {
     if(!$aks) {
       // No AСS exists - making one
       if(!$objFleet->group_id) {
-        doquery("INSERT INTO {{aks}} SET
-          `name` = '" . db_escape($lang['flt_acs_prefix'] . $fleetid) . "',
-          `teilnehmer` = '" . $user['id'] . "',
-          `flotten` = '" . $fleetid . "',
-          `ankunft` = '" . $objFleet->time_arrive_to_target . "',
-          `galaxy` = '" . $objFleet->fleet_end_galaxy . "',
-          `system` = '" . $objFleet->fleet_end_system . "',
-          `planet` = '" . $objFleet->fleet_end_planet . "',
-          `planet_type` = '" . $objFleet->fleet_end_type . "',
-          `eingeladen` = '" . $user['id'] . "',
-          `fleet_end_time` = '" . $objFleet->time_return_to_source . "'");
+        db_acs_insert($lang, $fleetid, $user, $objFleet);
 
-        $aks = doquery("SELECT * FROM {{aks}} WHERE `flotten` = {$fleetid} LIMIT 1;", true);
+        $aks = db_acs_get_by_fleet($fleetid);
 
         $objFleet->group_acs_set($aks['id'], MT_AKS);
         $objFleet->flush_changes_to_db();
@@ -82,7 +72,7 @@ if($userToAdd_unsafe) {
       $userToAdd_unsafe != $user['username'] ? $add_user_message_mr = sprintf($lang['fl_aks_player_invited_already'], $userToAdd) : false;
     } else {
       $add_user_message_mr = sprintf($lang['fl_aks_player_invited'], $userToAdd);
-      doquery("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};")
+      db_acs_update($userToAddID, $fleetid)
         or die(sprintf($lang['fl_aks_adding_error'],db_error()));
       $aks['eingeladen'] .= ',' . $userToAddID;
     }

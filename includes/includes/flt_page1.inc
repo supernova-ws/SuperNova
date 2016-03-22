@@ -66,7 +66,7 @@ if(empty($fleet['fleetarray'])) {
 }
 
 // Building list of shortcuts
-$query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
+$query = db_note_list_select_by_owner_and_planet($user);
 while($shortcut = db_fetch($query)) {
   $template->assign_block_vars('shortcut', array(
     'NAME'       => $shortcut['title'],
@@ -98,7 +98,8 @@ if(count($colonies) > 1) {
 
 //ACS Start
 //Need to look for acs attacks.
-$aks_madnessred = doquery('SELECT * FROM {{aks}};');
+
+$aks_madnessred = db_acs_get_list();
 while($row = db_fetch($aks_madnessred)) {
   $members = explode(',', $row['eingeladen']);
   foreach($members as $a => $b) {

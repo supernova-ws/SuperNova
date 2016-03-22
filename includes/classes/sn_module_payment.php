@@ -826,7 +826,7 @@ abstract class sn_module_payment extends sn_module {
         }
       }
       $payment['payment_status'] = PAYMENT_STATUS_CANCELED;
-      doquery("UPDATE {{payment}} SET payment_status = {$payment['payment_status']}, payment_comment = '{$safe_comment}' WHERE payment_id = {$payment['payment_id']};");
+      db_payment_update($payment, $safe_comment);
       throw new exception($lang['pay_msg_request_payment_cancel_complete'], SN_PAYMENT_REQUEST_OK);
     } elseif($payment['payment_status'] == PAYMENT_STATUS_CANCELED) {
       throw new exception($lang['pay_msg_request_payment_cancelled_already'], SN_PAYMENT_REQUEST_OK);

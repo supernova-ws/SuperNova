@@ -88,13 +88,6 @@ $template->assign_vars(array(
 
 $relations = ali_relations($ally['id']);
 foreach($relations as $relation) {
-  /*
-  if($relation['alliance_diplomacy_contr_ally_id'] == $user['ally_id'])
-  {
-    $contr_ally = doquery("SELECT ally_name FROM {{alliance}} WHERE `id` = {$relation['alliance_diplomacy_ally_id']} LIMIT 1;", '', true);
-    $relation['alliance_diplomacy_contr_ally_name'] = $contr_ally['ally_name'];
-  }
-  */
   if($relation['alliance_diplomacy_contr_ally_id'] && $relation['alliance_diplomacy_ally_id']) {
     $template->assign_block_vars('relation', array(
       'NAME'     => $relation['alliance_diplomacy_contr_ally_name'],

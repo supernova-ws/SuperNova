@@ -110,7 +110,7 @@ function coe_o_missile_calculate() {
 
   global $lang;
 
-  $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
+  $iraks = db_missile_list_by_arrival();
 
   while($fleetRow = db_fetch($iraks)) {
     set_time_limit(15);
@@ -181,6 +181,6 @@ function coe_o_missile_calculate() {
       msg_send_simple_message ( $fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
       msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
     }
-    doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
+    db_missile_delete($fleetRow);
   }
 }

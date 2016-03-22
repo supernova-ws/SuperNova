@@ -137,7 +137,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
     return ATTACK_ALLOWED;
   }
 
-  $query = doquery("SELECT bashing_time FROM {{bashing}} WHERE bashing_user_id = {$user['id']} AND bashing_planet_id = {$planet_dst['id']} AND bashing_time >= {$time_limit};");
+  $query = db_bashing_list_get($user, $planet_dst, $time_limit);
   while($bashing_row = db_fetch($query)) {
     $bashing_list[] = $bashing_row['bashing_time'];
   }
@@ -269,7 +269,6 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
       return $result = ATTACK_WRONG_MISSION;
     };
 
-//    $acs_ = doquery("SELECT * FROM {{aks_}} WHERE id = '{$fleet_group}' LIMIT 1;", '', true);
     $acs = db_acs_get_by_group_id($fleet_group);
     if(!$acs['id']) {
       return $result = ATTACK_NO_ACS;

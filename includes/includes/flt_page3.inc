@@ -133,7 +133,6 @@ function sn_fleet_page3($time_to_travel) {
   //The co-ords must be the same as where the acs fleet is going.
   if($fleet_group && sys_get_param_str('acs_target_mr') == "g{$galaxy}s{$system}p{$planet}t{$planet_type}") {
     //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-//    $aks = doquery("SELECT * FROM {{aks}} WHERE id = '{$fleet_group}' LIMIT 1;", true);
     $aks = db_acs_get_by_group_id($fleet_group);
     if(!$aks) {
       $fleet_group = 0;

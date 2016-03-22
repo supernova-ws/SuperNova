@@ -56,46 +56,6 @@ if (isset($GET_result)) {
 
     case 'usr_data':
       print('Временно не работает');
-      /*
-      $SelUser = db_user_list_like_name_extra('%'. $Pattern .'%', " LIMIT 1");
-      $UsrMain = db_planet_by_id($SelUser['id_planet'], false, 'name');
-
-      $bloc                    = $lang;
-      $bloc['answer1']         = $SelUser['id'];
-      $bloc['answer2']         = $SelUser['username'];
-      $bloc['answer3']         = $SelUser['user_lastip'];
-      $bloc['answer4']         = $SelUser['email'];
-      $bloc['answer5']         = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-      $bloc['answer6']         = $lang['adm_usr_genre'][ $SelUser['gender'] ];
-      $bloc['answer7']         = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
-      $bloc['answer8']         = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
-      $bloc['qst_quest_complete'] = get_quest_amount_complete($SelUser['id']);
-      $bloc['user_id'] = $SelUser['id'];
-      $SubPanelTPL             = gettemplate('admin/admin_panel_asw1');
-      $parse['adm_sub_form1']  = parsetemplate( $SubPanelTPL, $bloc );
-
-      $parse['adm_sub_form2']  = "<table><tbody>";
-      $parse['adm_sub_form2'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_colony']."</td></tr>";
-      $UsrColo = db_planet_list_sorted($SelUser); // doquery("SELECT * FROM !!planets!! WHERE `id_owner` = '". $SelUser['id'] ." ORDER BY `galaxy` ASC, `planet` ASC, `system` ASC, `planet_type` ASC';");
-      while ( $Colo = db_fetch($UsrColo) ) {
-        if ($Colo['id'] != $SelUser['id_planet']) {
-          $parse['adm_sub_form2'] .= "<tr><th>".$Colo['id']."</th>";
-          $parse['adm_sub_form2'] .= "<th>". (($Colo['planet_type'] == 1) ? $lang['adm_planet'] : $lang['adm_moon'] ) ."</th>";
-          $parse['adm_sub_form2'] .= "<th>[".$Colo['galaxy'].":".$Colo['system'].":".$Colo['planet']."]</th>";
-          $parse['adm_sub_form2'] .= "<th>".$Colo['name']."</th></tr>";
-        }
-      }
-      $parse['adm_sub_form2'] .= "</tbody></table>";
-
-      $parse['adm_sub_form3']  = "<table><tbody>";
-      $parse['adm_sub_form3'] .= "<tr><td colspan=\"4\" class=\"c\">".$lang['adm_technos']."</td></tr>";
-      foreach(sn_get_groups('tech') as $Item)
-      {
-        $parse['adm_sub_form3'] .= "<tr><th>".$lang['tech'][$Item]."</th>";
-        $parse['adm_sub_form3'] .= "<th>".$SelUser[get_unit_param($Item, P_NAME)]."</th></tr>";
-      }
-      $parse['adm_sub_form3'] .= "</tbody></table>";
-      */
       break;
 
     case 'usr_level':

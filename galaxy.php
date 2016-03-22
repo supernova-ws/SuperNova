@@ -144,7 +144,6 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
         if($cached['allies'][$uni_galaxyRowUser['ally_id']]) {
           $allyquery = $cached['allies'][$uni_galaxyRowUser['ally_id']];
         } else {
-//          $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
           $allyquery = db_ally_get_by_id($uni_galaxyRowUser['ally_id']);
           $cached['allies'][$uni_galaxyRowUser['ally_id']] = $allyquery;
         }
@@ -306,10 +305,6 @@ foreach($cached['allies'] as $PlanetAlly) {
 
 $is_missile = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange);
 $colspan = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY] + $is_missile;
-
-//$ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', true);
-//$galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", true);
-//$system_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", true);
 
 $template->assign_vars(array(
     'rows'                  => $Result,

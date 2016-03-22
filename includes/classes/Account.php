@@ -57,7 +57,7 @@ class Account {
   public $db;
 
   protected $table_check = array(
-    'account' => 'account',
+    'account'        => 'account',
     'log_metamatter' => 'log_metamatter',
   );
 
@@ -74,6 +74,7 @@ class Account {
     $this->is_exists = 0;
     $this->is_loaded = 0;
   }
+
   public function __construct($db = null) {
     $this->reset();
     $this->db = is_object($db) ? $db : classSupernova::$db;
@@ -159,6 +160,7 @@ class Account {
     $account_id_safe = round(floatval($account_id_unsafe));
 
     $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}", true);
+
     return $this->assign_from_db_row($account_row);
   }
   /**
@@ -175,6 +177,7 @@ class Account {
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
 
     $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE", true);
+
     return $this->assign_from_db_row($account_row);
   }
   /**
@@ -191,6 +194,7 @@ class Account {
     $email_safe = $this->db->db_escape($email_unsafe);
 
     $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;", true);
+
     return $this->assign_from_db_row($account_row);
   }
   /**
@@ -210,6 +214,7 @@ class Account {
     $email_safe = $this->db->db_escape($email_unsafe);
 
     $account = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') OR LOWER(`account_name`) = LOWER('{$email_safe}') OR LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE", true);
+
     return $this->assign_from_db_row($account);
   }
   /**
@@ -353,6 +358,7 @@ class Account {
 
     if(!$this->is_exists || !($metamatter = round(floatval($metamatter)))) {
       $debug->error('Ошибка при попытке манипуляции с ММ');
+
       return false;
     }
 
@@ -370,7 +376,7 @@ class Account {
         "UPDATE {{account}}
         SET
           `account_metamatter` = `account_metamatter` + '{$metamatter}'" .
-          ($metamatter_total_delta ? ", `account_immortal` = IF(`account_metamatter_total` + '{$metamatter_total_delta}' >= {$config->player_metamatter_immortal}, NOW(), `account_immortal`), `account_metamatter_total` = `account_metamatter_total` + '{$metamatter_total_delta}'" : '') .
+        ($metamatter_total_delta ? ", `account_immortal` = IF(`account_metamatter_total` + '{$metamatter_total_delta}' >= {$config->player_metamatter_immortal}, NOW(), `account_immortal`), `account_metamatter_total` = `account_metamatter_total` + '{$metamatter_total_delta}'" : '') .
         " WHERE `account_id` = {$account_id_safe}"
       );
       if(!$result) {
@@ -404,11 +410,11 @@ class Account {
     $result = $this->db_mm_log_insert($comment, $change_type, $metamatter, $user_id_unsafe);
 
     if($metamatter > 0 && !empty($user_id_safe)) {
-      $old_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;", '', true);
+      $old_referral = db_referral_get_by_id($user_id_safe);
       if($old_referral['id']) {
         $dark_matter_from_metamatter = $metamatter * AFFILIATE_MM_TO_REFERRAL_DM;
-        doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter_from_metamatter}' WHERE `id` = {$user_id_safe} LIMIT 1;");
-        $new_referral = doquery("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1;", '', true);
+        db_referral_update_dm($user_id_safe, $dark_matter_from_metamatter);
+        $new_referral = db_referral_get_by_id($user_id_safe);
 
         $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
         if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {
@@ -418,6 +424,7 @@ class Account {
     }
 
     $mm_change_legit = false;
+
     return $result;
   }
 

@@ -59,10 +59,10 @@ function sn_imperator_view($template = null) {
   }
 
   $template = gettemplate('imperator', $template);
-  $StatRecord = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};", true);
+  $StatRecord = db_stat_get_by_user($user_id);
 
   $stat_array = array();
-  $query = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
+  $query = db_stat_get_by_user2($user_id);
   $stat_count = classSupernova::$db->db_affected_rows();
   while($row = db_fetch($query)) {
     foreach($stat_fields as $field_db_name => $field_template_name) {

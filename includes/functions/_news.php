@@ -2,23 +2,13 @@
 
 /**
  * @param template $template
- * @param string $query_where
- * @param int    $query_limit
+ * @param string   $query_where
+ * @param int      $query_limit
  */
 function nws_render(&$template, $query_where = '', $query_limit = 20) {
   global $config, $user;
 
-  $announce_list = doquery(
-    "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
-    FROM
-      {{announce}} AS a
-      LEFT JOIN {{survey}} AS s ON s.survey_announce_id = a.idAnnounce
-      LEFT JOIN {{users}} AS u ON u.id = a.user_id
-    {$query_where}
-    ORDER BY `tsTimeStamp` DESC, idAnnounce" .
-    ($query_limit ? " LIMIT {$query_limit}" : ''));
-
-  $template->assign_var('NEWS_COUNT', db_num_rows($announce_list));
+  $announce_list = db_news_list_get_by_query($template, $query_where, $query_limit);
 
   $users = array();
   while($announce = db_fetch($announce_list)) {
@@ -30,7 +20,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     $survey_complete = strtotime($announce['survey_until']) < SN_TIME_NOW;
 
     if($announce['survey_id'] && !empty($user['id'])) {
-      $survey_vote = !$survey_complete ? $survey_vote = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true) : array();
+      $survey_vote = !$survey_complete ? db_survey_get_vote($announce, $user) : array();
     }
 
     $announce_exploded = explode("<br /><br />", cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])));
@@ -41,8 +31,8 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
       'ANNOUNCE'        => cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])),
       'DETAIL_URL'      => $announce['detail_url'],
       'USER_NAME'       =>
-        isset($users[$announce['user_id']]) && $users[$announce['user_id']] ? player_nick_render_to_html($users[$announce['user_id']], array('color' => true)):
-        js_safe_string($announce['user_name']),
+        isset($users[$announce['user_id']]) && $users[$announce['user_id']] ? player_nick_render_to_html($users[$announce['user_id']], array('color' => true)) :
+          js_safe_string($announce['user_name']),
       'NEW'             => $announce['unix_time'] + $config->game_news_actual >= SN_TIME_NOW,
       'FUTURE'          => $announce['unix_time'] > SN_TIME_NOW,
       'SURVEY_ID'       => $announce['survey_id'],
@@ -59,14 +49,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     }
 
     if($announce['survey_id']) {
-      $survey_query = doquery(
-        "SELECT survey_answer_text AS `TEXT`, count(DISTINCT survey_vote_id) AS `VOTES`
-          FROM `{{survey_answers}}` AS sa
-            LEFT JOIN `{{survey_votes}}` AS sv ON sv.survey_parent_answer_id = sa.survey_answer_id
-          WHERE sa.survey_parent_id = {$announce['survey_id']}
-          GROUP BY survey_answer_id
-          ORDER BY survey_answer_id;"
-      );
+      $survey_query = db_survey_get_answer_texts($announce);
       $survey_vote_result = array();
       $total_votes = 0;
       while($row = db_fetch($survey_query)) {
@@ -76,10 +59,10 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
 
       if(empty($survey_vote) && !$survey_complete) {
         // Can vote
-        $survey_query = doquery("SELECT * FROM {{survey_answers}} WHERE survey_parent_id  = {$announce['survey_id']} ORDER BY survey_answer_id;");
+        $survey_query = db_survey_answers_get_list_by_parent($announce);
         while($row = db_fetch($survey_query)) {
           $template->assign_block_vars('announces.survey_answers', array(
-            'ID' => $row['survey_answer_id'],
+            'ID'   => $row['survey_answer_id'],
             'TEXT' => $row['survey_answer_text'],
           ));
         }
@@ -106,6 +89,7 @@ function nws_mark_read(&$user) {
     db_user_set_by_id($user['id'], '`news_lastread` = ' . SN_TIME_NOW);
     $user['news_lastread'] = SN_TIME_NOW;
   }
+
   return true;
 }
 
@@ -116,13 +100,13 @@ function survey_vote(&$user) {
 
   sn_db_transaction_start();
   $survey_id = sys_get_param_id('survey_id');
-  $is_voted = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;", true);
+  $is_voted = db_survey_vote_get($user, $survey_id);
   if(empty($is_voted)) {
     $survey_vote_id = sys_get_param_id('survey_vote');
-    $is_answer_exists = doquery("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};", true);
+    $is_answer_exists = db_survey_answer_get($survey_id, $survey_vote_id);
     if(!empty($is_answer_exists)) {
       $user_name_safe = db_escape($user['username']);
-      doquery("INSERT INTO {{survey_votes}} SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
+      db_survey_vote_insert($user, $survey_id, $survey_vote_id, $user_name_safe);
     }
   }
   sn_db_transaction_commit();

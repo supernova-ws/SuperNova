@@ -96,19 +96,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 
   $banned['username'] = db_escape($banned['username']);
   $banner['username'] = db_escape($banner['username']);
-  doquery(
-    "INSERT INTO
-      {{banned}}
-    SET
-      `ban_user_id` = '{$banned['id']}',
-      `ban_user_name` = '{$banned['username']}',
-      `ban_reason` = '{$reason}',
-      `ban_time` = " . SN_TIME_NOW . ",
-      `ban_until` = {$ban_until},
-      `ban_issuer_id` = '{$banner['id']}',
-      `ban_issuer_name` = '{$banner['username']}',
-      `ban_issuer_email` = '{$banner['email']}'
-  ");
+  db_ban_insert($banner, $banned, $reason, $ban_until);
 
   db_planet_set_by_owner($banned['id'],
     "`metal_mine_porcent` = 0, `crystal_mine_porcent` = 0, `deuterium_sintetizer_porcent` = 0, `solar_plant_porcent` = 0,
@@ -127,18 +115,7 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
   $banned['username'] = db_escape($banned['username']);
   $banner['username'] = db_escape($banner['username']);
   $reason = db_escape($reason);
-  doquery(
-    "INSERT INTO {{banned}}
-    SET
-      `ban_user_id` = '{$banned['id']}',
-      `ban_user_name` = '{$banned['username']}',
-      `ban_reason` = '{$reason}',
-      `ban_time` = 0,
-      `ban_until` = " . SN_TIME_NOW . ",
-      `ban_issuer_id` = '{$banner['id']}',
-      `ban_issuer_name` = '{$banner['username']}',
-      `ban_issuer_email` = '{$banner['email']}'
-  ");
+  db_ban_insert_unset($banner, $banned, $reason);
 }
 
 function player_create($username_unsafe, $email_unsafe, $options) {
@@ -223,10 +200,10 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   $config->db_saveItem('users_amount', $config->users_amount + 1);
 
   $username_safe = db_escape($username_unsafe);
-  doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user_new['id']}, `player_name` = '{$username_safe}'");
+  db_player_name_history_replace($user_new, $username_safe);
 
   if(!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {
-    doquery("INSERT INTO {{referrals}} SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
+    db_referral_insert($options, $user_new);
   }
 
   sys_player_new_adjust($user_new['id'], $new_planet_id);

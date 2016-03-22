@@ -56,7 +56,6 @@ if(sys_get_param('note_delete')) {
     }
 
     sn_db_transaction_start();
-//    doquery("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
     db_note_list_delete($user, $query_where);
     sn_db_transaction_commit();
     throw new Exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
@@ -87,7 +86,6 @@ if(sys_get_param('note_delete')) {
 
     sn_db_transaction_start();
     if($note_id_edit) {
-//      $check_note_id = doquery("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
       $check_note_id = db_note_get_id_and_owner($note_id_edit);
       if(!$check_note_id) {
         throw new Exception('note_err_note_not_found', ERR_ERROR);

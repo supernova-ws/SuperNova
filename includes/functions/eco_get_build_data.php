@@ -37,7 +37,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
   {
     if($user['user_as_ally'])
     {
-      $lab_level = doquery("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1", true);
+      $lab_level = db_ally_get_ally_count($user);
     }
     else
     {

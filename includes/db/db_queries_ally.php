@@ -291,3 +291,46 @@ function db_ally_get_members_by_user_as_ally(&$user) {
 
   return $alliance;
 }
+
+/**
+ * @param $ranklist
+ * @param $user
+ */
+function db_ally_update_ranklist($ranklist, $user) {
+  doquery("UPDATE {{alliance}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';");
+}
+
+/**
+ * @param $ally_from
+ * @param $ally_to
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_ally_diplomacy_get_relations($ally_from, $ally_to) {
+  $query = doquery(
+    "SELECT b.*
+      FROM
+        {{alliance_diplomacy}} AS b,
+        (SELECT alliance_diplomacy_contr_ally_id, MAX(alliance_diplomacy_time) AS alliance_diplomacy_time
+          FROM {{alliance_diplomacy}}
+          WHERE alliance_diplomacy_ally_id = {$ally_from}  {$ally_to}
+          GROUP BY alliance_diplomacy_ally_id, alliance_diplomacy_contr_ally_id
+        ) AS m
+      WHERE b.alliance_diplomacy_contr_ally_id = m.alliance_diplomacy_contr_ally_id
+        AND b.alliance_diplomacy_time = m.alliance_diplomacy_time AND b.alliance_diplomacy_ally_id = {$ally_from}
+      ORDER BY alliance_diplomacy_time, alliance_diplomacy_id;"
+  );
+
+  return $query;
+}
+
+/**
+ * @param $user
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_ally_get_ally_count(&$user) {
+  $lab_level = doquery("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1", true);
+
+  return $lab_level;
+}

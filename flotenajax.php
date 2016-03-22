@@ -107,12 +107,6 @@ if($target_mission == MT_MISSILE) {
   $arrival = SN_TIME_NOW + $duration;
   $travel_data['consumption'] = 0;
 
-//  doquery(
-//    "INSERT INTO `{{iraks}}` SET
-//     `fleet_target_owner` = '{$target_row['id_owner']}', `fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}',
-//     `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',
-//     `fleet_end_time` = '{$arrival}', `fleet_amount` = '{$fleet_ship_count}', `primaer` = '{$target_structure}';"
-//  );
   db_missile_insert($target_row, $target_coord, $user, $planetrow, $arrival, $fleet_ship_count, $target_structure);
 } else {
   $travel_data = flt_travel_data($user, $planetrow, $target_coord, $fleet_array, 10);
