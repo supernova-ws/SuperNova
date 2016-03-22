@@ -260,6 +260,16 @@ class Fleet extends UnitContainer {
 
 
   /**
+   * Returns location's player owner ID
+   *
+   * @return int
+   */
+  // TODO - REMOVE! TEMPORARY UNTIL THERE BE FULLLY FUNCTIONAL Player CLASS AND FLEETS WOULD BE LOCATED ON PLANET OR PLAYER!!!!!
+  public function getPlayerOwnerId() {
+    return $this->_dbId;
+  }
+
+  /**
    * Fleet constructor.
    */
   public function __construct() {
@@ -748,41 +758,30 @@ class Fleet extends UnitContainer {
    * Initializes Fleet from user params and posts it to DB
    *
    * @param     $owner_id
-   * @param     $mission_type
-   * @param     $from
-   * @param     $to
    * @param int $fleet_group
    *
    * @return int|string
    */
-  public function create_and_send($owner_id, $mission_type, $from, $to, $fleet_group = 0) {
-    $this->mission_type = $mission_type;
+  public function create_and_send($owner_id, $fleet_group = 0) {
+//    $this->mission_type = $mission_type;
     $this->group_id = $fleet_group;
 
     $this->playerOwnerId = $owner_id;
-    $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
 
     // Filling $ship_list and $resource_list, also fills $amount
 //    $this->unitsSetFromArray($unit_array);
 
-    $this->fleet_start_planet_id = intval($from['id']) ? $from['id'] : null;
-    $this->fleet_start_galaxy = $from['galaxy'];
-    $this->fleet_start_system = $from['system'];
-    $this->fleet_start_planet = $from['planet'];
-    $this->fleet_start_type = $from['planet_type'];
+//    $this->set_start_planet($from);
 
-    $this->fleet_end_planet_id = intval($to['id']) ? $to['id'] : null;
-    $this->fleet_end_galaxy = $to['galaxy'];
-    $this->fleet_end_system = $to['system'];
-    $this->fleet_end_planet = $to['planet'];
-    $this->fleet_end_type = $to['planet_type'];
+//    $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
+//    $this->set_end_planet($to);
 
     // WARNING! MISSION TIMES MUST BE SET WITH set_times() method!
     if(empty($this->_time_launch)) {
       die('Fleet time not set!');
     }
 
-    $this->dbInsert();
+    $this->dbSave();
 
     return $this->_dbId;
   }
@@ -902,7 +901,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.24
+   * @version 41a6.25
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -972,6 +971,29 @@ class Fleet extends UnitContainer {
     $this->resource_replace = array();
   }
 
+  /**
+   * @param $from
+   */
+  public function set_start_planet($from) {
+    $this->fleet_start_planet_id = intval($from['id']) ? $from['id'] : null;
+    $this->fleet_start_galaxy = $from['galaxy'];
+    $this->fleet_start_system = $from['system'];
+    $this->fleet_start_planet = $from['planet'];
+    $this->fleet_start_type = $from['planet_type'];
+  }
+
+  /**
+   * @param $to
+   */
+  public function set_end_planet($to) {
+    $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
+    $this->fleet_end_planet_id = intval($to['id']) ? $to['id'] : null;
+    $this->fleet_end_galaxy = $to['galaxy'];
+    $this->fleet_end_system = $to['system'];
+    $this->fleet_end_planet = $to['planet'];
+    $this->fleet_end_type = $to['planet_type'];
+  }
+
 
   /**
    * Extracts resources value from db_row
@@ -979,7 +1001,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.24
+   * @version 41a6.25
    */
   protected function extractResources(array &$db_row) {
     $this->resource_list = array(

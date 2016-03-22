@@ -212,15 +212,6 @@ function sn_fleet_page3($time_to_travel) {
     message("<font color=\"red\"><b>" . $lang['fl_no_resources'] . "</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
-  $to = array(
-    'id'          => !empty($TargetPlanet['id']) ? $TargetPlanet['id'] : null,
-    'galaxy'      => !empty($galaxy) ? $galaxy : 0,
-    'system'      => !empty($system) ? $system : 0,
-    'planet'      => !empty($planet) ? $planet : 0,
-    'planet_type' => !empty($planet_type) ? $planet_type : 0,
-    'id_owner'    => $TargetPlanet['id_owner'],
-  );
-
   $fleetarray[RES_METAL] = $TransMetal;
   $fleetarray[RES_CRYSTAL] = $TransCrystal;
   $fleetarray[RES_DEUTERIUM] = $TransDeuterium;
@@ -228,7 +219,17 @@ function sn_fleet_page3($time_to_travel) {
   $objFleet = new Fleet();
   $objFleet->set_times($time_to_travel, $mission_time_in_seconds, $group_sync_delta_time);
   $objFleet->unitsSetFromArray($fleetarray);
-  $fleet_id = $objFleet->create_and_send($user['id'], $target_mission, $planetrow, $to, $fleet_group);
+  $objFleet->mission_type = $target_mission;
+  $objFleet->set_start_planet($planetrow);
+  $objFleet->set_end_planet(array(
+    'id'          => !empty($TargetPlanet['id']) ? $TargetPlanet['id'] : null,
+    'galaxy'      => !empty($galaxy) ? $galaxy : 0,
+    'system'      => !empty($system) ? $system : 0,
+    'planet'      => !empty($planet) ? $planet : 0,
+    'planet_type' => !empty($planet_type) ? $planet_type : 0,
+    'id_owner'    => $TargetPlanet['id_owner'],
+  ));
+  $fleet_id = $objFleet->create_and_send($user['id'], $fleet_group);
 
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);
