@@ -14,58 +14,48 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 lng_include('buddy');
 
 $result = array();
-try
-{
+try {
   sn_db_transaction_start();
 
-  if($buddy_id = sys_get_param_id('buddy_id'))
-  {
-    $buddy_row = doquery("SELECT BUDDY_SENDER_ID, BUDDY_OWNER_ID, BUDDY_STATUS FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1 FOR UPDATE;", true);
-    if(!is_array($buddy_row))
-    {
+  if($buddy_id = sys_get_param_id('buddy_id')) {
+//    $buddy_row = doquery("SELECT BUDDY_SENDER_ID, BUDDY_OWNER_ID, BUDDY_STATUS FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1 FOR UPDATE;", true);
+    $buddy_row = db_buddy_get_row($buddy_id);
+    if(!is_array($buddy_row)) {
       throw new exception('buddy_err_not_exist', ERR_ERROR);
     }
 
-    switch($mode = sys_get_param_str('mode'))
-    {
+    switch($mode = sys_get_param_str('mode')) {
       case 'accept':
-        if($buddy_row['BUDDY_SENDER_ID'] == $user['id'])
-        {
+        if($buddy_row['BUDDY_SENDER_ID'] == $user['id']) {
           throw new exception('buddy_err_accept_own', ERR_ERROR);
         }
 
-        if($buddy_row['BUDDY_OWNER_ID'] != $user['id'])
-        {
+        if($buddy_row['BUDDY_OWNER_ID'] != $user['id']) {
           throw new exception('buddy_err_accept_alien', ERR_ERROR);
         }
 
-        if($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE)
-        {
+        if($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE) {
           throw new exception('buddy_err_accept_already', ERR_WARNING);
         }
 
-        if($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_DENIED)
-        {
+        if($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_DENIED) {
           throw new exception('buddy_err_accept_denied', ERR_ERROR);
         }
 
-        doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_ACTIVE . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
-        if(classSupernova::$db->db_affected_rows())
-        {
+//        doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_ACTIVE . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+        db_buddy_update_status($buddy_id, BUDDY_REQUEST_ACTIVE);
+        if(classSupernova::$db->db_affected_rows()) {
           msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_accept_title'],
             sprintf($lang['buddy_msg_accept_text'], $user['username']));
           sn_db_transaction_commit();
           throw new exception('buddy_err_accept_none', ERR_NONE);
-        }
-        else
-        {
+        } else {
           throw new exception('buddy_err_accept_internal', ERR_ERROR);
         }
       break;
 
       case 'delete':
-        if($buddy_row['BUDDY_SENDER_ID'] != $user['id'] && $buddy_row['BUDDY_OWNER_ID'] != $user['id'])
-        {
+        if($buddy_row['BUDDY_SENDER_ID'] != $user['id'] && $buddy_row['BUDDY_OWNER_ID'] != $user['id']) {
           throw new exception('buddy_err_delete_alien', ERR_ERROR);
         }
 
@@ -76,22 +66,23 @@ try
           msg_send_simple_message($ex_friend_id, $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_unfriend_title'],
             sprintf($lang['buddy_msg_unfriend_text'], $user['username']));
 
-          doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+//          doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+          db_buddy_delete($buddy_id);
           sn_db_transaction_commit();
           throw new exception('buddy_err_unfriend_none', ERR_NONE);
-        }
-        elseif($buddy_row['BUDDY_SENDER_ID'] == $user['id']) // Player's outcoming request - either denied or waiting
+        } elseif($buddy_row['BUDDY_SENDER_ID'] == $user['id']) // Player's outcoming request - either denied or waiting
         {
-          doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+//          doquery("DELETE FROM {{buddy}} WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+          db_buddy_delete($buddy_id);
           sn_db_transaction_commit();
           throw new exception('buddy_err_delete_own', ERR_NONE);
-        }
-        elseif($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) // Deny incoming request
+        } elseif($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) // Deny incoming request
         {
           msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_deny_title'],
             sprintf($lang['buddy_msg_deny_text'], $user['username']));
 
-          doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_DENIED . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+//          doquery("UPDATE {{buddy}} SET `BUDDY_STATUS` = " . BUDDY_REQUEST_DENIED . " WHERE `BUDDY_ID` = {$buddy_id} LIMIT 1;");
+          db_buddy_update_status($buddy_id, BUDDY_REQUEST_DENIED);
           sn_db_transaction_commit();
           throw new exception('buddy_err_deny_none', ERR_NONE);
         }
@@ -101,46 +92,40 @@ try
 
   // New request?
   // Checking for user ID - in case if it was request from outside buddy system
-  if($new_friend_id = sys_get_param_id('request_user_id'))
-  {
+  if($new_friend_id = sys_get_param_id('request_user_id')) {
     $new_friend_row = db_user_by_id($new_friend_id, true, '`id`, `username`');
-  }
-  elseif($new_friend_name = sys_get_param_str_unsafe('request_user_name'))
-  {
+  } elseif($new_friend_name = sys_get_param_str_unsafe('request_user_name')) {
     $new_friend_row = db_user_by_username($new_friend_name, true, '`id`, `username`');
     $new_friend_name = db_escape($new_friend_name);
   }
 
-  if($new_friend_row['id'] == $user['id'])
-  {
+  if($new_friend_row['id'] == $user['id']) {
     unset($new_friend_row);
     throw new exception('buddy_err_adding_self', ERR_ERROR);
   }
 
   // Checking for user name & request text - in case if it was request to adding new request
-  if(isset($new_friend_row['id']) && ($new_request_text = sys_get_param_str('request_text')))
-  {
-    $check_relation = doquery("SELECT `BUDDY_ID` FROM {{buddy}} WHERE
-      (`BUDDY_SENDER_ID` = {$user['id']} AND `BUDDY_OWNER_ID` = {$new_friend_row['id']})
-      OR
-      (`BUDDY_SENDER_ID` = {$new_friend_row['id']} AND `BUDDY_OWNER_ID` = {$user['id']})
-      LIMIT 1 FOR UPDATE;"
-    , true);
-    if(isset($check_relation['BUDDY_ID']))
-    {
+  if(isset($new_friend_row['id']) && ($new_request_text = sys_get_param_str('request_text'))) {
+//    $check_relation = doquery("SELECT `BUDDY_ID` FROM {{buddy}} WHERE
+//      (`BUDDY_SENDER_ID` = {$user['id']} AND `BUDDY_OWNER_ID` = {$new_friend_row['id']})
+//      OR
+//      (`BUDDY_SENDER_ID` = {$new_friend_row['id']} AND `BUDDY_OWNER_ID` = {$user['id']})
+//      LIMIT 1 FOR UPDATE;"
+//    , true);
+    $check_relation = db_buddy_check_relation($user, $new_friend_row);
+    if(isset($check_relation['BUDDY_ID'])) {
       throw new exception('buddy_err_adding_exists', ERR_WARNING);
     }
 
     msg_send_simple_message($new_friend_row['id'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], $lang['buddy_msg_adding_title'],
       sprintf($lang['buddy_msg_adding_text'], $user['username']));
 
-    doquery($q = "INSERT INTO {{buddy}} SET `BUDDY_SENDER_ID` = {$user['id']}, `BUDDY_OWNER_ID` = {$new_friend_row['id']}, `BUDDY_REQUEST` = '{$new_request_text}';");
+//    doquery("INSERT INTO {{buddy}} SET `BUDDY_SENDER_ID` = {$user['id']}, `BUDDY_OWNER_ID` = {$new_friend_row['id']}, `BUDDY_REQUEST` = '{$new_request_text}';");
+    db_buddy_insert($user, $new_friend_row, $new_request_text);
     sn_db_transaction_commit();
     throw new exception('buddy_err_adding_none', ERR_NONE);
   }
-}
-catch(exception $e)
-{
+} catch(Exception $e) {
   $result[] = array(
     'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
     'MESSAGE' => $lang[$e->getMessage()],
@@ -150,8 +135,7 @@ catch(exception $e)
 sn_db_transaction_rollback();
 
 $query = db_buddy_list_by_user($user['id']);
-while($row = db_fetch($query))
-{
+while($row = db_fetch($query)) {
   $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
 
   $row['BUDDY_ACTIVE'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE;
@@ -163,10 +147,10 @@ while($row = db_fetch($query))
 }
 
 $template_result += array(
-  'PAGE_HEADER' => $lang['buddy_buddies'],
-  'PAGE_HINT' => $lang['buddy_hint'],
-  'USER_ID' => $user['id'],
-  'REQUEST_USER_ID' => isset($new_friend_row['id']) ? $new_friend_row['id'] : 0,
+  'PAGE_HEADER'       => $lang['buddy_buddies'],
+  'PAGE_HINT'         => $lang['buddy_hint'],
+  'USER_ID'           => $user['id'],
+  'REQUEST_USER_ID'   => isset($new_friend_row['id']) ? $new_friend_row['id'] : 0,
   'REQUEST_USER_NAME' => isset($new_friend_row['username']) ? $new_friend_row['username'] : '',
 );
 

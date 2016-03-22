@@ -72,7 +72,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     // ЭТО НА БЛИЦЕ!!!
 //    doquery("DELETE FROM {{users}} WHERE username like 'Игрок%';");
 //    doquery("DELETE FROM {{planets}} WHERE id_owner not in (SELECT `id` FROM {{users}});");
-    db_blitz_reg_delete_current_players();
+    db_player_list_blitz_delete_players();
     db_planets_purge();
 
     $imported_string = explode(';', sys_get_param_str('generated_string'));
@@ -117,7 +117,8 @@ pdump($system_step, '$system_step');
         $system = $system_step;
       }
     }
-    doquery('UPDATE {{users}} SET dark_matter = 50000, dark_matter_total = 50000;');
+//    doquery('UPDATE {{users}} SET dark_matter = 50000, dark_matter_total = 50000;');
+    db_player_list_blitz_set_50k_dm();
 
     $config->db_saveItem('users_amount', $config->users_amount + $new_players);
     // pdump($imported_string);
@@ -130,13 +131,14 @@ pdump($system_step, '$system_step');
       $blitz_result_data = explode(',', $blitz_result_data);
       if(count($blitz_result_data) == 5) {
         $blitz_result_data[1] = db_escape($blitz_result_data[1]);
-        doquery(
-          "UPDATE `{{blitz_registrations}}` SET
-            `blitz_player_id` = '{$blitz_result_data[0]}',
-            `blitz_online` = '{$blitz_result_data[2]}',
-            `blitz_place` = '{$blitz_result_data[3]}',
-            `blitz_points` = '{$blitz_result_data[4]}'
-          WHERE `blitz_name` = '{$blitz_result_data[1]}' AND `round_number` = {$current_round};");
+//        doquery(
+//          "UPDATE `{{blitz_registrations}}` SET
+//            `blitz_player_id` = '{$blitz_result_data[0]}',
+//            `blitz_online` = '{$blitz_result_data[2]}',
+//            `blitz_place` = '{$blitz_result_data[3]}',
+//            `blitz_points` = '{$blitz_result_data[4]}'
+//          WHERE `blitz_name` = '{$blitz_result_data[1]}' AND `round_number` = {$current_round};");
+        db_blitz_reg_update_results($blitz_result_data, $current_round);
       }
     }
     $blitz_result = array();
@@ -144,12 +146,14 @@ pdump($system_step, '$system_step');
 
   if($config->game_mode == GAME_BLITZ) {
     $blitz_result = array($config->db_loadItem('var_stat_update'));
-    $query = doquery("SELECT id, username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
+//    $query = doquery("SELECT id, username, total_rank, total_points, onlinetime FROM {{users}} ORDER BY `id`;");
+    $query = db_player_list_export_blitz_info();
     while($row = db_fetch($query)) {
       $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
     }
   } else {
-    $query = doquery("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `id`;");
+//    $query = doquery("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `id`;");
+    $query = db_blitz_reg_get_player_list($current_round);
     while($row = db_fetch($query)) {
       $blitz_generated[] = "{$row['blitz_name']},{$row['blitz_password']}";
       $row['blitz_online'] ? $blitz_prize_players_active++ : false;
@@ -157,19 +161,13 @@ pdump($system_step, '$system_step');
     }
     $blitz_prize_dark_matter = $blitz_prize_players_active * 20000;
     $blitz_prize_places = ceil($blitz_prize_players_active / 5);
-    /*
-    'Игрок10'
-    'Игрок14'
-    'Игрок23'
-    'Игрок32'
-    'Игрок40'
-    */
 
     if(sys_get_param_str('prize_calculate') && $blitz_prize_players_active && ($blitz_prize_dark_matter_actual = sys_get_param_int('blitz_prize_dark_matter'))) {
       // $blitz_prize_dark_matter_actual = sys_get_param_int('blitz_prize_dark_matter');
       $blitz_prize_places_actual = sys_get_param_int('blitz_prize_places');
       sn_db_transaction_start();
-      $query = doquery("SELECT * FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `blitz_place` FOR UPDATE;");
+//      $query = doquery("SELECT * FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `blitz_place` FOR UPDATE;");
+      $query = db_blitz_reg_get_player_list_order_by_place($current_round);
       while($row = db_fetch($query)) {
         if(!$row['blitz_place']) {
           continue;
@@ -184,7 +182,8 @@ pdump("{{$row['id']}} {$row['blitz_name']}, Place {$row['blitz_place']}, Prize p
           rpg_points_change($row['user_id'], RPG_BLITZ, $reward, sprintf(
             $lang['sys_blitz_reward_log_message'], $row['blitz_place'], $row['blitz_name']
           ));
-          doquery("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']} AND `round_number` = {$current_round};");
+//          doquery("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']} AND `round_number` = {$current_round};");
+          db_blitz_reg_update_apply_results($reward, $row, $current_round);
         }
 
         if(!$blitz_prize_places_actual || $blitz_prize_dark_matter_actual < 1000) {
@@ -201,12 +200,13 @@ pdump("{{$row['id']}} {$row['blitz_name']}, Place {$row['blitz_place']}, Prize p
 $template = gettemplate('blitz_register', true);
 
 $player_registered = false;
-$query = doquery(
-  "SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points, br.blitz_reward_dark_matter
-    FROM {{blitz_registrations}} AS br
-    JOIN {{users}} AS u ON u.id = br.user_id
-  WHERE br.`round_number` = {$current_round}
-  order by `blitz_place`, `timestamp`;");
+//$query = doquery(
+//  "SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points, br.blitz_reward_dark_matter
+//    FROM {{blitz_registrations}} AS br
+//    JOIN {{users}} AS u ON u.id = br.user_id
+//  WHERE br.`round_number` = {$current_round}
+//  order by `blitz_place`, `timestamp`;");
+$query = db_blitz_reg_get_player_list_and_users($current_round);
 while($row = db_fetch($query)) {
   $tpl_player_data = array(
     'NAME' => player_nick_render_to_html($row, array('icons' => true, 'color' => true, 'ally' => true)),

@@ -47,7 +47,7 @@ if(!isset($sn_message_class_list[$current_class])) {
   $mode = '';
 }
 
-switch ($mode) {
+switch($mode) {
   case 'write':
     $error_list = array();
     $template = gettemplate('msg_message_compose', true);
@@ -104,7 +104,7 @@ switch ($mode) {
         //$recipient_id = 0;
         //$recipient_name = '';
         //$subject = '';
-        $text    = '';
+        $text = '';
 
         $msg_sent = true;
       } else {
@@ -127,22 +127,23 @@ switch ($mode) {
       $template->assign_block_vars('result', $error_message);
     }
 
-    $message_query = doquery(
-      "SELECT * FROM {{messages}}
-        WHERE
-          `message_type` = '" . MSG_TYPE_PLAYER . "' AND
-          ((`message_owner` = '{$user['id']}' AND `message_sender` = '{$recipient_id}')
-          OR
-          (`message_sender` = '{$user['id']}' AND `message_owner` = '{$recipient_id}')) ORDER BY `message_time` DESC LIMIT 20;");
-    while ($message_row = db_fetch($message_query)) {
+//    $message_query = doquery(
+//      "SELECT * FROM {{messages}}
+//        WHERE
+//          `message_type` = '" . MSG_TYPE_PLAYER . "' AND
+//          ((`message_owner` = '{$user['id']}' AND `message_sender` = '{$recipient_id}')
+//          OR
+//          (`message_sender` = '{$user['id']}' AND `message_owner` = '{$recipient_id}')) ORDER BY `message_time` DESC LIMIT 20;");
+    $message_query = db_message_list_get_last_20($user, $recipient_id);
+    while($message_row = db_fetch($message_query)) {
       $template->assign_block_vars('messages', array(
-        'ID'             => $message_row['message_id'],
-        'DATE'           => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
-        'FROM'           => htmlspecialchars($message_row['message_from']),
-        'SUBJ'           => htmlspecialchars($message_row['message_subject']),
-        'TEXT'           => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : nl2br($message_row['message_text']),
+        'ID'   => $message_row['message_id'],
+        'DATE' => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
+        'FROM' => htmlspecialchars($message_row['message_from']),
+        'SUBJ' => htmlspecialchars($message_row['message_subject']),
+        'TEXT' => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : nl2br($message_row['message_text']),
 
-        'FROM_ID'        => $message_row['message_sender'],
+        'FROM_ID' => $message_row['message_sender'],
       ));
     }
 
@@ -181,14 +182,15 @@ switch ($mode) {
 
     if($query_add) {
       $query_add = $query_add === true ? '' : $query_add;
-      doquery("DELETE FROM `{{messages}}` WHERE `message_owner` = '{$user['id']}'{$query_add};");
+//      doquery("DELETE FROM `{{messages}}` WHERE `message_owner` = '{$user['id']}'{$query_add};");
+      db_message_list_delete($user, $query_add);
     }
 
   case 'show':
     if($current_class == MSG_TYPE_OUTBOX) {
       $message_query = db_message_list_outbox_by_user_id($user['id']);
     } else {
-      if ($current_class == MSG_TYPE_NEW) {
+      if($current_class == MSG_TYPE_NEW) {
         $SubUpdateQry = array();
         foreach($sn_message_class_list as $message_class_id => $message_class) {
           if($message_class_id != MSG_TYPE_OUTBOX) {
@@ -206,8 +208,9 @@ switch ($mode) {
       }
 
       db_user_set_by_id($user['id'], $SubUpdateQry);
-      $message_query = "SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;";
-      $message_query = doquery($message_query);
+//      $message_query = "SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;";
+//      $message_query = doquery($message_query);
+      $message_query = db_message_list_by_owner_and_string($user, $SubSelectQry);
     }
 
     if(sys_get_param_int('return')) {
@@ -216,13 +219,13 @@ switch ($mode) {
     }
 
     $template = gettemplate('msg_message_list', true);
-    while ($message_row = db_fetch($message_query)) {
+    while($message_row = db_fetch($message_query)) {
       $template->assign_block_vars('messages', array(
-        'ID'             => $message_row['message_id'],
-        'DATE'           => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
-        'FROM'           => htmlspecialchars($message_row['message_from']),
-        'SUBJ'           => htmlspecialchars($message_row['message_subject']),
-        'TEXT'           => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : nl2br($message_row['message_text']),
+        'ID'   => $message_row['message_id'],
+        'DATE' => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
+        'FROM' => htmlspecialchars($message_row['message_from']),
+        'SUBJ' => htmlspecialchars($message_row['message_subject']),
+        'TEXT' => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : nl2br($message_row['message_text']),
 
         'FROM_ID'        => $message_row['message_sender'],
         'SUBJ_SANITIZED' => htmlspecialchars($message_row['message_subject']),
@@ -242,14 +245,16 @@ switch ($mode) {
 if(!$template) {
   $template = gettemplate('msg_message_class', true);
 
-  $query = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
+//  $query = doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
+  $query = db_message_count_by_owner_and_type($user);
   while($message_row = db_fetch($query)) {
-    $messages_total[$message_row['message_type']]  = $message_row['message_count'];
-    $messages_total[MSG_TYPE_NEW]                 += $message_row['message_count'];
+    $messages_total[$message_row['message_type']] = $message_row['message_count'];
+    $messages_total[MSG_TYPE_NEW] += $message_row['message_count'];
   }
 
-  $query = doquery("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '{$user['id']}' AND message_type = 1 GROUP BY message_sender;", '', true);
-  $messages_total[MSG_TYPE_OUTBOX] = intval($query['message_count']);
+//  $query = doquery("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '{$user['id']}' AND message_type = 1 GROUP BY message_sender;", '', true);
+//  $messages_total[MSG_TYPE_OUTBOX] = intval($query['message_count']);
+  $messages_total[MSG_TYPE_OUTBOX] = db_message_count_outbox($user);
 
   foreach($sn_message_class_list as $message_class_id => $message_class) {
     $template->assign_block_vars('message_class', array(

@@ -19,8 +19,7 @@ if(!($user_row = db_user_by_id($user_id))) {
 $template = gettemplate('admin/admin_user', true);
 
 if(!empty($user_row['user_last_browser_id'])) {
-  $temp = doquery("SELECT browser_user_agent FROM {{security_browser}} WHERE `browser_id` = {$user_row['user_last_browser_id']}", true);
-  $user_row['browser_user_agent'] = $temp['browser_user_agent'];
+  $user_row['browser_user_agent'] = db_browser_agent_get_by_id($user_row['user_last_browser_id']);
 }
 
 $formats = array(

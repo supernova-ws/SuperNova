@@ -1,11 +1,60 @@
 <?php
 
+/**
+ * Получение максимального ID игрока
+ *
+ * @return int
+ */
+function db_player_get_max_id() {
+  $max_user_id = classSupernova::$db->doquery("SELECT MAX(`id`) AS `max_user_id` FROM `{{user}}`", true);
+
+  return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
+}
+
+/**
+ * @param $user_id
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_player_list_online_by_id($user_id) {
+  $user_record = doquery("SELECT `username`, onlinetime FROM {{users}} WHERE id = {$user_id};", true);
+
+  return $user_record;
+}
+
+/**
+ * @param $user_list
+ *
+ * @return array|bool|mysqli_result|null
+ */
+function db_user_list_get_by_id_array($user_list) {
+  $query = doquery("SELECT `id` FROM `{{users}}` WHERE `id` IN (" . implode(',', $user_list) . ")");
+
+  return $query;
+}
+
+
+function db_player_list_blitz_delete_players() {
+  doquery("DELETE FROM `{{users}}` WHERE username LIKE 'Игрок%';");
+}
+
+function db_player_list_blitz_set_50k_dm() {
+  doquery('UPDATE `{{users}}` SET dark_matter = 50000, dark_matter_total = 50000;');
+}
+
+function db_player_list_export_blitz_info() {
+  return doquery("SELECT id, username, total_rank, total_points, onlinetime FROM `{{users}}` ORDER BY `id`;");
+}
+
+
 function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
   return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);
 }
+
 function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
   return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
 }
+
 function db_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
   return classSupernova::db_get_user_by_email($email_unsafe, $use_both, $for_update, $fields);
 }
@@ -21,7 +70,6 @@ function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
 }
 
 
-
 function db_user_set_by_id($user_id, $set) {
   return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
   // return classSupernova::db_set_user_by_id($user_id, $set);
@@ -31,21 +79,19 @@ function db_user_set_by_id($user_id, $set) {
 function db_user_list_set_mass_mail(&$owners_list, $set) {
   return classSupernova::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
 }
+
 function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
   return classSupernova::db_upd_record_list(LOC_USER, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
 }
+
 function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
   return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
 }
 
 
-
-
-
 function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
   return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet};");
 }
-
 
 
 // TODO Внести это всё в $supernova для HyperNova
@@ -56,7 +102,8 @@ function db_user_last_registered_username() {
 function db_user_count($online = false) {
   global $config;
 
-  $result = doquery('SELECT COUNT(id) AS user_count FROM {{users}} WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - $config->game_users_online_timeout) : ''), true);
+  $result = doquery('SELECT COUNT(id) AS user_count FROM `{{users}}` WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - $config->game_users_online_timeout) : ''), true);
+
   return isset($result['user_count']) ? $result['user_count'] : 0;
 }
 
@@ -82,13 +129,13 @@ function db_user_list_online_sorted($TypeSort) {
   return doquery(
     "SELECT `id` AS `ID`, `username` AS `NAME`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
       `onlinetime` AS `ACTIVITY`
-    FROM {{users}}
-    WHERE `onlinetime` >= ". (SN_TIME_NOW - $config->game_users_online_timeout) ." ORDER BY user_as_ally, `". $TypeSort ."` ASC;");
+    FROM `{{users}}`
+    WHERE `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) . " ORDER BY user_as_ally, `" . $TypeSort . "` ASC;");
 }
 
 
 function db_user_list_admin_multiaccounts() {
-  return doquery("SELECT COUNT(*) as ip_count, user_lastip FROM {{users}} WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
+  return doquery("SELECT COUNT(*) AS ip_count, user_lastip FROM `{{users}}` WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
 }
 
 
@@ -98,7 +145,7 @@ function db_user_list_admin_sorted($sort, $online = false) {
   return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
     LEFT JOIN {{referrals}} as r on r.id_partner = u.id
     WHERE" .
-    ($online ? " `onlinetime` >= ". (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .
+    ($online ? " `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .
     " GROUP BY u.id
     ORDER BY user_as_ally, {$sort} ASC");
 }

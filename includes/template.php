@@ -409,9 +409,9 @@ function tpl_topnav_event_build_helper($time, $event, $msg, $coordinates, $is_de
 }
 
 /**
- * @param template  $template
+ * @param template       $template
  * @param FleetList|null $FleetList
- * @param string    $type
+ * @param string         $type
  */
 function tpl_topnav_event_build(&$template, $FleetList, $type = 'fleet') {
   if(empty($FleetList)) {
@@ -550,7 +550,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}", $config->game_news_overview);
   }
 
-  $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
+  $notes_query = db_note_list_by_owner($user['id'], true);
   while($note_row = db_fetch($notes_query)) {
     note_assign($template, $note_row);
   }

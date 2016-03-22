@@ -14,36 +14,27 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if ($user['authlevel'] < 3)
-{
+if($user['authlevel'] < 3) {
   AdminMessage($lang['adm_err_denied']);
 }
 
-if($delete = sys_get_param_id('delete'))
-{
-  doquery("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
-}
-elseif(sys_get_param_str('delete_update_info'))
-{
-  doquery("DELETE FROM `{{logs}}` WHERE `log_code` in (103, 180, 191);");
-}
-elseif(sys_get_param_str('deleteall') == 'yes')
-{
+if($delete = sys_get_param_id('delete')) {
+  db_log_delete_by_id($delete);
+} elseif(sys_get_param_str('delete_update_info')) {
+  db_log_delete_update_and_stat_calc();
+} elseif(sys_get_param_str('deleteall') == 'yes') {
 //  doquery("TRUNCATE TABLE `{{logs}}`");
 }
 
-if($detail = sys_get_param_id('detail'))
-{
+if($detail = sys_get_param_id('detail')) {
   $template = gettemplate('admin/adm_log_main_detail', true);
 
-  $errorInfo = doquery("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;", true);
+  $errorInfo = db_log_get_by_id($detail);
   $error_dump = unserialize($errorInfo['log_dump']);
-  if(is_array($error_dump))
-  {
-    foreach ($error_dump as $key => $value)
-    {
+  if(is_array($error_dump)) {
+    foreach($error_dump as $key => $value) {
       $v = array(
-        'VAR_NAME' => $key,
+        'VAR_NAME'  => $key,
         'VAR_VALUE' => $key == 'query_log' ? $value : dump($value, $key)
       );
 
@@ -51,24 +42,20 @@ if($detail = sys_get_param_id('detail'))
     }
   }
   $template->assign_vars($errorInfo);
-}
-else
-{
+} else {
   $template = gettemplate('admin/adm_log_main', true);
 
   $i = 0;
-  $query = doquery("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
-  while($u = db_fetch($query))
-  {
+  $query = db_log_list_get_last_100();
+  while($u = db_fetch($query)) {
     $i++;
     $v = array();
-    foreach($u as $key => $value)
-    {
+    foreach($u as $key => $value) {
       $v[strtoupper($key)] = $value;
     }
     $template->assign_block_vars('error', $v);
   }
-  $query = doquery("SELECT COUNT(*) AS LOG_MESSAGES_TOTAL, {$i} AS LOG_MESSAGES_VISIBLE FROM `{{logs}}`;", true);
+  $query = db_log_count($i);
 
   $template->assign_vars($query);
 }

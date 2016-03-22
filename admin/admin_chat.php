@@ -14,32 +14,25 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if ($user['authlevel'] < 3)
-{
+if($user['authlevel'] < 3) {
   AdminMessage($lang['adm_err_denied']);
 }
 
 $parse = $lang;
 
-// extract($_GET);
 $delete = sys_get_param_str('delete');
 $deleteall = sys_get_param_str('deleteall');
 
-// Système de suppression
-if ($delete)
-{
-  doquery("DELETE FROM {{chat}} WHERE `messageid`={$delete};");
-}
-elseif ($deleteall == 'yes')
-{
-  doquery("DELETE FROM {{chat}};");
+
+if($delete) {
+  db_chat_message_delete($delete);
+} elseif($deleteall == 'yes') {
+  db_chat_message_purge();
 }
 
-// Affichage des messages
-$query = doquery("SELECT * FROM {{chat}} ORDER BY messageid DESC LIMIT 25;");
+$query = db_chat_message_get_last_25();
 $i = 0;
-while ($e = db_fetch($query))
-{
+while($e = db_fetch($query)) {
   $i++;
   $parse['msg_list'] .= stripslashes("<tr>" .
     "<td class=n>{$e['messageid']}</td>" .

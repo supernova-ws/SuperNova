@@ -20,7 +20,7 @@ define('SN_MEM_START', memory_get_usage());
 version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3.2') : false;
 
 // Бенчмарк
-register_shutdown_function(function() {
+register_shutdown_function(function () {
   if(defined('IN_AJAX')) {
     return;
   }
@@ -74,8 +74,8 @@ $sn_root_relative .= basename($_SERVER['SCRIPT_NAME']);
 $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
 define('SN_ROOT_RELATIVE', $sn_root_relative);
 
-define('SN_ROOT_VIRTUAL' , 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
-define('SN_ROOT_VIRTUAL_PARENT' , str_replace('//google.', '//', SN_ROOT_VIRTUAL));
+define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
+define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
 define('PHP_EX', $phpEx); // PHP extension on this server
@@ -146,7 +146,7 @@ require_once('classes/user_options.php');
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 /**
- * @var classConfig $config
+ * @var classConfig    $config
  * @var classSupernova $supernova
  */
 global $supernova, $sn_cache, $config, $auth;
@@ -167,21 +167,21 @@ $sn_page_name_original = isset($_GET['page'])
   ? trim(strip_tags($_GET['page']))
   : str_replace(DOT_PHP_EX, '', str_replace(SN_ROOT_RELATIVE, '', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])));
 define('INITIAL_PAGE', $sn_page_name_original);
-define('SN_COOKIE'        , ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
-define('SN_COOKIE_I'      , SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
-define('SN_COOKIE_D'      , SN_COOKIE . '_D');
-define('SN_COOKIE_T'      , SN_COOKIE . '_T'); // Time measure cookie
-define('SN_COOKIE_F'      , SN_COOKIE . '_F'); // Font size cookie
-define('SN_COOKIE_U'      , SN_COOKIE . '_U'); // Current user cookie aka user ID
-define('SN_COOKIE_U_I'    , SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
-define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
-define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
-define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . TEMPLATE_PATH);
-define('DEFAULT_SKINPATH' , $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
-define('DEFAULT_LANG'     , $config->game_default_language ? $config->game_default_language : 'ru');
-define('FMT_DATE'         , $config->int_format_date ? $config->int_format_date : 'd.m.Y');
-define('FMT_TIME'         , $config->int_format_time ? $config->int_format_time : 'H:i:s');
-define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
+define('SN_COOKIE', ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
+define('SN_COOKIE_I', SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
+define('SN_COOKIE_D', SN_COOKIE . '_D');
+define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie
+define('SN_COOKIE_F', SN_COOKIE . '_F'); // Font size cookie
+define('SN_COOKIE_U', SN_COOKIE . '_U'); // Current user cookie aka user ID
+define('SN_COOKIE_U_I', SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
+define('TEMPLATE_NAME', $config->game_default_template ? $config->game_default_template : 'OpenGame');
+define('TEMPLATE_PATH', 'design/templates/' . TEMPLATE_NAME);
+define('TEMPLATE_DIR', SN_ROOT_PHYSICAL . TEMPLATE_PATH);
+define('DEFAULT_SKINPATH', $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
+define('DEFAULT_LANG', $config->game_default_language ? $config->game_default_language : 'ru');
+define('FMT_DATE', $config->int_format_date ? $config->int_format_date : 'd.m.Y');
+define('FMT_TIME', $config->int_format_time ? $config->int_format_time : 'H:i:s');
+define('FMT_DATE_TIME', FMT_DATE . ' ' . FMT_TIME);
 
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 
@@ -236,12 +236,12 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
     $supernova->options = array_merge($supernova->options, $sn_page_data['options']);
   }
 //  $sn_page_data
-/*
-  if(basename($sn_page_data) == $sn_page_data)
-  {
-    require_once('includes/pages/' . $sn_page_data . '.' . $phpEx);
-  }
-*/
+  /*
+    if(basename($sn_page_data) == $sn_page_data)
+    {
+      require_once('includes/pages/' . $sn_page_data . '.' . $phpEx);
+    }
+  */
 }
 
 // load_order:
@@ -285,8 +285,7 @@ do {
       $load_order[$loaded_module_name] = $level;
     }
   }
-}
-while($prev_order != $load_order);
+} while($prev_order != $load_order);
 
 asort($load_order);
 
@@ -317,7 +316,6 @@ if(!isset($sn_data['pages'][$sn_page_name])) {
 }
 
 
-
 //pdump(array_keys($sn_module_list));
 //pdump(array_keys($sn_module_list['core']));
 //pdump(array_keys($sn_module_list['auth']));
@@ -344,10 +342,9 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
   $config->db_saveItem('var_online_user_count', db_user_count(true));
   $config->db_saveItem('var_online_user_time', SN_TIME_NOW);
   if($config->server_log_online) {
-    doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
+    db_log_online_insert();
   }
 }
-
 
 
 //pdump($sn_module);die();
@@ -383,12 +380,12 @@ $template_result[F_LOGIN_MESSAGE] =
   isset($template_result[F_LOGIN_MESSAGE]) && $template_result[F_LOGIN_MESSAGE]
     ? $template_result[F_LOGIN_MESSAGE]
     : ($template_result[F_LOGIN_STATUS] != LOGIN_UNDEFINED
-        ? $lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]]
-        : false
-      );
+    ? $lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]]
+    : false
+  );
 
 if($template_result[F_LOGIN_STATUS] == LOGIN_ERROR_USERNAME_RESTRICTED_CHARACTERS) {
-  $prohibited_characters = array_map(function($value) {
+  $prohibited_characters = array_map(function ($value) {
     return "'" . htmlentities($value, ENT_QUOTES, 'UTF-8') . "'";
   }, str_split(LOGIN_REGISTER_CHARACTERS_PROHIBITED));
   $template_result[F_LOGIN_MESSAGE] .= implode(', ', $prohibited_characters);
@@ -481,7 +478,8 @@ $skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_ski
 if(
   !$skip_fleet_update
   && !(defined('IN_AJAX') && IN_AJAX === true)
-  && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval) {
+  && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval
+) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($skip_fleet_update);
 }

@@ -44,7 +44,7 @@ function check_suspicious(&$session, &$session_list_last_id, &$row) {
 }
 
 $session_list = array();
-$query = doquery("SELECT `visit_time`, user_id FROM {{counter}} where user_id <> 0 and visit_time > UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 DAY)) order by user_id, visit_time;");
+$query = db_counter_list_by_week();
 $session = array();
 if($row = db_fetch($query)) {
   $session = array(
@@ -112,7 +112,7 @@ print("<td>ID</td><td>Username</td><td>Start</td><td>End</td><td>Length</td>");
 print("<td>Last online</td>");
 print("</tr>");
 foreach($session_list as $user_id => $value) {
-  $user_record = doquery("SELECT `username`, onlinetime FROM {{users}} WHERE id = {$user_id};", true);
+  $user_record = db_player_list_online_by_id($user_id);
   foreach($value as $interval_data) {
     print("<tr>");
     print("<td>{$user_id}</td><td>{$user_record['username']}</td><td>{$interval_data[0]}</td><td>{$interval_data[1]}</td><td>{$interval_data[2]}</td>");

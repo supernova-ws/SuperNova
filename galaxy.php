@@ -144,7 +144,8 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
         if($cached['allies'][$uni_galaxyRowUser['ally_id']]) {
           $allyquery = $cached['allies'][$uni_galaxyRowUser['ally_id']];
         } else {
-          $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
+//          $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
+          $allyquery = db_ally_get_by_id($uni_galaxyRowUser['ally_id']);
           $cached['allies'][$uni_galaxyRowUser['ally_id']] = $allyquery;
         }
       }
@@ -306,14 +307,15 @@ foreach($cached['allies'] as $PlanetAlly) {
 $is_missile = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE] && ($CurrentMIP > 0) && ($uni_galaxy == $CurrentGalaxy) && ($uni_system >= $CurrentSystem - $MissileRange) && ($uni_system <= $CurrentSystem + $MissileRange);
 $colspan = classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_PM] + classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY] + $is_missile;
 
-$ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', true);
-$galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", true);
-$system_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", true);
+//$ally_count = doquery("SELECT COUNT(*) AS ally_count FROM {{alliance}};", '', true);
+//$galaxy_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = 0 limit 1;", true);
+//$system_name = doquery("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;", true);
 
 $template->assign_vars(array(
     'rows'                  => $Result,
     'userCount'             => $config->users_amount,
-    'ALLY_COUNT'            => $ally_count['ally_count'],
+//    'ALLY_COUNT'            => $ally_count['ally_count'],
+    'ALLY_COUNT'            => db_ally_count(),
     'PLANET_EXPEDITION'     => $config->game_maxPlanet + 1,
     'curPlanetID'           => $planetrow['id'],
     'curPlanetG'            => $planetrow['galaxy'],
@@ -347,8 +349,10 @@ $template->assign_vars(array(
     'PAGE_HINT'             => $lang['gal_sys_hint'],
     'PLANET_RECYCLERS'      => $planet_recyclers_orbiting,
     'PLANET_RECYCLERS_TEXT' => pretty_number($planet_recyclers_orbiting),
-    'GALAXY_NAME'           => $galaxy_name['universe_name'],
-    'SYSTEM_NAME'           => $system_name['universe_name'],
+//    'GALAXY_NAME'           => $galaxy_name['universe_name'],
+//    'SYSTEM_NAME'           => $system_name['universe_name'],
+    'GALAXY_NAME'           => db_universe_get_name($uni_galaxy),
+    'SYSTEM_NAME'           => db_universe_get_name($uni_galaxy, $uni_system),
     'COL_SPAN'              => $colspan + 9,
     'COL_SPAN_PLUS'         => $colspan + 3,
 
