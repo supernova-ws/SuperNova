@@ -1,21 +1,17 @@
 <?php
 
-if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
-{
+if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }
 
 $template = gettemplate('ali_info', true);
 
-if($mode == 'exit')
-{
-  if ($ally['ally_owner'] == $user['id'])
-  {
+if($mode == 'exit') {
+  if($ally['ally_owner'] == $user['id']) {
     message($lang['Owner_cant_go_out'], $lang['Alliance']);
   }
 
-  if (sys_get_param_int('ali_info_leave_confirm'))
-  {
+  if(sys_get_param_int('ali_info_leave_confirm')) {
     sn_db_transaction_start();
     db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
     db_ally_list_recalc_counts();
@@ -23,27 +19,20 @@ if($mode == 'exit')
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
     message(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
   }
-}
-elseif($mode == 'ainfo')
-{
+} elseif($mode == 'ainfo') {
   $tag = sys_get_param_str('tag');
   $id_ally = sys_get_param_id('a');
-  if($tag)
-  {
-    $ally = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", '', true);
-  }
-  elseif($id_ally)
-  {
-    $ally = doquery("SELECT * FROM {{alliance}} WHERE id='{$id_ally}' LIMIT 1;", '', true);
+  if($tag) {
+    $ally = db_ally_get_by_tag($tag);
+  } elseif($id_ally) {
+    $ally = db_ally_get_by_id($id_ally);
   }
 
-  if(!$ally)
-  {
+  if(!$ally) {
     message($lang['ali_sys_notFound'], $lang['Ally_info_1']);
   }
 
-  if(!$ally['ally_description'])
-  {
+  if(!$ally['ally_description']) {
     $ally['ally_description'] = $lang['Ally_nodescription'];
   }
 
@@ -51,36 +40,29 @@ elseif($mode == 'ainfo')
     'EXTERNAL'     => true,
     'USER_ALLY_ID' => $user['ally_id'],
   ));
-  $page_header          = $lang['sys_alliance'];
-}
-else
-{
+  $page_header = $lang['sys_alliance'];
+} else {
   $page_header = $lang['your_alliance'];
 
-  if($ally['ally_owner'] == $user['id'])
-  {
+  if($ally['ally_owner'] == $user['id']) {
     $range = $ally['ally_owner_range'] ? $ally['ally_owner_range'] : $lang['Founder'];
-  }
-  elseif($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name']))
-  {
+  } elseif($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name'])) {
     $range = $ranks[$user['ally_rank_id']]['name'];
-  }
-  else
-  {
+  } else {
     $range = $lang['member'];
   }
 
-  $request = doquery("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'", '', true);
+  $request = db_ally_request_count_by_id($ally);
 
   $template->assign_vars(array(
-    'range' => $range,
+    'range'         => $range,
     'ALLY_REQUESTS' => $request['request_count'],
 
-    'ALLY_ADMIN' => $user_admin,
-    'ALLY_CAN_KICK' => $user_can_kick,
-    'MASS_MAIL' => $user_can_send_mails,
+    'ALLY_ADMIN'      => $user_admin,
+    'ALLY_CAN_KICK'   => $user_can_kick,
+    'MASS_MAIL'       => $user_can_send_mails,
     'MANAGE_REQUESTS' => $user_admin_applications,
-    'ALLY_NEGOTIATE' => $user_can_negotiate,
+    'ALLY_NEGOTIATE'  => $user_can_negotiate,
   ));
 }
 
@@ -105,8 +87,7 @@ $template->assign_vars(array(
 ));
 
 $relations = ali_relations($ally['id']);
-foreach($relations as $relation)
-{
+foreach($relations as $relation) {
   /*
   if($relation['alliance_diplomacy_contr_ally_id'] == $user['ally_id'])
   {
@@ -114,8 +95,7 @@ foreach($relations as $relation)
     $relation['alliance_diplomacy_contr_ally_name'] = $contr_ally['ally_name'];
   }
   */
-  if($relation['alliance_diplomacy_contr_ally_id'] && $relation['alliance_diplomacy_ally_id'])
-  {
+  if($relation['alliance_diplomacy_contr_ally_id'] && $relation['alliance_diplomacy_ally_id']) {
     $template->assign_block_vars('relation', array(
       'NAME'     => $relation['alliance_diplomacy_contr_ally_name'],
       'RELATION' => $lang['ali_dip_relations'][$relation['alliance_diplomacy_relation']],
@@ -126,7 +106,12 @@ foreach($relations as $relation)
 
 $template = parsetemplate($template, $lang);
 
-function ali_render(){$func_args = func_get_args();return sn_function_call(__FUNCTION__, $func_args);}
+function ali_render() {
+  $func_args = func_get_args();
+
+  return sn_function_call(__FUNCTION__, $func_args);
+}
+
 ali_render();
 
 display($template, "{$lang['your_alliance']} [{$ally['ally_name']}]");

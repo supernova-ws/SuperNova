@@ -19,13 +19,14 @@ if($id_user && isset($id_rank) && $user_admin){
 }
 
 $id_kick = sys_get_param_id('kick');
+
 if ($id_kick && $user_can_kick)
 {
   $u = db_user_by_id($id_kick, true);
   if ($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner'])
   {
     db_user_set_by_id($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
-    doquery("UPDATE {{alliance}} SET `ally_members`= `ally_members` - 1 WHERE `id`='{$ally['id']}' LIMIT 1;");
+    db_ally_update_member_decrease($ally);
   }
 }
 
@@ -168,7 +169,7 @@ foreach($userList as $userRow)
 
 if ($i != $ally['ally_members'])
 {
-  doquery("UPDATE {{alliance}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
+  db_ally_update_member_set($i, $ally);
 }
 
 $template->assign_vars(array(

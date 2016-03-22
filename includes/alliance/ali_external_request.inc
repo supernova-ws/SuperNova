@@ -10,13 +10,12 @@ if ($user['ally_id'])
   message($lang['ali_req_inAlly'], $lang['ali_req_title']);
 }
 
-if ($user_request['id_ally'])
-{
-  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user_request['id_ally']}'", true);
+if ($user_request['id_ally']) {
+  $ally = db_ally_get_by_id($user_request['id_ally']);
 
   if (sys_get_param_str('bcancel'))
   {
-    doquery("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
+    db_ally_request_delete_by_user($user);
     header('Location: alliance.php');
   }
 
@@ -36,11 +35,11 @@ $id_ally = sys_get_param_id('a');
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time=" . SN_TIME_NOW . ";");
+  db_ally_request_insert($user, $id_ally, $POST_text);
   header('Location: alliance.php');
 }
 
-$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);
+$ally = db_ally_get_by_id($id_ally);
 
 if(!$ally)
 {
