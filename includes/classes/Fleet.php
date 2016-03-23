@@ -756,17 +756,12 @@ class Fleet extends UnitContainer {
 
   /**
    * Initializes Fleet from user params and posts it to DB
-   *
-   * @param     $owner_id
-   * @param int $fleet_group
-   *
-   * @return int|string
    */
-  public function create_and_send($owner_id, $fleet_group = 0) {
+  public function create_and_send() {
 //    $this->mission_type = $mission_type;
-    $this->group_id = $fleet_group;
+//    $this->group_id = $fleet_group;
 
-    $this->playerOwnerId = $owner_id;
+//    $this->playerOwnerId = $owner_id;
 
     // Filling $ship_list and $resource_list, also fills $amount
 //    $this->unitsSetFromArray($unit_array);
@@ -777,13 +772,12 @@ class Fleet extends UnitContainer {
 //    $this->set_end_planet($to);
 
     // WARNING! MISSION TIMES MUST BE SET WITH set_times() method!
+    // TODO - more checks!
     if(empty($this->_time_launch)) {
       die('Fleet time not set!');
     }
 
-    $this->dbSave();
-
-    return $this->_dbId;
+    parent::dbInsert();
   }
 
   /**
@@ -901,7 +895,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.25
+   * @version 41a6.27
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -1001,7 +995,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.25
+   * @version 41a6.27
    */
   protected function extractResources(array &$db_row) {
     $this->resource_list = array(

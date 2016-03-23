@@ -229,7 +229,9 @@ function sn_fleet_page3($time_to_travel) {
     'planet_type' => !empty($planet_type) ? $planet_type : 0,
     'id_owner'    => $TargetPlanet['id_owner'],
   ));
-  $fleet_id = $objFleet->create_and_send($user['id'], $fleet_group);
+  $objFleet->playerOwnerId = $user['id'];
+  $objFleet->group_id = $fleet_group;
+  $objFleet->create_and_send();
 
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);
@@ -237,7 +239,7 @@ function sn_fleet_page3($time_to_travel) {
   $template = gettemplate('fleet3', true);
 
   if(is_array($captain)) {
-    db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$fleet_id}");
+    db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$objFleet->dbId}");
   }
 
   $template_route = array(

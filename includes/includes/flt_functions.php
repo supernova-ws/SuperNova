@@ -466,11 +466,16 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
   $options['fleet_group'] = !empty($options['fleet_group']) ? idval($options['fleet_group']) : 0;
   $objFleet = new Fleet();
   $objFleet->set_times($travel_data['duration'], $time_on_mission);
+  // TODO ???????? Прямое обращение к unitList????????????
+  // - Диферсифицировать по типу? Если массив - значит unitsSetFromArray?
+  // - Иначе - экспешн?
   $objFleet->unitsSetFromArray($fleet_REAL_array);
   $objFleet->mission_type = $mission;
   $objFleet->set_start_planet($from);
   $objFleet->set_end_planet($to);
-  $fleet_id = $objFleet->create_and_send($user['id'], $options['fleet_group']);
+  $objFleet->playerOwnerId = $user['id'];
+  $objFleet->group_id = $options['fleet_group'];
+  $objFleet->create_and_send();
 
   $sn_group_fleet = sn_get_groups('fleet');
   $sn_group_resources_loot = sn_get_groups('resources_loot');
