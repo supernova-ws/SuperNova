@@ -251,13 +251,6 @@ class Fleet extends UnitContainer {
   protected $resource_delta = array();
   protected $resource_replace = array();
 
-  /**
-   * Changes to non-unit and non-resource fields
-   *
-   * @var array $core_field_set_list
-   */
-  protected $core_field_set_list = array();
-
 
   /**
    * Returns location's player owner ID
@@ -287,25 +280,6 @@ class Fleet extends UnitContainer {
 
 
   /* FLEET DB ACCESS =================================================================================================*/
-
-  /**
-   * UPDATE - Updates fleet record by ID with SET
-   *
-   * @param string $set_safe_string
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  // TODO - унести куда-то глубоко. Например в DBAware или даже в БД-драйвер
-  protected function db_fleet_update_set_safe_string($set_safe_string) {
-    $fleet_id_safe = idval($this->_dbId);
-    if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
-      $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
-    } else {
-      $result = false;
-    }
-
-    return $result;
-  }
 
   /**
    * LOCK - Lock all records which can be used with mission
@@ -394,17 +368,16 @@ class Fleet extends UnitContainer {
     $this->mark_fleet_as_returned();
 
     // Считаем, что флот уже долетел TODO
-    $this->core_field_set_list['fleet_start_time'] = $this->time_arrive_to_target = SN_TIME_NOW;
+    $this->time_arrive_to_target = SN_TIME_NOW;
     // Убираем флот из группы
-    $this->core_field_set_list['fleet_group'] = $this->group_id = 0;
+    $this->group_id = 0;
     // Отменяем работу в точке назначения
-    $this->core_field_set_list['fleet_end_stay'] = $this->time_mission_job_complete = 0;
+    $this->time_mission_job_complete = 0;
     // TODO - правильно вычслять время возвращения - по проделанному пути, а не по старому времени возвращения
-    $this->core_field_set_list['fleet_end_time'] = $this->time_return_to_source = $ReturnFlyingTime;
+    $this->time_return_to_source = $ReturnFlyingTime;
 
     // Записываем изменения в БД
-    $this->flush_changes_to_db();
-//    $this->dbSave();
+    $this->dbSave();
 
     if($this->_group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
@@ -417,7 +390,7 @@ class Fleet extends UnitContainer {
    */
   public function mark_fleet_as_returned() {
     // TODO - Проверка - а не возвращается ли уже флот?
-    $this->core_field_set_list['fleet_mess'] = $this->is_returning = 1;
+    $this->is_returning = 1;
   }
 
 
@@ -522,7 +495,7 @@ class Fleet extends UnitContainer {
     } else {
       $this->set_zero_cargo();
       $this->mark_fleet_as_returned();
-      $this->flush_changes_to_db();
+      $this->dbSave();
     }
 
     // Restoring resources to planet
@@ -557,66 +530,18 @@ class Fleet extends UnitContainer {
    */
   // TODO - safe IDs with check via possible fleets
   public function group_acs_set($acs_id, $mission_id) {
-    $this->core_field_set_list['fleet_group'] = $this->group_id = $acs_id;
-    $this->core_field_set_list['fleet_mission'] = $this->mission_type = $mission_id;
+    $this->group_id = $acs_id;
+    $this->mission_type = $mission_id;
   }
 
   public function shipCountById($ship_id) {
     return $this->unitList->unitCountById($ship_id);
   }
 
-  /**
-   * Saves all changes in object to DB
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function flush_changes_to_db() {
-    $result_changeset = array();
-
-    // Готовим дельту. ДЕЛЬТА ВСЕГДА ДОЛЖНА ИДТИ ПЕРВОЙ И ЧТО БЫ В СЛУЧАЕ ДУБЛИКАТОВ БЫТЬ ПЕРЕЗАПИСАНОЙ СЕТОМ!!!
-    $field_delta_changes = array();
-    // Сейчас это у нас только ресурсы
-    $field_delta_changes = array_merge(
-      $field_delta_changes,
-      UnitResourceLoot::convert_id_to_field_name($this->resource_delta, 'fleet_resource_')
-    );
-    $field_delta_string_safe = db_set_make_safe_string($field_delta_changes, true);
-    !empty($field_delta_string_safe) ? $result_changeset[] = $field_delta_string_safe : false;
-
-
-    // Теперь готовим REPLACE
-    // Берем все изменения основных полей
-    $field_replace_changes = $this->core_field_set_list;
-
-    $this->unitList->setLocatedAt($this);
-    $this->unitList->dbSave();
-
-    // Добавляем REPLACE ресурсов
-    if(!empty($this->resource_replace)) {
-      $field_replace_changes = array_merge(
-        $field_replace_changes,
-        UnitResourceLoot::convert_id_to_field_name($this->resource_replace, 'fleet_resource_')
-      );
-    }
-
-    $field_replace_string_safe = db_set_make_safe_string($field_replace_changes);
-    !empty($field_replace_string_safe) ? $result_changeset[] = $field_replace_string_safe : false;
-
-    $set_safe_string = implode(',', $result_changeset);
-    $result = $this->db_fleet_update_set_safe_string($set_safe_string);
-
-    // if($result) // TODO - Вставить обработку ошибок
-    $this->_reset_update();
-
-    // TODO - пересчитать статистику флота
-    return $result;
-  }
-
 
   public function mark_fleet_as_returned_and_save() {
     $this->mark_fleet_as_returned();
-    $this->flush_changes_to_db();
-//    $this->dbSave();
+    $this->dbSave();
   }
 
   /**
@@ -624,6 +549,7 @@ class Fleet extends UnitContainer {
    *
    * @param array $unit_list
    */
+  // TODO - DEPRECATED!
   public function replace_ships($unit_list) {
     // TODO - Resets also delta and changes?!
 //    $this->unitList->_reset();
@@ -642,64 +568,8 @@ class Fleet extends UnitContainer {
   }
 
 
-  /**
-   * Updates fleet resource list with deltas
-   *
-   * @param $resource_delta_list
-   */
-  public function update_resources($resource_delta_list) {
-    !is_array($resource_delta_list) ? $resource_delta_list = array() : false;
-
-    foreach($resource_delta_list as $resource_id => $unit_delta) {
-      if(!UnitResourceLoot::is_in_group($resource_id) || !($unit_delta = floor($unit_delta))) {
-        // Not a resource or no resources - continuing
-        continue;
-      }
-
-      $this->resource_list[$resource_id] += $unit_delta;
-
-      // Check for negative unit value
-      if($this->resource_list[$resource_id] < 0) {
-        // TODO
-        die('$unit_delta is less then resource amount in ' . __FILE__ . ' ' . __FUNCTION__ . ' ' . __LINE__);
-      }
-
-      // Preparing changes
-      $this->resource_delta[$resource_id] += $unit_delta;
-    }
-  }
-
-  /**
-   * Set current resource list from array of units
-   *
-   * @param array $resource_list
-   */
-  public function replace_resources($resource_list) {
-    // TODO - Resets also delta and changes?!
-    $this->_reset_resources();
-
-    !is_array($resource_list) ? $resource_list = array() : false;
-
-    foreach($resource_list as $resource_id => $unit_count) {
-      if(!UnitResourceLoot::is_in_group($resource_id) || !($unit_count = floor($unit_count))) {
-        // Not a resource or zero resource - continuing
-        continue;
-      }
-
-      // Check for negative unit value
-      if($unit_count < 0) {
-        // TODO
-        die('$unit_count can not be negative in ' . __FUNCTION__);
-      }
-      $this->resource_list[$resource_id] = $unit_count;
-
-      // Preparing changes
-      $this->resource_replace[$resource_id] = $unit_count;
-    }
-  }
-
   public function set_zero_cargo() {
-    $this->replace_resources(array(
+    $this->unitSetResourceList(array(
       RES_METAL     => 0,
       RES_CRYSTAL   => 0,
       RES_DEUTERIUM => 0,
@@ -757,20 +627,7 @@ class Fleet extends UnitContainer {
   /**
    * Initializes Fleet from user params and posts it to DB
    */
-  public function create_and_send() {
-//    $this->mission_type = $mission_type;
-//    $this->group_id = $fleet_group;
-
-//    $this->playerOwnerId = $owner_id;
-
-    // Filling $ship_list and $resource_list, also fills $amount
-//    $this->unitsSetFromArray($unit_array);
-
-//    $this->set_start_planet($from);
-
-//    $this->target_owner_id = intval($to['id_owner']) ? $to['id_owner'] : 0;
-//    $this->set_end_planet($to);
-
+  public function dbInsert() {
     // WARNING! MISSION TIMES MUST BE SET WITH set_times() method!
     // TODO - more checks!
     if(empty($this->_time_launch)) {
@@ -895,7 +752,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.27
+   * @version 41a6.28
    */
   public function fleet_recyclers_capacity(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -916,51 +773,12 @@ class Fleet extends UnitContainer {
     return empty($this->resource_list) || !is_array($this->resource_list) ? 0 : array_sum($this->resource_list);
   }
 
-//  protected function _reset() {
-//    $this->_dbId = 0;
-//    $this->_playerOwnerId = 0;
-//    $this->_target_owner_id = null;
-//    $this->_mission_type = 0;
-////    $this->db_string = '';
-//    $this->_group_id = 0;
-//    $this->_is_returning = 0;
-//
-//    $this->_time_launch = 0; // SN_TIME_NOW
-//    $this->_time_arrive_to_target = 0; // SN_TIME_NOW + $time_travel
-//    $this->_time_mission_job_complete = 0;
-//    $this->_time_return_to_source = 0;
-//
-//    $this->_fleet_start_planet_id = null;
-//    $this->_fleet_start_galaxy = 0;
-//    $this->_fleet_start_system = 0;
-//    $this->_fleet_start_planet = 0;
-//    $this->_fleet_start_type = PT_ALL;
-//
-//    $this->_fleet_end_planet_id = null;
-//    $this->_fleet_end_galaxy = 0;
-//    $this->_fleet_end_system = 0;
-//    $this->_fleet_end_planet = 0;
-//    $this->_fleet_end_type = PT_ALL;
-//
-//    $this->unitList->_reset();
-//
-//    $this->_reset_resources();
-//    $this->core_field_set_list = array();
-//  }
-
   protected function _reset_resources() {
     $this->resource_list = array(
       RES_METAL     => 0,
       RES_CRYSTAL   => 0,
       RES_DEUTERIUM => 0,
     );
-    $this->resource_delta = array();
-    $this->resource_replace = array();
-  }
-
-  protected function _reset_update() {
-    $this->core_field_set_list = array();
-
     $this->resource_delta = array();
     $this->resource_replace = array();
   }
@@ -995,7 +813,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.27
+   * @version 41a6.28
    */
   protected function extractResources(array &$db_row) {
     $this->resource_list = array(
@@ -1023,7 +841,7 @@ class Fleet extends UnitContainer {
    * @param int $unit_count
    */
   public function unitSetCount($unit_id, $unit_count = 0) {
-    $this->unitList->unitAdjustCount($unit_id, $unit_count, true);
+    $this->unitAdjustCount($unit_id, $unit_count, true);
   }
 
   /**
@@ -1036,6 +854,76 @@ class Fleet extends UnitContainer {
    */
   public function unitAdjustCount($unit_id, $unit_count = 0, $replace_value = false) {
     $this->unitList->unitAdjustCount($unit_id, $unit_count, $replace_value);
+  }
+
+  // Resources access ***************************************************************************************************
+
+//  /**
+//   * Set unit count of $unit_id to $unit_count
+//   * If there is no $unit_id - it will be created and saved to DB on dbSave
+//   *
+//   * @param int $unit_id
+//   * @param int $unit_count
+//   */
+//  public function unitSetResourceList($unit_id, $unit_count = 0) {
+//    $this->unitList->unitAdjustCount($unit_id, $unit_count, true);
+//  }
+//
+//  /**
+//   * Adjust unit count of $unit_id by $unit_count - or just replace value
+//   * If there is no $unit_id - it will be created and saved to DB on dbSave
+//   *
+//   * @param int  $unit_id
+//   * @param int  $unit_count
+//   * @param bool $replace_value
+//   */
+//  public function unitAdjustResourceList($unit_id, $unit_count = 0, $replace_value = false) {
+//    $this->unitList->unitAdjustCount($unit_id, $unit_count, $replace_value);
+//  }
+
+  /**
+   * Set current resource list from array of units
+   *
+   * @param array $resource_list
+   */
+  public function unitSetResourceList($resource_list) {
+    if(!empty($this->propertiesAdjusted['resource_list'])) {
+      throw new PropertyAccessException('Property "resource_list" already was adjusted so no SET is possible until dbSave in ' . get_called_class() . '::unitSetResourceList', ERR_ERROR);
+    }
+    $this->unitAdjustResourceList($resource_list, true);
+  }
+
+  /**
+   * Updates fleet resource list with deltas
+   *
+   * @param $resource_delta_list
+   */
+  public function unitAdjustResourceList($resource_delta_list, $replace_value = false) {
+    !is_array($resource_delta_list) ? $resource_delta_list = array() : false;
+
+    foreach($resource_delta_list as $resource_id => $unit_delta) {
+      if(!UnitResourceLoot::is_in_group($resource_id) || !($unit_delta = floor($unit_delta))) {
+        // Not a resource or no resources - continuing
+        continue;
+      }
+
+      if($replace_value) {
+        $this->resource_list[$resource_id] = $unit_delta;
+      } else {
+        $this->resource_list[$resource_id] += $unit_delta;
+        // Preparing changes
+        $this->resource_delta[$resource_id] += $unit_delta;
+      }
+
+      // Check for negative unit value
+      if($this->resource_list[$resource_id] < 0) {
+        // TODO
+        throw new Exception('Resource ' . $resource_id . ' will become negative in ' . get_called_class() . '::unitAdjustResourceList', ERR_ERROR);
+      }
+    }
+
+    $this->propertiesAdjusted['resource_list'] = 1;
+
   }
 
 }

@@ -1,4 +1,8 @@
 <?php
+/**
+ * Some helpers to sweeten dev's life
+ */
+
 /*
  * debug.class.php ::  Clase Debug, maneja reporte de eventos
  *
@@ -27,6 +31,17 @@
 if(!defined('INSIDE')) {
   die("attemp hacking");
 }
+
+if (php_sapi_name() == "cli") {
+  // In cli-mode
+  define('__DEBUG_CRLF', "\r\n");
+  define('__DEBUG_LINE', '-------------------------------------------------' . __DEBUG_CRLF);
+} else {
+  // Not in cli-mode
+  define('__DEBUG_CRLF', '<br />');
+  define('__DEBUG_LINE', '<hr />');
+}
+
 
 class debug {
   var $log, $numqueries;
@@ -221,7 +236,7 @@ class debug {
       print("<hr>User ID {$user['id']} raised error code {$error_code} titled '{$title}' with text '{$error_text}' on page {$_SERVER['SCRIPT_NAME']}");
 
       foreach($error_backtrace as $name => $value) {
-        print('<hr>');
+        print(__DEBUG_LINE);
         pdump($value, $name);
       }
       ob_end_flush();
@@ -341,9 +356,9 @@ function debug($value, $varname = null) {
 
 function pr($prePrint = false) {
   if($prePrint) {
-    print("<br>");
+    print(__DEBUG_CRLF);
   }
-  print(mt_rand() . "<br>");
+  print(mt_rand() . __DEBUG_CRLF);
 }
 
 function pc($prePrint = false) {
@@ -351,9 +366,9 @@ function pc($prePrint = false) {
   $_PRINT_COUNT_VALUE++;
 
   if($prePrint) {
-    print("<br>");
+    print(__DEBUG_CRLF);
   }
-  print($_PRINT_COUNT_VALUE . "<br>");
+  print($_PRINT_COUNT_VALUE . __DEBUG_CRLF);
 }
 
 function prep($message) {
@@ -372,7 +387,12 @@ function pvar_dump($expression) {
   print('</pre>');
 }
 
+/**
+ * Smart die() implementation that knew where it's grave
+ *
+ * @param string $message
+ */
 function pdie($message = '') {
   $backtrace = debug_backtrace();
-  die('<hr />' . ($message ? $message . ' @ ' : '') . $backtrace[0]['file'] . ':' . $backtrace[0]['line']);
+  die(__DEBUG_LINE . ($message ? $message . ' @ ' : '') . $backtrace[0]['file'] . ':' . $backtrace[0]['line']);
 }

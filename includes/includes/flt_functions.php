@@ -475,7 +475,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
   $objFleet->set_end_planet($to);
   $objFleet->playerOwnerId = $user['id'];
   $objFleet->group_id = $options['fleet_group'];
-  $objFleet->create_and_send();
+  $objFleet->dbInsert();
 
   $sn_group_fleet = sn_get_groups('fleet');
   $sn_group_resources_loot = sn_get_groups('resources_loot');

@@ -94,7 +94,7 @@ class UBEFleet {
   /**
    * @param UBEPlayerList $players
    *
-   * @version 41a6.16
+   * @version 41a6.28
    */
   public function ube_load_from_players(UBEPlayerList $players) {
     $this->is_attacker = $players[$this->owner_id]->getSide();
@@ -114,7 +114,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a6.16
+   * @version 41a6.28
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -154,7 +154,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a6.16
+   * @version 41a6.28
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -182,7 +182,7 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.16
+   * @version 41a6.28
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->dbId;
@@ -494,13 +494,13 @@ class UBEFleet {
       }
 
       $resource_delta_fleet = $this->ube_combat_result_calculate_resources();
-      $objFleet2->update_resources($resource_delta_fleet);
+      $objFleet2->unitAdjustResourceList($resource_delta_fleet);
 
       // Если защитник и не РМФ - отправляем флот назад
       if($this->is_attacker == UBE_PLAYER_IS_ATTACKER || ($this->is_attacker == UBE_PLAYER_IS_DEFENDER && !$is_small_fleet_recce)) {
         $objFleet2->mark_fleet_as_returned();
       }
-      $objFleet2->flush_changes_to_db();
+      $objFleet2->dbSave();
     }
 
     unset($objFleet2);
@@ -552,7 +552,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a6.16
+   * @version 41a6.28
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     UBEDebug::unit_dump_header();

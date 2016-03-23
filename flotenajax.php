@@ -137,7 +137,7 @@ function fleet_ajax() {
     $objFleet->set_end_planet($target_coord);
     $objFleet->playerOwnerId = $user['id'];
     $objFleet->group_id = 0;
-    $objFleet->create_and_send();
+    $objFleet->dbInsert();
   }
 
   db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");

@@ -231,7 +231,7 @@ function sn_fleet_page3($time_to_travel) {
   ));
   $objFleet->playerOwnerId = $user['id'];
   $objFleet->group_id = $fleet_group;
-  $objFleet->create_and_send();
+  $objFleet->dbInsert();
 
   db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);

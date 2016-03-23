@@ -47,7 +47,7 @@ function flt_mission_colonize(&$mission_data) {
   }
 
   $objFleet->mark_fleet_as_returned();
-  $objFleet->flush_changes_to_db();
+  $objFleet->dbSave();
   msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$TargetAddress}{$TheMessage}");
 
   return CACHE_FLEET;

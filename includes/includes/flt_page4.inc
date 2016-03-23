@@ -50,7 +50,7 @@ if($userToAdd_unsafe) {
         $aks = db_acs_get_by_fleet($fleetid);
 
         $objFleet->group_acs_set($aks['id'], MT_AKS);
-        $objFleet->flush_changes_to_db();
+        $objFleet->dbSave();
       } else {
         message($lang['fl_aks_already_in_aks'], $lang['fl_error']);
       }

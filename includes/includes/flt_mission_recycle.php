@@ -12,17 +12,11 @@
 function flt_mission_recycle($mission_data) {
   global $lang;
 
-//  if(empty($mission_data->fleet)) {
-//    return CACHE_NOTHING;
-//  }
-//
   $objFleet = $mission_data->fleet;
-
   $destination_planet = &$mission_data->dst_planet;
-
   if(empty($destination_planet['id'])) {
     $objFleet->mark_fleet_as_returned();
-    $objFleet->flush_changes_to_db();
+    $objFleet->dbSave();
 
     return CACHE_FLEET;
   }
@@ -92,9 +86,9 @@ function flt_mission_recycle($mission_data) {
     $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message
   );
 
-  $objFleet->update_resources($resources_recycled);
+  $objFleet->unitAdjustResourceList($resources_recycled);
   $objFleet->mark_fleet_as_returned();
-  $objFleet->flush_changes_to_db();
+  $objFleet->dbSave();
 
   return CACHE_FLEET | CACHE_PLANET_DST;
 }

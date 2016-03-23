@@ -207,7 +207,7 @@ function flt_mission_explore(&$mission_data) {
 
       $resources_found[RES_DEUTERIUM] = $found_in_metal;
 
-      $objFleet->update_resources($resources_found);
+      $objFleet->unitAdjustResourceList($resources_found);
 
       if(array_sum($resources_found) == 0) {
         $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
@@ -290,7 +290,7 @@ function flt_mission_explore(&$mission_data) {
       $objFleet->replace_ships($fleet_real_array);
     }
     $objFleet->mark_fleet_as_returned();
-    $objFleet->flush_changes_to_db();
+    $objFleet->dbSave();
   } else {
     // Удалить флот
     $objFleet->db_delete_this_fleet();

@@ -214,10 +214,10 @@ class Unit extends DBRowLocation {
    */
   // TODO - some calcs ??????
   public function adjustCount($value) {
-    if($this->_count + $value < 0) {
-      classSupernova::$debug->error('Can not let Unit::$count value be less then a zero - adjustCount with negative greater then $count');
-    }
-    $this->_count += $value;
+//    if($this->_count + $value < 0) {
+//      classSupernova::$debug->error('Can not let Unit::$count value be less then a zero - adjustCount with negative greater then $count');
+//    }
+    $this->count += $value;
 //    $this->propertiesChanged['count'] = true;
     $this->propertiesAdjusted['count'] += $value;
 
@@ -230,7 +230,7 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.16
+   * @version 41a6.28
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();
@@ -246,6 +246,7 @@ class Unit extends DBRowLocation {
 
   // TODO - DEBUG
   public function zeroDbId() {
-    $this->dbId = 0;
+    $this->_dbId = 0;
   }
+
 }
