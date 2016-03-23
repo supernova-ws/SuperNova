@@ -87,6 +87,36 @@ class TestDBRow extends DBRow {
 
 }
 
+/*
+lh__test
+
+id
+abigint
+adatetime
+astring
+afloat
+adecimal
+res_metal
+res_crystal
+
+-- ----------------------------
+-- Table structure for lh__test
+-- ----------------------------
+DROP TABLE IF EXISTS `lh__test`;
+CREATE TABLE `lh__test` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `abigint` bigint(20) DEFAULT NULL,
+  `adatetime` datetime DEFAULT NULL,
+  `astring` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `afloat` float DEFAULT NULL,
+  `adecimal` decimal(64,8) DEFAULT NULL,
+  `res_metal` decimal(64,4) DEFAULT NULL,
+  `res_crystal` decimal(64,0) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+
+ */
+
 sn_db_transaction_start();
 //$fleet = new Fleet();
 //
