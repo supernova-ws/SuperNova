@@ -26,12 +26,13 @@ require_once('includes/includes/flt_functions.php');
 function fleet_ajax() {
   global $lang, $user;
 
+  $lang->lng_include('universe');
+  $lang->lng_include('fleet');
+
   $travel_data = array();
 
   // TODO - change to JSON. Message can be sent in JSON-encoded field
   header("Content-type: text/html; charset=utf-8");
-  $lang->lng_include('universe');
-  $lang->lng_include('fleet');
 
   $target_mission = sys_get_param_int('mission');
   $sn_group_missions = sn_get_groups('missions');
@@ -96,11 +97,17 @@ function fleet_ajax() {
 
   }
 
-  $options = array('target_structure' => $target_structure = sys_get_param_int('structures'));
-  $cant_attack = flt_can_attack($planetrow, $target_row, $fleet_array, $target_mission, $options);
-
-  if($cant_attack != ATTACK_ALLOWED) {
-    die($lang['fl_attack_error'][$cant_attack]);
+  $isAttackAllowed = flt_can_attack(
+    $planetrow,
+    $target_row,
+    $fleet_array,
+    $target_mission,
+    array(
+      'target_structure' => $target_structure = sys_get_param_int('structures'),
+    )
+  );
+  if($isAttackAllowed != ATTACK_ALLOWED) {
+    die($lang['fl_attack_error'][$isAttackAllowed]);
   }
 
   $db_changeset = array();

@@ -703,6 +703,7 @@ attribute - свойства юнитов
 
 
 Инкапсулируём всё, что можно в Fleet
+    create_and_send
 
 
 
