@@ -234,6 +234,7 @@ abstract class DBRow implements IDbRow {
    *
    * @return int|string
    */
+  // TODO - protected
   public function dbInsert() {
     if(!$this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - record db_id is not empty on ' . get_called_class() . '::dbInsert');
@@ -250,6 +251,7 @@ abstract class DBRow implements IDbRow {
   /**
    * Updates record in DB
    */
+  // TODO - protected
   public function dbUpdate() {
     // TODO - Update
     if($this->isNew()) {
@@ -261,6 +263,7 @@ abstract class DBRow implements IDbRow {
   /**
    * Deletes record from DB
    */
+  // TODO - protected
   public function dbDelete() {
     if($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbDelete');

@@ -94,7 +94,7 @@ class UBEFleet {
   /**
    * @param UBEPlayerList $players
    *
-   * @version 41a6.28
+   * @version 41a6.30
    */
   public function ube_load_from_players(UBEPlayerList $players) {
     $this->is_attacker = $players[$this->owner_id]->getSide();
@@ -114,7 +114,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a6.28
+   * @version 41a6.30
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -154,7 +154,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a6.28
+   * @version 41a6.30
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -182,14 +182,14 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.28
+   * @version 41a6.30
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->dbId;
     $this->owner_id = $objFleet->playerOwnerId;
     $this->group_id = $objFleet->group_id;
 
-    $fleet_unit_list = $objFleet->get_unit_list();
+    $fleet_unit_list = $objFleet->shipsGetArray();
     foreach($fleet_unit_list as $unit_id => $unit_count) {
       if(!$unit_count) {
         continue;
@@ -201,7 +201,7 @@ class UBEFleet {
       }
     }
 
-    $resources = $objFleet->get_resource_list();
+    $resources = $objFleet->resourcesGetList();
     $this->resource_list = array(
       RES_METAL     => $resources[RES_METAL],
       RES_CRYSTAL   => $resources[RES_CRYSTAL],
@@ -477,28 +477,29 @@ class UBEFleet {
 
     // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
     if($this->is_attacker == UBE_PLAYER_IS_ATTACKER && $reapers_status == UBE_MOON_REAPERS_DIED) {
-      $objFleet2->db_delete_this_fleet();
+      $objFleet2->dbDelete();
     } elseif($ship_count_initial == 0) { // $ship_count_lost == $ship_count_initial ||
-      $objFleet2->db_delete_this_fleet();
+      $objFleet2->dbDelete();
     } else {
       if($ship_count_lost) {
-        $fleet_real_array = array();
         // Просматриваем результаты изменения флотов
         foreach($this->unit_list->_container as $UBEUnit) {
           // Перебираем аутком на случай восстановления юнитов
-          if(($units_left = $UBEUnit->getCount() - (float)$UBEUnit->units_lost) > 0) {
-            $fleet_real_array[$UBEUnit->unitId] = $units_left;
+//          if(($units_left = $UBEUnit->getCount() - (float)$UBEUnit->units_lost) > 0) {
+//            $fleet_real_array[$UBEUnit->unitId] = $units_left;
+//          };
+          if(floatval($UBEUnit->units_lost) != 0) {
+            $objFleet2->shipAdjustCount($UBEUnit->unitId, floatval($UBEUnit->units_lost));
           };
         }
-        $objFleet2->replace_ships($fleet_real_array);
       }
 
       $resource_delta_fleet = $this->ube_combat_result_calculate_resources();
-      $objFleet2->unitAdjustResourceList($resource_delta_fleet);
+      $objFleet2->resourcesAdjust($resource_delta_fleet);
 
       // Если защитник и не РМФ - отправляем флот назад
       if($this->is_attacker == UBE_PLAYER_IS_ATTACKER || ($this->is_attacker == UBE_PLAYER_IS_DEFENDER && !$is_small_fleet_recce)) {
-        $objFleet2->mark_fleet_as_returned();
+        $objFleet2->markReturned();
       }
       $objFleet2->dbSave();
     }
@@ -552,7 +553,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a6.28
+   * @version 41a6.30
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     UBEDebug::unit_dump_header();

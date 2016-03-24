@@ -148,7 +148,7 @@ return;
     set_time_limit(15);
     // TODO - Унифицировать код с темплейтным разбором эвентов на планете!
     $missions_used[$objFleet->mission_type] = 1;
-    if($objFleet->time_arrive_to_target <= SN_TIME_NOW && $objFleet->is_returning == 0) {
+    if($objFleet->time_arrive_to_target <= SN_TIME_NOW && !$objFleet->isReturning()) {
       $fleet_event_list[] = array(
         'object'      => $objFleet,
         'fleet_time'  => $objFleet->time_arrive_to_target,
@@ -156,7 +156,7 @@ return;
       );
     }
 
-    if($objFleet->time_mission_job_complete > 0 && $objFleet->time_mission_job_complete <= SN_TIME_NOW && $objFleet->is_returning == 0) {
+    if($objFleet->time_mission_job_complete > 0 && $objFleet->time_mission_job_complete <= SN_TIME_NOW && !$objFleet->isReturning()) {
       $fleet_event_list[] = array(
         'object'      => $objFleet,
         'fleet_time'  => $objFleet->time_mission_job_complete,
@@ -220,7 +220,7 @@ return;
     $mission_data = $sn_groups_mission[$objFleet->mission_type];
 
     // Формируем запрос, блокирующий сразу все нужные записи
-    $objFleet->db_fleet_lock_flying($mission_data);
+    $objFleet->dbLockFlying($mission_data);
 
     $objFleet->dbLoad($objFleet->dbId);
 
@@ -232,12 +232,12 @@ return;
 
     if($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
       // Fleet returns to planet
-      $objFleet->RestoreFleetToPlanet(true, false, true);
+      $objFleet->RestoreFleetToPlanet(true, false);
       sn_db_transaction_commit();
       continue;
     }
 
-    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $objFleet->is_returning) {
+    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $objFleet->isReturning()) {
       // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
       // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
       sn_db_transaction_commit();

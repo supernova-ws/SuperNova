@@ -55,12 +55,12 @@ function flt_mission_spy(&$mission_data) {
   $objFleet = $mission_data->fleet;
 
   if(empty($target_user_row['id']) || empty($target_planet_row['id']) || empty($spying_user_row['id'])) {
-    $objFleet->mark_fleet_as_returned_and_save();
+    $objFleet->markReturnedAndSave();
 
     return $result;
   }
 
-  $spy_probes = $objFleet->shipCountById(SHIP_SPY);
+  $spy_probes = $objFleet->shipsGetTotalById(SHIP_SPY);
   if($spy_probes > 0) {
     $TargetSpyLvl = GetSpyLevel($target_user_row);
     $CurrentSpyLvl = GetSpyLevel($spying_user_row);
@@ -150,9 +150,9 @@ function flt_mission_spy(&$mission_data) {
   }
 
   if($spy_detected) {
-    $objFleet->db_delete_this_fleet();
+    $objFleet->dbDelete();
   } else {
-    $objFleet->mark_fleet_as_returned_and_save();
+    $objFleet->markReturnedAndSave();
   }
 
   return $result;

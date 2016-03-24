@@ -20,6 +20,8 @@ class TestDBRow extends DBRow {
     ),
   );
 
+  public $_dbId;
+
   public function __construct() {
     parent::__construct();
   }

@@ -20,7 +20,7 @@ function flt_mission_colonize(&$mission_data) {
   $TargetAddress = sprintf($lang['sys_adress_planet'], $fleet_end_coordinates['galaxy'], $fleet_end_coordinates['system'], $fleet_end_coordinates['planet']);
 
   $TheMessage = $lang['sys_colo_no_colonizer'];
-  if($objFleet->shipCountById(SHIP_COLONIZER) >= 1) {
+  if($objFleet->shipsGetTotalById(SHIP_COLONIZER) >= 1) {
     $TheMessage = $lang['sys_colo_notfree'];
     if(empty($mission_data->dst_planet)) {
       $iPlanetCount = get_player_current_colonies($src_user_row);
@@ -39,14 +39,14 @@ function flt_mission_colonize(&$mission_data) {
           $TheMessage = $lang['sys_colo_arrival'] . $TargetAddress . $lang['sys_colo_allisok'];
           msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
-          $objFleet->unitAdjustCount(SHIP_COLONIZER, -1);
+          $objFleet->shipAdjustCount(SHIP_COLONIZER, -1);
           return $objFleet->RestoreFleetToPlanet(false);
         }
       }
     }
   }
 
-  $objFleet->mark_fleet_as_returned();
+  $objFleet->markReturned();
   $objFleet->dbSave();
   msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], "{$lang['sys_colo_arrival']}{$TargetAddress}{$TheMessage}");
 

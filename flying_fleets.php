@@ -11,7 +11,7 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
       $objFleet = new Fleet();
       $objFleet->dbLoad($fleet_id);
 
-      if ($objFleet->playerOwnerId == $user['id'] && $objFleet->is_returning == 0) {
+      if ($objFleet->playerOwnerId == $user['id'] && !$objFleet->isReturning()) {
         $objFleet->commandReturn();
       } elseif ($objFleet->dbId && $objFleet->playerOwnerId != $user['id']) {
         sn_db_transaction_rollback();

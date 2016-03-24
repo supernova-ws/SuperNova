@@ -425,7 +425,7 @@ function tpl_topnav_event_build(&$template, $FleetList, $type = 'fleet') {
   $fleet_flying_events = array();
   foreach($FleetList->_container as $objFleet) {
     $will_return = true;
-    if($objFleet->is_returning == 0) {
+    if(!$objFleet->isReturning()) {
       // cut fleets on Hold and Expedition
       if($objFleet->time_arrive_to_target >= SN_TIME_NOW) {
         $objFleet->mission_type == MT_RELOCATE ? $will_return = false : false;

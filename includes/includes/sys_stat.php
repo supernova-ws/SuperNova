@@ -155,7 +155,7 @@ function sys_stat_calculate() {
       continue;
     }
 
-    $fleet = $objFleet->get_unit_list();
+    $fleet = $objFleet->shipsGetArray();
     foreach($fleet as $unit_id => $unit_amount) {
       $counts[$user_id][UNIT_SHIPS] += $unit_amount;
 
@@ -166,7 +166,7 @@ function sys_stat_calculate() {
       $points[$user_id][UNIT_SHIPS] += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
     }
 //    $resources = $fleet_resources[RES_METAL] * $rate[RES_METAL] + $fleet_resources[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $fleet_resources[RES_DEUTERIUM] * $rate[RES_DEUTERIUM];
-    $resources = $objFleet->get_resources_amount_in_metal($rate);
+    $resources = $objFleet->resourcesGetTotalInMetal($rate);
 
     $counts[$user_id][UNIT_RESOURCES] += $resources;
     // $points[$user_id][UNIT_RESOURCES] += $resources;

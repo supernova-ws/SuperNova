@@ -86,7 +86,7 @@ $system_fleet_list = FleetList::dbGetFleetListByCoordinates($uni_galaxy, $uni_sy
  */
 $fleet_list = array();
 foreach($system_fleet_list->_container as $objFleetSystem) {
-  if($objFleetSystem->is_returning == 0) {
+  if(!$objFleetSystem->isReturning()) {
     $fleet_planet = $objFleetSystem->fleet_end_planet;
     $fleet_type = $objFleetSystem->fleet_end_type;
   } else {
@@ -177,7 +177,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
     if(!empty($fleet_list[$Planet][PT_DEBRIS])) {
       foreach($fleet_list[$Planet][PT_DEBRIS] as $objFleetToDebris) {
         if($objFleetToDebris->playerOwnerId == $user['id']) {
-          $recyclers_incoming_capacity += $objFleetToDebris->fleet_recyclers_capacity($recycler_info);
+          $recyclers_incoming_capacity += $objFleetToDebris->shipsGetCapacityRecyclers($recycler_info);
         }
       }
     }

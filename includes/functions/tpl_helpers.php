@@ -94,13 +94,13 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     $user_data = $user;
   }
 
-  if($objFleet->is_returning == 0 && $objFleet->mission_type == MT_AKS) {
+  if(!$objFleet->isReturning() && $objFleet->mission_type == MT_AKS) {
     $aks = db_acs_get_by_group_id($objFleet->group_id);
   }
 
   $spy_level = $user['id'] == $objFleet->playerOwnerId ? 100 : GetSpyLevel($user);
 
-  $fleet_resources = $objFleet->get_resource_list();
+  $fleet_resources = $objFleet->resourcesGetList();
   $result['fleet'] = isset($result['fleet']) ? $result['fleet'] : array();
   $result['fleet'] = array(
     'NUMBER' => $index,
@@ -109,11 +109,11 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     'OWNER'        => $objFleet->playerOwnerId,
     'TARGET_OWNER' => $objFleet->target_owner_id,
 
-    'MESSAGE'      => $objFleet->is_returning,
+    'MESSAGE'      => $objFleet->isReturning(),
     'MISSION'      => $objFleet->mission_type,
     'MISSION_NAME' => $lang['type_mission'][$objFleet->mission_type],
     'ACS'          => !empty($aks['name']) ? $aks['name'] : (!empty($objFleet->group_id) ? $objFleet->group_id : ''),
-    'AMOUNT'       => $spy_level >= 4 ? (pretty_number($objFleet->getShipCount()) . (array_sum($fleet_resources) ? '+' : '')) : '?',
+    'AMOUNT'       => $spy_level >= 4 ? (pretty_number($objFleet->shipsGetTotal()) . (array_sum($fleet_resources) ? '+' : '')) : '?',
 
     'METAL'     => $spy_level >= 8 ? $fleet_resources[RES_METAL] : 0,
     'CRYSTAL'   => $spy_level >= 8 ? $fleet_resources[RES_CRYSTAL] : 0,
@@ -151,7 +151,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     ));
   }
 
-  $ship_list_fully_parsed = $objFleet->get_unit_list();
+  $ship_list_fully_parsed = $objFleet->shipsGetArray();
 
   $ship_id = 0;
   if($spy_level >= 6) {
@@ -300,8 +300,8 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
 
     $fleet_list[$fleet_ownage]['fleets'][$fleet->dbId] = $fleet;
 
-    if($fleet->is_returning == 1 || ($fleet->is_returning == 0 && $fleet->mission_type == MT_RELOCATE) || ($fleet->target_owner_id != $user['id'])) {
-      $fleet_sn = $fleet->get_unit_list();
+    if($fleet->isReturning() || (!$fleet->isReturning() && $fleet->mission_type == MT_RELOCATE) || ($fleet->target_owner_id != $user['id'])) {
+      $fleet_sn = $fleet->shipsGetArray();
       foreach($fleet_sn as $ship_id => $ship_amount) {
         if(in_array($ship_id, sn_get_groups('fleet'))) {
           $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
@@ -310,8 +310,8 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
     }
 
     $fleet_list[$fleet_ownage]['count']++;
-    $fleet_list[$fleet_ownage]['amount'] += $fleet->getShipCount();
-    $fleet_resources = $fleet->get_resource_list();
+    $fleet_list[$fleet_ownage]['amount'] += $fleet->shipsGetTotal();
+    $fleet_resources = $fleet->resourcesGetList();
     $fleet_list[$fleet_ownage]['total'][RES_METAL] += $fleet_resources[RES_METAL];
     $fleet_list[$fleet_ownage]['total'][RES_CRYSTAL] += $fleet_resources[RES_CRYSTAL];
     $fleet_list[$fleet_ownage]['total'][RES_DEUTERIUM] += $fleet_resources[RES_DEUTERIUM];

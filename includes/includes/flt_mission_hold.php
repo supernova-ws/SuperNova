@@ -11,7 +11,7 @@
  */
 function flt_mission_hold($mission_data) {
   if($mission_data->fleet->time_mission_job_complete < SN_TIME_NOW) {
-    $mission_data->fleet->mark_fleet_as_returned_and_save();
+    $mission_data->fleet->markReturnedAndSave();
 
     return CACHE_FLEET;
   }

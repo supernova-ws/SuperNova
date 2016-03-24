@@ -17,7 +17,7 @@ function sn_flt_planet_capture(&$fleet_row, &$combat_data, &$result) { return $r
 function flt_mission_attack($objMission) {
   $objFleet = $objMission->fleet;
 
-  if($objFleet->getShipCount() <= 0) {
+  if($objFleet->shipsGetTotal() <= 0) {
     return null;
   }
 
@@ -29,14 +29,14 @@ function flt_mission_attack($objMission) {
     empty($destination_user) || empty($destination_planet) || !is_array($destination_user) || !is_array($destination_planet)
     ||
     // "Уничтожение" не на луну
-    ($objFleet->mission_type == MT_DESTROY && $destination_planet['planet_type'] != PT_MOON)
+    ($objFleet->mission_type == MT_DESTROY && $objFleet->fleet_end_type != PT_MOON)
   ) {
-    $objFleet->mark_fleet_as_returned_and_save();
+    $objFleet->markReturnedAndSave();
 
     return null;
   }
 
-  require_once('includes/classes/UBE/UBE.php');
+//  require_once('includes/classes/UBE/UBE.php');
 
   return UBE::flt_mission_attack($objMission);
 }

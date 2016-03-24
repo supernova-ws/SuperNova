@@ -15,7 +15,7 @@ function flt_mission_recycle($mission_data) {
   $objFleet = $mission_data->fleet;
   $destination_planet = &$mission_data->dst_planet;
   if(empty($destination_planet['id'])) {
-    $objFleet->mark_fleet_as_returned();
+    $objFleet->markReturned();
     $objFleet->dbSave();
 
     return CACHE_FLEET;
@@ -24,7 +24,7 @@ function flt_mission_recycle($mission_data) {
   $RecyclerCapacity = 0;
   $OtherFleetCapacity = 0;
 
-  $fleet_array = $objFleet->get_unit_list();
+  $fleet_array = $objFleet->shipsGetArray();
   foreach($fleet_array as $unit_id => $unit_count) {
     if(in_array($unit_id, sn_get_groups('fleet'))) {
       $capacity = get_unit_param($unit_id, P_CAPACITY) * $unit_count;
@@ -36,7 +36,7 @@ function flt_mission_recycle($mission_data) {
     }
   }
 
-  $fleet_resources_amount = $objFleet->get_resources_amount();
+  $fleet_resources_amount = $objFleet->resourcesGetTotal();
   if($fleet_resources_amount > $OtherFleetCapacity) {
     // Если во флоте есть другие корабли И количество ресурсов больше, чем их ёмкость трюмов - значит часть этих ресурсов лежит в трюмах переработчиков
     // Уменьшаем ёмкость переработчиков на указанную величину
@@ -86,8 +86,8 @@ function flt_mission_recycle($mission_data) {
     $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message
   );
 
-  $objFleet->unitAdjustResourceList($resources_recycled);
-  $objFleet->mark_fleet_as_returned();
+  $objFleet->resourcesAdjust($resources_recycled);
+  $objFleet->markReturned();
   $objFleet->dbSave();
 
   return CACHE_FLEET | CACHE_PLANET_DST;

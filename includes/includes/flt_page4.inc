@@ -17,7 +17,7 @@ if(!$objFleet->dbId) {
   message($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
 
-if ($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to_source < SN_TIME_NOW || $objFleet->is_returning == 1) {
+if ($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to_source < SN_TIME_NOW || $objFleet->isReturning()) {
   message($lang['fl_isback'], $lang['fl_error']);
 }
 
@@ -49,7 +49,8 @@ if($userToAdd_unsafe) {
 
         $aks = db_acs_get_by_fleet($fleetid);
 
-        $objFleet->group_acs_set($aks['id'], MT_AKS);
+        $objFleet->mission_type = MT_AKS;
+        $objFleet->group_id = $aks['id'];
         $objFleet->dbSave();
       } else {
         message($lang['fl_aks_already_in_aks'], $lang['fl_error']);

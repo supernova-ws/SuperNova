@@ -141,7 +141,7 @@ class Unit extends DBRowLocation {
   // или locationType == LOC_NONE
   // Но тогда оверврайт в UBEUnit наверное
   public function isEmpty() {
-    return $this->_count <= 0;
+    return $this->_count <= 0 || $this->getLocatedAtDbId() == 0 || $this->getLocatedAtType() == LOC_NONE;
   }
 
 
@@ -214,11 +214,7 @@ class Unit extends DBRowLocation {
    */
   // TODO - some calcs ??????
   public function adjustCount($value) {
-//    if($this->_count + $value < 0) {
-//      classSupernova::$debug->error('Can not let Unit::$count value be less then a zero - adjustCount with negative greater then $count');
-//    }
     $this->count += $value;
-//    $this->propertiesChanged['count'] = true;
     $this->propertiesAdjusted['count'] += $value;
 
     return $this->_count;
@@ -230,7 +226,7 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.28
+   * @version 41a6.30
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();

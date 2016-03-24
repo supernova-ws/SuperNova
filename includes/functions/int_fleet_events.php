@@ -25,7 +25,7 @@ function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scann
       $objFleet->fleet_end_name = $planet_end['name'];
     }
 
-    if($objFleet->time_arrive_to_target > SN_TIME_NOW && $objFleet->is_returning == 0 && $objFleet->mission_type != MT_MISSILE &&
+    if($objFleet->time_arrive_to_target > SN_TIME_NOW && !$objFleet->isReturning() && $objFleet->mission_type != MT_MISSILE &&
       ($planet_scanned === false
         ||
         (
@@ -39,12 +39,12 @@ function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scann
       $fleet_events[] = flt_register_event_objFleet($objFleet, 0, $planet_end_type);
     }
 
-    if($objFleet->time_mission_job_complete > SN_TIME_NOW && $objFleet->is_returning == 0 && $planet_scanned === false && $objFleet->mission_type != MT_MISSILE) {
+    if($objFleet->time_mission_job_complete > SN_TIME_NOW && !$objFleet->isReturning() && $planet_scanned === false && $objFleet->mission_type != MT_MISSILE) {
       $fleet_events[] = flt_register_event_objFleet($objFleet, 1, $planet_end_type);
     }
 
     if(
-      $objFleet->time_return_to_source > SN_TIME_NOW && $objFleet->mission_type != MT_MISSILE && ($objFleet->is_returning == 1 || ($objFleet->mission_type != MT_RELOCATE && $objFleet->mission_type != MT_COLONIZE)) &&
+      $objFleet->time_return_to_source > SN_TIME_NOW && $objFleet->mission_type != MT_MISSILE && ($objFleet->isReturning() || ($objFleet->mission_type != MT_RELOCATE && $objFleet->mission_type != MT_COLONIZE)) &&
       (
         ($planet_scanned === false && $objFleet->playerOwnerId == $user['id'])
         ||

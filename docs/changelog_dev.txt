@@ -259,7 +259,6 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 
 Заменить
         $objFleet->mark_fleet_as_returned();
-        $objFleet->flush_changes_to_db();
     на
         $objFleet->mark_fleet_as_returned_and_save();
 
@@ -703,9 +702,9 @@ attribute - свойства юнитов
 
 
 Инкапсулируём всё, что можно в Fleet
-    flush_changes_to_db
     Проверить все свойства - когда надо брать из обычных значений, а когда - через DBRow
 
+  public function RestoreFleetToPlanet($start = true, $only_resources = false, &$result = CACHE_NOTHING) {
 
 
 #ctv

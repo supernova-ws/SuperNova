@@ -1,28 +1,8 @@
 <?php
 
-function flt_mission_explore_outcome_lost_fleet(&$result) {
-  $fleet = &$result['$fleet'];
-  $fleet_lost = &$result['$fleet_lost'];
-
-  $fleet_left = 1 - mt_rand(1, 3) * mt_rand(200000, 300000) / 1000000;
-  $fleet_lost = array();
-  foreach($fleet as $unit_id => &$unit_amount) {
-    $ships_left = floor($unit_amount * $fleet_left);
-    $fleet_lost[$unit_id] = $unit_amount - $ships_left;
-    $unit_amount = $ships_left;
-    if(!$unit_amount) {
-      unset($fleet[$unit_id]);
-    }
-  }
-}
-
-function flt_mission_explore_outcome_lost_fleet_all(&$result) {
-  $result['$fleet_lost'] = $result['$fleet'];
-  $result['$fleet'] = array();
-}
-
 // Used by Festival
 function mission_expedition_result_adjust(&$result) { return sn_function_call(__FUNCTION__, array(&$result)); }
+
 function sn_mission_expedition_result_adjust(&$result) {
   return $result;
 }
@@ -48,6 +28,7 @@ function flt_mission_explore(&$mission_data) {
   $objFleet = $mission_data->fleet;
 
   $result = array(
+    '$objFleet'            => $objFleet,
     '$mission_data'        => $mission_data,
     '$outcome_list'        => array(),
     '$mission_outcome'     => FLT_EXPEDITION_OUTCOME_NONE,
@@ -55,20 +36,15 @@ function flt_mission_explore(&$mission_data) {
     '$outcome_percent'     => 0,
     '$outcome_mission_sub' => -1,
 
-    '$fleet'              => array(),
-    '$fleet_lost'         => array(),
     '$found_dark_matter'  => 0,
     '$fleet_metal_points' => 0,
   );
-  $fleet_real_array = &$result['$fleet'];
-  $fleet_lost = &$result['$fleet_lost'];
   $outcome_mission_sub = &$result['$outcome_mission_sub'];
   $outcome_percent = &$result['$outcome_percent'];
   $found_dark_matter = &$result['$found_dark_matter'];
   $mission_outcome = &$result['$mission_outcome'];
   $outcome_value = &$result['$outcome_value'];
   $outcome_list = &$result['$outcome_list'];
-  $fleet_metal_points = &$result['$fleet_metal_points'];
 
   if(!$ship_data) {
     foreach(sn_get_groups('fleet') as $unit_id) {
@@ -81,17 +57,15 @@ function flt_mission_explore(&$mission_data) {
     $rates = get_resource_exchange();
   }
 
-
-  $fleet_capacity = 0;
-  $fleet_metal_points = 0;
-
-  $fleet_real_array = $objFleet->get_unit_list();
+  $max_metal_cost = 0;
+  $fleet_real_array = $objFleet->shipsGetArray();
   foreach($fleet_real_array as $ship_id => $ship_amount) {
-    $unit_info = get_unit_param($ship_id);
-    $fleet_capacity += $ship_amount * $unit_info[P_CAPACITY];
-    $fleet_metal_points += $ship_amount * $ship_data[$ship_id][P_COST_METAL];
+    $ship_cost_in_metal = $ship_amount * $ship_data[$ship_id][P_COST_METAL];
+    $result['$fleet_metal_points'] += $ship_amount * $ship_data[$ship_id][P_COST_METAL];
+    // Рассчитываем стоимость самого дорого корабля в металле
+    $max_metal_cost = max($max_metal_cost, $ship_cost_in_metal);
   }
-  $fleet_capacity = max(0, $fleet_capacity - $objFleet->get_resources_amount());
+  $fleet_capacity = $objFleet->shipsGetHoldFree();
 
   $flt_stay_hours = ($objFleet->time_mission_job_complete - $objFleet->time_arrive_to_target) / 3600 * ($config->game_speed_expedition ? $config->game_speed_expedition : 1);
 
@@ -133,11 +107,11 @@ function flt_mission_explore(&$mission_data) {
   $fleet_found = array();
   switch($mission_outcome) {
     case FLT_EXPEDITION_OUTCOME_LOST_FLEET:
-      flt_mission_explore_outcome_lost_fleet($result);
+      $objFleet->shipsCountApplyLossMultiplier(mt_rand(1, 3) * mt_rand(200000, 300000) / 1000000);
     break;
 
     case FLT_EXPEDITION_OUTCOME_LOST_FLEET_ALL:
-      flt_mission_explore_outcome_lost_fleet_all($result);
+      $objFleet->shipsCountApplyLossMultiplier(0);
     break;
 
     case FLT_EXPEDITION_OUTCOME_FOUND_FLEET:
@@ -145,16 +119,10 @@ function flt_mission_explore(&$mission_data) {
       $outcome_percent = $outcome_description['percent'][$outcome_mission_sub];
       // Рассчитываем эквивалент найденного флота в метале
       // $found_in_metal = min($outcome_percent * $fleet_metal_points, $config->resource_multiplier * 10000000); // game_speed
-      $found_in_metal = min($outcome_percent * $fleet_metal_points, game_resource_multiplier(true) * 10000000); // game_speed
+      $found_in_metal = min($outcome_percent * $result['$fleet_metal_points'], game_resource_multiplier(true) * 10000000); // game_speed
       //  13 243 754 000 g x1
       //  60 762 247 000 a x10
       // 308 389 499 488 000 b x500
-
-      // Рассчитываем стоимость самого дорого корабля в металле
-      $max_metal_cost = 0;
-      foreach($fleet_real_array as $ship_id => $ship_amount) {
-        $max_metal_cost = max($max_metal_cost, $ship_data[$ship_id]['metal_cost']);
-      }
 
       // Ограничиваем корабли только теми, чья стоимость в металле меньше или равно стоимости самого дорогого корабля
       $can_be_found = array();
@@ -186,7 +154,7 @@ function flt_mission_explore(&$mission_data) {
         $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
       } else {
         foreach($fleet_found as $unit_id => $unit_amount) {
-          $fleet_real_array[$unit_id] += $unit_amount;
+          $objFleet->shipAdjustCount($unit_id, $unit_amount);
         }
       }
     break;
@@ -195,7 +163,7 @@ function flt_mission_explore(&$mission_data) {
       $outcome_mission_sub = $outcome_percent >= 0.99 ? 0 : ($outcome_percent >= 0.90 ? 1 : 2);
       $outcome_percent = $outcome_description['percent'][$outcome_mission_sub];
       // Рассчитываем количество найденных ресурсов
-      $found_in_metal = ceil(min($outcome_percent * $fleet_metal_points, game_resource_multiplier(true) * 10000000, $fleet_capacity) * mt_rand(950000, 1050000) / 1000000); // game_speed
+      $found_in_metal = ceil(min($outcome_percent * $result['$fleet_metal_points'], game_resource_multiplier(true) * 10000000, $fleet_capacity) * mt_rand(950000, 1050000) / 1000000); // game_speed
 
       $resources_found[RES_METAL] = floor(mt_rand(300000, 700000) / 1000000 * $found_in_metal);
       $found_in_metal -= $resources_found[RES_METAL];
@@ -207,7 +175,7 @@ function flt_mission_explore(&$mission_data) {
 
       $resources_found[RES_DEUTERIUM] = $found_in_metal;
 
-      $objFleet->unitAdjustResourceList($resources_found);
+      $objFleet->resourcesAdjust($resources_found);
 
       if(array_sum($resources_found) == 0) {
         $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
@@ -218,7 +186,7 @@ function flt_mission_explore(&$mission_data) {
       $outcome_mission_sub = $outcome_percent >= 0.99 ? 0 : ($outcome_percent >= 0.90 ? 1 : 2);
       $outcome_percent = $outcome_description['percent'][$outcome_mission_sub];
       // Рассчитываем количество найденной ТМ
-      $found_dark_matter = floor(min($outcome_percent * $fleet_metal_points / $rates[RES_DARK_MATTER], 10000) * mt_rand(750000, 1000000) / 1000000);
+      $found_dark_matter = floor(min($outcome_percent * $result['$fleet_metal_points'] / $rates[RES_DARK_MATTER], 10000) * mt_rand(750000, 1000000) / 1000000);
 
       if(!$found_dark_matter) {
         $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
@@ -232,7 +200,7 @@ function flt_mission_explore(&$mission_data) {
     break;
   }
 
-  mission_expedition_result_adjust($result);
+  mission_expedition_result_adjust($result, $objFleet);
 
   if($found_dark_matter) {
     rpg_points_change($objFleet->playerOwnerId, RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
@@ -279,23 +247,25 @@ function flt_mission_explore(&$mission_data) {
 
   db_user_set_by_id($objFleet->playerOwnerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
 
-  if(!empty($fleet_real_array) && $objFleet->getShipCount() >= 1) {
-    // ПОКА НЕ НУЖНО - мы уже выше посчитали суммарные ресурсы (те, что были до отправку в экспу плюс найденное) и обновили $fleet_row
-    // НО МОЖЕТ ПРИГОДИТЬСЯ, когда будем работать напрямую с $objFleet
-//    if(!empty($resources_found) && array_sum($resources_found) > 0) {
-//      $objFleet->update_resources($resources_found); // TODO - проверить, что бы не терялись ресурсы в трюме
+//  if(!empty($fleet_real_array) && $objFleet->shipsGetTotal() >= 1) {
+//    // ПОКА НЕ НУЖНО - мы уже выше посчитали суммарные ресурсы (те, что были до отправку в экспу плюс найденное) и обновили $fleet_row
+//    // НО МОЖЕТ ПРИГОДИТЬСЯ, когда будем работать напрямую с $objFleet
+////    if(!empty($resources_found) && array_sum($resources_found) > 0) {
+////      $objFleet->update_resources($resources_found); // TODO - проверить, что бы не терялись ресурсы в трюме
+////    }
+//
+//    if(!empty($fleet_lost) || !empty($fleet_found)) {
+//      $objFleet->replace_ships($fleet_real_array);
 //    }
-
-    if(!empty($fleet_lost) || !empty($fleet_found)) {
-      $objFleet->replace_ships($fleet_real_array);
-    }
-    $objFleet->mark_fleet_as_returned();
-    $objFleet->dbSave();
-  } else {
-    // Удалить флот
-    $objFleet->db_delete_this_fleet();
-    // From this point $fleet_row is useless - all data are put in local variables
-  }
+//    $objFleet->markReturned();
+//    $objFleet->dbSave();
+//  } else {
+//    // Удалить флот
+//    $objFleet->dbDelete();
+//    // From this point $fleet_row is useless - all data are put in local variables
+//  }
+  $objFleet->markReturned();
+  $objFleet->dbSave();
 
   return CACHE_FLEET | CACHE_USER_SRC;
 }
