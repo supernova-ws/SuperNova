@@ -23,9 +23,9 @@ function uni_create_planet_get_density($position_data, $user_row, $planet_sector
       // Фильтруем типы ядер, которые не подходят по размеру планеты
       $probability += $density_list[$possible_core_id][UNIT_PLANET_DENSITY_RARITY];
       $possible_cores[$possible_core_id] = array(
-        UNIT_PLANET_DENSITY_INDEX => $possible_core_id,
+        UNIT_PLANET_DENSITY_INDEX  => $possible_core_id,
         UNIT_PLANET_DENSITY_RARITY => $probability,
-        UNIT_PLANET_DENSITY => mt_rand($density_min[UNIT_PLANET_DENSITY], $density_list[$possible_core_id][UNIT_PLANET_DENSITY] - 1),
+        UNIT_PLANET_DENSITY        => mt_rand($density_min[UNIT_PLANET_DENSITY], $density_list[$possible_core_id][UNIT_PLANET_DENSITY] - 1),
       );
     }
     $density_min = $density_list[$possible_core_id];
@@ -91,10 +91,10 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
 
   $core_info = uni_create_planet_get_density($position_data, $user_row, $planet_sectors);
 
-  $planet_name_unsafe = $user_row['username'] . ' ' . ($planet_name_unsafe ? $planet_name_unsafe : $lang['sys_colo_defaultname']);
+  $planet_name_unsafe = $user_row['username'] . ' ' . ($planet_name_unsafe ? $planet_name_unsafe : classLocale::$lang['sys_colo_defaultname']);
 
   $planet['name'] = db_escape(strip_tags(trim($planet_name_unsafe)));
-  $planet['id_owner']    = $PlanetOwnerID;
+  $planet['id_owner'] = $PlanetOwnerID;
   $planet['last_update'] = SN_TIME_NOW;
   $planet['image'] = $planet_image;
 
@@ -110,16 +110,16 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['temp_min'] = $planet['temp_min_original'] = $t_min;
   $planet['temp_max'] = $planet['temp_max_original'] = $t_max;
 
-  $planet['metal']             = $config->eco_planet_starting_metal;
-  $planet['crystal']           = $config->eco_planet_starting_crystal;
-  $planet['deuterium']         = $config->eco_planet_starting_deuterium;
-  $planet['metal_max']         = $config->eco_planet_storage_metal;
-  $planet['crystal_max']       = $config->eco_planet_storage_crystal;
-  $planet['deuterium_max']     = $config->eco_planet_storage_deuterium;
+  $planet['metal'] = $config->eco_planet_starting_metal;
+  $planet['crystal'] = $config->eco_planet_starting_crystal;
+  $planet['deuterium'] = $config->eco_planet_starting_deuterium;
+  $planet['metal_max'] = $config->eco_planet_storage_metal;
+  $planet['crystal_max'] = $config->eco_planet_storage_crystal;
+  $planet['deuterium_max'] = $config->eco_planet_storage_deuterium;
 
   $density_info_resources = &$density_list[$core_info[UNIT_PLANET_DENSITY_INDEX]][UNIT_RESOURCES];
-  $planet['metal_perhour']     = $config->metal_basic_income * $density_info_resources[RES_METAL];
-  $planet['crystal_perhour']   = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
+  $planet['metal_perhour'] = $config->metal_basic_income * $density_info_resources[RES_METAL];
+  $planet['crystal_perhour'] = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
   $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
   $RetValue = classSupernova::db_ins_record(LOC_PLANET,
@@ -149,7 +149,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
  *   [+] Deep rewrite to rid of using `galaxy` and `lunas` tables greatly reduce numbers of SQL-queries
  * @version 1.1
  * @copyright 2008
-*/
+ */
 
 /**
  * @param        $pos_galaxy
@@ -188,8 +188,8 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
       $moon_chance = min(30, ceil($size / 1000));
 
-      $temp_min  = $moon_planet['temp_min'] - rand(10, 45);
-      $temp_max  = $temp_min + 40;
+      $temp_min = $moon_planet['temp_min'] - rand(10, 45);
+      $temp_max = $temp_min + 40;
 
       $moon_name = $moon_name ? $moon_name : "{$moon_planet['name']} {$lang['sys_moon']}";
       $moon_name_safe = db_escape($moon_name);
@@ -213,7 +213,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
       if($update_debris) {
         $debris_spent = $moon_chance * 1000000;
-        $metal_spent  = round(min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100));
+        $metal_spent = round(min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100));
         $crystal_spent = min($moon_planet['debris_crystal'], $debris_spent - $metal_spent);
         $metal_spent = min($moon_planet['debris_metal'], $debris_spent - $crystal_spent); // Need if crystal less then their part
         db_planet_set_by_id($moon_planet['id'], "`debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent})");
@@ -242,17 +242,13 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
  * 1 - copyright 2008 By Chlorel for XNova
  *
  */
-function SetSelectedPlanet(&$user)
-{
+function SetSelectedPlanet(&$user) {
   $planet_row['id'] = $user['current_planet'];
 
   // Пытаемся переключить на новую планету
-  if(($selected_planet = sys_get_param_id('cp')) && $selected_planet != $user['current_planet'])
-  {
+  if(($selected_planet = sys_get_param_id('cp')) && $selected_planet != $user['current_planet']) {
     $planet_row = db_planet_by_id_and_owner($selected_planet, $user['id'], false, 'id');
-  }
-  else
-  {
+  } else {
     $planet_row = db_planet_by_id($planet_row['id']);
   }
 
@@ -261,12 +257,10 @@ function SetSelectedPlanet(&$user)
   {
     $planet_row = db_planet_by_id_and_owner($user['current_planet'], $user['id'], false, 'id');
     // Если текущей планеты не существует - выставляем Столицу
-    if(!isset($planet_row['id']))
-    {
+    if(!isset($planet_row['id'])) {
       $planet_row = db_planet_by_id_and_owner($user['id_planet'], $user['id'], false, 'id');
       // Если и столицы не существует - значит что-то очень не так с записью пользователя
-      if(!isset($planet_row['id']))
-      {
+      if(!isset($planet_row['id'])) {
         global $debug;
         $debug->error("User ID {$user['id']} has Capital planet {$user['id_planet']} but this planet does not exists", 'User record error', 502);
       }
@@ -274,8 +268,7 @@ function SetSelectedPlanet(&$user)
   }
 
   // Если производилось переключение планеты - делаем запись в юзере
-  if($user['current_planet'] != $planet_row['id'])
-  {
+  if($user['current_planet'] != $planet_row['id']) {
     db_user_set_by_id($user['id'], "`current_planet` = '{$planet_row['id']}'");
     $user['current_planet'] = $planet_row['id'];
   }
@@ -284,32 +277,26 @@ function SetSelectedPlanet(&$user)
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-function uni_render_coordinates($from, $prefix = '')
-{
+function uni_render_coordinates($from, $prefix = '') {
   return "[{$from[$prefix . 'galaxy']}:{$from[$prefix . 'system']}:{$from[$prefix . 'planet']}]";
 }
 
-function uni_render_planet($from)
-{
+function uni_render_planet($from) {
   return "{$from['name']} [{$from['galaxy']}:{$from['system']}:{$from['planet']}]";
 }
 
-function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include_id = false)
-{
+function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include_id = false) {
   global $lang;
 
-  if(!$from['id'])
-  {
-    $result = $lang['sys_planet_expedition'];
-  }
-  else
-  {
+  if(!$from['id']) {
+    $result = classLocale::$lang['sys_planet_expedition'];
+  } else {
     $from_planet_id = $include_id ? (
       'ID {' . ($from['id'] ? $from['id'] : ($from[$prefix . 'planet_id'] ? $from[$prefix . 'planet_id'] : 0)) . '} '
     ) : '';
 
     $from_planet_type = $from['planet_type'] ? $from['planet_type'] : ($from[$prefix . 'type'] ? $from[$prefix . 'type'] : 0);
-    $from_planet_type = ($from_planet_type ? ' ' . $lang['sys_planet_type_sh'][$from_planet_type] : '');
+    $from_planet_type = ($from_planet_type ? ' ' . classLocale::$lang['sys_planet_type_sh'][$from_planet_type] : '');
 
     $result = $from_planet_id . uni_render_coordinates($from, $prefix) . $from_planet_type . ($from['name'] ? ' ' . $from['name'] : '');
     $result = $html_safe ? str_replace(' ', '&nbsp;', htmlentities($result, ENT_COMPAT, 'UTF-8')) : $result;
@@ -318,30 +305,27 @@ function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include
   return $result;
 }
 
-function uni_render_coordinates_url($from, $prefix = '', $page = 'galaxy.php')
-{
+function uni_render_coordinates_url($from, $prefix = '', $page = 'galaxy.php') {
   return $page . (strpos($page, '?') === false ? '?' : '&') . "galaxy={$from[$prefix . 'galaxy']}&system={$from[$prefix . 'system']}&planet={$from[$prefix . 'planet']}";
 }
 
-function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type = '')
-{
+function uni_render_coordinates_href($from, $prefix = '', $mode = 0, $fleet_type = '') {
   return '<a href="' . uni_render_coordinates_url($from, $prefix, "galaxy.php?mode={$mode}") . '"' . ($fleet_type ? " {$fleet_type}" : '') . '>' . uni_render_coordinates($from, $prefix) . '</a>';
 }
 
-function uni_get_time_to_jump($moon_row)
-{
+function uni_get_time_to_jump($moon_row) {
   $jump_gate_level = mrc_get_level($user, $moon_row, STRUC_MOON_GATE);
+
   return $jump_gate_level ? max(0, $moon_row['last_jump_time'] + abs(60 * 60 / $jump_gate_level) - SN_TIME_NOW) : 0;
 }
 
-function uni_calculate_moon_chance($FleetDebris)
-{
+function uni_calculate_moon_chance($FleetDebris) {
   $MoonChance = $FleetDebris / 1000000;
-  return ($MoonChance < 1) ? 0 : ($MoonChance>30 ? 30 : $MoonChance);
+
+  return ($MoonChance < 1) ? 0 : ($MoonChance > 30 ? 30 : $MoonChance);
 }
 
-function uni_coordinates_valid($coordinates, $prefix = '')
-{
+function uni_coordinates_valid($coordinates, $prefix = '') {
   global $config;
 
   // array_walk($coordinates, 'intval');
@@ -360,23 +344,23 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
 
   try {
     if($planetrow['planet_teleport_next'] && $planetrow['planet_teleport_next'] > SN_TIME_NOW) {
-      throw new exception($lang['ov_teleport_err_cooldown'], ERR_ERROR);
+      throw new exception(classLocale::$lang['ov_teleport_err_cooldown'], ERR_ERROR);
     }
 
     if(mrc_get_level($user, false, RES_DARK_MATTER) < $config->planet_teleport_cost) {
-      throw new exception($lang['ov_teleport_err_no_dark_matter'], ERR_ERROR);
+      throw new exception(classLocale::$lang['ov_teleport_err_no_dark_matter'], ERR_ERROR);
     }
 
     // TODO: Replace quick-check with using gathered flying fleet data
     if(FleetList::fleet_count_incoming($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'])) {
-      throw new exception($lang['ov_teleport_err_fleet'], ERR_ERROR);
+      throw new exception(classLocale::$lang['ov_teleport_err_fleet'], ERR_ERROR);
     }
 
     if(is_array($new_coordinates)) {
       $new_coordinates['planet_type'] = PT_PLANET;
       $incoming = db_planet_by_vector($new_coordinates, '', true, 'id');
       if($incoming['id']) {
-        throw new exception($lang['ov_teleport_err_destination_busy'], ERR_ERROR);
+        throw new exception(classLocale::$lang['ov_teleport_err_destination_busy'], ERR_ERROR);
       }
     }
 

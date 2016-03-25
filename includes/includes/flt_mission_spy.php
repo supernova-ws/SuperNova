@@ -86,19 +86,19 @@ function flt_mission_spy(&$mission_data) {
     $spy_message .= "<td width=220>{$lang['sys_energy']}</td><td width=220 align=right>" . pretty_number($target_planet_row['energy_max']) . "</td>";
     $spy_message .= "</tr>";
     if($spy_diff >= 2) {
-      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', $lang['tech'][UNIT_SHIPS], $target_user_row) . "</div>";
+      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', classLocale::$lang['tech'][UNIT_SHIPS], $target_user_row) . "</div>";
       coe_compress_add_units(sn_get_groups('fleet'), $target_planet_row, $combat_pack[0]);
     }
     if($spy_diff >= 3) {
-      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'defense', $lang['tech'][UNIT_DEFENCE], $target_user_row) . "</div>";
+      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'defense', classLocale::$lang['tech'][UNIT_DEFENCE], $target_user_row) . "</div>";
       coe_compress_add_units(sn_get_groups('defense_active'), $target_planet_row, $combat_pack[0]);
     }
     if($spy_diff >= 5) {
-      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'structures', $lang['tech'][UNIT_STRUCTURES], $target_user_row) . "</div>";
+      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'structures', classLocale::$lang['tech'][UNIT_STRUCTURES], $target_user_row) . "</div>";
     }
 
     if($spy_diff_empire >= 0) {
-      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'tech', $lang['tech'][UNIT_TECHNOLOGIES], $target_user_row) . "</div>";
+      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'tech', classLocale::$lang['tech'][UNIT_TECHNOLOGIES], $target_user_row) . "</div>";
       coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_planet_row, $combat_pack[0], $target_user_row);
     }
     // TODO: Наемники, губернаторы, артефакты и прочее имперское
@@ -113,10 +113,10 @@ function flt_mission_spy(&$mission_data) {
     $spy_detected = $spy_probes * $target_unit_list / 4 * pow(2, $TargetSpyLvl - $CurrentSpyLvl);
 
     if(mt_rand(0, 99) > $spy_detected) {
-      $spy_outcome_str = sprintf($lang['sys_mess_spy_detect_chance'], $spy_detected);
+      $spy_outcome_str = sprintf(classLocale::$lang['sys_mess_spy_detect_chance'], $spy_detected);
       $spy_detected = false;
     } else {
-      $spy_outcome_str = $lang['sys_mess_spy_destroyed'];
+      $spy_outcome_str = classLocale::$lang['sys_mess_spy_destroyed'];
       $spy_detected = true;
     }
 
@@ -127,7 +127,7 @@ function flt_mission_spy(&$mission_data) {
     $spy_message .= "</th></tr></table>";
     // End of link generation
 
-    msg_send_simple_message($spying_user_row['id'], '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_mess_qg'], $lang['sys_mess_spy_report'], $spy_message);
+    msg_send_simple_message($spying_user_row['id'], '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_mess_spy_report'], $spy_message);
 
     $target_message = "{$lang['sys_mess_spy_ennemyfleet']} {$spying_planet_row['name']} " . uni_render_coordinates_href($spying_planet_row, '', 3);
     $target_message .= " {$lang['sys_mess_spy_seen_at']} {$target_planet_row['name']} " . uni_render_coordinates($target_planet_row);
@@ -146,7 +146,7 @@ function flt_mission_spy(&$mission_data) {
     } else {
       $result = CACHE_FLEET;
     }
-    msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $target_message);
+    msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_mess_spy_control'], classLocale::$lang['sys_mess_spy_activity'], $target_message);
   }
 
   if($spy_detected) {

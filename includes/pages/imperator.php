@@ -54,7 +54,7 @@ function sn_imperator_view($template = null) {
 //  }
 
   if(!$user_data) {
-    message($lang['imp_imperator_none'], $lang['sys_error'], 'index.php', 10);
+    message(classLocale::$lang['imp_imperator_none'], classLocale::$lang['sys_error'], 'index.php', 10);
     die();
   }
 
@@ -106,7 +106,7 @@ function sn_imperator_view($template = null) {
   foreach($template_data as $stat_type => $stat_type_data) {
     $template->assign_block_vars('stat', array(
       'TYPE' => $stat_type,
-      'TEXT' => $lang['imp_stat_types'][$stat_type],
+      'TEXT' => classLocale::$lang['imp_stat_types'][$stat_type],
       'MIN' => $stat_array[$stat_type]['MIN'],
       'MAX' => $stat_array[$stat_type]['MAX'],
       'AVG' => $stat_array[$stat_type]['AVG'],
@@ -145,7 +145,7 @@ function sn_imperator_view($template = null) {
     // 'user_gender'             => $user_data['gender'] == 'F' ? 'female' : 'male',
     'USER_AVATAR'          => $user_data['avatar'],
     'VACATION'             => $user_data['vacation'],
-    'GENDER_TEXT'          => $lang['sys_gender_list'][$user_data['gender']],
+    'GENDER_TEXT'          => classLocale::$lang['sys_gender_list'][$user_data['gender']],
 
     'NEW_MESSAGES'         => $user_data['new_message'],
     'REGISTRATION_DATE'    => date(FMT_DATE_TIME, $user_data['register_time']),

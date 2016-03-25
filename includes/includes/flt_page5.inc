@@ -20,8 +20,8 @@ function flt_build_gathering($resources_taken = '') {
   global $planetrow, $user, $lang;
 
   // Caching sn_data names for quick access
-  $lang_sys_planet_type = $lang['sys_planet_type'];
-  $lang_fl_attack_error = $lang['fl_attack_error'];
+  $lang_sys_planet_type = classLocale::$lang['sys_planet_type'];
+  $lang_fl_attack_error = classLocale::$lang['fl_attack_error'];
 
   $planet_list = array();
 
@@ -165,14 +165,14 @@ if(!empty($resources_taken))  { // begin processing parameters
       $planet_data['RESULT'] = flt_t_send_fleet($user, $planet_data['PLANET_DB_DATA'], $planetrow, $planet_data['FLEET'], MT_TRANSPORT);
     }
 
-    $planet_data['MESSAGE'] = $lang['fl_attack_error'][$planet_data['RESULT']];
+    $planet_data['MESSAGE'] = classLocale::$lang['fl_attack_error'][$planet_data['RESULT']];
 
     $template->assign_block_vars('results', $planet_data);
     if(!empty($planet_data['FLEET']) && $planet_data['RESULT'] == ATTACK_ALLOWED) {
       foreach($planet_data['FLEET'] as $unit_id => $amount) {
         $template->assign_block_vars('results.units', array(
           'ID'     => $unit_id,
-          'NAME'   => $lang['tech'][$unit_id],
+          'NAME'   => classLocale::$lang['tech'][$unit_id],
           'AMOUNT' => $amount
         ));
       }
@@ -183,12 +183,12 @@ if(!empty($resources_taken))  { // begin processing parameters
 // Building list of own planets & moons
 $planet_list = flt_build_gathering();
 foreach($planet_list as $planet_data) {
-  $planet_data['DURATION'] = $planet_data['DURATION'] ? pretty_time($planet_data['DURATION']) : $lang['flt_no_fuel'];
+  $planet_data['DURATION'] = $planet_data['DURATION'] ? pretty_time($planet_data['DURATION']) : classLocale::$lang['flt_no_fuel'];
   $template->assign_block_vars('colonies', $planet_data);
 }
 
 $template->assign_vars(array(
-  'PAGE_HINT'      => $lang['fl_page5_hint'],
+  'PAGE_HINT'      => classLocale::$lang['fl_page5_hint'],
   'METAL_NEED'     => pretty_number(max(0, -sys_get_param_float('metal'))),
   'CRYSTAL_NEED'   => pretty_number(max(0, -sys_get_param_float('crystal'))),
   'DEUTERIUM_NEED' => pretty_number(max(0, -sys_get_param_float('deuterium'))),
@@ -196,4 +196,4 @@ $template->assign_vars(array(
 
 tpl_set_resource_info($template, $planetrow, array());
 
-display($template, $lang['fl_title']);
+display($template, classLocale::$lang['fl_title']);

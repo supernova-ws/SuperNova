@@ -69,8 +69,6 @@ class UBESnapshotUnit {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function report_render_unit(UBESnapshotUnit $prev_unit_snapshot) {
-    global $lang;
-
     $shields_original = $this->unit_randomized_shield * $prev_unit_snapshot->count; //
 
     return array(

@@ -77,13 +77,13 @@ function flt_mission_recycle($mission_data) {
   );
 
   $Message = sprintf(
-    $lang['sys_recy_gotten'],
-    pretty_number($resources_recycled[RES_METAL]), $lang['Metal'],
-    pretty_number($resources_recycled[RES_CRYSTAL]), $lang['Crystal']
+    classLocale::$lang['sys_recy_gotten'],
+    pretty_number($resources_recycled[RES_METAL]), classLocale::$lang['Metal'],
+    pretty_number($resources_recycled[RES_CRYSTAL]), classLocale::$lang['Crystal']
   );
   msg_send_simple_message(
     $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_RECYCLE,
-    $lang['sys_mess_spy_control'], $lang['sys_recy_report'], $Message
+    classLocale::$lang['sys_mess_spy_control'], classLocale::$lang['sys_recy_report'], $Message
   );
 
   $objFleet->resourcesAdjust($resources_recycled);

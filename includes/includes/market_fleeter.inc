@@ -4,7 +4,7 @@ if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) {
   $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
 }
 
-$page_title .= ' - ' . $lang["eco_mrk_{$submode}"];
+$page_title .= ' - ' . classLocale::$lang["eco_mrk_{$submode}"];
 
 $template = gettemplate('market_fleet', true);
 $template->assign_vars(array(
@@ -26,7 +26,7 @@ if(is_array($shipList)) {
   // Блокируем запись о запасах кораблей у трейдера
   db_config_get_stockman_fleet();
 
-  $message .= $lang["eco_mrk_{$submode}_ships"] . '<ul>';
+  $message .= classLocale::$lang["eco_mrk_{$submode}_ships"] . '<ul>';
   $qry = array();
   $total = array();
   $db_changeset = array();
@@ -89,7 +89,7 @@ if(is_array($shipList)) {
   $intError = ($intError == MARKET_DEAL) && (array_sum($total) == 0) ? $error_zero_res : $intError;
 
   if($intError == MARKET_DEAL) {
-    $message .= '</ul>' . $lang["eco_mrk_{$submode}_res"] . '<ul>';
+    $message .= '</ul>' . classLocale::$lang["eco_mrk_{$submode}_res"] . '<ul>';
     foreach($total as $resID => $resCount) {
       if(!$resCount) {
         continue;
@@ -99,7 +99,7 @@ if(is_array($shipList)) {
       // $newrow[$resID] = $planetrow[$resID] + $resCount * (-$multiplier);
       $qry[] = "`{$resource_name}` = `{$resource_name}` + ({$resCount})";
 
-      $message .= "<li>" . $lang['sys_' . $resource_name] . ": " . pretty_number(abs($resCount));
+      $message .= "<li>" . classLocale::$lang['sys_' . $resource_name] . ": " . pretty_number(abs($resCount));
     }
     $message .= "</ul>";
 
@@ -122,7 +122,7 @@ if(is_array($shipList)) {
     sn_db_transaction_rollback();
     $template->assign_block_vars('result', array(
       'STATUS' => ERR_ERROR,
-      'MESSAGE' => $lang['eco_mrk_errors'][$intError],
+      'MESSAGE' => classLocale::$lang['eco_mrk_errors'][$intError],
     ));
 
     foreach($shipList as $shipID => $shipCount) {
@@ -161,7 +161,7 @@ foreach($array as $key => $value) {
     $template->assign_block_vars('ships', array(
       'ID'        => $shipID,
       'COUNT'     => $amount,
-      'NAME'      => $lang['tech'][$shipID],
+      'NAME'      => classLocale::$lang['tech'][$shipID],
       'METAL'     => floor($build_data[BUILD_CREATE][RES_METAL] * $config_rpg_scrape_metal),
       'CRYSTAL'   => floor($build_data[BUILD_CREATE][RES_CRYSTAL] * $config_rpg_scrape_crystal),
       'DEUTERIUM' => floor($build_data[BUILD_CREATE][RES_DEUTERIUM] * $config_rpg_scrape_deuterium),

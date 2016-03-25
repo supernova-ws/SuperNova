@@ -18,19 +18,19 @@ if(!is_array($ships)) {
 foreach(array(PT_PLANET, PT_DEBRIS, PT_MOON) as $possible_planet_type_id) {
   $template->assign_block_vars('possible_planet_type_id', array(
     'ID' => $possible_planet_type_id,
-    'NAME' => $lang['sys_planet_type_sh'][$possible_planet_type_id],
+    'NAME' => classLocale::$lang['sys_planet_type_sh'][$possible_planet_type_id],
   ));
 }
 
 $template_route = array(
-  'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$planetrow['planet_type']],
+  'START_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$planetrow['planet_type']],
   'START_COORDS'       => uni_render_coordinates($planetrow),
   'START_NAME'         => $planetrow['name'],
 );
 
 if(!empty($TargetPlanet)) {
   $template_route += array(
-    'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
+    'END_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
     'END_COORDS'       => uni_render_coordinates($TargetPlanet),
     'END_NAME'         => $TargetPlanet['name'],
   );
@@ -43,7 +43,7 @@ foreach($ships as $ship_id => $ship_count) {
   if(in_array($ship_id, $sn_groups_fleet) && $ship_count) {
     $ship_info = get_unit_param($ship_id);
     if($ship_count > mrc_get_level($user, $planetrow, $ship_id, false, true)) {
-      $page .= $lang['fl_noenought'];
+      $page .= classLocale::$lang['fl_noenought'];
     } else {
       $fleet['fleetarray'][$ship_id]  = $ship_count;
       $fleet['amount']               += $ship_count;
@@ -56,13 +56,13 @@ foreach($ships as $ship_id => $ship_count) {
       'AMOUNT_TEXT' => pretty_number($ship_count),
       'CONSUMPTION' => $ship_base_data['consumption'],
       'SPEED'       => $ship_base_data['speed'],
-      'NAME'        => $lang['tech'][$ship_id],
+      'NAME'        => classLocale::$lang['tech'][$ship_id],
     ));
   }
 }
 
 if(empty($fleet['fleetarray'])) {
-  message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
+  message(classLocale::$lang['fl_err_no_ships'], classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
 }
 
 // Building list of shortcuts
@@ -76,7 +76,7 @@ while($shortcut = db_fetch($query)) {
     'PRIORITY'   => $shortcut['priority'],
     'PRIORITY_CLASS' => $note_priority_classes[$shortcut['priority']],
     'TYPE'       => $shortcut['planet_type'],
-    'TYPE_PRINT' => $lang['fl_shrtcup'][$shortcut['planet_type']],
+    'TYPE_PRINT' => classLocale::$lang['fl_shrtcup'][$shortcut['planet_type']],
   ));
 }
 
@@ -91,7 +91,7 @@ if(count($colonies) > 1) {
       'SYSTEM'     => $row['system'],
       'PLANET'     => $row['planet'],
       'TYPE'       => $row['planet_type'],
-      'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
+      'TYPE_PRINT' => classLocale::$lang['fl_shrtcup'][$row['planet_type']],
     ));
   }
 }
@@ -111,7 +111,7 @@ while($row = db_fetch($aks_madnessred)) {
         'SYSTEM'     => $row['system'],
         'PLANET'     => $row['planet'],
         'TYPE'       => $row['planet_type'],
-        'TYPE_PRINT' => $lang['fl_shrtcup'][$row['planet_type']],
+        'TYPE_PRINT' => classLocale::$lang['fl_shrtcup'][$row['planet_type']],
       ));
     }
   }
@@ -132,8 +132,8 @@ $template->assign_vars(array(
 
   'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
 
-  'PAGE_HINT'       => $lang['fl_page1_hint'],
+  'PAGE_HINT'       => classLocale::$lang['fl_page1_hint'],
 ));
 
 $template->assign_recursive($template_result);
-display($template, $lang['fl_title']);
+display($template, classLocale::$lang['fl_title']);

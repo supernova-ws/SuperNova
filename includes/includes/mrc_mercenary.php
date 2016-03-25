@@ -27,7 +27,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
 }
 
 function mrc_mercenary_hire($mode, $user, $mercenary_id) {
-  global $config, $lang, $sn_powerup_buy_discounts;
+  global $config, $sn_powerup_buy_discounts;
 
   try {
     $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
@@ -124,7 +124,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
 }
 
 function mrc_mercenary_render($user) {
-  global $config, $lang, $sn_powerup_buy_discounts;
+  global $config, $sn_powerup_buy_discounts;
 
   $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
   $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;

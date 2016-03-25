@@ -13,7 +13,7 @@ function sn_options_model() {
   $language_new = sys_get_param_str('langer', $user['lang']);
 
   if($language_new != $user['lang']) {
-    $lang->lng_switch($language_new);
+    classLocale::$lang->lng_switch($language_new);
   }
 
   lng_include('options');
@@ -33,18 +33,18 @@ function sn_options_model() {
       sn_db_transaction_start();
       if($user['authlevel'] < 3) {
         if($user['vacation_next'] > SN_TIME_NOW) {
-          message($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
+          message(classLocale::$lang['opt_vacation_err_timeout'], classLocale::$lang['Error'], 'index.php?page=options', 5);
           die();
         }
 
         if(FleetList::fleet_count_flying($user['id'])) {
-          message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
+          message(classLocale::$lang['opt_vacation_err_your_fleet'], classLocale::$lang['Error'], 'index.php?page=options', 5);
           die();
         }
 
         $que = que_get($user['id'], false);
         if(!empty($que)) {
-          message($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
+          message(classLocale::$lang['opt_vacation_err_que'], classLocale::$lang['Error'], 'index.php?page=options', 5);
           die();
         }
 
@@ -103,7 +103,7 @@ function sn_options_model() {
             if(mrc_get_level($user, $planetrow, RES_DARK_MATTER) < $config->game_user_changename_cost) {
               $template_result['.']['result'][] = array(
                 'STATUS'  => ERR_ERROR,
-                'MESSAGE' => $lang['opt_msg_name_change_err_no_dm'],
+                'MESSAGE' => classLocale::$lang['opt_msg_name_change_err_no_dm'],
               );
               break;
             }
@@ -116,7 +116,7 @@ function sn_options_model() {
             // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
             $template_result['.']['result'][] = array(
               'STATUS'  => ERR_NONE,
-              'MESSAGE' => $lang['opt_msg_name_changed']
+              'MESSAGE' => classLocale::$lang['opt_msg_name_changed']
             );
             $user['username'] = $username;
           break;
@@ -124,7 +124,7 @@ function sn_options_model() {
       } else {
         $template_result['.']['result'][] = array(
           'STATUS'  => ERR_ERROR,
-          'MESSAGE' => $lang['opt_msg_name_change_err_used_name'],
+          'MESSAGE' => classLocale::$lang['opt_msg_name_change_err_used_name'],
         );
       }
       sn_db_transaction_commit();
@@ -133,14 +133,14 @@ function sn_options_model() {
     if($new_password = sys_get_param('newpass1')) {
       try {
         if($new_password != sys_get_param('newpass2')) {
-          throw new Exception($lang['opt_err_pass_unmatched'], ERR_WARNING);
+          throw new Exception(classLocale::$lang['opt_err_pass_unmatched'], ERR_WARNING);
         }
 
         if(!classSupernova::$auth->password_change(sys_get_param('db_password'), $new_password)) {
-          throw new Exception($lang['opt_err_pass_wrong'], ERR_WARNING);
+          throw new Exception(classLocale::$lang['opt_err_pass_wrong'], ERR_WARNING);
         }
 
-        throw new Exception($lang['opt_msg_pass_changed'], ERR_NONE);
+        throw new Exception(classLocale::$lang['opt_msg_pass_changed'], ERR_NONE);
       } catch(Exception $e) {
         $template_result['.']['result'][] = array(
           'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
@@ -178,7 +178,7 @@ function sn_options_model() {
     $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + $config->player_delete_time);
 
     $gender = sys_get_param_int('gender', $user['gender']);
-    !isset($lang['sys_gender_list'][$gender]) ? $gender = $user['gender'] : false;
+    !isset(classLocale::$lang['sys_gender_list'][$gender]) ? $gender = $user['gender'] : false;
     $user['gender'] = $user['gender'] == GENDER_UNKNOWN ? $gender : $user['gender'];
 
     try {
@@ -255,12 +255,12 @@ function sn_options_model() {
 
     $template_result['.']['result'][] = array(
       'STATUS'  => ERR_NONE,
-      'MESSAGE' => $lang['opt_msg_saved']
+      'MESSAGE' => classLocale::$lang['opt_msg_saved']
     );
   } elseif(sys_get_param_str('result') == 'ok') {
     $template_result['.']['result'][] = array(
       'STATUS'  => ERR_NONE,
-      'MESSAGE' => $lang['opt_msg_saved']
+      'MESSAGE' => classLocale::$lang['opt_msg_saved']
     );
   }
 
@@ -296,7 +296,7 @@ function sn_options_view($template = null) {
   }
   $dir->close();
 
-  foreach($lang['opt_planet_sort_options'] as $key => &$value) {
+  foreach(classLocale::$lang['opt_planet_sort_options'] as $key => &$value) {
     $template_result['.']['planet_sort_options'][] = array(
       'VALUE'    => $key,
       'NAME'     => $value,
@@ -312,7 +312,7 @@ function sn_options_view($template = null) {
       );
     }
   */
-  foreach($lang['sys_gender_list'] as $key => $value) {
+  foreach(classLocale::$lang['sys_gender_list'] as $key => $value) {
     $template_result['.']['gender_list'][] = array(
       'VALUE'    => $key,
       'NAME'     => $value,
@@ -330,8 +330,8 @@ function sn_options_view($template = null) {
   }
 
 
-  if(isset($lang['menu_customize_show_hide_button_state'])) {
-    foreach($lang['menu_customize_show_hide_button_state'] as $key => $value) {
+  if(isset(classLocale::$lang['menu_customize_show_hide_button_state'])) {
+    foreach(classLocale::$lang['menu_customize_show_hide_button_state'] as $key => $value) {
       $template->assign_block_vars('menu_customize_show_hide_button_state', array(
         'ID'   => $key,
         'NAME' => $value,
@@ -398,7 +398,7 @@ function sn_options_view($template = null) {
     'opt_sskin_data' => ($user['design'] == 1) ? " checked='checked'" : '',
     'opt_noipc_data' => ($user['noipcheck'] == 1) ? " checked='checked'" : '',
     'deltime'        => $user['deltime'],
-    'deltime_text'   => sprintf($str_date_format, $time_now_parsed['year'], $lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
+    'deltime_text'   => sprintf($str_date_format, $time_now_parsed['year'], classLocale::$lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
       $time_now_parsed['hours'], $time_now_parsed['minutes'], $time_now_parsed['seconds']
     ),
 
@@ -420,7 +420,7 @@ function sn_options_view($template = null) {
 
     'user_birthday' => $user['user_birthday'],
     'GENDER'        => $user['gender'],
-    'GENDER_TEXT'   => $lang['sys_gender_list'][$user['gender']],
+    'GENDER_TEXT'   => classLocale::$lang['sys_gender_list'][$user['gender']],
     'FMT_DATE'      => $FMT_DATE,
     'JS_FMT_DATE'   => js_safe_string($FMT_DATE),
 
@@ -438,7 +438,7 @@ function sn_options_view($template = null) {
 
     'DARK_MATTER' => pretty_number($config->game_user_changename_cost, true, mrc_get_level($user, $planetrow, RES_DARK_MATTER)),
 
-    'PAGE_HEADER' => $lang['opt_header'],
+    'PAGE_HEADER' => classLocale::$lang['opt_header'],
   ));
 
   foreach($user_option_list as $option_group_id => $option_group) {
@@ -449,7 +449,7 @@ function sn_options_view($template = null) {
 
           $template->assign_block_vars("options_{$option_group_id}", array(
             'NAME'  => $message_class_data['name'],
-            'TEXT'  => $lang['msg_class'][$message_class_id], // $lang['opt_custom'][$option_name],
+            'TEXT'  => classLocale::$lang['msg_class'][$message_class_id], // $lang['opt_custom'][$option_name],
             'PM'    => $message_class_data['switchable'] ? $user["opt_{$option_name}"] : -1,
             'EMAIL' => $message_class_data['email'] && $config->game_email_pm ? $user["opt_email_{$option_name}"] : -1,
           ));
@@ -466,8 +466,8 @@ function sn_options_view($template = null) {
         $template->assign_block_vars("options_{$option_group_id}", array(
           'NAME'  => $option_name,
           'TYPE'  => $option_type,
-          'TEXT'  => $lang['opt_custom'][$option_name],
-          'HINT'  => $lang['opt_custom']["{$option_name}_hint"],
+          'TEXT'  => classLocale::$lang['opt_custom'][$option_name],
+          'HINT'  => classLocale::$lang['opt_custom']["{$option_name}_hint"],
           'VALUE' => $user[$option_name],
         ));
       }

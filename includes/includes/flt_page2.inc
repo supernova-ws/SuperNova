@@ -22,14 +22,14 @@ function sn_fleet_page2() {
   $fleetarray = is_array($fleetarray) ? $fleetarray : array();
 
   $template_route = array(
-    'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$planetrow['planet_type']],
+    'START_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$planetrow['planet_type']],
     'START_COORDS'       => uni_render_coordinates($planetrow),
     'START_NAME'         => $planetrow['name'],
   );
 
   if(!empty($TargetPlanet)) {
     $template_route += array(
-      'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
+      'END_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
       'END_COORDS'       => uni_render_coordinates($TargetPlanet),
       'END_NAME'         => $TargetPlanet['name'],
     );
@@ -47,7 +47,7 @@ function sn_fleet_page2() {
         'AMOUNT_TEXT' => pretty_number($ship_count),
 //        'CONSUMPTION' => $ship_base_data['consumption'],
 //        'SPEED'       => $ship_base_data['speed'],
-        'NAME'        => $lang['tech'][$ship_id],
+        'NAME'        => classLocale::$lang['tech'][$ship_id],
       ));
     }
   }
@@ -86,7 +86,7 @@ function sn_fleet_page2() {
       'ID' => $i,
       'ON_PLANET' => floor($amount),
       'TEXT' => pretty_number($amount),
-      'NAME' => $lang['sys_' . $sn_group_resources[$i]],
+      'NAME' => classLocale::$lang['sys_' . $sn_group_resources[$i]],
     ));
   }
 
@@ -125,5 +125,5 @@ function sn_fleet_page2() {
   ));
 
   $template->assign_recursive($template_result);
-  display($template, $lang['fl_title']);
+  display($template, classLocale::$lang['fl_title']);
 }

@@ -94,8 +94,6 @@ class UBERound {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function report_render_round_fleet_list(UBE $ube, array $prevSnapshot) {
-    global $lang;
-
     $fleet_list_template = array(
       UBE_PLAYER_IS_ATTACKER => array(),
       UBE_PLAYER_IS_DEFENDER => array(),

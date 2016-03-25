@@ -107,7 +107,7 @@ function sn_imperium_view($template = null) {
 
       'DENSITY_CLASS'     => $planet['density_index'],
       'DENSITY_RICHNESS'  => $planet_density[$planet['density_index']][UNIT_PLANET_DENSITY_RICHNESS],
-      'DENSITY_CLASS_TEXT'=> $lang['uni_planet_density_types'][$planet['density_index']],
+      'DENSITY_CLASS_TEXT'=> classLocale::$lang['uni_planet_density_types'][$planet['density_index']],
     )));
 
     $planet['fleet_list'] = $planet_template['fleet_list'];
@@ -145,7 +145,7 @@ function sn_imperium_view($template = null) {
   foreach($show_groups as $unit_group_id => $mode)
   {
     $template->assign_block_vars('prods', array(
-      'NAME' => $lang['tech'][$unit_group_id],
+      'NAME' => classLocale::$lang['tech'][$unit_group_id],
     ));
     $unit_group = get_unit_param('techtree', $unit_group_id);
     foreach($unit_group as $unit_id)
@@ -210,7 +210,7 @@ function sn_imperium_view($template = null) {
         $template->assign_block_vars('prods', array(
           'ID'    => $unit_id,
           'FIELD' => 'unit_' . $unit_id, // pname_resource_name($unit_id), // TODO Делать это прямо в темплейте
-          'NAME'  => $lang['tech'][$unit_id],
+          'NAME'  => classLocale::$lang['tech'][$unit_id],
           'MODE'  => $mode,
         ));
 
@@ -234,7 +234,7 @@ function sn_imperium_view($template = null) {
 
   $template->assign_block_vars('planet', array_merge(array(
     'ID'         => 0,
-    'NAME'       => $lang['sys_total'],
+    'NAME'       => classLocale::$lang['sys_total'],
 
     'FIELDS_CUR' => $total['fields'],
     'FIELDS_MAX' => $total['fields_max'],

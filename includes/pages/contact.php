@@ -21,12 +21,12 @@ function sn_contact_view($template = null)
   {
     $template_result['.']['contact'][] = array(
       'NAME'  => $row['username'],
-      'LEVEL' => $lang['user_level'][$row['authlevel']],
+      'LEVEL' => classLocale::$lang['user_level'][$row['authlevel']],
       'EMAIL' => $row['email'],
     );
   }
 
-  $template_result['PAGE_HEADER'] = $lang['ctc_title'];
+  $template_result['PAGE_HEADER'] = classLocale::$lang['ctc_title'];
 
   return $template;
 }

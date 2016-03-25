@@ -202,7 +202,7 @@ function pretty_time($seconds) {
 
   $day = floor($seconds / (24 * 3600));
 
-  $sys_day_short = $lang['sys_day_short'];
+  $sys_day_short = classLocale::$lang['sys_day_short'];
 
   return sprintf("%s%02d:%02d:%02d", $day ? "{$day}{$sys_day_short} " : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
 }
@@ -642,13 +642,13 @@ function sys_time_human($time, $full = false) {
   $hours = $time % 24;
   $time = floor($time / 24);
 
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
-  $classLocale1 = $lang;
+  $classLocale1 = classLocale::$lang;
 
-  $classLocale2 = $lang;
+  $classLocale2 = classLocale::$lang;
 
-  $classLocale3 = $lang;
+  $classLocale3 = classLocale::$lang;
 
   return
     ($full || $time ? "{$time} {$classLocale['sys_day']}&nbsp;" : '') .

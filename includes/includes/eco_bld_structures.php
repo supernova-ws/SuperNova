@@ -56,18 +56,18 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $build_unit_list = sn_get_groups('build_allow');
     $build_unit_list = $build_unit_list[$planet['planet_type']];
     $artifact_id = ART_NANO_BUILDER;
-    $page_header = $lang['tech'][UNIT_STRUCTURES];
+    $page_header = classLocale::$lang['tech'][UNIT_STRUCTURES];
   } elseif($que_type == QUE_RESEARCH) {
     if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
-      message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
+      message(classLocale::$lang['no_laboratory'], classLocale::$lang['tech'][UNIT_TECHNOLOGIES]);
     }
 
     if(eco_unit_busy($user, $planet, UNIT_TECHNOLOGIES)) {
-      message($lang['eco_bld_msg_err_laboratory_upgrading'], $lang['tech'][UNIT_TECHNOLOGIES]);
+      message(classLocale::$lang['eco_bld_msg_err_laboratory_upgrading'], classLocale::$lang['tech'][UNIT_TECHNOLOGIES]);
     }
     $build_unit_list = sn_get_groups('tech');
     $artifact_id = ART_HEURISTIC_CHIP;
-    $page_header = $lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
+    $page_header = classLocale::$lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } elseif($que_type == QUE_MERCENARY) {
 //    if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
 //      message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
@@ -78,14 +78,14 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 //    }
     $build_unit_list = sn_get_groups('mercenaries');
     $artifact_id = 0;
-    $page_header = $lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
+    $page_header = classLocale::$lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } else {
     if(mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) == 0) {
-      message($lang['need_hangar'], $lang['tech'][STRUC_FACTORY_HANGAR]);
+      message(classLocale::$lang['need_hangar'], classLocale::$lang['tech'][STRUC_FACTORY_HANGAR]);
     }
 
     $build_unit_list = sn_get_groups($page_mode = $que_type == SUBQUE_FLEET ? 'fleet' : 'defense');
-    $page_header = $lang[$page_mode];
+    $page_header = classLocale::$lang[$page_mode];
     $artifact_id = 0;
 
     $silo_capacity_free = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY);
@@ -176,14 +176,14 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     $unit_autoconvert_can ? $build_data['RESULT'][BUILD_CREATE] = BUILD_AUTOCONVERT_AVAILABLE : false;
 
-    $build_result_text = $lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
+    $build_result_text = classLocale::$lang['sys_build_result'][$build_data['RESULT'][BUILD_CREATE]];
     $build_result_text = !is_array($build_result_text) ? $build_result_text : (isset($build_result_text[$unit_id]) ? $build_result_text[$unit_id] : $build_result_text[0]);
 
     $production = array(
       '__INDEX'     => $record_index++,
       'ID'          => $unit_id,
-      'NAME'        => $lang['tech'][$unit_id],
-      'DESCRIPTION' => $lang['info'][$unit_id]['description_short'],
+      'NAME'        => classLocale::$lang['tech'][$unit_id],
+      'DESCRIPTION' => classLocale::$lang['info'][$unit_id]['description_short'],
 
       'LEVEL_OLD'   => $level_base,
       'LEVEL_BONUS' => $level_bonus,
@@ -318,7 +318,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $template_result['.']['production'][] = $production;
   }
 
-  foreach($lang['player_option_building_sort'] as $sort_id => $sort_text) {
+  foreach(classLocale::$lang['player_option_building_sort'] as $sort_id => $sort_text) {
     $template->assign_block_vars('sort_values', array(
       'VALUE' => $sort_id,
       'TEXT'  => $sort_text,
@@ -361,7 +361,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     'ARTIFACT_ID'    => $artifact_id,
     'ARTIFACT_LEVEL' => mrc_get_level($user, array(), $artifact_id),
-    'ARTIFACT_NAME'  => $lang['tech'][$artifact_id],
+    'ARTIFACT_NAME'  => classLocale::$lang['tech'][$artifact_id],
     'REQUEST_URI'    => urlencode($_SERVER['REQUEST_URI']),
 
     'PAGE_HEADER' => $page_header,
@@ -385,7 +385,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'QUE_HAS_PLACE'  => $can_que_element,
     'QUE_HAS_FIELDS' => $planet_fields_queable,
 
-    'PAGE_HINT'        => $lang['eco_bld_page_hint'],
+    'PAGE_HINT'        => classLocale::$lang['eco_bld_page_hint'],
     'PLANET_TYPE'      => $planet['planet_type'],
     'SECTOR_CAN_BUY'   => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
     'SECTOR_COST'      => $sector_cost,
@@ -395,8 +395,8 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     'TEMPORARY' => intval($config->empire_mercenary_temporary && $que_type == QUE_MERCENARY),
 
-    'STRING_CREATE'     => $que_type == QUE_MERCENARY ? $lang['bld_hire'] : ($que_type == QUE_RESEARCH ? $lang['bld_research'] : $lang['bld_create']),
-    'STRING_BUILD_TIME' => $que_type == QUE_RESEARCH ? $lang['ResearchTime'] : $lang['ConstructionTime'],
+    'STRING_CREATE'     => $que_type == QUE_MERCENARY ? classLocale::$lang['bld_hire'] : ($que_type == QUE_RESEARCH ? classLocale::$lang['bld_research'] : classLocale::$lang['bld_create']),
+    'STRING_BUILD_TIME' => $que_type == QUE_RESEARCH ? classLocale::$lang['ResearchTime'] : classLocale::$lang['ConstructionTime'],
 
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
 

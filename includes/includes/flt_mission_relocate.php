@@ -23,20 +23,20 @@ function flt_mission_relocate($mission_data) {
   }
 
   $fleet_resources = $objFleet->resourcesGetList();
-  $Message = sprintf($lang['sys_tran_mess_user'],
+  $Message = sprintf(classLocale::$lang['sys_tran_mess_user'],
       $mission_data->src_planet['name'], uni_render_coordinates_href($objFleet->launch_coordinates_typed(), '', 3),
       $destination_planet['name'], uni_render_coordinates_href($objFleet->target_coordinates_typed(), '', 3),
-      $fleet_resources[RES_METAL], $lang['Metal'],
-      $fleet_resources[RES_CRYSTAL], $lang['Crystal'],
-      $fleet_resources[RES_DEUTERIUM], $lang['Deuterium']
-    ) . '<br />' . $lang['sys_relocate_mess_user'];
+      $fleet_resources[RES_METAL], classLocale::$lang['Metal'],
+      $fleet_resources[RES_CRYSTAL], classLocale::$lang['Crystal'],
+      $fleet_resources[RES_DEUTERIUM], classLocale::$lang['Deuterium']
+    ) . '<br />' . classLocale::$lang['sys_relocate_mess_user'];
   $fleet_real_array = $objFleet->shipsGetArray();
   foreach($fleet_real_array as $ship_id => $ship_count) {
-    $Message .= $lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
+    $Message .= classLocale::$lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
   }
   msg_send_simple_message(
     $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT,
-    $lang['sys_mess_qg'], $lang['sys_stay_mess_stay'], $Message
+    classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_stay_mess_stay'], $Message
   );
 
   return $objFleet->shipsLand(false);

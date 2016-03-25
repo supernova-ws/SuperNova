@@ -27,12 +27,12 @@ function qst_render_page()
         {
           if(!in_array($quest_rewards_id, $quest_reward_allowed))
           {
-            throw new Exception($lang['qst_adm_err_reward_type']);
+            throw new Exception(classLocale::$lang['qst_adm_err_reward_type']);
           }
 
           if($quest_rewards_amount < 0)
           {
-            throw new Exception($lang['qst_adm_err_reward_amount']);
+            throw new Exception(classLocale::$lang['qst_adm_err_reward_amount']);
           }
           elseif($quest_rewards_amount > 0)
           {
@@ -41,7 +41,7 @@ function qst_render_page()
         }
         if(empty($quest_rewards))
         {
-          throw new Exception($lang['qst_adm_err_reward_empty']);
+          throw new Exception(classLocale::$lang['qst_adm_err_reward_empty']);
         }
 
         $quest_rewards = implode(';', $quest_rewards);
@@ -49,13 +49,13 @@ function qst_render_page()
         $quest_unit_id = sys_get_param_int('QUEST_UNIT_ID');
         if(!in_array($quest_unit_id, $quest_units_allowed))
         {
-          throw new Exception($lang['qst_adm_err_unit_id']);
+          throw new Exception(classLocale::$lang['qst_adm_err_unit_id']);
         }
 
         $quest_unit_amount = sys_get_param_float('QUEST_UNIT_AMOUNT');
         if($quest_unit_amount <= 0)
         {
-          throw new Exception($lang['qst_adm_err_unit_amount']);
+          throw new Exception(classLocale::$lang['qst_adm_err_unit_amount']);
         }
         $quest_conditions = "{$quest_unit_id},{$quest_unit_amount}";
 
@@ -89,7 +89,7 @@ function qst_render_page()
       }
       catch (Exception $e)
       {
-        message($e->getMessage(), $lang['sys_error']);
+        message($e->getMessage(), classLocale::$lang['sys_error']);
       }
 
       $mode = '';
@@ -151,7 +151,7 @@ function qst_render_page()
     {
       $quest_templatized['quest_rewards_list'][$unit_id] = array(
         'ID'     => $unit_id,
-        'NAME'   => $lang['tech'][$unit_id],
+        'NAME'   => classLocale::$lang['tech'][$unit_id],
         'AMOUNT' => 0,
       );
     }
@@ -168,7 +168,7 @@ function qst_render_page()
   {
     $template->assign_block_vars('allowed_unit', array(
       'ID'   => $unit_id,
-      'NAME' => $lang['tech'][$unit_id],
+      'NAME' => classLocale::$lang['tech'][$unit_id],
     ));
   }
 }
@@ -241,7 +241,7 @@ function qst_templatize($quest, $for_display = true)
   {
     $tmp[] = array(
       'ID'     => $quest_reward_id,
-      'NAME'   => $for_display ? str_replace(' ', '&nbsp;', $lang['tech'][$quest_reward_id]) : $lang['tech'][$quest_reward_id],
+      'NAME'   => $for_display ? str_replace(' ', '&nbsp;', classLocale::$lang['tech'][$quest_reward_id]) : classLocale::$lang['tech'][$quest_reward_id],
       'AMOUNT' => $quest_reward_amount,
     );
   }
@@ -253,10 +253,10 @@ function qst_templatize($quest, $for_display = true)
     'QUEST_DESCRIPTION'  => $for_display ? sys_bbcodeParse($quest['quest_description']) : $quest['quest_description'],
     'QUEST_CONDITIONS'   => $quest['quest_condition'],
     'QUEST_UNIT_ID'      => $quest['quest_unit_id'],
-    'QUEST_UNIT_NAME'    => $lang['tech'][$quest['quest_unit_id']],
+    'QUEST_UNIT_NAME'    => classLocale::$lang['tech'][$quest['quest_unit_id']],
     'QUEST_UNIT_AMOUNT'  => $quest['quest_unit_amount'],
     'QUEST_STATUS'       => intval($quest['quest_status_status']),
-    'QUEST_STATUS_NAME'  => $lang['qst_status_list'][intval($quest['quest_status_status'])],
+    'QUEST_STATUS_NAME'  => classLocale::$lang['qst_status_list'][intval($quest['quest_status_status'])],
     'quest_rewards_list' => $tmp,
   );
 }
@@ -290,18 +290,18 @@ function qst_reward(&$user, &$rewards, &$quest_list)
     foreach($user_data as $user_id => $planet_data)
       foreach($planet_data as $planet_id => $reward_list)
       {
-        $comment = sprintf($lang['qst_msg_complete_body'], $quest_list[$quest_id]['quest_name']);
+        $comment = sprintf(classLocale::$lang['qst_msg_complete_body'], $quest_list[$quest_id]['quest_name']);
         $comment_dm .= isset($reward_list[RES_DARK_MATTER]) ? $comment : '';
 
         $comment_reward = array();
         foreach($reward_list as $unit_id => $unit_amount)
         {
-          $comment_reward[] = $unit_amount . ' ' . $lang['tech'][$unit_id];
+          $comment_reward[] = $unit_amount . ' ' . classLocale::$lang['tech'][$unit_id];
           $total_rewards[$user_id][$planet_id][$unit_id] += $unit_amount;
         }
         $comment .= " {$lang['qst_msg_your_reward']} " . implode(',', $comment_reward);
 
-        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
+        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['msg_from_admin'], classLocale::$lang['qst_msg_complete_subject'], $comment);
 
         sn_db_perform('{{quest_status}}', array(
           'quest_status_quest_id' => $quest_id,

@@ -39,12 +39,12 @@ function sn_chat_model() {
   switch($mode) {
     case CHAT_MODE_ALLY:
       $template_result['ALLY'] = intval($user['ally_id']);
-      $page_title = $lang['chat_ally'];
+      $page_title = classLocale::$lang['chat_ally'];
     break;
 
     case CHAT_MODE_COMMON:
     default:
-      $page_title = $lang['chat_common'];
+      $page_title = classLocale::$lang['chat_common'];
     break;
   }
 

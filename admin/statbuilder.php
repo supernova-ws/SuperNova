@@ -38,8 +38,8 @@ if(SN_TIME_NOW >= $config->db_loadAll('var_stat_update_admin_forced') && SN_TIME
   });
   </script>';
 
-  $title = $lang['adm_stat_title'];
-  $sys_wait = $lang['sys_wait'];
+  $title = classLocale::$lang['adm_stat_title'];
+  $sys_wait = classLocale::$lang['sys_wait'];
   AdminMessage("{$script}<img src=\"design/images/progressbar.gif\"><br>{$sys_wait}", $title, '', 120);
 }
 else

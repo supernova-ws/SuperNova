@@ -16,7 +16,7 @@ function sn_techtree_view($template = null)
   foreach(get_unit_param('techtree') as $unit_group_id => $unit_list)
   {
     $tech_tree[] = array(
-      'NAME' => $lang['tech'][$unit_group_id],
+      'NAME' => classLocale::$lang['tech'][$unit_group_id],
       'GROUP_ID' => $unit_group_id,
     );
 
@@ -27,7 +27,7 @@ function sn_techtree_view($template = null)
       $unit_level = $sn_data_unit[P_STACKABLE] ? 0 : mrc_get_level($user, $planetrow, $unit_id);
       $rendered_info = array(
         'ID' => $unit_id,
-        'NAME' => $lang['tech'][$unit_id],
+        'NAME' => classLocale::$lang['tech'][$unit_id],
         'LEVEL' => $unit_level,
         'LEVEL_BASIC' => $level_basic,
         'LEVEL_BONUS' => max(0, $unit_level - $level_basic),
@@ -46,7 +46,7 @@ function sn_techtree_view($template = null)
   $template->assign_recursive($template_result);
 
   $template->assign_vars(array(
-    'PAGE_HEADER' => $lang['tech'][UNIT_TECHNOLOGIES],
+    'PAGE_HEADER' => classLocale::$lang['tech'][UNIT_TECHNOLOGIES],
     'PLAYER_OPTION_TECH_TREE_TABLE' => classSupernova::$user_options[PLAYER_OPTION_TECH_TREE_TABLE],
   ));
 

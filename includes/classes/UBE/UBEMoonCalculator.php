@@ -187,7 +187,7 @@ class UBEMoonCalculator {
 
     if($ube->mission_type_id == MT_DESTROY) {
       if($this->reapers_status == UBE_MOON_REAPERS_NONE) {
-        $text_defender .= $lang['ube_report_moon_reapers_none'];
+        $text_defender .= classLocale::$lang['ube_report_moon_reapers_none'];
       } else {
         $text_defender .= "{$lang['ube_report_moon_reapers_wave']}. {$lang['ube_report_moon_reapers_chance']} {$this->destroy_chance}%. ";
         $text_defender .= classLocale::$lang[$this->status == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";

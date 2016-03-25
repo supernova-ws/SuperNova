@@ -55,7 +55,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id) {
       $single_ship_data = get_ship_data($ship_id, $user_data);
       $return['ships'][$ship_id] = array(
         'ID'          => $ship_id,
-        'NAME'        => $lang['tech'][$ship_id],
+        'NAME'        => classLocale::$lang['tech'][$ship_id],
         'AMOUNT'      => $ship_amount,
         'CONSUMPTION' => $single_ship_data['consumption'],
         'SPEED'       => $single_ship_data['speed'],
@@ -111,7 +111,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
 
     'MESSAGE'      => $objFleet->isReturning(),
     'MISSION'      => $objFleet->mission_type,
-    'MISSION_NAME' => $lang['type_mission'][$objFleet->mission_type],
+    'MISSION_NAME' => classLocale::$lang['type_mission'][$objFleet->mission_type],
     'ACS'          => !empty($aks['name']) ? $aks['name'] : (!empty($objFleet->group_id) ? $objFleet->group_id : ''),
     'AMOUNT'       => $spy_level >= 4 ? (pretty_number($objFleet->shipsGetTotal()) . (array_sum($fleet_resources) ? '+' : '')) : '?',
 
@@ -119,13 +119,13 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     'CRYSTAL'   => $spy_level >= 8 ? $fleet_resources[RES_CRYSTAL] : 0,
     'DEUTERIUM' => $spy_level >= 8 ? $fleet_resources[RES_DEUTERIUM] : 0,
 
-    'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$objFleet->fleet_start_type],
+    'START_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$objFleet->fleet_start_type],
     'START_COORDS'       => "[{$objFleet->fleet_start_galaxy}:{$objFleet->fleet_start_system}:{$objFleet->fleet_start_planet}]",
     'START_TIME_TEXT'    => date(FMT_DATE_TIME, $objFleet->time_return_to_source + SN_CLIENT_TIME_DIFF),
     'START_LEFT'         => floor($objFleet->time_return_to_source + 1 - SN_TIME_NOW),
     'START_URL'          => uni_render_coordinates_href($objFleet->launch_coordinates_typed(), '', 3),
 
-    'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$objFleet->fleet_end_type],
+    'END_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$objFleet->fleet_end_type],
     'END_COORDS'       => "[{$objFleet->fleet_end_galaxy}:{$objFleet->fleet_end_system}:{$objFleet->fleet_end_planet}]",
     'END_TIME_TEXT'    => date(FMT_DATE_TIME, $objFleet->time_arrive_to_target + SN_CLIENT_TIME_DIFF),
     'END_LEFT'         => floor($objFleet->time_arrive_to_target + 1 - SN_TIME_NOW),
@@ -160,7 +160,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
         $single_ship_data = get_ship_data($ship_sn_id, $user_data);
         $result['ships'][$ship_sn_id] = array(
           'ID'          => $ship_sn_id,
-          'NAME'        => $lang['tech'][$ship_sn_id],
+          'NAME'        => classLocale::$lang['tech'][$ship_sn_id],
           'AMOUNT'      => $ship_amount,
           'AMOUNT_TEXT' => pretty_number($ship_amount),
           'CONSUMPTION' => $single_ship_data['consumption'],
@@ -170,7 +170,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
       } else {
         $result['ships'][$ship_sn_id] = array(
           'ID'               => $ship_id++,
-          'NAME'             => $lang['tech'][UNIT_SHIPS],
+          'NAME'             => classLocale::$lang['tech'][UNIT_SHIPS],
           'AMOUNT'           => $ship_amount,
           'AMOUNT_TEXT'      => pretty_number($ship_amount),
           'CONSUMPTION'      => 0,
@@ -228,12 +228,12 @@ function tpl_parse_planet($planet) {
     'CRYSTAL_PERCENT'   => $planet['crystal_mine_porcent'] * 10,
     'DEUTERIUM_PERCENT' => $planet['deuterium_sintetizer_porcent'] * 10,
 
-    'STRUCTURE' => isset($structure_que_first['id']) ? $lang['tech'][$structure_que_first['id']] : '',
+    'STRUCTURE' => isset($structure_que_first['id']) ? classLocale::$lang['tech'][$structure_que_first['id']] : '',
 
-    'HANGAR'     => isset($hangar_que_first['id']) ? $lang['tech'][$hangar_que_first['id']] : '',
+    'HANGAR'     => isset($hangar_que_first['id']) ? classLocale::$lang['tech'][$hangar_que_first['id']] : '',
     'hangar_que' => $hangar_que,
 
-    'DEFENSE'     => isset($defense_que_first['id']) ? $lang['tech'][$defense_que_first['id']] : '',
+    'DEFENSE'     => isset($defense_que_first['id']) ? classLocale::$lang['tech'][$defense_que_first['id']] : '',
     'defense_que' => $defense_que,
 
     'FIELDS_CUR' => $planet['field_current'],
@@ -247,7 +247,7 @@ function tpl_parse_planet($planet) {
     'fleet_list' => $fleet_list,
 
     'PLANET_GOVERNOR_ID'        => $planet['PLANET_GOVERNOR_ID'],
-    'PLANET_GOVERNOR_NAME'      => $lang['tech'][$planet['PLANET_GOVERNOR_ID']],
+    'PLANET_GOVERNOR_NAME'      => classLocale::$lang['tech'][$planet['PLANET_GOVERNOR_ID']],
     'PLANET_GOVERNOR_LEVEL'     => $planet['PLANET_GOVERNOR_LEVEL'],
     'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($planet['PLANET_GOVERNOR_ID'], P_MAX_STACK),
   );

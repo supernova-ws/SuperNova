@@ -56,15 +56,15 @@ if($info_action)
         $msg_text = array();
         foreach(sn_get_groups('mercenaries') as $mercenary_id)
         {
-          $msg_text[] = "{$lang['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, false, $mercenary_id)) ? "{$lang['sys_level']} {$mercenary_level}" : $lang['eco_mrk_info_not_hired']);
+          $msg_text[] = "{$lang['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, false, $mercenary_id)) ? "{$lang['sys_level']} {$mercenary_level}" : classLocale::$lang['eco_mrk_info_not_hired']);
         }
         if($mercenary_level = mrc_get_level($user_info, false, UNIT_PREMIUM))
         {
           $msg_text[] = "{$lang['tech'][UNIT_PREMIUM]} - {$mercenary_level} {$lang['sys_level']}";
         }
-        $msg_text = sprintf($lang['eco_mrk_info_player_message'], $user_info['id'], $user_info['username']) . "\r\n" . implode("\r\n", $msg_text);
+        $msg_text = sprintf(classLocale::$lang['eco_mrk_info_player_message'], $user_info['id'], $user_info['username']) . "\r\n" . implode("\r\n", $msg_text);
 
-        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_SPY, $lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
+        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
       break;
 
       default:
@@ -86,7 +86,7 @@ if($info_action)
 
     $template->assign_block_vars('result', array(
       'STATUS' => $e->getCode(),
-      'MESSAGE' => $lang['eco_mrk_errors'][$e->getMessage()],
+      'MESSAGE' => classLocale::$lang['eco_mrk_errors'][$e->getMessage()],
     ));
     /*
     return array(

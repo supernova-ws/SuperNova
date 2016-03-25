@@ -185,7 +185,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
       $options['planet'] += 3;
     }
   }
-  $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $lang['sys_capital'], true, $options['planet_options']);
+  $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], classLocale::$lang['sys_capital'], true, $options['planet_options']);
 
 //  db_user_set_by_id($user_new['id'],
 //    "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',

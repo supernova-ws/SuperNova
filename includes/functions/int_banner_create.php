@@ -14,7 +14,7 @@
 function int_banner_create($id, $type = 'userbar', $format = 'png')
 {
 // banner.php?id=<userid>&type=<banner|userbar>&format=<png>
-  global $config, $lang;
+  global $config;
 
   $id = intval($id);
 

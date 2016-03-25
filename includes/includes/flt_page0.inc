@@ -7,7 +7,7 @@
 
 if($fleet_ship_sort = sys_get_param_id('sort_elements')) {
   define('IN_AJAX', true);
-  if(!empty($lang['player_option_fleet_ship_sort'][$fleet_ship_sort])) {
+  if(!empty(classLocale::$lang['player_option_fleet_ship_sort'][$fleet_ship_sort])) {
     // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT, $fleet_ship_sort);
     // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE, sys_get_param_id('fleet_ship_sort_inverse', 0));
     classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT] = $fleet_ship_sort;
@@ -23,7 +23,7 @@ if(SN_IN_FLEET !== true) {
 lng_include('overview');
 
 if(!$planetrow) {
-  message($lang['fl_noplanetrow'], $lang['fl_error']);
+  message(classLocale::$lang['fl_noplanetrow'], classLocale::$lang['fl_error']);
 }
 
 $template = gettemplate('fleet0', true);
@@ -37,7 +37,7 @@ foreach(sn_get_groups('fleet') as $n => $unit_id) {
     $ship_list[$unit_id] = array(
       '__INDEX'     => $record_index++,
       'ID'          => $unit_id,
-      'NAME'        => $lang['tech'][$unit_id],
+      'NAME'        => classLocale::$lang['tech'][$unit_id],
       'AMOUNT'      => $unit_level,
       'AMOUNT_TEXT' => pretty_number($unit_level),
       'CONSUMPTION' => $ship_data['consumption'],
@@ -72,7 +72,7 @@ foreach($ship_list as $ship_data) {
   $template->assign_block_vars('ships', $ship_data);
 }
 
-foreach($lang['player_option_fleet_ship_sort'] as $sort_id => $sort_text) {
+foreach(classLocale::$lang['player_option_fleet_ship_sort'] as $sort_id => $sort_text) {
   $template->assign_block_vars('ship_sort_list', array(
     'VALUE' => $sort_id,
     'TEXT' => $sort_text,
@@ -95,7 +95,7 @@ $template->assign_vars(array(
 
 //  'target_mission'     => $target_mission,
 //  'MISSION_NAME'		  => $lang['type_mission'][$target_mission],
-  'TYPE_NAME'		     => $lang['fl_planettype'][$planet_type],
+  'TYPE_NAME'		     => classLocale::$lang['fl_planettype'][$planet_type],
 
   'ShipList'           => $ShipList,
 
@@ -111,4 +111,4 @@ $template->assign_vars(array(
 ));
 
 $template->assign_recursive($template_result);
-display($template, $lang['fl_title']);
+display($template, classLocale::$lang['fl_title']);

@@ -14,16 +14,16 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
 $objFleet = new Fleet();
 $objFleet->dbLoad($fleetid);
 if(!$objFleet->dbId) {
-  message($lang['fl_fleet_not_exists'], $lang['fl_error']);
+  message(classLocale::$lang['fl_fleet_not_exists'], classLocale::$lang['fl_error']);
 }
 
 if ($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to_source < SN_TIME_NOW || $objFleet->isReturning()) {
-  message($lang['fl_isback'], $lang['fl_error']);
+  message(classLocale::$lang['fl_isback'], classLocale::$lang['fl_error']);
 }
 
 if($objFleet->playerOwnerId != $user['id']) {
-  $debug->warning($lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
-  message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
+  $debug->warning(classLocale::$lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
+  message(classLocale::$lang['fl_aks_hack_wrong_fleet'], classLocale::$lang['fl_error']);
 }
 
 $aks = db_acs_get_by_fleet($fleetid);
@@ -38,14 +38,14 @@ if($userToAdd_unsafe) {
   $userToAddID = $userToAddID['id'];
 
   if($objFleet->target_owner_id == $userToAddID) {
-    message($lang['flt_aks_player_same'], $lang['fl_error']);
+    message(classLocale::$lang['flt_aks_player_same'], classLocale::$lang['fl_error']);
   }
 
   if($userToAddID) {
     if(!$aks) {
       // No AСS exists - making one
       if(!$objFleet->group_id) {
-        db_acs_insert($lang, $fleetid, $user, $objFleet);
+        db_acs_insert(classLocale::$lang, $fleetid, $user, $objFleet);
 
         $aks = db_acs_get_by_fleet($fleetid);
 
@@ -53,7 +53,7 @@ if($userToAdd_unsafe) {
         $objFleet->group_id = $aks['id'];
         $objFleet->dbSave();
       } else {
-        message($lang['fl_aks_already_in_aks'], $lang['fl_error']);
+        message(classLocale::$lang['fl_aks_already_in_aks'], classLocale::$lang['fl_error']);
       }
     }
 
@@ -66,21 +66,21 @@ if($userToAdd_unsafe) {
     }
 
     if(count($invited_ar) >= 5) {
-      message($lang['flt_aks_error_too_much_players'], $lang['fl_error']);
+      message(classLocale::$lang['flt_aks_error_too_much_players'], classLocale::$lang['fl_error']);
     }
 
     if($isUserExists) {
-      $userToAdd_unsafe != $user['username'] ? $add_user_message_mr = sprintf($lang['fl_aks_player_invited_already'], $userToAdd) : false;
+      $userToAdd_unsafe != $user['username'] ? $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_invited_already'], $userToAdd) : false;
     } else {
-      $add_user_message_mr = sprintf($lang['fl_aks_player_invited'], $userToAdd);
+      $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_invited'], $userToAdd);
       db_acs_update($userToAddID, $fleetid)
-        or die(sprintf($lang['fl_aks_adding_error'],db_error()));
+        or die(sprintf(classLocale::$lang['fl_aks_adding_error'],db_error()));
       $aks['eingeladen'] .= ',' . $userToAddID;
     }
     msg_send_simple_message ( $userToAddID, $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'],
-      $lang['fl_aks_invite_message_header'], sprintf( $lang['fl_aks_invite_message'], $user['username']));
+      classLocale::$lang['fl_aks_invite_message_header'], sprintf( classLocale::$lang['fl_aks_invite_message'], $user['username']));
   } else {
-    $add_user_message_mr = sprintf($lang['fl_aks_player_error'], $userToAdd);
+    $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_error'], $userToAdd);
   }
 }
 
@@ -89,7 +89,7 @@ $template->assign_vars(array(
   'FLEET_ID' => $fleetid,
   'MESSAGE' => $add_user_message_mr,
   'PAGE_HEADER' => "{$lang['fl_associate']} '{$aks['name']}'",
-  'MISSION_NAME' => $lang['type_mission'][MT_AKS],
+  'MISSION_NAME' => classLocale::$lang['type_mission'][MT_AKS],
 ));
 
 if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(LOC_USER, "`id` in ({$aks['eingeladen']})")) && !empty($members)) {
@@ -122,4 +122,4 @@ foreach($fleet_data['ships'] as $ship_data) {
   $template->assign_block_vars('fleets.ships', $ship_data);
 }
 
-display($template, $lang['fl_title']);
+display($template, classLocale::$lang['fl_title']);

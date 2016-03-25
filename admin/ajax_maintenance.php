@@ -256,7 +256,7 @@ $_GET['admin_update'] = 1;
 include_once('../scheduler.php');
 $totaltime = microtime(true) - $totaltime;
 
-$adm_stat_title = $lang['adm_stat_title'];
+$adm_stat_title = classLocale::$lang['adm_stat_title'];
 $result = $result ? "<li>{$adm_stat_title} - {$result}</li>" : '';
 $result = '<div align="left"><ul>' . $msg . $result . '</ul></div>';
 echo json_encode($result . ' ' . $totaltime);

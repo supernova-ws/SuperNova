@@ -13,7 +13,7 @@ function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar')
     {
       if(file_exists($avatar_filename) && !unlink($avatar_filename))
       {
-        throw new Exception($lang['opt_msg_avatar_error_delete'], ERR_ERROR);
+        throw new Exception(classLocale::$lang['opt_msg_avatar_error_delete'], ERR_ERROR);
       }
       $avatar_field = 0;
       throw new Exception(classLocale::$lang['opt_msg_avatar_removed'], ERR_NONE);

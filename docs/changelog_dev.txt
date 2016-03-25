@@ -721,6 +721,10 @@ attribute - свойства юнитов
     $parse - это остатки старого темплейт-энджайна!
     $parse = classLocale::$lang;
 
+    Поизвлекать $lang из строк
+
+    $classLocale1-2-3.. - позаменять
+
 
 #ctv
 

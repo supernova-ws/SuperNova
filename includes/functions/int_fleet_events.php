@@ -1,7 +1,7 @@
 <?php
 
 function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scanned = false) {
-  global $config, $user, $fleet_number, $lang;
+  global $config, $user, $fleet_number;
 
   $fleet_events = array();
   $fleet_number = 0;
@@ -123,7 +123,7 @@ function flt_register_event_objFleet(Fleet $objFleet, $ov_label, $planet_end_typ
 
 function int_planet_pretemplate($planetrow, &$template)
 {
-  global $lang, $user;
+  global $user;
 
   $governor_id = $planetrow['PLANET_GOVERNOR_ID'];
   $governor_level_plain = mrc_get_level($user, $planetrow, $governor_id, false, true);

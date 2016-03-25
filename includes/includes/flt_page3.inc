@@ -15,30 +15,30 @@ function sn_fleet_page3($time_to_travel) {
 
   $adjusted_travel_time = $time_to_travel;
 
-  $errorlist .= !is_array($fleetarray) ? $lang['fl_no_fleetarray'] : '';
+  $errorlist .= !is_array($fleetarray) ? classLocale::$lang['fl_no_fleetarray'] : '';
 
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = '';
   if(!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1) {
-    $errorlist .= $lang['fl_limit_galaxy'];
+    $errorlist .= classLocale::$lang['fl_limit_galaxy'];
   }
   if(!$system || $system > $config->game_maxSystem || $system < 1) {
-    $errorlist .= $lang['fl_limit_system'];
+    $errorlist .= classLocale::$lang['fl_limit_system'];
   }
   if(!$planet || $planet < 1 || ($planet > $config->game_maxPlanet && $target_mission != MT_EXPLORE)) {
-    $errorlist .= $lang['fl_limit_planet'];
+    $errorlist .= classLocale::$lang['fl_limit_planet'];
   }
   if($planetrow['galaxy'] == $galaxy && $planetrow['system'] == $system && $planetrow['planet'] == $planet && $planetrow['planet_type'] == $planet_type) {
-    $errorlist .= $lang['fl_ownpl_err'];
+    $errorlist .= classLocale::$lang['fl_ownpl_err'];
   }
   if(!$planet_type) {
-    $errorlist .= $lang['fl_no_planettype'];
+    $errorlist .= classLocale::$lang['fl_no_planettype'];
   }
   if($planet_type != PT_PLANET && $planet_type != PT_DEBRIS && $planet_type != PT_MOON) {
-    $errorlist .= $lang['fl_fleet_err_pl'];
+    $errorlist .= classLocale::$lang['fl_fleet_err_pl'];
   }
   if(empty($missiontype[$target_mission])) {
-    $errorlist .= $lang['fl_bad_mission'];
+    $errorlist .= classLocale::$lang['fl_bad_mission'];
   }
 
   $TransMetal = max(0, sys_get_param_float('resource0'));
@@ -47,7 +47,7 @@ function sn_fleet_page3($time_to_travel) {
   $StorageNeeded = $TransMetal + $TransCrystal + $TransDeuterium;
 
   if(!$StorageNeeded && $target_mission == MT_TRANSPORT) {
-    $errorlist .= $lang['fl_noenoughtgoods'];
+    $errorlist .= classLocale::$lang['fl_noenoughtgoods'];
   }
 
   sn_db_transaction_start();
@@ -57,40 +57,40 @@ function sn_fleet_page3($time_to_travel) {
 
   if($target_mission == MT_EXPLORE) {
     if($MaxExpeditions == 0) {
-      $errorlist .= $lang['fl_expe_notech'];
+      $errorlist .= classLocale::$lang['fl_expe_notech'];
     } elseif($FlyingExpeditions >= $MaxExpeditions) {
-      $errorlist .= $lang['fl_expe_max'];
+      $errorlist .= classLocale::$lang['fl_expe_max'];
     }
   } else {
     if($TargetPlanet['id_owner']) {
       if($target_mission == MT_COLONIZE) {
-        $errorlist .= $lang['fl_colonized'];
+        $errorlist .= classLocale::$lang['fl_colonized'];
       }
 
       if($TargetPlanet['id_owner'] == $planetrow['id_owner']) {
         if($target_mission == MT_ATTACK) {
-          $errorlist .= $lang['fl_no_self_attack'];
+          $errorlist .= classLocale::$lang['fl_no_self_attack'];
         }
 
         if($target_mission == MT_SPY) {
-          $errorlist .= $lang['fl_no_self_spy'];
+          $errorlist .= classLocale::$lang['fl_no_self_spy'];
         }
       } else {
         if($target_mission == MT_RELOCATE) {
-          $errorlist .= $lang['fl_only_stay_at_home'];
+          $errorlist .= classLocale::$lang['fl_only_stay_at_home'];
         }
       }
     } else {
       if($target_mission < MT_COLONIZE) {
-        $errorlist .= $lang['fl_unknow_target'];
+        $errorlist .= classLocale::$lang['fl_unknow_target'];
       } else {
         if($target_mission == MT_DESTROY) {
-          $errorlist .= $lang['fl_nomoon'];
+          $errorlist .= classLocale::$lang['fl_nomoon'];
         }
 
         if($target_mission == MT_RECYCLE) {
           if($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0) {
-            $errorlist .= $lang['fl_nodebris'];
+            $errorlist .= classLocale::$lang['fl_nodebris'];
           }
         }
       }
@@ -102,25 +102,25 @@ function sn_fleet_page3($time_to_travel) {
     $captain = sn_module::$sn_module['unit_captain']->unit_captain_get($planetrow['id']);
 //      mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
     if(!$captain) {
-      $errorlist .= $lang['module_unit_captain_error_no_captain'];
+      $errorlist .= classLocale::$lang['module_unit_captain_error_no_captain'];
     } elseif($captain['unit_location_type'] == LOC_PLANET) {
       if($target_mission == MT_RELOCATE && ($arriving_captain = mrc_get_level($user, $TargetPlanet, UNIT_CAPTAIN, true))) {
-        $errorlist .= $lang['module_unit_captain_error_captain_already_bound'];
+        $errorlist .= classLocale::$lang['module_unit_captain_error_captain_already_bound'];
       }
     } else {
-      $errorlist .= $lang['module_unit_captain_error_captain_flying'];
+      $errorlist .= classLocale::$lang['module_unit_captain_error_captain_flying'];
     }
   }
 
   if($errorlist) {
     sn_db_transaction_rollback();
-    message("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
+    message("<span class='error'><ul>{$errorlist}</ul></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach($fleetarray as $Ship => $Count) {
     if($Count > mrc_get_level($user, $planetrow, $Ship)) {
-      message("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+      message("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
     }
   }
 
@@ -156,12 +156,12 @@ function sn_fleet_page3($time_to_travel) {
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
   if($cant_attack !== ATTACK_ALLOWED) {
-    message("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
+    message("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   if(!in_array($speed_percent, $speed_possible)) {
-    message("<span class='error'><b>" . $lang['fl_cheat_speed'] . "</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    message("<span class='error'><b>" . classLocale::$lang['fl_cheat_speed'] . "</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $mission_time_in_seconds = 0;
@@ -169,7 +169,7 @@ function sn_fleet_page3($time_to_travel) {
   if($target_mission == MT_AKS && $aks) {
 //    if($fleet_start_time > $aks['ankunft']) {
     if($arrival_time > $aks['ankunft']) {
-      message($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $arrival_time) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), $lang['fl_error']);
+      message(classLocale::$lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $arrival_time) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), classLocale::$lang['fl_error']);
     }
     $group_sync_delta_time = $aks['ankunft'] - $arrival_time;
     // Set arrival time to ACS arrival time
@@ -202,13 +202,13 @@ function sn_fleet_page3($time_to_travel) {
   $FleetStorage -= $consumption;
 
   if($StorageNeeded > $FleetStorage) {
-    message("<span class='error'><b>" . $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    message("<span class='error'><b>" . classLocale::$lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if($planetrow['deuterium'] < $TransDeuterium + $consumption) {
-    message("<font color=\"red\"><b>" . $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) . "</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) . "</b></font>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if(($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
-    message("<font color=\"red\"><b>" . $lang['fl_no_resources'] . "</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_resources'] . "</b></font>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $fleetarray[RES_METAL] = $TransMetal;
@@ -243,7 +243,7 @@ function sn_fleet_page3($time_to_travel) {
 
   $template_route = array(
     'ID'                 => 1,
-    'START_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$planetrow['planet_type']],
+    'START_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$planetrow['planet_type']],
     'START_COORDS'       => uni_render_coordinates($planetrow),
     'START_NAME'         => $planetrow['name'],
     'START_TIME_TEXT'    => date(FMT_DATE_TIME, $return_time + SN_CLIENT_TIME_DIFF),
@@ -252,7 +252,7 @@ function sn_fleet_page3($time_to_travel) {
 
   if(!empty($TargetPlanet)) {
     $template_route += array(
-      'END_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
+      'END_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
       'END_COORDS'       => uni_render_coordinates($TargetPlanet),
       'END_NAME'         => $TargetPlanet['name'],
       'END_TIME_TEXT'    => date(FMT_DATE_TIME, $arrival_time + SN_CLIENT_TIME_DIFF),
@@ -272,13 +272,13 @@ function sn_fleet_page3($time_to_travel) {
         'AMOUNT_TEXT' => pretty_number($ship_count),
 //        'CONSUMPTION' => $ship_base_data['consumption'],
 //        'SPEED'       => $ship_base_data['speed'],
-        'NAME'        => $lang['tech'][$ship_id],
+        'NAME'        => classLocale::$lang['tech'][$ship_id],
       ));
     }
   }
 
   $template->assign_vars(array(
-    'mission'         => $lang['type_mission'][$target_mission] . ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD ? ' ' . pretty_time($mission_time_in_seconds) : ''),
+    'mission'         => classLocale::$lang['type_mission'][$target_mission] . ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD ? ' ' . pretty_time($mission_time_in_seconds) : ''),
     'dist'            => pretty_number($distance),
     'speed'           => pretty_number($fleet_speed),
     'deute_need'      => pretty_number($consumption),
@@ -293,5 +293,5 @@ function sn_fleet_page3($time_to_travel) {
   $planetrow = db_planet_by_id($planetrow['id']);
 
   $template->assign_recursive($template_result);
-  display($template, $lang['fl_title']);
+  display($template, classLocale::$lang['fl_title']);
 }

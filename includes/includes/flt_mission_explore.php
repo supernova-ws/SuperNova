@@ -94,8 +94,8 @@ function flt_mission_explore(&$mission_data) {
   }
 
   // Вычисляем вероятность выпадения данного числа в общем пуле
-  $msg_sender = $lang['flt_mission_expedition']['msg_sender'];
-  $msg_title = $lang['flt_mission_expedition']['msg_title'];
+  $msg_sender = classLocale::$lang['flt_mission_expedition']['msg_sender'];
+  $msg_title = classLocale::$lang['flt_mission_expedition']['msg_title'];
 
   $outcome_percent = ($outcome_description['value'] - $outcome_value) / $outcome_description['chance'];
 
@@ -151,7 +151,7 @@ function flt_mission_explore(&$mission_data) {
       }
 
       if(empty($fleet_found)) {
-        $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
+        $msg_text_addon = classLocale::$lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
       } else {
         foreach($fleet_found as $unit_id => $unit_amount) {
           $objFleet->shipAdjustCount($unit_id, $unit_amount);
@@ -178,7 +178,7 @@ function flt_mission_explore(&$mission_data) {
       $objFleet->resourcesAdjust($resources_found);
 
       if(array_sum($resources_found) == 0) {
-        $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
+        $msg_text_addon = classLocale::$lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
       }
     break;
 
@@ -189,7 +189,7 @@ function flt_mission_explore(&$mission_data) {
       $found_dark_matter = floor(min($outcome_percent * $result['$fleet_metal_points'] / $rates[RES_DARK_MATTER], 10000) * mt_rand(750000, 1000000) / 1000000);
 
       if(!$found_dark_matter) {
-        $msg_text_addon = $lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
+        $msg_text_addon = classLocale::$lang['flt_mission_expedition']['outcomes'][$mission_outcome]['no_result'];
       }
     break;
 
@@ -204,32 +204,32 @@ function flt_mission_explore(&$mission_data) {
 
   if($found_dark_matter) {
     rpg_points_change($objFleet->playerOwnerId, RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
-    $msg_text_addon = sprintf($lang['flt_mission_expedition']['found_dark_matter'], $found_dark_matter);
+    $msg_text_addon = sprintf(classLocale::$lang['flt_mission_expedition']['found_dark_matter'], $found_dark_matter);
   }
 
   if(!empty($fleet_lost)) {
-    $msg_text_addon = $lang['flt_mission_expedition']['lost_fleet'];
+    $msg_text_addon = classLocale::$lang['flt_mission_expedition']['lost_fleet'];
     foreach($fleet_lost as $ship_id => $ship_amount) {
-      $msg_text_addon .= $lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
+      $msg_text_addon .= classLocale::$lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
     }
   }
 
   if(!empty($fleet_found)) {
-    $msg_text_addon = $lang['flt_mission_expedition']['found_fleet'];
+    $msg_text_addon = classLocale::$lang['flt_mission_expedition']['found_fleet'];
     foreach($fleet_found as $ship_id => $ship_amount) {
-      $msg_text_addon .= $lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
+      $msg_text_addon .= classLocale::$lang['tech'][$ship_id] . ' - ' . $ship_amount . "\r\n";
     }
   }
 
   if(!empty($resources_found) && array_sum($resources_found) > 0) {
-    $msg_text_addon = $lang['flt_mission_expedition']['found_resources'];
+    $msg_text_addon = classLocale::$lang['flt_mission_expedition']['found_resources'];
     foreach($resources_found as $resource_id => $resource_amount) {
-      $msg_text_addon .= $lang['tech'][$resource_id] . ' - ' . $resource_amount . "\r\n";
+      $msg_text_addon .= classLocale::$lang['tech'][$resource_id] . ' - ' . $resource_amount . "\r\n";
     }
   }
 
   if(!$msg_text) {
-    $messages = &$lang['flt_mission_expedition']['outcomes'][$mission_outcome]['messages'];
+    $messages = &classLocale::$lang['flt_mission_expedition']['outcomes'][$mission_outcome]['messages'];
     if($outcome_mission_sub >= 0 && is_array($messages)) {
       $messages = &$messages[$outcome_mission_sub];
     }
