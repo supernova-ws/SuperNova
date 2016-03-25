@@ -203,7 +203,7 @@ function sn_maintenance_pack_user_list($user_list) {
   return implode(',', $result);
 }
 
-global $config, $debug, $lang;
+global $config, $debug;
 
 sn_db_transaction_start();
 $old_server_status = $config->db_loadItem('game_disable');

@@ -1,5 +1,8 @@
 <?php
 
+global $lang;
+$classLocale = $lang;
+
 if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= SN_TIME_NOW) {
   include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);
 }
@@ -95,6 +98,7 @@ if($template_result[F_GAME_DISABLE] = $config->game_disable) {
   }
 }
 
+
 // TODO ban
 // TODO $skip_ban_check
 if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
@@ -106,10 +110,8 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
   // TODO: Add ban reason. Add vacation time. Add message window
   // sn_sys_logout(false, true);
   // core_auth::logout(false, true);
-  $classLocale = $lang;
   message("{$classLocale['sys_banned_msg']} {$bantime}", classLocale::$lang['ban_title']);
-  $classLocale1 = $lang;
-  die("{$classLocale1['sys_banned_msg']} {$bantime}");
+  die("{$classLocale['sys_banned_msg']} {$bantime}");
 }
 
 // TODO !!! Просто $allow_anonymous используется в платежных модулях !!!

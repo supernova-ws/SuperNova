@@ -8,9 +8,8 @@ $active_payment_modules = sn_module_get_active_count('payment') > 0;
 
 global $sn_version_check_class, $template_result, $user, $config, $lang; // , $sn_menu_admin_extra
 global $sn_menu, $sn_menu_admin;
-
 $classLocale = $lang;
-$classLocale1 = $lang;
+
 $sn_menu = array(
   /*
     'menu_triolan' => array(                     // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
@@ -347,7 +346,7 @@ $sn_menu = array(
   'menu_news'          => array(
     'LEVEL'       => 'submenu',
     'ITEM'        => classLocale::$lang['news_title'],
-    'ITEM_FINISH' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"fresh\">{$classLocale1['lm_announce_fresh']}</span>" : ''),
+    'ITEM_FINISH' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"fresh\">{$classLocale['lm_announce_fresh']}</span>" : ''),
     'LINK'        => 'announce.php',
     'ICON'        => true,
   ),

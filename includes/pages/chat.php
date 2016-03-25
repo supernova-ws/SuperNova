@@ -97,6 +97,7 @@ function sn_chat_add_model() {
 
 function sn_chat_msg_view($template = null) {
   global $config, $skip_fleet_update, $user, $lang;
+  $classLocale = $lang;
 
   define('IN_AJAX', true);
   $skip_fleet_update = true;
@@ -172,7 +173,7 @@ function sn_chat_msg_view($template = null) {
   $template->assign_recursive($template_result);
 
   if($history) {
-    display($template, "{$lang['chat_history']} - {$lang[$alliance ? 'chat_ally' : 'chat_common']}", true, '', false, true);
+    display($template, "{$classLocale['chat_history']} - {$classLocale[$alliance ? 'chat_ally' : 'chat_common']}", true, '', false, true);
   } else {
     $result['last_message'] = $last_message;
     ob_start();

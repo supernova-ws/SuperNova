@@ -1,5 +1,8 @@
 <?php
 
+global $lang;
+$classLocale = $lang;
+
 if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
@@ -85,7 +88,6 @@ if($userToAdd_unsafe) {
 }
 
 $template = gettemplate('fleet_aks_invite', true);
-$classLocale = $lang;
 $template->assign_vars(array(
   'FLEET_ID' => $fleetid,
   'MESSAGE' => $add_user_message_mr,

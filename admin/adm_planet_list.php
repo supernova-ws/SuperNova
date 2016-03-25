@@ -6,7 +6,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $config, $lang, $user;
+global $config, $user;
 
 // if($user['authlevel'] < 1)
 if($user['authlevel'] < 3) {

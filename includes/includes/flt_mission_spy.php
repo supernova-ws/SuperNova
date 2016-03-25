@@ -79,7 +79,7 @@ function flt_mission_spy(&$mission_data) {
 
     $spy_message = "<table width=\"440\" cellspacing = \"1\"><tr><td class=\"c\" colspan=\"4\">{$classLocale['sys_spy_maretials']} {$target_planet_row['name']} ";
     $spy_message .= uni_render_coordinates_href($target_planet_row, '', 3);
-    $spy_message .= " ({$lang['Player_']} '{$target_user_row['username']}') {$classLocale['On_']} ";
+    $spy_message .= " ({$classLocale['Player_']} '{$target_user_row['username']}') {$classLocale['On_']} ";
     $spy_message .= date(FMT_DATE_TIME, $objFleet->time_arrive_to_target);
     $spy_message .= "</td></tr><tr>";
     $spy_message .= "<td width=220>{$classLocale['sys_metal']}</td><td width=220 align=right>" . pretty_number($target_planet_row['metal']) . "</td>";

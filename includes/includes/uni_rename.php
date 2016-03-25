@@ -1,5 +1,7 @@
 <?php
 
+global $lang;
+$classLocale = $lang;
 
 try
   {
@@ -20,7 +22,6 @@ try
 
     $uni_row = db_universe_get($uni_galaxy, $uni_system);
     $uni_row['universe_price'] += $uni_system ? $config->uni_price_system : $config->uni_price_galaxy;
-    $classLocale = $lang;
     $uni_row['universe_name'] = strip_tags($uni_row['universe_name'] ? $uni_row['universe_name'] : ($uni_system ? "{$classLocale['sys_system']} [{$uni_galaxy}:{$uni_system}]" : "{$classLocale['sys_galaxy']} {$uni_galaxy}"));
 
     if(sys_get_param_str('uni_name_submit'))

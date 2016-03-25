@@ -177,7 +177,6 @@ class UBEMoonCalculator {
 
   public function message_generate(UBE $ube) {
     global $lang;
-
     $classLocale = $lang;
 
     $text_defender = '';

@@ -1,5 +1,8 @@
 <?php
 
+global $lang;
+$classLocale = $lang;
+
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
@@ -92,7 +95,6 @@ foreach($userList as $userRow)
     }
   }
 
-  $classLocale = $lang;
   $last_active = time() - $userRow["onlinetime"];
   if($user_admin)
   {

@@ -8,7 +8,7 @@ class UBEDebug {
   /**
    *
    *
-   * @version 41a6.44
+   * @version 41a6.45
    */
   public static function unit_dump_header() {
     if(!defined('DEBUG_UBE')) {
@@ -45,7 +45,7 @@ class UBEDebug {
    * @param string       $desc
    * @param UBEUnit|null $before
    *
-   * @version 41a6.44
+   * @version 41a6.45
    */
   public static function unit_dump(UBEUnit $unit, $desc = '', UBEUnit $before = null) {
     if(!defined('DEBUG_UBE')) {
@@ -84,7 +84,7 @@ class UBEDebug {
   /**
    *
    *
-   * @version 41a6.44
+   * @version 41a6.45
    */
   public static function unit_dump_footer() {
     if(!defined('DEBUG_UBE')) {
@@ -107,8 +107,8 @@ class UBEDebug {
     }
 
     global $lang;
-
     $classLocale = $lang;
+
     print("[{$attacking_unit_pool->unitId}]{$classLocale['tech'][$attacking_unit_pool->unitId]}" .
       ' attacks ' .
       $defending_fleet_id . '@' . "[{$defending_unit_pool->unitId}]{$classLocale['tech'][$defending_unit_pool->unitId]}" .
@@ -126,7 +126,7 @@ class UBEDebug {
    * @param string       $field
    * @param UBEUnit|null $before
    *
-   * @version 41a6.44
+   * @version 41a6.45
    */
   public static function unit_dump_delta(UBEUnit $unit, $field, UBEUnit $before = null) {
     if(!defined('DEBUG_UBE')) {

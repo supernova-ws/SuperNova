@@ -10,7 +10,7 @@ classSupernova::$sn_mvc['view']['techtree'][] = 'sn_techtree_view';
 
 function sn_techtree_view($template = null)
 {
-  global $lang, $user, $planetrow;
+  global $user, $planetrow;
 
   $tech_tree = array();
   foreach(get_unit_param('techtree') as $unit_group_id => $unit_list)

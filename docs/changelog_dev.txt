@@ -723,8 +723,10 @@ attribute - свойства юнитов
 
     Поизвлекать $lang из строк
 
-    $classLocale1-2-3.. - позаменять
+Проработать - поделать нормальные строки без {$classLocale['value']}
 
+global $lang;
+$classLocale = $lang;
 
 #ctv
 

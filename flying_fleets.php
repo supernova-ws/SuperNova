@@ -2,7 +2,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $debug, $lang, $user, $planetrow;
+global $debug, $user, $planetrow;
 
 if(!empty($_POST['return']) && is_array($_POST['return'])) {
   foreach($_POST['return'] as $fleet_id) {

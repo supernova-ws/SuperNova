@@ -8,7 +8,7 @@
  * @copyright 2008 by ??????? for XNova
  */
 function sn_options_model() {
-  global $user, $user_option_list, $lang, $template_result, $config;
+  global $user, $user_option_list, $template_result, $config;
 
   $language_new = sys_get_param_str('langer', $user['lang']);
 
@@ -272,6 +272,7 @@ function sn_options_model() {
 
 function sn_options_view($template = null) {
   global $lang, $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config;
+  $classLocale = $lang;
 
   sys_user_vacation($user);
 
@@ -339,7 +340,7 @@ function sn_options_view($template = null) {
     }
   }
 
-  $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
+  $str_date_format = "%3$02d %2$0s %1$04d {$classLocale['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate($user['deltime']);
 
   $user_time_diff = playerTimeDiff::user_time_diff_get();

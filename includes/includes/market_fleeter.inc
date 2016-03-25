@@ -1,5 +1,8 @@
 <?php
 
+global $lang;
+$classLocale = $lang;
+
 if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) {
   $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
 }
@@ -73,7 +76,6 @@ if(is_array($shipList)) {
       $total[$resID] += $resCount;
     }
 
-    $classLocale = $lang;
     $message .= "<li>{$classLocale['tech'][$shipID]}: " . pretty_number($shipCount);
   }
 
