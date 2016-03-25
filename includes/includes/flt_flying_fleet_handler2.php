@@ -1,23 +1,5 @@
 <?php
 
-/**
- * @function RestoreFleetToPlanet
- *
- * @version 1.0
- * @copyright 2008 Chlorel for XNova
- */
-
-/*
-@function RestoreFleetToPlanet
-
-$fleet_row      = enregistrement de flotte
-$start          = true  - planete de depart
-                = false - planete d'arrivГ©e
-$only_resources = true - store only resources
-                = false - store fleet too
-returns         = bitmask for recaching
-*/
-
 // ------------------------------------------------------------------
 // unit_captain overrides
 /**
@@ -28,12 +10,11 @@ returns         = bitmask for recaching
  *
  * @param Fleet $objFleet
  * @param bool  $start
- * @param bool  $only_resources
  * @param null  $result
  *
  * @return mixed
  */
-function RestoreFleetToPlanet(&$objFleet, $start = true, $only_resources = false, $result = null) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start, $only_resources, &$result)); }
+function RestoreFleetToPlanet(&$objFleet, $start = true, $result = null) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start, $only_resources, &$result)); }
 
 // ------------------------------------------------------------------
 function flt_flyingFleetsSort($a, $b) {
@@ -232,7 +213,7 @@ return;
 
     if($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
       // Fleet returns to planet
-      $objFleet->RestoreFleetToPlanet(true, false);
+      $objFleet->shipsLand(true);
       sn_db_transaction_commit();
       continue;
     }

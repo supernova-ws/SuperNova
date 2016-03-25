@@ -39,5 +39,5 @@ function flt_mission_relocate($mission_data) {
     $lang['sys_mess_qg'], $lang['sys_stay_mess_stay'], $Message
   );
 
-  return $objFleet->RestoreFleetToPlanet(false);
+  return $objFleet->shipsLand(false);
 }

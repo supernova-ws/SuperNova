@@ -40,7 +40,7 @@ function flt_mission_colonize(&$mission_data) {
           msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, $lang['sys_colo_mess_from'], $lang['sys_colo_mess_report'], $TheMessage);
 
           $objFleet->shipAdjustCount(SHIP_COLONIZER, -1);
-          return $objFleet->RestoreFleetToPlanet(false);
+          return $objFleet->shipsLand(false);
         }
       }
     }

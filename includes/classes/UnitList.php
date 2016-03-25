@@ -181,7 +181,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.30
+   * @version 41a6.31
    */
   // TODO - Factory
   public function _createElement() {
@@ -204,12 +204,6 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
       throw new Exception('Unit [' . $unit_id . '] is not exists in UnitList');
     }
     return $this->mapUnitIdToDb[$unit_id]->count;
-  }
-
-  public function unitsCountApplyLossMultiplier($ships_lost_multiplier) {
-    foreach($this->mapUnitIdToDb as $unit_id => $unit) {
-      $unit->count = floor($unit->count * $ships_lost_multiplier);
-    }
   }
 
   /**
@@ -249,12 +243,18 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return $result;
   }
 
+  public function unitsCountApplyLossMultiplier($ships_lost_multiplier) {
+    foreach($this->mapUnitIdToDb as $unit_id => $unit) {
+      $unit->count = floor($unit->count * $ships_lost_multiplier);
+    }
+  }
+
   public function unitsCount() {
-    return $this->getSumProperty('count');
+    return $this->unitsPropertySumById(0, 'count');
   }
 
   public function unitsCapacity() {
-    return $this->getSumProperty('capacity');
+    return $this->unitsPropertySumById(0, 'capacity');
   }
 
   /**
@@ -265,10 +265,14 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    * @return int
    */
   public function unitsCountById($unit_id = 0) {
+    return $this->unitsPropertySumById($unit_id, 'count');
+  }
+
+  public function unitsPropertySumById($unit_id = 0, $propertyName = 'count') {
     $result = 0;
     foreach($this->mapUnitIdToDb as $unit) {
       if(!$unit_id || $unit->unitId == $unit_id) {
-        $result += $unit->count;
+        $result += $unit->$propertyName;
       }
     }
 

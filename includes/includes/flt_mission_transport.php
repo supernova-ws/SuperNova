@@ -12,6 +12,8 @@
 function flt_mission_transport($mission_data) {
   global $lang;
 
+  $result = CACHE_FLEET;
+
   $objFleet = $mission_data->fleet;
   $source_planet = &$mission_data->src_planet;
   $destination_planet = &$mission_data->dst_planet;
@@ -19,7 +21,7 @@ function flt_mission_transport($mission_data) {
   if(!isset($destination_planet['id']) || !$destination_planet['id_owner']) {
     $objFleet->markReturnedAndSave();
 
-    return CACHE_FLEET;
+    return $result;
   }
 
   $fleet_resources = $objFleet->resourcesGetList();
@@ -35,5 +37,8 @@ function flt_mission_transport($mission_data) {
     msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, $lang['sys_mess_tower'], $lang['sys_mess_transport'], $Message);
   }
 
-  return $objFleet->RestoreFleetToPlanet(false, true);
+  $result = $objFleet->resourcesUnload(false, $result);
+  $this->dbSave();
+
+  return $result;
 }

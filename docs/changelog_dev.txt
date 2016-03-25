@@ -706,6 +706,7 @@ attribute - свойства юнитов
 
   public function RestoreFleetToPlanet($start = true, $only_resources = false, &$result = CACHE_NOTHING) {
 
+    Fleet->shipsGetArray() - всё, что его использует, должно быть внесено в Fleet
 
 #ctv
 

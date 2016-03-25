@@ -270,8 +270,7 @@ class Fleet extends UnitContainer {
   }
 
   public function isEmpty() {
-    // TODO: Implement isEmpty() method.
-    return false;
+    return !$this->resourcesGetTotal() && !$this->shipsGetTotal();
   }
 
 //  public function getPlayerOwnerId() {
@@ -409,87 +408,6 @@ class Fleet extends UnitContainer {
     );
   }
 
-
-  /**
-   * Restores fleet or resources to planet
-   *
-   * @param bool $start
-   * @param bool $only_resources
-   * @param int  $result
-   *
-   * @return int
-   */
-  // TODO - split to functions
-  public function RestoreFleetToPlanet($start = true, $only_resources = false, &$result = CACHE_NOTHING) {
-    sn_db_transaction_check(true);
-
-    // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-    if($this->isEmpty() || ($this->_is_returning == 1 && $only_resources)) {
-      return $result;
-    }
-
-    $coordinates = $start ? $this->launch_coordinates_typed() : $this->target_coordinates_typed();
-
-    // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
-    // TODO Проверить от многократного срабатывания !!!
-    // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
-    // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
-    // Узнаем ИД владельца планеты - без блокировки
-    $planet_arrival = db_planet_by_vector($coordinates, '', false, 'id_owner');
-    // Блокируем пользователя
-    $user = db_user_by_id($planet_arrival['id_owner'], true);
-    // Блокируем планету
-    $planet_arrival = db_planet_by_vector($coordinates, '', true);
-    // Блокируем флот
-
-    // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
-    // Флот, который возвращается на захваченную планету, пропадает
-    if($start && $this->_is_returning == 1 && $planet_arrival['id_owner'] != $this->_playerOwnerId) {
-      $result = RestoreFleetToPlanet($this, $start, $only_resources, $result);
-
-      $this->dbDelete();
-
-      return $result;
-    }
-
-    if(!$only_resources) {
-      // Landing ships
-      $db_changeset = array();
-
-      if($this->_playerOwnerId == $planet_arrival['id_owner']) {
-        $fleet_array = $this->shipsGetArray();
-        foreach($fleet_array as $ship_id => $ship_count) {
-          if($ship_count) {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
-          }
-        }
-
-        // Adjusting ship amount on planet
-        if(!empty($db_changeset)) {
-          db_changeset_apply($db_changeset);
-        }
-      }
-    } else {
-      $this->resourcesReset();
-      $this->markReturned();
-      $this->dbSave();
-    }
-
-    // Restoring resources to planet
-    if($this->resourcesGetTotal() != 0) {
-      $fleet_resources = $this->resourcesGetList();
-      db_planet_set_by_id($planet_arrival['id'],
-        "`metal` = `metal` + '{$fleet_resources[RES_METAL]}', `crystal` = `crystal` + '{$fleet_resources[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_resources[RES_DEUTERIUM]}'");
-    }
-
-    if(!$only_resources) {
-      $this->dbDelete();
-    }
-
-    $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
-
-    return RestoreFleetToPlanet($this, $start, $only_resources, $result);
-  }
 
 
   /**
@@ -684,7 +602,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.30
+   * @version 41a6.31
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -696,6 +614,70 @@ class Fleet extends UnitContainer {
     return $recyclers_incoming_capacity;
   }
 
+  /**
+   * Restores fleet or resources to planet
+   *
+   * @param bool $start
+   * @param int  $result
+   *
+   * @return int
+   */
+  // TODO - split to functions
+  public function shipsLand($start = true, &$result = CACHE_NOTHING) {
+    sn_db_transaction_check(true);
+
+    // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
+    if($this->isEmpty()) {
+      return $result;
+    }
+
+    $coordinates = $start ? $this->launch_coordinates_typed() : $this->target_coordinates_typed();
+
+    // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
+    // TODO Проверить от многократного срабатывания !!!
+    // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
+    // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
+
+    // Узнаем ИД владельца планеты.
+    // С блокировкой, поскольку эта функция может быть вызвана только из менеджера летящих флотов.
+    // А там уже всё заблокировано как надо и повторная блокировка не вызовет дедлок.
+    $planet_arrival = db_planet_by_vector($coordinates, '', true);
+    // Блокируем пользователя
+    // TODO - вообще-то нам уже известен пользователь в МЛФ - так что можно просто передать его сюда
+    $user = db_user_by_id($planet_arrival['id_owner'], true);
+
+    // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
+    // Флот, который возвращается на захваченную планету, пропадает
+    // Ship landing is possible only to fleet owner's planet
+    if($this->getPlayerOwnerId() == $planet_arrival['id_owner']) {
+      $db_changeset = array();
+
+      $fleet_array = $this->shipsGetArray();
+      foreach($fleet_array as $ship_id => $ship_count) {
+        if($ship_count) {
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
+        }
+      }
+
+      // Adjusting ship amount on planet
+      if(!empty($db_changeset)) {
+        db_changeset_apply($db_changeset);
+      }
+
+      // Restoring resources to planet
+      $this->resourcesUnload($start, $result);
+    }
+
+    $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
+
+    $result = RestoreFleetToPlanet($this, $start, $result);
+
+    $this->dbDelete();
+
+    return $result;
+  }
+
+
   // Resources access ***************************************************************************************************
 
   /**
@@ -704,7 +686,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.30
+   * @version 41a6.31
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -752,6 +734,7 @@ class Fleet extends UnitContainer {
         $this->resource_list[$resource_id] += $unit_delta;
         // Preparing changes
         $this->resource_delta[$resource_id] += $unit_delta;
+        $this->propertiesAdjusted['resource_list'] = 1;
       }
 
       // Check for negative unit value
@@ -760,9 +743,6 @@ class Fleet extends UnitContainer {
         throw new Exception('Resource ' . $resource_id . ' will become negative in ' . get_called_class() . '::unitAdjustResourceList', ERR_ERROR);
       }
     }
-
-    $this->propertiesAdjusted['resource_list'] = 1;
-
   }
 
   public function resourcesGetTotal() {
@@ -796,6 +776,54 @@ class Fleet extends UnitContainer {
       RES_DEUTERIUM => 0,
     ));
   }
+
+  /**
+   * Restores fleet or resources to planet
+   *
+   * @param bool $start
+   * @param bool $only_resources
+   * @param int  $result
+   *
+   * @return int
+   */
+  public function resourcesUnload($start = true, &$result = CACHE_NOTHING) {
+    sn_db_transaction_check(true);
+
+    // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
+    if(!$this->resourcesGetTotal()) {
+      return $result;
+    }
+
+    $coordinates = $start ? $this->launch_coordinates_typed() : $this->target_coordinates_typed();
+
+    // Поскольку эта функция может быть вызвана не из обработчика флотов - нам надо всё заблокировать вроде бы НЕ МОЖЕТ!!!
+    // TODO Проверить от многократного срабатывания !!!
+    // Тут не блокируем пока - сначала надо заблокировать пользователя, что бы не было дедлока
+    // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
+
+
+    // Узнаем ИД владельца планеты.
+    // С блокировкой, поскольку эта функция может быть вызвана только из менеджера летящих флотов.
+    // А там уже всё заблокировано как надо и повторная блокировка не вызовет дедлок.
+    $planet_arrival = db_planet_by_vector($coordinates, '', true);
+
+    // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
+
+    // Restoring resources to planet
+    if($this->resourcesGetTotal()) {
+      $fleet_resources = $this->resourcesGetList();
+      db_planet_set_by_id($planet_arrival['id'],
+        "`metal` = `metal` + '{$fleet_resources[RES_METAL]}', `crystal` = `crystal` + '{$fleet_resources[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_resources[RES_DEUTERIUM]}'");
+    }
+
+    $this->resourcesReset();
+    $this->markReturned();
+
+    $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
+
+    return $result;
+  }
+
 
   protected function isResource($unit_id) {
     return UnitResourceLoot::is_in_group($unit_id);
