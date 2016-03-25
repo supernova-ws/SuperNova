@@ -18,7 +18,7 @@ function upd_do_query($query, $no_log = false) {
       $query = str_replace("{{{$tableName}}}", classSupernova::$db->db_prefix . $tableName, $query);
     }
   }
-  $result = classSupernova::$db->db_sql_query($query) or die('Query error for ' . $query . ': ' . db_error());
+  $result = classSupernova::$db->db_sql_query($query) || die('Query error for ' . $query . ': ' . db_error());
 
   return $result;
 }

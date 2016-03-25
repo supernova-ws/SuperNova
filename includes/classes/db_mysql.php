@@ -127,7 +127,7 @@ class db_mysql {
   }
 
   function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    global $numqueries, $debug, $sn_cache, $config;
+    global $numqueries, $debug, $config;
 
     if(!is_string($table)) {
       $fetch = $table;
@@ -139,11 +139,10 @@ class db_mysql {
 
     $query = trim($query);
     $this->security_watch_user_queries($query);
-    $skip_query_check or $this->security_query_check_bad_words($query);
+    $skip_query_check ? $this->security_query_check_bad_words($query) : false;
 
     $sql = $query;
     if(strpos($sql, '{{') !== false) {
-//     foreach($sn_cache->tables as $tableName) {
       foreach($this->table_list as $tableName) {
         $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
       }

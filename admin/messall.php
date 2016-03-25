@@ -35,7 +35,7 @@ if ($_POST && $mode == "change") {
     $kolor = 'yellow';
     $ranga = 'SuperGameOperator';
   }
-  if ($config->tresc != '' and $config->temat) {
+  if ($config->tresc != '' && $config->temat) {
     $Time    = time();
     $From    = '<font color="'. $kolor .'">'. $ranga ." ".$user['username']."</font>";
     $Subject = '<font color="'. $kolor .'">'. $config->temat ."</font>";
