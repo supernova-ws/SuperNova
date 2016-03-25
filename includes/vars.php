@@ -7,10 +7,7 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
-if (!defined('INSIDE'))
-{
-  die('Hack attempt!');
-}
+defined('INSIDE') || die();
 
 $sn_menu_extra = array();
 $sn_menu_admin_extra = array();

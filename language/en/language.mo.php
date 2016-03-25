@@ -26,10 +26,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('INSIDE')) 
-{
-	die('Hack attempt!');
-}
+defined('INSIDE') || die();
 
 $lang_info = array(
   'LANG_VERSION'      => 'V26e20',

@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 41a6.35
 *
 */
 
@@ -24,7 +24,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
+defined('INSIDE') || die();
 
 global $config;
 

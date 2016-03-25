@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a0.37# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.35# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -85,6 +85,20 @@ class sn_module {
     );
   }
 
+  function loadModuleRootConfig() {
+    static $i;
+
+    require SN_ROOT_PHYSICAL . 'config.php';
+
+    $module_config_array = get_class($this) . '_config';
+    if(!empty($$module_config_array) && is_array($$module_config_array)) {
+      $this->config = $$module_config_array;
+      return true;
+    }
+
+    return false;
+  }
+
   function __construct($filename = __FILE__) {
     global $sn_module;
 
@@ -96,18 +110,19 @@ class sn_module {
 
     // TODO: Load configuration from DB. Manifest setting
     // Trying to load configuration from file
-    $config_exists = false;
-    // Конфигурация может лежать в config_path в манифеста или в корне модуля
-    if(isset($this->manifest['config_path']) && file_exists($config_filename = $this->manifest['config_path'] . '/config.php')) {
-      $config_exists = true;
-    } elseif(file_exists($config_filename = dirname($filename) . '/config.php')) {
-      $config_exists = true;
-    }
+    if(!$config_exists = $this->loadModuleRootConfig()) {
+      // Конфигурация может лежать в config_path в манифеста или в корне модуля
+      if(isset($this->manifest['config_path']) && file_exists($config_filename = $this->manifest['config_path'] . '/config.php')) {
+        $config_exists = true;
+      } elseif(file_exists($config_filename = dirname($filename) . '/config.php')) {
+        $config_exists = true;
+      }
 
-    if($config_exists) {
-      include($config_filename);
-      $module_config_array = $class_module_name . '_config';
-      $this->config = $$module_config_array;
+      if($config_exists) {
+        include($config_filename);
+        $module_config_array = $class_module_name . '_config';
+        $this->config = $$module_config_array;
+      }
     }
 
     // Registering module

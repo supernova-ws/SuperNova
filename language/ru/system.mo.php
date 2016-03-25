@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #41a4.51#
+* @version #41a6.35#
 *
 */
 
@@ -24,10 +24,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE'))
-{
-  exit;
-}
+defined('INSIDE') || die();
 
 // System-wide localization
 

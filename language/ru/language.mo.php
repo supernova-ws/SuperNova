@@ -22,10 +22,7 @@
 /**
 * DO NOT CHANGE
 */
-if (!defined('INSIDE'))
-{
-  exit;
-}
+defined('INSIDE') || die();
 
 $lang_info = array(
   'LANG_VERSION'      => 'V26e20',

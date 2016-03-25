@@ -1,6 +1,6 @@
 <?php
 
-!defined('INSIDE') ? die('Hack attempt!') : false;
+defined('INSIDE') || die();
 
 $sn_data += array(
   STRUC_MINE_METAL => array(

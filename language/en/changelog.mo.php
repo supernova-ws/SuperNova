@@ -1,9 +1,6 @@
 <?php
 
-if (!defined('INSIDE')) 
-{
-	die('Hack attempt!');
-}
+defined('INSIDE') || die();
 
 $lang['Version']     = 'Version';
 $lang['Description'] = 'Description';

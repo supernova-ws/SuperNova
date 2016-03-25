@@ -1,9 +1,6 @@
 <?php
 
-if(!defined('INSIDE'))
-{
-  die('Hack attempt!');
-}
+defined('INSIDE') || die();
 
 $sn_data += array(
   SHIP_CARGO_SMALL => array(

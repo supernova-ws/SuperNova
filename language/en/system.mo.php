@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a4.51
+* @version 41a6.35
 *
 */
 
@@ -26,9 +26,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) {
-	die('Hack attempt!');
-}
+defined('INSIDE') || die();
 
 global $config;
 

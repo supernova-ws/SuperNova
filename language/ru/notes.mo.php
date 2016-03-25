@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 41a6.35
 *
 */
 
@@ -23,7 +23,7 @@
 * DO NOT CHANGE
 */
 
-!defined('INSIDE') && die();
+defined('INSIDE') || die();
 
 $a_lang_array = (array(
   'note_page_header' => 'Заметки',

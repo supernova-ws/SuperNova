@@ -10,13 +10,7 @@
 *
 */
 
-/**
-* @ignore
-*/
-if (!defined('INSIDE'))
-{
-  exit;
-}
+defined('INSIDE') || die();
 
 /**
 * Base Template class.

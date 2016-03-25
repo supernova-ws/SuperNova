@@ -28,9 +28,7 @@
  * que esperabas!!! soy newbie!!! D':<
 */
 
-if(!defined('INSIDE')) {
-  die("attemp hacking");
-}
+defined('INSIDE') || die();
 
 if (php_sapi_name() == "cli") {
   // In cli-mode

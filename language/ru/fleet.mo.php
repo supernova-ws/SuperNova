@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 41a3.0
+* @version 41a6.35
 *
 */
 
@@ -24,7 +24,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
+defined('INSIDE') || die();
 
 $a_lang_array = (array(
   'flt_page2_title' => 'Выбор задания',

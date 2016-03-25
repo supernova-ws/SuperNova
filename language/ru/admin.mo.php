@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 41a2.0
+* @version 41a6.35
 *
 */
 
@@ -24,8 +24,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
-
+defined('INSIDE') || die();
 
 $a_lang_array = array(
   'adm_tool_md5_header' => 'Генерация и шифрование пароля (MD5)',

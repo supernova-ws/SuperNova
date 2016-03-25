@@ -5,9 +5,7 @@
  * @copyright 2008-2015 Gorlum for Project "SuperNova.WS"
  */
 
-if(!defined('INSIDE')) {
-  die();
-}
+defined('INSIDE') || die();
 
 require_once('db/db_queries.php');
 

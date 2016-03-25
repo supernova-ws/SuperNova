@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a3.2
+* @version 41a6.35
 *
 */
 
@@ -26,7 +26,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
+defined('INSIDE') || die();
 
 $a_lang_array = array(
   'opt_account' => 'Account',

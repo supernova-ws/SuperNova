@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 41a6.35
 * @condition clear
 *
 */
@@ -24,7 +24,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
+defined('INSIDE') || die();
 
 $a_lang_array = (array(
   'eco_mrk_title' => 'Чёрный Рынок',

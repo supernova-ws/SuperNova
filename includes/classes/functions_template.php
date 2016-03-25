@@ -13,10 +13,8 @@
 /**
 * @ignore
 */
-if (!defined('INSIDE'))
-{
-  exit;
-}
+
+defined('INSIDE') || die();
 
 /**
 * Extension of template class - Functions needed for compiling templates only.

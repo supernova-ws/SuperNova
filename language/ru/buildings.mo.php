@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a19.12
+* @version 41a6.35
 *
 */
 
@@ -24,7 +24,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE')) die();
+defined('INSIDE') || die();
 
 $a_lang_array = (array(
   'built' => 'Построено',

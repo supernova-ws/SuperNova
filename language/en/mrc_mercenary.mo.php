@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 41a6.35
 *
 * @clean - all constants is used
 *
@@ -25,10 +25,7 @@
 * DO NOT CHANGE
 */
 
-if (!defined('INSIDE'))
-{
-  exit;
-}
+defined('INSIDE') || die();
 
 $a_lang_array = array(
   'mrc_up_to' => 'up to',

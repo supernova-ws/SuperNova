@@ -1,8 +1,6 @@
 <?php
 
-if(!defined('INSIDE')) {
-  die('Hack attempt!');
-}
+defined('INSIDE') || die();
 
 lng_include('menu');
 
