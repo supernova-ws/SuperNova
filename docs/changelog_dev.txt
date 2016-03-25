@@ -707,9 +707,19 @@ attribute - свойства юнитов
     Перенести правила из modules/.htaccess в .htaccess
 
     global $sn_menu_extra, $sn_menu_admin_extra;
+    global $config
+    global $dpath;
+    global $template;
 
-sn_module::$sn_module = array();
-sn_module::$sn_module_list = array();
+    global $user;
+    global $planetrow;
+    global $debug;
+
+    global $lang !!!!!!!!!!!!!!!!!!!!!!!!!!!!☻
+
+
+    $parse - это остатки старого темплейт-энджайна!
+    $parse = classLocale::$lang;
 
 
 #ctv

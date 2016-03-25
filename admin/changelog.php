@@ -14,15 +14,15 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if ($user['authlevel'] < 1)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 lng_include('changelog');
 $template = gettemplate('changelog_table');
 
-$parse = $lang;
+$parse = classLocale::$lang;
 
-foreach ($lang['changelog'] as $a => $b)
+foreach (classLocale::$lang['changelog'] as $a => $b)
 {
 
   $parse['version_number'] = $a;

@@ -62,7 +62,7 @@ $sn_menu = array(
   ),
   'menu_admin'        => array(
     'LEVEL'    => 'header',
-    'ITEM'     => $lang['user_level'][$user['authlevel']],
+    'ITEM'     => classLocale::$lang['user_level'][$user['authlevel']],
     'LINK'     => 'admin/overview.php',
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
@@ -344,7 +344,7 @@ $sn_menu = array(
 
   'menu_news'          => array(
     'LEVEL'       => 'submenu',
-    'ITEM'        => $lang['news_title'],
+    'ITEM'        => classLocale::$lang['news_title'],
     'ITEM_FINISH' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"fresh\">{$lang['lm_announce_fresh']}</span>" : ''),
     'LINK'        => 'announce.php',
     'ICON'        => true,
@@ -457,14 +457,14 @@ $sn_menu_admin = array(
   'menu_admin_version_info'  => array(
     'TYPE' => 'text',
     'ITEM' => ($config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : '') . '<div class="' .
-      $sn_version_check_class[$config->server_updater_check_result] . '">' . $lang['adm_opt_ver_response_short'][$config->server_updater_check_result] . '</div>',
+      $sn_version_check_class[$config->server_updater_check_result] . '">' . classLocale::$lang['adm_opt_ver_response_short'][$config->server_updater_check_result] . '</div>',
   ),
 
   'USER_AUTHLEVEL_NAME'      => array(
     'LEVEL' => 'header',
 //    'TYPE' => 'lang',
 //    'ITEM'  => 'user_level[USER_LEVEL]',
-    'ITEM'  => $lang['user_level'][$user['authlevel']],
+    'ITEM'  => classLocale::$lang['user_level'][$user['authlevel']],
   ),
   'menu_admin_overview'      => array(
     'TYPE'       => 'lang',

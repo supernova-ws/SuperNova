@@ -14,7 +14,7 @@ define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate('admin/settings', true);
@@ -108,7 +108,7 @@ if(sys_get_param('save')) {
 
   $config->db_saveAll();
 
-  $template->assign_var('MESSAGE', $lang['adm_opt_saved']);
+  $template->assign_var('MESSAGE', classLocale::$lang['adm_opt_saved']);
 }
 
 $template->assign_vars(array(
@@ -128,7 +128,7 @@ $template->assign_vars(array(
 
   'SERVER_UPDATE_CHECK_AUTO' => $config->server_updater_check_auto,
   'CHECK_DATE' => $config->server_updater_check_last ? date(FMT_DATE_TIME, $config->server_updater_check_last) : 0,
-  'CHECK_RESULT' => isset($lang['adm_opt_ver_response'][$config->server_updater_check_result]) ? $lang['adm_opt_ver_response'][$config->server_updater_check_result] : $lang['adm_opt_ver_response'][SNC_VER_UNKNOWN_RESPONSE],
+  'CHECK_RESULT' => isset(classLocale::$lang['adm_opt_ver_response'][$config->server_updater_check_result]) ? classLocale::$lang['adm_opt_ver_response'][$config->server_updater_check_result] : classLocale::$lang['adm_opt_ver_response'][SNC_VER_UNKNOWN_RESPONSE],
   'CHECK_CLASS' => isset($sn_version_check_class[$config->server_updater_check_result]) ? $sn_version_check_class[$config->server_updater_check_result] : $sn_version_check_class[SNC_VER_UNKNOWN_RESPONSE],
 
   'SERVER_UPDATE_ID' => $config->server_updater_id,
@@ -140,21 +140,21 @@ $template->assign_vars(array(
 //  'STATS_SCHEDULE' => $config->stats_hide_player_list,
 ));
 
-foreach($lang['sys_game_disable_reason'] as $id => $name) {
+foreach(classLocale::$lang['sys_game_disable_reason'] as $id => $name) {
   $template->assign_block_vars('sys_game_disable_reason', array(
     'ID'   => $id,
     'NAME' => $name,
   ));
 }
 
-foreach($lang['sys_game_mode'] as $mode_id => $mode_name) {
+foreach(classLocale::$lang['sys_game_mode'] as $mode_id => $mode_name) {
   $template->assign_block_vars('game_modes', array(
     'ID'   => $mode_id,
     'NAME' => $mode_name,
   ));
 }
 
-foreach($lang['adm_opt_ver_response'] as $ver_id => $ver_response) {
+foreach(classLocale::$lang['adm_opt_ver_response'] as $ver_id => $ver_response) {
   $template->assign_block_vars('ver_response', array(
     'ID'   => $ver_id,
     'NAME' => js_safe_string($ver_response),
@@ -170,4 +170,4 @@ foreach($lang_list as $lang_id => $lang_data) {
   ));
 }
 
-display(parsetemplate($template), $lang['adm_opt_title'], false, '', true);
+display(parsetemplate($template), classLocale::$lang['adm_opt_title'], false, '', true);

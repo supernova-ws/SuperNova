@@ -14,17 +14,17 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if ($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $PageTpl = gettemplate("admin/deletuser");
 
 if ($mode != "delet")
 {
-  $parse['adm_bt_delet'] = $lang['adm_bt_delet'];
+  $parse['adm_bt_delet'] = classLocale::$lang['adm_bt_delet'];
 }
 
 $Page = parsetemplate($PageTpl, $parse);
-display($Page, $lang['adminpanel'], false, '', true);
+display($Page, classLocale::$lang['adminpanel'], false, '', true);
 
 ?>

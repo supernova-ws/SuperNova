@@ -22,7 +22,7 @@ $mode = sys_get_param_escaped('mode');
 $mode = (!$mode || $mode == 'buildings') ? QUE_STRUCTURES : ($mode == 'fleet' ? SUBQUE_FLEET : ($mode == 'defense' ? SUBQUE_DEFENSE : ($mode == 'research' ? QUE_RESEARCH : $mode)));
 
 if($building_sort = sys_get_param_id('sort_elements')) {
-  if(!empty($lang['player_option_building_sort'][$building_sort])) {
+  if(!empty(classLocale::$lang['player_option_building_sort'][$building_sort])) {
     classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT, $mode)] = $building_sort;
     classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT_INVERSE, $mode)] = sys_get_param_id('sort_elements_inverse', 0);
   }

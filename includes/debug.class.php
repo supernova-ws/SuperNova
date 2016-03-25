@@ -196,7 +196,7 @@ class debug {
   }
 
   function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
-    global $config, $sys_stop_log_hit, $lang, $sys_log_disabled, $user;
+    global $config, $sys_stop_log_hit, $sys_log_disabled, $user;
 
     if(empty(classSupernova::$db->connected)) {
       // TODO - писать ошибку в файл
@@ -243,7 +243,7 @@ class debug {
   }
 
   function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
-    global $user, $lang, $sys_log_disabled;
+    global $user, $sys_log_disabled;
 
     if(empty(classSupernova::$db->connected)) {
       // TODO - писать ошибку в файл

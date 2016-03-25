@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a13.17# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.41# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -239,7 +239,7 @@ class auth_local extends auth_abstract {
    */
   // OK v4.6
   protected function password_reset_send_code() {
-    global $lang, $config;
+    global $config;
 
     if(!$this->is_password_reset) {
       return $this->account_login_status;
@@ -285,8 +285,8 @@ class auth_local extends auth_abstract {
       sn_db_transaction_commit();
 
       @$result = mymail($email_unsafe,
-        sprintf($lang['log_lost_email_title'], $config->game_name),
-        sprintf($lang['log_lost_email_code'], SN_ROOT_VIRTUAL . 'login.php', $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE), $config->game_name)
+        sprintf(classLocale::$lang['log_lost_email_title'], $config->game_name),
+        sprintf(classLocale::$lang['log_lost_email_code'], SN_ROOT_VIRTUAL . 'login.php', $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE), $config->game_name)
       );
 
       $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
@@ -357,8 +357,8 @@ class auth_local extends auth_abstract {
 
       if($this->account_login_status == LOGIN_SUCCESS) {
         // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
-        $message_header = sprintf($lang['log_lost_email_title'], $config->game_name);
-        $message = sprintf($lang['log_lost_email_pass'], $config->game_name, $this->account->account_name, $new_password_unsafe);
+        $message_header = sprintf(classLocale::$lang['log_lost_email_title'], $config->game_name);
+        $message = sprintf(classLocale::$lang['log_lost_email_pass'], $config->game_name, $this->account->account_name, $new_password_unsafe);
         @$operation_result = mymail($confirmation['email'], $message_header, htmlspecialchars($message));
 
         // $users_translated = classSupernova::$auth->db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
@@ -371,12 +371,12 @@ class auth_local extends auth_abstract {
           //    - список аккаунтов, имеющих тот же емейл, что указан в Подтверждении
           //    - игроки, привязанные только к этим аккаунтам
           // Значит им всем сразу скопом можно отправлять сообщения
-          $message = sprintf($lang['sys_password_reset_message_body'], $new_password_unsafe);
+          $message = sprintf(classLocale::$lang['sys_password_reset_message_body'], $new_password_unsafe);
           $message = sys_bbcodeParse($message) . '<br><br>';
           // msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
 
           foreach($users_translated as $user_id => $providers_list) {
-            msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
+            msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['sys_administration'], classLocale::$lang['sys_login_register_message_title'], $message);
           }
         } else {
           // Фигня - может быть и пустой, если у нас есть только аккаунт, но нет пользователей

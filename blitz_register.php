@@ -8,7 +8,7 @@ if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
   );
 
   if($error_message) {
-    message($lang[$error_message], $lang['sys_error'], 'overview.php', 10);
+    message(classLocale::$lang[$error_message], classLocale::$lang['sys_error'], 'overview.php', 10);
     die();
   }
 
@@ -159,7 +159,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
         pdump("{{$row['id']}} {$row['blitz_name']}, Place {$row['blitz_place']}, Prize places {$blitz_prize_places_actual}, Prize {$reward}", $row['id']);
         if($reward) {
           rpg_points_change($row['user_id'], RPG_BLITZ, $reward, sprintf(
-            $lang['sys_blitz_reward_log_message'], $row['blitz_place'], $row['blitz_name']
+            classLocale::$lang['sys_blitz_reward_log_message'], $row['blitz_place'], $row['blitz_name']
           ));
           db_blitz_reg_update_apply_results($reward, $row, $current_round);
         }
@@ -221,4 +221,4 @@ $template->assign_vars(array(
   'BLITZ_PRIZE_PLACES'         => $blitz_prize_places,
 ));
 
-display($template, $lang['sys_blitz_global_button']);
+display($template, classLocale::$lang['sys_blitz_global_button']);

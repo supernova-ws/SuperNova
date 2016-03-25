@@ -69,7 +69,7 @@ foreach($userList as $userRow)
 
   if ($ally['ally_owner'] == $userRow['id'])
   {
-    $ally_range = ($ally['ally_owner_range'])?$ally['ally_owner_range']:$lang['Founder'];
+    $ally_range = ($ally['ally_owner_range'])?$ally['ally_owner_range']:classLocale::$lang['Founder'];
   }
   else
   {
@@ -176,12 +176,12 @@ $template->assign_vars(array(
   'mode' => $mode . ($edit ? "&edit=" . $edit : ''),
   'ADMIN_MODE' => $user_can_kick,
   'dpath' => SN_ROOT_VIRTUAL . $dpath,
-  'onlineMessage' => $user_admin ? $lang['ali_sys_lastActive'] : $lang['Online'],
+  'onlineMessage' => $user_admin ? classLocale::$lang['ali_sys_lastActive'] : classLocale::$lang['Online'],
   'memberCount' => count($userList),
   'memberslist' => $page_list,
   's' => $sort2,
 ));
 
-display(parsetemplate($template), $lang['members_admin']);
+display(parsetemplate($template), classLocale::$lang['members_admin']);
 
 ?>

@@ -26,8 +26,8 @@ require_once('includes/includes/flt_functions.php');
 function fleet_ajax() {
   global $lang, $user;
 
-  $lang->lng_include('universe');
-  $lang->lng_include('fleet');
+  classLocale::$lang->lng_include('universe');
+  classLocale::$lang->lng_include('fleet');
 
   $travel_data = array();
 
@@ -37,7 +37,7 @@ function fleet_ajax() {
   $target_mission = sys_get_param_int('mission');
   $sn_group_missions = sn_get_groups('missions');
   if(empty($sn_group_missions[$target_mission]['AJAX'])) {
-    die($lang['gs_c00']);
+    die(classLocale::$lang['gs_c00']);
   }
 
   // Checking target coordinates validity
@@ -52,7 +52,7 @@ function fleet_ajax() {
   // fleet_ajax now can send fleets only to existing planets/moons
   // TODO - sending colonization and expeditions in 1 click
   if(!uni_coordinates_valid($target_coord)) {
-    die($lang['gs_c02']);
+    die(classLocale::$lang['gs_c02']);
   }
 
   sn_db_transaction_start();
@@ -107,7 +107,7 @@ function fleet_ajax() {
     )
   );
   if($isAttackAllowed != ATTACK_ALLOWED) {
-    die($lang['fl_attack_error'][$isAttackAllowed]);
+    die(classLocale::$lang['fl_attack_error'][$isAttackAllowed]);
   }
 
   $db_changeset = array();
@@ -126,7 +126,7 @@ function fleet_ajax() {
     $travel_data = flt_travel_data($user, $planetrow, $target_coord, $fleet_array, 10);
 
     if($planetrow['deuterium'] < $travel_data['consumption']) {
-      die($lang['gs_c13']);
+      die(classLocale::$lang['gs_c13']);
     }
 
     $objFleet = new Fleet();

@@ -32,7 +32,7 @@ function int_calc_storage_bar($resource_id)
   $storage_fill         = $caps_real['total_storage'][$resource_id] ? floor(mrc_get_level($user, $planetrow, $resource_id) / $caps_real['total_storage'][$resource_id] * 100) : 0;
 
   $template->assign_block_vars('resources', array(
-    'NAME'        => $lang["sys_" . pname_resource_name($resource_id)],
+    'NAME'        => classLocale::$lang["sys_" . pname_resource_name($resource_id)],
 
 //    'BASIC_INCOME'=> $config->$resource_income_name * game_resource_multiplier(),
 
@@ -100,7 +100,7 @@ for ($Option = 10; $Option >= 0; $Option--)
 $caps_real = eco_get_planet_caps($user, $planetrow, 3600);
 
 $template->assign_block_vars('production', array(
-  'TYPE'           => $lang['res_basic_income'],
+  'TYPE'           => classLocale::$lang['res_basic_income'],
 
   'METAL_TYPE'     => pretty_number($caps_real['production'][RES_METAL][0], true, true),
   'CRYSTAL_TYPE'   => pretty_number($caps_real['production'][RES_CRYSTAL][0], true, true),
@@ -117,10 +117,10 @@ foreach($sn_group_factories as $unit_id)
       'ID'             => $unit_id,
       // 'NAME'           => $resource_db_name,
       'PERCENT'        => $planetrow[pname_factory_production_field_name($unit_id)] * 10,
-      'TYPE'           => $lang['tech'][$unit_id],
+      'TYPE'           => classLocale::$lang['tech'][$unit_id],
       'LEVEL'          => $level_plain,
       'LEVEL_BONUS'    => mrc_get_level($user, $planetrow, $unit_id) - $level_plain,
-      'LEVEL_TYPE'     => ($unit_id > 200) ? $lang['quantity'] : $lang['level'],
+      'LEVEL_TYPE'     => ($unit_id > 200) ? classLocale::$lang['quantity'] : classLocale::$lang['level'],
 
       'METAL_TYPE'     => pretty_number($caps_real['production'][RES_METAL][$unit_id], true, true),
       'CRYSTAL_TYPE'   => pretty_number($caps_real['production'][RES_CRYSTAL][$unit_id], true, true),
@@ -145,7 +145,7 @@ $density_price_chart = planet_density_price_chart($planetrow);
 tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
 
 $template->assign_block_vars('production', array(
-  'TYPE'           => $lang['res_total'],
+  'TYPE'           => classLocale::$lang['res_total'],
 
   'METAL_TYPE'     => pretty_number($caps_real['total'][RES_METAL], true, true),
   'CRYSTAL_TYPE'   => pretty_number($caps_real['total'][RES_CRYSTAL], true, true),
@@ -166,11 +166,11 @@ $template->assign_vars(array(
  'PLANET_NAME'          => $planetrow['name'],
  'PLANET_TYPE'          => $planetrow['planet_type'],
  'PLANET_DENSITY_INDEX' => $planet_density_index,
- 'PLANET_CORE_TEXT'     => $lang['uni_planet_density_types'][$planet_density_index],
+ 'PLANET_CORE_TEXT'     => classLocale::$lang['uni_planet_density_types'][$planet_density_index],
 
  'PRODUCTION_LEVEL'     => floor($caps_real['efficiency'] * 100),
 
- 'PAGE_HINT'            => $lang['res_hint'],
+ 'PAGE_HINT'            => classLocale::$lang['res_hint'],
 ));
 
-display($template, $lang['res_planet_production']);
+display($template, classLocale::$lang['res_planet_production']);

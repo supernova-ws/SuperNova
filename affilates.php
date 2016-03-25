@@ -47,4 +47,4 @@ $template->assign_vars(array(
   'userbarURL' => $userbarURL,
 ));
 
-display(parsetemplate($template), $lang['aff_title']);
+display(parsetemplate($template), classLocale::$lang['aff_title']);

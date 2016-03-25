@@ -58,7 +58,7 @@ $options['fleets_max'] = GetMaxFleets($user);
 $MaxFleets = GetMaxFleets($user);
 $FlyingFleets = FleetList::fleet_count_flying($user['id']);
 if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
-  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
+  message(classLocale::$lang['fl_noslotfree'], classLocale::$lang['fl_error'], "fleet." . PHP_EX, 5);
 }
 
 $MaxExpeditions = get_player_max_expeditons($user);
@@ -89,7 +89,7 @@ switch ($fleet_page) {
     $missiontype = array();
     if ($planet > $config->game_maxPlanet) {
       $target_mission = MT_EXPLORE;
-      $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];
+      $missiontype[MT_EXPLORE] = classLocale::$lang['type_mission'][MT_EXPLORE];
     } elseif ($galaxy && $system && $planet) {
       $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
 
@@ -104,11 +104,11 @@ switch ($fleet_page) {
 
       if (!$UsedPlanet) {
         if ($fleetarray[SHIP_COLONIZER]) {
-          $missiontype[MT_COLONIZE] = $lang['type_mission'][MT_COLONIZE];
+          $missiontype[MT_COLONIZE] = classLocale::$lang['type_mission'][MT_COLONIZE];
           $target_mission = MT_COLONIZE;
           $planet_type = PT_PLANET;
         } else {
-          message ("<font color=\"red\"><b>". $lang['fl_no_planet_type'] ."</b></font>", $lang['fl_error']);
+          message ("<font color=\"red\"><b>". classLocale::$lang['fl_no_planet_type'] ."</b></font>", classLocale::$lang['fl_error']);
         }
       } else {
         $recyclers = 0;
@@ -117,28 +117,28 @@ switch ($fleet_page) {
         }
         if ($recyclers > 0 && $planet_type == PT_DEBRIS) {
           $target_mission = MT_RECYCLE;
-          $missiontype[MT_RECYCLE] = $lang['type_mission'][MT_RECYCLE];
+          $missiontype[MT_RECYCLE] = classLocale::$lang['type_mission'][MT_RECYCLE];
         } elseif ($planet_type == PT_PLANET || $planet_type == PT_MOON) {
           if ($YourPlanet) {
-            $missiontype[MT_RELOCATE] = $lang['type_mission'][MT_RELOCATE];
-            $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
+            $missiontype[MT_RELOCATE] = classLocale::$lang['type_mission'][MT_RELOCATE];
+            $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
           } else {
             // Not Your Planet
             if ($fleetarray[SHIP_SPY]) {
               // Only spy missions if any spy
-              $missiontype[MT_SPY] = $lang['type_mission'][MT_SPY];
+              $missiontype[MT_SPY] = classLocale::$lang['type_mission'][MT_SPY];
             } else {
               // If no spies...
               if ($fleet_group_mr) {
-                $missiontype[MT_AKS] = $lang['type_mission'][MT_AKS];
+                $missiontype[MT_AKS] = classLocale::$lang['type_mission'][MT_AKS];
               } else {
-                $missiontype[MT_ATTACK] = $lang['type_mission'][MT_ATTACK];
-                $missiontype[MT_TRANSPORT] = $lang['type_mission'][MT_TRANSPORT];
+                $missiontype[MT_ATTACK] = classLocale::$lang['type_mission'][MT_ATTACK];
+                $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
 
-                $missiontype[MT_HOLD] = $lang['type_mission'][MT_HOLD];
+                $missiontype[MT_HOLD] = classLocale::$lang['type_mission'][MT_HOLD];
 
                 if($planet_type == PT_MOON && $fleetarray[SHIP_HUGE_DEATH_STAR]) {
-                  $missiontype[MT_DESTROY] = $lang['type_mission'][MT_DESTROY];
+                  $missiontype[MT_DESTROY] = classLocale::$lang['type_mission'][MT_DESTROY];
                 }
               }
             }
@@ -193,7 +193,7 @@ $template_result += array(
   'planet' => $planet,
   'planet_type' => $planet_type,
   'target_mission'  => $target_mission ? $target_mission : 0,
-  'MISSION_NAME'		=> $target_mission ? $lang['type_mission'][$target_mission] : '',
+  'MISSION_NAME'		=> $target_mission ? classLocale::$lang['type_mission'][$target_mission] : '',
 );
 
 $is_transport_missions = false;

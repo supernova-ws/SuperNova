@@ -16,13 +16,13 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 // if ($user['authlevel'] < 2)
 if ($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $mode = $_POST['mode'];
 
 $PageTpl = gettemplate("admin/add_research", true);
-$parse = $lang;
+$parse = classLocale::$lang;
 
 if ($mode == 'addit')
 {
@@ -51,10 +51,10 @@ if ($mode == 'addit')
     `intergalactic_tech` = `intergalactic_tech` + '{$intergalactic_tech}',`expedition_tech` = `expedition_tech` + '{$expedition_tech}',
     `graviton_tech` = `graviton_tech` + '{$graviton_tech}'");
 
-  AdminMessage($lang['adm_addresearch2'], $lang['adm_addresearch1']);
+  AdminMessage(classLocale::$lang['adm_addresearch2'], classLocale::$lang['adm_addresearch1']);
 }
 $Page = parsetemplate($PageTpl, $parse);
 
-display($Page, $lang['adm_am_ttle'], false, '', true);
+display($Page, classLocale::$lang['adm_am_ttle'], false, '', true);
 
 ?>

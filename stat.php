@@ -16,7 +16,7 @@ function stat_tpl_assign(&$template, $selected, $array_name, $array, $sn_group_s
       continue;
     }
 
-    $header = isset($value['header']) ? $value['header'] : $lang['stat_type'][$key];
+    $header = isset($value['header']) ? $value['header'] : classLocale::$lang['stat_type'][$key];
 
     $template->assign_block_vars($array_name, array(
       'ID'       => $key,
@@ -42,10 +42,10 @@ $source = sys_get_param_str('source');
 $template = gettemplate('stat_statistics', true);
 
 $subject_list = array(
-  1 => array('header' => $lang['stat_player']),
+  1 => array('header' => classLocale::$lang['stat_player']),
 );
 if(!$source) {
-  $subject_list[2] = array('header' => $lang['stat_allys']);
+  $subject_list[2] = array('header' => classLocale::$lang['stat_allys']);
 }
 stat_tpl_assign($template, $who, 'subject', $subject_list, $sn_group_stat_common);
 
@@ -170,4 +170,4 @@ $template->assign_vars(array(
   'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link || $source,
 ));
 
-display($template, $lang['stat_header'], !empty($user), '', false, !empty($user));
+display($template, classLocale::$lang['stat_header'], !empty($user), '', false, !empty($user));

@@ -50,4 +50,4 @@ $template->assign_vars(array(
 
 tpl_login_lang($template);
 
-display($template, $lang['Login'], false, '', false, false);
+display($template, classLocale::$lang['Login'], false, '', false, false);

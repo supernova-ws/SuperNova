@@ -20,7 +20,7 @@ if(!sn_module_get_active_count('payment')) {
 }
 
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate("admin/adm_metamatter", true);
@@ -32,23 +32,23 @@ if($points = sys_get_param_float('points')) {
   try {
     $username = sys_get_param_str_unsafe('id_user');
     if(empty($username)) {
-      throw new Exception($lang['adm_mm_no_dest']);
+      throw new Exception(classLocale::$lang['adm_mm_no_dest']);
     }
 
     $an_account = new Account(classSupernova::$auth->account->db);
     if(!$an_account->db_get_by_id($username) && !$an_account->db_get_by_name($username) && !$an_account->db_get_by_email($username)) {
-      throw new Exception(sprintf($lang['adm_mm_user_none'], $username));
+      throw new Exception(sprintf(classLocale::$lang['adm_mm_user_none'], $username));
     }
 
     if(!$an_account->metamatter_change(RPG_ADMIN, $points, sprintf(
-      $lang['adm_matter_change_log_record'],
+      classLocale::$lang['adm_matter_change_log_record'],
       $an_account->account_id, db_escape($an_account->account_name),
       $user['id'], db_escape($user['username']),
       db_escape(sys_get_param_str('reason'))
     ))) {
-      throw new Exception($lang['adm_mm_add_err']);
+      throw new Exception(classLocale::$lang['adm_mm_add_err']);
     }
-    $message = sprintf($lang['adm_mm_user_added'], $an_account->account_name, $an_account->account_id, pretty_number($points));
+    $message = sprintf(classLocale::$lang['adm_mm_user_added'], $an_account->account_name, $an_account->account_id, pretty_number($points));
     $isNoError = true;
     $message_status = ERR_NONE;
   } catch (Exception $e) {
@@ -71,4 +71,4 @@ if($message) {
   $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
 }
 
-display($template, $lang['adm_mm_title'], false, '', true);
+display($template, classLocale::$lang['adm_mm_title'], false, '', true);

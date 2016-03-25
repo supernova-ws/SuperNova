@@ -7,7 +7,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate('admin/planet_compensate', true);
@@ -37,34 +37,34 @@ if($galaxy_src)
   $planet = $planet['planet'];
   if(!$planet)
   {
-    $errors[] = $lang['adm_pl_comp_err_0'];
+    $errors[] = classLocale::$lang['adm_pl_comp_err_0'];
   }
 
   if($planet['destruyed'])
   {
-    $errors[] = $lang['adm_pl_comp_err_1'];
+    $errors[] = classLocale::$lang['adm_pl_comp_err_1'];
   }
 
   if($planet['id_owner'] != $owner['id'] || !$username)
   {
-    $errors[] = $lang['adm_pl_comp_err_4'];
+    $errors[] = classLocale::$lang['adm_pl_comp_err_4'];
   }
 
   $destination = sys_o_get_updated($owner, array('galaxy' => $galaxy_dst, 'system' => $system_dst, 'planet' => $planet_dst, 'planet_type' => 1), SN_TIME_NOW);
   $destination = $destination['planet'];
   if(!$destination)
   {
-    $errors[] = $lang['adm_pl_comp_err_2'];
+    $errors[] = classLocale::$lang['adm_pl_comp_err_2'];
   }
 
   if($planet['id'] == $destination['id'])
   {
-    $errors[] = $lang['adm_pl_comp_err_5'];
+    $errors[] = classLocale::$lang['adm_pl_comp_err_5'];
   }
 
   if($planet['id_owner'] != $destination['id_owner'])
   {
-    $errors[] = $lang['adm_pl_comp_err_3'];
+    $errors[] = classLocale::$lang['adm_pl_comp_err_3'];
   }
 
   if(!empty($errors))
@@ -131,7 +131,7 @@ $template->assign_vars(array(
   'username' => $username,
 ));
 
-display(parsetemplate($template, $parse), $lang['adm_pl_comp_title'], false, '', true );
+display(parsetemplate($template, $parse), classLocale::$lang['adm_pl_comp_title'], false, '', true );
 
 function killer_add_planet($planet)
 {

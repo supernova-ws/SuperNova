@@ -3,7 +3,7 @@
 /**
  * adm_payment.php
  *
- * @version #41a6.18#
+ * @version #41a6.41#
  * @copyright 2013-2015 by Gorlum for http://supernova.ws
  */
 
@@ -15,13 +15,13 @@ define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate('admin/adm_payment', true);
 
 $payer_list = array(
-  -1 => $lang['adm_pay_filter_all'],
+  -1 => classLocale::$lang['adm_pay_filter_all'],
 );
 
 $query = db_payment_list_payers();
@@ -31,7 +31,7 @@ while($row = db_fetch($query)) {
 tpl_assign_select($template, 'payer', $payer_list);
 
 $module_list = array(
-  '' => $lang['adm_pay_filter_all'],
+  '' => classLocale::$lang['adm_pay_filter_all'],
 );
 
 $query = db_payment_list_modules();
@@ -40,8 +40,8 @@ while($row = db_fetch($query)) {
 }
 tpl_assign_select($template, 'module', $module_list);
 
-tpl_assign_select($template, 'status', $lang['adm_pay_filter_status']);
-tpl_assign_select($template, 'test', $lang['adm_pay_filter_test']);
+tpl_assign_select($template, 'status', classLocale::$lang['adm_pay_filter_status']);
+tpl_assign_select($template, 'test', classLocale::$lang['adm_pay_filter_test']);
 
 $flt_payer = sys_get_param_int('flt_payer', -1);
 $flt_module = sys_get_param_str('flt_module');
@@ -65,4 +65,4 @@ $template->assign_vars(array(
   'FLT_MODULE' => $flt_module,
 ));
 
-display($template, $lang['adm_pay'], false, '', true);
+display($template, classLocale::$lang['adm_pay'], false, '', true);

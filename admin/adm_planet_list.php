@@ -10,7 +10,7 @@ global $config, $lang, $user;
 
 // if($user['authlevel'] < 1)
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $planet_active = sys_get_param_int('planet_active');
@@ -33,7 +33,7 @@ while ($planet_row = db_fetch($query)) {
     'SYSTEM'      => $planet_row['system'],
     'PLANET'      => $planet_row['planet'],
     'PLANET_TYPE' => $planet_row['planet_type'],
-    'PLANET_TYPE_PRINT' => $lang['sys_planet_type_sh'][$planet_row['planet_type']],
+    'PLANET_TYPE_PRINT' => classLocale::$lang['sys_planet_type_sh'][$planet_row['planet_type']],
     'PARENT_ID'   => js_safe_string($planet_row['parent_planet']),
     'PARENT_NAME' => js_safe_string($planet_row['parent_name']),
     'OWNER'       => js_safe_string($planet_row['username']),
@@ -41,10 +41,10 @@ while ($planet_row = db_fetch($query)) {
   ));
 }
 
-$page_title = 
-  $lang['adm_planet_list_title'] . ': ' . 
-  ($planet_active ? $lang['adm_planet_active'] :
-    ($planet_type ? ($planet_type == 3 ? $lang['sys_moons'] : $lang['sys_planets']) : '')
+$page_title =
+  classLocale::$lang['adm_planet_list_title'] . ': ' .
+  ($planet_active ? classLocale::$lang['adm_planet_active'] :
+    ($planet_type ? ($planet_type == 3 ? classLocale::$lang['sys_moons'] : classLocale::$lang['sys_planets']) : '')
   );
 $template->assign_vars(array(
   'PAGE_TITLE' => $page_title,

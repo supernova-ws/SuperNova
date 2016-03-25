@@ -15,7 +15,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 if ($_POST && $mode == "change") {

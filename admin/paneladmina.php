@@ -16,7 +16,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $GET_action = sys_get_param_str('action');
@@ -27,7 +27,7 @@ $ip         = sys_get_param_str('ip');
 
 $PanelMainTPL = gettemplate('admin/admin_panel_main');
 
-$parse                  = $lang;
+$parse                  = classLocale::$lang;
 $parse['adm_sub_form1'] = '';
 $parse['adm_sub_form2'] = '';
 $parse['adm_sub_form3'] = '';
@@ -39,13 +39,13 @@ if (isset($GET_result)) {
       $SelUser = db_user_by_username('%'. $Pattern .'%', false, '*', true, true);
       $UsrMain = db_planet_by_id($SelUser['id_planet'], false, 'name');
 
-      $bloc                   = $lang;
+      $bloc                   = classLocale::$lang;
       $bloc['answer1']        = $SelUser['id'];
       $bloc['answer2']        = $SelUser['username'];
       $bloc['answer3']        = $SelUser['user_lastip'];
       $bloc['answer4']        = $SelUser['email'];
-      $bloc['answer5']        = $lang['adm_usr_level'][ $SelUser['authlevel'] ];
-      $bloc['answer6']        = $lang['adm_usr_genre'][ $SelUser['gender'] ];
+      $bloc['answer5']        = classLocale::$lang['adm_usr_level'][ $SelUser['authlevel'] ];
+      $bloc['answer6']        = classLocale::$lang['adm_usr_genre'][ $SelUser['gender'] ];
       $bloc['answer7']        = "[".$SelUser['id_planet']."] ".$UsrMain['name'];
       $bloc['answer8']        = "[".$SelUser['galaxy'].":".$SelUser['system'].":".$SelUser['planet']."] ";
       $bloc['qst_quest_complete'] = get_quest_amount_complete($SelUser['id']);
@@ -63,21 +63,21 @@ if (isset($GET_result)) {
       # only for admins
       if ($user['authlevel'] < 3 || $NewLevel >= $user['authlevel'])
       {
-        message($lang['sys_noalloaw'], $lang['sys_noaccess']);
+        message(classLocale::$lang['sys_noalloaw'], classLocale::$lang['sys_noaccess']);
         die();
       }
 
       $selected_user = db_user_by_username($Pattern, false, 'id');
       $QryUpdate = db_user_set_by_id($selected_user['id'], "`authlevel` = '{$NewLvl}'");
-      $Message    = $lang['adm_mess_lvl1']. " ". $Pattern ." ".$lang['adm_mess_lvl2'];
-      $Message   .= "<font color=\"red\">".$lang['adm_usr_level'][ $NewLvl ]."</font>!";
+      $Message    = classLocale::$lang['adm_mess_lvl1']. " ". $Pattern ." ".classLocale::$lang['adm_mess_lvl2'];
+      $Message   .= "<font color=\"red\">".classLocale::$lang['adm_usr_level'][ $NewLvl ]."</font>!";
 
-      AdminMessage ( $Message, $lang['adm_mod_level'] );
+      AdminMessage ( $Message, classLocale::$lang['adm_mod_level'] );
       break;
 
     case 'ip_search':
 
-      $bloc                   = $lang;
+      $bloc                   = classLocale::$lang;
       $bloc['adm_this_ip']    = $ip;
       $SelUser = db_user_list("`user_lastip` = '{$ip}'");
       //while ( $Usr = db_fetch($SelUser) ) {
@@ -95,7 +95,7 @@ if (isset($GET_result)) {
 
 // Traiter les reponses aux formulaires
 if (isset($GET_action)) {
-  $bloc                   = $lang;
+  $bloc                   = classLocale::$lang;
   switch ($GET_action){
     case 'usr_search':
       $SubPanelTPL            = gettemplate('admin/admin_panel_frm1');
@@ -109,13 +109,13 @@ if (isset($GET_action)) {
       # only for admins
       if ($user['authlevel'] != 3)
       {
-        message($lang['sys_noalloaw'], $lang['sys_noaccess']);
+        message(classLocale::$lang['sys_noalloaw'], classLocale::$lang['sys_noaccess']);
         die();
       }
 
 
       for ($Lvl = 0; $Lvl < 4; $Lvl++) {
-        $bloc['adm_level_lst'] .= '<option value="'. $Lvl .'">'. $lang['adm_usr_level'][ $Lvl ] ."</option>";
+        $bloc['adm_level_lst'] .= '<option value="'. $Lvl .'">'. classLocale::$lang['adm_usr_level'][ $Lvl ] ."</option>";
       }
       $SubPanelTPL            = gettemplate('admin/admin_panel_frm3');
       break;
@@ -131,5 +131,5 @@ if (isset($GET_action)) {
 }
 
 $page = parsetemplate( $PanelMainTPL, $parse );
-display( $page, $lang['panel_mainttl'], false, '', true );
+display( $page, classLocale::$lang['panel_mainttl'], false, '', true );
 ?>

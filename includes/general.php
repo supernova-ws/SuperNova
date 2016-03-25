@@ -604,7 +604,7 @@ function sys_unit_arr2str($unit_list) {
 }
 
 function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
-  global $config, $lang;
+  global $config;
 
   $from = trim($from ? $from : $config->game_adminEmail);
 
@@ -760,7 +760,7 @@ if(!function_exists('strptime')) {
 }
 
 function sn_sys_sector_buy($redirect = 'overview.php') {
-  global $lang, $user, $planetrow;
+  global $user, $planetrow;
 
   if(!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET) {
     return;
@@ -777,8 +777,8 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
   if($sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER)) {
     $planet_name_text = uni_render_planet($planetrow);
-    if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, sprintf($lang['sys_sector_purchase_log'],
-        $user['username'], $user['id'], $planet_name_text, $lang['sys_planet_type'][$planetrow['planet_type']], $planetrow['id'], $sector_cost)
+    if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, sprintf(classLocale::$lang['sys_sector_purchase_log'],
+        $user['username'], $user['id'], $planet_name_text, classLocale::$lang['sys_planet_type'][$planetrow['planet_type']], $planetrow['id'], $sector_cost)
     )) {
       $sector_db_name = pname_resource_name(UNIT_SECTOR);
       db_planet_set_by_id($planetrow['id'], "{$sector_db_name} = {$sector_db_name} + 1");
@@ -1061,7 +1061,7 @@ function idval($value, $default = 0) {
 function unit_requirements_render($user, $planetrow, $unit_id, $field = 'require') { return sn_function_call(__FUNCTION__, array($user, $planetrow, $unit_id, $field, &$result)); }
 
 function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'require', &$result) {
-  global $lang, $config;
+  global $config;
 
   $sn_data_unit = get_unit_param($unit_id);
 
@@ -1071,7 +1071,7 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'requ
       $level_got = mrc_get_level($user, $planetrow, $require_id);
       $level_basic = mrc_get_level($user, $planetrow, $require_id, false, true);
       $result[] = array(
-        'NAME'             => $lang['tech'][$require_id],
+        'NAME'             => classLocale::$lang['tech'][$require_id],
         //'CLASS' => $require_level > $level_got ? 'negative' : ($require_level == $level_got ? 'zero' : 'positive'),
         'REQUEREMENTS_MET' => intval($require_level <= $level_got ? REQUIRE_MET : REQUIRE_MET_NOT),
         'LEVEL_REQUIRE'    => $require_level,
@@ -1166,11 +1166,11 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
 
   try {
     if($planetrow['planet_type'] != PT_PLANET) {
-      throw new exception($lang['ov_core_err_not_a_planet'], ERR_ERROR);
+      throw new exception(classLocale::$lang['ov_core_err_not_a_planet'], ERR_ERROR);
     }
 
     if($planetrow['density_index'] == ($new_density_index = sys_get_param_id('density_type'))) {
-      throw new exception($lang['ov_core_err_same_density'], ERR_WARNING);
+      throw new exception(classLocale::$lang['ov_core_err_same_density'], ERR_WARNING);
     }
 
     sn_db_transaction_start();
@@ -1185,7 +1185,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     $density_price_chart = planet_density_price_chart($planetrow);
     if(!isset($density_price_chart[$new_density_index])) {
       // Hack attempt
-      throw new exception($lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
+      throw new exception(classLocale::$lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
     }
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
@@ -1193,7 +1193,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     // $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
     $transmute_cost = $density_price_chart[$new_density_index];
     if($user_dark_matter < $transmute_cost) {
-      throw new exception($lang['ov_core_err_no_dark_matter'], ERR_ERROR);
+      throw new exception(classLocale::$lang['ov_core_err_no_dark_matter'], ERR_ERROR);
     }
 
     $sn_data_planet_density = sn_get_groups('planet_density');
@@ -1213,9 +1213,9 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
         $planetrow['id'],
         uni_render_coordinates($planetrow),
         $planet_density_index,
-        $lang['uni_planet_density_types'][$planet_density_index],
+        classLocale::$lang['uni_planet_density_types'][$planet_density_index],
         $new_density_index,
-        $lang['uni_planet_density_types'][$new_density_index],
+        classLocale::$lang['uni_planet_density_types'][$new_density_index],
         $new_density
       )
     );
@@ -1227,7 +1227,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     $planetrow['density_index'] = $new_density_index;
     $result = array(
       'STATUS'  => ERR_NONE,
-      'MESSAGE' => sprintf($lang['ov_core_err_none'], $lang['uni_planet_density_types'][$planet_density_index], $lang['uni_planet_density_types'][$new_density_index], $new_density),
+      'MESSAGE' => sprintf(classLocale::$lang['ov_core_err_none'], classLocale::$lang['uni_planet_density_types'][$planet_density_index], classLocale::$lang['uni_planet_density_types'][$new_density_index], $new_density),
     );
   } catch(exception $e) {
     sn_db_transaction_rollback();
@@ -1398,14 +1398,14 @@ function note_assign(&$template, $note_row) {
     'TIME_TEXT'              => date(FMT_DATE_TIME, $note_row['time']),
     'PRIORITY'               => $note_row['priority'],
     'PRIORITY_CLASS'         => $note_priority_classes[$note_row['priority']],
-    'PRIORITY_TEXT'          => $lang['sys_notes_priorities'][$note_row['priority']],
+    'PRIORITY_TEXT'          => classLocale::$lang['sys_notes_priorities'][$note_row['priority']],
     'TITLE'                  => htmlentities($note_row['title'], ENT_COMPAT, 'UTF-8'),
     'GALAXY'                 => intval($note_row['galaxy']),
     'SYSTEM'                 => intval($note_row['system']),
     'PLANET'                 => intval($note_row['planet']),
     'PLANET_TYPE'            => intval($note_row['planet_type']),
-    'PLANET_TYPE_TEXT'       => $lang['sys_planet_type'][$note_row['planet_type']],
-    'PLANET_TYPE_TEXT_SHORT' => $lang['sys_planet_type_sh'][$note_row['planet_type']],
+    'PLANET_TYPE_TEXT'       => classLocale::$lang['sys_planet_type'][$note_row['planet_type']],
+    'PLANET_TYPE_TEXT_SHORT' => classLocale::$lang['sys_planet_type_sh'][$note_row['planet_type']],
     'TEXT'                   => sys_bbcodeParse(htmlentities($note_row['text'], ENT_COMPAT, 'UTF-8')),
     'TEXT_EDIT'              => htmlentities($note_row['text'], ENT_COMPAT, 'UTF-8'),
     'STICKY'                 => intval($note_row['sticky']),

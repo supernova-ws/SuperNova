@@ -5,11 +5,11 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
 }
 
 if(!$user_can_negotiate) {
-  message($lang['Denied_access'], $lang['ali_dip_title']);
+  message(classLocale::$lang['Denied_access'], classLocale::$lang['ali_dip_title']);
 }
 
 $template = gettemplate('ali_admin_diplomacy', true);
-$page_title = $lang['ali_dip_title'];
+$page_title = classLocale::$lang['ali_dip_title'];
 
 $ally_name_safe = db_escape($user['ally_name']);
 
@@ -18,22 +18,22 @@ $ally_name_safe = db_escape($user['ally_name']);
 if(sys_get_param_str('ali_dip_offer_make')) {
   $alliance_negotiation_relation = sys_get_param_str('alliance_negotiation_relation');
   if(!array_key_exists($alliance_negotiation_relation, $sn_diplomacy_relation_list)) {
-    message($lang['ali_dip_err_wrong_offer'], $page_title);
+    message(classLocale::$lang['ali_dip_err_wrong_offer'], $page_title);
   }
 
   $alliance_negotiation_contr_ally_id = sys_get_param_id('alliance_negotiation_contr_ally_id');
   if($alliance_negotiation_contr_ally_id == $user['ally_id']) {
-    message($lang['ali_dip_err_same_ally'], $page_title);
+    message(classLocale::$lang['ali_dip_err_same_ally'], $page_title);
   }
 
   $contr_ally_row = db_ally_get_by_id($alliance_negotiation_contr_ally_id);
   if(!$contr_ally_row) {
-    message($lang['ali_dip_err_no_ally'], $page_title);
+    message(classLocale::$lang['ali_dip_err_no_ally'], $page_title);
   }
 
   $relation_current_id = ali_relation($user['ally_id'], $alliance_negotiation_contr_ally_id);
   if($alliance_negotiation_relation == $relation_current_id) {
-    message(sprintf($lang['ali_dip_err_offer_same'], $lang['ali_dip_relations'][$alliance_negotiation_relation]), $page_title);
+    message(sprintf(classLocale::$lang['ali_dip_err_offer_same'], classLocale::$lang['ali_dip_relations'][$alliance_negotiation_relation]), $page_title);
   }
 
   $alliance_negotiation_propose = sys_get_param_str('alliance_negotiation_propose');
@@ -75,14 +75,14 @@ if(sys_get_param_str('ali_dip_offer_make')) {
 
     $negotiation = db_ally_negotiation_get_by_offer_id($offer_id);
     if(!$negotiation) {
-      message($lang['ali_dip_err_offer_none'], $page_title);
+      message(classLocale::$lang['ali_dip_err_offer_none'], $page_title);
     } elseif($negotiation['alliance_negotiation_ally_id'] != $user['ally_id'] && $negotiation['alliance_negotiation_contr_ally_id'] != $user['ally_id']) {
       // TODO: Add log of hack attempt
-      message($lang['ali_dip_err_offer_alien'], $page_title);
+      message(classLocale::$lang['ali_dip_err_offer_alien'], $page_title);
     } elseif($negotiation['alliance_negotiation_ally_id'] == $user['ally_id']) {
       if($offer_answer == 'accept') {
         // TODO: Add log of hack attempt
-        message($lang['ali_dip_err_offer_accept_own'], $page_title);
+        message(classLocale::$lang['ali_dip_err_offer_accept_own'], $page_title);
       } elseif($offer_answer == 'deny') {
         db_ally_negotiation_delete_by_offer_id($offer_id);
       }
@@ -128,7 +128,7 @@ if($accept_offer) {
 foreach($sn_diplomacy_relation_list as $diplomacy_relation_id => $diplomacy_relation) {
   $template->assign_block_vars('relation', array(
     'ID'   => $diplomacy_relation_id,
-    'TEXT' => $lang['ali_dip_relations'][$diplomacy_relation_id],
+    'TEXT' => classLocale::$lang['ali_dip_relations'][$diplomacy_relation_id],
   ));
 }
 
@@ -147,7 +147,7 @@ while($offer = db_fetch($query)) {
   $template->assign_block_vars('offer', array(
     'ID'       => $offer['alliance_negotiation_id'],
     'NAME'     => $offer['ally_name'],
-    'RELATION' => $lang['ali_dip_relations'][$offer['alliance_negotiation_relation']],
+    'RELATION' => classLocale::$lang['ali_dip_relations'][$offer['alliance_negotiation_relation']],
     'TIME'     => date(FMT_DATE_TIME, $offer['alliance_negotiation_time']),
     'TEXT'     => cht_message_parse($offer['alliance_negotiation_propose']),
     'RESPONSE' => cht_message_parse($offer['alliance_negotiation_response']),

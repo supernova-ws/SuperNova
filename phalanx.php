@@ -18,11 +18,11 @@ lng_include('universe');
 
 $sensorLevel = mrc_get_level($user, $planetrow, STRUC_MOON_PHALANX);
 if (!intval($sensorLevel)) {
-  message ($lang['phalanx_nosensoravailable'], $lang['tech'][STRUC_MOON_PHALANX], '', 3);
+  message (classLocale::$lang['phalanx_nosensoravailable'], classLocale::$lang['tech'][STRUC_MOON_PHALANX], '', 3);
 }
 
 if ($planetrow['planet_type'] != PT_MOON) {
-  message ($lang['phalanx_onlyformoons'], $lang['tech'][STRUC_MOON_PHALANX], '', 3);
+  message (classLocale::$lang['phalanx_onlyformoons'], classLocale::$lang['tech'][STRUC_MOON_PHALANX], '', 3);
 }
 
 $scan_galaxy  = sys_get_param_int('galaxy');
@@ -40,25 +40,25 @@ $sensorRange = GetPhalanxRange($sensorLevel);
 $system_distance = abs($source_system - $scan_system);
 if($system_distance > $sensorRange || $scan_galaxy != $source_galaxy)
 {
-  message ($lang['phalanx_rangeerror'], $lang['tech'][STRUC_MOON_PHALANX], '', 3);
+  message (classLocale::$lang['phalanx_rangeerror'], classLocale::$lang['tech'][STRUC_MOON_PHALANX], '', 3);
 }
 
 $cost = $sensorLevel * 1000;
 
 if ($planetrow['deuterium'] < $cost)
 {
-  message($lang['phalanx_nodeuterium'], "phalanx", '', 3);
+  message(classLocale::$lang['phalanx_nodeuterium'], "phalanx", '', 3);
 }
 
 $planet_scanned = db_planet_by_gspt($scan_galaxy, $scan_system, $scan_planet, $scan_planet_type);
 if(!$planet_scanned['id'])
 {
-  message($lang['phalanx_planet_not_exists'], $lang['tech'][STRUC_MOON_PHALANX], '', 3);
+  message(classLocale::$lang['phalanx_planet_not_exists'], classLocale::$lang['tech'][STRUC_MOON_PHALANX], '', 3);
 }
 
 if($planet_scanned['destruyed'])
 {
-  message ($lang['phalanx_planet_destroyed'], $lang['tech'][STRUC_MOON_PHALANX], '', 3);
+  message (classLocale::$lang['phalanx_planet_destroyed'], classLocale::$lang['tech'][STRUC_MOON_PHALANX], '', 3);
 }
 
 db_planet_set_by_id($user['current_planet'], "deuterium = deuterium - {$cost}");
@@ -69,4 +69,4 @@ $objFleetList = FleetList::dbGetFleetListAndMissileByCoordinates($planet_scanned
 $fleet_events = flt_parse_objFleetList_to_events($objFleetList, $planet_scanned);
 tpl_assign_fleet($template, $fleet_events);
 
-display($template, $lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);
+display($template, classLocale::$lang['tech'][STRUC_MOON_PHALANX], false, '', false, false);

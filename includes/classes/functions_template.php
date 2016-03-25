@@ -292,9 +292,6 @@ class template_compile
   */
   function compile_var_tags(&$text_blocks)
   {
-    // including $lang variable
-    global $lang, $config;
-
     // change template varrefs into PHP varrefs
     $varrefs = array();
 

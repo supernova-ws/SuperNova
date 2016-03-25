@@ -23,6 +23,13 @@ class classLocale implements ArrayAccess {
   protected $cache_prefix = 'lng_';
   protected $cache_prefix_lang = '';
 
+  /**
+   * ex $lang
+   *
+   * @var classLocale $lang
+   */
+  public static $lang = null;
+
   public function __construct($enable_stat_usage = false) {
     classSupernova::log_file('locale.__constructor: Starting', 1);
 

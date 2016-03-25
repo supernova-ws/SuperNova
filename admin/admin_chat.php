@@ -15,10 +15,10 @@ define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
-$parse = $lang;
+$parse = classLocale::$lang;
 
 $delete = sys_get_param_str('delete');
 $deleteall = sys_get_param_str('deleteall');

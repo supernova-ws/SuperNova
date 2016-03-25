@@ -55,21 +55,21 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
           db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 
           $planetrow['last_jump_time'] = SN_TIME_NOW;
-          $RetMessage = $lang['gate_jump_done'] ." - ". pretty_time(uni_get_time_to_jump($planetrow));
+          $RetMessage = classLocale::$lang['gate_jump_done'] ." - ". pretty_time(uni_get_time_to_jump($planetrow));
         } else {
-          $RetMessage = $lang['gate_wait_data'];
+          $RetMessage = classLocale::$lang['gate_wait_data'];
         }
       } else {
-        $RetMessage = $lang['gate_wait_dest'] ." - ". pretty_time($NextDestTime);
+        $RetMessage = classLocale::$lang['gate_wait_dest'] ." - ". pretty_time($NextDestTime);
       }
     } else {
-      $RetMessage = $lang['gate_no_dest_g'];
+      $RetMessage = classLocale::$lang['gate_no_dest_g'];
     }
   } else {
-    $RetMessage = $lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
+    $RetMessage = classLocale::$lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
   }
   sn_db_transaction_commit();
-  message($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
+  message($RetMessage, classLocale::$lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
 } else {
   $template = gettemplate('jumpgate', true);
   if(mrc_get_level($user, $planetrow, STRUC_MOON_GATE) > 0)
@@ -102,7 +102,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
 
       $template->assign_block_vars('fleet', array(
         'SHIP_ID'         => $Ship,
-        'SHIP_NAME'       => $lang['tech'][$Ship],
+        'SHIP_NAME'       => classLocale::$lang['tech'][$Ship],
         'SHIP_COUNT'      => $ship_count,
         'SHIP_COUNT_TEXT' => pretty_number($ship_count),
       ));
@@ -114,11 +114,11 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
       'gate_start_link' => uni_render_coordinates_href($planetrow, '', 3),
     ));
 
-    display($template, $lang['tech'][STRUC_MOON_GATE]);
+    display($template, classLocale::$lang['tech'][STRUC_MOON_GATE]);
   }
   else
   {
-    message($lang['gate_no_src_ga'], $lang['tech'][STRUC_MOON_GATE], "overview.php", 10);
+    message(classLocale::$lang['gate_no_src_ga'], classLocale::$lang['tech'][STRUC_MOON_GATE], "overview.php", 10);
   }
 }
 

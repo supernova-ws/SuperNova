@@ -21,7 +21,7 @@ if($unit_id == RES_METAMATTER) {
 }
 
 lng_include('infos');
-if(!$unit_id || (!get_unit_param($unit_id) && !isset($lang['info'][$unit_id]))) {
+if(!$unit_id || (!get_unit_param($unit_id) && !isset(classLocale::$lang['info'][$unit_id]))) {
   sys_redirect('index.php?page=techtree');
 }
 
@@ -50,7 +50,7 @@ if($unit_type == UNIT_SHIPS) {
     $unit_engine_data = get_engine_data($user, $unit_engine_data);
 
     $engine_template_info[] = array(
-      'NAME'               => $lang['tech'][$unit_engine_data['tech']],
+      'NAME'               => classLocale::$lang['tech'][$unit_engine_data['tech']],
       'MIN_LEVEL'          => $unit_engine_data['min_level'],
       'USER_TECH_LEVEL'    => mrc_get_level($user, null, $unit_engine_data['tech']),
       'BASE_SPEED'         => pretty_number($unit_engine_data['speed_base']),
@@ -89,7 +89,7 @@ if(in_array($unit_id, $sn_data_group_combat)) {
   }
   foreach($volley_arr as $enemy_id => &$rapid) {
     $rapid['ENEMY_ID'] = $enemy_id;
-    $rapid['ENEMY_NAME'] = $lang['tech'][$enemy_id];
+    $rapid['ENEMY_NAME'] = classLocale::$lang['tech'][$enemy_id];
   }
   $template_result['.']['volley'] = $volley_arr;
 
@@ -105,8 +105,8 @@ if(in_array($unit_id, $sn_data_group_combat)) {
 
 }
 
-if($lang['info'][$unit_id]['effect']) {
-  $template_result['UNIT_EFFECT'] = $lang['info'][$unit_id]['effect'];
+if(classLocale::$lang['info'][$unit_id]['effect']) {
+  $template_result['UNIT_EFFECT'] = classLocale::$lang['info'][$unit_id]['effect'];
 }
 
 if($unit_data['bonus']) {
@@ -117,13 +117,13 @@ if($unit_data['bonus']) {
 }
 
 $template_result += array(
-  'PAGE_HEADER' => $lang['wiki_title'],
+  'PAGE_HEADER' => classLocale::$lang['wiki_title'],
 
   'UNIT_ID'          => $unit_id,
-  'UNIT_NAME'        => $lang['tech'][$unit_id],
+  'UNIT_NAME'        => classLocale::$lang['tech'][$unit_id],
   'UNIT_TYPE'        => $unit_type,
-  'UNIT_TYPE_NAME'   => $lang['tech'][$unit_type],
-  'UNIT_DESCRIPTION' => $lang['info'][$unit_id]['description'],
+  'UNIT_TYPE_NAME'   => classLocale::$lang['tech'][$unit_type],
+  'UNIT_DESCRIPTION' => classLocale::$lang['info'][$unit_id]['description'],
 );
 
 $template_result['.']['require'] = unit_requirements_render($user, $planetrow, $unit_id);
@@ -295,12 +295,12 @@ lng_include('infos');
 $DestroyTPL = '';
 $TableHeadTPL = '';
 
-$parse = $lang;
+$parse = classLocale::$lang;
 // Données de base
 $parse['dpath'] = $dpath;
-$parse['name'] = $lang['tech'][$unit_id];
+$parse['name'] = classLocale::$lang['tech'][$unit_id];
 $parse['image'] = $unit_id;
-$parse['description'] = $lang['info'][$unit_id]['description'];
+$parse['description'] = classLocale::$lang['info'][$unit_id]['description'];
 
 $unit_info = get_unit_param($unit_id);
 
@@ -362,7 +362,7 @@ if($unit_id >= 1 && $unit_id <= 3) {
 
   $PageTPL = gettemplate('info_buildings_fleet');
 
-  $parse['element_typ'] = $lang['tech'][UNIT_SHIPS];
+  $parse['element_typ'] = classLocale::$lang['tech'][UNIT_SHIPS];
   $rapid_fire = eco_render_rapid_fire($unit_id);
   $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
   $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de
@@ -389,7 +389,7 @@ if($unit_id >= 1 && $unit_id <= 3) {
 } elseif(in_array($unit_id, sn_get_groups('defense_active'))) {
   // Defenses
   $PageTPL = gettemplate('info_buildings_defense');
-  $parse['element_typ'] = $lang['tech'][UNIT_DEFENCE];
+  $parse['element_typ'] = classLocale::$lang['tech'][UNIT_DEFENCE];
 
   $rapid_fire = eco_render_rapid_fire($unit_id);
   $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
@@ -401,7 +401,7 @@ if($unit_id >= 1 && $unit_id <= 3) {
 } elseif(in_array($unit_id, sn_get_groups('missile'))) {
   // Misilles
   $PageTPL = gettemplate('info_buildings_defense');
-  $parse['element_typ'] = $lang['tech'][UNIT_DEFENCE];
+  $parse['element_typ'] = classLocale::$lang['tech'][UNIT_DEFENCE];
   $parse['hull_pt'] = pretty_number($unit_info['metal'] + $unit_info['crystal']); // Points de Structure
   $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
@@ -428,10 +428,10 @@ if($unit_id >= 1 && $unit_id <= 3) {
       break;
   }
 
-  $parse['EFFECT'] = $lang['info'][$unit_id]['effect'];
+  $parse['EFFECT'] = classLocale::$lang['info'][$unit_id]['effect'];
   $parse['mercenary_bonus'] = $mercenary_bonus;
   if(!in_array($unit_id, sn_get_groups(array('artifacts', 'resources_all')))) {
-    $parse['max_level'] = $lang['sys_level'] . ' ' .
+    $parse['max_level'] = classLocale::$lang['sys_level'] . ' ' .
       (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? mrc_get_level($user, null, $unit_id) : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
       . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
   }
@@ -439,14 +439,14 @@ if($unit_id >= 1 && $unit_id <= 3) {
 
 // ---- Tableau d'evolution
 if($TableHeadTPL != '') {
-  $parse['table_head'] = parsetemplate($TableHeadTPL, $lang);
+  $parse['table_head'] = parsetemplate($TableHeadTPL, classLocale::$lang);
   $parse['table_data'] = ShowProductionTable($user, $planetrow, $unit_id, $TableTPL);
 }
 
 // La page principale
 $page = parsetemplate($PageTPL, $parse);
 
-display($page, $lang['nfo_page_title']);
+display($page, classLocale::$lang['nfo_page_title']);
 
 // -----------------------------------------------------------------------------------------------------------
 // History version

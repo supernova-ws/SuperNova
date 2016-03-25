@@ -15,8 +15,8 @@ lng_include('notes');
 $template = gettemplate('notes', true);
 
 $result = array();
-if(($result_message = sys_get_param_str('MESSAGE')) && isset($lang[$result_message])) {
-  $result[] = array('STATUS' => sys_get_param_int('STATUS'), 'MESSAGE' => $lang[$result_message]);
+if(($result_message = sys_get_param_str('MESSAGE')) && isset(classLocale::$lang[$result_message])) {
+  $result[] = array('STATUS' => sys_get_param_int('STATUS'), 'MESSAGE' => classLocale::$lang[$result_message]);
 }
 
 $note_id_edit = sys_get_param_id('note_id_edit');
@@ -64,12 +64,12 @@ if(sys_get_param('note_delete')) {
     sn_db_transaction_rollback();
     $result[] = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
-      'MESSAGE' => $lang[$e->getMessage()],
+      'MESSAGE' => classLocale::$lang[$e->getMessage()],
     );
   }
 } elseif(($note_title = sys_get_param_str('note_title')) || ($note_text = sys_get_param_str('note_text'))) {
-  $note_title == db_escape($lang['note_new_title']) ? $note_title = '' : false;
-  ($note_text = sys_get_param_str('note_text')) == db_escape($lang['note_new_text']) ? $note_text = '' : false;
+  $note_title == db_escape(classLocale::$lang['note_new_title']) ? $note_title = '' : false;
+  ($note_text = sys_get_param_str('note_text')) == db_escape(classLocale::$lang['note_new_text']) ? $note_text = '' : false;
 
   try {
     $note_galaxy = max(0, min(sys_get_param_id('note_galaxy'), $config->game_maxGalaxy));
@@ -81,7 +81,7 @@ if(sys_get_param('note_delete')) {
     }
 
     $note_priority = min(sys_get_param_id('note_priority', 2), count($note_priority_classes) - 1);
-    $note_planet_type = max(1, min(sys_get_param_id('note_planet_type', 1), count($lang['sys_planet_type'])));
+    $note_planet_type = max(1, min(sys_get_param_id('note_planet_type', 1), count(classLocale::$lang['sys_planet_type'])));
     $note_sticky = intval(sys_get_param_id('note_sticky')) ? 1 : 0;
 
     sn_db_transaction_start();
@@ -110,7 +110,7 @@ if(sys_get_param('note_delete')) {
     sn_db_transaction_rollback();
     $result[] = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
-      'MESSAGE' => $lang[$e->getMessage()],
+      'MESSAGE' => classLocale::$lang[$e->getMessage()],
     );
   }
 }
@@ -121,8 +121,8 @@ if(!$note_id_edit) {
     'time'        => SN_TIME_NOW,
     'priority'    => 2,
     'planet_type' => PT_PLANET,
-    'title'       => $lang['note_new_title'],
-    'text'        => $lang['note_new_text'],
+    'title'       => classLocale::$lang['note_new_title'],
+    'text'        => classLocale::$lang['note_new_text'],
   ));
 }
 
@@ -138,11 +138,11 @@ foreach($note_priority_classes as $note_priority_id => $note_priority_class) {
   $template->assign_block_vars('note_priority', array(
     'ID'    => $note_priority_id,
     'CLASS' => $note_priority_classes[$note_priority_id],
-    'TEXT'  => $lang['sys_notes_priorities'][$note_priority_id],
+    'TEXT'  => classLocale::$lang['sys_notes_priorities'][$note_priority_id],
   ));
 }
 
-foreach($lang['sys_planet_type'] as $planet_type_id => $planet_type_string) {
+foreach(classLocale::$lang['sys_planet_type'] as $planet_type_id => $planet_type_string) {
   $template->assign_block_vars('planet_type', array(
     'ID'   => $planet_type_id,
     'TEXT' => $planet_type_string,
@@ -154,7 +154,7 @@ foreach($result as $result_data) {
 }
 
 $template->assign_vars(array(
-  'PAGE_HEADER'      => $lang['note_page_header'],
+  'PAGE_HEADER'      => classLocale::$lang['note_page_header'],
   'NOTE_ID_EDIT'     => $note_id_edit,
   'NOTE_FULL_RENDER' => true,
 ));

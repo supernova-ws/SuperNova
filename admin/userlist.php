@@ -16,7 +16,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $config, $lang, $user;
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '256M');
@@ -55,7 +55,7 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
     }
   } else {
     // Restricted try to delete user higher or equal level
-    AdminMessage($lang['adm_err_denied']);
+    AdminMessage(classLocale::$lang['adm_err_denied']);
   }
 }
 
@@ -110,7 +110,7 @@ $template->assign_vars(array(
   'GEOIP_WHOIS_URL' => $config->geoip_whois_url,
 
   'PAGE_URL'    => $_SERVER['SCRIPT_NAME'],
-  'PAGE_HEADER' => $is_players_online_page ? $lang['adm_ul_title_online'] : $lang['adm_ul_title'],
+  'PAGE_HEADER' => $is_players_online_page ? classLocale::$lang['adm_ul_title_online'] : classLocale::$lang['adm_ul_title'],
 ));
 
 display($template, '', false, '', true);

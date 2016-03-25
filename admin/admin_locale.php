@@ -33,12 +33,7 @@ function adm_lng_assign_string($lang_id, $locale_string_name, $value) {
 }
 
 function adm_lng_load($full_filename) {
-//  $lang_old = $lang;
-//  $lang = array();
   require($full_filename);
-//  $lang_new = $lang;
-//  $lang = $lang_old;
-//  return $lang_new;
   return $a_lang_array;
 }
 

@@ -9,7 +9,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 // if($user['authlevel'] < 2)
 if($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 AdminMessage('Временно не работает');
 
@@ -55,8 +55,8 @@ foreach($admin_planet_edit_mode_list as $page_mode => $mode_locale)
 $template->assign_vars(array(
   'MODE' => $mode,
   'PLANET_ID' => $planet_id,
-  'PLANET_NAME' => empty($edit_planet_row) ? '' : $lang['sys_planet_type'][$edit_planet_row['planet_type']] . ' ' . uni_render_planet($edit_planet_row),
-  'PAGE_HINT' => $lang['adm_planet_edit_hint'],
+  'PLANET_NAME' => empty($edit_planet_row) ? '' : classLocale::$lang['sys_planet_type'][$edit_planet_row['planet_type']] . ' ' . uni_render_planet($edit_planet_row),
+  'PAGE_HINT' => classLocale::$lang['adm_planet_edit_hint'],
 ));
 
-display($template, $lang['adm_am_ttle'], false, '', true);
+display($template, classLocale::$lang['adm_am_ttle'], false, '', true);

@@ -48,7 +48,7 @@ $template_result[F_LOGIN_MESSAGE] =
   isset($template_result[F_LOGIN_MESSAGE]) && $template_result[F_LOGIN_MESSAGE]
     ? $template_result[F_LOGIN_MESSAGE]
     : ($template_result[F_LOGIN_STATUS] != LOGIN_UNDEFINED
-    ? $lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]]
+    ? classLocale::$lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]]
     : false
   );
 
@@ -66,7 +66,7 @@ if(defined('DEBUG_AUTH') && DEBUG_AUTH && !defined('IN_AJAX')) {
 
 
 // Это уже переключаемся на пользовательский язык с откатом до языка в параметрах запроса
-$lang->lng_switch(sys_get_param_str('lang'));
+classLocale::$lang->lng_switch(sys_get_param_str('lang'));
 global $dpath;
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
@@ -78,7 +78,7 @@ if($template_result[F_GAME_DISABLE] = $config->game_disable) {
   $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse(
     $config->game_disable == GAME_DISABLE_REASON
       ? $config->game_disable_reason
-      : $lang['sys_game_disable_reason'][$config->game_disable]
+      : classLocale::$lang['sys_game_disable_reason'][$config->game_disable]
   );
   if(defined('IN_API')) {
     return;

@@ -84,7 +84,7 @@ switch($mode)
 $message_id = sys_get_param_int('message');
 if($message_id != MARKET_NOTHING)
 {
-  $template->assign_block_vars('result', array('MESSAGE' => $lang['eco_mrk_errors'][$message_id]));
+  $template->assign_block_vars('result', array('MESSAGE' => classLocale::$lang['eco_mrk_errors'][$message_id]));
 }
 
 if($message)

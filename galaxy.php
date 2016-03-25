@@ -243,7 +243,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
     'USER_NOOB'       => $RowUserPoints * $config->game_noob_factor < $CurrentPoints && $config->game_noob_factor,
     'USER_STRONG'     => $CurrentPoints * $config->game_noob_factor < $RowUserPoints && $config->game_noob_factor,
     'USER_AUTH'       => $uni_galaxyRowUser['authlevel'],
-    'USER_ADMIN'      => $lang['user_level_shortcut'][$uni_galaxyRowUser['authlevel']],
+    'USER_ADMIN'      => classLocale::$lang['user_level_shortcut'][$uni_galaxyRowUser['authlevel']],
     'USER_BIRTHDAY'   => $birthday_array['month'] == $time_now_parsed['mon'] && $birthday_array['day'] == $time_now_parsed['mday'] ? date(FMT_DATE, SN_TIME_NOW) : 0,
 
     'ALLY_ID'  => $uni_galaxyRowUser['ally_id'],
@@ -256,7 +256,7 @@ tpl_assign_fleet($template, $fleets);
 foreach(sn_get_groups('defense_active') as $unit_id) {
   $template->assign_block_vars('defense_active', array(
     'ID'   => $unit_id,
-    'NAME' => $lang['tech'][$unit_id],
+    'NAME' => classLocale::$lang['tech'][$unit_id],
   ));
 }
 
@@ -341,7 +341,7 @@ $template->assign_vars(array(
     'opt_uni_avatar_ally'   => $user['opt_uni_avatar_ally'],
     'ACT_MISSILE'           => $is_missile,
     'PLANET_PHALANX'        => $HavePhalanx && $uni_galaxy == $CurrentGalaxy && $uni_system >= $CurrentSystem - $PhalanxRange && $uni_system <= $CurrentSystem + $PhalanxRange,
-    'PAGE_HINT'             => $lang['gal_sys_hint'],
+    'PAGE_HINT'             => classLocale::$lang['gal_sys_hint'],
     'PLANET_RECYCLERS'      => $planet_recyclers_orbiting,
     'PLANET_RECYCLERS_TEXT' => pretty_number($planet_recyclers_orbiting),
 //    'GALAXY_NAME'           => $galaxy_name['universe_name'],
@@ -359,4 +359,4 @@ $template->assign_vars(array(
   )
 );
 
-display(parsetemplate($template), $lang['sys_universe'], true, '', false);
+display(parsetemplate($template), classLocale::$lang['sys_universe'], true, '', false);

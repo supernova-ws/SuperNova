@@ -71,31 +71,31 @@ switch($mode) {
     }
 
     if($recipient_id == $user['id']) {
-      $error_list[] = array('MESSAGE' => $lang['msg_err_self_send'], 'STATUS' => ERR_ERROR);
+      $error_list[] = array('MESSAGE' => classLocale::$lang['msg_err_self_send'], 'STATUS' => ERR_ERROR);
     }
 
     $re = 0;
     $subject = sys_get_param_str('subject');
-    while(strpos($subject, $lang['msg_answer_prefix']) !== false) {
-      $subject = substr($subject, strlen($lang['msg_answer_prefix']));
+    while(strpos($subject, classLocale::$lang['msg_answer_prefix']) !== false) {
+      $subject = substr($subject, strlen(classLocale::$lang['msg_answer_prefix']));
       $re++;
     }
-    $re ? $subject = $lang['msg_answer_prefix'] . $subject : false;
+    $re ? $subject = classLocale::$lang['msg_answer_prefix'] . $subject : false;
 
     if(sys_get_param_str('msg_send')) {
-      $subject = $subject ? $subject : $lang['msg_subject_default'];
+      $subject = $subject ? $subject : classLocale::$lang['msg_subject_default'];
 
       if(!$recipient_id) {
-        $error_list[] = array('MESSAGE' => $lang['msg_err_player_not_found'], 'STATUS' => ERR_ERROR);
+        $error_list[] = array('MESSAGE' => classLocale::$lang['msg_err_player_not_found'], 'STATUS' => ERR_ERROR);
       }
 
       $text = sys_get_param_str('text');
       if(!$text) {
-        $error_list[] = array('MESSAGE' => $lang['msg_err_no_text'], 'STATUS' => ERR_ERROR);
+        $error_list[] = array('MESSAGE' => classLocale::$lang['msg_err_no_text'], 'STATUS' => ERR_ERROR);
       }
 
       if(empty($error_list)) {
-        $error_list[] = array('MESSAGE' => $lang['msg_not_message_sent'], 'STATUS' => ERR_NONE);
+        $error_list[] = array('MESSAGE' => classLocale::$lang['msg_not_message_sent'], 'STATUS' => ERR_NONE);
 
         $user_safe_name = db_escape($user['username']);
         $recipient_name = db_escape($recipient_name);
@@ -114,7 +114,7 @@ switch($mode) {
       $recipient_name = sys_get_param_str_unsafe('recipient_name');
     }
 
-    $subject = $subject ? $subject : $lang['msg_subject_default'];
+    $subject = $subject ? $subject : classLocale::$lang['msg_subject_default'];
 
     $template->assign_vars(array(
       'RECIPIENT_ID'   => $recipient_id,
@@ -223,7 +223,7 @@ switch($mode) {
       ));
     }
 
-    $current_class_text = $lang['msg_class'][$current_class];
+    $current_class_text = classLocale::$lang['msg_class'][$current_class];
 
     $template->assign_vars(array(
       "MESSAGE_CLASS"      => $current_class,
@@ -247,15 +247,15 @@ if(!$template) {
     $template->assign_block_vars('message_class', array(
       'ID'     => $message_class_id,
       'STYLE'  => $message_class['name'],
-      'TEXT'   => $lang['msg_class'][$message_class_id],
+      'TEXT'   => classLocale::$lang['msg_class'][$message_class_id],
       'UNREAD' => $user[$message_class['name']],
       'TOTAL'  => intval($messages_total[$message_class_id]),
     ));
   }
 
   $template->assign_vars(array(
-    'PAGE_HINT' => $lang['msg_page_hint_class'],
+    'PAGE_HINT' => classLocale::$lang['msg_page_hint_class'],
   ));
 }
 
-display($template, $lang['msg_page_header']);
+display($template, classLocale::$lang['msg_page_header']);

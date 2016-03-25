@@ -14,10 +14,10 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if ($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
-$parse = $lang;
+$parse = classLocale::$lang;
 
 $script = '
 <script type="text/javascript">
@@ -28,4 +28,4 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage($script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title']);
+AdminMessage($script . '<img src=design/images/progressbar.gif><br>' . classLocale::$lang['sys_wait'], classLocale::$lang['adm_maintenance_title']);

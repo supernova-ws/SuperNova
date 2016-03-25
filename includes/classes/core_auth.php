@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a6.39#
+ * version #41a6.41#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.39# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.41# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -255,7 +255,7 @@ class core_auth extends sn_module {
       isset($template_result[F_PLAYER_REGISTER_MESSAGE]) && $template_result[F_PLAYER_REGISTER_MESSAGE]
         ? $template_result[F_PLAYER_REGISTER_MESSAGE]
         : ($this->register_status != LOGIN_UNDEFINED
-        ? $lang['sys_login_messages'][$this->register_status]
+        ? classLocale::$lang['sys_login_messages'][$this->register_status]
         : false
       );
 
@@ -312,7 +312,7 @@ class core_auth extends sn_module {
 
     foreach($this->providers as $provider_id => $provider) {
       $login_status = $provider->login(); // OK v4.5
-      self::flog(($provider->manifest['name'] . '->' . 'login_try - ') . (empty($provider->account->account_id) ? $lang['sys_login_messages'][$provider->account_login_status] : dump($provider)));
+      self::flog(($provider->manifest['name'] . '->' . 'login_try - ') . (empty($provider->account->account_id) ? classLocale::$lang['sys_login_messages'][$provider->account_login_status] : dump($provider)));
       if($login_status == LOGIN_SUCCESS && is_object($provider->account) && $provider->account instanceof Account && $provider->account->account_id) {
         $this->providers_authorised[$provider_id] = &$this->providers[$provider_id];
 
@@ -521,8 +521,8 @@ class core_auth extends sn_module {
       foreach($account_translation as $user_id => $provider_info) {
         // TODO - УКазывать тип аккаунта, на котором сменён пароль
         msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN,
-          $lang['sys_administration'], $lang['sys_login_register_message_title'],
-          sprintf($lang['sys_login_register_message_body'], $provider->account->account_name, $new_password_unsafe), false //true
+          classLocale::$lang['sys_administration'], classLocale::$lang['sys_login_register_message_title'],
+          sprintf(classLocale::$lang['sys_login_register_message_body'], $provider->account->account_name, $new_password_unsafe), false //true
         );
       }
       $providers_changed_password[$provider_id] = $provider;

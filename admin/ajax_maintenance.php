@@ -6,7 +6,7 @@ require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3)
 {
-  message($lang['sys_noalloaw'], $lang['sys_noaccess']);
+  message(classLocale::$lang['sys_noalloaw'], classLocale::$lang['sys_noaccess']);
   die();
 }
 
@@ -229,10 +229,10 @@ foreach($ques as $que_transaction) {
     $msg .=
       '<li>' . htmlspecialchars($que) .
         ' --- <span style="' . ($QryResult ? 'ok">OK' : 'error">FAILED!') . '</span> ' .
-      classSupernova::$db->db_affected_rows() . ' ' . $lang['adm_records'] .
+      classSupernova::$db->db_affected_rows() . ' ' . classLocale::$lang['adm_records'] .
       "</li>";
 
-    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . classSupernova::$db->db_affected_rows() . ' ' . $lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
+    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . classSupernova::$db->db_affected_rows() . ' ' . classLocale::$lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
   }
 
   sn_db_transaction_commit();

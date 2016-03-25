@@ -448,7 +448,7 @@ abstract class sn_module_payment extends sn_module {
    * @throws Exception
    */
   public function compile_request($request) {
-    global $config, $lang, $user;
+    global $config, $user;
 
     if(!(classSupernova::$auth->account instanceof Account)) {
       // TODO - throw new Exception($lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
@@ -475,12 +475,12 @@ abstract class sn_module_payment extends sn_module {
       $this->payment_external_currency = $this->config['currency'];
     }
     if(empty($this->payment_external_currency)) {
-      throw new Exception($lang['pay_error_internal_no_external_currency_set'], SN_PAYMENT_ERROR_INTERNAL_NO_EXTERNAL_CURRENCY_SET);
+      throw new Exception(classLocale::$lang['pay_error_internal_no_external_currency_set'], SN_PAYMENT_ERROR_INTERNAL_NO_EXTERNAL_CURRENCY_SET);
     }
 
     $this->payment_external_amount = self::currency_convert($this->payment_dark_matter_paid, 'MM_', $this->payment_external_currency);
     if($this->payment_external_amount < 0.01) {
-      throw new Exception($lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
+      throw new Exception(classLocale::$lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
     }
 
     $this->payment_test = !empty($this->config['test']);
@@ -489,7 +489,7 @@ abstract class sn_module_payment extends sn_module {
 
     $this->db_insert();
     if(!$this->is_exists) {
-      throw new Exception($lang['pay_msg_request_error_db_payment_create'], SN_PAYMENT_REQUEST_DB_ERROR_PAYMENT_CREATE);
+      throw new Exception(classLocale::$lang['pay_msg_request_error_db_payment_create'], SN_PAYMENT_REQUEST_DB_ERROR_PAYMENT_CREATE);
     }
   }
 
@@ -504,18 +504,18 @@ abstract class sn_module_payment extends sn_module {
     global $lang, $config;
 
     if(!$this->manifest['active']) {
-      throw new Exception($lang['pay_msg_module_disabled'], SN_MODULE_DISABLED);
+      throw new Exception(classLocale::$lang['pay_msg_module_disabled'], SN_MODULE_DISABLED);
     }
 
     // Если есть payment_id - загружаем под него данные
     if(!empty($this->payment_params['payment_id'])) {
       $this->request_payment_id = sys_get_param_id($this->payment_params['payment_id']);
       if(!$this->request_payment_id) {
-        throw new Exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG);
+        throw new Exception(classLocale::$lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG);
       }
 
       if(!$this->db_get_by_id($this->request_payment_id)) {
-        throw new Exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG);
+        throw new Exception(classLocale::$lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_INTERNAL_ID_WRONG);
       }
 
       // Проверяем - был ли этот платеж обработан?
@@ -536,7 +536,7 @@ abstract class sn_module_payment extends sn_module {
     // Если теперь у нас нету ИД аккаунта ни в запросе, ни в записи таблицы - можно паниковать
     if(empty($request_account_id)) {
       // TODO - аккаунт
-      throw new Exception($lang['pay_msg_request_user_invalid'], $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
+      throw new Exception(classLocale::$lang['pay_msg_request_user_invalid'], $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
     }
     // Если нет записи в таблице - тогда берем payment_account_id из запроса
     if(empty($this->payment_account_id)) {
@@ -545,18 +545,18 @@ abstract class sn_module_payment extends sn_module {
     // Если у нас отличаются ИД аккаунта в запросе и ИД аккаунта в записи - тоже можно паниковать
     if($this->payment_account_id != $request_account_id) {
       // TODO - Поменять сообщение об ошибке
-      throw new Exception($lang['pay_msg_request_user_invalid'], $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
+      throw new Exception(classLocale::$lang['pay_msg_request_user_invalid'], $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
     }
     // Проверяем существование аккаунта с данным ИД
     if(!$this->account->db_get_by_id($this->payment_account_id)) {
-      throw new Exception($lang['pay_msg_request_user_invalid'] . ' ID ' . $this->payment_account_id, $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
+      throw new Exception(classLocale::$lang['pay_msg_request_user_invalid'] . ' ID ' . $this->payment_account_id, $this->retranslate_error(SN_PAYMENT_REQUEST_USER_NOT_FOUND, $options));
     }
 
     // TODO Проверка на сервер_ид - как бы и не нужна, наверное?
     if(!empty($this->payment_params['server_id'])) {
       $this->request_server_id = sys_get_param_str($this->payment_params['server_id']);
       if(SN_ROOT_VIRTUAL != $this->request_server_id) {
-        throw new Exception($lang['pay_msg_request_server_wrong'] . " {$this->request_server_id} вместо " . SN_ROOT_VIRTUAL, SN_PAYMENT_REQUEST_SERVER_WRONG);
+        throw new Exception(classLocale::$lang['pay_msg_request_server_wrong'] . " {$this->request_server_id} вместо " . SN_ROOT_VIRTUAL, SN_PAYMENT_REQUEST_SERVER_WRONG);
       }
     }
 
@@ -564,7 +564,7 @@ abstract class sn_module_payment extends sn_module {
     if(!empty($this->payment_params['payment_dark_matter_gained'])) {
       $request_mm_amount = sys_get_param_id($this->payment_params['payment_dark_matter_gained']);
       if($request_mm_amount != $this->payment_dark_matter_gained && $this->is_loaded) {
-        throw new Exception($lang['pay_msg_mm_request_amount_invalid'] . " пришло {$request_mm_amount} ММ вместо {$this->payment_dark_matter_gained} ММ", SN_PAYMENT_REQUEST_MM_AMOUNT_INVALID);
+        throw new Exception(classLocale::$lang['pay_msg_mm_request_amount_invalid'] . " пришло {$request_mm_amount} ММ вместо {$this->payment_dark_matter_gained} ММ", SN_PAYMENT_REQUEST_MM_AMOUNT_INVALID);
       }
       empty($this->payment_dark_matter_gained) ? $this->payment_dark_matter_gained = $request_mm_amount : false;
     }
@@ -576,10 +576,10 @@ abstract class sn_module_payment extends sn_module {
     if(!empty($this->payment_params['payment_external_id'])) {
       $request_payment_external_id = sys_get_param_id($this->payment_params['payment_external_id']);
       if(empty($request_payment_external_id)) {
-        throw new exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG);
+        throw new exception(classLocale::$lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG);
       } elseif(!empty($this->payment_external_id) && $this->payment_external_id != $request_payment_external_id) {
         // TODO - Может быть поменять сообщение
-        throw new exception($lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG);
+        throw new exception(classLocale::$lang['pay_msg_request_payment_id_invalid'], SN_PAYMENT_REQUEST_EXTERNAL_ID_WRONG);
       }
       $this->payment_external_id = $request_payment_external_id;
     }
@@ -587,7 +587,7 @@ abstract class sn_module_payment extends sn_module {
     if(!empty($this->payment_params['payment_external_money'])) {
       $request_money_out = sys_get_param_float($this->payment_params['payment_external_money']);
       if($request_money_out != $this->payment_external_amount && $this->is_loaded) {
-        throw new Exception($lang['pay_msg_request_payment_amount_invalid'] . " пришло {$request_money_out} денег вместо {$this->payment_external_amount} денег", SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID);
+        throw new Exception(classLocale::$lang['pay_msg_request_payment_amount_invalid'] . " пришло {$request_money_out} денег вместо {$this->payment_external_amount} денег", SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID);
       }
       empty($this->payment_external_amount) ? $this->payment_external_amount = $request_money_out : false;
     }
@@ -596,7 +596,7 @@ abstract class sn_module_payment extends sn_module {
       $this->payment_external_currency = sys_get_param_str($this->payment_params['payment_external_currency']);
       if(empty($this->payment_external_currency)) {
         // TODO - поменять сообщение
-        throw new Exception($lang['pay_msg_request_payment_amount_invalid'] . " {$this->payment_external_currency}", SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID);
+        throw new Exception(classLocale::$lang['pay_msg_request_payment_amount_invalid'] . " {$this->payment_external_currency}", SN_PAYMENT_REQUEST_CURRENCY_AMOUNT_INVALID);
       }
     }
     if(empty($this->payment_external_currency)) {
@@ -813,11 +813,11 @@ abstract class sn_module_payment extends sn_module {
     global $lang;
 
     if(!isset($payment['payment_status'])) {
-      throw new exception($lang['pay_msg_request_payment_not_found'], SN_PAYMENT_REQUEST_ORDER_NOT_FOUND);
+      throw new exception(classLocale::$lang['pay_msg_request_payment_not_found'], SN_PAYMENT_REQUEST_ORDER_NOT_FOUND);
     }
 
     if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
-      $safe_comment = db_escape($payment['payment_comment'] = $lang['pay_msg_request_payment_cancelled'] .' ' . $payment['payment_comment']);
+      $safe_comment = db_escape($payment['payment_comment'] = classLocale::$lang['pay_msg_request_payment_cancelled'] .' ' . $payment['payment_comment']);
 
       if(!$payment['payment_test']) {
         $result = $this->account->metamatter_change(RPG_PURCHASE_CANCEL, -$payment['payment_dark_matter_gained'], $payment['payment_comment']);
@@ -827,11 +827,11 @@ abstract class sn_module_payment extends sn_module {
       }
       $payment['payment_status'] = PAYMENT_STATUS_CANCELED;
       db_payment_update($payment, $safe_comment);
-      throw new exception($lang['pay_msg_request_payment_cancel_complete'], SN_PAYMENT_REQUEST_OK);
+      throw new exception(classLocale::$lang['pay_msg_request_payment_cancel_complete'], SN_PAYMENT_REQUEST_OK);
     } elseif($payment['payment_status'] == PAYMENT_STATUS_CANCELED) {
-      throw new exception($lang['pay_msg_request_payment_cancelled_already'], SN_PAYMENT_REQUEST_OK);
+      throw new exception(classLocale::$lang['pay_msg_request_payment_cancelled_already'], SN_PAYMENT_REQUEST_OK);
     } elseif($payment['payment_status'] == PAYMENT_STATUS_NONE) {
-      throw new exception($lang['pay_msg_request_payment_cancel_not_complete'], SN_PAYMENT_REQUEST_PAYMENT_NOT_COMPLETE);
+      throw new exception(classLocale::$lang['pay_msg_request_payment_cancel_not_complete'], SN_PAYMENT_REQUEST_PAYMENT_NOT_COMPLETE);
     }
   }
 

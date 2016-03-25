@@ -6,10 +6,10 @@ function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
   global $lang;
 
   $admin_planet_edit_mode_list = array_merge(isset($admin_planet_edit_mode_list) ? $admin_planet_edit_mode_list : array(), array(
-    'structures' => $lang['tech'][UNIT_STRUCTURES],
-    'fleet' => $lang['tech'][UNIT_SHIPS],
-    'defense' => $lang['tech'][UNIT_DEFENCE],
-    'resources_loot' => $lang['tech'][UNIT_RESOURCES],
+    'structures' => classLocale::$lang['tech'][UNIT_STRUCTURES],
+    'fleet' => classLocale::$lang['tech'][UNIT_SHIPS],
+    'defense' => classLocale::$lang['tech'][UNIT_DEFENCE],
+    'resources_loot' => classLocale::$lang['tech'][UNIT_RESOURCES],
   ));
 
   $mode = sys_get_param_str('mode');
@@ -29,7 +29,7 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
   {
     return;
   }
-  $name_list = $lang['tech'];
+  $name_list = classLocale::$lang['tech'];
 
   foreach($unit_list as $unit_id)
   {

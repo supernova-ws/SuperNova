@@ -200,9 +200,6 @@ spl_autoload_register(function ($class) {
 // По нормальным делам тут надо подключать манифесты
 // И читать конфиги - вдруг модуль отключен?
 // Конфиг - часть манифеста?
-sn_module::$sn_module = array();
-sn_module::$sn_module_list = array();
-
 classSupernova::$auth = new core_auth();
 
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
@@ -293,8 +290,8 @@ if(!isset($sn_data['pages'][$sn_page_name])) {
 }
 
 global $lang;
-$lang = new classLocale($config->server_locale_log_usage);
-$lang->lng_switch(sys_get_param_str('lang'));
+classLocale::$lang = $lang = new classLocale($config->server_locale_log_usage);
+classLocale::$lang->lng_switch(sys_get_param_str('lang'));
 
 if(!defined('DEBUG_INIT_SKIP_SECONDARY') || DEBUG_INIT_SKIP_SECONDARY !== true) {
   require_once "init_secondary.php";

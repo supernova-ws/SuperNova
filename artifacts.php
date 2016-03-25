@@ -51,12 +51,12 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
         }
         else
         {
-          $Message = $lang['off_maxed_out'];
+          $Message = classLocale::$lang['off_maxed_out'];
         }
       }
       else
       {
-        $Message = $lang['sys_no_points'];
+        $Message = classLocale::$lang['sys_no_points'];
       }
       sn_db_transaction_rollback();
     break;
@@ -68,7 +68,7 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
       die();
     break;
   }
-  message($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
+  message($Message, classLocale::$lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
 }
 
 $template = gettemplate('artifacts', true);
@@ -100,9 +100,9 @@ foreach($sn_group_artifacts as $artifact_id)
 
     $template->assign_block_vars('artifact', array(
       'ID'          => $artifact_id,
-      'NAME'        => $lang['tech'][$artifact_id],
-      'DESCRIPTION' => $lang['info'][$artifact_id]['description'],
-      'EFFECT'      => $lang['info'][$artifact_id]['effect'],
+      'NAME'        => classLocale::$lang['tech'][$artifact_id],
+      'DESCRIPTION' => classLocale::$lang['info'][$artifact_id]['description'],
+      'EFFECT'      => classLocale::$lang['info'][$artifact_id]['effect'],
       'COST'        => $build_data[BUILD_CREATE][RES_DARK_MATTER],
       'COST_TEXT'   => pretty_number($build_data[BUILD_CREATE][RES_DARK_MATTER]),
       'LEVEL'       => intval($artifact_level),
@@ -115,8 +115,8 @@ foreach($sn_group_artifacts as $artifact_id)
 }
 
 $template->assign_vars(array(
-  'PAGE_HEADER' => $lang['tech'][UNIT_ARTIFACTS],
-  'PAGE_HINT' => $lang['art_page_hint'],
+  'PAGE_HEADER' => classLocale::$lang['tech'][UNIT_ARTIFACTS],
+  'PAGE_HINT' => classLocale::$lang['art_page_hint'],
 ));
 
-display(parsetemplate($template), $lang['tech'][UNIT_ARTIFACTS]);
+display(parsetemplate($template), classLocale::$lang['tech'][UNIT_ARTIFACTS]);

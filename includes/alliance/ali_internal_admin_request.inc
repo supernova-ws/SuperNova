@@ -5,13 +5,13 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
 }
 
 if (!$user_admin_applications) {
-  message($lang['Denied_access'], $lang['requests_admin']);
+  message(classLocale::$lang['Denied_access'], classLocale::$lang['requests_admin']);
 }
 
 $d = sys_get_param_id('d');
 
 if($d) {
-  db_ally_request_deny($lang, $d);
+  db_ally_request_deny(classLocale::$lang, $d);
 }
 
 $id_user = sys_get_param_id('id_user');
@@ -41,4 +41,4 @@ $template->assign_vars(array(
   'ally_tag' => $ally['ally_tag'],
 ));
 
-display(parsetemplate($template), $lang['requests_admin']);
+display(parsetemplate($template), classLocale::$lang['requests_admin']);

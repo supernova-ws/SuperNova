@@ -102,15 +102,15 @@ switch($mode = sys_get_param_str('mode')) {
 //        $planetrow = $global_data['planet'];
 
         if($planetrow['planet_type'] != PT_PLANET) {
-          throw new exception($lang['ov_capital_err_not_a_planet'], ERR_ERROR);
+          throw new exception(classLocale::$lang['ov_capital_err_not_a_planet'], ERR_ERROR);
         }
 
         if($planetrow['id'] == $user['id_planet']) {
-          throw new exception($lang['ov_capital_err_capital_already'], ERR_ERROR);
+          throw new exception(classLocale::$lang['ov_capital_err_capital_already'], ERR_ERROR);
         }
 
         if($user_dark_matter < $config->planet_capital_cost) {
-          throw new exception($lang['ov_capital_err_no_dark_matter'], ERR_ERROR);
+          throw new exception(classLocale::$lang['ov_capital_err_no_dark_matter'], ERR_ERROR);
         }
 
         rpg_points_change($user['id'], RPG_CAPITAL, -$config->planet_capital_cost,
@@ -122,7 +122,7 @@ switch($mode = sys_get_param_str('mode')) {
         $user['id_planet'] = $planetrow['id'];
         $result[] = array(
           'STATUS'  => ERR_NONE,
-          'MESSAGE' => $lang['ov_capital_err_none'],
+          'MESSAGE' => classLocale::$lang['ov_capital_err_none'],
         );
         sn_db_transaction_commit();
         sys_redirect('overview.php?mode=manage');
@@ -140,7 +140,7 @@ switch($mode = sys_get_param_str('mode')) {
           'system' => sys_get_param_int('new_system'),
           'planet' => sys_get_param_int('new_planet')))
         ) {
-          throw new exception($lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
+          throw new exception(classLocale::$lang['ov_teleport_err_wrong_coordinates'], ERR_ERROR);
         }
 
         sn_db_transaction_start();
@@ -157,7 +157,7 @@ switch($mode = sys_get_param_str('mode')) {
         }
 
         rpg_points_change($user['id'], RPG_TELEPORT, -$config->planet_teleport_cost,
-          array(&$lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
+          array(&classLocale::$lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
         $planet_teleport_next = SN_TIME_NOW + $config->planet_teleport_timeout;
         db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
@@ -173,7 +173,7 @@ switch($mode = sys_get_param_str('mode')) {
         $planetrow = db_planet_by_id($planetrow['id'], true, '*');
         $result[] = array(
           'STATUS'  => ERR_NONE,
-          'MESSAGE' => $lang['ov_teleport_err_none'],
+          'MESSAGE' => classLocale::$lang['ov_teleport_err_none'],
         );
         sys_redirect('overview.php?mode=manage');
       } catch(exception $e) {
@@ -191,12 +191,12 @@ switch($mode = sys_get_param_str('mode')) {
           db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
-          message($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
+          message(classLocale::$lang['ov_delete_ok'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
         } else {
-          message($lang['ov_delete_wrong_planet'], $lang['colony_abandon'], 'overview.php?mode=manage');
+          message(classLocale::$lang['ov_delete_wrong_planet'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
         }
       } else {
-        message($lang['ov_delete_wrong_pass'] , $lang['colony_abandon'], 'overview.php?mode=manage');
+        message(classLocale::$lang['ov_delete_wrong_pass'] , classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
       }
     } elseif(
       ($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))
@@ -227,7 +227,7 @@ switch($mode = sys_get_param_str('mode')) {
           $user['id'],
           RPG_GOVERNOR,
           -$build_data[BUILD_CREATE][RES_DARK_MATTER],
-          sprintf($lang['ov_governor_purchase'], $lang['tech'][$hire], $hire, $planetrow['PLANET_GOVERNOR_LEVEL'], uni_render_planet_full($planetrow, '', false, true))
+          sprintf(classLocale::$lang['ov_governor_purchase'], classLocale::$lang['tech'][$hire], $hire, $planetrow['PLANET_GOVERNOR_LEVEL'], uni_render_planet_full($planetrow, '', false, true))
         );
 
         //  => 'Игрок купил Губернатора %1$s ID %2$d уровня %3$d на планету %4$s',
@@ -249,7 +249,7 @@ switch($mode = sys_get_param_str('mode')) {
       $build_data = eco_get_build_data($user, $planetrow, $governor_id, $governor_level);
       $template->assign_block_vars('governors', array(
         'ID'         => $governor_id,
-        'NAME'       => $lang['tech'][$governor_id],
+        'NAME'       => classLocale::$lang['tech'][$governor_id],
         'COST'       => $build_data[BUILD_CREATE][RES_DARK_MATTER],
         'MAX'        => get_unit_param($governor_id, P_MAX_STACK),
         'LEVEL'      => $governor_level,
@@ -286,18 +286,18 @@ switch($mode = sys_get_param_str('mode')) {
       'CAPITAL_COST_TEXT'     => pretty_number($config->planet_capital_cost, true, $user_dark_matter),
 
       'PLANET_DENSITY_INDEX'  => $planet_density_index,
-      'PLANET_CORE_TEXT'      => $lang['uni_planet_density_types'][$planet_density_index],
+      'PLANET_CORE_TEXT'      => classLocale::$lang['uni_planet_density_types'][$planet_density_index],
 
       'IS_CAPITAL'            => $planetrow['id'] == $user['id_planet'],
 
-      'PAGE_HINT'   => $lang['ov_manage_page_hint'],
+      'PAGE_HINT'   => classLocale::$lang['ov_manage_page_hint'],
     ));
 
     foreach($result as &$a_result) {
       $template->assign_block_vars('result', $a_result);
     }
 
-    display($template, $lang['rename_and_abandon_planet']);
+    display($template, classLocale::$lang['rename_and_abandon_planet']);
   break;
 
   default:
@@ -417,7 +417,7 @@ switch($mode = sys_get_param_str('mode')) {
         $this_que = $que['ques'][$que_id][$user['id']][$planetrow['id']];
         $template->assign_block_vars('ques', array(
           'ID'     => $que_id,
-          'NAME'   => $lang['sys_ques'][$que_id],
+          'NAME'   => classLocale::$lang['sys_ques'][$que_id],
           'LENGTH' => empty($this_que) ? 0 : count($this_que),
         ));
 
@@ -432,7 +432,7 @@ switch($mode = sys_get_param_str('mode')) {
     $que_hangar_length = tpl_assign_hangar($template, $planetrow, SUBQUE_FLEET);
     $template->assign_block_vars('ques', array(
       'ID'     => QUE_HANGAR,
-      'NAME'   => $lang['sys_ques'][QUE_HANGAR],
+      'NAME'   => classLocale::$lang['sys_ques'][QUE_HANGAR],
       'LENGTH' => $que_hangar_length,
     ));
 
@@ -440,7 +440,7 @@ switch($mode = sys_get_param_str('mode')) {
       $que_hangar_length = tpl_assign_hangar($template, $planetrow, SUBQUE_DEFENSE);
       $template->assign_block_vars('ques', array(
         'ID'     => SUBQUE_DEFENSE,
-        'NAME'   => $lang['sys_ques'][SUBQUE_DEFENSE],
+        'NAME'   => classLocale::$lang['sys_ques'][SUBQUE_DEFENSE],
         'LENGTH' => $que_hangar_length,
       ));
     }
@@ -483,7 +483,7 @@ switch($mode = sys_get_param_str('mode')) {
       'planet_temp_max'       => $planetrow['temp_max'],
       'planet_density'        => $planetrow['density'],
       'planet_density_index'  => $planetrow['density_index'],
-      'planet_density_text'   => $lang['uni_planet_density_types'][$planetrow['density_index']],
+      'planet_density_text'   => classLocale::$lang['uni_planet_density_types'][$planetrow['density_index']],
 
       'GATE_LEVEL'            => mrc_get_level($user, $planetrow, STRUC_MOON_GATE),
       'GATE_JUMP_REST_TIME'   => uni_get_time_to_jump($planetrow),
@@ -494,7 +494,7 @@ switch($mode = sys_get_param_str('mode')) {
 //      'PLANET_GOVERNOR_LEVEL' => $planetrow['PLANET_GOVERNOR_LEVEL'] mrc_get_level($user, $planetrow,),
       'PLANET_GOVERNOR_LEVEL' => $governor_level,
       'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID']) - $governor_level,
-      'PLANET_GOVERNOR_NAME'  => $lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
+      'PLANET_GOVERNOR_NAME'  => classLocale::$lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
 
       'LIST_ROW_COUNT'        => $overview_planet_rows,
       'LIST_COLUMN_COUNT'     => $overview_planet_columns,
@@ -502,7 +502,7 @@ switch($mode = sys_get_param_str('mode')) {
       'DARK_MATTER'           => $user_dark_matter,
 
       'PLANET_DENSITY_INDEX'  => $planet_density_index,
-      'PLANET_CORE_TEXT'      => $lang['uni_planet_density_types'][$planet_density_index],
+      'PLANET_CORE_TEXT'      => classLocale::$lang['uni_planet_density_types'][$planet_density_index],
 
       'SECTOR_CAN_BUY'        => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
       'SECTOR_COST'           => $sector_cost,

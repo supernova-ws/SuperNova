@@ -13,7 +13,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 // if ($user['authlevel'] < 2)
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate('admin/adm_flying_fleets', true);
@@ -38,4 +38,4 @@ foreach($all_flying_fleets->_container as $fleet_id => $objFleet) {
   }
 }
 
-display($template, $lang['flt_title'], false, '', true);
+display($template, classLocale::$lang['flt_title'], false, '', true);

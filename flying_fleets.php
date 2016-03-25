@@ -31,7 +31,7 @@ lng_include('overview');
 lng_include('fleet');
 
 if(!$planetrow) {
-  message($lang['fl_noplanetrow'], $lang['fl_error']);
+  message(classLocale::$lang['fl_noplanetrow'], classLocale::$lang['fl_error']);
 }
 
 $template = gettemplate('flying_fleets', true);
@@ -62,4 +62,4 @@ $template->assign_vars(array(
   'EXPEDITIONS_MAX'    => $MaxExpeditions,
 ));
 
-display($template, $lang['fl_title']);
+display($template, classLocale::$lang['fl_title']);

@@ -211,7 +211,7 @@ class template
   */
   function display($handle, $include_once = true)
   {
-    global $user, $phpbb_hook, $lang, $config;
+    global $phpbb_hook;
 
     if (!empty($phpbb_hook) && $phpbb_hook->call_hook(array(__CLASS__, __FUNCTION__), $handle, $include_once))
     {
@@ -654,8 +654,6 @@ class template
   */
   function _tpl_include($filename, $include = true)
   {
-    global $lang, $config;
-
     $handle = $filename;
     $this->filename[$handle] = $filename;
     $this->files[$handle] = $this->root . '/' . $filename;

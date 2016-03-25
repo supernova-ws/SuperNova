@@ -16,7 +16,7 @@ define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate("admin/admin_darkmatter", true);
@@ -37,23 +37,23 @@ if($points = sys_get_param_float('points')) {
         $row['id'],
         RPG_ADMIN,
         $points,
-        sprintf($lang['adm_matter_change_log_record'], $row['id'], db_escape($row['username']), $user['id'], db_escape($user['username']), db_escape(sys_get_param_str('reason')))
+        sprintf(classLocale::$lang['adm_matter_change_log_record'], $row['id'], db_escape($row['username']), $user['id'], db_escape($user['username']), db_escape(sys_get_param_str('reason')))
       )) {
-        $message = sprintf($lang['adm_dm_user_added'], $row['username'], $row['id'], pretty_number($points));
+        $message = sprintf(classLocale::$lang['adm_dm_user_added'], $row['username'], $row['id'], pretty_number($points));
         $isNoError = true;
         $message_status = ERR_NONE;
       } else {
         // No? We will say it to user...
-        $message = $lang['adm_dm_add_err'];
+        $message = classLocale::$lang['adm_dm_add_err'];
       }
     }
   } else {
     // Points not empty but destination is not set - this means error
-    $message = $lang['adm_dm_no_dest'];
+    $message = classLocale::$lang['adm_dm_no_dest'];
   }
 } elseif($id_user) {
   // Points is empty but destination is set - this again means error
-  $message = $lang['adm_dm_no_quant'];
+  $message = classLocale::$lang['adm_dm_no_quant'];
 }
 
 if(!$isNoError) {
@@ -68,4 +68,4 @@ if($message) {
   $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
 }
 
-display($template, $lang['adm_dm_title'], false, '', true);
+display($template, classLocale::$lang['adm_dm_title'], false, '', true);

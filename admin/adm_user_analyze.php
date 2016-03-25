@@ -13,7 +13,7 @@ define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 // define('SESSION_INTERRUPT', 15*60); // Можно увеличить до 4 часов - никито не может сидеть 2 суток с перерывом менее 4 часов

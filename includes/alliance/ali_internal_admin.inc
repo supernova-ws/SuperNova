@@ -5,7 +5,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
 }
 
 if(!$user_admin) {
-  message($lang['Denied_access'], $lang['ally_admin']);
+  message(classLocale::$lang['Denied_access'], classLocale::$lang['ally_admin']);
 }
 
 $template = gettemplate('ali_admin', $template);
@@ -69,7 +69,7 @@ if(sys_get_param_str('isSaveOptions')) {
   $ally[$text_list[$allyTextID]['db_field']] = $text['unsafe'];
 } elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNewLeader')) {
   if(!$isAllyOwner) {
-    message($lang['Denied_access'], $lang['ally_admin']);
+    message(classLocale::$lang['Denied_access'], classLocale::$lang['ally_admin']);
   }
 
   $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
@@ -83,7 +83,7 @@ if(sys_get_param_str('isSaveOptions')) {
   }
 } elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband')) {
   if(!$isAllyOwner) {
-    message($lang['Denied_access'], $lang['ally_admin']);
+    message(classLocale::$lang['Denied_access'], classLocale::$lang['ally_admin']);
   }
   sn_db_transaction_start();
   db_ally_delete($ally);
@@ -95,9 +95,9 @@ if(sys_get_param_str('isSaveOptions')) {
 $request = db_ally_request_count_by_id($ally);
 
 $template->assign_vars(array(
-  'request_count'           => $request['request_count'] ? $lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . $lang['ali_req_check'] : $lang['ali_req_emptyList'],
+  'request_count'           => $request['request_count'] ? classLocale::$lang['ali_req_requestCount'] . ': ' . intval($request['request_count']) . '. ' . classLocale::$lang['ali_req_check'] : classLocale::$lang['ali_req_emptyList'],
   'text'                    => $ally[$text_list[$allyTextID]['db_field']],
-  'request_type'            => $lang[$text_list[$allyTextID]['text_type']],
+  'request_type'            => classLocale::$lang[$text_list[$allyTextID]['text_type']],
   't'                       => $allyTextID,
   'ALLY_ID'                 => $ally['id'],
   'ALLY_IMAGE'              => $ally['ally_image'],
@@ -142,8 +142,8 @@ foreach($sn_ali_admin_internal as $sn_ali_admin_action => $sn_ali_admin_action_l
   }
   $template->assign_block_vars('admin_actions', array(
     'ACTION' => $sn_ali_admin_action,
-    'LOCALE' => $lang[$sn_ali_admin_action_locale['title']],
+    'LOCALE' => classLocale::$lang[$sn_ali_admin_action_locale['title']],
   ));
 }
 
-display($template, $lang['ally_admin']);
+display($template, classLocale::$lang['ally_admin']);

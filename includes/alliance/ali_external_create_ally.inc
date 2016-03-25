@@ -13,15 +13,15 @@ $ally_name = db_escape($ally_name_raw);
 
 if($ally_tag) {
   if(!$ally_name_raw || !$ally_tag_raw) {
-    message($lang['have_not_name'], $lang['make_alliance']);
+    message(classLocale::$lang['have_not_name'], classLocale::$lang['make_alliance']);
   }
 
   $query = db_ally_get_by_name_or_tag($ally_tag, $ally_name);
   if($query) {
-    message(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, $lang['always_exist']), $lang['make_alliance']);
+    message(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, classLocale::$lang['always_exist']), classLocale::$lang['make_alliance']);
   }
 
-  db_ally_insert($ally_name, $ally_tag, $user, $lang);
+  db_ally_insert($ally_name, $ally_tag, $user, classLocale::$lang);
   $ally_id = db_insert_id();
   db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= " . SN_TIME_NOW . "");
 
@@ -30,9 +30,9 @@ if($ally_tag) {
   $ally_user_id = is_array($ally_user) ? $ally_user['id'] : 'NULL';
   db_ally_update_ally_user($ally_user_id, $ally_id);
 
-  message(str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_maked']));
+  message(str_replace('%s', $ally_tag_raw, classLocale::$lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, classLocale::$lang['ally_maked']));
 } else {
-  $page .= parsetemplate(gettemplate('ali_external_make'), $lang);
+  $page .= parsetemplate(gettemplate('ali_external_make'), classLocale::$lang);
 }
 
-display($page, $lang['make_alliance']);
+display($page, classLocale::$lang['make_alliance']);

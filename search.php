@@ -13,7 +13,7 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($config->game_mode == GAME_BLITZ) {
-  message($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
+  message(classLocale::$lang['sys_blitz_page_disabled'], classLocale::$lang['sys_error'], 'overview.php', 10);
   die();
 }
 
@@ -53,7 +53,7 @@ if($searchtext && $type) {
         'PLANET_GALAXY'   => $row['galaxy'],
         'PLANET_SYSTEM'   => $row['system'],
         'PLANET_PLANET'   => $row['planet'],
-        'PLANET_TYPE'     => $lang['sys_planet_type_sh'][$row['planet_type']],
+        'PLANET_TYPE'     => classLocale::$lang['sys_planet_type_sh'][$row['planet_type']],
         'ALLY_NAME'       => htmlentities($row['ally_name'], ENT_COMPAT, 'UTF-8'),
         'ALLY_TAG'        => htmlentities($row['ally_tag'], ENT_COMPAT, 'UTF-8'),
       ));
@@ -78,14 +78,14 @@ $search_type = array(
 foreach($search_type as $type_id => $type_lang) {
   $template->assign_block_vars('type', array(
     'ID'       => $type_id,
-    'TEXT'     => $lang[$type_lang],
+    'TEXT'     => classLocale::$lang[$type_lang],
     'SELECTED' => $type_id == $type,
   ));
 }
 
 $template->assign_vars(array(
-  'PAGE_HEADER'        => $lang['Search'],
-  'PAGE_HINT'          => $lang['srch_page_hint'],
+  'PAGE_HEADER'        => classLocale::$lang['Search'],
+  'PAGE_HINT'          => classLocale::$lang['srch_page_hint'],
   'TEXT'               => $searchtext,
   'IS_ALLY'            => $type == 'ally',
   'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link,
