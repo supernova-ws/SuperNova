@@ -2,7 +2,7 @@
 
 function sn_user_birthday_celebrate()
 {
-  global $config, $lang;
+  global $config;
 
   sn_db_transaction_start();
 

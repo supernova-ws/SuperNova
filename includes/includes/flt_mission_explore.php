@@ -18,7 +18,8 @@ function sn_mission_expedition_result_adjust(&$result) {
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_explore(&$mission_data) {
-  global $lang, $config;
+  global $config;
+
   static $ship_data, $rates;
 
   if(empty($mission_data->fleet_event) || $mission_data->fleet_event != EVENT_FLT_ACOMPLISH) {

@@ -55,7 +55,7 @@ function uni_create_planet_get_density($position_data, $user_row, $planet_sector
  * @return bool
  */
 function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = array()) {
-  global $lang, $config;
+  global $config;
 
   $Position = intval($Position);
 
@@ -168,6 +168,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
  */
 function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_chance = 0, $moon_name = '', $update_debris = true, $options = array()) {
   global $lang;
+  $classLocale = $lang;
 
   $moon_name = '';
   $moon_row = array();
@@ -191,7 +192,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
       $temp_min = $moon_planet['temp_min'] - rand(10, 45);
       $temp_max = $temp_min + 40;
 
-      $moon_name = $moon_name ? $moon_name : "{$moon_planet['name']} {$lang['sys_moon']}";
+      $moon_name = $moon_name ? $moon_name : "{$moon_planet['name']} {$classLocale['sys_moon']}";
       $moon_name_safe = db_escape($moon_name);
 
       $field_max = ceil($size / 1000);
@@ -286,8 +287,6 @@ function uni_render_planet($from) {
 }
 
 function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include_id = false) {
-  global $lang;
-
   if(!$from['id']) {
     $result = classLocale::$lang['sys_planet_expedition'];
   } else {
@@ -340,7 +339,7 @@ function uni_coordinates_valid($coordinates, $prefix = '') {
 }
 
 function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
-  global $lang, $config;
+  global $config;
 
   try {
     if($planetrow['planet_teleport_next'] && $planetrow['planet_teleport_next'] > SN_TIME_NOW) {

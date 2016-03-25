@@ -409,6 +409,7 @@ function tpl_topnav_event_build(&$template, $FleetList, $type = 'fleet') {
   }
 
   global $lang;
+  $classLocale = $lang;
 
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
@@ -438,7 +439,7 @@ function tpl_topnav_event_build(&$template, $FleetList, $type = 'fleet') {
     $template->assign_block_vars("flying_{$type}s", array(
       'TIME' => max(0, $fleet_time - SN_TIME_NOW),
       'TEXT' => $fleet_flying_count,
-      'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$lang['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$lang['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$lang['type_mission'][$fleet_event['OBJECT']->mission_type]}",
+      'HINT' => date(FMT_DATE_TIME, $fleet_time + SN_CLIENT_TIME_DIFF) . " - {$classLocale['sys_fleet']} {$fleet_event['TEXT']} {$fleet_event['COORDINATES']} {$classLocale['sys_planet_type_sh'][$fleet_event['COORDINATES_TYPE']]} {$classLocale['type_mission'][$fleet_event['OBJECT']->mission_type]}",
     ));
     $fleet_event['DECREASE'] ? $fleet_flying_count-- : false;
   }
@@ -460,6 +461,7 @@ function tpl_render_topnav(&$user, $planetrow) { return sn_function_call(__FUNCT
  */
 function sn_tpl_render_topnav(&$user, $planetrow) {
   global $lang, $config, $template_result;
+  $classLocale = $lang;
 
   if(!is_array($user)) {
     return '';
@@ -531,7 +533,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
   $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array(classSupernova::$sn_mvc['navbar_prefix_button']) ? count(classSupernova::$sn_mvc['navbar_prefix_button']) : 0);
 
-  $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
+  $str_date_format = "%3$02d %2$0s %1$04d {$classLocale['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate(SN_TIME_NOW);
   $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 

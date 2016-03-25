@@ -28,7 +28,7 @@ sn_mvc['view']['chat'][] = 'sn_chat_view';
 sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
 */
 function sn_chat_model() {
-  global $config, $user, $template_result, $lang, $supernova;
+  global $config, $user, $template_result, $supernova;
 
   $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   $config->array_set('users', $user['id'], 'chat_last_refresh', 0);

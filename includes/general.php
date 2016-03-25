@@ -198,8 +198,6 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
 
 // ----------------------------------------------------------------------------------------------------------------
 function pretty_time($seconds) {
-  global $lang;
-
   $day = floor($seconds / (24 * 3600));
 
   $sys_day_short = classLocale::$lang['sys_day_short'];
@@ -633,8 +631,6 @@ function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
 }
 
 function sys_time_human($time, $full = false) {
-  global $lang;
-
   $seconds = $time % 60;
   $time = floor($time / 60);
   $minutes = $time % 60;

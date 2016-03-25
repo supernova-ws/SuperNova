@@ -109,7 +109,7 @@ class UBE {
    *
    * @param Mission $objMission
    *
-   * @version 41a6.42
+   * @version 41a6.44
    */
   function loadDataFromMission(&$objMission) {
     $this->combatMission = $objMission;
@@ -139,7 +139,7 @@ class UBE {
    *
    * @internal param array $planet
    *
-   * @version 41a6.42
+   * @version 41a6.44
    */
   function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];
@@ -162,7 +162,7 @@ class UBE {
   /**
    * Общий алгоритм расчета боя
    *
-   * @version 41a6.42
+   * @version 41a6.44
    */
   protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -319,7 +319,7 @@ pdie();
    *
    * @return mixed
    *
-   * @version 41a6.42
+   * @version 41a6.44
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -417,6 +417,7 @@ pdie();
         ($this->combat_result == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')]
     );
 
+    $classLocale = $lang;
     $text_defender = '';
     $debris = $this->debris->get_debris();
     foreach($debris as $resource_id => $resource_amount) {
@@ -424,15 +425,15 @@ pdie();
         continue;
       }
 
-      $text_defender .= "{$lang['tech'][$resource_id]}: " . pretty_number($resource_amount) . '<br />';
+      $text_defender .= "{$classLocale['tech'][$resource_id]}: " . pretty_number($resource_amount) . '<br />';
     }
     if($text_defender) {
-      $text_defender = "{$lang['ube_report_msg_body_debris']}{$text_defender}<br />";
+      $text_defender = "{$classLocale['ube_report_msg_body_debris']}{$text_defender}<br />";
     }
 
     $text_defender .= $this->moon_calculator->message_generate($this);
 
-    $text_defender .= "{$lang['ube_report_info_link']}: <a href=\"index.php?page=battle_report&cypher=$this->report_cypher\">{$this->report_cypher}</a>";
+    $text_defender .= "{$classLocale['ube_report_info_link']}: <a href=\"index.php?page=battle_report&cypher=$this->report_cypher\">{$this->report_cypher}</a>";
 
     // TODO: Оптимизировать отсылку сообщений - отсылать пакетами
     $player_sides = $this->players->get_player_sides();
@@ -467,7 +468,7 @@ pdie();
    * @param     $attacker
    * @param int $player_id
    *
-   * @version 41a6.42
+   * @version 41a6.44
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -549,7 +550,7 @@ pdie();
    *
    * @return bool
    *
-   * @version 41a6.42
+   * @version 41a6.44
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
@@ -687,7 +688,7 @@ pdie();
  *
  * @return mixed
  *
- * @version 41a6.42
+ * @version 41a6.44
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
@@ -699,7 +700,7 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  *
  * @return mixed
  *
- * @version 41a6.42
+ * @version 41a6.44
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
@@ -710,6 +711,6 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  *
  * @return mixed
  *
- * @version 41a6.42
+ * @version 41a6.44
  */
 function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

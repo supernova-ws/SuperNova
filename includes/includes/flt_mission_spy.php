@@ -20,11 +20,12 @@ function coe_compress_add_units($unit_group, $target_planet, &$compress_data, $t
 
 function flt_spy_scan($target_planet, $group_name, $section_title, $target_user = array()) {
   global $lang;
+  $classLocale = $lang;
 
   $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
   foreach(sn_get_groups($group_name) as $unit_id) {
     if(($unit_amount = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0) {
-      $result .= "<tr><td align=\"left\" colspan=\"3\">{$lang['tech'][$unit_id]}</td><td align=\"right\">{$unit_amount}</td></tr>";
+      $result .= "<tr><td align=\"left\" colspan=\"3\">{$classLocale['tech'][$unit_id]}</td><td align=\"right\">{$unit_amount}</td></tr>";
     }
 
   }
@@ -43,6 +44,8 @@ function flt_spy_scan($target_planet, $group_name, $section_title, $target_user 
  */
 function flt_mission_spy(&$mission_data) {
   global $lang;
+  $classLocale = $lang;
+
 
   $result = CACHE_NONE;
   $spy_detected = false;
@@ -74,16 +77,16 @@ function flt_mission_spy(&$mission_data) {
       RES_DEUTERIUM => $target_planet_row['deuterium']
     );
 
-    $spy_message = "<table width=\"440\" cellspacing = \"1\"><tr><td class=\"c\" colspan=\"4\">{$lang['sys_spy_maretials']} {$target_planet_row['name']} ";
+    $spy_message = "<table width=\"440\" cellspacing = \"1\"><tr><td class=\"c\" colspan=\"4\">{$classLocale['sys_spy_maretials']} {$target_planet_row['name']} ";
     $spy_message .= uni_render_coordinates_href($target_planet_row, '', 3);
-    $spy_message .= " ({$lang['Player_']} '{$target_user_row['username']}') {$lang['On_']} ";
+    $spy_message .= " ({$lang['Player_']} '{$target_user_row['username']}') {$classLocale['On_']} ";
     $spy_message .= date(FMT_DATE_TIME, $objFleet->time_arrive_to_target);
     $spy_message .= "</td></tr><tr>";
-    $spy_message .= "<td width=220>{$lang['sys_metal']}</td><td width=220 align=right>" . pretty_number($target_planet_row['metal']) . "</td>";
-    $spy_message .= "<td width=220>{$lang['sys_crystal']}</td></td><td width=220 align=right>" . pretty_number($target_planet_row['crystal']) . "</td>";
+    $spy_message .= "<td width=220>{$classLocale['sys_metal']}</td><td width=220 align=right>" . pretty_number($target_planet_row['metal']) . "</td>";
+    $spy_message .= "<td width=220>{$classLocale['sys_crystal']}</td></td><td width=220 align=right>" . pretty_number($target_planet_row['crystal']) . "</td>";
     $spy_message .= "</tr><tr>";
-    $spy_message .= "<td width=220>{$lang['sys_deuterium']}</td><td width=220 align=right>" . pretty_number($target_planet_row['deuterium']) . "</td>";
-    $spy_message .= "<td width=220>{$lang['sys_energy']}</td><td width=220 align=right>" . pretty_number($target_planet_row['energy_max']) . "</td>";
+    $spy_message .= "<td width=220>{$classLocale['sys_deuterium']}</td><td width=220 align=right>" . pretty_number($target_planet_row['deuterium']) . "</td>";
+    $spy_message .= "<td width=220>{$classLocale['sys_energy']}</td><td width=220 align=right>" . pretty_number($target_planet_row['energy_max']) . "</td>";
     $spy_message .= "</tr>";
     if($spy_diff >= 2) {
       $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', classLocale::$lang['tech'][UNIT_SHIPS], $target_user_row) . "</div>";
@@ -122,15 +125,15 @@ function flt_mission_spy(&$mission_data) {
 
     $spy_message .= "<tr><th class=\"c_c\" colspan=4>";
     $spy_message .= "{$spy_outcome_str}<br />";
-    $spy_message .= "<a href=\"fleet.php?target_mission=1&planet_type={$target_planet_row['planet_type']}&galaxy={$target_planet_row['galaxy']}&system={$target_planet_row['system']}&planet={$target_planet_row['planet']} \">{$lang['type_mission'][1]}</a><br />";
-    $spy_message .= "<a href=\"simulator.php?replay={$simulator_link}\">{$lang['COE_combatSimulator']}</a><br />";
+    $spy_message .= "<a href=\"fleet.php?target_mission=1&planet_type={$target_planet_row['planet_type']}&galaxy={$target_planet_row['galaxy']}&system={$target_planet_row['system']}&planet={$target_planet_row['planet']} \">{$classLocale['type_mission'][1]}</a><br />";
+    $spy_message .= "<a href=\"simulator.php?replay={$simulator_link}\">{$classLocale['COE_combatSimulator']}</a><br />";
     $spy_message .= "</th></tr></table>";
     // End of link generation
 
     msg_send_simple_message($spying_user_row['id'], '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_mess_spy_report'], $spy_message);
 
-    $target_message = "{$lang['sys_mess_spy_ennemyfleet']} {$spying_planet_row['name']} " . uni_render_coordinates_href($spying_planet_row, '', 3);
-    $target_message .= " {$lang['sys_mess_spy_seen_at']} {$target_planet_row['name']} " . uni_render_coordinates($target_planet_row);
+    $target_message = "{$classLocale['sys_mess_spy_ennemyfleet']} {$spying_planet_row['name']} " . uni_render_coordinates_href($spying_planet_row, '', 3);
+    $target_message .= " {$classLocale['sys_mess_spy_seen_at']} {$target_planet_row['name']} " . uni_render_coordinates($target_planet_row);
 
     if($spy_detected) {
       $debris_planet_id = $target_planet_row['planet_type'] == PT_PLANET ? $target_planet_row['id'] : $target_planet_row['parent_planet'];
@@ -140,7 +143,7 @@ function flt_mission_spy(&$mission_data) {
       db_planet_set_by_id($debris_planet_id,
         "`debris_metal` = `debris_metal` + " . floor($spy_probes * $spy_cost[RES_METAL] * 0.3) . ", `debris_crystal` = `debris_crystal` + " . floor($spy_probes * $spy_cost[RES_CRYSTAL] * 0.3));
 
-      $target_message .= "<br />{$lang['sys_mess_spy_destroyed_enemy']}";
+      $target_message .= "<br />{$classLocale['sys_mess_spy_destroyed_enemy']}";
 
       $result = CACHE_FLEET | CACHE_PLANET_DST;
     } else {

@@ -17,7 +17,7 @@ if(SN_IN_FLEET !== true) {
 }
 
 function flt_build_gathering($resources_taken = '') {
-  global $planetrow, $user, $lang;
+  global $planetrow, $user;
 
   // Caching sn_data names for quick access
   $lang_sys_planet_type = classLocale::$lang['sys_planet_type'];

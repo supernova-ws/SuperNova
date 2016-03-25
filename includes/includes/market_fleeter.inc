@@ -73,7 +73,8 @@ if(is_array($shipList)) {
       $total[$resID] += $resCount;
     }
 
-    $message .= "<li>{$lang['tech'][$shipID]}: " . pretty_number($shipCount);
+    $classLocale = $lang;
+    $message .= "<li>{$classLocale['tech'][$shipID]}: " . pretty_number($shipCount);
   }
 
   if($mode == MARKET_STOCKMAN && $intError == MARKET_DEAL) {

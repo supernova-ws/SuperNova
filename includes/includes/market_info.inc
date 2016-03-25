@@ -5,7 +5,8 @@ if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)
   $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
 }
 
-$page_title .= " - {$lang['eco_mrk_info']}";
+$classLocale = $lang;
+$page_title .= " - {$classLocale['eco_mrk_info']}";
 
 $template = gettemplate('market_info', true);
 
@@ -56,15 +57,15 @@ if($info_action)
         $msg_text = array();
         foreach(sn_get_groups('mercenaries') as $mercenary_id)
         {
-          $msg_text[] = "{$lang['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, false, $mercenary_id)) ? "{$lang['sys_level']} {$mercenary_level}" : classLocale::$lang['eco_mrk_info_not_hired']);
+          $msg_text[] = "{$classLocale['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, false, $mercenary_id)) ? "{$classLocale['sys_level']} {$mercenary_level}" : classLocale::$lang['eco_mrk_info_not_hired']);
         }
         if($mercenary_level = mrc_get_level($user_info, false, UNIT_PREMIUM))
         {
-          $msg_text[] = "{$lang['tech'][UNIT_PREMIUM]} - {$mercenary_level} {$lang['sys_level']}";
+          $msg_text[] = "{$classLocale['tech'][UNIT_PREMIUM]} - {$mercenary_level} {$classLocale['sys_level']}";
         }
         $msg_text = sprintf(classLocale::$lang['eco_mrk_info_player_message'], $user_info['id'], $user_info['username']) . "\r\n" . implode("\r\n", $msg_text);
 
-        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['eco_mrk_info_msg_from'], "{$lang['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
+        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['eco_mrk_info_msg_from'], "{$classLocale['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
       break;
 
       default:
@@ -72,7 +73,7 @@ if($info_action)
       break;
     }
 
-    if(!rpg_points_change($user['id'], RPG_MARKET_INFO_MERCENARY, -$config->rpg_cost_info, "Using Black Market page {$lang['eco_mrk_info']} - getting info about user ID {$user_info['id']}"))
+    if(!rpg_points_change($user['id'], RPG_MARKET_INFO_MERCENARY, -$config->rpg_cost_info, "Using Black Market page {$classLocale['eco_mrk_info']} - getting info about user ID {$user_info['id']}"))
     {
       // TODO: throw new Exception(MARKET_INFO_PLAYER_SAME, ERR_ERROR);
     }

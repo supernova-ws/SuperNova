@@ -57,6 +57,7 @@ function eco_que_arr2str($que_arr) {
 
 function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true) {
   global $lang, $config;
+  $classLocale = $lang;
 
   $is_autoconvert = false;
   if($build_mode == BUILD_AUTOCONVERT || sys_get_param_int('auto_convert')) {
@@ -189,7 +190,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
         }
         $unit_size = get_unit_param($unit_id, P_UNIT_SIZE);
         if($free_silo < $unit_size) {
-          throw new exception("{В ракетной шахте нет места для {$lang['tech'][$unit_id]}}", ERR_ERROR); // TODO EXCEPTION
+          throw new exception("{В ракетной шахте нет места для {$classLocale['tech'][$unit_id]}}", ERR_ERROR); // TODO EXCEPTION
         }
         $unit_amount = max(0, min($unit_amount, floor($free_silo / $unit_size)));
       }

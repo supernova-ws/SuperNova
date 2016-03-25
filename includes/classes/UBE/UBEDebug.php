@@ -8,7 +8,7 @@ class UBEDebug {
   /**
    *
    *
-   * @version 41a6.0
+   * @version 41a6.44
    */
   public static function unit_dump_header() {
     if(!defined('DEBUG_UBE')) {
@@ -45,7 +45,7 @@ class UBEDebug {
    * @param string       $desc
    * @param UBEUnit|null $before
    *
-   * @version 41a6.0
+   * @version 41a6.44
    */
   public static function unit_dump(UBEUnit $unit, $desc = '', UBEUnit $before = null) {
     if(!defined('DEBUG_UBE')) {
@@ -53,10 +53,11 @@ class UBEDebug {
     }
 
     global $lang;
+    $classLocale = $lang;
 
     print('<tr align="right">');
     print("<td>{$desc}</td>");
-    print("<td>[{$unit->unitId}]{$lang['tech_short'][$unit->unitId]}</td>");
+    print("<td>[{$unit->unitId}]{$classLocale['tech_short'][$unit->unitId]}</td>");
 //  print("<td>" . unit_dump_delta($current, 'count', $before) . "</td>");
     static::unit_dump_delta($unit, 'count', $before);
 //  print("<td>" . $this->type . "</td>");
@@ -83,7 +84,7 @@ class UBEDebug {
   /**
    *
    *
-   * @version 41a6.0
+   * @version 41a6.44
    */
   public static function unit_dump_footer() {
     if(!defined('DEBUG_UBE')) {
@@ -107,9 +108,10 @@ class UBEDebug {
 
     global $lang;
 
-    print("[{$attacking_unit_pool->unitId}]{$lang['tech'][$attacking_unit_pool->unitId]}" .
+    $classLocale = $lang;
+    print("[{$attacking_unit_pool->unitId}]{$classLocale['tech'][$attacking_unit_pool->unitId]}" .
       ' attacks ' .
-      $defending_fleet_id . '@' . "[{$defending_unit_pool->unitId}]{$lang['tech'][$defending_unit_pool->unitId]}" .
+      $defending_fleet_id . '@' . "[{$defending_unit_pool->unitId}]{$classLocale['tech'][$defending_unit_pool->unitId]}" .
       ' with ' . pretty_number($defending_unit_pool->attack_income) .
       '<br>'
     );
@@ -124,7 +126,7 @@ class UBEDebug {
    * @param string       $field
    * @param UBEUnit|null $before
    *
-   * @version 41a6.0
+   * @version 41a6.44
    */
   public static function unit_dump_delta(UBEUnit $unit, $field, UBEUnit $before = null) {
     if(!defined('DEBUG_UBE')) {

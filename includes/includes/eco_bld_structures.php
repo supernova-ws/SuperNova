@@ -17,6 +17,7 @@ function eco_build($que_type, &$user, &$planet) { return sn_function_call(__FUNC
 
 function sn_eco_build($que_type, &$auser, &$planet) {
   global $lang, $config, $template_result;
+  $classLocale = $lang;
 
   if($ally_id = sys_get_param_id('ally_id')) {
     define('SN_IN_ALLY', true);
@@ -67,7 +68,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     }
     $build_unit_list = sn_get_groups('tech');
     $artifact_id = ART_HEURISTIC_CHIP;
-    $page_header = classLocale::$lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
+    $page_header = classLocale::$lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$classLocale['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } elseif($que_type == QUE_MERCENARY) {
 //    if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
 //      message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
@@ -78,7 +79,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 //    }
     $build_unit_list = sn_get_groups('mercenaries');
     $artifact_id = 0;
-    $page_header = classLocale::$lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$lang['sys_of_ally']}&nbsp;{$user['username']}" : '');
+    $page_header = classLocale::$lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$classLocale['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } else {
     if(mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) == 0) {
       message(classLocale::$lang['need_hangar'], classLocale::$lang['tech'][STRUC_FACTORY_HANGAR]);

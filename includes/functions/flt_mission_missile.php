@@ -109,6 +109,7 @@ function coe_o_missile_calculate() {
   sn_db_transaction_check(true);
 
   global $lang;
+  $classLocale = $lang;
 
   $iraks = db_missile_list_by_arrival();
 
@@ -154,12 +155,12 @@ function coe_o_missile_calculate() {
           if($destroyed) {
             $db_changeset['unit'][] = sn_db_unit_changeset_prepare($key, -$destroyed, $targetUser, $target_planet_row['id']);
 
-            $message .= "&nbsp;&nbsp;{$lang['tech'][$key]} - {$destroyed} {$lang['quantity']}<br>";
+            $message .= "&nbsp;&nbsp;{$classLocale['tech'][$key]} - {$destroyed} {$classLocale['quantity']}<br>";
           }
         }
 
         if(!empty($message)) {
-          $message = $lang['mip_defense_destroyed'] . $message . "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
+          $message = classLocale::$lang['mip_defense_destroyed'] . $message . "{$classLocale['mip_recycled']}{$classLocale['Metal']}: {$attackResult['metal']}, {$classLocale['Crystal']}: {$attackResult['crystal']}<br>";
 
           db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
         }

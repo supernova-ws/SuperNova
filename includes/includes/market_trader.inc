@@ -15,6 +15,7 @@ function eco_mrk_trader($user, $planetrow = null) {
   $planetrow = isset($planetrow) ? $planetrow : $user;
 
   global $page_title, $config, $lang;
+  $classLocale = $lang;
 
   lng_include('market');
 
@@ -91,7 +92,7 @@ function eco_mrk_trader($user, $planetrow = null) {
       $table = $planetrow['id_owner'] ? 'planets' : 'users';
 
       doquery("UPDATE {{{$table}}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
-      rpg_points_change($user['id'], RPG_MARKET, -$operation_cost, "Using Black Market page {$lang['eco_mrk_trader']}");
+      rpg_points_change($user['id'], RPG_MARKET, -$operation_cost, "Using Black Market page {$classLocale['eco_mrk_trader']}");
       sn_db_transaction_commit();
 
       $intError = MARKET_DEAL_TRADE;

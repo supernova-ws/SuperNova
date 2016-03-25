@@ -85,10 +85,11 @@ if($userToAdd_unsafe) {
 }
 
 $template = gettemplate('fleet_aks_invite', true);
+$classLocale = $lang;
 $template->assign_vars(array(
   'FLEET_ID' => $fleetid,
   'MESSAGE' => $add_user_message_mr,
-  'PAGE_HEADER' => "{$lang['fl_associate']} '{$aks['name']}'",
+  'PAGE_HEADER' => "{$classLocale['fl_associate']} '{$aks['name']}'",
   'MISSION_NAME' => classLocale::$lang['type_mission'][MT_AKS],
 ));
 

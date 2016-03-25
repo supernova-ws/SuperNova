@@ -24,7 +24,7 @@ require_once('includes/includes/flt_functions.php');
  * @throws Exception
  */
 function fleet_ajax() {
-  global $lang, $user;
+  global $user;
 
   classLocale::$lang->lng_include('universe');
   classLocale::$lang->lng_include('fleet');

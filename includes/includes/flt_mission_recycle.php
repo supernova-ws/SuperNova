@@ -10,8 +10,6 @@
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_recycle($mission_data) {
-  global $lang;
-
   $objFleet = $mission_data->fleet;
   $destination_planet = &$mission_data->dst_planet;
   if(empty($destination_planet['id'])) {

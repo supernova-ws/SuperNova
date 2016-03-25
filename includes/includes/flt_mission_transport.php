@@ -10,8 +10,6 @@
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_transport($mission_data) {
-  global $lang;
-
   $result = CACHE_FLEET;
 
   $objFleet = $mission_data->fleet;

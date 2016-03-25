@@ -4,7 +4,7 @@
 // @copyright 2008 by Chlorel for XNova
 
 function sn_fleet_page2() {
-  global $missiontype, $target_mission, $fleetarray, $planetrow, $lang;
+  global $missiontype, $target_mission, $fleetarray, $planetrow;
   global $TargetPlanet, $consumption, $template_result;
   global $user, $config, $is_transport_missions;
 

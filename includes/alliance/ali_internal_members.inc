@@ -92,22 +92,23 @@ foreach($userList as $userRow)
     }
   }
 
+  $classLocale = $lang;
   $last_active = time() - $userRow["onlinetime"];
   if($user_admin)
   {
     if ( $last_active < 60 )
     {
-      $tmp = "lime>{$lang['On']}";
+      $tmp = "lime>{$classLocale['On']}";
     }
     elseif ($last_active < 60 * 60)
     {
       $last_active = round($last_active / 60);
-      $tmp = "lime>{$last_active} {$lang['sys_min_short']}";
+      $tmp = "lime>{$last_active} {$classLocale['sys_min_short']}";
     }
     elseif ($last_active < 60 * 60 * 24)
     {
       $last_active = round( $last_active / (60 * 60));
-      $tmp = "green>{$last_active} {$lang['sys_hrs_short']}";
+      $tmp = "green>{$last_active} {$classLocale['sys_hrs_short']}";
     }
     else
     {
@@ -124,7 +125,7 @@ foreach($userList as $userRow)
       {
         $tmp = "red";
       }
-      $tmp .= ">{$last_active} {$lang['sys_day_short']}";
+      $tmp .= ">{$last_active} {$classLocale['sys_day_short']}";
     }
   }
   else
@@ -133,15 +134,15 @@ foreach($userList as $userRow)
     {
       if ( $last_active < 60 * 5 )
       {
-        $tmp = "lime>{$lang['On']}";
+        $tmp = "lime>{$classLocale['On']}";
       }
       elseif ($last_active < 60 * 15)
       {
-        $tmp = "yellow>{$lang['ali_lessThen15min']}";
+        $tmp = "yellow>{$classLocale['ali_lessThen15min']}";
       }
       else
       {
-        $tmp = "red>{$lang['Off']}";
+        $tmp = "red>{$classLocale['Off']}";
       }
     }
     else

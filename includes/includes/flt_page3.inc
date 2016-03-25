@@ -12,6 +12,7 @@ function sn_fleet_page3($time_to_travel) {
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
+  $classLocale = $lang;
 
   $adjusted_travel_time = $time_to_travel;
 
@@ -120,7 +121,7 @@ function sn_fleet_page3($time_to_travel) {
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach($fleetarray as $Ship => $Count) {
     if($Count > mrc_get_level($user, $planetrow, $Ship)) {
-      message("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+      message("<span class='error'><b>{$classLocale['fl_fleet_err']}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
     }
   }
 
@@ -156,7 +157,7 @@ function sn_fleet_page3($time_to_travel) {
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
   if($cant_attack !== ATTACK_ALLOWED) {
-    message("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
+    message("<span class='error'><b>{$classLocale['fl_attack_error'][$cant_attack]}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);

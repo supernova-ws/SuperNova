@@ -2,7 +2,7 @@
 
 function qst_render_page()
 {
-  global $lang, $user, $template, $config;
+  global $user, $template, $config;
 
   $user_id = sys_get_param_id('user_id', false);
   $mode    = sys_get_param_str('mode');
@@ -234,8 +234,6 @@ function qst_quest_parse($quest)
 
 function qst_templatize($quest, $for_display = true)
 {
-  global $lang;
-
   $tmp = array();
   foreach($quest['quest_rewards_list'] as $quest_reward_id => $quest_reward_amount)
   {
@@ -281,6 +279,7 @@ function qst_reward(&$user, &$rewards, &$quest_list)
   if(empty($rewards)) return;
 
   global $lang;
+  $classLocale = $lang;
 
   $db_changeset = array();
   $total_rewards = array();
@@ -299,7 +298,7 @@ function qst_reward(&$user, &$rewards, &$quest_list)
           $comment_reward[] = $unit_amount . ' ' . classLocale::$lang['tech'][$unit_id];
           $total_rewards[$user_id][$planet_id][$unit_id] += $unit_amount;
         }
-        $comment .= " {$lang['qst_msg_your_reward']} " . implode(',', $comment_reward);
+        $comment .= " {$classLocale['qst_msg_your_reward']} " . implode(',', $comment_reward);
 
         msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['msg_from_admin'], classLocale::$lang['qst_msg_complete_subject'], $comment);
 

@@ -2,7 +2,7 @@
 
 function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar')
 {
-  global $config, $lang;
+  global $config;
 
   try
   {

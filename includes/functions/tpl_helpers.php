@@ -38,7 +38,7 @@ function tpl_assign_fleet(&$template, $fleets, $js_name = 'fleets') {
 
 // function that parses internal fleet representation (as array(id => count))
 function tpl_parse_fleet_sn($fleet, $fleet_id) {
-  global $lang, $user;
+  global $user;
 
   $user_data = &$user;
 
@@ -86,7 +86,7 @@ function tplParseFleetObject(Fleet $objFleet, $index, $user_data = false) { retu
  * @return array
  */
 function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$result) {
-  global $lang, $user;
+  global $user;
 
   $result = array();
 
@@ -199,9 +199,6 @@ function tpl_parse_planet_que($que, $planet, $que_id) {
 }
 
 function tpl_parse_planet($planet) {
-  global $lang;
-
-//  $fleet_list = flt_get_fleets_to_planet($planet);
   $fleet_list = FleetList::EMULATE_flt_get_fleets_to_planet($planet);
 
   $que = que_get($planet['id_owner'], $planet['id'], false);

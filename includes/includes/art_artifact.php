@@ -2,6 +2,7 @@
 
 function art_use(&$user, &$planetrow, $unit_id) {
   global $lang;
+  $classLocale = $lang;
 
   if(!in_array($unit_id, sn_get_groups('artifacts'))) {
     return;
@@ -132,7 +133,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
   }
 
   sn_db_transaction_commit();
-  message($message, "{$lang['tech'][UNIT_ARTIFACTS]} - {$lang['tech'][$unit_id]}",
+  message($message, "{$classLocale['tech'][UNIT_ARTIFACTS]} - {$classLocale['tech'][$unit_id]}",
     ($request_uri = sys_get_param_str_unsafe('REQUEST_URI')) ? $request_uri : ('artifacts' . DOT_PHP_EX . '#' . $unit_id),
     5);
 }

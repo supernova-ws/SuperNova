@@ -121,7 +121,7 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
 function player_create($username_unsafe, $email_unsafe, $options) {
   sn_db_transaction_check(true);
 
-  global $config, $lang;
+  global $config;
 
   static $player_options_string = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';
 

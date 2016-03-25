@@ -178,21 +178,23 @@ class UBEMoonCalculator {
   public function message_generate(UBE $ube) {
     global $lang;
 
+    $classLocale = $lang;
+
     $text_defender = '';
     if($this->status == UBE_MOON_CREATE_SUCCESS) {
-      $text_defender .= "{$lang['ube_report_moon_created']} {$this->moon_diameter} {$lang['sys_kilometers_short']}<br /><br />";
+      $text_defender .= "{$classLocale['ube_report_moon_created']} {$this->moon_diameter} {$classLocale['sys_kilometers_short']}<br /><br />";
     } elseif($this->status == UBE_MOON_CREATE_FAILED) {
-      $text_defender .= "{$lang['ube_report_moon_chance']} {$this->create_chance}%<br /><br />";
+      $text_defender .= "{$classLocale['ube_report_moon_chance']} {$this->create_chance}%<br /><br />";
     }
 
     if($ube->mission_type_id == MT_DESTROY) {
       if($this->reapers_status == UBE_MOON_REAPERS_NONE) {
         $text_defender .= classLocale::$lang['ube_report_moon_reapers_none'];
       } else {
-        $text_defender .= "{$lang['ube_report_moon_reapers_wave']}. {$lang['ube_report_moon_reapers_chance']} {$this->destroy_chance}%. ";
+        $text_defender .= "{$classLocale['ube_report_moon_reapers_wave']}. {$classLocale['ube_report_moon_reapers_chance']} {$this->destroy_chance}%. ";
         $text_defender .= classLocale::$lang[$this->status == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";
 
-        $text_defender .= "{$lang['ube_report_moon_reapers_outcome']} {$this->reaper_die_chance}%. ";
+        $text_defender .= "{$classLocale['ube_report_moon_reapers_outcome']} {$this->reaper_die_chance}%. ";
         $text_defender .= classLocale::$lang[$this->reapers_status == UBE_MOON_REAPERS_RETURNED ? 'ube_report_moon_reapers_survive' : 'ube_report_moon_reapers_died'];
       }
       $text_defender .= '<br /><br />';

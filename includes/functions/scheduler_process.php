@@ -2,6 +2,7 @@
 
 function scheduler_process() {
   global $config, $user, $debug, $lang;
+  $classLocale = $lang;
 
   $is_admin_request = false;
 
@@ -44,7 +45,7 @@ function scheduler_process() {
       $msg = "Stat update complete in {$total_time} seconds.";
       $debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
 
-      $msg = "{$lang['adm_done']}: {$total_time} {$lang['sys_sec']}."; // . date(FMT_DATE_TIME, $ts_scheduled_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
+      $msg = "{$classLocale['adm_done']}: {$total_time} {$classLocale['sys_sec']}."; // . date(FMT_DATE_TIME, $ts_scheduled_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
 
       // TODO: Analyze maintenance result. Add record to log if error. Add record to log if OK
       $maintenance_result = sys_maintenance();

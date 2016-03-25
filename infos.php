@@ -253,8 +253,6 @@ function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template) 
 }
 
 function eco_render_rapid_fire($unit_id) {
-  global $lang;
-
   $unit_data = get_unit_param($unit_id);
   $unit_durability = $unit_data['shield'] + $unit_data['armor'];
 
