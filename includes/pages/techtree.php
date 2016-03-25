@@ -6,8 +6,7 @@
  * version 2.0 copyright (c) 2012 by Gorlum for http://supernova.ws
  */
 
-//$sn_mvc['model']['techtree'][] = 'sn_techtree_model';
-$sn_mvc['view']['techtree'][] = 'sn_techtree_view';
+classSupernova::$sn_mvc['view']['techtree'][] = 'sn_techtree_view';
 
 function sn_techtree_view($template = null)
 {

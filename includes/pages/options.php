@@ -7,16 +7,6 @@
  * @version 1.0
  * @copyright 2008 by ??????? for XNova
  */
-/*
-$sn_mvc['model']['options'][] = 'sn_options_model';
-$sn_mvc['view']['options'][] = 'sn_options_view';
-
-$sn_mvc['i18n']['options'] = array(
-  'options' => 'options',
-  'messages' => 'messages',
-);
- */
-
 function sn_options_model() {
   global $user, $user_option_list, $lang, $template_result, $config;
 

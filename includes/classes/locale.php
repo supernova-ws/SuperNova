@@ -285,7 +285,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
   }
 
   public function lng_switch($language_new) {
-    global $language, $user, $sn_mvc;
+    global $language, $user;
 
     classSupernova::log_file("locale.switch: Request for switch to '{$language_new}'", 1);
 
@@ -322,7 +322,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
     $this->lng_include('tech');
     $this->lng_include('payment');
     // Loading global language files
-    $this->lng_load_i18n($sn_mvc['i18n']['']);
+    $this->lng_load_i18n(classSupernova::$sn_mvc['i18n']['']);
 
     if($this->cache) {
       classSupernova::log_file("locale.switch: Cache - setting flag " . $this->cache_prefix_lang . '__INIT');

@@ -213,7 +213,7 @@ function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $A
  * @param bool|int|string $exitStatus - Код или сообщение выхода
  */
 function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $isDisplayMenu = true, $exitStatus = true) {
-  global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
+  global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_page_name;
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
   $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
@@ -231,7 +231,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     $isDisplayTopNav = false;
   }
 
-  !empty($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page, 'view', '');
+  !empty(classSupernova::$sn_mvc['view']['']) && execute_hooks(classSupernova::$sn_mvc['view'][''], $page, 'view', '');
 
   // Global header
   $user_time_diff = playerTimeDiff::user_time_diff_get();
@@ -253,8 +253,8 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 
   $template = gettemplate('_global_header', true);
 
-  if(!empty($sn_mvc['javascript'])) {
-    foreach($sn_mvc['javascript'] as $page_name => $script_list) {
+  if(!empty(classSupernova::$sn_mvc['javascript'])) {
+    foreach(classSupernova::$sn_mvc['javascript'] as $page_name => $script_list) {
       if(empty($page_name) || $page_name == $sn_page_name) {
         foreach($script_list as $filename => $content) {
           $template_result['.']['javascript'][] = array(
@@ -266,15 +266,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     }
   }
 
-
-//    <!-- IF LOGIN_LOGOUT -->
-//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/{GAME_MODE_CSS_PREFIX}login_background.min.css?{C_var_db_update}" />
-//    <!-- ELSE -->
-//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}{GAME_MODE_CSS_PREFIX}skin_background.min.css?{C_var_db_update}" />
-//    <!-- ENDIF -->
-//    <!--<link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin_server.css?{C_var_db_update}" />-->
-//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_override.css?{C_var_db_update}" />
-  empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
+  empty(classSupernova::$sn_mvc['css']) ? classSupernova::$sn_mvc['css'] = array('' => array()) : false;
   $standard_css = array(
     'design/css/jquery-ui.css'  => '',
     'design/css/global.min.css' => '',
@@ -287,10 +279,10 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   );
 
   // Prepending standard CSS files
-  $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
+  classSupernova::$sn_mvc['css'][''] = array_merge($standard_css, classSupernova::$sn_mvc['css']['']);
 
 
-  foreach($sn_mvc['css'] as $page_name => $script_list) {
+  foreach(classSupernova::$sn_mvc['css'] as $page_name => $script_list) {
     if(empty($page_name) || $page_name == $sn_page_name) {
       foreach($script_list as $filename => $content) {
         $template_result['.']['css'][] = array(
@@ -469,7 +461,7 @@ function tpl_render_topnav(&$user, $planetrow) { return sn_function_call(__FUNCT
  * @return string|template
  */
 function sn_tpl_render_topnav(&$user, $planetrow) {
-  global $lang, $config, $sn_module_list, $template_result, $sn_mvc;
+  global $lang, $config, $sn_module_list, $template_result;
 
   if(!is_array($user)) {
     return '';
@@ -530,8 +522,8 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   que_tpl_parse($template, QUE_RESEARCH, $user, array(), null, !classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE]);
   que_tpl_parse($template, SUBQUE_FLEET, $user, $planetrow, null, true);
 
-  if(!empty($sn_mvc['navbar_prefix_button']) && is_array($sn_mvc['navbar_prefix_button'])) {
-    foreach($sn_mvc['navbar_prefix_button'] as $navbar_button_image => $navbar_button_url) {
+  if(!empty(classSupernova::$sn_mvc['navbar_prefix_button']) && is_array(classSupernova::$sn_mvc['navbar_prefix_button'])) {
+    foreach(classSupernova::$sn_mvc['navbar_prefix_button'] as $navbar_button_image => $navbar_button_url) {
       $template->assign_block_vars('navbar_prefix_button', array(
         'IMAGE'        => $navbar_button_image,
         'URL_RELATIVE' => $navbar_button_url,
@@ -539,7 +531,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     }
   }
 
-  $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array($sn_mvc['navbar_prefix_button']) ? count($sn_mvc['navbar_prefix_button']) : 0);
+  $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array(classSupernova::$sn_mvc['navbar_prefix_button']) ? count(classSupernova::$sn_mvc['navbar_prefix_button']) : 0);
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate(SN_TIME_NOW);
@@ -715,7 +707,7 @@ function parsetemplate($template, $array = false) {
  * @return template
  */
 function gettemplate($files, $template = false, $template_path = false) {
-  global $sn_mvc, $sn_page_name, $user;
+  global $sn_page_name, $user;
 
   $template_ex = '.tpl.html';
 
@@ -736,8 +728,8 @@ function gettemplate($files, $template = false, $template_path = false) {
   //  - затем по ходу дела ОСНОВНОЙ языковой пакет может перезаписать данные из МОДУЛЬНОГО языкового пакета
   // Поэтому и нужен этот грязный хак
   // В норме же - страницы заявляют сами, какие им пакеты нужны. Так что сначала всегда должны грузится основные языковые пакеты, а уже ПОВЕРХ них - пакеты модулей
-  !empty($sn_mvc['i18n']['']) ? lng_load_i18n($sn_mvc['i18n']['']) : false;
-  $sn_page_name ? lng_load_i18n($sn_mvc['i18n'][$sn_page_name]) : false;
+  !empty(classSupernova::$sn_mvc['i18n']['']) ? lng_load_i18n(classSupernova::$sn_mvc['i18n']['']) : false;
+  $sn_page_name ? lng_load_i18n(classSupernova::$sn_mvc['i18n'][$sn_page_name]) : false;
 
   foreach($files as &$filename) {
     $filename = $filename . $template_ex;

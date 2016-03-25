@@ -708,8 +708,6 @@ attribute - свойства юнитов
 
     global $sn_module;
     global $sn_menu_extra, $sn_menu_admin_extra;
-    global $sn_mvc, $functions;
-
 
 #ctv
 
@@ -717,6 +715,11 @@ BONUS_ABILITY - deprecated ???
 
 
 На новых наградах 8 марта-2106 не отображается надписи
+
+2016-03-25 21:47:20 41a6.38
+[@] Код
+    $sn_mvc и $functions перенесены в god-classSupernova для улучшения code smell
+
 
 2016-03-25 21:28:27 41a6.37
 [+] Модули

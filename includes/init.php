@@ -126,22 +126,9 @@ classSupernova::init_main_db(new db_mysql());
 
 require_once('classes/cache.php');
 require_once('classes/locale.php');
-// require_once('classes/template.php');
 require_once('classes/functions_template.php');
-//require_once('classes/skin.php');
 require_once('classes/module.php');
 
-//require_once('classes/playerTimeDiff.php');
-
-//require_once('classes/RequestInfo.php');
-//require_once('classes/PlayerToAccountTranslate.php');
-//require_once('classes/Confirmation.php');
-//require_once('classes/Account.php');
-//require_once('classes/core_auth.php');
-// require_once('auth_provider.php');
-//require_once('classes/auth_abstract.php');
-//require_once('classes/auth_local.php');
-//require_once('classes/sn_module_payment.php');
 require_once('classes/user_options.php');
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 

@@ -12,16 +12,16 @@ require_once('general/math.php');
 require_once('general_pname.php');
 
 function sn_function_call($func_name, $func_arg = array()) {
-  global $functions; // All data in $functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
+  // All data in classSupernova::$functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
 
-  if(is_array($functions[$func_name]) && !is_callable($functions[$func_name])) {
+  if(is_array(classSupernova::$functions[$func_name]) && !is_callable(classSupernova::$functions[$func_name])) {
     // Chain-callable functions should be made as following:
     // 1. Never use incomplete calls with parameters "by default"
     // 2. Reserve last parameter for cumulative result
     // 3. Use same format for original value and cumulative result (if there is original value)
     // 4. Honor cumulative result
     // 5. Return cumulative result
-    foreach($functions[$func_name] as $func_chain_name) {
+    foreach(classSupernova::$functions[$func_name] as $func_chain_name) {
       // По идее - это уже тут не нужно, потому что оно все должно быть callable к этому моменту
       // Но для старых модулей...
       if(is_callable($func_chain_name)) {
@@ -30,7 +30,7 @@ function sn_function_call($func_name, $func_arg = array()) {
     }
   } else {
     // TODO: This is left for backward compatibility. Appropriate code should be rewrote!
-    $func_name = isset($functions[$func_name]) && is_callable($functions[$func_name]) ? $functions[$func_name] : ('sn_' . $func_name);
+    $func_name = isset(classSupernova::$functions[$func_name]) && is_callable(classSupernova::$functions[$func_name]) ? classSupernova::$functions[$func_name] : ('sn_' . $func_name);
     if(is_callable($func_name)) {
       $result = call_user_func_array($func_name, $func_arg);
     }
@@ -818,10 +818,7 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
       } elseif(!isset($functions[$function_name])) {
         $functions[$function_name] = array();
         $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
-        //if(is_callable($sn_function_name))
-        {
-          $functions[$function_name][] = $sn_function_name;
-        }
+        $functions[$function_name][] = $sn_function_name;
       }
 
       $functions[$function_name][] = $function_data;

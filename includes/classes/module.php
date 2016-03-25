@@ -5,7 +5,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.37# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.38# copyright © 2009-2014 Gorlum',
 
     'require'       => array(),
     'root_relative' => '',
@@ -196,31 +196,25 @@ class sn_module {
   }
 
   protected function addSystemHandlers() {
-    global $sn_mvc, $functions;
-
     // Overriding function if any
-    sn_sys_handler_add($functions, $this->manifest['functions'], $this);
+    sn_sys_handler_add(classSupernova::$functions, $this->manifest['functions'], $this);
 
-    foreach($sn_mvc as $handler_type => &$handler_data) {
+    foreach(classSupernova::$sn_mvc as $handler_type => &$handler_data) {
       sn_sys_handler_add($handler_data, $this->manifest['mvc'][$handler_type], $this, $handler_type);
     }
   }
 
   protected function mergeNavbarButton() {
-    global $sn_mvc;
-
     if(empty($this->manifest['navbar_prefix_button']) || !is_array($this->manifest['navbar_prefix_button'])) {
       return;
     }
 
     foreach($this->manifest['navbar_prefix_button'] as $button_image => $button_url_relative) {
-      $sn_mvc['navbar_prefix_button'][$button_image] = $button_url_relative;
+      classSupernova::$sn_mvc['navbar_prefix_button'][$button_image] = $button_url_relative;
     }
   }
 
   protected function mergeI18N() {
-    global $sn_mvc;
-
     $arrayName = 'i18n';
     if(empty($this->manifest[$arrayName]) || !is_array($this->manifest[$arrayName])) {
       return;
@@ -232,24 +226,22 @@ class sn_module {
           $i18n_file_data['path'] = $this->manifest['root_relative'];
         }
       }
-      if(!isset($sn_mvc[$arrayName][$pageName])) {
-        $sn_mvc[$arrayName][$pageName] = array();
+      if(!isset(classSupernova::$sn_mvc[$arrayName][$pageName])) {
+        classSupernova::$sn_mvc[$arrayName][$pageName] = array();
       }
-      $sn_mvc[$arrayName][$pageName] += $contentList;
+      classSupernova::$sn_mvc[$arrayName][$pageName] += $contentList;
     }
   }
 
   protected function mergeArraySpecial($arrayName) {
-    global $sn_mvc;
-
     if(empty($this->manifest[$arrayName]) || !is_array($this->manifest[$arrayName])) {
       return;
     }
 
     foreach($this->manifest[$arrayName] as $pageName => &$contentList) {
-      !isset($sn_mvc[$arrayName][$pageName]) ? $sn_mvc[$arrayName][$pageName] = array() : false;
+      !isset(classSupernova::$sn_mvc[$arrayName][$pageName]) ? classSupernova::$sn_mvc[$arrayName][$pageName] = array() : false;
       foreach($contentList as $contentName => &$content) {
-        $sn_mvc[$arrayName][$pageName][$contentName] = $content;
+        classSupernova::$sn_mvc[$arrayName][$pageName][$contentName] = $content;
       }
     }
   }

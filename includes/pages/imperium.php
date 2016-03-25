@@ -11,7 +11,7 @@
  *
  */
 
-$sn_mvc['view']['imperium'][] = 'sn_imperium_view';
+classSupernova::$sn_mvc['view']['imperium'][] = 'sn_imperium_view';
 
 function sn_imperium_view($template = null) {
   global $user, $lang;

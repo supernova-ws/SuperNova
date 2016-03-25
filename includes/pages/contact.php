@@ -6,8 +6,7 @@
  *
  */
 
-//$sn_mvc['model']['chat'][] = 'sn_chat_model';
-$sn_mvc['view']['contact'][] = 'sn_contact_view';
+classSupernova::$sn_mvc['view']['contact'][] = 'sn_contact_view';
 
 function sn_contact_view($template = null)
 {

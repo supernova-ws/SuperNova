@@ -62,9 +62,21 @@ class classSupernova {
    */
   public static $debug = null;
 
+  /**
+   * ex $sn_mvc
+   *
+   * @var array
+   */
+  public static $sn_mvc = array();
+
+  /**
+   * ex $functions
+   *
+   * @var array
+   */
+  public static $functions = array();
 
   public $options = array();
-
 
   /*
   // protected static $user = null;

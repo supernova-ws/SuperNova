@@ -12,7 +12,7 @@ defined('INSIDE') || die();
 $sn_menu_extra = array();
 $sn_menu_admin_extra = array();
 
-$sn_mvc = array(
+classSupernova::$sn_mvc = array(
  'model' => array(
    'options' => array('sn_options_model'),
    'chat' => array('sn_chat_model'),
@@ -112,9 +112,7 @@ $ally_rights = array(
   7 => 'diplomacy'
 );
 
-$functions = array(
-//    'test' => 'sn_test',
-  );
+classSupernova::$functions = array();
 
 $sn_message_class_list = array(
    MSG_TYPE_NEW => array(
