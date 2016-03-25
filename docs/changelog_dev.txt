@@ -263,17 +263,11 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
         $objFleet->mark_fleet_as_returned_and_save();
 
 
-!!!!!!!!!!!!    - RestoreFleetToPlanet($fleet_row, false) должен принимать на входе $objFleet
-    А затем Fleet::proxy_update_units - убрать внутрь класса
-    !!!!!!!!!! Капитан использует перекрытие этой функции!!!
-    !!!!!! в RestoreFleetToPlanet должны передаваться КООРДИНАТЫ, а не $start true/false
+!!!!!! в RestoreFleetToPlanet должны передаваться КООРДИНАТЫ, а не $start true/false
 
     СДЕЛАТЬ ЭМУЛЯТОР! Т.е. метод вызывает после себя общий RestoreFleetToPlanet c $fleet_row в качестве параметра
 
 ПРИ ПЕРЕВОДЕ ЮНИТОВ В ТАБЛИЦУ unit НЕ ЗАБЫВАТЬ БЛОКИРОВАТЬ ИХ ПРЕЖДЕ ВСЕХ ОПЕРАЦИЙ!
-
-Поменять:
-        - RestoreFleetToPlanet() стал методом Fleet. Цепочка вызова дополнительных хэндлеров инициируется перед возвращением из кода метода
 
 Ставить в классе Fleet тэги для того, что бы хэндлеры до/после основного метода могли нормально отрабатывать, например, удаление флота
         - is_deleted
@@ -704,14 +698,17 @@ attribute - свойства юнитов
 Инкапсулируём всё, что можно в Fleet
     Проверить все свойства - когда надо брать из обычных значений, а когда - через DBRow
 
-  public function RestoreFleetToPlanet($start = true, $only_resources = false, &$result = CACHE_NOTHING) {
 
     Fleet->shipsGetArray() - всё, что его использует, должно быть внесено в Fleet
 
+
+
     Сделать отдельный каталог для незаконченных модулей - и грузить данные из него
     Перенести правила из modules/.htaccess в .htaccess
-    Перенести конфигурацию из каталогов модулей в корневой конфиг или в БД
 
+    global $sn_module;
+    global $sn_menu_extra, $sn_menu_admin_extra;
+    global $sn_mvc, $functions;
 
 
 #ctv
@@ -720,6 +717,11 @@ BONUS_ABILITY - deprecated ???
 
 
 На новых наградах 8 марта-2106 не отображается надписи
+
+2016-03-25 21:28:27 41a6.37
+[+] Модули
+    Переписан корневой модуль для улучшения code smell
+
 
 2016-03-25 20:42:58 41a6.35
 [+] Модули
