@@ -1,11 +1,19 @@
 <?php
 
 class sn_module {
+  /**
+   * @var sn_module[]
+   */
+  // TODO - MAKE PROTECTED !!!
+  public static $sn_module = array();
+
+  public static $sn_module_list = array();
+
   public $manifest = array(
     'package'   => 'core',
     'name'      => 'sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.38# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.39# copyright © 2009-2014 Gorlum',
 
     'require'       => array(),
     'root_relative' => '',
@@ -78,8 +86,6 @@ class sn_module {
   }
 
   function __construct($filename = __FILE__) {
-    global $sn_module;
-
     // Getting module PHP class name
     $class_module_name = get_class($this);
 
@@ -104,7 +110,7 @@ class sn_module {
     }
 
     // Registering module
-    $sn_module[$class_module_name] = $this;
+    self::$sn_module[$class_module_name] = $this;
   }
 
 

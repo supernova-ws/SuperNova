@@ -200,16 +200,13 @@ spl_autoload_register(function ($class) {
 // По нормальным делам тут надо подключать манифесты
 // И читать конфиги - вдруг модуль отключен?
 // Конфиг - часть манифеста?
-$sn_module = array();
-$sn_module_list = array();
+sn_module::$sn_module = array();
+sn_module::$sn_module_list = array();
 
 classSupernova::$auth = new core_auth();
 
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // Здесь - потому что core_auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
-// TODO - переработать этот костыль
-// new auth_local();
-// pdump($sn_module);
 
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
@@ -222,13 +219,6 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
   if(is_array($sn_page_data['options'])) {
     $supernova->options = array_merge($supernova->options, $sn_page_data['options']);
   }
-//  $sn_page_data
-  /*
-    if(basename($sn_page_data) == $sn_page_data)
-    {
-      require_once('includes/pages/' . $sn_page_data . '.' . $phpEx);
-    }
-  */
 }
 
 // load_order:
@@ -241,7 +231,7 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
 $load_order = array();
 $sn_req = array();
 
-foreach($sn_module as $loaded_module_name => $module_data) {
+foreach(sn_module::$sn_module as $loaded_module_name => $module_data) {
   $load_order[$loaded_module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 100000;
   if(isset($module_data->manifest['require']) && !empty($module_data->manifest['require'])) {
     foreach($module_data->manifest['require'] as $require_name) {
@@ -280,16 +270,16 @@ asort($load_order);
 // По нормальным делам это должна быть загрузка модулей и лишь затем инициализация - что бы минимизировать размер процесса в памяти
 foreach($load_order as $loaded_module_name => $load_order_order) {
   if($load_order_order >= 0) {
-    $sn_module[$loaded_module_name]->check_status();
-    if(!$sn_module[$loaded_module_name]->manifest['active']) {
-      unset($sn_module[$loaded_module_name]);
+    sn_module::$sn_module[$loaded_module_name]->check_status();
+    if(!sn_module::$sn_module[$loaded_module_name]->manifest['active']) {
+      unset(sn_module::$sn_module[$loaded_module_name]);
       continue;
     }
 
-    $sn_module[$loaded_module_name]->initialize();
-    $sn_module_list[$sn_module[$loaded_module_name]->manifest['package']][$loaded_module_name] = &$sn_module[$loaded_module_name];
+    sn_module::$sn_module[$loaded_module_name]->initialize();
+    sn_module::$sn_module_list[sn_module::$sn_module[$loaded_module_name]->manifest['package']][$loaded_module_name] = &sn_module::$sn_module[$loaded_module_name];
   } else {
-    unset($sn_module[$loaded_module_name]);
+    unset(sn_module::$sn_module[$loaded_module_name]);
   }
 }
 
@@ -301,15 +291,6 @@ unset($sn_req);
 if(!isset($sn_data['pages'][$sn_page_name])) {
   $sn_page_name = '';
 }
-
-
-//pdump(array_keys($sn_module_list));
-//pdump(array_keys($sn_module_list['core']));
-//pdump(array_keys($sn_module_list['auth']));
-//die();
-
-
-// classSupernova::$db->sn_db_connect(); // Не нужно. Делаем раньше
 
 global $lang;
 $lang = new classLocale($config->server_locale_log_usage);

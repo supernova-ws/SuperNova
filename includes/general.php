@@ -1241,11 +1241,9 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
 }
 
 function sn_module_get_active_count($group = '*') {
-  global $sn_module_list;
-
   $active_modules = 0;
-  if(isset($sn_module_list[$group]) && is_array($sn_module_list[$group])) {
-    foreach($sn_module_list[$group] as $payment_module) {
+  if(isset(sn_module::$sn_module_list[$group]) && is_array(sn_module::$sn_module_list[$group])) {
+    foreach(sn_module::$sn_module_list[$group] as $payment_module) {
       $active_modules += $payment_module->manifest['active'];
     }
   }

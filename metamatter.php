@@ -119,7 +119,7 @@ array_walk($payment_methods_available, function (&$value, $index) {
 // pdump($payment_methods_available);
 $payment_module_valid = false;
 $payment_module = sys_get_param_str('payment_module');
-foreach($sn_module_list['payment'] as $module_name => $module) {
+foreach(sn_module::$sn_module_list['payment'] as $module_name => $module) {
   if(!is_object($module) || !$module->manifest['active']) {
     continue;
   }
@@ -185,7 +185,7 @@ if($payment_module_valid) {
 } elseif($payment_type_selected && count($payment_methods_available[$payment_type_selected][$payment_method_selected]) == 1) {
   reset($payment_methods_available[$payment_type_selected][$payment_method_selected]);
   $payment_module = key($payment_methods_available[$payment_type_selected][$payment_method_selected]);
-} elseif(count($sn_module_list['payment']) == 1) {
+} elseif(count(sn_module::$sn_module_list['payment']) == 1) {
   $payment_module = $module_name;
 } else {
   $payment_module = '';
@@ -222,7 +222,7 @@ foreach($lang['pay_currency_list'] as $key => $value) {
 if($request['metamatter'] && $payment_module) {
   try {
     // Any possible errors about generating paylink should be raised in module!
-    $pay_link = $sn_module[$payment_module]->compile_request($request);
+    $pay_link = sn_module::$sn_module[$payment_module]->compile_request($request);
 
     // Поддержка дополнительной информации
     if(is_array($pay_link['RENDER'])) {

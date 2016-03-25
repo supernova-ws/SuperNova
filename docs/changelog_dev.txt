@@ -706,8 +706,11 @@ attribute - свойства юнитов
     Сделать отдельный каталог для незаконченных модулей - и грузить данные из него
     Перенести правила из modules/.htaccess в .htaccess
 
-    global $sn_module;
     global $sn_menu_extra, $sn_menu_admin_extra;
+
+sn_module::$sn_module = array();
+sn_module::$sn_module_list = array();
+
 
 #ctv
 
@@ -715,6 +718,11 @@ BONUS_ABILITY - deprecated ???
 
 
 На новых наградах 8 марта-2106 не отображается надписи
+
+2016-03-25 22:01:12 41a6.39
+[+] Модули
+    Глобальные переменные $sn_module и sn_module:: внесены в качестве static properties в класс sn_module - где им самое место
+
 
 2016-03-25 21:47:20 41a6.38
 [@] Код

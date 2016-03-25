@@ -106,7 +106,7 @@ $template->assign_vars(array(
   'USER_COUNT'      => db_num_rows($query),
   'SORT'            => $sort,
   'GEOIP'           => $geoip,
-  'METAMATTER'      => isset($sn_module['unit_res_metamatter']),
+  'METAMATTER'      => isset(sn_module::$sn_module['unit_res_metamatter']),
   'GEOIP_WHOIS_URL' => $config->geoip_whois_url,
 
   'PAGE_URL'    => $_SERVER['SCRIPT_NAME'],

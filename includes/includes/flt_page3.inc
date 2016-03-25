@@ -12,7 +12,6 @@ function sn_fleet_page3($time_to_travel) {
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
-  global $sn_module;
 
   $adjusted_travel_time = $time_to_travel;
 
@@ -99,8 +98,8 @@ function sn_fleet_page3($time_to_travel) {
   }
 
 
-  if($sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id')) {
-    $captain = $sn_module['unit_captain']->unit_captain_get($planetrow['id']);
+  if(sn_module::$sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id')) {
+    $captain = sn_module::$sn_module['unit_captain']->unit_captain_get($planetrow['id']);
 //      mrc_get_level($user, $planetrow, UNIT_CAPTAIN, true);
     if(!$captain) {
       $errorlist .= $lang['module_unit_captain_error_no_captain'];

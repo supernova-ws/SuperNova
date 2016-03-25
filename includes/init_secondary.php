@@ -18,10 +18,7 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
 }
 
 
-//pdump($sn_module);die();
-
 global $user;
-// $result = core_auth::login();
 $result = classSupernova::$auth->login();
 
 global $account_logged_in;
