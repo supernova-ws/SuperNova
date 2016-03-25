@@ -15,7 +15,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 2)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 lng_include('quest');
@@ -23,6 +23,6 @@ $template = gettemplate('quest', true);
 
 qst_render_page();
 
-display($template, $lang['qst_quests'], false, '', true);
+display($template, classLocale::$lang['qst_quests'], false, '', true);
 
 ?>

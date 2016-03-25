@@ -266,12 +266,16 @@ function eco_render_rapid_fire($unit_id) {
 
     $rapid = floor($unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability);
     if($rapid >= 1) {
-      $str_rapid_to .= "{$lang['nfo_rf_again']} {$lang['tech'][$enemy_id]} <font color=\"#00ff00\">{$rapid}</font><br>";
+      $classLocale2 = $lang;
+      $classLocale3 = $lang;
+      $str_rapid_to .= "{$classLocale2['nfo_rf_again']} {$classLocale3['tech'][$enemy_id]} <font color=\"#00ff00\">{$rapid}</font><br>";
     }
 
     $rapid = floor($enemy_data['attack'] * (isset($enemy_data['amplify'][$unit_id]) ? $enemy_data['amplify'][$unit_id] : 1) / $unit_durability);
     if($rapid >= 1) {
-      $str_rapid_from .= "{$lang['tech'][$enemy_id]} {$lang['nfo_rf_from']} <font color=\"#ff0000\">{$rapid}</font><br>";
+      $classLocale = $lang;
+      $classLocale1 = $lang;
+      $str_rapid_from .= "{$classLocale1['tech'][$enemy_id]} {$classLocale['nfo_rf_from']} <font color=\"#ff0000\">{$rapid}</font><br>";
     }
   }
 

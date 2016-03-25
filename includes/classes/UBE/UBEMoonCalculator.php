@@ -190,10 +190,10 @@ class UBEMoonCalculator {
         $text_defender .= $lang['ube_report_moon_reapers_none'];
       } else {
         $text_defender .= "{$lang['ube_report_moon_reapers_wave']}. {$lang['ube_report_moon_reapers_chance']} {$this->destroy_chance}%. ";
-        $text_defender .= $lang[$this->status == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";
+        $text_defender .= classLocale::$lang[$this->status == UBE_MOON_DESTROY_SUCCESS ? 'ube_report_moon_reapers_success' : 'ube_report_moon_reapers_failure'] . "<br />";
 
         $text_defender .= "{$lang['ube_report_moon_reapers_outcome']} {$this->reaper_die_chance}%. ";
-        $text_defender .= $lang[$this->reapers_status == UBE_MOON_REAPERS_RETURNED ? 'ube_report_moon_reapers_survive' : 'ube_report_moon_reapers_died'];
+        $text_defender .= classLocale::$lang[$this->reapers_status == UBE_MOON_REAPERS_RETURNED ? 'ube_report_moon_reapers_survive' : 'ube_report_moon_reapers_died'];
       }
       $text_defender .= '<br /><br />';
     }

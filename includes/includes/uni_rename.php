@@ -10,12 +10,12 @@ try
 
     if($uni_galaxy < 1 || $uni_galaxy > $config->game_maxGalaxy)
     {
-      throw new exception($lang['uni_msg_error_wrong_galaxy'], ERR_ERROR);
+      throw new exception(classLocale::$lang['uni_msg_error_wrong_galaxy'], ERR_ERROR);
     }
 
     if($uni_system < 0 || $uni_system > $config->game_maxSystem)
     {
-      throw new exception($lang['uni_msg_error_wrong_system'], ERR_ERROR);
+      throw new exception(classLocale::$lang['uni_msg_error_wrong_system'], ERR_ERROR);
     }
 
     $uni_row = db_universe_get($uni_galaxy, $uni_system);

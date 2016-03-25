@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a6.41#
+ * version #41a6.42#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.41# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.42# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -247,7 +247,7 @@ class core_auth extends sn_module {
 
   // TODO - OK v4.7
   public function player_register_view($template = null) {
-    global $template_result, $lang;
+    global $template_result;
 
     define('LOGIN_LOGOUT', true);
 
@@ -288,11 +288,7 @@ class core_auth extends sn_module {
    *
    * @param null $result
    */
-  // TODO - OK v4.5
   public function login() {
-    global $lang;
-
-    // !self::$is_init ? self::init() : false;
     if(empty(sn_module::$sn_module_list['auth'])) {
       die('{Не обнаружено ни одного провайдера авторизации в core_auth::login()!}');
     }
@@ -490,8 +486,6 @@ class core_auth extends sn_module {
    */
   // OK v4.6
   public function password_change($old_password_unsafe, $new_password_unsafe) {
-    global $lang;
-
     if(empty($this->providers_authorised)) {
       // TODO - такого быть не может!
       self::flog("Не найдено ни одного авторизированного провайдера в self::\$providers_authorised", true);

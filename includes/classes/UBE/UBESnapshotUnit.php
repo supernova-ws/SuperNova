@@ -75,7 +75,7 @@ class UBESnapshotUnit {
 
     return array(
       'ID'          => $this->unit_id, //
-      'NAME'        => $lang['tech'][$this->unit_id], //
+      'NAME'        => classLocale::$lang['tech'][$this->unit_id], //
       'ATTACK'      => pretty_number($this->pool_attack), //
       'SHIELD'      => pretty_number($shields_original),
       'SHIELD_LOST' => pretty_number($shields_original - $this->pool_shield), //

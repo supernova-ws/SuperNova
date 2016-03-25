@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.41# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.42# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -302,9 +302,8 @@ class auth_local extends auth_abstract {
    *
    * @return int|string
    */
-  // OK v4.6
   protected function password_reset_confirm() {
-    global $lang, $config;
+    global $config;
 
     if(!$this->is_password_reset_confirm) {
       return $this->account_login_status;

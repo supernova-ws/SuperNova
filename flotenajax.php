@@ -147,13 +147,16 @@ function fleet_ajax() {
   $ships_sent = array();
   $ships_sent_js = 0;
   foreach($fleet_array as $unit_id => $unit_count) {
-    $ships_sent[] = "{$unit_count} {$lang['tech'][$unit_id]}";
+    $classLocale = $lang;
+    $ships_sent[] = "{$unit_count} {$classLocale['tech'][$unit_id]}";
     $ships_sent_js += mrc_get_level($user, $planetrow, $unit_id, false, true);
   }
   $ships_sent = implode(', ', $ships_sent);
   $ships_sent_js = "{$unit_group}={$ships_sent_js}";
 
-  $ResultMessage = "{$lang['gs_sending']} {$ships_sent} {$lang['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
+  $classLocale1 = $lang;
+  $classLocale2 = $lang;
+  $ResultMessage = "{$classLocale1['gs_sending']} {$ships_sent} {$classLocale2['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
 
   die($ResultMessage);
 }

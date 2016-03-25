@@ -514,6 +514,8 @@ switch($mode = sys_get_param_str('mode')) {
       $template->assign_block_vars('result', $a_result);
     }
 
-    display($template, "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
+    $classLocale = $lang;
+    $classLocale1 = $lang;
+    display($template, "{$classLocale1['ov_overview']} - {$classLocale['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
   break;
 }

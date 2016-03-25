@@ -60,7 +60,7 @@ else
   {
     $template->assign_block_vars('simulator', array(
       'GROUP' => $unit_group_id,
-      'NAME' => $lang['tech'][$unit_group_id],
+      'NAME' => classLocale::$lang['tech'][$unit_group_id],
     ));
 
     foreach($unit_group as $unit_id)
@@ -73,7 +73,7 @@ else
         'NUM'      => $tab < 9 ? "0{$tab}" : $tab,
         'ID'       => $unit_id,
         'GROUP'    => $unit_group_id,
-        'NAME'     => $lang['tech'][$unit_id],
+        'NAME'     => classLocale::$lang['tech'][$unit_id],
         'ATTACKER' => intval($sym_attacker[1][$unit_id]),
         'DEFENDER' => intval($sym_defender[0][$unit_id]),
         'VALUE'    => $value,
@@ -87,5 +87,5 @@ else
     'UNIT_GOVERNORS' => UNIT_GOVERNORS,
   ));
 
-  display($template, $lang['coe_combatSimulator'], false);
+  display($template, classLocale::$lang['coe_combatSimulator'], false);
 }

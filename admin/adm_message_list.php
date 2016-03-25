@@ -15,7 +15,7 @@ define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate('admin/adm_messagelist', true);
@@ -24,7 +24,7 @@ $int_type_selected = sys_get_param_int('int_type_selected', -1);
 $allowed_types = array(
   -1 => array(
     'VALUE' => -1,
-    'TEXT'  => $lang['adm_pay_filter_all']
+    'TEXT'  => classLocale::$lang['adm_pay_filter_all']
   ),
 );
 $template->assign_block_vars('int_type_selected', $allowed_types[-1]);
@@ -35,7 +35,7 @@ foreach($sn_message_class_list as $key => $value) {
 
   $template->assign_block_vars('int_type_selected', $allowed_types[$key] = array(
     'VALUE' => $key,
-    'TEXT'  => $lang['msg_class'][$key],
+    'TEXT'  => classLocale::$lang['msg_class'][$key],
   ));
 }
 
@@ -47,14 +47,14 @@ if(sys_get_param('str_delete_selected') && is_array($message_delete = sys_get_pa
 
 if($message_delete) {
   db_message_list_delete_set($message_delete);
-  $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['mlst_messages_deleted'], $message_delete)));
+  $template->assign_block_vars('result', array('MESSAGE' => sprintf(classLocale::$lang['mlst_messages_deleted'], $message_delete)));
 }
 
 
 if(sys_get_param('str_delete_date') && checkdate($month = sys_get_param_id('delete_month'), $day = sys_get_param_id('delete_day'), $year = sys_get_param_id('delete_year'))) {
   $delete_date = "{$year}-{$month}-{$day}";
   db_message_list_delete_by_date($delete_date, $int_type_selected);
-  $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['mlst_messages_deleted_date'], $allowed_types[$int_type_selected]['TEXT'], $delete_date)));
+  $template->assign_block_vars('result', array('MESSAGE' => sprintf(classLocale::$lang['mlst_messages_deleted_date'], $allowed_types[$int_type_selected]['TEXT'], $delete_date)));
 }
 
 
@@ -90,4 +90,4 @@ $template->assign_vars(array(
   'TYPE_SELECTED' => $int_type_selected,
 ));
 
-display(parsetemplate($template, $parse), $lang['mlst_title'], false, '', true);
+display(parsetemplate($template, $parse), classLocale::$lang['mlst_title'], false, '', true);

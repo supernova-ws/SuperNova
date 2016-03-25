@@ -102,8 +102,6 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
  * @param template $template
  */
 function tpl_menu_assign_to_template(&$sn_menu, &$template) {
-  global $lang;
-
   if(empty($sn_menu) || !is_array($sn_menu)) {
     return;
   }
@@ -118,7 +116,7 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template) {
     }
 
     if($menu_item['TYPE'] == 'lang') {
-      $lang_string = &$lang;
+      $lang_string = &classLocale::$lang;
       if(preg_match('#(\w+)(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?(?:\[(\w+)\])?#', $menu_item['ITEM'], $matches) && count($matches) > 1) {
         for($i = 1; $i < count($matches); $i++) {
           if(defined($matches[$i])) {
@@ -149,7 +147,7 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template) {
  * @return template
  */
 function tpl_render_menu() {
-  global $user, $lang, $template_result, $sn_menu_admin_extra, $sn_menu_admin, $sn_menu, $sn_menu_extra;
+  global $user, $template_result, $sn_menu_admin_extra, $sn_menu_admin, $sn_menu, $sn_menu_extra;
 
   lng_include('admin');
 
@@ -158,7 +156,7 @@ function tpl_render_menu() {
 
   $template->assign_vars(array(
     'USER_AUTHLEVEL'      => $user['authlevel'],
-    'USER_AUTHLEVEL_NAME' => $lang['user_level'][$user['authlevel']],
+    'USER_AUTHLEVEL_NAME' => classLocale::$lang['user_level'][$user['authlevel']],
 //    'USER_IMPERSONATOR'   => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED,
     'PAYMENT'             => sn_module_get_active_count('payment'),
     'MENU_START_HIDE'     => !empty($_COOKIE[SN_COOKIE . '_menu_hidden']) || defined('SN_GOOGLE'),
@@ -213,7 +211,7 @@ function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $A
  * @param bool|int|string $exitStatus - Код или сообщение выхода
  */
 function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $isDisplayMenu = true, $exitStatus = true) {
-  global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_page_name;
+  global $debug, $user, $planetrow, $config, $template_result, $sn_page_name;
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
   $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
@@ -310,22 +308,22 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     ), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
     //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
 
-    'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
+    'title'                    => ($title ? "{$title} - " : '') . classLocale::$lang['sys_server'] . " {$config->game_name} - " . classLocale::$lang['sys_supernova'] ,
     '-meta-'                   => $metatags,
     'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
     'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
     'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
 
-    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+    'LANG_LANGUAGE'  => classLocale::$lang['LANG_INFO']['LANG_NAME_ISO2'],
     'LANG_ENCODING'  => 'utf-8',
-    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
+    'LANG_DIRECTION' => classLocale::$lang['LANG_INFO']['LANG_DIRECTION'],
 
     'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
     'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
     'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
 
     // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
-    'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
+    'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf(classLocale::$lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
     'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
   ));
   $template->assign_recursive($template_result);
@@ -421,14 +419,14 @@ function tpl_topnav_event_build(&$template, $FleetList, $type = 'fleet') {
       // cut fleets on Hold and Expedition
       if($objFleet->time_arrive_to_target >= SN_TIME_NOW) {
         $objFleet->mission_type == MT_RELOCATE ? $will_return = false : false;
-        tpl_topnav_event_build_helper($objFleet->time_arrive_to_target, EVENT_FLEET_ARRIVE, $lang['sys_event_arrive'], $objFleet->target_coordinates_typed(), !$will_return, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
+        tpl_topnav_event_build_helper($objFleet->time_arrive_to_target, EVENT_FLEET_ARRIVE, classLocale::$lang['sys_event_arrive'], $objFleet->target_coordinates_typed(), !$will_return, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
       if($objFleet->time_mission_job_complete) {
-        tpl_topnav_event_build_helper($objFleet->time_mission_job_complete, EVENT_FLEET_STAY, $lang['sys_event_stay'], $objFleet->target_coordinates_typed(), false, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
+        tpl_topnav_event_build_helper($objFleet->time_mission_job_complete, EVENT_FLEET_STAY, classLocale::$lang['sys_event_stay'], $objFleet->target_coordinates_typed(), false, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
       }
     }
     if($will_return) {
-      tpl_topnav_event_build_helper($objFleet->time_return_to_source, EVENT_FLEET_RETURN, $lang['sys_event_return'], $objFleet->launch_coordinates_typed(), true, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
+      tpl_topnav_event_build_helper($objFleet->time_return_to_source, EVENT_FLEET_RETURN, classLocale::$lang['sys_event_return'], $objFleet->launch_coordinates_typed(), true, $objFleet, $fleet_flying_sorter, $fleet_flying_events, $fleet_event_count);
     }
   }
 
@@ -496,7 +494,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
       'ID'          => $CurPlanet['id'],
       'NAME'        => $CurPlanet['name'],
       'TYPE'        => $CurPlanet['planet_type'],
-      'TYPE_TEXT'   => $lang['sys_planet_type_sh'][$CurPlanet['planet_type']],
+      'TYPE_TEXT'   => classLocale::$lang['sys_planet_type_sh'][$CurPlanet['planet_type']],
       'PLIMAGE'     => $CurPlanet['image'],
       'FLEET_ENEMY' => $fleet_listx['enemy']['count'],
       'COORDS'      => uni_render_coordinates($CurPlanet),
@@ -556,15 +554,15 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
     'RESEARCH_ONGOING' => (boolean)$user['que'],
 
-    'TIME_TEXT'       => sprintf($str_date_format, $time_now_parsed['year'], $lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
+    'TIME_TEXT'       => sprintf($str_date_format, $time_now_parsed['year'], classLocale::$lang['months'][$time_now_parsed['mon']], $time_now_parsed['mday'],
       $time_now_parsed['hours'], $time_now_parsed['minutes'], $time_now_parsed['seconds']
     ),
-    'TIME_TEXT_LOCAL' => sprintf($str_date_format, $time_local_parsed['year'], $lang['months'][$time_local_parsed['mon']], $time_local_parsed['mday'],
+    'TIME_TEXT_LOCAL' => sprintf($str_date_format, $time_local_parsed['year'], classLocale::$lang['months'][$time_local_parsed['mon']], $time_local_parsed['mday'],
       $time_local_parsed['hours'], $time_local_parsed['minutes'], $time_local_parsed['seconds']
     ),
 
     'GAME_BLITZ_REGISTER'             => $config->game_blitz_register,
-    'GAME_BLITZ_REGISTER_TEXT'        => $lang['sys_blitz_registration_mode_list'][$config->game_blitz_register],
+    'GAME_BLITZ_REGISTER_TEXT'        => classLocale::$lang['sys_blitz_registration_mode_list'][$config->game_blitz_register],
     'BLITZ_REGISTER_OPEN'             => $config->game_blitz_register == BLITZ_REGISTER_OPEN,
     'BLITZ_REGISTER_CLOSED'           => $config->game_blitz_register == BLITZ_REGISTER_CLOSED,
     'BLITZ_REGISTER_SHOW_LOGIN'       => $config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
@@ -801,8 +799,6 @@ function tpl_assign_hangar(&$template, $planet, $que_type) {
  * @param int      $user_dark_matter
  */
 function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_matter) {
-  global $lang;
-
   foreach($density_price_chart as $density_price_index => &$density_price_data) {
     $density_cost = $density_price_data;
     $density_number_style = pretty_number($density_cost, true, $user_dark_matter, false, false);
@@ -813,7 +809,7 @@ function tpl_planet_density_info(&$template, &$density_price_chart, $user_dark_m
       'COST_TEXT_CLASS' => $density_number_style['class'],
       'REST'            => $user_dark_matter - $density_cost,
       'ID'              => $density_price_index,
-      'TEXT'            => $lang['uni_planet_density_types'][$density_price_index],
+      'TEXT'            => classLocale::$lang['uni_planet_density_types'][$density_price_index],
     );
     $template->assign_block_vars('densities', $density_price_data);
   }

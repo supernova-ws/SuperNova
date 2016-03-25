@@ -20,7 +20,7 @@ $mode = sys_get_param_int('mode');
 $action = sys_get_param_int('action');
 $shipList = $_POST['ships'];
 
-$page_title = "{$lang['eco_mrk_title']}";
+$page_title = classLocale::$lang['eco_mrk_title'];
 
 $stock = sys_unit_str2arr($config->eco_stockman_fleet);
 $newstock = $stock;

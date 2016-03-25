@@ -501,7 +501,7 @@ abstract class sn_module_payment extends sn_module {
    */
   // OK 4.8
   protected function payment_request_process($options = array()) {
-    global $lang, $config;
+    global $config;
 
     if(!$this->manifest['active']) {
       throw new Exception(classLocale::$lang['pay_msg_module_disabled'], SN_MODULE_DISABLED);
@@ -810,7 +810,6 @@ abstract class sn_module_payment extends sn_module {
 
   function payment_cancel(&$payment) {
     die('{НЕ РАБОТАЕТ! СООБЩИТЕ АДМИНИСТРАЦИИ!}');
-    global $lang;
 
     if(!isset($payment['payment_status'])) {
       throw new exception(classLocale::$lang['pay_msg_request_payment_not_found'], SN_PAYMENT_REQUEST_ORDER_NOT_FOUND);

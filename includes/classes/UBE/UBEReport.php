@@ -214,8 +214,6 @@ class UBEReport {
       return;
     }
 
-    global $lang;
-
     // Обсчитываем результаты боя из начальных данных
     // Генерируем отчет по флотам
     $ube->rounds->report_render_rounds($template_result, $ube); // OK3
@@ -237,7 +235,7 @@ class UBEReport {
     foreach(array(RES_METAL, RES_CRYSTAL) as $resource_id) {
       if($resource_amount = $ube->debris->debris_get_resource($resource_id)) {
         $debris[] = array(
-          'NAME'   => $lang['tech'][$resource_id],
+          'NAME'   => classLocale::$lang['tech'][$resource_id],
           'AMOUNT' => pretty_number($resource_amount),
         );
       }
@@ -254,10 +252,10 @@ class UBEReport {
       'UBE_MISSION_TYPE'  => $ube->mission_type_id,
       'UBE_REPORT_CYPHER' => $ube->get_cypher(),
 
-      'PLANET_TYPE_TEXT' => $lang['sys_planet_type_sh'][$template_result['PLANET_TYPE']],
+      'PLANET_TYPE_TEXT' => classLocale::$lang['sys_planet_type_sh'][$template_result['PLANET_TYPE']],
 
       'UBE_CAPTURE_RESULT'      => $ube->capture_result,
-      'UBE_CAPTURE_RESULT_TEXT' => $lang['ube_report_capture_result'][$ube->capture_result],
+      'UBE_CAPTURE_RESULT_TEXT' => classLocale::$lang['ube_report_capture_result'][$ube->capture_result],
 
       'UBE_SFR'           => $ube->is_small_fleet_recce,
       'UBE_COMBAT_RESULT' => $ube->combat_result,

@@ -17,4 +17,4 @@ $template = gettemplate('quest', true);
 
 qst_render_page();
 
-display($template, $lang['qst_quests']);
+display($template, classLocale::$lang['qst_quests']);

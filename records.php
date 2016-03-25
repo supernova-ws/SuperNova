@@ -37,15 +37,15 @@ $user_name_cache = array();
 foreach($show_groups as $unit_group_id => $mode)
 {
   $template->assign_block_vars('records', array(
-    'UNIT' => $lang['tech'][$unit_group_id],
-    'COUNT' => in_array($unit_group_id, array(UNIT_STRUCTURES, UNIT_STRUCTURES_SPECIAL, UNIT_TECHNOLOGIES)) ? $lang['sys_level_max'] : $lang['sys_quantity_total'],
+    'UNIT' => classLocale::$lang['tech'][$unit_group_id],
+    'COUNT' => in_array($unit_group_id, array(UNIT_STRUCTURES, UNIT_STRUCTURES_SPECIAL, UNIT_TECHNOLOGIES)) ? classLocale::$lang['sys_level_max'] : classLocale::$lang['sys_quantity_total'],
     'HEADER' => true,
   ));
   $unit_group = get_unit_param('techtree', $unit_group_id); // TODO - REWRITE!!!!
 
   foreach($unit_group as $unit_id)
   {
-    $unit_name = &$lang['tech'][$unit_id];
+    $unit_name = &classLocale::$lang['tech'][$unit_id];
     if($unit_name)
     {
       // TODO - ISUNITSTACKABLE!
@@ -55,12 +55,12 @@ foreach($show_groups as $unit_group_id => $mode)
       {
         $template->assign_block_vars('records', array(
           'UNIT' => $unit_name,
-          'USER' => $data_row['username'] ? js_safe_string($data_row['username']) : $lang['rec_rien'],
-          'COUNT' => $data_row['unit_level'] ? pretty_number($data_row['unit_level']) : $lang['rec_rien'],
+          'USER' => $data_row['username'] ? js_safe_string($data_row['username']) : classLocale::$lang['rec_rien'],
+          'COUNT' => $data_row['unit_level'] ? pretty_number($data_row['unit_level']) : classLocale::$lang['rec_rien'],
         ));
       }
     }
   }
 }
 
-display($template, $lang['rec_title']);
+display($template, classLocale::$lang['rec_title']);

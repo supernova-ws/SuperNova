@@ -8,7 +8,7 @@
 */
 
 function stat_tpl_assign(&$template, $selected, $array_name, $array, $sn_group_stat_common) {
-  global $who, $lang;
+  global $who;
 
   // $sn_group_stat_common = sn_get_groups('STAT_COMMON');
   foreach($array as $key => $value) {

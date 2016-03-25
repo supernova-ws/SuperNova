@@ -13,7 +13,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 // if($user['authlevel'] < 1)
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $mode = sys_get_param_int('mode');
@@ -43,7 +43,7 @@ switch($mode) {
       'STRING' => htmlentities($string),
       'MD5'    => md5($string),
     ));
-    display($template, $lang['adm_tools_md5_header'], false, '', true);
+    display($template, classLocale::$lang['adm_tools_md5_header'], false, '', true);
   break;
 
   case ADM_TOOL_FORCE_ALL:
@@ -63,11 +63,11 @@ switch($mode) {
   case ADM_TOOL_INFO_SQL:
     $template = gettemplate("simple_table", true);
 
-    $template->assign_block_vars('table', $lang['adm_tool_sql_table']['server']);
+    $template->assign_block_vars('table', classLocale::$lang['adm_tool_sql_table']['server']);
     $status = array(
-      $lang['adm_tool_sql_server_version'] => db_get_server_info(),
-      $lang['adm_tool_sql_client_version'] => db_get_client_info(),
-      $lang['adm_tool_sql_host_info']      => db_get_host_info(),
+      classLocale::$lang['adm_tool_sql_server_version'] => db_get_server_info(),
+      classLocale::$lang['adm_tool_sql_client_version'] => db_get_client_info(),
+      classLocale::$lang['adm_tool_sql_host_info']      => db_get_host_info(),
     );
     foreach($status as $key => $value) {
       $template->assign_block_vars('table.row', array(
@@ -76,7 +76,7 @@ switch($mode) {
       ));
     }
 
-    $template->assign_block_vars('table', $lang['adm_tool_sql_table']['status']);
+    $template->assign_block_vars('table', classLocale::$lang['adm_tool_sql_table']['status']);
     $status = explode('  ', db_server_stat());
     foreach($status as $value) {
       $row = explode(': ', $value);
@@ -87,7 +87,7 @@ switch($mode) {
     }
 
 
-    $template->assign_block_vars('table', $lang['adm_tool_sql_table']['params']);
+    $template->assign_block_vars('table', classLocale::$lang['adm_tool_sql_table']['params']);
     $result = db_core_show_status();
     while($row = db_fetch($result)) {
       $template->assign_block_vars('table.row', array(
@@ -97,16 +97,16 @@ switch($mode) {
     }
 
     $template->assign_vars(array(
-      'PAGE_HEADER'   => $lang['adm_tool_sql_page_header'],
-      'COLUMN_NAME_1' => $lang['adm_tool_sql_param_name'],
-      'COLUMN_NAME_2' => $lang['adm_tool_sql_param_value'],
+      'PAGE_HEADER'   => classLocale::$lang['adm_tool_sql_page_header'],
+      'COLUMN_NAME_1' => classLocale::$lang['adm_tool_sql_param_name'],
+      'COLUMN_NAME_2' => classLocale::$lang['adm_tool_sql_param_value'],
       'TABLE_FOOTER'  => 'test',
     ));
 
-    display($template, $lang['adm_bn_ttle'], false, '', true);
+    display($template, classLocale::$lang['adm_bn_ttle'], false, '', true);
   break;
 
 }
 
-display(parsetemplate(gettemplate("admin/admin_tools", true)), $lang['adm_bn_ttle'], false, '', true);
+display(parsetemplate(gettemplate("admin/admin_tools", true)), classLocale::$lang['adm_bn_ttle'], false, '', true);
 ?>

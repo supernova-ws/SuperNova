@@ -2,7 +2,7 @@
 
 function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar')
 {
-  global $config, $lang, $user;
+  global $config, $lang;
 
   try
   {
@@ -16,23 +16,23 @@ function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar')
         throw new Exception($lang['opt_msg_avatar_error_delete'], ERR_ERROR);
       }
       $avatar_field = 0;
-      throw new Exception($lang['opt_msg_avatar_removed'], ERR_NONE);
+      throw new Exception(classLocale::$lang['opt_msg_avatar_removed'], ERR_NONE);
     }
     elseif($_FILES['avatar']['size'])
     {
       if(!in_array($_FILES['avatar']['type'], array('image/gif', 'image/jpeg', 'image/jpg', 'image/pjpeg', 'image/png')) || $_FILES['avatar']['size'] > 204800)
       {
-        throw new Exception($lang['opt_msg_avatar_error_unsupported'], ERR_WARNING);
+        throw new Exception(classLocale::$lang['opt_msg_avatar_error_unsupported'], ERR_WARNING);
       }
 
       if($_FILES['avatar']['error'])
       {
-        throw new Exception(sprintf($lang['opt_msg_avatar_error_upload'], $_FILES['avatar']['error']), ERR_ERROR);
+        throw new Exception(sprintf(classLocale::$lang['opt_msg_avatar_error_upload'], $_FILES['avatar']['error']), ERR_ERROR);
       }
 
       if(!($avatar_image = imagecreatefromstring(file_get_contents($_FILES['avatar']['tmp_name']))))
       {
-        throw new Exception($lang['opt_msg_avatar_error_unsupported'], ERR_WARNING);
+        throw new Exception(classLocale::$lang['opt_msg_avatar_error_unsupported'], ERR_WARNING);
       }
 
       $avatar_size = getimagesize($_FILES['avatar']['tmp_name']);
@@ -49,17 +49,17 @@ function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar')
 
       if(file_exists($avatar_filename) && !unlink($avatar_filename))
       {
-        throw new Exception($lang['opt_msg_avatar_error_delete'], ERR_ERROR);
+        throw new Exception(classLocale::$lang['opt_msg_avatar_error_delete'], ERR_ERROR);
       }
 
       if(!imagepng($avatar_image, $avatar_filename, 9))
       {
-        throw new Exception($lang['opt_msg_avatar_error_writing'], ERR_ERROR);
+        throw new Exception(classLocale::$lang['opt_msg_avatar_error_writing'], ERR_ERROR);
       }
 
       $avatar_field = 1;
       imagedestroy($avatar_image);
-      throw new Exception($lang['opt_msg_avatar_uploaded'], ERR_NONE);
+      throw new Exception(classLocale::$lang['opt_msg_avatar_uploaded'], ERR_NONE);
     }
   }
   catch (Exception $e)

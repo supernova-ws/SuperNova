@@ -103,7 +103,7 @@ function eco_mrk_trader($user, $planetrow = null) {
     sn_db_transaction_rollback();
     $template->assign_block_vars('result', array(
       'STATUS' => $intError == MARKET_DEAL ? ERR_NONE : ERR_ERROR,
-      'MESSAGE' => $lang['eco_mrk_errors'][$intError],
+      'MESSAGE' => classLocale::$lang['eco_mrk_errors'][$intError],
     ));
   }
 
@@ -120,7 +120,7 @@ function eco_mrk_trader($user, $planetrow = null) {
 
     $template->assign_block_vars('resources', array(
       'ID'         => $resource_id,
-      'NAME'       => $lang['tech'][$resource_id],
+      'NAME'       => classLocale::$lang['tech'][$resource_id],
       'AVAIL'      => $amount,
       'AVAIL_TEXT' => pretty_number($amount),
       'SPENT'      => ($intError == MARKET_DEAL) ? 0 : max(0, $tradeList[$resource_id]),

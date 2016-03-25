@@ -114,7 +114,7 @@ class UBERound {
       if(is_array($planet_ube_row)) {
         $template_fleet += $planet_ube_row;
         $template_fleet[PLANET_NAME] = $template_fleet[PLANET_NAME] ? htmlentities($template_fleet[PLANET_NAME], ENT_COMPAT, 'UTF-8') : '';
-        $template_fleet['PLANET_TYPE_TEXT'] = $lang['sys_planet_type_sh'][$template_fleet['PLANET_TYPE']];
+        $template_fleet['PLANET_TYPE_TEXT'] = classLocale::$lang['sys_planet_type_sh'][$template_fleet['PLANET_TYPE']];
       }
 
       foreach($fleet_snapshot as $unit_id => $unit_snapshot) {

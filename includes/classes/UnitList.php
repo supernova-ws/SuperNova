@@ -181,7 +181,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.31
+   * @version 41a6.42
    */
   // TODO - Factory
   public function _createElement() {
@@ -302,8 +302,6 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
   // TODO - DEBUG - REMOVE =============================================================================================
   public function _dump() {
-    global $lang;
-
     print(__FILE__ . ':' . __LINE__ . "<br />");
     print("Located at " . $this->getLocationDbId() . " type " . $this->getLocationType() . "<br />");
 
@@ -361,11 +359,11 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
       print('<td>');
       $type = $unit->getType();
-      print("[{$type}] {$lang['tech'][$type]}");
+      print("[{$type}] " . classLocale::$lang['tech'][$type]);
       print('</td>');
 
       print('<td>');
-      print("[{$unit->unitId}] {$lang['tech'][$unit->unitId]}");
+      print("[{$unit->unitId}] " . classLocale::$lang['tech'][$unit->unitId]);
       print('</td>');
 
       print('<td>');

@@ -26,7 +26,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 function int_calc_storage_bar($resource_id)
 {
-  global $lang, $template, $caps_real, $planetrow, $user;
+  global $template, $caps_real, $planetrow, $user;
 
   $totalProduction      = $caps_real['total'][$resource_id];
   $storage_fill         = $caps_real['total_storage'][$resource_id] ? floor(mrc_get_level($user, $planetrow, $resource_id) / $caps_real['total_storage'][$resource_id] * 100) : 0;

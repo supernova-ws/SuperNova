@@ -202,7 +202,9 @@ function pretty_time($seconds) {
 
   $day = floor($seconds / (24 * 3600));
 
-  return sprintf("%s%02d:%02d:%02d", $day ? "{$day}{$lang['sys_day_short']} " : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
+  $sys_day_short = $lang['sys_day_short'];
+
+  return sprintf("%s%02d:%02d:%02d", $day ? "{$day}{$sys_day_short} " : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
 }
 
 // ----------------------------------------------------------------------------------------------------------------
@@ -640,11 +642,19 @@ function sys_time_human($time, $full = false) {
   $hours = $time % 24;
   $time = floor($time / 24);
 
+  $classLocale = $lang;
+
+  $classLocale1 = $lang;
+
+  $classLocale2 = $lang;
+
+  $classLocale3 = $lang;
+
   return
-    ($full || $time ? "{$time} {$lang['sys_day']}&nbsp;" : '') .
-    ($full || $hours ? "{$hours} {$lang['sys_hrs']}&nbsp;" : '') .
-    ($full || $minutes ? "{$minutes} {$lang['sys_min']}&nbsp;" : '') .
-    ($full || !$time || $seconds ? "{$seconds} {$lang['sys_sec']}" : '');
+    ($full || $time ? "{$time} {$classLocale['sys_day']}&nbsp;" : '') .
+    ($full || $hours ? "{$hours} {$classLocale1['sys_hrs']}&nbsp;" : '') .
+    ($full || $minutes ? "{$minutes} {$classLocale2['sys_min']}&nbsp;" : '') .
+    ($full || !$time || $seconds ? "{$seconds} {$classLocale3['sys_sec']}" : '');
 }
 
 function sys_time_human_system($time) {
@@ -1162,8 +1172,6 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     return array();
   }
 
-  global $lang;
-
   try {
     if($planetrow['planet_type'] != PT_PLANET) {
       throw new exception(classLocale::$lang['ov_core_err_not_a_planet'], ERR_ERROR);
@@ -1390,7 +1398,7 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
 }
 
 function note_assign(&$template, $note_row) {
-  global $note_priority_classes, $lang;
+  global $note_priority_classes;
 
   $template->assign_block_vars('note', array(
     'ID'                     => $note_row['id'],

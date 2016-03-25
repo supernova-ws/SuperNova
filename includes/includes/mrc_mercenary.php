@@ -34,27 +34,27 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
     $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
     $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
     if(!in_array($mercenary_id, sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries'))) {
-      throw new Exception($lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);
     }
 
     if(!mrc_officer_accessible($user, $mercenary_id)) {
-      throw new Exception($lang['mrc_msg_error_requirements'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['mrc_msg_error_requirements'], ERR_ERROR);
     }
 
     $mercenary_level = sys_get_param_int('mercenary_level');
     if($mercenary_level < 0 || $mercenary_level > get_unit_param($mercenary_id, P_MAX_STACK)) {
-      throw new Exception($lang['mrc_msg_error_wrong_level'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['mrc_msg_error_wrong_level'], ERR_ERROR);
     }
 
     if($mercenary_level && !array_key_exists($mercenary_period = sys_get_param_int('mercenary_period'), $sn_powerup_buy_discounts)) {
-      throw new Exception($lang['mrc_msg_error_wrong_period'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['mrc_msg_error_wrong_period'], ERR_ERROR);
     }
 
     sn_db_transaction_start();
 
     $mercenary_level_old = mrc_get_level($user, $planetrow, $mercenary_id, true, true);
     if($config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level) {
-      throw new Exception($lang['mrc_msg_error_already_hired'], ERR_ERROR); // Can't hire already hired temp mercenary - dismiss first
+      throw new Exception(classLocale::$lang['mrc_msg_error_already_hired'], ERR_ERROR); // Can't hire already hired temp mercenary - dismiss first
     } elseif($config->empire_mercenary_temporary && !$mercenary_level_old && !$mercenary_level) {
       throw new Exception('', ERR_NONE); // Can't dismiss (!$mercenary_level) not hired (!$mercenary_level_old) temp mercenary. But no error
     }
@@ -72,7 +72,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
     $darkmater_cost *= $cost_alliance_multiplyer;
 
     if(mrc_get_level($user, null, RES_DARK_MATTER) < $darkmater_cost) {
-      throw new Exception($lang['mrc_msg_error_no_resource'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['mrc_msg_error_no_resource'], ERR_ERROR);
     }
 
     if(($darkmater_cost && $mercenary_level) || !$is_permanent) {
@@ -88,7 +88,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
           ));
 */
         rpg_points_change($user['id'], RPG_MERCENARY_DISMISSED, 0,
-          sprintf($lang['mrc_mercenary_dismissed_log'], $lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
+          sprintf(classLocale::$lang['mrc_mercenary_dismissed_log'], classLocale::$lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
             $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)
         ));
       }
@@ -108,7 +108,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
       );
 
       rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost),
-        sprintf($lang[$mode == UNIT_PLANS ? 'mrc_plan_bought_log' : 'mrc_mercenary_hired_log'], $lang['tech'][$mercenary_id], $mercenary_id, $darkmater_cost, round($mercenary_period / PERIOD_DAY)));
+        sprintf(classLocale::$lang[$mode == UNIT_PLANS ? 'mrc_plan_bought_log' : 'mrc_mercenary_hired_log'], classLocale::$lang['tech'][$mercenary_id], $mercenary_id, $darkmater_cost, round($mercenary_period / PERIOD_DAY)));
     }
     sn_db_transaction_commit();
     sys_redirect($_SERVER['REQUEST_URI']);
@@ -148,7 +148,7 @@ function mrc_mercenary_render($user) {
   {
     $template->assign_block_vars('period', array(
       'LENGTH'   => $hire_period,
-      'TEXT'     => $lang['mrc_period_list'][$hire_period],
+      'TEXT'     => classLocale::$lang['mrc_period_list'][$hire_period],
       'DISCOUNT' => $hire_period / $config->empire_mercenary_base_period * $hire_discount,
       'SELECTED' => $hire_period == $config->empire_mercenary_base_period,
     ));
@@ -193,9 +193,9 @@ function mrc_mercenary_render($user) {
       $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
       $template->assign_block_vars('officer', array(
         'ID'          => $mercenary_id,
-        'NAME'        => $lang['tech'][$mercenary_id],
-        'DESCRIPTION' => $lang['info'][$mercenary_id]['description'],
-        'EFFECT'      => $lang['info'][$mercenary_id]['effect'],
+        'NAME'        => classLocale::$lang['tech'][$mercenary_id],
+        'DESCRIPTION' => classLocale::$lang['info'][$mercenary_id]['description'],
+        'EFFECT'      => classLocale::$lang['info'][$mercenary_id]['effect'],
         'COST'        => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
         'COST_TEXT'   => pretty_number($total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old, 0, $user_dark_matter),
         'LEVEL'       => $mercenary_level,
@@ -225,12 +225,12 @@ function mrc_mercenary_render($user) {
   }
 
   $template->assign_vars(array(
-    'PAGE_HEADER' => $lang['tech'][$mode],
+    'PAGE_HEADER' => classLocale::$lang['tech'][$mode],
     'MODE' => $mode,
     'IS_PERMANENT' => intval($is_permanent),
     'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
     'DARK_MATTER' => $user_dark_matter,
   ));
 
-  display(parsetemplate($template), $lang['tech'][$mode]);
+  display(parsetemplate($template), classLocale::$lang['tech'][$mode]);
 }

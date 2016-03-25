@@ -16,7 +16,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 // if ($user['authlevel'] < 2)
 if($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate("admin/add_moon", true);
@@ -31,7 +31,7 @@ if(sys_get_param_str('mode') == 'addit')
   uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], 0, $MoonName);
   sn_db_transaction_commit();
 
-  AdminMessage($lang['addm_done'], $lang['addm_title']);
+  AdminMessage(classLocale::$lang['addm_done'], classLocale::$lang['addm_title']);
 }
 
-display($template, $lang['addm_title'], false, '', true);
+display($template, classLocale::$lang['addm_title'], false, '', true);

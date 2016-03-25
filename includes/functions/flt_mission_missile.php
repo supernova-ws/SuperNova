@@ -138,11 +138,11 @@ function coe_o_missile_calculate() {
       $interceptors = mrc_get_level($targetUser, $target_planet_row, UNIT_DEF_MISSILE_INTERCEPTOR, true, true); //$target_planet_row[$interceptor_db_name]; // Number of interceptors
       $missiles = $fleetRow['fleet_amount']; // Number of MIP
       if ($interceptors >= $missiles) {
-        $message = $lang['mip_all_destroyed'];
+        $message = classLocale::$lang['mip_all_destroyed'];
         $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$missiles, $targetUser, $target_planet_row['id']);
       } else {
         if($interceptors) {
-          $message = sprintf($lang['mip_destroyed'], $interceptors);
+          $message = sprintf(classLocale::$lang['mip_destroyed'], $interceptors);
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
         }
 //        $message .= $lang['mip_defense_destroyed'];
@@ -171,15 +171,15 @@ function coe_o_missile_calculate() {
       $fleetRow['fleet_start_type'] = PT_PLANET;
       $sourcePlanet = db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
 
-      $message_vorlage = sprintf($lang['mip_body_attack'], $fleetRow['fleet_amount'],
+      $message_vorlage = sprintf(classLocale::$lang['mip_body_attack'], $fleetRow['fleet_amount'],
         addslashes($sourcePlanet['name']), $fleetRow['fleet_start_galaxy'], $fleetRow['fleet_start_system'], $fleetRow['fleet_start_planet'],
         addslashes($target_planet_row['name']), $fleetRow['fleet_end_galaxy'], $fleetRow['fleet_end_system'], $fleetRow['fleet_end_planet']);
 
-      empty($message) ? $message = $lang['mip_no_defense'] : false;
+      empty($message) ? $message = classLocale::$lang['mip_no_defense'] : false;
       // empty($message) && ($message = $lang['mip_no_defense']);
 
-      msg_send_simple_message ( $fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
-      msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
+      msg_send_simple_message ( $fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message );
+      msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message );
     }
     db_missile_delete($fleetRow);
   }

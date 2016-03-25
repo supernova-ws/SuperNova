@@ -1,14 +1,12 @@
 <?php
 
-function admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list){return sn_function_call(__FUNCTION__, array(&$template, &$admin_planet_edit_mode_list));}
-function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
-{
-  global $lang;
+function admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list) { return sn_function_call(__FUNCTION__, array(&$template, &$admin_planet_edit_mode_list)); }
 
+function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list) {
   $admin_planet_edit_mode_list = array_merge(isset($admin_planet_edit_mode_list) ? $admin_planet_edit_mode_list : array(), array(
-    'structures' => classLocale::$lang['tech'][UNIT_STRUCTURES],
-    'fleet' => classLocale::$lang['tech'][UNIT_SHIPS],
-    'defense' => classLocale::$lang['tech'][UNIT_DEFENCE],
+    'structures'     => classLocale::$lang['tech'][UNIT_STRUCTURES],
+    'fleet'          => classLocale::$lang['tech'][UNIT_SHIPS],
+    'defense'        => classLocale::$lang['tech'][UNIT_DEFENCE],
     'resources_loot' => classLocale::$lang['tech'][UNIT_RESOURCES],
   ));
 
@@ -19,20 +17,16 @@ function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
   return $mode;
 }
 
-function admin_planet_edit_template(&$template, $edit_planet_row, $mode){return sn_function_call(__FUNCTION__, array(&$template, $edit_planet_row, $mode));}
-function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
-{
-  global $lang;
+function admin_planet_edit_template(&$template, $edit_planet_row, $mode) { return sn_function_call(__FUNCTION__, array(&$template, $edit_planet_row, $mode)); }
 
+function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode) {
   $unit_list = sn_get_groups($mode);
-  if(empty($unit_list))
-  {
+  if(empty($unit_list)) {
     return;
   }
   $name_list = classLocale::$lang['tech'];
 
-  foreach($unit_list as $unit_id)
-  {
+  foreach($unit_list as $unit_id) {
     $template->assign_block_vars('unit', array(
       'ID'    => $unit_id,
       'NAME'  => $name_list[$unit_id],
@@ -42,17 +36,14 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
   }
 }
 
-function admin_planet_edit_query_string($unit_id, $unit_amount, $mode){return sn_function_call(__FUNCTION__, array($unit_id, $unit_amount, $mode));}
-function sn_admin_planet_edit_query_string($unit_id, $unit_amount, $mode)
-{
-  if($unit_amount && in_array($unit_id, sn_get_groups($mode)))
-  {
+function admin_planet_edit_query_string($unit_id, $unit_amount, $mode) { return sn_function_call(__FUNCTION__, array($unit_id, $unit_amount, $mode)); }
+
+function sn_admin_planet_edit_query_string($unit_id, $unit_amount, $mode) {
+  if($unit_amount && in_array($unit_id, sn_get_groups($mode))) {
     $unit_amount = round($unit_amount);
     $unit_name = get_unit_param($unit_id, P_NAME);
     $result = "{$unit_name} = GREATEST(0, {$unit_name} + ({$unit_amount}))";
-  }
-  else
-  {
+  } else {
     $result = '';
   }
 

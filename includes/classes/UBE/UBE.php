@@ -109,7 +109,7 @@ class UBE {
    *
    * @param Mission $objMission
    *
-   * @version 41a6.22
+   * @version 41a6.42
    */
   function loadDataFromMission(&$objMission) {
     $this->combatMission = $objMission;
@@ -139,7 +139,7 @@ class UBE {
    *
    * @internal param array $planet
    *
-   * @version 41a6.22
+   * @version 41a6.42
    */
   function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];
@@ -162,7 +162,7 @@ class UBE {
   /**
    * Общий алгоритм расчета боя
    *
-   * @version 41a6.22
+   * @version 41a6.42
    */
   protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -319,7 +319,7 @@ pdie();
    *
    * @return mixed
    *
-   * @version 41a6.22
+   * @version 41a6.42
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -406,14 +406,14 @@ pdie();
     $planet_info = &$this->ube_planet_info;
 
     // Генерируем текст письма
-    $text_common = sprintf($lang['ube_report_msg_body_common'],
+    $text_common = sprintf(classLocale::$lang['ube_report_msg_body_common'],
       date(FMT_DATE_TIME, $this->combat_timestamp),
-      $lang['sys_planet_type_sh'][$planet_info[PLANET_TYPE]],
+      classLocale::$lang['sys_planet_type_sh'][$planet_info[PLANET_TYPE]],
       $planet_info[PLANET_GALAXY],
       $planet_info[PLANET_SYSTEM],
       $planet_info[PLANET_PLANET],
       htmlentities($planet_info[PLANET_NAME], ENT_COMPAT, 'UTF-8'),
-      $lang[$this->combat_result == UBE_COMBAT_RESULT_WIN ? 'ube_report_info_outcome_win' :
+      classLocale::$lang[$this->combat_result == UBE_COMBAT_RESULT_WIN ? 'ube_report_info_outcome_win' :
         ($this->combat_result == UBE_COMBAT_RESULT_DRAW ? 'ube_report_info_outcome_draw' : 'ube_report_info_outcome_loss')]
     );
 
@@ -437,8 +437,8 @@ pdie();
     // TODO: Оптимизировать отсылку сообщений - отсылать пакетами
     $player_sides = $this->players->get_player_sides();
     foreach($player_sides as $player_id => $player_side) {
-      $message = $text_common . ($this->is_small_fleet_recce && ($player_side == UBE_PLAYER_IS_ATTACKER) ? $lang['ube_report_msg_body_sfr'] : $text_defender);
-      msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, $lang['sys_mess_tower'], $lang['sys_mess_attack_report'], $message);
+      $message = $text_common . ($this->is_small_fleet_recce && ($player_side == UBE_PLAYER_IS_ATTACKER) ? classLocale::$lang['ube_report_msg_body_sfr'] : $text_defender);
+      msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_attack_report'], $message);
     }
 
   }
@@ -467,7 +467,7 @@ pdie();
    * @param     $attacker
    * @param int $player_id
    *
-   * @version 41a6.22
+   * @version 41a6.42
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -549,7 +549,7 @@ pdie();
    *
    * @return bool
    *
-   * @version 41a6.22
+   * @version 41a6.42
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
@@ -577,7 +577,7 @@ pdie();
    * @return template
    */
   static function sn_battle_report_view(&$template) {
-    global $template_result, $lang;
+    global $template_result;
 
     $ube_report = new UBEReport();
     $ube = $ube_report->sn_ube_report_load(sys_get_param_str('cypher'));
@@ -586,10 +586,10 @@ pdie();
 
       $template = gettemplate('ube_combat_report', $template);
       $template->assign_vars(array(
-        'PAGE_HEADER' => $lang['ube_report_info_page_header'],
+        'PAGE_HEADER' => classLocale::$lang['ube_report_info_page_header'],
       ));
     } else {
-      message($lang['sys_msg_ube_report_err_not_found'], $lang['sys_error']);
+      message(classLocale::$lang['sys_msg_ube_report_err_not_found'], classLocale::$lang['sys_error']);
     }
 
     return $template;
@@ -687,7 +687,7 @@ pdie();
  *
  * @return mixed
  *
- * @version 41a6.22
+ * @version 41a6.42
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
@@ -699,7 +699,7 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  *
  * @return mixed
  *
- * @version 41a6.22
+ * @version 41a6.42
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
@@ -710,6 +710,6 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  *
  * @return mixed
  *
- * @version 41a6.22
+ * @version 41a6.42
  */
 function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

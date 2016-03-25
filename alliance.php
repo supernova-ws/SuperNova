@@ -37,7 +37,7 @@ if(!$user['ally_id']) {
       break;
 
       default:
-        display(parsetemplate(gettemplate('ali_external', true)), $lang['alliance']);
+        display(parsetemplate(gettemplate('ali_external', true)), classLocale::$lang['alliance']);
       break;
     }
   }
@@ -46,7 +46,7 @@ if(!$user['ally_id']) {
 sn_ali_fill_user_ally($user);
 if(!isset($user['ally'])) {
   db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
-  message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
+  message(classLocale::$lang['ali_sys_notFound'], classLocale::$lang['your_alliance'], 'alliance.php');
 }
 $ally = &$user['ally'];
 /*

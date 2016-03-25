@@ -46,7 +46,9 @@ if($mode == 'banit' && $action)
 
     sys_admin_player_ban($user, $player_banned_row, $BanTime, $is_vacation = sys_get_param_int('isVacation'), sys_get_param_str('why'));
 
-    $DoneMessage = "{$lang['adm_bn_thpl']} {$name_output} {$lang['adm_bn_isbn']}";
+    $adm_bn_isbn = $lang['adm_bn_isbn'];
+    $adm_bn_thpl = $lang['adm_bn_thpl'];
+    $DoneMessage = "{$adm_bn_thpl} {$name_output} {$adm_bn_isbn}";
 
     if($is_vacation)
     {

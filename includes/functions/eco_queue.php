@@ -298,7 +298,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
         RES_DEUTERIUM => !empty($exchange[RES_DEUTERIUM]) ? $exchange[RES_DEUTERIUM] : 0,
       ));
       rpg_points_change($user['id'], RPG_BUILD_AUTOCONVERT, -$market_get_autoconvert_cost, sprintf(
-        $lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), $lang['tech'][$unit_id],
+        classLocale::$lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), classLocale::$lang['tech'][$unit_id],
         sys_unit_arr2str($build_data[BUILD_CREATE]), sys_unit_arr2str($resource_got), sys_unit_arr2str($exchange)
       ));
     }
@@ -332,7 +332,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
   }
 
   if(!empty($operation_result['MESSAGE'])) {
-    $operation_result['MESSAGE'] .= ' ' . ($unit_amount_qued ? $unit_amount_qued : $unit_amount) . 'x[' . $lang['tech'][$unit_id] . ']';
+    $operation_result['MESSAGE'] .= ' ' . ($unit_amount_qued ? $unit_amount_qued : $unit_amount) . 'x[' . classLocale::$lang['tech'][$unit_id] . ']';
   }
 
   return $operation_result;
@@ -473,15 +473,13 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
 
 function que_tpl_parse_element($que_element, $short_names = false) {
-  global $lang;
-
   return
     array(
       'ID' => $que_element['que_unit_id'],
       'QUE' => $que_element['que_type'],
-      'NAME' => $short_names && !empty($lang['tech_short'][$que_element['que_unit_id']])
-                  ? $lang['tech_short'][$que_element['que_unit_id']]
-                  : $lang['tech'][$que_element['que_unit_id']],
+      'NAME' => $short_names && !empty(classLocale::$lang['tech_short'][$que_element['que_unit_id']])
+                  ? classLocale::$lang['tech_short'][$que_element['que_unit_id']]
+                  : classLocale::$lang['tech'][$que_element['que_unit_id']],
       'TIME' => $que_element['que_time_left'],
       'TIME_FULL' => $que_element['que_unit_time'],
       'AMOUNT' => $que_element['que_unit_amount'],

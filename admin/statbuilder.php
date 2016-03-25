@@ -17,7 +17,7 @@ require_once('../common.' . substr(strrchr(__FILE__, '.'), 1));
 // if($user['authlevel'] < 1)
 if($user['authlevel'] < 3)
 {
-  AdminMessage($lang['adm_err_denied']);
+  AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 if(SN_TIME_NOW >= $config->db_loadAll('var_stat_update_admin_forced') && SN_TIME_NOW >= $config->db_loadAll('var_stat_update_end'))
@@ -38,11 +38,13 @@ if(SN_TIME_NOW >= $config->db_loadAll('var_stat_update_admin_forced') && SN_TIME
   });
   </script>';
 
-  AdminMessage("{$script}<img src=\"design/images/progressbar.gif\"><br>{$lang['sys_wait']}", $lang['adm_stat_title'], '', 120);
+  $title = $lang['adm_stat_title'];
+  $sys_wait = $lang['sys_wait'];
+  AdminMessage("{$script}<img src=\"design/images/progressbar.gif\"><br>{$sys_wait}", $title, '', 120);
 }
 else
 {
-  AdminMessage($lang['adm_stat_already_started'], $lang['adm_stat_title'], 'admin/overview.php', 5);
+  AdminMessage(classLocale::$lang['adm_stat_already_started'], classLocale::$lang['adm_stat_title'], 'admin/overview.php', 5);
 }
 
 // require_once('../scheduler.php');

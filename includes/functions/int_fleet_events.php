@@ -17,9 +17,9 @@ function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scann
 
     $planet_end_type = $objFleet->fleet_end_type == PT_MOON ? PT_MOON : PT_PLANET;
     if($objFleet->fleet_end_planet > $config->game_maxPlanet) {
-      $objFleet->fleet_end_name = $lang['ov_fleet_exploration'];
+      $objFleet->fleet_end_name = classLocale::$lang['ov_fleet_exploration'];
     } elseif($objFleet->mission_type == MT_COLONIZE) {
-      $objFleet->fleet_end_name = $lang['ov_fleet_colonization'];
+      $objFleet->fleet_end_name = classLocale::$lang['ov_fleet_colonization'];
     } else {
       $planet_end = db_planet_by_gspt($objFleet->fleet_end_galaxy, $objFleet->fleet_end_system, $objFleet->fleet_end_planet, $planet_end_type, false, 'name');
       $objFleet->fleet_end_name = $planet_end['name'];
@@ -136,11 +136,11 @@ function int_planet_pretemplate($planetrow, &$template)
     'PLANET_SYSTEM'      => $planetrow['system'],
     'PLANET_PLANET'      => $planetrow['planet'],
     'PLANET_TYPE'        => $planetrow['planet_type'],
-    'PLANET_TYPE_TEXT'   => $lang['sys_planet_type'][$planetrow['planet_type']],
+    'PLANET_TYPE_TEXT'   => classLocale::$lang['sys_planet_type'][$planetrow['planet_type']],
     'PLANET_DEBRIS'      => $planetrow['debris_metal'] + $planetrow['debris_crystal'],
 
     'PLANET_GOVERNOR_ID'         => $governor_id,
-    'PLANET_GOVERNOR_NAME'       => $lang['tech'][$governor_id],
+    'PLANET_GOVERNOR_NAME'       => classLocale::$lang['tech'][$governor_id],
     'PLANET_GOVERNOR_LEVEL'      => $governor_level_plain,
     'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $governor_id, false, false) - $governor_level_plain,
     'PLANET_GOVERNOR_LEVEL_MAX'  => get_unit_param($governor_id, P_MAX_STACK),
