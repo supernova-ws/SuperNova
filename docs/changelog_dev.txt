@@ -797,6 +797,19 @@ BONUS_ABILITY - deprecated ???
 На новых наградах 8 марта-2106 не отображается надписи
 
 
+2016-03-26 19:54:47 41a6.55
+[@] Код
+    Удалены неиспользуемые файлы:
+        - admin/paneladmina.php
+        - design/templates/OpenGame/admin/admin_panel_asw1.tpl.html
+        - design/templates/OpenGame/admin/admin_panel_asw2.tpl.html
+        - design/templates/OpenGame/admin/admin_panel_frm1.tpl.html
+        - design/templates/OpenGame/admin/admin_panel_frm2.tpl.html
+        - design/templates/OpenGame/admin/admin_panel_frm3.tpl.html
+        - design/templates/OpenGame/admin/admin_panel_frm4.tpl.html
+        - design/templates/OpenGame/admin/admin_panel_main.tpl.html
+
+
 2016-03-26 19:43:57 41a6.53
 [~] Админка
     Переписаны:

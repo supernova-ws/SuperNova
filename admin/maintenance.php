@@ -17,8 +17,6 @@ if ($user['authlevel'] < 3)
   AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
-$parse = classLocale::$lang;
-
 $script = '
 <script type="text/javascript">
 $(document).ready(function() {
