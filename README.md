@@ -2,6 +2,7 @@ Badges
 ======
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/supernova-ws/SuperNova/badges/quality-score.png?b=work-fleets)](https://scrutinizer-ci.com/g/supernova-ws/SuperNova/?branch=work-fleets)
 [![Build Status](https://scrutinizer-ci.com/g/supernova-ws/SuperNova/badges/build.png?b=work-fleets)](https://scrutinizer-ci.com/g/supernova-ws/SuperNova/build-status/work-fleets)
+[![Codacy Badge](https://api.codacy.com/project/badge/grade/0d27f04e6bab4fb3a002e4e4a4d5ce1f)](https://www.codacy.com/app/smeagorl/SuperNova)
 
 
 Project "SuperNova.WS"
