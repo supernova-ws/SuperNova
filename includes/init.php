@@ -136,7 +136,7 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
  * @var classConfig    $config
  * @var classSupernova $supernova
  */
-global $supernova, $sn_cache, $config, $auth;
+global $supernova, $sn_cache, $auth;
 
 classSupernova::init_global_objects();
 
@@ -154,20 +154,20 @@ $sn_page_name_original = isset($_GET['page'])
   ? trim(strip_tags($_GET['page']))
   : str_replace(DOT_PHP_EX, '', str_replace(SN_ROOT_RELATIVE, '', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])));
 define('INITIAL_PAGE', $sn_page_name_original);
-define('SN_COOKIE', ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
+define('SN_COOKIE', (classSupernova::$config->COOKIE_NAME ? classSupernova::$config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
 define('SN_COOKIE_I', SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
 define('SN_COOKIE_D', SN_COOKIE . '_D');
 define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie
 define('SN_COOKIE_F', SN_COOKIE . '_F'); // Font size cookie
 define('SN_COOKIE_U', SN_COOKIE . '_U'); // Current user cookie aka user ID
 define('SN_COOKIE_U_I', SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
-define('TEMPLATE_NAME', $config->game_default_template ? $config->game_default_template : 'OpenGame');
+define('TEMPLATE_NAME', classSupernova::$config->game_default_template ? classSupernova::$config->game_default_template : 'OpenGame');
 define('TEMPLATE_PATH', 'design/templates/' . TEMPLATE_NAME);
 define('TEMPLATE_DIR', SN_ROOT_PHYSICAL . TEMPLATE_PATH);
-define('DEFAULT_SKINPATH', $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
-define('DEFAULT_LANG', $config->game_default_language ? $config->game_default_language : 'ru');
-define('FMT_DATE', $config->int_format_date ? $config->int_format_date : 'd.m.Y');
-define('FMT_TIME', $config->int_format_time ? $config->int_format_time : 'H:i:s');
+define('DEFAULT_SKINPATH', classSupernova::$config->game_default_skin ? classSupernova::$config->game_default_skin : 'skins/EpicBlue/');
+define('DEFAULT_LANG', classSupernova::$config->game_default_language ? classSupernova::$config->game_default_language : 'ru');
+define('FMT_DATE', classSupernova::$config->int_format_date ? classSupernova::$config->int_format_date : 'd.m.Y');
+define('FMT_TIME', classSupernova::$config->int_format_time ? classSupernova::$config->int_format_time : 'H:i:s');
 define('FMT_DATE_TIME', FMT_DATE . ' ' . FMT_TIME);
 
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
@@ -283,7 +283,7 @@ if(!isset($sn_data['pages'][$sn_page_name])) {
 }
 
 global $lang;
-classLocale::$lang = $lang = new classLocale($config->server_locale_log_usage);
+classLocale::$lang = $lang = new classLocale(classSupernova::$config->server_locale_log_usage);
 classLocale::$lang->lng_switch(sys_get_param_str('lang'));
 
 if(!defined('DEBUG_INIT_SKIP_SECONDARY') || DEBUG_INIT_SKIP_SECONDARY !== true) {

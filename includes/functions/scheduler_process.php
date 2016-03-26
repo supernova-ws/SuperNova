@@ -45,7 +45,7 @@ function scheduler_process() {
       $msg = "Stat update complete in {$total_time} seconds.";
       $debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
 
-      $msg = "{$classLocale['adm_done']}: {$total_time} {$classLocale['sys_sec']}."; // . date(FMT_DATE_TIME, $ts_scheduled_update) . ' ' . date(FMT_DATE_TIME, $config->var_stat_update);
+      $msg = "{$classLocale['adm_done']}: {$total_time} {$classLocale['sys_sec']}.";
 
       // TODO: Analyze maintenance result. Add record to log if error. Add record to log if OK
       $maintenance_result = sys_maintenance();

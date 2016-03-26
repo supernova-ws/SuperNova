@@ -102,28 +102,24 @@ class UBEDebris {
   }
 
   /**
-   * @param classConfig $config
-   *
    * @return int
    */
-  public function debris_in_metal($config) {
+  public function debris_in_metal() {
     return floatval(
-      ($this->debris_get_resource(RES_METAL) + $this->debris_get_resource(RES_CRYSTAL) * $config->rpg_exchange_crystal)
+      ($this->debris_get_resource(RES_METAL) + $this->debris_get_resource(RES_CRYSTAL) * classSupernova::$config->rpg_exchange_crystal)
       /
-      (floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1)
+      (floatval(classSupernova::$config->rpg_exchange_metal) ? floatval(classSupernova::$config->rpg_exchange_metal) : 1)
     );
   }
 
   /**
-   * @param classConfig $config
-   *
    * @return string
    */
-  public function report_generate_sql(classConfig $config) {
+  public function report_generate_sql() {
     return "
       `ube_report_debris_metal` = " . (float)$this->debris_get_resource(RES_METAL) . ",
       `ube_report_debris_crystal` = " . (float)$this->debris_get_resource(RES_CRYSTAL) . ",
-      `ube_report_debris_total_in_metal` = " . (float)$this->debris_in_metal($config) . ", ";
+      `ube_report_debris_total_in_metal` = " . (float)$this->debris_in_metal() . ", ";
   }
 
   /**

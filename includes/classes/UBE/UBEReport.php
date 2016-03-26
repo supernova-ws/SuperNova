@@ -126,7 +126,7 @@ class UBEReport {
       `ube_report_planet_planet_type` = " . (int)$ube->ube_planet_info[PLANET_TYPE] . ",
 
       `ube_report_capture_result` = " . (int)$ube->capture_result . ", "
-      . $ube->debris->report_generate_sql(classSupernova::$config)
+      . $ube->debris->report_generate_sql()
       . $ube->moon_calculator->report_generate_sql();
 
     doquery($sql_str);

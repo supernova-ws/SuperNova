@@ -672,18 +672,10 @@ abstract class sn_module_payment extends sn_module {
    * @return float|int
    */
   public static function currency_convert($value, $currency_from = '', $currency_to = '', $round = 2) {
-//    global $config;
-
     $currency_from = strtolower($currency_from);
     $currency_to = strtolower($currency_to);
 
     if($currency_from != $currency_to) {
-//      $config_currency_from_name = 'payment_currency_exchange_' . $currency_from;
-//      $config_currency_to_name = 'payment_currency_exchange_' . $currency_to;
-
-//      $exchange_from = floatval($currency_from == 'mm_' ? get_mm_cost() : $config->$config_currency_from_name);
-//      $exchange_to = floatval($currency_to == 'mm_' ? get_mm_cost() : $config->$config_currency_to_name);
-
       $exchange_from = get_exchange_rate($currency_from);
       $exchange_to = get_exchange_rate($currency_to);
 

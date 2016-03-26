@@ -93,12 +93,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $config_resource_multiplier = game_resource_multiplier();
   $config_resource_multiplier_plain = game_resource_multiplier(true);
 
-  /*
-  // Code for fully working new que system
-  $hangar_busy = count($que['que'][QUE_HANGAR]);
-  $lab_busy    = count($que['que'][QUE_RESEARCH]) && !$config->BuildLabWhileRun;
-  */
-
   $template = gettemplate('buildings_builds', true);
   if(!empty($operation_result)) {
     $template_result['.']['result'][] = $operation_result;
@@ -114,7 +108,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $que_length = count($que);
   $can_que_element = $que_length < que_get_max_que_length($user, $planet, $que_type);
 
-//  $fleet_list = flt_get_fleets_to_planet($planet);
   $fleet_list = FleetList::EMULATE_flt_get_fleets_to_planet($planet);
 
   $planet_fields_max = eco_planet_fields_max($planet);

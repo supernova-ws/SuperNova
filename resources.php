@@ -34,8 +34,6 @@ function int_calc_storage_bar($resource_id)
   $template->assign_block_vars('resources', array(
     'NAME'        => classLocale::$lang["sys_" . pname_resource_name($resource_id)],
 
-//    'BASIC_INCOME'=> $config->$resource_income_name * game_resource_multiplier(),
-
     'HOURLY'      => pretty_number($totalProduction, true, true),
     'WEEKLY'      => pretty_number($totalProduction * 24 * 7, true, true),
     'DAILY'       => pretty_number($totalProduction * 24, true, true),

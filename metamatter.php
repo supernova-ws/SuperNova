@@ -163,7 +163,6 @@ if($payment_type_selected && $payment_method_selected) {
 
 foreach(classLocale::$lang['pay_currency_list'] as $key => $value) {
   $course = get_exchange_rate($key);
-//  if(!$course || $key == $config->payment_currency_default) {
   if(!$course) {
     continue;
   }

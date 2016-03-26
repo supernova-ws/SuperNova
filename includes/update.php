@@ -30,7 +30,7 @@ define('IN_UPDATE', true);
 
 require('includes/upd_helpers.php');
 
-global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
+global $sn_cache, $new_version, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
 classSupernova::$config->reset();
 classSupernova::$config->db_loadAll();
@@ -39,7 +39,6 @@ classSupernova::$config->cache_prefix = classSupernova::$cache_prefix;
 classSupernova::$config->debug = 0;
 
 
-//$config->db_loadItem('db_version');
 if(classSupernova::$config->db_version == DB_VERSION) {
 } elseif(classSupernova::$config->db_version > DB_VERSION) {
   classSupernova::$config->db_saveItem('var_db_update_end', SN_TIME_NOW);
@@ -226,7 +225,7 @@ switch($new_version) {
         PRIMARY KEY (`id`),
         KEY `I_award_player` (`player_id`,`award_type_id`),
 
-        CONSTRAINT `FK_player_award_user_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+        CONSTRAINT `FK_player_award_user_id` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     }
 
@@ -479,7 +478,7 @@ switch($new_version) {
       upd_alter_table('statpoints', "DROP FOREIGN KEY `FK_stats_id_ally`", $update_foreigns['statpoints']['FK_stats_id_ally']);
       upd_alter_table('statpoints', "DROP KEY `I_stats_id_ally`", $update_indexes['statpoints']['I_stats_id_ally']);
       upd_alter_table('statpoints', "ADD KEY `I_stats_id_ally` (`id_ally`,`stat_type`,`stat_code`) USING BTREE", !$update_indexes['statpoints']['I_stats_id_ally']);
-      upd_alter_table('statpoints', "ADD CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE", !$update_foreigns['statpoints']['FK_stats_id_ally']);
+      upd_alter_table('statpoints', "ADD CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE", !$update_foreigns['statpoints']['FK_stats_id_ally']);
     }
 
     upd_alter_table('statpoints', "ADD KEY `I_stats_type_code` (`stat_type`,`stat_code`) USING BTREE", !$update_indexes['statpoints']['I_stats_type_code']);
@@ -527,7 +526,7 @@ switch($new_version) {
 
         PRIMARY KEY (`player_id`, `option_id`),
 
-        CONSTRAINT `FK_player_options_user_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+        CONSTRAINT `FK_player_options_user_id` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
     upd_create_table('security_browser', " (
@@ -567,7 +566,7 @@ switch($new_version) {
       "ADD COLUMN `user_last_proxy` VARCHAR(250) NOT NULL DEFAULT '' AFTER `user_lastip`",
       "ADD COLUMN `user_last_browser_id` BIGINT(20) UNSIGNED DEFAULT NULL AFTER `user_last_proxy`",
       "ADD KEY `I_users_last_browser_id` (`user_last_browser_id`)",
-      "ADD CONSTRAINT `FK_users_browser_id` FOREIGN KEY (`user_last_browser_id`) REFERENCES `{$config->db_prefix}security_browser` (`browser_id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_users_browser_id` FOREIGN KEY (`user_last_browser_id`) REFERENCES `{{security_browser}}` (`browser_id`) ON DELETE SET NULL ON UPDATE CASCADE",
     ), !isset($update_tables['users']['user_last_proxy']));
 
     if(!isset($update_tables['notes']['planet_type'])) {
@@ -1327,7 +1326,7 @@ if($new_version) {
   classSupernova::$config->db_saveItem('db_version', $new_version);
   upd_log_message("<font color=green>DB version is now {$new_version}</font>");
 } else {
-  upd_log_message("DB version didn't changed from {$config->db_version}");
+  upd_log_message("DB version didn't changed from " . classSupernova::$config->db_version);
 }
 
 classSupernova::$config->db_loadAll();

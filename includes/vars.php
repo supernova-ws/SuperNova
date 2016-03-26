@@ -233,17 +233,17 @@ $sn_diplomacy_relation_list = array(
   ALLY_DIPLOMACY_CONFEDERATION => array(
     'relation_id' => ALLY_DIPLOMACY_CONFEDERATION,
     'enter_delay' => -1,
-    'exit_delay'  => $config->fleet_bashing_war_delay,
+    'exit_delay'  => config->fleet_bashing_war_delay,
   ),
   ALLY_DIPLOMACY_FEDERATION    => array(
     'relation_id' => ALLY_DIPLOMACY_FEDERATION,
     'enter_delay' => -1,
-    'exit_delay'  => $config->fleet_bashing_war_delay,
+    'exit_delay'  => config->fleet_bashing_war_delay,
   ),
   ALLY_DIPLOMACY_UNION         => array(
     'relation_id' => ALLY_DIPLOMACY_UNION,
     'enter_delay' => -1,
-    'exit_delay'  => $config->fleet_bashing_war_delay,
+    'exit_delay'  => config->fleet_bashing_war_delay,
   ),
   ALLY_DIPLOMACY_MASTER        => array(
     'relation_id' => ALLY_DIPLOMACY_MASTER,
@@ -253,7 +253,7 @@ $sn_diplomacy_relation_list = array(
   ALLY_DIPLOMACY_SLAVE         => array(
     'relation_id' => ALLY_DIPLOMACY_SLAVE,
     'enter_delay' => -1,
-    'exit_delay'  => $config->fleet_bashing_war_delay,
+    'exit_delay'  => config->fleet_bashing_war_delay,
   )
   */
 );

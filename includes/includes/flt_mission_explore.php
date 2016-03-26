@@ -117,8 +117,8 @@ function flt_mission_explore(&$mission_data) {
       $outcome_mission_sub = $outcome_percent >= 0.99 ? 0 : ($outcome_percent >= 0.90 ? 1 : 2);
       $outcome_percent = $outcome_description['percent'][$outcome_mission_sub];
       // Рассчитываем эквивалент найденного флота в метале
-      // $found_in_metal = min($outcome_percent * $fleet_metal_points, $config->resource_multiplier * 10000000); // game_speed
       $found_in_metal = min($outcome_percent * $result['$fleet_metal_points'], game_resource_multiplier(true) * 10000000); // game_speed
+
       //  13 243 754 000 g x1
       //  60 762 247 000 a x10
       // 308 389 499 488 000 b x500

@@ -1,12 +1,10 @@
 <?php
 
-if(!defined('IN_UPDATE') || IN_UPDATE !== true)
-{
+if(!defined('IN_UPDATE') || IN_UPDATE !== true) {
   die('Hack attempt');
 }
 
-switch($new_version)
-{
+switch($new_version) {
   case 0:
   case 1:
   case 2:
@@ -34,8 +32,7 @@ switch($new_version)
     );
     upd_drop_table('lunas');
 
-    if($update_tables['galaxy'])
-    {
+    if($update_tables['galaxy']) {
       upd_do_query(
         'UPDATE `{{planets}}`
           LEFT JOIN `{{galaxy}}` ON {{galaxy}}.id_planet = {{planets}}.id
@@ -85,19 +82,18 @@ switch($new_version)
     );
     upd_add_more_time();
 
-    if($update_tables['users']['rpg_points'])
-    {
+    if($update_tables['users']['rpg_points']) {
       upd_do_query(
         "UPDATE {{users}} AS u
           RIGHT JOIN {{referrals}} AS r
-            ON r.id_partner = u.id AND r.dark_matter >= {$config->rpg_bonus_divisor}
-        SET u.rpg_points = u.rpg_points + FLOOR(r.dark_matter/{$config->rpg_bonus_divisor});"
+            ON r.id_partner = u.id AND r.dark_matter >= " . classSupernova::$config->rpg_bonus_divisor . "
+        SET u.rpg_points = u.rpg_points + FLOOR(r.dark_matter/" . classSupernova::$config->rpg_bonus_divisor . ");"
       );
     }
 
     $dm_change_legit = false;
-  upd_do_query('COMMIT;', true);
-  $new_version = 10;
+    upd_do_query('COMMIT;', true);
+    $new_version = 10;
 
   case 10:
   case 11:
@@ -146,7 +142,7 @@ switch($new_version)
 
     upd_drop_table('update');
 
-    upd_check_key('fleet_speed', classSupernova::$config->fleet_speed/2500, classSupernova::$config->fleet_speed >= 2500);
+    upd_check_key('fleet_speed', classSupernova::$config->fleet_speed / 2500, classSupernova::$config->fleet_speed >= 2500);
     upd_check_key('game_counter', 0);
     upd_check_key('game_default_language', 'ru');
     upd_check_key('game_default_skin', 'skins/EpicBlue/');
@@ -155,7 +151,7 @@ switch($new_version)
     upd_check_key('game_news_actual', 259200);
     upd_check_key('game_noob_factor', 5, !isset(classSupernova::$config->game_noob_factor));
     upd_check_key('game_noob_points', 5000, !isset(classSupernova::$config->game_noob_points));
-    upd_check_key('game_speed', classSupernova::$config->game_speed/2500, classSupernova::$config->game_speed >= 2500);
+    upd_check_key('game_speed', classSupernova::$config->game_speed / 2500, classSupernova::$config->game_speed >= 2500);
     upd_check_key('int_format_date', 'd.m.Y');
     upd_check_key('int_format_time', 'H:i:s', true);
     upd_check_key('int_banner_background', 'design/images/banner.png', true);
@@ -169,8 +165,8 @@ switch($new_version)
       'game_date_withTime', 'player_max_planets', 'OverviewNewsFrame', 'forum_url', 'rules_url'
     );");
 
-  upd_do_query('COMMIT;', true);
-  $new_version = 22;
+    upd_do_query('COMMIT;', true);
+    $new_version = 22;
 
   case 22:
     upd_log_version_update();
@@ -179,27 +175,20 @@ switch($new_version)
     upd_alter_table('planets', "ADD `governor_level` smallint unsigned NOT NULL DEFAULT '0' COMMENT 'Governor level'", !$update_tables['planets']['governor_level']);
     upd_alter_table('planets', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'Planet que'", !$update_tables['planets']['que']);
 
-    if($update_tables['planets']['b_building'])
-    {
+    if($update_tables['planets']['b_building']) {
       $planet_query = upd_do_query('SELECT * FROM {{planets}} WHERE `b_building` <> 0;');
       $const_que_structures = QUE_STRUCTURES;
-      while($planet_data = db_fetch($planet_query))
-      {
+      while($planet_data = db_fetch($planet_query)) {
         $old_que = explode(';', $planet_data['b_building_id']);
-        foreach($old_que as $old_que_item_string)
-        {
-          if(!$old_que_item_string)
-          {
+        foreach($old_que as $old_que_item_string) {
+          if(!$old_que_item_string) {
             continue;
           }
 
           $old_que_item = explode(',', $old_que_item_string);
-          if($old_que_item[4] == 'build')
-          {
+          if($old_que_item[4] == 'build') {
             $old_que_item[4] = BUILD_CREATE;
-          }
-          else
-          {
+          } else {
             $old_que_item[4] = BUILD_DESTROY;
           }
 
@@ -210,8 +199,8 @@ switch($new_version)
       }
     }
 
-  upd_do_query('COMMIT;', true);
-  $new_version = 23;
+    upd_do_query('COMMIT;', true);
+    $new_version = 23;
 
   case 23:
   case 24:
@@ -230,8 +219,7 @@ switch($new_version)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
     );
 
-    if($update_tables['users']['urlaubs_until'])
-    {
+    if($update_tables['users']['urlaubs_until']) {
       upd_alter_table('users', "ADD `vacation` int(11) NOT NULL DEFAULT '0' COMMENT 'Time when user can leave vacation mode'", !$update_tables['users']['vacation']);
       upd_do_query('UPDATE {{users}} SET `vacation` = `urlaubs_until` WHERE `urlaubs_modus` <> 0;');
       upd_alter_table('users', 'DROP COLUMN `urlaubs_until`, DROP COLUMN `urlaubs_modus`, DROP COLUMN `urlaubs_modus_time`', $update_tables['users']['urlaubs_until']);
@@ -240,8 +228,8 @@ switch($new_version)
     upd_check_key('user_vacation_disable', classSupernova::$config->urlaubs_modus_erz, !isset(classSupernova::$config->user_vacation_disable));
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('urlaubs_modus_erz');");
 
-  upd_do_query('COMMIT;', true);
-  $new_version = 25;
+    upd_do_query('COMMIT;', true);
+    $new_version = 25;
 
   case 25:
     upd_log_version_update();
@@ -255,7 +243,7 @@ switch($new_version)
     ), !$update_tables['rw']['report_id']);
 
     upd_add_more_time();
-    upd_create_table('logs_backup', "AS (SELECT * FROM {$config->db_prefix}logs);");
+    upd_create_table('logs_backup', "AS (SELECT * FROM {{logs}});");
 
     upd_alter_table('logs', array(
       "MODIFY COLUMN `log_id` INT(1)",
@@ -281,16 +269,12 @@ switch($new_version)
     ), !$update_tables['logs']['log_timestamp']);
     upd_do_query('DELETE FROM `{{logs}}` WHERE `log_code` = 303;');
 
-    if($update_tables['errors'])
-    {
+    if($update_tables['errors']) {
       upd_do_query('INSERT INTO `{{logs}}` (`log_code`, `log_sender`, `log_title`, `log_text`, `log_page`, `log_time`) SELECT 500, `error_sender`, `error_type`, `error_text`, `error_page`, `error_time` FROM `{{errors}}`;');
-      if($update_tables['errors_backup'])
-      {
+      if($update_tables['errors_backup']) {
         upd_drop_table('errors_backup');
       }
-//      __db_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
-//      classSupernova::$db->__db_query("ALTER TABLE {$config->db_prefix}errors RENAME TO {$config->db_prefix}errors_backup;");
-      upd_alter_table('errors', ' RENAME TO {$config->db_prefix}errors_backup');
+      upd_alter_table('errors', ' RENAME TO ' . classSupernova::$config->db_prefix . 'errors_backup');
 
       upd_drop_table('errors');
     }
@@ -332,8 +316,8 @@ switch($new_version)
     upd_do_query("UPDATE `{{planets}}` SET `crystal` = 0 WHERE `crystal` < 0;");
     upd_do_query("UPDATE `{{planets}}` SET `deuterium` = 0 WHERE `deuterium` < 0;");
     upd_alter_table('planets', array(
-       "DROP COLUMN `b_building`",
-       "DROP COLUMN `b_building_id`"
+      "DROP COLUMN `b_building`",
+      "DROP COLUMN `b_building_id`"
     ), $update_tables['planets']['b_building']);
 
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('noobprotection', 'noobprotectionmulti', 'noobprotectiontime', 'chat_admin_msgFormat');");
@@ -348,8 +332,7 @@ switch($new_version)
 
     upd_alter_table('users', 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
 
-    if(!$update_tables['shortcut'])
-    {
+    if(!$update_tables['shortcut']) {
       upd_create_table('shortcut',
         "(
           `shortcut_id` SERIAL,
@@ -365,7 +348,7 @@ switch($new_version)
           KEY `i_shortcut_user_id` (`shortcut_user_id`),
           KEY `i_shortcut_planet_id` (`shortcut_planet_id`),
 
-          CONSTRAINT `FK_shortcut_user_id` FOREIGN KEY (`shortcut_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          CONSTRAINT `FK_shortcut_user_id` FOREIGN KEY (`shortcut_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
@@ -373,13 +356,10 @@ switch($new_version)
       $temp_planet_types = array(PT_PLANET, PT_DEBRIS, PT_MOON);
 
       $query = upd_do_query("SELECT id, fleet_shortcut FROM {{users}} WHERE fleet_shortcut > '';");
-      while($user_data = db_fetch($query))
-      {
+      while($user_data = db_fetch($query)) {
         $shortcuts = explode("\r\n", $user_data['fleet_shortcut']);
-        foreach($shortcuts as $shortcut)
-        {
-          if(!$shortcut)
-          {
+        foreach($shortcuts as $shortcut) {
+          if(!$shortcut) {
             continue;
           }
 
@@ -390,8 +370,7 @@ switch($new_version)
           $shortcut[3] = intval($shortcut[3]);
           $shortcut[4] = intval($shortcut[4]);
 
-          if($shortcut[0] && $shortcut[1] && $shortcut[2] && $shortcut[3] && in_array($shortcut[4], $temp_planet_types))
-          {
+          if($shortcut[0] && $shortcut[1] && $shortcut[2] && $shortcut[3] && in_array($shortcut[4], $temp_planet_types)) {
             upd_do_query("INSERT INTO {classSupernova::$config->db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');", true);
           }
         }
@@ -423,8 +402,7 @@ switch($new_version)
       "CHANGE COLUMN `author` `ban_issuer_name` VARCHAR(64) NOT NULL DEFAULT ''",
       "CHANGE COLUMN `email` `ban_issuer_email` VARCHAR(64) NOT NULL DEFAULT ''",
       "DROP COLUMN who2",
-      "ADD PRIMARY KEY (`ban_id`)"/*,
-      "RENAME TO {$config->db_prefix}ban"*/
+      "ADD PRIMARY KEY (`ban_id`)"
     ), !$update_tables['banned']['ban_id']);
 
     upd_alter_table('alliance', array(
@@ -449,9 +427,9 @@ switch($new_version)
         KEY (`alliance_diplomacy_ally_id`, `alliance_diplomacy_contr_ally_id`, `alliance_diplomacy_time`),
         KEY (`alliance_diplomacy_ally_id`, `alliance_diplomacy_time`),
 
-        CONSTRAINT  `FK_diplomacy_ally_id`         FOREIGN KEY (`alliance_diplomacy_ally_id`)         REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ,CONSTRAINT `FK_diplomacy_contr_ally_id`   FOREIGN KEY (`alliance_diplomacy_contr_ally_id`)   REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ,CONSTRAINT `FK_diplomacy_contr_ally_name` FOREIGN KEY (`alliance_diplomacy_contr_ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT  `FK_diplomacy_ally_id`         FOREIGN KEY (`alliance_diplomacy_ally_id`)         REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_diplomacy_contr_ally_id`   FOREIGN KEY (`alliance_diplomacy_contr_ally_id`)   REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_diplomacy_contr_ally_name` FOREIGN KEY (`alliance_diplomacy_contr_ally_name`) REFERENCES `{{alliance}}` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
     );
 
@@ -472,10 +450,10 @@ switch($new_version)
         KEY (`alliance_negotiation_ally_id`, `alliance_negotiation_contr_ally_id`, `alliance_negotiation_time`),
         KEY (`alliance_negotiation_ally_id`, `alliance_negotiation_time`),
 
-        CONSTRAINT  `FK_negotiation_ally_id`         FOREIGN KEY (`alliance_negotiation_ally_id`)         REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ,CONSTRAINT `FK_negotiation_ally_name`       FOREIGN KEY (`alliance_negotiation_ally_name`)       REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
-        ,CONSTRAINT `FK_negotiation_contr_ally_id`   FOREIGN KEY (`alliance_negotiation_contr_ally_id`)   REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ,CONSTRAINT `FK_negotiation_contr_ally_name` FOREIGN KEY (`alliance_negotiation_contr_ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT  `FK_negotiation_ally_id`         FOREIGN KEY (`alliance_negotiation_ally_id`)         REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_negotiation_ally_name`       FOREIGN KEY (`alliance_negotiation_ally_name`)       REFERENCES `{{alliance}}` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_negotiation_contr_ally_id`   FOREIGN KEY (`alliance_negotiation_contr_ally_id`)   REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_negotiation_contr_ally_name` FOREIGN KEY (`alliance_negotiation_contr_ally_name`) REFERENCES `{{alliance}}` (`ally_name`) ON DELETE CASCADE ON UPDATE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
     );
 
@@ -494,8 +472,8 @@ switch($new_version)
         KEY (`bashing_planet_id`),
         KEY (`bashing_time`),
 
-        CONSTRAINT  `FK_bashing_user_id`   FOREIGN KEY (`bashing_user_id`)   REFERENCES `{$config->db_prefix}users`   (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ,CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT  `FK_bashing_user_id`   FOREIGN KEY (`bashing_user_id`)   REFERENCES `{{users}}`   (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `{{planets}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
     );
 
@@ -505,8 +483,8 @@ switch($new_version)
     upd_check_key('fleet_bashing_waves', 3, !isset(classSupernova::$config->fleet_bashing_waves));
     upd_check_key('fleet_bashing_attacks', 3, !isset(classSupernova::$config->fleet_bashing_attacks));
 
-  upd_do_query('COMMIT;', true);
-  $new_version = 28;
+    upd_do_query('COMMIT;', true);
+    $new_version = 28;
 
   case 28:
   case 28.1:
@@ -537,15 +515,14 @@ switch($new_version)
 
         PRIMARY KEY (`quest_status_id`)
         ,KEY (`quest_status_user_id`, `quest_status_quest_id`, `quest_status_status`)
-        ,CONSTRAINT `FK_quest_status_quest_id` FOREIGN KEY (`quest_status_quest_id`) REFERENCES `{$config->db_prefix}quest` (`quest_id`) ON DELETE CASCADE ON UPDATE CASCADE
-        ,CONSTRAINT `FK_quest_status_user_id`  FOREIGN KEY (`quest_status_user_id`)  REFERENCES `{$config->db_prefix}users` (`id`)       ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_quest_status_quest_id` FOREIGN KEY (`quest_status_quest_id`) REFERENCES `{{quest}}` (`quest_id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ,CONSTRAINT `FK_quest_status_user_id`  FOREIGN KEY (`quest_status_user_id`)  REFERENCES `{{users}}` (`id`)       ON DELETE CASCADE ON UPDATE CASCADE
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
     );
 
     upd_check_key('quest_total', 0, !isset(classSupernova::$config->quest_total));
 
-    for($i = 0; $i < 25; $i++)
-    {
+    for($i = 0; $i < 25; $i++) {
       upd_alter_table('alliance', array("DROP INDEX `id_{$i}`",), $update_indexes['alliance']["id_{$i}"]);
       upd_alter_table('users', array("DROP INDEX `id_{$i}`",), $update_indexes['users']["id_{$i}"]);
       upd_alter_table('planets', array("DROP INDEX `id_{$i}`",), $update_indexes['planets']["id_{$i}"]);
@@ -573,20 +550,19 @@ switch($new_version)
       "ADD `msg_admin` bigint(11) unsigned DEFAULT '0' AFTER mnl_buildlist"
     ), !$update_tables['users']['msg_admin']);
 
-    if(!$update_foreigns['users']['FK_users_ally_id'])
-    {
+    if(!$update_foreigns['users']['FK_users_ally_id']) {
       upd_alter_table('users', array(
         'MODIFY COLUMN `ally_name` VARCHAR(32) DEFAULT NULL',
         'MODIFY COLUMN `ally_id` BIGINT(20) UNSIGNED DEFAULT NULL',
       ), strtoupper($update_tables['users']['ally_id']['Type']) != 'BIGINT(20) UNSIGNED');
 
-      upd_do_query('DELETE FROM {{alliance}} WHERE id not in (select ally_id from {{users}} group by ally_id);');
-      upd_do_query("UPDATE {{users}} SET `ally_id` = null, ally_name = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` NOT IN (SELECT id FROM {{alliance}});");
+      upd_do_query('DELETE FROM {{alliance}} WHERE id NOT IN (SELECT ally_id FROM {{users}} GROUP BY ally_id);');
+      upd_do_query("UPDATE {{users}} SET `ally_id` = NULL, ally_name = NULL, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` NOT IN (SELECT id FROM {{alliance}});");
       upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name, u.ally_tag = a.ally_tag WHERE u.ally_id IS NOT NULL;");
 
       upd_alter_table('users', array(
-         "ADD CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
-         "ADD CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `{$config->db_prefix}alliance` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_users_ally_id` FOREIGN KEY (`ally_id`) REFERENCES `{{alliance}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_users_ally_name` FOREIGN KEY (`ally_name`) REFERENCES `{{alliance}}` (`ally_name`) ON DELETE SET NULL ON UPDATE CASCADE",
       ), !$update_foreigns['users']['FK_users_ally_id']);
     }
 
@@ -596,23 +572,22 @@ switch($new_version)
     ), strtoupper($update_tables['planets']['debris_metal']['Type']) != 'BIGINT(20) UNSIGNED');
 
     $illegal_moon_query = upd_do_query("SELECT id FROM `{{planets}}` WHERE `id_owner` <> 0 AND `planet_type` = 3 AND `parent_planet` <> 0 AND `parent_planet` NOT IN (SELECT `id` FROM {{planets}} WHERE `planet_type` = 1);");
-    while($illegal_moon_row = db_fetch($illegal_moon_query))
-    {
+    while($illegal_moon_row = db_fetch($illegal_moon_query)) {
       upd_do_query("DELETE FROM {{planets}} WHERE id = {$illegal_moon_row['id']} LIMIT 1;", true);
     }
 
     upd_check_key('allow_buffing', isset(classSupernova::$config->fleet_buffing_check) ? !classSupernova::$config->fleet_buffing_check : 0, !isset(classSupernova::$config->allow_buffing));
     upd_check_key('ally_help_weak', 0, !isset(classSupernova::$config->ally_help_weak));
 
-  upd_do_query('COMMIT;', true);
-  $new_version = 29;
+    upd_do_query('COMMIT;', true);
+    $new_version = 29;
 
   case 29:
     upd_log_version_update();
 
     upd_check_key('game_email_pm', 0, !isset(classSupernova::$config->game_email_pm));
-    upd_check_key('player_vacation_time', 2*24*60*60, !isset(classSupernova::$config->player_vacation_time));
-    upd_check_key('player_delete_time', 45*24*60*60, !isset(classSupernova::$config->player_delete_time));
+    upd_check_key('player_vacation_time', 2 * 24 * 60 * 60, !isset(classSupernova::$config->player_vacation_time));
+    upd_check_key('player_delete_time', 45 * 24 * 60 * 60, !isset(classSupernova::$config->player_delete_time));
 
     upd_create_table('log_dark_matter',
       "(
@@ -634,19 +609,16 @@ switch($new_version)
     upd_do_query('COMMIT;', true);
 
     $records = 1;
-    while($records)
-    {
+    while($records) {
       upd_do_query('START TRANSACTION;', true);
-      $query = upd_do_query("SELECT * FROM {{logs}} WHERE log_code = 102 order by log_id LIMIT 1000;");
+      $query = upd_do_query("SELECT * FROM {{LOGS}} WHERE log_code = 102 ORDER BY log_id LIMIT 1000;");
       $records = db_num_rows($query);
-      while($row = db_fetch($query))
-      {
+      while($row = db_fetch($query)) {
         $result = preg_match('/^Player ID (\d+) Dark Matter was adjusted with (\-?\d+). Reason: (.+)$/', $row['log_text'], $matches);
 
         $reason = RPG_NONE;
         $comment = $matches[3];
-        switch($matches[3])
-        {
+        switch($matches[3]) {
           case 'Level Up For Structure Building':
             $reason = RPG_STRUCTURE;
           break;
@@ -662,30 +634,22 @@ switch($new_version)
           break;
 
           default:
-            if(preg_match('/^Using Black Market page (\d+)$/', $comment, $matches2))
-            {
+            if(preg_match('/^Using Black Market page (\d+)$/', $comment, $matches2)) {
               $reason = RPG_MARKET;
-            }
-            elseif(preg_match('/^Spent for officer (.+) ID (\d+)$/', $comment, $matches2))
-            {
+            } elseif(preg_match('/^Spent for officer (.+) ID (\d+)$/', $comment, $matches2)) {
               $reason = RPG_MERCENARY;
               $comment = "Spent for mercenary {$matches2[1]} GUID {$matches2[2]}";
-            }
-            elseif(preg_match('/^Incoming From Referral ID\ ?(\d+)$/', $comment, $matches2))
-            {
+            } elseif(preg_match('/^Incoming From Referral ID\ ?(\d+)$/', $comment, $matches2)) {
               $reason = RPG_REFERRAL;
               $comment = "Incoming from referral ID {$matches[1]}";
-            }
-            elseif(preg_match('/^Through admin interface for user .* ID \d+ (.*)$/', $comment, $matches2))
-            {
+            } elseif(preg_match('/^Through admin interface for user .* ID \d+ (.*)$/', $comment, $matches2)) {
               $reason = RPG_ADMIN;
               $comment = $matches2[1];
             }
           break;
         }
 
-        if($matches[2])
-        {
+        if($matches[2]) {
           $row['log_username'] = db_escape($row['log_username']);
           $row['log_page'] = db_escape($row['log_page']);
           $comment = db_escape($comment);
@@ -696,29 +660,26 @@ switch($new_version)
             VALUES (
               '{$row['log_timestamp']}', '{$row['log_username']}', {$reason},
               {$matches[2]}, '{$comment}', '{$row['log_page']}', {$row['log_sender']});"
-          , true);
+            , true);
         }
       }
 
-      upd_do_query("DELETE FROM {{logs}} WHERE log_code = 102 LIMIT 1000;", true);
+      upd_do_query("DELETE FROM {{LOGS}} WHERE log_code = 102 LIMIT 1000;", true);
       upd_do_query('COMMIT;', true);
     }
 
-    foreach($update_tables as $table_name => $cork)
-    {
-      $row = db_fetch(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '" . db_escape(classSupernova::$db_name) . "' AND TABLE_NAME = '{$config->db_prefix}{$table_name}';", true));
-      if($row['ENGINE'] != 'InnoDB')
-      {
+    foreach($update_tables as $table_name => $cork) {
+      $row = db_fetch(upd_do_query("SELECT * FROM information_schema.TABLES WHERE TABLE_SCHEMA = '" . db_escape(classSupernova::$db_name) . "' AND TABLE_NAME = '" . classSupernova::$config->db_prefix . "{$table_name}';", true));
+      if($row['ENGINE'] != 'InnoDB') {
         upd_alter_table($table_name, 'ENGINE=InnoDB', true);
       }
-      if($row['TABLE_COLLATION'] != 'utf8_general_ci')
-      {
+      if($row['TABLE_COLLATION'] != 'utf8_general_ci') {
         upd_alter_table($table_name, 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci', true);
       }
     }
 
-  upd_do_query('COMMIT;', true);
-  $new_version = 30;
+    upd_do_query('COMMIT;', true);
+    $new_version = 30;
 
   case 30:
     upd_log_version_update();
@@ -732,8 +693,7 @@ switch($new_version)
       "CHANGE COLUMN `governor_level` `PLANET_GOVERNOR_LEVEL` SMALLINT(5) NOT NULL DEFAULT 0",
     ), !$update_tables['planets']['PLANET_GOVERNOR_ID']);
 
-    if($update_tables['users']['rpg_geologue'])
-    {
+    if($update_tables['users']['rpg_geologue']) {
       doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_geologue` + `rpg_ingenieur` + `rpg_constructeur` + `rpg_technocrate` + `rpg_scientifique` + `rpg_defenseur`) * 3;");
 
       upd_alter_table('users', array(
@@ -746,8 +706,7 @@ switch($new_version)
       ), $update_tables['users']['rpg_geologue']);
     }
 
-    if($update_tables['users']['rpg_bunker'])
-    {
+    if($update_tables['users']['rpg_bunker']) {
       doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_bunker`) * 3;");
 
       upd_alter_table('users', array(
@@ -797,15 +756,14 @@ switch($new_version)
     ), !isset($update_tables['alliance']['total_rank']));
     doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_owner = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 
-    if(!isset($update_tables['users']['ally_tag']))
-    {
+    if(!isset($update_tables['users']['ally_tag'])) {
       upd_alter_table('users', array(
         "ADD COLUMN `ally_tag` varchar(8) DEFAULT NULL AFTER `ally_id`",
       ), !isset($update_tables['users']['ally_tag']));
       doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag, u.ally_name = a.ally_name;");
-      doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_id = NULL, u.ally_tag = NULL, u.ally_name = NULL, u.ally_register_time = 0, ally_rank_id = 0 WHERE a.id is NULL;");
+      doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_id = NULL, u.ally_tag = NULL, u.ally_name = NULL, u.ally_register_time = 0, ally_rank_id = 0 WHERE a.id IS NULL;");
       upd_alter_table('users', array(
-        "ADD CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `{$config->db_prefix}alliance` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `{{alliance}}` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE",
       ), !$update_foreigns['users']['FK_users_ally_tag']);
     }
 
@@ -813,8 +771,7 @@ switch($new_version)
       "ADD COLUMN `player_artifact_list` TEXT",
     ), !isset($update_tables['users']['player_artifact_list']));
 
-    if(!isset($update_tables['users']['player_rpg_tech_xp']))
-    {
+    if(!isset($update_tables['users']['player_rpg_tech_xp'])) {
       upd_check_key('eco_scale_storage', 1, !isset(classSupernova::$config->eco_scale_storage));
 
       upd_alter_table('users', array(
@@ -829,8 +786,8 @@ switch($new_version)
       "ADD COLUMN `planet_cargo_hyper` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `big_ship_cargo`",
     ), !isset($update_tables['planets']['planet_cargo_hyper']));
 
-  upd_do_query('COMMIT;', true);
-  $new_version = 31;
+    upd_do_query('COMMIT;', true);
+    $new_version = 31;
 
   case 31:
     upd_log_version_update();
@@ -844,8 +801,7 @@ switch($new_version)
       "MODIFY COLUMN `ally_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
     ), strtoupper($update_tables['alliance']['ally_owner']['Type']) != 'BIGINT(20) UNSIGNED');
 
-    if(strtoupper($update_tables['alliance_diplomacy']['alliance_diplomacy_ally_id']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['alliance_diplomacy']['alliance_diplomacy_ally_id']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_alter_table('alliance_diplomacy', array(
         "DROP FOREIGN KEY `FK_diplomacy_ally_id`",
         "DROP FOREIGN KEY `FK_diplomacy_contr_ally_id`"
@@ -855,13 +811,12 @@ switch($new_version)
         "MODIFY COLUMN `alliance_diplomacy_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
         "MODIFY COLUMN `alliance_diplomacy_contr_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
 
-        "ADD CONSTRAINT `FK_diplomacy_ally_id`       FOREIGN KEY (`alliance_diplomacy_ally_id`)       REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_diplomacy_contr_ally_id` FOREIGN KEY (`alliance_diplomacy_contr_ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_diplomacy_ally_id`       FOREIGN KEY (`alliance_diplomacy_ally_id`)       REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_diplomacy_contr_ally_id` FOREIGN KEY (`alliance_diplomacy_contr_ally_id`) REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
-    if(strtoupper($update_tables['alliance_negotiation']['alliance_negotiation_ally_id']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['alliance_negotiation']['alliance_negotiation_ally_id']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_alter_table('alliance_negotiation', array(
         "DROP FOREIGN KEY `FK_negotiation_ally_id`",
         "DROP FOREIGN KEY `FK_negotiation_contr_ally_id`"
@@ -872,13 +827,12 @@ switch($new_version)
         "MODIFY COLUMN `alliance_negotiation_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
         "MODIFY COLUMN `alliance_negotiation_contr_ally_id` BIGINT(20) UNSIGNED DEFAULT NULL",
 
-        "ADD CONSTRAINT `FK_negotiation_ally_id`       FOREIGN KEY (`alliance_negotiation_ally_id`)       REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_negotiation_contr_ally_id` FOREIGN KEY (`alliance_negotiation_contr_ally_id`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_negotiation_ally_id`       FOREIGN KEY (`alliance_negotiation_ally_id`)       REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_negotiation_contr_ally_id` FOREIGN KEY (`alliance_negotiation_contr_ally_id`) REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
-    if(strtoupper($update_tables['alliance_requests']['id_user']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['alliance_requests']['id_user']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_do_query('DELETE FROM {{alliance_requests}} WHERE id_user NOT IN (SELECT id FROM {{users}}) OR id_ally NOT IN (SELECT id FROM {{alliance}});', true);
 
       upd_alter_table('alliance_requests', array(
@@ -887,14 +841,13 @@ switch($new_version)
 
         "ADD KEY `I_alliance_requests_id_ally` (`id_ally`, `id_user`)",
 
-        "ADD CONSTRAINT `FK_alliance_request_user_id` FOREIGN KEY (`id_user`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_alliance_request_ally_id` FOREIGN KEY (`id_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_alliance_request_user_id` FOREIGN KEY (`id_user`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_alliance_request_ally_id` FOREIGN KEY (`id_ally`) REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
-    if(strtoupper($update_tables['annonce']['id']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
-      upd_do_query('DELETE FROM {{annonce}} WHERE user NOT IN (SELECT username FROM {{users}});', true);
+    if(strtoupper($update_tables['annonce']['id']['Type']) != 'BIGINT(20) UNSIGNED') {
+      upd_do_query('DELETE FROM {{annonce}} WHERE USER NOT IN (SELECT username FROM {{users}});', true);
 
       upd_alter_table('annonce', array(
         "MODIFY COLUMN `id` SERIAL",
@@ -902,12 +855,11 @@ switch($new_version)
 
         "ADD KEY `I_annonce_user` (`user`, `id`)",
 
-        "ADD CONSTRAINT `FK_annonce_user` FOREIGN KEY (`user`) REFERENCES `{$config->db_prefix}users` (`username`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_annonce_user` FOREIGN KEY (`user`) REFERENCES `{{users}}` (`username`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
-    if(strtoupper($update_tables['bashing']['bashing_user_id']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['bashing']['bashing_user_id']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_alter_table('bashing', array(
         "DROP FOREIGN KEY `FK_bashing_user_id`",
         "DROP FOREIGN KEY `FK_bashing_planet_id`",
@@ -917,14 +869,13 @@ switch($new_version)
         "MODIFY COLUMN `bashing_user_id` BIGINT(20) UNSIGNED DEFAULT NULL",
         "MODIFY COLUMN `bashing_planet_id` BIGINT(20) UNSIGNED DEFAULT NULL",
 
-        "ADD CONSTRAINT `FK_bashing_user_id`   FOREIGN KEY (`bashing_user_id`)   REFERENCES `{$config->db_prefix}users`   (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_bashing_user_id`   FOREIGN KEY (`bashing_user_id`)   REFERENCES `{{users}}`   (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_bashing_planet_id` FOREIGN KEY (`bashing_planet_id`) REFERENCES `{{planets}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
-    if(strtoupper($update_tables['buddy']['id']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
-      upd_do_query('DELETE FROM {{buddy}} WHERE sender NOT IN (SELECT id FROM {{users}}) OR owner NOT IN (SELECT id FROM {{users}});', true);
+    if(strtoupper($update_tables['buddy']['id']['Type']) != 'BIGINT(20) UNSIGNED') {
+      upd_do_query('DELETE FROM {{buddy}} WHERE sender NOT IN (SELECT id FROM {{users}}) OR OWNER NOT IN (SELECT id FROM {{users}});', true);
 
       upd_alter_table('buddy', array(
         "MODIFY COLUMN `id` SERIAL",
@@ -935,8 +886,8 @@ switch($new_version)
         "ADD KEY `I_buddy_sender` (`sender`)",
         "ADD KEY `I_buddy_owner` (`owner`)",
 
-        "ADD CONSTRAINT `FK_buddy_sender_id` FOREIGN KEY (`sender`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_buddy_owner_id`  FOREIGN KEY (`owner`)  REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_buddy_sender_id` FOREIGN KEY (`sender`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_buddy_owner_id`  FOREIGN KEY (`owner`)  REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
@@ -961,9 +912,8 @@ switch($new_version)
       "MODIFY COLUMN `fleet_resource_deuterium` DECIMAL(65,0) DEFAULT '0'",
     ), strtoupper($update_tables['fleets']['fleet_resource_metal']['Type']) != 'DECIMAL(65,0)');
 
-    if(strtoupper($update_tables['iraks']['fleet_owner']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
-      upd_do_query('DELETE FROM {{iraks}} WHERE owner NOT IN (SELECT id FROM {{users}}) OR zielid NOT IN (SELECT id FROM {{users}});', true);
+    if(strtoupper($update_tables['iraks']['fleet_owner']['Type']) != 'BIGINT(20) UNSIGNED') {
+      upd_do_query('DELETE FROM {{iraks}} WHERE OWNER NOT IN (SELECT id FROM {{users}}) OR zielid NOT IN (SELECT id FROM {{users}});', true);
 
       upd_alter_table('iraks', array(
         "CHANGE COLUMN `zeit` `fleet_end_time` INT(11) UNSIGNED NOT NULL DEFAULT 0",
@@ -981,14 +931,13 @@ switch($new_version)
         "ADD KEY `I_iraks_fleet_owner` (`fleet_owner`)",
         "ADD KEY `I_iraks_fleet_target_owner` (`fleet_target_owner`)",
 
-        "ADD CONSTRAINT `FK_iraks_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_iraks_fleet_target_owner` FOREIGN KEY (`fleet_target_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_iraks_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_iraks_fleet_target_owner` FOREIGN KEY (`fleet_target_owner`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
-    if(strtoupper($update_tables['notes']['owner']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
-      upd_do_query('DELETE FROM {{notes}} WHERE owner NOT IN (SELECT id FROM {{users}});', true);
+    if(strtoupper($update_tables['notes']['owner']['Type']) != 'BIGINT(20) UNSIGNED') {
+      upd_do_query('DELETE FROM {{notes}} WHERE OWNER NOT IN (SELECT id FROM {{users}});', true);
 
       upd_alter_table('notes', array(
         "MODIFY COLUMN id SERIAL",
@@ -996,7 +945,7 @@ switch($new_version)
 
         "ADD KEY `I_notes_owner` (`owner`)",
 
-        "ADD CONSTRAINT `FK_notes_owner` FOREIGN KEY (`owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_notes_owner` FOREIGN KEY (`owner`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
@@ -1112,8 +1061,7 @@ switch($new_version)
       "DROP COLUMN `b_hangar_plus`",
     ), isset($update_tables['planets']['b_hangar_plus']));
 
-    if(strtoupper($update_tables['referrals']['id_partner']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['referrals']['id_partner']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_do_query('DELETE FROM {{referrals}} WHERE id NOT IN (SELECT id FROM {{users}}) OR id_partner NOT IN (SELECT id FROM {{users}});', true);
 
       upd_alter_table('referrals', array(
@@ -1121,8 +1069,8 @@ switch($new_version)
         "MODIFY COLUMN `id_partner` BIGINT(20) UNSIGNED DEFAULT NULL",
         "MODIFY COLUMN `dark_matter` DECIMAL(65,0) NOT NULL DEFAULT '0'",
 
-        "ADD CONSTRAINT `FK_referrals_id` FOREIGN KEY (`id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_referrals_id_partner` FOREIGN KEY (`id_partner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_referrals_id` FOREIGN KEY (`id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_referrals_id_partner` FOREIGN KEY (`id_partner`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
@@ -1132,8 +1080,7 @@ switch($new_version)
       "MODIFY COLUMN `id_owner2` BIGINT(20) UNSIGNED",
     ), strtoupper($update_tables['rw']['id_owner1']['Type']) != 'BIGINT(20) UNSIGNED');
 
-    if(strtoupper($update_tables['shortcut']['shortcut_user_id']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['shortcut']['shortcut_user_id']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_do_query('DELETE FROM {{shortcut}} WHERE shortcut_user_id NOT IN (SELECT id FROM {{users}}) OR shortcut_planet_id NOT IN (SELECT id FROM {{planets}});', true);
 
       upd_alter_table('shortcut', array(
@@ -1144,55 +1091,54 @@ switch($new_version)
         "MODIFY COLUMN `shortcut_system` SMALLINT UNSIGNED DEFAULT 0",
         "MODIFY COLUMN `shortcut_planet` TINYINT UNSIGNED DEFAULT 0",
 
-        "ADD CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_shortcut_planet_id` FOREIGN KEY (`shortcut_planet_id`) REFERENCES `{{planets}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
-    if(strtoupper($update_tables['statpoints']['id_owner']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['statpoints']['id_owner']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_do_query('DELETE FROM {{statpoints}} WHERE id_owner NOT IN (SELECT id FROM {{users}}) OR id_ally NOT IN (SELECT id FROM {{alliance}});', true);
 
       upd_alter_table('statpoints', array(
-       "MODIFY COLUMN `stat_date` int(11) NOT NULL DEFAULT '0' FIRST",
-       "MODIFY COLUMN `id_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
-       "MODIFY COLUMN `id_ally` BIGINT(20) UNSIGNED DEFAULT NULL",
-       "MODIFY COLUMN `stat_type` TINYINT UNSIGNED DEFAULT 0",
-       "MODIFY COLUMN `stat_code` TINYINT UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `stat_date` int(11) NOT NULL DEFAULT '0' FIRST",
+        "MODIFY COLUMN `id_owner` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `id_ally` BIGINT(20) UNSIGNED DEFAULT NULL",
+        "MODIFY COLUMN `stat_type` TINYINT UNSIGNED DEFAULT 0",
+        "MODIFY COLUMN `stat_code` TINYINT UNSIGNED NOT NULL DEFAULT '0'",
 
-       "MODIFY COLUMN `tech_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `tech_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `tech_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `tech_count` DECIMAL(65,0) UNSIGNED UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `tech_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `tech_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `tech_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `tech_count` DECIMAL(65,0) UNSIGNED UNSIGNED NOT NULL DEFAULT '0'",
 
-       "MODIFY COLUMN `build_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `build_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `build_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `build_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `build_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `build_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `build_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `build_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
 
-       "MODIFY COLUMN `defs_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `defs_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `defs_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `defs_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `defs_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `defs_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `defs_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `defs_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
 
-       "MODIFY COLUMN `fleet_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `fleet_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `fleet_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `fleet_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `fleet_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `fleet_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `fleet_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `fleet_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
 
-       "MODIFY COLUMN `res_rank` INT(11) UNSIGNED DEFAULT '0' COMMENT 'Rank by resources' AFTER `fleet_count`",
-       "MODIFY COLUMN `res_old_rank` INT(11) UNSIGNED DEFAULT '0' COMMENT 'Old rank by resources'AFTER `res_rank`",
-       "MODIFY COLUMN `res_points` DECIMAL(65,0) UNSIGNED DEFAULT '0' COMMENT 'Resource stat points' AFTER `res_old_rank`",
-       "MODIFY COLUMN `res_count` DECIMAL(65,0) UNSIGNED DEFAULT '0' COMMENT 'Resource count' AFTER `res_points`",
+        "MODIFY COLUMN `res_rank` INT(11) UNSIGNED DEFAULT '0' COMMENT 'Rank by resources' AFTER `fleet_count`",
+        "MODIFY COLUMN `res_old_rank` INT(11) UNSIGNED DEFAULT '0' COMMENT 'Old rank by resources'AFTER `res_rank`",
+        "MODIFY COLUMN `res_points` DECIMAL(65,0) UNSIGNED DEFAULT '0' COMMENT 'Resource stat points' AFTER `res_old_rank`",
+        "MODIFY COLUMN `res_count` DECIMAL(65,0) UNSIGNED DEFAULT '0' COMMENT 'Resource count' AFTER `res_points`",
 
-       "MODIFY COLUMN `total_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `total_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `total_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
-       "MODIFY COLUMN `total_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `total_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `total_old_rank` INT(11) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `total_points` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
+        "MODIFY COLUMN `total_count` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT '0'",
 
-       "ADD KEY `I_stats_id_ally` (`id_ally`)",
+        "ADD KEY `I_stats_id_ally` (`id_ally`)",
 
-       "ADD CONSTRAINT `FK_stats_id_owner` FOREIGN KEY (`id_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-       "ADD CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_stats_id_owner` FOREIGN KEY (`id_owner`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_stats_id_ally` FOREIGN KEY (`id_ally`) REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
@@ -1303,9 +1249,8 @@ switch($new_version)
       "DROP COLUMN `settings_allylogo`",
     ), isset($update_tables['users']['settings_allylogo']));
 
-    if(!isset($update_tables['powerup']))
-    {
-      upd_do_query("DROP TABLE IF EXISTS {$config->db_prefix}mercenaries;");
+    if(!isset($update_tables['powerup'])) {
+      upd_do_query("DROP TABLE IF EXISTS {{mercenaries}};");
 
       upd_create_table('powerup',
         "(
@@ -1324,39 +1269,34 @@ switch($new_version)
           KEY `I_user_powerup_time` (`powerup_user_id`, `powerup_unit_id`, `powerup_time_start`, `powerup_time_finish`),
           KEY `I_planet_powerup_time` (`powerup_planet_id`, `powerup_unit_id`, `powerup_time_start`, `powerup_time_finish`),
 
-          CONSTRAINT `FK_powerup_user_id` FOREIGN KEY (`powerup_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-          CONSTRAINT `FK_powerup_planet_id` FOREIGN KEY (`powerup_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+          CONSTRAINT `FK_powerup_user_id` FOREIGN KEY (`powerup_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+          CONSTRAINT `FK_powerup_planet_id` FOREIGN KEY (`powerup_planet_id`) REFERENCES `{{planets}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
 
-      upd_check_key('empire_mercenary_temporary', 0, !isset($config->empire_mercenary_temporary));
-      upd_check_key('empire_mercenary_base_period', PERIOD_MONTH, !isset($config->empire_mercenary_base_period));
+      upd_check_key('empire_mercenary_temporary', 0, !isset(classSupernova::$config->empire_mercenary_temporary));
+      upd_check_key('empire_mercenary_base_period', PERIOD_MONTH, !isset(classSupernova::$config->empire_mercenary_base_period));
 
       $update_query_template = "UPDATE {{users}} SET id = id %s WHERE id = %d LIMIT 1;";
       $user_list = upd_do_query("SELECT * FROM {{users}};");
-      while($user_row = db_fetch($user_list))
-      {
+      while($user_row = db_fetch($user_list)) {
         $update_query_str = '';
-        foreach(sn_get_groups('mercenaries') as $mercenary_id)
-        {
+        foreach(sn_get_groups('mercenaries') as $mercenary_id) {
           $mercenary_data_name = get_unit_param($mercenary_id, P_NAME);
-          if($mercenary_level = $user_row[$mercenary_data_name])
-          {
+          if($mercenary_level = $user_row[$mercenary_data_name]) {
             $update_query_str = ", `{$mercenary_data_name}` = 0";
             upd_do_query("DELETE FROM {{powerup}} WHERE powerup_user_id = {$user_row['id']} AND powerup_unit_id = {$mercenary_id} LIMIT 1;");
             upd_do_query("INSERT {{powerup}} SET powerup_user_id = {$user_row['id']}, powerup_unit_id = {$mercenary_id}, powerup_unit_level = {$mercenary_level};");
           }
         }
 
-        if($update_query_str)
-        {
+        if($update_query_str) {
           upd_do_query(sprintf($update_query_template, $update_query_str, $user_row['id']));
         }
       }
     }
 
-    if(!isset($update_tables['universe']))
-    {
+    if(!isset($update_tables['universe'])) {
       upd_create_table('universe',
         "(
           `universe_galaxy` SMALLINT UNSIGNED NOT NULL DEFAULT '0',
@@ -1379,14 +1319,13 @@ switch($new_version)
 
     // ------------------------------------------------------------------------
     // Modifying tables
-    if(strtoupper($update_tables['users']['user_as_ally']['Type']) != 'BIGINT(20) UNSIGNED')
-    {
+    if(strtoupper($update_tables['users']['user_as_ally']['Type']) != 'BIGINT(20) UNSIGNED') {
       upd_alter_table('users', array(
         "ADD COLUMN user_as_ally BIGINT(20) UNSIGNED DEFAULT NULL",
 
         "ADD KEY `I_user_user_as_ally` (`user_as_ally`)",
 
-        "ADD CONSTRAINT `FK_user_user_as_ally` FOREIGN KEY (`user_as_ally`) REFERENCES `{$config->db_prefix}alliance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_user_user_as_ally` FOREIGN KEY (`user_as_ally`) REFERENCES `{{alliance}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
 
       upd_alter_table('alliance', array(
@@ -1394,15 +1333,14 @@ switch($new_version)
 
         "ADD KEY `I_ally_user_id` (`ally_user_id`)",
 
-        "ADD CONSTRAINT `FK_ally_ally_user_id` FOREIGN KEY (`ally_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_ally_ally_user_id` FOREIGN KEY (`ally_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
     // ------------------------------------------------------------------------
     // Creating players for allies
     $ally_row_list = doquery("SELECT `id`, `ally_tag` FROM {{alliance}} WHERE ally_user_id IS NULL;");
-    while($ally_row = db_fetch($ally_row_list))
-    {
+    while($ally_row = db_fetch($ally_row_list)) {
       $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
       doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_row['id']};");
       $ally_user_id = db_insert_id();
@@ -1416,8 +1354,7 @@ switch($new_version)
     // ------------------------------------------------------------------------
     // Creating planets for allies
     $ally_user_list = doquery("SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NOT NULL AND `id_planet` = 0;");
-    while($ally_user_row = db_fetch($ally_user_list))
-    {
+    while($ally_user_row = db_fetch($ally_user_list)) {
       $ally_planet_name = db_escape($ally_user_row['username']);
       doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = " . SN_TIME_NOW . ", `id_owner` = {$ally_user_row['id']};");
       $ally_planet_id = db_insert_id();
@@ -1448,11 +1385,9 @@ switch($new_version)
     // Adding db field
     upd_alter_table('users', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que'", !$update_tables['users']['que']);
     // Converting old data to new one and dropping old fields
-    if($update_tables['users']['b_tech_planet'])
-    {
+    if($update_tables['users']['b_tech_planet']) {
       $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
-      while($planet_row = db_fetch($query))
-      {
+      while($planet_row = db_fetch($query)) {
         $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - SN_TIME_NOW) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
         doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
       }
@@ -1465,8 +1400,7 @@ switch($new_version)
       upd_alter_table('users', "DROP COLUMN `b_tech_planet`", $update_tables['users']['b_tech_planet']);
     }
 
-    if(!$update_tables['powerup']['powerup_category'])
-    {
+    if(!$update_tables['powerup']['powerup_category']) {
       upd_alter_table('powerup', "ADD COLUMN `powerup_category` SMALLINT NOT NULL DEFAULT 0 AFTER `powerup_planet_id`", !$update_tables['powerup']['powerup_category']);
 
       doquery("UPDATE {{powerup}} SET powerup_category = " . BONUS_MERCENARY);
@@ -1487,8 +1421,7 @@ switch($new_version)
     upd_check_key('ali_bonus_brackets', 10, !isset(classSupernova::$config->ali_bonus_brackets));
     upd_check_key('ali_bonus_brackets_divisor', 50, !isset(classSupernova::$config->ali_bonus_brackets_divisor));
 
-    if(!classSupernova::$config->db_loadItem('rpg_flt_explore'))
-    {
+    if(!classSupernova::$config->db_loadItem('rpg_flt_explore')) {
       $inflation_rate = 1000;
 
       classSupernova::$config->db_saveItem('rpg_cost_banker', classSupernova::$config->rpg_cost_banker * $inflation_rate);
@@ -1505,21 +1438,17 @@ switch($new_version)
       doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
 
       $query = doquery("SELECT * FROM {{quest}}");
-      while($row = db_fetch($query))
-      {
+      while($row = db_fetch($query)) {
         $query_add = '';
         $quest_reward_list = explode(';', $row['quest_rewards']);
-        foreach($quest_reward_list as &$quest_reward)
-        {
+        foreach($quest_reward_list as &$quest_reward) {
           list($reward_resource, $reward_amount) = explode(',', $quest_reward);
-          if($reward_resource == RES_DARK_MATTER)
-          {
+          if($reward_resource == RES_DARK_MATTER) {
             $quest_reward = "{$reward_resource}," . $reward_amount * 1000;
           }
         }
         $new_rewards = implode(';', $quest_reward_list);
-        if($new_rewards != $row['quest_rewards'])
-        {
+        if($new_rewards != $row['quest_rewards']) {
           doquery("UPDATE {{quest}} SET `quest_rewards` = '{$new_rewards}' WHERE quest_id = {$row['quest_id']} LIMIT 1;");
         }
       }
@@ -1549,8 +1478,7 @@ switch($new_version)
     upd_check_key('user_birthday_range', 30, !isset(classSupernova::$config->user_birthday_range));
     upd_check_key('user_birthday_celebrate', 0, !isset(classSupernova::$config->user_birthday_celebrate));
 
-    if(!isset($update_tables['payment']))
-    {
+    if(!isset($update_tables['payment'])) {
       upd_alter_table('users', array(
         "ADD KEY `I_user_id_name` (`id`, `username`)",
       ), !$update_indexes['users']['I_user_id_name']);
@@ -1574,7 +1502,7 @@ switch($new_version)
           KEY `I_payment_user` (`payment_user_id`, `payment_user_name`),
           KEY `I_payment_module_internal_id` (`payment_module_name`, `payment_internal_id`),
 
-          CONSTRAINT `FK_payment_user` FOREIGN KEY (`payment_user_id`, `payment_user_name`) REFERENCES `{$config->db_prefix}users` (`id`, `username`) ON UPDATE CASCADE ON DELETE NO ACTION
+          CONSTRAINT `FK_payment_user` FOREIGN KEY (`payment_user_id`, `payment_user_name`) REFERENCES `{{users}}` (`id`, `username`) ON UPDATE CASCADE ON DELETE NO ACTION
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
 
@@ -1601,8 +1529,7 @@ switch($new_version)
     ), !$update_tables['iraks']['fleet_start_type']);
 
 
-    if(!$update_tables['payment']['payment_status'])
-    {
+    if(!$update_tables['payment']['payment_status']) {
       upd_alter_table('payment', array(
         "ADD COLUMN `payment_status` INT DEFAULT 0 COMMENT 'Payment status' AFTER `payment_id`",
 
@@ -1686,8 +1613,7 @@ switch($new_version)
       "ADD INDEX `I_owner_priority_time` (`owner`, `priority`, `time`)",
     ), !$update_indexes['notes']['I_owner_priority_time']);
 
-    if(!$update_tables['buddy']['BUDDY_ID'])
-    {
+    if(!$update_tables['buddy']['BUDDY_ID']) {
       upd_alter_table('buddy', array(
         "CHANGE COLUMN `id` `BUDDY_ID` SERIAL COMMENT 'Buddy table row ID'",
         "CHANGE COLUMN `active` `BUDDY_STATUS` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Buddy request status'",
@@ -1708,30 +1634,25 @@ switch($new_version)
 
       $query = upd_do_query("SELECT `BUDDY_ID`, `BUDDY_SENDER_ID`, `BUDDY_OWNER_ID` FROM {{buddy}} ORDER BY `BUDDY_ID`;");
       $found = $lost = array();
-      while($row = db_fetch($query))
-      {
+      while($row = db_fetch($query)) {
         $index = min($row['BUDDY_SENDER_ID'], $row['BUDDY_OWNER_ID']) . ';' . max($row['BUDDY_SENDER_ID'], $row['BUDDY_OWNER_ID']);
-        if(!isset($found[$index]))
-        {
+        if(!isset($found[$index])) {
           $found[$index] = $row['BUDDY_ID'];
-        }
-        else
-        {
+        } else {
           $lost[] = $row['BUDDY_ID'];
         }
       }
       $lost = implode(',', $lost);
-      if($lost)
-      {
+      if($lost) {
         upd_do_query("DELETE FROM {{buddy}} WHERE `BUDDY_ID` IN ({$lost})");
       }
 
       upd_alter_table('buddy', array(
-          "ADD KEY `I_BUDDY_SENDER_ID` (`BUDDY_SENDER_ID`, `BUDDY_OWNER_ID`)",
-          "ADD KEY `I_BUDDY_OWNER_ID` (`BUDDY_OWNER_ID`, `BUDDY_SENDER_ID`)",
+        "ADD KEY `I_BUDDY_SENDER_ID` (`BUDDY_SENDER_ID`, `BUDDY_OWNER_ID`)",
+        "ADD KEY `I_BUDDY_OWNER_ID` (`BUDDY_OWNER_ID`, `BUDDY_SENDER_ID`)",
 
-          "ADD CONSTRAINT `FK_BUDDY_SENDER_ID` FOREIGN KEY (`BUDDY_SENDER_ID`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-          "ADD CONSTRAINT `FK_BUDDY_OWNER_ID` FOREIGN KEY (`BUDDY_OWNER_ID`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_BUDDY_SENDER_ID` FOREIGN KEY (`BUDDY_SENDER_ID`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_BUDDY_OWNER_ID` FOREIGN KEY (`BUDDY_OWNER_ID`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), !$update_indexes['buddy']['I_BUDDY_SENDER_ID']);
     }
 
@@ -1741,10 +1662,9 @@ switch($new_version)
   case 35:
     upd_log_version_update();
 
-    upd_do_query("UPDATE {{users}} SET `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` IS NULL");
+    upd_do_query("UPDATE {{users}} SET `ally_name` = NULL, `ally_tag` = NULL, ally_register_time = 0, ally_rank_id = 0 WHERE `ally_id` IS NULL");
 
-    if(!$update_tables['ube_report'])
-    {
+    if(!$update_tables['ube_report']) {
       upd_create_table('ube_report',
         "(
           `ube_report_id` SERIAL COMMENT 'Report ID',
@@ -1785,8 +1705,7 @@ switch($new_version)
       );
     }
 
-    if(!$update_tables['ube_report_player'])
-    {
+    if(!$update_tables['ube_report_player']) {
       upd_create_table('ube_report_player',
         "(
           `ube_report_player_id` SERIAL COMMENT 'Record ID',
@@ -1802,13 +1721,12 @@ switch($new_version)
 
           PRIMARY KEY (`ube_report_player_id`),
           KEY `I_ube_report_player_player_id` (`ube_report_player_player_id`),
-          CONSTRAINT `FK_ube_report_player_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{$config->db_prefix}ube_report` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_ube_report_player_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{{ube_report}}` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
-    if(!$update_tables['ube_report_fleet'])
-    {
+    if(!$update_tables['ube_report_fleet']) {
       upd_create_table('ube_report_fleet',
         "(
           `ube_report_fleet_id` SERIAL COMMENT 'Record DB ID',
@@ -1833,13 +1751,12 @@ switch($new_version)
           `ube_report_fleet_resource_deuterium` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Fleet deuterium amount',
 
           PRIMARY KEY (`ube_report_fleet_id`),
-          CONSTRAINT `FK_ube_report_fleet_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{$config->db_prefix}ube_report` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_ube_report_fleet_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{{ube_report}}` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
-    if(!$update_tables['ube_report_unit'])
-    {
+    if(!$update_tables['ube_report_unit']) {
       // TODO: Сохранять так же имя корабля - на случай конструкторов - не, хуйня. Конструктор может давать имена разные на разных языках
       // Может сохранять имена удаленных кораблей долго?
 
@@ -1871,13 +1788,12 @@ switch($new_version)
           KEY `I_ube_report_unit_report_round_fleet_order` (`ube_report_id`, `ube_report_unit_round`, `ube_report_unit_fleet_id`, `ube_report_unit_sort_order`),
           KEY `I_ube_report_unit_report_unit_order` (`ube_report_id`, `ube_report_unit_sort_order`),
           KEY `I_ube_report_unit_order` (`ube_report_unit_sort_order`),
-          CONSTRAINT `FK_ube_report_unit_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{$config->db_prefix}ube_report` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_ube_report_unit_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{{ube_report}}` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
-    if(!$update_tables['ube_report_outcome_fleet'])
-    {
+    if(!$update_tables['ube_report_outcome_fleet']) {
       upd_create_table('ube_report_outcome_fleet',
         "(
           `ube_report_outcome_fleet_id` SERIAL COMMENT 'Record DB ID',
@@ -1901,13 +1817,12 @@ switch($new_version)
 
           PRIMARY KEY (`ube_report_outcome_fleet_id`),
           KEY `I_ube_report_outcome_fleet_report_fleet` (`ube_report_id`, `ube_report_outcome_fleet_fleet_id`),
-          CONSTRAINT `FK_ube_report_outcome_fleet_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{$config->db_prefix}ube_report` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_ube_report_outcome_fleet_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{{ube_report}}` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
-    if(!$update_tables['ube_report_outcome_unit'])
-    {
+    if(!$update_tables['ube_report_outcome_unit']) {
       upd_create_table('ube_report_outcome_unit',
         "(
           `ube_report_outcome_unit_id` SERIAL COMMENT 'Record DB ID',
@@ -1923,13 +1838,12 @@ switch($new_version)
 
           PRIMARY KEY (`ube_report_outcome_unit_id`),
           KEY `I_ube_report_outcome_unit_report_order` (`ube_report_id`, `ube_report_outcome_unit_sort_order`),
-          CONSTRAINT `FK_ube_report_outcome_unit_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{$config->db_prefix}ube_report` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_ube_report_outcome_unit_ube_report` FOREIGN KEY (`ube_report_id`) REFERENCES `{{ube_report}}` (`ube_report_id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
-    if(!$update_tables['unit'])
-    {
+    if(!$update_tables['unit']) {
       upd_create_table('unit',
         "(
           `unit_id` SERIAL COMMENT 'Record ID',
@@ -1943,13 +1857,12 @@ switch($new_version)
 
           PRIMARY KEY (`unit_id`),
           KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`),
-          CONSTRAINT `FK_unit_player_id` FOREIGN KEY (`unit_player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_unit_player_id` FOREIGN KEY (`unit_player_id`) REFERENCES `{{users}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
-    if(!$update_tables['captain'])
-    {
+    if(!$update_tables['captain']) {
       upd_create_table('captain',
         "(
           `captain_id` SERIAL COMMENT 'Record ID',
@@ -1964,13 +1877,12 @@ switch($new_version)
 
           PRIMARY KEY (`captain_id`),
           KEY `I_captain_unit_id` (`captain_unit_id`),
-          CONSTRAINT `FK_captain_unit_id` FOREIGN KEY (`captain_unit_id`) REFERENCES `{$config->db_prefix}unit` (`unit_id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_captain_unit_id` FOREIGN KEY (`captain_unit_id`) REFERENCES `{{unit}}` (`unit_id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
-    if(!$update_tables['fleets']['fleet_start_planet_id'])
-    {
+    if(!$update_tables['fleets']['fleet_start_planet_id']) {
       upd_alter_table('fleets', array(
         "ADD `fleet_start_planet_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Fleet start planet ID' AFTER `fleet_start_time`",
         "ADD `fleet_end_planet_id` BIGINT(20) UNSIGNED DEFAULT NULL COMMENT 'Fleet end planet ID' AFTER `fleet_end_stay`",
@@ -1978,8 +1890,8 @@ switch($new_version)
         "ADD KEY `I_fleet_start_planet_id` (`fleet_start_planet_id`)",
         "ADD KEY `I_fleet_end_planet_id` (`fleet_end_planet_id`)",
 
-        "ADD CONSTRAINT `FK_fleet_planet_start` FOREIGN KEY (`fleet_start_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_fleet_planet_end` FOREIGN KEY (`fleet_end_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_fleet_planet_start` FOREIGN KEY (`fleet_start_planet_id`) REFERENCES `{{planets}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_fleet_planet_end` FOREIGN KEY (`fleet_end_planet_id`) REFERENCES `{{planets}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
       ), !$update_tables['fleets']['fleet_start_planet_id']);
 
       upd_do_query("
@@ -1992,8 +1904,7 @@ switch($new_version)
 
     upd_alter_table('fleets', array("DROP COLUMN `processing_start`"), $update_tables['fleets']['processing_start']);
 
-    if(!$update_tables['chat_player'])
-    {
+    if(!$update_tables['chat_player']) {
       upd_create_table('chat_player',
         "(
           `chat_player_id` SERIAL COMMENT 'Record ID',
@@ -2008,7 +1919,7 @@ switch($new_version)
 
           KEY `I_chat_player_id` (`chat_player_player_id`),
 
-          CONSTRAINT `FK_chat_player_id` FOREIGN KEY (`chat_player_player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_chat_player_id` FOREIGN KEY (`chat_player_player_id`) REFERENCES `{{users}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
 
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
@@ -2021,8 +1932,8 @@ switch($new_version)
       "ADD KEY `I_chat_message_sender_id` (`chat_message_sender_id`)",
       "ADD KEY `I_chat_message_recipient_id` (`chat_message_recipient_id`)",
 
-      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
     ), !$update_tables['chat']['chat_message_sender_id']);
 
     upd_alter_table('chat', array(
@@ -2041,8 +1952,8 @@ switch($new_version)
       "ADD KEY `I_ban_user_id` (`ban_user_id`)",
       "ADD KEY `I_ban_issuer_id` (`ban_issuer_id`)",
 
-      "ADD CONSTRAINT `FK_ban_user_id` FOREIGN KEY (`ban_user_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
-      "ADD CONSTRAINT `FK_ban_issuer_id` FOREIGN KEY (`ban_issuer_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_ban_user_id` FOREIGN KEY (`ban_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_ban_issuer_id` FOREIGN KEY (`ban_issuer_id`) REFERENCES `{{users}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
     ), !$update_tables['banned']['ban_user_id']);
 
     upd_do_query('COMMIT;', true);
@@ -2055,16 +1966,15 @@ switch($new_version)
       "DROP FOREIGN KEY `FK_payment_user`",
     ), $update_foreigns['payment']['FK_payment_user']);
 
-    if($update_foreigns['chat']['FK_chat_message_sender_user_id'] != 'chat_message_sender_id,users,id;')
-    {
+    if($update_foreigns['chat']['FK_chat_message_sender_user_id'] != 'chat_message_sender_id,users,id;') {
       upd_alter_table('chat', array(
         "DROP FOREIGN KEY `FK_chat_message_sender_user_id`",
         "DROP FOREIGN KEY `FK_chat_message_sender_recipient_id`",
       ), true);
 
       upd_alter_table('chat', array(
-        "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
-        "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_chat_message_sender_user_id` FOREIGN KEY (`chat_message_sender_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_chat_message_sender_recipient_id` FOREIGN KEY (`chat_message_recipient_id`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
       ), true);
     }
 
@@ -2089,8 +1999,7 @@ switch($new_version)
       "ADD KEY `I_ube_report_time_combat` (`ube_report_time_combat`)",
     ), !$update_indexes['ube_report']['I_ube_report_time_combat']);
 
-    if(!$update_tables['unit']['unit_time_start'])
-    {
+    if(!$update_tables['unit']['unit_time_start']) {
       upd_alter_table('unit', array(
         "ADD COLUMN `unit_time_start` DATETIME NULL DEFAULT NULL COMMENT 'Unit activation start time'",
         "ADD COLUMN `unit_time_finish` DATETIME NULL DEFAULT NULL COMMENT 'Unit activation end time'",
@@ -2106,8 +2015,7 @@ switch($new_version)
       );
     }
 
-    if(!$update_tables['que'])
-    {
+    if(!$update_tables['que']) {
       upd_create_table('que',
         "(
           `que_id` SERIAL COMMENT 'Internal que id',
@@ -2131,45 +2039,37 @@ switch($new_version)
           KEY `I_que_player_type` (`que_player_id`, `que_type`, `que_id`), -- For main search
           KEY `I_que_planet_id` (`que_planet_id`), -- For constraint
 
-          CONSTRAINT `FK_que_player_id` FOREIGN KEY (`que_player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-          CONSTRAINT `FK_que_planet_id` FOREIGN KEY (`que_planet_id`) REFERENCES `{$config->db_prefix}planets` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
-          CONSTRAINT `FK_que_planet_id_origin` FOREIGN KEY (`que_planet_id_origin`) REFERENCES `{$config->db_prefix}planets` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_que_player_id` FOREIGN KEY (`que_player_id`) REFERENCES `{{users}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+          CONSTRAINT `FK_que_planet_id` FOREIGN KEY (`que_planet_id`) REFERENCES `{{planets}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE,
+          CONSTRAINT `FK_que_planet_id_origin` FOREIGN KEY (`que_planet_id_origin`) REFERENCES `{{planets}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
 
     // Конвертирум очередь исследований
-    if($update_tables['users']['que'])
-    {
+    if($update_tables['users']['que']) {
       $que_lines = array();
       $que_query = upd_do_query("SELECT * FROM {{users}} WHERE `que`");
-      while($que_row = db_fetch($que_query))
-      {
+      while($que_row = db_fetch($que_query)) {
         $que_data = explode(',', $que_row['que']);
 
-        if(!in_array($que_data[QI_UNIT_ID], sn_get_groups('tech')))
-        {
+        if(!in_array($que_data[QI_UNIT_ID], sn_get_groups('tech'))) {
           continue;
         }
 
         $que_data[QI_TIME] = $que_data[QI_TIME] >= 0 ? $que_data[QI_TIME] : 0;
         // Если планета пустая - ставим главку
         $que_data[QI_PLANET_ID] = $que_data[QI_PLANET_ID] ? $que_data[QI_PLANET_ID] : $que_row['id_planet'];
-        if($que_data[QI_PLANET_ID])
-        {
+        if($que_data[QI_PLANET_ID]) {
           $que_planet_check = db_fetch(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
-          if(!$que_planet_check['id'])
-          {
+          if(!$que_planet_check['id']) {
             $que_data[QI_PLANET_ID] = $que_row['id_planet'];
             $que_planet_check = db_fetch(upd_do_query("SELECT `id` FROM {{planets}} WHERE `id` = {$que_data[QI_PLANET_ID]}"));
-            if(!$que_planet_check['id'])
-            {
+            if(!$que_planet_check['id']) {
               $que_data[QI_PLANET_ID] = 'NULL';
             }
           }
-        }
-        else
-        {
+        } else {
           $que_data[QI_PLANET_ID] = 'NULL';
         }
 
@@ -2179,10 +2079,8 @@ switch($new_version)
         $price_increase = pow($unit_factor, $unit_level);
         $unit_level++;
         $unit_cost = array();
-        foreach($unit_info[P_COST] as $resource_id => $resource_amount)
-        {
-          if($resource_id === P_FACTOR || $resource_id == RES_ENERGY || !($resource_cost = $resource_amount * $price_increase))
-          {
+        foreach($unit_info[P_COST] as $resource_id => $resource_amount) {
+          if($resource_id === P_FACTOR || $resource_id == RES_ENERGY || !($resource_cost = $resource_amount * $price_increase)) {
             continue;
           }
           $unit_cost[] = $resource_id . ',' . floor($resource_cost);
@@ -2193,8 +2091,7 @@ switch($new_version)
           BUILD_CREATE . ",{$unit_level},{$que_data[QI_TIME]},'{$unit_cost}')";
       }
 
-      if(!empty($que_lines))
-      {
+      if(!empty($que_lines)) {
         upd_do_query('INSERT INTO `{{que}}` (`que_player_id`,`que_planet_id_origin`,`que_type`,`que_time_left`,`que_unit_id`,`que_unit_amount`,`que_unit_mode`,`que_unit_level`,`que_unit_time`,`que_unit_price`) VALUES ' . implode(',', $que_lines));
       }
 
@@ -2208,27 +2105,22 @@ switch($new_version)
 
 
     // Ковертируем технологии в таблицы
-    if($update_tables['users']['graviton_tech'])
-    {
+    if($update_tables['users']['graviton_tech']) {
       upd_do_query("DELETE FROM {{unit}} WHERE unit_type = " . UNIT_TECHNOLOGIES);
 
       $que_lines = array();
       $user_query = upd_do_query("SELECT * FROM {{users}}");
       upd_add_more_time(300);
       $sn_group_tech = sn_get_groups('tech');
-      while($user_row = db_fetch($user_query))
-      {
-        foreach($sn_group_tech as $tech_id)
-        {
-          if($tech_level = intval($user_row[get_unit_param($tech_id, P_NAME)]))
-          {
+      while($user_row = db_fetch($user_query)) {
+        foreach($sn_group_tech as $tech_id) {
+          if($tech_level = intval($user_row[get_unit_param($tech_id, P_NAME)])) {
             $que_lines[] = "({$user_row['id']}," . LOC_USER . ",{$user_row['id']}," . UNIT_TECHNOLOGIES . ",{$tech_id},{$tech_level})";
           }
         }
       }
 
-      if(!empty($que_lines))
-      {
+      if(!empty($que_lines)) {
         upd_do_query("INSERT INTO {{unit}} (unit_player_id, unit_location_type, unit_location_id, unit_type, unit_snid, unit_level) VALUES " . implode(',', $que_lines));
       }
 
@@ -2237,31 +2129,25 @@ switch($new_version)
       ), $update_tables['users']['graviton_tech']);
     }
 
-    if(!$update_indexes['unit']['I_unit_record_search'])
-    {
+    if(!$update_indexes['unit']['I_unit_record_search']) {
       upd_alter_table('unit', array(
         "ADD KEY `I_unit_record_search` (`unit_snid`,`unit_player_id`,`unit_level` DESC,`unit_id`)",
       ), !$update_indexes['unit']['I_unit_record_search']);
 
-      foreach(sn_get_groups(array('structures', 'fleet', 'defense')) as $unit_id)
-      {
+      foreach(sn_get_groups(array('structures', 'fleet', 'defense')) as $unit_id) {
         $planet_units[get_unit_param($unit_id, P_NAME)] = 1;
       }
       $drop_index = array();
       $create_index = &$drop_index; // array();
-      foreach($planet_units as $unit_name => $unit_create)
-      {
-        if($update_indexes['planets']['I_' . $unit_name])
-        {
+      foreach($planet_units as $unit_name => $unit_create) {
+        if($update_indexes['planets']['I_' . $unit_name]) {
           $drop_index[] = "DROP KEY I_{$unit_name}";
         }
-        if($update_indexes['planets']['i_' . $unit_name])
-        {
+        if($update_indexes['planets']['i_' . $unit_name]) {
           $drop_index[] = "DROP KEY i_{$unit_name}";
         }
 
-        if($unit_create)
-        {
+        if($unit_create) {
           $create_index[] = "ADD KEY `I_{$unit_name}` (`id_owner`, {$unit_name} DESC)";
         }
       }
@@ -2272,15 +2158,14 @@ switch($new_version)
       "ADD `user_time_utc_offset` INT(11) DEFAULT NULL COMMENT 'User time difference with server time' AFTER `user_time_diff`",
     ), !$update_tables['users']['user_time_utc_offset']);
 
-    if(!$update_foreigns['alliance']['FK_alliance_owner'])
-    {
-      upd_do_query("UPDATE {{alliance}} SET ally_owner = null WHERE ally_owner not in (select id from {{users}})");
+    if(!$update_foreigns['alliance']['FK_alliance_owner']) {
+      upd_do_query("UPDATE {{alliance}} SET ally_owner = NULL WHERE ally_owner NOT IN (SELECT id FROM {{users}})");
 
       upd_alter_table('alliance', array(
-        "ADD CONSTRAINT `FK_alliance_owner` FOREIGN KEY (`ally_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
+        "ADD CONSTRAINT `FK_alliance_owner` FOREIGN KEY (`ally_owner`) REFERENCES `{{users}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
       ), !$update_foreigns['alliance']['FK_alliance_owner']);
 
-      upd_do_query("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id not in (select id from {{alliance}}) OR alliance_negotiation_contr_ally_id not in (select id from {{alliance}})");
+      upd_do_query("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id NOT IN (SELECT id FROM {{alliance}}) OR alliance_negotiation_contr_ally_id NOT IN (SELECT id FROM {{alliance}})");
 
       upd_do_query("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id = alliance_negotiation_contr_ally_id");
       upd_do_query("DELETE FROM {{alliance_diplomacy}} WHERE alliance_diplomacy_ally_id = alliance_diplomacy_contr_ally_id");
@@ -2288,13 +2173,12 @@ switch($new_version)
 
     upd_alter_table('fleets', array(
       'MODIFY COLUMN `fleet_owner` BIGINT(20) UNSIGNED DEFAULT NULL',
-      "ADD CONSTRAINT `FK_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
+      "ADD CONSTRAINT `FK_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `{{users}}` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
     ), strtoupper($update_tables['fleets']['fleet_owner']['Type']) != 'BIGINT(20) UNSIGNED');
 
     upd_check_key('chat_highlight_developer', '<span class="nick_developer">$1</span>', !classSupernova::$config->chat_highlight_developer);
 
-    if(!$update_tables['player_name_history'])
-    {
+    if(!$update_tables['player_name_history']) {
       upd_check_key('game_user_changename_cost', 100000, !classSupernova::$config->game_user_changename_cost);
       upd_check_key('game_user_changename', SERVER_PLAYER_NAME_CHANGE_PAY, classSupernova::$config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_PAY);
 
@@ -2311,7 +2195,7 @@ switch($new_version)
           PRIMARY KEY (`player_name`),
           KEY `I_player_name_history_id_name` (`player_id`, `player_name`),
 
-          CONSTRAINT `FK_player_name_history_id` FOREIGN KEY (`player_id`) REFERENCES `{$config->db_prefix}users` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
+          CONSTRAINT `FK_player_name_history_id` FOREIGN KEY (`player_id`) REFERENCES `{{users}}` (`id`) ON UPDATE CASCADE ON DELETE CASCADE
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
 
@@ -2323,8 +2207,7 @@ switch($new_version)
       "ADD `density_index` TINYINT NOT NULL DEFAULT " . PLANET_DENSITY_STANDARD . " COMMENT 'Planet cached density index'",
     ), !$update_tables['planets']['density_index']);
 
-    if($update_tables['users']['player_artifact_list'])
-    {
+    if($update_tables['users']['player_artifact_list']) {
       upd_alter_table('unit', "DROP KEY `unit_id`", $update_indexes['unit']['unit_id']);
 
       upd_alter_table('unit', "ADD KEY `I_unit_player_location_snid` (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_snid`)", !$update_indexes['unit']['I_unit_player_location_snid']);
@@ -2334,18 +2217,14 @@ switch($new_version)
       $db_changeset = array();
 
       $query = upd_do_query("SELECT `id`, `player_artifact_list` FROM {{users}} WHERE `player_artifact_list` IS NOT NULL AND `player_artifact_list` != '' FOR UPDATE");
-      while($row = db_fetch($query))
-      {
+      while($row = db_fetch($query)) {
         $artifact_list = explode(';', $row['player_artifact_list']);
-        if(!$row['player_artifact_list'] || empty($artifact_list))
-        {
+        if(!$row['player_artifact_list'] || empty($artifact_list)) {
           continue;
         }
-        foreach($artifact_list as $key => &$value)
-        {
+        foreach($artifact_list as $key => &$value) {
           $value = explode(',', $value);
-          if(!isset($value[1]) || $value[1] <= 0 || !isset($sn_data_artifacts[$value[0]]))
-          {
+          if(!isset($value[1]) || $value[1] <= 0 || !isset($sn_data_artifacts[$value[0]])) {
             unset($artifact_list[$key]);
             continue;
           }
@@ -2376,14 +2255,14 @@ switch($new_version)
       "DROP COLUMN `colonisation_tech`",
     ), $update_tables['users']['spy_tech']);
 
-    upd_check_key('payment_currency_exchange_dm_', 2500,             !classSupernova::$config->payment_currency_exchange_dm_ || classSupernova::$config->payment_currency_exchange_dm_ == 1000);
+    upd_check_key('payment_currency_exchange_dm_', 2500, !classSupernova::$config->payment_currency_exchange_dm_ || classSupernova::$config->payment_currency_exchange_dm_ == 1000);
     upd_check_key('payment_currency_exchange_eur', 0.09259259259259, !classSupernova::$config->payment_currency_exchange_eur);
-    upd_check_key('payment_currency_exchange_rub', 4.0,              !classSupernova::$config->payment_currency_exchange_rub);
-    upd_check_key('payment_currency_exchange_usd', 0.125,            !classSupernova::$config->payment_currency_exchange_usd);
-    upd_check_key('payment_currency_exchange_wme', 0.0952380952381,  !classSupernova::$config->payment_currency_exchange_usd);
-    upd_check_key('payment_currency_exchange_wmr', 4.1,              !classSupernova::$config->payment_currency_exchange_wmr);
-    upd_check_key('payment_currency_exchange_wmu', 1.05,             !classSupernova::$config->payment_currency_exchange_wmu);
-    upd_check_key('payment_currency_exchange_wmz', 0.126582278481,   !classSupernova::$config->payment_currency_exchange_wmz);
+    upd_check_key('payment_currency_exchange_rub', 4.0, !classSupernova::$config->payment_currency_exchange_rub);
+    upd_check_key('payment_currency_exchange_usd', 0.125, !classSupernova::$config->payment_currency_exchange_usd);
+    upd_check_key('payment_currency_exchange_wme', 0.0952380952381, !classSupernova::$config->payment_currency_exchange_usd);
+    upd_check_key('payment_currency_exchange_wmr', 4.1, !classSupernova::$config->payment_currency_exchange_wmr);
+    upd_check_key('payment_currency_exchange_wmu', 1.05, !classSupernova::$config->payment_currency_exchange_wmu);
+    upd_check_key('payment_currency_exchange_wmz', 0.126582278481, !classSupernova::$config->payment_currency_exchange_wmz);
 
     upd_do_query('COMMIT;', true);
     $new_version = 37;

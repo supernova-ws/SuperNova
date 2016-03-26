@@ -109,7 +109,7 @@ class UBE {
    *
    * @param Mission $objMission
    *
-   * @version 41a6.64
+   * @version 41a6.65
    */
   function loadDataFromMission(&$objMission) {
     $this->combatMission = $objMission;
@@ -139,7 +139,7 @@ class UBE {
    *
    * @internal param array $planet
    *
-   * @version 41a6.64
+   * @version 41a6.65
    */
   function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];
@@ -162,7 +162,7 @@ class UBE {
   /**
    * Общий алгоритм расчета боя
    *
-   * @version 41a6.64
+   * @version 41a6.65
    */
   protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -319,7 +319,7 @@ pdie();
    *
    * @return mixed
    *
-   * @version 41a6.64
+   * @version 41a6.65
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -467,7 +467,7 @@ pdie();
    * @param     $attacker
    * @param int $player_id
    *
-   * @version 41a6.64
+   * @version 41a6.65
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -548,7 +548,7 @@ pdie();
    *
    * @return bool
    *
-   * @version 41a6.64
+   * @version 41a6.65
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
@@ -602,16 +602,11 @@ pdie();
     global $template_result;
 
     $ube = new UBE();
-    $ube->sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender); //  $combat_data = UNUSED_sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
+    $ube->sn_ube_simulator_fleet_converter($sym_attacker, $sym_defender);
 
-    $ube->set_option_from_config(); //  $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
-    $ube->sn_ube_combat(); //  sn_ube_combat($combat_data);
+    $ube->set_option_from_config();
+    $ube->sn_ube_combat();
     $ube_report = new UBEReport();
-
-    // Это используется для тестов - отключено в стандартном режиме
-//  if(!sys_get_param_int('simulator') || sys_get_param_str('reload')) {
-//    sn_ube_report_save($combat_data);
-//  }
 
     if(sys_get_param_str('reload')) {
       $ube_new = $ube_report->sn_ube_report_load($ube->get_cypher()); // $combat_data = sn_ube_report_load($combat_data[UBE_REPORT_CYPHER]);
@@ -686,7 +681,7 @@ pdie();
  *
  * @return mixed
  *
- * @version 41a6.64
+ * @version 41a6.65
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
@@ -698,7 +693,7 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  *
  * @return mixed
  *
- * @version 41a6.64
+ * @version 41a6.65
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
@@ -709,6 +704,6 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  *
  * @return mixed
  *
- * @version 41a6.64
+ * @version 41a6.65
  */
 function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

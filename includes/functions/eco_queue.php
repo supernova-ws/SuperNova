@@ -42,6 +42,7 @@ function eco_que_str2arr($que_str) {
       unset($que_arr[$que_index]);
     }
   }
+
   return $que_arr;
 }
 
@@ -49,6 +50,7 @@ function eco_que_arr2str($que_arr) {
   foreach($que_arr as &$que_item) {
     $que_item = implode(',', $que_item);
   }
+
   return implode(';', $que_arr);
 }
 
@@ -135,14 +137,17 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 
     // TODO Отдельно посмотреть на уничтожение зданий - что бы можно было уничтожать их без планов
     switch(eco_can_build_unit($user, $planet, $unit_id)) {
-      case BUILD_ALLOWED: break;
-      case BUILD_UNIT_BUSY: throw new exception('{Строение занято}', ERR_ERROR); break; // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
+      case BUILD_ALLOWED:
+      break;
+      case BUILD_UNIT_BUSY:
+        throw new exception('{Строение занято}', ERR_ERROR);
+      break; // TODO EXCEPTION eco_bld_msg_err_laboratory_upgrading
       // case BUILD_REQUIRE_NOT_MEET:
       default:
         if($build_mode == BUILD_CREATE) {
           throw new exception('{Требования не удовлетворены}', ERR_ERROR);
         }
-        break; // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
+      break; // TODO EXCEPTION eco_bld_msg_err_requirements_not_meet
     }
 
     $unit_amount = floor(sys_get_param_float('unit_amount', 1));
@@ -190,8 +195,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       if($que_id == QUE_STRUCTURES) {
         // if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $que['sectors'][$planet['id']] <= 0)
         $sectors_qued = is_array($in_que) ? array_sum($in_que) : 0;
-        if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $sectors_qued <= 0)
-        {
+        if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $sectors_qued <= 0) {
           throw new exception('{Не хватает секторов на планете}', ERR_ERROR); // TODO EXCEPTION
         }
         // И что это я такое написал? Зачем?
@@ -330,9 +334,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 }
 
 
-
-
-
 function que_recalculate($old_que) {
   $new_que = array();
 
@@ -397,7 +398,7 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
   $resource_list = sys_unit_arr2str($build_data[$build_mode]);
 
   db_que_set_insert(
-      "`que_player_id` = {$user['id']},
+    "`que_player_id` = {$user['id']},
       `que_planet_id` = {$planet_id},
       `que_planet_id_origin` = {$planet_id_origin},
       `que_type` = {$que_type},
@@ -449,8 +450,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
     if(is_numeric($planet['id'])) {
       db_planet_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
-    }
-    elseif(is_numeric($user['id'])) {
+    } elseif(is_numeric($user['id'])) {
       db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
     }
 
@@ -466,20 +466,19 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 function que_tpl_parse_element($que_element, $short_names = false) {
   return
     array(
-      'ID' => $que_element['que_unit_id'],
-      'QUE' => $que_element['que_type'],
-      'NAME' => $short_names && !empty(classLocale::$lang['tech_short'][$que_element['que_unit_id']])
-                  ? classLocale::$lang['tech_short'][$que_element['que_unit_id']]
-                  : classLocale::$lang['tech'][$que_element['que_unit_id']],
-      'TIME' => $que_element['que_time_left'],
+      'ID'        => $que_element['que_unit_id'],
+      'QUE'       => $que_element['que_type'],
+      'NAME'      => $short_names && !empty(classLocale::$lang['tech_short'][$que_element['que_unit_id']])
+        ? classLocale::$lang['tech_short'][$que_element['que_unit_id']]
+        : classLocale::$lang['tech'][$que_element['que_unit_id']],
+      'TIME'      => $que_element['que_time_left'],
       'TIME_FULL' => $que_element['que_unit_time'],
-      'AMOUNT' => $que_element['que_unit_amount'],
-      'LEVEL' => $que_element['que_unit_level'],
+      'AMOUNT'    => $que_element['que_unit_amount'],
+      'LEVEL'     => $que_element['que_unit_level'],
     );
 }
 
-/*
- *
+/**
  * Процедура парсит очереди текущего игрока в темплейт
  *
  * TODO: Переместить в хелперы темплейтов
@@ -488,6 +487,12 @@ function que_tpl_parse_element($que_element, $short_names = false) {
  * $que_type - тип очереди ОБЯЗАТЕЛЬНО
  * $que - либо результат $que_get(), либо конкретная очередь
  *
+ * @param template $template
+ * @param          $que_type
+ * @param          $user
+ * @param array    $planet
+ * @param null     $que
+ * @param bool     $short_names
  */
 function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = null, $short_names = false) {
   // TODO: Переделать для $que_type === false
@@ -508,8 +513,6 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = n
   }
 
   if($que_type == QUE_RESEARCH) {
-    // TODO Исправить
-//    $template->assign_var('RESEARCH_ONGOING', count($global_que[QUE_RESEARCH][0]) >= $config->server_que_length_research);
   }
 }
 
@@ -605,24 +608,24 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
 
     if($que_item['que_unit_amount'] <= 0) {
       $db_changeset['que'][] = array(
-        'action' => SQL_OP_DELETE,
+        'action'  => SQL_OP_DELETE,
         P_VERSION => 1,
-        'where' => array(
+        'where'   => array(
           "que_id" => $que_item['que_id'],
         ),
       );
     } else {
       $db_changeset['que'][] = array(
-        'action' => SQL_OP_UPDATE,
+        'action'  => SQL_OP_UPDATE,
         P_VERSION => 1,
-        'where' => array(
+        'where'   => array(
           "que_id" => $que_item['que_id'],
         ),
-        'fields' => array(
+        'fields'  => array(
           'que_unit_amount' => array(
             'delta' => -$unit_processed
           ),
-          'que_time_left' => array(
+          'que_time_left'   => array(
             'set' => $que_item['que_time_left']
           ),
         ),
@@ -640,12 +643,12 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
       $table = $planet_id ? 'planets' : 'users';
       $id = $planet_id ? $planet_id : $player_id;
       $db_changeset[$table][] = array(
-        'action' => SQL_OP_UPDATE,
+        'action'  => SQL_OP_UPDATE,
         P_VERSION => 1,
-        'where' => array(
+        'where'   => array(
           "id" => $id,
         ),
-        'fields' => array(
+        'fields'  => array(
           'que_processed' => array(
             'set' => $on_time,
           ),
