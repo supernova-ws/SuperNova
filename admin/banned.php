@@ -16,8 +16,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if ($user['authlevel'] < 1)
-{
+if($user['authlevel'] < 1) {
   AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
@@ -26,11 +25,11 @@ $name_unsafe = sys_get_param_str_unsafe('name');
 $name_output = sys_safe_output($name_unsafe);
 $action = sys_get_param_str('action');
 
+$template = gettemplate("admin/admin_ban", true);
+
 $player_banned_row = db_user_by_username($name_unsafe);
-if($mode == 'banit' && $action)
-{
-  if($player_banned_row)
-  {
+if($mode == 'banit' && $action) {
+  if($player_banned_row) {
     $reas = $_POST['why'];
     $days = $_POST['days'];
     $hour = $_POST['hour'];
@@ -50,29 +49,26 @@ if($mode == 'banit' && $action)
     $adm_bn_thpl = classLocale::$lang['adm_bn_thpl'];
     $DoneMessage = "{$adm_bn_thpl} {$name_output} {$adm_bn_isbn}";
 
-    if($is_vacation)
-    {
+    if($is_vacation) {
       $DoneMessage .= classLocale::$lang['adm_bn_vctn'];
     }
 
     $DoneMessage .= classLocale::$lang['adm_bn_plnt'];
-  }
-  else
-  {
+  } else {
     $DoneMessage = sprintf(classLocale::$lang['adm_bn_errr'], $name_output);
   }
 
   AdminMessage($DoneMessage, classLocale::$lang['adm_ban_title']);
-}
-elseif($mode == 'unbanit' && $action)
-{
+} elseif($mode == 'unbanit' && $action) {
   sys_admin_player_ban_unset($user, $player_banned_row, ($reason = sys_get_param_str('why')) ? $reason : classLocale::$lang['sys_unbanned']);
 
   $DoneMessage = classLocale::$lang['adm_unbn_thpl'] . " " . $name_output . " " . classLocale::$lang['adm_unbn_isbn'];
   AdminMessage($DoneMessage, classLocale::$lang['adm_unbn_ttle']);
 };
 
-$parse['name'] = $name_output;
-$parse['mode'] = $mode;
+$template->assign_vars(array(
+  'NAME' => $name_output,
+  'MODE' => $mode,
+));
 
-display(parsetemplate(gettemplate("admin/admin_ban", true), $parse), classLocale::$lang['adm_ban_title'], false, '', true);
+display(parsetemplate($template), classLocale::$lang['adm_ban_title'], false, '', true);

@@ -90,4 +90,4 @@ $template->assign_vars(array(
   'TYPE_SELECTED' => $int_type_selected,
 ));
 
-display(parsetemplate($template, $parse), classLocale::$lang['mlst_title'], false, '', true);
+display(parsetemplate($template), classLocale::$lang['mlst_title'], false, '', true);

@@ -180,6 +180,8 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
         );
       }
     }
+  } else {
+    $result['ships'] = array();
   }
 
   return $result;

@@ -119,8 +119,6 @@ class template_compile
   */
   function compile($code, $no_echo = false, $echo_var = '')
   {
-    global $config;
-
     if ($echo_var)
     {
       global $$echo_var;
@@ -246,11 +244,11 @@ class template_compile
         break;
 
         case 'INCLUDEPHP':
-          $compile_blocks[] = ($config->tpl_allow_php) ? '<?php ' . $this->compile_tag_include_php(array_shift($includephp_blocks)) . ' ?>' : '';
+          $compile_blocks[] = (classSupernova::$config->tpl_allow_php) ? '<?php ' . $this->compile_tag_include_php(array_shift($includephp_blocks)) . ' ?>' : '';
         break;
 
         case 'PHP':
-          $compile_blocks[] = ($config->tpl_allow_php) ? '<?php ' . array_shift($php_blocks) . ' ?>' : '';
+          $compile_blocks[] = (classSupernova::$config->tpl_allow_php) ? '<?php ' . array_shift($php_blocks) . ' ?>' : '';
         break;
 
         default:
@@ -318,8 +316,8 @@ class template_compile
     // transform vars prefixed by C_ into global config value
     if (strpos($text_blocks, '{C_') !== false)
     {
-      $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['C_\\1']['\\2'])) ? \$this->_rootref['C_\\1']['\\2'] : ((isset(\$config->\\1['\\2'])) ? \$config->\\1['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
-      $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['C_\\1'])) ? \$this->_rootref['C_\\1'] : ((isset(\$config->\\1)) ? \$config->\\1 : '{ C_\\1 }')); ?>", $text_blocks);
+      $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['C_\\1']['\\2'])) ? \$this->_rootref['C_\\1']['\\2'] : ((isset(classSupernova::\$config->\\1['\\2'])) ? classSupernova::\$config->\\1['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
+      $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['C_\\1'])) ? \$this->_rootref['C_\\1'] : ((isset(classSupernova::\$config->\\1)) ? classSupernova::\$config->\\1 : '{ C_\\1 }')); ?>", $text_blocks);
     }
     // transform vars prefixed by D_ into global defined constant
     if (strpos($text_blocks, '{D_') !== false)
@@ -851,13 +849,10 @@ class template_compile
   // Gorlum's minifier BOF
   /**
   * Minifies template w/i PHP code by removing extra spaces
-  * @access private
   */
-  function minify($html)
+  private function minify($html)
   {
-    global $config;
-
-    if(!$config->tpl_minifier)
+    if(!classSupernova::$config->tpl_minifier)
     {
       return $html;
     }
@@ -865,8 +860,6 @@ class template_compile
     // TODO: Match <code> and <pre> too - in separate arrays
     preg_match_all('/(<script[^>]*?>.*?<\/script>)/si', $html, $pre);
     $html = preg_replace('/(<script[^>]*?>.*?<\/script>)/si', '#pre#', $html);
-    //$html = preg_replace('#<!-[^\[].+->#', '', $html);
-    //$html = preg_replace('/[\r\n\t]+/', ' ', $html);
     $html = preg_replace('/>[\s]*</', '><', $html); // Strip spacechars between tags
     $html = preg_replace('/[\s]+/', ' ', $html); // Replace several spacechars with one space
     if(!empty($pre[0]))

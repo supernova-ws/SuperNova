@@ -615,6 +615,10 @@ UNUSED    define('BONUS_SPEED',               7);  // Speed bonus
 
 * @method int borp() borp(int $int1, int $int2) multiply two integers
 
+Делать HTML-кэш темплейтов для работы JS-фреймворка (который еще нужно написать...)
+
+Хранить всё время в UTC ?
+
 
 ILocation - проапгрейдится до 5.4 и использовать traits
 
@@ -644,6 +648,11 @@ UBE - генерить репорт, который совсем не имеет
     - Создавать репорт из UBE или симулятора
     - Читать репорт, но при этом не заполнять UBE ВООБЩЕ! Ибо нахуй не нужно!
         - Вынести в репорт всю генерящую хуету из UBE-классов
+
+АДМИНКА:
+    - Добавлять ресурсы игрокам
+    - Добавлять технологии игрокам
+
 
 
 // TODO - СЕЙЧАС
@@ -692,9 +701,16 @@ L3 - helper - simplifies some routine operations
         - А это просто переписать геттер только для поддержки $_property свойств - с подчёркиванием. Остальные - либо открыты, либо закрыты, либо через геттер
 
 
+Понаблюдать за playerOwnerId у Fleet
+    Пример:
+        - function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$result) {
+            - $objFleet->playerOwnerId = 0, потому что у флотов ПОКА нет нормальной поддержки locatedAt
+            - А то сейчас на странице ? вместо количества кораблей из-за того, что неправильно считается уровень шпионажа
+
 
 attribute - свойства юнитов
 
+Шпионаж - выдавать абилити по просмотру кораблей
 
 
 Инкапсулируём всё, что можно в Fleet
@@ -730,9 +746,6 @@ attribute - свойства юнитов
 
 
 // СЕЙЧАС !!!!!!!!!!
-global $lang;
-$classLocale = $lang;
-
     $parse - это остатки старого темплейт-энджайна!
     $parse = classLocale::$lang;
 
@@ -740,6 +753,8 @@ $classLocale = $lang;
 
 
 запустить движок и переделать infos.php - там какой-то трэш и угар!
+
+
 
 ABSOLUTLY OK
 CODE-feat-41a6.49: Finally moved $lang to property of classLocale - w…
@@ -763,15 +778,45 @@ CODE-feat-41a6.27: Wide rewrite
 CODE-feat-41a6.26: Wide rewrite
 CODE-feat-41a6.25: Wide rewrite
 CODE-feat-41a6.24: Wide rewrite
+CODE-misc-41a6.22: Isolating doquery() calls
+CODE-misc-41a6.20: Isolating doquery() calls
+CODE-misc-41a6.18: Isolating doquery() calls
+CODE-misc-41a6.17: Isolating doquery() calls
 
 
+parsetemplate($template, $parse) - ото хуйня, когда есть второй параметр
+
+minify cached templates
 
 #ctv
 
 BONUS_ABILITY - deprecated ???
 
+Оказывается, в $config есть настройки темплейта tpl_allow_php - см. functions_template.php @ 247
 
 На новых наградах 8 марта-2106 не отображается надписи
+
+
+2016-03-26 19:43:57 41a6.53
+[~] Админка
+    Переписаны:
+        - Редактирование чата (admin/admin_chat.php)
+        - Баннерилка (admin/banned.php)
+
+[%] Флоты в полёте
+    Исправлен PHP_NOTICE
+
+[@] Код
+    Удалены неиспользуемые файлы:
+        - admin/add_research.php
+        - admin/changelog.php
+        - admin/deletuser.php
+        - admin/messall.php
+        - design/templates/OpenGame/admin/add_research.tpl.html
+        - design/templates/OpenGame/admin/deletuser.tpl.html
+        - design/templates/OpenGame/admin/messall_body.tpl.html
+        - docs/phpBB3/phpbb3-to-SuperNova.patch
+
 
 2016-03-25 22:01:12 41a6.39
 [+] Модули
