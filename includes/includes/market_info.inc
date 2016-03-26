@@ -24,7 +24,7 @@ if($info_action)
     sn_db_transaction_start();
 
     $user = db_user_by_id($user['id'], true);
-    if(mrc_get_level($user, null, RES_DARK_MATTER) < $config->rpg_cost_info)
+    if(mrc_get_level($user, null, RES_DARK_MATTER) < classSupernova::$config->rpg_cost_info)
     {
       throw new Exception(MARKET_NO_DM, ERR_ERROR);
     }
@@ -74,7 +74,7 @@ if($info_action)
       break;
     }
 
-    if(!rpg_points_change($user['id'], RPG_MARKET_INFO_MERCENARY, -$config->rpg_cost_info, "Using Black Market page {$classLocale['eco_mrk_info']} - getting info about user ID {$user_info['id']}"))
+    if(!rpg_points_change($user['id'], RPG_MARKET_INFO_MERCENARY, -classSupernova::$config->rpg_cost_info, "Using Black Market page {$classLocale['eco_mrk_info']} - getting info about user ID {$user_info['id']}"))
     {
       // TODO: throw new Exception(MARKET_INFO_PLAYER_SAME, ERR_ERROR);
     }

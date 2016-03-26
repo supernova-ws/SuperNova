@@ -29,7 +29,7 @@ function sn_options_model() {
       $user['admin_protection'] = $planet_protection;
     }
 
-    if(sys_get_param_int('vacation') && !$config->user_vacation_disable) {
+    if(sys_get_param_int('vacation') && !classSupernova::$config->user_vacation_disable) {
       sn_db_transaction_start();
       if($user['authlevel'] < 3) {
         if($user['vacation_next'] > SN_TIME_NOW) {
@@ -60,7 +60,7 @@ function sn_options_model() {
             fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"
           );
         }
-        $user['vacation'] = SN_TIME_NOW + $config->player_vacation_time;
+        $user['vacation'] = SN_TIME_NOW + classSupernova::$config->player_vacation_time;
       } else {
         $user['vacation'] = SN_TIME_NOW;
       }
@@ -92,22 +92,22 @@ function sn_options_model() {
 
     $username = substr(sys_get_param_str_unsafe('username'), 0, 32);
     $username_safe = db_escape($username);
-    if($username && $user['username'] != $username && $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm') && !strpbrk($username, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
+    if($username && $user['username'] != $username && classSupernova::$config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE && sys_get_param_int('username_confirm') && !strpbrk($username, LOGIN_REGISTER_CHARACTERS_PROHIBITED)) {
       // проверка на корректность
       sn_db_transaction_start();
       $name_check = db_player_name_history_get_name_by_name($username_safe);
       if(!$name_check || $name_check['player_id'] == $user['id']) {
         $user = db_user_by_id($user['id'], true);
-        switch($config->game_user_changename) {
+        switch(classSupernova::$config->game_user_changename) {
           case SERVER_PLAYER_NAME_CHANGE_PAY:
-            if(mrc_get_level($user, $planetrow, RES_DARK_MATTER) < $config->game_user_changename_cost) {
+            if(mrc_get_level($user, $planetrow, RES_DARK_MATTER) < classSupernova::$config->game_user_changename_cost) {
               $template_result['.']['result'][] = array(
                 'STATUS'  => ERR_ERROR,
                 'MESSAGE' => classLocale::$lang['opt_msg_name_change_err_no_dm'],
               );
               break;
             }
-            rpg_points_change($user['id'], RPG_NAME_CHANGE, -$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
+            rpg_points_change($user['id'], RPG_NAME_CHANGE, -classSupernova::$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
             db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
@@ -156,7 +156,7 @@ function sn_options_model() {
 
     $user['design'] = sys_get_param_int('design');
     $user['noipcheck'] = sys_get_param_int('noipcheck');
-    $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + $config->player_delete_time);
+    $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + classSupernova::$config->player_delete_time);
 
     $gender = sys_get_param_int('gender', $user['gender']);
     !isset(classLocale::$lang['sys_gender_list'][$gender]) ? $gender = $user['gender'] : false;
@@ -314,7 +314,7 @@ function sn_options_view($template = null) {
   $user_time_diff = playerTimeDiff::user_time_diff_get();
   // $player_options = player_load_option($user);
   $template->assign_vars(array(
-    'USER_ID'      => $user['id'],
+    'USER_ID' => $user['id'],
 
     'ACCOUNT_NAME' => sys_safe_output(classSupernova::$auth->account->account_name),
 
@@ -370,7 +370,7 @@ function sn_options_view($template = null) {
 
     'opt_avatar' => $user['avatar'],
 
-    'config_game_email_pm' => $config->game_email_pm,
+    'config_game_email_pm' => classSupernova::$config->game_email_pm,
 
     'user_settings_esp'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_SPYING],
     'user_settings_mis'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_MISSILE],
@@ -390,19 +390,19 @@ function sn_options_view($template = null) {
     'FMT_DATE'      => $FMT_DATE,
     'JS_FMT_DATE'   => js_safe_string($FMT_DATE),
 
-    'USER_VACATION_DISABLE' => $config->user_vacation_disable,
+    'USER_VACATION_DISABLE' => classSupernova::$config->user_vacation_disable,
     'VACATION_NEXT'         => $user['vacation_next'],
     'VACATION_NEXT_TEXT'    => date(FMT_DATE_TIME, $user['vacation_next']),
     'VACATION_TIMEOUT'      => $user['vacation_next'] - SN_TIME_NOW > 0 ? $user['vacation_next'] - SN_TIME_NOW : 0,
     'SN_TIME_NOW'           => SN_TIME_NOW,
 
-    'SERVER_SEND_EMAIL' => $config->game_email_pm,
+    'SERVER_SEND_EMAIL' => classSupernova::$config->game_email_pm,
 
-    'SERVER_NAME_CHANGE'         => $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE,
-    'SERVER_NAME_CHANGE_PAY'     => $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY,
-    'SERVER_NAME_CHANGE_ENABLED' => $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_FREE || ($config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY && mrc_get_level($user, $planetrow, RES_DARK_MATTER) >= $config->game_user_changename_cost),
+    'SERVER_NAME_CHANGE'         => classSupernova::$config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_NONE,
+    'SERVER_NAME_CHANGE_PAY'     => classSupernova::$config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY,
+    'SERVER_NAME_CHANGE_ENABLED' => classSupernova::$config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_FREE || (classSupernova::$config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY && mrc_get_level($user, $planetrow, RES_DARK_MATTER) >= classSupernova::$config->game_user_changename_cost),
 
-    'DARK_MATTER' => pretty_number($config->game_user_changename_cost, true, mrc_get_level($user, $planetrow, RES_DARK_MATTER)),
+    'DARK_MATTER' => pretty_number(classSupernova::$config->game_user_changename_cost, true, mrc_get_level($user, $planetrow, RES_DARK_MATTER)),
 
     'PAGE_HEADER' => classLocale::$lang['opt_header'],
   ));
@@ -410,14 +410,14 @@ function sn_options_view($template = null) {
   foreach($user_option_list as $option_group_id => $option_group) {
     if($option_group_id == OPT_MESSAGE) {
       foreach($sn_message_class_list as $message_class_id => $message_class_data) {
-        if($message_class_data['switchable'] || ($message_class_data['email'] && $config->game_email_pm)) {
+        if($message_class_data['switchable'] || ($message_class_data['email'] && classSupernova::$config->game_email_pm)) {
           $option_name = $message_class_data['name'];
 
           $template->assign_block_vars("options_{$option_group_id}", array(
             'NAME'  => $message_class_data['name'],
             'TEXT'  => classLocale::$lang['msg_class'][$message_class_id],
             'PM'    => $message_class_data['switchable'] ? $user["opt_{$option_name}"] : -1,
-            'EMAIL' => $message_class_data['email'] && $config->game_email_pm ? $user["opt_email_{$option_name}"] : -1,
+            'EMAIL' => $message_class_data['email'] && classSupernova::$config->game_email_pm ? $user["opt_email_{$option_name}"] : -1,
           ));
         }
       }

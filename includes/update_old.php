@@ -146,24 +146,24 @@ switch($new_version)
 
     upd_drop_table('update');
 
-    upd_check_key('fleet_speed', $config->fleet_speed/2500, $config->fleet_speed >= 2500);
+    upd_check_key('fleet_speed', classSupernova::$config->fleet_speed/2500, classSupernova::$config->fleet_speed >= 2500);
     upd_check_key('game_counter', 0);
     upd_check_key('game_default_language', 'ru');
     upd_check_key('game_default_skin', 'skins/EpicBlue/');
     upd_check_key('game_default_template', 'OpenGame');
     upd_check_key('game_news_overview', 3);
     upd_check_key('game_news_actual', 259200);
-    upd_check_key('game_noob_factor', 5, !isset($config->game_noob_factor));
-    upd_check_key('game_noob_points', 5000, !isset($config->game_noob_points));
-    upd_check_key('game_speed', $config->game_speed/2500, $config->game_speed >= 2500);
+    upd_check_key('game_noob_factor', 5, !isset(classSupernova::$config->game_noob_factor));
+    upd_check_key('game_noob_points', 5000, !isset(classSupernova::$config->game_noob_points));
+    upd_check_key('game_speed', classSupernova::$config->game_speed/2500, classSupernova::$config->game_speed >= 2500);
     upd_check_key('int_format_date', 'd.m.Y');
     upd_check_key('int_format_time', 'H:i:s', true);
     upd_check_key('int_banner_background', 'design/images/banner.png', true);
     upd_check_key('int_userbar_background', 'design/images/userbar.png', true);
-    upd_check_key('player_max_colonies', $config->player_max_planets ? ($config->player_max_planets - 1) : 9);
-    upd_check_key('url_forum', $config->forum_url, !isset($config->url_forum));
-    upd_check_key('url_rules', $config->rules_url, !isset($config->url_rules));
-    upd_check_key('url_dark_matter', '', !isset($config->url_dark_matter));
+    upd_check_key('player_max_colonies', classSupernova::$config->player_max_planets ? (classSupernova::$config->player_max_planets - 1) : 9);
+    upd_check_key('url_forum', classSupernova::$config->forum_url, !isset(classSupernova::$config->url_forum));
+    upd_check_key('url_rules', classSupernova::$config->rules_url, !isset(classSupernova::$config->url_rules));
+    upd_check_key('url_dark_matter', '', !isset(classSupernova::$config->url_dark_matter));
 
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN (
       'game_date_withTime', 'player_max_planets', 'OverviewNewsFrame', 'forum_url', 'rules_url'
@@ -237,7 +237,7 @@ switch($new_version)
       upd_alter_table('users', 'DROP COLUMN `urlaubs_until`, DROP COLUMN `urlaubs_modus`, DROP COLUMN `urlaubs_modus_time`', $update_tables['users']['urlaubs_until']);
     }
 
-    upd_check_key('user_vacation_disable', $config->urlaubs_modus_erz, !isset($config->user_vacation_disable));
+    upd_check_key('user_vacation_disable', classSupernova::$config->urlaubs_modus_erz, !isset(classSupernova::$config->user_vacation_disable));
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('urlaubs_modus_erz');");
 
   upd_do_query('COMMIT;', true);
@@ -341,10 +341,10 @@ switch($new_version)
     upd_do_query("DELETE FROM `{{logs}}` WHERE `log_code` = 501;");
     upd_do_query("DELETE FROM `{{logs}}` WHERE `log_title` IN ('Canceling Hangar Que', 'Building Planet Defense');");
 
-    upd_check_key('chat_admin_highlight', '<font color=purple>$1</font>', !isset($config->chat_admin_highlight));
+    upd_check_key('chat_admin_highlight', '<font color=purple>$1</font>', !isset(classSupernova::$config->chat_admin_highlight));
 
-    upd_check_key('int_banner_URL', 'banner.php?type=banner', $config->int_banner_URL == '/banner.php?type=banner');
-    upd_check_key('int_userbar_URL', 'banner.php?type=userbar', $config->int_userbar_URL == '/banner.php?type=userbar');
+    upd_check_key('int_banner_URL', 'banner.php?type=banner', classSupernova::$config->int_banner_URL == '/banner.php?type=banner');
+    upd_check_key('int_userbar_URL', 'banner.php?type=userbar', classSupernova::$config->int_userbar_URL == '/banner.php?type=userbar');
 
     upd_alter_table('users', 'CONVERT TO CHARACTER SET utf8 COLLATE utf8_general_ci');
 
@@ -392,7 +392,7 @@ switch($new_version)
 
           if($shortcut[0] && $shortcut[1] && $shortcut[2] && $shortcut[3] && in_array($shortcut[4], $temp_planet_types))
           {
-            upd_do_query("INSERT INTO {$config->db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');", true);
+            upd_do_query("INSERT INTO {classSupernova::$config->db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');", true);
           }
         }
       }
@@ -400,7 +400,7 @@ switch($new_version)
       upd_alter_table('users', 'DROP COLUMN `fleet_shortcut`');
     };
 
-    upd_check_key('url_faq', '', !isset($config->url_faq));
+    upd_check_key('url_faq', '', !isset(classSupernova::$config->url_faq));
 
     upd_do_query('COMMIT;', true);
     $new_version = 27;
@@ -408,9 +408,9 @@ switch($new_version)
   case 27:
     upd_log_version_update();
 
-    upd_check_key('chat_highlight_moderator', '<font color=green>$1</font>', !isset($config->chat_highlight_moderator));
-    upd_check_key('chat_highlight_operator', '<font color=red>$1</font>', !isset($config->chat_highlight_operator));
-    upd_check_key('chat_highlight_admin', $config->chat_admin_highlight ? $config->chat_admin_highlight : '<font color=puple>$1</font>', !isset($config->chat_highlight_admin));
+    upd_check_key('chat_highlight_moderator', '<font color=green>$1</font>', !isset(classSupernova::$config->chat_highlight_moderator));
+    upd_check_key('chat_highlight_operator', '<font color=red>$1</font>', !isset(classSupernova::$config->chat_highlight_operator));
+    upd_check_key('chat_highlight_admin', classSupernova::$config->chat_admin_highlight ? classSupernova::$config->chat_admin_highlight : '<font color=puple>$1</font>', !isset(classSupernova::$config->chat_highlight_admin));
 
     upd_do_query("DELETE FROM {{config}} WHERE `config_name` IN ('chat_admin_highlight');");
 
@@ -499,11 +499,11 @@ switch($new_version)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
     );
 
-    upd_check_key('fleet_bashing_war_delay', 12 * 60 * 60, !isset($config->fleet_bashing_war_delay));
-    upd_check_key('fleet_bashing_scope', 24 * 60 * 60, !isset($config->fleet_bashing_scope));
-    upd_check_key('fleet_bashing_interval', 30 * 60, !isset($config->fleet_bashing_interval));
-    upd_check_key('fleet_bashing_waves', 3, !isset($config->fleet_bashing_waves));
-    upd_check_key('fleet_bashing_attacks', 3, !isset($config->fleet_bashing_attacks));
+    upd_check_key('fleet_bashing_war_delay', 12 * 60 * 60, !isset(classSupernova::$config->fleet_bashing_war_delay));
+    upd_check_key('fleet_bashing_scope', 24 * 60 * 60, !isset(classSupernova::$config->fleet_bashing_scope));
+    upd_check_key('fleet_bashing_interval', 30 * 60, !isset(classSupernova::$config->fleet_bashing_interval));
+    upd_check_key('fleet_bashing_waves', 3, !isset(classSupernova::$config->fleet_bashing_waves));
+    upd_check_key('fleet_bashing_attacks', 3, !isset(classSupernova::$config->fleet_bashing_attacks));
 
   upd_do_query('COMMIT;', true);
   $new_version = 28;
@@ -542,7 +542,7 @@ switch($new_version)
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE utf8_general_ci;"
     );
 
-    upd_check_key('quest_total', 0, !isset($config->quest_total));
+    upd_check_key('quest_total', 0, !isset(classSupernova::$config->quest_total));
 
     for($i = 0; $i < 25; $i++)
     {
@@ -601,8 +601,8 @@ switch($new_version)
       upd_do_query("DELETE FROM {{planets}} WHERE id = {$illegal_moon_row['id']} LIMIT 1;", true);
     }
 
-    upd_check_key('allow_buffing', isset($config->fleet_buffing_check) ? !$config->fleet_buffing_check : 0, !isset($config->allow_buffing));
-    upd_check_key('ally_help_weak', 0, !isset($config->ally_help_weak));
+    upd_check_key('allow_buffing', isset(classSupernova::$config->fleet_buffing_check) ? !classSupernova::$config->fleet_buffing_check : 0, !isset(classSupernova::$config->allow_buffing));
+    upd_check_key('ally_help_weak', 0, !isset(classSupernova::$config->ally_help_weak));
 
   upd_do_query('COMMIT;', true);
   $new_version = 29;
@@ -610,9 +610,9 @@ switch($new_version)
   case 29:
     upd_log_version_update();
 
-    upd_check_key('game_email_pm', 0, !isset($config->game_email_pm));
-    upd_check_key('player_vacation_time', 2*24*60*60, !isset($config->player_vacation_time));
-    upd_check_key('player_delete_time', 45*24*60*60, !isset($config->player_delete_time));
+    upd_check_key('game_email_pm', 0, !isset(classSupernova::$config->game_email_pm));
+    upd_check_key('player_vacation_time', 2*24*60*60, !isset(classSupernova::$config->player_vacation_time));
+    upd_check_key('player_delete_time', 45*24*60*60, !isset(classSupernova::$config->player_delete_time));
 
     upd_create_table('log_dark_matter',
       "(
@@ -815,7 +815,7 @@ switch($new_version)
 
     if(!isset($update_tables['users']['player_rpg_tech_xp']))
     {
-      upd_check_key('eco_scale_storage', 1, !isset($config->eco_scale_storage));
+      upd_check_key('eco_scale_storage', 1, !isset(classSupernova::$config->eco_scale_storage));
 
       upd_alter_table('users', array(
         "ADD COLUMN `player_rpg_tech_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
@@ -1288,8 +1288,8 @@ switch($new_version)
   case 32:
     upd_log_version_update();
 
-    upd_check_key('avatar_max_width', 128, !isset($config->avatar_max_width));
-    upd_check_key('avatar_max_height', 128, !isset($config->avatar_max_height));
+    upd_check_key('avatar_max_width', 128, !isset(classSupernova::$config->avatar_max_width));
+    upd_check_key('avatar_max_height', 128, !isset(classSupernova::$config->avatar_max_height));
 
     upd_alter_table('users', array(
       "MODIFY COLUMN `avatar` tinyint(1) unsigned NOT NULL DEFAULT '0'",
@@ -1368,14 +1368,14 @@ switch($new_version)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
 
-      upd_check_key('uni_price_galaxy', 10000, !isset($config->uni_price_galaxy));
-      upd_check_key('uni_price_system', 1000, !isset($config->uni_price_system));
+      upd_check_key('uni_price_galaxy', 10000, !isset(classSupernova::$config->uni_price_galaxy));
+      upd_check_key('uni_price_system', 1000, !isset(classSupernova::$config->uni_price_system));
     }
 
     // ========================================================================
     // Ally player
     // Adding config variable
-    upd_check_key('ali_bonus_members', 10, !isset($config->ali_bonus_members));
+    upd_check_key('ali_bonus_members', 10, !isset(classSupernova::$config->ali_bonus_members));
 
     // ------------------------------------------------------------------------
     // Modifying tables
@@ -1472,35 +1472,35 @@ switch($new_version)
       doquery("UPDATE {{powerup}} SET powerup_category = " . BONUS_MERCENARY);
     }
 
-    upd_check_key('rpg_cost_info', 10000, !isset($config->rpg_cost_info));
-    upd_check_key('tpl_minifier', 0, !isset($config->tpl_minifier));
+    upd_check_key('rpg_cost_info', 10000, !isset(classSupernova::$config->rpg_cost_info));
+    upd_check_key('tpl_minifier', 0, !isset(classSupernova::$config->tpl_minifier));
 
-    upd_check_key('server_updater_check_auto', 0, !isset($config->server_updater_check_auto));
-    upd_check_key('server_updater_check_period', PERIOD_DAY, !isset($config->server_updater_check_period));
-    upd_check_key('server_updater_check_last', 0, !isset($config->server_updater_check_last));
-    upd_check_key('server_updater_check_result', SNC_VER_NEVER, !isset($config->server_updater_check_result));
-    upd_check_key('server_updater_key', '', !isset($config->server_updater_key));
-    upd_check_key('server_updater_id', 0, !isset($config->server_updater_id));
+    upd_check_key('server_updater_check_auto', 0, !isset(classSupernova::$config->server_updater_check_auto));
+    upd_check_key('server_updater_check_period', PERIOD_DAY, !isset(classSupernova::$config->server_updater_check_period));
+    upd_check_key('server_updater_check_last', 0, !isset(classSupernova::$config->server_updater_check_last));
+    upd_check_key('server_updater_check_result', SNC_VER_NEVER, !isset(classSupernova::$config->server_updater_check_result));
+    upd_check_key('server_updater_key', '', !isset(classSupernova::$config->server_updater_key));
+    upd_check_key('server_updater_id', 0, !isset(classSupernova::$config->server_updater_id));
 
-    upd_check_key('ali_bonus_algorithm', 0, !isset($config->ali_bonus_algorithm));
-    upd_check_key('ali_bonus_divisor', 10000000, !isset($config->ali_bonus_divisor));
-    upd_check_key('ali_bonus_brackets', 10, !isset($config->ali_bonus_brackets));
-    upd_check_key('ali_bonus_brackets_divisor', 50, !isset($config->ali_bonus_brackets_divisor));
+    upd_check_key('ali_bonus_algorithm', 0, !isset(classSupernova::$config->ali_bonus_algorithm));
+    upd_check_key('ali_bonus_divisor', 10000000, !isset(classSupernova::$config->ali_bonus_divisor));
+    upd_check_key('ali_bonus_brackets', 10, !isset(classSupernova::$config->ali_bonus_brackets));
+    upd_check_key('ali_bonus_brackets_divisor', 50, !isset(classSupernova::$config->ali_bonus_brackets_divisor));
 
-    if(!$config->db_loadItem('rpg_flt_explore'))
+    if(!classSupernova::$config->db_loadItem('rpg_flt_explore'))
     {
       $inflation_rate = 1000;
 
-      $config->db_saveItem('rpg_cost_banker', $config->rpg_cost_banker * $inflation_rate);
-      $config->db_saveItem('rpg_cost_exchange', $config->rpg_cost_exchange * $inflation_rate);
-      $config->db_saveItem('rpg_cost_pawnshop', $config->rpg_cost_pawnshop * $inflation_rate);
-      $config->db_saveItem('rpg_cost_scraper', $config->rpg_cost_scraper * $inflation_rate);
-      $config->db_saveItem('rpg_cost_stockman', $config->rpg_cost_stockman * $inflation_rate);
-      $config->db_saveItem('rpg_cost_trader', $config->rpg_cost_trader * $inflation_rate);
+      classSupernova::$config->db_saveItem('rpg_cost_banker', classSupernova::$config->rpg_cost_banker * $inflation_rate);
+      classSupernova::$config->db_saveItem('rpg_cost_exchange', classSupernova::$config->rpg_cost_exchange * $inflation_rate);
+      classSupernova::$config->db_saveItem('rpg_cost_pawnshop', classSupernova::$config->rpg_cost_pawnshop * $inflation_rate);
+      classSupernova::$config->db_saveItem('rpg_cost_scraper', classSupernova::$config->rpg_cost_scraper * $inflation_rate);
+      classSupernova::$config->db_saveItem('rpg_cost_stockman', classSupernova::$config->rpg_cost_stockman * $inflation_rate);
+      classSupernova::$config->db_saveItem('rpg_cost_trader', classSupernova::$config->rpg_cost_trader * $inflation_rate);
 
-      $config->db_saveItem('rpg_exchange_darkMatter', $config->rpg_exchange_darkMatter / $inflation_rate * 4);
+      classSupernova::$config->db_saveItem('rpg_exchange_darkMatter', classSupernova::$config->rpg_exchange_darkMatter / $inflation_rate * 4);
 
-      $config->db_saveItem('rpg_flt_explore', $inflation_rate);
+      classSupernova::$config->db_saveItem('rpg_flt_explore', $inflation_rate);
 
       doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
 
@@ -1525,12 +1525,12 @@ switch($new_version)
       }
     }
 
-    upd_check_key('rpg_bonus_minimum', 10000, !isset($config->rpg_bonus_minimum));
+    upd_check_key('rpg_bonus_minimum', 10000, !isset(classSupernova::$config->rpg_bonus_minimum));
     upd_check_key('rpg_bonus_divisor',
-      !isset($config->rpg_bonus_divisor) ? 10 : ($config->rpg_bonus_divisor >= 1000 ? floor($config->rpg_bonus_divisor / 1000) : $config->rpg_bonus_divisor),
-      !isset($config->rpg_bonus_divisor) || $config->rpg_bonus_divisor >= 1000);
+      !isset(classSupernova::$config->rpg_bonus_divisor) ? 10 : (classSupernova::$config->rpg_bonus_divisor >= 1000 ? floor(classSupernova::$config->rpg_bonus_divisor / 1000) : classSupernova::$config->rpg_bonus_divisor),
+      !isset(classSupernova::$config->rpg_bonus_divisor) || classSupernova::$config->rpg_bonus_divisor >= 1000);
 
-    upd_check_key('var_news_last', 0, !isset($config->var_news_last));
+    upd_check_key('var_news_last', 0, !isset(classSupernova::$config->var_news_last));
 
     upd_do_query('COMMIT;', true);
     $new_version = 33;
@@ -1545,9 +1545,9 @@ switch($new_version)
       "ADD KEY `I_user_birthday` (`user_birthday`, `user_birthday_celebrated`)",
     ), !$update_tables['users']['user_birthday']);
 
-    upd_check_key('user_birthday_gift', 0, !isset($config->user_birthday_gift));
-    upd_check_key('user_birthday_range', 30, !isset($config->user_birthday_range));
-    upd_check_key('user_birthday_celebrate', 0, !isset($config->user_birthday_celebrate));
+    upd_check_key('user_birthday_gift', 0, !isset(classSupernova::$config->user_birthday_gift));
+    upd_check_key('user_birthday_range', 30, !isset(classSupernova::$config->user_birthday_range));
+    upd_check_key('user_birthday_celebrate', 0, !isset(classSupernova::$config->user_birthday_celebrate));
 
     if(!isset($update_tables['payment']))
     {
@@ -1578,10 +1578,10 @@ switch($new_version)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
 
-      upd_check_key('payment_currency_default', 'UAH', !isset($config->payment_currency_default));
+      upd_check_key('payment_currency_default', 'UAH', !isset(classSupernova::$config->payment_currency_default));
     }
-    upd_check_key('payment_lot_size', 1000, !isset($config->payment_lot_size));
-    upd_check_key('payment_lot_price', 1, !isset($config->payment_lot_price));
+    upd_check_key('payment_lot_size', 1000, !isset(classSupernova::$config->payment_lot_size));
+    upd_check_key('payment_lot_price', 1, !isset(classSupernova::$config->payment_lot_price));
 
     // Updating category for Mercenaries
     upd_do_query("UPDATE {{powerup}} SET powerup_category = " . UNIT_MERCENARIES . " WHERE powerup_unit_id > 600 AND powerup_unit_id < 700;");
@@ -1619,15 +1619,15 @@ switch($new_version)
 
     upd_do_query("UPDATE {{powerup}} SET powerup_time_start = 0, powerup_time_finish = 0 WHERE powerup_category = " . UNIT_PLANS . ";");
 
-    upd_check_key('server_start_date', date('d.m.Y', SN_TIME_NOW), !isset($config->server_start_date));
-    upd_check_key('server_que_length_structures', 5, !isset($config->server_que_length_structures));
-    upd_check_key('server_que_length_hangar', 5, !isset($config->server_que_length_hangar));
+    upd_check_key('server_start_date', date('d.m.Y', SN_TIME_NOW), !isset(classSupernova::$config->server_start_date));
+    upd_check_key('server_que_length_structures', 5, !isset(classSupernova::$config->server_que_length_structures));
+    upd_check_key('server_que_length_hangar', 5, !isset(classSupernova::$config->server_que_length_hangar));
 
-    upd_check_key('chat_highlight_moderator', '<span class="nick_moderator">$1</span>', $config->chat_highlight_admin == '<font color=green>$1</font>');
-    upd_check_key('chat_highlight_operator', '<span class="nick_operator">$1</span>', $config->chat_highlight_admin == '<font color=red>$1</font>');
-    upd_check_key('chat_highlight_admin', '<span class="nick_admin">$1</span>', $config->chat_highlight_admin == '<font color=purple>$1</font>');
+    upd_check_key('chat_highlight_moderator', '<span class="nick_moderator">$1</span>', classSupernova::$config->chat_highlight_admin == '<font color=green>$1</font>');
+    upd_check_key('chat_highlight_operator', '<span class="nick_operator">$1</span>', classSupernova::$config->chat_highlight_admin == '<font color=red>$1</font>');
+    upd_check_key('chat_highlight_admin', '<span class="nick_admin">$1</span>', classSupernova::$config->chat_highlight_admin == '<font color=purple>$1</font>');
 
-    upd_check_key('chat_highlight_premium', '<span class="nick_premium">$1</span>', !isset($config->chat_highlight_premium));
+    upd_check_key('chat_highlight_premium', '<span class="nick_premium">$1</span>', !isset(classSupernova::$config->chat_highlight_premium));
 
     upd_do_query("UPDATE {{planets}} SET `PLANET_GOVERNOR_LEVEL` = CEILING(`PLANET_GOVERNOR_LEVEL`/2) WHERE PLANET_GOVERNOR_ID = " . MRC_ENGINEER . " AND `PLANET_GOVERNOR_LEVEL` > 8;");
 
@@ -1642,10 +1642,10 @@ switch($new_version)
       "ADD COLUMN `planet_teleport_next` INT(11) NOT NULL DEFAULT 0 COMMENT 'Next teleport time'",
     ), !$update_tables['planets']['planet_teleport_next']);
 
-    upd_check_key('planet_teleport_cost', 50000, !isset($config->planet_teleport_cost));
-    upd_check_key('planet_teleport_timeout', PERIOD_DAY * 1, !isset($config->planet_teleport_timeout));
+    upd_check_key('planet_teleport_cost', 50000, !isset(classSupernova::$config->planet_teleport_cost));
+    upd_check_key('planet_teleport_timeout', PERIOD_DAY * 1, !isset(classSupernova::$config->planet_teleport_timeout));
 
-    upd_check_key('planet_capital_cost', 25000, !isset($config->planet_capital_cost));
+    upd_check_key('planet_capital_cost', 25000, !isset(classSupernova::$config->planet_capital_cost));
 
     upd_alter_table('users', array(
       "ADD COLUMN `player_race` INT(11) NOT NULL DEFAULT 0 COMMENT 'Player\'s race'",
@@ -1674,13 +1674,13 @@ switch($new_version)
       "ADD KEY `I_ship_cargo_greed` (`ship_cargo_greed`, `id_level`)",
     ), !$update_tables['planets']['ship_sattelite_sloth_porcent']);
 
-    upd_check_key('stats_hide_admins', 1, !isset($config->stats_hide_admins));
-    upd_check_key('stats_hide_player_list', '', !isset($config->stats_hide_player_list));
+    upd_check_key('stats_hide_admins', 1, !isset(classSupernova::$config->stats_hide_admins));
+    upd_check_key('stats_hide_player_list', '', !isset(classSupernova::$config->stats_hide_player_list));
 
-    upd_check_key('adv_seo_meta_description', '', !isset($config->adv_seo_meta_description));
-    upd_check_key('adv_seo_meta_keywords', '', !isset($config->adv_seo_meta_keywords));
+    upd_check_key('adv_seo_meta_description', '', !isset(classSupernova::$config->adv_seo_meta_description));
+    upd_check_key('adv_seo_meta_keywords', '', !isset(classSupernova::$config->adv_seo_meta_keywords));
 
-    upd_check_key('stats_hide_pm_link', '0', !isset($config->stats_hide_pm_link));
+    upd_check_key('stats_hide_pm_link', '0', !isset(classSupernova::$config->stats_hide_pm_link));
 
     upd_alter_table('notes', array(
       "ADD INDEX `I_owner_priority_time` (`owner`, `priority`, `time`)",
@@ -2077,7 +2077,7 @@ switch($new_version)
       "ADD `ship_orbital_heavy` bigint(20) NOT NULL DEFAULT '0' COMMENT 'HOPe - Heavy Orbital Platform'",
     ), !$update_tables['planets']['ship_orbital_heavy']);
 
-    upd_check_key('chat_refresh_rate', 5, !isset($config->chat_refresh_rate));
+    upd_check_key('chat_refresh_rate', 5, !isset(classSupernova::$config->chat_refresh_rate));
 
     upd_alter_table('chat_player', array(
       "ADD `chat_player_refresh_last`  INT(11) NOT NULL DEFAULT 0 COMMENT 'Player last refresh time'",
@@ -2204,7 +2204,7 @@ switch($new_version)
     }
 
 
-    upd_check_key('server_que_length_research', 1, !isset($config->server_que_length_research));
+    upd_check_key('server_que_length_research', 1, !isset(classSupernova::$config->server_que_length_research));
 
 
     // Ковертируем технологии в таблицы
@@ -2291,12 +2291,12 @@ switch($new_version)
       "ADD CONSTRAINT `FK_fleet_owner` FOREIGN KEY (`fleet_owner`) REFERENCES `{$config->db_prefix}users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE",
     ), strtoupper($update_tables['fleets']['fleet_owner']['Type']) != 'BIGINT(20) UNSIGNED');
 
-    upd_check_key('chat_highlight_developer', '<span class="nick_developer">$1</span>', !$config->chat_highlight_developer);
+    upd_check_key('chat_highlight_developer', '<span class="nick_developer">$1</span>', !classSupernova::$config->chat_highlight_developer);
 
     if(!$update_tables['player_name_history'])
     {
-      upd_check_key('game_user_changename_cost', 100000, !$config->game_user_changename_cost);
-      upd_check_key('game_user_changename', SERVER_PLAYER_NAME_CHANGE_PAY, $config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_PAY);
+      upd_check_key('game_user_changename_cost', 100000, !classSupernova::$config->game_user_changename_cost);
+      upd_check_key('game_user_changename', SERVER_PLAYER_NAME_CHANGE_PAY, classSupernova::$config->game_user_changename != SERVER_PLAYER_NAME_CHANGE_PAY);
 
       upd_alter_table('users', array(
         "CHANGE COLUMN `username` `username` VARCHAR(32) NOT NULL DEFAULT '' COMMENT 'Player name'",
@@ -2376,14 +2376,14 @@ switch($new_version)
       "DROP COLUMN `colonisation_tech`",
     ), $update_tables['users']['spy_tech']);
 
-    upd_check_key('payment_currency_exchange_dm_', 2500,             !$config->payment_currency_exchange_dm_ || $config->payment_currency_exchange_dm_ == 1000);
-    upd_check_key('payment_currency_exchange_eur', 0.09259259259259, !$config->payment_currency_exchange_eur);
-    upd_check_key('payment_currency_exchange_rub', 4.0,              !$config->payment_currency_exchange_rub);
-    upd_check_key('payment_currency_exchange_usd', 0.125,            !$config->payment_currency_exchange_usd);
-    upd_check_key('payment_currency_exchange_wme', 0.0952380952381,  !$config->payment_currency_exchange_usd);
-    upd_check_key('payment_currency_exchange_wmr', 4.1,              !$config->payment_currency_exchange_wmr);
-    upd_check_key('payment_currency_exchange_wmu', 1.05,             !$config->payment_currency_exchange_wmu);
-    upd_check_key('payment_currency_exchange_wmz', 0.126582278481,   !$config->payment_currency_exchange_wmz);
+    upd_check_key('payment_currency_exchange_dm_', 2500,             !classSupernova::$config->payment_currency_exchange_dm_ || classSupernova::$config->payment_currency_exchange_dm_ == 1000);
+    upd_check_key('payment_currency_exchange_eur', 0.09259259259259, !classSupernova::$config->payment_currency_exchange_eur);
+    upd_check_key('payment_currency_exchange_rub', 4.0,              !classSupernova::$config->payment_currency_exchange_rub);
+    upd_check_key('payment_currency_exchange_usd', 0.125,            !classSupernova::$config->payment_currency_exchange_usd);
+    upd_check_key('payment_currency_exchange_wme', 0.0952380952381,  !classSupernova::$config->payment_currency_exchange_usd);
+    upd_check_key('payment_currency_exchange_wmr', 4.1,              !classSupernova::$config->payment_currency_exchange_wmr);
+    upd_check_key('payment_currency_exchange_wmu', 1.05,             !classSupernova::$config->payment_currency_exchange_wmu);
+    upd_check_key('payment_currency_exchange_wmz', 0.126582278481,   !classSupernova::$config->payment_currency_exchange_wmz);
 
     upd_do_query('COMMIT;', true);
     $new_version = 37;

@@ -7,7 +7,7 @@ function mrc_officer_accessible(&$user, $mercenary_id)
   global $config;
 
   $mercenary_info = get_unit_param($mercenary_id);
-  if($config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS)
+  if(classSupernova::$config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS)
   {
     return true;
   }
@@ -30,8 +30,8 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
   global $config, $sn_powerup_buy_discounts;
 
   try {
-    $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
-    $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
+    $is_permanent = $mode == UNIT_PLANS || !classSupernova::$config->empire_mercenary_temporary;
+    $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? classSupernova::$config->ali_bonus_members : 1);
     $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
     if(!in_array($mercenary_id, sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries'))) {
       throw new Exception(classLocale::$lang['mrc_msg_error_wrong_mercenary'], ERR_ERROR);
@@ -53,19 +53,19 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
     sn_db_transaction_start();
 
     $mercenary_level_old = mrc_get_level($user, $planetrow, $mercenary_id, true, true);
-    if($config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level) {
+    if(classSupernova::$config->empire_mercenary_temporary && $mercenary_level_old && $mercenary_level) {
       throw new Exception(classLocale::$lang['mrc_msg_error_already_hired'], ERR_ERROR); // Can't hire already hired temp mercenary - dismiss first
-    } elseif($config->empire_mercenary_temporary && !$mercenary_level_old && !$mercenary_level) {
+    } elseif(classSupernova::$config->empire_mercenary_temporary && !$mercenary_level_old && !$mercenary_level) {
       throw new Exception('', ERR_NONE); // Can't dismiss (!$mercenary_level) not hired (!$mercenary_level_old) temp mercenary. But no error
     }
 
     if($mercenary_level) {
       $darkmater_cost = eco_get_total_cost($mercenary_id, $mercenary_level);
-      if(!$config->empire_mercenary_temporary && $mercenary_level_old) {
+      if(!classSupernova::$config->empire_mercenary_temporary && $mercenary_level_old) {
        $darkmater_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level_old);
        $darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] -= $darkmater_cost_old[BUILD_CREATE][RES_DARK_MATTER];
       }
-      $darkmater_cost = ceil($darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] * $mercenary_period * $sn_powerup_buy_discounts[$mercenary_period] / $config->empire_mercenary_base_period);
+      $darkmater_cost = ceil($darkmater_cost[BUILD_CREATE][RES_DARK_MATTER] * $mercenary_period * $sn_powerup_buy_discounts[$mercenary_period] / classSupernova::$config->empire_mercenary_base_period);
     } else {
       $darkmater_cost = 0;
     }
@@ -123,7 +123,7 @@ function mrc_mercenary_render($user) {
 
   $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
   $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;
-  $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
+  $is_permanent = $mode == UNIT_PLANS || !classSupernova::$config->empire_mercenary_temporary;
 
   if($mercenary_id = sys_get_param_int('mercenary_id'))
   {
@@ -144,13 +144,13 @@ function mrc_mercenary_render($user) {
     $template->assign_block_vars('period', array(
       'LENGTH'   => $hire_period,
       'TEXT'     => classLocale::$lang['mrc_period_list'][$hire_period],
-      'DISCOUNT' => $hire_period / $config->empire_mercenary_base_period * $hire_discount,
-      'SELECTED' => $hire_period == $config->empire_mercenary_base_period,
+      'DISCOUNT' => $hire_period / classSupernova::$config->empire_mercenary_base_period * $hire_discount,
+      'SELECTED' => $hire_period == classSupernova::$config->empire_mercenary_base_period,
     ));
   }
 
   $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
-  $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
+  $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? classSupernova::$config->ali_bonus_members : 1);
   $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
   foreach(sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id)
   {
@@ -206,7 +206,7 @@ function mrc_mercenary_render($user) {
       ));
 
       $upgrade_cost = 1;
-      for($i = $config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++)
+      for($i = classSupernova::$config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++)
       {
         $total_cost = eco_get_total_cost($mercenary_id, $i);
         $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
@@ -223,7 +223,7 @@ function mrc_mercenary_render($user) {
     'PAGE_HEADER' => classLocale::$lang['tech'][$mode],
     'MODE' => $mode,
     'IS_PERMANENT' => intval($is_permanent),
-    'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
+    'EMPIRE_MERCENARY_TEMPORARY' => classSupernova::$config->empire_mercenary_temporary,
     'DARK_MATTER' => $user_dark_matter,
   ));
 

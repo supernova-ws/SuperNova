@@ -206,8 +206,8 @@ function sn_maintenance_pack_user_list($user_list) {
 global $config, $debug;
 
 sn_db_transaction_start();
-$old_server_status = $config->db_loadItem('game_disable');
-$old_server_status == GAME_DISABLE_NONE ? $config->db_saveItem('game_disable', GAME_DISABLE_MAINTENANCE) : false;
+$old_server_status = classSupernova::$config->db_loadItem('game_disable');
+$old_server_status == GAME_DISABLE_NONE ? classSupernova::$config->db_saveItem('game_disable', GAME_DISABLE_MAINTENANCE) : false;
 sn_db_transaction_commit();
 
 foreach($ques as $que_transaction) {
@@ -239,17 +239,17 @@ foreach($ques as $que_transaction) {
 }
 
 sn_db_transaction_start();
-$config->db_saveItem('stats_hide_player_list', sn_maintenance_pack_user_list($config->db_loadItem('stats_hide_player_list')));
+classSupernova::$config->db_saveItem('stats_hide_player_list', sn_maintenance_pack_user_list(classSupernova::$config->db_loadItem('stats_hide_player_list')));
 $debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 
 sn_db_transaction_start();
-$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list($config->db_loadItem('game_watchlist')));
+classSupernova::$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list(classSupernova::$config->db_loadItem('game_watchlist')));
 $debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 
-$config->db_saveItem('users_amount', db_user_count());
-$config->db_saveItem('game_disable', $old_server_status);
+classSupernova::$config->db_saveItem('users_amount', db_user_count());
+classSupernova::$config->db_saveItem('game_disable', $old_server_status);
 
 $_GET['admin_update'] = 1;
 

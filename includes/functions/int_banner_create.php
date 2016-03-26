@@ -21,11 +21,11 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
   switch ($type)
   {
     case 'banner':
-      $img_name = $config->int_banner_background;
+      $img_name = classSupernova::$config->int_banner_background;
     break;
 
     default:
-      $img_name = $config->int_userbar_background;
+      $img_name = classSupernova::$config->int_userbar_background;
     break;
   }
   $size = getimagesize(SN_ROOT_PHYSICAL . $img_name);
@@ -46,10 +46,10 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
   $txt_color2 = imagecolorallocatealpha($image, 255, 255, 255, 40);
 
   $fonts = array (
-    'userbar' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_userbar_font,
-    'universe' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontUniverse,
-    'raids' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontRaids,
-    'info' => SN_ROOT_PHYSICAL . "design/fonts/" . $config->int_banner_fontInfo,
+    'userbar' => SN_ROOT_PHYSICAL . "design/fonts/" . classSupernova::$config->int_userbar_font,
+    'universe' => SN_ROOT_PHYSICAL . "design/fonts/" . classSupernova::$config->int_banner_fontUniverse,
+    'raids' => SN_ROOT_PHYSICAL . "design/fonts/" . classSupernova::$config->int_banner_fontRaids,
+    'info' => SN_ROOT_PHYSICAL . "design/fonts/" . classSupernova::$config->int_banner_fontInfo,
   );
 
   if($id)
@@ -63,7 +63,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
     $b_ally = $user['ally_name'];
     $b_planet = $planet_row['name'];
     $b_xyz = "[".$planet_row['galaxy'].":".$planet_row['system'].":".$planet_row['planet']."]";
-    $b_lvl = ($user['total_rank'] ? $user['total_rank'] : $config->users_amount) ."/{$config->users_amount}";
+    $b_lvl = ($user['total_rank'] ? $user['total_rank'] : classSupernova::$config->users_amount) ."/{$config->users_amount}";
   }
   else
   {

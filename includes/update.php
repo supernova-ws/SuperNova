@@ -32,17 +32,17 @@ require('includes/upd_helpers.php');
 
 global $sn_cache, $new_version, $config, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
-$config->reset();
-$config->db_loadAll();
-$config->db_prefix = classSupernova::$db->db_prefix; // Оставить пока для совместимости
-$config->cache_prefix = classSupernova::$cache_prefix;
-$config->debug = 0;
+classSupernova::$config->reset();
+classSupernova::$config->db_loadAll();
+classSupernova::$config->db_prefix = classSupernova::$db->db_prefix; // Оставить пока для совместимости
+classSupernova::$config->cache_prefix = classSupernova::$cache_prefix;
+classSupernova::$config->debug = 0;
 
 
 //$config->db_loadItem('db_version');
-if($config->db_version == DB_VERSION) {
-} elseif($config->db_version > DB_VERSION) {
-  $config->db_saveItem('var_db_update_end', SN_TIME_NOW);
+if(classSupernova::$config->db_version == DB_VERSION) {
+} elseif(classSupernova::$config->db_version > DB_VERSION) {
+  classSupernova::$config->db_saveItem('var_db_update_end', SN_TIME_NOW);
   die(
     'Internal error! Auotupdater detects DB version greater then can be handled!<br />
     Possible you have out-of-date SuperNova version<br />
@@ -50,20 +50,20 @@ if($config->db_version == DB_VERSION) {
   );
 }
 
-if($config->db_version < 26) {
+if(classSupernova::$config->db_version < 26) {
   $sys_log_disabled = true;
 }
 
 $upd_log = '';
-$new_version = floatval($config->db_version);
-upd_check_key('upd_lock_time', 300, !isset($config->upd_lock_time));
+$new_version = floatval(classSupernova::$config->db_version);
+upd_check_key('upd_lock_time', 300, !isset(classSupernova::$config->upd_lock_time));
 
-set_time_limit($config->upd_lock_time + 10);
+set_time_limit(classSupernova::$config->upd_lock_time + 10);
 
 upd_log_message('Update started. Disabling server');
 
-$old_server_status = $config->db_loadItem('game_disable');
-$config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
+$old_server_status = classSupernova::$config->db_loadItem('game_disable');
+classSupernova::$config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
 
 upd_log_message('Server disabled. Loading table info...');
 $update_tables  = array();
@@ -86,16 +86,16 @@ switch($new_version) {
   case 37:
     upd_log_version_update();
 
-    upd_check_key('player_vacation_timeout', PERIOD_WEEK, $config->player_vacation_timeout != PERIOD_WEEK);
-    upd_check_key('player_vacation_time', PERIOD_WEEK ,   $config->player_vacation_time != PERIOD_WEEK);
+    upd_check_key('player_vacation_timeout', PERIOD_WEEK, classSupernova::$config->player_vacation_timeout != PERIOD_WEEK);
+    upd_check_key('player_vacation_time', PERIOD_WEEK ,   classSupernova::$config->player_vacation_time != PERIOD_WEEK);
 
     upd_alter_table('users', "ADD `vacation_next` INT(11) NOT NULL DEFAULT 0 COMMENT 'Next datetime when player can go on vacation'", !$update_tables['users']['vacation_next']);
 
     upd_alter_table('users', "ADD `metamatter` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Metamatter amount'", !$update_tables['users']['metamatter']);
-    upd_check_key('url_purchase_metamatter', $config->url_dark_matter, !$config->url_purchase_metamatter && $config->url_dark_matter);
-    upd_check_key('url_dark_matter', '', $config->url_dark_matter); // TODO REMOVE KEY FROM DB
+    upd_check_key('url_purchase_metamatter', classSupernova::$config->url_dark_matter, !classSupernova::$config->url_purchase_metamatter && classSupernova::$config->url_dark_matter);
+    upd_check_key('url_dark_matter', '', classSupernova::$config->url_dark_matter); // TODO REMOVE KEY FROM DB
 
-    upd_check_key('payment_currency_exchange_mm_', 2500, !$config->payment_currency_exchange_mm_);
+    upd_check_key('payment_currency_exchange_mm_', 2500, !classSupernova::$config->payment_currency_exchange_mm_);
 
     if(!$update_tables['log_metamatter'])
     {
@@ -117,7 +117,7 @@ switch($new_version) {
       );
     }
 
-    upd_check_key('adv_seo_javascript', '', !isset($config->adv_seo_javascript));
+    upd_check_key('adv_seo_javascript', '', !isset(classSupernova::$config->adv_seo_javascript));
 
     upd_alter_table('payment', array(
       "ADD `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Is this a test payment?'",
@@ -134,7 +134,7 @@ switch($new_version) {
 
     upd_do_query('UPDATE {{payment}} SET `payment_test` = 1, `payment_status` = 1 WHERE payment_status = -1;');
 
-    upd_check_key('game_speed_expedition', 1, !$config->game_speed_expedition);
+    upd_check_key('game_speed_expedition', 1, !classSupernova::$config->game_speed_expedition);
 
     upd_alter_table('users', array(
       "MODIFY COLUMN `metamatter` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Metamatter amount'",
@@ -189,7 +189,7 @@ switch($new_version) {
     // Удалить из очереди Колонизационную технологию и вернуть ресы
     // Вернуть ресы за уже исследованную Колонизационную технологию
     // Вернуть ресы за уже исследованную Экспедиционную технологию
-    upd_check_key('player_max_colonies', -1, $config->player_max_colonies >= 0);
+    upd_check_key('player_max_colonies', -1, classSupernova::$config->player_max_colonies >= 0);
 
     if(!isset($update_tables['users']['player_rpg_explore_xp']))
     {
@@ -209,7 +209,7 @@ switch($new_version) {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
     }
 
-    upd_check_key('server_log_online', 0, !isset($config->server_log_online));
+    upd_check_key('server_log_online', 0, !isset(classSupernova::$config->server_log_online));
 
     upd_alter_table('users', array(
       "ADD `user_time_measured` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'When was time diff measured last time' AFTER `onlinetime`",
@@ -245,7 +245,7 @@ switch($new_version) {
       "MODIFY COLUMN `payment_external_id` varchar(64) DEFAULT '' COMMENT 'External payment ID in payment system'",
     ), strtolower($update_tables['payment']['payment_test']['Type']) != 'varchar(64)');
 
-    upd_check_key('stats_schedule', '01 00:00:00', strpos($config->stats_schedule, '@') !== false);
+    upd_check_key('stats_schedule', '01 00:00:00', strpos(classSupernova::$config->stats_schedule, '@') !== false);
 
     upd_alter_table('users', array(
       "ADD `admin_protection` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Protection of administration planets'",
@@ -626,7 +626,7 @@ switch($new_version) {
           );");
     }
 
-    upd_check_key('player_metamatter_immortal', 100000, !isset($config->player_metamatter_immortal));
+    upd_check_key('player_metamatter_immortal', 100000, !isset(classSupernova::$config->player_metamatter_immortal));
     if(!$update_tables['users']['metamatter_total']) {
       upd_alter_table('users', "ADD `metamatter_total` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Total Metamatter amount ever bought'", !$update_tables['users']['metamatter_total']);
 
@@ -824,20 +824,20 @@ switch($new_version) {
     ), !isset($update_tables['security_device']['timestamp']));
 
 
-    upd_check_key('game_multiaccount_enabled', 0, !isset($config->game_multiaccount_enabled));
-    upd_check_key('stats_schedule', '04:00:00', $config->stats_schedule !== '04:00:00');
-    upd_check_key('stats_php_memory', '1024M', !isset($config->stats_php_memory));
-    upd_check_key('stats_minimal_interval', '600', !isset($config->stats_minimal_interval));
+    upd_check_key('game_multiaccount_enabled', 0, !isset(classSupernova::$config->game_multiaccount_enabled));
+    upd_check_key('stats_schedule', '04:00:00', classSupernova::$config->stats_schedule !== '04:00:00');
+    upd_check_key('stats_php_memory', '1024M', !isset(classSupernova::$config->stats_php_memory));
+    upd_check_key('stats_minimal_interval', '600', !isset(classSupernova::$config->stats_minimal_interval));
 
-    upd_check_key('fleet_update_interval', 4, !intval($config->fleet_update_interval));
+    upd_check_key('fleet_update_interval', 4, !intval(classSupernova::$config->fleet_update_interval));
     upd_check_key('fleet_update_last', SN_TIME_SQL, true);
-    upd_check_key('fleet_update_lock', '', empty($config->fleet_update_interval));
+    upd_check_key('fleet_update_lock', '', empty(classSupernova::$config->fleet_update_interval));
 
-    upd_check_key('uni_galaxy_distance', 20000, empty($config->uni_galaxy_distance));
+    upd_check_key('uni_galaxy_distance', 20000, empty(classSupernova::$config->uni_galaxy_distance));
 
-    upd_check_key('stats_history_days', 14, !$config->stats_history_days);
+    upd_check_key('stats_history_days', 14, !classSupernova::$config->stats_history_days);
 
-    if($config->payment_currency_default != 'USD') {
+    if(classSupernova::$config->payment_currency_default != 'USD') {
       upd_check_key('payment_currency_default',      'USD', true);
       upd_check_key('payment_currency_exchange_dm_', 20000, true);
       upd_check_key('payment_currency_exchange_mm_', 20000, true);
@@ -848,7 +848,7 @@ switch($new_version) {
     upd_check_key('payment_currency_exchange_eur', 0.90, true);
     upd_check_key('payment_currency_exchange_wme', 0.90, true);
 
-    upd_check_key('payment_currency_exchange_wmb', 18000, !$config->payment_currency_exchange_wmb);
+    upd_check_key('payment_currency_exchange_wmb', 18000, !classSupernova::$config->payment_currency_exchange_wmb);
 
     upd_check_key('payment_currency_exchange_uah', 30, true);
     upd_check_key('payment_currency_exchange_wmu', 30, true);
@@ -894,7 +894,7 @@ switch($new_version) {
 
     $virtual_exploded = explode('/', SN_ROOT_VIRTUAL_PARENT);
     // TODO - переделать всё на db_loadItem... НАВЕРНОЕ
-    upd_check_key('server_email', 'root@' . $virtual_exploded[2], !$config->db_loadItem('server_email'));
+    upd_check_key('server_email', 'root@' . $virtual_exploded[2], !classSupernova::$config->db_loadItem('server_email'));
 
     upd_alter_table('survey_votes', array(
       "DROP FOREIGN KEY `FK_survey_votes_user`",
@@ -972,7 +972,7 @@ switch($new_version) {
       upd_do_query('UPDATE {{planets}} SET `density_index` = ' . PLANET_DENSITY_METAL_PERIDOT . ' WHERE `density_index` = 7'); // deprecated define('PLANET_DENSITY_METAL_HEAVY', 7);
 
       // Добавляем планету-странника
-      upd_check_key('game_maxPlanet', 16, $config->game_maxPlanet == 15);
+      upd_check_key('game_maxPlanet', 16, classSupernova::$config->game_maxPlanet == 15);
     }
 
     // 2015-08-19 04:41:57 40a8.10
@@ -1066,35 +1066,35 @@ switch($new_version) {
 
 
     // 2015-10-14 01:35:55 40a13.8
-    upd_check_key('db_manual_lock_enabled', 0, !isset($config->db_manual_lock_enabled));
+    upd_check_key('db_manual_lock_enabled', 0, !isset(classSupernova::$config->db_manual_lock_enabled));
 
-    upd_check_key('eco_planet_starting_metal', 500, !isset($config->eco_planet_starting_metal));
-    upd_check_key('eco_planet_starting_crystal', 500, !isset($config->eco_planet_starting_crystal));
-    upd_check_key('eco_planet_starting_deuterium', 0, !isset($config->eco_planet_starting_deuterium));
+    upd_check_key('eco_planet_starting_metal', 500, !isset(classSupernova::$config->eco_planet_starting_metal));
+    upd_check_key('eco_planet_starting_crystal', 500, !isset(classSupernova::$config->eco_planet_starting_crystal));
+    upd_check_key('eco_planet_starting_deuterium', 0, !isset(classSupernova::$config->eco_planet_starting_deuterium));
 
-    upd_check_key('eco_planet_storage_metal', 500000, !isset($config->eco_planet_storage_metal));
-    upd_check_key('eco_planet_storage_crystal', 500000, !isset($config->eco_planet_storage_crystal));
-    upd_check_key('eco_planet_storage_deuterium', 500000, !isset($config->eco_planet_storage_deuterium));
+    upd_check_key('eco_planet_storage_metal', 500000, !isset(classSupernova::$config->eco_planet_storage_metal));
+    upd_check_key('eco_planet_storage_crystal', 500000, !isset(classSupernova::$config->eco_planet_storage_crystal));
+    upd_check_key('eco_planet_storage_deuterium', 500000, !isset(classSupernova::$config->eco_planet_storage_deuterium));
 
-    upd_check_key('security_write_full_url_disabled', 1, !isset($config->security_write_full_url_disabled));
+    upd_check_key('security_write_full_url_disabled', 1, !isset(classSupernova::$config->security_write_full_url_disabled));
 
     // http://1whois.ru?url=
-    upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', !isset($config->core_geoip_whois_url));
+    upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', !isset(classSupernova::$config->core_geoip_whois_url));
 
-    upd_check_key('ube_capture_points_diff', 2, !isset($config->ube_capture_points_diff));
+    upd_check_key('ube_capture_points_diff', 2, !isset(classSupernova::$config->ube_capture_points_diff));
 
     // 2015-10-17 14:46:32 40a15.5
-    upd_check_key('game_users_online_timeout', 15 * 60, !isset($config->game_users_online_timeout));
+    upd_check_key('game_users_online_timeout', 15 * 60, !isset(classSupernova::$config->game_users_online_timeout));
 
     // 2015-10-22 14:37:58 40a17.5
-    upd_check_key('locale_cache_disable', 0, !isset($config->locale_cache_disable));
+    upd_check_key('locale_cache_disable', 0, !isset(classSupernova::$config->locale_cache_disable));
 
     // 2015-10-30 19:09:01 40a19.5
-    upd_check_key('event_halloween_2015_lock', 0, !isset($config->event_halloween_2015_lock));
-    upd_check_key('event_halloween_2015_unit', 0, !isset($config->event_halloween_2015_unit));
-    upd_check_key('event_halloween_2015_code', '', !isset($config->event_halloween_2015_code));
-    upd_check_key('event_halloween_2015_timestamp', SN_TIME_SQL, !isset($config->event_halloween_2015_timestamp));
-    upd_check_key('event_halloween_2015_units_used', serialize(array()), !isset($config->event_halloween_2015_units_used));
+    upd_check_key('event_halloween_2015_lock', 0, !isset(classSupernova::$config->event_halloween_2015_lock));
+    upd_check_key('event_halloween_2015_unit', 0, !isset(classSupernova::$config->event_halloween_2015_unit));
+    upd_check_key('event_halloween_2015_code', '', !isset(classSupernova::$config->event_halloween_2015_code));
+    upd_check_key('event_halloween_2015_timestamp', SN_TIME_SQL, !isset(classSupernova::$config->event_halloween_2015_timestamp));
+    upd_check_key('event_halloween_2015_units_used', serialize(array()), !isset(classSupernova::$config->event_halloween_2015_units_used));
     if(empty($update_tables['log_halloween_2015'])) {
       upd_create_table('log_halloween_2015', " (
       `log_hw2015_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -1116,8 +1116,8 @@ switch($new_version) {
         "ADD KEY `I_ube_report_time_debris_id` (`ube_report_time_process` DESC, `ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC)", // For Best Battles module
       ), !isset($update_tables['ube_report']['ube_report_debris_total_in_metal']));
 
-      $config_rpg_exchange_metal = floatval($config->rpg_exchange_metal) ? floatval($config->rpg_exchange_metal) : 1;
-      $config_rpg_exchange_crystal = floatval($config->rpg_exchange_crystal) ? floatval($config->rpg_exchange_crystal) : 1;
+      $config_rpg_exchange_metal = floatval(classSupernova::$config->rpg_exchange_metal) ? floatval(classSupernova::$config->rpg_exchange_metal) : 1;
+      $config_rpg_exchange_crystal = floatval(classSupernova::$config->rpg_exchange_crystal) ? floatval(classSupernova::$config->rpg_exchange_crystal) : 1;
 
       upd_do_query("UPDATE `{{ube_report}}`
         SET `ube_report_debris_total_in_metal` = (`ube_report_debris_metal` + `ube_report_debris_crystal` * {$config_rpg_exchange_crystal}) / {$config_rpg_exchange_metal}");
@@ -1322,13 +1322,13 @@ upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
 classSupernova::$cache->unset_by_prefix('lng_');
 
 if($new_version) {
-  $config->db_saveItem('db_version', $new_version);
+  classSupernova::$config->db_saveItem('db_version', $new_version);
   upd_log_message("<font color=green>DB version is now {$new_version}</font>");
 } else {
   upd_log_message("DB version didn't changed from {$config->db_version}");
 }
 
-$config->db_loadAll();
+classSupernova::$config->db_loadAll();
 /*
 if($user['authlevel'] >= 3) {
   print(str_replace("\r\n", '<br>', $upd_log));
@@ -1338,4 +1338,4 @@ unset($sn_cache->tables);
 sys_refresh_tablelist();
 
 upd_log_message('Restoring server status');
-$config->db_saveItem('game_disable', $old_server_status);
+classSupernova::$config->db_saveItem('game_disable', $old_server_status);

@@ -109,11 +109,11 @@ switch($mode = sys_get_param_str('mode')) {
           throw new exception(classLocale::$lang['ov_capital_err_capital_already'], ERR_ERROR);
         }
 
-        if($user_dark_matter < $config->planet_capital_cost) {
+        if($user_dark_matter < classSupernova::$config->planet_capital_cost) {
           throw new exception(classLocale::$lang['ov_capital_err_no_dark_matter'], ERR_ERROR);
         }
 
-        rpg_points_change($user['id'], RPG_CAPITAL, -$config->planet_capital_cost,
+        rpg_points_change($user['id'], RPG_CAPITAL, -classSupernova::$config->planet_capital_cost,
           array('Planet %s ID %d at coordinates %s now become Empire Capital', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow))
         );
 
@@ -156,10 +156,10 @@ switch($mode = sys_get_param_str('mode')) {
           throw new exception($can_teleport['message'], $can_teleport['result']);
         }
 
-        rpg_points_change($user['id'], RPG_TELEPORT, -$config->planet_teleport_cost,
+        rpg_points_change($user['id'], RPG_TELEPORT, -classSupernova::$config->planet_teleport_cost,
           array(&classLocale::$lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
-        $planet_teleport_next = SN_TIME_NOW + $config->planet_teleport_timeout;
+        $planet_teleport_next = SN_TIME_NOW + classSupernova::$config->planet_teleport_timeout;
         db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
           "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
 
@@ -280,10 +280,10 @@ switch($mode = sys_get_param_str('mode')) {
 
       'CAN_TELEPORT'          => $can_teleport['result'] == ERR_NONE,
       'CAN_NOT_TELEPORT_MSG'  => $can_teleport['message'],
-      'TELEPORT_COST_TEXT'    => pretty_number($config->planet_teleport_cost, true, $user_dark_matter),
+      'TELEPORT_COST_TEXT'    => pretty_number(classSupernova::$config->planet_teleport_cost, true, $user_dark_matter),
 
-      'CAN_CAPITAL'           => $user_dark_matter >= $config->planet_capital_cost,
-      'CAPITAL_COST_TEXT'     => pretty_number($config->planet_capital_cost, true, $user_dark_matter),
+      'CAN_CAPITAL'           => $user_dark_matter >= classSupernova::$config->planet_capital_cost,
+      'CAPITAL_COST_TEXT'     => pretty_number(classSupernova::$config->planet_capital_cost, true, $user_dark_matter),
 
       'PLANET_DENSITY_INDEX'  => $planet_density_index,
       'PLANET_CORE_TEXT'      => classLocale::$lang['uni_planet_density_types'][$planet_density_index],
@@ -488,7 +488,7 @@ switch($mode = sys_get_param_str('mode')) {
       'GATE_LEVEL'            => mrc_get_level($user, $planetrow, STRUC_MOON_GATE),
       'GATE_JUMP_REST_TIME'   => uni_get_time_to_jump($planetrow),
 
-      'ADMIN_EMAIL'           => $config->game_adminEmail,
+      'ADMIN_EMAIL'           => classSupernova::$config->game_adminEmail,
 
       'PLANET_GOVERNOR_ID'    => $planetrow['PLANET_GOVERNOR_ID'],
 //      'PLANET_GOVERNOR_LEVEL' => $planetrow['PLANET_GOVERNOR_LEVEL'] mrc_get_level($user, $planetrow,),

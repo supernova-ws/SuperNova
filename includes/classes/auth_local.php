@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.49# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.63# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -285,8 +285,8 @@ class auth_local extends auth_abstract {
       sn_db_transaction_commit();
 
       @$result = mymail($email_unsafe,
-        sprintf(classLocale::$lang['log_lost_email_title'], $config->game_name),
-        sprintf(classLocale::$lang['log_lost_email_code'], SN_ROOT_VIRTUAL . 'login.php', $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE), $config->game_name)
+        sprintf(classLocale::$lang['log_lost_email_title'], classSupernova::$config->game_name),
+        sprintf(classLocale::$lang['log_lost_email_code'], SN_ROOT_VIRTUAL . 'login.php', $confirm_code_unsafe, date(FMT_DATE_TIME, SN_TIME_NOW + AUTH_PASSWORD_RESET_CONFIRMATION_EXPIRE), classSupernova::$config->game_name)
       );
 
       $result = $result ? PASSWORD_RESTORE_SUCCESS_CODE_SENT : PASSWORD_RESTORE_ERROR_SENDING;
@@ -356,8 +356,8 @@ class auth_local extends auth_abstract {
 
       if($this->account_login_status == LOGIN_SUCCESS) {
         // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
-        $message_header = sprintf(classLocale::$lang['log_lost_email_title'], $config->game_name);
-        $message = sprintf(classLocale::$lang['log_lost_email_pass'], $config->game_name, $this->account->account_name, $new_password_unsafe);
+        $message_header = sprintf(classLocale::$lang['log_lost_email_title'], classSupernova::$config->game_name);
+        $message = sprintf(classLocale::$lang['log_lost_email_pass'], classSupernova::$config->game_name, $this->account->account_name, $new_password_unsafe);
         @$operation_result = mymail($confirmation['email'], $message_header, htmlspecialchars($message));
 
         $users_translated = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5

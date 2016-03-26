@@ -59,7 +59,7 @@ function sn_fleet_page2() {
   $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :
     (isset($missiontype[MT_HOLD]) ? 12 : 0);
   if($max_duration) {
-    $config_game_speed_expedition = ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1);
+    $config_game_speed_expedition = ($target_mission == MT_EXPLORE && classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1);
     for($i = 1; $i <= $max_duration; $i++) {
       $template->assign_block_vars('duration', array(
         'ID' => $i,

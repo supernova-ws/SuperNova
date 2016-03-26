@@ -102,7 +102,7 @@ function db_user_last_registered_username() {
 function db_user_count($online = false) {
   global $config;
 
-  $result = doquery('SELECT COUNT(id) AS user_count FROM `{{users}}` WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - $config->game_users_online_timeout) : ''), true);
+  $result = doquery('SELECT COUNT(id) AS user_count FROM `{{users}}` WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''), true);
 
   return isset($result['user_count']) ? $result['user_count'] : 0;
 }
@@ -130,7 +130,7 @@ function db_user_list_online_sorted($TypeSort) {
     "SELECT `id` AS `ID`, `username` AS `NAME`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
       `onlinetime` AS `ACTIVITY`
     FROM `{{users}}`
-    WHERE `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) . " ORDER BY user_as_ally, `" . $TypeSort . "` ASC;");
+    WHERE `onlinetime` >= " . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) . " ORDER BY user_as_ally, `" . $TypeSort . "` ASC;");
 }
 
 
@@ -145,7 +145,7 @@ function db_user_list_admin_sorted($sort, $online = false) {
   return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
     LEFT JOIN {{referrals}} as r on r.id_partner = u.id
     WHERE" .
-    ($online ? " `onlinetime` >= " . (SN_TIME_NOW - $config->game_users_online_timeout) : ' user_as_ally IS NULL') .
+    ($online ? " `onlinetime` >= " . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ' user_as_ally IS NULL') .
     " GROUP BY u.id
     ORDER BY user_as_ally, {$sort} ASC");
 }

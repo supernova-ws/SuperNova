@@ -221,7 +221,7 @@ $sn_diplomacy_relation_list = array(
   ),
   ALLY_DIPLOMACY_WAR => array(
     'relation_id' => ALLY_DIPLOMACY_WAR,
-    'enter_delay' => $config->fleet_bashing_war_delay,
+    'enter_delay' => classSupernova::$config->fleet_bashing_war_delay,
     'exit_delay'  => -1,
   ),
   ALLY_DIPLOMACY_PEACE => array(
@@ -498,8 +498,8 @@ mission = array(
         't_max_max' => 40,
         't_delta_min' => 40, // Tmin 0
         't_delta_max' => 40,
-        'size_min' => $config->initial_fields,
-        'size_max' => $config->initial_fields,
+        'size_min' => classSupernova::$config->initial_fields,
+        'size_max' => classSupernova::$config->initial_fields,
         'core_types' => array(PLANET_DENSITY_STANDARD,),
         'planet_images' => array('normaltemp'),
       ),

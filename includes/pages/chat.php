@@ -30,8 +30,8 @@ sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
 function sn_chat_model() {
   global $config, $user, $template_result, $supernova;
 
-  $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
-  $config->array_set('users', $user['id'], 'chat_last_refresh', 0);
+  classSupernova::$config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
+  classSupernova::$config->array_set('users', $user['id'], 'chat_last_refresh', 0);
 
   $user_auth_level = isset($user['authlevel']) ? $user['authlevel'] : AUTH_LEVEL_ANONYMOUS;
 
@@ -77,7 +77,7 @@ function sn_chat_add_model() {
   define('IN_AJAX', true);
   $skip_fleet_update = true;
 
-  if($config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout) {
+  if(classSupernova::$config->_MODE != CACHER_NO_CACHE && classSupernova::$config->chat_timeout && SN_TIME_MICRO - classSupernova::$config->array_get('users', $user['id'], 'chat_last_activity') > classSupernova::$config->chat_timeout) {
     die();
   }
 
@@ -89,7 +89,7 @@ function sn_chat_add_model() {
 
     db_chat_message_insert($user['id'], $nick, $ally_id, $message);
 
-    $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
+    classSupernova::$config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   }
 
   die();
@@ -104,14 +104,14 @@ function sn_chat_msg_view($template = null) {
 
   $history = sys_get_param_str('history');
   if(!$history) {
-    $config->array_set('users', $user['id'], 'chat_last_refresh', SN_TIME_MICRO);
+    classSupernova::$config->array_set('users', $user['id'], 'chat_last_refresh', SN_TIME_MICRO);
   }
 
   $page = 0;
   $last_message = '';
   $alliance = 0;
   $template_result['.']['chat'] = array();
-  if(!$history && $config->_MODE != CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout) {
+  if(!$history && classSupernova::$config->_MODE != CACHER_NO_CACHE && classSupernova::$config->chat_timeout && SN_TIME_MICRO - classSupernova::$config->array_get('users', $user['id'], 'chat_last_activity') > classSupernova::$config->chat_timeout) {
     $result['disable'] = true;
     $template_result['.']['chat'][] = array(
       'TIME'    => date(FMT_DATE_TIME, htmlentities(SN_CLIENT_TIME_LOCAL, ENT_QUOTES, 'utf-8')),

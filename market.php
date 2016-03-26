@@ -22,7 +22,7 @@ $shipList = $_POST['ships'];
 
 $page_title = classLocale::$lang['eco_mrk_title'];
 
-$stock = sys_unit_str2arr($config->eco_stockman_fleet);
+$stock = sys_unit_str2arr(classSupernova::$config->eco_stockman_fleet);
 $newstock = $stock;
 $intError = MARKET_DEAL;
 
@@ -34,14 +34,14 @@ switch($mode)
   break;
 
   case MARKET_SCRAPPER: // Fleet scraper
-    $rpg_cost = $config->rpg_cost_scraper;
+    $rpg_cost = classSupernova::$config->rpg_cost_scraper;
     $submode = 'scraper';
     $error_no_stock = MARKET_NO_SHIPS;
     $error_zero_res = MARKET_ZERO_RES;
 
-    $config_rpg_scrape_metal     = $config->rpg_scrape_metal;
-    $config_rpg_scrape_crystal   = $config->rpg_scrape_crystal;
-    $config_rpg_scrape_deuterium = $config->rpg_scrape_deuterium;
+    $config_rpg_scrape_metal     = classSupernova::$config->rpg_scrape_metal;
+    $config_rpg_scrape_crystal   = classSupernova::$config->rpg_scrape_crystal;
+    $config_rpg_scrape_deuterium = classSupernova::$config->rpg_scrape_deuterium;
 
     $array = sn_get_groups('fleet');
 
@@ -49,14 +49,14 @@ switch($mode)
   break;
 
   case MARKET_STOCKMAN: // S/H ship seller
-    $rpg_cost = $config->rpg_cost_stockman;
+    $rpg_cost = classSupernova::$config->rpg_cost_stockman;
     $submode = 'stockman';
     $error_no_stock = MARKET_NO_STOCK;
     $error_zero_res = MARKET_ZERO_RES_STOCK;
 
-    $config_rpg_scrape_metal     = 1 / $config->rpg_scrape_metal;
-    $config_rpg_scrape_crystal   = 1 / $config->rpg_scrape_crystal;
-    $config_rpg_scrape_deuterium = 1 / $config->rpg_scrape_deuterium;
+    $config_rpg_scrape_metal     = 1 / classSupernova::$config->rpg_scrape_metal;
+    $config_rpg_scrape_crystal   = 1 / classSupernova::$config->rpg_scrape_crystal;
+    $config_rpg_scrape_deuterium = 1 / classSupernova::$config->rpg_scrape_deuterium;
 
     $array = &$stock;
 
@@ -93,14 +93,14 @@ if($message)
 }
 
 $template->assign_vars(array(
-  'rpg_cost_trader'   => $config->rpg_cost_trader,
-  'rpg_cost_scraper'  => $config->rpg_cost_scraper,
-  'rpg_cost_stockman' => $config->rpg_cost_stockman,
-  'rpg_cost_info'     => $config->rpg_cost_info,
+  'rpg_cost_trader'   => classSupernova::$config->rpg_cost_trader,
+  'rpg_cost_scraper'  => classSupernova::$config->rpg_cost_scraper,
+  'rpg_cost_stockman' => classSupernova::$config->rpg_cost_stockman,
+  'rpg_cost_info'     => classSupernova::$config->rpg_cost_info,
 
-  'rpg_cost_banker'   => $config->rpg_cost_banker,
-  'rpg_cost_exchange' => $config->rpg_cost_exchange,
-  'rpg_cost_pawnshop' => $config->rpg_cost_pawnshop,
+  'rpg_cost_banker'   => classSupernova::$config->rpg_cost_banker,
+  'rpg_cost_exchange' => classSupernova::$config->rpg_cost_exchange,
+  'rpg_cost_pawnshop' => classSupernova::$config->rpg_cost_pawnshop,
 
 //  'message' => $message,
   'MODE' => $mode

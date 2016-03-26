@@ -793,6 +793,12 @@ minify cached templates
 
 $config должен быть синглтоном! И все обращения к нему должны идти через статик
 
+
+/// TODO
+    config - сделать пропертем
+        - поискать по регекспу
+        - Посмотреть внимательно на $config->db_prefix - мало где это надо
+
 #ctv
 
 BONUS_ABILITY - deprecated ???

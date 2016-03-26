@@ -19,7 +19,7 @@ if($user['authlevel'] < 3) {
   AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
-ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '256M');
+ini_set('memory_limit', classSupernova::$config->stats_php_memory ? classSupernova::$config->stats_php_memory : '256M');
 
 lng_include('admin');
 
@@ -107,7 +107,7 @@ $template->assign_vars(array(
   'SORT'            => $sort,
   'GEOIP'           => $geoip,
   'METAMATTER'      => isset(sn_module::$sn_module['unit_res_metamatter']),
-  'GEOIP_WHOIS_URL' => $config->geoip_whois_url,
+  'GEOIP_WHOIS_URL' => classSupernova::$config->geoip_whois_url,
 
   'PAGE_URL'    => $_SERVER['SCRIPT_NAME'],
   'PAGE_HEADER' => $is_players_online_page ? classLocale::$lang['adm_ul_title_online'] : classLocale::$lang['adm_ul_title'],

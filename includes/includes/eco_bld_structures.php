@@ -387,7 +387,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     'STACKABLE' => $unit_stackable,
 
-    'TEMPORARY' => intval($config->empire_mercenary_temporary && $que_type == QUE_MERCENARY),
+    'TEMPORARY' => intval(classSupernova::$config->empire_mercenary_temporary && $que_type == QUE_MERCENARY),
 
     'STRING_CREATE'     => $que_type == QUE_MERCENARY ? classLocale::$lang['bld_hire'] : ($que_type == QUE_RESEARCH ? classLocale::$lang['bld_research'] : classLocale::$lang['bld_create']),
     'STRING_BUILD_TIME' => $que_type == QUE_RESEARCH ? classLocale::$lang['ResearchTime'] : classLocale::$lang['ConstructionTime'],

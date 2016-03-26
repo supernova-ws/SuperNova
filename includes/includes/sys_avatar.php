@@ -36,8 +36,8 @@ function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar')
       }
 
       $avatar_size = getimagesize($_FILES['avatar']['tmp_name']);
-      $avatar_max_width  = $config-> avatar_max_width;
-      $avatar_max_height = $config-> avatar_max_height;
+      $avatar_max_width  = classSupernova::$config-> avatar_max_width;
+      $avatar_max_height = classSupernova::$config-> avatar_max_height;
       if($avatar_size[0] > $avatar_max_width || $avatar_size[1] > $avatar_max_height)
       {
         $aspect_ratio = min($avatar_max_width / $avatar_size[0], $avatar_max_height / $avatar_size[1]);

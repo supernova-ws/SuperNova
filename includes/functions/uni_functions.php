@@ -110,17 +110,17 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['temp_min'] = $planet['temp_min_original'] = $t_min;
   $planet['temp_max'] = $planet['temp_max_original'] = $t_max;
 
-  $planet['metal'] = $config->eco_planet_starting_metal;
-  $planet['crystal'] = $config->eco_planet_starting_crystal;
-  $planet['deuterium'] = $config->eco_planet_starting_deuterium;
-  $planet['metal_max'] = $config->eco_planet_storage_metal;
-  $planet['crystal_max'] = $config->eco_planet_storage_crystal;
-  $planet['deuterium_max'] = $config->eco_planet_storage_deuterium;
+  $planet['metal'] = classSupernova::$config->eco_planet_starting_metal;
+  $planet['crystal'] = classSupernova::$config->eco_planet_starting_crystal;
+  $planet['deuterium'] = classSupernova::$config->eco_planet_starting_deuterium;
+  $planet['metal_max'] = classSupernova::$config->eco_planet_storage_metal;
+  $planet['crystal_max'] = classSupernova::$config->eco_planet_storage_crystal;
+  $planet['deuterium_max'] = classSupernova::$config->eco_planet_storage_deuterium;
 
   $density_info_resources = &$density_list[$core_info[UNIT_PLANET_DENSITY_INDEX]][UNIT_RESOURCES];
-  $planet['metal_perhour'] = $config->metal_basic_income * $density_info_resources[RES_METAL];
-  $planet['crystal_perhour'] = $config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
-  $planet['deuterium_perhour'] = $config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
+  $planet['metal_perhour'] = classSupernova::$config->metal_basic_income * $density_info_resources[RES_METAL];
+  $planet['crystal_perhour'] = classSupernova::$config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
+  $planet['deuterium_perhour'] = classSupernova::$config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
   $RetValue = classSupernova::db_ins_record(LOC_PLANET,
     "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
@@ -332,9 +332,9 @@ function uni_coordinates_valid($coordinates, $prefix = '') {
   $coordinates["{$prefix}planet"] = intval($coordinates["{$prefix}planet"]);
 
   return
-    isset($coordinates["{$prefix}galaxy"]) && $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= $config->game_maxGalaxy &&
-    isset($coordinates["{$prefix}system"]) && $coordinates["{$prefix}system"] > 0 && $coordinates["{$prefix}system"] <= $config->game_maxSystem &&
-    isset($coordinates["{$prefix}planet"]) && $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= $config->game_maxPlanet;
+    isset($coordinates["{$prefix}galaxy"]) && $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= classSupernova::$config->game_maxGalaxy &&
+    isset($coordinates["{$prefix}system"]) && $coordinates["{$prefix}system"] > 0 && $coordinates["{$prefix}system"] <= classSupernova::$config->game_maxSystem &&
+    isset($coordinates["{$prefix}planet"]) && $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= classSupernova::$config->game_maxPlanet;
 }
 
 function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
@@ -345,7 +345,7 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
       throw new exception(classLocale::$lang['ov_teleport_err_cooldown'], ERR_ERROR);
     }
 
-    if(mrc_get_level($user, null, RES_DARK_MATTER) < $config->planet_teleport_cost) {
+    if(mrc_get_level($user, null, RES_DARK_MATTER) < classSupernova::$config->planet_teleport_cost) {
       throw new exception(classLocale::$lang['ov_teleport_err_no_dark_matter'], ERR_ERROR);
     }
 

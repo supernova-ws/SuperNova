@@ -236,7 +236,7 @@ class Player extends UnitContainer {
         $astrotech = mrc_get_level($this->db_row, null, TECH_ASTROTECH);
         $colonies = $astrotech - $expeditions;
 
-        $this->db_row[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+        $this->db_row[UNIT_PLAYER_COLONIES_MAX] = classSupernova::$config->player_max_colonies < 0 ? $colonies : min(classSupernova::$config->player_max_colonies, $colonies);
       }
 
       return $this->db_row[UNIT_PLAYER_COLONIES_MAX];
@@ -244,7 +244,7 @@ class Player extends UnitContainer {
       $expeditions = get_player_max_expeditons($this->db_row, $astrotech);
       $colonies = $astrotech - $expeditions;
 
-      return $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+      return classSupernova::$config->player_max_colonies < 0 ? $colonies : min(classSupernova::$config->player_max_colonies, $colonies);
     }
   }
 

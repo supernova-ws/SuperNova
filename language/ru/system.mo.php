@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #41a6.35#
+* @version #41a6.63#
 *
 */
 
@@ -973,8 +973,8 @@ $a_lang_array = (array(
     REGISTER_ERROR_EMAIL_EXISTS => 'Этот электронный адрес уже зарегестрирован. Если вы уже регистрировались в игре - попробуйте воспользоваться сбросом пароля. Иначе - используйте другой почтовый ящик',
 
     PASSWORD_RESTORE_ERROR_EMAIL_NOT_EXISTS => 'Нет игрока с таким основным емейлом',
-    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'Запросить код восстановления можно только 1 раз в 10 минут. Если вы не получили письмо - проверьте папку СПАМа или напишите письмо Администрации сервера на email <span class="ok">' . $config->server_email . '</span> с адреса, который вы использовали при регистрации',
-    PASSWORD_RESTORE_ERROR_SENDING => 'Ошибка отправки письма. Напишите письмо Администрации сервера на email <span class="ok">' . $config->server_email . '</span>',
+    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'Запросить код восстановления можно только 1 раз в 10 минут. Если вы не получили письмо - проверьте папку СПАМа или напишите письмо Администрации сервера на email <span class="ok">' . classSupernova::$config->server_email . '</span> с адреса, который вы использовали при регистрации',
+    PASSWORD_RESTORE_ERROR_SENDING => 'Ошибка отправки письма. Напишите письмо Администрации сервера на email <span class="ok">' . classSupernova::$config->server_email . '</span>',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Письмо с кодом восстановления успешно отправлено',
 
     PASSWORD_RESTORE_ERROR_CODE_EMPTY => 'Код восстановления не может быть пустым',

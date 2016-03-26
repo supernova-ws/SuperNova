@@ -85,8 +85,8 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
         db_referral_update_dm($user_id, $dark_matter);
         $new_referral = db_referral_get_by_id($user_id);
 
-        $partner_bonus = floor($new_referral['dark_matter'] / $config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= $config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / $config->rpg_bonus_divisor) : 0);
-        if($partner_bonus > 0 && $new_referral['dark_matter'] >= $config->rpg_bonus_minimum) {
+        $partner_bonus = floor($new_referral['dark_matter'] / classSupernova::$config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= classSupernova::$config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / classSupernova::$config->rpg_bonus_divisor) : 0);
+        if($partner_bonus > 0 && $new_referral['dark_matter'] >= classSupernova::$config->rpg_bonus_minimum) {
           rpg_points_change($new_referral['id_partner'], RPG_REFERRAL, $partner_bonus, "Incoming From Referral ID {$user_id}");
         }
       }

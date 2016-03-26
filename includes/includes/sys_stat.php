@@ -33,9 +33,9 @@
 function sta_set_time_limit($sta_update_msg = 'updating something', $next_step = true) {
   global $config, $debug, $sta_update_step;
 
-  $value = $config->stats_minimal_interval ? $config->stats_minimal_interval : 600;
+  $value = classSupernova::$config->stats_minimal_interval ? classSupernova::$config->stats_minimal_interval : 600;
   set_time_limit($value);
-  $config->db_saveItem('var_stat_update_end', time() + $value);
+  classSupernova::$config->db_saveItem('var_stat_update_end', time() + $value);
 
   $sta_update_msg = db_escape($sta_update_msg);
 
@@ -44,7 +44,7 @@ function sta_set_time_limit($sta_update_msg = 'updating something', $next_step =
   }
   $sta_update_msg = "Update in progress. Step {$sta_update_step}/14: {$sta_update_msg}.";
 
-  $config->db_saveItem('var_stat_update_msg', $sta_update_msg);
+  classSupernova::$config->db_saveItem('var_stat_update_msg', $sta_update_msg);
   if($next_step) {
     $debug->warning($sta_update_msg, 'Stat update', LOG_INFO_STAT_PROCESS);
   }
@@ -69,15 +69,15 @@ function sys_stat_calculate_flush(&$data, $force = false) {
 function sys_stat_calculate() {
   global $config, $sta_update_step;
 
-  ini_set('memory_limit', $config->stats_php_memory ? $config->stats_php_memory : '1024M');
+  ini_set('memory_limit', classSupernova::$config->stats_php_memory ? classSupernova::$config->stats_php_memory : '1024M');
 
   $user_skip_list = sys_stat_get_user_skip_list();
 
   // $sn_groups_resources_loot = sn_get_groups('resources_loot');
-  $rate[RES_METAL] = $config->rpg_exchange_metal;
-  $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
-  $rate[RES_DEUTERIUM] = $config->rpg_exchange_deuterium / $config->rpg_exchange_metal;
-  $rate[RES_DARK_MATTER] = $config->rpg_exchange_darkMatter / $config->rpg_exchange_metal;
+  $rate[RES_METAL] = classSupernova::$config->rpg_exchange_metal;
+  $rate[RES_CRYSTAL] = classSupernova::$config->rpg_exchange_crystal / classSupernova::$config->rpg_exchange_metal;
+  $rate[RES_DEUTERIUM] = classSupernova::$config->rpg_exchange_deuterium / classSupernova::$config->rpg_exchange_metal;
+  $rate[RES_DARK_MATTER] = classSupernova::$config->rpg_exchange_darkMatter / classSupernova::$config->rpg_exchange_metal;
 
   $sta_update_step = -1;
 
@@ -324,7 +324,7 @@ function sys_stat_calculate() {
   db_stat_list_update_ally_stats();
 
   // Counting real user count and updating values
-  $config->db_saveItem('users_amount', db_user_count());
+  classSupernova::$config->db_saveItem('users_amount', db_user_count());
 
   sn_db_transaction_commit();
 }

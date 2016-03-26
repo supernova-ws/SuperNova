@@ -20,13 +20,13 @@ function sn_fleet_page3($time_to_travel) {
 
   // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = '';
-  if(!$galaxy || $galaxy > $config->game_maxGalaxy || $galaxy < 1) {
+  if(!$galaxy || $galaxy > classSupernova::$config->game_maxGalaxy || $galaxy < 1) {
     $errorlist .= classLocale::$lang['fl_limit_galaxy'];
   }
-  if(!$system || $system > $config->game_maxSystem || $system < 1) {
+  if(!$system || $system > classSupernova::$config->game_maxSystem || $system < 1) {
     $errorlist .= classLocale::$lang['fl_limit_system'];
   }
-  if(!$planet || $planet < 1 || ($planet > $config->game_maxPlanet && $target_mission != MT_EXPLORE)) {
+  if(!$planet || $planet < 1 || ($planet > classSupernova::$config->game_maxPlanet && $target_mission != MT_EXPLORE)) {
     $errorlist .= classLocale::$lang['fl_limit_planet'];
   }
   if($planetrow['galaxy'] == $galaxy && $planetrow['system'] == $system && $planetrow['planet'] == $planet && $planetrow['planet_type'] == $planet_type) {
@@ -186,7 +186,7 @@ function sn_fleet_page3($time_to_travel) {
           $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
           die();
         }
-        $mission_time_in_seconds = ceil($mission_time_in_hours * 3600 / ($target_mission == MT_EXPLORE && $config->game_speed_expedition ? $config->game_speed_expedition : 1));
+        $mission_time_in_seconds = ceil($mission_time_in_hours * 3600 / ($target_mission == MT_EXPLORE && classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1));
       }
     }
     $return_time = $arrival_time + $mission_time_in_seconds + $time_to_travel;

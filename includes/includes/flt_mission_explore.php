@@ -68,7 +68,7 @@ function flt_mission_explore(&$mission_data) {
   }
   $fleet_capacity = $objFleet->shipsGetHoldFree();
 
-  $flt_stay_hours = ($objFleet->time_mission_job_complete - $objFleet->time_arrive_to_target) / 3600 * ($config->game_speed_expedition ? $config->game_speed_expedition : 1);
+  $flt_stay_hours = ($objFleet->time_mission_job_complete - $objFleet->time_arrive_to_target) / 3600 * (classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1);
 
   $outcome_list = sn_get_groups('mission_explore_outcome_list');
   $outcome_list[FLT_EXPEDITION_OUTCOME_NONE]['chance'] = ceil(200 / pow($flt_stay_hours, 1 / 1.7));

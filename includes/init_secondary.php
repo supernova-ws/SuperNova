@@ -2,19 +2,19 @@
 
 $classLocale = classLocale::$lang;
 
-if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= SN_TIME_NOW) {
+if(classSupernova::$config->server_updater_check_auto && classSupernova::$config->server_updater_check_last + classSupernova::$config->server_updater_check_period <= SN_TIME_NOW) {
   include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);
 }
 
-if($config->user_birthday_gift && SN_TIME_NOW - $config->user_birthday_celebrate > PERIOD_DAY) {
+if(classSupernova::$config->user_birthday_gift && SN_TIME_NOW - classSupernova::$config->user_birthday_celebrate > PERIOD_DAY) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/user_birthday_celebrate" . DOT_PHP_EX);
   sn_user_birthday_celebrate();
 }
 
-if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TIME_NOW) {
-  $config->db_saveItem('var_online_user_count', db_user_count(true));
-  $config->db_saveItem('var_online_user_time', SN_TIME_NOW);
-  if($config->server_log_online) {
+if(!classSupernova::$config->var_online_user_count || classSupernova::$config->var_online_user_time + 30 < SN_TIME_NOW) {
+  classSupernova::$config->db_saveItem('var_online_user_count', db_user_count(true));
+  classSupernova::$config->db_saveItem('var_online_user_time', SN_TIME_NOW);
+  if(classSupernova::$config->server_log_online) {
     db_log_online_insert();
   }
 }
@@ -72,15 +72,15 @@ classLocale::$lang->lng_switch(sys_get_param_str('lang'));
 global $dpath;
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
+classSupernova::$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
   ? define('INSTALL_MODE', GAME_DISABLE_INSTALL)
   : false;
 
-if($template_result[F_GAME_DISABLE] = $config->game_disable) {
+if($template_result[F_GAME_DISABLE] = classSupernova::$config->game_disable) {
   $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse(
-    $config->game_disable == GAME_DISABLE_REASON
-      ? $config->game_disable_reason
-      : classLocale::$lang['sys_game_disable_reason'][$config->game_disable]
+    classSupernova::$config->game_disable == GAME_DISABLE_REASON
+      ? classSupernova::$config->game_disable_reason
+      : classLocale::$lang['sys_game_disable_reason'][classSupernova::$config->game_disable]
   );
   if(defined('IN_API')) {
     return;
@@ -91,7 +91,7 @@ if($template_result[F_GAME_DISABLE] = $config->game_disable) {
     &&
     !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))
   ) {
-    message($template_result[F_GAME_DISABLE_REASON], $config->game_name);
+    message($template_result[F_GAME_DISABLE_REASON], classSupernova::$config->game_name);
     ob_end_flush();
     die();
   }
@@ -149,7 +149,7 @@ $skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_ski
 if(
   !$skip_fleet_update
   && !(defined('IN_AJAX') && IN_AJAX === true)
-  && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval
+  && SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_last) > classSupernova::$config->fleet_update_interval
 ) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($skip_fleet_update);

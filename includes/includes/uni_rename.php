@@ -9,18 +9,18 @@ try
     $uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
     $uni_system = sys_get_param_int('system');
 
-    if($uni_galaxy < 1 || $uni_galaxy > $config->game_maxGalaxy)
+    if($uni_galaxy < 1 || $uni_galaxy > classSupernova::$config->game_maxGalaxy)
     {
       throw new exception(classLocale::$lang['uni_msg_error_wrong_galaxy'], ERR_ERROR);
     }
 
-    if($uni_system < 0 || $uni_system > $config->game_maxSystem)
+    if($uni_system < 0 || $uni_system > classSupernova::$config->game_maxSystem)
     {
       throw new exception(classLocale::$lang['uni_msg_error_wrong_system'], ERR_ERROR);
     }
 
     $uni_row = db_universe_get($uni_galaxy, $uni_system);
-    $uni_row['universe_price'] += $uni_system ? $config->uni_price_system : $config->uni_price_galaxy;
+    $uni_row['universe_price'] += $uni_system ? classSupernova::$config->uni_price_system : classSupernova::$config->uni_price_galaxy;
     $uni_row['universe_name'] = strip_tags($uni_row['universe_name'] ? $uni_row['universe_name'] : ($uni_system ? "{$classLocale['sys_system']} [{$uni_galaxy}:{$uni_system}]" : "{$classLocale['sys_galaxy']} {$uni_galaxy}"));
 
     if(sys_get_param_str('uni_name_submit'))

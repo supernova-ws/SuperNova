@@ -138,7 +138,7 @@ function sn_imperator_view($template = null) {
 
 
   $template->assign_vars(array(
-    'USERS_TOTAL'          => $config->users_amount,
+    'USERS_TOTAL'          => classSupernova::$config->users_amount,
 
     'USER_ID'              => $user_id,
     'user_username'        => player_nick_render_to_html($user_data, true),

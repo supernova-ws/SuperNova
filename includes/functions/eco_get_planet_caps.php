@@ -19,13 +19,13 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0) {
     $sn_group_modifiers = sn_get_groups('modifiers');
     $config_resource_multiplier = game_resource_multiplier();
     $config_resource_multiplier_plain = game_resource_multiplier(true);
-    $config_eco_scale_storage = $config->eco_scale_storage ? $config_resource_multiplier_plain : 1;
+    $config_eco_scale_storage = classSupernova::$config->eco_scale_storage ? $config_resource_multiplier_plain : 1;
   }
 
   $caps = array();
-  $caps['storage'][RES_METAL][0] = $config->eco_planet_storage_metal;
-  $caps['storage'][RES_CRYSTAL][0] = $config->eco_planet_storage_crystal;
-  $caps['storage'][RES_DEUTERIUM][0] = $config->eco_planet_storage_deuterium;
+  $caps['storage'][RES_METAL][0] = classSupernova::$config->eco_planet_storage_metal;
+  $caps['storage'][RES_CRYSTAL][0] = classSupernova::$config->eco_planet_storage_crystal;
+  $caps['storage'][RES_DEUTERIUM][0] = classSupernova::$config->eco_planet_storage_deuterium;
   foreach(sn_get_groups('storages') as $unit_id) {
     foreach(get_unit_param($unit_id, P_STORAGE) as $resource_id => $function) {
       $caps['storage'][$resource_id][$unit_id] = floor($config_eco_scale_storage *
@@ -41,10 +41,10 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0) {
   $sn_group_planet_density = sn_get_groups('planet_density');
   $planet_density = $sn_group_planet_density[$planet_row['density_index']][UNIT_RESOURCES];
 
-  $caps['production_full'][RES_METAL][0] = floor($config->metal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_METAL]) ? $planet_density[RES_METAL] : 1));
-  $caps['production_full'][RES_CRYSTAL][0] = floor($config->crystal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_CRYSTAL]) ? $planet_density[RES_CRYSTAL] : 1));
-  $caps['production_full'][RES_DEUTERIUM][0] = floor($config->deuterium_basic_income * $config_resource_multiplier * (isset($planet_density[RES_DEUTERIUM]) ? $planet_density[RES_DEUTERIUM] : 1));
-  $caps['production_full'][RES_ENERGY][0] = floor($config->energy_basic_income * $config_resource_multiplier_plain * (isset($planet_density[RES_ENERGY]) ? $planet_density[RES_ENERGY] : 1));
+  $caps['production_full'][RES_METAL][0] = floor(classSupernova::$config->metal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_METAL]) ? $planet_density[RES_METAL] : 1));
+  $caps['production_full'][RES_CRYSTAL][0] = floor(classSupernova::$config->crystal_basic_income * $config_resource_multiplier * (isset($planet_density[RES_CRYSTAL]) ? $planet_density[RES_CRYSTAL] : 1));
+  $caps['production_full'][RES_DEUTERIUM][0] = floor(classSupernova::$config->deuterium_basic_income * $config_resource_multiplier * (isset($planet_density[RES_DEUTERIUM]) ? $planet_density[RES_DEUTERIUM] : 1));
+  $caps['production_full'][RES_ENERGY][0] = floor(classSupernova::$config->energy_basic_income * $config_resource_multiplier_plain * (isset($planet_density[RES_ENERGY]) ? $planet_density[RES_ENERGY] : 1));
 
   foreach(sn_get_groups('factories') as $unit_id) {
     $unit_data = get_unit_param($unit_id);

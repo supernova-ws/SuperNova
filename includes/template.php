@@ -299,7 +299,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 
     'SN_TIME_NOW'          => SN_TIME_NOW,
     'LOGIN_LOGOUT'         => $is_login,
-    'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
+    'GAME_MODE_CSS_PREFIX' => classSupernova::$config->game_mode == GAME_BLITZ ? 'blitz_' : '',
     //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
     'TIME_DIFF_MEASURE'    => intval(
       empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
@@ -310,9 +310,9 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 
     'title'                    => ($title ? "{$title} - " : '') . classLocale::$lang['sys_server'] . " {$config->game_name} - " . classLocale::$lang['sys_supernova'],
     '-meta-'                   => $metatags,
-    'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
-    'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
-    'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
+    'ADV_SEO_META_DESCRIPTION' => classSupernova::$config->adv_seo_meta_description,
+    'ADV_SEO_META_KEYWORDS'    => classSupernova::$config->adv_seo_meta_keywords,
+    'ADV_SEO_JAVASCRIPT'       => classSupernova::$config->adv_seo_javascript,
 
     'LANG_LANGUAGE'  => classLocale::$lang['LANG_INFO']['LANG_NAME_ISO2'],
     'LANG_ENCODING'  => 'utf-8',
@@ -359,13 +359,13 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   // Global footer
   $template = gettemplate('_global_footer', true);
   $template->assign_vars(array(
-    'ADMIN_EMAIL' => $config->game_adminEmail,
+    'ADMIN_EMAIL' => classSupernova::$config->game_adminEmail,
     'SN_TIME_NOW' => SN_TIME_NOW,
     'SN_VERSION'  => SN_VERSION,
   ));
   displayP(parsetemplate($template));
 
-  $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
+  $user['authlevel'] >= 3 && classSupernova::$config->debug ? $debug->echo_log() : false;;
 
   sn_db_disconnect();
 
@@ -535,9 +535,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   $time_now_parsed = getdate(SN_TIME_NOW);
   $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 
-  if($config->game_news_overview) {
+  if(classSupernova::$config->game_news_overview) {
     $user_last_read_safe = intval($user['news_lastread']);
-    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}", $config->game_news_overview);
+    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}", classSupernova::$config->game_news_overview);
   }
 
   $notes_query = db_note_list_by_owner($user['id'], true);
@@ -564,16 +564,16 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
       $time_local_parsed['hours'], $time_local_parsed['minutes'], $time_local_parsed['seconds']
     ),
 
-    'GAME_BLITZ_REGISTER'             => $config->game_blitz_register,
-    'GAME_BLITZ_REGISTER_TEXT'        => classLocale::$lang['sys_blitz_registration_mode_list'][$config->game_blitz_register],
-    'BLITZ_REGISTER_OPEN'             => $config->game_blitz_register == BLITZ_REGISTER_OPEN,
-    'BLITZ_REGISTER_CLOSED'           => $config->game_blitz_register == BLITZ_REGISTER_CLOSED,
-    'BLITZ_REGISTER_SHOW_LOGIN'       => $config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
-    'BLITZ_REGISTER_DISCLOSURE_NAMES' => $config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
-    'GAME_BLITZ'                      => $config->game_mode == GAME_BLITZ,
+    'GAME_BLITZ_REGISTER'             => classSupernova::$config->game_blitz_register,
+    'GAME_BLITZ_REGISTER_TEXT'        => classLocale::$lang['sys_blitz_registration_mode_list'][classSupernova::$config->game_blitz_register],
+    'BLITZ_REGISTER_OPEN'             => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_OPEN,
+    'BLITZ_REGISTER_CLOSED'           => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_CLOSED,
+    'BLITZ_REGISTER_SHOW_LOGIN'       => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_SHOW_LOGIN,
+    'BLITZ_REGISTER_DISCLOSURE_NAMES' => classSupernova::$config->game_blitz_register == BLITZ_REGISTER_DISCLOSURE_NAMES,
+    'GAME_BLITZ'                      => classSupernova::$config->game_mode == GAME_BLITZ,
 
-    'USERS_ONLINE'  => $config->var_online_user_count,
-    'USERS_TOTAL'   => $config->users_amount,
+    'USERS_ONLINE'  => classSupernova::$config->var_online_user_count,
+    'USERS_TOTAL'   => classSupernova::$config->users_amount,
     'USER_RANK'     => $user['total_rank'],
     'USER_NICK'     => $user['username'],
     'USER_AVATAR'   => $user['avatar'],
@@ -611,7 +611,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
     'TOPNAV_QUEST_COMPLETE' => get_quest_amount_complete($user['id']),
 
-    'GAME_NEWS_OVERVIEW'       => $config->game_news_overview,
+    'GAME_NEWS_OVERVIEW'       => classSupernova::$config->game_news_overview,
     'GAME_RESEARCH_DISABLED'   => defined('GAME_RESEARCH_DISABLED') && GAME_RESEARCH_DISABLED,
     'GAME_DEFENSE_DISABLED'    => defined('GAME_DEFENSE_DISABLED') && GAME_DEFENSE_DISABLED,
     'GAME_STRUCTURES_DISABLED' => defined('GAME_STRUCTURES_DISABLED') && GAME_STRUCTURES_DISABLED,

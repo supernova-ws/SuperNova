@@ -22,7 +22,7 @@ function flt_travel_distance($from, $to) {
   global $config;
 
   if($from['galaxy'] != $to['galaxy']) {
-    $distance = abs($from['galaxy'] - $to['galaxy']) * $config->uni_galaxy_distance;
+    $distance = abs($from['galaxy'] - $to['galaxy']) * classSupernova::$config->uni_galaxy_distance;
   } elseif($from['system'] != $to['system']) {
     $distance = abs($from['system'] - $to['system']) * 5 * 19 + 2700;
   } elseif($from['planet'] != $to['planet']) {
@@ -87,8 +87,8 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
 function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duration, $fleet_group = 0) {
   global $config;
 
-  $config_bashing_attacks = $config->fleet_bashing_attacks;
-  $config_bashing_interval = $config->fleet_bashing_interval;
+  $config_bashing_attacks = classSupernova::$config->fleet_bashing_attacks;
+  $config_bashing_interval = classSupernova::$config->fleet_bashing_interval;
   if(!$config_bashing_attacks) {
     // Bashing allowed - protection disabled
     return ATTACK_ALLOWED;
@@ -101,7 +101,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
       $relations = $relations[$enemy['ally_id']];
       switch($relations['alliance_diplomacy_relation']) {
         case ALLY_DIPLOMACY_WAR:
-          if(SN_TIME_NOW - $relations['alliance_diplomacy_time'] <= $config->fleet_bashing_war_delay) {
+          if(SN_TIME_NOW - $relations['alliance_diplomacy_time'] <= classSupernova::$config->fleet_bashing_war_delay) {
             $bashing_result = ATTACK_BASHING_WAR_DELAY;
           } else {
             return ATTACK_ALLOWED;
@@ -118,7 +118,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
     }
   }
 
-  $time_limit = SN_TIME_NOW + $flight_duration - $config->fleet_bashing_scope;
+  $time_limit = SN_TIME_NOW + $flight_duration - classSupernova::$config->fleet_bashing_scope;
   $bashing_list = array(SN_TIME_NOW);
 
   // Retrieving flying fleets
@@ -157,7 +157,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
     $last_attack = $bash_time;
   }
 
-  return ($wave > $config->fleet_bashing_waves ? $bashing_result : ATTACK_ALLOWED);
+  return ($wave > classSupernova::$config->fleet_bashing_waves ? $bashing_result : ATTACK_ALLOWED);
 }
 
 function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false) { return sn_function_call(__FUNCTION__, array($planet_src, $planet_dst, $fleet, $mission, $options, &$result)); }
@@ -351,7 +351,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
 
   // Is it transport? If yes - checking for buffing to prevent mega-alliance destroyer
   if($mission == MT_TRANSPORT) {
-    if($user_points >= $enemy_points || $config->allow_buffing) {
+    if($user_points >= $enemy_points || classSupernova::$config->allow_buffing) {
       return $result = ATTACK_ALLOWED;
     } else {
       return $result = ATTACK_BUFFING;
@@ -368,14 +368,14 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
   // Okay. Now skipping protection checks for inactive longer then 1 week
   if(!$enemy['onlinetime'] || $enemy['onlinetime'] >= (SN_TIME_NOW - 60 * 60 * 24 * 7)) {
     if(
-      ($enemy_points <= $config->game_noob_points && $user_points > $config->game_noob_points)
+      ($enemy_points <= classSupernova::$config->game_noob_points && $user_points > classSupernova::$config->game_noob_points)
       ||
-      ($config->game_noob_factor && $user_points > $enemy_points * $config->game_noob_factor)
+      (classSupernova::$config->game_noob_factor && $user_points > $enemy_points * classSupernova::$config->game_noob_factor)
     ) {
       if($mission != MT_HOLD) {
         return $result = ATTACK_NOOB;
       }
-      if($mission == MT_HOLD && !($user['ally_id'] && $user['ally_id'] == $enemy['ally_id'] && $config->ally_help_weak)) {
+      if($mission == MT_HOLD && !($user['ally_id'] && $user['ally_id'] == $enemy['ally_id'] && classSupernova::$config->ally_help_weak)) {
         return $result = ATTACK_NOOB;
       }
     }

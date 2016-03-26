@@ -26,15 +26,15 @@ function upd_do_query($query, $no_log = false) {
 function upd_check_key($key, $default_value, $condition = false) {
   global $config, $sys_log_disabled;
 
-  $config->db_loadItem($key);
-  if($condition || !isset($config->$key)) {
+  classSupernova::$config->db_loadItem($key);
+  if($condition || !isset(classSupernova::$config->$key)) {
     upd_add_more_time();
     if(!$sys_log_disabled) {
       upd_log_message("Updating config key '{$key}' with value '{$default_value}'");
     }
-    $config->db_saveItem($key, $default_value);
+    classSupernova::$config->db_saveItem($key, $default_value);
   } else {
-    $config->db_saveItem($key);
+    classSupernova::$config->db_saveItem($key);
   }
 }
 
@@ -49,8 +49,8 @@ function upd_log_version_update() {
 function upd_add_more_time($time = 0) {
   global $config, $sys_log_disabled;
 
-  $time = $time ? $time : ($config->upd_lock_time ? $config->upd_lock_time : 30);
-  !$sys_log_disabled ? $config->db_saveItem('var_db_update_end', SN_TIME_NOW + $time) : false;
+  $time = $time ? $time : (classSupernova::$config->upd_lock_time ? classSupernova::$config->upd_lock_time : 30);
+  !$sys_log_disabled ? classSupernova::$config->db_saveItem('var_db_update_end', SN_TIME_NOW + $time) : false;
   set_time_limit($time);
 }
 
@@ -84,8 +84,8 @@ function upd_unset_table_info($table_name) {
 function upd_load_table_info($prefix_table_name, $prefixed = true) {
   global $config, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
-  $tableName = $prefixed ? str_replace($config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
-  $prefix_table_name = $prefixed ? $prefix_table_name : $config->db_prefix . $prefix_table_name;
+  $tableName = $prefixed ? str_replace(classSupernova::$config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
+  $prefix_table_name = $prefixed ? $prefix_table_name : classSupernova::$config->db_prefix . $prefix_table_name;
 
   upd_unset_table_info($tableName);
 
@@ -102,7 +102,7 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
 
   $q1 = upd_do_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name) . "' AND TABLE_NAME = '{$prefix_table_name}' AND REFERENCED_TABLE_NAME is not null;", true);
   while($r1 = db_fetch($q1)) {
-    $table_referenced = str_replace($config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
+    $table_referenced = str_replace(classSupernova::$config->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
 
     $update_foreigns[$tableName][$r1['CONSTRAINT_NAME']] .= "{$r1['COLUMN_NAME']},{$table_referenced},{$r1['REFERENCED_COLUMN_NAME']};";
   }
@@ -162,7 +162,7 @@ function upd_create_table($table_name, $declaration) {
 
   if(!$update_tables[$table_name]) {
     upd_do_query('set foreign_key_checks = 0;', true);
-    $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
+    $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{classSupernova::$config->db_prefix}{$table_name}` {$declaration}");
     $error = db_error();
     if($error) {
       die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));

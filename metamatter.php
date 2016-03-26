@@ -22,7 +22,7 @@ $template = gettemplate('metamatter', true);
 
 $player_currency_default = classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT];
 $player_currency = sys_get_param_str('player_currency', $player_currency_default);
-empty(classLocale::$lang['pay_currency_list'][$player_currency]) ? ($player_currency = $player_currency_default ? $player_currency_default : $config->payment_currency_default) : false;
+empty(classLocale::$lang['pay_currency_list'][$player_currency]) ? ($player_currency = $player_currency_default ? $player_currency_default : classSupernova::$config->payment_currency_default) : false;
 $player_currency_default != $player_currency ? classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT] = $player_currency : false;
 
 // Таблица скидок
@@ -176,7 +176,7 @@ foreach(classLocale::$lang['pay_currency_list'] as $key => $value) {
     'COURSE_REVERSE'  => pretty_number(1 / $course, 4),
     'MM_PER_CURRENCY' => pretty_number(sn_module_payment::currency_convert(1, $key, 'MM_')),
     'LOT_PRICE'       => sn_module_payment::currency_convert(get_mm_cost(), 'MM_', $key),
-    'DEFAULT'         => $key == $config->payment_currency_default,
+    'DEFAULT'         => $key == classSupernova::$config->payment_currency_default,
     // 'UNIT_PER_LOT' => sn_module_payment::currency_convert(2500, 'MM_', $key),
   ));
 }
@@ -252,7 +252,7 @@ $income_metamatter_text = pretty_number(sn_module_payment::bonus_calculate($requ
 $template->assign_vars(array(
   'PAGE_HEADER' => classLocale::$lang['sys_metamatter'],
 
-  'URL_PURCHASE' => $config->url_purchase_metamatter,
+  'URL_PURCHASE' => classSupernova::$config->url_purchase_metamatter,
 
   'PAYMENT_TYPE'        => $payment_type_selected,
   'PAYMENT_METHOD'      => $payment_method_selected,
@@ -272,7 +272,7 @@ $template->assign_vars(array(
   'UNIT_AMOUNT_TEXT_COST_BASE'  => pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
 
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number(get_mm_cost(), true, true),
-  'PAYMENT_CURRENCY_DEFAULT_TEXT'     => classLocale::$lang['pay_currency_list'][$config->payment_currency_default],
+  'PAYMENT_CURRENCY_DEFAULT_TEXT'     => classLocale::$lang['pay_currency_list'][classSupernova::$config->payment_currency_default],
 
   'METAMATTER' => mrc_get_level($user, null, RES_METAMATTER),
 

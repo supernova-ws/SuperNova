@@ -18,10 +18,10 @@ function eco_mrk_trader($user, $planetrow = null) {
   lng_include('market');
 
   $rates = array(
-    RES_METAL => $config->rpg_exchange_metal,
-    RES_CRYSTAL => $config->rpg_exchange_crystal,
-    RES_DEUTERIUM => $config->rpg_exchange_deuterium,
-    RES_DARK_MATTER => $config->rpg_exchange_darkMatter
+    RES_METAL => classSupernova::$config->rpg_exchange_metal,
+    RES_CRYSTAL => classSupernova::$config->rpg_exchange_crystal,
+    RES_DEUTERIUM => classSupernova::$config->rpg_exchange_deuterium,
+    RES_DARK_MATTER => classSupernova::$config->rpg_exchange_darkMatter
   );
 
   // $dm_db_name = pname_resource_name(RES_DARK_MATTER);
@@ -80,7 +80,7 @@ function eco_mrk_trader($user, $planetrow = null) {
       $qry[] = "`{$exchange_to_db_name}` = `{$exchange_to_db_name}` + {$amount}";
     }
 
-    $operation_cost = $config->rpg_cost_trader * ($exchangeTo == RES_DARK_MATTER ? 3 : 1) + $tradeList[RES_DARK_MATTER];
+    $operation_cost = classSupernova::$config->rpg_cost_trader * ($exchangeTo == RES_DARK_MATTER ? 3 : 1) + $tradeList[RES_DARK_MATTER];
 
     $intError = $value <= 0 ? MARKET_ZERO_DEAL : $intError;
     $intError = mrc_get_level($user, null, RES_DARK_MATTER) < $operation_cost ? MARKET_NO_DM : $intError;
@@ -112,7 +112,7 @@ function eco_mrk_trader($user, $planetrow = null) {
 
   foreach(sn_get_groups('resources_trader') as $resource_id) {
     if($resource_id == RES_DARK_MATTER) {
-      $amount = floor(mrc_get_level($user, null, RES_DARK_MATTER) - $config->rpg_cost_trader);
+      $amount = floor(mrc_get_level($user, null, RES_DARK_MATTER) - classSupernova::$config->rpg_cost_trader);
     } else {
       $amount = floor(mrc_get_level($user, $planetrow, $resource_id));
     }
@@ -128,7 +128,7 @@ function eco_mrk_trader($user, $planetrow = null) {
   }
 
   $template->assign_vars(array(
-    'rpg_cost_trader'   => $config->rpg_cost_trader,
+    'rpg_cost_trader'   => classSupernova::$config->rpg_cost_trader,
     // 'message' => $message,
     'MODE' => $mode,
   ));

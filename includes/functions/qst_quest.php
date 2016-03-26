@@ -104,7 +104,7 @@ function qst_render_page()
       break;
     }
     $query = db_quest_count();
-    $config->db_saveItem('quest_total', $query['count']);
+    classSupernova::$config->db_saveItem('quest_total', $query['count']);
   }
   elseif(!$user_id)
   {

@@ -25,7 +25,7 @@ function que_get_max_que_length($user, $planet, $que_id, $que_data = null) {
   $que_length = 1;
   switch($que_id) {
     case QUE_RESEARCH:
-      $que_length = $config->server_que_length_research + mrc_get_level($user, null, UNIT_PREMIUM); // TODO - вынести в модуль
+      $que_length = classSupernova::$config->server_que_length_research + mrc_get_level($user, null, UNIT_PREMIUM); // TODO - вынести в модуль
     break;
 
     default:
@@ -226,7 +226,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       foreach($resources_loot as $resource_id) {
         $resource_db_name = pname_resource_name($resource_id);
         $resource_got[$resource_id] = floor(mrc_get_level($user, $planet, $resource_id));
-        $resource_exchange_rates[$resource_id] = $config->__get("rpg_exchange_{$resource_db_name}");
+        $resource_exchange_rates[$resource_id] = classSupernova::$config->__get("rpg_exchange_{$resource_db_name}");
         $resource_diff[$resource_id] = $resource_got[$resource_id] - $build_data[BUILD_CREATE][$resource_id] * $unit_amount;
         $all_positive = $all_positive && ($resource_diff[$resource_id] > 0);
       }

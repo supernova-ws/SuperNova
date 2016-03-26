@@ -81,12 +81,12 @@ return;
   */
   global $config, $debug;
 
-  if($config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
+  if(classSupernova::$config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
     return;
   }
 
   sn_db_transaction_start();
-  if($config->db_loadItem('game_disable') != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime($config->db_loadItem('fleet_update_last')) <= $config->fleet_update_interval) {
+  if(classSupernova::$config->db_loadItem('game_disable') != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime(classSupernova::$config->db_loadItem('fleet_update_last')) <= classSupernova::$config->fleet_update_interval) {
     sn_db_transaction_rollback();
 
     return;
@@ -94,14 +94,14 @@ return;
 
 
   // Watchdog timer
-  if($config->db_loadItem('fleet_update_lock')) {
+  if(classSupernova::$config->db_loadItem('fleet_update_lock')) {
     if(defined('DEBUG_FLYING_FLEETS')) {
       $random = 0;
     } else {
       $random = mt_rand(240, 300);
     }
 
-    if(SN_TIME_NOW - strtotime($config->fleet_update_lock) <= $random) {
+    if(SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_lock) <= $random) {
       sn_db_transaction_rollback();
 
       return;
@@ -110,8 +110,8 @@ return;
     }
   }
 
-  $config->db_saveItem('fleet_update_lock', SN_TIME_SQL);
-  $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
+  classSupernova::$config->db_saveItem('fleet_update_lock', SN_TIME_SQL);
+  classSupernova::$config->db_saveItem('fleet_update_last', SN_TIME_SQL);
   sn_db_transaction_commit();
 
 //log_file('Начинаем обсчёт флотов');
@@ -195,7 +195,7 @@ return;
 
     // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
     sn_db_transaction_start();
-    $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
+    classSupernova::$config->db_saveItem('fleet_update_last', SN_TIME_SQL);
 
 
     $mission_data = $sn_groups_mission[$objFleet->mission_type];
@@ -291,8 +291,8 @@ return;
     sn_db_transaction_commit();
   }
   sn_db_transaction_start();
-  $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
-  $config->db_saveItem('fleet_update_lock', '');
+  classSupernova::$config->db_saveItem('fleet_update_last', SN_TIME_SQL);
+  classSupernova::$config->db_saveItem('fleet_update_lock', '');
   sn_db_transaction_commit();
 
 //  log_file('Закончили обсчёт флотов');

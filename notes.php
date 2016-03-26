@@ -72,9 +72,9 @@ if(sys_get_param('note_delete')) {
   ($note_text = sys_get_param_str('note_text')) == db_escape(classLocale::$lang['note_new_text']) ? $note_text = '' : false;
 
   try {
-    $note_galaxy = max(0, min(sys_get_param_id('note_galaxy'), $config->game_maxGalaxy));
-    $note_system = max(0, min(sys_get_param_id('note_system'), $config->game_maxSystem));
-    $note_planet = max(0, min(sys_get_param_id('note_planet'), $config->game_maxPlanet + 1));
+    $note_galaxy = max(0, min(sys_get_param_id('note_galaxy'), classSupernova::$config->game_maxGalaxy));
+    $note_system = max(0, min(sys_get_param_id('note_system'), classSupernova::$config->game_maxSystem));
+    $note_planet = max(0, min(sys_get_param_id('note_planet'), classSupernova::$config->game_maxPlanet + 1));
 
     if(!$note_text && !$note_title && !$note_galaxy && !$note_system && !$note_planet) {
       throw new exception('note_err_note_empty', ERR_WARNING);

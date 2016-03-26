@@ -387,9 +387,9 @@ class classSupernova {
     static::$transaction_id++;
     doquery('START TRANSACTION');
 
-    if($config->db_manual_lock_enabled) {
-      $config->db_loadItem('var_db_manually_locked');
-      $config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
+    if(classSupernova::$config->db_manual_lock_enabled) {
+      classSupernova::$config->db_loadItem('var_db_manually_locked');
+      classSupernova::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
     }
 
     static::$db_in_transaction = true;
@@ -1315,7 +1315,7 @@ class classSupernova {
     empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
 
     // Initializing global "config" object
-    $config = static::$config = new classConfig(classSupernova::$cache_prefix);
+    classSupernova::$config = static::$config = new classConfig(classSupernova::$cache_prefix);
   }
 
   public static function init_debug_state() {

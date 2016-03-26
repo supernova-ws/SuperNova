@@ -57,7 +57,7 @@ $sn_menu = array(
     'TYPE'     => 'image',
     'ITEM'     => 'design/images/supernova.png',
     'LINK'     => '.',
-    'ALT'      => $config->game_name,
+    'ALT'      => classSupernova::$config->game_name,
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
   ),
@@ -85,12 +85,12 @@ $sn_menu = array(
 //    'LEVEL' => 'submenu',
     'TYPE'     => 'lang',
     'ITEM'     => 'm_faq',
-    'LINK'     => $config->url_faq,
+    'LINK'     => classSupernova::$config->url_faq,
     'BLANK'    => true,
     'ICON'     => true,
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
-    'DISABLED' => empty($config->url_faq),
+    'DISABLED' => empty(classSupernova::$config->url_faq),
   ),
   'menu_planet_overview'   => array(
     'LEVEL' => 'header',
@@ -185,7 +185,7 @@ $sn_menu = array(
     'LINK'     => 'alliance.php',
     'ICON'     => true,
     'LOCATION' => '+menu_empire_emperor',
-    'DISABLED' => $config->game_mode == GAME_BLITZ,
+    'DISABLED' => classSupernova::$config->game_mode == GAME_BLITZ,
   ),
   'menu_info_stats'         => array(
     'LEVEL' => 'submenu', // header
@@ -278,17 +278,17 @@ $sn_menu = array(
     'ITEM'     => 'AllyChat',
     'LINK'     => 'index.php?page=chat&mode=' . CHAT_MODE_ALLY,
     'ICON'     => true,
-    'DISABLED' => $config->game_mode == GAME_BLITZ,
+    'DISABLED' => classSupernova::$config->game_mode == GAME_BLITZ,
   ),
 
   'menu_comm_forum'      => array(
     'LEVEL'    => 'submenu',
     'TYPE'     => 'lang',
     'ITEM'     => 'm_forum',
-    'LINK'     => $config->url_forum,
+    'LINK'     => classSupernova::$config->url_forum,
     'BLANK'    => true,
     'ICON'     => true,
-    'DISABLED' => empty($config->url_forum),
+    'DISABLED' => empty(classSupernova::$config->url_forum),
   ),
 
 //  'menu_utils' => array(
@@ -303,7 +303,7 @@ $sn_menu = array(
     'ITEM'     => 'Search',
     'LINK'     => 'search.php',
     'ICON'     => true,
-    'DISABLED' => $config->game_mode == GAME_BLITZ,
+    'DISABLED' => classSupernova::$config->game_mode == GAME_BLITZ,
   ),
   'menu_utils_shortcuts' => array(
     'LEVEL' => 'submenu',
@@ -337,16 +337,16 @@ $sn_menu = array(
     'LEVEL'    => 'header',
     'TYPE'     => 'lang',
     'ITEM'     => 'sys_game_rules',
-    'LINK'     => $config->url_rules,
+    'LINK'     => classSupernova::$config->url_rules,
     'BLANK'    => true,
     'ICON'     => true,
-    'DISABLED' => empty($config->url_rules),
+    'DISABLED' => empty(classSupernova::$config->url_rules),
   ),
 
   'menu_news'          => array(
     'LEVEL'       => 'submenu',
     'ITEM'        => classLocale::$lang['news_title'],
-    'ITEM_FINISH' => ($user['news_lastread'] < $config->var_news_last ? "&nbsp;<span class=\"fresh\">{$classLocale['lm_announce_fresh']}</span>" : ''),
+    'ITEM_FINISH' => ($user['news_lastread'] < classSupernova::$config->var_news_last ? "&nbsp;<span class=\"fresh\">{$classLocale['lm_announce_fresh']}</span>" : ''),
     'LINK'        => 'announce.php',
     'ICON'        => true,
   ),
@@ -400,12 +400,12 @@ $sn_menu = array(
   'menu_extra' => array(
     'LEVEL'    => 'submenu',
     'CLASS'    => 'c_c',
-    'ITEM'     => $config->advGoogleLeftMenuCode,
+    'ITEM'     => classSupernova::$config->advGoogleLeftMenuCode,
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
     'DISABLED' =>
-      !$config->advGoogleLeftMenuIsOn
-      || empty($config->advGoogleLeftMenuCode)
+      !classSupernova::$config->advGoogleLeftMenuIsOn
+      || empty(classSupernova::$config->advGoogleLeftMenuCode)
       || empty($user)
       || SN_TIME_NOW - $user['register_time'] < PERIOD_WEEK
       || mrc_get_level($user, null, UNIT_PREMIUM)
@@ -443,7 +443,7 @@ $sn_menu_admin = array(
   'menu_admin_server_name' => array(
     'LEVEL' => 'header',
     'TYPE'  => 'text',
-    'ITEM'  => $config->game_name,
+    'ITEM'  => classSupernova::$config->game_name,
   ),
   'menu_admin_server_time' => array(
     'TYPE' => 'text',
@@ -457,8 +457,8 @@ $sn_menu_admin = array(
   ),
   'menu_admin_version_info'  => array(
     'TYPE' => 'text',
-    'ITEM' => ($config->server_updater_check_last ? date(FMT_DATE, $config->server_updater_check_last) : '') . '<div class="' .
-      $sn_version_check_class[$config->server_updater_check_result] . '">' . classLocale::$lang['adm_opt_ver_response_short'][$config->server_updater_check_result] . '</div>',
+    'ITEM' => (classSupernova::$config->server_updater_check_last ? date(FMT_DATE, classSupernova::$config->server_updater_check_last) : '') . '<div class="' .
+      $sn_version_check_class[classSupernova::$config->server_updater_check_result] . '">' . classLocale::$lang['adm_opt_ver_response_short'][classSupernova::$config->server_updater_check_result] . '</div>',
   ),
 
   'USER_AUTHLEVEL_NAME'      => array(

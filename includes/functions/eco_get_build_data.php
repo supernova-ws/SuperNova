@@ -66,7 +66,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
 function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false) {
   global $config;
 
-  $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
+  $rpg_exchange_deuterium = classSupernova::$config->rpg_exchange_deuterium;
 
   $unit_data = get_unit_param($unit_id);
   // $unit_db_name = &$unit_data[P_NAME];
@@ -88,9 +88,9 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $cost[BUILD_DESTROY][$resource_id] = round($resource_cost / 2);
 
     $resource_db_name = pname_resource_name($resource_id);
-    $cost_in_metal += $cost[BUILD_CREATE][$resource_id] * $config->__get("rpg_exchange_{$resource_db_name}");
+    $cost_in_metal += $cost[BUILD_CREATE][$resource_id] * classSupernova::$config->__get("rpg_exchange_{$resource_db_name}");
     if(in_array($resource_id, sn_get_groups('resources_loot'))) {
-      $time += $resource_cost * $config->__get("rpg_exchange_{$resource_db_name}") / $rpg_exchange_deuterium;
+      $time += $resource_cost * classSupernova::$config->__get("rpg_exchange_{$resource_db_name}") / $rpg_exchange_deuterium;
       $resource_got = mrc_get_level($user, $planet, $resource_id);
     } elseif($resource_id == RES_DARK_MATTER) {
       $resource_got = mrc_get_level($user, null, $resource_id);
@@ -110,7 +110,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   foreach($resources_loot as $resource_id) {
     $resource_db_name = pname_resource_name($resource_id);
     $resource_got = mrc_get_level($user, $planet, $resource_id);
-    $resources_normalized += floor($resource_got) * $config->__get("rpg_exchange_{$resource_db_name}");
+    $resources_normalized += floor($resource_got) * classSupernova::$config->__get("rpg_exchange_{$resource_db_name}");
   }
 
   $cost[BUILD_AUTOCONVERT] = $only_dark_matter != RES_DARK_MATTER ? max(!empty($unit_data[P_MAX_STACK]) ? $unit_data[P_MAX_STACK] : 0, floor($resources_normalized / $cost_in_metal)) : 0;
@@ -178,7 +178,7 @@ function sn_eco_can_build_unit($user, $planet, $unit_id, &$result) {
   $result = $result == BUILD_ALLOWED && eco_unit_busy($user, $planet, $unit_id) ? BUILD_UNIT_BUSY : $result;
 
   $unit_param = get_unit_param($unit_id);
-  if($unit_param[P_UNIT_TYPE] != UNIT_MERCENARIES || !$config->empire_mercenary_temporary) {
+  if($unit_param[P_UNIT_TYPE] != UNIT_MERCENARIES || !classSupernova::$config->empire_mercenary_temporary) {
     $requirement = &$unit_param[P_REQUIRE];
     if($result == BUILD_ALLOWED && $requirement) {
       foreach($requirement as $require_id => $require_level) {
@@ -223,7 +223,7 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result)
   $result = isset($result) ? $result : false;
   if(!$result)
   {
-    if(($unit_id == STRUC_LABORATORY || $unit_id == STRUC_LABORATORY_NANO) && !$config->BuildLabWhileRun)
+    if(($unit_id == STRUC_LABORATORY || $unit_id == STRUC_LABORATORY_NANO) && !classSupernova::$config->BuildLabWhileRun)
     {
       $global_que = que_get($user['id'], $planet['id'], QUE_RESEARCH, false);
       if(is_array($global_que['ques'][QUE_RESEARCH][$user['id']]))
@@ -239,7 +239,7 @@ function sn_eco_unit_busy(&$user, &$planet, $unit_id, &$result)
       //  $result = true;
       //}
     }
-    elseif(($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !$config->BuildLabWhileRun && $planet['que'])
+    elseif(($unit_id == UNIT_TECHNOLOGIES || in_array($unit_id, sn_get_groups('tech'))) && !classSupernova::$config->BuildLabWhileRun && $planet['que'])
     {
       $result = eco_is_builds_in_que($planet['que'], array(STRUC_LABORATORY, STRUC_LABORATORY_NANO));
     }

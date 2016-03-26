@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a6.35
+* @version 41a6.63
 *
 */
 
@@ -956,8 +956,8 @@ $a_lang_array = (array(
     REGISTER_ERROR_EMAIL_EXISTS => 'This email already registered. If you already registered try password reset option. Otherwise use other email address',
 
     PASSWORD_RESTORE_ERROR_EMAIL_NOT_EXISTS => 'There is no player with such base email',
-    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per 10 minutes. Check your SPAM folder for restoration code or contact server administration via email <span class="ok">' . $config->server_email . '</span> from your main email (email which you used for registration)',
-    PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration via email <span class="ok">' . $config->server_email . '</span>',
+    PASSWORD_RESTORE_ERROR_TOO_OFTEN => 'You can request password restoration code only once per 10 minutes. Check your SPAM folder for restoration code or contact server administration via email <span class="ok">' . classSupernova::$config->server_email . '</span> from your main email (email which you used for registration)',
+    PASSWORD_RESTORE_ERROR_SENDING => 'There is error sending email with restore code. Contact server administration via email <span class="ok">' . classSupernova::$config->server_email . '</span>',
     PASSWORD_RESTORE_SUCCESS_CODE_SENT => 'Restoration code successfully sent',
 
     PASSWORD_RESTORE_ERROR_CODE_EMPTY => 'Restoration code can not be empty',

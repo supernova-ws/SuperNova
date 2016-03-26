@@ -12,7 +12,7 @@ function sys_user_vacation($user) {
   if(sys_get_param_str('vacation') == 'leave') {
     if ($user['vacation'] < SN_TIME_NOW) {
       $user['vacation'] = 0;
-      $user['vacation_next'] = SN_TIME_NOW + $config->player_vacation_timeout;
+      $user['vacation_next'] = SN_TIME_NOW + classSupernova::$config->player_vacation_timeout;
       db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
     }
   }
@@ -39,7 +39,7 @@ function sys_user_vacation($user) {
 function sys_is_multiaccount($user1, $user2) {
   global $config;
 
-  return $user1['user_lastip'] == $user2['user_lastip'] && !$config->game_multiaccount_enabled;
+  return $user1['user_lastip'] == $user2['user_lastip'] && !classSupernova::$config->game_multiaccount_enabled;
 }
 
 /**
@@ -77,7 +77,7 @@ function DeleteSelectedUser($UserID) {
   classSupernova::db_del_record_by_id(LOC_USER, $UserID);
   doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
   global $config;
-  $config->db_saveItem('users_amount', $config->db_loadItem('users_amount') - 1);
+  classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->db_loadItem('users_amount') - 1);
   sn_db_transaction_commit();
 }
 
@@ -153,28 +153,28 @@ function player_create($username_unsafe, $email_unsafe, $options) {
 
   $user_new = classSupernova::db_ins_field_set(LOC_USER, $field_set);
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
-    $options['galaxy'] = $config->LastSettedGalaxyPos;
-    $options['system'] = $config->LastSettedSystemPos;
-    $segment_size = floor($config->game_maxPlanet / 3);
-    $segment = floor($config->LastSettedPlanetPos / $segment_size);
+    $options['galaxy'] = classSupernova::$config->LastSettedGalaxyPos;
+    $options['system'] = classSupernova::$config->LastSettedSystemPos;
+    $segment_size = floor(classSupernova::$config->game_maxPlanet / 3);
+    $segment = floor(classSupernova::$config->LastSettedPlanetPos / $segment_size);
     $segment++;
     $options['planet'] = mt_rand(1 + $segment * $segment_size, ($segment + 1) * $segment_size);
 
     // $new_planet_id = 0;
     while(true) {
-      if($options['planet'] > $config->game_maxPlanet) {
+      if($options['planet'] > classSupernova::$config->game_maxPlanet) {
         $options['planet'] = mt_rand(0, $segment_size - 1) + 1;
         $options['system']++;
       }
-      if($options['system'] > $config->game_maxSystem) {
+      if($options['system'] > classSupernova::$config->game_maxSystem) {
         $options['system'] = 1;
         $options['galaxy']++;
       }
-      $options['galaxy'] > $config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
+      $options['galaxy'] > classSupernova::$config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
 
       $galaxy_row = db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET, true, 'id');
       if(!$galaxy_row['id']) {
-        $config->db_saveItem(array(
+        classSupernova::$config->db_saveItem(array(
           'LastSettedGalaxyPos' => $options['galaxy'],
           'LastSettedSystemPos' => $options['system'],
           'LastSettedPlanetPos' => $options['planet'],
@@ -191,7 +191,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
   );
 
-  $config->db_saveItem('users_amount', $config->users_amount + 1);
+  classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->users_amount + 1);
 
   $username_safe = db_escape($username_unsafe);
   db_player_name_history_replace($user_new, $username_safe);

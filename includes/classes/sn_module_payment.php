@@ -468,7 +468,7 @@ abstract class sn_module_payment extends sn_module {
     $this->payment_dark_matter_paid = $request['metamatter'];
     $this->payment_dark_matter_gained = self::bonus_calculate($this->payment_dark_matter_paid, true);
 
-    $this->payment_currency = $config->payment_currency_default;
+    $this->payment_currency = classSupernova::$config->payment_currency_default;
     $this->payment_amount = self::currency_convert($this->payment_dark_matter_paid, 'MM_', $this->payment_currency);
 
     if(empty($this->payment_external_currency) && !empty($this->config['currency'])) {
@@ -605,7 +605,7 @@ abstract class sn_module_payment extends sn_module {
 
     // Заполнение внутренней суммы и валюты из внешних данных
     if(empty($this->payment_currency)) {
-      $this->payment_currency = $config->payment_currency_default;
+      $this->payment_currency = classSupernova::$config->payment_currency_default;
     }
     if(empty($this->payment_amount) && !empty($this->payment_external_currency)) {
       $this->payment_amount = self::currency_convert($this->payment_external_amount, $this->payment_external_currency, $this->payment_currency);

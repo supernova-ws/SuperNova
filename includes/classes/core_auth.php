@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a6.42#
+ * version #41a6.63#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.42# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.63# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -718,7 +718,7 @@ class core_auth extends sn_module {
       );
     }
 
-    if($extra = $config->security_ban_extra) {
+    if($extra = classSupernova::$config->security_ban_extra) {
       $extra = explode(',', $extra);
       array_walk($extra,'trim');
       in_array(self::$device->device_id, $extra) and die();

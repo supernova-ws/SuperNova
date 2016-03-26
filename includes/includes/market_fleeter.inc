@@ -109,7 +109,7 @@ if(is_array($shipList)) {
     db_changeset_apply($db_changeset);
 
     rpg_points_change($user['id'], RPG_MARKET_FLEET, -($rpg_cost), "Using Black Market page {$mode}");
-    $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));
+    classSupernova::$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));
 
     $stock = $newstock;
     $planetrow = db_planet_by_id($planetrow['id']);
@@ -134,8 +134,8 @@ if(is_array($shipList)) {
 }
 $message = '';
 
-if(!$config->eco_stockman_fleet && $config->eco_stockman_fleet_populate) {
-  $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str(array_map(function($item){return mt_rand(1, 1000);}, sn_get_groups('fleet'))));
+if(!classSupernova::$config->eco_stockman_fleet && classSupernova::$config->eco_stockman_fleet_populate) {
+  classSupernova::$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str(array_map(function($item){return mt_rand(1, 1000);}, sn_get_groups('fleet'))));
 }
 
 tpl_set_resource_info($template, $planetrow, array());

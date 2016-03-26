@@ -148,7 +148,7 @@ class db_mysql {
       }
     }
 
-    if($config->debug) {
+    if(classSupernova::$config->debug) {
       $numqueries++;
       $arr = debug_backtrace();
       $file = end(explode('/',$arr[0]['file']));
@@ -183,7 +183,7 @@ class db_mysql {
     // TODO Заменить это на новый логгер
     global $config, $is_watching, $user, $debug;
 
-    if(!$is_watching && $config->game_watchlist_array && in_array($user['id'], $config->game_watchlist_array))
+    if(!$is_watching && classSupernova::$config->game_watchlist_array && in_array($user['id'], classSupernova::$config->game_watchlist_array))
     {
       if(!preg_match('/^(select|commit|rollback|start transaction)/i', $query)) {
         $is_watching = true;

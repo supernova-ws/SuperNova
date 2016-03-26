@@ -9,8 +9,8 @@ $url = 'http://supernova.ws/version_check.php?mode=' . $mode
   . '&db=' . DB_VERSION
   . '&release=' . SN_RELEASE
   . '&version=' . SN_VERSION
-  . '&key=' . urlencode($config->server_updater_key)
-  . '&id=' . urlencode($config->server_updater_id);
+  . '&key=' . urlencode(classSupernova::$config->server_updater_key)
+  . '&id=' . urlencode(classSupernova::$config->server_updater_id);
 /*
 //TODO REMOVE DEBUG!!!
 $url = 'http://localhost/supernova_site/version_check.php?mode=' . $mode
@@ -23,7 +23,7 @@ $url = 'http://localhost/supernova_site/version_check.php?mode=' . $mode
 switch($mode)
 {
   case SNC_MODE_REGISTER:
-    if($config->server_updater_key || $config->server_updater_id)
+    if(classSupernova::$config->server_updater_key || classSupernova::$config->server_updater_id)
     {
       if($ajax)
       {
@@ -31,7 +31,7 @@ switch($mode)
       }
       die();
     }
-    $url .= "&name=" . urlencode($config->game_name) . "&url=" . urlencode(SN_ROOT_VIRTUAL);
+    $url .= "&name=" . urlencode(classSupernova::$config->game_name) . "&url=" . urlencode(SN_ROOT_VIRTUAL);
 //TODO REMOVE DEBUG!!!
 //$url .= "&name=" . urlencode($config->game_name) . "&url=" . urlencode('http://supernova.ws/');
   break;
@@ -57,8 +57,8 @@ else
     case SNC_MODE_REGISTER:
       if($check_result['site']['site_key'] && $check_result['site']['site_id'] && $check_result['site']['result'] == SNC_VER_REGISTER_REGISTERED)
       {
-        $config->db_saveItem('server_updater_key', $check_result['site']['site_key']);
-        $config->db_saveItem('server_updater_id', $check_result['site']['site_id']);
+        classSupernova::$config->db_saveItem('server_updater_key', $check_result['site']['site_key']);
+        classSupernova::$config->db_saveItem('server_updater_id', $check_result['site']['site_id']);
       }
       $version_check = $check_result['site']['result'];
     break;
@@ -66,8 +66,8 @@ else
 }
 //debug($mode);
 
-$config->db_saveItem('server_updater_check_last', SN_TIME_NOW);
-$config->db_saveItem('server_updater_check_result', $version_check);
+classSupernova::$config->db_saveItem('server_updater_check_last', SN_TIME_NOW);
+classSupernova::$config->db_saveItem('server_updater_check_result', $version_check);
 
 if($ajax)
 {

@@ -42,10 +42,10 @@ $template->assign_vars(array(
   'EMAIL'     => htmlentities($email, ENT_QUOTES, 'UTF-8'),
   'PASSWORD'     => htmlentities($password_raw, ENT_QUOTES, 'UTF-8'),
   'PASSWORD_REPEAT' => htmlentities($password_repeat_raw, ENT_QUOTES, 'UTF-8'),
-  'URL_RULES'    => $config->url_rules,
-  'URL_FORUM'    => $config->url_forum,
-  'URL_FAQ'      => $config->url_faq,
-  'GAME_BLITZ'   => $config->game_mode == GAME_BLITZ,
+  'URL_RULES'    => classSupernova::$config->url_rules,
+  'URL_FORUM'    => classSupernova::$config->url_forum,
+  'URL_FAQ'      => classSupernova::$config->url_faq,
+  'GAME_BLITZ'   => classSupernova::$config->game_mode == GAME_BLITZ,
 ));
 
 tpl_login_lang($template);

@@ -105,7 +105,7 @@ function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
 
   $msg = str_replace('sn://', SN_ROOT_VIRTUAL, $msg);
 
-  !empty($config->url_faq) ? $msg = str_replace('faq://', $config->url_faq, $msg) : false;
+  !empty(classSupernova::$config->url_faq) ? $msg = str_replace('faq://', classSupernova::$config->url_faq, $msg) : false;
 
   foreach($supernova->design['bbcodes'] as $auth_level => $replaces) {
     if($auth_level > $author_auth) {

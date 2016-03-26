@@ -102,7 +102,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
         $insert_values[] = sprintf($insert_template, $owner);
       }
 
-      if($message_class_email && $config->game_email_pm && $owner_row["opt_email_{$message_class_name}"])
+      if($message_class_email && classSupernova::$config->game_email_pm && $owner_row["opt_email_{$message_class_name}"])
       {
         @$result = mymail($owner_row['email'], $subject, $text_unescaped, '', true);
       }
