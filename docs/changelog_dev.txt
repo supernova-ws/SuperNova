@@ -791,6 +791,8 @@ minify cached templates
 В админке нет добавления ТМ - включить!
 
 
+$config должен быть синглтоном! И все обращения к нему должны идти через статик
+
 #ctv
 
 BONUS_ABILITY - deprecated ???

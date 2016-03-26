@@ -405,8 +405,7 @@ function db_payment_list_modules() {
 
 // Log Online *************************************************************************************************************
 function db_log_online_insert() {
-  $config = classSupernova::$config;
-  doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
+  doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = " . classSupernova::$config->var_online_user_count);
 }
 
 // Log *************************************************************************************************************

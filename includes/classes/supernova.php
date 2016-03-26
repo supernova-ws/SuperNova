@@ -1315,13 +1315,7 @@ class classSupernova {
     empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
 
     // Initializing global "config" object
-    static::$config = new classConfig(classSupernova::$cache_prefix);
-    $config = static::$config;
-    //$config->db_prefix = classSupernova::$db_prefix;
-    //$config->secret_word = classSupernova::$sn_secret_word;
-    //$config->db_saveItem('secret_word', classSupernova::$sn_secret_word);
-    //$config->db_saveItem('db_prefix', classSupernova::$db_prefix);
-    //$config->db_saveItem('cache_prefix', classSupernova::$cache_prefix);
+    $config = static::$config = new classConfig(classSupernova::$cache_prefix);
   }
 
   public static function init_debug_state() {
