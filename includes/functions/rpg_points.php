@@ -1,25 +1,32 @@
 <?php
 /**
-*
-* @package rpg
-* @version $Id$
-* @copyright (c) 2009-2010 Gorlum for http://supernova.ws
-* @license http://opensource.org/licenses/gpl-license.php GNU Public License
-*
-*/
+ *
+ * @package rpg
+ * @version $Id$
+ * @copyright (c) 2009-2010 Gorlum for http://supernova.ws
+ * @license http://opensource.org/licenses/gpl-license.php GNU Public License
+ *
+ */
 
 
 /**
-*
-* This function changes rpg_points for user
-* You should ALWAYS use this function and NEVER directly change rpg_points by yourself
-* Otherwise refferal system wouldn't work and no logs would be made
-* "No logs" means you can never check if the user cheating with DM
-*
-* @package rpg
-*
-*/
-function rpg_points_change($user_id, $change_type, $dark_matter, $comment = false, $already_changed = false) {
+ *
+ * This function changes rpg_points for user
+ * You should ALWAYS use this function and NEVER directly change rpg_points by yourself
+ * Otherwise refferal system wouldn't work and no logs would be made
+ * "No logs" means you can never check if the user cheating with DM
+ *
+ * @param int    $user_id
+ * @param int    $change_type
+ * @param int    $dark_matter
+ * @param string $comment
+ * @param bool   $already_changed
+ *
+ * @return bool|int
+ *
+ * @package rpg
+ */
+function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', $already_changed = false) {
   global $debug, $config, $dm_change_legit, $user;
 
   if(!$user_id) {
@@ -89,15 +96,14 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = fals
   }
 
   $dm_change_legit = false;
+
   return $rows_affected;
 }
 
-function rpg_level_up(&$user, $type, $xp_to_add = 0)
-{
+function rpg_level_up(&$user, $type, $xp_to_add = 0) {
   $q = 1.03;
 
-  switch($type)
-  {
+  switch($type) {
     case RPG_STRUCTURE:
       $field_level = 'lvl_minier';
       $field_xp = 'xpminier';
@@ -128,53 +134,45 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0)
     break;
 
     default:
-      break;
+    break;
 
   }
 
   $xp = &$user[$field_xp];
 
-  if($xp_to_add)
-  {
+  if($xp_to_add) {
     $xp += $xp_to_add;
     db_user_set_by_id($user['id'], "`{$field_xp}` = `{$field_xp}` + '{$xp_to_add}'");
   }
 
   $level = $user[$field_level];
-  while($xp > rpg_xp_for_level($level + 1, $b1, $q))
-  {
+  while($xp > rpg_xp_for_level($level + 1, $b1, $q)) {
     $level++;
   }
   $level -= $user[$field_level];
-  if($level > 0)
-  {
+  if($level > 0) {
     db_user_set_by_id($user['id'], "`{$field_level}` = `{$field_level}` + '{$level}'");
     rpg_points_change($user['id'], $type, $level * 1000, $comment);
     $user[$field_level] += $level;
   }
 }
 
-function rpg_xp_for_level($level, $b1, $q)
-{
-  return floor($b1 * (pow($q, $level) - 1)/($q - 1));
+function rpg_xp_for_level($level, $b1, $q) {
+  return floor($b1 * (pow($q, $level) - 1) / ($q - 1));
 }
 
-function rpg_get_miner_xp($level)
-{
+function rpg_get_miner_xp($level) {
   return rpg_xp_for_level($level, 50, 1.03);
 }
 
-function RPG_get_raider_xp($level)
-{
+function RPG_get_raider_xp($level) {
   return rpg_xp_for_level($level, 10, 1.03);
 }
 
-function rpg_get_tech_xp($level)
-{
+function rpg_get_tech_xp($level) {
   return rpg_xp_for_level($level, 50, 1.03);
 }
 
-function rpg_get_explore_xp($level)
-{
+function rpg_get_explore_xp($level) {
   return rpg_xp_for_level($level, 10, 1.05);
 }

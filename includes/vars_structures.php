@@ -88,7 +88,7 @@ $sn_data += array(
     ),
     P_UNIT_PRODUCTION => array(
       RES_DEUTERIUM => function ($level, $production_factor, $user, $planet_row) {return -10 * $level * pow(1.1, $level) * (0.1 * $production_factor);},
-      RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($user, "", TECH_ENERGY), $level) * (0.1 * $production_factor);},
+      RES_ENERGY    => function ($level, $production_factor, $user, $planet_row) {return  30 * $level * pow(1.05 + 0.01 * mrc_get_level($user, null, TECH_ENERGY), $level) * (0.1 * $production_factor);},
     ),
     P_MINING_IS_MANAGED => true,
   ),

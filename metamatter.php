@@ -274,7 +274,7 @@ $template->assign_vars(array(
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number(get_mm_cost(), true, true),
   'PAYMENT_CURRENCY_DEFAULT_TEXT'     => classLocale::$lang['pay_currency_list'][$config->payment_currency_default],
 
-  'METAMATTER' => mrc_get_level($user, '', RES_METAMATTER),
+  'METAMATTER' => mrc_get_level($user, null, RES_METAMATTER),
 
   'METAMATTER_COST_TEXT'       => sprintf(classLocale::$lang['pay_mm_buy_conversion_cost'],
     pretty_number($request['metamatter'], true, true),

@@ -10,7 +10,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
   sn_db_transaction_start();
   $user = db_user_by_id($user['id'], true);
 
-  $unit_level = $artifact_level_old = mrc_get_level($user, array(), $unit_id, true);
+  $unit_level = $artifact_level_old = mrc_get_level($user, null, $unit_id, true);
   if($unit_level > 0) {
     $db_changeset = array();
     switch($unit_id) {

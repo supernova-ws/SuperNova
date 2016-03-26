@@ -82,7 +82,7 @@ switch($mode = sys_get_param_str('mode')) {
   case 'manage':
     sn_sys_sector_buy('overview.php?mode=manage');
 
-    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+    $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
     $result[] = sn_sys_planet_core_transmute($user, $planetrow);
 
     $template  = gettemplate('planet_manage', true);
@@ -257,7 +257,7 @@ switch($mode = sys_get_param_str('mode')) {
       ));
     }
 
-    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+    $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
     $planet_density_index = $planetrow['density_index'];
     $density_price_chart = planet_density_price_chart($planetrow);
     tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
@@ -313,7 +313,7 @@ switch($mode = sys_get_param_str('mode')) {
 
     $template = gettemplate('planet_overview', true);
 
-    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+    $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
 
     $planet_density_index = $planetrow['density_index'];
     $density_price_chart = planet_density_price_chart($planetrow);

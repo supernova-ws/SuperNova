@@ -545,7 +545,10 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     note_assign($template, $note_row);
   }
 
-  $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
+  $premium_lvl = mrc_get_level($user, null, UNIT_PREMIUM, true, true);
+  $darkMatter = mrc_get_level($user, null, RES_DARK_MATTER);
+  $darkMatterPlain = mrc_get_level($user, null, RES_DARK_MATTER, false, true);
+  $metaMatter = mrc_get_level($user, null, RES_METAMATTER);
   $template->assign_vars(array(
     'HALLOWEEN' => !empty(sn_module::$sn_module_list['event']['event_halloween_2015']) && sn_module::$sn_module_list['event']['event_halloween_2015']->manifest['active'],
 
@@ -585,12 +588,12 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'TOPNAV_COLONIES_MAX'         => get_player_max_colonies($user),
     'TOPNAV_MODE'                 => $GET_mode,
 
-    'TOPNAV_DARK_MATTER'            => mrc_get_level($user, '', RES_DARK_MATTER),
-    'TOPNAV_DARK_MATTER_TEXT'       => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER)),
-    'TOPNAV_DARK_MATTER_PLAIN'      => mrc_get_level($user, '', RES_DARK_MATTER, false, true),
-    'TOPNAV_DARK_MATTER_PLAIN_TEXT' => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER, false, true)),
-    'TOPNAV_METAMATTER'             => mrc_get_level($user, '', RES_METAMATTER),
-    'TOPNAV_METAMATTER_TEXT'        => pretty_number(mrc_get_level($user, '', RES_METAMATTER)),
+    'TOPNAV_DARK_MATTER'            => $darkMatter,
+    'TOPNAV_DARK_MATTER_TEXT'       => pretty_number($darkMatter),
+    'TOPNAV_DARK_MATTER_PLAIN'      => $darkMatterPlain,
+    'TOPNAV_DARK_MATTER_PLAIN_TEXT' => pretty_number($darkMatterPlain),
+    'TOPNAV_METAMATTER'             => $metaMatter,
+    'TOPNAV_METAMATTER_TEXT'        => pretty_number($metaMatter),
 
     // TODO ГРЯЗНЫЙ ХАК!!!
     'TOPNAV_PAYMENT'                => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),

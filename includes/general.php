@@ -432,6 +432,15 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
 }
 */
 
+/**
+ * @param array      $user
+ * @param array|null $planet
+ * @param int        $unit_id
+ * @param bool       $for_update
+ * @param bool       $plain
+ *
+ * @return mixed
+ */
 function mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false) { return sn_function_call(__FUNCTION__, array(&$user, $planet, $unit_id, $for_update, $plain, &$result)); }
 
 function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = false, $plain = false, &$result) {
@@ -639,6 +648,7 @@ function sys_time_human($time, $full = false) {
   $time = floor($time / 24);
 
   $classLocale = classLocale::$lang;
+
   return
     ($full || $time ? "{$time} {$classLocale['sys_day']}&nbsp;" : '') .
     ($full || $hours ? "{$hours} {$classLocale['sys_hrs']}&nbsp;" : '') .
@@ -696,7 +706,7 @@ function sn_get_url_contents($url) {
 function get_engine_data($user, $engine_info) {
   $sn_data_tech_bonus = get_unit_param($engine_info['tech'], 'bonus');
 
-  $user_tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
+  $user_tech_level = intval(mrc_get_level($user, null, $engine_info['tech']));
 
   $engine_info['speed_base'] = $engine_info['speed'];
   $tech_bonus = ($user_tech_level - $engine_info['min_level']) * $sn_data_tech_bonus / 100;
@@ -715,7 +725,7 @@ function get_ship_data($ship_id, $user) {
   $ship_data = array();
   if(in_array($ship_id, sn_get_groups(array('fleet', 'missile')))) {
     foreach(get_unit_param($ship_id, 'engine') as $engine_info) {
-      $tech_level = intval(mrc_get_level($user, false, $engine_info['tech']));
+      $tech_level = intval(mrc_get_level($user, null, $engine_info['tech']));
       if(empty($ship_data) || $tech_level >= $engine_info['min_level']) {
         $ship_data = $engine_info;
         $ship_data['tech_level'] = $tech_level;
@@ -961,7 +971,7 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
     if($user_auth_level = $render_user['authlevel']) {
       $result[NICK_AUTH_LEVEL] = $user_auth_level;
     }
-    if($user_premium = mrc_get_level($render_user, false, UNIT_PREMIUM)) {
+    if($user_premium = mrc_get_level($render_user, null, UNIT_PREMIUM)) {
       $result[NICK_PREMIUM] = $user_premium;
     }
   }
@@ -1185,7 +1195,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
       throw new exception(classLocale::$lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
     }
 
-    $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+    $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
     // $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
     // $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
     $transmute_cost = $density_price_chart[$new_density_index];
@@ -1289,7 +1299,7 @@ function get_player_max_expeditons(&$user, $astrotech = -1) { return sn_function
 function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0) {
   if($astrotech == -1) {
     if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX])) {
-      $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
+      $astrotech = mrc_get_level($user, null, TECH_ASTROTECH);
       $user[UNIT_PLAYER_EXPEDITIONS_MAX] = $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
     }
 
@@ -1300,7 +1310,7 @@ function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0) {
 }
 
 function get_player_max_expedition_duration(&$user, $astrotech = -1) {
-  return $astrotech == -1 ? mrc_get_level($user, false, TECH_ASTROTECH) : $astrotech;
+  return $astrotech == -1 ? mrc_get_level($user, null, TECH_ASTROTECH) : $astrotech;
 }
 
 function get_player_max_colonies(&$user, $astrotech = -1) {
@@ -1310,7 +1320,7 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
     if(!isset($user[UNIT_PLAYER_COLONIES_MAX])) {
 
       $expeditions = get_player_max_expeditons($user);
-      $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
+      $astrotech = mrc_get_level($user, null, TECH_ASTROTECH);
       $colonies = $astrotech - $expeditions;
 
       $user[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);

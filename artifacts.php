@@ -30,7 +30,7 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
       sn_db_transaction_start();
 
       $user = db_user_by_id($user['id'], true);
-      $artifact_level = mrc_get_level($user, array(), $unit_id, true);
+      $artifact_level = mrc_get_level($user, null, $unit_id, true);
 
       $build_data = eco_get_build_data($user, $planetrow, $unit_id, $artifact_level, true);
       $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
@@ -77,7 +77,7 @@ $template = gettemplate('artifacts', true);
 
 foreach($sn_group_artifacts as $artifact_id)
 {
-  $artifact_level = mrc_get_level($user, array(), $artifact_id, true);
+  $artifact_level = mrc_get_level($user, null, $artifact_id, true);
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
   {
     $artifact_data = get_unit_param($artifact_id);

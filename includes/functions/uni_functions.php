@@ -345,7 +345,7 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
       throw new exception(classLocale::$lang['ov_teleport_err_cooldown'], ERR_ERROR);
     }
 
-    if(mrc_get_level($user, false, RES_DARK_MATTER) < $config->planet_teleport_cost) {
+    if(mrc_get_level($user, null, RES_DARK_MATTER) < $config->planet_teleport_cost) {
       throw new exception(classLocale::$lang['ov_teleport_err_no_dark_matter'], ERR_ERROR);
     }
 

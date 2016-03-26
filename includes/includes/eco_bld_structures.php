@@ -354,7 +354,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'FLEET_OWN_COUNT' => $fleet_list['own']['count'],
 
     'ARTIFACT_ID'    => $artifact_id,
-    'ARTIFACT_LEVEL' => mrc_get_level($user, array(), $artifact_id),
+    'ARTIFACT_LEVEL' => mrc_get_level($user, null, $artifact_id),
     'ARTIFACT_NAME'  => classLocale::$lang['tech'][$artifact_id],
     'REQUEST_URI'    => urlencode($_SERVER['REQUEST_URI']),
 

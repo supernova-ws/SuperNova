@@ -41,7 +41,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
     }
     else
     {
-      $tech_intergalactic = mrc_get_level($user, false, TECH_RESEARCH) + 1;
+      $tech_intergalactic = mrc_get_level($user, null, TECH_RESEARCH) + 1;
       $lab_level['effective_level'] = 0;
 
       foreach($user['laboratories_active'] as $data)
@@ -138,7 +138,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
     $mercenary = MRC_ENGINEER;
     $cost['RESULT'][BUILD_DESTROY] =
-      mrc_get_level($user, $planet, $unit_id, false, true)
+      mrc_get_level($user, $planet, $unit_id, null, true)
         ? ($cost['CAN'][BUILD_DESTROY]
             ? ($cost['RESULT'][BUILD_CREATE] == BUILD_UNIT_BUSY ? BUILD_UNIT_BUSY : BUILD_ALLOWED)
             : BUILD_NO_RESOURCES

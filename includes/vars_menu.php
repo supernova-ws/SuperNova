@@ -408,7 +408,7 @@ $sn_menu = array(
       || empty($config->advGoogleLeftMenuCode)
       || empty($user)
       || SN_TIME_NOW - $user['register_time'] < PERIOD_WEEK
-      || mrc_get_level($user, array(), UNIT_PREMIUM)
+      || mrc_get_level($user, null, UNIT_PREMIUM)
   ,
   ),
 

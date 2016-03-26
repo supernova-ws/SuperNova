@@ -58,9 +58,9 @@ if($info_action)
         $msg_text = array();
         foreach(sn_get_groups('mercenaries') as $mercenary_id)
         {
-          $msg_text[] = "{$classLocale['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, false, $mercenary_id)) ? "{$classLocale['sys_level']} {$mercenary_level}" : classLocale::$lang['eco_mrk_info_not_hired']);
+          $msg_text[] = "{$classLocale['tech'][$mercenary_id]} - " . (($mercenary_level = mrc_get_level($user_info, null, $mercenary_id)) ? "{$classLocale['sys_level']} {$mercenary_level}" : classLocale::$lang['eco_mrk_info_not_hired']);
         }
-        if($mercenary_level = mrc_get_level($user_info, false, UNIT_PREMIUM))
+        if($mercenary_level = mrc_get_level($user_info, null, UNIT_PREMIUM))
         {
           $msg_text[] = "{$classLocale['tech'][UNIT_PREMIUM]} - {$mercenary_level} {$classLocale['sys_level']}";
         }

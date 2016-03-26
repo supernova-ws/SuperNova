@@ -149,7 +149,7 @@ function mrc_mercenary_render($user) {
     ));
   }
 
-  $user_dark_matter = mrc_get_level($user, '', RES_DARK_MATTER);
+  $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
   $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
   $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
   foreach(sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id)

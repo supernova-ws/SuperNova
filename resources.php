@@ -139,7 +139,7 @@ foreach($sn_group_factories as $unit_id)
   }
 }
 
-$user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
+$user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
 $planet_density_index = $planetrow['density_index'];
 $density_price_chart = planet_density_price_chart($planetrow);
 tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);

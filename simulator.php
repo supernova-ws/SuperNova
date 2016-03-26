@@ -44,7 +44,7 @@ else
   {
     if(!$sym_attacker[1][$tech_id])
     {
-      $sym_attacker[1][$tech_id] = mrc_get_level($user, false, $tech_id);
+      $sym_attacker[1][$tech_id] = mrc_get_level($user, null, $tech_id);
     }
   }
 

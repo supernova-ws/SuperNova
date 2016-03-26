@@ -25,7 +25,7 @@ function que_get_max_que_length($user, $planet, $que_id, $que_data = null) {
   $que_length = 1;
   switch($que_id) {
     case QUE_RESEARCH:
-      $que_length = $config->server_que_length_research + mrc_get_level($user, '', UNIT_PREMIUM); // TODO - вынести в модуль
+      $que_length = $config->server_que_length_research + mrc_get_level($user, null, UNIT_PREMIUM); // TODO - вынести в модуль
     break;
 
     default:

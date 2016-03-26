@@ -352,8 +352,15 @@ class Account {
     return $result;
   }
 
-  // OK 4.8
-  public function metamatter_change($change_type, $metamatter, $comment = false, $already_changed = false) {
+  /**
+   * @param int    $change_type
+   * @param int    $metamatter
+   * @param string $comment
+   * @param bool   $already_changed
+   *
+   * @return array|bool|int|mysqli_result|null|string
+   */
+  public function metamatter_change($change_type, $metamatter, $comment = '', $already_changed = false) {
     global $debug, $mm_change_legit, $config;
 
     if(!$this->is_exists || !($metamatter = round(floatval($metamatter)))) {

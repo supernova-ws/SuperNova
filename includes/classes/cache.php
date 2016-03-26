@@ -403,7 +403,8 @@ class classPersistent extends classCache {
 * This class is used to handle server configuration
 *
 * @package supernova
-*
+* @property bool tpl_allow_php
+* @property bool tpl_minifier
 */
 class classConfig extends classPersistent {
   protected $defaults = array(
@@ -607,7 +608,8 @@ class classConfig extends classPersistent {
     'stats_hide_pm_link'           => 0,
     'stats_schedule'               => '04:00:00',
 
-    'tpl_minifier'                 => 0, // Template minifier
+    'tpl_allow_php'                => 0, // Allow template to include PHP code. SHOULD BE ALWAYS DISABLE!!!!!!!!
+    'tpl_minifier'                 => 1, // Template minifier
 
     'uni_price_galaxy'             => 10000,
     'uni_price_system'             => 1000,

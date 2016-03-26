@@ -198,10 +198,10 @@ class Player extends UnitContainer {
 //    $this->unitList->dbLoad($this->_dbId);
 
     // Высчитываем бонусы
-    $this->player_bonus->add_unit_by_snid(MRC_ADMIRAL, mrc_get_level($this->db_row, false, MRC_ADMIRAL));
-    $this->player_bonus->add_unit_by_snid(TECH_WEAPON, mrc_get_level($this->db_row, false, TECH_WEAPON));
-    $this->player_bonus->add_unit_by_snid(TECH_SHIELD, mrc_get_level($this->db_row, false, TECH_SHIELD));
-    $this->player_bonus->add_unit_by_snid(TECH_ARMOR, mrc_get_level($this->db_row, false, TECH_ARMOR));
+    $this->player_bonus->add_unit_by_snid(MRC_ADMIRAL, mrc_get_level($this->db_row, null, MRC_ADMIRAL));
+    $this->player_bonus->add_unit_by_snid(TECH_WEAPON, mrc_get_level($this->db_row, null, TECH_WEAPON));
+    $this->player_bonus->add_unit_by_snid(TECH_SHIELD, mrc_get_level($this->db_row, null, TECH_SHIELD));
+    $this->player_bonus->add_unit_by_snid(TECH_ARMOR, mrc_get_level($this->db_row, null, TECH_ARMOR));
   }
 
   /**
@@ -233,7 +233,7 @@ class Player extends UnitContainer {
       if(!isset($this->db_row[UNIT_PLAYER_COLONIES_MAX])) {
 
         $expeditions = get_player_max_expeditons($this->db_row);
-        $astrotech = mrc_get_level($this->db_row, false, TECH_ASTROTECH);
+        $astrotech = mrc_get_level($this->db_row, null, TECH_ASTROTECH);
         $colonies = $astrotech - $expeditions;
 
         $this->db_row[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);

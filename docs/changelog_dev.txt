@@ -788,6 +788,9 @@ parsetemplate($template, $parse) - ото хуйня, когда есть вто
 
 minify cached templates
 
+В админке нет добавления ТМ - включить!
+
+
 #ctv
 
 BONUS_ABILITY - deprecated ???
@@ -795,6 +798,12 @@ BONUS_ABILITY - deprecated ???
 Оказывается, в $config есть настройки темплейта tpl_allow_php - см. functions_template.php @ 247
 
 На новых наградах 8 марта-2106 не отображается надписи
+
+2016-03-26 21:10:21 41a6.58
+[@] Code smell
+    Изменена сигнатура и вызовы mrc_get_level() для уменьшения code smell
+    Изменена сигнатура rpg_points_change() для уменьшения code smell
+    Изменена сигнатура Account::metamatter_change() для уменьшения code smell
 
 
 2016-03-26 20:33:36 41a6.57
