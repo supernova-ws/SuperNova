@@ -11,133 +11,6 @@
  */
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-$unit_id = sys_get_param_id('gid');
-if($unit_id == RES_DARK_MATTER) {
-  sys_redirect('dark_matter.php');
-}
-
-if($unit_id == RES_METAMATTER) {
-  sys_redirect('metamatter.php');
-}
-
-lng_include('infos');
-if(!$unit_id || (!get_unit_param($unit_id) && !isset(classLocale::$lang['info'][$unit_id]))) {
-  sys_redirect('index.php?page=techtree');
-}
-
-$template = gettemplate('novapedia', true);
-
-$unit_data = get_unit_param($unit_id);
-$unit_type = $unit_data['type'];
-
-if($unit_type == UNIT_SHIPS) {
-  $template_result['UNIT_IS_SHIP'] = true;
-
-  $ship_data = get_ship_data($unit_id, $user);
-
-  $template_result += array(
-    'BASE_SPEED'         => pretty_number($ship_data['speed_base']),
-    'ACTUAL_SPEED'       => pretty_number($ship_data['speed']),
-    'BASE_CONSUMPTION'   => pretty_number($ship_data['consumption_base']),
-    'ACTUAL_CONSUMPTION' => pretty_number($ship_data['consumption']),
-
-    'BASE_CAPACITY'   => pretty_number($unit_data['capacity']),
-    'ACTUAL_CAPACITY' => pretty_number($ship_data['capacity']),
-  );
-
-  $engine_template_info = array();
-  foreach($unit_data['engine'] as $unit_engine_data) {
-    $unit_engine_data = get_engine_data($user, $unit_engine_data);
-
-    $engine_template_info[] = array(
-      'NAME'               => classLocale::$lang['tech'][$unit_engine_data['tech']],
-      'MIN_LEVEL'          => $unit_engine_data['min_level'],
-      'USER_TECH_LEVEL'    => mrc_get_level($user, null, $unit_engine_data['tech']),
-      'BASE_SPEED'         => pretty_number($unit_engine_data['speed_base']),
-      'BASE_CONSUMPTION'   => pretty_number($unit_engine_data['consumption_base']),
-      'ACTUAL_SPEED'       => pretty_number($unit_engine_data['speed']),
-      'ACTUAL_CONSUMPTION' => pretty_number($unit_engine_data['consumption']),
-    );
-  }
-  $template_result['.']['engine'] = $engine_template_info;
-
-}
-
-
-$sn_data_group_combat = sn_get_groups('combat');
-if(in_array($unit_id, $sn_data_group_combat)) {
-  $template_result['UNIT_IS_COMBAT'] = true;
-
-  $unit_durability = $unit_data['shield'] + $unit_data['armor'];
-
-  $volley_arr = $rapid_to = $rapid_from = array();
-  $str_rapid_from = '';
-  $str_rapid_to = '';
-  foreach($sn_data_group_combat as $enemy_id) {
-    $enemy_data = get_unit_param($enemy_id);
-    $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
-
-    $rapid = $unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability;
-    if($rapid >= 1) {
-      $volley_arr[$enemy_id]['TO'] = floor($rapid);
-    }
-
-    $rapid = $enemy_data['attack'] * (isset($enemy_data['amplify'][$unit_id]) ? $enemy_data['amplify'][$unit_id] : 1) / $unit_durability;
-    if($rapid >= 1) {
-      $volley_arr[$enemy_id]['FROM'] = floor($rapid);
-    }
-  }
-  foreach($volley_arr as $enemy_id => &$rapid) {
-    $rapid['ENEMY_ID'] = $enemy_id;
-    $rapid['ENEMY_NAME'] = classLocale::$lang['tech'][$enemy_id];
-  }
-  $template_result['.']['volley'] = $volley_arr;
-
-  $template_result += array(
-    'BASE_ARMOR'  => pretty_number($unit_data['armor']),
-    'BASE_SHIELD' => pretty_number($unit_data['shield']),
-    'BASE_WEAPON' => pretty_number($unit_data['attack']),
-
-    'ACTUAL_ARMOR'  => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_data['armor'])),
-    'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_data['shield'])),
-    'ACTUAL_WEAPON' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_data['attack'])),
-  );
-
-}
-
-if(classLocale::$lang['info'][$unit_id]['effect']) {
-  $template_result['UNIT_EFFECT'] = classLocale::$lang['info'][$unit_id]['effect'];
-}
-
-if($unit_data['bonus']) {
-  $unit_bonus = !$unit_data['bonus'] || $unit_data['bonus_type'] == BONUS_ABILITY ? '' : (
-    ($unit_data['bonus'] >= 0 ? '+' : '') . $unit_data['bonus'] . ($unit_data['bonus_type'] == BONUS_PERCENT ? '%' : '')
-  );
-  $template_result['UNIT_BONUS'] = $unit_bonus;
-}
-
-$template_result += array(
-  'PAGE_HEADER' => classLocale::$lang['wiki_title'],
-
-  'UNIT_ID'          => $unit_id,
-  'UNIT_NAME'        => classLocale::$lang['tech'][$unit_id],
-  'UNIT_TYPE'        => $unit_type,
-  'UNIT_TYPE_NAME'   => classLocale::$lang['tech'][$unit_type],
-  'UNIT_DESCRIPTION' => classLocale::$lang['info'][$unit_id]['description'],
-);
-
-$template_result['.']['require'] = unit_requirements_render($user, $planetrow, $unit_id);
-
-
-$template->assign_recursive($template_result);
-display($template);
-
-
-// ----------------------------------------------------------------------------------------------------------
-// Creation du tableau de production de ressources
-// Tient compte du parametrage de la planete (si la production n'est pas affectée a 100% par exemple
-// Tient compte aussi du multiplicateur de ressources
-//
 function ShowProductionTable($CurrentUser, $CurrentPlanet, $BuildID, $Template) {
   $config_resource_multiplier = game_resource_multiplier();
   $config_resource_multiplier_plain = game_resource_multiplier(true);
@@ -282,175 +155,122 @@ function eco_render_rapid_fire($unit_id) {
   return array('to' => $str_rapid_to, 'from' => $str_rapid_from);
 }
 
-// ----------------------------------------------------------------------------------------------------------
-// Construit la page par rapport a l'information demandée ...
-// Permet de faire la differance entre les divers types et les pages speciales
-//
-$unit_id = sys_get_param_int('gid');
+$unit_id = sys_get_param_id('gid');
+if($unit_id == RES_DARK_MATTER) {
+  sys_redirect('dark_matter.php');
+}
 
-$unit_data = get_unit_param($unit_id);
+if($unit_id == RES_METAMATTER) {
+  sys_redirect('metamatter.php');
+}
 
 lng_include('infos');
+if(!$unit_id || (!get_unit_param($unit_id) && !isset(classLocale::$lang['info'][$unit_id]))) {
+  sys_redirect('index.php?page=techtree');
+}
 
-$DestroyTPL = '';
-$TableHeadTPL = '';
+$template = gettemplate('novapedia', true);
 
-$parse = classLocale::$lang;
+$unit_data = get_unit_param($unit_id);
+$unit_type = $unit_data['type'];
 
-$unit_info = get_unit_param($unit_id);
-
-if($unit_id >= 1 && $unit_id <= 3) {
-  // Cas des mines
-  $templatePage = gettemplate('info_buildings_table');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-  $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_p_hour}</td><td class=\"c\">{nfo_difference}</td><td class=\"c\">{nfo_used_energy}</td><td class=\"c\">{nfo_difference}</td></tr>";
-  $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th><th>{build_need}</th><th>{build_need_diff}</th></tr>";
-} elseif($unit_id == 4) {
-  // Centrale Solaire
-  $templatePage = gettemplate('info_buildings_table');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-  $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td></tr>";
-  $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th></tr>";
-} elseif($unit_id == STRUC_MINE_FUSION) {
-  // Centrale Fusion
-  $templatePage = gettemplate('info_buildings_table');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-  $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td><td class=\"c\">{nfo_used_deuter}</td><td class=\"c\">{nfo_difference}</td></tr>";
-  $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th><th>{build_need}</th><th>{build_need_diff}</th></tr>";
-} elseif($unit_id >= STRUC_FACTORY_ROBOT && $unit_id <= 32) {
-  // Batiments Generaux
-  $templatePage = gettemplate('info_buildings_general');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-} elseif($unit_id == STRUC_TERRAFORMER) {
-  // Batiments Terraformer
-  $templatePage = gettemplate('info_buildings_general');
-} elseif($unit_id == STRUC_ALLY_DEPOSIT) {
-  // Dépot d'alliance
-  $templatePage = gettemplate('info_buildings_general');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-} elseif($unit_id == STRUC_LABORATORY_NANO) {
-  // nano
-  $templatePage = gettemplate('info_buildings_general');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-} elseif($unit_id == STRUC_SILO) {
-  // Silo de missiles
-  $templatePage = gettemplate('info_buildings_general');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-} elseif($unit_id == STRUC_MOON_STATION) {
-  // Batiments lunaires
-  $templatePage = gettemplate('info_buildings_general');
-} elseif($unit_id == STRUC_MOON_PHALANX) {
-  // Phalange
-  $templatePage = gettemplate('info_buildings_table');
-  $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_range}</td></tr>";
-  $TableTPL = "<tr><th>{build_lvl}</th><th>{build_range}</th></tr>";
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-} elseif($unit_id == STRUC_MOON_GATE) {
-  // Porte de Saut
-  $templatePage = gettemplate('info_buildings_general');
-  $DestroyTPL = gettemplate('info_buildings_destroy');
-} elseif(in_array($unit_id, sn_get_groups('tech'))) {
-  // Laboratoire
-  $templatePage = gettemplate('info_buildings_general');
-} elseif(in_array($unit_id, sn_get_groups('fleet'))) {
-  // Flotte
-
-  $templatePage = gettemplate('info_buildings_fleet');
-
-  $parse['element_typ'] = classLocale::$lang['tech'][UNIT_SHIPS];
-  $rapid_fire = eco_render_rapid_fire($unit_id);
-  $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
-  $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de
-
-  $parse['hull_pt'] = pretty_number(($unit_info['metal'] + $unit_info['crystal']) / 10); // Points de Structure
-  $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
-  $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
-  $parse['capacity_pt'] = pretty_number($unit_info['capacity']); // Capacitée de fret
-  $parse['base_speed'] = pretty_number($unit_info['engine'][0]['speed']);    // Vitesse de base
-  $parse['base_conso'] = pretty_number($unit_info['engine'][0]['consumption']);  // Consommation de base
-
-  $parse['ACTUAL_ARMOR'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), ($unit_info['metal'] + $unit_info['crystal']) / 10));
-  $parse['ACTUAL_SHIELD'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_info['shield']));
-  $parse['ACTUAL_WEAPON'] = pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_info['attack']));
+if($unit_type == UNIT_SHIPS) {
+  $template_result['UNIT_IS_SHIP'] = true;
 
   $ship_data = get_ship_data($unit_id, $user);
-  $parse['ACTUAL_CAPACITY'] = pretty_number($ship_data['capacity']);
-  $parse['ACTUAL_SPEED'] = pretty_number($ship_data['speed']);
-  $parse['ACTUAL_CONSUMPTION'] = pretty_number($ship_data['consumption']);
-  if(count($unit_info['engine']) > 1) {
-    $parse['upd_speed'] = "<font color=\"yellow\">(" . pretty_number($unit_info['engine'][1]['speed']) . ")</font>";       // Vitesse rééquipée
-    $parse['upd_conso'] = "<font color=\"yellow\">(" . pretty_number($unit_info['engine'][1]['consumption']) . ")</font>"; // Consommation apres rééquipement
+
+  $template_result += array(
+    'BASE_SPEED'         => pretty_number($ship_data['speed_base']),
+    'ACTUAL_SPEED'       => pretty_number($ship_data['speed']),
+    'BASE_CONSUMPTION'   => pretty_number($ship_data['consumption_base']),
+    'ACTUAL_CONSUMPTION' => pretty_number($ship_data['consumption']),
+
+    'BASE_CAPACITY'   => pretty_number($unit_data['capacity']),
+    'ACTUAL_CAPACITY' => pretty_number($ship_data['capacity']),
+  );
+
+  $engine_template_info = array();
+  foreach($unit_data['engine'] as $unit_engine_data) {
+    $unit_engine_data = get_engine_data($user, $unit_engine_data);
+
+    $engine_template_info[] = array(
+      'NAME'               => classLocale::$lang['tech'][$unit_engine_data['tech']],
+      'MIN_LEVEL'          => $unit_engine_data['min_level'],
+      'USER_TECH_LEVEL'    => mrc_get_level($user, null, $unit_engine_data['tech']),
+      'BASE_SPEED'         => pretty_number($unit_engine_data['speed_base']),
+      'BASE_CONSUMPTION'   => pretty_number($unit_engine_data['consumption_base']),
+      'ACTUAL_SPEED'       => pretty_number($unit_engine_data['speed']),
+      'ACTUAL_CONSUMPTION' => pretty_number($unit_engine_data['consumption']),
+    );
   }
-} elseif(in_array($unit_id, sn_get_groups('defense_active'))) {
-  // Defenses
-  $templatePage = gettemplate('info_buildings_defense');
-  $parse['element_typ'] = classLocale::$lang['tech'][UNIT_DEFENCE];
+  $template_result['.']['engine'] = $engine_template_info;
 
-  $rapid_fire = eco_render_rapid_fire($unit_id);
-  $parse['rf_info_to'] = $rapid_fire['to'];   // Rapid Fire vers
-  $parse['rf_info_fr'] = $rapid_fire['from']; // Rapid Fire de
-
-  $parse['hull_pt'] = pretty_number(($unit_info['metal'] + $unit_info['crystal']) / 10); // Points de Structure
-  $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
-  $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
-} elseif(in_array($unit_id, sn_get_groups('missile'))) {
-  // Misilles
-  $templatePage = gettemplate('info_buildings_defense');
-  $parse['element_typ'] = classLocale::$lang['tech'][UNIT_DEFENCE];
-  $parse['hull_pt'] = pretty_number($unit_info['metal'] + $unit_info['crystal']); // Points de Structure
-  $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
-  $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
-} elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artifacts', 'resources_all')))) {
-  // Officiers
-  $templatePage = gettemplate('info_officiers_general');
-
-  $mercenary = $unit_info;
-  $mercenary_bonus = $mercenary['bonus'];
-  $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
-  switch($mercenary['bonus_type']) {
-    case BONUS_PERCENT:
-      $mercenary_bonus = "{$mercenary_bonus}%";
-      break;
-
-    case BONUS_ADD:
-      break;
-
-    case BONUS_ABILITY:
-      $mercenary_bonus = '';
-      break;
-
-    default:
-      break;
-  }
-
-  $parse['EFFECT'] = classLocale::$lang['info'][$unit_id]['effect'];
-  $parse['mercenary_bonus'] = $mercenary_bonus;
-  if(!in_array($unit_id, sn_get_groups(array('artifacts', 'resources_all')))) {
-    $parse['max_level'] = classLocale::$lang['sys_level'] . ' ' .
-      (in_array($unit_id, sn_get_groups('mercenaries')) ? mrc_get_level($user, $planetrow, $unit_id) : ($mercenary['location'] == LOC_USER ? mrc_get_level($user, null, $unit_id) : ($planetrow['PLANET_GOVERNOR_ID'] == $unit_id ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0)))
-      . (isset($mercenary['max']) ? "/{$mercenary['max']}" : '');
-  }
 }
 
-// ---- Tableau d'evolution
-if($TableHeadTPL != '') {
-  $parse['table_head'] = parsetemplate($TableHeadTPL, classLocale::$lang);
-  $parse['table_data'] = ShowProductionTable($user, $planetrow, $unit_id, $TableTPL);
+
+$sn_data_group_combat = sn_get_groups('combat');
+if(in_array($unit_id, $sn_data_group_combat)) {
+  $template_result['UNIT_IS_COMBAT'] = true;
+
+  $unit_durability = $unit_data['shield'] + $unit_data['armor'];
+
+  $volley_arr = $rapid_to = $rapid_from = array();
+  $str_rapid_from = '';
+  $str_rapid_to = '';
+  foreach($sn_data_group_combat as $enemy_id) {
+    $enemy_data = get_unit_param($enemy_id);
+    $enemy_durability = $enemy_data['shield'] + $enemy_data['armor'];
+
+    $rapid = $unit_data['attack'] * (isset($unit_data['amplify'][$enemy_id]) ? $unit_data['amplify'][$enemy_id] : 1) / $enemy_durability;
+    if($rapid >= 1) {
+      $volley_arr[$enemy_id]['TO'] = floor($rapid);
+    }
+
+    $rapid = $enemy_data['attack'] * (isset($enemy_data['amplify'][$unit_id]) ? $enemy_data['amplify'][$unit_id] : 1) / $unit_durability;
+    if($rapid >= 1) {
+      $volley_arr[$enemy_id]['FROM'] = floor($rapid);
+    }
+  }
+  foreach($volley_arr as $enemy_id => &$rapid) {
+    $rapid['ENEMY_ID'] = $enemy_id;
+    $rapid['ENEMY_NAME'] = classLocale::$lang['tech'][$enemy_id];
+  }
+  $template_result['.']['volley'] = $volley_arr;
+
+  $template_result += array(
+    'BASE_ARMOR'  => pretty_number($unit_data['armor']),
+    'BASE_SHIELD' => pretty_number($unit_data['shield']),
+    'BASE_WEAPON' => pretty_number($unit_data['attack']),
+
+    'ACTUAL_ARMOR'  => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_data['armor'])),
+    'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_data['shield'])),
+    'ACTUAL_WEAPON' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_data['attack'])),
+  );
+
 }
 
-// Données de base
-$parse['dpath'] = $dpath;
-$parse['name'] = classLocale::$lang['tech'][$unit_id];
-$parse['image'] = $unit_id;
-$parse['description'] = classLocale::$lang['info'][$unit_id]['description'];
+if(classLocale::$lang['info'][$unit_id]['effect']) {
+  $template_result['UNIT_EFFECT'] = classLocale::$lang['info'][$unit_id]['effect'];
+}
 
-// La page principale
-$page = parsetemplate($templatePage, $parse);
+if($unit_data['bonus']) {
+  $unit_bonus = !$unit_data['bonus'] || $unit_data['bonus_type'] == BONUS_ABILITY ? '' : (
+    ($unit_data['bonus'] >= 0 ? '+' : '') . $unit_data['bonus'] . ($unit_data['bonus_type'] == BONUS_PERCENT ? '%' : '')
+  );
+  $template_result['UNIT_BONUS'] = $unit_bonus;
+}
 
-display($page, classLocale::$lang['nfo_page_title']);
+$template_result += array(
+  'PAGE_HEADER' => classLocale::$lang['wiki_title'],
 
-// -----------------------------------------------------------------------------------------------------------
-// History version
-// 2.0 - Using sn_timer instead of script generated by InsertScriptChronoApplet
-// 1.1 - Ajout JumpGate pour la porte de saut comme la présente OGame ... Enfin un peu mieux quand meme !
-// 1.0 - Réécriture (réinventation de l'eau tiède)
+  'UNIT_ID'          => $unit_id,
+  'UNIT_NAME'        => classLocale::$lang['tech'][$unit_id],
+  'UNIT_TYPE'        => $unit_type,
+  'UNIT_TYPE_NAME'   => classLocale::$lang['tech'][$unit_type],
+  'UNIT_DESCRIPTION' => classLocale::$lang['info'][$unit_id]['description'],
+);
+
+$template_result['.']['require'] = unit_requirements_render($user, $planetrow, $unit_id);
+
+$template->assign_recursive($template_result);
+display($template);
