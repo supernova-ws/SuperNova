@@ -139,7 +139,7 @@ class db_mysql {
 
     $query = trim($query);
     $this->security_watch_user_queries($query);
-    $skip_query_check ? $this->security_query_check_bad_words($query) : false;
+    !$skip_query_check ? $this->security_query_check_bad_words($query) : false;
 
     $sql = $query;
     if(strpos($sql, '{{') !== false) {

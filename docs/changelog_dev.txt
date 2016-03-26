@@ -735,6 +735,17 @@ $classLocale = $lang;
     $parse = classLocale::$lang;
 
 
+запустить движок и переделать infos.php - там какой-то трэш и угар!
+
+ABSOLUTLY OK
+CODE-feat-41a6.49: Finally moved $lang to property of classLocale - w…
+CODE-feat-41a6.48: Wide rewrite
+
+CODE-feat-41a6.27: Wide rewrite
+CODE-feat-41a6.26: Wide rewrite
+CODE-feat-41a6.25: Wide rewrite
+CODE-feat-41a6.24: Wide rewrite
+
 #ctv
 
 BONUS_ABILITY - deprecated ???

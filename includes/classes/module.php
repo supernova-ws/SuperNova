@@ -13,7 +13,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.39# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.51# copyright © 2009-2014 Gorlum',
 
     'require'       => array(),
     'root_relative' => '',
@@ -129,8 +129,8 @@ class sn_module {
     $this->mergeI18N();
 
     // Patching game menu - if any
-    isset($this->manifest['menu']) && $this->mergeMenu($sn_menu_extra, $this->manifest['menu']);
-    isset($this->manifest['menu_admin']) && $this->mergeMenu($sn_menu_admin_extra, $this->manifest['menu_admin']);
+    isset($this->manifest['menu']) ? $this->mergeMenu($sn_menu_extra, $this->manifest['menu']) : false;
+    isset($this->manifest['menu_admin']) ? $this->mergeMenu($sn_menu_admin_extra, $this->manifest['menu_admin']) : false;
 
     $this->mergeJavascript();
     $this->mergeCss();
@@ -144,7 +144,7 @@ class sn_module {
     }
 
     foreach($this->manifest['constants'] as $constant_name => $constant_value) {
-      defined($constant_name) || define($constant_name, $constant_value);
+      !defined($constant_name) ? define($constant_name, $constant_value) : false;
     }
   }
 

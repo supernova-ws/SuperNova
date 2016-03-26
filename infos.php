@@ -296,71 +296,66 @@ $DestroyTPL = '';
 $TableHeadTPL = '';
 
 $parse = classLocale::$lang;
-// Données de base
-$parse['dpath'] = $dpath;
-$parse['name'] = classLocale::$lang['tech'][$unit_id];
-$parse['image'] = $unit_id;
-$parse['description'] = classLocale::$lang['info'][$unit_id]['description'];
 
 $unit_info = get_unit_param($unit_id);
 
 if($unit_id >= 1 && $unit_id <= 3) {
   // Cas des mines
-  $PageTPL = gettemplate('info_buildings_table');
+  $templatePage = gettemplate('info_buildings_table');
   $DestroyTPL = gettemplate('info_buildings_destroy');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_p_hour}</td><td class=\"c\">{nfo_difference}</td><td class=\"c\">{nfo_used_energy}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th><th>{build_need}</th><th>{build_need_diff}</th></tr>";
 } elseif($unit_id == 4) {
   // Centrale Solaire
-  $PageTPL = gettemplate('info_buildings_table');
+  $templatePage = gettemplate('info_buildings_table');
   $DestroyTPL = gettemplate('info_buildings_destroy');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th></tr>";
 } elseif($unit_id == STRUC_MINE_FUSION) {
   // Centrale Fusion
-  $PageTPL = gettemplate('info_buildings_table');
+  $templatePage = gettemplate('info_buildings_table');
   $DestroyTPL = gettemplate('info_buildings_destroy');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_prod_energy}</td><td class=\"c\">{nfo_difference}</td><td class=\"c\">{nfo_used_deuter}</td><td class=\"c\">{nfo_difference}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_prod} {build_gain}</th><th>{build_prod_diff}</th><th>{build_need}</th><th>{build_need_diff}</th></tr>";
 } elseif($unit_id >= STRUC_FACTORY_ROBOT && $unit_id <= 32) {
   // Batiments Generaux
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 } elseif($unit_id == STRUC_TERRAFORMER) {
   // Batiments Terraformer
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
 } elseif($unit_id == STRUC_ALLY_DEPOSIT) {
   // Dépot d'alliance
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 } elseif($unit_id == STRUC_LABORATORY_NANO) {
   // nano
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 } elseif($unit_id == STRUC_SILO) {
   // Silo de missiles
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 } elseif($unit_id == STRUC_MOON_STATION) {
   // Batiments lunaires
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
 } elseif($unit_id == STRUC_MOON_PHALANX) {
   // Phalange
-  $PageTPL = gettemplate('info_buildings_table');
+  $templatePage = gettemplate('info_buildings_table');
   $TableHeadTPL = "<tr><td class=\"c\">{nfo_level}</td><td class=\"c\">{nfo_range}</td></tr>";
   $TableTPL = "<tr><th>{build_lvl}</th><th>{build_range}</th></tr>";
   $DestroyTPL = gettemplate('info_buildings_destroy');
 } elseif($unit_id == STRUC_MOON_GATE) {
   // Porte de Saut
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
   $DestroyTPL = gettemplate('info_buildings_destroy');
 } elseif(in_array($unit_id, sn_get_groups('tech'))) {
   // Laboratoire
-  $PageTPL = gettemplate('info_buildings_general');
+  $templatePage = gettemplate('info_buildings_general');
 } elseif(in_array($unit_id, sn_get_groups('fleet'))) {
   // Flotte
 
-  $PageTPL = gettemplate('info_buildings_fleet');
+  $templatePage = gettemplate('info_buildings_fleet');
 
   $parse['element_typ'] = classLocale::$lang['tech'][UNIT_SHIPS];
   $rapid_fire = eco_render_rapid_fire($unit_id);
@@ -388,7 +383,7 @@ if($unit_id >= 1 && $unit_id <= 3) {
   }
 } elseif(in_array($unit_id, sn_get_groups('defense_active'))) {
   // Defenses
-  $PageTPL = gettemplate('info_buildings_defense');
+  $templatePage = gettemplate('info_buildings_defense');
   $parse['element_typ'] = classLocale::$lang['tech'][UNIT_DEFENCE];
 
   $rapid_fire = eco_render_rapid_fire($unit_id);
@@ -400,14 +395,14 @@ if($unit_id >= 1 && $unit_id <= 3) {
   $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
 } elseif(in_array($unit_id, sn_get_groups('missile'))) {
   // Misilles
-  $PageTPL = gettemplate('info_buildings_defense');
+  $templatePage = gettemplate('info_buildings_defense');
   $parse['element_typ'] = classLocale::$lang['tech'][UNIT_DEFENCE];
   $parse['hull_pt'] = pretty_number($unit_info['metal'] + $unit_info['crystal']); // Points de Structure
   $parse['shield_pt'] = pretty_number($unit_info['shield']);  // Points de Bouclier
   $parse['attack_pt'] = pretty_number($unit_info['attack']);  // Points d'Attaque
 } elseif(in_array($unit_id, sn_get_groups(array('mercenaries', 'governors', 'artifacts', 'resources_all')))) {
   // Officiers
-  $PageTPL = gettemplate('info_officiers_general');
+  $templatePage = gettemplate('info_officiers_general');
 
   $mercenary = $unit_info;
   $mercenary_bonus = $mercenary['bonus'];
@@ -443,8 +438,14 @@ if($TableHeadTPL != '') {
   $parse['table_data'] = ShowProductionTable($user, $planetrow, $unit_id, $TableTPL);
 }
 
+// Données de base
+$parse['dpath'] = $dpath;
+$parse['name'] = classLocale::$lang['tech'][$unit_id];
+$parse['image'] = $unit_id;
+$parse['description'] = classLocale::$lang['info'][$unit_id]['description'];
+
 // La page principale
-$page = parsetemplate($PageTPL, $parse);
+$page = parsetemplate($templatePage, $parse);
 
 display($page, classLocale::$lang['nfo_page_title']);
 
