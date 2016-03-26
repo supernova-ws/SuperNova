@@ -32,8 +32,11 @@ define('CACHER_LOCK_SLEEP', 10000);
  * Currently support is a bit limited - for example there is no "walk" function. However basic array abilities supported
  * You should NEVER operate with arrays inside of cacher and should ALWAYS use wrap-up functions
  *
- * @package supernova
  *
+ * @property bool _INITIALIZED
+ * @property bool tables
+ *
+ * @package supernova
  */
 class classCache {
   // CACHER_NOT_INIT - not initialized
@@ -309,8 +312,9 @@ class classCache {
  * Look supernova.sql to learn more
  * Also this class can holds default values for variables
  *
- * @package supernova
+ * @property bool _DB_LOADED
  *
+ * @package supernova
  */
 class classPersistent extends classCache {
   protected $table_name;
@@ -412,13 +416,13 @@ class classPersistent extends classCache {
  * This class is used to handle server configuration
  *
  * @package supernova
+ * @property string advGoogleLeftMenuCode
+ * @property int    advGoogleLeftMenuIsOn
  * @property string adv_conversion_code_payment
  * @property string adv_conversion_code_register
+ * @property string adv_seo_javascript
  * @property string adv_seo_meta_description
  * @property string adv_seo_meta_keywords
- * @property string adv_seo_javascript
- * @property int    advGoogleLeftMenuIsOn
- * @property string advGoogleLeftMenuCode
  * @property int    ali_bonus_algorithm   // Bonus calculation algorithm
  * @property int    ali_bonus_brackets  // Brackets count for ALI_BONUS_BY_RANK
  * @property int    ali_bonus_brackets_divisor // Bonus divisor for ALI_BONUS_BY_RANK
@@ -429,8 +433,8 @@ class classPersistent extends classCache {
  * @property int    avatar_max_height  // Maximum height
  * @property int    avatar_max_width  // Maximum width
  * @property int    BuildLabWhileRun
- * @property string chat_highlight_developer  // Developer nick
  * @property string chat_highlight_admin  // Admin nick
+ * @property string chat_highlight_developer  // Developer nick
  * @property string chat_highlight_moderator  // Moderator nick
  * @property string chat_highlight_operator  // Operator nick
  * @property string chat_highlight_premium  // Premium nick
@@ -438,6 +442,8 @@ class classPersistent extends classCache {
  * @property int    chat_timeout  // in seconds. Default = 15 min
  * @property string COOKIE_NAME
  * @property int    crystal_basic_income
+ * @property int    db_manual_lock_enabled
+ * @property int    db_version
  * @property int    debug
  * @property int    Defs_Cdr
  * @property int    deuterium_basic_income
@@ -456,6 +462,7 @@ class classPersistent extends classCache {
  * @property int    fleet_speed
  * @property int    fleet_update_interval
  * @property string game_adminEmail     // Admin's email to show to users
+ * @property int    game_blitz_register   // Blitz registration status - see BLITZ_REGISTER_xxx constants
  * @property int    game_counter   // Does built-in page hit counter is on?
  * @property string game_default_language
  * @property string game_default_skin
@@ -464,18 +471,21 @@ class classPersistent extends classCache {
  * @property string game_disable_reason
  * @property int    game_email_pm  // Is allowed forwarding messages from PM to e-mail?
  * @property int    game_maxGalaxy
- * @property int    game_maxSystem
  * @property int    game_maxPlanet
+ * @property int    game_maxSystem
  * @property int    game_mode            // int - SuperNova, 1 - oGame
+ * @property int    game_multiaccount_enabled  // 1 - allow interactions for players with same IP (multiaccounts)
  * @property string game_name  // Server name (would be on banners and on top of left menu)
  * @property int    game_news_actual  // How long announcement would be marked as "New". In seconds. Default - 3 days
  * @property int    game_news_overview     // How much last news to show in Overview page
  * @property int    game_noob_factor     // Multiplier to divide "stronger" and "weaker" users
  * @property int    game_noob_points  // Below this point user threated as noob. int to disable
- * @property int    game_multiaccount_enabled  // 1 - allow interactions for players with same IP (multiaccounts)
  * @property int    game_speed  // Game speed
+ * @property float  game_speed_expedition // Expedition speed. 1 means "normal"
  * @property int    game_user_changename  // Is user allowed to change name after registration?
  * @property int    game_user_changename_cost  // Change name cost for paid changename
+ * @property string game_watchlist
+ * @property array  game_watchlist_array
  * @property int    initial_fields
  * @property string int_banner_background
  * @property string int_banner_fontInfo
@@ -496,8 +506,8 @@ class classPersistent extends classCache {
  * @property int    metal_basic_income
  * @property string payment_currency_default
  * @property int    payment_currency_exchange_dm_
- * @property int    payment_currency_exchange_mm_
  * @property int    payment_currency_exchange_eur
+ * @property int    payment_currency_exchange_mm_
  * @property int    payment_currency_exchange_rub
  * @property int    payment_currency_exchange_uah
  * @property int    payment_currency_exchange_usd
@@ -512,9 +522,9 @@ class classPersistent extends classCache {
  * @property int    planet_teleport_timeout  //
  * @property int    player_delete_time  //
  * @property int    player_max_colonies  // Max player planet count (NOT including main planet)
+ * @property int    player_metamatter_immortal
  * @property int    player_vacation_time  //
  * @property int    player_vacation_timeout  //
- * @property int    player_metamatter_immortal
  * @property int    quest_total  // Total number of quests
  * @property int    resource_multiplier
  * @property int    rpg_bonus_divisor     // Amount of DM referral shoud get for partner have 1 DM bonus
@@ -526,10 +536,10 @@ class classPersistent extends classCache {
  * @property int    rpg_cost_scraper  // Scrapper buys ship for fraction of cost
  * @property int    rpg_cost_stockman  // Stockman resells ship that was scrapped
  * @property int    rpg_cost_trader  // Trader trades between resources
- * @property int    rpg_exchange_metal
  * @property int    rpg_exchange_crystal
- * @property int    rpg_exchange_deuterium
  * @property int    rpg_exchange_darkMatter
+ * @property int    rpg_exchange_deuterium
+ * @property int    rpg_exchange_metal
  * @property int    rpg_flt_explore  // DM reward for finding Supernova in expedition
  * @property int    rpg_scrape_crystal
  * @property int    rpg_scrape_deuterium
@@ -547,10 +557,10 @@ class classPersistent extends classCache {
  * @property int    server_updater_check_result  // Server last check result
  * @property int    server_updater_id  // Server ID on update server
  * @property string server_updater_key  // Server key on update server
- * @property int    stats_history_days  // За сколько дней хранить статистику в базе
  * @property int    stats_hide_admins
  * @property string stats_hide_player_list
  * @property int    stats_hide_pm_link
+ * @property int    stats_history_days  // За сколько дней хранить статистику в базе
  * @property string stats_schedule
  * @property bool   tpl_allow_php // Allow template to include PHP code. SHOULD BE ALWAYS DISABLE!!!!!!!!
  * @property bool   tpl_minifier // Template minifier
@@ -664,6 +674,7 @@ class classConfig extends classPersistent {
     'game_multiaccount_enabled' => 0, // 1 - allow interactions for players with same IP (multiaccounts)
 
     'game_speed'                => 1, // Game speed
+    'game_speed_expedition'     => 1, // Expedition speed. 1 means "normal"
     'game_user_changename'      => 2, // Is user allowed to change name after registration?
     'game_user_changename_cost' => 100000, // Change name cost for paid changename
 

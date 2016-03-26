@@ -255,6 +255,11 @@ class db_mysql {
     }
   }
 
+  /**
+   * @param bool $prefixed_only
+   *
+   * @return array
+   */
   function db_get_table_list($prefixed_only = true) {
     $query = $this->mysql_get_table_list();
 

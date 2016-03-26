@@ -1309,8 +1309,8 @@ class classSupernova {
     // Initializing global 'cacher' object
     static::$cache = new classCache(classSupernova::$cache_prefix);
     $sn_cache = static::$cache;
-    empty($sn_cache->tables) && sys_refresh_tablelist();
-    empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
+    empty($sn_cache->tables) ? sys_refresh_tablelist() : false;
+    empty($sn_cache->tables) ? die('DB error - cannot find any table. Halting...') : false;
 
     // Initializing global "config" object
     classSupernova::$config = static::$config = new classConfig(classSupernova::$cache_prefix);

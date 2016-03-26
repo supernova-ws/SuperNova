@@ -136,6 +136,15 @@ function get_exchange_rate($currency_symbol) {
  * false - return array('text' => $ret, 'class' => $class), where $ret - unstyled
  */
 
+/**
+ * @param float     $n
+ * @param int|bool  $floor
+ * @param int|bool  $color
+ * @param int|bool  $limit
+ * @param bool|null $style
+ *
+ * @return array|float|string
+ */
 function pretty_number($n, $floor = true, $color = false, $limit = false, $style = null) {
   $n = floatval($n);
   if(is_int($floor)) {
