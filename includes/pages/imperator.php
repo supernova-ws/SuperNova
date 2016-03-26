@@ -15,7 +15,7 @@ classSupernova::$sn_mvc['i18n']['imperator'] = array(
 classSupernova::$sn_mvc['view']['imperator'][] = 'sn_imperator_view';
 
 function sn_imperator_view($template = null) {
-  global $config, $user;
+  global $user;
 
   $stat_fields = array(
     'stat_date' => 'STAT_DATE',

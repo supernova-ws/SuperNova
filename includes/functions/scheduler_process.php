@@ -1,7 +1,7 @@
 <?php
 
 function scheduler_process() {
-  global $config, $user, $debug;
+  global $user, $debug;
   $classLocale = classLocale::$lang;
 
   $is_admin_request = false;

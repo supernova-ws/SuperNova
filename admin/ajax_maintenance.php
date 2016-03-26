@@ -203,7 +203,7 @@ function sn_maintenance_pack_user_list($user_list) {
   return implode(',', $result);
 }
 
-global $config, $debug;
+global $debug;
 
 sn_db_transaction_start();
 $old_server_status = classSupernova::$config->db_loadItem('game_disable');

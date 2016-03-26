@@ -12,7 +12,7 @@ function eco_mrk_trader($user, $planetrow = null) {
   $intError = MARKET_DEAL;
   $planetrow = isset($planetrow) ? $planetrow : $user;
 
-  global $page_title, $config;
+  global $page_title;
   $classLocale = classLocale::$lang;
 
   lng_include('market');

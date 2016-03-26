@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #41a6.63#
+* @version #41a6.64#
 *
 */
 
@@ -27,8 +27,6 @@
 defined('INSIDE') || die();
 
 // System-wide localization
-
-global $config;
 
 $a_lang_array = (array(
   'sys_birthday' => 'День рождения',

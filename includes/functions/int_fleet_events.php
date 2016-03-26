@@ -1,7 +1,7 @@
 <?php
 
 function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scanned = false) {
-  global $config, $user, $fleet_number;
+  global $user, $fleet_number;
 
   $fleet_events = array();
   $fleet_number = 0;

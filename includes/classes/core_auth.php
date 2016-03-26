@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a6.63#
+ * version #41a6.64#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.63# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.64# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -681,8 +681,6 @@ class core_auth extends sn_module {
    */
   // OK v4.5
   protected function make_return_array() {
-    global $config;
-
     $user_id = !empty(self::$user['id']) ? self::$user['id'] : 0;
     // if(!empty($user_id) && !$user_impersonator) {
     // $user_id не может быть пустым из-за констраинтов в таблице SPE

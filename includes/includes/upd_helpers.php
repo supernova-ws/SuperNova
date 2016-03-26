@@ -24,7 +24,7 @@ function upd_do_query($query, $no_log = false) {
 }
 
 function upd_check_key($key, $default_value, $condition = false) {
-  global $config, $sys_log_disabled;
+  global $sys_log_disabled;
 
   classSupernova::$config->db_loadItem($key);
   if($condition || !isset(classSupernova::$config->$key)) {
@@ -47,7 +47,7 @@ function upd_log_version_update() {
 }
 
 function upd_add_more_time($time = 0) {
-  global $config, $sys_log_disabled;
+  global $sys_log_disabled;
 
   $time = $time ? $time : (classSupernova::$config->upd_lock_time ? classSupernova::$config->upd_lock_time : 30);
   !$sys_log_disabled ? classSupernova::$config->db_saveItem('var_db_update_end', SN_TIME_NOW + $time) : false;
@@ -82,7 +82,7 @@ function upd_unset_table_info($table_name) {
 }
 
 function upd_load_table_info($prefix_table_name, $prefixed = true) {
-  global $config, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
+  global $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
   $tableName = $prefixed ? str_replace(classSupernova::$config->db_prefix, '', $prefix_table_name) : $prefix_table_name;
   $prefix_table_name = $prefixed ? $prefix_table_name : classSupernova::$config->db_prefix . $prefix_table_name;
@@ -116,8 +116,6 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
  * @return bool|mysqli_result|void
  */
 function upd_alter_table($table, $alters, $condition = true) {
-  global $config;
-
   if(!$condition) {
     return;
   }
@@ -131,38 +129,33 @@ function upd_alter_table($table, $alters, $condition = true) {
   }
 
   $alters = implode(',', $alters);
-  // foreach($alters as $table_name => )
-  $qry = "ALTER TABLE {$config->db_prefix}{$table} {$alters};";
+  $qry = "ALTER TABLE {{{$table}}} {$alters};";
 
-  //$result = db_query($qry);
   $result = upd_do_query($qry);
   $error = db_error();
   if($error) {
     die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
   }
 
-//  if(strpos('RENAME TO', strtoupper(implode(',', $alters))) === false)
-  {
-    upd_load_table_info($table, false);
-  }
+  upd_load_table_info($table, false);
 
   return $result;
 }
 
 function upd_drop_table($table_name) {
-  global $config;
-
-  classSupernova::$db->db_sql_query("DROP TABLE IF EXISTS {$config->db_prefix}{$table_name};");
+  $db_prefix = classSupernova::$config->db_prefix;
+  classSupernova::$db->db_sql_query("DROP TABLE IF EXISTS {$db_prefix}{$table_name};");
 
   upd_unset_table_info($table_name);
 }
 
 function upd_create_table($table_name, $declaration) {
-  global $config, $update_tables;
+  global $update_tables;
 
   if(!$update_tables[$table_name]) {
     upd_do_query('set foreign_key_checks = 0;', true);
-    $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{classSupernova::$config->db_prefix}{$table_name}` {$declaration}");
+    $db_prefix = classSupernova::$config->db_prefix;
+    $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$db_prefix}{$table_name}` {$declaration}");
     $error = db_error();
     if($error) {
       die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));

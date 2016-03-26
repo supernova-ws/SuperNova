@@ -13,8 +13,6 @@ if(!sn_module_get_active_count('payment')) {
   die();
 }
 
-global $config;
-
 lng_include('payment');
 lng_include('infos');
 

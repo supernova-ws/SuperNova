@@ -361,7 +361,7 @@ class Account {
    * @return array|bool|int|mysqli_result|null|string
    */
   public function metamatter_change($change_type, $metamatter, $comment = '', $already_changed = false) {
-    global $debug, $mm_change_legit, $config;
+    global $debug, $mm_change_legit;
 
     if(!$this->is_exists || !($metamatter = round(floatval($metamatter)))) {
       $debug->error('Ошибка при попытке манипуляции с ММ');
@@ -379,11 +379,12 @@ class Account {
     } else {
       $metamatter_total_delta = $metamatter > 0 ? $metamatter : 0;
 
+      $classConfig = classSupernova::$config;
       $result = $this->db->doquery(
         "UPDATE {{account}}
         SET
           `account_metamatter` = `account_metamatter` + '{$metamatter}'" .
-        ($metamatter_total_delta ? ", `account_immortal` = IF(`account_metamatter_total` + '{$metamatter_total_delta}' >= {$config->player_metamatter_immortal}, NOW(), `account_immortal`), `account_metamatter_total` = `account_metamatter_total` + '{$metamatter_total_delta}'" : '') .
+        ($metamatter_total_delta ? ", `account_immortal` = IF(`account_metamatter_total` + '{$metamatter_total_delta}' >= {$classConfig->player_metamatter_immortal}, NOW(), `account_immortal`), `account_metamatter_total` = `account_metamatter_total` + '{$metamatter_total_delta}'" : '') .
         " WHERE `account_id` = {$account_id_safe}"
       );
       if(!$result) {

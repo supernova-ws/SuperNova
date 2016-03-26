@@ -8,7 +8,7 @@
  * @copyright 2008 by ??????? for XNova
  */
 function sn_options_model() {
-  global $user, $user_option_list, $template_result, $config;
+  global $user, $user_option_list, $template_result;
 
   $language_new = sys_get_param_str('langer', $user['lang']);
 
@@ -53,9 +53,10 @@ function sn_options_model() {
           // $planet = sys_o_get_updated($user, $planet, SN_TIME_NOW);
           // $planet = $planet['planet'];
 
+          $classConfig = classSupernova::$config;
           db_planet_set_by_id($planet['id'],
             "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
-            metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
+            metal_perhour = '{$classConfig->metal_basic_income}', crystal_perhour = '{$classConfig->crystal_basic_income}', deuterium_perhour = '{$classConfig->deuterium_basic_income}',
             metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
             fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"
           );
@@ -252,7 +253,7 @@ function sn_options_model() {
 //-------------------------------
 
 function sn_options_view($template = null) {
-  global $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config;
+  global $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list;
   $classLocale = classLocale::$lang;
 
   sys_user_vacation($user);

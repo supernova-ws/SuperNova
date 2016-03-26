@@ -8,8 +8,6 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $config;
-
 lng_include('universe');
 lng_include('stat');
 

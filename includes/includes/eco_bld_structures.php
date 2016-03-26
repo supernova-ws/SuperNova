@@ -16,7 +16,7 @@
 function eco_build($que_type, &$user, &$planet) { return sn_function_call(__FUNCTION__, array($que_type, &$user, &$planet)); }
 
 function sn_eco_build($que_type, &$auser, &$planet) {
-  global $config, $template_result;
+  global $template_result;
   $classLocale = classLocale::$lang;
 
   if($ally_id = sys_get_param_id('ally_id')) {

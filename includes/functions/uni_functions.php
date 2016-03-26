@@ -55,8 +55,6 @@ function uni_create_planet_get_density($position_data, $user_row, $planet_sector
  * @return bool
  */
 function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_name_unsafe = '', $HomeWorld = false, $options = array()) {
-  global $config;
-
   $Position = intval($Position);
 
   if(!isset($options['skip_check']) && db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
@@ -324,8 +322,6 @@ function uni_calculate_moon_chance($FleetDebris) {
 }
 
 function uni_coordinates_valid($coordinates, $prefix = '') {
-  global $config;
-
   // array_walk($coordinates, 'intval');
   $coordinates["{$prefix}galaxy"] = intval($coordinates["{$prefix}galaxy"]);
   $coordinates["{$prefix}system"] = intval($coordinates["{$prefix}system"]);
@@ -338,8 +334,6 @@ function uni_coordinates_valid($coordinates, $prefix = '') {
 }
 
 function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
-  global $config;
-
   try {
     if($planetrow['planet_teleport_next'] && $planetrow['planet_teleport_next'] > SN_TIME_NOW) {
       throw new exception(classLocale::$lang['ov_teleport_err_cooldown'], ERR_ERROR);

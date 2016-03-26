@@ -14,8 +14,6 @@ function que_get_unit_que($unit_id) {
 
 
 function que_get_max_que_length($user, $planet, $que_id, $que_data = null) {
-  global $config;
-
   if(empty($que_data)) {
     $que_data = sn_get_groups('ques');
     $que_data = $que_data[$que_id];
@@ -56,7 +54,6 @@ function eco_que_arr2str($que_arr) {
 
 
 function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true) {
-  global $config;
   $classLocale = classLocale::$lang;
 
   $is_autoconvert = false;

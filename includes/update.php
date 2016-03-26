@@ -44,7 +44,7 @@ if(classSupernova::$config->db_version == DB_VERSION) {
 } elseif(classSupernova::$config->db_version > DB_VERSION) {
   classSupernova::$config->db_saveItem('var_db_update_end', SN_TIME_NOW);
   die(
-    'Internal error! Auotupdater detects DB version greater then can be handled!<br />
+  'Internal error! Auotupdater detects DB version greater then can be handled!<br />
     Possible you have out-of-date SuperNova version<br />
     Please upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>'
   );
@@ -66,7 +66,7 @@ $old_server_status = classSupernova::$config->db_loadItem('game_disable');
 classSupernova::$config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
 
 upd_log_message('Server disabled. Loading table info...');
-$update_tables  = array();
+$update_tables = array();
 $update_indexes = array();
 $query = upd_do_query('SHOW TABLES;', true);
 while($row = db_fetch_row($query)) {
@@ -87,7 +87,7 @@ switch($new_version) {
     upd_log_version_update();
 
     upd_check_key('player_vacation_timeout', PERIOD_WEEK, classSupernova::$config->player_vacation_timeout != PERIOD_WEEK);
-    upd_check_key('player_vacation_time', PERIOD_WEEK ,   classSupernova::$config->player_vacation_time != PERIOD_WEEK);
+    upd_check_key('player_vacation_time', PERIOD_WEEK, classSupernova::$config->player_vacation_time != PERIOD_WEEK);
 
     upd_alter_table('users', "ADD `vacation_next` INT(11) NOT NULL DEFAULT 0 COMMENT 'Next datetime when player can go on vacation'", !$update_tables['users']['vacation_next']);
 
@@ -97,8 +97,7 @@ switch($new_version) {
 
     upd_check_key('payment_currency_exchange_mm_', 2500, !classSupernova::$config->payment_currency_exchange_mm_);
 
-    if(!$update_tables['log_metamatter'])
-    {
+    if(!$update_tables['log_metamatter']) {
       upd_create_table('log_metamatter',
         "(
           `id` SERIAL,
@@ -123,8 +122,7 @@ switch($new_version) {
       "ADD `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Is this a test payment?'",
     ), !$update_tables['payment']['payment_test']);
 
-    if($update_tables['payment']['payment_test']['Default'] == 1)
-    {
+    if($update_tables['payment']['payment_test']['Default'] == 1) {
       upd_alter_table('payment', array(
         "MODIFY COLUMN `payment_test` TINYINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Is this a test payment?'",
       ));
@@ -140,9 +138,8 @@ switch($new_version) {
       "MODIFY COLUMN `metamatter` BIGINT(20) NOT NULL DEFAULT 0 COMMENT 'Metamatter amount'",
     ), $update_tables['users']['metamatter']['Type'] == 'int(20)');
 
-    $query = upd_do_query("SELECT * FROM {{que}} WHERE `que_type` = " . QUE_RESEARCH . " AND que_unit_id in (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ") FOR UPDATE");
-    while($row = db_fetch($query))
-    {
+    $query = upd_do_query("SELECT * FROM {{que}} WHERE `que_type` = " . QUE_RESEARCH . " AND que_unit_id IN (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ") FOR UPDATE");
+    while($row = db_fetch($query)) {
       $planet_id = ($row['que_planet_id_origin'] ? $row['que_planet_id_origin'] : $row['que_planet_id']);
       upd_do_query("SELECT id FROM {{planets}} WHERE id = {$planet_id} FOR UPDATE");
       $price = sys_unit_str2arr($row['que_unit_price']);
@@ -158,12 +155,10 @@ switch($new_version) {
     $query = upd_do_query("SELECT unit_id, unit_snid, unit_level, id_planet FROM {{unit}} AS un
     LEFT JOIN {{users}} AS u ON u.id = un.unit_player_id
     LEFT JOIN {{planets}} AS p ON p.id = u.id_planet
-    WHERE unit_snid in (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ")
+    WHERE unit_snid IN (" . TECH_EXPEDITION . "," . TECH_COLONIZATION . ")
     FOR UPDATE");
-    while($row = db_fetch($query))
-    {
-      if(!$row['id_planet'])
-      {
+    while($row = db_fetch($query)) {
+      if(!$row['id_planet']) {
         continue;
       }
 
@@ -171,8 +166,7 @@ switch($new_version) {
       $unit_level = $row['unit_level'];
       $price = get_unit_param($unit_id, P_COST);
       $factor = $price['factor'];
-      foreach($price as $resource_id => &$resource_amount)
-      {
+      foreach($price as $resource_id => &$resource_amount) {
         $resource_amount = $resource_amount * (pow($factor, $unit_level) - 1) / ($factor - 1);
       }
       // upd_do_query
@@ -191,17 +185,15 @@ switch($new_version) {
     // Вернуть ресы за уже исследованную Экспедиционную технологию
     upd_check_key('player_max_colonies', -1, classSupernova::$config->player_max_colonies >= 0);
 
-    if(!isset($update_tables['users']['player_rpg_explore_xp']))
-    {
+    if(!isset($update_tables['users']['player_rpg_explore_xp'])) {
       upd_alter_table('users', array(
         "ADD COLUMN `player_rpg_explore_level` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
         "ADD COLUMN `player_rpg_explore_xp` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
       ), !isset($update_tables['users']['player_rpg_explore_xp']));
     }
 
-    if(!$update_tables['log_users_online'])
-    {
-      upd_create_table('log_users_online',"(
+    if(!$update_tables['log_users_online']) {
+      upd_create_table('log_users_online', "(
         `online_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'Measure time',
         `online_count` SMALLINT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Users online',
 
@@ -215,13 +207,11 @@ switch($new_version) {
       "ADD `user_time_measured` INT UNSIGNED NOT NULL DEFAULT 0 COMMENT 'When was time diff measured last time' AFTER `onlinetime`",
     ), !$update_tables['users']['user_time_measured']);
 
-    if($update_tables['rw'])
-    {
+    if($update_tables['rw']) {
       upd_do_query("DROP TABLE IF EXISTS {{rw}};");
     }
 
-    if(!$update_tables['player_award'])
-    {
+    if(!$update_tables['player_award']) {
       upd_create_table('player_award', "(
         `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
         `award_type_id` int(11) DEFAULT NULL COMMENT 'Award type i.e. order, medal, pennant, rank etc',
@@ -278,12 +268,9 @@ switch($new_version) {
     }
 
 
-
-
-
     if(isset($update_tables['planets']['que'])) {
       $sn_data_aux = array(
-        SHIP_SMALL_FIGHTER_WRATH => array(
+        SHIP_SMALL_FIGHTER_WRATH    => array(
           'name' => 'ship_fighter_wrath',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -292,7 +279,7 @@ switch($new_version) {
             RES_DEUTERIUM => 500,
           ),
         ),
-        SHIP_CARGO_GREED => array(
+        SHIP_CARGO_GREED            => array(
           'name' => 'ship_cargo_greed',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -301,7 +288,7 @@ switch($new_version) {
             RES_DEUTERIUM => 10000,
           ),
         ),
-        SHIP_SATTELITE_SLOTH => array(
+        SHIP_SATTELITE_SLOTH        => array(
           'name' => 'ship_sattelite_sloth',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -319,7 +306,7 @@ switch($new_version) {
             RES_DEUTERIUM => 20000,
           ),
         ),
-        SHIP_RECYCLER_GLUTTONY => array(
+        SHIP_RECYCLER_GLUTTONY      => array(
           'name' => 'ship_recycler_gluttony',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -328,7 +315,7 @@ switch($new_version) {
             RES_DEUTERIUM => 3000,
           ),
         ),
-        SHIP_MEDIUM_BOMBER_ENVY => array(
+        SHIP_MEDIUM_BOMBER_ENVY     => array(
           'name' => 'ship_bomber_envy',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -337,7 +324,7 @@ switch($new_version) {
             RES_DEUTERIUM => 10000,
           ),
         ),
-        SHIP_LARGE_ORBITAL_HEAVY => array(
+        SHIP_LARGE_ORBITAL_HEAVY    => array(
           'name' => 'ship_orbital_heavy',
           'type' => UNIT_SHIPS,
           'cost' => array(
@@ -399,7 +386,9 @@ switch($new_version) {
         $units_levels = array();
         foreach($planet_unit_list as $unit_id) {
           $unit_name = &$units_info[$unit_id][P_NAME];
-          if(!isset($row[$unit_name]) || !$row[$unit_name]) continue;
+          if(!isset($row[$unit_name]) || !$row[$unit_name]) {
+            continue;
+          }
           $units_levels[$unit_id] = $row[$unit_name];
           $unit_data[] = "({$user_id}," . LOC_PLANET . ",{$planet_id},{$units_info[$unit_id][P_UNIT_TYPE]},{$unit_id},{$units_levels[$unit_id]})";
           if(count($unit_data) > 30) {
@@ -413,7 +402,9 @@ switch($new_version) {
         if($row['que']) {
           $que = explode(';', $row['que']);
           foreach($que as $que_item) {
-            if(!$que_item) continue;
+            if(!$que_item) {
+              continue;
+            }
 
             $que_item = explode(',', $que_item);
 
@@ -439,15 +430,19 @@ switch($new_version) {
             $que_data[] = "({$user_id},{$planet_id},{$planet_id},1,{$que_item[2]},{$unit_id},1,{$que_item[3]},{$units_levels[$unit_id]},{$que_item[2]},'{$unit_cost}')";
           }
         }
- 
+
         // Конвертируем очередь верфи
         if($row['b_hangar_id']) {
-          $return_resources = array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0, );
+          $return_resources = array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0,);
           $hangar_units = sys_unit_str2arr($row['b_hangar_id']);
           foreach($hangar_units as $unit_id => $unit_count) {
-            if($unit_count <= 0) continue;
+            if($unit_count <= 0) {
+              continue;
+            }
             foreach($units_info[$unit_id][P_COST] as $resource_id => $resource_amount) {
-              if(!in_array($resource_id, $group_resource_loot)) continue;
+              if(!in_array($resource_id, $group_resource_loot)) {
+                continue;
+              }
               $return_resources[$resource_id] += $unit_count * $resource_amount;
             }
           }
@@ -464,11 +459,13 @@ switch($new_version) {
         }
       }
 
-      if(!empty($unit_data))
+      if(!empty($unit_data)) {
         upd_do_query('REPLACE INTO {{unit}} (`unit_player_id`, `unit_location_type`, `unit_location_id`, `unit_type`, `unit_snid`, `unit_level`) VALUES ' . implode(',', $unit_data) . ';');
+      }
 
-      if(!empty($que_data))
+      if(!empty($que_data)) {
         upd_do_query('INSERT INTO {{que}} (`que_player_id`, `que_planet_id`, `que_planet_id_origin`, `que_type`, `que_time_left`, `que_unit_id`, `que_unit_amount`, `que_unit_mode`, `que_unit_level`, `que_unit_time`, `que_unit_price`) VALUES ' . implode(',', $que_data) . ';');
+      }
 
       upd_alter_table('planets', $drop, true);
     }
@@ -575,7 +572,6 @@ switch($new_version) {
 
     if(!isset($update_tables['notes']['planet_type'])) {
       upd_alter_table('notes', array(
-//      "ADD COLUMN `planet_name` VARCHAR(64) NOT NULL DEFAULT '' AFTER `title`",
         "ADD COLUMN `galaxy` SMALLINT(6) UNSIGNED NOT NULL DEFAULT 0 AFTER `title`",
         "ADD COLUMN `system` SMALLINT(6) UNSIGNED NOT NULL DEFAULT 0 AFTER `galaxy`",
         "ADD COLUMN `planet` SMALLINT(6) UNSIGNED NOT NULL DEFAULT 0 AFTER `system`",
@@ -610,7 +606,7 @@ switch($new_version) {
 
     if(!isset($update_tables['users']['gender'])) {
       upd_alter_table('users', "ADD COLUMN `gender` TINYINT(1) UNSIGNED NOT NULL DEFAULT " . GENDER_UNKNOWN, !isset($update_tables['users']['gender']));
-      upd_do_query("UPDATE {{users}} SET `gender` = IF(UPPER(`sex`) = 'F', " . GENDER_FEMALE. ", IF(UPPER(`sex`) = 'M', " . GENDER_MALE . ", " . GENDER_UNKNOWN . "));");
+      upd_do_query("UPDATE {{users}} SET `gender` = IF(UPPER(`sex`) = 'F', " . GENDER_FEMALE . ", IF(UPPER(`sex`) = 'M', " . GENDER_MALE . ", " . GENDER_UNKNOWN . "));");
     }
     upd_alter_table('users', "DROP COLUMN `sex`", isset($update_tables['users']['sex']));
 
@@ -763,8 +759,8 @@ switch($new_version) {
 
       if(isset($update_tables['counter']['page'])) // TODO REMOVE
       {
-        update_security_url("SELECT DISTINCT `page` as url FROM {{counter}}");
-        update_security_url("SELECT DISTINCT `url` as url FROM {{counter}}");
+        update_security_url("SELECT DISTINCT `page` AS url FROM {{counter}}");
+        update_security_url("SELECT DISTINCT `url` AS url FROM {{counter}}");
       }
     }
 
@@ -838,7 +834,7 @@ switch($new_version) {
     upd_check_key('stats_history_days', 14, !classSupernova::$config->stats_history_days);
 
     if(classSupernova::$config->payment_currency_default != 'USD') {
-      upd_check_key('payment_currency_default',      'USD', true);
+      upd_check_key('payment_currency_default', 'USD', true);
       upd_check_key('payment_currency_exchange_dm_', 20000, true);
       upd_check_key('payment_currency_exchange_mm_', 20000, true);
       upd_check_key('payment_currency_exchange_usd', 1, true);
@@ -878,8 +874,8 @@ switch($new_version) {
       "ADD KEY `I_users_parent_account_global` (`parent_account_global`)",
     ), empty($update_indexes['users']['I_users_parent_account_id']));
 
-    // 2015-05-02 15:11:07 40a0.1
 
+    // 2015-05-02 15:11:07 40a0.1
     upd_do_query("TRUNCATE TABLE {{confirmations}};");
     upd_alter_table('confirmations', array(
       "ADD COLUMN `provider_id` tinyint unsigned NOT NULL DEFAULT 0",
@@ -908,15 +904,15 @@ switch($new_version) {
       "ADD CONSTRAINT `FK_survey_votes_user_id` FOREIGN KEY (`survey_vote_user_id`) REFERENCES `{{users}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE",
     ), empty($update_foreigns['survey_votes']['FK_survey_votes_user_id']));
 
-    // 2015-05-03 12:55:15 40a0.26
 
+    // 2015-05-03 12:55:15 40a0.26
     upd_do_query(
-      'update {{users}} as u join {{planets}} as p on p.id = u.id_planet
-      set u.system = p.system, u.planet = p.planet
-      where u.system = 0 and user_as_ally is null and current_planet > 0;');
+      'UPDATE {{users}} AS u JOIN {{planets}} AS p ON p.id = u.id_planet
+      SET u.system = p.system, u.planet = p.planet
+      WHERE u.system = 0 AND user_as_ally IS NULL AND current_planet > 0;');
+
 
     // 2015-05-03 23:03:52 40a1.0
-
     function propagade_player_options($old_option_name, $new_option_id) {
       global $update_tables;
 
@@ -952,8 +948,8 @@ switch($new_version) {
     upd_alter_table('users', "DROP COLUMN `user_time_utc_offset`", !empty($update_tables['users']['user_time_utc_offset']));
     upd_alter_table('users', "DROP COLUMN `user_time_diff_forced`", !empty($update_tables['users']['user_time_diff_forced']));
 
-    // 2015-08-03 15:05:26 40a6.0
 
+    // 2015-08-03 15:05:26 40a6.0
     if(empty($update_tables['planets']['position_original'])) {
       upd_alter_table('planets', array(
         "ADD COLUMN `position_original` smallint NOT NULL DEFAULT 0",
@@ -975,12 +971,12 @@ switch($new_version) {
       upd_check_key('game_maxPlanet', 16, classSupernova::$config->game_maxPlanet == 15);
     }
 
-    // 2015-08-19 04:41:57 40a8.10
 
+    // 2015-08-19 04:41:57 40a8.10
     upd_do_query('UPDATE {{planets}} SET `image` = "normaltempplanet01" WHERE `image` = "planet" OR `image` = "normaltemp01"');
 
-    // 2015-08-27 19:14:05 40a10.0
 
+    // 2015-08-27 19:14:05 40a10.0
     // Старая версия таблицы
     if(!empty($update_tables['account']['account_is_global']) || empty($update_tables['account']['account_immortal'])) {
       upd_drop_table('account');
@@ -1035,14 +1031,18 @@ switch($new_version) {
       );
     }
 
+
     // 2015-08-31 12:34:21 40a10.8
     upd_do_query('UPDATE {{planets}} SET `diameter` = SQRT(`field_max`) * 1000 WHERE `diameter` > 1000000');
+
 
     // 2015-09-05 17:07:15 40a10.17
     upd_alter_table('ube_report', "ADD COLUMN `ube_report_capture_result` tinyint unsigned NOT NULL DEFAULT " . UBE_CAPTURE_DISABLED, empty($update_tables['ube_report']['ube_report_capture_result']));
 
+
     // 2015-09-07 21:11:48 40a10.19
     upd_alter_table('security_url', "MODIFY COLUMN `url_string` VARCHAR(250) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT ''", empty($update_tables['security_url']['ube_report_capture_result']));
+
 
     // 2015-09-24 11:39:37 40a10.25
     if(empty($update_tables['log_metamatter']['provider_id'])) {
@@ -1078,16 +1078,18 @@ switch($new_version) {
 
     upd_check_key('security_write_full_url_disabled', 1, !isset(classSupernova::$config->security_write_full_url_disabled));
 
-    // http://1whois.ru?url=
     upd_check_key('geoip_whois_url', 'https://who.is/whois-ip/ip-address/', !isset(classSupernova::$config->core_geoip_whois_url));
 
     upd_check_key('ube_capture_points_diff', 2, !isset(classSupernova::$config->ube_capture_points_diff));
 
+
     // 2015-10-17 14:46:32 40a15.5
     upd_check_key('game_users_online_timeout', 15 * 60, !isset(classSupernova::$config->game_users_online_timeout));
 
+
     // 2015-10-22 14:37:58 40a17.5
     upd_check_key('locale_cache_disable', 0, !isset(classSupernova::$config->locale_cache_disable));
+
 
     // 2015-10-30 19:09:01 40a19.5
     upd_check_key('event_halloween_2015_lock', 0, !isset(classSupernova::$config->event_halloween_2015_lock));
@@ -1108,11 +1110,11 @@ switch($new_version) {
       ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
     }
 
+
     // 2015-11-28 06:30:27 40a19.21
     if(!isset($update_tables['ube_report']['ube_report_debris_total_in_metal'])) {
       upd_alter_table('ube_report', array(
         "ADD COLUMN `ube_report_debris_total_in_metal` DECIMAL(65,0) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Total debris in metal'",
-//        "ADD KEY `I_ube_report_debris_id` (`ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC)", // For Best Battles module
         "ADD KEY `I_ube_report_time_debris_id` (`ube_report_time_process` DESC, `ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC)", // For Best Battles module
       ), !isset($update_tables['ube_report']['ube_report_debris_total_in_metal']));
 
@@ -1122,6 +1124,7 @@ switch($new_version) {
       upd_do_query("UPDATE `{{ube_report}}`
         SET `ube_report_debris_total_in_metal` = (`ube_report_debris_metal` + `ube_report_debris_crystal` * {$config_rpg_exchange_crystal}) / {$config_rpg_exchange_metal}");
     }
+
 
     // 2015-12-06 15:10:58 40b1.0
     if(!empty($update_indexes['planets']['I_metal_mine'])) {
@@ -1180,8 +1183,6 @@ switch($new_version) {
       upd_alter_table('planets', "DROP KEY `I_interceptor_misil`", $update_indexes['planets']['I_interceptor_misil']);
       upd_alter_table('planets', "DROP KEY `I_interplanetary_misil`", $update_indexes['planets']['I_interplanetary_misil']);
     }
-
-    // #ctv
 
     upd_do_query('COMMIT;', true);
     $new_version = 40;
@@ -1265,8 +1266,10 @@ switch($new_version) {
       );
     }
 
+
     // 2015-12-22 00:00:32 41a0.17
     upd_alter_table('festival_unit_log', "ADD COLUMN `unit_image` varchar(255) NOT NULL DEFAULT ''", empty($update_tables['festival_unit_log']['unit_image']));
+
 
     // 2016-01-15 10:57:17 41a1.4
     upd_alter_table(
@@ -1276,12 +1279,10 @@ switch($new_version) {
     );
 
     if($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
-//      pdump($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type']);
       upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
       upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
 
-    // #ctv№
     if(!empty($update_tables['fleets']['fleet_array'])) {
       $query = upd_do_query("SELECT * FROM {{fleets}}");
       while($row = db_fetch($query)) {
@@ -1298,19 +1299,20 @@ switch($new_version) {
       upd_alter_table('fleets', "DROP COLUMN `fleet_array`", isset($update_tables['fleets']['fleet_array']));
     }
 
+
     // 2016-03-05 22:01:30 41a5.21
     upd_alter_table('fleets', array(
       "MODIFY COLUMN `fleet_target_owner` bigint(20) unsigned DEFAULT NULL",
     ), $update_tables['fleets']['fleet_target_owner']['Null'] == 'NO');
 
+
     // 2016-03-05 22:26:23 41a5.22
     // Fix to old accounts where stored RUR default currency instead of RUB
-    upd_do_query("UPDATE `{{player_options}}` SET `value` = 'RUB' where option_id = 11 and `value` = 'RUR';");
+    upd_do_query("UPDATE `{{player_options}}` SET `value` = 'RUB' WHERE option_id = 11 AND `value` = 'RUR';");
 
 
     // #ctv
 
-//    pdump($update_indexes_full['security_browser']['I_browser_user_agent']);
     upd_do_query('COMMIT;', true);
 //    $new_version = 41;
 
@@ -1329,11 +1331,6 @@ if($new_version) {
 }
 
 classSupernova::$config->db_loadAll();
-/*
-if($user['authlevel'] >= 3) {
-  print(str_replace("\r\n", '<br>', $upd_log));
-}
-*/
 unset($sn_cache->tables);
 sys_refresh_tablelist();
 

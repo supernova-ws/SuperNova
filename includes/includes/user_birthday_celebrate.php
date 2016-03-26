@@ -1,15 +1,11 @@
 <?php
 
-function sn_user_birthday_celebrate()
-{
-  global $config;
-
+function sn_user_birthday_celebrate() {
   sn_db_transaction_start();
 
   $query = db_user_list_to_celebrate(classSupernova::$config->user_birthday_range);
 
-  while($row = db_fetch($query))
-  {
+  while($row = db_fetch($query)) {
     $row['username'] = db_escape($row['username']);
     rpg_points_change($row['id'], RPG_BIRTHDAY, classSupernova::$config->user_birthday_gift, "Birthday gift for user {$row['username']} ID {$row['id']} on his birthday on {$row['user_birthday']}. Gift last gaved at {$row['user_birthday_celebrated']}");
     db_user_set_by_id($row['id'], "`user_birthday_celebrated` = '{$row['current_birthday']}'");

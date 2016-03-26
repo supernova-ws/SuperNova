@@ -378,8 +378,6 @@ class classSupernova {
   }
 
   public static function db_transaction_start($level = '') {
-    global $config;
-
     static::db_transaction_check(null);
 
     $level ? doquery('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
@@ -1299,7 +1297,7 @@ class classSupernova {
     /**
      * @var classSupernova $supernova
      */
-    global $supernova, $sn_cache, $config;
+    global $supernova, $sn_cache;
 
     self::$user_options = new userOptions(0);
 

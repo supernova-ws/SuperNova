@@ -7,8 +7,6 @@
  */
 
 function sys_user_vacation($user) {
-  global $config;
-
   if(sys_get_param_str('vacation') == 'leave') {
     if ($user['vacation'] < SN_TIME_NOW) {
       $user['vacation'] = 0;
@@ -37,8 +35,6 @@ function sys_user_vacation($user) {
 }
 
 function sys_is_multiaccount($user1, $user2) {
-  global $config;
-
   return $user1['user_lastip'] == $user2['user_lastip'] && !classSupernova::$config->game_multiaccount_enabled;
 }
 
@@ -76,7 +72,6 @@ function DeleteSelectedUser($UserID) {
 
   classSupernova::db_del_record_by_id(LOC_USER, $UserID);
   doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
-  global $config;
   classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->db_loadItem('users_amount') - 1);
   sn_db_transaction_commit();
 }
@@ -120,8 +115,6 @@ function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
 
 function player_create($username_unsafe, $email_unsafe, $options) {
   sn_db_transaction_check(true);
-
-  global $config;
 
   static $player_options_string = 'opt_mnl_spy^1|opt_email_mnl_spy^0|opt_email_mnl_joueur^0|opt_email_mnl_alliance^0|opt_mnl_attaque^1|opt_email_mnl_attaque^0|opt_mnl_exploit^1|opt_email_mnl_exploit^0|opt_mnl_transport^1|opt_email_mnl_transport^0|opt_email_msg_admin^1|opt_mnl_expedition^1|opt_email_mnl_expedition^0|opt_mnl_buildlist^1|opt_email_mnl_buildlist^0|opt_int_navbar_resource_force^1|';
 

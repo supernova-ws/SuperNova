@@ -27,7 +27,7 @@
  * @package rpg
  */
 function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', $already_changed = false) {
-  global $debug, $config, $dm_change_legit, $user;
+  global $debug, $dm_change_legit, $user;
 
   if(!$user_id) {
     return false;

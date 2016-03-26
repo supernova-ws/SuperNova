@@ -227,8 +227,6 @@ class Player extends UnitContainer {
    * @return int|mixed
    */
   public function calcColonyMaxCount($astrotech = -1) {
-    global $config;
-
     if($astrotech == -1) {
       if(!isset($this->db_row[UNIT_PLAYER_COLONIES_MAX])) {
 

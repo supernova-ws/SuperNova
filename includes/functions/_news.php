@@ -6,7 +6,7 @@
  * @param int      $query_limit
  */
 function nws_render(&$template, $query_where = '', $query_limit = 20) {
-  global $config, $user;
+  global $user;
 
   $announce_list = db_news_list_get_by_query($template, $query_where, $query_limit);
 

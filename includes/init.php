@@ -147,7 +147,7 @@ classSupernova::init_debug_state();
 require_once(SN_ROOT_PHYSICAL . "includes/vars" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/general" . DOT_PHP_EX);
 
-init_update($config);
+init_update();
 
 // Initializing constants
 $sn_page_name_original = isset($_GET['page'])
@@ -187,13 +187,6 @@ spl_autoload_register(function ($class) {
   }
 });
 
-//require_once('classes/DBRow.php');
-//require_once('classes/Unit.php');
-//require_once('classes/UnitResourceLoot.php');
-//require_once('classes/UnitShip.php');
-//require_once('classes/Mission.php');
-//require_once('classes/Fleet.php');
-//require_once('classes/FleetList.php');
 
 
 // Подключаем все модули

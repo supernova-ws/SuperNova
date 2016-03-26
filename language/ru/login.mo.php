@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 41a6.63
+* @version 41a6.64
 *
 */
 
@@ -25,8 +25,6 @@
 */
 
 defined('INSIDE') || die();
-
-global $config;
 
 $a_lang_array = (array(
   'Login' => 'Логин',

@@ -97,7 +97,7 @@ $supernova->design['smiles'] = array(
 );
 
 function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
-  global $supernova, $config;
+  global $supernova;
 
   // $user_auth_level = isset($user['authlevel']) ? $user['authlevel'] : AUTH_LEVEL_ANONYMOUS;
 

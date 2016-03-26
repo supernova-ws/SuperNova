@@ -11,8 +11,6 @@ function eco_get_planet_caps_modify_production(&$item, $key, $data) {
 
 function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0) {
   // TODO Считать $production_time для термоядерной электростанции
-  global $config;
-
   static $sn_group_modifiers, $config_resource_multiplier, $config_resource_multiplier_plain, $config_eco_scale_storage;
 
   if(!$sn_group_modifiers) {

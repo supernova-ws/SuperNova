@@ -19,8 +19,6 @@ function flt_fleet_speed($user, $fleet) {
 }
 
 function flt_travel_distance($from, $to) {
-  global $config;
-
   if($from['galaxy'] != $to['galaxy']) {
     $distance = abs($from['galaxy'] - $to['galaxy']) * classSupernova::$config->uni_galaxy_distance;
   } elseif($from['system'] != $to['system']) {
@@ -85,8 +83,6 @@ function flt_travel_data($user_row, $from, $to, $fleet_array, $speed_percent = 1
 }
 
 function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duration, $fleet_group = 0) {
-  global $config;
-
   $config_bashing_attacks = classSupernova::$config->fleet_bashing_attacks;
   $config_bashing_interval = classSupernova::$config->fleet_bashing_interval;
   if(!$config_bashing_attacks) {
@@ -164,7 +160,7 @@ function flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $o
 
 function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission, $options = false, &$result) {
   //TODO: try..catch
-  global $config, $user;
+  global $user;
 
   if($user['vacation']) {
     return $result = ATTACK_OWN_VACATION;

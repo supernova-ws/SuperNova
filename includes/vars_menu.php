@@ -6,10 +6,11 @@ lng_include('menu');
 
 $active_payment_modules = sn_module_get_active_count('payment') > 0;
 
-global $sn_version_check_class, $template_result, $user, $config; // , $sn_menu_admin_extra
+global $sn_version_check_class, $template_result, $user; // , $sn_menu_admin_extra
 global $sn_menu, $sn_menu_admin;
 $classLocale = classLocale::$lang;
 
+$classConfig = classSupernova::$config;
 $sn_menu = array(
   /*
     'menu_triolan' => array(                     // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
@@ -47,7 +48,7 @@ $sn_menu = array(
   'menu_server_name'  => array(
     'LEVEL'    => 'text',
     'CLASS'    => 'menu_text_t',
-    'ITEM'     => "{$config->game_name}<br />{$classLocale['sys_from']} {$config->server_start_date}",
+    'ITEM'     => "{$classConfig->game_name}<br />{$classLocale['sys_from']} {$classConfig->server_start_date}",
     'MOVEABLE' => 2,
     'HIDEABLE' => 3,
   ),

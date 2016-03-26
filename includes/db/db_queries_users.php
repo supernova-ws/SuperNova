@@ -100,8 +100,6 @@ function db_user_last_registered_username() {
 }
 
 function db_user_count($online = false) {
-  global $config;
-
   $result = doquery('SELECT COUNT(id) AS user_count FROM `{{users}}` WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''), true);
 
   return isset($result['user_count']) ? $result['user_count'] : 0;
@@ -124,8 +122,6 @@ function db_user_list_to_celebrate($config_user_birthday_range) {
 }
 
 function db_user_list_online_sorted($TypeSort) {
-  global $config;
-
   return doquery(
     "SELECT `id` AS `ID`, `username` AS `NAME`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
       `onlinetime` AS `ACTIVITY`
@@ -140,8 +136,6 @@ function db_user_list_admin_multiaccounts() {
 
 
 function db_user_list_admin_sorted($sort, $online = false) {
-  global $config;
-
   return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
     LEFT JOIN {{referrals}} as r on r.id_partner = u.id
     WHERE" .

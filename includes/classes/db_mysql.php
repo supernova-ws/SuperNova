@@ -127,7 +127,7 @@ class db_mysql {
   }
 
   function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    global $numqueries, $debug, $config;
+    global $numqueries, $debug;
 
     if(!is_string($table)) {
       $fetch = $table;
@@ -181,7 +181,7 @@ class db_mysql {
 
   function security_watch_user_queries($query) {
     // TODO Заменить это на новый логгер
-    global $config, $is_watching, $user, $debug;
+    global $is_watching, $user, $debug;
 
     if(!$is_watching && classSupernova::$config->game_watchlist_array && in_array($user['id'], classSupernova::$config->game_watchlist_array))
     {

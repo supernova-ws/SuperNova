@@ -12,8 +12,6 @@ class UBEReport {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   function sn_ube_report_save($ube) {
-    global $config;
-
     // Если уже есть ИД репорта - значит репорт был взят из таблицы. С таким мы не работаем
     if($ube->get_cypher()) {
       return false;

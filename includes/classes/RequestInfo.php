@@ -165,7 +165,7 @@ class RequestInfo {
    * @param $user_id_unsafe
    */
   public function db_counter_insert($user_id_unsafe) {
-    global $config, $sys_stop_log_hit, $is_watching;
+    global $sys_stop_log_hit, $is_watching;
 
     if($sys_stop_log_hit || !classSupernova::$config->game_counter) {
       return;

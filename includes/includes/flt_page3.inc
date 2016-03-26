@@ -10,7 +10,7 @@ if(SN_IN_FLEET !== true) {
 function sn_fleet_page3($time_to_travel) {
   global $missiontype, $target_mission, $fleetarray, $planetrow;
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
-  global $errorlist, $config, $planet_type, $MaxExpeditions, $FlyingExpeditions;
+  global $errorlist, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
   $classLocale = classLocale::$lang;
 

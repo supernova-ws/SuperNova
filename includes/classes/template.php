@@ -267,7 +267,7 @@ class template
   */
   function _tpl_load(&$handle)
   {
-    global $user, $config;
+    global $user;
 
     if (!isset($this->filename[$handle]))
     {
@@ -288,7 +288,7 @@ class template
     {
       $recompile = true;
     }
-    else if ($config->load_tplcompile)
+    else if (classSupernova::$config->load_tplcompile)
     {
       // No way around it: we need to check inheritance here
       if ($user->theme['template_inherits_id'] && !file_exists($this->files[$handle]))

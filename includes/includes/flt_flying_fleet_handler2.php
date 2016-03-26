@@ -79,7 +79,7 @@ return;
   [*] Но не раньше, чем переписать все миссии
 
   */
-  global $config, $debug;
+  global $debug;
 
   if(classSupernova::$config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
     return;

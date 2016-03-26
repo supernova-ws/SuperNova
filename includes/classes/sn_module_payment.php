@@ -448,7 +448,7 @@ abstract class sn_module_payment extends sn_module {
    * @throws Exception
    */
   public function compile_request($request) {
-    global $config, $user;
+    global $user;
 
     if(!(classSupernova::$auth->account instanceof Account)) {
       // TODO - throw new Exception(lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
@@ -499,10 +499,7 @@ abstract class sn_module_payment extends sn_module {
    * @return array
    * @throws Exception
    */
-  // OK 4.8
   protected function payment_request_process($options = array()) {
-    global $config;
-
     if(!$this->manifest['active']) {
       throw new Exception(classLocale::$lang['pay_msg_module_disabled'], SN_MODULE_DISABLED);
     }
@@ -744,8 +741,6 @@ abstract class sn_module_payment extends sn_module {
 
 
   function db_insert() {
-    global $config;
-
     $this->payment_test = !empty($this->config['test']) || $this->payment_test;
 
     $payment = array(

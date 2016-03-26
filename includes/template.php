@@ -211,7 +211,7 @@ function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $A
  * @param bool|int|string $exitStatus - Код или сообщение выхода
  */
 function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $isDisplayMenu = true, $exitStatus = true) {
-  global $debug, $user, $planetrow, $config, $template_result, $sn_page_name;
+  global $debug, $user, $planetrow, $template_result, $sn_page_name;
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
   $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
@@ -291,6 +291,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     }
   }
 
+  $classConfig = classSupernova::$config;
   $template->assign_vars(array(
     'USER_AUTHLEVEL' => intval($user['authlevel']),
 
@@ -308,7 +309,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     ), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
     //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
 
-    'title'                    => ($title ? "{$title} - " : '') . classLocale::$lang['sys_server'] . " {$config->game_name} - " . classLocale::$lang['sys_supernova'],
+    'title'                    => ($title ? "{$title} - " : '') . classLocale::$lang['sys_server'] . " {$classConfig->game_name} - " . classLocale::$lang['sys_supernova'],
     '-meta-'                   => $metatags,
     'ADV_SEO_META_DESCRIPTION' => classSupernova::$config->adv_seo_meta_description,
     'ADV_SEO_META_KEYWORDS'    => classSupernova::$config->adv_seo_meta_keywords,
@@ -458,7 +459,7 @@ function tpl_render_topnav(&$user, $planetrow) { return sn_function_call(__FUNCT
  * @return string|template
  */
 function sn_tpl_render_topnav(&$user, $planetrow) {
-  global $config, $template_result;
+  global $template_result;
   $classLocale = classLocale::$lang;
 
   if(!is_array($user)) {

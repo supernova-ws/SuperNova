@@ -31,7 +31,7 @@
  */
 
 function sta_set_time_limit($sta_update_msg = 'updating something', $next_step = true) {
-  global $config, $debug, $sta_update_step;
+  global $debug, $sta_update_step;
 
   $value = classSupernova::$config->stats_minimal_interval ? classSupernova::$config->stats_minimal_interval : 600;
   set_time_limit($value);
@@ -67,7 +67,7 @@ function sys_stat_calculate_flush(&$data, $force = false) {
 }
 
 function sys_stat_calculate() {
-  global $config, $sta_update_step;
+  global $sta_update_step;
 
   ini_set('memory_limit', classSupernova::$config->stats_php_memory ? classSupernova::$config->stats_php_memory : '1024M');
 
@@ -214,7 +214,8 @@ function sys_stat_calculate() {
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation
   // doquery("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
-  doquery("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$config->stats_history_days} DAY));");
+  $classConfig = classSupernova::$config;
+  doquery("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
   doquery("UPDATE {{statpoints}} SET `stat_code` = `stat_code` + 1;");
 
   sta_set_time_limit('posting new user stats to DB');

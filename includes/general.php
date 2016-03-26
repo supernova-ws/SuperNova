@@ -68,24 +68,18 @@ function sys_file_write($filename, $content) {
 function get_game_speed($plain = false) { return sn_function_call(__FUNCTION__, array($plain, &$result)); }
 
 function sn_get_game_speed($plain = false, &$result) {
-  global $config;
-
   return $result = classSupernova::$config->game_speed ? classSupernova::$config->game_speed : 1;
 }
 
 function flt_server_flight_speed_multiplier($plain = false) { return sn_function_call(__FUNCTION__, array($plain, &$result)); }
 
 function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
-  global $config;
-
   return $result = classSupernova::$config->fleet_speed;
 }
 
 function game_resource_multiplier($plain = false) { return sn_function_call(__FUNCTION__, array($plain, &$result)); }
 
 function sn_game_resource_multiplier($plain = false, &$result) {
-  global $config;
-
   return $result = classSupernova::$config->resource_multiplier;
 }
 
@@ -99,8 +93,6 @@ function sn_game_resource_multiplier($plain = false, &$result) {
 function get_mm_cost($plain = false) { return sn_function_call(__FUNCTION__, array($plain, &$result)); }
 
 function sn_get_mm_cost($plain = false, &$result) {
-  global $config;
-
   return $result = classSupernova::$config->payment_currency_exchange_mm_ ? classSupernova::$config->payment_currency_exchange_mm_ : METAMATTER_DEFAULT_LOT_SIZE;
 }
 
@@ -112,8 +104,6 @@ function sn_get_mm_cost($plain = false, &$result) {
  * @return float
  */
 function get_exchange_rate($currency_symbol) {
-  global $config;
-
   $currency_symbol = strtolower($currency_symbol);
   $config_field = 'payment_currency_exchange_' . $currency_symbol;
 
@@ -338,8 +328,6 @@ function CheckAbandonPlanetState(&$planet) {
 }
 
 function eco_get_total_cost($unit_id, $unit_level) {
-  global $config;
-
   static $rate, $sn_group_resources_all, $sn_group_resources_loot;
   if(!$rate) {
     $sn_group_resources_all = sn_get_groups('resources_all');
@@ -613,14 +601,13 @@ function sys_unit_arr2str($unit_list) {
 }
 
 function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
-  global $config;
-
   $from = trim($from ? $from : classSupernova::$config->game_adminEmail);
 
   $head = '';
   $head .= "Content-Type: text/" . ($html ? 'html' : 'plain') . "; charset=utf-8 \r\n";
   $head .= "Date: " . date('r') . " \r\n";
-  $head .= "Return-Path: {$config->game_adminEmail} \r\n";
+  $classConfig = classSupernova::$config;
+  $head .= "Return-Path: {$classConfig->game_adminEmail} \r\n";
   $head .= "From: {$from} \r\n";
   $head .= "Sender: {$from} \r\n";
   $head .= "Reply-To: {$from} \r\n";
@@ -881,7 +868,7 @@ function player_nick_uncompact($nick_string) {
 function player_nick_render_array_to_html($nick_array) { return sn_function_call(__FUNCTION__, array($nick_array, &$result)); }
 
 function sn_player_nick_render_array_to_html($nick_array, &$result) {
-  global $config, $user;
+  global $user;
 
   // ALL STRING ARE UNSAFE!!!
   if(isset($nick_array[NICK_BIRTHSDAY])) {
@@ -992,8 +979,6 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
 
 // TODO sys_stat_get_user_skip_list() ПЕРЕДЕЛАТЬ!
 function sys_stat_get_user_skip_list() {
-  global $config;
-
   $result = array();
 
   $user_skip_list = array();
@@ -1070,8 +1055,6 @@ function idval($value, $default = 0) {
 function unit_requirements_render($user, $planetrow, $unit_id, $field = 'require') { return sn_function_call(__FUNCTION__, array($user, $planetrow, $unit_id, $field, &$result)); }
 
 function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'require', &$result) {
-  global $config;
-
   $sn_data_unit = get_unit_param($unit_id);
 
   $result = is_array($result) ? $result : array();
@@ -1262,8 +1245,6 @@ function get_resource_exchange() {
   static $rates;
 
   if(!$rates) {
-    global $config;
-
     $rates = array(
       RES_METAL       => 'rpg_exchange_metal',
       RES_CRYSTAL     => 'rpg_exchange_crystal',
@@ -1314,8 +1295,6 @@ function get_player_max_expedition_duration(&$user, $astrotech = -1) {
 }
 
 function get_player_max_colonies(&$user, $astrotech = -1) {
-  global $config;
-
   if($astrotech == -1) {
     if(!isset($user[UNIT_PLAYER_COLONIES_MAX])) {
 
@@ -1439,8 +1418,6 @@ function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELA
 }
 
 function market_get_autoconvert_cost() {
-  global $config;
-
   return classSupernova::$config->rpg_cost_exchange ? classSupernova::$config->rpg_cost_exchange * 3 : 3000;
 }
 
