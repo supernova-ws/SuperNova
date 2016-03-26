@@ -229,7 +229,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     $isDisplayTopNav = false;
   }
 
-  !empty(classSupernova::$sn_mvc['view']['']) && execute_hooks(classSupernova::$sn_mvc['view'][''], $page, 'view', '');
+  !empty(classSupernova::$sn_mvc['view']['']) ? execute_hooks(classSupernova::$sn_mvc['view'][''], $page, 'view', '') : false;
 
   // Global header
   $user_time_diff = playerTimeDiff::user_time_diff_get();

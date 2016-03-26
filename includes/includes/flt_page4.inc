@@ -19,12 +19,12 @@ if(!$objFleet->dbId) {
   message(classLocale::$lang['fl_fleet_not_exists'], classLocale::$lang['fl_error']);
 }
 
-if ($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to_source < SN_TIME_NOW || $objFleet->isReturning()) {
+if($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to_source < SN_TIME_NOW || $objFleet->isReturning()) {
   message(classLocale::$lang['fl_isback'], classLocale::$lang['fl_error']);
 }
 
 if($objFleet->playerOwnerId != $user['id']) {
-  $debug->warning(classLocale::$lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
+  $debug->warning(classLocale::$lang['fl_aks_hack_wrong_fleet'], 'Wrong Fleet Owner', 301);
   message(classLocale::$lang['fl_aks_hack_wrong_fleet'], classLocale::$lang['fl_error']);
 }
 
@@ -62,7 +62,7 @@ if($userToAdd_unsafe) {
     $isUserExists = false;
     $invited_ar = explode(",", $aks['eingeladen']);
     foreach($invited_ar as $inv) {
-      if ($userToAddID == $inv) {
+      if($userToAddID == $inv) {
         $isUserExists = true;
       }
     }
@@ -75,12 +75,11 @@ if($userToAdd_unsafe) {
       $userToAdd_unsafe != $user['username'] ? $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_invited_already'], $userToAdd) : false;
     } else {
       $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_invited'], $userToAdd);
-      db_acs_update($userToAddID, $fleetid)
-        or die(sprintf(classLocale::$lang['fl_aks_adding_error'],db_error()));
+      !(db_acs_update($userToAddID, $fleetid)) ? die(sprintf(classLocale::$lang['fl_aks_adding_error'], db_error())) : false;
       $aks['eingeladen'] .= ',' . $userToAddID;
     }
-    msg_send_simple_message ( $userToAddID, $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'],
-      classLocale::$lang['fl_aks_invite_message_header'], sprintf( classLocale::$lang['fl_aks_invite_message'], $user['username']));
+    msg_send_simple_message($userToAddID, $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'],
+      classLocale::$lang['fl_aks_invite_message_header'], sprintf(classLocale::$lang['fl_aks_invite_message'], $user['username']));
   } else {
     $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_error'], $userToAdd);
   }
@@ -88,9 +87,9 @@ if($userToAdd_unsafe) {
 
 $template = gettemplate('fleet_aks_invite', true);
 $template->assign_vars(array(
-  'FLEET_ID' => $fleetid,
-  'MESSAGE' => $add_user_message_mr,
-  'PAGE_HEADER' => "{$classLocale['fl_associate']} '{$aks['name']}'",
+  'FLEET_ID'     => $fleetid,
+  'MESSAGE'      => $add_user_message_mr,
+  'PAGE_HEADER'  => "{$classLocale['fl_associate']} '{$aks['name']}'",
   'MISSION_NAME' => classLocale::$lang['type_mission'][MT_AKS],
 ));
 
