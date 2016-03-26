@@ -31,13 +31,6 @@ class db_mysql {
   public $table_list = array();
 
   /**
-   * Соединение с MySQL
-   *
-   * @var resource $link
-   */
-  // public $link;
-
-  /**
    * Настройки БД
    *
    * @var array
@@ -58,11 +51,6 @@ class db_mysql {
   public $time_mysql_total = 0.0;
 
   public function __construct() {
-//    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
-//
-//    $driver_name = empty($dbsettings['sn_driver']) ? 'db_mysql_v5' : $dbsettings['sn_driver'];
-//
-//    $this->driver = new $driver_name();
   }
 
   function load_db_settings() {
@@ -151,7 +139,7 @@ class db_mysql {
     if(classSupernova::$config->debug) {
       $numqueries++;
       $arr = debug_backtrace();
-      $file = end(explode('/',$arr[0]['file']));
+      $file = end(explode('/', $arr[0]['file']));
       $line = $arr[0]['line'];
       $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
     }
@@ -173,7 +161,7 @@ class db_mysql {
       $sql = $sql_commented;
     }
 
-    $sqlquery = $this->db_sql_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
+    $sqlquery = $this->db_sql_query($sql) or $debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
@@ -183,20 +171,22 @@ class db_mysql {
     // TODO Заменить это на новый логгер
     global $is_watching, $user, $debug;
 
-    if(!$is_watching && classSupernova::$config->game_watchlist_array && in_array($user['id'], classSupernova::$config->game_watchlist_array))
-    {
-      if(!preg_match('/^(select|commit|rollback|start transaction)/i', $query)) {
-        $is_watching = true;
-        $msg = "\$query = \"{$query}\"\n\r";
-        if(!empty($_POST)) {
-          $msg .= "\n\r" . dump($_POST,'$_POST');
-        }
-        if(!empty($_GET)) {
-          $msg .= "\n\r" . dump($_GET,'$_GET');
-        }
-        $debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
-        $is_watching = false;
+    if(
+      !$is_watching // Not already watching
+      && !empty(classSupernova::$config->game_watchlist_array) // There is some players in watchlist
+      && in_array($user['id'], classSupernova::$config->game_watchlist_array) // Current player is in watchlist
+      && !preg_match('/^(select|commit|rollback|start transaction)/i', $query) // Current query should be watched
+    ) {
+      $is_watching = true;
+      $msg = "\$query = \"{$query}\"\n\r";
+      if(!empty($_POST)) {
+        $msg .= "\n\r" . dump($_POST, '$_POST');
       }
+      if(!empty($_GET)) {
+        $msg .= "\n\r" . dump($_GET, '$_GET');
+      }
+      $debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
+      $is_watching = false;
     }
   }
 
@@ -215,33 +205,33 @@ class db_mysql {
       case stripos($query, 'RPG_POINTS') != false && stripos(trim($query), 'UPDATE ') === 0 && !$dm_change_legit:
       case stripos($query, 'METAMATTER') != false && stripos(trim($query), 'UPDATE ') === 0 && !$mm_change_legit:
       case stripos($query, 'AUTHLEVEL') != false && $user['authlevel'] < 3 && stripos($query, 'SELECT') !== 0:
-        $report  = "Hacking attempt (".date("d.m.Y H:i:s")." - [".time()."]):\n";
+        $report = "Hacking attempt (" . date("d.m.Y H:i:s") . " - [" . time() . "]):\n";
         $report .= ">Database Inforamation\n";
-        $report .= "\tID - ".$user['id']."\n";
-        $report .= "\tUser - ".$user['username']."\n";
-        $report .= "\tAuth level - ".$user['authlevel']."\n";
-        $report .= "\tAdmin Notes - ".$user['adminNotes']."\n";
-        $report .= "\tCurrent Planet - ".$user['current_planet']."\n";
-        $report .= "\tUser IP - ".$user['user_lastip']."\n";
-        $report .= "\tUser IP at Reg - ".$user['ip_at_reg']."\n";
-        $report .= "\tUser Agent- ".$_SERVER['HTTP_USER_AGENT']."\n";
-        $report .= "\tCurrent Page - ".$user['current_page']."\n";
-        $report .= "\tRegister Time - ".$user['register_time']."\n";
+        $report .= "\tID - " . $user['id'] . "\n";
+        $report .= "\tUser - " . $user['username'] . "\n";
+        $report .= "\tAuth level - " . $user['authlevel'] . "\n";
+        $report .= "\tAdmin Notes - " . $user['adminNotes'] . "\n";
+        $report .= "\tCurrent Planet - " . $user['current_planet'] . "\n";
+        $report .= "\tUser IP - " . $user['user_lastip'] . "\n";
+        $report .= "\tUser IP at Reg - " . $user['ip_at_reg'] . "\n";
+        $report .= "\tUser Agent- " . $_SERVER['HTTP_USER_AGENT'] . "\n";
+        $report .= "\tCurrent Page - " . $user['current_page'] . "\n";
+        $report .= "\tRegister Time - " . $user['register_time'] . "\n";
         $report .= "\n";
 
         $report .= ">Query Information\n";
-        $report .= "\tQuery - ".$query."\n";
+        $report .= "\tQuery - " . $query . "\n";
         $report .= "\n";
 
         $report .= ">\$_SERVER Information\n";
-        $report .= "\tIP - ".$_SERVER['REMOTE_ADDR']."\n";
-        $report .= "\tHost Name - ".$_SERVER['HTTP_HOST']."\n";
-        $report .= "\tUser Agent - ".$_SERVER['HTTP_USER_AGENT']."\n";
-        $report .= "\tRequest Method - ".$_SERVER['REQUEST_METHOD']."\n";
-        $report .= "\tCame From - ".$_SERVER['HTTP_REFERER']."\n";
-        $report .= "\tPage is - ".$_SERVER['SCRIPT_NAME']."\n";
-        $report .= "\tUses Port - ".$_SERVER['REMOTE_PORT']."\n";
-        $report .= "\tServer Protocol - ".$_SERVER['SERVER_PROTOCOL']."\n";
+        $report .= "\tIP - " . $_SERVER['REMOTE_ADDR'] . "\n";
+        $report .= "\tHost Name - " . $_SERVER['HTTP_HOST'] . "\n";
+        $report .= "\tUser Agent - " . $_SERVER['HTTP_USER_AGENT'] . "\n";
+        $report .= "\tRequest Method - " . $_SERVER['REQUEST_METHOD'] . "\n";
+        $report .= "\tCame From - " . $_SERVER['HTTP_REFERER'] . "\n";
+        $report .= "\tPage is - " . $_SERVER['SCRIPT_NAME'] . "\n";
+        $report .= "\tUses Port - " . $_SERVER['REMOTE_PORT'] . "\n";
+        $report .= "\tServer Protocol - " . $_SERVER['SERVER_PROTOCOL'] . "\n";
 
         $report .= "\n--------------------------------------------------------------------------------------------------\n";
 
@@ -251,7 +241,7 @@ class db_mysql {
 
         $message = 'Привет, я не знаю то, что Вы пробовали сделать, но команда, которую Вы только послали базе данных, не выглядела очень дружественной и она была заблокированна.<br /><br />Ваш IP, и другие данные переданны администрации сервера. Удачи!.';
         die($message);
-        break;
+      break;
     }
   }
 
@@ -284,6 +274,7 @@ class db_mysql {
   function mysql_get_table_list() {
     return $this->db_sql_query('SHOW TABLES;');
   }
+
   function mysql_get_innodb_status() {
     return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
   }
@@ -300,6 +291,7 @@ class db_mysql {
     $microtime = microtime(true);
     $result = $this->driver->mysql_query($query_string);
     $this->time_mysql_total += microtime(true) - $microtime;
+
     return $result;
   }
 
@@ -314,38 +306,50 @@ class db_mysql {
     $microtime = microtime(true);
     $result = $this->driver->mysql_fetch_assoc($query);
     $this->time_mysql_total += microtime(true) - $microtime;
+
     return $result;
   }
+
   function db_fetch_row(&$query) {
     return $this->driver->mysql_fetch_row($query);
   }
+
   function db_escape($unescaped_string) {
     return $this->driver->mysql_real_escape_string($unescaped_string);
   }
+
   function driver_disconnect() {
     return $this->driver->mysql_close_link();
   }
+
   function db_error() {
     return $this->driver->mysql_error();
   }
+
   function db_insert_id() {
     return $this->driver->mysql_insert_id();
   }
+
   function db_num_rows(&$result) {
     return $this->driver->mysql_num_rows($result);
   }
+
   function db_affected_rows() {
     return $this->driver->mysql_affected_rows();
   }
+
   function db_get_client_info() {
     return $this->driver->mysql_get_client_info();
   }
+
   function db_get_server_info() {
     return $this->driver->mysql_get_server_info();
   }
+
   function db_get_host_info() {
     return $this->driver->mysql_get_host_info();
   }
+
   function db_get_server_stat() {
     return $this->driver->mysql_stat();
   }

@@ -2,7 +2,7 @@
 
 // ALLY *************************************************************************************************************
 function db_ally_list_recalc_counts() {
-  return doquery("UPDATE `{{alliance}}` AS a LEFT JOIN (SELECT ally_id, count(*) AS ally_memeber_count FROM `{{users}}`
+  doquery("UPDATE `{{alliance}}` AS a LEFT JOIN (SELECT ally_id, count(*) AS ally_memeber_count FROM `{{users}}`
       WHERE ally_id IS NOT NULL GROUP BY ally_id) AS u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;");
 }
 
