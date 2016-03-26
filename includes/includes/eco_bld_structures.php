@@ -16,8 +16,8 @@
 function eco_build($que_type, &$user, &$planet) { return sn_function_call(__FUNCTION__, array($que_type, &$user, &$planet)); }
 
 function sn_eco_build($que_type, &$auser, &$planet) {
-  global $lang, $config, $template_result;
-  $classLocale = $lang;
+  global $config, $template_result;
+  $classLocale = classLocale::$lang;
 
   if($ally_id = sys_get_param_id('ally_id')) {
     define('SN_IN_ALLY', true);
@@ -70,13 +70,6 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $artifact_id = ART_HEURISTIC_CHIP;
     $page_header = classLocale::$lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$classLocale['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } elseif($que_type == QUE_MERCENARY) {
-//    if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
-//      message($lang['no_laboratory'], $lang['tech'][UNIT_TECHNOLOGIES]);
-//    }
-
-//    if(eco_unit_busy($user, $planet, UNIT_TECHNOLOGIES)) {
-//      message($lang['eco_bld_msg_err_laboratory_upgrading'], $lang['tech'][UNIT_TECHNOLOGIES]);
-//    }
     $build_unit_list = sn_get_groups('mercenaries');
     $artifact_id = 0;
     $page_header = classLocale::$lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$classLocale['sys_of_ally']}&nbsp;{$user['username']}" : '');
@@ -413,5 +406,5 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $template->assign_recursive($template_result);
 
-  display(parsetemplate($template)); // , $lang['Builds']
+  display(parsetemplate($template)); 
 }

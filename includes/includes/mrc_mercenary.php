@@ -82,11 +82,6 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
         $dismiss_full_cost = $dismiss_full_cost[BUILD_CREATE][RES_DARK_MATTER];
 
         $dismiss_full_days = round((strtotime($unit_row['unit_time_finish']) - strtotime($unit_row['unit_time_start'])) / PERIOD_DAY);
-/*
-        print(sprintf($lang['mrc_mercenary_dismissed_log'], $lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
-          $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)
-          ));
-*/
         rpg_points_change($user['id'], RPG_MERCENARY_DISMISSED, 0,
           sprintf(classLocale::$lang['mrc_mercenary_dismissed_log'], classLocale::$lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
             $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)

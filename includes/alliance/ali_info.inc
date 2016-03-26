@@ -8,7 +8,7 @@ $template = gettemplate('ali_info', true);
 
 if($mode == 'exit') {
   if($ally['ally_owner'] == $user['id']) {
-    message($lang['Owner_cant_go_out'], $lang['Alliance']);
+    message(classLocale::$lang['Owner_cant_go_out'], classLocale::$lang['Alliance']);
   }
 
   if(sys_get_param_int('ali_info_leave_confirm')) {
@@ -16,8 +16,7 @@ if($mode == 'exit') {
     db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
     db_ally_list_recalc_counts();
     sn_db_transaction_commit();
-    $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
-    message(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
+    message(sprintf(classLocale::$lang['ali_info_leave_success'], $ally['ally_name']), classLocale::$lang['sys_alliance']);
   }
 } elseif($mode == 'ainfo') {
   $tag = sys_get_param_str('tag');
@@ -29,27 +28,27 @@ if($mode == 'exit') {
   }
 
   if(!$ally) {
-    message($lang['ali_sys_notFound'], $lang['Ally_info_1']);
+    message(classLocale::$lang['ali_sys_notFound'], classLocale::$lang['Ally_info_1']);
   }
 
   if(!$ally['ally_description']) {
-    $ally['ally_description'] = $lang['Ally_nodescription'];
+    $ally['ally_description'] = classLocale::$lang['Ally_nodescription'];
   }
 
   $template->assign_vars(array(
     'EXTERNAL'     => true,
     'USER_ALLY_ID' => $user['ally_id'],
   ));
-  $page_header = $lang['sys_alliance'];
+  $page_header = classLocale::$lang['sys_alliance'];
 } else {
-  $page_header = $lang['your_alliance'];
+  $page_header = classLocale::$lang['your_alliance'];
 
   if($ally['ally_owner'] == $user['id']) {
-    $range = $ally['ally_owner_range'] ? $ally['ally_owner_range'] : $lang['Founder'];
+    $range = $ally['ally_owner_range'] ? $ally['ally_owner_range'] : classLocale::$lang['Founder'];
   } elseif($user['ally_rank_id'] != 0 && isset($ranks[$user['ally_rank_id']]['name'])) {
     $range = $ranks[$user['ally_rank_id']]['name'];
   } else {
-    $range = $lang['member'];
+    $range = classLocale::$lang['member'];
   }
 
   $request = db_ally_request_count_by_id($ally);
@@ -81,7 +80,7 @@ $template->assign_vars(array(
   'ally_id'          => $ally['id'],
   'ALLY_MEMBERS'     => $ally['ally_members'],
   'ally_web'         => $ally['ally_web'],
-  'ally_tag'         => $ally['ally_tag'],
+  'ALLY_TAG'         => $ally['ally_tag'],
   'ally_image'       => $ally['ally_image'],
   'ally_name'        => $ally['ally_name'],
 ));
@@ -91,13 +90,13 @@ foreach($relations as $relation) {
   if($relation['alliance_diplomacy_contr_ally_id'] && $relation['alliance_diplomacy_ally_id']) {
     $template->assign_block_vars('relation', array(
       'NAME'     => $relation['alliance_diplomacy_contr_ally_name'],
-      'RELATION' => $lang['ali_dip_relations'][$relation['alliance_diplomacy_relation']],
+      'RELATION' => classLocale::$lang['ali_dip_relations'][$relation['alliance_diplomacy_relation']],
       'TIME'     => date(FMT_DATE_TIME, $relation['alliance_diplomacy_time']),
     ));
   }
 }
 
-$template = parsetemplate($template, $lang);
+$template = parsetemplate($template);
 
 function ali_render() {
   $func_args = func_get_args();
@@ -107,6 +106,4 @@ function ali_render() {
 
 ali_render();
 
-display($template, "{$lang['your_alliance']} [{$ally['ally_name']}]");
-
-?>
+display($template, classLocale::$lang['your_alliance'] . ' [' . $ally['ally_name'] . ']');

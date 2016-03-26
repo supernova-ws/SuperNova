@@ -6,15 +6,15 @@ lng_include('menu');
 
 $active_payment_modules = sn_module_get_active_count('payment') > 0;
 
-global $sn_version_check_class, $template_result, $user, $config, $lang; // , $sn_menu_admin_extra
+global $sn_version_check_class, $template_result, $user, $config; // , $sn_menu_admin_extra
 global $sn_menu, $sn_menu_admin;
-$classLocale = $lang;
+$classLocale = classLocale::$lang;
 
 $sn_menu = array(
   /*
     'menu_triolan' => array(                     // This should be used as ID for both internal submenu insert AND as "id" attribute of Tx HTML-tag (see below)
       'LEVEL'    => 'submenu',                   // Which Tx HTML tag to use. 'header' - would be used TH; 'submenu' - TD
-      'TYPE'     => 'image',                     // Menu item type: 'image' (wrapped by IMG tag), 'text' (puts "as-is") or 'lang' for late biding with $lang[ITEM] values. Default is 'text'
+      'TYPE'     => 'image',                     // Menu item type: 'image' (wrapped by IMG tag), 'text' (puts "as-is") or 'lang' for late biding with lang[ITEM] values. Default is 'text'
       'CLASS'    => 'c_c',                       // Class for TD/TH element. Can be c_c, c_l, c_r or any other custom. 'c_c' default for 'header', 'c_l' default for 'text'
       'TITLE'    => 'Triolan.COM',               // TITLE tag for Tx HTML-element
       'ICON'     => 'menu_icon.png',             // Icon filename - would be searched in $dpath/icons/. If 'true' - icon name would be generated from menu item ID plus ".png"

@@ -11,7 +11,7 @@ if (!$user_admin_applications) {
 $d = sys_get_param_id('d');
 
 if($d) {
-  db_ally_request_deny(classLocale::$lang, $d);
+  db_ally_request_deny($d);
 }
 
 $id_user = sys_get_param_id('id_user');

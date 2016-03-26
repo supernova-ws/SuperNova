@@ -6,16 +6,14 @@ if((!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) && (!defined('SN_IN_ALLY'
 
 function eco_mrk_trader($user, $planetrow = null) {
   global $debug, $mode;
-  // global $lang;
 
-  // $page_title = " - {$lang['eco_mrk_trader']}";
   $template = gettemplate('market_trader', true);
 
   $intError = MARKET_DEAL;
   $planetrow = isset($planetrow) ? $planetrow : $user;
 
-  global $page_title, $config, $lang;
-  $classLocale = $lang;
+  global $page_title, $config;
+  $classLocale = classLocale::$lang;
 
   lng_include('market');
 

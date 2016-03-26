@@ -96,8 +96,8 @@ function sn_chat_add_model() {
 }
 
 function sn_chat_msg_view($template = null) {
-  global $config, $skip_fleet_update, $user, $lang;
-  $classLocale = $lang;
+  global $config, $skip_fleet_update, $user;
+  $classLocale = classLocale::$lang;
 
   define('IN_AJAX', true);
   $skip_fleet_update = true;

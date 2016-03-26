@@ -13,7 +13,6 @@ function sn_fleet_page2() {
   foreach ($missiontype as $key => $value) {
     $template->assign_block_vars('missions', array(
       'ID' => $key,
-//      'NAME' => $value . ($key == MT_COLONIZE ? ' (' . $lang['sys_colonies'] . ' ' . get_player_current_colonies($user) . '/' . get_player_max_colonies($user) . ')' : ''),
       'NAME' => $value,
       'CHECKED' => $target_mission == $key,
     ));
@@ -68,16 +67,6 @@ function sn_fleet_page2() {
       ));
     }
   }
-
-//  $temp = array(
-//    'id' => $TargetPlanet['id'],
-//    'galaxy' => $galaxy,
-//    'system' => $system,
-//    'planet' => $planet,
-//    'planet_type' => $planet_type,
-//    'name' => $TargetPlanet['name'] ? $TargetPlanet['name'] : $lang['type_mission'][$target_mission],
-//  );
-  // $TableTitle = uni_render_planet_full($planetrow) . '&nbsp;=&gt;&nbsp;' . uni_render_planet_full($temp);
 
   $sn_group_resources = sn_get_groups('resources');
   for($i = 0; $i<3; $i++) {

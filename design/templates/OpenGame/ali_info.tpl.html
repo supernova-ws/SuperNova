@@ -1,12 +1,12 @@
 <!-- IF ally_image -->
-  <!-- DEFINE $COLSPAN = 3 -->
-  <!-- DEFINE $COLSPAN2 = 2 -->
+<!-- DEFINE $COLSPAN = 3 -->
+<!-- DEFINE $COLSPAN2 = 2 -->
 <!-- ELSE -->
-  <!-- DEFINE $COLSPAN = 2 -->
-  <!-- DEFINE $COLSPAN2 = 3 -->
+<!-- DEFINE $COLSPAN = 2 -->
+<!-- DEFINE $COLSPAN2 = 3 -->
 <!-- ENDIF -->
 
-<h1>{L_sys_alliance}&nbsp;[{ally_tag}]</h1>
+<h1>{L_sys_alliance}&nbsp;[{ALLY_TAG}]</h1>
 
 <table width=519>
   <tr>
@@ -25,13 +25,24 @@
       <!-- ENDIF -->
     </th>
   </tr>
-  <tr><th width=150>{L_Tag}</th><th>{ally_tag}</th><!-- IF ally_image --><th rowspan="<!-- IF ALLY_DESCRIPTION -->5<!-- ELSE -->4<!-- ENDIF -->" valign="top"><img src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th><!-- ENDIF --></tr>
-  <tr><th>{L_Name}</th><th>{ally_name}</th></tr>
-  <tr><th>{L_Main_Page}</th><th><a href="{ally_web}">{ally_web}</a></th></tr>
+  <tr>
+    <th width=150>{L_Tag}</th>
+    <th>{ALLY_TAG}</th><!-- IF ally_image -->
+    <th rowspan="<!-- IF ALLY_DESCRIPTION -->5<!-- ELSE -->4<!-- ENDIF -->" valign="top"><img
+            src="{D_SN_ROOT_VIRTUAL}/images/avatar/ally_{ally_id}.png"></th><!-- ENDIF --></tr>
+  <tr>
+    <th>{L_Name}</th>
+    <th>{ally_name}</th>
+  </tr>
+  <tr>
+    <th>{L_Main_Page}</th>
+    <th><a href="{ally_web}">{ally_web}</a></th>
+  </tr>
   <tr>
     <th>{L_Members}</th>
     <th>
-      {ALLY_MEMBERS}<!-- IF ! EXTERNAL -->&nbsp;<a href="alliance.php?mode=memberslist" class="fr">[ {L_Members_list} ]</a><!-- ENDIF -->
+      {ALLY_MEMBERS}<!-- IF ! EXTERNAL -->&nbsp;<a href="alliance.php?mode=memberslist" class="fr">[ {L_Members_list}
+      ]</a><!-- ENDIF -->
     </th>
   </tr>
   <!-- IF EXTERNAL && ! USER_ALLY_ID -->
@@ -40,7 +51,10 @@
     <th><a href="alliance.php?mode=apply&a={ally_id}">{L_Click_writerequest}</a></th>
   </tr>
   <!-- ENDIF -->
-  <!-- IF ALLY_DESCRIPTION --><tr><th colspan="{$COLSPAN2}">{ALLY_DESCRIPTION}</th></tr><!-- ENDIF -->
+  <!-- IF ALLY_DESCRIPTION -->
+  <tr>
+    <th colspan="{$COLSPAN2}">{ALLY_DESCRIPTION}</th>
+  </tr><!-- ENDIF -->
 </table>
 
 <!-- IF ! EXTERNAL -->
@@ -50,9 +64,21 @@
       <span class="fl">{L_ali_info_internal}</span>
     </td>
   </tr>
-  <tr><th width=150>{L_Range}</th><th>{range}</th></tr>
-  <!-- IF MANAGE_REQUESTS --><tr><th>{L_ali_req_check}</th><th><a href="alliance.php?mode=admin&edit=requests"><!-- IF ALLY_REQUESTS -->{L_ali_req_requestCount}:&nbsp;{ALLY_REQUESTS}<!-- ELSE -->{L_ali_req_emptyList}<!-- ENDIF --></a></th></tr><!-- ENDIF -->
-  <!-- IF MASS_MAIL --><tr><th>{L_Circular_message}</th><th><a href="alliance.php?mode=circular">{L_Send_circular_mail}</a></th></tr><!-- ENDIF -->
+  <tr>
+    <th width=150>{L_Range}</th>
+    <th>{range}</th>
+  </tr>
+  <!-- IF MANAGE_REQUESTS -->
+  <tr>
+    <th>{L_ali_req_check}</th>
+    <th><a href="alliance.php?mode=admin&edit=requests"><!-- IF ALLY_REQUESTS -->{L_ali_req_requestCount}:&nbsp;{ALLY_REQUESTS}
+      <!-- ELSE -->{L_ali_req_emptyList}<!-- ENDIF --></a></th>
+  </tr><!-- ENDIF -->
+  <!-- IF MASS_MAIL -->
+  <tr>
+    <th>{L_Circular_message}</th>
+    <th><a href="alliance.php?mode=circular">{L_Send_circular_mail}</a></th>
+  </tr><!-- ENDIF -->
   <!-- IF ! ALLY_ADMIN -->
   <tr>
     <th>{L_ali_info_leave}</th>
@@ -65,7 +91,10 @@
     </th>
   </tr>
   <!-- ENDIF -->
-  <!-- IF ALLY_TEXT --><tr><th colspan=2>{ALLY_TEXT}</th></tr><!-- ENDIF -->
+  <!-- IF ALLY_TEXT -->
+  <tr>
+    <th colspan=2>{ALLY_TEXT}</th>
+  </tr><!-- ENDIF -->
 </table>
 <!-- ENDIF -->
 
@@ -73,7 +102,8 @@
   <tr>
     <td class=c colspan=3>
       <span class="fl">{L_ali_dip_title}</span>
-      <!-- IF ALLY_NEGOTIATE --><a class="fr" href="alliance.php?mode=admin&edit=diplomacy">[ {L_ali_dip_negotiate} ]</a><!-- ENDIF -->
+      <!-- IF ALLY_NEGOTIATE --><a class="fr" href="alliance.php?mode=admin&edit=diplomacy">[ {L_ali_dip_negotiate}
+      ]</a><!-- ENDIF -->
     </td>
   </tr>
   <!-- BEGIN relation -->
@@ -83,8 +113,10 @@
     <th width=100>{relation.RELATION}</th>
   </tr>
   <!-- BEGINELSE relation -->
-  <tr><th>
-    {L_ali_dip_relation_none}
-  </th></tr>
+  <tr>
+    <th>
+      {L_ali_dip_relation_none}
+    </th>
+  </tr>
   <!-- END relation -->
 </table>

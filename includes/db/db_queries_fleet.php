@@ -83,14 +83,13 @@ function db_acs_get_by_fleet($fleetid) {
 }
 
 /**
- * @param $lang
  * @param $fleetid
  * @param $user
  * @param $objFleet
  */
-function db_acs_insert($lang, $fleetid, $user, $objFleet) {
+function db_acs_insert($fleetid, $user, $objFleet) {
   doquery("INSERT INTO {{aks}} SET
-          `name` = '" . db_escape($lang['flt_acs_prefix'] . $fleetid) . "',
+          `name` = '" . db_escape(classLocale::$lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $user['id'] . "',
           `flotten` = '" . $fleetid . "',
           `ankunft` = '" . $objFleet->time_arrive_to_target . "',

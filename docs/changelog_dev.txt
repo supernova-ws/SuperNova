@@ -718,15 +718,22 @@ attribute - свойства юнитов
     global $lang !!!!!!!!!!!!!!!!!!!!!!!!!!!!☻
 
 
-    $parse - это остатки старого темплейт-энджайна!
-    $parse = classLocale::$lang;
 
     Поизвлекать $lang из строк
 
 Проработать - поделать нормальные строки без {$classLocale['value']}
 
+  display($template, classLocale::$lang['ali_req_title']);
+  Загнать заголовок окна в темплейт
+
+
+// СЕЙЧАС !!!!!!!!!!
 global $lang;
 $classLocale = $lang;
+
+    $parse - это остатки старого темплейт-энджайна!
+    $parse = classLocale::$lang;
+
 
 #ctv
 

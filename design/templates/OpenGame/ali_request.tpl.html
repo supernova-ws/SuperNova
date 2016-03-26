@@ -1,11 +1,19 @@
-<br />
+<br/>
 <form action="alliance.php?mode=apply&a={allyid}" method=POST>
-<table width=519>
-  <tr><td class=c>{L_ali_req_title}</td></tr>
-  <tr>
-    <th><span class="fl">{L_ali_req_text}</span><span class="fr"><span id="cntChars">{chars_count}</span> / 6000 {L_ali_req_characters}</span><br>
-    <textarea name="text" cols=60 rows=10 onkeyup="cntchar(6000)">{text_apply}</textarea><br>
-  </tr>
-  <tr><th><span class="fl"><input type="reset" value="{L_sys_reset}"></span><span class="fr"><input type=submit value="{L_sys_send}"></span></th></tr>
-</table>
+  <table width=519>
+    <tr>
+      <td class=c>
+        {L_ali_req_title} [{ALLY_TAG}]
+      </td>
+    </tr>
+    <tr>
+      <th><span class="fl">{L_ali_req_text}</span><span class="fr"><span id="cntChars">{chars_count}</span> / 6000 {L_ali_req_characters}</span><br>
+        <textarea name="text" cols=60 rows=10 onkeyup="cntchar(6000)">{text_apply}</textarea><br>
+    </tr>
+    <tr>
+      <th><span class="fl"><input type="reset" value="{L_sys_reset}"></span><span class="fr"><input type=submit
+                                                                                                    value="{L_sys_send}"></span>
+      </th>
+    </tr>
+  </table>
 </form>

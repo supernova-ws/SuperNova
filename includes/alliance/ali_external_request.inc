@@ -7,7 +7,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 
 if ($user['ally_id'])
 {
-  message($lang['ali_req_inAlly'], $lang['ali_req_title']);
+  message(classLocale::$lang['ali_req_inAlly'], classLocale::$lang['ali_req_title']);
 }
 
 if ($user_request['id_ally']) {
@@ -21,14 +21,19 @@ if ($user_request['id_ally']) {
 
   if($user_request['request_denied'])
   {
-    $lang['request_text'] = sprintf($lang['ali_req_deny_msg'], $ally['ally_tag'], $user_request['request_text']);
+    $request_text = sprintf(classLocale::$lang['ali_req_deny_msg'], $ally['ally_tag'], $user_request['request_text']);
   }
   else
   {
-    $lang['request_text'] = sprintf($lang['ali_req_waiting'], $ally['ally_tag']);
+    $request_text = sprintf(classLocale::$lang['ali_req_waiting'], $ally['ally_tag']);
   }
 
-  display(gettemplate('ali_request_waiting', true), $lang['ali_req_title']);
+  $template = gettemplate('ali_request_waiting', true);
+  $template->assign_vars(array(
+    'REQUEST_TEXT' => $request_text,
+  ));
+
+  display($template, classLocale::$lang['ali_req_title']);
 }
 
 $id_ally = sys_get_param_id('a');
@@ -43,15 +48,15 @@ $ally = db_ally_get_by_id($id_ally);
 
 if(!$ally)
 {
-  message($lang['ali_sys_notFound'], $lang['ali_req_title']);
+  message(classLocale::$lang['ali_sys_notFound'], classLocale::$lang['ali_req_title']);
 }
 
 if($ally['ally_request_notallow'])
 {
-  message($lang['ali_req_not_allowed'], $lang['ali_req_title']);
+  message(classLocale::$lang['ali_req_not_allowed'], classLocale::$lang['ali_req_title']);
 }
 
-$text_apply = $ally['ally_request'] ? $ally['ally_request'] : $lang['ali_req_template'];
+$text_apply = $ally['ally_request'] ? $ally['ally_request'] : classLocale::$lang['ali_req_template'];
 
 $template = gettemplate('ali_request', true);
 
@@ -59,9 +64,7 @@ $template->assign_vars(array(
   'allyid' => $id_ally,
   'chars_count' => strlen($text_apply),
   'text_apply' => $text_apply,
-  'ali_req_title' => "{$lang['ali_req_title']} [{$ally['ally_tag']}]",
+  'ALLY_TAG' => $ally['ally_tag'],
 ));
 
-display($template, $lang['ali_req_title']);
-
-?>
+display($template, classLocale::$lang['ali_req_title']);

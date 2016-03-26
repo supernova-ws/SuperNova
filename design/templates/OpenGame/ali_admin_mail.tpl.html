@@ -1,30 +1,30 @@
-<br />
+<br/>
 <form action="alliance.php?mode=circular" method="post">
   <table width=519>
-	<tr>
-	  <td class="c" colspan=2>{Send_circular_mail}</td>
-	</tr>
-	<tr>
-	  <th>{Destiny}</th>
-	  <th>
-		<select name="r">
-		  {r_list}
-		</select>
-	  </th>
-	</tr>
+    <tr>
+      <td class="c" colspan=2>{L_Send_circular_mail}</td>
+    </tr>
+    <tr>
+      <th>{L_Destiny}</th>
+      <th>
+        <select name="r">
+          {R_LIST}
+        </select>
+      </th>
+    </tr>
 
-	<tr>
-	  <th>{Text_mail} (<span id="cntChars">0</span> / 5000 {ali_req_characters})</th>
-	  <th>
-	    <textarea name="text" cols="60" rows="10" onkeyup="cntchar(5000)"></textarea>
-	  </th>
-	</tr>
-	<tr>
-	  <td class="c"><a href="alliance.php">{Back}</a></td>
-	  <td class="c">
-		<input type="reset" value="{Clear}">
-		<input type="submit" value="{Send}">
-	  </td>
-	</tr>
+    <tr>
+      <th>{L_Text_mail} (<span id="cntChars">0</span> / 5000 {L_ali_req_characters})</th>
+      <th>
+        <textarea name="text" cols="60" rows="10" onkeyup="cntchar(5000)"></textarea>
+      </th>
+    </tr>
+    <tr>
+      <td class="c"><a href="alliance.php">{L_Back}</a></td>
+      <td class="c">
+        <input type="reset" value="{L_Clear}">
+        <input type="submit" value="{L_Send}">
+      </td>
+    </tr>
   </table>
 </form>

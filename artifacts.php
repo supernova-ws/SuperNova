@@ -43,8 +43,9 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
         {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, 1, $user);
           db_changeset_apply($db_changeset);
-          $classLocale = classLocale::$lang;
-          rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$classLocale['tech'][$unit_id]} ID {$unit_id}");
+          rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost),
+            sprintf('Spent for artifact %1$s ID %2$d', classLocale::$lang['tech'][$unit_id], $unit_id)
+          );
           sn_db_transaction_commit();
           header("Location: artifacts.php#{$unit_id}");
           ob_end_flush();

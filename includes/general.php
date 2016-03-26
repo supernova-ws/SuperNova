@@ -639,18 +639,11 @@ function sys_time_human($time, $full = false) {
   $time = floor($time / 24);
 
   $classLocale = classLocale::$lang;
-
-  $classLocale1 = classLocale::$lang;
-
-  $classLocale2 = classLocale::$lang;
-
-  $classLocale3 = classLocale::$lang;
-
   return
     ($full || $time ? "{$time} {$classLocale['sys_day']}&nbsp;" : '') .
-    ($full || $hours ? "{$hours} {$classLocale1['sys_hrs']}&nbsp;" : '') .
-    ($full || $minutes ? "{$minutes} {$classLocale2['sys_min']}&nbsp;" : '') .
-    ($full || !$time || $seconds ? "{$seconds} {$classLocale3['sys_sec']}" : '');
+    ($full || $hours ? "{$hours} {$classLocale['sys_hrs']}&nbsp;" : '') .
+    ($full || $minutes ? "{$minutes} {$classLocale['sys_min']}&nbsp;" : '') .
+    ($full || !$time || $seconds ? "{$seconds} {$classLocale['sys_sec']}" : '');
 }
 
 function sys_time_human_system($time) {

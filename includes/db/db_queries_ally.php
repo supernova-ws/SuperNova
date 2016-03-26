@@ -58,16 +58,15 @@ function db_ally_get_by_name_or_tag($ally_tag, $ally_name) {
  * @param $ally_name
  * @param $ally_tag
  * @param $user
- * @param $lang
  */
-function db_ally_insert($ally_name, $ally_tag, $user, $lang) {
+function db_ally_insert($ally_name, $ally_tag, $user) {
   $ally = doquery("INSERT INTO {{alliance}} SET
     `ally_name` = '{$ally_name}',
     `ally_tag` = '{$ally_tag}',
     `ally_owner` = '{$user['id']}',
-    `ally_owner_range` = '{$lang['ali_leaderRank']}',
+    `ally_owner_range` = '" . classLocale::$lang['ali_leaderRank'] . "',
     `ally_members` = 1,
-    `ranklist` = '{$lang['ali_defaultRankName']},0,0,0,0,0',
+    `ranklist` = '" . classLocale::$lang['ali_defaultRankName'] . ",0,0,0,0,0',
     `ally_register_time`= " . SN_TIME_NOW
   );
 }
@@ -244,11 +243,10 @@ function db_ally_negotiation_list($user) {
 }
 
 /**
- * @param $lang
  * @param $d
  */
-function db_ally_request_deny($lang, $d) {
-  doquery("UPDATE {{alliance_requests}} SET `request_denied` = 1, `request_text` = '{$lang['ali_req_deny_reason']}' WHERE `id_user`= {$d} LIMIT 1;");
+function db_ally_request_deny($d) {
+  doquery("UPDATE {{alliance_requests}} SET `request_denied` = 1, `request_text` = '" . classLocale::$lang['ali_req_deny_reason'] . "' WHERE `id_user`= {$d} LIMIT 1;");
 }
 
 /**

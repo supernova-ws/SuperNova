@@ -150,31 +150,12 @@ function sn_options_model() {
     }
 
     $user['email'] = sys_get_param_str('db_email');
-//    if(!$template_result[F_ACCOUNT]['account_email'] && ($email_2 = sys_get_param_str('db_email2'))) {
-//      core_auth::email_set($email_2);
-//    }
     $user['dpath'] = sys_get_param_str('dpath');
     $user['lang'] = sys_get_param_str('langer', $user['lang']);
 
-//    if($lang->lng_switch($user['lang'])) {
-//      lng_include('options');
-//      lng_include('messages');
-//    }
 
     $user['design'] = sys_get_param_int('design');
     $user['noipcheck'] = sys_get_param_int('noipcheck');
-    // $user['spio_anz'] = sys_get_param_int('spio_anz');
-    // $user['settings_fleetactions'] = sys_get_param_int('settings_fleetactions', 1);
-    // $user['settings_tooltiptime'] = sys_get_param_int('settings_tooltiptime');
-    // $user['settings_esp'] = sys_get_param_int('settings_esp');
-    // $user['settings_wri'] = sys_get_param_int('settings_wri');
-    // $user['settings_bud'] = sys_get_param_int('settings_bud');
-    // $user['settings_mis'] = sys_get_param_int('settings_mis');
-    // $user['settings_statistics'] = sys_get_param_int('settings_statistics');
-    // $user['settings_info'] = sys_get_param_int('settings_info');
-    // $user['settings_rep'] = sys_get_param_int('settings_rep');
-    // $user['planet_sort']  = sys_get_param_int('settings_sort');
-    // $user['planet_sort_order'] = sys_get_param_int('settings_order');
     $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + $config->player_delete_time);
 
     $gender = sys_get_param_int('gender', $user['gender']);
@@ -271,19 +252,14 @@ function sn_options_model() {
 //-------------------------------
 
 function sn_options_view($template = null) {
-  global $lang, $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config;
-  $classLocale = $lang;
+  global $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list, $config;
+  $classLocale = classLocale::$lang;
 
   sys_user_vacation($user);
 
   $FMT_DATE = preg_replace(array('/d/', '/m/', '/Y/'), array('DD', 'MM', 'YYYY'), FMT_DATE);
 
   $template = gettemplate('options', $template);
-
-//  $template_result['.']['skin_list'][] = array(
-//    'NAME'  => $lang['select_skin_path'],
-//    'VALUE' => '',
-//  );
 
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
   while(($entry = $dir->read()) !== false) {
@@ -304,15 +280,7 @@ function sn_options_view($template = null) {
       'SELECTED' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT] == $key,
     );
   }
-  /*
-    foreach($lang['opt_planet_sort_ascending'] as $key => &$value) {
-      $template_result['.']['planet_sort_ascending'][] = array(
-        'VALUE' => $key,
-        'NAME'  => $value,
-        'SELECTED' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE] == $key,
-      );
-    }
-  */
+
   foreach(classLocale::$lang['sys_gender_list'] as $key => $value) {
     $template_result['.']['gender_list'][] = array(
       'VALUE'    => $key,
@@ -348,10 +316,7 @@ function sn_options_view($template = null) {
   $template->assign_vars(array(
     'USER_ID'      => $user['id'],
 
-    // 'AUTH_PROVIDER' => $template_result[F_PROVIDER_ID],
     'ACCOUNT_NAME' => sys_safe_output(classSupernova::$auth->account->account_name),
-
-//    'ACCOUNT_NAME' => sys_safe_output($account['account_name']),
 
     'USER_AUTHLEVEL' => $user['authlevel'],
 
@@ -450,7 +415,7 @@ function sn_options_view($template = null) {
 
           $template->assign_block_vars("options_{$option_group_id}", array(
             'NAME'  => $message_class_data['name'],
-            'TEXT'  => classLocale::$lang['msg_class'][$message_class_id], // $lang['opt_custom'][$option_name],
+            'TEXT'  => classLocale::$lang['msg_class'][$message_class_id],
             'PM'    => $message_class_data['switchable'] ? $user["opt_{$option_name}"] : -1,
             'EMAIL' => $message_class_data['email'] && $config->game_email_pm ? $user["opt_email_{$option_name}"] : -1,
           ));

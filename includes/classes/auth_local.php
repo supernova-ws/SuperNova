@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.42# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.49# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -360,7 +360,6 @@ class auth_local extends auth_abstract {
         $message = sprintf(classLocale::$lang['log_lost_email_pass'], $config->game_name, $this->account->account_name, $new_password_unsafe);
         @$operation_result = mymail($confirmation['email'], $message_header, htmlspecialchars($message));
 
-        // $users_translated = classSupernova::$auth->db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
         $users_translated = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
         if(!empty($users_translated)) {
           // Отправляем в лички письмо о сбросе пароля
@@ -372,7 +371,6 @@ class auth_local extends auth_abstract {
           // Значит им всем сразу скопом можно отправлять сообщения
           $message = sprintf(classLocale::$lang['sys_password_reset_message_body'], $new_password_unsafe);
           $message = sys_bbcodeParse($message) . '<br><br>';
-          // msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
 
           foreach($users_translated as $user_id => $providers_list) {
             msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['sys_administration'], classLocale::$lang['sys_login_register_message_title'], $message);

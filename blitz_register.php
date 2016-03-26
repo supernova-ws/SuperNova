@@ -11,16 +11,6 @@ if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
     message(classLocale::$lang[$error_message], classLocale::$lang['sys_error'], 'overview.php', 10);
     die();
   }
-
-//  if($config->game_mode == GAME_BLITZ) {
-//    message($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
-//    die();
-//  }
-//
-//  if(!$config->game_blitz_register) { //  && $user['authlevel'] < AUTH_LEVEL_DEVELOPER
-//    message($lang['sys_blitz_registration_disabled'], $lang['sys_error'], 'overview.php', 10);
-//    die();
-//  }
 }
 
 $current_round = intval($config->db_loadItem('game_blitz_register_round'));

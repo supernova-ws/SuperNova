@@ -10,8 +10,7 @@
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_colonize(&$mission_data) {
-  global $lang;
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
   $objFleet = $mission_data->fleet;
   $src_user_row = &$mission_data->src_user;

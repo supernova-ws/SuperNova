@@ -1,7 +1,6 @@
 <?php
 
-global $lang;
-$classLocale = $lang;
+$classLocale = classLocale::$lang;
 
 if(SN_IN_FLEET !== true) {
   $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
@@ -48,7 +47,7 @@ if($userToAdd_unsafe) {
     if(!$aks) {
       // No AСS exists - making one
       if(!$objFleet->group_id) {
-        db_acs_insert(classLocale::$lang, $fleetid, $user, $objFleet);
+        db_acs_insert($fleetid, $user, $objFleet);
 
         $aks = db_acs_get_by_fleet($fleetid);
 

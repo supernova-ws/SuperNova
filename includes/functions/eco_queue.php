@@ -56,8 +56,8 @@ function eco_que_arr2str($que_arr) {
 
 
 function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true) {
-  global $lang, $config;
-  $classLocale = $lang;
+  global $config;
+  $classLocale = classLocale::$lang;
 
   $is_autoconvert = false;
   if($build_mode == BUILD_AUTOCONVERT || sys_get_param_int('auto_convert')) {
@@ -162,13 +162,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     if($unit_amount < 1) {
       throw new exception('{Неправильное количество юнитов - сообщите Администрации}', ERR_ERROR); // TODO EXCEPTION
     }
-
-    /*
-    if($unit_max && $unit_level + $unit_amount > $unit_max)
-    {
-      throw new exception("Постройка {$unit_amount} {$lang['tech'][$unit_id]} приведет к привышению максимально возможного количества юнитов данного типа", ERR_ERROR); // TODO EXCEPTION
-    }
-    */
 
     // TODO Переделать eco_unit_busy для всех типов зданий
     //  if(eco_unit_busy($user, $planet, $que, $unit_id))

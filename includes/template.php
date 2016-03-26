@@ -308,7 +308,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     ), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
     //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
 
-    'title'                    => ($title ? "{$title} - " : '') . classLocale::$lang['sys_server'] . " {$config->game_name} - " . classLocale::$lang['sys_supernova'] ,
+    'title'                    => ($title ? "{$title} - " : '') . classLocale::$lang['sys_server'] . " {$config->game_name} - " . classLocale::$lang['sys_supernova'],
     '-meta-'                   => $metatags,
     'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
     'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
@@ -322,7 +322,6 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
     'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
 
-    // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
     'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf(classLocale::$lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
     'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
   ));
@@ -408,8 +407,7 @@ function tpl_topnav_event_build(&$template, $FleetList, $type = 'fleet') {
     return;
   }
 
-  global $lang;
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
   $fleet_event_count = 0;
   $fleet_flying_sorter = array();
@@ -460,8 +458,8 @@ function tpl_render_topnav(&$user, $planetrow) { return sn_function_call(__FUNCT
  * @return string|template
  */
 function sn_tpl_render_topnav(&$user, $planetrow) {
-  global $lang, $config, $template_result;
-  $classLocale = $lang;
+  global $config, $template_result;
+  $classLocale = classLocale::$lang;
 
   if(!is_array($user)) {
     return '';
@@ -687,10 +685,10 @@ function parsetemplate($template, $array = false) {
     return $template;
   } else {
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
-    $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'{L_\1[\2]}\');';
+    $replace[] = '((isset(classLocale::$lang[\'\1\'][\'\2\'])) ? classLocale::$lang[\'\1\'][\'\2\'] : \'{L_\1[\2]}\');';
 
     $search[] = '#\{L_([a-z0-9\-_]*?)\}#Ssie';
-    $replace[] = '((isset($lang[\'\1\'])) ? $lang[\'\1\'] : \'{L_\1}\');';
+    $replace[] = '((isset(classLocale::$lang[\'\1\'])) ? classLocale::$lang[\'\1\'] : \'{L_\1}\');';
 
     $search[] = '#\{([a-z0-9\-_]*?)\}#Ssie';
     $replace[] = '((isset($array[\'\1\'])) ? $array[\'\1\'] : \'{\1}\');';

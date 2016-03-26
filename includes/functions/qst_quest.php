@@ -80,12 +80,6 @@ function qst_render_page()
         }
 
         // TODO: Add mass mail for new quests
-        /*
-        if(sys_get_param_int('news_mass_mail'))
-        {
-          msg_send_simple_message('*', 0, 0, MSG_TYPE_PLAYER, $lang['sys_administration'], $lang['news_title'], $text);
-        }
-        */
       }
       catch (Exception $e)
       {
@@ -278,8 +272,7 @@ function qst_reward(&$user, &$rewards, &$quest_list)
 {
   if(empty($rewards)) return;
 
-  global $lang;
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
   $db_changeset = array();
   $total_rewards = array();

@@ -9,7 +9,7 @@ function lng_try_filepath($path, $file_path_relative)
 
 function lng_die_not_an_object()
 {
-  print('Ошибка - $lang не объект! Сообщите Администратору сервера и приложите содержимое страницы');
+  print('Ошибка - lang не объект! Сообщите Администратору сервера и приложите содержимое страницы');
   $trace = debug_backtrace();
   unset($trace[0]);
   pdump($trace);

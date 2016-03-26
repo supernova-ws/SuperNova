@@ -1,7 +1,6 @@
 <?php
 
-global $lang;
-$classLocale = $lang;
+$classLocale = classLocale::$lang;
 
 if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= SN_TIME_NOW) {
   include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);

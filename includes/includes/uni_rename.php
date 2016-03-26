@@ -1,7 +1,6 @@
 <?php
 
-global $lang;
-$classLocale = $lang;
+$classLocale = classLocale::$lang;
 
 try
   {

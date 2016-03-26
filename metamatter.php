@@ -20,48 +20,10 @@ lng_include('infos');
 
 $template = gettemplate('metamatter', true);
 
-// $player_currency_default = player_load_option($user, PLAYER_OPTION_CURRENCY_DEFAULT);
 $player_currency_default = classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT];
 $player_currency = sys_get_param_str('player_currency', $player_currency_default);
 empty(classLocale::$lang['pay_currency_list'][$player_currency]) ? ($player_currency = $player_currency_default ? $player_currency_default : $config->payment_currency_default) : false;
-// $player_currency_default != $player_currency ? player_save_option($user, PLAYER_OPTION_CURRENCY_DEFAULT, $player_currency) : false;
 $player_currency_default != $player_currency ? classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT] = $player_currency : false;
-
-//// Конвертация ММ в ТМ
-//if(sys_get_param('mm_convert_do')) {
-//  try {
-//    if(!($mm_convert = sys_get_param_id('mm_convert'))) {
-//      throw new exception($lang['pay_msg_mm_convert_wrong_amount'], ERR_ERROR);
-//    }
-//
-//    sn_db_transaction_start();
-//    $user = db_user_by_id($user['id'], true);
-//    if($mm_convert > mrc_get_level($user, null, RES_METAMATTER)) {
-//      throw new exception($lang['pay_msg_mm_convert_not_enough'], ERR_ERROR);
-//    }
-//
-//    $payment_comment = sprintf("Игрок сконвертировал %d Метаматерии в Тёмную Материю", $mm_convert);
-//    if(!mm_points_change($user['id'], RPG_CONVERT_MM, -$mm_convert, $payment_comment)) {
-//      throw new exception($lang['pay_msg_mm_convert_mm_error'], ERR_ERROR);
-//    }
-//    if(!rpg_points_change($user['id'], RPG_CONVERT_MM, $mm_convert, $payment_comment)) {
-//      throw new exception($lang['pay_msg_mm_convert_dm_error'], ERR_ERROR);
-//    }
-//
-//    $template->assign_block_vars('result', array(
-//      'STATUS'  => ERR_NONE,
-//      'MESSAGE' => sprintf('Конвертация %1$s единиц Метаматерии в %1$s единиц Тёмной Материи успешно произведена', pretty_number($mm_convert)),
-//    ));
-//
-//    sn_db_transaction_commit();
-//  } catch(exception $e) {
-//    sn_db_transaction_rollback();
-//    $template->assign_block_vars('result', $response = array(
-//      'STATUS'  => $e->getCode(),
-//      'MESSAGE' => $e->getMessage(),
-//    ));
-//  }
-//}
 
 // Таблица скидок
 $prev_discount = 0;

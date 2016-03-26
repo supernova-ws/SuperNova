@@ -54,9 +54,6 @@ if($points = sys_get_param_float('points')) {
   } catch (Exception $e) {
     $message = $e->getMessage();
   }
-//} elseif($id_user) {
-//  // Points is empty but destination is set - this again means error
-//  $message = $lang['adm_mm_no_quant'];
 }
 
 if($message_status == ERR_ERROR) {

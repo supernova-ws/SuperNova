@@ -451,7 +451,7 @@ abstract class sn_module_payment extends sn_module {
     global $config, $user;
 
     if(!(classSupernova::$auth->account instanceof Account)) {
-      // TODO - throw new Exception($lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
+      // TODO - throw new Exception(lang['pay_msg_mm_request_amount_invalid'], SN_PAYMENT_REQUEST_ERROR_UNIT_AMOUNT);
     }
     $this->account = classSupernova::$auth->account;
 

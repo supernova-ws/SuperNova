@@ -21,7 +21,7 @@ if($ally_tag) {
     message(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, classLocale::$lang['always_exist']), classLocale::$lang['make_alliance']);
   }
 
-  db_ally_insert($ally_name, $ally_tag, $user, classLocale::$lang);
+  db_ally_insert($ally_name, $ally_tag, $user);
   $ally_id = db_insert_id();
   db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= " . SN_TIME_NOW . "");
 

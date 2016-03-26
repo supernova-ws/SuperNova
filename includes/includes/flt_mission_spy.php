@@ -19,8 +19,7 @@ function coe_compress_add_units($unit_group, $target_planet, &$compress_data, $t
 }
 
 function flt_spy_scan($target_planet, $group_name, $section_title, $target_user = array()) {
-  global $lang;
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
   $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
   foreach(sn_get_groups($group_name) as $unit_id) {
@@ -43,8 +42,7 @@ function flt_spy_scan($target_planet, $group_name, $section_title, $target_user 
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_spy(&$mission_data) {
-  global $lang;
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
 
   $result = CACHE_NONE;

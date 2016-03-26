@@ -1,8 +1,7 @@
 <?php
 
 function art_use(&$user, &$planetrow, $unit_id) {
-  global $lang;
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
   if(!in_array($unit_id, sn_get_groups('artifacts'))) {
     return;

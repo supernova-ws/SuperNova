@@ -179,7 +179,6 @@ function player_create($username_unsafe, $email_unsafe, $options) {
           'LastSettedSystemPos' => $options['system'],
           'LastSettedPlanetPos' => $options['planet'],
         ));
-        // $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $username_unsafe . ' ' . $lang['sys_capital'], true, $options['planet_options']);
         break;
       }
       $options['planet'] += 3;
@@ -187,11 +186,6 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   }
   $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], classLocale::$lang['sys_capital'], true, $options['planet_options']);
 
-//  db_user_set_by_id($user_new['id'],
-//    "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
-//    `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}',
-//    `parent_account_id` = {$account['account_id']}"
-//  );
   db_user_set_by_id($user_new['id'],
     "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"

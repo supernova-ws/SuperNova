@@ -167,8 +167,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
  * @return array|false|resource
  */
 function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_chance = 0, $moon_name = '', $update_debris = true, $options = array()) {
-  global $lang;
-  $classLocale = $lang;
+  $classLocale = classLocale::$lang;
 
   $moon_name = '';
   $moon_row = array();

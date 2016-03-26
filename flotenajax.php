@@ -29,6 +29,8 @@ function fleet_ajax() {
   classLocale::$lang->lng_include('universe');
   classLocale::$lang->lng_include('fleet');
 
+  $classLocale = classLocale::$lang;
+
   $travel_data = array();
 
   // TODO - change to JSON. Message can be sent in JSON-encoded field
@@ -147,16 +149,13 @@ function fleet_ajax() {
   $ships_sent = array();
   $ships_sent_js = 0;
   foreach($fleet_array as $unit_id => $unit_count) {
-    $classLocale = classLocale::$lang;
     $ships_sent[] = "{$unit_count} {$classLocale['tech'][$unit_id]}";
     $ships_sent_js += mrc_get_level($user, $planetrow, $unit_id, false, true);
   }
   $ships_sent = implode(', ', $ships_sent);
   $ships_sent_js = "{$unit_group}={$ships_sent_js}";
 
-  $classLocale1 = classLocale::$lang;
-  $classLocale2 = classLocale::$lang;
-  $ResultMessage = "{$classLocale1['gs_sending']} {$ships_sent} {$classLocale2['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
+  $ResultMessage = "{$classLocale['gs_sending']} {$ships_sent} {$classLocale['gs_to']} {$target_coord['galaxy']}:{$target_coord['system']}:{$target_coord['planet']}|{$ships_sent_js}";
 
   die($ResultMessage);
 }
