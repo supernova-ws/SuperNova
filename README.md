@@ -43,19 +43,19 @@ Web-resources
 
 Main Hub For Your SuperNova Experience
 --------------------------------------
-* [http://supernova.ws/index.htm](Russian Version)
-* [http://supernova.ws/index-en.htm](English Version)
+* [Russian Version](http://supernova.ws/index.htm)
+* [English Version](http://supernova.ws/index-en.htm)
 
 GitHub
 ------
 You encouraged to use GitHub as main source for SN releases and builds
 
-* [http://github.com/supernova-ws/SuperNova](SN on GitHub)
-* [git://github.com/supernova-ws/SuperNova.git](GIT-repository)
-* [https://github.com/supernova-ws/SuperNova#](GIT-repository through HTTP)
-* [https://github.com/supernova-ws/SuperNova/zipball/master](Latest stable release)
-* [https://github.com/supernova-ws/SuperNova/zipball/trunk](Latest night build) (stability is not guaranted!)
-* [http://svn.github.com/supernova-ws/SuperNova.git](SVN-interface) SVN-interface on GitHub is very unstable
+* [SN on GitHub](http://github.com/supernova-ws/SuperNova)
+* [GIT-repository](git://github.com/supernova-ws/SuperNova.git)
+* [GIT-repository through HTTP](https://github.com/supernova-ws/SuperNova#)
+* [Latest stable release](https://github.com/supernova-ws/SuperNova/zipball/master)
+* [Latest night build (may be unstable and even non-working!)](https://github.com/supernova-ws/SuperNova/zipball/trunk)
+* [GitHub SVN-interface (SVN on GitHub is very unstable)](http://github.com/supernova-ws/SuperNova)
 
 There are 3 branches on GitHub repository
 * "master" contains last stable version.
@@ -65,21 +65,21 @@ non-functional. Hovewer here you can see currently developing features.
 
 SourceForge
 -----------
-* [git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws](GIT-repository on SourceForge)
-* [http://sourceforge.net/projects/supernova-ws/files/releases/](Release archives)
-* [http://sourceforge.net/projects/supernova-ws/files/diffs/](DIFFs)
-* [http://sourceforge.net/projects/supernova-ws/files/patches/](Patches) (archive of differences between indicated versions)
+* [GIT-repository on SourceForge](git://supernova-ws.git.sourceforge.net/gitroot/supernova-ws/supernova-ws)
+* [Release archives](http://sourceforge.net/projects/supernova-ws/files/releases/)
+* [DIFFs](http://sourceforge.net/projects/supernova-ws/files/diffs/)
+* [Patches (differences between indicated versions)](http://sourceforge.net/projects/supernova-ws/files/patches/)
 
 Support
 -------
-[http://forum.supernova.ws/viewforum.php?f=73](Support Forum - Russian/English)
+[Support Forum - Russian/English](http://forum.supernova.ws/viewforum.php?f=73)
 
 Live Universes
 --------------
-* [http://alpha.supernova.ws/](Alpha - rates x2/x2/x20)
-* [http://beta.supernova.ws/](Beta - rates x50)
-* [http://gamma.supernova.ws/](Gamma - rates x1)
-* [http://delta.supernova.ws/](Delta - rates x100)
+* [Alpha - rates x2/x2/x20](http://alpha.supernova.ws/)
+* [Beta - rates x50](http://beta.supernova.ws/)
+* [Gamma - rates x1](http://gamma.supernova.ws/)
+* [Delta - rates x100](http://delta.supernova.ws/)
 
 Documentation
 =============
