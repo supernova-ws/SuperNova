@@ -84,10 +84,6 @@ class db_mysql_v5 {
     return mysqli_fetch_assoc($query);
   }
   function mysql_fetch_row(&$query) {
-if(is_bool($query)) {
-  pdump(debug_backtrace());
-  pdie();
-}
     return mysqli_fetch_row($query);
   }
   function mysql_real_escape_string($unescaped_string) {

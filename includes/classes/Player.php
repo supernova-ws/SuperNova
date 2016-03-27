@@ -185,23 +185,18 @@ class Player extends UnitContainer {
   }
 
   /**
-   * @param $player_id
+   * Loading object from DB by primary ID
+   *
+   * @param int  $dbId
+   * @param bool $lockSkip
+   *
+   * @return
    */
-  public function dbLoad($player_id) {
-//    parent::dbLoad($dbId); // TODO: Uncomment when the stars be right
-    $this->db_row = db_user_by_id($player_id, true);
+  public function dbLoad($dbId, $lockSkip = false) {
+//    parent::dbLoad($dbId, $lockSkip); // TODO: Uncomment when the stars be right
+    $this->db_row = db_user_by_id($dbId, true);
     // Парсим инфу и загружаем юниты
     $this->dbRowParse($this->db_row);
-
-//    // Загружаем юниты
-//    $this->unitList->setLocatedAt($this);
-//    $this->unitList->dbLoad($this->_dbId);
-
-    // Высчитываем бонусы
-    $this->player_bonus->add_unit_by_snid(MRC_ADMIRAL, mrc_get_level($this->db_row, null, MRC_ADMIRAL));
-    $this->player_bonus->add_unit_by_snid(TECH_WEAPON, mrc_get_level($this->db_row, null, TECH_WEAPON));
-    $this->player_bonus->add_unit_by_snid(TECH_SHIELD, mrc_get_level($this->db_row, null, TECH_SHIELD));
-    $this->player_bonus->add_unit_by_snid(TECH_ARMOR, mrc_get_level($this->db_row, null, TECH_ARMOR));
   }
 
   /**
@@ -273,5 +268,18 @@ class Player extends UnitContainer {
     $this->_name = $name;
   }
 
+
+  /**
+   * Lock all fields that belongs to operation
+   *
+   * @param int $dbId
+   *
+   * @return
+   * param DBLock $dbRow - Object that accumulates locks
+   *
+   */
+  public function dbGetLockById($dbId) {
+    // TODO: Implement dbGetLockById() method.
+  }
 
 }

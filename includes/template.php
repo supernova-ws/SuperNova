@@ -368,7 +368,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 
   $user['authlevel'] >= 3 && classSupernova::$config->debug ? $debug->echo_log() : false;;
 
-  sn_db_disconnect();
+  classSupernova::$db->db_disconnect();
 
   $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
 }

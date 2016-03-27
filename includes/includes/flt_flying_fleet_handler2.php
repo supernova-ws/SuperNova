@@ -201,6 +201,7 @@ return;
     $mission_data = $sn_groups_mission[$objFleet->mission_type];
 
     // Формируем запрос, блокирующий сразу все нужные записи
+    // TODO - два уровня блокировки. "Просто" блокировка - и для атаки
     $objFleet->dbLockFlying($mission_data);
 
     $objFleet->dbLoad($objFleet->dbId);

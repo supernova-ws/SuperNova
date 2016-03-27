@@ -50,6 +50,15 @@ class db_mysql {
    */
   public $time_mysql_total = 0.0;
 
+  /**
+   * Amount of queries on this DB
+   *
+   * @var int
+   */
+  public $numqueries = 0;
+
+  protected $isWatching = false;
+
   public function __construct() {
   }
 
@@ -114,9 +123,65 @@ class db_mysql {
     return !$this->connected;
   }
 
-  function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    global $numqueries, $debug;
+  /**
+   * @param $query
+   *
+   * @return mixed
+   */
+  public function replaceTablePlaceholders($query) {
+    $sql = $query;
+    if(strpos($sql, '{{') !== false) {
+      foreach($this->table_list as $tableName) {
+        $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
+      }
+    }
 
+    return $sql;
+  }
+
+  /**
+   * @param       $query
+   * @param       $fetch
+   */
+  public function logQuery($query, $fetch) {
+    if(!classSupernova::$config->debug) {
+      return;
+    }
+
+    $this->numqueries++;
+    $arr = debug_backtrace();
+    $file = end(explode('/', $arr[0]['file']));
+    $line = $arr[0]['line'];
+    classSupernova::$debug->add("<tr><th>Query {$this->numqueries}: </th><th>$query</th><th>{$file} @ {$line}</th><th>&nbsp;</th><th> " . ($fetch ? '+' : '&nbsp;') . " </th></tr>");
+  }
+
+
+  /**
+   * @param $sql
+   *
+   * @return void
+   */
+  public function commentQuery(&$sql) {
+    if(!defined('DEBUG_SQL_COMMENT')) {
+      return;
+    }
+    $backtrace = debug_backtrace();
+    $sql_comment = classSupernova::$debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
+
+    $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
+    if(defined('DEBUG_SQL_ONLINE')) {
+      classSupernova::$debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
+    }
+
+    if(defined('DEBUG_SQL_ERROR')) {
+      array_unshift($sql_comment, preg_replace("/\s+/", ' ', $sql));
+      classSupernova::$debug->add_to_array($sql_comment);
+    }
+
+    $sql = $sql_commented;
+  }
+
+  public function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
     if(!is_string($table)) {
       $fetch = $table;
     }
@@ -128,56 +193,27 @@ class db_mysql {
     $query = trim($query);
     $this->security_watch_user_queries($query);
     !$skip_query_check ? $this->security_query_check_bad_words($query) : false;
+    $this->logQuery($query, $fetch);
 
-    $sql = $query;
-    if(strpos($sql, '{{') !== false) {
-      foreach($this->table_list as $tableName) {
-        $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
-      }
-    }
-
-    if(classSupernova::$config->debug) {
-      $numqueries++;
-      $arr = debug_backtrace();
-      $file = end(explode('/', $arr[0]['file']));
-      $line = $arr[0]['line'];
-      $debug->add("<tr><th>Query $numqueries: </th><th>$query</th><th>$file($line)</th><th>$table</th><th>$fetch</th></tr>");
-    }
-
-    if(defined('DEBUG_SQL_COMMENT')) {
-      $backtrace = debug_backtrace();
-      $sql_comment = $debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
-
-      $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
-      if(defined('DEBUG_SQL_ONLINE')) {
-        $debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
-      }
-
-      if(defined('DEBUG_SQL_ERROR')) {
-        array_unshift($sql_comment, preg_replace("/\s+/", ' ', $sql));
-        $debug->add_to_array($sql_comment);
-        // $debug->add_to_array($sql_comment . preg_replace("/\s+/", ' ', $sql));
-      }
-      $sql = $sql_commented;
-    }
-
-    $sqlquery = $this->db_sql_query($sql) or $debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    $sql = $this->replaceTablePlaceholders($query);
+    $this->commentQuery($sql);
+    !($sqlquery = $this->db_sql_query($sql)) ? classSupernova::$debug->error(db_error() . "<br />$sql<br />", 'SQL Error') : false;
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
 
 
+  // TODO Заменить это на новый логгер
   function security_watch_user_queries($query) {
-    // TODO Заменить это на новый логгер
-    global $is_watching, $user, $debug;
+    global $user;
 
     if(
-      !$is_watching // Not already watching
+      !$this->isWatching // Not already watching
       && !empty(classSupernova::$config->game_watchlist_array) // There is some players in watchlist
       && in_array($user['id'], classSupernova::$config->game_watchlist_array) // Current player is in watchlist
       && !preg_match('/^(select|commit|rollback|start transaction)/i', $query) // Current query should be watched
     ) {
-      $is_watching = true;
+      $this->isWatching = true;
       $msg = "\$query = \"{$query}\"\n\r";
       if(!empty($_POST)) {
         $msg .= "\n\r" . dump($_POST, '$_POST');
@@ -185,8 +221,8 @@ class db_mysql {
       if(!empty($_GET)) {
         $msg .= "\n\r" . dump($_GET, '$_GET');
       }
-      $debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
-      $is_watching = false;
+      classSupernova::$debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
+      $this->isWatching = false;
     }
   }
 
@@ -338,20 +374,48 @@ class db_mysql {
     return $this->driver->mysql_affected_rows();
   }
 
+  /**
+   * @return string
+   */
   function db_get_client_info() {
     return $this->driver->mysql_get_client_info();
   }
 
+  /**
+   * @return string
+   */
   function db_get_server_info() {
     return $this->driver->mysql_get_server_info();
   }
 
+  /**
+   * @return string
+   */
   function db_get_host_info() {
     return $this->driver->mysql_get_host_info();
   }
 
   function db_get_server_stat() {
-    return $this->driver->mysql_stat();
+    $result = array();
+
+    $status = explode('  ', $this->driver->mysql_stat());
+    foreach($status as $value) {
+      $row = explode(': ', $value);
+      $result[$row[0]] = $row[1];
+    }
+
+    return $result;
+  }
+
+  function db_core_show_status() {
+    $result = array();
+
+    $query = doquery('SHOW STATUS;');
+    while($row = db_fetch($query)) {
+      $result[$row['Variable_name']] = $row['Value'];
+    }
+
+    return $result;
   }
 
 }

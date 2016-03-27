@@ -102,8 +102,7 @@ require_once('classes/core_classes.php');
 // Initializing global 'debug' object
 require_once(SN_ROOT_PHYSICAL . "includes/debug.class" . DOT_PHP_EX);
 global $debug;
-$debug = new debug();
-classSupernova::debug_set_handler($debug);
+classSupernova::$debug = $debug = new debug();
 
 spl_autoload_register(function ($class) {
   if(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php')) {

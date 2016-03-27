@@ -18,6 +18,21 @@ if($user['authlevel'] < 3) {
 
 $mode = sys_get_param_int('mode');
 
+/**
+ * @param $template
+ * @param $str
+ * @param $status
+ */
+function templateAssignTable($template, $str, $status) {
+  $template->assign_block_vars('table', classLocale::$lang['adm_tool_sql_table'][$str]);
+  foreach($status as $key => $value) {
+    $template->assign_block_vars('table.row', array(
+      'VALUE_1' => $key,
+      'VALUE_2' => $value,
+    ));
+  }
+}
+
 switch($mode) {
   case ADM_TOOL_CONFIG_RELOAD:
     classSupernova::$config->db_loadAll();
@@ -63,38 +78,15 @@ switch($mode) {
   case ADM_TOOL_INFO_SQL:
     $template = gettemplate("simple_table", true);
 
-    $template->assign_block_vars('table', classLocale::$lang['adm_tool_sql_table']['server']);
     $status = array(
-      classLocale::$lang['adm_tool_sql_server_version'] => db_get_server_info(),
-      classLocale::$lang['adm_tool_sql_client_version'] => db_get_client_info(),
-      classLocale::$lang['adm_tool_sql_host_info']      => db_get_host_info(),
+      classLocale::$lang['adm_tool_sql_server_version'] => classSupernova::$db->db_get_server_info(),
+      classLocale::$lang['adm_tool_sql_client_version'] => classSupernova::$db->db_get_client_info(),
+      classLocale::$lang['adm_tool_sql_host_info']      => classSupernova::$db->db_get_host_info(),
     );
-    foreach($status as $key => $value) {
-      $template->assign_block_vars('table.row', array(
-        'VALUE_1' => $key,
-        'VALUE_2' => $value,
-      ));
-    }
+    templateAssignTable($template, 'server', $status);
 
-    $template->assign_block_vars('table', classLocale::$lang['adm_tool_sql_table']['status']);
-    $status = explode('  ', db_server_stat());
-    foreach($status as $value) {
-      $row = explode(': ', $value);
-      $template->assign_block_vars('table.row', array(
-        'VALUE_1' => $row[0],
-        'VALUE_2' => $row[1],
-      ));
-    }
-
-
-    $template->assign_block_vars('table', classLocale::$lang['adm_tool_sql_table']['params']);
-    $result = db_core_show_status();
-    while($row = db_fetch($result)) {
-      $template->assign_block_vars('table.row', array(
-        'VALUE_1' => $row['Variable_name'],
-        'VALUE_2' => $row['Value'],
-      ));
-    }
+    templateAssignTable($template, 'status', classSupernova::$db->db_get_server_stat());
+    templateAssignTable($template, 'params', classSupernova::$db->db_core_show_status());
 
     $template->assign_vars(array(
       'PAGE_HEADER'   => classLocale::$lang['adm_tool_sql_page_header'],
@@ -109,4 +101,3 @@ switch($mode) {
 }
 
 display(parsetemplate(gettemplate("admin/admin_tools", true)), classLocale::$lang['adm_bn_ttle'], false, '', true);
-?>

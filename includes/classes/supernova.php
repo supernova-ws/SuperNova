@@ -63,6 +63,7 @@ class classSupernova {
 
 
   public static $db_in_transaction = false;
+  public static $db_records_locked = false;
   public static $transaction_id = 0;
   public static $user = array();
   /**
@@ -394,8 +395,6 @@ class classSupernova {
     static::$locator = array();
     static::$queries = array();
 
-    //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
-
     return static::$transaction_id;
   }
 
@@ -406,27 +405,28 @@ class classSupernova {
       static::db_changeset_apply(static::$delayed_changset, true);
       // pdump(static::$delayed_changset);
     }
-    static::$delayed_changset = array();
-    static::cache_lock_unset_all();
     doquery('COMMIT');
 
-    //print('<br/>TRANSACTION COMMIT id' . static::$transaction_id . '<hr />');
-    static::$db_in_transaction = false;
-
-    return static::$transaction_id++;
+    return static::db_transaction_clear();
   }
 
   public static function db_transaction_rollback() {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
+
     if(!empty(static::$delayed_changset)) {
       static::db_changeset_revert();
     }
-    static::$delayed_changset = array();
-    static::cache_lock_unset_all();
     doquery('ROLLBACK');
 
-    //print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
+    return static::db_transaction_clear();
+  }
+
+  protected static function db_transaction_clear() {
+    static::$delayed_changset = array();
+    static::cache_lock_unset_all();
+
     static::$db_in_transaction = false;
+    static::$db_records_locked = false;
     static::$transaction_id++;
 
     return static::$transaction_id;

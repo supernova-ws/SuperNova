@@ -85,6 +85,13 @@ abstract class DBRow implements IDbRow {
    */
   protected $_dbId = 0;
 
+  /**
+   * Flag to skip lock on current Load operation
+   *
+   * @var bool
+   */
+  protected $lockSkip = false;
+
 
   // Some magic ********************************************************************************************************
 
@@ -168,11 +175,12 @@ abstract class DBRow implements IDbRow {
   /**
    * Loading object from DB by primary ID
    *
-   * @param int $dbId
+   * @param int  $dbId
+   * @param bool $lockSkip
+   *
+   * @return
    */
-  public function dbLoad($dbId) {
-//    $this->_reset();
-
+  public function dbLoad($dbId, $lockSkip = false) {
     $dbId = idval($dbId);
     if($dbId <= 0) {
       classSupernova::$debug->error(get_called_class() . '::dbLoad $dbId not positive = ' . $dbId);
@@ -180,13 +188,32 @@ abstract class DBRow implements IDbRow {
       return;
     }
 
-    $db_row = doquery("SELECT * FROM `{{" . static::$_table . "}}` WHERE `" . static::$_dbIdFieldName . "` = " . $dbId . " LIMIT 1 FOR UPDATE;", true);
+    $this->_dbId = $dbId;
+    $this->lockSkip = $lockSkip;
+    // TODO - Use classSupernova::$db_records_locked
+    if(false && !$lockSkip && sn_db_transaction_check(false)) {
+      $this->dbGetLockById($this->_dbId);
+    }
+
+    $db_row = doquery("SELECT * FROM `{{" . static::$_table . "}}` WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId . " LIMIT 1 FOR UPDATE;", true);
     if(empty($db_row)) {
       return;
     }
 
     $this->dbRowParse($db_row);
+    $this->lockSkip = false;
   }
+
+  /**
+   * Lock all fields that belongs to operation
+   *
+   * @param int $dbId
+   *
+   * @return
+   * param DBLock $dbRow - Object that accumulates locks
+   *
+   */
+  abstract public function dbGetLockById($dbId);
 
   /**
    * Saving object to DB

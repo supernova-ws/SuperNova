@@ -341,6 +341,130 @@ class Fleet extends UnitContainer {
     );
   }
 
+  /**
+   * Lock all fields that belongs to operation
+   *
+   * @param $dbId
+   *
+   * @internal param DBLock $dbRow - Object that accumulates locks
+   *
+   */
+  // TODO = make static
+  public function dbGetLockById($dbId) {
+    doquery(
+    // Блокировка самого флота
+      "SELECT 1 FROM {{fleets}} AS FLEET0 " .
+      // Lock fleet owner
+      "LEFT JOIN {{users}} as USER0 on USER0.id = FLEET0.fleet_owner " .
+      // Блокировка всех юнитов, принадлежащих этому флоту
+      "LEFT JOIN {{unit}} as UNIT0 ON UNIT0.unit_location_type = " . LOC_FLEET . " AND UNIT0.unit_location_id = FLEET0.fleet_id " .
+
+      // Без предварительной выборки неизвестно - куда летит этот флот.
+      // Поэтому надо выбирать флоты, чьи координаты прибытия ИЛИ отбытия совпадают с координатами прибытия ИЛИ отбытия текущего флота.
+      // Получаем матрицу 2х2 - т.е. 4 подзапроса.
+      // При блокировке всегда нужно выбирать И лпанету, И луну - поскольку при бое на орбите луны обломки падают на орбиту планеты.
+      // Поэтому тип планеты не указывается
+
+      // Lock fleet heading to destination planet. Only if FLEET0.fleet_mess == 0
+      "LEFT JOIN {{fleets}} AS FLEET1 ON
+        FLEET1.fleet_mess = 0 AND FLEET0.fleet_mess = 0 AND
+        FLEET1.fleet_end_galaxy = FLEET0.fleet_end_galaxy AND
+        FLEET1.fleet_end_system = FLEET0.fleet_end_system AND
+        FLEET1.fleet_end_planet = FLEET0.fleet_end_planet
+      " .
+      // Блокировка всех юнитов, принадлежащих этим флотам
+      "LEFT JOIN {{unit}} as UNIT1 ON UNIT1.unit_location_type = " . LOC_FLEET . " AND UNIT1.unit_location_id = FLEET1.fleet_id " .
+      // Lock fleet owner
+      "LEFT JOIN {{users}} as USER1 on USER1.id = FLEET1.fleet_owner " .
+
+      "LEFT JOIN {{fleets}} AS FLEET2 ON
+        FLEET2.fleet_mess = 1   AND FLEET0.fleet_mess = 0 AND
+        FLEET2.fleet_start_galaxy = FLEET0.fleet_end_galaxy AND
+        FLEET2.fleet_start_system = FLEET0.fleet_end_system AND
+        FLEET2.fleet_start_planet = FLEET0.fleet_end_planet
+      " .
+      // Блокировка всех юнитов, принадлежащих этим флотам
+      "LEFT JOIN {{unit}} as UNIT2 ON
+        UNIT2.unit_location_type = " . LOC_FLEET . " AND
+        UNIT2.unit_location_id = FLEET2.fleet_id
+      " .
+      // Lock fleet owner
+      "LEFT JOIN {{users}} as USER2 on
+        USER2.id = FLEET2.fleet_owner
+      " .
+
+      // Lock fleet heading to source planet. Only if FLEET0.fleet_mess == 1
+      "LEFT JOIN {{fleets}} AS FLEET3 ON
+        FLEET3.fleet_mess = 0 AND FLEET0.fleet_mess = 1 AND
+        FLEET3.fleet_end_galaxy = FLEET0.fleet_start_galaxy AND
+        FLEET3.fleet_end_system = FLEET0.fleet_start_system AND
+        FLEET3.fleet_end_planet = FLEET0.fleet_start_planet
+      " .
+      // Блокировка всех юнитов, принадлежащих этим флотам
+      "LEFT JOIN {{unit}} as UNIT3 ON
+        UNIT3.unit_location_type = " . LOC_FLEET . " AND
+        UNIT3.unit_location_id = FLEET3.fleet_id
+      " .
+      // Lock fleet owner
+      "LEFT JOIN {{users}} as USER3 on USER3.id = FLEET3.fleet_owner " .
+
+      "LEFT JOIN {{fleets}} AS FLEET4 ON
+        FLEET4.fleet_mess = 1   AND FLEET0.fleet_mess = 1 AND
+        FLEET4.fleet_start_galaxy = FLEET0.fleet_start_galaxy AND
+        FLEET4.fleet_start_system = FLEET0.fleet_start_system AND
+        FLEET4.fleet_start_planet = FLEET0.fleet_start_planet
+      " .
+      // Блокировка всех юнитов, принадлежащих этим флотам
+      "LEFT JOIN {{unit}} as UNIT4 ON
+        UNIT4.unit_location_type = " . LOC_FLEET . " AND
+        UNIT4.unit_location_id = FLEET4.fleet_id
+      " .
+      // Lock fleet owner
+      "LEFT JOIN {{users}} as USER4 on
+        USER4.id = FLEET4.fleet_owner
+      " .
+
+
+
+      // Locking start planet
+      "LEFT JOIN {{planets}} AS PLANETS5 ON
+        FLEET0.fleet_mess = 1 AND
+        PLANETS5.galaxy = FLEET0.fleet_start_galaxy AND
+        PLANETS5.system = FLEET0.fleet_start_system AND
+        PLANETS5.planet = FLEET0.fleet_start_planet
+      " .
+      // Lock planet owner
+      "LEFT JOIN {{users}} as USER5 on
+        USER5.id = PLANETS5.id_owner
+      " .
+      // Блокировка всех юнитов, принадлежащих этой планете
+      "LEFT JOIN {{unit}} as UNIT5 ON
+        UNIT5.unit_location_type = " . LOC_PLANET . " AND
+        UNIT5.unit_location_id = PLANETS5.id
+      " .
+
+
+      // Locking destination planet
+      "LEFT JOIN {{planets}} AS PLANETS6 ON
+        FLEET0.fleet_mess = 0 AND
+        PLANETS6.galaxy = FLEET0.fleet_end_galaxy AND
+        PLANETS6.system = FLEET0.fleet_end_system AND
+        PLANETS6.planet = FLEET0.fleet_end_planet
+      " .
+      // Lock planet owner
+      "LEFT JOIN {{users}} as USER6 on
+        USER6.id = PLANETS6.id_owner
+      " .
+      // Блокировка всех юнитов, принадлежащих этой планете
+      "LEFT JOIN {{unit}} as UNIT6 ON
+        UNIT6.unit_location_type = " . LOC_PLANET . " AND
+        UNIT6.unit_location_id = PLANETS6.id
+      " .
+      "WHERE FLEET0.fleet_id = {$dbId} GROUP BY 1 FOR UPDATE"
+    );
+  }
+
+
 
   /* FLEET HELPERS =====================================================================================================*/
   /**
@@ -602,7 +726,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.31
+   * @version 41a6.71
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -686,7 +810,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.31
+   * @version 41a6.71
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(

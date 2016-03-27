@@ -165,7 +165,7 @@ class RequestInfo {
    * @param $user_id_unsafe
    */
   public function db_counter_insert($user_id_unsafe) {
-    global $sys_stop_log_hit, $is_watching;
+    global $sys_stop_log_hit;
 
     if($sys_stop_log_hit || !classSupernova::$config->game_counter) {
       return;
@@ -174,13 +174,7 @@ class RequestInfo {
     $user_id_safe = db_escape($user_id_unsafe);
     $proxy_safe = db_escape($this->ip_v4_proxy_chain);
 
-    $is_watching = true;
-//    doquery(
-//      "INSERT INTO {{counter}}
-//          (`visit_time`, `user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`, `page_url_id`, `plain_url_id`)
-//        VALUES
-//          ('" . SN_TIME_SQL. "', {$user_id_safe}, " . $this->device_id . "," . $this->browser_id . ", " .
-//      $this->ip_v4_int . ", '{$proxy_safe}', " . $this->page_address_id . ", " . $this->page_url_id . ");");
+    $this->isWatching = true;
     doquery(
       "INSERT INTO {{counter}} SET
         `visit_time` = '" . SN_TIME_SQL. "',
@@ -193,7 +187,7 @@ class RequestInfo {
         ($this->write_full_url ? ", `plain_url_id` = {$this->page_url_id}" : '' ).
       ";");
 
-    $is_watching = false;
+    $this->isWatching = false;
   }
 
 }

@@ -226,7 +226,7 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.30
+   * @version 41a6.71
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();
@@ -238,11 +238,24 @@ class Unit extends DBRowLocation {
   // А еще нужны методы для вытаскивания ЧИСТОГО и БОНУСНОГО значений
   // Магметоды вытаскивают чистые значения. А если нам нужны бонусные - вытаскивают их спецметоды ??? Хотя бонусные вроде используются чаще...
   // Наоборот - для совместимости с MRC_GET_LEVEL()
+  // Да не - чистые. Там уже всё совсем будет иначе и совместимост с MRC_GET_LEVEL() не требуется
 
 
   // TODO - DEBUG
   public function zeroDbId() {
     $this->_dbId = 0;
+  }
+
+  /**
+   * Lock all fields that belongs to operation
+   *
+   * @param DBLock $dbId - Object that accumulates locks
+   *
+   */
+  public function dbGetLockById($dbId) {
+//    "LEFT JOIN {{users}} as u on u.id = {{unit}}.unit_player_id";
+    $dbId->addPlayerLock('unit', 'unit_player_id');
+    // TODO: Implement dbGetLock() method.
   }
 
 }

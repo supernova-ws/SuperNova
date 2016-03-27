@@ -155,4 +155,8 @@ if(
   flt_flying_fleet_handler($skip_fleet_update);
 }
 
-scheduler_process();
+if(!defined('IN_AJAX')) {
+  print("Scheduled processes is disabled<br />");
+}
+// scheduler_process();
+

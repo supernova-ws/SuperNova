@@ -211,12 +211,6 @@ function sn_db_transaction_rollback() {
 function db_error() {
   return classSupernova::$db->db_error();
 }
-function sn_db_connect() {
-  return classSupernova::$db->sn_db_connect();
-}
-function sn_db_disconnect() {
-  return classSupernova::$db->db_disconnect();
-}
 function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
   return classSupernova::$db->doquery($query, $table, $fetch, $skip_query_check);
 }
@@ -239,18 +233,6 @@ function db_affected_rows() {
   return classSupernova::$db->db_affected_rows();
 }
 // Информационные функции
-function db_get_client_info() {
-  return classSupernova::$db->db_get_client_info();
-}
-function db_get_server_info() {
-  return classSupernova::$db->db_get_server_info();
-}
-function db_get_host_info() {
-  return classSupernova::$db->db_get_host_info();
-}
-function db_server_stat() {
-  return classSupernova::$db->db_get_server_stat();
-}
 function db_get_table_list() {
   return classSupernova::$db->db_get_table_list();
 }

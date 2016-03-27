@@ -114,8 +114,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    *
    * @param int $dbId - dbId is generally unused here. However it works as flag: 0 - just reset; (negative) - just reset; (positive) - proceed with loading
    */
-  // TODO: Implement dbLoad() method.
-  public function dbLoad($dbId) {
+  public function dbLoad($dbId, $lockSkip = false) {
 //    $this->_reset();
 
     if($dbId <= 0) {
@@ -133,7 +132,6 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
     foreach($unit_array as $unit_db_row) {
       $unit = $this->_createElement();
-      $unit->setLocatedAt($this);
       $unit->dbRowParse($unit_db_row);
 
       // TODO - сюда вставить разборку бонусов данного юнитлиста - тех бонусов, которые Grants данный юнит добавить в список бонусов юнит-листа
@@ -181,11 +179,14 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.42
+   * @version 41a6.71
    */
   // TODO - Factory
   public function _createElement() {
-    return new Unit();
+    $unit = new Unit();
+    $unit->setLocatedAt($this);
+
+    return $unit;
   }
 
   /**
