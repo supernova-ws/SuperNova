@@ -21,7 +21,7 @@
  * method int getDbId()
  * @property int dbId
  */
-abstract class DBRow implements IDbRow {
+abstract class DBRow extends stdClass implements IDbRow {
   // TODO
   /**
    * Should be this object - (!) not class - cached

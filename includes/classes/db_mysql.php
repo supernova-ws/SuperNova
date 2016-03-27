@@ -55,14 +55,14 @@ class db_mysql {
    *
    * @var int
    */
-  public $numqueries = 0;
+  public $queryCount = 0;
 
   public $isWatching = false;
 
   public function __construct() {
   }
 
-  function load_db_settings() {
+  public function load_db_settings() {
     $dbsettings = array();
 
     require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
@@ -70,7 +70,7 @@ class db_mysql {
     $this->dbsettings = $dbsettings;
   }
 
-  function sn_db_connect($external_db_settings = null) {
+  public function sn_db_connect($external_db_settings = null) {
     $this->db_disconnect();
 
     if(!empty($external_db_settings) && is_array($external_db_settings)) {
@@ -100,7 +100,7 @@ class db_mysql {
     return $this->connected;
   }
 
-  function driver_connect() {
+  protected function driver_connect() {
     global $debug;
 
     if(!is_object($this->driver)) {
@@ -114,7 +114,7 @@ class db_mysql {
     return $this->driver->mysql_connect($this->dbsettings);
   }
 
-  function db_disconnect() {
+  public function db_disconnect() {
     if($this->connected) {
       $this->connected = !$this->driver_disconnect();
       $this->connected = false;
@@ -143,16 +143,16 @@ class db_mysql {
    * @param       $query
    * @param       $fetch
    */
-  public function logQuery($query, $fetch) {
+  protected function logQuery($query, $fetch) {
     if(!classSupernova::$config->debug) {
       return;
     }
 
-    $this->numqueries++;
+    $this->queryCount++;
     $arr = debug_backtrace();
     $file = end(explode('/', $arr[0]['file']));
     $line = $arr[0]['line'];
-    classSupernova::$debug->add("<tr><th>Query {$this->numqueries}: </th><th>$query</th><th>{$file} @ {$line}</th><th>&nbsp;</th><th> " . ($fetch ? '+' : '&nbsp;') . " </th></tr>");
+    classSupernova::$debug->add("<tr><th>Query {$this->queryCount}: </th><th>$query</th><th>{$file} @ {$line}</th><th>&nbsp;</th><th> " . ($fetch ? '+' : '&nbsp;') . " </th></tr>");
   }
 
 
@@ -161,7 +161,7 @@ class db_mysql {
    *
    * @return void
    */
-  public function commentQuery(&$sql) {
+  protected function commentQuery(&$sql) {
     if(!defined('DEBUG_SQL_COMMENT')) {
       return;
     }
@@ -204,7 +204,7 @@ class db_mysql {
 
 
   // TODO Заменить это на новый логгер
-  function security_watch_user_queries($query) {
+  protected function security_watch_user_queries($query) {
     global $user;
 
     if(
@@ -227,7 +227,7 @@ class db_mysql {
   }
 
 
-  function security_query_check_bad_words($query) {
+  public function security_query_check_bad_words($query) {
     global $user, $dm_change_legit, $mm_change_legit;
 
     switch(true) {
@@ -286,7 +286,7 @@ class db_mysql {
    *
    * @return array
    */
-  function db_get_table_list($prefixed_only = true) {
+  public function db_get_table_list($prefixed_only = true) {
     $query = $this->mysql_get_table_list();
 
     $prefix_length = strlen($this->db_prefix);
@@ -307,14 +307,6 @@ class db_mysql {
     return $tl;
   }
 
-  function mysql_get_table_list() {
-    return $this->db_sql_query('SHOW TABLES;');
-  }
-
-  function mysql_get_innodb_status() {
-    return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
-  }
-
 
   /**
    * L1 perform the query
@@ -323,7 +315,7 @@ class db_mysql {
    *
    * @return bool|mysqli_result
    */
-  function db_sql_query($query_string) {
+  public function db_sql_query($query_string) {
     $microtime = microtime(true);
     $result = $this->driver->mysql_query($query_string);
     $this->time_mysql_total += microtime(true) - $microtime;
@@ -338,7 +330,7 @@ class db_mysql {
    *
    * @return array|null
    */
-  function db_fetch(&$query) {
+  public function db_fetch(&$query) {
     $microtime = microtime(true);
     $result = $this->driver->mysql_fetch_assoc($query);
     $this->time_mysql_total += microtime(true) - $microtime;
@@ -346,56 +338,56 @@ class db_mysql {
     return $result;
   }
 
-  function db_fetch_row(&$query) {
+  public function db_fetch_row(&$query) {
     return $this->driver->mysql_fetch_row($query);
   }
 
-  function db_escape($unescaped_string) {
+  public function db_escape($unescaped_string) {
     return $this->driver->mysql_real_escape_string($unescaped_string);
   }
 
-  function driver_disconnect() {
+  public function driver_disconnect() {
     return $this->driver->mysql_close_link();
   }
 
-  function db_error() {
+  public function db_error() {
     return $this->driver->mysql_error();
   }
 
-  function db_insert_id() {
+  public function db_insert_id() {
     return $this->driver->mysql_insert_id();
   }
 
-  function db_num_rows(&$result) {
+  public function db_num_rows(&$result) {
     return $this->driver->mysql_num_rows($result);
   }
 
-  function db_affected_rows() {
+  public function db_affected_rows() {
     return $this->driver->mysql_affected_rows();
   }
 
   /**
    * @return string
    */
-  function db_get_client_info() {
+  public function db_get_client_info() {
     return $this->driver->mysql_get_client_info();
   }
 
   /**
    * @return string
    */
-  function db_get_server_info() {
+  public function db_get_server_info() {
     return $this->driver->mysql_get_server_info();
   }
 
   /**
    * @return string
    */
-  function db_get_host_info() {
+  public function db_get_host_info() {
     return $this->driver->mysql_get_host_info();
   }
 
-  function db_get_server_stat() {
+  public function db_get_server_stat() {
     $result = array();
 
     $status = explode('  ', $this->driver->mysql_stat());
@@ -407,15 +399,30 @@ class db_mysql {
     return $result;
   }
 
-  function db_core_show_status() {
+  /**
+   * @return array
+   * @throws Exception
+   */
+  public function db_core_show_status() {
     $result = array();
 
-    $query = doquery('SHOW STATUS;');
+    $query = $this->db_sql_query('SHOW STATUS;');
+    if(is_bool($query)) {
+      throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
+    }
     while($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 
     return $result;
+  }
+
+  public function mysql_get_table_list() {
+    return $this->db_sql_query('SHOW TABLES;');
+  }
+
+  public function mysql_get_innodb_status() {
+    return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
   }
 
 }

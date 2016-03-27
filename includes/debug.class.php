@@ -30,7 +30,7 @@
 
 defined('INSIDE') || die();
 
-if (php_sapi_name() == "cli") {
+if(php_sapi_name() == "cli") {
   // In cli-mode
   define('__DEBUG_CRLF', "\r\n");
   define('__DEBUG_LINE', '-------------------------------------------------' . __DEBUG_CRLF);
@@ -120,6 +120,8 @@ class debug {
   }
 
   function dump($dump = false, $force_base = false, $deadlock = false) {
+    global $user, $planetrow;
+
     if($dump === false) {
       return;
     }
@@ -147,14 +149,12 @@ class debug {
       }
     }
 
-//    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_query('SHOW ENGINE INNODB STATUS')))) {
     if($deadlock && ($q = db_fetch(classSupernova::$db->mysql_get_innodb_status()))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = classSupernova::$locks;
       $error_backtrace['cSN_data'] = classSupernova::$data;
       foreach($error_backtrace['cSN_data'] as &$location) {
-        foreach($location as $location_id => &$location_data) //          $location_data = $location_id;
-        {
+        foreach($location as $location_id => &$location_data) {
           $location_data = isset($location_data['username']) ? $location_data['username'] :
             (isset($location_data['name']) ? $location_data['name'] : $location_id);
         }
@@ -164,9 +164,6 @@ class debug {
 
     if($base_dump) {
       if(is_array($this->log_array) && count($this->log_array) > 0) {
-//        ;
-//      }
-//      {
         foreach($this->log_array as $log) {
           $error_backtrace['queries'][] = $log;
         }
@@ -175,14 +172,12 @@ class debug {
       $error_backtrace['backtrace'] = debug_backtrace();
       unset($error_backtrace['backtrace'][1]);
       unset($error_backtrace['backtrace'][0]);
-      // $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
       $error_backtrace['$_GET'] = $_GET;
       $error_backtrace['$_POST'] = $_POST;
       $error_backtrace['$_REQUEST'] = $_REQUEST;
       $error_backtrace['$_COOKIE'] = $_COOKIE;
       $error_backtrace['$_SESSION'] = $_SESSION;
       $error_backtrace['$_SERVER'] = $_SERVER;
-      global $user, $planetrow;
       $error_backtrace['user'] = $user;
       $error_backtrace['planetrow'] = $planetrow;
     }
@@ -376,6 +371,7 @@ function prep($message) {
 function backtrace_no_arg() {
   $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
   array_shift($trace);
+
   return $trace;
 }
 
