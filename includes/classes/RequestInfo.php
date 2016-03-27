@@ -174,7 +174,7 @@ class RequestInfo {
     $user_id_safe = db_escape($user_id_unsafe);
     $proxy_safe = db_escape($this->ip_v4_proxy_chain);
 
-    $this->isWatching = true;
+    classSupernova::$db->isWatching = true;
     doquery(
       "INSERT INTO {{counter}} SET
         `visit_time` = '" . SN_TIME_SQL. "',
@@ -187,7 +187,7 @@ class RequestInfo {
         ($this->write_full_url ? ", `plain_url_id` = {$this->page_url_id}" : '' ).
       ";");
 
-    $this->isWatching = false;
+    classSupernova::$db->isWatching = false;
   }
 
 }

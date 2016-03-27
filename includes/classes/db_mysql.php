@@ -57,7 +57,7 @@ class db_mysql {
    */
   public $numqueries = 0;
 
-  protected $isWatching = false;
+  public $isWatching = false;
 
   public function __construct() {
   }
