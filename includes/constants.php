@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.74');
+define('SN_VERSION', '41a6.75');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1202,6 +1202,8 @@ define('P_CONSUMPTION', 'consumption');
 define('P_ID', 'id');
 define('P_SNID', 'snid');
 
+define('P_MISSION_PLANET_TYPE_RESTRICT', 'missionRestrictPlanetType');
+
 define('P_TABLE_NAME', 'table_name');
 define('P_OWNER_INFO', 'owner_info');
 define('P_OWNER_FIELD', 'owner_field');
@@ -1518,3 +1520,7 @@ define('SKIN_IMAGE_TAG_IMAGE_ID', 2);
  * Параметры тэга в массиве - отсортированные и переупорядоченные
  */
 define('SKIN_IMAGE_TAG_PARAMS', 3);
+
+
+define('VECTOR_READ_PARAMS', 'readParams');
+define('VECTOR_READ_VECTOR', 'readVector');

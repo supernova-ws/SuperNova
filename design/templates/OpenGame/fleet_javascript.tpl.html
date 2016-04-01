@@ -20,7 +20,10 @@ var SHIP_SPY = {D_SHIP_SPY};
 <script type="text/javascript">
   var planet_types = {
     <!-- BEGIN possible_planet_type_id -->
-    {possible_planet_type_id.ID}: '{possible_planet_type_id.NAME}',
+    '{possible_planet_type_id.ID}': {
+      'name': '{possible_planet_type_id.NAME}',
+      'short_name': '{possible_planet_type_id.SHORT_NAME}'
+    },
     <!-- END possible_planet_type_id -->
   };
   var planet_names = {};

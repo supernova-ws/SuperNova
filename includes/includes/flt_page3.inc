@@ -12,13 +12,13 @@ function sn_fleet_page3($time_to_travel) {
   global $galaxy, $system, $planet, $TargetPlanet, $consumption, $template_result;
   global $errorlist, $planet_type, $MaxExpeditions, $FlyingExpeditions;
   global $speed_percent, $distance, $fleet_speed, $user, $debug;
+
   $classLocale = classLocale::$lang;
 
   $adjusted_travel_time = $time_to_travel;
 
   $errorlist .= !is_array($fleetarray) ? classLocale::$lang['fl_no_fleetarray'] : '';
 
-  // Test de coherance de la destination (voir si elle se trouve dans les limites de l'univers connu
   $errorlist = '';
   if(!$galaxy || $galaxy > classSupernova::$config->game_maxGalaxy || $galaxy < 1) {
     $errorlist .= classLocale::$lang['fl_limit_galaxy'];

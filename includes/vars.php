@@ -431,6 +431,7 @@ mission = array(
         'src_planet' => 0,
         'src_user'   => 1,
         'transport'  => true,
+        P_MISSION_PLANET_TYPE_RESTRICT => array(PT_PLANET => PT_PLANET),
       ),
 
       MT_MISSILE => array(

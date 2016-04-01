@@ -4,6 +4,26 @@
 
 <!-- INCLUDE fleet_miniatures -->
 
+<script type="text/javascript"><!--
+var fleet_capacity = parseInt("{fleet_capacity};") ? parseInt("{fleet_capacity};") : 0;
+var fleet_speed    = parseInt("{fleet_speed}") ? parseInt("{fleet_speed}") : 0;
+var speed_factor   = parseFloat("{speed_factor}") ? parseFloat("{speed_factor}") : 0;;
+
+var ships = Array();
+<!-- BEGIN fleets -->
+<!-- BEGIN ships -->
+<!-- IF (ships.SPEED > 0) -->
+ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, 0);
+<!-- ENDIF -->
+<!-- END ships -->
+<!-- END fleets -->
+
+jQuery(document).ready(function() {
+  $('#fleet_speed').html(sn_format_number(fleet_speed));
+  shortInfo();
+});
+--></script>
+
 <form action="fleet.php?fleet_page=2" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />
   <input type="hidden" name="thissystem"      value="{thissystem}" />
@@ -14,6 +34,15 @@
 
   <input type="hidden" name="usedfleet"       value="{usedfleet}" />
 
+  <!-- BEGIN fleets -->
+  <!-- BEGIN ships -->
+  <!-- IF (ships.SPEED > 0) -->
+  <input type="hidden" name="ships[{ships.ID}]"       value="{ships.AMOUNT}" />
+  <!-- ENDIF -->
+  <!-- END ships -->
+  <!-- END fleets -->
+
+
   <table border="0" cellpadding="0" cellspacing="1" style="width: 42em">
     <tr>
       <th width="12em">{L_fl_dest}</th>
@@ -22,9 +51,9 @@
         <input type="text" name="system" class="coordinate" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{system}" />
         <input type="text" name="planet" class="coordinate" maxlength="3" onChange="shortInfo()" onKeyUp="shortInfo()" value="{planet}" />
         <select name="planet_type" onChange="shortInfo()" onKeyUp="shortInfo()">
-          <option value="1" {t1}>{L_fl_planet}</option>
-          <option value="2" {t2}>{L_fl_ruins}</option>
-          <option value="3" {t3}>{L_fl_moon}</option>
+          <!-- BEGIN possible_planet_type_id -->
+          <option value="{possible_planet_type_id.ID}" <!-- IF possible_planet_type_id.ID == planet_type --> SELECTED<!-- ENDIF -->>{possible_planet_type_id.NAME}</option>
+          <!-- END possible_planet_type_id -->
         </select>
         <input type="hidden" name="fleet_group" id="fleet_group" onChange="shortInfo()" onKeyUp="shortInfo()" value="0" />
         <input type="hidden" name="acs_target_mr" onChange="shortInfo()" onKeyUp="shortInfo()" value="0:0:0" />
@@ -165,22 +194,3 @@
   </table>
   <!-- INCLUDE page_hint -->
 </form>
-
-<script type="text/javascript"><!--
-var fleet_capacity = {fleet_capacity};
-var fleet_speed    = {fleet_speed};
-var speed_factor   = {speed_factor};
-
-document.getElementById('fleet_speed').innerHTML = sn_format_number(fleet_speed);
-
-var ships = Array();
-<!-- BEGIN fleets -->
-<!-- BEGIN ships -->
-  <!-- IF (ships.SPEED > 0) -->
-  ships[{ships.ID}] = Array({ships.AMOUNT}, {ships.SPEED}, {ships.CONSUMPTION}, 0);
-  <!-- ENDIF -->
-<!-- END ships -->
-<!-- END fleets -->
-
-shortInfo();
---></script>

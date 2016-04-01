@@ -31,8 +31,8 @@ class UBEPlayer extends Player {
    * @param array $report_player_row
    */
   public function load_from_report_player_row($report_player_row) {
-    $this->db_row['id'] = $report_player_row['ube_report_player_player_id'];
-    $this->db_row['username'] = $report_player_row['ube_report_player_name'];
+    $this->_dbRow['id'] = $report_player_row['ube_report_player_player_id'];
+    $this->_dbRow['username'] = $report_player_row['ube_report_player_name'];
     $this->is_attacker = empty($report_player_row['ube_report_player_attacker']); // TODO - ПРАВИЛЬНО ВЫСТАВЛЯТЬ!
 
     $this->player_bonus->setBonusList(array(

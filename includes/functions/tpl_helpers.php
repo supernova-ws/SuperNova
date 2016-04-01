@@ -154,6 +154,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
   $ship_list_fully_parsed = $objFleet->shipsGetArray();
 
   $ship_id = 0;
+  $result['ships'] = array();
   if($spy_level >= 6) {
     foreach($ship_list_fully_parsed as $ship_sn_id => $ship_amount) {
       if($spy_level >= 10) {
@@ -181,7 +182,6 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
       }
     }
   } else {
-    $result['ships'] = array();
   }
 
   return $result;

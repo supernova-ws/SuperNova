@@ -1,210 +1,102 @@
 <?php
 
-/*
-  fleet.php
-  Fleet manager
-
-  V3.3 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
-    [~] Imploded fleet_back.php code
-
-  V3.2 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
-    [~] separate independent chunks in INC-files
-
-  V3.1 copyright (c) 2009-2010 by Gorlum for http://supernova.ws
-    [~] Security checked & tested
-
-  V3.0 Updated by Gorlum Sep 2009
-    [!] extracting templates from code
-    [~] some redundant code cleaning
-
-  V2.0 Updated by Chlorel. 16 Jan 2008 (String extraction, bug corrections, code uniformisation
-
-  V1.0 Created by Perberos. All rights reversed (C) 2006
-*/
+define('SN_IN_FLEET', true);
+define('SN_RENDER_NAVBAR_PLANET', true);
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
-$template_result = is_array($template_result) ? $template_result : array();
 
-define('SN_IN_FLEET', true);
+// TODO - Переместить это куда-нибудь
+$fleet_page = sys_get_param_int('fleet_page', sys_get_param_int('mode'));
+if($fleet_ship_sort = sys_get_param_id('sort_elements') && $fleet_page == 0) {
+  define('IN_AJAX', true);
+  if(!empty(classLocale::$lang['player_option_fleet_ship_sort'][$fleet_ship_sort])) {
+    // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT, $fleet_ship_sort);
+    // player_save_option($user, PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE, sys_get_param_id('fleet_ship_sort_inverse', 0));
+    classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT] = $fleet_ship_sort;
+    classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE] = sys_get_param_id('sort_elements_inverse', 0);
+  }
+  die();
+}
+
+global $template_result, $user, $planetrow;
+$template_result = !empty($template_result) && is_array($template_result) ? $template_result : array();
+
 
 require_once('includes/includes/flt_functions.php');
 
 lng_include('fleet');
 
-//$fleet_page = ($fleet_page = sys_get_param_int('fleet_page')) ? $fleet_page : sys_get_param_int('mode');
-$fleet_page = sys_get_param_int('fleet_page', sys_get_param_int('mode'));
+//$galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
+//$system = sys_get_param_int('system', $planetrow['system']);
+//$planet = sys_get_param_int('planet', $planetrow['planet']);
 
-$galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
-$system = sys_get_param_int('system', $planetrow['system']);
-$planet = sys_get_param_int('planet', $planetrow['planet']);
+$targetVector = new Vector(VECTOR_READ_PARAMS, $planetrow);
+$target_mission = sys_get_param_int('target_mission', MT_NONE);
+$ships = sys_get_param_array('ships');
+$fleet_group_mr = sys_get_param_id('fleet_group');
 
-$target_mission = sys_get_param_int('target_mission');
-if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
-  $planet_type = PT_PLANET;
-} elseif($target_mission == MT_RECYCLE) {
-  $planet_type = PT_DEBRIS;
-} elseif($target_mission == MT_DESTROY) {
-  $planet_type = PT_MOON;
-} else {
-  $planet_type = sys_get_param_int('planet_type');
-  if (!$planet_type) {
-    $planet_type = sys_get_param_int('planettype', $planetrow['planet_type']);
-  }
-}
 
-$options = array();
-$options['fleets_max'] = GetMaxFleets($user);
+// Инициализируем объекты значениями по умолчанию
+$objFleet5 = new Fleet();
+$objFleet5->initDefaults($user, $planetrow, $targetVector, $target_mission, $ships, $fleet_group_mr);
 
-$MaxFleets = GetMaxFleets($user);
-$FlyingFleets = FleetList::fleet_count_flying($user['id']);
-if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
-  message(classLocale::$lang['fl_noslotfree'], classLocale::$lang['fl_error'], "fleet." . PHP_EX, 5);
-}
 
-$MaxExpeditions = get_player_max_expeditons($user);
-if($MaxExpeditions) {
-  $FlyingExpeditions  = FleetList::fleet_count_flying($user['id'], MT_EXPLORE);
-} else {
-  $FlyingExpeditions = 0;
-}
+// TODO
+//if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
+//  $planet_type = PT_PLANET;
+//} elseif($target_mission == MT_RECYCLE) {
+//  $planet_type = PT_DEBRIS;
+//} elseif($target_mission == MT_DESTROY) {
+//  $planet_type = PT_MOON;
+//} else {
+//  $planet_type = sys_get_param_int('planet_type');
+//  if(!$planet_type) {
+//    $planet_type = sys_get_param_int('planettype', $planetrow['planet_type']);
+//  }
+//}
 
-switch ($fleet_page) {
+// TODO
+//$options = array();
+//$MaxFleets = $options['fleets_max'] = GetMaxFleets($user);
+//
+//$FlyingFleets = FleetList::fleet_count_flying($user['id']);
+//if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
+//  message(classLocale::$lang['fl_noslotfree'], classLocale::$lang['fl_error'], "fleet." . PHP_EX, 5);
+//}
+//
+//$MaxExpeditions = get_player_max_expeditons($user);
+//if($MaxExpeditions) {
+//  $FlyingExpeditions = FleetList::fleet_count_flying($user['id'], MT_EXPLORE);
+//} else {
+//  $FlyingExpeditions = 0;
+//}
+
+
+switch($fleet_page) {
   case 3:
 
   case 2:
-    $fleet_group_mr = sys_get_param_id('fleet_group');
-    $fleetarray     = unserialize(base64_decode(str_rot13(sys_get_param('usedfleet'))));
-    $fleetarray = is_array($fleetarray) ? $fleetarray : array();
-
-    foreach($fleetarray as $ship_id => &$ship_amount) {
-      if(!in_array($ship_id, sn_get_groups('fleet')) || (string)floatval($ship_amount) != $ship_amount || $ship_amount < 1) {
-        $debug->warning('Supplying wrong ship in ship list on fleet page', 'Hack attempt', 302, array('base_dump' => true));
-        die();
-      }
-      $ship_amount = floatval($ship_amount);
-    }
-
-    $UsedPlanet = false;
-    $YourPlanet = false;
-    $missiontype = array();
-    if ($planet > classSupernova::$config->game_maxPlanet) {
-      $target_mission = MT_EXPLORE;
-      $missiontype[MT_EXPLORE] = classLocale::$lang['type_mission'][MT_EXPLORE];
-    } elseif ($galaxy && $system && $planet) {
-      $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
-
-      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
-
-      if ($TargetPlanet['id_owner']) {
-        $UsedPlanet = true;
-        if ($TargetPlanet['id_owner'] == $user['id']) {
-          $YourPlanet = true;
-        }
-      }
-
-      if (!$UsedPlanet) {
-        if ($fleetarray[SHIP_COLONIZER]) {
-          $missiontype[MT_COLONIZE] = classLocale::$lang['type_mission'][MT_COLONIZE];
-          $target_mission = MT_COLONIZE;
-          $planet_type = PT_PLANET;
-        } else {
-          message ("<font color=\"red\"><b>". classLocale::$lang['fl_no_planet_type'] ."</b></font>", classLocale::$lang['fl_error']);
-        }
-      } else {
-        $recyclers = 0;
-        foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
-          $recyclers += $fleetarray[$recycler_id];
-        }
-        if ($recyclers > 0 && $planet_type == PT_DEBRIS) {
-          $target_mission = MT_RECYCLE;
-          $missiontype[MT_RECYCLE] = classLocale::$lang['type_mission'][MT_RECYCLE];
-        } elseif ($planet_type == PT_PLANET || $planet_type == PT_MOON) {
-          if ($YourPlanet) {
-            $missiontype[MT_RELOCATE] = classLocale::$lang['type_mission'][MT_RELOCATE];
-            $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
-          } else {
-            // Not Your Planet
-            if ($fleetarray[SHIP_SPY]) {
-              // Only spy missions if any spy
-              $missiontype[MT_SPY] = classLocale::$lang['type_mission'][MT_SPY];
-            } else {
-              // If no spies...
-              if ($fleet_group_mr) {
-                $missiontype[MT_AKS] = classLocale::$lang['type_mission'][MT_AKS];
-              } else {
-                $missiontype[MT_ATTACK] = classLocale::$lang['type_mission'][MT_ATTACK];
-                $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
-
-                $missiontype[MT_HOLD] = classLocale::$lang['type_mission'][MT_HOLD];
-
-                if($planet_type == PT_MOON && $fleetarray[SHIP_HUGE_DEATH_STAR]) {
-                  $missiontype[MT_DESTROY] = classLocale::$lang['type_mission'][MT_DESTROY];
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-
-    if (!$target_mission && is_array($missiontype)) {
-      $target_mission = MT_ATTACK;
-    }
-
-    ksort($missiontype);
-
-    $speed_percent = sys_get_param_int('speed', 10);
-    $travel_data   = flt_travel_data($user, $planetrow, array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet), $fleetarray, $speed_percent);
-
-    $fleet_speed   = $travel_data['fleet_speed'];
-    $distance      = $travel_data['distance'];
-    $duration      = $travel_data['duration'];
-    $consumption   = $travel_data['consumption'];
+    list($ship_amount, $planet_type, $duration) = $objFleet5->fleetPage2Prepare($ship_amount, $debug, $planet, $galaxy, $system, $planet_type, $user, $planetrow);
   // No Break
 
   case 1:
-    if ($galaxy && $system && $planet) {
-      $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
-
-      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
-    }
-
-  case 0:
-    $template_result += array(
-      'thisgalaxy'      => $planetrow['galaxy'],
-      'thissystem'      => $planetrow['system'],
-      'thisplanet'      => $planetrow['planet'],
-      'thisplanet_type' => $planetrow['planet_type'],
-    );
-  // no break
+//    if($galaxy && $system && $planet) {
+//      $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
+//
+//      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
+//    }
 
 }
 
-$template_result += array(
-  'galaxy' => $galaxy,
-  'system' => $system,
-  'planet' => $planet,
-  'planet_type' => $planet_type,
-  'target_mission'  => $target_mission ? $target_mission : 0,
-  'MISSION_NAME'		=> $target_mission ? classLocale::$lang['type_mission'][$target_mission] : '',
-);
-
-$is_transport_missions = false;
-if($missiontype) {
-  $sn_group_missions = sn_get_groups('missions');
-  foreach($missiontype as $mission_data_id => $mission_data) {
-    $is_transport_missions = $is_transport_missions || (isset($sn_group_missions[$mission_data_id]['transport']) && $sn_group_missions[$mission_data_id]['transport']);
-  }
-}
+$objFleet5->fleetPage0Prepare();
 
 switch($fleet_page) {
   case 1:
-    require('includes/includes/flt_page1.inc');
+    $objFleet5->fleetPage1($planet_type);
   break;
 
   case 2:
-    require_once('includes/includes/flt_page2.inc');
-    sn_fleet_page2();
+    $objFleet5->fleetPage2();
   break;
 
   case 3:
@@ -221,8 +113,6 @@ switch($fleet_page) {
   break;
 
   default:
-    define('SN_RENDER_NAVBAR_PLANET', true);
-
-    require('includes/includes/flt_page0.inc');
+    $objFleet5->fleetPage0();
   break;
 }

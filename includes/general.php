@@ -259,6 +259,10 @@ function sys_get_param($param_name, $default = '') {
   return $_POST[$param_name] !== null ? $_POST[$param_name] : ($_GET[$param_name] !== null ? $_GET[$param_name] : $default);
 }
 
+function sys_get_param_array($param_name, $default = array()) {
+  return is_array($result = sys_get_param($param_name, $default)) ? $result : array();
+}
+
 function sys_get_param_id($param_name, $default = 0) {
   return is_id($value = sys_get_param($param_name, $default)) ? $value : $default;
 }
