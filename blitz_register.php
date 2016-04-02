@@ -59,8 +59,8 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     shuffle($imported_string);
 
     $new_players = count($imported_string);
-    $system_count = ceil($new_players / classSupernova::$config->game_maxGalaxy);
-    $system_step = floor(classSupernova::$config->game_maxSystem / $system_count);
+    $system_count = ceil($new_players / Vector::$knownGalaxies);
+    $system_step = floor(Vector::$knownSystems / $system_count);
 
     pdump($system_count, '$system_count');
     pdump($system_step, '$system_step');
@@ -70,7 +70,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 
     $galaxy = 1;
     $system = $system_step;
-    $planet = round(classSupernova::$config->game_maxPlanet / 2);
+    $planet = round(Vector::$knownPlanets / 2);
 
     foreach($imported_string as &$string_data) {
       $string_data = explode(',', $string_data);
@@ -92,7 +92,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 
       $moon_row = uni_create_moon($galaxy, $system, $planet, $user_new['id'], 30, '', false);
 
-      if(($system += $system_step) >= classSupernova::$config->game_maxSystem) {
+      if(($system += $system_step) >= Vector::$knownSystems) {
         $galaxy++;
         $system = $system_step;
       }

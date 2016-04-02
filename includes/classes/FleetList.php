@@ -27,7 +27,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a6.12
+   * @version 41a6.76
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -62,7 +62,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.12
+   * @version 41a6.76
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -116,7 +116,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.12
+   * @version 41a6.76
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.12
+   * @version 41a6.76
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -145,7 +145,7 @@ class FleetList extends ArrayAccessV2 {
     AND `fleet_end_planet` = {$planet_row['planet']}
     AND `fleet_end_type`   = {$planet_row['planet_type']}
     AND `fleet_owner` = {$fleet_owner_id}
-    AND `fleet_mission` IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ")
+    AND `fleet_mission` IN (" . MT_ATTACK . "," . MT_ACS . "," . MT_DESTROY . ")
     AND `fleet_mess` = 0"
     );
   }

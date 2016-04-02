@@ -160,7 +160,7 @@ return;
 // TODO: Грузить только используемые модули из $missions_used
   $mission_files = array(
     MT_ATTACK    => 'flt_mission_attack',
-    MT_AKS       => 'flt_mission_attack',
+    MT_ACS       => 'flt_mission_attack',
     MT_DESTROY   => 'flt_mission_attack',
     MT_TRANSPORT => 'flt_mission_transport',
     MT_RELOCATE  => 'flt_mission_relocate',
@@ -247,7 +247,7 @@ return;
 
     switch($objFleet->mission_type) {
       // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
-      case MT_AKS:
+      case MT_ACS:
       case MT_ATTACK:
       case MT_DESTROY:
         $attack_result = flt_mission_attack($objMission); // Partially

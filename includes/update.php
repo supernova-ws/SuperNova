@@ -967,7 +967,7 @@ switch($new_version) {
       upd_do_query('UPDATE {{planets}} SET `density_index` = ' . PLANET_DENSITY_METAL_PERIDOT . ' WHERE `density_index` = 7'); // deprecated define('PLANET_DENSITY_METAL_HEAVY', 7);
 
       // Добавляем планету-странника
-      upd_check_key('game_maxPlanet', 16, classSupernova::$config->game_maxPlanet == 15);
+      upd_check_key('game_maxPlanet', 16, Vector::$knownPlanets == 15);
     }
 
 

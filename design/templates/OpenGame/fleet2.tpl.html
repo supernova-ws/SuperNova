@@ -1,10 +1,18 @@
 <!-- INCLUDE fleet_javascript -->
 
-<script type="text/javascript"><!--
-var fleet_capacity = {fleet_capacity};
-var resource_max = Array({planet_metal}, {planet_crystal}, {planet_deuterium});
-var fleet_slide_changing = false;
---></script>
+<script type="text/javascript">
+  var fleet_slide_changing = false;
+
+  var resource_max = Array(
+    parseInt("{planet_metal}") ? parseInt("{planet_metal}") : 0,
+    parseInt("{planet_crystal}") ? parseInt("{planet_crystal}") : 0,
+    parseInt("{planet_deuterium}") ? parseInt("{planet_deuterium}") : 0
+  );
+
+  jQuery(document).ready(function() {
+    fleetPage2Loaded();
+  });
+</script>
 
 <h2>{L_flt_page2_title}</h2>
 
@@ -39,7 +47,7 @@ var fleet_slide_changing = false;
           <img src="design/images/mission_{missions.ID}.png" id="mission_button{missions.ID}" class="mission_button_image button_image button_pseudo <!-- IF missions.CHECKED --> button_pseudo_pressed<!-- ENDIF -->" /><br/>
           <input id="target_mission{missions.ID}" mission_id="{missions.ID}" type="radio" name="target_mission"
                  style="display: none"
-                 value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);" <!-- IF missions.CHECKED -->checked <!-- ENDIF -->>
+                 value="{missions.ID}" onChange="changeMission(this);" onClick="changeMission(this);"<!-- IF missions.ID == target_mission--> checked <!-- ENDIF -->>
           <span id="mission_name">{missions.NAME}</span>
         <!-- IF missions.ID == 5 || missions.ID == 15 -->
           <!-- IF MAX_DURATION -->
@@ -123,7 +131,3 @@ var fleet_slide_changing = false;
   <!-- ENDIF -->
 
 </form>
-
-<script type="text/javascript">
-  fleet_page_2_loaded();
-</script>

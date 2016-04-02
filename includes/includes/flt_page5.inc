@@ -137,12 +137,12 @@ function flt_build_gathering($resources_taken = '') {
             break;
           }
         }
-        $result = ATTACK_ALLOWED;
+        $result = FLIGHT_ALLOWED;
       } else {
-        $result = ATTACK_NO_FUEL;
+        $result = FLIGHT_RESOURCES_FUEL_NOT_ENOUGH;
       }
     } else {
-      $result = ATTACK_NO_FLEET;
+      $result = FLIGHT_SHIPS_NO_SHIPS;
     }
 
     $planet_data['MESSAGE'] = $lang_fl_attack_error[$result];
@@ -161,14 +161,14 @@ if(!empty($resources_taken))  { // begin processing parameters
   $planet_list = flt_build_gathering($resources_taken);
 
   foreach($planet_list as $planet_id => $planet_data) {
-    if($planet_data['RESULT'] == ATTACK_ALLOWED) {
+    if($planet_data['RESULT'] == FLIGHT_ALLOWED) {
       $planet_data['RESULT'] = flt_t_send_fleet($user, $planet_data['PLANET_DB_DATA'], $planetrow, $planet_data['FLEET'], MT_TRANSPORT);
     }
 
     $planet_data['MESSAGE'] = classLocale::$lang['fl_attack_error'][$planet_data['RESULT']];
 
     $template->assign_block_vars('results', $planet_data);
-    if(!empty($planet_data['FLEET']) && $planet_data['RESULT'] == ATTACK_ALLOWED) {
+    if(!empty($planet_data['FLEET']) && $planet_data['RESULT'] == FLIGHT_ALLOWED) {
       foreach($planet_data['FLEET'] as $unit_id => $amount) {
         $template->assign_block_vars('results.units', array(
           'ID'     => $unit_id,

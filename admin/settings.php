@@ -40,9 +40,9 @@ if(sys_get_param('save')) {
   classSupernova::$config->game_default_skin       = sys_get_param_str_unsafe('game_default_skin', DEFAULT_SKINPATH);
   classSupernova::$config->game_default_template   = sys_get_param_str_unsafe('game_default_template', TEMPLATE_NAME);
 
-  classSupernova::$config->game_maxGalaxy          = sys_get_param_int('game_maxGalaxy', 5);
-  classSupernova::$config->game_maxSystem          = sys_get_param_int('game_maxSystem', 199);
-  classSupernova::$config->game_maxPlanet          = sys_get_param_int('game_maxPlanet', 16);
+  Vector::$knownGalaxies = classSupernova::$config->game_maxGalaxy = sys_get_param_int('game_maxGalaxy', 5);
+  Vector::$knownSystems  = classSupernova::$config->game_maxSystem = sys_get_param_int('game_maxSystem', 199);
+  Vector::$knownPlanets  = classSupernova::$config->game_maxPlanet = sys_get_param_int('game_maxPlanet', 16);
 
   classSupernova::$config->player_max_colonies     = sys_get_param_int('player_max_colonies', -1);
 

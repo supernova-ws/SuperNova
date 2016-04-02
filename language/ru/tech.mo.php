@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 41a6.35
+* @version 41a6.76
 *
 */
 
@@ -44,17 +44,17 @@ $a_lang_array = (array(
   'comingsoon' => 'Скоро',
   'te_dt_tx_pre' => 'Слабая добыча',
   'type_mission' => array(
-    MT_ATTACK => 'Атака',
-    MT_AKS => 'Совместная атака',
+    MT_ATTACK    => 'Атака',
+    MT_ACS       => 'Совместная атака',
     MT_TRANSPORT => 'Транспорт',
-    MT_RELOCATE => 'Передислокация',
-    MT_HOLD => 'Удержание',
-    MT_SPY => 'Шпионаж',
-    MT_COLONIZE => 'Колонизация',
-    MT_RECYCLE => 'Переработать',
-    MT_DESTROY => 'Уничтожение',
-    MT_MISSILE => 'Ракетная атака',
-    MT_EXPLORE => 'Экспедиция',
+    MT_RELOCATE  => 'Передислокация',
+    MT_HOLD      => 'Удержание',
+    MT_SPY       => 'Шпионаж',
+    MT_COLONIZE  => 'Колонизация',
+    MT_RECYCLE   => 'Переработать',
+    MT_DESTROY   => 'Уничтожение',
+    MT_MISSILE   => 'Ракетная атака',
+    MT_EXPLORE   => 'Экспедиция',
   ),
 
   'tech' => array(

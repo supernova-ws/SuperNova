@@ -1,13 +1,9 @@
 <!-- INCLUDE fleet_javascript -->
-
-<h2>{L_fl_floten1_ttl}</h2>
-
 <!-- INCLUDE fleet_miniatures -->
 
-<script type="text/javascript"><!--
-var fleet_capacity = parseInt("{fleet_capacity};") ? parseInt("{fleet_capacity};") : 0;
+<script type="text/javascript">
 var fleet_speed    = parseInt("{fleet_speed}") ? parseInt("{fleet_speed}") : 0;
-var speed_factor   = parseFloat("{speed_factor}") ? parseFloat("{speed_factor}") : 0;;
+var speed_factor   = parseFloat("{speed_factor}") ? parseFloat("{speed_factor}") : 0;
 
 var ships = Array();
 <!-- BEGIN fleets -->
@@ -22,7 +18,9 @@ jQuery(document).ready(function() {
   $('#fleet_speed').html(sn_format_number(fleet_speed));
   shortInfo();
 });
---></script>
+</script>
+
+<h2>{L_fl_floten1_ttl}</h2>
 
 <form action="fleet.php?fleet_page=2" method="post">
   <input type="hidden" name="thisgalaxy"      value="{thisgalaxy}" />

@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.75
+   * @version 41a6.76
    */
   // TODO - Factory
   public function _createElement() {
@@ -323,6 +323,93 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     }
 
     $fleet['amount'] += $this->unitsCount();
+  }
+
+
+  /**
+   * @param $user
+   *
+   * @return int|mixed
+   */
+  // TODO - REDO!!!!
+  function flt_fleet_speed($user) {
+    $speeds = array();
+    if(!empty($this->mapUnitIdToDb)) {
+      foreach($this->mapUnitIdToDb as $ship_id => $unit) {
+        if($unit->getCount() > 0 && in_array($unit->unitId, sn_get_groups(array('fleet', 'missile')))) {
+          $single_ship_data = get_ship_data($unit->unitId, $user);
+          $speeds[] = $single_ship_data['speed'];
+        }
+      }
+    }
+
+    return empty($speeds) ? 0 : min($speeds);
+  }
+
+  public function travelData($speed_percent = 10, $distance, $dbOwnerRow) {
+    $consumption = 0;
+    $capacity = 0;
+    $duration = 0;
+
+    $speed_percent = $speed_percent ? max(min($speed_percent, 10), 1) : 10;
+
+    $game_fleet_speed = flt_server_flight_speed_multiplier();
+    $fleet_speed = $this->flt_fleet_speed($dbOwnerRow);
+    $real_speed = $speed_percent * sqrt($fleet_speed);
+
+    if($fleet_speed && $game_fleet_speed) {
+      $duration = max(1, round((35000 / $speed_percent * sqrt($distance * 10 / $fleet_speed) + 10) / $game_fleet_speed));
+
+      foreach($this->mapUnitIdToDb as $ship_id => $unit) {
+        if(!$unit->unitId || $unit->getCount() <= 0) {
+          continue;
+        }
+
+        $single_ship_data = get_ship_data($unit->unitId, $dbOwnerRow);
+        $single_ship_data['speed'] = $single_ship_data['speed'] < 1 ? 1 : $single_ship_data['speed'];
+
+        $consumption += $single_ship_data['consumption'] * $unit->getCount() * pow($real_speed / sqrt($single_ship_data['speed']) / 10 + 1, 2);
+        $capacity += $single_ship_data['capacity'] * $unit->getCount();
+      }
+
+      $consumption = round($distance * $consumption / 35000) + 1;
+    }
+
+    return array(
+      'fleet_speed'            => $fleet_speed,
+      'distance'               => $distance,
+      'duration'               => $duration,
+      'consumption'            => $consumption,
+      'capacity'               => $capacity,
+      'hold'                   => $capacity - $consumption,
+      'transport_effectivness' => $consumption ? $capacity / $consumption : 0,
+    );
+  }
+
+  /**
+   * @param $group
+   *
+   * @return bool
+   */
+  public function unitsInGroup($group) {
+    foreach($this->mapUnitIdToDb as $unitId => $unit) {
+      if(!in_array($unitId, $group)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public function unitsIsAllMovable($dbOwnerRow) {
+    foreach($this->mapUnitIdToDb as $unitId => $unit) {
+      $single_ship_data = get_ship_data($unit->unitId, $dbOwnerRow);
+      if($single_ship_data['speed'] <= 0) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
 

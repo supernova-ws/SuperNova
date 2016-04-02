@@ -334,26 +334,9 @@ function uni_coordinates_valid($coordinates, $prefix = '') {
   $coordinates["{$prefix}planet"] = intval($coordinates["{$prefix}planet"]);
 
   return
-    isset($coordinates["{$prefix}galaxy"]) && $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= classSupernova::$config->game_maxGalaxy &&
-    isset($coordinates["{$prefix}system"]) && $coordinates["{$prefix}system"] > 0 && $coordinates["{$prefix}system"] <= classSupernova::$config->game_maxSystem &&
-    isset($coordinates["{$prefix}planet"]) && $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= classSupernova::$config->game_maxPlanet;
-}
-
-/**
- * @param Vector $vector
- * @param string $prefix
- *
- * @return bool
- */
-function uni_vector_valid($vector) {
-  $vector->galaxy = intval($vector->galaxy);
-  $vector->system = intval($vector->system);
-  $vector->planet = intval($vector->planet);
-
-  return
-    $vector->galaxy > 0 && $vector->galaxy <= classSupernova::$config->game_maxGalaxy &&
-    $vector->system > 0 && $vector->system <= classSupernova::$config->game_maxSystem &&
-    $vector->planet > 0 && $vector->planet <= classSupernova::$config->game_maxPlanet;
+    isset($coordinates["{$prefix}galaxy"]) && $coordinates["{$prefix}galaxy"] > 0 && $coordinates["{$prefix}galaxy"] <= Vector::$knownGalaxies&&
+    isset($coordinates["{$prefix}system"]) && $coordinates["{$prefix}system"] > 0 && $coordinates["{$prefix}system"] <= Vector::$knownSystems&&
+    isset($coordinates["{$prefix}planet"]) && $coordinates["{$prefix}planet"] > 0 && $coordinates["{$prefix}planet"] <= Vector::$knownPlanets;
 }
 
 function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {

@@ -148,22 +148,22 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
     $options['galaxy'] = classSupernova::$config->LastSettedGalaxyPos;
     $options['system'] = classSupernova::$config->LastSettedSystemPos;
-    $segment_size = floor(classSupernova::$config->game_maxPlanet / 3);
+    $segment_size = floor(Vector::$knownPlanets/ 3);
     $segment = floor(classSupernova::$config->LastSettedPlanetPos / $segment_size);
     $segment++;
     $options['planet'] = mt_rand(1 + $segment * $segment_size, ($segment + 1) * $segment_size);
 
     // $new_planet_id = 0;
     while(true) {
-      if($options['planet'] > classSupernova::$config->game_maxPlanet) {
+      if($options['planet'] > Vector::$knownPlanets) {
         $options['planet'] = mt_rand(0, $segment_size - 1) + 1;
         $options['system']++;
       }
-      if($options['system'] > classSupernova::$config->game_maxSystem) {
+      if($options['system'] > Vector::$knownSystems) {
         $options['system'] = 1;
         $options['galaxy']++;
       }
-      $options['galaxy'] > classSupernova::$config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
+      $options['galaxy'] > Vector::$knownGalaxies? $options['galaxy'] = 1 : false;
 
       $galaxy_row = db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET, true, 'id');
       if(!$galaxy_row['id']) {

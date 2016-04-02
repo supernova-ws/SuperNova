@@ -51,7 +51,7 @@ if($userToAdd_unsafe) {
 
         $aks = db_acs_get_by_fleet($fleetid);
 
-        $objFleet->mission_type = MT_AKS;
+        $objFleet->mission_type = MT_ACS;
         $objFleet->group_id = $aks['id'];
         $objFleet->dbSave();
       } else {
@@ -90,7 +90,7 @@ $template->assign_vars(array(
   'FLEET_ID'     => $fleetid,
   'MESSAGE'      => $add_user_message_mr,
   'PAGE_HEADER'  => "{$classLocale['fl_associate']} '{$aks['name']}'",
-  'MISSION_NAME' => classLocale::$lang['type_mission'][MT_AKS],
+  'MISSION_NAME' => classLocale::$lang['type_mission'][MT_ACS],
 ));
 
 if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(LOC_USER, "`id` in ({$aks['eingeladen']})")) && !empty($members)) {

@@ -852,7 +852,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.75
+   * @version 41a6.76
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -936,7 +936,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.75
+   * @version 41a6.76
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1115,6 +1115,7 @@ class Fleet extends UnitContainer {
     if($this->mission_type != MT_NONE) {
       $this->restrictTargetTypeByMission();
 
+      // TODO - Нельзя тут просто менять тип планеты или координат!
       // If current planet type is not allowed on mission - switch planet type
       if(empty($this->allowed_planet_types[$this->targetVector->type])) {
         $targetPlanetCoords->type = reset($this->allowed_planet_types);
@@ -1340,226 +1341,227 @@ class Fleet extends UnitContainer {
     display($template, classLocale::$lang['fl_title']);
   }
 
-  protected function restrictMission() {
+  public function restrictToKnownSpace() {
+    if(!$this->targetVector->isInKnownSpace()) {
+      throw new Exception('FLIGHT_VECTOR_BEYOND_SYSTEM', FLIGHT_VECTOR_BEYOND_SYSTEM);
+    }
+  }
 
+  public function restrictToPlanet($errorCode) {
+    if($this->targetVector->type != PT_PLANET) {
+      throw new Exception($errorCode, $errorCode);
+    }
+  }
 
+  public function restrictToNoMissiles() {
+    $missilesAttack = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
+    $missilesDefense = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR);
+    if($missilesAttack + $missilesDefense == $this->shipsGetTotal()) {
+      throw new Exception('FLIGHT_SHIPS_NO_MISSILES', FLIGHT_SHIPS_NO_MISSILES);
+    }
+  }
+
+  public function restrictToAttackMissiles($missilesAttack) {
+    if($missilesAttack != $this->shipsGetTotal()) {
+      throw new Exception('FLIGHT_SHIPS_ONLY_MISSILES', FLIGHT_SHIPS_ONLY_MISSILES);
+    }
+  }
+
+  public function restrictToSelf() {
+    if($this->dbTargetRow['id'] != $this->getPlayerOwnerId()) {
+      throw new Exception('FLIGHT_VECTOR_ONLY_OWN', FLIGHT_VECTOR_ONLY_OWN);
+    }
+  }
+
+  public function restrictToOther() {
+    if($this->dbTargetRow['id'] == $this->getPlayerOwnerId()) {
+      throw new Exception('FLIGHT_VECTOR_ONLY_OTHER', FLIGHT_VECTOR_ONLY_OTHER);
+    }
+  }
+
+  public function restrictToNotOnlySpies() {
+    if($this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal()) {
+      throw new Exception('FLIGHT_SHIPS_NOT_ONLY_SPIES', FLIGHT_SHIPS_NOT_ONLY_SPIES);
+    }
+  }
+
+  public function restrictMissionMissile() {
+    $missilesAttack = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
+    $missilesDefense = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR);
+    if($this->_mission_type == MT_MISSILE) {
+      $this->restrictToAttackMissiles($missilesAttack);
+      $this->restrictToKnownSpace();
+      $this->restrictToOther();
+      $this->restrictToPlanet(FLIGHT_MISSION_MISSILE_ONLY_PLANET);
+
+      $this->allowed_missions = array(MT_MISSILE => MT_MISSILE,);
+
+      throw new Exception('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
+    }
+
+    if($missilesAttack + $missilesDefense > 0) {
+      throw new Exception('FLIGHT_SHIPS_NO_MISSILES', FLIGHT_SHIPS_NO_MISSILES);
+    }
+
+    unset($this->allowed_missions[MT_MISSILE]);
+    // No missile attack beyond this point
+  }
+
+  protected function restrictMissionExplore() {
     // Is it exploration - fleet sent beyond of system?
-    if($this->targetVector->planet > classSupernova::$config->game_maxPlanet) {
+    if(!$this->targetVector->isInKnownSpace()) {
+      $this->restrictToNotOnlySpies();
+      $this->restrictToNoMissiles();
+
       $this->allowed_missions = array(MT_EXPLORE => MT_EXPLORE,);
 
-      // TODO - check for only spies in fleet
-
-      return;
+      throw new Exception('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
     }
+
     unset($this->allowed_missions[MT_EXPLORE]);
     // No exploration beyond this point
+  }
 
-    if(!uni_vector_valid($this->targetVector)) {
-      throw new Exception('LANG_INVALID_COORDINATES');
+  protected function restrictToColonizer() {
+    // Colonization fleet should have at least one colonizer
+    if(!$this->unitList->unitsCountById(SHIP_COLONIZER) <= 0) {
+      throw new Exception('FLIGHT_SHIPS_NO_COLONIZER', FLIGHT_SHIPS_NO_COLONIZER);
     }
+  }
 
+  protected function restrictMissionColonize() {
     // Is it colonization - fleet sent to empty place?
     if(empty($this->dbTargetRow)) {
       // Only planet can be destination for colonization
-      if(!$this->targetVector->type == PT_PLANET) {
-        throw new Exception('LANG_INVALID_COLONIZATION_TYPE_ONLY_PLANET_CAN_BE_COLONIZED');
-      }
-      // Colonization fleet should have at least one colonizer
-      if(!$this->unitList->unitsCountById(SHIP_COLONIZER) <= 0) {
-        throw new Exception('LANG_INVALID_COLONIZATION_TYPE_ONLY_PLANET_CAN_BE_COLONIZED', ATTACK_NO_COLONIZER);
-      }
+      $this->restrictToPlanet(FLIGHT_MISSION_COLONIZE_NOT_EMPTY);
+      $this->restrictToColonizer();
 
       $this->allowed_missions = array(MT_COLONIZE => MT_COLONIZE,);
 
-      return;
+      throw new Exception('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
     }
     unset($this->allowed_missions[MT_COLONIZE]);
     // No colonization beyond this point
+  }
 
+  protected function restrictToUniverse() {
+    return $this->targetVector->isInUniverse();
+  }
 
-    $UsedPlanet = false;
-    $YourPlanet = false;
-    $missiontype = array();
-
-    $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
-
-    $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
-
-    if($TargetPlanet['id_owner']) {
-      $UsedPlanet = true;
-      if($TargetPlanet['id_owner'] == $user['id']) {
-        $YourPlanet = true;
-      }
+  protected function restrictToMovable() {
+    if(!$this->unitList->unitsIsAllMovable($this->dbOwnerRow)) {
+      throw new Exception('FLIGHT_SHIPS_UNMOVABLE', FLIGHT_SHIPS_UNMOVABLE);
     }
+  }
 
-    if(!$UsedPlanet) {
-      if($fleetarray[SHIP_COLONIZER]) {
-        $missiontype[MT_COLONIZE] = classLocale::$lang['type_mission'][MT_COLONIZE];
-        $target_mission = MT_COLONIZE;
-        $planet_type = PT_PLANET;
-      } else {
-        message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_planet_type'] . "</b></font>", classLocale::$lang['fl_error']);
-      }
-    } else {
+  protected function restrictToFleetUnits() {
+    if(!$this->unitList->unitsInGroup(sn_get_groups(array('fleet', 'missile')))) {
+      throw new Exception('FLIGHT_SHIPS_UNIT_WRONG', FLIGHT_SHIPS_UNIT_WRONG);
+    }
+  }
+
+  public function restrictMissionRecycle(){
+    if($this->targetVector->type == PT_DEBRIS) {
       $recyclers = 0;
       foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
-        $recyclers += $fleetarray[$recycler_id];
+        $recyclers += $this->unitList->unitsCountById($recycler_id);
       }
-      if($recyclers > 0 && $planet_type == PT_DEBRIS) {
-        $target_mission = MT_RECYCLE;
-        $missiontype[MT_RECYCLE] = classLocale::$lang['type_mission'][MT_RECYCLE];
-      } elseif($planet_type == PT_PLANET || $planet_type == PT_MOON) {
-        if($YourPlanet) {
-          $missiontype[MT_RELOCATE] = classLocale::$lang['type_mission'][MT_RELOCATE];
-          $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
-        } else {
-          // Not Your Planet
-          if($fleetarray[SHIP_SPY]) {
-            // Only spy missions if any spy
-            $missiontype[MT_SPY] = classLocale::$lang['type_mission'][MT_SPY];
-          } else {
-            // If no spies...
-            if($fleet_group_mr) {
-              $missiontype[MT_AKS] = classLocale::$lang['type_mission'][MT_AKS];
-            } else {
-              $missiontype[MT_ATTACK] = classLocale::$lang['type_mission'][MT_ATTACK];
-              $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
 
-              $missiontype[MT_HOLD] = classLocale::$lang['type_mission'][MT_HOLD];
-
-              if($planet_type == PT_MOON && $fleetarray[SHIP_HUGE_DEATH_STAR]) {
-                $missiontype[MT_DESTROY] = classLocale::$lang['type_mission'][MT_DESTROY];
-              }
-            }
-          }
-        }
+      if($recyclers <= 0) {
+        throw new Exception('FLIGHT_SHIPS_NO_RECYCLERS', FLIGHT_SHIPS_NO_RECYCLERS);
       }
+
+      $this->allowed_missions = array(MT_RECYCLE => MT_RECYCLE,);
+
+      throw new Exception('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
     }
 
+    unset($this->allowed_missions[MT_RECYCLE]);
+    // No recycling beyond this point
   }
 
-  /**
-   * @param $ship_amount
-   * @param $debug
-   * @param $planet
-   * @param $galaxy
-   * @param $system
-   * @param $planet_type
-   * @param $user
-   * @param $planetrow
-   *
-   * @return array
-   */
-  public function fleetPage2Prepare($ship_amount, $planet, $galaxy, $system, $planet_type, $user, $planetrow) {
-//    $fleet_group_mr = sys_get_param_id('fleet_group');
-//    $fleetarray = unserialize(base64_decode(str_rot13(sys_get_param('usedfleet'))));
-//    $fleetarray = is_array($fleetarray) ? $fleetarray : array();
-//
-//    foreach($fleetarray as $ship_id => &$ship_amount) {
-//      if(!in_array($ship_id, sn_get_groups('fleet')) || (string)floatval($ship_amount) != $ship_amount || $ship_amount < 1) {
-//        $debug->warning('Supplying wrong ship in ship list on fleet page', 'Hack attempt', 302, array('base_dump' => true));
-//        die();
-//      }
-//      $ship_amount = floatval($ship_amount);
-//    }
+  public function restrictMission() {
+    if($this->targetVector->isEqualToPlanet($this->dbSourcePlanetRow)) {
+      throw new Exception('FLIGHT_VECTOR_SAME_SOURCE', FLIGHT_VECTOR_SAME_SOURCE);
+    }
 
-    $UsedPlanet = false;
-    $YourPlanet = false;
-    $missiontype = array();
-    if($planet > classSupernova::$config->game_maxPlanet) {
-      $target_mission = MT_EXPLORE;
-      $missiontype[MT_EXPLORE] = classLocale::$lang['type_mission'][MT_EXPLORE];
-    } elseif($galaxy && $system && $planet) {
-      $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
+    // Only ships and missiles can be sent to mission
+    $this->restrictToFleetUnits();
 
-      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
+    // Only units with engines can fly - no other units like satellites
+    $this->restrictToMovable();
 
-      if($TargetPlanet['id_owner']) {
-        $UsedPlanet = true;
-        if($TargetPlanet['id_owner'] == $user['id']) {
-          $YourPlanet = true;
-        }
-      }
+    // No mission could fly beyond Universe - i.e. with wrong Galaxy and/or System coordinates
+    $this->restrictToUniverse();
 
-      if(!$UsedPlanet) {
-        if($fleetarray[SHIP_COLONIZER]) {
-          $missiontype[MT_COLONIZE] = classLocale::$lang['type_mission'][MT_COLONIZE];
-          $target_mission = MT_COLONIZE;
-          $planet_type = PT_PLANET;
-        } else {
-          message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_planet_type'] . "</b></font>", classLocale::$lang['fl_error']);
-        }
-      } else {
-        $recyclers = 0;
-        foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
-          $recyclers += $fleetarray[$recycler_id];
-        }
-        if($recyclers > 0 && $planet_type == PT_DEBRIS) {
-          $target_mission = MT_RECYCLE;
-          $missiontype[MT_RECYCLE] = classLocale::$lang['type_mission'][MT_RECYCLE];
-        } elseif($planet_type == PT_PLANET || $planet_type == PT_MOON) {
-          if($YourPlanet) {
-            $missiontype[MT_RELOCATE] = classLocale::$lang['type_mission'][MT_RELOCATE];
-            $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
-          } else {
-            // Not Your Planet
-            if($fleetarray[SHIP_SPY]) {
-              // Only spy missions if any spy
-              $missiontype[MT_SPY] = classLocale::$lang['type_mission'][MT_SPY];
-            } else {
-              // If no spies...
-              if($fleet_group_mr) {
-                $missiontype[MT_AKS] = classLocale::$lang['type_mission'][MT_AKS];
-              } else {
-                $missiontype[MT_ATTACK] = classLocale::$lang['type_mission'][MT_ATTACK];
-                $missiontype[MT_TRANSPORT] = classLocale::$lang['type_mission'][MT_TRANSPORT];
+    // No missions except MT_MISSILE should have any missiles in fleet
+    $this->restrictMissionMissile();
 
-                $missiontype[MT_HOLD] = classLocale::$lang['type_mission'][MT_HOLD];
+    // No missions except MT_EXPLORE could target coordinates beyond known system
+    $this->restrictMissionExplore();
 
-                if($planet_type == PT_MOON && $fleetarray[SHIP_HUGE_DEATH_STAR]) {
-                  $missiontype[MT_DESTROY] = classLocale::$lang['type_mission'][MT_DESTROY];
-                }
-              }
-            }
-          }
-        }
-      }
+    // Beyond this point all mission address only known space
+    $this->restrictToKnownSpace();
+
+    // No missions except MT_COLONIZE could target empty coordinates
+    $this->restrictMissionColonize();
+
+    // No missions except MT_RECYCLE could target debris
+    $this->restrictMissionRecycle();
+
+    // TODO - later then
+
+    // If no ACS group is shown - then it can't be an ACS attack
+    if(empty($this->_group_id)) {
+      unset($this->allowed_missions[MT_ACS]);
+    }
+
+    // Checking target owner
+    if($this->dbTargetRow['id'] != $this->getPlayerOwnerId()) {
+      // Relocate can be done only on owner's planet/moon
+      unset($this->allowed_missions[MT_RELOCATE]);
+    } else {
+      // Spying can't be done on owner's planet/moon
+      unset($this->allowed_missions[MT_SPY]);
+      // Attack can't be done on owner's planet/moon
+      unset($this->allowed_missions[MT_ATTACK]);
+      // ACS can't be done on owner's planet/moon
+      unset($this->allowed_missions[MT_ACS]);
+      // Destroy can't be done on owner's moon
+      unset($this->allowed_missions[MT_DESTROY]);
+    }
+
+    // If no Reapers (i.e. Death Star) in fleet - then mission Moon Destroy is unaccessible
+    if($this->targetVector->type == PT_MOON && $this->unitList->unitsCountById(SHIP_HUGE_DEATH_STAR) <= 0) {
+      unset($this->allowed_missions[MT_DESTROY]);
     }
   }
 
-  public function fleetPage2() {
-    global $missiontype, $target_mission, $fleetarray, $planetrow;
-    global $TargetPlanet, $consumption, $template_result;
-    global $user, $is_transport_missions;
+  public function fleetPage2($speed_percent) {
+    global $template_result;
 
     try {
       $this->restrictMission();
-      if(!$target_mission && is_array($missiontype)) {
-        $target_mission = MT_ATTACK;
-      }
-
-      ksort($missiontype);
-
-      $speed_percent = sys_get_param_int('speed', 10);
-      $travel_data = flt_travel_data($user, $planetrow, array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet), $fleetarray, $speed_percent);
-
-      $fleet_speed = $travel_data['fleet_speed'];
-      $distance = $travel_data['distance'];
-      $duration = $travel_data['duration'];
-      $consumption = $travel_data['consumption'];
-
-      return array($ship_amount, $planet_type, $duration);
     } catch(Exception $e) {
-      die($e->getMessage());
+      // TODO - MESSAGE BOX
+      pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
     }
+
+    // If mission is not set - setting first mission from allowed
+    if(!$this->_mission_type && is_array($this->allowed_missions)) {
+      $this->_mission_type = reset($this->allowed_missions);
+    }
+
+    ksort($this->allowed_missions);
+
+    $travel_data = $this->flt_travel_data($speed_percent);
 
     $template = gettemplate('fleet2', true);
 
-    foreach($missiontype as $key => $value) {
+    foreach($this->allowed_missions as $key => $value) {
       $template->assign_block_vars('missions', array(
-        'ID'      => $key,
-        'NAME'    => $value,
-        'CHECKED' => $target_mission == $key,
+        'ID'   => $key,
+        'NAME' => classLocale::$lang['type_mission'][$key],
       ));
     };
 
@@ -1601,10 +1603,10 @@ class Fleet extends UnitContainer {
       $fleet_capacity += get_unit_param($Ship, P_CAPACITY) * $Count;
     }
 
-    $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) :
+    $max_duration = $this->_mission_type == MT_EXPLORE ? get_player_max_expedition_duration($user) :
       (isset($missiontype[MT_HOLD]) ? 12 : 0);
     if($max_duration) {
-      $config_game_speed_expedition = ($target_mission == MT_EXPLORE && classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1);
+      $config_game_speed_expedition = ($this->_mission_type == MT_EXPLORE && classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1);
       for($i = 1; $i <= $max_duration; $i++) {
         $template->assign_block_vars('duration', array(
           'ID'   => $i,
@@ -1615,7 +1617,7 @@ class Fleet extends UnitContainer {
 
     $sn_group_resources = sn_get_groups('resources');
     for($i = 0; $i < 3; $i++) {
-      $amount = $planetrow[$sn_group_resources[$i]] - ($i == 2 ? $consumption : 0);
+      $amount = $planetrow[$sn_group_resources[$i]] - ($i == 2 ? $travel_data['consumption'] : 0);
       $template->assign_block_vars('resources', array(
         'ID'        => $i,
         'ON_PLANET' => floor($amount),
@@ -1635,14 +1637,12 @@ class Fleet extends UnitContainer {
     }
 
     $template->assign_vars(array(
-      'planet_metal'     => floor($planetrow['metal']),
-      'planet_crystal'   => floor($planetrow['crystal']),
-      'planet_deuterium' => floor($planetrow['deuterium'] - $consumption),
+      'planet_metal'     => floor($this->dbTargetRow['metal']),
+      'planet_crystal'   => floor($this->dbTargetRow['crystal']),
+      'planet_deuterium' => floor($this->dbTargetRow['deuterium'] - $travel_data['consumption']),
 
-      'fleet_capacity' => $fleet_capacity - $consumption,
+      'fleet_capacity' => $fleet_capacity - $travel_data['consumption'],
       'usedfleet'      => $_POST['usedfleet'],
-
-      // 'TableTitle' => $TableTitle,
 
       'speedallsmin' => sys_get_param_float('speedallsmin'),
       'speed'        => sys_get_param_int('speed'),
@@ -1660,6 +1660,18 @@ class Fleet extends UnitContainer {
 
     $template->assign_recursive($template_result);
     display($template, classLocale::$lang['fl_title']);
+  }
+
+
+  /**
+   * @param int $speed_percent
+   *
+   * @return array
+   */
+  protected function flt_travel_data($speed_percent = 10) {
+    $distance = $this->targetVector->distanceFromCoordinates($this->dbSourcePlanetRow);
+
+    return $this->unitList->travelData($speed_percent, $distance, $this->dbOwnerRow);
   }
 
 }

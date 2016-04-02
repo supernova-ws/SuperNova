@@ -46,9 +46,9 @@ if($mode == 1) {
   $planet = $planetrow['planet'];
 }
 
-$uni_galaxy = $uni_galaxy < 1 ? 1 : ($uni_galaxy > classSupernova::$config->game_maxGalaxy ? classSupernova::$config->game_maxGalaxy : $uni_galaxy);
-$uni_system = $uni_system < 1 ? 1 : ($uni_system > classSupernova::$config->game_maxSystem ? classSupernova::$config->game_maxSystem : $uni_system);
-$planet = $planet < 1 ? 1 : ($planet > classSupernova::$config->game_maxPlanet + 1 ? classSupernova::$config->game_maxPlanet + 1 : $planet);
+$uni_galaxy = $uni_galaxy < 1 ? 1 : ($uni_galaxy > Vector::$knownGalaxies? Vector::$knownGalaxies: $uni_galaxy);
+$uni_system = $uni_system < 1 ? 1 : ($uni_system > Vector::$knownSystems ? Vector::$knownSystems : $uni_system);
+$planet = $planet < 1 ? 1 : ($planet > Vector::$knownPlanets + 1 ? Vector::$knownPlanets + 1 : $planet);
 
 $planetcount = 0;
 $lunacount = 0;
@@ -108,7 +108,7 @@ foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
 $user_skip_list = sys_stat_get_user_skip_list();
 $fleet_id = 1;
 $fleets = array();
-$config_game_max_planet = classSupernova::$config->game_maxPlanet + 1;
+$config_game_max_planet = Vector::$knownPlanets + 1;
 for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   unset($uni_galaxyRowPlanet);
   unset($uni_galaxyRowMoon);
@@ -309,7 +309,7 @@ $template->assign_vars(array(
     'userCount'             => classSupernova::$config->users_amount,
 //    'ALLY_COUNT'            => $ally_count['ally_count'],
     'ALLY_COUNT'            => db_ally_count(),
-    'PLANET_EXPEDITION'     => classSupernova::$config->game_maxPlanet + 1,
+    'PLANET_EXPEDITION'     => Vector::$knownPlanets + 1,
     'curPlanetID'           => $planetrow['id'],
     'curPlanetG'            => $planetrow['galaxy'],
     'curPlanetS'            => $planetrow['system'],

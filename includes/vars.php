@@ -356,7 +356,7 @@ mission = array(
         'transport'  => false,
       ),
 
-      MT_AKS => array(
+      MT_ACS => array(
         'dst_planet' => 1,
         'dst_user'   => 1,
         'dst_fleets' => 1,

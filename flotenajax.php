@@ -108,7 +108,7 @@ function fleet_ajax() {
       'target_structure' => $target_structure = sys_get_param_int('structures'),
     )
   );
-  if($isAttackAllowed != ATTACK_ALLOWED) {
+  if($isAttackAllowed != FLIGHT_ALLOWED) {
     die(classLocale::$lang['fl_attack_error'][$isAttackAllowed]);
   }
 

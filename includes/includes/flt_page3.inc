@@ -20,13 +20,13 @@ function sn_fleet_page3($time_to_travel) {
   $errorlist .= !is_array($fleetarray) ? classLocale::$lang['fl_no_fleetarray'] : '';
 
   $errorlist = '';
-  if(!$galaxy || $galaxy > classSupernova::$config->game_maxGalaxy || $galaxy < 1) {
+  if(!$galaxy || $galaxy > Vector::$knownGalaxies|| $galaxy < 1) {
     $errorlist .= classLocale::$lang['fl_limit_galaxy'];
   }
-  if(!$system || $system > classSupernova::$config->game_maxSystem || $system < 1) {
+  if(!$system || $system > Vector::$knownSystems|| $system < 1) {
     $errorlist .= classLocale::$lang['fl_limit_system'];
   }
-  if(!$planet || $planet < 1 || ($planet > classSupernova::$config->game_maxPlanet && $target_mission != MT_EXPLORE)) {
+  if(!$planet || $planet < 1 || ($planet > Vector::$knownPlanets&& $target_mission != MT_EXPLORE)) {
     $errorlist .= classLocale::$lang['fl_limit_planet'];
   }
   if($planetrow['galaxy'] == $galaxy && $planetrow['system'] == $system && $planetrow['planet'] == $planet && $planetrow['planet_type'] == $planet_type) {
@@ -138,14 +138,14 @@ function sn_fleet_page3($time_to_travel) {
       $fleet_group = 0;
     } else {
       //Also it must be mission type 2
-      $target_mission = MT_AKS;
+      $target_mission = MT_ACS;
 
       $galaxy = $aks['galaxy'];
       $system = $aks['system'];
       $planet = $aks['planet'];
       $planet_type = $aks['planet_type'];
     }
-  } elseif($target_mission == MT_AKS) {
+  } elseif($target_mission == MT_ACS) {
     //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
     $target_mission = MT_ATTACK;
   }
@@ -156,7 +156,7 @@ function sn_fleet_page3($time_to_travel) {
   $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group, 'resources' => $StorageNeeded);
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
-  if($cant_attack !== ATTACK_ALLOWED) {
+  if($cant_attack !== FLIGHT_ALLOWED) {
     message("<span class='error'><b>{$classLocale['fl_attack_error'][$cant_attack]}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
   }
 
@@ -167,7 +167,7 @@ function sn_fleet_page3($time_to_travel) {
 
   $mission_time_in_seconds = 0;
   $arrival_time = SN_TIME_NOW + $time_to_travel;
-  if($target_mission == MT_AKS && $aks) {
+  if($target_mission == MT_ACS && $aks) {
 //    if($fleet_start_time > $aks['ankunft']) {
     if($arrival_time > $aks['ankunft']) {
       message(classLocale::$lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $arrival_time) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), classLocale::$lang['fl_error']);

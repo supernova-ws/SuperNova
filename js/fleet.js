@@ -433,7 +433,7 @@ function fleet_table_make(fleet_id)
   return(fleets[fleet_id][9]);
 }
 
-function fleet_page_2_loaded() {
+function fleetPage2Loaded() {
   mission_checked = 0;
   $("[name='target_mission']:checked").each(function(){
     mission_checked = $(this);

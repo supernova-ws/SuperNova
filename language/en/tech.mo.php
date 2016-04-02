@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a6.35
+* @version 41a6.76
 *
 */
 
@@ -45,17 +45,17 @@ $a_lang_array = (array(
   'comingsoon' => 'Coming Soon',
   'te_dt_tx_pre' => 'Weak production',
   'type_mission' => array(
-    MT_ATTACK => 'Attack',
-    MT_AKS => 'Joint Attack',
+    MT_ATTACK    => 'Attack',
+    MT_ACS       => 'Joint Attack',
     MT_TRANSPORT => 'Transport',
-    MT_RELOCATE => 'Deployment',
-    MT_HOLD => 'Retention',
-    MT_SPY => 'Espionage',
-    MT_COLONIZE => 'Colonization',
-    MT_RECYCLE => 'Rework',
-    MT_DESTROY => 'Destruction',
-    MT_MISSILE => 'Missile attack',
-    MT_EXPLORE => 'Expedition',
+    MT_RELOCATE  => 'Deployment',
+    MT_HOLD      => 'Retention',
+    MT_SPY       => 'Espionage',
+    MT_COLONIZE  => 'Colonization',
+    MT_RECYCLE   => 'Rework',
+    MT_DESTROY   => 'Destruction',
+    MT_MISSILE   => 'Missile attack',
+    MT_EXPLORE   => 'Expedition',
   ),
 
   'tech' => array(

@@ -34,6 +34,7 @@ $targetVector = new Vector(VECTOR_READ_PARAMS, $planetrow);
 $target_mission = sys_get_param_int('target_mission', MT_NONE);
 $ships = sys_get_param_array('ships');
 $fleet_group_mr = sys_get_param_id('fleet_group');
+$speed_percent = sys_get_param_int('speed', 10);
 
 
 // Инициализируем объекты значениями по умолчанию
@@ -76,7 +77,7 @@ switch($fleet_page) {
   case 3:
 
   case 2:
-    list($ship_amount, $planet_type, $duration) = $objFleet5->fleetPage2Prepare($ship_amount, $debug, $planet, $galaxy, $system, $planet_type, $user, $planetrow);
+    $objFleet5->restrictMission();
   // No Break
 
   case 1:
@@ -96,7 +97,7 @@ switch($fleet_page) {
   break;
 
   case 2:
-    $objFleet5->fleetPage2();
+    $objFleet5->fleetPage2($speed_percent);
   break;
 
   case 3:

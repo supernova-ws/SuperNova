@@ -749,6 +749,8 @@ parsetemplate($template, $parse) - ото хуйня, когда есть вто
             - просто поискать dbPrefix
         - $classConfig
 
+flt_travel_data - всегда должна вызываться в контексте флота. Без кораблей и обвязки она не имеет смысла
+
 // TODO
     Отправка флота
         + fleet0
@@ -757,8 +759,8 @@ parsetemplate($template, $parse) - ото хуйня, когда есть вто
 
 
 // TODO Сейчас!!!!!!!!!
-$objFleet5->initDefaults($user, $planetrow, $targetVector, $target_mission, $ships);
-    обработка $ships
+Fleet::restrictMission() @ 1512
+
 
 #ctv
 

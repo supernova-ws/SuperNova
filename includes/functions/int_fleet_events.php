@@ -16,7 +16,7 @@ function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scann
     $objFleet->fleet_start_name = $planet_start['name'];
 
     $planet_end_type = $objFleet->fleet_end_type == PT_MOON ? PT_MOON : PT_PLANET;
-    if($objFleet->fleet_end_planet > classSupernova::$config->game_maxPlanet) {
+    if($objFleet->fleet_end_planet > Vector::$knownPlanets) {
       $objFleet->fleet_end_name = classLocale::$lang['ov_fleet_exploration'];
     } elseif($objFleet->mission_type == MT_COLONIZE) {
       $objFleet->fleet_end_name = classLocale::$lang['ov_fleet_colonization'];

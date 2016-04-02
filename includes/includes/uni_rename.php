@@ -1,5 +1,7 @@
 <?php
 
+global $planetrow, $template, $uni_row, $debug, $uni_galaxy, $uni_system;
+
 $classLocale = classLocale::$lang;
 
 try
@@ -9,12 +11,12 @@ try
     $uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
     $uni_system = sys_get_param_int('system');
 
-    if($uni_galaxy < 1 || $uni_galaxy > classSupernova::$config->game_maxGalaxy)
+    if($uni_galaxy < 1 || $uni_galaxy > Vector::$knownGalaxies)
     {
       throw new exception(classLocale::$lang['uni_msg_error_wrong_galaxy'], ERR_ERROR);
     }
 
-    if($uni_system < 0 || $uni_system > classSupernova::$config->game_maxSystem)
+    if($uni_system < 0 || $uni_system > Vector::$knownSystems)
     {
       throw new exception(classLocale::$lang['uni_msg_error_wrong_system'], ERR_ERROR);
     }

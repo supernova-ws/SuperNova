@@ -94,7 +94,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     $user_data = $user;
   }
 
-  if(!$objFleet->isReturning() && $objFleet->mission_type == MT_AKS) {
+  if(!$objFleet->isReturning() && $objFleet->mission_type == MT_ACS) {
     $aks = db_acs_get_by_group_id($objFleet->group_id);
   }
 
@@ -284,7 +284,7 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
     } else {
       switch($fleet->mission_type) {
         case MT_ATTACK:
-        case MT_AKS:
+        case MT_ACS:
         case MT_DESTROY:
         case MT_MISSILE:
           $fleet_ownage = 'enemy';
