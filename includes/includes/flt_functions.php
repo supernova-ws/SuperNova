@@ -20,17 +20,6 @@ function flt_fleet_speed($user, $fleet) {
 
 function flt_travel_distance($from, $to) {
   return Vector::distanceBetweenCoordinates($from, $to);
-//  if($from['galaxy'] != $to['galaxy']) {
-//    $distance = abs($from['galaxy'] - $to['galaxy']) * classSupernova::$config->uni_galaxy_distance;
-//  } elseif($from['system'] != $to['system']) {
-//    $distance = abs($from['system'] - $to['system']) * 5 * 19 + 2700;
-//  } elseif($from['planet'] != $to['planet']) {
-//    $distance = abs($from['planet'] - $to['planet']) * 5 + 1000;
-//  } else {
-//    $distance = 5;
-//  }
-//
-//  return $distance;
 }
 
 /**

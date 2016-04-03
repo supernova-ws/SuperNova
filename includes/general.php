@@ -1506,3 +1506,42 @@ function sqlStringToUnixTimeStamp($value) {
 function nullIfEmpty($value) {
   return !empty($value) ? $value : null;
 }
+
+
+/**
+ * @param $sort_option
+ * @param $sort_option_inverse
+ *
+ * @return mixed
+ */
+function sortUnitRenderedList(&$ListToSort, $sort_option, $sort_option_inverse) {
+  if($sort_option || $sort_option_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
+    switch($sort_option) {
+      case PLAYER_OPTION_SORT_NAME:
+        $sort_option_field = 'NAME';
+      break;
+      case PLAYER_OPTION_SORT_SPEED:
+        $sort_option_field = 'SPEED';
+      break;
+      case PLAYER_OPTION_SORT_COUNT:
+        $sort_option_field = 'AMOUNT';
+      break;
+      case PLAYER_OPTION_SORT_ID:
+        $sort_option_field = 'ID';
+      break;
+      case PLAYER_OPTION_SORT_CREATE_TIME_LENGTH:
+        $sort_option_field = 'TIME_SECONDS';
+      break;
+      default:
+        $sort_option_field = '__INDEX';
+      break;
+    }
+    $sort_option_inverse_closure = $sort_option_inverse ? -1 : 1;
+    usort($ListToSort, function ($a, $b) use ($sort_option_field, $sort_option_inverse_closure) {
+      return $a[$sort_option_field] < $b[$sort_option_field] ? -1 * $sort_option_inverse_closure : (
+      $a[$sort_option_field] > $b[$sort_option_field] ? 1 * $sort_option_inverse_closure : 0
+      );
+    });
+  }
+
+}

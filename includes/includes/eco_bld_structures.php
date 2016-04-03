@@ -314,28 +314,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $sort_option = classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT, $que_type)];
   $sort_option_inverse = classSupernova::$user_options[array(PLAYER_OPTION_BUILDING_SORT_INVERSE, $que_type)];
-  if($sort_option || $sort_option_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
-    switch($sort_option) {
-      case PLAYER_OPTION_SORT_NAME:
-        $sort_option_field = 'NAME';
-      break;
-      case PLAYER_OPTION_SORT_ID:
-        $sort_option_field = 'ID';
-      break;
-      case PLAYER_OPTION_SORT_CREATE_TIME_LENGTH:
-        $sort_option_field = 'TIME_SECONDS';
-      break;
-      default:
-        $sort_option_field = '__INDEX';
-      break;
-    }
-    $sort_option_inverse_closure = $sort_option_inverse ? -1 : 1;
-    usort($template_result['.']['production'], function ($a, $b) use ($sort_option_field, $sort_option_inverse_closure) {
-      return $a[$sort_option_field] < $b[$sort_option_field] ? -1 * $sort_option_inverse_closure : (
-      $a[$sort_option_field] > $b[$sort_option_field] ? 1 * $sort_option_inverse_closure : 0
-      );
-    });
-  }
+  sortUnitRenderedList($template_result['.']['production'], $sort_option, $sort_option_inverse);
 
   $sector_cost = eco_get_build_data($user, $planet, UNIT_SECTOR, mrc_get_level($user, $planet, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];

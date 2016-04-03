@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.76
+   * @version 41a6.77
    */
   // TODO - Factory
   public function _createElement() {
@@ -281,13 +281,10 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
   /**
-   * @param $page
-   * @param $fleet
-   * @param template $template
-   *
+   * @return array
    * @throws Exception
    */
-  public function unitsRender(&$page, &$fleet, &$template) {
+  public function unitsRender() {
     /**
      * @var Fleet $objFleet
      */
@@ -296,6 +293,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
       throw new Exception('No fleet owner on UnitList::unitsRender() in ' . __FILE__ . '@' . __LINE__);
     }
 
+    $tplShips = array();
     foreach($this->mapUnitIdToDb as $unit) {
       $ship_id = $unit->unitId;
       $ship_count = $unit->count;
@@ -303,26 +301,20 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
         continue;
       }
 
-      if($ship_count > mrc_get_level($objFleet->dbOwnerRow, $objFleet->dbSourcePlanetRow, $ship_id, false, true)) {
-        $page .= classLocale::$lang['fl_noenought'];
-      } else {
-        $fleet['fleetarray'][$ship_id] = $ship_count;
-      }
-
-      $ship_info = get_unit_param($ship_id);
-      $fleet['capacity'] += $ship_info[P_CAPACITY] * $ship_count;
       $ship_base_data = get_ship_data($ship_id, $objFleet->dbOwnerRow);
-      $template->assign_block_vars('fleets.ships', array(
+//      $template->assign_block_vars('fleets.ships', array(
+      $tplShips[] = array(
         'ID'          => $ship_id,
+        'NAME'        => classLocale::$lang['tech'][$ship_id],
         'AMOUNT'      => $ship_count,
         'AMOUNT_TEXT' => pretty_number($ship_count),
         'CONSUMPTION' => $ship_base_data['consumption'],
         'SPEED'       => $ship_base_data['speed'],
-        'NAME'        => classLocale::$lang['tech'][$ship_id],
-      ));
+        'CAPACITY'    => $ship_base_data['capacity'],
+      );
     }
 
-    $fleet['amount'] += $this->unitsCount();
+    return $tplShips;
   }
 
 

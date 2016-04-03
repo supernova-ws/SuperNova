@@ -15,7 +15,7 @@ define('DEBUG_FLYING_FLEETS', true);
 define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
 
-//define('SN_DEBUG_PDUMP_CALLER', true);
+define('SN_DEBUG_PDUMP_CALLER', true);
 
 version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3.2') : false;
 

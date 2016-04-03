@@ -39,7 +39,7 @@ $speed_percent = sys_get_param_int('speed', 10);
 
 // Инициализируем объекты значениями по умолчанию
 $objFleet5 = new Fleet();
-$objFleet5->initDefaults($user, $planetrow, $targetVector, $target_mission, $ships, $fleet_group_mr);
+$objFleet5->initDefaults($user, $planetrow, $targetVector, $target_mission, $ships, $fleet_group_mr, $speed_percent);
 
 
 // TODO
@@ -77,7 +77,7 @@ switch($fleet_page) {
   case 3:
 
   case 2:
-    $objFleet5->restrictMission();
+//    $objFleet5->restrictMission();
   // No Break
 
   case 1:
@@ -93,11 +93,11 @@ $objFleet5->fleetPage0Prepare();
 
 switch($fleet_page) {
   case 1:
-    $objFleet5->fleetPage1($planet_type);
+    $objFleet5->fleetPage1();
   break;
 
   case 2:
-    $objFleet5->fleetPage2($speed_percent);
+    $objFleet5->fleetPage2();
   break;
 
   case 3:

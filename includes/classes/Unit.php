@@ -86,6 +86,10 @@ class Unit extends DBRowLocation {
       P_FUNC_INPUT  => 'sqlStringToUnixTimeStamp',
       P_FUNC_OUTPUT => 'unixTimeStampToSqlString',
     ),
+
+    'capacity' => array(
+      P_READ_ONLY => true,
+    ),
   );
 
   // New statics *******************************************************************************************************
@@ -145,6 +149,9 @@ class Unit extends DBRowLocation {
   }
 
 
+  protected function getCapacity() {
+    return !empty($this->info['capacity']) ? intval($this->info['capacity']) : 0;
+  }
 
   // New statics *******************************************************************************************************
 
@@ -226,7 +233,7 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.71
+   * @version 41a6.77
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();

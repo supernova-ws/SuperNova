@@ -4,9 +4,9 @@
   var fleet_slide_changing = false;
 
   var resource_max = Array(
-    parseInt("{planet_metal}") ? parseInt("{planet_metal}") : 0,
-    parseInt("{planet_crystal}") ? parseInt("{planet_crystal}") : 0,
-    parseInt("{planet_deuterium}") ? parseInt("{planet_deuterium}") : 0
+    parseFloat("{planet_metal}") ? parseFloat("{planet_metal}") : 0.0,
+    parseFloat("{planet_crystal}") ? parseFloat("{planet_crystal}") : 0.0,
+    parseFloat("{planet_deuterium}") ? parseFloat("{planet_deuterium}") : 0.0
   );
 
   jQuery(document).ready(function() {
@@ -29,14 +29,10 @@
   <input type="hidden" name="thisplanet"      value="{thisplanet}" />
   <input type="hidden" name="thisplanet_type" value="{thisplanet_type}" />
 
-  <input type="hidden" name="usedfleet"       value="{usedfleet}" />
-
   <input type="hidden" name="consumption"     value="{consumption}" />
   <input type="hidden" name="speed"           value="{speed}" />
   <input type="hidden" name="fleet_group"     value="{fleet_group}" />
-  <input type="hidden" name="acs_target_mr"   value="{acs_target_mr}" />
-  
-  <input type="hidden" name="speedallsmin"    value="{speedallsmin}" />
+
   <input type="hidden" name="speedfactor"     value="{speedfactor}" />
 
   <table class="fleet_2_table">

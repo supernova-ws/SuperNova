@@ -274,13 +274,20 @@ function SetSelectedPlanet(&$user) {
   return $user['current_planet'];
 }
 
+/**
+ * @param Vector $vector
+ */
+function uniRenderVector($vector) {
+  return "[{$vector->galaxy}:{$vector->system}:{$vector->planet}]";
+}
+
 // ----------------------------------------------------------------------------------------------------------------
 function uni_render_coordinates($from, $prefix = '') {
   return "[{$from[$prefix . 'galaxy']}:{$from[$prefix . 'system']}:{$from[$prefix . 'planet']}]";
 }
 
 function uni_render_planet($from) {
-  return "{$from['name']} [{$from['galaxy']}:{$from['system']}:{$from['planet']}]";
+  return "[{$from['galaxy']}:{$from['system']}:{$from['planet']}] {$from['name']}";
 }
 
 function uni_render_planet_full($from, $prefix = '', $html_safe = true, $include_id = false) {
