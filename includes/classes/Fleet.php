@@ -830,7 +830,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.77
+   * @version 41a6.78
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -914,7 +914,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.77
+   * @version 41a6.78
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1194,7 +1194,9 @@ class Fleet extends UnitContainer {
   }
 
   protected function restrictToUniverse() {
-    return $this->targetVector->isInUniverse();
+    if(!$this->targetVector->isInUniverse()) {
+      throw new Exception('FLIGHT_VECTOR_BEYOND_UNIVERSE', FLIGHT_VECTOR_BEYOND_UNIVERSE);
+    }
   }
 
   protected function restrictToMovable() {

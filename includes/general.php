@@ -11,6 +11,12 @@ Reference: https://bugs.php.net/bug.php?id=50394
 require_once('general/math.php');
 require_once('general_pname.php');
 
+/**
+ * @param       $func_name
+ * @param array $func_arg
+ *
+ * @return mixed
+ */
 function sn_function_call($func_name, $func_arg = array()) {
   // All data in classSupernova::$functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
 
