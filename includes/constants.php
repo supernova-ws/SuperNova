@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.78');
+define('SN_VERSION', '41a6.79');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -680,6 +680,9 @@ define('FLIGHT_VECTOR_ONLY_OWN', 50);
 define('FLIGHT_VECTOR_ONLY_OTHER', 51);
 define('FLIGHT_MISSION_COLONIZE_NOT_PLANET', 52);
 define('FLIGHT_VECTOR_BEYOND_UNIVERSE', 53);
+define('FLIGHT_SHIPS_NOT_ENOUGH', 54);
+define('FLIGHT_MISSION_EXPLORE_NO_ASTROTECH', 55);
+define('FLIGHT_MISSION_EXPLORE_NO_SLOTS', 56);
 
 
 // *** Races - Homeworlds

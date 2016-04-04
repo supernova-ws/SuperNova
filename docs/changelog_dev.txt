@@ -758,8 +758,32 @@ flt_travel_data - всегда должна вызываться в контек
         ? fleet2
 
 
-// TODO Сейчас!!!!!!!!!
+// TODO
 Fleet::restrictMission() @ 1512
+
+
+// TODO Сейчас!!!!!!!!!
+
+Unused strings
+      $errorlist .= classLocale::$lang['fl_limit_galaxy'];
+      $errorlist .= classLocale::$lang['fl_limit_system'];
+      $errorlist .= classLocale::$lang['fl_limit_planet'];
+      $errorlist .= classLocale::$lang['fl_ownpl_err'];
+      $errorlist .= classLocale::$lang['fl_no_planettype'];
+      $errorlist .= classLocale::$lang['fl_fleet_err_pl'];
+      $errorlist .= classLocale::$lang['fl_bad_mission'];
+        message("<span class='error'><b>{$classLocale['fl_fleet_err']}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+      message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_resources'] . "</b></font>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+      message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) . "</b></font>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+      message("<span class='error'><b>" . classLocale::$lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+            $errorlist .= classLocale::$lang['fl_nomoon'];
+
+
+// TODO Сейчас!!!!!!!!!
+    Переделать рестрикты на список методов
+        - Что бы по каждой миссии проходили только её методы
+        - Сделать отдельную группу mission_common_checks - для проверки только выбранной миссии - ДЛЯ СОВМЕСТИМОСТИ. Потом поставить MT_ANY
+        - Сделать отдельно группу в каждой миссии precheck - по ним собирать список чеков, что нужно проделать - для missionRestrict на fleetPage2
 
 
 #ctv

@@ -42,55 +42,6 @@ $objFleet5 = new Fleet();
 $objFleet5->initDefaults($user, $planetrow, $targetVector, $target_mission, $ships, $fleet_group_mr, $speed_percent);
 
 
-// TODO
-//if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
-//  $planet_type = PT_PLANET;
-//} elseif($target_mission == MT_RECYCLE) {
-//  $planet_type = PT_DEBRIS;
-//} elseif($target_mission == MT_DESTROY) {
-//  $planet_type = PT_MOON;
-//} else {
-//  $planet_type = sys_get_param_int('planet_type');
-//  if(!$planet_type) {
-//    $planet_type = sys_get_param_int('planettype', $planetrow['planet_type']);
-//  }
-//}
-
-// TODO
-//$options = array();
-//$MaxFleets = $options['fleets_max'] = GetMaxFleets($user);
-//
-//$FlyingFleets = FleetList::fleet_count_flying($user['id']);
-//if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
-//  message(classLocale::$lang['fl_noslotfree'], classLocale::$lang['fl_error'], "fleet." . PHP_EX, 5);
-//}
-//
-//$MaxExpeditions = get_player_max_expeditons($user);
-//if($MaxExpeditions) {
-//  $FlyingExpeditions = FleetList::fleet_count_flying($user['id'], MT_EXPLORE);
-//} else {
-//  $FlyingExpeditions = 0;
-//}
-
-
-switch($fleet_page) {
-  case 3:
-
-  case 2:
-//    $objFleet5->restrictMission();
-  // No Break
-
-  case 1:
-//    if($galaxy && $system && $planet) {
-//      $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
-//
-//      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
-//    }
-
-}
-
-$objFleet5->fleetPage0Prepare();
-
 switch($fleet_page) {
   case 1:
     $objFleet5->fleetPage1();
@@ -101,8 +52,7 @@ switch($fleet_page) {
   break;
 
   case 3:
-    require_once('includes/includes/flt_page3.inc');
-    sn_fleet_page3($duration);
+    $objFleet5->fleetPage3($duration);
   break;
 
   case 4:

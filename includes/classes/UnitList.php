@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.77
+   * @version 41a6.79
    */
   // TODO - Factory
   public function _createElement() {
@@ -254,10 +254,6 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return $this->unitsPropertySumById(0, 'count');
   }
 
-  public function unitsCapacity() {
-    return $this->unitsPropertySumById(0, 'capacity');
-  }
-
   /**
    * Get count of units in UnitList by unit_id (or all units if unit_id == 0)
    *
@@ -278,6 +274,34 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     }
 
     return $result;
+  }
+
+  // TODO - WRONG FOR STRUCTURES
+  public function shipsCapacity() {
+    return $this->shipsPoolPropertySumById(0, 'capacity');
+  }
+
+  // TODO - WRONG FOR STRUCTURES
+  public function shipsPoolPropertySumById($unit_id = 0, $propertyName = 'count') {
+    $result = 0;
+    foreach($this->mapUnitIdToDb as $unit) {
+      if(!$unit_id || $unit->unitId == $unit_id) {
+        $result += $unit->$propertyName * $unit->count;
+      }
+    }
+
+    return $result;
+  }
+
+  public function shipsIsEnoughOnPlanet($dbPlanetRow) {
+    $player = null;
+    foreach($this->mapUnitIdToDb as $unitId => $unit) {
+      if($unit->count < mrc_get_level($player, $dbPlanetRow, $unit->unitId)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -317,14 +341,13 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return $tplShips;
   }
 
-
   /**
    * @param $user
    *
    * @return int|mixed
    */
   // TODO - REDO!!!!
-  function flt_fleet_speed($user) {
+  public function shipsSpeedMin($user) {
     $speeds = array();
     if(!empty($this->mapUnitIdToDb)) {
       foreach($this->mapUnitIdToDb as $ship_id => $unit) {
@@ -338,6 +361,8 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return empty($speeds) ? 0 : min($speeds);
   }
 
+
+  // TODO - REDO!!!!
   public function travelData($speed_percent = 10, $distance, $dbOwnerRow) {
     $consumption = 0;
     $capacity = 0;
@@ -346,7 +371,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     $speed_percent = $speed_percent ? max(min($speed_percent, 10), 1) : 10;
 
     $game_fleet_speed = flt_server_flight_speed_multiplier();
-    $fleet_speed = $this->flt_fleet_speed($dbOwnerRow);
+    $fleet_speed = $this->shipsSpeedMin($dbOwnerRow);
     $real_speed = $speed_percent * sqrt($fleet_speed);
 
     if($fleet_speed && $game_fleet_speed) {
@@ -404,25 +429,6 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return true;
   }
 
-
-//  // TODO - revise it later
-//  public function _reset() {
-//    //if(!empty($this->mapUnitIdToDb)) {
-//    //  foreach($this->mapUnitIdToDb as $unit_id => $object) {
-//    //    unset($this->mapUnitIdToDb[$unit_id]);
-//    //  }
-//    //}
-//    unset($this->mapUnitIdToDb);
-//    $this->mapUnitIdToDb = array();
-//
-//    //if(!empty($this->_container)) {
-//    //  foreach($this->_container as $unit_db_id => $object) {
-//    //    unset($this->_container[$unit_db_id]);
-//    //  }
-//    //}
-//    unset($this->_container);
-//    $this->_container = array();
-//  }
 
 
   // TODO - DEBUG - REMOVE =============================================================================================
@@ -523,15 +529,11 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     }
     print('</table>');
   }
-
-
   public function unitZeroDbId() {
     foreach($this->mapUnitIdToDb as $unit) {
       $unit->zeroDbId();
     }
   }
-
-
   public function unitZeroCount() {
     foreach($this->mapUnitIdToDb as $unit) {
       $unit->count = 0;

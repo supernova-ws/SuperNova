@@ -458,7 +458,7 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
     $unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
   } elseif(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense')))) {
-    $unit = classSupernova::db_get_unit_by_location(is_array($user) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
+    $unit = classSupernova::db_get_unit_by_location(isset($user['id']) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
   } elseif(in_array($unit_id, sn_get_groups('governors'))) {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
@@ -1294,8 +1294,21 @@ function get_unit_cost_in(&$cost, $in_resource = RES_METAL) {
   return $metal_cost;
 }
 
+/**
+ * @param array $user
+ * @param int   $astrotech
+ *
+ * @return int
+ */
 function get_player_max_expeditons(&$user, $astrotech = -1) { return sn_function_call(__FUNCTION__, array(&$user, $astrotech, &$result)); }
 
+/**
+ * @param     $user
+ * @param int $astrotech
+ * @param int $result
+ *
+ * @return float|int
+ */
 function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0) {
   if($astrotech == -1) {
     if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX])) {

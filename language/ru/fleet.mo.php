@@ -16,7 +16,7 @@
  *
  * @package language
  * @system [Russian]
- * @version 41a6.78
+ * @version 41a6.79
  *
  */
 
@@ -102,39 +102,41 @@ $a_lang_array = (array(
     FLIGHT_PLAYER_BUFFING          => 'Прокачка - передача ресурсов от слабого игрока к сильному - запрещена правилами',
     FLIGHT_PLAYER_ADMIN            => 'Вы не можете атаковать Администратора',
     FLIGHT_PLAYER_NOOB             => 'Этот игрок слишком слабый для вас',
-    FLIGHT_PLAYER_VACATION_OWN     => 'Вы же в отпуске',
+    FLIGHT_PLAYER_VACATION_OWN     => 'Вы же в отпуске!',
     FLIGHT_PLAYER_CHILD_PROTECTION => 'Сегодня - День Защиты Детей! Нельзя атаковать игрока с меньшим количеством очков!',
 
-    FLIGHT_FLEET_NO_SLOTS    => 'Некому командовать флотом',
+    FLIGHT_FLEET_NO_SLOTS    => 'Некому командовать флотом - превышено максимальное количество доступных флотов',
     FLIGHT_FLEET_SPEED_WRONG => 'Неправильная скорость полета',
     FLIGHT_FLEET_TOO_FAR     => 'Ваш флот не может лететь так далеко',
     FLIGHT_FLEET_OVERLOAD    => 'Ваши корабли перегружены. Уменьшите загрузку трюмов или добавьте транспортных кораблей',
 
-    FLIGHT_MISSION_IMPOSSIBLE               => 'Это задание не может быть выполнено в указанной точке назначения',
+    FLIGHT_MISSION_IMPOSSIBLE               => 'Это задание не может быть выполнено в указанной точке назначения и/или с выбранными кораблями',
     FLIGHT_MISSION_UNKNOWN                  => 'Не существует такого типа миссии',
     FLIGHT_MISSION_MORATORIUM               => 'На запуск флота в эту миссию наложен мораторий',
     FLIGHT_MISSION_ATTACK_BASHING           => 'Защита от башинга. Уже произведено разрешенное количество атак в сутки на одну планету',
     FLIGHT_MISSION_ATTACK_BASHING_WAR_DELAY => 'Защита от башинга. Война этому Альянсу уже объявлена, но еще не началась. Посмотрите на страницу информации вашего Альянса, что бы увидеть дату начала войны',
-    FLIGHT_MISSION_HOLD_NO_ALLY_DEPOSIT     => 'На планете нет склада Альянса',
-    FLIGHT_MISSION_RECYCLE_NO_DEBRIS        => 'Поле обломков не существует',
-    FLIGHT_MISSION_MISSILE_NO_SILO          => 'Слишком низкий уровень ракетной шахты',
-    FLIGHT_MISSION_MISSILE_NO_MISSILES      => 'Нельзя начать ракетную атаку без ракет',
-    FLIGHT_MISSION_MISSILE_ONLY_PLANET      => 'Ракетная атака может быть произведена только на планету',
-    FLIGHT_MISSION_SPY_NO_SPIES             => 'Нельзя отправить шпионить флот без шпионских зондов',
-    FLIGHT_MISSION_COLONIZE_NOT_EMPTY       => 'Нельзя Колонизировать уже занятые координаты',
-    FLIGHT_MISSION_COLONIZE_NOT_PLANET      => 'Нельзя Колонизировать уже занятые координаты',
-    FLIGHT_MISSION_MISSILE_TOO_FAR          => 'Ракеты нельзя запустить так далеко',
-    FLIGHT_MISSION_MISSILE_WRONG_STRUCTURE  => 'Нельзя атаковать ракетами что-то кроме защитных сооружений',
     FLIGHT_MISSION_ACS_NOT_EXISTS           => 'Указанная группа САБ не существует',
     FLIGHT_MISSION_ACS_MISSTARGET           => 'Не совпадает точка назначения и цель группы САБ',
     FLIGHT_MISSION_ACS_TOO_LATE             => 'Флот слишком медленный - он не успеет догнать группу САБ',
     FLIGHT_MISSION_ACS_WRONG_TARGET         => 'Точка назначения флота не совпадает с целью для САБа',
+    FLIGHT_MISSION_COLONIZE_NOT_EMPTY       => 'Нельзя Колонизировать уже занятые координаты',
+    FLIGHT_MISSION_COLONIZE_NOT_PLANET      => 'Нельзя Колонизировать уже занятые координаты',
+    FLIGHT_MISSION_EXPLORE_NO_ASTROTECH     => 'Нет слотов Экспедиций. Исследуйте больше уровней Астрокартографии',
+    FLIGHT_MISSION_EXPLORE_NO_SLOTS         => 'Все слоты Экспедиций заняты. Исследуйте больше уровней Астрокартографии или дождитесь возвращения Экспедиции',
+    FLIGHT_MISSION_HOLD_NO_ALLY_DEPOSIT     => 'На планете нет склада Альянса',
+    FLIGHT_MISSION_MISSILE_NO_SILO          => 'Слишком низкий уровень ракетной шахты',
+    FLIGHT_MISSION_MISSILE_NO_MISSILES      => 'Нельзя начать ракетную атаку без ракет',
+    FLIGHT_MISSION_MISSILE_ONLY_PLANET      => 'Ракетная атака может быть произведена только на планету',
+    FLIGHT_MISSION_MISSILE_TOO_FAR          => 'Ракеты нельзя запустить так далеко',
+    FLIGHT_MISSION_MISSILE_WRONG_STRUCTURE  => 'Нельзя атаковать ракетами что-то кроме защитных сооружений',
+    FLIGHT_MISSION_RECYCLE_NO_DEBRIS        => 'Поле обломков не существует',
+    FLIGHT_MISSION_SPY_NO_SPIES             => 'Нельзя отправить шпионить флот без шпионских зондов',
 
     FLIGHT_RESOURCES_FORBIDDEN       => 'Нельзя отправить флот с ресурсами в эту миссию',
-    FLIGHT_RESOURCES_EMPTY           => 'Нельзя отправить флот без ресурсов в транспортную миссию',
+    FLIGHT_RESOURCES_EMPTY           => 'Нет смысла отправлять флот без ресурсов в с миссией "Транспорт"',
     FLIGHT_RESOURCES_NEGATIVE        => 'Количество ресурсов во флоте не может быть негативным',
-    FLIGHT_RESOURCES_FUEL_NOT_ENOUGH => 'Не хватает дейтерия для запуска флота',
-    FLIGHT_RESOURCES_NOT_ENOUGH      => 'Нет указанного количества ресурсов для транспортировки',
+    FLIGHT_RESOURCES_FUEL_NOT_ENOUGH => 'Не хватает топлива (дейтерия) для запуска флота. Попробуйте уменьшить скорость флота и/или количество кораблей и/или выгрузить часть дейтерия из трюмов',
+    FLIGHT_RESOURCES_NOT_ENOUGH      => 'Нет заявленного количества ресурсов для транспортировки. Попробуйте выгрузить часть ресурсов из трюмов',
 
     FLIGHT_SHIPS_NO_RECYCLERS            => 'Нет смысла отправлять на переработку флот без переработчиков',
     FLIGHT_SHIPS_NO_COLONIZER            => 'Нельзя колнизировать планету без колонизатора',
@@ -145,6 +147,7 @@ $a_lang_array = (array(
     FLIGHT_SHIPS_NEGATIVE                => 'Количество кораблей во флоте не может быть негативным',
     FLIGHT_SHIPS_NO_SHIPS                => 'Нельзя отправлять на задание пустой флот',
     FLIGHT_SHIPS_NOT_ENOUGH_OR_RESOURCES => 'Не хватает боевых единиц или заявленного количества ресурсов для перевозки',
+    FLIGHT_SHIPS_NOT_ENOUGH              => 'Не хватает кораблей на орбите планеты',
     FLIGHT_SHIPS_ONLY_MISSILES           => 'Только атакующие ракеты (никаких "Перехватчиков"!) могут быть отправлены миссию "Ракетная атака"',
     FLIGHT_SHIPS_NO_MISSILES             => 'Ракеты могут быть отправлены только с миссией "Ракетная атака',
 
@@ -173,7 +176,6 @@ $a_lang_array = (array(
   'fl_only_stay_at_home' => '<li>Нельзя передислоцировать флот на чужую планету!</li>',
   'fl_cheat_speed'       => 'Попытка багоюзерства! Сообщение администрации отправлено!',
   'fl_cheat_origine'     => 'Попытка багоюзерства! Сообщение администрации отправлено!',
-  'fl_limit_planet'      => '<li>Неправильная планета !</li>',
   'fl_limit_system'      => '<li>Неправильная система !</li>',
   'fl_limit_galaxy'      => '<li>Неправильная галактика !</li>',
   'fl_ownpl_err'         => '<li>Нельзя нападать на свою планету!</li>',
