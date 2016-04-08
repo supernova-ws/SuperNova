@@ -822,7 +822,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.79
+   * @version 41a6.80
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -906,7 +906,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.79
+   * @version 41a6.80
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1401,9 +1401,6 @@ class Fleet extends UnitContainer {
   }
 
   protected function restrictToValidSpeedPercentOld() {
-    if(!$this->unitList->shipsIsEnoughOnPlanet($this->dbSourcePlanetRow)) {
-    }
-
     $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
     if(!in_array($this->oldSpeedInTens, $speed_possible)) {
       throw new Exception('FLIGHT_FLEET_SPEED_WRONG', FLIGHT_FLEET_SPEED_WRONG);
@@ -1927,12 +1924,12 @@ class Fleet extends UnitContainer {
       // TODO - later then
 
       // 2nd level restrictions
+      // Still cheap
       $this->restrict2ToAllowedMissions();
       $this->restrict2ToAllowedPlanetTypes();
 
-
+      // More expensive checks
       $this->restrict2ToMaxFleets();
-
 
       $fleetResources = array(
         RES_METAL     => max(0, floor(sys_get_param_float('resource0'))),
@@ -1956,7 +1953,6 @@ class Fleet extends UnitContainer {
       $this->restrict2ToEnoughCapacity($fleetCapacity, $fleetConsumption, $fleetResources);
 
       $this->restrict2ByResources($fleetConsumption, $fleetResources);
-
       $this->restrict2ToEnoughShips();
 
       // TODO - REWRITE TO LEVEL 2

@@ -346,6 +346,96 @@ mission = array(
 ),
 );
 */
+    // Here listed methods of Fleet, naturally ordered by priorities
+    // Each mission will filter only necessary checks and do it in this order
+    'mission_checks' => array(
+      // Cheap checks - class Fleet already have all this info internally
+      'restrictToValidSpeedPercentOld',
+      'restrictToNonVacationSender',
+      'restrictToNotSource',
+      'restrictToUniverse',
+      'restrictToFleetUnits',
+      'restrictToMovable',
+
+
+      // Branching here - if it is not known space then it can be only Explore mission
+      // However in Explore can't be send mission with missiles or mission with only spies in fleet
+      // Explore mission needs no additional checks
+      'restrictToNotOnlySpies',
+      'restrictToNoMissiles',
+      'restrictToMissionExplore', // TODO
+      // Continue - known space, not an Explore mission
+      'restrictToKnownSpace',
+
+
+
+      // Another branching here - for Colonize mission
+      // Colonize mission checks
+      'restrictToTypePlanet', // Message - FLIGHT_MISSION_COLONIZE_NOT_PLANET
+      'restrictToColonizer',
+      'restrictToNoMissiles', // TODO - ALREADY DONE ABOVE
+      'restrictToMissionColonize', // TODO
+      // Continue - target exists, not a Colonize mission
+      'restrictToTargetExists',
+
+
+
+
+      // Branching for Debris
+      // Recycle mission checks
+      'restrictToNoMissiles', // TODO - ALREADY DONE ABOVE
+      'restrictToHaveRecyclers', // TODO
+      'restrictToMissionRecycle', // TODO
+      // Continue - not debris, not a Recycle
+      'restrictToTypeNotDebris', // TODO
+
+
+
+
+      // Branching again
+      // Missions that target OWN planet
+      'restrictToTargetOwn', // TODO
+      'restrictToNoMissiles', // TODO - ALREADY DONE ABOVE
+      'restrictToNonAggressive', // TODO
+      'restrictToMissionRelocate', // TODO
+
+
+      // Missions that target OTHER planet
+      'restrictToTargetOther', // TODO
+      'restrictToNotMissionRelocate', // TODO
+
+      // Missile mission
+      'restrictToTypePlanet', // TODO - message FLIGHT_MISSION_MISSILE_ONLY_PLANET
+      'restrictToTargetOther', // TODO - ALREADY DONE ABOVE
+      'restrictToMissionMissile', // TODO
+      // Non-missile mission
+      'restrictToNoMissiles', // TODO - ALREADY DONE ABOVE
+
+
+
+
+
+
+      'restrictMissionDestroy', // TODO
+      'restrictMissionACS', // TODO
+
+
+
+
+
+      // Branch here - aggressive/non-aggressive
+
+
+
+
+
+
+
+
+
+
+    ),
+
     'missions' => array(
       MT_ATTACK => array(
         'dst_planet' => 1,
