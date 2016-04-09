@@ -778,12 +778,31 @@ Unused strings
       message("<span class='error'><b>" . classLocale::$lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
             $errorlist .= classLocale::$lang['fl_nomoon'];
 
+// TODO
+    При входящей миссии (из Вселенной или по клику на Закладке) ограничивать доступные корабли:
+        = Шпионаж - только шпионы;
+        - Ракетная Атака - только ракеты;
+        - Другие миссии - отключать ракеты;
+
 
 // TODO Сейчас!!!!!!!!!
     Переделать рестрикты на список методов
         - Что бы по каждой миссии проходили только её методы
         - Сделать отдельную группу mission_common_checks - для проверки только выбранной миссии - ДЛЯ СОВМЕСТИМОСТИ. Потом поставить MT_ANY
         - Сделать отдельно группу в каждой миссии precheck - по ним собирать список чеков, что нужно проделать - для missionRestrict на fleetPage2
+
+
+      // Continue - known space, not an Explore mission
+// TODO - UNUSED ?????????
+      'checkKnownSpace'       => FLIGHT_VECTOR_BEYOND_SYSTEM,
+      'checkKnownSpace'       => FLIGHT_VECTOR_NO_TARGET,
+      FLIGHT_VECTOR_ONLY_OWN
+    Пройтись еще раз по константам
+        - в списке локализаций
+        - в списке констант
+    Убрать ненужное
+    Локализовать или хотя бы продублировать нужное в английской части
+
 
 
 #ctv

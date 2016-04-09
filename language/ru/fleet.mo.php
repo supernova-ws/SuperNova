@@ -16,7 +16,7 @@
  *
  * @package language
  * @system [Russian]
- * @version 41a6.79
+ * @version 41a6.81
  *
  */
 
@@ -96,6 +96,7 @@ $a_lang_array = (array(
   'fl_attack_error'     => array(
     FLIGHT_ALLOWED => 'Флот успешно отправлен',
 
+    FLIGHT_PLAYER_ATTACK_SELF      => 'Нельзя атаковать собственные планеты',
     FLIGHT_PLAYER_OWN              => 'Нельзя атаковать собственные планеты',
     FLIGHT_PLAYER_VACATION         => 'Нельзя атаковать игрока, находящегося в режие отпуска',
     FLIGHT_PLAYER_SAME_IP          => 'ЗАЩИТА ОТ МУЛЬТИАККАУНТОВ!<br>Взаимодействие с игроком с таким же IP невозможно',

@@ -30,7 +30,6 @@
  */
 class Fleet extends UnitContainer {
 
-
   // DBRow inheritance *************************************************************************************************
 
   /**
@@ -288,6 +287,7 @@ class Fleet extends UnitContainer {
   public $oldSpeedInTens = 0;
 
   public $tempPlayerMaxFleets = 0;
+  public $travelData = array();
 
   /**
    * Fleet constructor.
@@ -822,7 +822,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.80
+   * @version 41a6.81
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -906,7 +906,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.80
+   * @version 41a6.81
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1432,13 +1432,14 @@ class Fleet extends UnitContainer {
     }
   }
 
-  protected function restrict2ToEnoughCapacity($fleetCapacity, $fleetConsumption, $fleetResources) {
-    if(floor($fleetCapacity) < ceil(array_sum($fleetResources) + $fleetConsumption)) {
+  protected function restrict2ToEnoughCapacity($fleetCapacity, $fleetConsumption) {
+    if(floor($fleetCapacity) < ceil(array_sum($this->resource_list) + $fleetConsumption)) {
       throw new Exception('FLIGHT_FLEET_OVERLOAD', FLIGHT_FLEET_OVERLOAD);
     }
   }
 
-  protected function restrict2ByResources($fleetConsumption, $fleetResources) {
+  protected function restrict2ByResources($fleetConsumption) {
+    $fleetResources = $this->resource_list;
     $fleetResources[RES_DEUTERIUM] = ceil($fleetResources[RES_DEUTERIUM] + $fleetConsumption);
     foreach($fleetResources as $resourceId => $resourceAmount) {
       if($fleetResources[$resourceId] < 0) {
@@ -1829,7 +1830,7 @@ class Fleet extends UnitContainer {
 
 
   public function restrict2MissionTransportWithResources($fleetResources) {
-    if($this->_mission_type != MT_TRANSPORT ) {
+    if($this->_mission_type != MT_TRANSPORT) {
       return;
     }
 
@@ -1878,7 +1879,19 @@ class Fleet extends UnitContainer {
       $this->dbTargetOwnerRow = db_planet_by_id($this->dbTargetRow['id_owner'], true);
     }
 
+    $this->resource_list = array(
+      RES_METAL     => max(0, floor(sys_get_param_float('resource0'))),
+      RES_CRYSTAL   => max(0, floor(sys_get_param_float('resource1'))),
+      RES_DEUTERIUM => max(0, floor(sys_get_param_float('resource2'))),
+    );
+
+    $checklist = sn_get_groups('mission_checks');
+
+    $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
+
     try {
+
+      $this->checkMissionRestrictions($checklist);
 
 
       // Do the restrictMission checks
@@ -1930,12 +1943,8 @@ class Fleet extends UnitContainer {
 
       // More expensive checks
       $this->restrict2ToMaxFleets();
+      $this->restrict2ToEnoughShips();
 
-      $fleetResources = array(
-        RES_METAL     => max(0, floor(sys_get_param_float('resource0'))),
-        RES_CRYSTAL   => max(0, floor(sys_get_param_float('resource1'))),
-        RES_DEUTERIUM => max(0, floor(sys_get_param_float('resource2'))),
-      );
 
       $travelData = $this->flt_travel_data($this->oldSpeedInTens);
       $fleetCapacity = $travelData['capacity'];
@@ -1949,11 +1958,9 @@ class Fleet extends UnitContainer {
         hold                   = capacity - consumption,
         transport_effectivness = consumption ? capacity / consumption : 0,
        */
+      $this->restrict2ToEnoughCapacity($fleetCapacity, $fleetConsumption);
+      $this->restrict2ByResources($fleetConsumption);
 
-      $this->restrict2ToEnoughCapacity($fleetCapacity, $fleetConsumption, $fleetResources);
-
-      $this->restrict2ByResources($fleetConsumption, $fleetResources);
-      $this->restrict2ToEnoughShips();
 
       // TODO - REWRITE TO LEVEL 2
       $this->restrict2MissionExploreAvailable();
@@ -2036,7 +2043,7 @@ class Fleet extends UnitContainer {
       //
 
 
-      $this->restrict2MissionTransportWithResources($fleetResources);
+//      $this->restrict2MissionTransportWithResources($fleetResources);
     } catch(Exception $e) {
       // TODO - MESSAGE BOX
       if($e->getCode() != FLIGHT_ALLOWED) {
@@ -2046,6 +2053,9 @@ class Fleet extends UnitContainer {
         pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
       }
     }
+
+
+    // TODO check for empty mission AKA mission allowed
 
     $errorlist = '';
 
@@ -2059,7 +2069,6 @@ class Fleet extends UnitContainer {
     if(!$StorageNeeded && $target_mission == MT_TRANSPORT) {
       $errorlist .= classLocale::$lang['fl_noenoughtgoods'];
     }
-
 
 
     if($target_mission == MT_EXPLORE) {
@@ -2299,6 +2308,247 @@ class Fleet extends UnitContainer {
     $planetrow = db_planet_by_id($planetrow['id']);
     $template->assign_recursive($template_result);
     display($template, classLocale::$lang['fl_title']);
+  }
+
+
+  /**
+   * @param array $checklist
+   *
+   * @throws Exception
+   */
+  public function checkMissionRestrictions($checklist) {
+    foreach($checklist as $condition => $action) {
+      $checkResult = call_user_func(array($this, $condition));
+
+      if(is_array($action) && !empty($action[$checkResult])) {
+        $action = $action[$checkResult];
+      }
+
+      if(is_array($action)) {
+        $this->checkMissionRestrictions($action);
+      } elseif(!$checkResult) {
+        throw new Exception($action, $action);
+      }
+    }
+  }
+
+  protected function checkSpeedPercentOld() {
+    return in_array($this->oldSpeedInTens, array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1));
+  }
+
+  protected function checkSenderNoVacation() {
+    return empty($this->dbOwnerRow['vacation']) || $this->dbOwnerRow['vacation'] >= SN_TIME_NOW;
+  }
+
+  protected function checkTargetNotSource() {
+    return !$this->targetVector->isEqualToPlanet($this->dbSourcePlanetRow);
+  }
+
+  protected function checkTargetInUniverse() {
+    return $this->targetVector->isInUniverse();
+  }
+
+  protected function checkUnitsPositive() {
+    return $this->unitList->unitsPositive();
+  }
+
+  protected function checkOnlyFleetUnits() {
+    return $this->unitList->unitsInGroup(sn_get_groups(array('fleet', 'missile')));
+  }
+
+  protected function checkOnlyFlyingUnits() {
+    return $this->unitList->unitsIsAllMovable($this->dbOwnerRow);
+  }
+
+  protected function checkEnoughFleetSlots() {
+    return FleetList::fleet_count_flying($this->getPlayerOwnerId()) < GetMaxFleets($this->dbOwnerRow);
+  }
+
+  protected function checkSourceEnoughShips() {
+    return $this->unitList->shipsIsEnoughOnPlanet($this->dbSourcePlanetRow);
+  }
+
+  protected function checkEnoughCapacity() {
+    return
+      !empty($this->travelData) &&
+      is_array($this->travelData) &&
+      floor($this->travelData['capacity']) >= ceil(array_sum($this->resource_list) + $this->travelData['consumption']);
+  }
+
+  protected function checkResourcesPositive() {
+    foreach($this->resource_list as $resourceId => $resourceAmount) {
+      if($resourceAmount < 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  protected function checkSourceEnoughFuel() {
+    $deuteriumOnPlanet = mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, RES_DEUTERIUM);
+
+    return $deuteriumOnPlanet < ceil($this->travelData['consumption']);
+  }
+
+
+  protected function checkSourceEnoughResources() {
+    $fleetResources = $this->resource_list;
+    $fleetResources[RES_DEUTERIUM] = ceil($fleetResources[RES_DEUTERIUM] + $this->travelData['consumption']);
+    foreach($fleetResources as $resourceId => $resourceAmount) {
+      if(mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resourceId) < ceil($fleetResources[$resourceId])) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  protected function checkKnownSpace() {
+    return $this->targetVector->isInKnownSpace();
+  }
+
+  protected function checkNotOnlySpies() {
+    return $this->unitList->unitsCountById(SHIP_SPY) < $this->shipsGetTotal();
+  }
+
+  public function checkNoMissiles() {
+    $missilesAttack = mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, UNIT_DEF_MISSILE_INTERPLANET); // this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
+    $missilesDefense = mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, UNIT_DEF_MISSILE_INTERCEPTOR); // this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR);
+    return $missilesAttack == 0 && $missilesDefense == 0;
+  }
+
+
+  protected function forceMissionExplore() {
+    $this->allowed_missions = array(
+      MT_EXPLORE => MT_EXPLORE,
+    );
+
+    return false;
+  }
+
+  protected function checkTargetExists() {
+    return !empty($this->dbTargetRow['id']);
+  }
+
+  protected function checkHaveColonizer() {
+    // Colonization fleet should have at least one colonizer
+    return $this->unitList->unitsCountById(SHIP_COLONIZER) >= 1;
+  }
+
+  protected function checkTargetIsPlanet() {
+    return $this->targetVector->type == PT_PLANET;
+  }
+
+  protected function forceMissionColonize() {
+    $this->allowed_missions = array(
+      MT_COLONIZE => MT_COLONIZE,
+    );
+
+    return false;
+  }
+
+  protected function checkTargetIsDebris() {
+    return $this->targetVector->type == PT_DEBRIS;
+  }
+
+  protected function checkHaveRecyclers() {
+    $recyclers = 0;
+    foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
+      $recyclers += $this->unitList->unitsCountById($recycler_id);
+    }
+
+    return $recyclers >= 1;
+  }
+
+  protected function forceMissionRecycle() {
+    $this->allowed_missions = array(
+      MT_RECYCLE => MT_RECYCLE,
+    );
+
+    return false;
+  }
+
+
+  // TODO
+  protected function checkTargetOwn() {
+    $result = $this->dbTargetRow['id_owner'] == $this->dbSourcePlanetRow['id_owner'];
+
+    if($result) {
+      // Spying can't be done on owner's planet/moon
+      unset($this->allowed_missions[MT_SPY]);
+      // Attack can't be done on owner's planet/moon
+      unset($this->allowed_missions[MT_ATTACK]);
+      // ACS can't be done on owner's planet/moon
+      unset($this->allowed_missions[MT_ACS]);
+      // Destroy can't be done on owner's moon
+      unset($this->allowed_missions[MT_DESTROY]);
+      unset($this->allowed_missions[MT_MISSILE]);
+
+      // MT_RELOCATE
+      // No checks
+      // TODO - check captain
+
+      // MT_HOLD
+      // TODO - Check for Allies Deposit for HOLD
+
+      // MT_TRANSPORT
+
+    } else {
+      // Relocate can be done only on owner's planet/moon
+      unset($this->allowed_missions[MT_RELOCATE]);
+
+    }
+
+    return $result; // this->getPlayerOwnerId();
+  }
+
+
+  protected function alwaysFalse() {
+    return false;
+  }
+
+
+  // TODO - is MT_HOLD is aggressive??
+  protected function checkMissionPeaceful() {
+    return !$this->_mission_type || in_array($this->_mission_type, array(
+      MT_EXPLORE => MT_EXPLORE,
+      MT_COLONIZE => MT_COLONIZE,
+      MT_RECYCLE => MT_RECYCLE,
+      MT_RELOCATE => MT_RELOCATE,
+      MT_TRANSPORT => MT_TRANSPORT,
+    ));
+  }
+
+  protected function checkSpiesOnly() {
+    return $this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal();
+  }
+
+  protected function checkMissionSpy() {
+    $result = !$this->_mission_type || $this->_mission_type == MT_SPY;
+    if($result) {
+      $this->allowed_missions = array(
+        MT_SPY => MT_SPY,
+      );
+    } else {
+      unset($this->allowed_missions[MT_SPY]);
+    }
+
+    return $result;
+  }
+
+
+  protected function checkMissionRelocate() {
+    $result = !$this->_mission_type || $this->_mission_type == MT_RELOCATE;
+    if($result) {
+      $this->allowed_missions = array(
+        MT_RELOCATE => MT_RELOCATE,
+      );
+    } else {
+      unset($this->allowed_missions[MT_RELOCATE]);
+    }
+
+    return $result;
   }
 
 }

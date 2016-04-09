@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.79
+   * @version 41a6.81
    */
   // TODO - Factory
   public function _createElement() {
@@ -422,6 +422,16 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     foreach($this->mapUnitIdToDb as $unitId => $unit) {
       $single_ship_data = get_ship_data($unit->unitId, $dbOwnerRow);
       if($single_ship_data['speed'] <= 0) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  public function unitsPositive() {
+    foreach($this->mapUnitIdToDb as $unitId => $unit) {
+      if($unit->count < 1) {
         return false;
       }
     }
