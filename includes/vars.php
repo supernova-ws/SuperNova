@@ -434,16 +434,16 @@ $sn_data += array(
           // TODO - check noob protection
           // TODO - check bashing
 
-          // No missions except MT_MISSILE should have any missiles in fleet
-          $this->restrictMissionMissile(),
-          $this->restrictToNoMissiles(),
-          // Beyond this point no mission can have a missile in fleet
-
-          // MT_DESTROY
-          $this->restrictMissionDestroy(),
-
-          // MT_ACS
-          $this->restrictMissionACS(),
+//          // No missions except MT_MISSILE should have any missiles in fleet
+//          $this->restrictMissionMissile(),
+//          $this->restrictToNoMissiles(),
+//          // Beyond this point no mission can have a missile in fleet
+//
+//          // MT_DESTROY
+//          $this->restrictMissionDestroy(),
+//
+//          // MT_ACS
+//          $this->restrictMissionACS(),
 
           // MT_ATTACK - no checks
 
