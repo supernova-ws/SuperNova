@@ -825,7 +825,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.83
+   * @version 41a6.84
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -909,7 +909,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.83
+   * @version 41a6.84
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -2444,9 +2444,10 @@ class Fleet extends UnitContainer {
   }
 
   public function checkNoMissiles() {
-    $missilesAttack = mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, UNIT_DEF_MISSILE_INTERPLANET); // this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
-    $missilesDefense = mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, UNIT_DEF_MISSILE_INTERCEPTOR); // this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR);
-    return $missilesAttack == 0 && $missilesDefense == 0;
+    return
+      $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET) == 0
+      &&
+      $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR) == 0;
   }
 
 
@@ -2587,6 +2588,10 @@ class Fleet extends UnitContainer {
     return $this->checkMission(MT_RECYCLE);
   }
 
+  protected function checkMissionMissile() {
+    return $this->checkMission(MT_MISSILE);
+  }
+
   protected function checkNotEmptyMission() {
     return !empty($this->_mission_type);
   }
@@ -2679,12 +2684,10 @@ class Fleet extends UnitContainer {
   }
 
 
-  protected function checkMissiles() {
+  protected function checkOnlyAttackMissiles() {
     $missilesAttack = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
-    $missilesDefense = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR);
-    if($missilesAttack > 0 || $missilesDefense > 0) {
-      throw new Exception('FLIGHT_SHIPS_NO_MISSILES', FLIGHT_SHIPS_NO_MISSILES);
-    }
+
+    return $missilesAttack != 0 && $missilesAttack == $this->shipsGetTotal();
   }
 
 }

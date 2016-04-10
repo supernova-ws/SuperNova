@@ -453,6 +453,7 @@ $sn_data += array(
       // Past this point missions target only other players
 
       // MT_SPY checks
+      // TODO - move above
       'checkSpiesOnly'             => array(
         // Only spies in fleet
         true => array(
@@ -467,6 +468,25 @@ $sn_data += array(
       // Check for multiaccount
       'checkMultiAccount'          => FLIGHT_PLAYER_SAME_IP,                                  //+
       // TODO - check for moratorium
+
+      // MT_MISSILE checks
+      // TODO - move above
+      'checkMissionMissile'        => array(
+        true => array(
+          // FLIGHT_MISSION_MISSILE_NO_SILO
+          // FLIGHT_MISSION_MISSILE_NO_MISSILES
+          // FLIGHT_MISSION_MISSILE_ONLY_PLANET
+          // FLIGHT_MISSION_MISSILE_TOO_FAR
+          // FLIGHT_MISSION_MISSILE_WRONG_STRUCTURE
+          'checkOnlyAttackMissiles' => array(
+            false => FLIGHT_SHIPS_ONLY_MISSILES,
+            true  => FLIGHT_ALLOWED,
+          ),
+        ),
+      ),
+      'checkNoMissiles'            => FLIGHT_SHIPS_NO_MISSILES,
+      // Beyond this point fleet can't contain any missiles
+
 
       // If HOLD is selected AND it is real mission (page 3)...
       'checkMissionHoldReal'       => array(
