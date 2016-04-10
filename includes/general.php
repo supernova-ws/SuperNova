@@ -1047,8 +1047,19 @@ function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet =
   return $result;
 }
 
+/**
+ * @param $groups
+ *
+ * @return array
+ */
 function sn_get_groups($groups) { return sn_function_call(__FUNCTION__, array($groups, &$result)); }
 
+/**
+ * @param $groups
+ * @param $result
+ *
+ * @return array
+ */
 function sn_sn_get_groups($groups, &$result) {
   $result = is_array($result) ? $result : array();
   foreach($groups = is_array($groups) ? $groups : array($groups) as $group_name) {

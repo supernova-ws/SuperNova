@@ -253,7 +253,13 @@ class Fleet extends UnitContainer {
 //
 
 
+  /**
+   * @var array $allowed_missions
+   */
   protected $allowed_missions = array();
+  /**
+   * @var array $exists_missions
+   */
   protected $exists_missions = array();
   protected $allowed_planet_types = array(
     // PT_NONE => PT_NONE,
@@ -297,7 +303,8 @@ class Fleet extends UnitContainer {
    */
   public function __construct() {
     parent::__construct();
-    $this->allowed_missions = $this->exists_missions = sn_get_groups('missions');
+    $this->exists_missions = sn_get_groups('missions');
+    $this->allowed_missions = $this->exists_missions;
   }
 
   /**
@@ -825,7 +832,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.84
+   * @version 41a6.85
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -909,7 +916,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.84
+   * @version 41a6.85
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1542,7 +1549,8 @@ class Fleet extends UnitContainer {
     ksort($this->allowed_missions);
     // If mission is not set - setting first mission from allowed
     if(empty($this->_mission_type) && is_array($this->allowed_missions)) {
-      $this->_mission_type = reset($this->allowed_missions);
+      reset($this->allowed_missions);
+      $this->_mission_type = key($this->allowed_missions);
     }
     foreach($this->allowed_missions as $key => $value) {
       $template_result['.']['missions'][] = array(
@@ -1897,38 +1905,12 @@ class Fleet extends UnitContainer {
     try {
       $this->checkMissionRestrictions($checklist);
 
-
       // Do the restrictMission checks
 
       // TODO - Кое-какие проверки дают FLIGHT_ALLOWED - ЧТО НЕПРАВДА В ДАННОМ СЛУЧАЕ!!!
       // На странице 1 некоторые проверки ДОЛЖНЫ БЫТЬ опущены - иначе будет некрасиво
       // А вот здесь надо проверять много дополнительной хуйни
       try {
-        $this->restrictToNonVacationSender();
-
-        $this->restrictToNotSource();
-
-        // No mission could fly beyond Universe - i.e. with wrong Galaxy and/or System coordinates
-        $this->restrictToUniverse();
-
-        // Only ships and missiles can be sent to mission
-        $this->restrictToFleetUnits();
-        // Only units with main engines (speed >=0) can fly - no other units like satellites
-        $this->restrictToMovable();
-
-        // No missions except MT_EXPLORE could target coordinates beyond known system
-        $this->restrictKnownSpaceOrMissionExplore();
-        // Beyond this point all mission address only known space
-
-        // No missions except MT_COLONIZE could target empty coordinates
-        $this->restrictTargetExistsOrMissionColonize();
-        // Beyond this point all mission address only existing planets/moons
-
-        // No missions except MT_RECYCLE could target debris
-        $this->restrictNotDebrisOrMissionRecycle();
-        // Beyond this point targets can be only PT_PLANET or PT_MOON
-
-
         // TODO  - ALL OF THE ABOVE!
         $this->restrictMission();
       } catch(Exception $e) {
@@ -1945,86 +1927,10 @@ class Fleet extends UnitContainer {
       $this->restrict2ToAllowedMissions();
       $this->restrict2ToAllowedPlanetTypes();
 
-      // More expensive checks
-      $this->restrict2ToMaxFleets();
-      $this->restrict2ToEnoughShips();
-
-
-      $travelData = $this->flt_travel_data($this->oldSpeedInTens);
-      $fleetCapacity = $travelData['capacity'];
-      $fleetConsumption = $travelData['consumption'];
-      /*
-        fleet_speed
-        distance
-        duration
-        consumption
-        capacity
-        hold                   = capacity - consumption,
-        transport_effectivness = consumption ? capacity / consumption : 0,
-       */
-      $this->restrict2ToEnoughCapacity($fleetCapacity, $fleetConsumption);
-      $this->restrict2ByResources($fleetConsumption);
-
-
       // TODO - REWRITE TO LEVEL 2
       $this->restrict2MissionExploreAvailable();
       $this->restrictTargetExistsOrMissionColonize();
       $this->restrictNotDebrisOrMissionRecycle();
-      // TODO - START $this->restrictFriendOrFoe();
-      if($this->dbTargetRow['id'] == $this->getPlayerOwnerId()) {
-        // Spying can't be done on owner's planet/moon
-        unset($this->allowed_missions[MT_SPY]);
-        // Attack can't be done on owner's planet/moon
-        unset($this->allowed_missions[MT_ATTACK]);
-        // ACS can't be done on owner's planet/moon
-        unset($this->allowed_missions[MT_ACS]);
-        // Destroy can't be done on owner's moon
-        unset($this->allowed_missions[MT_DESTROY]);
-
-        $this->restrictToNoMissiles();
-
-        // MT_RELOCATE
-        // No checks
-        // TODO - check captain
-
-        // MT_HOLD
-        // TODO - Check for Allies Deposit for HOLD
-
-        // MT_TRANSPORT
-
-      } else {
-        // Relocate can be done only on owner's planet/moon
-        unset($this->allowed_missions[MT_RELOCATE]);
-
-        // TODO - check for moratorium
-
-        // MT_HOLD
-        // TODO - Check for Allies Deposit for HOLD
-        // TODO - Noob protection for HOLD depends on server settings
-
-        // MT_SPY
-        $this->restrictToNotOnlySpiesOrMissionSpy();
-
-        // TODO - check noob protection
-
-        // TODO - check bashing
-
-        // No missions except MT_MISSILE should have any missiles in fleet
-        $this->restrictMissionMissile();
-        $this->restrictToNoMissiles();
-        // Beyond this point no mission can have a missile in fleet
-
-        // MT_DESTROY
-        $this->restrictMissionDestroy();
-
-        // MT_ACS
-        $this->restrictMissionACS();
-
-        // MT_ATTACK - no checks
-
-        // MT_TRANSPORT - no checks
-      }
-      // TODO - END $this->restrictFriendOrFoe();
 
 
       //
@@ -2521,7 +2427,7 @@ class Fleet extends UnitContainer {
     $result = $this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal();
     if($result) {
       $this->allowed_missions = array(
-        MT_SPY => MT_SPY,
+        MT_SPY => $this->exists_missions[MT_SPY],
       );
     } else {
       unset($this->allowed_missions[MT_SPY]);
@@ -2542,10 +2448,10 @@ class Fleet extends UnitContainer {
 
   protected function checkMissionsOwn() {
     $result = !$this->_mission_type || in_array($this->_mission_type, array(
-        MT_HOLD      => MT_HOLD,
-        MT_RECYCLE   => MT_RECYCLE,
-        MT_RELOCATE  => MT_RELOCATE,
-        MT_TRANSPORT => MT_TRANSPORT,
+        MT_HOLD      => $this->exists_missions[MT_HOLD],
+        MT_RECYCLE   => $this->exists_missions[MT_RECYCLE],
+        MT_RELOCATE  => $this->exists_missions[MT_RELOCATE],
+        MT_TRANSPORT => $this->exists_missions[MT_TRANSPORT],
       ));
 
     unset($this->allowed_missions[MT_ATTACK]);
@@ -2563,7 +2469,7 @@ class Fleet extends UnitContainer {
     $result = !$this->_mission_type || $this->_mission_type == $missionType;
     if($result) {
       $this->allowed_missions = array(
-        $missionType => $missionType,
+        $missionType => $this->exists_missions[$missionType],
       );
     } else {
       unset($this->allowed_missions[$missionType]);
