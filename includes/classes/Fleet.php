@@ -254,6 +254,7 @@ class Fleet extends UnitContainer {
 
 
   protected $allowed_missions = array();
+  protected $exists_missions = array();
   protected $allowed_planet_types = array(
     // PT_NONE => PT_NONE,
     PT_PLANET => PT_PLANET,
@@ -289,12 +290,14 @@ class Fleet extends UnitContainer {
   public $tempPlayerMaxFleets = 0;
   public $travelData = array();
 
+  protected $isRealFlight = false;
+
   /**
    * Fleet constructor.
    */
   public function __construct() {
     parent::__construct();
-    $this->allowed_missions = sn_get_groups('missions');
+    $this->allowed_missions = $this->exists_missions = sn_get_groups('missions');
   }
 
   /**
@@ -822,7 +825,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.81
+   * @version 41a6.83
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -906,7 +909,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.81
+   * @version 41a6.83
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1866,6 +1869,8 @@ class Fleet extends UnitContainer {
 
     $classLocale = classLocale::$lang;
 
+    $this->isRealFlight = true;
+
     sn_db_transaction_start();
 
     db_user_lock_with_target_owner($this->dbOwnerRow, $this->dbTargetRow);
@@ -1890,7 +1895,6 @@ class Fleet extends UnitContainer {
     $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
 
     try {
-
       $this->checkMissionRestrictions($checklist);
 
 
@@ -2340,6 +2344,18 @@ class Fleet extends UnitContainer {
     return empty($this->dbOwnerRow['vacation']) || $this->dbOwnerRow['vacation'] >= SN_TIME_NOW;
   }
 
+  protected function checkTargetNoVacation() {
+    return empty($this->dbTargetOwnerRow['vacation']) || $this->dbTargetOwnerRow['vacation'] >= SN_TIME_NOW;
+  }
+
+  protected function checkMultiAccount() {
+    return sys_is_multiaccount($this->dbOwnerRow, $this->dbTargetOwnerRow);
+  }
+
+  protected function checkFleetNotEmpty() {
+    return $this->unitList->unitsCount() >= 1;
+  }
+
   protected function checkTargetNotSource() {
     return !$this->targetVector->isEqualToPlanet($this->dbSourcePlanetRow);
   }
@@ -2368,11 +2384,22 @@ class Fleet extends UnitContainer {
     return $this->unitList->shipsIsEnoughOnPlanet($this->dbSourcePlanetRow);
   }
 
-  protected function checkEnoughCapacity() {
+  protected function checkEnoughCapacity($includeResources = true) {
+    $checkVia = $this->travelData['consumption'];
+    $checkVia = ceil(($includeResources ? array_sum($this->resource_list) : 0) + $checkVia);
+
     return
       !empty($this->travelData) &&
       is_array($this->travelData) &&
-      floor($this->travelData['capacity']) >= ceil(array_sum($this->resource_list) + $this->travelData['consumption']);
+      floor($this->travelData['capacity']) >= $checkVia;
+  }
+
+  protected function checkNotTooFar() {
+    return $this->checkEnoughCapacity(false);
+  }
+
+  protected function checkDebrisExists() {
+    return is_array($this->dbTargetRow) && ($this->dbTargetRow['debris_metal'] + $this->dbTargetRow['debris_crystal'] > 0);
   }
 
   protected function checkResourcesPositive() {
@@ -2383,6 +2410,10 @@ class Fleet extends UnitContainer {
     }
 
     return true;
+  }
+
+  protected function checkCargo() {
+    return array_sum($this->resource_list) >= 1;
   }
 
   protected function checkSourceEnoughFuel() {
@@ -2419,14 +2450,6 @@ class Fleet extends UnitContainer {
   }
 
 
-  protected function forceMissionExplore() {
-    $this->allowed_missions = array(
-      MT_EXPLORE => MT_EXPLORE,
-    );
-
-    return false;
-  }
-
   protected function checkTargetExists() {
     return !empty($this->dbTargetRow['id']);
   }
@@ -2440,14 +2463,6 @@ class Fleet extends UnitContainer {
     return $this->targetVector->type == PT_PLANET;
   }
 
-  protected function forceMissionColonize() {
-    $this->allowed_missions = array(
-      MT_COLONIZE => MT_COLONIZE,
-    );
-
-    return false;
-  }
-
   protected function checkTargetIsDebris() {
     return $this->targetVector->type == PT_DEBRIS;
   }
@@ -2459,14 +2474,6 @@ class Fleet extends UnitContainer {
     }
 
     return $recyclers >= 1;
-  }
-
-  protected function forceMissionRecycle() {
-    $this->allowed_missions = array(
-      MT_RECYCLE => MT_RECYCLE,
-    );
-
-    return false;
   }
 
 
@@ -2509,23 +2516,8 @@ class Fleet extends UnitContainer {
   }
 
 
-  // TODO - is MT_HOLD is aggressive??
-  protected function checkMissionPeaceful() {
-    return !$this->_mission_type || in_array($this->_mission_type, array(
-      MT_EXPLORE => MT_EXPLORE,
-      MT_COLONIZE => MT_COLONIZE,
-      MT_RECYCLE => MT_RECYCLE,
-      MT_RELOCATE => MT_RELOCATE,
-      MT_TRANSPORT => MT_TRANSPORT,
-    ));
-  }
-
   protected function checkSpiesOnly() {
-    return $this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal();
-  }
-
-  protected function checkMissionSpy() {
-    $result = !$this->_mission_type || $this->_mission_type == MT_SPY;
+    $result = $this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal();
     if($result) {
       $this->allowed_missions = array(
         MT_SPY => MT_SPY,
@@ -2537,18 +2529,162 @@ class Fleet extends UnitContainer {
     return $result;
   }
 
-
-  protected function checkMissionRelocate() {
-    $result = !$this->_mission_type || $this->_mission_type == MT_RELOCATE;
-    if($result) {
-      $this->allowed_missions = array(
-        MT_RELOCATE => MT_RELOCATE,
-      );
-    } else {
-      unset($this->allowed_missions[MT_RELOCATE]);
+  protected function checkTargetAllyDeposit() {
+    $result = mrc_get_level($this->dbTargetOwnerRow, $this->dbTargetRow, STRUC_ALLY_DEPOSIT) >= 1;
+    if(!$result) {
+      unset($this->allowed_missions[MT_HOLD]);
     }
 
     return $result;
+  }
+
+
+  protected function checkMissionsOwn() {
+    $result = !$this->_mission_type || in_array($this->_mission_type, array(
+        MT_HOLD      => MT_HOLD,
+        MT_RECYCLE   => MT_RECYCLE,
+        MT_RELOCATE  => MT_RELOCATE,
+        MT_TRANSPORT => MT_TRANSPORT,
+      ));
+
+    unset($this->allowed_missions[MT_ATTACK]);
+    unset($this->allowed_missions[MT_COLONIZE]);
+    unset($this->allowed_missions[MT_EXPLORE]);
+    unset($this->allowed_missions[MT_ACS]);
+    unset($this->allowed_missions[MT_SPY]);
+    unset($this->allowed_missions[MT_DESTROY]);
+    unset($this->allowed_missions[MT_MISSILE]);
+
+    return $result;
+  }
+
+  protected function checkMission($missionType) {
+    $result = !$this->_mission_type || $this->_mission_type == $missionType;
+    if($result) {
+      $this->allowed_missions = array(
+        $missionType => $missionType,
+      );
+    } else {
+      unset($this->allowed_missions[$missionType]);
+    }
+
+    return $result;
+  }
+
+  protected function checkMissionNonRestrict($missionType) {
+    return $this->_mission_type == $missionType;
+  }
+
+  protected function checkMissionExplore() {
+    return $this->checkMission(MT_EXPLORE);
+  }
+
+  protected function checkMissionColonize() {
+    return $this->checkMission(MT_COLONIZE);
+  }
+
+  protected function checkMissionRecycle() {
+    return $this->checkMission(MT_RECYCLE);
+  }
+
+  protected function checkNotEmptyMission() {
+    return !empty($this->_mission_type);
+  }
+
+
+  protected function checkMissionRelocate() {
+    return $this->checkMissionNonRestrict(MT_RELOCATE);
+  }
+
+  protected function checkMissionHoldNonUnique() {
+    $result = $this->checkMissionNonRestrict(MT_HOLD);
+
+    return $result;
+  }
+
+  protected function checkMissionTransport() {
+    return $this->checkMissionNonRestrict(MT_TRANSPORT);
+  }
+  protected function checkMissionTransportReal() {
+    return
+      $this->checkRealFlight()
+      &&
+      $this->checkMissionTransport();
+  }
+
+
+  protected function checkMissionSpy() {
+    return $this->checkMission(MT_SPY);
+  }
+
+
+  protected function checkRealFlight() {
+    return $this->isRealFlight;
+  }
+
+  protected function checkMissionExists() {
+    return !empty($this->exists_missions[$this->_mission_type]);
+  }
+
+  protected function checkTargetActive() {
+    return
+      empty($this->dbTargetOwnerRow['onlinetime'])
+      ||
+      SN_TIME_NOW - $this->dbTargetOwnerRow['onlinetime'] >= PLAYER_TIME_ACTIVE_SECONDS;
+  }
+
+  // TODO - REDO MAIN FUNCTION
+  protected function checkTargetNotActive() {
+    return !$this->checkTargetActive();
+  }
+
+
+  protected function checkSameAlly() {
+    return !empty($this->dbTargetOwnerRow['ally_id']) && $this->dbTargetOwnerRow['ally_id'] == $this->dbOwnerRow['ally_id'];
+  }
+
+  protected function checkTargetNoob() {
+    $user_points = $this->dbTargetOwnerRow['total_points'];
+    $enemy_points = $this->dbTargetOwnerRow['total_points'];
+
+    return
+      // Target is under Noob Protection but Fleet owner is not
+      ($enemy_points <= classSupernova::$config->game_noob_points && $user_points > classSupernova::$config->game_noob_points)
+      ||
+      (classSupernova::$config->game_noob_factor && $user_points > $enemy_points * classSupernova::$config->game_noob_factor);
+  }
+
+  // TODO - REDO MAIN FUNCTION
+  protected function checkTargetNotNoob() {
+    return !$this->checkTargetNoob();
+  }
+
+
+  protected function checkMissionHoldReal() {
+    return
+      $this->checkRealFlight()
+      &&
+      $this->checkMissionHoldNonUnique();
+  }
+
+
+
+  protected function checkMissionHoldOnNotNoob() {
+    return
+      $this->checkTargetNotActive()
+      ||
+      ($this->checkSameAlly() && classSupernova::$config->ally_help_weak)
+      ||
+      $this->checkTargetNotNoob();
+  }
+
+
+  protected function checkMissiles() {
+    $missilesAttack = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
+    $missilesDefense = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR);
+    if($missilesAttack > 0 || $missilesDefense > 0) {
+      throw new Exception('FLIGHT_SHIPS_NO_MISSILES', FLIGHT_SHIPS_NO_MISSILES);
+    }
   }
 
 }

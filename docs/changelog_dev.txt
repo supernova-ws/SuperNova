@@ -671,6 +671,11 @@ L2 - SN security layer - makes query sanity and security checks and replaces tab
 L3 - helper - simplifies some routine operations
 
 
+Уровень Аллай Депозит влияет:
+    - На количество флотов в Удержании;
+    - На возможность настройки, кого принимать, кого нет;
+
+
 // TODO - СЕЙЧАС
 Сеттер и геттер в DBRow должны кидать эксепшны
     - а их потомки - ловить эксепшны
@@ -727,6 +732,11 @@ attribute - свойства юнитов
         - Поизвлекать $lang из строк
 
 minify cached templates
+
+
+game_noob_points - ДОЛЖНЫ СКАЛИРОВАТЬСЯ ВМЕСТЕ С БАЗОВОЙ СКОРОСТЬЮ ДОБЫЧИ!
+
+
 
 Проработать - поделать нормальные строки без {$classLocale['value']}
 

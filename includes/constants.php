@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.82');
+define('SN_VERSION', '41a6.83');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -85,6 +85,9 @@ define('BASE_STORAGE_SIZE', 500000);
 define('HIDE_1ST_FROM_STATS', 0);
 define('HIDE_BUILDING_RECORDS', 0);
 define('SHOW_ADMIN', 1);
+
+define('PLAYER_TIME_ACTIVE_DAYS', 7);
+define('PLAYER_TIME_ACTIVE_SECONDS', PERIOD_DAY * PLAYER_TIME_ACTIVE_DAYS);
 
 define('UNIVERSE_RANDOM_PLANET_START', 16); // Позиция начала рандомизации планет
 define('UNIVERSE_RANDOM_PLANET_TEMPERATURE_DECREASE', 5); // Шаг тзменения минимальной температуры рандомной планеты
@@ -684,6 +687,8 @@ define('FLIGHT_SHIPS_NOT_ENOUGH', 54);
 define('FLIGHT_MISSION_EXPLORE_NO_ASTROTECH', 55);
 define('FLIGHT_MISSION_EXPLORE_NO_SLOTS', 56);
 define('FLIGHT_PLAYER_ATTACK_SELF', 57);
+define('FLIGHT_VECTOR_TARGET_DEBRIS', 58);
+define('FLIGHT_MISSION_HOLD_ON_NOOB', 59);
 
 
 // *** Races - Homeworlds
