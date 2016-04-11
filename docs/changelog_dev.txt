@@ -774,6 +774,12 @@ flt_travel_data - всегда должна вызываться в контек
 Fleet::restrictMission() @ 1512
 
 
+Фильтры в списке заметок/закладок:
+    - Прилепленные
+    - С координатами
+
+
+
 // TODO Сейчас!!!!!!!!!
 
 Unused strings
@@ -784,11 +790,22 @@ Unused strings
       $errorlist .= classLocale::$lang['fl_no_planettype'];
       $errorlist .= classLocale::$lang['fl_fleet_err_pl'];
       $errorlist .= classLocale::$lang['fl_bad_mission'];
+        $errorlist .= classLocale::$lang['fl_expe_notech'];
+        $errorlist .= classLocale::$lang['fl_expe_max'];
+          $errorlist .= classLocale::$lang['fl_colonized'];
+          $errorlist .= classLocale::$lang['fl_unknow_target'];
+            $errorlist .= classLocale::$lang['fl_no_self_attack'];
+            $errorlist .= classLocale::$lang['fl_no_self_spy'];
+            $errorlist .= classLocale::$lang['fl_only_stay_at_home'];
+              $errorlist .= classLocale::$lang['fl_nodebris'];
         message("<span class='error'><b>{$classLocale['fl_fleet_err']}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
       message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_resources'] . "</b></font>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
       message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) . "</b></font>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
       message("<span class='error'><b>" . classLocale::$lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
             $errorlist .= classLocale::$lang['fl_nomoon'];
+
+
+Выводить сообщение "Это будет дооооооооолгий полёт..." для очень долгих миссий
 
 // TODO
     При входящей миссии (из Вселенной или по клику на Закладке) ограничивать доступные корабли:
@@ -830,6 +847,8 @@ BONUS_ABILITY - deprecated ???
 
 На новых наградах 8 марта-2106 не отображается надписи
 
+
+Время возвращения флота из САБа теперь равно времени полёта на САБ, а не чистому времени полёта флота
 
 2016-03-27 20:27:36 41a6.71
 [+] Админка

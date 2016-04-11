@@ -88,7 +88,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    * @param Unit  $value
    */
   public function offsetSet($offset, $value) {
-    if(isset($this->mapUnitIdToDb[$value->unitId])) {
+    if (isset($this->mapUnitIdToDb[$value->unitId])) {
       classSupernova::$debug->error('UnitList::offsetSet: Unit with UnitId ' . $value->unitId . ' already exists');
     }
     $this->mapUnitIdToDb[$value->unitId] = $value;
@@ -96,7 +96,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
   public function offsetUnset($offset) {
-    if(!empty($this[$offset]->unitId)) {
+    if (!empty($this[$offset]->unitId)) {
 //      $unit_id = $this[$offset]->unitId;
 //      $this->mapUnitIdToDb[$unit_id] = null;
 //      unset($this->mapUnitIdToDb[$unit_id]);
@@ -117,20 +117,20 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   public function dbLoad($dbId, $lockSkip = false) {
 //    $this->_reset();
 
-    if($dbId <= 0) {
+    if ($dbId <= 0) {
       return;
     }
 
-    if(!is_object($this->locatedAt)) {
+    if (!is_object($this->locatedAt)) {
       classSupernova::$debug->error('UnitList::dbLoad have no locatedAt field set');
     }
 
     $unit_array = classSupernova::db_get_unit_list_by_location(0, $this->getLocationType(), $this->getLocationDbId());
-    if(!is_array($unit_array)) {
+    if (!is_array($unit_array)) {
       return;
     }
 
-    foreach($unit_array as $unit_db_row) {
+    foreach ($unit_array as $unit_db_row) {
       $unit = $this->_createElement();
       $unit->dbRowParse($unit_db_row);
 
@@ -145,25 +145,25 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
   public function dbSave() {
-    if(!is_object($this->locatedAt)) {
+    if (!is_object($this->locatedAt)) {
       classSupernova::$debug->error('UnitList::dbSave have no locatedAt field set');
     }
 
-    foreach($this->mapUnitIdToDb as $unit) {
+    foreach ($this->mapUnitIdToDb as $unit) {
       $unit_db_id = $unit->dbId;
       $unit->dbSave();
 
-      if($unit->isEmpty()) {
+      if ($unit->isEmpty()) {
         // Removing unit object
         // TODO - change when there will be common bus for all objects
         // ...or should I? If COUNT is empty - it means that object does not exists in DB. So it should be deleted from PHP memory and cache too
         unset($this[$unit_db_id]);
       } else {
-        if($unit->dbId <= 0) {
+        if ($unit->dbId <= 0) {
           classSupernova::$debug->error('Error writing unit to DB');
         }
         // If unit is new then putting unit object to container
-        if(empty($this->_container[$unit->dbId])) {
+        if (empty($this->_container[$unit->dbId])) {
           $this->_container[$unit->dbId] = $unit;
         }
       }
@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.86
+   * @version 41a6.87
    */
   // TODO - Factory
   public function _createElement() {
@@ -201,9 +201,10 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
   public function unitGetCount($unit_id) {
-    if(empty($this->mapUnitIdToDb[$unit_id])) {
+    if (empty($this->mapUnitIdToDb[$unit_id])) {
       throw new Exception('Unit [' . $unit_id . '] is not exists in UnitList');
     }
+
     return $this->mapUnitIdToDb[$unit_id]->count;
   }
 
@@ -216,14 +217,14 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    * @param bool $replace_value
    */
   public function unitAdjustCount($unit_id, $unit_count = 0, $replace_value = false) {
-    if(empty($this->mapUnitIdToDb[$unit_id])) {
+    if (empty($this->mapUnitIdToDb[$unit_id])) {
       // If unit not exists - creating one and setting all attributes
       $this->mapUnitIdToDb[$unit_id] = $this->_createElement();
       $this->mapUnitIdToDb[$unit_id]->setUnitId($unit_id);
       $this->mapUnitIdToDb[$unit_id]->setLocatedAt($this);
     }
 
-    if($replace_value) {
+    if ($replace_value) {
       $this->mapUnitIdToDb[$unit_id]->count = $unit_count;
     } else {
       $this->mapUnitIdToDb[$unit_id]->adjustCount($unit_count);
@@ -237,7 +238,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    */
   public function unitsGetArray() {
     $result = array();
-    foreach($this->mapUnitIdToDb as $unit) {
+    foreach ($this->mapUnitIdToDb as $unit) {
       $result[$unit->unitId] = $unit->count;
     }
 
@@ -245,7 +246,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
   public function unitsCountApplyLossMultiplier($ships_lost_multiplier) {
-    foreach($this->mapUnitIdToDb as $unit_id => $unit) {
+    foreach ($this->mapUnitIdToDb as $unit_id => $unit) {
       $unit->count = floor($unit->count * $ships_lost_multiplier);
     }
   }
@@ -273,8 +274,8 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    */
   public function unitsPropertySumById($unit_id = 0, $propertyName = 'count') {
     $result = 0;
-    foreach($this->mapUnitIdToDb as $unit) {
-      if(!$unit_id || $unit->unitId == $unit_id) {
+    foreach ($this->mapUnitIdToDb as $unit) {
+      if (!$unit_id || $unit->unitId == $unit_id) {
         $result += $unit->$propertyName;
       }
     }
@@ -290,8 +291,8 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   // TODO - WRONG FOR STRUCTURES
   public function shipsPoolPropertySumById($unit_id = 0, $propertyName = 'count') {
     $result = 0;
-    foreach($this->mapUnitIdToDb as $unit) {
-      if(!$unit_id || $unit->unitId == $unit_id) {
+    foreach ($this->mapUnitIdToDb as $unit) {
+      if (!$unit_id || $unit->unitId == $unit_id) {
         $result += $unit->$propertyName * $unit->count;
       }
     }
@@ -301,8 +302,8 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
   public function shipsIsEnoughOnPlanet($dbPlanetRow) {
     $player = null;
-    foreach($this->mapUnitIdToDb as $unitId => $unit) {
-      if($unit->count < mrc_get_level($player, $dbPlanetRow, $unit->unitId)) {
+    foreach ($this->mapUnitIdToDb as $unitId => $unit) {
+      if ($unit->count < mrc_get_level($player, $dbPlanetRow, $unit->unitId)) {
         return false;
       }
     }
@@ -319,15 +320,15 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
      * @var Fleet $objFleet
      */
     $objFleet = $this->getLocatedAt();
-    if(empty($objFleet)) {
+    if (empty($objFleet)) {
       throw new Exception('No fleet owner on UnitList::unitsRender() in ' . __FILE__ . '@' . __LINE__);
     }
 
     $tplShips = array();
-    foreach($this->mapUnitIdToDb as $unit) {
+    foreach ($this->mapUnitIdToDb as $unit) {
       $ship_id = $unit->unitId;
       $ship_count = $unit->count;
-      if(!UnitShip::is_in_group($ship_id) || $ship_count <= 0) {
+      if (!UnitShip::is_in_group($ship_id) || $ship_count <= 0) {
         continue;
       }
 
@@ -355,9 +356,9 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   // TODO - REDO!!!!
   public function shipsSpeedMin($user) {
     $speeds = array();
-    if(!empty($this->mapUnitIdToDb)) {
-      foreach($this->mapUnitIdToDb as $ship_id => $unit) {
-        if($unit->getCount() > 0 && in_array($unit->unitId, sn_get_groups(array('fleet', 'missile')))) {
+    if (!empty($this->mapUnitIdToDb)) {
+      foreach ($this->mapUnitIdToDb as $ship_id => $unit) {
+        if ($unit->getCount() > 0 && in_array($unit->unitId, sn_get_groups(array('fleet', 'missile')))) {
           $single_ship_data = get_ship_data($unit->unitId, $user);
           $speeds[] = $single_ship_data['speed'];
         }
@@ -380,11 +381,11 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     $fleet_speed = $this->shipsSpeedMin($dbOwnerRow);
     $real_speed = $speed_percent * sqrt($fleet_speed);
 
-    if($fleet_speed && $game_fleet_speed) {
+    if ($fleet_speed && $game_fleet_speed) {
       $duration = max(1, round((35000 / $speed_percent * sqrt($distance * 10 / $fleet_speed) + 10) / $game_fleet_speed));
 
-      foreach($this->mapUnitIdToDb as $ship_id => $unit) {
-        if(!$unit->unitId || $unit->getCount() <= 0) {
+      foreach ($this->mapUnitIdToDb as $ship_id => $unit) {
+        if (!$unit->unitId || $unit->getCount() <= 0) {
           continue;
         }
 
@@ -415,8 +416,8 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
    * @return bool
    */
   public function unitsInGroup($group) {
-    foreach($this->mapUnitIdToDb as $unitId => $unit) {
-      if(!in_array($unitId, $group)) {
+    foreach ($this->mapUnitIdToDb as $unitId => $unit) {
+      if (!in_array($unitId, $group)) {
         return false;
       }
     }
@@ -425,9 +426,9 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
   public function unitsIsAllMovable($dbOwnerRow) {
-    foreach($this->mapUnitIdToDb as $unitId => $unit) {
+    foreach ($this->mapUnitIdToDb as $unitId => $unit) {
       $single_ship_data = get_ship_data($unit->unitId, $dbOwnerRow);
-      if($single_ship_data['speed'] <= 0) {
+      if ($single_ship_data['speed'] <= 0) {
         return false;
       }
     }
@@ -436,8 +437,8 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   }
 
   public function unitsPositive() {
-    foreach($this->mapUnitIdToDb as $unitId => $unit) {
-      if($unit->count < 1) {
+    foreach ($this->mapUnitIdToDb as $unitId => $unit) {
+      if ($unit->count < 1) {
         return false;
       }
     }
@@ -445,6 +446,20 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return true;
   }
 
+  /**
+   * @param array $dbOwnerRow
+   * @param int   $sourcePlanetRowId
+   *
+   * @return array
+   */
+  public function db_prepare_old_changeset_for_planet($dbOwnerRow, $sourcePlanetRowId) {
+    $db_changeset = array();
+    foreach ($this->mapUnitIdToDb as $unit) {
+      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit->unitId, -$unit->count, $dbOwnerRow, $sourcePlanetRowId);
+    }
+
+    return $db_changeset;
+  }
 
 
   // TODO - DEBUG - REMOVE =============================================================================================
@@ -497,7 +512,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
 
     print('</tr>');
 
-    foreach($this->mapUnitIdToDb as $unit) {
+    foreach ($this->mapUnitIdToDb as $unit) {
       print('<tr>');
 
       print('<td>');
@@ -545,13 +560,15 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     }
     print('</table>');
   }
+
   public function unitZeroDbId() {
-    foreach($this->mapUnitIdToDb as $unit) {
+    foreach ($this->mapUnitIdToDb as $unit) {
       $unit->zeroDbId();
     }
   }
+
   public function unitZeroCount() {
-    foreach($this->mapUnitIdToDb as $unit) {
+    foreach ($this->mapUnitIdToDb as $unit) {
       $unit->count = 0;
     }
   }

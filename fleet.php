@@ -52,7 +52,7 @@ switch($fleet_page) {
   break;
 
   case 3:
-    $objFleet5->fleetPage3($duration);
+    $objFleet5->fleetPage3();
   break;
 
   case 4:

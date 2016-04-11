@@ -359,9 +359,11 @@ $sn_data += array(
         false => array(
           // However in Explore can't be send mission with missiles or mission with only spies in fleet
           // Explore mission needs no additional checks
-          'checkNotOnlySpies'   => FLIGHT_SHIPS_NOT_ONLY_SPIES,
-          'checkNoMissiles'     => FLIGHT_SHIPS_NO_MISSILES,
-          'forceMissionExplore' => array(
+          'checkNotOnlySpies'    => FLIGHT_SHIPS_NOT_ONLY_SPIES,
+          'checkNoMissiles'      => FLIGHT_SHIPS_NO_MISSILES,
+          'checkExpeditionsMax'  => FLIGHT_MISSION_EXPLORE_NO_ASTROTECH,
+          'checkExpeditionsFree' => FLIGHT_MISSION_EXPLORE_NO_SLOTS,
+          'forceMissionExplore'  => array(
             true  => FLIGHT_ALLOWED,                                                         //+
             false => FLIGHT_VECTOR_BEYOND_SYSTEM,
           ),
