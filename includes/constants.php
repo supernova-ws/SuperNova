@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.85');
+define('SN_VERSION', '41a6.86');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -689,6 +689,8 @@ define('FLIGHT_MISSION_EXPLORE_NO_SLOTS', 56);
 define('FLIGHT_PLAYER_ATTACK_SELF', 57);
 define('FLIGHT_VECTOR_TARGET_DEBRIS', 58);
 define('FLIGHT_MISSION_HOLD_ON_NOOB', 59);
+define('FLIGHT_MISSION_MISSILE_DIFFERENT_GALAXY', 60);
+define('FLIGHT_MISSION_SPY_OTHER', 61);
 
 
 // *** Races - Homeworlds

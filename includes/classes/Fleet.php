@@ -299,6 +299,11 @@ class Fleet extends UnitContainer {
   protected $isRealFlight = false;
 
   /**
+   * @var int $targetedUnitId
+   */
+  public $targetedUnitId = 0;
+
+  /**
    * Fleet constructor.
    */
   public function __construct() {
@@ -316,9 +321,9 @@ class Fleet extends UnitContainer {
   public function renderAvailableShips(&$template_result, $playerRow, $planetRow) {
     $record_index = 0;
     $ship_list = array();
-    foreach(sn_get_groups('fleet') as $n => $unit_id) {
+    foreach (sn_get_groups('fleet') as $n => $unit_id) {
       $unit_level = mrc_get_level($playerRow, $planetRow, $unit_id, false, true);
-      if($unit_level <= 0) {
+      if ($unit_level <= 0) {
         continue;
       }
       $ship_data = get_ship_data($unit_id, $playerRow);
@@ -339,7 +344,7 @@ class Fleet extends UnitContainer {
 
     sortUnitRenderedList($ship_list, classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT], classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE]);
 
-    foreach($ship_list as $ship_data) {
+    foreach ($ship_list as $ship_data) {
       $template_result['.']['ships'][] = $ship_data;
     }
   }
@@ -358,7 +363,7 @@ class Fleet extends UnitContainer {
   public function dbInsert() {
     // WARNING! MISSION TIMES MUST BE SET WITH set_times() method!
     // TODO - more checks!
-    if(empty($this->_time_launch)) {
+    if (empty($this->_time_launch)) {
       die('Fleet time not set!');
     }
 
@@ -372,7 +377,6 @@ class Fleet extends UnitContainer {
    * LOCK - Lock all records which can be used with mission
    *
    * @param $mission_data
-   * @param $fleet_id
    *
    * @return array|bool|mysqli_result|null
    */
@@ -420,9 +424,6 @@ class Fleet extends UnitContainer {
    * Lock all fields that belongs to operation
    *
    * @param $dbId
-   *
-   * @internal param DBLock $dbRow - Object that accumulates locks
-   *
    */
   // TODO = make static
   public function dbGetLockById($dbId) {
@@ -567,7 +568,7 @@ class Fleet extends UnitContainer {
     // Записываем изменения в БД
     $this->dbSave();
 
-    if($this->_group_id) {
+    if ($this->_group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
       db_fleet_aks_purge();
     }
@@ -631,21 +632,23 @@ class Fleet extends UnitContainer {
    * Parses extended unit_array which can include not only ships but resources, captains etc
    *
    * @param $unit_array
+   *
+   * @throws Exception
    */
   // TODO - separate shipList and unitList
   public function unitsSetFromArray($unit_array) {
-    if(empty($unit_array) || !is_array($unit_array)) {
+    if (empty($unit_array) || !is_array($unit_array)) {
       return;
     }
-    foreach($unit_array as $unit_id => $unit_count) {
+    foreach ($unit_array as $unit_id => $unit_count) {
       $unit_count = floatval($unit_count);
-      if(!$unit_count) {
+      if (!$unit_count) {
         continue;
       }
 
-      if($this->isShip($unit_id)) {
+      if ($this->isShip($unit_id)) {
         $this->unitList->unitSetCount($unit_id, $unit_count);
-      } elseif($this->isResource($unit_id)) {
+      } elseif ($this->isResource($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
       } else {
         throw new Exception('Trying to pass to fleet non-resource and non-ship ' . var_export($unit_array, true), ERR_ERROR);
@@ -674,7 +677,7 @@ class Fleet extends UnitContainer {
   public function parse_missile_db_row($missile_db_row) {
 //    $this->_reset();
 
-    if(empty($missile_db_row) || !is_array($missile_db_row)) {
+    if (empty($missile_db_row) || !is_array($missile_db_row)) {
       return;
     }
 
@@ -821,6 +824,13 @@ class Fleet extends UnitContainer {
     return max(0, $this->shipsGetCapacity() - $this->resourcesGetTotal());
   }
 
+  /**
+   * Get count of ships with $ship_id
+   *
+   * @param int $ship_id
+   *
+   * @return int
+   */
   public function shipsGetTotalById($ship_id) {
     return $this->unitList->unitsCountById($ship_id);
   }
@@ -832,12 +842,12 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.85
+   * @version 41a6.86
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
     $fleet_data = $this->shipsGetArray();
-    foreach($recycler_info as $recycler_id => $recycler_data) {
+    foreach ($recycler_info as $recycler_id => $recycler_data) {
       $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
     }
 
@@ -857,7 +867,7 @@ class Fleet extends UnitContainer {
     sn_db_transaction_check(true);
 
     // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-    if($this->isEmpty()) {
+    if ($this->isEmpty()) {
       return $result;
     }
 
@@ -879,18 +889,18 @@ class Fleet extends UnitContainer {
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
     // Флот, который возвращается на захваченную планету, пропадает
     // Ship landing is possible only to fleet owner's planet
-    if($this->getPlayerOwnerId() == $planet_arrival['id_owner']) {
+    if ($this->getPlayerOwnerId() == $planet_arrival['id_owner']) {
       $db_changeset = array();
 
       $fleet_array = $this->shipsGetArray();
-      foreach($fleet_array as $ship_id => $ship_count) {
-        if($ship_count) {
+      foreach ($fleet_array as $ship_id => $ship_count) {
+        if ($ship_count) {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
         }
       }
 
       // Adjusting ship amount on planet
-      if(!empty($db_changeset)) {
+      if (!empty($db_changeset)) {
         db_changeset_apply($db_changeset);
       }
 
@@ -916,7 +926,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.85
+   * @version 41a6.86
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -938,7 +948,7 @@ class Fleet extends UnitContainer {
    * @param array $resource_list
    */
   public function resourcesSet($resource_list) {
-    if(!empty($this->propertiesAdjusted['resource_list'])) {
+    if (!empty($this->propertiesAdjusted['resource_list'])) {
       throw new PropertyAccessException('Property "resource_list" already was adjusted so no SET is possible until dbSave in ' . get_called_class() . '::unitSetResourceList', ERR_ERROR);
     }
     $this->resourcesAdjust($resource_list, true);
@@ -947,18 +957,21 @@ class Fleet extends UnitContainer {
   /**
    * Updates fleet resource list with deltas
    *
-   * @param $resource_delta_list
+   * @param array $resource_delta_list
+   * @param bool  $replace_value
+   *
+   * @throws Exception
    */
   public function resourcesAdjust($resource_delta_list, $replace_value = false) {
     !is_array($resource_delta_list) ? $resource_delta_list = array() : false;
 
-    foreach($resource_delta_list as $resource_id => $unit_delta) {
-      if(!UnitResourceLoot::is_in_group($resource_id) || !($unit_delta = floor($unit_delta))) {
+    foreach ($resource_delta_list as $resource_id => $unit_delta) {
+      if (!UnitResourceLoot::is_in_group($resource_id) || !($unit_delta = floor($unit_delta))) {
         // Not a resource or no resources - continuing
         continue;
       }
 
-      if($replace_value) {
+      if ($replace_value) {
         $this->resource_list[$resource_id] = $unit_delta;
       } else {
         $this->resource_list[$resource_id] += $unit_delta;
@@ -968,7 +981,7 @@ class Fleet extends UnitContainer {
       }
 
       // Check for negative unit value
-      if($this->resource_list[$resource_id] < 0) {
+      if ($this->resource_list[$resource_id] < 0) {
         // TODO
         throw new Exception('Resource ' . $resource_id . ' will become negative in ' . get_called_class() . '::unitAdjustResourceList', ERR_ERROR);
       }
@@ -1020,7 +1033,7 @@ class Fleet extends UnitContainer {
     sn_db_transaction_check(true);
 
     // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
-    if(!$this->resourcesGetTotal()) {
+    if (!$this->resourcesGetTotal()) {
       return $result;
     }
 
@@ -1040,7 +1053,7 @@ class Fleet extends UnitContainer {
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
 
     // Restoring resources to planet
-    if($this->resourcesGetTotal()) {
+    if ($this->resourcesGetTotal()) {
       $fleet_resources = $this->resourcesGetList();
       db_planet_set_by_id($planet_arrival['id'],
         "`metal` = `metal` + '{$fleet_resources[RES_METAL]}', `crystal` = `crystal` + '{$fleet_resources[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_resources[RES_DEUTERIUM]}'");
@@ -1077,7 +1090,7 @@ class Fleet extends UnitContainer {
    * @param Vector $targetVector
    *
    */
-  public function initDefaults($dbPlayerRow, $dbPlanetRow, $targetVector, $mission, $ships, $fleet_group_mr, $oldSpeedInTens) {
+  public function initDefaults($dbPlayerRow, $dbPlanetRow, $targetVector, $mission, $ships, $fleet_group_mr, $oldSpeedInTens = 10, $targetedUnitId = 0) {
     $objFleet5Player = new Player();
     $objFleet5Player->dbRowParse($dbPlayerRow);
     $this->setLocatedAt($objFleet5Player);
@@ -1100,18 +1113,20 @@ class Fleet extends UnitContainer {
 
     $this->oldSpeedInTens = $oldSpeedInTens;
 
+    $this->targetedUnitId = $targetedUnitId;
+
     $this->fleetPage0Prepare();
 
   }
 
   protected function populateTargetPlanet() {
     $targetPlanetCoords = $this->targetVector;
-    if($this->mission_type != MT_NONE) {
+    if ($this->mission_type != MT_NONE) {
       $this->restrictTargetTypeByMission();
 
       // TODO - Нельзя тут просто менять тип планеты или координат!
       // If current planet type is not allowed on mission - switch planet type
-      if(empty($this->allowed_planet_types[$this->targetVector->type])) {
+      if (empty($this->allowed_planet_types[$this->targetVector->type])) {
         $targetPlanetCoords->type = reset($this->allowed_planet_types);
       }
     }
@@ -1120,14 +1135,14 @@ class Fleet extends UnitContainer {
   }
 
   protected function restrictTargetTypeByMission() {
-    if($this->_mission_type == MT_MISSILE) {
+    if ($this->_mission_type == MT_MISSILE) {
       $this->allowed_planet_types = array(PT_PLANET => PT_PLANET);
-    } elseif($this->_mission_type == MT_COLONIZE || $this->_mission_type == MT_EXPLORE) {
+    } elseif ($this->_mission_type == MT_COLONIZE || $this->_mission_type == MT_EXPLORE) {
       // TODO - PT_NONE
       $this->allowed_planet_types = array(PT_PLANET => PT_PLANET);
-    } elseif($this->_mission_type == MT_RECYCLE) {
+    } elseif ($this->_mission_type == MT_RECYCLE) {
       $this->allowed_planet_types = array(PT_DEBRIS => PT_DEBRIS);
-    } elseif($this->_mission_type == MT_DESTROY) {
+    } elseif ($this->_mission_type == MT_DESTROY) {
       $this->allowed_planet_types = array(PT_MOON => PT_MOON);
     } else {
       $this->allowed_planet_types = array(PT_PLANET => PT_PLANET, PT_MOON => PT_MOON);
@@ -1159,13 +1174,13 @@ class Fleet extends UnitContainer {
 
 
   public function restrictToKnownSpace() {
-    if(!$this->targetVector->isInKnownSpace()) {
+    if (!$this->targetVector->isInKnownSpace()) {
       throw new Exception('FLIGHT_VECTOR_BEYOND_SYSTEM', FLIGHT_VECTOR_BEYOND_SYSTEM);
     }
   }
 
   public function restrictToTypePlanet($errorCode) {
-    if($this->targetVector->type != PT_PLANET) {
+    if ($this->targetVector->type != PT_PLANET) {
       throw new Exception($errorCode, $errorCode);
     }
   }
@@ -1173,56 +1188,56 @@ class Fleet extends UnitContainer {
   public function restrictToNoMissiles() {
     $missilesAttack = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
     $missilesDefense = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERCEPTOR);
-    if($missilesAttack > 0 || $missilesDefense > 0) {
+    if ($missilesAttack > 0 || $missilesDefense > 0) {
       throw new Exception('FLIGHT_SHIPS_NO_MISSILES', FLIGHT_SHIPS_NO_MISSILES);
     }
   }
 
   public function restrictToTargetOwn() {
-    if($this->dbTargetRow['id'] != $this->getPlayerOwnerId()) {
+    if ($this->dbTargetRow['id'] != $this->getPlayerOwnerId()) {
       throw new Exception('FLIGHT_VECTOR_ONLY_OWN', FLIGHT_VECTOR_ONLY_OWN);
     }
   }
 
   public function restrictToTargetOther() {
-    if($this->dbTargetRow['id'] == $this->getPlayerOwnerId()) {
+    if ($this->dbTargetRow['id'] == $this->getPlayerOwnerId()) {
       throw new Exception('FLIGHT_VECTOR_ONLY_OTHER', FLIGHT_VECTOR_ONLY_OTHER);
     }
   }
 
   public function restrictToNotOnlySpies() {
-    if($this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal()) {
+    if ($this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal()) {
       throw new Exception('FLIGHT_SHIPS_NOT_ONLY_SPIES', FLIGHT_SHIPS_NOT_ONLY_SPIES);
     }
   }
 
   protected function restrictToUniverse() {
-    if(!$this->targetVector->isInUniverse()) {
+    if (!$this->targetVector->isInUniverse()) {
       throw new Exception('FLIGHT_VECTOR_BEYOND_UNIVERSE', FLIGHT_VECTOR_BEYOND_UNIVERSE);
     }
   }
 
   protected function restrictToMovable() {
-    if(!$this->unitList->unitsIsAllMovable($this->dbOwnerRow)) {
+    if (!$this->unitList->unitsIsAllMovable($this->dbOwnerRow)) {
       throw new Exception('FLIGHT_SHIPS_UNMOVABLE', FLIGHT_SHIPS_UNMOVABLE);
     }
   }
 
   protected function restrictToFleetUnits() {
-    if(!$this->unitList->unitsInGroup(sn_get_groups(array('fleet', 'missile')))) {
+    if (!$this->unitList->unitsInGroup(sn_get_groups(array('fleet', 'missile')))) {
       throw new Exception('FLIGHT_SHIPS_UNIT_WRONG', FLIGHT_SHIPS_UNIT_WRONG);
     }
   }
 
   protected function restrictToColonizer() {
     // Colonization fleet should have at least one colonizer
-    if(!$this->unitList->unitsCountById(SHIP_COLONIZER) <= 0) {
+    if (!$this->unitList->unitsCountById(SHIP_COLONIZER) <= 0) {
       throw new Exception('FLIGHT_SHIPS_NO_COLONIZER', FLIGHT_SHIPS_NO_COLONIZER);
     }
   }
 
   protected function restrictToTargetExists() {
-    if(empty($this->dbTargetRow) || empty($this->dbTargetRow['id'])) {
+    if (empty($this->dbTargetRow) || empty($this->dbTargetRow['id'])) {
       throw new Exception('FLIGHT_VECTOR_NO_TARGET', FLIGHT_VECTOR_NO_TARGET);
     }
   }
@@ -1230,7 +1245,7 @@ class Fleet extends UnitContainer {
 
   protected function restrictKnownSpaceOrMissionExplore() {
     // Is it exploration - fleet sent beyond of system?
-    if($this->targetVector->isInKnownSpace()) {
+    if ($this->targetVector->isInKnownSpace()) {
       // No exploration beyond this point
       unset($this->allowed_missions[MT_EXPLORE]);
 
@@ -1248,7 +1263,7 @@ class Fleet extends UnitContainer {
 
   protected function restrictTargetExistsOrMissionColonize() {
     // Is it colonization - fleet sent to empty place?
-    if(!empty($this->dbTargetRow)) {
+    if (!empty($this->dbTargetRow)) {
       // No colonization beyond this point
       unset($this->allowed_missions[MT_COLONIZE]);
 
@@ -1267,7 +1282,7 @@ class Fleet extends UnitContainer {
   }
 
   protected function restrictNotDebrisOrMissionRecycle() {
-    if($this->targetVector->type != PT_DEBRIS) {
+    if ($this->targetVector->type != PT_DEBRIS) {
       // No recycling beyond this point
       unset($this->allowed_missions[MT_RECYCLE]);
 
@@ -1278,11 +1293,11 @@ class Fleet extends UnitContainer {
 
     // restrict to recyclers
     $recyclers = 0;
-    foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
+    foreach (sn_get_groups('flt_recyclers') as $recycler_id) {
       $recyclers += $this->unitList->unitsCountById($recycler_id);
     }
 
-    if($recyclers <= 0) {
+    if ($recyclers <= 0) {
       throw new Exception('FLIGHT_SHIPS_NO_RECYCLERS', FLIGHT_SHIPS_NO_RECYCLERS);
     }
 
@@ -1293,14 +1308,14 @@ class Fleet extends UnitContainer {
 
   protected function restrictMissionMissile() {
     $missilesAttack = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
-    if($missilesAttack <= 0) {
+    if ($missilesAttack <= 0) {
       // No missile attack beyond this point
       unset($this->allowed_missions[MT_MISSILE]);
 
       return;
     }
 
-    if($missilesAttack != $this->shipsGetTotal()) {
+    if ($missilesAttack != $this->shipsGetTotal()) {
       throw new Exception('FLIGHT_SHIPS_ONLY_MISSILES', FLIGHT_SHIPS_ONLY_MISSILES);
     }
 
@@ -1312,7 +1327,7 @@ class Fleet extends UnitContainer {
   }
 
   protected function restrictToNotOnlySpiesOrMissionSpy() {
-    if($this->unitList->unitsCountById(SHIP_SPY) != $this->shipsGetTotal()) {
+    if ($this->unitList->unitsCountById(SHIP_SPY) != $this->shipsGetTotal()) {
 //      throw new Exception('FLIGHT_SHIPS_ONLY_SPIES', FLIGHT_SHIPS_ONLY_SPIES);
       unset($this->allowed_missions[MT_SPY]);
 
@@ -1328,14 +1343,14 @@ class Fleet extends UnitContainer {
   protected function restrictMissionDestroy() {
     // If target vector is not Moon - then it can't be Destroy mission
     // If no Reapers (i.e. Death Star) in fleet - then mission Moon Destroy is unaccessible
-    if($this->targetVector->type != PT_MOON || $this->unitList->unitsCountById(SHIP_HUGE_DEATH_STAR) <= 0) {
+    if ($this->targetVector->type != PT_MOON || $this->unitList->unitsCountById(SHIP_HUGE_DEATH_STAR) <= 0) {
       unset($this->allowed_missions[MT_DESTROY]);
     }
   }
 
   protected function restrictMissionACS() {
     // If no ACS group is shown - then it can't be an ACS attack
-    if(empty($this->_group_id)) {
+    if (empty($this->_group_id)) {
       unset($this->allowed_missions[MT_ACS]);
     }
   }
@@ -1343,7 +1358,7 @@ class Fleet extends UnitContainer {
   /** @throws Exception */
   protected function restrictFriendOrFoe() {
     // Checking target owner
-    if($this->dbTargetRow['id'] == $this->getPlayerOwnerId()) {
+    if ($this->dbTargetRow['id'] == $this->getPlayerOwnerId()) {
       // Spying can't be done on owner's planet/moon
       unset($this->allowed_missions[MT_SPY]);
       // Attack can't be done on owner's planet/moon
@@ -1399,51 +1414,51 @@ class Fleet extends UnitContainer {
   }
 
   protected function restrictToNotSource() {
-    if($this->targetVector->isEqualToPlanet($this->dbSourcePlanetRow)) {
+    if ($this->targetVector->isEqualToPlanet($this->dbSourcePlanetRow)) {
       throw new Exception('FLIGHT_VECTOR_SAME_SOURCE', FLIGHT_VECTOR_SAME_SOURCE);
     }
   }
 
   protected function restrictToNonVacationSender() {
-    if(!empty($this->dbOwnerRow['vacation']) && $this->dbOwnerRow['vacation'] >= SN_TIME_NOW) {
+    if (!empty($this->dbOwnerRow['vacation']) && $this->dbOwnerRow['vacation'] >= SN_TIME_NOW) {
       throw new Exception('FLIGHT_PLAYER_VACATION_OWN', FLIGHT_PLAYER_VACATION_OWN);
     }
   }
 
   protected function restrictToValidSpeedPercentOld() {
     $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
-    if(!in_array($this->oldSpeedInTens, $speed_possible)) {
+    if (!in_array($this->oldSpeedInTens, $speed_possible)) {
       throw new Exception('FLIGHT_FLEET_SPEED_WRONG', FLIGHT_FLEET_SPEED_WRONG);
     }
 
   }
 
   protected function restrict2ToAllowedMissions() {
-    if(empty($this->allowed_missions[$this->_mission_type])) {
+    if (empty($this->allowed_missions[$this->_mission_type])) {
       throw new Exception('FLIGHT_MISSION_IMPOSSIBLE', FLIGHT_MISSION_IMPOSSIBLE);
     }
   }
 
   protected function restrict2ToAllowedPlanetTypes() {
-    if(empty($this->allowed_planet_types[$this->targetVector->type])) {
+    if (empty($this->allowed_planet_types[$this->targetVector->type])) {
       throw new Exception('FLIGHT_MISSION_IMPOSSIBLE', FLIGHT_MISSION_IMPOSSIBLE);
     }
   }
 
   protected function restrict2ToMaxFleets() {
-    if(FleetList::fleet_count_flying($this->getPlayerOwnerId()) >= GetMaxFleets($this->dbOwnerRow)) {
+    if (FleetList::fleet_count_flying($this->getPlayerOwnerId()) >= GetMaxFleets($this->dbOwnerRow)) {
       throw new Exception('FLIGHT_FLEET_NO_SLOTS', FLIGHT_FLEET_NO_SLOTS);
     }
   }
 
   protected function restrict2ToEnoughShips() {
-    if(!$this->unitList->shipsIsEnoughOnPlanet($this->dbSourcePlanetRow)) {
+    if (!$this->unitList->shipsIsEnoughOnPlanet($this->dbSourcePlanetRow)) {
       throw new Exception('FLIGHT_SHIPS_NOT_ENOUGH', FLIGHT_SHIPS_NOT_ENOUGH);
     }
   }
 
   protected function restrict2ToEnoughCapacity($fleetCapacity, $fleetConsumption) {
-    if(floor($fleetCapacity) < ceil(array_sum($this->resource_list) + $fleetConsumption)) {
+    if (floor($fleetCapacity) < ceil(array_sum($this->resource_list) + $fleetConsumption)) {
       throw new Exception('FLIGHT_FLEET_OVERLOAD', FLIGHT_FLEET_OVERLOAD);
     }
   }
@@ -1451,13 +1466,13 @@ class Fleet extends UnitContainer {
   protected function restrict2ByResources($fleetConsumption) {
     $fleetResources = $this->resource_list;
     $fleetResources[RES_DEUTERIUM] = ceil($fleetResources[RES_DEUTERIUM] + $fleetConsumption);
-    foreach($fleetResources as $resourceId => $resourceAmount) {
-      if($fleetResources[$resourceId] < 0) {
+    foreach ($fleetResources as $resourceId => $resourceAmount) {
+      if ($fleetResources[$resourceId] < 0) {
         throw new Exception('FLIGHT_RESOURCES_NEGATIVE', FLIGHT_RESOURCES_NEGATIVE);
       }
 
-      if(mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resourceId) < ceil($fleetResources[$resourceId])) {
-        if($resourceId == RES_DEUTERIUM) {
+      if (mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resourceId) < ceil($fleetResources[$resourceId])) {
+        if ($resourceId == RES_DEUTERIUM) {
           throw new Exception('FLIGHT_RESOURCES_FUEL_NOT_ENOUGH', FLIGHT_RESOURCES_FUEL_NOT_ENOUGH);
         } else {
           throw new Exception('FLIGHT_RESOURCES_NOT_ENOUGH', FLIGHT_RESOURCES_NOT_ENOUGH);
@@ -1510,7 +1525,7 @@ class Fleet extends UnitContainer {
 
 
   protected function printErrorIfNoShips() {
-    if($this->unitList->unitsCount() <= 0) {
+    if ($this->unitList->unitsCount() <= 0) {
       message(classLocale::$lang['fl_err_no_ships'], classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
     }
   }
@@ -1548,11 +1563,11 @@ class Fleet extends UnitContainer {
   protected function renderAllowedMissions(&$template_result) {
     ksort($this->allowed_missions);
     // If mission is not set - setting first mission from allowed
-    if(empty($this->_mission_type) && is_array($this->allowed_missions)) {
+    if (empty($this->_mission_type) && is_array($this->allowed_missions)) {
       reset($this->allowed_missions);
       $this->_mission_type = key($this->allowed_missions);
     }
-    foreach($this->allowed_missions as $key => $value) {
+    foreach ($this->allowed_missions as $key => $value) {
       $template_result['.']['missions'][] = array(
         'ID'   => $key,
         'NAME' => classLocale::$lang['type_mission'][$key],
@@ -1564,9 +1579,9 @@ class Fleet extends UnitContainer {
    * @param $template_result
    */
   protected function renderDuration(&$template_result, $max_duration) {
-    if($max_duration) {
+    if ($max_duration) {
       $config_game_speed_expedition = ($this->_mission_type == MT_EXPLORE && classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1);
-      for($i = 1; $i <= $max_duration; $i++) {
+      for ($i = 1; $i <= $max_duration; $i++) {
         $template_result['.']['duration'][] = array(
           'ID'   => $i,
           'TIME' => pretty_time(ceil($i * 3600 / $config_game_speed_expedition)),
@@ -1582,7 +1597,7 @@ class Fleet extends UnitContainer {
   protected function renderPlanetResources(&$planetResources, &$template_result) {
     // TODO - REDO to resource_id
     $i = 0;
-    foreach($planetResources as $resource_id => $resource_amount) {
+    foreach ($planetResources as $resource_id => $resource_amount) {
       $template_result['.']['resources'][] = array(
         'ID'        => $i++, // $resource_id,
         'ON_PLANET' => $resource_amount,
@@ -1596,7 +1611,7 @@ class Fleet extends UnitContainer {
    * @param $template_result
    */
   protected function renderAllowedPlanetTypes(&$template_result) {
-    foreach($this->allowed_planet_types as $possible_planet_type_id) {
+    foreach ($this->allowed_planet_types as $possible_planet_type_id) {
       $template_result['.']['possible_planet_type_id'][] = array(
         'ID'         => $possible_planet_type_id,
         'NAME'       => classLocale::$lang['sys_planet_type'][$possible_planet_type_id],
@@ -1619,14 +1634,14 @@ class Fleet extends UnitContainer {
       'TYPE_PRINT' => classLocale::$lang['fl_shrtcup'][$shortcut['planet_type']],
     );
 
-    if(isset($shortcut['priority'])) {
+    if (isset($shortcut['priority'])) {
       $result += array(
         'PRIORITY'       => $shortcut['priority'],
         'PRIORITY_CLASS' => $note_priority_classes[$shortcut['priority']],
       );
     }
 
-    if(isset($shortcut['id'])) {
+    if (isset($shortcut['id'])) {
       $result += array(
         'ID' => $shortcut['id'],
       );
@@ -1653,12 +1668,12 @@ class Fleet extends UnitContainer {
    */
   protected function renderOwnPlanets(&$template_result) {
     $colonies = db_planet_list_sorted($this->dbOwnerRow);
-    if(count($colonies) <= 1) {
+    if (count($colonies) <= 1) {
       return;
     }
 
-    foreach($colonies as $row) {
-      if($row['id'] == $this->dbSourcePlanetRow['id']) {
+    foreach ($colonies as $row) {
+      if ($row['id'] == $this->dbSourcePlanetRow['id']) {
         continue;
       }
 
@@ -1673,8 +1688,8 @@ class Fleet extends UnitContainer {
     $query = db_acs_get_list();
     while($row = db_fetch($query)) {
       $members = explode(',', $row['eingeladen']);
-      foreach($members as $a => $b) {
-        if($b == $this->dbOwnerRow['id']) {
+      foreach ($members as $a => $b) {
+        if ($b == $this->dbOwnerRow['id']) {
           $template_result['.']['acss'][] = $this->renderFleet1TargetSelect($row);
         }
       }
@@ -1685,7 +1700,7 @@ class Fleet extends UnitContainer {
    * @param $template_result
    */
   protected function renderShipSortOptions(&$template_result) {
-    foreach(classLocale::$lang['player_option_fleet_ship_sort'] as $sort_id => $sort_text) {
+    foreach (classLocale::$lang['player_option_fleet_ship_sort'] as $sort_id => $sort_text) {
       $template_result['.']['ship_sort_list'][] = array(
         'VALUE' => $sort_id,
         'TEXT'  => $sort_text,
@@ -1704,7 +1719,7 @@ class Fleet extends UnitContainer {
 
     lng_include('overview');
 
-    if(empty($this->dbSourcePlanetRow)) {
+    if (empty($this->dbSourcePlanetRow)) {
       message(classLocale::$lang['fl_noplanetrow'], classLocale::$lang['fl_error']);
     }
 
@@ -1780,9 +1795,9 @@ class Fleet extends UnitContainer {
 
     try {
       $this->restrictMission();
-    } catch(Exception $e) {
+    } catch (Exception $e) {
       // TODO - MESSAGE BOX
-      if($e->getCode() != FLIGHT_ALLOWED) {
+      if ($e->getCode() != FLIGHT_ALLOWED) {
         pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
       } else {
         pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
@@ -1800,12 +1815,12 @@ class Fleet extends UnitContainer {
 
     $sn_group_resources = sn_get_groups('resources_loot');
     $planetResources = array();
-    foreach($sn_group_resources as $resource_id) {
+    foreach ($sn_group_resources as $resource_id) {
       $planetResources[$resource_id] = floor(mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resource_id) - ($resource_id == RES_DEUTERIUM ? $travel_data['consumption'] : 0));
     }
     $this->renderPlanetResources($planetResources, $template_result);
 
-    if(sn_module::$sn_module['unit_captain']->manifest['active'] && ($captain = sn_module::$sn_module['unit_captain']->unit_captain_get($this->dbSourcePlanetRow['id'])) && $captain['unit_location_type'] == LOC_PLANET) {
+    if (sn_module::$sn_module['unit_captain']->manifest['active'] && ($captain = sn_module::$sn_module['unit_captain']->unit_captain_get($this->dbSourcePlanetRow['id'])) && $captain['unit_location_type'] == LOC_PLANET) {
       $template_result += array(
         'CAPTAIN_ID'     => $captain['unit_id'],
         'CAPTAIN_LEVEL'  => $captain['captain_level'],
@@ -1841,24 +1856,24 @@ class Fleet extends UnitContainer {
 
 
   public function restrict2MissionTransportWithResources($fleetResources) {
-    if($this->_mission_type != MT_TRANSPORT) {
+    if ($this->_mission_type != MT_TRANSPORT) {
       return;
     }
 
-    if(array_sum($fleetResources) <= 0) {
+    if (array_sum($fleetResources) <= 0) {
       throw new Exception('FLIGHT_RESOURCES_EMPTY', FLIGHT_RESOURCES_EMPTY);
     }
   }
 
   protected function restrict2MissionExploreAvailable() {
-    if($this->_mission_type != MT_EXPLORE) {
+    if ($this->_mission_type != MT_EXPLORE) {
       return;
     }
 
-    if(($expeditionsMax = get_player_max_expeditons($this->dbOwnerRow)) <= 0) {
+    if (($expeditionsMax = get_player_max_expeditons($this->dbOwnerRow)) <= 0) {
       throw new Exception('FLIGHT_MISSION_EXPLORE_NO_ASTROTECH', FLIGHT_MISSION_EXPLORE_NO_ASTROTECH);
     }
-    if(FleetList::fleet_count_flying($this->getPlayerOwnerId(), MT_EXPLORE) >= $expeditionsMax) {
+    if (FleetList::fleet_count_flying($this->getPlayerOwnerId(), MT_EXPLORE) >= $expeditionsMax) {
       throw new Exception('FLIGHT_MISSION_EXPLORE_NO_SLOTS', FLIGHT_MISSION_EXPLORE_NO_SLOTS);
     }
 
@@ -1885,10 +1900,10 @@ class Fleet extends UnitContainer {
 
     $this->dbOwnerRow = db_user_by_id($this->dbOwnerRow['id'], true);
     $this->dbSourcePlanetRow = db_planet_by_id($this->dbSourcePlanetRow['id'], true);
-    if(!empty($this->dbTargetRow['id'])) {
+    if (!empty($this->dbTargetRow['id'])) {
       $this->dbTargetRow = db_planet_by_id($this->dbTargetRow['id'], true);
     }
-    if(!empty($this->dbTargetRow['id_owner'])) {
+    if (!empty($this->dbTargetRow['id_owner'])) {
       $this->dbTargetOwnerRow = db_planet_by_id($this->dbTargetRow['id_owner'], true);
     }
 
@@ -1913,9 +1928,9 @@ class Fleet extends UnitContainer {
       try {
         // TODO  - ALL OF THE ABOVE!
         $this->restrictMission();
-      } catch(Exception $e) {
+      } catch (Exception $e) {
         // If mission is restricted - rethrow exception
-        if($e->getCode() != FLIGHT_ALLOWED) {
+        if ($e->getCode() != FLIGHT_ALLOWED) {
           throw new Exception($e->getMessage(), $e->getCode());
         }
       }
@@ -1954,9 +1969,9 @@ class Fleet extends UnitContainer {
 
 
 //      $this->restrict2MissionTransportWithResources($fleetResources);
-    } catch(Exception $e) {
+    } catch (Exception $e) {
       // TODO - MESSAGE BOX
-      if($e->getCode() != FLIGHT_ALLOWED) {
+      if ($e->getCode() != FLIGHT_ALLOWED) {
         sn_db_transaction_rollback();
         pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
       } else {
@@ -1976,46 +1991,46 @@ class Fleet extends UnitContainer {
     $TransDeuterium = max(0, floor(sys_get_param_float('resource2')));
     $StorageNeeded = $TransMetal + $TransCrystal + $TransDeuterium;
 
-    if(!$StorageNeeded && $target_mission == MT_TRANSPORT) {
+    if (!$StorageNeeded && $target_mission == MT_TRANSPORT) {
       $errorlist .= classLocale::$lang['fl_noenoughtgoods'];
     }
 
 
-    if($target_mission == MT_EXPLORE) {
-      if($MaxExpeditions == 0) {
+    if ($target_mission == MT_EXPLORE) {
+      if ($MaxExpeditions == 0) {
         $errorlist .= classLocale::$lang['fl_expe_notech'];
-      } elseif($FlyingExpeditions >= $MaxExpeditions) {
+      } elseif ($FlyingExpeditions >= $MaxExpeditions) {
         $errorlist .= classLocale::$lang['fl_expe_max'];
       }
     } else {
-      if($TargetPlanet['id_owner']) {
-        if($target_mission == MT_COLONIZE) {
+      if ($TargetPlanet['id_owner']) {
+        if ($target_mission == MT_COLONIZE) {
           $errorlist .= classLocale::$lang['fl_colonized'];
         }
 
-        if($TargetPlanet['id_owner'] == $planetrow['id_owner']) {
-          if($target_mission == MT_ATTACK) {
+        if ($TargetPlanet['id_owner'] == $planetrow['id_owner']) {
+          if ($target_mission == MT_ATTACK) {
             $errorlist .= classLocale::$lang['fl_no_self_attack'];
           }
 
-          if($target_mission == MT_SPY) {
+          if ($target_mission == MT_SPY) {
             $errorlist .= classLocale::$lang['fl_no_self_spy'];
           }
         } else {
-          if($target_mission == MT_RELOCATE) {
+          if ($target_mission == MT_RELOCATE) {
             $errorlist .= classLocale::$lang['fl_only_stay_at_home'];
           }
         }
       } else {
-        if($target_mission < MT_COLONIZE) {
+        if ($target_mission < MT_COLONIZE) {
           $errorlist .= classLocale::$lang['fl_unknow_target'];
         } else {
 //          if($target_mission == MT_DESTROY) {
 //            $errorlist .= classLocale::$lang['fl_nomoon'];
 //          }
 
-          if($target_mission == MT_RECYCLE) {
-            if($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0) {
+          if ($target_mission == MT_RECYCLE) {
+            if ($TargetPlanet['debris_metal'] + $TargetPlanet['debris_crystal'] == 0) {
               $errorlist .= classLocale::$lang['fl_nodebris'];
             }
           }
@@ -2024,12 +2039,12 @@ class Fleet extends UnitContainer {
     }
 
 
-    if(sn_module::$sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id')) {
+    if (sn_module::$sn_module['unit_captain']->manifest['active'] && $captain_id = sys_get_param_id('captain_id')) {
       $captain = sn_module::$sn_module['unit_captain']->unit_captain_get($planetrow['id']);
-      if(!$captain) {
+      if (!$captain) {
         $errorlist .= classLocale::$lang['module_unit_captain_error_no_captain'];
-      } elseif($captain['unit_location_type'] == LOC_PLANET) {
-        if($target_mission == MT_RELOCATE && ($arriving_captain = mrc_get_level($user, $TargetPlanet, UNIT_CAPTAIN, true))) {
+      } elseif ($captain['unit_location_type'] == LOC_PLANET) {
+        if ($target_mission == MT_RELOCATE && ($arriving_captain = mrc_get_level($user, $TargetPlanet, UNIT_CAPTAIN, true))) {
           $errorlist .= classLocale::$lang['module_unit_captain_error_captain_already_bound'];
         }
       } else {
@@ -2037,7 +2052,7 @@ class Fleet extends UnitContainer {
       }
     }
 
-    if($errorlist) {
+    if ($errorlist) {
       sn_db_transaction_rollback();
       message("<span class='error'><ul>{$errorlist}</ul></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
     }
@@ -2048,10 +2063,10 @@ class Fleet extends UnitContainer {
     //But is it acs??
     //Well all acs fleets must have a fleet code.
     //The co-ords must be the same as where the acs fleet is going.
-    if($fleet_group && sys_get_param_str('acs_target_mr') == "g{$galaxy}s{$system}p{$planet}t{$planet_type}") {
+    if ($fleet_group && sys_get_param_str('acs_target_mr') == "g{$galaxy}s{$system}p{$planet}t{$planet_type}") {
       //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
       $aks = db_acs_get_by_group_id($fleet_group);
-      if(!$aks) {
+      if (!$aks) {
         $fleet_group = 0;
       } else {
         //Also it must be mission type 2
@@ -2062,26 +2077,26 @@ class Fleet extends UnitContainer {
         $planet = $aks['planet'];
         $planet_type = $aks['planet_type'];
       }
-    } elseif($target_mission == MT_ACS) {
+    } elseif ($target_mission == MT_ACS) {
       //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
       $target_mission = MT_ATTACK;
     }
 
-    if($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
+    if ($target_mission == MT_COLONIZE || $target_mission == MT_EXPLORE) {
       $TargetPlanet = array('galaxy' => $galaxy, 'system' => $system, 'planet' => $planet, 'id_owner' => 0);
     }
     $options = array('fleet_speed_percent' => $speed_percent, 'fleet_group' => $fleet_group, 'resources' => $StorageNeeded);
     $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
-    if($cant_attack !== FLIGHT_ALLOWED) {
+    if ($cant_attack !== FLIGHT_ALLOWED) {
       message("<span class='error'><b>{$classLocale['fl_attack_error'][$cant_attack]}</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
     }
 
     $mission_time_in_seconds = 0;
     $arrival_time = SN_TIME_NOW + $time_to_travel;
-    if($target_mission == MT_ACS && $aks) {
+    if ($target_mission == MT_ACS && $aks) {
 //    if($fleet_start_time > $aks['ankunft']) {
-      if($arrival_time > $aks['ankunft']) {
+      if ($arrival_time > $aks['ankunft']) {
         message(classLocale::$lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, $arrival_time) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), classLocale::$lang['fl_error']);
       }
       $group_sync_delta_time = $aks['ankunft'] - $arrival_time;
@@ -2090,11 +2105,11 @@ class Fleet extends UnitContainer {
       // Set return time to ACS return time + fleet's time to travel
       $return_time = $aks['ankunft'] + $time_to_travel;
     } else {
-      if($target_mission == MT_EXPLORE || $target_mission == MT_HOLD) {
+      if ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD) {
         $max_duration = $target_mission == MT_EXPLORE ? get_player_max_expedition_duration($user) : ($target_mission == MT_HOLD ? 12 : 0);
-        if($max_duration) {
+        if ($max_duration) {
           $mission_time_in_hours = sys_get_param_id('missiontime');
-          if($mission_time_in_hours > $max_duration || $mission_time_in_hours < 1) {
+          if ($mission_time_in_hours > $max_duration || $mission_time_in_hours < 1) {
             $debug->warning('Supplying wrong mission time', 'Hack attempt', 302, array('base_dump' => true));
             die();
           }
@@ -2108,7 +2123,7 @@ class Fleet extends UnitContainer {
 //    $FleetStorage = 0;
 
     $db_changeset = array();
-    foreach($fleetarray as $Ship => $Count) {
+    foreach ($fleetarray as $Ship => $Count) {
 //      $FleetStorage += get_unit_param($Ship, P_CAPACITY) * $Count;
       $db_changeset['unit'][] = sn_db_unit_changeset_prepare($Ship, -$Count, $user, $planetrow['id']);
     }
@@ -2161,7 +2176,7 @@ class Fleet extends UnitContainer {
 
     $template = gettemplate('fleet3', true);
 
-    if(is_array($captain)) {
+    if (is_array($captain)) {
       db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$objFleet->dbId}");
     }
 
@@ -2173,7 +2188,7 @@ class Fleet extends UnitContainer {
       'START_TIME_TEXT'    => date(FMT_DATE_TIME, $return_time + SN_CLIENT_TIME_DIFF),
       'START_LEFT'         => floor($return_time + 1 - SN_TIME_NOW),
     );
-    if(!empty($TargetPlanet)) {
+    if (!empty($TargetPlanet)) {
       $template_route += array(
         'END_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$TargetPlanet['planet_type']],
         'END_COORDS'       => uni_render_coordinates($TargetPlanet),
@@ -2186,8 +2201,8 @@ class Fleet extends UnitContainer {
     $template->assign_block_vars('fleets', $template_route);
 
     $sn_groups_fleet = sn_get_groups('fleet');
-    foreach($fleetarray as $ship_id => $ship_count) {
-      if(in_array($ship_id, $sn_groups_fleet) && $ship_count) {
+    foreach ($fleetarray as $ship_id => $ship_count) {
+      if (in_array($ship_id, $sn_groups_fleet) && $ship_count) {
 //      $ship_base_data = get_ship_data($ship_id, $user);
         $template->assign_block_vars('fleets.ships', array(
           'ID'          => $ship_id,
@@ -2227,16 +2242,16 @@ class Fleet extends UnitContainer {
    * @throws Exception
    */
   public function checkMissionRestrictions($checklist) {
-    foreach($checklist as $condition => $action) {
+    foreach ($checklist as $condition => $action) {
       $checkResult = call_user_func(array($this, $condition));
 
-      if(is_array($action) && !empty($action[$checkResult])) {
+      if (is_array($action) && !empty($action[$checkResult])) {
         $action = $action[$checkResult];
       }
 
-      if(is_array($action)) {
+      if (is_array($action)) {
         $this->checkMissionRestrictions($action);
-      } elseif(!$checkResult) {
+      } elseif (!$checkResult) {
         throw new Exception($action, $action);
       }
     }
@@ -2309,8 +2324,8 @@ class Fleet extends UnitContainer {
   }
 
   protected function checkResourcesPositive() {
-    foreach($this->resource_list as $resourceId => $resourceAmount) {
-      if($resourceAmount < 0) {
+    foreach ($this->resource_list as $resourceId => $resourceAmount) {
+      if ($resourceAmount < 0) {
         return false;
       }
     }
@@ -2332,8 +2347,8 @@ class Fleet extends UnitContainer {
   protected function checkSourceEnoughResources() {
     $fleetResources = $this->resource_list;
     $fleetResources[RES_DEUTERIUM] = ceil($fleetResources[RES_DEUTERIUM] + $this->travelData['consumption']);
-    foreach($fleetResources as $resourceId => $resourceAmount) {
-      if(mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resourceId) < ceil($fleetResources[$resourceId])) {
+    foreach ($fleetResources as $resourceId => $resourceAmount) {
+      if (mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resourceId) < ceil($fleetResources[$resourceId])) {
         return false;
       }
     }
@@ -2376,7 +2391,7 @@ class Fleet extends UnitContainer {
 
   protected function checkHaveRecyclers() {
     $recyclers = 0;
-    foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
+    foreach (sn_get_groups('flt_recyclers') as $recycler_id) {
       $recyclers += $this->unitList->unitsCountById($recycler_id);
     }
 
@@ -2384,11 +2399,25 @@ class Fleet extends UnitContainer {
   }
 
 
-  // TODO
+  /**
+   * @return bool
+   */
   protected function checkTargetOwn() {
-    $result = $this->dbTargetRow['id_owner'] == $this->dbSourcePlanetRow['id_owner'];
+    return $this->dbTargetRow['id_owner'] == $this->dbSourcePlanetRow['id_owner'];
+  }
 
-    if($result) {
+  /**
+   * @return bool
+   */
+  protected function checkTargetOther() {
+    return !$this->checkTargetOwn();
+  }
+
+  /**
+   * @return bool
+   */
+  protected function forceTargetOwn() {
+    if ($result = $this->checkTargetOwn()) {
       // Spying can't be done on owner's planet/moon
       unset($this->allowed_missions[MT_SPY]);
       // Attack can't be done on owner's planet/moon
@@ -2424,21 +2453,12 @@ class Fleet extends UnitContainer {
 
 
   protected function checkSpiesOnly() {
-    $result = $this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal();
-    if($result) {
-      $this->allowed_missions = array(
-        MT_SPY => $this->exists_missions[MT_SPY],
-      );
-    } else {
-      unset($this->allowed_missions[MT_SPY]);
-    }
-
-    return $result;
+    return $this->unitList->unitsCountById(SHIP_SPY) == $this->shipsGetTotal();
   }
 
   protected function checkTargetAllyDeposit() {
     $result = mrc_get_level($this->dbTargetOwnerRow, $this->dbTargetRow, STRUC_ALLY_DEPOSIT) >= 1;
-    if(!$result) {
+    if (!$result) {
       unset($this->allowed_missions[MT_HOLD]);
     }
 
@@ -2446,12 +2466,20 @@ class Fleet extends UnitContainer {
   }
 
 
-  protected function checkMissionsOwn() {
-    $result = !$this->_mission_type || in_array($this->_mission_type, array(
-        MT_HOLD      => $this->exists_missions[MT_HOLD],
-        MT_RECYCLE   => $this->exists_missions[MT_RECYCLE],
-        MT_RELOCATE  => $this->exists_missions[MT_RELOCATE],
-        MT_TRANSPORT => $this->exists_missions[MT_TRANSPORT],
+  /**
+   * Forces missions that can flight to OWN planets
+   *
+   * @return bool
+   */
+  protected function forceMissionsOwn() {
+    $result =
+      !$this->_mission_type
+      ||
+      in_array($this->_mission_type, array(
+        MT_HOLD,
+        MT_RECYCLE,
+        MT_RELOCATE,
+        MT_TRANSPORT,
       ));
 
     unset($this->allowed_missions[MT_ATTACK]);
@@ -2465,9 +2493,16 @@ class Fleet extends UnitContainer {
     return $result;
   }
 
-  protected function checkMission($missionType) {
+  /**
+   * Check mission type OR no mission - and limits available missions to this type if positive
+   *
+   * @param int $missionType
+   *
+   * @return bool
+   */
+  protected function forceMission($missionType) {
     $result = !$this->_mission_type || $this->_mission_type == $missionType;
-    if($result) {
+    if ($result) {
       $this->allowed_missions = array(
         $missionType => $this->exists_missions[$missionType],
       );
@@ -2478,30 +2513,37 @@ class Fleet extends UnitContainer {
     return $result;
   }
 
+  protected function forceMissionExplore() {
+    return $this->forceMission(MT_EXPLORE);
+  }
+
+  protected function forceMissionColonize() {
+    return $this->forceMission(MT_COLONIZE);
+  }
+
+  protected function forceMissionRecycle() {
+    return $this->forceMission(MT_RECYCLE);
+  }
+
+  protected function forceMissionMissile() {
+    return $this->forceMission(MT_MISSILE);
+  }
+
+  /**
+   * Just checks mission type
+   *
+   * @param int $missionType
+   *
+   * @return bool
+   */
   protected function checkMissionNonRestrict($missionType) {
     return $this->_mission_type == $missionType;
   }
 
-  protected function checkMissionExplore() {
-    return $this->checkMission(MT_EXPLORE);
-  }
-
-  protected function checkMissionColonize() {
-    return $this->checkMission(MT_COLONIZE);
-  }
-
-  protected function checkMissionRecycle() {
-    return $this->checkMission(MT_RECYCLE);
-  }
-
-  protected function checkMissionMissile() {
-    return $this->checkMission(MT_MISSILE);
-  }
 
   protected function checkNotEmptyMission() {
     return !empty($this->_mission_type);
   }
-
 
   protected function checkMissionRelocate() {
     return $this->checkMissionNonRestrict(MT_RELOCATE);
@@ -2516,6 +2558,7 @@ class Fleet extends UnitContainer {
   protected function checkMissionTransport() {
     return $this->checkMissionNonRestrict(MT_TRANSPORT);
   }
+
   protected function checkMissionTransportReal() {
     return
       $this->checkRealFlight()
@@ -2524,8 +2567,23 @@ class Fleet extends UnitContainer {
   }
 
 
-  protected function checkMissionSpy() {
-    return $this->checkMission(MT_SPY);
+  protected function forceMissionSpy() {
+    return $this->forceMission(MT_SPY);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function unsetMissionSpyComplex() {
+    unset($this->allowed_missions[MT_SPY]);
+    if($this->_mission_type == MT_SPY) {
+      if($this->checkRealFlight()) {
+        return false;
+      }
+      $this->_mission_type = MT_NONE;
+    }
+
+    return true;
   }
 
 
@@ -2533,10 +2591,26 @@ class Fleet extends UnitContainer {
     return $this->isRealFlight;
   }
 
+  /**
+   * @return bool
+   */
   protected function checkMissionExists() {
     return !empty($this->exists_missions[$this->_mission_type]);
   }
 
+  /**
+   * @return bool
+   */
+  protected function checkPlayerInactiveOrNotNoob() {
+    return
+      $this->checkTargetNotActive()
+      ||
+      $this->checkTargetNotNoob();
+  }
+
+  /**
+   * @return bool
+   */
   protected function checkTargetActive() {
     return
       empty($this->dbTargetOwnerRow['onlinetime'])
@@ -2550,19 +2624,33 @@ class Fleet extends UnitContainer {
   }
 
 
+  /**
+   * @return bool
+   */
   protected function checkSameAlly() {
     return !empty($this->dbTargetOwnerRow['ally_id']) && $this->dbTargetOwnerRow['ally_id'] == $this->dbOwnerRow['ally_id'];
   }
 
+  /**
+   * @return bool
+   */
   protected function checkTargetNoob() {
     $user_points = $this->dbTargetOwnerRow['total_points'];
     $enemy_points = $this->dbTargetOwnerRow['total_points'];
 
     return
       // Target is under Noob Protection but Fleet owner is not
-      ($enemy_points <= classSupernova::$config->game_noob_points && $user_points > classSupernova::$config->game_noob_points)
-      ||
-      (classSupernova::$config->game_noob_factor && $user_points > $enemy_points * classSupernova::$config->game_noob_factor);
+      (
+        classSupernova::$config->game_noob_points
+        &&
+        $enemy_points <= classSupernova::$config->game_noob_points
+        &&
+        $user_points > classSupernova::$config->game_noob_points
+      ) || (
+        classSupernova::$config->game_noob_factor
+        &&
+        $user_points > $enemy_points * classSupernova::$config->game_noob_factor
+      );
   }
 
   // TODO - REDO MAIN FUNCTION
@@ -2579,7 +2667,6 @@ class Fleet extends UnitContainer {
   }
 
 
-
   protected function checkMissionHoldOnNotNoob() {
     return
       $this->checkTargetNotActive()
@@ -2594,6 +2681,24 @@ class Fleet extends UnitContainer {
     $missilesAttack = $this->unitList->unitsCountById(UNIT_DEF_MISSILE_INTERPLANET);
 
     return $missilesAttack != 0 && $missilesAttack == $this->shipsGetTotal();
+  }
+
+  protected function checkSiloLevel() {
+    $sn_data_mip = get_unit_param(UNIT_DEF_MISSILE_INTERPLANET);
+
+    return mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, STRUC_SILO) >= $sn_data_mip[P_REQUIRE][STRUC_SILO];
+  }
+
+  protected function checkSameGalaxy() {
+    return $this->targetVector->galaxy == $this->dbSourcePlanetRow['galaxy'];
+  }
+
+  protected function checkMissileDistance() {
+    return abs($this->dbSourcePlanetRow['system'] - $this->targetVector->system) <= flt_get_missile_range($this->dbOwnerRow);
+  }
+
+  protected function checkMissileTarget() {
+    return empty($this->targetedUnitId) || in_array($this->targetedUnitId, sn_get_groups('defense_active'));
   }
 
 }

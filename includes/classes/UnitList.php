@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.81
+   * @version 41a6.86
    */
   // TODO - Factory
   public function _createElement() {
@@ -265,6 +265,12 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return $this->unitsPropertySumById($unit_id, 'count');
   }
 
+  /**
+   * @param int    $unit_id
+   * @param string $propertyName
+   *
+   * @return int
+   */
   public function unitsPropertySumById($unit_id = 0, $propertyName = 'count') {
     $result = 0;
     foreach($this->mapUnitIdToDb as $unit) {
