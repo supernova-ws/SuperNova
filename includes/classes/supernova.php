@@ -203,7 +203,7 @@ class classSupernova {
 
 
   public static function log_file($message, $spaces = 0) {
-    if(self::$debug) {
+    if (self::$debug) {
       self::$debug->log_file($message, $spaces);
     }
   }
@@ -215,16 +215,16 @@ class classSupernova {
   // Перепаковывает массив на заданную глубину, убирая поля с null
   public static function array_repack(&$array, $level = 0) {
     // TODO $lock_table не нужна тут
-    if(!is_array($array)) {
+    if (!is_array($array)) {
       return;
     }
 
-    foreach($array as $key => &$value) {
-      if($value === null) {
+    foreach ($array as $key => &$value) {
+      if ($value === null) {
         unset($array[$key]);
-      } elseif($level > 0 && is_array($value)) {
+      } elseif ($level > 0 && is_array($value)) {
         static::array_repack($value, $level - 1);
-        if(empty($value)) {
+        if (empty($value)) {
           unset($array[$key]);
         }
       }
@@ -235,7 +235,7 @@ class classSupernova {
   // TODO Вынести в отдельный объект
   public static function cache_repack($location_type, $record_id = 0) {
     // Если есть $user_id - проверяем, а надо ли перепаковывать?
-    if($record_id && isset(static::$data[$location_type][$record_id]) && static::$data[$location_type][$record_id] !== null) {
+    if ($record_id && isset(static::$data[$location_type][$record_id]) && static::$data[$location_type][$record_id] !== null) {
       return;
     }
 
@@ -246,7 +246,7 @@ class classSupernova {
 
   public static function cache_clear($location_type, $hard = true) {
     //print("<br />CACHE CLEAR {$cache_id} " . ($hard ? 'HARD' : 'SOFT') . "<br />");
-    if($hard && !empty(static::$data[$location_type])) {
+    if ($hard && !empty(static::$data[$location_type])) {
       // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
       array_walk(static::$data[$location_type], function (&$item) { $item = null; });
     }
@@ -257,7 +257,7 @@ class classSupernova {
 
   public static function cache_clear_all($hard = true) {
     //print('<br />CACHE CLEAR ALL<br />');
-    if($hard) {
+    if ($hard) {
       static::$data = array();
       static::cache_lock_unset_all();
     }
@@ -286,12 +286,12 @@ class classSupernova {
   */
   public static function cache_set($location_type, $record_id, $record, $force_overwrite = false, $skip_lock = false) {
     // нет идентификатора - выход
-    if(!($record_id = $record[static::$location_info[$location_type][P_ID]])) {
+    if (!($record_id = $record[static::$location_info[$location_type][P_ID]])) {
       return;
     }
 
     $in_transaction = static::db_transaction_check(false);
-    if(
+    if (
       $force_overwrite
       ||
       // Не заменяются заблокированные записи во время транзакции
@@ -301,7 +301,7 @@ class classSupernova {
       !static::cache_isset($location_type, $record_id)
     ) {
       static::$data[$location_type][$record_id] = $record;
-      if($in_transaction && !$skip_lock) {
+      if ($in_transaction && !$skip_lock) {
         static::cache_lock_set($location_type, $record_id);
       }
     }
@@ -309,7 +309,7 @@ class classSupernova {
 
   public static function cache_unset($cache_id, $safe_record_id) {
     // $record_id должен быть проверен заранее !
-    if(isset(static::$data[$cache_id][$safe_record_id]) && static::$data[$cache_id][$safe_record_id] !== null) {
+    if (isset(static::$data[$cache_id][$safe_record_id]) && static::$data[$cache_id][$safe_record_id] !== null) {
       // Выставляем запись в null
       static::$data[$cache_id][$safe_record_id] = null;
       // Очищаем кэш мягко - что бы удалить очистить связанные данные - кэш локаций и кэш запоросов и всё, что потребуется впредь
@@ -326,7 +326,7 @@ class classSupernova {
   }
 
   public static function cache_lock_unset($location_type, $record_id) {
-    if(isset(static::$locks[$location_type][$record_id])) {
+    if (isset(static::$locks[$location_type][$record_id])) {
       unset(static::$locks[$location_type][$record_id]);
     }
 
@@ -360,13 +360,13 @@ class classSupernova {
    */
   public static function db_transaction_check($status = null) {
     $error_msg = false;
-    if($status && !static::$db_in_transaction) {
+    if ($status && !static::$db_in_transaction) {
       $error_msg = 'No transaction started for current operation';
-    } elseif($status === null && static::$db_in_transaction) {
+    } elseif ($status === null && static::$db_in_transaction) {
       $error_msg = 'Transaction is already started';
     }
 
-    if($error_msg) {
+    if (!empty($error_msg)) {
       // TODO - Убрать позже
       print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
       $backtrace = debug_backtrace();
@@ -386,7 +386,7 @@ class classSupernova {
     static::$transaction_id++;
     doquery('START TRANSACTION');
 
-    if(classSupernova::$config->db_manual_lock_enabled) {
+    if (classSupernova::$config->db_manual_lock_enabled) {
       classSupernova::$config->db_loadItem('var_db_manually_locked');
       classSupernova::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
     }
@@ -401,7 +401,7 @@ class classSupernova {
   public static function db_transaction_commit() {
     static::db_transaction_check(true);
 
-    if(!empty(static::$delayed_changset)) {
+    if (!empty(static::$delayed_changset)) {
       static::db_changeset_apply(static::$delayed_changset, true);
       // pdump(static::$delayed_changset);
     }
@@ -413,7 +413,7 @@ class classSupernova {
   public static function db_transaction_rollback() {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
 
-    if(!empty(static::$delayed_changset)) {
+    if (!empty(static::$delayed_changset)) {
       static::db_changeset_revert();
     }
     doquery('ROLLBACK');
@@ -441,7 +441,7 @@ class classSupernova {
    */
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
-    foreach($tables as $table_name => $condition) {
+    foreach ($tables as $table_name => $condition) {
       self::$db->doquery("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
     }
   }
@@ -484,17 +484,17 @@ class classSupernova {
     //pdump($filter, 'Выбираем ' . $location_type);
     $query_cache = &static::$queries[$location_type][$filter];
 
-    if(!isset($query_cache) || $query_cache === null) {
+    if (!isset($query_cache) || $query_cache === null) {
       // pdump($filter, 'Кэш пустой, начинаем возню');
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
       $query_cache = array();
 
-      if(static::db_transaction_check(false)) {
+      if (static::db_transaction_check(false)) {
         //pdump($filter, 'Транзакция - блокируем ' . $location_type);
         // Проходим по всем родителям данной записи
         // foreach($location_info[P_OWNER_INFO] as $owner_location_type => $owner_data)
-        foreach($location_info[P_OWNER_INFO] as $owner_data) {
+        foreach ($location_info[P_OWNER_INFO] as $owner_data) {
           $owner_location_type = $owner_data[P_LOCATION];
           //pdump($filter, 'Транзакция - блокируем родителя ' . $owner_location_type);
           $parent_id_list = array();
@@ -507,15 +507,15 @@ class classSupernova {
             ($fetch ? ' LIMIT 1' : ''), false, true);
 
           //pdump($q, 'Запрос блокировки');
-          while($row = db_fetch($query)) {
+          while ($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
-            if(!static::cache_lock_get($owner_location_type, $row['parent_id'])) {
+            if (!static::cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
             }
           }
           //pdump($parent_id_list, 'Выбраны родители');
           // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
-          if($indexes_str = implode(',', $parent_id_list)) {
+          if ($indexes_str = implode(',', $parent_id_list)) {
             //pdump($indexes_str, '$indexes_str');
             $parent_id_field = static::$location_info[$owner_location_type][P_ID];
             static::db_get_record_list($owner_location_type,
@@ -530,7 +530,7 @@ class classSupernova {
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
-      while($row = db_fetch($query)) {
+      while ($row = db_fetch($query)) {
         // static::db_get_record_by_id($location_type, $row[$id_field]);
         static::cache_set($location_type, $row[$id_field], $row);
         $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
@@ -538,14 +538,14 @@ class classSupernova {
       }
     }
 
-    if($no_return) {
+    if ($no_return) {
       return true;
     } else {
       $result = false;
-      if(is_array($query_cache)) {
-        foreach($query_cache as $key => $value) {
+      if (is_array($query_cache)) {
+        foreach ($query_cache as $key => $value) {
           $result[$key] = $value;
-          if($fetch) {
+          if ($fetch) {
             break;
           }
         }
@@ -564,16 +564,16 @@ class classSupernova {
    */
   public static function db_upd_record_by_id($location_type, $record_id, $set) {
     //if(!($record_id = intval($record_id)) || !($set = trim($set))) return false;
-    if(!($record_id = idval($record_id)) || !($set = trim($set))) {
+    if (!($record_id = idval($record_id)) || !($set = trim($set))) {
       return false;
     }
 
     $location_info = &static::$location_info[$location_type];
     $id_field = $location_info[P_ID];
     $table_name = $location_info[P_TABLE_NAME];
-    if($result = static::db_query($q = "UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
+    if ($result = static::db_query($q = "UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
-      if(static::$db->db_affected_rows()) {
+      if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         // TODO - переделать под работу со структурированными $set
 
@@ -589,7 +589,7 @@ class classSupernova {
   }
 
   public static function db_upd_record_list($location_type, $condition, $set) {
-    if(!($set = trim($set))) {
+    if (!($set = trim($set))) {
       return false;
     }
 
@@ -598,9 +598,9 @@ class classSupernova {
 
 //static::db_get_record_list($location_type, $condition, false, true);
 
-    if($result = static::db_query("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
+    if ($result = static::db_query("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
-      if(static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
+      if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         // TODO - когда будет структурированный $condition и $set - перепаковывать данные
         static::cache_clear($location_type, true);
@@ -619,8 +619,8 @@ class classSupernova {
   public static function db_ins_record($location_type, $set) {
     $set = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if($result = static::db_query("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
-      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+    if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
+      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         $record_id = db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
@@ -642,8 +642,8 @@ class classSupernova {
     $fields = implode(',', array_keys($field_set));
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if($result = static::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);")) {
-      if(static::$db->db_affected_rows()) {
+    if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);")) {
+      if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         $record_id = db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
@@ -659,15 +659,15 @@ class classSupernova {
 
   public static function db_del_record_by_id($location_type, $safe_record_id) {
     // if(!($safe_record_id = intval($safe_record_id))) return false;
-    if(!($safe_record_id = idval($safe_record_id))) {
+    if (!($safe_record_id = idval($safe_record_id))) {
       return false;
     }
 
     $location_info = &static::$location_info[$location_type];
     $id_field = $location_info[P_ID];
     $table_name = $location_info[P_TABLE_NAME];
-    if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
-      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+    if ($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
+      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         static::cache_unset($location_type, $safe_record_id);
       }
@@ -677,7 +677,7 @@ class classSupernova {
   }
 
   public static function db_del_record_list($location_type, $condition) {
-    if(!($condition = trim($condition))) {
+    if (!($condition = trim($condition))) {
       return false;
     }
 
@@ -686,8 +686,8 @@ class classSupernova {
 
 //static::db_get_record_list($location_type, $condition, false, true);
 
-    if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
-      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+    if ($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
+      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось
         // TODO - когда будет структурированный $condition можно будет делать только cache_unset по нужным записям
@@ -734,20 +734,20 @@ class classSupernova {
 
   public static function db_get_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
     // TODO Проверить, кстати - а везде ли нужно выбирать юзеров или где-то все-таки ищутся Альянсы ?
-    if(!($username_unsafe = trim($username_unsafe))) {
+    if (!($username_unsafe = trim($username_unsafe))) {
       return false;
     }
 
     $user = null;
-    if(is_array(static::$data[LOC_USER])) {
-      foreach(static::$data[LOC_USER] as $user_id => $user_data) {
-        if(is_array($user_data) && isset($user_data['username'])) {
+    if (is_array(static::$data[LOC_USER])) {
+      foreach (static::$data[LOC_USER] as $user_id => $user_data) {
+        if (is_array($user_data) && isset($user_data['username'])) {
           // проверяем поле
           // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
-          if((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe))) {
+          if ((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe))) {
             // $user_as_ally = intval($user_data['user_as_ally']);
             $user_as_ally = idval($user_data['user_as_ally']);
-            if($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally)) {
+            if ($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally)) {
               $user = $user_data;
               break;
             }
@@ -756,7 +756,7 @@ class classSupernova {
       }
     }
 
-    if($user === null) {
+    if ($user === null) {
       // Вытаскиваем запись
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
@@ -774,17 +774,17 @@ class classSupernova {
 
   // UNUSED
   public static function db_get_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
-    if(!($email_unsafe = strtolower(trim($email_unsafe)))) {
+    if (!($email_unsafe = strtolower(trim($email_unsafe)))) {
       return false;
     }
 
     $user = null;
     // TODO переделать на индексы
-    if(is_array(static::$data[LOC_USER])) {
-      foreach(static::$data[LOC_USER] as $user_id => $user_data) {
-        if(is_array($user_data) && isset($user_data['email_2'])) {
+    if (is_array(static::$data[LOC_USER])) {
+      foreach (static::$data[LOC_USER] as $user_id => $user_data) {
+        if (is_array($user_data) && isset($user_data['email_2'])) {
           // проверяем поле
-          if(strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email']) == $email_unsafe)) {
+          if (strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email']) == $email_unsafe)) {
             $user = $user_data;
             break;
           }
@@ -792,7 +792,7 @@ class classSupernova {
       }
     }
 
-    if($user === null) {
+    if ($user === null) {
       // Вытаскиваем запись
       $email_safe = db_escape($email_unsafe);
       $user = static::db_query(
@@ -811,7 +811,7 @@ class classSupernova {
     $user = null;
     // TODO переделать на индексы
 
-    if($user === null && !empty($where_safe)) {
+    if ($user === null && !empty($where_safe)) {
       // Вытаскиваем запись
       $user = static::db_query("SELECT * FROM {{users}} WHERE {$where_safe}", true);
 
@@ -833,7 +833,7 @@ class classSupernova {
   public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*') {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
     $unit = static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
-    if(is_array($unit)) {
+    if (is_array($unit)) {
       static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
     }
 
@@ -849,15 +849,15 @@ class classSupernova {
    */
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id) {
     //if(!($location_type = intval($location_type)) || !($location_id = intval($location_id))) return false;
-    if(!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
+    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
       return false;
     }
 
     $query_cache = &static::$locator[LOC_UNIT][$location_type][$location_id];
-    if(!isset($query_cache)) {
+    if (!isset($query_cache)) {
       $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
-      if(is_array($got_data)) {
-        foreach($got_data as $unit_id => $unit_data) {
+      if (is_array($got_data)) {
+        foreach ($got_data as $unit_id => $unit_data) {
           // static::$data[LOC_LOCATION][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
           $query_cache[$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
         }
@@ -865,8 +865,8 @@ class classSupernova {
     }
 
     $result = false;
-    if(is_array($query_cache)) {
-      foreach($query_cache as $key => $value) {
+    if (is_array($query_cache)) {
+      foreach ($query_cache as $key => $value) {
         $result[$key] = $value;
       }
     }
@@ -901,7 +901,7 @@ class classSupernova {
    *
    */
   public static function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false) {
-    if(!$user_id) {
+    if (!$user_id) {
       pdump(debug_backtrace());
       die('No user_id for que_get_que()');
     }
@@ -911,16 +911,16 @@ class classSupernova {
     $query = array();
 
     // if($user_id = intval($user_id))
-    if($user_id = idval($user_id)) {
+    if ($user_id = idval($user_id)) {
       $query[] = "`que_player_id` = {$user_id}";
     }
 
-    if($que_type == QUE_RESEARCH || $planet_id === null) {
+    if ($que_type == QUE_RESEARCH || $planet_id === null) {
       $query[] = "`que_planet_id` IS NULL";
-    } elseif($planet_id) {
+    } elseif ($planet_id) {
       $query[] = "(`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")";
     }
-    if($que_type) {
+    if ($que_type) {
       $query[] = "`que_type` = {$que_type}";
     }
 
@@ -953,13 +953,13 @@ class classSupernova {
 
 
   public static function db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id = null) {
-    if(!is_array($user)) {
+    if (!is_array($user)) {
       // TODO - remove later
       print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
       pdump(debug_backtrace());
       die('USER is not ARRAY');
     }
-    if(!isset($user['id']) || !$user['id']) {
+    if (!isset($user['id']) || !$user['id']) {
       // TODO - remove later
       print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
       pdump($user);
@@ -972,9 +972,8 @@ class classSupernova {
     $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
     $location_id = $location_id ? $location_id : 'NULL';
 
-    $db_changeset = array();
     $temp = db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
-    if($temp['unit_id']) {
+    if ($temp['unit_id']) {
       $db_changeset = array(
         'action'  => SQL_OP_UPDATE,
         P_VERSION => 1,
@@ -1043,9 +1042,9 @@ class classSupernova {
   }
 
   public function db_changeset_condition_compile(&$conditions, &$table_name = '') {
-    if(!$conditions[P_LOCATION] || $conditions[P_LOCATION] == LOC_NONE) {
+    if (!$conditions[P_LOCATION] || $conditions[P_LOCATION] == LOC_NONE) {
       $conditions[P_LOCATION] = LOC_NONE;
-      switch($table_name) {
+      switch ($table_name) {
         case 'users':
         case LOC_USER:
           $conditions[P_TABLE_NAME] = $table_name = 'users';
@@ -1067,18 +1066,18 @@ class classSupernova {
     }
 
     $conditions[P_FIELDS_STR] = '';
-    if($conditions['fields']) {
+    if ($conditions['fields']) {
       $fields = array();
-      foreach($conditions['fields'] as $field_name => $field_data) {
+      foreach ($conditions['fields'] as $field_name => $field_data) {
         $condition = "`{$field_name}` = ";
         $value = '';
-        if($field_data['delta']) {
+        if ($field_data['delta']) {
           $value = "`{$field_name}`" . ($field_data['delta'] >= 0 ? '+' : '') . $field_data['delta'];
-        } elseif($field_data['set']) {
+        } elseif ($field_data['set']) {
           $value = (is_string($field_data['set']) ? "'{$field_data['set']}'" : $field_data['set']);
         }
 
-        if($value) {
+        if ($value) {
           $fields[] = $condition . $value;
         }
       }
@@ -1086,12 +1085,12 @@ class classSupernova {
     }
 
     $conditions[P_WHERE_STR] = '';
-    if(!empty($conditions['where'])) {
-      if($conditions[P_VERSION] == 1) {
+    if (!empty($conditions['where'])) {
+      if ($conditions[P_VERSION] == 1) {
         $the_conditions = array();
-        foreach($conditions['where'] as $field_id => $field_value) {
+        foreach ($conditions['where'] as $field_id => $field_value) {
           // Простое условие - $field_id = $field_value
-          if(is_string($field_id)) {
+          if (is_string($field_id)) {
             $field_value =
               $field_value === null ? 'NULL' :
                 (is_string($field_value) ? "'" . db_escape($field_value) . "'" :
@@ -1112,7 +1111,7 @@ class classSupernova {
       $conditions[P_WHERE_STR] = implode(' AND ', $the_conditions);
     }
 
-    switch($conditions['action']) {
+    switch ($conditions['action']) {
       case SQL_OP_DELETE:
         $conditions[P_ACTION_STR] = ("DELETE FROM {{{$table_name}}}");
       break;
@@ -1132,11 +1131,11 @@ class classSupernova {
 
   public static function db_changeset_apply($db_changeset, $flush_delayed = false) {
     $result = true;
-    if(!is_array($db_changeset) || empty($db_changeset)) {
+    if (!is_array($db_changeset) || empty($db_changeset)) {
       return $result;
     }
 
-    foreach($db_changeset as $table_name => &$table_data) {
+    foreach ($db_changeset as $table_name => &$table_data) {
       // TODO - delayed changeset
       /*
       if(static::db_transaction_check(false) && !$flush_delayed && ($table_name == 'users' || $table_name == 'planets' || $table_name == 'unit'))
@@ -1145,19 +1144,19 @@ class classSupernova {
         continue;
       }
       */
-      foreach($table_data as $record_id => &$conditions) {
+      foreach ($table_data as $record_id => &$conditions) {
         static::db_changeset_condition_compile($conditions, $table_name);
 
-        if($conditions['action'] != SQL_OP_DELETE && !$conditions[P_FIELDS_STR]) {
+        if ($conditions['action'] != SQL_OP_DELETE && !$conditions[P_FIELDS_STR]) {
           continue;
         }
-        if($conditions['action'] == SQL_OP_DELETE && !$conditions[P_WHERE_STR]) {
+        if ($conditions['action'] == SQL_OP_DELETE && !$conditions[P_WHERE_STR]) {
           continue;
         } // Защита от случайного удаления всех данных в таблице
 
-        if($conditions[P_LOCATION] != LOC_NONE) {
+        if ($conditions[P_LOCATION] != LOC_NONE) {
           //die('spec ops supernova.php line 928 Добавить работу с кэшем юнитов итд');
-          switch($conditions['action']) {
+          switch ($conditions['action']) {
             case SQL_OP_DELETE:
               $result = self::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result;
             break;
@@ -1239,13 +1238,13 @@ class classSupernova {
   public static function init_0_prepare() {
     // Отключаем magic_quotes
     ini_get('magic_quotes_sybase') ? die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...') : false;
-    if(@get_magic_quotes_gpc()) {
+    if (@get_magic_quotes_gpc()) {
       $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
       array_walk_recursive($gpcr, function (&$value, $key) {
         $value = stripslashes($value);
       });
     }
-    if(function_exists('set_magic_quotes_runtime')) {
+    if (function_exists('set_magic_quotes_runtime')) {
       @set_magic_quotes_runtime(0);
       @ini_set('magic_quotes_runtime', 0);
       @ini_set('magic_quotes_sybase', 0);
@@ -1317,7 +1316,7 @@ class classSupernova {
   }
 
   public static function init_debug_state() {
-    if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
+    if ($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
       define('BE_DEBUG', true);
     }
 // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
@@ -1329,7 +1328,7 @@ class classSupernova {
     defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
     defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
 
-    if(defined('BE_DEBUG') || static::$config->debug) {
+    if (defined('BE_DEBUG') || static::$config->debug) {
       @define('BE_DEBUG', true);
       @ini_set('display_errors', 1);
       @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);

@@ -74,6 +74,7 @@ function fleet_ajax() {
     $target_coord['id_owner'] = $target_row['id_owner'];
   }
 
+  $unit_group = '';
   $fleet_array = array();
   switch($target_mission) {
     case MT_SPY:

@@ -19,6 +19,7 @@ require_once('general_pname.php');
  */
 function sn_function_call($func_name, $func_arg = array()) {
   // All data in classSupernova::$functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
+  $result = null;
 
   if (is_array(classSupernova::$functions[$func_name]) && !is_callable(classSupernova::$functions[$func_name])) {
     // Chain-callable functions should be made as following:
@@ -630,7 +631,7 @@ function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
   $head .= "From: {$from} \r\n";
   $head .= "Sender: {$from} \r\n";
   $head .= "Reply-To: {$from} \r\n";
-  $head .= "Organization: {$org} \r\n";
+  // $head .= "Organization: {$org} \r\n";
   $head .= "X-Sender: {$from} \r\n";
   $head .= "X-Priority: 3 \r\n";
   $body = str_replace("\r\n", "\n", $body);
@@ -809,6 +810,7 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
 function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '', $sub_type = '') {
   if (isset($handler_list) && is_array($handler_list) && !empty($handler_list)) {
     foreach ($handler_list as $function_name => $function_data) {
+      $override_with = '';
       if (is_string($function_data)) {
         $override_with = &$function_data;
       } elseif (isset($function_data['callable'])) {
@@ -1217,6 +1219,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     }
 
     $sn_data_planet_density = sn_get_groups('planet_density');
+    $prev_density_index = PLANET_DENSITY_NONE;
     foreach ($sn_data_planet_density as $key => $value) {
       if ($key == $new_density_index) {
         break;

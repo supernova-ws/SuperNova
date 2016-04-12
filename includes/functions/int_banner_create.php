@@ -15,7 +15,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
 // banner.php?id=<userid>&type=<banner|userbar>&format=<png>
   $id = intval($id);
 
-  switch($type) {
+  switch ($type) {
     case 'banner':
       $img_name = classSupernova::$config->int_banner_background;
     break;
@@ -35,7 +35,6 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
   $red = hexdec(substr($color, 0, 2));
   $green = hexdec(substr($color, 2, 4));
   $blue = hexdec(substr($color, 4, 6));
-  $select = imagecolorallocate($image, $red, $green, $blue);
   $txt_shadow = imagecolorallocatealpha($image, 255, 255, 255, 255);
   $txt_color = imagecolorallocatealpha($image, 255, 255, 255, 2);
   $txt_shadow2 = imagecolorallocatealpha($image, 255, 255, 255, 255);
@@ -48,7 +47,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
     'info'     => SN_ROOT_PHYSICAL . "design/fonts/" . classSupernova::$config->int_banner_fontInfo,
   );
 
-  if($id) {
+  if ($id) {
     // Querys
     $user = db_user_by_id($id);
     $planet_row = db_planet_by_id($user['id_planet']);
@@ -61,10 +60,14 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
     $b_lvl = ($user['total_rank'] ? $user['total_rank'] : classSupernova::$config->users_amount) . "/" . classSupernova::$config->users_amount;
   } else {
     $b_user = classLocale::$lang['ov_banner_empty_id'];
+    $b_lvl = '';
+    $b_ally = '';
+    $b_planet = '';
+    $b_xyz = '';
   }
 
   $b_univ = classSupernova::$config->game_name;
-  switch($type) {
+  switch ($type) {
     case 'banner':
       // Banner size 416 x 58
       $fsize = 15;
@@ -77,7 +80,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
       imagettftext($image, 11, 0, 8, 26, $txt_shadow, $fonts['info'], $b_user);
       imagettftext($image, 11, 0, 6, 23, $txt_color, $fonts['info'], $b_user);
 
-      if($id) {
+      if ($id) {
         // Player level - right-alligned
         $is = imagettfbbox(11, 0, $fonts['info'], $b_lvl);
         imagettftext($image, 11, 0, $size[0] - 4 - $is[2], 25, $txt_shadow, $fonts['info'], $b_lvl);
@@ -93,7 +96,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
         imagettftext($image, 6, 0, 6, 9, $txt_color2, $fonts['raids'], $b_planet . " " . $b_xyz);
 
         //StatPoint
-        $b_points = classLocale::$lang['ov_points'] . ": " . pretty_number($user['total_points']);
+        $b_points = classLocale::$lang['ov_points'] . ": " . pretty_number(!empty($user['total_points']) ? $user['total_points'] : 0);
         $is = imagettfbbox(8, 0, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 412 - $is[2], 11, $txt_shadow, $fonts['info'], $b_points);
         imagettftext($image, 8, 0, 410 - $is[2], 9, $txt_color, $fonts['info'], $b_points);
@@ -135,7 +138,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
       imagettftext($image, 9, 0, 4, $size[1] - 4, $txt_shadow, $fonts['userbar'], $b_user);
       imagettftext($image, 9, 0, 2, $size[1] - 6, $txt_color, $fonts['userbar'], $b_user);
 
-      if($id) {
+      if ($id) {
         // Player level - right-alligned
         $isp = imagettfbbox(9, 0, $fonts['userbar'], $b_lvl);
         imagettftext($image, 9, 0, $is - $isp[2] - 10, $size[1] - 4, $txt_shadow, $fonts['userbar'], $b_lvl);
@@ -148,11 +151,8 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
   imagecopy($im_result, $image, 0, 0, 0, 0, $size[0], $size[1]);
   imagedestroy($image);
   //And save it
-  $imagetypes = imagetypes();
   // TODO: Add support to different image types
   header("Content-type: image/png");
   imagepng($im_result);
   imagedestroy($im_result);
 }
-
-?>

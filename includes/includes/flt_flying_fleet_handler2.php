@@ -14,7 +14,7 @@
  *
  * @return mixed
  */
-function RestoreFleetToPlanet(&$objFleet, $start = true, $result = null) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start, $only_resources, &$result)); }
+function RestoreFleetToPlanet(&$objFleet, $start = true, $result = null) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start, &$result)); }
 
 // ------------------------------------------------------------------
 function flt_flyingFleetsSort($a, $b) {
@@ -41,7 +41,7 @@ function flt_flyingFleetsSort($a, $b) {
 function log_file($msg) {
   static $handler;
 
-  if(!$handler) {
+  if (!$handler) {
     $handler = fopen('event.log', 'a+');
   }
 
@@ -50,8 +50,11 @@ function log_file($msg) {
 
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler($skip_fleet_update = false) {
-print('<div style="color: red; font-size: 300%">Fleet handler is disabled</div>');
-return;
+  if (true) {
+    print('<div style="color: red; font-size: 300%">Fleet handler is disabled</div>');
+
+    return;
+  }
   /*
 
   [*] Нужно ли заворачивать ВСЕ в одну транзакцию?
@@ -80,12 +83,12 @@ return;
 
   */
 
-  if(classSupernova::$config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
+  if (classSupernova::$config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
     return;
   }
 
   sn_db_transaction_start();
-  if(classSupernova::$config->db_loadItem('game_disable') != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime(classSupernova::$config->db_loadItem('fleet_update_last')) <= classSupernova::$config->fleet_update_interval) {
+  if (classSupernova::$config->db_loadItem('game_disable') != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime(classSupernova::$config->db_loadItem('fleet_update_last')) <= classSupernova::$config->fleet_update_interval) {
     sn_db_transaction_rollback();
 
     return;
@@ -93,14 +96,14 @@ return;
 
 
   // Watchdog timer
-  if(classSupernova::$config->db_loadItem('fleet_update_lock')) {
-    if(defined('DEBUG_FLYING_FLEETS')) {
+  if (classSupernova::$config->db_loadItem('fleet_update_lock')) {
+    if (defined('DEBUG_FLYING_FLEETS')) {
       $random = 0;
     } else {
       $random = mt_rand(240, 300);
     }
 
-    if(SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_lock) <= $random) {
+    if (SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_lock) <= $random) {
       sn_db_transaction_rollback();
 
       return;
@@ -124,11 +127,11 @@ return;
   $missions_used = array();
 
   $objFleetList = FleetList::dbGetFleetListCurrentTick();
-  foreach($objFleetList->_container as $objFleet) {
+  foreach ($objFleetList->_container as $objFleet) {
     set_time_limit(15);
     // TODO - Унифицировать код с темплейтным разбором эвентов на планете!
     $missions_used[$objFleet->mission_type] = 1;
-    if($objFleet->time_arrive_to_target <= SN_TIME_NOW && !$objFleet->isReturning()) {
+    if ($objFleet->time_arrive_to_target <= SN_TIME_NOW && !$objFleet->isReturning()) {
       $fleet_event_list[] = array(
         'object'      => $objFleet,
         'fleet_time'  => $objFleet->time_arrive_to_target,
@@ -136,7 +139,7 @@ return;
       );
     }
 
-    if($objFleet->time_mission_job_complete > 0 && $objFleet->time_mission_job_complete <= SN_TIME_NOW && !$objFleet->isReturning()) {
+    if ($objFleet->time_mission_job_complete > 0 && $objFleet->time_mission_job_complete <= SN_TIME_NOW && !$objFleet->isReturning()) {
       $fleet_event_list[] = array(
         'object'      => $objFleet,
         'fleet_time'  => $objFleet->time_mission_job_complete,
@@ -144,7 +147,7 @@ return;
       );
     }
 
-    if($objFleet->time_return_to_source <= SN_TIME_NOW) {
+    if ($objFleet->time_return_to_source <= SN_TIME_NOW) {
       $fleet_event_list[] = array(
         'object'      => $objFleet,
         'fleet_time'  => $objFleet->time_return_to_source,
@@ -170,17 +173,17 @@ return;
 //    MT_MISSILE => 'flt_mission_missile.php',
     MT_EXPLORE   => 'flt_mission_explore',
   );
-  foreach($missions_used as $mission_id => $cork) {
+  foreach ($missions_used as $mission_id => $cork) {
     require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
   }
 
 //log_file('Обработка миссий');
   $sn_groups_mission = sn_get_groups('missions');
-  foreach($fleet_event_list as $fleet_event) {
+  foreach ($fleet_event_list as $fleet_event) {
     // TODO: Указатель тут потом сделать
     // TODO: СЕЙЧАС НАДО ПРОВЕРЯТЬ ПО БАЗЕ - А ЖИВОЙ ЛИ ФЛОТ?!
     $fleet_row = $fleet_event['fleet_row'];
-    if(empty($fleet_event['object'])) {
+    if (empty($fleet_event['object'])) {
       // Fleet was destroyed in course of previous actions
       continue;
     }
@@ -205,20 +208,20 @@ return;
 
     $objFleet->dbLoad($objFleet->dbId);
 
-    if(!$objFleet->dbId) {
+    if (!$objFleet->dbId) {
       // Fleet was destroyed in course of previous actions
       sn_db_transaction_commit();
       continue;
     }
 
-    if($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
+    if ($fleet_event['fleet_event'] == EVENT_FLT_RETURN) {
       // Fleet returns to planet
       $objFleet->shipsLand(true);
       sn_db_transaction_commit();
       continue;
     }
 
-    if($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $objFleet->isReturning()) {
+    if ($fleet_event['fleet_event'] == EVENT_FLT_ARRIVE && $objFleet->isReturning()) {
       // При событии EVENT_FLT_ARRIVE флот всегда должен иметь fleet_mess == 0
       // В противном случае это означает, что флот уже был обработан ранее - например, при САБе
       sn_db_transaction_commit();
@@ -238,13 +241,13 @@ return;
     $objMission->dst_planet = $mission_data['dst_planet'] ? db_planet_by_vector($objFleet->target_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
     $objMission->fleet_event = $fleet_event['fleet_event'];
 
-    if($objMission->dst_planet && $objMission->dst_planet['id_owner']) {
+    if ($objMission->dst_planet && $objMission->dst_planet['id_owner']) {
       $update_result = sys_o_get_updated($objMission->dst_planet['id_owner'], $objMission->dst_planet['id'], $objFleet->time_arrive_to_target);
       $objMission->dst_user = !empty($objMission->dst_user) ? $update_result['user'] : null;
       $objMission->dst_planet = $update_result['planet'];
     }
 
-    switch($objFleet->mission_type) {
+    switch ($objFleet->mission_type) {
       // Для боевых атак нужно обновлять по САБу и по холду - таки надо возвращать данные из обработчика миссий!
       case MT_ACS:
       case MT_ATTACK:

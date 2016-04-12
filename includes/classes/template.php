@@ -24,34 +24,34 @@ class template
   * if it's a root-level variable, it'll be like this:
   * --> $this->_tpldata[.][0][varname] == value
   */
-  var $_tpldata = array('.' => array(0 => array()));
-  var $_rootref;
+  public $_tpldata = array('.' => array(0 => array()));
+  public $_rootref;
 //  var $_block_counter = array();
-  var $_block_value = array();
+  public $_block_value = array();
 
   // Root dir and hash of filenames for each template handle.
-  var $root = '';
-  var $cachepath = '';
-  var $files = array();
-  var $filename = array();
-  var $files_inherit = array();
-  var $files_template = array();
-  var $inherit_root = '';
-  var $orig_tpl_storedb;
-  var $orig_tpl_inherits_id;
+  public $root = '';
+  public $cachepath = '';
+  public $files = array();
+  public $filename = array();
+  public $files_inherit = array();
+  public $files_template = array();
+  public $inherit_root = '';
+  public $orig_tpl_storedb;
+  public $orig_tpl_inherits_id;
 
   // this will hash handle names to the compiled/uncompiled code for that handle.
-  var $compiled_code = array();
+  public $compiled_code = array();
 
   // this for compatibility with old templates
-  var $parse = array();
+  public $parse = array();
 
   /**
    * Is template already parsed with SN code?
    *
    * @var bool $parsed
    */
-  var $parsed = false;
+  public $parsed = false;
 
   /**
   * Set template location
