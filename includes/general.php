@@ -63,7 +63,6 @@ function execute_hooks(&$hook_list, &$template, $hook_type = null, $page_name = 
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-// Fonction de lecture / ecriture / exploitation de templates
 function sys_file_read($filename) {
   return @file_get_contents($filename);
 }
@@ -232,14 +231,6 @@ function GetMaxFleets(&$user) {
 }
 
 // ----------------------------------------------------------------------------------------------------------------
-/*
-function GetMaxExpeditions(&$user)
-{
-  return floor(sqrt(mrc_get_level($user, false, TECH_EXPEDITION)));
-}
-*/
-
-// ----------------------------------------------------------------------------------------------------------------
 // Check input string for forbidden words
 //
 function CheckInputStrings($String) {
@@ -288,12 +279,6 @@ function sys_get_param_escaped($param_name, $default = '') {
   return db_escape(sys_get_param($param_name, $default));
 }
 
-/*
-function sys_get_param_safe($param_name, $default = '')
-{
-  return db_escape(strip_tags(sys_get_param($param_name, $default)));
-}
-*/
 function sys_get_param_date_sql($param_name, $default = '2000-01-01') {
   $val = sys_get_param($param_name, $default);
 
@@ -369,7 +354,6 @@ function eco_get_total_cost($unit_id, $unit_level) {
     if (!in_array($resource_id, $sn_group_resources_all)) {
       continue;
     }
-//    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
     $cost_array[BUILD_CREATE][$resource_id] = round($resource_amount * ($factor == 1 ? $unit_level : ((1 - pow($factor, $unit_level)) / (1 - $factor))));
     if (in_array($resource_id, $sn_group_resources_loot)) {
       $cost_array['total'] += $cost_array[BUILD_CREATE][$resource_id] * $rate[$resource_id];
@@ -382,63 +366,6 @@ function eco_get_total_cost($unit_id, $unit_level) {
 function sn_unit_purchase($unit_id) { }
 
 function sn_unit_relocate($unit_id, $from, $to) { }
-
-/*
-  ЭТО ПРОСТОЙ ВРАППЕР ДЛЯ БД! Здесь НЕТ никаких проверок! ВСЕ проверки должны быть сделаны заранее!
-  Враппер возвращает уровень для указанного UNIT_ID и заполняет поле в соответствующей записи
-  TODO: Он может быть перекрыт для возвращения дополнительной информации о юните - например, о Капитане (пока не реализовано)
-
-  $context
-    'location' - где искать данный тип юнита: LOC_USER
-    'user' - &$user
-
-  $options
-    'for_update' - блокировать запись до конца транзакции
-*/
-/*
-function unit_get_level($unit_id, &$context = null, $options = null){return sn_function_call('unit_get_level', array($unit_id, &$context, $options, &$result));}
-function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result)
-{
-  $unit_db_name = pname_resource_name($unit_id);
-  $for_update = $options['for_update'];
-
-  $unit_level = 0;
-  if($context['location'] == LOC_USER)
-  {
-    $user = &$context['user'];
-    if(!$user['id'])
-    {
-      $user[$unit_id]['unit_level'] = $user[$unit_db_name];
-    }
-    elseif($for_update || !isset($user[$unit_id]))
-    {
-      $unit_level = db_unit_by_location($user['id'], $context['location'], $user['id'], $unit_id, $for_update);
-      $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
-      $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
-      $user[$unit_id] = $unit_level;
-    }
-    $unit_level = intval($user[$unit_id]['unit_level']);
-  }
-  elseif($context['location'] == LOC_PLANET)
-  {
-    $planet = &$context['planet'];
-    if(!$planet['id'])
-    {
-      $planet[$unit_id]['unit_level'] = $planet[$unit_db_name];
-    }
-    elseif($for_update || !isset($planet[$unit_id]))
-    {
-      $unit_level = db_unit_by_location(0, $context['location'], $planet['id'], $unit_id, $for_update);
-      $unit_level['unit_time_start'] = strtotime($unit_level['unit_time_start']);
-      $unit_level['unit_time_finish'] = strtotime($unit_level['unit_time_finish']);
-      $planet[$unit_id] = $unit_level;
-    }
-    $unit_level = intval($planet[$unit_id]['unit_level']);
-  }
-
-  return $result = $unit_level;
-}
-*/
 
 /**
  * @param array|bool|null $user
@@ -786,9 +713,6 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
   $user = db_user_by_id($user['id'], true, '*');
   $planetrow = db_planet_by_id($planetrow['id'], true, '*');
   // Тут не надо делать обсчет - ресурсы мы уже посчитали, очередь (и количество зданий) - тоже
-//  $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
-//  $user = $planetrow['user'];
-//  $planetrow = $planetrow['planet'];
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
   if ($sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER)) {
@@ -860,7 +784,6 @@ function player_nick_render_to_html($result, $options = false) {
       $result = player_nick_render_array_to_html($result);
     }
     unset($result[NICK_HTML]);
-    // unset($result[NICK_ID]);
     ksort($result);
     $result = implode('', $result);
   }
@@ -878,7 +801,6 @@ function player_nick_compact($nick_array) {
 function player_nick_uncompact($nick_string) {
   try {
     $result = unserialize($nick_string);
-    // ksort($result); // Всегда ksort-ый в player_nick_compact()
   } catch (exception $e) {
     $result = strpos($nick_string, ':{i:') ? null : $nick_string; // fallback if it is already string - for old chat strings, for example
   }
@@ -929,7 +851,6 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
     if ($highlight) {
       list($result[NICK_HIGHLIGHT], $result[NICK_HIGHLIGHT_END]) = explode('$1', $highlight);
     }
-    // $result = preg_replace("#(.+)#", $highlight, $result);
   }
 
   if (isset($nick_array[NICK_CLASS])) {
@@ -951,18 +872,6 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
 function player_nick_render_current_to_array($render_user, $options = false) { return sn_function_call(__FUNCTION__, array($render_user, $options, &$result)); }
 
 function sn_player_nick_render_current_to_array($render_user, $options = false, &$result) {
-  /*
-  $options = $options !== true ? $options :
-    array(
-      'color' => true,
-      'icons' => true,
-      'gender' => true,
-      'birthday' => true,
-      'ally' => true,
-    );
-  */
-
-
   if ($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', SN_TIME_NOW) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', SN_TIME_NOW))) {
     $result[NICK_BIRTHSDAY] = '';
   }
@@ -1030,9 +939,6 @@ function sys_stat_get_user_skip_list() {
 
   return $result;
 }
-
-// function player_nick_render_to_html($render_user, $options = false){return sn_function_call('player_nick_render_to_html', array($render_user, $options, &$result));}
-// function sn_render_player_nick($render_user, $options = false, &$result)
 
 function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null) { return sn_function_call(__FUNCTION__, array($unit_id, $param_name, $user, $planet, &$result)); }
 
@@ -1142,11 +1048,6 @@ function sn_sys_player_new_adjust($user_id, $planet_id, &$result) {
 function array_merge_recursive_numeric($array1, $array2) {
   if (!empty($array2) && is_array($array2)) {
     foreach ($array2 as $key => $value) {
-//    if(!isset($array1[$key]) || !is_array($array1[$key])) {
-//      $array1[$key] = $value;
-//    } else {
-//      $array1[$key] = array_merge_recursive_numeric($array1[$key], $value);
-//    }
       $array1[$key] = !isset($array1[$key]) || !is_array($array1[$key]) ? $value : array_merge_recursive_numeric($array1[$key], $value);
     }
   }
@@ -1198,9 +1099,6 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     sn_db_transaction_start();
     $user = db_user_by_id($user['id'], true, '*');
     $planetrow = db_planet_by_id($planetrow['id'], true, '*');
-//    $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
-//    $user = $global_data['user'];
-//    $planetrow = $global_data['planet'];
 
     $planet_density_index = $planetrow['density_index'];
 
@@ -1211,8 +1109,6 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     }
 
     $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
-    // $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
-    // $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
     $transmute_cost = $density_price_chart[$new_density_index];
     if ($user_dark_matter < $transmute_cost) {
       throw new exception(classLocale::$lang['ov_core_err_no_dark_matter'], ERR_ERROR);
@@ -1382,10 +1278,8 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
   $result = array();
 
   $powerup_data = get_unit_param($powerup_id);
-  //pdump($powerup_data, '$powerup_data');
   $is_upgrade = !empty($powerup_unit) && $powerup_unit;
 
-  // pdump($powerup_unit, '$powerup_unit');
   $level_current = $term_original = $time_left = 0;
   if ($is_upgrade) {
     $time_finish = strtotime($powerup_unit['unit_time_finish']);
@@ -1421,6 +1315,10 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
   return $result;
 }
 
+/**
+ * @param template $template
+ * @param array    $note_row
+ */
 function note_assign(&$template, $note_row) {
   global $note_priority_classes;
 

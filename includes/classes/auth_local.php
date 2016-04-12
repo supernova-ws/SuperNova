@@ -9,9 +9,8 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.64# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a6.95# copyright © 2009-2015 Gorlum',
 
-    // 'require' => array('auth_provider'),
     'root_relative' => '',
 
     'load_order' => 2,
@@ -19,15 +18,10 @@ class auth_local extends auth_abstract {
     'installed' => true,
     'active' => true,
 
-//    'provider_id' => ACCOUNT_PROVIDER_LOCAL,
-
-    // 'class_path' => __FILE__,
     'config_path' => SN_ROOT_PHYSICAL,
   );
 
   public $provider_id = ACCOUNT_PROVIDER_LOCAL;
-  // TODO - private ??
-  //public $user = null;
 
   /**
    * Флаг входа в игру
@@ -60,16 +54,11 @@ class auth_local extends auth_abstract {
    */
   protected $remember_me = 1;
 
-  // TODO - должны быть PRIVATE
-  // public $data = array();
-
   /**
    * @var Confirmation
    */
   protected $confirmation = null;
 
-
-  // public $is_impersonating = false;
 
   protected $features = array(
     AUTH_FEATURE_EMAIL_CHANGE => AUTH_FEATURE_EMAIL_CHANGE,
@@ -93,38 +82,6 @@ class auth_local extends auth_abstract {
   protected $cookie_name = SN_COOKIE;
   protected $cookie_name_impersonate = SN_COOKIE_I;
   protected $secret_word = '';
-
-//  public $login_methods_supported = array(
-//    // 'login_cookie' => 'login_cookie',
-//    // 'login_username' => 'login_username',
-//    // 'register_username' => 'register_username',
-//  );
-//  Пока не будем с этим заморачиваться. Будут юниттесты - будем плакать. А так - только лишний гемморой
-//  /**
-//   * Используемый менеджер авторизации
-//   *
-//   * @var auth $auth
-//   */
-//  protected $auth = null;
-//
-//  /**
-//   * Конструктор
-//   *
-//   * @param auth $auth
-//   */
-//  function __construct($auth) {
-//    parent::__construct(__FILE__);
-//
-//    $this->auth = $auth;
-//  }
-//  public function auth_manager_set($auth) {
-//    $this->auth = $auth;
-//  }
-//
-
-//  public function set_database($db = null) {
-//    $this->db = is_object($db) ? $db : classSupernova::$db;
-//  }
 
   /**
    * @param string $filename
@@ -189,8 +146,6 @@ class auth_local extends auth_abstract {
     $this->register();
     $this->login_username();
     $this->login_cookie();
-
-    // $this->is_impersonating = $this->account_login_status == LOGIN_SUCCESS && !empty($_COOKIE[$this->cookie_name_impersonate]);
 
     return $this->account_login_status;
   }
@@ -431,8 +386,6 @@ class auth_local extends auth_abstract {
       $this->register_validate_input();
 
       sn_db_transaction_start();
-      // $this->provider_account = new Account($this->db);
-      // $this->account_check_duplicate_name_or_email($this->input_login_unsafe, $this->input_email_unsafe);
 
       $this->account->db_get_by_name_or_email($this->input_login_unsafe, $this->input_email_unsafe);
       if($this->account->is_exists) {
@@ -443,15 +396,6 @@ class auth_local extends auth_abstract {
         }
       }
 
-//      if($this->provider_account->db_get_by_name($this->input_login_unsafe)) {
-//        throw new Exception(REGISTER_ERROR_ACCOUNT_NAME_EXISTS, ERR_ERROR);
-//      }
-//
-//      if($this->provider_account->db_get_by_email($this->input_email_unsafe)) {
-//        throw new Exception(REGISTER_ERROR_EMAIL_EXISTS, ERR_ERROR);
-//      }
-
-
       // Проблемы с созданием аккаунта - вызовут эксершн и обработается catch()
       $this->account->db_create(
         $this->input_login_unsafe,
@@ -459,14 +403,6 @@ class auth_local extends auth_abstract {
         $this->input_email_unsafe,
         $this->input_language_unsafe
       );
-//      $this->db_account_create(
-//        $this->input_login_unsafe,
-//        $this->input_login_password_raw,
-//        $this->input_email_unsafe,
-//        $this->input_language_unsafe
-//      );
-
-      // $this->data[F_ACCOUNT] = $this->db_account_get_by_id($account_id);
 
       // Устанавливать не надо - мы дальше пойдем по workflow
       $this->account_login_status = LOGIN_SUCCESS;
@@ -497,15 +433,11 @@ class auth_local extends auth_abstract {
 
     // Пытаемся войти по куке
     if(!empty($_COOKIE[$this->cookie_name])) {
-// Кто хотел - уже сконвертировал старые куки в новые
-// Update оказывается - не все...
       if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
         list($account_id_unsafe, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $_COOKIE[$this->cookie_name]);
       } else {
         list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
       }
-
-      // $account = $this->db_account_get_by_id($account_id_unsafe);
 
       if(
         $this->account->db_get_by_id($account_id_unsafe)
@@ -513,7 +445,6 @@ class auth_local extends auth_abstract {
       ) {
         $this->account_login_status = LOGIN_SUCCESS;
         $this->remember_me = intval($user_remember_me);
-        // $this->data[F_ACCOUNT] = $account;
       }
     }
 
@@ -547,10 +478,6 @@ class auth_local extends auth_abstract {
 
       $this->login_validate_input();
 
-//      $account = $this->db_account_get_by_name($this->input_login_unsafe);
-//      if(empty($account)) {
-//        throw new Exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
-//      }
       if(!$this->account->db_get_by_name($this->input_login_unsafe) && !$this->account->db_get_by_email($this->input_login_unsafe)) {
         throw new Exception(LOGIN_ERROR_USERNAME, ERR_ERROR);
       }
@@ -558,8 +485,6 @@ class auth_local extends auth_abstract {
       if(!$this->account->password_check($this->input_login_password_raw)) {
         throw new Exception(LOGIN_ERROR_PASSWORD, ERR_ERROR);
       }
-
-      // $this->data[F_ACCOUNT] = $account;
 
       $this->cookie_set();
       $this->account_login_status = LOGIN_SUCCESS;
@@ -688,14 +613,10 @@ class auth_local extends auth_abstract {
   }
   // OK v4
   protected function password_encode($password, $salt) {
-//    $class_name = $this->auth;
-//    return $class_name::password_encode($password, $salt);
     return core_auth::password_encode($password, $salt);
   }
   // OK v4
   protected function password_salt_generate() {
-//    $class_name = $this->core_auth;
-//    return $class_name::password_salt_generate();
     return core_auth::password_salt_generate();
   }
   /**
@@ -719,14 +640,10 @@ class auth_local extends auth_abstract {
       (!empty($caller['function']) ? $caller['function'] : '') .
       (!empty($called['line']) ? ':' . $called['line'] : '');
 
-//     $real_caller_class = get_called_class();
-
     $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
 
     classSupernova::log_file("$message - $caller_name");
     if($die) {
-      // pdump($caller);
-      // pdump(debug_backtrace(false));
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }
