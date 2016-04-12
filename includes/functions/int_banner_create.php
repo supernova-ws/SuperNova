@@ -31,10 +31,6 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
   imagedestroy($im);
 
   // Colors
-  $color = "FFFFFF";
-  $red = hexdec(substr($color, 0, 2));
-  $green = hexdec(substr($color, 2, 4));
-  $blue = hexdec(substr($color, 4, 6));
   $txt_shadow = imagecolorallocatealpha($image, 255, 255, 255, 255);
   $txt_color = imagecolorallocatealpha($image, 255, 255, 255, 2);
   $txt_shadow2 = imagecolorallocatealpha($image, 255, 255, 255, 255);
@@ -104,21 +100,21 @@ function int_banner_create($id, $type = 'userbar', $format = 'png') {
         //Raids Total
         imagettftext($image, 6, 0, 8, 37, $txt_shadow2, $fonts['raids'], classLocale::$lang['NumberOfRaids']);
         imagettftext($image, 6, 0, 6, 35, $txt_color2, $fonts['raids'], classLocale::$lang['NumberOfRaids']);
-        $b_points = ": " . pretty_number($user['raids']);
+        $b_points = ": " . pretty_number(!empty($user['raids']) ? $user['raids'] : 0);
         imagettftext($image, 6, 0, 61, 37, $txt_shadow2, $fonts['raids'], $b_points);
         imagettftext($image, 6, 0, 59, 35, $txt_color2, $fonts['raids'], $b_points);
 
         //Raids Won
         imagettftext($image, 6, 0, 8, 47, $txt_shadow2, $fonts['raids'], classLocale::$lang['RaidsWin']);
         imagettftext($image, 6, 0, 6, 45, $txt_color2, $fonts['raids'], classLocale::$lang['RaidsWin']);
-        $b_points = ": " . pretty_number($user['raidswin']);
+        $b_points = ": " . pretty_number(!empty($user['raidswin']) ? $user['raidswin'] : 0);
         imagettftext($image, 6, 0, 61, 47, $txt_shadow2, $fonts['raids'], $b_points);
         imagettftext($image, 6, 0, 59, 45, $txt_color2, $fonts['raids'], $b_points);
 
         //Raids Lost
         imagettftext($image, 6, 0, 8, 57, $txt_shadow2, $fonts['raids'], classLocale::$lang['RaidsLoose']);
         imagettftext($image, 6, 0, 6, 55, $txt_color2, $fonts['raids'], classLocale::$lang['RaidsLoose']);
-        $b_points = ": " . pretty_number($user['raidsloose']);
+        $b_points = ": " . pretty_number(!empty($user['raidsloose']) ? $user['raidsloose'] : 0);
         imagettftext($image, 6, 0, 61, 57, $txt_shadow2, $fonts['raids'], $b_points);
         imagettftext($image, 6, 0, 59, 55, $txt_color2, $fonts['raids'], $b_points);
       }
