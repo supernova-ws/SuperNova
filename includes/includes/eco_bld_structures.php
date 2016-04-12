@@ -19,10 +19,10 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   global $template_result;
   $classLocale = classLocale::$lang;
 
-  if($ally_id = sys_get_param_id('ally_id')) {
+  if (sys_get_param_id('ally_id')) {
     define('SN_IN_ALLY', true);
     $ranks = ally_get_ranks($auser['ally']);
-    if($ranks[$auser['ally_rank_id']]['admin'] || $auser['ally']['ally_owner'] == $auser['id']) {
+    if ($ranks[$auser['ally_rank_id']]['admin'] || $auser['ally']['ally_owner'] == $auser['id']) {
       $user = &$auser['ally']['player'];
       $planet = array(
         'metal'     => $user['metal'],
@@ -32,11 +32,11 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     }
   }
 
-  if(!$user) {
+  if (empty($user)) {
     $user = &$auser;
   }
 
-  switch($action = sys_get_param_escaped('action')) {
+  switch ($action = sys_get_param_escaped('action')) {
     case 'create': // Add unit to que for build
     case 'create_autoconvert': // Add unit to que for build
     case 'destroy': // Add unit to que for remove
@@ -53,28 +53,28 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $group_missile = sn_get_groups('missile');
   $silo_capacity_free = 0;
-  if($que_type == QUE_STRUCTURES) {
+  if ($que_type == QUE_STRUCTURES) {
     $build_unit_list = sn_get_groups('build_allow');
     $build_unit_list = $build_unit_list[$planet['planet_type']];
     $artifact_id = ART_NANO_BUILDER;
     $page_header = classLocale::$lang['tech'][UNIT_STRUCTURES];
-  } elseif($que_type == QUE_RESEARCH) {
-    if(!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
+  } elseif ($que_type == QUE_RESEARCH) {
+    if (!mrc_get_level($user, $planet, STRUC_LABORATORY)) {
       message(classLocale::$lang['no_laboratory'], classLocale::$lang['tech'][UNIT_TECHNOLOGIES]);
     }
 
-    if(eco_unit_busy($user, $planet, UNIT_TECHNOLOGIES)) {
+    if (eco_unit_busy($user, $planet, UNIT_TECHNOLOGIES)) {
       message(classLocale::$lang['eco_bld_msg_err_laboratory_upgrading'], classLocale::$lang['tech'][UNIT_TECHNOLOGIES]);
     }
     $build_unit_list = sn_get_groups('tech');
     $artifact_id = ART_HEURISTIC_CHIP;
     $page_header = classLocale::$lang['tech'][UNIT_TECHNOLOGIES] . ($user['user_as_ally'] ? "&nbsp;{$classLocale['sys_of_ally']}&nbsp;{$user['username']}" : '');
-  } elseif($que_type == QUE_MERCENARY) {
+  } elseif ($que_type == QUE_MERCENARY) {
     $build_unit_list = sn_get_groups('mercenaries');
     $artifact_id = 0;
     $page_header = classLocale::$lang['tech'][UNIT_MERCENARIES] . ($user['user_as_ally'] ? "&nbsp;{$classLocale['sys_of_ally']}&nbsp;{$user['username']}" : '');
   } else {
-    if(mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) == 0) {
+    if (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) == 0) {
       message(classLocale::$lang['need_hangar'], classLocale::$lang['tech'][STRUC_FACTORY_HANGAR]);
     }
 
@@ -83,7 +83,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $artifact_id = 0;
 
     $silo_capacity_free = mrc_get_level($user, $planet, STRUC_SILO) * get_unit_param(STRUC_SILO, P_CAPACITY);
-    foreach($group_missile as $unit_id) {
+    foreach ($group_missile as $unit_id) {
       $silo_capacity_free -= (mrc_get_level($user, $planet, $unit_id, false, true) + (isset($in_que[$unit_id]) && $in_que[$unit_id] ? $in_que[$unit_id] : 0)) * get_unit_param($unit_id, P_UNIT_SIZE);
     }
     $silo_capacity_free = max(0, $silo_capacity_free);
@@ -94,7 +94,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $config_resource_multiplier_plain = game_resource_multiplier(true);
 
   $template = gettemplate('buildings_builds', true);
-  if(!empty($operation_result)) {
+  if (!empty($operation_result)) {
     $template_result['.']['result'][] = $operation_result;
   }
 
@@ -124,7 +124,9 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $record_index = 0;
 
-  foreach($build_unit_list as $unit_id) {
+  $temp = array();
+  $unit_stackable = false;
+  foreach ($build_unit_list as $unit_id) {
     $level_base = mrc_get_level($user, $planet, $unit_id, false, true);
     $level_effective = mrc_get_level($user, $planet, $unit_id);
     $level_in_que = $in_que[$unit_id];
@@ -147,12 +149,12 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $can_build = $unit_info[P_MAX_STACK] ? max(0, $unit_info[P_MAX_STACK] - $level_in_que - $level_effective) : $build_data['CAN'][BUILD_CREATE];
     // Restricting $can_build by free silo capacity
     $can_build = ($unit_is_missile = in_array($unit_id, $group_missile)) ? min($can_build, floor($silo_capacity_free / $unit_info[P_UNIT_SIZE])) : $can_build;
-    if(!$can_build) {
-      if(!$build_data['CAN'][BUILD_CREATE]) {
+    if (!$can_build) {
+      if (!$build_data['CAN'][BUILD_CREATE]) {
         $build_data['RESULT'][BUILD_CREATE] = BUILD_NO_RESOURCES;
-      } elseif($unit_is_missile && $silo_capacity_free < $unit_info[P_UNIT_SIZE]) {
+      } elseif ($unit_is_missile && $silo_capacity_free < $unit_info[P_UNIT_SIZE]) {
         $build_data['RESULT'][BUILD_CREATE] = BUILD_SILO_FULL;
-      } elseif($unit_info[P_MAX_STACK]) {
+      } elseif ($unit_info[P_MAX_STACK]) {
         $build_data['RESULT'][BUILD_CREATE] = BUILD_MAX_REACHED;
       }
     }
@@ -219,14 +221,14 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       'MAP_IS_RESOURCE' => !empty($unit_info[P_UNIT_PRODUCTION]),
     );
 
-    if($unit_stackable) {
+    if ($unit_stackable) {
       $level_production_base = array(
         'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_info['shield'])),
         'ACTUAL_ARMOR'  => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_info['armor'])),
         'ACTUAL_WEAPON' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_info['attack'])),
       );
 
-      if($unit_info[P_UNIT_TYPE] == UNIT_SHIPS) {
+      if ($unit_info[P_UNIT_TYPE] == UNIT_SHIPS) {
         $ship_data = get_ship_data($unit_id, $user);
 
         $level_production_base += array(
@@ -236,9 +238,9 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         );
       }
 
-      if($unit_info[P_UNIT_PRODUCTION]) {
-        foreach($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
-          if($resource_income =
+      if ($unit_info[P_UNIT_PRODUCTION]) {
+        foreach ($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
+          if ($resource_income =
             floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc(1, 10, $user, $planet)
               * ($resource_id == RES_ENERGY ? $config_resource_multiplier_plain : $config_resource_multiplier)
               * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))
@@ -248,11 +250,11 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         }
       }
       $production['.']['resource'][] = $level_production_base;
-    } elseif($unit_info[P_UNIT_PRODUCTION]) {
+    } elseif ($unit_info[P_UNIT_PRODUCTION]) {
       $level_production_base = array();
       $element_level_start = $level_effective + $in_que[$unit_id];
-      foreach($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
-        if($resource_income =
+      foreach ($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
+        if ($resource_income =
           floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($element_level_start, 10, $user, $planet)
             * ($resource_id == RES_ENERGY ? $config_resource_multiplier_plain : $config_resource_multiplier)
             * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))
@@ -262,10 +264,10 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       }
 
       $level_start = $level_base_and_que > 1 ? $level_effective + $level_in_que - 1 : 1;
-      for($i = 0; $i < 6; $i++) {
+      for ($i = 0; $i < 6; $i++) {
         $level_production = array('LEVEL' => $level_start + $i);
-        foreach($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
-          if(
+        foreach ($unit_info[P_UNIT_PRODUCTION] as $resource_id => $resource_calc) {
+          if (
           $resource_income = floor(mrc_modify_value($user, $planet, $sn_modifiers_resource, $resource_calc($level_start + $i, 10, $user, $planet)
             * ($resource_id == RES_ENERGY ? $config_resource_multiplier_plain : $config_resource_multiplier)
             * (isset($density_info[$resource_id]) ? $density_info[$resource_id] : 1)))
@@ -276,7 +278,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         }
         $production['.']['resource'][] = $level_production;
       }
-    } elseif($unit_id == TECH_ASTROTECH) {
+    } elseif ($unit_id == TECH_ASTROTECH) {
       $element_level_start = $level_effective + $in_que[$unit_id];
       $level_production_base = array(
         UNIT_PLAYER_EXPEDITIONS_MAX => get_player_max_expeditons($user, $element_level_start),
@@ -284,7 +286,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       );
 
       $level_start = $level_base_and_que > 1 ? $level_effective + $level_in_que - 1 : 1;
-      for($i = 0; $i < 6; $i++) {
+      for ($i = 0; $i < 6; $i++) {
         $level_production = array('LEVEL' => $level_start + $i);
         $level_production['R' . UNIT_PLAYER_EXPEDITIONS_MAX] = get_player_max_expeditons($user, $level_start + $i);
         $level_production['D' . UNIT_PLAYER_EXPEDITIONS_MAX] = $level_production['R' . UNIT_PLAYER_EXPEDITIONS_MAX] - $level_production_base[UNIT_PLAYER_EXPEDITIONS_MAX];
@@ -305,7 +307,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     $template_result['.']['production'][] = $production;
   }
 
-  foreach(classLocale::$lang['player_option_building_sort'] as $sort_id => $sort_text) {
+  foreach (classLocale::$lang['player_option_building_sort'] as $sort_id => $sort_text) {
     $template->assign_block_vars('sort_values', array(
       'VALUE' => $sort_id,
       'TEXT'  => $sort_text,
@@ -378,5 +380,5 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $template->assign_recursive($template_result);
 
-  display(parsetemplate($template)); 
+  display(parsetemplate($template));
 }

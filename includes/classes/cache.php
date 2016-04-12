@@ -49,19 +49,19 @@ class classCache {
   protected static $cacheObject;
 
   public function __construct($prefIn = 'CACHE_', $init_mode = false) {
-    if(!($init_mode === false || $init_mode === CACHER_NO_CACHE || ($init_mode === CACHER_XCACHE && extension_loaded('xcache')))) {
+    if (!($init_mode === false || $init_mode === CACHER_NO_CACHE || ($init_mode === CACHER_XCACHE && extension_loaded('xcache')))) {
       throw new UnexpectedValueException('Wrong work mode or current mode does not supported on your server');
     }
 
     $this->prefix = $prefIn;
-    if(extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false)) {
-      if(self::$mode === CACHER_NOT_INIT) {
+    if (extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false)) {
+      if (self::$mode === CACHER_NOT_INIT) {
         self::$mode = CACHER_XCACHE;
       }
     } else {
-      if(self::$mode === CACHER_NOT_INIT) {
+      if (self::$mode === CACHER_NOT_INIT) {
         self::$mode = CACHER_NO_CACHE;
-        if(!self::$data) {
+        if (!self::$data) {
           self::$data = array();
         }
       }
@@ -69,7 +69,7 @@ class classCache {
   }
 
   public static function getInstance($prefIn = 'CACHE_', $table_name = '') {
-    if(!isset(self::$cacheObject)) {
+    if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($prefIn);
     }
@@ -86,7 +86,7 @@ class classCache {
   // Here comes low-level functions - those that directly works with cacher engines
   // -------------------------------------------------------------------------
   public function __set($name, $value) {
-    switch($name) {
+    switch ($name) {
       case '_MODE':
         throw new UnexpectedValueException('You can not change cacher mode on-the-fly!');
       break;
@@ -96,7 +96,7 @@ class classCache {
       break;
 
       default:
-        switch(self::$mode) {
+        switch (self::$mode) {
           case CACHER_NO_CACHE:
             self::$data[$this->prefix . $name] = $value;
           break;
@@ -110,7 +110,7 @@ class classCache {
   }
 
   public function __get($name) {
-    switch($name) {
+    switch ($name) {
       case '_MODE':
         return self::$mode;
       break;
@@ -120,7 +120,7 @@ class classCache {
       break;
 
       default:
-        switch(self::$mode) {
+        switch (self::$mode) {
           case CACHER_NO_CACHE:
             return self::$data[$this->prefix . $name];
           break;
@@ -137,7 +137,7 @@ class classCache {
   }
 
   public function __isset($name) {
-    switch(self::$mode) {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
         return isset(self::$data[$this->prefix . $name]);
       break;
@@ -151,7 +151,7 @@ class classCache {
   }
 
   public function __unset($name) {
-    switch(self::$mode) {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
         unset(self::$data[$this->prefix . $name]);
       break;
@@ -168,7 +168,7 @@ class classCache {
       strpos($k, $p) === 0 ? $v = null : false;
     } : false;
 
-    switch(self::$mode) {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
 //        array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), $this->prefix.$prefix_unset);
         array_walk(self::$data, $array_clear, $this->prefix . $prefix_unset);
@@ -177,7 +177,7 @@ class classCache {
       break;
 
       case CACHER_XCACHE:
-        if(!function_exists('xcache_unset_by_prefix')) {
+        if (!function_exists('xcache_unset_by_prefix')) {
           return false;
         }
 
@@ -194,13 +194,13 @@ class classCache {
   protected function make_element_name($args, $diff = 0) {
     $num_args = count($args);
 
-    if($num_args < 1) {
+    if ($num_args < 1) {
       return false;
     }
 
     $name = '';
     $aName = array();
-    for($i = 0; $i <= $num_args - 1 - $diff; $i++) {
+    for ($i = 0; $i <= $num_args - 1 - $diff; $i++) {
       $name .= "[{$args[$i]}]";
       array_unshift($aName, $name);
     }
@@ -212,15 +212,15 @@ class classCache {
     $args = func_get_args();
     $name = $this->make_element_name($args, 1);
 
-    if(!$name) {
+    if (!$name) {
       return null;
     }
 
-    if($this->$name[0] === null) {
-      for($i = count($name) - 1; $i > 0; $i--) {
+    if ($this->$name[0] === null) {
+      for ($i = count($name) - 1; $i > 0; $i--) {
         $cName = "{$name[$i]}_COUNT";
         $cName1 = "{$name[$i-1]}_COUNT";
-        if($this->$cName1 == null || $i == 1) {
+        if ($this->$cName1 == null || $i == 1) {
           $this->$cName++;
         }
       }
@@ -233,7 +233,7 @@ class classCache {
 
   public function array_get() {
     $name = $this->make_element_name(func_get_args());
-    if(!$name) {
+    if (!$name) {
       return null;
     }
 
@@ -242,12 +242,12 @@ class classCache {
 
   public function array_count() {
     $name = $this->make_element_name(func_get_args());
-    if(!$name) {
+    if (!$name) {
       return 0;
     }
     $cName = "{$name[0]}_COUNT";
     $retVal = $this->$cName;
-    if(!$retVal) {
+    if (!$retVal) {
       $retVal = null;
     }
 
@@ -257,18 +257,18 @@ class classCache {
   public function array_unset() {
     $name = $this->make_element_name(func_get_args());
 
-    if(!$name) {
+    if (!$name) {
       return false;
     }
     $this->unset_by_prefix($name[0]);
 
-    for($i = 1; $i < count($name); $i++) {
+    for ($i = 1; $i < count($name); $i++) {
       $cName = "{$name[$i]}_COUNT";
       $cName1 = "{$name[$i-1]}_COUNT";
 
-      if($i == 1 || $this->$cName1 === null) {
+      if ($i == 1 || $this->$cName1 === null) {
         $this->$cName--;
-        if($this->$cName <= 0) {
+        if ($this->$cName <= 0) {
           unset($this->$cName);
         }
       }
@@ -278,7 +278,7 @@ class classCache {
   }
 
   public function dumpData() {
-    switch(self::$mode) {
+    switch (self::$mode) {
       case CACHER_NO_CACHE:
         return dump(self::$data, $this->prefix);
       break;
@@ -330,13 +330,13 @@ class classPersistent extends classCache {
     $this->sql_index_field = "{$table_name}_name";
     $this->sql_value_field = "{$table_name}_value";
 
-    if(!$this->_DB_LOADED) {
+    if (!$this->_DB_LOADED) {
       $this->db_loadAll();
     }
   }
 
   public static function getInstance($gamePrefix = 'sn_', $table_name = '') {
-    if(!isset(self::$cacheObject)) {
+    if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }
@@ -346,7 +346,7 @@ class classPersistent extends classCache {
 
   public function db_loadItem($index) {
     $result = null;
-    if($index) {
+    if ($index) {
       $index_safe = db_escape($index);
       $result = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
       // В две строки - что бы быть уверенным в порядке выполнения
@@ -361,7 +361,7 @@ class classPersistent extends classCache {
     $this->loadDefaults();
 
     $query = doquery("SELECT * FROM {{{$this->table_name}}} FOR UPDATE;");
-    while($row = db_fetch($query)) {
+    while ($row = db_fetch($query)) {
       $this->$row[$this->sql_index_field] = $row[$this->sql_value_field];
     }
 
@@ -369,7 +369,7 @@ class classPersistent extends classCache {
   }
 
   public function loadDefaults() {
-    foreach($this->defaults as $defName => $defValue) {
+    foreach ($this->defaults as $defName => $defValue) {
       $this->$defName = $defValue;
     }
   }
@@ -385,7 +385,7 @@ class classPersistent extends classCache {
   }
 
   public function db_saveItem($item_list, $value = null) {
-    if(empty($item_list)) {
+    if (empty($item_list)) {
       return;
     }
 
@@ -393,8 +393,8 @@ class classPersistent extends classCache {
 
     // Сначала записываем данные в базу - что бы поймать все блокировки
     $qry = array();
-    foreach($item_list as $item_name => $item_value) {
-      if($item_name) {
+    foreach ($item_list as $item_name => $item_value) {
+      if ($item_name) {
         $item_value = db_escape($item_value === null ? $this->$item_name : $item_value);
         $item_name = db_escape($item_name);
         $qry[] = "('{$item_name}', '{$item_value}')";
@@ -403,8 +403,8 @@ class classPersistent extends classCache {
     doquery("REPLACE INTO `{{" . $this->table_name . "}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES " . implode(',', $qry) . ";");
 
     // И только после взятия блокировок - меняем значения в кэше
-    foreach($item_list as $item_name => $item_value) {
-      if($item_name && $item_value !== null) {
+    foreach ($item_list as $item_name => $item_value) {
+      if ($item_name && $item_value !== null) {
         $this->$item_name = $item_value;
       }
     }
@@ -416,6 +416,9 @@ class classPersistent extends classCache {
  * This class is used to handle server configuration
  *
  * @package supernova
+ *
+ * @property string db_prefix
+ *
  * @property string advGoogleLeftMenuCode
  * @property int    advGoogleLeftMenuIsOn
  * @property string adv_conversion_code_payment
@@ -824,7 +827,7 @@ class classConfig extends classPersistent {
   }
 
   public static function getInstance($gamePrefix = 'sn_', $table_name = 'config') {
-    if(!isset(self::$cacheObject)) {
+    if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }

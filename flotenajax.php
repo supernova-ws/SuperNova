@@ -38,7 +38,7 @@ function fleet_ajax() {
 
   $target_mission = sys_get_param_int('mission');
   $sn_group_missions = sn_get_groups('missions');
-  if(empty($sn_group_missions[$target_mission]['AJAX'])) {
+  if (empty($sn_group_missions[$target_mission]['AJAX'])) {
     die(classLocale::$lang['gs_c00']);
   }
 
@@ -53,7 +53,7 @@ function fleet_ajax() {
   );
   // fleet_ajax now can send fleets only to existing planets/moons
   // TODO - sending colonization and expeditions in 1 click
-  if(!uni_coordinates_valid($target_coord)) {
+  if (!uni_coordinates_valid($target_coord)) {
     die(classLocale::$lang['gs_c02']);
   }
 
@@ -64,7 +64,7 @@ function fleet_ajax() {
 
   // TODO - DEADLOCK CAN BE HERE!!!! We should lock SOURCE and TARGET owners in one query
   $target_row = db_planet_by_vector($target_coord);
-  if(empty($target_row)) {
+  if (empty($target_row)) {
     $target_row = $target_coord;
     $target_row['id_owner'] = 0;
     // If fleet destination is PT_DEBRIS - then it's actually destination is PT_PLANET // TODO - REMOVE! Debris should be valid DESTINATION planet_type!
@@ -76,15 +76,15 @@ function fleet_ajax() {
 
   $unit_group = '';
   $fleet_array = array();
-  switch($target_mission) {
+  switch ($target_mission) {
     case MT_SPY:
       $fleet_array[SHIP_SPY] = min(mrc_get_level($user, $planetrow, SHIP_SPY), abs(classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT]));
       $unit_group = 'flt_spies';
     break;
 
     case MT_RECYCLE:
-      foreach(sn_get_groups('flt_recyclers') as $unit_id) {
-        if($unit_count = mrc_get_level($user, $planetrow, $unit_id)) {
+      foreach (sn_get_groups('flt_recyclers') as $unit_id) {
+        if ($unit_count = mrc_get_level($user, $planetrow, $unit_id)) {
           $fleet_array[$unit_id] = $unit_count;
         }
       }
@@ -109,16 +109,16 @@ function fleet_ajax() {
       'target_structure' => $target_structure = sys_get_param_int('structures'),
     )
   );
-  if($isAttackAllowed != FLIGHT_ALLOWED) {
+  if ($isAttackAllowed != FLIGHT_ALLOWED) {
     die(classLocale::$lang['fl_attack_error'][$isAttackAllowed]);
   }
 
   $db_changeset = array();
-  foreach($fleet_array as $unit_id => $unit_count) {
+  foreach ($fleet_array as $unit_id => $unit_count) {
     $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
   }
 
-  if($target_mission == MT_MISSILE) {
+  if ($target_mission == MT_MISSILE) {
     $distance = abs($target_coord['system'] - $planetrow['system']);
     $duration = round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
     $arrival = SN_TIME_NOW + $duration;
@@ -128,7 +128,7 @@ function fleet_ajax() {
   } else {
     $travel_data = flt_travel_data($user, $planetrow, $target_coord, $fleet_array, 10);
 
-    if($planetrow['deuterium'] < $travel_data['consumption']) {
+    if ($planetrow['deuterium'] < $travel_data['consumption']) {
       die(classLocale::$lang['gs_c13']);
     }
 
@@ -149,7 +149,7 @@ function fleet_ajax() {
 
   $ships_sent = array();
   $ships_sent_js = 0;
-  foreach($fleet_array as $unit_id => $unit_count) {
+  foreach ($fleet_array as $unit_id => $unit_count) {
     $ships_sent[] = "{$unit_count} {$classLocale['tech'][$unit_id]}";
     $ships_sent_js += mrc_get_level($user, $planetrow, $unit_id, false, true);
   }

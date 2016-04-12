@@ -85,7 +85,7 @@ function db_unit_records_plain($unit_id, $user_skip_list_unit) {
 
 function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = false) {
 // pdump($source);
-  if(!$source) {
+  if (!$source) {
     $source = array(
       'statpoints' => 'statpoints',
       'users'      => 'users',
@@ -106,8 +106,8 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = 
     );
   }
 // pdump($source);
-  if($who == 1) {
-    if($is_common_stat) { // , UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
+  if ($who == 1) {
+    if ($is_common_stat) { // , UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
       $query_str =
         "SELECT
       @rownum:=@rownum+1 rownum, subject.{$source['id']} as `id`, sp.{$Rank}_rank as rank, sp.{$Rank}_old_rank as rank_old, sp.{$Rank}_points as points, subject.{$source['username']} as `name`, subject.*
@@ -191,7 +191,7 @@ function db_referrals_list_by_id($user_id) {
 function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $db_table_name, $db_value_field_name) {
   $current_value_safe = db_escape($current_value_unsafe);
   $value_id = doquery("SELECT `{$db_id_field_name}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE", true);
-  if(!isset($value_id['id_field']) || !$value_id['id_field']) {
+  if (!isset($value_id['id_field']) || !$value_id['id_field']) {
     doquery("INSERT INTO {{{$db_table_name}}} (`{$db_value_field_name}`) VALUES ('{$current_value_safe}');");
     $variable_id = db_insert_id();
   } else {
@@ -356,7 +356,6 @@ function db_universe_get($uni_galaxy, $uni_system) {
 function db_universe_rename($uni_galaxy, $uni_system, $uni_row) {
   doquery("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
 }
-
 
 
 // Payment *************************************************************************************************************
@@ -599,10 +598,6 @@ function db_quest_update($quest_name, $quest_type, $quest_description, $quest_co
 }
 
 
-
-
-
-
 /**
  * @param $banner
  * @param $banned
@@ -647,7 +642,6 @@ function db_ban_insert_unset($banner, $banned, $reason) {
 }
 
 
-
 /**
  * @param $user_id
  *
@@ -688,7 +682,7 @@ function db_payment_get_something($options) {
  */
 function db_payment_get_something2($payment_external_id) {
   $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_external_id` = '{$payment_external_id}' LIMIT 1 FOR UPDATE;", true);
-  
+
   return $payment;
 }
 

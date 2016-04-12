@@ -182,7 +182,6 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   foreach ($fleet_event_list as $fleet_event) {
     // TODO: Указатель тут потом сделать
     // TODO: СЕЙЧАС НАДО ПРОВЕРЯТЬ ПО БАЗЕ - А ЖИВОЙ ЛИ ФЛОТ?!
-    $fleet_row = $fleet_event['fleet_row'];
     if (empty($fleet_event['object'])) {
       // Fleet was destroyed in course of previous actions
       continue;
@@ -252,36 +251,35 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       case MT_ACS:
       case MT_ATTACK:
       case MT_DESTROY:
-        $attack_result = flt_mission_attack($objMission); // Partially
-        $mission_result = CACHE_COMBAT;
+        flt_mission_attack($objMission); // Partially
       break;
 
       case MT_TRANSPORT:
-        $mission_result = flt_mission_transport($objMission); // OK
+        flt_mission_transport($objMission); // OK
       break;
 
       case MT_HOLD:
-        $mission_result = flt_mission_hold($objMission); // OK
+        flt_mission_hold($objMission); // OK
       break;
 
       case MT_RELOCATE:
-        $mission_result = flt_mission_relocate($objMission); // OK
+        flt_mission_relocate($objMission); // OK
       break;
 
       case MT_EXPLORE:
-        $mission_result = flt_mission_explore($objMission); // OK
+        flt_mission_explore($objMission); // OK
       break;
 
       case MT_RECYCLE:
-        $mission_result = flt_mission_recycle($objMission); // OK
+        flt_mission_recycle($objMission); // OK
       break;
 
       case MT_COLONIZE:
-        $mission_result = flt_mission_colonize($objMission); // OK
+        flt_mission_colonize($objMission); // OK
       break;
 
       case MT_SPY:
-        $mission_result = flt_mission_spy($objMission); // OK
+        flt_mission_spy($objMission); // OK
       break;
 
       case MT_MISSILE:  // Missiles !!

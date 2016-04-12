@@ -29,28 +29,28 @@
 function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', $already_changed = false) {
   global $dm_change_legit, $user;
 
-  if(!$user_id) {
+  if (!$user_id) {
     return false;
   }
 
   $dm_change_legit = true;
   $sn_data_dark_matter_db_name = pname_resource_name(RES_DARK_MATTER);
 
-  if($already_changed) {
+  if ($already_changed) {
     $rows_affected = 1;
   } else {
     $changeset = array();
     $a_user = db_user_by_id($user_id, true);
-    if($dark_matter < 0) {
+    if ($dark_matter < 0) {
       $dark_matter_exists = mrc_get_level($a_user, null, RES_DARK_MATTER, false, true);
       $dark_matter_exists < 0 ? $dark_matter_exists = 0 : false;
       $metamatter_to_reduce = -$dark_matter - $dark_matter_exists;
-      if($metamatter_to_reduce > 0) {
+      if ($metamatter_to_reduce > 0) {
         $metamatter_exists = mrc_get_level($a_user, null, RES_METAMATTER);
-        if($metamatter_exists < $metamatter_to_reduce) {
+        if ($metamatter_exists < $metamatter_to_reduce) {
           classSupernova::$debug->error('Ошибка снятия ТМ - ММ+ТМ меньше, чем сумма для снятия!', 'Ошибка снятия ТМ', LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER);
         }
-        if(is_array($comment)) {
+        if (is_array($comment)) {
           $comment = call_user_func_array('sprintf', $comment);
         }
 //        mm_points_change($user_id, $change_type, -$metamatter_to_reduce, 'ММ в ТМ: ' . (-$dark_matter) . ' ТМ = ' . $dark_matter_exists . ' ТМ + ' . $metamatter_to_reduce . ' ММ. ' . $comment);
@@ -65,9 +65,9 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
     $rows_affected = classSupernova::$db->db_affected_rows();
   }
 
-  if($rows_affected || !$dark_matter) {
+  if ($rows_affected || !$dark_matter) {
     $page_url = db_escape($_SERVER['SCRIPT_NAME']);
-    if(is_array($comment)) {
+    if (is_array($comment)) {
       $comment = call_user_func_array('sprintf', $comment);
     }
     $comment = db_escape($comment);
@@ -75,18 +75,18 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
     $row['username'] = db_escape($row['username']);
     db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment, $row, $page_url);
 
-    if($user['id'] == $user_id) {
+    if ($user['id'] == $user_id) {
       $user['dark_matter'] += $dark_matter;
     }
 
-    if($dark_matter > 0) {
+    if ($dark_matter > 0) {
       $old_referral = db_referral_get_by_id($user_id);
-      if($old_referral['id']) {
+      if ($old_referral['id']) {
         db_referral_update_dm($user_id, $dark_matter);
         $new_referral = db_referral_get_by_id($user_id);
 
         $partner_bonus = floor($new_referral['dark_matter'] / classSupernova::$config->rpg_bonus_divisor) - ($old_referral['dark_matter'] >= classSupernova::$config->rpg_bonus_minimum ? floor($old_referral['dark_matter'] / classSupernova::$config->rpg_bonus_divisor) : 0);
-        if($partner_bonus > 0 && $new_referral['dark_matter'] >= classSupernova::$config->rpg_bonus_minimum) {
+        if ($partner_bonus > 0 && $new_referral['dark_matter'] >= classSupernova::$config->rpg_bonus_minimum) {
           rpg_points_change($new_referral['id_partner'], RPG_REFERRAL, $partner_bonus, "Incoming From Referral ID {$user_id}");
         }
       }
@@ -103,7 +103,11 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
 function rpg_level_up(&$user, $type, $xp_to_add = 0) {
   $q = 1.03;
 
-  switch($type) {
+  $field_xp = '';
+  $field_level = '';
+  $b1 = 10;
+  $comment = '';
+  switch ($type) {
     case RPG_STRUCTURE:
       $field_level = 'lvl_minier';
       $field_xp = 'xpminier';
@@ -140,17 +144,17 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0) {
 
   $xp = &$user[$field_xp];
 
-  if($xp_to_add) {
+  if ($xp_to_add) {
     $xp += $xp_to_add;
     db_user_set_by_id($user['id'], "`{$field_xp}` = `{$field_xp}` + '{$xp_to_add}'");
   }
 
   $level = $user[$field_level];
-  while($xp > rpg_xp_for_level($level + 1, $b1, $q)) {
+  while ($xp > rpg_xp_for_level($level + 1, $b1, $q)) {
     $level++;
   }
   $level -= $user[$field_level];
-  if($level > 0) {
+  if ($level > 0) {
     db_user_set_by_id($user['id'], "`{$field_level}` = `{$field_level}` + '{$level}'");
     rpg_points_change($user['id'], $type, $level * 1000, $comment);
     $user[$field_level] += $level;
