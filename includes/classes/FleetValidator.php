@@ -24,29 +24,17 @@ class FleetValidator {
   public function validate() {
     $checklist = sn_get_groups('mission_checks');
     try {
-      $this->checkMissionRestrictions($checklist);
-
-      // Do the restrictMission checks
+      // TODO - Do the restrictMission checks
 
       // TODO - Кое-какие проверки дают FLIGHT_ALLOWED - ЧТО НЕПРАВДА В ДАННОМ СЛУЧАЕ!!!
       // На странице 1 некоторые проверки ДОЛЖНЫ БЫТЬ опущены - иначе будет некрасиво
       // А вот здесь надо проверять много дополнительной хуйни
-      try {
-        // TODO  - ALL OF THE ABOVE!
-      } catch (Exception $e) {
-        // If mission is restricted - rethrow exception
-        if ($e->getCode() != FLIGHT_ALLOWED) {
-          throw new Exception($e->getMessage(), $e->getCode());
-        }
-      }
-
-      // TODO - later then
+      $this->checkMissionRestrictions($checklist);
 
       // 2nd level restrictions
       // Still cheap
       $this->restrict2ToAllowedMissions();
       $this->restrict2ToAllowedPlanetTypes();
-//      $this->restrict2MissionTransportWithResources($fleetResources);
     } catch (Exception $e) {
       if ($e->getCode() != FLIGHT_ALLOWED) {
         pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);

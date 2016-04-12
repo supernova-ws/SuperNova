@@ -1,17 +1,19 @@
 <?php
 
 /**
-* artifacts.php
-* Artifact actions
-*
-* @package roleplay
-* @version 1.0
-*
-* Revision History
-* ================
-* 1.0 copyright (c) 2011 by Gorlum for http://supernova.ws
-*
-*/
+ * artifacts.php
+ * Artifact actions
+ *
+ * @package roleplay
+ * @version 1.0
+ *
+ * Revision History
+ * ================
+ * 1.0 copyright (c) 2011 by Gorlum for http://supernova.ws
+ *
+ */
+
+global $user, $planetrow;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
@@ -22,10 +24,9 @@ include('includes/includes/art_artifact.php');
 
 $sn_group_artifacts = sn_get_groups('artifacts');
 
-if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts))
-{
-  switch($action)
-  {
+$Message = '';
+if (($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts)) {
+  switch ($action) {
     case ACTION_BUY:
       sn_db_transaction_start();
 
@@ -36,11 +37,9 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
       $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
 
       // TODO: more correct check - with "FOR UPDATE"
-      if(mrc_get_level($user, null, RES_DARK_MATTER) >= $darkmater_cost)
-      {
+      if (mrc_get_level($user, null, RES_DARK_MATTER) >= $darkmater_cost) {
         $unit_max_stack = get_unit_param($unit_id, P_MAX_STACK);
-        if(!isset($unit_max_stack) || $unit_max_stack > mrc_get_level($user, $planetrow, $unit_id))
-        {
+        if (!isset($unit_max_stack) || $unit_max_stack > mrc_get_level($user, $planetrow, $unit_id)) {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, 1, $user);
           db_changeset_apply($db_changeset);
           rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost),
@@ -50,14 +49,10 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
           header("Location: artifacts.php#{$unit_id}");
           ob_end_flush();
           die();
-        }
-        else
-        {
+        } else {
           $Message = classLocale::$lang['off_maxed_out'];
         }
-      }
-      else
-      {
+      } else {
         $Message = classLocale::$lang['sys_no_points'];
       }
       sn_db_transaction_rollback();
@@ -75,16 +70,14 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
 
 $template = gettemplate('artifacts', true);
 
-foreach($sn_group_artifacts as $artifact_id)
-{
+foreach ($sn_group_artifacts as $artifact_id) {
   $artifact_level = mrc_get_level($user, null, $artifact_id, true);
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
   {
     $artifact_data = get_unit_param($artifact_id);
     $artifact_data_bonus = $artifact_data['bonus'];
     $artifact_data_bonus = $artifact_data_bonus >= 0 ? "+{$artifact_data_bonus}" : "{$artifact_data_bonus}";
-    switch($artifact_data['bonus_type'])
-    {
+    switch ($artifact_data['bonus_type']) {
       case BONUS_PERCENT:
         $artifact_data_bonus = "{$artifact_data_bonus}% ";
       break;
@@ -118,7 +111,7 @@ foreach($sn_group_artifacts as $artifact_id)
 
 $template->assign_vars(array(
   'PAGE_HEADER' => classLocale::$lang['tech'][UNIT_ARTIFACTS],
-  'PAGE_HINT' => classLocale::$lang['art_page_hint'],
+  'PAGE_HINT'   => classLocale::$lang['art_page_hint'],
 ));
 
 display(parsetemplate($template), classLocale::$lang['tech'][UNIT_ARTIFACTS]);

@@ -20,24 +20,24 @@ require_once('general_pname.php');
 function sn_function_call($func_name, $func_arg = array()) {
   // All data in classSupernova::$functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
 
-  if(is_array(classSupernova::$functions[$func_name]) && !is_callable(classSupernova::$functions[$func_name])) {
+  if (is_array(classSupernova::$functions[$func_name]) && !is_callable(classSupernova::$functions[$func_name])) {
     // Chain-callable functions should be made as following:
     // 1. Never use incomplete calls with parameters "by default"
     // 2. Reserve last parameter for cumulative result
     // 3. Use same format for original value and cumulative result (if there is original value)
     // 4. Honor cumulative result
     // 5. Return cumulative result
-    foreach(classSupernova::$functions[$func_name] as $func_chain_name) {
+    foreach (classSupernova::$functions[$func_name] as $func_chain_name) {
       // По идее - это уже тут не нужно, потому что оно все должно быть callable к этому моменту
       // Но для старых модулей...
-      if(is_callable($func_chain_name)) {
+      if (is_callable($func_chain_name)) {
         $result = call_user_func_array($func_chain_name, $func_arg);
       }
     }
   } else {
     // TODO: This is left for backward compatibility. Appropriate code should be rewrote!
     $func_name = isset(classSupernova::$functions[$func_name]) && is_callable(classSupernova::$functions[$func_name]) ? classSupernova::$functions[$func_name] : ('sn_' . $func_name);
-    if(is_callable($func_name)) {
+    if (is_callable($func_name)) {
       $result = call_user_func_array($func_name, $func_arg);
     }
   }
@@ -52,9 +52,9 @@ function sn_function_call($func_name, $func_arg = array()) {
  * @param string $page_name - имя страницы, для которого должен был быть выполнен хук
  */
 function execute_hooks(&$hook_list, &$template, $hook_type = null, $page_name = null) {
-  if(!empty($hook_list)) {
-    foreach($hook_list as $hook) {
-      if(is_callable($hook_call = (is_string($hook) ? $hook : (is_array($hook) ? $hook['callable'] : $hook->callable)))) {
+  if (!empty($hook_list)) {
+    foreach ($hook_list as $hook) {
+      if (is_callable($hook_call = (is_string($hook) ? $hook : (is_array($hook) ? $hook['callable'] : $hook->callable)))) {
         $template = call_user_func($hook_call, $template, $hook_type, $page_name);
       }
     }
@@ -153,9 +153,9 @@ function get_exchange_rate($currency_symbol) {
  */
 function pretty_number($n, $floor = true, $color = false, $limit = false, $style = null) {
   $n = floatval($n);
-  if(is_int($floor)) {
+  if (is_int($floor)) {
     $n = round($n, $floor); // , PHP_ROUND_HALF_DOWN
-  } elseif($floor === true) {
+  } elseif ($floor === true) {
     $n = floor($n);
     $floor = 0;
   } else {
@@ -165,14 +165,14 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
   $ret = $n;
 
   $suffix = '';
-  if($limit) {
-    if($ret > 0) {
-      while($ret > $limit) {
+  if ($limit) {
+    if ($ret > 0) {
+      while ($ret > $limit) {
         $suffix .= 'k';
         $ret = round($ret / 1000);
       }
     } else {
-      while($ret < -$limit) {
+      while ($ret < -$limit) {
         $suffix .= 'k';
         $ret = round($ret / 1000);
       }
@@ -182,16 +182,16 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
   $ret = number_format($ret, $floor, ',', '.');
   $ret .= $suffix;
 
-  if($color !== false) {
-    if($color === true) {
+  if ($color !== false) {
+    if ($color === true) {
       $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
-    } elseif($color >= 0) {
+    } elseif ($color >= 0) {
       $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
     } else {
       $class = ($n == -$color) ? 'zero' : ($n < -$color ? 'negative' : 'positive');
     }
 
-    if(!isset($style)) {
+    if (!isset($style)) {
       $ret = "<span class='{$class}'>{$ret}</span>";
     } else {
       $ret = $style ? $ret = $class : $ret = array('text' => $ret, 'class' => $class);
@@ -320,11 +320,11 @@ function sys_get_param_str_both($param_name, $default = '') {
 
 function sys_get_param_phone($param_name, $default = '') {
   $phone_raw = sys_get_param_str_unsafe($param_name, $default = '');
-  if($phone_raw) {
+  if ($phone_raw) {
     $phone = $phone_raw[0] == '+' ? '+' : '';
-    for($i = 0; $i < strlen($phone_raw); $i++) {
+    for ($i = 0; $i < strlen($phone_raw); $i++) {
       $ord = ord($phone_raw[$i]);
-      if($ord >= 48 && $ord <= 57) {
+      if ($ord >= 48 && $ord <= 57) {
         $phone .= $phone_raw[$i];
       }
     }
@@ -341,14 +341,14 @@ function GetPhalanxRange($phalanx_level) {
 }
 
 function CheckAbandonPlanetState(&$planet) {
-  if($planet['destruyed'] && $planet['destruyed'] <= SN_TIME_NOW) {
+  if ($planet['destruyed'] && $planet['destruyed'] <= SN_TIME_NOW) {
     db_planet_delete_by_id($planet['id']);
   }
 }
 
 function eco_get_total_cost($unit_id, $unit_level) {
   static $rate, $sn_group_resources_all, $sn_group_resources_loot;
-  if(!$rate) {
+  if (!$rate) {
     $sn_group_resources_all = sn_get_groups('resources_all');
     $sn_group_resources_loot = sn_get_groups('resources_loot');
 
@@ -358,19 +358,19 @@ function eco_get_total_cost($unit_id, $unit_level) {
   }
 
   $unit_cost_data = get_unit_param($unit_id, 'cost');
-  if(!is_array($unit_cost_data)) {
+  if (!is_array($unit_cost_data)) {
     return array('total' => 0);
   }
   $factor = isset($unit_cost_data['factor']) ? $unit_cost_data['factor'] : 1;
   $cost_array = array(BUILD_CREATE => array(), 'total' => 0);
   $unit_level = $unit_level > 0 ? $unit_level : 0;
-  foreach($unit_cost_data as $resource_id => $resource_amount) {
-    if(!in_array($resource_id, $sn_group_resources_all)) {
+  foreach ($unit_cost_data as $resource_id => $resource_amount) {
+    if (!in_array($resource_id, $sn_group_resources_all)) {
       continue;
     }
 //    $cost_array[BUILD_CREATE][$resource_id] = $resource_amount * ($factor == 1 ? $unit_level : ((pow($factor, $unit_level) - $factor) / ($factor - 1)));
     $cost_array[BUILD_CREATE][$resource_id] = round($resource_amount * ($factor == 1 ? $unit_level : ((1 - pow($factor, $unit_level)) / (1 - $factor))));
-    if(in_array($resource_id, $sn_group_resources_loot)) {
+    if (in_array($resource_id, $sn_group_resources_loot)) {
       $cost_array['total'] += $cost_array[BUILD_CREATE][$resource_id] * $rate[$resource_id];
     }
   }
@@ -440,11 +440,11 @@ function sn_unit_get_level($unit_id, &$context = null, $options = null, &$result
 */
 
 /**
- * @param array      $user
- * @param array|null $planet
- * @param int        $unit_id
- * @param bool       $for_update
- * @param bool       $plain
+ * @param array|bool|null $user
+ * @param array|null      $planet
+ * @param int             $unit_id
+ * @param bool            $for_update
+ * @param bool            $plain
  *
  * @return mixed
  */
@@ -454,19 +454,19 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   $mercenary_level = 0;
   $unit_db_name = pname_resource_name($unit_id);
 
-  if(in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts')))) {
+  if (in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts')))) {
     $unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
-  } elseif(in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense')))) {
+  } elseif (in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense')))) {
     $unit = classSupernova::db_get_unit_by_location(isset($user['id']) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
-  } elseif(in_array($unit_id, sn_get_groups('governors'))) {
+  } elseif (in_array($unit_id, sn_get_groups('governors'))) {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
-  } elseif($unit_id == RES_DARK_MATTER) {
+  } elseif ($unit_id == RES_DARK_MATTER) {
     $mercenary_level = $user[$unit_db_name] + ($plain || $user['user_as_ally'] ? 0 : classSupernova::$auth->account->account_metamatter);
-  } elseif($unit_id == RES_METAMATTER) {
+  } elseif ($unit_id == RES_METAMATTER) {
     $mercenary_level = classSupernova::$auth->account->account_metamatter; //$user[$unit_db_name];
-  } elseif(in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR) {
+  } elseif (in_array($unit_id, sn_get_groups(array('resources_loot'))) || $unit_id == UNIT_SECTOR) {
     $mercenary_level = !empty($planet) ? $planet[$unit_db_name] : $user[$unit_db_name];
   }
 
@@ -476,19 +476,19 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
 function mrc_modify_value(&$user, $planet = array(), $mercenaries, $value) { return sn_function_call(__FUNCTION__, array(&$user, $planet, $mercenaries, $value)); }
 
 function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $base_value = null) {
-  if(!is_array($mercenaries)) {
+  if (!is_array($mercenaries)) {
     $mercenaries = array($mercenaries);
   }
 
   $base_value = isset($base_value) ? $base_value : $value;
 
-  foreach($mercenaries as $mercenary_id) {
+  foreach ($mercenaries as $mercenary_id) {
     $mercenary_level = mrc_get_level($user, $planet, $mercenary_id);
 
     $mercenary = get_unit_param($mercenary_id);
     $mercenary_bonus = $mercenary['bonus'];
 
-    switch($mercenary['bonus_type']) {
+    switch ($mercenary['bonus_type']) {
       case BONUS_PERCENT_CUMULATIVE:
         $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
       break;
@@ -519,7 +519,7 @@ function sys_random_string($length = 16, $allowed_chars = SN_SYS_SEC_CHARS_ALLOW
   $allowed_length = strlen($allowed_chars);
 
   $random_string = '';
-  for($i = 0; $i < $length; $i++) {
+  for ($i = 0; $i < $length; $i++) {
     $random_string .= $allowed_chars[mt_rand(0, $allowed_length - 1)];
   }
 
@@ -539,12 +539,12 @@ function sys_user_options_pack(&$user) {
 
   $options = '';
   $option_list = array();
-  foreach($user_option_list as $option_group_id => $option_group) {
+  foreach ($user_option_list as $option_group_id => $option_group) {
     $option_list[$option_group_id] = array();
-    foreach($option_group as $option_name => $option_value) {
-      if(!isset($user[$option_name])) {
+    foreach ($option_group as $option_name => $option_value) {
+      if (!isset($user[$option_name])) {
         $user[$option_name] = $option_value;
-      } elseif($user[$option_name] == '') {
+      } elseif ($user[$option_name] == '') {
         $user[$option_name] = 0;
       }
       $options .= "{$option_name}^{$user[$option_name]}|";
@@ -564,16 +564,16 @@ function sys_user_options_unpack(&$user) {
   $option_list = array();
   $option_string_list = explode('|', $user['options']);
 
-  foreach($option_string_list as $option_string) {
+  foreach ($option_string_list as $option_string) {
     list($option_name, $option_value) = explode('^', $option_string);
     $option_list[$option_name] = $option_value;
   }
 
   $final_list = array();
-  foreach($user_option_list as $option_group_id => $option_group) {
+  foreach ($user_option_list as $option_group_id => $option_group) {
     $final_list[$option_group_id] = array();
-    foreach($option_group as $option_name => $option_value) {
-      if(!isset($option_list[$option_name])) {
+    foreach ($option_group as $option_name => $option_value) {
+      if (!isset($option_list[$option_name])) {
         $option_list[$option_name] = $option_value;
       }
       $user[$option_name] = $final_list[$option_group_id][$option_name] = $option_list[$option_name];
@@ -587,12 +587,12 @@ function sys_user_options_unpack(&$user) {
 
 function sys_unit_str2arr($fleet_string) {
   $fleet_array = array();
-  if(!empty($fleet_string)) {
+  if (!empty($fleet_string)) {
     $arrTemp = explode(';', $fleet_string);
-    foreach($arrTemp as $temp) {
-      if($temp) {
+    foreach ($arrTemp as $temp) {
+      if ($temp) {
         $temp = explode(',', $temp);
-        if(!empty($temp[0]) && !empty($temp[1])) {
+        if (!empty($temp[0]) && !empty($temp[1])) {
           $fleet_array[$temp[0]] += $temp[1];
         }
       }
@@ -604,13 +604,13 @@ function sys_unit_str2arr($fleet_string) {
 
 function sys_unit_arr2str($unit_list) {
   $fleet_string = array();
-  if(isset($unit_list)) {
-    if(!is_array($unit_list)) {
+  if (isset($unit_list)) {
+    if (!is_array($unit_list)) {
       $unit_list = array($unit_list => 1);
     }
 
-    foreach($unit_list as $unit_id => $unit_count) {
-      if($unit_id && $unit_count) {
+    foreach ($unit_list as $unit_id => $unit_count) {
+      if ($unit_id && $unit_count) {
         $fleet_string[] = "{$unit_id},{$unit_count}";
       }
     }
@@ -636,7 +636,7 @@ function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
   $body = str_replace("\r\n", "\n", $body);
   $body = str_replace("\n", "\r\n", $body);
 
-  if($html) {
+  if ($html) {
     $body = '<html><head><base href="' . SN_ROOT_VIRTUAL . '"></head><body>' . nl2br($body) . '</body></html>';
   }
 
@@ -680,21 +680,21 @@ function sn_sys_get_unit_location($user, $planet, $unit_id) {
 }
 
 function sn_ali_fill_user_ally(&$user) {
-  if(!$user['ally_id']) {
+  if (!$user['ally_id']) {
     return;
   }
 
-  if(!isset($user['ally'])) {
+  if (!isset($user['ally'])) {
     $user['ally'] = db_ally_get_by_id($user['ally_id']);
   }
 
-  if(!isset($user['ally']['player'])) {
+  if (!isset($user['ally']['player'])) {
     $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
   }
 }
 
 function sn_get_url_contents($url) {
-  if(function_exists('curl_init')) {
+  if (function_exists('curl_init')) {
     $crl = curl_init();
     $timeout = 5;
     curl_setopt($crl, CURLOPT_URL, $url);
@@ -729,10 +729,10 @@ function get_engine_data($user, $engine_info) {
 
 function get_ship_data($ship_id, $user) {
   $ship_data = array();
-  if(in_array($ship_id, sn_get_groups(array('fleet', 'missile')))) {
-    foreach(get_unit_param($ship_id, 'engine') as $engine_info) {
+  if (in_array($ship_id, sn_get_groups(array('fleet', 'missile')))) {
+    foreach (get_unit_param($ship_id, 'engine') as $engine_info) {
       $tech_level = intval(mrc_get_level($user, null, $engine_info['tech']));
-      if(empty($ship_data) || $tech_level >= $engine_info['min_level']) {
+      if (empty($ship_data) || $tech_level >= $engine_info['min_level']) {
         $ship_data = $engine_info;
         $ship_data['tech_level'] = $tech_level;
       }
@@ -744,7 +744,7 @@ function get_ship_data($ship_id, $user) {
   return $ship_data;
 }
 
-if(!function_exists('strptime')) {
+if (!function_exists('strptime')) {
   function strptime($date, $format) {
     $masks = array(
       '%d' => '(?P<d>[0-9]{2})',
@@ -757,7 +757,7 @@ if(!function_exists('strptime')) {
     );
 
     $rexep = "#" . strtr(preg_quote($format), $masks) . "#";
-    if(preg_match($rexep, $date, $out)) {
+    if (preg_match($rexep, $date, $out)) {
       $ret = array(
         "tm_sec"  => (int)$out['S'],
         "tm_min"  => (int)$out['M'],
@@ -777,7 +777,7 @@ if(!function_exists('strptime')) {
 function sn_sys_sector_buy($redirect = 'overview.php') {
   global $user, $planetrow;
 
-  if(!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET) {
+  if (!sys_get_param_str('sector_buy') || $planetrow['planet_type'] != PT_PLANET) {
     return;
   }
 
@@ -790,9 +790,9 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
 //  $planetrow = $planetrow['planet'];
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
   $sector_cost = $sector_cost[BUILD_CREATE][RES_DARK_MATTER];
-  if($sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER)) {
+  if ($sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER)) {
     $planet_name_text = uni_render_planet($planetrow);
-    if(rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, sprintf(classLocale::$lang['sys_sector_purchase_log'],
+    if (rpg_points_change($user['id'], RPG_SECTOR, -$sector_cost, sprintf(classLocale::$lang['sys_sector_purchase_log'],
         $user['username'], $user['id'], $planet_name_text, classLocale::$lang['sys_planet_type'][$planetrow['planet_type']], $planetrow['id'], $sector_cost)
     )) {
       $sector_db_name = pname_resource_name(UNIT_SECTOR);
@@ -807,30 +807,30 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
 }
 
 function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '', $sub_type = '') {
-  if(isset($handler_list) && is_array($handler_list) && !empty($handler_list)) {
-    foreach($handler_list as $function_name => $function_data) {
-      if(is_string($function_data)) {
+  if (isset($handler_list) && is_array($handler_list) && !empty($handler_list)) {
+    foreach ($handler_list as $function_name => $function_data) {
+      if (is_string($function_data)) {
         $override_with = &$function_data;
-      } elseif(isset($function_data['callable'])) {
+      } elseif (isset($function_data['callable'])) {
         $override_with = &$function_data['callable'];
       }
 
       $overwrite = $override_with[0] == '*';
-      if($overwrite) {
+      if ($overwrite) {
         $override_with = substr($override_with, 1);
       }
 
-      if(($point_position = strpos($override_with, '.')) === false && $class_module_name) {
+      if (($point_position = strpos($override_with, '.')) === false && $class_module_name) {
         $override_with = array($class_module_name, $override_with);
-      } elseif($point_position == 0) {
+      } elseif ($point_position == 0) {
         $override_with = substr($override_with, 1);
-      } elseif($point_position > 0) {
+      } elseif ($point_position > 0) {
         $override_with = array(substr($override_with, 0, $point_position), substr($override_with, $point_position + 1));
       }
 
-      if($overwrite) {
+      if ($overwrite) {
         $functions[$function_name] = array();
-      } elseif(!isset($functions[$function_name])) {
+      } elseif (!isset($functions[$function_name])) {
         $functions[$function_name] = array();
         $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
         $functions[$function_name][] = $sn_function_name;
@@ -846,15 +846,15 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
 function player_nick_render_to_html($result, $options = false) {
   // TODO - обрабатывать разные случаи: $user, $render_nick_array, $string
 
-  if(is_string($result) && strpos($result, ':{i:')) {
+  if (is_string($result) && strpos($result, ':{i:')) {
     $result = player_nick_uncompact($result);
   }
 
-  if(is_array($result)) {
-    if(isset($result['id'])) {
+  if (is_array($result)) {
+    if (isset($result['id'])) {
       $result = player_nick_render_current_to_array($result, $options);
     }
-    if(!isset($result[NICK_HTML])) {
+    if (!isset($result[NICK_HTML])) {
       $result = player_nick_render_array_to_html($result);
     }
     unset($result[NICK_HTML]);
@@ -877,7 +877,7 @@ function player_nick_uncompact($nick_string) {
   try {
     $result = unserialize($nick_string);
     // ksort($result); // Всегда ksort-ый в player_nick_compact()
-  } catch(exception $e) {
+  } catch (exception $e) {
     $result = strpos($nick_string, ':{i:') ? null : $nick_string; // fallback if it is already string - for old chat strings, for example
   }
 
@@ -890,20 +890,20 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   global $user;
 
   // ALL STRING ARE UNSAFE!!!
-  if(isset($nick_array[NICK_BIRTHSDAY])) {
+  if (isset($nick_array[NICK_BIRTHSDAY])) {
     $result[NICK_BIRTHSDAY] = '<img src="design/images/birthday.png" />';
   }
 
-  if(isset($nick_array[NICK_VACATION])) {
+  if (isset($nick_array[NICK_VACATION])) {
     $result[NICK_VACATION] = '<img src="design/images/icon_vacation.png" />';
   }
 
-  if(isset($nick_array[NICK_GENDER])) {
+  if (isset($nick_array[NICK_GENDER])) {
     $result[NICK_GENDER] = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/gender_' . $nick_array[NICK_GENDER] . '.png" />';
   }
 
-  if(isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {
-    switch($nick_array[NICK_AUTH_LEVEL]) {
+  if (isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {
+    switch ($nick_array[NICK_AUTH_LEVEL]) {
       case 4:
         $highlight = classSupernova::$config->chat_highlight_developer;
       break;
@@ -924,20 +924,20 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
         $highlight = isset($nick_array[NICK_PREMIUM]) ? classSupernova::$config->chat_highlight_premium : '';
     }
 
-    if($highlight) {
+    if ($highlight) {
       list($result[NICK_HIGHLIGHT], $result[NICK_HIGHLIGHT_END]) = explode('$1', $highlight);
     }
     // $result = preg_replace("#(.+)#", $highlight, $result);
   }
 
-  if(isset($nick_array[NICK_CLASS])) {
+  if (isset($nick_array[NICK_CLASS])) {
     $result[NICK_CLASS] = '<span ' . $nick_array[NICK_CLASS] . '>';
     $result[NICK_CLASS_END] = '</span>';
   }
 
   $result[NICK_NICK] = sys_safe_output($nick_array[NICK_NICK]);
 
-  if(isset($nick_array[NICK_ALLY])) {
+  if (isset($nick_array[NICK_ALLY])) {
     $result[NICK_ALLY] = '[' . sys_safe_output($nick_array[NICK_ALLY]) . ']';
   }
 
@@ -961,32 +961,32 @@ function sn_player_nick_render_current_to_array($render_user, $options = false, 
   */
 
 
-  if($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', SN_TIME_NOW) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', SN_TIME_NOW))) {
+  if ($render_user['user_birthday'] && ($options === true || isset($options['icons']) || isset($options['birthday'])) && (date('Y', SN_TIME_NOW) . date('-m-d', strtotime($render_user['user_birthday'])) == date('Y-m-d', SN_TIME_NOW))) {
     $result[NICK_BIRTHSDAY] = '';
   }
 
-  if($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['gender']) && $options['gender'])) {
+  if ($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['gender']) && $options['gender'])) {
     $result[NICK_GENDER] = $render_user['gender'] == GENDER_UNKNOWN ? 'unknown' : ($render_user['gender'] == GENDER_FEMALE ? 'female' : 'male');
   }
 
-  if(($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['vacancy']) && $options['vacancy'])) && $render_user['vacation']) {
+  if (($options === true || (isset($options['icons']) && $options['icons']) || (isset($options['vacancy']) && $options['vacancy'])) && $render_user['vacation']) {
     $result[NICK_VACATION] = $render_user['vacation'];
   }
 
-  if($options === true || (isset($options['color']) && $options['color'])) {
-    if($user_auth_level = $render_user['authlevel']) {
+  if ($options === true || (isset($options['color']) && $options['color'])) {
+    if ($user_auth_level = $render_user['authlevel']) {
       $result[NICK_AUTH_LEVEL] = $user_auth_level;
     }
-    if($user_premium = mrc_get_level($render_user, null, UNIT_PREMIUM)) {
+    if ($user_premium = mrc_get_level($render_user, null, UNIT_PREMIUM)) {
       $result[NICK_PREMIUM] = $user_premium;
     }
   }
 
-  if((isset($options['class']) && $options['class'])) {
+  if ((isset($options['class']) && $options['class'])) {
     $result[NICK_CLASS] = (isset($result_options[NICK_CLASS]) ? ' ' . $result_options[NICK_CLASS] : '') . $options['class'];
   }
 
-  if($render_user['ally_tag'] && ($options === true || (isset($options['ally']) && $options['ally']))) {
+  if ($render_user['ally_tag'] && ($options === true || (isset($options['ally']) && $options['ally']))) {
     $result[NICK_ALLY] = $render_user['ally_tag'];
   }
 
@@ -1002,25 +1002,25 @@ function sys_stat_get_user_skip_list() {
 
   $user_skip_list = array();
 
-  if(classSupernova::$config->stats_hide_admins) {
+  if (classSupernova::$config->stats_hide_admins) {
     $user_skip_list[] = '`authlevel` > 0';
   }
 
-  if(classSupernova::$config->stats_hide_player_list) {
+  if (classSupernova::$config->stats_hide_player_list) {
     $temp = explode(',', classSupernova::$config->stats_hide_player_list);
-    foreach($temp as $user_id) {
+    foreach ($temp as $user_id) {
       $user_id = floatval($user_id);
-      if($user_id) {
+      if ($user_id) {
         $user_skip_list[] = '`id` = ' . $user_id;
       }
     }
   }
 
-  if(!empty($user_skip_list)) {
+  if (!empty($user_skip_list)) {
     $user_skip_list = implode(' OR ', $user_skip_list);
     $user_skip_query = db_user_list($user_skip_list);
-    if(!empty($user_skip_query)) {
-      foreach($user_skip_query as $user_skip_row) {
+    if (!empty($user_skip_query)) {
+      foreach ($user_skip_query as $user_skip_row) {
         $result[$user_skip_row['id']] = $user_skip_row['id'];
       }
     }
@@ -1062,7 +1062,7 @@ function sn_get_groups($groups) { return sn_function_call(__FUNCTION__, array($g
  */
 function sn_sn_get_groups($groups, &$result) {
   $result = is_array($result) ? $result : array();
-  foreach($groups = is_array($groups) ? $groups : array($groups) as $group_name) {
+  foreach ($groups = is_array($groups) ? $groups : array($groups) as $group_name) {
     $result += is_array($a_group = get_unit_param(UNIT_GROUP, $group_name)) ? $a_group : array();
   }
 
@@ -1088,8 +1088,8 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'requ
   $sn_data_unit = get_unit_param($unit_id);
 
   $result = is_array($result) ? $result : array();
-  if($sn_data_unit[$field] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && classSupernova::$config->empire_mercenary_temporary)) {
-    foreach($sn_data_unit[$field] as $require_id => $require_level) {
+  if ($sn_data_unit[$field] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && classSupernova::$config->empire_mercenary_temporary)) {
+    foreach ($sn_data_unit[$field] as $require_id => $require_level) {
       $level_got = mrc_get_level($user, $planetrow, $require_id);
       $level_basic = mrc_get_level($user, $planetrow, $require_id, false, true);
       $result[] = array(
@@ -1113,16 +1113,16 @@ function ally_get_ranks(&$ally) {
 
   $ranks = array();
 
-  if($ally['ranklist']) {
+  if ($ally['ranklist']) {
     $str_ranks = explode(';', $ally['ranklist']);
-    foreach($str_ranks as $str_rank) {
-      if(!$str_rank) {
+    foreach ($str_ranks as $str_rank) {
+      if (!$str_rank) {
         continue;
       }
 
       $tmp = explode(',', $str_rank);
       $rank_id = count($ranks);
-      foreach($ally_rights as $key => $value) {
+      foreach ($ally_rights as $key => $value) {
         $ranks[$rank_id][$value] = $tmp[$key];
       }
     }
@@ -1138,8 +1138,8 @@ function sn_sys_player_new_adjust($user_id, $planet_id, &$result) {
 }
 
 function array_merge_recursive_numeric($array1, $array2) {
-  if(!empty($array2) && is_array($array2)) {
-    foreach($array2 as $key => $value) {
+  if (!empty($array2) && is_array($array2)) {
+    foreach ($array2 as $key => $value) {
 //    if(!isset($array1[$key]) || !is_array($array1[$key])) {
 //      $array1[$key] = $value;
 //    } else {
@@ -1154,7 +1154,7 @@ function array_merge_recursive_numeric($array1, $array2) {
 
 function sn_sys_array_cumulative_sum(&$array) {
   $accum = 0;
-  foreach($array as &$value) {
+  foreach ($array as &$value) {
     $accum += $value;
     $value = $accum;
   }
@@ -1164,7 +1164,7 @@ function planet_density_price_chart($planet_row) {
   $sn_data_density = sn_get_groups('planet_density');
   $density_price_chart = array();
 
-  foreach($sn_data_density as $density_id => $density_data) {
+  foreach ($sn_data_density as $density_id => $density_data) {
     // Отсекаем записи с RARITY = 0 - служебные записи и супер-ядра
     $density_data[UNIT_PLANET_DENSITY_RARITY] ? $density_price_chart[$density_id] = $density_data[UNIT_PLANET_DENSITY_RARITY] : false;
   }
@@ -1172,7 +1172,7 @@ function planet_density_price_chart($planet_row) {
 
   $total_rarity = array_sum($density_price_chart);
 
-  foreach($density_price_chart as &$density_data) {
+  foreach ($density_price_chart as &$density_data) {
     $density_data = ceil($total_rarity / $density_data * $planet_row['field_max'] * PLANET_DENSITY_TO_DARK_MATTER_RATE);
   }
 
@@ -1180,16 +1180,16 @@ function planet_density_price_chart($planet_row) {
 }
 
 function sn_sys_planet_core_transmute(&$user, &$planetrow) {
-  if(!sys_get_param_str('transmute')) {
+  if (!sys_get_param_str('transmute')) {
     return array();
   }
 
   try {
-    if($planetrow['planet_type'] != PT_PLANET) {
+    if ($planetrow['planet_type'] != PT_PLANET) {
       throw new exception(classLocale::$lang['ov_core_err_not_a_planet'], ERR_ERROR);
     }
 
-    if($planetrow['density_index'] == ($new_density_index = sys_get_param_id('density_type'))) {
+    if ($planetrow['density_index'] == ($new_density_index = sys_get_param_id('density_type'))) {
       throw new exception(classLocale::$lang['ov_core_err_same_density'], ERR_WARNING);
     }
 
@@ -1203,7 +1203,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     $planet_density_index = $planetrow['density_index'];
 
     $density_price_chart = planet_density_price_chart($planetrow);
-    if(!isset($density_price_chart[$new_density_index])) {
+    if (!isset($density_price_chart[$new_density_index])) {
       // Hack attempt
       throw new exception(classLocale::$lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
     }
@@ -1212,13 +1212,13 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     // $transmute_cost = get_unit_param(UNIT_PLANET_DENSITY, 'cost');
     // $transmute_cost = $transmute_cost[RES_DARK_MATTER] * $density_price_chart[$new_density_index];
     $transmute_cost = $density_price_chart[$new_density_index];
-    if($user_dark_matter < $transmute_cost) {
+    if ($user_dark_matter < $transmute_cost) {
       throw new exception(classLocale::$lang['ov_core_err_no_dark_matter'], ERR_ERROR);
     }
 
     $sn_data_planet_density = sn_get_groups('planet_density');
-    foreach($sn_data_planet_density as $key => $value) {
-      if($key == $new_density_index) {
+    foreach ($sn_data_planet_density as $key => $value) {
+      if ($key == $new_density_index) {
         break;
       }
       $prev_density_index = $key;
@@ -1249,7 +1249,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
       'STATUS'  => ERR_NONE,
       'MESSAGE' => sprintf(classLocale::$lang['ov_core_err_none'], classLocale::$lang['uni_planet_density_types'][$planet_density_index], classLocale::$lang['uni_planet_density_types'][$new_density_index], $new_density),
     );
-  } catch(exception $e) {
+  } catch (exception $e) {
     sn_db_transaction_rollback();
     $result = array(
       'STATUS'  => $e->getCode(),
@@ -1262,8 +1262,8 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
 
 function sn_module_get_active_count($group = '*') {
   $active_modules = 0;
-  if(isset(sn_module::$sn_module_list[$group]) && is_array(sn_module::$sn_module_list[$group])) {
-    foreach(sn_module::$sn_module_list[$group] as $payment_module) {
+  if (isset(sn_module::$sn_module_list[$group]) && is_array(sn_module::$sn_module_list[$group])) {
+    foreach (sn_module::$sn_module_list[$group] as $payment_module) {
       $active_modules += $payment_module->manifest['active'];
     }
   }
@@ -1274,7 +1274,7 @@ function sn_module_get_active_count($group = '*') {
 function get_resource_exchange() {
   static $rates;
 
-  if(!$rates) {
+  if (!$rates) {
     $rates = array(
       RES_METAL       => 'rpg_exchange_metal',
       RES_CRYSTAL     => 'rpg_exchange_crystal',
@@ -1282,7 +1282,7 @@ function get_resource_exchange() {
       RES_DARK_MATTER => 'rpg_exchange_darkMatter',
     );
 
-    foreach($rates as &$rate) {
+    foreach ($rates as &$rate) {
       $rate = classSupernova::$config->$rate;
     }
   }
@@ -1293,12 +1293,12 @@ function get_resource_exchange() {
 function get_unit_cost_in(&$cost, $in_resource = RES_METAL) {
   static $rates;
 
-  if(!$rates) {
+  if (!$rates) {
     $rates = get_resource_exchange();
   }
 
   $metal_cost = 0;
-  foreach($cost as $resource_id => $resource_value) {
+  foreach ($cost as $resource_id => $resource_value) {
     $metal_cost += $rates[$resource_id] * $resource_value;
   }
 
@@ -1321,8 +1321,8 @@ function get_player_max_expeditons(&$user, $astrotech = -1) { return sn_function
  * @return float|int
  */
 function sn_get_player_max_expeditons(&$user, $astrotech = -1, &$result = 0) {
-  if($astrotech == -1) {
-    if(!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX])) {
+  if ($astrotech == -1) {
+    if (!isset($user[UNIT_PLAYER_EXPEDITIONS_MAX])) {
       $astrotech = mrc_get_level($user, null, TECH_ASTROTECH);
       $user[UNIT_PLAYER_EXPEDITIONS_MAX] = $astrotech >= 1 ? floor(sqrt($astrotech - 1)) : 0;
     }
@@ -1338,8 +1338,8 @@ function get_player_max_expedition_duration(&$user, $astrotech = -1) {
 }
 
 function get_player_max_colonies(&$user, $astrotech = -1) {
-  if($astrotech == -1) {
-    if(!isset($user[UNIT_PLAYER_COLONIES_MAX])) {
+  if ($astrotech == -1) {
+    if (!isset($user[UNIT_PLAYER_COLONIES_MAX])) {
 
       $expeditions = get_player_max_expeditons($user);
       $astrotech = mrc_get_level($user, null, TECH_ASTROTECH);
@@ -1384,10 +1384,10 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
 
   // pdump($powerup_unit, '$powerup_unit');
   $level_current = $term_original = $time_left = 0;
-  if($is_upgrade) {
+  if ($is_upgrade) {
     $time_finish = strtotime($powerup_unit['unit_time_finish']);
     $time_left = max(0, $time_finish - SN_TIME_NOW);
-    if($time_left > 0) {
+    if ($time_left > 0) {
       $term_original = $time_finish - strtotime($powerup_unit['unit_time_start']);
       $level_current = $powerup_unit['unit_level'];
     }
@@ -1395,17 +1395,17 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
 
   $level_max = $level_max > $powerup_data[P_MAX_STACK] ? $level_max : $powerup_data[P_MAX_STACK];
   $original_cost = 0;
-  for($i = 1; $i <= $level_max; $i++) {
+  for ($i = 1; $i <= $level_max; $i++) {
     $base_cost = eco_get_total_cost($powerup_id, $i);
     $base_cost = $base_cost[BUILD_CREATE][RES_DARK_MATTER];
-    foreach($sn_powerup_buy_discounts as $period => $discount) {
+    foreach ($sn_powerup_buy_discounts as $period => $discount) {
       $upgrade_price = floor($base_cost * $discount * $period / PERIOD_MONTH);
       $result[$i][$period] = $upgrade_price;
       $original_cost = $is_upgrade && $i == $level_current && $period <= $term_original ? $upgrade_price : $original_cost;
     }
   }
 
-  if($is_upgrade && $time_left) {
+  if ($is_upgrade && $time_left) {
     $term_original = round($term_original / PERIOD_DAY);
     $time_left = min(floor($time_left / PERIOD_DAY), $term_original);
     $cost_left = $term_original > 0 ? ceil($time_left / $term_original * $original_cost) : 0;
@@ -1466,7 +1466,7 @@ function market_get_autoconvert_cost() {
 
 function print_rr($var, $capture = false) {
   $print = '<pre>' . htmlspecialchars(print_r($var, true)) . '</pre>';
-  if($capture) {
+  if ($capture) {
     return $print;
   } else {
     print($print);
@@ -1545,8 +1545,8 @@ function nullIfEmpty($value) {
  * @return mixed
  */
 function sortUnitRenderedList(&$ListToSort, $sort_option, $sort_option_inverse) {
-  if($sort_option || $sort_option_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
-    switch($sort_option) {
+  if ($sort_option || $sort_option_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
+    switch ($sort_option) {
       case PLAYER_OPTION_SORT_NAME:
         $sort_option_field = 'NAME';
       break;

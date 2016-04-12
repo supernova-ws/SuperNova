@@ -2,6 +2,8 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $user;
+
 if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
   $error_message = classSupernova::$config->game_mode == GAME_BLITZ ? 'sys_blitz_page_disabled' : (
   !classSupernova::$config->game_blitz_register ? 'sys_blitz_registration_disabled' : ''

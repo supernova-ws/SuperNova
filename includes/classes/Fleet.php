@@ -850,7 +850,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.90
+   * @version 41a6.91
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -962,7 +962,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.90
+   * @version 41a6.91
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1530,6 +1530,7 @@ class Fleet extends UnitContainer {
     global $template_result;
 
     $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
+    $planetResources = $this->resourcesGetOnPlanet();
     try {
       $validator = new FleetValidator($this);
       $validator->validate();
@@ -1538,7 +1539,6 @@ class Fleet extends UnitContainer {
       sn_db_transaction_rollback();
       pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
     }
-    $planetResources = $this->resourcesGetOnPlanet();
 
     // Flight allowed here
     pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
@@ -1553,6 +1553,7 @@ class Fleet extends UnitContainer {
         : (isset($this->allowed_missions[MT_HOLD]) ? 12 : 0);
     $template_result['.']['duration'] = $this->renderDuration($max_duration);
 
+    $this->captainGet();
     $template_result += $this->renderCaptain();
 
     $template_result['.']['resources'] = $this->renderPlanetResources($planetResources);
@@ -1610,9 +1611,7 @@ class Fleet extends UnitContainer {
       RES_DEUTERIUM => max(0, floor(sys_get_param_float('resource2'))),
     );
 
-    // TODO
-    $this->captainId = sys_get_param_id('captain_id');
-    $this->captain = $this->captainGet();
+    $this->captainGet();
 
     $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
 
@@ -1780,15 +1779,13 @@ class Fleet extends UnitContainer {
   protected function renderCaptain() {
     $result = array();
 
-    $captain = $this->captainGet();
-
-    if (!empty($captain['unit_id']) && $captain['unit_location_type'] == LOC_PLANET) {
+    if (!empty($this->captain['unit_id']) && $this->captain['unit_location_type'] == LOC_PLANET) {
       $result = array(
-        'CAPTAIN_ID'     => $captain['unit_id'],
-        'CAPTAIN_LEVEL'  => $captain['captain_level'],
-        'CAPTAIN_SHIELD' => $captain['captain_shield'],
-        'CAPTAIN_ARMOR'  => $captain['captain_armor'],
-        'CAPTAIN_ATTACK' => $captain['captain_attack'],
+        'CAPTAIN_ID'     => $this->captain['unit_id'],
+        'CAPTAIN_LEVEL'  => $this->captain['captain_level'],
+        'CAPTAIN_SHIELD' => $this->captain['captain_shield'],
+        'CAPTAIN_ARMOR'  => $this->captain['captain_armor'],
+        'CAPTAIN_ATTACK' => $this->captain['captain_attack'],
       );
     }
 
