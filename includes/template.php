@@ -211,7 +211,7 @@ function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $A
  * @param bool|int|string $exitStatus - Код или сообщение выхода
  */
 function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $isDisplayMenu = true, $exitStatus = true) {
-  global $debug, $user, $planetrow, $template_result, $sn_page_name;
+  global $user, $planetrow, $template_result, $sn_page_name;
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
   $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
@@ -366,7 +366,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   ));
   displayP(parsetemplate($template));
 
-  $user['authlevel'] >= 3 && classSupernova::$config->debug ? $debug->echo_log() : false;;
+  $user['authlevel'] >= 3 && classSupernova::$config->debug ? classSupernova::$debug->echo_log() : false;;
 
   classSupernova::$db->db_disconnect();
 

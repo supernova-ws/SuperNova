@@ -101,14 +101,12 @@ class db_mysql {
   }
 
   protected function driver_connect() {
-    global $debug;
-
     if(!is_object($this->driver)) {
-      $debug->error_fatal('DB Error - No driver for MySQL found!');
+      classSupernova::$debug->error_fatal('DB Error - No driver for MySQL found!');
     }
 
     if(!method_exists($this->driver, 'mysql_connect')) {
-      $debug->error_fatal('DB Error - WRONG MySQL driver!');
+      classSupernova::$debug->error_fatal('DB Error - WRONG MySQL driver!');
     }
 
     return $this->driver->mysql_connect($this->dbsettings);

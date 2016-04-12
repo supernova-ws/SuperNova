@@ -1,7 +1,5 @@
 <?php
 
-global $debug;
-
 // Придумать какой статус должен быть у глобальных ответов, что бы не перекрывать статусы платежных систем
 // Может добавить спецстатус "Ответ системы платежа" и парсить дальше getMessage
 // см constants.php
@@ -222,7 +220,7 @@ if($request['metamatter'] && $payment_module) {
       'STATUS'  => $e->getCode(),
       'MESSAGE' => $e->getMessage(),
     ));
-    $debug->warning('Результат операции: код ' . $e->getCode() . ' сообщение "' . $e->getMessage() . '"', 'Ошибка платежа', LOG_INFO_PAYMENT);
+    classSupernova::$debug->warning('Результат операции: код ' . $e->getCode() . ' сообщение "' . $e->getMessage() . '"', 'Ошибка платежа', LOG_INFO_PAYMENT);
   }
 }
 

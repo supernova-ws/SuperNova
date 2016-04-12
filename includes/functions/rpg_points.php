@@ -27,7 +27,7 @@
  * @package rpg
  */
 function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', $already_changed = false) {
-  global $debug, $dm_change_legit, $user;
+  global $dm_change_legit, $user;
 
   if(!$user_id) {
     return false;
@@ -48,7 +48,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
       if($metamatter_to_reduce > 0) {
         $metamatter_exists = mrc_get_level($a_user, null, RES_METAMATTER);
         if($metamatter_exists < $metamatter_to_reduce) {
-          $debug->error('Ошибка снятия ТМ - ММ+ТМ меньше, чем сумма для снятия!', 'Ошибка снятия ТМ', LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER);
+          classSupernova::$debug->error('Ошибка снятия ТМ - ММ+ТМ меньше, чем сумма для снятия!', 'Ошибка снятия ТМ', LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER);
         }
         if(is_array($comment)) {
           $comment = call_user_func_array('sprintf', $comment);
@@ -92,7 +92,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
       }
     }
   } else {
-    $debug->warning("Error adjusting Dark Matter for player ID {$user_id} (Player Not Found?) with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 402);
+    classSupernova::$debug->warning("Error adjusting Dark Matter for player ID {$user_id} (Player Not Found?) with {$dark_matter}. Reason: {$comment}", 'Dark Matter Change', 402);
   }
 
   $dm_change_legit = false;

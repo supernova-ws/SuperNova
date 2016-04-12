@@ -3,7 +3,7 @@
 $classLocale = classLocale::$lang;
 
 if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) {
-  $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
+  classSupernova::$debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
 }
 
 $page_title .= ' - ' . classLocale::$lang["eco_mrk_{$submode}"];
@@ -39,7 +39,7 @@ if(is_array($shipList)) {
     }
 
     if($shipCount < 0) {
-      $debug->warning('User supplied negative ship count on Black Market page', 'Hack Attempt', 307);
+      classSupernova::$debug->warning('User supplied negative ship count on Black Market page', 'Hack Attempt', 307);
       $intError = MARKET_NEGATIVE_SHIPS;
       break;
     }
@@ -56,7 +56,7 @@ if(is_array($shipList)) {
     }
 
     if(!in_array($shipID, sn_get_groups('fleet'))) {
-      $debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
+      classSupernova::$debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
       $intError = MARKET_NOT_A_SHIP;
       break;
     }
@@ -82,7 +82,7 @@ if(is_array($shipList)) {
     foreach($total as $resID => $resCount) {
       if(mrc_get_level($user, $planetrow, $resID, true, true) < -$resCount) {
         $intError = MARKET_NO_RESOURCES;
-        $debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 301);
+        classSupernova::$debug->warning('Trying to use bug in s/h market', 'S/H Ship Market', 301);
         break;
       }
     }

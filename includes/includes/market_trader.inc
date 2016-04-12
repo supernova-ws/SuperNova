@@ -1,11 +1,11 @@
 <?php
 
 if((!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) && (!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)) {
-  $debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
+  classSupernova::$debug->error("Attempt to call market page mode {$mode} directly - not from market.php", 'Forbidden', 403);
 }
 
 function eco_mrk_trader($user, $planetrow = null) {
-  global $debug, $mode;
+  global $mode;
 
   $template = gettemplate('market_trader', true);
 
@@ -43,7 +43,7 @@ function eco_mrk_trader($user, $planetrow = null) {
     foreach(sn_get_groups('resources_trader') as $resource_id) {
       $amount = floatval($tradeList[$resource_id]);
       if($amount < 0) {
-        $debug->error('Trying to supply negative resource amount on Black Market Page', 'Hack Attempt', 305);
+        classSupernova::$debug->error('Trying to supply negative resource amount on Black Market Page', 'Hack Attempt', 305);
       }
 
       if($resource_id == RES_DARK_MATTER && $exchangeTo == RES_DARK_MATTER) {

@@ -74,8 +74,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
         $increment = min($increment, max(0, $store_free));
 
         if($planet[$resource_name] + $increment < 0 && !$simulation) {
-          global $debug;
-          $debug->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resource_name]} of {$resource_name}", 'Negative Resources', 501);
+          classSupernova::$debug->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resource_name]} of {$resource_name}", 'Negative Resources', 501);
         }
         $planet[$resource_name] += $increment;
         $planet[$resource_name . '_perhour'] = $caps_real['total'][$resource_id];

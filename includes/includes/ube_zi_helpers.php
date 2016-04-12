@@ -45,7 +45,7 @@ function sn_ube_combat_helper_round_footer($round = 0)
   print('</table>');
 }
 
-function sn_ube_combat_helper_round_row(&$debug_unit_crossfire_result)
+function sn_ube_combat_helper_round_row(&$unit_crossfire_result)
 {
   $SN = array(
     SHIP_CARGO_SMALL => 'МаТр', SHIP_CARGO_BIG => 'БоТр', SHIP_CARGO_SUPER => 'СуТр', SHIP_CARGO_HYPER => 'ГпТр',
@@ -61,7 +61,7 @@ function sn_ube_combat_helper_round_row(&$debug_unit_crossfire_result)
   );
 
   print('<tr align="right">');
-  foreach($debug_unit_crossfire_result as $key => $value)
+  foreach($unit_crossfire_result as $key => $value)
   {
     if(is_array($value))
     {

@@ -259,8 +259,7 @@ function SetSelectedPlanet(&$user) {
       $planet_row = db_planet_by_id_and_owner($user['id_planet'], $user['id'], false, 'id');
       // Если и столицы не существует - значит что-то очень не так с записью пользователя
       if(!isset($planet_row['id'])) {
-        global $debug;
-        $debug->error("User ID {$user['id']} has Capital planet {$user['id_planet']} but this planet does not exists", 'User record error', 502);
+        classSupernova::$debug->error("User ID {$user['id']} has Capital planet {$user['id_planet']} but this planet does not exists", 'User record error', 502);
       }
     }
   }

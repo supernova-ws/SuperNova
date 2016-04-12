@@ -361,10 +361,10 @@ class Account {
    * @return array|bool|int|mysqli_result|null|string
    */
   public function metamatter_change($change_type, $metamatter, $comment = '', $already_changed = false) {
-    global $debug, $mm_change_legit;
+    global $mm_change_legit;
 
     if(!$this->is_exists || !($metamatter = round(floatval($metamatter)))) {
-      $debug->error('Ошибка при попытке манипуляции с ММ');
+      classSupernova::$debug->error('Ошибка при попытке манипуляции с ММ');
 
       return false;
     }
@@ -388,7 +388,7 @@ class Account {
         " WHERE `account_id` = {$account_id_safe}"
       );
       if(!$result) {
-        $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
+        classSupernova::$debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
       }
       $result = classSupernova::$db->db_affected_rows();
     }
@@ -403,7 +403,7 @@ class Account {
     $user_id_safe = $this->db->db_escape($user_id_unsafe);
 
     if(!$result) {
-      $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
+      classSupernova::$debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
     }
 
     if(!$already_changed) {

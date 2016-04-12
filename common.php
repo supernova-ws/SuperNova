@@ -9,7 +9,7 @@
 
 require_once('includes/init.php');
 
-global $debug, $template_result, $user;
+global $template_result, $user;
 
 // Напоминание для Администрации, что игра отключена
 if($template_result[F_GAME_DISABLE]) {
@@ -33,7 +33,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
       // sn_sys_logout(false, true);
       // core_auth::logout(false);
       classSupernova::$auth->logout(false);
-      $debug->error("User ID {$user['id']} has ally ID {$user['ally_id']} but no ally info", 'User record error', 502);
+      classSupernova::$debug->error("User ID {$user['id']} has ally ID {$user['ally_id']} but no ally info", 'User record error', 502);
     }
     // TODO UNCOMMENT
     que_process($user['ally']['player']);
@@ -52,7 +52,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
     // sn_sys_logout(false, true);
     // core_auth::logout(false);
     classSupernova::$auth->logout(false);
-    $debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
+    classSupernova::$debug->error("User ID {$user['id']} has no current planet and no homeworld", 'User record error', 502);
   }
 
   $que = $global_data['que'];

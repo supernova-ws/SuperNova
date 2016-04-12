@@ -101,7 +101,7 @@ function average($arr)
 {
   return is_array($arr) && count($arr) ? array_sum($arr) / count($arr) : 0;
 }
-function linear_calc(&$linear, $from = 0, $debug = false)
+function linear_calc(&$linear, $from = 0, $logProcess = false)
 {
   for($i = $from; $i < count($linear); $i++)
   {
@@ -111,7 +111,7 @@ function linear_calc(&$linear, $from = 0, $debug = false)
       $eq[$j] /= $eq[$from];
     }
   }
-  if($debug) pdump($linear, 'Нормализовано по х' . $from);
+  if($logProcess) pdump($linear, 'Нормализовано по х' . $from);
 
   for($i = $from + 1; $i < count($linear); $i++)
   {
@@ -121,11 +121,11 @@ function linear_calc(&$linear, $from = 0, $debug = false)
       $eq[$j] -= $linear[$from][$j];
     }
   }
-  if($debug) pdump($linear, 'Подставили х' . $from);
+  if($logProcess) pdump($linear, 'Подставили х' . $from);
 
   if($from < count($linear) - 1)
   {
-    linear_calc($linear, $from + 1, $debug);
+    linear_calc($linear, $from + 1, $logProcess);
   }
 
   if($from)
@@ -138,11 +138,11 @@ function linear_calc(&$linear, $from = 0, $debug = false)
         $eq[$j] = $eq[$j] - $eq[$from] * $linear[$from][$j];
       }
     }
-    if($debug) pdump($linear, 'Подставили обратно х' . $from);
+    if($logProcess) pdump($linear, 'Подставили обратно х' . $from);
   }
   else
   {
-    if($debug) pdump($linear, 'Результат' . $from);
+    if($logProcess) pdump($linear, 'Результат' . $from);
     foreach($linear as $index => &$eq)
     {
       pdump($eq[count($linear)], 'x' . $index);

@@ -1,7 +1,7 @@
 <?php
 
 function scheduler_process() {
-  global $user, $debug;
+  global $user;
   $classLocale = classLocale::$lang;
 
   $is_admin_request = false;
@@ -34,7 +34,7 @@ function scheduler_process() {
       $msg = "Running stat updates: {$msg}. Config->var_stat_update = " . classSupernova::$config->var_stat_update .
         ', $ts_scheduled_update = ' . date(FMT_DATE_TIME_SQL, $ts_scheduled_update) .
         ', next_stat_update = ' . $next_run;
-      $debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
+      classSupernova::$debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
       $total_time = microtime(true);
 
       // require_once('../includes/sys_stat.php');
@@ -43,7 +43,7 @@ function scheduler_process() {
 
       $total_time = microtime(true) - $total_time;
       $msg = "Stat update complete in {$total_time} seconds.";
-      $debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
+      classSupernova::$debug->warning($msg, 'Stat update', LOG_INFO_STAT_PROCESS);
 
       $msg = "{$classLocale['adm_done']}: {$total_time} {$classLocale['sys_sec']}.";
 

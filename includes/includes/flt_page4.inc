@@ -3,7 +3,7 @@
 $classLocale = classLocale::$lang;
 
 if(SN_IN_FLEET !== true) {
-  $debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
+  classSupernova::$debug->error("Attempt to call FLEET page mode {$mode} directly - not from fleet.php", 'Forbidden', 403);
 }
 
 $fleetid = sys_get_param_id('fleetid');
@@ -24,7 +24,7 @@ if($objFleet->time_arrive_to_target <= SN_TIME_NOW || $objFleet->time_return_to_
 }
 
 if($objFleet->playerOwnerId != $user['id']) {
-  $debug->warning(classLocale::$lang['fl_aks_hack_wrong_fleet'], 'Wrong Fleet Owner', 301);
+  classSupernova::$debug->warning(classLocale::$lang['fl_aks_hack_wrong_fleet'], 'Wrong Fleet Owner', 301);
   message(classLocale::$lang['fl_aks_hack_wrong_fleet'], classLocale::$lang['fl_error']);
 }
 

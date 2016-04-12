@@ -2,7 +2,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $debug, $user, $planetrow;
+global $user, $planetrow;
 
 if(!empty($_POST['return']) && is_array($_POST['return'])) {
   foreach($_POST['return'] as $fleet_id) {
@@ -15,7 +15,7 @@ if(!empty($_POST['return']) && is_array($_POST['return'])) {
         $objFleet->commandReturn();
       } elseif ($objFleet->dbId && $objFleet->playerOwnerId != $user['id']) {
         sn_db_transaction_rollback();
-        $debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(
+        classSupernova::$debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(
           'base_dump' => true,
           'fleet_owner_id' => $objFleet->playerOwnerId,
           'user_id' => $user['id'])

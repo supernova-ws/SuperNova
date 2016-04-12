@@ -31,7 +31,7 @@
  */
 
 function sta_set_time_limit($sta_update_msg = 'updating something', $next_step = true) {
-  global $debug, $sta_update_step;
+  global $sta_update_step;
 
   $value = classSupernova::$config->stats_minimal_interval ? classSupernova::$config->stats_minimal_interval : 600;
   set_time_limit($value);
@@ -46,7 +46,7 @@ function sta_set_time_limit($sta_update_msg = 'updating something', $next_step =
 
   classSupernova::$config->db_saveItem('var_stat_update_msg', $sta_update_msg);
   if($next_step) {
-    $debug->warning($sta_update_msg, 'Stat update', LOG_INFO_STAT_PROCESS);
+    classSupernova::$debug->warning($sta_update_msg, 'Stat update', LOG_INFO_STAT_PROCESS);
   }
 }
 

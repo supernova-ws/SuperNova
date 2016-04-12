@@ -725,10 +725,10 @@ TODO - КомпТеха - каждые 5 (3?) уровня добавляют +1
     global $config
     global $dpath;
     global $template;
+    global $debug;
 
     global $user;
     global $planetrow;
-    global $debug;
 
     global $lang !!!!!!!!!!!!!!!!!!!!!!!!!!!!☻
         - Поизвлекать $lang из строк

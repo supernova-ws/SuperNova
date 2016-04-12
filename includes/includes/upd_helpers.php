@@ -55,13 +55,13 @@ function upd_add_more_time($time = 0) {
 }
 
 function upd_log_message($message) {
-  global $sys_log_disabled, $upd_log, $debug;
+  global $sys_log_disabled, $upd_log;
 
   if($sys_log_disabled) {
 //    print("{$message}<br />");
   } else {
     $upd_log .= "{$message}\r\n";
-    $debug->warning($message, 'Database Update', 103);
+    classSupernova::$debug->warning($message, 'Database Update', 103);
   }
 }
 

@@ -203,8 +203,6 @@ function sn_maintenance_pack_user_list($user_list) {
   return implode(',', $result);
 }
 
-global $debug;
-
 sn_db_transaction_start();
 $old_server_status = classSupernova::$config->db_loadItem('game_disable');
 $old_server_status == GAME_DISABLE_NONE ? classSupernova::$config->db_saveItem('game_disable', GAME_DISABLE_MAINTENANCE) : false;
@@ -232,7 +230,7 @@ foreach($ques as $que_transaction) {
       classSupernova::$db->db_affected_rows() . ' ' . classLocale::$lang['adm_records'] .
       "</li>";
 
-    $debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . classSupernova::$db->db_affected_rows() . ' ' . classLocale::$lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
+    classSupernova::$debug->warning($que . ' --- ' . ($QryResult ? 'OK' : 'FAILED!') . ' ' . classSupernova::$db->db_affected_rows() . ' ' . classLocale::$lang['adm_records'], 'System maintenance', LOG_INFO_MAINTENANCE);
   }
 
   sn_db_transaction_commit();
@@ -240,12 +238,12 @@ foreach($ques as $que_transaction) {
 
 sn_db_transaction_start();
 classSupernova::$config->db_saveItem('stats_hide_player_list', sn_maintenance_pack_user_list(classSupernova::$config->db_loadItem('stats_hide_player_list')));
-$debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
+classSupernova::$debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 
 sn_db_transaction_start();
 classSupernova::$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list(classSupernova::$config->db_loadItem('game_watchlist')));
-$debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
+classSupernova::$debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 
 classSupernova::$config->db_saveItem('users_amount', db_user_count());

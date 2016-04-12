@@ -1,6 +1,6 @@
 <?php
 
-global $planetrow, $template, $uni_row, $debug, $uni_galaxy, $uni_system;
+global $planetrow, $template, $uni_row, $uni_galaxy, $uni_system;
 
 $classLocale = classLocale::$lang;
 
@@ -50,7 +50,7 @@ try
       }
 
       db_universe_rename($uni_galaxy, $uni_system, $uni_row);
-      $debug->warning(sprintf(classLocale::$lang['uni_msg_admin_rename'], $user['id'], $user['username'], $uni_price, $uni_system ? classLocale::$lang['uni_system_of'] : classLocale::$lang['uni_galaxy_of'], $uni_galaxy, $uni_system ? ":{$uni_system}" : '', strip_tags(sys_get_param_str_unsafe('uni_name'))), classLocale::$lang['uni_naming'], LOG_INFO_UNI_RENAME);
+      classSupernova::$debug->warning(sprintf(classLocale::$lang['uni_msg_admin_rename'], $user['id'], $user['username'], $uni_price, $uni_system ? classLocale::$lang['uni_system_of'] : classLocale::$lang['uni_galaxy_of'], $uni_galaxy, $uni_system ? ":{$uni_system}" : '', strip_tags(sys_get_param_str_unsafe('uni_name'))), classLocale::$lang['uni_naming'], LOG_INFO_UNI_RENAME);
       sn_db_transaction_commit();
       sys_redirect("galaxy.php?mode=name&galaxy={$uni_galaxy}&system={$uni_system}");
     }

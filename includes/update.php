@@ -30,7 +30,7 @@ define('IN_UPDATE', true);
 
 require('includes/upd_helpers.php');
 
-global $sn_cache, $new_version, $debug, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
+global $sn_cache, $new_version, $sys_log_disabled, $upd_log, $update_tables, $update_indexes, $update_indexes_full, $update_foreigns;
 
 classSupernova::$config->reset();
 classSupernova::$config->db_loadAll();

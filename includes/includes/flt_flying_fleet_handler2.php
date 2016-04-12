@@ -79,7 +79,6 @@ return;
   [*] Но не раньше, чем переписать все миссии
 
   */
-  global $debug;
 
   if(classSupernova::$config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
     return;
@@ -106,7 +105,7 @@ return;
 
       return;
     } else {
-      $debug->warning('Flying fleet handler was locked too long - watchdog unlocked', 'FFH Error', 504);
+      classSupernova::$debug->warning('Flying fleet handler was locked too long - watchdog unlocked', 'FFH Error', 504);
     }
   }
 

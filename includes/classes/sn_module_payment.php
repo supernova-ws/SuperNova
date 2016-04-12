@@ -629,8 +629,6 @@ abstract class sn_module_payment extends sn_module {
   // OK 4.8
   // TODO - Здесь должно происходить разделение на resultURL, successURL, failURL
   public function payment_request_response() {
-    global $debug;
-
     $this->db = core_auth::$main_provider->db;
     $this->account = new Account($this->db);
 
@@ -645,10 +643,10 @@ abstract class sn_module_payment extends sn_module {
 
     if($response['result'] == SN_PAYMENT_REQUEST_OK) {
       sn_db_transaction_commit();
-      $debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Успешный платёж', LOG_INFO_PAYMENT);
+      classSupernova::$debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Успешный платёж', LOG_INFO_PAYMENT);
     } else {
       sn_db_transaction_rollback();
-      $debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Ошибка платежа', LOG_INFO_PAYMENT, true);
+      classSupernova::$debug->warning('Результат операции: код ' . $response['result'] . ' сообщение "' . $response['message'] . '"', 'Ошибка платежа', LOG_INFO_PAYMENT, true);
     }
 
     // Переводим код результата из СН в код платежной системы

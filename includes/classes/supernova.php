@@ -208,7 +208,7 @@ class classSupernova {
     }
   }
 
-  public static function debug_set_handler(&$debug) {
+  public static function debug_set_handler($debug) {
     self::$debug = $debug;
   }
 
