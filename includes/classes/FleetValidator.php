@@ -763,12 +763,52 @@ class FleetValidator {
   }
 
 
+  /**
+   * @return int
+   */
   protected function checkExpeditionsMax() {
     return get_player_max_expeditons($this->fleet->dbOwnerRow);
   }
 
+  /**
+   * @return bool
+   */
   protected function checkExpeditionsFree() {
     return get_player_max_expeditons($this->fleet->dbOwnerRow) > FleetList::fleet_count_flying($this->fleet->dbOwnerRow['id'], MT_EXPLORE);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkCaptainSent() {
+    return $this->fleet->captainId >= 1;
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkCaptainExists() {
+    return !empty($this->fleet->captain) && is_array($this->fleet->captain);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkCaptainOnPlanet() {
+    return $this->fleet->captain['unit_location_type'] == LOC_PLANET;
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkCaptainNotRelocating() {
+    if($this->fleet->mission_type == MT_RELOCATE) {
+      $arriving_captain = mrc_get_level($this->fleet->dbOwnerRow, $this->fleet->dbTargetRow, UNIT_CAPTAIN, true);
+    } else {
+      $arriving_captain = false;
+    }
+
+    return empty($arriving_captain) || !is_array($arriving_captain);
   }
 
 }

@@ -164,7 +164,8 @@ fleet_aks_invite (page4) - выставить список игроков-дру
 
 
 
-
+Миссия экспедиции к солнцу - для добычи чисто ТМ!
+[11.04.2016 16:13:04] Aleksandr Omelchenko (Oracle): И поиска ништяков (?)
 
 
 Использовать __DIR__ в init.php ???
@@ -803,6 +804,11 @@ Unused strings
       message("<font color=\"red\"><b>" . classLocale::$lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) . "</b></font>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
       message("<span class='error'><b>" . classLocale::$lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
             $errorlist .= classLocale::$lang['fl_nomoon'];
+
+//        $errorlist .= classLocale::$lang['module_unit_captain_error_no_captain'];
+//          $errorlist .= classLocale::$lang['module_unit_captain_error_captain_already_bound'];
+//        $errorlist .= classLocale::$lang['module_unit_captain_error_captain_flying'];
+
 
 
 Выводить сообщение "Это будет дооооооооолгий полёт..." для очень долгих миссий

@@ -304,6 +304,15 @@ class Fleet extends UnitContainer {
   public $targetedUnitId = 0;
 
   /**
+   * @var array $captain
+   */
+  public $captain = array();
+  /**
+   * @var int $captainId
+   */
+  public $captainId = 0;
+
+  /**
    * Fleet constructor.
    */
   public function __construct() {
@@ -841,7 +850,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.87
+   * @version 41a6.90
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -953,7 +962,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.87
+   * @version 41a6.90
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1117,7 +1126,7 @@ class Fleet extends UnitContainer {
    * @param Vector $targetVector
    *
    */
-  public function initDefaults($dbPlayerRow, $dbPlanetRow, $targetVector, $mission, $ships, $fleet_group_mr, $oldSpeedInTens = 10, $targetedUnitId = 0) {
+  public function initDefaults($dbPlayerRow, $dbPlanetRow, $targetVector, $mission, $ships, $fleet_group_mr, $oldSpeedInTens = 10, $targetedUnitId = 0, $captainId = 0, $resources = array()) {
     $objFleet5Player = new Player();
     $objFleet5Player->dbRowParse($dbPlayerRow);
     $this->setLocatedAt($objFleet5Player);
@@ -1141,6 +1150,8 @@ class Fleet extends UnitContainer {
     $this->oldSpeedInTens = $oldSpeedInTens;
 
     $this->targetedUnitId = $targetedUnitId;
+
+    $this->captainId = $captainId;
 
     $this->renderParamCoordinates();
 
@@ -1527,6 +1538,7 @@ class Fleet extends UnitContainer {
       sn_db_transaction_rollback();
       pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
     }
+    $planetResources = $this->resourcesGetOnPlanet();
 
     // Flight allowed here
     pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
@@ -1543,7 +1555,6 @@ class Fleet extends UnitContainer {
 
     $template_result += $this->renderCaptain();
 
-    $planetResources = $this->resourcesGetOnPlanet();
     $template_result['.']['resources'] = $this->renderPlanetResources($planetResources);
 
     $template_result += array(
@@ -1599,21 +1610,9 @@ class Fleet extends UnitContainer {
       RES_DEUTERIUM => max(0, floor(sys_get_param_float('resource2'))),
     );
 
-
     // TODO
-    $captain = array();
-    if ($captain_id = sys_get_param_id('captain_id')) {
-      $captain = $this->captainGet();
-      if (empty($captain)) {
-        $errorlist .= classLocale::$lang['module_unit_captain_error_no_captain'];
-      } elseif ($captain['unit_location_type'] == LOC_PLANET) {
-        if ($this->_mission_type == MT_RELOCATE && ($arriving_captain = mrc_get_level($this->dbOwnerRow, $this->dbTargetRow, UNIT_CAPTAIN, true))) {
-          $errorlist .= classLocale::$lang['module_unit_captain_error_captain_already_bound'];
-        }
-      } else {
-        $errorlist .= classLocale::$lang['module_unit_captain_error_captain_flying'];
-      }
-    }
+    $this->captainId = sys_get_param_id('captain_id');
+    $this->captain = $this->captainGet();
 
     $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
 
@@ -1747,6 +1746,7 @@ class Fleet extends UnitContainer {
    */
   protected function resourcesGetOnPlanet() {
     $planetResources = array();
+
     $sn_group_resources = sn_get_groups('resources_loot');
     foreach ($sn_group_resources as $resource_id) {
       $planetResources[$resource_id] = floor(mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resource_id) - ($resource_id == RES_DEUTERIUM ? $this->travelData['consumption'] : 0));
@@ -1755,8 +1755,10 @@ class Fleet extends UnitContainer {
     return $planetResources;
   }
 
-  protected function captainGet() {
-    $result = array();
+  /**
+   */
+  public function captainGet() {
+    $this->captain = array();
 
     /**
      * @var unit_captain $moduleCaptain
@@ -1768,10 +1770,8 @@ class Fleet extends UnitContainer {
       &&
       $moduleCaptain->manifest['active']
     ) {
-      $result = $moduleCaptain->unit_captain_get($this->dbSourcePlanetRow['id']);
+      $this->captain = $moduleCaptain->unit_captain_get($this->dbSourcePlanetRow['id']);
     }
-
-    return $result;
   }
 
   /**

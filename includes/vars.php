@@ -347,12 +347,24 @@ $sn_data += array(
       'checkResourcesPositive'       => FLIGHT_RESOURCES_NEGATIVE,                            //+
       'checkNotTooFar'               => FLIGHT_FLEET_TOO_FAR,                                //+
       'checkEnoughCapacity'          => FLIGHT_FLEET_OVERLOAD,                                //+
+
       // Medium checks - currently requires access to DB but potentially doesn't
       'checkSourceEnoughShips'       => FLIGHT_SHIPS_NOT_ENOUGH,                              //+
       'checkSourceEnoughFuel'        => FLIGHT_RESOURCES_FUEL_NOT_ENOUGH,                     //+
       'checkSourceEnoughResources'   => FLIGHT_RESOURCES_NOT_ENOUGH,                          //+
+
+      // TODO - THIS CHECKS SHOULD BE ADDED IN UNIT_CAPTAIN MODULE!
+      'checkCaptainSent'             => array(
+        true => array(
+          'checkCaptainExists'        => FLIGHT_CAPTAIN_NOT_HIRED,
+          'checkCaptainOnPlanet'      => FLIGHT_CAPTAIN_ALREADY_FLYING,
+          'checkCaptainNotRelocating' => FLIGHT_CAPTAIN_RELOCATE_LOCK,
+        ),
+      ),
+
       // Heavy checks - will absolutely require DB access
       'checkEnoughFleetSlots'        => FLIGHT_FLEET_NO_SLOTS,                                //+
+
 
       // Vector targeting space beyond MaxPlanet forces MT_EXPLORE mission
       'checkKnownSpace'              => array(
