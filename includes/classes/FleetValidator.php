@@ -66,14 +66,6 @@ class FleetValidator {
   }
 
 
-
-
-
-
-
-
-
-
   /**
    * @throws Exception
    */
@@ -91,17 +83,6 @@ class FleetValidator {
       throw new Exception('FLIGHT_MISSION_IMPOSSIBLE', FLIGHT_MISSION_IMPOSSIBLE);
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
   /**
@@ -175,9 +156,7 @@ class FleetValidator {
   }
 
 
-
-
-    /**
+  /**
    * @return bool
    */
   protected function checkEnoughCapacity($includeResources = true) {
@@ -315,6 +294,13 @@ class FleetValidator {
     return $this->fleet->targetVector->type == PT_DEBRIS;
   }
 
+  /**
+   * @return bool
+   */
+  protected function checkTargetIsMoon() {
+    return $this->fleet->targetVector->type == PT_MOON;
+  }
+
 
 
 
@@ -381,17 +367,6 @@ class FleetValidator {
       &&
       $this->fleet->shipsGetTotalById(UNIT_DEF_MISSILE_INTERCEPTOR) == 0;
   }
-
-
-
-
-
-
-
-
-
-
-
 
 
   /**
@@ -790,13 +765,119 @@ class FleetValidator {
    * @return bool
    */
   protected function checkCaptainNotRelocating() {
-    if($this->fleet->mission_type == MT_RELOCATE) {
+    if ($this->fleet->mission_type == MT_RELOCATE) {
       $arriving_captain = mrc_get_level($this->fleet->dbOwnerRow, $this->fleet->dbTargetRow, UNIT_CAPTAIN, true);
     } else {
       $arriving_captain = false;
     }
 
     return empty($arriving_captain) || !is_array($arriving_captain);
+  }
+
+
+
+
+
+
+
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionDestroyReal() {
+    return
+      $this->checkRealFlight()
+      &&
+      $this->checkMissionNonRestrict(MT_DESTROY);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkHaveReapers() {
+    $unitsTyped = 0;
+    foreach (sn_get_groups('flt_reapers') as $unit_id) {
+      $unitsTyped += $this->fleet->shipsGetTotalById($unit_id);
+    }
+
+    return $unitsTyped >= 1;
+  }
+
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionDestroyAllowed(){
+    $result =
+      $this->checkTargetIsMoon()
+      &&
+      $this->checkHaveReapers();
+
+    if(!$result) {
+      unset($this->fleet->allowed_missions[MT_DESTROY]);
+    }
+
+    return $result;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * Checks if mission can be MT_DESTROY in any point
+   *
+   * First check - exact MT_DESTROY set as mission_type - fleet pages 2 and 3
+   * Second check - empty MT_DESTROY
+   *
+   * @return bool
+   */
+  protected function checkMissionDestroyOrEmptyNotReal() {
+    $result = $this->checkMissionNonRestrict(MT_DESTROY)
+      ||
+      (empty($this->fleet->mission_type) && !$this->checkRealFlight());
+
+    if(!$result) {
+      unset($this->fleet->allowed_missions[MT_DESTROY]);
+    }
+
+    return $result;
+  }
+
+  protected function disableMissionDestroy() {
+    unset($this->fleet->allowed_missions[MT_DESTROY]);
+    return true;
   }
 
 }

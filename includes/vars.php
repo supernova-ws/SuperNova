@@ -333,25 +333,26 @@ $sn_data += array(
     // Each mission will filter only necessary checks and do it in this order
     'mission_checks' => array(
       // Cheap checks - class Fleet already have all this info internally
-      'checkSenderNoVacation'        => FLIGHT_PLAYER_VACATION_OWN,                           //+
-      'checkTargetNoVacation'        => FLIGHT_PLAYER_VACATION,                                  //+
-      'checkFleetNotEmpty'           => FLIGHT_SHIPS_NO_SHIPS,                                //+
-      // FLIGHT_MISSION_UNKNOWN
-      // FLIGHT_RESOURCES_FORBIDDEN
-      'checkSpeedPercentOld'         => FLIGHT_FLEET_SPEED_WRONG,                             //+
-      'checkTargetNotSource'         => FLIGHT_VECTOR_SAME_SOURCE,                            //+
+      'checkSpeedPercentOld'         => FLIGHT_FLEET_SPEED_WRONG,
       'checkTargetInUniverse'        => FLIGHT_VECTOR_BEYOND_UNIVERSE,
-      'checkUnitsPositive'           => FLIGHT_SHIPS_NEGATIVE,                                //+
+      'checkTargetNotSource'         => FLIGHT_VECTOR_SAME_SOURCE,
+      'checkSenderNoVacation'        => FLIGHT_PLAYER_VACATION_OWN,
+      'checkTargetNoVacation'        => FLIGHT_PLAYER_VACATION,
+      'checkFleetNotEmpty'           => FLIGHT_SHIPS_NO_SHIPS,
+      'checkUnitsPositive'           => FLIGHT_SHIPS_NEGATIVE,
       'checkOnlyFleetUnits'          => FLIGHT_SHIPS_UNIT_WRONG,
-      'checkOnlyFlyingUnits'         => FLIGHT_SHIPS_UNMOVABLE,                               //+
-      'checkResourcesPositive'       => FLIGHT_RESOURCES_NEGATIVE,                            //+
-      'checkNotTooFar'               => FLIGHT_FLEET_TOO_FAR,                                //+
-      'checkEnoughCapacity'          => FLIGHT_FLEET_OVERLOAD,                                //+
+      'checkOnlyFlyingUnits'         => FLIGHT_SHIPS_UNMOVABLE,
+      'checkResourcesPositive'       => FLIGHT_RESOURCES_NEGATIVE,
+      'checkNotTooFar'               => FLIGHT_FLEET_TOO_FAR,
+      'checkEnoughCapacity'          => FLIGHT_FLEET_OVERLOAD,
 
       // Medium checks - currently requires access to DB but potentially doesn't
-      'checkSourceEnoughShips'       => FLIGHT_SHIPS_NOT_ENOUGH,                              //+
-      'checkSourceEnoughFuel'        => FLIGHT_RESOURCES_FUEL_NOT_ENOUGH,                     //+
-      'checkSourceEnoughResources'   => FLIGHT_RESOURCES_NOT_ENOUGH,                          //+
+      'checkSourceEnoughShips'       => FLIGHT_SHIPS_NOT_ENOUGH,
+      'checkSourceEnoughFuel'        => FLIGHT_RESOURCES_FUEL_NOT_ENOUGH,
+      'checkSourceEnoughResources'   => FLIGHT_RESOURCES_NOT_ENOUGH,
+
+      // Heavy checks - will absolutely require DB access
+      'checkEnoughFleetSlots'        => FLIGHT_FLEET_NO_SLOTS,
 
       // TODO - THIS CHECKS SHOULD BE ADDED IN UNIT_CAPTAIN MODULE!
       'checkCaptainSent'             => array(
@@ -361,10 +362,6 @@ $sn_data += array(
           'checkCaptainNotRelocating' => FLIGHT_CAPTAIN_RELOCATE_LOCK,
         ),
       ),
-
-      // Heavy checks - will absolutely require DB access
-      'checkEnoughFleetSlots'        => FLIGHT_FLEET_NO_SLOTS,                                //+
-
 
       // Vector targeting space beyond MaxPlanet forces MT_EXPLORE mission
       'checkKnownSpace'              => array(
@@ -376,7 +373,7 @@ $sn_data += array(
           'checkExpeditionsMax'  => FLIGHT_MISSION_EXPLORE_NO_ASTROTECH,
           'checkExpeditionsFree' => FLIGHT_MISSION_EXPLORE_NO_SLOTS,
           'forceMissionExplore'  => array(
-            true  => FLIGHT_ALLOWED,                                                         //+
+            true  => FLIGHT_ALLOWED,
             false => FLIGHT_VECTOR_BEYOND_SYSTEM,
           ),
         ),
@@ -387,31 +384,16 @@ $sn_data += array(
       'checkTargetExists'            => array(
         // If target not exists - it can be only Colonize mission
         false => array(
-          'checkHaveColonizer'   => FLIGHT_SHIPS_NO_COLONIZER, // Colonization fleet should have at least one colonizer                         //+
+          'checkHaveColonizer'   => FLIGHT_SHIPS_NO_COLONIZER, // Replaces checkNotOnlySpies
           'checkNoMissiles'      => FLIGHT_SHIPS_NO_MISSILES,
           'checkTargetIsPlanet'  => FLIGHT_MISSION_COLONIZE_NOT_PLANET,
           'forceMissionColonize' => array(
-            true  => FLIGHT_ALLOWED,                                                         //+
+            true  => FLIGHT_ALLOWED,
             false => FLIGHT_VECTOR_NO_TARGET,
           ),
         ),
       ),
       // Beyond this point all missions goes to existing locations
-
-      // Vector targeting Debris forces MT_RECYCLE mission
-      'checkTargetIsDebris'          => array(
-        true => array(
-          // Recycle mission checks
-          'checkHaveRecyclers'  => FLIGHT_SHIPS_NO_RECYCLERS,             //+
-          'checkNoMissiles'     => FLIGHT_SHIPS_NO_MISSILES,
-          'checkDebrisExists'   => FLIGHT_MISSION_RECYCLE_NO_DEBRIS,    //+
-          'forceMissionRecycle' => array(
-            true  => FLIGHT_ALLOWED,                                                                           //+
-            false => FLIGHT_VECTOR_TARGET_DEBRIS,
-          ),
-        ),
-      ),
-      // Beyond this point all missions targets Planet or Moon
 
       // Fleet from only attack missiles forces MT_MISSILE mission
       'checkOnlyAttackMissiles'      => array(
@@ -433,6 +415,20 @@ $sn_data += array(
       ),
       'checkNoMissiles'              => FLIGHT_SHIPS_NO_MISSILES,
       // Beyond this point fleet doesn't have missiles
+
+      // Vector targeting Debris forces MT_RECYCLE mission
+      'checkTargetIsDebris'          => array(
+        true => array(
+          // Recycle mission checks
+          'checkHaveRecyclers'  => FLIGHT_SHIPS_NO_RECYCLERS, // Replaces checkNotOnlySpies
+          'checkDebrisExists'   => FLIGHT_MISSION_RECYCLE_NO_DEBRIS,
+          'forceMissionRecycle' => array(
+            true  => FLIGHT_ALLOWED,
+            false => FLIGHT_VECTOR_TARGET_DEBRIS,
+          ),
+        ),
+      ),
+      // Beyond this point all missions targets MT_PLANET or MT_MOON
 
       // Fleet from only spies forces MT_SPY
       'checkSpiesOnly'               => array(
@@ -486,7 +482,7 @@ $sn_data += array(
               'checkCargo' => array(
                 // Check for resources to transport - otherwise ther is no sense in Transport mission
                 true  => FLIGHT_ALLOWED,
-                false => FLIGHT_RESOURCES_EMPTY,
+                false => FLIGHT_MISSION_TRANSPORT_EMPTY_CARGO,
               ),
             ),
           ),
@@ -502,7 +498,7 @@ $sn_data += array(
 
 
       // Check for multiaccount
-      'checkMultiAccount'            => FLIGHT_PLAYER_SAME_IP,                                  //+
+      'checkMultiAccount'            => FLIGHT_PLAYER_SAME_IP,
       // TODO - check for moratorium
 
 
@@ -530,45 +526,43 @@ $sn_data += array(
       'checkPlayerInactiveOrNotNoob' => FLIGHT_PLAYER_NOOB,
 
       'checkMissionTransportReal' => array(
-        // TODO - extra check for extra limit??
         true => array(
+          // TODO - additional check to block Buffing?
           'checkCargo' => array(
+            false => FLIGHT_MISSION_TRANSPORT_EMPTY_CARGO,
             true  => FLIGHT_ALLOWED,
-            false => FLIGHT_RESOURCES_EMPTY,
           ),
         ),
       ),
 
       // TODO - check bashing
 
+
       // MT_DESTROY
-      $this->restrictMissionDestroy(),
+      'checkMissionDestroyReal'   => array(
+        true  => array(
+          'checkTargetIsMoon' => FLIGHT_MISSION_DESTROY_NOT_MOON,
+          'checkHaveReapers'  => array(
+            false => FLIGHT_MISSION_DESTROY_NO_REAPERS,
+            true  => FLIGHT_ALLOWED,
+          ),
+        ),
+        false => array(
+          'checkMissionDestroyAllowed' => array(),
+        ),
+      ),
+
 
       // MT_ACS
       $this->restrictMissionACS(),
 
       // MT_ATTACK - no checks
-
-      // MT_TRANSPORT - no checks
-
-      // Missile mission
-      'restrictToTypePlanet', // TODO - message FLIGHT_MISSION_MISSILE_ONLY_PLANET
-      'restrictToTargetOther', // TODO - ALREADY DONE ABOVE
-      'restrictToMissionMissile', // TODO
-
-      // Non-missile mission
-      'restrictToNoMissiles', // TODO - ALREADY DONE ABOVE
-
-
-      'restrictMissionDestroy', // TODO
-      'restrictMissionACS', // TODO
-
-
-      // Branch here - aggressive/non-aggressive
-
-      $this->restrict2ToAllowedMissions()    => true,
-      $this->restrict2ToAllowedPlanetTypes() => true,
-
+      'checkRealFlight' => array(
+        true=> array(
+          $this->restrict2ToAllowedMissions()    => true,
+          $this->restrict2ToAllowedPlanetTypes() => true,
+        ),
+      ),
     ),
 
     // Missions
@@ -1296,6 +1290,10 @@ $sn_data += array(
     // Recyclers
     'flt_recyclers'      => array(
       SHIP_RECYCLER => SHIP_RECYCLER,
+    ),
+    // Recyclers
+    'flt_reapers'        => array(
+      SHIP_HUGE_DEATH_STAR => SHIP_HUGE_DEATH_STAR,
     ),
     // Spies
     'flt_spies'          => array(

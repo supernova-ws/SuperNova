@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a6.76
+* @version 41a6.96
 *
 */
 
@@ -124,18 +124,18 @@ $a_lang_array = (array(
     FLIGHT_MISSION_ACS_MISSTARGET          => 'Does not match the destination and the purpose of ACS',
     FLIGHT_FLEET_SPEED_WRONG               => 'Incorrect speed',
     FLIGHT_MISSION_ACS_TOO_LATE            => 'Fleet to slow - it will not catch with the Group ACS',
-    FLIGHT_MISSION_ATTACK_BASHING    => 'Bashing protection. Number of allowed attacks per day per planet already reached',
+    FLIGHT_MISSION_ATTACK_BASHING           => 'Bashing protection. Number of allowed attacks per day per planet already reached',
     FLIGHT_MISSION_ATTACK_BASHING_WAR_DELAY => 'Bashing protection. War to this Alliance already declared but did not started yet. Look at your Alliance page to see war begin date',
     FLIGHT_MISSION_ACS_WRONG_TARGET         => 'Fleet destination did not equal to ACS destination',
     FLIGHT_VECTOR_SAME_SOURCE               => 'Source and destination planets are a same',
-    FLIGHT_RESOURCES_FORBIDDEN  => 'It is not allowed to send fleet with resources in this mission',
-    FLIGHT_RESOURCES_EMPTY      => 'It is not allowed to send empty fleet to transport mission',
-    FLIGHT_SHIPS_NOT_ONLY_SPIES => 'In this missions spies should be accompanied with other ships',
-    FLIGHT_FLEET_TOO_FAR        => 'Your fleet cannot reach this far',
-    FLIGHT_FLEET_OVERLOAD       => 'Your ships is overloaded. Reduce fleet cargo load or add more transports',
-    FLIGHT_MISSION_UNKNOWN      => 'There is no such mission type',
-    FLIGHT_SHIPS_UNIT_WRONG     => 'Wrong unit type',
-    FLIGHT_SHIPS_UNMOVABLE      => 'There is orbital structure in the fleet',
+    FLIGHT_RESOURCES_FORBIDDEN              => 'It is not allowed to send fleet with resources in this mission',
+    FLIGHT_MISSION_TRANSPORT_EMPTY_CARGO    => 'It is not allowed to send empty fleet to transport mission',
+    FLIGHT_SHIPS_NOT_ONLY_SPIES             => 'In this missions spies should be accompanied with other ships',
+    FLIGHT_FLEET_TOO_FAR                    => 'Your fleet cannot reach this far',
+    FLIGHT_FLEET_OVERLOAD                   => 'Your ships is overloaded. Reduce fleet cargo load or add more transports',
+    FLIGHT_MISSION_UNKNOWN                  => 'There is no such mission type',
+    FLIGHT_SHIPS_UNIT_WRONG                 => 'Wrong unit type',
+    FLIGHT_SHIPS_UNMOVABLE                  => 'There is orbital structure in the fleet',
     FLIGHT_SHIPS_NEGATIVE       => 'Ship amount can not be negative or zero',
     FLIGHT_RESOURCES_NEGATIVE   => 'Resource amount can not be negative or zero',
     FLIGHT_MISSION_MORATORIUM   => 'There is moratorium on this mission type in progress',

@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.95');
+define('SN_VERSION', '41a6.96');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -662,7 +662,7 @@ define('FLIGHT_MISSION_ATTACK_BASHING_WAR_DELAY' , 29);
 define('FLIGHT_MISSION_ACS_WRONG_TARGET'  , 30);
 define('FLIGHT_VECTOR_SAME_SOURCE'              , 31);
 define('FLIGHT_RESOURCES_FORBIDDEN', 32);
-define('FLIGHT_RESOURCES_EMPTY'   , 33);
+define('FLIGHT_MISSION_TRANSPORT_EMPTY_CARGO'   , 33);
 define('FLIGHT_SHIPS_NOT_ONLY_SPIES'       , 34);
 define('FLIGHT_FLEET_TOO_FAR'           , 35);
 define('FLIGHT_FLEET_OVERLOAD'        , 36);
@@ -694,6 +694,8 @@ define('FLIGHT_MISSION_SPY_OTHER', 61);
 define('FLIGHT_CAPTAIN_NOT_HIRED', 62);
 define('FLIGHT_CAPTAIN_ALREADY_FLYING', 63);
 define('FLIGHT_CAPTAIN_RELOCATE_LOCK', 64);
+define('FLIGHT_MISSION_DESTROY_NOT_MOON', 65);
+define('FLIGHT_MISSION_DESTROY_NO_REAPERS', 66);
 
 
 // *** Races - Homeworlds
