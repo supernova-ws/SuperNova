@@ -179,7 +179,7 @@ function db_user_list_non_bots() {
   return $query;
 }
 
-function db_user_lock_with_target_owner($user, $planet = array()) {
+function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
   doquery("SELECT 1 FROM {{users}} WHERE `id` = " . idval($user['id']) .
     (isset($planet['id_owner']) ? 'OR `id` = ' . idval($planet['id_owner']) . ' ' : '') .
   "FOR UPDATE;"

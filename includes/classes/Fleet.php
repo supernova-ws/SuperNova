@@ -167,6 +167,7 @@ class Fleet extends UnitContainer {
    * @var int
    */
   protected $_group_id = 0;
+  public $acs = array();
 
   /**
    * `fleet_mission`
@@ -850,7 +851,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.91
+   * @version 41a6.97
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -962,7 +963,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.91
+   * @version 41a6.97
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1145,13 +1146,15 @@ class Fleet extends UnitContainer {
 
     $this->unitsSetFromArray($ships);
 
-    $this->_group_id = $fleet_group_mr;
+    $this->_group_id = intval($fleet_group_mr);
 
     $this->oldSpeedInTens = $oldSpeedInTens;
 
     $this->targetedUnitId = $targetedUnitId;
 
     $this->captainId = $captainId;
+
+    $this->_time_launch = SN_TIME_NOW;
 
     $this->renderParamCoordinates();
 
@@ -1588,13 +1591,14 @@ class Fleet extends UnitContainer {
   public function fleetPage3() {
     global $template_result;
 
-    $errorlist = ''; // TODO - DEPRECATED
-
     $this->isRealFlight = true;
 
     sn_db_transaction_start();
 
-    db_user_lock_with_target_owner($this->dbOwnerRow, $this->dbTargetRow);
+    db_user_lock_with_target_owner_and_acs($this->dbOwnerRow, $this->dbTargetRow);
+
+    // Checking for group
+    $this->groupCheck();
 
     $this->dbOwnerRow = db_user_by_id($this->dbOwnerRow['id'], true);
     $this->dbSourcePlanetRow = db_planet_by_id($this->dbSourcePlanetRow['id'], true);
@@ -1629,41 +1633,7 @@ class Fleet extends UnitContainer {
 
 
     // TODO check for empty mission AKA mission allowed
-
-    if (array_sum($this->resource_list) < 1 && $this->_mission_type == MT_TRANSPORT) {
-      $errorlist .= classLocale::$lang['fl_noenoughtgoods'];
-    }
-
-    if ($errorlist) {
-      sn_db_transaction_rollback();
-      message("<span class='error'><ul>{$errorlist}</ul></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
-    }
-
-    //Normally... unless its acs...
-    $aks = 0;
-    //But is it acs??
-    //Well all acs fleets must have a fleet code.
-    //The co-ords must be the same as where the acs fleet is going.
-    if ($this->_group_id && sys_get_param_str('acs_target_mr') == "g{$this->targetVector->galaxy}s{$this->targetVector->system}p{$this->targetVector->planet}t{$this->targetVector->type}") {
-      //ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-      $aks = db_acs_get_by_group_id($this->_group_id);
-      if (!$aks) {
-        $this->_group_id = 0;
-      } else {
-        //Also it must be mission type 2
-        $this->_mission_type = MT_ACS;
-
-
-        $this->targetVector->galaxy = $aks['galaxy'];
-        $this->targetVector->system = $aks['system'];
-        $this->targetVector->planet = $aks['planet'];
-        $this->targetVector->type = $aks['planet_type'];
-      }
-    } elseif ($this->_mission_type == MT_ACS) {
-      //Check that a failed acs attack isn't being sent, if it is, make it an attack fleet.
-      $this->_mission_type = MT_ATTACK;
-    }
-
+/*
     $timeMissionJob = 0;
     if ($this->_mission_type == MT_ACS && $aks) {
       $acsTimeToArrive = $aks['ankunft'] - SN_TIME_NOW;
@@ -1672,7 +1642,8 @@ class Fleet extends UnitContainer {
       }
       // Set time to travel to ACS' TTT
       $this->travelData['duration'] = $acsTimeToArrive;
-    } else {
+*/
+      if ($this->_mission_type != MT_ACS) {
       if ($this->_mission_type == MT_EXPLORE || $this->_mission_type == MT_HOLD) {
         $max_duration = $this->_mission_type == MT_EXPLORE ? get_player_max_expedition_duration($this->dbOwnerRow) : ($this->_mission_type == MT_HOLD ? 12 : 0);
         if ($max_duration) {
@@ -1713,6 +1684,11 @@ class Fleet extends UnitContainer {
       db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$this->_dbId}");
     }
 
+//    return $this->fleet->acs['ankunft'] - $this->fleet->time_launch >= $this->fleet->travelData['duration'];
+//
+//    // Set time to travel to ACS' TTT
+//    $this->fleet->travelData['duration'] = $acsTimeToArrive;
+
 
     $template_result['.']['fleets'][] = $this->renderFleet(SN_TIME_NOW, $timeMissionJob);
 
@@ -1737,6 +1713,20 @@ class Fleet extends UnitContainer {
     $template = gettemplate('fleet3', true);
     $template->assign_recursive($template_result);
     display($template, classLocale::$lang['fl_title']);
+  }
+
+  protected function groupCheck() {
+    if (empty($this->_group_id)) {
+      return;
+    }
+
+    // ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
+    $this->acs = db_acs_get_by_group_id($this->_group_id);
+    if (empty($this->acs)) {
+      $this->_group_id = 0;
+    } else {
+      $this->targetVector->convertToVector($this->acs);
+    }
   }
 
 

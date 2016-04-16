@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.96');
+define('SN_VERSION', '41a6.97');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -149,17 +149,21 @@ define('QUEST_STATUS_COMPLETE'    , 2);
 // *** Combat-related constants
 // *** Mission Type constants starts with MT_
 define('MT_NONE'     ,  0);
-define('MT_ATTACK'   ,  1);
-define('MT_ACS'      ,  2);
-define('MT_TRANSPORT',  3);
-define('MT_RELOCATE' ,  4);
-define('MT_HOLD'     ,  5);
-define('MT_SPY'      ,  6);
+define('MT_EXPLORE'  , 15);
 define('MT_COLONIZE' ,  7);
 define('MT_RECYCLE'  ,  8);
-define('MT_DESTROY'  ,  9);
+
+define('MT_RELOCATE' ,  4);
+
+define('MT_TRANSPORT',  3);
+define('MT_HOLD'     ,  5);
+
 define('MT_MISSILE'  , 10);
-define('MT_EXPLORE'  , 15);
+define('MT_SPY'      ,  6);
+define('MT_ATTACK'   ,  1);
+define('MT_ACS'      ,  2);
+define('MT_DESTROY'  ,  9);
+// 11, 12, 13, 14, 16...
 
 // *** Planet Target constants starts with PT_
 define('PT_NONE', 0);
@@ -696,6 +700,7 @@ define('FLIGHT_CAPTAIN_ALREADY_FLYING', 63);
 define('FLIGHT_CAPTAIN_RELOCATE_LOCK', 64);
 define('FLIGHT_MISSION_DESTROY_NOT_MOON', 65);
 define('FLIGHT_MISSION_DESTROY_NO_REAPERS', 66);
+define('FLIGHT_MISSION_ACS_NOT_INVITED', 67);
 
 
 // *** Races - Homeworlds

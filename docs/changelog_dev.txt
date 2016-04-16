@@ -805,6 +805,8 @@ Unused strings
       message("<span class='error'><b>" . classLocale::$lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) . "</b></span>", classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
             $errorlist .= classLocale::$lang['fl_nomoon'];
 
+      message(classLocale::$lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, SN_TIME_NOW + $this->travelData['duration']) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), classLocale::$lang['fl_error']);
+      $errorlist .= classLocale::$lang['fl_noenoughtgoods'];
 //        $errorlist .= classLocale::$lang['module_unit_captain_error_no_captain'];
 //          $errorlist .= classLocale::$lang['module_unit_captain_error_captain_already_bound'];
 //        $errorlist .= classLocale::$lang['module_unit_captain_error_captain_flying'];
@@ -812,6 +814,11 @@ Unused strings
 
 
 Выводить сообщение "Это будет дооооооооолгий полёт..." для очень долгих миссий
+
+// TODO
+    Прописать типы всех полей в $_properties
+    $setXXXX - проводить через преобразование типов, что бы внутренние переменные всегда были указанных типов
+
 
 // TODO
     При входящей миссии (из Вселенной или по клику на Закладке) ограничивать доступные корабли:
@@ -846,6 +853,13 @@ TODO - Теперь можно атаковать ракетами свои же
     ? Общие соображения - будет рынок или поднимется планка ограничений на транспорт - надо будет запрещать
     ! Как вариант - ограничить количество транспорта теми же условиями, что и у башинга
         - можно в отдельном стэке, можно в том же самом - т.е. можно что бы и атаки и транспорт влияли друг на друга, либо что бы считались отдельно
+
+// TODO
+    В валидаторе сократить коилчество процедур за счёт использование магического метода __call() м разбори метода на куски
+
+
+// TODO - Новая логика работы
+    - Если миссия указана (переход с Закладки или Вселенной) - строго проверять соответствие
 
 
 #ctv

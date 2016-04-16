@@ -381,22 +381,28 @@ class FleetValidator {
    */
   protected function forceTargetOwn() {
     if ($result = $this->checkTargetOwn()) {
-      // Spying can't be done on owner's planet/moon
-      unset($this->fleet->allowed_missions[MT_SPY]);
-      // Attack can't be done on owner's planet/moon
-      unset($this->fleet->allowed_missions[MT_ATTACK]);
-      // ACS can't be done on owner's planet/moon
-      unset($this->fleet->allowed_missions[MT_ACS]);
-      // Destroy can't be done on owner's moon
-      unset($this->fleet->allowed_missions[MT_DESTROY]);
       unset($this->fleet->allowed_missions[MT_MISSILE]);
-    } else {
-      // Relocate can be done only on owner's planet/moon
-      unset($this->fleet->allowed_missions[MT_RELOCATE]);
+      unset($this->fleet->allowed_missions[MT_SPY]);
 
+      unset($this->fleet->allowed_missions[MT_ATTACK]);
+      unset($this->fleet->allowed_missions[MT_ACS]);
+      unset($this->fleet->allowed_missions[MT_DESTROY]);
+    } else {
+      unset($this->fleet->allowed_missions[MT_RELOCATE]);
     }
 
-    return $result; // this->getPlayerOwnerId();
+    return $result;
+  }
+
+  protected function checkMissionPeaceful() {
+    return
+      !$this->fleet->mission_type
+      ||
+      in_array($this->fleet->mission_type, array(
+        MT_HOLD,
+        MT_RELOCATE,
+        MT_TRANSPORT,
+      ));
   }
 
   /**
@@ -427,33 +433,6 @@ class FleetValidator {
     return $result;
   }
 
-
-  /**
-   * Forces missions that can flight to OWN planets
-   *
-   * @return bool
-   */
-  protected function forceMissionsOwn() {
-    $result =
-      !$this->fleet->mission_type
-      ||
-      in_array($this->fleet->mission_type, array(
-        MT_HOLD,
-        MT_RECYCLE,
-        MT_RELOCATE,
-        MT_TRANSPORT,
-      ));
-
-    unset($this->fleet->allowed_missions[MT_ATTACK]);
-    unset($this->fleet->allowed_missions[MT_COLONIZE]);
-    unset($this->fleet->allowed_missions[MT_EXPLORE]);
-    unset($this->fleet->allowed_missions[MT_ACS]);
-    unset($this->fleet->allowed_missions[MT_SPY]);
-    unset($this->fleet->allowed_missions[MT_DESTROY]);
-    unset($this->fleet->allowed_missions[MT_MISSILE]);
-
-    return $result;
-  }
 
   /**
    * Check mission type OR no mission - and limits available missions to this type if positive
@@ -775,12 +754,6 @@ class FleetValidator {
   }
 
 
-
-
-
-
-
-
   /**
    * @return bool
    */
@@ -807,77 +780,134 @@ class FleetValidator {
   /**
    * @return bool
    */
-  protected function checkMissionDestroyAllowed(){
-    $result =
-      $this->checkTargetIsMoon()
+  protected function checkMissionACSReal() {
+    return
+      $this->checkRealFlight()
       &&
-      $this->checkHaveReapers();
+      $this->checkMissionNonRestrict(MT_ACS);
+  }
 
-    if(!$result) {
-      unset($this->fleet->allowed_missions[MT_DESTROY]);
-    }
-
-    return $result;
+  protected function checkACSInTime() {
+    return $this->fleet->acs['ankunft'] - $this->fleet->time_launch >= $this->fleet->travelData['duration'];
   }
 
 
+  protected function checkMissionRealAndSelected($missionType) {
+    return
+      $this->checkRealFlight()
+      &&
+      $this->checkMissionNonRestrict($missionType);
+  }
 
+  protected function unsetMission($missionType, $result, $restrictToMission = false) {
+    if (!$result) {
+      unset($this->fleet->allowed_missions[$missionType]);
+    } elseif ($restrictToMission) {
+      $this->fleet->allowed_missions = array(
+        $missionType => $this->fleet->exists_missions[$missionType],
+      );
+    }
+  }
 
+  protected function checkMissionResultAndUnset($missionType, $result, $forceMission = false) {
+    $this->unsetMission($missionType, $result, $forceMission);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    return $result && $this->checkMissionRealAndSelected($missionType);
+  }
 
 
   /**
-   * Checks if mission can be MT_DESTROY in any point
-   *
-   * First check - exact MT_DESTROY set as mission_type - fleet pages 2 and 3
-   * Second check - empty MT_DESTROY
-   *
    * @return bool
    */
-  protected function checkMissionDestroyOrEmptyNotReal() {
-    $result = $this->checkMissionNonRestrict(MT_DESTROY)
-      ||
-      (empty($this->fleet->mission_type) && !$this->checkRealFlight());
+  protected function checkMissionSpyPossibleAndReal() {
+    return $this->checkMissionResultAndUnset(
+      MT_SPY,
+      $this->checkSpiesOnly() && $this->checkTargetOther(),
+      true
+    );
+  }
 
-    if(!$result) {
-      unset($this->fleet->allowed_missions[MT_DESTROY]);
+  /**
+   * @return bool
+   */
+  protected function checkMissionDestroyAndReal() {
+    return $this->checkMissionResultAndUnset(
+      MT_DESTROY,
+      $this->checkTargetIsMoon() && $this->checkHaveReapers()
+    );
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionHoldPossibleAndReal() {
+    return $this->checkMissionResultAndUnset(
+      MT_HOLD,
+      $this->checkTargetAllyDeposit() && $this->checkMissionHoldOnNotNoob()
+    );
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkSpiesOnlyFriendlyRestrictsToRelocate() {
+    if ($result = $this->checkSpiesOnly()) {
+      $this->fleet->allowed_missions = array(
+        MT_RELOCATE => $this->fleet->exists_missions[MT_RELOCATE],
+      );
     }
 
     return $result;
   }
 
-  protected function disableMissionDestroy() {
-    unset($this->fleet->allowed_missions[MT_DESTROY]);
-    return true;
+
+  protected function checkFleetGroupACS() {
+    $result = !empty($this->fleet->group_id) && !empty($this->fleet->acs);
+    $this->unsetMission(MT_ACS, $result, true);
+    if ($result) {
+      $this->fleet->mission_type = MT_ACS;
+    } else {
+      $this->fleet->group_id = 0;
+    }
+
+    return $result;
   }
+
+  protected function checkACSNotEmpty() {
+    return !empty($this->fleet->acs);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkACSInvited() {
+    $playersInvited = !empty($this->fleet->acs['eingeladen']) ? explode(',', $this->fleet->acs['eingeladen']) : array();
+    foreach($playersInvited as $playerId) {
+      if(intval($playerId) == $this->fleet->dbOwnerRow['id']) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionACSPossibleAndReal() {
+    return $this->checkMissionResultAndUnset(
+      MT_ACS,
+      $this->checkACSNotEmpty() && $this->checkACSInvited() && $this->checkACSInTime(),
+      true
+    );
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionAttack() {
+    return $this->checkMissionNonRestrict(MT_ATTACK);
+  }
+
 
 }

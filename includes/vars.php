@@ -333,29 +333,29 @@ $sn_data += array(
     // Each mission will filter only necessary checks and do it in this order
     'mission_checks' => array(
       // Cheap checks - class Fleet already have all this info internally
-      'checkSpeedPercentOld'         => FLIGHT_FLEET_SPEED_WRONG,
-      'checkTargetInUniverse'        => FLIGHT_VECTOR_BEYOND_UNIVERSE,
-      'checkTargetNotSource'         => FLIGHT_VECTOR_SAME_SOURCE,
-      'checkSenderNoVacation'        => FLIGHT_PLAYER_VACATION_OWN,
-      'checkTargetNoVacation'        => FLIGHT_PLAYER_VACATION,
-      'checkFleetNotEmpty'           => FLIGHT_SHIPS_NO_SHIPS,
-      'checkUnitsPositive'           => FLIGHT_SHIPS_NEGATIVE,
-      'checkOnlyFleetUnits'          => FLIGHT_SHIPS_UNIT_WRONG,
-      'checkOnlyFlyingUnits'         => FLIGHT_SHIPS_UNMOVABLE,
-      'checkResourcesPositive'       => FLIGHT_RESOURCES_NEGATIVE,
-      'checkNotTooFar'               => FLIGHT_FLEET_TOO_FAR,
-      'checkEnoughCapacity'          => FLIGHT_FLEET_OVERLOAD,
+      'checkSpeedPercentOld'            => FLIGHT_FLEET_SPEED_WRONG,
+      'checkTargetInUniverse'           => FLIGHT_VECTOR_BEYOND_UNIVERSE,
+      'checkTargetNotSource'            => FLIGHT_VECTOR_SAME_SOURCE,
+      'checkSenderNoVacation'           => FLIGHT_PLAYER_VACATION_OWN,
+      'checkTargetNoVacation'           => FLIGHT_PLAYER_VACATION,
+      'checkFleetNotEmpty'              => FLIGHT_SHIPS_NO_SHIPS,
+      'checkUnitsPositive'              => FLIGHT_SHIPS_NEGATIVE,
+      'checkOnlyFleetUnits'             => FLIGHT_SHIPS_UNIT_WRONG,
+      'checkOnlyFlyingUnits'            => FLIGHT_SHIPS_UNMOVABLE,
+      'checkResourcesPositive'          => FLIGHT_RESOURCES_NEGATIVE,
+      'checkNotTooFar'                  => FLIGHT_FLEET_TOO_FAR,
+      'checkEnoughCapacity'             => FLIGHT_FLEET_OVERLOAD,
 
       // Medium checks - currently requires access to DB but potentially doesn't
-      'checkSourceEnoughShips'       => FLIGHT_SHIPS_NOT_ENOUGH,
-      'checkSourceEnoughFuel'        => FLIGHT_RESOURCES_FUEL_NOT_ENOUGH,
-      'checkSourceEnoughResources'   => FLIGHT_RESOURCES_NOT_ENOUGH,
+      'checkSourceEnoughShips'          => FLIGHT_SHIPS_NOT_ENOUGH,
+      'checkSourceEnoughFuel'           => FLIGHT_RESOURCES_FUEL_NOT_ENOUGH,
+      'checkSourceEnoughResources'      => FLIGHT_RESOURCES_NOT_ENOUGH,
 
       // Heavy checks - will absolutely require DB access
-      'checkEnoughFleetSlots'        => FLIGHT_FLEET_NO_SLOTS,
+      'checkEnoughFleetSlots'           => FLIGHT_FLEET_NO_SLOTS,
 
       // TODO - THIS CHECKS SHOULD BE ADDED IN UNIT_CAPTAIN MODULE!
-      'checkCaptainSent'             => array(
+      'checkCaptainSent'                => array(
         true => array(
           'checkCaptainExists'        => FLIGHT_CAPTAIN_NOT_HIRED,
           'checkCaptainOnPlanet'      => FLIGHT_CAPTAIN_ALREADY_FLYING,
@@ -363,8 +363,11 @@ $sn_data += array(
         ),
       ),
 
+      // Forcing MT_ACS if group presents and ACS record exists
+      'checkFleetGroupACS'              => array(),
+
       // Vector targeting space beyond MaxPlanet forces MT_EXPLORE mission
-      'checkKnownSpace'              => array(
+      'checkKnownSpace'                 => array(
         false => array(
           // However in Explore can't be send mission with missiles or mission with only spies in fleet
           // Explore mission needs no additional checks
@@ -381,7 +384,7 @@ $sn_data += array(
       // Beyond this point all missions goes to known space
 
       // Vector targeting non-exists point forces MT_COLONIZE mission
-      'checkTargetExists'            => array(
+      'checkTargetExists'               => array(
         // If target not exists - it can be only Colonize mission
         false => array(
           'checkHaveColonizer'   => FLIGHT_SHIPS_NO_COLONIZER, // Replaces checkNotOnlySpies
@@ -396,7 +399,7 @@ $sn_data += array(
       // Beyond this point all missions goes to existing locations
 
       // Fleet from only attack missiles forces MT_MISSILE mission
-      'checkOnlyAttackMissiles'      => array(
+      'checkOnlyAttackMissiles'         => array(
         true => array(
           // For now missile self-attack is enabled. By adding checkTargetOther it can be disabled again
           'checkSameGalaxy'              => FLIGHT_MISSION_MISSILE_DIFFERENT_GALAXY,
@@ -413,11 +416,11 @@ $sn_data += array(
           ),
         ),
       ),
-      'checkNoMissiles'              => FLIGHT_SHIPS_NO_MISSILES,
+      'checkNoMissiles'                 => FLIGHT_SHIPS_NO_MISSILES,
       // Beyond this point fleet doesn't have missiles
 
       // Vector targeting Debris forces MT_RECYCLE mission
-      'checkTargetIsDebris'          => array(
+      'checkTargetIsDebris'             => array(
         true => array(
           // Recycle mission checks
           'checkHaveRecyclers'  => FLIGHT_SHIPS_NO_RECYCLERS, // Replaces checkNotOnlySpies
@@ -430,39 +433,28 @@ $sn_data += array(
       ),
       // Beyond this point all missions targets MT_PLANET or MT_MOON
 
-      // Fleet from only spies forces MT_SPY
-      'checkSpiesOnly'               => array(
-        // Only spies in fleet
-        true => array(
-          'checkTargetOther' => FLIGHT_MISSION_SPY_OTHER,
-          'forceMissionSpy'  => array(
-            true  => FLIGHT_ALLOWED,
-            false => FLIGHT_SHIPS_NOT_ONLY_SPIES,
-          ),
-        ),
-      ),
-      // If fleet contains something else then spy probes - then removing MT_SPY from mission list with some additional checks
-      // If it is RealFlight (checked inside) and current mission type is MT_SPY - then it's error
-      'unsetMissionSpyComplex'       => FLIGHT_SHIPS_ONLY_SPIES,
-      // Beyond this point fleet can't contain ONLY spies
 
 
+
+      
       // Targeting self limits mission to one of the following: RELOCATE, HOLD, TRANSPORT, RECYCLE
       // However - RECYCLE was processed above
-      'forceTargetOwn'               => array(
+      'forceTargetOwn'                  => array(
         // Missions target same player
         true => array(
-          // Forcing all missions to be OWN or just ending with error message
-          'forceMissionsOwn'     => FLIGHT_PLAYER_ATTACK_SELF,
+          'checkMissionPeaceful'                      => FLIGHT_PLAYER_ATTACK_SELF,
+
+          // HOLD/TRANSPORT with only spies in fleet should be prevented
+          'checkSpiesOnlyFriendlyRestrictsToRelocate' => array(),
 
           // Allow here missions filtered above if no RealFlight flag set. It means that we on page 2
-          'checkRealFlight'      => FLIGHT_ALLOWED,
+          'checkRealFlight'                           => FLIGHT_ALLOWED,
 
           // We on page 3 - so no empty missions here
-          'checkNotEmptyMission' => FLIGHT_MISSION_UNKNOWN,
+          'checkNotEmptyMission'                      => FLIGHT_MISSION_UNKNOWN,
 
           // Relocate
-          'checkMissionRelocate' => array(
+          'checkMissionRelocate'                      => array(
             // No additional checks
             true => FLIGHT_ALLOWED,
           ),
@@ -497,35 +489,47 @@ $sn_data += array(
       // Past this point missions target only other players
 
 
+      // Fleet from only spies forces MT_SPY
+      'checkMissionSpyPossibleAndReal'  => array(
+        // Mission possible and it's real flight and mission selected
+        true  => FLIGHT_ALLOWED,
+        false => array(
+          'checkRealFlight' => array(
+            true => array(
+              'checkNotOnlySpies' => FLIGHT_SHIPS_ONLY_SPIES,
+              'checkTargetOther'  => FLIGHT_SHIPS_NOT_ONLY_SPIES,
+            ),
+          ),
+        ),
+      ),
+      // Beyond this point fleet can't contain ONLY spies
+
+
       // Check for multiaccount
-      'checkMultiAccount'            => FLIGHT_PLAYER_SAME_IP,
+      'checkMultiAccount'               => FLIGHT_PLAYER_SAME_IP,
       // TODO - check for moratorium
 
-
       // If HOLD is selected AND it is real mission (page 3)...
-      'checkMissionHoldReal'         => array(
-        true => array(
-          'checkTargetAllyDeposit' => array(
-            // Deposit is present...
-            true  => array(
-              // Making checks for non-Noob target
-              'checkMissionHoldOnNotNoob' => array(
-                true  => FLIGHT_ALLOWED,
-                false => FLIGHT_MISSION_HOLD_ON_NOOB,
-              ),
+      'checkMissionHoldPossibleAndReal' => array(
+        // Mission possible and it's real flight and mission selected
+        true  => FLIGHT_ALLOWED,
+        false => array(
+          'checkRealFlight' => array( // If it is real flight - we need to say something about conditions
+            true => array(
+              'checkTargetAllyDeposit'    => FLIGHT_MISSION_HOLD_NO_ALLY_DEPOSIT, // No Deposit - it's a TRAP!
+              'checkMissionHoldOnNotNoob' => FLIGHT_MISSION_HOLD_ON_NOOB,
             ),
-
-            // No Deposit - it's a TRAP!
-            false => FLIGHT_MISSION_HOLD_NO_ALLY_DEPOSIT,
           ),
         ),
       ),
       // Past this point no HOLD mission can be present in real flight
 
-      // TODO PvP check here!!!!!!!!!
-      'checkPlayerInactiveOrNotNoob' => FLIGHT_PLAYER_NOOB,
+      // Noob check
+      'checkPlayerInactiveOrNotNoob'    => FLIGHT_PLAYER_NOOB,
+      //
 
-      'checkMissionTransportReal' => array(
+      //
+      'checkMissionTransportReal'       => array(
         true => array(
           // TODO - additional check to block Buffing?
           'checkCargo' => array(
@@ -537,30 +541,50 @@ $sn_data += array(
 
       // TODO - check bashing
 
-
       // MT_DESTROY
-      'checkMissionDestroyReal'   => array(
-        true  => array(
-          'checkTargetIsMoon' => FLIGHT_MISSION_DESTROY_NOT_MOON,
-          'checkHaveReapers'  => array(
-            false => FLIGHT_MISSION_DESTROY_NO_REAPERS,
-            true  => FLIGHT_ALLOWED,
-          ),
-        ),
+      'checkMissionDestroyAndReal'      => array(
+        // Mission possible and it's real flight and mission selected
+        true  => FLIGHT_ALLOWED,
         false => array(
-          'checkMissionDestroyAllowed' => array(),
+          // If it is real flight - we need to say something about conditions
+          'checkRealFlight' => array(
+            true => array(
+              'checkTargetIsMoon' => FLIGHT_MISSION_DESTROY_NOT_MOON,
+              'checkHaveReapers'  => FLIGHT_MISSION_DESTROY_NO_REAPERS,
+            ),
+          ),
         ),
       ),
 
-
-      // MT_ACS
-      $this->restrictMissionACS(),
+      // Multicheck - does mission MT_ACS is ever possible ?
+      'checkMissionACSPossibleAndReal'  => array(
+        // Mission possible and it's real flight and mission selected
+        true  => FLIGHT_ALLOWED,
+        // Otherwise...
+        false => array(
+          // If it is real flight - we need to say something about conditions
+          'checkRealFlight' => array(
+            true => array(
+              'checkACSNotEmpty' => FLIGHT_MISSION_ACS_NOT_EXISTS,
+              'checkACSInvited'  => FLIGHT_MISSION_ACS_NOT_INVITED,
+              'checkACSInTime'   => FLIGHT_MISSION_ACS_TOO_LATE,
+            ),
+          ),
+        ),
+      ),
 
       // MT_ATTACK - no checks
-      'checkRealFlight' => array(
-        true=> array(
-          $this->restrict2ToAllowedMissions()    => true,
-          $this->restrict2ToAllowedPlanetTypes() => true,
+      'checkMissionAttack'              => array(
+        // Mission possible and it's real flight and mission selected
+        true => FLIGHT_ALLOWED,
+      ),
+      // If it is real flight - we need to say something about conditions
+      'checkRealFlight'                 => array(
+        true => array(
+          'checkMissionExists' => array(
+            true  => FLIGHT_MISSION_IMPOSSIBLE,
+            false => FLIGHT_MISSION_UNKNOWN,
+          ),
         ),
       ),
     ),

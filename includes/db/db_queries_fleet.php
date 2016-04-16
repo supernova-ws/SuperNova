@@ -7,11 +7,14 @@
 /**
  * @param $aks_id
  *
- * @return array|bool|mysqli_result|null
+ * @return array
  */
 function db_acs_get_by_group_id($aks_id) {
   // TODO - safe
-  return doquery("SELECT * FROM {{aks}} WHERE id = '{$aks_id}' LIMIT 1;", true);
+  $aks_id = intval($aks_id);
+  $result = doquery("SELECT * FROM {{aks}} WHERE id = '{$aks_id}' LIMIT 1 FOR UPDATE;", true);
+
+  return is_array($result) && !empty($result) ? $result : array();
 }
 
 /**
