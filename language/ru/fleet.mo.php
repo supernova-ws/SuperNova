@@ -16,7 +16,7 @@
  *
  * @package language
  * @system [Russian]
- * @version 41a6.97
+ * @version 41a6.98
  *
  */
 
@@ -94,6 +94,8 @@ $a_lang_array = (array(
   'fl_allressources'    => 'Все ресурсы',
   'fl_space_left'       => 'Место в трюме',
   'fl_attack_error'     => array(
+    FLIGHT_INTERNAL_ERROR => 'Внутренняя ошибка игры. Пожалуйста, свяжитесь с Администрацией сервера и подробно опишите, как вы получили эту ошибку',
+
     FLIGHT_ALLOWED => 'Флот успешно отправлен',
 
     FLIGHT_PLAYER_ATTACK_SELF      => 'Нельзя атаковать собственные планеты',

@@ -527,17 +527,6 @@ class FleetValidator {
   /**
    * @return bool
    */
-  protected function checkMissionTransportReal() {
-    return
-      $this->checkRealFlight()
-      &&
-      $this->checkMissionTransport();
-  }
-
-
-  /**
-   * @return bool
-   */
   protected function forceMissionSpy() {
     return $this->forceMission(MT_SPY);
   }
@@ -909,5 +898,24 @@ class FleetValidator {
     return $this->checkMissionNonRestrict(MT_ATTACK);
   }
 
+  /**
+   * @return bool
+   */
+  protected function checkMissionTransportPossibleAndReal() {
+    return $this->checkMissionResultAndUnset(
+      MT_TRANSPORT,
+      $this->checkCargo() && $this->checkPlayerInactiveOrNotNoob() && $this->checkNotOnlySpies()
+    );
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionTransportReal() {
+    return
+      $this->checkMissionTransport()
+      &&
+      $this->checkRealFlight();
+  }
 
 }
