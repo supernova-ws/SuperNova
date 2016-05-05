@@ -435,8 +435,8 @@ $sn_data += array(
 
       //
       'checkMissionTransportPossibleAndReal' => array(
-        true  => FLIGHT_ALLOWED,
-        false => array(
+        true                   => FLIGHT_ALLOWED,
+        false                  => array(
           'checkMissionTransportReal' => array(
             true => array(
               'checkNotOnlySpies'            => FLIGHT_SHIPS_NOT_ONLY_SPIES,
@@ -448,29 +448,25 @@ $sn_data += array(
           ),
         ),
         // Relocate
-        'checkMissionRelocate'                      => array(
+        'checkMissionRelocate' => array(
           // No additional checks
           true => FLIGHT_ALLOWED,
         ),
       ),
 
 
-
-
       // TODO - REWRITE!!!!!!!!
       // If HOLD is selected AND it is real mission (page 3)...
       'checkMissionHoldPossibleAndReal'      => array(
         // Mission possible and it's real flight and mission selected
-        true  => array(
-          // HOLD/TRANSPORT with only spies in fleet should be prevented
-          'checkSpiesOnlyFriendlyRestrictsToRelocate' => array(),
-          FLIGHT_ALLOWED,
-        ),
+        true  => FLIGHT_ALLOWED,
         false => array(
           'checkRealFlight' => array( // If it is real flight - we need to say something about conditions
             true => array(
               'checkTargetAllyDeposit'    => FLIGHT_MISSION_HOLD_NO_ALLY_DEPOSIT, // No Deposit - it's a TRAP!
               'checkMissionHoldOnNotNoob' => FLIGHT_MISSION_HOLD_ON_NOOB,
+              // HOLD/TRANSPORT with only spies in fleet should be prevented
+              'checkNotOnlySpies'         => FLIGHT_SHIPS_NOT_ONLY_SPIES,
             ),
           ),
         ),
@@ -478,22 +474,18 @@ $sn_data += array(
       // Past this point no HOLD mission can be present in real flight
 
 
-
-
-
-
       // Targeting self limits mission to one of the following: RELOCATE, HOLD, TRANSPORT, RECYCLE
       // However - RECYCLE was processed above
       'forceTargetOwn'                       => array(
         // Missions target same player
         true => array(
-          'checkMissionPeaceful'                      => FLIGHT_PLAYER_ATTACK_SELF,
+          'checkMissionPeaceful' => FLIGHT_PLAYER_ATTACK_SELF,
 
           // Allow here missions filtered above if no RealFlight flag set. It means that we on page 2
-          'checkRealFlight'                           => FLIGHT_ALLOWED,
+          'checkRealFlight'      => FLIGHT_ALLOWED,
 
           // We on page 3 - so no empty missions here
-          'checkNotEmptyMission'                      => FLIGHT_MISSION_UNKNOWN,
+          'checkNotEmptyMission' => FLIGHT_MISSION_UNKNOWN,
 
           'checkMissionHoldNonUnique' => array(
             true => array(
@@ -541,7 +533,20 @@ $sn_data += array(
       //
 
 
-      // TODO - check bashing
+      // Bashing check
+      'checkBashingNotRestricted'            => array(
+        false => array(
+          'checkBashingBothAlliesAndRelationWar' => array(
+            true => array(
+              'checkBashingAlliesWarNoDelay' => array(
+                true  => FLIGHT_ALLOWED,
+                false => FLIGHT_MISSION_ATTACK_BASHING_WAR_DELAY,
+              ),
+            ),
+          ),
+          'checkBashingNone'                     => FLIGHT_MISSION_ATTACK_BASHING,
+        ),
+      ),
 
       // MT_DESTROY
       'checkMissionDestroyAndReal'           => array(

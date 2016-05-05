@@ -832,7 +832,7 @@ class FleetValidator {
   protected function checkMissionHoldPossibleAndReal() {
     return $this->checkMissionResultAndUnset(
       MT_HOLD,
-      $this->checkTargetAllyDeposit() && $this->checkMissionHoldOnNotNoob()
+      $this->checkTargetAllyDeposit() && $this->checkMissionHoldOnNotNoob() && $this->checkNotOnlySpies()
     );
   }
 
@@ -916,6 +916,88 @@ class FleetValidator {
       $this->checkMissionTransport()
       &&
       $this->checkRealFlight();
+  }
+
+
+
+
+
+
+
+
+  protected function checkBashingNotRestricted() {
+    return classSupernova::$config->fleet_bashing_attacks <= 0;
+  }
+
+  protected function checkBashingBothAllies() {
+    return $this->fleet->dbOwnerRow['ally_id'] && $this->fleet->dbTargetOwnerRow['ally_id'];
+  }
+
+  protected function checkBashingAlliesHaveRelationWar() {
+    return ali_relation($this->fleet->dbOwnerRow['ally_id'], $this->fleet->dbTargetOwnerRow['ally_id']) == ALLY_DIPLOMACY_WAR;
+  }
+
+  protected function checkBashingBothAlliesAndRelationWar() {
+    return $this->checkBashingBothAllies() && $this->checkBashingAlliesHaveRelationWar();
+  }
+
+  protected function checkBashingAlliesWarNoDelay() {
+    $user = $this->fleet->dbOwnerRow;
+    $enemy = $this->fleet->dbTargetOwnerRow;
+
+    $relations = ali_relations($user['ally_id'], $enemy['ally_id']);
+
+    return SN_TIME_NOW - $relations[$enemy['ally_id']]['alliance_diplomacy_time'] > classSupernova::$config->fleet_bashing_war_delay;
+  }
+
+
+  protected function checkBashingNone() {
+    $user = $this->fleet->dbOwnerRow;
+
+    $time_limit = SN_TIME_NOW + $this->fleet->travelData['duration'] - classSupernova::$config->fleet_bashing_scope;
+    $bashing_list = array(SN_TIME_NOW);
+
+    // Retrieving flying fleets
+    $objFleetsBashing = FleetList::dbGetFleetListBashing($user['id'], $this->fleet->dbTargetRow);
+    foreach($objFleetsBashing->_container as $fleetBashing) {
+      // Checking for ACS - each ACS count only once
+      if($fleetBashing->group_id) {
+        $bashing_list["{$user['id']}_{$fleetBashing->group_id}"] = $fleetBashing->time_arrive_to_target;
+      } else {
+        $bashing_list[] = $fleetBashing->time_arrive_to_target;
+      }
+    }
+
+    // Check for joining to ACS - if there are already fleets in ACS no checks should be done
+    if($this->fleet->mission_type == MT_ACS && $bashing_list["{$user['id']}_{$this->fleet->group_id}"]) {
+      return true;
+    }
+
+    $query = db_bashing_list_get($user, $this->fleet->dbTargetRow, $time_limit);
+    while($bashing_row = db_fetch($query)) {
+      $bashing_list[] = $bashing_row['bashing_time'];
+    }
+
+    sort($bashing_list);
+
+    $last_attack = 0;
+    $wave = 0;
+    $attack = 1;
+    foreach($bashing_list as &$bash_time) {
+      $attack++;
+      if(
+        $bash_time - $last_attack > classSupernova::$config->fleet_bashing_interval
+        ||
+        $attack > classSupernova::$config->fleet_bashing_attacks
+      ) {
+        $wave++;
+        $attack = 1;
+      }
+
+      $last_attack = $bash_time;
+    }
+
+    return $wave <= classSupernova::$config->fleet_bashing_waves;
   }
 
 }
