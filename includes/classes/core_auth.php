@@ -9,14 +9,14 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a6.92#
+ * version #41a7.0#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a6.92# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a7.0# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -218,7 +218,7 @@ class core_auth extends sn_module {
 
     // Если у нас провайдеры не дают имени и пользователь не дал свой вариант - это у нас первый логин в игру
     if (!$this->player_suggested_name) {
-      $max_user_id = db_player_get_max_id(); // 4.5
+      $max_user_id = DBStaticUser::getMaxId(); // 4.5
       // TODO - предлагать имя игрока по локали
 
       // Проверить наличие такого имени в истории имён

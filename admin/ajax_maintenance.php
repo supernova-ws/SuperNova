@@ -184,25 +184,6 @@ $ques = array(
   WHERE player_id IS NULL;",
 );
 
-function sn_maintenance_pack_user_list($user_list) {
-  $user_list = explode(',', $user_list);
-  foreach($user_list as $key => $user_id) {
-    if(!ceil(floatval($user_id))) {
-      unset($user_list[$key]);
-    }
-  }
-
-  $result = array();
-  if(!empty($user_list)) {
-    $query = db_user_list_get_by_id_array($user_list);
-    while($row = db_fetch($query)) {
-      $result[] = $row['id'];
-    }
-  }
-
-  return implode(',', $result);
-}
-
 sn_db_transaction_start();
 $old_server_status = classSupernova::$config->db_loadItem('game_disable');
 $old_server_status == GAME_DISABLE_NONE ? classSupernova::$config->db_saveItem('game_disable', GAME_DISABLE_MAINTENANCE) : false;
@@ -237,12 +218,14 @@ foreach($ques as $que_transaction) {
 }
 
 sn_db_transaction_start();
-classSupernova::$config->db_saveItem('stats_hide_player_list', sn_maintenance_pack_user_list(classSupernova::$config->db_loadItem('stats_hide_player_list')));
+classSupernova::$config->db_loadItem('stats_hide_player_list');
+classSupernova::$config->db_saveItem('stats_hide_player_list', DBStaticUser::filterIdListStringRepack(classSupernova::$config->db_loadItem('stats_hide_player_list')));
 classSupernova::$debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 
 sn_db_transaction_start();
-classSupernova::$config->db_saveItem('game_watchlist', sn_maintenance_pack_user_list(classSupernova::$config->db_loadItem('game_watchlist')));
+classSupernova::$config->db_loadItem('game_watchlist');
+classSupernova::$config->db_saveItem('game_watchlist', DBStaticUser::filterIdListStringRepack(classSupernova::$config->db_loadItem('game_watchlist')));
 classSupernova::$debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 

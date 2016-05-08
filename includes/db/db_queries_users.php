@@ -1,39 +1,5 @@
 <?php
 
-/**
- * Получение максимального ID игрока
- *
- * @return int
- */
-function db_player_get_max_id() {
-  $max_user_id = classSupernova::$db->doquery("SELECT MAX(`id`) AS `max_user_id` FROM `{{user}}`", true);
-
-  return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
-}
-
-/**
- * @param $user_id
- *
- * @return array|bool|mysqli_result|null
- */
-function db_player_list_online_by_id($user_id) {
-  $user_record = doquery("SELECT `username`, onlinetime FROM {{users}} WHERE id = {$user_id};", true);
-
-  return $user_record;
-}
-
-/**
- * @param $user_list
- *
- * @return array|bool|mysqli_result|null
- */
-function db_user_list_get_by_id_array($user_list) {
-  $query = doquery("SELECT `id` FROM `{{users}}` WHERE `id` IN (" . implode(',', $user_list) . ")");
-
-  return $query;
-}
-
-
 function db_player_list_blitz_delete_players() {
   doquery("DELETE FROM `{{users}}` WHERE username LIKE 'Игрок%';");
 }
