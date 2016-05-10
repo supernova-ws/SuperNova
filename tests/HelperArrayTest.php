@@ -39,13 +39,16 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
    */
   public function testMakeArray() {
     // Straightforward: just array
-    $this->assertEquals(array('test'), HelperArray::makeArray($test = array('test')));
+    $test = array('test');
+    $this->assertEquals(array('test'), HelperArray::makeArray($test));
 
     // Value with default index
-    $this->assertEquals(array(0 => 'test'), HelperArray::makeArray($test = 'test'));
+    $test = 'test';
+    $this->assertEquals(array(0 => 'test'), HelperArray::makeArray($test));
 
     // Value with non-default index
-    $this->assertEquals(array(1 => 'test'), HelperArray::makeArray($test = 'test', 1));
+    $test = 'test';
+    $this->assertEquals(array(1 => 'test'), HelperArray::makeArray($test, 1));
   }
 
   /**
@@ -57,19 +60,24 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
     };
 
     // Not array
-    $this->assertEquals(array(), HelperArray::filter($test = 1, $callback));
+    $test = 1;
+    $this->assertEquals(array(), HelperArray::filter($test, $callback));
 
     // Empty array
-    $this->assertEquals(array(), HelperArray::filter($test = array(), $callback));
+    $test = array();
+    $this->assertEquals(array(), HelperArray::filter($test, $callback));
 
     // Not empty array with one empty element
-    $this->assertEquals(array(), HelperArray::filter($test = array(''), $callback));
+    $test = array('');
+    $this->assertEquals(array(), HelperArray::filter($test, $callback));
 
     // Not empty array with one filterable element
-    $this->assertEquals(array('test'), HelperArray::filter($test = array('test', ''), $callback));
+    $test = array('test', '');
+    $this->assertEquals(array('test'), HelperArray::filter($test, $callback));
 
     // Not empty array with both filterable elements
-    $this->assertEquals(array(), HelperArray::filter($test = array('0', ''), $callback));
+    $test = array('0', '');
+    $this->assertEquals(array(), HelperArray::filter($test, $callback));
   }
 
   /**
