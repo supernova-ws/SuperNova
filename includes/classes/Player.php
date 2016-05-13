@@ -200,7 +200,7 @@ class Player extends UnitContainer {
    */
   public function dbLoad($dbId, $lockSkip = false) {
 //    parent::dbLoad($dbId, $lockSkip); // TODO: Uncomment when the stars be right
-    $this->_dbRow = db_user_by_id($dbId, true);
+    $this->_dbRow = DBStaticUser::db_user_by_id($dbId, true);
     // Парсим инфу и загружаем юниты
     $this->dbRowParse($this->_dbRow);
   }

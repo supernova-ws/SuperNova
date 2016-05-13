@@ -851,7 +851,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a6.97
+   * @version 41a7.5
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -921,7 +921,7 @@ class Fleet extends UnitContainer {
     $planet_arrival = db_planet_by_vector($coordinates, '', true);
     // Блокируем пользователя
     // TODO - вообще-то нам уже известен пользователь в МЛФ - так что можно просто передать его сюда
-    $user = db_user_by_id($planet_arrival['id_owner'], true);
+    $user = DBStaticUser::db_user_by_id($planet_arrival['id_owner'], true);
 
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
     // Флот, который возвращается на захваченную планету, пропадает
@@ -963,7 +963,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a6.97
+   * @version 41a7.5
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1595,12 +1595,12 @@ class Fleet extends UnitContainer {
 
     sn_db_transaction_start();
 
-    db_user_lock_with_target_owner_and_acs($this->dbOwnerRow, $this->dbTargetRow);
+    DBStaticUser::db_user_lock_with_target_owner_and_acs($this->dbOwnerRow, $this->dbTargetRow);
 
     // Checking for group
     $this->groupCheck();
 
-    $this->dbOwnerRow = db_user_by_id($this->dbOwnerRow['id'], true);
+    $this->dbOwnerRow = DBStaticUser::db_user_by_id($this->dbOwnerRow['id'], true);
     $this->dbSourcePlanetRow = db_planet_by_id($this->dbSourcePlanetRow['id'], true);
     if (!empty($this->dbTargetRow['id'])) {
       $this->dbTargetRow = db_planet_by_id($this->dbTargetRow['id'], true);

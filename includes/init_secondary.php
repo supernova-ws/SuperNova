@@ -12,7 +12,7 @@ if(classSupernova::$config->user_birthday_gift && SN_TIME_NOW - classSupernova::
 }
 
 if(!classSupernova::$config->var_online_user_count || classSupernova::$config->var_online_user_time + 30 < SN_TIME_NOW) {
-  classSupernova::$config->db_saveItem('var_online_user_count', db_user_count(true));
+  classSupernova::$config->db_saveItem('var_online_user_count', DBStaticUser::db_user_count(true));
   classSupernova::$config->db_saveItem('var_online_user_time', SN_TIME_NOW);
   if(classSupernova::$config->server_log_online) {
     db_log_online_insert();

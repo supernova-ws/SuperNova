@@ -30,7 +30,7 @@ if (($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param
     case ACTION_BUY:
       sn_db_transaction_start();
 
-      $user = db_user_by_id($user['id'], true);
+      $user = DBStaticUser::db_user_by_id($user['id'], true);
       $artifact_level = mrc_get_level($user, null, $unit_id, true);
 
       $build_data = eco_get_build_data($user, $planetrow, $unit_id, $artifact_level, true);

@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a6.95# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a7.5# copyright © 2009-2015 Gorlum',
 
     'root_relative' => '',
 
@@ -215,7 +215,7 @@ class auth_local extends auth_abstract {
       }
 
       $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
-      $user_list = db_user_list_by_id(array_keys($account_translation));
+      $user_list = DBStaticUser::db_user_list_by_id(array_keys($account_translation));
 
       // TODO - Проверять уровень доступа аккаунта!
       // Аккаунты с АУТЛЕВЕЛ больше 0 - НЕ СБРАСЫВАЮТ ПАРОЛИ!

@@ -29,7 +29,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
       die();
     }
 
-    $user = db_user_by_id($user, !$simulation, '*', true);
+    $user = DBStaticUser::db_user_by_id($user, !$simulation, '*', true);
   }
 
   if(empty($user['id'])) {

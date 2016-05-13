@@ -233,9 +233,9 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
     $objMission = new Mission();
     $objMission->fleet = $objFleet;
-    $objMission->src_user = $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($objFleet->playerOwnerId, true) : null;
+    $objMission->src_user = $mission_data['src_user'] || $mission_data['src_planet'] ? DBStaticUser::db_user_by_id($objFleet->playerOwnerId, true) : null;
     $objMission->src_planet = $mission_data['src_planet'] ? db_planet_by_vector($objFleet->launch_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
-    $objMission->dst_user = $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($objFleet->target_owner_id, true) : null;
+    $objMission->dst_user = $mission_data['dst_user'] || $mission_data['dst_planet'] ? DBStaticUser::db_user_by_id($objFleet->target_owner_id, true) : null;
     // шпионаж не дает нормальный ID fleet_end_planet_id 'dst_planet'
     $objMission->dst_planet = $mission_data['dst_planet'] ? db_planet_by_vector($objFleet->target_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
     $objMission->fleet_event = $fleet_event['fleet_event'];

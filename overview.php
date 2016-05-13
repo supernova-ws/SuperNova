@@ -95,7 +95,7 @@ switch($mode = sys_get_param_str('mode')) {
     } elseif(sys_get_param_str('action') == 'make_capital') {
       try {
         sn_db_transaction_start();
-        $user = db_user_by_id($user['id'], true, '*');
+        $user = DBStaticUser::db_user_by_id($user['id'], true, '*');
         $planetrow = db_planet_by_id($planetrow['id'], true, '*');
 //        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
 //        $user = $global_data['user'];
@@ -117,7 +117,7 @@ switch($mode = sys_get_param_str('mode')) {
           array('Planet %s ID %d at coordinates %s now become Empire Capital', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow))
         );
 
-        db_user_set_by_id($user['id'], "id_planet = {$planetrow['id']}, galaxy = {$planetrow['galaxy']}, system = {$planetrow['system']}, planet = {$planetrow['planet']}");
+        DBStaticUser::db_user_set_by_id($user['id'], "id_planet = {$planetrow['id']}, galaxy = {$planetrow['galaxy']}, system = {$planetrow['system']}, planet = {$planetrow['planet']}");
 
         $user['id_planet'] = $planetrow['id'];
         $result[] = array(
@@ -145,7 +145,7 @@ switch($mode = sys_get_param_str('mode')) {
 
         sn_db_transaction_start();
         // При телепорте обновлять данные не надо - просто получить текущие данные и залочить их
-        $user = db_user_by_id($user['id'], true, '*');
+        $user = DBStaticUser::db_user_by_id($user['id'], true, '*');
         $planetrow = db_planet_by_id($planetrow['id'], true, '*');
 //        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
 //        $user = $global_data['user'];
@@ -164,12 +164,12 @@ switch($mode = sys_get_param_str('mode')) {
           "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
 
         if($planetrow['id'] == $user['id_planet']) {
-          db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
+          DBStaticUser::db_user_set_by_id($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
         }
 
         // $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
         sn_db_transaction_commit();
-        $user = db_user_by_id($user['id'], true, '*');
+        $user = DBStaticUser::db_user_by_id($user['id'], true, '*');
         $planetrow = db_planet_by_id($planetrow['id'], true, '*');
         $result[] = array(
           'STATUS'  => ERR_NONE,
@@ -190,7 +190,7 @@ switch($mode = sys_get_param_str('mode')) {
           $destroyed = SN_TIME_NOW + 60 * 60 * 24;
           db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
-          db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
+          DBStaticUser::db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
           message(classLocale::$lang['ov_delete_ok'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
         } else {
           message(classLocale::$lang['ov_delete_wrong_planet'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
@@ -210,7 +210,7 @@ switch($mode = sys_get_param_str('mode')) {
       )
     ) {
       sn_db_transaction_start();
-      $user = db_user_by_id($user['id'], true);
+      $user = DBStaticUser::db_user_by_id($user['id'], true);
       $planetrow = db_planet_by_id($planetrow['id'], true);
       $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
       if($build_data['CAN'][BUILD_CREATE]) {

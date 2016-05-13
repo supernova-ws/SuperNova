@@ -229,7 +229,7 @@ classSupernova::$config->db_saveItem('game_watchlist', DBStaticUser::filterIdLis
 classSupernova::$debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
 sn_db_transaction_commit();
 
-classSupernova::$config->db_saveItem('users_amount', db_user_count());
+classSupernova::$config->db_saveItem('users_amount', DBStaticUser::db_user_count());
 classSupernova::$config->db_saveItem('game_disable', $old_server_status);
 
 $_GET['admin_update'] = 1;

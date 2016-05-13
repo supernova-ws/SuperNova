@@ -116,7 +116,7 @@ function coe_o_missile_calculate() {
     set_time_limit(15);
     $db_changeset = array();
 
-    $targetUser = db_user_by_id($fleetRow['fleet_target_owner'], true);
+    $targetUser = DBStaticUser::db_user_by_id($fleetRow['fleet_target_owner'], true);
 
     $target_planet_row = sys_o_get_updated($targetUser, array(
       'galaxy' => $fleetRow['fleet_end_galaxy'],
@@ -126,7 +126,7 @@ function coe_o_missile_calculate() {
     ), SN_TIME_NOW);
     $target_planet_row = $target_planet_row['planet'];
 
-    $rowAttacker = db_user_by_id($fleetRow['fleet_owner'], true);
+    $rowAttacker = DBStaticUser::db_user_by_id($fleetRow['fleet_owner'], true);
 
     if($target_planet_row['id']) {
       $planetDefense = array();

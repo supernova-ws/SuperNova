@@ -320,7 +320,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
     return $result = FLIGHT_MISSION_IMPOSSIBLE;
   }
 
-  $enemy = db_user_by_id($planet_dst['id_owner']);
+  $enemy = DBStaticUser::db_user_by_id($planet_dst['id_owner']);
   // We cannot attack or send resource to users in VACATION mode
   if($enemy['vacation'] && $mission != MT_RECYCLE) {
     return $result = FLIGHT_PLAYER_VACATION;
@@ -428,7 +428,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
 //pdump($internal_transaction);
 
   // TODO Потенциальный дедлок - если успела залочится запись пользователя - хозяина планеты
-  $user = db_user_by_id($user['id'], true);
+  $user = DBStaticUser::db_user_by_id($user['id'], true);
   $from = sys_o_get_updated($user, $from['id'], SN_TIME_NOW);
   $from = $from['planet'];
 

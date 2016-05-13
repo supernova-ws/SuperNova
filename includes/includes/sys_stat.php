@@ -92,7 +92,7 @@ function sys_stat_calculate() {
   $i = 0;
   // Блокируем всех пользователей
   classSupernova::db_lock_tables('users');
-  $user_list = db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
+  $user_list = DBStaticUser::db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
   $row_num = count($user_list);
   // while($player = db_fetch($query))
   foreach($user_list as $player) {
@@ -325,7 +325,7 @@ function sys_stat_calculate() {
   db_stat_list_update_ally_stats();
 
   // Counting real user count and updating values
-  classSupernova::$config->db_saveItem('users_amount', db_user_count());
+  classSupernova::$config->db_saveItem('users_amount', DBStaticUser::db_user_count());
 
   sn_db_transaction_commit();
 }

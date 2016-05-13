@@ -12,15 +12,15 @@ if(isset($_GET['id_rank'])) {
   $id_rank = sys_get_param_int('id_rank');
 }
 if($id_user && isset($id_rank) && $user_admin) {
-  db_user_set_by_id($id_user, "`ally_rank_id` = {$id_rank}");
+  DBStaticUser::db_user_set_by_id($id_user, "`ally_rank_id` = {$id_rank}");
 }
 
 $id_kick = sys_get_param_id('kick');
 
 if($id_kick && $user_can_kick) {
-  $u = db_user_by_id($id_kick, true);
+  $u = DBStaticUser::db_user_by_id($id_kick, true);
   if($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner']) {
-    db_user_set_by_id($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
+    DBStaticUser::db_user_set_by_id($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
     db_ally_update_member_decrease($ally);
   }
 }
@@ -49,7 +49,7 @@ $sort1s = array(
 
 $template = gettemplate('ali_members', true);
 
-$userList = db_user_list("`ally_id`= {$user['ally_id']} ORDER BY " . sprintf($sort1s[$sort1], $sort2s), false,
+$userList = DBStaticUser::db_user_list("`ally_id`= {$user['ally_id']} ORDER BY " . sprintf($sort1s[$sort1], $sort2s), false,
   'id, username, galaxy, system, planet, onlinetime, ally_rank_id, ally_register_time, total_points');
 
 // while ($userRow = db_fetch($userList))

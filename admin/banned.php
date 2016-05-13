@@ -27,7 +27,7 @@ $action = sys_get_param_str('action');
 
 $template = gettemplate("admin/admin_ban", true);
 
-$player_banned_row = db_user_by_username($name_unsafe);
+$player_banned_row = DBStaticUser::db_user_by_username($name_unsafe);
 if($mode == 'banit' && $action) {
   if($player_banned_row) {
     $reas = $_POST['why'];

@@ -125,7 +125,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
     if($cached['users'][$uni_galaxyRowPlanet['id_owner']]) {
       $uni_galaxyRowUser = $cached['users'][$uni_galaxyRowPlanet['id_owner']];
     } else {
-      $uni_galaxyRowUser = db_user_by_id($uni_galaxyRowPlanet['id_owner']);
+      $uni_galaxyRowUser = DBStaticUser::db_user_by_id($uni_galaxyRowPlanet['id_owner']);
       $cached['users'][$uni_galaxyRowUser['id']] = $uni_galaxyRowUser;
     }
 

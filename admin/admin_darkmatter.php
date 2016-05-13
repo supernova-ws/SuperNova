@@ -27,9 +27,9 @@ $message_status = ERR_ERROR;
 if($points = sys_get_param_float('points')) {
 // If points not empty...
   if($username = sys_get_param_str_unsafe('id_user')) {
-    $row = db_user_by_id($username, false, 'id, username', true, true);
+    $row = DBStaticUser::db_user_by_id($username, false, 'id, username', true);
     if(!isset($row['id'])) {
-      $row = db_user_by_username($username, false, 'id, username', true, true);
+      $row = DBStaticUser::db_user_by_username($username, false, 'id, username', true, true);
     }
     if(is_array($row) && isset($row['id'])) {
       // Does anything post to DB?

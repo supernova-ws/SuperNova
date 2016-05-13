@@ -54,12 +54,12 @@ switch($mode) {
 
     $recipient_name = sys_get_param_str_unsafe('recipient_name');
     if($recipient_name) {
-      $recipient_row = db_user_by_username($recipient_name);
+      $recipient_row = DBStaticUser::db_user_by_username($recipient_name);
     }
 
     if(!$recipient_row) {
       $recipient_id = sys_get_param_id('id');
-      $recipient_row = db_user_by_id($recipient_id);
+      $recipient_row = DBStaticUser::db_user_by_id($recipient_id);
       if(!$recipient_row) {
         $recipient_id = 0;
       }
@@ -199,7 +199,7 @@ switch($mode) {
         $user[$sn_message_class_list[$current_class]['name']] = 0;
       }
 
-      db_user_set_by_id($user['id'], $SubUpdateQry);
+      DBStaticUser::db_user_set_by_id($user['id'], $SubUpdateQry);
       $message_query = db_message_list_by_owner_and_string($user, $SubSelectQry);
     }
 

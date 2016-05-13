@@ -23,7 +23,7 @@ if($info_action)
   {
     sn_db_transaction_start();
 
-    $user = db_user_by_id($user['id'], true);
+    $user = DBStaticUser::db_user_by_id($user['id'], true);
     if(mrc_get_level($user, null, RES_DARK_MATTER) < classSupernova::$config->rpg_cost_info)
     {
       throw new Exception(MARKET_NO_DM, ERR_ERROR);
@@ -40,11 +40,11 @@ if($info_action)
 
         if(is_id($user_info_name_unsafe))
         {
-          $user_info = db_user_by_id($user_info_name_unsafe, true, '`id`, `username`', true);
+          $user_info = DBStaticUser::db_user_by_id($user_info_name_unsafe, true, '`id`, `username`', true);
         }
         if(!is_array($user_info))
         {
-          $user_info = db_user_by_username($user_info_name_unsafe, true, '`id`, `username`', true, true);
+          $user_info = DBStaticUser::db_user_by_username($user_info_name_unsafe, true, '`id`, `username`', true, true);
         }
         if(!is_array($user_info))
         {

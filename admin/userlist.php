@@ -40,7 +40,7 @@ $sort = sys_get_param_int('sort', SORT_ID);
 $sort = $sort_fields[$sort] ? $sort : SORT_ID;
 
 if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'))) {
-  $user_selected = db_user_by_id($user_id, false, 'id, username, authlevel');
+  $user_selected = DBStaticUser::db_user_by_id($user_id, false, 'id, username, authlevel');
   if($user_selected['authlevel'] < $user['authlevel'] && $user['authlevel'] >= 3) {
     switch($action) {
       case ACTION_DELETE:
@@ -62,14 +62,14 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
 $template = gettemplate('admin/userlist', true);
 
 $multi_ip = array();
-$ip_query = db_user_list_admin_multiaccounts();
+$ip_query = DBStaticUser::db_user_list_admin_multiaccounts();
 while($ip = db_fetch($ip_query)) {
   $multi_ip[$ip['user_lastip']] = $ip['ip_count'];
 }
 
 $geoip = geoip_status();
 
-$query = db_user_list_admin_sorted($sort_fields[$sort], $is_players_online_page);
+$query = DBStaticUser::db_user_list_admin_sorted($sort_fields[$sort], $is_players_online_page);
 while($user_row = db_fetch($query)) {
   if($user_row['banaday']) {
     $ban_details = db_ban_list_get_details($user_row);

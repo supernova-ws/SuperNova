@@ -29,8 +29,8 @@ $email = sys_get_param_str('email');
 
 $template = gettemplate('login_body', true);
 $template->assign_vars(array(
-  'last_user'    => db_user_last_registered_username(),
-  'online_users' => db_user_count(true),
+  'last_user'    => DBStaticUser::getLastRegisteredUserName(),
+  'online_users' => DBStaticUser::db_user_count(true),
   'id_ref' => sys_get_param_int('id_ref'),
   'F_LOGIN_MESSAGE' => $template_result[F_LOGIN_MESSAGE],
   'F_LOGIN_STATUS' => $template_result[F_LOGIN_STATUS],

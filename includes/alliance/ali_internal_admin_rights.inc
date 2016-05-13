@@ -46,7 +46,7 @@ if ($d && isset($ranks[$d]))
     message(classLocale::$lang['ali_adm_lastRank'], classLocale::$lang['ali_adm_rights_title']);
   }
   array_splice($ranks, $d, 1);
-  db_user_list_set_by_ally_and_rank($ally['id'], $d, '`ally_rank_id`=`ally_rank_id` - 1');
+  DBStaticUser::db_user_list_set_by_ally_and_rank($ally['id'], $d, '`ally_rank_id`=`ally_rank_id` - 1');
 }
 
 ali_rank_list_save($ranks);

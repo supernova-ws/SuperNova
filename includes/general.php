@@ -617,7 +617,7 @@ function sn_ali_fill_user_ally(&$user) {
   }
 
   if (!isset($user['ally']['player'])) {
-    $user['ally']['player'] = db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
+    $user['ally']['player'] = DBStaticUser::db_user_by_id($user['ally']['ally_user_id'], true, '*', false);
   }
 }
 
@@ -710,7 +710,7 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
   }
 
   sn_db_transaction_start();
-  $user = db_user_by_id($user['id'], true, '*');
+  $user = DBStaticUser::db_user_by_id($user['id'], true, '*');
   $planetrow = db_planet_by_id($planetrow['id'], true, '*');
   // Тут не надо делать обсчет - ресурсы мы уже посчитали, очередь (и количество зданий) - тоже
   $sector_cost = eco_get_build_data($user, $planetrow, UNIT_SECTOR, mrc_get_level($user, $planetrow, UNIT_SECTOR), true);
@@ -929,7 +929,7 @@ function sys_stat_get_user_skip_list() {
 
   if (!empty($user_skip_list)) {
     $user_skip_list = implode(' OR ', $user_skip_list);
-    $user_skip_query = db_user_list($user_skip_list);
+    $user_skip_query = DBStaticUser::db_user_list($user_skip_list);
     if (!empty($user_skip_query)) {
       foreach ($user_skip_query as $user_skip_row) {
         $result[$user_skip_row['id']] = $user_skip_row['id'];
@@ -1097,7 +1097,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     }
 
     sn_db_transaction_start();
-    $user = db_user_by_id($user['id'], true, '*');
+    $user = DBStaticUser::db_user_by_id($user['id'], true, '*');
     $planetrow = db_planet_by_id($planetrow['id'], true, '*');
 
     $planet_density_index = $planetrow['density_index'];

@@ -61,7 +61,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
     return false;
   }
 
-  $user_row = !empty($options['user_row']) && is_array($options['user_row']) ? $options['user_row'] : db_user_by_id($PlanetOwnerID);
+  $user_row = !empty($options['user_row']) && is_array($options['user_row']) ? $options['user_row'] : DBStaticUser::db_user_by_id($PlanetOwnerID);
 
 
   $planet_generator = sn_get_groups('planet_generator');
@@ -266,7 +266,7 @@ function SetSelectedPlanet(&$user) {
 
   // Если производилось переключение планеты - делаем запись в юзере
   if($user['current_planet'] != $planet_row['id']) {
-    db_user_set_by_id($user['id'], "`current_planet` = '{$planet_row['id']}'");
+    DBStaticUser::db_user_set_by_id($user['id'], "`current_planet` = '{$planet_row['id']}'");
     $user['current_planet'] = $planet_row['id'];
   }
 

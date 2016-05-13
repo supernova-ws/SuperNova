@@ -9,14 +9,14 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a7.0#
+ * version #41a7.5#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a7.0# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a7.5# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -354,7 +354,7 @@ class core_auth extends sn_module {
         $this->get_active_user(); // 4.5
 
         if ($this->is_impersonating = !empty($_COOKIE[SN_COOKIE_U_I]) ? $_COOKIE[SN_COOKIE_U_I] : 0) {
-          $a_user = db_user_by_id($this->is_impersonating);
+          $a_user = DBStaticUser::db_user_by_id($this->is_impersonating);
           $this->impersonator_username = $a_user['username'];
         }
 
@@ -619,7 +619,7 @@ class core_auth extends sn_module {
     // Вообще-то это не особо нужно - у нас по определению стоят констраинты
     // Зато так мы узнаем максимальный authlevel, проверим права имперсонейта и вытащим все записи юзеров
     foreach ($this->user_id_to_provider as $user_id => $cork) {
-      $user = db_user_by_id($user_id);
+      $user = DBStaticUser::db_user_by_id($user_id);
       // Если записи игрока в БД не существует?
       if (empty($user['id'])) {
         // Удаляем этого и переходим к следующему
@@ -663,7 +663,7 @@ class core_auth extends sn_module {
       // Берем текущим юзером юзера с ИД из куки
 //      $this->is_impersonating = empty($this->accessible_user_row_list[$_COOKIE[SN_COOKIE_U]]);
       // self::$user = self::$accessible_user_row_list[$_COOKIE[SN_COOKIE_U]];
-      self::$user = db_user_by_id($_COOKIE[SN_COOKIE_U]);
+      self::$user = DBStaticUser::db_user_by_id($_COOKIE[SN_COOKIE_U]);
     }
 
     // В куке нет валидного ИД записи игрока, доступной с текущих аккаунтов
@@ -710,7 +710,7 @@ class core_auth extends sn_module {
 
       $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
 
-      db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ",
+      DBStaticUser::db_user_set_by_id($user['id'], "`onlinetime` = " . SN_TIME_NOW . ",
       `banaday` = " . static::$db->db_escape($user['banaday']) . ", `vacation` = " . static::$db->db_escape($user['vacation']) . ",
       `user_lastip` = '" . static::$db->db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$device->browser_id
       );

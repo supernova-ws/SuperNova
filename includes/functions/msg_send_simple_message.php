@@ -21,7 +21,7 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0) {
   $ally_id = $ally_id ? $ally_id : $user['ally_id'];
 
   $list = '';
-  $query = db_user_list(
+  $query = DBStaticUser::db_user_list(
     "ally_id = '{$ally_id}'" . ($ally_rank_id >= 0 ? " AND ally_rank_id = {$ally_rank_id}" : ''),
     false, 'id, username');
   // while ($u = db_fetch($query))
@@ -77,7 +77,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
     foreach($owners as $owner) {
       if($user['id'] != $owner) {
-        $owner_row = db_user_by_id($owner);
+        $owner_row = DBStaticUser::db_user_by_id($owner);
       } else {
         $owner_row = $user;
       }
@@ -98,7 +98,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
     db_message_insert($insert_values);
   }
-  db_user_list_set_mass_mail($owners, "`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1");
+  DBStaticUser::db_user_list_set_mass_mail($owners, "`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1");
 
   if(in_array($user['id'], $owners) || $owners[0] == '*') {
     $user[$message_class_name]++;

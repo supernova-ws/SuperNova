@@ -30,7 +30,7 @@ if($galaxy_src)
   sn_db_transaction_start();
   $errors = array();
 
-  $owner = db_user_by_username($username_unsafe, false, '*', true, true);
+  $owner = DBStaticUser::db_user_by_username($username_unsafe, false, '*', true, true);
 
   $planet = sys_o_get_updated($owner, array('galaxy' => $galaxy_src, 'system' => $system_src, 'planet' => $planet_src, 'planet_type' => 1), SN_TIME_NOW);
   $que    = $planet['que'];

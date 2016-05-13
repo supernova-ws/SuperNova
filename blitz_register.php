@@ -20,7 +20,7 @@ $current_price = intval(classSupernova::$config->db_loadItem('game_blitz_registe
 
 if(classSupernova::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER_OPEN && (sys_get_param_str('register_me') || sys_get_param_str('register_me_not'))) {
   sn_db_transaction_start();
-  $user = db_user_by_id($user['id'], true);
+  $user = DBStaticUser::db_user_by_id($user['id'], true);
   $is_registered = db_blitz_reg_get_id_by_player_and_round($user, $current_round);
   if(sys_get_param_str('register_me')) {
     if(empty($is_registered) && mrc_get_level($user, null, RES_METAMATTER) >= $current_price) {
@@ -54,7 +54,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     }
   } elseif(sys_get_param_str('import_generated')) {
     // ЭТО НА БЛИЦЕ!!!
-    db_player_list_blitz_delete_players();
+    DBStaticUser::db_player_list_blitz_delete_players();
     db_planets_purge();
 
     $imported_string = explode(';', sys_get_param_str('generated_string'));
@@ -99,7 +99,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
         $system = $system_step;
       }
     }
-    db_player_list_blitz_set_50k_dm();
+    DBStaticUser::db_player_list_blitz_set_50k_dm();
 
     classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->users_amount + $new_players);
     // pdump($imported_string);
@@ -120,7 +120,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 
   if(classSupernova::$config->game_mode == GAME_BLITZ) {
     $blitz_result = array(classSupernova::$config->db_loadItem('var_stat_update'));
-    $query = db_player_list_export_blitz_info();
+    $query = DBStaticUser::db_player_list_export_blitz_info();
     while($row = db_fetch($query)) {
       $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
     }

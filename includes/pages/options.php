@@ -25,7 +25,7 @@ function sn_options_model() {
     if($user['authlevel'] > 0) {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
       db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
-      db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
+      DBStaticUser::db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
     }
 
@@ -98,7 +98,7 @@ function sn_options_model() {
       sn_db_transaction_start();
       $name_check = db_player_name_history_get_name_by_name($username_safe);
       if(!$name_check || $name_check['player_id'] == $user['id']) {
-        $user = db_user_by_id($user['id'], true);
+        $user = DBStaticUser::db_user_by_id($user['id'], true);
         switch(classSupernova::$config->game_user_changename) {
           case SERVER_PLAYER_NAME_CHANGE_PAY:
             if(mrc_get_level($user, $planetrow, RES_DARK_MATTER) < classSupernova::$config->game_user_changename_cost) {
@@ -111,7 +111,7 @@ function sn_options_model() {
             rpg_points_change($user['id'], RPG_NAME_CHANGE, -classSupernova::$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
-            db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
+            DBStaticUser::db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
             db_player_name_history_replace($user, $username_safe);
             // TODO: Change cookie to not force user relogin
             // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
@@ -229,7 +229,7 @@ function sn_options_model() {
     }
 
     $user_options_safe = db_escape($user['options']);
-    db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
+    DBStaticUser::db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
       `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe}', `gender` = {$user['gender']}
       {$user_birthday}"
@@ -246,7 +246,7 @@ function sn_options_model() {
     );
   }
 
-  $user = db_user_by_id($user['id']);
+  $user = DBStaticUser::db_user_by_id($user['id']);
   $options = sys_user_options_unpack($user);
 }
 

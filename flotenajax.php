@@ -59,7 +59,7 @@ function fleet_ajax() {
 
   sn_db_transaction_start();
 
-  $user = db_user_by_id($user['id'], true);
+  $user = DBStaticUser::db_user_by_id($user['id'], true);
   $planetrow = db_planet_by_id($user['current_planet'], true);
 
   // TODO - DEADLOCK CAN BE HERE!!!! We should lock SOURCE and TARGET owners in one query

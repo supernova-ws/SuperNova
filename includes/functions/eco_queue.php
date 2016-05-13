@@ -117,7 +117,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
 
     sn_db_transaction_start();
     // Это нужно, что бы заблокировать пользователя и работу с очередями
-    $user = db_user_by_id($user['id']);
+    $user = DBStaticUser::db_user_by_id($user['id']);
     // Это нужно, что бы заблокировать планету от списания ресурсов
     if(isset($planet['id']) && $planet['id']) {
       $planet = db_planet_by_id($planet['id'], true);
@@ -392,7 +392,7 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
   if(is_numeric($planet_id)) {
     db_planet_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
   } elseif(is_numeric($user['id'])) {
-    db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
+    DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
   }
 
   $resource_list = sys_unit_arr2str($build_data[$build_mode]);
@@ -417,7 +417,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
   // TODO: Some checks
   sn_db_transaction_start();
-  $user = db_user_by_id($user['id'], true);
+  $user = DBStaticUser::db_user_by_id($user['id'], true);
   $planet['id'] = $planet['id'] && $que_type !== QUE_RESEARCH ? $planet['id'] : 0;
   $global_que = que_get($user['id'], $planet['id'], $que_type, true);
 
@@ -451,7 +451,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
     if(is_numeric($planet['id'])) {
       db_planet_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
     } elseif(is_numeric($user['id'])) {
-      db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
+      DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
     }
 
     sn_db_transaction_commit();
@@ -535,7 +535,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
   $que = array();
 
   // Блокируем пользователя. Собственно, запись о нём нам не нужна - будем использовать старую
-  $user = db_user_by_id($user['id'], true);
+  $user = DBStaticUser::db_user_by_id($user['id'], true);
 
   $time_left[$user['id']][0] = max(0, $on_time - $user['que_processed']);
   if($planet === null && !$time_left[$user['id']][0]) {

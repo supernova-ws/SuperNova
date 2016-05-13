@@ -45,7 +45,7 @@ if(!$user['ally_id']) {
 
 sn_ali_fill_user_ally($user);
 if(!isset($user['ally'])) {
-  db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
+  DBStaticUser::db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
   message(classLocale::$lang['ali_sys_notFound'], classLocale::$lang['your_alliance'], 'alliance.php');
 }
 $ally = &$user['ally'];
@@ -79,7 +79,7 @@ if(!$ally['ranklist'] && $ally['ally_ranks']) {
     foreach($ally_rights as $key => $value) {
       $ranks[$i][$value] = $rank[$rights_old[$key]];
     }
-    db_user_list_set_ally_deprecated_convert_ranks($user['ally_id'], $i, $rank_id);
+    DBStaticUser::db_user_list_set_ally_deprecated_convert_ranks($user['ally_id'], $i, $rank_id);
     $i++;
   }
 

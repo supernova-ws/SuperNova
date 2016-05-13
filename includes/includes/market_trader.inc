@@ -37,7 +37,7 @@ function eco_mrk_trader($user, $planetrow = null) {
     }
     else {
       // Locking user record
-      $user = db_user_by_id($user['id'], true);
+      $user = DBStaticUser::db_user_by_id($user['id'], true);
     }
 
     foreach(sn_get_groups('resources_trader') as $resource_id) {

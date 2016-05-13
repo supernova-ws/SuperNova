@@ -11,7 +11,7 @@ function sys_user_vacation($user) {
     if ($user['vacation'] < SN_TIME_NOW) {
       $user['vacation'] = 0;
       $user['vacation_next'] = SN_TIME_NOW + classSupernova::$config->player_vacation_timeout;
-      db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
+      DBStaticUser::db_user_set_by_id($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
     }
   }
 
@@ -44,7 +44,7 @@ function sys_is_multiaccount($user1, $user2) {
 function DeleteSelectedUser($UserID) {
   // TODO: Full rewrite
   sn_db_transaction_start();
-  $TheUser = db_user_by_id($UserID);
+  $TheUser = DBStaticUser::db_user_by_id($UserID);
   if ( $TheUser['ally_id'] != 0 ) {
     $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
     $TheAlly['ally_members'] -= 1;
@@ -84,10 +84,10 @@ function DeleteSelectedUser($UserID) {
  * @param string $reason
  */
 function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '') {
-  $ban_current = db_user_by_id($banned['id'], false, 'banaday');
+  $ban_current = DBStaticUser::db_user_by_id($banned['id'], false, 'banaday');
   $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
 
-  db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
+  DBStaticUser::db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
 
   $banned['username'] = db_escape($banned['username']);
   $banner['username'] = db_escape($banner['username']);
@@ -105,7 +105,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
  * @param string $reason
  */
 function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
-  db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
+  DBStaticUser::db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
 
   $banned['username'] = db_escape($banned['username']);
   $banner['username'] = db_escape($banner['username']);
@@ -179,7 +179,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   }
   $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], classLocale::$lang['sys_capital'], true, $options['planet_options']);
 
-  db_user_set_by_id($user_new['id'],
+  DBStaticUser::db_user_set_by_id($user_new['id'],
     "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
   );
@@ -189,11 +189,11 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   $username_safe = db_escape($username_unsafe);
   db_player_name_history_replace($user_new, $username_safe);
 
-  if(!empty($options['partner_id']) && ($referral_row = db_user_by_id($options['partner_id'], true))) {
+  if(!empty($options['partner_id']) && ($referral_row = DBStaticUser::db_user_by_id($options['partner_id'], true))) {
     db_referral_insert($options, $user_new);
   }
 
   sys_player_new_adjust($user_new['id'], $new_planet_id);
 
-  return $result = db_user_by_id($user_new['id']);
+  return $result = DBStaticUser::db_user_by_id($user_new['id']);
 }

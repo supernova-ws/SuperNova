@@ -17,7 +17,7 @@ lng_include('fleet');
 if($TargetPlanet = sys_get_param_id('jmpto'))
 {
   sn_db_transaction_start();
-  db_user_by_id($user['id'], true, 'id');
+  DBStaticUser::db_user_by_id($user['id'], true, 'id');
   $planetrow = db_planet_by_id($planetrow['id'], true);
   if(!($NextJumpTime = uni_get_time_to_jump($planetrow)))
   {
@@ -52,7 +52,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
           db_planet_set_by_id($planetrow['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
           db_changeset_apply($db_changeset);
 
-          db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
+          DBStaticUser::db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 
           $planetrow['last_jump_time'] = SN_TIME_NOW;
           $RetMessage = classLocale::$lang['gate_jump_done'] ." - ". pretty_time(uni_get_time_to_jump($planetrow));

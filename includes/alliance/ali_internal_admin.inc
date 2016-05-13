@@ -35,7 +35,7 @@ if(sys_get_param_str('isSaveOptions')) {
   if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
     $new_tag = db_escape($new_tag);
     $ally_changeset[] = "`ally_tag`='{$new_tag}'";
-    db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
+    DBStaticUser::db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
   }
   if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) && $new_name != $ally['ally_name']) {
     $new_name = db_escape($new_name);
@@ -70,12 +70,12 @@ if(sys_get_param_str('isSaveOptions')) {
     message(classLocale::$lang['Denied_access'], classLocale::$lang['ally_admin']);
   }
 
-  $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
+  $newLeader = DBStaticUser::db_user_by_id($idNewLeader, false, `ally_id`);
   if($newLeader['ally_id'] == $user['ally_id']) {
     sn_db_transaction_start();
-    db_user_set_by_id($user['id'], "`ally_rank_id`='0'");
+    DBStaticUser::db_user_set_by_id($user['id'], "`ally_rank_id`='0'");
     db_ally_update_owner($idNewLeader, $user);
-    db_user_set_by_id($idNewLeader, "`ally_rank_id`='0'");
+    DBStaticUser::db_user_set_by_id($idNewLeader, "`ally_rank_id`='0'");
     sn_db_transaction_commit();
     sys_redirect('alliance.php');
   }
@@ -85,7 +85,7 @@ if(sys_get_param_str('isSaveOptions')) {
   }
   sn_db_transaction_start();
   db_ally_delete($ally);
-  db_user_list_set_by_ally_and_rank($ally['id'], -20, "`ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0");
+  DBStaticUser::db_user_list_set_by_ally_and_rank($ally['id'], -20, "`ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0");
   sn_db_transaction_commit();
   sys_redirect('alliance.php');
 };
@@ -123,7 +123,7 @@ if(!empty($tmp))
 {
 //pdump($ally['id']);
   // $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']} AND ({$tmp})", false, '`id`, `username`');
-  $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']}", false, '`id`, `username`');
+  $userAllyAdmins = DBStaticUser::db_user_list("`ally_id`= {$ally['id']}", false, '`id`, `username`');
   unset($tmp);
   // while ($userAllyAdmin = db_fetch($userAllyAdmins))
   foreach($userAllyAdmins as $userAllyAdmin) {

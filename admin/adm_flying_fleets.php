@@ -23,8 +23,8 @@ $template = gettemplate('admin/adm_flying_fleets', true);
 
 $all_flying_fleets = FleetList::dbGetFleetList();
 foreach($all_flying_fleets->_container as $fleet_id => $objFleet) {
-  $FleetOwner = db_user_by_id($objFleet->playerOwnerId);
-  $TargetOwner = db_user_by_id($objFleet->target_owner_id);
+  $FleetOwner = DBStaticUser::db_user_by_id($objFleet->playerOwnerId);
+  $TargetOwner = DBStaticUser::db_user_by_id($objFleet->target_owner_id);
 
   $fleet_data = tplParseFleetObject($objFleet, ++$i, $FleetOwner);
   $fleet_data['fleet']['OWNER_NAME'] = htmlentities($FleetOwner['username'], ENT_COMPAT, 'UTF-8');

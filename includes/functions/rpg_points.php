@@ -40,7 +40,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
     $rows_affected = 1;
   } else {
     $changeset = array();
-    $a_user = db_user_by_id($user_id, true);
+    $a_user = DBStaticUser::db_user_by_id($user_id, true);
     if ($dark_matter < 0) {
       $dark_matter_exists = mrc_get_level($a_user, null, RES_DARK_MATTER, false, true);
       $dark_matter_exists < 0 ? $dark_matter_exists = 0 : false;
@@ -61,7 +61,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
       $changeset[] = "`dark_matter_total` = `dark_matter_total` + '{$dark_matter}'";
     }
     $dark_matter ? $changeset[] = "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'" : false;
-    !empty($changeset) ? db_user_set_by_id($user_id, implode(',', $changeset)) : false;
+    !empty($changeset) ? DBStaticUser::db_user_set_by_id($user_id, implode(',', $changeset)) : false;
     $rows_affected = classSupernova::$db->db_affected_rows();
   }
 
@@ -71,7 +71,7 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
       $comment = call_user_func_array('sprintf', $comment);
     }
     $comment = db_escape($comment);
-    $row = db_user_by_id($user_id, false, 'username');
+    $row = DBStaticUser::db_user_by_id($user_id, false, 'username');
     $row['username'] = db_escape($row['username']);
     db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment, $row, $page_url);
 
@@ -146,7 +146,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0) {
 
   if ($xp_to_add) {
     $xp += $xp_to_add;
-    db_user_set_by_id($user['id'], "`{$field_xp}` = `{$field_xp}` + '{$xp_to_add}'");
+    DBStaticUser::db_user_set_by_id($user['id'], "`{$field_xp}` = `{$field_xp}` + '{$xp_to_add}'");
   }
 
   $level = $user[$field_level];
@@ -155,7 +155,7 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0) {
   }
   $level -= $user[$field_level];
   if ($level > 0) {
-    db_user_set_by_id($user['id'], "`{$field_level}` = `{$field_level}` + '{$level}'");
+    DBStaticUser::db_user_set_by_id($user['id'], "`{$field_level}` = `{$field_level}` + '{$level}'");
     rpg_points_change($user['id'], $type, $level * 1000, $comment);
     $user[$field_level] += $level;
   }

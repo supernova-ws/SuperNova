@@ -115,7 +115,7 @@ function flt_register_event_objFleet(Fleet $objFleet, $ov_label, $planet_end_typ
   if($objFleet->playerOwnerId == $user['id']) {
     $user_data = $user;
   } else {
-    $user_data = db_user_by_id($objFleet->playerOwnerId);
+    $user_data = DBStaticUser::db_user_by_id($objFleet->playerOwnerId);
   }
 
   return tplParseFleetObject($objFleet, ++$fleet_number, $user_data);

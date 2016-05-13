@@ -43,7 +43,7 @@ function sn_imperator_view($template = null) {
 
   $user_id = sys_get_param_id('int_user_id', $user['id']);
 
-  $user_data = ($same_user = $user_id == $user['id']) ? $user : db_user_by_id($user_id);
+  $user_data = ($same_user = $user_id == $user['id']) ? $user : DBStaticUser::db_user_by_id($user_id);
 
 //  if($user_id == $user['id']) {
 //    $user_data = &$user;

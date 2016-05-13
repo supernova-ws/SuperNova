@@ -37,7 +37,7 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
     }
     // TODO UNCOMMENT
     que_process($user['ally']['player']);
-    db_user_set_by_id($user['ally']['player']['id'], '`onlinetime` = ' . SN_TIME_NOW);
+    DBStaticUser::db_user_set_by_id($user['ally']['player']['id'], '`onlinetime` = ' . SN_TIME_NOW);
     sn_db_transaction_commit();
   }
 

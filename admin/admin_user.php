@@ -12,7 +12,7 @@ if($user['authlevel'] < 3) {
 lng_include('admin');
 
 $user_id = sys_get_param_id('uid');
-if(!($user_row = db_user_by_id($user_id))) {
+if(!($user_row = DBStaticUser::db_user_by_id($user_id))) {
   AdminMessage(sprintf(classLocale::$lang['adm_dm_user_none'], $user_id));
 }
 
