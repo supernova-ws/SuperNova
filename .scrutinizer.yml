@@ -11,3 +11,8 @@ filter:
         - tests/*
         - vendor/*
         - admin/sxd/*
+coding_style:
+    php:
+        indentation:
+            general:
+                size: 2

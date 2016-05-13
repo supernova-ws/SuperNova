@@ -3,7 +3,7 @@
 /**
  * Class HelperArrayTest
  *
- * @cover HelperArray
+ * @coversDefaultClass HelperArray
  */
 class HelperArrayTest extends PHPUnit_Framework_TestCase {
 
@@ -12,8 +12,8 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @cover ::StringToArray
-   * @cover ::stringToArrayFilterEmpty
+   * @covers ::StringToArray
+   * @covers ::stringToArrayFilterEmpty
    */
   public function testStringToArray() {
     // Only string would be converted to array
@@ -35,7 +35,7 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
 
 
   /**
-   * @cover ::makeArray
+   * @covers ::makeArray
    */
   public function testMakeArray() {
     // Straightforward: just array
@@ -52,7 +52,7 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @cover ::filter
+   * @covers ::filter
    */
   public function testFilter() {
     $callback = function ($value) {
@@ -81,8 +81,8 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @cover ::isNotEmpty
-   * @cover ::stringToArrayFilterEmpty
+   * @covers ::isNotEmpty
+   * @covers ::stringToArrayFilterEmpty
    */
   public function testIsNotEmpty() {
     $tested = new HelperArray();
@@ -95,8 +95,8 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @cover ::filterEmpty
-   * @cover ::stringToArrayFilterEmpty
+   * @covers ::filterEmpty
+   * @covers ::stringToArrayFilterEmpty
    */
   public function testFilterEmpty() {
     // Not array
@@ -117,7 +117,7 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
 
 
   /**
-   * @cover ::stringToArrayFilterEmpty
+   * @covers ::stringToArrayFilterEmpty
    */
   public function testStringToArrayFilterEmpty() {
     // Not string

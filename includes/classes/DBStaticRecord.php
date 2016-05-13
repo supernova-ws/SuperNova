@@ -7,7 +7,7 @@ class DBStaticRecord {
 
   /**
    * Converts fields array to string
-   * Scalar values or empty arrays would be converted to wildcard '*"
+   * Scalar values or empty arrays would be converted to wildcard '*'
    * null array members would be converted to field NULL
    * All other values would be enquoted by `
    *
