@@ -84,7 +84,7 @@ define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
 
 require_once('constants.php');
 
-require_once('classes/supernova.php');
+require_once('classes/classSupernova.php');
 
 classSupernova::init_0_prepare();
 //classSupernova::init_1_constants();

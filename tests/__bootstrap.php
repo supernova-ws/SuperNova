@@ -1,16 +1,16 @@
 <?php
 
-echo 'bootstrap';
-
 // Эти три строки должны быть В ЭТОМ ФАЙЛЕ, ПО ЭТОМУ ПУТИ и ПЕРЕД ЭТИМ ИНКЛЮДОМ!!!
 $sn_root_physical = str_replace('\\', '/', __FILE__);
 $sn_root_physical = str_replace('tests/__bootstrap.php', '', $sn_root_physical);
-print($sn_root_physical);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
 // define('SN_ROOT_PHYSICAL_STR_LEN', mb_strlen($sn_root_physical));
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen($sn_root_physical));
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
+
+// echo 'bootstrap';
+//print($sn_root_physical);
 
 spl_autoload_register(function ($class) {
   if (file_exists(SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php')) {

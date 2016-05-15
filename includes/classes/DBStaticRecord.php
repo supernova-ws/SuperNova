@@ -6,6 +6,20 @@ class DBStaticRecord {
   public static $_idField = 'id';
 
   /**
+   * @var db_mysql $dbStatic
+   */
+  protected static $dbStatic;
+
+  /**
+   * DBStaticRecord constructor.
+   *
+   * @param db_mysql|null $db
+   */
+  public static function _init($db = null) {
+    self::$dbStatic = (!empty($db) && $db instanceof db_mysql) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
+  }
+
+  /**
    * Converts fields array to string
    * Scalar values or empty arrays would be converted to wildcard '*'
    * null array members would be converted to field NULL
@@ -14,6 +28,8 @@ class DBStaticRecord {
    * @param array $fieldList
    *
    * @return string
+   *
+   * @throws ExceptionDBFieldEmpty
    */
   protected static function fieldsToString($fieldList) {
     $fieldList = HelperArray::makeArray($fieldList);
@@ -29,7 +45,11 @@ class DBStaticRecord {
             $result[] = 'NULL';
           break;
           default:
-            $result[] = '`' . (string)$fieldName . '`';
+            $string = (string)$fieldName;
+            if($string == '') {
+              throw new ExceptionDBFieldEmpty();
+            }
+            $result[] = '`' . $string . '`';
         }
       }
     } else {
@@ -55,7 +75,7 @@ class DBStaticRecord {
 
     $user_record = null;
     if (!empty($fieldList)) {
-      $user_record = doquery(
+      $user_record = self::$dbStatic->doquery(
         (
           "SELECT {$fieldList}" .
           " FROM {{" . self::$_table . "}}" .
@@ -90,7 +110,7 @@ class DBStaticRecord {
    * @return int
    */
   public static function getMaxId() {
-    $maxId = classSupernova::$db->doquery("SELECT MAX(`" . static::$_idField . "`) AS `maxId` FROM `{{" . static::$_table . "}}`", true);
+    $maxId = self::$dbStatic->doquery("SELECT MAX(`" . static::$_idField . "`) AS `maxId` FROM `{{" . static::$_table . "}}`", true);
 
     return !empty($maxId['maxId']) ? $maxId['maxId'] : 0;
   }
@@ -115,7 +135,7 @@ class DBStaticRecord {
   public static function queryExistsIdInList($idList) {
     $query = null;
     if (!empty($idList)) {
-      $query = doquery("SELECT `" . static::$_idField . "` FROM `{{" . static::$_table . "}}` WHERE `" . static::$_idField . "` IN (" . implode(',', $idList) . ")");
+      $query = self::$dbStatic->doquery("SELECT `" . static::$_idField . "` FROM `{{" . static::$_table . "}}` WHERE `" . static::$_idField . "` IN (" . implode(',', $idList) . ")");
     }
 
     return !empty($query) ? $query : null;
@@ -142,3 +162,5 @@ class DBStaticRecord {
   }
 
 }
+
+DBStaticRecord::_init();
