@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a6.87
+   * @version 41a7.7
    */
   // TODO - Factory
   public function _createElement() {
@@ -300,10 +300,9 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
     return $result;
   }
 
-  public function shipsIsEnoughOnPlanet($dbPlanetRow) {
-    $player = null;
+  public function shipsIsEnoughOnPlanet($dbOwnerRow, $dbPlanetRow) {
     foreach ($this->mapUnitIdToDb as $unitId => $unit) {
-      if ($unit->count < mrc_get_level($player, $dbPlanetRow, $unit->unitId)) {
+      if ($unit->count > mrc_get_level($dbOwnerRow, $dbPlanetRow, $unit->unitId)) {
         return false;
       }
     }

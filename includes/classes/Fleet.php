@@ -851,7 +851,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a7.5
+   * @version 41a7.7
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -867,7 +867,7 @@ class Fleet extends UnitContainer {
    * @return bool
    */
   public function shipsIsEnoughOnPlanet() {
-    return $this->unitList->shipsIsEnoughOnPlanet($this->fleet->dbSourcePlanetRow);
+    return $this->unitList->shipsIsEnoughOnPlanet($this->dbOwnerRow, $this->dbSourcePlanetRow);
   }
 
   /**
@@ -888,7 +888,7 @@ class Fleet extends UnitContainer {
    * @return bool
    */
   public function shipsAllMovable() {
-    return $this->unitList->unitsIsAllMovable($this->fleet->dbOwnerRow);
+    return $this->unitList->unitsIsAllMovable($this->dbOwnerRow);
   }
 
   /**
@@ -963,7 +963,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a7.5
+   * @version 41a7.7
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1538,9 +1538,14 @@ class Fleet extends UnitContainer {
       $validator = new FleetValidator($this);
       $validator->validate();
     } catch (Exception $e) {
+
       // TODO - MESSAGE BOX
-      sn_db_transaction_rollback();
-      pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
+      if($e instanceof ExceptionFleetInvalid) {
+        sn_db_transaction_rollback();
+        pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
+      } else {
+        throw $e;
+      }
     }
 
     // Flight allowed here
@@ -1624,8 +1629,12 @@ class Fleet extends UnitContainer {
       $validator->validate();
     } catch (Exception $e) {
       // TODO - MESSAGE BOX
-      sn_db_transaction_rollback();
-      pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
+      if($e instanceof ExceptionFleetInvalid) {
+        sn_db_transaction_rollback();
+        pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
+      } else {
+        throw $e;
+      }
     }
 
     // Flight allowed here

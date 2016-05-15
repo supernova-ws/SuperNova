@@ -30,12 +30,15 @@ class FleetValidator {
       // На странице 1 некоторые проверки ДОЛЖНЫ БЫТЬ опущены - иначе будет некрасиво
       // А вот здесь надо проверять много дополнительной хуйни
       $this->checkMissionRestrictions($checklist);
+//pdump('passed');
 
       // 2nd level restrictions
       // Still cheap
-      $this->restrict2ToAllowedMissions();
-      $this->restrict2ToAllowedPlanetTypes();
-    } catch (Exception $e) {
+//      $this->restrict2ToAllowedMissions();
+//      $this->restrict2ToAllowedPlanetTypes();
+    } catch (ExceptionFleetInvalid $e) {
+//pdump($e->getCode(), '$e->getCode()');
+//pdump($e->getMessage(), '$e->getMessage()');
       if ($e->getCode() != FLIGHT_ALLOWED) {
         pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
       } else {
@@ -51,16 +54,25 @@ class FleetValidator {
    */
   public function checkMissionRestrictions($checklist) {
     foreach ($checklist as $condition => $action) {
-      $checkResult = call_user_func(array($this, $condition));
 
-      if (is_array($action) && !empty($action[$checkResult])) {
-        $action = $action[$checkResult];
+      $checkResult = call_user_func(array($this, $condition));
+//pdump($checkResult, $condition);
+
+      if (is_array($action)) {
+        if(!empty($action[$checkResult])) {
+          $action = $action[$checkResult];
+        } else {
+          continue;
+        }
       }
+
+//pdump($action, $condition);
+
 
       if (is_array($action)) {
         $this->checkMissionRestrictions($action);
       } elseif (!$checkResult) {
-        throw new Exception($action, $action);
+        throw new ExceptionFleetInvalid($action, $action);
       }
     }
   }
@@ -109,8 +121,8 @@ class FleetValidator {
   /**
    * @return bool
    */
-  protected function checkMultiAccount() {
-    return sys_is_multiaccount($this->fleet->dbOwnerRow, $this->fleet->dbTargetOwnerRow);
+  protected function checkMultiAccountNot() {
+    return !sys_is_multiaccount($this->fleet->dbOwnerRow, $this->fleet->dbTargetOwnerRow);
   }
 
   /**
@@ -221,8 +233,7 @@ class FleetValidator {
    */
   protected function checkSourceEnoughFuel() {
     $deuteriumOnPlanet = mrc_get_level($this->fleet->dbOwnerRow, $this->fleet->dbSourcePlanetRow, RES_DEUTERIUM);
-
-    return $deuteriumOnPlanet < ceil($this->fleet->travelData['consumption']);
+    return $deuteriumOnPlanet > ceil($this->fleet->travelData['consumption']);
   }
 
   /**

@@ -35,7 +35,7 @@ function sys_user_vacation($user) {
 }
 
 function sys_is_multiaccount($user1, $user2) {
-  return $user1['user_lastip'] == $user2['user_lastip'] && !classSupernova::$config->game_multiaccount_enabled;
+  return $user1['id'] != $user2['id'] && $user1['user_lastip'] == $user2['user_lastip'] && !classSupernova::$config->game_multiaccount_enabled;
 }
 
 /**

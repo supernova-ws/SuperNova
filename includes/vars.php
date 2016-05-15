@@ -520,12 +520,12 @@ $sn_data += array(
           ),
         ),
       ),
-      'checkNotOnlySpies'                    => FLIGHT_SHIPS_NOT_ONLY_SPIES,
+//      'checkNotOnlySpies'                    => FLIGHT_SHIPS_NOT_ONLY_SPIES,
       // Beyond this point fleet can't contain ONLY spies
 
 
       // Check for multiaccount
-      'checkMultiAccount'                    => FLIGHT_PLAYER_SAME_IP,
+      'checkMultiAccountNot'                    => FLIGHT_PLAYER_SAME_IP,
       // TODO - check for moratorium
 
       // Noob check
