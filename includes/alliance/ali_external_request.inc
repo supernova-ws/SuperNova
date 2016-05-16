@@ -11,11 +11,11 @@ if ($user['ally_id'])
 }
 
 if ($user_request['id_ally']) {
-  $ally = db_ally_get_by_id($user_request['id_ally']);
+  $ally = DBStaticAlly::db_ally_get_by_id($user_request['id_ally']);
 
   if (sys_get_param_str('bcancel'))
   {
-    db_ally_request_delete_by_user($user);
+    DBStaticAlly::db_ally_request_delete_by_user($user);
     header('Location: alliance.php');
   }
 
@@ -40,11 +40,11 @@ $id_ally = sys_get_param_id('a');
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  db_ally_request_insert($user, $id_ally, $POST_text);
+  DBStaticAlly::db_ally_request_insert($user, $id_ally, $POST_text);
   header('Location: alliance.php');
 }
 
-$ally = db_ally_get_by_id($id_ally);
+$ally = DBStaticAlly::db_ally_get_by_id($id_ally);
 
 if(!$ally)
 {

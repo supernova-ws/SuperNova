@@ -30,7 +30,7 @@ function eco_get_lab_max_effective_level(&$user, $lab_require) {
 
   if (!isset($user['research_effective_level'][$lab_require])) {
     if ($user['user_as_ally']) {
-      $lab_level = db_ally_get_ally_count($user);
+      $lab_level = DBStaticAlly::db_ally_get_ally_count($user);
     } else {
       $tech_intergalactic = mrc_get_level($user, null, TECH_RESEARCH) + 1;
       $lab_level['effective_level'] = 0;

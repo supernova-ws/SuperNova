@@ -10,7 +10,7 @@ function ali_rank_list_save($ranks) {
     }
   }
 
-  db_ally_update_ranklist($ranklist, $user);
+  DBStaticAlly::db_ally_update_ranklist($ranklist, $user);
 
   return $ranklist;
 }
@@ -20,7 +20,7 @@ function ali_relations($ally_from, $ally_to = 0) {
   $ally_to = $ally_to ? " AND alliance_diplomacy_contr_ally_id = {$ally_to}" : '';
 
   $temp_array = array();
-  $query = db_ally_diplomacy_get_relations($ally_from, $ally_to);
+  $query = DBStaticAlly::db_ally_diplomacy_get_relations($ally_from, $ally_to);
 
   while($record = db_fetch($query)) {
     $temp_array[$record['alliance_diplomacy_contr_ally_id']] = $record;

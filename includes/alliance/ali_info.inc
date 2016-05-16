@@ -14,7 +14,7 @@ if($mode == 'exit') {
   if(sys_get_param_int('ali_info_leave_confirm')) {
     sn_db_transaction_start();
     DBStaticUser::db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
-    db_ally_list_recalc_counts();
+    DBStaticAlly::db_ally_list_recalc_counts();
     sn_db_transaction_commit();
     message(sprintf(classLocale::$lang['ali_info_leave_success'], $ally['ally_name']), classLocale::$lang['sys_alliance']);
   }
@@ -22,9 +22,9 @@ if($mode == 'exit') {
   $tag = sys_get_param_str('tag');
   $id_ally = sys_get_param_id('a');
   if($tag) {
-    $ally = db_ally_get_by_tag($tag);
+    $ally = DBStaticAlly::db_ally_get_by_tag($tag);
   } elseif($id_ally) {
-    $ally = db_ally_get_by_id($id_ally);
+    $ally = DBStaticAlly::db_ally_get_by_id($id_ally);
   }
 
   if(!$ally) {
@@ -51,7 +51,7 @@ if($mode == 'exit') {
     $range = classLocale::$lang['member'];
   }
 
-  $request = db_ally_request_count_by_id($ally);
+  $request = DBStaticAlly::db_ally_request_count_by_id($ally);
 
   $template->assign_vars(array(
     'range'         => $range,

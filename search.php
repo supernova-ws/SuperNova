@@ -32,7 +32,7 @@ if($searchtext && $type) {
     break;
 
     case "ally":
-      $search = db_ally_list_search($searchtext);
+      $search = DBStaticAlly::db_ally_list_search($searchtext);
     break;
 
     case "playername":

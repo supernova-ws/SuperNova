@@ -87,7 +87,7 @@ function sn_chat_add_model() {
 
     $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
 
-    db_chat_message_insert($user['id'], $nick, $ally_id, $message);
+    DBStaticChat::db_chat_message_insert($user['id'], $nick, $ally_id, $message);
 
     classSupernova::$config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   }
@@ -125,7 +125,7 @@ function sn_chat_msg_view($template = null) {
     $where_add = '';
     $last_message = 0;
     if($history) {
-      $rows = db_chat_message_count_by_ally($alliance);
+      $rows = DBStaticChat::db_chat_message_count_by_ally($alliance);
       $page_count = ceil($rows['CNT'] / $page_limit);
 
       for($i = 0; $i < $page_count; $i++) {
@@ -141,7 +141,7 @@ function sn_chat_msg_view($template = null) {
     }
 
     $start_row = $page * $page_limit;
-    $query = db_chat_message_get_page($alliance, $where_add, $start_row, $page_limit);
+    $query = DBStaticChat::db_chat_message_get_page($alliance, $where_add, $start_row, $page_limit);
     while($chat_row = db_fetch($query)) {
       // Little magik here - to retain HTML codes from DB and stripping HTML codes from nick
       $chat_row['user'] = player_nick_render_to_html($chat_row['user']);

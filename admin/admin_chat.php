@@ -19,14 +19,14 @@ if($user['authlevel'] < 3) {
 }
 
 if($delete = sys_get_param_str('delete')) {
-  db_chat_message_delete($delete);
+  DBStaticChat::db_chat_message_delete($delete);
 } elseif(sys_get_param_str('deleteall') == 'yes') {
-  db_chat_message_purge();
+  DBStaticChat::db_chat_message_purge();
 }
 
 $template = gettemplate('admin/admin_chat', true);
 
-$query = db_chat_message_get_last_25();
+$query = DBStaticChat::db_chat_message_get_last_25();
 $i = 0;
 while($e = db_fetch($query)) {
   $i++;

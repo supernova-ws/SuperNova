@@ -16,19 +16,19 @@ if($ally_tag) {
     message(classLocale::$lang['have_not_name'], classLocale::$lang['make_alliance']);
   }
 
-  $query = db_ally_get_by_name_or_tag($ally_tag, $ally_name);
+  $query = DBStaticAlly::db_ally_get_by_name_or_tag($ally_tag, $ally_name);
   if($query) {
     message(str_replace('%s', $query['ally_tag'] == $ally_tag_raw ? $ally_tag_raw : $ally_name_raw, classLocale::$lang['always_exist']), classLocale::$lang['make_alliance']);
   }
 
-  db_ally_insert($ally_name, $ally_tag, $user);
+  DBStaticAlly::db_ally_insert($ally_name, $ally_tag, $user);
   $ally_id = db_insert_id();
   DBStaticUser::db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= " . SN_TIME_NOW . "");
 
   $ally_user = classSupernova::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_id}");
   // $ally_user_id = db_insert_id();
   $ally_user_id = is_array($ally_user) ? $ally_user['id'] : 'NULL';
-  db_ally_update_ally_user($ally_user_id, $ally_id);
+  DBStaticAlly::db_ally_update_ally_user($ally_user_id, $ally_id);
 
   message(str_replace('%s', $ally_tag_raw, classLocale::$lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, classLocale::$lang['ally_maked']));
 } else {

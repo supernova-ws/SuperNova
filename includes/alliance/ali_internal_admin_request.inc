@@ -11,7 +11,7 @@ if (!$user_admin_applications) {
 $d = sys_get_param_id('d');
 
 if($d) {
-  db_ally_request_deny($d);
+  DBStaticAlly::db_ally_request_deny($d);
 }
 
 $id_user = sys_get_param_id('id_user');
@@ -20,13 +20,13 @@ if($id_user) {
   $ally_name_safe = db_escape($ally['ally_name']);
   $ally_tag_safe = db_escape($ally['ally_tag']);
   DBStaticUser::db_user_set_by_id($id_user, "`ally_id` = '{$ally['id']}', `ally_name` = '{$ally_name_safe}', `ally_tag` = '{$ally_tag_safe}', `ally_register_time` = " . SN_TIME_NOW . ", `ally_rank_id` = 0");
-  db_ally_update_member_increase($ally);
-  db_ally_request_delete_by_user_id($id_user);
+  DBStaticAlly::db_ally_update_member_increase($ally);
+  DBStaticAlly::db_ally_request_delete_by_user_id($id_user);
 }
 
 $template = gettemplate('ali_admin_request', true);
 
-$query = db_ally_request_list($ally['id']);
+$query = DBStaticAlly::db_ally_request_list($ally['id']);
 while ($ally_request_row = db_fetch($query)) {
   $template->assign_block_vars('alliance_request', array(
     'USER_ID'   => $ally_request_row['id_user'],

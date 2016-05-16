@@ -613,7 +613,7 @@ function sn_ali_fill_user_ally(&$user) {
   }
 
   if (!isset($user['ally'])) {
-    $user['ally'] = db_ally_get_by_id($user['ally_id']);
+    $user['ally'] = DBStaticAlly::db_ally_get_by_id($user['ally_id']);
   }
 
   if (!isset($user['ally']['player'])) {

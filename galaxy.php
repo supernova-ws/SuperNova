@@ -142,7 +142,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
         if($cached['allies'][$uni_galaxyRowUser['ally_id']]) {
           $allyquery = $cached['allies'][$uni_galaxyRowUser['ally_id']];
         } else {
-          $allyquery = db_ally_get_by_id($uni_galaxyRowUser['ally_id']);
+          $allyquery = DBStaticAlly::db_ally_get_by_id($uni_galaxyRowUser['ally_id']);
           $cached['allies'][$uni_galaxyRowUser['ally_id']] = $allyquery;
         }
       }
@@ -308,7 +308,7 @@ $template->assign_vars(array(
     'rows'                  => $Result,
     'userCount'             => classSupernova::$config->users_amount,
 //    'ALLY_COUNT'            => $ally_count['ally_count'],
-    'ALLY_COUNT'            => db_ally_count(),
+    'ALLY_COUNT'            => DBStaticAlly::db_ally_count(),
     'PLANET_EXPEDITION'     => Vector::$knownPlanets + 1,
     'curPlanetID'           => $planetrow['id'],
     'curPlanetG'            => $planetrow['galaxy'],
