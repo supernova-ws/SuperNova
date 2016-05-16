@@ -195,7 +195,7 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('calculating ques stats');
   $i = 0;
-  $query = db_que_list_stat();
+  $query = DBStaticQue::db_que_list_stat();
   $row_num = db_num_rows($query);
   while($que_item = db_fetch($query)) {
     if($i++ % 100 == 0) {

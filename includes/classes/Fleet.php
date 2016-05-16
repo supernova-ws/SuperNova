@@ -851,7 +851,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a7.14
+   * @version 41a7.16
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -963,7 +963,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a7.14
+   * @version 41a7.16
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1379,7 +1379,7 @@ class Fleet extends UnitContainer {
     $result = array();
 
     // Building list of shortcuts
-    $query = db_note_list_select_by_owner_and_planet($this->dbOwnerRow);
+    $query = DBStaticNote::db_note_list_select_by_owner_and_planet($this->dbOwnerRow);
     while ($row = db_fetch($query)) {
       $result[] = $this->renderFleet1TargetSelect($row);
     }

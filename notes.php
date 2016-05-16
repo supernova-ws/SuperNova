@@ -56,7 +56,7 @@ if(sys_get_param('note_delete')) {
     }
 
     sn_db_transaction_start();
-    db_note_list_delete($user, $query_where);
+    DBStaticNote::db_note_list_delete($user, $query_where);
     sn_db_transaction_commit();
     throw new Exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
   } catch(Exception $e) {
@@ -86,7 +86,7 @@ if(sys_get_param('note_delete')) {
 
     sn_db_transaction_start();
     if($note_id_edit) {
-      $check_note_id = db_note_get_id_and_owner($note_id_edit);
+      $check_note_id = DBStaticNote::db_note_get_id_and_owner($note_id_edit);
       if(!$check_note_id) {
         throw new Exception('note_err_note_not_found', ERR_ERROR);
       }
@@ -97,9 +97,9 @@ if(sys_get_param('note_delete')) {
         throw new Exception('note_err_owner_wrong', ERR_ERROR);
       }
 
-      db_note_update_by_id($note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky, $note_id_edit);
+      DBStaticNote::db_note_update_by_id($note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky, $note_id_edit);
     } else {
-      db_note_insert($user, $note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky);
+      DBStaticNote::db_note_insert($user, $note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky);
     }
 
     sn_db_transaction_commit();
@@ -127,7 +127,7 @@ if(!$note_id_edit) {
 }
 
 $note_exist = false;
-$notes_query = db_note_list_by_owner($user['id']);
+$notes_query = DBStaticNote::db_note_list_by_owner($user['id']);
 while($note_row = db_fetch($notes_query)) {
   note_assign($template, $note_row);
   $note_exist = $note_exist || $note_row['id'] == $note_id_edit;

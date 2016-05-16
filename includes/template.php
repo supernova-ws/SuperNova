@@ -541,7 +541,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}", classSupernova::$config->game_news_overview);
   }
 
-  $notes_query = db_note_list_by_owner($user['id'], true);
+  $notes_query = DBStaticNote::db_note_list_by_owner($user['id'], true);
   while($note_row = db_fetch($notes_query)) {
     note_assign($template, $note_row);
   }
