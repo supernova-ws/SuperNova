@@ -12,7 +12,7 @@ function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scann
 
   foreach($objFleetList->_container as $objFleet) {
     $planet_start_type = $objFleet->fleet_start_type == PT_MOON ? PT_MOON : PT_PLANET;
-    $planet_start = db_planet_by_gspt($objFleet->fleet_start_galaxy, $objFleet->fleet_start_system, $objFleet->fleet_start_planet, $planet_start_type, false, 'name');
+    $planet_start = DBStaticPlanet::db_planet_by_gspt($objFleet->fleet_start_galaxy, $objFleet->fleet_start_system, $objFleet->fleet_start_planet, $planet_start_type, false, 'name');
     $objFleet->fleet_start_name = $planet_start['name'];
 
     $planet_end_type = $objFleet->fleet_end_type == PT_MOON ? PT_MOON : PT_PLANET;
@@ -21,7 +21,7 @@ function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scann
     } elseif($objFleet->mission_type == MT_COLONIZE) {
       $objFleet->fleet_end_name = classLocale::$lang['ov_fleet_colonization'];
     } else {
-      $planet_end = db_planet_by_gspt($objFleet->fleet_end_galaxy, $objFleet->fleet_end_system, $objFleet->fleet_end_planet, $planet_end_type, false, 'name');
+      $planet_end = DBStaticPlanet::db_planet_by_gspt($objFleet->fleet_end_galaxy, $objFleet->fleet_end_system, $objFleet->fleet_end_planet, $planet_end_type, false, 'name');
       $objFleet->fleet_end_name = $planet_end['name'];
     }
 

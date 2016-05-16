@@ -120,7 +120,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     $user = DBStaticUser::db_user_by_id($user['id']);
     // Это нужно, что бы заблокировать планету от списания ресурсов
     if(isset($planet['id']) && $planet['id']) {
-      $planet = db_planet_by_id($planet['id'], true);
+      $planet = DBStaticPlanet::db_planet_by_id($planet['id'], true);
     } else {
       $planet['id'] = 0;
     }
@@ -390,7 +390,7 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
   $planet_id_origin = $planet['id'] ? $planet['id'] : 'NULL';
   $planet_id = $que_type == QUE_RESEARCH ? 'NULL' : $planet_id_origin;
   if(is_numeric($planet_id)) {
-    db_planet_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
+    DBStaticPlanet::db_planet_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
   } elseif(is_numeric($user['id'])) {
     DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
   }
@@ -432,7 +432,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
       }
 
       if(!isset($planets_locked[$planet['id']])) {
-        $planets_locked[$planet['id']] = $planet['id'] ? db_planet_by_id($planet['id'], true) : $planet;
+        $planets_locked[$planet['id']] = $planet['id'] ? DBStaticPlanet::db_planet_by_id($planet['id'], true) : $planet;
       }
 
       $build_data = sys_unit_str2arr($que_item['que_unit_price']);
@@ -449,7 +449,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
     }
 
     if(is_numeric($planet['id'])) {
-      db_planet_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
+      DBStaticPlanet::db_planet_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
     } elseif(is_numeric($user['id'])) {
       DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
     }
@@ -555,7 +555,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
   if($planet !== null) {
     // Если нужно изменять данные на планетах - блокируем планеты и получаем данные о них
     // TODO - от них не надо ничего, кроме ID и que_processed
-    $planet_row = db_planet_list_by_user_or_planet($user['id'], $planet);
+    $planet_row = DBStaticPlanet::db_planet_list_by_user_or_planet($user['id'], $planet);
     $planet_list[$planet_row['id']] = $planet_row;
     $time_left[$planet_row['id_owner']][$planet_row['id']] = max(0, $on_time - $planet_row['que_processed']);
   }
@@ -694,7 +694,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
               foreach($quest_trigger_list as $quest_id) {
                 $quest_unit_level = $unit_level_new;
                 if(get_unit_param($unit_id, P_UNIT_TYPE) == UNIT_SHIPS) {
-                  $quest_unit_level = db_unit_count_by_user_and_type_and_snid($user_id, 0, $unit_id);
+                  $quest_unit_level = DBStaticUnit::db_unit_count_by_user_and_type_and_snid($user_id, 0, $unit_id);
                   $quest_unit_level = $quest_unit_level[$unit_id]['qty'];
                 }
                 if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $quest_unit_level) {

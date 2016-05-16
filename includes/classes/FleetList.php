@@ -27,7 +27,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a6.76
+   * @version 41a7.9
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -62,7 +62,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.76
+   * @version 41a7.9
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -79,7 +79,7 @@ class FleetList extends ArrayAccessV2 {
    * @return array|bool|mysqli_result|null
    */
   public static function db_fleet_list_delete_by_owner($owner_id) {
-    db_unit_list_delete($owner_id, LOC_FLEET);
+    DBStaticUnit::db_unit_list_delete($owner_id, LOC_FLEET);
     return doquery("DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '{$owner_id}';");
   }
   /**
@@ -116,7 +116,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.76
+   * @version 41a7.9
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a6.76
+   * @version 41a7.9
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(

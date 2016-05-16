@@ -219,7 +219,7 @@ class Player extends UnitContainer {
   }
 
   public function calcColonyCount() {
-    return $this->_dbRow[UNIT_PLAYER_COLONIES_CURRENT] = isset($this->_dbRow[UNIT_PLAYER_COLONIES_CURRENT]) ? $this->_dbRow[UNIT_PLAYER_COLONIES_CURRENT] : max(0, db_planet_count_by_type($this->_dbRow['id']) - 1);
+    return $this->_dbRow[UNIT_PLAYER_COLONIES_CURRENT] = isset($this->_dbRow[UNIT_PLAYER_COLONIES_CURRENT]) ? $this->_dbRow[UNIT_PLAYER_COLONIES_CURRENT] : max(0, DBStaticPlanet::db_planet_count_by_type($this->_dbRow['id']) - 1);
   }
 
   /**

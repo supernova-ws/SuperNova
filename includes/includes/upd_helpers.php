@@ -175,7 +175,7 @@ function upd_db_unit_by_location($user_id = 0, $location_type, $location_id, $un
     "SELECT {$fields}
     FROM {{unit}}
     WHERE
-      `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id} AND " . db_unit_time_restrictions() .
+      `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions() .
     ($user_id = intval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
     ($unit_snid = intval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : '') .
     " LIMIT 1" .

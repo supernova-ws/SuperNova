@@ -60,10 +60,10 @@ function fleet_ajax() {
   sn_db_transaction_start();
 
   $user = DBStaticUser::db_user_by_id($user['id'], true);
-  $planetrow = db_planet_by_id($user['current_planet'], true);
+  $planetrow = DBStaticPlanet::db_planet_by_id($user['current_planet'], true);
 
   // TODO - DEADLOCK CAN BE HERE!!!! We should lock SOURCE and TARGET owners in one query
-  $target_row = db_planet_by_vector($target_coord);
+  $target_row = DBStaticPlanet::db_planet_by_vector($target_coord);
   if (empty($target_row)) {
     $target_row = $target_coord;
     $target_row['id_owner'] = 0;
@@ -143,7 +143,7 @@ function fleet_ajax() {
     $objFleet->dbInsert();
   }
 
-  db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
+  DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
   db_changeset_apply($db_changeset);
   sn_db_transaction_commit();
 

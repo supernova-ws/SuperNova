@@ -27,7 +27,7 @@ if(sys_get_param_str('mode') == 'addit')
   $MoonName = sys_get_param_str('name');
 
   sn_db_transaction_start();
-  $PlanetSelected = db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
+  $PlanetSelected = DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
   uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], 0, $MoonName);
   sn_db_transaction_commit();
 

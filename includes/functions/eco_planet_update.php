@@ -37,10 +37,10 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
   }
 
   if(is_array($planet) && isset($planet['galaxy']) && $planet['galaxy']) {
-    $planet = db_planet_by_vector($planet, '', !$simulation);
+    $planet = DBStaticPlanet::db_planet_by_vector($planet, '', !$simulation);
   } else {
     $planet = intval(is_array($planet) && isset($planet['id']) ? $planet['id'] : $planet);
-    $planet = db_planet_by_id($planet, !$simulation);
+    $planet = DBStaticPlanet::db_planet_by_id($planet, !$simulation);
   }
   if(!is_array($planet) || !isset($planet['id'])) {
     return $no_data;
@@ -104,7 +104,7 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
     return array('user' => $user, 'planet' => $planet, 'que' => $que);
   }
 
-  db_planet_set_by_id($planet['id'],
+  DBStaticPlanet::db_planet_set_by_id($planet['id'],
     "`last_update` = '{$planet['last_update']}', `field_current` = {$planet['field_current']},
     `metal` = `metal` + '{$resources_increase[RES_METAL]}', `crystal` = `crystal` + '{$resources_increase[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$resources_increase[RES_DEUTERIUM]}',
     `metal_perhour` = '{$planet['metal_perhour']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}',

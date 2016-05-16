@@ -112,9 +112,9 @@ $i++;
 
 $objFleet = new Fleet();
 $objFleet->dbLoad($fleetid);
-$planet_start = db_planet_by_id($objFleet->fleet_start_planet_id);
+$planet_start = DBStaticPlanet::db_planet_by_id($objFleet->fleet_start_planet_id);
 $objFleet->fleet_start_name = !empty($planet_start['name']) ? $planet_start['name'] : '';
-$planet_end = db_planet_by_id($objFleet->fleet_end_planet_id);
+$planet_end = DBStaticPlanet::db_planet_by_id($objFleet->fleet_end_planet_id);
 $objFleet->fleet_end_name = !empty($planet_end['name']) ? $planet_end['name'] : '';
 $fleet_data = tplParseFleetObject($objFleet, $i, $user);
 

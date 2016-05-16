@@ -98,9 +98,9 @@ if(sys_get_param('save')) {
   classSupernova::$config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
   if(classSupernova::$config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary')) {
     if(classSupernova::$config->empire_mercenary_temporary) {
-      db_unit_list_admin_delete_mercenaries_finished();
+      DBStaticUnit::db_unit_list_admin_delete_mercenaries_finished();
     } else {
-      db_unit_list_admin_set_mercenaries_expire_time(classSupernova::$config->empire_mercenary_base_period);
+      DBStaticUnit::db_unit_list_admin_set_mercenaries_expire_time(classSupernova::$config->empire_mercenary_base_period);
     }
 
     classSupernova::$config->empire_mercenary_temporary = sys_get_param_int('empire_mercenary_temporary');

@@ -171,7 +171,7 @@ class UBEMoonCalculator {
       $this->moon_name = $moon_row['name'];
       unset($moon_row);
     } elseif($this->status == UBE_MOON_DESTROY_SUCCESS) {
-      db_planet_delete_by_id($planet_info[PLANET_ID]);
+      DBStaticPlanet::db_planet_delete_by_id($planet_info[PLANET_ID]);
     }
   }
 
@@ -215,7 +215,7 @@ class UBEMoonCalculator {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function ubeInitLoadStatis($destination_planet) {
-    if($destination_planet['planet_type'] == PT_MOON || is_array($moon = db_planet_by_parent($destination_planet['id'], true, '`id`'))) {
+    if($destination_planet['planet_type'] == PT_MOON || is_array($moon = DBStaticPlanet::db_planet_by_parent($destination_planet['id'], true, '`id`'))) {
       $this->status = UBE_MOON_EXISTS;
       $this->moon_diameter = !empty($moon['planet_type']) && $moon['planet_type'] == PT_MOON ? $moon['diameter'] : $destination_planet['diameter'];
       $this->reapers_status = UBE_MOON_REAPERS_NONE;

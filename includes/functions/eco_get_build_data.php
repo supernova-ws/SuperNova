@@ -13,7 +13,7 @@ function eco_lab_sort_effectivness($a, $b) {
 function eco_get_lab_max_effective_level(&$user, $lab_require) {
   if (!$user['user_as_ally'] && !isset($user['laboratories_active'])) {
     $user['laboratories_active'] = array();
-    $query = db_unit_list_laboratories($user['id']);
+    $query = DBStaticUnit::db_unit_list_laboratories($user['id']);
     while ($row = db_fetch($query)) {
       if (!eco_unit_busy($user, $row, UNIT_TECHNOLOGIES)) {
         $row += array(

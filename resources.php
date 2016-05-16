@@ -86,7 +86,7 @@ if (is_array($production)) {
 //  if($SubQry) {
 //    db_planet_set_by_id($planetrow['id'], $SubQry);
 //  }
-  !empty($SubQry) ? db_planet_set_by_id($planetrow['id'], implode(',', $SubQry)) : false;
+  !empty($SubQry) ? DBStaticPlanet::db_planet_set_by_id($planetrow['id'], implode(',', $SubQry)) : false;
 }
 
 // -------------------------------------------------------------------------------------------------------

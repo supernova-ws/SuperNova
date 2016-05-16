@@ -851,7 +851,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a7.7
+   * @version 41a7.9
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -918,7 +918,7 @@ class Fleet extends UnitContainer {
     // Узнаем ИД владельца планеты.
     // С блокировкой, поскольку эта функция может быть вызвана только из менеджера летящих флотов.
     // А там уже всё заблокировано как надо и повторная блокировка не вызовет дедлок.
-    $planet_arrival = db_planet_by_vector($coordinates, '', true);
+    $planet_arrival = DBStaticPlanet::db_planet_by_vector($coordinates, '', true);
     // Блокируем пользователя
     // TODO - вообще-то нам уже известен пользователь в МЛФ - так что можно просто передать его сюда
     $user = DBStaticUser::db_user_by_id($planet_arrival['id_owner'], true);
@@ -963,7 +963,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a7.7
+   * @version 41a7.9
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1085,14 +1085,14 @@ class Fleet extends UnitContainer {
     // Узнаем ИД владельца планеты.
     // С блокировкой, поскольку эта функция может быть вызвана только из менеджера летящих флотов.
     // А там уже всё заблокировано как надо и повторная блокировка не вызовет дедлок.
-    $planet_arrival = db_planet_by_vector($coordinates, '', true);
+    $planet_arrival = DBStaticPlanet::db_planet_by_vector($coordinates, '', true);
 
     // TODO - Проверка, что планета всё еще существует на указанных координатах, а не телепортировалась, не удалена хозяином, не уничтожена врагом
 
     // Restoring resources to planet
     if ($this->resourcesGetTotal()) {
       $fleet_resources = $this->resourcesGetList();
-      db_planet_set_by_id($planet_arrival['id'],
+      DBStaticPlanet::db_planet_set_by_id($planet_arrival['id'],
         "`metal` = `metal` + '{$fleet_resources[RES_METAL]}', `crystal` = `crystal` + '{$fleet_resources[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_resources[RES_DEUTERIUM]}'");
     }
 
@@ -1187,7 +1187,7 @@ class Fleet extends UnitContainer {
       }
     }
 
-    $this->dbTargetRow = db_planet_by_vector_object($targetPlanetCoords);
+    $this->dbTargetRow = DBStaticPlanet::db_planet_by_vector_object($targetPlanetCoords);
   }
 
 
@@ -1395,7 +1395,7 @@ class Fleet extends UnitContainer {
   protected function renderOwnPlanets() {
     $result = array();
 
-    $colonies = db_planet_list_sorted($this->dbOwnerRow);
+    $colonies = DBStaticPlanet::db_planet_list_sorted($this->dbOwnerRow);
     if (count($colonies) <= 1) {
       return $result;
     }
@@ -1606,12 +1606,12 @@ class Fleet extends UnitContainer {
     $this->groupCheck();
 
     $this->dbOwnerRow = DBStaticUser::db_user_by_id($this->dbOwnerRow['id'], true);
-    $this->dbSourcePlanetRow = db_planet_by_id($this->dbSourcePlanetRow['id'], true);
+    $this->dbSourcePlanetRow = DBStaticPlanet::db_planet_by_id($this->dbSourcePlanetRow['id'], true);
     if (!empty($this->dbTargetRow['id'])) {
-      $this->dbTargetRow = db_planet_by_id($this->dbTargetRow['id'], true);
+      $this->dbTargetRow = DBStaticPlanet::db_planet_by_id($this->dbTargetRow['id'], true);
     }
     if (!empty($this->dbTargetRow['id_owner'])) {
-      $this->dbTargetOwnerRow = db_planet_by_id($this->dbTargetRow['id_owner'], true);
+      $this->dbTargetOwnerRow = DBStaticPlanet::db_planet_by_id($this->dbTargetRow['id_owner'], true);
     }
 
     $this->resource_list = array(
@@ -1679,7 +1679,7 @@ class Fleet extends UnitContainer {
     $this->set_times($this->travelData['duration'], $timeMissionJob);
     $this->dbInsert();
 
-    db_planet_set_by_id($this->dbSourcePlanetRow['id'],
+    DBStaticPlanet::db_planet_set_by_id($this->dbSourcePlanetRow['id'],
       "`metal` = `metal` - {$this->resource_list[RES_METAL]},
       `crystal` = `crystal` - {$this->resource_list[RES_CRYSTAL]},
       `deuterium` = `deuterium` - {$this->resource_list[RES_DEUTERIUM]} - {$this->travelData['consumption']}"
@@ -1690,7 +1690,7 @@ class Fleet extends UnitContainer {
 
 
     if (!empty($captain['unit_id'])) {
-      db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$this->_dbId}");
+      DBStaticUnit::db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$this->_dbId}");
     }
 
 //    return $this->fleet->acs['ankunft'] - $this->fleet->time_launch >= $this->fleet->travelData['duration'];
@@ -1713,7 +1713,7 @@ class Fleet extends UnitContainer {
       'time_back_local' => date(FMT_DATE_TIME, $this->_time_return_to_source + SN_CLIENT_TIME_DIFF),
     );
 
-    $this->dbSourcePlanetRow = db_planet_by_id($this->dbSourcePlanetRow['id']);
+    $this->dbSourcePlanetRow = DBStaticPlanet::db_planet_by_id($this->dbSourcePlanetRow['id']);
 
     pdie('Stop for debug');
 

@@ -34,13 +34,13 @@ if(sys_get_param('change_data') && !empty($unit_list))
 
   if(!empty($query_string))
   {
-    db_planet_set_by_id($planet_id, implode(', ', $query_string));
+    DBStaticPlanet::db_planet_set_by_id($planet_id, implode(', ', $query_string));
   }
 }
 
 if($planet_id)
 {
-  $edit_planet_row = db_planet_by_id($planet_id);
+  $edit_planet_row = DBStaticPlanet::db_planet_by_id($planet_id);
   admin_planet_edit_template($template, $edit_planet_row, $mode);
 }
 

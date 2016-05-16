@@ -55,7 +55,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
   } elseif(sys_get_param_str('import_generated')) {
     // ЭТО НА БЛИЦЕ!!!
     DBStaticUser::db_player_list_blitz_delete_players();
-    db_planets_purge();
+    DBStaticPlanet::db_planets_purge();
 
     $imported_string = explode(';', sys_get_param_str('generated_string'));
     shuffle($imported_string);

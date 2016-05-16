@@ -481,7 +481,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   $planetrow = $planetrow['planet'];
   */
 
-  $ThisUsersPlanets = db_planet_list_sorted($user);
+  $ThisUsersPlanets = DBStaticPlanet::db_planet_list_sorted($user);
   // while ($CurPlanet = db_fetch($ThisUsersPlanets))
   foreach($ThisUsersPlanets as $CurPlanet) {
     if($CurPlanet['destruyed']) {

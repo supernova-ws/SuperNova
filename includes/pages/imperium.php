@@ -27,7 +27,7 @@ function sn_imperium_view($template = null) {
     if(is_array($production) && !empty($production)) {
       // sn_db_transaction_start();
       $query = array();
-      $planet_row_list = db_planet_list_sorted($user, false, '*');
+      $planet_row_list = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
       // while($planet = db_fetch($planet_row_list))
       foreach($planet_row_list as $planet) {
         foreach($sn_group_factories as $factory_unit_id) {
@@ -44,13 +44,13 @@ function sn_imperium_view($template = null) {
         }
       }
       foreach($query as $planet_id => $query_data) {
-        db_planet_set_by_id($planet_id, implode(',', $query_data));
+        DBStaticPlanet::db_planet_set_by_id($planet_id, implode(',', $query_data));
       }
       // sn_db_transaction_commit();
     }
   }
 
-  $planet_row_list = db_planet_list_sorted($user);
+  $planet_row_list = DBStaticPlanet::db_planet_list_sorted($user);
   // while ($planet = db_fetch($planet_row_list))
   foreach($planet_row_list as $planet) {
     sn_db_transaction_start();

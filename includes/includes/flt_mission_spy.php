@@ -138,7 +138,7 @@ function flt_mission_spy(&$mission_data) {
 
       $spy_cost = get_unit_param(SHIP_SPY, P_COST);
 
-      db_planet_set_by_id($debris_planet_id,
+      DBStaticPlanet::db_planet_set_by_id($debris_planet_id,
         "`debris_metal` = `debris_metal` + " . floor($spy_probes * $spy_cost[RES_METAL] * 0.3) . ", `debris_crystal` = `debris_crystal` + " . floor($spy_probes * $spy_cost[RES_CRYSTAL] * 0.3));
 
       $target_message .= "<br />{$classLocale['sys_mess_spy_destroyed_enemy']}";

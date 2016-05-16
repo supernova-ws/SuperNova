@@ -63,7 +63,7 @@ $CurrentPoints = $user['total_points'];
 $MissileRange = flt_get_missile_range($user);
 $PhalanxRange = GetPhalanxRange($HavePhalanx);
 
-$planet_precache_query = db_planet_list_in_system($uni_galaxy, $uni_system);
+$planet_precache_query = DBStaticPlanet::db_planet_list_in_system($uni_galaxy, $uni_system);
 if(!empty($planet_precache_query)) {
   foreach($planet_precache_query as $planet_row) {
     $planet_list[$planet_row['planet']][$planet_row['planet_type']] = $planet_row;
@@ -133,7 +133,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
       classSupernova::$debug->warning("Planet '{$uni_galaxyRowPlanet['name']}' [{$uni_galaxy}:{$uni_system}:{$Planet}] has no owner!", 'Userless planet', 503);
       $uni_galaxyRowPlanet['destruyed'] = SN_TIME_NOW + 60 * 60 * 24;
       $uni_galaxyRowPlanet['id_owner'] = 0;
-      db_planet_set_by_id($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
+      DBStaticPlanet::db_planet_set_by_id($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
     }
 
     if($uni_galaxyRowUser['id']) {
