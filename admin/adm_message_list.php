@@ -46,19 +46,19 @@ if(sys_get_param('str_delete_selected') && is_array($message_delete = sys_get_pa
 }
 
 if($message_delete) {
-  db_message_list_delete_set($message_delete);
+  DBStaticMessages::db_message_list_delete_set($message_delete);
   $template->assign_block_vars('result', array('MESSAGE' => sprintf(classLocale::$lang['mlst_messages_deleted'], $message_delete)));
 }
 
 
 if(sys_get_param('str_delete_date') && checkdate($month = sys_get_param_id('delete_month'), $day = sys_get_param_id('delete_day'), $year = sys_get_param_id('delete_year'))) {
   $delete_date = "{$year}-{$month}-{$day}";
-  db_message_list_delete_by_date($delete_date, $int_type_selected);
+  DBStaticMessages::db_message_list_delete_by_date($delete_date, $int_type_selected);
   $template->assign_block_vars('result', array('MESSAGE' => sprintf(classLocale::$lang['mlst_messages_deleted_date'], $allowed_types[$int_type_selected]['TEXT'], $delete_date)));
 }
 
 
-$page_max = db_message_count_by_type($int_type_selected);
+$page_max = DBStaticMessages::db_message_count_by_type($int_type_selected);
 $page_max = ceil($page_max['max'] / 25);
 
 $int_page_current = min(sys_get_param_id('int_page_current', 1), $page_max);
@@ -76,7 +76,7 @@ for($i = 1; $i <= $page_max; $i++) {
 
 $StartRec = ($int_page_current - 1) * 25;
 
-$Messages = db_message_list_admin_by_type($int_type_selected, $StartRec);
+$Messages = DBStaticMessages::db_message_list_admin_by_type($int_type_selected, $StartRec);
 while($row = db_fetch($Messages)) {
   $row['FROM'] = htmlentities($row['FROM'], ENT_COMPAT, 'UTF-8');
   $row['OWNER_NAME'] = htmlentities($row['OWNER_NAME'], ENT_COMPAT, 'UTF-8');

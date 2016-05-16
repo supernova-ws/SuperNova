@@ -28,7 +28,7 @@ if($objFleet->playerOwnerId != $user['id']) {
   message(classLocale::$lang['fl_aks_hack_wrong_fleet'], classLocale::$lang['fl_error']);
 }
 
-$aks = db_acs_get_by_fleet($fleetid);
+$aks = DBStaticFleetACS::db_acs_get_by_fleet($fleetid);
 // If we got a message to add some1 to attack (MadnessRed code)
 $userToAdd_unsafe = sys_get_param_str_unsafe('addtogroup');
 
@@ -47,9 +47,9 @@ if($userToAdd_unsafe) {
     if(!$aks) {
       // No AСS exists - making one
       if(!$objFleet->group_id) {
-        db_acs_insert($fleetid, $user, $objFleet);
+        DBStaticFleetACS::db_acs_insert($fleetid, $user, $objFleet);
 
-        $aks = db_acs_get_by_fleet($fleetid);
+        $aks = DBStaticFleetACS::db_acs_get_by_fleet($fleetid);
 
         $objFleet->mission_type = MT_ACS;
         $objFleet->group_id = $aks['id'];
@@ -75,7 +75,7 @@ if($userToAdd_unsafe) {
       $userToAdd_unsafe != $user['username'] ? $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_invited_already'], $userToAdd) : false;
     } else {
       $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_invited'], $userToAdd);
-      !(db_acs_update($userToAddID, $fleetid)) ? die(sprintf(classLocale::$lang['fl_aks_adding_error'], db_error())) : false;
+      !(DBStaticFleetACS::db_acs_update($userToAddID, $fleetid)) ? die(sprintf(classLocale::$lang['fl_aks_adding_error'], db_error())) : false;
       $aks['eingeladen'] .= ',' . $userToAddID;
     }
     msg_send_simple_message($userToAddID, $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'],

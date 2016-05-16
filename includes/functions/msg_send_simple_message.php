@@ -69,7 +69,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     }
     // TODO Добавить $timestamp - рассылка может быть и отсроченной
     // TODO Добавить $sender - рассылка может быть и от кого-то
-    db_message_insert_all($message_type, $from, $subject, $text);
+    DBStaticMessages::db_message_insert_all($message_type, $from, $subject, $text);
     $owners = array();
   } else {
     $insert_values = array();
@@ -96,7 +96,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
       return;
     }
 
-    db_message_insert($insert_values);
+    DBStaticMessages::db_message_insert($insert_values);
   }
   DBStaticUser::db_user_list_set_mass_mail($owners, "`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1");
 

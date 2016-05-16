@@ -8,7 +8,7 @@
 function nws_render(&$template, $query_where = '', $query_limit = 20) {
   global $user;
 
-  $announce_list = db_news_list_get_by_query($template, $query_where, $query_limit);
+  $announce_list = DBStaticNews::db_news_list_get_by_query($template, $query_where, $query_limit);
 
   $users = array();
   while($announce = db_fetch($announce_list)) {
@@ -20,7 +20,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     $survey_complete = strtotime($announce['survey_until']) < SN_TIME_NOW;
 
     if($announce['survey_id'] && !empty($user['id'])) {
-      $survey_vote = !$survey_complete ? db_survey_get_vote($announce, $user) : array();
+      $survey_vote = !$survey_complete ? DBStaticSurveyVote::db_survey_get_vote($announce, $user) : array();
     }
 
     $announce_exploded = explode("<br /><br />", cht_message_parse($announce['strAnnounce'], false, intval($announce['authlevel'])));
@@ -49,7 +49,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     }
 
     if($announce['survey_id']) {
-      $survey_query = db_survey_get_answer_texts($announce);
+      $survey_query = DBStaticSurveyAnswer::db_survey_get_answer_texts($announce);
       $survey_vote_result = array();
       $total_votes = 0;
       while($row = db_fetch($survey_query)) {
@@ -59,7 +59,7 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
 
       if(empty($survey_vote) && !$survey_complete) {
         // Can vote
-        $survey_query = db_survey_answers_get_list_by_parent($announce);
+        $survey_query = DBStaticSurveyAnswer::db_survey_answers_get_list_by_parent($announce);
         while($row = db_fetch($survey_query)) {
           $template->assign_block_vars('announces.survey_answers', array(
             'ID'   => $row['survey_answer_id'],
@@ -100,13 +100,13 @@ function survey_vote(&$user) {
 
   sn_db_transaction_start();
   $survey_id = sys_get_param_id('survey_id');
-  $is_voted = db_survey_vote_get($user, $survey_id);
+  $is_voted = DBStaticSurveyVote::db_survey_vote_get($user, $survey_id);
   if(empty($is_voted)) {
     $survey_vote_id = sys_get_param_id('survey_vote');
-    $is_answer_exists = db_survey_answer_get($survey_id, $survey_vote_id);
+    $is_answer_exists = DBStaticSurveyAnswer::db_survey_answer_get($survey_id, $survey_vote_id);
     if(!empty($is_answer_exists)) {
       $user_name_safe = db_escape($user['username']);
-      db_survey_vote_insert($user, $survey_id, $survey_vote_id, $user_name_safe);
+      DBStaticSurveyVote::db_survey_vote_insert($user, $survey_id, $survey_vote_id, $user_name_safe);
     }
   }
   sn_db_transaction_commit();

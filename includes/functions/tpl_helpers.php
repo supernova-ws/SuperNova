@@ -95,7 +95,7 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
   }
 
   if(!$objFleet->isReturning() && $objFleet->mission_type == MT_ACS) {
-    $aks = db_acs_get_by_group_id($objFleet->group_id);
+    $aks = DBStaticFleetACS::db_acs_get_by_group_id($objFleet->group_id);
   }
 
   $spy_level = $user['id'] == $objFleet->playerOwnerId ? 100 : GetSpyLevel($user);

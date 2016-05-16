@@ -124,7 +124,7 @@ function fleet_ajax() {
     $arrival = SN_TIME_NOW + $duration;
     $travel_data['consumption'] = 0;
 
-    db_missile_insert($target_coord, $user, $planetrow, $arrival, array_sum($fleet_array), $target_structure);
+    DBStaticFleetMissile::db_missile_insert($target_coord, $user, $planetrow, $arrival, array_sum($fleet_array), $target_structure);
   } else {
     $travel_data = flt_travel_data($user, $planetrow, $target_coord, $fleet_array, 10);
 

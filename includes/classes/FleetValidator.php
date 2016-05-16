@@ -984,7 +984,7 @@ class FleetValidator {
       return true;
     }
 
-    $query = db_bashing_list_get($user, $this->fleet->dbTargetRow, $time_limit);
+    $query = DBStaticFleetBashing::db_bashing_list_get($user, $this->fleet->dbTargetRow, $time_limit);
     while($bashing_row = db_fetch($query)) {
       $bashing_list[] = $bashing_row['bashing_time'];
     }

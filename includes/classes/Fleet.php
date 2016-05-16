@@ -580,7 +580,7 @@ class Fleet extends UnitContainer {
 
     if ($this->_group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
-      db_fleet_aks_purge();
+      DBStaticFleetACS::db_fleet_aks_purge();
     }
   }
 
@@ -851,7 +851,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a7.9
+   * @version 41a7.14
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -963,7 +963,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a7.9
+   * @version 41a7.14
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1417,7 +1417,7 @@ class Fleet extends UnitContainer {
   protected function renderACSList() {
     $result = array();
 
-    $query = db_acs_get_list();
+    $query = DBStaticFleetACS::db_acs_get_list();
     while ($row = db_fetch($query)) {
       $members = explode(',', $row['eingeladen']);
       foreach ($members as $a => $b) {
@@ -1730,7 +1730,7 @@ class Fleet extends UnitContainer {
     }
 
     // ACS attack must exist (if acs fleet has arrived this will also return false (2 checks in 1!!!)
-    $this->acs = db_acs_get_by_group_id($this->_group_id);
+    $this->acs = DBStaticFleetACS::db_acs_get_by_group_id($this->_group_id);
     if (empty($this->acs)) {
       $this->_group_id = 0;
     } else {

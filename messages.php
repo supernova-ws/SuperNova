@@ -127,7 +127,7 @@ switch($mode) {
       $template->assign_block_vars('result', $error_message);
     }
 
-    $message_query = db_message_list_get_last_20($user, $recipient_id);
+    $message_query = DBStaticMessages::db_message_list_get_last_20($user, $recipient_id);
     while($message_row = db_fetch($message_query)) {
       $template->assign_block_vars('messages', array(
         'ID'   => $message_row['message_id'],
@@ -175,12 +175,12 @@ switch($mode) {
 
     if($query_add) {
       $query_add = $query_add === true ? '' : $query_add;
-      db_message_list_delete($user, $query_add);
+      DBStaticMessages::db_message_list_delete($user, $query_add);
     }
 
   case 'show':
     if($current_class == MSG_TYPE_OUTBOX) {
-      $message_query = db_message_list_outbox_by_user_id($user['id']);
+      $message_query = DBStaticMessages::db_message_list_outbox_by_user_id($user['id']);
     } else {
       if($current_class == MSG_TYPE_NEW) {
         $SubUpdateQry = array();
@@ -200,7 +200,7 @@ switch($mode) {
       }
 
       DBStaticUser::db_user_set_by_id($user['id'], $SubUpdateQry);
-      $message_query = db_message_list_by_owner_and_string($user, $SubSelectQry);
+      $message_query = DBStaticMessages::db_message_list_by_owner_and_string($user, $SubSelectQry);
     }
 
     if(sys_get_param_int('return')) {
@@ -235,13 +235,13 @@ switch($mode) {
 if(!$template) {
   $template = gettemplate('msg_message_class', true);
 
-  $query = db_message_count_by_owner_and_type($user);
+  $query = DBStaticMessages::db_message_count_by_owner_and_type($user);
   while($message_row = db_fetch($query)) {
     $messages_total[$message_row['message_type']] = $message_row['message_count'];
     $messages_total[MSG_TYPE_NEW] += $message_row['message_count'];
   }
 
-  $messages_total[MSG_TYPE_OUTBOX] = db_message_count_outbox($user);
+  $messages_total[MSG_TYPE_OUTBOX] = DBStaticMessages::db_message_count_outbox($user);
 
   foreach($sn_message_class_list as $message_class_id => $message_class) {
     $template->assign_block_vars('message_class', array(

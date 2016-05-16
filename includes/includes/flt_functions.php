@@ -123,7 +123,7 @@ function flt_bashing_check($user, $enemy, $planet_dst, $mission, $flight_duratio
     return FLIGHT_ALLOWED;
   }
 
-  $query = db_bashing_list_get($user, $planet_dst, $time_limit);
+  $query = DBStaticFleetBashing::db_bashing_list_get($user, $planet_dst, $time_limit);
   while($bashing_row = db_fetch($query)) {
     $bashing_list[] = $bashing_row['bashing_time'];
   }
@@ -255,7 +255,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
       return $result = FLIGHT_MISSION_IMPOSSIBLE;
     };
 
-    $acs = db_acs_get_by_group_id($fleet_group);
+    $acs = DBStaticFleetACS::db_acs_get_by_group_id($fleet_group);
     if(!$acs['id']) {
       return $result = FLIGHT_MISSION_ACS_NOT_EXISTS;
     }
