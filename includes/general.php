@@ -244,7 +244,8 @@ function is_email($email) {
 }
 
 function is_id($value) {
-  return preg_match('/^\d+$/', $value) && ($value >= 0);
+//  return preg_match('/^\d+$/', $value) && ($value >= 0);
+  return is_numeric($value) && ($value + 0 >= 0);
 }
 
 /**

@@ -46,7 +46,7 @@ class DBStaticRecord {
           break;
           default:
             $string = (string)$fieldName;
-            if($string == '') {
+            if ($string == '') {
               throw new ExceptionDBFieldEmpty();
             }
             $result[] = '`' . $string . '`';
@@ -91,17 +91,25 @@ class DBStaticRecord {
   }
 
   /**
-   * @param string $where
-   * @param mixed  $fieldList
+   * @param array       $where
+   * @param mixed|array $fieldList
    *     Field list can be scalar - it would be converted to array and used as field name
-   * @param bool   $for_update
+   * @param bool        $for_update
    *
    * @return array|null
    *
    * @see static::getRecordList
    */
-  protected static function getRecord($where = '', $fieldList = array(), $for_update = false) {
-    return static::getRecordList($where, $fieldList, $for_update, true);
+  protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
+    $maxId = self::$dbStatic->fetchOne(
+      DbSqlStatement::build(null, get_called_class())
+        ->select()
+        ->fields($fieldList)
+        ->where($where)
+        ->fetchOne()
+    );
+
+    return $maxId;
   }
 
   /**
@@ -110,20 +118,26 @@ class DBStaticRecord {
    * @return int
    */
   public static function getMaxId() {
-    $maxId = self::$dbStatic->doquery("SELECT MAX(`" . static::$_idField . "`) AS `maxId` FROM `{{" . static::$_table . "}}`", true);
+    $maxId = self::$dbStatic->fetchOne(
+      DbSqlStatement::build(null, get_called_class())
+        ->select()
+        ->fields(new DbSqlLiteral('MAX(id) AS maxId'))
+        ->fetchOne()
+    );
 
     return !empty($maxId['maxId']) ? $maxId['maxId'] : 0;
   }
 
   /**
-   * @param int|string $user_id
-   * @param array      $fieldList
-   * @param bool       $for_update
+   * @param int|string  $recordId
+   * @param mixed|array $fieldList
+   * @param bool        $forUpdate
    *
    * @return array|null
    */
-  public static function getRecordById($user_id, $fieldList = array(), $for_update = false) {
-    return static::getRecord(static::$_idField . ' = ' . $user_id, $fieldList, $for_update);
+  public static function getRecordById($recordId, $fieldList = '*', $forUpdate = false) {
+//    return static::getRecord(array(static::$_idField => $recordId), $fieldList, $forUpdate);
+    return static::getRecord(array(static::$_idField . '=' . $recordId), $fieldList, $forUpdate);
   }
 
 

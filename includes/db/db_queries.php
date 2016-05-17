@@ -2,19 +2,6 @@
 
 require_once('db_helpers.php');
 
-require_once('db_queries_account.php');
-require_once('db_queries_users.php');
-require_once('db_queries_planets.php');
-require_once('db_queries_unit.php');
-require_once('db_queries_que.php');
-require_once('db_queries_fleet.php');
-require_once('db_queries_news_and_surveys.php');
-require_once('db_queries_buddy.php');
-require_once('db_queries_notes.php');
-require_once('db_queries_ally.php');
-require_once('db_queries_chat.php');
-
-
 function db_planet_list_admin_list($table_parent_columns, $planet_active, $active_time, $planet_type) {
   return doquery(
     "SELECT p.*, u.username" . ($table_parent_columns ? ', p1.name AS parent_name' : '') .

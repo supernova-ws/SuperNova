@@ -179,6 +179,25 @@ class db_mysql {
     $sql = $sql_commented;
   }
 
+  /**
+   * @param DbSqlStatement $statement
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function execute($statement) {
+    return $this->doquery((string)$statement);
+  }
+
+  /**
+   * @param DbSqlStatement $statement
+   *
+   * @return array|null
+   */
+  public function fetchOne($statement) {
+    $query = $this->execute($statement);
+    return $this->db_fetch($query);
+  }
+
   public function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
     if(!is_string($table)) {
       $fetch = $table;
