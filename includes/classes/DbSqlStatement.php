@@ -37,8 +37,8 @@ class DbSqlStatement {
   public $fetchOne = false;
 
   /**
-   * @param null   $db
-   * @param string $className
+   * @param db_mysql|null $db
+   * @param string        $className
    *
    * @return DbSqlStatement
    */
@@ -51,6 +51,11 @@ class DbSqlStatement {
     return $result;
   }
 
+  /**
+   * DbSqlStatement constructor.
+   *
+   * @param db_mysql|null $db
+   */
   public function __construct($db = null) {
     $this->db = (!empty($db) && $db instanceof db_mysql) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
   }
@@ -60,6 +65,7 @@ class DbSqlStatement {
    *
    * @param bool $full
    *
+   * @return $this
    */
   // TODO - UNITTEST
   protected function _reset($full = true) {
@@ -76,6 +82,8 @@ class DbSqlStatement {
     $this->order = array();
     $this->limit = array();
     $this->fetchOne = false;
+
+    return $this;
   }
 
   /**
@@ -217,34 +225,13 @@ class DbSqlStatement {
    * @throws ExceptionDBFieldEmpty
    */
   protected function selectFieldsToString($fields) {
-    if (!is_array($fields)) {
-      $fields = array($fields);
-    }
+    $fields = HelperArray::makeArray($fields);
 
     $result = array();
     foreach ($fields as $fieldName) {
-      switch(true) {
-//        case $fieldName === '*':
-//          $result[] = '*';
-//        break;
-
-        case is_bool($fieldName):
-          $result[] = intval($fieldName);
-        break;
-
-//        case is_numeric($fieldName):
-//          $result[] = $fieldName;
-//        break;
-
-        case is_null($fieldName):
-          $result[] = 'NULL';
-        break;
-
-        default:
-          $string = $this->processFieldDefault($fieldName);
-          if ($string != '') {
-            $result[] = $string;
-          }
+      $string = $this->processField($fieldName);
+      if ($string !== '') {
+        $result[] = $string;
       }
     }
 
@@ -255,16 +242,40 @@ class DbSqlStatement {
     return implode(',', $result);
   }
 
+  /**
+   * @param mixed $fieldName
+   *
+   * @return string
+   */
+  protected function processField($fieldName) {
+    if (is_bool($fieldName)) {
+      $result = (string)intval($fieldName);
+    } elseif (is_null($fieldName)) {
+      $result = 'NULL';
+    } elseif ($fieldName === '*') {
+      $result = '*';
+    } else {
+      $result = $this->processFieldDefault($fieldName);
+    }
+
+    return $result;
+  }
+
+  /**
+   * @param mixed $fieldName
+   *
+   * @return string
+   */
   protected function processFieldDefault($fieldName) {
     $result = (string)$fieldName;
     if (
       $result != ''
       &&
+//      // Wildcard goes as is
+//      $fieldName !== '*'
+//      &&
       // Literals plays as they are - they do properly format by itself
       !($fieldName instanceof DbSqlLiteral)
-      &&
-      // Wildcard goes as is
-      $fieldName !== '*'
       &&
       // Numeric need no escaping
       !is_numeric($fieldName)
@@ -276,6 +287,11 @@ class DbSqlStatement {
     return $result;
   }
 
+  /**
+   * @param $string
+   *
+   * @return mixed|string
+   */
   protected function stringEscape($string) {
     return
       method_exists($this->db, 'db_escape')
