@@ -145,7 +145,7 @@ class DbSqlStatement {
 
 
   /**
-   * @return $this
+   * @return self
    */
   public function select() {
     $this->_reset(false);
@@ -168,16 +168,41 @@ class DbSqlStatement {
 
   /**
    * @param array $where
+   * @param bool  $replace
    *
    * @return $this
+   * @throws ExceptionDbSqlWhereNotAnArray
    */
   // TODO - fields should be escaped !!
   // TODO - $where should be validated and checked!
-  public function where($where = array()) {
-    if(!is_array($where)) {
+  public function where($where = array(), $replace = true) {
+    if (!is_array($where)) {
       throw new ExceptionDbSqlWhereNotAnArray();
     }
-    $this->where = $where;
+
+    if ($replace) {
+      $this->where = $where;
+    } else {
+      $this->where = array_merge($this->where, $where);
+    }
+
+    return $this;
+  }
+
+  /**
+   * @param array $order
+   *
+   * @return $this
+   * @throws ExceptionDbSqlWhereNotAnArray
+   */
+  // TODO - fields should be escaped !!
+  // TODO - $where should be validated and checked!
+  public function order($order = array()) {
+    if (!is_array($order)) {
+      // TODO - separate exception
+      throw new ExceptionDbSqlWhereNotAnArray();
+    }
+    $this->order = $order;
 
     return $this;
   }
@@ -286,9 +311,6 @@ class DbSqlStatement {
     if (
       $result != ''
       &&
-//      // Wildcard goes as is
-//      $fieldName !== '*'
-//      &&
       // Literals plays as they are - they do properly format by itself
       !($fieldName instanceof DbSqlLiteral)
       &&

@@ -23,6 +23,13 @@ class DBStaticRecord {
   }
 
   /**
+   * @return DbSqlStatement
+   */
+  public static function buildSelect() {
+    return DbSqlStatement::build(null, get_called_class())->select();
+  }
+
+  /**
    * @param array       $where
    * @param mixed|array $fieldList
    *     Field list can be scalar - it would be converted to array and used as field name
@@ -34,8 +41,7 @@ class DBStaticRecord {
    */
   protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
     $result = static::$dbStatic->fetchOne(
-      DbSqlStatement::build(null, get_called_class())
-        ->select()
+      static::buildSelect()
         ->fields($fieldList)
         ->where($where)
     );
@@ -81,8 +87,7 @@ class DBStaticRecord {
     $query = null;
     if (!empty($idList) && is_array($idList)) {
       $query = static::$dbStatic->execute(
-        DbSqlStatement::build(null, get_called_class())
-          ->select()
+        static::buildSelect()
           ->fields(static::$_idField)
           ->where(array("`" . static::$_idField . "` IN (" . implode(',', $idList) . ")"))
       );

@@ -18,10 +18,30 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   // TODO - это вообще-то надо хранить в конфигурации
+  /**
+   * @return string
+   * @throws ExceptionDbSqlWhereNotAnArray
+   */
   public static function getLastRegisteredUserName() {
-    $user = doquery('SELECT `username` FROM {{users}} WHERE `user_as_ally` IS NULL ORDER BY `id` DESC LIMIT 1', true);
+    $result = static::$dbStatic->fetchOne(
+      static::buildSelect()
+        ->fields('username')
+        ->where(array('`user_as_ally` IS NULL'))
+        ->order(array('`ID` DESC'))
+    );
 
-    return isset($user['username']) ? $user['username'] : '';
+    return isset($result['username']) ? $result['username'] : '';
+  }
+
+  public static function db_player_list_export_blitz_info() {
+    return static::$dbStatic->execute(
+      static::buildSelect()
+        ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
+        ->where(array('`user_as_ally` IS NULL'))
+        ->order(array('`ID` DESC'))
+    );
+
+    return doquery("SELECT id, username, total_rank, total_points, onlinetime FROM `{{users}}` ORDER BY `id`;");
   }
 
   public static function db_player_list_blitz_delete_players() {
@@ -30,10 +50,6 @@ class DBStaticUser extends DBStaticRecord {
 
   public static function db_player_list_blitz_set_50k_dm() {
     doquery('UPDATE `{{users}}` SET dark_matter = 50000, dark_matter_total = 50000;');
-  }
-
-  public static function db_player_list_export_blitz_info() {
-    return doquery("SELECT id, username, total_rank, total_points, onlinetime FROM `{{users}}` ORDER BY `id`;");
   }
 
   public static function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
