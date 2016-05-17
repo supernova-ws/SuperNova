@@ -16,7 +16,7 @@ class DBStaticRecord {
    * @param db_mysql|null $db
    */
   public static function _init($db = null) {
-    self::$dbStatic = (!empty($db) && $db instanceof db_mysql) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
+    static::$dbStatic = (!empty($db) && $db instanceof db_mysql) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
   }
 
   /**
@@ -75,10 +75,10 @@ class DBStaticRecord {
 
     $user_record = null;
     if (!empty($fieldList)) {
-      $user_record = self::$dbStatic->doquery(
+      $user_record = static::$dbStatic->doquery(
         (
           "SELECT {$fieldList}" .
-          " FROM {{" . self::$_table . "}}" .
+          " FROM {{" . static::$_table . "}}" .
           (!empty($where) ? " WHERE {$where}" : '') .
           (!empty($for_update) ? " FOR UPDATE" : '') .
           ($returnFirst ? ' LIMIT 1' : '')
@@ -101,7 +101,7 @@ class DBStaticRecord {
    * @see static::getRecordList
    */
   protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
-    $maxId = self::$dbStatic->fetchOne(
+    $maxId = static::$dbStatic->fetchOne(
       DbSqlStatement::build(null, get_called_class())
         ->select()
         ->fields($fieldList)
@@ -118,7 +118,7 @@ class DBStaticRecord {
    * @return int
    */
   public static function getMaxId() {
-    $maxId = self::$dbStatic->fetchOne(
+    $maxId = static::$dbStatic->fetchOne(
       DbSqlStatement::build(null, get_called_class())
         ->select()
         ->fields(new DbSqlLiteral('MAX(id) AS maxId'))
@@ -146,10 +146,20 @@ class DBStaticRecord {
    *
    * @return mysqli_result|null
    */
+  /**
+   * @param array $idList
+   *
+   * @return mysqli_result|null
+   */
   public static function queryExistsIdInList($idList) {
     $query = null;
-    if (!empty($idList)) {
-      $query = self::$dbStatic->doquery("SELECT `" . static::$_idField . "` FROM `{{" . static::$_table . "}}` WHERE `" . static::$_idField . "` IN (" . implode(',', $idList) . ")");
+    if (!empty($idList) && is_array($idList)) {
+      $query = static::$dbStatic->execute(
+        DbSqlStatement::build(null, get_called_class())
+          ->select()
+          ->fields(static::$_idField)
+          ->where(array("`" . static::$_idField . "` IN (" . implode(',', $idList) . ")"))
+      );
     }
 
     return !empty($query) ? $query : null;
@@ -162,6 +172,7 @@ class DBStaticRecord {
    * @return string
    */
   public static function filterIdListStringRepack($idList) {
+    // TODO - remove HelperArray caller
     $idList = HelperArray::stringToArrayFilterEmpty($idList);
 
     $result = array();
@@ -172,6 +183,7 @@ class DBStaticRecord {
       }
     }
 
+    // TODO - remove implode
     return implode(',', $result);
   }
 

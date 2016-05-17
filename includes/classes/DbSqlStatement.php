@@ -166,6 +166,9 @@ class DbSqlStatement {
   // TODO - fields should be escaped !!
   // TODO - $where should be validated and checked!
   public function where($where = array()) {
+    if(!is_array($where)) {
+      throw new ExceptionDbSqlWhereNotAnArray();
+    }
     $this->where = $where;
 
     return $this;
