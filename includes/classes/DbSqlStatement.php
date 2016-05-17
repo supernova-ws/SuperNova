@@ -44,9 +44,10 @@ class DbSqlStatement {
    */
   public static function build($db = null, $className = '') {
     $result = new self($db);
-    if(!empty($className) && is_string($className)) {
+    if (!empty($className) && is_string($className)) {
       $result->getParamsFromStaticClass($className);
     }
+
     return $result;
   }
 
@@ -222,35 +223,27 @@ class DbSqlStatement {
 
     $result = array();
     foreach ($fields as $fieldName) {
-      switch (true) {
-        case $fieldName === '*':
-          $result[] = '*';
-        break;
+      switch(true) {
+//        case $fieldName === '*':
+//          $result[] = '*';
+//        break;
 
         case is_bool($fieldName):
           $result[] = intval($fieldName);
         break;
 
-        case is_numeric($fieldName):
-          $result[] = $fieldName;
-        break;
+//        case is_numeric($fieldName):
+//          $result[] = $fieldName;
+//        break;
 
         case is_null($fieldName):
           $result[] = 'NULL';
         break;
 
         default:
-          $string = (string)$fieldName;
-          if ($string == '') {
-            continue;
-          }
-
-          if($fieldName instanceof DbSqlLiteral) {
-            // Literals plays as they are - they do properly format by itself
+          $string = $this->processFieldDefault($fieldName);
+          if ($string != '') {
             $result[] = $string;
-          } else {
-            // Other should be formatted
-            $result[] = '`' . $this->stringEscape($string) . '`';
           }
       }
     }
@@ -262,8 +255,32 @@ class DbSqlStatement {
     return implode(',', $result);
   }
 
+  protected function processFieldDefault($fieldName) {
+    $result = (string)$fieldName;
+    if (
+      $result != ''
+      &&
+      // Literals plays as they are - they do properly format by itself
+      !($fieldName instanceof DbSqlLiteral)
+      &&
+      // Wildcard goes as is
+      $fieldName !== '*'
+      &&
+      // Numeric need no escaping
+      !is_numeric($fieldName)
+    ) {
+      // Other should be formatted
+      $result = '`' . $this->stringEscape($result) . '`';
+    }
+
+    return $result;
+  }
+
   protected function stringEscape($string) {
-    return method_exists($this->db, 'db_escape') ? $this->db->db_escape($string) : str_replace('`', '\`', addslashes($string));
+    return
+      method_exists($this->db, 'db_escape')
+        ? $this->db->db_escape($string)
+        : str_replace('`', '\`', addslashes($string));
   }
 
 }

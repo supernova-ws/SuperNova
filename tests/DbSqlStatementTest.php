@@ -125,6 +125,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
   /**
    * @dataProvider testSelectFieldsToStringDataProvider
    * @covers ::selectFieldsToString
+   * @covers ::processFieldDefault
    */
   public function testSelectFieldsToString($expected, $param) {
     // Testing with mocked stringEscape function
