@@ -27,7 +27,7 @@ class DBStaticUser extends DBStaticRecord {
       static::buildSelect()
         ->fields('username')
         ->where(array('`user_as_ally` IS NULL'))
-        ->order(array('`ID` DESC'))
+        ->order(array('`id` DESC'))
     );
 
     return isset($result['username']) ? $result['username'] : '';
@@ -38,10 +38,8 @@ class DBStaticUser extends DBStaticRecord {
       static::buildSelect()
         ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
         ->where(array('`user_as_ally` IS NULL'))
-        ->order(array('`ID` DESC'))
+        ->order(array('`id`'))
     );
-
-    return doquery("SELECT id, username, total_rank, total_points, onlinetime FROM `{{users}}` ORDER BY `id`;");
   }
 
   public static function db_player_list_blitz_delete_players() {
@@ -64,10 +62,6 @@ class DBStaticUser extends DBStaticRecord {
     return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
   }
 
-  public static function db_user_lock_all() {
-    doquery("SELECT 1 FROM {{users}} FOR UPDATE;");
-  }
-
   /**
    * @return array|bool|mysqli_result|null
    */
@@ -78,10 +72,16 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
-    doquery("SELECT 1 FROM {{users}} WHERE `id` = " . idval($user['id']) .
-      (isset($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '') .
-      " FOR UPDATE;"
+    static::$dbStatic->execute(
+      static::buildSelectLock()
+        ->where(array("`id` = " . idval($user['id']) .
+          (isset($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '')))
     );
+
+//    doquery("SELECT 1 FROM {{users}} WHERE `id` = " . idval($user['id']) .
+//      (isset($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '') .
+//      " FOR UPDATE;"
+//    );
   }
 
   /**
@@ -95,15 +95,13 @@ class DBStaticUser extends DBStaticRecord {
     !is_array($user_id_list) ? $user_id_list = array($user_id_list) : false;
 
     $user_list = array();
-    foreach($user_id_list as $user_id_unsafe) {
+    foreach ($user_id_list as $user_id_unsafe) {
       $user = DBStaticUser::db_user_by_id($user_id_unsafe);
       !empty($user) ? $user_list[$user_id_unsafe] = $user : false;
     }
 
     return $user_list;
   }
-
-
 
 
   public static function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
@@ -133,13 +131,6 @@ class DBStaticUser extends DBStaticRecord {
 
     return isset($result['user_count']) ? $result['user_count'] : 0;
   }
-
-
-
-
-
-
-
 
 
   public static function db_user_list_to_celebrate($config_user_birthday_range) {

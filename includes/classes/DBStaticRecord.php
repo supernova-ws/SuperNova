@@ -30,6 +30,16 @@ class DBStaticRecord {
   }
 
   /**
+   * @return DbSqlStatement
+   */
+  public static function buildSelectLock() {
+    return
+      static::buildSelect()
+        ->fields(1)
+        ->forUpdate();
+  }
+
+  /**
    * @param array       $where
    * @param mixed|array $fieldList
    *     Field list can be scalar - it would be converted to array and used as field name
@@ -116,6 +126,15 @@ class DBStaticRecord {
 
     // TODO - remove implode
     return implode(',', $result);
+  }
+
+  /**
+   *
+   */
+  public static function lockAllRecords() {
+    static::$dbStatic->execute(
+      static::buildSelectLock()
+    );
   }
 
 }

@@ -43,6 +43,7 @@ class DbSqlStatement {
   public $limit = array();
 
   public $fetchOne = false;
+  public $forUpdate = false;
 
   /**
    * @param db_mysql|null $db
@@ -156,7 +157,7 @@ class DbSqlStatement {
   }
 
   /**
-   * @param array $fields
+   * @param mixed|array $fields
    *
    * @return $this
    */
@@ -218,6 +219,15 @@ class DbSqlStatement {
   }
 
   /**
+   * @return $this
+   */
+  public function forUpdate($forUpdate = true) {
+    $this->forUpdate = $forUpdate;
+
+    return $this;
+  }
+
+  /**
    * @return string
    * @throws ExceptionDbOperationEmpty
    * @throws ExceptionDbOperationRestricted
@@ -252,6 +262,8 @@ class DbSqlStatement {
     // TODO - fields should be escaped !!
     // TODO - separate offset and row_count
     $result .= !empty($this->limit) ? ' LIMIT ' . implode(' OFFSET ', $this->limit) : '';
+
+    $result .= $this->forUpdate ? ' FOR UPDATE' : '';
 
     // TODO - protect from double escape!
 
