@@ -2,6 +2,7 @@
 
 //pdump(DBStaticUser::getMaxId());
 //pdump(DBStaticUser::getRecordById(67));
+//pdump(DBStaticUser::filterIdListStringRepack('2,3,5,67'));
 
 
 class DbSqlStatement {
@@ -32,6 +33,13 @@ class DbSqlStatement {
   public $where = array();
   public $group = array();
   public $order = array();
+  /**
+   * @var array
+   *  [0] - row_count
+   *  [1] - offset
+   *    Used {LIMIT row_count [OFFSET offset]} syntax
+   */
+  // TODO - separate offset and row_count
   public $limit = array();
 
   public $fetchOne = false;
@@ -174,9 +182,12 @@ class DbSqlStatement {
     return $this;
   }
 
+  /**
+   * @return $this
+   */
   public function fetchOne() {
     $this->fetchOne = true;
-    $this->limit = array(1);
+    $this->limit[0] = 1;
 
     return $this;
   }
@@ -214,7 +225,8 @@ class DbSqlStatement {
     $result .= !empty($this->order) ? ' ORDER BY ' . implode(',', $this->order) : '';
 
     // TODO - fields should be escaped !!
-    $result .= !empty($this->limit) ? ' LIMIT ' . implode(',', $this->limit) : '';
+    // TODO - separate offset and row_count
+    $result .= !empty($this->limit) ? ' LIMIT ' . implode(' OFFSET ', $this->limit) : '';
 
     // TODO - protect from double escape!
 

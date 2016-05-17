@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class DBStaticRecord
+ */
 class DBStaticRecord {
 
   public static $_table = '_table';
@@ -20,77 +23,6 @@ class DBStaticRecord {
   }
 
   /**
-   * Converts fields array to string
-   * Scalar values or empty arrays would be converted to wildcard '*'
-   * null array members would be converted to field NULL
-   * All other values would be enquoted by `
-   *
-   * @param array $fieldList
-   *
-   * @return string
-   *
-   * @throws ExceptionDBFieldEmpty
-   */
-  protected static function fieldsToString($fieldList) {
-    $fieldList = HelperArray::makeArray($fieldList);
-
-    $result = array();
-    if (!empty($fieldList)) {
-      foreach ($fieldList as $fieldName) {
-        switch (true) {
-          case is_int($fieldName):
-            $result[] = $fieldName;
-          break;
-          case is_null($fieldName):
-            $result[] = 'NULL';
-          break;
-          default:
-            $string = (string)$fieldName;
-            if ($string == '') {
-              throw new ExceptionDBFieldEmpty();
-            }
-            $result[] = '`' . $string . '`';
-        }
-      }
-    } else {
-      $result = array('*');
-    }
-
-    $result = implode(',', $result);
-
-    return $result;
-  }
-
-  /**
-   * @param string $where
-   * @param mixed  $fieldList
-   *     Field list is scalar it would be converted to array and used as field name
-   * @param bool   $for_update
-   * @param bool   $returnFirst
-   *
-   * @return array|null
-   */
-  protected static function getRecordList($where = '', $fieldList = array(), $for_update = false, $returnFirst = false) {
-    $fieldList = static::fieldsToString($fieldList);
-
-    $user_record = null;
-    if (!empty($fieldList)) {
-      $user_record = static::$dbStatic->doquery(
-        (
-          "SELECT {$fieldList}" .
-          " FROM {{" . static::$_table . "}}" .
-          (!empty($where) ? " WHERE {$where}" : '') .
-          (!empty($for_update) ? " FOR UPDATE" : '') .
-          ($returnFirst ? ' LIMIT 1' : '')
-        ),
-        $returnFirst
-      );
-    }
-
-    return !empty($user_record) ? $user_record : null;
-  }
-
-  /**
    * @param array       $where
    * @param mixed|array $fieldList
    *     Field list can be scalar - it would be converted to array and used as field name
@@ -101,15 +33,14 @@ class DBStaticRecord {
    * @see static::getRecordList
    */
   protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
-    $maxId = static::$dbStatic->fetchOne(
+    $result = static::$dbStatic->fetchOne(
       DbSqlStatement::build(null, get_called_class())
         ->select()
         ->fields($fieldList)
         ->where($where)
-        ->fetchOne()
     );
 
-    return $maxId;
+    return $result;
   }
 
   /**
@@ -118,12 +49,7 @@ class DBStaticRecord {
    * @return int
    */
   public static function getMaxId() {
-    $maxId = static::$dbStatic->fetchOne(
-      DbSqlStatement::build(null, get_called_class())
-        ->select()
-        ->fields(new DbSqlLiteral('MAX(id) AS maxId'))
-        ->fetchOne()
-    );
+    $maxId = static::getRecord(array(), new DbSqlLiteral('MAX(id) AS maxId'));
 
     return !empty($maxId['maxId']) ? $maxId['maxId'] : 0;
   }

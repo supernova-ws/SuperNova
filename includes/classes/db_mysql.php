@@ -194,7 +194,7 @@ class db_mysql {
    * @return array|null
    */
   public function fetchOne($statement) {
-    $query = $this->execute($statement);
+    $query = $this->execute($statement->fetchOne());
     return $this->db_fetch($query);
   }
 
