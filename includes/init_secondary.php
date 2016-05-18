@@ -156,7 +156,7 @@ if(
 }
 
 if(!defined('IN_AJAX')) {
-  print("Scheduled processes is disabled<br />");
+  pdump("Scheduled processes is disabled");
 }
 // scheduler_process();
 

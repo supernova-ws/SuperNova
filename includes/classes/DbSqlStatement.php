@@ -5,6 +5,16 @@
 //pdump(DBStaticUser::filterIdListStringRepack('2,3,5,67'));
 
 
+/**
+ * Class DbSqlStatement
+ *
+ * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement fields(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement group(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement order(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement having(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ *
+ */
 class DbSqlStatement {
 
   const SELECT = 'SELECT';
@@ -33,6 +43,10 @@ class DbSqlStatement {
   public $where = array();
   public $group = array();
   public $order = array();
+
+  public $having = array();
+
+
   /**
    * @var array
    *  [0] - row_count
@@ -40,10 +54,12 @@ class DbSqlStatement {
    *    Used {LIMIT row_count [OFFSET offset]} syntax
    */
   // TODO - separate offset and row_count
-  public $limit = array();
+  public $limit = 0;
+  public $offset = 0;
 
   public $fetchOne = false;
   public $forUpdate = false;
+  public $skipLock = false;
 
   /**
    * @param db_mysql|null $db
@@ -89,8 +105,14 @@ class DbSqlStatement {
     $this->where = array();
     $this->group = array();
     $this->order = array();
-    $this->limit = array();
+    $this->having = array();
+
+    $this->limit = 0;
+    $this->offset = 0;
+
     $this->fetchOne = false;
+    $this->forUpdate = false;
+    $this->skipLock = false;
 
     return $this;
   }
@@ -116,6 +138,29 @@ class DbSqlStatement {
 
     return $this;
   }
+
+  /**
+   * @param int $limit
+   *
+   * @return $this
+   */
+  public function limit($limit) {
+    $this->limit = $limit;
+
+    return $this;
+  }
+
+  /**
+   * @param int $offset
+   *
+   * @return $this
+   */
+  public function offset($offset) {
+    $this->offset = $offset;
+
+    return $this;
+  }
+
 
   /**
    * @param string $tableName
@@ -149,71 +194,32 @@ class DbSqlStatement {
    * @return self
    */
   public function select() {
-    $this->_reset(false);
     $this->operation = DbSqlStatement::SELECT;
-    $this->fields = array('*');
-
-    return $this;
-  }
-
-  /**
-   * @param mixed|array $fields
-   *
-   * @return $this
-   */
-  public function fields($fields = array()) {
-    $this->fields = $fields;
-
-    return $this;
-  }
-
-  /**
-   * @param array $where
-   * @param bool  $replace
-   *
-   * @return $this
-   * @throws ExceptionDbSqlWhereNotAnArray
-   */
-  // TODO - fields should be escaped !!
-  // TODO - $where should be validated and checked!
-  public function where($where = array(), $replace = true) {
-    if (!is_array($where)) {
-      throw new ExceptionDbSqlWhereNotAnArray();
+    if (empty($this->fields)) {
+      $this->fields = array('*');
     }
 
-    if ($replace) {
-      $this->where = $where;
-    } else {
-      $this->where = array_merge($this->where, $where);
+    return $this;
+  }
+
+  public function __call($name, $arguments) {
+    // TODO: Implement __call() method.
+    if (in_array($name, array('fields', 'where', 'group', 'order', 'having'))) {
+      array_unshift($arguments, '');
+      $arguments[0] = &$this->$name;
+      call_user_func_array('HelperArray::merge', $arguments);
     }
 
     return $this;
   }
 
   /**
-   * @param array $order
+   * Make statement fetch only one record
    *
    * @return $this
-   * @throws ExceptionDbSqlWhereNotAnArray
    */
-  // TODO - fields should be escaped !!
-  // TODO - $where should be validated and checked!
-  public function order($order = array()) {
-    if (!is_array($order)) {
-      // TODO - separate exception
-      throw new ExceptionDbSqlWhereNotAnArray();
-    }
-    $this->order = $order;
-
-    return $this;
-  }
-
-  /**
-   * @return $this
-   */
-  public function fetchOne() {
-    $this->fetchOne = true;
-    $this->limit[0] = 1;
+  public function fetchOne($fetchOne = true) {
+    $this->fetchOne = $fetchOne;
 
     return $this;
   }
@@ -226,6 +232,16 @@ class DbSqlStatement {
 
     return $this;
   }
+
+  /**
+   * @return $this
+   */
+  public function skipLock($skipLock = true) {
+    $this->skipLock = $skipLock;
+
+    return $this;
+  }
+
 
   /**
    * @return string
@@ -260,10 +276,20 @@ class DbSqlStatement {
     $result .= !empty($this->order) ? ' ORDER BY ' . implode(',', $this->order) : '';
 
     // TODO - fields should be escaped !!
-    // TODO - separate offset and row_count
-    $result .= !empty($this->limit) ? ' LIMIT ' . implode(' OFFSET ', $this->limit) : '';
+    $result .= !empty($this->having) ? ' HAVING ' . implode(' AND ', $this->having) : '';
 
-    $result .= $this->forUpdate ? ' FOR UPDATE' : '';
+    // TODO - fields should be escaped !!
+    $limit = $this->fetchOne ? 1 : $this->limit;
+    $result .= !empty($limit)
+      ? ' LIMIT ' . $limit . (!empty($this->offset) ? ' OFFSET ' . $this->offset : '')
+      : '';
+
+    $result .=
+      // forUpdate flag forces select with row locking - didn't look at skipLock flag
+      $this->forUpdate
+      ||
+      // Also row locked when transaction is up and skipLock flag is not set
+      (classSupernova::db_transaction_check(false) && !$this->skipLock) ? ' FOR UPDATE' : '';
 
     // TODO - protect from double escape!
 
@@ -277,7 +303,7 @@ class DbSqlStatement {
    * @throws ExceptionDBFieldEmpty
    */
   protected function selectFieldsToString($fields) {
-    $fields = HelperArray::makeArray($fields);
+    HelperArray::makeArrayRef($fields);
 
     $result = array();
     foreach ($fields as $fieldName) {

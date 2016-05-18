@@ -431,6 +431,28 @@ class classSupernova {
     }
   }
 
+  /**
+   * @param DbSqlStatement $statement
+   * @param bool           $skip_lock
+   *
+   * @return array|null
+   */
+  public static function dbFetchOne($statement, $skip_lock = false) {
+    if ($statement->operation == DbSqlStatement::SELECT) {
+      // Updating skipLock status
+      $statement->skipLock($skip_lock);
+    }
+
+    return self::$db->fetchOne($statement);
+  }
+
+  /**
+   * @param      $query
+   * @param bool $fetch
+   * @param bool $skip_lock
+   *
+   * @return array|bool|mysqli_result|null
+   */
   public static function db_query($query, $fetch = false, $skip_lock = false) {
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
@@ -727,9 +749,14 @@ class classSupernova {
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
       // TODO переписать
-      $user = static::db_query(
-        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
-        , true);
+      $user = static::dbFetchOne(
+        DBStaticUser::buildSelect()
+          ->where(array("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"))
+      );
+
+//      $user = static::db_query(
+//        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
+//        , true);
       static::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
     }
 

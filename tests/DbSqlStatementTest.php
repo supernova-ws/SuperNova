@@ -45,20 +45,62 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
 
 
   /**
+   * @covers ::select
+   * @covers ::from
+   * @covers ::setIdField
+   * @covers ::fields
+   * @covers ::where
+   * @covers ::group
+   * @covers ::order
+   * @covers ::having
+   * @covers ::limit
+   * @covers ::offset
+   * @covers ::fetchOne
+   * @covers ::forUpdate
+   * @covers ::skipLock
    * @covers ::_reset
    */
   public function test_reset() {
-    // Setting some values and soft-reset then
+    // Setting some values
     $this->assertEquals(
       $this->object,
       $this->object
-        ->setIdField('idField')
         ->select()
-        ->fields(array('qwe'))
         ->from('aTable', 'theTable')
-        ->_reset(false)
+        ->setIdField('idField')
+        ->fields('qwe')
+        ->where('asd')
+        ->group('qaz')
+        ->order('zxc')
+        ->having('wes')
+        ->limit(2)
+        ->offset(3)
+        ->fetchOne()
+        ->forUpdate()
+        ->skipLock()
     );
 
+    // Checking that all properties is set
+    $this->assertEquals(DbSqlStatement::SELECT, $this->object->operation);
+    $this->assertEquals('aTable', $this->object->table);
+    $this->assertEquals('theTable', $this->object->alias);
+    $this->assertEquals('idField', $this->object->idField);
+
+    $this->assertEquals(array('qwe'), $this->object->fields);
+    $this->assertEquals(array('asd'), $this->object->where);
+    $this->assertEquals(array('qaz'), $this->object->group);
+    $this->assertEquals(array('zxc'), $this->object->order);
+    $this->assertEquals(array('wes'), $this->object->having);
+
+    $this->assertEquals(2, $this->object->limit);
+    $this->assertEquals(3, $this->object->offset);
+
+    $this->assertTrue($this->object->fetchOne);
+    $this->assertTrue($this->object->forUpdate);
+    $this->assertTrue($this->object->skipLock);
+
+    // Checking soft-reset
+    $this->assertEquals($this->object, $this->object->_reset(false));
     // Checking that protected part is not affected
     $this->assertEquals(DbSqlStatement::SELECT, $this->object->operation);
     $this->assertEquals('aTable', $this->object->table);
@@ -70,8 +112,14 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(array(), $this->object->where);
     $this->assertEquals(array(), $this->object->group);
     $this->assertEquals(array(), $this->object->order);
-    $this->assertEquals(array(), $this->object->limit);
+    $this->assertEquals(array(), $this->object->having);
+
+    $this->assertEquals(0, $this->object->limit);
+    $this->assertEquals(0, $this->object->offset);
+
     $this->assertFalse($this->object->fetchOne);
+    $this->assertFalse($this->object->forUpdate);
+    $this->assertFalse($this->object->skipLock);
 
     // Hard reset
     $this->assertEquals(
@@ -88,9 +136,6 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('', $this->object->table);
     $this->assertEquals('', $this->object->alias);
     $this->assertEquals('', $this->object->idField);
-
-//    $this->object->_reset();
-//    new DbSqlStatementPublisher(null);
   }
 
   /**
@@ -119,16 +164,48 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
   public function testSelect() {
     $this->assertEquals($this->object, $this->object->select());
 
+    // Testing behaviour by default
     $this->assertEquals(DbSqlStatement::SELECT, $this->object->operation);
     $this->assertEquals(array('*'), $this->object->fields);
+
+    // Testing preset fields
+    $this->assertEquals($this->object, $this->object->fields('test')->select());
+    $this->assertEquals(array('test'), $this->object->fields);
+  }
+
+  /**
+   * @covers ::fetchOne
+   * @covers ::limit
+   * @covers ::offset
+   */
+  public function testFetchOne() {
+    $this->assertEquals($this->object, $this->object->limit(10)->offset(20)->fetchOne());
+
+    // Testing behaviour by default
+    $this->assertTrue($this->object->fetchOne);
+    $this->assertEquals(10, $this->object->limit);
+    $this->assertEquals(20, $this->object->offset);
+
+    // Testing fetchOne reset
+    $this->assertEquals($this->object, $this->object->limit(10)->offset(20)->fetchOne(false));
+    $this->assertNotTrue($this->object->fetchOne);
   }
 
   /**
    * @covers ::where
    */
   public function testWhere() {
-    $this->assertEquals($this->object, $this->object->where(array('a = b')));
+    // Scalar value
+    $this->assertEquals($this->object, $this->object->where('a = b'));
     $this->assertEquals(array('a = b'), $this->object->where);
+
+    // Array - replace
+    $this->assertEquals($this->object, $this->object->where(array('b = c')));
+    $this->assertEquals(array('b = c'), $this->object->where);
+
+    // Array - merge
+    $this->assertEquals($this->object, $this->object->where(array('w'), HelperArray::ARRAY_MERGE));
+    $this->assertEquals(array('b = c', 'w'), $this->object->where);
   }
 
   /**
@@ -187,7 +264,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
       // --- String
       array('`test`', 'test'),
 
-      // --- Testing escaping with mocked stringEscape function
+      // --- Testing escaping with stringEscape function
       array('`t\\\'e\\"s\\\\t`', 't\'e"s\\t'),
 
       // Testing arrays
@@ -204,13 +281,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @covers ::processFieldDefault
    */
   public function testSelectFieldsToString($expected, $param) {
-    // Testing with mocked stringEscape function
-    $mock = $this->getMock('DbSqlStatementPublisher', array('stringEscape'));
-    $mock->expects($this->any())
-      ->method('stringEscape')
-      ->will($this->returnCallback(function ($string) { return addslashes($string); }));
-
-    $this->assertEquals($expected, $mock->selectFieldsToString($param));
+    $this->assertEquals($expected, $this->object->selectFieldsToString($param));
   }
 
   public function testSelectFieldsToStringExceptionDataProvider() {

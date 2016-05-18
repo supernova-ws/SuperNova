@@ -51,7 +51,10 @@ function log_file($msg) {
 // ------------------------------------------------------------------
 function flt_flying_fleet_handler($skip_fleet_update = false) {
   if (true) {
-    print('<div style="color: red; font-size: 300%">Fleet handler is disabled</div>');
+    if(!defined('IN_AJAX')) {
+      print('<div style="color: red; font-size: 300%">Fleet handler is disabled</div>');
+      pdump('Fleet handler is disabled');
+    }
 
     return;
   }
