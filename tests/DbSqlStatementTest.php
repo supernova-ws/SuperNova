@@ -193,7 +193,8 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::where
+   * covers ::where
+   * @covers ::__call
    */
   public function testWhere() {
     // Scalar value
@@ -211,7 +212,8 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::select
-   * @covers ::fields
+   * covers ::fields
+   * @covers ::__call
    * @covers ::from
    * @covers ::fromAlias
    * @covers ::setIdField
