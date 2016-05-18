@@ -8,8 +8,8 @@
 /**
  * Class DbSqlStatement
  *
- * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement fields(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement group(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement order(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement having(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)

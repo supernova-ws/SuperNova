@@ -48,11 +48,12 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @covers ::select
    * @covers ::from
    * @covers ::setIdField
-   * @covers ::fields
-   * @covers ::where
-   * @covers ::group
-   * @covers ::order
-   * @covers ::having
+   * covers ::fields
+   * covers ::where
+   * covers ::group
+   * covers ::order
+   * covers ::having
+   * @covers ::__call
    * @covers ::limit
    * @covers ::offset
    * @covers ::fetchOne
