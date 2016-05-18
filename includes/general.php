@@ -732,6 +732,12 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
   sys_redirect($redirect);
 }
 
+/**
+ * @param           $functions
+ * @param           $handler_list
+ * @param sn_module $class_module_name
+ * @param string    $sub_type
+ */
 function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '', $sub_type = '') {
   if (isset($handler_list) && is_array($handler_list) && !empty($handler_list)) {
     foreach ($handler_list as $function_name => $function_data) {
@@ -757,6 +763,7 @@ function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '',
 
       if ($overwrite) {
         $functions[$function_name] = array();
+        $function_data = array('callable' => $override_with);
       } elseif (!isset($functions[$function_name])) {
         $functions[$function_name] = array();
         $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
