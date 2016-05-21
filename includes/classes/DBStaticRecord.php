@@ -50,7 +50,7 @@ class DBStaticRecord {
    * @see static::getRecordList
    */
   protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
-    $result = static::$dbStatic->fetchOne(
+    $result = static::fetchOne(
       static::buildSelect()
         ->fields($fieldList)
         ->where($where)
@@ -65,7 +65,7 @@ class DBStaticRecord {
    * @return int
    */
   public static function getMaxId() {
-    $maxId = static::getRecord(array(), new DbSqlLiteral('MAX(id) AS maxId'));
+    $maxId = static::getRecord(array(), DbSqlLiteral::build()->max(static::$_idField, 'maxId'));
 
     return !empty($maxId['maxId']) ? $maxId['maxId'] : 0;
   }
@@ -78,10 +78,26 @@ class DBStaticRecord {
    * @return array|null
    */
   public static function getRecordById($recordId, $fieldList = '*', $forUpdate = false) {
-//    return static::getRecord(array(static::$_idField => $recordId), $fieldList, $forUpdate);
     return static::getRecord(array(static::$_idField . '=' . $recordId), $fieldList, $forUpdate);
   }
 
+  /**
+   * @param DbSqlStatement $statement
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  protected static function execute($statement) {
+    return static::$dbStatic->execute($statement);
+  }
+
+  /**
+   * @param DbSqlStatement $statement
+   *
+   * @return array|null
+   */
+  protected static function fetchOne($statement) {
+    return static::$dbStatic->fetchOne($statement);
+  }
 
   /**
    * @param array $idList
@@ -96,7 +112,7 @@ class DBStaticRecord {
   public static function queryExistsIdInList($idList) {
     $query = null;
     if (!empty($idList) && is_array($idList)) {
-      $query = static::$dbStatic->execute(
+      $query = static::execute(
         static::buildSelect()
           ->fields(static::$_idField)
           ->where(array("`" . static::$_idField . "` IN (" . implode(',', $idList) . ")"))
@@ -132,7 +148,7 @@ class DBStaticRecord {
    *
    */
   public static function lockAllRecords() {
-    static::$dbStatic->execute(
+    static::execute(
       static::buildSelectLock()
     );
   }

@@ -5,28 +5,27 @@
  *
  * @version 1.0
  * @copyright 2013 by Gorlum for http://supernova.ws
-*/
+ */
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3) {
+if ($user['authlevel'] < 3) {
   AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 // define('SESSION_INTERRUPT', 15*60); // Можно увеличить до 4 часов - никито не может сидеть 2 суток с перерывом менее 4 часов
 // define('SUSPICIOUS_LONG', 2 * 60*60); // Тогда это увеличиваем до, скажем суток - и там смотрим
 
-define('SESSION_INTERRUPT', 1 * 60*60); // Можно увеличить до 4 часов - никито не может сидеть 2 суток с перерывом менее 4 часов
-define('SUSPICIOUS_LONG', 16 * 60*60); // Тогда это увеличиваем до, скажем суток - и там смотрим
+define('SESSION_INTERRUPT', 1 * 60 * 60); // Можно увеличить до 4 часов - никито не может сидеть 2 суток с перерывом менее 4 часов
+define('SUSPICIOUS_LONG', 16 * 60 * 60); // Тогда это увеличиваем до, скажем суток - и там смотрим
 
 
 function check_suspicious(&$session, &$session_list_last_id, &$row) {
   $session[2] = $session[1] - $session[0];
-  if($session[2] > SUSPICIOUS_LONG)
-  {
+  if ($session[2] > SUSPICIOUS_LONG) {
     $session[2] = pretty_time($session[2]);
     $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
     $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
@@ -38,33 +37,31 @@ function check_suspicious(&$session, &$session_list_last_id, &$row) {
 //    1 => $row['time'], // end
     0 => $row['visit_time'], // start
     1 => $row['visit_time'], // end
-  )
-   //: false
-   ;
+  )//: false
+  ;
 }
 
 $session_list = array();
 $query = db_counter_list_by_week();
 $session = array();
-if($row = db_fetch($query)) {
+if ($row = db_fetch($query)) {
   $session = array(
     0 => strtotime($row['visit_time']), // start
     1 => strtotime($row['visit_time']), // end
   );
   $last_id = $row['user_id'];
 }
-while($row = db_fetch($query)) {
+while ($row = db_fetch($query)) {
   $row['visit_time'] = strtotime($row['visit_time']);
-  if($last_id == $row['user_id']) {
+  if ($last_id == $row['user_id']) {
     // Тот же юзер
-    if($row['visit_time'] - $session[1] <= SESSION_INTERRUPT) { // Та же сессия
+    if ($row['visit_time'] - $session[1] <= SESSION_INTERRUPT) { // Та же сессия
       $session[1] = $row['visit_time'];
     } else {
       // Новая сессия
 //      check_suspicious($session, $session_list[$last_id], $row);
       $session[2] = $session[1] - $session[0];
-      if($session[2] > SUSPICIOUS_LONG)
-      {
+      if ($session[2] > SUSPICIOUS_LONG) {
         $session[2] = pretty_time($session[2]);
         $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
         $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
@@ -78,13 +75,12 @@ while($row = db_fetch($query)) {
   } else {
 //    check_suspicious($session, $session_list[$last_id], $row);
     $session[2] = $session[1] - $session[0];
-      if($session[2] > SUSPICIOUS_LONG)
-      {
-        $session[2] = pretty_time($session[2]);
-        $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
-        $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
-        $session_list[$last_id][] = $session;
-      }
+    if ($session[2] > SUSPICIOUS_LONG) {
+      $session[2] = pretty_time($session[2]);
+      $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
+      $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
+      $session_list[$last_id][] = $session;
+    }
     $session = array(
       0 => $row['visit_time'], // start
       1 => $row['visit_time'], // end
@@ -93,12 +89,11 @@ while($row = db_fetch($query)) {
   }
 }
 
-if($last_id) {
+if ($last_id) {
   // check_suspicious($session, $session_list[$last_id], $row = array('time' => 0));
   $session[2] = $session[1] - $session[0];
 
-  if($session[2] > SUSPICIOUS_LONG)
-  {
+  if ($session[2] > SUSPICIOUS_LONG) {
     $session[2] = pretty_time($session[2]);
     $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
     $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
@@ -111,9 +106,9 @@ print("<tr>");
 print("<td>ID</td><td>Username</td><td>Start</td><td>End</td><td>Length</td>");
 print("<td>Last online</td>");
 print("</tr>");
-foreach($session_list as $user_id => $value) {
+foreach ($session_list as $user_id => $value) {
   $user_record = DBStaticUser::getOnlineTime($user_id);
-  foreach($value as $interval_data) {
+  foreach ($value as $interval_data) {
     print("<tr>");
     print("<td>{$user_id}</td><td>{$user_record['username']}</td><td>{$interval_data[0]}</td><td>{$interval_data[1]}</td><td>{$interval_data[2]}</td>");
     print("<td>" . date(FMT_DATE_TIME_SQL, $user_record['onlinetime']) . "</td>");

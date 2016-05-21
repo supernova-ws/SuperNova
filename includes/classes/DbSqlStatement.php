@@ -8,25 +8,20 @@
 /**
  * Class DbSqlStatement
  *
- * @method static DbSqlStatement fields(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement fields(mixed $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement groupBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement orderBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement having(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  *
  */
-class DbSqlStatement {
+class DbSqlStatement extends DbSqlAware {
 
   const SELECT = 'SELECT';
 
   protected static $allowedOperations = array(
     self::SELECT,
   );
-
-  /**
-   * @var db_mysql $db
-   */
-  protected $db;
 
   public $operation = '';
 
@@ -55,62 +50,6 @@ class DbSqlStatement {
   protected $_compiledQuery = array();
 
   /**
-   * @param db_mysql|null $db
-   * @param string        $className
-   *
-   * @return DbSqlStatement
-   */
-  public static function build($db = null, $className = '') {
-    $result = new self($db);
-    if (!empty($className) && is_string($className)) {
-      $result->getParamsFromStaticClass($className);
-    }
-
-    return $result;
-  }
-
-  /**
-   * DbSqlStatement constructor.
-   *
-   * @param db_mysql|null $db
-   */
-  public function __construct($db = null) {
-    $this->db = (!empty($db) && $db instanceof db_mysql) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
-  }
-
-  /**
-   * Resets statement
-   *
-   * @param bool $full
-   *
-   * @return $this
-   */
-  // TODO - UNITTEST
-  protected function _reset($full = true) {
-    if ($full) {
-      $this->operation = '';
-      $this->table = '';
-      $this->alias = '';
-      $this->idField = '';
-    }
-
-    $this->fields = array();
-    $this->where = array();
-    $this->groupBy = array();
-    $this->orderBy = array();
-    $this->having = array();
-
-    $this->limit = 0;
-    $this->offset = 0;
-
-    $this->fetchOne = false;
-    $this->forUpdate = false;
-    $this->skipLock = false;
-
-    return $this;
-  }
-
-  /**
    * @param string $fieldName
    *
    * @return $this
@@ -122,12 +61,53 @@ class DbSqlStatement {
   }
 
   /**
+   * @return self
+   */
+  public function select() {
+    $this->operation = DbSqlStatement::SELECT;
+    if (empty($this->fields)) {
+      $this->fields = array('*');
+    }
+
+    return $this;
+  }
+
+  /**
    * @param string $alias
    *
    * @return $this
    */
   public function fromAlias($alias) {
     $this->alias = $alias;
+
+    return $this;
+  }
+
+  /**
+   * @param string $tableName
+   * @param string $alias
+   *
+   * @return $this
+   */
+  public function from($tableName, $alias = '') {
+    $this->table = $tableName;
+    $this->fromAlias($alias);
+
+    return $this;
+  }
+
+  public function __call($name, $arguments) {
+    // TODO: Implement __call() method.
+    if (in_array($name, array('fields', 'where', 'groupBy', 'orderBy', 'having'))) {
+//      array_unshift($arguments, '');
+//      $arguments[0] = &$this->$name;
+//      call_user_func_array('HelperArray::merge', $arguments);
+      HelperArray::merge($this->$name, $arguments[0], !empty($arguments[1]) ? $arguments[1] : HelperArray::ARRAY_REPLACE);
+    }
+    // TODO - make all setters protected ??
+//    elseif(method_exists($this, $name)) {
+//      call_user_func_array(array($this, $name), $arguments);
+//    }
 
     return $this;
   }
@@ -156,57 +136,6 @@ class DbSqlStatement {
 
 
   /**
-   * @param string $tableName
-   * @param string $alias
-   *
-   * @return $this
-   */
-  public function from($tableName, $alias = '') {
-    $this->table = $tableName;
-    $this->fromAlias($alias);
-
-    return $this;
-  }
-
-  /**
-   * @param string $params
-   *
-   * @return $this
-   */
-  public function getParamsFromStaticClass($params) {
-    if (is_string($params) && $params && class_exists($params)) {
-      $this->from($params::$_table);
-      $this->setIdField($params::$_idField);
-    }
-
-    return $this;
-  }
-
-
-  /**
-   * @return self
-   */
-  public function select() {
-    $this->operation = DbSqlStatement::SELECT;
-    if (empty($this->fields)) {
-      $this->fields = array('*');
-    }
-
-    return $this;
-  }
-
-  public function __call($name, $arguments) {
-    // TODO: Implement __call() method.
-    if (in_array($name, array('fields', 'where', 'groupBy', 'orderBy', 'having'))) {
-      array_unshift($arguments, '');
-      $arguments[0] = &$this->$name;
-      call_user_func_array('HelperArray::merge', $arguments);
-    }
-
-    return $this;
-  }
-
-  /**
    * Make statement fetch only one record
    *
    * @return $this
@@ -231,6 +160,69 @@ class DbSqlStatement {
    */
   public function skipLock($skipLock = true) {
     $this->skipLock = $skipLock;
+
+    return $this;
+  }
+
+  /**
+   * @param string $className
+   *
+   * @return $this
+   */
+  public function getParamsFromStaticClass($className) {
+    if (is_string($className) && $className && class_exists($className)) {
+      $this->from($className::$_table);
+      $this->setIdField($className::$_idField);
+    }
+
+    return $this;
+  }
+
+  /**
+   * @param db_mysql|null $db
+   * @param string        $className
+   *
+   * @return static
+   */
+  public static function build($db = null, $className = '') {
+    /**
+     * @var static $result
+     */
+    $result = parent::build($db);
+    if (!empty($className) && is_string($className)) {
+      $result->getParamsFromStaticClass($className);
+    }
+
+    return $result;
+  }
+
+  /**
+   * Resets statement
+   *
+   * @param bool $full
+   *
+   * @return static
+   */
+  protected function _reset($full = true) {
+    if ($full) {
+      $this->operation = '';
+      $this->table = '';
+      $this->alias = '';
+      $this->idField = '';
+    }
+
+    $this->fields = array();
+    $this->where = array();
+    $this->groupBy = array();
+    $this->orderBy = array();
+    $this->having = array();
+
+    $this->limit = 0;
+    $this->offset = 0;
+
+    $this->fetchOne = false;
+    $this->forUpdate = false;
+    $this->skipLock = false;
 
     return $this;
   }
@@ -282,7 +274,7 @@ class DbSqlStatement {
 
   protected function compileLimit() {
     // TODO - fields should be escaped !!
-    if($limit = $this->fetchOne ? 1 : $this->limit) {
+    if ($limit = $this->fetchOne ? 1 : $this->limit) {
       $this->_compiledQuery[] = 'LIMIT ' . $limit . (!empty($this->offset) ? ' OFFSET ' . $this->offset : '');
     }
   }
@@ -391,19 +383,6 @@ class DbSqlStatement {
     }
 
     return $result;
-  }
-
-
-  /**
-   * @param $string
-   *
-   * @return mixed|string
-   */
-  protected function stringEscape($string) {
-    return
-      method_exists($this->db, 'db_escape')
-        ? $this->db->db_escape($string)
-        : str_replace('`', '\`', addslashes($string));
   }
 
 }

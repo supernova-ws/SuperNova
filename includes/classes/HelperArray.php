@@ -57,7 +57,6 @@ class HelperArray {
           $result[] = $value;
         }
       }
-
     }
 
     return $result;

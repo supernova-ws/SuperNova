@@ -29,6 +29,4 @@ class ValidatorsTest extends PHPUnit_Framework_TestCase {
     $this->assertFalse(invokeMethod($tested, 'isNotEmpty', array('0')));
   }
 
-
-
 }

@@ -7,14 +7,14 @@ class DBStaticUser extends DBStaticRecord {
 
 
   /**
-   * @param int $user_id
+   * @param int $playerId
    *
    * @return string[]
    */
-  public static function getOnlineTime($user_id) {
-    $user_record = static::getRecordById($user_id, array('username', 'onlinetime'));
+  public static function getOnlineTime($playerId) {
+    $row = static::getRecordById($playerId, array('username', 'onlinetime'));
 
-    return !empty($user_record) ? $user_record : array();
+    return !empty($row) ? $row : array();
   }
 
   // TODO - это вообще-то надо хранить в конфигурации
@@ -22,7 +22,7 @@ class DBStaticUser extends DBStaticRecord {
    * @return string
    */
   public static function getLastRegisteredUserName() {
-    $result = static::$dbStatic->fetchOne(
+    $result = static::fetchOne(
       static::buildSelect()
         ->fields('username')
         ->where(array('`user_as_ally` IS NULL'))
@@ -33,7 +33,7 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_player_list_export_blitz_info() {
-    return static::$dbStatic->execute(
+    return static::execute(
       static::buildSelect()
         ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
         ->where(array('`user_as_ally` IS NULL'))
@@ -45,7 +45,7 @@ class DBStaticUser extends DBStaticRecord {
    * @return array|bool|mysqli_result|null
    */
   public static function db_user_list_non_bots() {
-    $query = static::$dbStatic->execute(
+    $query = static::execute(
       static::buildSelect()
         ->fields('id')
         ->where(array(
@@ -59,7 +59,7 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
-    static::$dbStatic->execute(
+    static::execute(
       static::buildSelectLock()
         ->where(array("`id` = " . idval($user['id']) .
           (isset($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '')))
@@ -115,11 +115,15 @@ class DBStaticUser extends DBStaticRecord {
       ($online ? " `onlinetime` >= " . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ' user_as_ally IS NULL') .
       " GROUP BY u.id
     ORDER BY user_as_ally, {$sort} ASC");
+
+//    return $this->execute(
+//      static::buildSelect()
+//      ->fields(array(
+//        DbSqlLiteral::build('u.*'),
+//        DbSqlLiteral::build('u.*'),
+//      ))
+//    );
   }
-
-
-
-
 
 
   public static function db_player_list_blitz_delete_players() {
