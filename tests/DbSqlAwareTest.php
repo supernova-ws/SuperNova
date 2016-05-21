@@ -23,7 +23,7 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::__constructor
+   * @covers ::__construct
    * @covers ::build
    */
   public function testBuild() {
