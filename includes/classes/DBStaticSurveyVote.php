@@ -9,7 +9,7 @@ class DBStaticSurveyVote {
    * @return array|bool|mysqli_result|null
    */
   public static function db_survey_get_vote($announce, $user) {
-    return $survey_vote = doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true);
+    return doquery("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;", true);
   }
 
 

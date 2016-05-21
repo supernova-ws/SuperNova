@@ -27,7 +27,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a7.9
+   * @version 41a7.35
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -62,7 +62,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a7.9
+   * @version 41a7.35
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -116,7 +116,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a7.9
+   * @version 41a7.35
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a7.9
+   * @version 41a7.35
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -167,7 +167,7 @@ class FleetList extends ArrayAccessV2 {
    * @param array $coordinates
    * @param bool  $for_phalanx - If true - this is phalanx scan so limiting output with fleet_mess
    *
-   * @return static
+   * @return static|array
    */
   public static function dbGetFleetListAndMissileByCoordinates($coordinates, $for_phalanx = false) {
     if(empty($coordinates) || !is_array($coordinates)) {

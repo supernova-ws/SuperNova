@@ -166,7 +166,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
     $file = str_replace('\\', '/', substr($trace[1]['file'], strlen(SN_ROOT_PHYSICAL) - 1));
 
     $string_id = $this->active . ':' . $offset . ':' . $file . ':' . $trace[1]['line'];
-    if(!isset($this->stat_usage[$string_id]) || $this->stat_usage[$string_id] != $empty) {
+    if(!isset($this->stat_usage[$string_id]) || $this->stat_usage[$string_id] != empty($value)) {
       $this->stat_usage[$string_id] = empty($value);
       $this->stat_usage_new[] = array(
         'lang_code' => $this->active,
@@ -241,6 +241,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
     }
 
     if($file_path) {
+      $a_lang_array = array();
       include($file_path);
 
       if(!empty($a_lang_array)) {

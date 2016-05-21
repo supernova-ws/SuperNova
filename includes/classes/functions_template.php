@@ -707,6 +707,7 @@ class template_compile
       $expr_type = $first_token;
     }
 
+    $expr = '';
     switch ($expr_type)
     {
       case 'even':

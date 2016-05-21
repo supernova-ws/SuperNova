@@ -69,9 +69,10 @@ class DBStaticUnit {
     return classSupernova::db_ins_record(LOC_UNIT, $set);
   }
 
-  public static function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_id, $unit_snid = 0) {
+  public static function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_id = 0, $unit_snid = 0) {
     return classSupernova::db_del_record_list(LOC_UNIT,
-      "`unit_location_type` = {$unit_location_type} AND `unit_location_id` = {$unit_location_id}" .
+      "`unit_location_type` = {$unit_location_type}" .
+      ($unit_location_id = idval($unit_location_id) ? " AND `unit_location_id` = {$unit_location_id}" : '') .
       ($user_id = idval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
       ($unit_snid = idval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
   }

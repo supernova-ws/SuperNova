@@ -125,7 +125,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_player_get($player_id, $fields) {
-    return $result = doquery("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true);
+    return doquery("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1", true);
   }
 
 

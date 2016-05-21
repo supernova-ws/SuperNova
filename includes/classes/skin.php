@@ -244,8 +244,6 @@ class skin {
         // Если есть парент - берем у парента. У предков всегда всё есть
         : $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null);
     }
-
-    return $this;
   }
 
   /**

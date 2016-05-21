@@ -851,7 +851,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a7.16
+   * @version 41a7.35
    */
   public function shipsGetCapacityRecyclers(array $recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -963,7 +963,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a7.16
+   * @version 41a7.35
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1641,9 +1641,9 @@ class Fleet extends UnitContainer {
     pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
 
 
+    $timeMissionJob = 0;
     // TODO check for empty mission AKA mission allowed
 /*
-    $timeMissionJob = 0;
     if ($this->_mission_type == MT_ACS && $aks) {
       $acsTimeToArrive = $aks['ankunft'] - SN_TIME_NOW;
       if ($acsTimeToArrive < $this->travelData['duration']) {
@@ -1689,8 +1689,8 @@ class Fleet extends UnitContainer {
     db_changeset_apply($db_changeset);
 
 
-    if (!empty($captain['unit_id'])) {
-      DBStaticUnit::db_unit_set_by_id($captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$this->_dbId}");
+    if (!empty($this->captain['unit_id'])) {
+      DBStaticUnit::db_unit_set_by_id($this->captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$this->_dbId}");
     }
 
 //    return $this->fleet->acs['ankunft'] - $this->fleet->time_launch >= $this->fleet->travelData['duration'];

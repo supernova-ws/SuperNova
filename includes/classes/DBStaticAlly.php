@@ -71,6 +71,8 @@ class DBStaticAlly {
     `ranklist` = '" . classLocale::$lang['ali_defaultRankName'] . ",0,0,0,0,0',
     `ally_register_time`= " . SN_TIME_NOW
     );
+
+    return $ally;
   }
 
   /**

@@ -43,7 +43,7 @@ class DbSqlLiteral extends DbSqlAware {
 
     $this->literal = strtoupper($functionName) . '(' . $this->makeFieldFromString($field) . ')';
 
-    if ($alias) {
+    if (!empty($alias)) {
       $this->literal .= ' AS `' . $alias . '`';
     }
 
