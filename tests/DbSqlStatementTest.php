@@ -50,8 +50,8 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @covers ::setIdField
    * covers ::fields
    * covers ::where
-   * covers ::group
-   * covers ::order
+   * covers ::groupBy
+   * covers ::orderBy
    * covers ::having
    * @covers ::__call
    * @covers ::limit
@@ -71,8 +71,8 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
         ->setIdField('idField')
         ->fields('qwe')
         ->where('asd')
-        ->group('qaz')
-        ->order('zxc')
+        ->groupBy('qaz')
+        ->orderBy('zxc')
         ->having('wes')
         ->limit(2)
         ->offset(3)
@@ -89,8 +89,8 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(array('qwe'), $this->object->fields);
     $this->assertEquals(array('asd'), $this->object->where);
-    $this->assertEquals(array('qaz'), $this->object->group);
-    $this->assertEquals(array('zxc'), $this->object->order);
+    $this->assertEquals(array('qaz'), $this->object->groupBy);
+    $this->assertEquals(array('zxc'), $this->object->orderBy);
     $this->assertEquals(array('wes'), $this->object->having);
 
     $this->assertEquals(2, $this->object->limit);
@@ -111,8 +111,8 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
     // Checking that common part is cleared
     $this->assertEquals(array(), $this->object->fields);
     $this->assertEquals(array(), $this->object->where);
-    $this->assertEquals(array(), $this->object->group);
-    $this->assertEquals(array(), $this->object->order);
+    $this->assertEquals(array(), $this->object->groupBy);
+    $this->assertEquals(array(), $this->object->orderBy);
     $this->assertEquals(array(), $this->object->having);
 
     $this->assertEquals(0, $this->object->limit);

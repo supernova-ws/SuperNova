@@ -26,7 +26,7 @@ class DBStaticUser extends DBStaticRecord {
       static::buildSelect()
         ->fields('username')
         ->where(array('`user_as_ally` IS NULL'))
-        ->order(array('`id` DESC'))
+        ->orderBy(array('`id` DESC'))
     );
 
     return isset($result['username']) ? $result['username'] : '';
@@ -37,7 +37,7 @@ class DBStaticUser extends DBStaticRecord {
       static::buildSelect()
         ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
         ->where(array('`user_as_ally` IS NULL'))
-        ->order(array('`id`'))
+        ->orderBy(array('`id`'))
     );
   }
 

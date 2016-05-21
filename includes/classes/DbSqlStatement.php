@@ -10,8 +10,8 @@
  *
  * @method static DbSqlStatement fields(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement group(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement order(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement groupBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement orderBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement having(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  *
  */
@@ -41,25 +41,18 @@ class DbSqlStatement {
   public $fields = array();
 
   public $where = array();
-  public $group = array();
-  public $order = array();
-
+  public $groupBy = array();
+  public $orderBy = array();
   public $having = array();
 
-
-  /**
-   * @var array
-   *  [0] - row_count
-   *  [1] - offset
-   *    Used {LIMIT row_count [OFFSET offset]} syntax
-   */
-  // TODO - separate offset and row_count
   public $limit = 0;
   public $offset = 0;
 
   public $fetchOne = false;
   public $forUpdate = false;
   public $skipLock = false;
+
+  protected $_compiledQuery = array();
 
   /**
    * @param db_mysql|null $db
@@ -103,8 +96,8 @@ class DbSqlStatement {
 
     $this->fields = array();
     $this->where = array();
-    $this->group = array();
-    $this->order = array();
+    $this->groupBy = array();
+    $this->orderBy = array();
     $this->having = array();
 
     $this->limit = 0;
@@ -145,7 +138,7 @@ class DbSqlStatement {
    * @return $this
    */
   public function limit($limit) {
-    $this->limit = $limit;
+    $this->limit = is_numeric($limit) ? $limit : 0;
 
     return $this;
   }
@@ -156,7 +149,7 @@ class DbSqlStatement {
    * @return $this
    */
   public function offset($offset) {
-    $this->offset = $offset;
+    $this->offset = is_numeric($offset) ? $offset : 0;
 
     return $this;
   }
@@ -204,7 +197,7 @@ class DbSqlStatement {
 
   public function __call($name, $arguments) {
     // TODO: Implement __call() method.
-    if (in_array($name, array('fields', 'where', 'group', 'order', 'having'))) {
+    if (in_array($name, array('fields', 'where', 'groupBy', 'orderBy', 'having'))) {
       array_unshift($arguments, '');
       $arguments[0] = &$this->$name;
       call_user_func_array('HelperArray::merge', $arguments);
@@ -244,6 +237,66 @@ class DbSqlStatement {
 
 
   /**
+   * @param array $array
+   *
+   * @return array
+   */
+  protected function arrayEscape(&$array) {
+    $result = array();
+    foreach ($array as $key => &$value) {
+      $result[$key] = $this->stringEscape($value);
+    }
+
+    return $result;
+  }
+
+  protected function compileFrom() {
+    $this->_compiledQuery[] = 'FROM `{{' . $this->stringEscape($this->table) . '}}`';
+    if (!empty($this->alias)) {
+      $this->_compiledQuery[] = 'AS `' . $this->stringEscape($this->alias) . '`';
+    }
+  }
+
+  protected function compileJoin() {
+  }
+
+  protected function compileWhere() {
+    // TODO - fields should be escaped !!
+    !empty($this->where) ? $this->_compiledQuery[] = 'WHERE ' . implode(' AND ', $this->where) : false;
+  }
+
+  protected function compileGroupBy() {
+    // TODO - fields should be escaped !!
+    !empty($this->groupBy) ? $this->_compiledQuery[] = 'GROUP BY ' . implode(',', $this->arrayEscape($this->groupBy)) : false;
+  }
+
+  protected function compileOrderBy() {
+    // TODO - fields should be escaped !!
+    !empty($this->orderBy) ? $this->_compiledQuery[] = 'ORDER BY ' . implode(',', $this->arrayEscape($this->orderBy)) : false;
+  }
+
+  protected function compileHaving() {
+    // TODO - fields should be escaped !!
+    !empty($this->having) ? $this->_compiledQuery[] = 'HAVING ' . implode(' AND ', $this->having) : false;
+  }
+
+  protected function compileLimit() {
+    // TODO - fields should be escaped !!
+    if($limit = $this->fetchOne ? 1 : $this->limit) {
+      $this->_compiledQuery[] = 'LIMIT ' . $limit . (!empty($this->offset) ? ' OFFSET ' . $this->offset : '');
+    }
+  }
+
+  protected function compileForUpdate() {
+    $this->_compiledQuery[] =
+      // forUpdate flag forces select with row locking - didn't look at skipLock flag
+      $this->forUpdate
+      ||
+      // Also row locked when transaction is up and skipLock flag is not set
+      (classSupernova::db_transaction_check(false) && !$this->skipLock) ? 'FOR UPDATE' : '';
+  }
+
+  /**
    * @return string
    * @throws ExceptionDbOperationEmpty
    * @throws ExceptionDbOperationRestricted
@@ -257,43 +310,21 @@ class DbSqlStatement {
       throw new ExceptionDbOperationRestricted();
     }
 
-    $result = '';
-    $result .= $this->stringEscape($this->operation);
+    $this->_compiledQuery = array();
 
-    $result .= ' ' . $this->selectFieldsToString($this->fields);
+    $this->_compiledQuery[] = $this->stringEscape($this->operation);
+    $this->_compiledQuery[] = $this->selectFieldsToString($this->fields);
 
-    $result .= ' FROM';
-    $result .= ' `{{' . $this->stringEscape($this->table) . '}}`';
-    $result .= !empty($this->alias) ? ' AS `' . $this->stringEscape($this->alias) . '`' : '';
+    $this->compileFrom();
+    $this->compileJoin();
+    $this->compileWhere();
+    $this->compileGroupBy();
+    $this->compileOrderBy();
+    $this->compileHaving();
+    $this->compileLimit();
+    $this->compileForUpdate();
 
-    // TODO - fields should be escaped !!
-    $result .= !empty($this->where) ? ' WHERE ' . implode(' AND ', $this->where) : '';
-
-    // TODO - fields should be escaped !!
-    $result .= !empty($this->group) ? ' GROUP BY ' . implode(',', $this->group) : '';
-
-    // TODO - fields should be escaped !!
-    $result .= !empty($this->order) ? ' ORDER BY ' . implode(',', $this->order) : '';
-
-    // TODO - fields should be escaped !!
-    $result .= !empty($this->having) ? ' HAVING ' . implode(' AND ', $this->having) : '';
-
-    // TODO - fields should be escaped !!
-    $limit = $this->fetchOne ? 1 : $this->limit;
-    $result .= !empty($limit)
-      ? ' LIMIT ' . $limit . (!empty($this->offset) ? ' OFFSET ' . $this->offset : '')
-      : '';
-
-    $result .=
-      // forUpdate flag forces select with row locking - didn't look at skipLock flag
-      $this->forUpdate
-      ||
-      // Also row locked when transaction is up and skipLock flag is not set
-      (classSupernova::db_transaction_check(false) && !$this->skipLock) ? ' FOR UPDATE' : '';
-
-    // TODO - protect from double escape!
-
-    return $result;
+    return implode(' ', $this->_compiledQuery);
   }
 
   /**
@@ -325,15 +356,16 @@ class DbSqlStatement {
    *
    * @return string
    */
-  protected function processField($fieldName) {
-    if (is_bool($fieldName)) {
-      $result = (string)intval($fieldName);
-    } elseif (is_null($fieldName)) {
-      $result = 'NULL';
-    } elseif ($fieldName === '*') {
-      $result = '*';
-    } else {
-      $result = $this->processFieldDefault($fieldName);
+  protected function processFieldString($fieldName) {
+    $result = (string)$fieldName;
+    if (
+      $result != ''
+      &&
+      // Literals plays as they are - they do properly format by itself
+      !($fieldName instanceof DbSqlLiteral)
+    ) {
+      // Other should be formatted
+      $result = '`' . $this->stringEscape($result) . '`';
     }
 
     return $result;
@@ -344,23 +376,23 @@ class DbSqlStatement {
    *
    * @return string
    */
-  protected function processFieldDefault($fieldName) {
-    $result = (string)$fieldName;
-    if (
-      $result != ''
-      &&
-      // Literals plays as they are - they do properly format by itself
-      !($fieldName instanceof DbSqlLiteral)
-      &&
-      // Numeric need no escaping
-      !is_numeric($fieldName)
-    ) {
-      // Other should be formatted
-      $result = '`' . $this->stringEscape($result) . '`';
+  protected function processField($fieldName) {
+    if (is_bool($fieldName)) {
+      $result = (string)intval($fieldName);
+    } elseif (is_numeric($fieldName)) {
+      $result = $fieldName;
+    } elseif (is_null($fieldName)) {
+      $result = 'NULL';
+    } elseif ($fieldName === '*') {
+      $result = '*';
+    } else {
+      // Field has other type - string or should be convertible to string
+      $result = $this->processFieldString($fieldName);
     }
 
     return $result;
   }
+
 
   /**
    * @param $string
