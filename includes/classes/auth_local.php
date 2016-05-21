@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a7.35# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a7.37# copyright © 2009-2015 Gorlum',
 
     'root_relative' => '',
 
@@ -309,7 +309,8 @@ class auth_local extends auth_abstract {
         // TODO - НЕ ОБЯЗАТЕЛЬНО ОТПРАВЛЯТЬ ЧЕРЕЗ ЕМЕЙЛ! ЕСЛИ ЭТО ФЕЙСБУЧЕК ИЛИ ВКШЕЧКА - МОЖНО ЧЕРЕЗ ЛС ПИСАТЬ!!
         $message_header = sprintf(classLocale::$lang['log_lost_email_title'], classSupernova::$config->game_name);
         $message = sprintf(classLocale::$lang['log_lost_email_pass'], classSupernova::$config->game_name, $this->account->account_name, $new_password_unsafe);
-        $operation_result = mymail($confirmation['email'], $message_header, htmlspecialchars($message));
+        // TODO - use $operation_result =
+        mymail($confirmation['email'], $message_header, htmlspecialchars($message));
 
         $users_translated = PlayerToAccountTranslate::db_translate_get_users_from_account_list($this->provider_id, $this->account->account_id); // OK 4.5
         if(!empty($users_translated)) {

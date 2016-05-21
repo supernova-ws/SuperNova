@@ -22,25 +22,7 @@ if ($user['authlevel'] < 3) {
 define('SESSION_INTERRUPT', 1 * 60 * 60); // Можно увеличить до 4 часов - никито не может сидеть 2 суток с перерывом менее 4 часов
 define('SUSPICIOUS_LONG', 16 * 60 * 60); // Тогда это увеличиваем до, скажем суток - и там смотрим
 
-
-function check_suspicious(&$session, &$session_list_last_id, &$row) {
-  $session[2] = $session[1] - $session[0];
-  if ($session[2] > SUSPICIOUS_LONG) {
-    $session[2] = pretty_time($session[2]);
-    $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
-    $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
-    $session_list_last_id[] = $session;
-  }
-  //$row ?
-  $session = array(
-//    0 => $row['time'], // start
-//    1 => $row['time'], // end
-    0 => $row['visit_time'], // start
-    1 => $row['visit_time'], // end
-  )//: false
-  ;
-}
-
+$last_id = 0;
 $session_list = array();
 $query = db_counter_list_by_week();
 $session = array();
@@ -51,6 +33,27 @@ if ($row = db_fetch($query)) {
   );
   $last_id = $row['user_id'];
 }
+
+/**
+ * @param $session
+ * @param $session_list
+ * @param $last_id
+ * @param $row
+ */
+function checkSuspicious(&$session, &$session_list, &$last_id, &$row) {
+  $session[2] = $session[1] - $session[0];
+  if ($session[2] > SUSPICIOUS_LONG) {
+    $session[2] = pretty_time($session[2]);
+    $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
+    $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
+    $session_list[$last_id][] = $session;
+  }
+  $session = array(
+    0 => $row['visit_time'], // start
+    1 => $row['visit_time'], // end
+  );
+}
+
 while ($row = db_fetch($query)) {
   $row['visit_time'] = strtotime($row['visit_time']);
   if ($last_id == $row['user_id']) {
@@ -59,46 +62,35 @@ while ($row = db_fetch($query)) {
       $session[1] = $row['visit_time'];
     } else {
       // Новая сессия
-//      check_suspicious($session, $session_list[$last_id], $row);
-      $session[2] = $session[1] - $session[0];
-      if ($session[2] > SUSPICIOUS_LONG) {
-        $session[2] = pretty_time($session[2]);
-        $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
-        $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
-        $session_list[$last_id][] = $session;
-      }
-      $session = array(
-        0 => $row['visit_time'], // start
-        1 => $row['visit_time'], // end
-      );
+      checkSuspicious($session, $session_list, $last_id, $row);
     }
   } else {
-//    check_suspicious($session, $session_list[$last_id], $row);
-    $session[2] = $session[1] - $session[0];
-    if ($session[2] > SUSPICIOUS_LONG) {
-      $session[2] = pretty_time($session[2]);
-      $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
-      $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
-      $session_list[$last_id][] = $session;
-    }
-    $session = array(
-      0 => $row['visit_time'], // start
-      1 => $row['visit_time'], // end
-    );
+    checkSuspicious($session, $session_list, $last_id, $row);
+//    $session[2] = $session[1] - $session[0];
+//    if ($session[2] > SUSPICIOUS_LONG) {
+//      $session[2] = pretty_time($session[2]);
+//      $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
+//      $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
+//      $session_list[$last_id][] = $session;
+//    }
+//    $session = array(
+//      0 => $row['visit_time'], // start
+//      1 => $row['visit_time'], // end
+//    );
     $last_id = $row['user_id'];
   }
 }
 
 if ($last_id) {
-  // check_suspicious($session, $session_list[$last_id], $row = array('time' => 0));
-  $session[2] = $session[1] - $session[0];
-
-  if ($session[2] > SUSPICIOUS_LONG) {
-    $session[2] = pretty_time($session[2]);
-    $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
-    $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
-    $session_list[$last_id][] = $session;
-  }
+  checkSuspicious($session, $session_list, $last_id, $row);
+//  $session[2] = $session[1] - $session[0];
+//
+//  if ($session[2] > SUSPICIOUS_LONG) {
+//    $session[2] = pretty_time($session[2]);
+//    $session[0] = date(FMT_DATE_TIME_SQL, $session[0]);
+//    $session[1] = date(FMT_DATE_TIME_SQL, $session[1]);
+//    $session_list[$last_id][] = $session;
+//  }
 }
 
 print("<table border='1'>");
