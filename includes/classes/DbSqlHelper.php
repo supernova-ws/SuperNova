@@ -2,7 +2,7 @@
 
 class DbSqlHelper {
 
-  public function UCFirstByRef(&$value) {
+  public static function UCFirstByRef(&$value) {
     $value = ucfirst($value);
   }
 
