@@ -127,7 +127,8 @@ $(function(){
   });
 
   $(document).on('click mouseenter', '.uni_show_planet,.uni_show_debris,.uni_show_user,.uni_show_ally', function(event) {
-    that = $(this);
+    var result;
+    var that = $(this);
     universe_popup = that;
     sn_delay(function(that) {
       if(that != universe_popup) {

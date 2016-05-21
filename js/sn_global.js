@@ -158,6 +158,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
 
   $(document).on('click', '.password_show', function () {
+    var button_value, input, type;
     input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
     if (input.attr('type') == 'password') {
       type = 'text';
@@ -169,7 +170,6 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
 
     var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
-    ;
     rep.attr("id", input.attr("id"));
 
     input.remove();
@@ -260,6 +260,9 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       if (ui != undefined && ui.type == 'slidechange') {
         return;
       }
+
+      var slider, value, min_slide, max_slide;
+
       slider = jQuery('#' + jQuery(this).attr('id') + 'slide');
       value = (value = parseInt(jQuery(this).val())) ? value : 0;
       value = value > (max_slide = parseInt(slider.slider("option", "max"))) ? max_slide :
@@ -273,7 +276,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       this.select();
     })
     .on('blur', "[ainput]", function (event, ui) {
-      that = jQuery(this);
+      var that = jQuery(this);
       that.val(parseInt(that.val()) ? that.val() : 0);
     })
   ;
@@ -381,11 +384,13 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   function sn_ainput_mouselerate_jquery() {
     jQuery('[slider_ticks]').each(function () {
-      that = jQuery(this);
-      slider = jQuery("#" + that.attr('id') + 'slide');
+      var val, option_min, option_max, ticks;
+
+      var that = jQuery(this);
+      var slider = jQuery("#" + that.attr('id') + 'slide');
       val = (val = parseInt(that.val())) ? val : 0;
-      step_now = parseInt(that.attr('step_now'));
-      val_next = val + step_now * parseInt(that.attr('increase'));
+      var step_now = parseInt(that.attr('step_now'));
+      var val_next = val + step_now * parseInt(that.attr('increase'));
       val_next = val_next > (option_min = parseInt(slider.slider("option", "min"))) ? val_next : option_min;
       val_next = val_next < (option_max = parseInt(slider.slider("option", "max"))) ? val_next : option_max;
 
@@ -402,23 +407,25 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   function sn_ainput_make_jquery(field_name, options) {
     jQuery('ainput').each(function () {
-      col_span = 3;
+      var step_value, start_value, min_value, max_value;
 
-      old = jQuery(this);
+      var col_span = 3;
+
+      var old = jQuery(this);
       //min_value = (min_value = old.attr('min')) ? min_value : 0;
       //max_value = (max_value = old.attr('max')) ? max_value : 0;
       step_value = (step_value = old.attr('step')) ? step_value : 1; // TODO НЕ РАБОТАЕТ ИСПРАВИТЬ
       start_value = (start_value = old.val()) ? start_value : 0; // TODO НЕ РАБОТАЕТ ИСПРАВИТЬ
 
-      field_name_orig = old.attr('name');
+      var field_name_orig = old.attr('name');
 
       field_name = field_name_orig.replace('[', '').replace(']', '');
-      field_id = '#' + field_name;
+      var field_id = '#' + field_name;
 
-      slider_name = field_name + 'slide';
-      slider_id = "#" + slider_name;
+      var slider_name = field_name + 'slide';
+      var slider_id = "#" + slider_name;
 
-      new_element = '<table width="100%" class="markup">'; // main container - sets width
+      var new_element = '<table width="100%" class="markup">'; // main container - sets width
       new_element += '<tr>';
       if (!old.is('[disable_min]')) {
         new_element += '<td width="3em"><input type="button" value="0" parent_id="' + field_name + '" id="' + field_name + '_ai_zero" style="width: 3em"></td>';

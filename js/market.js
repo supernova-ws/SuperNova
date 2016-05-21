@@ -15,7 +15,7 @@ function eco_mrk_trader_recalc() {
     return;
   }
 
-  selected_resource_id = parseInt($('input:radio[name=exchangeTo]:checked').val());
+  var selected_resource_id = parseInt($('input:radio[name=exchangeTo]:checked').val());
 
   var resource_increase = 0;
   var block_exchange = false;

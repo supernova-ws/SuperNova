@@ -20,25 +20,6 @@ function addSmiley(smiley) {
   document.chat_form.msg.focus();
 }
 
-function addMessage() {
-  var message = document.chat_form.msg.value;
-  if(!message) {
-    return;
-  }
-
-  document.chat_form.msg.value = '';
-  var color = document.getElementById("chat_color");
-  color = color.options[color.selectedIndex].value;
-
-  if(color) {
-    message = "[c="+color+"]" + message + "[/c]";
-  }
-
-  jQuery.post("index.php?page=chat_add", {'ally': ally_id, 'message': message}, function(data) {
-    showMessage();
-  });
-}
-
 function showMessage(initial) {
   if(chat_refreshing) {
     return;
@@ -64,6 +45,25 @@ function showMessage(initial) {
       window.setTimeout(showMessage, 5000);
     }
   }, "json");
+}
+
+function addMessage() {
+  var message = document.chat_form.msg.value;
+  if(!message) {
+    return;
+  }
+
+  document.chat_form.msg.value = '';
+  var color = document.getElementById("chat_color");
+  color = color.options[color.selectedIndex].value;
+
+  if(color) {
+    message = "[c="+color+"]" + message + "[/c]";
+  }
+
+  jQuery.post("index.php?page=chat_add", {'ally': ally_id, 'message': message}, function(data) {
+    showMessage();
+  });
 }
 
 jQuery(document).ready(function() {

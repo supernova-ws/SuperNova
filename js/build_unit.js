@@ -1,3 +1,24 @@
+function eco_struc_make_resource_row(resource_name, value, value_destroy, value_dm, show_actual_price) {
+  if(value > 0) {
+    value = show_actual_price ? value * jQuery('#unit_amount').val() : value;
+    document.getElementById('unit_' + resource_name).style.visibility = "visible";
+    document.getElementById('unit_' + resource_name).style.display = "table-row";
+
+    document.getElementById(resource_name + '_price').innerHTML = sn_format_number(value, 0, 'positive', planet[resource_name]);
+    document.getElementById(resource_name + '_left').innerHTML = sn_format_number(parseFloat(planet[resource_name]) - parseFloat(value), 0, 'positive');
+    if(planet['fleet_own']) {
+      document.getElementById(resource_name + '_fleet').innerHTML = sn_format_number(parseFloat(planet[resource_name]) + parseFloat(planet[resource_name + '_incoming']) - parseFloat(value), 0, 'positive');
+      jQuery('#fleet_res').css('display', "block");
+    } else {
+      document.getElementById(resource_name + '_fleet').style.display = "none";
+    }
+  } else {
+    (value_dm && resource_name != 'dark_matter') || (!value && resource_name == 'dark_matter')
+      ? (document.getElementById('unit_' + resource_name).style.display = "none")
+      : (document.getElementById('unit_' + resource_name).style.visibility = "hidden");
+  }
+}
+
 jQuery(document).ready( function(e) {
   $(".unit_create,.unit_destroy,#unit_create_button_auto").on('click', function(e){
     if($(this).is(":disabled") || $(this).attr("aria-disabled") == 'true') {
@@ -114,27 +135,6 @@ jQuery(document).ready( function(e) {
 });
 
 
-function eco_struc_make_resource_row(resource_name, value, value_destroy, value_dm, show_actual_price) {
-  if(value > 0) {
-    value = show_actual_price ? value * jQuery('#unit_amount').val() : value;
-    document.getElementById('unit_' + resource_name).style.visibility = "visible";
-    document.getElementById('unit_' + resource_name).style.display = "table-row";
-
-    document.getElementById(resource_name + '_price').innerHTML = sn_format_number(value, 0, 'positive', planet[resource_name]);
-    document.getElementById(resource_name + '_left').innerHTML = sn_format_number(parseFloat(planet[resource_name]) - parseFloat(value), 0, 'positive');
-    if(planet['fleet_own']) {
-      document.getElementById(resource_name + '_fleet').innerHTML = sn_format_number(parseFloat(planet[resource_name]) + parseFloat(planet[resource_name + '_incoming']) - parseFloat(value), 0, 'positive');
-      jQuery('#fleet_res').css('display', "block");
-    } else {
-      document.getElementById(resource_name + '_fleet').style.display = "none";
-    }
-  } else {
-      (value_dm && resource_name != 'dark_matter') || (!value && resource_name == 'dark_matter')
-        ? (document.getElementById('unit_' + resource_name).style.display = "none")
-        : (document.getElementById('unit_' + resource_name).style.visibility = "hidden");
-  }
-}
-
 var bld_unit_info_width = 0;
 
 function eco_struc_show_unit_info(unit_id, no_color) {
@@ -180,6 +180,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
   $('#unit_create_button').button('disable');
   $('#unit_destroy').css('visibility', 'hidden');
 
+  var req;
   if(require[unit_id]) {
     requirement_string = '';
     for(i in require[unit_id]) {

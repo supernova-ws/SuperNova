@@ -1,13 +1,12 @@
 var pp;
 
 function t() {
-	v  = new Date();
+	var v  = new Date();
 	var btc = document.getElementById('btc');
-	n  = new Date();
-	ss = pp;
-	s  = ss - Math.round((n.getTime() - v.getTime()) / 1000.);
-	m  = 0;
-	h  = 0;
+	var n  = new Date();
+	var s  = pp - Math.round((n.getTime() - v.getTime()) / 1000.);
+	var m  = 0;
+	var h  = 0;
 	if ( s < 0 ) {
 		btc.innerHTML = "Termin&eacute;<br>" + "<a href=?cp=" + pl + ">Continuer</a>"
 	} else {

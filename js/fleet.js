@@ -175,7 +175,7 @@ function shortInfo() {
 
     jQuery("#duration").html(hours + ":" + minutes + ":" + seconds);
 
-    time_temp_local = new Date();
+    var time_temp_local = new Date();
     time_temp_local.setTime(time_temp_local.valueOf() + duration_tick);
     jQuery('#time_dst_local').html(time_temp_local.toLocaleString());
 
@@ -249,18 +249,12 @@ function fl_calc_stats(event, ui) {
 }
 
 function calculateTransportCapacity() {
-  transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
+  var transportCapacity = fleet_capacity - check_resource(0) - check_resource(1) - check_resource(2);
 
   $("#remainingresources").html(sn_format_number(transportCapacity, 0, 'positive'));
 
   $("#fleet_page2_submit").prop('disabled', transportCapacity < 0);
 
-  // document.getElementById("fleet_page2_submit").disabled = transportCapacity < 0;
-  //if(transportCapacity < 0) {
-  //  document.getElementById("fleet_page2_submit").disabled = true;
-  //} else {
-  //  document.getElementById("fleet_page2_submit").disabled = false;
-  //}
   return transportCapacity;
 }
 
@@ -329,19 +323,17 @@ function max_fleet()
 
 function check_resource(id)
 {
-//  var zi_res = parseInt(document.getElementById("resource" + id).value);
   var zi_res = parseInt($('#resource' + id).val());
   zi_res = zi_res ? zi_res : 0;
 
   $('#rest_res' + id).html(sn_format_number(resource_max[id] - zi_res, 0, 'zero'));
-  // document.getElementById('rest_res' + id).innerHTML = sn_format_number(resource_max[id] - zi_res, 0, 'zero');
 
   return zi_res;
 }
 
 function zero_resource(id)
 {
-  element = document.getElementsByName('resource' + id)[0];
+  var element = document.getElementsByName('resource' + id)[0];
 
   if(element)
   {
