@@ -1,3 +1,10 @@
+# whitelist
+branches:
+  only:
+    - work-fleets
+#    - master
+
+
 # see http://about.travis-ci.org/docs/user/languages/php/ for more hints
 language: php
 
@@ -76,9 +83,3 @@ script: phpunit --configuration tests/phpunit.xml --coverage-text tests
 #    on_failure: always
 #    on_start: false
 #  irc: "irc.freenode.org#yourfavouriteroomfortravis"
-
-# whitelist
-branches:
-  only:
-    - work-fleets
-#    - master
