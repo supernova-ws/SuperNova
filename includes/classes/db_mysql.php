@@ -6,10 +6,10 @@
  * Time: 15:58
  */
 class db_mysql {
-  const DB_MYSQL_TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';
-  const DB_MYSQL_TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
-  const DB_MYSQL_TRANSACTION_READ_COMMITTED = 'READ COMMITTED';
-  const DB_MYSQL_TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITTED';
+  const TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';
+  const TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
+  const TRANSACTION_READ_COMMITTED = 'READ COMMITTED';
+  const TRANSACTION_READ_UNCOMMITTED = 'READ UNCOMMITTED';
 
   /**
    * Статус соеднения с MySQL
@@ -73,23 +73,23 @@ class db_mysql {
   public function sn_db_connect($external_db_settings = null) {
     $this->db_disconnect();
 
-    if(!empty($external_db_settings) && is_array($external_db_settings)) {
+    if (!empty($external_db_settings) && is_array($external_db_settings)) {
       $this->dbsettings = $external_db_settings;
     }
 
-    if(empty($this->dbsettings)) {
+    if (empty($this->dbsettings)) {
       $this->load_db_settings();
     }
 
     // TODO - фатальные (?) ошибки на каждом шагу. Хотя - скорее Эксепшны
-    if(!empty($this->dbsettings)) {
+    if (!empty($this->dbsettings)) {
       $driver_name = empty($this->dbsettings['sn_driver']) ? 'db_mysql_v5' : $this->dbsettings['sn_driver'];
       $this->driver = new $driver_name();
       $this->db_prefix = $this->dbsettings['prefix'];
 
       $this->connected = $this->connected || $this->driver_connect();
 
-      if($this->connected) {
+      if ($this->connected) {
         $this->table_list = $this->db_get_table_list();
         // TODO Проверка на пустоту
       }
@@ -101,11 +101,11 @@ class db_mysql {
   }
 
   protected function driver_connect() {
-    if(!is_object($this->driver)) {
+    if (!is_object($this->driver)) {
       classSupernova::$debug->error_fatal('DB Error - No driver for MySQL found!');
     }
 
-    if(!method_exists($this->driver, 'mysql_connect')) {
+    if (!method_exists($this->driver, 'mysql_connect')) {
       classSupernova::$debug->error_fatal('DB Error - WRONG MySQL driver!');
     }
 
@@ -113,7 +113,7 @@ class db_mysql {
   }
 
   public function db_disconnect() {
-    if($this->connected) {
+    if ($this->connected) {
       $this->connected = !$this->driver_disconnect();
       $this->connected = false;
     }
@@ -122,14 +122,14 @@ class db_mysql {
   }
 
   /**
-   * @param $query
+   * @param string $query
    *
-   * @return mixed
+   * @return mixed|string
    */
   public function replaceTablePlaceholders($query) {
     $sql = $query;
-    if(strpos($sql, '{{') !== false) {
-      foreach($this->table_list as $tableName) {
+    if (strpos($sql, '{{') !== false) {
+      foreach ($this->table_list as $tableName) {
         $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
       }
     }
@@ -142,7 +142,7 @@ class db_mysql {
    * @param       $fetch
    */
   protected function logQuery($query, $fetch) {
-    if(!classSupernova::$config->debug) {
+    if (!classSupernova::$config->debug) {
       return;
     }
 
@@ -155,28 +155,26 @@ class db_mysql {
 
 
   /**
-   * @param $sql
-   *
-   * @return void
+   * @return string
    */
-  protected function commentQuery(&$sql) {
-    if(!defined('DEBUG_SQL_COMMENT')) {
-      return;
+  public function queryTrace() {
+    if (!defined('DEBUG_SQL_COMMENT') || constant('DEBUG_SQL_ERROR') !== true) {
+      return '';
     }
     $backtrace = debug_backtrace();
     $sql_comment = classSupernova::$debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
 
-    $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ' . preg_replace("/\s+/", ' ', $sql);
-    if(defined('DEBUG_SQL_ONLINE')) {
-      classSupernova::$debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
-    }
-
-    if(defined('DEBUG_SQL_ERROR')) {
-      array_unshift($sql_comment, preg_replace("/\s+/", ' ', $sql));
+    if (defined('DEBUG_SQL_ERROR') && constant('DEBUG_SQL_ERROR') === true) {
+//      array_unshift($sql_comment, $sql_one_liner);
       classSupernova::$debug->add_to_array($sql_comment);
     }
 
-    $sql = $sql_commented;
+    $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ';
+    if (defined('DEBUG_SQL_ONLINE') && constant('DEBUG_SQL_ONLINE') === true) {
+      classSupernova::$debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
+    }
+
+    return $sql_commented;
   }
 
   /**
@@ -195,28 +193,66 @@ class db_mysql {
    */
   public function fetchOne($statement) {
     $query = $this->execute($statement->fetchOne());
+
     return $this->db_fetch($query);
   }
 
+  /**
+   * @param string|DbSqlPrepare $query
+   * @param string              $table
+   * @param bool                $fetch
+   * @param bool                $skip_query_check
+   *
+   * @return array|bool|mysqli_result|null
+   */
   public function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    if(!is_string($table)) {
+    if (!is_string($table)) {
       $fetch = $table;
     }
 
-    if(!$this->connected) {
+    if (!$this->connected) {
       $this->sn_db_connect();
     }
 
-    $query = trim($query);
-    $this->security_watch_user_queries($query);
-    !$skip_query_check ? $this->security_query_check_bad_words($query) : false;
-    $this->logQuery($query, $fetch);
+    $stringQuery = $query instanceof DbSqlPrepare ? $query->query : $query;
+    $stringQuery = trim($stringQuery);
+    $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
 
-    $sql = $this->replaceTablePlaceholders($query);
-    $this->commentQuery($sql);
-    !($sqlquery = $this->db_sql_query($sql)) ? classSupernova::$debug->error(db_error() . "<br />$sql<br />", 'SQL Error') : false;
+    $this->security_watch_user_queries($stringQuery);
+    $this->security_query_check_bad_words($stringQuery, $skip_query_check);
+    $this->logQuery($stringQuery, $fetch);
 
-    return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+    $stringQuery = $this->replaceTablePlaceholders($stringQuery);
+
+    $queryTrace = $this->queryTrace();
+
+    $queryResult = null;
+    try {
+      if ($query instanceof DbSqlPrepare) {
+        // MYSQLI ONLY!!!
+        $queryResult = $query
+          ->setQuery($stringQuery)
+          ->comment($queryTrace)
+          ->compileMySqlI()
+          ->statementGet($this)
+          ->execute()
+          ->getResult();
+      } else {
+        $queryResult = $this->db_sql_query($stringQuery . $queryTrace);
+      }
+      if (!$queryResult) {
+        throw new Exception();
+      }
+    } catch (Exception $e) {
+      classSupernova::$debug->error($this->db_error() . "<br />{$query}<br />", 'SQL Error');
+    }
+
+    if ($fetch) {
+      $queryResult = $this->db_fetch($queryResult);
+      // DO NOT CLOSE STATEMENT HERE TO MAKE STATEMENT CACHING WORK!
+    }
+
+    return $queryResult;
   }
 
 
@@ -224,7 +260,7 @@ class db_mysql {
   protected function security_watch_user_queries($query) {
     global $user;
 
-    if(
+    if (
       !$this->isWatching // Not already watching
       && !empty(classSupernova::$config->game_watchlist_array) // There is some players in watchlist
       && in_array($user['id'], classSupernova::$config->game_watchlist_array) // Current player is in watchlist
@@ -232,10 +268,10 @@ class db_mysql {
     ) {
       $this->isWatching = true;
       $msg = "\$query = \"{$query}\"\n\r";
-      if(!empty($_POST)) {
+      if (!empty($_POST)) {
         $msg .= "\n\r" . dump($_POST, '$_POST');
       }
-      if(!empty($_GET)) {
+      if (!empty($_GET)) {
         $msg .= "\n\r" . dump($_GET, '$_GET');
       }
       classSupernova::$debug->warning($msg, "Watching user {$user['id']}", 399, array('base_dump' => true));
@@ -244,10 +280,14 @@ class db_mysql {
   }
 
 
-  public function security_query_check_bad_words($query) {
+  public function security_query_check_bad_words($query, $skip_query_check = false) {
+    if ($skip_query_check) {
+      return;
+    }
+
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch(true) {
+    switch (true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -309,11 +349,11 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while($row = $this->db_fetch($query)) {
-      foreach($row as $table_name) {
-        if(strpos($table_name, $this->db_prefix) === 0) {
+    while ($row = $this->db_fetch($query)) {
+      foreach ($row as $table_name) {
+        if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
-        } elseif($prefixed_only) {
+        } elseif ($prefixed_only) {
           continue;
         }
         // $table_name = str_replace($db_prefix, '', $table_name);
@@ -322,6 +362,19 @@ class db_mysql {
     }
 
     return $tl;
+  }
+
+  /**
+   * @param string $statement
+   *
+   * @return bool|mysqli_stmt
+   */
+  public function db_prepare($statement) {
+    $microtime = microtime(true);
+    $result = $this->driver->mysql_prepare($statement);
+    $this->time_mysql_total += microtime(true) - $microtime;
+
+    return $result;
   }
 
 
@@ -408,7 +461,7 @@ class db_mysql {
     $result = array();
 
     $status = explode('  ', $this->driver->mysql_stat());
-    foreach($status as $value) {
+    foreach ($status as $value) {
       $row = explode(': ', $value);
       $result[$row[0]] = $row[1];
     }
@@ -424,10 +477,10 @@ class db_mysql {
     $result = array();
 
     $query = $this->db_sql_query('SHOW STATUS;');
-    if(is_bool($query)) {
+    if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while($row = db_fetch($query)) {
+    while ($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 

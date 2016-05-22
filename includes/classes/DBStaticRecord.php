@@ -32,6 +32,13 @@ class DBStaticRecord {
   /**
    * @return DbSqlStatement
    */
+  public static function buildSelectNoFields() {
+    return DbSqlStatement::build(null, get_called_class())->select(false);
+  }
+
+  /**
+   * @return DbSqlStatement
+   */
   public static function buildSelectLock() {
     return
       static::buildSelect()

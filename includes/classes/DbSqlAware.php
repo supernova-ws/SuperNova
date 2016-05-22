@@ -21,9 +21,7 @@ class DbSqlAware {
    * @return static
    */
   public static function build($db = null) {
-    $result = new static($db);
-
-    return $result;
+    return new static($db);
   }
 
   /**

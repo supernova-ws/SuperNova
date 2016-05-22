@@ -9,6 +9,7 @@
  * Class DbSqlStatement
  *
  * @method static DbSqlStatement fields(mixed $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement join(mixed $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement groupBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement orderBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
@@ -34,6 +35,8 @@ class DbSqlStatement extends DbSqlAware {
    * @var array
    */
   public $fields = array();
+
+  public $join = array();
 
   public $where = array();
   public $groupBy = array();
@@ -63,9 +66,9 @@ class DbSqlStatement extends DbSqlAware {
   /**
    * @return self
    */
-  public function select() {
+  public function select($initFields = true) {
     $this->operation = DbSqlStatement::SELECT;
-    if (empty($this->fields)) {
+    if (empty($this->fields) && $initFields) {
       $this->fields = array('*');
     }
 
@@ -96,9 +99,27 @@ class DbSqlStatement extends DbSqlAware {
     return $this;
   }
 
+  public function field($fieldName) {
+    $this->fields[] = $fieldName;
+
+    return $this;
+  }
+
+  public function singleFunction($functionName, $field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+    return $this->field(DbSqlLiteral::build($this->db)->buildSingleArgument($functionName, $field, $alias));
+  }
+
+  public function count($field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+    return $this->field(DbSqlLiteral::build($this->db)->count($field, $alias));
+  }
+
+  public function isNull($field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+    return $this->field(DbSqlLiteral::build($this->db)->isNull($field, $alias));
+  }
+
   public function __call($name, $arguments) {
     // TODO: Implement __call() method.
-    if (in_array($name, array('fields', 'where', 'groupBy', 'orderBy', 'having'))) {
+    if (in_array($name, array('fields', 'join', 'where', 'groupBy', 'orderBy', 'having'))) {
 //      array_unshift($arguments, '');
 //      $arguments[0] = &$this->$name;
 //      call_user_func_array('HelperArray::merge', $arguments);
@@ -250,6 +271,7 @@ class DbSqlStatement extends DbSqlAware {
   }
 
   protected function compileJoin() {
+    !empty($this->join) ? $this->_compiledQuery[] = implode(' ', $this->join) : false;
   }
 
   protected function compileWhere() {
@@ -259,7 +281,8 @@ class DbSqlStatement extends DbSqlAware {
 
   protected function compileGroupBy() {
     // TODO - fields should be escaped !!
-    !empty($this->groupBy) ? $this->_compiledQuery[] = 'GROUP BY ' . implode(',', $this->arrayEscape($this->groupBy)) : false;
+//    !empty($this->groupBy) ? $this->_compiledQuery[] = 'GROUP BY ' . implode(',', $this->arrayEscape($this->groupBy)) : false;
+    !empty($this->groupBy) ? $this->_compiledQuery[] = 'GROUP BY ' . $this->selectFieldsToString($this->groupBy) : false;
   }
 
   protected function compileOrderBy() {
@@ -348,26 +371,6 @@ class DbSqlStatement extends DbSqlAware {
    *
    * @return string
    */
-  protected function processFieldString($fieldName) {
-    $result = (string)$fieldName;
-    if (
-      $result != ''
-      &&
-      // Literals plays as they are - they do properly format by itself
-      !($fieldName instanceof DbSqlLiteral)
-    ) {
-      // Other should be formatted
-      $result = '`' . $this->stringEscape($result) . '`';
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param mixed $fieldName
-   *
-   * @return string
-   */
   protected function processField($fieldName) {
     if (is_bool($fieldName)) {
       $result = (string)intval($fieldName);
@@ -375,11 +378,12 @@ class DbSqlStatement extends DbSqlAware {
       $result = $fieldName;
     } elseif (is_null($fieldName)) {
       $result = 'NULL';
-    } elseif ($fieldName === '*') {
-      $result = '*';
     } else {
       // Field has other type - string or should be convertible to string
-      $result = $this->processFieldString($fieldName);
+      $result = (string)$fieldName;
+      if(!$fieldName instanceof DbSqlLiteral) {
+        $result = $this->makeFieldFromString($fieldName);
+      }
     }
 
     return $result;

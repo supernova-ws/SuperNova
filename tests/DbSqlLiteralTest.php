@@ -67,6 +67,7 @@ class DbSqlLiteralTest extends PHPUnit_Framework_TestCase {
    * @covers ::__toString
    */
   public function testMax($field, $alias, $expected) {
+//    $this->assertEquals($this->object, invokeMethod($this->object, 'max', array($field, $alias)));
     $this->assertEquals($this->object, $this->object->max($field, $alias));
     $this->assertEquals($expected, $this->object->__toString());
   }

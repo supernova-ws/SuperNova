@@ -130,4 +130,14 @@ class db_mysql_v5 {
   function mysql_stat() {
     return mysqli_stat($this->link);
   }
+
+  /**
+   * @param string $statement
+   *
+   * @return bool|mysqli_stmt
+   */
+  function mysql_prepare($statement) {
+    return mysqli_prepare($this->link, $statement);
+  }
+
 }

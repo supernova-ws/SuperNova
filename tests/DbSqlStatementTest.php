@@ -254,7 +254,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @dataProvider dataSelectFieldsToString
    * @covers ::selectFieldsToString
    * @covers ::processField
-   * @covers ::processFieldString
+   * @covers ::makeFieldFromString
    */
   public function testSelectFieldsToString($expected, $param) {
     $this->assertEquals($expected, invokeMethod($this->object, 'selectFieldsToString', array($param)));
@@ -294,6 +294,30 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @expectedException ExceptionDbOperationRestricted
    */
   public function test__toStringExceptionDbOperationRestricted() {
+//    return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
+//    LEFT JOIN {{referrals}} as r on r.id_partner = u.id
+//    WHERE" .
+//      ($online ? " `onlinetime` >= " . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ' user_as_ally IS NULL') .
+//      " GROUP BY u.id
+//    ORDER BY user_as_ally, {$sort} ASC");
+
+//    $test = DBStaticUser::buildSelectNoFields()
+//      ->fromAlias('u')
+//      ->field('u.*')
+////      ->field(DbSqlLiteral::build()->count('r.id', 'referral_count'))
+////      ->field(DbSqlLiteral::build()->sum('r.dark_matter', 'referral_dm'))
+////      ->count('r.id', 'referral_count')
+//      ->singleFunction('count','r.id', 'referral_count')
+//      ->singleFunction('sum','r.dark_matter', 'referral_dm')
+//      ->join('LEFT JOIN {{referrals}} as r on r.id_partner = u.id')
+//      ->where(!empty($online) ? "`onlinetime` >= " . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : 'user_as_ally IS NULL')
+//      ->groupBy('u.id')
+//      ->orderBy('user_as_ally, {$sort} ASC');
+//
+//
+//    @print($test);
+
+
     $this->object->operation = 'RESTRICTED';
     $this->object->__toString();
   }

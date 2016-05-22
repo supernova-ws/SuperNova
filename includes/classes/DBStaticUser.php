@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Class DBStaticUser
+ */
 class DBStaticUser extends DBStaticRecord {
 
   public static $_table = 'users';
@@ -109,20 +112,44 @@ class DBStaticUser extends DBStaticRecord {
 
 
   public static function db_user_list_admin_sorted($sort, $online = false) {
-    return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u
-    LEFT JOIN {{referrals}} as r on r.id_partner = u.id
-    WHERE" .
-      ($online ? " `onlinetime` >= " . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ' user_as_ally IS NULL') .
+//    static $stmt;
+//
+//    if (empty($stmt)) {
+//      $stmt = DbSqlPrepare::build(
+//        "SELECT
+//            u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm
+//        FROM
+//            {{users}} as u
+//            LEFT JOIN
+//                {{referrals}} as r on r.id_partner = u.id
+//        WHERE " .
+//        ($online ? "`onlinetime` >= :onlineTime" : 'user_as_ally IS NULL') .
+//        " GROUP BY u.id
+//        ORDER BY user_as_ally, {$sort} ASC",
+//        array(
+//          ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
+//        ),
+//        array()
+//      );
+//    }
+//
+//    return doquery($stmt);
+    $stmt = DbSqlPrepare::build(
+      "SELECT
+            u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm
+        FROM
+            {{users}} as u
+            LEFT JOIN
+                {{referrals}} as r on r.id_partner = u.id
+        WHERE " .
+      ($online ? "`onlinetime` >= :onlineTime" : 'user_as_ally IS NULL') .
       " GROUP BY u.id
-    ORDER BY user_as_ally, {$sort} ASC");
+        ORDER BY user_as_ally, {$sort} ASC", array(
+        ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
+      )
+    );
 
-//    return $this->execute(
-//      static::buildSelect()
-//      ->fields(array(
-//        DbSqlLiteral::build('u.*'),
-//        DbSqlLiteral::build('u.*'),
-//      ))
-//    );
+    return doquery($stmt);
   }
 
 
