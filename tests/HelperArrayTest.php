@@ -33,29 +33,37 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
    * @dataProvider dataStringToArray
    *
    * @covers ::stringToArray
-   * @covers ::stringToArrayFilterEmpty
    */
   public function testStringToArray($value, $delimiter, $expected) {
     $this->assertEquals($expected, HelperArray::stringToArray($value, $delimiter));
   }
 
 
+  public function dataMakeArray() {
+    return array(
+      array(array('test'), 0, array('test')), // Straightforward: just array
+      array('test', 0, array(0 => 'test')), // Value with default index
+      array('test', 1, array(1 => 'test')), // Value with non-default index
+    );
+  }
+
   /**
+   * @dataProvider dataMakeArray
+   *
    * @covers ::makeArrayRef
+   */
+  public function testMakeArrayRef($value, $index, $expected) {
+    HelperArray::makeArrayRef($value, $index);
+    $this->assertEquals($expected, $value);
+  }
+
+  /**
+   * @dataProvider dataMakeArray
+   *
    * @covers ::makeArray
    */
-  public function testMakeArray() {
-    // Straightforward: just array
-    $test = array('test');
-    $this->assertEquals(array('test'), HelperArray::makeArray($test));
-
-    // Value with default index
-    $test = 'test';
-    $this->assertEquals(array(0 => 'test'), HelperArray::makeArray($test));
-
-    // Value with non-default index
-    $test = 'test';
-    $this->assertEquals(array(1 => 'test'), HelperArray::makeArray($test, 1));
+  public function testMakeArray($value, $index, $expected) {
+    $this->assertEquals($expected, HelperArray::makeArray($value, $index));
   }
 
   public function dataFilter() {
@@ -67,15 +75,17 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
       array(1, $callback, array()), // Not array
       array(array(), $callback, array()), // Empty array
       array(array(''), $callback, array()), // Not empty array with one empty element
-      array(array('0', ''), $callback,array()), // Not empty array with both filterable elements
+      array(array('0', ''), $callback, array()), // Not empty array with both filterable elements
       array(array('test', ''), $callback, array(0 => 'test')), // Not empty array with one filterable element
+      array(array('test1', '', 'test2'), $callback, array(0 => 'test1', 1 => 'test2')),
+      array(array('test1', 'test', 'test2'), $callback, array(0 => 'test1', 1 => 'test', 2 => 'test2')),
     );
   }
 
   /**
-   * @param mixed $value
+   * @param mixed    $value
    * @param callable $callback
-   * @param array $expected
+   * @param array    $expected
    *
    * @dataProvider dataFilter
    *
@@ -86,14 +96,15 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @param mixed $value
+   * @param mixed    $value
    * @param callable $callback
-   * @param array $expected
-
+   * @param array    $expected
+   *
    * @dataProvider dataFilter
    *
    * @covers ::filterEmpty
-   * @covers Validators::isNotEmpty
+   * @covers       Validators::isNotEmpty
+   * @covers       Validators::isNotEmptyByRef
    * @covers ::filter
    */
   public function testFilterEmpty($value, $callback, $expected) {
@@ -132,6 +143,13 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
     $array2 = array('c' => 'e', 0 => 20);
     HelperArray::merge($array1, $array2, HelperArray::ARRAY_MERGE);
     $this->assertEquals(array('c' => 'e', 0 => 10, 1 => 20), $array1);
+
+    // First array is not an array
+    $array1 = 1;
+    $array2 = array('c' => 'd', 1 => 10);
+    HelperArray::merge($array1, $array2, HelperArray::ARRAY_MERGE);
+    $this->assertEquals(array(0 => 1, 'c' => 'd', 1 => 10), $array1);
+
   }
 
 }

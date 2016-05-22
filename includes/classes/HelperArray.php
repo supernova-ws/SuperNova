@@ -23,7 +23,9 @@ class HelperArray {
    * @param mixed &$value
    */
   public static function makeArrayRef(&$value, $index = 0) {
-    !is_array($value) ? $value = array($index => $value) : false;
+    if(!is_array($value)) {
+      $value = array($index => $value);
+    }
   }
 
 
@@ -89,14 +91,11 @@ class HelperArray {
    * @param int         $mergeStrategy - default is HelperArray::ARRAY_REPLACE
    */
   public static function merge(&$arrayOld, $arrayNew = array(), $mergeStrategy = HelperArray::ARRAY_REPLACE) {
-    if (!is_array($arrayOld)) {
-      $arrayOld = array($arrayOld);
-    }
-
     static::makeArrayRef($arrayNew);
 
     switch ($mergeStrategy) {
       case HelperArray::ARRAY_MERGE:
+        static::makeArrayRef($arrayOld);
         $arrayOld = array_merge($arrayOld, $arrayNew);
       break;
 
