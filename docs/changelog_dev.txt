@@ -899,6 +899,122 @@ http://www.hongkiat.com/blog/css-scroll-bar/
     - Добавить в DB метод для enquote полей - типа, ` для MySQL
     - А затем добавить его использование в литерал и в стэйтмент
 
+
+    return static::prepareExecute(
+      "SELECT
+        `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
+        CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`,
+        DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`
+      FROM
+        `{{users}}`
+      WHERE
+        `user_birthday` IS NOT NULL
+        AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
+        AND `user_as_ally` IS NULL
+      HAVING
+        `days_after_birthday` >= 0
+        AND `days_after_birthday` < :birthdayRange FOR UPDATE",
+      array(
+        ':birthdayRange' => $config_user_birthday_range,
+      )
+    );
+
+    build()
+    ->command('SELECT')
+    ->field('id')
+    ->field('username')
+    ->field('user_birthday')
+    ->field('user_birthday_celebrated')
+    ->literal(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`)
+    ->literal(DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`)
+    ->table('users')
+    ->where(`user_birthday` IS NOT NULL)
+    ->where((`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE))
+    ->where(`user_as_ally` IS NULL)
+    ->having(`days_after_birthday` >= 0)
+    ->having(`days_after_birthday` < :birthdayRange)
+    ->forUpdate(true)
+    ->param(':birthdayRange', $config_user_birthday_range)
+    ->prepareExecute();
+
+
+
+
+      DELETE {{unit}}
+      FROM {{unit}}
+      LEFT JOIN {{planets}} ON id = unit_location_id
+      WHERE unit_location_type = 1 AND unit_type = 99 AND (
+        (planet_type = 1 AND unit_snid IN (41, 42, 43))
+        OR
+        (planet_type = 3 AND unit_snid NOT IN (14, 15, 21, 34, 41, 42, 43))
+      )
+
+
+
+
+  // New interface
+  public function _operation($value) {
+    if (empty($value)) {
+      throw new ExceptionDbOperationEmpty();
+    }
+
+    $value = strtoupper($value);
+
+    if (!in_array($value, self::$allowedOperations)) {
+      throw new ExceptionDbOperationRestricted();
+    }
+
+    $this->operation = $value;
+
+    return $this;
+  }
+
+  public function _field($value, $alias = '') {
+    $this->fields[] = array($value, $alias);
+
+    return $this;
+  }
+
+  public function _literal($value, $alias = '') {
+    $this->fields[] = array(new DbSqlLiteral($db = null, $value), $alias);
+
+    return $this;
+  }
+
+  public function _table($value, $alias = '') {
+    // Будет использоваться как основная таблица:
+    // SELECT ... FROM _table
+    // DELETE _table FROM ..., возможно, _table
+    // INSERT INTO  _table ...
+    $this->table = array($value, $alias);
+
+    return $this;
+  }
+
+  public function _where($value) {
+    $this->where[] = new DbSqlLiteral($db = null, $value);
+
+    return $this;
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 #ctv
 
 Теперь можно атаковать ракетами свои же планеты. Таким образом можно избавится от излишних ракет или перехватчиков в шахтах, а так же уничтожать свои защитные сооружения

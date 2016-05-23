@@ -67,7 +67,7 @@ class DBStaticUser extends DBStaticRecord {
 //        ->where(array("`id` = " . idval($user['id']) .
 //          (isset($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '')))
 //    );
-
+    // TODO - FOR UPDATE
     return static::prepareExecute(
       "SELECT 1 FROM {{users}} WHERE `id` = :userId" .
       (!empty($planet['id_owner']) ? ' OR `id` = :planetOwnerId' : ''),
@@ -128,10 +128,10 @@ class DBStaticUser extends DBStaticRecord {
 
   public static function db_user_list_admin_multiaccounts() {
     return static::prepareExecute(
-      "SELECT COUNT(*) AS ip_count, user_lastip
+      "SELECT COUNT(*) AS `ip_count`, `user_lastip`
       FROM `{{users}}`
-      WHERE user_as_ally IS NULL
-      GROUP BY user_lastip
+      WHERE `user_as_ally` IS NULL
+      GROUP BY `user_lastip`
       HAVING COUNT(*) > 1"
     );
   }
@@ -142,18 +142,6 @@ class DBStaticUser extends DBStaticRecord {
 
   public static function db_player_list_blitz_set_50k_dm() {
     doquery('UPDATE `{{users}}` SET dark_matter = 50000, dark_matter_total = 50000;');
-  }
-
-  public static function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
-    return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
-  }
-
-  public static function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
-    return classSupernova::db_get_record_list(LOC_USER, $user_filter);
-  }
-
-  public static function db_user_set_by_id($user_id, $set) {
-    return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
   }
 
 
@@ -177,6 +165,18 @@ class DBStaticUser extends DBStaticRecord {
   }
 
 
+  public static function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
+    return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
+  }
+
+  public static function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
+    return classSupernova::db_get_record_list(LOC_USER, $user_filter);
+  }
+
+  public static function db_user_set_by_id($user_id, $set) {
+    return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
+  }
+
   public static function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
     return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);
   }
@@ -193,10 +193,8 @@ class DBStaticUser extends DBStaticRecord {
     return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
   }
 
-
 //  public static function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
 //    return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet};");
 //  }
-
 
 }

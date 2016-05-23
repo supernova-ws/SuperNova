@@ -3,15 +3,48 @@
 /**
  * Class DbSqlPrepare
  */
+// TODO - Вааще всё переделать.
+// Получение стейтмента по строке - это должен быть статик
+// Тогда же должны ребиндится параметры
 class DbSqlPrepare {
   const COMMENT_PLACEHOLDER = ':__COMMENT__';
   const PARAM_PREG = '#(\:.+?\b)#im';
 
+  /**
+   * SQL text
+   *
+   * @var string $query
+   */
   public $query = '';
+  /**
+   * Array of used params :param => value
+   * Each param would bind with bind_param() function
+   * Used for DML part of query
+   *
+   * @var array $values
+   */
   public $values = array();
+  /**
+   * Array of used placeholders |param => value
+   * Each placeholder would be placed into query with conversion via (string)
+   * Used for dynamic queries creation for DDL part
+   *
+   * @var array $placeholders
+   */
+  // TODO - make use of it
+  public $placeholders = array();
 
+  /**
+   * Comment for query
+   * Should be quoted with SQL comment quote
+   * Will be placed after query itself. Used mainly for debug purposes (should be disabled on production servers)
+   *
+   * @var string
+   */
+  // TODO - disable comments in SQL via game config
   public $comment = '';
 
+  // Prepared values for query execution
   public $queryPrepared = '';
   public $paramsPrepared = array();
   public $valuesPrepared = array();
@@ -20,6 +53,13 @@ class DbSqlPrepare {
    * @var mysqli_stmt $statement
    */
   public $statement;
+  /**
+   * Flag that params already bound
+   * Setting values performed via updating $values property
+   *
+   * @var bool $isParamsBound
+   */
+  protected $isParamsBound = false;
 
 //  /**
 //   * @var ReflectionMethod
@@ -27,7 +67,7 @@ class DbSqlPrepare {
 //  public static $bindParamMethod;
 
   /**
-   * @var self[]
+   * @var mysqli_stmt[]
    */
   protected static $statements = array();
 
@@ -92,6 +132,10 @@ class DbSqlPrepare {
     return $this;
   }
 
+
+  // TODO - method to re-set and re-bind values
+
+
   public function __toString() {
 //    $result = str_replace(array_keys($this->tables), $this->tables, $this->query);
     $result = str_replace(array_keys($this->values), $this->values, $this->query);
@@ -100,8 +144,6 @@ class DbSqlPrepare {
   }
 
   public function compileMySqlI() {
-//    print($this->statement);
-
     $this->queryPrepared = $this->query;
     $this->paramsPrepared = array();
     $this->valuesPrepared = array();
@@ -117,26 +159,23 @@ class DbSqlPrepare {
         // TODO - Add comment value directly to statement
       }
 
-//      pdump($this->valuesUsed, '$this->valuesUsed0');
+      // Replacing actual param names with '?' - for mysqli_prepare
+      $this->queryPrepared = preg_replace(self::PARAM_PREG, '?', $this->queryPrepared);
 
-      // Using $matches array as keys for used values array
-//     $this->valuesUsed = array_combine($matches, array_fill(0, count($matches), null));
-
-      // Now filling found parms with it values
+      // Now filling found params with it values
       // We can't use param names as keys 'cause same param can be met twice
       // So one key would overwrite another and total number of valuesUsed will be less then actual values used
+      // TODO - move out of this proc to separate method to allow rebind of params
       foreach ($this->paramsPrepared as $key => &$value) {
         if (!key_exists($value, $this->values)) {
           // Throw exception if not key found in statement values list
-          throw new Exception('DbSqlPrepare::compile() - values array has no match for statement params');
+          throw new Exception('DbSqlPrepare::compileMySqlI() - values array has no match for statement params');
         }
-//        $value = array(
-//          'param' => $value,
-//          'value' => $this->values[$value],
-//        );
-        // Reference need for call mysqli::bind_param later in execute() method
+
+        // Reference need for call mysqli::bind_param later in bindParam() method
         $this->valuesPrepared[$key] = &$this->values[$value];
 
+        // TODO - move out of this proc to separate method and own loop to allow rebind of params
         // i corresponding variable has type integer
         // d corresponding variable has type double
         // s corresponding variable has type string
@@ -149,40 +188,21 @@ class DbSqlPrepare {
           $this->valueTypesPrepared .= 's';
         }
       }
-
-
-//      foreach ($this->valuesUsed as $key => &$value) {
-//        if (!key_exists($key, $this->values)) {
-//          // Throw exception if not key found in statement values list
-//          throw new Exception('DbSqlPrepare::compile() - values array has no match for statement params');
-//        }
-//        $value = $this->values[$key];
-//      }
-//
-
-
-//      pdump($matches, '$matches0');
-//      $this->valuesUsed = array_intersect_key($this->values, $matches);
-//      pdump($matches, '$matches2 ');
-
-      // Replacing actual param names with '?' - for mysqli_prepare
-      $this->queryPrepared = preg_replace(self::PARAM_PREG, '?', $this->queryPrepared);
-
-//      pdump($this->paramsPrepared, '$this->paramsUsed');
-//      pdump($this->valuesPrepared, '$this->valuesPrepared');
-//      pdump($this->valueTypesPrepared, '$valueTypes');
-//
-//      print($this->queryPrepared);
-//      print($questioned);
-    };
-
-//    pdie();
+    }
 
     return $this;
   }
 
-  public function getResult() {
-    return $this->statement->get_result();
+
+  /**
+   * @internal param mysqli_stmt $mysqli_stmt
+   */
+  protected function bindParams() {
+    if (count($this->valuesPrepared)) {
+      $params = array_merge(array(&$this->valueTypesPrepared), $this->valuesPrepared);
+      // static::$bindParamMethod->invokeArgs($this->statement, $params);
+      call_user_func_array(array($this->statement, 'bind_param'), $params);
+    }
   }
 
   /**
@@ -192,19 +212,21 @@ class DbSqlPrepare {
    * @throws Exception
    */
   public function statementGet($db) {
+    // TODO - к этому моменту плейсхолдеры под DDL уже должны быть заполнены соответствующими значениями
+    // Надо вынести собственно prepared statement в отдельный объект, что бы здесь остались только манипуляции с полями
     $md5 = md5($this->queryPrepared);
 
     if (empty(static::$statements[$md5])) {
       if (!(static::$statements[$md5] = $db->db_prepare($this->queryPrepared))) {
-        throw new Exception('doQueryPhase1 - can not prepare statement');
+        throw new Exception('DbSqlPrepare::statementGet() - can not prepare statement');
       }
-      if (count($this->valuesPrepared)) {
-        $params = array_merge(array(&$this->valueTypesPrepared), $this->valuesPrepared);
-        // static::$bindParamMethod->invokeArgs($this->statement, $params);
-        call_user_func_array(array(static::$statements[$md5], 'bind_param'), $params);
-      }
+      $this->statement = static::$statements[$md5];
+      $this->bindParams();
+    } else {
+      // TODO - вот тут фигня. На самом деле нельзя под один и тот же DbSqlPrepare исползовать разные mysqli_stmt
+      // С другой стороны - это позволяет реюзать параметры. Так что еще вопрос - фигня ли это....
+      $this->statement = static::$statements[$md5];
     }
-    $this->statement = static::$statements[$md5];
 
     return $this;
   }
@@ -213,16 +235,13 @@ class DbSqlPrepare {
    * @return $this
    */
   public function execute() {
-//pdump($this->valuesPrepared);
-//    if (count($this->valuesPrepared)) {
-//      $params = array_merge(array(&$this->valueTypesPrepared), $this->valuesPrepared);
-////      static::$bindParamMethod->invokeArgs($this->statement, $params);
-//      call_user_func_array(array($this->statement, 'bind_param'), $params);
-//    }
-
     $this->statement->execute();
 
     return $this;
+  }
+
+  public function getResult() {
+    return $this->statement->get_result();
   }
 
 }

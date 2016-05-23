@@ -124,6 +124,8 @@ class DbSqlStatement extends DbSqlAware {
 //      $arguments[0] = &$this->$name;
 //      call_user_func_array('HelperArray::merge', $arguments);
       HelperArray::merge($this->$name, $arguments[0], !empty($arguments[1]) ? $arguments[1] : HelperArray::ARRAY_REPLACE);
+    } else {
+      $this->_callNew($name, $arguments);
     }
     // TODO - make all setters protected ??
 //    elseif(method_exists($this, $name)) {
