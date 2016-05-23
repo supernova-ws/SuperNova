@@ -160,6 +160,48 @@ class DBStaticRecord {
     );
   }
 
+  /**
+   * Builds and Executes prepared statement
+   *
+   * @param string $sqlQuery
+   * @param array  $values
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  protected static function prepareExecute($sqlQuery, $values = array()) {
+    return static::$dbStatic->doquery(DbSqlPrepare::build($sqlQuery, $values));
+  }
+
+  /**
+   * Builds and executes prepared statement then return first record from sets
+   *
+   * @param string $sqlQuery
+   * @param array $values
+   *
+   * @return array|null
+   */
+  protected static function prepareFetchOne($sqlQuery, $values = array()) {
+    return static::$dbStatic->db_fetch(static::prepareExecute($sqlQuery, $values));
+  }
+
+  /**
+   * Builds and executes prepared statement then fetches first record from sets and returns value from first field
+   *
+   * @param string $sqlQuery
+   * @param array $values
+   *
+   * @return mixed|null
+   */
+  protected static function prepareFetchValue($sqlQuery, $values = array()) {
+    $result = static::prepareFetchOne($sqlQuery, $values);
+    if(empty($result) || !array($result)) {
+      $result = null;
+    } else {
+      $result = array_pop($result);
+    }
+    return $result;
+  }
+
 }
 
 DBStaticRecord::_init();
