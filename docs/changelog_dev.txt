@@ -366,6 +366,7 @@ OK8 Следующий
 
 
 
+
     // TODO - вынести на уровень FleetList
     $debris->debris_add_wrecks($this->resources_lost_on_ships, $is_simulator);
 
