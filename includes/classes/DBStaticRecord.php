@@ -26,14 +26,14 @@ class DBStaticRecord {
    * @return DbSqlStatement
    */
   public static function buildSelect() {
-    return DbSqlStatement::build(null, get_called_class())->select();
+    return DbSqlStatement::build(null)->getParamsFromStaticClass(get_called_class())->select(false);
   }
 
   /**
    * @return DbSqlStatement
    */
-  public static function buildSelectNoFields() {
-    return DbSqlStatement::build(null, get_called_class())->select(false);
+  public static function buildSelectAll() {
+    return static::buildSelect()->field('*');
   }
 
   /**
@@ -41,8 +41,7 @@ class DBStaticRecord {
    */
   public static function buildSelectLock() {
     return
-      static::buildSelect()
-        ->fields(1)
+      static::buildSelect()->field(1)
         ->forUpdate();
   }
 
@@ -58,8 +57,7 @@ class DBStaticRecord {
    */
   protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
     $result = static::fetchOne(
-      static::buildSelect()
-        ->fields($fieldList)
+      static::buildSelect()->fields($fieldList)
         ->where($where)
     );
 
@@ -94,7 +92,7 @@ class DBStaticRecord {
    * @return array|bool|mysqli_result|null
    */
   protected static function execute($statement) {
-    return static::$dbStatic->execute($statement);
+    return static::$dbStatic->execute((string)$statement);
   }
 
   /**
@@ -120,7 +118,7 @@ class DBStaticRecord {
     $query = null;
     if (!empty($idList) && is_array($idList)) {
       $query = static::execute(
-        static::buildSelect()
+        static::buildSelectAll()
           ->fields(static::$_idField)
           ->where(array("`" . static::$_idField . "` IN (" . implode(',', $idList) . ")"))
       );
@@ -142,7 +140,7 @@ class DBStaticRecord {
     $result = array();
     if (!empty($idList)) {
       $query = static::queryExistsIdInList($idList);
-      while ($row = db_fetch($query)) {
+      while($row = db_fetch($query)) {
         $result[] = $row[static::$_idField];
       }
     }
@@ -169,14 +167,14 @@ class DBStaticRecord {
    * @return array|bool|mysqli_result|null
    */
   protected static function prepareExecute($sqlQuery, $values = array()) {
-    return static::$dbStatic->doquery(DbSqlPrepare::build($sqlQuery, $values));
+    return static::$dbStatic->sqlPrepareAndExecute($sqlQuery, $values);
   }
 
   /**
    * Builds and executes prepared statement then return first record from sets
    *
    * @param string $sqlQuery
-   * @param array $values
+   * @param array  $values
    *
    * @return array|null
    */
@@ -188,17 +186,18 @@ class DBStaticRecord {
    * Builds and executes prepared statement then fetches first record from sets and returns value from first field
    *
    * @param string $sqlQuery
-   * @param array $values
+   * @param array  $values
    *
    * @return mixed|null
    */
   protected static function prepareFetchValue($sqlQuery, $values = array()) {
     $result = static::prepareFetchOne($sqlQuery, $values);
-    if(empty($result) || !array($result)) {
+    if (empty($result) || !array($result)) {
       $result = null;
     } else {
       $result = array_pop($result);
     }
+
     return $result;
   }
 

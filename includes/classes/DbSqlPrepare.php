@@ -13,7 +13,7 @@ class DbSqlPrepare {
   /**
    * SQL text
    *
-   * @var string $query
+   * @var string|DbSqlStatement
    */
   public $query = '';
   /**
@@ -74,28 +74,28 @@ class DbSqlPrepare {
   /**
    * DbSqlPrepare constructor.
    *
-   * @param string $statement
+   * @param string $query
    * @param array  $values
    */
-  public function __construct($statement, $values = array()) {
+  public function __construct($query, $values = array()) {
 //    if(empty(static::$bindParamMethod)) {
 //      $ref = new ReflectionClass('mysqli_stmt');
 //      static::$bindParamMethod = $ref->getMethod("bind_param");
 //    }
 
-    $this->query = trim($statement);
+    $this->query = trim($query);
     $this->values = $values;
   }
 
   /**
-   * @param string $statement
+   * @param string $query
    * @param array  $values
    *
    * @return static
    *
    */
-  public static function build($statement, $values = array()) {
-    return new static($statement, $values);
+  public static function build($query, $values = array()) {
+    return new static($query, $values);
   }
 
 

@@ -178,12 +178,26 @@ class db_mysql {
   }
 
   /**
-   * @param DbSqlStatement $statement
+   * Prepares sql string to execution and execute it
+   *
+   * @param string $sqlQuery
+   * @param array  $values
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function sqlPrepareAndExecute($sqlQuery, $values = array()) {
+    return $this->doquery(DbSqlPrepare::build($sqlQuery, $values));
+  }
+
+
+
+  /**
+   * @param string|DbSqlStatement $statement
    *
    * @return array|bool|mysqli_result|null
    */
   public function execute($statement) {
-    return $this->doquery((string)$statement);
+    return $this->doquery($statement);
   }
 
   /**
@@ -287,7 +301,7 @@ class db_mysql {
 
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch (true) {
+    switch(true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -349,7 +363,7 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while ($row = $this->db_fetch($query)) {
+    while($row = $this->db_fetch($query)) {
       foreach ($row as $table_name) {
         if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
@@ -480,7 +494,7 @@ class db_mysql {
     if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while ($row = db_fetch($query)) {
+    while($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 

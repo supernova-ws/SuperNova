@@ -750,7 +750,7 @@ class classSupernova {
 
       // TODO переписать
       $user = static::dbFetchOne(
-        DBStaticUser::buildSelect()
+        DBStaticUser::buildSelectAll()
           ->where(array("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"))
       );
 

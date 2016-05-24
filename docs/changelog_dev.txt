@@ -229,6 +229,13 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 
 
 
+Два метода исполнения:
+    - Если запрос - строка, значит просто db_sql_query()
+    - Если запрос - prepared statement, значит mysqli_stmt::execute()
+Первое отличается от второго наличием параметров
+    - Хотя препарить их нужно, наверное, обоих
+
+
 
 
 

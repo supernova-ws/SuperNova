@@ -13,7 +13,7 @@
  * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement groupBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  * @method static DbSqlStatement orderBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement having(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement having(mixed $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
  *
  */
 class DbSqlStatement extends DbSqlAware {
@@ -64,13 +64,13 @@ class DbSqlStatement extends DbSqlAware {
   }
 
   /**
-   * @return self
+   * @return $this
    */
-  public function select($initFields = true) {
+  public function select() {
     $this->operation = DbSqlStatement::SELECT;
-    if (empty($this->fields) && $initFields) {
-      $this->fields = array('*');
-    }
+//    if (empty($this->fields) && $initFields) {
+//      $this->fields = array('*');
+//    }
 
     return $this;
   }
@@ -99,8 +99,22 @@ class DbSqlStatement extends DbSqlAware {
     return $this;
   }
 
-  public function field($fieldName) {
-    $this->fields[] = $fieldName;
+  /**
+   * @param mixed ...
+   *
+   * @return $this
+   */
+  public function field() {
+    $arguments = func_get_args();
+
+    // Special case - call method with array of fields
+    if(count($arguments) == 1 && is_array($arguments[0])) {
+      $arguments = array_shift($arguments);
+    }
+
+    foreach($arguments as $arg) {
+      $this->fields[] = $arg;
+    }
 
     return $this;
   }
@@ -118,14 +132,11 @@ class DbSqlStatement extends DbSqlAware {
   }
 
   public function __call($name, $arguments) {
-    // TODO: Implement __call() method.
     if (in_array($name, array('fields', 'join', 'where', 'groupBy', 'orderBy', 'having'))) {
 //      array_unshift($arguments, '');
 //      $arguments[0] = &$this->$name;
 //      call_user_func_array('HelperArray::merge', $arguments);
       HelperArray::merge($this->$name, $arguments[0], !empty($arguments[1]) ? $arguments[1] : HelperArray::ARRAY_REPLACE);
-    } else {
-      $this->_callNew($name, $arguments);
     }
     // TODO - make all setters protected ??
 //    elseif(method_exists($this, $name)) {
@@ -265,6 +276,22 @@ class DbSqlStatement extends DbSqlAware {
     return $result;
   }
 
+  protected function compileOperation() {
+    if (empty($this->operation)) {
+      throw new ExceptionDbOperationEmpty();
+    }
+
+    if (!in_array($this->operation, self::$allowedOperations)) {
+      throw new ExceptionDbOperationRestricted();
+    }
+
+    $this->_compiledQuery[] = $this->stringEscape($this->operation);
+  }
+
+  protected function compileSubject() {
+    $this->_compiledQuery[] = $this->selectFieldsToString($this->fields);
+  }
+
   protected function compileFrom() {
     $this->_compiledQuery[] = 'FROM `{{' . $this->stringEscape($this->table) . '}}`';
     if (!empty($this->alias)) {
@@ -314,37 +341,6 @@ class DbSqlStatement extends DbSqlAware {
   }
 
   /**
-   * @return string
-   * @throws ExceptionDbOperationEmpty
-   * @throws ExceptionDbOperationRestricted
-   */
-  public function __toString() {
-    if (empty($this->operation)) {
-      throw new ExceptionDbOperationEmpty();
-    }
-
-    if (!in_array($this->operation, self::$allowedOperations)) {
-      throw new ExceptionDbOperationRestricted();
-    }
-
-    $this->_compiledQuery = array();
-
-    $this->_compiledQuery[] = $this->stringEscape($this->operation);
-    $this->_compiledQuery[] = $this->selectFieldsToString($this->fields);
-
-    $this->compileFrom();
-    $this->compileJoin();
-    $this->compileWhere();
-    $this->compileGroupBy();
-    $this->compileOrderBy();
-    $this->compileHaving();
-    $this->compileLimit();
-    $this->compileForUpdate();
-
-    return implode(' ', $this->_compiledQuery);
-  }
-
-  /**
    * @param array|mixed $fields
    *
    * @return string
@@ -383,12 +379,35 @@ class DbSqlStatement extends DbSqlAware {
     } else {
       // Field has other type - string or should be convertible to string
       $result = (string)$fieldName;
-      if(!$fieldName instanceof DbSqlLiteral) {
+      if (!$fieldName instanceof DbSqlLiteral) {
         $result = $this->makeFieldFromString($fieldName);
       }
     }
 
     return $result;
+  }
+
+
+  /**
+   * @return string
+   * @throws ExceptionDbOperationEmpty
+   * @throws ExceptionDbOperationRestricted
+   */
+  public function __toString() {
+    $this->_compiledQuery = array();
+
+    $this->compileOperation();
+    $this->compileSubject();
+    $this->compileFrom();
+    $this->compileJoin();
+    $this->compileWhere();
+    $this->compileGroupBy();
+    $this->compileOrderBy();
+    $this->compileHaving();
+    $this->compileLimit();
+    $this->compileForUpdate();
+
+    return implode(' ', $this->_compiledQuery);
   }
 
 }

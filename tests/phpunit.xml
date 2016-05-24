@@ -1,4 +1,20 @@
 <phpunit
         bootstrap="__bootstrap.php"
 >
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <!--<file>../includes/classes/DBStaticRecord.php</file>-->
+            <!--<file>../includes/classes/DbSqlAware.php</file>-->
+            <!--<file>../includes/classes/HelperArray.php</file>-->
+            <directory suffix=".php">../includes/classes/</directory>
+
+            <!--<directory suffix=".php">../</directory>-->
+            <exclude>
+                <directory>../.git/</directory>
+                <directory>../.local/</directory>
+                <directory>../__local/</directory>
+                <directory>../admin/sxd/</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

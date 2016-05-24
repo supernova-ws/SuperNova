@@ -26,7 +26,7 @@ class DBStaticUser extends DBStaticRecord {
    */
   public static function getLastRegisteredUserName() {
     $result = static::fetchOne(
-      static::buildSelect()
+      static::buildSelectAll()
         ->fields('username')
         ->where(array('`user_as_ally` IS NULL'))
         ->orderBy(array('`id` DESC'))
@@ -37,7 +37,7 @@ class DBStaticUser extends DBStaticRecord {
 
   public static function db_player_list_export_blitz_info() {
     return static::execute(
-      static::buildSelect()
+      static::buildSelectAll()
         ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
         ->where(array('`user_as_ally` IS NULL'))
         ->orderBy(array('`id`'))
@@ -51,7 +51,7 @@ class DBStaticUser extends DBStaticRecord {
 //    $query = doquery("SELECT `id` FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . " FOR UPDATE;");
 
     $query = static::execute(
-      static::buildSelect()
+      static::buildSelectAll()
         ->fields('id')
         ->where(array(
           "`user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . " FOR UPDATE;"
