@@ -230,7 +230,8 @@ class db_mysql {
 
     $stringQuery = $query instanceof DbSqlPrepare ? $query->query : $query;
     $stringQuery = trim($stringQuery);
-    $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
+    // You can't do it - 'cause you can break commented statement with line-end comments
+    // $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
 
     $this->security_watch_user_queries($stringQuery);
     $this->security_query_check_bad_words($stringQuery, $skip_query_check);
