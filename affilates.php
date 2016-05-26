@@ -1,4 +1,4 @@
-classSupernova::<?php
+<?php
 
 /**
  * affilates.php
