@@ -4,6 +4,9 @@
 # Set the default behavior, in case people don't have core.autocrlf set.
 #* text=auto
 *.php text
+*.html text
+*.css text
+*.ini text
 
 # Explicitly declare text files you want to always be normalized and converted
 # to native line endings on checkout.
