@@ -35,9 +35,9 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
    * @covers ::stringEscape
    */
   public function testStringEscape() {
-    $this->assertEquals('', invokeMethod($this->object, 'stringEscape', array('')));
-    $this->assertEquals('test', invokeMethod($this->object, 'stringEscape', array('test')));
-    $this->assertEquals('t\\\'e\\"s\\\\t', invokeMethod($this->object, 'stringEscape', array('t\'e"s\\t')));
+    $this->assertEquals('', invokeMethod($this->object, 'escapeString', array('')));
+    $this->assertEquals('test', invokeMethod($this->object, 'escapeString', array('test')));
+    $this->assertEquals('t\\\'e\\"s\\\\t', invokeMethod($this->object, 'escapeString', array('t\'e"s\\t')));
   }
 
 
@@ -58,7 +58,7 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
    * @covers ::quoteStringAsFieldByRef
    */
   public function testQuoteStringAsFieldByRef($value, $expected) {
-    invokeMethod($this->object, 'quoteStringAsFieldByRef', array(&$value));
+    invokeMethod($this->object, 'quoteFieldSimpleByRef', array(&$value));
     $this->assertEquals($expected, $value);
   }
 
@@ -83,7 +83,7 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
    * @covers ::quoteStringAsFieldByRef
    */
   public function testMakeFieldFromString($value, $expected) {
-    $this->assertEquals($expected, invokeMethod($this->object, 'makeFieldFromString', array(&$value)));
+    $this->assertEquals($expected, invokeMethod($this->object, 'quoteField', array(&$value)));
   }
 
 
@@ -107,7 +107,7 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
    * @covers       DbSqlHelper::UCFirstByRef
    */
   public function testMakeAliasFromField($functionName, $field, $expected) {
-    $this->assertEquals($expected, invokeMethod($this->object, 'makeAliasFromField', array($functionName, $field)));
+    $this->assertEquals($expected, invokeMethod($this->object, 'aliasFromField', array($functionName, $field)));
   }
 
 }

@@ -25,41 +25,43 @@ class DbSqlAware {
   }
 
   /**
+   * Just escapes string used DB string escape method - or a drop-in replacement addslashes() if not DB specified
+   *
    * @param string $string
    *
    * @return mixed|string
    */
-  protected function stringEscape($string) {
+  protected function escapeString($string) {
     return
       method_exists($this->db, 'db_escape')
         ? $this->db->db_escape($string)
-        : str_replace('`', '\`', addslashes($string));
+        : addslashes($string);
   }
 
   /**
-   * Quotes string by ref as field - except '*'
+   * Quotes string by ref as DDL ID (i.e. field or table name) - except '*' which not quoted
    *
    * @param string &$string
    */
-  protected function quoteStringAsFieldByRef(&$string) {
-    $string = $this->stringEscape($string);
+  protected function quoteFieldSimpleByRef(&$string) {
+    $string = $this->escapeString($string);
     if ((string)$string && '*' != $string) {
       $string = '`' . $string . '`';
     }
   }
 
   /**
-   * Escapes field
+   * Escapes field - include fully qualified field like table.field, table.* and mask '*'
    *
    * @param string $string
    *
    * @return string
    */
-  protected function makeFieldFromString($string) {
+  protected function quoteField($string) {
     // Checking if string is just a '*' - to skip some code
     if ($string != '*') {
       $temp = explode('.', $string);
-      array_walk($temp, array($this, 'quoteStringAsFieldByRef'));
+      array_walk($temp, array($this, 'quoteFieldSimpleByRef'));
       $string = implode('.', $temp);
     }
 
@@ -67,12 +69,14 @@ class DbSqlAware {
   }
 
   /**
+   * Making and alias from fully qualified field name prepending with function name
+   *
    * @param string $functionName
    * @param string $field
    *
    * @return string
    */
-  protected function makeAliasFromField($functionName, $field) {
+  protected function aliasFromField($functionName, $field) {
     $alias = strtolower($functionName);
 
     // Checking if string is just a '*' - to skip some code

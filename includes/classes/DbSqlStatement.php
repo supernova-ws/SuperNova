@@ -270,7 +270,7 @@ class DbSqlStatement extends DbSqlAware {
   protected function arrayEscape(&$array) {
     $result = array();
     foreach ($array as $key => &$value) {
-      $result[$key] = $this->stringEscape($value);
+      $result[$key] = $this->escapeString($value);
     }
 
     return $result;
@@ -285,7 +285,7 @@ class DbSqlStatement extends DbSqlAware {
       throw new ExceptionDbOperationRestricted();
     }
 
-    $this->_compiledQuery[] = $this->stringEscape($this->operation);
+    $this->_compiledQuery[] = $this->escapeString($this->operation);
   }
 
   protected function compileSubject() {
@@ -293,9 +293,9 @@ class DbSqlStatement extends DbSqlAware {
   }
 
   protected function compileFrom() {
-    $this->_compiledQuery[] = 'FROM `{{' . $this->stringEscape($this->table) . '}}`';
+    $this->_compiledQuery[] = 'FROM `{{' . $this->escapeString($this->table) . '}}`';
     if (!empty($this->alias)) {
-      $this->_compiledQuery[] = 'AS `' . $this->stringEscape($this->alias) . '`';
+      $this->_compiledQuery[] = 'AS `' . $this->escapeString($this->alias) . '`';
     }
   }
 
@@ -380,7 +380,7 @@ class DbSqlStatement extends DbSqlAware {
       // Field has other type - string or should be convertible to string
       $result = (string)$fieldName;
       if (!$fieldName instanceof DbSqlLiteral) {
-        $result = $this->makeFieldFromString($fieldName);
+        $result = $this->quoteField($fieldName);
       }
     }
 

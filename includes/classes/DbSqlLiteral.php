@@ -3,12 +3,16 @@
 /**
  * Class DbSqlLiteral
  */
-
 class DbSqlLiteral extends DbSqlAware {
 
   const SQL_LITERAL_ALIAS_NONE = null;
   const SQL_LITERAL_ALIAS_AUTO = '';
 
+  /**
+   * ALWAYS STRING!
+   *
+   * @var string $literal
+   */
   public $literal = '';
 
   /**
@@ -19,7 +23,17 @@ class DbSqlLiteral extends DbSqlAware {
    */
   public function __construct($db = null, $literal = '') {
     parent::__construct($db);
-    $this->literal = $literal;
+  }
+
+  /**
+   * @param mixed $value
+   *
+   * @return $this
+   */
+  public function literal($value) {
+    $this->literal = (string)$value;
+
+    return $this;
   }
 //
 //  public static function __callStatic($name, $arguments) {
@@ -47,12 +61,12 @@ class DbSqlLiteral extends DbSqlAware {
    */
   public function buildSingleArgument($functionName, $field = '*', $alias = self::SQL_LITERAL_ALIAS_NONE) {
     if ($alias === self::SQL_LITERAL_ALIAS_AUTO) {
-      $alias = $this->makeAliasFromField($functionName, $field);
+      $alias = $this->aliasFromField($functionName, $field);
     }
 
-    $this->literal = strtoupper($functionName) . '(' . $this->makeFieldFromString($field) . ')';
+    $this->literal = strtoupper($functionName) . '(' . $this->quoteField($field) . ')';
 
-    if (!empty($alias)) {
+    if (self::SQL_LITERAL_ALIAS_NONE !== $alias && !empty($alias)) {
       $this->literal .= ' AS `' . $alias . '`';
     }
 
@@ -107,10 +121,10 @@ class DbSqlLiteral extends DbSqlAware {
     $functionName = 'isNull';
 
     if ($alias === self::SQL_LITERAL_ALIAS_AUTO) {
-      $alias = $this->makeAliasFromField($functionName, $field);
+      $alias = $this->aliasFromField($functionName, $field);
     }
 
-    $this->literal = $this->makeFieldFromString($field) . ' IS NULL';
+    $this->literal = $this->quoteField($field) . ' IS NULL';
 
     if (!empty($alias)) {
       $this->literal .= ' AS `' . $alias . '`';

@@ -225,7 +225,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
       array('*', '*'),
 
       // --- DbSqlLiteral
-      array('MAX()', new DbSqlLiteral(null, 'MAX()')),
+      array('MAX()', DbSqlLiteral::build(null)->literal('MAX()')),
 
       // --- Booleans
       array('1', true),
