@@ -26,14 +26,28 @@ class DBStaticRecord {
    * @return DbSqlStatement
    */
   public static function buildSelect() {
-    return DbSqlStatement::build(null)->getParamsFromStaticClass(get_called_class())->select(false);
+    return
+      DbSqlStatement::build(null)
+        ->getParamsFromStaticClass(get_called_class())
+        ->select();
+  }
+
+  /**
+   * @return DbSqlStatement
+   */
+  public static function buildSelectCountId() {
+    return
+      static::buildSelect()
+        ->fieldCount(static::$_idField);
   }
 
   /**
    * @return DbSqlStatement
    */
   public static function buildSelectAll() {
-    return static::buildSelect()->field('*');
+    return
+      static::buildSelect()
+        ->field('*');
   }
 
   /**

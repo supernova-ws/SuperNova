@@ -127,7 +127,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @covers ::getParamsFromStaticClass
    */
   public function testBuild() {
-    $this->assertEquals('DbSqlStatement', get_class($test = DbSqlStatement::build(null, 'DBStaticRecord')));
+    $this->assertEquals('DbSqlStatement', get_class($test = DbSqlStatement::build(null)->getParamsFromStaticClass('DBStaticRecord')));
 
     $this->assertEquals('_table', $test->table);
     $this->assertEquals('id', $test->idField);
@@ -178,11 +178,11 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(array('a = b'), $this->object->where);
 
     // Array - replace
-    $this->assertEquals($this->object, $this->object->where(array('b = c')));
+    $this->assertEquals($this->object, $this->object->where(array('b = c'), HelperArray::OVERWRITE));
     $this->assertEquals(array('b = c'), $this->object->where);
 
     // Array - merge
-    $this->assertEquals($this->object, $this->object->where(array('w'), HelperArray::ARRAY_MERGE));
+    $this->assertEquals($this->object, $this->object->where(array('w'), HelperArray::MERGE_PHP));
     $this->assertEquals(array('b = c', 'w'), $this->object->where);
   }
 

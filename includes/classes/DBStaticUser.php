@@ -62,15 +62,20 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
-//    static::execute(
-//      static::buildSelectLock()
-//        ->where(array("`id` = " . idval($user['id']) .
-//          (isset($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '')))
-//    );
+//    $query = "SELECT 1 FROM `{{users}}` WHERE `id` = :userId" .
+//      (!empty($planet['id_owner']) ? ' OR `id` = :planetOwnerId' : '');
+
+    $where = '`id` = :userId';
+    if (!empty($planet['id_owner'])) {
+      $where .= ' OR `id` = :planetOwnerId';
+    }
+
+    $query = static::buildSelectLock()
+      ->where($where);
+
     // TODO - FOR UPDATE
     return static::prepareExecute(
-      "SELECT 1 FROM {{users}} WHERE `id` = :userId" .
-      (!empty($planet['id_owner']) ? ' OR `id` = :planetOwnerId' : ''),
+      $query,
       array(
         ':userId'        => idval($user['id']),
         ':planetOwnerId' => !empty($planet['id_owner']) ? idval($planet['id_owner']) : 0,
@@ -79,27 +84,47 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_count($online = false) {
-    return static::prepareFetchValue(
-      'SELECT COUNT(id) AS user_count FROM `{{users}}` WHERE user_as_ally IS NULL' .
-      ($online ? ' AND onlinetime > :onlineTime' : ''),
-      array(
-        ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
-      )
-    );
+//    $result = doquery('SELECT COUNT(id) AS user_count FROM {{users}} WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''), true);
+//    return isset($result['user_count']) ? $result['user_count'] : 0;
+
+//    $query =      'SELECT COUNT(`id`) AS `user_count` FROM `{{users}}` WHERE `user_as_ally` IS NULL' .
+//      ($online ? ' AND `onlinetime` > :onlineTime' : '');
+
+    $query = static::buildSelectCountId()
+      ->where('`user_as_ally` IS NULL');
+    if ($online) {
+      $query->where('`onlinetime` > :onlineTime');
+    }
+
+    return static::prepareFetchValue($query, array(
+      ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
+    ));
   }
 
   public static function db_user_list_admin_sorted($sort, $online = false) {
+//    $query = "SELECT
+//          u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm
+//      FROM
+//          {{users}} as u
+//          LEFT JOIN
+//              {{referrals}} as r on r.id_partner = u.id
+//      WHERE " .
+//      ($online ? "`onlinetime` >= :onlineTime" : 'user_as_ally IS NULL') .
+//      " GROUP BY u.id
+//        ORDER BY user_as_ally, {$sort} ASC";
+
+    $query = static::buildSelect()
+      ->fromAlias('u')
+      ->field('u.*')
+      ->fieldCount('r.id', 'referral_count')
+      ->fieldSingleFunction('sum', 'r.dark_matter', 'referral_dm')
+      ->join('LEFT JOIN {{referrals}} as r on r.id_partner = u.id')
+      ->where($online ? "`onlinetime` >= :onlineTime" : 'user_as_ally IS NULL')
+      ->groupBy('u.id')
+      ->orderBy("user_as_ally, {$sort} ASC");
+
     return static::prepareExecute(
-      "SELECT
-          u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm
-      FROM
-          {{users}} as u
-          LEFT JOIN
-              {{referrals}} as r on r.id_partner = u.id
-      WHERE " .
-      ($online ? "`onlinetime` >= :onlineTime" : 'user_as_ally IS NULL') .
-      " GROUP BY u.id
-        ORDER BY user_as_ally, {$sort} ASC",
+      $query,
       array(
         ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
       )
@@ -107,8 +132,7 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_list_to_celebrate($config_user_birthday_range) {
-    return static::prepareExecute(
-      "SELECT
+    $query = "SELECT
         `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
         CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`,
         DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`
@@ -119,7 +143,10 @@ class DBStaticUser extends DBStaticRecord {
         AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
         AND `user_as_ally` IS NULL
       HAVING
-        `days_after_birthday` >= 0 AND `days_after_birthday` < :birthdayRange FOR UPDATE",
+        `days_after_birthday` >= 0 AND `days_after_birthday` < :birthdayRange FOR UPDATE";
+
+    return static::prepareExecute(
+      $query,
       array(
         ':birthdayRange' => $config_user_birthday_range,
       )
@@ -127,12 +154,14 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_list_admin_multiaccounts() {
-    return static::prepareExecute(
-      "SELECT COUNT(*) AS `ip_count`, `user_lastip`
+    $query = "SELECT COUNT(*) AS `ip_count`, `user_lastip`
       FROM `{{users}}`
       WHERE `user_as_ally` IS NULL
       GROUP BY `user_lastip`
-      HAVING COUNT(*) > 1"
+      HAVING COUNT(*) > 1";
+
+    return static::prepareExecute(
+      $query
     );
   }
 

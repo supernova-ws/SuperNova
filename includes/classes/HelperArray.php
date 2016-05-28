@@ -2,8 +2,15 @@
 
 class HelperArray {
 
-  const ARRAY_REPLACE = 0;
-  const ARRAY_MERGE = 1;
+  /**
+   * Overwrites old array with new
+   */
+  const OVERWRITE = 0;
+  /**
+   * Merges old array with new with array_merge()
+   * String keys replaced, numeric keys renumbered
+   */
+  const MERGE_PHP = 1;
 
   /**
    * Convert $delimiter delimited string to array
@@ -90,12 +97,12 @@ class HelperArray {
    * @param mixed|array $arrayNew
    * @param int         $mergeStrategy - default is HelperArray::ARRAY_REPLACE
    */
-  public static function merge(&$arrayOld, $arrayNew = array(), $mergeStrategy = HelperArray::ARRAY_REPLACE) {
+  public static function merge(&$arrayOld, $arrayNew = array(), $mergeStrategy = HelperArray::OVERWRITE) {
     static::makeArrayRef($arrayNew);
+    static::makeArrayRef($arrayOld);
 
     switch ($mergeStrategy) {
-      case HelperArray::ARRAY_MERGE:
-        static::makeArrayRef($arrayOld);
+      case HelperArray::MERGE_PHP:
         $arrayOld = array_merge($arrayOld, $arrayNew);
       break;
 

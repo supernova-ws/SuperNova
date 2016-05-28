@@ -8,12 +8,12 @@
 /**
  * Class DbSqlStatement
  *
- * @method static DbSqlStatement fields(mixed $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement join(mixed $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement groupBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement orderBy(array $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
- * @method static DbSqlStatement having(mixed $value, int $mergeStrategy = HelperArray::ARRAY_REPLACE)
+ * @method static DbSqlStatement fields(mixed $value, int $mergeStrategy = HelperArray::OVERWRITE)
+ * @method static DbSqlStatement join(mixed $value, int $mergeStrategy = HelperArray::OVERWRITE)
+ * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::OVERWRITE)
+ * @method static DbSqlStatement groupBy(array $value, int $mergeStrategy = HelperArray::OVERWRITE)
+ * @method static DbSqlStatement orderBy(array $value, int $mergeStrategy = HelperArray::OVERWRITE)
+ * @method static DbSqlStatement having(mixed $value, int $mergeStrategy = HelperArray::OVERWRITE)
  *
  */
 class DbSqlStatement extends DbSqlAware {
@@ -119,15 +119,15 @@ class DbSqlStatement extends DbSqlAware {
     return $this;
   }
 
-  public function singleFunction($functionName, $field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+  public function fieldSingleFunction($functionName, $field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
     return $this->field(DbSqlLiteral::build($this->db)->buildSingleArgument($functionName, $field, $alias));
   }
 
-  public function count($field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+  public function fieldCount($field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
     return $this->field(DbSqlLiteral::build($this->db)->count($field, $alias));
   }
 
-  public function isNull($field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+  public function fieldIsNull($field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
     return $this->field(DbSqlLiteral::build($this->db)->isNull($field, $alias));
   }
 
@@ -136,7 +136,7 @@ class DbSqlStatement extends DbSqlAware {
 //      array_unshift($arguments, '');
 //      $arguments[0] = &$this->$name;
 //      call_user_func_array('HelperArray::merge', $arguments);
-      HelperArray::merge($this->$name, $arguments[0], !empty($arguments[1]) ? $arguments[1] : HelperArray::ARRAY_REPLACE);
+      HelperArray::merge($this->$name, $arguments[0], array_key_exists(1, $arguments) ? $arguments[1] : HelperArray::MERGE_PHP);
     }
     // TODO - make all setters protected ??
 //    elseif(method_exists($this, $name)) {

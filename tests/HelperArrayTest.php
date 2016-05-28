@@ -141,13 +141,13 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
     // String keyed value should be replaced
     // Integer keyed value should be added and integer keys should be recalculated
     $array2 = array('c' => 'e', 0 => 20);
-    HelperArray::merge($array1, $array2, HelperArray::ARRAY_MERGE);
+    HelperArray::merge($array1, $array2, HelperArray::MERGE_PHP);
     $this->assertEquals(array('c' => 'e', 0 => 10, 1 => 20), $array1);
 
     // First array is not an array
     $array1 = 1;
     $array2 = array('c' => 'd', 1 => 10);
-    HelperArray::merge($array1, $array2, HelperArray::ARRAY_MERGE);
+    HelperArray::merge($array1, $array2, HelperArray::MERGE_PHP);
     $this->assertEquals(array(0 => 1, 'c' => 'd', 1 => 10), $array1);
 
   }
