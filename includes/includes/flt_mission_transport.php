@@ -29,10 +29,10 @@ function flt_mission_transport($mission_data) {
     $fleet_resources[RES_METAL], classLocale::$lang['Metal'],
     $fleet_resources[RES_CRYSTAL], classLocale::$lang['Crystal'],
     $fleet_resources[RES_DEUTERIUM], classLocale::$lang['Deuterium']);
-  msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_transport'], $Message);
+  DBStaticMessages::msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_transport'], $Message);
 
   if($objFleet->target_owner_id <> $objFleet->playerOwnerId) {
-    msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_transport'], $Message);
+    DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_transport'], $Message);
   }
 
   $result = $objFleet->resourcesUnload(false, $result);

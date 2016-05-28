@@ -43,7 +43,7 @@ try {
 
         DBStaticBuddy::db_buddy_update_status($buddy_id, BUDDY_REQUEST_ACTIVE);
         if(classSupernova::$db->db_affected_rows()) {
-          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_accept_title'],
+          DBStaticMessages::msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_accept_title'],
             sprintf(classLocale::$lang['buddy_msg_accept_text'], $user['username']));
           sn_db_transaction_commit();
           throw new exception('buddy_err_accept_none', ERR_NONE);
@@ -61,7 +61,7 @@ try {
         {
           $ex_friend_id = $buddy_row['BUDDY_SENDER_ID'] == $user['id'] ? $buddy_row['BUDDY_OWNER_ID'] : $buddy_row['BUDDY_SENDER_ID'];
 
-          msg_send_simple_message($ex_friend_id, $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_unfriend_title'],
+          DBStaticMessages::msg_send_simple_message($ex_friend_id, $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_unfriend_title'],
             sprintf(classLocale::$lang['buddy_msg_unfriend_text'], $user['username']));
 
           DBStaticBuddy::db_buddy_delete($buddy_id);
@@ -74,7 +74,7 @@ try {
           throw new exception('buddy_err_delete_own', ERR_NONE);
         } elseif($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) // Deny incoming request
         {
-          msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_deny_title'],
+          DBStaticMessages::msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_deny_title'],
             sprintf(classLocale::$lang['buddy_msg_deny_text'], $user['username']));
 
           DBStaticBuddy::db_buddy_update_status($buddy_id, BUDDY_REQUEST_DENIED);
@@ -106,7 +106,7 @@ try {
       throw new exception('buddy_err_adding_exists', ERR_WARNING);
     }
 
-    msg_send_simple_message($new_friend_row['id'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_adding_title'],
+    DBStaticMessages::msg_send_simple_message($new_friend_row['id'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_adding_title'],
       sprintf(classLocale::$lang['buddy_msg_adding_text'], $user['username']));
 
     DBStaticBuddy::db_buddy_insert($user, $new_friend_row, $new_request_text);

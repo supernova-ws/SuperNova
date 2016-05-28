@@ -872,6 +872,9 @@ Unused strings
 
 TODO - Теперь можно атаковать ракетами свои же планеты. Таким образом можно избавится от излишних ракет или перехватчиков в
 
+    $template_result,
+
+
 ???? Запретить транспорт на неактивных игроков?
     + Плюсы - совсем заблокируется передача ресурсов через неактивных
     - Минусы - нельзя будет делать нычки на неактивных - а пользуется ли кто?
@@ -1012,6 +1015,8 @@ http://www.hongkiat.com/blog/css-scroll-bar/
 
 
 
+replacing
+    msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false) {
 
 
 

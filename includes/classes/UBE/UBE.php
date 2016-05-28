@@ -109,7 +109,7 @@ class UBE {
    *
    * @param Mission $objMission
    *
-   * @version 41a7.14
+   * @version 41a7.59
    */
   function loadDataFromMission(&$objMission) {
     $this->combatMission = $objMission;
@@ -139,7 +139,7 @@ class UBE {
    *
    * @internal param array $planet
    *
-   * @version 41a7.14
+   * @version 41a7.59
    */
   function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];
@@ -162,7 +162,7 @@ class UBE {
   /**
    * Общий алгоритм расчета боя
    *
-   * @version 41a7.14
+   * @version 41a7.59
    */
   protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -319,7 +319,7 @@ pdie();
    *
    * @return mixed
    *
-   * @version 41a7.14
+   * @version 41a7.59
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -438,7 +438,7 @@ pdie();
     $player_sides = $this->players->get_player_sides();
     foreach($player_sides as $player_id => $player_side) {
       $message = $text_common . ($this->is_small_fleet_recce && ($player_side == UBE_PLAYER_IS_ATTACKER) ? classLocale::$lang['ube_report_msg_body_sfr'] : $text_defender);
-      msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_attack_report'], $message);
+      DBStaticMessages::msg_send_simple_message($player_id, '', $this->combat_timestamp, MSG_TYPE_COMBAT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_attack_report'], $message);
     }
 
   }
@@ -467,7 +467,7 @@ pdie();
    * @param     $attacker
    * @param int $player_id
    *
-   * @version 41a7.14
+   * @version 41a7.59
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -548,7 +548,7 @@ pdie();
    *
    * @return bool
    *
-   * @version 41a7.14
+   * @version 41a7.59
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
@@ -681,7 +681,7 @@ pdie();
  *
  * @return mixed
  *
- * @version 41a7.14
+ * @version 41a7.59
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
@@ -693,7 +693,7 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  *
  * @return mixed
  *
- * @version 41a7.14
+ * @version 41a7.59
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
@@ -704,6 +704,6 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  *
  * @return mixed
  *
- * @version 41a7.14
+ * @version 41a7.59
  */
 function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

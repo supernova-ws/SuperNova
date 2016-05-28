@@ -32,7 +32,7 @@ function flt_mission_relocate($mission_data) {
   foreach($fleet_real_array as $ship_id => $ship_count) {
     $Message .= classLocale::$lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
   }
-  msg_send_simple_message(
+  DBStaticMessages::msg_send_simple_message(
     $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT,
     classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_stay_mess_stay'], $Message
   );

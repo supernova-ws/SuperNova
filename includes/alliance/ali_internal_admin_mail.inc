@@ -10,7 +10,7 @@ if(!$user_can_send_mails) {
 
 $POST_text = sys_get_param_str('text');
 if($POST_text) {
-  message(classLocale::$lang['members_who_recived_message'] . msg_ali_send($POST_text, classLocale::$lang['ali_adm_msg_subject'], sys_get_param_int('r')), classLocale::$lang['Circular_sended'], "alliance.php", '');
+  message(classLocale::$lang['members_who_recived_message'] . DBStaticMessages::msg_ali_send($POST_text, classLocale::$lang['ali_adm_msg_subject'], sys_get_param_int('r')), classLocale::$lang['Circular_sended'], "alliance.php", '');
 }
 
 $r_list = "<option value=\"-1\">" . classLocale::$lang['All_players'] . "</option>";

@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a7.37# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a7.59# copyright © 2009-2015 Gorlum',
 
     'root_relative' => '',
 
@@ -325,7 +325,7 @@ class auth_local extends auth_abstract {
           $message = sys_bbcodeParse($message) . '<br><br>';
 
           foreach($users_translated as $user_id => $providers_list) {
-            msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['sys_administration'], classLocale::$lang['sys_login_register_message_title'], $message);
+            DBStaticMessages::msgSendFromAdmin($user_id, classLocale::$lang['sys_login_register_message_title'], $message);
           }
         } else {
           // Фигня - может быть и пустой, если у нас есть только аккаунт, но нет пользователей

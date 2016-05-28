@@ -254,7 +254,7 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
         }
         $comment .= " {$classLocale['qst_msg_your_reward']} " . implode(',', $comment_reward);
 
-        msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['msg_from_admin'], classLocale::$lang['qst_msg_complete_subject'], $comment);
+        DBStaticMessages::msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['msg_from_admin'], classLocale::$lang['qst_msg_complete_subject'], $comment);
 
         sn_db_perform('{{quest_status}}', array(
           'quest_status_quest_id' => $quest_id,

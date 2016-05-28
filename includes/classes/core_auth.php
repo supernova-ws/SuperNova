@@ -9,14 +9,14 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a7.5#
+ * version #41a7.59#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a7.5# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a7.59# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -514,10 +514,8 @@ class core_auth extends sn_module {
       // Рассылаем уведомления о смене пароля в ЛС
       foreach ($account_translation as $user_id => $provider_info) {
         // TODO - УКазывать тип аккаунта, на котором сменён пароль
-        msg_send_simple_message($user_id, 0, SN_TIME_NOW, MSG_TYPE_ADMIN,
-          classLocale::$lang['sys_administration'], classLocale::$lang['sys_login_register_message_title'],
-          sprintf(classLocale::$lang['sys_login_register_message_body'], $provider->account->account_name, $new_password_unsafe), false //true
-        );
+        $message = sprintf(classLocale::$lang['sys_login_register_message_body'], $provider->account->account_name, $new_password_unsafe);
+        DBStaticMessages::msgSendFromAdmin($user_id, classLocale::$lang['sys_login_register_message_title'], $message);
       }
       $providers_changed_password[$provider_id] = $provider;
     }

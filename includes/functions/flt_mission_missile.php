@@ -4,8 +4,7 @@
 // Open Source
 // V1
 //
-function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStructure = '0')
-{
+function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStructure = '0') {
   // Here we select which part of defense should take damage: structure or shield
   // $damageTo = P_SHIELD;
   // $damageTo = P_STRUCTURE;
@@ -13,48 +12,40 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
 
   $mip_data = get_unit_param(UNIT_DEF_MISSILE_INTERPLANET);
   $MIPDamage = floor(mrc_modify_value($attackerTech, false, TECH_WEAPON, $MIPs * $mip_data[P_ATTACK] * mt_rand(80, 120) / 100));
-  foreach($structures as $key => $structure)
-  {
+  foreach ($structures as $key => $structure) {
     $unit_info = get_unit_param($key);
     $amplify = isset($mip_data[P_AMPLIFY][$key]) ? $mip_data[P_AMPLIFY][$key] : 1;
     $structures[$key][P_SHIELD] = floor(mrc_modify_value($defenceTech, false, TECH_SHIELD, $unit_info[P_SHIELD]) / $amplify);
     $structures[$key][P_STRUCTURE] = floor(mrc_modify_value($defenceTech, false, TECH_ARMOR, $unit_info[P_ARMOR]) / $amplify);
     $structures[$key][P_DEFENSE] = floor((
-      mrc_modify_value($defenceTech, false, TECH_ARMOR, $unit_info[P_ARMOR]) +
-      mrc_modify_value($defenceTech, false, TECH_SHIELD, $unit_info[P_SHIELD])
-    ) / $amplify * mt_rand(80, 120) / 100);
+        mrc_modify_value($defenceTech, false, TECH_ARMOR, $unit_info[P_ARMOR]) +
+        mrc_modify_value($defenceTech, false, TECH_SHIELD, $unit_info[P_SHIELD])
+      ) / $amplify * mt_rand(80, 120) / 100);
   }
 
   $startStructs = $structures;
 
-  if ($targetedStructure)
-  {
+  if ($targetedStructure) {
     //attacking only selected structure
     $damageDone = $structures[$targetedStructure][$damageTo];
-    $structsDestroyed = min( floor($MIPDamage/$damageDone), $structures[$targetedStructure][0] );
+    $structsDestroyed = min(floor($MIPDamage / $damageDone), $structures[$targetedStructure][0]);
     $structures[$targetedStructure][0] -= $structsDestroyed;
-    $MIPDamage -= $structsDestroyed*$damageDone;
-  }
-  else
-  {
+    $MIPDamage -= $structsDestroyed * $damageDone;
+  } else {
     // REALLY random attack
     $can_be_damaged = sn_get_groups('defense_active');
 //debug($structures);
 //debug($can_be_damaged);
-    do
-    {
+    do {
       // finding is there any structure that can be damaged with leftovers of $MIPDamage
-      foreach($can_be_damaged as $key => $unit_id)
-      {
+      foreach ($can_be_damaged as $key => $unit_id) {
 //debug($structures[$unit_id][0]);
 //debug($structures[$unit_id][$damageTo], $MIPDamage);
-        if($structures[$unit_id][0] <= 0 || $structures[$unit_id][$damageTo] > $MIPDamage)
-        {
+        if ($structures[$unit_id][0] <= 0 || $structures[$unit_id][$damageTo] > $MIPDamage) {
           unset($can_be_damaged[$key]);
         }
       }
-      if(empty($can_be_damaged))
-      {
+      if (empty($can_be_damaged)) {
         break;
       }
       sort($can_be_damaged);
@@ -72,15 +63,14 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
 //debug($destroyed, 'Actually destroyed');
 
 //print('<hr>');
-    } while($MIPDamage > 0 && !empty($can_be_damaged));
+    } while ($MIPDamage > 0 && !empty($can_be_damaged));
 //debug($MIPDamage, 'MIPDamage left');
   }
 //debug($structures);//die();
   // 1/2 of metal and 1/4 of crystal of destroyed structures returns to planet
   $metal = 0;
   $crystal = 0;
-  foreach ($structures as $key => $structure)
-  {
+  foreach ($structures as $key => $structure) {
     $unit_info = get_unit_param($key);
     $destroyed = $startStructs[$key][0] - $structure[0];
     $metal += $destroyed * $unit_info[P_COST][RES_METAL] / 2;
@@ -88,8 +78,8 @@ function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $tar
   }
 
   $return['structures'] = $structures;     // Structures left after attack
-  $return['metal']      = floor($metal);   // Metal scraps
-  $return['crystal']    = floor($crystal); // Crystal scraps
+  $return['metal'] = floor($metal);   // Metal scraps
+  $return['crystal'] = floor($crystal); // Crystal scraps
 
   return $return;
 }
@@ -112,25 +102,25 @@ function coe_o_missile_calculate() {
 
   $iraks = DBStaticFleetMissile::db_missile_list_by_arrival();
 
-  while($fleetRow = db_fetch($iraks)) {
+  while ($fleetRow = db_fetch($iraks)) {
     set_time_limit(15);
     $db_changeset = array();
 
     $targetUser = DBStaticUser::db_user_by_id($fleetRow['fleet_target_owner'], true);
 
     $target_planet_row = sys_o_get_updated($targetUser, array(
-      'galaxy' => $fleetRow['fleet_end_galaxy'],
-      'system' => $fleetRow['fleet_end_system'],
-      'planet' => $fleetRow['fleet_end_planet'],
+      'galaxy'      => $fleetRow['fleet_end_galaxy'],
+      'system'      => $fleetRow['fleet_end_system'],
+      'planet'      => $fleetRow['fleet_end_planet'],
       'planet_type' => PT_PLANET
     ), SN_TIME_NOW);
     $target_planet_row = $target_planet_row['planet'];
 
     $rowAttacker = DBStaticUser::db_user_by_id($fleetRow['fleet_owner'], true);
 
-    if($target_planet_row['id']) {
+    if ($target_planet_row['id']) {
       $planetDefense = array();
-      foreach(sn_get_groups('defense_active') as $unit_id) {
+      foreach (sn_get_groups('defense_active') as $unit_id) {
         $planetDefense[$unit_id] = array(mrc_get_level($targetUser, $target_planet_row, $unit_id, true, true));
       }
 
@@ -141,23 +131,23 @@ function coe_o_missile_calculate() {
         $message = classLocale::$lang['mip_all_destroyed'];
         $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$missiles, $targetUser, $target_planet_row['id']);
       } else {
-        if($interceptors) {
+        if ($interceptors) {
           $message = sprintf(classLocale::$lang['mip_destroyed'], $interceptors);
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
         }
 
         $attackResult = COE_missileAttack($targetUser, $rowAttacker, $missiles - $interceptors, $planetDefense, $fleetRow['primaer']);
 
-        foreach($attackResult['structures'] as $key => $structure) {
+        foreach ($attackResult['structures'] as $key => $structure) {
           $destroyed = $planetDefense[$key][0] - $structure[0];
-          if($destroyed) {
+          if ($destroyed) {
             $db_changeset['unit'][] = sn_db_unit_changeset_prepare($key, -$destroyed, $targetUser, $target_planet_row['id']);
 
             $message .= "&nbsp;&nbsp;{$classLocale['tech'][$key]} - {$destroyed} {$classLocale['quantity']}<br>";
           }
         }
 
-        if(!empty($message)) {
+        if (!empty($message)) {
           $message = classLocale::$lang['mip_defense_destroyed'] . $message . "{$classLocale['mip_recycled']}{$classLocale['Metal']}: {$attackResult['metal']}, {$classLocale['Crystal']}: {$attackResult['crystal']}<br>";
 
           DBStaticPlanet::db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
@@ -175,8 +165,8 @@ function coe_o_missile_calculate() {
 
       empty($message) ? $message = classLocale::$lang['mip_no_defense'] : false;
 
-      msg_send_simple_message ( $fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message );
-      msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message );
+      DBStaticMessages::msg_send_simple_message($fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message);
+      DBStaticMessages::msg_send_simple_message($fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message);
     }
     DBStaticFleetMissile::db_missile_delete($fleetRow);
   }

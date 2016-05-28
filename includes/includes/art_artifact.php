@@ -31,7 +31,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
           } else {
             $message = classLocale::$lang['art_lhc_moon_fail'];
           }
-          msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_ADMIN, classLocale::$lang['art_lhc_from'], classLocale::$lang['art_lhc_subj'], $message);
+          DBStaticMessages::msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_ADMIN, classLocale::$lang['art_lhc_from'], classLocale::$lang['art_lhc_subj'], $message);
         } else {
           $message = classLocale::$lang['art_moon_exists'];
         }
@@ -73,7 +73,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
         $unit_level--;
         DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`field_current` = `field_current` + {$sectors_used}");
         $message = sprintf(classLocale::$lang['art_rcd_ok'], classLocale::$lang['tech'][$unit_id], $planetrow['name'], uni_render_coordinates($planetrow));
-        msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, classLocale::$lang['art_rcd_subj'], classLocale::$lang['art_rcd_subj'], $message);
+      DBStaticMessages::msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, classLocale::$lang['art_rcd_subj'], classLocale::$lang['art_rcd_subj'], $message);
       break;
 
       case ART_HEURISTIC_CHIP:
@@ -91,7 +91,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
           $que_item['que_time_left'] = $que_item['que_time_left'] > PERIOD_HOUR ? ceil($que_item['que_time_left'] / 2) : 0;
           DBStaticQue::db_que_set_time_left_by_id($que_item['que_id'], $que_item['que_time_left']);
           $message = sprintf(classLocale::$lang['art_heurestic_chip_ok'], classLocale::$lang['tech'][$que_item['que_unit_id']], $que_item['que_unit_level'], sys_time_human($old_time - $que_item['que_time_left']));
-          msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, classLocale::$lang['art_heurestic_chip_subj'], classLocale::$lang['art_heurestic_chip_subj'], $message);
+          DBStaticMessages::msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, classLocale::$lang['art_heurestic_chip_subj'], classLocale::$lang['art_heurestic_chip_subj'], $message);
         } else {
           $message = classLocale::$lang['art_heurestic_chip_no_research'];
         }
@@ -116,7 +116,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
           $message = sprintf(classLocale::$lang['art_nano_builder_ok'], $que_item['que_unit_mode'] == BUILD_CREATE ? classLocale::$lang['art_nano_builder_build'] : classLocale::$lang['art_nano_builder_destroy'],
             classLocale::$lang['tech'][$que_item['que_unit_id']], $que_item['que_unit_level'], $planetrow['name'], uni_render_coordinates($planetrow), sys_time_human($old_time - $que_item['que_time_left'])
           );
-          msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, classLocale::$lang['art_nano_builder_subj'], classLocale::$lang['art_nano_builder_subj'], $message);
+          DBStaticMessages::msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, classLocale::$lang['art_nano_builder_subj'], classLocale::$lang['art_nano_builder_subj'], $message);
         } else {
           $message = classLocale::$lang['art_nano_builder_no_que'];
         }

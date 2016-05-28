@@ -122,8 +122,8 @@ if($accept_offer) {
 
   DBStaticAlly::db_ally_negotiatiion_delete_extended($negotiation, $user);
 
-  msg_ali_send("{$classLocale['ali_dip_relation_change']} [{$negotiation['alliance_negotiation_ally_name']}] {$classLocale['ali_dip_relation_change_to']} {$classLocale['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
-  msg_ali_send("{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$classLocale['ali_dip_relation_accept']} {$classLocale['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
+  DBStaticMessages::msg_ali_send("{$classLocale['ali_dip_relation_change']} [{$negotiation['alliance_negotiation_ally_name']}] {$classLocale['ali_dip_relation_change_to']} {$classLocale['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
+  DBStaticMessages::msg_ali_send("{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$classLocale['ali_dip_relation_accept']} {$classLocale['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);
   sn_db_transaction_commit();
 }
 

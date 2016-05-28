@@ -128,7 +128,7 @@ function flt_mission_spy(&$mission_data) {
     $spy_message .= "</th></tr></table>";
     // End of link generation
 
-    msg_send_simple_message($spying_user_row['id'], '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_mess_spy_report'], $spy_message);
+    DBStaticMessages::msg_send_simple_message($spying_user_row['id'], '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_mess_spy_report'], $spy_message);
 
     $target_message = "{$classLocale['sys_mess_spy_ennemyfleet']} {$spying_planet_row['name']} " . uni_render_coordinates_href($spying_planet_row, '', 3);
     $target_message .= " {$classLocale['sys_mess_spy_seen_at']} {$target_planet_row['name']} " . uni_render_coordinates($target_planet_row);
@@ -147,7 +147,7 @@ function flt_mission_spy(&$mission_data) {
     } else {
       $result = CACHE_FLEET;
     }
-    msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_mess_spy_control'], classLocale::$lang['sys_mess_spy_activity'], $target_message);
+    DBStaticMessages::msg_send_simple_message($objFleet->target_owner_id, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_mess_spy_control'], classLocale::$lang['sys_mess_spy_activity'], $target_message);
   }
 
   if($spy_detected) {

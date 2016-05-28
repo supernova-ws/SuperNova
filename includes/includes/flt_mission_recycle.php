@@ -79,7 +79,7 @@ function flt_mission_recycle($mission_data) {
     pretty_number($resources_recycled[RES_METAL]), classLocale::$lang['Metal'],
     pretty_number($resources_recycled[RES_CRYSTAL]), classLocale::$lang['Crystal']
   );
-  msg_send_simple_message(
+  DBStaticMessages::msg_send_simple_message(
     $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_RECYCLE,
     classLocale::$lang['sys_mess_spy_control'], classLocale::$lang['sys_recy_report'], $Message
   );

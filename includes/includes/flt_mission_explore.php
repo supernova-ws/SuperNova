@@ -242,7 +242,7 @@ function flt_mission_explore(&$mission_data) {
   $msg_text = sprintf($msg_text, $objFleet->dbId, uni_render_coordinates($fleet_row_end_coordinates_without_type)) .
     ($msg_text_addon ? "\r\n" . $msg_text_addon : '');
 
-  msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
+  DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
 
   DBStaticUser::db_user_set_by_id($objFleet->playerOwnerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
 
