@@ -243,7 +243,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
       // --- String
       array('`test`', 'test'),
 
-      // --- Testing escaping with stringEscape function
+      // --- Testing escaping with escapeString function
       array('`t\\\'e\\"s\\\\t`', 't\'e"s\\t'),
 
       // Testing arrays

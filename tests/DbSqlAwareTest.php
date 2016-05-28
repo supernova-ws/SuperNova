@@ -32,9 +32,9 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::stringEscape
+   * @covers ::escapeString
    */
-  public function testStringEscape() {
+  public function testEscapeString() {
     $this->assertEquals('', invokeMethod($this->object, 'escapeString', array('')));
     $this->assertEquals('test', invokeMethod($this->object, 'escapeString', array('test')));
     $this->assertEquals('t\\\'e\\"s\\\\t', invokeMethod($this->object, 'escapeString', array('t\'e"s\\t')));
