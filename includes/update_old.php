@@ -371,7 +371,8 @@ switch($new_version) {
           $shortcut[4] = intval($shortcut[4]);
 
           if($shortcut[0] && $shortcut[1] && $shortcut[2] && $shortcut[3] && in_array($shortcut[4], $temp_planet_types)) {
-            upd_do_query("INSERT INTO {classSupernova::$config->db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');", true);
+            $db_prefix = classSupernova::$config->db_prefix;
+            upd_do_query("INSERT INTO {$db_prefix}shortcut (shortcut_user_id, shortcut_galaxy, shortcut_system, shortcut_planet, shortcut_planet_type, shortcut_text) VALUES ({$user_data['id']}, {$shortcut[1]}, {$shortcut[2]}, {$shortcut[3]}, {$shortcut[4]}, '{$shortcut[0]}');", true);
           }
         }
       }
