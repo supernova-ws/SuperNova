@@ -28,7 +28,7 @@ $allowed_types = array(
   ),
 );
 $template->assign_block_vars('int_type_selected', $allowed_types[-1]);
-foreach($sn_message_class_list as $key => $value) {
+foreach(DBStaticMessages::$snMessageClassList as $key => $value) {
   if($key == MSG_TYPE_NEW || $key == MSG_TYPE_OUTBOX) {
     continue;
   }

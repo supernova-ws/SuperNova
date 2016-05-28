@@ -43,8 +43,7 @@ try {
 
         DBStaticBuddy::db_buddy_update_status($buddy_id, BUDDY_REQUEST_ACTIVE);
         if(classSupernova::$db->db_affected_rows()) {
-          DBStaticMessages::msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_accept_title'],
-            sprintf(classLocale::$lang['buddy_msg_accept_text'], $user['username']));
+          DBStaticMessages::msgSendFromPlayerBuddy($buddy_row['BUDDY_SENDER_ID'], $user, 'buddy_msg_accept_title', 'buddy_msg_accept_text');
           sn_db_transaction_commit();
           throw new exception('buddy_err_accept_none', ERR_NONE);
         } else {
@@ -61,8 +60,7 @@ try {
         {
           $ex_friend_id = $buddy_row['BUDDY_SENDER_ID'] == $user['id'] ? $buddy_row['BUDDY_OWNER_ID'] : $buddy_row['BUDDY_SENDER_ID'];
 
-          DBStaticMessages::msg_send_simple_message($ex_friend_id, $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_unfriend_title'],
-            sprintf(classLocale::$lang['buddy_msg_unfriend_text'], $user['username']));
+          DBStaticMessages::msgSendFromPlayerBuddy($ex_friend_id, $user, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
           DBStaticBuddy::db_buddy_delete($buddy_id);
           sn_db_transaction_commit();
@@ -74,8 +72,7 @@ try {
           throw new exception('buddy_err_delete_own', ERR_NONE);
         } elseif($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) // Deny incoming request
         {
-          DBStaticMessages::msg_send_simple_message($buddy_row['BUDDY_SENDER_ID'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_deny_title'],
-            sprintf(classLocale::$lang['buddy_msg_deny_text'], $user['username']));
+          DBStaticMessages::msgSendFromPlayerBuddy($buddy_row['BUDDY_SENDER_ID'], $user, 'buddy_msg_deny_title', 'buddy_msg_deny_text');
 
           DBStaticBuddy::db_buddy_update_status($buddy_id, BUDDY_REQUEST_DENIED);
           sn_db_transaction_commit();
@@ -106,8 +103,7 @@ try {
       throw new exception('buddy_err_adding_exists', ERR_WARNING);
     }
 
-    DBStaticMessages::msg_send_simple_message($new_friend_row['id'], $user['id'], SN_TIME_NOW, MSG_TYPE_PLAYER, $user['username'], classLocale::$lang['buddy_msg_adding_title'],
-      sprintf(classLocale::$lang['buddy_msg_adding_text'], $user['username']));
+    DBStaticMessages::msgSendFromPlayerBuddy($new_friend_row['id'], $user, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
 
     DBStaticBuddy::db_buddy_insert($user, $new_friend_row, $new_request_text);
     sn_db_transaction_commit();

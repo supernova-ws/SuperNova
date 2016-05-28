@@ -114,76 +114,11 @@ $ally_rights = array(
 
 classSupernova::$functions = array();
 
-$sn_message_class_list = array(
-  MSG_TYPE_NEW       => array(
-    'name'       => 'new_message',
-    'switchable' => false,
-    'email'      => false,
-  ),
-  MSG_TYPE_ADMIN     => array(
-    'name'       => 'msg_admin',
-    'switchable' => false,
-    'email'      => true,
-  ),
-  MSG_TYPE_PLAYER    => array(
-    'name'       => 'mnl_joueur',
-    'switchable' => false,
-    'email'      => true,
-  ),
-  MSG_TYPE_ALLIANCE  => array(
-    'name'       => 'mnl_alliance',
-    'switchable' => false,
-    'email'      => true,
-  ),
-  MSG_TYPE_SPY       => array(
-    'name'       => 'mnl_spy',
-    'switchable' => true,
-    'email'      => true,
-  ),
-  MSG_TYPE_COMBAT    => array(
-    'name'       => 'mnl_attaque',
-    'switchable' => true,
-    'email'      => true,
-  ),
-  MSG_TYPE_TRANSPORT => array(
-    'name'       => 'mnl_transport',
-    'switchable' => true,
-    'email'      => true,
-  ),
-  MSG_TYPE_RECYCLE   => array(
-    'name'       => 'mnl_exploit',
-    'switchable' => true,
-    'email'      => true,
-  ),
-  MSG_TYPE_EXPLORE   => array(
-    'name'       => 'mnl_expedition',
-    'switchable' => true,
-    'email'      => true,
-  ),
-  //     97 => 'mnl_general',
-  MSG_TYPE_QUE       => array(
-    'name'       => 'mnl_buildlist',
-    'switchable' => true,
-    'email'      => true,
-  ),
-  MSG_TYPE_OUTBOX    => array(
-    'name'       => 'mnl_outbox',
-    'switchable' => false,
-    'email'      => false,
-  ),
-);
-
-$sn_message_groups = array(
-  'switchable' => array(MSG_TYPE_SPY, MSG_TYPE_COMBAT, MSG_TYPE_RECYCLE, MSG_TYPE_TRANSPORT, MSG_TYPE_EXPLORE, MSG_TYPE_QUE),
-  'email'      => array(MSG_TYPE_SPY, MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE, MSG_TYPE_COMBAT, MSG_TYPE_RECYCLE, MSG_TYPE_TRANSPORT,
-    MSG_TYPE_ADMIN, MSG_TYPE_EXPLORE, MSG_TYPE_QUE),
-);
-
 // Default user option list as 'option_name' => 'option_list'
 $user_option_list = array();
 
 $user_option_list[OPT_MESSAGE] = array();
-foreach ($sn_message_class_list as $message_class_id => $message_class_data) {
+foreach (DBStaticMessages::$snMessageClassList as $message_class_id => $message_class_data) {
   if ($message_class_data['switchable']) {
     $user_option_list[OPT_MESSAGE]["opt_{$message_class_data['name']}"] = 1;
   }

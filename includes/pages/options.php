@@ -253,7 +253,7 @@ function sn_options_model() {
 //-------------------------------
 
 function sn_options_view($template = null) {
-  global $template_result, $user, $planetrow, $user_option_list, $user_option_types, $sn_message_class_list;
+  global $template_result, $user, $planetrow, $user_option_list, $user_option_types;
   $classLocale = classLocale::$lang;
 
   sys_user_vacation($user);
@@ -410,7 +410,7 @@ function sn_options_view($template = null) {
 
   foreach($user_option_list as $option_group_id => $option_group) {
     if($option_group_id == OPT_MESSAGE) {
-      foreach($sn_message_class_list as $message_class_id => $message_class_data) {
+      foreach(DBStaticMessages::$snMessageClassList as $message_class_id => $message_class_data) {
         if($message_class_data['switchable'] || ($message_class_data['email'] && classSupernova::$config->game_email_pm)) {
           $option_name = $message_class_data['name'];
 
