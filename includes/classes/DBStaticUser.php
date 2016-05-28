@@ -132,18 +132,32 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_list_to_celebrate($config_user_birthday_range) {
-    $query = "SELECT
-        `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
-        CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`,
-        DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`
-      FROM
-        `{{users}}`
-      WHERE
-        `user_birthday` IS NOT NULL
-        AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
-        AND `user_as_ally` IS NULL
-      HAVING
-        `days_after_birthday` >= 0 AND `days_after_birthday` < :birthdayRange FOR UPDATE";
+//    $query = "SELECT
+//        `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
+//        CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`,
+//        DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`
+//      FROM
+//        `{{users}}`
+//      WHERE
+//        `user_birthday` IS NOT NULL
+//        AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
+//        AND `user_as_ally` IS NULL
+//      HAVING
+//        `days_after_birthday` >= 0 AND `days_after_birthday` < :birthdayRange FOR UPDATE";
+
+    $query = static::buildSelect()
+      ->field('id')
+      ->field('username')
+      ->field('user_birthday')
+      ->field('user_birthday_celebrated')
+      ->field(DbSqlLiteral::build()->literal('CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, \'-%m-%d\')) AS `current_birthday`'))
+      ->field(DbSqlLiteral::build()->literal('DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, \'-%m-%d\'))) AS `days_after_birthday`'))
+      ->where('`user_birthday` IS NOT NULL')
+      ->where('(`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)')
+      ->where('`user_as_ally` IS NULL')
+      ->having('`days_after_birthday` >= 0')
+      ->having('`days_after_birthday` < :birthdayRange')
+      ->forUpdate();
 
     return static::prepareExecute(
       $query,
