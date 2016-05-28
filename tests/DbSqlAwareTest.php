@@ -87,7 +87,7 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
   }
 
 
-  public function dataMakeAliasFromField() {
+  public function dataAliasFromField() {
     return array(
       array('max', '*', 'maxValue'),
       array('max', 'field', 'maxField'),
@@ -101,12 +101,12 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
    * @param string $field
    * @param string $expected
    *
-   * @dataProvider dataMakeAliasFromField
+   * @dataProvider dataAliasFromField
    *
-   * @covers ::makeAliasFromField
+   * @covers ::aliasFromField
    * @covers       DbSqlHelper::UCFirstByRef
    */
-  public function testMakeAliasFromField($functionName, $field, $expected) {
+  public function testAliasFromField($functionName, $field, $expected) {
     $this->assertEquals($expected, invokeMethod($this->object, 'aliasFromField', array($functionName, $field)));
   }
 
