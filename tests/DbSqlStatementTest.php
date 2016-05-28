@@ -261,7 +261,6 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    *
    * @covers ::selectFieldsToString
    * @covers ::processField
-   * @covers ::makeFieldFromString
    */
   public function testSelectFieldsToString($expected, $param) {
     $this->assertEquals($expected, invokeMethod($this->object, 'selectFieldsToString', array($param)));
