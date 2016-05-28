@@ -8,7 +8,8 @@
 // Тогда же должны ребиндится параметры
 class DbSqlPrepare {
   const COMMENT_PLACEHOLDER = ':__COMMENT__';
-  const PARAM_PREG = '#(\:.+?\b)#im';
+  const DDL_REGEXP = '#(\|.+?\b)#im';
+  const PARAM_REGEXP = '#(\:.+?\b)#im';
 
   /**
    * SQL text
@@ -105,16 +106,16 @@ class DbSqlPrepare {
     return $this;
   }
 
-  public function commentRemove() {
+  protected function commentRemove() {
     if (!empty($this->values[static::COMMENT_PLACEHOLDER])) {
       unset($this->values[static::COMMENT_PLACEHOLDER]);
-      $this->query = str_replace(' ' . static::COMMENT_PLACEHOLDER, '', $this->query);
+      $this->query = str_replace(static::COMMENT_PLACEHOLDER, '', $this->query);
     }
   }
 
-  public function commentAdd($comment) {
+  protected function commentAdd($comment) {
     if (empty($this->values[static::COMMENT_PLACEHOLDER])) {
-      $this->query .= ' ' . static::COMMENT_PLACEHOLDER;
+      $this->query .= static::COMMENT_PLACEHOLDER;
     }
     $this->values[static::COMMENT_PLACEHOLDER] = $comment;
   }
@@ -136,31 +137,24 @@ class DbSqlPrepare {
   // TODO - method to re-set and re-bind values
 
 
-  public function __toString() {
-//    $result = str_replace(array_keys($this->tables), $this->tables, $this->query);
-    $result = str_replace(array_keys($this->values), $this->values, $this->query);
-
-    return $result;
-  }
-
   public function compileMySqlI() {
     $this->queryPrepared = $this->query;
     $this->paramsPrepared = array();
     $this->valuesPrepared = array();
     $this->valueTypesPrepared = '';
 
-    if ($variableCount = preg_match_all(self::PARAM_PREG, $this->query, $matches, PREG_PATTERN_ORDER)) {
+    if ($variableCount = preg_match_all(self::PARAM_REGEXP, $this->query, $matches, PREG_PATTERN_ORDER)) {
       $this->paramsPrepared = $matches[0];
       if (in_array(static::COMMENT_PLACEHOLDER, $this->paramsPrepared)) {
         // Removing comment placeholder from statement
-        $this->queryPrepared = str_replace(static::COMMENT_PLACEHOLDER, $this->comment, $this->queryPrepared);
+        $this->queryPrepared = str_replace(static::COMMENT_PLACEHOLDER, DbSqlHelper::quoteComment($this->comment), $this->queryPrepared);
         // Removing comment value from values list
         $this->paramsPrepared = array_filter($this->paramsPrepared, function ($value) { return $value != DbSqlPrepare::COMMENT_PLACEHOLDER; });
         // TODO - Add comment value directly to statement
       }
 
       // Replacing actual param names with '?' - for mysqli_prepare
-      $this->queryPrepared = preg_replace(self::PARAM_PREG, '?', $this->queryPrepared);
+      $this->queryPrepared = preg_replace(self::PARAM_REGEXP, '?', $this->queryPrepared);
 
       // Now filling found params with it values
       // We can't use param names as keys 'cause same param can be met twice
@@ -242,6 +236,13 @@ class DbSqlPrepare {
 
   public function getResult() {
     return $this->statement->get_result();
+  }
+
+  public function __toString() {
+//    $result = str_replace(array_keys($this->tables), $this->tables, $this->query);
+    $result = str_replace(array_keys($this->values), $this->values, $this->query);
+
+    return $result;
   }
 
 }

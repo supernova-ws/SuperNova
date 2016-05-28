@@ -161,15 +161,15 @@ class db_mysql {
     if (!defined('DEBUG_SQL_COMMENT') || constant('DEBUG_SQL_ERROR') !== true) {
       return '';
     }
+
     $backtrace = debug_backtrace();
     $sql_comment = classSupernova::$debug->compact_backtrace($backtrace, defined('DEBUG_SQL_COMMENT_LONG'));
 
     if (defined('DEBUG_SQL_ERROR') && constant('DEBUG_SQL_ERROR') === true) {
-//      array_unshift($sql_comment, $sql_one_liner);
       classSupernova::$debug->add_to_array($sql_comment);
     }
 
-    $sql_commented = '/* ' . implode("<br />", $sql_comment) . '<br /> */ ';
+    $sql_commented = implode("\r\n", $sql_comment);
     if (defined('DEBUG_SQL_ONLINE') && constant('DEBUG_SQL_ONLINE') === true) {
       classSupernova::$debug->warning($sql_commented, 'SQL Debug', LOG_DEBUG_SQL);
     }
@@ -188,7 +188,6 @@ class db_mysql {
   public function sqlPrepareAndExecute($sqlQuery, $values = array()) {
     return $this->doquery(DbSqlPrepare::build($sqlQuery, $values));
   }
-
 
 
   /**
@@ -253,7 +252,7 @@ class db_mysql {
           ->execute()
           ->getResult();
       } else {
-        $queryResult = $this->db_sql_query($stringQuery . $queryTrace);
+        $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
       }
       if (!$queryResult) {
         throw new Exception();
@@ -302,7 +301,7 @@ class db_mysql {
 
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch(true) {
+    switch (true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -364,7 +363,7 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while($row = $this->db_fetch($query)) {
+    while ($row = $this->db_fetch($query)) {
       foreach ($row as $table_name) {
         if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
@@ -495,7 +494,7 @@ class db_mysql {
     if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while($row = db_fetch($query)) {
+    while ($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 
