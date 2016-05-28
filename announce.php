@@ -11,8 +11,6 @@
 $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $config;
-
 nws_mark_read($user);
 $template = gettemplate('announce', true);
 
@@ -51,13 +49,14 @@ if($user['authlevel'] >= 3) {
     }
 
     if($announce_time <= SN_TIME_NOW) {
-      if($announce_time > $config->var_news_last && $announce_time == SN_TIME_NOW) {
-        $config->db_saveItem('var_news_last', $announce_time);
+      if($announce_time > classSupernova::$config->var_news_last && $announce_time == SN_TIME_NOW) {
+        classSupernova::$config->db_saveItem('var_news_last', $announce_time);
       }
 
       if(sys_get_param_int('news_mass_mail')) {
-        $text = sys_get_param('text') . ($detail_url ? " <a href=\"{$detail_url}\"><span class=\"positive\">{$lang['news_more']}</span></a>" : '');
-        msg_send_simple_message('*', 0, 0, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['news_title'], $text);
+        $lang_news_more = classLocale::$lang['news_more'];
+        $text = sys_get_param('text') . ($detail_url ? " <a href=\"{$detail_url}\"><span class=\"positive\">{$lang_news_more}</span></a>" : '');
+        DBStaticMessages::msgSendFromAdmin('*', classLocale::$lang['news_title'], $text);
       }
     }
 
@@ -72,6 +71,7 @@ if($user['authlevel'] >= 3) {
       $mode = '';
     break;
 
+    /** @noinspection PhpMissingBreakStatementInspection */
     case 'edit':
       $template->assign_var('ID', $announce_id);
     case 'copy':
@@ -103,4 +103,4 @@ $template->assign_vars(array(
   'SURVEY_ANSWERS'  => $survey_answers,
 ));
 
-display($template, $lang['news_title']);
+display($template, classLocale::$lang['news_title']);
