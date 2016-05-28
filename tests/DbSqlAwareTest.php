@@ -41,7 +41,7 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
   }
 
 
-  public function dataQuoteStringAsFieldByRef() {
+  public function dataQuoteFieldSimpleByRef() {
     return array(
       array('', ''),
       array('*', '*'),
@@ -53,11 +53,11 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
    * @param $value
    * @param $expected
    *
-   * @dataProvider dataQuoteStringAsFieldByRef
+   * @dataProvider dataQuoteFieldSimpleByRef
    *
-   * @covers ::quoteStringAsFieldByRef
+   * @covers ::quoteFieldSimpleByRef
    */
-  public function testQuoteStringAsFieldByRef($value, $expected) {
+  public function testQuoteFieldSimpleByRef($value, $expected) {
     invokeMethod($this->object, 'quoteFieldSimpleByRef', array(&$value));
     $this->assertEquals($expected, $value);
   }
@@ -80,7 +80,7 @@ class DbSqlAwareTest extends PHPUnit_Framework_TestCase {
    * @dataProvider dataMakeFieldFromString
    *
    * @covers ::makeFieldFromString
-   * @covers ::quoteStringAsFieldByRef
+   * @covers ::quoteFieldSimpleByRef
    */
   public function testMakeFieldFromString($value, $expected) {
     $this->assertEquals($expected, invokeMethod($this->object, 'quoteField', array(&$value)));
