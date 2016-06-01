@@ -1,13 +1,17 @@
 <?php
 
+define('INSIDE', true);
+
 // Эти три строки должны быть В ЭТОМ ФАЙЛЕ, ПО ЭТОМУ ПУТИ и ПЕРЕД ЭТИМ ИНКЛЮДОМ!!!
 $sn_root_physical = str_replace('\\', '/', __FILE__);
 $sn_root_physical = str_replace('tests/__bootstrap.php', '', $sn_root_physical);
 define('SN_ROOT_PHYSICAL', $sn_root_physical);
 // define('SN_ROOT_PHYSICAL_STR_LEN', mb_strlen($sn_root_physical));
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen($sn_root_physical));
+global $phpbb_root_path;
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
+require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
 
 // echo 'bootstrap';
 //print($sn_root_physical);
@@ -41,4 +45,21 @@ function invokeMethod($object, $methodName, array $parameters = array()) {
   $method->setAccessible(true);
 
   return $method->invokeArgs($object, $parameters);
+}
+
+/**
+ * getPrivateProperty
+ *
+ * @param string $className
+ * @param string $propertyName
+ *
+ * @return ReflectionProperty
+ */
+function getPrivateProperty($className, $propertyName)
+{
+  $reflector = new ReflectionClass($className);
+  $property = $reflector->getProperty($propertyName);
+  $property->setAccessible(true);
+
+  return $property;
 }

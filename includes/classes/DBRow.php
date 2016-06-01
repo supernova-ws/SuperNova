@@ -93,10 +93,66 @@ abstract class DBRow extends stdClass implements IDbRow {
   protected $lockSkip = false;
 
 
+  /**
+   * @param db_mysql|null $db
+   */
+  public static function setDb($db = null) {
+    if(empty($db) || !($db instanceof db_mysql)) {
+      $db = null;
+    }
+    static::$db = !empty($db) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
+  }
+
+  public static function getDb() {
+    return static::$db;
+  }
+
+  /**
+   * @param string $tableName
+   */
+  public static function setTable($tableName) {
+    static::$_table = $tableName;
+  }
+
+  public static function getTable() {
+    return static::$_table;
+  }
+
+  /**
+   * @param string $dbIdFieldName
+   */
+  public static function setIdFieldName($dbIdFieldName) {
+    static::$_dbIdFieldName = $dbIdFieldName;
+  }
+
+  public static function getIdFieldName() {
+    return static::$_dbIdFieldName;
+  }
+
+  /**
+   * @param array $properties
+   */
+  public static function setProperties($properties) {
+    static::$_properties = $properties;
+  }
+
+  public static function getProperties() {
+    return static::$_properties;
+  }
+
   // Some magic ********************************************************************************************************
 
-  public function __construct() {
-    static::$db = classSupernova::$db;
+  /**
+   * DBRow constructor.
+   *
+   * @param db_mysql|null $db
+   */
+  public function __construct($db = null) {
+    if (empty($db)) {
+      $db = static::getDb();
+    }
+
+    static::setDb($db);
   }
 
   /**
@@ -138,14 +194,14 @@ abstract class DBRow extends stdClass implements IDbRow {
 
     // If method is not getter or setter OR property name not exists in $_properties - raising exception
     // Descendants can catch this Exception to make own __call magic
-    if(($left3 != 'get' && $left3 != 'set') || empty(static::$_properties[$propertyName])) {
+    if (($left3 != 'get' && $left3 != 'set') || empty(static::$_properties[$propertyName])) {
       throw new ExceptionPropertyNotExists('Property ' . $propertyName . ' not exists when calling getter/setter ' . get_called_class() . '::' . $name, ERR_ERROR);
     }
 
     // TODO check for read-only
 
-    if($left3 == 'set') {
-      if(!empty($this->propertiesAdjusted[$propertyName])) {
+    if ($left3 == 'set') {
+      if (!empty($this->propertiesAdjusted[$propertyName])) {
         throw new PropertyAccessException('Property ' . $propertyName . ' already was adjusted so no SET is possible until dbSave in ' . get_called_class() . '::' . $name, ERR_ERROR);
       }
       $this->propertiesChanged[$propertyName] = 1;
@@ -154,13 +210,13 @@ abstract class DBRow extends stdClass implements IDbRow {
     // Now deciding - will we call a protected setter or will we work with protected property
 
     // If method exists - just calling it
-    if(method_exists($this, $name)) {
+    if (method_exists($this, $name)) {
       return call_user_func_array(array($this, $name), $arguments);
     }
     // No getter/setter exists - works directly with protected property
 
     // Is it getter?
-    if($left3 === 'get') {
+    if ($left3 === 'get') {
       return $this->{'_' . $propertyName};
     }
 
@@ -182,7 +238,7 @@ abstract class DBRow extends stdClass implements IDbRow {
    */
   public function dbLoad($dbId, $lockSkip = false) {
     $dbId = idval($dbId);
-    if($dbId <= 0) {
+    if ($dbId <= 0) {
       classSupernova::$debug->error(get_called_class() . '::dbLoad $dbId not positive = ' . $dbId);
 
       return;
@@ -191,12 +247,12 @@ abstract class DBRow extends stdClass implements IDbRow {
     $this->_dbId = $dbId;
     $this->lockSkip = $lockSkip;
     // TODO - Use classSupernova::$db_records_locked
-    if(false && !$lockSkip && sn_db_transaction_check(false)) {
+    if (false && !$lockSkip && sn_db_transaction_check(false)) {
       $this->dbGetLockById($this->_dbId);
     }
 
     $db_row = doquery("SELECT * FROM `{{" . static::$_table . "}}` WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId . " LIMIT 1 FOR UPDATE;", true);
-    if(empty($db_row)) {
+    if (empty($db_row)) {
       return;
     }
 
@@ -224,26 +280,26 @@ abstract class DBRow extends stdClass implements IDbRow {
    */
   // TODO - perform operations only if properties was changed
   public function dbSave() {
-    if($this->isNew()) {
+    if ($this->isNew()) {
       // No DB_ID - new unit
-      if($this->isEmpty()) {
+      if ($this->isEmpty()) {
         classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - object is empty on ' . get_called_class() . '::dbSave');
       }
       $this->dbInsert();
     } else {
       // DB_ID is present
-      if($this->isEmpty()) {
+      if ($this->isEmpty()) {
         $this->dbDelete();
       } else {
-        if(!sn_db_transaction_check(false)) {
+        if (!sn_db_transaction_check(false)) {
           classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - transaction should always be started on ' . get_called_class() . '::dbUpdate');
         }
         $this->dbUpdate();
       }
     }
 
-    if(!empty($this->triggerDbOperationOn)) {
-      foreach($this->triggerDbOperationOn as $item) {
+    if (!empty($this->triggerDbOperationOn)) {
+      foreach ($this->triggerDbOperationOn as $item) {
         $item->dbSave();
       }
     }
@@ -263,12 +319,12 @@ abstract class DBRow extends stdClass implements IDbRow {
    */
   // TODO - protected
   public function dbInsert() {
-    if(!$this->isNew()) {
+    if (!$this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - record db_id is not empty on ' . get_called_class() . '::dbInsert');
     }
     $this->_dbId = $this->db_field_set_create($this->dbMakeFieldSet());
 
-    if(empty($this->_dbId)) {
+    if (empty($this->_dbId)) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - error saving record ' . get_called_class() . '::dbInsert');
     }
 
@@ -281,7 +337,7 @@ abstract class DBRow extends stdClass implements IDbRow {
   // TODO - protected
   public function dbUpdate() {
     // TODO - Update
-    if($this->isNew()) {
+    if ($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbUpdate');
     }
     $this->db_field_update($this->dbMakeFieldSet(true));
@@ -292,7 +348,7 @@ abstract class DBRow extends stdClass implements IDbRow {
    */
   // TODO - protected
   public function dbDelete() {
-    if($this->isNew()) {
+    if ($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbDelete');
     }
     doquery("DELETE FROM {{" . static::$_table . "}} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
@@ -334,18 +390,18 @@ abstract class DBRow extends stdClass implements IDbRow {
    * @param array $db_row
    */
   public function dbRowParse(array $db_row) {
-    foreach(static::$_properties as $property_name => &$property_data) {
+    foreach (static::$_properties as $property_name => &$property_data) {
       // Advanced values extraction procedure. Should be used when at least one of following rules is matched:
       // - one field should translate to several properties;
       // - one property should be filled according to several fields;
       // - property filling requires some lookup in object values;
-      if(!empty($property_data[P_METHOD_EXTRACT]) && is_callable(array($this, $property_data[P_METHOD_EXTRACT]))) {
+      if (!empty($property_data[P_METHOD_EXTRACT]) && is_callable(array($this, $property_data[P_METHOD_EXTRACT]))) {
         call_user_func_array(array($this, $property_data[P_METHOD_EXTRACT]), array(&$db_row));
         continue;
       }
 
       // If property is read-only - doing nothing
-      if(!empty($property_data[P_READ_ONLY])) {
+      if (!empty($property_data[P_READ_ONLY])) {
         continue;
       }
 
@@ -356,7 +412,7 @@ abstract class DBRow extends stdClass implements IDbRow {
       !empty($property_data[P_FUNC_INPUT]) && is_callable($property_data[P_FUNC_INPUT]) ? $value = call_user_func($property_data[P_FUNC_INPUT], $value) : false;
 
       // If there is setter for this field - using it. Setters is always a methods of $THIS
-      if(!empty($property_data[P_METHOD_SET]) && is_callable(array($this, $property_data[P_METHOD_SET]))) {
+      if (!empty($property_data[P_METHOD_SET]) && is_callable(array($this, $property_data[P_METHOD_SET]))) {
         call_user_func(array($this, $property_data[P_METHOD_SET]), $value);
       } else {
         $this->{$property_name} = $value;
@@ -372,21 +428,21 @@ abstract class DBRow extends stdClass implements IDbRow {
   protected function dbMakeFieldSet($isUpdate = false) {
     $array = array();
 
-    foreach(static::$_properties as $property_name => &$property_data) {
+    foreach (static::$_properties as $property_name => &$property_data) {
       // TODO - on isUpdate add only changed/adjusted properties
 
-      if(!empty($property_data[P_METHOD_INJECT]) && is_callable(array($this, $property_data[P_METHOD_INJECT]))) {
+      if (!empty($property_data[P_METHOD_INJECT]) && is_callable(array($this, $property_data[P_METHOD_INJECT]))) {
         call_user_func_array(array($this, $property_data[P_METHOD_INJECT]), array(&$array));
         continue;
       }
 
       // Skipping properties which have no corresponding field in DB
-      if(empty($property_data[P_DB_FIELD])) {
+      if (empty($property_data[P_DB_FIELD])) {
         continue;
       }
 
       // Checking - is property was adjusted or changed
-      if($isUpdate && array_key_exists($property_name, $this->propertiesAdjusted)) {
+      if ($isUpdate && array_key_exists($property_name, $this->propertiesAdjusted)) {
         // For adjusted property - take value from propertiesAdjusted array
         // TODO - differ how treated conversion to string for changed and adjusted properties
         $value = $this->propertiesAdjusted[$property_name];
@@ -416,17 +472,17 @@ abstract class DBRow extends stdClass implements IDbRow {
    */
   protected function isFieldChanged($fieldName) {
     $isFieldChanged = false;
-    foreach($this->propertiesChanged as $propertyName => $cork) {
+    foreach ($this->propertiesChanged as $propertyName => $cork) {
       $propertyScheme = static::$_properties[$propertyName];
-      if(!empty($propertyScheme[P_DB_FIELDS_LINKED])) {
-        foreach($propertyScheme[P_DB_FIELDS_LINKED] as $linkedFieldName) {
-          if($linkedFieldName == $fieldName) {
+      if (!empty($propertyScheme[P_DB_FIELDS_LINKED])) {
+        foreach ($propertyScheme[P_DB_FIELDS_LINKED] as $linkedFieldName) {
+          if ($linkedFieldName == $fieldName) {
             $isFieldChanged = $propertyName;
             break 2;
           }
         }
       }
-      if(!empty($propertyScheme[P_DB_FIELD]) && $propertyScheme[P_DB_FIELD] == $fieldName) {
+      if (!empty($propertyScheme[P_DB_FIELD]) && $propertyScheme[P_DB_FIELD] == $fieldName) {
         $isFieldChanged = $propertyName;
         break;
       }
@@ -448,7 +504,7 @@ abstract class DBRow extends stdClass implements IDbRow {
     $fields = implode(',', array_keys($field_set));
 
     $result = 0;
-    if(classSupernova::db_query("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
+    if (classSupernova::db_query("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
       $result = db_insert_id();
     }
 
@@ -466,13 +522,13 @@ abstract class DBRow extends stdClass implements IDbRow {
     sn_db_field_set_safe_flag_clear($field_set);
 
     $set = array();
-    foreach($field_set as $fieldName => $value) {
-      if(!($changedProperty = $this->isFieldChanged($fieldName))) {
+    foreach ($field_set as $fieldName => $value) {
+      if (!($changedProperty = $this->isFieldChanged($fieldName))) {
         continue;
       }
 
       // TODO - separate sets from adjusts
-      if(array_key_exists($changedProperty, $this->propertiesAdjusted)) {
+      if (array_key_exists($changedProperty, $this->propertiesAdjusted)) {
         $value = "`{$fieldName}` + ($value)"; // braces for negative values
       }
 
