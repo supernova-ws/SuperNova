@@ -85,24 +85,6 @@ class DBRowTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::getIdFieldName
-   * @covers ::setProperties
-   */
-  public function testSetProperties() {
-    $this->assertEquals(
-      array(
-        'dbId' => array(
-          P_DB_FIELD => 'id',
-        ),
-      ),
-      DBRowPublish::getProperties()
-    );
-
-    DBRowPublish::setProperties(array('test' => 'qwe'));
-    $this->assertEquals(array('test' => 'qwe'), DBRowPublish::getProperties());
-  }
-
-  /**
    * @covers ::__construct
    * @covers ::getDb
    * covers ::build

@@ -21,7 +21,7 @@
  * method int getDbId()
  * @property int dbId
  */
-abstract class DBRow extends stdClass implements IDbRow {
+abstract class DBRow extends PropertyHider implements IDbRow {
   // TODO
   /**
    * Should be this object - (!) not class - cached
@@ -50,6 +50,7 @@ abstract class DBRow extends stdClass implements IDbRow {
    * @var string
    */
   protected static $_dbIdFieldName = 'id';
+
   /**
    * DB_ROW to Class translation scheme
    *
@@ -67,18 +68,6 @@ abstract class DBRow extends stdClass implements IDbRow {
    * @var IDbRow[]
    */
   protected $triggerDbOperationOn = array(); // Not a static - because it's an object array
-  /**
-   * List of property names that was changed since last DB operation
-   *
-   * @var string[]
-   */
-  protected $propertiesChanged = array();
-  /**
-   * List of property names->$delta that was adjusted since last DB operation - and then need to be processed as Deltas
-   *
-   * @var string[]
-   */
-  protected $propertiesAdjusted = array();
 
   /**
    * @var int
@@ -129,17 +118,6 @@ abstract class DBRow extends stdClass implements IDbRow {
     return static::$_dbIdFieldName;
   }
 
-  /**
-   * @param array $properties
-   */
-  public static function setProperties($properties) {
-    static::$_properties = $properties;
-  }
-
-  public static function getProperties() {
-    return static::$_properties;
-  }
-
   // Some magic ********************************************************************************************************
 
   /**
@@ -148,6 +126,7 @@ abstract class DBRow extends stdClass implements IDbRow {
    * @param db_mysql|null $db
    */
   public function __construct($db = null) {
+    parent::__construct();
     if (empty($db)) {
       $db = static::getDb();
     }
@@ -155,76 +134,7 @@ abstract class DBRow extends stdClass implements IDbRow {
     static::setDb($db);
   }
 
-  /**
-   * Getter with support of protected methods
-   *
-   * @param $name
-   *
-   * @return mixed
-   */
-  public function __get($name) {
-    // Redirecting inaccessible get to __call which will handle the rest
-    return $this->__call('get' . ucfirst($name), array());
-  }
 
-  /**
-   * Setter with support of protected properties/methods
-   *
-   * @param $name
-   * @param $value
-   */
-  // TODO - сеттер должен параллельно изменять значение db_row - for now...
-  public function __set($name, $value) {
-    // Redirecting inaccessible set to __call which will handle the rest
-    $this->__call('set' . ucfirst($name), array($value));
-  }
-
-  /**
-   * Handles getters and setters
-   *
-   * @param string $name
-   * @param array  $arguments
-   *
-   * @return mixed
-   * @throws ExceptionPropertyNotExists
-   */
-  public function __call($name, $arguments) {
-    $left3 = substr($name, 0, 3);
-    $propertyName = lcfirst(substr($name, 3));
-
-    // If method is not getter or setter OR property name not exists in $_properties - raising exception
-    // Descendants can catch this Exception to make own __call magic
-    if (($left3 != 'get' && $left3 != 'set') || empty(static::$_properties[$propertyName])) {
-      throw new ExceptionPropertyNotExists('Property ' . $propertyName . ' not exists when calling getter/setter ' . get_called_class() . '::' . $name, ERR_ERROR);
-    }
-
-    // TODO check for read-only
-
-    if ($left3 == 'set') {
-      if (!empty($this->propertiesAdjusted[$propertyName])) {
-        throw new PropertyAccessException('Property ' . $propertyName . ' already was adjusted so no SET is possible until dbSave in ' . get_called_class() . '::' . $name, ERR_ERROR);
-      }
-      $this->propertiesChanged[$propertyName] = 1;
-    }
-
-    // Now deciding - will we call a protected setter or will we work with protected property
-
-    // If method exists - just calling it
-    if (method_exists($this, $name)) {
-      return call_user_func_array(array($this, $name), $arguments);
-    }
-    // No getter/setter exists - works directly with protected property
-
-    // Is it getter?
-    if ($left3 === 'get') {
-      return $this->{'_' . $propertyName};
-    }
-
-    // Not getter? Then it's setter
-    $this->{'_' . $propertyName} = $arguments[0];
-
-    return null;
-  }
 
   // IDBrow Implementation *********************************************************************************************
 
@@ -239,7 +149,7 @@ abstract class DBRow extends stdClass implements IDbRow {
   public function dbLoad($dbId, $lockSkip = false) {
     $dbId = idval($dbId);
     if ($dbId <= 0) {
-      classSupernova::$debug->error(get_called_class() . '::dbLoad $dbId not positive = ' . $dbId);
+      classSupernova::$debug->error(get_called_class() . '::' . __METHOD__ . ' $dbId not positive = ' . $dbId);
 
       return;
     }
