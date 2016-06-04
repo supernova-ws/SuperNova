@@ -1289,7 +1289,8 @@ switch($new_version) {
         foreach($unit_list as $unit_id => $unit_count) {
           upd_do_query(
             "REPLACE INTO {{unit}} (`unit_player_id`,`unit_location_type`,`unit_location_id`,`unit_type`,`unit_snid`,`unit_level`) VALUES
-              ({$row['fleet_owner']}, " . LOC_FLEET . ", {$row['fleet_id']}, " . get_unit_param($unit_id, P_UNIT_TYPE) . ", {$unit_id}, {$unit_count});",
+              ({$row['fleet_owner']}, " . LOC_FLEET . ", {$row['fleet_id']}, 200, {$unit_id}, {$unit_count});",
+//              ({$row['fleet_owner']}, " . LOC_FLEET . ", {$row['fleet_id']}, " . get_unit_param($unit_id, P_UNIT_TYPE) . ", {$unit_id}, {$unit_count});",
             true
           );
         }
