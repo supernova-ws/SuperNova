@@ -216,6 +216,10 @@ textarea {
   height: 100%;
 }
 
+.h2em {
+  height: 2em;
+}
+
 /* Absolute Positioning */
 
 /* Fill container - usually images */

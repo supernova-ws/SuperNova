@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a6.4');
+define('SN_VERSION', '41a8.2');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -221,6 +221,8 @@ define('RPG_EVENT_SUPERBORN', 41);
 define('RPG_REFERRAL_BOUGHT_MM', 42);
 define('RPG_HALLOWEEN', 43);
 define('RPG_CHRISTMAS', 44);
+define('RPG_EVENT_BIRTHDAY', 45);
+define('RPG_EVENT_BIRTHDAY_COMPILED', 46);
 
 
 

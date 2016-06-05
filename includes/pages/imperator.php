@@ -72,6 +72,7 @@ function sn_imperator_view($template = null) {
   }
 
   $stat_array_date = $stat_array['STAT_DATE'];
+  empty($stat_array_date['DATA']) ? $stat_array_date['DATA'] = array() : false;
   foreach($stat_array_date['DATA'] as $key => $value) {
     $template->assign_block_vars('stat_date', array(
       'ID' => $key,
