@@ -239,6 +239,26 @@ FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 
 
 
+
+
+
+
+
+
+$success = SnDb->querySql(SnDbNonSelect);
+
+$iterator = SnDb->select(SnDbSelect);
+$row = SnDb->fetchRow(SnDbSelect);
+$value = SnDb->fetchFirstValue(SnDbSelect);
+
+
+
+
+
+
+
+
+
 #ctv
 
 Для DBRow (Fleet, например) должны быть два метода:

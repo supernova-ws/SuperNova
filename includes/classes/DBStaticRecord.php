@@ -27,7 +27,7 @@ class DBStaticRecord {
    */
   public static function buildSelect() {
     return
-      DbSqlStatement::build(null)
+      DbSqlStatement::build(self::$dbStatic)
         ->getParamsFromStaticClass(get_called_class())
         ->select();
   }
@@ -106,7 +106,7 @@ class DBStaticRecord {
    * @return array|bool|mysqli_result|null
    */
   protected static function execute($statement) {
-    return static::$dbStatic->execute((string)$statement);
+    return static::$dbStatic->execOld((string)$statement);
   }
 
   /**
@@ -115,7 +115,7 @@ class DBStaticRecord {
    * @return array|null
    */
   protected static function fetchOne($statement) {
-    return static::$dbStatic->fetchOne($statement);
+    return static::$dbStatic->fetchFirst($statement);
   }
 
   /**
@@ -173,46 +173,15 @@ class DBStaticRecord {
   }
 
   /**
-   * Builds and Executes prepared statement
+   * Builds and Executes prepared statement and returns Iterator
    *
    * @param string $sqlQuery
    * @param array  $values
    *
-   * @return array|bool|mysqli_result|null
+   * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  protected static function prepareExecute($sqlQuery, $values = array()) {
-    return static::$dbStatic->sqlPrepareAndExecute($sqlQuery, $values);
-  }
-
-  /**
-   * Builds and executes prepared statement then return first record from sets
-   *
-   * @param string $sqlQuery
-   * @param array  $values
-   *
-   * @return array|null
-   */
-  protected static function prepareFetchOne($sqlQuery, $values = array()) {
-    return static::$dbStatic->db_fetch(static::prepareExecute($sqlQuery, $values));
-  }
-
-  /**
-   * Builds and executes prepared statement then fetches first record from sets and returns value from first field
-   *
-   * @param string $sqlQuery
-   * @param array  $values
-   *
-   * @return mixed|null
-   */
-  protected static function prepareFetchValue($sqlQuery, $values = array()) {
-    $result = static::prepareFetchOne($sqlQuery, $values);
-    if (empty($result) || !array($result)) {
-      $result = null;
-    } else {
-      $result = array_pop($result);
-    }
-
-    return $result;
+  protected static function prepareGetIterator($sqlQuery, $values = array()) {
+    return static::$dbStatic->select(DbSqlPrepare::build($sqlQuery, $values));
   }
 
 }

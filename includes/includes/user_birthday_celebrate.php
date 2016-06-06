@@ -3,9 +3,7 @@
 function sn_user_birthday_celebrate() {
   sn_db_transaction_start();
 
-  $query = DBStaticUser::db_user_list_to_celebrate(classSupernova::$config->user_birthday_range);
-
-  while ($row = db_fetch($query)) {
+  foreach (DBStaticUser::db_user_list_to_celebrate(classSupernova::$config->user_birthday_range) as $row) {
     $row['username'] = db_escape($row['username']);
     rpg_points_change(
       $row['id'],

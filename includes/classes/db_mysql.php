@@ -178,24 +178,11 @@ class db_mysql {
   }
 
   /**
-   * Prepares sql string to execution and execute it
-   *
-   * @param string $sqlQuery
-   * @param array  $values
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function sqlPrepareAndExecute($sqlQuery, $values = array()) {
-    return $this->doquery(DbSqlPrepare::build($sqlQuery, $values));
-  }
-
-
-  /**
    * @param string|DbSqlStatement $statement
    *
    * @return array|bool|mysqli_result|null
    */
-  public function execute($statement) {
+  public function execOld($statement) {
     return $this->doquery($statement);
   }
 
@@ -204,8 +191,8 @@ class db_mysql {
    *
    * @return array|null
    */
-  public function fetchOne($statement) {
-    $query = $this->execute($statement->fetchOne());
+  public function fetchFirst($statement) {
+    $query = $this->execOld($statement->fetchOne());
 
     return $this->db_fetch($query);
   }
@@ -270,6 +257,109 @@ class db_mysql {
   }
 
 
+  /**
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return bool|DbMysqliResultIterator
+   */
+  public function querySql($query, $skip_query_check = false) {
+    if (!$this->connected) {
+      $this->sn_db_connect();
+    }
+
+    $stringQuery = $query instanceof DbSqlPrepare ? $query->query : $query;
+    $stringQuery = trim($stringQuery);
+    // You can't do it - 'cause you can break commented statement with line-end comments
+    // $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
+
+    $this->security_watch_user_queries($stringQuery);
+    $this->security_query_check_bad_words($stringQuery, $skip_query_check);
+    $this->logQuery($stringQuery, false);
+    $stringQuery = $this->replaceTablePlaceholders($stringQuery);
+
+    $queryTrace = $this->queryTrace();
+
+    $result = false;
+    try {
+      if ($query instanceof DbSqlPrepare) {
+        // MYSQLI ONLY!!!
+        $result = $query
+          ->setQuery($stringQuery)
+          ->comment($queryTrace)
+          ->compileMySqlI()
+          ->statementGet($this)
+          ->execute()
+          ->storeResult()
+          ->getIterator();
+      } else {
+        $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
+
+        if (!$queryResult) {
+          throw new Exception();
+        }
+
+        if($queryResult instanceof mysqli_result) {
+          $result = new DbMysqliResultIterator($queryResult);
+        } else {
+          $result = $queryResult;
+        }
+
+      }
+
+    } catch (Exception $e) {
+      classSupernova::$debug->error($this->db_error() . "<br />{$query}<br />", 'SQL Error');
+    }
+
+    return $result;
+  }
+
+  /**
+   * Returns iterator to iterate through mysqli_result
+   *
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * return DbRowIterator
+   * @return DbEmptyIterator|DbMysqliResultIterator
+   */
+  public function select($query, $skip_query_check = false) {
+    if ($queryResult = $this->querySql($query, $skip_query_check)) {
+      $result = $queryResult;
+    } else {
+      $result = new DbEmptyIterator();
+    }
+
+    return $result;
+  }
+
+  /**
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return array
+   */
+  public function selectRow($query, $skip_query_check = false) {
+    // TODO - ... LIMIT 1 FOR UPDATE
+    if (!is_array($row = $this->select($query, $skip_query_check)->current())) {
+      $row = array();
+    }
+
+    return $row;
+  }
+
+  /**
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return mixed
+   */
+  public function selectValue($query, $skip_query_check = false) {
+    $array = $this->selectRow($query, $skip_query_check);
+
+    return reset($array);
+  }
+
   // TODO Заменить это на новый логгер
   protected function security_watch_user_queries($query) {
     global $user;
@@ -301,7 +391,7 @@ class db_mysql {
 
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch (true) {
+    switch(true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -363,7 +453,7 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while ($row = $this->db_fetch($query)) {
+    while($row = $this->db_fetch($query)) {
       foreach ($row as $table_name) {
         if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
@@ -410,7 +500,7 @@ class db_mysql {
   /**
    * L1 fetch assoc array
    *
-   * @param $query
+   * @param mysqli_result $query
    *
    * @return array|null
    */
@@ -494,7 +584,7 @@ class db_mysql {
     if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while ($row = db_fetch($query)) {
+    while($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 

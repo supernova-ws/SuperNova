@@ -73,7 +73,7 @@ class db_mysql_v5 {
   /**
    * L0 fetch assoc array
    *
-   * @param $query
+   * @param mysqli_result $query
    *
    * @return array|null
    */

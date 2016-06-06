@@ -62,15 +62,13 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
 $template = gettemplate('admin/userlist', true);
 
 $multi_ip = array();
-$ip_query = DBStaticUser::db_user_list_admin_multiaccounts();
-while($ip = db_fetch($ip_query)) {
+foreach(DBStaticUser::db_user_list_admin_multiaccounts() as $ip) {
   $multi_ip[$ip['user_lastip']] = $ip['ip_count'];
 }
 
 $geoip = geoip_status();
 
-$query = DBStaticUser::db_user_list_admin_sorted($sort_fields[$sort], $is_players_online_page);
-while($user_row = db_fetch($query)) {
+foreach(DBStaticUser::db_user_list_admin_sorted($sort_fields[$sort], $is_players_online_page) as $user_row ) {
   if($user_row['banaday']) {
     $ban_details = db_ban_list_get_details($user_row);
   }

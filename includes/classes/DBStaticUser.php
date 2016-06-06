@@ -25,19 +25,18 @@ class DBStaticUser extends DBStaticRecord {
    * @return string
    */
   public static function getLastRegisteredUserName() {
-    $result = static::fetchOne(
-      static::buildSelectAll()
-        ->fields('username')
+    return (string) static::$dbStatic->selectValue(
+      static::buildSelect()
+        ->field('username')
         ->where(array('`user_as_ally` IS NULL'))
         ->orderBy(array('`id` DESC'))
+        ->fetchOne()
     );
-
-    return isset($result['username']) ? $result['username'] : '';
   }
 
   public static function db_player_list_export_blitz_info() {
     return static::execute(
-      static::buildSelectAll()
+      static::buildSelect()
         ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
         ->where(array('`user_as_ally` IS NULL'))
         ->orderBy(array('`id`'))
@@ -74,7 +73,7 @@ class DBStaticUser extends DBStaticRecord {
       ->where($where);
 
     // TODO - FOR UPDATE
-    return static::prepareExecute(
+    return static::prepareGetIterator(
       $query,
       array(
         ':userId'        => idval($user['id']),
@@ -85,10 +84,6 @@ class DBStaticUser extends DBStaticRecord {
 
   public static function db_user_count($online = false) {
 //    $result = doquery('SELECT COUNT(id) AS user_count FROM {{users}} WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''), true);
-//    return isset($result['user_count']) ? $result['user_count'] : 0;
-
-//    $query =      'SELECT COUNT(`id`) AS `user_count` FROM `{{users}}` WHERE `user_as_ally` IS NULL' .
-//      ($online ? ' AND `onlinetime` > :onlineTime' : '');
 
     $query = static::buildSelectCountId()
       ->where('`user_as_ally` IS NULL');
@@ -96,9 +91,9 @@ class DBStaticUser extends DBStaticRecord {
       $query->where('`onlinetime` > :onlineTime');
     }
 
-    return static::prepareFetchValue($query, array(
+    return static::$dbStatic->selectValue(DbSqlPrepare::build($query, array(
       ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
-    ));
+    )));
   }
 
   public static function db_user_list_admin_sorted($sort, $online = false) {
@@ -123,7 +118,7 @@ class DBStaticUser extends DBStaticRecord {
       ->groupBy('u.id')
       ->orderBy("user_as_ally, {$sort} ASC");
 
-    return static::prepareExecute(
+    return static::prepareGetIterator(
       $query,
       array(
         ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
@@ -159,7 +154,7 @@ class DBStaticUser extends DBStaticRecord {
       ->having('`days_after_birthday` < :birthdayRange')
       ->forUpdate();
 
-    return static::prepareExecute(
+    return static::prepareGetIterator(
       $query,
       array(
         ':birthdayRange' => $config_user_birthday_range,
@@ -167,6 +162,9 @@ class DBStaticUser extends DBStaticRecord {
     );
   }
 
+  /**
+   * @return DbEmptyIterator|DbMysqliResultIterator
+   */
   public static function db_user_list_admin_multiaccounts() {
     $query = "SELECT COUNT(*) AS `ip_count`, `user_lastip`
       FROM `{{users}}`
@@ -174,7 +172,7 @@ class DBStaticUser extends DBStaticRecord {
       GROUP BY `user_lastip`
       HAVING COUNT(*) > 1";
 
-    return static::prepareExecute(
+    return static::prepareGetIterator(
       $query
     );
   }

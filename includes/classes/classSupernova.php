@@ -443,7 +443,7 @@ class classSupernova {
       $statement->skipLock($skip_lock);
     }
 
-    return self::$db->fetchOne($statement);
+    return self::$db->fetchFirst($statement);
   }
 
   /**

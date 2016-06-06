@@ -234,8 +234,24 @@ class DbSqlPrepare {
     return $this;
   }
 
+  /**
+   * @return $this
+   */
+  public function storeResult() {
+    $this->statement->store_result();
+
+    return $this;
+  }
+
   public function getResult() {
     return $this->statement->get_result();
+  }
+
+  /**
+   * @return bool|mysqli_result
+   */
+  public function getIterator() {
+    return new DBMysqliStatementIterator($this->statement);
   }
 
   public function __toString() {
