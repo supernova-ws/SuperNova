@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.1');
+define('SN_VERSION', '41a50.3');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -261,6 +261,8 @@ define('RPG_EVENT_SUPERBORN', 41);
 define('RPG_REFERRAL_BOUGHT_MM', 42);
 define('RPG_HALLOWEEN', 43);
 define('RPG_CHRISTMAS', 44);
+define('RPG_EVENT_BIRTHDAY', 45);
+define('RPG_EVENT_BIRTHDAY_COMPILED', 46);
 
 
 
