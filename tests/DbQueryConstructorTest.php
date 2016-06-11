@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class DbSqlStatementTest
+ * Class DbQueryConstructorTest
  *
  * @coversDefaultClass DbQueryConstructor
  */
-class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
+class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @var DbQueryConstructor $object
@@ -35,7 +35,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @covers ::__call
    * @covers ::limit
    * @covers ::offset
-   * @covers ::fetchOne
+   * @covers ::setFetchOne
    * @covers ::forUpdate
    * @covers ::skipLock
    * @covers ::_reset
@@ -151,7 +151,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::fetchOne
+   * @covers ::setFetchOne
    * @covers ::limit
    * @covers ::offset
    */
