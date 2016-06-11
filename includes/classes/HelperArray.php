@@ -30,7 +30,7 @@ class HelperArray {
    * @param mixed &$value
    */
   public static function makeArrayRef(&$value, $index = 0) {
-    if(!is_array($value)) {
+    if (!is_array($value)) {
       $value = array($index => $value);
     }
   }
@@ -101,7 +101,7 @@ class HelperArray {
     static::makeArrayRef($arrayNew);
     static::makeArrayRef($arrayOld);
 
-    switch ($mergeStrategy) {
+    switch($mergeStrategy) {
       case HelperArray::MERGE_PHP:
         $arrayOld = array_merge($arrayOld, $arrayNew);
       break;
@@ -110,6 +110,17 @@ class HelperArray {
         $arrayOld = $arrayNew;
       break;
     }
+  }
+
+  /**
+   * @param array &$array
+   * @param mixed $key
+   * @param mixed $alternative
+   *
+   * @return mixed
+   */
+  public static function keyExistsOr(&$array, $key, $alternative) {
+    return array_key_exists($key, $array) ? $array[$key] : $alternative;
   }
 
 }

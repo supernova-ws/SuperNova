@@ -6,6 +6,8 @@
 // TODO - Вааще всё переделать.
 // Получение стейтмента по строке - это должен быть статик
 // Тогда же должны ребиндится параметры
+
+// TODO - Переключатель - использовать get_result или нет
 class DbSqlPrepare {
   const COMMENT_PLACEHOLDER = ':__COMMENT__';
   const DDL_REGEXP = '#(\|.+?\b)#im';
@@ -14,7 +16,7 @@ class DbSqlPrepare {
   /**
    * SQL text
    *
-   * @var string|DbSqlStatement
+   * @var string|DbQueryConstructor
    */
   public $query = '';
   /**
@@ -72,6 +74,8 @@ class DbSqlPrepare {
    */
   protected static $statements = array();
 
+  public static $isUseGetResult = false;
+
   /**
    * DbSqlPrepare constructor.
    *
@@ -97,6 +101,17 @@ class DbSqlPrepare {
    */
   public static function build($query, $values = array()) {
     return new static($query, $values);
+  }
+
+  /**
+   * @param string $query
+   * @param array  $values
+   *
+   * @return static
+   *
+   */
+  public static function buildIterator($query, $values = array()) {
+    return static::build($query, $values);
   }
 
 
@@ -214,13 +229,15 @@ class DbSqlPrepare {
       if (!(static::$statements[$md5] = $db->db_prepare($this->queryPrepared))) {
         throw new Exception('DbSqlPrepare::statementGet() - can not prepare statement');
       }
-      $this->statement = static::$statements[$md5];
-      $this->bindParams();
-    } else {
-      // TODO - вот тут фигня. На самом деле нельзя под один и тот же DbSqlPrepare исползовать разные mysqli_stmt
-      // С другой стороны - это позволяет реюзать параметры. Так что еще вопрос - фигня ли это....
-      $this->statement = static::$statements[$md5];
+//      $this->statement = static::$statements[$md5];
+//      $this->bindParams();
+//    } else {
+//      // TODO - вот тут фигня. На самом деле нельзя под один и тот же DbSqlPrepare исползовать разные mysqli_stmt
+//      // С другой стороны - это позволяет реюзать параметры. Так что еще вопрос - фигня ли это....
+//      $this->statement = static::$statements[$md5];
     }
+    $this->statement = static::$statements[$md5];
+    $this->bindParams();
 
     return $this;
   }
@@ -243,15 +260,27 @@ class DbSqlPrepare {
     return $this;
   }
 
+  /**
+   * @return bool|mysqli_result
+   */
   public function getResult() {
     return $this->statement->get_result();
   }
 
-  /**
-   * @return bool|mysqli_result
-   */
   public function getIterator() {
-    return new DBMysqliStatementIterator($this->statement);
+    if(DbSqlPrepare::$isUseGetResult) {
+      $mysqli_result = $this->statement->get_result();
+      if($mysqli_result instanceof mysqli_result) {
+        $iterator = new DbMysqliResultIterator($this->statement->get_result());
+      } else {
+        $iterator = new DbEmptyIterator();
+      }
+    } else {
+      $this->storeResult();
+      $iterator = new DBMysqliStatementIterator($this->statement);
+    }
+
+    return $iterator;
   }
 
   public function __toString() {
@@ -262,3 +291,5 @@ class DbSqlPrepare {
   }
 
 }
+
+DbSqlPrepare::$isUseGetResult = method_exists('mysqli_stmt', 'get_result');

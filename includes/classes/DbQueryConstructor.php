@@ -6,23 +6,43 @@
 
 
 /**
- * Class DbSqlStatement
+ * Class DbQueryConstructor
  *
- * @method static DbSqlStatement fields(mixed $value, int $mergeStrategy = HelperArray::OVERWRITE)
- * @method static DbSqlStatement join(mixed $value, int $mergeStrategy = HelperArray::OVERWRITE)
- * @method static DbSqlStatement where(array $value, int $mergeStrategy = HelperArray::OVERWRITE)
- * @method static DbSqlStatement groupBy(array $value, int $mergeStrategy = HelperArray::OVERWRITE)
- * @method static DbSqlStatement orderBy(array $value, int $mergeStrategy = HelperArray::OVERWRITE)
- * @method static DbSqlStatement having(mixed $value, int $mergeStrategy = HelperArray::OVERWRITE)
+ * @method static DbQueryConstructor fields(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method static DbQueryConstructor join(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method static DbQueryConstructor where(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method static DbQueryConstructor groupBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method static DbQueryConstructor orderBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method static DbQueryConstructor having(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor setFetchOne(bool $fetchOne = true)
+ * @method DbQueryConstructor setForUpdate(bool $forUpdate = true)
+ * @method DbQueryConstructor setSkipLock(bool $skipLock = true)
  *
  */
-class DbSqlStatement extends DbSqlAware {
+class DbQueryConstructor extends DbSqlAware {
 
   const SELECT = 'SELECT';
+  const INSERT = 'INSERT';
+  const UPDATE = 'UPDATE';
+  const DELETE = 'DELETE';
+  const REPLACE = 'REPLACE';
 
   protected static $allowedOperations = array(
     self::SELECT,
   );
+
+  /**
+   * List of array properties names that should be merged on each call of setter
+   *
+   * @var string[] $propListArrayMerge
+   */
+  protected static $propListArrayMerge = array('fields', 'join', 'where', 'groupBy', 'orderBy', 'having');
+  /**
+   * List of setters that will simple set property with default value TRUE
+   *
+   * @var string[] $propListSetDefaultTrue
+   */
+  protected static $propListSetDefaultTrue = array('setFetchOne', 'setForUpdate', 'setSkipLock');
 
   public $operation = '';
 
@@ -50,6 +70,8 @@ class DbSqlStatement extends DbSqlAware {
   public $forUpdate = false;
   public $skipLock = false;
 
+  public $variables = array();
+
   protected $_compiledQuery = array();
 
   /**
@@ -64,10 +86,35 @@ class DbSqlStatement extends DbSqlAware {
   }
 
   /**
+   * Sets internal variables
+   *
+   * @param array $values
+   *
+   * @return $this
+   */
+  public function variables($values) {
+    $this->variables = $values;
+
+    return $this;
+  }
+
+
+  /**
+   * @param string $alias
+   *
+   * @return $this
+   */
+  public function setAlias($alias) {
+    $this->alias = $alias;
+
+    return $this;
+  }
+
+  /**
    * @return $this
    */
   public function select() {
-    $this->operation = DbSqlStatement::SELECT;
+    $this->operation = DbQueryConstructor::SELECT;
 //    if (empty($this->fields) && $initFields) {
 //      $this->fields = array('*');
 //    }
@@ -75,16 +122,6 @@ class DbSqlStatement extends DbSqlAware {
     return $this;
   }
 
-  /**
-   * @param string $alias
-   *
-   * @return $this
-   */
-  public function fromAlias($alias) {
-    $this->alias = $alias;
-
-    return $this;
-  }
 
   /**
    * @param string $tableName
@@ -94,7 +131,7 @@ class DbSqlStatement extends DbSqlAware {
    */
   public function from($tableName, $alias = '') {
     $this->table = $tableName;
-    $this->fromAlias($alias);
+    $this->setAlias($alias);
 
     return $this;
   }
@@ -108,15 +145,19 @@ class DbSqlStatement extends DbSqlAware {
     $arguments = func_get_args();
 
     // Special case - call method with array of fields
-    if(count($arguments) == 1 && is_array($arguments[0])) {
+    if (count($arguments) == 1 && is_array($arguments[0])) {
       $arguments = array_shift($arguments);
     }
 
-    foreach($arguments as $arg) {
+    foreach ($arguments as $arg) {
       $this->fields[] = $arg;
     }
 
     return $this;
+  }
+
+  public function fieldLiteral($field = '0', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+    return $this->field(DbSqlLiteral::build($this->db)->literal($field));
   }
 
   public function fieldSingleFunction($functionName, $field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
@@ -131,12 +172,24 @@ class DbSqlStatement extends DbSqlAware {
     return $this->field(DbSqlLiteral::build($this->db)->isNull($field, $alias));
   }
 
+  /**
+   * @param string  $name
+   * @param mixed[] $arguments
+   *
+   * @return $this
+   */
   public function __call($name, $arguments) {
-    if (in_array($name, array('fields', 'join', 'where', 'groupBy', 'orderBy', 'having'))) {
+    if (in_array($name, self::$propListArrayMerge)) {
 //      array_unshift($arguments, '');
 //      $arguments[0] = &$this->$name;
 //      call_user_func_array('HelperArray::merge', $arguments);
-      HelperArray::merge($this->$name, $arguments[0], array_key_exists(1, $arguments) ? $arguments[1] : HelperArray::MERGE_PHP);
+      HelperArray::merge($this->$name, $arguments[0], HelperArray::keyExistsOr($arguments, 1, HelperArray::MERGE_PHP));
+    } elseif (in_array($name, self::$propListSetDefaultTrue)) {
+      $varName = lcfirst(substr($name, 3));
+      if (!array_key_exists(0, $arguments)) {
+        $arguments[0] = true;
+      }
+      $this->$varName = $arguments[0];
     }
     // TODO - make all setters protected ??
 //    elseif(method_exists($this, $name)) {
@@ -169,34 +222,34 @@ class DbSqlStatement extends DbSqlAware {
   }
 
 
-  /**
-   * Make statement fetch only one record
-   *
-   * @return $this
-   */
-  public function fetchOne($fetchOne = true) {
-    $this->fetchOne = $fetchOne;
-
-    return $this;
-  }
-
-  /**
-   * @return $this
-   */
-  public function forUpdate($forUpdate = true) {
-    $this->forUpdate = $forUpdate;
-
-    return $this;
-  }
-
-  /**
-   * @return $this
-   */
-  public function skipLock($skipLock = true) {
-    $this->skipLock = $skipLock;
-
-    return $this;
-  }
+//  /**
+//   * Make statement fetch only one record
+//   *
+//   * @return $this
+//   */
+//  public function fetchOne($fetchOne = true) {
+//    $this->fetchOne = $fetchOne;
+//
+//    return $this;
+//  }
+//
+//  /**
+//   * @return $this
+//   */
+//  public function forUpdate($forUpdate = true) {
+//    $this->forUpdate = $forUpdate;
+//
+//    return $this;
+//  }
+//
+//  /**
+//   * @return $this
+//   */
+//  public function skipLock($skipLock = true) {
+//    $this->skipLock = $skipLock;
+//
+//    return $this;
+//  }
 
   /**
    * @param string $className

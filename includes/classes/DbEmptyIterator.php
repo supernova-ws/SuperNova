@@ -5,7 +5,17 @@
  *
  * Empty iterator
  */
-class DbEmptyIterator extends DbRowIterator {
+class DbEmptyIterator extends DbResultIterator {
+
+  /**
+   * Constructor
+   *
+   * @param mixed $result
+   * @param int   $fetchMode constant (MYSQLI_ASSOC, MYSQLI_NUM, MYSQLI_BOTH)
+   */
+  public function __construct($result = false, $fetchMode = MYSQLI_ASSOC) {
+    // Empty constructor
+  }
 
   /**
    * Return the current element
@@ -56,5 +66,10 @@ class DbEmptyIterator extends DbRowIterator {
    */
   public function rewind() {
     // Doing nothing
+  }
+
+  protected function fetchCurrentRow() {
+    // TODO: Implement fetchCurrentRow() method.
+    $this->currentRow = false;
   }
 }

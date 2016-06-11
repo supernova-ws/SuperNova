@@ -3,18 +3,18 @@
 /**
  * Class DbSqlStatementTest
  *
- * @coversDefaultClass DbSqlStatement
+ * @coversDefaultClass DbQueryConstructor
  */
 class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
 
   /**
-   * @var DbSqlStatement $object
+   * @var DbQueryConstructor $object
    */
   protected $object;
 
   public function setUp() {
     parent::setUp();
-    $this->object = new DbSqlStatement(null);
+    $this->object = new DbQueryConstructor(null);
   }
 
   public function tearDown() {
@@ -57,13 +57,13 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
         ->having('wes')
         ->limit(2)
         ->offset(3)
-        ->fetchOne()
-        ->forUpdate()
-        ->skipLock()
+        ->setFetchOne()
+        ->setForUpdate()
+        ->setSkipLock()
     );
 
     // Checking that all properties is set
-    $this->assertEquals(DbSqlStatement::SELECT, $this->object->operation);
+    $this->assertEquals(DbQueryConstructor::SELECT, $this->object->operation);
     $this->assertEquals('aTable', $this->object->table);
     $this->assertEquals('theTable', $this->object->alias);
     $this->assertEquals('idField', $this->object->idField);
@@ -85,7 +85,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($this->object, invokeMethod($this->object, '_reset', array(false)));
 
     // Checking that protected part is not affected
-    $this->assertEquals(DbSqlStatement::SELECT, $this->object->operation);
+    $this->assertEquals(DbQueryConstructor::SELECT, $this->object->operation);
     $this->assertEquals('aTable', $this->object->table);
     $this->assertEquals('theTable', $this->object->alias);
     $this->assertEquals('idField', $this->object->idField);
@@ -127,7 +127,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @covers ::getParamsFromStaticClass
    */
   public function testBuild() {
-    $this->assertEquals('DbSqlStatement', get_class($test = DbSqlStatement::build(null)->getParamsFromStaticClass('DBStaticRecord')));
+    $this->assertEquals('DbQueryConstructor', get_class($test = DbQueryConstructor::build(null)->getParamsFromStaticClass('DBStaticRecord')));
 
     $this->assertEquals('_table', $test->table);
     $this->assertEquals('id', $test->idField);
@@ -142,7 +142,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals($this->object, $this->object->select());
 
     // Testing behaviour by default
-    $this->assertEquals(DbSqlStatement::SELECT, $this->object->operation);
+    $this->assertEquals(DbQueryConstructor::SELECT, $this->object->operation);
     $this->assertEquals(array(), $this->object->fields);
 
     // Testing preset fields
@@ -156,7 +156,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
    * @covers ::offset
    */
   public function testFetchOne() {
-    $this->assertEquals($this->object, $this->object->limit(10)->offset(20)->fetchOne());
+    $this->assertEquals($this->object, $this->object->limit(10)->offset(20)->setFetchOne());
 
     // Testing behaviour by default
     $this->assertTrue($this->object->fetchOne);
@@ -164,7 +164,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(20, $this->object->offset);
 
     // Testing fetchOne reset
-    $this->assertEquals($this->object, $this->object->limit(10)->offset(20)->fetchOne(false));
+    $this->assertEquals($this->object, $this->object->limit(10)->offset(20)->setFetchOne(false));
     $this->assertNotTrue($this->object->fetchOne);
   }
 
@@ -197,7 +197,7 @@ class DbSqlStatementTest extends PHPUnit_Framework_TestCase {
   public function testChain() {
     $this->assertEquals($this->object, $this->object->select()->fields(array('qwe'))->from('aTable', 'theTable')->setIdField('idField'));
 
-    $this->assertEquals(DbSqlStatement::SELECT, $this->object->operation);
+    $this->assertEquals(DbQueryConstructor::SELECT, $this->object->operation);
     $this->assertEquals('aTable', $this->object->table);
     $this->assertEquals('theTable', $this->object->alias);
     $this->assertEquals('idField', $this->object->idField);

@@ -178,26 +178,6 @@ class db_mysql {
   }
 
   /**
-   * @param string|DbSqlStatement $statement
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function execOld($statement) {
-    return $this->doquery($statement);
-  }
-
-  /**
-   * @param DbSqlStatement $statement
-   *
-   * @return array|null
-   */
-  public function fetchFirst($statement) {
-    $query = $this->execOld($statement->fetchOne());
-
-    return $this->db_fetch($query);
-  }
-
-  /**
    * @param string|DbSqlPrepare $query
    * @param string              $table
    * @param bool                $fetch
@@ -258,17 +238,17 @@ class db_mysql {
 
 
   /**
-   * @param string $query
-   * @param bool   $skip_query_check
+   * @param string|DbQueryConstructor $query
+   * @param bool                      $skip_query_check
    *
-   * @return bool|DbMysqliResultIterator
+   * @return bool|DbResultIterator
    */
-  public function querySql($query, $skip_query_check = false) {
+  public function selectIterator($query, $skip_query_check = false) {
     if (!$this->connected) {
       $this->sn_db_connect();
     }
 
-    $stringQuery = $query instanceof DbSqlPrepare ? $query->query : $query;
+    $stringQuery = $query instanceof DbQueryConstructor ? $query->__toString() : $query;
     $stringQuery = trim($stringQuery);
     // You can't do it - 'cause you can break commented statement with line-end comments
     // $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
@@ -282,15 +262,14 @@ class db_mysql {
 
     $result = false;
     try {
-      if ($query instanceof DbSqlPrepare) {
+      // If variables not empty - running PREPARE
+      if ($query instanceof DbQueryConstructor && !empty($query->variables)) {
         // MYSQLI ONLY!!!
-        $result = $query
-          ->setQuery($stringQuery)
+        $result = DbSqlPrepare::build($stringQuery, $query->variables)
           ->comment($queryTrace)
           ->compileMySqlI()
           ->statementGet($this)
           ->execute()
-          ->storeResult()
           ->getIterator();
       } else {
         $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
@@ -299,14 +278,12 @@ class db_mysql {
           throw new Exception();
         }
 
-        if($queryResult instanceof mysqli_result) {
+        if ($queryResult instanceof mysqli_result) {
           $result = new DbMysqliResultIterator($queryResult);
         } else {
           $result = $queryResult;
         }
-
       }
-
     } catch (Exception $e) {
       classSupernova::$debug->error($this->db_error() . "<br />{$query}<br />", 'SQL Error');
     }
@@ -317,14 +294,16 @@ class db_mysql {
   /**
    * Returns iterator to iterate through mysqli_result
    *
-   * @param string $query
-   * @param bool   $skip_query_check
+   * @param string|DbSqlPrepare|DbQueryConstructor $query
+   * @param bool                                   $skip_query_check
+   * @param array                                  $variables
    *
-   * return DbRowIterator
+   * return DbResultIterator
+   *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  public function select($query, $skip_query_check = false) {
-    if ($queryResult = $this->querySql($query, $skip_query_check)) {
+  public function select($query, $skip_query_check = false, $variables = array()) {
+    if ($queryResult = $this->selectIterator($query, $skip_query_check)) {
       $result = $queryResult;
     } else {
       $result = new DbEmptyIterator();
@@ -334,14 +313,15 @@ class db_mysql {
   }
 
   /**
-   * @param string $query
-   * @param bool   $skip_query_check
+   * @param string|DbSqlPrepare $query
+   * @param bool                $skip_query_check
+   * @param array               $variables
    *
    * @return array
    */
-  public function selectRow($query, $skip_query_check = false) {
+  public function selectRow($query, $skip_query_check = false, $variables = array()) {
     // TODO - ... LIMIT 1 FOR UPDATE
-    if (!is_array($row = $this->select($query, $skip_query_check)->current())) {
+    if (!is_array($row = $this->select($query, $skip_query_check, $variables)->current())) {
       $row = array();
     }
 
@@ -349,13 +329,14 @@ class db_mysql {
   }
 
   /**
-   * @param string $query
-   * @param bool   $skip_query_check
+   * @param string|DbSqlPrepare|DbQueryConstructor $query
+   * @param bool                                   $skip_query_check
+   * @param array                                  $variables
    *
    * @return mixed
    */
-  public function selectValue($query, $skip_query_check = false) {
-    $array = $this->selectRow($query, $skip_query_check);
+  public function selectValue($query, $skip_query_check = false, $variables = array()) {
+    $array = $this->selectRow($query, $skip_query_check, $variables);
 
     return reset($array);
   }

@@ -23,17 +23,17 @@ class DBStaticRecord {
   }
 
   /**
-   * @return DbSqlStatement
+   * @return DbQueryConstructor
    */
   public static function buildSelect() {
     return
-      DbSqlStatement::build(self::$dbStatic)
+      DbQueryConstructor::build(self::$dbStatic)
         ->getParamsFromStaticClass(get_called_class())
         ->select();
   }
 
   /**
-   * @return DbSqlStatement
+   * @return DbQueryConstructor
    */
   public static function buildSelectCountId() {
     return
@@ -42,21 +42,13 @@ class DBStaticRecord {
   }
 
   /**
-   * @return DbSqlStatement
-   */
-  public static function buildSelectAll() {
-    return
-      static::buildSelect()
-        ->field('*');
-  }
-
-  /**
-   * @return DbSqlStatement
+   * @return DbQueryConstructor
    */
   public static function buildSelectLock() {
     return
-      static::buildSelect()->field(1)
-        ->forUpdate();
+      static::buildSelect()
+        ->field(1)
+        ->setForUpdate();
   }
 
   /**
@@ -65,15 +57,17 @@ class DBStaticRecord {
    *     Field list can be scalar - it would be converted to array and used as field name
    * @param bool        $for_update
    *
-   * @return array|null
-   *
-   * @see static::getRecordList
+   * @return array
    */
   protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
-    $result = static::fetchOne(
-      static::buildSelect()->fields($fieldList)
+    $stmt =
+      static::buildSelect()
+        ->fields($fieldList)
         ->where($where)
-    );
+        ->setFetchOne();
+
+
+    $result = static::$dbStatic->selectRow($stmt);
 
     return $result;
   }
@@ -101,44 +95,22 @@ class DBStaticRecord {
   }
 
   /**
-   * @param DbSqlStatement $statement
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  protected static function execute($statement) {
-    return static::$dbStatic->execOld((string)$statement);
-  }
-
-  /**
-   * @param DbSqlStatement $statement
-   *
-   * @return array|null
-   */
-  protected static function fetchOne($statement) {
-    return static::$dbStatic->fetchFirst($statement);
-  }
-
-  /**
    * @param array $idList
    *
-   * @return mysqli_result|null
-   */
-  /**
-   * @param array $idList
-   *
-   * @return mysqli_result|null
+   * @return DbResultIterator
    */
   public static function queryExistsIdInList($idList) {
-    $query = null;
     if (!empty($idList) && is_array($idList)) {
-      $query = static::execute(
-        static::buildSelectAll()
+      $query = static::selectIterator(
+        static::buildSelect()
           ->fields(static::$_idField)
           ->where(array("`" . static::$_idField . "` IN (" . implode(',', $idList) . ")"))
       );
+    } else {
+      $query = new DbEmptyIterator();
     }
 
-    return !empty($query) ? $query : null;
+    return $query;
   }
 
 
@@ -153,8 +125,7 @@ class DBStaticRecord {
 
     $result = array();
     if (!empty($idList)) {
-      $query = static::queryExistsIdInList($idList);
-      while($row = db_fetch($query)) {
+      foreach(static::queryExistsIdInList($idList) as $row) {
         $result[] = $row[static::$_idField];
       }
     }
@@ -167,21 +138,23 @@ class DBStaticRecord {
    *
    */
   public static function lockAllRecords() {
-    static::execute(
-      static::buildSelectLock()
-    );
+    static::selectIterator(static::buildSelectLock());
   }
 
   /**
-   * Builds and Executes prepared statement and returns Iterator
+   * Executes prepared statement and returns Iterator
    *
-   * @param string $sqlQuery
-   * @param array  $values
+   * @param string|DbQueryConstructor $sql - SQL string or SqlQuery
    *
-   * @return DbEmptyIterator|DbMysqliResultIterator
+   * @return DbResultIterator
    */
-  protected static function prepareGetIterator($sqlQuery, $values = array()) {
-    return static::$dbStatic->select(DbSqlPrepare::build($sqlQuery, $values));
+  protected static function selectIterator($sql) {
+    $result = static::$dbStatic->selectIterator($sql, false);
+    if(!($result instanceof DbResultIterator)) {
+      $result = new DbEmptyIterator();
+    }
+    return $result;
+//    return static::$dbStatic->select(DbSqlPrepare::build($sqlQuery, $values));
   }
 
 }

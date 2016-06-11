@@ -152,4 +152,13 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
 
   }
 
+  /**
+   * @covers ::keyExistsOr
+   */
+  public function testKeyExistsOr() {
+    $array = array('a' => 'b');
+    $this->assertEquals('b', HelperArray::keyExistsOr($array, 'a', 'q'));
+    $this->assertEquals('q', HelperArray::keyExistsOr($array, 'c', 'q'));
+  }
+
 }

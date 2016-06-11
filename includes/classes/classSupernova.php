@@ -432,21 +432,6 @@ class classSupernova {
   }
 
   /**
-   * @param DbSqlStatement $statement
-   * @param bool           $skip_lock
-   *
-   * @return array|null
-   */
-  public static function dbFetchOne($statement, $skip_lock = false) {
-    if ($statement->operation == DbSqlStatement::SELECT) {
-      // Updating skipLock status
-      $statement->skipLock($skip_lock);
-    }
-
-    return self::$db->fetchFirst($statement);
-  }
-
-  /**
    * @param      $query
    * @param bool $fetch
    * @param bool $skip_lock
@@ -507,7 +492,7 @@ class classSupernova {
             ($filter ? ' WHERE ' . $filter : '') .
             ($fetch ? ' LIMIT 1' : ''), false, true);
 
-          while ($row = db_fetch($query)) {
+          while($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if (!static::cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
@@ -526,7 +511,7 @@ class classSupernova {
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
-      while ($row = db_fetch($query)) {
+      while($row = db_fetch($query)) {
         static::cache_set($location_type, $row);
         $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
       }
@@ -749,10 +734,16 @@ class classSupernova {
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
       // TODO переписать
-      $user = static::dbFetchOne(
-        DBStaticUser::buildSelectAll()
+      $user = self::$db->selectRow(
+        DBStaticUser::buildSelect()
+          ->field('*')
           ->where(array("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"))
+          ->setFetchOne()
       );
+
+      if(empty($user)) {
+        $user = null;
+      }
 
 //      $user = static::db_query(
 //        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
@@ -998,7 +989,7 @@ class classSupernova {
   public function db_changeset_condition_compile(&$conditions, &$table_name = '') {
     if (!$conditions[P_LOCATION] || $conditions[P_LOCATION] == LOC_NONE) {
       $conditions[P_LOCATION] = LOC_NONE;
-      switch ($table_name) {
+      switch($table_name) {
         case 'users':
         case LOC_USER:
           $conditions[P_TABLE_NAME] = $table_name = 'users';
@@ -1060,7 +1051,7 @@ class classSupernova {
       $conditions[P_WHERE_STR] = implode(' AND ', $the_conditions);
     }
 
-    switch ($conditions['action']) {
+    switch($conditions['action']) {
       case SQL_OP_DELETE:
         $conditions[P_ACTION_STR] = ("DELETE FROM {{{$table_name}}}");
       break;
@@ -1097,7 +1088,7 @@ class classSupernova {
         } // Защита от случайного удаления всех данных в таблице
 
         if ($conditions[P_LOCATION] != LOC_NONE) {
-          switch ($conditions['action']) {
+          switch($conditions['action']) {
             case SQL_OP_DELETE:
               $result = self::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result;
             break;

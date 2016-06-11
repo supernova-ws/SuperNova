@@ -120,8 +120,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
 
   if(classSupernova::$config->game_mode == GAME_BLITZ) {
     $blitz_result = array(classSupernova::$config->db_loadItem('var_stat_update'));
-    $query = DBStaticUser::db_player_list_export_blitz_info();
-    while($row = db_fetch($query)) {
+    foreach(DBStaticUser::db_player_list_export_blitz_info() as $row) {
       $blitz_result[] = "{$row['id']},{$row['username']},{$row['onlinetime']},{$row['total_rank']},{$row['total_points']}";
     }
   } else {

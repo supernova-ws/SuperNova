@@ -25,39 +25,46 @@ class DBStaticUser extends DBStaticRecord {
    * @return string
    */
   public static function getLastRegisteredUserName() {
-    return (string) static::$dbStatic->selectValue(
+    $query =
       static::buildSelect()
         ->field('username')
-        ->where(array('`user_as_ally` IS NULL'))
+        ->where('`user_as_ally` IS NULL')
         ->orderBy(array('`id` DESC'))
-        ->fetchOne()
-    );
+        ->setFetchOne();
+
+    return (string)static::$dbStatic->selectValue($query);
   }
 
+  protected static function whereNotAlly() {
+
+  }
+
+  /**
+   * @return DbResultIterator
+   */
   public static function db_player_list_export_blitz_info() {
-    return static::execute(
+    return static::selectIterator(
       static::buildSelect()
         ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
-        ->where(array('`user_as_ally` IS NULL'))
+        ->where('`user_as_ally` IS NULL')
         ->orderBy(array('`id`'))
     );
   }
 
   /**
-   * @return array|bool|mysqli_result|null
+   * @return DbResultIterator
    */
   public static function db_user_list_non_bots() {
 //    $query = doquery("SELECT `id` FROM {{users}} WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . " FOR UPDATE;");
 
-    $query = static::execute(
-      static::buildSelectAll()
-        ->fields('id')
-        ->where(array(
-          "`user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . " FOR UPDATE;"
-        ))
-    );
+    $query =
+      static::buildSelect()
+        ->field('id')
+        ->where("`user_as_ally` IS NULL")
+        ->where("`user_bot` = " . USER_BOT_PLAYER)
+        ->setForUpdate();
 
-    return $query;
+    return static::selectIterator($query);
   }
 
   public static function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
@@ -70,28 +77,26 @@ class DBStaticUser extends DBStaticRecord {
     }
 
     $query = static::buildSelectLock()
-      ->where($where);
-
-    // TODO - FOR UPDATE
-    return static::prepareGetIterator(
-      $query,
-      array(
+      ->where($where)
+      ->variables(array(
         ':userId'        => idval($user['id']),
         ':planetOwnerId' => !empty($planet['id_owner']) ? idval($planet['id_owner']) : 0,
-      )
-    );
+      ));
+
+    // TODO - FOR UPDATE
+    return static::selectIterator($query);
   }
 
   public static function db_user_count($online = false) {
 //    $result = doquery('SELECT COUNT(id) AS user_count FROM {{users}} WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''), true);
 
-    $query = static::buildSelectCountId()
+    $stmt = static::buildSelectCountId()
       ->where('`user_as_ally` IS NULL');
     if ($online) {
-      $query->where('`onlinetime` > :onlineTime');
+      $stmt->where('`onlinetime` > :onlineTime');
     }
 
-    return static::$dbStatic->selectValue(DbSqlPrepare::build($query, array(
+    return static::$dbStatic->selectValue(DbSqlPrepare::build($stmt, array(
       ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
     )));
   }
@@ -109,21 +114,19 @@ class DBStaticUser extends DBStaticRecord {
 //        ORDER BY user_as_ally, {$sort} ASC";
 
     $query = static::buildSelect()
-      ->fromAlias('u')
+      ->setAlias('u')
       ->field('u.*')
       ->fieldCount('r.id', 'referral_count')
       ->fieldSingleFunction('sum', 'r.dark_matter', 'referral_dm')
       ->join('LEFT JOIN {{referrals}} as r on r.id_partner = u.id')
       ->where($online ? "`onlinetime` >= :onlineTime" : 'user_as_ally IS NULL')
       ->groupBy('u.id')
-      ->orderBy("user_as_ally, {$sort} ASC");
-
-    return static::prepareGetIterator(
-      $query,
-      array(
+      ->orderBy("user_as_ally, {$sort} ASC")
+      ->variables(array(
         ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
-      )
-    );
+      ));
+
+    return static::selectIterator($query);
   }
 
   public static function db_user_list_to_celebrate($config_user_birthday_range) {
@@ -141,25 +144,20 @@ class DBStaticUser extends DBStaticRecord {
 //        `days_after_birthday` >= 0 AND `days_after_birthday` < :birthdayRange FOR UPDATE";
 
     $query = static::buildSelect()
-      ->field('id')
-      ->field('username')
-      ->field('user_birthday')
-      ->field('user_birthday_celebrated')
-      ->field(DbSqlLiteral::build()->literal('CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, \'-%m-%d\')) AS `current_birthday`'))
-      ->field(DbSqlLiteral::build()->literal('DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, \'-%m-%d\'))) AS `days_after_birthday`'))
+      ->field('id', 'username', 'user_birthday', 'user_birthday_celebrated')
+      ->fieldLiteral('CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, \'-%m-%d\')) AS `current_birthday`')
+      ->fieldLiteral('DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, \'-%m-%d\'))) AS `days_after_birthday`')
       ->where('`user_birthday` IS NOT NULL')
       ->where('(`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)')
       ->where('`user_as_ally` IS NULL')
       ->having('`days_after_birthday` >= 0')
       ->having('`days_after_birthday` < :birthdayRange')
-      ->forUpdate();
-
-    return static::prepareGetIterator(
-      $query,
-      array(
+      ->setForUpdate()
+      ->variables(array(
         ':birthdayRange' => $config_user_birthday_range,
-      )
-    );
+      ));
+
+    return static::selectIterator($query);
   }
 
   /**
@@ -172,9 +170,7 @@ class DBStaticUser extends DBStaticRecord {
       GROUP BY `user_lastip`
       HAVING COUNT(*) > 1";
 
-    return static::prepareGetIterator(
-      $query
-    );
+    return static::selectIterator($query);
   }
 
   public static function db_player_list_blitz_delete_players() {
