@@ -8,12 +8,12 @@
 /**
  * Class DbQueryConstructor
  *
- * @method static DbQueryConstructor fields(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method static DbQueryConstructor join(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method static DbQueryConstructor where(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method static DbQueryConstructor groupBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method static DbQueryConstructor orderBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method static DbQueryConstructor having(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor fields(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor join(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor where(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor groupBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor orderBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor having(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
  * @method DbQueryConstructor setFetchOne(bool $fetchOne = true)
  * @method DbQueryConstructor setForUpdate(bool $forUpdate = true)
  * @method DbQueryConstructor setSkipLock(bool $skipLock = true)

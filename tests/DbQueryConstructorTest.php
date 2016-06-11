@@ -27,17 +27,20 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
    * @covers ::from
    * @covers ::setIdField
    * @covers ::field
+   *
+   * @covers ::__call
    * covers ::fields
    * covers ::where
    * covers ::groupBy
    * covers ::orderBy
    * covers ::having
-   * @covers ::__call
+   *
+   * covers ::setFetchOne
+   * covers ::setForUpdate
+   * covers ::setSkipLock
+   *
    * @covers ::limit
    * @covers ::offset
-   * @covers ::setFetchOne
-   * @covers ::forUpdate
-   * @covers ::skipLock
    * @covers ::_reset
    */
   public function test_reset() {
@@ -151,7 +154,8 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::setFetchOne
+   * @covers ::__call
+   * covers ::setFetchOne
    * @covers ::limit
    * @covers ::offset
    */
