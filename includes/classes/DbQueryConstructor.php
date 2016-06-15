@@ -1,10 +1,5 @@
 <?php
 
-//pdump(DBStaticUser::getMaxId());
-//pdump(DBStaticUser::getRecordById(67));
-//pdump(DBStaticUser::filterIdListStringRepack('2,3,5,67'));
-
-
 /**
  * Class DbQueryConstructor
  *
