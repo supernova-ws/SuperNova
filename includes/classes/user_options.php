@@ -140,7 +140,6 @@ class userOptions extends oldArrayAccessNd {
       }
 
       doquery("DELETE FROM {{player_options}} WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
-      // pdump("DELETE FROM {{player_options}} WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
 
       $this->to_delete = array();
       $update_cache = true;

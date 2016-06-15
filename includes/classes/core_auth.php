@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #40a11.8#
+ * version #41a8.4#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a11.8# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a8.4# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -266,8 +266,6 @@ class core_auth extends sn_module {
       $template_result[F_PLAYER_REGISTER_MESSAGE] .= implode(', ', $prohibited_characters);
     }
 
-//    pdump('view');
-//    die('view');
     $template_result = array_merge($template_result, array(
       'NAVBAR' => false,
       'PLAYER_SUGGESTED_NAME' => sys_safe_output($this->player_suggested_name),
@@ -848,8 +846,6 @@ class core_auth extends sn_module {
 
     classSupernova::log_file("$message - $caller_name");
     if($die) {
-      // pdump($caller);
-      // pdump(debug_backtrace(false));
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }

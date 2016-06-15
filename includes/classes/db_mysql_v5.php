@@ -63,8 +63,6 @@ class db_mysql_v5 {
   }
 
   function mysql_query($query_string) {
-if(!is_object($this->link))
-pdump(debug_backtrace());
     return $this->link->query($query_string);
   }
   function mysql_fetch_assoc(&$query) {

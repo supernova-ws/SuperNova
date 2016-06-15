@@ -101,8 +101,6 @@ function sn_options_model() {
         $value = intval($value);
       });
       classSupernova::$user_options->offsetSet($player_options);
-      // pdump($player_options);die();
-      //      player_save_option_array($user, $player_options);
     }
 
     $username = substr(sys_get_param_str_unsafe('username'), 0, 32);

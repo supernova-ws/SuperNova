@@ -106,8 +106,6 @@ abstract class oldArrayAccessNd implements ArrayAccess {
     // Адресация многомерного массива через массив индексов в $option
     if(is_array($offset) && isset($value)) {
       // TODO - а не переделать ли это всё на __isset() ??
-//pdump($offset, '$offset');
-//pdump($value, '$value');
       // Вытаскиваем корневой элемент
       $root = $this->__get(reset($offset));
       $current_leaf = &$root;
@@ -115,12 +113,8 @@ abstract class oldArrayAccessNd implements ArrayAccess {
         !is_array($current_leaf[$leaf_index]) ? $current_leaf[$leaf_index] = array() : false;
         $current_leaf = &$current_leaf[$leaf_index];
       }
-//pdump($current_leaf, '$current_leaf');
-//pdump($value, '$value');
       if($current_leaf != $value) {
         $current_leaf = $value;
-//pdump(reset($offset), 'reset($offset)');
-//pdump($root, '$root');
         // Сохраняем данные с корня
         $this->__set(reset($offset), $root);
       }
@@ -156,11 +150,8 @@ abstract class oldArrayAccessNd implements ArrayAccess {
     !is_array($offset) ? $offset = array($offset) : false;
 
     if($this->offsetExists($offset)) {
-//pdump($offset);
       // Перематываем массив в конец
       $key_to_delete = end($offset);
-//      $key_to_delete = key($offset);
-//pdump($key_to_delete, '$key_to_delete');
       $parent_offset = $offset;
       array_pop($parent_offset);
       if(!count($parent_offset)) {
@@ -168,12 +159,9 @@ abstract class oldArrayAccessNd implements ArrayAccess {
         $this->__unset($key_to_delete);
       } else {
         // Получаем родительское дерево
-// pdump($parent_offset, '$parent_offset');
         $parent_element = $this->offsetGet($parent_offset);
-// pdump($parent_element, '$parent_element');
         // Удаляем из него элемент
         unset($parent_element[$key_to_delete]);
-// pdump($parent_element, '$parent_element');
         // Записываем измененное родительское дерево назад
         $this->offsetSet($parent_offset, $parent_element);
       }

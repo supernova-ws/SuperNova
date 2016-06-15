@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #40a13.17# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a8.4# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -726,14 +726,10 @@ class auth_local extends auth_abstract {
       (!empty($caller['function']) ? $caller['function'] : '') .
       (!empty($called['line']) ? ':' . $called['line'] : '');
 
-//     $real_caller_class = get_called_class();
-
     $_SERVER['SERVER_NAME'] == 'localhost' ? print("<div class='debug'>$message - $caller_name\r\n</div>") : false;
 
     classSupernova::log_file("$message - $caller_name");
     if($die) {
-      // pdump($caller);
-      // pdump(debug_backtrace(false));
       $die && die("<div class='negative'>СТОП! Функция {$caller_name} при вызове в " . get_called_class() . " (располагается в " . get_class() . "). СООБЩИТЕ АДМИНИСТРАЦИИ!</div>");
     }
   }

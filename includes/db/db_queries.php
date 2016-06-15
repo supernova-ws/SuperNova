@@ -136,7 +136,6 @@ function db_unit_records_plain($unit_id, $user_skip_list_unit)
 }
 
 function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = false) {
-// pdump($source);
   if(!$source) {
     $source = array(
       'statpoints' => 'statpoints',
@@ -157,7 +156,7 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = 
       'alliance' => 'blitz_alliance', // TODO
     );
   }
-// pdump($source);
+
   if($who == 1) {
     if($is_common_stat) { // , UNIX_TIMESTAMP(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `nearest_birthday`
       $query_str =

@@ -164,14 +164,12 @@ class skin {
     strpos($skin_path, '/') !== false ? $skin_path = str_replace('/', '', $skin_path) : false;
 
     // Загружены ли уже данные по текущему скину?
-//pdump(static::$skin_list[$ini_path], 'static');
     if(empty(static::$skin_list[$skin_path])) {
       // Прогружаем текущий скин
       static::$skin_list[$skin_path] = new skin($skin_path);
       static::$active = static::$skin_list[$skin_path];
     }
 
-//    'dpath'         => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
 // В $user['dpath'] 'skins/xnova/'
 //    {D_SN_ROOT_VIRTUAL}{dpath}skin.css?{C_var_db_update}
 
@@ -192,10 +190,8 @@ class skin {
     strpos($skin_path, '/') !== false ? $skin_path = str_replace('/', '', $skin_path) : false;
 
     $this->root_http_relative = 'skins/' . $skin_path . '/'; // Пока стоит base="" в body SN_ROOT_VIRTUAL - не нужен
-//    $this->root_http = SN_ROOT_VIRTUAL . 'skins/' . $skin_path . '/'; // Всегда абсолютный путь от корня сайта
     $this->root_physical_absolute = SN_ROOT_PHYSICAL . 'skins/' . $skin_path . '/';
     $this->name = $skin_path;
-//    pdump($this->root_folder);
     // Искать скин среди пользовательских - когда будет конструктор скинов
     // Может не быть файла конфигурации - тогда используется всё "по дефаулту". Т.е. поданная строка - это именно имя файла
 
@@ -226,9 +222,6 @@ class skin {
       }
 
       // Проверка на _inherit
-
-
-//      pdump($this->config);
     }
 
     // Пытаемся скомпилировать _no_image заранее

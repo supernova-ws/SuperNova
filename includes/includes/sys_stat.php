@@ -109,8 +109,6 @@ function sys_stat_calculate() {
   }
   unset($user_list);
   classSupernova::cache_clear(LOC_USER, true);
-  //pdump(classSupernova::$data[LOC_USER]);
-  //pdump(classSupernova::$locks[LOC_USER]);
 
 
 

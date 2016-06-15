@@ -155,28 +155,12 @@ $template->assign_vars(array(
   'ally_owner_range' => htmlspecialchars($ally['ally_owner_range']),
   'hideNotOwner' => $ally['ally_owner'] != $user['id'] ? 'display: hide;' : '',
 ));
-/*
-unset($tmp);
-foreach($ranks as $rankID => $rank)
-{
-  if($rank['admin'])
-  {
-    $tmp .= "`ally_rank_id` = {$rankID} OR ";
-  }
-}
-$tmp = substr($tmp, 0, -4);
 
-if(!empty($tmp))
-*/
 {
-//pdump($ally['id']);
-  // $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']} AND ({$tmp})", false, '`id`, `username`');
   $userAllyAdmins = db_user_list("`ally_id`= {$ally['id']}", false, '`id`, `username`');
   unset($tmp);
-  // while ($userAllyAdmin = db_fetch($userAllyAdmins))
   foreach($userAllyAdmins as $userAllyAdmin)
   {
-// pdump($userAllyAdmin);
     $tmp .= "<option value={$userAllyAdmin['id']}>{$userAllyAdmin['username']}</option>";
   }
 

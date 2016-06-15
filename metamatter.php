@@ -116,7 +116,6 @@ array_walk($payment_methods_available, function(&$value, $index) {
   $value = !empty(sn_module_payment::$payment_methods[$index]) ? array_combine(array_keys(sn_module_payment::$payment_methods[$index]), array_fill(0, count(sn_module_payment::$payment_methods[$index]), null)) : $value;
 });
 
-// pdump($payment_methods_available);
 $payment_module_valid = false;
 $payment_module = sys_get_param_str('payment_module');
 foreach($sn_module_list['payment'] as $module_name => $module) {

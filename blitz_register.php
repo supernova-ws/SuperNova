@@ -112,7 +112,6 @@ pdump($system_step, '$system_step');
     doquery('UPDATE {{users}} SET dark_matter = 50000, dark_matter_total = 50000;');
 
     $config->db_saveItem('users_amount', $config->users_amount + $new_players);
-    // pdump($imported_string);
     // generated_string
   } elseif(sys_get_param_str('import_result') && ($blitz_result_string = sys_get_param_str('blitz_result_string'))) {
     $blitz_result = explode(';', $blitz_result_string);

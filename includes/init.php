@@ -194,9 +194,6 @@ classSupernova::$auth = new core_auth();
 
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // Здесь - потому что core_auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
-// TODO - переработать этот костыль
-// new auth_local();
-// pdump($sn_module);
 
 // Подключаем дефолтную страницу
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
@@ -236,8 +233,6 @@ foreach($sn_module as $loaded_module_name => $module_data) {
     }
   }
 }
-
-// pdump($load_order, '$load_order');
 
 // Создаем последовательность инициализации модулей
 // По нормальным делам надо сначала читать их конфиги - вдруг какой-то модуль отключен?
@@ -292,12 +287,6 @@ if(!isset($sn_data['pages'][$sn_page_name])) {
 
 
 
-//pdump(array_keys($sn_module_list));
-//pdump(array_keys($sn_module_list['core']));
-//pdump(array_keys($sn_module_list['auth']));
-//die();
-
-
 // classSupernova::$db->sn_db_connect(); // Не нужно. Делаем раньше
 
 global $lang;
@@ -324,19 +313,12 @@ if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TI
 
 
 
-//pdump($sn_module);die();
 
 global $user;
-// $result = core_auth::login();
 $result = classSupernova::$auth->login();
 
 global $account_logged_in;
 $account_logged_in = !empty(classSupernova::$auth->account) && $result[F_LOGIN_STATUS] == LOGIN_SUCCESS;
-
-//pdump($result[F_LOGIN_STATUS], LOGIN_SUCCESS);
-// die();
-
-// pdump($result);die();
 
 $user = !empty($result[F_USER]) ? $result[F_USER] : false;
 
@@ -346,7 +328,6 @@ unset($result);
 // В этой точке пользователь либо авторизирован - и есть его запись - либо пользователя гарантированно нет в базе
 
 $template_result[F_ACCOUNT_IS_AUTHORIZED] = $sys_user_logged_in = !empty($user) && isset($user['id']) && $user['id'];
-//pdump($template_result[F_ACCOUNT_IS_AUTHORIZED]);die();
 
 if(!empty($user['id'])) {
   classSupernova::$user_options->user_change($user['id']);
@@ -413,8 +394,6 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
 
   $bantime = date(FMT_DATE_TIME, $template_result[F_BANNED_STATUS]);
   // TODO: Add ban reason. Add vacation time. Add message window
-  // sn_sys_logout(false, true);
-  // core_auth::logout(false, true);
   message("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
   die("{$lang['sys_banned_msg']} {$bantime}");
 }
@@ -422,17 +401,11 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
 // TODO !!! Просто $allow_anonymous используется в платежных модулях !!!
 $allow_anonymous = $allow_anonymous || (isset($sn_page_data['allow_anonymous']) && $sn_page_data['allow_anonymous']);
 
-// pdump($allow_anonymous, '$allow_anonymous');
-// pdump($sys_user_logged_in, '$sys_user_logged_in');
 
 if($sys_user_logged_in && INITIAL_PAGE == 'login') {
   sys_redirect(SN_ROOT_VIRTUAL . 'overview.php');
 } elseif($account_logged_in && !$sys_user_logged_in) { // empty(core_auth::$user['id'])
-//  pdump($sn_page_name);
-//  pdump(INITIAL_PAGE);
-//  die('{Тут должна быть ваша реклама. Точнее - ввод имени игрока}');
 } elseif(!$allow_anonymous && !$sys_user_logged_in) {
-  // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
   sys_redirect(SN_ROOT_VIRTUAL . 'login.php');
 }
 

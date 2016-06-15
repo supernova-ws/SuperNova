@@ -80,9 +80,6 @@ function sn_imperator_view($template = null) {
       'TEXT' => date(FMT_DATE_TIME, $value),
     ));
   }
-  // $stat_count = count($stat_array_date['DATA']);
-  // pdump($stat_array_date);
-
 
   unset($stat_array['STAT_DATE']);
   $template_data = array();
@@ -92,17 +89,13 @@ function sn_imperator_view($template = null) {
     $stat_type_data['MAX'] = $reverse_min_max ? min($stat_type_data['DATA']) : max($stat_type_data['DATA']);
     $stat_type_data['AVG'] = average($stat_type_data['DATA']);
     foreach($stat_type_data['DATA'] as $key => $value) {
-      // $stat_type_data['PERCENT'][$key] = $stat_type_data['MAX'] - $value ? ($stat_type_data['MAX'] - $stat_type_data['MIN']) / ($stat_type_data['MAX'] - $value) : 100;
       $stat_type_data['PERCENT'][$key] = ($stat_type_data['MAX'] - $value ? ($value - $stat_type_data['MIN']) / ($stat_type_data['MAX'] - $stat_type_data['MIN']) : 1) * 100;
       $template_data[$stat_type][$key]['ID'] = $key;
       $template_data[$stat_type][$key]['VALUE'] = $value;
       $template_data[$stat_type][$key]['DELTA'] = ($reverse_min_max ? $stat_type_data['MIN']  - $value : $value - $stat_type_data['MAX']);
       $template_data[$stat_type][$key]['PERCENT'] = $stat_type_data['PERCENT'][$key];
-
-//$template_data[$stat_type][$key]['PERCENT'] = $key ? $stat_type_data['PERCENT'][$key] : 50; // TODO DEBUG
     }
   }
-  // pdump($stat_array['RES_POINTS']);
 
   foreach($template_data as $stat_type => $stat_type_data) {
     $template->assign_block_vars('stat', array(
@@ -117,8 +110,6 @@ function sn_imperator_view($template = null) {
     }
   }
 
-
-  // pdump($template_data);
 
   if($same_user) {
     rpg_level_up($user, RPG_STRUCTURE);

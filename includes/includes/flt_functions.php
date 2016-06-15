@@ -488,7 +488,6 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
 //ini_set('error_reporting', E_ALL);
 
   $internal_transaction = !sn_db_transaction_check(false) ? sn_db_transaction_start() : false;
-//pdump($internal_transaction);
 
   // TODO Потенциальный дедлок - если успела залочится запись пользователя - хозяина планеты
   $user = db_user_by_id($user['id'], true);

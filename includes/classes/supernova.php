@@ -371,7 +371,6 @@ class classSupernova {
 
     if(!empty(static::$delayed_changset)) {
       static::db_changeset_apply(static::$delayed_changset, true);
-      // pdump(static::$delayed_changset);
     }
     static::$delayed_changset = array();
     static::cache_lock_unset_all();
@@ -443,22 +442,17 @@ class classSupernova {
   }
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-    //pdump($filter, 'Выбираем ' . $location_type);
     $query_cache = &static::$queries[$location_type][$filter];
 
     if(!isset($query_cache) || $query_cache === null) {
-      // pdump($filter, 'Кэш пустой, начинаем возню');
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
       $query_cache = array();
 
       if(static::db_transaction_check(false)) {
-        //pdump($filter, 'Транзакция - блокируем ' . $location_type);
         // Проходим по всем родителям данной записи
-        // foreach($location_info[P_OWNER_INFO] as $owner_location_type => $owner_data)
         foreach($location_info[P_OWNER_INFO] as $owner_data) {
           $owner_location_type = $owner_data[P_LOCATION];
-          //pdump($filter, 'Транзакция - блокируем родителя ' . $owner_location_type);
           $parent_id_list = array();
           // Выбираем родителей данного типа и соответствующие ИД текущего типа
           $query = static::db_query(
@@ -468,25 +462,21 @@ class classSupernova {
             ($filter ? ' WHERE ' . $filter : '') .
             ($fetch ? ' LIMIT 1' : ''), false, true);
 
-          //pdump($q, 'Запрос блокировки');
           while($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if(!static::cache_lock_get($owner_location_type, $row['parent_id']))
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
           }
-          //pdump($parent_id_list, 'Выбраны родители');
+
           // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
           if($indexes_str = implode(',', $parent_id_list)) {
-            //pdump($indexes_str, '$indexes_str');
             $parent_id_field = static::$location_info[$owner_location_type][P_ID];
             static::db_get_record_list($owner_location_type,
               $parent_id_field . (count($parent_id_list) > 1 ? " IN ({$indexes_str})" : " = {$indexes_str}"), $fetch, true);
           }
-          //pdump($filter, 'Транзакция - родители заблокированы ' . $owner_location_type);
         }
       }
 
-      //pdump($filter, 'Выбираем записи и заносим их в кыш-память ' . $owner_location_type);
       $query = static::db_query(
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
@@ -495,7 +485,6 @@ class classSupernova {
         // static::db_get_record_by_id($location_type, $row[$id_field]);
         static::cache_set($location_type, $row[$id_field], $row);
         $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
-        //pdump(static::$data[$location_type][$row[$id_field]]);
       }
     }
 
@@ -514,7 +503,6 @@ class classSupernova {
   }
 
   public static function db_upd_record_by_id($location_type, $record_id, $set) {
-    //if(!($record_id = intval($record_id)) || !($set = trim($set))) return false;
     if(!($record_id = idval($record_id)) || !($set = trim($set))) return false;
 
     $location_info = &static::$location_info[$location_type];
@@ -599,7 +587,6 @@ class classSupernova {
 
   public static function db_del_record_by_id($location_type, $safe_record_id)
   {
-    // if(!($safe_record_id = intval($safe_record_id))) return false;
     if(!($safe_record_id = idval($safe_record_id))) return false;
 
     $location_info = &static::$location_info[$location_type];
@@ -621,8 +608,6 @@ class classSupernova {
 
     $location_info = &static::$location_info[$location_type];
     $table_name = $location_info[P_TABLE_NAME];
-
-//static::db_get_record_list($location_type, $condition, false, true);
 
     if($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}"))
     {
@@ -744,7 +729,6 @@ class classSupernova {
     return $user;
   }
   public static function db_get_user_by_where($where_safe, $for_update = false, $fields = '*') {
-//    if(!($email_unsafe = strtolower(trim($email_unsafe)))) return false;
     $user = null;
     // TODO переделать на индексы
 
@@ -793,7 +777,6 @@ class classSupernova {
 
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
   {
-    //if(!($location_type = intval($location_type)) || !($location_id = intval($location_id))) return false;
     if(!($location_type = idval($location_type)) || !($location_id = idval($location_id))) return false;
 
     $query_cache = &static::$locator[LOC_UNIT][$location_type][$location_id];
@@ -860,7 +843,6 @@ class classSupernova {
 
     $query = array();
 
-    // if($user_id = intval($user_id))
     if($user_id = idval($user_id))
       $query[] = "`que_player_id` = {$user_id}";
 
@@ -870,28 +852,6 @@ class classSupernova {
       $query[] = "(`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")";
     if($que_type)
       $query[] = "`que_type` = {$que_type}";
-
-    /*
-    $sql = '';
-    $sql .= $user_id ? " AND `que_player_id` = {$user_id}" : '';
-    $sql .= $que_type == QUE_RESEARCH || $planet_id === null ? " AND `que_planet_id` IS NULL" :
-      ($planet_id ? " AND (`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")" : '');
-    $sql .= $que_type ? " AND `que_type` = {$que_type}" : '';
-    pdump($sql);
-    pdump(implode(' AND ', $query));
-
-    $que_query = ($sql = implode(' AND ', $query))
-      ? doquery("SELECT * FROM {{que}} WHERE {$sql} ORDER BY que_id" . ($for_update ? ' FOR UPDATE' : ''))
-      : false;
-
-    if($que_query)
-    {
-      while($row = db_fetch($que_query))
-      {
-        $ques['items'][] = $row;
-      }
-    }
-    */
 
     $ques['items'] = static::db_get_record_list(LOC_QUE, implode(' AND ', $query));
 
@@ -1028,18 +988,7 @@ class classSupernova {
     // TODO Применять ченджсет к записям
     static::$delayed_changset[$table_name] = is_array(static::$delayed_changset[$table_name]) ? static::$delayed_changset[$table_name] : array();
     // TODO - На самом деле дурацкая оптимизация, если честно - может быть идентичные записи с идентичными дельтами - и привет. Но не должны, конечно
-    /*
-    foreach($table_data as $key => $value)
-    {
-      if(array_search($value, static::$delayed_changset[$table_name]) !== false)
-      {
-        unset($table_data[$key]);
-      }
-    }
-    */
     static::$delayed_changset[$table_name] = array_merge(static::$delayed_changset[$table_name], $table_data);
-    // pdump(static::$delayed_changset);
-    // die();
   }
 
   public function db_changeset_revert()
@@ -1109,11 +1058,6 @@ class classSupernova {
             die('Неподдерживаемый тип условия');
           }
         }
-        /*
-        print('<h1>НЕ СООБЩАТЬ! НЕ ОШИБКА!</h1>');
-        pdump($conditions['where']);
-        pdump($the_conditions);
-        */
       } else {
         $the_conditions = &$conditions['where'];
       }

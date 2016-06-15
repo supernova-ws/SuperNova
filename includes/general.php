@@ -1504,10 +1504,8 @@ function sn_sn_powerup_get_price_matrix($powerup_id, $powerup_unit = false, $lev
   $result = array();
 
   $powerup_data = get_unit_param($powerup_id);
-  //pdump($powerup_data, '$powerup_data');
   $is_upgrade = !empty($powerup_unit) && $powerup_unit;
 
-  // pdump($powerup_unit, '$powerup_unit');
   $level_current = $term_original = $time_left = 0;
   if($is_upgrade) {
     $time_finish = strtotime($powerup_unit['unit_time_finish']);

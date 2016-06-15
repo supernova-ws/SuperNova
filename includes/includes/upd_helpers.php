@@ -286,11 +286,6 @@ function upd_db_changeset_apply($db_changeset) {
 
         case SQL_OP_UPDATE:
           if($fields) {
-            /*if($table_name == 'unit')
-            {
-              pdump("UPDATE {{{$table_name}}} SET {$fields} {$where}");
-              //die();
-            }*/
             upd_do_query("UPDATE {{{$table_name}}} SET {$fields} {$where}");
           }
           break;

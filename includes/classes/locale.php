@@ -81,8 +81,6 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
   }
 
   public function offsetSet($offset, $value) {
-//pdump('set', $this->cache_prefix_lang . $offset);
-//pdump($this->container[$this->active][$offset]);
     if (is_null($offset)) {
       $this->container[$this->active][] = $value;
     } else {
@@ -95,13 +93,10 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
   public function offsetExists($offset) {
     // Шорткат если у нас уже есть строка в памяти PHP
     if(!isset($this->container[$this->active][$offset])) {
-//        pdump($this->cache_prefix_lang . $offset);
       if(!$this->cache || !($this->container[$this->active][$offset] = $this->cache->__get($this->cache_prefix_lang . $offset))) {
-//        pdump($this->cache_prefix_lang . $offset);
         // Если нету такой строки - делаем фоллбэк
         $this->locale_string_fallback($offset);
       }
-//pdump($offset);
       return isset($this->container[$this->active][$offset]);
     } else {
       return true;
@@ -248,7 +243,6 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
               if(is_array($value)) {
                 $alt_value = $this->cache->__get($value_cache_key);
                 $value = array_replace_recursive($alt_value, $value);
-                // pdump($alt_value, $alt_value);
               }
             }
             $this->cache->__set($this->cache_prefix_lang . $key, $value);

@@ -52,12 +52,10 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 
   // Флот, который возвращается на захваченную планету, пропадает
   if($start && $fleet_row['fleet_mess'] == 1 && $planet_arrival['id_owner'] != $fleet_row['fleet_owner']) {
-//    doquery("DELETE FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
     db_fleet_delete($fleet_row['fleet_id']);
     return $result;
   }
 
-//pdump($planet_arrival);
   $db_changeset = array();
   if(!$only_resources) {
     db_fleet_delete($fleet_row['fleet_id']);
@@ -73,8 +71,6 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
       return CACHE_NOTHING;
     }
   } else {
-    // fleet_send_back($fleet_row);
-//    doquery("UPDATE {{fleets}} SET fleet_resource_metal = 0, fleet_resource_crystal = 0, fleet_resource_deuterium = 0, fleet_mess = 1 WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1;");
     $fleet_set = array(
       'fleet_resource_metal' => 0,
       'fleet_resource_crystal' => 0,

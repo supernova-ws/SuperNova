@@ -108,8 +108,6 @@ $query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source);
 
 // TODO - Не работает, если игроков на Блице > 100
 $record_count = $source ? db_num_rows($query) : ($who == 1 ? db_user_count() : db_ally_count());
-// pdump($record_count, '$record_count');
-// $record_count = db_num_rows($query);
 
 $page_count = floor($record_count / 100);
 $pages = array();
@@ -131,22 +129,13 @@ while ($row = db_fetch($query)) {
     'RANK_CHANGE' => $row['rank_old'] ? $row['rank_old'] - $row['rank'] : 0,
     'POINTS' => pretty_number($row['points']),
   );
-//pdump($row);
 
   if($who == 1) {
     $row_stat['ALLY_NAME'] = $row['ally_name'];
     $row_stat['ALLY_ID'] = $row['ally_id'];
     empty($row['username']) ? $row['username'] = $row['name'] : false;
     $row_stat['NAME'] = player_nick_render_to_html($row, array('icons' => empty($source), 'color' => empty($source)));
-//    $row_stat['NAME'] = player_nick_render_to_html(array(
-//      'id' => $row['id'],
 //      // TODO - Добавлять реальное имя игрока на Блице для закрытого раунда
-//      'username' => $row['name'],
-//      'gender' => isset($row['gender']) ? $row['gender'] : GENDER_UNKNOWN,
-//      // 'gender',
-//      // 'race',
-//      // 'ally_tag',
-//    ), array('icons' => empty($source), 'color' => empty($source)));
   } else {
     $row_stat['MEMBERS'] = $row['ally_members'];
     $row_stat['POINTS_PER_MEMBER'] = pretty_number(floor($row['points'] / $row['ally_members']));

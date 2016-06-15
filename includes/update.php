@@ -1276,13 +1276,11 @@ switch($new_version) {
     );
 
     if($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
-//      pdump($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type']);
       upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
       upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
     // #ctv
 
-//    pdump($update_indexes_full['security_browser']['I_browser_user_agent']);
     upd_do_query('COMMIT;', true);
 //    $new_version = 41;
 
