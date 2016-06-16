@@ -12,7 +12,7 @@
  * @property Unit[] $_container
  *
  */
-class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
+class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
 
 
   // Properties ********************************************************************************************************
@@ -179,7 +179,7 @@ class UnitList extends ArrayAccessV2 implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a7.7
+   * @version 41a50.9
    */
   // TODO - Factory
   public function _createElement() {

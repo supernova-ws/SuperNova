@@ -12,6 +12,11 @@ class HelperArray {
    */
   const MERGE_PHP = 1;
 
+
+  const CLONE_NONE = 0;
+  const CLONE_SHALLOW = 1;
+  const CLONE_DEEP = 2;
+
   /**
    * Convert $delimiter delimited string to array
    *
@@ -121,6 +126,20 @@ class HelperArray {
    */
   public static function keyExistsOr(&$array, $key, $alternative) {
     return array_key_exists($key, $array) ? $array[$key] : $alternative;
+  }
+
+  /**
+   * @param array &$array
+   * @param int   $deep
+   */
+  public static function cloneDeep(&$array, $deep = HelperArray::CLONE_DEEP) {
+    foreach ($array as &$value) {
+      if (is_object($value)) {
+        $value = clone $value;
+      } elseif (is_array($value) && $deep == HelperArray::CLONE_DEEP) {
+        static::cloneDeep($value, $deep);
+      }
+    }
   }
 
 }

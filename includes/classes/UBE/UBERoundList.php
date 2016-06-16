@@ -6,7 +6,7 @@
  * @method UBERound offsetGet($offset)
  * @property UBERound[] $_container
  */
-class UBERoundList extends ArrayAccessV2 {
+class UBERoundList extends ContainerArrayOfObject {
 
   /**
    * @return UBERound

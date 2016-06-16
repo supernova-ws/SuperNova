@@ -6,7 +6,7 @@
  * @method Fleet offsetGet($offset)
  * @property Fleet[] $_container
  */
-class FleetList extends ArrayAccessV2 {
+class FleetList extends ContainerArrayOfObject {
 
   public function __construct() {
 
@@ -27,7 +27,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a7.35
+   * @version 41a50.9
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -62,7 +62,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a7.35
+   * @version 41a50.9
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -116,7 +116,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a7.35
+   * @version 41a50.9
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ArrayAccessV2 {
    *
    * @return static
    *
-   * @version 41a7.35
+   * @version 41a50.9
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(

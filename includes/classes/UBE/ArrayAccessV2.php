@@ -3,25 +3,21 @@
 /**
  * Class ArrayAccessV2
  *
- * Access to object container as to array by index
+ * Simple data container
  * Features:
+ * - translates property operation to container elements operation
+ * - implements access to properties as to array
+ * - class is traversable
  * - clone options: deep, shallow, none;
- * - applying predefined functions to container content via __call();
- * - get sum of specified property of containing objects;
- * - aggregate value of property of containing objects;
  */
-class ArrayAccessV2 implements ArrayAccess {
-
-  const CLONE_NONE = 0;
-  const CLONE_SHALLOW = 1;
-  const CLONE_DEEP = 2;
+class ArrayAccessV2 implements ArrayAccess, Iterator {
 
   /**
    * If container data need to be additionally cloned
    *
    * @var int
    */
-  public static $_clonable = ArrayAccessV2::CLONE_DEEP;
+  public static $_clonable = HelperArray::CLONE_DEEP;
 
   /**
    * Data container
@@ -34,77 +30,52 @@ class ArrayAccessV2 implements ArrayAccess {
   /**
    * @return stdClass
    *
-   * @version 41a6.12
+   * @version 41a50.9
    */
   public function _createElement() {
     return new stdClass();
   }
 
 
+  /**
+   * @param $name
+   *
+   * @return bool
+   */
+  public function __isset($name) {
+    return array_key_exists($name, $this->_container);
+  }
+
+  /**
+   * @param $name
+   */
+  public function __unset($name) {
+    unset($this->_container[$name]);
+  }
+
+  /**
+   * @param mixed $name
+   *
+   * @return mixed|null
+   */
+  public function __get($name) {
+    return $this->__isset($name) ? $this->_container[$name] : null;
+  }
+
+  /**
+   * @param $name
+   * @param $value
+   */
+  public function __set($name, $value) {
+    $this->_container[$name] = $value;
+  }
+
   public function __clone() {
-    if(static::$_clonable == ArrayAccessV2::CLONE_NONE) {
+    if (static::$_clonable == HelperArray::CLONE_NONE) {
       return;
     }
 
-    static::_deep_clone($this->_container);
-  }
-
-  protected static function _deep_clone(&$array) {
-    foreach($array as &$value) {
-      if(is_object($value)) {
-        $value = clone $value;
-      } elseif(is_array($value) && static::$_clonable == ArrayAccessV2::CLONE_DEEP) {
-        static::_deep_clone($value);
-      }
-    }
-  }
-
-  /**
-   * Automatically apply all non-exist function from static::$_call list to $_container content
-   *
-   * @param string $method_name
-   * @param array  $arguments
-   */
-  public function __call($method_name, array $arguments) {
-    $object_first = reset($this->_container);
-    if($object_first !== false && method_exists($object_first, $method_name)) {
-      foreach($this->_container as $unit_id => $object) {
-        call_user_func_array(array($object, $method_name), $arguments);
-      }
-    }
-  }
-
-  /**
-   * Summarize property values of contained objects
-   *
-   * @param string $property_name
-   *
-   * @return float
-   */
-  public function getSumProperty($property_name) {
-    $result = 0.0;
-    foreach($this->_container as $object) {
-      if(is_object($object) && property_exists($object, $property_name)) {
-        $result += $object->$property_name;
-      }
-    }
-
-    return $result;
-  }
-
-  /**
-   * Aggregate value of $property_name in containing object by $method_name
-   *
-   * @param string $method_name
-   *
-   * @return mixed
-   */
-  public function aggregateByMethod($method_name, &$result) {
-    foreach($this->_container as $object) {
-      if(is_object($object) && method_exists($object, $method_name)) {
-        call_user_func(array($object, $method_name), $result);
-      }
-    }
+    HelperArray::cloneDeep($this->_container, static::$_clonable);
   }
 
   /**
@@ -122,7 +93,7 @@ class ArrayAccessV2 implements ArrayAccess {
    * @since 5.0.0
    */
   public function offsetExists($offset) {
-    return array_key_exists($offset, $this->_container);
+    return $this->__isset($offset);
   }
 
   /**
@@ -137,7 +108,7 @@ class ArrayAccessV2 implements ArrayAccess {
    * @since 5.0.0
    */
   public function offsetGet($offset) {
-    return $this->_container[$offset];
+    return $this->__get[$offset];
   }
 
   /**
@@ -155,7 +126,7 @@ class ArrayAccessV2 implements ArrayAccess {
    * @since 5.0.0
    */
   public function offsetSet($offset, $value) {
-    $this->_container[$offset] = $value;
+    $this->__set($offset, $value);
   }
 
   /**
@@ -170,7 +141,7 @@ class ArrayAccessV2 implements ArrayAccess {
    * @since 5.0.0
    */
   public function offsetUnset($offset) {
-    unset($this->_container[$offset]);
+    $this->__unset($offset);
   }
 
 
@@ -181,6 +152,57 @@ class ArrayAccessV2 implements ArrayAccess {
    */
   public function count() {
     return count($this->_container);
+  }
+
+  /**
+   * Return the current element
+   * @link http://php.net/manual/en/iterator.current.php
+   * @return mixed Can return any type.
+   * @since 5.0.0
+   */
+  public function current() {
+    return current($this->_container);
+  }
+
+  /**
+   * Move forward to next element
+   * @link http://php.net/manual/en/iterator.next.php
+   * @return void Any returned value is ignored.
+   * @since 5.0.0
+   */
+  public function next() {
+    next($this->_container);
+  }
+
+  /**
+   * Return the key of the current element
+   * @link http://php.net/manual/en/iterator.key.php
+   * @return mixed scalar on success, or null on failure.
+   * @since 5.0.0
+   */
+  public function key() {
+    return key($this->_container);
+  }
+
+  /**
+   * Checks if current position is valid
+   * @link http://php.net/manual/en/iterator.valid.php
+   * @return boolean The return value will be casted to boolean and then evaluated.
+   * Returns true on success or false on failure.
+   * @since 5.0.0
+   */
+  public function valid() {
+    return false !== current($this->_container);
+  }
+
+  /**
+   * Rewind the Iterator to the first element
+   * @link http://php.net/manual/en/iterator.rewind.php
+   * @return void Any returned value is ignored.
+   * @since 5.0.0
+   */
+  public function rewind() {
+    reset($this->_container);
   }
 
 }
