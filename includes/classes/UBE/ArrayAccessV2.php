@@ -17,7 +17,7 @@ class ArrayAccessV2 implements ArrayAccess, Iterator {
    *
    * @var int
    */
-  public static $_clonable = HelperArray::CLONE_DEEP;
+  public $_cloneable = HelperArray::CLONE_ARRAY_RECURSIVE;
 
   /**
    * Data container
@@ -30,7 +30,7 @@ class ArrayAccessV2 implements ArrayAccess, Iterator {
   /**
    * @return stdClass
    *
-   * @version 41a50.9
+   * @version 41a50.10
    */
   public function _createElement() {
     return new stdClass();
@@ -71,11 +71,7 @@ class ArrayAccessV2 implements ArrayAccess, Iterator {
   }
 
   public function __clone() {
-    if (static::$_clonable == HelperArray::CLONE_NONE) {
-      return;
-    }
-
-    HelperArray::cloneDeep($this->_container, static::$_clonable);
+    HelperArray::cloneDeep($this->_container, $this->_cloneable);
   }
 
   /**

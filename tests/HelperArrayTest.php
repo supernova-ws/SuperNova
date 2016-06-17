@@ -161,4 +161,46 @@ class HelperArrayTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('q', HelperArray::keyExistsOr($array, 'c', 'q'));
   }
 
+  public function dataCloneDeep() {
+    return array(
+      array(HelperArray::CLONE_ARRAY_NONE, true, 2, true, 6),
+      array(HelperArray::CLONE_ARRAY_SHALLOW, false, 1, true, 6),
+      array(HelperArray::CLONE_ARRAY_RECURSIVE, false, 1, false, 5),
+    );
+  }
+
+  protected function helpCloneDeep($source, $destination, $isSameObject, $value, $valueAfterChange) {
+    // Checking 0-level object
+    $this->assertEquals($isSameObject, $source === $destination);
+
+    // Checking property 'test' of 0-level object
+    $this->assertEquals($source->test, $destination->test);
+    $this->assertEquals($value, $destination->test);
+    $this->assertEquals($value, $source->test);
+
+    // Changing property of 0-level and checking result
+    $destination->test = $value + 1;
+    $this->assertEquals($value + 1, $destination->test);
+    $this->assertEquals($valueAfterChange, $source->test);
+  }
+
+
+  /**
+   * @dataProvider dataCloneDeep
+   *
+   * @covers ::cloneDeep
+   */
+  public function testCloneDeep($deep, $l0Eq, $l0Prop, $l1Eq, $l1Prop) {
+    // Init values
+    $source = array(new StdClass(), array(new StdClass()));
+    $source[0]->test = 1;
+    $source[1][0]->test = 5;
+    $destination = $source;
+
+    // Making clone
+    HelperArray::cloneDeep($destination, $deep);
+    $this->helpCloneDeep($source[0], $destination[0], $l0Eq, 1, $l0Prop);
+    $this->helpCloneDeep($source[1][0], $destination[1][0], $l1Eq, 5, $l1Prop);
+  }
+
 }

@@ -45,7 +45,7 @@ class ContainerArrayOfObject extends ArrayAccessV2 {
   }
 
   /**
-   * Aggregate value of $property_name in containing object by $method_name
+   * Aggregate value of $property_name in containing object by $method_name into $result
    *
    * @param string $method_name
    *

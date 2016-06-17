@@ -5,7 +5,7 @@ class HelperArray {
   /**
    * Overwrites old array with new
    */
-  const OVERWRITE = 0;
+  const MERGE_OVERWRITE = 0;
   /**
    * Merges old array with new with array_merge()
    * String keys replaced, numeric keys renumbered
@@ -13,9 +13,18 @@ class HelperArray {
   const MERGE_PHP = 1;
 
 
-  const CLONE_NONE = 0;
-  const CLONE_SHALLOW = 1;
-  const CLONE_DEEP = 2;
+  /**
+   * No array cloning - just stay with same objects
+   */
+  const CLONE_ARRAY_NONE = 0;
+  /**
+   * Clone objects on first level of array
+   */
+  const CLONE_ARRAY_SHALLOW = 1;
+  /**
+   * Clone objects recursive on any array level
+   */
+  const CLONE_ARRAY_RECURSIVE = 2;
 
   /**
    * Convert $delimiter delimited string to array
@@ -100,9 +109,9 @@ class HelperArray {
   /**
    * @param mixed|array &$arrayOld
    * @param mixed|array $arrayNew
-   * @param int         $mergeStrategy - default is HelperArray::ARRAY_REPLACE
+   * @param int         $mergeStrategy - default is HelperArray::MERGE_OVERWRITE
    */
-  public static function merge(&$arrayOld, $arrayNew = array(), $mergeStrategy = HelperArray::OVERWRITE) {
+  public static function merge(&$arrayOld, $arrayNew = array(), $mergeStrategy = HelperArray::MERGE_OVERWRITE) {
     static::makeArrayRef($arrayNew);
     static::makeArrayRef($arrayOld);
 
@@ -129,14 +138,20 @@ class HelperArray {
   }
 
   /**
-   * @param array &$array
-   * @param int   $deep
+   * Clone objects in array
+   *
+   * @param array &$array - Any dimensional array with presumed objects in there
+   * @param int   $deep - HelperArray::CLONE_ARRAY_xxx constants
    */
-  public static function cloneDeep(&$array, $deep = HelperArray::CLONE_DEEP) {
+  public static function cloneDeep(&$array, $deep = HelperArray::CLONE_ARRAY_RECURSIVE) {
+    if ($deep == HelperArray::CLONE_ARRAY_NONE) {
+      return;
+    }
+
     foreach ($array as &$value) {
       if (is_object($value)) {
         $value = clone $value;
-      } elseif (is_array($value) && $deep == HelperArray::CLONE_DEEP) {
+      } elseif (is_array($value) && $deep == HelperArray::CLONE_ARRAY_RECURSIVE) {
         static::cloneDeep($value, $deep);
       }
     }

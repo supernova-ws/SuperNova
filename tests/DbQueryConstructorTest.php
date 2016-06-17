@@ -182,7 +182,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(array('a = b'), $this->object->where);
 
     // Array - replace
-    $this->assertEquals($this->object, $this->object->where(array('b = c'), HelperArray::OVERWRITE));
+    $this->assertEquals($this->object, $this->object->where(array('b = c'), HelperArray::MERGE_OVERWRITE));
     $this->assertEquals(array('b = c'), $this->object->where);
 
     // Array - merge
@@ -195,7 +195,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
    * covers ::fields
    * @covers ::__call
    * @covers ::from
-   * @covers ::fromAlias
+   * @covers ::setAlias
    * @covers ::setIdField
    */
   public function testChain() {
