@@ -102,11 +102,11 @@ if($galaxy_src)
     {
       $time = SN_TIME_NOW + PERIOD_DAY;
 
-      db_unit_list_delete($planet['id_owner'], LOC_PLANET, $planet['id']);
+      DBStaticUnit::db_unit_list_delete($planet['id_owner'], LOC_PLANET, $planet['id']);
       db_planet_set_by_id($planet['id'], "id_owner = 0, destruyed = {$time}");
       if($moon)
       {
-        db_unit_list_delete($planet['id_owner'], LOC_PLANET, $moon['id']);
+        DBStaticUnit::db_unit_list_delete($planet['id_owner'], LOC_PLANET, $moon['id']);
         db_planet_set_by_id($moon['id'], "id_owner = 0, destruyed = {$time}");
       }
 

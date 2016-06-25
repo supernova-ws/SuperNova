@@ -154,7 +154,7 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('calculating unit stats');
   $i = 0;
-  $query = db_unit_list_stat_calculate();
+  $query = DBStaticUnit::db_unit_list_stat_calculate();
   $row_num = db_num_rows($query);
   while($unit = db_fetch($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating unit stats (unit {$i}/{$row_num})", false);

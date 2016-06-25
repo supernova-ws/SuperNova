@@ -1210,7 +1210,7 @@ function sn_ube_combat_result_apply(&$combat_data)
         // Удаляем пустые флоты
         // doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id} LIMIT 1");
         db_fleet_delete($fleet_id);
-        db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
+        DBStaticUnit::db_unit_list_delete(0, LOC_FLEET, $fleet_id, 0);
       }
     }
     else // Планета

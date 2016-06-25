@@ -27,7 +27,7 @@ class DBStaticUnit {
       'GROUP BY `unit_snid`'
     );
     $result = array();
-    while($row = db_fetch($query)) {
+    while ($row = db_fetch($query)) {
       $result[$row['unit_snid']] = $row;
     }
 

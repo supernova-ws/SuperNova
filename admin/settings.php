@@ -98,9 +98,9 @@ if(sys_get_param('save')) {
   $config->empire_mercenary_base_period = sys_get_param_int('empire_mercenary_base_period');
   if($config->empire_mercenary_temporary != sys_get_param_int('empire_mercenary_temporary')) {
     if($config->empire_mercenary_temporary) {
-      db_unit_list_admin_delete_mercenaries_finished();
+      DBStaticUnit::db_unit_list_admin_delete_mercenaries_finished();
     } else {
-      db_unit_list_admin_set_mercenaries_expire_time($config->empire_mercenary_base_period);
+      DBStaticUnit::db_unit_list_admin_set_mercenaries_expire_time($config->empire_mercenary_base_period);
     }
 
     $config->empire_mercenary_temporary = sys_get_param_int('empire_mercenary_temporary');

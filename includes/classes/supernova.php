@@ -935,7 +935,7 @@ class classSupernova {
     $location_id = $location_id ? $location_id : 'NULL';
 
     $db_changeset = array();
-    $temp = db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
+    $temp = DBStaticUnit::db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
     if($temp['unit_id'])
     {
       $db_changeset = array(
