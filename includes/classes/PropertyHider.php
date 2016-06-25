@@ -4,6 +4,8 @@
  * Class PropertyHider
  *
  * Hides properties from visibility
+ * Implements new set of methods adjXXX
+ * - adjXXX method returns value of property adjusted by $diff
  */
 class PropertyHider extends stdClass {
 
@@ -148,35 +150,6 @@ class PropertyHider extends stdClass {
   }
 
   /**
-   * Real setter function
-   *
-   * @param string $name
-   * @param mixed  $value
-   *
-   * @return mixed|null
-   * @throws ExceptionPropertyNotExists
-   */
-  protected function ___set($name, $value) {
-    $result = null;
-    // Now deciding - will we call a protected setter or will we work with protected property
-    if (method_exists($this, $methodName = 'set' . ucfirst($name))) {
-      // If method exists - just calling it
-      // TODO - should return TRUE if value changed or FALSE otherwise
-      $result = call_user_func_array(array($this, $methodName), array($value));
-    } elseif (property_exists($this, $propertyName = '_' . $name)) {
-      // No setter exists - works directly with protected property
-      $this->$propertyName = $value;
-    } else {
-      throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] does not have setter/property to set', ERR_ERROR);
-    }
-
-    // TODO - should be primed only if value changed
-    $this->propertiesChanged[$name] = true;
-
-    return $result;
-  }
-
-  /**
    * Setter wrapper with support of protected properties/methods
    *
    * @param string $name
@@ -191,7 +164,25 @@ class PropertyHider extends stdClass {
     $this->checkPropertyExists($name);
     $this->checkOverwriteAdjusted($name);
 
-    $result = $this->___set($name, $value);
+    $result = null;
+    // Now deciding - will we call a protected setter or will we work with protected property
+    if (method_exists($this, $methodName = 'set' . ucfirst($name))) {
+      // If method exists - just calling it
+      // TODO - should return TRUE if value changed or FALSE otherwise
+      $result = call_user_func_array(array($this, $methodName), array($value));
+    } elseif (property_exists($this, $propertyName = '_' . $name)) {
+      // No setter exists - works directly with protected property
+//      if($result = $this->$propertyName !== $value) {
+        $this->$propertyName = $value;
+//      }
+    } else {
+      throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] does not have setter/property to set', ERR_ERROR);
+    }
+
+    // TODO - should be primed only if value changed
+//    if($result) {
+      $this->propertiesChanged[$name] = true;
+//    }
 
     return $result;
   }
@@ -212,7 +203,7 @@ class PropertyHider extends stdClass {
     // Now deciding - will we call a protected setter or will we work with protected property
     if (method_exists($this, $methodName = 'adj' . ucfirst($name))) {
       // If method exists - just calling it
-      // TODO - should return TRUE if value changed or FALSE otherwise
+      // Method returns new adjusted value
       $newValue = call_user_func_array(array($this, $methodName), array($diff));
     } else {
       // No adjuster exists - works directly with protected property
@@ -220,13 +211,22 @@ class PropertyHider extends stdClass {
       $newValue = $this->$name + $diff;
     }
 
-    $this->___set($name, $newValue);
+    // Invoking property setter
+    $this->$name = $newValue;
+//    $this->___set($name, $newValue);
 
+    // Initializing value of adjustment
     if (!array_key_exists($name, $this->propertiesAdjusted)) {
       $this->propertiesAdjusted[$name] = null;
     }
 
-    $this->propertiesAdjusted[$name] += $diff;
+    // Adding diff to adjustment accumulator
+    if (method_exists($this, $methodName = 'adj' . ucfirst($name) . 'Diff')) {
+      call_user_func_array(array($this, $methodName), array($diff));
+    } else {
+      // TODO - property type checks
+      $this->propertiesAdjusted[$name] += $diff;
+    }
 
     return $this->$name;
   }

@@ -1,15 +1,22 @@
 <?php
 
+/**
+ * Class PropertyHiderTested
+ *
+ * @property int test
+ * @property int testGetSet
+ * @property array testArray
+ */
 class PropertyHiderTested extends PropertyHider {
   protected $_test = -2;
-
   protected $_testGetSet = -1;
+  protected $_testArray = array();
 
-  protected function getTest2() {
+  protected function getTestGetSet() {
     return $this->_testGetSet + 1;
   }
 
-  protected function setTest2($value) {
+  protected function setTestGetSet($value) {
     $this->_testGetSet = $value + 2;
   }
 
@@ -18,9 +25,51 @@ class PropertyHiderTested extends PropertyHider {
    *
    * @return int
    */
-  protected function adjTest2($value) {
+  protected function adjTestGetSet($value) {
     return $this->_testGetSet + $value + 4;
   }
+
+
+  /**
+   * @return array
+   */
+  protected function getTestArray() {
+    return $this->_testArray;
+  }
+
+  /**
+   * @param array $value
+   */
+  protected function setTestArray($value) {
+    $this->_testArray = $value;
+  }
+
+  /**
+   * @param array $value
+   *
+   * @return array
+   */
+  protected function adjTestArray($diff) {
+//    if(!isset($this->propertiesAdjusted['testArray']) || !is_array($this->propertiesAdjusted['testArray'])) {
+//      $this->propertiesAdjusted['testArray'] = array();
+//    }
+
+    HelperArray::merge($this->_testArray, $diff, HelperArray::MERGE_PHP);
+    return $this->_testArray;
+  }
+
+  /**
+   * @param array $value
+   */
+  protected function adjTestArrayDiff($diff) {
+    if(!is_array($this->propertiesAdjusted['testArray'])) {
+      $this->propertiesAdjusted['testArray'] = array();
+    }
+
+    HelperArray::merge($this->propertiesAdjusted['testArray'], $diff, HelperArray::MERGE_PHP);
+    return $this->propertiesAdjusted['testArray'];
+  }
+
 }
 
 /**
@@ -35,7 +84,8 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
   protected $object;
   protected $testProperties = array(
     'test'                    => array(),
-    'test2'                   => array(),
+    'testGetSet'              => array(),
+    'testArray'               => array(),
     'noClassPropertyOrMethod' => array(),
   );
 
@@ -72,7 +122,6 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
    * @covers ::checkPropertyExists
    * @covers ::__set
    * @covers ::checkOverwriteAdjusted
-   * @covers ::___set
    */
   public function testCheckPropertyExists() {
     $this->assertEquals(-2, $this->object->test);
@@ -84,13 +133,13 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
     // Test with calling getters/setters
     // Getter = +1 to real value
-    $this->assertEquals(0, $this->object->test2);
+    $this->assertEquals(0, $this->object->testGetSet);
     // Setter = +2 to setting value
-    $this->object->test2 = 0;
+    $this->object->testGetSet = 0;
     // Getter + Setter = 0 + 1 + 2
-    $this->assertEquals(3, $this->object->test2);
+    $this->assertEquals(3, $this->object->testGetSet);
 
-    $this->assertEquals(array('test' => true, 'test2' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    $this->assertEquals(array('test' => true, 'testGetSet' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
   }
 
   public function dataSetGetException() {
@@ -108,7 +157,6 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
    * @covers ::__set
    * @covers ::checkPropertyExists
    * @covers ::checkOverwriteAdjusted
-   * @covers ::___set
    * @expectedException ExceptionPropertyNotExists
    */
   public function testSetException($badValue) {
@@ -129,7 +177,6 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::___set
    * @covers ::__set
    * @covers ::__get
    * @covers ::__adjust
@@ -144,15 +191,34 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
     // Test with calling getters/setters
     // Getter = +1 to real value
-    $this->assertEquals(0, $this->object->test2);
+    $this->assertEquals(0, $this->object->testGetSet);
     // $Diff (8) + Adjuster (+4) + Setter(+2) + Getter (+1) + real value (-1) = 14
-    $this->assertEquals(14, $this->object->__adjust('test2', 8));
-    $this->assertEquals(array('test' => true, 'test2' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
-    $this->assertEquals(array('test' => 10, 'test2' => 8), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
+    $this->assertEquals(14, $this->object->__adjust('testGetSet', 8));
+    $this->assertEquals(array('test' => true, 'testGetSet' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    $this->assertEquals(array('test' => 10, 'testGetSet' => 8), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
   }
 
   /**
-   * @covers ::___set
+   * @covers ::__set
+   * @covers ::__get
+   * @covers ::__adjust
+   * @covers ::checkOverwriteAdjusted
+   */
+  public function test__adjustArray() {
+    // Test with calling getters/setters and DIFF adjuster on array
+    $this->assertEquals(array(), $this->object->testArray);
+    // Testing setter
+    $this->object->__set('testArray', array('one' => 'ten'));
+    $this->assertEquals(array('one' => 'ten'), $this->object->testArray);
+    $this->assertEquals(array('testArray' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    // Testing adjuster
+    $this->assertEquals(array('one' => 'ten', 'two' => 'eleven'), $this->object->__adjust('testArray', array('two' => 'eleven')));
+    $this->assertEquals(array('one' => 'ten', 'two' => 'eleven'), $this->object->testArray);
+    $this->assertEquals(array('testArray' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    $this->assertEquals(array('testArray' => array('two' => 'eleven')), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
+  }
+
+  /**
    * @covers ::__set
    * @covers ::checkOverwriteAdjusted
    * @expectedException PropertyAccessException
