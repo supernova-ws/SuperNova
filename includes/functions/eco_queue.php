@@ -405,7 +405,7 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
 
   $resource_list = sys_unit_arr2str($build_data[$build_mode]);
 
-  db_que_set_insert(
+  DBStaticQue::db_que_set_insert(
       "`que_player_id` = {$user['id']},
       `que_planet_id` = {$planet_id},
       `que_planet_id_origin` = {$planet_id_origin},
@@ -433,7 +433,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
     $que = array_reverse($global_que['ques'][$que_type][$user['id']][$planet['id']]);
 
     foreach($que as $que_item) {
-      db_que_delete_by_id($que_item['que_id']);
+      DBStaticQue::db_que_delete_by_id($que_item['que_id']);
 
       if($que_item['que_planet_id_origin']) {
         $planet['id'] = $que_item['que_planet_id_origin'];

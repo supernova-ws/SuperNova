@@ -104,7 +104,7 @@ function art_use(&$user, &$planetrow, $unit_id)
           $unit_level--;
           $old_time = $que_item['que_time_left'];
           $que_item['que_time_left'] = $que_item['que_time_left'] > PERIOD_HOUR ? ceil($que_item['que_time_left'] / 2) : 0;
-          db_que_set_time_left_by_id($que_item['que_id'], $que_item['que_time_left']);
+          DBStaticQue::db_que_set_time_left_by_id($que_item['que_id'], $que_item['que_time_left']);
           $message = sprintf($lang['art_heurestic_chip_ok'], $lang['tech'][$que_item['que_unit_id']], $que_item['que_unit_level'], sys_time_human($old_time - $que_item['que_time_left']));
           msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_heurestic_chip_subj'], $lang['art_heurestic_chip_subj'], $message);
         }
@@ -131,7 +131,7 @@ function art_use(&$user, &$planetrow, $unit_id)
           $unit_level--;
           $old_time = $que_item['que_time_left'];
           $que_item['que_time_left'] = $que_item['que_time_left'] > PERIOD_HOUR ? ceil($que_item['que_time_left'] / 2) : 0;
-          db_que_set_time_left_by_id($que_item['que_id'], $que_item['que_time_left']);
+          DBStaticQue::db_que_set_time_left_by_id($que_item['que_id'], $que_item['que_time_left']);
           $message = sprintf($lang['art_nano_builder_ok'], $que_item['que_unit_mode'] == BUILD_CREATE ? $lang['art_nano_builder_build'] : $lang['art_nano_builder_destroy'],
             $lang['tech'][$que_item['que_unit_id']], $que_item['que_unit_level'], $planetrow['name'], uni_render_coordinates($planetrow), sys_time_human($old_time - $que_item['que_time_left'])
           );
