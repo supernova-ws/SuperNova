@@ -19,13 +19,13 @@ class PropertyHider extends stdClass {
   /**
    * List of property names that was changed since last DB operation
    *
-   * @var string[]
+   * @var boolean[]
    */
   protected $propertiesChanged = array();
   /**
    * List of property names->$delta that was adjusted since last DB operation - and then need to be processed as Deltas
    *
-   * @var string[]
+   * @var array
    */
   protected $propertiesAdjusted = array();
 
@@ -150,6 +150,40 @@ class PropertyHider extends stdClass {
   }
 
   /**
+   * Unsafe setter - w/o checking if the property was already adjusted
+   *
+   * @param string $name
+   * @param mixed  $value
+   *
+   * @return mixed|null
+   * @throws ExceptionPropertyNotExists
+   */
+  protected function _setUnsafe($name, $value) {
+    $result = null;
+    // Now deciding - will we call a protected setter or will we work with protected property
+    if (method_exists($this, $methodName = 'set' . ucfirst($name))) {
+      // If method exists - just calling it
+      // TODO - should return TRUE if value changed or FALSE otherwise
+      $result = call_user_func_array(array($this, $methodName), array($value));
+    } elseif (property_exists($this, $propertyName = '_' . $name)) {
+      // No setter exists - works directly with protected property
+//      if($result = $this->$propertyName !== $value) {
+      $this->$propertyName = $value;
+//      }
+    } else {
+      throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] does not have setter/property to set', ERR_ERROR);
+    }
+
+    // TODO - should be primed only if value changed
+//    if($result) {
+    $this->propertiesChanged[$name] = true;
+
+//    }
+
+    return $result;
+  }
+
+  /**
    * Setter wrapper with support of protected properties/methods
    *
    * @param string $name
@@ -164,33 +198,14 @@ class PropertyHider extends stdClass {
     $this->checkPropertyExists($name);
     $this->checkOverwriteAdjusted($name);
 
-    $result = null;
-    // Now deciding - will we call a protected setter or will we work with protected property
-    if (method_exists($this, $methodName = 'set' . ucfirst($name))) {
-      // If method exists - just calling it
-      // TODO - should return TRUE if value changed or FALSE otherwise
-      $result = call_user_func_array(array($this, $methodName), array($value));
-    } elseif (property_exists($this, $propertyName = '_' . $name)) {
-      // No setter exists - works directly with protected property
-//      if($result = $this->$propertyName !== $value) {
-        $this->$propertyName = $value;
-//      }
-    } else {
-      throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] does not have setter/property to set', ERR_ERROR);
-    }
-
-    // TODO - should be primed only if value changed
-//    if($result) {
-      $this->propertiesChanged[$name] = true;
-//    }
-
-    return $result;
+    return $this->_setUnsafe($name, $value);
   }
 
   /**
    * Adjust property value with $diff
    * Adjusted values put into DB with UPDATE query
-   * Adjuster callback adjXXX() should return new value which will be propagated via ___set()
+   * Adjuster callback adjXXX() should return new value which will be propagated via __set()
+   * Optionally there can be DIFF-adjuster adjXXXDiff() for complex types
    *
    * @param string $name
    * @param mixed  $diff
@@ -208,12 +223,11 @@ class PropertyHider extends stdClass {
     } else {
       // No adjuster exists - works directly with protected property
       // TODO - property type checks
-      $newValue = $this->$name + $diff;
+      $newValue = $this->_adjustValue($name, $diff);
     }
 
     // Invoking property setter
-    $this->$name = $newValue;
-//    $this->___set($name, $newValue);
+    $this->_setUnsafe($name, $newValue);
 
     // Initializing value of adjustment
     if (!array_key_exists($name, $this->propertiesAdjusted)) {
@@ -225,10 +239,163 @@ class PropertyHider extends stdClass {
       call_user_func_array(array($this, $methodName), array($diff));
     } else {
       // TODO - property type checks
-      $this->propertiesAdjusted[$name] += $diff;
+//      $this->propertiesAdjusted[$name] += $diff;
+      $this->propertiesAdjusted[$name] = $this->_adjustValueDiff($name, $diff);
     }
 
     return $this->$name;
+  }
+
+  /**
+   * @param string $name
+   * @param int    $diff
+   *
+   * @return int
+   */
+  protected function _adjustValueInteger($name, $diff) {
+    return intval($this->$name) + intval($diff);
+  }
+
+  /**
+   * @param string $name
+   * @param float  $diff
+   *
+   * @return float
+   */
+  protected function _adjustValueDouble($name, $diff) {
+    return floatval($this->$name) + floatval($diff);
+  }
+
+  /**
+   * @param string $name
+   * @param string $diff
+   *
+   * @return string
+   */
+  protected function _adjustValueString($name, $diff) {
+    return (string)$this->$name . (string)$diff;
+  }
+
+  /**
+   * @param string $name
+   * @param array $diff
+   *
+   * @return array
+   */
+  protected function _adjustValueArray($name, $diff) {
+    $copy = (array)$this->$name;
+    HelperArray::merge($copy, (array)$diff, HelperArray::MERGE_PHP);
+    return $copy;
+  }
+
+  /**
+   * Directly adjusts value DIFF without Adjuster
+   *
+   * @param string $name
+   * @param mixed  $diff
+   *
+   * @return mixed
+   */
+  protected function _adjustValueDiff($name, $diff) {
+    return $this->propertyMethodResult($name, $diff, 'Diff');
+  }
+
+  /**
+   * Directly adjusts value without Adjuster
+   *
+   * @param string $name
+   * @param mixed  $diff
+   *
+   * @return mixed
+   */
+  protected function _adjustValue($name, $diff) {
+    return $this->propertyMethodResult($name, $diff);
+  }
+
+  /**
+   * Directly adjusts value without Adjuster
+   *
+   * @param string $name
+   * @param mixed  $diff
+   *
+   * @return mixed
+   */
+  protected function propertyMethodResult($name, $diff, $suffix = '') {
+    // TODO - property type checks
+    // Capitalizing type name
+    $type = explode(' ', gettype($this->$name));
+    array_walk($type, 'DbSqlHelper::UCFirstByRef');
+    $type = implode('', $type);
+
+    if (!method_exists($this, $methodName = '_adjustValue' . $type . $suffix)) {
+      throw new ExceptionTypeUnsupported();
+    }
+
+//    "integer" +
+//    "double" +
+//    "string" +
+//    "array" +
+//    "boolean"
+//    "object"
+//    "resource"
+//    "NULL"
+//    "unknown type"
+
+//    $newValue = $this->$name + $diff;
+
+    return call_user_func(array($this, $methodName), $name, $diff);
+  }
+
+
+
+
+
+
+
+
+
+
+
+  /**
+   * @param string $name
+   * @param int    $diff
+   *
+   * @return int
+   */
+  protected function _adjustValueIntegerDiff($name, $diff) {
+    return (int)$this->propertiesAdjusted[$name] + $diff;
+  }
+
+  /**
+   * @param string $name
+   * @param float  $diff
+   *
+   * @return float
+   */
+  protected function _adjustValueDoubleDiff($name, $diff) {
+    return (float)$this->propertiesAdjusted[$name] + $diff;
+  }
+
+  /**
+   * @param string $name
+   * @param string $diff
+   *
+   * @return string
+   */
+  protected function _adjustValueStringDiff($name, $diff) {
+    return (string)$this->propertiesAdjusted[$name] . $diff;
+  }
+
+  /**
+   * @param string $name
+   * @param array $diff
+   *
+   * @return array
+   */
+  protected function _adjustValueArrayDiff($name, $diff) {
+    $copy = (array)$this->propertiesAdjusted[$name];
+    HelperArray::merge($copy, $diff, HelperArray::MERGE_PHP);
+    return $copy;
   }
 
 }
