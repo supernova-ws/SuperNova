@@ -12,7 +12,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($config->game_mode == GAME_BLITZ) {
+if(classSupernova::$config->game_mode == GAME_BLITZ) {
   message($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
   die();
 }
@@ -95,7 +95,7 @@ $template->assign_vars(array(
   'PAGE_HINT' => $lang['srch_page_hint'],
   'TEXT' => $searchtext,
   'IS_ALLY' => $type == 'ally',
-  'STATS_HIDE_PM_LINK' => $config->stats_hide_pm_link,
+  'STATS_HIDE_PM_LINK' => classSupernova::$config->stats_hide_pm_link,
 ));
 
 display($template);

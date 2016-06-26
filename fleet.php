@@ -91,7 +91,7 @@ switch ($fleet_page) {
     $UsedPlanet = false;
     $YourPlanet = false;
     $missiontype = array();
-    if ($planet > $config->game_maxPlanet) {
+    if ($planet > classSupernova::$config->game_maxPlanet) {
       $target_mission = MT_EXPLORE;
       $missiontype[MT_EXPLORE] = $lang['type_mission'][MT_EXPLORE];
     } elseif ($galaxy && $system && $planet) {
