@@ -49,12 +49,12 @@ switch($mode = sys_get_param_str('mode')) {
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
 //      $new_name = db_escape($new_name);
-      db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
+      DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
     } elseif(sys_get_param_str('action') == 'make_capital') {
       try {
         sn_db_transaction_start();
         $user = db_user_by_id($user['id'], true, '*');
-        $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 //        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
 //        $user = $global_data['user'];
 //        $planetrow = $global_data['planet'];
@@ -104,7 +104,7 @@ switch($mode = sys_get_param_str('mode')) {
         sn_db_transaction_start();
         // При телепорте обновлять данные не надо - просто получить текущие данные и залочить их
         $user = db_user_by_id($user['id'], true, '*');
-        $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 //        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
 //        $user = $global_data['user'];
 //        $planetrow = $global_data['planet'];
@@ -118,7 +118,7 @@ switch($mode = sys_get_param_str('mode')) {
           array(&$lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
         $planet_teleport_next = SN_TIME_NOW + $config->planet_teleport_timeout;
-        db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
+        DBStaticPlanet::db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
           "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
 
         if($planetrow['id'] == $user['id_planet']) {
@@ -128,7 +128,7 @@ switch($mode = sys_get_param_str('mode')) {
         // $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
         sn_db_transaction_commit();
         $user = db_user_by_id($user['id'], true, '*');
-        $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
         $result[] = array(
           'STATUS'  => ERR_NONE,
           'MESSAGE' => $lang['ov_teleport_err_none'],
@@ -146,8 +146,8 @@ switch($mode = sys_get_param_str('mode')) {
       if(classSupernova::$auth->password_check(sys_get_param('abandon_confirm'))) {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id) {
           $destroyed = SN_TIME_NOW + 60 * 60 * 24;
-          db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
-          db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
+          DBStaticPlanet::db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
+          DBStaticPlanet::db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
           message($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
         } else {
@@ -169,7 +169,7 @@ switch($mode = sys_get_param_str('mode')) {
     ) {
       sn_db_transaction_start();
       $user = db_user_by_id($user['id'], true);
-      $planetrow = db_planet_by_id($planetrow['id'], true);
+      $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
       $build_data = eco_get_build_data($user, $planetrow, $hire, $planetrow['PLANET_GOVERNOR_ID'] == $hire ? $planetrow['PLANET_GOVERNOR_LEVEL'] : 0);
       if($build_data['CAN'][BUILD_CREATE]) {
         if($planetrow['PLANET_GOVERNOR_ID'] == $hire) {
@@ -180,7 +180,7 @@ switch($mode = sys_get_param_str('mode')) {
           $planetrow['PLANET_GOVERNOR_ID'] = $hire;
           $query = '1';
         }
-        db_planet_set_by_id($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
+        DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
         rpg_points_change(
           $user['id'],
           RPG_GOVERNOR,
@@ -264,7 +264,7 @@ switch($mode = sys_get_param_str('mode')) {
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
       $new_name_safe = db_escape($new_name);
-      db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
+      DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
     }
 
     $result[] = sn_sys_planet_core_transmute($user, $planetrow);
@@ -288,7 +288,7 @@ switch($mode = sys_get_param_str('mode')) {
     $fleets = flt_parse_fleets_to_events($fleet_list);
 
     $planet_count = 0;
-    $planets_query = db_planet_list_sorted($user, false, '*');
+    $planets_query = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
     foreach($planets_query as $an_id => $UserPlanet) {
       sn_db_transaction_start();
       $UserPlanet = sys_o_get_updated($user, $UserPlanet['id'], SN_TIME_NOW, false, true);
@@ -308,7 +308,7 @@ switch($mode = sys_get_param_str('mode')) {
       if($UserPlanet['planet_type'] == PT_MOON) {
         continue;
       }
-      $moon = db_planet_by_parent($UserPlanet['id']);
+      $moon = DBStaticPlanet::db_planet_by_parent($UserPlanet['id']);
       if($moon) {
         $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
       } else {
@@ -334,7 +334,7 @@ switch($mode = sys_get_param_str('mode')) {
     tpl_assign_fleet($template, $fleets_to_planet);
     tpl_assign_fleet($template, $fleets);
 
-    $lune = $planetrow['planet_type'] == PT_PLANET ? db_planet_by_parent($planetrow['id']) : db_planet_by_id($planetrow['parent_planet']);
+    $lune = $planetrow['planet_type'] == PT_PLANET ? DBStaticPlanet::db_planet_by_parent($planetrow['id']) : DBStaticPlanet::db_planet_by_id($planetrow['parent_planet']);
     if($lune) {
       $template->assign_vars(array(
         'MOON_ID' => $lune['id'],

@@ -82,7 +82,7 @@ if($galaxy_src)
 
     killer_add_planet($planet);
 
-    $moon = db_planet_by_gspt($galaxy_src, $system_src, $planet_src, PT_MOON, true);
+    $moon = DBStaticPlanet::db_planet_by_gspt($galaxy_src, $system_src, $planet_src, PT_MOON, true);
     if($moon)
     {
       $moon = sys_o_get_updated($owner, $moon, SN_TIME_NOW);
@@ -103,14 +103,14 @@ if($galaxy_src)
       $time = SN_TIME_NOW + PERIOD_DAY;
 
       DBStaticUnit::db_unit_list_delete($planet['id_owner'], LOC_PLANET, $planet['id']);
-      db_planet_set_by_id($planet['id'], "id_owner = 0, destruyed = {$time}");
+      DBStaticPlanet::db_planet_set_by_id($planet['id'], "id_owner = 0, destruyed = {$time}");
       if($moon)
       {
         DBStaticUnit::db_unit_list_delete($planet['id_owner'], LOC_PLANET, $moon['id']);
-        db_planet_set_by_id($moon['id'], "id_owner = 0, destruyed = {$time}");
+        DBStaticPlanet::db_planet_set_by_id($moon['id'], "id_owner = 0, destruyed = {$time}");
       }
 
-      db_planet_set_by_id($destination['id'], "metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}'");
+      DBStaticPlanet::db_planet_set_by_id($destination['id'], "metal = metal + '{$final_cost[RES_METAL]}', crystal = crystal + '{$final_cost[RES_CRYSTAL]}', deuterium = deuterium + '{$final_cost[RES_DEUTERIUM]}'");
       $template->assign_var('CHECK', 2);
     }
   }

@@ -16,7 +16,7 @@ function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
   foreach($fleet_list as $fleet)
   {
     $planet_start_type = $fleet['fleet_start_type'] == PT_MOON ? PT_MOON : PT_PLANET;
-    $planet_start = db_planet_by_gspt($fleet['fleet_start_galaxy'], $fleet['fleet_start_system'], $fleet['fleet_start_planet'], $planet_start_type, false, 'name');
+    $planet_start = DBStaticPlanet::db_planet_by_gspt($fleet['fleet_start_galaxy'], $fleet['fleet_start_system'], $fleet['fleet_start_planet'], $planet_start_type, false, 'name');
     $fleet['fleet_start_name'] = $planet_start['name'];
 
     $planet_end_type = $fleet['fleet_end_type'] == PT_MOON ? PT_MOON : PT_PLANET;
@@ -30,7 +30,7 @@ function flt_parse_fleets_to_events($fleet_list, $planet_scanned = false)
     }
     else
     {
-      $planet_end = db_planet_by_gspt($fleet['fleet_end_galaxy'], $fleet['fleet_end_system'], $fleet['fleet_end_planet'], $planet_end_type, false, 'name');
+      $planet_end = DBStaticPlanet::db_planet_by_gspt($fleet['fleet_end_galaxy'], $fleet['fleet_end_system'], $fleet['fleet_end_planet'], $planet_end_type, false, 'name');
       $fleet['fleet_end_name'] = $planet_end['name'];
     }
 

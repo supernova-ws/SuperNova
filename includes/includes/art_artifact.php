@@ -22,7 +22,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       case ART_HOOK_SMALL:
       case ART_HOOK_MEDIUM:
       case ART_HOOK_LARGE:
-        $has_moon = db_planet_by_parent($planetrow['id'], true, '`id`');
+        $has_moon = DBStaticPlanet::db_planet_by_parent($planetrow['id'], true, '`id`');
         if($planetrow['planet_type'] == PT_PLANET && !$has_moon['id'])
         {
           $unit_level--;
@@ -50,7 +50,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       case ART_RCD_SMALL:
       case ART_RCD_MEDIUM:
       case ART_RCD_LARGE:
-        $planetrow = db_planet_by_id($planetrow['id'], true);
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
         if($planetrow['planet_type'] != PT_PLANET)
         {
           $message = $lang['art_rcd_err_moon'];
@@ -84,7 +84,7 @@ function art_use(&$user, &$planetrow, $unit_id)
           break;
         }
         $unit_level--;
-        db_planet_set_by_id($planetrow['id'], "`field_current` = `field_current` + {$sectors_used}");
+        DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`field_current` = `field_current` + {$sectors_used}");
         $message = sprintf($lang['art_rcd_ok'], $lang['tech'][$unit_id], $planetrow['name'], uni_render_coordinates($planetrow));
         msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, $lang['art_rcd_subj'], $lang['art_rcd_subj'], $message);
       break;
@@ -115,7 +115,7 @@ function art_use(&$user, &$planetrow, $unit_id)
       break;
 
       case ART_NANO_BUILDER:
-        $planetrow = db_planet_by_id($planetrow['id'], true);
+        $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
         $que_item = null;
         $que = que_get($user['id'], $planetrow['id'], QUE_STRUCTURES, true);
         $current_que = &$que['ques'][QUE_STRUCTURES][$user['id']][$planetrow['id']];

@@ -34,7 +34,7 @@ function sn_options_model() {
   if(sys_get_param_str('mode') == 'change') {
     if($user['authlevel'] > 0) {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
-      db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
+      DBStaticPlanet::db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
       db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
     }
@@ -68,7 +68,7 @@ function sn_options_model() {
           // $planet = sys_o_get_updated($user, $planet, SN_TIME_NOW);
           // $planet = $planet['planet'];
 
-          db_planet_set_by_id($planet['id'],
+          DBStaticPlanet::db_planet_set_by_id($planet['id'],
             "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
             metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
             metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',

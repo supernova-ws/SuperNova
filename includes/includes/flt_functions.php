@@ -618,7 +618,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
   // $internal_transaction = false;sn_db_transaction_rollback(); // TODO - REMOVE !!!!!!!!!!!!!!!!!!
 
   $internal_transaction ? sn_db_transaction_commit() : false;
-  $from = db_planet_by_id($from['id']);
+  $from = DBStaticPlanet::db_planet_by_id($from['id']);
 
   return ATTACK_ALLOWED;
 //ini_set('error_reporting', E_ALL ^ E_NOTICE);

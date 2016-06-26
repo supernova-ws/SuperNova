@@ -119,29 +119,11 @@ if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(
   }
 }
 
-//$fleet_query = doquery(
-//  "SELECT f.*, ps.name AS fleet_start_name, pe.name AS fleet_end_name
-//  FROM {{fleets}} AS f
-//    LEFT JOIN {{planets}} AS ps ON ps.id = f.fleet_start_planet_id
-//    LEFT JOIN {{planets}} AS pe ON pe.id = f.fleet_end_planet_id
-//  WHERE fleet_id = {$fleetid}"
-//);
-//while ($fleet_row = db_fetch($fleet_query)) {
-//  $i++;
-//  $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
-//
-//  $template->assign_block_vars('fleets', $fleet_data['fleet']);
-//
-//  foreach($fleet_data['ships'] as $ship_data) {
-//    $template->assign_block_vars('fleets.ships', $ship_data);
-//  }
-//}
-
 $i++;
 $fleet_row = db_fleet_get($fleetid);
-$planet_start = db_planet_by_id($fleet_row['fleet_start_planet_id']);
+$planet_start = DBStaticPlanet::db_planet_by_id($fleet_row['fleet_start_planet_id']);
 $fleet_row['fleet_start_name'] = !empty($planet_start['name']) ? $planet_start['name'] : '';
-$planet_end = db_planet_by_id($fleet_row['fleet_end_planet_id']);
+$planet_end = DBStaticPlanet::db_planet_by_id($fleet_row['fleet_end_planet_id']);
 $fleet_row['fleet_end_name'] = !empty($planet_end['name']) ? $planet_end['name'] : '';
 
 $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);

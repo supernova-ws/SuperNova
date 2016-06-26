@@ -96,7 +96,7 @@ function flt_mission_recycle(&$mission_data)
   $NewCargo['Crystal']   = $fleet_row["fleet_resource_crystal"] + $RecycledGoods["crystal"];
   $NewCargo['Deuterium'] = $fleet_row["fleet_resource_deuterium"];
 
-  db_planet_set_by_gspt($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], PT_PLANET,
+  DBStaticPlanet::db_planet_set_by_gspt($fleet_row['fleet_end_galaxy'], $fleet_row['fleet_end_system'], $fleet_row['fleet_end_planet'], PT_PLANET,
     "`debris_metal` = `debris_metal` - '{$RecycledGoods['metal']}', `debris_crystal` = `debris_crystal` - '{$RecycledGoods['crystal']}'"
   );
 

@@ -62,7 +62,7 @@ function missile_list_convert_to_fleet(&$missile_db_list, &$fleet_db_list) {
   foreach($missile_db_list as $irak) {
     if($irak['fleet_end_time'] >= SN_TIME_NOW) {
       $irak['fleet_start_type'] = PT_PLANET;
-      $planet_start = db_planet_by_vector($irak, 'fleet_start_', false, 'name');
+      $planet_start = DBStaticPlanet::db_planet_by_vector($irak, 'fleet_start_', false, 'name');
       $irak['fleet_id'] = -$irak['id'];
       $irak['fleet_mission'] = MT_MISSILE;
       $irak['fleet_array'] = UNIT_DEF_MISSILE_INTERPLANET . ",{$irak['fleet_amount']};";

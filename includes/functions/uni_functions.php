@@ -59,7 +59,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
 
   $Position = intval($Position);
 
-  if(!isset($options['skip_check']) && db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
+  if(!isset($options['skip_check']) && DBStaticPlanet::db_planet_by_gspt($Galaxy, $System, $Position, PT_PLANET, true, '`id`')) {
     return false;
   }
 
@@ -171,9 +171,9 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
 
   $moon_name = '';
   $moon_row = array();
-  $moon = db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_MOON, false, 'id');
+  $moon = DBStaticPlanet::db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_MOON, false, 'id');
   if(!$moon['id']) {
-    $moon_planet = db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_PLANET, true, '`id`, `temp_min`, `temp_max`, `name`, `debris_metal`, `debris_crystal`');
+    $moon_planet = DBStaticPlanet::db_planet_by_gspt($pos_galaxy, $pos_system, $pos_planet, PT_PLANET, true, '`id`, `temp_min`, `temp_max`, `name`, `debris_metal`, `debris_crystal`');
 
     if($moon_planet['id']) {
       $base_storage_size = BASE_STORAGE_SIZE;
@@ -216,7 +216,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
         $metal_spent  = round(min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100));
         $crystal_spent = min($moon_planet['debris_crystal'], $debris_spent - $metal_spent);
         $metal_spent = min($moon_planet['debris_metal'], $debris_spent - $crystal_spent); // Need if crystal less then their part
-        db_planet_set_by_id($moon_planet['id'], "`debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent})");
+        DBStaticPlanet::db_planet_set_by_id($moon_planet['id'], "`debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent})");
       }
     }
   }
@@ -249,21 +249,21 @@ function SetSelectedPlanet(&$user)
   // Пытаемся переключить на новую планету
   if(($selected_planet = sys_get_param_id('cp')) && $selected_planet != $user['current_planet'])
   {
-    $planet_row = db_planet_by_id_and_owner($selected_planet, $user['id'], false, 'id');
+    $planet_row = DBStaticPlanet::db_planet_by_id_and_owner($selected_planet, $user['id'], false, 'id');
   }
   else
   {
-    $planet_row = db_planet_by_id($planet_row['id']);
+    $planet_row = DBStaticPlanet::db_planet_by_id($planet_row['id']);
   }
 
   // Если новая планета не найдена или было переключения - проверяем текущую выбранную планету
   if(!isset($planet_row['id'])) // || $planet_row['id'] != $user['current_planet']
   {
-    $planet_row = db_planet_by_id_and_owner($user['current_planet'], $user['id'], false, 'id');
+    $planet_row = DBStaticPlanet::db_planet_by_id_and_owner($user['current_planet'], $user['id'], false, 'id');
     // Если текущей планеты не существует - выставляем Столицу
     if(!isset($planet_row['id']))
     {
-      $planet_row = db_planet_by_id_and_owner($user['id_planet'], $user['id'], false, 'id');
+      $planet_row = DBStaticPlanet::db_planet_by_id_and_owner($user['id_planet'], $user['id'], false, 'id');
       // Если и столицы не существует - значит что-то очень не так с записью пользователя
       if(!isset($planet_row['id']))
       {
@@ -386,7 +386,7 @@ function uni_planet_teleport_check($user, $planetrow, $new_coordinates = null) {
 
     if(is_array($new_coordinates)) {
       $new_coordinates['planet_type'] = PT_PLANET;
-      $incoming = db_planet_by_vector($new_coordinates, '', true, 'id');
+      $incoming = DBStaticPlanet::db_planet_by_vector($new_coordinates, '', true, 'id');
       if($incoming['id']) {
         throw new exception($lang['ov_teleport_err_destination_busy'], ERR_ERROR);
       }

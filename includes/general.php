@@ -374,7 +374,7 @@ function CheckAbandonPlanetState(&$planet)
 {
   if($planet['destruyed'] && $planet['destruyed'] <= SN_TIME_NOW)
   {
-    db_planet_delete_by_id($planet['id']);
+    DBStaticPlanet::db_planet_delete_by_id($planet['id']);
   }
 }
 
@@ -853,7 +853,7 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
 
   sn_db_transaction_start();
   $user = db_user_by_id($user['id'], true, '*');
-  $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+  $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
   // Тут не надо делать обсчет - ресурсы мы уже посчитали, очередь (и количество зданий) - тоже
 //  $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
 //  $user = $planetrow['user'];
@@ -866,7 +866,7 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
         $user['username'], $user['id'], $planet_name_text, $lang['sys_planet_type'][$planetrow['planet_type']], $planetrow['id'], $sector_cost)
     )) {
       $sector_db_name = pname_resource_name(UNIT_SECTOR);
-      db_planet_set_by_id($planetrow['id'], "{$sector_db_name} = {$sector_db_name} + 1");
+      DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "{$sector_db_name} = {$sector_db_name} + 1");
     } else {
       sn_db_transaction_rollback();
     }
@@ -1316,7 +1316,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
 
     sn_db_transaction_start();
     $user = db_user_by_id($user['id'], true, '*');
-    $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+    $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 //    $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
 //    $user = $global_data['user'];
 //    $planetrow = $global_data['planet'];
@@ -1361,7 +1361,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
       )
     );
 
-    db_planet_set_by_id($planetrow['id'], "`density` = {$new_density}, `density_index` = {$new_density_index}");
+    DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`density` = {$new_density}, `density_index` = {$new_density_index}");
     sn_db_transaction_commit();
 
     $planetrow['density'] = $new_density;
@@ -1485,7 +1485,7 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
 
 function get_player_current_colonies(&$user)
 {
-  return $user[UNIT_PLAYER_COLONIES_CURRENT] = isset($user[UNIT_PLAYER_COLONIES_CURRENT]) ? $user[UNIT_PLAYER_COLONIES_CURRENT] : max(0, db_planet_count_by_type($user['id']) - 1);
+  return $user[UNIT_PLAYER_COLONIES_CURRENT] = isset($user[UNIT_PLAYER_COLONIES_CURRENT]) ? $user[UNIT_PLAYER_COLONIES_CURRENT] : max(0, DBStaticPlanet::db_planet_count_by_type($user['id']) - 1);
 }
 
 function str_raw2unsafe($raw) {

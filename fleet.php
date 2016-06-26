@@ -97,7 +97,7 @@ switch ($fleet_page) {
     } elseif ($galaxy && $system && $planet) {
       $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
 
-      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
+      $TargetPlanet = DBStaticPlanet::db_planet_by_gspt($galaxy, $system, $planet, $check_type);
 
       if ($TargetPlanet['id_owner']) {
         $UsedPlanet = true;
@@ -177,7 +177,7 @@ switch ($fleet_page) {
     if ($galaxy && $system && $planet) {
       $check_type = $planet_type == PT_MOON ? PT_MOON : PT_PLANET;
 
-      $TargetPlanet = db_planet_by_gspt($galaxy, $system, $planet, $check_type);
+      $TargetPlanet = DBStaticPlanet::db_planet_by_gspt($galaxy, $system, $planet, $check_type);
     }
 
   case 0:

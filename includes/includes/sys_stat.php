@@ -114,7 +114,7 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('calculating planets stats');
   $i = 0;
-  $query = db_planet_list_resources_by_owner();
+  $query = DBStaticPlanet::db_planet_list_resources_by_owner();
   $row_num = db_num_rows($query);
   while($planet = db_fetch($query)) {
     if($i++ % 100 == 0) sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);

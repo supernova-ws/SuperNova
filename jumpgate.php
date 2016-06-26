@@ -18,10 +18,10 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
 {
   sn_db_transaction_start();
   db_user_by_id($user['id'], true, 'id');
-  $planetrow = db_planet_by_id($planetrow['id'], true);
+  $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
   if(!($NextJumpTime = uni_get_time_to_jump($planetrow)))
   {
-    $TargetGate = db_planet_by_id($TargetPlanet, true, '`id`, `last_jump_time`');
+    $TargetGate = DBStaticPlanet::db_planet_by_id($TargetPlanet, true, '`id`, `last_jump_time`');
     if(mrc_get_level($user, $TargetGate, STRUC_MOON_GATE) > 0)
     {
       $NextDestTime = uni_get_time_to_jump ( $TargetGate );
@@ -48,8 +48,8 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         // Dit monsieur, y avait quelque chose a envoyer ???
         if(!empty($db_changeset))
         {
-          db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
-          db_planet_set_by_id($planetrow['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
+          DBStaticPlanet::db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
+          DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
           db_changeset_apply($db_changeset);
 
           db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
@@ -75,7 +75,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
   if(mrc_get_level($user, $planetrow, STRUC_MOON_GATE) > 0)
   {
     $Combo = '';
-    $MoonList = db_planet_list_moon_other($user['id'], $planetrow['id']);
+    $MoonList = DBStaticPlanet::db_planet_list_moon_other($user['id'], $planetrow['id']);
     // while($CurMoon = db_fetch($MoonList))
     foreach($MoonList as $CurMoon)
     {

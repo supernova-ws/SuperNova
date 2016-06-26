@@ -161,7 +161,7 @@ function coe_o_missile_calculate() {
         if(!empty($message)) {
           $message = $lang['mip_defense_destroyed'] . $message . "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
 
-          db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
+          DBStaticPlanet::db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
         }
 
 //        $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
@@ -169,7 +169,7 @@ function coe_o_missile_calculate() {
       db_changeset_apply($db_changeset);
 
       $fleetRow['fleet_start_type'] = PT_PLANET;
-      $sourcePlanet = db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
+      $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
 
       $message_vorlage = sprintf($lang['mip_body_attack'], $fleetRow['fleet_amount'],
         addslashes($sourcePlanet['name']), $fleetRow['fleet_start_galaxy'], $fleetRow['fleet_start_system'], $fleetRow['fleet_start_planet'],

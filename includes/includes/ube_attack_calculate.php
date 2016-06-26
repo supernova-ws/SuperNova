@@ -264,7 +264,7 @@ function ube_attack_prepare(&$mission_data) {
   }
 
   // Готовим опции
-  $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(db_planet_by_parent($destination_planet['id'], true, '`id`'));
+  $combat_data[UBE_OPTIONS][UBE_MOON_WAS] = $destination_planet['planet_type'] == PT_MOON || is_array(DBStaticPlanet::db_planet_by_parent($destination_planet['id'], true, '`id`'));
   $combat_data[UBE_OPTIONS][UBE_MISSION_TYPE] = $fleet_row['fleet_mission'];
   global $config;
   $combat_data[UBE_OPTIONS][UBE_METHOD] = $config->game_ube_method ? $config->game_ube_method : 0;
@@ -1092,7 +1092,7 @@ function sn_ube_combat_result_apply(&$combat_data)
   // Обновляем поле обломков на планете
   if(!$combat_data[UBE_OPTIONS][UBE_COMBAT_ADMIN] && !empty($outcome[UBE_DEBRIS]))
   {
-    db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
+    DBStaticPlanet::db_planet_set_by_gspt($planet_info[PLANET_GALAXY], $planet_info[PLANET_SYSTEM], $planet_info[PLANET_PLANET], PT_PLANET,
       "`debris_metal` = `debris_metal` + " . floor($outcome[UBE_DEBRIS][RES_METAL]) . ", `debris_crystal` = `debris_crystal` + " . floor($outcome[UBE_DEBRIS][RES_CRYSTAL])
     );
   }
@@ -1222,7 +1222,7 @@ function sn_ube_combat_result_apply(&$combat_data)
         foreach($fleet_delta as $resource_db_name => $resource_amount) {
           $temp[] = "`{$resource_db_name}` = `{$resource_db_name}` + ({$resource_amount})";
         }
-        db_planet_set_by_id($planet_id, implode(',', $temp));
+        DBStaticPlanet::db_planet_set_by_id($planet_id, implode(',', $temp));
       }
       if(!empty($db_changeset)) // Сохраняем изменения юнитов на планете - если они есть
       {
@@ -1247,7 +1247,7 @@ function sn_ube_combat_result_apply(&$combat_data)
   }
   elseif($outcome[UBE_MOON] == UBE_MOON_DESTROY_SUCCESS)
   {
-    db_planet_delete_by_id($planet_id);
+    DBStaticPlanet::db_planet_delete_by_id($planet_id);
   }
 
   {

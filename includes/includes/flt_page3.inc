@@ -46,7 +46,7 @@ function sn_fleet_page3() {
   sn_db_transaction_start();
 
   $user = db_user_by_id($user['id'], true);
-  $planetrow = db_planet_by_id($planetrow['id'], true);
+  $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true);
 
   if ($target_mission == MT_EXPLORE) {
     if ($MaxExpeditions == 0 ) {
@@ -230,7 +230,7 @@ function sn_fleet_page3() {
   );
   $fleet_id = fleet_insert_set($fleet_set);
 
-  db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
+  DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
   db_changeset_apply($db_changeset);
 
   $template = gettemplate('fleet3', true);
@@ -295,7 +295,7 @@ function sn_fleet_page3() {
   ));
 
   sn_db_transaction_commit();
-  $planetrow = db_planet_by_id($planetrow['id']);
+  $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id']);
 
   $template->assign_recursive($template_result);
   display($template, $lang['fl_title']);

@@ -36,12 +36,12 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
 //  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1", true);
   // Узнаем ИД владельца планеты - без блокировки
   // TODO поменять на владельца планеты - когда его будут возвращать всегда !!!
-  $user_id = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
+  $user_id = DBStaticPlanet::db_planet_by_vector($fleet_row, "fleet_{$prefix}_", false, 'id_owner');
   $user_id = $user_id['id_owner'];
   // Блокируем пользователя
   $user = db_user_by_id($user_id, true);
   // Блокируем планету
-  $planet_arrival = db_planet_by_vector($fleet_row, "fleet_{$prefix}_", true);
+  $planet_arrival = DBStaticPlanet::db_planet_by_vector($fleet_row, "fleet_{$prefix}_", true);
   // Блокируем флот
 //  $fleet_row = doquery("SELECT * FROM {{fleets}} WHERE `fleet_id`='{$fleet_row['fleet_id']}' LIMIT 1 FOR UPDATE;", true);
 
@@ -84,7 +84,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
     db_changeset_apply($db_changeset);
   }
 
-  db_planet_set_by_id($planet_arrival['id'],
+  DBStaticPlanet::db_planet_set_by_id($planet_arrival['id'],
     "`metal` = `metal` + '{$fleet_row['fleet_resource_metal']}', `crystal` = `crystal` + '{$fleet_row['fleet_resource_crystal']}', `deuterium` = `deuterium` + '{$fleet_row['fleet_resource_deuterium']}'");
   $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 
@@ -299,10 +299,10 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       'fleet'      => &$fleet_row,
       'dst_user'   => $mission_data['dst_user'] || $mission_data['dst_planet'] ? db_user_by_id($fleet_row['fleet_target_owner'], true) : null,
       // TODO 'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_id($fleet_row['fleet_end_planet_id'], true) : null,
-      'dst_planet' => $mission_data['dst_planet'] ? db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
+      'dst_planet' => $mission_data['dst_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_end_', true, '`id`, `id_owner`, `name`') : null,
       'src_user'   => $mission_data['src_user'] || $mission_data['src_planet'] ? db_user_by_id($fleet_row['fleet_owner'], true)  : null,
       // TODO 'src_planet' => $mission_data['src_planet'] ? db_planet_by_id($fleet_row['fleet_start_planet_id'], true) : null,
-      'src_planet' => $mission_data['src_planet'] ? db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
+      'src_planet' => $mission_data['src_planet'] ? DBStaticPlanet::db_planet_by_vector($fleet_row, 'fleet_start_', true, '`id`, `id_owner`, `name`') : null,
       'fleet_event' => $fleet_event['fleet_event'],
     );
 

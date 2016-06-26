@@ -38,7 +38,7 @@ function flt_build_gathering($resources_taken = '') {
   }
   arsort($transports);
 
-  $planets_db_list = db_planet_list_sorted($user, $planetrow['id'], '*', $query);
+  $planets_db_list = DBStaticPlanet::db_planet_list_sorted($user, $planetrow['id'], '*', $query);
   !is_array($planets_db_list) ? $planets_db_list = array() : false;
   foreach($planets_db_list as $planet_db_data) {
   // begin planet loop

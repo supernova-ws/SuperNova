@@ -37,7 +37,7 @@ if (isset($GET_result)) {
   switch ($GET_result){
     case 'usr_search':
       $SelUser = db_user_by_username('%'. $Pattern .'%', false, '*', true, true);
-      $UsrMain = db_planet_by_id($SelUser['id_planet'], false, 'name');
+      $UsrMain = DBStaticPlanet::db_planet_by_id($SelUser['id_planet'], false, 'name');
 
       $bloc                   = $lang;
       $bloc['answer1']        = $SelUser['id'];
@@ -122,7 +122,7 @@ if (isset($GET_result)) {
       $SelUser = db_user_list("`user_lastip` = '{$ip}'");
       //while ( $Usr = db_fetch($SelUser) ) {
       foreach($SelUser as $Usr) {
-        $UsrMain = db_planet_by_id($Usr['id_planet'], false, 'name');
+        $UsrMain = DBStaticPlanet::db_planet_by_id($Usr['id_planet'], false, 'name');
         $bloc['adm_plyer_lst'] .= "<tr><th>".$Usr['username']."</th><th>[".$Usr['galaxy'].":".$Usr['system'].":".$Usr['planet']."] ".$UsrMain['name']."</th></tr>";
       }
       $SubPanelTPL            = gettemplate('admin/admin_panel_asw2');

@@ -56,7 +56,7 @@ function int_banner_create($id, $type = 'userbar', $format = 'png')
   {
     // Querys
     $user = db_user_by_id($id);
-    $planet_row = db_planet_by_id($user['id_planet']);
+    $planet_row = DBStaticPlanet::db_planet_by_id($user['id_planet']);
 
     // Variables
     $b_user = $user['username'];

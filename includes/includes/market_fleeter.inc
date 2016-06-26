@@ -19,7 +19,7 @@ if(is_array($shipList)) {
 
   sn_db_transaction_start();
   // Здесь не надо апдейтить планету - очередь мы посчитали глобально
-  $planetrow = db_planet_by_id($planetrow['id'], true, '*');
+  $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
 //  $global_data = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
 //  $planetrow = $global_data['planet'];
 
@@ -103,14 +103,14 @@ if(is_array($shipList)) {
     }
     $message .= "</ul>";
 
-    db_planet_set_by_id($planetrow['id'], implode(',', $qry));
+    DBStaticPlanet::db_planet_set_by_id($planetrow['id'], implode(',', $qry));
     db_changeset_apply($db_changeset);
 
     rpg_points_change($user['id'], RPG_MARKET_FLEET, -($rpg_cost), "Using Black Market page {$mode}");
     $config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));
 
     $stock = $newstock;
-    $planetrow = db_planet_by_id($planetrow['id']);
+    $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id']);
 
     sn_db_transaction_commit();
 

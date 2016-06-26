@@ -61,7 +61,7 @@ function DeleteSelectedUser($UserID) {
   }
   doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
 
-  db_planet_list_delete_by_owner($UserID);
+  DBStaticPlanet::db_planet_list_delete_by_owner($UserID);
 
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
   doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
@@ -110,7 +110,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
       `ban_issuer_email` = '{$banner['email']}'
   ");
 
-  db_planet_set_by_owner($banned['id'],
+  DBStaticPlanet::db_planet_set_by_owner($banned['id'],
     "`metal_mine_porcent` = 0, `crystal_mine_porcent` = 0, `deuterium_sintetizer_porcent` = 0, `solar_plant_porcent` = 0,
     `fusion_plant_porcent` = 0, `solar_satelit_porcent` = 0, `ship_sattelite_sloth_porcent` = 0"
   );
@@ -195,7 +195,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
       }
       $options['galaxy'] > $config->game_maxGalaxy ? $options['galaxy'] = 1 : false;
 
-      $galaxy_row = db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET, true, 'id');
+      $galaxy_row = DBStaticPlanet::db_planet_by_gspt($options['galaxy'], $options['system'], $options['planet'], PT_PLANET, true, 'id');
       if(!$galaxy_row['id']) {
         $config->db_saveItem(array(
           'LastSettedGalaxyPos' => $options['galaxy'],

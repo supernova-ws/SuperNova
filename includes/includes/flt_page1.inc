@@ -81,7 +81,7 @@ while($shortcut = db_fetch($query)) {
 }
 
 // Building list of own planets & moons
-$colonies = db_planet_list_sorted ( $user );
+$colonies = DBStaticPlanet::db_planet_list_sorted ( $user );
 if(count($colonies) > 1) {
   // while($row = db_fetch($colonies))
   foreach($colonies as $row) {

@@ -44,13 +44,13 @@ if(!isset($sn_group_missions[$target_mission]['AJAX']) || !$sn_group_missions[$t
 sn_db_transaction_start();
 
 $user = db_user_by_id($user['id'], true);
-$planetrow = db_planet_by_id($user['current_planet'], true);
+$planetrow = DBStaticPlanet::db_planet_by_id($user['current_planet'], true);
 
 $target_planet_type = sys_get_param_int('planet_type');
 $target_planet_check = $target_planet_type == PT_DEBRIS ? PT_PLANET : $target_planet_type;
 
 $target_coord['planet_type'] = $target_planet_check;
-$target_row = db_planet_by_vector($target_coord);
+$target_row = DBStaticPlanet::db_planet_by_vector($target_coord);
 
 if(empty($target_row))
 {
@@ -184,7 +184,7 @@ else
   fleet_insert_set($fleet_set);
 }
 
-db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
+DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
 db_changeset_apply($db_changeset);
 sn_db_transaction_commit();
 
