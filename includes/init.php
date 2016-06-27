@@ -132,9 +132,8 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 /**
  * @var classConfig    $config
- * @var classSupernova $supernova
  */
-global $supernova, $sn_cache, $auth;
+global $sn_cache, $auth;
 
 classSupernova::init_global_objects();
 
@@ -205,7 +204,7 @@ $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
 if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
   require_once($sn_page_name_file);
   if(is_array($sn_page_data['options'])) {
-    $supernova->options = array_merge($supernova->options, $sn_page_data['options']);
+    classSupernova::$options = array_merge(classSupernova::$options, $sn_page_data['options']);
   }
 }
 

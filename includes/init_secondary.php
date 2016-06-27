@@ -145,7 +145,7 @@ $sn_page_name && !empty(classSupernova::$sn_mvc['i18n'][$sn_page_name]) ? lng_lo
 execute_hooks(classSupernova::$sn_mvc['model'][''], $template, 'model', '');
 
 global $skip_fleet_update;
-$skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
+$skip_fleet_update = $skip_fleet_update || classSupernova::$options['fleet_update_skip'] || defined('IN_ADMIN');
 if(
   !$skip_fleet_update
   && !(defined('IN_AJAX') && IN_AJAX === true)

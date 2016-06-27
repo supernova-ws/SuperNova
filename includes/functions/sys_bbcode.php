@@ -1,8 +1,6 @@
 <?php
 
-global $supernova;
-
-$supernova->design['bbcodes'] = array(
+classSupernova::$design['bbcodes'] = array(
 //  "^\[c=(white|blue|yellow|green|pink|red|orange|purple)\](.+)\[/c\]$" => "<font color=\"$1\">$2</font>",
   AUTH_LEVEL_ADMINISTRATOR => array(
     "#\[url=(ft|https?://)(.+)\](.+)\[/url\]#isU" => "<a href=\"$1$2\" target=\"_blank\" class=\"link\">$3</a>",
@@ -26,7 +24,7 @@ $supernova->design['bbcodes'] = array(
   ),
 );
 
-$supernova->design['smiles'] = array(
+classSupernova::$design['smiles'] = array(
   AUTH_LEVEL_REGISTERED => array(
     ':)' => 'smile',
     ':p:' => 'tongue',
@@ -97,8 +95,6 @@ $supernova->design['smiles'] = array(
 );
 
 function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
-  global $supernova;
-
   // $user_auth_level = isset($user['authlevel']) ? $user['authlevel'] : AUTH_LEVEL_ANONYMOUS;
 
   $msg = htmlentities($msg, ENT_COMPAT, 'UTF-8');
@@ -107,7 +103,7 @@ function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
 
   !empty(classSupernova::$config->url_faq) ? $msg = str_replace('faq://', classSupernova::$config->url_faq, $msg) : false;
 
-  foreach($supernova->design['bbcodes'] as $auth_level => $replaces) {
+  foreach(classSupernova::$design['bbcodes'] as $auth_level => $replaces) {
     if($auth_level > $author_auth) {
       continue;
     }
@@ -117,7 +113,7 @@ function cht_message_parse($msg, $escaped = false, $author_auth = 0) {
     }
   }
 
-  foreach($supernova->design['smiles'] as $auth_level => $replaces) {
+  foreach(classSupernova::$design['smiles'] as $auth_level => $replaces) {
     if($auth_level > $author_auth) {
       continue;
     }

@@ -18,7 +18,7 @@ class classSupernova {
   /**
    * @var array[] $design
    */
-  public $design = array(
+  public static $design = array(
     'bbcodes' => array(),
     'smiles'  => array(),
   );
@@ -76,7 +76,7 @@ class classSupernova {
    */
   public static $debug = null;
 
-  public $options = array();
+  public static $options = array();
 
   public static $data = array(); // Кэш данных - юзера, планеты, юниты, очередь, альянсы итд
   public static $locks = array(); // Информация о блокировках
@@ -1186,17 +1186,7 @@ class classSupernova {
   }
 
   public static function init_global_objects() {
-    /**
-     * @var classSupernova $supernova
-     */
-    global $supernova, $sn_cache;
-
     self::$user_options = new userOptions(0);
-
-    /**
-     * @var classSupernova $supernova
-     */
-    $supernova = new classSupernova();
 
     // Initializing global 'cacher' object
     static::$cache = new classCache(classSupernova::$cache_prefix);
@@ -1205,7 +1195,10 @@ class classSupernova {
     empty($sn_cache->tables) ? die('DB error - cannot find any table. Halting...') : false;
 
     // Initializing global "config" object
-    classSupernova::$config = static::$config = new classConfig(classSupernova::$cache_prefix);
+    static::$config = new classConfig(classSupernova::$cache_prefix);
+
+    // Initializing statics
+    Vector::_staticInit(static::$config);
   }
 
   public static function init_debug_state() {
