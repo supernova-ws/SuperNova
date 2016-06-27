@@ -209,7 +209,7 @@ fleet_amount => sum($fleet_real_array) - ВСЕГДА И ВЕЗДЕ!
 FLEET UNIT DB UPDATE SHOULD NULL unit_delta AND OTHER STUFF!
 
 Заменить проверки:
-    - sn_get_groups('fleet') -> UnitShip::is_ship($unit_id)
+    - Fleet::$snGroupFleet -> UnitShip::is_ship($unit_id)
     - sn_get_groups('resources_loot') -> UnitResourceLoot::is_resource($unit_id)
 
 Сделать класс DBRow:

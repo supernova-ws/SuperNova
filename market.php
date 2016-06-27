@@ -43,7 +43,7 @@ switch($mode)
     $config_rpg_scrape_crystal   = classSupernova::$config->rpg_scrape_crystal;
     $config_rpg_scrape_deuterium = classSupernova::$config->rpg_scrape_deuterium;
 
-    $array = sn_get_groups('fleet');
+    $array = Fleet::$snGroupFleet;
 
     require('includes/includes/market_fleeter.inc');
   break;

@@ -22,11 +22,10 @@ function flt_mission_recycle($mission_data) {
   $RecyclerCapacity = 0;
   $OtherFleetCapacity = 0;
 
-  $fleet_array = $objFleet->shipsGetArray();
-  foreach($fleet_array as $unit_id => $unit_count) {
-    if(in_array($unit_id, sn_get_groups('fleet'))) {
-      $capacity = get_unit_param($unit_id, P_CAPACITY) * $unit_count;
-      if(in_array($unit_id, sn_get_groups('flt_recyclers'))) {
+  foreach($objFleet->shipsIterator() as $unit_id => $unit) {
+    if(in_array($unit_id, Fleet::$snGroupFleet)) {
+      $capacity = get_unit_param($unit_id, P_CAPACITY) * $unit->count;
+      if(in_array($unit_id, Fleet::$snGroupRecyclers)) {
         $RecyclerCapacity += $capacity;
       } else {
         $OtherFleetCapacity += $capacity;

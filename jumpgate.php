@@ -27,13 +27,11 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
       $NextDestTime = uni_get_time_to_jump ( $TargetGate );
       if(!$NextDestTime)
       {
-        // $SubQueryOri = "";
-        // $SubQueryDes = "";
         $ship_list = sys_get_param('ships');
         $db_changeset = array();
         foreach($ship_list as $ship_id => $ship_count)
         {
-          if(!in_array($ship_id, sn_get_groups('fleet')))
+          if(!in_array($ship_id, Fleet::$snGroupFleet))
           {
             continue;
           }
@@ -93,7 +91,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
       }
     }
 
-    foreach(sn_get_groups('fleet') as $Ship)
+    foreach(Fleet::$snGroupFleet as $Ship)
     {
       if(($ship_count = mrc_get_level($user, $planetrow, $Ship)) <= 0)
       {

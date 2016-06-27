@@ -99,7 +99,7 @@ $time_now_parsed = getdate(SN_TIME_NOW);
 $recycler_info = array();
 $planet_recyclers_orbiting = 0;
 $recyclers_fleet = array();
-foreach(sn_get_groups('flt_recyclers') as $recycler_id) {
+foreach(Fleet::$snGroupRecyclers as $recycler_id) {
   $recycler_info[$recycler_id] = get_ship_data($recycler_id, $user);
   $recyclers_fleet[$recycler_id] = mrc_get_level($user, $planetrow, $recycler_id);
   $planet_recyclers_orbiting += $recyclers_fleet[$recycler_id];

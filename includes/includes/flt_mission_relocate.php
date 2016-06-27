@@ -28,9 +28,8 @@ function flt_mission_relocate($mission_data) {
       $fleet_resources[RES_CRYSTAL], classLocale::$lang['Crystal'],
       $fleet_resources[RES_DEUTERIUM], classLocale::$lang['Deuterium']
     ) . '<br />' . classLocale::$lang['sys_relocate_mess_user'];
-  $fleet_real_array = $objFleet->shipsGetArray();
-  foreach($fleet_real_array as $ship_id => $ship_count) {
-    $Message .= classLocale::$lang['tech'][$ship_id] . ' - ' . $ship_count . '<br />';
+  foreach($objFleet->shipsIterator() as $ship_id => $ship) {
+    $Message .= classLocale::$lang['tech'][$ship_id] . ' - ' . $ship->count . '<br />';
   }
   DBStaticMessages::msg_send_simple_message(
     $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT,

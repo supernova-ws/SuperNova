@@ -155,6 +155,10 @@ class Fleet extends UnitContainer {
 
 
   // New properties ****************************************************************************************************
+  public static $snGroupFleet = array();
+  public static $snGroupFleetAndMissiles = array();
+  public static $snGroupRecyclers = array();
+
   /**
    * `fleet_owner`
    *
@@ -320,6 +324,11 @@ class Fleet extends UnitContainer {
     parent::__construct();
     $this->exists_missions = sn_get_groups('missions');
     $this->allowed_missions = $this->exists_missions;
+    if(empty(static::$snGroupFleet)) {
+      static::$snGroupFleet = sn_get_groups('fleet');
+      static::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', 'missile'));
+      static::$snGroupRecyclers = sn_get_groups('flt_recyclers');
+    }
   }
 
   /**
@@ -331,7 +340,7 @@ class Fleet extends UnitContainer {
   public function renderAvailableShips(&$template_result, $playerRow, $planetRow) {
     $record_index = 0;
     $ship_list = array();
-    foreach (sn_get_groups('fleet') as $n => $unit_id) {
+    foreach (Fleet::$snGroupFleet as $n => $unit_id) {
       $unit_level = mrc_get_level($playerRow, $planetRow, $unit_id, false, true);
       if ($unit_level <= 0) {
         continue;
@@ -791,6 +800,7 @@ class Fleet extends UnitContainer {
    * @param int $unit_count
    */
   public function shipSetCount($unit_id, $unit_count = 0) {
+pdump(__CLASS__ . '->' . __FUNCTION__);
     $this->shipAdjustCount($unit_id, $unit_count, true);
   }
 
@@ -815,10 +825,21 @@ class Fleet extends UnitContainer {
   }
 
   /**
-   * Returns ship list in fleet
+   * Returns fleet ships cost in metal
+   *
+   * @param array $shipCostInMetalPerPiece
+   *
+   * @return float[]
    */
-  public function shipsGetArray() {
-    return $this->unitList->unitsGetArray();
+  public function shipsCostInMetal($shipCostInMetalPerPiece) {
+    return $this->unitList->unitsCostInMetal($shipCostInMetalPerPiece);
+  }
+
+  /**
+   * @return UnitIterator
+   */
+  public function shipsIterator() {
+    return $this->unitList->getUnitIterator();
   }
 
   public function shipsGetTotal() {
@@ -851,13 +872,14 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a7.35
+   * @version 41a50.14
    */
-  public function shipsGetCapacityRecyclers(array $recycler_info) {
+  public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
-    $fleet_data = $this->shipsGetArray();
-    foreach ($recycler_info as $recycler_id => $recycler_data) {
-      $recyclers_incoming_capacity += $fleet_data[$recycler_id] * $recycler_data['capacity'];
+    foreach($this->shipsIterator() as $unitId => $unit) {
+      if(!empty(static::$snGroupRecyclers[$unitId]) && $unit->count >= 1) {
+        $recyclers_incoming_capacity += $unit->count * $recycler_info[$unitId]['capacity'];
+      }
     }
 
     return $recyclers_incoming_capacity;
@@ -866,6 +888,7 @@ class Fleet extends UnitContainer {
   /**
    * @return bool
    */
+  // TODO - А если не на планете????
   public function shipsIsEnoughOnPlanet() {
     return $this->unitList->shipsIsEnoughOnPlanet($this->dbOwnerRow, $this->dbSourcePlanetRow);
   }
@@ -881,7 +904,7 @@ class Fleet extends UnitContainer {
    * @return bool
    */
   public function shipsAllFlying() {
-    return $this->unitList->unitsInGroup(sn_get_groups(array('fleet', 'missile')));
+    return $this->unitList->unitsInGroup(static::$snGroupFleetAndMissiles);
   }
 
   /**
@@ -929,10 +952,9 @@ class Fleet extends UnitContainer {
     if ($this->getPlayerOwnerId() == $planet_arrival['id_owner']) {
       $db_changeset = array();
 
-      $fleet_array = $this->shipsGetArray();
-      foreach ($fleet_array as $ship_id => $ship_count) {
-        if ($ship_count) {
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
+      foreach ($this->shipsIterator() as $ship_id => $ship) {
+        if ($ship->count) {
+          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship->count, $user, $planet_arrival['id']);
         }
       }
 
@@ -963,7 +985,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a7.35
+   * @version 41a50.14
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1513,7 +1535,7 @@ class Fleet extends UnitContainer {
     $template_result += array(
       'speed_factor' => flt_server_flight_speed_multiplier(),
 
-      'fleet_speed'    => flt_fleet_speed($this->dbOwnerRow, $this->shipsGetArray()),
+      'fleet_speed'    => $this->fleetSpeed(),
       'fleet_capacity' => $this->shipsGetCapacity(),
 
       'PLANET_DEUTERIUM' => pretty_number($this->dbSourcePlanetRow['deuterium']),
@@ -1524,6 +1546,18 @@ class Fleet extends UnitContainer {
     $template = gettemplate('fleet1', true);
     $template->assign_recursive($template_result);
     display($template, classLocale::$lang['fl_title']);
+  }
+
+  public function fleetSpeed() {
+    $maxSpeed = PHP_INT_MAX;
+    foreach($this->shipsIterator() as $ship_id => $unit) {
+      if($unit->count > 0 && empty(static::$snGroupFleetAndMissiles[$ship_id])) {
+        $single_ship_data = get_ship_data($ship_id, $this->dbOwnerRow);
+        $maxSpeed = min($maxSpeed, $single_ship_data['speed']);
+      }
+    }
+
+    return $maxSpeed == PHP_INT_MAX ? 0 : min($maxSpeed);
   }
 
   /**

@@ -574,6 +574,7 @@ class classPersistent extends classCache {
  * @property string url_forum
  * @property string url_purchase_metamatter
  * @property string url_rules
+ * @property float  uni_galaxy_distance
  * @property int    users_amount
  * @property int    user_birthday_celebrate  // When last time celebrations (i.e. giftgiving) was made
  * @property int    user_birthday_gift  // User birthday gift

@@ -5,6 +5,7 @@ class Vector {
   public static $knownGalaxies = 0;
   public static $knownSystems = 0;
   public static $knownPlanets = 0;
+  public static $galaxyDistance = 20000;
   protected static $_isStaticInit = false;
 
   public $galaxy = 0;
@@ -12,13 +13,18 @@ class Vector {
   public $planet = 0;
   public $type = PT_NONE;
 
-  public static function _staticInit() {
+  /**
+   * @param classConfig $config
+   */
+  public static function _staticInit($config) {
     if(static::$_isStaticInit) {
       return;
     }
-    static::$knownGalaxies = intval(classSupernova::$config->game_maxGalaxy);
-    static::$knownSystems = intval(classSupernova::$config->game_maxSystem);
-    static::$knownPlanets = intval(classSupernova::$config->game_maxPlanet);
+
+    static::$knownGalaxies = intval($config->game_maxGalaxy);
+    static::$knownSystems = intval($config->game_maxSystem);
+    static::$knownPlanets = intval($config->game_maxPlanet);
+    static::$galaxyDistance = intval($config->uni_galaxy_distance);
     static::$_isStaticInit = true;
   }
 
@@ -46,11 +52,11 @@ class Vector {
   }
 
 
-  public function readFromParamFleets($planetrow = array()) {
-    $this->galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
-    $this->system = sys_get_param_int('system', $planetrow['system']);
-    $this->planet = sys_get_param_int('planet', $planetrow['planet']);
-    $this->type = sys_get_param_int('planet_type', $planetrow['planet_type']);
+  public function readFromParamFleets($planetRow = array()) {
+    $this->galaxy = sys_get_param_int('galaxy', $planetRow['galaxy']);
+    $this->system = sys_get_param_int('system', $planetRow['system']);
+    $this->planet = sys_get_param_int('planet', $planetRow['planet']);
+    $this->type = sys_get_param_int('planet_type', $planetRow['planet_type']);
   }
 
   /**
@@ -65,6 +71,8 @@ class Vector {
 
   /**
    * @param array $planetRow
+   *
+   * @return bool
    */
   public function isEqualToPlanet($planetRow) {
     return $this->distanceFromCoordinates($planetRow) == 0;
@@ -72,10 +80,12 @@ class Vector {
 
   /**
    * @param Vector $vector
+   *
+   * @return int|number
    */
   public function distance($vector) {
     if($this->galaxy != $vector->galaxy) {
-      $distance = abs($this->galaxy - $vector->galaxy) * classSupernova::$config->uni_galaxy_distance;
+      $distance = abs($this->galaxy - $vector->galaxy) * static::$galaxyDistance;
     } elseif($this->system != $vector->system) {
       $distance = abs($this->system - $vector->system) * 5 * 19 + 2700;
     } elseif($this->planet != $vector->planet) {
@@ -92,6 +102,8 @@ class Vector {
 
   /**
    * @param array $coordinates
+   *
+   * @return int|number
    */
   public function distanceFromCoordinates($coordinates) {
     return $this->distance(static::convertToVector($coordinates));
@@ -112,9 +124,7 @@ class Vector {
   }
 
   public static function distanceBetweenCoordinates($from, $to) {
-    $fromVector = static::convertToVector($from);
-
-    return $fromVector->distanceFromCoordinates($to);
+    return static::convertToVector($from)->distanceFromCoordinates($to);
   }
 
   /**
@@ -122,15 +132,15 @@ class Vector {
    */
   public function isInUniverse() {
     return
-      $this->galaxy > 0 && $this->galaxy <= static::$knownGalaxies &&
-      $this->system > 0 && $this->system <= static::$knownSystems;
+      $this->galaxy >= 1 && $this->galaxy <= static::$knownGalaxies &&
+      $this->system >= 1 && $this->system <= static::$knownSystems;
   }
 
   /**
    * @return bool
    */
   public function isInSystem() {
-    return $this->planet > 0 && $this->planet <= static::$knownPlanets;
+    return $this->planet >= 1 && $this->planet <= static::$knownPlanets;
   }
 
   /**
@@ -142,4 +152,4 @@ class Vector {
 
 }
 
-Vector::_staticInit();
+Vector::_staticInit(classSupernova::$config);

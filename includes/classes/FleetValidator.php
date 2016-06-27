@@ -348,7 +348,7 @@ class FleetValidator {
    */
   protected function checkHaveRecyclers() {
     $recyclers = 0;
-    foreach (sn_get_groups('flt_recyclers') as $recycler_id) {
+    foreach (Fleet::$snGroupRecyclers as $recycler_id) {
       $recyclers += $this->fleet->shipsGetTotalById($recycler_id);
     }
 

@@ -138,7 +138,7 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   } elseif (in_array($unit_id, sn_get_groups('defense'))) {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
     $mercenary = MRC_FORTIFIER;
-  } elseif (in_array($unit_id, sn_get_groups('fleet'))) {
+  } elseif (in_array($unit_id, Fleet::$snGroupFleet)) {
     $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
     $mercenary = MRC_ENGINEER;
   }

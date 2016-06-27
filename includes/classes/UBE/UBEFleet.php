@@ -94,7 +94,7 @@ class UBEFleet {
   /**
    * @param UBEPlayerList $players
    *
-   * @version 41a6.42
+   * @version 41a50.14
    */
   public function ube_load_from_players(UBEPlayerList $players) {
     $this->is_attacker = $players[$this->owner_id]->getSide();
@@ -114,7 +114,7 @@ class UBEFleet {
    * @param     $fleet_row
    * @param UBE $ube
    *
-   * @version 41a6.42
+   * @version 41a50.14
    */
   public function load_from_report($fleet_row, UBE $ube) {
     $this->db_id = $fleet_row['ube_report_fleet_fleet_id'];
@@ -154,7 +154,7 @@ class UBEFleet {
    *
    * @return array
    *
-   * @version 41a6.42
+   * @version 41a50.14
    */
   public function sql_generate_array($ube_report_id) {
     return array(
@@ -182,22 +182,21 @@ class UBEFleet {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.42
+   * @version 41a50.14
    */
   public function read_from_fleet_object(Fleet $objFleet) {
     $this->db_id = $objFleet->dbId;
     $this->owner_id = $objFleet->playerOwnerId;
     $this->group_id = $objFleet->group_id;
 
-    $fleet_unit_list = $objFleet->shipsGetArray();
-    foreach($fleet_unit_list as $unit_id => $unit_count) {
-      if(!$unit_count) {
+    foreach($objFleet->shipsIterator() as $unit_id => $unit) {
+      if(!$unit->count) {
         continue;
       }
 
       $unit_type = get_unit_param($unit_id, P_UNIT_TYPE);
       if($unit_type == UNIT_SHIPS || $unit_type == UNIT_DEFENCE) {
-        $this->unit_list->unitAdjustCount($unit_id, $unit_count);
+        $this->unit_list->unitAdjustCount($unit_id, $unit->count);
       }
     }
 
@@ -551,7 +550,7 @@ class UBEFleet {
    * @param UBEFleet $defending_fleet
    * @param          $is_simulator
    *
-   * @version 41a6.42
+   * @version 41a50.14
    */
   public function attack_fleet(UBEFleet $defending_fleet, $is_simulator) {
     UBEDebug::unit_dump_header();

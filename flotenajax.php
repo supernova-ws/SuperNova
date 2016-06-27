@@ -83,7 +83,7 @@ function fleet_ajax() {
     break;
 
     case MT_RECYCLE:
-      foreach (sn_get_groups('flt_recyclers') as $unit_id) {
+      foreach (Fleet::$snGroupRecyclers as $unit_id) {
         if ($unit_count = mrc_get_level($user, $planetrow, $unit_id)) {
           $fleet_array[$unit_id] = $unit_count;
         }
@@ -126,20 +126,21 @@ function fleet_ajax() {
 
     DBStaticFleetMissile::db_missile_insert($target_coord, $user, $planetrow, $arrival, array_sum($fleet_array), $target_structure);
   } else {
+    $objFleet = new Fleet();
+    $objFleet->set_start_planet($planetrow);
+    $objFleet->set_end_planet($target_coord);
+    $objFleet->playerOwnerId = $user['id'];
+    $objFleet->group_id = 0;
+    $objFleet->unitsSetFromArray($fleet_array);
+    $objFleet->mission_type = $target_mission;
+
     $travel_data = flt_travel_data($user, $planetrow, $target_coord, $fleet_array, 10);
 
     if ($planetrow['deuterium'] < $travel_data['consumption']) {
       die(classLocale::$lang['gs_c13']);
     }
 
-    $objFleet = new Fleet();
     $objFleet->set_times($travel_data['duration']);
-    $objFleet->unitsSetFromArray($fleet_array);
-    $objFleet->mission_type = $target_mission;
-    $objFleet->set_start_planet($planetrow);
-    $objFleet->set_end_planet($target_coord);
-    $objFleet->playerOwnerId = $user['id'];
-    $objFleet->group_id = 0;
     $objFleet->dbInsert();
   }
 

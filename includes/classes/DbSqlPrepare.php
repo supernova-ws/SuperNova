@@ -284,7 +284,6 @@ class DbSqlPrepare {
   }
 
   public function __toString() {
-//    $result = str_replace(array_keys($this->tables), $this->tables, $this->query);
     $result = str_replace(array_keys($this->values), $this->values, $this->query);
 
     return $result;
@@ -292,4 +291,5 @@ class DbSqlPrepare {
 
 }
 
-DbSqlPrepare::$isUseGetResult = method_exists('mysqli_stmt', 'get_result');
+// DbSqlPrepare::$isUseGetResult = method_exists('mysqli_stmt', 'get_result');
+DbSqlPrepare::$isUseGetResult = false;

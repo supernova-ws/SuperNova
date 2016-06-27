@@ -157,7 +157,9 @@ class DBStaticUser extends DBStaticRecord {
         ':birthdayRange' => $config_user_birthday_range,
       ));
 
-    return static::selectIterator($query);
+    $result = static::selectIterator($query);
+
+    return $result;
   }
 
   /**

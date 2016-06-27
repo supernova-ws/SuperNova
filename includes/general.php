@@ -658,7 +658,7 @@ function get_engine_data($user, $engine_info) {
 
 function get_ship_data($ship_id, $user) {
   $ship_data = array();
-  if (in_array($ship_id, sn_get_groups(array('fleet', 'missile')))) {
+  if (in_array($ship_id, Fleet::$snGroupFleetAndMissiles)) {
     foreach (get_unit_param($ship_id, 'engine') as $engine_info) {
       $tech_level = intval(mrc_get_level($user, null, $engine_info['tech']));
       if (empty($ship_data) || $tech_level >= $engine_info['min_level']) {

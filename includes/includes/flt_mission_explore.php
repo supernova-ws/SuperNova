@@ -18,7 +18,8 @@ function sn_mission_expedition_result_adjust(&$result) {
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_explore(&$mission_data) {
-  static $ship_data, $rates;
+  // TODO - Currently $ship_data is one for all players
+  static $shipCostInMetalPerPiece, $rates;
 
   if(empty($mission_data->fleet_event) || $mission_data->fleet_event != EVENT_FLT_ACOMPLISH) {
     return CACHE_NONE;
@@ -45,25 +46,23 @@ function flt_mission_explore(&$mission_data) {
   $outcome_value = &$result['$outcome_value'];
   $outcome_list = &$result['$outcome_list'];
 
-  if(!$ship_data) {
-    foreach(sn_get_groups('fleet') as $unit_id) {
+  if(!$shipCostInMetalPerPiece) {
+    $rates = get_resource_exchange();
+
+    foreach(Fleet::$snGroupFleet as $unit_id) {
       $unit_info = get_unit_param($unit_id);
       if($unit_info[P_UNIT_TYPE] != UNIT_SHIPS || !isset($unit_info['engine'][0]['speed']) || !$unit_info['engine'][0]['speed']) {
         continue;
       }
-      $ship_data[$unit_id][P_COST_METAL] = get_unit_cost_in($unit_info[P_COST]);
+      $shipCostInMetalPerPiece[$unit_id] = get_unit_cost_in($unit_info[P_COST], RES_METAL);
     }
-    $rates = get_resource_exchange();
   }
 
-  $max_metal_cost = 0;
-  $fleet_real_array = $objFleet->shipsGetArray();
-  foreach($fleet_real_array as $ship_id => $ship_amount) {
-    $ship_cost_in_metal = $ship_amount * $ship_data[$ship_id][P_COST_METAL];
-    $result['$fleet_metal_points'] += $ship_amount * $ship_data[$ship_id][P_COST_METAL];
-    // Рассчитываем стоимость самого дорого корабля в металле
-    $max_metal_cost = max($max_metal_cost, $ship_cost_in_metal);
-  }
+  $shipsCostInMetal = $objFleet->shipsCostInMetal($shipCostInMetalPerPiece);
+  $result['$fleet_metal_points'] += array_sum($shipsCostInMetal);
+  // Рассчитываем стоимость самого дорого типа кораблей в металле
+  $max_metal_cost = max($shipsCostInMetal);
+
   $fleet_capacity = $objFleet->shipsGetHoldFree();
 
   $flt_stay_hours = ($objFleet->time_mission_job_complete - $objFleet->time_arrive_to_target) / 3600 * (classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1);
@@ -125,9 +124,9 @@ function flt_mission_explore(&$mission_data) {
 
       // Ограничиваем корабли только теми, чья стоимость в металле меньше или равно стоимости самого дорогого корабля
       $can_be_found = array();
-      foreach($ship_data as $ship_id => $ship_info) {
-        if($ship_info['metal_cost'] < $max_metal_cost) {
-          $can_be_found[$ship_id] = $ship_info['metal_cost'];
+      foreach($shipCostInMetalPerPiece as $ship_id => $shipMetalCost) {
+        if($shipMetalCost < $max_metal_cost) {
+          $can_be_found[$ship_id] = $shipMetalCost;
         }
       }
       // Убираем колонизаторы и шпионов - миллиарды шпионов и колонизаторов нам не нужны

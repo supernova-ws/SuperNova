@@ -51,7 +51,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id) {
   );
 
   foreach($fleet as $ship_id => $ship_amount) {
-    if(in_array($ship_id, sn_get_groups('fleet'))) {
+    if(in_array($ship_id, Fleet::$snGroupFleet)) {
       $single_ship_data = get_ship_data($ship_id, $user_data);
       $return['ships'][$ship_id] = array(
         'ID'          => $ship_id,
@@ -151,19 +151,17 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
     ));
   }
 
-  $ship_list_fully_parsed = $objFleet->shipsGetArray();
-
   $ship_id = 0;
   $result['ships'] = array();
   if($spy_level >= 6) {
-    foreach($ship_list_fully_parsed as $ship_sn_id => $ship_amount) {
+    foreach($objFleet->shipsIterator() as $ship_sn_id => $ship) {
       if($spy_level >= 10) {
         $single_ship_data = get_ship_data($ship_sn_id, $user_data);
         $result['ships'][$ship_sn_id] = array(
           'ID'          => $ship_sn_id,
           'NAME'        => classLocale::$lang['tech'][$ship_sn_id],
-          'AMOUNT'      => $ship_amount,
-          'AMOUNT_TEXT' => pretty_number($ship_amount),
+          'AMOUNT'      => $ship->count,
+          'AMOUNT_TEXT' => pretty_number($ship->count),
           'CONSUMPTION' => $single_ship_data['consumption'],
           'SPEED'       => $single_ship_data['speed'],
           'CAPACITY'    => $single_ship_data['capacity'],
@@ -172,8 +170,8 @@ function sn_tplParseFleetObject(Fleet $objFleet, $index, $user_data = false, &$r
         $result['ships'][$ship_sn_id] = array(
           'ID'               => $ship_id++,
           'NAME'             => classLocale::$lang['tech'][UNIT_SHIPS],
-          'AMOUNT'           => $ship_amount,
-          'AMOUNT_TEXT'      => pretty_number($ship_amount),
+          'AMOUNT'           => $ship->count,
+          'AMOUNT_TEXT'      => pretty_number($ship->count),
           'CONSUMPTION'      => 0,
           'CONSUMPTION_TEXT' => '0',
           'SPEED'            => 0,
@@ -270,6 +268,9 @@ function tpl_parse_planet($planet) {
 function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
   global $user;
 
+  static $snGroupFleet;
+  !$snGroupFleet ? $snGroupFleet = Fleet::$snGroupFleet : false;
+
   if(empty($array_of_Fleet)) {
     return false;
   }
@@ -300,10 +301,9 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
     $fleet_list[$fleet_ownage]['fleets'][$fleet->dbId] = $fleet;
 
     if($fleet->isReturning() || (!$fleet->isReturning() && $fleet->mission_type == MT_RELOCATE) || ($fleet->target_owner_id != $user['id'])) {
-      $fleet_sn = $fleet->shipsGetArray();
-      foreach($fleet_sn as $ship_id => $ship_amount) {
-        if(in_array($ship_id, sn_get_groups('fleet'))) {
-          $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship_amount;
+      foreach($fleet->shipsIterator() as $ship_id => $ship) {
+        if(!empty($snGroupFleet[$ship_id])) {
+          $fleet_list[$fleet_ownage]['total'][$ship_id] += $ship->count;
         }
       }
     }

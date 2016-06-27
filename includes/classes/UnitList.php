@@ -179,7 +179,7 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a50.9
+   * @version 41a50.14
    */
   // TODO - Factory
   public function _createElement() {
@@ -232,17 +232,26 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
   }
 
   /**
-   * Get unit list in array as $unit_id => $unit_count
-   *
-   * @return array
+   * @return UnitIterator
    */
-  public function unitsGetArray() {
-    $result = array();
-    foreach ($this->mapUnitIdToDb as $unit) {
-      $result[$unit->unitId] = $unit->count;
+  public function getUnitIterator() {
+    $obj = new ArrayObject($this->mapUnitIdToDb);
+    $obj->setIteratorClass('UnitIterator');
+    return $obj->getIterator();
+  }
+
+  /**
+   * @param array $shipCostInMetalPerPiece - cost in metal by unitId
+   *
+   * @return float[]
+   */
+  public function unitsCostInMetal($shipCostInMetalPerPiece) {
+    $shipsCostInMetal = array();
+    foreach($this->mapUnitIdToDb as $ship_id => $ship) {
+      $shipsCostInMetal[$ship_id] = $ship->count * $shipCostInMetalPerPiece[$ship_id];
     }
 
-    return $result;
+    return $shipsCostInMetal;
   }
 
   public function unitsCountApplyLossMultiplier($ships_lost_multiplier) {
@@ -357,7 +366,7 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
     $speeds = array();
     if (!empty($this->mapUnitIdToDb)) {
       foreach ($this->mapUnitIdToDb as $ship_id => $unit) {
-        if ($unit->getCount() > 0 && in_array($unit->unitId, sn_get_groups(array('fleet', 'missile')))) {
+        if ($unit->getCount() > 0 && in_array($unit->unitId, Fleet::$snGroupFleetAndMissiles)) {
           $single_ship_data = get_ship_data($unit->unitId, $user);
           $speeds[] = $single_ship_data['speed'];
         }
