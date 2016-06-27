@@ -76,23 +76,21 @@ function sys_file_write($filename, $content)
 
 function get_game_speed($plain = false){return sn_function_call('get_game_speed', array($plain, &$result));}
 function sn_get_game_speed($plain = false, &$result) {
-  global $config;
-
-  return $result = $config->game_speed ? $config->game_speed : 1;
+  return $result = classSupernova::$config->game_speed ? classSupernova::$config->game_speed : 1;
 }
 
 function flt_server_flight_speed_multiplier($plain = false){return sn_function_call('flt_server_flight_speed_multiplier', array($plain, &$result));}
 function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
   global $config;
 
-  return $result = $config->fleet_speed;
+  return $result = classSupernova::$config->fleet_speed;
 }
 
 function game_resource_multiplier($plain = false){return sn_function_call('game_resource_multiplier', array($plain,&$result));}
 function sn_game_resource_multiplier($plain = false, &$result) {
   global $config;
 
-  return $result = $config->resource_multiplier;
+  return $result = classSupernova::$config->resource_multiplier;
 }
 
 /**
@@ -106,7 +104,7 @@ function get_mm_cost($plain = false){return sn_function_call('get_mm_cost', arra
 function sn_get_mm_cost($plain = false, &$result) {
   global $config;
 
-  return $result = $config->payment_currency_exchange_mm_ ? $config->payment_currency_exchange_mm_ : 20000;
+  return $result = classSupernova::$config->payment_currency_exchange_mm_ ? classSupernova::$config->payment_currency_exchange_mm_ : 20000;
 }
 
 /**
@@ -123,7 +121,7 @@ function get_exchange_rate($currency_symbol) {
   $config_field = 'payment_currency_exchange_' . $currency_symbol;
 
   // Заворачиваем получение стоимости ММ через перекрываемую процедуру
-  $exchange_rate = floatval($currency_symbol == 'mm_' ? get_mm_cost() : $config->$config_field);
+  $exchange_rate = floatval($currency_symbol == 'mm_' ? get_mm_cost() : classSupernova::$config->$config_field);
 
   return $exchange_rate;
 }
@@ -388,9 +386,9 @@ function eco_get_total_cost($unit_id, $unit_level)
     $sn_group_resources_all = sn_get_groups('resources_all');
     $sn_group_resources_loot = sn_get_groups('resources_loot');
 
-    $rate[RES_METAL] = $config->rpg_exchange_metal;
-    $rate[RES_CRYSTAL] = $config->rpg_exchange_crystal / $config->rpg_exchange_metal;
-    $rate[RES_DEUTERIUM] = $config->rpg_exchange_deuterium / $config->rpg_exchange_metal;
+    $rate[RES_METAL] = classSupernova::$config->rpg_exchange_metal;
+    $rate[RES_CRYSTAL] = classSupernova::$config->rpg_exchange_crystal / classSupernova::$config->rpg_exchange_metal;
+    $rate[RES_DEUTERIUM] = classSupernova::$config->rpg_exchange_deuterium / classSupernova::$config->rpg_exchange_metal;
   }
 
   $unit_cost_data = get_unit_param($unit_id, 'cost');
@@ -676,12 +674,12 @@ function sys_unit_arr2str($unit_list)
 function mymail($email_unsafe, $title, $body, $from = '', $html = false) {
   global $config, $lang;
 
-  $from = trim($from ? $from : $config->game_adminEmail);
+  $from = trim($from ? $from : classSupernova::$config->game_adminEmail);
 
   $head  = '';
   $head .= "Content-Type: text/" . ($html ? 'html' : 'plain'). "; charset=utf-8 \r\n";
   $head .= "Date: " . date('r') . " \r\n";
-  $head .= "Return-Path: {$config->game_adminEmail} \r\n";
+  $head .= "Return-Path: {classSupernova::$config->game_adminEmail} \r\n";
   $head .= "From: {$from} \r\n";
   $head .= "Sender: {$from} \r\n";
   $head .= "Reply-To: {$from} \r\n";
@@ -990,23 +988,23 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   if(isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {
     switch($nick_array[NICK_AUTH_LEVEL]) {
       case 4:
-        $highlight = $config->chat_highlight_developer;
+        $highlight = classSupernova::$config->chat_highlight_developer;
         break;
 
       case 3:
-        $highlight = $config->chat_highlight_admin;
+        $highlight = classSupernova::$config->chat_highlight_admin;
         break;
 
       case 2:
-        $highlight = $config->chat_highlight_operator;
+        $highlight = classSupernova::$config->chat_highlight_operator;
         break;
 
       case 1:
-        $highlight = $config->chat_highlight_moderator;
+        $highlight = classSupernova::$config->chat_highlight_moderator;
         break;
 
       default:
-        $highlight = isset($nick_array[NICK_PREMIUM]) ? $config->chat_highlight_premium : '';
+        $highlight = isset($nick_array[NICK_PREMIUM]) ? classSupernova::$config->chat_highlight_premium : '';
     }
 
     if($highlight) {
@@ -1121,12 +1119,12 @@ function sys_stat_get_user_skip_list() {
 
   $user_skip_list = array();
 
-  if($config->stats_hide_admins) {
+  if(classSupernova::$config->stats_hide_admins) {
     $user_skip_list[] = '`authlevel` > 0';
   }
 
-  if($config->stats_hide_player_list) {
-    $temp = explode(',', $config->stats_hide_player_list);
+  if(classSupernova::$config->stats_hide_player_list) {
+    $temp = explode(',', classSupernova::$config->stats_hide_player_list);
     foreach($temp as $user_id) {
       $user_id = floatval($user_id);
       if($user_id) {
@@ -1199,7 +1197,7 @@ function sn_unit_requirements_render($user, $planetrow, $unit_id, $field = 'requ
   $sn_data_unit = get_unit_param($unit_id);
 
   $result = is_array($result) ? $result : array();
-  if($sn_data_unit[$field] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && $config->empire_mercenary_temporary))
+  if($sn_data_unit[$field] && !($sn_data_unit[P_UNIT_TYPE] == UNIT_MERCENARIES && classSupernova::$config->empire_mercenary_temporary))
   {
     foreach($sn_data_unit[$field] as $require_id => $require_level)
     {
@@ -1414,7 +1412,7 @@ function get_resource_exchange()
 
     foreach($rates as &$rate)
     {
-      $rate = $config->$rate;
+      $rate = classSupernova::$config->$rate;
     }
   }
 
@@ -1470,7 +1468,7 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
       $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
       $colonies = $astrotech - $expeditions;
 
-      $user[UNIT_PLAYER_COLONIES_MAX] = $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+      $user[UNIT_PLAYER_COLONIES_MAX] = classSupernova::$config->player_max_colonies < 0 ? $colonies : min(classSupernova::$config->player_max_colonies, $colonies);
     }
 
     return $user[UNIT_PLAYER_COLONIES_MAX];
@@ -1479,7 +1477,7 @@ function get_player_max_colonies(&$user, $astrotech = -1) {
     // $astrotech = mrc_get_level($user, false, TECH_ASTROTECH);
     $colonies = $astrotech - $expeditions;
 
-    return $config->player_max_colonies < 0 ? $colonies : min($config->player_max_colonies, $colonies);
+    return classSupernova::$config->player_max_colonies < 0 ? $colonies : min(classSupernova::$config->player_max_colonies, $colonies);
   }
 }
 
@@ -1584,7 +1582,7 @@ function sn_setcookie($name, $value = null, $expire = null, $path = SN_ROOT_RELA
 function market_get_autoconvert_cost() {
   global $config;
 
-  return $config->rpg_cost_exchange ? $config->rpg_cost_exchange * 3 : 3000;
+  return classSupernova::$config->rpg_cost_exchange ? classSupernova::$config->rpg_cost_exchange * 3 : 3000;
 }
 
 function print_rr($var, $capture = false) {

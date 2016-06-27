@@ -21,17 +21,17 @@ $mode = sys_get_param_int('mode');
 
 switch($mode){
   case ADM_TOOL_CONFIG_RELOAD:
-    $config->db_loadAll();
+    classSupernova::$config->db_loadAll();
     sys_refresh_tablelist();
 
-    $config->db_loadItem('game_watchlist');
-    if($config->game_watchlist)
+    classSupernova::$config->db_loadItem('game_watchlist');
+    if(classSupernova::$config->game_watchlist)
     {
-      $config->game_watchlist_array = explode(';', $config->game_watchlist);
+      classSupernova::$config->game_watchlist_array = explode(';', classSupernova::$config->game_watchlist);
     }
     else
     {
-      unset($config->game_watchlist_array);
+      unset(classSupernova::$config->game_watchlist_array);
     }
   break;
   
@@ -51,12 +51,12 @@ switch($mode){
   break;
 
   case ADM_TOOL_FORCE_ALL:
-    $config->db_saveItem('db_version', 0);
+    classSupernova::$config->db_saveItem('db_version', 0);
     require_once('../includes/update.php');
   break;
 
   case ADM_TOOL_FORCE_LAST:
-    $config->db_saveItem('db_version', floor($config->db_version - 1));
+    classSupernova::$config->db_saveItem('db_version', floor(classSupernova::$config->db_version - 1));
     require_once('../includes/update.php');
   break;
 

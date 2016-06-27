@@ -20,10 +20,10 @@ if($user['authlevel'] < 3)
 
 if ($_POST && $mode == "change") {
   if (isset($_POST["tresc"]) && $_POST["tresc"] != '') {
-    $config->tresc = $_POST['tresc'];
+    classSupernova::$config->tresc = $_POST['tresc'];
   }
   if (isset($_POST["temat"]) && $_POST["temat"] != '') {
-    $config->temat = $_POST['temat'];
+    classSupernova::$config->temat = $_POST['temat'];
   }
   if ($user['authlevel'] == 3) {
     $kolor = 'red';
@@ -35,11 +35,11 @@ if ($_POST && $mode == "change") {
     $kolor = 'yellow';
     $ranga = 'SuperGameOperator';
   }
-  if ($config->tresc != '' and $config->temat) {
+  if (classSupernova::$config->tresc != '' and classSupernova::$config->temat) {
     $Time    = time();
     $From    = '<font color="'. $kolor .'">'. $ranga ." ".$user['username']."</font>";
-    $Subject = '<font color="'. $kolor .'">'. $config->temat ."</font>";
-    $Message = '<font color="'. $kolor .'"><b>'. $config->tresc ."</b></font>";
+    $Subject = '<font color="'. $kolor .'">'. classSupernova::$config->temat ."</font>";
+    $Message = '<font color="'. $kolor .'"><b>'. classSupernova::$config->tresc ."</b></font>";
     $sq      = db_user_list('', false, 'id');
     foreach($sq as $u)
     // while ($u = db_fetch($sq))
@@ -50,7 +50,7 @@ if ($_POST && $mode == "change") {
   }
 } else {
   $parse['dpath'] = $dpath;
-  $parse['debug'] = ($config->debug == 1) ? " checked='checked'/":'';
+  $parse['debug'] = (classSupernova::$config->debug == 1) ? " checked='checked'/":'';
   $page .= parsetemplate(gettemplate('admin/messall_body'), $parse);
   display($page, '', false,'', true);
 }

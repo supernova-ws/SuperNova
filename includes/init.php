@@ -148,27 +148,27 @@ classSupernova::init_debug_state();
 require_once(SN_ROOT_PHYSICAL . "includes/vars" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/general" . DOT_PHP_EX);
 
-init_update($config);
+init_update(classSupernova::$config);
 
 // Initializing constants
 $sn_page_name_original = isset($_GET['page'])
   ? trim(strip_tags($_GET['page']))
   : str_replace(DOT_PHP_EX, '', str_replace(SN_ROOT_RELATIVE, '', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])));
 define('INITIAL_PAGE', $sn_page_name_original);
-define('SN_COOKIE'        , ($config->COOKIE_NAME ? $config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
+define('SN_COOKIE'        , (classSupernova::$config->COOKIE_NAME ? classSupernova::$config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
 define('SN_COOKIE_I'      , SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
 define('SN_COOKIE_D'      , SN_COOKIE . '_D');
 define('SN_COOKIE_T'      , SN_COOKIE . '_T'); // Time measure cookie
 define('SN_COOKIE_F'      , SN_COOKIE . '_F'); // Font size cookie
 define('SN_COOKIE_U'      , SN_COOKIE . '_U'); // Current user cookie aka user ID
 define('SN_COOKIE_U_I'    , SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
-define('TEMPLATE_NAME'    , $config->game_default_template ? $config->game_default_template : 'OpenGame');
+define('TEMPLATE_NAME'    , classSupernova::$config->game_default_template ? classSupernova::$config->game_default_template : 'OpenGame');
 define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . TEMPLATE_PATH);
-define('DEFAULT_SKINPATH' , $config->game_default_skin ? $config->game_default_skin : 'skins/EpicBlue/');
-define('DEFAULT_LANG'     , $config->game_default_language ? $config->game_default_language : 'ru');
-define('FMT_DATE'         , $config->int_format_date ? $config->int_format_date : 'd.m.Y');
-define('FMT_TIME'         , $config->int_format_time ? $config->int_format_time : 'H:i:s');
+define('DEFAULT_SKINPATH' , classSupernova::$config->game_default_skin ? classSupernova::$config->game_default_skin : 'skins/EpicBlue/');
+define('DEFAULT_LANG'     , classSupernova::$config->game_default_language ? classSupernova::$config->game_default_language : 'ru');
+define('FMT_DATE'         , classSupernova::$config->int_format_date ? classSupernova::$config->int_format_date : 'd.m.Y');
+define('FMT_TIME'         , classSupernova::$config->int_format_time ? classSupernova::$config->int_format_time : 'H:i:s');
 define('FMT_DATE_TIME'    , FMT_DATE . ' ' . FMT_TIME);
 
 $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
@@ -290,24 +290,24 @@ if(!isset($sn_data['pages'][$sn_page_name])) {
 // classSupernova::$db->sn_db_connect(); // Не нужно. Делаем раньше
 
 global $lang;
-$lang = new classLocale($config->server_locale_log_usage);
+$lang = new classLocale(classSupernova::$config->server_locale_log_usage);
 $lang->lng_switch(sys_get_param_str('lang'));
 
 
-if($config->server_updater_check_auto && $config->server_updater_check_last + $config->server_updater_check_period <= SN_TIME_NOW) {
+if(classSupernova::$config->server_updater_check_auto && classSupernova::$config->server_updater_check_last + classSupernova::$config->server_updater_check_period <= SN_TIME_NOW) {
   include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);
 }
 
-if($config->user_birthday_gift && SN_TIME_NOW - $config->user_birthday_celebrate > PERIOD_DAY) {
+if(classSupernova::$config->user_birthday_gift && SN_TIME_NOW - classSupernova::$config->user_birthday_celebrate > PERIOD_DAY) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/user_birthday_celebrate" . DOT_PHP_EX);
   sn_user_birthday_celebrate();
 }
 
-if(!$config->var_online_user_count || $config->var_online_user_time + 30 < SN_TIME_NOW) {
-  $config->db_saveItem('var_online_user_count', db_user_count(true));
-  $config->db_saveItem('var_online_user_time', SN_TIME_NOW);
-  if($config->server_log_online) {
-    doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = {$config->var_online_user_count};");
+if(!classSupernova::$config->var_online_user_count || classSupernova::$config->var_online_user_time + 30 < SN_TIME_NOW) {
+  classSupernova::$config->db_saveItem('var_online_user_count', db_user_count(true));
+  classSupernova::$config->db_saveItem('var_online_user_time', SN_TIME_NOW);
+  if(classSupernova::$config->server_log_online) {
+    doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = " . classSupernova::$config->var_online_user_count . ";");
   }
 }
 
@@ -360,15 +360,15 @@ $lang->lng_switch(sys_get_param_str('lang'));
 global $dpath;
 $dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
-$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
+classSupernova::$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
   ? define('INSTALL_MODE', GAME_DISABLE_INSTALL)
   : false;
 
-if($template_result[F_GAME_DISABLE] = $config->game_disable) {
+if($template_result[F_GAME_DISABLE] = classSupernova::$config->game_disable) {
   $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse(
-    $config->game_disable == GAME_DISABLE_REASON
-      ? $config->game_disable_reason
-      : $lang['sys_game_disable_reason'][$config->game_disable]
+    classSupernova::$config->game_disable == GAME_DISABLE_REASON
+      ? classSupernova::$config->game_disable_reason
+      : $lang['sys_game_disable_reason'][classSupernova::$config->game_disable]
   );
   if(defined('IN_API')) {
     return;
@@ -379,7 +379,7 @@ if($template_result[F_GAME_DISABLE] = $config->game_disable) {
     &&
     !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))
   ) {
-    message($template_result[F_GAME_DISABLE_REASON], $config->game_name);
+    message($template_result[F_GAME_DISABLE_REASON], classSupernova::$config->game_name);
     ob_end_flush();
     die();
   }
@@ -425,7 +425,7 @@ execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
 global $skip_fleet_update;
 $skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
-if(!$skip_fleet_update && SN_TIME_NOW - strtotime($config->fleet_update_last) > $config->fleet_update_interval) {
+if(!$skip_fleet_update && SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_last) > classSupernova::$config->fleet_update_interval) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($skip_fleet_update);
 }
