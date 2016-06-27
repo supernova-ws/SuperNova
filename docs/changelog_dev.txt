@@ -1043,7 +1043,22 @@ replacing
 
 Пересчитывать планеты не всегда, а с задержкой в 1 минуту - в частности, в Империи
 
+RREWORK TO OBJECT
 
+function flt_fleet_speed($user, $fleet) {
+
+
+REWORK TO EMPTY()
+
+Fleet::$snGroupFleet
+Заменить проверки:
+    - sn_get_groups('fleet') -> UnitShip::is_ship($unit_id)
+    - sn_get_groups('resources_loot') -> UnitResourceLoot::is_resource($unit_id)
+
+
+LAMBDA FUNCTION - FROM ANONYMOUS
+
+FUNCTION (
 
 
 
