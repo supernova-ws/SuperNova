@@ -129,7 +129,7 @@ class FleetValidator {
    * @return bool
    */
   protected function checkTargetNotSource() {
-    return !$this->fleet->targetVector->isEqualToPlanet($this->fleet->dbSourcePlanetRow);
+    return !$this->fleet->targetVector->isSameLocation($this->fleet->dbSourcePlanetRow);
   }
 
   /**

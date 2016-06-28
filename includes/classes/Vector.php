@@ -2,6 +2,9 @@
 
 class Vector {
 
+  const READ_VECTOR = 'readVector';
+  const READ_PARAMS_FLEET = 'readParamsFleet';
+
   public static $knownGalaxies = 0;
   public static $knownSystems = 0;
   public static $knownPlanets = 0;
@@ -17,7 +20,7 @@ class Vector {
    * @param classConfig $config
    */
   public static function _staticInit($config) {
-    if(static::$_isStaticInit) {
+    if (static::$_isStaticInit) {
       return;
     }
 
@@ -26,37 +29,6 @@ class Vector {
     static::$knownPlanets = intval($config->game_maxPlanet);
     static::$galaxyDistance = intval($config->uni_galaxy_distance);
     static::$_isStaticInit = true;
-  }
-
-  /**
-   * UniverseVector constructor.
-   *
-   * @param int|string       $galaxy
-   * @param int|Vector|array $system
-   * @param int              $planet
-   * @param int              $type
-   */
-  public function __construct($galaxy = 0, $system = 0, $planet = 0, $type = PT_NONE) {
-    // static::_staticInit();
-
-    if(is_string($galaxy) && $galaxy == VECTOR_READ_VECTOR && is_object($system) && $system instanceof Vector) {
-      $this->readFromVector($system);
-    } elseif(is_string($galaxy) && $galaxy == VECTOR_READ_PARAMS && is_array($system)) {
-      $this->readFromParamFleets($system);
-    } else {
-      $this->galaxy = intval($galaxy);
-      $this->system = intval($system);
-      $this->planet = intval($planet);
-      $this->type = intval($type);
-    }
-  }
-
-
-  public function readFromParamFleets($planetRow = array()) {
-    $this->galaxy = sys_get_param_int('galaxy', $planetRow['galaxy']);
-    $this->system = sys_get_param_int('system', $planetRow['system']);
-    $this->planet = sys_get_param_int('planet', $planetRow['planet']);
-    $this->type = sys_get_param_int('planet_type', $planetRow['planet_type']);
   }
 
   /**
@@ -70,29 +42,66 @@ class Vector {
   }
 
   /**
-   * @param array $planetRow
+   * @param string $paramName
+   * @param array  $planetRow
    *
-   * @return bool
+   * @return int
    */
-  public function isEqualToPlanet($planetRow) {
-    return $this->distanceFromCoordinates($planetRow) == 0;
+  protected function getParamInt($paramName, $planetRow) {
+    $default = empty($planetRow[$paramName]) ? 0 : $planetRow[$paramName];
+
+    return sys_get_param_int($paramName, $default);
+  }
+
+  /**
+   * @param array $planetRow
+   */
+  public function readFromParamFleets($planetRow = array()) {
+    $this->galaxy = $this->getParamInt('galaxy', $planetRow);
+    $this->system = $this->getParamInt('system', $planetRow);
+    $this->planet = $this->getParamInt('planet', $planetRow);
+    $this->type = $this->getParamInt('planet_type', $planetRow);
+  }
+
+  /**
+   * Vector constructor.
+   *
+   * @param int|string       $galaxy
+   * @param int|Vector|array $system
+   * @param int              $planet
+   * @param int              $type
+   */
+  public function __construct($galaxy = 0, $system = 0, $planet = 0, $type = PT_NONE) {
+    // static::_staticInit();
+
+    if (is_string($galaxy) && $galaxy == Vector::READ_VECTOR && is_object($system) && $system instanceof Vector) {
+      $this->readFromVector($system);
+    } elseif (is_string($galaxy) && $galaxy == Vector::READ_PARAMS_FLEET && is_array($system)) {
+      $this->readFromParamFleets($system);
+    } else {
+      $this->galaxy = intval($galaxy);
+      $this->system = intval($system);
+      $this->planet = intval($planet);
+      $this->type = intval($type);
+    }
   }
 
   /**
    * @param Vector $vector
+   * @param bool   $returnZero
    *
    * @return int|number
    */
-  public function distance($vector) {
-    if($this->galaxy != $vector->galaxy) {
+  public function distance($vector, $returnZero = false) {
+    if ($this->galaxy != $vector->galaxy) {
       $distance = abs($this->galaxy - $vector->galaxy) * static::$galaxyDistance;
-    } elseif($this->system != $vector->system) {
+    } elseif ($this->system != $vector->system) {
       $distance = abs($this->system - $vector->system) * 5 * 19 + 2700;
-    } elseif($this->planet != $vector->planet) {
+    } elseif ($this->planet != $vector->planet) {
       $distance = abs($this->planet - $vector->planet) * 5 + 1000;
-      // TODO - uncomment
-//    } elseif($this->type != PT_NONE && $vector->type != PT_NONE && $this->type == $vector->type) {
-//      $distance = 0;
+    } elseif ($returnZero && $this->type == $vector->type) {
+      // && $this->type != PT_NONE && $vector->type != PT_NONE
+      $distance = 0;
     } else {
       $distance = 5;
     }
@@ -101,16 +110,10 @@ class Vector {
   }
 
   /**
-   * @param array $coordinates
+   * @param array  $coordinates
+   * @param string $prefix
    *
-   * @return int|number
-   */
-  public function distanceFromCoordinates($coordinates) {
-    return $this->distance(static::convertToVector($coordinates));
-  }
-
-  /**
-   * @param array $coordinates
+   * @return static
    */
   public static function convertToVector($coordinates, $prefix = '') {
     $galaxy = !empty($coordinates[$prefix . 'galaxy']) ? intval($coordinates[$prefix . 'galaxy']) : 0;
@@ -123,8 +126,34 @@ class Vector {
     return new static($galaxy, $system, $planet, $type);
   }
 
-  public static function distanceBetweenCoordinates($from, $to) {
-    return static::convertToVector($from)->distanceFromCoordinates($to);
+  /**
+   * @param array $coordinates
+   * @param bool  $returnZero
+   *
+   * @return int|number
+   */
+  public function distanceFromCoordinates($coordinates, $returnZero = false) {
+    return $this->distance(static::convertToVector($coordinates), $returnZero);
+  }
+
+  /**
+   * @param array $from
+   * @param array $to
+   * @param bool  $returnZero
+   *
+   * @return int|number
+   */
+  public static function distanceBetweenCoordinates($from, $to, $returnZero = false) {
+    return static::convertToVector($from)->distanceFromCoordinates($to, $returnZero);
+  }
+
+  /**
+   * @param array $planetRow
+   *
+   * @return bool
+   */
+  public function isSameLocation($planetRow) {
+    return $this->distanceFromCoordinates($planetRow, true) == 0;
   }
 
   /**
@@ -151,5 +180,3 @@ class Vector {
   }
 
 }
-
-Vector::_staticInit(classSupernova::$config);

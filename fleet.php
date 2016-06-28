@@ -24,7 +24,7 @@ require_once('includes/includes/flt_functions.php');
 
 lng_include('fleet');
 
-$targetVector = new Vector(VECTOR_READ_PARAMS, $planetrow);
+$targetVector = new Vector(Vector::READ_PARAMS_FLEET, $planetrow);
 $target_mission = sys_get_param_int('target_mission', MT_NONE);
 $ships = sys_get_param_array('ships');
 $fleet_group_mr = sys_get_param_id('fleet_group');
