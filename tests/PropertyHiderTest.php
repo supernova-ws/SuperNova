@@ -39,7 +39,7 @@ class PropertyHiderTested extends PropertyHider {
    *
    * @return int
    */
-  protected function adjTestGetSet($value) {
+  protected function adjustTestGetSet($value) {
     return $this->_testGetSet + $value + 4;
   }
 
@@ -63,7 +63,7 @@ class PropertyHiderTested extends PropertyHider {
    *
    * @return array
    */
-  protected function adjtestWithDiff($diff) {
+  protected function adjusttestWithDiff($diff) {
 //    if(!isset($this->propertiesAdjusted['testWithDiff']) || !is_array($this->propertiesAdjusted['testWithDiff'])) {
 //      $this->propertiesAdjusted['testWithDiff'] = array();
 //    }
@@ -76,7 +76,7 @@ class PropertyHiderTested extends PropertyHider {
   /**
    * @param array $value
    */
-  protected function adjtestWithDiffDiff($diff) {
+  protected function deltatestWithDiff($diff) {
     if (!is_array($this->propertiesAdjusted['testWithDiff'])) {
       $this->propertiesAdjusted['testWithDiff'] = array();
     }
@@ -129,11 +129,11 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::isPropertyDeclared
+   * @covers ::isPropertyActionAvailable
    */
   public function testIsPropertyDeclared() {
-    $this->assertTrue(invokeMethod($this->object, 'isPropertyDeclared', array('test')));
-    $this->assertFalse(invokeMethod($this->object, 'isPropertyDeclared', array('nonDeclaredClassProperty')));
+    $this->assertTrue(invokeMethod($this->object, 'isPropertyActionAvailable', array('test')));
+    $this->assertFalse(invokeMethod($this->object, 'isPropertyActionAvailable', array('nonDeclaredClassProperty')));
   }
 
   /**
@@ -256,33 +256,33 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
   public function dataAdjustValueType() {
     return array(
-      array('_adjustValue', 'testInteger', 0, 3.5, 3, 'integer'),
-      array('_adjustValueDiff', 'testInteger', 0, 3.5, 3, 'integer'),
+      array('adjustProperty', 'testInteger', 0, 3.5, 3, 'integer'),
+      array('deltaProperty', 'testInteger', 0, 3.5, 3, 'integer'),
 
-      array('_adjustValueInteger', 'testInteger', 0, 3.5, 3, 'integer'),
-      array('_adjustValueIntegerDiff', 'testInteger', 0, 3.5, 3, 'integer'),
-      array('_adjustValueDouble', 'testFloat', 0.0, 5.7, 5.7, 'double'),
-      array('_adjustValueDoubleDiff', 'testFloat', 0.0, 5.7, 5.7, 'double'),
-      array('_adjustValueString', 'testString', '', 'foo', 'foo', 'string'),
-      array('_adjustValueStringDiff', 'testString', '', 'foo', 'foo', 'string'),
-      array('_adjustValueArray', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), 'array'),
-      array('_adjustValueArrayDiff', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), 'array'),
+      array('adjustPropertyInteger', 'testInteger', 0, 3.5, 3, 'integer'),
+      array('deltaInteger', 'testInteger', 0, 3.5, 3, 'integer'),
+      array('adjustPropertyDouble', 'testFloat', 0.0, 5.7, 5.7, 'double'),
+      array('deltaDouble', 'testFloat', 0.0, 5.7, 5.7, 'double'),
+      array('adjustPropertyString', 'testString', '', 'foo', 'foo', 'string'),
+      array('deltaString', 'testString', '', 'foo', 'foo', 'string'),
+      array('adjustPropertyArray', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), 'array'),
+      array('deltaArray', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), 'array'),
     );
   }
 
   /**
    * @dataProvider dataAdjustValueType
    *
-   * @covers ::_adjustValue
-   * @covers ::_adjustValueInteger
-   * @covers ::_adjustValueDouble
-   * @covers ::_adjustValueString
-   * @covers ::_adjustValueArray
-   * @covers ::_adjustValueDiff
-   * @covers ::_adjustValueIntegerDiff
-   * @covers ::_adjustValueDoubleDiff
-   * @covers ::_adjustValueStringDiff
-   * @covers ::_adjustValueArrayDiff
+   * @covers ::adjustProperty
+   * @covers ::adjustPropertyInteger
+   * @covers ::adjustPropertyDouble
+   * @covers ::adjustPropertyString
+   * @covers ::adjustPropertyArray
+   * @covers ::deltaProperty
+   * @covers ::deltaInteger
+   * @covers ::deltaDouble
+   * @covers ::deltaString
+   * @covers ::deltaArray
    *
    * @param $methodName
    * @param $fieldName
@@ -291,7 +291,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
    * @param $expected
    * @param $type
    */
-  public function test_adjustValueTypeAndDiff($methodName, $fieldName, $start, $diff, $expected, $type) {
+  public function testadjustPropertyTypeAndDiff($methodName, $fieldName, $start, $diff, $expected, $type) {
     $this->assertEquals($start, $this->object->$fieldName);
     $result = invokeMethod($this->object, $methodName, array($fieldName, $diff));
     $this->assertEquals($expected, $result);
@@ -304,14 +304,14 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
   public function dataPropertyMethodResult() {
     return array(
-      array('testInteger', 3.5, 3, 'integer', ''),
-      array('testFloat', 5.7, 5.7, 'double', ''),
-      array('testString', 'foo', 'foo', 'string', ''),
-      array('testArray', array('a' => 'b'), array('a' => 'b'), 'array', ''),
-      array('testInteger', 3.5, 3, 'integer', 'Diff'),
-      array('testFloat', 5.7, 5.7, 'double', 'Diff'),
-      array('testString', 'foo', 'foo', 'string', 'Diff'),
-      array('testArray', array('a' => 'b'), array('a' => 'b'), 'array', 'Diff'),
+      array('testInteger', 3.5, 3, 'integer', 'adjustProperty'),
+      array('testFloat', 5.7, 5.7, 'double', 'adjustProperty'),
+      array('testString', 'foo', 'foo', 'string', 'adjustProperty'),
+      array('testArray', array('a' => 'b'), array('a' => 'b'), 'array', 'adjustProperty'),
+      array('testInteger', 3.5, 3, 'integer', 'delta'),
+      array('testFloat', 5.7, 5.7, 'double', 'delta'),
+      array('testString', 'foo', 'foo', 'string', 'delta'),
+      array('testArray', array('a' => 'b'), array('a' => 'b'), 'array', 'delta'),
     );
   }
 
@@ -335,11 +335,11 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     invokeMethod($this->object, 'propertyMethodResult', array('testNull', null, ''));
   }
 
-//  protected function _adjustValue($name, $diff) {
+//  protected function adjustProperty($name, $diff) {
 //    return $this->propertyMethodResult($name, $diff);
 //  }
 //
-//$this->propertiesAdjusted[$name] = $this->_adjustValueDiff($name, $diff);
+//$this->propertiesAdjusted[$name] = $this->deltaProperty($name, $diff);
 
 
   /**
@@ -408,14 +408,14 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 //   * @covers ::_setUnsafe
 //   * @covers ::__get
 //   * @covers ::__adjust
-//   * @covers ::_adjustValue
-//   * @covers ::_adjustValueDiff
-//   * @covers ::_adjustValueDouble
-//   * @covers ::_adjustValueDoubleDiff
+//   * @covers ::adjustProperty
+//   * @covers ::deltaProperty
+//   * @covers ::adjustPropertyDouble
+//   * @covers ::deltaDouble
 //   * @covers ::propertyMethodResult
 //   * @covers ::checkOverwriteAdjusted
 //   */
-//  public function test__adjustValueFloat() {
+//  public function test_adjustPropertyFloat() {
 //    // Test with calling getters/setters and DIFF adjuster on array
 //    $this->assertEquals(0.0, $this->object->testFloat);
 //    $this->assertEquals(3.1, $this->object->__adjust('testFloat', 3.1));
@@ -430,14 +430,14 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 //   * @covers ::_setUnsafe
 //   * @covers ::__get
 //   * @covers ::__adjust
-//   * @covers ::_adjustValue
-//   * @covers ::_adjustValueDiff
-//   * @covers ::_adjustValueString
-//   * @covers ::_adjustValueStringDiff
+//   * @covers ::adjustProperty
+//   * @covers ::deltaProperty
+//   * @covers ::adjustPropertyString
+//   * @covers ::deltaString
 //   * @covers ::propertyMethodResult
 //   * @covers ::checkOverwriteAdjusted
 //   */
-//  public function test__adjustValueString() {
+//  public function test_adjustPropertyString() {
 //    // Test with calling getters/setters and DIFF adjuster on array
 //    $this->assertEquals('', $this->object->testString);
 //    $this->assertEquals('foo', $this->object->__adjust('testString', 'foo'));
@@ -456,14 +456,14 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 //   * @covers ::_setUnsafe
 //   * @covers ::__get
 //   * @covers ::__adjust
-//   * @covers ::_adjustValue
-//   * @covers ::_adjustValueDiff
-//   * @covers ::_adjustValueArray
-//   * @covers ::_adjustValueArrayDiff
+//   * @covers ::adjustProperty
+//   * @covers ::deltaProperty
+//   * @covers ::adjustPropertyArray
+//   * @covers ::deltaArray
 //   * @covers ::propertyMethodResult
 //   * @covers ::checkOverwriteAdjusted
 //   */
-//  public function test__adjustValueArray() {
+//  public function test_adjustPropertyArray() {
 //    // Test with calling getters/setters and DIFF adjuster on array
 //
 //    $this->assertEquals(array(), $this->object->testArray);

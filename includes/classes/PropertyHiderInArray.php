@@ -1,11 +1,11 @@
 <?php
 
 /**
- * Class PropertyContainer
+ * Class PropertyHiderInArray
  *
  * Holding properties in internal container
  */
-class PropertyContainer extends PropertyHider {
+class PropertyHiderInArray extends PropertyHider {
   /**
    * Property list
    *

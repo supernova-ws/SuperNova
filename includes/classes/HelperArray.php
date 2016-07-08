@@ -127,14 +127,16 @@ class HelperArray {
   }
 
   /**
+   * Checks if key exists in array. If yes - return value on key otherwise return default value
+   *
    * @param array &$array
    * @param mixed $key
-   * @param mixed $alternative
+   * @param mixed $default
    *
    * @return mixed
    */
-  public static function keyExistsOr(&$array, $key, $alternative) {
-    return array_key_exists($key, $array) ? $array[$key] : $alternative;
+  public static function keyExistsOr(&$array, $key, $default) {
+    return array_key_exists($key, $array) ? $array[$key] : $default;
   }
 
   /**

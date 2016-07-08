@@ -10,6 +10,23 @@
 class PropertyHider extends stdClass {
 
   /**
+   * Getting value
+   */
+  const ACTION_GET = 'get';
+  /**
+   * Setting value
+   */
+  const ACTION_SET = 'set';
+  /**
+   * Adjusting value
+   */
+  const ACTION_ADJUST = 'adjust';
+  /**
+   * Calculating value
+   */
+  const ACTION_DELTA = 'delta';
+
+  /**
    * Property list
    *
    * @var array[]
@@ -29,7 +46,6 @@ class PropertyHider extends stdClass {
    */
   protected $propertiesAdjusted = array();
 
-  //+
   /**
    * @param array $properties
    */
@@ -38,43 +54,115 @@ class PropertyHider extends stdClass {
     static::$_properties = $properties;
   }
 
-  //+
   public static function getProperties() {
     return static::$_properties;
   }
 
-  //+
   /**
    * PropertyHider constructor.
    */
   public function __construct() {
   }
 
-  //+
   protected function checkPropertyExists($name) {
     if (!array_key_exists($name, static::$_properties)) {
       throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] not exists', ERR_ERROR);
     }
   }
 
-  //+
   protected function checkOverwriteAdjusted($name) {
     if (array_key_exists($name, $this->propertiesAdjusted)) {
       throw new PropertyAccessException('Property [' . get_called_class() . '::' . $name . '] already was adjusted so no SET is possible until dbSave', ERR_ERROR);
     }
   }
 
-  //+
   private function getPhysicalPropertyName($name) {
     return '_' . $name;
   }
 
-  //+
-  protected function isPropertyDeclared($name) {
+  /**
+   * Method checks if action is available for named property
+   *
+   * @param string $name
+   * @param string $action
+   *
+   * @return bool
+   */
+  protected function isPropertyActionAvailable($name, $action = '') {
+    // By default all action available for existing properties
     return property_exists($this, $this->getPhysicalPropertyName($name));
   }
 
-  //+
+  /**
+   * Internal method that make real changes to property value
+   * May be override in child class
+   *
+   * @param string $name
+   * @param mixed  $value
+   *
+   * @return mixed
+   */
+  protected function setProperty($name, $value) {
+    // TODO: Change property only if value differs ????
+//      if($this->{$this->getPhysicalPropertyName($name)} !== $value) {
+//      }
+    return $this->{$this->getPhysicalPropertyName($name)} = $value;
+  }
+
+  /**
+   * Internal method that make really reads property value
+   * May be override in child class
+   *
+   * @param string $name
+   * @param mixed  $value - ignored. Used for compatibility
+   *
+   * @return mixed
+   */
+  protected function getProperty($name, $value = null) {
+    return $this->{$this->getPhysicalPropertyName($name)};
+  }
+
+  /**
+   * Directly adjusts value without Adjuster
+   *
+   * @param string $name
+   * @param mixed  $diff
+   *
+   * @return mixed
+   */
+  protected function adjustProperty($name, $diff) {
+    return $this->propertyMethodResult($name, $diff, 'adjustProperty');
+  }
+
+  /**
+   * Directly adjusts value Delta for properties without Adjuster
+   *
+   * @param string $name
+   * @param mixed  $diff
+   *
+   * @return mixed
+   */
+  protected function deltaProperty($name, $diff) {
+    return $this->propertyMethodResult($name, $diff, 'delta');
+  }
+
+  protected function actionProperty($action, $name, $value) {
+    $result = null;
+    // Now deciding - will we call a protected setter or will we work with protected property
+    if (method_exists($this, $methodName = $action . ucfirst($name))) {
+      // If method exists - just calling it
+      // TODO - should return TRUE if value changed or FALSE otherwise
+      $result = call_user_func_array(array($this, $methodName), array($value));
+    } elseif ($this->isPropertyActionAvailable($name, $action)) {
+      // No setter exists - works directly with protected property
+      $result = $this->{$action . 'Property'}($name, $value);
+    } else {
+      throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] does not have ' . $action . 'ter/property to ' . $action, ERR_ERROR);
+    }
+
+    return $result;
+  }
+
   /**
    * Getter with support of protected methods
    *
@@ -86,20 +174,11 @@ class PropertyHider extends stdClass {
   public function __get($name) {
     $this->checkPropertyExists($name);
 
-    $result = null;
-    // Now deciding - will we call a protected setter or will we work with protected property
-    if (method_exists($this, $methodName = 'get' . ucfirst($name))) {
-      // If method exists - just calling it
-      $result = call_user_func_array(array($this, $methodName), array());
-    } elseif ($this->isPropertyDeclared($name)) {
-      // No getter exists - works directly with protected property
-      $result = $this->{$this->getPhysicalPropertyName($name)};
-    } else {
-      throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] does not have getter/property to get', ERR_ERROR);
-    }
+    $result = $this->actionProperty('get', $name, null);
 
     return $result;
   }
+
 
   //+
   /**
@@ -112,20 +191,7 @@ class PropertyHider extends stdClass {
    * @throws ExceptionPropertyNotExists
    */
   protected function _setUnsafe($name, $value) {
-    $result = null;
-    // Now deciding - will we call a protected setter or will we work with protected property
-    if (method_exists($this, $methodName = 'set' . ucfirst($name))) {
-      // If method exists - just calling it
-      // TODO - should return TRUE if value changed or FALSE otherwise
-      $result = call_user_func_array(array($this, $methodName), array($value));
-    } elseif ($this->isPropertyDeclared($name)) {
-      // No setter exists - works directly with protected property
-//      if($result = $this->$propertyName !== $value) {
-      $this->{$this->getPhysicalPropertyName($name)} = $value;
-//      }
-    } else {
-      throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] does not have setter/property to set', ERR_ERROR);
-    }
+    $result = $this->actionProperty('set', $name, $value);
 
     // TODO - should be primed only if value changed
 //    if($result) {
@@ -148,8 +214,8 @@ class PropertyHider extends stdClass {
   // TODO - сеттер должен параллельно изменять значение db_row - for now...
   // TODO - Проверка, а действительно ли данные были изменены?? Понадобится определение типов - разные типы сравниваются по-разному
   public function __set($name, $value) {
-    $this->checkPropertyExists($name);
     $this->checkOverwriteAdjusted($name);
+    $this->checkPropertyExists($name);
 
     return $this->_setUnsafe($name, $value);
   }
@@ -161,7 +227,7 @@ class PropertyHider extends stdClass {
    *
    * @return int
    */
-  protected function _adjustValueInteger($name, $diff) {
+  protected function adjustPropertyInteger($name, $diff) {
     return intval($this->$name) + intval($diff);
   }
 
@@ -171,7 +237,7 @@ class PropertyHider extends stdClass {
    *
    * @return float
    */
-  protected function _adjustValueDouble($name, $diff) {
+  protected function adjustPropertyDouble($name, $diff) {
     return floatval($this->$name) + floatval($diff);
   }
 
@@ -181,19 +247,20 @@ class PropertyHider extends stdClass {
    *
    * @return string
    */
-  protected function _adjustValueString($name, $diff) {
+  protected function adjustPropertyString($name, $diff) {
     return (string)$this->$name . (string)$diff;
   }
 
   /**
    * @param string $name
-   * @param array $diff
+   * @param array  $diff
    *
    * @return array
    */
-  protected function _adjustValueArray($name, $diff) {
+  protected function adjustPropertyArray($name, $diff) {
     $copy = (array)$this->$name;
     HelperArray::merge($copy, (array)$diff, HelperArray::MERGE_PHP);
+
     return $copy;
   }
 
@@ -203,7 +270,7 @@ class PropertyHider extends stdClass {
    *
    * @return int
    */
-  protected function _adjustValueIntegerDiff($name, $diff) {
+  protected function deltaInteger($name, $diff) {
     return (int)HelperArray::keyExistsOr($this->propertiesAdjusted, $name, 0) + (int)$diff;
   }
 
@@ -213,7 +280,7 @@ class PropertyHider extends stdClass {
    *
    * @return float
    */
-  protected function _adjustValueDoubleDiff($name, $diff) {
+  protected function deltaDouble($name, $diff) {
     return (float)HelperArray::keyExistsOr($this->propertiesAdjusted, $name, 0.0) + (float)$diff;
   }
 
@@ -223,19 +290,20 @@ class PropertyHider extends stdClass {
    *
    * @return string
    */
-  protected function _adjustValueStringDiff($name, $diff) {
+  protected function deltaString($name, $diff) {
     return (string)HelperArray::keyExistsOr($this->propertiesAdjusted, $name, '') . (string)$diff;
   }
 
   /**
    * @param string $name
-   * @param array $diff
+   * @param array  $diff
    *
    * @return array
    */
-  protected function _adjustValueArrayDiff($name, $diff) {
+  protected function deltaArray($name, $diff) {
     $copy = (array)HelperArray::keyExistsOr($this->propertiesAdjusted, $name, array());
     HelperArray::merge($copy, $diff, HelperArray::MERGE_PHP);
+
     return $copy;
   }
 
@@ -246,47 +314,23 @@ class PropertyHider extends stdClass {
    *
    * @param string $name
    * @param mixed  $diff
-   * @param string $suffix
+   * @param string $prefix
    *
    * @return mixed
    * @throws ExceptionTypeUnsupported
    */
-  protected function propertyMethodResult($name, $diff, $suffix = '') {
+  protected function propertyMethodResult($name, $diff, $prefix = '') {
     // TODO - property type checks
     // Capitalizing type name
     $type = explode(' ', gettype($this->$name));
     array_walk($type, 'DbSqlHelper::UCFirstByRef');
     $type = implode('', $type);
 
-    if (!method_exists($this, $methodName = '_adjustValue' . $type . $suffix)) {
+    if (!method_exists($this, $methodName = $prefix . $type)) {
       throw new ExceptionTypeUnsupported();
     }
 
     return call_user_func(array($this, $methodName), $name, $diff);
-  }
-
-  /**
-   * Directly adjusts value without Adjuster
-   *
-   * @param string $name
-   * @param mixed  $diff
-   *
-   * @return mixed
-   */
-  protected function _adjustValue($name, $diff) {
-    return $this->propertyMethodResult($name, $diff);
-  }
-
-  /**
-   * Directly adjusts value DIFF without Adjuster
-   *
-   * @param string $name
-   * @param mixed  $diff
-   *
-   * @return mixed
-   */
-  protected function _adjustValueDiff($name, $diff) {
-    return $this->propertyMethodResult($name, $diff, 'Diff');
   }
 
   /**
@@ -303,32 +347,17 @@ class PropertyHider extends stdClass {
   public function __adjust($name, $diff) {
     $this->checkPropertyExists($name);
 
-    // Now deciding - will we call a protected setter or will we work with protected property
-    if (method_exists($this, $methodName = 'adj' . ucfirst($name))) {
-      // If method exists - just calling it
-      // Method returns new adjusted value
-      $newValue = call_user_func_array(array($this, $methodName), array($diff));
-    } else {
-      // No adjuster exists - works directly with protected property
-      // TODO - property type checks
-      $newValue = $this->_adjustValue($name, $diff);
-    }
+    $result = $this->actionProperty('adjust', $name, $diff);
 
     // Invoking property setter
-    $this->_setUnsafe($name, $newValue);
+    $this->_setUnsafe($name, $result);
 
     // Initializing value of adjustment
     if (!array_key_exists($name, $this->propertiesAdjusted)) {
       $this->propertiesAdjusted[$name] = null;
     }
 
-    // Adding diff to adjustment accumulator
-    if (method_exists($this, $methodName = 'adj' . ucfirst($name) . 'Diff')) {
-      call_user_func_array(array($this, $methodName), array($diff));
-    } else {
-      // TODO - property type checks
-      $this->propertiesAdjusted[$name] = $this->_adjustValueDiff($name, $diff);
-    }
+    $this->propertiesAdjusted[$name] = $this->actionProperty('delta', $name, $diff);
 
     return $this->$name;
   }
