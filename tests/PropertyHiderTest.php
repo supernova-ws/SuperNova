@@ -3,16 +3,21 @@
 /**
  * Class PropertyHiderTested
  *
- * @property int    test
- * @property int    testGetSet
- * @property array  testWithDiff
+ * @property int      test
+ * @property int      testGetSet
+ * @property array    testWithDiff
  *
- * @property int    testInteger
- * @property float  testFloat
- * @property string testString
- * @property array  testArray
+ * @property int      testInteger
+ * @property float    testFloat
+ * @property string   testString
+ * @property array    testArray
  *
- * @property null   testNull
+ * @property bool     testBoolean
+ * @property object   testObject
+ *
+ * @property null     testNull
+ * @property resource testResource
+ * @property resource testUnknownType
  */
 class PropertyHiderTested extends PropertyHider {
   protected $_test = -2;
@@ -24,7 +29,12 @@ class PropertyHiderTested extends PropertyHider {
   protected $_testString = '';
   protected $_testArray = array();
 
+  protected $_testBoolean = false;
+  protected $_testObject = null;
+
   protected $_testNull = null;
+  protected $_testResource = null;
+  protected $_testUnknownType = null;
 
   protected function getTestGetSet() {
     return $this->_testGetSet + 1;
@@ -64,10 +74,6 @@ class PropertyHiderTested extends PropertyHider {
    * @return array
    */
   protected function adjusttestWithDiff($diff) {
-//    if(!isset($this->propertiesAdjusted['testWithDiff']) || !is_array($this->propertiesAdjusted['testWithDiff'])) {
-//      $this->propertiesAdjusted['testWithDiff'] = array();
-//    }
-
     HelperArray::merge($this->_testWithDiff, $diff, HelperArray::MERGE_PHP);
 
     return $this->_testWithDiff;
@@ -107,7 +113,11 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     'testFloat'               => array(),
     'testString'              => array(),
     'testArray'               => array(),
+    'testBoolean'             => array(),
     'testNull'                => array(),
+    'testObject'              => array(),
+    'testResource'            => array(),
+    'testUnknownType'         => array(),
   );
 
   public function setUp() {
@@ -298,10 +308,6 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     $this->assertInternalType($type, $result);
   }
 
-
-//  protected function propertyMethodResult($name, $diff, $suffix = ''){}
-
-
   public function dataPropertyMethodResult() {
     return array(
       array('testInteger', 3.5, 3, 'integer', 'adjustProperty'),
@@ -325,22 +331,32 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     $this->assertInternalType($type, $result);
   }
 
+  public function dataPropertyMethodResultException() {
+    $h1 = @fopen(__FILE__, 'r');
+    fclose($h1);
+    $h2 = @fopen(__FILE__, 'r');
+
+    return array(
+      array('testBoolean', true),
+      array('testNull', null),
+      array('testObject', new stdClass()),
+      array('testResource', $h2),
+      array('testUnknownType', $h1),
+    );
+  }
+
   /**
    * Test exception when trying to adjust unsupported property type
    *
+   * @dataProvider dataPropertyMethodResultException
    * @covers ::propertyMethodResult
-   * @expectedException ExceptionTypeUnsupported
+   * expectedException ExceptionTypeUnsupported
    */
-  public function testExceptionTypeUnsupported() {
-    invokeMethod($this->object, 'propertyMethodResult', array('testNull', null, ''));
+  public function testExceptionTypeUnsupported($varName, $value) {
+    $this->setExpectedExceptionRegExp('ExceptionTypeUnsupported', '/Type .+ is unsupported in PropertyHider::propertyMethodResult/i');
+    $this->object->$varName = $value;
+    invokeMethod($this->object, 'propertyMethodResult', array($varName, null, ''));
   }
-
-//  protected function adjustProperty($name, $diff) {
-//    return $this->propertyMethodResult($name, $diff);
-//  }
-//
-//$this->propertiesAdjusted[$name] = $this->deltaProperty($name, $diff);
-
 
   /**
    * Testing adjusters
@@ -399,83 +415,5 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(array('testWithDiff' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
     $this->assertEquals(array('testWithDiff' => array('b' => 'q', 'с' => 'w')), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
   }
-
-
-//  /**
-//   * Testing built-in type adjusters
-//   *
-//   * @covers ::__set
-//   * @covers ::_setUnsafe
-//   * @covers ::__get
-//   * @covers ::__adjust
-//   * @covers ::adjustProperty
-//   * @covers ::deltaProperty
-//   * @covers ::adjustPropertyDouble
-//   * @covers ::deltaDouble
-//   * @covers ::propertyMethodResult
-//   * @covers ::checkOverwriteAdjusted
-//   */
-//  public function test_adjustPropertyFloat() {
-//    // Test with calling getters/setters and DIFF adjuster on array
-//    $this->assertEquals(0.0, $this->object->testFloat);
-//    $this->assertEquals(3.1, $this->object->__adjust('testFloat', 3.1));
-//    $this->assertEquals(array('testFloat' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
-//    $this->assertEquals(array('testFloat' => 3.1), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
-//  }
-//
-//  /**
-//   * Testing built-in type adjusters
-//   *
-//   * @covers ::__set
-//   * @covers ::_setUnsafe
-//   * @covers ::__get
-//   * @covers ::__adjust
-//   * @covers ::adjustProperty
-//   * @covers ::deltaProperty
-//   * @covers ::adjustPropertyString
-//   * @covers ::deltaString
-//   * @covers ::propertyMethodResult
-//   * @covers ::checkOverwriteAdjusted
-//   */
-//  public function test_adjustPropertyString() {
-//    // Test with calling getters/setters and DIFF adjuster on array
-//    $this->assertEquals('', $this->object->testString);
-//    $this->assertEquals('foo', $this->object->__adjust('testString', 'foo'));
-//    $this->assertEquals(array('testString' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
-//    $this->assertEquals(array('testString' => 'foo'), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
-//
-//    $this->assertEquals('foobar', $this->object->__adjust('testString', 'bar'));
-//    $this->assertEquals(array('testString' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
-//    $this->assertEquals(array('testString' => 'foobar'), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
-//  }
-//
-//  /**
-//   * Testing built-in type adjusters
-//   *
-//   * @covers ::__set
-//   * @covers ::_setUnsafe
-//   * @covers ::__get
-//   * @covers ::__adjust
-//   * @covers ::adjustProperty
-//   * @covers ::deltaProperty
-//   * @covers ::adjustPropertyArray
-//   * @covers ::deltaArray
-//   * @covers ::propertyMethodResult
-//   * @covers ::checkOverwriteAdjusted
-//   */
-//  public function test_adjustPropertyArray() {
-//    // Test with calling getters/setters and DIFF adjuster on array
-//
-//    $this->assertEquals(array(), $this->object->testArray);
-//    // Testing setter
-//    $this->object->__set('testArray', array('a' => 'p'));
-//    $this->assertEquals(array('a' => 'p'), $this->object->testArray);
-//    $this->assertEquals(array('testArray' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
-//    // Testing adjuster
-//    $this->assertEquals(array('a' => 'p', 'b' => 'q'), $this->object->__adjust('testArray', array('b' => 'q')));
-//    $this->assertEquals(array('a' => 'p', 'b' => 'q'), $this->object->testArray);
-//    $this->assertEquals(array('testArray' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
-//    $this->assertEquals(array('testArray' => array('b' => 'q')), getPrivateProperty('PropertyHiderTested', 'propertiesAdjusted')->getValue($this->object));
-//  }
 
 }

@@ -320,14 +320,14 @@ class PropertyHider extends stdClass {
    * @throws ExceptionTypeUnsupported
    */
   protected function propertyMethodResult($name, $diff, $prefix = '') {
-    // TODO - property type checks
+    $type = gettype($this->$name);
     // Capitalizing type name
-    $type = explode(' ', gettype($this->$name));
-    array_walk($type, 'DbSqlHelper::UCFirstByRef');
-    $type = implode('', $type);
+    $methodName = explode(' ', $type);
+    array_walk($methodName, 'DbSqlHelper::UCFirstByRef');
+    $methodName = $prefix . implode('', $methodName);
 
-    if (!method_exists($this, $methodName = $prefix . $type)) {
-      throw new ExceptionTypeUnsupported();
+    if (!method_exists($this, $methodName)) {
+      throw new ExceptionTypeUnsupported('Type "' . $type . '" is unsupported in PropertyHider::propertyMethodResult');
     }
 
     return call_user_func(array($this, $methodName), $name, $diff);
