@@ -872,7 +872,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.14
+   * @version 41a50.24
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -985,7 +985,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.14
+   * @version 41a50.24
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1250,7 +1250,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
       'START_COORDS'       => uni_render_coordinates($this->dbSourcePlanetRow),
       'START_NAME'         => $this->dbSourcePlanetRow['name'],
       'START_TIME_TEXT'    => date(FMT_DATE_TIME, $missionStartTimeStamp + $timeToReturn + SN_CLIENT_TIME_DIFF),
-      'START_LEFT'         => floor($this->travelData['duration'] * 2 + $timeMissionJob),
+      'START_LEFT'         => floor($timeToReturn),
       'END_TYPE_TEXT_SH'   =>
         !empty($this->targetVector->type)
           ? classLocale::$lang['sys_planet_type_sh'][$this->targetVector->type]
