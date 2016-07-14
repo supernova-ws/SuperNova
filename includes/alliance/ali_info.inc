@@ -18,7 +18,7 @@ if($mode == 'exit')
   {
     sn_db_transaction_start();
     db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
-    db_ally_list_recalc_counts();
+    DBStaticAlly::db_ally_list_recalc_counts();
     sn_db_transaction_commit();
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
     message(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);

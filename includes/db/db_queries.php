@@ -101,14 +101,6 @@ function db_message_list_outbox_by_user_id($user_id)
 
 
 
-function db_ally_count()
-{
-  $result = doquery('SELECT COUNT(`id`) AS ally_count FROM {{alliance}}', true);
-  return isset($result['ally_count']) ? $result['ally_count'] : 0;
-}
-
-
-
 function db_unit_records_sum($unit_id, $user_skip_list_unit)
 {
   return doquery (
@@ -260,18 +252,6 @@ FROM
   `message_id` DESC
 LIMIT
   {$StartRec}, 25;");
-}
-
-
-function db_ally_list_recalc_counts()
-{
-  return doquery("UPDATE {{alliance}} as a LEFT JOIN (SELECT ally_id, count(*) as ally_memeber_count FROM {{users}}
-      WHERE ally_id IS NOT NULL GROUP BY ally_id) as u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;");
-}
-
-function db_ally_request_list($ally_id)
-{
-  return doquery("SELECT {{alliance_requests}}.*, {{users}}.username FROM {{alliance_requests}} LEFT JOIN {{users}} ON {{users}}.id = {{alliance_requests}}.id_user WHERE id_ally='{$ally_id}'");
 }
 
 

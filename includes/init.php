@@ -67,6 +67,14 @@ define('SN_ROOT_PHYSICAL', $sn_root_physical);
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen($sn_root_physical));
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
+spl_autoload_register(function ($class) {
+  if(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php')) {
+    require_once SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php';
+  } elseif(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php')) {
+    require_once SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php';
+  }
+});
+
 $sn_root_relative = str_replace('\\', '/', getcwd());
 $sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
 $sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);

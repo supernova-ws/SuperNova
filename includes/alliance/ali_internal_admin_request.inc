@@ -24,7 +24,7 @@ if($id_user) {
 
 $template = gettemplate('ali_admin_request', true);
 
-$query = db_ally_request_list($ally['id']);
+$query = DBStaticAlly::db_ally_request_list($ally['id']);
 while ($ally_request_row = db_fetch($query)) {
   $template->assign_block_vars('alliance_request', array(
     'USER_ID'   => $ally_request_row['id_user'],

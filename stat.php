@@ -107,7 +107,7 @@ $start = floor($range / 100 % 100) * 100;
 $query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source);
 
 // TODO - Не работает, если игроков на Блице > 100
-$record_count = $source ? db_num_rows($query) : ($who == 1 ? db_user_count() : db_ally_count());
+$record_count = $source ? db_num_rows($query) : ($who == 1 ? db_user_count() : DBStaticAlly::db_ally_count());
 
 $page_count = floor($record_count / 100);
 $pages = array();

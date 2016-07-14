@@ -113,7 +113,7 @@ else
       }
       elseif($offer_answer == 'deny')
       {
-        doquery("UPDATE {{alliance_negotiation}} SET alliance_negotiation_status = 1 WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
+        DBStaticAlly::db_ally_negotiation_update_status_1($offer_id);
       }
     }
   }
