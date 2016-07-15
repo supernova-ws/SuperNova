@@ -5,7 +5,6 @@
  *
  * @property int $unitId
  * @property int $count
- * @method int getCount() - TODO - DEPRECATED - не существует, но используется в UBE
  * @method int getUnitId()
  * @method int getType()
  * @method int getTimeStart()
@@ -14,7 +13,6 @@
  *
  */
 class Unit extends DBRowLocation {
-
   /**
    * Type of this location
    *
@@ -233,7 +231,7 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a6.77
+   * @version 41a50.25
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();

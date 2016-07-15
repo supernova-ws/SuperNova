@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.24');
+define('SN_VERSION', '41a50.25');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -635,6 +635,8 @@ define('MSG_TYPE_QUE'      ,  99);
 define('MSG_TYPE_NEW'      , 100);
 
 // Attack verification statuses
+define('FLIGHT_ALLOWED_NEW'           ,  -1);
+//define('FLIGHT_DO_NOTHING'           ,  0);
 define('FLIGHT_ALLOWED'           ,  0);
 define('FLIGHT_VECTOR_NO_TARGET'         ,  1);
 define('FLIGHT_PLAYER_OWN'               ,  2);

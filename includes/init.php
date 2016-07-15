@@ -106,14 +106,21 @@ classSupernova::$debug = new debug();
 spl_autoload_register(function ($class) {
   if(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php')) {
     require_once SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php';
-  }
-});
-
-spl_autoload_register(function ($class) {
-  if(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php')) {
+  } elseif(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php')) {
     require_once SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php';
   }
 });
+
+//spl_autoload_register(function ($class) {
+//  if(file_exists('includes/classes/' . $class . '.php')) {
+//    require_once 'includes/classes/' . $class . '.php';
+//  } elseif(file_exists('includes/classes/UBE/' . $class . '.php')) {
+//    require_once 'includes/classes/UBE/' . $class . '.php';
+//  } else {
+////    die("Can't find {$class} class");
+//  }
+//});
+
 
 require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
 require_once('classes/db_mysql_v4.php');
@@ -174,15 +181,6 @@ $template_result = array('.' => array('result' => array()));
 
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
-spl_autoload_register(function ($class) {
-  if(file_exists('includes/classes/' . $class . '.php')) {
-    require_once 'includes/classes/' . $class . '.php';
-  } elseif(file_exists('includes/classes/UBE/' . $class . '.php')) {
-    require_once 'includes/classes/UBE/' . $class . '.php';
-  } else {
-//    die("Can't find {$class} class");
-  }
-});
 
 
 

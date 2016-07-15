@@ -179,7 +179,7 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a50.14
+   * @version 41a50.25
    */
   // TODO - Factory
   public function _createElement() {
@@ -366,7 +366,7 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
     $speeds = array();
     if (!empty($this->mapUnitIdToDb)) {
       foreach ($this->mapUnitIdToDb as $ship_id => $unit) {
-        if ($unit->getCount() > 0 && in_array($unit->unitId, Fleet::$snGroupFleetAndMissiles)) {
+        if ($unit->count > 0 && in_array($unit->unitId, Fleet::$snGroupFleetAndMissiles)) {
           $single_ship_data = get_ship_data($unit->unitId, $user);
           $speeds[] = $single_ship_data['speed'];
         }
@@ -393,15 +393,15 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
       $duration = max(1, round((35000 / $speed_percent * sqrt($distance * 10 / $fleet_speed) + 10) / $game_fleet_speed));
 
       foreach ($this->mapUnitIdToDb as $ship_id => $unit) {
-        if (!$unit->unitId || $unit->getCount() <= 0) {
+        if (!$unit->unitId || $unit->count <= 0) {
           continue;
         }
 
         $single_ship_data = get_ship_data($unit->unitId, $dbOwnerRow);
         $single_ship_data['speed'] = $single_ship_data['speed'] < 1 ? 1 : $single_ship_data['speed'];
 
-        $consumption += $single_ship_data['consumption'] * $unit->getCount() * pow($real_speed / sqrt($single_ship_data['speed']) / 10 + 1, 2);
-        $capacity += $single_ship_data['capacity'] * $unit->getCount();
+        $consumption += $single_ship_data['consumption'] * $unit->count * pow($real_speed / sqrt($single_ship_data['speed']) / 10 + 1, 2);
+        $capacity += $single_ship_data['capacity'] * $unit->count;
       }
 
       $consumption = round($distance * $consumption / 35000) + 1;

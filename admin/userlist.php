@@ -67,8 +67,9 @@ foreach(DBStaticUser::db_user_list_admin_multiaccounts() as $ip) {
 }
 
 $geoip = geoip_status();
-
+$count = 0;
 foreach(DBStaticUser::db_user_list_admin_sorted($sort_fields[$sort], $is_players_online_page) as $user_row ) {
+  $count++;
   if($user_row['banaday']) {
     $ban_details = db_ban_list_get_details($user_row);
   }
@@ -101,7 +102,7 @@ foreach(DBStaticUser::db_user_list_admin_sorted($sort_fields[$sort], $is_players
 }
 
 $template->assign_vars(array(
-  'USER_COUNT'      => db_num_rows($query),
+  'USER_COUNT'      => $count,
   'SORT'            => $sort,
   'GEOIP'           => $geoip,
   'METAMATTER'      => isset(sn_module::$sn_module['unit_res_metamatter']),

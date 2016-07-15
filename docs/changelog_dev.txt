@@ -1056,10 +1056,14 @@ Fleet::$snGroupFleet
     - sn_get_groups('resources_loot') -> UnitResourceLoot::is_resource($unit_id)
 
 
-LAMBDA FUNCTION - FROM ANONYMOUS
-
+LAMBDA FUNCTION - FROM ANONYMOUS - запихивать анонимные функции в переменные для реюза
 FUNCTION (
 
+
+Показывать в Обзоре Империи обломки на орбитах
+
+
+// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же
 
 
 #ctv

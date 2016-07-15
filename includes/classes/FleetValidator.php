@@ -45,6 +45,7 @@ class FleetValidator {
         pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
       }
     }
+    pdump('// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же', FLIGHT_ALLOWED);
   }
 
   /**
@@ -56,24 +57,71 @@ class FleetValidator {
     foreach ($checklist as $condition => $action) {
 
       $checkResult = call_user_func(array($this, $condition));
-//pdump($checkResult, $condition);
+pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
 
-      if (is_array($action)) {
-        if(!empty($action[$checkResult])) {
-          $action = $action[$checkResult];
-        } else {
-          continue;
-        }
-      }
-
-//pdump($action, $condition);
-
-
-      if (is_array($action)) {
-        $this->checkMissionRestrictions($action);
-      } elseif (!$checkResult) {
+//      // Simple action on failed check
+//      if(!is_array($action)) {
+//        if(!$checkResult) {
+//          throw new ExceptionFleetInvalid($action, $action);
+//        } else {
+//          continue;
+//        }
+//      }
+      // If check failed and there no alternative actions - throw exception
+      // Shortcut ACTION => FAIL_STATUS instead of ACTION => array(false => FAIL_STATUS)
+      if (!$checkResult && !is_array($action)) {
         throw new ExceptionFleetInvalid($action, $action);
       }
+
+      // If no actions on current result - just skipping to next condition
+      if (!isset($action[$checkResult])) {
+        // If not - just continuing
+        continue;
+      }
+
+      // Otherwise - we got some action for current result
+      $action = $action[$checkResult];
+
+      // Is it a list of conditions?
+      if (is_array($action)) {
+        // Yes - performing condition check
+        $this->checkMissionRestrictions($action);
+      } else {
+        // No - then just performing action
+        throw new ExceptionFleetInvalid($action, $action);
+      }
+
+
+//      // Is there some alternatives?
+//      if (is_array($action)) {
+//        if (!empty($action[$checkResult])) {
+//          // Now action is selected alternative
+//          $action = $action[$checkResult];
+//        } else {
+//          continue;
+//        }
+//        // No alternatives - just action
+//      } elseif (!$checkResult) {
+//        // Action launched if check failed
+//
+//        throw new ExceptionFleetInvalid($action, $action);
+//      }
+//
+//      // Here we got action that should be processed
+//
+////pdump($action, $condition);
+//
+////var_dump($checkResult);
+//      // Is new action an array - i.e. list of other checks?
+//      if (is_array($action)) {
+//        // Yes - performing check
+//        $this->checkMissionRestrictions($action);
+//      } else {
+////        if (!$checkResult)
+//        {
+//          throw new ExceptionFleetInvalid($action, $action);
+//        }
+//      }
     }
   }
 
@@ -233,6 +281,7 @@ class FleetValidator {
    */
   protected function checkSourceEnoughFuel() {
     $deuteriumOnPlanet = mrc_get_level($this->fleet->dbOwnerRow, $this->fleet->dbSourcePlanetRow, RES_DEUTERIUM);
+
     return $deuteriumOnPlanet > ceil($this->fleet->travelData['consumption']);
   }
 
@@ -358,6 +407,7 @@ class FleetValidator {
   /**
    * @return bool
    */
+  // TODO - used only as callable. Redo inversion
   protected function checkSpiesOnly() {
     return $this->fleet->shipsGetTotalById(SHIP_SPY) == $this->fleet->shipsGetTotal();
   }
@@ -392,7 +442,11 @@ class FleetValidator {
    */
   protected function forceTargetOwn() {
     if ($result = $this->checkTargetOwn()) {
+      unset($this->fleet->allowed_missions[MT_EXPLORE]);
+      unset($this->fleet->allowed_missions[MT_COLONIZE]);
+      unset($this->fleet->allowed_missions[MT_RECYCLE]);
       unset($this->fleet->allowed_missions[MT_MISSILE]);
+
       unset($this->fleet->allowed_missions[MT_SPY]);
 
       unset($this->fleet->allowed_missions[MT_ATTACK]);
@@ -494,13 +548,20 @@ class FleetValidator {
   }
 
   /**
+   * @return bool
+   */
+  protected function forceMissionSpy() {
+    return $this->forceMission(MT_SPY);
+  }
+
+  /**
    * Just checks mission type
    *
    * @param int $missionType
    *
    * @return bool
    */
-  protected function checkMissionNonRestrict($missionType) {
+  protected function checkMissionExact($missionType) {
     return $this->fleet->mission_type == $missionType;
   }
 
@@ -516,30 +577,21 @@ class FleetValidator {
    * @return bool
    */
   protected function checkMissionRelocate() {
-    return $this->checkMissionNonRestrict(MT_RELOCATE);
+    return $this->checkMissionExact(MT_RELOCATE);
   }
 
   /**
    * @return bool
    */
-  protected function checkMissionHoldNonUnique() {
-    $result = $this->checkMissionNonRestrict(MT_HOLD);
-
-    return $result;
+  protected function checkMissionExactHold() {
+    return $this->checkMissionExact(MT_HOLD);
   }
 
   /**
    * @return bool
    */
   protected function checkMissionTransport() {
-    return $this->checkMissionNonRestrict(MT_TRANSPORT);
-  }
-
-  /**
-   * @return bool
-   */
-  protected function forceMissionSpy() {
-    return $this->forceMission(MT_SPY);
+    return $this->checkMissionExact(MT_TRANSPORT);
   }
 
   /**
@@ -571,6 +623,13 @@ class FleetValidator {
    */
   protected function checkMissionExists() {
     return !empty($this->fleet->exists_missions[$this->fleet->mission_type]);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionAllowed() {
+    return !empty($this->fleet->allowed_missions[$this->fleet->mission_type]);
   }
 
   /**
@@ -647,7 +706,7 @@ class FleetValidator {
     return
       $this->checkRealFlight()
       &&
-      $this->checkMissionHoldNonUnique();
+      $this->checkMissionExactHold();
   }
 
   /**
@@ -709,7 +768,7 @@ class FleetValidator {
    * @return int
    */
   protected function checkExpeditionsMax() {
-    return get_player_max_expeditons($this->fleet->dbOwnerRow);
+    return get_player_max_expeditons($this->fleet->dbOwnerRow) > 0;
   }
 
   /**
@@ -761,7 +820,7 @@ class FleetValidator {
     return
       $this->checkRealFlight()
       &&
-      $this->checkMissionNonRestrict(MT_DESTROY);
+      $this->checkMissionExact(MT_DESTROY);
   }
 
   /**
@@ -784,7 +843,7 @@ class FleetValidator {
     return
       $this->checkRealFlight()
       &&
-      $this->checkMissionNonRestrict(MT_ACS);
+      $this->checkMissionExact(MT_ACS);
   }
 
   protected function checkACSInTime() {
@@ -796,7 +855,7 @@ class FleetValidator {
     return
       $this->checkRealFlight()
       &&
-      $this->checkMissionNonRestrict($missionType);
+      $this->checkMissionExact($missionType);
   }
 
   protected function unsetMission($missionType, $result, $restrictToMission = false) {
@@ -807,6 +866,26 @@ class FleetValidator {
         $missionType => $this->fleet->exists_missions[$missionType],
       );
     }
+  }
+
+  protected function unsetMissionColonize() {
+    $this->unsetMission(MT_COLONIZE, false);
+  }
+
+  protected function unsetMissionRecycle() {
+    $this->unsetMission(MT_RECYCLE, false);
+  }
+
+  protected function unsetMissionMissile() {
+    $this->unsetMission(MT_MISSILE, false);
+  }
+
+  protected function unsetMissionExplore() {
+    $this->unsetMission(MT_EXPLORE, false);
+  }
+
+  protected function unsetMissionSpy() {
+    $this->unsetMission(MT_SPY, false);
   }
 
   protected function checkMissionResultAndUnset($missionType, $result, $forceMission = false) {
@@ -882,8 +961,8 @@ class FleetValidator {
    */
   protected function checkACSInvited() {
     $playersInvited = !empty($this->fleet->acs['eingeladen']) ? explode(',', $this->fleet->acs['eingeladen']) : array();
-    foreach($playersInvited as $playerId) {
-      if(intval($playerId) == $this->fleet->dbOwnerRow['id']) {
+    foreach ($playersInvited as $playerId) {
+      if (intval($playerId) == $this->fleet->dbOwnerRow['id']) {
         return true;
       }
     }
@@ -906,7 +985,14 @@ class FleetValidator {
    * @return bool
    */
   protected function checkMissionAttack() {
-    return $this->checkMissionNonRestrict(MT_ATTACK);
+    return $this->checkMissionExact(MT_ATTACK);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkMissionExactSpy() {
+    return $this->checkMissionExact(MT_SPY);
   }
 
   /**
@@ -928,12 +1014,6 @@ class FleetValidator {
       &&
       $this->checkRealFlight();
   }
-
-
-
-
-
-
 
 
   protected function checkBashingNotRestricted() {
@@ -970,9 +1050,9 @@ class FleetValidator {
 
     // Retrieving flying fleets
     $objFleetsBashing = FleetList::dbGetFleetListBashing($user['id'], $this->fleet->dbTargetRow);
-    foreach($objFleetsBashing->_container as $fleetBashing) {
+    foreach ($objFleetsBashing->_container as $fleetBashing) {
       // Checking for ACS - each ACS count only once
-      if($fleetBashing->group_id) {
+      if ($fleetBashing->group_id) {
         $bashing_list["{$user['id']}_{$fleetBashing->group_id}"] = $fleetBashing->time_arrive_to_target;
       } else {
         $bashing_list[] = $fleetBashing->time_arrive_to_target;
@@ -980,12 +1060,12 @@ class FleetValidator {
     }
 
     // Check for joining to ACS - if there are already fleets in ACS no checks should be done
-    if($this->fleet->mission_type == MT_ACS && $bashing_list["{$user['id']}_{$this->fleet->group_id}"]) {
+    if ($this->fleet->mission_type == MT_ACS && $bashing_list["{$user['id']}_{$this->fleet->group_id}"]) {
       return true;
     }
 
     $query = DBStaticFleetBashing::db_bashing_list_get($user, $this->fleet->dbTargetRow, $time_limit);
-    while($bashing_row = db_fetch($query)) {
+    while ($bashing_row = db_fetch($query)) {
       $bashing_list[] = $bashing_row['bashing_time'];
     }
 
@@ -994,9 +1074,9 @@ class FleetValidator {
     $last_attack = 0;
     $wave = 0;
     $attack = 1;
-    foreach($bashing_list as &$bash_time) {
+    foreach ($bashing_list as &$bash_time) {
       $attack++;
-      if(
+      if (
         $bash_time - $last_attack > classSupernova::$config->fleet_bashing_interval
         ||
         $attack > classSupernova::$config->fleet_bashing_attacks

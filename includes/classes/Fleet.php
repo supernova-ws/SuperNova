@@ -872,7 +872,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.24
+   * @version 41a50.25
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -985,7 +985,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.24
+   * @version 41a50.25
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1549,15 +1549,15 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
   }
 
   public function fleetSpeed() {
-    $maxSpeed = PHP_INT_MAX;
+    $maxSpeed = array();
     foreach($this->shipsIterator() as $ship_id => $unit) {
-      if($unit->count > 0 && empty(static::$snGroupFleetAndMissiles[$ship_id])) {
+      if($unit->count > 0 && !empty(static::$snGroupFleetAndMissiles[$ship_id])) {
         $single_ship_data = get_ship_data($ship_id, $this->dbOwnerRow);
-        $maxSpeed = min($maxSpeed, $single_ship_data['speed']);
+        $maxSpeed[$ship_id] = $single_ship_data['speed'];
       }
     }
 
-    return $maxSpeed == PHP_INT_MAX ? 0 : min($maxSpeed);
+    return empty($maxSpeed) ? 0 : min($maxSpeed);
   }
 
   /**
@@ -1584,6 +1584,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
 
     // Flight allowed here
     pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
+//    pdump('// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же', FLIGHT_ALLOWED);
 
     $template_result['.']['missions'] = $this->renderAllowedMissions();
 
@@ -1671,8 +1672,11 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
       }
     }
 
+    // TODO - check if mission is not 0 and in ALLOWED_MISSIONS
+
     // Flight allowed here
     pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
+//    pdump('// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же', FLIGHT_ALLOWED);
 
 
     $timeMissionJob = 0;
