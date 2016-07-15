@@ -57,7 +57,7 @@ class FleetValidator {
     foreach ($checklist as $condition => $action) {
 
       $checkResult = call_user_func(array($this, $condition));
-pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
+      pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
 
 //      // Simple action on failed check
 //      if(!is_array($action)) {
@@ -498,6 +498,16 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
     return $result;
   }
 
+  /**
+   * @param int  $missionType
+   * @param bool $exact
+   *
+   * @return bool
+   */
+  protected function checkMission($missionType, $exact = false) {
+    return $this->fleet->mission_type == $missionType || (!$exact && $this->fleet->mission_type == MT_NONE);
+  }
+
 
   /**
    * Check mission type OR no mission - and limits available missions to this type if positive
@@ -506,52 +516,59 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
    *
    * @return bool
    */
-  protected function forceMission($missionType) {
-    $result = !$this->fleet->mission_type || $this->fleet->mission_type == $missionType;
-    if ($result) {
+  protected function forceMission($missionType, $exact = false) {
+    return $this->unsetMission($missionType, $this->checkMission($missionType, $exact), true);
+  }
+
+  protected function unsetMission($missionType, $result, $forceMission = false) {
+    if (!$result) {
+      unset($this->fleet->allowed_missions[$missionType]);
+    } elseif ($forceMission) {
       $this->fleet->allowed_missions = array(
         $missionType => $this->fleet->exists_missions[$missionType],
       );
-    } else {
-      unset($this->fleet->allowed_missions[$missionType]);
     }
 
     return $result;
   }
 
   /**
-   * @return bool
+   * @param string $name
+   * @param string $prefix
+   *
+   * @return int|false
+   * @throws Exception
    */
-  protected function forceMissionExplore() {
-    return $this->forceMission(MT_EXPLORE);
+  protected function checkMissionPrefix($name, $prefix) {
+    $result = false;
+    if (strpos($name, $prefix) === 0) {
+      $mission = 'MT_' . strtoupper(substr($name, strlen($prefix)));
+      if (!defined($mission)) {
+        // TODO - Ну, как-то получше это обделать
+        throw new Exception('Mission type "' . $mission . '" is not defined');
+      }
+
+      $result = constant($mission);
+    }
+
+    return $result;
   }
 
-  /**
-   * @return bool
-   */
-  protected function forceMissionColonize() {
-    return $this->forceMission(MT_COLONIZE);
-  }
+  public function __call($name, $arguments) {
+    $result = null;
+    if (($missionType = $this->checkMissionPrefix($name, 'unsetMission')) !== false) {
+      $result = $this->unsetMission($missionType, false);
+    } elseif (($missionType = $this->checkMissionPrefix($name, 'forceMissionExact')) !== false) {
+      $result = $this->forceMission($missionType, true);
+    } elseif (($missionType = $this->checkMissionPrefix($name, 'forceMission')) !== false) {
+      $result = $this->forceMission($missionType, false);
+    } elseif (($missionType = $this->checkMissionPrefix($name, 'checkMissionExact')) !== false) {
+      $result = $this->checkMission($missionType, true);
+    } elseif (($missionType = $this->checkMissionPrefix($name, 'checkMission')) !== false) {
+      $result = $this->checkMission($missionType, false);
+    }
 
-  /**
-   * @return bool
-   */
-  protected function forceMissionRecycle() {
-    return $this->forceMission(MT_RECYCLE);
-  }
-
-  /**
-   * @return bool
-   */
-  protected function forceMissionMissile() {
-    return $this->forceMission(MT_MISSILE);
-  }
-
-  /**
-   * @return bool
-   */
-  protected function forceMissionSpy() {
-    return $this->forceMission(MT_SPY);
+    return $result;
   }
 
   /**
@@ -561,8 +578,9 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
    *
    * @return bool
    */
+  // TODO - obsolete ??
   protected function checkMissionExact($missionType) {
-    return $this->fleet->mission_type == $missionType;
+    return $this->checkMission($missionType, true);
   }
 
 
@@ -571,27 +589,6 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
    */
   protected function checkNotEmptyMission() {
     return !empty($this->fleet->mission_type);
-  }
-
-  /**
-   * @return bool
-   */
-  protected function checkMissionRelocate() {
-    return $this->checkMissionExact(MT_RELOCATE);
-  }
-
-  /**
-   * @return bool
-   */
-  protected function checkMissionExactHold() {
-    return $this->checkMissionExact(MT_HOLD);
-  }
-
-  /**
-   * @return bool
-   */
-  protected function checkMissionTransport() {
-    return $this->checkMissionExact(MT_TRANSPORT);
   }
 
   /**
@@ -706,7 +703,7 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
     return
       $this->checkRealFlight()
       &&
-      $this->checkMissionExactHold();
+      $this->checkMissionExact(MT_HOLD);
   }
 
   /**
@@ -858,36 +855,6 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
       $this->checkMissionExact($missionType);
   }
 
-  protected function unsetMission($missionType, $result, $restrictToMission = false) {
-    if (!$result) {
-      unset($this->fleet->allowed_missions[$missionType]);
-    } elseif ($restrictToMission) {
-      $this->fleet->allowed_missions = array(
-        $missionType => $this->fleet->exists_missions[$missionType],
-      );
-    }
-  }
-
-  protected function unsetMissionColonize() {
-    $this->unsetMission(MT_COLONIZE, false);
-  }
-
-  protected function unsetMissionRecycle() {
-    $this->unsetMission(MT_RECYCLE, false);
-  }
-
-  protected function unsetMissionMissile() {
-    $this->unsetMission(MT_MISSILE, false);
-  }
-
-  protected function unsetMissionExplore() {
-    $this->unsetMission(MT_EXPLORE, false);
-  }
-
-  protected function unsetMissionSpy() {
-    $this->unsetMission(MT_SPY, false);
-  }
-
   protected function checkMissionResultAndUnset($missionType, $result, $forceMission = false) {
     $this->unsetMission($missionType, $result, $forceMission);
 
@@ -984,20 +951,6 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
   /**
    * @return bool
    */
-  protected function checkMissionAttack() {
-    return $this->checkMissionExact(MT_ATTACK);
-  }
-
-  /**
-   * @return bool
-   */
-  protected function checkMissionExactSpy() {
-    return $this->checkMissionExact(MT_SPY);
-  }
-
-  /**
-   * @return bool
-   */
   protected function checkMissionTransportPossibleAndReal() {
     return $this->checkMissionResultAndUnset(
       MT_TRANSPORT,
@@ -1010,7 +963,7 @@ pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
    */
   protected function checkMissionTransportReal() {
     return
-      $this->checkMissionTransport()
+      $this->checkMissionExact(MT_TRANSPORT)
       &&
       $this->checkRealFlight();
   }
