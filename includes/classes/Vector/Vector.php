@@ -1,5 +1,9 @@
 <?php
 
+namespace Vector;
+
+use classConfig;
+
 class Vector {
 
   const READ_VECTOR = 'readVector';

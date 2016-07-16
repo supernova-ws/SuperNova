@@ -2,6 +2,8 @@
 
 global $planetrow, $template, $uni_row, $uni_galaxy, $uni_system;
 
+use Vector\Vector;
+
 $classLocale = classLocale::$lang;
 
 try

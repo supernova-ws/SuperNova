@@ -23,28 +23,31 @@ class FleetValidator {
    */
   public function validate() {
     $checklist = sn_get_groups('mission_checks');
-    try {
-      // TODO - Do the restrictMission checks
 
-      // TODO - Кое-какие проверки дают FLIGHT_ALLOWED - ЧТО НЕПРАВДА В ДАННОМ СЛУЧАЕ!!!
-      // На странице 1 некоторые проверки ДОЛЖНЫ БЫТЬ опущены - иначе будет некрасиво
-      // А вот здесь надо проверять много дополнительной хуйни
-      $this->checkMissionRestrictions($checklist);
-//pdump('passed');
+    $this->checkMissionRestrictions($checklist);
 
-      // 2nd level restrictions
-      // Still cheap
-//      $this->restrict2ToAllowedMissions();
-//      $this->restrict2ToAllowedPlanetTypes();
-    } catch (ExceptionFleetInvalid $e) {
-//pdump($e->getCode(), '$e->getCode()');
-//pdump($e->getMessage(), '$e->getMessage()');
-      if ($e->getCode() != FLIGHT_ALLOWED) {
-        pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
-      } else {
-        pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
-      }
-    }
+//    try {
+//      // TODO - Do the restrictMission checks
+//
+//      // TODO - Кое-какие проверки дают FLIGHT_ALLOWED - ЧТО НЕПРАВДА В ДАННОМ СЛУЧАЕ!!!
+//      // На странице 1 некоторые проверки ДОЛЖНЫ БЫТЬ опущены - иначе будет некрасиво
+//      // А вот здесь надо проверять много дополнительной хуйни
+//      $this->checkMissionRestrictions($checklist);
+////pdump('passed');
+//
+//      // 2nd level restrictions
+//      // Still cheap
+////      $this->restrict2ToAllowedMissions();
+////      $this->restrict2ToAllowedPlanetTypes();
+//    } catch (ExceptionFleetInvalid $e) {
+////pdump($e->getCode(), '$e->getCode()');
+////pdump($e->getMessage(), '$e->getMessage()');
+//      if ($e->getCode() != FLIGHT_ALLOWED) {
+//        pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
+//      } else {
+//        pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
+//      }
+//    }
     pdump('// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же', FLIGHT_ALLOWED);
   }
 

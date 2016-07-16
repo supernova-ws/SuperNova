@@ -1,5 +1,7 @@
 <?php
 
+use Vector\Vector;
+
 define('SN_IN_FLEET', true);
 define('SN_RENDER_NAVBAR_PLANET', true);
 

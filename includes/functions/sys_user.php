@@ -1,4 +1,6 @@
 <?php
+use Vector\Vector;
+
 /**
  * Created by PhpStorm.
  * User: Gorlum

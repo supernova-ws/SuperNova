@@ -9,7 +9,7 @@ $sn_data[UNIT_GROUP]['mission_checks'] = array(
   // Cheap checks - class Fleet already have all this info internally
   'checkSpeedPercentOld'       => FLIGHT_FLEET_SPEED_WRONG,
   'checkTargetInUniverse'      => FLIGHT_VECTOR_BEYOND_UNIVERSE,
-  'checkTargetNotSource'       => FLIGHT_VECTOR_SAME_SOURCE,
+  'checkTargetNotSource'       => FLIGHT_VECTOR_SAME_SOURCE, // -
   'checkSenderNoVacation'      => FLIGHT_PLAYER_VACATION_OWN,
   'checkTargetNoVacation'      => FLIGHT_PLAYER_VACATION,
   'checkFleetNotEmpty'         => FLIGHT_SHIPS_NO_SHIPS,
@@ -19,6 +19,9 @@ $sn_data[UNIT_GROUP]['mission_checks'] = array(
   'checkResourcesPositive'     => FLIGHT_RESOURCES_NEGATIVE,
   'checkNotTooFar'             => FLIGHT_FLEET_TOO_FAR,
   'checkEnoughCapacity'        => FLIGHT_FLEET_OVERLOAD,
+
+  // checkMissionAllowed
+  // consumptionIsNegative ??????
 
   // Medium checks - currently requires access to DB but potentially doesn't
   'checkSourceEnoughShips'     => FLIGHT_SHIPS_NOT_ENOUGH,

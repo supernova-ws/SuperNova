@@ -1,5 +1,7 @@
 <?php
 
+use Vector\Vector;
+
 function flt_fleet_speed($user, $fleet) {
   if(!is_array($fleet)) {
     $fleet = array($fleet => 1);

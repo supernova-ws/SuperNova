@@ -1,5 +1,7 @@
 <?php
 
+use Vector\Vector;
+
 class classSupernova {
   /**
    * ex $sn_mvc

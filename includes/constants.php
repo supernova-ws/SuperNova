@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.26');
+define('SN_VERSION', '41a50.30');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -708,6 +708,11 @@ define('FLIGHT_MISSION_ACS_NOT_INVITED', 67);
 
 
 define('FLIGHT_INTERNAL_ERROR', 999);
+
+define('FLEET_PAGE_SHIPS', 0);
+define('FLEET_PAGE_DESTINATION', 1);
+define('FLEET_PAGE_MISSION', 2);
+define('FLEET_PAGE_SEND', 3);
 
 
 // *** Races - Homeworlds

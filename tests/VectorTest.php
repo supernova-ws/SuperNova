@@ -1,5 +1,7 @@
 <?php
 
+use Vector\Vector;
+
 /**
  * Class VectorTest
  *
@@ -40,12 +42,14 @@ class VectorTest extends PHPUnit_Framework_TestCase {
    * @covers ::_staticInit
    */
   public function test_staticInit() {
-    $this->assertTrue(getPrivateProperty('Vector', '_isStaticInit')->getValue($this->object));
-    $this->assertEquals(2, getPrivateProperty('Vector', 'knownGalaxies')->getValue($this->object));
-    $this->assertEquals(4, getPrivateProperty('Vector', 'knownSystems')->getValue($this->object));
-    $this->assertEquals(6, getPrivateProperty('Vector', 'knownPlanets')->getValue($this->object));
-    $this->assertEquals(PT_PLANET, getPrivateProperty('Vector', 'type')->getValue($this->object));
-    $this->assertEquals(20000, getPrivateProperty('Vector', 'galaxyDistance')->getValue($this->object));
+    $className = get_class($this->object);
+    $this->assertAttributeEquals(true, '_isStaticInit', $className);
+    $this->assertAttributeEquals(2, 'knownGalaxies', $className);
+    $this->assertAttributeEquals(4, 'knownSystems', $className);
+    $this->assertAttributeEquals(6, 'knownPlanets', $className);
+    $this->assertAttributeEquals(20000, 'galaxyDistance', $className);
+
+    $this->assertAttributeEquals(PT_PLANET, 'type', $this->object);
   }
 
   /**
@@ -55,10 +59,10 @@ class VectorTest extends PHPUnit_Framework_TestCase {
     $vector = new Vector(1, 3, 5, PT_MOON);
     $this->object->readFromVector($vector);
 
-    $this->assertEquals(1, getPrivateProperty('Vector', 'galaxy')->getValue($this->object));
-    $this->assertEquals(3, getPrivateProperty('Vector', 'system')->getValue($this->object));
-    $this->assertEquals(5, getPrivateProperty('Vector', 'planet')->getValue($this->object));
-    $this->assertEquals(PT_MOON, getPrivateProperty('Vector', 'type')->getValue($this->object));
+    $this->assertAttributeEquals(1, 'galaxy', $this->object);
+    $this->assertAttributeEquals(3, 'system', $this->object);
+    $this->assertAttributeEquals(5, 'planet', $this->object);
+    $this->assertAttributeEquals(PT_MOON, 'type', $this->object);
   }
 
   /**
@@ -94,10 +98,10 @@ class VectorTest extends PHPUnit_Framework_TestCase {
   public function test__construct($galaxy, $system, $planet, $type, $g, $s, $p, $t) {
     $this->object = new Vector($galaxy, $system, $planet, $type);
 
-    $this->assertEquals($g, getPrivateProperty('Vector', 'galaxy')->getValue($this->object));
-    $this->assertEquals($s, getPrivateProperty('Vector', 'system')->getValue($this->object));
-    $this->assertEquals($p, getPrivateProperty('Vector', 'planet')->getValue($this->object));
-    $this->assertEquals($t, getPrivateProperty('Vector', 'type')->getValue($this->object));
+    $this->assertAttributeEquals($g, 'galaxy', $this->object);
+    $this->assertAttributeEquals($s, 'system', $this->object);
+    $this->assertAttributeEquals($p, 'planet', $this->object);
+    $this->assertAttributeEquals($t, 'type', $this->object);
   }
 
   public function dataDistance() {
@@ -220,10 +224,10 @@ class VectorTest extends PHPUnit_Framework_TestCase {
   public function testConvertToVector($coordinates, $prefix, $g, $s, $p, $t, $d) {
     $this->object = Vector::convertToVector($coordinates, $prefix);
 
-    $this->assertEquals($g, getPrivateProperty('Vector', 'galaxy')->getValue($this->object));
-    $this->assertEquals($s, getPrivateProperty('Vector', 'system')->getValue($this->object));
-    $this->assertEquals($p, getPrivateProperty('Vector', 'planet')->getValue($this->object));
-    $this->assertEquals($t, getPrivateProperty('Vector', 'type')->getValue($this->object));
+    $this->assertAttributeEquals($g, 'galaxy', $this->object);
+    $this->assertAttributeEquals($s, 'system', $this->object);
+    $this->assertAttributeEquals($p, 'planet', $this->object);
+    $this->assertAttributeEquals($t, 'type', $this->object);
   }
 
   /**

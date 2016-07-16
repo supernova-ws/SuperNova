@@ -1,5 +1,7 @@
 <?php
 
+use Vector\Vector;
+
 function uni_create_planet_get_density($position_data, $user_row, $planet_sectors) {
   $density_list = sn_get_groups('planet_density');
   $density_min = reset($density_list);

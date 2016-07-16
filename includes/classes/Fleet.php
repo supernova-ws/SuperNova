@@ -1,4 +1,5 @@
 <?php
+use Vector\Vector;
 
 /**
  * Class Fleet
@@ -872,7 +873,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.25
+   * @version 41a50.30
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -985,7 +986,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.25
+   * @version 41a50.30
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1164,7 +1165,17 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     $this->setTargetFromVectorObject($targetVector);
     $this->targetVector = $targetVector;
 
-    $this->populateTargetPlanet();
+//    if ($this->mission_type != MT_NONE) {
+//      $this->restrictTargetTypeByMission();
+//
+//      // TODO - Нельзя тут просто менять тип планеты или координат!
+//      // If current planet type is not allowed on mission - switch planet type
+//      if (empty($this->allowed_planet_types[$this->targetVector->type])) {
+//        $targetPlanetCoords->type = reset($this->allowed_planet_types);
+//      }
+//    }
+
+    $this->populateTargetPlanetAndOwner();
 
     $this->unitsSetFromArray($ships);
 
@@ -1197,19 +1208,17 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     }
   }
 
-  protected function populateTargetPlanet() {
-    $targetPlanetCoords = $this->targetVector;
-    if ($this->mission_type != MT_NONE) {
-      $this->restrictTargetTypeByMission();
-
-      // TODO - Нельзя тут просто менять тип планеты или координат!
-      // If current planet type is not allowed on mission - switch planet type
-      if (empty($this->allowed_planet_types[$this->targetVector->type])) {
-        $targetPlanetCoords->type = reset($this->allowed_planet_types);
-      }
+  protected function populateTargetPlanetAndOwner() {
+    // If vector points to no exact object OR debris - then getting planet on coordinates
+    $targetVector = clone $this->targetVector;
+    if($targetVector->type == PT_DEBRIS || $targetVector == PT_NONE) {
+      $targetVector->type = PT_PLANET;
     }
 
-    $this->dbTargetRow = DBStaticPlanet::db_planet_by_vector_object($targetPlanetCoords);
+    $this->dbTargetRow = DBStaticPlanet::db_planet_by_vector_object($targetVector);
+    if (!empty($this->dbTargetRow['id_owner'])) {
+      $this->dbTargetOwnerRow = DBStaticUser::getRecordById($this->dbTargetRow['id_owner'], '*', true);
+    }
   }
 
 
@@ -1561,18 +1570,27 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
   }
 
   /**
+   * @param array $planetResourcesWithoutConsumption
+   */
+  public function fleetPage2Prepare($planetResourcesWithoutConsumption) {
+    $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
+
+    $validator = new FleetValidator($this);
+    $validator->validate();
+  }
+
+  /**
    *
    */
   public function fleetPage2() {
     global $template_result;
 
-    $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
-    $planetResources = $this->resourcesGetOnPlanet();
-    try {
-      $validator = new FleetValidator($this);
-      $validator->validate();
-    } catch (Exception $e) {
+    $planetResourcesTotal = DBStaticPlanet::getResources($this->dbOwnerRow, $this->dbSourcePlanetRow);
+    $planetResourcesWithoutConsumption = $this->resourcesSubstractConsumption($planetResourcesTotal);
 
+    try {
+      $this->fleetPage2Prepare($planetResourcesWithoutConsumption);
+    } catch (Exception $e) {
       // TODO - MESSAGE BOX
       if($e instanceof ExceptionFleetInvalid) {
         sn_db_transaction_rollback();
@@ -1599,12 +1617,12 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     $this->captainGet();
     $template_result += $this->renderCaptain();
 
-    $template_result['.']['resources'] = $this->renderPlanetResources($planetResources);
+    $template_result['.']['resources'] = $this->renderPlanetResources($planetResourcesWithoutConsumption);
 
     $template_result += array(
-      'planet_metal'     => $planetResources[RES_METAL],
-      'planet_crystal'   => $planetResources[RES_CRYSTAL],
-      'planet_deuterium' => $planetResources[RES_DEUTERIUM],
+      'planet_metal'     => $planetResourcesWithoutConsumption[RES_METAL],
+      'planet_crystal'   => $planetResourcesWithoutConsumption[RES_CRYSTAL],
+      'planet_deuterium' => $planetResourcesWithoutConsumption[RES_DEUTERIUM],
 
       'fleet_capacity' => $this->shipsGetCapacity() - $this->travelData['consumption'],
       'speed'          => $this->oldSpeedInTens,
@@ -1645,6 +1663,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     if (!empty($this->dbTargetRow['id'])) {
       $this->dbTargetRow = DBStaticPlanet::db_planet_by_id($this->dbTargetRow['id'], true);
     }
+    // TODO - deprecated! Filled in populateTargetPlanetAndOwner
     if (!empty($this->dbTargetRow['id_owner'])) {
       $this->dbTargetOwnerRow = DBStaticPlanet::db_planet_by_id($this->dbTargetRow['id_owner'], true);
     }
@@ -1776,16 +1795,16 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     }
   }
 
-
   /**
+   * @param array $planetResources
+   *
    * @return array
    */
-  protected function resourcesGetOnPlanet() {
-    $planetResources = array();
+  protected function resourcesSubstractConsumption($planetResources) {
+    !isset($planetResources[RES_DEUTERIUM]) ? $planetResources[RES_DEUTERIUM] = 0 : false;
 
-    $sn_group_resources = sn_get_groups('resources_loot');
-    foreach ($sn_group_resources as $resource_id) {
-      $planetResources[$resource_id] = floor(mrc_get_level($this->dbOwnerRow, $this->dbSourcePlanetRow, $resource_id) - ($resource_id == RES_DEUTERIUM ? $this->travelData['consumption'] : 0));
+    if($this->travelData['consumption'] >= 0) {
+      $planetResources[RES_DEUTERIUM] -= ceil($this->travelData['consumption']);
     }
 
     return $planetResources;

@@ -21,6 +21,8 @@
    [!] DB code updates
 */
 
+use Vector\Vector;
+
 if(!defined('INIT')) {
 //  include_once('init.php');
   die('Unauthorized access');

@@ -1,5 +1,7 @@
 <?php
 
+use Vector\Vector;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $user;

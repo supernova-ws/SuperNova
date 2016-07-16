@@ -1,10 +1,29 @@
 <?php
 
+use Vector\Vector;
+
 class DBStaticPlanet {
+
+  /**
+   * @param array $rowUser
+   * @param array $rowPlanet
+   *
+   * @return array
+   */
+  public static function getResources($rowUser, $rowPlanet) {
+    $planetResources = array();
+
+    $sn_group_resources = sn_get_groups('resources_loot');
+    foreach ($sn_group_resources as $resource_id) {
+      $planetResources[$resource_id] = floor(mrc_get_level($rowUser, $rowPlanet, $resource_id));
+    }
+
+    return $planetResources;
+  }
 
 
   public static function db_planets_purge() {
-    doquery("DELETE FROM {{planets}} WHERE id_owner NOT IN (SELECT `id` FROM {{users}});");
+    doquery("DELETE FROM `{{planets}}` WHERE `id_owner` NOT IN (SELECT `id` FROM `{{users}}`);");
   }
 
 
@@ -23,7 +42,7 @@ class DBStaticPlanet {
 
   public static function db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*') {
     return classSupernova::db_get_record_list(LOC_PLANET,
-      "{{planets}}.`galaxy` = {$galaxy} AND {{planets}}.`system` = {$system} AND {{planets}}.`planet` = {$planet} AND {{planets}}.`planet_type` = {$planet_type}", true);
+      "`{{planets}}`.`galaxy` = {$galaxy} AND `{{planets}}`.`system` = {$system} AND `{{planets}}`.`planet` = {$planet} AND `{{planets}}`.`planet_type` = {$planet_type}", true);
   }
 
   public static function db_planet_by_gspt($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*') {

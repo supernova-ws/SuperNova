@@ -8,6 +8,8 @@
  *     [!] Wrote from scratch
  */
 
+use Vector\Vector;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('notes');
