@@ -13,6 +13,7 @@
                 <directory>../.git/</directory>
                 <directory>../.local/</directory>
                 <directory>../__local/</directory>
+                <directory>../tests.int/</directory>
                 <directory>../admin/sxd/</directory>
             </exclude>
         </whitelist>
