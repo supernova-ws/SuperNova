@@ -55,14 +55,36 @@ $testData = array(
   array(FLIGHT_PLAYER_VACATION, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 12, PT_PLANET), MT_NONE, array(), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
   // checkFleetNotEmpty
   array(FLIGHT_SHIPS_NO_SHIPS, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 1, PT_NONE), MT_NONE, array(), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // checkUnitsPositive - Unused: Unit class does not accept negative unit count
+  // checkOnlyFleetUnits - Unused: Fleet class restricts passing non-ship or non-resource
+  // checkOnlyFlyingUnits
+  array(FLIGHT_SHIPS_UNMOVABLE, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_NONE, array(SHIP_SATTELITE_SOLAR => 1), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // 'checkResourcesPositive'     => FLIGHT_RESOURCES_NEGATIVE,
+  array(FLIGHT_RESOURCES_NEGATIVE, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_NONE, array(SHIP_SMALL_FIGHTER_LIGHT => 1, RES_DEUTERIUM => -1), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // checkNotTooFar
+  array(FLIGHT_FLEET_TOO_FAR, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(4, 1, 4, PT_PLANET), MT_NONE, array(SHIP_SMALL_FIGHTER_LIGHT => 1), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // checkEnoughCapacity
+  array(FLIGHT_FLEET_OVERLOAD, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_NONE, array(SHIP_SMALL_FIGHTER_LIGHT => 1, RES_DEUTERIUM => 100000), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // checkSourceEnoughShips
+  array(FLIGHT_SHIPS_NOT_ENOUGH, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_NONE, array(SHIP_SMALL_FIGHTER_LIGHT => PHP_INT_MAX), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // checkSourceEnoughFuel
+  array(FLIGHT_RESOURCES_FUEL_NOT_ENOUGH, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_NONE, array(SHIP_SMALL_FIGHTER_LIGHT => 10000), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // 'checkSourceEnoughResources'
+  array(FLIGHT_RESOURCES_NOT_ENOUGH, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_NONE, array(SHIP_SMALL_FIGHTER_LIGHT => 1000, RES_METAL => 10000), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
+  // TODO 'checkMultiAccountNot'            => FLIGHT_PLAYER_SAME_IP,
+  // TODO ''checkEnoughFleetSlots'           => FLIGHT_FLEET_NO_SLOTS,
 
-//  // 'checkUnitsPositive'
-    array(FLIGHT_SHIPS_NEGATIVE, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_NONE, array(SHIP_CARGO_SMALL => -1), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
-//  // 'checkOnlyFleetUnits'        => FLIGHT_SHIPS_UNIT_WRONG,
-//  // 'checkOnlyFlyingUnits'       => FLIGHT_SHIPS_UNMOVABLE,
-//  // 'checkResourcesPositive'     => FLIGHT_RESOURCES_NEGATIVE,
-//  // 'checkNotTooFar'             => FLIGHT_FLEET_TOO_FAR,
-//  // 'checkEnoughCapacity'        => FLIGHT_FLEET_OVERLOAD,
+
+//  // TODO - THIS CHECKS SHOULD BE ADDED IN UNIT_CAPTAIN MODULE!
+//  'checkCaptainSent'                => array(
+//    true => array(
+//      'checkCaptainExists'        => FLIGHT_CAPTAIN_NOT_HIRED,
+//      'checkCaptainOnPlanet'      => FLIGHT_CAPTAIN_ALREADY_FLYING,
+//      'checkCaptainNotRelocating' => FLIGHT_CAPTAIN_RELOCATE_LOCK,
+//    ),
+//  ),
+
+
 //  array(FLIGHT_FLEET_SPEED_WRONG, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 1, PT_NONE), MT_NONE, array(), 0, 10, 0, 0, array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0), array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0)),
 );
 
@@ -98,12 +120,16 @@ function testFleet($exceptionCode, $fleet_page, $user, $planetrow, $targetVector
 //  break;
     }
 
-    print('Passed');
+    if($exceptionCode !== null) {
+      print('<span style="color: red; font-size: 200%;">FAILED! Expected Exception [' . $exceptionCode . ']: "' . classLocale::$lang['fl_attack_error'][$exceptionCode] . '" - FAILED!</span><br />');
+    } else {
+      print('Passed');
+    }
   } catch (Exception $e) {
     if ($exceptionCode !== null && $e->getCode() === $exceptionCode) {
-      print('<font color="green">Exception [' . $exceptionCode . ']: "' . classLocale::$lang['fl_attack_error'][$e->getCode()] . '" - passed</font><br />');
+      print('<span style="color: darkgreen;">Exception [' . $exceptionCode . ']: "' . classLocale::$lang['fl_attack_error'][$exceptionCode] . '" - passed</span><br />');
     } else {
-      print('<font color="red">');
+      print('<span style="color: red; font-size: 200%;">Expected Exception [' . $exceptionCode . ']: "' . classLocale::$lang['fl_attack_error'][$exceptionCode] . '" - FAILED!</span><br />');
       throw $e;
     }
   }

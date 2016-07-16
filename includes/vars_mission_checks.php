@@ -9,12 +9,12 @@ $sn_data[UNIT_GROUP]['mission_checks'] = array(
   // Cheap checks - class Fleet already have all this info internally
   'checkSpeedPercentOld'       => FLIGHT_FLEET_SPEED_WRONG,
   'checkTargetInUniverse'      => FLIGHT_VECTOR_BEYOND_UNIVERSE,
-  'checkTargetNotSource'       => FLIGHT_VECTOR_SAME_SOURCE, // -
-  'checkSenderNoVacation'      => FLIGHT_PLAYER_VACATION_OWN,
+  'checkTargetNotSource'       => FLIGHT_VECTOR_SAME_SOURCE,
+  'checkSenderNoVacation'      => FLIGHT_PLAYER_VACATION_OWN,  // tODO
   'checkTargetNoVacation'      => FLIGHT_PLAYER_VACATION,
   'checkFleetNotEmpty'         => FLIGHT_SHIPS_NO_SHIPS,
-  'checkUnitsPositive'         => FLIGHT_SHIPS_NEGATIVE,
-  'checkOnlyFleetUnits'        => FLIGHT_SHIPS_UNIT_WRONG,
+  // 'checkUnitsPositive'         => FLIGHT_SHIPS_NEGATIVE, // Unused - 'cause it's not allowed to put negative units into Unit class
+  // 'checkOnlyFleetUnits'        => FLIGHT_SHIPS_UNIT_WRONG, // Unused - 'cause it's only possible to pass to fleet SHIP or RESOURCE
   'checkOnlyFlyingUnits'       => FLIGHT_SHIPS_UNMOVABLE,
   'checkResourcesPositive'     => FLIGHT_RESOURCES_NEGATIVE,
   'checkNotTooFar'             => FLIGHT_FLEET_TOO_FAR,

@@ -1067,6 +1067,22 @@ FUNCTION (
 
 // TODO - заметки. Сделать время ДО которого заметка будет висеть прилепленной или ПОСЛЕ которого она появится в прилепленных
 
+
+
+// TODO - http://localhost/supernova/index.php?page=options
+Warning: htmlentities() expects parameter 1 to be string, array given in X:\Documents\Projects\supernova\src_new\modules\menu_customize\menu_customize.php on line 93
+Call Stack
+#	Time	Memory	Function	Location
+1	0.0002	367384	{main}( )	..\index.php:0
+2	0.4626	3049960	execute_hooks( )	..\index.php:10
+3	0.4852	3114032	call_user_func ( )	..\general.php:59
+4	0.4852	3114056	menu_customize->options_view( )	..\general.php:59
+5	0.4853	3118312	htmlentities ( )	..\menu_customize.php:93
+
+
+
+
+
 #ctv
 
 Теперь можно атаковать ракетами свои же планеты. Таким образом можно избавится от излишних ракет или перехватчиков в шахтах, а так же уничтожать свои защитные сооружения
