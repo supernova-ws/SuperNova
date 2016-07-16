@@ -103,11 +103,13 @@ require_once('classes/core_classes.php');
 require_once(SN_ROOT_PHYSICAL . "includes/debug.class" . DOT_PHP_EX);
 classSupernova::$debug = new debug();
 
-spl_autoload_register(function ($class) {
-  if(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php')) {
-    require_once SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php';
-  } elseif(file_exists(SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php')) {
-    require_once SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php';
+empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'includes/classes/' : false;
+spl_autoload_register(function ($class) use ($classRoot) {
+  $class = str_replace('\\', '/', $class);
+  if (file_exists($classRoot . $class . '.php')) {
+    require_once $classRoot . $class . '.php';
+  } elseif (file_exists($classRoot . 'UBE/' . $class . '.php')) {
+    require_once $classRoot . 'UBE/' . $class . '.php';
   }
 });
 
