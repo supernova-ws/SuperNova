@@ -873,7 +873,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.30
+   * @version 41a50.36
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -986,7 +986,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.30
+   * @version 41a50.36
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1217,7 +1217,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
 
     $this->dbTargetRow = DBStaticPlanet::db_planet_by_vector_object($targetVector);
     if (!empty($this->dbTargetRow['id_owner'])) {
-      $this->dbTargetOwnerRow = DBStaticUser::getRecordById($this->dbTargetRow['id_owner'], '*', true);
+      $this->dbTargetOwnerRow = DBStaticUser::db_user_by_id($this->dbTargetRow['id_owner'], true);
     }
   }
 
@@ -1665,7 +1665,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     }
     // TODO - deprecated! Filled in populateTargetPlanetAndOwner
     if (!empty($this->dbTargetRow['id_owner'])) {
-      $this->dbTargetOwnerRow = DBStaticPlanet::db_planet_by_id($this->dbTargetRow['id_owner'], true);
+      $this->dbTargetOwnerRow = DBStaticUser::db_user_by_id($this->dbTargetRow['id_owner'], true);
     }
 
     $this->resource_list = array(
