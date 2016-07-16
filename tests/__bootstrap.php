@@ -16,15 +16,13 @@ require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
 // echo 'bootstrap';
 //print($sn_root_physical);
 
-spl_autoload_register(function ($class) {
-  if (file_exists(SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php')) {
-    require_once SN_ROOT_PHYSICAL . 'includes/classes/' . $class . '.php';
-  }
-});
-
-spl_autoload_register(function ($class) {
-  if (file_exists(SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php')) {
-    require_once SN_ROOT_PHYSICAL . 'includes/classes/UBE/' . $class . '.php';
+empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'includes/classes/' : false;
+spl_autoload_register(function ($class) use ($classRoot) {
+  $class = str_replace('\\', '/', $class);
+  if (file_exists($classRoot . $class . '.php')) {
+    require_once $classRoot . $class . '.php';
+  } elseif (file_exists($classRoot . 'UBE/' . $class . '.php')) {
+    require_once $classRoot . 'UBE/' . $class . '.php';
   }
 });
 
@@ -55,11 +53,14 @@ function invokeMethod($object, $methodName, array $parameters = array()) {
  *
  * @return ReflectionProperty
  */
-function getPrivateProperty($className, $propertyName)
-{
+function getPrivateProperty($className, $propertyName) {
   $reflector = new ReflectionClass($className);
   $property = $reflector->getProperty($propertyName);
   $property->setAccessible(true);
 
   return $property;
+}
+
+function getPrivatePropertyValue($object, $propertyName) {
+  return getPrivateProperty(get_class($object), $propertyName)->getValue($object);
 }
