@@ -150,7 +150,7 @@ classSupernova::init_global_objects();
 // define('BE_DEBUG', true); // Отладка боевого движка
 classSupernova::init_debug_state();
 
-require_once(SN_ROOT_PHYSICAL . "includes/vars" . DOT_PHP_EX);
+require_once(SN_ROOT_PHYSICAL . "includes/vars/vars" . DOT_PHP_EX);
 require_once(SN_ROOT_PHYSICAL . "includes/general" . DOT_PHP_EX);
 
 init_update();

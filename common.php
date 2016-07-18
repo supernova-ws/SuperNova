@@ -58,6 +58,6 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
   $que = $global_data['que'];
 }
 
-require_once('includes/vars_menu.php');
+require_once 'includes/vars/vars_menu.php';
 
 sys_user_options_unpack($user);
