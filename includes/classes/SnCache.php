@@ -13,6 +13,11 @@ class SnCache {
    */
   protected static $data = array();
 
+  // Массив $locator - хранит отношения между записями для быстрого доступа по тип_записи:тип_локации:ид_локации:внутренний_ид_записи=>информация
+  // Для LOC_UNIT внутренний ИД - это SNID, а информация - это ссылка на запись `unit`
+  // Для LOC_QUE внутренний ИД - это тип очереди, а информация - массив ссылок на `que`
+  public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
+
   /**
    * Repacking data for $location_type
    *
@@ -26,7 +31,7 @@ class SnCache {
     }
 
     HelperArray::array_repack(static::$data[$location_type]);
-    HelperArray::array_repack(classSupernova::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
+    HelperArray::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
     HelperArray::array_repack(classSupernova::$queries[$location_type], 1);
   }
 
@@ -36,7 +41,7 @@ class SnCache {
       // TODO - replace with setNull
       array_walk(static::$data[$location_type], function (&$item) { $item = null; });
     }
-    classSupernova::$locator[$location_type] = array();
+    static::$locator[$location_type] = array();
     classSupernova::$queries[$location_type] = array();
     static::cache_repack($location_type); // Перепаковываем внутренние структуры, если нужно
   }
@@ -50,7 +55,7 @@ class SnCache {
       static::$data = array();
       SnCache::cache_lock_unset_all();
     }
-    classSupernova::$locator = array();
+    static::$locator = array();
     classSupernova::$queries = array();
   }
 
