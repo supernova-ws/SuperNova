@@ -217,7 +217,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     // Simple set
     invokeMethod($this->object, '_setUnsafe', array('test', 5));
     $this->assertEquals(5, $this->object->test);
-    $this->assertEquals(array('test' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    $this->assertAttributeEquals(array('test' => true), 'propertiesChanged', $this->object);
 
     // Test with calling getters/setters
     // Getter = +1 to real value
@@ -227,7 +227,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     // Initial + Getter + Setter = 0 + 1 + 2
     $this->assertEquals(3, $this->object->testGetSet);
     // Checking that all changed properties still marked
-    $this->assertEquals(array('test' => true, 'testGetSet' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    $this->assertAttributeEquals(array('test' => true, 'testGetSet' => true), 'propertiesChanged', $this->object);
   }
 
   /**
@@ -250,7 +250,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     // Simple set
     $this->object->test = 5;
     $this->assertEquals(5, $this->object->test);
-    $this->assertEquals(array('test' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    $this->assertAttributeEquals(array('test' => true), 'propertiesChanged', $this->object);
 
     // Test with calling getters/setters
     // Getter = +1 to real value
@@ -260,7 +260,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     // Initial + Getter + Setter = 0 + 1 + 2
     $this->assertEquals(3, $this->object->testGetSet);
     // Checking that all changed properties still marked
-    $this->assertEquals(array('test' => true, 'testGetSet' => true), getPrivateProperty('PropertyHiderTested', 'propertiesChanged')->getValue($this->object));
+    $this->assertAttributeEquals(array('test' => true, 'testGetSet' => true), 'propertiesChanged', $this->object);
   }
 
 
