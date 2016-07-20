@@ -80,7 +80,6 @@ class classSupernova {
 
   public static $options = array();
 
-  public static $data = array(); // Кэш данных - юзера, планеты, юниты, очередь, альянсы итд
   public static $locks = array(); // Информация о блокировках
   public static $queries = array(); // Кэш запросов
 
@@ -203,115 +202,6 @@ class classSupernova {
     self::$debug = $debug;
   }
 
-  // TODO Вынести в отдельный объект
-  public static function cache_repack($location_type, $record_id = 0) {
-    // Если есть $user_id - проверяем, а надо ли перепаковывать?
-    if ($record_id && isset(static::$data[$location_type][$record_id]) && static::$data[$location_type][$record_id] !== null) {
-      return;
-    }
-
-    HelperArray::array_repack(static::$data[$location_type]);
-    HelperArray::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
-    HelperArray::array_repack(static::$queries[$location_type], 1);
-  }
-
-  public static function cache_clear($location_type, $hard = true) {
-    if ($hard && !empty(static::$data[$location_type])) {
-      // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
-      array_walk(static::$data[$location_type], function (&$item) { $item = null; });
-    }
-    static::$locator[$location_type] = array();
-    static::$queries[$location_type] = array();
-    static::cache_repack($location_type); // Перепаковываем внутренние структуры, если нужно
-  }
-
-  public static function cache_clear_all($hard = true) {
-    if ($hard) {
-      static::$data = array();
-      static::cache_lock_unset_all();
-    }
-    static::$locator = array();
-    static::$queries = array();
-  }
-
-  public static function cache_get($location_type, $record_id) {
-    return isset(static::$data[$location_type][$record_id]) ? static::$data[$location_type][$record_id] : null;
-  }
-
-  public static function cache_isset($location_type, $record_id) {
-    return isset(static::$data[$location_type][$record_id]) && static::$data[$location_type][$record_id] !== null;
-  }
-
-  /* Кэшируем запись в соответствующий кэш
-
-  Писать в кэш:
-  1. Если записи не существует в кэше
-  2. Если стоит $force_overwrite
-  3. Если во время транзакции существующая запись не заблокирована
-
-  Блокировать запись:
-  1. Если идет транзакция и запись не заблокирована
-  2. Если не стоит скип-лок
-  */
-  public static function cache_set($location_type, $record, $force_overwrite = false, $skip_lock = false) {
-    // нет идентификатора - выход
-    if (!($record_id = $record[static::$location_info[$location_type][P_ID]])) {
-      return;
-    }
-
-    $in_transaction = static::db_transaction_check(false);
-    if (
-      $force_overwrite
-      ||
-      // Не заменяются заблокированные записи во время транзакции
-      ($in_transaction && !static::cache_lock_get($location_type, $record_id))
-      ||
-      !static::cache_isset($location_type, $record_id)
-    ) {
-      static::$data[$location_type][$record_id] = $record;
-      if ($in_transaction && !$skip_lock) {
-        static::cache_lock_set($location_type, $record_id);
-      }
-    }
-  }
-
-  public static function cache_unset($cache_id, $safe_record_id) {
-    // $record_id должен быть проверен заранее !
-    if (isset(static::$data[$cache_id][$safe_record_id]) && static::$data[$cache_id][$safe_record_id] !== null) {
-      // Выставляем запись в null
-      static::$data[$cache_id][$safe_record_id] = null;
-      // Очищаем кэш мягко - что бы удалить очистить связанные данные - кэш локаций и кэш запоросов и всё, что потребуется впредь
-      static::cache_clear($cache_id, false);
-    }
-  }
-
-  public static function cache_lock_get($location_type, $record_id) {
-    return isset(static::$locks[$location_type][$record_id]);
-  }
-
-  public static function cache_lock_set($location_type, $record_id) {
-    return static::$locks[$location_type][$record_id] = true; // Не всегда - от результата
-  }
-
-  public static function cache_lock_unset($location_type, $record_id) {
-    if (isset(static::$locks[$location_type][$record_id])) {
-      unset(static::$locks[$location_type][$record_id]);
-    }
-
-    return true; // Не всегда - от результата
-  }
-
-  public static function cache_lock_unset_all() {
-    // Когда будем работать с xcache - это понадобиться, что бы снимать в xcache блокировки с записей
-    // Пройти по массиву - снять блокировки для кэшера в памяти
-    static::$locks = array();
-
-    return true; // Не всегда - от результата
-  }
-
-
-
-
 
   // TODO Вынести в отдельный объект
   /**
@@ -381,7 +271,11 @@ class classSupernova {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
 
     if (!empty(static::$delayed_changset)) {
-      static::db_changeset_revert();
+//      static::db_changeset_revert();
+      // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
+      // Для этапа 2 - чистить только записи
+      // Для этапа 3 - возвращать всё
+      SnCache::cache_clear_all(true);
     }
     doquery('ROLLBACK');
 
@@ -390,7 +284,7 @@ class classSupernova {
 
   protected static function db_transaction_clear() {
     static::$delayed_changset = array();
-    static::cache_lock_unset_all();
+    SnCache::cache_lock_unset_all();
 
     static::$db_in_transaction = false;
     static::$db_records_locked = false;
@@ -476,7 +370,7 @@ class classSupernova {
 
           while($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
-            if (!static::cache_lock_get($owner_location_type, $row['parent_id'])) {
+            if (!SnCache::cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
             }
           }
@@ -494,8 +388,8 @@ class classSupernova {
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
       while($row = db_fetch($query)) {
-        static::cache_set($location_type, $row);
-        $query_cache[$row[$id_field]] = &static::$data[$location_type][$row[$id_field]];
+        SnCache::cache_set($location_type, $row);
+        $query_cache[$row[$id_field]] = &SnCache::$data[$location_type][$row[$id_field]];
       }
     }
 
@@ -538,10 +432,11 @@ class classSupernova {
         // TODO - переделать под работу со структурированными $set
 
         // Тут именно так, а не cache_unset - что бы в кэшах автоматически обновилась запись. Будет нужно на будущее
-        static::$data[$location_type][$record_id] = null;
+        //static::$data[$location_type][$record_id] = null;
+        SnCache::cacheUnsetElement($location_type, $record_id);
         // Вытаскиваем обновленную запись
         static::db_get_record_by_id($location_type, $record_id);
-        static::cache_clear($location_type, false); // Мягкий сброс - только $queries
+        SnCache::cache_clear($location_type, false); // Мягкий сброс - только $queries
       }
     }
 
@@ -561,7 +456,7 @@ class classSupernova {
       if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         // TODO - когда будет структурированный $condition и $set - перепаковывать данные
-        static::cache_clear($location_type, true);
+        SnCache::cache_clear($location_type, true);
       }
     }
 
@@ -585,7 +480,7 @@ class classSupernova {
         $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
         // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
-        static::cache_clear($location_type, false); // Мягкий сброс - только $queries
+        SnCache::cache_clear($location_type, false); // Мягкий сброс - только $queries
       }
     }
 
@@ -608,7 +503,7 @@ class classSupernova {
         $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
         // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
-        static::cache_clear($location_type, false); // Мягкий сброс - только $queries
+        SnCache::cache_clear($location_type, false); // Мягкий сброс - только $queries
       }
     }
 
@@ -626,7 +521,7 @@ class classSupernova {
     if ($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       // Обновляем данные только если ряд был затронут
       if (static::$db->db_affected_rows()) {
-        static::cache_unset($location_type, $safe_record_id);
+        SnCache::cache_unset($location_type, $safe_record_id);
       }
     }
 
@@ -646,7 +541,7 @@ class classSupernova {
       if (static::$db->db_affected_rows()) {
         // Обнуление кэша, потому что непонятно, что поменялось
         // TODO - когда будет структурированный $condition можно будет делать только cache_unset по нужным записям
-        static::cache_clear($location_type);
+        SnCache::cache_clear($location_type);
       }
     }
 
@@ -694,8 +589,8 @@ class classSupernova {
     }
 
     $user = null;
-    if (is_array(static::$data[LOC_USER])) {
-      foreach (static::$data[LOC_USER] as $user_id => $user_data) {
+    if (SnCache::isArrayLocation(LOC_USER)) {
+      foreach (SnCache::getData(LOC_USER) as $user_id => $user_data) {
         if (is_array($user_data) && isset($user_data['username'])) {
           // проверяем поле
           // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
@@ -730,7 +625,7 @@ class classSupernova {
 //      $user = static::db_query(
 //        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
 //        , true);
-      static::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
+      SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
     }
 
     return $user;
@@ -778,7 +673,7 @@ class classSupernova {
       // Вытаскиваем запись
       $user = static::db_query("SELECT * FROM {{users}} WHERE {$where_safe}", true);
 
-      static::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
+      SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
     }
 
     return $user;
@@ -797,7 +692,7 @@ class classSupernova {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
     $unit = static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
     if (is_array($unit)) {
-      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
+      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
     }
 
     return $unit;
@@ -820,7 +715,7 @@ class classSupernova {
       $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
       if (is_array($got_data)) {
         foreach ($got_data as $unit_id => $unit_data) {
-          $query_cache[$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_id];
+          $query_cache[$unit_data['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
         }
       }
     }
@@ -959,13 +854,6 @@ class classSupernova {
     static::$delayed_changset[$table_name] = is_array(static::$delayed_changset[$table_name]) ? static::$delayed_changset[$table_name] : array();
     // TODO - На самом деле дурацкая оптимизация, если честно - может быть идентичные записи с идентичными дельтами - и привет. Но не должны, конечно
     static::$delayed_changset[$table_name] = array_merge(static::$delayed_changset[$table_name], $table_data);
-  }
-
-  public function db_changeset_revert() {
-    // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
-    // Для этапа 2 - чистить только записи
-    // Для этапа 3 - возвращать всё
-    static::cache_clear_all(true);
   }
 
   public function db_changeset_condition_compile(&$conditions, &$table_name = '') {
