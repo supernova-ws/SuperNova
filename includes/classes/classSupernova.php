@@ -368,7 +368,7 @@ class classSupernova {
             ($filter ? ' WHERE ' . $filter : '') .
             ($fetch ? ' LIMIT 1' : ''), false, true);
 
-          while($row = db_fetch($query)) {
+          while ($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if (!SnCache::cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
@@ -387,9 +387,11 @@ class classSupernova {
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
-      while($row = db_fetch($query)) {
+      while ($row = db_fetch($query)) {
         SnCache::cache_set($location_type, $row);
-        $query_cache[$row[$id_field]] = &SnCache::$data[$location_type][$row[$id_field]];
+//        $query_cache[$row[$id_field]] = &SnCache::$data[$location_type][$row[$id_field]];
+        $query_cache[$row[$id_field]] = &SnCache::getDataRefByLocationAndId($location_type, $row[$id_field]);
+//        static::checkReturnRef($query_cache[$row[$id_field]], SnCache::$data[$location_type][$row[$id_field]]);
       }
     }
 
@@ -618,7 +620,7 @@ class classSupernova {
           ->setFetchOne()
       );
 
-      if(empty($user)) {
+      if (empty($user)) {
         $user = null;
       }
 
@@ -692,7 +694,8 @@ class classSupernova {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
     $unit = static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
     if (is_array($unit)) {
-      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
+//      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
+      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
     }
 
     return $unit;
@@ -715,7 +718,8 @@ class classSupernova {
       $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
       if (is_array($got_data)) {
         foreach ($got_data as $unit_id => $unit_data) {
-          $query_cache[$unit_data['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
+//          $query_cache[$unit_data['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
+          $query_cache[$unit_data['unit_snid']] = &SnCache::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
         }
       }
     }
@@ -859,7 +863,7 @@ class classSupernova {
   public function db_changeset_condition_compile(&$conditions, &$table_name = '') {
     if (!$conditions[P_LOCATION] || $conditions[P_LOCATION] == LOC_NONE) {
       $conditions[P_LOCATION] = LOC_NONE;
-      switch($table_name) {
+      switch ($table_name) {
         case 'users':
         case LOC_USER:
           $conditions[P_TABLE_NAME] = $table_name = 'users';
@@ -921,7 +925,7 @@ class classSupernova {
       $conditions[P_WHERE_STR] = implode(' AND ', $the_conditions);
     }
 
-    switch($conditions['action']) {
+    switch ($conditions['action']) {
       case SQL_OP_DELETE:
         $conditions[P_ACTION_STR] = ("DELETE FROM {{{$table_name}}}");
       break;
@@ -958,7 +962,7 @@ class classSupernova {
         } // Защита от случайного удаления всех данных в таблице
 
         if ($conditions[P_LOCATION] != LOC_NONE) {
-          switch($conditions['action']) {
+          switch ($conditions['action']) {
             case SQL_OP_DELETE:
               $result = self::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result;
             break;
@@ -1091,6 +1095,26 @@ class classSupernova {
     } else {
       @define('BE_DEBUG', false);
       @ini_set('display_errors', 0);
+    }
+
+  }
+
+  public static function checkReturnRef(&$ref1, &$ref2) {
+    if (isset($ref1['id'])) {
+      $ref1['id']++;
+      pdump($ref1['id']);
+      pdump($ref2['id']);
+      if ($ref2['id'] == $ref1['id']) {
+        pdump('ok');
+      } else {
+        pdie('failed');
+      }
+      $ref2['id']--;
+      if ($ref2['id'] == $ref1['id']) {
+        pdump('ok');
+      } else {
+        pdie('failed');
+      }
     }
 
   }

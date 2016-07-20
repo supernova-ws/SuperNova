@@ -11,7 +11,7 @@ class SnCache {
    *
    * @var array $data
    */
-  public static $data = array();
+  protected static $data = array();
 
   /**
    * Repacking data for $location_type
@@ -144,10 +144,15 @@ class SnCache {
   }
 
   /**
-   * @param mixed $variable
+   * Return reference to record in $data by locationType and recordId
+   *
+   * @param int $locationType
+   * @param int $recordId
+   *
+   * @return &mixed
    */
-  public static function refAssign(&$variable, $locationType, $recordId) {
-    $variable = &static::$data[$locationType][$recordId];
+  public static function &getDataRefByLocationAndId($locationType, $recordId) {
+    return static::$data[$locationType][$recordId];
   }
 
 }
