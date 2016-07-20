@@ -115,7 +115,7 @@ class HelperArray {
     static::makeArrayRef($arrayNew);
     static::makeArrayRef($arrayOld);
 
-    switch($mergeStrategy) {
+    switch ($mergeStrategy) {
       case HelperArray::MERGE_PHP:
         $arrayOld = array_merge($arrayOld, $arrayNew);
       break;
@@ -155,6 +155,30 @@ class HelperArray {
         $value = clone $value;
       } elseif (is_array($value) && $deep == HelperArray::CLONE_ARRAY_RECURSIVE) {
         static::cloneDeep($value, $deep);
+      }
+    }
+  }
+
+  /**
+   * Repacking array to provided level, removing null elements
+   *
+   * @param array &$array
+   * @param int   $level
+   */
+  public static function array_repack(&$array, $level = 0) {
+    // TODO $lock_table не нужна тут
+    if (!is_array($array)) {
+      return;
+    }
+
+    foreach ($array as $key => &$value) {
+      if ($value === null) {
+        unset($array[$key]);
+      } elseif ($level > 0 && is_array($value)) {
+        static::array_repack($value, $level - 1);
+        if (empty($value)) {
+          unset($array[$key]);
+        }
       }
     }
   }

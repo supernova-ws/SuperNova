@@ -203,26 +203,6 @@ class classSupernova {
     self::$debug = $debug;
   }
 
-  // Перепаковывает массив на заданную глубину, убирая поля с null
-  public static function array_repack(&$array, $level = 0) {
-    // TODO $lock_table не нужна тут
-    if (!is_array($array)) {
-      return;
-    }
-
-    foreach ($array as $key => &$value) {
-      if ($value === null) {
-        unset($array[$key]);
-      } elseif ($level > 0 && is_array($value)) {
-        static::array_repack($value, $level - 1);
-        if (empty($value)) {
-          unset($array[$key]);
-        }
-      }
-    }
-  }
-
-
   // TODO Вынести в отдельный объект
   public static function cache_repack($location_type, $record_id = 0) {
     // Если есть $user_id - проверяем, а надо ли перепаковывать?
@@ -230,9 +210,9 @@ class classSupernova {
       return;
     }
 
-    static::array_repack(static::$data[$location_type]);
-    static::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
-    static::array_repack(static::$queries[$location_type], 1);
+    HelperArray::array_repack(static::$data[$location_type]);
+    HelperArray::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
+    HelperArray::array_repack(static::$queries[$location_type], 1);
   }
 
   public static function cache_clear($location_type, $hard = true) {
