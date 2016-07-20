@@ -36,9 +36,10 @@ $sn_data[UNIT_GROUP]['mission_checks'] = array(
   // TODO - THIS CHECKS SHOULD BE ADDED IN UNIT_CAPTAIN MODULE!
   'checkCaptainSent'                => array(
     true => array(
-      'checkCaptainExists'        => FLIGHT_CAPTAIN_NOT_HIRED,
-      'checkCaptainOnPlanet'      => FLIGHT_CAPTAIN_ALREADY_FLYING,
-      'checkCaptainNotRelocating' => FLIGHT_CAPTAIN_RELOCATE_LOCK,
+      'checkCaptainExists'         => FLIGHT_CAPTAIN_NOT_HIRED,
+      'checkCaptainOnPlanetType'   => FLIGHT_CAPTAIN_ALREADY_FLYING,
+      'checkCaptainOnPlanetSource' => FLIGHT_CAPTAIN_ON_OTHER_PLANET,
+      'checkCaptainNotRelocating'  => FLIGHT_CAPTAIN_RELOCATE_LOCK,
     ),
   ),
 

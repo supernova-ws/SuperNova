@@ -159,7 +159,7 @@ class FleetValidator {
    * @return bool
    */
   protected function checkSenderNoVacation() {
-    return empty($this->fleet->dbOwnerRow['vacation']) || $this->fleet->dbOwnerRow['vacation'] >= SN_TIME_NOW;
+    return empty($this->fleet->dbOwnerRow['vacation']) || $this->fleet->dbOwnerRow['vacation'] <= SN_TIME_NOW;
   }
 
   /**
@@ -795,8 +795,15 @@ class FleetValidator {
   /**
    * @return bool
    */
-  protected function checkCaptainOnPlanet() {
-    return $this->fleet->captain['unit_location_type'] == LOC_PLANET;
+  protected function checkCaptainOnPlanetType() {
+    return $this->fleet->captain['unit_location_type'] == $this->fleet->dbSourcePlanetRow['planet_type'];
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkCaptainOnPlanetSource() {
+    return $this->checkCaptainOnPlanetType() && $this->fleet->captain['unit_location_id'] == $this->fleet->dbSourcePlanetRow['id'];
   }
 
   /**

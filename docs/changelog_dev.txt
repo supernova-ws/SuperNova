@@ -1080,7 +1080,8 @@ Call Stack
 5	0.4853	3118312	htmlentities ( )	..\menu_customize.php:93
 
 
-
+// TODO - does CAPTAINs allowed on moon??
+    If not - allow
 
 
 #ctv

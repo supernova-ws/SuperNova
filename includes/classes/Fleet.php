@@ -671,7 +671,7 @@ class Fleet extends UnitContainer {
       } elseif ($this->isResource($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
       } else {
-        throw new Exception('Trying to pass to fleet non-resource and non-ship ' . var_export($unit_array, true), ERR_ERROR);
+        throw new Exception('Trying to pass to fleet non-resource and non-ship ' . var_export($unit_array, true), FLIGHT_SHIPS_UNIT_WRONG);
       }
     }
   }
@@ -873,7 +873,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.36
+   * @version 41a50.39
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -986,7 +986,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.36
+   * @version 41a50.39
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
