@@ -194,8 +194,16 @@ class SnCache {
     return $unit_snid ? static::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : static::$locator[LOC_UNIT][$location_type][$location_id];
   }
 
-  public static function &getUnitLocatorByFullLocation($location_type, $location_id) {
-    return static::$locator[LOC_UNIT][$location_type][$location_id];
+  public static function getUnitLocatorByFullLocation($location_type, $location_id) {
+    return is_array(static::$locator[LOC_UNIT][$location_type][$location_id]) ? static::$locator[LOC_UNIT][$location_type][$location_id] : array();
+  }
+
+  public static function setUnitLocatorByLocationAndIDs($location_type, $location_id, $unit_data) {
+    SnCache::$locator[LOC_UNIT][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_data['unit_id']];
+  }
+
+  public static function isUnitLocatorNotSet($location_type, $location_id) {
+    return !isset(static::$locator[LOC_UNIT][$location_type][$location_id]);
   }
 
   public static function locatorReset() {
@@ -214,8 +222,8 @@ class SnCache {
     return static::$locks;
   }
 
-  public static function &getQueriesByLocationAndFilter($locationType, $filter) {
-    return static::$queries[$locationType][$filter];
+  public static function getQueriesByLocationAndFilter($locationType, $filter) {
+    return !empty(static::$queries[$locationType][$filter]) && is_array(static::$queries[$locationType][$filter]) ? static::$queries[$locationType][$filter] : array();
   }
 
   public static function isQueryCacheByLocationAndFilterEmpty($locationType, $filter) {

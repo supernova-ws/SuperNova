@@ -390,15 +390,17 @@ class classSupernova {
       return true;
     } else {
       $result = false;
-      $queryCache = SnCache::getQueriesByLocationAndFilter($location_type, $filter);
-      if (is_array($queryCache)) {
-        foreach ($queryCache as $key => $value) {
-          $result[$key] = $value;
-          if ($fetch) {
-            break;
-          }
+//      $queryCache = SnCache::getQueriesByLocationAndFilter($location_type, $filter);
+//      if (is_array($queryCache)) {
+//        foreach ($queryCache as $key => $value) {
+      foreach (SnCache::getQueriesByLocationAndFilter($location_type, $filter) as $key => $value) {
+        $result[$key] = $value;
+        if ($fetch) {
+          break;
         }
       }
+
+//      }
 
       return $fetch ? (is_array($result) ? reset($result) : false) : $result;
     }
@@ -703,23 +705,18 @@ class classSupernova {
       return false;
     }
 
-//    $query_cache = &SnCache::$locator[LOC_UNIT][$location_type][$location_id];
-    $query_cache = &SnCache::getUnitLocatorByFullLocation($location_type, $location_id);
-    if (!isset($query_cache)) {
+    if (SnCache::isUnitLocatorNotSet($location_type, $location_id)) {
       $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
-      if (is_array($got_data)) {
+      if (!empty($got_data) && is_array($got_data)) {
         foreach ($got_data as $unit_id => $unit_data) {
-//          $query_cache[$unit_data['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
-          $query_cache[$unit_data['unit_snid']] = &SnCache::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
+          SnCache::setUnitLocatorByLocationAndIDs($location_type, $location_id, $unit_data);
         }
       }
     }
 
     $result = false;
-    if (is_array($query_cache)) {
-      foreach ($query_cache as $key => $value) {
-        $result[$key] = $value;
-      }
+    foreach (SnCache::getUnitLocatorByFullLocation($location_type, $location_id) as $key => $value) {
+      $result[$key] = $value;
     }
 
     return $result;
