@@ -80,8 +80,6 @@ class classSupernova {
 
   public static $options = array();
 
-  public static $locks = array(); // Информация о блокировках
-
   public static $delayed_changset = array(); // Накопительный массив изменений
 
   // Кэш индексов - ключ MD5-строка от суммы ключевых строк через | - менять | на что-то другое перед поиском и назад - после поиска

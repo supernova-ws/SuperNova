@@ -32,6 +32,13 @@ class SnCache {
   protected static $queries = array();
 
   /**
+   * Информация о блокировках
+   *
+   * @var array $locks
+   */
+  protected static $locks = array();
+
+  /**
    * Repacking data for $location_type
    *
    * @param int $location_type
@@ -125,17 +132,17 @@ class SnCache {
   }
 
   public static function cache_lock_get($location_type, $record_id) {
-    return isset(classSupernova::$locks[$location_type][$record_id]);
+    return isset(static::$locks[$location_type][$record_id]);
   }
 
   public static function cache_lock_set($location_type, $record_id) {
-    return classSupernova::$locks[$location_type][$record_id] = true; // Не всегда - от результата
+    return static::$locks[$location_type][$record_id] = true; // Не всегда - от результата
   }
 
   // TODO - UNUSED ????????????
   public static function cache_lock_unset($location_type, $record_id) {
-    if (isset(classSupernova::$locks[$location_type][$record_id])) {
-      unset(classSupernova::$locks[$location_type][$record_id]);
+    if (isset(static::$locks[$location_type][$record_id])) {
+      unset(static::$locks[$location_type][$record_id]);
     }
 
     return true; // Не всегда - от результата
@@ -144,7 +151,7 @@ class SnCache {
   public static function cache_lock_unset_all() {
     // Когда будем работать с xcache - это понадобиться, что бы снимать в xcache блокировки с записей
     // Пройти по массиву - снять блокировки для кэшера в памяти
-    classSupernova::$locks = array();
+    static::$locks = array();
 
     return true; // Не всегда - от результата
   }
@@ -197,6 +204,10 @@ class SnCache {
 
   public static function getQueries() {
     return static::$queries;
+  }
+
+  public static function getLocks() {
+    return static::$locks;
   }
 
   public static function &getQueriesByLocationAndFilter($locationType, $filter) {
