@@ -121,6 +121,10 @@ class SnCache {
     }
   }
 
+  public static function queryCacheSetByFilter($location_type, $filter, $record_id) {
+    SnCache::$queries[$location_type][$filter][$record_id] = &SnCache::getDataRefByLocationAndId($location_type, $record_id);
+  }
+
   public static function cache_unset($cache_id, $safe_record_id) {
     // $record_id должен быть проверен заранее !
     if (isset(static::$data[$cache_id][$safe_record_id]) && static::$data[$cache_id][$safe_record_id] !== null) {
@@ -214,4 +218,11 @@ class SnCache {
     return static::$queries[$locationType][$filter];
   }
 
+  public static function isQueryCacheByLocationAndFilterEmpty($locationType, $filter) {
+    return !isset(SnCache::$queries[$locationType][$filter]) || SnCache::$queries[$locationType][$filter] === null;
+  }
+
+  public static function queryCacheResetByLocationAndFilter($locationType, $filter) {
+    SnCache::$queries[$locationType][$filter] = array();
+  }
 }

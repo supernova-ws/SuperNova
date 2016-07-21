@@ -340,13 +340,11 @@ class classSupernova {
   }
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-//    $query_cache = &SnCache::$queries[$location_type][$filter];
-    $query_cache = &SnCache::getQueriesByLocationAndFilter($location_type, $filter);
+    if (SnCache::isQueryCacheByLocationAndFilterEmpty($location_type, $filter)) {
+      SnCache::queryCacheResetByLocationAndFilter($location_type, $filter);
 
-    if (!isset($query_cache) || $query_cache === null) {
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
-      $query_cache = array();
 
       if (static::db_transaction_check(false)) {
         // Проходим по всем родителям данной записи
@@ -381,10 +379,10 @@ class classSupernova {
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
       while ($row = db_fetch($query)) {
+        // Caching record in row cache
         SnCache::cache_set($location_type, $row);
-//        $query_cache[$row[$id_field]] = &SnCache::$data[$location_type][$row[$id_field]];
-        $query_cache[$row[$id_field]] = &SnCache::getDataRefByLocationAndId($location_type, $row[$id_field]);
-//        static::checkReturnRef($query_cache[$row[$id_field]], SnCache::$data[$location_type][$row[$id_field]]);
+        // Making ref to cached record in query cache
+        SnCache::queryCacheSetByFilter($location_type, $filter, $row[$id_field]);
       }
     }
 
@@ -392,8 +390,9 @@ class classSupernova {
       return true;
     } else {
       $result = false;
-      if (is_array($query_cache)) {
-        foreach ($query_cache as $key => $value) {
+      $queryCache = SnCache::getQueriesByLocationAndFilter($location_type, $filter);
+      if (is_array($queryCache)) {
+        foreach ($queryCache as $key => $value) {
           $result[$key] = $value;
           if ($fetch) {
             break;
