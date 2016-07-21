@@ -29,7 +29,7 @@ class SnCache {
    *
    * @var array $queries
    */
-  public static $queries = array();
+  protected static $queries = array();
 
   /**
    * Repacking data for $location_type
@@ -189,6 +189,18 @@ class SnCache {
 
   public static function locatorReset() {
     SnCache::$locator = array();
+  }
+
+  public static function queriesReset() {
+    SnCache::$queries = array();
+  }
+
+  public static function getQueries() {
+    return static::$queries;
+  }
+
+  public static function &getQueriesByLocationAndFilter($locationType, $filter) {
+    return SnCache::$queries[$locationType][$filter];
   }
 
 }

@@ -245,7 +245,7 @@ class classSupernova {
 
     static::$db_in_transaction = true;
     SnCache::locatorReset();
-    SnCache::$queries = array();
+    SnCache::queriesReset();
 
     return static::$transaction_id;
   }
@@ -342,8 +342,8 @@ class classSupernova {
   }
 
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-    $query_cache = &SnCache::$queries[$location_type][$filter];
-//pdump($query_cache);
+//    $query_cache = &SnCache::$queries[$location_type][$filter];
+    $query_cache = &SnCache::getQueriesByLocationAndFilter($location_type, $filter);
 
     if (!isset($query_cache) || $query_cache === null) {
       $location_info = &static::$location_info[$location_type];
