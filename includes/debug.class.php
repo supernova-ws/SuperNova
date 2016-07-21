@@ -159,7 +159,7 @@ class debug {
             (isset($location_data['name']) ? $location_data['name'] : $location_id);
         }
       }
-      $error_backtrace['cSN_queries'] = classSupernova::$queries;
+      $error_backtrace['cSN_queries'] = SnCache::$queries;
     }
 
     if($base_dump) {

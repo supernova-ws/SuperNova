@@ -13,10 +13,23 @@ class SnCache {
    */
   protected static $data = array();
 
-  // Массив $locator - хранит отношения между записями для быстрого доступа по тип_записи:тип_локации:ид_локации:внутренний_ид_записи=>информация
-  // Для LOC_UNIT внутренний ИД - это SNID, а информация - это ссылка на запись `unit`
-  // Для LOC_QUE внутренний ИД - это тип очереди, а информация - массив ссылок на `que`
-  protected static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
+  /**
+   * Кэширует соответствия между расположением объектов - в частности юнитов и очередей
+   *
+   * Массив $locator - хранит отношения между записями для быстрого доступа по тип_записи:тип_локации:ид_локации:внутренний_ид_записи=>информация
+   * Для LOC_UNIT внутренний ИД - это SNID, а информация - это ссылка на запись `unit`
+   * Для LOC_QUE внутренний ИД - это тип очереди, а информация - массив ссылок на `que`
+   *
+   * @var array $locator
+   */
+  protected static $locator = array();
+
+  /**
+   * Кэш запросов
+   *
+   * @var array $queries
+   */
+  public static $queries = array();
 
   /**
    * Repacking data for $location_type
@@ -32,7 +45,7 @@ class SnCache {
 
     HelperArray::array_repack(static::$data[$location_type]);
     HelperArray::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
-    HelperArray::array_repack(classSupernova::$queries[$location_type], 1);
+    HelperArray::array_repack(SnCache::$queries[$location_type], 1);
   }
 
   public static function cache_clear($location_type, $hard = true) {
@@ -42,7 +55,7 @@ class SnCache {
       array_walk(static::$data[$location_type], function (&$item) { $item = null; });
     }
     static::$locator[$location_type] = array();
-    classSupernova::$queries[$location_type] = array();
+    SnCache::$queries[$location_type] = array();
     static::cache_repack($location_type); // Перепаковываем внутренние структуры, если нужно
   }
 
@@ -56,7 +69,7 @@ class SnCache {
       SnCache::cache_lock_unset_all();
     }
     static::$locator = array();
-    classSupernova::$queries = array();
+    SnCache::$queries = array();
   }
 
   public static function cache_isset($location_type, $record_id) {
