@@ -417,9 +417,8 @@ class classSupernova {
       return false;
     }
 
-    $location_info = &static::$location_info[$location_type];
-    $id_field = $location_info[P_ID];
-    $table_name = $location_info[P_TABLE_NAME];
+    $id_field = static::$location_info[$location_type][P_ID];
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     if ($result = static::db_query($q = "UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
       if (static::$db->db_affected_rows()) {
@@ -490,7 +489,7 @@ class classSupernova {
     $fields = implode(',', array_keys($field_set));
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);")) {
+    if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
       if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         $record_id = db_insert_id();
@@ -510,9 +509,8 @@ class classSupernova {
       return false;
     }
 
-    $location_info = &static::$location_info[$location_type];
-    $id_field = $location_info[P_ID];
-    $table_name = $location_info[P_TABLE_NAME];
+    $id_field = static::$location_info[$location_type][P_ID];
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     if ($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       // Обновляем данные только если ряд был затронут
       if (static::$db->db_affected_rows()) {
@@ -528,8 +526,7 @@ class classSupernova {
       return false;
     }
 
-    $location_info = &static::$location_info[$location_type];
-    $table_name = $location_info[P_TABLE_NAME];
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
     if ($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
       // Обновляем данные только если ряд был затронут

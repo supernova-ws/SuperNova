@@ -52,7 +52,7 @@ class SnCache {
 
     HelperArray::array_repack(static::$data[$location_type]);
     HelperArray::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
-    HelperArray::array_repack(SnCache::$queries[$location_type], 1);
+    HelperArray::array_repack(static::$queries[$location_type], 1);
   }
 
   public static function cache_clear($location_type, $hard = true) {
@@ -62,7 +62,7 @@ class SnCache {
       array_walk(static::$data[$location_type], function (&$item) { $item = null; });
     }
     static::$locator[$location_type] = array();
-    SnCache::$queries[$location_type] = array();
+    static::$queries[$location_type] = array();
     static::cache_repack($location_type); // Перепаковываем внутренние структуры, если нужно
   }
 
@@ -73,10 +73,10 @@ class SnCache {
   public static function cache_clear_all($hard = true) {
     if ($hard) {
       static::$data = array();
-      SnCache::cache_lock_unset_all();
+      static::cache_lock_unset_all();
     }
     static::$locator = array();
-    SnCache::$queries = array();
+    static::$queries = array();
   }
 
   public static function cache_isset($location_type, $record_id) {
@@ -110,13 +110,13 @@ class SnCache {
       $force_overwrite
       ||
       // Не заменяются заблокированные записи во время транзакции
-      ($in_transaction && !SnCache::cache_lock_get($location_type, $record_id))
+      ($in_transaction && !static::cache_lock_get($location_type, $record_id))
       ||
       !static::cache_isset($location_type, $record_id)
     ) {
       static::$data[$location_type][$record_id] = $record;
       if ($in_transaction && !$skip_lock) {
-        SnCache::cache_lock_set($location_type, $record_id);
+        static::cache_lock_set($location_type, $record_id);
       }
     }
   }
@@ -182,24 +182,24 @@ class SnCache {
 
   public static function setUnitLocator($unit, $unit_id) {
     if (is_array($unit)) {
-      SnCache::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
+      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &static::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
     }
   }
 
   public static function getUnitLocator($location_type, $location_id, $unit_snid) {
-    return $unit_snid ? SnCache::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : SnCache::$locator[LOC_UNIT][$location_type][$location_id];
+    return $unit_snid ? static::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : static::$locator[LOC_UNIT][$location_type][$location_id];
   }
 
   public static function &getUnitLocatorByFullLocation($location_type, $location_id) {
-    return SnCache::$locator[LOC_UNIT][$location_type][$location_id];
+    return static::$locator[LOC_UNIT][$location_type][$location_id];
   }
 
   public static function locatorReset() {
-    SnCache::$locator = array();
+    static::$locator = array();
   }
 
   public static function queriesReset() {
-    SnCache::$queries = array();
+    static::$queries = array();
   }
 
   public static function getQueries() {
@@ -211,7 +211,7 @@ class SnCache {
   }
 
   public static function &getQueriesByLocationAndFilter($locationType, $filter) {
-    return SnCache::$queries[$locationType][$filter];
+    return static::$queries[$locationType][$filter];
   }
 
 }
