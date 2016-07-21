@@ -245,7 +245,7 @@ class classSupernova {
     }
 
     static::$db_in_transaction = true;
-    SnCache::$locator = array();
+    SnCache::locatorReset();
     static::$queries = array();
 
     return static::$transaction_id;
@@ -688,18 +688,19 @@ class classSupernova {
   public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*') {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
     $unit = static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
-    if (is_array($unit)) {
-//      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
-      SnCache::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
-    }
+//    if (is_array($unit)) {
+//      // static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::$data[LOC_UNIT][$unit_id];
+//      SnCache::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
+//    }
+    SnCache::setUnitLocator($unit, $unit_id);
 
     return $unit;
   }
 
   /**
    * @param int $user_id
-   * @param     $location_type
-   * @param     $location_id
+   * @param int $location_type
+   * @param int $location_id
    *
    * @return array|bool
    */
@@ -708,7 +709,8 @@ class classSupernova {
       return false;
     }
 
-    $query_cache = &SnCache::$locator[LOC_UNIT][$location_type][$location_id];
+//    $query_cache = &SnCache::$locator[LOC_UNIT][$location_type][$location_id];
+    $query_cache = &SnCache::getUnitLocatorByFullLocation($location_type, $location_id);
     if (!isset($query_cache)) {
       $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
       if (is_array($got_data)) {
@@ -732,7 +734,7 @@ class classSupernova {
   public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
     static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
-    return $unit_snid ? SnCache::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : SnCache::$locator[LOC_UNIT][$location_type][$location_id];
+    return SnCache::getUnitLocator($location_type, $location_id, $unit_snid);
   }
 
 

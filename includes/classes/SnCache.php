@@ -16,7 +16,7 @@ class SnCache {
   // Массив $locator - хранит отношения между записями для быстрого доступа по тип_записи:тип_локации:ид_локации:внутренний_ид_записи=>информация
   // Для LOC_UNIT внутренний ИД - это SNID, а информация - это ссылка на запись `unit`
   // Для LOC_QUE внутренний ИД - это тип очереди, а информация - массив ссылок на `que`
-  public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
+  protected static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
 
   /**
    * Repacking data for $location_type
@@ -158,6 +158,24 @@ class SnCache {
    */
   public static function &getDataRefByLocationAndId($locationType, $recordId) {
     return static::$data[$locationType][$recordId];
+  }
+
+  public static function setUnitLocator($unit, $unit_id) {
+    if (is_array($unit)) {
+      SnCache::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &SnCache::getDataRefByLocationAndId(LOC_UNIT, $unit_id);
+    }
+  }
+
+  public static function getUnitLocator($location_type, $location_id, $unit_snid) {
+    return $unit_snid ? SnCache::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : SnCache::$locator[LOC_UNIT][$location_type][$location_id];
+  }
+
+  public static function &getUnitLocatorByFullLocation($location_type, $location_id) {
+    return SnCache::$locator[LOC_UNIT][$location_type][$location_id];
+  }
+
+  public static function locatorReset() {
+    SnCache::$locator = array();
   }
 
 }
