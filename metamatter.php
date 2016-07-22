@@ -179,7 +179,11 @@ foreach(classLocale::$lang['pay_currency_list'] as $key => $value) {
 if($request['metamatter'] && $payment_module) {
   try {
     // Any possible errors about generating paylink should be raised in module!
-    $pay_link = sn_module::$sn_module[$payment_module]->compile_request($request);
+    /**
+     * @var sn_module_payment $module
+     */
+    $module = sn_module::getModule($payment_module);
+    $pay_link = $module->compile_request($request);
 
     // Поддержка дополнительной информации
     if(is_array($pay_link['RENDER'])) {

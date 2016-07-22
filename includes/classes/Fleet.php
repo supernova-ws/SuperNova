@@ -873,7 +873,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.39
+   * @version 41a50.52
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -986,7 +986,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.39
+   * @version 41a50.52
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1818,13 +1818,8 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     /**
      * @var unit_captain $moduleCaptain
      */
-    $moduleCaptain = !empty(sn_module::$sn_module['unit_captain']) ? sn_module::$sn_module['unit_captain'] : null;
-
-    if (
-      !empty($moduleCaptain)
-      &&
-      $moduleCaptain->manifest['active']
-    ) {
+    if (sn_module::isModuleActive('unit_captain')) {
+      $moduleCaptain = sn_module::getModule('unit_captain');
       $this->captain = $moduleCaptain->unit_captain_get($this->dbSourcePlanetRow['id']);
     }
   }

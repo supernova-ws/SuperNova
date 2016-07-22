@@ -17,7 +17,7 @@ $template->assign_vars(array(
   'fleet_bashing_scope' => sys_time_human(classSupernova::$config->fleet_bashing_scope),
   'fleet_bashing_war_delay' => sys_time_human(classSupernova::$config->fleet_bashing_war_delay),
   'EMPIRE_MERCENARY_TEMPORARY' => classSupernova::$config->empire_mercenary_temporary,
-  'ALI_BONUS_MEMBERS' => isset(sn_module::$sn_module['ali_ally_player']) ? classSupernova::$config->ali_bonus_members : 0,
+  'ALI_BONUS_MEMBERS' => sn_module::isModuleActive('ali_ally_player') ? classSupernova::$config->ali_bonus_members : 0,
 
   'PLAYER_MAX_COLONIES' => classSupernova::$config->player_max_colonies,
 

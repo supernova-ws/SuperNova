@@ -188,71 +188,9 @@ if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
   }
 }
 
-// load_order:
-//  100000 - default load order
-//  999999 - core_ship_constructor
-//  2000000000 - that requires that all possible modules loaded already
-//  2000100000 - game_skirmish
+sn_module::orderModules();
 
-// Генерируем список требуемых модулей
-$load_order = array();
-$sn_req = array();
 
-foreach(sn_module::$sn_module as $loaded_module_name => $module_data) {
-  $load_order[$loaded_module_name] = isset($module_data->manifest['load_order']) && !empty($module_data->manifest['load_order']) ? $module_data->manifest['load_order'] : 100000;
-  if(isset($module_data->manifest['require']) && !empty($module_data->manifest['require'])) {
-    foreach($module_data->manifest['require'] as $require_name) {
-      $sn_req[$loaded_module_name][$require_name] = 0;
-    }
-  }
-}
-
-// pdump($load_order, '$load_order');
-
-// Создаем последовательность инициализации модулей
-// По нормальным делам надо сначала читать их конфиги - вдруг какой-то модуль отключен?
-do {
-  $prev_order = $load_order;
-
-  foreach($sn_req as $loaded_module_name => &$req_data) {
-    $level = 1;
-    foreach($req_data as $req_name => &$req_level) {
-      if($load_order[$req_name] == -1 || !isset($load_order[$req_name])) {
-        $level = $req_level = -1;
-        break;
-      } else {
-        $level += $load_order[$req_name];
-      }
-      $req_level = $load_order[$req_name];
-    }
-    if($level > $load_order[$loaded_module_name] || $level == -1) {
-      $load_order[$loaded_module_name] = $level;
-    }
-  }
-} while($prev_order != $load_order);
-
-asort($load_order);
-
-// Инициализируем модули
-// По нормальным делам это должна быть загрузка модулей и лишь затем инициализация - что бы минимизировать размер процесса в памяти
-foreach($load_order as $loaded_module_name => $load_order_order) {
-  if($load_order_order >= 0) {
-    sn_module::$sn_module[$loaded_module_name]->check_status();
-    if(!sn_module::$sn_module[$loaded_module_name]->manifest['active']) {
-      unset(sn_module::$sn_module[$loaded_module_name]);
-      continue;
-    }
-
-    sn_module::$sn_module[$loaded_module_name]->initialize();
-    sn_module::$sn_module_list[sn_module::$sn_module[$loaded_module_name]->manifest['package']][$loaded_module_name] = &sn_module::$sn_module[$loaded_module_name];
-  } else {
-    unset(sn_module::$sn_module[$loaded_module_name]);
-  }
-}
-
-// Скрипач не нужон
-unset($load_order);
-unset($sn_req);
 
 // А теперь проверяем - поддерживают ли у нас загруженный код такую страницу
 if(!isset($sn_data['pages'][$sn_page_name])) {

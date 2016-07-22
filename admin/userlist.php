@@ -105,7 +105,7 @@ $template->assign_vars(array(
   'USER_COUNT'      => $count,
   'SORT'            => $sort,
   'GEOIP'           => $geoip,
-  'METAMATTER'      => isset(sn_module::$sn_module['unit_res_metamatter']),
+  'METAMATTER'      => sn_module::isModuleActive('unit_res_metamatter'),
   'GEOIP_WHOIS_URL' => classSupernova::$config->geoip_whois_url,
 
   'PAGE_URL'    => $_SERVER['SCRIPT_NAME'],
