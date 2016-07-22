@@ -31,14 +31,14 @@ if($user['authlevel'] >= 3) {
       DBStaticSurvey::db_survey_delete_by_id($announce_id);
     } else {
       DBStaticNews::db_news_insert_set($announce_time, $text, $detail_url, $user);
-      $announce_id = db_insert_id();
+      $announce_id = classSupernova::$db->db_insert_id();
     }
     if(($survey_question = sys_get_param_str('survey_question')) && ($survey_answers = sys_get_param('survey_answers'))) {
       $survey_answers = explode("\r\n", $survey_answers);
       $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW);
       $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ? $survey_until : SN_TIME_NOW + PERIOD_DAY * 1);
       DBStaticSurvey::db_survey_insert($announce_id, $survey_question, $survey_until);
-      $survey_id = db_insert_id();
+      $survey_id = classSupernova::$db->db_insert_id();
       foreach($survey_answers as $survey_answer) {
         $survey_answer = db_escape(trim($survey_answer));
         if(empty($survey_answer)) {

@@ -103,7 +103,7 @@ class RequestInfo {
         $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       } while (!empty($row));
       doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
-      $this->device_id = db_insert_id();
+      $this->device_id = classSupernova::$db->db_insert_id();
       sn_setcookie(SN_COOKIE_D, $this->device_cypher, PERIOD_FOREVER, SN_ROOT_RELATIVE);
     }
     sn_db_transaction_commit();

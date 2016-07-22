@@ -106,7 +106,7 @@ if(is_array($shipList)) {
     $message .= "</ul>";
 
     DBStaticPlanet::db_planet_set_by_id($planetrow['id'], implode(',', $qry));
-    db_changeset_apply($db_changeset);
+    classSupernova::db_changeset_apply($db_changeset);
 
     rpg_points_change($user['id'], RPG_MARKET_FLEET, -($rpg_cost), "Using Black Market page {$mode}");
     classSupernova::$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));

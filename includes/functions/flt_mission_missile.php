@@ -154,7 +154,7 @@ function coe_o_missile_calculate() {
         }
 
       }
-      db_changeset_apply($db_changeset);
+      classSupernova::db_changeset_apply($db_changeset);
 
       $fleetRow['fleet_start_type'] = PT_PLANET;
       $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');

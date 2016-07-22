@@ -22,7 +22,7 @@ if($ally_tag) {
   }
 
   DBStaticAlly::db_ally_insert($ally_name, $ally_tag, $user);
-  $ally_id = db_insert_id();
+  $ally_id = classSupernova::$db->db_insert_id();
   DBStaticUser::db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= " . SN_TIME_NOW . "");
 
   $ally_user = classSupernova::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_id}");

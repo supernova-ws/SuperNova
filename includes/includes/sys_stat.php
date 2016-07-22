@@ -122,7 +122,7 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating planets stats');
   $i = 0;
   $query = DBStaticPlanet::db_planet_list_resources_by_owner();
-  $row_num = db_num_rows($query);
+  $row_num = classSupernova::$db->db_num_rows($query);
   while($planet = db_fetch($query)) {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating planets stats (planet {$i}/{$row_num})", false);
@@ -141,7 +141,7 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating flying fleets stats');
   $i = 0;
   $query = FleetList::dbQueryAllId();
-  $row_num = db_num_rows($query);
+  $row_num = classSupernova::$db->db_num_rows($query);
   while($fleet_row = db_fetch($query)) {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating flying fleets stats (fleet {$i}/{$row_num})", false);
@@ -177,7 +177,7 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating unit stats');
   $i = 0;
   $query = DBStaticUnit::db_unit_list_stat_calculate();
-  $row_num = db_num_rows($query);
+  $row_num = classSupernova::$db->db_num_rows($query);
   while($unit = db_fetch($query)) {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating unit stats (unit {$i}/{$row_num})", false);
@@ -195,7 +195,7 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating ques stats');
   $i = 0;
   $query = DBStaticQue::db_que_list_stat();
-  $row_num = db_num_rows($query);
+  $row_num = classSupernova::$db->db_num_rows($query);
   while($que_item = db_fetch($query)) {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating ques stats (que item {$i}/{$row_num})", false);

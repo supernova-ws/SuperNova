@@ -41,7 +41,7 @@ if (($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param
         $unit_max_stack = get_unit_param($unit_id, P_MAX_STACK);
         if (!isset($unit_max_stack) || $unit_max_stack > mrc_get_level($user, $planetrow, $unit_id)) {
           $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, 1, $user);
-          db_changeset_apply($db_changeset);
+          classSupernova::db_changeset_apply($db_changeset);
           rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost),
             sprintf('Spent for artifact %1$s ID %2$d', classLocale::$lang['tech'][$unit_id], $unit_id)
           );

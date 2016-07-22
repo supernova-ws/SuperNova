@@ -613,7 +613,7 @@ switch($new_version) {
     while($records) {
       upd_do_query('START TRANSACTION;', true);
       $query = upd_do_query("SELECT * FROM {{LOGS}} WHERE log_code = 102 ORDER BY log_id LIMIT 1000;");
-      $records = db_num_rows($query);
+      $records = classSupernova::$db->db_num_rows($query);
       while($row = db_fetch($query)) {
         $result = preg_match('/^Player ID (\d+) Dark Matter was adjusted with (\-?\d+). Reason: (.+)$/', $row['log_text'], $matches);
 
@@ -1344,7 +1344,7 @@ switch($new_version) {
     while($ally_row = db_fetch($ally_row_list)) {
       $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
       doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_row['id']};");
-      $ally_user_id = db_insert_id();
+      $ally_user_id = classSupernova::$db->db_insert_id();
       doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
     }
     // Renaming old ally players TODO: Remove on release
@@ -1358,7 +1358,7 @@ switch($new_version) {
     while($ally_user_row = db_fetch($ally_user_list)) {
       $ally_planet_name = db_escape($ally_user_row['username']);
       doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = " . SN_TIME_NOW . ", `id_owner` = {$ally_user_row['id']};");
-      $ally_planet_id = db_insert_id();
+      $ally_planet_id = classSupernova::$db->db_insert_id();
       doquery("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
     }
 

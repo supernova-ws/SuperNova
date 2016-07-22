@@ -873,7 +873,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.52
+   * @version 41a50.54
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -961,7 +961,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
 
       // Adjusting ship amount on planet
       if (!empty($db_changeset)) {
-        db_changeset_apply($db_changeset);
+        classSupernova::db_changeset_apply($db_changeset);
       }
 
       // Restoring resources to planet
@@ -986,7 +986,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.52
+   * @version 41a50.54
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1743,7 +1743,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
     );
 
     $db_changeset = $this->unitList->db_prepare_old_changeset_for_planet($this->dbOwnerRow, $this->dbSourcePlanetRow['id']);
-    db_changeset_apply($db_changeset);
+    classSupernova::db_changeset_apply($db_changeset);
 
 
     if (!empty($this->captain['unit_id'])) {

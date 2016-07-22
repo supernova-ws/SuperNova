@@ -219,9 +219,9 @@ class debug {
         `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
 //        ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
       ", `log_dump` = '" . ($error_backtrace ? db_escape(serialize($error_backtrace)) : '') . "'" . ";";
-      doquery($query, '', false, true) or die($fatal_error . db_error());
+      doquery($query, '', false, true) or die($fatal_error . classSupernova::$db->db_error());
 
-      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . db_insert_id() . "</b>";
+      $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . classSupernova::$db->db_insert_id() . "</b>";
 
       $sys_stop_log_hit = true;
       $sys_log_disabled = true;

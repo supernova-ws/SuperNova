@@ -11,7 +11,7 @@ if($ali_search_text) {
   $template->assign_var('SEARCH_TEXT', $ali_search_text);
 
   $search = DBStaticAlly::db_ally_search_by_name_or_tag($ali_search_text);
-  if(db_num_rows($search)) {
+  if(classSupernova::$db->db_num_rows($search)) {
     while($ally_row = db_fetch($search)) {
       $template->assign_block_vars('alliances', array(
         'ID'          => $ally_row['id'],

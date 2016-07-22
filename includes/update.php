@@ -70,7 +70,7 @@ upd_log_message('Server disabled. Loading table info...');
 $update_tables = array();
 $update_indexes = array();
 $query = upd_do_query('SHOW TABLES;', true);
-while($row = db_fetch_row($query)) {
+while($row = classSupernova::$db->db_fetch_row($query)) {
   upd_load_table_info($row[0]);
 }
 upd_log_message('Table info loaded. Now looking DB for upgrades...');

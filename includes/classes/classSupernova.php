@@ -475,7 +475,7 @@ class classSupernova {
     if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
-        $record_id = db_insert_id();
+        $record_id = classSupernova::$db->db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
         $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
@@ -498,7 +498,7 @@ class classSupernova {
     if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
       if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
-        $record_id = db_insert_id();
+        $record_id = classSupernova::$db->db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
         $result = static::db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего

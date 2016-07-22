@@ -18,7 +18,7 @@ function upd_do_query($query, $no_log = false) {
       $query = str_replace("{{{$tableName}}}", classSupernova::$db->db_prefix . $tableName, $query);
     }
   }
-  !($result = classSupernova::$db->db_sql_query($query)) ? die('Query error for ' . $query . ': ' . db_error()) : false;
+  !($result = classSupernova::$db->db_sql_query($query)) ? die('Query error for ' . $query . ': ' . classSupernova::$db->db_error()) : false;
 
   return $result;
 }
@@ -132,7 +132,7 @@ function upd_alter_table($table, $alters, $condition = true) {
   $qry = "ALTER TABLE {{{$table}}} {$alters};";
 
   $result = upd_do_query($qry);
-  $error = db_error();
+  $error = classSupernova::$db->db_error();
   if ($error) {
     die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
   }
@@ -158,7 +158,7 @@ function upd_create_table($table_name, $declaration) {
     upd_do_query('set foreign_key_checks = 0;', true);
     $db_prefix = classSupernova::$config->db_prefix;
     $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$db_prefix}{$table_name}` {$declaration}");
-    $error = db_error();
+    $error = classSupernova::$db->db_error();
     if ($error) {
       die("Creating error for table `{$table_name}`: {$error}<br />" . dump($declaration));
     }

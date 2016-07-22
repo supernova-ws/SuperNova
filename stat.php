@@ -107,7 +107,7 @@ $start = floor($range / 100 % 100) * 100;
 $query = db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source);
 
 // TODO - Не работает, если игроков на Блице > 100
-$record_count = $source ? db_num_rows($query) : ($who == 1 ? DBStaticUser::db_user_count() : DBStaticAlly::db_ally_count());
+$record_count = $source ? classSupernova::$db->db_num_rows($query) : ($who == 1 ? DBStaticUser::db_user_count() : DBStaticAlly::db_ally_count());
 // pdump($record_count, '$record_count');
 // $record_count = db_num_rows($query);
 

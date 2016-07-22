@@ -180,7 +180,7 @@ function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $d
   $value_id = doquery("SELECT `{$db_id_field_name}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE", true);
   if (!isset($value_id['id_field']) || !$value_id['id_field']) {
     doquery("INSERT INTO {{{$db_table_name}}} (`{$db_value_field_name}`) VALUES ('{$current_value_safe}');");
-    $variable_id = db_insert_id();
+    $variable_id = classSupernova::$db->db_insert_id();
   } else {
     $variable_id = $value_id['id_field'];
   }

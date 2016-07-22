@@ -29,7 +29,7 @@ function sn_sys_load_php_files($dir_name, $load_extension = 'php', $modules = fa
 }
 
 function sys_refresh_tablelist() {
-  classSupernova::$cache->tables = db_get_table_list();
+  classSupernova::$cache->tables = classSupernova::$db->db_get_table_list();
 }
 
 /**

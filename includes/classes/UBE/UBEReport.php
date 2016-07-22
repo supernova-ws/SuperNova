@@ -130,7 +130,7 @@ class UBEReport {
       . $ube->moon_calculator->report_generate_sql();
 
     doquery($sql_str);
-    $ube_report_id = db_insert_id();
+    $ube_report_id = classSupernova::$db->db_insert_id();
 
     // Сохраняем общую информацию по игрокам
     $player_sides = $ube->players->get_player_sides();

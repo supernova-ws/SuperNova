@@ -715,7 +715,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     }
   }
 
-  db_changeset_apply($db_changeset);
+  classSupernova::db_changeset_apply($db_changeset);
 
   // TODO Сообщения о постройке
 

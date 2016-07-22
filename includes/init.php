@@ -45,7 +45,7 @@ register_shutdown_function(function () {
 !defined('INSTALL') ? define('INSTALL', false) : false;
 !defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
 
-global $phpEx, $sn_root_physical, $phpbb_root_path; // Это нужно для работы PTL
+global $phpEx, $phpbb_root_path; // Это нужно для работы PTL
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
 define('SN_TIME_ZONE_OFFSET', date('Z'));
 
@@ -92,30 +92,19 @@ spl_autoload_register(function ($class) use ($classRoot) {
   }
 });
 
-require_once('constants.php');
-
-//require_once('classes/classSupernova.php');
+require_once 'constants.php';
 
 classSupernova::init_0_prepare();
 //classSupernova::init_1_constants();
 classSupernova::init_3_load_config_file();
 
-
-
 // required for db.php
 // Initializing global 'debug' object
 classSupernova::$debug = new debug();
 
-require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
+require_once SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX;
 classSupernova::init_main_db(new db_mysql());
 
-
-//require_once('classes/classCache.php');
-//require_once('classes/classLocale.php');
-//require_once('classes/template_compile.php');
-//require_once('classes/sn_module.php');
-
-//require_once('classes/userOptions.php');
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 /**

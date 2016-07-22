@@ -2,19 +2,13 @@
 
 define('INSIDE', true);
 
-// Эти три строки должны быть В ЭТОМ ФАЙЛЕ, ПО ЭТОМУ ПУТИ и ПЕРЕД ЭТИМ ИНКЛЮДОМ!!!
-$sn_root_physical = str_replace('\\', '/', __FILE__);
-$sn_root_physical = str_replace('tests/__bootstrap.php', '', $sn_root_physical);
-define('SN_ROOT_PHYSICAL', $sn_root_physical);
-// define('SN_ROOT_PHYSICAL_STR_LEN', mb_strlen($sn_root_physical));
-define('SN_ROOT_PHYSICAL_STR_LEN', strlen($sn_root_physical));
+define('SN_ROOT_PHYSICAL', str_replace(array('\\', '//'), '/', dirname(__DIR__) . '/'));
+define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL)); // mb_strlen ???
+
 global $phpbb_root_path;
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
 require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
-
-// echo 'bootstrap';
-//print($sn_root_physical);
 
 empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'includes/classes/' : false;
 spl_autoload_register(function ($class) use ($classRoot) {

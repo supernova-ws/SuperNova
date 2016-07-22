@@ -109,7 +109,7 @@ class UBE {
    *
    * @param Mission $objMission
    *
-   * @version 41a7.59
+   * @version 41a50.54
    */
   function loadDataFromMission(&$objMission) {
     $this->combatMission = $objMission;
@@ -139,7 +139,7 @@ class UBE {
    *
    * @internal param array $planet
    *
-   * @version 41a7.59
+   * @version 41a50.54
    */
   function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];
@@ -162,7 +162,7 @@ class UBE {
   /**
    * Общий алгоритм расчета боя
    *
-   * @version 41a7.59
+   * @version 41a50.54
    */
   protected function sn_ube_combat() {
     // TODO: Сделать атаку по типам,  когда они будут
@@ -319,7 +319,7 @@ pdie();
    *
    * @return mixed
    *
-   * @version 41a7.59
+   * @version 41a50.54
    */
   function ube_combat_result_apply() {
     $destination_user_id = $this->fleet_list[0]->owner_id;
@@ -357,7 +357,7 @@ pdie();
           foreach($UBEFleet->unit_list->_container as $UBEUnit) {
             $db_changeset['unit'][] = sn_db_unit_changeset_prepare($UBEUnit->unitId, -$UBEUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
-          db_changeset_apply($db_changeset);
+          classSupernova::db_changeset_apply($db_changeset);
         }
       }
     }
@@ -467,7 +467,7 @@ pdie();
    * @param     $attacker
    * @param int $player_id
    *
-   * @version 41a7.59
+   * @version 41a50.54
    */
   function sn_ube_simulator_fill_side($side_info, $attacker, $player_id = -1) {
     $player_id = $player_id == -1 ? $this->players->count() : $player_id;
@@ -548,7 +548,7 @@ pdie();
    *
    * @return bool
    *
-   * @version 41a7.59
+   * @version 41a50.54
    */
   static function flt_mission_attack($objMission) {
     $ube = new UBE();
@@ -681,7 +681,7 @@ pdie();
  *
  * @return mixed
  *
- * @version 41a7.59
+ * @version 41a50.54
  */
 function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }
 
@@ -693,7 +693,7 @@ function ube_combat_result_apply_from_object(UBE $ube) { return sn_function_call
  *
  * @return mixed
  *
- * @version 41a7.59
+ * @version 41a50.54
  */
 function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_function_call(__FUNCTION__, array($UBEFleet)); }
 
@@ -704,6 +704,6 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  *
  * @return mixed
  *
- * @version 41a7.59
+ * @version 41a50.54
  */
 function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }

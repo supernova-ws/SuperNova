@@ -42,7 +42,7 @@ class DBStaticNews {
     ORDER BY `tsTimeStamp` DESC, idAnnounce" .
       ($query_limit ? " LIMIT {$query_limit}" : ''));
 
-    $template->assign_var('NEWS_COUNT', db_num_rows($announce_list));
+    $template->assign_var('NEWS_COUNT', classSupernova::$db->db_num_rows($announce_list));
 
     return $announce_list;
   }

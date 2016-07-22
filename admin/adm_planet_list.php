@@ -49,7 +49,7 @@ $page_title =
 $template->assign_vars(array(
   'PAGE_TITLE' => $page_title,
 
-  'PLANET_COUNT'  => db_num_rows($query),
+  'PLANET_COUNT'  => classSupernova::$db->db_num_rows($query),
   'PARENT_COLUMN' => $table_parent_columns,
 ));
 
