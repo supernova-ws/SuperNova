@@ -27,7 +27,7 @@ class DBStaticRecord {
    */
   public static function buildSelect() {
     return
-      DbQueryConstructor::build(self::$dbStatic)
+      DbQueryConstructor::build(static::$dbStatic)
         ->getParamsFromStaticClass(get_called_class())
         ->select();
   }
