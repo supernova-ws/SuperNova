@@ -34,6 +34,11 @@ class classSupernova {
   public static $db_name = '';
 
   /**
+   * @var SnCache $dbCache
+   */
+  public static $dbCache;
+
+  /**
    * Настройки из файла конфигурации
    *
    * @var string
@@ -1048,6 +1053,8 @@ class classSupernova {
   }
 
   public static function init_global_objects() {
+    global $sn_cache;
+
     self::$user_options = new userOptions(0);
 
     // Initializing global 'cacher' object

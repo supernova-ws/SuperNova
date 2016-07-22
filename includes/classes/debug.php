@@ -4,7 +4,7 @@
  */
 
 /*
- * debug.class.php ::  Clase Debug, maneja reporte de eventos
+ * debug.php ::  Clase Debug, maneja reporte de eventos
  *
  * V4.0 copyright 2010-2011 by Gorlum for http://supernova.ws
  *  [!] Merged `errors` to `logs`

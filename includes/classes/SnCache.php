@@ -233,4 +233,5 @@ class SnCache {
   public static function queryCacheResetByLocationAndFilter($locationType, $filter) {
     SnCache::$queries[$locationType][$filter] = array();
   }
+
 }

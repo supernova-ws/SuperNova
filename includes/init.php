@@ -7,17 +7,16 @@ if(defined('INIT')) {
 
 define('INIT', true);
 
-define('DEBUG_UBE', true);
-define('DEBUG_FLYING_FLEETS', true);
-// define('SN_DEBUG_LOG', true);
-
 // Замеряем начальные параметры
 define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
 
-define('SN_DEBUG_PDUMP_CALLER', true);
-
 version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3.2') : false;
+
+define('DEBUG_UBE', true);
+define('DEBUG_FLYING_FLEETS', true);
+// define('SN_DEBUG_LOG', true);
+define('SN_DEBUG_PDUMP_CALLER', true);
 
 // Бенчмарк
 register_shutdown_function(function () {
@@ -60,15 +59,12 @@ if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
 }
 
 // Эти три строки должны быть В ЭТОМ ФАЙЛЕ, ПО ЭТОМУ ПУТИ и ПЕРЕД ЭТИМ ИНКЛЮДОМ!!!
-$sn_root_physical = str_replace('\\', '/', __FILE__);
-$sn_root_physical = str_replace('includes/init.php', '', $sn_root_physical);
-define('SN_ROOT_PHYSICAL', $sn_root_physical);
-// define('SN_ROOT_PHYSICAL_STR_LEN', mb_strlen($sn_root_physical));
-define('SN_ROOT_PHYSICAL_STR_LEN', strlen($sn_root_physical));
+define('SN_ROOT_PHYSICAL', str_replace(array('\\', '//'), '/', dirname(__DIR__) . '/'));
+define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
-$sn_root_relative = str_replace('\\', '/', getcwd());
-$sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
+$sn_root_relative = str_replace(array('\\', '//'), '/', getcwd() . '/');
+//$sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
 $sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
 $sn_root_relative .= basename($_SERVER['SCRIPT_NAME']);
 $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
@@ -82,26 +78,9 @@ define('PHP_EX', $phpEx); // PHP extension on this server
 define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
 
 
-require_once('constants.php');
-
-require_once('classes/classSupernova.php');
-
-classSupernova::init_0_prepare();
-//classSupernova::init_1_constants();
-classSupernova::init_3_load_config_file();
-
 header('Content-type: text/html; charset=utf-8');
 ob_start();
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
-
-
-// TODO - Разобраться с порядком подключени и зависимостями объектов
-require_once('classes/core_classes.php');
-
-// required for db.php
-// Initializing global 'debug' object
-require_once(SN_ROOT_PHYSICAL . "includes/debug.class" . DOT_PHP_EX);
-classSupernova::$debug = new debug();
 
 empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'includes/classes/' : false;
 spl_autoload_register(function ($class) use ($classRoot) {
@@ -113,30 +92,30 @@ spl_autoload_register(function ($class) use ($classRoot) {
   }
 });
 
-//spl_autoload_register(function ($class) {
-//  if(file_exists('includes/classes/' . $class . '.php')) {
-//    require_once 'includes/classes/' . $class . '.php';
-//  } elseif(file_exists('includes/classes/UBE/' . $class . '.php')) {
-//    require_once 'includes/classes/UBE/' . $class . '.php';
-//  } else {
-////    die("Can't find {$class} class");
-//  }
-//});
+require_once('constants.php');
 
+//require_once('classes/classSupernova.php');
+
+classSupernova::init_0_prepare();
+//classSupernova::init_1_constants();
+classSupernova::init_3_load_config_file();
+
+
+
+// required for db.php
+// Initializing global 'debug' object
+classSupernova::$debug = new debug();
 
 require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
-require_once('classes/db_mysql_v4.php');
-require_once('classes/db_mysql_v5.php');
-require_once('classes/db_mysql.php');
 classSupernova::init_main_db(new db_mysql());
 
 
-require_once('classes/cache.php');
-require_once('classes/locale.php');
-require_once('classes/functions_template.php');
-require_once('classes/module.php');
+//require_once('classes/classCache.php');
+//require_once('classes/classLocale.php');
+//require_once('classes/template_compile.php');
+//require_once('classes/sn_module.php');
 
-require_once('classes/user_options.php');
+//require_once('classes/userOptions.php');
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 /**
@@ -187,6 +166,7 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
 
 // Подключаем все модули
+// По нормальным делам тут надо подключать манифесты
 // По нормальным делам тут надо подключать манифесты
 // И читать конфиги - вдруг модуль отключен?
 // Конфиг - часть манифеста?
