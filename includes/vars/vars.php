@@ -393,7 +393,7 @@ $sn_data += array(
     ),
 
     // Missiles list
-    'missile'            => array(UNIT_DEF_MISSILE_INTERCEPTOR => UNIT_DEF_MISSILE_INTERCEPTOR, UNIT_DEF_MISSILE_INTERPLANET => UNIT_DEF_MISSILE_INTERPLANET,),
+    GROUP_STR_MISSILES            => array(UNIT_DEF_MISSILE_INTERCEPTOR => UNIT_DEF_MISSILE_INTERCEPTOR, UNIT_DEF_MISSILE_INTERPLANET => UNIT_DEF_MISSILE_INTERPLANET,),
 
     // Combat units list
     'combat'             => array(

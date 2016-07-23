@@ -172,7 +172,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     //  }
     if(get_unit_param($unit_id, P_STACKABLE)) {
       // TODO Поле 'max_Lot_size' для ограничения размера стэка в очереди - то ли в юниты, то ли в очередь
-      if(in_array($unit_id, $group_missile = sn_get_groups('missile'))) {
+      if(in_array($unit_id, $group_missile = sn_get_groups(GROUP_STR_MISSILES))) {
         // TODO Поле 'container' - указывает на родительску структуру, в которой хранится данный юнит и по вместительности которой нужно применять размер юнита
         $used_silo = 0;
         foreach($group_missile as $missile_id) {

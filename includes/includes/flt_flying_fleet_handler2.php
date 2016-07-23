@@ -2,6 +2,8 @@
 
 // ------------------------------------------------------------------
 // unit_captain overrides
+use Mission\Mission;
+
 /**
  * Handled by:
  *    - unit_captain

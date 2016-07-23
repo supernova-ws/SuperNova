@@ -216,36 +216,6 @@ class DbQueryConstructor extends DbSqlAware {
     return $this;
   }
 
-
-//  /**
-//   * Make statement fetch only one record
-//   *
-//   * @return $this
-//   */
-//  public function fetchOne($fetchOne = true) {
-//    $this->fetchOne = $fetchOne;
-//
-//    return $this;
-//  }
-//
-//  /**
-//   * @return $this
-//   */
-//  public function forUpdate($forUpdate = true) {
-//    $this->forUpdate = $forUpdate;
-//
-//    return $this;
-//  }
-//
-//  /**
-//   * @return $this
-//   */
-//  public function skipLock($skipLock = true) {
-//    $this->skipLock = $skipLock;
-//
-//    return $this;
-//  }
-
   /**
    * @param string $className
    *

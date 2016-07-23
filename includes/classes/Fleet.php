@@ -319,17 +319,23 @@ class Fleet extends UnitContainer {
   public $captainId = 0;
 
   /**
+   * @var FleetValidator $validator
+   */
+  public $validator;
+
+  /**
    * Fleet constructor.
    */
   public function __construct() {
     parent::__construct();
     $this->exists_missions = sn_get_groups('missions');
-    $this->allowed_missions = $this->exists_missions;
-    if(empty(static::$snGroupFleet)) {
+//    $this->allowed_missions = $this->exists_missions;
+    if (empty(static::$snGroupFleet)) {
       static::$snGroupFleet = sn_get_groups('fleet');
-      static::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', 'missile'));
+      static::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', GROUP_STR_MISSILES));
       static::$snGroupRecyclers = sn_get_groups('flt_recyclers');
     }
+    $this->validator = new FleetValidator($this);
   }
 
   /**
@@ -666,7 +672,7 @@ class Fleet extends UnitContainer {
         continue;
       }
 
-      if ($this->isShip($unit_id)) {
+      if ($this->isShip($unit_id) || $this->isMissile($unit_id)) {
         $this->unitList->unitSetCount($unit_id, $unit_count);
       } elseif ($this->isResource($unit_id)) {
         $this->resource_list[$unit_id] = $unit_count;
@@ -793,6 +799,10 @@ class Fleet extends UnitContainer {
     return UnitShip::is_in_group($unit_id);
   }
 
+  protected function isMissile($unit_id) {
+    return isInGroup(GROUP_STR_MISSILES, $unit_id);
+  }
+
   /**
    * Set unit count of $unit_id to $unit_count
    * If there is no $unit_id - it will be created and saved to DB on dbSave
@@ -801,7 +811,7 @@ class Fleet extends UnitContainer {
    * @param int $unit_count
    */
   public function shipSetCount($unit_id, $unit_count = 0) {
-pdump(__CLASS__ . '->' . __FUNCTION__);
+    pdump(__CLASS__ . '->' . __FUNCTION__);
     $this->shipAdjustCount($unit_id, $unit_count, true);
   }
 
@@ -873,12 +883,12 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    *
    * @return int
    *
-   * @version 41a50.54
+   * @version 41a50.57
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
-    foreach($this->shipsIterator() as $unitId => $unit) {
-      if(!empty(static::$snGroupRecyclers[$unitId]) && $unit->count >= 1) {
+    foreach ($this->shipsIterator() as $unitId => $unit) {
+      if (!empty(static::$snGroupRecyclers[$unitId]) && $unit->count >= 1) {
         $recyclers_incoming_capacity += $unit->count * $recycler_info[$unitId]['capacity'];
       }
     }
@@ -986,7 +996,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.54
+   * @version 41a50.57
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(
@@ -1211,7 +1221,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
   protected function populateTargetPlanetAndOwner() {
     // If vector points to no exact object OR debris - then getting planet on coordinates
     $targetVector = clone $this->targetVector;
-    if($targetVector->type == PT_DEBRIS || $targetVector == PT_NONE) {
+    if ($targetVector->type == PT_DEBRIS || $targetVector == PT_NONE) {
       $targetVector->type = PT_PLANET;
     }
 
@@ -1559,8 +1569,8 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
 
   public function fleetSpeed() {
     $maxSpeed = array();
-    foreach($this->shipsIterator() as $ship_id => $unit) {
-      if($unit->count > 0 && !empty(static::$snGroupFleetAndMissiles[$ship_id])) {
+    foreach ($this->shipsIterator() as $ship_id => $unit) {
+      if ($unit->count > 0 && !empty(static::$snGroupFleetAndMissiles[$ship_id])) {
         $single_ship_data = get_ship_data($ship_id, $this->dbOwnerRow);
         $maxSpeed[$ship_id] = $single_ship_data['speed'];
       }
@@ -1575,8 +1585,80 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
   public function fleetPage2Prepare($planetResourcesWithoutConsumption) {
     $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
 
-    $validator = new FleetValidator($this);
-    $validator->validate();
+//    /**
+//     * @var array $allowed_missions
+//     */
+//    public $allowed_missions = array();
+//    /**
+//     * @var array $exists_missions
+//     */
+//    public $exists_missions = array();
+//    public $allowed_planet_types = array(
+//      // PT_NONE => PT_NONE,
+//      PT_PLANET => PT_PLANET,
+//      PT_MOON   => PT_MOON,
+//      PT_DEBRIS => PT_DEBRIS
+//    );
+
+//    $this->exists_missions = array(
+////      MT_EXPLORE => MT_EXPLORE,
+////      MT_MISSILE => MT_MISSILE,
+//      MT_COLONIZE => MT_COLONIZE,
+//    );  // TODO
+    $this->allowed_missions = array();
+
+    if ($this->mission_type != MT_NONE && empty($this->exists_missions[$this->mission_type])) {
+      throw new ExceptionFleetInvalid(FLIGHT_MISSION_UNKNOWN, FLIGHT_MISSION_UNKNOWN);
+    }
+
+    $this->validator->validateGlobals();
+
+    $validateResult = array();
+    foreach ($this->exists_missions as $missionType => $missionData) {
+//print('qwe');
+      $mission = \Mission\MissionFactory::build($missionType, $this);
+//print('wer');
+      $validateResult[$missionType] = $mission->validate();
+      if (FLIGHT_ALLOWED == $validateResult[$missionType]) {
+        $this->allowed_missions[$missionType] = $mission;
+      } else {
+        if($missionType == $this->mission_type) {
+        }
+        unset($this->allowed_missions[$missionType]);
+      }
+    }
+//    print('asd');
+//var_dump($this->allowed_missions);
+//    print('выф');
+    if(empty($this->allowed_missions)) {
+      if($this->mission_type != MT_NONE && isset($validateResult[$this->mission_type])) {
+        throw new ExceptionFleetInvalid($validateResult[$this->mission_type], $validateResult[$this->mission_type]);
+      } else {
+        throw new ExceptionFleetInvalid(FLIGHT_MISSION_IMPOSSIBLE, FLIGHT_MISSION_IMPOSSIBLE);
+      }
+    }
+
+//    $this->validator->validate();
+  }
+
+  /**
+   * @param array $planetResourcesWithoutConsumption
+   */
+  public function fleetPage3Prepare($planetResourcesWithoutConsumption) {
+    $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
+
+    if (empty($this->exists_missions[$this->mission_type])) {
+      throw new ExceptionFleetInvalid(FLIGHT_MISSION_UNKNOWN, FLIGHT_MISSION_UNKNOWN);
+    }
+
+    $this->validator->validateGlobals();
+
+    $mission = \Mission\MissionFactory::build($this->mission_type, $this);
+    $result = $mission->validate();
+    if (FLIGHT_ALLOWED != $result) {
+      throw new ExceptionFleetInvalid($result, $result);
+    }
+
   }
 
   /**
@@ -1592,7 +1674,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
       $this->fleetPage2Prepare($planetResourcesWithoutConsumption);
     } catch (Exception $e) {
       // TODO - MESSAGE BOX
-      if($e instanceof ExceptionFleetInvalid) {
+      if ($e instanceof ExceptionFleetInvalid) {
         sn_db_transaction_rollback();
         pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
       } else {
@@ -1678,18 +1760,33 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
 
     $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
 
+    $planetResourcesTotal = DBStaticPlanet::getResources($this->dbOwnerRow, $this->dbSourcePlanetRow);
+    $planetResourcesWithoutConsumption = $this->resourcesSubstractConsumption($planetResourcesTotal);
+
     try {
-      $validator = new FleetValidator($this);
-      $validator->validate();
+      $this->fleetPage3Prepare($planetResourcesWithoutConsumption);
     } catch (Exception $e) {
       // TODO - MESSAGE BOX
-      if($e instanceof ExceptionFleetInvalid) {
+      if ($e instanceof ExceptionFleetInvalid) {
         sn_db_transaction_rollback();
         pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
       } else {
         throw $e;
       }
     }
+
+//    try {
+//      $validator = new FleetValidator($this);
+//      $validator->validate();
+//    } catch (Exception $e) {
+//      // TODO - MESSAGE BOX
+//      if($e instanceof ExceptionFleetInvalid) {
+//        sn_db_transaction_rollback();
+//        pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
+//      } else {
+//        throw $e;
+//      }
+//    }
 
     // TODO - check if mission is not 0 and in ALLOWED_MISSIONS
 
@@ -1700,16 +1797,16 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
 
     $timeMissionJob = 0;
     // TODO check for empty mission AKA mission allowed
-/*
-    if ($this->_mission_type == MT_ACS && $aks) {
-      $acsTimeToArrive = $aks['ankunft'] - SN_TIME_NOW;
-      if ($acsTimeToArrive < $this->travelData['duration']) {
-        message(classLocale::$lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, SN_TIME_NOW + $this->travelData['duration']) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), classLocale::$lang['fl_error']);
-      }
-      // Set time to travel to ACS' TTT
-      $this->travelData['duration'] = $acsTimeToArrive;
-*/
-      if ($this->_mission_type != MT_ACS) {
+    /*
+        if ($this->_mission_type == MT_ACS && $aks) {
+          $acsTimeToArrive = $aks['ankunft'] - SN_TIME_NOW;
+          if ($acsTimeToArrive < $this->travelData['duration']) {
+            message(classLocale::$lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME, SN_TIME_NOW + $this->travelData['duration']) . " AKS arrival: " . date(FMT_DATE_TIME, $aks['ankunft']), classLocale::$lang['fl_error']);
+          }
+          // Set time to travel to ACS' TTT
+          $this->travelData['duration'] = $acsTimeToArrive;
+    */
+    if ($this->_mission_type != MT_ACS) {
       if ($this->_mission_type == MT_EXPLORE || $this->_mission_type == MT_HOLD) {
         $max_duration = $this->_mission_type == MT_EXPLORE ? get_player_max_expedition_duration($this->dbOwnerRow) : ($this->_mission_type == MT_HOLD ? 12 : 0);
         if ($max_duration) {
@@ -1803,7 +1900,7 @@ pdump(__CLASS__ . '->' . __FUNCTION__);
   protected function resourcesSubstractConsumption($planetResources) {
     !isset($planetResources[RES_DEUTERIUM]) ? $planetResources[RES_DEUTERIUM] = 0 : false;
 
-    if($this->travelData['consumption'] >= 0) {
+    if ($this->travelData['consumption'] >= 0) {
       $planetResources[RES_DEUTERIUM] -= ceil($this->travelData['consumption']);
     }
 

@@ -95,7 +95,7 @@ function fleet_ajax() {
 
     case MT_MISSILE:
       $fleet_array[UNIT_DEF_MISSILE_INTERPLANET] = min(mrc_get_level($user, $planetrow, UNIT_DEF_MISSILE_INTERPLANET), abs(sys_get_param_float('missiles')));
-      $unit_group = 'missile';
+      $unit_group = GROUP_STR_MISSILES;
     break;
 
   }

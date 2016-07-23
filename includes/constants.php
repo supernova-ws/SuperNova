@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.56');
+define('SN_VERSION', '41a50.57');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -635,6 +635,7 @@ define('MSG_TYPE_QUE'      ,  99);
 define('MSG_TYPE_NEW'      , 100);
 
 // Attack verification statuses
+define('FLIGHT_NO_RESULT'           ,  -2);
 define('FLIGHT_ALLOWED_NEW'           ,  -1);
 //define('FLIGHT_DO_NOTHING'           ,  0);
 define('FLIGHT_ALLOWED'           ,  0);
@@ -706,6 +707,11 @@ define('FLIGHT_MISSION_DESTROY_NOT_MOON', 65);
 define('FLIGHT_MISSION_DESTROY_NO_REAPERS', 66);
 define('FLIGHT_MISSION_ACS_NOT_INVITED', 67);
 define('FLIGHT_CAPTAIN_ON_OTHER_PLANET', 68);
+define('FLIGHT_MISSION_EXPLORE_KNOWN_SPACE', 69);
+define('FLIGHT_MISSION_MISSILE_ONLY_ATTACK', 70);
+define('FLIGHT_VECTOR_TARGET_NOT_EXISTS', 71);
+define('FLIGHT_VECTOR_TARGET_DESTROYED', 72);
+define('FLIGHT_MISSION_MISSILE_DISABLED', 73);
 
 
 define('FLIGHT_INTERNAL_ERROR', 999);
@@ -941,6 +947,7 @@ define('UNIT_DEF_SHIELD_BIG', 408);
 define('UNIT_DEF_SHIELD_PLANET', 409);
 
 // --- Missiles
+define('GROUP_STR_MISSILES', 'missile');
 define('UNIT_DEF_MISSILES', 500);
 define('UNIT_DEF_MISSILE_INTERCEPTOR', 502);
 define('UNIT_DEF_MISSILE_INTERPLANET', 503);

@@ -1,5 +1,7 @@
 <?php
 
+use Mission\Mission;
+
 require_once('includes/includes/coe_simulator_helpers.php');
 
 /**

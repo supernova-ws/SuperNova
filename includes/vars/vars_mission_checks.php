@@ -44,7 +44,7 @@ $sn_data[UNIT_GROUP]['mission_checks'] = array(
   ),
 
   // Forcing MT_ACS if group presents and ACS record exists
-  // TODO
+  // TODO - REWRITE
   'checkFleetGroupACS'              => array(),
 
   // Vector targeting space beyond MaxPlanet forces MT_EXPLORE mission
@@ -55,13 +55,24 @@ $sn_data[UNIT_GROUP]['mission_checks'] = array(
       'checkNoMissiles'      => FLIGHT_SHIPS_NO_MISSILES,
       'checkExpeditionsMax'  => FLIGHT_MISSION_EXPLORE_NO_ASTROTECH,
       'checkExpeditionsFree' => FLIGHT_MISSION_EXPLORE_NO_SLOTS,
-      // TODO - realflight ??????
-      'forceMissionExplore'  => array(
-        true  => FLIGHT_ALLOWED,
-        false => FLIGHT_VECTOR_BEYOND_SYSTEM,
+
+      // TODO - COMPACT????
+      'checkRealFlight'  => array(
+        true  => array(
+          'checkMissionExactExplore' => array(
+            true  => FLIGHT_ALLOWED,
+            false => FLIGHT_VECTOR_BEYOND_SYSTEM,
+          ),
+        ),
+        false  => array(
+          'checkMissionExplore' => array(
+            true  => FLIGHT_ALLOWED,
+            false => FLIGHT_VECTOR_BEYOND_SYSTEM,
+          ),
+        ),
       ),
     ),
-    // Removing mission MT_RECYCLE from list of available missions if we flying to known space
+    // Removing mission MT_EXPLORE from list of available missions if we flying to known space
     true  => array(
       'unsetMissionExplore' => array(),
     ),

@@ -659,7 +659,9 @@ function get_engine_data($user, $engine_info) {
 function get_ship_data($ship_id, $user) {
   $ship_data = array();
   if (in_array($ship_id, Fleet::$snGroupFleetAndMissiles)) {
-    foreach (get_unit_param($ship_id, 'engine') as $engine_info) {
+    $engines = get_unit_param($ship_id, 'engine');
+    empty($engines) ? $engines = array() : false;
+    foreach ($engines as $engine_info) {
       $tech_level = intval(mrc_get_level($user, null, $engine_info['tech']));
       if (empty($ship_data) || $tech_level >= $engine_info['min_level']) {
         $ship_data = $engine_info;
@@ -983,6 +985,11 @@ function sn_sn_get_groups($groups, &$result) {
   }
 
   return $result;
+}
+
+function isInGroup($groups, $unitId) {
+  $group = sn_get_groups($groups);
+  return !empty($group[$unitId]);
 }
 
 // Format $value to ID

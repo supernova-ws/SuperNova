@@ -51,7 +51,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     break;
   }
 
-  $group_missile = sn_get_groups('missile');
+  $group_missile = sn_get_groups(GROUP_STR_MISSILES);
   $silo_capacity_free = 0;
   if ($que_type == QUE_STRUCTURES) {
     $build_unit_list = sn_get_groups('build_allow');

@@ -1,4 +1,5 @@
 <?php
+use Mission\Mission;
 
 /**
  * Fleet mission "Relocate"

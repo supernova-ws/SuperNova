@@ -1,6 +1,8 @@
 <?php
 
 // Used by Festival
+use Mission\Mission;
+
 function mission_expedition_result_adjust(&$result) { return sn_function_call(__FUNCTION__, array(&$result)); }
 
 function sn_mission_expedition_result_adjust(&$result) {

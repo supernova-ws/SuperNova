@@ -9,6 +9,46 @@ class FleetValidator {
    */
   protected $fleet;
 
+  protected static $conditionsGlobal = array(
+    // Cheap checks - class Fleet already have all this info internally
+    'checkSpeedPercentOld'       => FLIGHT_FLEET_SPEED_WRONG,
+    'checkTargetInUniverse'      => FLIGHT_VECTOR_BEYOND_UNIVERSE,
+    'checkTargetNotSource'       => FLIGHT_VECTOR_SAME_SOURCE,
+    'checkSenderNoVacation'      => FLIGHT_PLAYER_VACATION_OWN,  // tODO
+    'checkTargetNoVacation'      => FLIGHT_PLAYER_VACATION,
+    'checkFleetNotEmpty'         => FLIGHT_SHIPS_NO_SHIPS,
+    // 'checkUnitsPositive'         => FLIGHT_SHIPS_NEGATIVE, // Unused - 'cause it's not allowed to put negative units into Unit class
+    // 'checkOnlyFleetUnits'        => FLIGHT_SHIPS_UNIT_WRONG, // Unused - 'cause it's only possible to pass to fleet SHIP or RESOURCE
+    'checkOnlyFlyingUnits'       => FLIGHT_SHIPS_UNMOVABLE,
+    'checkResourcesPositive'     => FLIGHT_RESOURCES_NEGATIVE,
+    'checkNotTooFar'             => FLIGHT_FLEET_TOO_FAR,
+    'checkEnoughCapacity'        => FLIGHT_FLEET_OVERLOAD,
+
+    // checkMissionAllowed
+    // consumptionIsNegative ??????
+
+    // Medium checks - currently requires access to DB but potentially doesn't
+    'checkSourceEnoughShips'     => FLIGHT_SHIPS_NOT_ENOUGH,
+    'checkSourceEnoughFuel'      => FLIGHT_RESOURCES_FUEL_NOT_ENOUGH,
+    'checkSourceEnoughResources' => FLIGHT_RESOURCES_NOT_ENOUGH,
+
+    'checkMultiAccountNot'            => FLIGHT_PLAYER_SAME_IP,
+
+    // Heavy checks - will absolutely require DB access
+    'checkEnoughFleetSlots'           => FLIGHT_FLEET_NO_SLOTS,
+
+    // TODO - THIS CHECKS SHOULD BE ADDED IN UNIT_CAPTAIN MODULE!
+    'checkCaptainSent'                => array(
+      true => array(
+        'checkCaptainExists'         => FLIGHT_CAPTAIN_NOT_HIRED,
+        'checkCaptainOnPlanetType'   => FLIGHT_CAPTAIN_ALREADY_FLYING,
+        'checkCaptainOnPlanetSource' => FLIGHT_CAPTAIN_ON_OTHER_PLANET,
+        'checkCaptainNotRelocating'  => FLIGHT_CAPTAIN_RELOCATE_LOCK,
+      ),
+    ),
+  );
+
+
   /**
    * FleetValidator constructor.
    *
@@ -16,6 +56,38 @@ class FleetValidator {
    */
   public function __construct($fleet) {
     $this->fleet = $fleet;
+  }
+
+  /**
+   *
+   */
+  public function validateGlobals() {
+//    print('Validate globals<br/>');
+    $this->checkMissionRestrictions(self::$conditionsGlobal);
+//    print('Globals validated<br/>');
+
+//    try {
+//      // TODO - Do the restrictMission checks
+//
+//      // TODO - Кое-какие проверки дают FLIGHT_ALLOWED - ЧТО НЕПРАВДА В ДАННОМ СЛУЧАЕ!!!
+//      // На странице 1 некоторые проверки ДОЛЖНЫ БЫТЬ опущены - иначе будет некрасиво
+//      // А вот здесь надо проверять много дополнительной хуйни
+//      $this->checkMissionRestrictions($checklist);
+////pdump('passed');
+//
+//      // 2nd level restrictions
+//      // Still cheap
+////      $this->restrict2ToAllowedMissions();
+////      $this->restrict2ToAllowedPlanetTypes();
+//    } catch (ExceptionFleetInvalid $e) {
+////pdump($e->getCode(), '$e->getCode()');
+////pdump($e->getMessage(), '$e->getMessage()');
+//      if ($e->getCode() != FLIGHT_ALLOWED) {
+//        pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
+//      } else {
+//        pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
+//      }
+//    }
   }
 
   /**
@@ -56,20 +128,13 @@ class FleetValidator {
    *
    * @throws Exception
    */
-  public function checkMissionRestrictions($checklist) {
+  public function checkMissionRestrictions($checklist, $exception = true) {
     foreach ($checklist as $condition => $action) {
 
       $checkResult = call_user_func(array($this, $condition));
-      pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE'));
+      defined('DEBUG_FLEET_MISSION_VALIDATE_DUMP_STEPS')
+        ? pdump($action, $condition . ' ' . ($checkResult ? 'TRUE' : 'FALSE')) : false;
 
-//      // Simple action on failed check
-//      if(!is_array($action)) {
-//        if(!$checkResult) {
-//          throw new ExceptionFleetInvalid($action, $action);
-//        } else {
-//          continue;
-//        }
-//      }
       // If check failed and there no alternative actions - throw exception
       // Shortcut ACTION => FAIL_STATUS instead of ACTION => array(false => FAIL_STATUS)
       if (!$checkResult && !is_array($action)) {
@@ -91,41 +156,15 @@ class FleetValidator {
         $this->checkMissionRestrictions($action);
       } else {
         // No - then just performing action
-        throw new ExceptionFleetInvalid($action, $action);
+        if($exception) {
+          throw new ExceptionFleetInvalid($action, $action);
+        } else {
+          return $action;
+        }
       }
-
-
-//      // Is there some alternatives?
-//      if (is_array($action)) {
-//        if (!empty($action[$checkResult])) {
-//          // Now action is selected alternative
-//          $action = $action[$checkResult];
-//        } else {
-//          continue;
-//        }
-//        // No alternatives - just action
-//      } elseif (!$checkResult) {
-//        // Action launched if check failed
-//
-//        throw new ExceptionFleetInvalid($action, $action);
-//      }
-//
-//      // Here we got action that should be processed
-//
-////pdump($action, $condition);
-//
-////var_dump($checkResult);
-//      // Is new action an array - i.e. list of other checks?
-//      if (is_array($action)) {
-//        // Yes - performing check
-//        $this->checkMissionRestrictions($action);
-//      } else {
-////        if (!$checkResult)
-//        {
-//          throw new ExceptionFleetInvalid($action, $action);
-//        }
-//      }
     }
+
+    return FLIGHT_ALLOWED;
   }
 
 
@@ -339,8 +378,22 @@ class FleetValidator {
   /**
    * @return bool
    */
+  protected function checkUnKnownSpace() {
+    return !$this->checkKnownSpace();
+  }
+
+  /**
+   * @return bool
+   */
   protected function checkTargetExists() {
     return !empty($this->fleet->dbTargetRow['id']);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function checkTargetNotExists() {
+    return !$this->checkTargetExists();
   }
 
   /**
@@ -548,7 +601,7 @@ class FleetValidator {
       $mission = 'MT_' . strtoupper(substr($name, strlen($prefix)));
       if (!defined($mission)) {
         // TODO - Ну, как-то получше это обделать
-        throw new Exception('Mission type "' . $mission . '" is not defined');
+        throw new Exception('Mission type "' . $mission . '" is not defined', FLIGHT_MISSION_UNKNOWN);
       }
 
       $result = constant($mission);
