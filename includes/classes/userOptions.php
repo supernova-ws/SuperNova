@@ -140,17 +140,14 @@ class userOptions extends oldArrayAccessNd {
       }
 
       doquery("DELETE FROM {{player_options}} WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
-      // pdump("DELETE FROM {{player_options}} WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
 
       $this->to_delete = array();
       $update_cache = true;
     }
 
     if($update_cache) {
-      global $sn_cache;
-
       $field_name = $this->cached_name();
-      $sn_cache->$field_name = $this->data;
+      classSupernova::$cache->$field_name = $this->data;
     }
 
     return true;
@@ -171,8 +168,6 @@ class userOptions extends oldArrayAccessNd {
   }
 
   protected function load() {
-    global $sn_cache;
-
     if($this->loaded) {
       return;
     }
@@ -187,7 +182,7 @@ class userOptions extends oldArrayAccessNd {
     }
 
     $field_name = $this->cached_name();
-    $a_data = $sn_cache->$field_name;
+    $a_data = classSupernova::$cache->$field_name;
 
     if(!empty($a_data)) {
       $this->data = array_replace_recursive($this->data, $a_data);
@@ -199,7 +194,7 @@ class userOptions extends oldArrayAccessNd {
       // $this->data[$row['option_id']] = $row['value'];
       $this->data[$row['option_id']] = is_string($row['value']) && ($temp = unserialize($row['value'])) !== false ? $temp : $row['value']; // Десериализация
     }
-    $sn_cache->$field_name = $this->data;
+    classSupernova::$cache->$field_name = $this->data;
   }
 }
 
@@ -305,8 +300,6 @@ class userOptionsOld implements ArrayAccess {
    * @param null|mixed $value
    */
   public function __set($option, $value = null) {
-    global $sn_cache;
-
     if(empty($option) || !$this->user_id) {
       return;
     }
@@ -350,7 +343,7 @@ class userOptionsOld implements ArrayAccess {
 
     if(!empty($to_write)) {
       $field_name = $this->cached_name();
-      $sn_cache->$field_name = $this->data;
+      classSupernova::$cache->$field_name = $this->data;
 
       foreach($to_write as $option_id => &$option_value) {
         $option_value = is_array($this->data[$option_id]) ? serialize($this->data[$option_id]) : $this->data[$option_id]; // Сериализация для массивов при сохранении в БД
@@ -362,8 +355,6 @@ class userOptionsOld implements ArrayAccess {
   }
 
   protected function load() {
-    global $sn_cache;
-
     if($this->loaded) {
       return;
     }
@@ -375,7 +366,7 @@ class userOptionsOld implements ArrayAccess {
     }
 
     $field_name = $this->cached_name();
-    $a_data = $sn_cache->$field_name;
+    $a_data = classSupernova::$cache->$field_name;
 
     if(!empty($a_data)) {
       $this->data = array_replace($this->data, $a_data);
@@ -387,7 +378,7 @@ class userOptionsOld implements ArrayAccess {
       // $this->data[$row['option_id']] = $row['value'];
       $this->data[$row['option_id']] = is_string($row['value']) && ($temp = unserialize($row['value'])) !== false ? $temp : $row['value']; // Десериализация
     }
-    $sn_cache->$field_name = $this->data;
+    classSupernova::$cache->$field_name = $this->data;
     $this->loaded = true;
   }
 

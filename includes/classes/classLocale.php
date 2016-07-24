@@ -134,9 +134,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
 
 
   public function usage_stat_load() {
-    global $sn_cache;
-
-    $this->stat_usage = $sn_cache->lng_stat_usage  = array(); // TODO for debug
+    $this->stat_usage = classSupernova::$cache->lng_stat_usage  = array(); // TODO for debug
     if(empty($this->stat_usage)) {
       $query = doquery("SELECT * FROM {{lng_usage_stat}}");
       while($row = db_fetch($query)) {
@@ -146,8 +144,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
   }
   public function usage_stat_save() {
     if(!empty($this->stat_usage_new)) {
-      global $sn_cache;
-      $sn_cache->lng_stat_usage = $this->stat_usage;
+      classSupernova::$cache->lng_stat_usage = $this->stat_usage;
       doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
       foreach($this->stat_usage_new as &$value) {
         foreach($value as &$value2) {

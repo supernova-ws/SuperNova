@@ -34,7 +34,7 @@ define('CACHER_LOCK_SLEEP', 10000);
  *
  *
  * @property bool _INITIALIZED
- * @property bool tables
+ * @property array tables
  *
  * @package supernova
  */

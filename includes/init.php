@@ -110,7 +110,7 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 /**
  * @var classConfig    $config
  */
-global $sn_cache, $auth;
+global $auth;
 
 classSupernova::init_global_objects();
 
