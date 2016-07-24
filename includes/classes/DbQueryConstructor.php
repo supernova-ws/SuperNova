@@ -167,6 +167,10 @@ class DbQueryConstructor extends DbSqlAware {
     return $this->field(DbSqlLiteral::build($this->db)->isNull($field, $alias));
   }
 
+  public function fieldMax($field = '*', $alias = DbSqlLiteral::SQL_LITERAL_ALIAS_NONE) {
+    return $this->field(DbSqlLiteral::build($this->db)->max($field, $alias));
+  }
+
   /**
    * @param string  $name
    * @param mixed[] $arguments
@@ -241,9 +245,7 @@ class DbQueryConstructor extends DbSqlAware {
      * @var static $result
      */
     $result = parent::build($db);
-    if (!empty($className) && is_string($className)) {
-      $result->getParamsFromStaticClass($className);
-    }
+    $result->getParamsFromStaticClass($className);
 
     return $result;
   }

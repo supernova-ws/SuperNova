@@ -32,6 +32,19 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+//$ccc = 0;
+//foreach(DBStaticUser::db_user_list_non_bots() as $ip) {
+//  $ccc++;
+//}
+//pdump($ccc);
+//
+//foreach(DBStaticUser::db_user_list_non_bots() as $ip) {
+//  pdump($ip['id']);
+//  $ccc++;
+//}
+//
+//pdump(DBStaticUser::db_user_list_non_bots());
+
 lng_include('overview');
 
 $result = array();

@@ -25,51 +25,8 @@ class DBStaticRecord {
   /**
    * @return DbQueryConstructor
    */
-  public static function buildSelect() {
-    return
-      DbQueryConstructor::build(static::$dbStatic)
-        ->getParamsFromStaticClass(get_called_class())
-        ->select();
-  }
-
-  /**
-   * @return DbQueryConstructor
-   */
-  public static function buildSelectCountId() {
-    return
-      static::buildSelect()
-        ->fieldCount(static::$_idField);
-  }
-
-  /**
-   * @return DbQueryConstructor
-   */
-  public static function buildSelectLock() {
-    return
-      static::buildSelect()
-        ->field(1)
-        ->setForUpdate();
-  }
-
-  /**
-   * @param array       $where
-   * @param mixed|array $fieldList
-   *     Field list can be scalar - it would be converted to array and used as field name
-   * @param bool        $for_update
-   *
-   * @return array
-   */
-  protected static function getRecord($where = array(), $fieldList = '*', $for_update = false) {
-    $stmt =
-      static::buildSelect()
-        ->fields($fieldList)
-        ->where($where)
-        ->setFetchOne();
-
-
-    $result = static::$dbStatic->selectRow($stmt);
-
-    return $result;
+  public static function buildDBQ() {
+    return DbQueryConstructor::build(static::$dbStatic, get_called_class());
   }
 
   /**
@@ -78,20 +35,32 @@ class DBStaticRecord {
    * @return int
    */
   public static function getMaxId() {
-    $maxId = static::getRecord(array(), DbSqlLiteral::build()->max(static::$_idField, 'maxId'));
+    $stmt = static::buildDBQ()->fieldMax(static::$_idField);
 
-    return !empty($maxId['maxId']) ? $maxId['maxId'] : 0;
+    return idval(static::$dbStatic->doStmtSelectValue($stmt));
   }
 
   /**
    * @param int|string  $recordId
    * @param mixed|array $fieldList
-   * @param bool        $forUpdate
+   * @param bool   $forUpdate
    *
-   * @return array|null
+   * @return array
    */
+  // TODO - protected. Code doesn't know about fields
   public static function getRecordById($recordId, $fieldList = '*', $forUpdate = false) {
-    return static::getRecord(array(static::$_idField . '=' . $recordId), $fieldList, $forUpdate);
+    $stmt =
+      static::buildDBQ()
+        ->fields($fieldList)
+        ->where(static::$_idField . '=' . $recordId);
+
+    if($forUpdate) {
+      $stmt->setForUpdate();
+    }
+
+    $result = static::$dbStatic->doStmtSelectRow($stmt);
+
+    return $result;
   }
 
   /**
@@ -101,8 +70,8 @@ class DBStaticRecord {
    */
   public static function queryExistsIdInList($idList) {
     if (!empty($idList) && is_array($idList)) {
-      $query = static::selectIterator(
-        static::buildSelect()
+      $query = static::$dbStatic->doStmtSelectIterator(
+        static::buildDBQ()
           ->fields(static::$_idField)
           ->where(array("`" . static::$_idField . "` IN (" . implode(',', $idList) . ")"))
       );
@@ -115,6 +84,8 @@ class DBStaticRecord {
 
 
   /**
+   * Filter list of ID by only existed IDs in table
+   *
    * @param string $idList
    *
    * @return string
@@ -138,23 +109,7 @@ class DBStaticRecord {
    *
    */
   public static function lockAllRecords() {
-    static::selectIterator(static::buildSelectLock());
-  }
-
-  /**
-   * Executes prepared statement and returns Iterator
-   *
-   * @param string|DbQueryConstructor $sql - SQL string or SqlQuery
-   *
-   * @return DbResultIterator
-   */
-  protected static function selectIterator($sql) {
-    $result = static::$dbStatic->selectIterator($sql, false);
-    if(!($result instanceof DbResultIterator)) {
-      $result = new DbEmptyIterator();
-    }
-    return $result;
-//    return static::$dbStatic->select(DbSqlPrepare::build($sqlQuery, $values));
+    static::$dbStatic->doStmtLockAll(static::buildDBQ());
   }
 
 }

@@ -233,7 +233,7 @@ class db_mysql {
    * @return array|null
    */
   public function doQueryFetch($query, $skip_query_check = false) {
-    $queryResult = $this->doquery($query, false, $skip_query_check);
+    $queryResult = $this->doquery($query, '', false, $skip_query_check);
 
     return $this->db_fetch($queryResult);
   }
@@ -250,64 +250,21 @@ class db_mysql {
     return is_array($row) ? reset($row) : null;
   }
 
-
-  /**
-   * @param string|DbQueryConstructor $query
-   * @param bool                      $skip_query_check
-   *
-   * @return bool|DbResultIterator
-   */
-  public function selectIterator($query, $skip_query_check = false) {
-    if (!$this->connected) {
-      $this->sn_db_connect();
-    }
-
-    $stringQuery = $query instanceof DbQueryConstructor ? $query->__toString() : $query;
-    $stringQuery = trim($stringQuery);
-    // You can't do it - 'cause you can break commented statement with line-end comments
-    // $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
-
-    $this->security_watch_user_queries($stringQuery);
-    $this->security_query_check_bad_words($stringQuery, $skip_query_check);
-    $this->logQuery($stringQuery, false);
-    $stringQuery = $this->replaceTablePlaceholders($stringQuery);
-
-    $queryTrace = $this->queryTrace();
-
-    $result = false;
-    try {
-      $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
-
-      if (!$queryResult) {
-        throw new Exception();
-      }
-
-      if ($queryResult instanceof mysqli_result) {
-        $result = new DbMysqliResultIterator($queryResult);
-      } else {
-        $result = $queryResult;
-      }
-    } catch (Exception $e) {
-      classSupernova::$debug->error($this->db_error() . "<br />{$query}<br />", 'SQL Error');
-    }
-
-    return $result;
-  }
-
   /**
    * Returns iterator to iterate through mysqli_result
    *
-   * @param string|DbQueryConstructor $query
-   * @param bool                      $skip_query_check
-   * @param array                     $variables
+   * @param string $query
+   * @param bool   $skip_query_check
    *
    * return DbResultIterator
    *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  public function select($query, $skip_query_check = false, $variables = array()) {
-    if ($queryResult = $this->selectIterator($query, $skip_query_check)) {
-      $result = $queryResult;
+  public function doQueryIterator($query, $skip_query_check = false) {
+    $queryResult = $this->doquery($query, '', false, $skip_query_check);
+
+    if ($queryResult instanceof mysqli_result) {
+      $result = new DbMysqliResultIterator($queryResult);
     } else {
       $result = new DbEmptyIterator();
     }
@@ -316,32 +273,54 @@ class db_mysql {
   }
 
   /**
-   * @param string $query
-   * @param bool   $skip_query_check
-   * @param array  $variables
+   * @param DbQueryConstructor $stmt
+   * @param bool               $skip_query_check
    *
-   * @return array
+   * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  public function selectRow($query, $skip_query_check = false, $variables = array()) {
-    // TODO - ... LIMIT 1 FOR UPDATE
-    if (!is_array($row = $this->select($query, $skip_query_check, $variables)->current())) {
-      $row = array();
-    }
-
-    return $row;
+  public function doStmtSelectIterator($stmt, $skip_query_check = false) {
+    return $this->doQueryIterator($stmt->select()->__toString(), $skip_query_check);
   }
 
   /**
-   * @param string|DbQueryConstructor $query
-   * @param bool                      $skip_query_check
-   * @param array                     $variables
+   * @param DbQueryConstructor $stmt
+   * @param bool               $skip_query_check
    *
-   * @return mixed
+   * @return array
    */
-  public function selectValue($query, $skip_query_check = false, $variables = array()) {
-    $array = $this->selectRow($query, $skip_query_check, $variables);
+  public function doStmtSelectRow($stmt, $skip_query_check = false) {
+    $result = $this->doQueryFetch($stmt->select()->setFetchOne()->__toString(), $skip_query_check);
 
-    return reset($array);
+    return is_array($result) ? $result : array();
+  }
+
+  /**
+   * @param DbQueryConstructor $stmt
+   * @param bool               $skip_query_check
+   *
+   * @return mixed|null
+   */
+  public function doStmtSelectValue($stmt, $skip_query_check = false) {
+    $result = $this->doStmtSelectRow($stmt, $skip_query_check);
+
+    return is_array($result) ? reset($result) : null;
+  }
+
+  /**
+   * @param DbQueryConstructor $stmt
+   * @param bool               $skip_query_check
+   */
+  public function doStmtLockAll($stmt, $skip_query_check = false) {
+    $this->doquery(
+      $stmt
+        ->select()
+        ->field(1)
+        ->setForUpdate()
+        ->__toString(),
+      '',
+      false,
+      $skip_query_check
+    );
   }
 
   // TODO Заменить это на новый логгер

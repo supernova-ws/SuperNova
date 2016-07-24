@@ -424,4 +424,18 @@ class classConfig extends classPersistent {
 
     return self::$cacheObject;
   }
+
+  /**
+   * Repacks option with players ID so only exists ID left
+   *
+   * @param string $optionName
+   */
+  public function repackExistsOptionPlayerIdString($optionName) {
+    sn_db_transaction_start();
+    $this->db_loadItem($optionName);
+    $this->db_saveItem($optionName, DBStaticUser::filterIdListStringRepack($this->db_loadItem($optionName)));
+    classSupernova::$debug->warning('Repacked game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
+    sn_db_transaction_commit();
+  }
+
 }

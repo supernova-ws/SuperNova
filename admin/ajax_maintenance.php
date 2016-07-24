@@ -217,17 +217,8 @@ foreach($ques as $que_transaction) {
   sn_db_transaction_commit();
 }
 
-sn_db_transaction_start();
-classSupernova::$config->db_loadItem('stats_hide_player_list');
-classSupernova::$config->db_saveItem('stats_hide_player_list', DBStaticUser::filterIdListStringRepack(classSupernova::$config->db_loadItem('stats_hide_player_list')));
-classSupernova::$debug->warning('Упакован stats_hide_player_list', 'System maintenance', LOG_INFO_MAINTENANCE);
-sn_db_transaction_commit();
-
-sn_db_transaction_start();
-classSupernova::$config->db_loadItem('game_watchlist');
-classSupernova::$config->db_saveItem('game_watchlist', DBStaticUser::filterIdListStringRepack(classSupernova::$config->db_loadItem('game_watchlist')));
-classSupernova::$debug->warning('Упакован game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
-sn_db_transaction_commit();
+classSupernova::$config->repackExistsOptionPlayerIdString('stats_hide_player_list');
+classSupernova::$config->repackExistsOptionPlayerIdString('game_watchlist');
 
 classSupernova::$config->db_saveItem('users_amount', DBStaticUser::db_user_count());
 classSupernova::$config->db_saveItem('game_disable', $old_server_status);

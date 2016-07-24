@@ -167,20 +167,20 @@ $testData = array(
   array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_DESTROY, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
 
 
-  // checkKnownSpace
-  // Recycle
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_RECYCLE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  // Other missions
-  array(FLIGHT_MISSION_EXPLORE_KNOWN_SPACE, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_EXPLORE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_MISSILE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_COLONIZE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_RELOCATE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_TRANSPORT, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_HOLD, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_SPY, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_ATTACK, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_ACS, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_DESTROY, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  // checkDebris
+//  // Recycle
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_RECYCLE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  // Other missions
+//  array(FLIGHT_MISSION_EXPLORE_KNOWN_SPACE, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_EXPLORE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_MISSILE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_COLONIZE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_RELOCATE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_TRANSPORT, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_HOLD, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_SPY, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_ATTACK, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_ACS, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+//  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_DESTROY, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
 
 
 
