@@ -43,6 +43,8 @@ $noResources = array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0);
 $testUserVacation = $testUser;
 $testUserVacation['vacation'] = SN_TIME_NOW + PERIOD_DAY;
 
+$vectorDebris = new Vector(1, 1, 2, PT_DEBRIS);
+
 $testData = array(
 //array($exceptionCode, $fleet_page,        $user,     $planetrow,    $targetVector,                $target_mission, $ships, $fleet_group_mr, $speed_percent, $missileTarget, $captainId, $resources, $resourcesOnPlanet)
 
@@ -117,14 +119,14 @@ $testData = array(
 //  ),
 
 
-  // checkNoMissiles
-  // Missile
+  // checkOnlyAttackMissiles - Missile
   array(FLIGHT_MISSION_MISSILE_ONLY_ATTACK, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_MISSILE, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_MISSION_MISSILE_ONLY_ATTACK, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_MISSILE, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
-  // Other missions
+  // checkNoMissiles - Other missions
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_EXPLORE, array(SHIP_SMALL_FIGHTER_LIGHT => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_COLONIZE, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_RECYCLE, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_RELOCATE, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_TRANSPORT, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_HOLD, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_SPY, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
@@ -132,21 +134,72 @@ $testData = array(
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_ACS, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_SHIPS_NO_MISSILES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_DESTROY, array(SHIP_COLONIZER => 1, UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
 
+
+  // Espionage
+  array(FLIGHT_SHIPS_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_SPY, array(SHIP_SMALL_FIGHTER_LIGHT => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_SPY, array(SHIP_SPY => 1, SHIP_SMALL_FIGHTER_LIGHT => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  // checkNotOnlySpies - Other missions
+  // MT_MISSILE will check fleet with own check
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_EXPLORE, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_COLONIZE, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_RECYCLE, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  // Relocate can have fleet from only spies
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_TRANSPORT, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_HOLD, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_ATTACK, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_ACS, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_DESTROY, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+
+
+  // checkKnownSpace
+  // Expedition
+  array(FLIGHT_MISSION_EXPLORE_KNOWN_SPACE, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_EXPLORE, array(SHIP_SMALL_FIGHTER_LIGHT => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  // Other missions
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_MISSILE, array(UNIT_DEF_MISSILE_INTERPLANET => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_COLONIZE, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_RECYCLE, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_RELOCATE, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_TRANSPORT, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_HOLD, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_SPY, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_ATTACK, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_ACS, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_DESTROY, array(SHIP_COLONIZER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+
+
+  // checkKnownSpace
+  // Recycle
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_RECYCLE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  // Other missions
+  array(FLIGHT_MISSION_EXPLORE_KNOWN_SPACE, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_EXPLORE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_MISSILE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_COLONIZE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_RELOCATE, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_TRANSPORT, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_HOLD, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_SPY, array(SHIP_SPY => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_ATTACK, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_ACS, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_VECTOR_BEYOND_SYSTEM, FLEET_PAGE_SEND, $testUser, $testPlanetRow, $vectorDebris, MT_DESTROY, array(SHIP_RECYCLER => 1,), 0, 10, 0, 0, $noResources, $noResources),
+
+
+
+
   // MT_EXPLORE checks
-  // checkUnKnownSpace
-  array(FLIGHT_MISSION_EXPLORE_KNOWN_SPACE, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_EXPLORE, array(SHIP_SMALL_FIGHTER_LIGHT => 1), 0, 10, 0, 0, $noResources, $noResources),
-  // checkNotOnlySpies
-  array(FLIGHT_SHIPS_NOT_ONLY_SPIES, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 20, PT_PLANET), MT_EXPLORE, array(SHIP_SPY => 1), 0, 10, 0, 0, $noResources, $noResources),
 // TODO 'checkExpeditionsMax'  => FLIGHT_MISSION_EXPLORE_NO_ASTROTECH,
 // TODO 'checkExpeditionsFree' => FLIGHT_MISSION_EXPLORE_NO_SLOTS,
 
+  // MT_COLONIZE checks
+  array(FLIGHT_SHIPS_NO_COLONIZER, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_COLONIZE, array(SHIP_SMALL_FIGHTER_LIGHT => 1), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_MISSION_COLONIZE_NOT_EMPTY, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_COLONIZE, array(SHIP_COLONIZER => 1), 0, 10, 0, 0, $noResources, $noResources),
+  array(FLIGHT_MISSION_COLONIZE_NOT_PLANET, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_MOON), MT_COLONIZE, array(SHIP_COLONIZER => 1), 0, 10, 0, 0, $noResources, $noResources),
 
-  // MT_MISSILE checks
+
+
+  // MT_MISSILE checks TODO
+  // array(FLIGHT_MISSION_MISSILE_DIFFERENT_GALAXY, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(2, 1, 2, PT_PLANET), MT_MISSILE, array(UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
   array(FLIGHT_MISSION_MISSILE_DISABLED, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 1, 2, PT_PLANET), MT_MISSILE, array(UNIT_DEF_MISSILE_INTERPLANET => 1), 0, 10, 0, 0, $noResources, $noResources),
 
-  // MT_COLONIZE checks
-  // checkNoMissiles
-  array(FLIGHT_SHIPS_NO_COLONIZER, FLEET_PAGE_SEND, $testUser, $testPlanetRow, new Vector(1, 2, 1, PT_PLANET), MT_COLONIZE, array(SHIP_SMALL_FIGHTER_LIGHT => 1), 0, 10, 0, 0, $noResources, $noResources),
 
 
 

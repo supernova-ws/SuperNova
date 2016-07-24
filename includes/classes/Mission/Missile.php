@@ -16,9 +16,10 @@ class Missile extends Mission {
 
   protected static $conditionsLocal = array(
     'checkOnlyAttackMissiles'      => FLIGHT_MISSION_MISSILE_ONLY_ATTACK,
-
-    'alwaysFalse' => FLIGHT_MISSION_MISSILE_DISABLED,
-
+    'checkKnownSpace'              => FLIGHT_VECTOR_BEYOND_SYSTEM,
+    //
+    //
+    'alwaysFalse'                  => FLIGHT_MISSION_MISSILE_DISABLED,
     // TODO - check no captain
     // TODO - check no resources
     // TODO - check enough fuel

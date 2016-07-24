@@ -65,6 +65,11 @@ class Mission {
 //    $this->fleet_event = array();
 
 //    $this->validator = new \FleetValidator($fleet);
+    /**
+     * MT_EXPLORE  - Conditions: OK, Checks: need exp slot tests
+     * MT_COLONIZE - Conditions: OK, Checks: OK
+     * MT_MISSILE  - Conditions: NOT OK, Checks: NOT OK
+     */
   }
 
   public function validate() {

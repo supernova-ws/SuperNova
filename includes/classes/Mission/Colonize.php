@@ -17,8 +17,10 @@ class Colonize extends Mission {
 
   protected static $conditionsLocal = array(
     'checkNoMissiles'      => FLIGHT_SHIPS_NO_MISSILES,
-    'checkHaveColonizer'   => FLIGHT_SHIPS_NO_COLONIZER, // Replaces checkNotOnlySpies
+    'checkNotOnlySpies'    => FLIGHT_SHIPS_NOT_ONLY_SPIES,
     'checkKnownSpace'      => FLIGHT_VECTOR_BEYOND_SYSTEM,
+    //
+    'checkHaveColonizer'   => FLIGHT_SHIPS_NO_COLONIZER, // Replaces checkNotOnlySpies
     //
     'checkTargetNotExists' => FLIGHT_MISSION_COLONIZE_NOT_EMPTY,
     //

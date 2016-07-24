@@ -12,6 +12,7 @@ class Transport extends Mission {
   protected static $conditionsLocal = array(
     'checkNoMissiles'      => FLIGHT_SHIPS_NO_MISSILES,
     'checkKnownSpace'      => FLIGHT_VECTOR_BEYOND_SYSTEM,
+    'checkNotOnlySpies'    => FLIGHT_SHIPS_NOT_ONLY_SPIES,
   );
 
 }
