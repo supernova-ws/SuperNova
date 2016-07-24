@@ -178,10 +178,10 @@ class db_mysql {
   }
 
   /**
-   * @param string|DbSqlPrepare $query
-   * @param string              $table
-   * @param bool                $fetch
-   * @param bool                $skip_query_check
+   * @param string $query
+   * @param string $table
+   * @param bool   $fetch
+   * @param bool   $skip_query_check
    *
    * @return array|bool|mysqli_result|null
    */
@@ -194,7 +194,8 @@ class db_mysql {
       $this->sn_db_connect();
     }
 
-    $stringQuery = $query instanceof DbSqlPrepare ? $query->query : $query;
+//    $stringQuery = $query instanceof DbSqlPrepare ? $query->query : $query;
+    $stringQuery = $query;
     $stringQuery = trim($stringQuery);
     // You can't do it - 'cause you can break commented statement with line-end comments
     // $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
@@ -209,18 +210,7 @@ class db_mysql {
 
     $queryResult = null;
     try {
-      if ($query instanceof DbSqlPrepare) {
-        // MYSQLI ONLY!!!
-        $queryResult = $query
-          ->setQuery($stringQuery)
-          ->comment($queryTrace)
-          ->compileMySqlI()
-          ->statementGet($this)
-          ->execute()
-          ->getResult();
-      } else {
-        $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
-      }
+      $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
       if (!$queryResult) {
         throw new Exception();
       }
@@ -234,6 +224,30 @@ class db_mysql {
     }
 
     return $queryResult;
+  }
+
+  /**
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return array|null
+   */
+  public function doQueryFetch($query, $skip_query_check = false) {
+    $queryResult = $this->doquery($query, false, $skip_query_check);
+
+    return $this->db_fetch($queryResult);
+  }
+
+  /**
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return mixed|null
+   */
+  public function doQueryFetchValue($query, $skip_query_check = false) {
+    $row = $this->doQueryFetch($query, $skip_query_check);
+
+    return is_array($row) ? reset($row) : null;
   }
 
 
@@ -262,27 +276,16 @@ class db_mysql {
 
     $result = false;
     try {
-      // If variables not empty - running PREPARE
-      if ($query instanceof DbQueryConstructor && !empty($query->variables)) {
-        // MYSQLI ONLY!!!
-        $result = DbSqlPrepare::build($stringQuery, $query->variables)
-          ->comment($queryTrace)
-          ->compileMySqlI()
-          ->statementGet($this)
-          ->execute()
-          ->getIterator();
+      $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
+
+      if (!$queryResult) {
+        throw new Exception();
+      }
+
+      if ($queryResult instanceof mysqli_result) {
+        $result = new DbMysqliResultIterator($queryResult);
       } else {
-        $queryResult = $this->db_sql_query($stringQuery . DbSqlHelper::quoteComment($queryTrace));
-
-        if (!$queryResult) {
-          throw new Exception();
-        }
-
-        if ($queryResult instanceof mysqli_result) {
-          $result = new DbMysqliResultIterator($queryResult);
-        } else {
-          $result = $queryResult;
-        }
+        $result = $queryResult;
       }
     } catch (Exception $e) {
       classSupernova::$debug->error($this->db_error() . "<br />{$query}<br />", 'SQL Error');
@@ -294,9 +297,9 @@ class db_mysql {
   /**
    * Returns iterator to iterate through mysqli_result
    *
-   * @param string|DbSqlPrepare|DbQueryConstructor $query
-   * @param bool                                   $skip_query_check
-   * @param array                                  $variables
+   * @param string|DbQueryConstructor $query
+   * @param bool                      $skip_query_check
+   * @param array                     $variables
    *
    * return DbResultIterator
    *
@@ -313,9 +316,9 @@ class db_mysql {
   }
 
   /**
-   * @param string|DbSqlPrepare $query
-   * @param bool                $skip_query_check
-   * @param array               $variables
+   * @param string $query
+   * @param bool   $skip_query_check
+   * @param array  $variables
    *
    * @return array
    */
@@ -329,9 +332,9 @@ class db_mysql {
   }
 
   /**
-   * @param string|DbSqlPrepare|DbQueryConstructor $query
-   * @param bool                                   $skip_query_check
-   * @param array                                  $variables
+   * @param string|DbQueryConstructor $query
+   * @param bool                      $skip_query_check
+   * @param array                     $variables
    *
    * @return mixed
    */
@@ -372,7 +375,7 @@ class db_mysql {
 
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch(true) {
+    switch (true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -434,7 +437,7 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while($row = $this->db_fetch($query)) {
+    while ($row = $this->db_fetch($query)) {
       foreach ($row as $table_name) {
         if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
@@ -565,7 +568,7 @@ class db_mysql {
     if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while($row = db_fetch($query)) {
+    while ($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 

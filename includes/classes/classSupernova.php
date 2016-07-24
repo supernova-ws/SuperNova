@@ -608,60 +608,15 @@ class classSupernova {
       // Вытаскиваем запись
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
-      // TODO переписать
-      $user = self::$db->selectRow(
-        DBStaticUser::buildSelect()
-          ->field('*')
-          ->where(array("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"))
-          ->setFetchOne()
-      );
-
-      if (empty($user)) {
-        $user = null;
-      }
-
-//      $user = static::db_query(
-//        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
-//        , true);
+      $user = static::db_query(
+        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
+        , true);
       SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
     }
 
     return $user;
   }
 
-  // UNUSED
-//  public static function db_get_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
-//    if (!($email_unsafe = strtolower(trim($email_unsafe)))) {
-//      return false;
-//    }
-//
-//    $user = null;
-//    // TODO переделать на индексы
-//    if (is_array(static::$data[LOC_USER])) {
-//      foreach (static::$data[LOC_USER] as $user_id => $user_data) {
-//        if (is_array($user_data) && isset($user_data['email_2'])) {
-//          // проверяем поле
-//          if (strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email']) == $email_unsafe)) {
-//            $user = $user_data;
-//            break;
-//          }
-//        }
-//      }
-//    }
-//
-//    if ($user === null) {
-//      // Вытаскиваем запись
-//      $email_safe = db_escape($email_unsafe);
-//      $user = static::db_query(
-//        "SELECT * FROM {{users}} WHERE LOWER(`email_2`) = '{$email_safe}'" .
-//        ($use_both ? " OR LOWER(`email`) = '{$email_safe}'" : '')
-//        , true);
-//
-//      static::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
-//    }
-//
-//    return $user;
-//  }
 
   public static function db_get_user_by_where($where_safe, $for_update = false, $fields = '*') {
     $user = null;
@@ -1014,16 +969,6 @@ class classSupernova {
 
   // que_process не всегда должна работать в режиме прямой работы с БД !! Она может работать и в режиме эмуляции
   // !!!!!!!! После que_get брать не [0] элемент, а first() - тогда можно в индекс элемента засовывать que_id из таблицы
-
-
-  // Это для поиска по кэшу
-  protected static function db_get_record_by_field($location_type) {
-  }
-
-  // Для модулей - регистрация юнитов
-  public static function unit_register() {
-
-  }
 
 
   public static function init_0_prepare() {

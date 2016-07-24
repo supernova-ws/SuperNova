@@ -68,37 +68,23 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
-//    $query = "SELECT 1 FROM `{{users}}` WHERE `id` = :userId" .
-//      (!empty($planet['id_owner']) ? ' OR `id` = :planetOwnerId' : '');
+    $query = "SELECT 1 FROM `{{users}}` WHERE `id` = " . idval($user['id']) .
+      (!empty($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '')
+    . " FOR UPDATE"
+    ;
 
-    $where = '`id` = :userId';
-    if (!empty($planet['id_owner'])) {
-      $where .= ' OR `id` = :planetOwnerId';
-    }
-
-    $query = static::buildSelectLock()
-      ->where($where)
-      ->variables(array(
-        ':userId'        => idval($user['id']),
-        ':planetOwnerId' => !empty($planet['id_owner']) ? idval($planet['id_owner']) : 0,
-      ));
-
-    // TODO - FOR UPDATE
-    return static::selectIterator($query);
+    static::$dbStatic->doquery($query);
   }
 
+  /**
+   * @param bool $online
+   *
+   * @return int
+   */
   public static function db_user_count($online = false) {
-//    $result = doquery('SELECT COUNT(id) AS user_count FROM {{users}} WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''), true);
-
-    $stmt = static::buildSelectCountId()
-      ->where('`user_as_ally` IS NULL');
-    if ($online) {
-      $stmt->where('`onlinetime` > :onlineTime');
-    }
-
-    return static::$dbStatic->selectValue(DbSqlPrepare::build($stmt, array(
-      ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
-    )));
+    return intval(static::$dbStatic->doQueryFetchValue(
+      'SELECT COUNT(`id`) AS `user_count` FROM `{{users}}` WHERE `user_as_ally` IS NULL' . ($online ? ' AND `onlinetime` > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : '')
+    ));
   }
 
   public static function db_user_list_admin_sorted($sort, $online = false) {
@@ -119,12 +105,10 @@ class DBStaticUser extends DBStaticRecord {
       ->fieldCount('r.id', 'referral_count')
       ->fieldSingleFunction('sum', 'r.dark_matter', 'referral_dm')
       ->join('LEFT JOIN {{referrals}} as r on r.id_partner = u.id')
-      ->where($online ? "`onlinetime` >= :onlineTime" : 'user_as_ally IS NULL')
+      ->where($online ? "`onlinetime` >= " . intval(SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : 'user_as_ally IS NULL')
       ->groupBy('u.id')
       ->orderBy("user_as_ally, {$sort} ASC")
-      ->variables(array(
-        ':onlineTime' => SN_TIME_NOW - classSupernova::$config->game_users_online_timeout,
-      ));
+    ;
 
     return static::selectIterator($query);
   }
@@ -151,11 +135,9 @@ class DBStaticUser extends DBStaticRecord {
       ->where('(`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)')
       ->where('`user_as_ally` IS NULL')
       ->having('`days_after_birthday` >= 0')
-      ->having('`days_after_birthday` < :birthdayRange')
+      ->having('`days_after_birthday` < ' . intval($config_user_birthday_range))
       ->setForUpdate()
-      ->variables(array(
-        ':birthdayRange' => $config_user_birthday_range,
-      ));
+    ;
 
     $result = static::selectIterator($query);
 
@@ -231,9 +213,5 @@ class DBStaticUser extends DBStaticRecord {
   public static function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
     return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
   }
-
-//  public static function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
-//    return doquery("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet};");
-//  }
 
 }

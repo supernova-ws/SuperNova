@@ -292,4 +292,4 @@ class DbSqlPrepare {
 }
 
 // DbSqlPrepare::$isUseGetResult = method_exists('mysqli_stmt', 'get_result');
-DbSqlPrepare::$isUseGetResult = false;
+// DbSqlPrepare::$isUseGetResult = false;
