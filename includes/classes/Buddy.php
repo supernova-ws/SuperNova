@@ -5,7 +5,6 @@ class Buddy extends Entity {
   public static $tableName = 'buddy';
   public static $idField = 'BUDDY_ID';
 
-
   // TODO - remove public static function db_buddy_update_status($buddy_id, $status) {
   public function db_buddy_update_status($status) {
     $buddy_id = idval($this->row['BUDDY_ID']);
@@ -13,12 +12,6 @@ class Buddy extends Entity {
     doquery("UPDATE `{{buddy}}` SET `BUDDY_STATUS` = {$status} WHERE `BUDDY_ID` = '{$buddy_id}' LIMIT 1;");
 
     return classSupernova::$db->db_affected_rows();
-  }
-
-  public function db_buddy_delete($buddy_id) {
-    $buddy_id = idval($this->row['BUDDY_ID']);
-
-    doquery("DELETE FROM `{{buddy}}` WHERE `BUDDY_ID` = '{$buddy_id}' LIMIT 1;");
   }
 
   public function db_buddy_check_relation($user, $new_friend_row) {
@@ -29,10 +22,6 @@ class Buddy extends Entity {
       (`BUDDY_SENDER_ID` = {$new_friend_row['id']} AND `BUDDY_OWNER_ID` = {$user['id']})
       LIMIT 1 FOR UPDATE;"
     );
-  }
-
-  public function db_buddy_insert($userId_safe, $new_friend_row_id_safe, $new_request_text) {
-    doquery("INSERT INTO `{{buddy}}` SET `BUDDY_SENDER_ID` = {$userId_safe}, `BUDDY_OWNER_ID` = '{$new_friend_row_id_safe}', `BUDDY_REQUEST` = '{$new_request_text}';");
   }
 
   /**
@@ -118,11 +107,11 @@ class Buddy extends Entity {
 
       DBStaticMessages::msgSendFromPlayerBuddy($ex_friend_id, $user, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
-      $this->db_buddy_delete($buddy_row['BUDDY_ID']);
+      $this->delete();
       throw new Exception('buddy_err_unfriend_none', ERR_NONE);
     } elseif ($buddy_row['BUDDY_SENDER_ID'] == $user['id']) {
       // Player's outcoming request - either denied or waiting
-      $this->db_buddy_delete($buddy_row['BUDDY_ID']);
+      $this->delete();
       throw new Exception('buddy_err_delete_own', ERR_NONE);
     } elseif ($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) {
       // Deny incoming request
@@ -167,7 +156,12 @@ class Buddy extends Entity {
 
       DBStaticMessages::msgSendFromPlayerBuddy($new_friend_row['id'], $user, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
 
-      $this->db_buddy_insert(idval($user['id']), idval($new_friend_row['id']), $new_request_text_safe);
+      $this->row['BUDDY_SENDER_ID'] = idval($user['id']);
+      $this->row['BUDDY_OWNER_ID'] = idval($new_friend_row['id']);
+      $this->row['BUDDY_STATUS'] = BUDDY_REQUEST_WAITING;
+      $this->row['BUDDY_REQUEST'] = $new_request_text_safe;
+
+      $this->insert();
       throw new Exception('buddy_err_adding_none', ERR_NONE);
     }
   }

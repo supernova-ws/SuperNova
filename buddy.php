@@ -24,10 +24,9 @@ lng_include('buddy');
 
 $result = array();
 try {
-  sn_db_transaction_start();
-
   $buddy_id = sys_get_param_id('buddy_id');
   if ($buddy_id) {
+    sn_db_transaction_start();
     /**
      * @var Buddy $buddy
      */
@@ -49,15 +48,15 @@ try {
     unset($buddy);
   }
 
-
   // New request?
   // Checking for user ID - in case if it was request from outside buddy system
-  $new_friend_id = sys_get_param_id('request_user_id');
+  $new_friend_id_safe = sys_get_param_id('request_user_id');
   $new_friend_name = sys_get_param_str_unsafe('request_user_name');
-  if($new_friend_id || $new_friend_name) {
+  if($new_friend_id_safe || $new_friend_name) {
+    sn_db_transaction_start();
     $buddy = classSupernova::$gc->buddy;
     $new_request_text = sys_get_param_str('request_text');
-    $buddy->beFriend($user, $new_friend_id, $new_friend_name, $new_request_text);
+    $buddy->beFriend($user, $new_friend_id_safe, $new_friend_name, $new_request_text);
   }
 } catch (Exception $e) {
   $result[] = array(

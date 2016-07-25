@@ -20,4 +20,13 @@ class DbRowSimple {
     return $object;
   }
 
+  /**
+   * @param Entity $object
+   */
+  public function deleteById($object) {
+    classSupernova::$gc->db->doquery("DELETE FROM `{{" . $object::$tableName . "}}` WHERE `{$object::$idField}` = '{$object->row[$object::$idField]}' LIMIT 1;");
+
+    return classSupernova::$gc->db->db_affected_rows();
+  }
+
 }
