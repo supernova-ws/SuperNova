@@ -13,20 +13,41 @@ class DBStaticRecord {
    */
   protected static $dbStatic;
 
+//  /**
+//   * DBStaticRecord constructor.
+//   *
+//   * @param db_mysql|null $db
+//   */
+//  public static function _init($db = null) {
+//    static::$dbStatic = (!empty($db) && $db instanceof db_mysql) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
+//  }
+
   /**
-   * DBStaticRecord constructor.
+   * @param db_mysql $db
    *
-   * @param db_mysql|null $db
    */
-  public static function _init($db = null) {
-    static::$dbStatic = (!empty($db) && $db instanceof db_mysql) || !class_exists('classSupernova', false) ? $db : classSupernova::$db;
+  public static function setDb($db) {
+    static::$dbStatic = $db;
   }
 
   /**
+   * @return db_mysql
+   *
+   */
+  public static function getDb() {
+    return (!empty(static::$dbStatic) && static::$dbStatic instanceof db_mysql) || !class_exists('classSupernova', false) ? static::$dbStatic : classSupernova::$db;
+  }
+
+  /**
+   * @param string|DBStaticRecord $DBStaticRecord
+   *
    * @return DbQueryConstructor
    */
-  public static function buildDBQ() {
-    return DbQueryConstructor::build(static::$dbStatic, get_called_class());
+  public static function buildDBQ($DBStaticRecord = '') {
+    $dbClassName = empty($DBStaticRecord) ? get_called_class() : $DBStaticRecord;
+    $dbClassName = is_string($dbClassName) ? $dbClassName : get_class($dbClassName);
+
+    return DbQueryConstructor::build($dbClassName::getDb(), $dbClassName);
   }
 
   /**
@@ -35,15 +56,26 @@ class DBStaticRecord {
    * @return int
    */
   public static function getMaxId() {
-    $stmt = static::buildDBQ()->fieldMax(static::$_idField);
+    $stmt = static::buildDBQ()->fieldMax(static::$_idField)->selectValue();
 
-    return idval(static::$dbStatic->doStmtSelectValue($stmt));
+    return idval($stmt);
   }
 
+//  /**
+//   * @param string|DBStaticRecord $DBStaticRecord
+//   */
+//  // TODO - IoC test
+//  public static function getMax($DBStaticRecord) {
+//    $result = static::buildDBQ($DBStaticRecord)->fieldMax($DBStaticRecord::$_idField)->selectValue();
+//
+//    return idval($result);
+//  }
+
   /**
-   * @param int|string  $recordId
-   * @param mixed|array $fieldList
-   * @param bool   $forUpdate
+   * @param string|DBStaticRecord $DBStaticRecord
+   * @param int|string            $recordId
+   * @param mixed|array           $fieldList
+   * @param bool                  $forUpdate
    *
    * @return array
    */
@@ -54,11 +86,11 @@ class DBStaticRecord {
         ->fields($fieldList)
         ->where(static::$_idField . '=' . $recordId);
 
-    if($forUpdate) {
+    if ($forUpdate) {
       $stmt->setForUpdate();
     }
 
-    $result = static::$dbStatic->doStmtSelectRow($stmt);
+    $result = $stmt->selectRow();
 
     return $result;
   }
@@ -70,11 +102,11 @@ class DBStaticRecord {
    */
   public static function queryExistsIdInList($idList) {
     if (!empty($idList) && is_array($idList)) {
-      $query = static::$dbStatic->doStmtSelectIterator(
+      $query =
         static::buildDBQ()
           ->fields(static::$_idField)
           ->where(array("`" . static::$_idField . "` IN (" . implode(',', $idList) . ")"))
-      );
+          ->selectIterator();
     } else {
       $query = new DbEmptyIterator();
     }
@@ -96,7 +128,7 @@ class DBStaticRecord {
 
     $result = array();
     if (!empty($idList)) {
-      foreach(static::queryExistsIdInList($idList) as $row) {
+      foreach (static::queryExistsIdInList($idList) as $row) {
         $result[] = $row[static::$_idField];
       }
     }
@@ -109,9 +141,9 @@ class DBStaticRecord {
    *
    */
   public static function lockAllRecords() {
-    static::$dbStatic->doStmtLockAll(static::buildDBQ());
+    static::getDb()->doStmtLockAll(static::buildDBQ());
   }
 
 }
 
-DBStaticRecord::_init();
+//DBStaticRecord::_init();

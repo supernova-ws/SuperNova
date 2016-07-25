@@ -25,6 +25,20 @@ class DbSqlAware {
   }
 
   /**
+   * @return db_mysql|null
+   */
+  public function getDb() {
+    return $this->db;
+  }
+
+  /**
+   * @param db_mysql|null $db
+   */
+  public function setDb($db) {
+    $this->db = $db;
+  }
+
+  /**
    * Just escapes string used DB string escape method - or a drop-in replacement addslashes() if not DB specified
    *
    * @param string $string

@@ -275,40 +275,6 @@ class db_mysql {
   /**
    * @param DbQueryConstructor $stmt
    * @param bool               $skip_query_check
-   *
-   * @return DbEmptyIterator|DbMysqliResultIterator
-   */
-  public function doStmtSelectIterator($stmt, $skip_query_check = false) {
-    return $this->doQueryIterator($stmt->select()->__toString(), $skip_query_check);
-  }
-
-  /**
-   * @param DbQueryConstructor $stmt
-   * @param bool               $skip_query_check
-   *
-   * @return array
-   */
-  public function doStmtSelectRow($stmt, $skip_query_check = false) {
-    $result = $this->doQueryFetch($stmt->select()->setFetchOne()->__toString(), $skip_query_check);
-
-    return is_array($result) ? $result : array();
-  }
-
-  /**
-   * @param DbQueryConstructor $stmt
-   * @param bool               $skip_query_check
-   *
-   * @return mixed|null
-   */
-  public function doStmtSelectValue($stmt, $skip_query_check = false) {
-    $result = $this->doStmtSelectRow($stmt, $skip_query_check);
-
-    return is_array($result) ? reset($result) : null;
-  }
-
-  /**
-   * @param DbQueryConstructor $stmt
-   * @param bool               $skip_query_check
    */
   public function doStmtLockAll($stmt, $skip_query_check = false) {
     $this->doquery(

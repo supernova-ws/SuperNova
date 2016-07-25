@@ -72,7 +72,6 @@ class DbSqlLiteral extends DbSqlAware {
 
     return $this;
   }
-
   /**
    * @param string      $field
    * @param null|string $alias

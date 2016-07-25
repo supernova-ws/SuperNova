@@ -8,6 +8,9 @@ class DBStaticUser extends DBStaticRecord {
   public static $_table = 'users';
   public static $_idField = 'id';
 
+  protected static function whereNotAlly() {
+
+  }
 
   // TODO - это вообще-то надо хранить в конфигурации
   /**
@@ -20,23 +23,19 @@ class DBStaticUser extends DBStaticRecord {
         ->where('`user_as_ally` IS NULL')
         ->orderBy(array('`id` DESC'));
 
-    return (string)static::$dbStatic->doStmtSelectValue($query);
-  }
-
-  protected static function whereNotAlly() {
-
+    return (string)$query->selectValue();
   }
 
   /**
    * @return DbResultIterator
    */
   public static function db_player_list_export_blitz_info() {
-    return static::$dbStatic->doStmtSelectIterator(
+    return
       static::buildDBQ()
         ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
         ->where('`user_as_ally` IS NULL')
         ->orderBy(array('`id`'))
-    );
+        ->selectIterator();
   }
 
   /**
@@ -52,16 +51,15 @@ class DBStaticUser extends DBStaticRecord {
         ->where("`user_bot` = " . USER_BOT_PLAYER)
         ->setForUpdate();
 
-    return static::$dbStatic->doStmtSelectIterator($query);
+    return $query->selectIterator();
   }
 
   public static function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
     $query = "SELECT 1 FROM `{{users}}` WHERE `id` = " . idval($user['id']) .
       (!empty($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '')
-    . " FOR UPDATE"
-    ;
+      . " FOR UPDATE";
 
-    static::$dbStatic->doquery($query);
+    static::getDb()->doquery($query);
   }
 
   /**
@@ -70,7 +68,7 @@ class DBStaticUser extends DBStaticRecord {
    * @return int
    */
   public static function db_user_count($online = false) {
-    return intval(static::$dbStatic->doQueryFetchValue(
+    return intval(static::getDb()->doQueryFetchValue(
       'SELECT COUNT(`id`) AS `user_count` FROM `{{users}}` WHERE `user_as_ally` IS NULL' . ($online ? ' AND `onlinetime` > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : '')
     ));
   }
@@ -95,10 +93,10 @@ class DBStaticUser extends DBStaticRecord {
       ->join('LEFT JOIN {{referrals}} as r on r.id_partner = u.id')
       ->where($online ? "`onlinetime` >= " . intval(SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : 'user_as_ally IS NULL')
       ->groupBy('u.id')
-      ->orderBy("user_as_ally, {$sort} ASC")
-    ;
+      ->orderBy("user_as_ally, {$sort} ASC");
 
-    $result = static::$dbStatic->doStmtSelectIterator($query);
+    $result = $query->selectIterator();
+
     return $result;
   }
 
@@ -112,10 +110,9 @@ class DBStaticUser extends DBStaticRecord {
       ->where('`user_as_ally` IS NULL')
       ->having('`days_after_birthday` >= 0')
       ->having('`days_after_birthday` < ' . intval($config_user_birthday_range))
-      ->setForUpdate()
-    ;
+      ->setForUpdate();
 
-    $result = static::$dbStatic->doStmtSelectIterator($query);
+    $result = $query->selectIterator();
 //
 //    $query = "SELECT
 //        `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
@@ -145,15 +142,15 @@ class DBStaticUser extends DBStaticRecord {
       GROUP BY `user_lastip`
       HAVING COUNT(*) > 1";
 
-    return static::$dbStatic->doQueryIterator($query);
+    return static::getDb()->doQueryIterator($query);
   }
 
   public static function db_player_list_blitz_delete_players() {
-    doquery("DELETE FROM `{{users}}` WHERE username LIKE 'Игрок%';");
+    doquery("DELETE FROM `{{users}}` WHERE `username` LIKE 'Игрок%';");
   }
 
   public static function db_player_list_blitz_set_50k_dm() {
-    doquery('UPDATE `{{users}}` SET dark_matter = 50000, dark_matter_total = 50000;');
+    doquery('UPDATE `{{users}}` SET `dark_matter` = 50000, `dark_matter_total` = 50000;');
   }
 
 
@@ -205,4 +202,11 @@ class DBStaticUser extends DBStaticRecord {
     return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
   }
 
+
+//  // TODO - IoC test
+//  public static function test() {
+//    $that = new static();
+//
+//    return DBStaticUser::getMax($that);
+//  }
 }

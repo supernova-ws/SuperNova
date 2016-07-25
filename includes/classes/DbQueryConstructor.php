@@ -225,8 +225,12 @@ class DbQueryConstructor extends DbSqlAware {
    *
    * @return $this
    */
+  // TODO - rewrite
   public function getParamsFromStaticClass($className) {
     if (is_string($className) && $className && class_exists($className)) {
+      if(method_exists($className, 'getDb')) {
+        $this->setDb($className::getDb());
+      }
       $this->from($className::$_table);
       $this->setIdField($className::$_idField);
     }
@@ -236,7 +240,7 @@ class DbQueryConstructor extends DbSqlAware {
 
   /**
    * @param db_mysql|null $db
-   * @param string        $className
+   * @param string|object|DBStaticRecord|DbSqlAware $className
    *
    * @return static
    */
@@ -244,7 +248,7 @@ class DbQueryConstructor extends DbSqlAware {
     /**
      * @var static $result
      */
-    $result = parent::build($db);
+    $result = parent::build(null);
     $result->getParamsFromStaticClass($className);
 
     return $result;
@@ -428,6 +432,37 @@ class DbQueryConstructor extends DbSqlAware {
     $this->compileForUpdate();
 
     return implode(' ', $this->_compiledQuery);
+  }
+
+  /**
+   * @param bool $skip_query_check
+   *
+   * @return DbEmptyIterator|DbMysqliResultIterator
+   */
+  public function selectIterator($skip_query_check = false) {
+    return $this->getDb()->doQueryIterator($this->select()->__toString(), $skip_query_check);
+  }
+
+  /**
+   * @param bool $skip_query_check
+   *
+   * @return array
+   */
+  public function selectRow($skip_query_check = false) {
+    $result = $this->getDb()->doQueryFetch($this->select()->setFetchOne()->__toString(), $skip_query_check);
+
+    return is_array($result) ? $result : array();
+  }
+
+  /**
+   * @param bool $skip_query_check
+   *
+   * @return mixed|null
+   */
+  public function selectValue($skip_query_check = false) {
+    $result = $this->selectRow($skip_query_check);
+
+    return is_array($result) ? reset($result) : null;
   }
 
 }
