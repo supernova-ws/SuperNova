@@ -17,6 +17,8 @@ spl_autoload_register(function ($class) use ($classRoot) {
     require_once $classRoot . $class . '.php';
   } elseif (file_exists($classRoot . 'UBE/' . $class . '.php')) {
     require_once $classRoot . 'UBE/' . $class . '.php';
+  } elseif (file_exists(SN_ROOT_PHYSICAL . 'tests/' . $class . '.php')) {
+    require_once SN_ROOT_PHYSICAL . 'tests/' . $class . '.php';
   }
 });
 
