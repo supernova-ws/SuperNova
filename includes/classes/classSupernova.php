@@ -4,6 +4,11 @@ use Vector\Vector;
 
 class classSupernova {
   /**
+   * @var \Pimple\GlobalContainer $gc
+   */
+  public static $gc;
+
+  /**
    * ex $sn_mvc
    *
    * @var array
@@ -180,13 +185,13 @@ class classSupernova {
     ),
   );
 
-  /**
-   * @param $db db_mysql
-   */
-  public static function init_main_db($db) {
-    self::$db = $db;
-    self::$db->sn_db_connect();
-  }
+//  /**
+//   * @param $db db_mysql
+//   */
+//  public static function init_main_db($db) {
+//    self::$db = $db;
+//    self::$db->sn_db_connect();
+//  }
 
 
   public static function log_file($message, $spaces = 0) {
@@ -987,6 +992,49 @@ class classSupernova {
     }
   }
 
+  public static function init_1_globalContainer() {
+
+    $container = new Pimple\GlobalContainer();
+
+    $container->db = function ($c) {
+      $db = new db_mysql();
+      $db->sn_db_connect();
+
+      return $db;
+    };
+
+    $container->debug = function ($c) {
+      return new debug();
+    };
+
+    $container->cache = function ($c) {
+      return new classCache(classSupernova::$cache_prefix);
+    };
+
+    $container->config = function ($c) {
+      return new classConfig(classSupernova::$cache_prefix);
+    };
+
+    $container->dbRowOperator = function ($c) {
+      return new DbRowSimple($c);
+    };
+
+    $container->buddy = $container->factory(function ($c) {
+      return new Buddy($c);
+    });
+
+    $container->query = $container->factory(function (Pimple\GlobalContainer $c) {
+      return new DbQueryConstructor($c->db);
+    });
+
+// TODO
+//    $container->vector = $container->factory(function (Pimple\GlobalContainer $c) {
+//      return new DbQueryConstructor($c->db);
+//    });
+
+    static::$gc = $container;
+  }
+
   public static function init_3_load_config_file() {
     $dbsettings = array();
 
@@ -998,15 +1046,21 @@ class classSupernova {
   }
 
   public static function init_global_objects() {
+    self::$debug = self::$gc->debug;
+    self::$db = self::$gc->db;
+//    classSupernova::init_main_db(new db_mysql());
     self::$user_options = new userOptions(0);
 
     // Initializing global 'cacher' object
-    static::$cache = new classCache(classSupernova::$cache_prefix);
+//    static::$cache = new classCache(classSupernova::$cache_prefix);
+    self::$cache = self::$gc->cache;
+
     empty(static::$cache->tables) ? sys_refresh_tablelist() : false;
     empty(static::$cache->tables) ? die('DB error - cannot find any table. Halting...') : false;
 
     // Initializing global "config" object
-    static::$config = new classConfig(classSupernova::$cache_prefix);
+//    static::$config = new classConfig(classSupernova::$cache_prefix);
+    static::$config = self::$gc->config;
 
     // Initializing statics
     Vector::_staticInit(static::$config);

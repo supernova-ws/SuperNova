@@ -5,7 +5,7 @@
  *
  * @property mixed $_result
  */
-abstract class DbResultIterator implements Iterator {
+abstract class DbResultIterator implements Iterator, Countable {
   /**
    * @var mixed $_result
    */
@@ -112,6 +112,20 @@ abstract class DbResultIterator implements Iterator {
     // prefetch the current row
     // note that this advances the Results internal pointer.
     $this->fetchCurrentRow();
+  }
+
+
+  /**
+   * Count elements of an object
+   * @link http://php.net/manual/en/countable.count.php
+   * @return int The custom count as an integer.
+   * </p>
+   * <p>
+   * The return value is cast to an integer.
+   * @since 5.1.0
+   */
+  public function count() {
+    throw new Exception('You should implement ' . get_called_class() . '::count()');
   }
 
 }

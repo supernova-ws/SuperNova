@@ -15,7 +15,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 41a6.35
+* @version 41a50.65
 *
 */
 
@@ -43,6 +43,8 @@ $a_lang_array = (array(
 
   // Result messages
   'buddy_err_not_exist' => 'Указанная заявка не существует. Возможно, вы её удалили или отвергли, либо она была отозвана её автором',
+
+  'buddy_err_unknown_status' => 'Неизвестный статус дружбы. Попробуйте повторить процесс с начала',
 
   'buddy_err_accept_own' => 'Вы не можете принять свою же заявку',
   'buddy_err_accept_alien' => 'Вы не можете принять заявку, которая направлена не вам',

@@ -93,18 +93,7 @@ spl_autoload_register(function ($class) use ($classRoot) {
 });
 
 require_once 'constants.php';
-
-classSupernova::init_0_prepare();
-//classSupernova::init_1_constants();
-classSupernova::init_3_load_config_file();
-
-// required for db.php
-// Initializing global 'debug' object
-classSupernova::$debug = new debug();
-
 require_once SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX;
-classSupernova::init_main_db(new db_mysql());
-
 require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 
 /**
@@ -112,6 +101,13 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
  */
 global $auth;
 
+classSupernova::init_0_prepare();
+classSupernova::init_1_globalContainer();
+//classSupernova::init_1_constants();
+classSupernova::init_3_load_config_file();
+
+// required for db.php
+// Initializing global 'debug' object
 classSupernova::init_global_objects();
 
 // Отладка
