@@ -94,7 +94,7 @@ class Buddy extends Entity {
    *
    * @throws Exception
    */
-  public function delete($user) {
+  public function decline($user) {
     $buddy_row = $this->row;
 
     if ($buddy_row['BUDDY_SENDER_ID'] != $user['id'] && $buddy_row['BUDDY_OWNER_ID'] != $user['id']) {

@@ -42,7 +42,7 @@ try {
         $buddy->accept($user);
       break;
       case 'delete':
-        $buddy->delete($user);
+        $buddy->decline($user);
       break;
     }
     unset($buddy);
