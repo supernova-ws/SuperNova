@@ -1616,9 +1616,9 @@ switch($new_version) {
 
     if(!$update_tables['buddy']['BUDDY_ID']) {
       upd_alter_table('buddy', array(
-        "CHANGE COLUMN `id` `BUDDY_ID` SERIAL COMMENT 'Buddy table row ID'",
-        "CHANGE COLUMN `active` `BUDDY_STATUS` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Buddy request status'",
-        "CHANGE COLUMN `text` `BUDDY_REQUEST` TINYTEXT DEFAULT '' COMMENT 'Buddy request text'", // 255 chars
+        "CHANGE COLUMN `id` `BUDDY_ID` SERIAL COMMENT 'Buddy\Buddy table row ID'",
+        "CHANGE COLUMN `active` `BUDDY_STATUS` TINYINT(1) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Buddy\Buddy request status'",
+        "CHANGE COLUMN `text` `BUDDY_REQUEST` TINYTEXT DEFAULT '' COMMENT 'Buddy\Buddy request text'", // 255 chars
 
         "DROP INDEX `id`",
 
@@ -1629,8 +1629,8 @@ switch($new_version) {
       ), !$update_tables['buddy']['BUDDY_ID']);
 
       upd_alter_table('buddy', array(
-        "CHANGE COLUMN `sender` `BUDDY_SENDER_ID` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Buddy request sender ID'",
-        "CHANGE COLUMN `owner` `BUDDY_OWNER_ID` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Buddy request recipient ID'",
+        "CHANGE COLUMN `sender` `BUDDY_SENDER_ID` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Buddy\Buddy request sender ID'",
+        "CHANGE COLUMN `owner` `BUDDY_OWNER_ID` BIGINT(20) UNSIGNED NULL DEFAULT NULL COMMENT 'Buddy\Buddy request recipient ID'",
       ), !$update_tables['buddy']['BUDDY_SENDER']);
 
       $query = upd_do_query("SELECT `BUDDY_ID`, `BUDDY_SENDER_ID`, `BUDDY_OWNER_ID` FROM {{buddy}} ORDER BY `BUDDY_ID`;");

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a6.35
+* @version 41a50.69
 *
 */
 
@@ -105,7 +105,7 @@ $a_lang_array = array(
   'gl_ally_internal' => 'Alliance&nbsp;Info',
   'gl_ally_web' => 'Alliance Site',
   'gl_sendmess' => 'Send a message',
-  'gl_buddy' => 'Buddy list',
+  'gl_buddy' => 'Buddy\Buddy list',
   'gl_buddyreq' => 'Add as buddy',
   'gl_stats' => 'Statistics',
   'gl_planet' => 'Planet',

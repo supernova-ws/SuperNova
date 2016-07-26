@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a6.35
+* @version 41a50.69
 *
 */
 
@@ -61,7 +61,7 @@ $a_lang_array = (array(
   'Records' => 'Highscores',
   'Messages' => 'Messages',
   'Notes' => 'Notes',
-  'Buddylist' => 'Buddy List',
+  'Buddylist' => 'Buddy\Buddy List',
   'Chat' => 'Chat',
   'Contact' => 'Administration',
   'Options' => 'Settings',

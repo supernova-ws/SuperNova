@@ -994,9 +994,13 @@ class classSupernova {
 
   public static function init_1_globalContainer() {
 
-    $container = new Pimple\GlobalContainer();
+    $container = new Pimple\GlobalContainer(array(
+      'buddyClass' => 'Buddy\BuddyModel',
+    ));
 
-    $container->db = function ($c) {
+    $container->db = function ($c) {};
+
+      $container->db = function ($c) {
       $db = new db_mysql();
       $db->sn_db_connect();
 
@@ -1020,10 +1024,10 @@ class classSupernova {
     };
 
     $container->buddy = $container->factory(function ($c) {
-      return new BuddyModel($c);
+      return new $c->buddyClass($c);
     });
 //    $container->buddy = $container->factory(function ($c) {
-//      return new Buddy($c);
+//      return new Buddy\Buddy($c);
 //    });
 
     $container->query = $container->factory(function (Pimple\GlobalContainer $c) {

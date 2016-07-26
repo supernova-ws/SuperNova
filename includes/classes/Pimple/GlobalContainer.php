@@ -15,12 +15,13 @@ use Vector\Vector;
  * @property \db_mysql           $db
  * @property \classCache         $cache
  * @property \classConfig        $config
- * @property \Buddy              $buddy
- * property Vector              $vector // TODO
+ * @property string              $buddyClass
+ * @property \Buddy\Buddy        $buddy
  * @property \DbQueryConstructor $query
  * @property \DbRowSimple        $dbRowOperator
  *
- * method \Buddy rowGetById(GlobalContainer $container, \Buddy $object, int $buddy_id)
+ * property Vector              $vector // TODO
+ * method \Buddy\Buddy rowGetById(GlobalContainer $container, \Buddy\Buddy $object, int $buddy_id)
  */
 class GlobalContainer extends ContainerPlus {
 

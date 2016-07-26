@@ -1,24 +1,31 @@
 <?php
 
 class Entity {
+  public static $tableName = '_table';
+  public static $idField = 'id';
+  /**
+   * @var PropertyHiderInArray
+   */
+  public $_container;
+  public static $_containerName = 'PropertyHiderInArray';
+
+  /**
+   * Property list
+   *
+   * @var array
+   */
+  protected static $_properties = array();
 
   /**
    * @var db_mysql|null $dbStatic
    */
   public static $dbStatic = null;
-  public static $tableName = '_table';
-  public static $idField = 'id';
-  public static $_containerName = 'PropertyHiderInArray';
 
   /**
    * @var array $row
    */
   protected $row = array();
 
-  /**
-   * @var PropertyHiderInArray
-   */
-  public $_container;
 
   /**
    * @var int|float|string $dbId
@@ -27,7 +34,7 @@ class Entity {
 
 
   /**
-   * Buddy constructor.
+   * Buddy\Buddy constructor.
    *
    * @param \Pimple\GlobalContainer $c
    */
@@ -35,6 +42,10 @@ class Entity {
     empty(static::$dbStatic) && !empty($c->db) ? static::$dbStatic = $c->db : false;
 
     $this->_container = new static::$_containerName();
+  }
+
+  public function load($buddyId) {
+    classSupernova::$gc->dbRowOperator->getById($this, $buddyId);
   }
 
   // TODO - move to reader ????????
@@ -72,10 +83,17 @@ class Entity {
   /**
    * Compiles object data into db row
    *
+   * @param bool $withDbId - Should dbId too be returned. Usefull for INSERT statements
+   *
    * @return array
    */
-  public function getRow() {
-    return $this->row;
+  public function getRow($withDbId = true) {
+    $row = $this->row;
+    if (!$withDbId) {
+      unset($row[static::$idField]);
+    }
+
+    return $row;
   }
 
   public function setDbId($value) {
@@ -88,6 +106,22 @@ class Entity {
    */
   public function getDbId() {
     return $this->dbId;
+  }
+
+  public function __get($name) {
+    return $this->_container->$name;
+  }
+
+  public function __set($name, $value) {
+    $this->_container->$name = $value;
+  }
+
+  public function __isset($name) {
+    return isset($this->_container->$name);
+  }
+
+  public function __unset($name) {
+    unset($this->_container->$name);
   }
 
 }

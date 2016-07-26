@@ -38,10 +38,7 @@ class DbRowSimple {
     $db = classSupernova::$gc->db;
 
     $query = array();
-    foreach ($object->getRow() as $fieldName => $fieldValue) {
-      if($fieldName == $object::$idField) {
-        continue;
-      }
+    foreach ($object->getRow(false) as $fieldName => $fieldValue) {
       $fieldValue = $db->db_escape($fieldValue);
       $query[] = "`{$fieldName}` = '{$fieldValue}'";
     }
