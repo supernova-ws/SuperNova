@@ -214,7 +214,7 @@ class BuddyModel extends Entity {
    */
   // TODO -    PROOF OF CONCEPTION
   public function setRow($row) {
-//    foreach($this->_container->getProperties() as $propertyName => $cork) {
+//    foreach($this->getProperties() as $propertyName => $cork) {
 //    }
     $this->dbId = $row[static::$idField];
     $this->playerSenderId = $row['BUDDY_SENDER_ID'];
@@ -242,18 +242,6 @@ class BuddyModel extends Entity {
     }
 
     return $row;
-  }
-
-  public function setDbId($value) {
-    $this->dbId = $value;
-  }
-
-
-  /**
-   * @return int|float|string
-   */
-  public function getDbId() {
-    return $this->dbId;
   }
 
   /**
