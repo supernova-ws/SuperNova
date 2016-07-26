@@ -1,13 +1,23 @@
 <?php
 
 /**
- * Class PropertyHider
+ * Class PropertyHider - Hides properties from visibility
  *
- * Hides properties from visibility
+ * - Property access - via property names
+ * - Allowed property name is an index in static $_properties() array
+ * - Property XXX can have 4 accessories:
+ *    - getXXX - getter
+ *    - setXXX - setter. Setting property is logging in $propertiesChanged array
+ *    - adjustXXX - adjusts value. Delta from original value is holding in $propertiesAdjusted array
+ *    - deltaXXX - calculates delta from original value
+ * - Accessories can have any visibility
+ * - Public accessories should take care setting elements of $propertiesChanged/$propertiesAdjusted arrays if needed
+ *
+ *
  * Implements new set of methods adjXXX
  * - adjXXX method returns value of property adjusted by $diff
  */
-class PropertyHider extends stdClass {
+abstract class PropertyHider extends stdClass {
 
   /**
    * Getting value
@@ -54,7 +64,11 @@ class PropertyHider extends stdClass {
     static::$_properties = $properties;
   }
 
-  public static function getProperties() {
+  public static function getPropertiesStatic() {
+    return static::$_properties;
+  }
+
+  public function getProperties() {
     return static::$_properties;
   }
 
@@ -76,10 +90,6 @@ class PropertyHider extends stdClass {
     }
   }
 
-  private function getPhysicalPropertyName($name) {
-    return '_' . $name;
-  }
-
   /**
    * Method checks if action is available for named property
    *
@@ -88,11 +98,7 @@ class PropertyHider extends stdClass {
    *
    * @return bool
    */
-  protected function isPropertyActionAvailable($name, $action = '') {
-    // By default all action available for existing properties
-    return property_exists($this, $this->getPhysicalPropertyName($name));
-  }
-
+  abstract protected function isPropertyActionAvailable($name, $action = '');
   /**
    * Internal method that make real changes to property value
    * May be override in child class
@@ -102,13 +108,7 @@ class PropertyHider extends stdClass {
    *
    * @return mixed
    */
-  protected function setProperty($name, $value) {
-    // TODO: Change property only if value differs ????
-//      if($this->{$this->getPhysicalPropertyName($name)} !== $value) {
-//      }
-    return $this->{$this->getPhysicalPropertyName($name)} = $value;
-  }
-
+  abstract protected function setProperty($name, $value);
   /**
    * Internal method that make really reads property value
    * May be override in child class
@@ -118,9 +118,16 @@ class PropertyHider extends stdClass {
    *
    * @return mixed
    */
-  protected function getProperty($name, $value = null) {
-    return $this->{$this->getPhysicalPropertyName($name)};
-  }
+  abstract protected function getProperty($name, $value = null);
+  /**
+   * Magic method that checks if named property is set
+   * May be override in child class
+   *
+   * @param $name
+   *
+   * @return bool
+   */
+  abstract public function __isset($name);
 
   /**
    * Directly adjusts value without Adjuster
@@ -146,9 +153,22 @@ class PropertyHider extends stdClass {
     return $this->propertyMethodResult($name, $diff, 'delta');
   }
 
+  /**
+   * Performs '$action' on property with $name - possible with $value
+   *
+   * Universal method for call getter, setter, adjuster or delta calculator
+   *
+   * @param string $action
+   * @param string $name
+   * @param mixed  $value
+   *
+   * @return mixed|null
+   * @throws ExceptionPropertyNotExists
+   */
   protected function actionProperty($action, $name, $value) {
     $result = null;
     // Now deciding - will we call a protected setter or will we work with protected property
+    // Todo - on init recalc all method_exists
     if (method_exists($this, $methodName = $action . ucfirst($name))) {
       // If method exists - just calling it
       // TODO - should return TRUE if value changed or FALSE otherwise

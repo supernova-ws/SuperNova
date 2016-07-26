@@ -19,7 +19,7 @@
  * @property resource testResource
  * @property resource testUnknownType
  */
-class PropertyHiderTested extends PropertyHider {
+class PropertyHiderTested extends PropertyHiderInObject {
   protected $_test = -2;
   protected $_testGetSet = -1;
   protected $_testWithDiff = array();
@@ -156,11 +156,11 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(
       $this->testProperties,
-      PropertyHiderTested::getProperties()
+      PropertyHiderTested::getPropertiesStatic()
     );
 
     PropertyHiderTested::setProperties(array('asd' => 'qwe'));
-    $this->assertEquals(array('asd' => 'qwe'), PropertyHiderTested::getProperties());
+    $this->assertEquals(array('asd' => 'qwe'), PropertyHiderTested::getPropertiesStatic());
   }
 
   /**

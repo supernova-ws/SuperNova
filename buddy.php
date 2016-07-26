@@ -28,7 +28,7 @@ try {
   if ($buddy_id) {
     sn_db_transaction_start();
     /**
-     * @var Buddy $buddy
+     * @var BuddyModel $buddy
      */
     $buddy = classSupernova::$gc->dbRowOperator->getById(classSupernova::$gc->buddy, $buddy_id);
 

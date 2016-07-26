@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.67');
+define('SN_VERSION', '41a50.68');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1340,6 +1340,7 @@ define('CHAT_MODE_COMMON', 0);
 define('CHAT_MODE_ALLY', 1);
 define('CHAT_OPTION_SWITCH', 1);
 
+define('BUDDY_REQUEST_NOT_SET', -1);
 define('BUDDY_REQUEST_WAITING', 0);
 define('BUDDY_REQUEST_ACTIVE', 1);
 define('BUDDY_REQUEST_DENIED', 2);

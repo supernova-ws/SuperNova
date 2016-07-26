@@ -21,7 +21,7 @@
  * method int getDbId()
  * @property int dbId
  */
-abstract class DBRow extends PropertyHider implements IDbRow {
+abstract class DBRow extends PropertyHiderInObject implements IDbRow {
   // TODO
   /**
    * Should be this object - (!) not class - cached

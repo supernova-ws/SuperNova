@@ -1020,8 +1020,11 @@ class classSupernova {
     };
 
     $container->buddy = $container->factory(function ($c) {
-      return new Buddy($c);
+      return new BuddyModel($c);
     });
+//    $container->buddy = $container->factory(function ($c) {
+//      return new Buddy($c);
+//    });
 
     $container->query = $container->factory(function (Pimple\GlobalContainer $c) {
       return new DbQueryConstructor($c->db);

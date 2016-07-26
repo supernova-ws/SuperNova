@@ -4,6 +4,7 @@
  * Class DbMysqliResultIterator
  *
  * @property mysqli_result $_result
+ * @method array count()
  */
 class DbMysqliResultIterator extends DbResultIterator {
   protected function fetchCurrentRow() {

@@ -8,11 +8,22 @@ class Entity {
   public static $dbStatic = null;
   public static $tableName = '_table';
   public static $idField = 'id';
+  public static $_containerName = 'PropertyHiderInArray';
 
   /**
    * @var array $row
    */
-  public $row = array();
+  protected $row = array();
+
+  /**
+   * @var PropertyHiderInArray
+   */
+  public $_container;
+
+  /**
+   * @var int|float|string $dbId
+   */
+  protected $dbId = 0;
 
 
   /**
@@ -22,6 +33,8 @@ class Entity {
    */
   public function __construct($c) {
     empty(static::$dbStatic) && !empty($c->db) ? static::$dbStatic = $c->db : false;
+
+    $this->_container = new static::$_containerName();
   }
 
   // TODO - move to reader ????????
@@ -34,22 +47,7 @@ class Entity {
    */
   // TODO - move to reader ????????
   public function insert() {
-    $query = array();
-    foreach($this->row as $fieldName => $fieldValue) {
-      $fieldValue = self::$dbStatic->db_escape($fieldValue);
-      $query[] = "`{$fieldName}` = '{$fieldValue}'";
-    }
-
-    $query = implode(',', $query);
-    if(empty($query)) {
-      // TODO Exceptiion
-      return 0;
-    }
-
-    self::$dbStatic->doquery("INSERT INTO `{{" . static::$tableName . "}}` SET " . $query);
-
-    // TODO Exceptiion if result is empty
-    return $this->row[static::$idField] = self::$dbStatic->db_insert_id();
+    return classSupernova::$gc->dbRowOperator->insert($this);
   }
 
   public function isEmpty() {
@@ -58,6 +56,38 @@ class Entity {
 
   public function isNew() {
     return empty($this->row[static::$idField]);
+  }
+
+  /**
+   * @param array $row
+   */
+  public function setRow($row) {
+    $this->row = $row;
+    // TODO - $row can be empty
+    if (!empty(static::$idField)) {
+      $this->setDbId($row[static::$idField]);
+    }
+  }
+
+  /**
+   * Compiles object data into db row
+   *
+   * @return array
+   */
+  public function getRow() {
+    return $this->row;
+  }
+
+  public function setDbId($value) {
+    $this->dbId = $value;
+  }
+
+
+  /**
+   * @return int|float|string
+   */
+  public function getDbId() {
+    return $this->dbId;
   }
 
 }

@@ -15,7 +15,7 @@ class DbRowSimple {
       ->from($object::$tableName)
       ->where($object::$idField . ' = "' . $rowId . '"');
 
-    $object->row = $stmt->selectRow();
+    $object->setRow($stmt->selectRow());
 
     return $object;
   }
@@ -24,9 +24,41 @@ class DbRowSimple {
    * @param Entity $object
    */
   public function deleteById($object) {
-    classSupernova::$gc->db->doquery("DELETE FROM `{{" . $object::$tableName . "}}` WHERE `{$object::$idField}` = '{$object->row[$object::$idField]}' LIMIT 1;");
+    $db = classSupernova::$gc->db;
 
-    return classSupernova::$gc->db->db_affected_rows();
+    $db->doquery("DELETE FROM `{{" . $object::$tableName . "}}` WHERE `{$object::$idField}` = '{$object->getDbId()}' LIMIT 1;");
+
+    return $db->db_affected_rows();
+  }
+
+  /**
+   * @param Entity $object
+   */
+  public function insert($object) {
+    $db = classSupernova::$gc->db;
+
+    $query = array();
+    foreach ($object->getRow() as $fieldName => $fieldValue) {
+      if($fieldName == $object::$idField) {
+        continue;
+      }
+      $fieldValue = $db->db_escape($fieldValue);
+      $query[] = "`{$fieldName}` = '{$fieldValue}'";
+    }
+
+    $query = implode(',', $query);
+    if (empty($query)) {
+      // TODO Exceptiion
+      return 0;
+    }
+
+    $db->doquery("INSERT INTO `{{" . $object::$tableName . "}}` SET " . $query);
+
+    // TODO Exceptiion if db_insert_id() is empty
+    $dbId = $db->db_insert_id();
+    $object->setDbId($dbId);
+
+    return $dbId;
   }
 
 }

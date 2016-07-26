@@ -1,9 +1,15 @@
 <?php
 
-class Buddy extends Entity {
+class BuddyModel extends Entity {
 
   public static $tableName = 'buddy';
   public static $idField = 'BUDDY_ID';
+
+  /**
+   * @var BuddyContainer
+   */
+  public $_container;
+  public static $_containerName = 'BuddyContainer';
 
   /**
    * Who makes buddy request
@@ -32,7 +38,7 @@ class Buddy extends Entity {
 
   // TODO - remove public static function db_buddy_update_status($buddy_id, $status) {
   public function db_buddy_update_status($status) {
-    $buddy_id = idval($this->row['BUDDY_ID']);
+    $buddy_id = idval($this->_container->dbId);
 
     doquery("UPDATE `{{buddy}}` SET `BUDDY_STATUS` = {$status} WHERE `BUDDY_ID` = '{$buddy_id}' LIMIT 1;");
 
@@ -83,31 +89,29 @@ class Buddy extends Entity {
    * @throws Exception
    */
   public function accept($user) {
-    $buddy_row = $this->row;
-
-    if ($buddy_row['BUDDY_SENDER_ID'] == $user['id']) {
+    if ($this->_container->playerSenderId == $user['id']) {
       throw new Exception('buddy_err_accept_own', ERR_ERROR);
     }
 
-    if ($buddy_row['BUDDY_OWNER_ID'] != $user['id']) {
+    if ($this->_container->playerOwnerId != $user['id']) {
       throw new Exception('buddy_err_accept_alien', ERR_ERROR);
     }
 
-    if ($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE) {
+    if ($this->_container->buddyStatusId == BUDDY_REQUEST_ACTIVE) {
       throw new Exception('buddy_err_accept_already', ERR_WARNING);
     }
 
-    if ($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_DENIED) {
+    if ($this->_container->buddyStatusId == BUDDY_REQUEST_DENIED) {
       throw new Exception('buddy_err_accept_denied', ERR_ERROR);
     }
 
-    if ($buddy_row['BUDDY_STATUS'] != BUDDY_REQUEST_WAITING) {
+    if ($this->_container->buddyStatusId != BUDDY_REQUEST_WAITING) {
       throw new Exception('buddy_err_unknown_status', ERR_ERROR);
     }
 
     $result = $this->db_buddy_update_status(BUDDY_REQUEST_ACTIVE);
     if ($result) {
-      DBStaticMessages::msgSendFromPlayerBuddy($buddy_row['BUDDY_SENDER_ID'], $user, 'buddy_msg_accept_title', 'buddy_msg_accept_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($this->_container->playerSenderId, $user, 'buddy_msg_accept_title', 'buddy_msg_accept_text');
       throw new Exception('buddy_err_accept_none', ERR_NONE);
     } else {
       throw new Exception('buddy_err_accept_internal', ERR_ERROR);
@@ -120,27 +124,25 @@ class Buddy extends Entity {
    * @throws Exception
    */
   public function decline($user) {
-    $buddy_row = $this->row;
-
-    if ($buddy_row['BUDDY_SENDER_ID'] != $user['id'] && $buddy_row['BUDDY_OWNER_ID'] != $user['id']) {
+    if ($this->_container->playerSenderId != $user['id'] && $this->_container->playerOwnerId != $user['id']) {
       throw new Exception('buddy_err_delete_alien', ERR_ERROR);
     }
 
-    if ($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE) {
+    if ($this->_container->buddyStatusId == BUDDY_REQUEST_ACTIVE) {
       // Existing friendship
-      $ex_friend_id = $buddy_row['BUDDY_SENDER_ID'] == $user['id'] ? $buddy_row['BUDDY_OWNER_ID'] : $buddy_row['BUDDY_SENDER_ID'];
+      $ex_friend_id = $this->_container->playerSenderId == $user['id'] ? $this->_container->playerOwnerId : $this->_container->playerSenderId;
 
       DBStaticMessages::msgSendFromPlayerBuddy($ex_friend_id, $user, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
       $this->delete();
       throw new Exception('buddy_err_unfriend_none', ERR_NONE);
-    } elseif ($buddy_row['BUDDY_SENDER_ID'] == $user['id']) {
+    } elseif ($this->_container->playerSenderId == $user['id']) {
       // Player's outcoming request - either denied or waiting
       $this->delete();
       throw new Exception('buddy_err_delete_own', ERR_NONE);
-    } elseif ($buddy_row['BUDDY_STATUS'] == BUDDY_REQUEST_WAITING) {
+    } elseif ($this->_container->buddyStatusId == BUDDY_REQUEST_WAITING) {
       // Deny incoming request
-      DBStaticMessages::msgSendFromPlayerBuddy($buddy_row['BUDDY_SENDER_ID'], $user, 'buddy_msg_deny_title', 'buddy_msg_deny_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($this->_container->playerSenderId, $user, 'buddy_msg_deny_title', 'buddy_msg_deny_text');
 
       $this->db_buddy_update_status(BUDDY_REQUEST_DENIED);
       throw new Exception('buddy_err_deny_none', ERR_NONE);
@@ -181,10 +183,10 @@ class Buddy extends Entity {
 
       DBStaticMessages::msgSendFromPlayerBuddy($new_friend_row['id'], $user, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
 
-      $this->row['BUDDY_SENDER_ID'] = idval($user['id']);
-      $this->row['BUDDY_OWNER_ID'] = idval($new_friend_row['id']);
-      $this->row['BUDDY_STATUS'] = BUDDY_REQUEST_WAITING;
-      $this->row['BUDDY_REQUEST'] = $new_request_text_safe;
+      $this->_container->playerSenderId = idval($user['id']);
+      $this->_container->playerOwnerId = idval($new_friend_row['id']);
+      $this->_container->buddyStatusId = BUDDY_REQUEST_WAITING;
+      $this->_container->requestText = $new_request_text_safe;
 
       $this->insert();
       throw new Exception('buddy_err_adding_none', ERR_NONE);
@@ -192,7 +194,54 @@ class Buddy extends Entity {
   }
 
   public function isEmpty() {
-    return parent::isEmpty() || $this->row['BUDDY_STATUS'] == BUDDY_REQUEST_NOT_SET || empty($this->row['BUDDY_SENDER_ID']) || empty($this->row['BUDDY_OWNER_ID']);
+    return
+      $this->_container->buddyStatusId == BUDDY_REQUEST_NOT_SET
+      ||
+      empty($this->_container->playerSenderId)
+      ||
+      empty($this->_container->playerOwnerId);
+  }
+
+  /**
+   * @param array $row
+   */
+  // TODO -    PROOF OF CONCEPTION
+  public function setRow($row) {
+//    foreach($this->_container->getProperties() as $propertyName => $cork) {
+//    }
+//    $this->_container->dbId = $row['BUDDY_ID'];
+    $this->_container->dbId = $row[static::$idField];
+    $this->_container->playerSenderId = $row['BUDDY_SENDER_ID'];
+    $this->_container->playerOwnerId = $row['BUDDY_OWNER_ID'];
+    $this->_container->buddyStatusId = $row['BUDDY_STATUS'];
+    $this->_container->requestText = $row['BUDDY_REQUEST'];
+  }
+
+  /**
+   * Compiles object data into db row
+   *
+   * @return array
+   */
+  public function getRow() {
+    return array(
+      static::$idField => $this->_container->dbId,
+      'BUDDY_SENDER_ID' => $this->_container->playerSenderId,
+      'BUDDY_OWNER_ID' => $this->_container->playerOwnerId,
+      'BUDDY_STATUS' => $this->_container->buddyStatusId,
+      'BUDDY_REQUEST' => $this->_container->requestText,
+    );
+  }
+
+  public function setDbId($value) {
+    $this->_container->dbId = $value;
+  }
+
+
+  /**
+   * @return int|float|string
+   */
+  public function getDbId() {
+    return $this->_container->dbId;
   }
 
 }
