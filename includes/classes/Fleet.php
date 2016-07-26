@@ -50,7 +50,7 @@ class Fleet extends UnitContainer {
    *
    * @var array
    */
-  protected static $_properties = array(
+  protected $_properties = array(
     'dbId'          => array(
       P_DB_FIELD => 'fleet_id',
     ),
@@ -883,7 +883,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a50.57
+   * @version 41a50.70
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -996,7 +996,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.57
+   * @version 41a50.70
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(

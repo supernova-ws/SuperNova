@@ -123,7 +123,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     parent::setUp();
     $this->object = new PropertyHiderTested();
-    PropertyHiderTested::setProperties($this->testProperties);
+    $this->object->setProperties($this->testProperties);
   }
 
   public function tearDown() {
@@ -131,12 +131,12 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
     parent::tearDown();
   }
 
-  /**
-   * @covers ::getPhysicalPropertyName
-   */
-  public function testGetPhysicalPropertyName() {
-    $this->assertEquals('_test', invokeMethod($this->object, 'getPhysicalPropertyName', array('test')));
-  }
+//  /**
+//   * @covers ::getPhysicalPropertyName
+//   */
+//  public function testGetPhysicalPropertyName() {
+//    $this->assertEquals('_test', invokeMethod($this->object, 'getPhysicalPropertyName', array('test')));
+//  }
 
   /**
    * @covers ::isPropertyActionAvailable
@@ -156,11 +156,11 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
     $this->assertEquals(
       $this->testProperties,
-      PropertyHiderTested::getPropertiesStatic()
+      $this->object->getProperties()
     );
 
-    PropertyHiderTested::setProperties(array('asd' => 'qwe'));
-    $this->assertEquals(array('asd' => 'qwe'), PropertyHiderTested::getPropertiesStatic());
+    $this->object->setProperties(array('asd' => 'qwe'));
+    $this->assertEquals(array('asd' => 'qwe'), $this->object->getProperties());
   }
 
   /**

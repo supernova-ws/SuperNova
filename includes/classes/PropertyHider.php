@@ -41,7 +41,7 @@ abstract class PropertyHider extends stdClass {
    *
    * @var array[]
    */
-  protected static $_properties = array();
+  protected $_properties = array();
 
   /**
    * List of property names that was changed since last DB operation
@@ -59,17 +59,13 @@ abstract class PropertyHider extends stdClass {
   /**
    * @param array $properties
    */
-  public static function setProperties($properties) {
+  public function setProperties($properties) {
     // TODO - reset internals??
-    static::$_properties = $properties;
-  }
-
-  public static function getPropertiesStatic() {
-    return static::$_properties;
+    $this->_properties = $properties;
   }
 
   public function getProperties() {
-    return static::$_properties;
+    return $this->_properties;
   }
 
   /**
@@ -79,7 +75,7 @@ abstract class PropertyHider extends stdClass {
   }
 
   protected function checkPropertyExists($name) {
-    if (!array_key_exists($name, static::$_properties)) {
+    if (!array_key_exists($name, $this->_properties)) {
       throw new ExceptionPropertyNotExists('Property [' . get_called_class() . '::' . $name . '] not exists', ERR_ERROR);
     }
   }

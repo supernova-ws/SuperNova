@@ -9,12 +9,10 @@ use DbMysqliResultIterator;
 use DBStaticMessages;
 use DBStaticUser;
 use Entity;
-use Pimple\GlobalContainer;
 
 /**
  * Class BuddyModel
  *
- * @property int|float $dbId Buddy record DB ID
  * @property int|float $playerSenderId Who makes buddy request
  * @property int|float $playerOwnerId To whom this buddy request made
  * @property int       $buddyStatusId Current buddy request status
@@ -26,12 +24,6 @@ class BuddyModel extends Entity {
 
   public static $tableName = 'buddy';
   public static $idField = 'BUDDY_ID';
-
-  /**
-   * @var BuddyRow $_container
-   */
-  public $_container;
-  public static $_containerName = 'Buddy\BuddyRow';
 
   // TODO - make it work with Model's properties
   /**
@@ -57,6 +49,7 @@ class BuddyModel extends Entity {
     return classSupernova::$db->db_affected_rows();
   }
 
+  // TODO - make it non-static
   public function db_buddy_check_relation($user, $new_friend_row) {
     return static::$dbStatic->doQueryFetch(
       "SELECT `BUDDY_ID` FROM `{{buddy}}` WHERE
@@ -73,6 +66,7 @@ class BuddyModel extends Entity {
    *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
+  // TODO - make it non-static
   public static function db_buddy_list_by_user($db, $user_id) {
     return ($user_id = idval($user_id)) ? $db->doQueryIterator(
       "SELECT
@@ -222,7 +216,6 @@ class BuddyModel extends Entity {
   public function setRow($row) {
 //    foreach($this->_container->getProperties() as $propertyName => $cork) {
 //    }
-//    $this->_container->dbId = $row['BUDDY_ID'];
     $this->dbId = $row[static::$idField];
     $this->playerSenderId = $row['BUDDY_SENDER_ID'];
     $this->playerOwnerId = $row['BUDDY_OWNER_ID'];

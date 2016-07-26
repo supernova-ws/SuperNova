@@ -59,7 +59,7 @@ class Player extends UnitContainer {
    *
    * @var array
    */
-  protected static $_properties = array(
+  protected $_properties = array(
     'dbId'            => array(
       P_DB_FIELD => 'id',
 //      P_FUNC_INPUT => 'floatval',

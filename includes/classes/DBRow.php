@@ -56,7 +56,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
    *
    * @var array
    */
-  protected static $_properties = array(
+  protected $_properties = array(
     'dbId' => array(
       P_DB_FIELD => 'id',
     ),
@@ -300,7 +300,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
    * @param array $db_row
    */
   public function dbRowParse(array $db_row) {
-    foreach (static::$_properties as $property_name => &$property_data) {
+    foreach ($this->_properties as $property_name => &$property_data) {
       // Advanced values extraction procedure. Should be used when at least one of following rules is matched:
       // - one field should translate to several properties;
       // - one property should be filled according to several fields;

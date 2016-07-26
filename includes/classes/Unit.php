@@ -40,7 +40,7 @@ class Unit extends DBRowLocation {
    *
    * @var array
    */
-  protected static $_properties = array(
+  protected $_properties = array(
     'dbId'          => array(
       P_DB_FIELD => 'unit_id',
     ),
@@ -231,7 +231,7 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a50.25
+   * @version 41a50.70
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();

@@ -16,7 +16,7 @@ use Vector\Vector;
  * @property \classCache         $cache
  * @property \classConfig        $config
  * @property string              $buddyClass
- * @property \Buddy\Buddy        $buddy
+ * @property \Buddy\BuddyModel   $buddy
  * @property \DbQueryConstructor $query
  * @property \DbRowSimple        $dbRowOperator
  *

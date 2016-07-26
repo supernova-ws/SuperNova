@@ -8,6 +8,8 @@ use Pimple\GlobalContainer;
 /**
  * Class BuddyRoutingParams
  *
+ * Hints to enable IDE autocomplete. Otherwise - useless
+ *
  * @property GlobalContainer $gc
  * @property int|float       $buddy_id
  * @property string          $mode

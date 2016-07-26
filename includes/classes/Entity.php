@@ -1,13 +1,23 @@
 <?php
 
+/**
+ * Class Entity
+ *
+ * @property int|float $dbId Buddy record DB ID
+ */
 class Entity {
   public static $tableName = '_table';
+  /**
+   * Name of key field field in this table
+   *
+   * @var string $idField
+   */
   public static $idField = 'id';
   /**
-   * @var PropertyHiderInArray
+   * @var PropertyHider
    */
-  public $_container;
-  public static $_containerName = 'PropertyHiderInArray';
+  protected $_container;
+  protected static $_containerName = 'PropertyHiderInArray';
 
   /**
    * Property list
@@ -42,6 +52,15 @@ class Entity {
     empty(static::$dbStatic) && !empty($c->db) ? static::$dbStatic = $c->db : false;
 
     $this->_container = new static::$_containerName();
+    $this->_container->setProperties(static::$_properties);
+  }
+
+  public function getTableName() {
+    return static::$tableName;
+  }
+
+  public function getIdFieldName() {
+    return static::$idField;
   }
 
   public function load($buddyId) {
@@ -100,13 +119,14 @@ class Entity {
     $this->dbId = $value;
   }
 
-
   /**
    * @return int|float|string
    */
   public function getDbId() {
     return $this->dbId;
   }
+
+
 
   public function __get($name) {
     return $this->_container->$name;
