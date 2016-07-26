@@ -6,13 +6,13 @@
  * @property int|float $dbId Buddy record DB ID
  */
 class Entity {
-  public static $tableName = '_table';
+  protected static $tableName = '_table';
   /**
    * Name of key field field in this table
    *
    * @var string $idField
    */
-  public static $idField = 'id';
+  protected static $idField = 'id';
   /**
    * @var PropertyHider
    */
@@ -35,13 +35,6 @@ class Entity {
    * @var array $row
    */
   protected $row = array();
-
-
-  /**
-   * @var int|float|string $dbId
-   */
-  protected $dbId = 0;
-
 
   /**
    * Buddy\Buddy constructor.
@@ -85,7 +78,7 @@ class Entity {
   }
 
   public function isNew() {
-    return empty($this->row[static::$idField]);
+    return empty($this->row[$this->getIdFieldName()]);
   }
 
   /**
@@ -94,8 +87,8 @@ class Entity {
   public function setRow($row) {
     $this->row = $row;
     // TODO - $row can be empty
-    if (!empty(static::$idField)) {
-      $this->setDbId($row[static::$idField]);
+    if ($this->getIdFieldName() != 0) {
+      $this->setDbId($row[$this->getIdFieldName()]);
     }
   }
 
@@ -109,7 +102,7 @@ class Entity {
   public function getRow($withDbId = true) {
     $row = $this->row;
     if (!$withDbId) {
-      unset($row[static::$idField]);
+      unset($row[$this->getIdFieldName()]);
     }
 
     return $row;
@@ -125,8 +118,6 @@ class Entity {
   public function getDbId() {
     return $this->dbId;
   }
-
-
 
   public function __get($name) {
     return $this->_container->$name;

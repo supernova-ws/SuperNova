@@ -22,8 +22,8 @@ use Entity;
  */
 class BuddyModel extends Entity {
 
-  public static $tableName = 'buddy';
-  public static $idField = 'BUDDY_ID';
+  protected static $tableName = 'buddy';
+  protected static $idField = 'BUDDY_ID';
 
   // TODO - make it work with Model's properties
   /**
@@ -216,7 +216,7 @@ class BuddyModel extends Entity {
   public function setRow($row) {
 //    foreach($this->getProperties() as $propertyName => $cork) {
 //    }
-    $this->dbId = $row[static::$idField];
+    $this->dbId = $row[$this->getIdFieldName()];
     $this->playerSenderId = $row['BUDDY_SENDER_ID'];
     $this->playerOwnerId = $row['BUDDY_OWNER_ID'];
     $this->buddyStatusId = $row['BUDDY_STATUS'];
@@ -230,15 +230,15 @@ class BuddyModel extends Entity {
    */
   public function getRow($withDbId = true) {
     $row = array(
-      static::$idField  => $this->dbId,
-      'BUDDY_SENDER_ID' => $this->playerSenderId,
-      'BUDDY_OWNER_ID'  => $this->playerOwnerId,
-      'BUDDY_STATUS'    => $this->buddyStatusId,
-      'BUDDY_REQUEST'   => $this->requestText,
+      $this->getIdFieldName() => $this->dbId,
+      'BUDDY_SENDER_ID'       => $this->playerSenderId,
+      'BUDDY_OWNER_ID'        => $this->playerOwnerId,
+      'BUDDY_STATUS'          => $this->buddyStatusId,
+      'BUDDY_REQUEST'         => $this->requestText,
     );
 
     if (!$withDbId) {
-      unset($row[static::$idField]);
+      unset($row[$this->getIdFieldName()]);
     }
 
     return $row;
