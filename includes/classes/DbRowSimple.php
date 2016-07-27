@@ -26,7 +26,7 @@ class DbRowSimple {
   public function deleteById($object) {
     $db = classSupernova::$gc->db;
 
-    $db->doquery("DELETE FROM `{{" . $object->getTableName() . "}}` WHERE `{$object->getIdFieldName()}` = '{$object->getDbId()}' LIMIT 1;");
+    $db->doquery("DELETE FROM `{{" . $object->getTableName() . "}}` WHERE `{$object->getIdFieldName()}` = '{$object->dbId}' LIMIT 1;");
 
     return $db->db_affected_rows();
   }
@@ -52,10 +52,7 @@ class DbRowSimple {
     $db->doquery("INSERT INTO `{{" . $object->getTableName() . "}}` SET " . $query);
 
     // TODO Exceptiion if db_insert_id() is empty
-    $dbId = $db->db_insert_id();
-    $object->setDbId($dbId);
-
-    return $dbId;
+    return $object->dbId = $db->db_insert_id();
   }
 
 }

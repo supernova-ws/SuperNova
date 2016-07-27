@@ -228,6 +228,7 @@ class BuddyModel extends Entity {
    *
    * @return array
    */
+  // TODO -    PROOF OF CONCEPTION
   public function getRow($withDbId = true) {
     $row = array(
       $this->getIdFieldName() => $this->dbId,

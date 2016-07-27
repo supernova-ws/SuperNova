@@ -6,6 +6,11 @@
  * @property int|float $dbId Buddy record DB ID
  */
 class Entity {
+  /**
+   * Name of table for this entity
+   *
+   * @var string $tableName
+   */
   protected static $tableName = '_table';
   /**
    * Name of key field field in this table
@@ -14,7 +19,9 @@ class Entity {
    */
   protected static $idField = 'id';
   /**
-   * @var PropertyHider
+   * Container for property values
+   *
+   * @var PropertyHider $_container
    */
   protected $_container;
   protected static $_containerName = 'PropertyHiderInArray';
@@ -85,38 +92,37 @@ class Entity {
    * @param array $row
    */
   public function setRow($row) {
-    $this->row = $row;
+//    $this->row = $row;
     // TODO - $row can be empty
-    if ($this->getIdFieldName() != 0) {
-      $this->setDbId($row[$this->getIdFieldName()]);
+    if ($this->getIdFieldName() != '') {
+      $this->dbId = $row[$this->getIdFieldName()];
+      unset($row[$this->getIdFieldName()]);
+    }
+    foreach($row as $fieldName => $fieldValue) {
+      $this->$fieldName = $fieldValue;
     }
   }
 
   /**
    * Compiles object data into db row
    *
-   * @param bool $withDbId - Should dbId too be returned. Usefull for INSERT statements
+   * @param bool $withDbId - Should dbId too be returned. Useful for INSERT statements
    *
    * @return array
    */
   public function getRow($withDbId = true) {
-    $row = $this->row;
+//    $row = $this->row;
+    $row = array();
+    foreach($this->_container->getProperties() as $fieldName => $cork) {
+      $row[$fieldName] = $this->$fieldName;
+    }
+
     if (!$withDbId) {
       unset($row[$this->getIdFieldName()]);
+      unset($row['dbId']);
     }
 
     return $row;
-  }
-
-  public function setDbId($value) {
-    $this->dbId = $value;
-  }
-
-  /**
-   * @return int|float|string
-   */
-  public function getDbId() {
-    return $this->dbId;
   }
 
   public function __get($name) {
