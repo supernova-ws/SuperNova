@@ -55,4 +55,13 @@ class PropertyHiderInArray extends PropertyHider {
     return isset($this->_data[$name]);
   }
 
+  /**
+   * Is container empty
+   *
+   * @return boolean
+   */
+  public function isContainerEmpty() {
+    return empty($this->_data);
+  }
+
 }

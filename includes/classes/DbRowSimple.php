@@ -15,7 +15,7 @@ class DbRowSimple {
       ->from($object->getTableName())
       ->where($object->getIdFieldName() . ' = "' . $rowId . '"');
 
-    $object->setRow($stmt->selectRow());
+    $object->importDbRow($stmt->selectRow());
 
     return $object;
   }
@@ -38,9 +38,12 @@ class DbRowSimple {
     $db = classSupernova::$gc->db;
 
     $query = array();
-    foreach ($object->getRow(false) as $fieldName => $fieldValue) {
-      $fieldValue = $db->db_escape($fieldValue);
-      $query[] = "`{$fieldName}` = '{$fieldValue}'";
+    foreach ($object->exportDbRow(false) as $fieldName => $fieldValue) {
+      // TODO: MORE type detection
+      if(!is_numeric($fieldValue)) {
+        $fieldValue = "'" . $db->db_escape($fieldValue) . "'";
+      }
+      $query[] = "`{$fieldName}` = {$fieldValue}";
     }
 
     $query = implode(',', $query);

@@ -32,13 +32,22 @@ class BuddyModel extends Entity {
    * @var array
    */
   protected static $_properties = array(
-    'dbId'           => true,
-    'playerSenderId' => true,
-    'playerOwnerId'  => true,
-    'buddyStatusId'  => true,
-    'requestText'    => true,
+    'dbId'           => array(
+      P_DB_FIELD => 'BUDDY_ID',
+    ),
+    'playerSenderId' => array(
+      P_DB_FIELD => 'BUDDY_SENDER_ID',
+    ),
+    'playerOwnerId'  => array(
+      P_DB_FIELD => 'BUDDY_OWNER_ID',
+    ),
+    'buddyStatusId'  => array(
+      P_DB_FIELD => 'BUDDY_STATUS',
+    ),
+    'requestText'    => array(
+      P_DB_FIELD => 'BUDDY_REQUEST',
+    ),
   );
-
 
   // TODO - remove public static function db_buddy_update_status($buddy_id, $status) {
   public function db_buddy_update_status($status) {
@@ -49,13 +58,17 @@ class BuddyModel extends Entity {
     return classSupernova::$db->db_affected_rows();
   }
 
-  // TODO - make it non-static
-  public function db_buddy_check_relation($user, $new_friend_row) {
+  /**
+   * @param BuddyRoutingParams $cBuddy
+   *
+   * @return array|null
+   */
+  public function db_buddy_check_relation($cBuddy) {
     return static::$dbStatic->doQueryFetch(
       "SELECT `BUDDY_ID` FROM `{{buddy}}` WHERE
-      (`BUDDY_SENDER_ID` = {$user['id']} AND `BUDDY_OWNER_ID` = {$new_friend_row['id']})
+      (`BUDDY_SENDER_ID` = {$cBuddy->user['id']} AND `BUDDY_OWNER_ID` = {$cBuddy->newFriendId})
       OR
-      (`BUDDY_SENDER_ID` = {$new_friend_row['id']} AND `BUDDY_OWNER_ID` = {$user['id']})
+      (`BUDDY_SENDER_ID` = {$cBuddy->newFriendId} AND `BUDDY_OWNER_ID` = {$cBuddy->user['id']})
       LIMIT 1 FOR UPDATE;"
     );
   }
@@ -90,11 +103,17 @@ class BuddyModel extends Entity {
   }
 
   /**
-   * @param array $user
+   * @param BuddyRoutingParams $cBuddy
    *
    * @throws BuddyException
    */
-  public function accept($user) {
+  public function accept($cBuddy) {
+    if ($cBuddy->mode != 'accept') {
+      return;
+    }
+
+    $user = $cBuddy->user;
+
     if ($this->playerSenderId == $user['id']) {
       throw new BuddyException('buddy_err_accept_own', ERR_ERROR);
     }
@@ -125,11 +144,21 @@ class BuddyModel extends Entity {
   }
 
   /**
-   * @param array $user
+   * Declining buddy request
+   *
+   * If it is own request - it will be deleted
+   *
+   * @param BuddyRoutingParams $cBuddy
    *
    * @throws BuddyException
    */
-  public function decline($user) {
+  public function decline($cBuddy) {
+    if ($cBuddy->mode != 'delete') {
+      return;
+    }
+
+    $user = $cBuddy->user;
+
     if ($this->playerSenderId != $user['id'] && $this->playerOwnerId != $user['id']) {
       throw new BuddyException('buddy_err_delete_alien', ERR_ERROR);
     }
@@ -156,15 +185,18 @@ class BuddyModel extends Entity {
   }
 
   /**
-   * @param array              $user
-   * @param mixed              $new_friend_id
-   * @param string             $new_friend_name_unsafe
-   * @param string             $new_request_text_safe
    * @param BuddyRoutingParams $cBuddy
    *
    * @throws BuddyException
    */
-  public function beFriend($user, $new_friend_id, $new_friend_name_unsafe, $new_request_text_safe, $cBuddy) {
+  public function beFriend($cBuddy) {
+    if (empty($cBuddy->new_friend_id_safe) && empty($cBuddy->new_friend_name_unsafe)) {
+      return;
+    }
+
+    $user = $cBuddy->user;
+
+
     $new_friend_row = array();
     if ($cBuddy->new_friend_id_safe) {
       $new_friend_row = DBStaticUser::db_user_by_id($cBuddy->new_friend_id_safe, true, '`id`, `username`');
@@ -182,9 +214,10 @@ class BuddyModel extends Entity {
     }
 
     // Checking for user name & request text - in case if it was request to adding new request
-    if ($new_request_text_safe) {
-      $check_relation = $this->db_buddy_check_relation($user, $new_friend_row);
-      if (isset($check_relation['BUDDY_ID'])) {
+    if ($cBuddy->new_request_text_unsafe) {
+      $cBuddy->newFriendId = $new_friend_row['id'];
+      $check_relation = $this->db_buddy_check_relation($cBuddy);
+      if (isset($check_relation[$this->getIdFieldName()])) {
         throw new BuddyException('buddy_err_adding_exists', ERR_WARNING);
       }
 
@@ -193,15 +226,17 @@ class BuddyModel extends Entity {
       $this->playerSenderId = idval($user['id']);
       $this->playerOwnerId = idval($new_friend_row['id']);
       $this->buddyStatusId = BUDDY_REQUEST_WAITING;
-      $this->requestText = $new_request_text_safe;
+      $this->requestText = $cBuddy->new_request_text_unsafe;
 
       $this->insert();
       throw new BuddyException('buddy_err_adding_none', ERR_NONE);
     }
   }
 
-  public function isEmpty() {
+  public function isContainerEmpty() {
     return
+      $this->buddyStatusId == null
+      ||
       $this->buddyStatusId == BUDDY_REQUEST_NOT_SET
       ||
       empty($this->playerSenderId)
@@ -210,39 +245,20 @@ class BuddyModel extends Entity {
   }
 
   /**
-   * @param array $row
-   */
-  // TODO -    PROOF OF CONCEPTION
-  public function setRow($row) {
-//    foreach($this->getProperties() as $propertyName => $cork) {
-//    }
-    $this->dbId = $row[$this->getIdFieldName()];
-    $this->playerSenderId = $row['BUDDY_SENDER_ID'];
-    $this->playerOwnerId = $row['BUDDY_OWNER_ID'];
-    $this->buddyStatusId = $row['BUDDY_STATUS'];
-    $this->requestText = $row['BUDDY_REQUEST'];
-  }
-
-  /**
-   * Compiles object data into db row
+   * Trying to load object info by buddy ID - if it is supplied
    *
-   * @return array
+   * @param BuddyRoutingParams $cBuddy
+   *
+   * @throws BuddyException
    */
-  // TODO -    PROOF OF CONCEPTION
-  public function getRow($withDbId = true) {
-    $row = array(
-      $this->getIdFieldName() => $this->dbId,
-      'BUDDY_SENDER_ID'       => $this->playerSenderId,
-      'BUDDY_OWNER_ID'        => $this->playerOwnerId,
-      'BUDDY_STATUS'          => $this->buddyStatusId,
-      'BUDDY_REQUEST'         => $this->requestText,
-    );
+  protected function loadTry($cBuddy) {
+    if ($cBuddy->buddy_id) {
+      $this->load($cBuddy->buddy_id);
 
-    if (!$withDbId) {
-      unset($row[$this->getIdFieldName()]);
+      if ($this->isContainerEmpty()) {
+        throw new BuddyException('buddy_err_not_exist', ERR_ERROR);
+      }
     }
-
-    return $row;
   }
 
   /**
@@ -251,28 +267,14 @@ class BuddyModel extends Entity {
    * @throws BuddyException
    */
   public function route($cBuddy) {
-    if ($cBuddy->buddy_id) {
-      $this->load($cBuddy->buddy_id);
-
-      if ($this->isEmpty()) {
-        throw new BuddyException('buddy_err_not_exist', ERR_ERROR);
-      }
-
-      switch ($cBuddy->mode) {
-        case 'accept':
-          $this->accept($cBuddy->user);
-        break;
-        case 'delete':
-          $this->decline($cBuddy->user);
-        break;
-      }
-    } else {
-      // New request?
-      // Checking for user ID - in case if it was request from outside buddy system
-      if (!empty($cBuddy->new_friend_id_safe) || !empty($cBuddy->new_friend_name_unsafe)) {
-        $this->beFriend($cBuddy->user, $cBuddy->new_friend_id_safe, $cBuddy->new_friend_name_unsafe, $cBuddy->new_request_text, $cBuddy);
-      }
-    }
+    // Trying to load buddy record with supplied dbId
+    $this->loadTry($cBuddy);
+    // Trying to accept buddy request
+    $this->accept($cBuddy);
+    // Trying to decline buddy request. If it's own request - it will be deleted
+    $this->decline($cBuddy);
+    // New request?
+    $this->beFriend($cBuddy);
   }
 
 }

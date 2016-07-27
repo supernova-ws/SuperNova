@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.73');
+define('SN_VERSION', '41a50.74');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1196,6 +1196,8 @@ define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 // Unit params
 // define('GROUP_PARAMS', 1000000000);
 // Зарезервировано для параметров: 1.000.000.000-2.000.000.000
+define('P_DB_ROW_EXPORT', 'exportFieldsToRow'); // Function to fill row on property change
+define('P_DB_ROW_IMPORT', 'importFieldFromRow'); // Function to import data from DB row to class properties
 define('P_DB_FIELD', 'dbField'); // Field name in DB
 define('P_DB_FIELDS_LINKED', 'dbFieldsLinked'); // List of fields which should consider changed/updated on property change/update
 define('P_FUNC_INPUT', 'funcInput'); // Name of function to DB field value to property value

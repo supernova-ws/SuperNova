@@ -15,8 +15,10 @@ use Pimple\GlobalContainer;
  * @property string          $mode
  * @property int|float       $new_friend_id_safe
  * @property string          $new_friend_name_unsafe
+ * @property string          $new_request_text_unsafe
  * @property string          $new_request_text
- * @property array           $user
+ * @property array           $user - optional. Unfortunately - we need full record to get name and capital coordinates for buddy message
+ * @property int|float       $newFriendId - optional
  *
  * @package Pimple
  */

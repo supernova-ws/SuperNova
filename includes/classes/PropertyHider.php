@@ -126,6 +126,16 @@ abstract class PropertyHider extends stdClass {
   abstract public function __isset($name);
 
   /**
+   * Is container empty
+   *
+   * @return boolean
+   */
+  public function isContainerEmpty() {
+    throw new Exception('PropertyHider::isContainerEmpty() is not implemented. You should implement it in class ' . get_called_class());
+  }
+
+
+  /**
    * Directly adjusts value without Adjuster
    *
    * @param string $name
@@ -377,5 +387,4 @@ abstract class PropertyHider extends stdClass {
 
     return $this->$name;
   }
-
 }

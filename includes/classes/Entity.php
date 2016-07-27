@@ -5,7 +5,7 @@
  *
  * @property int|float $dbId Buddy record DB ID
  */
-class Entity {
+class Entity implements \Common\IMagicProperties {
   /**
    * Name of table for this entity
    *
@@ -34,26 +34,58 @@ class Entity {
   protected static $_properties = array();
 
   /**
+   * @var array
+   */
+  protected static $_propertyToField = array();
+
+  /**
    * @var db_mysql|null $dbStatic
    */
   public static $dbStatic = null;
 
   /**
-   * @var array $row
+   * Fills property-to-field table which used to generate result array
    */
-  protected $row = array();
+  protected function fillPropertyToField() {
+    if (!empty(static::$_propertyToField)) {
+      return;
+    }
+
+    // Filling property-to-filed relation array
+    foreach (static::$_properties as $propertyName => &$propertyData) {
+      // Property is mapped 1-to-1 to field
+      if (!empty($propertyData[P_DB_FIELD])) {
+        $fieldName = $propertyData[P_DB_FIELD];
+        /**
+         * @param static $that
+         */
+        // Alas! No bindTo() method in 5.3 closures! So we should use what we have
+        $propertyData[P_DB_ROW_EXPORT] = function ($that, &$row) use ($propertyName, $fieldName) {
+          $row[$fieldName] = $that->$propertyName;
+        };
+        $propertyData[P_DB_ROW_IMPORT] = function ($that, &$row) use ($propertyName, $fieldName) {
+          // TODO: Here should be some conversions to property type
+          $that->$propertyName = $row[$fieldName];
+        };
+      }
+
+    }
+  }
 
   /**
-   * Buddy\Buddy constructor.
+   * Entity constructor.
    *
-   * @param \Pimple\GlobalContainer $c
+   * @param \Pimple\GlobalContainer $gc
    */
-  public function __construct($c) {
-    empty(static::$dbStatic) && !empty($c->db) ? static::$dbStatic = $c->db : false;
+  public function __construct($gc) {
+    empty(static::$dbStatic) && !empty($gc->db) ? static::$dbStatic = $gc->db : false;
 
     $this->_container = new static::$_containerName();
     $this->_container->setProperties(static::$_properties);
+
+    $this->fillPropertyToField();
   }
+
 
   public function getTableName() {
     return static::$tableName;
@@ -63,8 +95,8 @@ class Entity {
     return static::$idField;
   }
 
-  public function load($buddyId) {
-    classSupernova::$gc->dbRowOperator->getById($this, $buddyId);
+  public function load($recordId) {
+    classSupernova::$gc->dbRowOperator->getById($this, $recordId);
   }
 
   // TODO - move to reader ????????
@@ -80,50 +112,68 @@ class Entity {
     return classSupernova::$gc->dbRowOperator->insert($this);
   }
 
-  public function isEmpty() {
-    return empty($this->row);
+  public function isContainerEmpty() {
+    return $this->_container->isContainerEmpty();
   }
 
   public function isNew() {
-    return empty($this->row[$this->getIdFieldName()]);
+    return $this->getIdFieldName() != 0;
   }
 
   /**
+   * Invoke row transformation operation on object
+   *
+   * Uses in to save/load data from DB row into/from object
+   *
+   * @param array  $row
+   * @param string $operation
+   * @param string $desc
+   *
+   * @throws Exception
+   */
+  protected function rowInvokeOperation(&$row, $operation, $desc) {
+    foreach (static::$_properties as $propertyName => $propertyData) {
+      if (is_callable($propertyData[$operation])) {
+        // Some black magic here
+        // Closure is a class - so have __invoke() magic method
+        // It means we can invoke it by directly call __invoke()
+        $propertyData[$operation]->__invoke($this, $row);
+        // TODO - however for a sake of uniformity may be we should consider use call_user_func
+//      call_user_func($propertyData[P_DB_ROW_EXPORT], $this);
+      } else {
+        throw new \Exception('There is no valid DB row ' . $desc . ' for ' . get_called_class() . '::' . $propertyName);
+      }
+    }
+  }
+
+  /**
+   * Import DB row state into object properties
+   *
    * @param array $row
    */
-  public function setRow($row) {
-//    $this->row = $row;
-    // TODO - $row can be empty
-    if ($this->getIdFieldName() != '') {
-      $this->dbId = $row[$this->getIdFieldName()];
-      unset($row[$this->getIdFieldName()]);
-    }
-    foreach($row as $fieldName => $fieldValue) {
-      $this->$fieldName = $fieldValue;
-    }
+  public function importDbRow($row) {
+    $this->rowInvokeOperation($row, P_DB_ROW_IMPORT, 'IMPORTER');
   }
 
   /**
-   * Compiles object data into db row
+   * Export data from object properties into DB row for further use
    *
    * @param bool $withDbId - Should dbId too be returned. Useful for INSERT statements
    *
    * @return array
    */
-  public function getRow($withDbId = true) {
-//    $row = $this->row;
+  public function exportDbRow($withDbId = true) {
     $row = array();
-    foreach($this->_container->getProperties() as $fieldName => $cork) {
-      $row[$fieldName] = $this->$fieldName;
-    }
+
+    $this->rowInvokeOperation($row, P_DB_ROW_EXPORT, 'EXPORTER');
 
     if (!$withDbId) {
       unset($row[$this->getIdFieldName()]);
-      unset($row['dbId']);
     }
 
     return $row;
   }
+
 
   public function __get($name) {
     return $this->_container->$name;
