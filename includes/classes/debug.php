@@ -291,10 +291,10 @@ function dump($value, $varname = null, $level = 0, $dumper = '') {
   $type = gettype($value);
   $dumper .= $type;
 
-  if($type == 'string') {
+  if($type == TYPE_STRING) {
     $dumper .= '(' . strlen($value) . ')';
     $value = dump($value, '', -1);
-  } elseif($type == 'boolean') {
+  } elseif($type == TYPE_BOOLEAN) {
     $value = ($value ? 'true' : 'false');
   } elseif($type == 'object') {
     $props = get_class_vars(get_class($value));
@@ -304,7 +304,7 @@ function dump($value, $varname = null, $level = 0, $dumper = '') {
       $dumper .= dump($value->$key, '', $level + 1);
     }
     $value = '';
-  } elseif($type == 'array') {
+  } elseif($type == TYPE_ARRAY) {
     $dumper .= '(' . count($value) . ')';
     foreach($value as $key => $val) {
       $dumper .= "\n" . str_repeat("\t", $level + 1) . dump($key, '', -1) . ' => ';

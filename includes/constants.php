@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.74');
+define('SN_VERSION', '41a50.75');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -145,6 +145,13 @@ define('QUEST_TYPE_COMBAT'  , 3);
 define('QUEST_STATUS_NOT_STARTED' , 0);
 define('QUEST_STATUS_STARTED'     , 1);
 define('QUEST_STATUS_COMPLETE'    , 2);
+
+define('TYPE_INTEGER', 'integer');
+define('TYPE_DOUBLE', 'double');
+define('TYPE_BOOLEAN', 'boolean');
+define('TYPE_NULL', 'NULL');
+define('TYPE_ARRAY', 'array');
+define('TYPE_STRING', 'string');
 
 // *** Combat-related constants
 // *** Mission Type constants starts with MT_
@@ -1198,6 +1205,7 @@ define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 // Зарезервировано для параметров: 1.000.000.000-2.000.000.000
 define('P_DB_ROW_EXPORT', 'exportFieldsToRow'); // Function to fill row on property change
 define('P_DB_ROW_IMPORT', 'importFieldFromRow'); // Function to import data from DB row to class properties
+define('P_DB_TYPE', 'propertyType'); // PHP type of property. Also supports in-game types like 'id'
 define('P_DB_FIELD', 'dbField'); // Field name in DB
 define('P_DB_FIELDS_LINKED', 'dbFieldsLinked'); // List of fields which should consider changed/updated on property change/update
 define('P_FUNC_INPUT', 'funcInput'); // Name of function to DB field value to property value

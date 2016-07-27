@@ -85,7 +85,7 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false) {
 
       foreach($values as $field => &$value) {
         $value_type = gettype($value);
-        if ($value_type == 'string') {
+        if ($value_type == TYPE_STRING) {
           $value = "'" . db_escape($value) . "'";
         }
         $value = "`{$field}` = {$value}";

@@ -99,23 +99,6 @@ function sys_schedule_get_prev_run($scheduleList, $recorded_run = SN_TIME_NOW, $
       $timestamp = strtotime($string);
       $schedule['timestamp'][$timestamp] = $possible_schedules[$timestamp] = date(FMT_DATE_TIME_SQL, strtotime($string));
     }
-    /*
-        $schedule['string']['recorded_string'] = ("{$schedule['array']['recorded'][5]}-{$schedule['array']['recorded'][4]}-{$schedule['array']['recorded'][3]} {$schedule['array']['recorded'][2]}:{$schedule['array']['recorded'][1]}:{$schedule['array']['recorded'][0]}");
-        $schedule['string']['next_recorded_string'] = $schedule['string']['recorded_string'] . ' +1 ' . $interval;
-        $schedule['string']['prev_recorded_string'] = $schedule['string']['recorded_string'] . ' -1 ' . $interval;
-
-        $schedule['timestamp']['recorded'] = strtotime($schedule['string']['recorded_string']);
-        $schedule['timestamp']['next_recorded'] = strtotime($schedule['string']['next_recorded_string']);
-        $schedule['timestamp']['prev_recorded'] = strtotime($schedule['string']['prev_recorded_string']);
-    */
-
-    // $schedule['string']['today_string'] = ("{$schedule['array']['now'][5]}-{$schedule['array']['now'][4]}-{$schedule['array']['now'][3]} {$schedule['array']['now'][2]}:{$schedule['array']['now'][1]}:{$schedule['array']['now'][0]}");
-    /*
-    foreach($schedule as $index => &$schedule_part) {
-      // $schedule_part = intval($schedule_part) * $in_seconds[$index];
-      $schedule_part = intval($schedule_part);
-    }
-    */
   });
 
 //  pdump($possible_schedules);

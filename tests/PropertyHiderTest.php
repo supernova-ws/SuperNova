@@ -266,17 +266,17 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
   public function dataAdjustValueType() {
     return array(
-      array('adjustProperty', 'testInteger', 0, 3.5, 3, 'integer'),
-      array('deltaProperty', 'testInteger', 0, 3.5, 3, 'integer'),
+      array('adjustProperty', 'testInteger', 0, 3.5, 3, TYPE_INTEGER),
+      array('deltaProperty', 'testInteger', 0, 3.5, 3, TYPE_INTEGER),
 
-      array('adjustPropertyInteger', 'testInteger', 0, 3.5, 3, 'integer'),
-      array('deltaInteger', 'testInteger', 0, 3.5, 3, 'integer'),
-      array('adjustPropertyDouble', 'testFloat', 0.0, 5.7, 5.7, 'double'),
-      array('deltaDouble', 'testFloat', 0.0, 5.7, 5.7, 'double'),
-      array('adjustPropertyString', 'testString', '', 'foo', 'foo', 'string'),
-      array('deltaString', 'testString', '', 'foo', 'foo', 'string'),
-      array('adjustPropertyArray', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), 'array'),
-      array('deltaArray', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), 'array'),
+      array('adjustPropertyInteger', 'testInteger', 0, 3.5, 3, TYPE_INTEGER),
+      array('deltaInteger', 'testInteger', 0, 3.5, 3, TYPE_INTEGER),
+      array('adjustPropertyDouble', 'testFloat', 0.0, 5.7, 5.7, TYPE_DOUBLE),
+      array('deltaDouble', 'testFloat', 0.0, 5.7, 5.7, TYPE_DOUBLE),
+      array('adjustPropertyString', 'testString', '', 'foo', 'foo', TYPE_STRING),
+      array('deltaString', 'testString', '', 'foo', 'foo', TYPE_STRING),
+      array('adjustPropertyArray', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), TYPE_ARRAY),
+      array('deltaArray', 'testArray', array(), array('a' => 'b'), array('a' => 'b'), TYPE_ARRAY),
     );
   }
 
@@ -310,14 +310,14 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
   public function dataPropertyMethodResult() {
     return array(
-      array('testInteger', 3.5, 3, 'integer', 'adjustProperty'),
-      array('testFloat', 5.7, 5.7, 'double', 'adjustProperty'),
-      array('testString', 'foo', 'foo', 'string', 'adjustProperty'),
-      array('testArray', array('a' => 'b'), array('a' => 'b'), 'array', 'adjustProperty'),
-      array('testInteger', 3.5, 3, 'integer', 'delta'),
-      array('testFloat', 5.7, 5.7, 'double', 'delta'),
-      array('testString', 'foo', 'foo', 'string', 'delta'),
-      array('testArray', array('a' => 'b'), array('a' => 'b'), 'array', 'delta'),
+      array('testInteger', 3.5, 3, TYPE_INTEGER, 'adjustProperty'),
+      array('testFloat', 5.7, 5.7, TYPE_DOUBLE, 'adjustProperty'),
+      array('testString', 'foo', 'foo', TYPE_STRING, 'adjustProperty'),
+      array('testArray', array('a' => 'b'), array('a' => 'b'), TYPE_ARRAY, 'adjustProperty'),
+      array('testInteger', 3.5, 3, TYPE_INTEGER, 'delta'),
+      array('testFloat', 5.7, 5.7, TYPE_DOUBLE, 'delta'),
+      array('testString', 'foo', 'foo', TYPE_STRING, 'delta'),
+      array('testArray', array('a' => 'b'), array('a' => 'b'), TYPE_ARRAY, 'delta'),
     );
   }
 

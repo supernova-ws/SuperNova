@@ -43,6 +43,67 @@ class Entity implements \Common\IMagicProperties {
    */
   public static $dbStatic = null;
 
+  protected function bindFieldExport($propertyData, $propertyName) {
+    $fieldName = $propertyData[P_DB_FIELD];
+
+    // Last resort - binding export function to DB field name
+    // Property is mapped 1-to-1 to field
+    if (!empty($propertyData[P_DB_FIELD]) && empty($propertyData[P_DB_ROW_EXPORT])) {
+      /**
+       * @param static $that
+       */
+      // Alas! No bindTo() method in 5.3 closures! So we should use what we have
+      $propertyData[P_DB_ROW_EXPORT] = function ($that, &$row) use ($propertyName, $fieldName, $propertyData) {
+        $row[$fieldName] = $that->$propertyName;
+      };
+    }
+  }
+
+  protected function bindFieldImport($propertyData, $propertyName) {
+    $fieldName = $propertyData[P_DB_FIELD];
+
+    // Last resort - binding import function to DB field name
+    // Property is mapped 1-to-1 to field
+    if (!empty($propertyData[P_DB_FIELD]) && empty($propertyData[P_DB_ROW_IMPORT])) {
+      /**
+       * @param static $that
+       */
+      // Alas! No bindTo() method in 5.3 closures! So we should use what we have
+      $propertyData[P_DB_ROW_IMPORT] = function ($that, &$row) use ($propertyName, $fieldName, $propertyData) {
+        $type = !empty($propertyData[P_DB_TYPE]) ? $propertyData[P_DB_TYPE] : '';
+
+        // "array"
+
+        // TODO: Here should be some conversions to property type
+        switch ($type) {
+          case TYPE_INTEGER:
+            $value = intval($row[$fieldName]);
+          break;
+
+          case TYPE_DOUBLE:
+            $value = floatval($row[$fieldName]);
+          break;
+
+          case TYPE_BOOLEAN:
+            $value = boolval($row[$fieldName]);
+          break;
+
+          case TYPE_NULL:
+            $value = null;
+          break;
+
+          // No-type defaults to string
+          default:
+            $value = (string)$row[$fieldName];
+          break;
+        }
+
+//        $that->$propertyName = $row[$fieldName];
+        $that->$propertyName = $value;
+      };
+    }
+  }
+
   /**
    * Fills property-to-field table which used to generate result array
    */
@@ -51,24 +112,10 @@ class Entity implements \Common\IMagicProperties {
       return;
     }
 
-    // Filling property-to-filed relation array
+    // Filling property-to-field relation array
     foreach (static::$_properties as $propertyName => &$propertyData) {
-      // Property is mapped 1-to-1 to field
-      if (!empty($propertyData[P_DB_FIELD])) {
-        $fieldName = $propertyData[P_DB_FIELD];
-        /**
-         * @param static $that
-         */
-        // Alas! No bindTo() method in 5.3 closures! So we should use what we have
-        $propertyData[P_DB_ROW_EXPORT] = function ($that, &$row) use ($propertyName, $fieldName) {
-          $row[$fieldName] = $that->$propertyName;
-        };
-        $propertyData[P_DB_ROW_IMPORT] = function ($that, &$row) use ($propertyName, $fieldName) {
-          // TODO: Here should be some conversions to property type
-          $that->$propertyName = $row[$fieldName];
-        };
-      }
-
+      $this->bindFieldExport($propertyData, $propertyName);
+      $this->bindFieldImport($propertyData, $propertyName);
     }
   }
 

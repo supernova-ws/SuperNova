@@ -141,8 +141,8 @@ $user_option_list[OPT_INTERFACE] = array(
 );
 
 $user_option_types = array(
-  'opt_int_overview_planet_columns' => 'integer',
-  'opt_int_overview_planet_rows'    => 'integer',
+  'opt_int_overview_planet_columns' => TYPE_INTEGER,
+  'opt_int_overview_planet_rows'    => TYPE_INTEGER,
 );
 
 $sn_diplomacy_relation_list = array(
