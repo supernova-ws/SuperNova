@@ -202,15 +202,14 @@ class DBStaticMessages {
 
   /**
    * @param \Buddy\BuddyRoutingParams $cBuddy
-   * @param mixed                     $recipientPlayerId
    * @param string                    $localeSubjectId
    * @param string                    $localeTextId
    */
-  public static function msgSendFromPlayerBuddy($cBuddy, $recipientPlayerId, $localeSubjectId, $localeTextId) {
+  public static function msgSendFromPlayerBuddy($cBuddy, $localeSubjectId, $localeTextId) {
     static::msgSendFromPlayer(
       $cBuddy->playerId,
       $cBuddy->playerNameAndCoordinates,
-      $recipientPlayerId,
+      $cBuddy->newFriendIdSafe,
       classLocale::$lang[$localeSubjectId],
       sprintf(classLocale::$lang[$localeTextId], $cBuddy->playerName)
     );
