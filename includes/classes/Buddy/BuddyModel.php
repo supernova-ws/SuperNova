@@ -170,8 +170,7 @@ class BuddyModel extends Entity {
 
     if ($this->buddyStatusId == BUDDY_REQUEST_ACTIVE) {
       // Existing friendship
-      $ex_friend_id = $this->playerSenderId == $playerId ? $this->playerOwnerId : $this->playerSenderId;
-
+      $cBuddy->newFriendIdSafe = $this->playerSenderId == $playerId ? $this->playerOwnerId : $this->playerSenderId;
       DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
       static::$rowOperator->deleteById($this);
