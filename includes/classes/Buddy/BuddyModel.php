@@ -66,9 +66,9 @@ class BuddyModel extends Entity {
   public function db_buddy_check_relation($cBuddy) {
     return static::$dbStatic->doQueryFetch(
       "SELECT `BUDDY_ID` FROM `{{buddy}}` WHERE
-      (`BUDDY_SENDER_ID` = {$cBuddy->user['id']} AND `BUDDY_OWNER_ID` = {$cBuddy->newFriendId})
+      (`BUDDY_SENDER_ID` = {$cBuddy->playerArray['id']} AND `BUDDY_OWNER_ID` = {$cBuddy->newFriendIdSafe})
       OR
-      (`BUDDY_SENDER_ID` = {$cBuddy->newFriendId} AND `BUDDY_OWNER_ID` = {$cBuddy->user['id']})
+      (`BUDDY_SENDER_ID` = {$cBuddy->newFriendIdSafe} AND `BUDDY_OWNER_ID` = {$cBuddy->playerArray['id']})
       LIMIT 1 FOR UPDATE;"
     );
   }
@@ -112,13 +112,13 @@ class BuddyModel extends Entity {
       return;
     }
 
-    $user = $cBuddy->user;
+    $playerId = $cBuddy->playerId;
 
-    if ($this->playerSenderId == $user['id']) {
+    if ($this->playerSenderId == $playerId) {
       throw new BuddyException('buddy_err_accept_own', ERR_ERROR);
     }
 
-    if ($this->playerOwnerId != $user['id']) {
+    if ($this->playerOwnerId != $playerId) {
       throw new BuddyException('buddy_err_accept_alien', ERR_ERROR);
     }
 
@@ -136,7 +136,7 @@ class BuddyModel extends Entity {
 
     $result = $this->db_buddy_update_status(BUDDY_REQUEST_ACTIVE);
     if ($result) {
-      DBStaticMessages::msgSendFromPlayerBuddy($this->playerSenderId, $user, 'buddy_msg_accept_title', 'buddy_msg_accept_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, $this->playerSenderId, 'buddy_msg_accept_title', 'buddy_msg_accept_text');
       throw new BuddyException('buddy_err_accept_none', ERR_NONE);
     } else {
       throw new BuddyException('buddy_err_accept_internal', ERR_ERROR);
@@ -157,27 +157,27 @@ class BuddyModel extends Entity {
       return;
     }
 
-    $user = $cBuddy->user;
+    $playerId = $cBuddy->playerId;
 
-    if ($this->playerSenderId != $user['id'] && $this->playerOwnerId != $user['id']) {
+    if ($this->playerSenderId != $playerId && $this->playerOwnerId != $playerId) {
       throw new BuddyException('buddy_err_delete_alien', ERR_ERROR);
     }
 
     if ($this->buddyStatusId == BUDDY_REQUEST_ACTIVE) {
       // Existing friendship
-      $ex_friend_id = $this->playerSenderId == $user['id'] ? $this->playerOwnerId : $this->playerSenderId;
+      $ex_friend_id = $this->playerSenderId == $playerId ? $this->playerOwnerId : $this->playerSenderId;
 
-      DBStaticMessages::msgSendFromPlayerBuddy($ex_friend_id, $user, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, $ex_friend_id, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
       static::$rowOperator->deleteById($this);
       throw new BuddyException('buddy_err_unfriend_none', ERR_NONE);
-    } elseif ($this->playerSenderId == $user['id']) {
+    } elseif ($this->playerSenderId == $playerId) {
       // Player's outcoming request - either denied or waiting
       static::$rowOperator->deleteById($this);
       throw new BuddyException('buddy_err_delete_own', ERR_NONE);
     } elseif ($this->buddyStatusId == BUDDY_REQUEST_WAITING) {
       // Deny incoming request
-      DBStaticMessages::msgSendFromPlayerBuddy($this->playerSenderId, $user, 'buddy_msg_deny_title', 'buddy_msg_deny_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, $this->playerSenderId, 'buddy_msg_deny_title', 'buddy_msg_deny_text');
 
       $this->db_buddy_update_status(BUDDY_REQUEST_DENIED);
       throw new BuddyException('buddy_err_deny_none', ERR_NONE);
@@ -190,39 +190,38 @@ class BuddyModel extends Entity {
    * @throws BuddyException
    */
   public function beFriend($cBuddy) {
-    if (empty($cBuddy->new_friend_id_safe) && empty($cBuddy->new_friend_name_unsafe)) {
+    if (empty($cBuddy->newFriendIdSafe) && empty($cBuddy->new_friend_name_unsafe)) {
       return;
     }
 
-    $user = $cBuddy->user;
-
+    $playerId = $cBuddy->playerId;
 
     $new_friend_row = array();
-    if ($cBuddy->new_friend_id_safe) {
-      $new_friend_row = DBStaticUser::db_user_by_id($cBuddy->new_friend_id_safe, true, '`id`, `username`');
+    if ($cBuddy->newFriendIdSafe) {
+      $new_friend_row = DBStaticUser::db_user_by_id($cBuddy->newFriendIdSafe, true, '`id`, `username`');
     } elseif ($cBuddy->new_friend_name_unsafe) {
       $new_friend_row = DBStaticUser::db_user_by_username($cBuddy->new_friend_name_unsafe, true, '`id`, `username`');
     }
 
     if (empty($new_friend_row) || empty($new_friend_row['id'])) {
-      return;
+      throw new BuddyException('buddy_err_unknown_player', ERR_ERROR);
     }
 
-    if ($new_friend_row['id'] == $user['id']) {
+    if ($new_friend_row['id'] == $playerId) {
       throw new BuddyException('buddy_err_adding_self', ERR_ERROR);
     }
 
     // Checking for user name & request text - in case if it was request to adding new request
     if ($cBuddy->new_request_text_unsafe) {
-      $cBuddy->newFriendId = $new_friend_row['id'];
+      $cBuddy->newFriendIdSafe = $new_friend_row['id'];
       $check_relation = $this->db_buddy_check_relation($cBuddy);
       if (isset($check_relation[$this->getIdFieldName()])) {
         throw new BuddyException('buddy_err_adding_exists', ERR_WARNING);
       }
 
-      DBStaticMessages::msgSendFromPlayerBuddy($new_friend_row['id'], $user, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, $new_friend_row['id'], 'buddy_msg_adding_title', 'buddy_msg_adding_text');
 
-      $this->playerSenderId = idval($user['id']);
+      $this->playerSenderId = idval($playerId);
       $this->playerOwnerId = idval($new_friend_row['id']);
       $this->buddyStatusId = BUDDY_REQUEST_WAITING;
       $this->requestText = $cBuddy->new_request_text_unsafe;

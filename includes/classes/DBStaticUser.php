@@ -202,6 +202,12 @@ class DBStaticUser extends DBStaticRecord {
     return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
   }
 
+  /**
+   * @param array $playerArray
+   */
+  public static function renderNameAndCoordinates($playerArray) {
+    return "{$playerArray['username']} " . uni_render_coordinates($playerArray);
+  }
 
 //  // TODO - IoC test
 //  public static function test() {

@@ -180,31 +180,39 @@ class DBStaticMessages {
   }
 
   /**
+   * @param        $senderPlayerId
+   * @param        $senderPlayerNameAndCoordinates
    * @param mixed  $recipientId
-   * @param array  $playerFromRow
    * @param string $subject
    * @param string $text
    */
-  public static function msgSendFromPlayer($recipientId, $playerFromRow, $subject, $text) {
-    static::msg_send_simple_message($recipientId, $playerFromRow['id'], SN_TIME_NOW, MSG_TYPE_PLAYER,
-      "{$playerFromRow['username']} [{$playerFromRow['galaxy']}:{$playerFromRow['system']}:{$playerFromRow['planet']}]",
+  public static function msgSendFromPlayer($senderPlayerId, $senderPlayerNameAndCoordinates, $recipientId, $subject, $text) {
+    static::msg_send_simple_message(
+      $recipientId,
+      $senderPlayerId,
+      SN_TIME_NOW,
+      MSG_TYPE_PLAYER,
+      $senderPlayerNameAndCoordinates,
       $subject,
       $text,
-      false, false);
+      false,
+      false
+    );
   }
 
   /**
-   * @param mixed  $recipientId
-   * @param array  $playerFromRow
-   * @param string $localeSubject
-   * @param string $localeText
+   * @param \Buddy\BuddyRoutingParams $cBuddy
+   * @param mixed                     $recipientPlayerId
+   * @param string                    $localeSubjectId
+   * @param string                    $localeTextId
    */
-  public static function msgSendFromPlayerBuddy($recipientId, $playerFromRow, $localeSubject, $localeText) {
+  public static function msgSendFromPlayerBuddy($cBuddy, $recipientPlayerId, $localeSubjectId, $localeTextId) {
     static::msgSendFromPlayer(
-      $recipientId,
-      $playerFromRow,
-      classLocale::$lang[$localeSubject],
-      sprintf(classLocale::$lang[$localeText], $playerFromRow['username'])
+      $cBuddy->playerId,
+      $cBuddy->playerNameAndCoordinates,
+      $recipientPlayerId,
+      classLocale::$lang[$localeSubjectId],
+      sprintf(classLocale::$lang[$localeTextId], $cBuddy->playerName)
     );
   }
 
@@ -263,7 +271,7 @@ class DBStaticMessages {
       if (empty($error_list)) {
         $error_list[] = array('MESSAGE' => classLocale::$lang['msg_not_message_sent'], 'STATUS' => ERR_NONE);
 
-        static::msgSendFromPlayer($recipientId, $player, $subject_unsafe, $textUnsafe);
+        static::msgSendFromPlayer($player['id'], DBStaticUser::renderNameAndCoordinates($player), $recipientId, $subject_unsafe, $textUnsafe);
 
         $textUnsafe = '';
       }

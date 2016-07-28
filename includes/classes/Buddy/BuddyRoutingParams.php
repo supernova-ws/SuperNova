@@ -13,12 +13,13 @@ use Common\GlobalContainer;
  * @property GlobalContainer $gc
  * @property int|float       $buddy_id
  * @property string          $mode
- * @property int|float       $new_friend_id_safe
+ * @property int|float       $newFriendIdSafe
  * @property string          $new_friend_name_unsafe
  * @property string          $new_request_text_unsafe
- * @property string          $new_request_text
- * @property array           $user - optional. Unfortunately - we need full record to get name and capital coordinates for buddy message
- * @property int|float       $newFriendId - optional
+ * @property array           $playerArray - optional. Unfortunately - we need full record to get name and capital coordinates for buddy message
+ * @property int|float       $playerId
+ * @property string          $playerName
+ * @property string          $playerNameAndCoordinates
  *
  * @package Pimple
  */

@@ -2,6 +2,7 @@
 
 use Buddy\BuddyModel;
 use Buddy\BuddyException;
+use Buddy\BuddyRoutingParams;
 
 /**
  * buddy.php
@@ -25,16 +26,24 @@ lng_include('buddy');
 $result = array();
 sn_db_transaction_start();
 try {
-  $cBuddy = new \Buddy\BuddyRoutingParams(array(
-    'gc'                      => classSupernova::$gc,
-    'buddy_id'                => sys_get_param_id('buddy_id'),
-    'mode'                    => sys_get_param_str('mode'),
-    'new_friend_id_safe'      => sys_get_param_id('request_user_id'),
-    'new_friend_name_unsafe'  => sys_get_param_str_unsafe('request_user_name'),
-    'new_request_text'        => sys_get_param_str('request_text'),
-    'new_request_text_unsafe' => sys_get_param_str_unsafe('request_text'),
-    'user'                    => $user,
-  ));
+  $cBuddy = new BuddyRoutingParams();
+
+  $cBuddy->gc = classSupernova::$gc;
+  $cBuddy->buddy_id = sys_get_param_id('buddy_id');
+  $cBuddy->mode = sys_get_param_str('mode');
+  $cBuddy->newFriendIdSafe = sys_get_param_id('request_user_id');
+  $cBuddy->new_friend_name_unsafe = sys_get_param_str_unsafe('request_user_name');
+  $cBuddy->new_request_text_unsafe = sys_get_param_str_unsafe('request_text');
+  $cBuddy->playerArray = $user;
+  $cBuddy->playerId = function (BuddyRoutingParams $cBuddy) {
+    return $cBuddy->playerArray['id'];
+  };
+  $cBuddy->playerName = function (BuddyRoutingParams $cBuddy) {
+    return $cBuddy->playerArray['username'];
+  };
+  $cBuddy->playerNameAndCoordinates = function (BuddyRoutingParams $cBuddy) {
+    return "{$cBuddy->playerArray['username']} " . uni_render_coordinates($cBuddy->playerArray) ;
+  };
 
   classSupernova::$gc->buddy->route($cBuddy);
 } catch (BuddyException $e) {
