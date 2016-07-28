@@ -169,11 +169,11 @@ class BuddyModel extends Entity {
 
       DBStaticMessages::msgSendFromPlayerBuddy($ex_friend_id, $user, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
-      $this->delete();
+      static::$rowOperator->deleteById($this);
       throw new BuddyException('buddy_err_unfriend_none', ERR_NONE);
     } elseif ($this->playerSenderId == $user['id']) {
       // Player's outcoming request - either denied or waiting
-      $this->delete();
+      static::$rowOperator->deleteById($this);
       throw new BuddyException('buddy_err_delete_own', ERR_NONE);
     } elseif ($this->buddyStatusId == BUDDY_REQUEST_WAITING) {
       // Deny incoming request
@@ -209,7 +209,6 @@ class BuddyModel extends Entity {
     }
 
     if ($new_friend_row['id'] == $user['id']) {
-      unset($new_friend_row);
       throw new BuddyException('buddy_err_adding_self', ERR_ERROR);
     }
 
@@ -228,7 +227,7 @@ class BuddyModel extends Entity {
       $this->buddyStatusId = BUDDY_REQUEST_WAITING;
       $this->requestText = $cBuddy->new_request_text_unsafe;
 
-      $this->insert();
+      static::$rowOperator->insert($this);
       throw new BuddyException('buddy_err_adding_none', ERR_NONE);
     }
   }
@@ -253,7 +252,8 @@ class BuddyModel extends Entity {
    */
   protected function loadTry($cBuddy) {
     if ($cBuddy->buddy_id) {
-      $this->load($cBuddy->buddy_id);
+      $this->dbId = $cBuddy->buddy_id;
+      static::$rowOperator->getById($this);
 
       if ($this->isContainerEmpty()) {
         throw new BuddyException('buddy_err_not_exist', ERR_ERROR);

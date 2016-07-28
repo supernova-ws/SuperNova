@@ -4,7 +4,7 @@ use Vector\Vector;
 
 class classSupernova {
   /**
-   * @var \Pimple\GlobalContainer $gc
+   * @var \Common\GlobalContainer $gc
    */
   public static $gc;
 
@@ -993,53 +993,45 @@ class classSupernova {
   }
 
   public static function init_1_globalContainer() {
+    static::$gc = new Common\GlobalContainer();
+    $gc = static::$gc;
 
-    $container = new Pimple\GlobalContainer(array(
-      'buddyClass' => 'Buddy\BuddyModel',
-    ));
-
-    $container->db = function ($c) {};
-
-      $container->db = function ($c) {
+    $gc->db = function ($c) {
       $db = new db_mysql();
       $db->sn_db_connect();
 
       return $db;
     };
 
-    $container->debug = function ($c) {
+    $gc->debug = function ($c) {
       return new debug();
     };
 
-    $container->cache = function ($c) {
+    $gc->cache = function ($c) {
       return new classCache(classSupernova::$cache_prefix);
     };
 
-    $container->config = function ($c) {
+    $gc->config = function ($c) {
       return new classConfig(classSupernova::$cache_prefix);
     };
 
-    $container->dbRowOperator = function ($c) {
-      return new DbRowSimple($c);
+    $gc->dbRowOperator = function ($c) {
+      return new DbRowDirectOperator($c);
     };
 
-    $container->buddy = $container->factory(function ($c) {
+    $gc->buddyClass = 'Buddy\BuddyModel';
+    $gc->buddy = $gc->factory(function (Common\GlobalContainer $c) {
       return new $c->buddyClass($c);
     });
-//    $container->buddy = $container->factory(function ($c) {
-//      return new Buddy\Buddy($c);
-//    });
 
-    $container->query = $container->factory(function (Pimple\GlobalContainer $c) {
+    $gc->query = $gc->factory(function (Common\GlobalContainer $c) {
       return new DbQueryConstructor($c->db);
     });
 
 // TODO
-//    $container->vector = $container->factory(function (Pimple\GlobalContainer $c) {
-//      return new DbQueryConstructor($c->db);
+//    $container->vector = $container->factory(function (Common\GlobalContainer $c) {
+//      return new Vector($c->db);
 //    });
-
-    static::$gc = $container;
   }
 
   public static function init_3_load_config_file() {

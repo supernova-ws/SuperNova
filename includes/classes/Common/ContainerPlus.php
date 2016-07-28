@@ -1,6 +1,7 @@
 <?php
 
-namespace Pimple;
+namespace Common;
+use Pimple\Container;
 
 /**
  * Class ContainerPlus
@@ -9,7 +10,7 @@ namespace Pimple;
  *
  * @package Pimple
  */
-class ContainerPlus extends Container {
+class ContainerPlus extends Container implements IMagicProperties, IMagicFunctions {
 
   public function __set($name, $value) {
     $this->offsetSet($name, $value);

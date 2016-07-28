@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.75');
+define('SN_VERSION', '41a50.76');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -146,6 +146,7 @@ define('QUEST_STATUS_NOT_STARTED' , 0);
 define('QUEST_STATUS_STARTED'     , 1);
 define('QUEST_STATUS_COMPLETE'    , 2);
 
+define('TYPE_EMPTY', '');
 define('TYPE_INTEGER', 'integer');
 define('TYPE_DOUBLE', 'double');
 define('TYPE_BOOLEAN', 'boolean');

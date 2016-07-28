@@ -27,9 +27,15 @@ class Entity implements \Common\IMagicProperties {
   protected static $_containerName = 'PropertyHiderInArray';
 
   /**
-   * Property list
+   * Property list and description
    *
-   * @var array
+   * propertyName => array(
+   *    P_DB_FIELD => 'dbFieldName', - directly converts property to field and vice versa
+   *    P_DB_ROW_IMPORT => function ($that, &$row) - Imports DB field value from dbRow to object's property
+   *    P_DB_ROW_EXPORT => function ($that, &$row) - Exports object's property to DB field
+   * )
+   *
+   * @var array[]
    */
   protected static $_properties = array();
 
@@ -37,69 +43,60 @@ class Entity implements \Common\IMagicProperties {
    * @var array
    */
   protected static $_propertyToField = array();
+  protected static $_propertyImportExportIsBind = false;
 
   /**
-   * @var db_mysql|null $dbStatic
+   * Link to DB which used by this Entity
+   *
+   * @var db_mysql $dbStatic
+   * deprecated - replace with container ID like 'db' or 'dbAuth'
    */
-  public static $dbStatic = null;
+  public static $dbStatic;
 
-  protected function bindFieldExport($propertyData, $propertyName) {
-    $fieldName = $propertyData[P_DB_FIELD];
+  /**
+   * Service to work with rows
+   *
+   * @var \DbRowDirectOperator $rowOperator
+   */
+  protected static $rowOperator;
+
+  protected function bindFieldExport(&$propertyData, $propertyName) {
+    if(!empty($propertyData[P_DB_ROW_EXPORT])) {
+      return;
+    }
 
     // Last resort - binding export function to DB field name
-    // Property is mapped 1-to-1 to field
-    if (!empty($propertyData[P_DB_FIELD]) && empty($propertyData[P_DB_ROW_EXPORT])) {
+    if (!empty($propertyData[P_DB_FIELD])) {
+      // Property is mapped 1-to-1 to field
       /**
        * @param static $that
        */
       // Alas! No bindTo() method in 5.3 closures! So we should use what we have
-      $propertyData[P_DB_ROW_EXPORT] = function ($that, &$row) use ($propertyName, $fieldName, $propertyData) {
-        $row[$fieldName] = $that->$propertyName;
+      // Also no auto bound of $this until 5.4
+      $propertyData[P_DB_ROW_EXPORT] = function ($that, &$row) use ($propertyName, $propertyData) {
+        $row[$propertyData[P_DB_FIELD]] = $that->$propertyName;
       };
     }
   }
 
-  protected function bindFieldImport($propertyData, $propertyName) {
-    $fieldName = $propertyData[P_DB_FIELD];
+  protected function bindFieldImport(&$propertyData, $propertyName) {
+    if(!empty($propertyData[P_DB_ROW_IMPORT])) {
+      return;
+    }
 
     // Last resort - binding import function to DB field name
-    // Property is mapped 1-to-1 to field
-    if (!empty($propertyData[P_DB_FIELD]) && empty($propertyData[P_DB_ROW_IMPORT])) {
+    if (!empty($propertyData[P_DB_FIELD])) {
+      // Property is mapped 1-to-1 to field
       /**
        * @param static $that
        */
       // Alas! No bindTo() method in 5.3 closures! So we should use what we have
-      $propertyData[P_DB_ROW_IMPORT] = function ($that, &$row) use ($propertyName, $fieldName, $propertyData) {
-        $type = !empty($propertyData[P_DB_TYPE]) ? $propertyData[P_DB_TYPE] : '';
-
-        // "array"
-
-        // TODO: Here should be some conversions to property type
-        switch ($type) {
-          case TYPE_INTEGER:
-            $value = intval($row[$fieldName]);
-          break;
-
-          case TYPE_DOUBLE:
-            $value = floatval($row[$fieldName]);
-          break;
-
-          case TYPE_BOOLEAN:
-            $value = boolval($row[$fieldName]);
-          break;
-
-          case TYPE_NULL:
-            $value = null;
-          break;
-
-          // No-type defaults to string
-          default:
-            $value = (string)$row[$fieldName];
-          break;
-        }
-
-//        $that->$propertyName = $row[$fieldName];
-        $that->$propertyName = $value;
+      // Also no auto bound of $this until 5.4
+      $propertyData[P_DB_ROW_IMPORT] = function ($that, &$row) use ($propertyName, $propertyData) {
+        $that->$propertyName = \Common\Types::castAs(
+          !empty($propertyData[P_DB_TYPE]) ? $propertyData[P_DB_TYPE] : TYPE_EMPTY,
+          $row[$propertyData[P_DB_FIELD]]
+        );
       };
     }
   }
@@ -108,7 +105,7 @@ class Entity implements \Common\IMagicProperties {
    * Fills property-to-field table which used to generate result array
    */
   protected function fillPropertyToField() {
-    if (!empty(static::$_propertyToField)) {
+    if (static::$_propertyImportExportIsBind) {
       return;
     }
 
@@ -117,15 +114,18 @@ class Entity implements \Common\IMagicProperties {
       $this->bindFieldExport($propertyData, $propertyName);
       $this->bindFieldImport($propertyData, $propertyName);
     }
+
+    static::$_propertyImportExportIsBind = true;
   }
 
   /**
    * Entity constructor.
    *
-   * @param \Pimple\GlobalContainer $gc
+   * @param \Common\GlobalContainer $gc
    */
   public function __construct($gc) {
     empty(static::$dbStatic) && !empty($gc->db) ? static::$dbStatic = $gc->db : false;
+    static::$rowOperator = $gc->dbRowOperator;
 
     $this->_container = new static::$_containerName();
     $this->_container->setProperties(static::$_properties);
@@ -133,39 +133,6 @@ class Entity implements \Common\IMagicProperties {
     $this->fillPropertyToField();
   }
 
-
-  public function getTableName() {
-    return static::$tableName;
-  }
-
-  public function getIdFieldName() {
-    return static::$idField;
-  }
-
-  public function load($recordId) {
-    classSupernova::$gc->dbRowOperator->getById($this, $recordId);
-  }
-
-  // TODO - move to reader ????????
-  public function delete() {
-    return classSupernova::$gc->dbRowOperator->deleteById($this);
-  }
-
-  /**
-   * @return int|string
-   */
-  // TODO - move to reader ????????
-  public function insert() {
-    return classSupernova::$gc->dbRowOperator->insert($this);
-  }
-
-  public function isContainerEmpty() {
-    return $this->_container->isContainerEmpty();
-  }
-
-  public function isNew() {
-    return $this->getIdFieldName() != 0;
-  }
 
   /**
    * Invoke row transformation operation on object
@@ -180,15 +147,16 @@ class Entity implements \Common\IMagicProperties {
    */
   protected function rowInvokeOperation(&$row, $operation, $desc) {
     foreach (static::$_properties as $propertyName => $propertyData) {
+
       if (is_callable($propertyData[$operation])) {
         // Some black magic here
         // Closure is a class - so have __invoke() magic method
         // It means we can invoke it by directly call __invoke()
         $propertyData[$operation]->__invoke($this, $row);
         // TODO - however for a sake of uniformity may be we should consider use call_user_func
-//      call_user_func($propertyData[P_DB_ROW_EXPORT], $this);
+//      call_user_func($propertyData[P_DB_ROW_EXPORT], $this, $row);
       } else {
-        throw new \Exception('There is no valid DB row ' . $desc . ' for ' . get_called_class() . '::' . $propertyName);
+        throw new \Exception('There is no valid DB [' . $operation . '] row operation for ' . get_called_class() . '::' . $propertyName);
       }
     }
   }
@@ -202,6 +170,9 @@ class Entity implements \Common\IMagicProperties {
     $this->rowInvokeOperation($row, P_DB_ROW_IMPORT, 'IMPORTER');
   }
 
+  const ENTITY_DB_ID_INCLUDE = true;
+  const ENTITY_DB_ID_EXCLUDE = true;
+
   /**
    * Export data from object properties into DB row for further use
    *
@@ -209,18 +180,54 @@ class Entity implements \Common\IMagicProperties {
    *
    * @return array
    */
-  public function exportDbRow($withDbId = true) {
+  protected function exportDbRow($withDbId = self::ENTITY_DB_ID_INCLUDE) {
     $row = array();
 
     $this->rowInvokeOperation($row, P_DB_ROW_EXPORT, 'EXPORTER');
 
-    if (!$withDbId) {
+    if ($withDbId == self::ENTITY_DB_ID_EXCLUDE) {
       unset($row[$this->getIdFieldName()]);
     }
 
     return $row;
   }
 
+  /**
+   * @return array
+   */
+  public function exportRowWithoutId() {
+    return $this->exportDbRow(self::ENTITY_DB_ID_EXCLUDE);
+  }
+
+  /**
+   * @return array
+   */
+  public function exportRowWithId() {
+    return $this->exportDbRow(self::ENTITY_DB_ID_INCLUDE);
+  }
+
+  public function getTableName() {
+    return static::$tableName;
+  }
+
+  public function getIdFieldName() {
+    return static::$idField;
+  }
+
+  public function isContainerEmpty() {
+    return $this->_container->isContainerEmpty();
+  }
+
+  public function isNew() {
+    return empty($this->dbId);
+  }
+
+  /**
+   * @return db_mysql
+   */
+  public function getDbStatic() {
+    return static::$dbStatic;
+  }
 
   public function __get($name) {
     return $this->_container->$name;

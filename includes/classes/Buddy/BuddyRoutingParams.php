@@ -2,8 +2,8 @@
 
 namespace Buddy;
 
-use Pimple\ContainerPlus;
-use Pimple\GlobalContainer;
+use Common\ContainerPlus;
+use Common\GlobalContainer;
 
 /**
  * Class BuddyRoutingParams
