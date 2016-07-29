@@ -9,7 +9,7 @@
 class DbRowDirectOperator implements \Common\IEntityOperator {
 
   /**
-   * @param Entity $entity
+   * @param \Common\IEntity $entity
    */
   public function getById($entity) {
     $stmt = classSupernova::$gc->query
@@ -18,11 +18,11 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
       ->from($entity->getTableName())
       ->where($entity->getIdFieldName() . ' = "' . $entity->dbId . '"');
 
-    $entity->importDbRow($stmt->selectRow());
+    $entity->importRow($stmt->selectRow());
   }
 
   /**
-   * @param Entity $entity
+   * @param \Common\IEntity $entity
    */
   public function deleteById($entity) {
     $db = $entity->getDbStatic();
@@ -33,7 +33,7 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   }
 
   /**
-   * @param Entity $entity
+   * @param \Common\IEntity $entity
    */
   public function insert($entity) {
     $db = $entity->getDbStatic();

@@ -1100,7 +1100,48 @@ Call Stack
     - Чистить таблицу buddy, а затем связать ID по констраинтам с {{user}}
 
 
+//class That {
+//  public $level;
+//}
+//
+//$that = new That();
+//
+//$c = new V2PropertyContainer();
+//$c->assignAccessor(
+//  'level',
+//  P_CONTAINER_IMPORTER,
+//  function ($row) use ($that) {
+//    $that->level = $row['unit_level'];
+//    pdump('level setter is launched');
+//    pdump($row['unit_level']);
+//    pdump($that->level);
+////    var_dump($that->_container);
+////pdie('importer launched');
+//  }
+//);
+//$c->setProperties(array(
+//  'level' => array(),
+//));
+//
+//$c->importRow(array('unit_level' => 5));
+//
+//pdump($c->level, '$c->level');
+//
+//pdie('container');
+
+$unit = classSupernova::$gc->unit;
+//var_dump($unit);
+$unit->dbId = 1;
+classSupernova::$gc->dbRowOperator->getById($unit);
+pdump($unit->level, '$unit->level');
+pdump($unit->playerOwnerId, '$unit->playerOwnerId');
+pdump($unit->dbId, '$unit->dbId');
+pdump($unit->exportRowWithId());
+pdie();
+
 #ctv
+
+Теперь можно отправлять пустой запрос на дружбу (хотя кому и зачем это может понадобиться - непонятно)
 
 Теперь можно атаковать ракетами свои же планеты. Таким образом можно избавится от излишних ракет или перехватчиков в шахтах, а так же уничтожать свои защитные сооружения
 

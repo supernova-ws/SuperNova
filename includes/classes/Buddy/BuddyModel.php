@@ -8,19 +8,18 @@ use DbEmptyIterator;
 use DbMysqliResultIterator;
 use DBStaticMessages;
 use DBStaticUser;
-use Entity;
 
 /**
  * Class BuddyModel
  *
- * @property int|float $playerSenderId Who makes buddy request
- * @property int|float $playerOwnerId To whom this buddy request made
- * @property int       $buddyStatusId Current buddy request status
- * @property string    $requestText Request text
+ * @property int|float|string $playerSenderId Who makes buddy request
+ * @property int|float|string $playerOwnerId To whom this buddy request made
+ * @property int              $buddyStatusId Current buddy request status
+ * @property string           $requestText Request text
  *
  * @package Buddy
  */
-class BuddyModel extends Entity {
+class BuddyModel extends \Entity {
 
   protected static $tableName = 'buddy';
   protected static $idField = 'BUDDY_ID';

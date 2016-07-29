@@ -15,6 +15,7 @@ namespace Common;
  * @property \classConfig         $config
  * @property string               $buddyClass
  * @property \Buddy\BuddyModel    $buddy
+ * @property \V2Unit\V2UnitModel  $unit
  * @property \DbQueryConstructor  $query
  * @property \DbRowDirectOperator $dbRowOperator
  *

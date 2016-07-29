@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.79');
+define('SN_VERSION', '41a50.80');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1204,8 +1204,16 @@ define('UNIT_PLAYER_EXPEDITIONS_MAX', 'EXPEDITIONS_MAX');
 // Unit params
 // define('GROUP_PARAMS', 1000000000);
 // Зарезервировано для параметров: 1.000.000.000-2.000.000.000
-define('P_DB_ROW_EXPORT', 'exportFieldsToRow'); // Function to fill row on property change
-define('P_DB_ROW_IMPORT', 'importFieldFromRow'); // Function to import data from DB row to class properties
+define('P_DB_ROW_IMPORT', 'importFieldsFromRow'); // Callable to import data from DB row to class properties
+define('P_DB_ROW_EXPORT', 'exportFieldsToRow'); // Callable to fill row on property change
+define('P_DB_ROW_METHOD_IMPORT_V2', 'importFieldFromRowMethodV2'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
+define('P_DB_ROW_METHOD_EXPORT_V2', 'exportFieldToRowMethodV2'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
+
+define("P_CONTAINER_SETTER", 'setters'); // Name of type of accessor - aka name of property to hold this accesor
+define("P_CONTAINER_GETTER", 'getters'); // Name of type of accessor - aka name of property to hold this accesor
+define("P_CONTAINER_IMPORTER", 'importers'); // Name of type of accessor - aka name of property to hold this accesor
+define("P_CONTAINER_EXPORTER", 'exporters'); // Name of type of accessor - aka name of property to hold this accesor
+
 define('P_DB_TYPE', 'propertyType'); // PHP type of property. Also supports in-game types like 'id'
 define('P_DB_FIELD', 'dbField'); // Field name in DB
 define('P_DB_FIELDS_LINKED', 'dbFieldsLinked'); // List of fields which should consider changed/updated on property change/update
@@ -1213,8 +1221,8 @@ define('P_FUNC_INPUT', 'funcInput'); // Name of function to DB field value to pr
 define('P_FUNC_OUTPUT', 'funcOutput'); // Name of function which will inject value of property TO $db_row
 define('P_METHOD_OUTPUT', 'methodOutput'); // Name of function which will inject value of property TO $db_row
 define('P_METHOD_EXTRACT', 'funcExtract'); // Name of function that receives $db_row and $this as parameters to extract info from $db_row to $this
-define('P_FUNC_INJECT', 'funcInject'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
 define('P_METHOD_INJECT', 'methodInject'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
+define('P_FUNC_INJECT', 'funcInject'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
 define('P_METHOD_SET', 'funcSet'); // Setter name
 define('P_FUNC_GET', 'funcGet'); // Getter name
 define('P_VALUE', 'value');

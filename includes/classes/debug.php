@@ -390,8 +390,13 @@ function pvar_dump($expression) {
  * Smart die() implementation that knew where it's grave
  *
  * @param string $message
+ * @param int $level - shift backtrace to X levels back
  */
-function pdie($message = '') {
+function pdie($message = '', $level = 0) {
   $backtrace = debug_backtrace();
+  for($i = 0; $i < $level; $i++) {
+    array_pop($backtrace);
+  }
+
   die(__DEBUG_LINE . ($message ? $message . ' @ ' : '') . $backtrace[0]['file'] . ':' . $backtrace[0]['line']);
 }

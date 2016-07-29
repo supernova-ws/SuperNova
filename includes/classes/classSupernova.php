@@ -1028,6 +1028,10 @@ class classSupernova {
       return new DbQueryConstructor($c->db);
     });
 
+    $gc->unit = $gc->factory(function (Common\GlobalContainer $c) {
+      return new \V2Unit\V2UnitModel($c);
+    });
+
 // TODO
 //    $container->vector = $container->factory(function (Common\GlobalContainer $c) {
 //      return new Vector($c->db);

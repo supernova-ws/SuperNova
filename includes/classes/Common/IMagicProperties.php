@@ -23,6 +23,7 @@ interface IMagicProperties {
    * Magic getter
    *
    * @param string $name
+   * @return mixed
    */
   public function __get($name);
 
@@ -30,11 +31,12 @@ interface IMagicProperties {
    * Magic checker for property set
    *
    * @param string $name
+   * @return boolean
    */
   public function __isset($name);
 
   /**
-   * Magic unsetter
+   * Magic un-setter
    *
    * @param string $name
    */

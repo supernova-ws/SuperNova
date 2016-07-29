@@ -2,22 +2,19 @@
 
 namespace Common;
 
-use \Entity;
-
-
 interface IEntityOperator {
   /**
-   * @param Entity $entity
+   * @param IEntity $entity
    */
   public function getById($entity);
 
   /**
-   * @param Entity $entity
+   * @param IEntity $entity
    */
   public function deleteById($entity);
 
   /**
-   * @param Entity $entity
+   * @param IEntity $entity
    */
   public function insert($entity);
 

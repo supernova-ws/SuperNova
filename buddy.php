@@ -42,7 +42,7 @@ try {
     return $cBuddy->playerArray['username'];
   };
   $cBuddy->playerNameAndCoordinates = function (BuddyRoutingParams $cBuddy) {
-    return "{$cBuddy->playerArray['username']} " . uni_render_coordinates($cBuddy->playerArray) ;
+    return "{$cBuddy->playerArray['username']} " . uni_render_coordinates($cBuddy->playerArray);
   };
 
   classSupernova::$gc->buddy->route($cBuddy);
