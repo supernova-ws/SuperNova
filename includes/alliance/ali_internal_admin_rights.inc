@@ -71,5 +71,3 @@ if (count($ranks))
 }
 
 display(parsetemplate($template), classLocale::$lang['ali_adm_rights_title']);
-
-?>

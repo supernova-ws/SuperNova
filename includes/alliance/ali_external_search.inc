@@ -25,5 +25,3 @@ if($ali_search_text) {
 }
 
 display(parsetemplate($template), classLocale::$lang['ali_search_title']);
-
-?>

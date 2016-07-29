@@ -44,7 +44,7 @@ class V2PropertyContainer implements IMagicProperties, IPropertyContainer {
    *
    * @var callable[]
    */
-  protected $importers;
+  protected $importers = array();
   /**
    * Array of exporters
    *

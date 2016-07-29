@@ -54,5 +54,3 @@ function sys_avatar_upload($subject_id, &$avatar_field, $prefix = 'avatar') {
     );
   }
 }
-
-?>

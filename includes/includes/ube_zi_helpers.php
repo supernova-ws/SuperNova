@@ -73,5 +73,3 @@ function sn_ube_combat_helper_round_row(&$unit_crossfire_result)
   }
   print('</tr>');
 }
-
-?>

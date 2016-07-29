@@ -297,5 +297,3 @@ if($html != $output_buffer)
   exit(1);
 }
 exit(0);
-
-?>

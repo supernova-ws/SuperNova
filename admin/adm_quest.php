@@ -24,5 +24,3 @@ $template = gettemplate('quest', true);
 qst_render_page();
 
 display($template, classLocale::$lang['qst_quests'], false, '', true);
-
-?>

@@ -731,5 +731,3 @@ class template
   }
 
 }
-
-?>

@@ -15,4 +15,3 @@ imagestring($tuval,3,27,7,$sayi,$b);
 Header("content-type:image/gif");
 imagegif($tuval);
 imagedestroy($tuval);
-?>
