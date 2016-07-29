@@ -1,9 +1,6 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: Gorlum
- * Date: 26.12.2015
- * Time: 17:19
+ * Created by Gorlum 26.12.2015 17:19
  */
 
 /**

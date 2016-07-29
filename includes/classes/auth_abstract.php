@@ -1,9 +1,7 @@
 <?php
 
 /**
- * User: Gorlum
- * Date: 10.10.2015
- * Time: 6:05
+ * Created by Gorlum 10.10.2015 6:05
  */
 class auth_abstract extends sn_module {
   public $manifest = array();

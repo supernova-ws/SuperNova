@@ -1,10 +1,7 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: Gorlum
- * Date: 24.08.2015
- * Time: 6:00
+ * Created by Gorlum 24.08.2015 6:00
  */
 class AuthProvider {
 

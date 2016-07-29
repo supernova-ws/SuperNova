@@ -1,9 +1,7 @@
 <?php
 
 /**
- * User: Gorlum
- * Date: 14.10.2015
- * Time: 0:28
+ * Created by Gorlum 14.10.2015 0:28
  */
 class playerTimeDiff {
   /**

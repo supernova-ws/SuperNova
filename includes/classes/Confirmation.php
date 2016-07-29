@@ -1,9 +1,7 @@
 <?php
 
 /**
- * User: Gorlum
- * Date: 17.09.2015
- * Time: 14:11
+ * Created by Gorlum 17.09.2015 14:11
  */
 class Confirmation {
 

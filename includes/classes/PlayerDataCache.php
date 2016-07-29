@@ -1,9 +1,7 @@
 <?php
 
 /**
- * User: Gorlum
- * Date: 27.01.2016
- * Time: 20:44
+ * Created by Gorlum 27.01.2016 20:44
  */
 class PlayerDataCache {
   /**

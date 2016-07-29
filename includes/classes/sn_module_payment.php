@@ -1,8 +1,6 @@
 <?php
 /**
- * User: Gorlum
- * Date: 21.04.2015
- * Time: 3:49
+ * Created by Gorlum 21.04.2015 3:49
  */
 
 abstract class sn_module_payment extends sn_module {

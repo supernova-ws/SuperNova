@@ -1,8 +1,6 @@
 <?php
 /**
- * User: Gorlum
- * Date: 23.07.2016
- * Time: 15:14
+ * Created by Gorlum 23.07.2016 15:14
  */
 
 namespace Mission;

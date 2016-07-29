@@ -1,9 +1,7 @@
 <?php
 
 /**
- * User: Gorlum
- * Date: 02.09.2015
- * Time: 0:41
+ * Created by Gorlum 02.09.2015 0:41
  */
 class db_mysql_v4 {
   const DB_MYSQL_TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';

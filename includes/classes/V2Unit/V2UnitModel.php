@@ -1,14 +1,9 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: oomelche
- * Date: 29.07.2016
- * Time: 13:18
+ * Created by Gorlum 29.07.2016 13:18
  */
 
 namespace V2Unit;
-
-use Common\ContainerPlus;
 
 /**
  * Class V2UnitModel
@@ -75,6 +70,7 @@ class V2UnitModel extends \Entity {
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
+    // TODO - remove and check how it's works
     $this->_container = new static::$_containerName();
     $this->_container->setProperties(static::$_properties);
 
@@ -86,24 +82,12 @@ class V2UnitModel extends \Entity {
         $that->type = $value;
       }
     );
+
     $this->_container->assignAccessor(
       'level',
       P_CONTAINER_IMPORTER,
       function (&$row) use ($that) {
-//pdump('level setter is launched');
-//pdump($row, '$row');
-//var_dump($that);
         $that->level = $row['unit_level'];
-//var_dump($that);
-//pdie();
-
-
-
-//pdump($row['unit_level'], '$row[\'unit_level\']');
-//pdump($that->level, '$that->level');
-//pdump($that->_container, '$that->_container');
-//        pdump($that);
-//pdie('importer launched');
       }
     );
 
@@ -111,55 +95,9 @@ class V2UnitModel extends \Entity {
       'dbLevel',
       P_CONTAINER_EXPORTER,
       function (&$row) use ($that) {
-//pdump('level setter is launched');
-//pdump($row, '$row');
-//var_dump($that);
         $row['unit_level'] = $that->dbLevel;
-//var_dump($that);
-//pdie();
-
-
-
-//pdump($row['unit_level'], '$row[\'unit_level\']');
-//pdump($that->level, '$that->level');
-//pdump($that->_container, '$that->_container');
-//        pdump($that);
-//pdie('importer launched');
       }
     );
-
-
-//    $this->_container->importRow(array('unit_level' => 5, 'unit_type' => 10,));
-//
-//    pdump($this->_container->level);
-//    pdump($this->level);
-////    pdump($this->type);
-//
-//    pdie();
-  }
-
-  /**
-   * @param static $that
-   * @param array  $row
-   */
-  protected function importLevel($that, &$row) {
-    $that->level = $row['unit_level'];
-  }
-
-  /**
-   * @param static $that
-   * @param array  $row
-   */
-  protected function exportLevel($that, &$row) {
-    // $row['unit_level'] = $that->level;
-  }
-
-  /**
-   * @param ContainerPlus $cUnit
-   */
-  public function test($unitId, $cUnit = null) {
-    $this->dbId = $unitId;
-    static::$rowOperator->getById($this);
   }
 
 }

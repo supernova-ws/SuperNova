@@ -6,9 +6,7 @@ use \Fleet;
 use \ExceptionFleetInvalid;
 
 /**
- * User: Gorlum
- * Date: 23.07.2016
- * Time: 14:35
+ * Created by Gorlum 23.07.2016 14:35
  */
 class MissionFactory {
   public static $missions = array(

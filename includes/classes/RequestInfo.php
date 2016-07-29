@@ -1,9 +1,7 @@
 <?php
 
 /**
- * User: Gorlum
- * Date: 29.08.2015
- * Time: 16:49
+ * Created by Gorlum 29.08.2015 16:49
  */
 
 /**

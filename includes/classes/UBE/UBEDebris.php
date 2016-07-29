@@ -1,10 +1,7 @@
 <?php
 
 /**
- * Created by PhpStorm.
- * User: Gorlum
- * Date: 20.02.2016
- * Time: 18:04
+ * Created by Gorlum 20.02.2016 18:04
  */
 class UBEDebris {
 

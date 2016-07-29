@@ -5,9 +5,7 @@ namespace Mission;
 use Fleet;
 
 /**
- * User: Gorlum
- * Date: 06.02.2016
- * Time: 22:30
+ * Created by Gorlum 06.02.2016 22:30
  */
 class Mission {
   /**

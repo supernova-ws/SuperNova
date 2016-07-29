@@ -1,12 +1,10 @@
 <?php
-use Vector\Vector;
 
 /**
- * Created by PhpStorm.
- * User: Gorlum
- * Date: 17.04.2015
- * Time: 6:37
+ * Created by Gorlum 17.04.2015 6:37
  */
+
+use Vector\Vector;
 
 function sys_user_vacation($user) {
   if(sys_get_param_str('vacation') == 'leave') {

@@ -5,18 +5,16 @@
 /**
  * Статический над-класс, который обеспечивает интерфейс авторизации для остального кода
  *
- * User: Gorlum
- * Date: 21.04.2015
- * Time: 3:51
+ * Created by Gorlum 21.04.2015 3:51
  *
- * version #41a7.59#
+ * version #41a50.81#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a7.59# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a50.81# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
