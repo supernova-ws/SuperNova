@@ -92,7 +92,7 @@ class UBEUnit extends Unit {
 
   /**
    *
-   * @version 41a6.16
+   * @version 41a50.84
    */
   public function calc_pool_stats() {
     // Заполняем информацию о кораблях в информации флота
@@ -132,7 +132,7 @@ class UBEUnit extends Unit {
    *
    * @param Bonus $bonus
    *
-   * @version 41a6.16
+   * @version 41a50.84
    */
   public function addBonus(Bonus $bonus) {
     $this->unit_bonus->mergeBonus($bonus);
@@ -143,7 +143,7 @@ class UBEUnit extends Unit {
   /**
    * @param bool $is_simulator
    *
-   * @version 41a6.16
+   * @version 41a50.84
    */
   public function ube_analyze_unit($is_simulator) {
     // Вычисляем сколько юнитов осталось и сколько потеряно
@@ -228,7 +228,7 @@ class UBEUnit extends Unit {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  function attack_damaged_unit($is_simulator) {
+  public function attack_damaged_unit($is_simulator) {
 //    // Нет юнитов или не осталось атак - ничего не делаем
 //    // Не нужно???????
 //    if($this->count <= 0 || $this->attack_income <= 0) {

@@ -24,7 +24,7 @@ class db_mysql_v4 {
 
   // public $dbsettings = array();
 
-  function mysql_connect($settings) {
+  public function mysql_connect($settings) {
     static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
 
     if ($this->connected) {
@@ -59,23 +59,23 @@ class db_mysql_v4 {
     return true;
   }
 
-  function mysql_query($query_string) {
+  public function mysql_query($query_string) {
     return mysql_query($query_string, $this->link);
   }
 
-  function mysql_fetch_assoc(&$query) {
+  public function mysql_fetch_assoc(&$query) {
     return mysql_fetch_assoc($query);
   }
 
-  function mysql_fetch_row(&$query) {
+  public function mysql_fetch_row(&$query) {
     return mysql_fetch_row($query);
   }
 
-  function mysql_real_escape_string($unescaped_string) {
+  public function mysql_real_escape_string($unescaped_string) {
     return mysql_real_escape_string($unescaped_string, $this->link);
   }
 
-  function mysql_close_link() {
+  public function mysql_close_link() {
     if ($this->connected) {
       $this->connected = false;
       mysql_close($this->link);
@@ -86,35 +86,35 @@ class db_mysql_v4 {
     // return mysql_close($this->link);
   }
 
-  function mysql_error() {
+  public function mysql_error() {
     return mysql_error($this->link);
   }
 
-  function mysql_insert_id() {
+  public function mysql_insert_id() {
     return mysql_insert_id($this->link);
   }
 
-  function mysql_num_rows(&$result) {
+  public function mysql_num_rows(&$result) {
     return mysql_num_rows($result);
   }
 
-  function mysql_affected_rows() {
+  public function mysql_affected_rows() {
     return mysql_affected_rows($this->link);
   }
 
-  function mysql_get_client_info() {
+  public function mysql_get_client_info() {
     return mysql_get_client_info();
   }
 
-  function mysql_get_server_info() {
+  public function mysql_get_server_info() {
     return mysql_get_server_info($this->link);
   }
 
-  function mysql_get_host_info() {
+  public function mysql_get_host_info() {
     return mysql_get_host_info($this->link);
   }
 
-  function mysql_stat() {
+  public function mysql_stat() {
     return mysql_stat($this->link);
   }
 }

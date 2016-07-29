@@ -11,7 +11,7 @@ class UBEReport {
    *
    * @version 2016-02-25 23:42:45 41a4.68
    */
-  function sn_ube_report_save($ube) {
+  public function sn_ube_report_save($ube) {
     // Если уже есть ИД репорта - значит репорт был взят из таблицы. С таким мы не работаем
     if($ube->get_cypher()) {
       return false;
@@ -188,7 +188,7 @@ class UBEReport {
    *
    * @return string|UBE
    */
-  function sn_ube_report_load($report_cypher) {
+  public function sn_ube_report_load($report_cypher) {
     $report_cypher = db_escape($report_cypher);
 
     $report_row = doquery("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1", true);
@@ -207,7 +207,7 @@ class UBEReport {
    * @param UBE $ube
    * @param     $template_result
    */
-  function sn_ube_report_generate(UBE $ube, &$template_result) {
+  public function sn_ube_report_generate(UBE $ube, &$template_result) {
     if(!is_object($ube)) {
       return;
     }

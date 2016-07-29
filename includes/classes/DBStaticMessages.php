@@ -396,7 +396,7 @@ class DBStaticMessages {
    * @param template $template
    * @param          $message_query
    */
-  function messageRenderList($current_class, $template, $message_query) {
+  public function messageRenderList($current_class, $template, $message_query) {
     while ($message_row = db_fetch($message_query)) {
       $template->assign_block_vars('messages', array(
         'ID'   => $message_row['message_id'],

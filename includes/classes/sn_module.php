@@ -12,7 +12,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a50.52# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a50.84# copyright © 2009-2014 Gorlum',
 
     'require'       => array(),
     'root_relative' => '',
@@ -67,11 +67,11 @@ class sn_module {
    *
    * @return array
    */
-  function __assign_vars() {
+  public function __assign_vars() {
     return array();
   }
 
-  function loadModuleRootConfig() {
+  public function loadModuleRootConfig() {
     require SN_ROOT_PHYSICAL . 'config.php';
 
     $module_config_array = get_class($this) . '_config';
@@ -84,7 +84,7 @@ class sn_module {
     return false;
   }
 
-  function __construct($filename = __FILE__) {
+  public function __construct($filename = __FILE__) {
     // Getting module PHP class name
     $class_module_name = get_class($this);
 

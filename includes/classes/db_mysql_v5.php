@@ -24,7 +24,7 @@ class db_mysql_v5 {
 
   // public $dbsettings = array();
 
-  function mysql_connect($settings) {
+  public function mysql_connect($settings) {
     static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
 
     if ($this->connected) {
@@ -64,7 +64,7 @@ class db_mysql_v5 {
    *
    * @return bool|mysqli_result
    */
-  function mysql_query($query_string) {
+  public function mysql_query($query_string) {
     return $this->link->query($query_string);
   }
 
@@ -75,19 +75,19 @@ class db_mysql_v5 {
    *
    * @return array|null
    */
-  function mysql_fetch_assoc(&$query) {
+  public function mysql_fetch_assoc(&$query) {
     return mysqli_fetch_assoc($query);
   }
 
-  function mysql_fetch_row(&$query) {
+  public function mysql_fetch_row(&$query) {
     return mysqli_fetch_row($query);
   }
 
-  function mysql_real_escape_string($unescaped_string) {
+  public function mysql_real_escape_string($unescaped_string) {
     return mysqli_real_escape_string($this->link, $unescaped_string);
   }
 
-  function mysql_close_link() {
+  public function mysql_close_link() {
     if (is_object($this->link)) {
       $this->link->close();
       $this->connected = false;
@@ -97,35 +97,35 @@ class db_mysql_v5 {
     return true;
   }
 
-  function mysql_error() {
+  public function mysql_error() {
     return mysqli_error($this->link);
   }
 
-  function mysql_insert_id() {
+  public function mysql_insert_id() {
     return mysqli_insert_id($this->link);
   }
 
-  function mysql_num_rows(&$result) {
+  public function mysql_num_rows(&$result) {
     return mysqli_num_rows($result);
   }
 
-  function mysql_affected_rows() {
+  public function mysql_affected_rows() {
     return mysqli_affected_rows($this->link);
   }
 
-  function mysql_get_client_info() {
+  public function mysql_get_client_info() {
     return mysqli_get_client_info();
   }
 
-  function mysql_get_server_info() {
+  public function mysql_get_server_info() {
     return mysqli_get_server_info($this->link);
   }
 
-  function mysql_get_host_info() {
+  public function mysql_get_host_info() {
     return mysqli_get_host_info($this->link);
   }
 
-  function mysql_stat() {
+  public function mysql_stat() {
     return mysqli_stat($this->link);
   }
 
@@ -134,7 +134,7 @@ class db_mysql_v5 {
    *
    * @return bool|mysqli_stmt
    */
-  function mysql_prepare($statement) {
+  public function mysql_prepare($statement) {
     return mysqli_prepare($this->link, $statement);
   }
 

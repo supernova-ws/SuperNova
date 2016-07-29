@@ -723,12 +723,12 @@ abstract class sn_module_payment extends sn_module {
 
   // Дополнительная ре-трансляция адреса, если в каком-то случае платежная система ожидает нелогичный ответ
   // Пример: иксолла при неправильно заданном пользователе в ордере ожидает НЕПРАВИЛЬНЫЙ_ОРДЕР, а не НЕПРАВИЛЬНЫЙ_ПОЛЬЗОВАТЕЛЬ
-  function retranslate_error($error_code, $options = array()) {
+  public function retranslate_error($error_code, $options = array()) {
     return isset($options['retranslate_error'][$error_code]) ? $options['retranslate_error'][$error_code] : $error_code;
   }
 
 
-  function db_insert() {
+  public function db_insert() {
     $this->payment_test = !empty($this->config['test']) || $this->payment_test;
 
     $payment = array(
@@ -779,7 +779,7 @@ abstract class sn_module_payment extends sn_module {
   }
 
 
-  function payment_adjust_mm_new() {
+  public function payment_adjust_mm_new() {
     if(!$this->payment_test) {
       // Not a test payment. Adding DM to account
       $this->account = new Account($this->db);
@@ -791,7 +791,7 @@ abstract class sn_module_payment extends sn_module {
     }
   }
 
-  function payment_cancel(&$payment) {
+  public function payment_cancel(&$payment) {
     die('{НЕ РАБОТАЕТ! СООБЩИТЕ АДМИНИСТРАЦИИ!}');
 
     if(!isset($payment['payment_status'])) {

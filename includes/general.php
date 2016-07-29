@@ -676,7 +676,7 @@ function get_ship_data($ship_id, $user) {
 }
 
 if (!function_exists('strptime')) {
-  function strptime($date, $format) {
+ function strptime($date, $format) {
     $masks = array(
       '%d' => '(?P<d>[0-9]{2})',
       '%m' => '(?P<m>[0-9]{2})',

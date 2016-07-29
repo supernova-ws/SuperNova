@@ -47,7 +47,7 @@ class debug {
 
   private $log_file_handler = null;
 
-  function log_file($message, $ident_change = 0) {
+  public function log_file($message, $ident_change = 0) {
     static $ident = 0;
 
     if(!defined('SN_DEBUG_LOG')) {
@@ -65,26 +65,26 @@ class debug {
     $ident_change > 0 ? $ident += $ident_change * 2 : false;
   }
 
-  function debug() {
+  public function debug() {
     $this->vars = $this->log = '';
     $this->numqueries = 0;
   }
 
-  function add($mes) {
+  public function add($mes) {
     $this->log .= $mes;
     $this->numqueries++;
   }
 
-  function add_to_array($mes) {
+  public function add_to_array($mes) {
     $this->log_array[] = $mes;
   }
 
-  function echo_log() {
+  public function echo_log() {
     echo '<br><table><tr><td class=k colspan=4><a href="' . SN_ROOT_PHYSICAL . "admin/settings.php\">Debug Log</a>:</td></tr>{$this->log}</table>";
     die();
   }
 
-  function compact_backtrace($backtrace, $long_comment = false) {
+  public function compact_backtrace($backtrace, $long_comment = false) {
     static $exclude_functions = array('doquery', 'db_query', 'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id');
 
     $result = array();
@@ -119,7 +119,7 @@ class debug {
     return $result;
   }
 
-  function dump($dump = false, $force_base = false, $deadlock = false) {
+  public function dump($dump = false, $force_base = false, $deadlock = false) {
     global $user, $planetrow;
 
     if($dump === false) {
@@ -185,12 +185,12 @@ class debug {
     return $error_backtrace;
   }
 
-  function error_fatal($die_message, $details = 'There is a fatal error on page') {
+  public function error_fatal($die_message, $details = 'There is a fatal error on page') {
     // TODO - Записывать детали ошибки в лог-файл
     die($die_message);
   }
 
-  function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
+  public function error($message = 'There is a error on page', $title = 'Internal Error', $error_code = 500, $dump = true) {
     global $sys_stop_log_hit, $sys_log_disabled, $user;
 
     if(empty(classSupernova::$db->connected)) {
@@ -240,7 +240,7 @@ class debug {
     }
   }
 
-  function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
+  public function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
     global $user, $sys_log_disabled;
 
     if(empty(classSupernova::$db->connected)) {

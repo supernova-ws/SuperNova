@@ -46,7 +46,7 @@ class template_compile
   /**
   * constuctor
   */
-  function template_compile(&$template)
+  public function template_compile(&$template)
   {
     $this->template = &$template;
   }
@@ -55,7 +55,7 @@ class template_compile
   * Load template source from file
   * @access private
   */
-  function _tpl_load_file($handle, $store_in_db = false)
+  public function _tpl_load_file($handle, $store_in_db = false)
   {
     // Try and open template for read
     if (!file_exists($this->template->files[$handle]))
@@ -101,7 +101,7 @@ class template_compile
   * the ones that exist in zend_language_scanner.l
   * @access private
   */
-  function remove_php_tags(&$code)
+  public function remove_php_tags(&$code)
   {
     // This matches the information gathered from the internal PHP lexer
     $match = array(
@@ -117,7 +117,7 @@ class template_compile
   * The all seeing all doing compile method. Parts are inspired by or directly from Smarty
   * @access private
   */
-  function compile($code, $no_echo = false, $echo_var = '')
+  public function compile($code, $no_echo = false, $echo_var = '')
   {
     if ($echo_var)
     {
@@ -288,7 +288,7 @@ class template_compile
   * Compile variables
   * @access private
   */
-  function compile_var_tags(&$text_blocks)
+  public function compile_var_tags(&$text_blocks)
   {
     // change template varrefs into PHP varrefs
     $varrefs = array();
@@ -350,7 +350,7 @@ class template_compile
   * Compile blocks
   * @access private
   */
-  function compile_tag_block($tag_args)
+  public function compile_tag_block($tag_args)
   {
     $no_nesting = false;
 
@@ -457,7 +457,7 @@ class template_compile
   * some adaptions for our block level methods
   * @access private
   */
-  function compile_tag_if($tag_args, $elseif)
+  public function compile_tag_if($tag_args, $elseif)
   {
     // Tokenize args for 'if' tag.
     preg_match_all('/(?:
@@ -614,7 +614,7 @@ class template_compile
   * Compile DEFINE tags
   * @access private
   */
-  function compile_tag_define($tag_args, $op)
+  public function compile_tag_define($tag_args, $op)
   {
     preg_match('#^((?:[a-z0-9\-_]+\.)+)?\$(?=[A-Z])([A-Z0-9_\-]*)(?: = (\'?)([^\']*)(\'?))?$#', $tag_args, $match);
 
@@ -667,7 +667,7 @@ class template_compile
   * Compile INCLUDE tag
   * @access private
   */
-  function compile_tag_include($tag_args)
+  public function compile_tag_include($tag_args)
   {
     // Process dynamic includes
     if ($tag_args[0] == '$')
@@ -682,7 +682,7 @@ class template_compile
   * Compile INCLUDE_PHP tag
   * @access private
   */
-  function compile_tag_include_php($tag_args)
+  public function compile_tag_include_php($tag_args)
   {
     return "\$this->_php_include('$tag_args');";
   }
@@ -692,7 +692,7 @@ class template_compile
   * This is from Smarty
   * @access private
   */
-  function _parse_is_expr($is_arg, $tokens)
+  public function _parse_is_expr($is_arg, $tokens)
   {
     $expr_end = 0;
     $negate_expr = false;
@@ -764,7 +764,7 @@ class template_compile
   * NOTE: expects a trailing "." on the namespace.
   * @access private
   */
-  function generate_block_varref($namespace, $varname, $echo = true, $defop = false)
+  public function generate_block_varref($namespace, $varname, $echo = true, $defop = false)
   {
     // Strip the trailing period.
     $namespace = substr($namespace, 0, -1);
@@ -789,7 +789,7 @@ class template_compile
   * NOTE: does not expect a trailing "." on the blockname.
   * @access private
   */
-  function generate_block_data_ref($blockname, $include_last_iterator, $defop = false)
+  public function generate_block_data_ref($blockname, $include_last_iterator, $defop = false)
   {
     // Get an array of the blocks involved.
     $blocks = explode('.', $blockname);
@@ -827,7 +827,7 @@ class template_compile
   * Write compiled file to cache directory
   * @access private
   */
-  function compile_write($handle, $data)
+  public function compile_write($handle, $data)
   {
     $filename = $this->template->cachepath . str_replace('/', '.', $this->template->filename[$handle]) . DOT_PHP_EX;
 
