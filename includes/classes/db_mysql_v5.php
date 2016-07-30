@@ -35,7 +35,7 @@ class db_mysql_v5 {
       classSupernova::$debug->error_fatal('There is missconfiguration in your config.php. Check it again');
     }
 
-    @$this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
+    $this->link = mysqli_connect($settings['server'], $settings['user'], $settings['pass'], $settings['name']);
     if (!is_object($this->link) || $this->link->connect_error) {
       classSupernova::$debug->error_fatal('DB Error - cannot connect to server error #' . $this->link->connect_errno, $this->link->connect_error);
     }

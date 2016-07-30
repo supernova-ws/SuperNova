@@ -11,15 +11,11 @@ define('INSTALL', false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-// if ($user['authlevel'] < 2)
 if($user['authlevel'] < 3) {
   AdminMessage(classLocale::$lang['adm_err_denied']);
 }
 
 $template = gettemplate('admin/adm_flying_fleets', true);
-
-//$FlyingFleets = db_fleet_list_all();
-//while($CurrentFleet = db_fetch($FlyingFleets))
 
 $all_flying_fleets = FleetList::dbGetFleetList();
 foreach($all_flying_fleets->_container as $fleet_id => $objFleet) {

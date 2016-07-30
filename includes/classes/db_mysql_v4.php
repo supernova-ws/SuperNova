@@ -36,7 +36,7 @@ class db_mysql_v4 {
     }
 
     // TODO !!!!!! DEBUG -> error!!!!
-    @$this->link = mysql_connect($settings['server'], $settings['user'], $settings['pass']);
+    $this->link = mysql_connect($settings['server'], $settings['user'], $settings['pass']);
     if (!is_resource($this->link)) {
       classSupernova::$debug->error_fatal('DB Error - cannot connect to server', $this->mysql_error());
     }

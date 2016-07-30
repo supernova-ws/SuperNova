@@ -8,7 +8,6 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $user;
 
-// if($user['authlevel'] < 1)
 if($user['authlevel'] < 3) {
   AdminMessage(classLocale::$lang['adm_err_denied']);
 }

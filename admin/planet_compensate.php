@@ -139,12 +139,6 @@ function killer_add_planet($planet)
 
   $final_cost = array();
   $sn_group_resources_loot = sn_get_groups('resources_loot');
-  /*
-  foreach($sn_group_resources_loot as &$value)
-  {
-    $value = get_unit_param($value, P_NAME);
-  }
-  */
 
   foreach(sn_get_groups('structures') as $unit_id)
   {
