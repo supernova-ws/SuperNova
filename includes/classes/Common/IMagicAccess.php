@@ -3,14 +3,14 @@
 namespace Common;
 
 /**
- * Interface IMagicProperties
+ * Interface IMagicAccess
  *
  * Implements all magic methods for accessing non-exists property
  * Used to distinguish how class properties should be accessed like ArrayAccess
  *
  * @package Common
  */
-interface IMagicProperties {
+interface IMagicAccess {
   /**
    * Magic setter
    *

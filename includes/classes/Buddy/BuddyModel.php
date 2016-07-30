@@ -261,6 +261,7 @@ class BuddyModel extends \Entity {
       static::$rowOperator->getById($this);
 
       if ($this->isContainerEmpty()) {
+        $this->dbId = 0;
         throw new BuddyException('buddy_err_not_exist', ERR_ERROR);
       }
     }

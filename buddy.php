@@ -46,6 +46,7 @@ try {
   };
 
   classSupernova::$gc->buddy->route($cBuddy);
+
 } catch (BuddyException $e) {
   $result[] = array(
     'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,

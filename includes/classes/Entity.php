@@ -5,7 +5,7 @@
  *
  * @property int|float $dbId Buddy record DB ID
  */
-class Entity implements \Common\IMagicProperties, \Common\IEntity {
+class Entity implements \Common\IMagicAccess, \Common\IEntity {
   const ENTITY_DB_ID_INCLUDE = true;
   const ENTITY_DB_ID_EXCLUDE = true;
 

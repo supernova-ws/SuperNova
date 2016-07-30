@@ -10,7 +10,7 @@ use Pimple\Container;
  *
  * @package Pimple
  */
-class ContainerPlus extends Container implements IMagicProperties, IMagicFunctions {
+class ContainerPlus extends Container implements IMagicAccess, IMagicCall {
 
   public function __set($name, $value) {
     $this->offsetSet($name, $value);

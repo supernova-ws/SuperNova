@@ -3,7 +3,7 @@
 namespace Common;
 
 
-interface IMagicFunctions {
+interface IMagicCall {
 
   public function __call($name, $arguments);
 

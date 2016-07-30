@@ -70,16 +70,20 @@ class V2UnitModel extends \Entity {
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
-    // TODO - remove and check how it's works
-    $this->_container = new static::$_containerName();
-    $this->_container->setProperties(static::$_properties);
-
     $that = $this;
     $this->_container->assignAccessor(
-      'type',
+      'level',
       P_CONTAINER_SETTER,
       function ($value) use ($that) {
-        $that->type = $value;
+        $that->level = $value;
+      }
+    );
+
+    $this->_container->assignAccessor(
+      'level',
+      P_CONTAINER_GETTER,
+      function () use ($that) {
+        return $that->level;
       }
     );
 
@@ -92,10 +96,10 @@ class V2UnitModel extends \Entity {
     );
 
     $this->_container->assignAccessor(
-      'dbLevel',
+      'level',
       P_CONTAINER_EXPORTER,
       function (&$row) use ($that) {
-        $row['unit_level'] = $that->dbLevel;
+        $row['unit_level'] = $that->level;
       }
     );
   }

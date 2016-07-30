@@ -1,9 +1,9 @@
 <?php
 
-use \Common\IMagicProperties;
+use \Common\ContainerMagic;
 use \Common\IPropertyContainer;
 
-class V2PropertyContainer implements IMagicProperties, IPropertyContainer {
+class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
 
   /**
    * Property descriptions
@@ -13,88 +13,75 @@ class V2PropertyContainer implements IMagicProperties, IPropertyContainer {
   protected $properties = array();
 
   /**
-   * Property values
-   *
-   * @var array
-   */
-  protected $values = array();
-  /**
-   * Array of getters
+   * Array of accessors - getters/setters/etc
    *
    * Getter is a callable like
    *    function ($value) use ($that) {}
    *
-   * @var callable[]
-   */
-  protected $setters = array();
-  /**
-   * Array of setters
-   *
    * Setter is a callable like
    *    function () use ($that) {}
-   *
-   * @var callable[]
-   */
-  protected $getters = array();
-  /**
-   * Array of importers
    *
    * Importer is a callable like
    *    function (&$row) use ($this) {}
    *
-   * @var callable[]
-   */
-  protected $importers = array();
-  /**
-   * Array of exporters
-   *
    * Exporter is a callable like
    *    function (&$row) use ($this) {}
    *
-   * @var callable[]
+   * @var callable[][]
    */
-  protected $exporters = array();
+  protected $accessors;
 
-  /**
-   * Magic checker for property set
-   *
-   * @param string $name
-   *
-   * @return boolean
-   */
-  public function __isset($name) {
-    return isset($this->values[$name]);
+  public function setProperties($properties) {
+    $this->properties = $properties;
   }
 
   /**
-   * Magic un-setter
+   * Is container contains no data
    *
-   * @param string $name
+   * @return bool
    */
-  public function __unset($name) {
-    unset($this->values[$name]);
+  public function isEmpty() {
+    return empty($this->values);
+  }
+
+  public function assignAccessor($varName, $type, $callable) {
+    if (empty($callable)) {
+      return;
+    }
+
+    if (is_callable($callable)) {
+      $this->accessors[$type][$varName] = $callable;
+    } else {
+      throw new Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $type . '] is not a callable or not accessible in the scope');
+    }
   }
 
   public function __set($name, $value) {
-    if (is_callable($this->setters[$name])) {
-      call_user_func($this->setters[$name], $value);
+    if (is_callable($this->accessors[P_CONTAINER_SETTER][$name])) {
+      call_user_func($this->accessors[P_CONTAINER_SETTER][$name], $value);
     } else {
       $this->values[$name] = $value;
     }
   }
 
   public function __get($name) {
-    if (is_callable($this->getters[$name])) {
-      return call_user_func($this->getters[$name]);
+    if (is_callable($this->accessors[P_CONTAINER_GETTER][$name])) {
+      return call_user_func($this->accessors[P_CONTAINER_GETTER][$name]);
     } else {
       return $this->values[$name];
     }
   }
 
   public function importRow($row) {
+    if(empty($row)) {
+      return;
+    }
+
+    // TODO - reset container ?
+
     foreach ($this->properties as $propertyName => $propertyData) {
-      if (is_callable($this->importers[$propertyName])) {
-        call_user_func($this->importers[$propertyName], &$row);
+      if (is_callable($this->accessors[P_CONTAINER_IMPORTER][$propertyName])) {
+        call_user_func($this->accessors[P_CONTAINER_IMPORTER][$propertyName], &$row);
       } elseif (!empty($propertyData[P_DB_FIELD])) {
         $this->$propertyName = $row[$propertyData[P_DB_FIELD]];
       }
@@ -106,8 +93,8 @@ class V2PropertyContainer implements IMagicProperties, IPropertyContainer {
     $row = array();
 
     foreach ($this->properties as $propertyName => $propertyData) {
-      if (is_callable($this->exporters[$propertyName])) {
-        call_user_func($this->exporters[$propertyName], &$row);
+      if (is_callable($this->accessors[P_CONTAINER_EXPORTER][$propertyName])) {
+        call_user_func($this->accessors[P_CONTAINER_EXPORTER][$propertyName], &$row);
       } elseif (!empty($propertyData[P_DB_FIELD])) {
         $row[$propertyData[P_DB_FIELD]] = $this->$propertyName;
       }
@@ -115,32 +102,6 @@ class V2PropertyContainer implements IMagicProperties, IPropertyContainer {
     }
 
     return $row;
-  }
-
-  public function setProperties($properties) {
-    $this->properties = $properties;
-  }
-
-  public function assignAccessor($varName, $type, $callable) {
-    if (empty($callable)) {
-      return;
-    }
-
-    if (is_callable($callable)) {
-      $this->{$type}[$varName] = $callable;
-    } else {
-      throw new Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $type . '] is not a callable or not accessible in the scope');
-    }
-  }
-
-
-  /**
-   * Is container contains no data
-   *
-   * @return bool
-   */
-  public function isEmpty() {
-    return empty($this->values);
   }
 
 }
