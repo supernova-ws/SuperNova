@@ -17,30 +17,29 @@ class BuddyView {
   public function makeTemplate($gc, $user) {
     $playerLocale = $gc->localePlayer;
 
+    $cBuddy = new BuddyRoutingParams();
+
+    $cBuddy->gc = $gc;
+    $cBuddy->buddy_id = sys_get_param_id('buddy_id');
+    $cBuddy->mode = sys_get_param_str('mode');
+    $cBuddy->newFriendIdSafe = sys_get_param_id('request_user_id');
+    $cBuddy->new_friend_name_unsafe = sys_get_param_str_unsafe('request_user_name');
+    $cBuddy->new_request_text_unsafe = sys_get_param_str_unsafe('request_text');
+    $cBuddy->playerArray = $user;
+
+    $cBuddy->playerId = function (BuddyRoutingParams $cBuddy) {
+      return $cBuddy->playerArray['id'];
+    };
+    $cBuddy->playerName = function (BuddyRoutingParams $cBuddy) {
+      return $cBuddy->playerArray['username'];
+    };
+    $cBuddy->playerNameAndCoordinates = function (BuddyRoutingParams $cBuddy) {
+      return "{$cBuddy->playerArray['username']} " . uni_render_coordinates($cBuddy->playerArray);
+    };
+
     $result = array();
+    sn_db_transaction_start();
     try {
-      sn_db_transaction_start();
-
-      $cBuddy = new BuddyRoutingParams();
-
-      $cBuddy->gc = $gc;
-      $cBuddy->buddy_id = sys_get_param_id('buddy_id');
-      $cBuddy->mode = sys_get_param_str('mode');
-      $cBuddy->newFriendIdSafe = sys_get_param_id('request_user_id');
-      $cBuddy->new_friend_name_unsafe = sys_get_param_str_unsafe('request_user_name');
-      $cBuddy->new_request_text_unsafe = sys_get_param_str_unsafe('request_text');
-      $cBuddy->playerArray = $user;
-
-      $cBuddy->playerId = function (BuddyRoutingParams $cBuddy) {
-        return $cBuddy->playerArray['id'];
-      };
-      $cBuddy->playerName = function (BuddyRoutingParams $cBuddy) {
-        return $cBuddy->playerArray['username'];
-      };
-      $cBuddy->playerNameAndCoordinates = function (BuddyRoutingParams $cBuddy) {
-        return "{$cBuddy->playerArray['username']} " . uni_render_coordinates($cBuddy->playerArray);
-      };
-
       $gc->buddy->route($cBuddy);
     } catch (BuddyException $e) {
       $exceptionCode = \ResultMessages::parseException($e, $result);
@@ -67,8 +66,8 @@ class BuddyView {
       'PAGE_HEADER'       => $playerLocale['buddy_buddies'],
       'PAGE_HINT'         => $playerLocale['buddy_hint'],
       'USER_ID'           => $user['id'],
-      'REQUEST_USER_ID'   => isset($new_friend_row['id']) ? $new_friend_row['id'] : 0,
-      'REQUEST_USER_NAME' => isset($new_friend_row['username']) ? $new_friend_row['username'] : '',
+      'REQUEST_USER_ID'   => $cBuddy->newFriendIdSafe,
+      'REQUEST_USER_NAME' => $cBuddy->new_friend_name_unsafe,
     );
 
     $template_result['.']['result'] = is_array($template_result['.']['result']) ? $template_result['.']['result'] : array();

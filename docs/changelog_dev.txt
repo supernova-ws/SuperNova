@@ -1101,10 +1101,16 @@ Call Stack
 
 
 // TODO - Друзья
-    - BuddModel - вынести все обращения к rowOperator из модели
+    - BuddyModel - вынести все обращения к rowOperator из модели
         - Наверное, возвращать специальный тип объекта, который будет указывать, что именно делать с моделью
             - Хотя тут просто - по isNew, isChanged, isDeleted можно всякое определить
     - Ну и заодно - избавиться от контейнера - вынести его наружу
+
+WORKING ON
+    classLocale => SnLocale
+
+    V2Unit
+
 
 
 $unit = classSupernova::$gc->unit;
@@ -1120,9 +1126,6 @@ pdump($unit->exportRowWithId());
 pdie();
 
 
-Moving buddy.php code to BuddyView class. Locale is known as $gc service. More love to V2Unit.
-
-classLocale => SnLocale
 
 #ctv
 
