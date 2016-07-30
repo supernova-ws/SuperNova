@@ -201,42 +201,42 @@ $sn_data += array(
   RES_METAL       => array(
     'name'       => 'metal',
     'type'       => UNIT_RESOURCES,
-    'location'   => LOC_PLANET,
+    P_LOCATION_DEFAULT   => LOC_PLANET,
     'bonus_type' => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_CRYSTAL     => array(
     'name'       => 'crystal',
     'type'       => UNIT_RESOURCES,
-    'location'   => LOC_PLANET,
+    P_LOCATION_DEFAULT   => LOC_PLANET,
     'bonus_type' => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_DEUTERIUM   => array(
     'name'       => 'deuterium',
     'type'       => UNIT_RESOURCES,
-    'location'   => LOC_PLANET,
+    P_LOCATION_DEFAULT   => LOC_PLANET,
     'bonus_type' => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_ENERGY      => array(
     'name'       => 'energy',
     'type'       => UNIT_RESOURCES,
-    'location'   => LOC_PLANET,
+    P_LOCATION_DEFAULT   => LOC_PLANET,
     'bonus_type' => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_DARK_MATTER => array(
     'name'       => 'dark_matter',
     'type'       => UNIT_RESOURCES,
-    'location'   => LOC_USER,
+    P_LOCATION_DEFAULT   => LOC_USER,
     'bonus_type' => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
   RES_METAMATTER  => array(
     'name'       => 'metamatter',
     'type'       => UNIT_RESOURCES,
-    'location'   => LOC_USER,
+    P_LOCATION_DEFAULT   => LOC_USER,
     'bonus_type' => BONUS_ABILITY,
     P_STACKABLE  => true,
   ),
@@ -244,7 +244,7 @@ $sn_data += array(
   UNIT_SECTOR => array(
     'name'       => 'field_max',
     'type'       => UNIT_SECTOR,
-    'location'   => LOC_PLANET,
+    P_LOCATION_DEFAULT   => LOC_PLANET,
     'cost'       => array(
       RES_DARK_MATTER => 1000,
       'factor'        => 1.01,
@@ -255,7 +255,7 @@ $sn_data += array(
   UNIT_PLANET_DENSITY => array(
     'name'       => 'density',
     'type'       => UNIT_PLANET_DENSITY,
-    'location'   => LOC_PLANET,
+    P_LOCATION_DEFAULT   => LOC_PLANET,
     'cost'       => array(
       RES_DARK_MATTER => 2000,
       'factor'        => 1,

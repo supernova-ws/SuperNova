@@ -1015,6 +1015,10 @@ class classSupernova {
       return new classConfig(classSupernova::$cache_prefix);
     };
 
+    $gc->localePlayer = function (Common\GlobalContainer $c) {
+      return new classLocale($c->config->server_locale_log_usage);
+    };
+
     $gc->dbRowOperator = function ($c) {
       return new DbRowDirectOperator($c);
     };

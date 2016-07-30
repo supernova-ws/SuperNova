@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a50.87');
+define('SN_VERSION', '41a50.88');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1267,6 +1267,7 @@ define('P_AMPLIFY', 'amplify');
 define('P_DEFENSE', 'defense');
 define('P_STRUCTURE', 'structure');
 define('P_LOCATION', 'location');
+define('P_LOCATION_DEFAULT', 'location');
 define('P_CONSUMPTION', 'consumption');
 
 define('P_ID', 'id');

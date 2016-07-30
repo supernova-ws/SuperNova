@@ -1083,8 +1083,6 @@ Call Stack
 // TODO - does CAPTAINs allowed on moon??
     If not - allow
 
-// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же
-
 // TODO - Телепортация
     - Стоимость телепортации динамическая
     - Зависит от размера планеты (без учёта терраформеров)
@@ -1108,44 +1106,23 @@ Call Stack
             - Хотя тут просто - по isNew, isChanged, isDeleted можно всякое определить
     - Ну и заодно - избавиться от контейнера - вынести его наружу
 
-//class That {
-//  public $level;
-//}
-//
-//$that = new That();
-//
-//$c = new V2PropertyContainer();
-//$c->assignAccessor(
-//  'level',
-//  P_CONTAINER_IMPORTER,
-//  function ($row) use ($that) {
-//    $that->level = $row['unit_level'];
-//    pdump('level setter is launched');
-//    pdump($row['unit_level']);
-//    pdump($that->level);
-////    var_dump($that->_container);
-////pdie('importer launched');
-//  }
-//);
-//$c->setProperties(array(
-//  'level' => array(),
-//));
-//
-//$c->importRow(array('unit_level' => 5));
-//
-//pdump($c->level, '$c->level');
-//
-//pdie('container');
 
 $unit = classSupernova::$gc->unit;
 //var_dump($unit);
 $unit->dbId = 1;
-classSupernova::$gc->dbRowOperator->getById($unit);
-pdump($unit->level, '$unit->level');
+$row = classSupernova::$gc->dbRowOperator->getById($unit);
+pdump($row);
+$unit->importRow($row);
+pdump($unit->timeStart, '$unit->timeStart');
 pdump($unit->playerOwnerId, '$unit->playerOwnerId');
 pdump($unit->dbId, '$unit->dbId');
 pdump($unit->exportRowWithId());
 pdie();
+
+
+Moving buddy.php code to BuddyView class. Locale is known as $gc service. More love to V2Unit.
+
+classLocale => SnLocale
 
 #ctv
 

@@ -183,7 +183,7 @@ if(!isset($sn_data['pages'][$sn_page_name])) {
 }
 
 global $lang;
-classLocale::$lang = $lang = new classLocale(classSupernova::$config->server_locale_log_usage);
+classLocale::$lang = $lang = classSupernova::$gc->localePlayer;
 classLocale::$lang->lng_switch(sys_get_param_str('lang'));
 
 if(!defined('DEBUG_INIT_SKIP_SECONDARY') || DEBUG_INIT_SKIP_SECONDARY !== true) {

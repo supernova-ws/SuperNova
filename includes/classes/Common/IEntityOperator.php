@@ -5,6 +5,8 @@ namespace Common;
 interface IEntityOperator {
   /**
    * @param IEntity $entity
+   *
+   * @return array
    */
   public function getById($entity);
 

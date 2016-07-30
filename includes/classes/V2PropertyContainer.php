@@ -73,11 +73,12 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   }
 
   public function importRow($row) {
+    // TODO - reset container in more convinient way
+    $this->values = array();
+
     if(empty($row)) {
       return;
     }
-
-    // TODO - reset container ?
 
     foreach ($this->properties as $propertyName => $propertyData) {
       if (is_callable($this->accessors[P_CONTAINER_IMPORTER][$propertyName])) {

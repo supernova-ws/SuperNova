@@ -30,6 +30,16 @@ class Entity implements \Common\IMagicAccess, \Common\IEntity {
   protected static $idField = 'id';
 
   /**
+   * Name of exception class that would be thrown
+   *
+   * Uses for calling when you don't know which exact exception should be called
+   * On Entity's children should be used exception class name
+   *
+   * @var string $exceptionClass
+   */
+  protected static $exceptionClass = 'EntityException';
+
+  /**
    * Container for property values
    *
    * @var \Common\IPropertyContainer $_container
@@ -66,6 +76,13 @@ class Entity implements \Common\IMagicAccess, \Common\IEntity {
 
     $this->_container = new static::$_containerName();
     $this->_container->setProperties(static::$_properties);
+  }
+
+  /**
+   * @return array[]
+   */
+  public function getProperties() {
+    return static::$_properties;
   }
 
   /**
@@ -106,6 +123,28 @@ class Entity implements \Common\IMagicAccess, \Common\IEntity {
    */
   public function exportRowWithId() {
     return $this->exportDbRow(self::ENTITY_DB_ID_INCLUDE);
+  }
+
+  /**
+   * Trying to load object info by buddy ID - if it is supplied
+   *
+   * @param int|float|string $dbId
+   *
+   * @return bool
+   */
+  protected function loadTry($dbId) {
+    $this->dbId = $dbId;
+    $row = static::$rowOperator->getById($this);
+
+    if (empty($row)) {
+      $this->dbId = 0;
+
+      return false;
+    } else {
+      $this->importRow($row);
+    }
+
+    return true;
   }
 
   /**

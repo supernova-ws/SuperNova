@@ -23,6 +23,7 @@ class BuddyModel extends \Entity {
 
   protected static $tableName = 'buddy';
   protected static $idField = 'BUDDY_ID';
+  protected static $exceptionClass = 'BuddyException';
 
   // TODO - make it work with Model's properties
   /**
@@ -249,32 +250,16 @@ class BuddyModel extends \Entity {
   }
 
   /**
-   * Trying to load object info by buddy ID - if it is supplied
-   *
-   * @param BuddyRoutingParams $cBuddy
-   *
-   * @throws BuddyException
-   */
-  protected function loadTry($cBuddy) {
-    if ($cBuddy->buddy_id) {
-      $this->dbId = $cBuddy->buddy_id;
-      static::$rowOperator->getById($this);
-
-      if ($this->isContainerEmpty()) {
-        $this->dbId = 0;
-        throw new BuddyException('buddy_err_not_exist', ERR_ERROR);
-      }
-    }
-  }
-
-  /**
    * @param BuddyRoutingParams $cBuddy
    *
    * @throws BuddyException
    */
   public function route($cBuddy) {
     // Trying to load buddy record with supplied dbId
-    $this->loadTry($cBuddy);
+    if ($cBuddy->buddy_id && !$this->loadTry($cBuddy->buddy_id)) {
+      throw new BuddyException('buddy_err_not_exist', ERR_ERROR);
+    }
+
     // Trying to accept buddy request
     $this->accept($cBuddy);
     // Trying to decline buddy request. If it's own request - it will be deleted

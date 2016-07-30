@@ -10,6 +10,8 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
 
   /**
    * @param \Common\IEntity $entity
+   *
+   * @return array
    */
   public function getById($entity) {
     $stmt = classSupernova::$gc->query
@@ -18,7 +20,7 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
       ->from($entity->getTableName())
       ->where($entity->getIdFieldName() . ' = "' . $entity->dbId . '"');
 
-    $entity->importRow($stmt->selectRow());
+    return $stmt->selectRow();
   }
 
   /**

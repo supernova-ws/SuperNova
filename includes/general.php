@@ -676,7 +676,7 @@ function get_ship_data($ship_id, $user) {
 }
 
 if (!function_exists('strptime')) {
- function strptime($date, $format) {
+  function strptime($date, $format) {
     $masks = array(
       '%d' => '(?P<d>[0-9]{2})',
       '%m' => '(?P<m>[0-9]{2})',
@@ -950,6 +950,14 @@ function sys_stat_get_user_skip_list() {
   return $result;
 }
 
+/**
+ * @param int|float|string $unit_id
+ * @param null|string|int  $param_name
+ * @param null|array       $user
+ * @param null|array       $planet
+ *
+ * @return mixed
+ */
 function get_unit_param($unit_id, $param_name = null, $user = null, $planet = null) { return sn_function_call(__FUNCTION__, array($unit_id, $param_name, $user, $planet, &$result)); }
 
 function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet = null, &$result) {
@@ -989,6 +997,7 @@ function sn_sn_get_groups($groups, &$result) {
 
 function isInGroup($groups, $unitId) {
   $group = sn_get_groups($groups);
+
   return !empty($group[$unitId]);
 }
 

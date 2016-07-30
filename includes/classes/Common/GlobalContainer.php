@@ -13,6 +13,7 @@ namespace Common;
  * @property \db_mysql            $db
  * @property \classCache          $cache
  * @property \classConfig         $config
+ * @property \classLocale         $localePlayer
  * @property string               $buddyClass
  * @property \Buddy\BuddyModel    $buddy
  * @property \V2Unit\V2UnitModel  $unit
