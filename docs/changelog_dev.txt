@@ -1106,11 +1106,11 @@ Call Stack
             - Хотя тут просто - по isNew, isChanged, isDeleted можно всякое определить
     - Ну и заодно - избавиться от контейнера - вынести его наружу
 
+
 WORKING ON
-    classLocale => SnLocale
-
     V2Unit
-
+        sn_db_unit_changeset_prepare
+    classLocale => SnLocale
 
 
 $unit = classSupernova::$gc->unit;

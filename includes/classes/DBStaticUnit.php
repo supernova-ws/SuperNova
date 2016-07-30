@@ -10,10 +10,6 @@ class DBStaticUnit {
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
 
-  public static function db_unit_by_id($unit_id, $for_update = false, $fields = '*') {
-    return classSupernova::db_get_unit_by_id($unit_id, $for_update, $fields);
-  }
-
   public static function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
     // apply time restrictions ????
     return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid, $for_update, $fields);
