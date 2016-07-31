@@ -179,7 +179,41 @@ class DBStaticUser extends DBStaticRecord {
 
 
   public static function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
-    return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
+    // TODO Проверить, кстати - а везде ли нужно выбирать юзеров или где-то все-таки ищутся Альянсы ?
+    if (!($username_unsafe = trim($username_unsafe))) {
+      return false;
+    }
+
+    $user = null;
+    if (SnCache::isArrayLocation(LOC_USER)) {
+      foreach (SnCache::getData(LOC_USER) as $user_id => $user_data) {
+        if (is_array($user_data) && isset($user_data['username'])) {
+          // проверяем поле
+          // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
+          if ((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe))) {
+            // $user_as_ally = intval($user_data['user_as_ally']);
+            $user_as_ally = idval($user_data['user_as_ally']);
+            if ($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally)) {
+              $user = $user_data;
+              break;
+            }
+          }
+        }
+      }
+    }
+
+    if ($user === null) {
+      // Вытаскиваем запись
+      $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
+
+      $user = classSupernova::$db->doSelectFetch(
+        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
+        . " FOR UPDATE"
+      );
+      SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
+    }
+
+    return $user;
   }
 
   public static function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
@@ -190,9 +224,37 @@ class DBStaticUser extends DBStaticRecord {
     return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
   }
 
+  /**
+   * Возвращает информацию о пользователе по его ID
+   *
+   * @param int|array $user_id_unsafe
+   *    <p>int - ID пользователя</p>
+   *    <p>array - запись пользователя с установленным полем ['id']</p>
+   * @param bool      $for_update @deprecated
+   * @param string    $fields @deprecated список полей или '*'/'' для всех полей
+   * @param null      $player
+   * @param bool|null $player Признак выбора записи пользователь типа "игрок"
+   *    <p>null - Можно выбрать запись любого типа</p>
+   *    <p>true - Выбирается только запись типа "игрок"</p>
+   *    <p>false - Выбирается только запись типа "альянс"</p>
+   *
+   * @return array|false
+   *    <p>false - Нет записи с указанным ID и $player</p>
+   *    <p>array - запись типа $user</p>
+   */
   public static function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-    return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);
+    $user = classSupernova::db_get_record_by_id(LOC_USER, $user_id_unsafe, $for_update, $fields);
+
+    return (is_array($user) &&
+      (
+        $player === null
+        ||
+        ($player === true && !$user['user_as_ally'])
+        ||
+        ($player === false && $user['user_as_ally'])
+      )) ? $user : false;
   }
+
 
   public static function db_user_list_set_mass_mail(&$owners_list, $set) {
     return classSupernova::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
@@ -213,10 +275,5 @@ class DBStaticUser extends DBStaticRecord {
     return "{$playerArray['username']} " . uni_render_coordinates($playerArray);
   }
 
-//  // TODO - IoC test
-//  public static function test() {
-//    $that = new static();
-//
-//    return DBStaticUser::getMax($that);
-//  }
+
 }

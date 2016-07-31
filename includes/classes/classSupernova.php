@@ -283,17 +283,12 @@ class classSupernova {
       return true;
     } else {
       $result = false;
-//      $queryCache = SnCache::getQueriesByLocationAndFilter($location_type, $filter);
-//      if (is_array($queryCache)) {
-//        foreach ($queryCache as $key => $value) {
       foreach (SnCache::getQueriesByLocationAndFilter($location_type, $filter) as $key => $value) {
         $result[$key] = $value;
         if ($fetch) {
           break;
         }
       }
-
-//      }
 
       return $fetch ? (is_array($result) ? reset($result) : false) : $result;
     }
@@ -436,90 +431,8 @@ class classSupernova {
 
 
 
-  // Работа с пользователями
-  /**
-   * Возвращает информацию о пользователе по его ID
-   *
-   * @param int|array $user_id_unsafe
-   *    <p>int - ID пользователя</p>
-   *    <p>array - запись пользователя с установленным полем ['id']</p>
-   * @param bool      $for_update @deprecated
-   * @param string    $fields @deprecated список полей или '*'/'' для всех полей
-   * @param null      $player
-   * @param bool|null $player Признак выбора записи пользователь типа "игрок"
-   *    <p>null - Можно выбрать запись любого типа</p>
-   *    <p>true - Выбирается только запись типа "игрок"</p>
-   *    <p>false - Выбирается только запись типа "альянс"</p>
-   *
-   * @return array|false
-   *    <p>false - Нет записи с указанным ID и $player</p>
-   *    <p>array - запись типа $user</p>
-   */
-  public static function db_get_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-    $user = static::db_get_record_by_id(LOC_USER, $user_id_unsafe, $for_update, $fields);
-
-    return (is_array($user) &&
-      (
-        $player === null
-        ||
-        ($player === true && !$user['user_as_ally'])
-        ||
-        ($player === false && $user['user_as_ally'])
-      )) ? $user : false;
-  }
-
-  public static function db_get_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
-    // TODO Проверить, кстати - а везде ли нужно выбирать юзеров или где-то все-таки ищутся Альянсы ?
-    if (!($username_unsafe = trim($username_unsafe))) {
-      return false;
-    }
-
-    $user = null;
-    if (SnCache::isArrayLocation(LOC_USER)) {
-      foreach (SnCache::getData(LOC_USER) as $user_id => $user_data) {
-        if (is_array($user_data) && isset($user_data['username'])) {
-          // проверяем поле
-          // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
-          if ((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe))) {
-            // $user_as_ally = intval($user_data['user_as_ally']);
-            $user_as_ally = idval($user_data['user_as_ally']);
-            if ($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally)) {
-              $user = $user_data;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    if ($user === null) {
-      // Вытаскиваем запись
-      $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
-
-      $user = static::$db->doSelectFetch(
-        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
-        . " FOR UPDATE"
-      );
-      SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
-    }
-
-    return $user;
-  }
 
 
-  public static function db_get_user_by_where($where_safe, $for_update = false, $fields = '*') {
-    $user = null;
-    // TODO переделать на индексы
-
-    if ($user === null && !empty($where_safe)) {
-      // Вытаскиваем запись
-      $user = static::$db->doSelectFetch("SELECT * FROM {{users}} WHERE {$where_safe}" . " FOR UPDATE");
-
-      SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
-    }
-
-    return $user;
-  }
 
 
 

@@ -1119,6 +1119,8 @@ Call Stack
 WORKING ON
     - вынести процедуры работы с записями из classSupernova
 
+    - избавится нахрен от V0DbChangeSetManager!
+
     - SnCache
         - сделать динамическими
         - сделать DI в $db
