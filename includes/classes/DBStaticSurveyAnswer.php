@@ -3,7 +3,7 @@
 class DBStaticSurveyAnswer {
 
   public static function db_survey_answer_insert($survey_id, $survey_answer) {
-    doquery("INSERT INTO {{survey_answers}} SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'");
+    classSupernova::$db->doInsert("INSERT INTO {{survey_answers}} SET `survey_parent_id` = {$survey_id}, `survey_answer_text` = '{$survey_answer}'");
   }
 
   public static function db_survey_answer_text_select_by_news($announce) {

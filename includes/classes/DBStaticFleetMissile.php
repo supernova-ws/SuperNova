@@ -3,7 +3,7 @@
 class DBStaticFleetMissile {
 
   public static function db_missile_insert($target_coord, $user, $planetrow, $arrival, $fleet_ship_count, $target_structure) {
-    doquery(
+    classSupernova::$db->doInsert(
       "INSERT INTO `{{iraks}}` SET
      `fleet_target_owner` = '{$target_coord['id_owner']}', `fleet_end_galaxy` = '{$target_coord['galaxy']}', `fleet_end_system` = '{$target_coord['system']}', `fleet_end_planet` = '{$target_coord['planet']}',
      `fleet_owner` = '{$user['id']}', `fleet_start_galaxy` = '{$planetrow['galaxy']}', `fleet_start_system` = '{$planetrow['system']}', `fleet_start_planet` = '{$planetrow['planet']}',
@@ -23,7 +23,7 @@ class DBStaticFleetMissile {
    * @return array|bool|mysqli_result|null
    */
   public static function db_missile_list_by_arrival() {
-    $iraks = doquery("SELECT * FROM {{iraks}} WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
+    $iraks = doquery("SELECT * FROM `{{iraks}}` WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
 
     return $iraks;
   }

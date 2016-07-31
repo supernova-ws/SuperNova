@@ -27,7 +27,7 @@ class DBStaticChat {
    * @param $chat_message_recipient_name
    */
   public static function db_chat_message_insert($user_id, $nick, $ally_id, $message, $chat_message_sender_name = '', $chat_message_recipient_id = 0, $chat_message_recipient_name = '') {
-    doquery(
+    classSupernova::$db->doInsert(
       "INSERT INTO
           {{chat}}
         SET
@@ -133,7 +133,7 @@ class DBStaticChat {
    * @param $player_id
    */
   public static function db_chat_player_insert($player_id) {
-    doquery("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$player_id}");
+    classSupernova::$db->doInsert("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$player_id}");
   }
 
 

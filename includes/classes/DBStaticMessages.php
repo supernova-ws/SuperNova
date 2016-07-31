@@ -512,7 +512,7 @@ LIMIT
    * @param $insert_values
    */
   public static function db_message_insert($insert_values) {
-    doquery('INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
+    classSupernova::$db->doInsert('INSERT INTO `{{messages}}` (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
       'VALUES ' . implode(',', $insert_values));
   }
 

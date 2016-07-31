@@ -50,7 +50,7 @@ class DBStaticFleetACS {
    * @param $objFleet
    */
   public static function db_acs_insert($fleetid, $user, $objFleet) {
-    doquery("INSERT INTO {{aks}} SET
+    classSupernova::$db->doInsert("INSERT INTO `{{aks}}` SET
           `name` = '" . db_escape(classLocale::$lang['flt_acs_prefix'] . $fleetid) . "',
           `teilnehmer` = '" . $user['id'] . "',
           `flotten` = '" . $fleetid . "',

@@ -174,7 +174,7 @@ class UBEReport {
       }
       $fields = $table_data[0];
       unset($table_data[0]);
-      doquery("INSERT INTO {{{$table_name}}} {$fields} VALUES " . implode(',', $table_data));
+      classSupernova::$db->doInsert("INSERT INTO {{{$table_name}}} {$fields} VALUES " . implode(',', $table_data));
     }
 
     return $ube->report_cypher;

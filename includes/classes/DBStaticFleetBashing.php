@@ -20,7 +20,7 @@ class DBStaticFleetBashing {
    * @param $bashing_list
    */
   public static function db_bashing_insert($bashing_list) {
-    doquery("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
+    classSupernova::$db->doInsert("INSERT INTO {{bashing}} (bashing_user_id, bashing_planet_id, bashing_time) VALUES {$bashing_list};");
   }
 
 }

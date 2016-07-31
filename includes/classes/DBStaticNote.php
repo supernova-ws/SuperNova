@@ -53,7 +53,7 @@ class DBStaticNote {
    * @param $note_sticky
    */
   public static function db_note_insert($user, $note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky) {
-    doquery("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = " . SN_TIME_NOW . ", `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
+    classSupernova::$db->doInsert("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = " . SN_TIME_NOW . ", `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
         `galaxy` = {$note_galaxy}, `system` = {$note_system}, `planet` = {$note_planet}, `planet_type` = {$note_planet_type}, `sticky` = {$note_sticky};");
   }
 

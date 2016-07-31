@@ -1137,7 +1137,7 @@ doquery\s*\(\s*[\"\']\s*update
             - classSupernova:db->doDeleteRow
 +            - db->doUpdate
 +            - db->doReplace
-            - db->doInsert
++            - db->doInsert
             - db->doQueryFetch
             - db->doSelect
 

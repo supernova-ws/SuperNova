@@ -62,7 +62,7 @@ class DBStaticAlly {
    * @param $user
    */
   public static function db_ally_insert($ally_name, $ally_tag, $user) {
-    $ally = doquery("INSERT INTO {{alliance}} SET
+    $ally = classSupernova::$db->doInsert("INSERT INTO {{alliance}} SET
     `ally_name` = '{$ally_name}',
     `ally_tag` = '{$ally_tag}',
     `ally_owner` = '{$user['id']}',
@@ -89,7 +89,7 @@ class DBStaticAlly {
    * @param $POST_text
    */
   public static function db_ally_request_insert($user, $id_ally, $POST_text) {
-    doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time=" . SN_TIME_NOW . ";");
+    classSupernova::$db->doInsert("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time=" . SN_TIME_NOW . ";");
   }
 
   /**

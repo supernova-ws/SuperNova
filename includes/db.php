@@ -178,9 +178,6 @@ function doquery($query, $table = '', $fetch = false, $skip_query_check = false)
 function doQueryFetch($query, $skip_query_check = false) {
   return classSupernova::$gc->db->doQueryFetch($query, $skip_query_check);
 }
-function doInsert($query) {
-  return classSupernova::$gc->db->doInsert($query);
-}
 
 function db_fetch(&$query) {
   return classSupernova::$gc->db->db_fetch($query);

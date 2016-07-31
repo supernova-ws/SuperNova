@@ -7,7 +7,7 @@ class DBStaticNews {
   }
 
   public static function db_news_insert_set($announce_time, $text, $detail_url, $user) {
-    doquery("INSERT INTO {{announce}}
+    classSupernova::$db->doInsert("INSERT INTO {{announce}}
         SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}',
         `user_id` = {$user['id']}, `user_name` = '" . db_escape($user['username']) . "'");
   }

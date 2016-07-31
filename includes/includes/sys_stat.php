@@ -243,7 +243,7 @@ function sys_stat_calculate() {
 
   // Updating Allie's stats
   sta_set_time_limit('posting new Alliance stats to DB');
-  doquery(
+  classSupernova::$db->doInsert(
     "INSERT INTO `{{statpoints}}`
       (`tech_points`, `tech_count`, `build_points`, `build_count`, `defs_points`, `defs_count`,
         `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`, `total_count`,

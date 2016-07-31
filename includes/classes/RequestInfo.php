@@ -100,7 +100,7 @@ class RequestInfo {
         $cypher_safe = db_escape($this->device_cypher = sys_random_string());
         $row = doquery("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE", true);
       } while (!empty($row));
-      doquery("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
+      classSupernova::$db->doInsert("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
       $this->device_id = classSupernova::$db->db_insert_id();
       sn_setcookie(SN_COOKIE_D, $this->device_cypher, PERIOD_FOREVER, SN_ROOT_RELATIVE);
     }
@@ -150,7 +150,7 @@ class RequestInfo {
     $user_id_safe = round(floatval($user_id_unsafe));
 
     // self::flog('Вставляем запись системы безопасности');
-    return doquery(
+    return classSupernova::$db->doInsert(
       "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
         VALUES ({$user_id_safe}," . $this->device_id . "," . $this->browser_id . "," .
       $this->ip_v4_int . ", '" . db_escape($this->ip_v4_proxy_chain) . "');"
@@ -173,7 +173,7 @@ class RequestInfo {
     $proxy_safe = db_escape($this->ip_v4_proxy_chain);
 
     classSupernova::$db->isWatching = true;
-    doquery(
+    classSupernova::$db->doInsert(
       "INSERT INTO {{counter}} SET
         `visit_time` = '" . SN_TIME_SQL. "',
         `user_id` = {$user_id_safe},

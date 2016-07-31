@@ -179,7 +179,7 @@ function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $d
   $current_value_safe = db_escape($current_value_unsafe);
   $value_id = doquery("SELECT `{$db_id_field_name}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE", true);
   if (!isset($value_id['id_field']) || !$value_id['id_field']) {
-    doquery("INSERT INTO {{{$db_table_name}}} (`{$db_value_field_name}`) VALUES ('{$current_value_safe}');");
+    classSupernova::$db->doInsert("INSERT INTO {{{$db_table_name}}} (`{$db_value_field_name}`) VALUES ('{$current_value_safe}');");
     $variable_id = classSupernova::$db->db_insert_id();
   } else {
     $variable_id = $value_id['id_field'];
@@ -228,7 +228,7 @@ function db_player_name_history_get_name_by_name($username_safe) {
 
 // ANNONCE *************************************************************************************************************
 function db_ANNONCE_insert_set($users, $metalvendre, $cristalvendre, $deutvendre, $metalsouhait, $cristalsouhait, $deutsouhait) {
-  return doquery("INSERT INTO {{annonce}} SET 
+  return classSupernova::$db->doInsert("INSERT INTO {{annonce}} SET 
     `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', 
     `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
 }
@@ -261,7 +261,7 @@ function db_ban_list_get_details($user_row) {
 
 // BLITZ ***************************************************************************************************************
 function db_blitz_reg_insert($user, $current_round) {
-  doquery("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
+  classSupernova::$db->doInsert("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
 }
 
 function db_blitz_reg_get_id_by_player_and_round($user, $current_round) {
@@ -391,7 +391,7 @@ function db_payment_list_modules() {
 
 // Log Online *************************************************************************************************************
 function db_log_online_insert() {
-  doquery("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . classSupernova::$config->var_online_user_count);
+  classSupernova::$db->doInsert("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . classSupernova::$config->var_online_user_count);
 }
 
 // Log *************************************************************************************************************
@@ -478,7 +478,7 @@ function db_browser_agent_get_by_id($user_last_browser_id) {
  * @param $page_url
  */
 function db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment, $row, $page_url) {
-  doquery(
+  classSupernova::$db->doInsert(
     "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
         `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
       VALUES (
@@ -513,7 +513,7 @@ function db_referral_update_dm($user_id_safe, $dark_matter) {
  * @param $user_new
  */
 function db_referral_insert($options, $user_new) {
-  doquery("INSERT INTO {{referrals}} SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
+  classSupernova::$db->doInsert("INSERT INTO {{referrals}} SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
 }
 
 
@@ -592,7 +592,7 @@ function db_quest_update($quest_name, $quest_type, $quest_description, $quest_co
  * @param $ban_until
  */
 function db_ban_insert($banner, $banned, $reason, $ban_until) {
-  doquery(
+  classSupernova::$db->doInsert(
     "INSERT INTO
       {{banned}}
     SET
@@ -614,7 +614,7 @@ function db_ban_insert($banner, $banned, $reason, $ban_until) {
  * @param $reason
  */
 function db_ban_insert_unset($banner, $banned, $reason) {
-  doquery(
+  classSupernova::$db->doInsert(
     "INSERT INTO {{banned}}
     SET
       `ban_user_id` = '{$banned['id']}',

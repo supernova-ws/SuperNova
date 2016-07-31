@@ -20,7 +20,7 @@ class DBStaticSurveyVote {
    * @param $user_name_safe
    */
   public static function db_survey_vote_insert(&$user, $survey_id, $survey_vote_id, $user_name_safe) {
-    doquery("INSERT INTO {{survey_votes}} SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
+    classSupernova::$db->doInsert("INSERT INTO {{survey_votes}} SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
   }
 
 
