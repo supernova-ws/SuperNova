@@ -65,7 +65,7 @@ class BuddyModel extends \Entity {
    * @throws BuddyException
    */
   public function db_buddy_check_relation($playerIdSafe, $newFriendIdSafe) {
-    $result = static::$dbStatic->doQueryFetchValue(
+    $result = static::$dbStatic->doSelectFetchValue(
       "SELECT `BUDDY_ID` 
       FROM `{{buddy}}` 
       WHERE

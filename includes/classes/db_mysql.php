@@ -280,6 +280,17 @@ class db_mysql {
     return $this->db_fetch($this->doSelect($query));
   }
 
+  /**
+   * @param string $query
+   *
+   * @return mixed|null
+   */
+  public function doSelectFetchValue($query) {
+    $row = $this->doSelectFetch($query);
+
+    return is_array($row) ? reset($row) : null;
+  }
+
 
   public function doInsert($query) {
     return $this->doExecute($query);
@@ -303,17 +314,6 @@ class db_mysql {
     return $this->doExecute($query);
   }
 
-
-  /**
-   * @param string $query
-   *
-   * @return mixed|null
-   */
-  public function doQueryFetchValue($query) {
-    $row = $this->doSelectFetch($query);
-
-    return is_array($row) ? reset($row) : null;
-  }
 
   /**
    * Returns iterator to iterate through mysqli_result

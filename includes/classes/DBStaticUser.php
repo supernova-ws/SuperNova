@@ -68,7 +68,7 @@ class DBStaticUser extends DBStaticRecord {
    * @return int
    */
   public static function db_user_count($online = false) {
-    return intval(static::getDb()->doQueryFetchValue(
+    return intval(static::getDb()->doSelectFetchValue(
       "SELECT COUNT(`id`) AS `user_count` 
       FROM `{{users}}` 
       WHERE 
