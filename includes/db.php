@@ -147,10 +147,6 @@ function sn_db_field_set_make_safe($field_set, $serialize = false) {
 }
 
 
-function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
-  return V0DbChangeSetManager::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
-}
-
 
 
 function sn_db_transaction_check($transaction_should_be_started = null) {

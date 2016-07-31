@@ -283,7 +283,7 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
             $local_changeset[pname_resource_name($unit_id)] = array('delta' => $unit_amount);
           } else // Проверим на юниты
           {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_amount, $user_row, $planet_id);
+            DBStaticUnit::dbUpdateOrInsertUnit($unit_id, $unit_amount, $user_row, $planet_id);
           }
           // unit
         }

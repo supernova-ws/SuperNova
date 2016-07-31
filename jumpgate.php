@@ -28,7 +28,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
       if(!$NextDestTime)
       {
         $ship_list = sys_get_param('ships');
-        $db_changeset = array();
+        $jumpMade = false;
         foreach($ship_list as $ship_id => $ship_count)
         {
           if(!in_array($ship_id, Fleet::$snGroupFleet))
@@ -39,16 +39,16 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
           $ship_count = max(0, min(floor($ship_count), mrc_get_level($user, $planetrow, $ship_id)));
           if($ship_count)
           {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, -$ship_count, $user, $planetrow['id']);
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $TargetGate['id']);
+            $jumpMade = true;
+            DBStaticUnit::dbUpdateOrInsertUnit($ship_id, -$ship_count, $user, $planetrow['id']);
+            DBStaticUnit::dbUpdateOrInsertUnit($ship_id, $ship_count, $user, $TargetGate['id']);
           }
         }
         // Dit monsieur, y avait quelque chose a envoyer ???
-        if(!empty($db_changeset))
+        if($jumpMade)
         {
           DBStaticPlanet::db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
           DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
-          V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
           DBStaticUser::db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 

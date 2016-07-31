@@ -12,7 +12,6 @@ function art_use(&$user, &$planetrow, $unit_id) {
 
   $unit_level = $artifact_level_old = mrc_get_level($user, null, $unit_id, true);
   if ($unit_level > 0) {
-    $db_changeset = array();
     switch($unit_id) {
       case ART_LHC:
       case ART_HOOK_SMALL:
@@ -61,9 +60,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
             continue;
           }
           $sectors_used += $levels_deployed;
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($deploy_unit_id, $levels_deployed, $user, $planetrow['id']);
-          //$deploy_unit_name = get_unit_param($deploy_unit_id, P_NAME);
-          //$deployment_str .= ",`{$deploy_unit_name}` = GREATEST(`{$deploy_unit_name}`, {$deploy_unit_level})";
+          DBStaticUnit::dbUpdateOrInsertUnit($deploy_unit_id, $levels_deployed, $user, $planetrow['id']);
         }
 
         if ($sectors_used == 0) {
@@ -124,8 +121,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
 
     }
     if ($unit_level != $artifact_level_old) {
-      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_level - $artifact_level_old, $user);
-      V0DbChangeSetManager::db_changeset_apply($db_changeset);
+      DBStaticUnit::dbUpdateOrInsertUnit($unit_id, $unit_level - $artifact_level_old, $user);
     }
   } else {
     $message = classLocale::$lang['art_err_no_artifact'];

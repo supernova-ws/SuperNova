@@ -350,12 +350,10 @@ pdie();
         }
 
         if($ship_count_lost) {
-          $db_changeset = array();
           $planet_row_cache = $this->players[$destination_user_id]->getDbRow();
           foreach($UBEFleet->unit_list->_container as $UBEUnit) {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($UBEUnit->unitId, -$UBEUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
+            DBStaticUnit::dbUpdateOrInsertUnit($UBEUnit->unitId, -$UBEUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
-          V0DbChangeSetManager::db_changeset_apply($db_changeset);
         }
       }
     }

@@ -63,7 +63,7 @@ if(is_array($shipList)) {
 
     $multiplier = $mode == MARKET_SCRAPPER ? -1 : 1;
 
-    $db_changeset['unit'][] = sn_db_unit_changeset_prepare($shipID, $shipCount * $multiplier, $user, $planetrow['id']);
+    DBStaticUnit::dbUpdateOrInsertUnit($shipID, $shipCount * $multiplier, $user, $planetrow['id']);
     $newstock[$shipID] += $shipCount * (-$multiplier);
 
     $build_data = eco_get_build_data($user, $planetrow, $shipID);

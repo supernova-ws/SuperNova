@@ -657,11 +657,13 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
 
       if(is_array($unit_changes[$player_id][$planet_id])) {
         foreach($unit_changes[$player_id][$planet_id] as $unit_id => $unit_amount) {
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_amount, $user, $planet_id ? $planet_id : null);
+          DBStaticUnit::dbUpdateOrInsertUnit($unit_id, $unit_amount, $user, $planet_id ? $planet_id : null);
         }
       }
     }
   }
+
+  V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
   $que = que_recalculate($que);
 
@@ -714,8 +716,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
       rpg_level_up($user, $que_id == QUE_RESEARCH ? RPG_TECH : RPG_STRUCTURE, $xp / 1000);
     }
   }
-
-  V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
   // TODO Сообщения о постройке
 

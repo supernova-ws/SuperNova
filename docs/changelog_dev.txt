@@ -1117,9 +1117,29 @@ Call Stack
                     - OR - we should redesign architecture
 
 WORKING ON
+    ? избавится нахрен от V0DbChangeSetManager!
+        - убрать upd_db_changeset_apply($db_changeset);
+        - убрать upd_db_unit_changeset_prepare($value[0], $value[1], $row)
+
     - вынести процедуры работы с записями из classSupernova
 
-    - избавится нахрен от V0DbChangeSetManager!
+    - public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null) {
+        - Эксепшны и обработка
+
+
+    - Джамп-гейт - переделать в миссию
+        - использовать общий интерфейс с отправкой флотов
+        - разрешить перенос ракет?
+        - разрешить перенос ресурсов?
+        - разрешить перенос капитанов?
+        - запретить работу джамп-гета под атакой? Разрешить только с артефактом?
+        - Блокада - как будет работать джамп-гейт?
+        - Разные уровни джампгейта - разные абилки? Типа мелкий - только мелкий корабли итд?
+        - Джамп-гейт - время кулдауна?
+
+    - EntityContainer
+        - SETted values cannot be ADJUSTed
+        - ADJUSTed values cannot be SETted
 
     - SnCache
         - сделать динамическими
@@ -1132,6 +1152,7 @@ WORKING ON
 
     - V2Unit
         sn_db_unit_changeset_prepare
+        - внести в класс DBStaticUnit::public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null)
 
     - classLocale => SnLocale
 

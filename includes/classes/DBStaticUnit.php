@@ -41,6 +41,16 @@ class DBStaticUnit {
   }
 
 
+  /**
+   * @param int    $user_id
+   * @param        $location_type
+   * @param        $location_id
+   * @param int    $unit_snid
+   * @param bool   $for_update
+   * @param string $fields
+   *
+   * @return mixed
+   */
   public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
     DBStaticUnit::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
@@ -55,7 +65,7 @@ class DBStaticUnit {
       'GROUP BY `unit_snid`'
     );
     $result = array();
-    while($row = db_fetch($query)) {
+    while ($row = db_fetch($query)) {
       $result[$row['unit_snid']] = $row;
     }
 
@@ -131,6 +141,49 @@ class DBStaticUnit {
       unit_time_finish = FROM_UNIXTIME(" . (SN_TIME_NOW + $default_length) . ")
     WHERE unit_type = " . UNIT_MERCENARIES
     );
+  }
+
+
+  /**
+   * @param      $unit_id
+   * @param      $unit_value
+   * @param      $user
+   * @param null $planet_id
+   *
+   * @return bool
+   */
+  public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null) {
+    DBStaticUser::validateUserRecord($user);
+
+    $planet_id = !empty($planet_id['id']) ? $planet_id['id'] : $planet_id;
+
+    $unit_location = sys_get_unit_location($user, array(), $unit_id);
+    $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
+    $location_id = $location_id ? $location_id : 'NULL';
+
+    $temp = DBStaticUnit::db_get_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
+    if (!empty($temp['unit_id'])) {
+      $result = (bool)classSupernova::db_upd_record_list(
+        LOC_UNIT,
+        "`unit_id` = {$temp['unit_id']}",
+        "`unit_level` = `unit_level` + ($unit_value)"
+      );
+    } else {
+      $locationIdRendered = $unit_location == LOC_USER ? $user['id'] : $planet_id;
+      $unitType = get_unit_param($unit_id, P_UNIT_TYPE);
+      $result = (bool)classSupernova::db_ins_record(
+        LOC_UNIT,
+        "unit_player_id = {$user['id']}, 
+        unit_location_type = {$unit_location}, 
+        unit_location_id = {$locationIdRendered},
+        unit_type = {$unitType},
+        unit_snid = {$unit_id},
+        unit_level = {$unit_value}
+        "
+      );
+    }
+
+    return $result;
   }
 
 }

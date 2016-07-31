@@ -467,7 +467,6 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
 
   $sn_group_fleet = Fleet::$snGroupFleet;
   $sn_group_resources_loot = sn_get_groups('resources_loot');
-  $db_changeset = array();
   $planet_row_changed_fields = array();
   foreach($fleet_REAL_array as $unit_id => $amount) {
     if(!$amount || !$unit_id) {
@@ -475,12 +474,13 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
     }
 
     if(in_array($unit_id, $sn_group_fleet)) {
-      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$amount, $user, $from['id']);
+      DBStaticUnit::dbUpdateOrInsertUnit($unit_id, -$amount, $user, $from['id']);
     } elseif(in_array($unit_id, $sn_group_resources_loot)) {
       $planet_row_changed_fields[pname_resource_name($unit_id)]['delta'] -= $amount;
     }
   }
 
+  $db_changeset = array();
   $planet_row_changed_fields[pname_resource_name(RES_DEUTERIUM)]['delta'] -= $travel_data['consumption'];
   $db_changeset['planets'][] = array(
     'action'  => SQL_OP_UPDATE,

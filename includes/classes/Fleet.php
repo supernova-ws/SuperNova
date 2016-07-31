@@ -960,17 +960,11 @@ class Fleet extends UnitContainer {
     // Флот, который возвращается на захваченную планету, пропадает
     // Ship landing is possible only to fleet owner's planet
     if ($this->getPlayerOwnerId() == $planet_arrival['id_owner']) {
-      $db_changeset = array();
-
+      // Adjusting ship amount on planet
       foreach ($this->shipsIterator() as $ship_id => $ship) {
         if ($ship->count) {
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship->count, $user, $planet_arrival['id']);
+          DBStaticUnit::dbUpdateOrInsertUnit($ship_id, $ship->count, $user, $planet_arrival['id']);
         }
-      }
-
-      // Adjusting ship amount on planet
-      if (!empty($db_changeset)) {
-        V0DbChangeSetManager::db_changeset_apply($db_changeset);
       }
 
       // Restoring resources to planet
@@ -1830,16 +1824,13 @@ class Fleet extends UnitContainer {
 
     $this->set_times($this->travelData['duration'], $timeMissionJob);
     $this->dbInsert();
+    $this->unitList->dbSubstractUnitsFromPlanet($this->dbOwnerRow, $this->dbSourcePlanetRow['id']);
 
     DBStaticPlanet::db_planet_set_by_id($this->dbSourcePlanetRow['id'],
       "`metal` = `metal` - {$this->resource_list[RES_METAL]},
       `crystal` = `crystal` - {$this->resource_list[RES_CRYSTAL]},
       `deuterium` = `deuterium` - {$this->resource_list[RES_DEUTERIUM]} - {$this->travelData['consumption']}"
     );
-
-    $db_changeset = $this->unitList->db_prepare_old_changeset_for_planet($this->dbOwnerRow, $this->dbSourcePlanetRow['id']);
-    V0DbChangeSetManager::db_changeset_apply($db_changeset);
-
 
     if (!empty($this->captain['unit_id'])) {
       DBStaticUnit::db_unit_set_by_id($this->captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$this->_dbId}");

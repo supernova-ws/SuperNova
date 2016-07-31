@@ -104,7 +104,6 @@ function coe_o_missile_calculate() {
 
   while ($fleetRow = db_fetch($iraks)) {
     set_time_limit(15);
-    $db_changeset = array();
 
     $targetUser = DBStaticUser::db_user_by_id($fleetRow['fleet_target_owner'], true);
 
@@ -129,11 +128,11 @@ function coe_o_missile_calculate() {
       $missiles = $fleetRow['fleet_amount']; // Number of MIP
       if ($interceptors >= $missiles) {
         $message = classLocale::$lang['mip_all_destroyed'];
-        $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$missiles, $targetUser, $target_planet_row['id']);
+        DBStaticUnit::dbUpdateOrInsertUnit(UNIT_DEF_MISSILE_INTERCEPTOR, -$missiles, $targetUser, $target_planet_row['id']);
       } else {
         if ($interceptors) {
           $message = sprintf(classLocale::$lang['mip_destroyed'], $interceptors);
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
+          DBStaticUnit::dbUpdateOrInsertUnit(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
         }
 
         $attackResult = COE_missileAttack($targetUser, $rowAttacker, $missiles - $interceptors, $planetDefense, $fleetRow['primaer']);
@@ -141,7 +140,7 @@ function coe_o_missile_calculate() {
         foreach ($attackResult['structures'] as $key => $structure) {
           $destroyed = $planetDefense[$key][0] - $structure[0];
           if ($destroyed) {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($key, -$destroyed, $targetUser, $target_planet_row['id']);
+            DBStaticUnit::dbUpdateOrInsertUnit($key, -$destroyed, $targetUser, $target_planet_row['id']);
 
             $message .= "&nbsp;&nbsp;{$classLocale['tech'][$key]} - {$destroyed} {$classLocale['quantity']}<br>";
           }
@@ -154,7 +153,6 @@ function coe_o_missile_calculate() {
         }
 
       }
-      V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
       $fleetRow['fleet_start_type'] = PT_PLANET;
       $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');

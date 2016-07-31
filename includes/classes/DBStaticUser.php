@@ -275,5 +275,23 @@ class DBStaticUser extends DBStaticRecord {
     return "{$playerArray['username']} " . uni_render_coordinates($playerArray);
   }
 
+  /**
+   * @param mixed $user
+   */
+  public static function validateUserRecord($user) {
+    if (!is_array($user)) {
+      // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
+      pdump(debug_backtrace());
+      die('USER is not ARRAY');
+    }
+    if (!isset($user['id']) || !$user['id']) {
+      // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
+      pdump($user);
+      pdump(debug_backtrace());
+      die('USER[id] пустой');
+    }
+  }
 
 }

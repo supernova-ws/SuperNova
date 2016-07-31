@@ -5,69 +5,6 @@
  */
 class V0DbChangeSetManager {
 
-  public static function db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id = null) {
-    if (!is_array($user)) {
-      // TODO - remove later
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
-      pdump(debug_backtrace());
-      die('USER is not ARRAY');
-    }
-    if (!isset($user['id']) || !$user['id']) {
-      // TODO - remove later
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
-      pdump($user);
-      pdump(debug_backtrace());
-      die('USER[id] пустой');
-    }
-    $planet_id = is_array($planet_id) && isset($planet_id['id']) ? $planet_id['id'] : $planet_id;
-
-    $unit_location = sys_get_unit_location($user, array(), $unit_id);
-    $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
-    $location_id = $location_id ? $location_id : 'NULL';
-
-    $temp = DBStaticUnit::db_get_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
-    if ($temp['unit_id']) {
-      $db_changeset = array(
-        'action'  => SQL_OP_UPDATE,
-        P_VERSION => 1,
-        'where'   => array(
-          "unit_id" => $temp['unit_id'],
-        ),
-        'fields'  => array(
-          'unit_level' => array(
-            'delta' => $unit_value
-          ),
-        ),
-      );
-    } else {
-      $db_changeset = array(
-        'action' => SQL_OP_INSERT,
-        'fields' => array(
-          'unit_player_id'     => array(
-            'set' => $user['id'],
-          ),
-          'unit_location_type' => array(
-            'set' => $unit_location,
-          ),
-          'unit_location_id'   => array(
-            'set' => $unit_location == LOC_USER ? $user['id'] : $planet_id,
-          ),
-          'unit_type'          => array(
-            'set' => get_unit_param($unit_id, P_UNIT_TYPE),
-          ),
-          'unit_snid'          => array(
-            'set' => $unit_id,
-          ),
-          'unit_level'         => array(
-            'set' => $unit_value,
-          ),
-        ),
-      );
-    }
-
-    return $db_changeset;
-  }
-
   public static function db_changeset_condition_compile(&$conditions, &$table_name = '') {
     if (!$conditions[P_LOCATION] || $conditions[P_LOCATION] == LOC_NONE) {
       $conditions[P_LOCATION] = LOC_NONE;

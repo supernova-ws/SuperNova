@@ -456,16 +456,11 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
   /**
    * @param array $dbOwnerRow
    * @param int   $sourcePlanetRowId
-   *
-   * @return array
    */
-  public function db_prepare_old_changeset_for_planet($dbOwnerRow, $sourcePlanetRowId) {
-    $db_changeset = array();
+  public function dbSubstractUnitsFromPlanet($dbOwnerRow, $sourcePlanetRowId) {
     foreach ($this->mapUnitIdToDb as $unit) {
-      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit->unitId, -$unit->count, $dbOwnerRow, $sourcePlanetRowId);
+      DBStaticUnit::dbUpdateOrInsertUnit($unit->unitId, -$unit->count, $dbOwnerRow, $sourcePlanetRowId);
     }
-
-    return $db_changeset;
   }
 
 

@@ -113,11 +113,6 @@ function fleet_ajax() {
     die(classLocale::$lang['fl_attack_error'][$isAttackAllowed]);
   }
 
-  $db_changeset = array();
-  foreach ($fleet_array as $unit_id => $unit_count) {
-    $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
-  }
-
   if ($target_mission == MT_MISSILE) {
     $distance = abs($target_coord['system'] - $planetrow['system']);
     $duration = round((30 + (60 * $distance)) / flt_server_flight_speed_multiplier());
@@ -145,7 +140,10 @@ function fleet_ajax() {
   }
 
   DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
-  V0DbChangeSetManager::db_changeset_apply($db_changeset);
+
+  foreach ($fleet_array as $unit_id => $unit_count) {
+    DBStaticUnit::dbUpdateOrInsertUnit($unit_id, -$unit_count, $user, $planetrow);
+  }
   sn_db_transaction_commit();
 
   $ships_sent = array();
