@@ -164,9 +164,7 @@ class DBStaticUnit {
     $temp = DBStaticUnit::db_get_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
     if (!empty($temp['unit_id'])) {
       $result = (bool)classSupernova::db_upd_record_list(
-        LOC_UNIT,
-        "`unit_id` = {$temp['unit_id']}",
-        "`unit_level` = `unit_level` + ($unit_value)"
+        LOC_UNIT, "`unit_level` = `unit_level` + ($unit_value)", "`unit_id` = {$temp['unit_id']}"
       );
     } else {
       $locationIdRendered = $unit_location == LOC_USER ? $user['id'] : $planet_id;

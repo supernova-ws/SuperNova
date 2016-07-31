@@ -328,12 +328,12 @@ class classSupernova {
 
   /**
    * @param int    $location_type
-   * @param string $condition
    * @param string $set
+   * @param string $condition
    *
    * @return array|bool|mysqli_result|null
    */
-  public static function db_upd_record_list($location_type, $condition, $set) {
+  public static function db_upd_record_list($location_type, $set, $condition) {
     if (!($set = trim($set))) {
       return false;
     }

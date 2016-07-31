@@ -47,8 +47,8 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         // Dit monsieur, y avait quelque chose a envoyer ???
         if($jumpMade)
         {
-          DBStaticPlanet::db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
-          DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
+          DBStaticPlanet::db_planet_update_set_by_id($TargetGate['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
+          DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
 
           DBStaticUser::db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 

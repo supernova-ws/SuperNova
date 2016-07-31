@@ -390,7 +390,7 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
   $planet_id_origin = $planet['id'] ? $planet['id'] : 'NULL';
   $planet_id = $que_type == QUE_RESEARCH ? 'NULL' : $planet_id_origin;
   if(is_numeric($planet_id)) {
-    DBStaticPlanet::db_planet_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
+    DBStaticPlanet::db_planet_update_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
   } elseif(is_numeric($user['id'])) {
     DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
   }
@@ -449,7 +449,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
     }
 
     if(is_numeric($planet['id'])) {
-      DBStaticPlanet::db_planet_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
+      DBStaticPlanet::db_planet_update_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
     } elseif(is_numeric($user['id'])) {
       DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
     }
@@ -565,7 +565,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     return $que;
   }
 
-  $db_changeset = array();
   $unit_changes = array();
   foreach($que['items'] as &$que_item) {
     $que_player_id = &$que_item['que_player_id'];
@@ -607,28 +606,12 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     }
 
     if($que_item['que_unit_amount'] <= 0) {
-      $db_changeset['que'][] = array(
-        'action'  => SQL_OP_DELETE,
-        P_VERSION => 1,
-        'where'   => array(
-          "que_id" => $que_item['que_id'],
-        ),
-      );
+      DBStaticQue::db_que_delete_by_id($que_item['que_id']);
     } else {
-      $db_changeset['que'][] = array(
-        'action'  => SQL_OP_UPDATE,
-        P_VERSION => 1,
-        'where'   => array(
-          "que_id" => $que_item['que_id'],
-        ),
-        'fields'  => array(
-          'que_unit_amount' => array(
-            'delta' => -$unit_processed
-          ),
-          'que_time_left'   => array(
-            'set' => $que_item['que_time_left']
-          ),
-        ),
+      classSupernova::db_upd_record_list(
+        LOC_QUE,
+        "`que_unit_amount` = `que_unit_amount` - ({$unit_processed}), `que_time_left` = {$que_item['que_time_left']}",
+        "`que_id` = {$que_item['que_id']}"
       );
     }
 
@@ -640,20 +623,13 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
 
   foreach($time_left as $player_id => $planet_data) {
     foreach($planet_data as $planet_id => $time_on_planet) {
-      $table = $planet_id ? 'planets' : 'users';
-      $id = $planet_id ? $planet_id : $player_id;
-      $db_changeset[$table][] = array(
-        'action'  => SQL_OP_UPDATE,
-        P_VERSION => 1,
-        'where'   => array(
-          "id" => $id,
-        ),
-        'fields'  => array(
-          'que_processed' => array(
-            'set' => $on_time,
-          ),
-        ),
-      );
+      if($planet_id) {
+        // update planet
+        classSupernova::db_upd_record_list(LOC_PLANET, "`que_processed` = {$on_time}", "id = {$planet_id}");
+      } else {
+        // update user
+        classSupernova::db_upd_record_list(LOC_USER, "`que_processed` = {$on_time}", "id = {$player_id}");
+      }
 
       if(is_array($unit_changes[$player_id][$planet_id])) {
         foreach($unit_changes[$player_id][$planet_id] as $unit_id => $unit_amount) {
@@ -662,8 +638,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
       }
     }
   }
-
-  V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
   $que = que_recalculate($que);
 

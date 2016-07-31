@@ -31,7 +31,6 @@ if(is_array($shipList)) {
   $message .= classLocale::$lang["eco_mrk_{$submode}_ships"] . '<ul>';
   $qry = array();
   $total = array();
-  $db_changeset = array();
   foreach($shipList as $shipID => &$shipCount) {
     $shipCount = ceil(floatval($shipCount));
     if(!$shipCount) {
@@ -105,8 +104,7 @@ if(is_array($shipList)) {
     }
     $message .= "</ul>";
 
-    DBStaticPlanet::db_planet_set_by_id($planetrow['id'], implode(',', $qry));
-    V0DbChangeSetManager::db_changeset_apply($db_changeset);
+    DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], implode(',', $qry));
 
     rpg_points_change($user['id'], RPG_MARKET_FLEET, -($rpg_cost), "Using Black Market page {$mode}");
     classSupernova::$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));

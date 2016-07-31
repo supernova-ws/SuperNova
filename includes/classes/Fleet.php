@@ -329,12 +329,6 @@ class Fleet extends UnitContainer {
   public function __construct() {
     parent::__construct();
     $this->exists_missions = sn_get_groups('missions');
-//    $this->allowed_missions = $this->exists_missions;
-    if (empty(static::$snGroupFleet)) {
-      static::$snGroupFleet = sn_get_groups('fleet');
-      static::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', GROUP_STR_MISSILES));
-      static::$snGroupRecyclers = sn_get_groups('flt_recyclers');
-    }
     $this->validator = new FleetValidator($this);
   }
 
@@ -1117,7 +1111,7 @@ class Fleet extends UnitContainer {
     // Restoring resources to planet
     if ($this->resourcesGetTotal()) {
       $fleet_resources = $this->resourcesGetList();
-      DBStaticPlanet::db_planet_set_by_id($planet_arrival['id'],
+      DBStaticPlanet::db_planet_update_set_by_id($planet_arrival['id'],
         "`metal` = `metal` + '{$fleet_resources[RES_METAL]}', `crystal` = `crystal` + '{$fleet_resources[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_resources[RES_DEUTERIUM]}'");
     }
 
@@ -1619,9 +1613,7 @@ class Fleet extends UnitContainer {
         unset($this->allowed_missions[$missionType]);
       }
     }
-//    print('asd');
-//var_dump($this->allowed_missions);
-//    print('выф');
+
     if(empty($this->allowed_missions)) {
       if($this->mission_type != MT_NONE && isset($validateResult[$this->mission_type])) {
         throw new ExceptionFleetInvalid($validateResult[$this->mission_type], $validateResult[$this->mission_type]);
@@ -1826,7 +1818,7 @@ class Fleet extends UnitContainer {
     $this->dbInsert();
     $this->unitList->dbSubstractUnitsFromPlanet($this->dbOwnerRow, $this->dbSourcePlanetRow['id']);
 
-    DBStaticPlanet::db_planet_set_by_id($this->dbSourcePlanetRow['id'],
+    DBStaticPlanet::db_planet_update_set_by_id($this->dbSourcePlanetRow['id'],
       "`metal` = `metal` - {$this->resource_list[RES_METAL]},
       `crystal` = `crystal` - {$this->resource_list[RES_CRYSTAL]},
       `deuterium` = `deuterium` - {$this->resource_list[RES_DEUTERIUM]} - {$this->travelData['consumption']}"
@@ -1929,4 +1921,10 @@ class Fleet extends UnitContainer {
     return $result;
   }
 
+}
+
+if (empty(Fleet::$snGroupFleet)) {
+  Fleet::$snGroupFleet = sn_get_groups('fleet');
+  Fleet::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', GROUP_STR_MISSILES));
+  Fleet::$snGroupRecyclers = sn_get_groups('flt_recyclers');
 }

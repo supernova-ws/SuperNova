@@ -62,7 +62,7 @@ switch($mode = sys_get_param_str('mode')) {
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
 //      $new_name = db_escape($new_name);
-      DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
+      DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], "`name` = '{$new_name}'");
     } elseif(sys_get_param_str('action') == 'make_capital') {
       try {
         sn_db_transaction_start();
@@ -131,7 +131,7 @@ switch($mode = sys_get_param_str('mode')) {
           array(&classLocale::$lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
         $planet_teleport_next = SN_TIME_NOW + classSupernova::$config->planet_teleport_timeout;
-        DBStaticPlanet::db_planet_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
+        DBStaticPlanet::db_planet_update_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
           "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
 
         if($planetrow['id'] == $user['id_planet']) {
@@ -159,7 +159,7 @@ switch($mode = sys_get_param_str('mode')) {
       if(classSupernova::$auth->password_check(sys_get_param('abandon_confirm'))) {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id) {
           $destroyed = SN_TIME_NOW + 60 * 60 * 24;
-          DBStaticPlanet::db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
+          DBStaticPlanet::db_planet_update_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           DBStaticPlanet::db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           DBStaticUser::db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
           message(classLocale::$lang['ov_delete_ok'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
@@ -193,7 +193,7 @@ switch($mode = sys_get_param_str('mode')) {
           $planetrow['PLANET_GOVERNOR_ID'] = $hire;
           $query = '1';
         }
-        DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
+        DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
         rpg_points_change(
           $user['id'],
           RPG_GOVERNOR,
@@ -277,7 +277,7 @@ switch($mode = sys_get_param_str('mode')) {
     if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
       $planetrow['name'] = $new_name;
       $new_name_safe = db_escape($new_name);
-      DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
+      DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], "`name` = '{$new_name_safe}'");
     }
 
     $result[] = sn_sys_planet_core_transmute($user, $planetrow);

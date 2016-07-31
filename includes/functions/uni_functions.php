@@ -216,7 +216,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
         $metal_spent = round(min($moon_planet['debris_metal'], $debris_spent * mt_rand(50, 75) / 100));
         $crystal_spent = min($moon_planet['debris_crystal'], $debris_spent - $metal_spent);
         $metal_spent = min($moon_planet['debris_metal'], $debris_spent - $crystal_spent); // Need if crystal less then their part
-        DBStaticPlanet::db_planet_set_by_id($moon_planet['id'], "`debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent})");
+        DBStaticPlanet::db_planet_update_set_by_id($moon_planet['id'], "`debris_metal` = GREATEST(0, `debris_metal` - {$metal_spent}), `debris_crystal` = GREATEST(0, `debris_crystal` - {$crystal_spent})");
       }
     }
   }

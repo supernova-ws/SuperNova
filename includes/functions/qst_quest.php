@@ -237,7 +237,6 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
 
   $classLocale = classLocale::$lang;
 
-  $db_changeset = array();
   $total_rewards = array();
   $comment_dm = '';
 
@@ -271,7 +270,7 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
     foreach ($total_rewards as $user_id => $planet_data) {
       $user_row = classSupernova::db_get_record_by_id(LOC_USER, $user_id);
       foreach ($planet_data as $planet_id => $unit_data) {
-        $local_changeset = array();
+        $resourcesChange = array();
         foreach ($unit_data as $unit_id => $unit_amount) {
           if (!isset($quest_rewards_allowed[$unit_id])) {
             continue;
@@ -280,7 +279,7 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
           if ($unit_id == RES_DARK_MATTER) {
             rpg_points_change($user['id'], RPG_QUEST, $unit_amount, $comment_dm);
           } elseif (isset($group_resources[$unit_id])) {
-            $local_changeset[pname_resource_name($unit_id)] = array('delta' => $unit_amount);
+            $resourcesChange[$unit_id] = $unit_amount;
           } else // Проверим на юниты
           {
             DBStaticUnit::dbUpdateOrInsertUnit($unit_id, $unit_amount, $user_row, $planet_id);
@@ -288,21 +287,18 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
           // unit
         }
 
-        if (!empty($local_changeset)) {
+        if (!empty($resourcesChange)) {
           $planet_id = $planet_id == 0 && isset($user_row['id_planet']) ? $user_row['id_planet'] : $planet_id;
-          $db_changeset[$planet_id ? 'planets' : 'users'][] = array(
-            'action'  => SQL_OP_UPDATE,
-            P_VERSION => 1,
-            'where'   => array(
-              "id" => $planet_id ? $planet_id : $user_id,
-            ),
-            'fields'  => $local_changeset,
-          );
+          if($planet_id) {
+            // update planet
+            DBStaticPlanet::db_planet_update_resources($resourcesChange, $planet_id);
+          } else {
+            // update user
+            DBStaticUser::db_user_update_resources($resourcesChange, $planet_id);
+          }
         }
       }
     }
-
-    V0DbChangeSetManager::db_changeset_apply($db_changeset);
   }
 }
 

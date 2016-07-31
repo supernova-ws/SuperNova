@@ -724,7 +724,7 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
         $user['username'], $user['id'], $planet_name_text, classLocale::$lang['sys_planet_type'][$planetrow['planet_type']], $planetrow['id'], $sector_cost)
     )) {
       $sector_db_name = pname_resource_name(UNIT_SECTOR);
-      DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "{$sector_db_name} = {$sector_db_name} + 1");
+      DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], "{$sector_db_name} = {$sector_db_name} + 1");
     } else {
       sn_db_transaction_rollback();
     }
@@ -1163,7 +1163,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
       )
     );
 
-    DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`density` = {$new_density}, `density_index` = {$new_density_index}");
+    DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], "`density` = {$new_density}, `density_index` = {$new_density_index}");
     sn_db_transaction_commit();
 
     $planetrow['density'] = $new_density;

@@ -324,7 +324,7 @@ pdie();
 
     // Обновляем поле обломков на планете
     if(!$this->is_admin_in_combat && $this->debris->debris_total() > 0) {
-      DBStaticPlanet::db_planet_set_by_gspt($this->ube_planet_info[PLANET_GALAXY], $this->ube_planet_info[PLANET_SYSTEM], $this->ube_planet_info[PLANET_PLANET], PT_PLANET,
+      DBStaticPlanet::db_planet_update_set_by_gspt($this->ube_planet_info[PLANET_GALAXY], $this->ube_planet_info[PLANET_SYSTEM], $this->ube_planet_info[PLANET_PLANET], PT_PLANET,
         "`debris_metal` = `debris_metal` + " . $this->debris->debris_get_resource(RES_METAL) . ", `debris_crystal` = `debris_crystal` + " . $this->debris->debris_get_resource(RES_CRYSTAL)
       );
     }
@@ -346,7 +346,7 @@ pdie();
             $resource_db_name = pname_resource_name($resource_id);
             $temp[] = "`{$resource_db_name}` = `{$resource_db_name}` + ({$resource_amount})";
           }
-          DBStaticPlanet::db_planet_set_by_id($this->ube_planet_info[PLANET_ID], implode(',', $temp));
+          DBStaticPlanet::db_planet_update_set_by_id($this->ube_planet_info[PLANET_ID], implode(',', $temp));
         }
 
         if($ship_count_lost) {

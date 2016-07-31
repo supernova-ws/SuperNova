@@ -257,15 +257,15 @@ class DBStaticUser extends DBStaticRecord {
 
 
   public static function db_user_list_set_mass_mail(&$owners_list, $set) {
-    return classSupernova::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
+    return classSupernova::db_upd_record_list(LOC_USER, $set, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '');
   }
 
   public static function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
-    return classSupernova::db_upd_record_list(LOC_USER, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
+    return classSupernova::db_upd_record_list(LOC_USER, $set, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}");
   }
 
   public static function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
-    return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
+    return classSupernova::db_upd_record_list(LOC_USER, "`ally_rank_id` = {$i}", "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}");
   }
 
   /**
@@ -291,6 +291,20 @@ class DBStaticUser extends DBStaticRecord {
       pdump($user);
       pdump(debug_backtrace());
       die('USER[id] пустой');
+    }
+  }
+
+  /**
+   * @param array $playerRowFieldChanges - array of $resourceId => $amount
+   * @param int   $userId
+   */
+  public static function db_user_update_resources($playerRowFieldChanges, $userId) {
+    foreach ($playerRowFieldChanges as $resourceId => &$value) {
+      $fieldName = pname_resource_name($resourceId);
+      $value = "{$fieldName} = {$fieldName} + ('{$value}')";
+    }
+    if($query = implode(',', $playerRowFieldChanges)) {
+      classSupernova::$gc->db->doUpdate("UPDATE `{{users}}` SET {$query} WHERE id = {$userId}");
     }
   }
 

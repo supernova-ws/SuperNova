@@ -54,7 +54,7 @@ function sn_options_model() {
           // $planet = $planet['planet'];
 
           $classConfig = classSupernova::$config;
-          DBStaticPlanet::db_planet_set_by_id($planet['id'],
+          DBStaticPlanet::db_planet_update_set_by_id($planet['id'],
             "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
             metal_perhour = '{$classConfig->metal_basic_income}', crystal_perhour = '{$classConfig->crystal_basic_income}', deuterium_perhour = '{$classConfig->deuterium_basic_income}',
             metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
