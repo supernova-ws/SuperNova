@@ -242,6 +242,23 @@ class db_mysql {
     return $queryResult;
   }
 
+  // Just wrappers to distinguish query types
+  public function doInsert($query) {
+    return $this->doquery($query);
+  }
+
+  public function doUpdate($query) {
+    return $this->doquery($query);
+  }
+
+  public function doDelete($query) {
+    return $this->doquery($query);
+  }
+
+  public function doReplace($query) {
+    return $this->doquery($query);
+  }
+
   /**
    * @param string $query
    * @param bool   $skip_query_check

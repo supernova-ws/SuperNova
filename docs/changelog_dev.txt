@@ -1120,6 +1120,19 @@ WORKING ON
     - doquery()
         - убрать параметр "таблица" - не нужен
         - убрать параметр "skip_query_check" - это глобальная настройка в ДБ
++            - doDelete
+            - doUpdate
+            - doReplace
+            - doInsert
+            - doQueryFetch
+            - doSelect
+
++            - classSupernova:db->doDelete
+            - db->doUpdate
+            - db->doReplace
+            - db->doInsert
+            - db->doQueryFetch
+            - db->doSelect
 
     - SnCache
         - сделать динамическими

@@ -40,7 +40,7 @@ class PlayerToAccountTranslate {
     $provider_account_id_safe = static::$db->db_escape($provider_account_id_unsafe);
     $user_id_safe = static::$db->db_escape($user_id_unsafe);
 
-    return static::$db->doquery(
+    return static::$db->doInsert(
       "INSERT INTO `{{account_translate}}` (`provider_id`, `provider_account_id`, `user_id`) VALUES
                   ({$provider_id_safe}, {$provider_account_id_safe}, {$user_id_safe});"
     );
@@ -100,7 +100,7 @@ class PlayerToAccountTranslate {
     static::init();
 
     $user_id_safe = static::$db->db_escape($user_id_unsafe);
-    return static::$db->doquery("DELETE FROM `{{account_translate}}` WHERE `user_id` = {$user_id_safe});");
+    return static::$db->doDelete("DELETE FROM `{{account_translate}}` WHERE `user_id` = {$user_id_safe});");
   }
 
 }

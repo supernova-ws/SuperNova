@@ -7,7 +7,6 @@
 namespace DBAL;
 
 use \classSupernova;
-use Common\GlobalContainer;
 use \SnCache;
 use \db_mysql;
 

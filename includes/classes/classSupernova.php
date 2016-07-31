@@ -790,7 +790,7 @@ class classSupernova {
       case SQL_OP_INSERT:
         $conditions[P_ACTION_STR] = ("INSERT INTO {{{$table_name}}} SET");
       break;
-      // case SQL_OP_REPLACE: $result = doquery("REPLACE INTO {{{$table_name}}} SET {$fields}") && $result; break;
+
       default:
         die('Неподдерживаемая операция в classSupernova::db_changeset_condition_compile');
     }
@@ -829,7 +829,6 @@ class classSupernova {
             break;
             default:
               die('Неподдерживаемая операция в classSupernova::db_changeset_apply');
-            // case SQL_OP_REPLACE: $result = $result && doquery("REPLACE INTO {{{$table_name}}} SET {$fields}"); break;
           }
         } else {
           $result = doquery($conditions[P_QUERY_STR]) && $result;

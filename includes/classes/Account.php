@@ -157,7 +157,7 @@ class Account {
 
     $account_id_safe = round(floatval($account_id_unsafe));
 
-    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}", true);
+    $account_row = $this->db->doQueryFetch("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}");
 
     return $this->assign_from_db_row($account_row);
   }
@@ -174,7 +174,7 @@ class Account {
 
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
 
-    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE", true);
+    $account_row = $this->db->doQueryFetch("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE");
 
     return $this->assign_from_db_row($account_row);
   }
@@ -191,7 +191,7 @@ class Account {
 
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;", true);
+    $account_row = $this->db->doQueryFetch("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;");
 
     return $this->assign_from_db_row($account_row);
   }
@@ -211,7 +211,7 @@ class Account {
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') OR LOWER(`account_name`) = LOWER('{$email_safe}') OR LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE", true);
+    $account = $this->db->doQueryFetch("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') OR LOWER(`account_name`) = LOWER('{$email_safe}') OR LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE");
 
     return $this->assign_from_db_row($account);
   }
@@ -232,7 +232,7 @@ class Account {
     $password_salted_safe = $this->db->db_escape($this->password_encode($password_raw, $salt_unsafe));
     $salt_safe = $this->db->db_escape($salt_unsafe);
 
-    $result = $this->db->doquery(
+    $result = $this->db->doInsert(
       "INSERT INTO {{account}} SET
         `account_name` = '{$account_name_safe}',
         `account_password` = '{$password_salted_safe}',
@@ -267,7 +267,7 @@ class Account {
     $account_id_safe = $this->db->db_escape($this->account_id);
     $salt_safe = $this->db->db_escape($salt_unsafe);
 
-    $result = $this->db->doquery(
+    $result = $this->db->doUpdate(
       "UPDATE {{account}} SET
         `account_password` = '{$password_encoded_safe}',
         `account_salt` = '{$salt_safe}'
@@ -333,7 +333,7 @@ class Account {
     $server_name_safe = $this->db->db_escape(SN_ROOT_VIRTUAL);
     $page_url_safe = $this->db->db_escape($_SERVER['SCRIPT_NAME']);
 
-    $this->db->doquery("INSERT INTO {{log_metamatter}} SET
+    $this->db->doInsert("INSERT INTO {{log_metamatter}} SET
         `provider_id` = {$provider_id_safe},
         `account_id` = {$account_id_safe},
         `account_name` = '{$account_name_safe}',
@@ -378,7 +378,7 @@ class Account {
       $metamatter_total_delta = $metamatter > 0 ? $metamatter : 0;
 
       $classConfig = classSupernova::$config;
-      $result = $this->db->doquery(
+      $result = $this->db->doUpdate(
         "UPDATE {{account}}
         SET
           `account_metamatter` = `account_metamatter` + '{$metamatter}'" .

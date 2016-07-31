@@ -96,7 +96,7 @@ class DBStaticAlly {
    * @param $user
    */
   public static function db_ally_request_delete_by_user($user) {
-    doquery("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
+    classSupernova::$db->doDelete("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
   }
 
 
@@ -164,7 +164,7 @@ class DBStaticAlly {
    * @param $ally
    */
   public static function db_ally_delete($ally) {
-    doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
+    classSupernova::$db->doDelete("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");
   }
 
 
@@ -173,7 +173,7 @@ class DBStaticAlly {
    * @param $alliance_negotiation_contr_ally_id
    */
   public static function db_ally_negotiation_delete($user, $alliance_negotiation_contr_ally_id) {
-    doquery("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id = {$user['ally_id']} AND alliance_negotiation_contr_ally_id = {$alliance_negotiation_contr_ally_id} LIMIT 1;");
+    classSupernova::$db->doDelete("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_ally_id = {$user['ally_id']} AND alliance_negotiation_contr_ally_id = {$alliance_negotiation_contr_ally_id} LIMIT 1;");
   }
 
   /**
@@ -191,7 +191,7 @@ class DBStaticAlly {
    * @param $offer_id
    */
   public static function db_ally_negotiation_delete_by_offer_id($offer_id) {
-    doquery("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
+    classSupernova::$db->doDelete("DELETE FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
   }
 
   /**
@@ -206,7 +206,7 @@ class DBStaticAlly {
    * @param $user
    */
   public static function db_ally_negotiatiion_delete_extended($negotiation, $user) {
-    doquery(
+    classSupernova::$db->doDelete(
       "DELETE FROM {{alliance_negotiation}}
   	 WHERE
         (alliance_negotiation_ally_id = {$negotiation['alliance_negotiation_ally_id']} AND alliance_negotiation_contr_ally_id = {$user['ally_id']})
@@ -279,7 +279,7 @@ class DBStaticAlly {
    * @param $id_user
    */
   public static function db_ally_request_delete_by_user_id($id_user) {
-    doquery("DELETE FROM {{alliance_requests}} WHERE `id_user`= '{$id_user}' LIMIT 1;");
+    classSupernova::$db->doDelete("DELETE FROM {{alliance_requests}} WHERE `id_user`= '{$id_user}' LIMIT 1;");
   }
 
 

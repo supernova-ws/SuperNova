@@ -146,7 +146,7 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_player_list_blitz_delete_players() {
-    doquery("DELETE FROM `{{users}}` WHERE `username` LIKE 'Игрок%';");
+    classSupernova::$db->doDelete("DELETE FROM `{{users}}` WHERE `username` LIKE 'Игрок%';");
   }
 
   public static function db_player_list_blitz_set_50k_dm() {

@@ -51,27 +51,27 @@ function DeleteSelectedUser($UserID) {
     if ( $TheAlly['ally_members'] > 0 ) {
       doquery ( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
     } else {
-      doquery ( "DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
-      doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");
+      classSupernova::$db->doDelete("DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
+      classSupernova::$db->doDelete("DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");
     }
   }
-  doquery ( "DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
+  classSupernova::$db->doDelete("DELETE FROM `{{statpoints}}` WHERE `stat_type` = '1' AND `id_owner` = '" . $UserID . "';");
 
   DBStaticPlanet::db_planet_list_delete_by_owner($UserID);
 
-  doquery ( "DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
+  classSupernova::$db->doDelete("DELETE FROM `{{messages}}` WHERE `message_sender` = '" . $UserID . "';");
+  classSupernova::$db->doDelete("DELETE FROM `{{messages}}` WHERE `message_owner` = '" . $UserID . "';");
+  classSupernova::$db->doDelete("DELETE FROM `{{notes}}` WHERE `owner` = '" . $UserID . "';");
   FleetList::db_fleet_list_delete_by_owner($UserID);
-//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
-//  doquery ( "DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
-  doquery ( "DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
+//  doDelete("DELETE FROM `{{rw}}` WHERE `id_owner1` = '" . $UserID . "';");
+//  doDelete("DELETE FROM `{{rw}}` WHERE `id_owner2` = '" . $UserID . "';");
+  classSupernova::$db->doDelete("DELETE FROM `{{buddy}}` WHERE `BUDDY_SENDER_ID` = '" . $UserID . "';");
+  classSupernova::$db->doDelete("DELETE FROM `{{buddy}}` WHERE `BUDDY_OWNER_ID` = '" . $UserID . "';");
+  classSupernova::$db->doDelete("DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
 
 
   classSupernova::db_del_record_by_id(LOC_USER, $UserID);
-  doquery ( "DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
+  classSupernova::$db->doDelete("DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
   classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->db_loadItem('users_amount') - 1);
   sn_db_transaction_commit();
 }

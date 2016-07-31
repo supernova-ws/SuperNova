@@ -539,7 +539,7 @@ class classCache {
 //
 //    if($force_db_remove)
 //    {
-//      doquery("DELETE FROM {{{$table_name}}} WHERE `{$table['id']}` = '{$id}';");
+//      doDelete("DELETE FROM {{{$table_name}}} WHERE `{$table['id']}` = '{$id}';");
 //    }
 //  }
 //

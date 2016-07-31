@@ -16,7 +16,7 @@ class DBStaticFleetMissile {
    * @param $fleetRow
    */
   public static function db_missile_delete($fleetRow) {
-    doquery("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
+    classSupernova::$db->doDelete("DELETE FROM {{iraks}} WHERE id = '{$fleetRow['id']}';");
   }
 
   /**

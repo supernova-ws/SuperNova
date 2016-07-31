@@ -200,7 +200,7 @@ function db_player_name_exists($player_name_unsafe) {
 
   $player_name_safe = classSupernova::$db->db_escape($player_name_unsafe);
 
-  $player_name_exists = classSupernova::$db->doquery("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
+  $player_name_exists = classSupernova::$db->doQueryFetch("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
 
   return !empty($player_name_exists);
 }
@@ -210,7 +210,7 @@ function db_player_name_exists($player_name_unsafe) {
  * @param $username_safe
  */
 function db_player_name_history_replace($user, $username_safe) {
-  doquery("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+  doReplace("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
 }
 
 
@@ -234,7 +234,7 @@ function db_ANNONCE_insert_set($users, $metalvendre, $cristalvendre, $deutvendre
 }
 
 function db_ANNONCE_delete_by_id($GET_id) {
-  return doquery("DELETE FROM `{{annonce}}` WHERE `id` = {$GET_id}");
+  return classSupernova::$db->doDelete("DELETE FROM `{{annonce}}` WHERE `id` = {$GET_id}");
 }
 
 function db_ANNONCE_LIST_select_all() {
@@ -312,7 +312,7 @@ function db_blitz_reg_update_results($blitz_result_data, $current_round) {
 }
 
 function db_blitz_reg_delete($user, $current_round) {
-  doquery("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
+  classSupernova::$db->doDelete("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
 }
 
 
@@ -341,7 +341,7 @@ function db_universe_get($uni_galaxy, $uni_system) {
  * @param $uni_row
  */
 function db_universe_rename($uni_galaxy, $uni_system, $uni_row) {
-  doquery("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
+  doReplace("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
 }
 
 
@@ -409,11 +409,11 @@ function db_log_list_get_last_100() {
  * @param $delete
  */
 function db_log_delete_by_id($delete) {
-  doquery("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
+  classSupernova::$db->doDelete("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
 }
 
 function db_log_delete_update_and_stat_calc() {
-  doquery("DELETE FROM `{{logs}}` WHERE `log_code` IN (103, 180, 191);");
+  classSupernova::$db->doDelete("DELETE FROM `{{logs}}` WHERE `log_code` IN (103, 180, 191);");
 }
 
 /**
@@ -561,7 +561,7 @@ function db_quest_get($quest_id) {
  * @param $quest_id
  */
 function db_quest_delete($quest_id) {
-  doquery("DELETE FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
+  classSupernova::$db->doDelete("DELETE FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
 }
 
 /**

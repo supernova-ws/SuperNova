@@ -13,7 +13,7 @@ class DBStaticNews {
   }
 
   public static function db_news_delete_by_id($announce_id) {
-    doquery("DELETE FROM {{announce}} WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
+    classSupernova::$db->doDelete("DELETE FROM {{announce}} WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
   }
 
   public static function db_news_with_survey_select_by_id($announce_id) {

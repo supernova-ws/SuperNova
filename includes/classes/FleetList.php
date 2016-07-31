@@ -27,7 +27,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a50.9
+   * @version 41a50.95
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -62,7 +62,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.9
+   * @version 41a50.95
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -80,7 +80,7 @@ class FleetList extends ContainerArrayOfObject {
    */
   public static function db_fleet_list_delete_by_owner($owner_id) {
     DBStaticUnit::db_unit_list_delete($owner_id, LOC_FLEET);
-    return doquery("DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '{$owner_id}';");
+    return classSupernova::$db->doDelete("DELETE FROM `{{fleets}}` WHERE `fleet_owner` = '{$owner_id}';");
   }
   /**
    * LIST STAT - DEPRECATED
@@ -116,7 +116,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.9
+   * @version 41a50.95
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.9
+   * @version 41a50.95
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(

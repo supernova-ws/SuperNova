@@ -175,6 +175,19 @@ function sn_db_transaction_rollback() {
 function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
   return classSupernova::$gc->db->doquery($query, $table, $fetch, $skip_query_check);
 }
+function doQueryFetch($query, $skip_query_check = false) {
+  return classSupernova::$gc->db->doQueryFetch($query, $skip_query_check);
+}
+function doInsert($query) {
+  return classSupernova::$gc->db->doInsert($query);
+}
+function doReplace($query) {
+  return classSupernova::$gc->db->doReplace($query);
+}
+function doUpdate($query) {
+  return classSupernova::$gc->db->doDelete($query);
+}
+
 function db_fetch(&$query) {
   return classSupernova::$gc->db->db_fetch($query);
 }

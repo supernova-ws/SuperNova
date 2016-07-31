@@ -291,7 +291,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       break;
 
 //      default:
-//        doquery("DELETE FROM `{{_fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
+//        doDelete("DELETE FROM `{{_fleets}}` WHERE `fleet_id` = '{$fleet_row['fleet_id']}' LIMIT 1;");
 //      break;
     }
     sn_db_transaction_commit();

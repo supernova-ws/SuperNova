@@ -820,7 +820,7 @@ abstract class sn_module_payment extends sn_module {
 
   protected function db_get_by_id($payment_id_unsafe) {
     $payment_id_internal_safe = $this->db->db_escape($payment_id_unsafe);
-    $payment = $this->db->doquery("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_id` = '{$payment_id_internal_safe}' LIMIT 1 FOR UPDATE;", true);
+    $payment = $this->db->doQueryFetch("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_id` = '{$payment_id_internal_safe}' LIMIT 1 FOR UPDATE;");
     return $this->db_assign_payment($payment);
   }
 

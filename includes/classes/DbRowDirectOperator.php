@@ -29,7 +29,7 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   public function deleteById($entity) {
     $db = $entity->getDbStatic();
 
-    $db->doquery("DELETE FROM `{{" . $entity->getTableName() . "}}` WHERE `{$entity->getIdFieldName()}` = '{$entity->dbId}' LIMIT 1;");
+    $db->doDelete("DELETE FROM `{{" . $entity->getTableName() . "}}` WHERE `{$entity->getIdFieldName()}` = '{$entity->dbId}' LIMIT 1;");
 
     return $db->db_affected_rows();
   }
@@ -55,7 +55,7 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
       return 0;
     }
 
-    $db->doquery("INSERT INTO `{{" . $entity->getTableName() . "}}` SET " . $query);
+    $db->doInsert("INSERT INTO `{{" . $entity->getTableName() . "}}` SET " . $query);
 
     // TODO Exceptiion if db_insert_id() is empty
     return $entity->dbId = $db->db_insert_id();

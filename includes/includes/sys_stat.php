@@ -212,9 +212,9 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation
-  // doquery("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
+  // doDelete("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
   $classConfig = classSupernova::$config;
-  doquery("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
+  classSupernova::$db->doDelete("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
   doquery("UPDATE {{statpoints}} SET `stat_code` = `stat_code` + 1;");
 
   sta_set_time_limit('posting new user stats to DB');

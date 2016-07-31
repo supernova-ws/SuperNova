@@ -78,7 +78,7 @@ class DBStaticFleetACS {
    * @param $fleet_group_id_list
    */
   public static function db_acs_delete_by_list($fleet_group_id_list) {
-    doquery("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
+    classSupernova::$db->doDelete("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
   }
 
 
