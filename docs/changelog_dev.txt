@@ -1108,6 +1108,11 @@ Call Stack
 
 
 WORKING ON
++    Транзакции внести в DB
+        - make Transaction methods non-static
+
+    doquery() - убрать параметр "таблица"
+    SnCache сделать DI
     V2Unit
         sn_db_unit_changeset_prepare
     classLocale => SnLocale

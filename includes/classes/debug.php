@@ -3,6 +3,8 @@
  * Some helpers to sweeten dev's life
  */
 
+use \DBAL\DbTransaction;
+
 /*
  * debug.php ::  Clase Debug, maneja reporte de eventos
  *
@@ -88,7 +90,7 @@ class debug {
     static $exclude_functions = array('doquery', 'db_query', 'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id');
 
     $result = array();
-    $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
+    $transaction_id = DbTransaction::getNextQueryTransactionId();
     $result[] = "tID {$transaction_id}";
     foreach($backtrace as $a_trace) {
       if(in_array($a_trace['function'], $exclude_functions)) {

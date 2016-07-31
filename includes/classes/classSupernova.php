@@ -1,6 +1,7 @@
 <?php
 
 use Vector\Vector;
+use \DBAL\DbTransaction;
 
 class classSupernova {
   /**
@@ -39,6 +40,11 @@ class classSupernova {
   public static $db_name = '';
 
   /**
+   * @var \DBAL\DbTransaction
+   */
+  public static $transaction;
+
+  /**
    * @var SnCache $dbCache
    */
   public static $dbCache;
@@ -74,9 +80,6 @@ class classSupernova {
   public static $auth = null;
 
 
-  public static $db_in_transaction = false;
-  public static $db_records_locked = false;
-  public static $transaction_id = 0;
   public static $user = array();
   /**
    * @var userOptions
@@ -185,25 +188,12 @@ class classSupernova {
     ),
   );
 
-//  /**
-//   * @param $db db_mysql
-//   */
-//  public static function init_main_db($db) {
-//    self::$db = $db;
-//    self::$db->sn_db_connect();
-//  }
-
 
   public static function log_file($message, $spaces = 0) {
     if (self::$debug) {
       self::$debug->log_file($message, $spaces);
     }
   }
-
-  public static function debug_set_handler($debug) {
-    self::$debug = $debug;
-  }
-
 
   // TODO Вынести в отдельный объект
   /**
@@ -219,80 +209,19 @@ class classSupernova {
    * @return bool Текущий статус транзакции
    */
   public static function db_transaction_check($status = null) {
-    $error_msg = false;
-    if ($status && !static::$db_in_transaction) {
-      $error_msg = 'No transaction started for current operation';
-    } elseif ($status === null && static::$db_in_transaction) {
-      $error_msg = 'Transaction is already started';
-    }
-
-    if (!empty($error_msg)) {
-      // TODO - Убрать позже
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
-      $backtrace = debug_backtrace();
-      array_shift($backtrace);
-      pdump($backtrace);
-      die($error_msg);
-    }
-
-    return static::$db_in_transaction;
+    return DbTransaction::db_transaction_check($status);
   }
 
   public static function db_transaction_start($level = '') {
-    static::db_transaction_check(null);
-
-    $level ? doquery('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
-
-    static::$transaction_id++;
-    doquery('START TRANSACTION');
-
-    if (classSupernova::$config->db_manual_lock_enabled) {
-      classSupernova::$config->db_loadItem('var_db_manually_locked');
-      classSupernova::$config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
-    }
-
-    static::$db_in_transaction = true;
-    SnCache::locatorReset();
-    SnCache::queriesReset();
-
-    return static::$transaction_id;
+    return DbTransaction::db_transaction_start($level);
   }
 
   public static function db_transaction_commit() {
-    static::db_transaction_check(true);
-
-    if (!empty(static::$delayed_changset)) {
-      static::db_changeset_apply(static::$delayed_changset, true);
-    }
-    doquery('COMMIT');
-
-    return static::db_transaction_clear();
+    return DbTransaction::db_transaction_commit();
   }
 
   public static function db_transaction_rollback() {
-    // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
-
-    if (!empty(static::$delayed_changset)) {
-//      static::db_changeset_revert();
-      // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
-      // Для этапа 2 - чистить только записи
-      // Для этапа 3 - возвращать всё
-      SnCache::cache_clear_all(true);
-    }
-    doquery('ROLLBACK');
-
-    return static::db_transaction_clear();
-  }
-
-  protected static function db_transaction_clear() {
-    static::$delayed_changset = array();
-    SnCache::cache_lock_unset_all();
-
-    static::$db_in_transaction = false;
-    static::$db_records_locked = false;
-    static::$transaction_id++;
-
-    return static::$transaction_id;
+    return DbTransaction::db_transaction_rollback();
   }
 
   /**
@@ -1003,6 +932,10 @@ class classSupernova {
       return $db;
     };
 
+    $gc->transaction = function ($gc) {
+      return new DbTransaction($gc);
+    };
+
     $gc->debug = function ($c) {
       return new debug();
     };
@@ -1055,18 +988,15 @@ class classSupernova {
   public static function init_global_objects() {
     self::$debug = self::$gc->debug;
     self::$db = self::$gc->db;
-//    classSupernova::init_main_db(new db_mysql());
     self::$user_options = new userOptions(0);
 
     // Initializing global 'cacher' object
-//    static::$cache = new classCache(classSupernova::$cache_prefix);
     self::$cache = self::$gc->cache;
 
     empty(static::$cache->tables) ? sys_refresh_tablelist() : false;
     empty(static::$cache->tables) ? die('DB error - cannot find any table. Halting...') : false;
 
     // Initializing global "config" object
-//    static::$config = new classConfig(classSupernova::$cache_prefix);
     static::$config = self::$gc->config;
 
     // Initializing statics
