@@ -182,7 +182,7 @@ function doInsert($query) {
   return classSupernova::$gc->db->doInsert($query);
 }
 function doUpdate($query) {
-  return classSupernova::$gc->db->doDelete($query);
+  return classSupernova::$gc->db->doUpdate($query);
 }
 
 function db_fetch(&$query) {

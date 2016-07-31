@@ -27,7 +27,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a50.95
+   * @version 41a50.97
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -62,7 +62,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.95
+   * @version 41a50.97
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -89,7 +89,7 @@ class FleetList extends ContainerArrayOfObject {
    */
   // Для потокового чтения данных
   public static function dbQueryAllId() {
-    return doquery("SELECT `fleet_id` FROM {{fleets}};");
+    return doquery("SELECT `fleet_id` FROM `{{fleets}}`;");
   }
   /**
    * COUNT - Get fleet count by condition
@@ -116,7 +116,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.95
+   * @version 41a50.97
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.95
+   * @version 41a50.97
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(

@@ -154,7 +154,7 @@ function db_stat_list_update_ally_stats() {
 }
 
 function db_stat_list_delete_ally_player() {
-  return doquery('DELETE s FROM `{{statpoints}}` AS s JOIN `{{users}}` AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL');
+  return classSupernova::$db->doDelete("DELETE s FROM `{{statpoints}}` AS s JOIN `{{users}}` AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL");
 }
 
 

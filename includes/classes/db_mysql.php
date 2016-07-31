@@ -255,6 +255,10 @@ class db_mysql {
     return $this->doquery($query);
   }
 
+  public function doDeleteRow($query) {
+    return $this->doquery($query);
+  }
+
   public function doReplace($query) {
     return $this->doquery($query);
   }

@@ -56,10 +56,10 @@ function sys_stat_calculate_flush(&$data, $force = false) {
   }
 
   if(!empty($data)) {
-    doquery('REPLACE INTO {{statpoints}}
+    classSupernova::$db->doReplace("REPLACE INTO `{{statpoints}}`
       (`id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_points`, `tech_count`, `build_points`, `build_count`,
        `defs_points`, `defs_count`, `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`,
-       `total_count`, `stat_date`) VALUES ' . implode(',', $data)
+       `total_count`, `stat_date`) VALUES " . implode(',', $data)
     );
   }
 
@@ -162,7 +162,7 @@ function sys_stat_calculate() {
         $unit_cost_cache[$unit_id][0] = get_unit_param($unit_id, P_COST);
       }
       $unit_cost_data = &$unit_cost_cache[$unit_id][0];
-      $points[$user_id][UNIT_SHIPS] += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit_amount;
+      $points[$user_id][UNIT_SHIPS] += ($unit_cost_data[RES_METAL] * $rate[RES_METAL] + $unit_cost_data[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $unit_cost_data[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $unit->count;
     }
 
     $resources = $objFleet->resourcesGetTotalInMetal($rate);
@@ -215,7 +215,7 @@ function sys_stat_calculate() {
   // doDelete("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
   $classConfig = classSupernova::$config;
   classSupernova::$db->doDelete("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
-  doquery("UPDATE {{statpoints}} SET `stat_code` = `stat_code` + 1;");
+  doquery("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
 
   sta_set_time_limit('posting new user stats to DB');
   $data = array();
@@ -244,7 +244,7 @@ function sys_stat_calculate() {
   // Updating Allie's stats
   sta_set_time_limit('posting new Alliance stats to DB');
   doquery(
-    "INSERT INTO {{statpoints}}
+    "INSERT INTO `{{statpoints}}`
       (`tech_points`, `tech_count`, `build_points`, `build_count`, `defs_points`, `defs_count`,
         `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`, `total_count`,
         `stat_date`, `id_owner`, `id_ally`, `stat_type`, `stat_code`,
@@ -256,10 +256,10 @@ function sys_stat_calculate() {
         SUM(u.`res_points`)+aus.`res_points`, SUM(u.`res_count`)+aus.`res_count`, SUM(u.`total_points`)+aus.`total_points`, SUM(u.`total_count`)+aus.`total_count`,
         " . SN_TIME_NOW . ", NULL, u.`id_ally`, 2, 1,
         a.tech_rank, a.build_rank, a.defs_rank, a.fleet_rank, a.res_rank, a.total_rank
-      FROM {{statpoints}} AS u
-        JOIN {{alliance}} AS al ON al.id = u.id_ally
-        LEFT JOIN {{statpoints}} AS aus ON aus.id_owner = al.ally_user_id AND aus.stat_type = 1 AND aus.stat_code = 1
-        LEFT JOIN {{statpoints}} AS a ON a.id_ally = u.id_ally AND a.stat_code = 2 AND a.stat_type = 2
+      FROM `{{statpoints}}` AS u
+        JOIN `{{alliance}}` AS al ON al.id = u.id_ally
+        LEFT JOIN `{{statpoints}}` AS aus ON aus.id_owner = al.ally_user_id AND aus.stat_type = 1 AND aus.stat_code = 1
+        LEFT JOIN `{{statpoints}}` AS a ON a.id_ally = u.id_ally AND a.stat_code = 2 AND a.stat_type = 2
       WHERE u.`stat_type` = 1 AND u.stat_code = 1 AND u.id_ally<>0
       GROUP BY u.`id_ally`"
   );
@@ -269,7 +269,7 @@ function sys_stat_calculate() {
 
   // Some variables we need to update ranks
   $qryResetRowNum = 'SET @rownum=0;';
-  $qryFormat = 'UPDATE {{statpoints}} SET `%1$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = %2$d AND `stat_code` = 1 ORDER BY `%1$s_points` DESC, `id_owner` ASC, `id_ally` ASC;';
+  $qryFormat = "UPDATE `{{statpoints}}` SET `%1\$s_rank` = (SELECT @rownum:=@rownum+1) WHERE `stat_type` = '%2\$d' AND `stat_code` = 1 ORDER BY `%1\$s_points` DESC, `id_owner` ASC, `id_ally` ASC;";
 
   $rankNames = array('tech', 'build', 'defs', 'fleet', 'res', 'total');
 
@@ -278,7 +278,7 @@ function sys_stat_calculate() {
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating player rank '{$rankName}'", false);
     doquery($qryResetRowNum);
-    doquery(sprintf($qryFormat, $rankName, 1));
+    classSupernova::$db->doUpdate(sprintf($qryFormat, $rankName, 1));
   }
 
   sta_set_time_limit("updating ranks for Alliances");
@@ -286,13 +286,13 @@ function sys_stat_calculate() {
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
     doquery($qryResetRowNum);
-    doquery(sprintf($qryFormat, $rankName, 2));
+    classSupernova::$db->doUpdate(sprintf($qryFormat, $rankName, 2));
   }
 
   sta_set_time_limit('setting previous user stats from archive');
   doquery(
-    "UPDATE {{statpoints}} AS new
-      LEFT JOIN {{statpoints}} AS old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = new.stat_type
+    "UPDATE `{{statpoints}}` AS new
+      LEFT JOIN `{{statpoints}}` AS old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
       new.tech_old_rank = old.tech_rank,
       new.build_old_rank = old.build_rank,
@@ -305,8 +305,8 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('setting previous allies stats from archive');
   doquery(
-    "UPDATE {{statpoints}} AS new
-      LEFT JOIN {{statpoints}} AS old ON old.id_ally = new.id_ally AND old.stat_code = 2 AND old.stat_type = new.stat_type
+    "UPDATE `{{statpoints}}` AS new
+      LEFT JOIN `{{statpoints}}` AS old ON old.id_ally = new.id_ally AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
       new.tech_old_rank = old.tech_rank,
       new.build_old_rank = old.build_rank,
