@@ -7,14 +7,14 @@
  *
  * Created by Gorlum 21.04.2015 3:51
  *
- * version #41a50.81#
+ * version #41a50.104#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a50.81# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a50.104# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -607,9 +607,7 @@ class core_auth extends sn_module {
 
   /**
    * Проверяет доступ авторизированных аккаунтов к заявленным в трансляции юзерам
-   * @version 4.5
    */
-  // OK v4.5
   protected function get_accessible_user_list() {
     // Пробиваем все ИД игроков по базе - есть ли вообще такие записи
     // Вообще-то это не особо нужно - у нас по определению стоят констраинты
@@ -632,10 +630,7 @@ class core_auth extends sn_module {
 
   /**
    * Выбирает активного игрока из куки или из списка доступных игроков
-   *
-   * @version 4.5
    */
-  // OK v4.5
   protected function get_active_user() {
     // Проверяем куку "текущего игрока" из браузера
     if (

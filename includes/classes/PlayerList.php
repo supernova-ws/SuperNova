@@ -11,7 +11,6 @@ class PlayerList extends ContainerArrayOfObject {
   /**
    * @return Player
    *
-   * @version 41a50.9
    */
   public function _createElement() {
     return new Player();
@@ -20,7 +19,6 @@ class PlayerList extends ContainerArrayOfObject {
   /**
    * @param int $player_id
    *
-   * @version 41a50.9
    */
   protected function db_load_player_by_id($player_id) {
     if(isset($this[$player_id])) {

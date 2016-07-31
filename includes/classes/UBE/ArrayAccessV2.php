@@ -30,7 +30,6 @@ class ArrayAccessV2 implements ArrayAccess, Iterator {
   /**
    * @return stdClass
    *
-   * @version 41a50.10
    */
   public function _createElement() {
     return new stdClass();

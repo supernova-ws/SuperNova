@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a7.59# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a50.104# copyright © 2009-2015 Gorlum',
 
     'root_relative' => '',
 
@@ -133,11 +133,9 @@ class auth_local extends auth_abstract {
 
   /**
    * Попытка залогиниться с использованием метода $method
-   * @version 4.5
    *
    * @param string $method_name
    */
-  // OK v4.5
   public function login() {
     // TODO Проверяем поддерживаемость метода
     // TODO Пытаемся залогиниться
@@ -369,11 +367,9 @@ class auth_local extends auth_abstract {
 
   /**
    * Пытается зарегестрировать пользователя по введенным данным
-   * @version 4.5
    *
    * @return mixed
    */
-  // OK v4.5
   protected function register() {
     // TODO РЕГИСТРАЦИЯ ВСЕГДА ДОЛЖНА ЛОГИНИТЬ ПОЛЬЗОВАТЕЛЯ!
     $this->flog('Регистрация: начинаем. Провайдер ' . $this->provider_id);
@@ -422,11 +418,9 @@ class auth_local extends auth_abstract {
 
   /**
    * Пытается залогинить пользователя по куке
-   * @version 4.5
    *
    * @return int Результат попытки
    */
-  // OK v4.5
   protected function login_cookie() {
     if($this->account_login_status != LOGIN_UNDEFINED) {
       return $this->account_login_status;
@@ -459,7 +453,6 @@ class auth_local extends auth_abstract {
 
   /**
    * Пытается залогинить пользователя по имени аккаунта и паролю
-   * @version 4.5
    *
    * @return mixed
    */

@@ -8,7 +8,6 @@ class UBEDebug {
   /**
    *
    *
-   * @version 41a6.49
    */
   public static function unit_dump_header() {
     if(!defined('DEBUG_UBE')) {
@@ -45,7 +44,6 @@ class UBEDebug {
    * @param string       $desc
    * @param UBEUnit|null $before
    *
-   * @version 41a6.49
    */
   public static function unit_dump(UBEUnit $unit, $desc = '', UBEUnit $before = null) {
     if(!defined('DEBUG_UBE')) {
@@ -83,7 +81,6 @@ class UBEDebug {
   /**
    *
    *
-   * @version 41a6.49
    */
   public static function unit_dump_footer() {
     if(!defined('DEBUG_UBE')) {
@@ -124,7 +121,6 @@ class UBEDebug {
    * @param string       $field
    * @param UBEUnit|null $before
    *
-   * @version 41a6.49
    */
   public static function unit_dump_delta(UBEUnit $unit, $field, UBEUnit $before = null) {
     if(!defined('DEBUG_UBE')) {

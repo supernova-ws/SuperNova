@@ -19,7 +19,6 @@ class UBEPlayerList extends PlayerList {
   /**
    * @return UBEPlayer
    *
-   * @version 41a6.16
    */
   public function _createElement() {
     return new UBEPlayer();

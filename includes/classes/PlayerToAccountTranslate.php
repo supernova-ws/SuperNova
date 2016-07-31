@@ -48,14 +48,12 @@ class PlayerToAccountTranslate {
 
   /**
    * Возвращает из `account_translate` список пользователей, которые прилинкованы к списку аккаунтов на указанном провайдере
-   * @version 4.5
    *
    * @param int $provider_id_unsafe Идентификатор провайдера авторизации
    * @param int|int[] $account_list
    *
    * @return array
    */
-  // OK v4.7
   public static function db_translate_get_users_from_account_list($provider_id_unsafe, $account_list) {
     static::init();
 

@@ -883,7 +883,6 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a50.102
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -996,7 +995,6 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.102
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(

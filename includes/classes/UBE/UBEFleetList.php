@@ -9,7 +9,6 @@
  * @method UBEFleet offsetGet($offset)
  * @property UBEFleet[] $_container
  *
- * @version 41a50.102
  */
 class UBEFleetList extends FleetList {
 
@@ -35,7 +34,6 @@ class UBEFleetList extends FleetList {
   /**
    * UBEFleetList constructor.
    *
-   * @version 41a50.102
    */
   public function __construct() {
     parent::__construct();
@@ -51,7 +49,6 @@ class UBEFleetList extends FleetList {
   /**
    * @return UBEFleet
    *
-   * @version 41a50.102
    */
   public function _createElement() {
     return new UBEFleet();
@@ -60,7 +57,6 @@ class UBEFleetList extends FleetList {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a50.102
    */
   public function ube_insert_from_Fleet(Fleet $objFleet) {
     $this[$objFleet->dbId] = new UBEFleet();
@@ -127,7 +123,6 @@ class UBEFleetList extends FleetList {
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    *
-   * @version 41a50.102
    */
   public function ube_analyze_fleets($is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя
@@ -300,7 +295,6 @@ class UBEFleetList extends FleetList {
    * @param Fleet         $objFleet
    * @param UBEPlayerList $players
    *
-   * @version 41a50.102
    */
   public function ubeInitGetAttackers(Fleet $objFleet, UBEPlayerList $players) {
     if($objFleet->group_id) {
@@ -319,7 +313,6 @@ class UBEFleetList extends FleetList {
    *
    * @param Fleet $objFleet
    *
-   * @version 41a50.102
    */
   public function ubeInitGetFleetsOnHold(Fleet $objFleet, UBEPlayerList $players) {
     $fleets_added = $this->dbLoadWhere(

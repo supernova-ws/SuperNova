@@ -21,7 +21,6 @@ class UBEUnitList extends UnitList {
   /**
    * @return UBEUnit
    *
-   * @version 41a6.30
    */
   public function _createElement() {
     return new UBEUnit();
@@ -29,7 +28,6 @@ class UBEUnitList extends UnitList {
 
   /**
    * @return float
-   * @version 41a6.30
    */
   public function unitCountLost() {
     return $this->getSumProperty('units_lost');
@@ -37,7 +35,6 @@ class UBEUnitList extends UnitList {
 
   /**
    * @return int
-   * @version 41a6.30
    */
   public function unitCountReapers() {
     return $this->unitsCountById(SHIP_HUGE_DEATH_STAR);

@@ -179,7 +179,6 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
   /**
    * @return Unit
    *
-   * @version 41a50.25
    */
   // TODO - Factory
   public function _createElement() {

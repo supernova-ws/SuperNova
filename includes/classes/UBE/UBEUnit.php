@@ -92,7 +92,6 @@ class UBEUnit extends Unit {
 
   /**
    *
-   * @version 41a50.84
    */
   public function calc_pool_stats() {
     // Заполняем информацию о кораблях в информации флота
@@ -132,7 +131,6 @@ class UBEUnit extends Unit {
    *
    * @param Bonus $bonus
    *
-   * @version 41a50.84
    */
   public function addBonus(Bonus $bonus) {
     $this->unit_bonus->mergeBonus($bonus);
@@ -143,7 +141,6 @@ class UBEUnit extends Unit {
   /**
    * @param bool $is_simulator
    *
-   * @version 41a50.84
    */
   public function ube_analyze_unit($is_simulator) {
     // Вычисляем сколько юнитов осталось и сколько потеряно

@@ -231,7 +231,6 @@ class Unit extends DBRowLocation {
    * @param array $db_row
    *
    * @internal param Unit $that
-   * @version 41a50.70
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();
