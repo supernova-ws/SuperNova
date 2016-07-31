@@ -1133,6 +1133,14 @@ doquery\s*\(\s*[\"\']\s*update
 
 , '', true
 
+classsupenorva  public static function db_query($query, $fetch = false, $skip_lock = false) {
+    - убрать!
+
+- public function doQueryFetch($query, $skip_query_check = false) {
+        ???
+
+
+
 +            - classSupernova:db->doDelete
             - classSupernova:db->doDeleteRow
 +            - db->doUpdate

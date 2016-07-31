@@ -66,11 +66,14 @@ class BuddyModel extends \Entity {
    */
   public function db_buddy_check_relation($playerIdSafe, $newFriendIdSafe) {
     $result = static::$dbStatic->doQueryFetchValue(
-      "SELECT `BUDDY_ID` FROM `{{buddy}}` WHERE
-      (`BUDDY_SENDER_ID` = {$playerIdSafe} AND `BUDDY_OWNER_ID` = {$newFriendIdSafe})
-      OR
-      (`BUDDY_SENDER_ID` = {$newFriendIdSafe} AND `BUDDY_OWNER_ID` = {$playerIdSafe})
-      LIMIT 1 FOR UPDATE;"
+      "SELECT `BUDDY_ID` 
+      FROM `{{buddy}}` 
+      WHERE
+        (`BUDDY_SENDER_ID` = {$playerIdSafe} AND `BUDDY_OWNER_ID` = {$newFriendIdSafe})
+        OR
+        (`BUDDY_SENDER_ID` = {$newFriendIdSafe} AND `BUDDY_OWNER_ID` = {$playerIdSafe})
+      LIMIT 1 
+      FOR UPDATE;"
     );
 
     if (!empty($result)) {
@@ -86,7 +89,7 @@ class BuddyModel extends \Entity {
    */
   // TODO - make it non-static
   public static function db_buddy_list_by_user($db, $user_id) {
-    return ($user_id = idval($user_id)) ? $db->doQueryIterator(
+    return ($user_id = idval($user_id)) ? $db->doSelectIterator(
       "SELECT
       b.*,
       IF(b.BUDDY_OWNER_ID = {$user_id}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,

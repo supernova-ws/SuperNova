@@ -59,7 +59,7 @@ class DBStaticUser extends DBStaticRecord {
       (!empty($planet['id_owner']) ? ' OR `id` = ' . idval($planet['id_owner']) : '')
       . " FOR UPDATE";
 
-    static::getDb()->doquery($query);
+    static::getDb()->doSelect($query);
   }
 
   /**
@@ -69,7 +69,11 @@ class DBStaticUser extends DBStaticRecord {
    */
   public static function db_user_count($online = false) {
     return intval(static::getDb()->doQueryFetchValue(
-      'SELECT COUNT(`id`) AS `user_count` FROM `{{users}}` WHERE `user_as_ally` IS NULL' . ($online ? ' AND `onlinetime` > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : '')
+      "SELECT COUNT(`id`) AS `user_count` 
+      FROM `{{users}}` 
+      WHERE 
+        `user_as_ally` IS NULL" .
+        ($online ? ' AND `onlinetime` > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : '')
     ));
   }
 
@@ -142,7 +146,7 @@ class DBStaticUser extends DBStaticRecord {
       GROUP BY `user_lastip`
       HAVING COUNT(*) > 1";
 
-    return static::getDb()->doQueryIterator($query);
+    return static::getDb()->doSelectIterator($query);
   }
 
   public static function db_player_list_blitz_delete_players() {

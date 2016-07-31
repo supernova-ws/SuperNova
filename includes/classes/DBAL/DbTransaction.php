@@ -88,7 +88,7 @@ class DbTransaction {
     if (!empty(classSupernova::$delayed_changset)) {
       classSupernova::db_changeset_apply(classSupernova::$delayed_changset, true);
     }
-    $this->db->doquery('COMMIT');
+    $this->db->doExecute('COMMIT');
 
     return $this->db_transaction_clear();
   }
@@ -102,7 +102,7 @@ class DbTransaction {
       // Для этапа 3 - возвращать всё
       SnCache::cache_clear_all(true);
     }
-    $this->db->doquery('ROLLBACK');
+    $this->db->doExecute('ROLLBACK');
 
     return $this->db_transaction_clear();
   }

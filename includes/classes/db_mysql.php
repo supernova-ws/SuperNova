@@ -195,17 +195,12 @@ class db_mysql {
 
   /**
    * @param string $query
-   * @param string $table
    * @param bool   $fetch
    * @param bool   $skip_query_check
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    if (!is_string($table)) {
-      $fetch = $table;
-    }
-
+  public function doquery($query, $fetch = false, $skip_query_check = false) {
     if (!$this->connected) {
       $this->sn_db_connect();
     }
@@ -242,47 +237,64 @@ class db_mysql {
     return $queryResult;
   }
 
+
   // Just wrappers to distinguish query types
-  public function doInsert($query) {
-    return $this->doquery($query);
+  public function doExecute($query, $skip_query_check = false) {
+    return $this->doquery($query, false, $skip_query_check);
   }
 
-  public function doUpdate($query) {
-    return $this->doquery($query);
+  // TODO - unused ??????
+  public function doSelectUnsafe($query) {
+    return $this->doExecute($query, true);
   }
 
-  public function doDelete($query) {
-    return $this->doquery($query);
-  }
-
-  public function doDeleteRow($query) {
-    return $this->doquery($query);
-  }
-
-  public function doReplace($query) {
-    return $this->doquery($query);
+  public function doSelect($query) {
+    return $this->doExecute($query);
   }
 
   /**
    * @param string $query
-   * @param bool   $skip_query_check
    *
    * @return array|null
    */
-  public function doQueryFetch($query, $skip_query_check = false) {
-    $queryResult = $this->doquery($query, '', false, $skip_query_check);
-
-    return $this->db_fetch($queryResult);
+  public function doSelectFetch($query) {
+    return $this->db_fetch($this->doSelect($query));
   }
+
+  public function doSelectLock($query, $skip_lock = false) {
+    return $this->doExecute($query);
+  }
+
+  public function doInsert($query) {
+    return $this->doExecute($query);
+  }
+
+  public function doReplace($query) {
+    return $this->doExecute($query);
+  }
+
+
+  public function doUpdate($query) {
+    return $this->doExecute($query);
+  }
+
+
+  public function doDelete($query) {
+    return $this->doExecute($query);
+  }
+
+  public function doDeleteRow($query) {
+    return $this->doExecute($query);
+  }
+
 
   /**
    * @param string $query
-   * @param bool   $skip_query_check
    *
    * @return mixed|null
    */
-  public function doQueryFetchValue($query, $skip_query_check = false) {
-    $row = $this->doQueryFetch($query, $skip_query_check);
+  public function doQueryFetchValue($query) {
+    $row = $this->doSelectFetch($query);
 
     return is_array($row) ? reset($row) : null;
   }
@@ -291,14 +303,13 @@ class db_mysql {
    * Returns iterator to iterate through mysqli_result
    *
    * @param string $query
-   * @param bool   $skip_query_check
    *
    * return DbResultIterator
    *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  public function doQueryIterator($query, $skip_query_check = false) {
-    $queryResult = $this->doquery($query, '', false, $skip_query_check);
+  public function doSelectIterator($query) {
+    $queryResult = $this->doSelect($query);
 
     if ($queryResult instanceof mysqli_result) {
       $result = new DbMysqliResultIterator($queryResult);
@@ -314,14 +325,12 @@ class db_mysql {
    * @param bool               $skip_query_check
    */
   public function doStmtLockAll($stmt, $skip_query_check = false) {
-    $this->doquery(
+    $this->doExecute(
       $stmt
         ->select()
         ->field(1)
         ->setForUpdate()
         ->__toString(),
-      '',
-      false,
       $skip_query_check
     );
   }

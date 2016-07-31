@@ -439,8 +439,8 @@ class DbQueryConstructor extends DbSqlAware {
    *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  public function selectIterator($skip_query_check = false) {
-    return $this->getDb()->doQueryIterator($this->select()->__toString(), $skip_query_check);
+  public function selectIterator() {
+    return $this->getDb()->doSelectIterator($this->select()->__toString());
   }
 
   /**
@@ -448,8 +448,8 @@ class DbQueryConstructor extends DbSqlAware {
    *
    * @return array
    */
-  public function selectRow($skip_query_check = false) {
-    $result = $this->getDb()->doQueryFetch($this->select()->setFetchOne()->__toString(), $skip_query_check);
+  public function selectRow() {
+    $result = $this->getDb()->doSelectFetch($this->select()->setFetchOne()->__toString());
 
     return is_array($result) ? $result : array();
   }
@@ -459,8 +459,8 @@ class DbQueryConstructor extends DbSqlAware {
    *
    * @return mixed|null
    */
-  public function selectValue($skip_query_check = false) {
-    $result = $this->selectRow($skip_query_check);
+  public function selectValue() {
+    $result = $this->selectRow();
 
     return is_array($result) ? reset($result) : null;
   }

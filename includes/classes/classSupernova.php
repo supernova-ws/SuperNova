@@ -207,26 +207,8 @@ class classSupernova {
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
     foreach ($tables as $table_name => $condition) {
-      self::$db->doquery("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
+      self::$db->doSelect("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
     }
-  }
-
-  /**
-   * @param      $query
-   * @param bool $fetch
-   * @param bool $skip_lock
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public static function db_query($query, $fetch = false, $skip_lock = false) {
-    $select = strpos(strtoupper($query), 'SELECT') !== false;
-
-    $query .= $select && $fetch ? ' LIMIT 1' : '';
-    $query .= $select && !$skip_lock && static::$db->getTransaction()->check(false) ? ' FOR UPDATE' : '';
-
-    $result = self::$db->doquery($query, $fetch);
-
-    return $result;
   }
 
   /**
@@ -264,19 +246,19 @@ class classSupernova {
           $owner_location_type = $owner_data[P_LOCATION];
           $parent_id_list = array();
           // Выбираем родителей данного типа и соответствующие ИД текущего типа
-          $query = static::db_query(
+          $query = static::$db->doSelect(
             "SELECT
               distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id
             FROM {{{$location_info[P_TABLE_NAME]}}}" .
             ($filter ? ' WHERE ' . $filter : '') .
-            ($fetch ? ' LIMIT 1' : ''), false, true);
-
+            ($fetch ? ' LIMIT 1' : ''));
           while ($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if (!SnCache::cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
             }
           }
+
           // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
           if ($indexes_str = implode(',', $parent_id_list)) {
             $parent_id_field = static::$location_info[$owner_location_type][P_ID];
@@ -286,9 +268,10 @@ class classSupernova {
         }
       }
 
-      $query = static::db_query(
+      $query = static::$db->doSelect(
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
+        . " FOR UPDATE"
       );
       while ($row = db_fetch($query)) {
         // Caching record in row cache
@@ -332,8 +315,8 @@ class classSupernova {
 
     $id_field = static::$location_info[$location_type][P_ID];
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = static::db_query($q = "UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
-    {
+    // TODO Как-то вернуть может быть LIMIT 1 ?
+    if ($result = static::$db->doUpdate("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) {
       if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         // TODO - переделать под работу со структурированными $set
@@ -358,7 +341,7 @@ class classSupernova {
     $condition = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = static::db_query("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
+    if ($result = static::$db->doUpdate("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
       if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
@@ -379,7 +362,7 @@ class classSupernova {
   public static function db_ins_record($location_type, $set) {
     $set = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
+    if ($result = static::$db->doInsert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         $record_id = classSupernova::$db->db_insert_id();
@@ -402,7 +385,7 @@ class classSupernova {
     $fields = implode(',', array_keys($field_set));
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = static::db_query("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
+    if ($result = static::$db->doInsert("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
       if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         $record_id = classSupernova::$db->db_insert_id();
@@ -424,7 +407,7 @@ class classSupernova {
 
     $id_field = static::$location_info[$location_type][P_ID];
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
+    if ($result = static::$db->doDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       // Обновляем данные только если ряд был затронут
       if (static::$db->db_affected_rows()) {
         SnCache::cache_unset($location_type, $safe_record_id);
@@ -441,7 +424,7 @@ class classSupernova {
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = static::db_query("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
+    if ($result = static::$db->doDelete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
       // Обновляем данные только если ряд был затронут
       if (static::$db->db_affected_rows()) {
         // Обнуление кэша, потому что непонятно, что поменялось
@@ -515,9 +498,10 @@ class classSupernova {
       // Вытаскиваем запись
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
-      $user = static::db_query(
+      $user = static::$db->doSelectFetch(
         "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
-        , true);
+        . " FOR UPDATE"
+      );
       SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
     }
 
@@ -531,7 +515,7 @@ class classSupernova {
 
     if ($user === null && !empty($where_safe)) {
       // Вытаскиваем запись
-      $user = static::db_query("SELECT * FROM {{users}} WHERE {$where_safe}", true);
+      $user = static::$db->doSelectFetch("SELECT * FROM {{users}} WHERE {$where_safe}" . " FOR UPDATE");
 
       SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
     }

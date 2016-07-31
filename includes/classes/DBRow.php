@@ -414,7 +414,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
     $fields = implode(',', array_keys($field_set));
 
     $result = 0;
-    if (classSupernova::db_query("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
+    if (classSupernova::$db->doInsert("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
       $result = classSupernova::$db->db_insert_id();
     }
 
@@ -450,7 +450,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
 
     return empty($set_string)
       ? true
-      : classSupernova::db_query("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
+      : classSupernova::$db->doUpdate("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
   }
 
 }

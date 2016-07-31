@@ -200,7 +200,13 @@ function db_player_name_exists($player_name_unsafe) {
 
   $player_name_safe = classSupernova::$db->db_escape($player_name_unsafe);
 
-  $player_name_exists = classSupernova::$db->doQueryFetch("SELECT * FROM `{{player_name_history}}` WHERE `player_name` = '{$player_name_safe}' LIMIT 1 FOR UPDATE", true);
+  $player_name_exists = classSupernova::$db->doSelectFetch(
+    "SELECT * 
+    FROM `{{player_name_history}}` 
+    WHERE `player_name` = '{$player_name_safe}' 
+    LIMIT 1 
+    FOR UPDATE"
+  );
 
   return !empty($player_name_exists);
 }
