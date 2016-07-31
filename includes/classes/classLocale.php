@@ -136,7 +136,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
   public function usage_stat_load() {
     $this->stat_usage = classSupernova::$cache->lng_stat_usage  = array(); // TODO for debug
     if(empty($this->stat_usage)) {
-      $query = doquery("SELECT * FROM {{lng_usage_stat}}");
+      $query = doquery("SELECT * FROM `{{lng_usage_stat}}`");
       while($row = db_fetch($query)) {
         $this->stat_usage[$row['lang_code'] . ':' . $row['string_id'] . ':' . $row['file'] . ':' . $row['line']] = $row['is_empty'];
       }
@@ -145,14 +145,14 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
   public function usage_stat_save() {
     if(!empty($this->stat_usage_new)) {
       classSupernova::$cache->lng_stat_usage = $this->stat_usage;
-      doquery("SELECT 1 FROM {{lng_usage_stat}} LIMIT 1");
+      doquery("SELECT 1 FROM `{{lng_usage_stat}}` LIMIT 1");
       foreach($this->stat_usage_new as &$value) {
         foreach($value as &$value2) {
           $value2 = '"' . db_escape($value2) . '"';
         }
         $value = '(' . implode(',', $value) .')';
       }
-      doReplace("REPLACE INTO {{lng_usage_stat}} (lang_code,string_id,`file`,line,is_empty,locale) VALUES " . implode(',', $this->stat_usage_new));
+      classSupernova::$db->doReplace("REPLACE INTO `{{lng_usage_stat}}` (lang_code,string_id,`file`,line,is_empty,locale) VALUES " . implode(',', $this->stat_usage_new));
     }
   }
   public function usage_stat_log(&$offset, &$value) {

@@ -210,7 +210,7 @@ function db_player_name_exists($player_name_unsafe) {
  * @param $username_safe
  */
 function db_player_name_history_replace($user, $username_safe) {
-  doReplace("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+  classSupernova::$db->doReplace("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
 }
 
 
@@ -341,7 +341,7 @@ function db_universe_get($uni_galaxy, $uni_system) {
  * @param $uni_row
  */
 function db_universe_rename($uni_galaxy, $uni_system, $uni_row) {
-  doReplace("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
+  classSupernova::$db->doReplace("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
 }
 
 
@@ -391,7 +391,7 @@ function db_payment_list_modules() {
 
 // Log Online *************************************************************************************************************
 function db_log_online_insert() {
-  doquery("INSERT IGNORE INTO {{log_users_online}} SET online_count = " . classSupernova::$config->var_online_user_count);
+  doquery("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . classSupernova::$config->var_online_user_count);
 }
 
 // Log *************************************************************************************************************
@@ -541,7 +541,7 @@ function db_quest_list_get($query_add_select, $query_add_from, $query_add_where)
  * @return array|bool|mysqli_result|null
  */
 function db_quest_count() {
-  $query = doquery("SELECT count(*) AS count FROM {{quest}};", '', true);
+  $query = doQueryFetch("SELECT count(*) AS count FROM `{{quest}}`;");
 
   return $query;
 }
@@ -552,7 +552,7 @@ function db_quest_count() {
  * @return array|bool|mysqli_result|null
  */
 function db_quest_get($quest_id) {
-  $quest = doquery("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
+  $quest = doQueryFetch("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
 
   return $quest;
 }
@@ -679,7 +679,7 @@ function db_payment_get_something2($payment_external_id) {
  */
 function db_ube_report_get_best_battles() {
   $query = doquery("SELECT *
-      FROM {{ube_report}}
+      FROM `{{ube_report}}`
       WHERE `ube_report_time_process` <  DATE(DATE_SUB(NOW(), INTERVAL " . MODULE_INFO_BEST_BATTLES_LOCK_DAYS . " DAY))
       ORDER BY `ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC
       LIMIT " . MODULE_INFO_BEST_BATTLES_REPORT_VIEW . ";");
@@ -688,7 +688,7 @@ function db_ube_report_get_best_battles() {
 }
 
 function db_config_get_stockman_fleet() {
-  doquery("SELECT * FROM {{config}} WHERE `config_name` = 'eco_stockman_fleet' LIMIT 1 FOR UPDATE;");
+  doquery("SELECT * FROM `{{config}}` WHERE `config_name` = 'eco_stockman_fleet' LIMIT 1 FOR UPDATE;");
 }
 
 

@@ -1122,14 +1122,16 @@ WORKING ON
         - убрать параметр "skip_query_check" - это глобальная настройка в ДБ
 +            - doDelete
             - doUpdate
-            - doReplace
++            - doReplace
             - doInsert
             - doQueryFetch
             - doSelect
 
+, '', true
+
 +            - classSupernova:db->doDelete
             - db->doUpdate
-            - db->doReplace
++            - db->doReplace
             - db->doInsert
             - db->doQueryFetch
             - db->doSelect

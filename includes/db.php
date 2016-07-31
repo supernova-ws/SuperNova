@@ -181,9 +181,6 @@ function doQueryFetch($query, $skip_query_check = false) {
 function doInsert($query) {
   return classSupernova::$gc->db->doInsert($query);
 }
-function doReplace($query) {
-  return classSupernova::$gc->db->doReplace($query);
-}
 function doUpdate($query) {
   return classSupernova::$gc->db->doDelete($query);
 }
