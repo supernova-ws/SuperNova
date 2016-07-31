@@ -1,8 +1,8 @@
 <?php
-
 /**
  * Created by Gorlum 01.09.2015 15:58
  */
+
 class db_mysql {
   const TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';
   const TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
@@ -57,17 +57,35 @@ class db_mysql {
 
   public $isWatching = false;
 
-  public function __construct() {
+  /**
+   * @var \DBAL\DbTransaction $transaction
+   */
+  protected $transaction;
+
+  /**
+   * db_mysql constructor.
+   *
+   * @param \Common\GlobalContainer $gc
+   */
+  public function __construct($gc) {
+    $this->transaction = new \DBAL\DbTransaction($this);
   }
 
-  public function load_db_settings() {
+  public function load_db_settings($configFile = '') {
     $dbsettings = array();
 
-    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+    empty($configFile) ? $configFile = SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX : false;
+
+    require $configFile;
 
     $this->dbsettings = $dbsettings;
   }
 
+  /**
+   * @param null|array $external_db_settings
+   *
+   * @return bool
+   */
   public function sn_db_connect($external_db_settings = null) {
     $this->db_disconnect();
 
@@ -76,7 +94,7 @@ class db_mysql {
     }
 
     if (empty($this->dbsettings)) {
-      $this->load_db_settings();
+      $this->load_db_settings(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
     }
 
     // TODO - фатальные (?) ошибки на каждом шагу. Хотя - скорее Эксепшны
@@ -524,6 +542,13 @@ class db_mysql {
 
   public function mysql_get_innodb_status() {
     return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
+  }
+
+  /**
+   * @return \DBAL\DbTransaction
+   */
+  public function getTransaction() {
+    return $this->transaction;
   }
 
 }

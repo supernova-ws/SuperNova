@@ -2,8 +2,6 @@
 
 namespace Common;
 
-use DBAL\DbTransaction;
-
 /**
  * Class GlobalContainer
  *
@@ -13,7 +11,6 @@ use DBAL\DbTransaction;
  *
  * @property \debug               $debug
  * @property \db_mysql            $db
- * @property DbTransaction        $transaction
  * @property \classCache          $cache
  * @property \classConfig         $config
  * @property \classLocale         $localePlayer

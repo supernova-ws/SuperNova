@@ -13,8 +13,8 @@ use \db_mysql;
 
 class DbTransaction {
 
-  protected static $db_in_transaction = false;
-  protected static $transaction_id = 0;
+  protected $db_in_transaction = false;
+  protected $transaction_id = 0;
 
   /**
    * @var db_mysql $db
@@ -22,18 +22,12 @@ class DbTransaction {
   protected $db;
 
   /**
-   * @var GlobalContainer $gc
-   */
-  protected $gc;
-
-  /**
    * DbTransaction constructor.
    *
-   * @param GlobalContainer $gc
+   * @param db_mysql $db
    */
-  public function __construct($gc) {
-    $this->gc = $gc;
-    $this->db = $gc->db;
+  public function __construct($db) {
+    $this->db = $db;
   }
 
   /**
@@ -48,11 +42,11 @@ class DbTransaction {
    *
    * @return bool Текущий статус транзакции
    */
-  public static function db_transaction_check($status = null) {
+  public function db_transaction_check($status = null) {
     $error_msg = false;
-    if ($status && !static::$db_in_transaction) {
+    if ($status && !$this->db_in_transaction) {
       $error_msg = 'No transaction started for current operation';
-    } elseif ($status === null && static::$db_in_transaction) {
+    } elseif ($status === null && $this->db_in_transaction) {
       $error_msg = 'Transaction is already started';
     }
 
@@ -65,15 +59,15 @@ class DbTransaction {
       die($error_msg);
     }
 
-    return static::$db_in_transaction;
+    return $this->db_in_transaction;
   }
 
-  public static function db_transaction_start($level = '') {
-    static::db_transaction_check(null);
+  public function db_transaction_start($level = '') {
+    $this->db_transaction_check(null);
 
     $level ? doquery('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
 
-    static::$transaction_id++;
+    $this->transaction_id++;
     doquery('START TRANSACTION');
 
     if (classSupernova::$gc->config->db_manual_lock_enabled) {
@@ -81,49 +75,47 @@ class DbTransaction {
       classSupernova::$gc->config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
     }
 
-    static::$db_in_transaction = true;
+    $this->db_in_transaction = true;
     SnCache::locatorReset();
     SnCache::queriesReset();
 
-    return static::$transaction_id;
+    return $this->transaction_id;
   }
 
   // TODO - move changeset data and methods somewhere
-  public static function db_transaction_commit() {
-    static::db_transaction_check(true);
+  public function db_transaction_commit() {
+    $this->db_transaction_check(true);
 
     if (!empty(classSupernova::$delayed_changset)) {
       classSupernova::db_changeset_apply(classSupernova::$delayed_changset, true);
     }
-    doquery('COMMIT');
+    $this->db->doquery('COMMIT');
 
-    return static::db_transaction_clear();
+    return $this->db_transaction_clear();
   }
 
-  public static function db_transaction_rollback() {
-    // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
+  public function db_transaction_rollback() {
+    // $this->db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
 
     if (!empty(classSupernova::$delayed_changset)) {
-//      static::db_changeset_revert();
       // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
       // Для этапа 2 - чистить только записи
       // Для этапа 3 - возвращать всё
       SnCache::cache_clear_all(true);
     }
-//    $this->db->doquery('ROLLBACK');
-    doquery('ROLLBACK');
+    $this->db->doquery('ROLLBACK');
 
-    return static::db_transaction_clear();
+    return $this->db_transaction_clear();
   }
 
-  protected static function db_transaction_clear() {
+  protected function db_transaction_clear() {
     classSupernova::$delayed_changset = array();
     SnCache::cache_lock_unset_all();
 
-    static::$db_in_transaction = false;
-    static::$transaction_id++;
+    $this->db_in_transaction = false;
+    $this->transaction_id++;
 
-    return static::$transaction_id;
+    return $this->transaction_id;
   }
 
   /**
@@ -134,8 +126,8 @@ class DbTransaction {
    *
    * @return int
    */
-  public static function getNextQueryTransactionId() {
-    return static::db_transaction_check(false) ? static::$transaction_id : static::$transaction_id++;
+  public function getNextQueryTransactionId() {
+    return $this->db_transaction_check(false) ? $this->transaction_id : $this->transaction_id++;
   }
 
 }

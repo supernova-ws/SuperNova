@@ -209,19 +209,19 @@ class classSupernova {
    * @return bool Текущий статус транзакции
    */
   public static function db_transaction_check($status = null) {
-    return DbTransaction::db_transaction_check($status);
+    return static::$db->getTransaction()->db_transaction_check($status);
   }
 
   public static function db_transaction_start($level = '') {
-    return DbTransaction::db_transaction_start($level);
+    return static::$db->getTransaction()->db_transaction_start($level);
   }
 
   public static function db_transaction_commit() {
-    return DbTransaction::db_transaction_commit();
+    return static::$db->getTransaction()->db_transaction_commit();
   }
 
   public static function db_transaction_rollback() {
-    return DbTransaction::db_transaction_rollback();
+    return static::$db->getTransaction()->db_transaction_rollback();
   }
 
   /**
@@ -926,14 +926,10 @@ class classSupernova {
     $gc = static::$gc;
 
     $gc->db = function ($c) {
-      $db = new db_mysql();
+      $db = new db_mysql($c);
       $db->sn_db_connect();
 
       return $db;
-    };
-
-    $gc->transaction = function ($gc) {
-      return new DbTransaction($gc);
     };
 
     $gc->debug = function ($c) {

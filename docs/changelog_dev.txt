@@ -1109,7 +1109,8 @@ Call Stack
 
 WORKING ON
 +    Транзакции внести в DB
-        - make Transaction methods non-static
++        - make Transaction methods non-static
+        - make direct access of db_mysql->getTransaction() - not clssSupernova methods
 
     doquery() - убрать параметр "таблица"
     SnCache сделать DI
