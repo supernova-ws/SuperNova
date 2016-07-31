@@ -695,7 +695,7 @@ switch($new_version) {
     ), !$update_tables['planets']['PLANET_GOVERNOR_ID']);
 
     if($update_tables['users']['rpg_geologue']) {
-      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_geologue` + `rpg_ingenieur` + `rpg_constructeur` + `rpg_technocrate` + `rpg_scientifique` + `rpg_defenseur`) * 3;");
+      classSupernova::$db->doUpdate("UPDATE `{{users}}` SET `dark_matter` = `dark_matter` + (`rpg_geologue` + `rpg_ingenieur` + `rpg_constructeur` + `rpg_technocrate` + `rpg_scientifique` + `rpg_defenseur`) * 3;");
 
       upd_alter_table('users', array(
         "DROP COLUMN `rpg_geologue`",
@@ -708,7 +708,7 @@ switch($new_version) {
     }
 
     if($update_tables['users']['rpg_bunker']) {
-      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_bunker`) * 3;");
+      classSupernova::$db->doUpdate("UPDATE {{users}} SET `dark_matter` = `dark_matter` + (`rpg_bunker`) * 3;");
 
       upd_alter_table('users', array(
         "DROP COLUMN `rpg_bunker`",
@@ -749,20 +749,20 @@ switch($new_version) {
       "ADD COLUMN `total_rank` INT(10) UNSIGNED NOT NULL DEFAULT 0",
       "ADD COLUMN `total_points` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
     ), !isset($update_tables['users']['total_rank']));
-    doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points;");
+    classSupernova::$db->doUpdate("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points;");
 
     upd_alter_table('alliance', array(
       "ADD COLUMN `total_rank` INT(10) UNSIGNED NOT NULL DEFAULT 0",
       "ADD COLUMN `total_points` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0",
     ), !isset($update_tables['alliance']['total_rank']));
-    doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_owner = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_owner = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 
     if(!isset($update_tables['users']['ally_tag'])) {
       upd_alter_table('users', array(
         "ADD COLUMN `ally_tag` varchar(8) DEFAULT NULL AFTER `ally_id`",
       ), !isset($update_tables['users']['ally_tag']));
-      doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag, u.ally_name = a.ally_name;");
-      doquery("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_id = NULL, u.ally_tag = NULL, u.ally_name = NULL, u.ally_register_time = 0, ally_rank_id = 0 WHERE a.id IS NULL;");
+      classSupernova::$db->doUpdate("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_tag = a.ally_tag, u.ally_name = a.ally_name;");
+      classSupernova::$db->doUpdate("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON a.id = u.ally_id SET u.ally_id = NULL, u.ally_tag = NULL, u.ally_name = NULL, u.ally_register_time = 0, ally_rank_id = 0 WHERE a.id IS NULL;");
       upd_alter_table('users', array(
         "ADD CONSTRAINT `FK_users_ally_tag` FOREIGN KEY (`ally_tag`) REFERENCES `{{alliance}}` (`ally_tag`) ON DELETE SET NULL ON UPDATE CASCADE",
       ), !$update_foreigns['users']['FK_users_ally_tag']);
@@ -780,7 +780,7 @@ switch($new_version) {
         "ADD COLUMN `player_rpg_tech_xp` BIGINT(20) UNSIGNED NOT NULL DEFAULT 0 AFTER `dark_matter`",
       ), !isset($update_tables['users']['player_rpg_tech_xp']));
 
-      doquery("UPDATE {{users}} AS u LEFT JOIN {{statpoints}} AS s ON s.id_owner = u.id AND s.stat_type = 1 AND s.stat_code = 1 SET u.player_rpg_tech_xp = s.tech_points;");
+      classSupernova::$db->doUpdate("UPDATE {{users}} AS u LEFT JOIN {{statpoints}} AS s ON s.id_owner = u.id AND s.stat_type = 1 AND s.stat_code = 1 SET u.player_rpg_tech_xp = s.tech_points;");
     }
 
     upd_alter_table('planets', array(
@@ -1345,7 +1345,7 @@ switch($new_version) {
       $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
       doquery("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_row['id']};");
       $ally_user_id = classSupernova::$db->db_insert_id();
-      doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
+      classSupernova::$db->doUpdate("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
     }
     // Renaming old ally players TODO: Remove on release
     upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.user_as_ally = a.id SET u.username = CONCAT('[', a.ally_tag, ']') WHERE u.user_as_ally IS NOT NULL AND u.username = '';");
@@ -1359,7 +1359,7 @@ switch($new_version) {
       $ally_planet_name = db_escape($ally_user_row['username']);
       doquery("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = " . SN_TIME_NOW . ", `id_owner` = {$ally_user_row['id']};");
       $ally_planet_id = classSupernova::$db->db_insert_id();
-      doquery("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
+      classSupernova::$db->doUpdate("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
     }
 
     upd_do_query("UPDATE {{users}} AS u LEFT JOIN {{alliance}} AS a ON u.ally_id = a.id SET u.ally_name = a.ally_name, u.ally_tag = a.ally_tag WHERE u.ally_id IS NOT NULL;");
@@ -1390,7 +1390,7 @@ switch($new_version) {
       $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
       while($planet_row = db_fetch($query)) {
         $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - SN_TIME_NOW) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
-        doquery("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
+        classSupernova::$db->doUpdate("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
       }
 
       upd_alter_table('planets', array(
@@ -1404,7 +1404,7 @@ switch($new_version) {
     if(!$update_tables['powerup']['powerup_category']) {
       upd_alter_table('powerup', "ADD COLUMN `powerup_category` SMALLINT NOT NULL DEFAULT 0 AFTER `powerup_planet_id`", !$update_tables['powerup']['powerup_category']);
 
-      doquery("UPDATE {{powerup}} SET powerup_category = " . BONUS_MERCENARY);
+      classSupernova::$db->doUpdate("UPDATE {{powerup}} SET powerup_category = " . BONUS_MERCENARY);
     }
 
     upd_check_key('rpg_cost_info', 10000, !isset(classSupernova::$config->rpg_cost_info));
@@ -1436,7 +1436,7 @@ switch($new_version) {
 
       classSupernova::$config->db_saveItem('rpg_flt_explore', $inflation_rate);
 
-      doquery("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
+      classSupernova::$db->doUpdate("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
 
       $query = doquery("SELECT * FROM {{quest}}");
       while($row = db_fetch($query)) {
@@ -1450,7 +1450,7 @@ switch($new_version) {
         }
         $new_rewards = implode(';', $quest_reward_list);
         if($new_rewards != $row['quest_rewards']) {
-          doquery("UPDATE {{quest}} SET `quest_rewards` = '{$new_rewards}' WHERE quest_id = {$row['quest_id']} LIMIT 1;");
+          classSupernova::$db->doUpdate("UPDATE {{quest}} SET `quest_rewards` = '{$new_rewards}' WHERE quest_id = {$row['quest_id']} LIMIT 1;");
         }
       }
     }

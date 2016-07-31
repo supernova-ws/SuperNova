@@ -4,7 +4,7 @@ class DBStaticAlly {
 
 // ALLY *************************************************************************************************************
   public static function db_ally_list_recalc_counts() {
-    doquery("UPDATE `{{alliance}}` AS a LEFT JOIN (SELECT ally_id, count(*) AS ally_memeber_count FROM `{{users}}`
+    classSupernova::$db->doUpdate("UPDATE `{{alliance}}` AS a LEFT JOIN (SELECT ally_id, count(*) AS ally_memeber_count FROM `{{users}}`
       WHERE ally_id IS NOT NULL GROUP BY ally_id) AS u ON u.ally_id = a.id SET a.`ally_members` = u.ally_memeber_count;");
   }
 
@@ -80,7 +80,7 @@ class DBStaticAlly {
    * @param $ally_id
    */
   public static function db_ally_update_ally_user($ally_user_id, $ally_id) {
-    doquery("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_id} LIMIT 1;");
   }
 
   /**
@@ -139,7 +139,7 @@ class DBStaticAlly {
    * @param $ally
    */
   public static function db_ally_update_by_changeset($ally_changeset, $ally) {
-    doquery("UPDATE {{alliance}} SET " . implode(',', $ally_changeset) . " WHERE `id`='{$ally['id']}' LIMIT 1;");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET " . implode(',', $ally_changeset) . " WHERE `id`='{$ally['id']}' LIMIT 1;");
   }
 
   /**
@@ -149,7 +149,7 @@ class DBStaticAlly {
    * @param $ally
    */
   public static function db_ally_update_texts($text_list, $allyTextID, $text, $ally) {
-    doquery("UPDATE {{alliance}} SET `{$text_list[$allyTextID]['db_field']}`='{$text['safe']}' WHERE `id`='{$ally['id']}';");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET `{$text_list[$allyTextID]['db_field']}`='{$text['safe']}' WHERE `id`='{$ally['id']}';");
   }
 
   /**
@@ -157,7 +157,7 @@ class DBStaticAlly {
    * @param $user
    */
   public static function db_ally_update_owner($idNewLeader, $user) {
-    doquery("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET `ally_owner`='{$idNewLeader}' WHERE `id`={$user['ally_id']};");
   }
 
   /**
@@ -198,7 +198,7 @@ class DBStaticAlly {
    * @param $offer_id
    */
   public static function db_ally_negotiation_update_status_1($offer_id) {
-    doquery("UPDATE {{alliance_negotiation}} SET alliance_negotiation_status = 1 WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
+    classSupernova::$db->doUpdate("UPDATE {{alliance_negotiation}} SET alliance_negotiation_status = 1 WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
   }
 
   /**
@@ -250,21 +250,21 @@ class DBStaticAlly {
    * @param $d
    */
   public static function db_ally_request_deny($d) {
-    doquery("UPDATE {{alliance_requests}} SET `request_denied` = 1, `request_text` = '" . classLocale::$lang['ali_req_deny_reason'] . "' WHERE `id_user`= {$d} LIMIT 1;");
+    classSupernova::$db->doUpdate("UPDATE {{alliance_requests}} SET `request_denied` = 1, `request_text` = '" . classLocale::$lang['ali_req_deny_reason'] . "' WHERE `id_user`= {$d} LIMIT 1;");
   }
 
   /**
    * @param $ally
    */
   public static function db_ally_update_member_increase($ally) {
-    doquery("UPDATE {{alliance}} SET `ally_members`= `ally_members` + 1 WHERE `id`='{$ally['id']}'");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET `ally_members`= `ally_members` + 1 WHERE `id`='{$ally['id']}'");
   }
 
   /**
    * @param $ally
    */
   public static function db_ally_update_member_decrease($ally) {
-    doquery("UPDATE {{alliance}} SET `ally_members`= `ally_members` - 1 WHERE `id`='{$ally['id']}' LIMIT 1;");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET `ally_members`= `ally_members` - 1 WHERE `id`='{$ally['id']}' LIMIT 1;");
   }
 
   /**
@@ -272,7 +272,7 @@ class DBStaticAlly {
    * @param $ally
    */
   public static function db_ally_update_member_set($i, $ally) {
-    doquery("UPDATE {{alliance}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET `ally_members`='{$i}' WHERE `id`='{$ally['id']}'");
   }
 
   /**
@@ -299,7 +299,7 @@ class DBStaticAlly {
    * @param $user
    */
   public static function db_ally_update_ranklist($ranklist, $user) {
-    doquery("UPDATE {{alliance}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';");
+    classSupernova::$db->doUpdate("UPDATE {{alliance}} SET `ranklist` = '{$ranklist}' WHERE `id` ='{$user['ally_id']}';");
   }
 
   /**

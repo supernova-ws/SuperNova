@@ -77,7 +77,7 @@ class DBStaticChat {
    * @param $user
    */
   public static function db_chat_player_update_invisibility($chat_directive, $user) {
-    doquery("UPDATE {{chat_player}} SET `chat_player_invisible` = {$chat_directive} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_invisible` = {$chat_directive} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
   }
 
   /**
@@ -85,7 +85,7 @@ class DBStaticChat {
    * @param $chat_player_subject
    */
   public static function db_chat_player_update_unmute($temp, $chat_player_subject) {
-    doquery("UPDATE {{chat_player}} SET `chat_player_muted` = 0, `chat_player_mute_reason` = '{$temp}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
+    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_muted` = 0, `chat_player_mute_reason` = '{$temp}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
   }
 
   /**
@@ -94,7 +94,7 @@ class DBStaticChat {
    * @param $chat_player_subject
    */
   public static function db_chat_player_update_mute($date_compiled, $chat_command_parsed_two, $chat_player_subject) {
-    doquery("UPDATE {{chat_player}} SET `chat_player_muted` = {$date_compiled}, `chat_player_mute_reason` = '{$chat_command_parsed_two[4]}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
+    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_muted` = {$date_compiled}, `chat_player_mute_reason` = '{$chat_command_parsed_two[4]}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
   }
 
   /**
@@ -141,7 +141,7 @@ class DBStaticChat {
    * @param $user
    */
   public static function db_chat_player_update($user) {
-    doquery("UPDATE {{chat_player}} SET `chat_player_refresh_last` = " . SN_TIME_NOW . " WHERE `chat_player_player_id` = {$user['id']} LIMIT 1;");
+    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_refresh_last` = " . SN_TIME_NOW . " WHERE `chat_player_player_id` = {$user['id']} LIMIT 1;");
   }
 
 
@@ -212,7 +212,7 @@ class DBStaticChat {
    * @param $user
    */
   public static function db_chat_player_update_activity($user) {
-    doquery("UPDATE {{chat_player}} SET `chat_player_activity` = '" . classSupernova::$db->db_escape(SN_TIME_SQL) . "' WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_activity` = '" . classSupernova::$db->db_escape(SN_TIME_SQL) . "' WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
   }
 
 }

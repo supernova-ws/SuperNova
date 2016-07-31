@@ -49,7 +49,7 @@ function DeleteSelectedUser($UserID) {
     $TheAlly = doquery ( "SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';", '', true );
     $TheAlly['ally_members'] -= 1;
     if ( $TheAlly['ally_members'] > 0 ) {
-      doquery ( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
+      classSupernova::$db->doUpdate( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
     } else {
       classSupernova::$db->doDelete("DELETE FROM `{{alliance}}` WHERE `id` = '" . $TheAlly['id'] . "';");
       classSupernova::$db->doDelete("DELETE FROM `{{statpoints}}` WHERE `stat_type` = '2' AND `id_owner` = '" . $TheAlly['id'] . "';");

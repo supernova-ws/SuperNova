@@ -150,7 +150,7 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_player_list_blitz_set_50k_dm() {
-    doquery('UPDATE `{{users}}` SET `dark_matter` = 50000, `dark_matter_total` = 50000;');
+    classSupernova::$db->doUpdate('UPDATE `{{users}}` SET `dark_matter` = 50000, `dark_matter_total` = 50000;');
   }
 
 

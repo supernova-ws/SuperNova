@@ -84,7 +84,7 @@ class DBStaticUnit {
 
 
   public static function db_unit_change_owner($location_type, $location_id, $new_owner_id) {
-    doquery("UPDATE {{unit}} SET `unit_player_id` = {$new_owner_id} WHERE `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id}");
+    classSupernova::$db->doUpdate("UPDATE {{unit}} SET `unit_player_id` = {$new_owner_id} WHERE `unit_location_type` = {$location_type} AND `unit_location_id` = {$location_id}");
   }
 
 
@@ -93,8 +93,8 @@ class DBStaticUnit {
   }
 
   public static function db_unit_list_admin_set_mercenaries_expire_time($default_length) {
-    return doquery(
-      "UPDATE {{unit}}
+    return classSupernova::$db->doUpdate(
+      "UPDATE `{{unit}}`
     SET
       unit_time_start = FROM_UNIXTIME(" . SN_TIME_NOW . "),
       unit_time_finish = FROM_UNIXTIME(" . (SN_TIME_NOW + $default_length) . ")

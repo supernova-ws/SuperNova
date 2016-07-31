@@ -53,7 +53,7 @@ class BuddyModel extends \Entity {
   public function db_buddy_update_status($status) {
     $buddy_id = idval($this->dbId);
 
-    doquery("UPDATE `{{buddy}}` SET `BUDDY_STATUS` = {$status} WHERE `BUDDY_ID` = '{$buddy_id}' LIMIT 1;");
+    classSupernova::$db->doUpdate("UPDATE `{{buddy}}` SET `BUDDY_STATUS` = {$status} WHERE `BUDDY_ID` = '{$buddy_id}' LIMIT 1;");
 
     return classSupernova::$db->db_affected_rows();
   }

@@ -1121,17 +1121,21 @@ WORKING ON
         - убрать параметр "таблица" - не нужен
         - убрать параметр "skip_query_check" - это глобальная настройка в ДБ
 +            - doDelete
-            - doUpdate
++            - doUpdate
 +            - doReplace
             - doInsert
             - doQueryFetch
             - doSelect
 
+doquery\s*\(\s*[\"\']\s*update
+
+\"\"
+
 , '', true
 
 +            - classSupernova:db->doDelete
             - classSupernova:db->doDeleteRow
-            - db->doUpdate
++            - db->doUpdate
 +            - db->doReplace
             - db->doInsert
             - db->doQueryFetch

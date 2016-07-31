@@ -3,7 +3,7 @@
 class DBStaticNews {
 
   public static function db_news_update_set($announce_time, $text, $detail_url, $announce_id) {
-    doquery("UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
+    classSupernova::$db->doUpdate("UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
   }
 
   public static function db_news_insert_set($announce_time, $text, $detail_url, $user) {

@@ -33,15 +33,15 @@ $ques = array(
 //  'DELETE {{users}}.* FROM {{users}} WHERE `user_as_ally` IS NULL and `onlinetime` < unix_timestamp(now()) - ( 60 * 60 * 24 * 45) and metamatter_total <= 0;',
 
   // Выводим из отпуска игроков, которые находятся там более 4 недель
-//  'UPDATE {{users}}
+//  "UPDATE {{users}}
 //  SET vacation = 0, vacation_next = 0
 //  WHERE
 //    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 /* Не админы, Не Альянсы, Не боты */
 //    AND vacation > 0 AND banaday = 0 /* В отпуске и не в бане */
-//    AND vacation < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Находящиеся в отпуске более 4 недель */;',
+//    AND vacation < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Находящиеся в отпуске более 4 недель */;",
 
 //  // Игроки удаляются по Регламенту
-//  'DELETE FROM `{{users}}` WHERE
+//  "DELETE FROM `{{users}}` WHERE
 //    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND metamatter_total = 0 AND /* Не админы, Не Альянсы, Не боты, Не Бессмертные*/
 //    metamatter = 0 AND /* Нету ММ */
 //    vacation = 0 AND banaday = 0 AND /* Не в отпуске, Не в бане */
@@ -50,17 +50,17 @@ $ques = array(
 //      OR (onlinetime - register_time < 30 * 60 AND UNIX_TIMESTAMP() - onlinetime > 4*7 *86400)
 //      OR (onlinetime - register_time < 10 * 60*60 AND UNIX_TIMESTAMP() - onlinetime > 6*7 *86400)
 //      OR (UNIX_TIMESTAMP() - onlinetime > 8*7 *86400)
-//    );',
+//    );",
 
-  // Игроки, которые не были активны более 4 недель становятся I-шками. Для них
-  // Отключаем получение писем
-//  'UPDATE {{users}}
-//  SET OPTIONS = ""
+//  // Игроки, которые не были активны более 4 недель становятся I-шками. Для них
+//  // Отключаем получение писем
+//  "UPDATE {{users}}
+//  SET OPTIONS = ''
 //  WHERE
 //    authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
-//    AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
+//    AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;",
 //  // Отключаем производство на планетах
-//  'UPDATE {{users}} AS u
+//  "UPDATE {{users}} AS u
 //    JOIN {{planets}} AS p ON p.id_owner = u.id
 //  SET
 //    metal_perhour = 0,
@@ -75,7 +75,7 @@ $ques = array(
 //    ship_sattelite_sloth_porcent = 0
 //  WHERE
 //		authlevel = 0 AND user_as_ally IS NULL AND user_bot = 0 AND vacation = 0 /* Не админы, Не Альянсы, Не боты, Не в отпуске */
-//		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;',
+//		AND onlinetime < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 4 WEEK)) /* Не выходившие в онлайн более 4 недель */;",
   // Удаляем все здания из очереди
 //  'DELETE q FROM {{users}} AS u JOIN {{que}} AS q ON q.que_player_id = u.id
 //  WHERE

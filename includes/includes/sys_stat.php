@@ -215,7 +215,7 @@ function sys_stat_calculate() {
   // doDelete("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
   $classConfig = classSupernova::$config;
   classSupernova::$db->doDelete("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
-  doquery("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
+  classSupernova::$db->doUpdate("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
 
   sta_set_time_limit('posting new user stats to DB');
   $data = array();
@@ -290,7 +290,7 @@ function sys_stat_calculate() {
   }
 
   sta_set_time_limit('setting previous user stats from archive');
-  doquery(
+  classSupernova::$db->doUpdate(
     "UPDATE `{{statpoints}}` AS new
       LEFT JOIN `{{statpoints}}` AS old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
@@ -304,7 +304,7 @@ function sys_stat_calculate() {
       new.stat_type = 1 AND new.stat_code = 1;");
 
   sta_set_time_limit('setting previous allies stats from archive');
-  doquery(
+  classSupernova::$db->doUpdate(
     "UPDATE `{{statpoints}}` AS new
       LEFT JOIN `{{statpoints}}` AS old ON old.id_ally = new.id_ally AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET

@@ -146,11 +146,11 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = 
 
 
 function db_stat_list_update_user_stats() {
-  return doquery("UPDATE `{{users}}` AS u JOIN `{{statpoints}}` AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
+  return classSupernova::$db->doUpdate("UPDATE `{{users}}` AS u JOIN `{{statpoints}}` AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
 }
 
 function db_stat_list_update_ally_stats() {
-  return doquery("UPDATE `{{alliance}}` AS a JOIN `{{statpoints}}` AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
+  return classSupernova::$db->doUpdate("UPDATE `{{alliance}}` AS a JOIN `{{statpoints}}` AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
 }
 
 function db_stat_list_delete_ally_player() {
@@ -294,15 +294,15 @@ function db_blitz_reg_get_player_list_and_users($current_round) {
 }
 
 function db_blitz_reg_update_with_name_and_password($blitz_name, $blitz_password, $row, $current_round) {
-  doquery("UPDATE {{blitz_registrations}} SET blitz_name = '{$blitz_name}', blitz_password = '{$blitz_password}' WHERE `id` = {$row['id']} AND `round_number` = {$current_round};");
+  classSupernova::$db->doUpdate("UPDATE {{blitz_registrations}} SET blitz_name = '{$blitz_name}', blitz_password = '{$blitz_password}' WHERE `id` = {$row['id']} AND `round_number` = {$current_round};");
 }
 
 function db_blitz_reg_update_apply_results($reward, $row, $current_round) {
-  doquery("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']} AND `round_number` = {$current_round};");
+  classSupernova::$db->doUpdate("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']} AND `round_number` = {$current_round};");
 }
 
 function db_blitz_reg_update_results($blitz_result_data, $current_round) {
-  doquery(
+  classSupernova::$db->doUpdate(
     "UPDATE `{{blitz_registrations}}` SET
             `blitz_player_id` = '{$blitz_result_data[0]}',
             `blitz_online` = '{$blitz_result_data[2]}',
@@ -504,7 +504,7 @@ function db_referral_get_by_id($user_id_safe) {
  * @param $dark_matter
  */
 function db_referral_update_dm($user_id_safe, $dark_matter) {
-  doquery("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id_safe} LIMIT 1;");
+  classSupernova::$db->doUpdate("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id_safe} LIMIT 1;");
 }
 
 
@@ -573,7 +573,7 @@ function db_quest_delete($quest_id) {
  * @param $quest_id
  */
 function db_quest_update($quest_name, $quest_type, $quest_description, $quest_conditions, $quest_rewards, $quest_id) {
-  doquery(
+  classSupernova::$db->doUpdate(
     "UPDATE {{quest}} SET
               `quest_name` = '{$quest_name}',
               `quest_type` = '{$quest_type}',
@@ -697,5 +697,5 @@ function db_config_get_stockman_fleet() {
  * @param $safe_comment
  */
 function db_payment_update(&$payment, $safe_comment) {
-  doquery("UPDATE {{payment}} SET payment_status = {$payment['payment_status']}, payment_comment = '{$safe_comment}' WHERE payment_id = {$payment['payment_id']};");
+  classSupernova::$db->doUpdate("UPDATE {{payment}} SET payment_status = {$payment['payment_status']}, payment_comment = '{$safe_comment}' WHERE payment_id = {$payment['payment_id']};");
 }
