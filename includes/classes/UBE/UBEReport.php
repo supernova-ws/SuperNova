@@ -20,7 +20,7 @@ class UBEReport {
     // Генерируем уникальный секретный ключ и проверяем наличие в базе
     do {
       $ube->report_cypher = sys_random_string(32);
-    } while(doquery("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$ube->report_cypher}' LIMIT 1 FOR UPDATE", true));
+    } while(classSupernova::$db->doSelectFetch("SELECT ube_report_cypher FROM {{ube_report}} WHERE ube_report_cypher = '{$ube->report_cypher}' LIMIT 1 FOR UPDATE"));
 
     // Инициализация таблицы для пакетной вставки информации
     $sql_perform = array(
@@ -191,7 +191,7 @@ class UBEReport {
   public function sn_ube_report_load($report_cypher) {
     $report_cypher = db_escape($report_cypher);
 
-    $report_row = doquery("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1", true);
+    $report_row = classSupernova::$db->doSelectFetch("SELECT * FROM {{ube_report}} WHERE ube_report_cypher = '{$report_cypher}' LIMIT 1");
     if(!$report_row) {
       return UBE_REPORT_NOT_FOUND;
     }

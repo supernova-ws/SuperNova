@@ -27,7 +27,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a50.102
+   * @version 41a50.103
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
@@ -62,7 +62,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.102
+   * @version 41a50.103
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -99,7 +99,7 @@ class FleetList extends ContainerArrayOfObject {
    * @return int
    */
   public static function db_fleet_count($where_safe) {
-    $result = doquery("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe} FOR UPDATE", true);
+    $result = classSupernova::$db->doSelectFetch("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe} FOR UPDATE");
 
     return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
   }
@@ -116,7 +116,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.102
+   * @version 41a50.103
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.102
+   * @version 41a50.103
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(

@@ -168,18 +168,6 @@ function sn_db_transaction_rollback() {
 
 
 
-
-function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-  if (!is_string($table)) {
-    $skip_query_check = $fetch;
-    $fetch = $table;
-  }
-  return classSupernova::$gc->db->doquery($query, $fetch, $skip_query_check);
-}
-function doQueryFetch($query) {
-  return classSupernova::$gc->db->doSelectFetch($query);
-}
-
 function db_fetch(&$query) {
   return classSupernova::$gc->db->db_fetch($query);
 }

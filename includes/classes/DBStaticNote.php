@@ -7,7 +7,7 @@ class DBStaticNote {
   }
 
   public static function db_note_get_id_and_owner($note_id_edit) {
-    return doquery("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE", true);
+    return classSupernova::$db->doSelectFetch("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE");
   }
 
   /**

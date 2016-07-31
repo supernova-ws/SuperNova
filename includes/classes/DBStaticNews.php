@@ -17,11 +17,11 @@ class DBStaticNews {
   }
 
   public static function db_news_with_survey_select_by_id($announce_id) {
-    return doquery(
+    return classSupernova::$db->doSelectFetch(
       "SELECT a.*, s.survey_id, s.survey_question, s.survey_until
         FROM {{announce}} AS a
         LEFT JOIN {{survey}} AS s ON s.survey_announce_id = a.idAnnounce
-        WHERE `idAnnounce` = {$announce_id} LIMIT 1;", true);
+        WHERE `idAnnounce` = {$announce_id} LIMIT 1;");
   }
 
   /**

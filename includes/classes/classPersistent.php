@@ -44,7 +44,7 @@ class classPersistent extends classCache {
     $result = null;
     if ($index) {
       $index_safe = db_escape($index);
-      $result = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
+      $result = classSupernova::$db->doSelectFetch("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE");
       // В две строки - что бы быть уверенным в порядке выполнения
       $result = $result[$this->sql_value_field];
       $this->$index = $result;

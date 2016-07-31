@@ -63,6 +63,15 @@ class db_mysql {
   protected $transaction;
 
   /**
+   * Should query check be skipped?
+   *
+   * Used for altering sheme of DB
+   *
+   * @var bool $skipQueryCheck
+   */
+  protected $skipQueryCheck = false;
+
+  /**
    * db_mysql constructor.
    *
    * @param \Common\GlobalContainer $gc
@@ -154,10 +163,9 @@ class db_mysql {
   }
 
   /**
-   * @param       $query
-   * @param       $fetch
+   * @param $query
    */
-  protected function logQuery($query, $fetch) {
+  protected function logQuery($query) {
     if (!classSupernova::$config->debug) {
       return;
     }
@@ -166,7 +174,7 @@ class db_mysql {
     $arr = debug_backtrace();
     $file = end(explode('/', $arr[0]['file']));
     $line = $arr[0]['line'];
-    classSupernova::$debug->add("<tr><th>Query {$this->queryCount}: </th><th>$query</th><th>{$file} @ {$line}</th><th>&nbsp;</th><th> " . ($fetch ? '+' : '&nbsp;') . " </th></tr>");
+    classSupernova::$debug->add("<tr><th>Query {$this->queryCount}: </th><th>$query</th><th>{$file} @ {$line}</th><th>&nbsp;</th></tr>");
   }
 
 
@@ -195,25 +203,24 @@ class db_mysql {
 
   /**
    * @param string $query
-   * @param bool   $fetch
-   * @param bool   $skip_query_check
    *
    * @return array|bool|mysqli_result|null
+   * @internal param bool $skip_query_check
+   *
    */
-  public function doquery($query, $fetch = false, $skip_query_check = false) {
+  protected function doquery($query) {
     if (!$this->connected) {
       $this->sn_db_connect();
     }
 
-//    $stringQuery = $query instanceof DbSqlPrepare ? $query->query : $query;
     $stringQuery = $query;
     $stringQuery = trim($stringQuery);
     // You can't do it - 'cause you can break commented statement with line-end comments
     // $stringQuery = preg_replace("/\s+/", ' ', $stringQuery);
 
     $this->security_watch_user_queries($stringQuery);
-    $this->security_query_check_bad_words($stringQuery, $skip_query_check);
-    $this->logQuery($stringQuery, $fetch);
+    $this->security_query_check_bad_words($stringQuery);
+    $this->logQuery($stringQuery);
 
     $stringQuery = $this->replaceTablePlaceholders($stringQuery);
 
@@ -229,24 +236,36 @@ class db_mysql {
       classSupernova::$debug->error($this->db_error() . "<br />{$query}<br />", 'SQL Error');
     }
 
-    if ($fetch) {
-      $queryResult = $this->db_fetch($queryResult);
-      // DO NOT CLOSE STATEMENT HERE TO MAKE STATEMENT CACHING WORK!
-    }
-
     return $queryResult;
   }
 
 
   // Just wrappers to distinguish query types
+  /**
+   * Executes non-data manipulation statements
+   *
+   * Can execute queries with check skip
+   * Honor current state of query checking
+   *
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return array|bool|mysqli_result|null
+   */
   public function doExecute($query, $skip_query_check = false) {
-    return $this->doquery($query, false, $skip_query_check);
+    $prevState = false;
+    if ($skip_query_check) {
+      $prevState = $this->skipQueryCheck;
+      $this->skipQueryCheck = true;
+    }
+    $result = $this->doquery($query);
+    if ($skip_query_check) {
+      $this->skipQueryCheck = $prevState;
+    }
+
+    return $result;
   }
 
-  // TODO - unused ??????
-  public function doSelectUnsafe($query) {
-    return $this->doExecute($query, true);
-  }
 
   public function doSelect($query) {
     return $this->doExecute($query);
@@ -261,9 +280,6 @@ class db_mysql {
     return $this->db_fetch($this->doSelect($query));
   }
 
-  public function doSelectLock($query, $skip_lock = false) {
-    return $this->doExecute($query);
-  }
 
   public function doInsert($query) {
     return $this->doExecute($query);
@@ -359,8 +375,8 @@ class db_mysql {
   }
 
 
-  public function security_query_check_bad_words($query, $skip_query_check = false) {
-    if ($skip_query_check) {
+  public function security_query_check_bad_words($query) {
+    if ($this->skipQueryCheck) {
       return;
     }
 

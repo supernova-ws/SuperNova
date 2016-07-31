@@ -32,7 +32,7 @@ class DBStaticUnit {
 
 // Used by UNIT_CAPTAIN module TODO
   public static function db_unit_in_fleet_by_user($user_id, $location_id, $unit_snid, $for_update) {
-    return doquery(
+    return classSupernova::$db->doSelectFetch(
       "SELECT *
     FROM {{fleets}} AS f
       JOIN {{unit}} AS u ON u.`unit_location_id` = f.fleet_id
@@ -41,8 +41,7 @@ class DBStaticUnit {
       (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
       AND u.unit_snid = {$unit_snid} AND u.`unit_location_type` = " . LOC_FLEET . " AND " . self::db_unit_time_restrictions() .
       " LIMIT 1" .
-      ($for_update ? ' FOR UPDATE' : '')
-      , true);
+      ($for_update ? ' FOR UPDATE' : ''));
   }
 
 
