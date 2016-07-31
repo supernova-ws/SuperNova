@@ -1106,17 +1106,30 @@ Call Stack
             - Хотя тут просто - по isNew, isChanged, isDeleted можно всякое определить
     - Ну и заодно - избавиться от контейнера - вынести его наружу
 
+// TODO -    Транзакции внести в DB
+        - remove transaction related function from db.php
+            - global transaction start function - for all DBs
+                - WHy WE FUCKING SHOULD EVER NEED IT?!!!
+                    - Each Entity should handle transaction by themselves !!!!!!!!!!
+                    - Otherwise - it's wrong architecture design
+                    - Yep, it's wrong design - but currently we working with wat we have
+                - So we NEED this functions if working across DBs - i.e. Global Auth
+                    - OR - we should redesign architecture
 
 WORKING ON
-+    Транзакции внести в DB
-+        - make Transaction methods non-static
-        - make direct access of db_mysql->getTransaction() - not clssSupernova methods
+    - doquery()
+        - убрать параметр "таблица" - не нужен
+        - убрать параметр "skip_query_check" - это глобальная настройка в ДБ
 
-    doquery() - убрать параметр "таблица"
-    SnCache сделать DI
-    V2Unit
+    - SnCache
+        - сделать динамическими
+        - сделать DI в $db
+            - каждая ДБ обладает своим кэшем
+        - переделать систему кэширования
+
+    - V2Unit
         sn_db_unit_changeset_prepare
-    classLocale => SnLocale
+    - classLocale => SnLocale
 
 
 $unit = classSupernova::$gc->unit;

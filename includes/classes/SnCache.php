@@ -105,7 +105,7 @@ class SnCache {
       return;
     }
 
-    $in_transaction = classSupernova::db_transaction_check(false);
+    $in_transaction = classSupernova::$db->getTransaction()->check(false);
     if (
       $force_overwrite
       ||

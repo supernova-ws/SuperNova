@@ -361,7 +361,7 @@ class DbQueryConstructor extends DbSqlAware {
       $this->forUpdate
       ||
       // Also row locked when transaction is up and skipLock flag is not set
-      (classSupernova::db_transaction_check(false) && !$this->skipLock) ? 'FOR UPDATE' : '';
+      ($this->db->getTransaction()->check(false) && !$this->skipLock) ? 'FOR UPDATE' : '';
   }
 
   /**

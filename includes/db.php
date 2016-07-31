@@ -13,7 +13,6 @@ function db_change_units_perform($query, $tablename, $object_id) {
   $query = implode(',', $query);
   if($query && $object_id) {
     return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
-    // return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
   }
 }
 
@@ -154,37 +153,31 @@ function sn_db_field_set_make_safe($field_set, $serialize = false) {
 function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
   return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
 }
-/**
- * Функция проверяет статус транзакции
- *
- * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
- *   <p>null - транзакция НЕ должна быть запущена</p>
- *   <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
- *   <p>false - всё равно - для совместимости с $for_update</p>
- * @return bool Текущий статус транзакции
- */
+
+
+
 function sn_db_transaction_check($transaction_should_be_started = null) {
-  return classSupernova::db_transaction_check($transaction_should_be_started);
+  return classSupernova::$gc->db->getTransaction()->check($transaction_should_be_started);
 }
 function sn_db_transaction_start($level = '') {
-  return classSupernova::db_transaction_start($level);
+  return classSupernova::$gc->db->getTransaction()->start($level);
 }
 function sn_db_transaction_commit() {
-  return classSupernova::db_transaction_commit();
+  return classSupernova::$gc->db->getTransaction()->commit();
 }
 function sn_db_transaction_rollback() {
-  return classSupernova::db_transaction_rollback();
+  return classSupernova::$gc->db->getTransaction()->rollback();
 }
 
 
 
 
 function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-  return classSupernova::$db->doquery($query, $table, $fetch, $skip_query_check);
+  return classSupernova::$gc->db->doquery($query, $table, $fetch, $skip_query_check);
 }
 function db_fetch(&$query) {
-  return classSupernova::$db->db_fetch($query);
+  return classSupernova::$gc->db->db_fetch($query);
 }
 function db_escape($unescaped_string) {
-  return classSupernova::$db->db_escape($unescaped_string);
+  return classSupernova::$gc->db->db_escape($unescaped_string);
 }

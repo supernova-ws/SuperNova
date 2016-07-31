@@ -42,7 +42,7 @@ class DbTransaction {
    *
    * @return bool Текущий статус транзакции
    */
-  public function db_transaction_check($status = null) {
+  public function check($status = null) {
     $error_msg = false;
     if ($status && !$this->db_in_transaction) {
       $error_msg = 'No transaction started for current operation';
@@ -62,8 +62,8 @@ class DbTransaction {
     return $this->db_in_transaction;
   }
 
-  public function db_transaction_start($level = '') {
-    $this->db_transaction_check(null);
+  public function start($level = '') {
+    $this->check(null);
 
     $level ? doquery('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
 
@@ -83,8 +83,8 @@ class DbTransaction {
   }
 
   // TODO - move changeset data and methods somewhere
-  public function db_transaction_commit() {
-    $this->db_transaction_check(true);
+  public function commit() {
+    $this->check(true);
 
     if (!empty(classSupernova::$delayed_changset)) {
       classSupernova::db_changeset_apply(classSupernova::$delayed_changset, true);
@@ -94,8 +94,8 @@ class DbTransaction {
     return $this->db_transaction_clear();
   }
 
-  public function db_transaction_rollback() {
-    // $this->db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
+  public function rollback() {
+    // TODO - вообще-то тут тоже надо проверять есть ли транзакция
 
     if (!empty(classSupernova::$delayed_changset)) {
       // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
@@ -127,7 +127,7 @@ class DbTransaction {
    * @return int
    */
   public function getNextQueryTransactionId() {
-    return $this->db_transaction_check(false) ? $this->transaction_id : $this->transaction_id++;
+    return $this->check(false) ? $this->transaction_id : $this->transaction_id++;
   }
 
 }

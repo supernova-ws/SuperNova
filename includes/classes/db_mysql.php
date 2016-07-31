@@ -1,8 +1,8 @@
 <?php
+
 /**
  * Created by Gorlum 01.09.2015 15:58
  */
-
 class db_mysql {
   const TRANSACTION_SERIALIZABLE = 'SERIALIZABLE';
   const TRANSACTION_REPEATABLE_READ = 'REPEATABLE READ';
@@ -549,6 +549,24 @@ class db_mysql {
    */
   public function getTransaction() {
     return $this->transaction;
+  }
+
+  // Some wrappers to DbTransaction
+  // Unused for now
+  public function transactionCheck($status = null) {
+    return $this->transaction->check($status);
+  }
+
+  public function transactionStart($level = '') {
+    return $this->transaction->start($level);
+  }
+
+  public function transactionCommit() {
+    return $this->transaction->commit();
+  }
+
+  public function transactionRollback() {
+    return $this->transaction->rollback();
   }
 
 }

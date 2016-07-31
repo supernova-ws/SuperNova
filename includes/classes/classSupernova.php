@@ -1,11 +1,12 @@
 <?php
 
 use Vector\Vector;
-use \DBAL\DbTransaction;
+
+use Common\GlobalContainer;
 
 class classSupernova {
   /**
-   * @var \Common\GlobalContainer $gc
+   * @var GlobalContainer $gc
    */
   public static $gc;
 
@@ -195,34 +196,6 @@ class classSupernova {
     }
   }
 
-  // TODO Вынести в отдельный объект
-  /**
-   * Эта функция проверяет статус транзакции
-   *
-   * Это - низкоуровневая функция. В нормальном состоянии движка её сообщения никогда не будут видны
-   *
-   * @param null|true|false $status Должна ли быть запущена транзакция в момент проверки
-   *   <p>null - транзакция НЕ должна быть запущена</p>
-   *   <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
-   *   <p>false - всё равно - для совместимости с $for_update</p>
-   *
-   * @return bool Текущий статус транзакции
-   */
-  public static function db_transaction_check($status = null) {
-    return static::$db->getTransaction()->db_transaction_check($status);
-  }
-
-  public static function db_transaction_start($level = '') {
-    return static::$db->getTransaction()->db_transaction_start($level);
-  }
-
-  public static function db_transaction_commit() {
-    return static::$db->getTransaction()->db_transaction_commit();
-  }
-
-  public static function db_transaction_rollback() {
-    return static::$db->getTransaction()->db_transaction_rollback();
-  }
 
   /**
    * Блокирует указанные таблицу/список таблиц
@@ -249,7 +222,7 @@ class classSupernova {
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
     $query .= $select && $fetch ? ' LIMIT 1' : '';
-    $query .= $select && !$skip_lock && static::db_transaction_check(false) ? ' FOR UPDATE' : '';
+    $query .= $select && !$skip_lock && static::$db->getTransaction()->check(false) ? ' FOR UPDATE' : '';
 
     $result = self::$db->doquery($query, $fetch);
 
@@ -285,7 +258,7 @@ class classSupernova {
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
 
-      if (static::db_transaction_check(false)) {
+      if (static::$db->getTransaction()->check(false)) {
         // Проходим по всем родителям данной записи
         foreach ($location_info[P_OWNER_INFO] as $owner_data) {
           $owner_location_type = $owner_data[P_LOCATION];
@@ -922,9 +895,10 @@ class classSupernova {
   }
 
   public static function init_1_globalContainer() {
-    static::$gc = new Common\GlobalContainer();
+    static::$gc = new GlobalContainer();
     $gc = static::$gc;
 
+    // Default db
     $gc->db = function ($c) {
       $db = new db_mysql($c);
       $db->sn_db_connect();
@@ -944,7 +918,7 @@ class classSupernova {
       return new classConfig(classSupernova::$cache_prefix);
     };
 
-    $gc->localePlayer = function (Common\GlobalContainer $c) {
+    $gc->localePlayer = function (GlobalContainer $c) {
       return new classLocale($c->config->server_locale_log_usage);
     };
 
@@ -953,20 +927,20 @@ class classSupernova {
     };
 
     $gc->buddyClass = 'Buddy\BuddyModel';
-    $gc->buddy = $gc->factory(function (Common\GlobalContainer $c) {
+    $gc->buddy = $gc->factory(function (GlobalContainer $c) {
       return new $c->buddyClass($c);
     });
 
-    $gc->query = $gc->factory(function (Common\GlobalContainer $c) {
+    $gc->query = $gc->factory(function (GlobalContainer $c) {
       return new DbQueryConstructor($c->db);
     });
 
-    $gc->unit = $gc->factory(function (Common\GlobalContainer $c) {
+    $gc->unit = $gc->factory(function (GlobalContainer $c) {
       return new \V2Unit\V2UnitModel($c);
     });
 
 // TODO
-//    $container->vector = $container->factory(function (Common\GlobalContainer $c) {
+//    $container->vector = $container->factory(function (GlobalContainer $c) {
 //      return new Vector($c->db);
 //    });
   }
