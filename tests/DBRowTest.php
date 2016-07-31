@@ -53,7 +53,7 @@ class DBRowTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(null, DBRowPublish::getDb());
 
     // db_mysql value check. Also check that getter return value - not 'null' every time
-    $db = new db_mysql();
+    $db = new db_mysql(new \Common\GlobalContainer());
     DBRowPublish::setDb($db);
     $this->assertEquals($db, DBRowPublish::getDb());
 
@@ -90,7 +90,7 @@ class DBRowTest extends PHPUnit_Framework_TestCase {
    * covers ::build
    */
   public function test__construct() {
-    $db = new db_mysql();
+    $db = new db_mysql(new \Common\GlobalContainer());
     $test = new DBRowPublish($db);
 
     $this->assertEquals('DBRowPublish', get_class($test));
