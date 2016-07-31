@@ -355,7 +355,7 @@ pdie();
           foreach($UBEFleet->unit_list->_container as $UBEUnit) {
             $db_changeset['unit'][] = sn_db_unit_changeset_prepare($UBEUnit->unitId, -$UBEUnit->units_lost, $planet_row_cache, $this->ube_planet_info[PLANET_ID]);
           }
-          classSupernova::db_changeset_apply($db_changeset);
+          V0DbChangeSetManager::db_changeset_apply($db_changeset);
         }
       }
     }

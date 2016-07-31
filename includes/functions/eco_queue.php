@@ -367,7 +367,7 @@ function que_recalculate($old_que) {
 }
 
 function que_get($user_id, $planet_id = null, $que_type = false, $for_update = false) {
-  return classSupernova::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
+  return DBStaticQue::db_que_list_by_type_location($user_id, $planet_id, $que_type, $for_update);
 }
 
 function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data, $unit_level = 0, $unit_amount = 1, $build_mode = BUILD_CREATE) {
@@ -715,7 +715,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     }
   }
 
-  classSupernova::db_changeset_apply($db_changeset);
+  V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
   // TODO Сообщения о постройке
 

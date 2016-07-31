@@ -970,7 +970,7 @@ class Fleet extends UnitContainer {
 
       // Adjusting ship amount on planet
       if (!empty($db_changeset)) {
-        classSupernova::db_changeset_apply($db_changeset);
+        V0DbChangeSetManager::db_changeset_apply($db_changeset);
       }
 
       // Restoring resources to planet
@@ -1838,7 +1838,7 @@ class Fleet extends UnitContainer {
     );
 
     $db_changeset = $this->unitList->db_prepare_old_changeset_for_planet($this->dbOwnerRow, $this->dbSourcePlanetRow['id']);
-    classSupernova::db_changeset_apply($db_changeset);
+    V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
 
     if (!empty($this->captain['unit_id'])) {

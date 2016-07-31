@@ -490,7 +490,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
     ),
     'fields'  => $planet_row_changed_fields,
   );
-  classSupernova::db_changeset_apply($db_changeset);
+  V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
   // $internal_transaction = false;sn_db_transaction_rollback(); // TODO - REMOVE !!!!!!!!!!!!!!!!!!
 

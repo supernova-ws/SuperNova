@@ -69,7 +69,7 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
     }
 
     if(($darkmater_cost && $mercenary_level) || !$is_permanent) {
-      $unit_row = DBStaticUnit::db_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+      $unit_row = DBStaticUnit::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
       if(is_array($unit_row) && ($dismiss_left_days = floor((strtotime($unit_row['unit_time_finish']) - SN_TIME_NOW) / PERIOD_DAY))) {
         $dismiss_full_cost = eco_get_total_cost($mercenary_id, $unit_row['unit_level']);
         $dismiss_full_cost = $dismiss_full_cost[BUILD_CREATE][RES_DARK_MATTER];
@@ -170,7 +170,7 @@ function mrc_mercenary_render($user) {
       }
       $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
       $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
-      $mercenary_unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+      $mercenary_unit = DBStaticUnit::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
       $mercenary_time_start = strtotime($mercenary_unit['unit_time_start']);
       $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
       $template->assign_block_vars('officer', array(

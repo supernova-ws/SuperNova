@@ -10,9 +10,41 @@ class DBStaticUnit {
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
 
-  public static function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
-    // apply time restrictions ????
-    return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid, $for_update, $fields);
+
+  /**
+   * @param int $user_id
+   * @param int $location_type
+   * @param int $location_id
+   *
+   * @return array|bool
+   */
+  public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id) {
+    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
+      return false;
+    }
+
+    if (SnCache::isUnitLocatorNotSet($location_type, $location_id)) {
+      $got_data = classSupernova::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
+      if (!empty($got_data) && is_array($got_data)) {
+        foreach ($got_data as $unit_id => $unit_data) {
+          SnCache::setUnitLocatorByLocationAndIDs($location_type, $location_id, $unit_data);
+        }
+      }
+    }
+
+    $result = false;
+    foreach (SnCache::getUnitLocatorByFullLocation($location_type, $location_id) as $key => $value) {
+      $result[$key] = $value;
+    }
+
+    return $result;
+  }
+
+
+  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
+    DBStaticUnit::db_get_unit_list_by_location($user_id, $location_type, $location_id);
+
+    return SnCache::getUnitLocator($location_type, $location_id, $unit_snid);
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {

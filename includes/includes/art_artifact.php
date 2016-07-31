@@ -125,7 +125,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
     }
     if ($unit_level != $artifact_level_old) {
       $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_level - $artifact_level_old, $user);
-      classSupernova::db_changeset_apply($db_changeset);
+      V0DbChangeSetManager::db_changeset_apply($db_changeset);
     }
   } else {
     $message = classLocale::$lang['art_err_no_artifact'];

@@ -85,9 +85,6 @@ class DbTransaction {
   public function commit() {
     $this->check(true);
 
-    if (!empty(classSupernova::$delayed_changset)) {
-      classSupernova::db_changeset_apply(classSupernova::$delayed_changset, true);
-    }
     $this->db->doExecute('COMMIT');
 
     return $this->db_transaction_clear();
@@ -96,19 +93,12 @@ class DbTransaction {
   public function rollback() {
     // TODO - вообще-то тут тоже надо проверять есть ли транзакция
 
-    if (!empty(classSupernova::$delayed_changset)) {
-      // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
-      // Для этапа 2 - чистить только записи
-      // Для этапа 3 - возвращать всё
-      SnCache::cache_clear_all(true);
-    }
     $this->db->doExecute('ROLLBACK');
 
     return $this->db_transaction_clear();
   }
 
   protected function db_transaction_clear() {
-    classSupernova::$delayed_changset = array();
     SnCache::cache_lock_unset_all();
 
     $this->db_in_transaction = false;

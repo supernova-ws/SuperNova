@@ -145,7 +145,7 @@ function fleet_ajax() {
   }
 
   DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
-  classSupernova::db_changeset_apply($db_changeset);
+  V0DbChangeSetManager::db_changeset_apply($db_changeset);
   sn_db_transaction_commit();
 
   $ships_sent = array();

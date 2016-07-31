@@ -125,7 +125,7 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
       classSupernova::$debug->error('UnitList::dbLoad have no locatedAt field set');
     }
 
-    $unit_array = classSupernova::db_get_unit_list_by_location(0, $this->getLocationType(), $this->getLocationDbId());
+    $unit_array = DBStaticUnit::db_get_unit_list_by_location(0, $this->getLocationType(), $this->getLocationDbId());
     if (!is_array($unit_array)) {
       return;
     }

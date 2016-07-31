@@ -384,10 +384,10 @@ function sn_mrc_get_level(&$user, $planet = array(), $unit_id, $for_update = fal
   $unit_db_name = pname_resource_name($unit_id);
 
   if (in_array($unit_id, sn_get_groups(array('plans', 'mercenaries', 'tech', 'artifacts')))) {
-    $unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id);
+    $unit = DBStaticUnit::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
   } elseif (in_array($unit_id, sn_get_groups(array('structures', 'fleet', 'defense')))) {
-    $unit = classSupernova::db_get_unit_by_location(isset($user['id']) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
+    $unit = DBStaticUnit::db_get_unit_by_location(isset($user['id']) ? $user['id'] : $planet['id_owner'], LOC_PLANET, $planet['id'], $unit_id);
     $mercenary_level = is_array($unit) && $unit['unit_level'] ? $unit['unit_level'] : 0;
   } elseif (in_array($unit_id, sn_get_groups('governors'))) {
     $mercenary_level = $unit_id == $planet['PLANET_GOVERNOR_ID'] ? $planet['PLANET_GOVERNOR_LEVEL'] : 0;
@@ -1497,6 +1497,26 @@ function sortUnitRenderedList(&$ListToSort, $sort_option, $sort_option_inverse) 
       $a[$sort_option_field] > $b[$sort_option_field] ? 1 * $sort_option_inverse_closure : 0
       );
     });
+  }
+
+}
+
+function checkReturnRef(&$ref1, &$ref2) {
+  if (isset($ref1['id'])) {
+    $ref1['id']++;
+    pdump($ref1['id']);
+    pdump($ref2['id']);
+    if ($ref2['id'] == $ref1['id']) {
+      pdump('ok');
+    } else {
+      pdie('failed');
+    }
+    $ref2['id']--;
+    if ($ref2['id'] == $ref1['id']) {
+      pdump('ok');
+    } else {
+      pdie('failed');
+    }
   }
 
 }

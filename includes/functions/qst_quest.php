@@ -302,7 +302,7 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
       }
     }
 
-    classSupernova::db_changeset_apply($db_changeset);
+    V0DbChangeSetManager::db_changeset_apply($db_changeset);
   }
 }
 

@@ -48,7 +48,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         {
           DBStaticPlanet::db_planet_set_by_id($TargetGate['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
           DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`last_jump_time` = " . SN_TIME_NOW . "");
-          classSupernova::db_changeset_apply($db_changeset);
+          V0DbChangeSetManager::db_changeset_apply($db_changeset);
 
           DBStaticUser::db_user_set_by_id($user['id'], "`current_planet` = '{$TargetGate['id']}'");
 
