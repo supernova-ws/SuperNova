@@ -1117,25 +1117,7 @@ Call Stack
                     - OR - we should redesign architecture
 
 WORKING ON
-    - doquery()
-        - убрать параметр "таблица" - не нужен
-        - убрать параметр "skip_query_check" - это глобальная настройка в ДБ
-+            - doDelete
-+            - doUpdate
-+            - doReplace
-            - doInsert
-            - doQueryFetch
-            - doSelect
-
-
-
-+            - classSupernova:db->doDelete
-+            - db->doUpdate
-+            - db->doReplace
-+            - db->doInsert
-+            - db->doSelect
-+            - db->doSelectFetch
-            - db->doDeleteRow
+    - вынести процедуры работы с записями из classSupernova
 
     - SnCache
         - сделать динамическими
@@ -1145,8 +1127,11 @@ WORKING ON
 
     - V2Unit
         sn_db_unit_changeset_prepare
+
     - classLocale => SnLocale
 
+    - doquery()
+         - db->doDeleteRow
 
 $unit = classSupernova::$gc->unit;
 //var_dump($unit);
