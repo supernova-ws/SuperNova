@@ -64,10 +64,10 @@ class DbTransaction {
   public function start($level = '') {
     $this->check(null);
 
-    $level ? doquery('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
+    $level ? $this->db->doExecute('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
 
     $this->transaction_id++;
-    doquery('START TRANSACTION');
+    $this->db->doExecute('START TRANSACTION');
 
     if (classSupernova::$gc->config->db_manual_lock_enabled) {
       classSupernova::$gc->config->db_loadItem('var_db_manually_locked');

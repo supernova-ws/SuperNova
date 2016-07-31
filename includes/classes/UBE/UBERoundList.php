@@ -65,7 +65,7 @@ class UBERoundList extends ContainerArrayOfObject {
    * @version 2016-02-25 23:42:45 41a4.68
    */
   public function db_load_round_list_from_report_row($report_row, UBE $ube) {
-    $query = doquery("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_id`");
+    $query = classSupernova::$db->doSelect("SELECT * FROM {{ube_report_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_unit_id`");
     while($report_unit_row = db_fetch($query)) {
       $round_number = $report_unit_row['ube_report_unit_round'];
       if(!isset($this[$round_number])) {

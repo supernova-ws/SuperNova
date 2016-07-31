@@ -9,7 +9,7 @@
  * @method UBEFleet offsetGet($offset)
  * @property UBEFleet[] $_container
  *
- * @version 41a6.16
+ * @version 41a50.102
  */
 class UBEFleetList extends FleetList {
 
@@ -35,7 +35,7 @@ class UBEFleetList extends FleetList {
   /**
    * UBEFleetList constructor.
    *
-   * @version 41a6.16
+   * @version 41a50.102
    */
   public function __construct() {
     parent::__construct();
@@ -51,7 +51,7 @@ class UBEFleetList extends FleetList {
   /**
    * @return UBEFleet
    *
-   * @version 41a6.16
+   * @version 41a50.102
    */
   public function _createElement() {
     return new UBEFleet();
@@ -60,7 +60,7 @@ class UBEFleetList extends FleetList {
   /**
    * @param Fleet $objFleet
    *
-   * @version 41a6.16
+   * @version 41a50.102
    */
   public function ube_insert_from_Fleet(Fleet $objFleet) {
     $this[$objFleet->dbId] = new UBEFleet();
@@ -81,13 +81,13 @@ class UBEFleetList extends FleetList {
    * @param $report_row
    */
   public function ube_db_load_fleets_outcome($report_row) {
-    $query = doquery("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+    $query = classSupernova::$db->doSelect("SELECT * FROM {{ube_report_outcome_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($row = db_fetch($query)) {
       $fleet_id = $row['ube_report_outcome_fleet_fleet_id'];
       $this[$fleet_id]->load_outcome_from_report_row($row);
     }
 
-    $query = doquery("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
+    $query = classSupernova::$db->doSelect("SELECT * FROM {{ube_report_outcome_unit}} WHERE `ube_report_id` = {$report_row['ube_report_id']} ORDER BY `ube_report_outcome_unit_sort_order`");
     while($row = db_fetch($query)) {
       $fleet_id = $row['ube_report_outcome_unit_fleet_id'];
       $this[$fleet_id]->load_unit_outcome_from_row($row);
@@ -127,7 +127,7 @@ class UBEFleetList extends FleetList {
    * @param UBEDebris $debris
    * @param array     $resource_exchange_rates
    *
-   * @version 41a6.16
+   * @version 41a50.102
    */
   public function ube_analyze_fleets($is_simulator, UBEDebris $debris, array $resource_exchange_rates) {
     // Генерируем результат боя
@@ -194,7 +194,7 @@ class UBEFleetList extends FleetList {
    * @param UBE   $ube
    */
   public function ube_db_load_from_report_row(array $report_row, UBE $ube) {
-    $query = doquery("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
+    $query = classSupernova::$db->doSelect("SELECT * FROM {{ube_report_fleet}} WHERE `ube_report_id` = {$report_row['ube_report_id']}");
     while($fleet_row = db_fetch($query)) {
       $objFleet = new UBEFleet();
       $objFleet->load_from_report($fleet_row, $ube);
@@ -300,7 +300,7 @@ class UBEFleetList extends FleetList {
    * @param Fleet         $objFleet
    * @param UBEPlayerList $players
    *
-   * @version 41a6.16
+   * @version 41a50.102
    */
   public function ubeInitGetAttackers(Fleet $objFleet, UBEPlayerList $players) {
     if($objFleet->group_id) {
@@ -319,7 +319,7 @@ class UBEFleetList extends FleetList {
    *
    * @param Fleet $objFleet
    *
-   * @version 41a6.16
+   * @version 41a50.102
    */
   public function ubeInitGetFleetsOnHold(Fleet $objFleet, UBEPlayerList $players) {
     $fleets_added = $this->dbLoadWhere(

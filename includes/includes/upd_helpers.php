@@ -41,7 +41,7 @@ function upd_check_key($key, $default_value, $condition = false) {
 function upd_log_version_update() {
   global $new_version;
 
-  doquery('START TRANSACTION;');
+  classSupernova::$db->doExecute('START TRANSACTION;');
   upd_add_more_time();
   upd_log_message("Detected outdated version {$new_version}. Upgrading...");
 }

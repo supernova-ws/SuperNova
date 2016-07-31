@@ -27,12 +27,12 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return array - ID of added fleets
    *
-   * @version 41a50.97
+   * @version 41a50.102
    */
   public function dbLoadWhere($where_safe = '') {
     $fleets_added = array();
 
-    $query = doquery(
+    $query = classSupernova::$db->doSelect(
       "SELECT * FROM `{{fleets}}`" .
       (!empty($where_safe) ? " WHERE {$where_safe}" : '') .
       " FOR UPDATE;"
@@ -62,7 +62,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.97
+   * @version 41a50.102
    */
   // DEPRECATED
   public static function dbGetFleetList($where_safe = '') {
@@ -89,7 +89,7 @@ class FleetList extends ContainerArrayOfObject {
    */
   // Для потокового чтения данных
   public static function dbQueryAllId() {
-    return doquery("SELECT `fleet_id` FROM `{{fleets}}`;");
+    return classSupernova::$db->doSelect("SELECT `fleet_id` FROM `{{fleets}}`;");
   }
   /**
    * COUNT - Get fleet count by condition
@@ -116,7 +116,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.97
+   * @version 41a50.102
    */
   public static function dbGetFleetListCurrentTick() {
     return static::dbGetFleetList(
@@ -136,7 +136,7 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @return static
    *
-   * @version 41a50.97
+   * @version 41a50.102
    */
   public static function dbGetFleetListBashing($fleet_owner_id, array $planet_row) {
     return static::dbGetFleetList(
@@ -245,7 +245,7 @@ class FleetList extends ContainerArrayOfObject {
    * @param string $where
    */
   public function dbMergeMissileList($where) {
-    $query = doquery(
+    $query = classSupernova::$db->doSelect(
       "SELECT * FROM `{{iraks}}`" .
       (!empty($where) ? " WHERE {$where}" : '') .
       " FOR UPDATE;");

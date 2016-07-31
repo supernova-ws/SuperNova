@@ -412,7 +412,7 @@ class Fleet extends UnitContainer {
 
     $fleet_id_safe = idval($this->_dbId);
 
-    return doquery(
+    return classSupernova::$db->doSelect(
     // Блокировка самого флота
       "SELECT 1 FROM {{fleets}} AS f " .
 
@@ -453,7 +453,7 @@ class Fleet extends UnitContainer {
    */
   // TODO = make static
   public function dbGetLockById($dbId) {
-    doquery(
+    classSupernova::$db->doSelect(
     // Блокировка самого флота
       "SELECT 1 FROM {{fleets}} AS FLEET0 " .
       // Lock fleet owner
@@ -883,7 +883,7 @@ class Fleet extends UnitContainer {
    *
    * @return int
    *
-   * @version 41a50.70
+   * @version 41a50.102
    */
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
@@ -996,7 +996,7 @@ class Fleet extends UnitContainer {
    * @param array $db_row
    *
    * @internal param Fleet $that
-   * @version 41a50.70
+   * @version 41a50.102
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(

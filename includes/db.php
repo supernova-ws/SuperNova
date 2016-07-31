@@ -61,10 +61,7 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) 
   db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
 }
 function sn_db_perform($table, $values, $type = 'insert', $options = false) {
-  $mass_perform = false;
-
   $field_set = '';
-  $value_set = '';
 
   switch($type) {
     case 'delete':
@@ -95,7 +92,7 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false) {
   };
 
   $query .= " {$table} {$field_set}";
-  return doquery($query);
+  return classSupernova::$db->doExecute($query);
 }
 
 

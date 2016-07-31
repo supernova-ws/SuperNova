@@ -16,7 +16,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {
-    $query = doquery(
+    $query = classSupernova::$db->doSelect(
       "SELECT unit_snid, sum(unit_level) as `qty`  FROM {{unit}} WHERE `unit_player_id` = {$user_id} " .
       ($unit_type ? "AND `unit_type` = {$unit_type} " : '') .
       ($unit_snid ? "AND `unit_snid` = {$unit_snid} " : '') .
@@ -47,7 +47,7 @@ class DBStaticUnit {
 
 
   public static function db_unit_list_laboratories($user_id) {
-    return doquery("SELECT DISTINCT unit_location_id AS `id`
+    return classSupernova::$db->doSelect("SELECT DISTINCT unit_location_id AS `id`
     FROM {{unit}}
     WHERE unit_player_id = {$user_id} AND unit_location_type = " . LOC_PLANET . " AND unit_level > 0 AND unit_snid IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ");");
   }
@@ -74,7 +74,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_list_stat_calculate() {
-    return doquery(
+    return classSupernova::$db->doSelect(
       "SELECT unit_player_id, unit_type, unit_snid, unit_level, count(*) AS unit_amount
     FROM `{{unit}}`
     WHERE unit_level > 0 AND " . self::db_unit_time_restrictions() .

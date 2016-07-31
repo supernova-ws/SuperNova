@@ -19,7 +19,7 @@ class DBStaticNote {
   public static function db_note_list_by_owner($user_id, $sticky = false) {
     $sticky = $sticky ? ' AND `sticky` = 1' : '';
     $extra_sort = $sticky ? ' `galaxy` ASC, `system` ASC, `planet` ASC, `planet_type` ASC,' : '';
-    $notes_query = doquery("SELECT * FROM `{{notes}}` WHERE `owner` = {$user_id} {$sticky} ORDER BY `priority` DESC, {$extra_sort} `time` DESC");
+    $notes_query = classSupernova::$db->doSelect("SELECT * FROM `{{notes}}` WHERE `owner` = {$user_id} {$sticky} ORDER BY `priority` DESC, {$extra_sort} `time` DESC");
 
     return $notes_query;
   }
@@ -64,7 +64,7 @@ class DBStaticNote {
    * @return array|bool|mysqli_result|null
    */
   public static function db_note_list_select_by_owner_and_planet($user) {
-    $query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
+    $query = classSupernova::$db->doSelect("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
 
     return $query;
   }

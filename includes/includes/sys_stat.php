@@ -277,7 +277,7 @@ function sys_stat_calculate() {
   sta_set_time_limit("updating ranks for players");
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating player rank '{$rankName}'", false);
-    doquery($qryResetRowNum);
+    classSupernova::$db->doExecute($qryResetRowNum);
     classSupernova::$db->doUpdate(sprintf($qryFormat, $rankName, 1));
   }
 
@@ -285,7 +285,7 @@ function sys_stat_calculate() {
   // --- Updating Allie's ranks
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
-    doquery($qryResetRowNum);
+    classSupernova::$db->doExecute($qryResetRowNum);
     classSupernova::$db->doUpdate(sprintf($qryFormat, $rankName, 2));
   }
 

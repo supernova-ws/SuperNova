@@ -6,7 +6,7 @@ class DBStaticChat {
   public static function db_chat_player_list_online($chat_refresh_rate, $ally_add) {
     $sql_date = SN_TIME_NOW - $chat_refresh_rate * 2;
 
-    return doquery(
+    return classSupernova::$db->doSelect(
       "SELECT u.*, cp.*
     FROM {{chat_player}} AS cp
       JOIN {{users}} AS u ON u.id = cp.chat_player_player_id
@@ -62,7 +62,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_message_get_page($alliance, $where_add, $start_row, $page_limit) {
-    $query = doquery(
+    $query = classSupernova::$db->doSelect(
       "SELECT c.*, u.authlevel
       FROM
         {{chat}} AS c
@@ -112,7 +112,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_message_get_last_25() {
-    $query = doquery("SELECT * FROM `{{chat}}` ORDER BY messageid DESC LIMIT 25;");
+    $query = classSupernova::$db->doSelect("SELECT * FROM `{{chat}}` ORDER BY messageid DESC LIMIT 25;");
 
     return $query;
   }
@@ -177,7 +177,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_list_get_with_users($alliance, $user, $where_add, $start_row, $page_limit) {
-    $query = doquery(
+    $query = classSupernova::$db->doSelect(
       "SELECT c.*, u.authlevel
         FROM
           {{chat}} AS c

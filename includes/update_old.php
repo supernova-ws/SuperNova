@@ -1340,7 +1340,7 @@ switch($new_version) {
 
     // ------------------------------------------------------------------------
     // Creating players for allies
-    $ally_row_list = doquery("SELECT `id`, `ally_tag` FROM {{alliance}} WHERE ally_user_id IS NULL;");
+    $ally_row_list = classSupernova::$db->doSelect("SELECT `id`, `ally_tag` FROM {{alliance}} WHERE ally_user_id IS NULL;");
     while($ally_row = db_fetch($ally_row_list)) {
       $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
       classSupernova::$db->doInsert("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_row['id']};");
@@ -1354,7 +1354,7 @@ switch($new_version) {
 
     // ------------------------------------------------------------------------
     // Creating planets for allies
-    $ally_user_list = doquery("SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NOT NULL AND `id_planet` = 0;");
+    $ally_user_list = classSupernova::$db->doSelect("SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NOT NULL AND `id_planet` = 0;");
     while($ally_user_row = db_fetch($ally_user_list)) {
       $ally_planet_name = db_escape($ally_user_row['username']);
       classSupernova::$db->doInsert("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = " . SN_TIME_NOW . ", `id_owner` = {$ally_user_row['id']};");
@@ -1387,7 +1387,7 @@ switch($new_version) {
     upd_alter_table('users', "ADD `que` varchar(4096) NOT NULL DEFAULT '' COMMENT 'User que'", !$update_tables['users']['que']);
     // Converting old data to new one and dropping old fields
     if($update_tables['users']['b_tech_planet']) {
-      $query = doquery("SELECT * FROM {{planets}} WHERE `b_tech_id` <> 0;");
+      $query = classSupernova::$db->doSelect("SELECT * FROM `{{planets}}` WHERE `b_tech_id` <> 0;");
       while($planet_row = db_fetch($query)) {
         $que_item_string = "{$planet_row['b_tech_id']},1," . max(0, $planet_row['b_tech'] - SN_TIME_NOW) . "," . BUILD_CREATE . "," . QUE_RESEARCH;
         classSupernova::$db->doUpdate("UPDATE {{users}} SET `que` = '{$que_item_string}' WHERE `id` = {$planet_row['id_owner']} LIMIT 1;");
@@ -1438,7 +1438,7 @@ switch($new_version) {
 
       classSupernova::$db->doUpdate("UPDATE {{users}} SET `dark_matter` = `dark_matter` * {$inflation_rate};");
 
-      $query = doquery("SELECT * FROM {{quest}}");
+      $query = classSupernova::$db->doSelect("SELECT * FROM `{{quest}}`");
       while($row = db_fetch($query)) {
         $query_add = '';
         $quest_reward_list = explode(';', $row['quest_rewards']);

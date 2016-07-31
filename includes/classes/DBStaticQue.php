@@ -7,7 +7,7 @@ class DBStaticQue {
   }
 
   public static function db_que_list_stat() {
-    return doquery("SELECT que_player_id, sum(que_unit_amount) AS que_unit_amount, que_unit_price FROM `{{que}}` GROUP BY que_player_id, que_unit_price;");
+    return classSupernova::$db->doSelect("SELECT que_player_id, sum(que_unit_amount) AS que_unit_amount, que_unit_price FROM `{{que}}` GROUP BY que_player_id, que_unit_price;");
   }
 
   public static function db_que_set_time_left_by_id($que_id, $que_time_left) {

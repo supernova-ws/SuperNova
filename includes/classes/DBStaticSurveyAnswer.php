@@ -7,7 +7,7 @@ class DBStaticSurveyAnswer {
   }
 
   public static function db_survey_answer_text_select_by_news($announce) {
-    return doquery("SELECT survey_answer_text FROM {{survey_answers}} WHERE survey_parent_id = {$announce['survey_id']};");
+    return classSupernova::$db->doSelect("SELECT survey_answer_text FROM {{survey_answers}} WHERE survey_parent_id = {$announce['survey_id']};");
   }
 
   /**
@@ -16,7 +16,7 @@ class DBStaticSurveyAnswer {
    * @return array|bool|mysqli_result|null
    */
   public static function db_survey_answers_get_list_by_parent($announce) {
-    $survey_query = doquery("SELECT * FROM {{survey_answers}} WHERE survey_parent_id  = {$announce['survey_id']} ORDER BY survey_answer_id;");
+    $survey_query = classSupernova::$db->doSelect("SELECT * FROM {{survey_answers}} WHERE survey_parent_id  = {$announce['survey_id']} ORDER BY survey_answer_id;");
 
     return $survey_query;
   }
@@ -27,7 +27,7 @@ class DBStaticSurveyAnswer {
    * @return array|bool|mysqli_result|null
    */
   public static function db_survey_get_answer_texts($announce) {
-    $survey_query = doquery(
+    $survey_query = classSupernova::$db->doSelect(
       "SELECT survey_answer_text AS `TEXT`, count(DISTINCT survey_vote_id) AS `VOTES`
           FROM `{{survey_answers}}` AS sa
             LEFT JOIN `{{survey_votes}}` AS sv ON sv.survey_parent_answer_id = sa.survey_answer_id

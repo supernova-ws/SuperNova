@@ -39,7 +39,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_list_search($searchtext) {
-    $search = doquery("SELECT ally_name, ally_tag, total_rank, ally_members FROM {{alliance}} WHERE ally_tag LIKE '%{$searchtext}%' OR ally_name LIKE '%{$searchtext}%' LIMIT 30");
+    $search = classSupernova::$db->doSelect("SELECT ally_name, ally_tag, total_rank, ally_members FROM {{alliance}} WHERE ally_tag LIKE '%{$searchtext}%' OR ally_name LIKE '%{$searchtext}%' LIMIT 30");
 
     return $search;
   }
@@ -106,7 +106,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_tag($tag) {
-    $ally = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", '', true);
+    $ally = doquery("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;", true);
 
     return $ally;
   }
@@ -117,7 +117,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_search_by_name_or_tag($ali_search_text) {
-    $search = doquery("SELECT DISTINCT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$ali_search_text}%' OR `ally_tag` LIKE '%{$ali_search_text}%' LIMIT 30");
+    $search = classSupernova::$db->doSelect("SELECT DISTINCT * FROM {{alliance}} WHERE `ally_name` LIKE '%{$ali_search_text}%' OR `ally_tag` LIKE '%{$ali_search_text}%' LIMIT 30");
 
     return $search;
   }
@@ -182,7 +182,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_negotiation_get_by_offer_id($offer_id) {
-    $negotiation = doquery("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;", '', true);
+    $negotiation = doquery("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;", true);
 
     return $negotiation;
   }
@@ -221,7 +221,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_list_get_by_not_user_ally($user) {
-    $query = doquery("SELECT id, ally_name, ally_tag FROM {{alliance}} WHERE `id` != {$user['ally_id']} ORDER BY ally_name;");
+    $query = classSupernova::$db->doSelect("SELECT id, ally_name, ally_tag FROM {{alliance}} WHERE `id` != {$user['ally_id']} ORDER BY ally_name;");
 
     return $query;
   }
@@ -232,15 +232,15 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_negotiation_list($user) {
-    $query = doquery(
+    $query = classSupernova::$db->doSelect(
       "SELECT
-    *,
-    if(alliance_negotiation_ally_id = {$user['ally_id']}, 1, 0) AS owner,
-    if(alliance_negotiation_ally_id = {$user['ally_id']}, alliance_negotiation_contr_ally_name, alliance_negotiation_ally_name) AS ally_name
-  FROM
-    {{alliance_negotiation}}
-  WHERE
-    alliance_negotiation_ally_id = {$user['ally_id']} OR alliance_negotiation_contr_ally_id = {$user['ally_id']};"
+        *,
+        if(alliance_negotiation_ally_id = {$user['ally_id']}, 1, 0) AS owner,
+        if(alliance_negotiation_ally_id = {$user['ally_id']}, alliance_negotiation_contr_ally_name, alliance_negotiation_ally_name) AS ally_name
+      FROM
+        {{alliance_negotiation}}
+      WHERE
+        alliance_negotiation_ally_id = {$user['ally_id']} OR alliance_negotiation_contr_ally_id = {$user['ally_id']};"
     );
 
     return $query;
@@ -309,7 +309,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_diplomacy_get_relations($ally_from, $ally_to) {
-    $query = doquery(
+    $query = classSupernova::$db->doSelect(
       "SELECT b.*
       FROM
         {{alliance_diplomacy}} AS b,

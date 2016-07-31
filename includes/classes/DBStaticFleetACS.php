@@ -28,7 +28,7 @@ class DBStaticFleetACS {
    * @return array|bool|mysqli_result|null
    */
   public static function db_acs_get_list() {
-    $aks_madnessred = doquery('SELECT * FROM {{aks}};');
+    $aks_madnessred = classSupernova::$db->doSelect('SELECT * FROM `{{aks}}`;');
 
     return $aks_madnessred;
   }

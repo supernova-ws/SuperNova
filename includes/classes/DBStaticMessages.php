@@ -419,7 +419,7 @@ class DBStaticMessages {
 
 // Messages *************************************************************************************************************
   public static function db_message_list_get_last_20($user, $recipient_id) {
-    return doquery(
+    return classSupernova::$db->doSelect(
       "SELECT * FROM {{messages}}
         WHERE
           `message_type` = '" . MSG_TYPE_PLAYER . "' AND
@@ -438,7 +438,7 @@ class DBStaticMessages {
       return false;
     }
 
-    return doquery("SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
+    return classSupernova::$db->doSelect("SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
           {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
        FROM
          {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$user_id}' AND `message_type` = 1
@@ -446,11 +446,11 @@ class DBStaticMessages {
   }
 
   public static function db_message_list_by_owner_and_string($user, $SubSelectQry) {
-    return doquery("SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;");
+    return classSupernova::$db->doSelect("SELECT * FROM {{messages}} WHERE `message_owner` = '{$user['id']}' {$SubSelectQry} ORDER BY `message_time` DESC;");
   }
 
   public static function db_message_count_by_owner_and_type($user) {
-    return doquery("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
+    return classSupernova::$db->doSelect("SELECT message_owner, message_type, COUNT(message_owner) AS message_count FROM {{messages}} WHERE `message_owner` = {$user['id']} GROUP BY message_owner, message_type ORDER BY message_owner ASC, message_type;");
   }
 
   public static function db_message_count_outbox($user) {
@@ -460,7 +460,7 @@ class DBStaticMessages {
   }
 
   public static function db_message_list_admin_by_type($int_type_selected, $StartRec) {
-    return doquery("SELECT
+    return classSupernova::$db->doSelect("SELECT
   message_id as `ID`,
   message_from as `FROM`,
   message_owner as `OWNER_ID`,
@@ -478,7 +478,7 @@ LIMIT
   }
 
   public static function db_message_insert_all($message_type, $from, $subject, $text) {
-    return doquery($QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
+    return classSupernova::$db->doInsert('INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
       "SELECT `id`, 0, unix_timestamp(now()), {$message_type}, '{$from}', '{$subject}', '{$text}' FROM {{users}}");
   }
 

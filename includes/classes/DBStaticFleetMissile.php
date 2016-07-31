@@ -23,7 +23,7 @@ class DBStaticFleetMissile {
    * @return array|bool|mysqli_result|null
    */
   public static function db_missile_list_by_arrival() {
-    $iraks = doquery("SELECT * FROM `{{iraks}}` WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
+    $iraks = classSupernova::$db->doSelect("SELECT * FROM `{{iraks}}` WHERE `fleet_end_time` <= " . SN_TIME_NOW . " FOR UPDATE;");
 
     return $iraks;
   }

@@ -1146,8 +1146,9 @@ classsupenorva  public static function db_query($query, $fetch = false, $skip_lo
 +            - db->doUpdate
 +            - db->doReplace
 +            - db->doInsert
++            - db->doSelect
+            - db->doSelectFetch
             - db->doQueryFetch
-            - db->doSelect
 
     - SnCache
         - сделать динамическими

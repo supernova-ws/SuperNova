@@ -129,7 +129,7 @@ class UBEReport {
       . $ube->debris->report_generate_sql()
       . $ube->moon_calculator->report_generate_sql();
 
-    doquery($sql_str);
+    classSupernova::$db->doInsert($sql_str);
     $ube_report_id = classSupernova::$db->db_insert_id();
 
     // Сохраняем общую информацию по игрокам

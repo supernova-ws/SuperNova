@@ -3,7 +3,7 @@
 require_once('db_helpers.php');
 
 function db_planet_list_admin_list($table_parent_columns, $planet_active, $active_time, $planet_type) {
-  return doquery(
+  return classSupernova::$db->doSelect(
     "SELECT p.*, u.username" . ($table_parent_columns ? ', p1.name AS parent_name' : '') .
     " FROM {{planets}} AS p
       LEFT JOIN {{users}} AS u ON u.id = p.id_owner" .
@@ -12,7 +12,7 @@ function db_planet_list_admin_list($table_parent_columns, $planet_active, $activ
 }
 
 function db_planet_list_search($searchtext) {
-  return doquery(
+  return classSupernova::$db->doSelect(
     "SELECT
       p.galaxy, p.system, p.planet, p.planet_type, p.name as planet_name,
       u.id as uid, u.username, u.ally_id, u.id_planet,
@@ -31,7 +31,7 @@ function db_planet_list_search($searchtext) {
 
 
 function db_user_list_search($searchtext) {
-  return doquery(
+  return classSupernova::$db->doSelect(
     "SELECT
       pn.player_name, u.id as uid, u.username, u.ally_id, u.id_planet, u.total_points, u.total_rank,
       p.galaxy, p.system, p.planet, p.planet_type, p.name as planet_name,
@@ -141,7 +141,7 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = 
     " . $start . ",100;";
   }
 
-  return doquery($query_str);
+  return classSupernova::$db->doSelect($query_str);
 }
 
 
@@ -159,7 +159,7 @@ function db_stat_list_delete_ally_player() {
 
 
 function db_referrals_list_by_id($user_id) {
-  return doquery("SELECT r.*, u.username, u.register_time FROM {{referrals}} AS r LEFT JOIN {{users}} AS u ON u.id = r.id WHERE id_partner = {$user_id}");
+  return classSupernova::$db->doSelect("SELECT r.*, u.username, u.register_time FROM {{referrals}} AS r LEFT JOIN {{users}} AS u ON u.id = r.id WHERE id_partner = {$user_id}");
 }
 
 
@@ -244,13 +244,13 @@ function db_ANNONCE_delete_by_id($GET_id) {
 }
 
 function db_ANNONCE_LIST_select_all() {
-  return doquery("SELECT * FROM `{{annonce}}` ORDER BY `id` DESC");
+  return classSupernova::$db->doSelect("SELECT * FROM `{{annonce}}` ORDER BY `id` DESC");
 }
 
 
 // BANNED *************************************************************************************************************
 function db_banned_list_select() {
-  return doquery("SELECT * FROM `{{banned}}` ORDER BY `ban_id` DESC;");
+  return classSupernova::$db->doSelect("SELECT * FROM `{{banned}}` ORDER BY `ban_id` DESC;");
 }
 
 /**
@@ -279,19 +279,19 @@ function db_blitz_reg_count($current_round) {
 }
 
 function db_blitz_reg_get_random_id($current_round) {
-  return doquery("SELECT `id` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY RAND();");
+  return classSupernova::$db->doSelect("SELECT `id` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY RAND();");
 }
 
 function db_blitz_reg_get_player_list($current_round) {
-  return doquery("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `id`;");
+  return classSupernova::$db->doSelect("SELECT blitz_name, blitz_password, blitz_online FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `id`;");
 }
 
 function db_blitz_reg_get_player_list_order_by_place($current_round) {
-  return doquery("SELECT * FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `blitz_place` FOR UPDATE;");
+  return classSupernova::$db->doSelect("SELECT * FROM {{blitz_registrations}} WHERE `round_number` = {$current_round} ORDER BY `blitz_place` FOR UPDATE;");
 }
 
 function db_blitz_reg_get_player_list_and_users($current_round) {
-  return doquery(
+  return classSupernova::$db->doSelect(
     "SELECT u.*, br.blitz_name, br.blitz_password, br.blitz_place, br.blitz_status, br.blitz_points, br.blitz_reward_dark_matter
     FROM {{blitz_registrations}} AS br
     JOIN {{users}} AS u ON u.id = br.user_id
@@ -371,7 +371,7 @@ function db_payment_list_get($flt_payer, $flt_status, $flt_test, $flt_module) {
     ($flt_status >= 0 ? "AND payment_status = {$flt_status} " : '') .
     ($flt_test >= 0 ? "AND payment_test = {$flt_test} " : '') .
     ($flt_module ? "AND payment_module_name = '{$flt_module}' " : '');
-  $query = doquery("SELECT * FROM `{{payment}}` WHERE 1 {$extra_conditions} ORDER BY payment_id DESC;");
+  $query = classSupernova::$db->doSelect("SELECT * FROM `{{payment}}` WHERE 1 {$extra_conditions} ORDER BY payment_id DESC;");
 
   return $query;
 }
@@ -380,7 +380,7 @@ function db_payment_list_get($flt_payer, $flt_status, $flt_test, $flt_module) {
  * @return array|bool|mysqli_result|null
  */
 function db_payment_list_payers() {
-  $query = doquery("SELECT payment_user_id, payment_user_name FROM `{{payment}}` GROUP BY payment_user_id ORDER BY payment_user_name");
+  $query = classSupernova::$db->doSelect("SELECT payment_user_id, payment_user_name FROM `{{payment}}` GROUP BY payment_user_id ORDER BY payment_user_name");
 
   return $query;
 }
@@ -389,7 +389,7 @@ function db_payment_list_payers() {
  * @return array|bool|mysqli_result|null
  */
 function db_payment_list_modules() {
-  $query = doquery("SELECT DISTINCT payment_module_name FROM `{{payment}}` ORDER BY payment_module_name");
+  $query = classSupernova::$db->doSelect("SELECT DISTINCT payment_module_name FROM `{{payment}}` ORDER BY payment_module_name");
 
   return $query;
 }
@@ -406,7 +406,7 @@ function db_log_online_insert() {
  * @return array|bool|mysqli_result|null
  */
 function db_log_list_get_last_100() {
-  $query = doquery("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
+  $query = classSupernova::$db->doSelect("SELECT * FROM `{{logs}}` ORDER BY log_id DESC LIMIT 100;");
 
   return $query;
 }
@@ -449,7 +449,7 @@ function db_log_count($i) {
  * @return array|bool|mysqli_result|null
  */
 function db_core_show_status() {
-  $result = doquery('SHOW STATUS;');
+  $result = classSupernova::$db->doExecute('SHOW STATUS;');
 
   return $result;
 }
@@ -458,7 +458,7 @@ function db_core_show_status() {
  * @return array|bool|mysqli_result|null
  */
 function db_counter_list_by_week() {
-  $query = doquery("SELECT `visit_time`, user_id FROM `{{counter}}` WHERE user_id <> 0 AND visit_time > UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 DAY)) ORDER BY user_id, visit_time;");
+  $query = classSupernova::$db->doSelect("SELECT `visit_time`, user_id FROM `{{counter}}` WHERE user_id <> 0 AND visit_time > UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL 7 DAY)) ORDER BY user_id, visit_time;");
 
   return $query;
 }
@@ -532,7 +532,7 @@ function db_referral_insert($options, $user_new) {
  * @return array|bool|mysqli_result|null
  */
 function db_quest_list_get($query_add_select, $query_add_from, $query_add_where) {
-  $query = doquery(
+  $query = classSupernova::$db->doSelect(
     "SELECT q.* {$query_add_select}
       FROM {{quest}} AS q {$query_add_from}
       WHERE 1 {$query_add_where}
@@ -652,7 +652,7 @@ function db_stat_get_by_user($user_id) {
  * @return array|bool|mysqli_result|null
  */
 function db_stat_get_by_user2($user_id) {
-  $query = doquery("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
+  $query = classSupernova::$db->doSelect("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `id_owner` = {$user_id} ORDER BY `stat_code` DESC;");
 
   return $query;
 }
@@ -684,7 +684,7 @@ function db_payment_get_something2($payment_external_id) {
  * @return array|bool|mysqli_result|null
  */
 function db_ube_report_get_best_battles() {
-  $query = doquery("SELECT *
+  $query = classSupernova::$db->doSelect("SELECT *
       FROM `{{ube_report}}`
       WHERE `ube_report_time_process` <  DATE(DATE_SUB(NOW(), INTERVAL " . MODULE_INFO_BEST_BATTLES_LOCK_DAYS . " DAY))
       ORDER BY `ube_report_debris_total_in_metal` DESC, `ube_report_id` ASC
@@ -694,7 +694,7 @@ function db_ube_report_get_best_battles() {
 }
 
 function db_config_get_stockman_fleet() {
-  doquery("SELECT * FROM `{{config}}` WHERE `config_name` = 'eco_stockman_fleet' LIMIT 1 FOR UPDATE;");
+  classSupernova::$db->doSelect("SELECT * FROM `{{config}}` WHERE `config_name` = 'eco_stockman_fleet' LIMIT 1 FOR UPDATE;");
 }
 
 

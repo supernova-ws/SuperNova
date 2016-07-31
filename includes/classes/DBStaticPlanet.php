@@ -228,7 +228,7 @@ class DBStaticPlanet {
   }
 
   public static function db_planet_list_resources_by_owner() {
-    return doquery("SELECT `id_owner`, sum(metal) AS metal, sum(crystal) AS crystal, sum(deuterium) AS deuterium FROM `{{planets}}` WHERE id_owner <> 0 /*AND id_owner is not null*/ GROUP BY id_owner;");
+    return classSupernova::$db->doSelect("SELECT `id_owner`, sum(metal) AS metal, sum(crystal) AS crystal, sum(deuterium) AS deuterium FROM `{{planets}}` WHERE id_owner <> 0 /*AND id_owner is not null*/ GROUP BY id_owner;");
   }
 
 }

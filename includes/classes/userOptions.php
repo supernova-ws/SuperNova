@@ -189,7 +189,7 @@ class userOptions extends oldArrayAccessNd {
       return;
     }
 
-    $query = doquery("SELECT * FROM `{{player_options}}` WHERE `player_id` = {$this->user_id} FOR UPDATE");
+    $query = classSupernova::$db->doSelect("SELECT * FROM `{{player_options}}` WHERE `player_id` = {$this->user_id} FOR UPDATE");
     while($row = db_fetch($query)) {
       // $this->data[$row['option_id']] = $row['value'];
       $this->data[$row['option_id']] = is_string($row['value']) && ($temp = unserialize($row['value'])) !== false ? $temp : $row['value']; // Десериализация
@@ -373,7 +373,7 @@ class userOptionsOld implements ArrayAccess {
       return;
     }
 
-    $query = doquery("SELECT * FROM `{{player_options}}` WHERE `player_id` = {$this->user_id} FOR UPDATE");
+    $query = classSupernova::$db->doSelect("SELECT * FROM `{{player_options}}` WHERE `player_id` = {$this->user_id} FOR UPDATE");
     while($row = db_fetch($query)) {
       // $this->data[$row['option_id']] = $row['value'];
       $this->data[$row['option_id']] = is_string($row['value']) && ($temp = unserialize($row['value'])) !== false ? $temp : $row['value']; // Десериализация

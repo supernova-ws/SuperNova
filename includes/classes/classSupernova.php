@@ -815,7 +815,7 @@ class classSupernova {
               die('Неподдерживаемая операция в classSupernova::db_changeset_apply');
           }
         } else {
-          $result = doquery($conditions[P_QUERY_STR]) && $result;
+          $result = classSupernova::$db->doExecute($conditions[P_QUERY_STR]) && $result;
         }
       }
     }

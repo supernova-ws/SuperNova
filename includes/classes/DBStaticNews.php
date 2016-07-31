@@ -25,14 +25,14 @@ class DBStaticNews {
   }
 
   /**
-   * @param $template
+   * @param template $template
    * @param $query_where
    * @param $query_limit
    *
    * @return array|bool|mysqli_result|null
    */
   public static function db_news_list_get_by_query(&$template, $query_where, $query_limit) {
-    $announce_list = doquery(
+    $announce_list = classSupernova::$db->doSelect(
       "SELECT a.*, UNIX_TIMESTAMP(`tsTimeStamp`) AS unix_time, u.authlevel, s.*
     FROM
       {{announce}} AS a
