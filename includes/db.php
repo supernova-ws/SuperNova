@@ -12,7 +12,7 @@ require_once('db/db_queries.php');
 function db_change_units_perform($query, $tablename, $object_id) {
   $query = implode(',', $query);
   if($query && $object_id) {
-    return SnDbCachedOperator::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
   }
 }
 

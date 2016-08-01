@@ -25,7 +25,7 @@ if($ally_tag) {
   $ally_id = classSupernova::$db->db_insert_id();
   DBStaticUser::db_user_set_by_id($user['id'], "`ally_tag` = '{$ally_tag}', `ally_id`= {$ally_id}, `ally_name`='{$ally_name}', `ally_register_time`= " . SN_TIME_NOW . "");
 
-  $ally_user = SnDbCachedOperator::db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_id}");
+  $ally_user = classSupernova::$gc->cacheOperator->db_ins_record(LOC_USER, "`username` = '[{$ally_tag}]', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_id}");
   // $ally_user_id = db_insert_id();
   $ally_user_id = is_array($ally_user) ? $ally_user['id'] : 'NULL';
   DBStaticAlly::db_ally_update_ally_user($ally_user_id, $ally_id);

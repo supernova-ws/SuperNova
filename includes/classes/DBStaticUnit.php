@@ -24,7 +24,7 @@ class DBStaticUnit {
     }
 
     if (SnCache::isUnitLocatorNotSet($location_type, $location_id)) {
-      $got_data = SnDbCachedOperator::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
+      $got_data = classSupernova::$gc->cacheOperator->db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . DBStaticUnit::db_unit_time_restrictions());
       if (!empty($got_data) && is_array($got_data)) {
         foreach ($got_data as $unit_id => $unit_data) {
           SnCache::setUnitLocatorByLocationAndIDs($location_type, $location_id, $unit_data);
@@ -94,7 +94,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_set_by_id($unit_id, $set) {
-    return SnDbCachedOperator::db_upd_record_by_id(LOC_UNIT, $unit_id, $set);
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_UNIT, $unit_id, $set);
   }
 
   /**
@@ -103,11 +103,11 @@ class DBStaticUnit {
    * @return array|bool|false|mysqli_result|null
    */
   public static function db_unit_set_insert($set) {
-    return SnDbCachedOperator::db_ins_record(LOC_UNIT, $set);
+    return classSupernova::$gc->cacheOperator->db_ins_record(LOC_UNIT, $set);
   }
 
   public static function db_unit_list_delete($user_id = 0, $unit_location_type, $unit_location_id = 0, $unit_snid = 0) {
-    return SnDbCachedOperator::db_del_record_list(LOC_UNIT,
+    return classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT,
       "`unit_location_type` = {$unit_location_type}" .
       ($unit_location_id = idval($unit_location_id) ? " AND `unit_location_id` = {$unit_location_id}" : '') .
       ($user_id = idval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
@@ -163,13 +163,13 @@ class DBStaticUnit {
 
     $temp = DBStaticUnit::db_get_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
     if (!empty($temp['unit_id'])) {
-      $result = (bool)SnDbCachedOperator::db_upd_record_list(
+      $result = (bool)classSupernova::$gc->cacheOperator->db_upd_record_list(
         LOC_UNIT, "`unit_level` = `unit_level` + ($unit_value)", "`unit_id` = {$temp['unit_id']}"
       );
     } else {
       $locationIdRendered = $unit_location == LOC_USER ? $user['id'] : $planet_id;
       $unitType = get_unit_param($unit_id, P_UNIT_TYPE);
-      $result = (bool)SnDbCachedOperator::db_ins_record(
+      $result = (bool)classSupernova::$gc->cacheOperator->db_ins_record(
         LOC_UNIT,
         "unit_player_id = {$user['id']}, 
         unit_location_type = {$unit_location}, 

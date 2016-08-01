@@ -259,6 +259,10 @@ class classSupernova {
       return new \V2Unit\V2UnitModel($c);
     });
 
+    $gc->cacheOperator = function(GlobalContainer $gc) {
+      return new SnDbCachedOperator($gc);
+    };
+
 // TODO
 //    $container->vector = $container->factory(function (GlobalContainer $c) {
 //      return new Vector($c->db);
