@@ -45,10 +45,10 @@ class classSupernova {
    */
   public static $transaction;
 
-  /**
-   * @var SnCache $dbCache
-   */
-  public static $dbCache;
+//  /**
+//   * @var SnCache $dbCache
+//   */
+//  public static $dbCache;
 
   /**
    * Настройки из файла конфигурации
@@ -261,6 +261,10 @@ class classSupernova {
 
     $gc->cacheOperator = function(GlobalContainer $gc) {
       return new SnDbCachedOperator($gc);
+    };
+
+    $gc->snCache = function(GlobalContainer $gc) {
+      return new SnCache($gc);
     };
 
 // TODO

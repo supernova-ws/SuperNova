@@ -1520,3 +1520,7 @@ function checkReturnRef(&$ref1, &$ref2) {
   }
 
 }
+
+function setNull(&$item) {
+  $item = null;
+}

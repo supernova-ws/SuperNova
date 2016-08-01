@@ -1138,8 +1138,14 @@ Call Stack
                 - So we NEED this functions if working across DBs - i.e. Global Auth
                     - OR - we should redesign architecture
 
+classSupernova::$gc->snCache-> - check where used and make DI
+    - also check for other modules
+
 WORKING ON
-    ? вынести процедуры работы с записями из classSupernova
+    - SnCache
+        - move out unit-related
+        - make simple SnCache implementation - just read from DB
+        - // TODO - looks like cache not working
 
     - log_file - тоже вынести из classSupernova
 

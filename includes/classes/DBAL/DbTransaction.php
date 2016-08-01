@@ -75,8 +75,8 @@ class DbTransaction {
     }
 
     $this->db_in_transaction = true;
-    SnCache::locatorReset();
-    SnCache::queriesReset();
+    classSupernova::$gc->snCache->locatorReset();
+    classSupernova::$gc->snCache->queriesReset();
 
     return $this->transaction_id;
   }
@@ -99,7 +99,7 @@ class DbTransaction {
   }
 
   protected function db_transaction_clear() {
-    SnCache::cache_lock_unset_all();
+    classSupernova::$gc->snCache->cache_lock_unset_all();
 
     $this->db_in_transaction = false;
     $this->transaction_id++;

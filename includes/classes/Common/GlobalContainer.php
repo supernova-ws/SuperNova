@@ -20,6 +20,7 @@ namespace Common;
  * @property \DbQueryConstructor  $query
  * @property \DbRowDirectOperator $dbRowOperator
  * @property \SnDbCachedOperator  $cacheOperator - really DB record operator. But let it be
+ * @property \SnCache             $snCache
  *
  * property Vector              $vector // TODO
  * method \Buddy\Buddy rowGetById(GlobalContainer $container, \Buddy\Buddy $object, int $buddy_id)

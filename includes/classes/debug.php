@@ -153,15 +153,15 @@ class debug {
 
     if($deadlock && ($q = db_fetch(classSupernova::$db->mysql_get_innodb_status()))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
-      $error_backtrace['locks'] = SnCache::getLocks();
-      $error_backtrace['cSN_data'] = SnCache::getData();
+      $error_backtrace['locks'] = classSupernova::$gc->snCache->getLocks();
+      $error_backtrace['cSN_data'] = classSupernova::$gc->snCache->getData();
       foreach($error_backtrace['cSN_data'] as &$location) {
         foreach($location as $location_id => &$location_data) {
           $location_data = isset($location_data['username']) ? $location_data['username'] :
             (isset($location_data['name']) ? $location_data['name'] : $location_id);
         }
       }
-      $error_backtrace['cSN_queries'] = SnCache::getQueries();
+      $error_backtrace['cSN_queries'] = classSupernova::$gc->snCache->getQueries();
     }
 
     if($base_dump) {

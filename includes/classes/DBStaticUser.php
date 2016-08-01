@@ -185,8 +185,8 @@ class DBStaticUser extends DBStaticRecord {
     }
 
     $user = null;
-    if (SnCache::isArrayLocation(LOC_USER)) {
-      foreach (SnCache::getData(LOC_USER) as $user_id => $user_data) {
+    if (classSupernova::$gc->snCache->isArrayLocation(LOC_USER)) {
+      foreach (classSupernova::$gc->snCache->getData(LOC_USER) as $user_id => $user_data) {
         if (is_array($user_data) && isset($user_data['username'])) {
           // проверяем поле
           // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
@@ -210,7 +210,7 @@ class DBStaticUser extends DBStaticRecord {
         "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
         . " FOR UPDATE"
       );
-      SnCache::cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
+      classSupernova::$gc->snCache->cache_set(LOC_USER, $user); // В кэш-юзер так же заполнять индексы
     }
 
     return $user;
