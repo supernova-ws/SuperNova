@@ -263,6 +263,7 @@ class classSupernova {
       return new SnDbCachedOperator($gc);
     };
 
+    $gc->snCacheClass = 'SnCache';
     $gc->snCache = function(GlobalContainer $gc) {
       return $gc->db->snCache;
 //      return new SnCache($gc);

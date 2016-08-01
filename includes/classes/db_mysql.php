@@ -71,6 +71,9 @@ class db_mysql {
    */
   protected $skipQueryCheck = false;
 
+  /**
+   * @var SnCache $snCache
+   */
   public $snCache;
 
   /**
@@ -80,7 +83,7 @@ class db_mysql {
    */
   public function __construct($gc) {
     $this->transaction = new \DBAL\DbTransaction($gc, $this);
-    $this->snCache = new SnCache($gc, $this);
+    $this->snCache = new $gc->snCacheClass($gc, $this);
   }
 
   public function load_db_settings($configFile = '') {

@@ -20,6 +20,7 @@ namespace Common;
  * @property \DbQueryConstructor  $query
  * @property \DbRowDirectOperator $dbRowOperator
  * @property \SnDbCachedOperator  $cacheOperator - really DB record operator. But let it be
+ * @property string               $snCacheClass
  * @property \SnCache             $snCache
  *
  * property Vector              $vector // TODO
