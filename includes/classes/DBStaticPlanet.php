@@ -35,13 +35,13 @@ class DBStaticPlanet {
    * @return array|null
    */
   public static function db_planet_by_id($planet_id, $for_update = false, $fields = '*') {
-    $result = classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id, $for_update, $fields);
+    $result = SnDbCachedOperator::db_get_record_by_id(LOC_PLANET, $planet_id, $for_update, $fields);
 
     return empty($result) ? null : $result;
   }
 
   public static function db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update = false, $fields = '*') {
-    return classSupernova::db_get_record_list(LOC_PLANET,
+    return SnDbCachedOperator::db_get_record_list(LOC_PLANET,
       "`{{planets}}`.`galaxy` = {$galaxy} AND `{{planets}}`.`system` = {$system} AND `{{planets}}`.`planet` = {$planet} AND `{{planets}}`.`planet_type` = {$planet_type}", true);
   }
 
@@ -84,7 +84,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::db_get_record_list(LOC_PLANET,
+    return SnDbCachedOperator::db_get_record_list(LOC_PLANET,
       "`parent_planet` = {$parent_id} AND `planet_type` = " . PT_MOON, true);
   }
 
@@ -94,7 +94,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::db_get_record_list(LOC_PLANET,
+    return SnDbCachedOperator::db_get_record_list(LOC_PLANET,
       "`id` = {$planet_id} AND `id_owner` = {$owner_id}", true);
   }
 
@@ -105,7 +105,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::db_get_record_list(LOC_PLANET,
+    return SnDbCachedOperator::db_get_record_list(LOC_PLANET,
       "`planet_type` = " . PT_MOON . " AND `id_owner` = {$user_id} AND `id` != {$this_moon_id}");
   }
 
@@ -113,7 +113,7 @@ class DBStaticPlanet {
     $galaxy = intval($galaxy);
     $system = intval($system);
 
-    return classSupernova::db_get_record_list(LOC_PLANET,
+    return SnDbCachedOperator::db_get_record_list(LOC_PLANET,
       "`galaxy` = {$galaxy} AND `system` = {$system}");
   }
 
@@ -135,7 +135,7 @@ class DBStaticPlanet {
     $order_by = $sort_orders[$order_by] . ' ' . (classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE] == SORT_ASCENDING ? 'ASC' : 'DESC');
 
     // Compilating query
-    return classSupernova::db_get_record_list(LOC_PLANET,
+    return SnDbCachedOperator::db_get_record_list(LOC_PLANET,
       "`id_owner` = '{$user_row['id']}' {$conditions} ORDER BY {$order_by}");
   }
 
@@ -144,7 +144,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::db_get_record_list(LOC_PLANET,
+    return SnDbCachedOperator::db_get_record_list(LOC_PLANET,
       $planet_id = idval($planet_id) ? "{{planets}}.`id` = {$planet_id}" : "`id_owner` = {$user_id}", $planet_id);
   }
 
@@ -167,7 +167,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::db_upd_record_by_id(LOC_PLANET, $planet_id, $set);
+    return SnDbCachedOperator::db_upd_record_by_id(LOC_PLANET, $planet_id, $set);
   }
 
   public static function db_planet_update_set_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_type = PT_ALL, $set) {
@@ -180,7 +180,7 @@ class DBStaticPlanet {
     $si_planet = intval($ui_planet);
     $si_planet_type = ($si_planet_type = intval($ui_planet_type)) ? "AND `planet_type` = {$si_planet_type}" : '';
 
-    return classSupernova::db_upd_record_list(LOC_PLANET, $set, "`galaxy` = {$si_galaxy} AND `system` = {$si_system} AND `planet` = {$si_planet} {$si_planet_type}");
+    return SnDbCachedOperator::db_upd_record_list(LOC_PLANET, $set, "`galaxy` = {$si_galaxy} AND `system` = {$si_system} AND `planet` = {$si_planet} {$si_planet_type}");
   }
 
   public static function db_planet_set_by_parent($ui_parent_id, $ss_set) {
@@ -189,7 +189,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::db_upd_record_list(LOC_PLANET, $ss_set, "`parent_planet` = {$si_parent_id}");
+    return SnDbCachedOperator::db_upd_record_list(LOC_PLANET, $ss_set, "`parent_planet` = {$si_parent_id}");
   }
 
   public static function db_planet_set_by_owner($ui_owner_id, $ss_set) {
@@ -198,7 +198,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::db_upd_record_list(LOC_PLANET, $ss_set, "`id_owner` = {$si_owner_id}");
+    return SnDbCachedOperator::db_upd_record_list(LOC_PLANET, $ss_set, "`id_owner` = {$si_owner_id}");
   }
 
 
@@ -207,8 +207,8 @@ class DBStaticPlanet {
     if (!($planet_id = idval($planet_id))) {
       return false;
     }
-    classSupernova::db_del_record_by_id(LOC_PLANET, $planet_id);
-    classSupernova::db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_location_id` = " . $planet_id);
+    SnDbCachedOperator::db_del_record_by_id(LOC_PLANET, $planet_id);
+    SnDbCachedOperator::db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_location_id` = " . $planet_id);
 
     // Очереди очистятся автоматически по FOREIGN KEY
     return true;
@@ -219,8 +219,8 @@ class DBStaticPlanet {
     if (!($si_owner_id = idval($ui_owner_id))) {
       return false;
     }
-    classSupernova::db_del_record_list(LOC_PLANET, "`id_owner` = {$si_owner_id}");
-    classSupernova::db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_player_id` = " . $si_owner_id);
+    SnDbCachedOperator::db_del_record_list(LOC_PLANET, "`id_owner` = {$si_owner_id}");
+    SnDbCachedOperator::db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_player_id` = " . $si_owner_id);
 
     // Очереди очистятся автоматически по FOREIGN KEY
     return true;
@@ -233,7 +233,7 @@ class DBStaticPlanet {
     $si_planet_type = intval($ui_planet_type);
 
     // Лочим запись-родителя - если она есть и еще не залочена
-    $record_list = classSupernova::db_get_record_list(LOC_PLANET, "`id_owner` = {$si_user_id} AND `planet_type` = {$si_planet_type}");
+    $record_list = SnDbCachedOperator::db_get_record_list(LOC_PLANET, "`id_owner` = {$si_user_id} AND `planet_type` = {$si_planet_type}");
 
     return is_array($record_list) ? count($record_list) : 0;
     // $planets = doquery("SELECT COUNT(*) AS planet_count FROM {{planets}} WHERE `id_owner` = {$si_user_id} AND `planet_type` = {$si_planet_type}", true);

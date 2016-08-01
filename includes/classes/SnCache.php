@@ -101,7 +101,7 @@ class SnCache {
   */
   public static function cache_set($location_type, $record, $force_overwrite = false, $skip_lock = false) {
     // нет идентификатора - выход
-    if (!($record_id = $record[classSupernova::$location_info[$location_type][P_ID]])) {
+    if (!($record_id = $record[SnDbCachedOperator::$location_info[$location_type][P_ID]])) {
       return;
     }
 

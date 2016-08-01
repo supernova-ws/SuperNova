@@ -1139,8 +1139,11 @@ Call Stack
                     - OR - we should redesign architecture
 
 WORKING ON
-    - вынести процедуры работы с записями из classSupernova
+    ? вынести процедуры работы с записями из classSupernova
 
+    - log_file - тоже вынести из classSupernova
+
+    - wrap cache items in objects - to rid off &
 
     - Fleet
         - сделать группы динамическими, что бы избавится от порнографии типа

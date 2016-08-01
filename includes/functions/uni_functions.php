@@ -122,7 +122,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['crystal_perhour'] = classSupernova::$config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
   $planet['deuterium_perhour'] = classSupernova::$config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
-  $RetValue = classSupernova::db_ins_record(LOC_PLANET,
+  $RetValue = SnDbCachedOperator::db_ins_record(LOC_PLANET,
     "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
       `galaxy` = '{$planet['galaxy']}', `system` = '{$planet['system']}', `planet` = '{$planet['planet']}', `planet_type` = '{$planet['planet_type']}', `position_original` = '{$planet['position_original']}',
       `diameter` = '{$planet['diameter']}', `field_max` = '{$planet['field_max']}', `field_max_original` = '{$planet['field_max_original']}',
@@ -202,7 +202,7 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
         $moon_image = 'mond';
       }
 
-      $moon_row = classSupernova::db_ins_record(LOC_PLANET,
+      $moon_row = SnDbCachedOperator::db_ins_record(LOC_PLANET,
         "`id_owner` = '{$user_id}', `parent_planet` = '{$moon_planet['id']}', `name` = '{$moon_name_safe}', `last_update` = " . SN_TIME_NOW . ", `image` = '{$moon_image}',
           `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = " . PT_MOON . ",
           `diameter` = '{$size}', `field_max` = '{$field_max}', `density` = 2500, `density_index` = 2, `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}',

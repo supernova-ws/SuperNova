@@ -48,7 +48,7 @@ function sn_options_model() {
           die();
         }
 
-        $query = classSupernova::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
+        $query = SnDbCachedOperator::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
         foreach($query as $planet) {
           // $planet = sys_o_get_updated($user, $planet, SN_TIME_NOW);
           // $planet = $planet['planet'];

@@ -93,7 +93,7 @@ $template->assign_vars(array(
   'MISSION_NAME' => classLocale::$lang['type_mission'][MT_ACS],
 ));
 
-if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(LOC_USER, "`id` in ({$aks['eingeladen']})")) && !empty($members)) {
+if($aks['eingeladen'] && is_array($members = SnDbCachedOperator::db_get_record_list(LOC_USER, "`id` in ({$aks['eingeladen']})")) && !empty($members)) {
   foreach($members as $row) {
     $template->assign_block_vars('invited', array(
       'NAME' => $row['username'],

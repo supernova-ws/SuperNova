@@ -91,7 +91,7 @@ function sys_stat_calculate() {
   sta_set_time_limit('calculating players stats');
   $i = 0;
   // Блокируем всех пользователей
-  classSupernova::db_lock_tables('users');
+  SnDbCachedOperator::db_lock_tables('users');
   $user_list = DBStaticUser::db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
   $row_num = count($user_list);
   // while($player = db_fetch($query))

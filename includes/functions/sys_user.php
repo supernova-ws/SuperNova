@@ -70,7 +70,7 @@ function DeleteSelectedUser($UserID) {
   classSupernova::$db->doDelete("DELETE FROM `{{annonce}}` WHERE `user` = '" . $UserID . "';");
 
 
-  classSupernova::db_del_record_by_id(LOC_USER, $UserID);
+  SnDbCachedOperator::db_del_record_by_id(LOC_USER, $UserID);
   classSupernova::$db->doDelete("DELETE FROM `{{referrals}}` WHERE (`id` = '{$UserID}') OR (`id_partner` = '{$UserID}');");
   classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->db_loadItem('users_amount') - 1);
   sn_db_transaction_commit();
@@ -144,7 +144,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   !empty($options['salt']) ? $field_set['salt'] = $options['salt'] : false;
   !empty($options['password_encoded_unsafe']) ? $field_set['password'] = $options['password_encoded_unsafe'] : false;
 
-  $user_new = classSupernova::db_ins_field_set(LOC_USER, $field_set);
+  $user_new = SnDbCachedOperator::db_ins_field_set(LOC_USER, $field_set);
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
     $options['galaxy'] = classSupernova::$config->LastSettedGalaxyPos;
     $options['system'] = classSupernova::$config->LastSettedSystemPos;

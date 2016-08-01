@@ -217,11 +217,11 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
-    return classSupernova::db_get_record_list(LOC_USER, $user_filter);
+    return SnDbCachedOperator::db_get_record_list(LOC_USER, $user_filter);
   }
 
   public static function db_user_set_by_id($user_id, $set) {
-    return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
+    return SnDbCachedOperator::db_upd_record_by_id(LOC_USER, $user_id, $set);
   }
 
   /**
@@ -243,7 +243,7 @@ class DBStaticUser extends DBStaticRecord {
    *    <p>array - запись типа $user</p>
    */
   public static function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-    $user = classSupernova::db_get_record_by_id(LOC_USER, $user_id_unsafe, $for_update, $fields);
+    $user = SnDbCachedOperator::db_get_record_by_id(LOC_USER, $user_id_unsafe, $for_update, $fields);
 
     return (is_array($user) &&
       (
@@ -257,15 +257,15 @@ class DBStaticUser extends DBStaticRecord {
 
 
   public static function db_user_list_set_mass_mail(&$owners_list, $set) {
-    return classSupernova::db_upd_record_list(LOC_USER, $set, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '');
+    return SnDbCachedOperator::db_upd_record_list(LOC_USER, $set, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '');
   }
 
   public static function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
-    return classSupernova::db_upd_record_list(LOC_USER, $set, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}");
+    return SnDbCachedOperator::db_upd_record_list(LOC_USER, $set, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}");
   }
 
   public static function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
-    return classSupernova::db_upd_record_list(LOC_USER, "`ally_rank_id` = {$i}", "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}");
+    return SnDbCachedOperator::db_upd_record_list(LOC_USER, "`ally_rank_id` = {$i}", "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}");
   }
 
   /**
