@@ -65,11 +65,13 @@ class db_mysql {
   /**
    * Should query check be skipped?
    *
-   * Used for altering sheme of DB
+   * Used for altering scheme of DB
    *
    * @var bool $skipQueryCheck
    */
   protected $skipQueryCheck = false;
+
+  public $snCache;
 
   /**
    * db_mysql constructor.
@@ -77,7 +79,8 @@ class db_mysql {
    * @param \Common\GlobalContainer $gc
    */
   public function __construct($gc) {
-    $this->transaction = new \DBAL\DbTransaction($this);
+    $this->transaction = new \DBAL\DbTransaction($gc, $this);
+    $this->snCache = new SnCache($gc, $this);
   }
 
   public function load_db_settings($configFile = '') {

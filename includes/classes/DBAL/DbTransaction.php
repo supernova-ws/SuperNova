@@ -7,7 +7,7 @@
 namespace DBAL;
 
 use \classSupernova;
-use \SnCache;
+use Common\GlobalContainer;
 use \db_mysql;
 
 class DbTransaction {
@@ -21,12 +21,19 @@ class DbTransaction {
   protected $db;
 
   /**
+   * @var \SnCache $snCache
+   */
+  protected $snCache;
+
+  /**
    * DbTransaction constructor.
    *
+   * @param GlobalContainer $gc
    * @param db_mysql $db
    */
-  public function __construct($db) {
+  public function __construct($gc, $db) {
     $this->db = $db;
+    $this->snCache = $db->snCache;
   }
 
   /**
@@ -68,6 +75,7 @@ class DbTransaction {
 
     $this->transaction_id++;
     $this->db->doExecute('START TRANSACTION');
+//pdump(debug_backtrace());pdie();
 
     if (classSupernova::$gc->config->db_manual_lock_enabled) {
       classSupernova::$gc->config->db_loadItem('var_db_manually_locked');
@@ -75,8 +83,8 @@ class DbTransaction {
     }
 
     $this->db_in_transaction = true;
-    classSupernova::$gc->snCache->locatorReset();
-    classSupernova::$gc->snCache->queriesReset();
+    $this->db->snCache->locatorReset();
+    $this->db->snCache->queriesReset();
 
     return $this->transaction_id;
   }
@@ -99,7 +107,7 @@ class DbTransaction {
   }
 
   protected function db_transaction_clear() {
-    classSupernova::$gc->snCache->cache_lock_unset_all();
+    $this->db->snCache->cache_lock_unset_all();
 
     $this->db_in_transaction = false;
     $this->transaction_id++;

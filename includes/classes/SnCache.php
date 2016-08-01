@@ -47,9 +47,11 @@ class SnCache {
    * SnDbCachedOperator constructor.
    *
    * @param \Common\GlobalContainer $gc
+   * @param db_mysql $db
    */
-  public function __construct($gc) {
-    $this->db = $gc->db;
+  public function __construct($gc, $db) {
+    $this->db = $db;
+//var_dump($this->db);pdie();
   }
 
 

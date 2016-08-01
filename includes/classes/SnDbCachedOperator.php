@@ -97,7 +97,15 @@ class SnDbCachedOperator {
     ),
   );
 
+  /**
+   * @var db_mysql $db
+   */
   protected $db;
+
+  /**
+   * @var \SnCache $snCache
+   */
+  protected $snCache;
 
   /**
    * SnDbCachedOperator constructor.
@@ -106,6 +114,7 @@ class SnDbCachedOperator {
    */
   public function __construct($gc) {
     $this->db = $gc->db;
+    $this->snCache = $gc->snCache;
   }
 
   public function db_del_record_by_id($location_type, $safe_record_id) {
@@ -118,7 +127,7 @@ class SnDbCachedOperator {
     if ($result = $this->db->doDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
       // Обновляем данные только если ряд был затронут
       if ($this->db->db_affected_rows()) {
-        classSupernova::$gc->snCache->cache_unset($location_type, $safe_record_id);
+        $this->snCache->cache_unset($location_type, $safe_record_id);
       }
     }
 
@@ -137,7 +146,7 @@ class SnDbCachedOperator {
       if ($this->db->db_affected_rows()) {
         // Обнуление кэша, потому что непонятно, что поменялось
         // TODO - когда будет структурированный $condition можно будет делать только cache_unset по нужным записям
-        classSupernova::$gc->snCache->cache_clear($location_type);
+        $this->snCache->cache_clear($location_type);
       }
     }
 
@@ -167,8 +176,8 @@ class SnDbCachedOperator {
   }
 
   public function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-    if (classSupernova::$gc->snCache->isQueryCacheByLocationAndFilterEmpty($location_type, $filter)) {
-      classSupernova::$gc->snCache->queryCacheResetByLocationAndFilter($location_type, $filter);
+    if ($this->snCache->isQueryCacheByLocationAndFilterEmpty($location_type, $filter)) {
+      $this->snCache->queryCacheResetByLocationAndFilter($location_type, $filter);
 
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
@@ -187,7 +196,7 @@ class SnDbCachedOperator {
             ($fetch ? ' LIMIT 1' : ''));
           while ($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
-            if (!classSupernova::$gc->snCache->cache_lock_get($owner_location_type, $row['parent_id'])) {
+            if (!$this->snCache->cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
             }
           }
@@ -208,9 +217,9 @@ class SnDbCachedOperator {
       );
       while ($row = db_fetch($query)) {
         // Caching record in row cache
-        classSupernova::$gc->snCache->cache_set($location_type, $row);
+        $this->snCache->cache_set($location_type, $row);
         // Making ref to cached record in query cache
-        classSupernova::$gc->snCache->queryCacheSetByFilter($location_type, $filter, $row[$id_field]);
+        $this->snCache->queryCacheSetByFilter($location_type, $filter, $row[$id_field]);
       }
     }
 
@@ -218,7 +227,7 @@ class SnDbCachedOperator {
       return true;
     } else {
       $result = false;
-      foreach (classSupernova::$gc->snCache->getQueriesByLocationAndFilter($location_type, $filter) as $key => $value) {
+      foreach ($this->snCache->getQueriesByLocationAndFilter($location_type, $filter) as $key => $value) {
         $result[$key] = $value;
         if ($fetch) {
           break;
@@ -251,10 +260,10 @@ class SnDbCachedOperator {
 
         // Тут именно так, а не cache_unset - что бы в кэшах автоматически обновилась запись. Будет нужно на будущее
         //static::$data[$location_type][$record_id] = null;
-        classSupernova::$gc->snCache->cacheUnsetElement($location_type, $record_id);
+        $this->snCache->cacheUnsetElement($location_type, $record_id);
         // Вытаскиваем обновленную запись
         $this->db_get_record_by_id($location_type, $record_id);
-        classSupernova::$gc->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
+        $this->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
       }
     }
 
@@ -281,7 +290,7 @@ class SnDbCachedOperator {
       if ($this->db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         // TODO - когда будет структурированный $condition и $set - перепаковывать данные
-        classSupernova::$gc->snCache->cache_clear($location_type, true);
+        $this->snCache->cache_clear($location_type, true);
       }
     }
 
@@ -305,7 +314,7 @@ class SnDbCachedOperator {
         $result = $this->db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
         // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
-        classSupernova::$gc->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
+        $this->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
       }
     }
 
@@ -328,7 +337,7 @@ class SnDbCachedOperator {
         $result = $this->db_get_record_by_id($location_type, $record_id);
         // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
         // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
-        classSupernova::$gc->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
+        $this->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
       }
     }
 

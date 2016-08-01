@@ -73,7 +73,6 @@ function sys_stat_calculate() {
 
   $user_skip_list = sys_stat_get_user_skip_list();
 
-  // $sn_groups_resources_loot = sn_get_groups('resources_loot');
   $rate[RES_METAL] = classSupernova::$config->rpg_exchange_metal;
   $rate[RES_CRYSTAL] = classSupernova::$config->rpg_exchange_crystal / classSupernova::$config->rpg_exchange_metal;
   $rate[RES_DEUTERIUM] = classSupernova::$config->rpg_exchange_deuterium / classSupernova::$config->rpg_exchange_metal;
@@ -94,7 +93,6 @@ function sys_stat_calculate() {
   classSupernova::$gc->cacheOperator->db_lock_tables('users');
   $user_list = DBStaticUser::db_user_list('', true, 'id, dark_matter, metal, crystal, deuterium, user_as_ally, ally_id');
   $row_num = count($user_list);
-  // while($player = db_fetch($query))
   foreach($user_list as $player) {
     if($i++ % 100 == 0) {
       sta_set_time_limit("calculating players stats (player {$i}/{$row_num})", false);
@@ -106,7 +104,6 @@ function sys_stat_calculate() {
     $resources = $player['metal'] * $rate[RES_METAL] + $player['crystal'] * $rate[RES_CRYSTAL] +
       $player['deuterium'] * $rate[RES_DEUTERIUM] + $player['dark_matter'] * $rate[RES_DARK_MATTER];
     $counts[$user_id][UNIT_RESOURCES] += $resources;
-    // $points[$user_id][UNIT_RESOURCES] += $resources;
 
     // А здесь мы фильтруем пользователей по $user_skip_list - далее не нужно этого делать, потому что
     if(!isset($user_skip_list[$user_id])) {
@@ -115,8 +112,6 @@ function sys_stat_calculate() {
   }
   unset($user_list);
   classSupernova::$gc->snCache->cache_clear(LOC_USER, true);
-  //pdump(classSupernova::$data[LOC_USER]);
-  //pdump(classSupernova::$locks[LOC_USER]);
 
 
   sta_set_time_limit('calculating planets stats');
@@ -134,7 +129,6 @@ function sys_stat_calculate() {
     $resources = $planet['metal'] * $rate[RES_METAL] + $planet['crystal'] * $rate[RES_CRYSTAL] +
       $planet['deuterium'] * $rate[RES_DEUTERIUM];
     $counts[$user_id][UNIT_RESOURCES] += $resources;
-    // $points[$user_id][UNIT_RESOURCES] += $resources;
   }
 
   // Calculation of Fleet-In-Flight
@@ -149,7 +143,6 @@ function sys_stat_calculate() {
     $objFleet = new Fleet();
     // TODO - без дополнительной инициализации и перераспределений памяти на каждый new Fleet()/unset($fleet)
     // К тому же при включённом кэшировании это быстро забъёт кэш холодными данными
-    // $objFleet->_reset();
     $objFleet->dbRowParse($fleet_row);
     if(array_key_exists($user_id = $objFleet->playerOwnerId, $user_skip_list)) {
       continue;
@@ -168,7 +161,6 @@ function sys_stat_calculate() {
     $resources = $objFleet->resourcesGetTotalInMetal($rate);
 
     $counts[$user_id][UNIT_RESOURCES] += $resources;
-    // $points[$user_id][UNIT_RESOURCES] += $resources;
 
     unset($objFleet);
   }
@@ -207,12 +199,10 @@ function sys_stat_calculate() {
     $que_item = sys_unit_str2arr($que_item['que_unit_price']);
     $resources = ($que_item[RES_METAL] * $rate[RES_METAL] + $que_item[RES_CRYSTAL] * $rate[RES_CRYSTAL] + $que_item[RES_DEUTERIUM] * $rate[RES_DEUTERIUM]) * $que_unit_amount;
     $counts[$user_id][UNIT_RESOURCES] += $resources;
-    // $points[$user_id][UNIT_RESOURCES] += $resources;
   }
 
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation
-  // doDelete("DELETE FROM {{statpoints}} WHERE `stat_code` >= 14;");
   $classConfig = classSupernova::$config;
   classSupernova::$db->doDelete("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
   classSupernova::$db->doUpdate("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
@@ -220,7 +210,6 @@ function sys_stat_calculate() {
   sta_set_time_limit('posting new user stats to DB');
   $data = array();
   foreach($user_allies as $user_id => $ally_id) {
-    // $counts[UNIT_RESOURCES] дублирует $points[UNIT_RESOURCES], поэтому $points не заполняем, а берем $counts и делим на 1000
     $points[$user_id][UNIT_RESOURCES] = $counts[$user_id][UNIT_RESOURCES] / 1000;
     $points[$user_id] = array_map('floor', $points[$user_id]);
     $counts[$user_id] = array_map('floor', $counts[$user_id]);
@@ -282,7 +271,7 @@ function sys_stat_calculate() {
   }
 
   sta_set_time_limit("updating ranks for Alliances");
-  // --- Updating Allie's ranks
+  // Updating Allie's ranks
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
     classSupernova::$db->doExecute($qryResetRowNum);

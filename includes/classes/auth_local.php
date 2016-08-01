@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a50.104# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a51.14# copyright © 2009-2015 Gorlum',
 
     'root_relative' => '',
 
@@ -95,7 +95,7 @@ class auth_local extends auth_abstract {
     $this->manifest['active'] = false;
     if(!empty($this->config) && is_array($this->config['db'])) {
       // БД, отличная от стандартной
-      $this->db = new db_mysql();
+      $this->db = classSupernova::$gc->db;
 
       $this->db->sn_db_connect($this->config['db']);
       if($this->manifest['active'] = $this->db->connected) {

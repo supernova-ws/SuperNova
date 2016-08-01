@@ -264,7 +264,8 @@ class classSupernova {
     };
 
     $gc->snCache = function(GlobalContainer $gc) {
-      return new SnCache($gc);
+      return $gc->db->snCache;
+//      return new SnCache($gc);
     };
 
 // TODO

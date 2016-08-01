@@ -7,14 +7,14 @@
  *
  * Created by Gorlum 21.04.2015 3:51
  *
- * version #41a50.104#
+ * version #41a51.14#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a50.104# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a51.14# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -180,7 +180,7 @@ class core_auth extends sn_module {
 
     // В этой точке все модули уже прогружены и инициализированы по 1 экземпляру
     // self::$db = !is_object($db) ? classSupernova::$db : $db;
-    self::$db = classSupernova::$db;
+    self::$db = classSupernova::$gc->db;
 
     self::$device = new RequestInfo();
     $this->is_player_register = sys_get_param('player_register') ? true : false;
