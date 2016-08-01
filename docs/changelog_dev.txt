@@ -1155,6 +1155,33 @@ WORKING ON
         - make simple SnCache implementation - just read from DB
         - // TODO - looks like cache not working
 
+classSupernova::$db - replace with GC calls
+
+classSupernova::$gc->snCache->
+    - check where used and make DI
+    - also check for other modules
+
+classSupernova::$gc->cacheOperator
+    - check where used and make DI
+    - also check for other modules
+
+
+- function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
+    - make it use ID
+    - развязать апдейт юзера и апдейт планеты
+        - но проследить, что апдейт планеты ПОТЕНЦИАЛЬНО может влиять на юзера - хотя нигде это, вроде, не используется
+
+- admin/add_moon.php - какие-то непонятки
+    - $PlanetID = sys_get_param_id('user');
+    - $PlanetSelected = DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
+    - хотя вроде работаем с планетой
+
+
+classSupernova::$gc->cacheOperator->db_del_record_list - unsafe params
+
+function idval($value, $default = 0) { - переделать под int|string
+    - может даже ввести новый тип numeric
+
     - log_file - тоже вынести из classSupernova
 
     - wrap cache items in objects - to rid off &
@@ -1176,8 +1203,10 @@ WORKING ON
         - SETted values cannot be ADJUSTed
         - ADJUSTed values cannot be SETted
 
+    - OPERATOR is in essence an API - try to rename
+
     - SnCache
-        - сделать динамическими
+        - сделать проперти ???????? динамическими
         - сделать DI в $db
             - каждая ДБ обладает своим кэшем
         - переделать систему кэширования

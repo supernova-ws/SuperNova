@@ -11,7 +11,7 @@ class SnCache {
    *
    * @var array $data
    */
-  protected static $data = array();
+  protected $data = array();
 
   /**
    * Кэширует соответствия между расположением объектов - в частности юнитов и очередей
@@ -22,21 +22,21 @@ class SnCache {
    *
    * @var array $locator
    */
-  protected static $locator = array();
+  protected $locator = array();
 
   /**
    * Кэш запросов
    *
    * @var array $queries
    */
-  protected static $queries = array();
+  protected $queries = array();
 
   /**
    * Информация о блокировках
    *
    * @var array $locks
    */
-  protected static $locks = array();
+  protected $locks = array();
 
   /**
    * @var db_mysql $db
@@ -63,43 +63,43 @@ class SnCache {
    */
   public function cache_repack($location_type, $record_id = 0) {
     // Если есть $user_id - проверяем, а надо ли перепаковывать?
-    if ($record_id && isset(static::$data[$location_type][$record_id]) && static::$data[$location_type][$record_id] !== null) {
+    if ($record_id && isset($this->data[$location_type][$record_id]) && $this->data[$location_type][$record_id] !== null) {
       return;
     }
 
-    HelperArray::array_repack(static::$data[$location_type]);
-    HelperArray::array_repack(static::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
-    HelperArray::array_repack(static::$queries[$location_type], 1);
+    HelperArray::array_repack($this->data[$location_type]);
+    HelperArray::array_repack($this->locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
+    HelperArray::array_repack($this->queries[$location_type], 1);
   }
 
   public function cache_clear($location_type, $hard = true) {
-    if ($hard && !empty(static::$data[$location_type])) {
+    if ($hard && !empty($this->data[$location_type])) {
       // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
       // TODO - replace with setNull
-      array_walk(static::$data[$location_type], 'setNull');
+      array_walk($this->data[$location_type], 'setNull');
     }
-    static::$locator[$location_type] = array();
-    static::$queries[$location_type] = array();
+    $this->locator[$location_type] = array();
+    $this->queries[$location_type] = array();
     $this->cache_repack($location_type); // Перепаковываем внутренние структуры, если нужно
   }
 
   // TODO - UNUSED ????????????
   public function cache_clear_all($hard = true) {
     if ($hard) {
-      static::$data = array();
+      $this->data = array();
       static::cache_lock_unset_all();
     }
-    static::$locator = array();
-    static::$queries = array();
+    $this->locator = array();
+    $this->queries = array();
   }
 
   public function cache_isset($location_type, $record_id) {
-    return isset(static::$data[$location_type][$record_id]) && static::$data[$location_type][$record_id] !== null;
+    return isset($this->data[$location_type][$record_id]) && $this->data[$location_type][$record_id] !== null;
   }
 
   // TODO - UNUSED ????????????
   public function cache_get($location_type, $record_id) {
-    return isset(static::$data[$location_type][$record_id]) ? static::$data[$location_type][$record_id] : null;
+    return isset($this->data[$location_type][$record_id]) ? $this->data[$location_type][$record_id] : null;
   }
 
   /* Кэшируем запись в соответствующий кэш
@@ -128,7 +128,7 @@ class SnCache {
       ||
       !$this->cache_isset($location_type, $record_id)
     ) {
-      static::$data[$location_type][$record_id] = $record;
+      $this->data[$location_type][$record_id] = $record;
       if ($in_transaction && !$skip_lock) {
         $this->cache_lock_set($location_type, $record_id);
       }
@@ -136,31 +136,31 @@ class SnCache {
   }
 
   public function queryCacheSetByFilter($location_type, $filter, $record_id) {
-    self::$queries[$location_type][$filter][$record_id] = &$this->getDataRefByLocationAndId($location_type, $record_id);
+    $this->queries[$location_type][$filter][$record_id] = &$this->getDataRefByLocationAndId($location_type, $record_id);
   }
 
   public function cache_unset($cache_id, $safe_record_id) {
     // $record_id должен быть проверен заранее !
-    if (isset(static::$data[$cache_id][$safe_record_id]) && static::$data[$cache_id][$safe_record_id] !== null) {
+    if (isset($this->data[$cache_id][$safe_record_id]) && $this->data[$cache_id][$safe_record_id] !== null) {
       // Выставляем запись в null
-      static::$data[$cache_id][$safe_record_id] = null;
+      $this->data[$cache_id][$safe_record_id] = null;
       // Очищаем кэш мягко - что бы удалить очистить связанные данные - кэш локаций и кэш запоросов и всё, что потребуется впредь
       $this->cache_clear($cache_id, false);
     }
   }
 
   public function cache_lock_get($location_type, $record_id) {
-    return isset(static::$locks[$location_type][$record_id]);
+    return isset($this->locks[$location_type][$record_id]);
   }
 
   public function cache_lock_set($location_type, $record_id) {
-    return static::$locks[$location_type][$record_id] = true; // Не всегда - от результата
+    return $this->locks[$location_type][$record_id] = true; // Не всегда - от результата
   }
 
   // TODO - UNUSED ????????????
   public function cache_lock_unset($location_type, $record_id) {
-    if (isset(static::$locks[$location_type][$record_id])) {
-      unset(static::$locks[$location_type][$record_id]);
+    if (isset($this->locks[$location_type][$record_id])) {
+      unset($this->locks[$location_type][$record_id]);
     }
 
     return true; // Не всегда - от результата
@@ -169,21 +169,21 @@ class SnCache {
   public function cache_lock_unset_all() {
     // Когда будем работать с xcache - это понадобиться, что бы снимать в xcache блокировки с записей
     // Пройти по массиву - снять блокировки для кэшера в памяти
-    static::$locks = array();
+    $this->locks = array();
 
     return true; // Не всегда - от результата
   }
 
   public function getData($locationType = LOC_NONE) {
-    return $locationType == LOC_NONE ? static::$data : static::$data[$locationType];
+    return $locationType == LOC_NONE ? $this->data : $this->data[$locationType];
   }
 
   public function cacheUnsetElement($locationType, $recordId) {
-    static::$data[$locationType][$recordId] = null;
+    $this->data[$locationType][$recordId] = null;
   }
 
   public function isArrayLocation($locationType) {
-    return is_array(static::$data[$locationType]);
+    return is_array($this->data[$locationType]);
   }
 
   /**
@@ -195,58 +195,58 @@ class SnCache {
    * @return &mixed
    */
   public function &getDataRefByLocationAndId($locationType, $recordId) {
-    return static::$data[$locationType][$recordId];
+    return $this->data[$locationType][$recordId];
   }
 
   // TODO UNUSED ????
   public function setUnitLocator($unit, $unit_id) {
     if (is_array($unit)) {
-      static::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &$this->getDataRefByLocationAndId(LOC_UNIT, $unit_id);
+      $this->locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &$this->getDataRefByLocationAndId(LOC_UNIT, $unit_id);
     }
   }
 
   public function getUnitLocator($location_type, $location_id, $unit_snid) {
-    return $unit_snid ? static::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : static::$locator[LOC_UNIT][$location_type][$location_id];
+    return $unit_snid ? $this->locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : $this->locator[LOC_UNIT][$location_type][$location_id];
   }
 
   public function getUnitLocatorByFullLocation($location_type, $location_id) {
-    return is_array(static::$locator[LOC_UNIT][$location_type][$location_id]) ? static::$locator[LOC_UNIT][$location_type][$location_id] : array();
+    return is_array($this->locator[LOC_UNIT][$location_type][$location_id]) ? $this->locator[LOC_UNIT][$location_type][$location_id] : array();
   }
 
   public function setUnitLocatorByLocationAndIDs($location_type, $location_id, $unit_data) {
-    self::$locator[LOC_UNIT][$location_type][$location_id][$unit_data['unit_snid']] = &static::$data[LOC_UNIT][$unit_data['unit_id']];
+    $this->locator[LOC_UNIT][$location_type][$location_id][$unit_data['unit_snid']] = &$this->data[LOC_UNIT][$unit_data['unit_id']];
   }
 
   public function isUnitLocatorNotSet($location_type, $location_id) {
-    return !isset(static::$locator[LOC_UNIT][$location_type][$location_id]);
+    return !isset($this->locator[LOC_UNIT][$location_type][$location_id]);
   }
 
   public function locatorReset() {
-    static::$locator = array();
+    $this->locator = array();
   }
 
   public function queriesReset() {
-    static::$queries = array();
+    $this->queries = array();
   }
 
   public function getQueries() {
-    return static::$queries;
+    return $this->queries;
   }
 
   public function getLocks() {
-    return static::$locks;
+    return $this->locks;
   }
 
   public function getQueriesByLocationAndFilter($locationType, $filter) {
-    return !empty(static::$queries[$locationType][$filter]) && is_array(static::$queries[$locationType][$filter]) ? static::$queries[$locationType][$filter] : array();
+    return !empty($this->queries[$locationType][$filter]) && is_array($this->queries[$locationType][$filter]) ? $this->queries[$locationType][$filter] : array();
   }
 
   public function isQueryCacheByLocationAndFilterEmpty($locationType, $filter) {
-    return !isset(self::$queries[$locationType][$filter]) || self::$queries[$locationType][$filter] === null;
+    return !isset($this->queries[$locationType][$filter]) || $this->queries[$locationType][$filter] === null;
   }
 
   public function queryCacheResetByLocationAndFilter($locationType, $filter) {
-    self::$queries[$locationType][$filter] = array();
+    $this->queries[$locationType][$filter] = array();
   }
 
 }
