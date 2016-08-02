@@ -112,7 +112,7 @@ function sn_options_model() {
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
             DBStaticUser::db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
-            db_player_name_history_replace($user, $username_safe);
+            db_player_name_history_replace($user['id'], $username);
             // TODO: Change cookie to not force user relogin
             // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
             $template_result['.']['result'][] = array(

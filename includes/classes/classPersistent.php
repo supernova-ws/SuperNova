@@ -96,7 +96,15 @@ class classPersistent extends classCache {
         $qry[] = "('{$item_name}', '{$item_value}')";
       }
     }
-    classSupernova::$db->doReplace("REPLACE INTO `{{" . $this->table_name . "}}` (`{$this->sql_index_field}`, `{$this->sql_value_field}`) VALUES " . implode(',', $qry) . ";");
+    classSupernova::$gc->db->doReplaceValuesDeprecated(
+      $this->table_name,
+      array(
+        $this->sql_index_field,
+        $this->sql_value_field,
+      ),
+      $qry
+    );
+
 
     // И только после взятия блокировок - меняем значения в кэше
     foreach ($item_list as $item_name => $item_value) {

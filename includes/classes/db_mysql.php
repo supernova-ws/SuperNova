@@ -302,10 +302,76 @@ class db_mysql {
     return $this->doExecute($query);
   }
 
-  public function doReplace($query) {
+  protected function doSet($table, $fieldsAndValues, $replace = false) {
+    $tableSafe = $this->db_escape($table);
+    $safeFieldsAndValues = implode(',', $this->safeFieldsAndValues($fieldsAndValues));
+    $command = $replace ? 'REPLACE' : 'INSERT';
+    $query = "{$command} INTO `{{{$tableSafe}}}` SET {$safeFieldsAndValues}";
+
     return $this->doExecute($query);
   }
 
+  public function doInsertSet($table, $fieldsAndValues) {
+    return $this->doSet($table, $fieldsAndValues, false);
+  }
+
+  public function doReplaceSet($table, $fieldsAndValues) {
+    return $this->doSet($table, $fieldsAndValues, true);
+  }
+
+  /**
+   * Values should be passed as-is
+   *
+   * @param string   $table
+   * @param array    $fields
+   * @param string[] $values
+   * @param bool     $replace
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  protected function doValuesDeprecated($table, $fields, &$values, $replace = false) {
+    $tableSafe = $this->db_escape($table);
+    $safeFields = implode(',', $this->safeFields($fields));
+    $safeValues = implode(',', $values);
+    $command = $replace ? 'REPLACE' : 'INSERT';
+    $query = "{$command} INTO `{{{$tableSafe}}}` ({$safeFields}) VALUES {$safeValues}";
+
+    return $this->doExecute($query);
+  }
+
+  // TODO - batch insert and replace here
+
+  // TODO - перед тем, как переделывать данные из депрекейтов - убедится, что
+  // null - это null, а не строка'NULL'
+
+  /**
+   * Values should be passed as-is
+   *
+   * @param string   $table
+   * @param array    $fields
+   * @param string[] $values
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  public function doInsertValuesDeprecated($table, $fields, &$values) {
+    return $this->doValuesDeprecated($table, $fields, $values, false);
+  }
+
+  /**
+   * Values should be passed as-is
+   *
+   * @param string   $table
+   * @param array    $fields
+   * @param string[] $values
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  public function doReplaceValuesDeprecated($table, $fields, &$values) {
+    return $this->doValuesDeprecated($table, $fields, $values, true);
+  }
 
   public function doUpdate($query) {
     return $this->doExecute($query);
@@ -322,27 +388,37 @@ class db_mysql {
   }
 
   /**
-   * @param string $query
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function doDeleteComplex($query) {
-    return $this->doDelete($query);
-  }
-
-  /**
    * @param string $table
    * @param array  $where - simple WHERE statement list which can be combined with AND
    * @param bool   $isOneRecord
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doDeleteWhereSimple($table, $where, $isOneRecord = false) {
+  public function doDeleteWhere($table, $where, $isOneRecord = false) {
     $tableSafe = $this->db_escape($table);
-    $safeWhere = implode(' AND ', $this->safeFields($where));
+    $safeWhere = implode(' AND ', $this->safeFieldsAndValues($where));
     $query = "DELETE FROM `{{{$tableSafe}}}` WHERE {$safeWhere}"
       . ($isOneRecord ? ' LIMIT 1' : '');
 
+    return $this->doDelete($query);
+  }
+
+  /**
+   * @param string $table
+   * @param array  $where - simple WHERE statement list which can be combined with AND
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doDeleteRowWhere($table, $where) {
+    return $this->doDeleteWhere($table, $where, true);
+  }
+
+  /**
+   * @param string $query
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doDeleteComplex($query) {
     return $this->doDelete($query);
   }
 
@@ -358,18 +434,7 @@ class db_mysql {
    * @deprecated
    */
   public function doDeleteDeprecated($table, $where) {
-    return $this->doDeleteWhereSimple($table, $where, false);
-  }
-
-
-  /**
-   * @param string $table
-   * @param array  $where - simple WHERE statement list which can be combined with AND
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function doDeleteRowWhereSimple($table, $where) {
-    return $this->doDeleteWhereSimple($table, $where, true);
+    return $this->doDeleteWhere($table, $where, false);
   }
 
 
@@ -413,7 +478,7 @@ class db_mysql {
    *
    * @return array
    */
-  protected function safeFields($fields) {
+  protected function safeFieldsAndValues($fields) {
     $result = array();
 
     if (!is_array($fields) || empty($fields)) {
@@ -442,6 +507,21 @@ class db_mysql {
 
     foreach ($values as $key => $value) {
       $result[$key] = $this->castAsDbValue($value);
+    }
+
+    return $result;
+  }
+
+  // TODO - redo as callable usage with array_map/array_walk
+  public function safeFields($fields) {
+    $result = array();
+
+    if (!is_array($fields) || empty($fields)) {
+      return $result;
+    }
+
+    foreach ($fields as $key => $value) {
+      $result[$key] = "`" . $this->db_escape($value) . "`";
     }
 
     return $result;

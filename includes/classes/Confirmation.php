@@ -26,12 +26,10 @@ class Confirmation {
   }
   // TODO - OK 4.6
   public function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_unsafe) {
-    return $this->db->doDeleteWhereSimple(TABLE_CONFIRMATIONS, array('type' => $confirmation_type_safe, 'email' => $email_unsafe));
+    return $this->db->doDeleteWhere(TABLE_CONFIRMATIONS, array('type' => $confirmation_type_safe, 'email' => $email_unsafe));
   }
   // TODO - OK 4.6
   public function db_confirmation_get_unique_code_by_type_and_email($confirmation_type_safe, $email_unsafe) {
-    $email_safe = $this->db->db_escape($email_unsafe);
-
     do {
       // Ну, если у нас > 999.999 подтверждений - тут нас ждут проблемы...
       $confirm_code_safe = $this->db->db_escape($confirm_code_unsafe = $this->make_password_reset_code());
@@ -40,9 +38,11 @@ class Confirmation {
       $query = $this->db->doSelectFetch("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE");
     } while($query);
 
-    $this->db->doReplace(
-      "REPLACE INTO {{confirmations}}
-        SET `type` = {$confirmation_type_safe}, `code` = '{$confirm_code_safe}', `email` = '{$email_safe}';");
+    $this->db->doReplaceSet(TABLE_CONFIRMATIONS, array(
+      'type'  => $confirmation_type_safe,
+      'code'  => $confirm_code_unsafe,
+      'email' => $email_unsafe,
+    ));
 
     return $confirm_code_unsafe;
   }

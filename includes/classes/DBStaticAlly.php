@@ -96,7 +96,7 @@ class DBStaticAlly {
    * @param $userId
    */
   public static function db_ally_request_delete_own($userId, $allyId) {
-    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_ALLIANCE_REQUEST, array('id_user' => $userId, 'id_ally' => $allyId,));
+    classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE_REQUEST, array('id_user' => $userId, 'id_ally' => $allyId,));
   }
 
 
@@ -164,7 +164,7 @@ class DBStaticAlly {
    * @param int $allyId
    */
   public static function db_ally_delete($allyId) {
-    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_ALLIANCE, array('id' => $allyId));
+    classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE, array('id' => $allyId));
   }
 
 
@@ -173,7 +173,7 @@ class DBStaticAlly {
    * @param int $alliance_negotiation_contr_ally_id
    */
   public static function db_ally_negotiation_delete($userAllyId, $alliance_negotiation_contr_ally_id) {
-    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_ALLIANCE_NEGOTIATION, array(
+    classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE_NEGOTIATION, array(
       'alliance_negotiation_ally_id'       => $userAllyId,
       'alliance_negotiation_contr_ally_id' => $alliance_negotiation_contr_ally_id,
     ));
@@ -194,7 +194,7 @@ class DBStaticAlly {
    * @param $offer_id
    */
   public static function db_ally_negotiation_delete_by_offer_id($offer_id) {
-    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_ALLIANCE_NEGOTIATION, array('alliance_negotiation_id' => $offer_id));
+    classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE_NEGOTIATION, array('alliance_negotiation_id' => $offer_id));
   }
 
   /**
@@ -209,11 +209,11 @@ class DBStaticAlly {
    * @param $userAllyId
    */
   public static function db_ally_negotiation_delete_extended($negotiatorId, $userAllyId) {
-    classSupernova::$gc->db->doDeleteWhereSimple(TABLE_ALLIANCE_NEGOTIATION, array(
+    classSupernova::$gc->db->doDeleteWhere(TABLE_ALLIANCE_NEGOTIATION, array(
       'alliance_negotiation_id' => $negotiatorId,
       'alliance_negotiation_contr_ally_id' => $userAllyId,
     ));
-    classSupernova::$gc->db->doDeleteWhereSimple(TABLE_ALLIANCE_NEGOTIATION, array(
+    classSupernova::$gc->db->doDeleteWhere(TABLE_ALLIANCE_NEGOTIATION, array(
       'alliance_negotiation_id' => $userAllyId,
       'alliance_negotiation_contr_ally_id' => $negotiatorId,
     ));
@@ -283,7 +283,7 @@ class DBStaticAlly {
    * @param $id_user
    */
   public static function db_ally_request_delete_all_when_accepted($id_user) {
-    classSupernova::$gc->db->doDeleteWhereSimple(TABLE_ALLIANCE_REQUEST, array('id_user' => $id_user));
+    classSupernova::$gc->db->doDeleteWhere(TABLE_ALLIANCE_REQUEST, array('id_user' => $id_user));
   }
 
 

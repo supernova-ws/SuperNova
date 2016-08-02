@@ -51,25 +51,25 @@ function DeleteSelectedUser($UserID) {
     if ( $TheAlly['ally_members'] > 0 ) {
       classSupernova::$db->doUpdate( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
     } else {
-      classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_ALLIANCE, array('id' => $TheAlly['id'],));
-      classSupernova::$gc->db->doDeleteWhereSimple(TABLE_STAT_POINTS, array('stat_type' => STAT_TYPE_ALLY, 'id_owner' => $TheAlly['id'],));
+      classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE, array('id' => $TheAlly['id'],));
+      classSupernova::$gc->db->doDeleteWhere(TABLE_STAT_POINTS, array('stat_type' => STAT_TYPE_ALLY, 'id_owner' => $TheAlly['id'],));
     }
   }
-  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_STAT_POINTS, array('stat_type' => STAT_TYPE_USER, 'id_owner' => $UserID,));
+  classSupernova::$gc->db->doDeleteWhere(TABLE_STAT_POINTS, array('stat_type' => STAT_TYPE_USER, 'id_owner' => $UserID,));
 
   DBStaticPlanet::db_planet_list_delete_by_owner($UserID);
 
-  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_MESSAGES, array('message_owner' => $UserID,));
-  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_MESSAGES, array('message_sender' => $UserID,));
-  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_NOTES, array('owner' => $UserID ,));
+  classSupernova::$gc->db->doDeleteWhere(TABLE_MESSAGES, array('message_owner' => $UserID,));
+  classSupernova::$gc->db->doDeleteWhere(TABLE_MESSAGES, array('message_sender' => $UserID,));
+  classSupernova::$gc->db->doDeleteWhere(TABLE_NOTES, array('owner' => $UserID ,));
   FleetList::db_fleet_list_delete_by_owner($UserID);
-  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_BUDDY, array('BUDDY_SENDER_ID' => $UserID ,));
-  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_BUDDY, array('BUDDY_OWNER_ID' => $UserID ,));
+  classSupernova::$gc->db->doDeleteWhere(TABLE_BUDDY, array('BUDDY_SENDER_ID' => $UserID ,));
+  classSupernova::$gc->db->doDeleteWhere(TABLE_BUDDY, array('BUDDY_OWNER_ID' => $UserID ,));
 
 
   classSupernova::$gc->cacheOperator->db_del_record_by_id(LOC_USER, $UserID);
-  classSupernova::$db->doDeleteWhereSimple(TABLE_REFERRALS, array('id' => $UserID));
-  classSupernova::$db->doDeleteWhereSimple(TABLE_REFERRALS, array('id_partner' => $UserID));
+  classSupernova::$db->doDeleteWhere(TABLE_REFERRALS, array('id' => $UserID));
+  classSupernova::$db->doDeleteWhere(TABLE_REFERRALS, array('id_partner' => $UserID));
   classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->db_loadItem('users_amount') - 1);
   sn_db_transaction_commit();
 }
@@ -184,8 +184,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
 
   classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->users_amount + 1);
 
-  $username_safe = db_escape($username_unsafe);
-  db_player_name_history_replace($user_new, $username_safe);
+  db_player_name_history_replace($user_new['id'], $username_unsafe);
 
   if(!empty($options['partner_id']) && ($referral_row = DBStaticUser::db_user_by_id($options['partner_id'], true))) {
     db_referral_insert($options, $user_new);

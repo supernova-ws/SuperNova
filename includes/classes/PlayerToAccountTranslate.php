@@ -102,7 +102,7 @@ class PlayerToAccountTranslate {
   public static function db_translate_unregister_user($user_id_unsafe) {
     static::init();
 
-    return static::$db->doDeleteWhereSimple(TABLE_ACCOUNT_TRANSLATE, array('user_id' => $user_id_unsafe));
+    return static::$db->doDeleteWhere(TABLE_ACCOUNT_TRANSLATE, array('user_id' => $user_id_unsafe));
   }
 
 }

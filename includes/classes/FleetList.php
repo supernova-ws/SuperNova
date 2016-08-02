@@ -78,7 +78,7 @@ class FleetList extends ContainerArrayOfObject {
    */
   public static function db_fleet_list_delete_by_owner($owner_id) {
     DBStaticUnit::db_unit_list_delete($owner_id, LOC_FLEET);
-    return classSupernova::$gc->db->doDeleteWhereSimple(TABLE_FLEETS, array('fleet_owner' => $owner_id));
+    return classSupernova::$gc->db->doDeleteWhere(TABLE_FLEETS, array('fleet_owner' => $owner_id));
   }
   /**
    * LIST STAT - DEPRECATED

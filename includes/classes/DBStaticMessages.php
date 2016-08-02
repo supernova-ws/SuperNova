@@ -496,7 +496,7 @@ LIMIT
   }
 
   public static function db_message_delete_by_id($messageId) {
-    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_MESSAGES, array('message_id' => $messageId));
+    classSupernova::$gc->db->doDeleteRowWhere(TABLE_MESSAGES, array('message_id' => $messageId));
   }
 
 

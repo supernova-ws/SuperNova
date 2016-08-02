@@ -761,23 +761,11 @@ abstract class sn_module_payment extends sn_module {
       'payment_external_lots' => $this->payment_dark_matter_paid / get_mm_cost(),
     );
 
-    $replace = false;
     if($this->payment_id) {
       $payment['payment_id'] = $this->payment_id;
-      $replace = true;
-    }
-
-    $query = array();
-    foreach($payment as $key => $value) {
-      $value = is_string($value) ? '"' . db_escape($value) . '"' : $value;
-      $query[] = "`{$key}` = {$value}";
-    }
-
-    $longQuery = ' INTO `{{payment}}` SET ' . implode(',', $query) . ';';
-    if($replace) {
-      $this->db->doReplace('REPLACE' . $longQuery);
+      classSupernova::$gc->db->doReplaceSet('payment', $payment);
     } else {
-      $this->db->doInsert('INSERT' . $longQuery);
+      classSupernova::$gc->db->doInsertSet('payment', $payment);
     }
 
     return $this->db_get_by_id($this->db->db_insert_id());

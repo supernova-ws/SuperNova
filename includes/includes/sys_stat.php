@@ -56,11 +56,30 @@ function sys_stat_calculate_flush(&$data, $force = false) {
   }
 
   if(!empty($data)) {
-    classSupernova::$db->doReplace("REPLACE INTO `{{statpoints}}`
-      (`id_owner`, `id_ally`, `stat_type`, `stat_code`, `tech_points`, `tech_count`, `build_points`, `build_count`,
-       `defs_points`, `defs_count`, `fleet_points`, `fleet_count`, `res_points`, `res_count`, `total_points`,
-       `total_count`, `stat_date`) VALUES " . implode(',', $data)
+    classSupernova::$gc->db->doReplaceValuesDeprecated(
+      TABLE_STAT_POINTS,
+      array(
+        'id_owner',
+        'id_ally',
+        'stat_type',
+        'stat_code',
+        'tech_points',
+        'tech_count',
+        'build_points',
+        'build_count',
+        'defs_points',
+        'defs_count',
+        'fleet_points',
+        'fleet_count',
+        'res_points',
+        'res_count',
+        'total_points',
+        'total_count',
+        'stat_date',
+      ),
+      $data
     );
+
   }
 
   $data = array();

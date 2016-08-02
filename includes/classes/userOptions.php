@@ -128,7 +128,16 @@ class userOptions extends oldArrayAccessNd {
         $this->to_write[$key] = "({$this->user_id}, '" . db_escape($key) . "', '" . db_escape($value) . "')";
       }
 
-      classSupernova::$db->doReplace("REPLACE INTO `{{player_options}}` (`player_id`, `option_id`, `value`) VALUES " . implode(',', $this->to_write));
+      classSupernova::$gc->db->doReplaceValuesDeprecated(
+        TABLE_PLAYER_OPTIONS,
+        array(
+          'player_id',
+          'option_id',
+          'value',
+        ),
+        $this->to_write
+      );
+
 
       $this->to_write = array();
       $update_cache = true;
@@ -353,7 +362,15 @@ class userOptionsOld implements ArrayAccess {
         $to_write[$option_id] = "({$this->user_id}, '" . db_escape($option_id) . "', '" . db_escape($option_value) . "')";
       }
 
-      classSupernova::$db->doReplace("REPLACE INTO `{{player_options}}` (`player_id`, `option_id`, `value`) VALUES " . implode(',', $to_write));
+      classSupernova::$gc->db->doReplaceValuesDeprecated(
+        TABLE_PLAYER_OPTIONS,
+        array(
+          'player_id',
+          'option_id',
+          'value',
+        ),
+        $to_write
+      );
     }
   }
 

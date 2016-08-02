@@ -157,7 +157,7 @@ class DBStaticPlanet {
       $fieldName = pname_resource_name($resourceId);
       $value = "{$fieldName} = {$fieldName} + ('{$value}')";
     }
-    if($query = implode(',', $planetRowFieldChanges)) {
+    if ($query = implode(',', $planetRowFieldChanges)) {
       classSupernova::$gc->db->doUpdate("UPDATE `{{planets}}` SET {$query} WHERE id = {$planetId}");
     }
   }
@@ -208,7 +208,10 @@ class DBStaticPlanet {
       return false;
     }
     classSupernova::$gc->cacheOperator->db_del_record_by_id(LOC_PLANET, $planet_id);
-    classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_location_id` = " . $planet_id);
+    classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT, array(
+      'unit_location_type' => LOC_PLANET,
+      'unit_location_id' => $planet_id,
+    ));
 
     // Очереди очистятся автоматически по FOREIGN KEY
     return true;
@@ -219,8 +222,11 @@ class DBStaticPlanet {
     if (!($si_owner_id = idval($ui_owner_id))) {
       return false;
     }
-    classSupernova::$gc->cacheOperator->db_del_record_list(LOC_PLANET, "`id_owner` = {$si_owner_id}");
-    classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT, "`unit_location_type` = " . LOC_PLANET . " AND `unit_player_id` = " . $si_owner_id);
+    classSupernova::$gc->cacheOperator->db_del_record_list(LOC_PLANET, array('id_owner' => $si_owner_id));
+    classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT, array(
+      'unit_location_type' => LOC_PLANET,
+      'unit_player_id' => $si_owner_id,
+    ));
 
     // Очереди очистятся автоматически по FOREIGN KEY
     return true;

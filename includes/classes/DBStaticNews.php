@@ -13,7 +13,7 @@ class DBStaticNews {
   }
 
   public static function db_news_delete_by_id($announce_id) {
-    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_ANNOUNCE, array('idAnnounce' => $announce_id));
+    classSupernova::$gc->db->doDeleteRowWhere(TABLE_ANNOUNCE, array('idAnnounce' => $announce_id));
   }
 
   public static function db_news_with_survey_select_by_id($announce_id) {

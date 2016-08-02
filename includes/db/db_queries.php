@@ -210,11 +210,14 @@ function db_player_name_exists($player_name_unsafe) {
 }
 
 /**
- * @param $user
- * @param $username_safe
+ * @param        $userId
+ * @param string $username_unsafe
  */
-function db_player_name_history_replace($user, $username_safe) {
-  classSupernova::$db->doReplace("REPLACE INTO {{player_name_history}} SET `player_id` = {$user['id']}, `player_name` = '{$username_safe}'");
+function db_player_name_history_replace($userId, $username_unsafe) {
+  classSupernova::$gc->db->doReplaceSet('player_name_history', array(
+    'player_id'   => $userId,
+    'player_name' => $username_unsafe,
+  ));
 }
 
 
@@ -300,7 +303,7 @@ function db_blitz_reg_update_results($blitz_result_data, $current_round) {
 }
 
 function db_blitz_reg_delete($userId, $current_round) {
-  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_BLITZ_REGISTRATIONS, array('user_id' => $userId, 'round_number' => $current_round));
+  classSupernova::$gc->db->doDeleteWhere(TABLE_BLITZ_REGISTRATIONS, array('user_id' => $userId, 'round_number' => $current_round));
 }
 
 
@@ -329,7 +332,13 @@ function db_universe_get($uni_galaxy, $uni_system) {
  * @param $uni_row
  */
 function db_universe_rename($uni_galaxy, $uni_system, $uni_row) {
-  classSupernova::$db->doReplace("replace {{universe}} set `universe_galaxy` = {$uni_galaxy}, `universe_system` = {$uni_system}, `universe_name` = '{$uni_row['universe_name']}', `universe_price` = {$uni_row['universe_price']};");
+  $this->db->doReplaceSet('universe', array(
+    'universe_galaxy' => $uni_galaxy,
+    'universe_system' => $uni_system,
+    'universe_name' => $uni_row['universe_name'],
+    'universe_price' => $uni_row['universe_price'],
+  ));
+
 }
 
 
@@ -397,7 +406,7 @@ function db_log_list_get_last_100() {
  * @param $delete
  */
 function db_log_delete_by_id($delete) {
-  classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_LOGS, array('log_id' => $delete));
+  classSupernova::$gc->db->doDeleteRowWhere(TABLE_LOGS, array('log_id' => $delete));
 }
 
 function db_log_delete_update_and_stat_calc() {
@@ -549,7 +558,7 @@ function db_quest_get($quest_id) {
  * @param $quest_id
  */
 function db_quest_delete($quest_id) {
-  classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_QUEST, array('quest_id' => $quest_id));
+  classSupernova::$gc->db->doDeleteRowWhere(TABLE_QUEST, array('quest_id' => $quest_id));
 }
 
 /**

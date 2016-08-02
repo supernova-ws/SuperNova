@@ -1157,6 +1157,13 @@ classSupernova::$gc->cacheOperator
 
 WORKING ON
     ? DeleteComplex
+    Check doReplaceSet
+
+  // TODO - redo as callable usage with array_map/array_walk
+        - public function safeValues($values) {
+        - public function safeFields($fields) {
+        - protected function safeFieldsAndValues($fields) {
+
 
     - SnCache
         - move out unit-related
