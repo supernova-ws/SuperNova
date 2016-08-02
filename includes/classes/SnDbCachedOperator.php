@@ -124,7 +124,8 @@ class SnDbCachedOperator {
 
     $id_field = static::$location_info[$location_type][P_ID];
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = $this->db->doDelete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
+    // TODO - lock value in cache
+    if ($result = $this->db->doDeleteRowWhereSimple($table_name, array($id_field => $safe_record_id))) {
       // Обновляем данные только если ряд был затронут
       if ($this->db->db_affected_rows()) {
         $this->snCache->cache_unset($location_type, $safe_record_id);
@@ -141,7 +142,7 @@ class SnDbCachedOperator {
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = $this->db->doDelete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
+    if ($result = $this->db->doDeleteComplex("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
       // Обновляем данные только если ряд был затронут
       if ($this->db->db_affected_rows()) {
         // Обнуление кэша, потому что непонятно, что поменялось

@@ -21,7 +21,7 @@ class DBStaticFleetACS {
    */
 // USED AS CALLABLE - SEARCH FOR STRING!!!!!!!
   public static function db_fleet_aks_purge() {
-    classSupernova::$db->doDelete("DELETE FROM `{{aks}}` WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM `{{fleets}}`);");
+    classSupernova::$db->doDeleteComplex("DELETE FROM `{{aks}}` WHERE `id` NOT IN (SELECT DISTINCT `fleet_group` FROM `{{fleets}}`);");
   }
 
   /**
@@ -78,7 +78,7 @@ class DBStaticFleetACS {
    * @param $fleet_group_id_list
    */
   public static function db_acs_delete_by_list($fleet_group_id_list) {
-    classSupernova::$db->doDelete("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
+    classSupernova::$db->doDeleteComplex("DELETE FROM {{aks}} WHERE `id` IN ({$fleet_group_id_list})");
   }
 
 

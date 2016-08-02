@@ -1149,11 +1149,23 @@ classSupernova::$gc->cacheOperator
     - also check for other modules
 
 
+// TODO - fleets
+    - Дедлочит флоты
+
 WORKING ON
+    ? DeleteComplex
+
     - SnCache
         - move out unit-related
         - make simple SnCache implementation - just read from DB
         - // TODO - looks like cache not working
+
+public function db_del_record_list($location_type, $condition) {
+    - отследить использование $condition и устранить по возможности
+    - под сложные кондишны сделать отдельную функцию, которую потом легко можно будет депрекейтить
+
+// TODO
+    - каждая таблица должна сама уметь управлять своим кэшем. Наверное
 
 classSupernova::$db - replace with GC calls
 

@@ -23,7 +23,7 @@ class DBStaticPlanet {
 
 
   public static function db_planets_purge() {
-    classSupernova::$db->doDelete("DELETE FROM `{{planets}}` WHERE `id_owner` NOT IN (SELECT `id` FROM `{{users}}`);");
+    classSupernova::$db->doDeleteComplex("DELETE FROM `{{planets}}` WHERE `id_owner` NOT IN (SELECT `id` FROM `{{users}}`);");
   }
 
 

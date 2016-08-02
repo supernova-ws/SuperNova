@@ -26,9 +26,7 @@ class Confirmation {
   }
   // TODO - OK 4.6
   public function db_confirmation_delete_by_type_and_email($confirmation_type_safe, $email_unsafe) {
-    $email_safe = $this->db->db_escape($email_unsafe);
-
-    return $this->db->doDelete("DELETE FROM {{confirmations}} WHERE `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}'");
+    return $this->db->doDeleteWhereSimple(TABLE_CONFIRMATIONS, array('type' => $confirmation_type_safe, 'email' => $email_unsafe));
   }
   // TODO - OK 4.6
   public function db_confirmation_get_unique_code_by_type_and_email($confirmation_type_safe, $email_unsafe) {

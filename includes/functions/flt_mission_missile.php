@@ -166,6 +166,6 @@ function coe_o_missile_calculate() {
       DBStaticMessages::msg_send_simple_message($fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message);
       DBStaticMessages::msg_send_simple_message($fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['mip_sender_amd'], classLocale::$lang['mip_subject_amd'], $message_vorlage . $message);
     }
-    DBStaticFleetMissile::db_missile_delete($fleetRow);
+    DBStaticFleetMissile::db_missile_delete($fleetRow['id']);
   }
 }

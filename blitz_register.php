@@ -30,7 +30,7 @@ if(classSupernova::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER
       classSupernova::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
     }
   } elseif(sys_get_param_str('register_me_not') && !empty($is_registered)) {
-    db_blitz_reg_delete($user, $current_round);
+    db_blitz_reg_delete($user['id'], $current_round);
     classSupernova::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION_CANCEL, $current_price, "Отмена регистрации в раунде {$current_round} Блица");
   }
   $registered_count = db_blitz_reg_count($current_round);

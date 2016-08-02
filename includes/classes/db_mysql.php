@@ -312,13 +312,126 @@ class db_mysql {
   }
 
 
+  /**
+   * @param string $query
+   *
+   * @return array|bool|mysqli_result|null
+   */
   public function doDelete($query) {
     return $this->doExecute($query);
   }
 
-  public function doDeleteRow($query) {
-    return $this->doExecute($query);
+  /**
+   * @param string $query
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doDeleteComplex($query) {
+    return $this->doDelete($query);
   }
+
+  /**
+   * @param string $table
+   * @param array  $where - simple WHERE statement list which can be combined with AND
+   * @param bool   $isOneRecord
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doDeleteWhereSimple($table, $where, $isOneRecord = false) {
+    $tableSafe = $this->db_escape($table);
+    $safeWhere = implode(' AND ', $this->safeFields($where));
+    $query = "DELETE FROM `{{{$tableSafe}}}` WHERE {$safeWhere}"
+      . ($isOneRecord ? ' LIMIT 1' : '');
+
+    return $this->doDelete($query);
+  }
+
+  /**
+   * Early deprecated function for complex delete conditions
+   *
+   * @param $table
+   * @param $where
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  public function doDeleteDeprecated($table, $where) {
+    return $this->doDeleteWhereSimple($table, $where, false);
+  }
+
+
+
+  /**
+   * @param string $table
+   * @param array  $where - simple WHERE statement list which can be combined with AND
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doDeleteRowWhereSimple($table, $where) {
+    return $this->doDeleteWhereSimple($table, $where, true);
+  }
+
+
+  protected function castAsDbValue($value) {
+    switch (gettype($value)) {
+      case TYPE_INTEGER:
+      case TYPE_DOUBLE:
+        // do nothing
+      break;
+
+      case TYPE_BOOLEAN:
+        $value = $value ? 1 : 0;
+      break;
+
+      case TYPE_NULL:
+        $value = 'NULL';
+      break;
+
+      /** @noinspection PhpMissingBreakStatementInspection */
+      case TYPE_ARRAY:
+        $value = serialize($value);
+        // Continuing with serialized array value
+      case TYPE_STRING:
+        // Empty type is string
+      case TYPE_EMPTY:
+        // No-type defaults to string
+      default:
+        $value = "'" . $this->db_escape((string)$value) . "'";
+      break;
+    }
+
+    return $value;
+  }
+
+  /**
+   * Make field list safe
+   *
+   * Support expressions - expression index should be strictly integer!
+   *
+   * @param array $fields - array of pair $fieldName => $fieldValue
+   *
+   * @return array
+   */
+  protected function safeFields($fields) {
+    $result = array();
+
+    if (!is_array($fields) || empty($fields)) {
+      return $result;
+    }
+
+    foreach($fields as $fieldName => $fieldValue) {
+      // Integer $fieldName means "leave as is" - for expressions and already processed fields
+      if(is_int($fieldName)) {
+        $result[$fieldName] = $fieldValue;
+      } else {
+        $result[$fieldName] = "`{$fieldName}` = " . $this->castAsDbValue($fieldValue);
+      }
+    }
+
+    return $result;
+  }
+
+
 
 
   /**

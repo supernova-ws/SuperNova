@@ -101,11 +101,11 @@ class DBStaticChat {
    * @param $delete
    */
   public static function db_chat_message_delete($delete) {
-    classSupernova::$db->doDelete("DELETE FROM {{chat}} WHERE `messageid`={$delete};");
+    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_CHAT, array('messageid' => $delete));
   }
 
   public static function db_chat_message_purge() {
-    classSupernova::$db->doDelete("DELETE FROM `{{chat}}`;");
+    classSupernova::$db->doDeleteComplex("DELETE FROM `{{chat}}`;");
   }
 
   /**

@@ -139,7 +139,7 @@ class userOptions extends oldArrayAccessNd {
         $value = is_string($key) ? "'". db_escape($key) . "'" : $key;
       }
 
-      classSupernova::$db->doDelete("DELETE FROM {{player_options}} WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
+      classSupernova::$db->doDeleteComplex("DELETE FROM {{player_options}} WHERE `player_id` = {$this->user_id} AND `option_id` IN (". implode(',', $this->to_delete) . ") ");
 
       $this->to_delete = array();
       $update_cache = true;

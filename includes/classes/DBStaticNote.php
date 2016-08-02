@@ -3,7 +3,7 @@
 class DBStaticNote {
 
   public static function db_note_list_delete($user, $query_where) {
-    classSupernova::$db->doDelete("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
+    classSupernova::$db->doDeleteComplex("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
   }
 
   public static function db_note_get_id_and_owner($note_id_edit) {

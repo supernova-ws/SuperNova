@@ -15,7 +15,7 @@ if ($user_request['id_ally']) {
 
   if (sys_get_param_str('bcancel'))
   {
-    DBStaticAlly::db_ally_request_delete_by_user($user);
+    DBStaticAlly::db_ally_request_delete_own($user['id'], $user_request['id_ally']);
     header('Location: alliance.php');
   }
 

@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.16');
+define('SN_VERSION', '41a51.18');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1343,6 +1343,9 @@ define('ADM_TOOL_FORCE_LAST', 4);
 define('ADM_TOOL_INFO_PHP', 5);
 define('ADM_TOOL_INFO_SQL', 6);
 
+define('STAT_TYPE_USER', 1);
+define('STAT_TYPE_ALLY', 2);
+
 define('STAT_TOTAL', 0);
 define('STAT_FLEET', 1);
 define('STAT_TECH', 2);
@@ -1592,3 +1595,22 @@ define('SKIN_IMAGE_TAG_IMAGE_ID', 2);
  * Параметры тэга в массиве - отсортированные и переупорядоченные
  */
 define('SKIN_IMAGE_TAG_PARAMS', 3);
+
+define('TABLE_CONFIRMATIONS', 'confirmations');
+define('TABLE_ALLIANCE', 'alliance');
+define('TABLE_ALLIANCE_NEGOTIATION', 'alliance_negotiation');
+define('TABLE_ALLIANCE_REQUEST', 'alliance_requests');
+define('TABLE_CHAT', 'chat');
+define('TABLE_AKS', 'aks');
+define('TABLE_MISSILES', 'iraks');
+define('TABLE_MESSAGES', 'messages');
+define('TABLE_ANNOUNCE', 'announce');
+define('TABLE_QUEST', 'quest');
+define('TABLE_LOGS', 'logs');
+define('TABLE_BLITZ_REGISTRATIONS', 'blitz_registrations');
+define('TABLE_SURVEY', 'survey');
+define('TABLE_FLEETS', 'fleets');
+define('TABLE_ACCOUNT_TRANSLATE', 'account_translate');
+define('TABLE_STAT_POINTS', 'statpoints');
+define('TABLE_NOTES', 'notes');
+define('TABLE_BUDDY', 'buddy');

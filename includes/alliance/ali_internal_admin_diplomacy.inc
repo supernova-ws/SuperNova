@@ -41,7 +41,7 @@ if(sys_get_param_str('ali_dip_offer_make')) {
   $alliance_negotiation_propose = sys_get_param_str('alliance_negotiation_propose');
 
   // If there is already offer for this alliance - delete it
-  DBStaticAlly::db_ally_negotiation_delete($user, $alliance_negotiation_contr_ally_id);
+  DBStaticAlly::db_ally_negotiation_delete($user['ally_id'], $alliance_negotiation_contr_ally_id);
 
   $relation_new = $sn_diplomacy_relation_list[$alliance_negotiation_relation];
   $relation_current = $sn_diplomacy_relation_list[$relation_current_id];
@@ -120,7 +120,7 @@ if($accept_offer) {
       'alliance_diplomacy_time'            => SN_TIME_NOW
     ));
 
-  DBStaticAlly::db_ally_negotiatiion_delete_extended($negotiation, $user);
+  DBStaticAlly::db_ally_negotiation_delete_extended($negotiation['alliance_negotiation_ally_id'], $user['ally_id']);
 
   DBStaticMessages::msg_ali_send("{$classLocale['ali_dip_relation_change']} [{$negotiation['alliance_negotiation_ally_name']}] {$classLocale['ali_dip_relation_change_to']} {$classLocale['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_ally_name']}]");
   DBStaticMessages::msg_ali_send("{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}] {$classLocale['ali_dip_relation_accept']} {$classLocale['ali_dip_relations'][$negotiation['alliance_negotiation_relation']]}", "{$classLocale['sys_alliance']} [{$negotiation['alliance_negotiation_contr_ally_name']}]", -1, $negotiation['alliance_negotiation_ally_id']);

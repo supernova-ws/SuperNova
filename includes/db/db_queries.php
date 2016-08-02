@@ -152,7 +152,7 @@ function db_stat_list_update_ally_stats() {
 }
 
 function db_stat_list_delete_ally_player() {
-  return classSupernova::$db->doDelete("DELETE s FROM `{{statpoints}}` AS s JOIN `{{users}}` AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL");
+  return classSupernova::$db->doDeleteComplex("DELETE s FROM `{{statpoints}}` AS s JOIN `{{users}}` AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL");
 }
 
 
@@ -230,22 +230,6 @@ function db_player_name_history_get_name_by_name($username_safe) {
 }
 
 
-// ANNONCE *************************************************************************************************************
-function db_ANNONCE_insert_set($users, $metalvendre, $cristalvendre, $deutvendre, $metalsouhait, $cristalsouhait, $deutsouhait) {
-  return classSupernova::$db->doInsert("INSERT INTO {{annonce}} SET 
-    `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', 
-    `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
-}
-
-function db_ANNONCE_delete_by_id($GET_id) {
-  return classSupernova::$db->doDelete("DELETE FROM `{{annonce}}` WHERE `id` = {$GET_id}");
-}
-
-function db_ANNONCE_LIST_select_all() {
-  return classSupernova::$db->doSelect("SELECT * FROM `{{annonce}}` ORDER BY `id` DESC");
-}
-
-
 // BANNED *************************************************************************************************************
 function db_banned_list_select() {
   return classSupernova::$db->doSelect("SELECT * FROM `{{banned}}` ORDER BY `ban_id` DESC;");
@@ -315,8 +299,8 @@ function db_blitz_reg_update_results($blitz_result_data, $current_round) {
           WHERE `blitz_name` = '{$blitz_result_data[1]}' AND `round_number` = {$current_round};");
 }
 
-function db_blitz_reg_delete($user, $current_round) {
-  classSupernova::$db->doDelete("DELETE FROM {{blitz_registrations}} WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round};");
+function db_blitz_reg_delete($userId, $current_round) {
+  classSupernova::$gc->db->doDeleteWhereSimple(TABLE_BLITZ_REGISTRATIONS, array('user_id' => $userId, 'round_number' => $current_round));
 }
 
 
@@ -413,11 +397,11 @@ function db_log_list_get_last_100() {
  * @param $delete
  */
 function db_log_delete_by_id($delete) {
-  classSupernova::$db->doDelete("DELETE FROM `{{logs}}` WHERE `log_id` = {$delete} LIMIT 1;");
+  classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_LOGS, array('log_id' => $delete));
 }
 
 function db_log_delete_update_and_stat_calc() {
-  classSupernova::$db->doDelete("DELETE FROM `{{logs}}` WHERE `log_code` IN (103, 180, 191);");
+  classSupernova::$db->doDeleteComplex("DELETE FROM `{{logs}}` WHERE `log_code` IN (103, 180, 191);");
 }
 
 /**
@@ -565,7 +549,7 @@ function db_quest_get($quest_id) {
  * @param $quest_id
  */
 function db_quest_delete($quest_id) {
-  classSupernova::$db->doDelete("DELETE FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
+  classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_QUEST, array('quest_id' => $quest_id));
 }
 
 /**
