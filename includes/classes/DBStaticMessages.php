@@ -303,7 +303,8 @@ class DBStaticMessages {
     $message_range = sys_get_param_str('message_range');
     $marked_message_list = sys_get_param('mark', array());
 
-    $query_add = '';
+    $deleteAll = false;
+    $where = array();
     switch ($message_range) {
       case 'unchecked':
       case 'checked':
@@ -314,28 +315,29 @@ class DBStaticMessages {
         foreach ($marked_message_list as &$messageId) {
           $messageId = idval($messageId);
         }
-
         $query_add = implode(',', $marked_message_list);
+
         if ($query_add) {
           $query_add = "IN ({$query_add})";
           if ($message_range == 'unchecked') {
             $query_add = "NOT {$query_add}";
           }
-          $query_add = " AND `message_id` {$query_add}";
+          $where[] = "`message_id` {$query_add}";
         }
 
       case 'class':
         if ($current_class != MSG_TYPE_OUTBOX && $current_class != MSG_TYPE_NEW) {
-          $query_add .= " AND `message_type` = {$current_class}";
+          $where['message_type'] = $current_class;
         }
       case 'all':
-        $query_add = $query_add ? $query_add : true;
+        $deleteAll = true;
       break;
     }
 
-    if ($query_add) {
-      $query_add = $query_add === true ? '' : $query_add;
-      static::db_message_list_delete($player['id'], $query_add);
+    if ($deleteAll || !empty($where)) {
+      $where['message_owner'] = $player['id'];
+      // Mallformed $where
+      classSupernova::$gc->db->doDeleteDeprecated(TABLE_MESSAGES, $where);
     }
   }
 
@@ -428,10 +430,6 @@ class DBStaticMessages {
           (`message_sender` = '{$user['id']}' AND `message_owner` = '{$recipient_id}')) ORDER BY `message_time` DESC LIMIT 20;");
   }
 
-  public static function db_message_list_delete($playerId, $query_add) {
-    classSupernova::$db->doDeleteComplex("DELETE FROM `{{messages}}` WHERE `message_owner` = '{$playerId}'{$query_add};");
-  }
-
   public static function db_message_list_outbox_by_user_id($user_id) {
     $user_id = idval($user_id);
     if (empty($user_id)) {
@@ -494,18 +492,28 @@ LIMIT
   }
 
   /**
-   * @param $message_delete
+   * @param string $message_delete
    */
   public static function db_message_list_delete_set($message_delete) {
-    classSupernova::$db->doDeleteComplex("DELETE FROM {{messages}} WHERE `message_id` in ({$message_delete});");
+    classSupernova::$db->doDeleteDeprecated(TABLE_MESSAGES, array(0 => "`message_id` in ({$message_delete})",));
   }
+
+  public static function db_message_delete_by_id($messageId) {
+    classSupernova::$gc->db->doDeleteRowWhereSimple(TABLE_MESSAGES, array('message_id' => $messageId));
+  }
+
+
 
   /**
    * @param $delete_date
    * @param $int_type_selected
    */
   public static function db_message_list_delete_by_date($delete_date, $int_type_selected) {
-    classSupernova::$db->doDeleteComplex("DELETE FROM {{messages}} WHERE message_time <= UNIX_TIMESTAMP('{$delete_date}')" . ($int_type_selected >= 0 ? " AND `message_type` = {$int_type_selected}" : ''));
+    $where[] = "message_time <= UNIX_TIMESTAMP('{$delete_date}')";
+    if($int_type_selected >= 0) {
+      $where['message_type'] = $int_type_selected;
+    }
+    classSupernova::$db->doDeleteDeprecated(TABLE_MESSAGES, $where);
   }
 
   /**

@@ -349,6 +349,8 @@ class db_mysql {
   /**
    * Early deprecated function for complex delete conditions
    *
+   * Usually used for mallformed $where conditions
+   *
    * @param $table
    * @param $where
    *
@@ -358,7 +360,6 @@ class db_mysql {
   public function doDeleteDeprecated($table, $where) {
     return $this->doDeleteWhereSimple($table, $where, false);
   }
-
 
 
   /**
@@ -390,7 +391,7 @@ class db_mysql {
       /** @noinspection PhpMissingBreakStatementInspection */
       case TYPE_ARRAY:
         $value = serialize($value);
-        // Continuing with serialized array value
+      // Continuing with serialized array value
       case TYPE_STRING:
         // Empty type is string
       case TYPE_EMPTY:
@@ -419,9 +420,9 @@ class db_mysql {
       return $result;
     }
 
-    foreach($fields as $fieldName => $fieldValue) {
+    foreach ($fields as $fieldName => $fieldValue) {
       // Integer $fieldName means "leave as is" - for expressions and already processed fields
-      if(is_int($fieldName)) {
+      if (is_int($fieldName)) {
         $result[$fieldName] = $fieldValue;
       } else {
         $result[$fieldName] = "`{$fieldName}` = " . $this->castAsDbValue($fieldValue);
@@ -431,7 +432,20 @@ class db_mysql {
     return $result;
   }
 
+  // TODO - redo as callable usage with array_map/array_walk
+  public function safeValues($values) {
+    $result = array();
 
+    if (!is_array($values) || empty($values)) {
+      return $result;
+    }
+
+    foreach ($values as $key => $value) {
+      $result[$key] = $this->castAsDbValue($value);
+    }
+
+    return $result;
+  }
 
 
   /**

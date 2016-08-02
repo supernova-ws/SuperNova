@@ -40,14 +40,18 @@ foreach(DBStaticMessages::$snMessageClassList as $key => $value) {
 }
 
 
-$message_delete = sys_get_param_id('msg_del');
-if(sys_get_param('str_delete_selected') && is_array($message_delete = sys_get_param('selected')) && !empty($message_delete)) {
+$deletedMessages = '';
+if($idMessageDelete = sys_get_param_id('msg_del')) {
+  DBStaticMessages::db_message_delete_by_id($idMessageDelete);
+  $deletedMessages = $idMessageDelete;
+} elseif(sys_get_param('str_delete_selected') && is_array($message_delete = sys_get_param('selected')) && !empty($message_delete)) {
   $message_delete = implode(', ', $message_delete);
+  DBStaticMessages::db_message_list_delete_set($message_delete);
+  $deletedMessages = $message_delete;
 }
 
-if($message_delete) {
-  DBStaticMessages::db_message_list_delete_set($message_delete);
-  $template->assign_block_vars('result', array('MESSAGE' => sprintf(classLocale::$lang['mlst_messages_deleted'], $message_delete)));
+if($deletedMessages) {
+  $template->assign_block_vars('result', array('MESSAGE' => sprintf(classLocale::$lang['mlst_messages_deleted'], $deletedMessages)));
 }
 
 
