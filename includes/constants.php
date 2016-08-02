@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.19');
+define('SN_VERSION', '41a51.20');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1614,3 +1614,8 @@ define('TABLE_ACCOUNT_TRANSLATE', 'account_translate');
 define('TABLE_STAT_POINTS', 'statpoints');
 define('TABLE_NOTES', 'notes');
 define('TABLE_BUDDY', 'buddy');
+define('TABLE_UNIT', 'unit');
+define('TABLE_USERS', 'users');
+define('TABLE_PLANETS', 'planets');
+define('TABLE_REFERRALS', 'referrals');
+define('TABLE_PLAYER_OPTIONS', 'player_options');

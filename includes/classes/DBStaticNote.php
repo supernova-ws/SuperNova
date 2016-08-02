@@ -2,8 +2,8 @@
 
 class DBStaticNote {
 
-  public static function db_note_list_delete($user, $query_where) {
-    classSupernova::$db->doDeleteComplex("DELETE FROM {{notes}} WHERE `owner` = {$user['id']} {$query_where};");
+  public static function db_note_list_delete($where) {
+    classSupernova::$gc->db->doDeleteDeprecated(TABLE_NOTES, $where);
   }
 
   public static function db_note_get_id_and_owner($note_id_edit) {
@@ -67,6 +67,55 @@ class DBStaticNote {
     $query = classSupernova::$db->doSelect("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `galaxy` <> 0 AND `system` <> 0 AND `planet` <> 0 ORDER BY `priority` DESC, `galaxy`, `system`, `planet`, `planet_type`;");
 
     return $query;
+  }
+
+  /**
+   * @param array $user
+   * @param int   $note_id_edit
+   *
+   * @throws Exception
+   */
+  public static function processDelete($user, $note_id_edit) {
+    $not = '';
+    $query_where = '';
+    switch (sys_get_param_str('note_delete_range')) {
+      case 'all':
+      break;
+
+      case 'marked_not':
+        $not = 'NOT';
+      case 'marked':
+        if (!is_array($notes_marked = sys_get_param('note'))) {
+          throw new Exception('note_err_none_selected', ERR_WARNING);
+        }
+
+        $notes_marked_filtered = array();
+        foreach ($notes_marked as $note_id => $note_select) {
+          if ($note_select == 'on' && $note_id = idval($note_id)) {
+            $notes_marked_filtered[] = $note_id;
+          }
+        }
+
+        if (empty($notes_marked_filtered)) {
+          throw new Exception('note_err_none_selected', ERR_WARNING);
+        }
+
+        $notes_marked_filtered = implode(',', $notes_marked_filtered);
+        $query_where = "AND `id` {$not} IN ({$notes_marked_filtered})";
+      break;
+
+      default:
+        throw new Exception('note_warn_no_range', ERR_WARNING);
+      break;
+    }
+
+    sn_db_transaction_start();
+    $where['owner'] = $user['id'];
+    $where[] = $query_where;
+    DBStaticNote::db_note_list_delete($where);
+    sn_db_transaction_commit();
+
+    throw new Exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
   }
 
 }

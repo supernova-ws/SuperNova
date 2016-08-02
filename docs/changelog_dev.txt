@@ -1149,6 +1149,9 @@ classSupernova::$gc->cacheOperator
     - also check for other modules
 
 
+// TODO
+    - Notes и Messages - унифицировать процесс выбора диапазонов
+
 // TODO - fleets
     - Дедлочит флоты
 

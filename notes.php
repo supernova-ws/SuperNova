@@ -11,8 +11,9 @@
 use Vector\Vector;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
-
 lng_include('notes');
+
+global $user;
 
 $template = gettemplate('notes', true);
 
@@ -24,43 +25,7 @@ if(($result_message = sys_get_param_str('MESSAGE')) && isset(classLocale::$lang[
 $note_id_edit = sys_get_param_id('note_id_edit');
 if(sys_get_param('note_delete')) {
   try {
-    $not = '';
-    $query_where = '';
-    switch(sys_get_param_str('note_delete_range')) {
-      case 'all':
-      break;
-
-      case 'marked_not':
-        $not = 'NOT';
-      case 'marked':
-        if(!is_array($notes_marked = sys_get_param('note'))) {
-          throw new Exception('note_err_none_selected', ERR_WARNING);
-        }
-
-        $notes_marked_filtered = array();
-        foreach($notes_marked as $note_id => $note_select) {
-          if($note_select == 'on' && $note_id = idval($note_id)) {
-            $notes_marked_filtered[] = $note_id;
-          }
-        }
-
-        if(empty($notes_marked_filtered)) {
-          throw new Exception('note_err_none_selected', ERR_WARNING);
-        }
-
-        $notes_marked_filtered = implode(',', $notes_marked_filtered);
-        $query_where = "AND `id` {$not} IN ({$notes_marked_filtered})";
-      break;
-
-      default:
-        throw new Exception('note_warn_no_range', ERR_WARNING);
-      break;
-    }
-
-    sn_db_transaction_start();
-    DBStaticNote::db_note_list_delete($user, $query_where);
-    sn_db_transaction_commit();
-    throw new Exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);
+    DBStaticNote::processDelete($user, $note_id_edit);
   } catch(Exception $e) {
     $note_id_edit = 0;
     sn_db_transaction_rollback();

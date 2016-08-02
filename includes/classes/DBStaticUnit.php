@@ -130,7 +130,11 @@ class DBStaticUnit {
 
 
   public static function db_unit_list_admin_delete_mercenaries_finished() {
-    return classSupernova::$db->doDeleteComplex("DELETE FROM `{{unit}}` WHERE unit_time_finish IS NOT NULL AND unit_time_finish < FROM_UNIXTIME(" . SN_TIME_NOW . ") AND unit_type = " . UNIT_MERCENARIES);
+    return classSupernova::$db->doDeleteDeprecated(TABLE_UNIT, array(
+      'unit_time_finish IS NOT NULL',
+      "unit_time_finish < FROM_UNIXTIME(" . SN_TIME_NOW . ")",
+      'unit_type' => UNIT_MERCENARIES,
+    ));
   }
 
   public static function db_unit_list_admin_set_mercenaries_expire_time($default_length) {

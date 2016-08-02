@@ -305,8 +305,10 @@ class DBStaticMessages {
 
     $deleteAll = false;
     $where = array();
+    $not = '';
     switch ($message_range) {
       case 'unchecked':
+        $not = 'NOT';
       case 'checked':
         if ($message_range == 'checked' && empty($marked_message_list)) {
           break;
@@ -315,14 +317,9 @@ class DBStaticMessages {
         foreach ($marked_message_list as &$messageId) {
           $messageId = idval($messageId);
         }
-        $query_add = implode(',', $marked_message_list);
 
-        if ($query_add) {
-          $query_add = "IN ({$query_add})";
-          if ($message_range == 'unchecked') {
-            $query_add = "NOT {$query_add}";
-          }
-          $where[] = "`message_id` {$query_add}";
+        if ($query_add = implode(',', $marked_message_list)) {
+          $where[] = "`message_id` {$not} IN ({$query_add})";
         }
 
       case 'class':
@@ -486,7 +483,7 @@ LIMIT
    * @return array|bool|mysqli_result|null
    */
   public static function db_message_count_by_type($int_type_selected) {
-    $page_max = classSupernova::$db->doSelectFetch('SELECT COUNT(*) AS `max` FROM {{messages}}' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''));
+    $page_max = classSupernova::$db->doSelectFetch('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''));
 
     return $page_max;
   }
