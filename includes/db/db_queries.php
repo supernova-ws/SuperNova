@@ -332,7 +332,7 @@ function db_universe_get($uni_galaxy, $uni_system) {
  * @param $uni_row
  */
 function db_universe_rename($uni_galaxy, $uni_system, $uni_row) {
-  $this->db->doReplaceSet('universe', array(
+  classSupernova::$db->doReplaceSet('universe', array(
     'universe_galaxy' => $uni_galaxy,
     'universe_system' => $uni_system,
     'universe_name' => $uni_row['universe_name'],
