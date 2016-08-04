@@ -155,7 +155,7 @@ class RequestInfo {
       'browser_id' => $this->browser_id,
       'user_ip'    => $this->ip_v4_int,
       'user_proxy' => $this->ip_v4_proxy_chain,
-    ));
+    ), DB_INSERT_IGNORE);
   }
 
   /**
