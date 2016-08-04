@@ -47,7 +47,7 @@ if($userToAdd_unsafe) {
     if(!$aks) {
       // No AСS exists - making one
       if(!$objFleet->group_id) {
-        DBStaticFleetACS::db_acs_insert($fleetid, $user, $objFleet);
+        DBStaticFleetACS::db_acs_insert($fleetid, $user['id'], $objFleet);
 
         $aks = DBStaticFleetACS::db_acs_get_by_fleet($fleetid);
 

@@ -473,7 +473,7 @@ LIMIT
   }
 
   public static function db_message_insert_all($message_type, $from, $subject, $text) {
-    return classSupernova::$db->doInsert('INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
+    return classSupernova::$db->doInsertComplex('INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
       "SELECT `id`, 0, unix_timestamp(now()), {$message_type}, '{$from}', '{$subject}', '{$text}' FROM {{users}}");
   }
 
@@ -514,11 +514,22 @@ LIMIT
   }
 
   /**
-   * @param $insert_values
+   * @param string[] $insert_values
    */
   public static function db_message_insert($insert_values) {
-    classSupernova::$db->doInsert('INSERT INTO `{{messages}}` (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
-      'VALUES ' . implode(',', $insert_values));
+    classSupernova::$db->doInsertValuesDeprecated(
+      TABLE_MESSAGES,
+      array(
+        'message_owner',
+        'message_sender',
+        'message_time',
+        'message_type',
+        'message_from',
+        'message_subject',
+        'message_text',
+      ),
+      $insert_values
+    );
   }
 
 }

@@ -414,7 +414,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
     $fields = implode(',', array_keys($field_set));
 
     $result = 0;
-    if (classSupernova::$db->doInsert("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
+    if (classSupernova::$db->doInsertComplex("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
       $result = classSupernova::$db->db_insert_id();
     }
 

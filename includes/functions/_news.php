@@ -105,8 +105,7 @@ function survey_vote(&$user) {
     $survey_vote_id = sys_get_param_id('survey_vote');
     $is_answer_exists = DBStaticSurveyAnswer::db_survey_answer_get($survey_id, $survey_vote_id);
     if(!empty($is_answer_exists)) {
-      $user_name_safe = db_escape($user['username']);
-      DBStaticSurveyVote::db_survey_vote_insert($user, $survey_id, $survey_vote_id, $user_name_safe);
+      DBStaticSurveyVote::db_survey_vote_insert($survey_id, $survey_vote_id, $user['id'], $user['username']);
     }
   }
   sn_db_transaction_commit();

@@ -75,6 +75,11 @@ class DBStaticQue {
     return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_QUE, $que_id, "`que_time_left` = {$que_time_left}");
   }
 
+  /**
+   * @param array $set
+   *
+   * @return array|bool|false|mysqli_result|null
+   */
   public static function db_que_set_insert($set) {
     return classSupernova::$gc->cacheOperator->db_ins_record(LOC_QUE, $set);
   }

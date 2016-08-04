@@ -26,7 +26,7 @@ if(classSupernova::$config->db_loadItem('game_blitz_register') == BLITZ_REGISTER
   $is_registered = db_blitz_reg_get_id_by_player_and_round($user, $current_round);
   if(sys_get_param_str('register_me')) {
     if(empty($is_registered) && mrc_get_level($user, null, RES_METAMATTER) >= $current_price) {
-      db_blitz_reg_insert($user, $current_round);
+      db_blitz_reg_insert($user['id'], $current_round);
       classSupernova::$auth->account->metamatter_change(RPG_BLITZ_REGISTRATION, -$current_price, "Регистрация в раунде {$current_round} Блица");
     }
   } elseif(sys_get_param_str('register_me_not') && !empty($is_registered)) {

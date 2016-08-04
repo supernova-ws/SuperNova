@@ -84,16 +84,16 @@ function mrc_mercenary_hire($mode, $user, $mercenary_id) {
     }
 
     if($darkmater_cost && $mercenary_level) {
-      DBStaticUnit::db_unit_set_insert(
-        "unit_player_id = {$user['id']},
-        unit_location_type = " . LOC_USER . ",
-        unit_location_id = {$user['id']},
-        unit_type = {$mode},
-        unit_snid = {$mercenary_id},
-        unit_level = {$mercenary_level},
-        unit_time_start = " . (!$is_permanent ? 'FROM_UNIXTIME(' . SN_TIME_NOW . ')' : 'null') . ",
-        unit_time_finish = " . (!$is_permanent ? 'FROM_UNIXTIME(' . (SN_TIME_NOW + $mercenary_period) . ')' : 'null')
-      );
+      DBStaticUnit::db_unit_set_insert(array(
+        'unit_player_id'     => $user['id'],
+        'unit_location_type' => LOC_USER,
+        'unit_location_id'   => $user['id'],
+        'unit_type'          => $mode,
+        'unit_snid'          => $mercenary_id,
+        'unit_level'         => $mercenary_level,
+        'unit_time_start'    => (!$is_permanent ? date(FMT_DATE_TIME_SQL, SN_TIME_NOW) : null),
+        'unit_time_finish'   => (!$is_permanent ? date(FMT_DATE_TIME_SQL, SN_TIME_NOW + $mercenary_period) : null),
+      ));
 
       rpg_points_change($user['id'], $mode == UNIT_PLANS ? RPG_PLANS : RPG_MERCENARY, -($darkmater_cost),
         sprintf(classLocale::$lang[$mode == UNIT_PLANS ? 'mrc_plan_bought_log' : 'mrc_mercenary_hired_log'], classLocale::$lang['tech'][$mercenary_id], $mercenary_id, $darkmater_cost, round($mercenary_period / PERIOD_DAY)));

@@ -100,7 +100,9 @@ class RequestInfo {
         $cypher_safe = db_escape($this->device_cypher = sys_random_string());
         $row = classSupernova::$db->doSelectFetch("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE");
       } while (!empty($row));
-      classSupernova::$db->doInsert("INSERT INTO {{security_device}} (`device_cypher`) VALUES ('{$cypher_safe}');");
+      classSupernova::$db->doInsertSet(TABLE_SECURITY_DEVICE, array(
+        'device_cypher' => $this->device_cypher,
+      ));
       $this->device_id = classSupernova::$db->db_insert_id();
       sn_setcookie(SN_COOKIE_D, $this->device_cypher, PERIOD_FOREVER, SN_ROOT_RELATIVE);
     }
@@ -147,14 +149,13 @@ class RequestInfo {
       return true;
     }
 
-    $user_id_safe = round(floatval($user_id_unsafe));
-
-    // self::flog('Вставляем запись системы безопасности');
-    return classSupernova::$db->doInsert(
-      "INSERT IGNORE INTO {{security_player_entry}} (`player_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)
-        VALUES ({$user_id_safe}," . $this->device_id . "," . $this->browser_id . "," .
-      $this->ip_v4_int . ", '" . db_escape($this->ip_v4_proxy_chain) . "');"
-    );
+    return classSupernova::$db->doInsertSet(TABLE_SECURITY_PLAYER_ENTRY, array(
+      'player_id'  => empty($user_id_unsafe) ? null : $user_id_unsafe,
+      'device_id'  => $this->device_id,
+      'browser_id' => $this->browser_id,
+      'user_ip'    => $this->ip_v4_int,
+      'user_proxy' => $this->ip_v4_proxy_chain,
+    ));
   }
 
   /**
@@ -169,21 +170,18 @@ class RequestInfo {
       return;
     }
 
-    $user_id_safe = db_escape($user_id_unsafe);
-    $proxy_safe = db_escape($this->ip_v4_proxy_chain);
-
     classSupernova::$db->isWatching = true;
-    classSupernova::$db->doInsert(
-      "INSERT INTO {{counter}} SET
-        `visit_time` = '" . SN_TIME_SQL. "',
-        `user_id` = {$user_id_safe},
-        `device_id` = {$this->device_id},
-        `browser_id` = {$this->browser_id},
-        `user_ip` = {$this->ip_v4_int},
-        `user_proxy` = '{$proxy_safe}',
-        `page_url_id` = {$this->page_address_id}" .
-        ($this->write_full_url ? ", `plain_url_id` = {$this->page_url_id}" : '' ).
-      ";");
+    $values = array(
+      'visit_time'  => SN_TIME_SQL,
+      'user_id'     => $user_id_unsafe,
+      'device_id'   => $this->device_id,
+      'browser_id'  => $this->browser_id,
+      'user_ip'     => $this->ip_v4_int,
+      'user_proxy'  => $this->ip_v4_proxy_chain,
+      'page_url_id' => $this->page_address_id,
+    );
+    $this->write_full_url ? $values['plain_url_id'] = $this->page_url_id : false;
+    classSupernova::$db->doInsertSet(TABLE_COUNTER, $values);
 
     classSupernova::$db->isWatching = false;
   }

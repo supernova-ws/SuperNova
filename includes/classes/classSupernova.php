@@ -94,100 +94,6 @@ class classSupernova {
 
   public static $options = array();
 
-  // Кэш индексов - ключ MD5-строка от суммы ключевых строк через | - менять | на что-то другое перед поиском и назад - после поиска
-  // Так же в индексах могут быть двойные вхождения - например, названия планет да и вообще
-  // Придумать спецсимвол для NULL
-
-  /*
-  TODO Кэш:
-  1. Всегда дешевле использовать процессор, чем локальную память
-  2. Всегда дешевле использовать локальную память, чем общую память всех процессов
-  3. Всегда дешевле использовать общую память всех процессов, чем обращаться к БД
-
-  Кэш - многоуровневый: локальная память-общая память-БД
-  БД может быть сверхкэширующей - см. HyperNova. Это реализуется на уровне СН-драйвера БД
-  Предусмотреть вариант, когда уровни кэширования совпадают, например когда нет xcache и используется общая память
-  */
-
-  // TODO Автоматически заполнять эту таблицу. В случае кэша в памяти - делать show table при обращении к таблице
-//  public static $location_info = array(
-//    LOC_USER => array(
-//      P_TABLE_NAME => 'users',
-//      P_ID         => 'id',
-//      P_OWNER_INFO => array(),
-//    ),
-//
-//    LOC_PLANET => array(
-//      P_TABLE_NAME => 'planets',
-//      P_ID         => 'id',
-//      P_OWNER_INFO => array(
-//        LOC_USER => array(
-//          P_LOCATION    => LOC_USER,
-//          P_OWNER_FIELD => 'id_owner',
-//        ),
-//      ),
-//    ),
-//
-//    LOC_UNIT => array(
-//      P_TABLE_NAME => 'unit',
-//      P_ID         => 'unit_id',
-//      P_OWNER_INFO => array(
-//        LOC_USER => array(
-//          P_LOCATION    => LOC_USER,
-//          P_OWNER_FIELD => 'unit_player_id',
-//        ),
-//      ),
-//    ),
-//
-//    LOC_QUE => array(
-//      P_TABLE_NAME => 'que',
-//      P_ID         => 'que_id',
-//      P_OWNER_INFO => array(
-//        array(
-//          P_LOCATION    => LOC_USER,
-//          P_OWNER_FIELD => 'que_player_id',
-//        ),
-//
-//        array(
-//          P_LOCATION    => LOC_PLANET,
-//          P_OWNER_FIELD => 'que_planet_id_origin',
-//        ),
-//
-//        array(
-//          P_LOCATION    => LOC_PLANET,
-//          P_OWNER_FIELD => 'que_planet_id',
-//        ),
-//      ),
-//    ),
-//
-//    LOC_FLEET => array(
-//      P_TABLE_NAME => 'fleets',
-//      P_ID         => 'fleet_id',
-//      P_OWNER_INFO => array(
-//        array(
-//          P_LOCATION    => LOC_USER,
-//          P_OWNER_FIELD => 'fleet_owner',
-//        ),
-//
-//        array(
-//          P_LOCATION    => LOC_USER,
-//          P_OWNER_FIELD => 'fleet_target_owner',
-//        ),
-//
-//        array(
-//          P_LOCATION    => LOC_PLANET,
-//          P_OWNER_FIELD => 'fleet_start_planet_id',
-//        ),
-//
-//        array(
-//          P_LOCATION    => LOC_PLANET,
-//          P_OWNER_FIELD => 'fleet_end_planet_id',
-//        ),
-//      ),
-//    ),
-//  );
-
-
   public static function log_file($message, $spaces = 0) {
     if (self::$debug) {
       self::$debug->log_file($message, $spaces);
@@ -220,7 +126,7 @@ class classSupernova {
 
     // Default db
     $gc->db = function ($c) {
-      $db = new db_mysql($c);
+      classSupernova::$db = $db = new db_mysql($c);
       $db->sn_db_connect();
 
       return $db;

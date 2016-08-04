@@ -83,11 +83,11 @@ function sn_chat_add_model() {
 
   if(($message = sys_get_param_str('message')) && $user['username']) {
     $ally_id = sys_get_param('ally') && $user['ally_id'] ? $user['ally_id'] : 0;
-    $nick = db_escape(player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id))));
+    $nickUnsafe = player_nick_compact(player_nick_render_current_to_array($user, array('color' => true, 'icons' => true, 'ally' => !$ally_id)));
 
     $message = preg_replace("#(?:https?\:\/\/(?:.+)?\/index\.php\?page\=battle_report\&cypher\=([0-9a-zA-Z]{32}))#", "[ube=$1]", $message);
 
-    DBStaticChat::db_chat_message_insert($user['id'], $nick, $ally_id, $message);
+    DBStaticChat::db_chat_message_insert($user['id'], $nickUnsafe, $ally_id, $message);
 
     classSupernova::$config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   }

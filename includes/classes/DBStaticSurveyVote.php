@@ -14,13 +14,18 @@ class DBStaticSurveyVote {
 
 
   /**
-   * @param $user
    * @param $survey_id
    * @param $survey_vote_id
-   * @param $user_name_safe
+   * @param $userId
+   * @param $user_name_unsafe
    */
-  public static function db_survey_vote_insert(&$user, $survey_id, $survey_vote_id, $user_name_safe) {
-    classSupernova::$db->doInsert("INSERT INTO {{survey_votes}} SET `survey_parent_id` = {$survey_id}, `survey_parent_answer_id` = {$survey_vote_id}, `survey_vote_user_id` = {$user['id']}, `survey_vote_user_name` = '{$user_name_safe}';");
+  public static function db_survey_vote_insert($survey_id, $survey_vote_id, $userId, $user_name_unsafe) {
+    classSupernova::$db->doInsertSet(TABLE_SURVEY_VOTES, array(
+      'survey_parent_id'        => $survey_id,
+      'survey_parent_answer_id' => $survey_vote_id,
+      'survey_vote_user_id'     => $userId,
+      'survey_vote_user_name'   => $user_name_unsafe,
+    ));
   }
 
 

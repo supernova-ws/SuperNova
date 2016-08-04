@@ -130,13 +130,18 @@ class UBEMoonCalculator {
     }
   }
 
-  public function report_generate_sql() {
-    return "`ube_report_moon` = " . (int)$this->status . ",
-      `ube_report_moon_chance` = " . (int)$this->create_chance . ",
-      `ube_report_moon_size` = " . (float)$this->moon_diameter . ",
-      `ube_report_moon_reapers` = " . (int)$this->reapers_status . ",
-      `ube_report_moon_destroy_chance` = " . (int)$this->destroy_chance . ",
-      `ube_report_moon_reapers_die_chance` = " . (int)$this->reaper_die_chance;
+  /**
+   * @return array
+   */
+  public function report_generate_array() {
+    return array(
+      'ube_report_moon'                    => (int)$this->status,
+      'ube_report_moon_chance'             => (int)$this->create_chance,
+      'ube_report_moon_size'               => (float)$this->moon_diameter,
+      'ube_report_moon_reapers'            => (int)$this->reapers_status,
+      'ube_report_moon_destroy_chance'     => (int)$this->destroy_chance,
+      'ube_report_moon_reapers_die_chance' => (int)$this->reaper_die_chance,
+    );
   }
 
   public function report_render_moon() {

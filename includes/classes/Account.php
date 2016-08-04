@@ -234,22 +234,16 @@ class Account {
   public function db_create($account_name_unsafe, $password_raw, $email_unsafe, $language_unsafe = null, $salt_unsafe = null) {
     $this->reset();
 
-    $account_name_safe = $this->db->db_escape($account_name_unsafe);
-    $email_safe = $this->db->db_escape($email_unsafe);
-    $language_safe = $this->db->db_escape($language_unsafe === null ? DEFAULT_LANG : $language_unsafe);
-
     $salt_unsafe === null ? $salt_unsafe = $this->password_salt_generate() : false;
-    $password_salted_safe = $this->db->db_escape($this->password_encode($password_raw, $salt_unsafe));
-    $salt_safe = $this->db->db_escape($salt_unsafe);
+    $password_salted_unsafe = $this->password_encode($password_raw, $salt_unsafe);
 
-    $result = $this->db->doInsert(
-      "INSERT INTO {{account}} SET
-        `account_name` = '{$account_name_safe}',
-        `account_password` = '{$password_salted_safe}',
-        `account_salt` = '{$salt_safe}',
-        `account_email` = LOWER('{$email_safe}'),
-        `account_language` = '{$language_safe}'"
-    );
+    $result = classSupernova::$db->doInsertSet(TABLE_ACCOUNT, array(
+      'account_name'     => $account_name_unsafe,
+      'account_password' => $password_salted_unsafe,
+      'account_salt'     => $salt_unsafe,
+      'account_email'    => strtolower($email_unsafe),
+      'account_language' => $language_unsafe === null ? DEFAULT_LANG : $language_unsafe,
+    ));
     if(!$result) {
       throw new Exception(REGISTER_ERROR_ACCOUNT_CREATE, ERR_ERROR);
     }
@@ -326,35 +320,20 @@ class Account {
    */
   // OK 4.8
   protected function db_mm_log_insert($comment, $change_type, $metamatter, $user_id_unsafe) {
-    $provider_id_safe = intval(core_auth::$main_provider->provider_id);
-    //$account_id_safe = $this->db->db_escape($this->account_id);
-    $account_id_safe = intval($this->account_id);
-    $account_name_safe = $this->db->db_escape($this->account_name);
-
-    // $user_id_safe = $this->db->db_escape(core_auth::$user['id']);
-    // $user_id_safe = intval(core_auth::$user['id']);
-    $user_id_safe = intval($user_id_unsafe);
-    $username_safe = !empty(core_auth::$user['username']) ? $this->db->db_escape(core_auth::$user['username']) : '';
-
     $metamatter = round(floatval($metamatter));
 
-    $comment_safe = $this->db->db_escape($comment);
-
-    $server_name_safe = $this->db->db_escape(SN_ROOT_VIRTUAL);
-    $page_url_safe = $this->db->db_escape($_SERVER['SCRIPT_NAME']);
-
-    $this->db->doInsert("INSERT INTO {{log_metamatter}} SET
-        `provider_id` = {$provider_id_safe},
-        `account_id` = {$account_id_safe},
-        `account_name` = '{$account_name_safe}',
-        `user_id` = {$user_id_safe},
-        `username` = '{$username_safe}',
-        `reason` = {$change_type},
-        `amount` = {$metamatter},
-        `comment` = '{$comment_safe}',
-        `server_name` = '{$server_name_safe}',
-        `page` = '{$page_url_safe}'
-      ;");
+    classSupernova::$db->doInsertSet(TABLE_LOG_METAMATTER, array(
+      'provider_id'  => core_auth::$main_provider->provider_id,
+      'account_id'   => $this->account_id,
+      'account_name' => $this->account_name,
+      'user_id'      => $user_id_unsafe,
+      'username'     => !empty(core_auth::$user['username']) ? core_auth::$user['username'] : '',
+      'reason'       => $change_type,
+      'amount'       => $metamatter,
+      'comment'      => $comment,
+      'server_name'  => SN_ROOT_VIRTUAL,
+      'page'         => $_SERVER['SCRIPT_NAME'],
+    ));
     $result = $this->db->db_insert_id();
 
     return $result;

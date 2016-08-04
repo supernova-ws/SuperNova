@@ -201,7 +201,7 @@ class SnDbCachedOperator {
             FROM {{{$location_info[P_TABLE_NAME]}}}" .
             ($filter ? ' WHERE ' . $filter : '') .
             ($fetch ? ' LIMIT 1' : ''));
-          while ($row = db_fetch($query)) {
+          while($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if (!$this->snCache->cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
@@ -222,7 +222,7 @@ class SnDbCachedOperator {
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
         . " FOR UPDATE"
       );
-      while ($row = db_fetch($query)) {
+      while($row = db_fetch($query)) {
         // Caching record in row cache
         $this->snCache->cache_set($location_type, $row);
         // Making ref to cached record in query cache
@@ -305,15 +305,15 @@ class SnDbCachedOperator {
   }
 
   /**
-   * @param int    $location_type
-   * @param string $set
+   * @param int   $location_type
+   * @param array $set
    *
    * @return array|bool|false|mysqli_result|null
    */
   public function db_ins_record($location_type, $set) {
-    $set = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = $this->db->doInsert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
+    $result = $this->db->doInsertSet($table_name, $set);
+    if ($result) {
       if ($this->db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         $record_id = $this->db->db_insert_id();
@@ -328,6 +328,7 @@ class SnDbCachedOperator {
     return $result;
   }
 
+
   public function db_ins_field_set($location_type, $field_set, $serialize = false) {
     // TODO multiinsert
     !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set, $serialize) : false;
@@ -336,7 +337,7 @@ class SnDbCachedOperator {
     $fields = implode(',', array_keys($field_set));
 
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = $this->db->doInsert("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
+    if ($result = $this->db->doInsertComplex("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
       if ($this->db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         $record_id = $this->db->db_insert_id();

@@ -110,13 +110,14 @@ class UBEDebris {
   }
 
   /**
-   * @return string
+   * @return array
    */
-  public function report_generate_sql() {
-    return "
-      `ube_report_debris_metal` = " . (float)$this->debris_get_resource(RES_METAL) . ",
-      `ube_report_debris_crystal` = " . (float)$this->debris_get_resource(RES_CRYSTAL) . ",
-      `ube_report_debris_total_in_metal` = " . (float)$this->debris_in_metal() . ", ";
+  public function report_generate_array() {
+    return array(
+      'ube_report_debris_metal'          => (float)$this->debris_get_resource(RES_METAL),
+      'ube_report_debris_crystal'        => (float)$this->debris_get_resource(RES_CRYSTAL),
+      'ube_report_debris_total_in_metal' => (float)$this->debris_in_metal(),
+    );
   }
 
   /**

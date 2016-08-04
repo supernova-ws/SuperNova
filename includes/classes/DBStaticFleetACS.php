@@ -46,21 +46,22 @@ class DBStaticFleetACS {
 
   /**
    * @param $fleetid
-   * @param $user
+   * @param $userId
    * @param $objFleet
    */
-  public static function db_acs_insert($fleetid, $user, $objFleet) {
-    classSupernova::$db->doInsert("INSERT INTO `{{aks}}` SET
-          `name` = '" . db_escape(classLocale::$lang['flt_acs_prefix'] . $fleetid) . "',
-          `teilnehmer` = '" . $user['id'] . "',
-          `flotten` = '" . $fleetid . "',
-          `ankunft` = '" . $objFleet->time_arrive_to_target . "',
-          `galaxy` = '" . $objFleet->fleet_end_galaxy . "',
-          `system` = '" . $objFleet->fleet_end_system . "',
-          `planet` = '" . $objFleet->fleet_end_planet . "',
-          `planet_type` = '" . $objFleet->fleet_end_type . "',
-          `eingeladen` = '" . $user['id'] . "',
-          `fleet_end_time` = '" . $objFleet->time_return_to_source . "'");
+  public static function db_acs_insert($fleetid, $userId, $objFleet) {
+    classSupernova::$db->doInsertSet(TABLE_AKS, array(
+      'name'           => classLocale::$lang['flt_acs_prefix'] . $fleetid,
+      'teilnehmer'     => $userId,
+      'flotten'        => $fleetid,
+      'ankunft'        => $objFleet->time_arrive_to_target,
+      'galaxy'         => $objFleet->fleet_end_galaxy,
+      'system'         => $objFleet->fleet_end_system,
+      'planet'         => $objFleet->fleet_end_planet,
+      'planet_type'    => $objFleet->fleet_end_type,
+      'eingeladen'     => $userId,
+      'fleet_end_time' => $objFleet->time_return_to_source,
+    ));
   }
 
   /**

@@ -397,19 +397,19 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
 
   $resource_list = sys_unit_arr2str($build_data[$build_mode]);
 
-  DBStaticQue::db_que_set_insert(
-    "`que_player_id` = {$user['id']},
-      `que_planet_id` = {$planet_id},
-      `que_planet_id_origin` = {$planet_id_origin},
-      `que_type` = {$que_type},
-      `que_time_left` = {$build_data[RES_TIME][$build_mode]},
-      `que_unit_id` = {$unit_id},
-      `que_unit_amount` = {$unit_amount},
-      `que_unit_mode` = {$build_mode},
-      `que_unit_level` = {$unit_level},
-      `que_unit_time` = {$build_data[RES_TIME][$build_mode]},
-      `que_unit_price` = '{$resource_list}'"
-  );
+  DBStaticQue::db_que_set_insert(array(
+    'que_player_id'        => $user['id'],
+    'que_planet_id'        => $planet_id,
+    'que_planet_id_origin' => $planet_id_origin,
+    'que_type'             => $que_type,
+    'que_time_left'        => $build_data[RES_TIME][$build_mode],
+    'que_unit_id'          => $unit_id,
+    'que_unit_amount'      => $unit_amount,
+    'que_unit_mode'        => $build_mode,
+    'que_unit_level'       => $unit_level,
+    'que_unit_time'        => $build_data[RES_TIME][$build_mode],
+    'que_unit_price'       => $resource_list,
+  ));
 }
 
 function que_delete($que_type, $user = array(), $planet = array(), $clear = false) {

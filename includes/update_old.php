@@ -1342,8 +1342,12 @@ switch($new_version) {
     // Creating players for allies
     $ally_row_list = classSupernova::$db->doSelect("SELECT `id`, `ally_tag` FROM {{alliance}} WHERE ally_user_id IS NULL;");
     while($ally_row = db_fetch($ally_row_list)) {
-      $ally_user_name = db_escape("[{$ally_row['ally_tag']}]");
-      classSupernova::$db->doInsert("INSERT INTO {{users}} SET `username` = '{$ally_user_name}', `register_time` = " . SN_TIME_NOW . ", `user_as_ally` = {$ally_row['id']};");
+      classSupernova::$db->doInsertSet(TABLE_USERS, array(
+        'username'      => "[{$ally_row['ally_tag']}]",
+        'register_time' => SN_TIME_NOW,
+        'user_as_ally'  => $ally_row['id'],
+      ));
+
       $ally_user_id = classSupernova::$db->db_insert_id();
       classSupernova::$db->doUpdate("UPDATE {{alliance}} SET ally_user_id = {$ally_user_id} WHERE id = {$ally_row['id']} LIMIT 1;");
     }
@@ -1356,8 +1360,12 @@ switch($new_version) {
     // Creating planets for allies
     $ally_user_list = classSupernova::$db->doSelect("SELECT `id`, `username` FROM {{users}} WHERE `user_as_ally` IS NOT NULL AND `id_planet` = 0;");
     while($ally_user_row = db_fetch($ally_user_list)) {
-      $ally_planet_name = db_escape($ally_user_row['username']);
-      classSupernova::$db->doInsert("INSERT INTO {{planets}} SET `name` = '{$ally_planet_name}', `last_update` = " . SN_TIME_NOW . ", `id_owner` = {$ally_user_row['id']};");
+      classSupernova::$db->doInsertSet(TABLE_PLANETS, array(
+        'name'        => $ally_user_row['username'],
+        'last_update' => SN_TIME_NOW,
+        'id_owner'    => $ally_user_row['id'],
+      ));
+
       $ally_planet_id = classSupernova::$db->db_insert_id();
       classSupernova::$db->doUpdate("UPDATE {{users}} SET `id_planet` = {$ally_planet_id} WHERE `id` = {$ally_user_row['id']} LIMIT 1;");
     }

@@ -79,17 +79,24 @@ function DeleteSelectedUser($UserID) {
  * @param        $banned
  * @param        $term
  * @param bool   $is_vacation
- * @param string $reason
+ * @param string $reason_unsafe
  */
-function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason = '') {
+function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $reason_unsafe = '') {
   $ban_current = DBStaticUser::db_user_by_id($banned['id'], false, 'banaday');
   $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
 
   DBStaticUser::db_user_set_by_id($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
 
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
-  db_ban_insert($banner, $banned, $reason, $ban_until);
+  classSupernova::$db->doInsertSet(TABLE_BANNED, array(
+    'ban_user_id'      => $banned['id'],
+    'ban_user_name'    => $banned['username'],
+    'ban_reason'       => $reason_unsafe,
+    'ban_time'         => SN_TIME_NOW,
+    'ban_until'        => $ban_until,
+    'ban_issuer_id'    => $banner['id'],
+    'ban_issuer_name'  => $banner['username'],
+    'ban_issuer_email' => $banner['email'],
+  ));
 
   DBStaticPlanet::db_planet_set_by_owner($banned['id'],
     "`metal_mine_porcent` = 0, `crystal_mine_porcent` = 0, `deuterium_sintetizer_porcent` = 0, `solar_plant_porcent` = 0,
@@ -100,15 +107,21 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
 /**
  * @param        $banner
  * @param        $banned
- * @param string $reason
+ * @param string $reasonUnsafe
  */
-function sys_admin_player_ban_unset($banner, $banned, $reason = '') {
+function sys_admin_player_ban_unset($banner, $banned, $reasonUnsafe = '') {
   DBStaticUser::db_user_set_by_id($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
 
-  $banned['username'] = db_escape($banned['username']);
-  $banner['username'] = db_escape($banner['username']);
-  $reason = db_escape($reason);
-  db_ban_insert_unset($banner, $banned, $reason);
+  return classSupernova::$db->doInsertSet(TABLE_BANNED, array(
+    'ban_user_id'      => $banned['id'],
+    'ban_user_name'    => $banned['username'],
+    'ban_reason'       => $reasonUnsafe,
+    'ban_time'         => 0,
+    'ban_until'        => SN_TIME_NOW,
+    'ban_issuer_id'    => $banner['id'],
+    'ban_issuer_name'  => $banner['username'],
+    'ban_issuer_email' => $banner['email'],
+  ));
 }
 
 function player_create($username_unsafe, $email_unsafe, $options) {
@@ -187,7 +200,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   db_player_name_history_replace($user_new['id'], $username_unsafe);
 
   if(!empty($options['partner_id']) && ($referral_row = DBStaticUser::db_user_by_id($options['partner_id'], true))) {
-    db_referral_insert($options, $user_new);
+    db_referral_insert($options['partner_id'], $user_new['id']);
   }
 
   sys_player_new_adjust($user_new['id'], $new_planet_id);

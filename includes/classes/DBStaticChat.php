@@ -19,27 +19,24 @@ class DBStaticChat {
 
   /**
    * @param $user_id
-   * @param $nick
+   * @param $nickUnsafe
    * @param $ally_id
-   * @param $message
-   * @param $chat_message_sender_name
+   * @param $message_unsafe
+   * @param $chat_message_sender_name_unsafe
    * @param $chat_message_recipient_id
-   * @param $chat_message_recipient_name
+   * @param $chat_message_recipient_name_unsafe
    */
-  public static function db_chat_message_insert($user_id, $nick, $ally_id, $message, $chat_message_sender_name = '', $chat_message_recipient_id = 0, $chat_message_recipient_name = '') {
-    classSupernova::$db->doInsert(
-      "INSERT INTO
-          {{chat}}
-        SET
-          `chat_message_sender_id` = {$user_id},
-          `user` = '{$nick}',
-          `ally_id` = '{$ally_id}',
-          `message` = '{$message}',
-          `timestamp` = " . SN_TIME_NOW . ",
-          `chat_message_sender_name` = '{$chat_message_sender_name}',
-          `chat_message_recipient_id` = {$chat_message_recipient_id},
-          `chat_message_recipient_name` = '{$chat_message_recipient_name}'"
-    );
+  public static function db_chat_message_insert($user_id, $nickUnsafe, $ally_id, $message_unsafe, $chat_message_sender_name_unsafe = '', $chat_message_recipient_id = 0, $chat_message_recipient_name_unsafe = '') {
+    classSupernova::$db->doInsertSet(TABLE_CHAT, array(
+      'chat_message_sender_id'      => $user_id,
+      'user'                        => $nickUnsafe,
+      'ally_id'                     => $ally_id,
+      'message'                     => $message_unsafe,
+      'timestamp'                   => SN_TIME_NOW,
+      'chat_message_sender_name'    => $chat_message_sender_name_unsafe,
+      'chat_message_recipient_id'   => $chat_message_recipient_id,
+      'chat_message_recipient_name' => $chat_message_recipient_name_unsafe,
+    ));
   }
 
   /**
@@ -133,7 +130,9 @@ class DBStaticChat {
    * @param $player_id
    */
   public static function db_chat_player_insert($player_id) {
-    classSupernova::$db->doInsert("INSERT INTO {{chat_player}} SET `chat_player_player_id` = {$player_id}");
+    classSupernova::$db->doInsertSet(TABLE_CHAT_PLAYER, array(
+      'chat_player_player_id' => $player_id,
+    ));
   }
 
 

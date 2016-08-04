@@ -1,5 +1,9 @@
 <?php
 
+define('DB_INSERT_PLAIN', 0);
+define('DB_INSERT_REPLACE', 1);
+define('DB_INSERT_IGNORE', 2);
+
 /**
  * Created by Gorlum 01.09.2015 15:58
  */
@@ -298,25 +302,45 @@ class db_mysql {
   }
 
 
-  public function doInsert($query) {
+  public function doInsertComplex($query) {
     return $this->doExecute($query);
   }
 
-  protected function doSet($table, $fieldsAndValues, $replace = false) {
+
+  protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
     $tableSafe = $this->db_escape($table);
     $safeFieldsAndValues = implode(',', $this->safeFieldsAndValues($fieldsAndValues));
-    $command = $replace ? 'REPLACE' : 'INSERT';
+//    $command = $replace == DB_INSERT_REPLACE ? 'REPLACE' : 'INSERT';
+//    $command .= $replace == DB_INSERT_IGNORE ? ' IGNORE' : '';
+    switch($replace) {
+      case DB_INSERT_IGNORE:
+        $command = 'INSERT IGNORE';
+      break;
+      case DB_INSERT_REPLACE:
+        $command = 'REPLACE';
+      break;
+      default:
+        $command = 'INSERT';
+      break;
+    }
     $query = "{$command} INTO `{{{$tableSafe}}}` SET {$safeFieldsAndValues}";
 
     return $this->doExecute($query);
   }
 
-  public function doInsertSet($table, $fieldsAndValues) {
-    return $this->doSet($table, $fieldsAndValues, false);
+  /**
+   * @param string $table
+   * @param array  $fieldsAndValues
+   * @param int    $replace - DB_INSERT_PLAIN || DB_INSERT_IGNORE
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doInsertSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
+    return $this->doSet($table, $fieldsAndValues, $replace);
   }
 
   public function doReplaceSet($table, $fieldsAndValues) {
-    return $this->doSet($table, $fieldsAndValues, true);
+    return $this->doSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
   }
 
   /**
@@ -330,11 +354,11 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    * @deprecated
    */
-  protected function doValuesDeprecated($table, $fields, &$values, $replace = false) {
+  protected function doValuesDeprecated($table, $fields, &$values, $replace = DB_INSERT_PLAIN) {
     $tableSafe = $this->db_escape($table);
     $safeFields = implode(',', $this->safeFields($fields));
     $safeValues = implode(',', $values);
-    $command = $replace ? 'REPLACE' : 'INSERT';
+    $command = $replace == DB_INSERT_REPLACE ? 'REPLACE' : 'INSERT';
     $query = "{$command} INTO `{{{$tableSafe}}}` ({$safeFields}) VALUES {$safeValues}";
 
     return $this->doExecute($query);
@@ -356,7 +380,7 @@ class db_mysql {
    * @deprecated
    */
   public function doInsertValuesDeprecated($table, $fields, &$values) {
-    return $this->doValuesDeprecated($table, $fields, $values, false);
+    return $this->doValuesDeprecated($table, $fields, $values, DB_INSERT_PLAIN);
   }
 
   /**
@@ -370,7 +394,7 @@ class db_mysql {
    * @deprecated
    */
   public function doReplaceValuesDeprecated($table, $fields, &$values) {
-    return $this->doValuesDeprecated($table, $fields, $values, true);
+    return $this->doValuesDeprecated($table, $fields, $values, DB_INSERT_REPLACE);
   }
 
   public function doUpdate($query) {
@@ -439,7 +463,7 @@ class db_mysql {
 
 
   protected function castAsDbValue($value) {
-    switch (gettype($value)) {
+    switch(gettype($value)) {
       case TYPE_INTEGER:
       case TYPE_DOUBLE:
         // do nothing
@@ -595,7 +619,7 @@ class db_mysql {
 
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch (true) {
+    switch(true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -657,7 +681,7 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while ($row = $this->db_fetch($query)) {
+    while($row = $this->db_fetch($query)) {
       foreach ($row as $table_name) {
         if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
@@ -788,7 +812,7 @@ class db_mysql {
     if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while ($row = db_fetch($query)) {
+    while($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 

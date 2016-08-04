@@ -66,14 +66,13 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
   }
 
   if ($rows_affected || !$dark_matter) {
-    $page_url = db_escape($_SERVER['SCRIPT_NAME']);
     if (is_array($comment)) {
       $comment = call_user_func_array('sprintf', $comment);
     }
-    $comment = db_escape($comment);
+    $comment_unsafe = $comment;
     $row = DBStaticUser::db_user_by_id($user_id, false, 'username');
     $row['username'] = db_escape($row['username']);
-    db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment, $row, $page_url);
+    db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment_unsafe, $row['username'], $_SERVER['SCRIPT_NAME']);
 
     if ($user['id'] == $user_id) {
       $user['dark_matter'] += $dark_matter;

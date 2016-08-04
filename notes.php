@@ -23,6 +23,8 @@ if(($result_message = sys_get_param_str('MESSAGE')) && isset(classLocale::$lang[
 }
 
 $note_id_edit = sys_get_param_id('note_id_edit');
+$note_title_unsafe = sys_get_param_str_unsafe('note_title');
+$note_text_unsafe = sys_get_param_str_unsafe('note_text');
 if(sys_get_param('note_delete')) {
   try {
     DBStaticNote::processDelete($user, $note_id_edit);
@@ -34,17 +36,16 @@ if(sys_get_param('note_delete')) {
       'MESSAGE' => classLocale::$lang[$e->getMessage()],
     );
   }
-} elseif(($note_title = sys_get_param_str('note_title')) || ($note_text = sys_get_param_str('note_text'))) {
-  $note_title == db_escape(classLocale::$lang['note_new_title']) ? $note_title = '' : false;
-  ($note_text = sys_get_param_str('note_text')) == db_escape(classLocale::$lang['note_new_text']) ? $note_text = '' : false;
-
+} elseif(($note_title_unsafe = sys_get_param_str_unsafe('note_title')) || ($note_text_unsafe = sys_get_param_str('note_text'))) {
+  $note_title_unsafe == classLocale::$lang['note_new_title'] ? $note_title_unsafe = '' : false;
+  $note_text_unsafe == classLocale::$lang['note_new_text'] ? $note_text_unsafe = '' : false;
   try {
     $note_galaxy = max(0, min(sys_get_param_id('note_galaxy'), Vector::$knownGalaxies));
     $note_system = max(0, min(sys_get_param_id('note_system'), Vector::$knownSystems));
     $note_planet = max(0, min(sys_get_param_id('note_planet'), Vector::$knownPlanets + 1));
 
-    if(!$note_text && !$note_title && !$note_galaxy && !$note_system && !$note_planet) {
-      throw new exception('note_err_note_empty', ERR_WARNING);
+    if(!$note_text_unsafe && !$note_title_unsafe && !$note_galaxy && !$note_system && !$note_planet) {
+      throw new Exception('note_err_note_empty', ERR_WARNING);
     }
 
     $note_priority = min(sys_get_param_id('note_priority', 2), count($note_priority_classes) - 1);
@@ -64,9 +65,9 @@ if(sys_get_param('note_delete')) {
         throw new Exception('note_err_owner_wrong', ERR_ERROR);
       }
 
-      DBStaticNote::db_note_update_by_id($note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky, $note_id_edit);
+      DBStaticNote::db_note_update_by_id($note_priority, db_escape($note_title_unsafe), db_escape($note_text_unsafe), $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky, $note_id_edit);
     } else {
-      DBStaticNote::db_note_insert($user, $note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky);
+      DBStaticNote::db_note_insert($user['id'], $note_priority, $note_title_unsafe, $note_text_unsafe, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky);
     }
 
     sn_db_transaction_commit();

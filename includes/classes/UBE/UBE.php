@@ -18,7 +18,7 @@ class UBE {
   /**
    * Время, потраченное на обсчёт
    *
-   * @var int
+   * @var float
    */
   public $time_spent = 0;
   public $options_method = 0;
@@ -383,7 +383,6 @@ pdie();
       }
     }
     if(!empty($bashing_list)) {
-      $bashing_list = implode(',', $bashing_list);
       DBStaticFleetBashing::db_bashing_insert($bashing_list);
     }
 

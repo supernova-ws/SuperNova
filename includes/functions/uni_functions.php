@@ -93,7 +93,7 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
 
   $planet_name_unsafe = $user_row['username'] . ' ' . ($planet_name_unsafe ? $planet_name_unsafe : classLocale::$lang['sys_colo_defaultname']);
 
-  $planet['name'] = db_escape(strip_tags(trim($planet_name_unsafe)));
+  $planet['name'] = trim(strip_tags($planet_name_unsafe));
   $planet['id_owner'] = $PlanetOwnerID;
   $planet['last_update'] = SN_TIME_NOW;
   $planet['image'] = $planet_image;
@@ -122,18 +122,9 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet['crystal_perhour'] = classSupernova::$config->crystal_basic_income * $density_info_resources[RES_CRYSTAL];
   $planet['deuterium_perhour'] = classSupernova::$config->deuterium_basic_income * $density_info_resources[RES_DEUTERIUM];
 
-  $RetValue = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET,
-    "`name` = '{$planet['name']}', `id_owner` = '{$planet['id_owner']}', `last_update` = '{$planet['last_update']}', `image` = '{$planet['image']}',
-      `galaxy` = '{$planet['galaxy']}', `system` = '{$planet['system']}', `planet` = '{$planet['planet']}', `planet_type` = '{$planet['planet_type']}', `position_original` = '{$planet['position_original']}',
-      `diameter` = '{$planet['diameter']}', `field_max` = '{$planet['field_max']}', `field_max_original` = '{$planet['field_max_original']}',
-      `density` = '{$planet['density']}', `density_index` = '{$planet['density_index']}',
-      `temp_min` = '{$planet['temp_min']}', `temp_max` = '{$planet['temp_max']}', `temp_min_original` = '{$planet['temp_min_original']}', `temp_max_original` = '{$planet['temp_max_original']}',
-      `metal` = '{$planet['metal']}', `metal_perhour` = '{$planet['metal_perhour']}', `metal_max` = '{$planet['metal_max']}',
-      `crystal` = '{$planet['crystal']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `crystal_max` = '{$planet['crystal_max']}',
-      `deuterium` = '{$planet['deuterium']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}', `deuterium_max` = '{$planet['deuterium_max']}'"
-  );
+  $RetValue = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET, $planet);
 
-  return is_array($RetValue) ? $RetValue['id'] : false; // OK
+  return !empty($RetValue['id']) ? $RetValue['id'] : false; // OK
 }
 
 /**
@@ -192,7 +183,6 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
       $temp_max = $temp_min + 40;
 
       $moon_name = $moon_name ? $moon_name : "{$moon_planet['name']} {$classLocale['sys_moon']}";
-      $moon_name_safe = db_escape($moon_name);
 
       $field_max = ceil($size / 1000);
 
@@ -202,14 +192,32 @@ function uni_create_moon($pos_galaxy, $pos_system, $pos_planet, $user_id, $moon_
         $moon_image = 'mond';
       }
 
-      $moon_row = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET,
-        "`id_owner` = '{$user_id}', `parent_planet` = '{$moon_planet['id']}', `name` = '{$moon_name_safe}', `last_update` = " . SN_TIME_NOW . ", `image` = '{$moon_image}',
-          `galaxy` = '{$pos_galaxy}', `system` = '{$pos_system}', `planet` = '{$pos_planet}', `planet_type` = " . PT_MOON . ",
-          `diameter` = '{$size}', `field_max` = '{$field_max}', `density` = 2500, `density_index` = 2, `temp_min` = '{$temp_min}', `temp_max` = '{$temp_max}',
-          `metal` = '0', `metal_perhour` = '0', `metal_max` = '{$base_storage_size}',
-          `crystal` = '0', `crystal_perhour` = '0', `crystal_max` = '{$base_storage_size}',
-          `deuterium` = '0', `deuterium_perhour` = '0', `deuterium_max` = '{$base_storage_size}'"
-      );
+      $moon_row = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET, array(
+        'id_owner'          => $user_id,
+        'parent_planet'     => $moon_planet['id'],
+        'name'              => $moon_name,
+        'last_update'       => SN_TIME_NOW,
+        'image'             => $moon_image,
+        'galaxy'            => $pos_galaxy,
+        'system'            => $pos_system,
+        'planet'            => $pos_planet,
+        'planet_type'       => PT_MOON,
+        'diameter'          => $size,
+        'field_max'         => $field_max,
+        'density'           => 2500,
+        'density_index'     => 2,
+        'temp_min'          => $temp_min,
+        'temp_max'          => $temp_max,
+        'metal'             => 0,
+        'metal_perhour'     => 0,
+        'metal_max'         => $base_storage_size,
+        'crystal'           => 0,
+        'crystal_perhour'   => 0,
+        'crystal_max'       => $base_storage_size,
+        'deuterium'         => 0,
+        'deuterium_perhour' => 0,
+        'deuterium_max'     => $base_storage_size,
+      ));
 
       if($update_debris) {
         $debris_spent = $moon_chance * 1000000;

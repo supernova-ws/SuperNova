@@ -37,10 +37,9 @@ if ($user_request['id_ally']) {
 }
 
 $id_ally = sys_get_param_id('a');
-$POST_text = sys_get_param_str('text');
-if ($POST_text)
+if ($requestTextUnsafe = sys_get_param_str_unsafe('text'))
 {
-  DBStaticAlly::db_ally_request_insert($user, $id_ally, $POST_text);
+  DBStaticAlly::db_ally_request_insert($user['id'], $id_ally, $requestTextUnsafe);
   header('Location: alliance.php');
 }
 

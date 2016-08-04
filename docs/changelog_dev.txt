@@ -1156,8 +1156,20 @@ classSupernova::$gc->cacheOperator
     - Дедлочит флоты
 
 WORKING ON
-    ? DeleteComplex
-    Check doReplaceSet
+    ? doInsert
+        - doInsertComplex - доделать
+            - protected function db_field_set_create(array $field_set) {
+        + Check doInsertSet
+        + Check doInsertValuesDeprecated
+            + правильные ли таблицы используются
+            + правильные поля
+            - записываются ли UNSAFE строки
+                - public static function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false) {
+                    - //todo Проблемы! Иногда заходит escaped!!!!!!!!!!
+                - В UBE - тоже разобраться, что бы заходили UNESCAPED
+            - ОПЦИОНАЛЬНО - strip-tags - тэгам нехрен делать в БД
+    - uni_create_moon $RetValue = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET, $planet);
+        - переделать на по месту генерируемый массив, а не на использование переменной $planet
 
   // TODO - redo as callable usage with array_map/array_walk
         - public function safeValues($values) {

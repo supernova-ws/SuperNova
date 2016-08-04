@@ -175,12 +175,15 @@ function db_referrals_list_by_id($user_id) {
 // TODO - вынести в отдельный класс
 function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $db_table_name, $db_value_field_name) {
   $current_value_safe = db_escape($current_value_unsafe);
-  $value_id = classSupernova::$db->doSelectFetch("SELECT `{$db_id_field_name}` AS id_field FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE");
-  if (!isset($value_id['id_field']) || !$value_id['id_field']) {
-    classSupernova::$db->doInsert("INSERT INTO {{{$db_table_name}}} (`{$db_value_field_name}`) VALUES ('{$current_value_safe}');");
+  $value_id = classSupernova::$db->doSelectFetch("SELECT `{$db_id_field_name}` FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE");
+  if (empty($value_id[$db_id_field_name])) {
+    classSupernova::$db->doInsertSet($db_table_name, array(
+      $db_value_field_name => $current_value_unsafe,
+    ));
+
     $variable_id = classSupernova::$db->db_insert_id();
   } else {
-    $variable_id = $value_id['id_field'];
+    $variable_id = $value_id[$db_id_field_name];
   }
 
   return $variable_id;
@@ -251,8 +254,11 @@ function db_ban_list_get_details($user_row) {
 
 
 // BLITZ ***************************************************************************************************************
-function db_blitz_reg_insert($user, $current_round) {
-  classSupernova::$db->doInsert("INSERT IGNORE INTO {{blitz_registrations}} SET `user_id` = {$user['id']}, `round_number` = {$current_round};");
+function db_blitz_reg_insert($userId, $current_round) {
+  classSupernova::$db->doInsertSet(TABLE_BLITZ_REGISTRATIONS, array(
+    'user_id'      => $userId,
+    'round_number' => $current_round,
+  ), DB_INSERT_IGNORE);
 }
 
 function db_blitz_reg_get_id_by_player_and_round($user, $current_round) {
@@ -388,7 +394,9 @@ function db_payment_list_modules() {
 
 // Log Online *************************************************************************************************************
 function db_log_online_insert() {
-  classSupernova::$db->doInsert("INSERT IGNORE INTO `{{log_users_online}}` SET online_count = " . classSupernova::$config->var_online_user_count);
+  classSupernova::$db->doInsertSet(LOG_USERS_ONLINE, array(
+    'online_count' => (int)classSupernova::$config->var_online_user_count,
+  ), DB_INSERT_IGNORE);
 }
 
 // Log *************************************************************************************************************
@@ -470,18 +478,19 @@ function db_browser_agent_get_by_id($user_last_browser_id) {
  * @param $user_id
  * @param $change_type
  * @param $dark_matter
- * @param $comment
- * @param $row
- * @param $page_url
+ * @param $comment_unsafe
+ * @param $rowUserNameUnsafe
+ * @param $page_url_unsafe
  */
-function db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment, $row, $page_url) {
-  classSupernova::$db->doInsert(
-    "INSERT INTO {{log_dark_matter}} (`log_dark_matter_username`, `log_dark_matter_reason`,
-        `log_dark_matter_amount`, `log_dark_matter_comment`, `log_dark_matter_page`, `log_dark_matter_sender`)
-      VALUES (
-        '{$row['username']}', {$change_type},
-        {$dark_matter}, '{$comment}', '{$page_url}', {$user_id}
-      );");
+function db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $comment_unsafe, $rowUserNameUnsafe, $page_url_unsafe) {
+  return classSupernova::$db->doInsertSet(TABLE_LOG_DARK_MATTER, array(
+    'log_dark_matter_username' => $rowUserNameUnsafe,
+    'log_dark_matter_reason'   => (int)$change_type,
+    'log_dark_matter_amount'   => (float)$dark_matter,
+    'log_dark_matter_comment'  => (string)$comment_unsafe,
+    'log_dark_matter_page'     => (string)$page_url_unsafe,
+    'log_dark_matter_sender'   => $user_id,
+  ));
 }
 
 // REFERRALS ***********************************************************************************************************
@@ -506,11 +515,14 @@ function db_referral_update_dm($user_id_safe, $dark_matter) {
 
 
 /**
- * @param $options
- * @param $user_new
+ * @param $partnerId
+ * @param $userId
  */
-function db_referral_insert($options, $user_new) {
-  classSupernova::$db->doInsert("INSERT INTO {{referrals}} SET `id` = {$user_new['id']}, `id_partner` = {$options['partner_id']}");
+function db_referral_insert($partnerId, $userId) {
+  classSupernova::$db->doInsertSet(TABLE_REFERRALS, array(
+    'id'         => $userId,
+    'id_partner' => $partnerId,
+  ));
 }
 
 
@@ -580,51 +592,6 @@ function db_quest_update($quest_name, $quest_type, $quest_description, $quest_co
             WHERE `quest_id` = {$quest_id} LIMIT 1;"
   );
 }
-
-
-/**
- * @param $banner
- * @param $banned
- * @param $reason
- * @param $ban_until
- */
-function db_ban_insert($banner, $banned, $reason, $ban_until) {
-  classSupernova::$db->doInsert(
-    "INSERT INTO
-      {{banned}}
-    SET
-      `ban_user_id` = '{$banned['id']}',
-      `ban_user_name` = '{$banned['username']}',
-      `ban_reason` = '{$reason}',
-      `ban_time` = " . SN_TIME_NOW . ",
-      `ban_until` = {$ban_until},
-      `ban_issuer_id` = '{$banner['id']}',
-      `ban_issuer_name` = '{$banner['username']}',
-      `ban_issuer_email` = '{$banner['email']}'
-  ");
-}
-
-
-/**
- * @param $banner
- * @param $banned
- * @param $reason
- */
-function db_ban_insert_unset($banner, $banned, $reason) {
-  classSupernova::$db->doInsert(
-    "INSERT INTO {{banned}}
-    SET
-      `ban_user_id` = '{$banned['id']}',
-      `ban_user_name` = '{$banned['username']}',
-      `ban_reason` = '{$reason}',
-      `ban_time` = 0,
-      `ban_until` = " . SN_TIME_NOW . ",
-      `ban_issuer_id` = '{$banner['id']}',
-      `ban_issuer_name` = '{$banner['username']}',
-      `ban_issuer_email` = '{$banner['email']}'
-  ");
-}
-
 
 /**
  * @param $user_id

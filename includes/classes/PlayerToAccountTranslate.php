@@ -36,14 +36,11 @@ class PlayerToAccountTranslate {
   public static function db_translate_register_user($provider_id_unsafe, $provider_account_id_unsafe, $user_id_unsafe) {
     static::init();
 
-    $provider_id_safe = static::$db->db_escape($provider_id_unsafe);
-    $provider_account_id_safe = static::$db->db_escape($provider_account_id_unsafe);
-    $user_id_safe = static::$db->db_escape($user_id_unsafe);
-
-    return static::$db->doInsert(
-      "INSERT INTO `{{account_translate}}` (`provider_id`, `provider_account_id`, `user_id`) VALUES
-                  ({$provider_id_safe}, {$provider_account_id_safe}, {$user_id_safe});"
-    );
+    return static::$db->doInsertSet(TABLE_ACCOUNT_TRANSLATE, array(
+      'provider_id'         => $provider_id_unsafe,
+      'provider_account_id' => $provider_account_id_unsafe,
+      'user_id'             => $user_id_unsafe,
+    ));
   }
 
   /**

@@ -57,20 +57,20 @@ class DBStaticAlly {
   }
 
   /**
-   * @param $ally_name
-   * @param $ally_tag
-   * @param $user
+   * @param $ally_name_unsafe
+   * @param $ally_tag_unsafe
+   * @param $userId
    */
-  public static function db_ally_insert($ally_name, $ally_tag, $user) {
-    $ally = classSupernova::$db->doInsert("INSERT INTO {{alliance}} SET
-    `ally_name` = '{$ally_name}',
-    `ally_tag` = '{$ally_tag}',
-    `ally_owner` = '{$user['id']}',
-    `ally_owner_range` = '" . classLocale::$lang['ali_leaderRank'] . "',
-    `ally_members` = 1,
-    `ranklist` = '" . classLocale::$lang['ali_defaultRankName'] . ",0,0,0,0,0',
-    `ally_register_time`= " . SN_TIME_NOW
-    );
+  public static function db_ally_insert($ally_name_unsafe, $ally_tag_unsafe, $userId) {
+    $ally = classSupernova::$db->doInsertSet(TABLE_ALLIANCE, array(
+      'ally_name'          => (string)$ally_name_unsafe,
+      'ally_tag'           => (string)$ally_tag_unsafe,
+      'ally_owner'         => $userId,
+      'ally_owner_range'   => (string)classLocale::$lang['ali_leaderRank'],
+      'ally_members'       => (int)1,
+      'ranklist'           => (string)(classLocale::$lang['ali_defaultRankName'] . ",0,0,0,0,0"),
+      'ally_register_time' => SN_TIME_NOW,
+    ));
 
     return $ally;
   }
@@ -84,19 +84,24 @@ class DBStaticAlly {
   }
 
   /**
-   * @param $user
-   * @param $id_ally
-   * @param $POST_text
+   * @param int    $userId
+   * @param int    $id_ally
+   * @param string $requestTextUnsafe
    */
-  public static function db_ally_request_insert($user, $id_ally, $POST_text) {
-    classSupernova::$db->doInsert("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time=" . SN_TIME_NOW . ";");
+  public static function db_ally_request_insert($userId, $id_ally, $requestTextUnsafe) {
+    classSupernova::$db->doInsertSet(TABLE_ALLIANCE_REQUESTS, array(
+      'id_user'      => $userId,
+      'id_ally'      => $id_ally,
+      'request_text' => $requestTextUnsafe,
+      'request_time' => SN_TIME_NOW,
+    ));
   }
 
   /**
    * @param $userId
    */
   public static function db_ally_request_delete_own($userId, $allyId) {
-    classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE_REQUEST, array('id_user' => $userId, 'id_ally' => $allyId,));
+    classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE_REQUESTS, array('id_user' => $userId, 'id_ally' => $allyId,));
   }
 
 
@@ -283,7 +288,7 @@ class DBStaticAlly {
    * @param $id_user
    */
   public static function db_ally_request_delete_all_when_accepted($id_user) {
-    classSupernova::$gc->db->doDeleteWhere(TABLE_ALLIANCE_REQUEST, array('id_user' => $id_user));
+    classSupernova::$gc->db->doDeleteWhere(TABLE_ALLIANCE_REQUESTS, array('id_user' => $id_user));
   }
 
 

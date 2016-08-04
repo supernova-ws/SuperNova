@@ -40,22 +40,12 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   public function insert($entity) {
     $db = $entity->getDbStatic();
 
-    $query = array();
-    foreach ($entity->exportRowWithoutId() as $fieldName => $fieldValue) {
-      // TODO: MORE type detection
-      if(!is_numeric($fieldValue)) {
-        $fieldValue = "'" . $db->db_escape($fieldValue) . "'";
-      }
-      $query[] = "`{$fieldName}` = {$fieldValue}";
-    }
-
-    $query = implode(',', $query);
-    if (empty($query)) {
+    $row = $entity->exportRowWithoutId();
+    if (empty($row)) {
       // TODO Exceptiion
       return 0;
     }
-
-    $db->doInsert("INSERT INTO `{{" . $entity->getTableName() . "}}` SET " . $query);
+    $db->doInsertSet($entity->getTableName(), $row);
 
     // TODO Exceptiion if db_insert_id() is empty
     return $entity->dbId = $db->db_insert_id();

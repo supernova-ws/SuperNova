@@ -42,19 +42,30 @@ class DBStaticNote {
   }
 
   /**
-   * @param $user
+   * @param $userId
    * @param $note_priority
-   * @param $note_title
-   * @param $note_text
+   * @param $note_title_unsafe
+   * @param $note_text_unsafe
    * @param $note_galaxy
    * @param $note_system
    * @param $note_planet
    * @param $note_planet_type
    * @param $note_sticky
    */
-  public static function db_note_insert($user, $note_priority, $note_title, $note_text, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky) {
-    classSupernova::$db->doInsert("INSERT INTO {{notes}} SET `owner` = {$user['id']}, `time` = " . SN_TIME_NOW . ", `priority` = {$note_priority}, `title` = '{$note_title}', `text` = '{$note_text}',
-        `galaxy` = {$note_galaxy}, `system` = {$note_system}, `planet` = {$note_planet}, `planet_type` = {$note_planet_type}, `sticky` = {$note_sticky};");
+  public static function db_note_insert(
+    $userId, $note_priority, $note_title_unsafe, $note_text_unsafe, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky) {
+    classSupernova::$db->doInsertSet(TABLE_NOTES, array(
+      'owner'       => $userId,
+      'time'        => SN_TIME_NOW,
+      'priority'    => $note_priority,
+      'title'       => $note_title_unsafe,
+      'text'        => $note_text_unsafe,
+      'galaxy'      => $note_galaxy,
+      'system'      => $note_system,
+      'planet'      => $note_planet,
+      'planet_type' => $note_planet_type,
+      'sticky'      => $note_sticky,
+    ));
   }
 
 

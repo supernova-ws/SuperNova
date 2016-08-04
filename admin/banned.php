@@ -43,7 +43,7 @@ if($mode == 'banit' && $action) {
     $BanTime += $secs;
 //    $BannedUntil = SN_TIME_NOW + $BanTime;
 
-    sys_admin_player_ban($user, $player_banned_row, $BanTime, $is_vacation = sys_get_param_int('isVacation'), sys_get_param_str('why'));
+    sys_admin_player_ban($user, $player_banned_row, $BanTime, $is_vacation = sys_get_param_int('isVacation'), sys_get_param_str_unsafe('why'));
 
     $adm_bn_isbn = classLocale::$lang['adm_bn_isbn'];
     $adm_bn_thpl = classLocale::$lang['adm_bn_thpl'];
@@ -60,7 +60,7 @@ if($mode == 'banit' && $action) {
 
   AdminMessage($DoneMessage, classLocale::$lang['adm_ban_title']);
 } elseif($mode == 'unbanit' && $action) {
-  sys_admin_player_ban_unset($user, $player_banned_row, ($reason = sys_get_param_str('why')) ? $reason : classLocale::$lang['sys_unbanned']);
+  sys_admin_player_ban_unset($user, $player_banned_row, ($reason = sys_get_param_str_unsafe('why')) ? $reason : classLocale::$lang['sys_unbanned']);
 
   $DoneMessage = classLocale::$lang['adm_unbn_thpl'] . " " . $name_output . " " . classLocale::$lang['adm_unbn_isbn'];
   AdminMessage($DoneMessage, classLocale::$lang['adm_unbn_ttle']);

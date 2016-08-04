@@ -16,8 +16,10 @@ $template = gettemplate('announce', true);
 
 $announce_id = sys_get_param_id('id');
 $text = sys_get_param_str('text');
+$text_unsafe = sys_get_param_str_unsafe('text');
 $announce_time = sys_get_param_str('dtDateTime');
 $detail_url = sys_get_param_str('detail_url');
+$detail_url_unsafe = sys_get_param_str_unsafe('detail_url');
 $mode = sys_get_param_str('mode');
 
 $announce = array();
@@ -30,21 +32,22 @@ if($user['authlevel'] >= 3) {
       DBStaticNews::db_news_update_set($announce_time, $text, $detail_url, $announce_id);
       DBStaticSurvey::db_survey_delete_by_id($announce_id);
     } else {
-      DBStaticNews::db_news_insert_set($announce_time, $text, $detail_url, $user);
+      DBStaticNews::db_news_insert_set($announce_time, $text_unsafe, $detail_url_unsafe, $user['id'], $user['username']);
       $announce_id = classSupernova::$db->db_insert_id();
     }
     if(($survey_question = sys_get_param_str('survey_question')) && ($survey_answers = sys_get_param('survey_answers'))) {
       $survey_answers = explode("\r\n", $survey_answers);
       $survey_until = strtotime($survey_until = sys_get_param_str('survey_until'), SN_TIME_NOW);
       $survey_until = date(FMT_DATE_TIME_SQL, $survey_until ? $survey_until : SN_TIME_NOW + PERIOD_DAY * 1);
-      DBStaticSurvey::db_survey_insert($announce_id, $survey_question, $survey_until);
+      $survey_question_unsafe = sys_get_param_str_unsafe('survey_question');
+      DBStaticSurvey::db_survey_insert($announce_id, $survey_question_unsafe, $survey_until);
       $survey_id = classSupernova::$db->db_insert_id();
       foreach($survey_answers as $survey_answer) {
-        $survey_answer = db_escape(trim($survey_answer));
-        if(empty($survey_answer)) {
+        $survey_answer_unsafe = trim($survey_answer);
+        if(empty($survey_answer_unsafe)) {
           continue;
         }
-        DBStaticSurveyAnswer::db_survey_answer_insert($survey_id, $survey_answer);
+        DBStaticSurveyAnswer::db_survey_answer_insert($survey_id, $survey_answer_unsafe);
       }
     }
 

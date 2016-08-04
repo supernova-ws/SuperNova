@@ -33,8 +33,6 @@ class Confirmation {
     do {
       // Ну, если у нас > 999.999 подтверждений - тут нас ждут проблемы...
       $confirm_code_safe = $this->db->db_escape($confirm_code_unsafe = $this->make_password_reset_code());
-      // $query = static::$db->doquery("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' AND `type` = {$confirmation_type_safe} FOR UPDATE", true);
-      // Тип не нужен для проверки - код подтверждения должен быть уникален от слова "совсем"
       $query = $this->db->doSelectFetch("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE");
     } while($query);
 

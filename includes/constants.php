@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.23');
+define('SN_VERSION', '41a51.24');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1599,7 +1599,7 @@ define('SKIN_IMAGE_TAG_PARAMS', 3);
 define('TABLE_CONFIRMATIONS', 'confirmations');
 define('TABLE_ALLIANCE', 'alliance');
 define('TABLE_ALLIANCE_NEGOTIATION', 'alliance_negotiation');
-define('TABLE_ALLIANCE_REQUEST', 'alliance_requests');
+define('TABLE_ALLIANCE_REQUESTS', 'alliance_requests');
 define('TABLE_CHAT', 'chat');
 define('TABLE_AKS', 'aks');
 define('TABLE_MISSILES', 'iraks');
@@ -1619,3 +1619,19 @@ define('TABLE_USERS', 'users');
 define('TABLE_PLANETS', 'planets');
 define('TABLE_REFERRALS', 'referrals');
 define('TABLE_PLAYER_OPTIONS', 'player_options');
+define('TABLE_FESTIVAL_UNIT', 'festival_unit');
+define('TABLE_FESTIVAL_UNIT_LOG', 'festival_unit_log');
+define('TABLE_CAPTAIN', 'captain');
+define('TABLE_ACCOUNT', 'account');
+define('TABLE_LOG_METAMATTER', 'log_metamatter');
+define('TABLE_CHAT_PLAYER', 'chat_player');
+define('TABLE_SURVEY_ANSWERS', 'survey_answers');
+define('TABLE_SURVEY_VOTES', 'survey_votes');
+define('TABLE_SECURITY_DEVICE', 'security_device');
+define('TABLE_SECURITY_PLAYER_ENTRY', 'security_player_entry');
+define('TABLE_COUNTER', 'counter');
+define('TABLE_BANNED', 'banned');
+define('TABLE_LOG_DARK_MATTER', 'log_dark_matter');
+define('TABLE_BASHING', 'bashing');
+define('LOG_USERS_ONLINE', 'log_users_online');
+define('TABLE_UBE_REPORT', 'ube_report');

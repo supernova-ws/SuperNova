@@ -98,7 +98,7 @@ class DBStaticUnit {
   }
 
   /**
-   * @param string $set
+   * @param array $set
    *
    * @return array|bool|false|mysqli_result|null
    */
@@ -179,16 +179,14 @@ class DBStaticUnit {
     } else {
       $locationIdRendered = $unit_location == LOC_USER ? $user['id'] : $planet_id;
       $unitType = get_unit_param($unit_id, P_UNIT_TYPE);
-      $result = (bool)classSupernova::$gc->cacheOperator->db_ins_record(
-        LOC_UNIT,
-        "unit_player_id = {$user['id']}, 
-        unit_location_type = {$unit_location}, 
-        unit_location_id = {$locationIdRendered},
-        unit_type = {$unitType},
-        unit_snid = {$unit_id},
-        unit_level = {$unit_value}
-        "
-      );
+      $result = (bool)classSupernova::$gc->cacheOperator->db_ins_record(LOC_UNIT, array(
+        'unit_player_id'     => $user['id'],
+        'unit_location_type' => (int)$unit_location,
+        'unit_location_id'   => $locationIdRendered,
+        'unit_type'          => (int)$unitType,
+        'unit_snid'          => (int)$unit_id,
+        'unit_level'         => (float)$unit_value,
+      ));
     }
 
     return $result;

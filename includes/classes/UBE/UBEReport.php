@@ -105,31 +105,26 @@ class UBEReport {
     );
 
     // Сохраняем общую информацию о бое
-    $sql_str = "INSERT INTO `{{ube_report}}`
-    SET
-      `ube_report_cypher` = '{$ube->report_cypher}',
-      `ube_report_time_combat` = '" . date(FMT_DATE_TIME_SQL, $ube->combat_timestamp) . "',
-      `ube_report_time_spent` = {$ube->time_spent},
-
-      `ube_report_combat_admin` = " . (int)$ube->is_admin_in_combat . ",
-      `ube_report_mission_type` = {$ube->mission_type_id},
-
-      `ube_report_combat_result` = {$ube->combat_result},
-      `ube_report_combat_sfr` = " . (int)$ube->is_small_fleet_recce . ",
-
-      `ube_report_planet_id`          = " . (int)$ube->ube_planet_info[PLANET_ID] . ",
-      `ube_report_planet_name`        = '" . db_escape($ube->ube_planet_info[PLANET_NAME]) . "',
-      `ube_report_planet_size`        = " . (int)$ube->ube_planet_info[PLANET_SIZE] . ",
-      `ube_report_planet_galaxy`      = " . (int)$ube->ube_planet_info[PLANET_GALAXY] . ",
-      `ube_report_planet_system`      = " . (int)$ube->ube_planet_info[PLANET_SYSTEM] . ",
-      `ube_report_planet_planet`      = " . (int)$ube->ube_planet_info[PLANET_PLANET] . ",
-      `ube_report_planet_planet_type` = " . (int)$ube->ube_planet_info[PLANET_TYPE] . ",
-
-      `ube_report_capture_result` = " . (int)$ube->capture_result . ", "
-      . $ube->debris->report_generate_sql()
-      . $ube->moon_calculator->report_generate_sql();
-
-    classSupernova::$db->doInsert($sql_str);
+    classSupernova::$db->doInsertSet(TABLE_UBE_REPORT, array(
+        'ube_report_cypher'             => (string)$ube->report_cypher,
+        'ube_report_time_combat'        => (string)date(FMT_DATE_TIME_SQL, $ube->combat_timestamp),
+        'ube_report_time_spent'         => (float)$ube->time_spent,
+        'ube_report_combat_admin'       => (int)$ube->is_admin_in_combat,
+        'ube_report_mission_type'       => (int)$ube->mission_type_id,
+        'ube_report_combat_result'      => (int)$ube->combat_result,
+        'ube_report_combat_sfr'         => (int)$ube->is_small_fleet_recce,
+        'ube_report_planet_id'          => (int)$ube->ube_planet_info[PLANET_ID],
+        'ube_report_planet_name'        => (string)$ube->ube_planet_info[PLANET_NAME],
+        'ube_report_planet_size'        => (int)$ube->ube_planet_info[PLANET_SIZE],
+        'ube_report_planet_galaxy'      => (int)$ube->ube_planet_info[PLANET_GALAXY],
+        'ube_report_planet_system'      => (int)$ube->ube_planet_info[PLANET_SYSTEM],
+        'ube_report_planet_planet'      => (int)$ube->ube_planet_info[PLANET_PLANET],
+        'ube_report_planet_planet_type' => (int)$ube->ube_planet_info[PLANET_TYPE],
+        'ube_report_capture_result'     => (int)$ube->capture_result,
+      )
+      + $ube->debris->report_generate_array()
+      + $ube->moon_calculator->report_generate_array()
+    );
     $ube_report_id = classSupernova::$db->db_insert_id();
 
     // Сохраняем общую информацию по игрокам
@@ -154,7 +149,6 @@ class UBEReport {
       $sql_perform['ube_report_fleet'][] = $UBEFleet->sql_generate_array($ube_report_id);
 
       // Сохраняем итоговую информацию по ресурсам флота - потеряно, выброшено, увезено
-//      $sql_perform['ube_report_outcome_fleet'][] = $ube->outcome->sql_generate_fleet_array($ube_report_id, $UBEFleet);
       $sql_perform['ube_report_outcome_fleet'][] = $UBEFleet->sql_generate_outcome_fleet_array($ube_report_id);
 
       // Сохраняем результаты по юнитам - потеряно и восстановлено
@@ -174,7 +168,7 @@ class UBEReport {
       }
       $fields = $table_data[0];
       unset($table_data[0]);
-      classSupernova::$db->doInsert("INSERT INTO {{{$table_name}}} {$fields} VALUES " . implode(',', $table_data));
+      classSupernova::$db->doInsertValuesDeprecated($table_name, $fields, $table_data);
     }
 
     return $ube->report_cypher;

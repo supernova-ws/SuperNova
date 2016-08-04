@@ -6,8 +6,12 @@ class DBStaticSurvey {
     classSupernova::$gc->db->doDeleteWhere(TABLE_SURVEY, array('survey_announce_id' => $announce_id));
   }
 
-  public static function db_survey_insert($announce_id, $survey_question, $survey_until) {
-    classSupernova::$db->doInsert("INSERT INTO {{survey}} SET `survey_announce_id` = {$announce_id}, `survey_question` = '{$survey_question}', `survey_until` = '{$survey_until}'");
+  public static function db_survey_insert($announce_id, $survey_question_unsafe, $survey_until) {
+    classSupernova::$db->doInsertSet(TABLE_SURVEY, array(
+      'survey_announce_id' => $announce_id,
+      'survey_question'    => $survey_question_unsafe,
+      'survey_until'       => $survey_until,
+    ));
   }
 
 }
