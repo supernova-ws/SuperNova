@@ -17,11 +17,11 @@ php:
   # aliased to 5.3.29
   - 5.3
   # aliased to a recent 5.4.x version
-#  - 5.4
+  - 5.4
   # aliased to a recent 5.5.x version
 #  - 5.5
   # aliased to a recent 5.6.x version
-#  - 5.6
+  - 5.6
   # aliased to a recent 7.x version
   - 7.0
   # aliased to a recent hhvm version
@@ -37,8 +37,8 @@ sudo: false
 before_install:
   - composer self-update
 
-#install:
-#  - travis_retry composer install --no-interaction --prefer-source
+install:
+  - travis_retry composer install --no-interaction --prefer-source
 
 #script:
 #  - ./phpunit
