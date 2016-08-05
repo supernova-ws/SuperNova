@@ -70,13 +70,12 @@ class DBStaticMessages {
    * @param integer     $sender
    * @param integer     $timestamp
    * @param integer     $message_type
-   * @param string      $from
-   * @param string      $subject
-   * @param string      $text
-   * @param bool        $escaped
+   * @param string      $from_unsafe
+   * @param string      $subject_unsafe
+   * @param string      $text_unsafe
    * @param bool        $force
    */
-  public static function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false) {
+  public static function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from_unsafe, $subject_unsafe, $text_unsafe, $force = false) {
     global $user;
 
     if (!$owners) {
@@ -89,18 +88,11 @@ class DBStaticMessages {
       $owners = array($owners);
     }
 
-    if (!$escaped) {
-      $from = db_escape($from);
-      $subject = db_escape($subject);
-      $text = db_escape($text);
-    }
-
-    $text_unescaped = stripslashes(str_replace(array('\r\n', "\r\n"), "<br />", $text));
-
+    // TODO - check for valid message_type ?
     $message_class = static::$snMessageClassList[$message_type];
-    $message_class_email = $message_class['email'];
-    $message_class_switchable = $message_class['switchable'];
     $message_class_name = $message_class['name'];
+
+    $text_safe = db_escape($text_unsafe);
 
     $message_class_name_total = static::$snMessageClassList[MSG_TYPE_NEW]['name'];
 
@@ -110,12 +102,10 @@ class DBStaticMessages {
       }
       // TODO Добавить $timestamp - рассылка может быть и отсроченной
       // TODO Добавить $sender - рассылка может быть и от кого-то
-      static::db_message_insert_all($message_type, $from, $subject, $text);
+      static::db_message_insert_all($message_type, $from_unsafe, $subject_unsafe, $text_unsafe);
       $owners = array();
     } else {
       $insert_values = array();
-      $insert_template = "('%u'," . str_replace('%', '%%', " '{$sender}', '{$timestamp}', '{$message_type}', '{$from}', '{$subject}', '{$text}')");
-
       foreach ($owners as $owner) {
         if ($user['id'] != $owner) {
           $owner_row = DBStaticUser::db_user_by_id($owner);
@@ -124,12 +114,14 @@ class DBStaticMessages {
         }
         sys_user_options_unpack($owner_row);
 
-        if ($force || !$message_class_switchable || $owner_row["opt_{$message_class_name}"]) {
-          $insert_values[] = sprintf($insert_template, $owner);
+        if ($force || !$message_class['switchable'] || $owner_row["opt_{$message_class_name}"]) {
+          $insert_values[] = "('" . idval($owner) . "', '{$sender}', '{$timestamp}', '{$message_type}', '" . db_escape($from_unsafe) . "', '" . db_escape($subject_unsafe) . "', '" . db_escape($text_unsafe) . "')";
         }
 
-        if ($message_class_email && classSupernova::$config->game_email_pm && $owner_row["opt_email_{$message_class_name}"]) {
-          @$result = mymail($owner_row['email'], $subject, $text_unescaped, '', true);
+        // TODO - allow sending HTML email only from admin
+        if ($message_class['email'] && classSupernova::$config->game_email_pm && $owner_row["opt_email_{$message_class_name}"]) {
+          $text_unescaped = str_replace(array('\\r\\n', '\\n', "\r\n", "\n"), "<br />", $text_unsafe);
+          @$result = mymail($owner_row['email'], $subject_unsafe, $text_unescaped, '', true);
         }
       }
 
@@ -137,7 +129,19 @@ class DBStaticMessages {
         return;
       }
 
-      static::db_message_insert($insert_values);
+      classSupernova::$db->doInsertValuesDeprecated(
+        TABLE_MESSAGES,
+        array(
+          'message_owner',
+          'message_sender',
+          'message_time',
+          'message_type',
+          'message_from',
+          'message_subject',
+          'message_text',
+        ),
+        $insert_values
+      );
     }
     DBStaticUser::db_user_list_set_mass_mail($owners, "`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1");
 
@@ -162,7 +166,7 @@ class DBStaticMessages {
       $list .= "<br>{$u['username']} ";
     }
 
-    static::msg_send_simple_message($sendList, $user['id'], SN_TIME_NOW, MSG_TYPE_ALLIANCE, $user['username'], $subject, $message, true);
+    static::msg_send_simple_message($sendList, $user['id'], SN_TIME_NOW, MSG_TYPE_ALLIANCE, $user['username'], $subject, $message);
 
     return $list;
   }
@@ -172,11 +176,10 @@ class DBStaticMessages {
    * @param mixed|array $owners
    * @param string      $subject
    * @param string      $text
-   * @param bool        $escaped
    * @param bool        $force
    */
-  public static function msgSendFromAdmin($owners, $subject, $text, $escaped = false, $force = false) {
-    static::msg_send_simple_message($owners, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['sys_administration'], $subject, $text, $escaped, $force);
+  public static function msgSendFromAdmin($owners, $subject, $text, $force = false) {
+    static::msg_send_simple_message($owners, 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['sys_administration'], $subject, $text, $force);
   }
 
   /**
@@ -188,15 +191,7 @@ class DBStaticMessages {
    */
   public static function msgSendFromPlayer($senderPlayerId, $senderPlayerNameAndCoordinates, $recipientId, $subject, $text) {
     static::msg_send_simple_message(
-      $recipientId,
-      $senderPlayerId,
-      SN_TIME_NOW,
-      MSG_TYPE_PLAYER,
-      $senderPlayerNameAndCoordinates,
-      $subject,
-      $text,
-      false,
-      false
+      $recipientId, $senderPlayerId, SN_TIME_NOW, MSG_TYPE_PLAYER, $senderPlayerNameAndCoordinates, $subject, $text
     );
   }
 
@@ -472,9 +467,14 @@ LIMIT
   {$StartRec}, 25;");
   }
 
-  public static function db_message_insert_all($message_type, $from, $subject, $text) {
+  public static function db_message_insert_all($message_type, $from_unsafe, $subject_unsafe, $text_unsafe) {
+    $message_type_safe = intval($message_type);
+    $from_safe = db_escape($from_unsafe);
+    $subject_safe = db_escape($subject_unsafe);
+    $text_safe = db_escape($text_unsafe);
+
     return classSupernova::$db->doInsertComplex('INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
-      "SELECT `id`, 0, unix_timestamp(now()), {$message_type}, '{$from}', '{$subject}', '{$text}' FROM {{users}}");
+      "SELECT `id`, 0, unix_timestamp(now()), {$message_type_safe}, '{$from_safe}', '{$subject_safe}', '{$text_safe}' FROM {{users}}");
   }
 
   /**
@@ -511,25 +511,6 @@ LIMIT
       $where['message_type'] = $int_type_selected;
     }
     classSupernova::$db->doDeleteDeprecated(TABLE_MESSAGES, $where);
-  }
-
-  /**
-   * @param string[] $insert_values
-   */
-  public static function db_message_insert($insert_values) {
-    classSupernova::$db->doInsertValuesDeprecated(
-      TABLE_MESSAGES,
-      array(
-        'message_owner',
-        'message_sender',
-        'message_time',
-        'message_type',
-        'message_from',
-        'message_subject',
-        'message_text',
-      ),
-      $insert_values
-    );
   }
 
 }

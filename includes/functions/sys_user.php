@@ -49,7 +49,15 @@ function DeleteSelectedUser($UserID) {
     $TheAlly = classSupernova::$db->doSelectFetch("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';");
     $TheAlly['ally_members'] -= 1;
     if ( $TheAlly['ally_members'] > 0 ) {
-      classSupernova::$db->doUpdate( "UPDATE `{{alliance}}` SET `ally_members` = '" . $TheAlly['ally_members'] . "' WHERE `id` = '" . $TheAlly['id'] . "';");
+      classSupernova::$db->doUpdateRowWhere(
+        TABLE_ALLIANCE,
+        array(
+          'ally_members' => $TheAlly['ally_members'],
+        ),
+        array(
+          'id' => $TheAlly['id'],
+        )
+      );
     } else {
       classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE, array('id' => $TheAlly['id'],));
       classSupernova::$gc->db->doDeleteWhere(TABLE_STAT_POINTS, array('stat_type' => STAT_TYPE_ALLY, 'id_owner' => $TheAlly['id'],));

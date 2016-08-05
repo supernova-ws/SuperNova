@@ -31,7 +31,7 @@ if($ally_tag) {
     'user_as_ally'  => $ally_id,
   ));
   // $ally_user_id = db_insert_id();
-  $ally_user_id = is_array($ally_user) ? $ally_user['id'] : 'NULL';
+  $ally_user_id = is_array($ally_user) ? $ally_user['id'] : null;
   DBStaticAlly::db_ally_update_ally_user($ally_user_id, $ally_id);
 
   message(str_replace('%s', $ally_tag_unsafe, classLocale::$lang['ally_been_maked']), str_replace('%s', $ally_tag_unsafe, classLocale::$lang['ally_maked']));

@@ -153,8 +153,18 @@ class DBStaticUser extends DBStaticRecord {
     classSupernova::$db->doDeleteDeprecated(TABLE_USERS, array("`username` LIKE 'Игрок%'"));
   }
 
+  /**
+   * @deprecated - NEVER change DM amount directly w/o logging!
+   */
   public static function db_player_list_blitz_set_50k_dm() {
-    classSupernova::$db->doUpdate('UPDATE `{{users}}` SET `dark_matter` = 50000, `dark_matter_total` = 50000;');
+//    classSupernova::$db->doUpdateRecord('UPDATE `{{users}}` SET `dark_matter` = 50000, `dark_matter_total` = 50000;');
+    classSupernova::$db->doUpdateTable(TABLE_USERS,
+      array(
+        'dark_matter' => 50000,
+        'dark_matter_total' => 50000,
+      )
+    );
+
   }
 
 
@@ -304,7 +314,7 @@ class DBStaticUser extends DBStaticRecord {
       $value = "{$fieldName} = {$fieldName} + ('{$value}')";
     }
     if($query = implode(',', $playerRowFieldChanges)) {
-      classSupernova::$gc->db->doUpdate("UPDATE `{{users}}` SET {$query} WHERE id = {$userId}");
+      classSupernova::$gc->db->doUpdateComplex("UPDATE `{{users}}` SET {$query} WHERE id = {$userId}");
     }
   }
 

@@ -66,7 +66,7 @@ if($info_action)
         }
         $msg_text = sprintf(classLocale::$lang['eco_mrk_info_player_message'], $user_info['id'], $user_info['username']) . "\r\n" . implode("\r\n", $msg_text);
 
-        DBStaticMessages::msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['eco_mrk_info_msg_from'], "{$classLocale['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, false, true);
+        DBStaticMessages::msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_SPY, classLocale::$lang['eco_mrk_info_msg_from'], "{$classLocale['eco_mrk_info_player']} ID {$user_info['id']} [{$user_info['username']}]", $msg_text, true);
       break;
 
       default:

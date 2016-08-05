@@ -92,7 +92,7 @@ if(sys_get_param_str('ali_dip_offer_make')) {
       if($offer_answer == 'accept') {
         $accept_offer = true;
       } elseif($offer_answer == 'deny') {
-        DBStaticAlly::db_ally_negotiation_update_status_1($offer_id);
+        DBStaticAlly::db_ally_negotiation_deny($offer_id);
       }
     }
   }

@@ -71,27 +71,53 @@ class DBStaticChat {
 
   /**
    * @param $chat_directive
-   * @param $user
+   * @param $userId
    */
-  public static function db_chat_player_update_invisibility($chat_directive, $user) {
-    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_invisible` = {$chat_directive} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+  public static function db_chat_player_update_invisibility($chat_directive, $userId) {
+    classSupernova::$db->doUpdateRowWhere(
+      TABLE_CHAT_PLAYER,
+      array(
+        'chat_player_invisible' => $chat_directive,
+      ),
+      array(
+        'chat_player_player_id' => $userId,
+      )
+    );
   }
 
   /**
-   * @param $temp
-   * @param $chat_player_subject
+   * @param $reasonUnsafe
+   * @param $chat_player_subject_id
    */
-  public static function db_chat_player_update_unmute($temp, $chat_player_subject) {
-    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_muted` = 0, `chat_player_mute_reason` = '{$temp}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
+  public static function db_chat_player_update_unmute($reasonUnsafe, $chat_player_subject_id) {
+    classSupernova::$db->doUpdateRowWhere(
+      TABLE_CHAT_PLAYER,
+      array(
+        'chat_player_muted'       => 0,
+        'chat_player_mute_reason' => $reasonUnsafe,
+      ),
+      array(
+        'chat_player_player_id' => $chat_player_subject_id,
+      )
+    );
   }
 
   /**
    * @param $date_compiled
-   * @param $chat_command_parsed_two
-   * @param $chat_player_subject
+   * @param $reasonUnsafe
+   * @param $chat_player_subject_id
    */
-  public static function db_chat_player_update_mute($date_compiled, $chat_command_parsed_two, $chat_player_subject) {
-    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_muted` = {$date_compiled}, `chat_player_mute_reason` = '{$chat_command_parsed_two[4]}' WHERE `chat_player_player_id` = {$chat_player_subject['id']} LIMIT 1");
+  public static function db_chat_player_update_mute($date_compiled, $reasonUnsafe, $chat_player_subject_id) {
+    classSupernova::$db->doUpdateRowWhere(
+      TABLE_CHAT_PLAYER,
+      array(
+        'chat_player_muted'       => $date_compiled,
+        'chat_player_mute_reason' => $reasonUnsafe,
+      ),
+      array(
+        'chat_player_player_id' => $chat_player_subject_id,
+      )
+    );
   }
 
   /**
@@ -137,10 +163,18 @@ class DBStaticChat {
 
 
   /**
-   * @param $user
+   * @param $userId
    */
-  public static function db_chat_player_update($user) {
-    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_refresh_last` = " . SN_TIME_NOW . " WHERE `chat_player_player_id` = {$user['id']} LIMIT 1;");
+  public static function db_chat_player_update($userId) {
+    classSupernova::$db->doUpdateRowWhere(
+      TABLE_CHAT_PLAYER,
+      array(
+        'chat_player_refresh_last' => SN_TIME_NOW,
+      ),
+      array(
+        'chat_player_player_id' => $userId,
+      )
+    );
   }
 
 
@@ -208,10 +242,18 @@ class DBStaticChat {
 
 
   /**
-   * @param $user
+   * @param $userId
    */
-  public static function db_chat_player_update_activity($user) {
-    classSupernova::$db->doUpdate("UPDATE {{chat_player}} SET `chat_player_activity` = '" . classSupernova::$db->db_escape(SN_TIME_SQL) . "' WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+  public static function db_chat_player_update_activity($userId) {
+    classSupernova::$db->doUpdateRowWhere(
+      TABLE_CHAT_PLAYER,
+      array(
+        'chat_player_activity' => SN_TIME_SQL,
+      ),
+      array(
+        'chat_player_player_id' => $userId,
+      )
+    );
   }
 
 }

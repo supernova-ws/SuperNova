@@ -260,7 +260,7 @@ class SnDbCachedOperator {
     $id_field = static::$location_info[$location_type][P_ID];
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     // TODO Как-то вернуть может быть LIMIT 1 ?
-    if ($result = $this->db->doUpdate("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) {
+    if ($result = $this->db->doUpdateComplex("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) {
       if ($this->db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         // TODO - переделать под работу со структурированными $set
@@ -292,7 +292,7 @@ class SnDbCachedOperator {
     $condition = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if ($result = $this->db->doUpdate("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
+    if ($result = $this->db->doUpdateComplex("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
       if ($this->db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
@@ -329,15 +329,10 @@ class SnDbCachedOperator {
   }
 
 
-  public function db_ins_field_set($location_type, $field_set, $serialize = false) {
-    // TODO multiinsert
-    !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set, $serialize) : false;
-    sn_db_field_set_safe_flag_clear($field_set);
-    $values = implode(',', $field_set);
-    $fields = implode(',', array_keys($field_set));
-
+  public function db_ins_field_set($location_type, $field_set) {
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if ($result = $this->db->doInsertComplex("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
+    $result = $this->db->doInsertSet($table_name, $field_set);
+    if ($result) {
       if ($this->db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         $record_id = $this->db->db_insert_id();

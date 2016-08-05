@@ -792,7 +792,7 @@ abstract class sn_module_payment extends sn_module {
     }
 
     if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
-      $safe_comment = db_escape($payment['payment_comment'] = classLocale::$lang['pay_msg_request_payment_cancelled'] .' ' . $payment['payment_comment']);
+      $comment_unsafe = $payment['payment_comment'] = classLocale::$lang['pay_msg_request_payment_cancelled'] .' ' . $payment['payment_comment'];
 
       if(!$payment['payment_test']) {
         $result = $this->account->metamatter_change(RPG_PURCHASE_CANCEL, -$payment['payment_dark_matter_gained'], $payment['payment_comment']);
@@ -801,7 +801,7 @@ abstract class sn_module_payment extends sn_module {
         }
       }
       $payment['payment_status'] = PAYMENT_STATUS_CANCELED;
-      db_payment_update($payment, $safe_comment);
+      db_payment_update($payment['payment_id'], $payment['payment_status'], $comment_unsafe);
       throw new exception(classLocale::$lang['pay_msg_request_payment_cancel_complete'], SN_PAYMENT_REQUEST_OK);
     } elseif($payment['payment_status'] == PAYMENT_STATUS_CANCELED) {
       throw new exception(classLocale::$lang['pay_msg_request_payment_cancelled_already'], SN_PAYMENT_REQUEST_OK);

@@ -4,6 +4,7 @@ function sn_user_birthday_celebrate() {
   sn_db_transaction_start();
 
   foreach (DBStaticUser::db_user_list_to_celebrate(classSupernova::$config->user_birthday_range) as $row) {
+    $username_unescaped = $row['username'];
     $row['username'] = db_escape($row['username']);
     rpg_points_change(
       $row['id'],
@@ -15,12 +16,12 @@ function sn_user_birthday_celebrate() {
 
     $message = sprintf(
       classLocale::$lang['sys_birthday_message'],
-      $row['username'],
+      $username_unescaped,
       $row['current_birthday'],
       classSupernova::$config->user_birthday_gift,
       classLocale::$lang['sys_dark_matter_sh']
     );
-    DBStaticMessages::msgSendFromAdmin($row['id'], classLocale::$lang['sys_birthday'], $message, true, true);
+    DBStaticMessages::msgSendFromAdmin($row['id'], classLocale::$lang['sys_birthday'], $message, true);
   }
 
   classSupernova::$config->db_saveItem('user_birthday_celebrate', SN_TIME_NOW);

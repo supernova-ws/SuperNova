@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.26');
+define('SN_VERSION', '41a51.27');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -136,6 +136,7 @@ define('ALLY_DIPLOMACY_MASTER'       , 'master');
 define('ALLY_DIPLOMACY_SLAVE'        , 'slave');
 
 define('ALLY_PROPOSE_SEND', 0);
+define('ALLY_PROPOSE_DENY', 1);
 
 // Quest types
 define('QUEST_TYPE_BUILD'   , 1);
@@ -1633,5 +1634,7 @@ define('TABLE_COUNTER', 'counter');
 define('TABLE_BANNED', 'banned');
 define('TABLE_LOG_DARK_MATTER', 'log_dark_matter');
 define('TABLE_BASHING', 'bashing');
-define('LOG_USERS_ONLINE', 'log_users_online');
+define('TABLE_LOG_USERS_ONLINE', 'log_users_online');
 define('TABLE_UBE_REPORT', 'ube_report');
+define('TABLE_QUE', 'que');
+define('TABLE_PAYMENT', 'payment');

@@ -213,9 +213,7 @@ class Player extends UnitContainer {
    * @return array|bool|mysqli_result|null
    */
   public function db_user_change_active_planet_to_capital($captured_planet_id) {
-    $user_id = $this->_dbId;
-
-    return classSupernova::$db->doUpdate("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$user_id} AND `current_planet` = {$captured_planet_id};");
+    return classSupernova::$db->doUpdateComplex("UPDATE {{users}} SET `current_planet` = `id_planet` WHERE `id` = {$this->_dbId} AND `current_planet` = {$captured_planet_id};");
   }
 
   public function calcColonyCount() {

@@ -158,7 +158,7 @@ class DBStaticPlanet {
       $value = "{$fieldName} = {$fieldName} + ('{$value}')";
     }
     if ($query = implode(',', $planetRowFieldChanges)) {
-      classSupernova::$gc->db->doUpdate("UPDATE `{{planets}}` SET {$query} WHERE id = {$planetId}");
+      classSupernova::$gc->db->doUpdateComplex("UPDATE `{{planets}}` SET {$query} WHERE id = {$planetId}");
     }
   }
 

@@ -266,18 +266,19 @@ class Account {
   // OK v4.5
   public function db_set_password($password_unsafe, $salt_unsafe) {
     $password_encoded_unsafe = $this->password_encode($password_unsafe, $salt_unsafe);
-    $password_encoded_safe = $this->db->db_escape($password_encoded_unsafe);
 
-    $account_id_safe = $this->db->db_escape($this->account_id);
-    $salt_safe = $this->db->db_escape($salt_unsafe);
-
-    $result = $this->db->doUpdate(
-      "UPDATE {{account}} SET
-        `account_password` = '{$password_encoded_safe}',
-        `account_salt` = '{$salt_safe}'
-      WHERE `account_id` = '{$account_id_safe}'"
-    ) ? true : false;
-
+    $result = $this->db->doUpdateRowWhere(
+      TABLE_ACCOUNT,
+      array(
+        'account_password' => $password_encoded_unsafe,
+        'account_salt'     => $salt_unsafe,
+      ),
+      array(
+        'account_id' => $this->account_id,
+      )
+    )
+      ? true
+      : false;
     if($result) {
       $result = $this->db_get_by_id($this->account_id);
     }
@@ -367,7 +368,7 @@ class Account {
       $metamatter_total_delta = $metamatter > 0 ? $metamatter : 0;
 
       $classConfig = classSupernova::$config;
-      $result = $this->db->doUpdate(
+      $result = $this->db->doUpdateComplex(
         "UPDATE {{account}}
         SET
           `account_metamatter` = `account_metamatter` + '{$metamatter}'" .

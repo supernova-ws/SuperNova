@@ -78,8 +78,7 @@ if($userToAdd_unsafe) {
       !(DBStaticFleetACS::db_acs_update($userToAddID, $fleetid)) ? die(sprintf(classLocale::$lang['fl_aks_adding_error'], classSupernova::$db->db_error())) : false;
       $aks['eingeladen'] .= ',' . $userToAddID;
     }
-    DBStaticMessages::msg_send_simple_message($userToAddID, $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'],
-      classLocale::$lang['fl_aks_invite_message_header'], sprintf(classLocale::$lang['fl_aks_invite_message'], $user['username']));
+    DBStaticMessages::msg_send_simple_message($userToAddID, $user['id'], SN_TIME_NOW, MSG_TYPE_COMBAT, $user['username'], classLocale::$lang['fl_aks_invite_message_header'], sprintf(classLocale::$lang['fl_aks_invite_message'], $user['username']));
   } else {
     $add_user_message_mr = sprintf(classLocale::$lang['fl_aks_player_error'], $userToAdd);
   }

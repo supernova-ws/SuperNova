@@ -51,9 +51,9 @@ function qst_render_page() {
         $quest_type = 0;
 
         if ($mode == 'edit') {
-          $quest_name = db_escape($quest_name);
-          $quest_description = db_escape($quest_description);
-          db_quest_update($quest_name, $quest_type, $quest_description, $quest_conditions, $quest_rewards, $quest_id);
+          $quest_name_unsafe = $quest_name;
+          $quest_description_unsafe = $quest_description;
+          db_quest_update($quest_name_unsafe, $quest_type, $quest_description_unsafe, $quest_conditions, $quest_rewards, $quest_id);
         } else {
           sn_db_perform('{{quest}}', array(
             'quest_name'        => $quest_name,

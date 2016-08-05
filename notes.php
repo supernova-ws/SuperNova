@@ -65,7 +65,7 @@ if(sys_get_param('note_delete')) {
         throw new Exception('note_err_owner_wrong', ERR_ERROR);
       }
 
-      DBStaticNote::db_note_update_by_id($note_priority, db_escape($note_title_unsafe), db_escape($note_text_unsafe), $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky, $note_id_edit);
+      DBStaticNote::db_note_update_by_id($note_priority, $note_title_unsafe, $note_text_unsafe, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky, $note_id_edit);
     } else {
       DBStaticNote::db_note_insert($user['id'], $note_priority, $note_title_unsafe, $note_text_unsafe, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky);
     }

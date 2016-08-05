@@ -51,9 +51,15 @@ class BuddyModel extends \Entity {
 
   // TODO - remove public static function db_buddy_update_status($buddy_id, $status) {
   public function db_buddy_update_status($status) {
-    $buddy_id = idval($this->dbId);
-
-    classSupernova::$db->doUpdate("UPDATE `{{buddy}}` SET `BUDDY_STATUS` = {$status} WHERE `BUDDY_ID` = '{$buddy_id}' LIMIT 1;");
+    classSupernova::$db->doUpdateRowWhere(
+      TABLE_BUDDY,
+      array(
+        'BUDDY_STATUS' => $status,
+      ),
+      array(
+        'BUDDY_ID' => idval($this->dbId),
+      )
+    );
 
     return classSupernova::$db->db_affected_rows();
   }

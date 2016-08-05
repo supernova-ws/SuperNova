@@ -2,8 +2,18 @@
 
 class DBStaticNews {
 
-  public static function db_news_update_set($announce_time, $text, $detail_url, $announce_id) {
-    classSupernova::$db->doUpdate("UPDATE {{announce}} SET `tsTimeStamp` = FROM_UNIXTIME({$announce_time}), `strAnnounce`='{$text}', detail_url = '{$detail_url}' WHERE `idAnnounce`={$announce_id};");
+  public static function db_news_update_set($announce_time, $text_unsafe, $detail_url_unsafe, $announce_id) {
+    classSupernova::$db->doUpdateRowWhere(
+      TABLE_ANNOUNCE,
+      array(
+        'tsTimeStamp' => date(FMT_DATE_TIME_SQL, $announce_time),
+        'strAnnounce' => $text_unsafe,
+        'detail_url'  => $detail_url_unsafe,
+      ),
+      array(
+        'idAnnounce' => $announce_id,
+      )
+    );
   }
 
   public static function db_news_insert_set($announce_time, $text_unsafe, $detail_url_unsafe, $userId, $userNameUnsafe) {

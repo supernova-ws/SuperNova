@@ -62,9 +62,9 @@ if(sys_get_param_str('isSaveOptions')) {
     sys_redirect('alliance.php?mode=admin&edit=ally');
   }
 } elseif(sys_get_param_str('isSaveText')) {
-  $text = sys_get_param_str_both('text');
-  DBStaticAlly::db_ally_update_texts($text_list, $allyTextID, $text, $ally);
-  $ally[$text_list[$allyTextID]['db_field']] = $text['unsafe'];
+  $text_unsafe = sys_get_param_str_unsafe('text');
+  DBStaticAlly::db_ally_update_texts($text_unsafe, $ally['id'], $text_list[$allyTextID]['db_field']);
+  $ally[$text_list[$allyTextID]['db_field']] = db_escape($text_unsafe);
 } elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNewLeader')) {
   if(!$isAllyOwner) {
     message(classLocale::$lang['Denied_access'], classLocale::$lang['ally_admin']);
@@ -74,7 +74,7 @@ if(sys_get_param_str('isSaveOptions')) {
   if($newLeader['ally_id'] == $user['ally_id']) {
     sn_db_transaction_start();
     DBStaticUser::db_user_set_by_id($user['id'], "`ally_rank_id`='0'");
-    DBStaticAlly::db_ally_update_owner($idNewLeader, $user);
+    DBStaticAlly::db_ally_update_owner($idNewLeader, $user['ally_id']);
     DBStaticUser::db_user_set_by_id($idNewLeader, "`ally_rank_id`='0'");
     sn_db_transaction_commit();
     sys_redirect('alliance.php');

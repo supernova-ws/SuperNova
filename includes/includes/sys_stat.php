@@ -224,7 +224,7 @@ function sys_stat_calculate() {
   // Statistic rotation
   $classConfig = classSupernova::$config;
   classSupernova::$db->doDeleteComplex("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
-  classSupernova::$db->doUpdate("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
+  classSupernova::$db->doUpdateComplex("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
 
   sta_set_time_limit('posting new user stats to DB');
   $data = array();
@@ -286,7 +286,7 @@ function sys_stat_calculate() {
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating player rank '{$rankName}'", false);
     classSupernova::$db->doExecute($qryResetRowNum);
-    classSupernova::$db->doUpdate(sprintf($qryFormat, $rankName, 1));
+    classSupernova::$db->doUpdateSqlNoParam(sprintf($qryFormat, $rankName, 1));
   }
 
   sta_set_time_limit("updating ranks for Alliances");
@@ -294,11 +294,11 @@ function sys_stat_calculate() {
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
     classSupernova::$db->doExecute($qryResetRowNum);
-    classSupernova::$db->doUpdate(sprintf($qryFormat, $rankName, 2));
+    classSupernova::$db->doUpdateSqlNoParam(sprintf($qryFormat, $rankName, 2));
   }
 
   sta_set_time_limit('setting previous user stats from archive');
-  classSupernova::$db->doUpdate(
+  classSupernova::$db->doUpdateSqlNoParam(
     "UPDATE `{{statpoints}}` AS new
       LEFT JOIN `{{statpoints}}` AS old ON old.id_owner = new.id_owner AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
@@ -312,7 +312,7 @@ function sys_stat_calculate() {
       new.stat_type = 1 AND new.stat_code = 1;");
 
   sta_set_time_limit('setting previous allies stats from archive');
-  classSupernova::$db->doUpdate(
+  classSupernova::$db->doUpdateSqlNoParam(
     "UPDATE `{{statpoints}}` AS new
       LEFT JOIN `{{statpoints}}` AS old ON old.id_ally = new.id_ally AND old.stat_code = 2 AND old.stat_type = new.stat_type
     SET
@@ -326,10 +326,30 @@ function sys_stat_calculate() {
       new.stat_type = 2 AND new.stat_code = 1;");
 
   sta_set_time_limit('updating players current rank and points');
-  db_stat_list_update_user_stats();
+  classSupernova::$db->doUpdateSqlNoParam(
+    "UPDATE `{{users}}` AS u 
+      JOIN `{{statpoints}}` AS sp ON 
+        sp.id_owner = u.id 
+        AND sp.stat_code = 1 
+        AND sp.stat_type = 1 
+    SET 
+      u.total_rank = sp.total_rank, 
+      u.total_points = sp.total_points 
+    WHERE 
+      user_as_ally IS NULL;"
+  );
 
   sta_set_time_limit('updating Allys current rank and points');
-  db_stat_list_update_ally_stats();
+  classSupernova::$db->doUpdateSqlNoParam(
+    "UPDATE `{{alliance}}` AS a 
+      JOIN `{{statpoints}}` AS sp ON 
+        sp.id_ally = a.id 
+        AND sp.stat_code = 1 
+        AND sp.stat_type = 2 
+    SET 
+      a.total_rank = sp.total_rank, 
+      a.total_points = sp.total_points;"
+  );
 
   // Counting real user count and updating values
   classSupernova::$config->db_saveItem('users_amount', DBStaticUser::db_user_count());

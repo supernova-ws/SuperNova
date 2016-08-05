@@ -132,7 +132,7 @@ foreach($userList as $userRow) {
 }
 
 if($i != $ally['ally_members']) {
-  DBStaticAlly::db_ally_update_member_set($i, $ally);
+  DBStaticAlly::db_ally_update_member_set($i, $ally['id']);
 }
 
 $template->assign_vars(array(

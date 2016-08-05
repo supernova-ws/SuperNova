@@ -3,6 +3,7 @@
 function ali_rank_list_save($ranks) {
   global $user;
 
+  $ranklist = '';
   if(!empty($ranks)) {
     foreach($ranks as $rank => $rights) {
       $rights = implode(',', $rights);
@@ -10,7 +11,7 @@ function ali_rank_list_save($ranks) {
     }
   }
 
-  DBStaticAlly::db_ally_update_ranklist($ranklist, $user);
+  DBStaticAlly::db_ally_update_ranklist($ranklist, $user['ally_id']);
 
   return $ranklist;
 }

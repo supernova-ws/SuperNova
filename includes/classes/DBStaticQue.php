@@ -89,11 +89,27 @@ class DBStaticQue {
   }
 
   public static function db_que_planet_change_owner($planet_id, $new_owner_id) {
-    return classSupernova::$db->doUpdate("UPDATE {{que}} SET `que_player_id` = {$new_owner_id} WHERE `que_planet_id` = {$planet_id}");
+    return classSupernova::$db->doUpdateTable(
+      TABLE_QUE,
+      array(
+        'que_player_id' => $new_owner_id,
+      ),
+      array(
+        'que_planet_id' => $planet_id,
+      )
+    );
   }
 
   public static function db_que_research_change_origin($planet_id, $new_planet_id) {
-    return classSupernova::$db->doUpdate("UPDATE {{que}} SET `que_planet_id_origin` = {$new_planet_id} WHERE `que_planet_id_origin` = {$planet_id}");
+    return classSupernova::$db->doUpdateTable(
+      TABLE_QUE,
+      array(
+        'que_planet_id_origin' => $new_planet_id,
+      ),
+      array(
+        'que_planet_id_origin' => $planet_id,
+      )
+    );
   }
 
 }

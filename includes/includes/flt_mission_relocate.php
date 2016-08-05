@@ -33,8 +33,7 @@ function flt_mission_relocate($mission_data) {
     $Message .= classLocale::$lang['tech'][$ship_id] . ' - ' . $ship->count . '<br />';
   }
   DBStaticMessages::msg_send_simple_message(
-    $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT,
-    classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_stay_mess_stay'], $Message
+    $objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, classLocale::$lang['sys_mess_qg'], classLocale::$lang['sys_stay_mess_stay'], $Message
   );
 
   return $objFleet->shipsLand(false);

@@ -1156,22 +1156,51 @@ classSupernova::$gc->cacheOperator
     - Дедлочит флоты
 
 WORKING ON
-    ? doInsert
-        - doInsertComplex - доделать
-            - protected function db_field_set_create(array $field_set) {
+    + doInsert
+        + doInsertComplex - доделать
+            + DBRow::db_field_set_create(array $field_set)
+            + SnDbCacheOperator::db_ins_field_set($location_type, $field_set, $serialize = false)
         + Check doInsertSet
         + Check doInsertValuesDeprecated
             + правильные ли таблицы используются
             + правильные поля
-            - записываются ли UNSAFE строки
-                - public static function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false) {
-                    - //todo Проблемы! Иногда заходит escaped!!!!!!!!!!
-                - В UBE - тоже разобраться, что бы заходили UNESCAPED
-            - ОПЦИОНАЛЬНО - strip-tags - тэгам нехрен делать в БД
+            + записываются ли UNSAFE строки
+                + public static function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false) {
+                    + public static function msgSendFromAdmin
+                    + public static function msgSendFromPlayer
+                + В UBE - тоже разобраться, что бы заходили UNESCAPED
+
+    ? doUpdateWhere
+        + сделать protected
+        + doUpdateRowWhere
+            + Проверить, что бы везде, где нужно, был return
+            + Проверить и сделать LIMIT 1
+            + правильные ли таблицы используются
+            + правильные поля
+            + записываются ли UNSAFE строки
+        + doUpdateTable
+            + Проверить, что бы везде, где нужно, был return
+            + правильные ли таблицы используются
+            + правильные поля
+        ? doUpdateComplex
+        - doUpdateAdjust
+
+    - Добавить возврат db_affected_rows() и db_last_insert_id
+        - Insert
+        - Delete
+        - Update
+
+
     - uni_create_moon $RetValue = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET, $planet);
         - переделать на по месту генерируемый массив, а не на использование переменной $planet
 
-  // TODO - redo as callable usage with array_map/array_walk
+    - Убрать (после переделки doUpdate)
+        - sn_db_field_set_is_safe
+        - sn_db_field_set_make_safe
+        - sn_db_field_set_safe_flag_clear
+
+
+    // TODO - redo as callable usage with array_map/array_walk
         - public function safeValues($values) {
         - public function safeFields($fields) {
         - protected function safeFieldsAndValues($fields) {

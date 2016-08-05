@@ -71,7 +71,7 @@ class DBStaticFleetACS {
    * @return array|bool|mysqli_result|null
    */
   public static function db_acs_update($userToAddID, $fleetid) {
-    return classSupernova::$db->doUpdate("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};");
+    return classSupernova::$db->doUpdateComplex("UPDATE `{{aks}}` SET `eingeladen` = concat(`eingeladen`, ',{$userToAddID}') WHERE `flotten` = {$fleetid};");
   }
 
 

@@ -89,7 +89,7 @@ function eco_mrk_trader($user, $planetrow = null) {
       $qry = implode(', ', $qry);
       $table = $planetrow['id_owner'] ? 'planets' : 'users';
 
-      classSupernova::$db->doUpdate("UPDATE {{{$table}}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+      classSupernova::$db->doUpdateComplex("UPDATE {{{$table}}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
       rpg_points_change($user['id'], RPG_MARKET, -$operation_cost, "Using Black Market page {$classLocale['eco_mrk_trader']}");
       sn_db_transaction_commit();
 

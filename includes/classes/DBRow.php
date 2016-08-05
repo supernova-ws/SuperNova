@@ -232,11 +232,13 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
     if (!$this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - record db_id is not empty on ' . get_called_class() . '::dbInsert');
     }
-    $this->_dbId = $this->db_field_set_create($this->dbMakeFieldSet());
 
-    if (empty($this->_dbId)) {
+    $fieldSet = $this->dbMakeFieldSet(false);
+
+    if (!static::$db->doInsertSet(static::$_table, $fieldSet)) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - error saving record ' . get_called_class() . '::dbInsert');
     }
+    $this->_dbId = static::$db->db_insert_id();
 
     return $this->_dbId;
   }
@@ -404,26 +406,6 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
   /**
    * @param array $field_set
    *
-   * @return int|string
-   */
-  protected function db_field_set_create(array $field_set) {
-    !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
-    sn_db_field_set_safe_flag_clear($field_set);
-
-    $values = implode(',', $field_set);
-    $fields = implode(',', array_keys($field_set));
-
-    $result = 0;
-    if (classSupernova::$db->doInsertComplex("INSERT INTO `{{" . static::$_table . "}}` ({$fields}) VALUES ({$values});")) {
-      $result = classSupernova::$db->db_insert_id();
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param array $field_set
-   *
    * @return array|bool|mysqli_result|null
    */
   // TODO - UPDATE ONLY CHANGED FIELDS
@@ -450,7 +432,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
 
     return empty($set_string)
       ? true
-      : classSupernova::$db->doUpdate("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
+      : classSupernova::$db->doUpdateComplex("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
   }
 
 }

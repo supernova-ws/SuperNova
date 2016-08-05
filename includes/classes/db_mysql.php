@@ -4,6 +4,9 @@ define('DB_INSERT_PLAIN', 0);
 define('DB_INSERT_REPLACE', 1);
 define('DB_INSERT_IGNORE', 2);
 
+define('DB_RECORDS_ALL', false);
+define('DB_RECORD_ONE', true);
+
 /**
  * Created by Gorlum 01.09.2015 15:58
  */
@@ -268,6 +271,7 @@ class db_mysql {
       $prevState = $this->skipQueryCheck;
       $this->skipQueryCheck = true;
     }
+    // TODO - disable watch ??
     $result = $this->doquery($query);
     if ($skip_query_check) {
       $this->skipQueryCheck = $prevState;
@@ -306,10 +310,9 @@ class db_mysql {
     return $this->doExecute($query);
   }
 
-
   protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
     $tableSafe = $this->db_escape($table);
-    $safeFieldsAndValues = implode(',', $this->safeFieldsAndValues($fieldsAndValues));
+    $safeFieldsAndValues = implode(',', $this->safeFieldsEqualValues($fieldsAndValues));
 //    $command = $replace == DB_INSERT_REPLACE ? 'REPLACE' : 'INSERT';
 //    $command .= $replace == DB_INSERT_IGNORE ? ' IGNORE' : '';
     switch($replace) {
@@ -397,7 +400,57 @@ class db_mysql {
     return $this->doValuesDeprecated($table, $fields, $values, DB_INSERT_REPLACE);
   }
 
-  public function doUpdate($query) {
+
+  public function doUpdateComplex($query) {
+    return $this->doExecute($query);
+  }
+
+  /**
+   * Executes self-contained SQL UPDATE query
+   *
+   * Self-contained - means no params used
+   * Such queries usually used to make large amount of in-base calculations
+   *
+   * @param $query
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doUpdateSqlNoParam($query) {
+    return $this->doExecute($query);
+  }
+
+  protected function doUpdateWhere($table, $fieldsAndValues, $where = array(), $isOneRecord = DB_RECORDS_ALL) {
+    $tableSafe = $this->db_escape($table);
+    $safeFieldsEqualValues = implode(',', $this->safeFieldsEqualValues($fieldsAndValues));
+    $safeWhereAnd = implode(' AND ', $this->safeFieldsEqualValues($where));
+    $query = "UPDATE `{{{$tableSafe}}}` SET {$safeFieldsEqualValues}"
+      . (!empty($safeWhereAnd) ? " WHERE {$safeWhereAnd}" : '')
+      . ($isOneRecord == DB_RECORD_ONE ? ' LIMIT 1' : '');
+
+    return $this->doExecute($query);
+  }
+
+  public function doUpdateRowWhere($table, $fieldsAndValues, $where) {
+    return $this->doUpdateWhere($table, $fieldsAndValues, $where, DB_RECORD_ONE);
+  }
+
+  public function doUpdateTable($table, $fieldsAndValues, $where = array()) {
+    return $this->doUpdateWhere($table, $fieldsAndValues, $where, DB_RECORDS_ALL);
+  }
+
+  public function doUpdateAdjust($query) {
+    return $this->doExecute($query);
+  }
+
+
+  /**
+   * For update_old - would be deprecated
+   *
+   * @param string $query
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doUpdateOld($query) {
     return $this->doExecute($query);
   }
 
@@ -420,7 +473,7 @@ class db_mysql {
    */
   public function doDeleteWhere($table, $where, $isOneRecord = false) {
     $tableSafe = $this->db_escape($table);
-    $safeWhere = implode(' AND ', $this->safeFieldsAndValues($where));
+    $safeWhere = implode(' AND ', $this->safeFieldsEqualValues($where));
     $query = "DELETE FROM `{{{$tableSafe}}}` WHERE {$safeWhere}"
       . ($isOneRecord ? ' LIMIT 1' : '');
 
@@ -502,7 +555,7 @@ class db_mysql {
    *
    * @return array
    */
-  protected function safeFieldsAndValues($fields) {
+  protected function safeFieldsEqualValues($fields) {
     $result = array();
 
     if (!is_array($fields) || empty($fields)) {

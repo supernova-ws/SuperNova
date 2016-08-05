@@ -52,7 +52,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
       $next_id++;
       $blitz_name = 'Игрок' . $next_id;
       $blitz_password = sys_random_string(8);
-      db_blitz_reg_update_with_name_and_password($blitz_name, $blitz_password, $row, $current_round);
+      db_blitz_reg_update_with_name_and_password($blitz_name, $blitz_password, $row['id'], $current_round);
     }
   } elseif(sys_get_param_str('import_generated')) {
     // ЭТО НА БЛИЦЕ!!!
@@ -113,8 +113,7 @@ if($user['authlevel'] >= AUTH_LEVEL_DEVELOPER) {
     foreach($blitz_result as $blitz_result_data) {
       $blitz_result_data = explode(',', $blitz_result_data);
       if(count($blitz_result_data) == 5) {
-        $blitz_result_data[1] = db_escape($blitz_result_data[1]);
-        db_blitz_reg_update_results($blitz_result_data, $current_round);
+        db_blitz_reg_update_results($current_round, $blitz_result_data[1], $blitz_result_data[0], $blitz_result_data[2], $blitz_result_data[3], $blitz_result_data[4]);
       }
     }
     $blitz_result = array();

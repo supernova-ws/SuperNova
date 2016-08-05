@@ -29,7 +29,7 @@ if($user['authlevel'] >= 3) {
     $announce_time = $announce_time ? $announce_time : SN_TIME_NOW;
 
     if($mode == 'edit') {
-      DBStaticNews::db_news_update_set($announce_time, $text, $detail_url, $announce_id);
+      DBStaticNews::db_news_update_set($announce_time, $text_unsafe, $detail_url_unsafe, $announce_id);
       DBStaticSurvey::db_survey_delete_by_id($announce_id);
     } else {
       DBStaticNews::db_news_insert_set($announce_time, $text_unsafe, $detail_url_unsafe, $user['id'], $user['username']);
