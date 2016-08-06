@@ -187,46 +187,62 @@ class DBStaticPlanet {
     return classSupernova::$gc->cacheOperator->db_upd_record_by_id_DEPRECATED(LOC_PLANET, $planet_id, $set);
   }
 
-  public static function db_planet_update_set_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_type = PT_ALL, $set) {
-    if (!($set = trim($set))) {
-      return false;
+  public static function db_planet_update_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_type = PT_ALL, $set, $adjust) {
+    if (empty($set) && empty($adjust)) {
+      return;
     }
 
-    $si_galaxy = intval($ui_galaxy);
-    $si_system = intval($ui_system);
-    $si_planet = intval($ui_planet);
-    $si_planet_type = ($si_planet_type = intval($ui_planet_type)) ? "AND `planet_type` = {$si_planet_type}" : '';
-
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+    $where = array(
+      'galaxy' => $ui_galaxy,
+      'system' => $ui_system,
+      'planet' => $ui_planet,
+    );
+    if(intval($ui_planet_type)) {
+      $where['planet_type'] = $ui_planet_type;
+    }
+    classSupernova::$gc->cacheOperator->db_upd_record_list(
       LOC_PLANET,
       $set,
-      "`galaxy` = {$si_galaxy} AND `system` = {$si_system} AND `planet` = {$si_planet} {$si_planet_type}"
+      $adjust,
+      $where
     );
   }
 
-  public static function db_planet_set_by_parent($ui_parent_id, $ss_set) {
-    //if(!($si_parent_id = intval($ui_parent_id)) || !($ss_set = trim($ss_set))) return false;
-    if (!($si_parent_id = idval($ui_parent_id)) || !($ss_set = trim($ss_set))) {
-      return false;
+  /**
+   * @param int   $ui_parent_id
+   * @param array $set
+   */
+  public static function db_planet_set_by_parent($ui_parent_id, $set) {
+    if (!idval($ui_parent_id) || empty($set)) {
+      return;
     }
 
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+    classSupernova::$gc->cacheOperator->db_upd_record_list(
       LOC_PLANET,
-      $ss_set,
-      "`parent_planet` = {$si_parent_id}"
+      $set,
+      array(),
+      array(
+        'parent_planet' => $ui_parent_id,
+      )
     );
   }
 
-  public static function db_planet_set_by_owner($ui_owner_id, $ss_set) {
-    //if(!($si_owner_id = intval($ui_owner_id)) || !($ss_set = trim($ss_set))) return false;
-    if (!($si_owner_id = idval($ui_owner_id)) || !($ss_set = trim($ss_set))) {
-      return false;
+  /**
+   * @param $ui_owner_id
+   * @param array $set
+   */
+  public static function db_planet_set_by_owner($ui_owner_id, $set) {
+    if (!idval($ui_owner_id) || empty($set)) {
+      return;
     }
 
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+    classSupernova::$gc->cacheOperator->db_upd_record_list(
       LOC_PLANET,
-      $ss_set,
-      "`id_owner` = {$si_owner_id}"
+      $set,
+      array(),
+      array(
+        'id_owner' => $ui_owner_id
+      )
     );
   }
 

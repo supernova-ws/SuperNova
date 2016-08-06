@@ -24,7 +24,12 @@ function sn_options_model() {
   if(sys_get_param_str('mode') == 'change') {
     if($user['authlevel'] > 0) {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
-      DBStaticPlanet::db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
+      DBStaticPlanet::db_planet_set_by_owner(
+        $user['id'],
+        array(
+          'id_level' => $planet_protection
+        )
+      );
       DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
     }

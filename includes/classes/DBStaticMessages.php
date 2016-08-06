@@ -143,7 +143,13 @@ class DBStaticMessages {
         $insert_values
       );
     }
-    DBStaticUser::db_user_list_set_mass_mail($owners, "`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1");
+    DBStaticUser::db_user_list_set_mass_mail(
+      $owners,
+      array(
+        $message_class_name       => +1,
+        $message_class_name_total => +1,
+      )
+    );
 
     if (in_array($user['id'], $owners) || $owners[0] == '*') {
       $user[$message_class_name]++;

@@ -322,23 +322,29 @@ class SnDbCachedOperator {
 
 
   /**
-   * @param int    $location_type
-   * @param string $set
-   * @param string $condition
+   * @param int   $location_type
+   * @param array $set
+   * @param array $adjust
+   *
+   * @param array $condition
    *
    * @return array|bool|mysqli_result|null
    */
-  public function db_upd_record_list($location_type, $set, $condition) {
-    if (!($set = trim($set))) {
+  public function db_upd_record_list($location_type, $set, $adjust, $condition) {
+    if (empty($set) && empty($adjust)) {
       return false;
     }
 
-    $condition = trim($condition);
-    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+    $result = $this->db->doUpdateTableAdjust(
+      static::$location_info[$location_type][P_TABLE_NAME],
+      $set,
+      $adjust,
+      $condition
+    );
 
-    if ($result = $this->db->doUpdateComplex("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
-
-      if ($this->db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
+    if ($result) {
+      // Обновляем данные только если ряд был затронут
+      if ($this->db->db_affected_rows()) {
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         // TODO - когда будет структурированный $condition и $set - перепаковывать данные
         $this->snCache->cache_clear($location_type, true);
@@ -349,6 +355,10 @@ class SnDbCachedOperator {
   }
 
   /**
+   * This calls is DANGER 'cause $condition contains direct variable injections and should be rewrote
+   *
+   * This call just a proxy to easier to locate code for rewrite
+   *
    * @param int   $location_type
    * @param array $set
    * @param array $adjust
@@ -356,31 +366,10 @@ class SnDbCachedOperator {
    * @param array $condition
    *
    * @return array|bool|mysqli_result|null
+   * @deprecated
    */
-  public function db_upd_record_list_NEW($location_type, $set, $adjust, $condition) {
-    if (!($set = trim($set))) {
-      return false;
-    }
-
-    $condition = trim($condition);
-    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-
-    $result = $this->db->doUpdateTableAdjust(
-      $table_name,
-      $set,
-      $adjust,
-      $condition
-    );
-    if ($result) {
-
-      if ($this->db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
-        // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
-        // TODO - когда будет структурированный $condition и $set - перепаковывать данные
-        $this->snCache->cache_clear($location_type, true);
-      }
-    }
-
-    return $result;
+  public function db_upd_record_list_DANGER($location_type, $set, $adjust, $condition) {
+    return $this->db_upd_record_list($location_type, $set, $adjust, $condition);
   }
 
   /**

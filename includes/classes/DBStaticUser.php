@@ -273,19 +273,41 @@ class DBStaticUser extends DBStaticRecord {
   }
 
 
-  public static function db_user_list_set_mass_mail(&$owners_list, $set) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+  /**
+   * @param array $owners_list
+   * @param array $adjust
+   */
+  public static function db_user_list_set_mass_mail(&$owners_list, $adjust) {
+    $where = array();
+    if (!empty($owners_list)) {
+      $where[] = '`id` IN (' . implode(',', $owners_list) . ')';
+    }
+
+    // Danger - 'cause if IN clause
+    classSupernova::$gc->cacheOperator->db_upd_record_list_DANGER(
       LOC_USER,
-      $set,
-      !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : ''
+      array(),
+      $adjust,
+      $where
     );
   }
 
-  public static function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+  /**
+   * @param $ally_id
+   * @param $ally_rank_id
+   * @param array $set
+   * @param array $adjust
+   */
+  public static function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set, $adjust) {
+    classSupernova::$gc->cacheOperator->db_upd_record_list_DANGER(
       LOC_USER,
       $set,
-      "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}"
+      $adjust,
+      array(
+        'ally_id' => $ally_id,
+        // TODO - DANGER !!!
+        "`ally_rank_id` >= {$ally_rank_id}"
+      )
     );
   }
 
@@ -298,7 +320,7 @@ class DBStaticUser extends DBStaticRecord {
    * @deprecated
    */
   public static function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_list_NEW(
+    return classSupernova::$gc->cacheOperator->db_upd_record_list(
       LOC_USER,
       array(
         'ally_rank_id' => $i,

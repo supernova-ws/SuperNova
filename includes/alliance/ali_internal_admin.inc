@@ -89,7 +89,17 @@ if(sys_get_param_str('isSaveOptions')) {
   }
   sn_db_transaction_start();
   DBStaticAlly::db_ally_delete($ally['id']);
-  DBStaticUser::db_user_list_set_by_ally_and_rank($ally['id'], -20, "`ally_id` = null, `ally_name` = null, `ally_rank_id` = 0, `ally_register_time` = 0");
+  DBStaticUser::db_user_list_set_by_ally_and_rank(
+    $ally['id'],
+    -20,
+    array(
+      'ally_id' => null,
+      'ally_name' => null,
+      'ally_rank_id' => 0,
+      'ally_register_time' => 0,
+    ),
+    array()
+  );
   sn_db_transaction_commit();
   sys_redirect('alliance.php');
 };

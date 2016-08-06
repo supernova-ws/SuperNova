@@ -1162,21 +1162,18 @@ classSupernova::$gc->cacheOperator
 // TODO - fleets
     - Дедлочит флоты
 
-WORKING ON
-    + doInsert
-        + doInsertComplex - доделать
-            + DBRow::db_field_set_create(array $field_set)
-            + SnDbCacheOperator::db_ins_field_set($location_type, $field_set, $serialize = false)
-        + Check doInsertSet
-        + Check doInsertValuesDeprecated
-            + правильные ли таблицы используются
-            + правильные поля
-            + записываются ли UNSAFE строки
-                + public static function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false) {
-                    + public static function msgSendFromAdmin
-                    + public static function msgSendFromPlayer
-                + В UBE - тоже разобраться, что бы заходили UNESCAPED
+- Работа с count()
+    - https://www.percona.com/blog/2007/04/10/count-vs-countcol/
 
+- Сделать инициализацию статических полей classSupernova через контейнер
+
+WORKING ON
+    - Пересмотреть вызовы update-insert-replace-delete
+        - и там где в $where есть опасные конструкции - заменить на отдельные вызовы
+        - опасные конструкции - там, где не указано поле, а берется условие целиком
+    - DBQuery
+        - добавить в код
+    + doInsert
     ? doUpdateWhere
         + сделать protected
         + doUpdateRowWhere
@@ -1185,9 +1182,7 @@ WORKING ON
         + doUpdateTableAdjust
         ? doUpdateComplex
             + DBStaticAlly::db_ally_update_by_changeset($ally_changeset, $ally)
-            ? SnDbCacheOperator::db_upd_record_list($location_type, $set, $condition)
-                - DBStaticPlanet::db_planet_set_by_owner($ui_owner_id, $ss_set)
-                - позаменять на db_upd_record_by_id - где можно
+            + SnDbCacheOperator::db_upd_record_list($location_type, $set, $condition)
             ? DBRow::db_field_update(array $field_set)
             // TODO - DBRow::dbMakeFieldSet($isUpdate = false) - РАБОТАЕТ НЕПРАВИЛЬНО ПРИ $isUpdate!!!!!!!!!
             - SnDbCacheOperator::db_upd_record_by_id($location_type, $record_id, $set)

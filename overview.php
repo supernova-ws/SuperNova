@@ -131,8 +131,16 @@ switch($mode = sys_get_param_str('mode')) {
           array(&classLocale::$lang['ov_teleport_log_record'], $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow), uni_render_coordinates($new_coordinates))
         );
         $planet_teleport_next = SN_TIME_NOW + classSupernova::$config->planet_teleport_timeout;
-        DBStaticPlanet::db_planet_update_set_by_gspt($planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
-          "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}, planet_teleport_next = {$planet_teleport_next}");
+        DBStaticPlanet::db_planet_update_by_gspt(
+          $planetrow['galaxy'], $planetrow['system'], $planetrow['planet'], PT_ALL,
+          array(
+            'galaxy'               => $new_coordinates['galaxy'],
+            'system'               => $new_coordinates['system'],
+            'planet'               => $new_coordinates['planet'],
+            'planet_teleport_next' => $planet_teleport_next,
+          ),
+          array()
+        );
 
         if($planetrow['id'] == $user['id_planet']) {
           DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
@@ -160,7 +168,13 @@ switch($mode = sys_get_param_str('mode')) {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id) {
           $destroyed = SN_TIME_NOW + 60 * 60 * 24;
           DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
-          DBStaticPlanet::db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
+          DBStaticPlanet::db_planet_set_by_parent(
+            $user['current_planet'],
+            array(
+              'destruyed' => $destroyed,
+              'id_owner'  => 0,
+            )
+          );
           DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], '`current_planet` = `id_planet`');
           message(classLocale::$lang['ov_delete_ok'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
         } else {

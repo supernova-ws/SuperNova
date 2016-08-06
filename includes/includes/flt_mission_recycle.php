@@ -70,8 +70,13 @@ function flt_mission_recycle($mission_data) {
     }
   }
 
-  DBStaticPlanet::db_planet_update_set_by_gspt($destination_planet['galaxy'], $destination_planet['system'], $destination_planet['planet'], PT_PLANET,
-    "`debris_metal` = `debris_metal` - '{$resources_recycled[RES_METAL]}', `debris_crystal` = `debris_crystal` - '{$resources_recycled[RES_CRYSTAL]}'"
+  DBStaticPlanet::db_planet_update_by_gspt(
+    $destination_planet['galaxy'], $destination_planet['system'], $destination_planet['planet'], PT_PLANET,
+    array(),
+    array(
+      'debris_metal'   => -$resources_recycled[RES_METAL],
+      'debris_crystal' => -$resources_recycled[RES_CRYSTAL],
+    )
   );
 
   $Message = sprintf(

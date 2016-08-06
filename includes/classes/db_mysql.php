@@ -462,6 +462,23 @@ class db_mysql {
     return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORDS_ALL);
   }
 
+  /**
+   * In this call means that used some conditions in $where different than field = value
+   *
+   * It should be rewrote later
+   *
+   * @param $table
+   * @param $fieldsSet
+   * @param $fieldsAdjust
+   * @param $where
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  public function doUpdateTableAdjustDanger($table, $fieldsSet, $fieldsAdjust, $where) {
+    return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORDS_ALL);
+  }
+
   public function doUpdateAdjustDeprecated($query) {
     return $this->doExecute($query);
   }

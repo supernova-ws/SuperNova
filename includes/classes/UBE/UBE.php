@@ -324,8 +324,13 @@ pdie();
 
     // Обновляем поле обломков на планете
     if(!$this->is_admin_in_combat && $this->debris->debris_total() > 0) {
-      DBStaticPlanet::db_planet_update_set_by_gspt($this->ube_planet_info[PLANET_GALAXY], $this->ube_planet_info[PLANET_SYSTEM], $this->ube_planet_info[PLANET_PLANET], PT_PLANET,
-        "`debris_metal` = `debris_metal` + " . $this->debris->debris_get_resource(RES_METAL) . ", `debris_crystal` = `debris_crystal` + " . $this->debris->debris_get_resource(RES_CRYSTAL)
+      DBStaticPlanet::db_planet_update_by_gspt(
+        $this->ube_planet_info[PLANET_GALAXY], $this->ube_planet_info[PLANET_SYSTEM], $this->ube_planet_info[PLANET_PLANET], PT_PLANET,
+        array(),
+        array(
+          'debris_metal'   => +$this->debris->debris_get_resource(RES_METAL),
+          'debris_crystal' => +$this->debris->debris_get_resource(RES_CRYSTAL)
+        )
       );
     }
 

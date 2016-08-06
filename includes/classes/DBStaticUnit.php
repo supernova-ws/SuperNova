@@ -198,27 +198,28 @@ class DBStaticUnit {
 
     $temp = DBStaticUnit::db_get_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
     if (!empty($temp['unit_id'])) {
-      $result = (bool)classSupernova::$gc->cacheOperator->db_upd_record_list_NEW(
+      $result = (bool)classSupernova::$gc->cacheOperator->db_upd_record_by_id(
         LOC_UNIT,
+        $temp['unit_id'],
         array(),
         array(
           'unit_level' => $unit_value
-        ),
-        array(
-          'unit_id' => $temp['unit_id'],
         )
       );
     } else {
       $locationIdRendered = $unit_location == LOC_USER ? $user['id'] : $planet_id;
       $unitType = get_unit_param($unit_id, P_UNIT_TYPE);
-      $result = (bool)classSupernova::$gc->cacheOperator->db_ins_record(LOC_UNIT, array(
-        'unit_player_id'     => $user['id'],
-        'unit_location_type' => (int)$unit_location,
-        'unit_location_id'   => $locationIdRendered,
-        'unit_type'          => (int)$unitType,
-        'unit_snid'          => (int)$unit_id,
-        'unit_level'         => (float)$unit_value,
-      ));
+      $result = (bool)classSupernova::$gc->cacheOperator->db_ins_record(
+        LOC_UNIT,
+        array(
+          'unit_player_id'     => $user['id'],
+          'unit_location_type' => (int)$unit_location,
+          'unit_location_id'   => $locationIdRendered,
+          'unit_type'          => (int)$unitType,
+          'unit_snid'          => (int)$unit_id,
+          'unit_level'         => (float)$unit_value,
+        )
+      );
     }
 
     return $result;
