@@ -274,15 +274,41 @@ class DBStaticUser extends DBStaticRecord {
 
 
   public static function db_user_list_set_mass_mail(&$owners_list, $set) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_USER, $set, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '');
+    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+      LOC_USER,
+      $set,
+      !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : ''
+    );
   }
 
   public static function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_USER, $set, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}");
+    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+      LOC_USER,
+      $set,
+      "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}"
+    );
   }
 
+  /**
+   * @param $ally_id
+   * @param $i
+   * @param $rank_id
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
   public static function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_USER, "`ally_rank_id` = {$i}", "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}");
+    return classSupernova::$gc->cacheOperator->db_upd_record_list_NEW(
+      LOC_USER,
+      array(
+        'ally_rank_id' => $i,
+      ),
+      array(),
+      array(
+        'ally_id'      => $ally_id,
+        'ally_rank_id' => $rank_id,
+      )
+    );
   }
 
   /**
@@ -314,6 +340,9 @@ class DBStaticUser extends DBStaticRecord {
   /**
    * @param array $playerRowFieldChanges - array of $resourceId => $amount
    * @param int   $userId
+   *
+   * @see DBStaticPlanet::db_planet_update_resources
+   * // TODO - DEDUPLICATE
    */
   public static function db_user_update_resources($playerRowFieldChanges, $userId) {
     $fields = array();

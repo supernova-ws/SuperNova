@@ -368,7 +368,7 @@ class Account {
       $metamatter_total_delta = $metamatter > 0 ? $metamatter : 0;
 
       $classConfig = classSupernova::$config;
-      $result = $this->db->doUpdateComplex(
+      $result = $this->db->doUpdateReallyComplex(
         "UPDATE {{account}}
         SET
           `account_metamatter` = `account_metamatter` + '{$metamatter}'" .

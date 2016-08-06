@@ -476,11 +476,11 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
     if(in_array($unit_id, $sn_group_fleet)) {
       DBStaticUnit::dbUpdateOrInsertUnit($unit_id, -$amount, $user, $from['id']);
     } elseif(in_array($unit_id, $sn_group_resources_loot)) {
-      $planetRowFieldChanges[pname_resource_name($unit_id)] -= $amount;
+      $planetRowFieldChanges[$unit_id] -= $amount;
     }
   }
 
-  $planetRowFieldChanges[pname_resource_name(RES_DEUTERIUM)] -= $travel_data['consumption'];
+  $planetRowFieldChanges[RES_DEUTERIUM] -= $travel_data['consumption'];
   DBStaticPlanet::db_planet_update_resources($planetRowFieldChanges, $from['id']);
 
 

@@ -1180,28 +1180,21 @@ WORKING ON
     ? doUpdateWhere
         + сделать protected
         + doUpdateRowWhere
-            + Проверить, что бы везде, где нужно, был return
-            + Проверить и сделать LIMIT 1
-            + правильные ли таблицы используются
-            + правильные поля
-            + записываются ли UNSAFE строки
         + doUpdateTable
-            + Проверить, что бы везде, где нужно, был return
-            + правильные ли таблицы используются
-            + правильные поля
         + doUpdateRowAdjust
         + doUpdateTableAdjust
         ? doUpdateComplex
+            + DBStaticAlly::db_ally_update_by_changeset($ally_changeset, $ally)
+            ? SnDbCacheOperator::db_upd_record_list($location_type, $set, $condition)
+                - DBStaticPlanet::db_planet_set_by_owner($ui_owner_id, $ss_set)
+                - позаменять на db_upd_record_by_id - где можно
             ? DBRow::db_field_update(array $field_set)
             // TODO - DBRow::dbMakeFieldSet($isUpdate = false) - РАБОТАЕТ НЕПРАВИЛЬНО ПРИ $isUpdate!!!!!!!!!
-            ? DBStaticAlly::db_ally_update_by_changeset($ally_changeset, $ally)
-            - DBStaticACS::db_acs_update($userToAddID, $fleetid)
-            - DBStaticPlanet::db_planet_update_resources($planetRowFieldChanges, $planetId)
-            - SnDbCacheOperator::db_upd_record_list($location_type, $set, $condition)
             - SnDbCacheOperator::db_upd_record_by_id($location_type, $record_id, $set)
                 + DBStaticUnit::db_unit_set_by_id
                 + GLOBAL::db_change_units_perform($adjust, $location, $object_id)
                     + db_change_units
+                + DBStaticPlanet::db_planet_update_resources($planetRowFieldChanges, $planetId)
                 - DBStaticPlanet::db_planet_update_set_by_id($planet_id, $set)
                 - DBStaticUser::db_user_set_by_id($user_id, $set)
 

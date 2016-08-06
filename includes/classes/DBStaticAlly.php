@@ -157,14 +157,6 @@ class DBStaticAlly {
 
 
   /**
-   * @param $ally_changeset
-   * @param $ally
-   */
-  public static function db_ally_update_by_changeset($ally_changeset, $ally) {
-    classSupernova::$db->doUpdateComplex("UPDATE {{alliance}} SET " . implode(',', $ally_changeset) . " WHERE `id`='{$ally['id']}' LIMIT 1;");
-  }
-
-  /**
    * @param $text_unsafe
    * @param $allyId
    * @param $fieldNameUnsafe

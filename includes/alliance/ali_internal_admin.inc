@@ -23,42 +23,46 @@ $allyTextID = ($allyTextID < 1 || $allyTextID > 3) ? 1 : $allyTextID;
 if(sys_get_param_str('isSaveOptions')) {
   require_once('includes/includes/sys_avatar.php');
 
+  $fieldChange = array();
+  if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) != $ally['ally_tag']) {
+    $fieldChange['ally_tag'] = $new_tag;
+    DBStaticUser::db_user_set_by_id_DEPRECATED($ally['ally_user_id'], "`username`='[" . db_escape($new_tag) . "]'");
+  }
+  if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) != $ally['ally_name']) {
+    $fieldChange['ally_name'] = $new_name;
+  }
+
+  if(($new_owner_rank = sys_get_param_str_unsafe('owner_range', $ally['ally_owner_range'])) != $ally['ally_owner_range']) {
+    $fieldChange['ally_owner_range'] = $new_owner_rank;
+  }
+
+  if(($new_web = sys_get_param_str_unsafe('web', $ally['ally_web'])) != $ally['ally_web']) {
+    $fieldChange['ally_web'] = $new_web;
+  }
+
+  if(($new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow'])) != $ally['ally_request_notallow']) {
+    $fieldChange['ally_request_notallow'] = sys_get_param_int('request_notallow', $ally['ally_request_notallow']);
+  }
+
   $new_image = $ally['ally_image'];
   $avatar_upload_result = sys_avatar_upload($ally['id'], $new_image, 'ally');
   $template->assign_vars(array(
     'AVATAR_UPLOAD_STATUS'  => $avatar_upload_result['STATUS'],
     'AVATAR_UPLOAD_MESSAGE' => $avatar_upload_result['MESSAGE'],
   ));
-//  $template->assign_block_vars('result', $avatar_upload_result);
-
-  $ally_changeset = array();
-  if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
-    $new_tag = db_escape($new_tag);
-    $ally_changeset[] = "`ally_tag`='{$new_tag}'";
-    DBStaticUser::db_user_set_by_id_DEPRECATED($ally['ally_user_id'], "`username`='[{$new_tag}]'");
-  }
-  if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) && $new_name != $ally['ally_name']) {
-    $new_name = db_escape($new_name);
-    $ally_changeset[] = "`ally_name`='{$new_name}'";
-  }
-
-  if(($new_owner_rank = sys_get_param_str_unsafe('owner_range', $ally['ally_owner_range'])) && $new_owner_rank != $ally['ally_owner_range']) {
-    $new_owner_rank = db_escape($new_owner_rank);
-    $ally_changeset[] = "`ally_owner_range` = '{$new_owner_rank}'";
-  }
-  if(($new_web = sys_get_param_str_unsafe('web', $ally['ally_web'])) && $new_web != $ally['ally_web']) {
-    $new_web = db_escape($new_web);
-    $ally_changeset[] = "`ally_web` = '{$new_web}'";
-  }
-  $new_request = sys_get_param_int('request_notallow', $ally['ally_request_notallow']);
-  $ally_changeset[] = "`ally_request_notallow` = '{$new_request}'";
   if($new_image != $ally['ally_image']) {
-    $new_image = intval($new_image);
-    $ally_changeset[] = "`ally_image` = '{$new_image}'";
+    $fieldChange['ally_image'] = $new_image;
   }
 
-  if(!empty($ally_changeset)) {
-    DBStaticAlly::db_ally_update_by_changeset($ally_changeset, $ally);
+  if(!empty($fieldChange)) {
+    classSupernova::$db->doUpdateRowSet(
+      TABLE_ALLIANCE,
+      $fieldChange,
+      array(
+        'id' => $ally['id'],
+      )
+    );
+
     sys_redirect('alliance.php?mode=admin&edit=ally');
   }
 } elseif(sys_get_param_str('isSaveText')) {

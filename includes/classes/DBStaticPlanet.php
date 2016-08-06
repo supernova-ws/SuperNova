@@ -151,14 +151,24 @@ class DBStaticPlanet {
   /**
    * @param array $planetRowFieldChanges - array of $resourceId => $amount
    * @param int   $planetId
+   *
+   * @see DBStaticUser::db_user_update_resources
+   * // TODO - DEDUPLICATE
    */
   public static function db_planet_update_resources($planetRowFieldChanges, $planetId) {
-    foreach ($planetRowFieldChanges as $resourceId => &$value) {
-      $fieldName = pname_resource_name($resourceId);
-      $value = "{$fieldName} = {$fieldName} + ('{$value}')";
+    $fields = array();
+    foreach ($planetRowFieldChanges as $resourceId => $value) {
+      $fields[pname_resource_name($resourceId)] = $value;
     }
-    if ($query = implode(',', $planetRowFieldChanges)) {
-      classSupernova::$gc->db->doUpdateComplex("UPDATE `{{planets}}` SET {$query} WHERE id = {$planetId}");
+    if(!empty($fields)) {
+      classSupernova::$gc->db->doUpdateRowAdjust(
+        TABLE_PLANETS,
+        array(),
+        $fields,
+        array(
+          'id' => $planetId
+        )
+      );
     }
   }
 
@@ -187,7 +197,11 @@ class DBStaticPlanet {
     $si_planet = intval($ui_planet);
     $si_planet_type = ($si_planet_type = intval($ui_planet_type)) ? "AND `planet_type` = {$si_planet_type}" : '';
 
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_PLANET, $set, "`galaxy` = {$si_galaxy} AND `system` = {$si_system} AND `planet` = {$si_planet} {$si_planet_type}");
+    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+      LOC_PLANET,
+      $set,
+      "`galaxy` = {$si_galaxy} AND `system` = {$si_system} AND `planet` = {$si_planet} {$si_planet_type}"
+    );
   }
 
   public static function db_planet_set_by_parent($ui_parent_id, $ss_set) {
@@ -196,7 +210,11 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_PLANET, $ss_set, "`parent_planet` = {$si_parent_id}");
+    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+      LOC_PLANET,
+      $ss_set,
+      "`parent_planet` = {$si_parent_id}"
+    );
   }
 
   public static function db_planet_set_by_owner($ui_owner_id, $ss_set) {
@@ -205,7 +223,11 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_PLANET, $ss_set, "`id_owner` = {$si_owner_id}");
+    return classSupernova::$gc->cacheOperator->db_upd_record_list(
+      LOC_PLANET,
+      $ss_set,
+      "`id_owner` = {$si_owner_id}"
+    );
   }
 
 

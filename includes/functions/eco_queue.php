@@ -620,10 +620,15 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     if($que_item['que_unit_amount'] <= 0) {
       DBStaticQue::db_que_delete_by_id($que_item['que_id']);
     } else {
-      classSupernova::$gc->cacheOperator->db_upd_record_list(
+      classSupernova::$gc->cacheOperator->db_upd_record_by_id(
         LOC_QUE,
-        "`que_unit_amount` = `que_unit_amount` - ({$unit_processed}), `que_time_left` = {$que_item['que_time_left']}",
-        "`que_id` = {$que_item['que_id']}"
+        $que_item['que_id'],
+        array(
+          'que_time_left' => $que_item['que_time_left']
+        ),
+        array(
+          'que_unit_amount' => -$unit_processed
+        )
       );
     }
 
@@ -637,10 +642,24 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     foreach($planet_data as $planet_id => $time_on_planet) {
       if($planet_id) {
         // update planet
-        classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_PLANET, "`que_processed` = {$on_time}", "id = {$planet_id}");
+        classSupernova::$gc->cacheOperator->db_upd_record_by_id(
+          LOC_PLANET,
+          $planet_id,
+          array(
+            'que_processed' => $on_time
+          ),
+          array()
+        );
       } else {
         // update user
-        classSupernova::$gc->cacheOperator->db_upd_record_list(LOC_USER, "`que_processed` = {$on_time}", "id = {$player_id}");
+        classSupernova::$gc->cacheOperator->db_upd_record_by_id(
+          LOC_USER,
+          $player_id,
+          array(
+            'que_processed' => $on_time
+          ),
+          array()
+        );
       }
 
       if(is_array($unit_changes[$player_id][$planet_id])) {

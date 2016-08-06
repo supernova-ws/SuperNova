@@ -405,6 +405,10 @@ class db_mysql {
     return $this->doExecute($query);
   }
 
+  public function doUpdateReallyComplex($query) {
+    return $this->doExecute($query);
+  }
+
   /**
    * Executes self-contained SQL UPDATE query
    *

@@ -351,6 +351,41 @@ class SnDbCachedOperator {
   /**
    * @param int   $location_type
    * @param array $set
+   * @param array $adjust
+   *
+   * @param array $condition
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function db_upd_record_list_NEW($location_type, $set, $adjust, $condition) {
+    if (!($set = trim($set))) {
+      return false;
+    }
+
+    $condition = trim($condition);
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+
+    $result = $this->db->doUpdateTableAdjust(
+      $table_name,
+      $set,
+      $adjust,
+      $condition
+    );
+    if ($result) {
+
+      if ($this->db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
+        // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
+        // TODO - когда будет структурированный $condition и $set - перепаковывать данные
+        $this->snCache->cache_clear($location_type, true);
+      }
+    }
+
+    return $result;
+  }
+
+  /**
+   * @param int   $location_type
+   * @param array $set
    *
    * @return array|bool|false|mysqli_result|null
    */
