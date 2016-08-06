@@ -419,28 +419,49 @@ class db_mysql {
     return $this->doExecute($query);
   }
 
-  protected function doUpdateWhere($table, $fieldsAndValues, $where = array(), $isOneRecord = DB_RECORDS_ALL) {
+  protected function doUpdateWhere($table, $fieldsSet, $fieldsAdjust = array(), $where = array(), $isOneRecord = DB_RECORDS_ALL) {
     $tableSafe = $this->db_escape($table);
-    $safeFieldsEqualValues = implode(',', $this->safeFieldsEqualValues($fieldsAndValues));
+
+    $safeFields = array();
+    // Adjusts overwritten by Sets
+    if($safeAdjust = implode(',', $this->safeFieldsAdjust($fieldsAdjust))) {
+      $safeFields[] = &$safeAdjust;
+    }
+    if($safeFieldsEqualValues = implode(',', $this->safeFieldsEqualValues($fieldsSet))) {
+      $safeFields[] = &$safeFieldsEqualValues;
+    }
+    $safeFieldsString = implode(',', $safeFields);
+
+    // TODO - Exception of $safeFieldsString
+
     $safeWhereAnd = implode(' AND ', $this->safeFieldsEqualValues($where));
-    $query = "UPDATE `{{{$tableSafe}}}` SET {$safeFieldsEqualValues}"
+    $query = "UPDATE `{{{$tableSafe}}}` SET {$safeFieldsString}"
       . (!empty($safeWhereAnd) ? " WHERE {$safeWhereAnd}" : '')
       . ($isOneRecord == DB_RECORD_ONE ? ' LIMIT 1' : '');
 
     return $this->doExecute($query);
   }
 
-  public function doUpdateRowWhere($table, $fieldsAndValues, $where) {
-    return $this->doUpdateWhere($table, $fieldsAndValues, $where, DB_RECORD_ONE);
+  public function doUpdateRowSet($table, $fieldsAndValues, $where) {
+    return $this->doUpdateWhere($table, $fieldsAndValues, array(), $where, DB_RECORD_ONE);
   }
 
-  public function doUpdateTable($table, $fieldsAndValues, $where = array()) {
-    return $this->doUpdateWhere($table, $fieldsAndValues, $where, DB_RECORDS_ALL);
+  public function doUpdateTableSet($table, $fieldsAndValues, $where = array()) {
+    return $this->doUpdateWhere($table, $fieldsAndValues, array(), $where, DB_RECORDS_ALL);
   }
 
-  public function doUpdateAdjust($query) {
+  public function doUpdateRowAdjust($table, $fieldsSet, $fieldsAdjust, $where) {
+    return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORD_ONE);
+  }
+
+  public function doUpdateTableAdjust($table, $fieldsSet, $fieldsAdjust, $where) {
+    return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORDS_ALL);
+  }
+
+  public function doUpdateAdjustDeprecated($query) {
     return $this->doExecute($query);
   }
+
 
 
   /**
@@ -449,6 +470,7 @@ class db_mysql {
    * @param string $query
    *
    * @return array|bool|mysqli_result|null
+   * @deprecated
    */
   public function doUpdateOld($query) {
     return $this->doExecute($query);
@@ -568,6 +590,35 @@ class db_mysql {
         $result[$fieldName] = $fieldValue;
       } else {
         $result[$fieldName] = "`{$fieldName}` = " . $this->castAsDbValue($fieldValue);
+      }
+    }
+
+    return $result;
+  }
+
+  /**
+   * Make fields adjustment safe
+   *
+   * Convert "key => value" pair to string "`key` = `key` + (value)"
+   * Supports expressions - expression index should be strictly integer!
+   *
+   * @param array $fields - array of pair $fieldName => $fieldValue
+   *
+   * @return array
+   */
+  protected function safeFieldsAdjust($fields) {
+    $result = array();
+
+    if (!is_array($fields) || empty($fields)) {
+      return $result;
+    }
+
+    foreach ($fields as $fieldName => $fieldValue) {
+      // Integer $fieldName means "leave as is" - for expressions and already processed fields
+      if (is_int($fieldName)) {
+        $result[$fieldName] = $fieldValue;
+      } else {
+        $result[$fieldName] = "`{$fieldName}` = `{$fieldName}` + (" . $this->castAsDbValue($fieldValue) . ")";
       }
     }
 

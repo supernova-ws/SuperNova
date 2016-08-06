@@ -131,7 +131,7 @@ class DBStaticUnit {
 
 
   public static function db_unit_change_owner($location_type, $location_id, $new_owner_id) {
-    classSupernova::$db->doUpdateTable(
+    classSupernova::$db->doUpdateTableSet(
       TABLE_UNIT,
       array(
         'unit_player_id' => $new_owner_id,
@@ -154,7 +154,7 @@ class DBStaticUnit {
 
   public static function db_unit_list_admin_set_mercenaries_expire_time($default_length) {
     return
-      classSupernova::$db->doUpdateTable(
+      classSupernova::$db->doUpdateTableSet(
         TABLE_UNIT,
         array(
           'unit_time_start'  => date(FMT_DATE_TIME_SQL, SN_TIME_NOW),

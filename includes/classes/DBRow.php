@@ -252,7 +252,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
     if ($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbUpdate');
     }
-    $this->db_field_update($this->dbMakeFieldSet(true));
+    $this->db_field_update($this->dbMakeFieldUpdate());
   }
 
   /**
@@ -285,17 +285,6 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
   abstract public function isEmpty();
 
   // Other Methods *****************************************************************************************************
-
-//  /**
-//   * Resets object to zero state
-//   * @see DBRow::dbLoad()
-//   *
-//   * @return void
-//   */
-//  protected function _reset() {
-//    $this->dbRowParse(array());
-//  }
-
   /**
    * Парсит запись из БД в поля объекта
    *
@@ -359,8 +348,45 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
         // TODO - differ how treated conversion to string for changed and adjusted properties
         $value = $this->propertiesAdjusted[$property_name];
       } else {
+        // TODO - ОШИБКА!!!!!!!!!!!!!!!!
         // Getting property value. Optionally getter is invoked by __get()
         $value = $this->{$property_name};
+      }
+
+      // If need some conversion to DB format - doing it
+      !empty($property_data[P_FUNC_OUTPUT]) && is_callable($property_data[P_FUNC_OUTPUT])
+        ? $value = call_user_func($property_data[P_FUNC_OUTPUT], $value) : false;
+      !empty($property_data[P_METHOD_OUTPUT]) && is_callable(array($this, $property_data[P_METHOD_OUTPUT]))
+        ? $value = call_user_func(array($this, $property_data[P_METHOD_OUTPUT]), $value) : false;
+
+      $array[$property_data[P_DB_FIELD]] = $value;
+    }
+
+    return $array;
+  }
+
+  /**
+   * Делает из свойств класса массив db_field_name => db_field_value
+   * @return array
+   * @deprecated
+   */
+  protected function dbMakeFieldUpdate() {
+    $array = array();
+    foreach (static::$_properties as $property_name => &$property_data) {
+      // TODO - on isUpdate add only changed/adjusted properties
+      // Skipping properties which have no corresponding field in DB
+      if (empty($property_data[P_DB_FIELD])) {
+        continue;
+      }
+
+      // Checking - is property was adjusted or changed
+      if (array_key_exists($property_name, $this->propertiesAdjusted)) {
+        // For adjusted property - take value from propertiesAdjusted array
+        // TODO - differ how treated conversion to string for changed and adjusted properties
+        $value = $this->propertiesAdjusted[$property_name];
+      } else {
+        // Skipping not updated properties
+        continue;
       }
 
       // If need some conversion to DB format - doing it
@@ -407,32 +433,32 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
    * @param array $field_set
    *
    * @return array|bool|mysqli_result|null
+   * @deprecated
    */
-  // TODO - UPDATE ONLY CHANGED FIELDS
   protected function db_field_update(array $field_set) {
-    !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
-    sn_db_field_set_safe_flag_clear($field_set);
-
     $set = array();
     foreach ($field_set as $fieldName => $value) {
       if (!($changedProperty = $this->isFieldChanged($fieldName))) {
         continue;
       }
 
-      // TODO - separate sets from adjusts
       if (array_key_exists($changedProperty, $this->propertiesAdjusted)) {
-        $value = "`{$fieldName}` + ($value)"; // braces for negative values
+        $set[$fieldName] = $value;
       }
-
-      $set[] = "`{$fieldName}` = $value";
     }
-    $set_string = implode(',', $set);
 
-//pdump($set_string, get_called_class());
-
-    return empty($set_string)
-      ? true
-      : classSupernova::$db->doUpdateComplex("UPDATE `{{" . static::$_table . "}}` SET {$set_string} WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId);
+    if(empty($set)) {
+      $theResult = true;
+    } else {
+      $theResult = classSupernova::$db->doUpdateRowAdjust(
+        static::$_table,
+        array(),
+        $field_set,
+        array(
+          static::$_dbIdFieldName => $this->_dbId,
+        ));
+    }
+    return $theResult;
   }
 
 }

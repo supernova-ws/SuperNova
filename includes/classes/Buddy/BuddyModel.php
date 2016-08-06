@@ -51,7 +51,7 @@ class BuddyModel extends \Entity {
 
   // TODO - remove public static function db_buddy_update_status($buddy_id, $status) {
   public function db_buddy_update_status($status) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_BUDDY,
       array(
         'BUDDY_STATUS' => $status,

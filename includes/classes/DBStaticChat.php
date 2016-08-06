@@ -74,7 +74,7 @@ class DBStaticChat {
    * @param $userId
    */
   public static function db_chat_player_update_invisibility($chat_directive, $userId) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_CHAT_PLAYER,
       array(
         'chat_player_invisible' => $chat_directive,
@@ -90,7 +90,7 @@ class DBStaticChat {
    * @param $chat_player_subject_id
    */
   public static function db_chat_player_update_unmute($reasonUnsafe, $chat_player_subject_id) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_CHAT_PLAYER,
       array(
         'chat_player_muted'       => 0,
@@ -108,7 +108,7 @@ class DBStaticChat {
    * @param $chat_player_subject_id
    */
   public static function db_chat_player_update_mute($date_compiled, $reasonUnsafe, $chat_player_subject_id) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_CHAT_PLAYER,
       array(
         'chat_player_muted'       => $date_compiled,
@@ -166,7 +166,7 @@ class DBStaticChat {
    * @param $userId
    */
   public static function db_chat_player_update($userId) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_CHAT_PLAYER,
       array(
         'chat_player_refresh_last' => SN_TIME_NOW,
@@ -245,7 +245,7 @@ class DBStaticChat {
    * @param $userId
    */
   public static function db_chat_player_update_activity($userId) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_CHAT_PLAYER,
       array(
         'chat_player_activity' => SN_TIME_SQL,

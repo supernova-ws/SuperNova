@@ -224,7 +224,14 @@ function sys_stat_calculate() {
   // Statistic rotation
   $classConfig = classSupernova::$config;
   classSupernova::$db->doDeleteComplex("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
-  classSupernova::$db->doUpdateComplex("UPDATE `{{statpoints}}` SET `stat_code` = `stat_code` + 1;");
+  classSupernova::$db->doUpdateTableAdjust(
+    TABLE_STAT_POINTS,
+    array(),
+    array(
+      'stat_code' => 1
+    ),
+    array()
+  );
 
   sta_set_time_limit('posting new user stats to DB');
   $data = array();

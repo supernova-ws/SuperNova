@@ -55,7 +55,7 @@ if(sys_get_param_str('ali_dip_offer_make')) {
         'alliance_negotiation_relation'        => $alliance_negotiation_relation,
         'alliance_negotiation_time'            => SN_TIME_NOW,
         'alliance_negotiation_propose'         => $alliance_negotiation_propose,
-        'alliance_negotiation_status'          => ALLY_PROPOSE_SEND
+        'alliance_negotiation_status'          => ALLY_PROPOSE_SENT
       )
     );
 

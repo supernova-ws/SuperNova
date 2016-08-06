@@ -89,7 +89,7 @@ class DBStaticAlly {
    * @param $ally_id
    */
   public static function db_ally_update_ally_user($ally_user_id, $ally_id) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_ALLIANCE,
       array(
         'ally_user_id' => $ally_user_id,
@@ -170,7 +170,7 @@ class DBStaticAlly {
    * @param $fieldNameUnsafe
    */
   public static function db_ally_update_texts($text_unsafe, $allyId, $fieldNameUnsafe) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_ALLIANCE,
       array(
         $fieldNameUnsafe => $text_unsafe,
@@ -186,7 +186,7 @@ class DBStaticAlly {
    * @param $userAllyId
    */
   public static function db_ally_update_owner($idNewLeader, $userAllyId) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_ALLIANCE,
       array(
         'ally_owner' => $idNewLeader,
@@ -238,10 +238,10 @@ class DBStaticAlly {
    * @param $offer_id
    */
   public static function db_ally_negotiation_deny($offer_id) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_ALLIANCE_NEGOTIATION,
       array(
-        'alliance_negotiation_status' => ALLY_PROPOSE_DENY,
+        'alliance_negotiation_status' => ALLY_PROPOSE_DENIED,
       ),
       array(
         'alliance_negotiation_id' => $offer_id,
@@ -296,24 +296,20 @@ class DBStaticAlly {
   }
 
   /**
-   * @param $d
+   * @param $id
    */
-  public static function db_ally_request_deny($d) {
-    classSupernova::$db->doUpdateAdjust("UPDATE {{alliance_requests}} SET `request_denied` = 1, `request_text` = '" . classLocale::$lang['ali_req_deny_reason'] . "' WHERE `id_user`= {$d} LIMIT 1;");
-  }
+  public static function db_ally_request_deny($id) {
+    classSupernova::$db->doUpdateRowSet(
+      TABLE_ALLIANCE_REQUESTS,
+      array(
+        'request_denied' => ALLY_REQUEST_DENIED,
+        'request_text' => classLocale::$lang['ali_req_deny_reason'],
+      ),
+      array(
+        'id_user' => $id,
+      )
+    );
 
-  /**
-   * @param $ally
-   */
-  public static function db_ally_update_member_increase($ally) {
-    classSupernova::$db->doUpdateAdjust("UPDATE {{alliance}} SET `ally_members`= `ally_members` + 1 WHERE `id`='{$ally['id']}'");
-  }
-
-  /**
-   * @param $ally
-   */
-  public static function db_ally_update_member_decrease($ally) {
-    classSupernova::$db->doUpdateAdjust("UPDATE {{alliance}} SET `ally_members`= `ally_members` - 1 WHERE `id`='{$ally['id']}' LIMIT 1;");
   }
 
   /**
@@ -321,7 +317,7 @@ class DBStaticAlly {
    * @param $allyId
    */
   public static function db_ally_update_member_set($i, $allyId) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_ALLIANCE,
       array(
         'ally_members' => $i,
@@ -356,7 +352,7 @@ class DBStaticAlly {
    * @param $userAllyId
    */
   public static function db_ally_update_ranklist($ranklist, $userAllyId) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_ALLIANCE,
       array(
         'ranklist' => $ranklist,

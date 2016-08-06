@@ -21,7 +21,16 @@ if($id_kick && $user_can_kick) {
   $u = DBStaticUser::db_user_by_id($id_kick, true);
   if($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner']) {
     DBStaticUser::db_user_set_by_id($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
-    DBStaticAlly::db_ally_update_member_decrease($ally);
+    classSupernova::$db->doUpdateRowAdjust(
+      TABLE_ALLIANCE,
+      array(),
+      array(
+        'ally_members' => -1,
+      ),
+      array(
+        'id' => $ally['id'],
+      )
+    );
   }
 }
 

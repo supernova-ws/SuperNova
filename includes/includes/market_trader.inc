@@ -28,7 +28,6 @@ function eco_mrk_trader($user, $planetrow = null) {
   $exchangeTo = in_array($exchangeTo = sys_get_param_int('exchangeTo'), sn_get_groups('resources_trader')) ? $exchangeTo : 0;
   if($exchangeTo && is_array($tradeList = $_POST['spend'])) {
     $value = 0;
-    $qry = array();
 
     sn_db_transaction_start();
     if($planetrow['id_owner']) {
@@ -40,6 +39,7 @@ function eco_mrk_trader($user, $planetrow = null) {
       $user = DBStaticUser::db_user_by_id($user['id'], true);
     }
 
+    $fields = array();
     foreach(sn_get_groups('resources_trader') as $resource_id) {
       $amount = floatval($tradeList[$resource_id]);
       if($amount < 0) {
@@ -50,9 +50,8 @@ function eco_mrk_trader($user, $planetrow = null) {
         continue;
       }
 
-      $resource_db_name = pname_resource_name($resource_id);
+      $sign = '+';
       if($exchangeTo == RES_DARK_MATTER) {
-        $sign = '+';
         $amount = floor($tradeList[RES_DARK_MATTER] / 3 * $rates[RES_DARK_MATTER] / $rates[$resource_id]);
         $value += $amount;
       } else {
@@ -70,14 +69,8 @@ function eco_mrk_trader($user, $planetrow = null) {
       }
 
       if($amount) {
-        $qry[] = "`{$resource_db_name}` = `{$resource_db_name}` {$sign} {$amount}";
+        $fields[pname_resource_name($resource_id)] = "{$sign} {$amount}";
       }
-    }
-
-    if($exchangeTo != RES_DARK_MATTER) {
-      $amount = floor($value);
-      $exchange_to_db_name = pname_resource_name($exchangeTo);
-      $qry[] = "`{$exchange_to_db_name}` = `{$exchange_to_db_name}` + {$amount}";
     }
 
     $operation_cost = classSupernova::$config->rpg_cost_trader * ($exchangeTo == RES_DARK_MATTER ? 3 : 1) + $tradeList[RES_DARK_MATTER];
@@ -86,10 +79,22 @@ function eco_mrk_trader($user, $planetrow = null) {
     $intError = mrc_get_level($user, null, RES_DARK_MATTER) < $operation_cost ? MARKET_NO_DM : $intError;
 
     if($intError == MARKET_DEAL) {
-      $qry = implode(', ', $qry);
-      $table = $planetrow['id_owner'] ? 'planets' : 'users';
+      if($exchangeTo != RES_DARK_MATTER) {
+        $amountExchangeTo = floor($value);
+        $fields[pname_resource_name($exchangeTo)] = $amountExchangeTo;
+      }
 
-      classSupernova::$db->doUpdateComplex("UPDATE {{{$table}}} SET {$qry} WHERE `id` = {$planetrow['id']} LIMIT 1;");
+      classSupernova::$db->doUpdateRowAdjust(
+        !empty($planetrow['id_owner']) ? TABLE_PLANETS : TABLE_USERS,
+        array(),
+        $fields,
+        array(
+          'id' => $planetrow['id'],
+        )
+      );
+
+
+
       rpg_points_change($user['id'], RPG_MARKET, -$operation_cost, "Using Black Market page {$classLocale['eco_mrk_trader']}");
       sn_db_transaction_commit();
 

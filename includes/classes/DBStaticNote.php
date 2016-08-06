@@ -36,7 +36,7 @@ class DBStaticNote {
    * @param $note_id_edit
    */
   public static function db_note_update_by_id($note_priority, $note_title_unsafe, $note_text_unsafe, $note_galaxy, $note_system, $note_planet, $note_planet_type, $note_sticky, $note_id_edit) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_NOTES,
       array(
         'time'        => SN_TIME_NOW,

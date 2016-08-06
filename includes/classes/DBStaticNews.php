@@ -3,7 +3,7 @@
 class DBStaticNews {
 
   public static function db_news_update_set($announce_time, $text_unsafe, $detail_url_unsafe, $announce_id) {
-    classSupernova::$db->doUpdateRowWhere(
+    classSupernova::$db->doUpdateRowSet(
       TABLE_ANNOUNCE,
       array(
         'tsTimeStamp' => date(FMT_DATE_TIME_SQL, $announce_time),

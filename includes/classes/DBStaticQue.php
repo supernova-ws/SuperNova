@@ -89,7 +89,7 @@ class DBStaticQue {
   }
 
   public static function db_que_planet_change_owner($planet_id, $new_owner_id) {
-    return classSupernova::$db->doUpdateTable(
+    return classSupernova::$db->doUpdateTableSet(
       TABLE_QUE,
       array(
         'que_player_id' => $new_owner_id,
@@ -101,7 +101,7 @@ class DBStaticQue {
   }
 
   public static function db_que_research_change_origin($planet_id, $new_planet_id) {
-    return classSupernova::$db->doUpdateTable(
+    return classSupernova::$db->doUpdateTableSet(
       TABLE_QUE,
       array(
         'que_planet_id_origin' => $new_planet_id,

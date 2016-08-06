@@ -267,7 +267,7 @@ class Account {
   public function db_set_password($password_unsafe, $salt_unsafe) {
     $password_encoded_unsafe = $this->password_encode($password_unsafe, $salt_unsafe);
 
-    $result = $this->db->doUpdateRowWhere(
+    $result = $this->db->doUpdateRowSet(
       TABLE_ACCOUNT,
       array(
         'account_password' => $password_encoded_unsafe,

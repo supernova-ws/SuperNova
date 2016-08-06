@@ -287,7 +287,7 @@ function db_blitz_reg_get_player_list_and_users($current_round) {
 }
 
 function db_blitz_reg_update_with_name_and_password($blitz_name_unsafe, $blitz_password_unsafe, $rowId, $current_round) {
-  classSupernova::$db->doUpdateTable(
+  classSupernova::$db->doUpdateTableSet(
     TABLE_BLITZ_REGISTRATIONS,
     array(
       'blitz_name'     => $blitz_name_unsafe,
@@ -301,11 +301,22 @@ function db_blitz_reg_update_with_name_and_password($blitz_name_unsafe, $blitz_p
 }
 
 function db_blitz_reg_update_apply_results($reward, $row, $current_round) {
-  classSupernova::$db->doUpdateAdjust("UPDATE {{blitz_registrations}} SET blitz_reward_dark_matter = blitz_reward_dark_matter + ($reward) WHERE id = {$row['id']} AND `round_number` = {$current_round};");
+  classSupernova::$db->doUpdateTableAdjust(
+    TABLE_BLITZ_REGISTRATIONS,
+    array(),
+    array(
+      'blitz_reward_dark_matter' => $reward,
+    ),
+    array(
+      'id' => $row['id'],
+      'round_number' => $current_round,
+    )
+  );
+
 }
 
 function db_blitz_reg_update_results($current_round, $blitz_name_unsafe, $blitz_player_id, $blitz_online, $blitz_place, $blitz_points) {
-  classSupernova::$db->doUpdateTable(
+  classSupernova::$db->doUpdateTableSet(
     TABLE_BLITZ_REGISTRATIONS,
     array(
       'blitz_player_id' => $blitz_player_id,
@@ -522,7 +533,16 @@ function db_referral_get_by_id($user_id_safe) {
  * @param $dark_matter
  */
 function db_referral_update_dm($user_id_safe, $dark_matter) {
-  classSupernova::$db->doUpdateAdjust("UPDATE {{referrals}} SET dark_matter = dark_matter + '{$dark_matter}' WHERE `id` = {$user_id_safe} LIMIT 1;");
+  classSupernova::$db->doUpdateRowAdjust(
+    TABLE_REFERRALS,
+    array(),
+    array(
+      'dark_matter' => $dark_matter,
+    ),
+    array(
+      'id' => $user_id_safe,
+    )
+  );
 }
 
 
@@ -594,7 +614,7 @@ function db_quest_delete($quest_id) {
  * @param $quest_id
  */
 function db_quest_update($quest_name_unsafe, $quest_type, $quest_description_unsafe, $quest_conditions, $quest_rewards, $quest_id) {
-  classSupernova::$db->doUpdateRowWhere(
+  classSupernova::$db->doUpdateRowSet(
     TABLE_QUEST,
     array(
       'quest_name'        => $quest_name_unsafe,
@@ -678,7 +698,7 @@ function db_config_get_stockman_fleet() {
  * @param $comment_unsafe
  */
 function db_payment_update($payment_id, $payment_status, $comment_unsafe) {
-  classSupernova::$db->doUpdateRowWhere(
+  classSupernova::$db->doUpdateRowSet(
     TABLE_PAYMENT,
     array(
       'payment_status'  => $payment_status,

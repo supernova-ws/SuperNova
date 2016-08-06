@@ -158,7 +158,7 @@ class DBStaticUser extends DBStaticRecord {
    */
   public static function db_player_list_blitz_set_50k_dm() {
 //    classSupernova::$db->doUpdateRecord('UPDATE `{{users}}` SET `dark_matter` = 50000, `dark_matter_total` = 50000;');
-    classSupernova::$db->doUpdateTable(TABLE_USERS,
+    classSupernova::$db->doUpdateTableSet(TABLE_USERS,
       array(
         'dark_matter' => 50000,
         'dark_matter_total' => 50000,
@@ -309,12 +309,19 @@ class DBStaticUser extends DBStaticRecord {
    * @param int   $userId
    */
   public static function db_user_update_resources($playerRowFieldChanges, $userId) {
-    foreach ($playerRowFieldChanges as $resourceId => &$value) {
-      $fieldName = pname_resource_name($resourceId);
-      $value = "{$fieldName} = {$fieldName} + ('{$value}')";
+    $fields = array();
+    foreach ($playerRowFieldChanges as $resourceId => $value) {
+      $fields[pname_resource_name($resourceId)] = $value;
     }
-    if($query = implode(',', $playerRowFieldChanges)) {
-      classSupernova::$gc->db->doUpdateComplex("UPDATE `{{users}}` SET {$query} WHERE id = {$userId}");
+    if(!empty($fields)) {
+      classSupernova::$gc->db->doUpdateRowAdjust(
+        TABLE_USERS,
+        array(),
+        $fields,
+        array(
+          'id' => $userId
+        )
+      );
     }
   }
 

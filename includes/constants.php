@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.30');
+define('SN_VERSION', '41a51.31');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -135,8 +135,11 @@ define('ALLY_DIPLOMACY_UNION'        , 'union');
 define('ALLY_DIPLOMACY_MASTER'       , 'master');
 define('ALLY_DIPLOMACY_SLAVE'        , 'slave');
 
-define('ALLY_PROPOSE_SEND', 0);
-define('ALLY_PROPOSE_DENY', 1);
+define('ALLY_PROPOSE_SENT', 0);
+define('ALLY_PROPOSE_DENIED', 1);
+
+//define('ALLY_REQUEST_SENT', 0);
+define('ALLY_REQUEST_DENIED', 1);
 
 // Quest types
 define('QUEST_TYPE_BUILD'   , 1);
