@@ -34,7 +34,7 @@ if(sys_get_param('change_data') && !empty($unit_list))
 
   if(!empty($query_string))
   {
-    DBStaticPlanet::db_planet_update_set_by_id($planet_id, implode(', ', $query_string));
+    DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planet_id, implode(', ', $query_string));
   }
 }
 

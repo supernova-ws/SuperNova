@@ -44,7 +44,7 @@ function sn_imperium_view($template = null) {
         }
       }
       foreach($query as $planet_id => $query_data) {
-        DBStaticPlanet::db_planet_update_set_by_id($planet_id, implode(',', $query_data));
+        DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planet_id, implode(',', $query_data));
       }
       // sn_db_transaction_commit();
     }

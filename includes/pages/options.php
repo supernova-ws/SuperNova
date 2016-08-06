@@ -25,7 +25,7 @@ function sn_options_model() {
     if($user['authlevel'] > 0) {
       $planet_protection = sys_get_param_int('adm_pl_prot') ? $user['authlevel'] : 0;
       DBStaticPlanet::db_planet_set_by_owner($user['id'], "`id_level` = '{$planet_protection}'");
-      DBStaticUser::db_user_set_by_id($user['id'], "`admin_protection` = '{$planet_protection}'");
+      DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
     }
 
@@ -54,7 +54,7 @@ function sn_options_model() {
           // $planet = $planet['planet'];
 
           $classConfig = classSupernova::$config;
-          DBStaticPlanet::db_planet_update_set_by_id($planet['id'],
+          DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planet['id'],
             "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
             metal_perhour = '{$classConfig->metal_basic_income}', crystal_perhour = '{$classConfig->crystal_basic_income}', deuterium_perhour = '{$classConfig->deuterium_basic_income}',
             metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
@@ -111,7 +111,7 @@ function sn_options_model() {
             rpg_points_change($user['id'], RPG_NAME_CHANGE, -classSupernova::$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
-            DBStaticUser::db_user_set_by_id($user['id'], "`username` = '{$username_safe}'");
+            DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`username` = '{$username_safe}'");
             db_player_name_history_replace($user['id'], $username);
             // TODO: Change cookie to not force user relogin
             // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
@@ -229,7 +229,7 @@ function sn_options_model() {
     }
 
     $user_options_safe = db_escape($user['options']);
-    DBStaticUser::db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
+    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
       `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe}', `gender` = {$user['gender']}
       {$user_birthday}"

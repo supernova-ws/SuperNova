@@ -162,7 +162,14 @@ class DBStaticPlanet {
     }
   }
 
-  public static function db_planet_update_set_by_id($planet_id, $set) {
+  /**
+   * @param        $planet_id
+   * @param string $set
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  public static function db_planet_update_set_by_id_DEPRECATED($planet_id, $set) {
     if (!($planet_id = idval($planet_id))) {
       return false;
     }

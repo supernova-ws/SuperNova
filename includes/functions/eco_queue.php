@@ -398,9 +398,9 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
   $planet_id_origin = $planet['id'] ? $planet['id'] : 'NULL';
   $planet_id = $que_type == QUE_RESEARCH ? 'NULL' : $planet_id_origin;
   if(is_numeric($planet_id)) {
-    DBStaticPlanet::db_planet_update_set_by_id($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
+    DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planet_id, "`que_processed` = UNIX_TIMESTAMP(NOW())");
   } elseif(is_numeric($user['id'])) {
-    DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
+    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
   }
 
   $resource_list = sys_unit_arr2str($build_data[$build_mode]);
@@ -461,9 +461,9 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
     }
 
     if(is_numeric($planet['id'])) {
-      DBStaticPlanet::db_planet_update_set_by_id($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
+      DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planet['id'], "`que_processed` = UNIX_TIMESTAMP(NOW())");
     } elseif(is_numeric($user['id'])) {
-      DBStaticUser::db_user_set_by_id($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
+      DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], '`que_processed` = UNIX_TIMESTAMP(NOW())');
     }
 
     sn_db_transaction_commit();

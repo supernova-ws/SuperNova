@@ -12,7 +12,7 @@ if(isset($_GET['id_rank'])) {
   $id_rank = sys_get_param_int('id_rank');
 }
 if($id_user && isset($id_rank) && $user_admin) {
-  DBStaticUser::db_user_set_by_id($id_user, "`ally_rank_id` = {$id_rank}");
+  DBStaticUser::db_user_set_by_id_DEPRECATED($id_user, "`ally_rank_id` = {$id_rank}");
 }
 
 $id_kick = sys_get_param_id('kick');
@@ -20,7 +20,7 @@ $id_kick = sys_get_param_id('kick');
 if($id_kick && $user_can_kick) {
   $u = DBStaticUser::db_user_by_id($id_kick, true);
   if($u['ally_id'] == $ally['id'] && $u['id'] != $ally['ally_owner']) {
-    DBStaticUser::db_user_set_by_id($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
+    DBStaticUser::db_user_set_by_id_DEPRECATED($id_kick, '`ally_id`= null, `ally_name` = null, `ally_tag` = null, ally_register_time = 0, ally_rank_id = 0');
     classSupernova::$db->doUpdateRowAdjust(
       TABLE_ALLIANCE,
       array(),

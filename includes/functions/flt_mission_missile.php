@@ -149,7 +149,7 @@ function coe_o_missile_calculate() {
         if (!empty($message)) {
           $message = classLocale::$lang['mip_defense_destroyed'] . $message . "{$classLocale['mip_recycled']}{$classLocale['Metal']}: {$attackResult['metal']}, {$classLocale['Crystal']}: {$attackResult['crystal']}<br>";
 
-          DBStaticPlanet::db_planet_update_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
+          DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
         }
 
       }

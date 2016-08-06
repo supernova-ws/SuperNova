@@ -17,7 +17,7 @@ $id_user = sys_get_param_id('id_user');
 if($id_user) {
   $ally_name_safe = db_escape($ally['ally_name']);
   $ally_tag_safe = db_escape($ally['ally_tag']);
-  DBStaticUser::db_user_set_by_id($id_user, "`ally_id` = '{$ally['id']}', `ally_name` = '{$ally_name_safe}', `ally_tag` = '{$ally_tag_safe}', `ally_register_time` = " . SN_TIME_NOW . ", `ally_rank_id` = 0");
+  DBStaticUser::db_user_set_by_id_DEPRECATED($id_user, "`ally_id` = '{$ally['id']}', `ally_name` = '{$ally_name_safe}', `ally_tag` = '{$ally_tag_safe}', `ally_register_time` = " . SN_TIME_NOW . ", `ally_rank_id` = 0");
   classSupernova::$db->doUpdateRowAdjust(
     TABLE_ALLIANCE,
     array(),

@@ -362,7 +362,7 @@ class DBStaticMessages {
         $player[static::$snMessageClassList[$current_class]['name']] = 0;
       }
 
-      DBStaticUser::db_user_set_by_id($player['id'], $SubUpdateQry);
+      DBStaticUser::db_user_set_by_id_DEPRECATED($player['id'], $SubUpdateQry);
       $message_query = static::db_message_list_by_owner_and_string($player, $SubSelectQry);
     }
 

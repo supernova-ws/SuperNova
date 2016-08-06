@@ -135,7 +135,7 @@ for($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
       classSupernova::$debug->warning("Planet '{$uni_galaxyRowPlanet['name']}' [{$uni_galaxy}:{$uni_system}:{$Planet}] has no owner!", 'Userless planet', 503);
       $uni_galaxyRowPlanet['destruyed'] = SN_TIME_NOW + 60 * 60 * 24;
       $uni_galaxyRowPlanet['id_owner'] = 0;
-      DBStaticPlanet::db_planet_update_set_by_id($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
+      DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
     }
 
     if($uni_galaxyRowUser['id']) {

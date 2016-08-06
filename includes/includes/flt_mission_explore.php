@@ -245,7 +245,7 @@ function flt_mission_explore(&$mission_data) {
 
   DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
 
-  DBStaticUser::db_user_set_by_id($objFleet->playerOwnerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
+  DBStaticUser::db_user_set_by_id_DEPRECATED($objFleet->playerOwnerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
 
 //  if(!empty($fleet_real_array) && $objFleet->shipsGetTotal() >= 1) {
 //    // ПОКА НЕ НУЖНО - мы уже выше посчитали суммарные ресурсы (те, что были до отправку в экспу плюс найденное) и обновили $fleet_row

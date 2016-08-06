@@ -12,7 +12,7 @@ function sn_user_birthday_celebrate() {
       classSupernova::$config->user_birthday_gift,
       "Birthday gift for user {$row['username']} ID {$row['id']} on his birthday on {$row['user_birthday']}. Gift last gaved at {$row['user_birthday_celebrated']}"
     );
-    DBStaticUser::db_user_set_by_id($row['id'], "`user_birthday_celebrated` = '{$row['current_birthday']}'");
+    DBStaticUser::db_user_set_by_id_DEPRECATED($row['id'], "`user_birthday_celebrated` = '{$row['current_birthday']}'");
 
     $message = sprintf(
       classLocale::$lang['sys_birthday_message'],

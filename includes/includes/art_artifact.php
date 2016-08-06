@@ -68,7 +68,7 @@ function art_use(&$user, &$planetrow, $unit_id) {
           break;
         }
         $unit_level--;
-        DBStaticPlanet::db_planet_update_set_by_id($planetrow['id'], "`field_current` = `field_current` + {$sectors_used}");
+        DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planetrow['id'], "`field_current` = `field_current` + {$sectors_used}");
         $message = sprintf(classLocale::$lang['art_rcd_ok'], classLocale::$lang['tech'][$unit_id], $planetrow['name'], uni_render_coordinates($planetrow));
       DBStaticMessages::msg_send_simple_message($user['id'], 0, 0, MSG_TYPE_QUE, classLocale::$lang['art_rcd_subj'], classLocale::$lang['art_rcd_subj'], $message);
       break;

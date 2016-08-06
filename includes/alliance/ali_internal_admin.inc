@@ -35,7 +35,7 @@ if(sys_get_param_str('isSaveOptions')) {
   if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
     $new_tag = db_escape($new_tag);
     $ally_changeset[] = "`ally_tag`='{$new_tag}'";
-    DBStaticUser::db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
+    DBStaticUser::db_user_set_by_id_DEPRECATED($ally['ally_user_id'], "`username`='[{$new_tag}]'");
   }
   if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) && $new_name != $ally['ally_name']) {
     $new_name = db_escape($new_name);
@@ -73,9 +73,9 @@ if(sys_get_param_str('isSaveOptions')) {
   $newLeader = DBStaticUser::db_user_by_id($idNewLeader, false, `ally_id`);
   if($newLeader['ally_id'] == $user['ally_id']) {
     sn_db_transaction_start();
-    DBStaticUser::db_user_set_by_id($user['id'], "`ally_rank_id`='0'");
+    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`ally_rank_id`='0'");
     DBStaticAlly::db_ally_update_owner($idNewLeader, $user['ally_id']);
-    DBStaticUser::db_user_set_by_id($idNewLeader, "`ally_rank_id`='0'");
+    DBStaticUser::db_user_set_by_id_DEPRECATED($idNewLeader, "`ally_rank_id`='0'");
     sn_db_transaction_commit();
     sys_redirect('alliance.php');
   }

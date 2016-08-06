@@ -45,7 +45,7 @@ if(!$user['ally_id']) {
 
 sn_ali_fill_user_ally($user);
 if(!isset($user['ally'])) {
-  DBStaticUser::db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
+  DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
   message(classLocale::$lang['ali_sys_notFound'], classLocale::$lang['your_alliance'], 'alliance.php');
 }
 $ally = &$user['ally'];
