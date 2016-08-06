@@ -72,7 +72,14 @@ class DBStaticQue {
   }
 
   public static function db_que_set_time_left_by_id($que_id, $que_time_left) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_QUE, $que_id, "`que_time_left` = {$que_time_left}");
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(
+      LOC_QUE,
+      $que_id,
+      array(
+        'que_time_left' => $que_time_left,
+      ),
+      array()
+    );
   }
 
   /**

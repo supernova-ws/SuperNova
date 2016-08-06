@@ -1825,7 +1825,14 @@ class Fleet extends UnitContainer {
     );
 
     if (!empty($this->captain['unit_id'])) {
-      DBStaticUnit::db_unit_set_by_id($this->captain['unit_id'], "`unit_location_type` = " . LOC_FLEET . ", `unit_location_id` = {$this->_dbId}");
+      DBStaticUnit::db_unit_set_by_id(
+        $this->captain['unit_id'],
+        array(
+          'unit_location_type' => LOC_FLEET,
+          'unit_location_id'   => $this->_dbId,
+        ),
+        array()
+      );
     }
 
 //    return $this->fleet->acs['ankunft'] - $this->fleet->time_launch >= $this->fleet->travelData['duration'];

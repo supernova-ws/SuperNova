@@ -167,7 +167,7 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_PLANET, $planet_id, $set);
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id_DEPRECATED(LOC_PLANET, $planet_id, $set);
   }
 
   public static function db_planet_update_set_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_type = PT_ALL, $set) {

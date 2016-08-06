@@ -93,8 +93,20 @@ class DBStaticUnit {
     WHERE unit_player_id = {$user_id} AND unit_location_type = " . LOC_PLANET . " AND unit_level > 0 AND unit_snid IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ");");
   }
 
-  public static function db_unit_set_by_id($unit_id, $set) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_UNIT, $unit_id, $set);
+  /**
+   * @param $unit_id
+   * @param array $set - SET fields
+   * @param array $adjust - ADJUST fields
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function db_unit_set_by_id($unit_id, $set, $adjust) {
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(
+      LOC_UNIT,
+      $unit_id,
+      $set,
+      $adjust
+    );
   }
 
   /**

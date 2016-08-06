@@ -231,7 +231,7 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_user_set_by_id($user_id, $set) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_USER, $user_id, $set);
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id_DEPRECATED(LOC_USER, $user_id, $set);
   }
 
   /**

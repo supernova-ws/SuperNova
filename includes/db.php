@@ -9,18 +9,33 @@ defined('INSIDE') || die();
 
 require_once('db/db_queries.php');
 
-function db_change_units_perform($query, $tablename, $object_id) {
-  $query = implode(',', $query);
-  if($query && $object_id) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
+/**
+ * @param $adjust
+ * @param $location
+ * @param $object_id
+ */
+function db_change_units_perform($adjust, $location, $object_id) {
+  if (!empty($object_id) && !empty($adjust)) {
+    classSupernova::$gc->cacheOperator->db_upd_record_by_id(
+      $location,
+      $object_id,
+      array(),
+      $adjust
+    );
   }
 }
 
 // TODO: THIS FUNCTION IS OBSOLETE AND SHOULD BE REPLACED!
 // TODO - ТОЛЬКО ДЛЯ РЕСУРСОВ
 // $unit_list should have unique entrances! Recompress non-uniq entrances before pass param!
-function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) {
-  $query = is_array($query) ? $query : array(
+/**
+ * @param       $user
+ * @param       $planet
+ * @param array $unit_list
+ * @param null  $query
+ */
+function db_change_units(&$user, &$planet, $unit_list) {
+  $query = array(
     LOC_USER => array(),
     LOC_PLANET => array(),
   );
@@ -35,7 +50,7 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) 
       die('db_change_units() вызван для не-ресурсов!');
     }
 
-    if(!$unit_amount) {
+    if(empty($unit_amount)) {
       continue;
     }
 
@@ -53,12 +68,11 @@ function db_change_units(&$user, &$planet, $unit_list = array(), $query = null) 
         break;
     }
 
-    $unit_amount = $unit_amount < 0 ? $unit_amount : "+{$unit_amount}"; // Converting positive unit_amount to string '+unit_amount'
-    $query[$unit_location][$unit_id] = "`{$unit_db_name}`=`{$unit_db_name}`{$unit_amount}";
+    $query[$unit_location][$unit_db_name] = $unit_amount;
   }
 
-  db_change_units_perform($query[LOC_USER], 'users', $user['id']);
-  db_change_units_perform($query[LOC_PLANET], 'planets', $planet['id']);
+  db_change_units_perform($query[LOC_USER], LOC_USER, $user['id']);
+  db_change_units_perform($query[LOC_PLANET], LOC_PLANET, $planet['id']);
 }
 function sn_db_perform($table, $values, $type = 'insert', $options = false) {
   $field_set = '';

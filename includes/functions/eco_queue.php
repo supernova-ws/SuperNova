@@ -287,11 +287,15 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     if($is_autoconvert) {
       ksort($exchange);
       ksort($resource_got);
-      db_change_units($user, $planet, array(
-        RES_METAL     => !empty($exchange[RES_METAL]) ? $exchange[RES_METAL] : 0,
-        RES_CRYSTAL   => !empty($exchange[RES_CRYSTAL]) ? $exchange[RES_CRYSTAL] : 0,
-        RES_DEUTERIUM => !empty($exchange[RES_DEUTERIUM]) ? $exchange[RES_DEUTERIUM] : 0,
-      ));
+      db_change_units(
+        $user,
+        $planet,
+        array(
+          RES_METAL     => !empty($exchange[RES_METAL]) ? $exchange[RES_METAL] : 0,
+          RES_CRYSTAL   => !empty($exchange[RES_CRYSTAL]) ? $exchange[RES_CRYSTAL] : 0,
+          RES_DEUTERIUM => !empty($exchange[RES_DEUTERIUM]) ? $exchange[RES_DEUTERIUM] : 0,
+        )
+      );
       rpg_points_change($user['id'], RPG_BUILD_AUTOCONVERT, -$market_get_autoconvert_cost, sprintf(
         classLocale::$lang['bld_autoconvert'], $unit_id, $unit_amount, uni_render_planet_full($planet, '', false, true), classLocale::$lang['tech'][$unit_id],
         sys_unit_arr2str($build_data[BUILD_CREATE]), sys_unit_arr2str($resource_got), sys_unit_arr2str($exchange)
@@ -380,11 +384,15 @@ function que_add_unit($unit_id, $user = array(), $planet = array(), $build_data,
   $build_mode = $build_mode == BUILD_CREATE ? BUILD_CREATE : BUILD_DESTROY;
 
   // TODO: Some checks
-  db_change_units($user, $planet, array(
-    RES_METAL     => -$build_data[$build_mode][RES_METAL] * $unit_amount,
-    RES_CRYSTAL   => -$build_data[$build_mode][RES_CRYSTAL] * $unit_amount,
-    RES_DEUTERIUM => -$build_data[$build_mode][RES_DEUTERIUM] * $unit_amount,
-  ));
+  db_change_units(
+    $user,
+    $planet,
+    array(
+      RES_METAL     => -$build_data[$build_mode][RES_METAL] * $unit_amount,
+      RES_CRYSTAL   => -$build_data[$build_mode][RES_CRYSTAL] * $unit_amount,
+      RES_DEUTERIUM => -$build_data[$build_mode][RES_DEUTERIUM] * $unit_amount,
+    )
+  );
 
   $que_type = que_get_unit_que($unit_id);
   $planet_id_origin = $planet['id'] ? $planet['id'] : 'NULL';
@@ -437,11 +445,15 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
 
       $build_data = sys_unit_str2arr($que_item['que_unit_price']);
 
-      db_change_units($user, $planets_locked[$planet['id']], array(
-        RES_METAL     => $build_data[RES_METAL] * $que_item['que_unit_amount'],
-        RES_CRYSTAL   => $build_data[RES_CRYSTAL] * $que_item['que_unit_amount'],
-        RES_DEUTERIUM => $build_data[RES_DEUTERIUM] * $que_item['que_unit_amount'],
-      ));
+      db_change_units(
+        $user,
+        $planets_locked[$planet['id']],
+        array(
+          RES_METAL     => $build_data[RES_METAL] * $que_item['que_unit_amount'],
+          RES_CRYSTAL   => $build_data[RES_CRYSTAL] * $que_item['que_unit_amount'],
+          RES_DEUTERIUM => $build_data[RES_DEUTERIUM] * $que_item['que_unit_amount'],
+        )
+      );
 
       if(!$clear) {
         break;

@@ -201,7 +201,7 @@ class SnDbCachedOperator {
             FROM {{{$location_info[P_TABLE_NAME]}}}" .
             ($filter ? ' WHERE ' . $filter : '') .
             ($fetch ? ' LIMIT 1' : ''));
-          while($row = db_fetch($query)) {
+          while ($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if (!$this->snCache->cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
@@ -222,7 +222,7 @@ class SnDbCachedOperator {
         (($filter = trim($filter)) ? " WHERE {$filter}" : '')
         . " FOR UPDATE"
       );
-      while($row = db_fetch($query)) {
+      while ($row = db_fetch($query)) {
         // Caching record in row cache
         $this->snCache->cache_set($location_type, $row);
         // Making ref to cached record in query cache
@@ -251,8 +251,9 @@ class SnDbCachedOperator {
    * @param string $set - SQL SET structure
    *
    * @return array|bool|mysqli_result|null
+   * @deprecated
    */
-  public function db_upd_record_by_id($location_type, $record_id, $set) {
+  public function db_upd_record_by_id_DEPRECATED($location_type, $record_id, $set) {
     if (!($record_id = idval($record_id)) || !($set = trim($set))) {
       return false;
     }
@@ -276,6 +277,49 @@ class SnDbCachedOperator {
 
     return $result;
   }
+
+  /**
+   * @param int   $location_type
+   * @param int   $record_id
+   * @param array $set - SQL SET structure
+   * @param array $adjust - SQL ADJUST structure
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function db_upd_record_by_id($location_type, $record_id, $set, $adjust) {
+    if (!($record_id = idval($record_id)) || (empty($set) && empty($adjust))) {
+      return false;
+    }
+
+    $id_field = static::$location_info[$location_type][P_ID];
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
+    // TODO Как-то вернуть может быть LIMIT 1 ?
+    $result = $this->db->doUpdateRowAdjust(
+      $table_name,
+      $set,
+      $adjust,
+      array(
+        $id_field => $record_id
+      )
+    );
+
+    if ($result) {
+      if ($this->db->db_affected_rows()) {
+        // Обновляем данные только если ряд был затронут
+        // TODO - переделать под работу со структурированными $set
+
+        // Тут именно так, а не cache_unset - что бы в кэшах автоматически обновилась запись. Будет нужно на будущее
+        //static::$data[$location_type][$record_id] = null;
+        $this->snCache->cacheUnsetElement($location_type, $record_id);
+        // Вытаскиваем обновленную запись
+        $this->db_get_record_by_id($location_type, $record_id);
+        $this->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
+      }
+    }
+
+    return $result;
+  }
+
 
   /**
    * @param int    $location_type
