@@ -981,8 +981,6 @@ class Fleet extends UnitContainer {
    * Extracts resources value from db_row
    *
    * @param array $db_row
-   *
-   * @internal param Fleet $that
    */
   protected function resourcesExtract(array &$db_row) {
     $this->resource_list = array(

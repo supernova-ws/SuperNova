@@ -213,8 +213,6 @@ class db_mysql {
    * @param string $query
    *
    * @return array|bool|mysqli_result|null
-   * @internal param bool $skip_query_check
-   *
    */
   protected function queryDriver($query) {
     if (!$this->connected) {
@@ -276,6 +274,7 @@ class db_mysql {
   }
 
 
+  // SELECTS
   public function doSelect($query) {
     return $this->doSql($query);
   }
@@ -301,23 +300,12 @@ class db_mysql {
   }
 
 
+  // INSERT/REPLACE
   protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
-    $tableSafe = $this->db_escape($table);
-    $safeFieldsAndValues = implode(',', $this->safeFieldsEqualValues($fieldsAndValues));
-//    $command = $replace == DB_INSERT_REPLACE ? 'REPLACE' : 'INSERT';
-//    $command .= $replace == DB_INSERT_IGNORE ? ' IGNORE' : '';
-    switch ($replace) {
-      case DB_INSERT_IGNORE:
-        $command = 'INSERT IGNORE';
-      break;
-      case DB_INSERT_REPLACE:
-        $command = 'REPLACE';
-      break;
-      default:
-        $command = 'INSERT';
-      break;
-    }
-    $query = "{$command} INTO `{{{$tableSafe}}}` SET {$safeFieldsAndValues}";
+    $query = DbQuery::build($this)
+      ->setTable($table)
+      ->setValues($fieldsAndValues)
+      ->insertSet($replace);
 
     return $this->doSql($query);
   }
@@ -328,24 +316,25 @@ class db_mysql {
   /**
    * Values should be passed as-is
    *
+   * DANGER! Values should be properly escaped before passing here
+   *
    * @param string   $table
    * @param array    $fields
-   * @param string[] $values
+   * @param string[] $valuesDanger
    * @param bool     $replace
    *
    * @return array|bool|mysqli_result|null
    * @deprecated
    */
-  protected function doValuesDeprecated($table, $fields, &$values, $replace = DB_INSERT_PLAIN) {
-    $tableSafe = $this->db_escape($table);
-    $safeFields = implode(',', $this->safeFields($fields));
-    $safeValues = implode(',', $values);
-    $command = $replace == DB_INSERT_REPLACE ? 'REPLACE' : 'INSERT';
-    $query = "{$command} INTO `{{{$tableSafe}}}` ({$safeFields}) VALUES {$safeValues}";
+  protected function doInsertBatchDanger($table, $fields, &$valuesDanger, $replace = DB_INSERT_PLAIN) {
+    $query = DbQuery::build($this)
+      ->setTable($table)
+      ->setFields($fields)
+      ->setValuesDanger($valuesDanger)
+      ->insertBatch($replace);
 
     return $this->doSql($query);
   }
-
 
 
   // INSERTERS
@@ -376,7 +365,7 @@ class db_mysql {
    * @deprecated
    */
   public function doInsertValuesDeprecated($table, $fields, &$values) {
-    return $this->doValuesDeprecated($table, $fields, $values, DB_INSERT_PLAIN);
+    return $this->doInsertBatchDanger($table, $fields, $values, DB_INSERT_PLAIN);
   }
 
 
@@ -407,7 +396,7 @@ class db_mysql {
    * @deprecated
    */
   public function doReplaceValuesDeprecated($table, $fields, &$values) {
-    return $this->doValuesDeprecated($table, $fields, $values, DB_INSERT_REPLACE);
+    return $this->doInsertBatchDanger($table, $fields, $values, DB_INSERT_REPLACE);
   }
 
 
@@ -435,6 +424,17 @@ class db_mysql {
   }
 
   protected function doUpdateWhere($table, $fieldsSet, $fieldsAdjust = array(), $where = array(), $isOneRecord = DB_RECORDS_ALL) {
+//    $query = DbQuery::build($this)
+//      ->setTable($table)
+//      ->setValues($fieldsSet)
+//      ->setAdjustDanger($fieldsAdjust)
+//
+//      // TODO - separate danger WHEREs
+//      ->setWhereArray($where)
+//      ->setOneRow($isOneRecord)
+//
+//      ->update();
+
     $tableSafe = $this->db_escape($table);
 
     $safeFields = array();
@@ -474,23 +474,6 @@ class db_mysql {
   }
 
   /**
-   * In this call means that used some conditions in $where different than field = value
-   *
-   * It should be rewrote later
-   *
-   * @param $table
-   * @param $fieldsSet
-   * @param $fieldsAdjust
-   * @param $where
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public function doUpdateTableAdjustDanger($table, $fieldsSet, $fieldsAdjust, $where) {
-    return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORDS_ALL);
-  }
-
-  /**
    * For update_old - would be deprecated
    *
    * @param string $query
@@ -514,9 +497,9 @@ class db_mysql {
    */
   protected function buildDeleteQuery($table, $where, $isOneRecord = DB_RECORDS_ALL) {
     return DbQuery::build($this)
-      ->table($table)
-      ->whereArray($where)
-      ->oneRow($isOneRecord);
+      ->setTable($table)
+      ->setWhereArray($where)
+      ->setOneRow($isOneRecord);
   }
 
   /**
@@ -544,7 +527,7 @@ class db_mysql {
    * @deprecated
    */
   public function doDeleteDanger($table, $where, $whereDanger) {
-    return $this->doSql($this->buildDeleteQuery($table, $where, false)->whereArrayDanger($whereDanger)->delete());
+    return $this->doSql($this->buildDeleteQuery($table, $where, DB_RECORDS_ALL)->setWhereArrayDanger($whereDanger)->delete());
   }
 
   /**
@@ -554,7 +537,7 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function doDeleteRow($table, $where) {
-    return $this->doDeleteWhere($table, $where, true);
+    return $this->doDeleteWhere($table, $where, DB_RECORD_ONE);
   }
 
   /**
@@ -654,36 +637,6 @@ class db_mysql {
       } else {
         $result[$fieldName] = "`{$fieldName}` = `{$fieldName}` + (" . $this->castAsDbValue($fieldValue) . ")";
       }
-    }
-
-    return $result;
-  }
-
-  // TODO - redo as callable usage with array_map/array_walk
-  public function safeValues($values) {
-    $result = array();
-
-    if (!is_array($values) || empty($values)) {
-      return $result;
-    }
-
-    foreach ($values as $key => $value) {
-      $result[$key] = $this->castAsDbValue($value);
-    }
-
-    return $result;
-  }
-
-  // TODO - redo as callable usage with array_map/array_walk
-  public function safeFields($fields) {
-    $result = array();
-
-    if (!is_array($fields) || empty($fields)) {
-      return $result;
-    }
-
-    foreach ($fields as $key => $value) {
-      $result[$key] = "`" . $this->db_escape($value) . "`";
     }
 
     return $result;

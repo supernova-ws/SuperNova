@@ -229,8 +229,6 @@ class Unit extends DBRowLocation {
    * Extracts resources value from db_row
    *
    * @param array $db_row
-   *
-   * @internal param Unit $that
    */
   protected function injectLocation(array &$db_row) {
     $db_row['unit_player_id'] = $this->getPlayerOwnerId();

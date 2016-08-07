@@ -1167,7 +1167,18 @@ classSupernova::$gc->cacheOperator
 
 - Сделать инициализацию статических полей classSupernova через контейнер
 
+- que_processed - вынести с планеты/юзера в таблицу que
+
+
+
 WORKING ON
+
+    !! Работаем над тестами для DbQuery
+        - // TODO - split all DANGER works in DbQuery
+        - Переделать одинаковые циклища
+
+    - Потом doUpdateWhere - в dbQuery
+
     ? class DbQuery
         - Для выноса функций, которые не должны быть в DbQuery
         + doDelete

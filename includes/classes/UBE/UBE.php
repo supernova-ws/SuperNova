@@ -137,9 +137,6 @@ class UBE {
 
   /**
    * Заполняет данные по планете
-   *
-   * @internal param array $planet
-   *
    */
   public function ubeInitPreparePlanet() {
     $player_id = $this->combatMission->dst_planet['id_owner'];

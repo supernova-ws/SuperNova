@@ -204,7 +204,6 @@ class DbSqlPrepare {
 
 
   /**
-   * @internal param mysqli_stmt $mysqli_stmt
    */
   protected function bindParams() {
     if (count($this->valuesPrepared)) {
