@@ -189,7 +189,7 @@ class db_mysql {
   /**
    * @return string
    */
-  public function queryTrace() {
+  public function traceQuery() {
     if (!defined('DEBUG_SQL_COMMENT') || constant('DEBUG_SQL_ERROR') !== true) {
       return '';
     }
@@ -232,7 +232,7 @@ class db_mysql {
 
     $stringQuery = $this->replaceTablePlaceholders($stringQuery);
 
-    $queryTrace = $this->queryTrace();
+    $queryTrace = $this->traceQuery();
 
     $queryResult = null;
     try {
@@ -301,10 +301,6 @@ class db_mysql {
   }
 
 
-  public function doInsertComplex($query) {
-    return $this->doSql($query);
-  }
-
   protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
     $tableSafe = $this->db_escape($table);
     $safeFieldsAndValues = implode(',', $this->safeFieldsEqualValues($fieldsAndValues));
@@ -326,21 +322,9 @@ class db_mysql {
     return $this->doSql($query);
   }
 
-  /**
-   * @param string $table
-   * @param array  $fieldsAndValues
-   * @param int    $replace - DB_INSERT_PLAIN || DB_INSERT_IGNORE
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function doInsertSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
-    return $this->doSet($table, $fieldsAndValues, $replace);
-  }
-
-  public function doReplaceSet($table, $fieldsAndValues) {
-    return $this->doSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
-  }
-
+  // TODO - batch insert and replace here
+  // TODO - перед тем, как переделывать данные из депрекейтов - убедится, что
+  // null - это null, а не строка'NULL'
   /**
    * Values should be passed as-is
    *
@@ -362,10 +346,24 @@ class db_mysql {
     return $this->doSql($query);
   }
 
-  // TODO - batch insert and replace here
 
-  // TODO - перед тем, как переделывать данные из депрекейтов - убедится, что
-  // null - это null, а не строка'NULL'
+
+  // INSERTERS
+  public function doInsertComplex($query) {
+    return $this->doSql($query);
+  }
+
+  /**
+   * @param string $table
+   * @param array  $fieldsAndValues
+   * @param int    $replace - DB_INSERT_PLAIN || DB_INSERT_IGNORE
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doInsertSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
+    return $this->doSet($table, $fieldsAndValues, $replace);
+  }
+
 
   /**
    * Values should be passed as-is
@@ -379,6 +377,23 @@ class db_mysql {
    */
   public function doInsertValuesDeprecated($table, $fields, &$values) {
     return $this->doValuesDeprecated($table, $fields, $values, DB_INSERT_PLAIN);
+  }
+
+
+
+  // REPLACERS
+  /**
+   * Replaces record in DB
+   *
+   * There are no DANGER replace operations
+   *
+   * @param string $table
+   * @param array  $fieldsAndValues
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doReplaceSet($table, $fieldsAndValues) {
+    return $this->doSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
   }
 
   /**
@@ -396,6 +411,7 @@ class db_mysql {
   }
 
 
+  // UPDATERS
   public function doUpdateComplex($query) {
     return $this->doSql($query);
   }

@@ -1176,6 +1176,7 @@ WORKING ON
             + doDeleteRow
             + doDeleteSimple
         - doReplace
+            - doValuesDeprecated -> doValues
         - doInsert
         - doUpdate
 
