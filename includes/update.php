@@ -747,15 +747,15 @@ switch($new_version) {
         static $query_string = "INSERT IGNORE INTO {{security_url}} (`url_string`) VALUES ";
 
         $strings = array();
-        $query = classSupernova::$db->doExecute($query);
+        $query = classSupernova::$db->doSql($query);
         while($row = db_fetch($query)) {
           $strings[] = '("' . db_escape($row['url']) . '")';
           if(count($strings) > 100) {
-            classSupernova::$db->doExecute($query_string . implode(',', $strings));
+            classSupernova::$db->doSql($query_string . implode(',', $strings));
             $strings = array();
           }
         }
-        !empty($strings) ? classSupernova::$db->doExecute($query_string . implode(',', $strings)) : false;
+        !empty($strings) ? classSupernova::$db->doSql($query_string . implode(',', $strings)) : false;
       }
 
       if(isset($update_tables['counter']['page'])) // TODO REMOVE

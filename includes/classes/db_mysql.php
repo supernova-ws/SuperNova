@@ -1,11 +1,6 @@
 <?php
 
-define('DB_INSERT_PLAIN', 0);
-define('DB_INSERT_REPLACE', 1);
-define('DB_INSERT_IGNORE', 2);
-
-define('DB_RECORDS_ALL', false);
-define('DB_RECORD_ONE', true);
+use \DBAL\DbQuery;
 
 /**
  * Created by Gorlum 01.09.2015 15:58
@@ -221,7 +216,7 @@ class db_mysql {
    * @internal param bool $skip_query_check
    *
    */
-  protected function doquery($query) {
+  protected function queryDriver($query) {
     if (!$this->connected) {
       $this->sn_db_connect();
     }
@@ -265,14 +260,14 @@ class db_mysql {
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doExecute($query, $skip_query_check = false) {
+  public function doSql($query, $skip_query_check = false) {
     $prevState = false;
     if ($skip_query_check) {
       $prevState = $this->skipQueryCheck;
       $this->skipQueryCheck = true;
     }
     // TODO - disable watch ??
-    $result = $this->doquery($query);
+    $result = $this->queryDriver($query);
     if ($skip_query_check) {
       $this->skipQueryCheck = $prevState;
     }
@@ -282,7 +277,7 @@ class db_mysql {
 
 
   public function doSelect($query) {
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   /**
@@ -307,7 +302,7 @@ class db_mysql {
 
 
   public function doInsertComplex($query) {
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
@@ -315,7 +310,7 @@ class db_mysql {
     $safeFieldsAndValues = implode(',', $this->safeFieldsEqualValues($fieldsAndValues));
 //    $command = $replace == DB_INSERT_REPLACE ? 'REPLACE' : 'INSERT';
 //    $command .= $replace == DB_INSERT_IGNORE ? ' IGNORE' : '';
-    switch($replace) {
+    switch ($replace) {
       case DB_INSERT_IGNORE:
         $command = 'INSERT IGNORE';
       break;
@@ -328,7 +323,7 @@ class db_mysql {
     }
     $query = "{$command} INTO `{{{$tableSafe}}}` SET {$safeFieldsAndValues}";
 
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   /**
@@ -364,7 +359,7 @@ class db_mysql {
     $command = $replace == DB_INSERT_REPLACE ? 'REPLACE' : 'INSERT';
     $query = "{$command} INTO `{{{$tableSafe}}}` ({$safeFields}) VALUES {$safeValues}";
 
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   // TODO - batch insert and replace here
@@ -402,11 +397,11 @@ class db_mysql {
 
 
   public function doUpdateComplex($query) {
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   public function doUpdateReallyComplex($query) {
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   /**
@@ -420,7 +415,7 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function doUpdateSqlNoParam($query) {
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   protected function doUpdateWhere($table, $fieldsSet, $fieldsAdjust = array(), $where = array(), $isOneRecord = DB_RECORDS_ALL) {
@@ -428,10 +423,10 @@ class db_mysql {
 
     $safeFields = array();
     // Adjusts overwritten by Sets
-    if($safeAdjust = implode(',', $this->safeFieldsAdjust($fieldsAdjust))) {
+    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($fieldsAdjust))) {
       $safeFields[] = &$safeAdjust;
     }
-    if($safeFieldsEqualValues = implode(',', $this->safeFieldsEqualValues($fieldsSet))) {
+    if ($safeFieldsEqualValues = implode(',', $this->safeFieldsEqualValues($fieldsSet))) {
       $safeFields[] = &$safeFieldsEqualValues;
     }
     $safeFieldsString = implode(',', $safeFields);
@@ -443,7 +438,7 @@ class db_mysql {
       . (!empty($safeWhereAnd) ? " WHERE {$safeWhereAnd}" : '')
       . ($isOneRecord == DB_RECORD_ONE ? ' LIMIT 1' : '');
 
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
   public function doUpdateRowSet($table, $fieldsAndValues, $where) {
@@ -479,12 +474,6 @@ class db_mysql {
     return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORDS_ALL);
   }
 
-  public function doUpdateAdjustDeprecated($query) {
-    return $this->doExecute($query);
-  }
-
-
-
   /**
    * For update_old - would be deprecated
    *
@@ -494,17 +483,24 @@ class db_mysql {
    * @deprecated
    */
   public function doUpdateOld($query) {
-    return $this->doExecute($query);
+    return $this->doSql($query);
   }
 
 
+
+  // DELETERS
   /**
-   * @param string $query
+   * @param string $table
+   * @param array  $where
+   * @param bool   $isOneRecord
    *
-   * @return array|bool|mysqli_result|null
+   * @return DbQuery
    */
-  public function doDelete($query) {
-    return $this->doExecute($query);
+  protected function buildDeleteQuery($table, $where, $isOneRecord = DB_RECORDS_ALL) {
+    return DbQuery::build($this)
+      ->table($table)
+      ->whereArray($where)
+      ->oneRow($isOneRecord);
   }
 
   /**
@@ -514,13 +510,25 @@ class db_mysql {
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doDeleteWhere($table, $where, $isOneRecord = false) {
-    $tableSafe = $this->db_escape($table);
-    $safeWhere = implode(' AND ', $this->safeFieldsEqualValues($where));
-    $query = "DELETE FROM `{{{$tableSafe}}}` WHERE {$safeWhere}"
-      . ($isOneRecord ? ' LIMIT 1' : '');
+  public function doDeleteWhere($table, $where, $isOneRecord = DB_RECORDS_ALL) {
+    return $this->doSql($this->buildDeleteQuery($table, $where, $isOneRecord)->delete());
+  }
 
-    return $this->doDelete($query);
+  /**
+   * Early deprecated function for complex delete conditions
+   *
+   * Used for malformed $where conditions
+   * Also whereDanger can contain references for other {{tables}}
+   *
+   * @param string $table
+   * @param array  $where
+   * @param array  $whereDanger
+   *
+   * @return array|bool|mysqli_result|null
+   * @deprecated
+   */
+  public function doDeleteDanger($table, $where, $whereDanger) {
+    return $this->doSql($this->buildDeleteQuery($table, $where, false)->whereArrayDanger($whereDanger)->delete());
   }
 
   /**
@@ -529,37 +537,26 @@ class db_mysql {
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doDeleteRowWhere($table, $where) {
+  public function doDeleteRow($table, $where) {
     return $this->doDeleteWhere($table, $where, true);
   }
 
   /**
+   * Perform simple delete queries on fixed tables w/o params
+   *
    * @param string $query
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doDeleteComplex($query) {
-    return $this->doDelete($query);
-  }
-
-  /**
-   * Early deprecated function for complex delete conditions
-   *
-   * Usually used for mallformed $where conditions
-   *
-   * @param $table
-   * @param $where
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public function doDeleteDeprecated($table, $where) {
-    return $this->doDeleteWhere($table, $where, false);
+  public function doDeleteSimple($query) {
+    return $this->doSql($query);
   }
 
 
+  // Misc functions
+  //
   protected function castAsDbValue($value) {
-    switch(gettype($value)) {
+    switch (gettype($value)) {
       case TYPE_INTEGER:
       case TYPE_DOUBLE:
         // do nothing
@@ -703,7 +700,7 @@ class db_mysql {
    * @param bool               $skip_query_check
    */
   public function doStmtLockAll($stmt, $skip_query_check = false) {
-    $this->doExecute(
+    $this->doSql(
       $stmt
         ->select()
         ->field(1)
@@ -744,7 +741,7 @@ class db_mysql {
 
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch(true) {
+    switch (true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -806,7 +803,7 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while($row = $this->db_fetch($query)) {
+    while ($row = $this->db_fetch($query)) {
       foreach ($row as $table_name) {
         if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
@@ -937,7 +934,7 @@ class db_mysql {
     if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while($row = db_fetch($query)) {
+    while ($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 

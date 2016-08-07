@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.38');
+define('SN_VERSION', '41a51.39');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1641,3 +1641,10 @@ define('TABLE_LOG_USERS_ONLINE', 'log_users_online');
 define('TABLE_UBE_REPORT', 'ube_report');
 define('TABLE_QUE', 'que');
 define('TABLE_PAYMENT', 'payment');
+
+define('DB_INSERT_PLAIN', 0);
+define('DB_INSERT_REPLACE', 1);
+define('DB_INSERT_IGNORE', 2);
+
+define('DB_RECORDS_ALL', false);
+define('DB_RECORD_ONE', true);

@@ -106,7 +106,7 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false) {
   };
 
   $query .= " {$table} {$field_set}";
-  return classSupernova::$db->doExecute($query);
+  return classSupernova::$db->doSql($query);
 }
 
 

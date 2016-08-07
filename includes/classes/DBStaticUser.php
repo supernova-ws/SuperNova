@@ -150,7 +150,13 @@ class DBStaticUser extends DBStaticRecord {
   }
 
   public static function db_player_list_blitz_delete_players() {
-    classSupernova::$db->doDeleteDeprecated(TABLE_USERS, array("`username` LIKE 'Игрок%'"));
+    classSupernova::$db->doDeleteDanger(
+      TABLE_USERS,
+      array(),
+      array(
+        "`username` LIKE 'Игрок%'"
+      )
+    );
   }
 
   /**

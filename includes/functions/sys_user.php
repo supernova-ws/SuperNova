@@ -59,7 +59,7 @@ function DeleteSelectedUser($UserID) {
         )
       );
     } else {
-      classSupernova::$gc->db->doDeleteRowWhere(TABLE_ALLIANCE, array('id' => $TheAlly['id'],));
+      classSupernova::$gc->db->doDeleteRow(TABLE_ALLIANCE, array('id' => $TheAlly['id'],));
       classSupernova::$gc->db->doDeleteWhere(TABLE_STAT_POINTS, array('stat_type' => STAT_TYPE_ALLY, 'id_owner' => $TheAlly['id'],));
     }
   }

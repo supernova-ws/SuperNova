@@ -125,7 +125,8 @@ class SnDbCachedOperator {
     $id_field = static::$location_info[$location_type][P_ID];
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     // TODO - lock value in cache
-    if ($result = $this->db->doDeleteRowWhere($table_name, array($id_field => $safe_record_id))) {
+    if ($result = $this->db->doDeleteRow($table_name, array($id_field => $safe_record_id,))
+    ) {
       // Обновляем данные только если ряд был затронут
       if ($this->db->db_affected_rows()) {
         $this->snCache->cache_unset($location_type, $safe_record_id);

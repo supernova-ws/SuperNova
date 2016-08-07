@@ -2,10 +2,6 @@
 
 class DBStaticNote {
 
-  public static function db_note_list_delete($where) {
-    classSupernova::$gc->db->doDeleteDeprecated(TABLE_NOTES, $where);
-  }
-
   public static function db_note_get_id_and_owner($note_id_edit) {
     return classSupernova::$db->doSelectFetch("SELECT `id`, `owner` FROM {{notes}} WHERE `id` = {$note_id_edit} LIMIT 1 FOR UPDATE");
   }
@@ -102,11 +98,12 @@ class DBStaticNote {
    */
   public static function processDelete($user, $note_id_edit) {
     $not = '';
-    $query_where = '';
+    $whereDanger = array();
     switch (sys_get_param_str('note_delete_range')) {
       case 'all':
       break;
 
+      /** @noinspection PhpMissingBreakStatementInspection */
       case 'marked_not':
         $not = 'NOT';
       case 'marked':
@@ -126,7 +123,7 @@ class DBStaticNote {
         }
 
         $notes_marked_filtered = implode(',', $notes_marked_filtered);
-        $query_where = "AND `id` {$not} IN ({$notes_marked_filtered})";
+        $whereDanger[] = "`id` {$not} IN ({$notes_marked_filtered})";
       break;
 
       default:
@@ -135,9 +132,14 @@ class DBStaticNote {
     }
 
     sn_db_transaction_start();
-    $where['owner'] = $user['id'];
-    $where[] = $query_where;
-    DBStaticNote::db_note_list_delete($where);
+
+    classSupernova::$gc->db->doDeleteDanger(
+      TABLE_NOTES,
+      array(
+        'owner' => $user['id'],
+      ),
+      $whereDanger
+    );
     sn_db_transaction_commit();
 
     throw new Exception($note_id_edit ? 'note_err_none_changed' : 'note_err_none_added', ERR_NONE);

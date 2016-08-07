@@ -24,7 +24,7 @@ function sys_maintenance() {
 
   foreach($queries as &$query) {
     if(!empty($query['query'])) {
-      $query['result'] = classSupernova::$db->doExecute($query['query']);
+      $query['result'] = classSupernova::$db->doSql($query['query']);
     } elseif(!empty($query['callable']) && is_callable($query['callable'])) {
       call_user_func($query['callable']);
     }

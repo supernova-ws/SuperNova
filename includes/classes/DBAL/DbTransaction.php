@@ -71,10 +71,10 @@ class DbTransaction {
   public function start($level = '') {
     $this->check(null);
 
-    $level ? $this->db->doExecute('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
+    $level ? $this->db->doSql('SET TRANSACTION ISOLATION LEVEL ' . $level) : false;
 
     $this->transaction_id++;
-    $this->db->doExecute('START TRANSACTION');
+    $this->db->doSql('START TRANSACTION');
 //pdump(debug_backtrace());pdie();
 
     if (classSupernova::$gc->config->db_manual_lock_enabled) {
@@ -93,7 +93,7 @@ class DbTransaction {
   public function commit() {
     $this->check(true);
 
-    $this->db->doExecute('COMMIT');
+    $this->db->doSql('COMMIT');
 
     return $this->db_transaction_clear();
   }
@@ -101,7 +101,7 @@ class DbTransaction {
   public function rollback() {
     // TODO - вообще-то тут тоже надо проверять есть ли транзакция
 
-    $this->db->doExecute('ROLLBACK');
+    $this->db->doSql('ROLLBACK');
 
     return $this->db_transaction_clear();
   }

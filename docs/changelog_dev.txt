@@ -1168,6 +1168,17 @@ classSupernova::$gc->cacheOperator
 - Сделать инициализацию статических полей classSupernova через контейнер
 
 WORKING ON
+    ? class DbQuery
+        - Для выноса функций, которые не должны быть в DbQuery
+        + doDelete
+            + doDeleteDanger
+            + doDeleteWhere
+            + doDeleteRow
+            + doDeleteSimple
+        - doReplace
+        - doInsert
+        - doUpdate
+
     - Пересмотреть вызовы update-insert-replace-delete
         - и там где в $where есть опасные конструкции - заменить на отдельные вызовы
         - опасные конструкции - там, где не указано поле, а берется условие целиком

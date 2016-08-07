@@ -306,6 +306,7 @@ class DBStaticMessages {
 
     $deleteAll = false;
     $where = array();
+    $whereDanger = array();
     $not = '';
     switch ($message_range) {
       case 'unchecked':
@@ -320,7 +321,7 @@ class DBStaticMessages {
         }
 
         if ($query_add = implode(',', $marked_message_list)) {
-          $where[] = "`message_id` {$not} IN ({$query_add})";
+          $whereDanger[] = "`message_id` {$not} IN ({$query_add})";
         }
 
       case 'class':
@@ -334,8 +335,12 @@ class DBStaticMessages {
 
     if ($deleteAll || !empty($where)) {
       $where['message_owner'] = $player['id'];
-      // Mallformed $where
-      classSupernova::$gc->db->doDeleteDeprecated(TABLE_MESSAGES, $where);
+      // Malformed $where
+      classSupernova::$gc->db->doDeleteDanger(
+        TABLE_MESSAGES,
+        $where,
+        $whereDanger
+      );
     }
   }
 
@@ -498,11 +503,22 @@ LIMIT
    * @param string $message_delete
    */
   public static function db_message_list_delete_set($message_delete) {
-    classSupernova::$db->doDeleteDeprecated(TABLE_MESSAGES, array(0 => "`message_id` in ({$message_delete})",));
+    classSupernova::$db->doDeleteDanger(
+      TABLE_MESSAGES,
+      array(),
+      array(
+        "`message_id` IN ({$message_delete})",
+      )
+    );
   }
 
   public static function db_message_delete_by_id($messageId) {
-    classSupernova::$gc->db->doDeleteRowWhere(TABLE_MESSAGES, array('message_id' => $messageId));
+    classSupernova::$gc->db->doDeleteRow(
+      TABLE_MESSAGES,
+      array(
+        'message_id' => $messageId,
+      )
+    );
   }
 
 
@@ -512,11 +528,17 @@ LIMIT
    * @param $int_type_selected
    */
   public static function db_message_list_delete_by_date($delete_date, $int_type_selected) {
-    $where[] = "message_time <= UNIX_TIMESTAMP('{$delete_date}')";
+    $where = array();
     if($int_type_selected >= 0) {
       $where['message_type'] = $int_type_selected;
     }
-    classSupernova::$db->doDeleteDeprecated(TABLE_MESSAGES, $where);
+    classSupernova::$db->doDeleteDanger(
+      TABLE_MESSAGES,
+      $where,
+      array(
+        "message_time <= UNIX_TIMESTAMP('{$delete_date}')"
+      )
+    );
   }
 
 }

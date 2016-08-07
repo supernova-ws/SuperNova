@@ -23,7 +23,12 @@ class DBStaticFleetMissile {
    * @param $fleetDbId
    */
   public static function db_missile_delete($fleetDbId) {
-    classSupernova::$gc->db->doDeleteRowWhere(TABLE_MISSILES, array('id' => $fleetDbId));
+    classSupernova::$gc->db->doDeleteRow(
+      TABLE_MISSILES,
+      array(
+        'id' => $fleetDbId,
+      )
+    );
   }
 
   /**

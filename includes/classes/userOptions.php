@@ -148,10 +148,15 @@ class userOptions extends oldArrayAccessNd {
         $value = is_string($key) ? "'". db_escape($key) . "'" : $key;
       }
 
-      classSupernova::$db->doDeleteDeprecated(TABLE_PLAYER_OPTIONS, array(
-        'player_id' => $this->user_id,
-        "`option_id` IN (". implode(',', $this->to_delete) . ")",
-      ));
+      classSupernova::$db->doDeleteDanger(
+        TABLE_PLAYER_OPTIONS,
+        array(
+          'player_id' => $this->user_id,
+        ),
+        array(
+          "`option_id` IN (" . implode(',', $this->to_delete) . ")",
+        )
+      );
 
       $this->to_delete = array();
       $update_cache = true;

@@ -263,7 +263,12 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
     if ($this->isNew()) {
       classSupernova::$debug->error(__FILE__ . ':' . __LINE__ . ' - unit db_id is empty on dbDelete');
     }
-    classSupernova::$gc->db->doDeleteRowWhere(static::$_table, array(static::$_dbIdFieldName => $this->_dbId));
+    classSupernova::$gc->db->doDeleteRow(
+      static::$_table,
+      array(
+        static::$_dbIdFieldName => $this->_dbId,
+      )
+    );
     $this->_dbId = 0;
     // Обо всём остальном должен позаботиться контейнер
   }

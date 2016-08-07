@@ -29,7 +29,12 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   public function deleteById($entity) {
     $db = $entity->getDbStatic();
 
-    $db->doDeleteRowWhere($entity->getTableName(), array($entity->getIdFieldName() => $entity->dbId));
+    $db->doDeleteRow(
+      $entity->getTableName(),
+      array(
+        $entity->getIdFieldName() => $entity->dbId,
+      )
+    );
 
     return $db->db_affected_rows();
   }

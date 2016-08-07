@@ -198,7 +198,7 @@ foreach($ques as $que_transaction) {
     if(is_callable($que)) {
       $QryResult = call_user_func($que);
     } else {
-      $QryResult = classSupernova::$db->doExecute($que);
+      $QryResult = classSupernova::$db->doSql($que);
     }
     //$msg .= '<hr>' . $que . '<hr>';
     $que = str_replace(array('{{', '}}'), '', $que);

@@ -148,7 +148,14 @@ function db_stat_list_update_ally_stats() {
 }
 
 function db_stat_list_delete_ally_player() {
-  return classSupernova::$db->doDeleteComplex("DELETE s FROM `{{statpoints}}` AS s JOIN `{{users}}` AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL");
+  return classSupernova::$db->doDeleteSimple(
+    'DELETE s 
+    FROM `{{statpoints}}` AS s 
+      JOIN `{{users}}` AS u ON u.id = s.id_owner 
+    WHERE 
+      s.id_ally IS NULL 
+      AND u.user_as_ally IS NOT NULL'
+  );
 }
 
 
@@ -437,11 +444,17 @@ function db_log_list_get_last_100() {
  * @param $delete
  */
 function db_log_delete_by_id($delete) {
-  classSupernova::$gc->db->doDeleteRowWhere(TABLE_LOGS, array('log_id' => $delete));
+  classSupernova::$gc->db->doDeleteRow(TABLE_LOGS, array('log_id' => $delete));
 }
 
 function db_log_delete_update_and_stat_calc() {
-  classSupernova::$db->doDeleteComplex("DELETE FROM `{{logs}}` WHERE `log_code` IN (103, 180, 191);");
+  classSupernova::$db->doDeleteSimple(
+    'DELETE FROM `{{logs}}` WHERE `log_code` IN ('
+    . LOG_INFO_DB_CHANGE . ', '
+    . LOG_INFO_MAINTENANCE . ', '
+    . LOG_INFO_STAT_PROCESS .
+    ')'
+  );
 }
 
 /**
@@ -471,7 +484,7 @@ function db_log_count($i) {
  * @return array|bool|mysqli_result|null
  */
 function db_core_show_status() {
-  $result = classSupernova::$db->doExecute('SHOW STATUS;');
+  $result = classSupernova::$db->doSql('SHOW STATUS;');
 
   return $result;
 }
@@ -602,7 +615,7 @@ function db_quest_get($quest_id) {
  * @param $quest_id
  */
 function db_quest_delete($quest_id) {
-  classSupernova::$gc->db->doDeleteRowWhere(TABLE_QUEST, array('quest_id' => $quest_id));
+  classSupernova::$gc->db->doDeleteRow(TABLE_QUEST, array('quest_id' => $quest_id));
 }
 
 /**

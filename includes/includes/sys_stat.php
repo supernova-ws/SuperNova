@@ -222,8 +222,12 @@ function sys_stat_calculate() {
 
   sta_set_time_limit('archiving old statistic');
   // Statistic rotation
-  $classConfig = classSupernova::$config;
-  classSupernova::$db->doDeleteComplex("DELETE FROM {{statpoints}} WHERE `stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$classConfig->stats_history_days} DAY));");
+  $stat_history_date = classSupernova::$config->stats_history_days;
+  classSupernova::$db->doDeleteDanger(
+    TABLE_STAT_POINTS,
+    array(),
+    array("`stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$stat_history_date} DAY))")
+  );
   classSupernova::$db->doUpdateTableAdjust(
     TABLE_STAT_POINTS,
     array(),
@@ -292,7 +296,7 @@ function sys_stat_calculate() {
   sta_set_time_limit("updating ranks for players");
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating player rank '{$rankName}'", false);
-    classSupernova::$db->doExecute($qryResetRowNum);
+    classSupernova::$db->doSql($qryResetRowNum);
     classSupernova::$db->doUpdateSqlNoParam(sprintf($qryFormat, $rankName, 1));
   }
 
@@ -300,7 +304,7 @@ function sys_stat_calculate() {
   // Updating Allie's ranks
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
-    classSupernova::$db->doExecute($qryResetRowNum);
+    classSupernova::$db->doSql($qryResetRowNum);
     classSupernova::$db->doUpdateSqlNoParam(sprintf($qryFormat, $rankName, 2));
   }
 
