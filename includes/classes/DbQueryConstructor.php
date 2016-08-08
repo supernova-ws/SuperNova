@@ -5,9 +5,9 @@
  *
  * @method DbQueryConstructor fields(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
  * @method DbQueryConstructor join(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method DbQueryConstructor where(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method DbQueryConstructor groupBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
- * @method DbQueryConstructor orderBy(array $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor where(array|string $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor groupBy(array|string $value, int $mergeStrategy = HelperArray::MERGE_PHP)
+ * @method DbQueryConstructor orderBy(array|string $value, int $mergeStrategy = HelperArray::MERGE_PHP)
  * @method DbQueryConstructor having(mixed $value, int $mergeStrategy = HelperArray::MERGE_PHP)
  * @method DbQueryConstructor setFetchOne(bool $fetchOne = true)
  * @method DbQueryConstructor setForUpdate(bool $forUpdate = true)

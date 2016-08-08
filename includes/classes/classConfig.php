@@ -39,6 +39,12 @@
  * @property int    debug
  * @property int    Defs_Cdr
  * @property int    deuterium_basic_income
+ * @property float  eco_planet_starting_metal
+ * @property float  eco_planet_starting_crystal
+ * @property float  eco_planet_starting_deuterium
+ * @property float  eco_planet_storage_metal
+ * @property float  eco_planet_storage_crystal
+ * @property float  eco_planet_storage_deuterium
  * @property int    eco_scale_storage
  * @property string eco_stockman_fleet  // Black Market - Starting amount of s/h ship merchant to sell
  * @property int    eco_stockman_fleet_populate   // Populate empty Stockman fleet with ships or not
@@ -78,6 +84,7 @@
  * @property int    game_user_changename_cost  // Change name cost for paid changename
  * @property string game_watchlist
  * @property array  game_watchlist_array
+ * @property string geoip_whois_url
  * @property int    initial_fields
  * @property string int_banner_background
  * @property string int_banner_fontInfo
