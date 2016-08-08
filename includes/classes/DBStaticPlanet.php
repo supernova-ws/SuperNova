@@ -180,7 +180,7 @@ class DBStaticPlanet {
 
   /**
    * @param        $planet_id
-   * @param string $set
+   * @param array $set
    *
    * @return array|bool|mysqli_result|null
    */
@@ -190,7 +190,7 @@ class DBStaticPlanet {
 
   /**
    * @param        $planet_id
-   * @param string $adjust
+   * @param array $adjust
    *
    * @return array|bool|mysqli_result|null
    */
