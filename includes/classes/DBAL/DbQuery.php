@@ -40,6 +40,7 @@ class DbQuery {
   protected $command;
 
   protected $table = '';
+
   /**
    * Contains field names
    *
@@ -51,6 +52,7 @@ class DbQuery {
   protected $fields = array();
   protected $where = array();
   protected $whereDanger = array();
+
   /**
    * Contain array of values - fielded or not
    *
@@ -60,18 +62,18 @@ class DbQuery {
    * @var array
    */
   protected $values = array();
-
-  protected $adjustDanger = array();
-
   /**
    * Contain array of DANGER values for batch INSERT/REPLACE
    *
    * @var string[]
    */
   protected $valuesDanger = array();
+  protected $adjust = array();
+  protected $adjustDanger = array();
+
 
   /**
-   * Variable for increment query build
+   * Variable for incremental query build
    *
    * @var string[] $build
    */
@@ -119,6 +121,7 @@ class DbQuery {
   protected function buildWhere() {
     $safeWhere = implode(
       ' AND ',
+    // TODO - remove onlyDanger with $this->where
       $this->onlyDanger($this->whereDanger) + $this->onlyDanger($this->where) + $this->fieldEqValue($this->where)
     );
 
@@ -136,12 +139,12 @@ class DbQuery {
 
   protected function buildFieldsSet() {
     $safeFields = array();
-    // Adjusts overwritten by Sets
-    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($this->adjustDanger) + $this->onlyDanger($this->adjustDanger))) {
-      $safeFields[] = &$safeAdjust;
-    }
+    // Sets overwritten by Adjusts
     if ($safeFieldsEqualValues = implode(',', $this->fieldEqValue($this->values))) {
       $safeFields[] = &$safeFieldsEqualValues;
+    }
+    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($this->adjust) + $this->onlyDanger($this->adjustDanger))) {
+      $safeFields[] = &$safeAdjust;
     }
     $safeFieldsString = implode(',', $safeFields);
 
@@ -296,6 +299,17 @@ class DbQuery {
    */
   public function setValuesDanger($values = array()) {
     HelperArray::merge($this->valuesDanger, $values, HelperArray::MERGE_PHP);
+
+    return $this;
+  }
+
+  /**
+   * @param array $values
+   *
+   * @return $this
+   */
+  public function setAdjust($values = array()) {
+    HelperArray::merge($this->adjust, $values, HelperArray::MERGE_PHP);
 
     return $this;
   }

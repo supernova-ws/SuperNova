@@ -30,8 +30,13 @@ function sn_options_model() {
           'id_level' => $planet_protection
         )
       );
-      DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`admin_protection` = '{$planet_protection}'");
       $user['admin_protection'] = $planet_protection;
+      DBStaticUser::db_user_set_by_id(
+        $user['id'],
+        array(
+          'admin_protection' => $user['admin_protection'],
+        )
+      );
     }
 
     if(sys_get_param_int('vacation') && !classSupernova::$config->user_vacation_disable) {
@@ -55,15 +60,24 @@ function sn_options_model() {
 
         $query = classSupernova::$gc->cacheOperator->db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
         foreach($query as $planet) {
-          // $planet = sys_o_get_updated($user, $planet, SN_TIME_NOW);
-          // $planet = $planet['planet'];
-
           $classConfig = classSupernova::$config;
-          DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planet['id'],
-            "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
-            metal_perhour = '{$classConfig->metal_basic_income}', crystal_perhour = '{$classConfig->crystal_basic_income}', deuterium_perhour = '{$classConfig->deuterium_basic_income}',
-            metal_mine_porcent = '0', crystal_mine_porcent = '0', deuterium_sintetizer_porcent = '0', solar_plant_porcent = '0',
-            fusion_plant_porcent = '0', solar_satelit_porcent = '0', ship_sattelite_sloth_porcent = 0"
+          DBStaticPlanet::db_planet_update_set_by_id(
+            $planet['id'],
+            array(
+              'last_update'                  => SN_TIME_NOW,
+              'metal_perhour'                => $classConfig->metal_basic_income,
+              'crystal_perhour'              => $classConfig->crystal_basic_income,
+              'deuterium_perhour'            => $classConfig->deuterium_basic_income,
+              'energy_used'                  => 0,
+              'energy_max'                   => 0,
+              'metal_mine_porcent'           => 0,
+              'crystal_mine_porcent'         => 0,
+              'deuterium_sintetizer_porcent' => 0,
+              'solar_plant_porcent'          => 0,
+              'fusion_plant_porcent'         => 0,
+              'solar_satelit_porcent'        => 0,
+              'ship_sattelite_sloth_porcent' => 0,
+            )
           );
         }
         $user['vacation'] = SN_TIME_NOW + classSupernova::$config->player_vacation_time;
@@ -116,7 +130,14 @@ function sn_options_model() {
             rpg_points_change($user['id'], RPG_NAME_CHANGE, -classSupernova::$config->game_user_changename_cost, sprintf('Пользователь ID %d сменил имя с "%s" на "%s"', $user['id'], $user['username'], $username));
 
           case SERVER_PLAYER_NAME_CHANGE_FREE:
-            DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`username` = '{$username_safe}'");
+            $user['username'] = $username;
+            DBStaticUser::db_user_set_by_id(
+              $user['id'],
+              array(
+                '$username' => $user['$username'],
+              )
+            );
+
             db_player_name_history_replace($user['id'], $username);
             // TODO: Change cookie to not force user relogin
             // sn_setcookie(SN_COOKIE, '', time() - PERIOD_WEEK, SN_ROOT_RELATIVE);
@@ -124,7 +145,6 @@ function sn_options_model() {
               'STATUS'  => ERR_NONE,
               'MESSAGE' => classLocale::$lang['opt_msg_name_changed']
             );
-            $user['username'] = $username;
           break;
         }
       } else {
@@ -155,9 +175,9 @@ function sn_options_model() {
       }
     }
 
-    $user['email'] = sys_get_param_str('db_email');
-    $user['dpath'] = sys_get_param_str('dpath');
-    $user['lang'] = sys_get_param_str('langer', $user['lang']);
+    $user['email'] = sys_get_param_str_unsafe('db_email');
+    $user['dpath'] = sys_get_param_str_unsafe('dpath');
+    $user['lang'] = sys_get_param_str_unsafe('langer', $user['lang']);
 
 
     $user['design'] = sys_get_param_int('design');
@@ -197,18 +217,16 @@ function sn_options_model() {
         throw new exception();
       }
 
-      $user['user_birthday'] = db_escape("{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}");
+      $user['user_birthday'] = "{$match[$pos['Y']]}-{$match[$pos['m']]}-{$match[$pos['d']]}";
       // EOF black magic! Now we have valid SQL date in $user['user_birthday'] - independent of date format
 
       $year = date('Y', SN_TIME_NOW);
       if(mktime(0, 0, 0, $match[$pos['m']], $match[$pos['d']], $year) > SN_TIME_NOW) {
         $year--;
       }
-      $user['user_birthday_celebrated'] = db_escape("{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}");
+      $user['user_birthday_celebrated'] = "{$year}-{$match[$pos['m']]}-{$match[$pos['d']]}";
 
-      $user_birthday = ", `user_birthday` = '{$user['user_birthday']}', `user_birthday_celebrated` = '{$user['user_birthday_celebrated']}'";
-    } catch(exception $e) {
-      $user_birthday = '';
+    } catch(Exception $e) {
     }
 
     require_once('includes/includes/sys_avatar.php');
@@ -233,11 +251,22 @@ function sn_options_model() {
       ));
     }
 
-    $user_options_safe = db_escape($user['options']);
-    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
-      `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
-      `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe}', `gender` = {$user['gender']}
-      {$user_birthday}"
+    DBStaticUser::db_user_set_by_id(
+      $user['id'],
+      array(
+        'email'                    => $user['email'],
+        'lang'                     => $user['lang'],
+        'avatar'                   => $user['avatar'],
+        'dpath'                    => $user['dpath'],
+        'design'                   => $user['design'],
+        'noipcheck'                => $user['noipcheck'],
+        'deltime'                  => $user['deltime'],
+        'vacation'                 => $user['vacation'],
+        'options'                  => $user['options'],
+        'gender'                   => $user['gender'],
+        'user_birthday'            => $user['user_birthday'],
+        'user_birthday_celebrated' => $user['user_birthday_celebrated'],
+      )
     );
 
     $template_result['.']['result'][] = array(

@@ -163,7 +163,6 @@ class DBStaticUser extends DBStaticRecord {
    * @deprecated - NEVER change DM amount directly w/o logging!
    */
   public static function db_player_list_blitz_set_50k_dm() {
-//    classSupernova::$db->doUpdateRecord('UPDATE `{{users}}` SET `dark_matter` = 50000, `dark_matter_total` = 50000;');
     classSupernova::$db->doUpdateTableSet(TABLE_USERS,
       array(
         'dark_matter' => 50000,
@@ -238,13 +237,23 @@ class DBStaticUser extends DBStaticRecord {
 
   /**
    * @param $user_id
-   * @param string $set
+   * @param array $set
    *
    * @return array|bool|mysqli_result|null
-   * @deprecated
    */
-  public static function db_user_set_by_id_DEPRECATED($user_id, $set) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_by_id_DEPRECATED(LOC_USER, $user_id, $set);
+  public static function db_user_set_by_id($user_id, $set) {
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_USER, $user_id, $set, array());
+  }
+
+  /**
+   * @param $user_id
+   * @param array $set
+   * @param array $adjust
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function db_user_adjust_by_id($user_id, $adjust) {
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_USER, $user_id, array(), $adjust);
   }
 
   /**
@@ -280,25 +289,6 @@ class DBStaticUser extends DBStaticRecord {
 
 
   /**
-   * @param array $owners_list
-   * @param array $adjust
-   */
-  public static function db_user_list_set_mass_mail(&$owners_list, $adjust) {
-    $where = array();
-    if (!empty($owners_list)) {
-      $where[] = '`id` IN (' . implode(',', $owners_list) . ')';
-    }
-
-    // Danger - 'cause if IN clause
-    classSupernova::$gc->cacheOperator->db_upd_record_list_DANGER(
-      LOC_USER,
-      array(),
-      $adjust,
-      $where
-    );
-  }
-
-  /**
    * @param $ally_id
    * @param $ally_rank_id
    * @param array $set
@@ -311,30 +301,10 @@ class DBStaticUser extends DBStaticRecord {
       $adjust,
       array(
         'ally_id' => $ally_id,
+      ),
+      array(
         // TODO - DANGER !!!
         "`ally_rank_id` >= {$ally_rank_id}"
-      )
-    );
-  }
-
-  /**
-   * @param $ally_id
-   * @param $i
-   * @param $rank_id
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public static function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
-    return classSupernova::$gc->cacheOperator->db_upd_record_list(
-      LOC_USER,
-      array(
-        'ally_rank_id' => $i,
-      ),
-      array(),
-      array(
-        'ally_id'      => $ally_id,
-        'ally_rank_id' => $rank_id,
       )
     );
   }

@@ -58,10 +58,14 @@ function rpg_points_change($user_id, $change_type, $dark_matter, $comment = '', 
         $dark_matter = -$dark_matter_exists;
       }
     } else {
-      $changeset[] = "`dark_matter_total` = `dark_matter_total` + '{$dark_matter}'";
+      $changeset['dark_matter_total'] = +$dark_matter;
     }
-    $dark_matter ? $changeset[] = "`{$sn_data_dark_matter_db_name}` = `{$sn_data_dark_matter_db_name}` + '{$dark_matter}'" : false;
-    !empty($changeset) ? DBStaticUser::db_user_set_by_id_DEPRECATED($user_id, implode(',', $changeset)) : false;
+    if($dark_matter) {
+      $changeset[$sn_data_dark_matter_db_name] = +$dark_matter;
+    }
+    if(!empty($changeset)) {
+      DBStaticUser::db_user_adjust_by_id($user_id, $changeset);
+    }
     $rows_affected = classSupernova::$db->db_affected_rows();
   }
 
@@ -145,7 +149,12 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0) {
 
   if ($xp_to_add) {
     $xp += $xp_to_add;
-    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`{$field_xp}` = `{$field_xp}` + '{$xp_to_add}'");
+    DBStaticUser::db_user_adjust_by_id(
+      $user['id'],
+      array(
+        $field_xp => +$xp_to_add
+      )
+    );
   }
 
   $level = $user[$field_level];
@@ -154,7 +163,13 @@ function rpg_level_up(&$user, $type, $xp_to_add = 0) {
   }
   $level -= $user[$field_level];
   if ($level > 0) {
-    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`{$field_level}` = `{$field_level}` + '{$level}'");
+    DBStaticUser::db_user_adjust_by_id(
+      $user['id'],
+      array(
+        $field_level => +$level
+      )
+    );
+
     rpg_points_change($user['id'], $type, $level * 1000, $comment);
     $user[$field_level] += $level;
   }

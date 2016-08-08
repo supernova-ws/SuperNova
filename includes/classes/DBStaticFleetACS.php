@@ -21,7 +21,7 @@ class DBStaticFleetACS {
    */
 // USED AS CALLABLE - SEARCH FOR STRING!!!!!!!
   public static function db_fleet_aks_purge() {
-    classSupernova::$db->doDeleteSimple(
+    classSupernova::$db->doDeleteSql(
       'DELETE FROM `{{aks}}` 
       WHERE 
         `id` NOT IN (

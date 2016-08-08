@@ -228,14 +228,13 @@ function sys_stat_calculate() {
     array(),
     array("`stat_date` < UNIX_TIMESTAMP(DATE_SUB(NOW(), INTERVAL {$stat_history_date} DAY))")
   );
-  classSupernova::$db->doUpdateTableAdjust(
-    TABLE_STAT_POINTS,
-    array(),
-    array(
-      'stat_code' => 1
-    ),
-    array()
-  );
+  $dbQuery = \DBAL\DbQuery::build(classSupernova::$db)
+    ->setTable(TABLE_STAT_POINTS)
+    ->setAdjust(array(
+      'stat_code' => +1,
+    ));
+  classSupernova::$db->doUpdateDbQueryAdjust($dbQuery);
+
 
   sta_set_time_limit('posting new user stats to DB');
   $data = array();
@@ -297,7 +296,7 @@ function sys_stat_calculate() {
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating player rank '{$rankName}'", false);
     classSupernova::$db->doSql($qryResetRowNum);
-    classSupernova::$db->doUpdateSqlNoParam(sprintf($qryFormat, $rankName, 1));
+    classSupernova::$db->doUpdateReallyComplex(sprintf($qryFormat, $rankName, 1));
   }
 
   sta_set_time_limit("updating ranks for Alliances");
@@ -305,7 +304,7 @@ function sys_stat_calculate() {
   foreach($rankNames as $rankName) {
     sta_set_time_limit("updating Alliances rank '{$rankName}'", false);
     classSupernova::$db->doSql($qryResetRowNum);
-    classSupernova::$db->doUpdateSqlNoParam(sprintf($qryFormat, $rankName, 2));
+    classSupernova::$db->doUpdateReallyComplex(sprintf($qryFormat, $rankName, 2));
   }
 
   sta_set_time_limit('setting previous user stats from archive');

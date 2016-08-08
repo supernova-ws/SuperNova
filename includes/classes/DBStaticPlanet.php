@@ -23,7 +23,7 @@ class DBStaticPlanet {
 
 
   public static function db_planets_purge() {
-    classSupernova::$db->doDeleteSimple(
+    classSupernova::$db->doDeleteSql(
       'DELETE FROM `{{planets}}` 
       WHERE 
         `id_owner` NOT IN (
@@ -183,15 +183,22 @@ class DBStaticPlanet {
    * @param string $set
    *
    * @return array|bool|mysqli_result|null
-   * @deprecated
    */
-  public static function db_planet_update_set_by_id_DEPRECATED($planet_id, $set) {
-    if (!($planet_id = idval($planet_id))) {
-      return false;
-    }
-
-    return classSupernova::$gc->cacheOperator->db_upd_record_by_id_DEPRECATED(LOC_PLANET, $planet_id, $set);
+  public static function db_planet_update_set_by_id($planet_id, $set) {
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_PLANET, $planet_id, $set, array());
   }
+
+  /**
+   * @param        $planet_id
+   * @param string $adjust
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function db_planet_update_adjust_by_id($planet_id, $adjust) {
+    return classSupernova::$gc->cacheOperator->db_upd_record_by_id(LOC_PLANET, $planet_id, array(), $adjust);
+  }
+
+  // TODO - adjust separate
 
   public static function db_planet_update_by_gspt($ui_galaxy, $ui_system, $ui_planet, $ui_planet_type = PT_ALL, $set, $adjust) {
     if (empty($set) && empty($adjust)) {

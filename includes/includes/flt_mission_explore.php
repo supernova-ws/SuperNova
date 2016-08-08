@@ -245,25 +245,11 @@ function flt_mission_explore(&$mission_data) {
 
   DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_mission_job_complete, MSG_TYPE_EXPLORE, $msg_sender, $msg_title, $msg_text);
 
-  DBStaticUser::db_user_set_by_id_DEPRECATED($objFleet->playerOwnerId, "`player_rpg_explore_xp` = `player_rpg_explore_xp` + 1");
+  DBStaticUser::db_user_adjust_by_id(
+    $objFleet->playerOwnerId,
+    array('player_rpg_explore_xp' => +1)
+  );
 
-//  if(!empty($fleet_real_array) && $objFleet->shipsGetTotal() >= 1) {
-//    // ПОКА НЕ НУЖНО - мы уже выше посчитали суммарные ресурсы (те, что были до отправку в экспу плюс найденное) и обновили $fleet_row
-//    // НО МОЖЕТ ПРИГОДИТЬСЯ, когда будем работать напрямую с $objFleet
-////    if(!empty($resources_found) && array_sum($resources_found) > 0) {
-////      $objFleet->update_resources($resources_found); // TODO - проверить, что бы не терялись ресурсы в трюме
-////    }
-//
-//    if(!empty($fleet_lost) || !empty($fleet_found)) {
-//      $objFleet->replace_ships($fleet_real_array);
-//    }
-//    $objFleet->markReturned();
-//    $objFleet->dbSave();
-//  } else {
-//    // Удалить флот
-//    $objFleet->dbDelete();
-//    // From this point $fleet_row is useless - all data are put in local variables
-//  }
   $objFleet->markReturned();
   $objFleet->dbSave();
 

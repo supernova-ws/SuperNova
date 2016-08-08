@@ -125,11 +125,6 @@ class DBStaticUnit {
     ($unit_snid = idval($unit_snid)) ? $where['unit_snid'] = $unit_snid : false;
 
     return classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT, $where);
-//    return classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT,
-//      "`unit_location_type` = {$unit_location_type}" .
-//      ($unit_location_id = idval($unit_location_id) ? " AND `unit_location_id` = {$unit_location_id}" : '') .
-//      ($user_id = idval($user_id) ? " AND `unit_player_id` = {$user_id}" : '') .
-//      ($unit_snid = idval($unit_snid) ? " AND `unit_snid` = {$unit_snid}" : ''));
   }
 
   public static function db_unit_list_stat_calculate() {
@@ -208,7 +203,7 @@ class DBStaticUnit {
         $temp['unit_id'],
         array(),
         array(
-          'unit_level' => $unit_value
+          'unit_level' => +$unit_value
         )
       );
     } else {

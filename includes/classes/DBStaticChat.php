@@ -133,7 +133,7 @@ class DBStaticChat {
   }
 
   public static function db_chat_message_purge() {
-    classSupernova::$db->doDeleteSimple('DELETE FROM `{{chat}}`;');
+    classSupernova::$db->doDeleteSql('DELETE FROM `{{chat}}`;');
   }
 
   /**

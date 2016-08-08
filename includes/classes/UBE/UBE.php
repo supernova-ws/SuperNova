@@ -346,9 +346,12 @@ pdie();
           $temp = array();
           foreach($resource_delta as $resource_id => $resource_amount) {
             $resource_db_name = pname_resource_name($resource_id);
-            $temp[] = "`{$resource_db_name}` = `{$resource_db_name}` + ({$resource_amount})";
+            $temp[$resource_db_name] = $resource_amount;
           }
-          DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($this->ube_planet_info[PLANET_ID], implode(',', $temp));
+          DBStaticPlanet::db_planet_update_adjust_by_id(
+            $this->ube_planet_info[PLANET_ID],
+            $temp
+          );
         }
 
         if($ship_count_lost) {
@@ -381,7 +384,14 @@ pdie();
       }
       if($this->mission_type_id == MT_ATTACK && $this->is_defender_active_player) {
         $str_loose_or_win = $this->combat_result == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';
-        DBStaticUser::db_user_set_by_id_DEPRECATED($player_id, "`xpraid` = `xpraid` + 1, `raids` = `raids` + 1, `{$str_loose_or_win}` = `{$str_loose_or_win}` + 1");
+        DBStaticUser::db_user_adjust_by_id(
+          $player_id,
+          array(
+            'xpraid'          => +1,
+            'raids'           => +1,
+            $str_loose_or_win => +1,
+          )
+        );
       }
     }
     if(!empty($bashing_list)) {

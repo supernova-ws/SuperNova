@@ -1172,12 +1172,19 @@ classSupernova::$gc->cacheOperator
 
 
 WORKING ON
-
     !! Работаем над тестами для DbQuery
         - // TODO - split all DANGER works in DbQuery
         - Переделать одинаковые циклища
 
+    - doUpdate
+        - doUpdateReallyComplex - DANGER
+            - rewrite to danger
+        - db_user_set_by_id - дедупликация
+        - doUpdateWhere ??? - protected
+
     - Потом doUpdateWhere - в dbQuery
+
+    - db.php::function db_change_resources(&$user, &$planet, $unit_list)
 
     ? class DbQuery
         - Для выноса функций, которые не должны быть в DbQuery
@@ -1196,25 +1203,6 @@ WORKING ON
         - опасные конструкции - там, где не указано поле, а берется условие целиком
     - DBQuery
         - добавить в код
-    + doInsert
-    ? doUpdateWhere
-        + сделать protected
-        + doUpdateRowWhere
-        + doUpdateTable
-        + doUpdateRowAdjust
-        + doUpdateTableAdjust
-        ? doUpdateComplex
-            + DBStaticAlly::db_ally_update_by_changeset($ally_changeset, $ally)
-            + SnDbCacheOperator::db_upd_record_list($location_type, $set, $condition)
-            ? DBRow::db_field_update(array $field_set)
-            // TODO - DBRow::dbMakeFieldSet($isUpdate = false) - РАБОТАЕТ НЕПРАВИЛЬНО ПРИ $isUpdate!!!!!!!!!
-            - SnDbCacheOperator::db_upd_record_by_id($location_type, $record_id, $set)
-                + DBStaticUnit::db_unit_set_by_id
-                + GLOBAL::db_change_units_perform($adjust, $location, $object_id)
-                    + db_change_units
-                + DBStaticPlanet::db_planet_update_resources($planetRowFieldChanges, $planetId)
-                - DBStaticPlanet::db_planet_update_set_by_id($planet_id, $set)
-                - DBStaticUser::db_user_set_by_id($user_id, $set)
 
 
     - Добавить возврат db_affected_rows() и db_last_insert_id
@@ -1345,6 +1333,7 @@ BONUS_ABILITY - deprecated ???
 
 На новых наградах 8 марта-2106 не отображается надписи
 
+Апгрейд с очень старый версий двиэка (СН версии 36 и ниже) больше не поддерживается
 
 Время возвращения флота из САБа теперь равно времени полёта на САБ, а не чистому времени полёта флота
 

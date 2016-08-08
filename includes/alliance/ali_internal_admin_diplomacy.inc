@@ -46,7 +46,8 @@ if(sys_get_param_str('ali_dip_offer_make')) {
   $relation_new = $sn_diplomacy_relation_list[$alliance_negotiation_relation];
   $relation_current = $sn_diplomacy_relation_list[$relation_current_id];
   if($relation_new['enter_delay'] == -1 || $relation_current['exit_delay'] == -1) {
-    sn_db_perform('{{alliance_negotiation}}',
+    classSupernova::$db->doInsertSet(
+      TABLE_ALLIANCE_NEGOTIATION,
       array(
         'alliance_negotiation_ally_id'         => $user['ally_id'],
         'alliance_negotiation_ally_name'       => $user['ally_name'],
@@ -58,10 +59,8 @@ if(sys_get_param_str('ali_dip_offer_make')) {
         'alliance_negotiation_status'          => ALLY_PROPOSE_SENT
       )
     );
-
     $accept_offer = false;
   } else {
-    $accept_offer = true;
     $negotiation = array(
       'alliance_negotiation_ally_id'         => $alliance_negotiation_contr_ally_id,
       'alliance_negotiation_ally_name'       => $contr_ally_row['ally_name'],
@@ -69,6 +68,7 @@ if(sys_get_param_str('ali_dip_offer_make')) {
       'alliance_negotiation_contr_ally_name' => $user['ally_name'],
       'alliance_negotiation_relation'        => $alliance_negotiation_relation,
     );
+    $accept_offer = true;
   }
 } else {
   $offer_id = sys_get_param_id('offer_id');
@@ -101,24 +101,27 @@ if(sys_get_param_str('ali_dip_offer_make')) {
 if($accept_offer) {
   sn_db_transaction_start();
 
-  // TODO: Make sn_db_perform() multirow
-  sn_db_perform('{{alliance_diplomacy}}',
+  classSupernova::$db->doInsertSet(
+    TABLE_ALLIANCE_DIPLOMACY,
     array(
       'alliance_diplomacy_ally_id'         => $user['ally_id'],
       'alliance_diplomacy_contr_ally_id'   => $negotiation['alliance_negotiation_ally_id'],
       'alliance_diplomacy_contr_ally_name' => $negotiation['alliance_negotiation_ally_name'],
       'alliance_diplomacy_relation'        => $negotiation['alliance_negotiation_relation'],
       'alliance_diplomacy_time'            => SN_TIME_NOW
-    ));
-
-  sn_db_perform('{{alliance_diplomacy}}',
+    )
+  );
+  classSupernova::$db->doInsertSet(
+    TABLE_ALLIANCE_DIPLOMACY,
     array(
       'alliance_diplomacy_ally_id'         => $negotiation['alliance_negotiation_ally_id'],
       'alliance_diplomacy_contr_ally_id'   => $user['ally_id'],
       'alliance_diplomacy_contr_ally_name' => $user['ally_name'],
       'alliance_diplomacy_relation'        => $negotiation['alliance_negotiation_relation'],
       'alliance_diplomacy_time'            => SN_TIME_NOW
-    ));
+    )
+  );
+
 
   DBStaticAlly::db_ally_negotiation_delete_extended($negotiation['alliance_negotiation_ally_id'], $user['ally_id']);
 

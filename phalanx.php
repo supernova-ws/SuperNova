@@ -61,7 +61,12 @@ if($planet_scanned['destruyed'])
   message (classLocale::$lang['phalanx_planet_destroyed'], classLocale::$lang['tech'][STRUC_MOON_PHALANX], '', 3);
 }
 
-DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($user['current_planet'], "deuterium = deuterium - {$cost}");
+DBStaticPlanet::db_planet_update_adjust_by_id(
+  $user['current_planet'],
+  array(
+    'deuterium' => - $cost,
+  )
+);
 
 $template = gettemplate('planet_fleet_list', true);
 

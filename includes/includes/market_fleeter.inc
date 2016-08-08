@@ -29,7 +29,6 @@ if(is_array($shipList)) {
   db_config_get_stockman_fleet();
 
   $message .= classLocale::$lang["eco_mrk_{$submode}_ships"] . '<ul>';
-  $qry = array();
   $total = array();
   foreach($shipList as $shipID => &$shipCount) {
     $shipCount = ceil(floatval($shipCount));
@@ -89,6 +88,7 @@ if(is_array($shipList)) {
 
   $intError = ($intError == MARKET_DEAL) && (array_sum($total) == 0) ? $error_zero_res : $intError;
 
+  $qry = array();
   if($intError == MARKET_DEAL) {
     $message .= '</ul>' . classLocale::$lang["eco_mrk_{$submode}_res"] . '<ul>';
     foreach($total as $resID => $resCount) {
@@ -96,15 +96,15 @@ if(is_array($shipList)) {
         continue;
       }
 
-      $resource_name = pname_resource_name($resID);
-      // $newrow[$resID] = $planetrow[$resID] + $resCount * (-$multiplier);
-      $qry[] = "`{$resource_name}` = `{$resource_name}` + ({$resCount})";
-
-      $message .= "<li>" . classLocale::$lang['sys_' . $resource_name] . ": " . pretty_number(abs($resCount));
+      $qry[pname_resource_name($resID)] = $resCount;
+      $message .= "<li>" . classLocale::$lang['sys_' . pname_resource_name($resID)] . ": " . pretty_number(abs($resCount));
     }
     $message .= "</ul>";
 
-    DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planetrow['id'], implode(',', $qry));
+    DBStaticPlanet::db_planet_update_adjust_by_id(
+      $planetrow['id'],
+      $qry
+    );
 
     rpg_points_change($user['id'], RPG_MARKET_FLEET, -($rpg_cost), "Using Black Market page {$mode}");
     classSupernova::$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str($newstock));

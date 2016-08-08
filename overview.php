@@ -59,18 +59,19 @@ switch($mode = sys_get_param_str('mode')) {
     $template  = gettemplate('planet_manage', true);
     $planet_id = sys_get_param_id('planet_id');
 
-    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
-      $planetrow['name'] = $new_name;
-//      $new_name = db_escape($new_name);
-      DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planetrow['id'], "`name` = '{$new_name}'");
+    if(sys_get_param_str('rename') && ($new_name_unsafe = sys_get_param_str_unsafe('new_name'))) {
+      $planetrow['name'] = $new_name_unsafe;
+      DBStaticPlanet::db_planet_update_set_by_id(
+        $planetrow['id'],
+        array(
+          'name' => $new_name_unsafe,
+        )
+      );
     } elseif(sys_get_param_str('action') == 'make_capital') {
       try {
         sn_db_transaction_start();
         $user = DBStaticUser::db_user_by_id($user['id'], true, '*');
         $planetrow = DBStaticPlanet::db_planet_by_id($planetrow['id'], true, '*');
-//        $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
-//        $user = $global_data['user'];
-//        $planetrow = $global_data['planet'];
 
         if($planetrow['planet_type'] != PT_PLANET) {
           throw new exception(classLocale::$lang['ov_capital_err_not_a_planet'], ERR_ERROR);
@@ -88,7 +89,15 @@ switch($mode = sys_get_param_str('mode')) {
           array('Planet %s ID %d at coordinates %s now become Empire Capital', $planetrow['name'], $planetrow['id'], uni_render_coordinates($planetrow))
         );
 
-        DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "id_planet = {$planetrow['id']}, galaxy = {$planetrow['galaxy']}, system = {$planetrow['system']}, planet = {$planetrow['planet']}");
+        DBStaticUser::db_user_set_by_id(
+          $user['id'],
+          array(
+            'id_planet' => $planetrow['id'],
+            'galaxy'    => $planetrow['galaxy'],
+            'system'    => $planetrow['system'],
+            'planet'    => $planetrow['planet'],
+          )
+        );
 
         $user['id_planet'] = $planetrow['id'];
         $result[] = array(
@@ -143,7 +152,14 @@ switch($mode = sys_get_param_str('mode')) {
         );
 
         if($planetrow['id'] == $user['id_planet']) {
-          DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "galaxy = {$new_coordinates['galaxy']}, system = {$new_coordinates['system']}, planet = {$new_coordinates['planet']}");
+          DBStaticUser::db_user_set_by_id(
+            $user['id'],
+            array(
+              'galaxy' => $new_coordinates['galaxy'],
+              'system' => $new_coordinates['system'],
+              'planet' => $new_coordinates['planet'],
+            )
+          );
         }
 
         // $global_data = sys_o_get_updated($user, $planetrow['id'], SN_TIME_NOW);
@@ -167,7 +183,14 @@ switch($mode = sys_get_param_str('mode')) {
       if(classSupernova::$auth->password_check(sys_get_param('abandon_confirm'))) {
         if($user['id_planet'] != $user['current_planet'] && $user['current_planet'] == $planet_id) {
           $destroyed = SN_TIME_NOW + 60 * 60 * 24;
-          DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
+          DBStaticPlanet::db_planet_update_set_by_id(
+            $user['current_planet'],
+            array(
+              'destruyed' => $destroyed,
+              'id_owner'  => 0,
+            )
+          );
+
           DBStaticPlanet::db_planet_set_by_parent(
             $user['current_planet'],
             array(
@@ -175,7 +198,10 @@ switch($mode = sys_get_param_str('mode')) {
               'id_owner'  => 0,
             )
           );
-          DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], '`current_planet` = `id_planet`');
+          DBStaticUser::db_user_set_by_id(
+            $user['id'],
+            array('current_planet' => $user['id_planet'])
+          );
           message(classLocale::$lang['ov_delete_ok'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
         } else {
           message(classLocale::$lang['ov_delete_wrong_planet'], classLocale::$lang['colony_abandon'], 'overview.php?mode=manage');
@@ -201,13 +227,19 @@ switch($mode = sys_get_param_str('mode')) {
       if($build_data['CAN'][BUILD_CREATE]) {
         if($planetrow['PLANET_GOVERNOR_ID'] == $hire) {
           $planetrow['PLANET_GOVERNOR_LEVEL']++;
-          $query = '`PLANET_GOVERNOR_LEVEL` + 1';
         } else {
           $planetrow['PLANET_GOVERNOR_LEVEL'] = 1;
           $planetrow['PLANET_GOVERNOR_ID'] = $hire;
-          $query = '1';
         }
-        DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planetrow['id'], "`PLANET_GOVERNOR_ID` = {$hire}, `PLANET_GOVERNOR_LEVEL` = {$query}");
+        DBStaticPlanet::db_planet_update_set_by_id(
+          $planetrow['id'],
+          array(
+            'PLANET_GOVERNOR_ID' => $hire,
+            // TODO - change it
+            'PLANET_GOVERNOR_LEVEL' => $planetrow['PLANET_GOVERNOR_LEVEL'],
+          )
+        );
+
         rpg_points_change(
           $user['id'],
           RPG_GOVERNOR,
@@ -288,10 +320,15 @@ switch($mode = sys_get_param_str('mode')) {
   default:
     sn_sys_sector_buy();
 
-    if(sys_get_param_str('rename') && $new_name = sys_get_param_str('new_name')) {
-      $planetrow['name'] = $new_name;
-      $new_name_safe = db_escape($new_name);
-      DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planetrow['id'], "`name` = '{$new_name_safe}'");
+    if(sys_get_param_str('rename') && $new_name_unsafe = sys_get_param_str_unsafe('new_name')) {
+      $planetrow['name'] = $new_name_unsafe;
+      DBStaticPlanet::db_planet_update_set_by_id(
+        $planetrow['id'],
+        array(
+          'name' => $new_name_unsafe,
+        )
+      );
+
     }
 
     $result[] = sn_sys_planet_core_transmute($user, $planetrow);

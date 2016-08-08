@@ -55,13 +55,16 @@ function qst_render_page() {
           $quest_description_unsafe = $quest_description;
           db_quest_update($quest_name_unsafe, $quest_type, $quest_description_unsafe, $quest_conditions, $quest_rewards, $quest_id);
         } else {
-          sn_db_perform('{{quest}}', array(
-            'quest_name'        => $quest_name,
-            'quest_type'        => $quest_type,
-            'quest_description' => $quest_description,
-            'quest_conditions'  => $quest_conditions,
-            'quest_rewards'     => $quest_rewards,
-          ));
+          classSupernova::$db->doInsertSet(
+            TABLE_QUEST,
+            array(
+              'quest_name'        => $quest_name,
+              'quest_type'        => $quest_type,
+              'quest_description' => $quest_description,
+              'quest_conditions'  => $quest_conditions,
+              'quest_rewards'     => $quest_rewards,
+            )
+          );
         }
 
         // TODO: Add mass mail for new quests
@@ -255,11 +258,14 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
 
         DBStaticMessages::msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['msg_from_admin'], classLocale::$lang['qst_msg_complete_subject'], $comment);
 
-        sn_db_perform('{{quest_status}}', array(
-          'quest_status_quest_id' => $quest_id,
-          'quest_status_user_id'  => $user_id,
-          'quest_status_status'   => QUEST_STATUS_COMPLETE
-        ));
+        classSupernova::$db->doInsertSet(
+          TABLE_QUEST_STATUS,
+          array(
+            'quest_status_quest_id' => $quest_id,
+            'quest_status_user_id'  => $user_id,
+            'quest_status_status'   => QUEST_STATUS_COMPLETE
+          )
+        );
       }
     }
   }

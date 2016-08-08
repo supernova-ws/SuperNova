@@ -7,14 +7,14 @@
  *
  * Created by Gorlum 21.04.2015 3:51
  *
- * version #41a51.35#
+ * version #41a51.43#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a51.35# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a51.43# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -693,18 +693,23 @@ class core_auth extends sn_module {
         $user['vacation'] = SN_TIME_NOW;
       }
 
-      $user['user_lastip'] = self::$device->ip_v4_string;// $ip['ip'];
-      $user['user_proxy'] = self::$device->ip_v4_proxy_chain; //$ip['proxy_chain'];
+      $user['user_lastip'] = self::$device->ip_v4_string;
+      $user['user_proxy'] = self::$device->ip_v4_proxy_chain;
+
+      DBStaticUser::db_user_set_by_id(
+        $user['id'],
+        array(
+          'user_last_proxy'      => $user['user_proxy'],
+          'onlinetime'           => SN_TIME_NOW,
+          'banaday'              => $user['banaday'],
+          'vacation'             => $user['vacation'],
+          'user_lastip'          => $user['user_lastip'],
+          'user_last_browser_id' => self::$device->browser_id
+        )
+      );
 
       $result[F_BANNED_STATUS] = $user['banaday'];
       $result[F_VACATION_STATUS] = $user['vacation'];
-
-      $proxy_safe = static::$db->db_escape(self::$device->ip_v4_proxy_chain);
-
-      DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`onlinetime` = " . SN_TIME_NOW . ",
-      `banaday` = " . static::$db->db_escape($user['banaday']) . ", `vacation` = " . static::$db->db_escape($user['vacation']) . ",
-      `user_lastip` = '" . static::$db->db_escape($user['user_lastip']) . "', `user_last_proxy` = '{$proxy_safe}', `user_last_browser_id` = " . self::$device->browser_id
-      );
     }
 
     if ($extra = classSupernova::$config->security_ban_extra) {

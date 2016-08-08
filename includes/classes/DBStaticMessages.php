@@ -92,8 +92,6 @@ class DBStaticMessages {
     $message_class = static::$snMessageClassList[$message_type];
     $message_class_name = $message_class['name'];
 
-    $text_safe = db_escape($text_unsafe);
-
     $message_class_name_total = static::$snMessageClassList[MSG_TYPE_NEW]['name'];
 
     if ($owners[0] == '*') {
@@ -143,13 +141,22 @@ class DBStaticMessages {
         $insert_values
       );
     }
-    DBStaticUser::db_user_list_set_mass_mail(
-      $owners,
-      array(
-        $message_class_name       => +1,
-        $message_class_name_total => +1,
-      )
-    );
+    if (!empty($owners)) {
+      // Danger - 'cause if IN clause
+      classSupernova::$gc->cacheOperator->db_upd_record_list_DANGER(
+        LOC_USER,
+        array(),
+        array(
+          $message_class_name       => +1,
+          $message_class_name_total => +1,
+        ),
+        array(),
+        array(
+          // TODO DANGER
+          '`id` IN (' . implode(',', $owners) . ')',
+        )
+      );
+    }
 
     if (in_array($user['id'], $owners) || $owners[0] == '*') {
       $user[$message_class_name]++;
@@ -351,29 +358,32 @@ class DBStaticMessages {
    * @return template
    */
   public static function messageShow(&$player, $current_class) {
+    $SubUpdateQrySet = array();
+    $SubUpdateQryAdjust = array();
+    $SubSelectQry = '';
     if ($current_class == MSG_TYPE_OUTBOX) {
       $message_query = static::db_message_list_outbox_by_user_id($player['id']);
     } else {
       if ($current_class == MSG_TYPE_NEW) {
-        $SubUpdateQry = array();
         foreach (static::$snMessageClassList as $message_class_id => $message_class) {
           if ($message_class_id != MSG_TYPE_OUTBOX) {
-            $SubUpdateQry[] = "`{$message_class['name']}` = '0'";
+            $SubUpdateQrySet[$message_class['name']] = 0;
             $player[$message_class['name']] = 0;
           }
         }
-        $SubUpdateQry = implode(',', $SubUpdateQry);
       } else {
         $classFieldNameCurrent = static::$snMessageClassList[$current_class]['name'];
         $classFieldNameNew = static::$snMessageClassList[MSG_TYPE_NEW]['name'];
-        $SubUpdateQry = "`{$classFieldNameCurrent}` = '0', `{$classFieldNameNew}` = `{$classFieldNameNew}` - '{$player[$classFieldNameCurrent]}'";
+        $SubUpdateQrySet[$classFieldNameCurrent] = 0;
+        $SubUpdateQryAdjust[$classFieldNameNew] = - $player[$classFieldNameCurrent];
         $SubSelectQry = "AND `message_type` = '{$current_class}'";
 
         $player[static::$snMessageClassList[MSG_TYPE_NEW]['name']] -= $player[static::$snMessageClassList[$current_class]['name']];
         $player[static::$snMessageClassList[$current_class]['name']] = 0;
       }
 
-      DBStaticUser::db_user_set_by_id_DEPRECATED($player['id'], $SubUpdateQry);
+      DBStaticUser::db_user_set_by_id($player['id'], $SubUpdateQrySet);
+      DBStaticUser::db_user_adjust_by_id($player['id'], $SubUpdateQryAdjust);
       $message_query = static::db_message_list_by_owner_and_string($player, $SubSelectQry);
     }
 

@@ -139,7 +139,12 @@ function fleet_ajax() {
     $objFleet->dbInsert();
   }
 
-  DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
+  DBStaticPlanet::db_planet_update_adjust_by_id(
+    $planetrow['id'],
+    array(
+      'deuterium' => -$travel_data['consumption'],
+    )
+  );
 
   foreach ($fleet_array as $unit_id => $unit_count) {
     DBStaticUnit::dbUpdateOrInsertUnit($unit_id, -$unit_count, $user, $planetrow);

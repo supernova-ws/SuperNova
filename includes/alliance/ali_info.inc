@@ -13,7 +13,16 @@ if($mode == 'exit') {
 
   if(sys_get_param_int('ali_info_leave_confirm')) {
     sn_db_transaction_start();
-    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`ally_id` = null, `ally_name` = null, `ally_tag` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
+    DBStaticUser::db_user_set_by_id(
+      $user['id'],
+      array(
+        'ally_id'            => null,
+        'ally_name'          => null,
+        'ally_tag'           => null,
+        'ally_register_time' => 0,
+        'ally_rank_id'       => 0,
+      )
+    );
     DBStaticAlly::db_ally_list_recalc_counts();
     sn_db_transaction_commit();
     message(sprintf(classLocale::$lang['ali_info_leave_success'], $ally['ally_name']), classLocale::$lang['sys_alliance']);

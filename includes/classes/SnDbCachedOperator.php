@@ -247,39 +247,6 @@ class SnDbCachedOperator {
   }
 
   /**
-   * @param int    $location_type
-   * @param int    $record_id
-   * @param string $set - SQL SET structure
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public function db_upd_record_by_id_DEPRECATED($location_type, $record_id, $set) {
-    if (!($record_id = idval($record_id)) || !($set = trim($set))) {
-      return false;
-    }
-
-    $id_field = static::$location_info[$location_type][P_ID];
-    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    // TODO Как-то вернуть может быть LIMIT 1 ?
-    if ($result = $this->db->doUpdateComplex("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) {
-      if ($this->db->db_affected_rows()) {
-        // Обновляем данные только если ряд был затронут
-        // TODO - переделать под работу со структурированными $set
-
-        // Тут именно так, а не cache_unset - что бы в кэшах автоматически обновилась запись. Будет нужно на будущее
-        //static::$data[$location_type][$record_id] = null;
-        $this->snCache->cacheUnsetElement($location_type, $record_id);
-        // Вытаскиваем обновленную запись
-        $this->db_get_record_by_id($location_type, $record_id);
-        $this->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
-      }
-    }
-
-    return $result;
-  }
-
-  /**
    * @param int   $location_type
    * @param int   $record_id
    * @param array $set - SQL SET structure
@@ -322,16 +289,17 @@ class SnDbCachedOperator {
   }
 
 
+
   /**
    * @param int   $location_type
    * @param array $set
    * @param array $adjust
    *
-   * @param array $condition
+   * @param array $where
    *
    * @return array|bool|mysqli_result|null
    */
-  public function db_upd_record_list($location_type, $set, $adjust, $condition) {
+  public function db_upd_record_list($location_type, $set, $adjust, $where, $whereDanger = array()) {
     if (empty($set) && empty($adjust)) {
       return false;
     }
@@ -340,7 +308,8 @@ class SnDbCachedOperator {
       static::$location_info[$location_type][P_TABLE_NAME],
       $set,
       $adjust,
-      $condition
+      $where,
+      $whereDanger
     );
 
     if ($result) {
@@ -363,15 +332,20 @@ class SnDbCachedOperator {
    * @param int   $location_type
    * @param array $set
    * @param array $adjust
-   *
-   * @param array $condition
+   * @param array $where
+   * @param array $whereDanger
    *
    * @return array|bool|mysqli_result|null
    * @deprecated
    */
-  public function db_upd_record_list_DANGER($location_type, $set, $adjust, $condition) {
-    return $this->db_upd_record_list($location_type, $set, $adjust, $condition);
+  public function db_upd_record_list_DANGER($location_type, $set, $adjust, $where, $whereDanger) {
+    return $this->db_upd_record_list($location_type, $set, $adjust, $where, $whereDanger);
   }
+
+
+
+
+
 
   /**
    * @param int   $location_type

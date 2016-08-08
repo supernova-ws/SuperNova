@@ -1109,8 +1109,14 @@ class Fleet extends UnitContainer {
     // Restoring resources to planet
     if ($this->resourcesGetTotal()) {
       $fleet_resources = $this->resourcesGetList();
-      DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planet_arrival['id'],
-        "`metal` = `metal` + '{$fleet_resources[RES_METAL]}', `crystal` = `crystal` + '{$fleet_resources[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$fleet_resources[RES_DEUTERIUM]}'");
+      DBStaticPlanet::db_planet_update_adjust_by_id(
+        $planet_arrival['id'],
+        array(
+          'metal'     => +$fleet_resources[RES_METAL],
+          'crystal'   => +$fleet_resources[RES_CRYSTAL],
+          'deuterium' => +$fleet_resources[RES_DEUTERIUM],
+        )
+      );
     }
 
     $this->resourcesReset();
@@ -1816,10 +1822,13 @@ class Fleet extends UnitContainer {
     $this->dbInsert();
     $this->unitList->dbSubstractUnitsFromPlanet($this->dbOwnerRow, $this->dbSourcePlanetRow['id']);
 
-    DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($this->dbSourcePlanetRow['id'],
-      "`metal` = `metal` - {$this->resource_list[RES_METAL]},
-      `crystal` = `crystal` - {$this->resource_list[RES_CRYSTAL]},
-      `deuterium` = `deuterium` - {$this->resource_list[RES_DEUTERIUM]} - {$this->travelData['consumption']}"
+    DBStaticPlanet::db_planet_update_adjust_by_id(
+      $this->dbSourcePlanetRow['id'],
+      array(
+        'metal'     => -$this->resource_list[RES_METAL],
+        'crystal'   => -$this->resource_list[RES_CRYSTAL],
+        'deuterium' => -$this->resource_list[RES_DEUTERIUM] - $this->travelData['consumption'],
+      )
     );
 
     if (!empty($this->captain['unit_id'])) {

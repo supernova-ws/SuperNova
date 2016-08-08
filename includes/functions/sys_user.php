@@ -11,7 +11,13 @@ function sys_user_vacation($user) {
     if ($user['vacation'] < SN_TIME_NOW) {
       $user['vacation'] = 0;
       $user['vacation_next'] = SN_TIME_NOW + classSupernova::$config->player_vacation_timeout;
-      DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], "`vacation` = {$user['vacation']}, `vacation_next` = {$user['vacation_next']}");
+      DBStaticUser::db_user_set_by_id(
+        $user['id'],
+        array(
+          'vacation' => $user['vacation'],
+          'vacation_next' => $user['vacation_next'],
+        )
+      );
     }
   }
 
@@ -93,7 +99,12 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
   $ban_current = DBStaticUser::db_user_by_id($banned['id'], false, 'banaday');
   $ban_until = ($ban_current['banaday'] ? $ban_current['banaday'] : SN_TIME_NOW) + $term;
 
-  DBStaticUser::db_user_set_by_id_DEPRECATED($banned['id'], "`banaday` = {$ban_until} " . ($is_vacation ? ", `vacation` = '{$ban_until}' " : ''));
+  DBStaticUser::db_user_set_by_id(
+    $banned['id'],
+    array(
+      'banaday' => $ban_until,
+    ) + ($is_vacation ? array('vacation' => $ban_until) : array())
+  );
 
   classSupernova::$db->doInsertSet(TABLE_BANNED, array(
     'ban_user_id'      => $banned['id'],
@@ -126,7 +137,13 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
  * @param string $reasonUnsafe
  */
 function sys_admin_player_ban_unset($banner, $banned, $reasonUnsafe = '') {
-  DBStaticUser::db_user_set_by_id_DEPRECATED($banned['id'], "`banaday` = 0, `vacation` = " . SN_TIME_NOW . "");
+  DBStaticUser::db_user_set_by_id(
+    $banned['id'],
+    array(
+      'banaday' => 0,
+      'vacation' => SN_TIME_NOW,
+    )
+  );
 
   return classSupernova::$db->doInsertSet(TABLE_BANNED, array(
     'ban_user_id'      => $banned['id'],
@@ -206,9 +223,15 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   }
   $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], classLocale::$lang['sys_capital'], true, $options['planet_options']);
 
-  DBStaticUser::db_user_set_by_id_DEPRECATED($user_new['id'],
-    "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
-    `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"
+  DBStaticUser::db_user_set_by_id(
+    $user_new['id'],
+    array(
+      'id_planet'      => $new_planet_id,
+      'current_planet' => $new_planet_id,
+      'galaxy'         => $options['galaxy'],
+      'system'         => $options['system'],
+      'planet'         => $options['planet'],
+    )
   );
 
   classSupernova::$config->db_saveItem('users_amount', classSupernova::$config->users_amount + 1);

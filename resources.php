@@ -74,19 +74,19 @@ if (is_array($production)) {
       $field_name = pname_factory_production_field_name($prod_id);
       $percent = floor($percent / 10);
       $planetrow[$field_name] = $percent;
-      //$SubQry                 .= "`{$field_name}` = '{$percent}',";
-      $SubQry[] = "`{$field_name}` = '{$percent}'";
+      $SubQry[$field_name] = $percent;
     } else {
       classSupernova::$debug->warning('Supplying wrong ID in production array - attempt to change some field - ID' . $prod_id, 'Resource Page', 301);
       continue;
     }
   }
 
-//  $SubQry = substr($SubQry, 0, -1);
-//  if($SubQry) {
-//    db_planet_set_by_id($planetrow['id'], $SubQry);
-//  }
-  !empty($SubQry) ? DBStaticPlanet::db_planet_update_set_by_id_DEPRECATED($planetrow['id'], implode(',', $SubQry)) : false;
+  if(!empty($SubQry)) {
+    DBStaticPlanet::db_planet_update_set_by_id(
+      $planetrow['id'],
+      $SubQry
+    );
+  }
 }
 
 // -------------------------------------------------------------------------------------------------------

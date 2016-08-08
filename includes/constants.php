@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.42');
+define('SN_VERSION', '41a51.43');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1604,6 +1604,7 @@ define('TABLE_CONFIRMATIONS', 'confirmations');
 define('TABLE_ALLIANCE', 'alliance');
 define('TABLE_ALLIANCE_NEGOTIATION', 'alliance_negotiation');
 define('TABLE_ALLIANCE_REQUESTS', 'alliance_requests');
+define('TABLE_ALLIANCE_DIPLOMACY', 'alliance_diplomacy');
 define('TABLE_CHAT', 'chat');
 define('TABLE_AKS', 'aks');
 define('TABLE_MISSILES', 'iraks');
@@ -1641,6 +1642,8 @@ define('TABLE_LOG_USERS_ONLINE', 'log_users_online');
 define('TABLE_UBE_REPORT', 'ube_report');
 define('TABLE_QUE', 'que');
 define('TABLE_PAYMENT', 'payment');
+define('TABLE_QUEST_STATUS', 'quest_status');
+
 
 define('DB_INSERT_PLAIN', 0);
 define('DB_INSERT_REPLACE', 1);

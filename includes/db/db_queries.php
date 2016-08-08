@@ -148,7 +148,7 @@ function db_stat_list_update_ally_stats() {
 }
 
 function db_stat_list_delete_ally_player() {
-  return classSupernova::$db->doDeleteSimple(
+  return classSupernova::$db->doDeleteSql(
     'DELETE s 
     FROM `{{statpoints}}` AS s 
       JOIN `{{users}}` AS u ON u.id = s.id_owner 
@@ -308,18 +308,16 @@ function db_blitz_reg_update_with_name_and_password($blitz_name_unsafe, $blitz_p
 }
 
 function db_blitz_reg_update_apply_results($reward, $row, $current_round) {
-  classSupernova::$db->doUpdateTableAdjust(
-    TABLE_BLITZ_REGISTRATIONS,
-    array(),
-    array(
+  $dbQuery = \DBAL\DbQuery::build(classSupernova::$db)
+    ->setTable(TABLE_BLITZ_REGISTRATIONS)
+    ->setAdjust(array(
       'blitz_reward_dark_matter' => $reward,
-    ),
-    array(
-      'id' => $row['id'],
+    ))
+    ->setWhereArray(array(
+      'id'           => $row['id'],
       'round_number' => $current_round,
-    )
-  );
-
+    ));
+  classSupernova::$db->doUpdateDbQueryAdjust($dbQuery);
 }
 
 function db_blitz_reg_update_results($current_round, $blitz_name_unsafe, $blitz_player_id, $blitz_online, $blitz_place, $blitz_points) {
@@ -448,7 +446,7 @@ function db_log_delete_by_id($delete) {
 }
 
 function db_log_delete_update_and_stat_calc() {
-  classSupernova::$db->doDeleteSimple(
+  classSupernova::$db->doDeleteSql(
     'DELETE FROM `{{logs}}` WHERE `log_code` IN ('
     . LOG_INFO_DB_CHANGE . ', '
     . LOG_INFO_MAINTENANCE . ', '

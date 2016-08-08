@@ -341,7 +341,6 @@ class db_mysql {
   public function doInsertComplex($query) {
     return $this->doSql($query);
   }
-
   /**
    * @param string $table
    * @param array  $fieldsAndValues
@@ -352,8 +351,6 @@ class db_mysql {
   public function doInsertSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
     return $this->doSet($table, $fieldsAndValues, $replace);
   }
-
-
   /**
    * Values should be passed as-is
    *
@@ -384,7 +381,6 @@ class db_mysql {
   public function doReplaceSet($table, $fieldsAndValues) {
     return $this->doSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
   }
-
   /**
    * Values should be passed as-is
    *
@@ -401,10 +397,6 @@ class db_mysql {
 
 
   // UPDATERS
-  public function doUpdateComplex($query) {
-    return $this->doSql($query);
-  }
-
   public function doUpdateReallyComplex($query) {
     return $this->doSql($query);
   }
@@ -423,7 +415,24 @@ class db_mysql {
     return $this->doSql($query);
   }
 
-  protected function doUpdateWhere($table, $fieldsSet, $fieldsAdjust = array(), $where = array(), $isOneRecord = DB_RECORDS_ALL) {
+
+
+  /**
+   * @param $DbQuery DbQuery
+   */
+  protected function doUpdateDbQuery($DbQuery) {
+    return $this->doSql($DbQuery->update());
+  }
+
+  /**
+   * @param $DbQuery DbQuery
+   */
+  public function doUpdateDbQueryAdjust($DbQuery) {
+    return $this->doUpdateDbQuery($DbQuery);
+  }
+
+
+  protected function doUpdateWhere($table, $fieldsSet, $fieldsAdjust = array(), $where = array(), $isOneRecord = DB_RECORDS_ALL, $whereDanger = array()) {
 //    $query = DbQuery::build($this)
 //      ->setTable($table)
 //      ->setValues($fieldsSet)
@@ -431,10 +440,11 @@ class db_mysql {
 //
 //      // TODO - separate danger WHEREs
 //      ->setWhereArray($where)
+//      ->setWhereArrayDanger($whereDanger)
 //      ->setOneRow($isOneRecord)
 //
 //      ->update();
-
+//
     $tableSafe = $this->db_escape($table);
 
     $safeFields = array();
@@ -469,22 +479,9 @@ class db_mysql {
     return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORD_ONE);
   }
 
-  public function doUpdateTableAdjust($table, $fieldsSet, $fieldsAdjust, $where) {
-    return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORDS_ALL);
+  public function doUpdateTableAdjust($table, $fieldsSet, $fieldsAdjust, $where, $whereDanger = array()) {
+    return $this->doUpdateWhere($table, $fieldsSet, $fieldsAdjust, $where, DB_RECORDS_ALL, $whereDanger);
   }
-
-  /**
-   * For update_old - would be deprecated
-   *
-   * @param string $query
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  public function doUpdateOld($query) {
-    return $this->doSql($query);
-  }
-
 
 
   // DELETERS
@@ -547,7 +544,7 @@ class db_mysql {
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doDeleteSimple($query) {
+  public function doDeleteSql($query) {
     return $this->doSql($query);
   }
 
@@ -918,6 +915,8 @@ class db_mysql {
     return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
   }
 
+  // Some wrappers to DbTransaction
+  // Unused for now
   /**
    * @return \DBAL\DbTransaction
    */
@@ -925,8 +924,6 @@ class db_mysql {
     return $this->transaction;
   }
 
-  // Some wrappers to DbTransaction
-  // Unused for now
   public function transactionCheck($status = null) {
     return $this->transaction->check($status);
   }

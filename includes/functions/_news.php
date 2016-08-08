@@ -86,7 +86,13 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
 
 function nws_mark_read(&$user) {
   if(isset($user['id'])) {
-    DBStaticUser::db_user_set_by_id_DEPRECATED($user['id'], '`news_lastread` = ' . SN_TIME_NOW);
+    DBStaticUser::db_user_set_by_id(
+      $user['id'],
+      array(
+        'news_lastread' => SN_TIME_NOW,
+      )
+    );
+
     $user['news_lastread'] = SN_TIME_NOW;
   }
 
