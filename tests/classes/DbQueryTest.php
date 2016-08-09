@@ -376,10 +376,11 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
     $this->object
       ->setTable('aT2')
       ->setValues(array(array('v3', 3),array('v4', 4)))
+      ->setValuesDanger(array('this IS danger!'))
     ;
     $this->assertEquals(
       "REPLACE INTO `{{aT2}}` (`f1`,`f2`) VALUES " .
-      "('v1',1),('v2',2),('v3',3),('v4',4)",
+      "this IS danger!,('v1',1),('v2',2),('v3',3),('v4',4)",
       $this->object->insertBatch(DB_INSERT_REPLACE)
     );
   }

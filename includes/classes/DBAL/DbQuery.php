@@ -431,6 +431,10 @@ class DbQuery {
   protected function buildValuesVector() {
     $compiled = array();
 
+    if(!empty($this->valuesDanger)) {
+      $compiled = $this->valuesDanger;
+    }
+
     foreach ($this->values as $valuesVector) {
       $compiled[] = '(' . implode(',', HelperArray::map($valuesVector, array($this, 'castAsDbValue'))) . ')';
     }

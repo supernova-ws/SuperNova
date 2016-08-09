@@ -464,36 +464,17 @@ class db_mysql {
 
 
   protected function doUpdateWhere($table, $fieldsSet, $fieldsAdjust = array(), $where = array(), $isOneRecord = DB_RECORDS_ALL, $whereDanger = array()) {
-//    $query = DbQuery::build($this)
-//      ->setTable($table)
-//      ->setValues($fieldsSet)
-//      ->setAdjustDanger($fieldsAdjust)
-//
-//      // TODO - separate danger WHEREs
-//      ->setWhereArray($where)
-//      ->setWhereArrayDanger($whereDanger)
-//      ->setOneRow($isOneRecord)
-//
-//      ->update();
-//
-    $tableSafe = $this->db_escape($table);
+    $query = DbQuery::build($this)
+      ->setTable($table)
+      ->setValues($fieldsSet)
+      ->setAdjust($fieldsAdjust)
 
-    $safeFields = array();
-    // Adjusts overwritten by Sets
-    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($fieldsAdjust))) {
-      $safeFields[] = &$safeAdjust;
-    }
-    if ($safeFieldsEqualValues = implode(',', $this->safeFieldsEqualValues($fieldsSet))) {
-      $safeFields[] = &$safeFieldsEqualValues;
-    }
-    $safeFieldsString = implode(',', $safeFields);
+      // TODO - separate danger WHEREs
+      ->setWhereArray($where)
+      ->setWhereArrayDanger($whereDanger)
+      ->setOneRow($isOneRecord)
 
-    // TODO - Exception of $safeFieldsString
-
-    $safeWhereAnd = implode(' AND ', $this->safeFieldsEqualValues($where));
-    $query = "UPDATE `{{{$tableSafe}}}` SET {$safeFieldsString}"
-      . (!empty($safeWhereAnd) ? " WHERE {$safeWhereAnd}" : '')
-      . ($isOneRecord == DB_RECORD_ONE ? ' LIMIT 1' : '');
+      ->update();
 
     return $this->doSql($query);
   }
@@ -580,95 +561,7 @@ class db_mysql {
   }
 
 
-  // Misc functions
-  //
-  protected function castAsDbValue($value) {
-    switch (gettype($value)) {
-      case TYPE_INTEGER:
-      case TYPE_DOUBLE:
-        // do nothing
-      break;
 
-      case TYPE_BOOLEAN:
-        $value = $value ? 1 : 0;
-      break;
-
-      case TYPE_NULL:
-        $value = 'NULL';
-      break;
-
-      /** @noinspection PhpMissingBreakStatementInspection */
-      case TYPE_ARRAY:
-        $value = serialize($value);
-      // Continuing with serialized array value
-      case TYPE_STRING:
-        // Empty type is string
-      case TYPE_EMPTY:
-        // No-type defaults to string
-      default:
-        $value = "'" . $this->db_escape((string)$value) . "'";
-      break;
-    }
-
-    return $value;
-  }
-
-  /**
-   * Make field list safe
-   *
-   * Support expressions - expression index should be strictly integer!
-   *
-   * @param array $fields - array of pair $fieldName => $fieldValue
-   *
-   * @return array
-   */
-  protected function safeFieldsEqualValues($fields) {
-    $result = array();
-
-    if (!is_array($fields) || empty($fields)) {
-      return $result;
-    }
-
-    foreach ($fields as $fieldName => $fieldValue) {
-      // Integer $fieldName means "leave as is" - for expressions and already processed fields
-      if (is_int($fieldName)) {
-        $result[$fieldName] = $fieldValue;
-      } else {
-        $result[$fieldName] = "`{$fieldName}` = " . $this->castAsDbValue($fieldValue);
-      }
-    }
-
-    return $result;
-  }
-
-  /**
-   * Make fields adjustment safe
-   *
-   * Convert "key => value" pair to string "`key` = `key` + (value)"
-   * Supports expressions - expression index should be strictly integer!
-   *
-   * @param array $fields - array of pair $fieldName => $fieldValue
-   *
-   * @return array
-   */
-  protected function safeFieldsAdjust($fields) {
-    $result = array();
-
-    if (!is_array($fields) || empty($fields)) {
-      return $result;
-    }
-
-    foreach ($fields as $fieldName => $fieldValue) {
-      // Integer $fieldName means "leave as is" - for expressions and already processed fields
-      if (is_int($fieldName)) {
-        $result[$fieldName] = $fieldValue;
-      } else {
-        $result[$fieldName] = "`{$fieldName}` = `{$fieldName}` + (" . $this->castAsDbValue($fieldValue) . ")";
-      }
-    }
-
-    return $result;
-  }
 
 
   /**
