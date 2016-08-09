@@ -78,7 +78,7 @@ upd_log_message('Table info loaded. Now looking DB for upgrades...');
 upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
 
 if($new_version < 37) {
-  pdie('Upgrade from SN versions below 37 are not supported. Use SN version 39 to upgrade old DB then use V40+ for further upgrade');
+  die('Upgrade from SN versions below 37 are not supported. Use SN version 39 to upgrade old DB then use V40+ for further upgrade');
 }
 
 ini_set('memory_limit', '1024M');

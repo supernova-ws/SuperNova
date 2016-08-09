@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.47');
+define('SN_VERSION', '41a51.48');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1651,3 +1651,6 @@ define('DB_INSERT_IGNORE', 2);
 
 define('DB_RECORDS_ALL', false);
 define('DB_RECORD_ONE', true);
+
+define('DB_SELECT_PLAIN', false);
+define('DB_SELECT_FOR_UPDATE', true);

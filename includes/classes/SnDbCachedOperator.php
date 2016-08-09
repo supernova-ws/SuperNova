@@ -180,12 +180,39 @@ class SnDbCachedOperator {
     $id_field = static::$location_info[$location_type][P_ID];
     $record_id_safe = idval(is_array($record_id_unsafe) && isset($record_id_unsafe[$id_field]) ? $record_id_unsafe[$id_field] : $record_id_unsafe);
 
-    return classSupernova::$gc->cacheOperator->db_get_record_list($location_type, "`{$id_field}` = {$record_id_safe}", true, false);
+    return $this->db_get_record_list($location_type, "`{$id_field}` = {$record_id_safe}", true, false);
   }
 
+  /**
+   * @param              $location_type
+   * @param string|array $filter
+   * @param bool         $fetch
+   * @param bool         $no_return
+   *
+   * @return bool|mixed
+   */
+  // TODO - Change $filter to only array class
   public function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-    if ($this->snCache->isQueryCacheByLocationAndFilterEmpty($location_type, $filter)) {
-      $this->snCache->queryCacheResetByLocationAndFilter($location_type, $filter);
+    if(is_array($filter)) {
+      // TODO - TEMPORARY
+      $filterString = array();
+      if(!empty($filter)) {
+        foreach ($filter as $key => $value) {
+          if(!is_int($key)) {
+            $value = "`$key` = '" . $this->db->db_escape($value). "'";
+          }
+          $filterString[$key] = $value;
+        }
+      }
+
+      $filterString = implode(',', $filterString);
+    } else {
+      $filterString =  $filter;
+    }
+
+
+    if ($this->snCache->isQueryCacheByLocationAndFilterEmpty($location_type, $filterString)) {
+      $this->snCache->queryCacheResetByLocationAndFilter($location_type, $filterString);
 
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
@@ -196,12 +223,25 @@ class SnDbCachedOperator {
           $owner_location_type = $owner_data[P_LOCATION];
           $parent_id_list = array();
           // Выбираем родителей данного типа и соответствующие ИД текущего типа
-          $query = $this->db->doSelect(
-            "SELECT
+          // TODO - сводить в одну таблицу всех родителей и только потом делать SELECT!!!
+          if (!empty($filter) && is_array($filter)) {
+            $query = $this->db->doSelectDanger(
+              $location_info[P_TABLE_NAME],
+              array("distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id"),
+              $filter,
+              // Always selecting all records for correctly perform FILTER locks
+               $fetch ? DB_RECORD_ONE : DB_RECORDS_ALL,
+//              DB_RECORDS_ALL,
+              DB_SELECT_PLAIN
+            );
+          } else {
+            $query = $this->db->doSelect(
+              "SELECT
               distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id
             FROM {{{$location_info[P_TABLE_NAME]}}}" .
-            ($filter ? ' WHERE ' . $filter : '') .
-            ($fetch ? ' LIMIT 1' : ''));
+              ($filter ? ' WHERE ' . $filter : '') .
+              ($fetch ? ' LIMIT 1' : ''));
+          }
           while ($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if (!$this->snCache->cache_lock_get($owner_location_type, $row['parent_id'])) {
@@ -210,24 +250,43 @@ class SnDbCachedOperator {
           }
 
           // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
-          if ($indexes_str = implode(',', $parent_id_list)) {
+          if (!empty($parent_id_list)) {
+            $indexes_str = implode(',', $parent_id_list);
             $parent_id_field = static::$location_info[$owner_location_type][P_ID];
-            classSupernova::$gc->cacheOperator->db_get_record_list($owner_location_type,
-              $parent_id_field . (count($parent_id_list) > 1 ? " IN ({$indexes_str})" : " = {$indexes_str}"), $fetch, true);
+            $this->db_get_record_list($owner_location_type,
+              $parent_id_field . (
+                count($parent_id_list) > 1
+                ? " IN ({$indexes_str})"
+                : " = {$indexes_str}"
+              ),
+              $fetch,
+              true
+            );
           }
         }
       }
 
-      $query = $this->db->doSelect(
-        "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
-        (($filter = trim($filter)) ? " WHERE {$filter}" : '')
-        . " FOR UPDATE"
-      );
+      // TODO - REWRITE
+      if (!empty($filter) && is_array($filter)) {
+        $query = $this->db->doSelectDanger(
+          $location_info[P_TABLE_NAME],
+          array('*'),
+          $filter,
+          DB_RECORDS_ALL,
+          DB_SELECT_FOR_UPDATE
+        );
+      } else {
+        $query = $this->db->doSelect(
+          "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" .
+          (($filter = trim($filter)) ? " WHERE {$filter}" : '')
+          . " FOR UPDATE"
+        );
+      }
       while ($row = db_fetch($query)) {
         // Caching record in row cache
         $this->snCache->cache_set($location_type, $row);
         // Making ref to cached record in query cache
-        $this->snCache->queryCacheSetByFilter($location_type, $filter, $row[$id_field]);
+        $this->snCache->queryCacheSetByFilter($location_type, $filterString, $row[$id_field]);
       }
     }
 
@@ -235,7 +294,7 @@ class SnDbCachedOperator {
       return true;
     } else {
       $result = false;
-      foreach ($this->snCache->getQueriesByLocationAndFilter($location_type, $filter) as $key => $value) {
+      foreach ($this->snCache->getQueriesByLocationAndFilter($location_type, $filterString) as $key => $value) {
         $result[$key] = $value;
         if ($fetch) {
           break;
@@ -289,7 +348,6 @@ class SnDbCachedOperator {
   }
 
 
-
   /**
    * @param int   $location_type
    * @param array $set
@@ -341,10 +399,6 @@ class SnDbCachedOperator {
   public function db_upd_record_list_DANGER($location_type, $set, $adjust, $where, $whereDanger) {
     return $this->db_upd_record_list($location_type, $set, $adjust, $where, $whereDanger);
   }
-
-
-
-
 
 
   /**

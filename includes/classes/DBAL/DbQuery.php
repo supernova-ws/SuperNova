@@ -42,10 +42,10 @@ class DbQuery {
   protected $table = '';
 
   /**
-   * Contains field names
+   * Contains field names integer keyed
    *
-   * For SELECT fields FROM
-   * For INSERT/REPLACE fields UPDATE ...
+   * For SELECT {fields} FROM
+   * For INSERT/REPLACE {fields} UPDATE ...
    *
    * @var array $fields
    */
@@ -56,8 +56,8 @@ class DbQuery {
   /**
    * Contain array of values - fielded or not
    *
-   * For INSERT/REPLACE ... SET contains fieldName => value
-   * For INSERT/REPLACE ... UPDATE contains values[][]
+   * For INSERT/REPLACE ... SET, UPDATE ... SET contains fieldName => value
+   * For INSERT/REPLACE ... VALUES contains values[][]
    *
    * @var array
    */
@@ -100,98 +100,24 @@ class DbQuery {
     return new static($db);
   }
 
-  protected function buildCommand() {
-    switch ($this->command) {
-      case static::UPDATE:
-        $this->build[] = $this->command . " " . $this->quoteTable($this->table);
-      break;
-
-      case static::DELETE:
-        $this->build[] = $this->command . " FROM " . $this->quoteTable($this->table);
-      break;
-
-      case static::REPLACE:
-      case static::INSERT_IGNORE:
-      case static::INSERT:
-        $this->build[] = $this->command . " INTO " . $this->quoteTable($this->table);
-      break;
-    }
-  }
-
-  protected function buildWhere() {
-    $safeWhere = implode(
-      ' AND ',
-    // TODO - remove onlyDanger with $this->where
-      $this->onlyDanger($this->whereDanger) + $this->onlyDanger($this->where) + $this->fieldEqValue($this->where)
-    );
-
-    if (!empty($safeWhere)) {
-      $this->build[] = " WHERE {$safeWhere}";
-    }
-  }
-
-  protected function buildLimit() {
-    if ($this->isOneRow == DB_RECORD_ONE) {
-      $this->build[] = ' LIMIT 1';
-    }
-  }
-
-
-  protected function buildFieldsSet() {
-    $safeFields = array();
-    // Sets overwritten by Adjusts
-    if ($safeFieldsEqualValues = implode(',', $this->fieldEqValue($this->values))) {
-      $safeFields[] = &$safeFieldsEqualValues;
-    }
-    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($this->adjust) + $this->onlyDanger($this->adjustDanger))) {
-      $safeFields[] = &$safeAdjust;
-    }
-    $safeFieldsString = implode(',', $safeFields);
-
-    if (!empty($safeFieldsString)) {
-      $this->build[] = ' SET ';
-      $this->build[] = $safeFieldsString;
-    }
-  }
-
-
-
-  protected function buildFieldNames() {
-    $this->build[] = implode(',', $this->safeFields($this->fields));
-  }
-
-  // ONLY FOR SCALAR VALUES!!!
-  protected function buildValuesScalar() {
-    $this->build[] = implode(',', $this->safeFields($this->values));
-  }
-
-  /**
-   * Vector values is for batch INSERT/REPLACE
-   */
-  // TODO - CHECK!
-  protected function buildValuesVector() {
-    $compiled = array();
-
-    foreach ($this->values as $valuesVector) {
-      $compiled[] = '(' . implode(',', $this->safeFields($valuesVector)) . ')';
-    }
-
-    $this->build[] = implode(',', $compiled);
-  }
-
-  protected function buildValuesDanger() {
-    $this->build[] = implode(',', $this->valuesDanger);
-  }
-
-
-
-
 
   public function delete() {
     $this->build = array();
 
     $this->command = static::DELETE;
     $this->buildCommand();
+    $this->buildWhere();
+    $this->buildLimit();
+
+    return implode('', $this->build);
+  }
+
+  public function update() {
+    $this->build = array();
+
+    $this->command = static::UPDATE;
+    $this->buildCommand();
+    $this->buildSetFields();
     $this->buildWhere();
     $this->buildLimit();
 
@@ -214,7 +140,7 @@ class DbQuery {
     }
 
     $this->buildCommand();
-    $this->buildFieldsSet();
+    $this->buildSetFields();
 
     return implode('', $this->build);
   }
@@ -238,22 +164,14 @@ class DbQuery {
     $this->build[] = " (";
     $this->buildFieldNames();
     $this->build[] = ") VALUES ";
-    $this->buildValuesDanger();
+    $this->buildValuesVector();
 
     return implode('', $this->build);
   }
 
-  public function update() {
-    $this->build = array();
 
-    $this->command = static::UPDATE;
-    $this->buildCommand();
-    $this->buildFieldsSet();
-    $this->buildWhere();
-    $this->buildLimit();
 
-    return implode('', $this->build);
-  }
+
 
 
 
@@ -357,7 +275,6 @@ class DbQuery {
    * @param array $whereArrayDanger
    *
    * @return $this
-   * @deprecated
    */
   public function setWhereArrayDanger($whereArrayDanger = array()) {
     HelperArray::merge($this->whereDanger, $whereArrayDanger, HelperArray::MERGE_PHP);
@@ -450,8 +367,9 @@ class DbQuery {
   }
 
 
+  // TODO - redo as callable usage with array_map/array_walk
   /**
-   * Make list of DANGER items from clauses - WHERE for ex
+   * Make string from DANGER item array
    *
    * This function is DANGER! It takes numeric indexes which translate to direct SQL string which can lead to SQL injection!
    *
@@ -459,7 +377,7 @@ class DbQuery {
    *
    * @return array
    */
-  protected function onlyDanger($where) {
+  protected function packIntKeyed($where) {
     $result = array();
 
     if (!is_array($where) || empty($where)) {
@@ -503,7 +421,7 @@ class DbQuery {
     return $result;
   }
 
-  // TODO - redo as callable usage with array_map/array_walk
+  // INSERT ... VALUES
   public function safeFields($fields) {
     $result = array();
 
@@ -514,6 +432,20 @@ class DbQuery {
     // For now $key is INTEGERS
     foreach ($fields as $key => $value) {
       $result[$key] = $this->quote($value);
+    }
+
+    return $result;
+  }
+
+  public function safeValuesScalar($values) {
+    $result = array();
+
+    if (!is_array($values) || empty($values)) {
+      return $result;
+    }
+
+    foreach ($values as $key => $value) {
+      $result[$key] = $this->castAsDbValue($value);
     }
 
     return $result;
@@ -543,6 +475,108 @@ class DbQuery {
     }
 
     return $result;
+  }
+
+
+  protected function buildCommand() {
+    switch ($this->command) {
+      case static::UPDATE:
+        $this->build[] = $this->command . " " . $this->quoteTable($this->table);
+      break;
+
+      case static::DELETE:
+        $this->build[] = $this->command . " FROM " . $this->quoteTable($this->table);
+      break;
+
+      case static::REPLACE:
+      case static::INSERT_IGNORE:
+      case static::INSERT:
+        $this->build[] = $this->command . " INTO " . $this->quoteTable($this->table);
+      break;
+
+      case static::SELECT:
+        $this->build[] = $this->command . " ";
+      break;
+    }
+  }
+
+  // UPDATE and INSERT ... SET
+  protected function buildSetFields() {
+    $safeFields = array();
+    // Sets overwritten by Adjusts
+    if ($safeValuesDanger = implode(',', $this->valuesDanger)) {
+      $safeFields[] = &$safeValuesDanger;
+    }
+    if ($safeFieldsEqualValues = implode(',', $this->fieldEqValue($this->values))) {
+      $safeFields[] = &$safeFieldsEqualValues;
+    }
+    if ($safeAdjustDanger = implode(',', $this->adjustDanger)) {
+      $safeFields[] = &$safeAdjustDanger;
+    }
+    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($this->adjust))) {
+      $safeFields[] = &$safeAdjust;
+    }
+    $safeFieldsString = implode(',', $safeFields);
+
+    if (!empty($safeFieldsString)) {
+      $this->build[] = ' SET ';
+      $this->build[] = $safeFieldsString;
+    }
+  }
+
+  // INSERT ... VALUES
+  protected function buildFieldNames() {
+    $this->build[] = implode(',', $this->safeFields($this->fields));
+  }
+
+  protected function buildValuesDanger() {
+    $this->build[] = implode(',', $this->valuesDanger);
+  }
+
+  // ONLY FOR SCALAR VALUES!!!
+  // NOT DANGER!
+  protected function buildValuesScalar() {
+    $this->build[] = implode(',', $this->safeValuesScalar($this->values));
+  }
+
+  /**
+   * Vector values is for batch INSERT/REPLACE
+   */
+  // TODO - CHECK!
+  protected function buildValuesVector() {
+    $compiled = array();
+
+    foreach ($this->values as $valuesVector) {
+      $compiled[] = '(' . implode(',', $this->safeValuesScalar($valuesVector)) . ')';
+    }
+
+    $this->build[] = implode(',', $compiled);
+  }
+
+
+  protected function buildWhere() {
+    $safeWhere = implode(
+      ' AND ',
+      $this->whereDanger +
+      // TODO - remove onlyDanger with $this->where
+      $this->packIntKeyed($this->where) +
+      $this->fieldEqValue($this->where)
+    );
+
+    if (!empty($safeWhere)) {
+      $this->build[] = " WHERE {$safeWhere}";
+    }
+  }
+
+  protected function buildLimit() {
+    if ($this->isOneRow == DB_RECORD_ONE) {
+      $this->build[] = ' LIMIT 1';
+    }
+  }
+
+
+  public function __toString() {
+    return implode('', $this->build);
   }
 
 }

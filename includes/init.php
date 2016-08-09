@@ -148,8 +148,6 @@ $template_result = array('.' => array('result' => array()));
 sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
 
-
-
 // Подключаем все модули
 // По нормальным делам тут надо подключать манифесты
 // По нормальным делам тут надо подключать манифесты

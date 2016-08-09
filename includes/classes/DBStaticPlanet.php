@@ -90,12 +90,17 @@ class DBStaticPlanet {
       return false;
     }
 
-    return classSupernova::$gc->cacheOperator->db_get_record_list(LOC_PLANET,
-      "`parent_planet` = {$parent_id} AND `planet_type` = " . PT_MOON, true);
+    return classSupernova::$gc->cacheOperator->db_get_record_list(
+      LOC_PLANET,
+      array('parent_planet' => $parent_id, 'planet_type' => PT_MOON),
+      true
+    );
+
+//    return classSupernova::$gc->cacheOperator->db_get_record_list(LOC_PLANET,
+//      "`parent_planet` = {$parent_id} AND `planet_type` = " . PT_MOON, true);
   }
 
   public static function db_planet_by_id_and_owner($planet_id, $owner_id, $for_update = false, $fields = '*') {
-    //if(!($planet_id = intval($planet_id)) || !($owner_id = intval($owner_id))) return false;
     if (!($planet_id = idval($planet_id)) || !($owner_id = idval($owner_id))) {
       return false;
     }
@@ -106,7 +111,6 @@ class DBStaticPlanet {
 
 
   public static function db_planet_list_moon_other($user_id, $this_moon_id) {
-    // if(!($user_id = intval($user_id)) || !($this_moon_id = intval($this_moon_id))) return false;
     if (!($user_id = idval($user_id)) || !($this_moon_id = idval($this_moon_id))) {
       return false;
     }

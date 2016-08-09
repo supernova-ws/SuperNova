@@ -1148,6 +1148,9 @@ classSupernova::$gc->cacheOperator
     - check where used and make DI
     - also check for other modules
 
+Статистика
+    - Посмотреть в пересчёте статистики, что бы были прямые SQL запросы без блокировки
+
 Кэширование
     - https://habrahabr.ru/company/alawar/blog/158799/
     - https://habrahabr.ru/post/200924/
@@ -1175,6 +1178,9 @@ WORKING ON
     !! Работаем над тестами для DbQuery
         - // TODO - split all DANGER works in DbQuery
         - Переделать одинаковые циклища
+
+    - ЕЩЕ РАЗ ПРОВЕРИТЬ, что бы просто $where, приходящие в DbQuery не содержали опасных условий
+        - и убрать потом перепаковку в DbQuery::buildWhere() и там же убрать ненужную packIntKeyed
 
     - doUpdate
         - doUpdateReallyComplex - DANGER

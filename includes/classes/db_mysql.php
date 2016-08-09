@@ -280,6 +280,37 @@ class db_mysql {
   }
 
   /**
+   * DANGER! Fields and Where can be danger
+   *
+   * @param string $table
+   * @param array  $fields
+   * @param array  $where
+   * @param bool   $isOneRecord
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public function doSelectDanger($table, $fields, $where = array(), $isOneRecord = DB_RECORDS_ALL, $forUpdate = DB_SELECT_PLAIN) {
+    // TODO - TEMPORARY UNTIL DbQuery
+    if(!empty($where)) {
+      foreach ($where as $key => &$value) {
+        if(!is_int($key)) {
+          $value = "`$key` = '" . $this->db_escape($value). "'";
+        }
+      }
+    }
+
+    $query =
+      "SELECT " . implode(',', $fields) .
+      " FROM `{{{$table}}}`" .
+      (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '') .
+      ($isOneRecord == DB_RECORD_ONE ? ' LIMIT 1' : '') .
+      ($forUpdate == DB_SELECT_FOR_UPDATE ? ' FOR UPDATE' : '')
+    ;
+
+    return $this->doSql($query);
+  }
+
+  /**
    * @param string $query
    *
    * @return array|null

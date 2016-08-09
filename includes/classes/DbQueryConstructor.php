@@ -435,12 +435,12 @@ class DbQueryConstructor extends DbSqlAware {
   }
 
   /**
-   * @param bool $skip_query_check
-   *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
   public function selectIterator() {
-    return $this->getDb()->doSelectIterator($this->select()->__toString());
+    $result = $this->getDb()->doSelectIterator($this->select()->__toString());
+
+    return $result;
   }
 
   /**
