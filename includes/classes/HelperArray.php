@@ -75,11 +75,10 @@ class HelperArray {
     $result = array();
 
     if (is_array($array) && !empty($array)) {
-//      $result = array_filter($array, $callback);
+      // TODO - array_filter
       foreach ($array as $value) {
         if (call_user_func($callback, $value)) {
           $result[] = $value;
-          // TODO - array_filter
         }
       }
     }
@@ -99,37 +98,12 @@ class HelperArray {
   public static function map(&$array, $callback, $withKeys = false) {
     $result = array();
 
-//    var_dump('entering map');
-//    var_dump('$withKeys');
-//    var_dump($withKeys);
-
     if (is_array($array) && !empty($array)) {
-
-
       if ($withKeys) {
         $result = array_map($callback, $array, array_keys($array));
       } else {
         $result = array_map($callback, $array);
       }
-
-//      $result = $withKeys
-//        ? array_map($callback, $array)
-//        : array_map($callback, $array, array_keys($array))
-//      ;
-
-//      var_dump($array);
-//      if ($withKeys) {
-//        var_dump('$array');
-//        var_dump($array);
-////        var_dump(array_keys($array));
-//        die();
-//      }
-
-//      foreach ($array as $key => $value) {
-//        if (call_user_func($callback, $value)) {
-//          $result[$key] = $value;
-//        }
-//      }
     }
 
     return $result;
