@@ -170,13 +170,6 @@ class DbQuery {
   }
 
 
-
-
-
-
-
-
-
   /**
    * @param $table
    *
@@ -321,8 +314,22 @@ class DbQuery {
    *
    * @return string
    */
-  protected function quote($fieldName) {
+//  protected function quote($fieldName) {
+  public function quote($fieldName) {
     return "`" . $this->escape((string)$fieldName) . "`";
+  }
+
+  public function makeAdjustString($fieldValue, $fieldName) {
+    return is_int($fieldName)
+      ? $fieldValue
+      : (($fieldNameQuoted = $this->quote($fieldName)) . " = " .
+        $fieldNameQuoted . " + (" . $this->castAsDbValue($fieldValue) . ")");
+  }
+
+  public function makeFieldEqualValue($fieldValue, $fieldName) {
+    return is_int($fieldName)
+      ? $fieldValue
+      : ($this->quote($fieldName) . " = " . $this->castAsDbValue($fieldValue));
   }
 
   /**
@@ -336,7 +343,8 @@ class DbQuery {
     return "`{{" . $this->escape((string)$tableName) . "}}`";
   }
 
-  protected function castAsDbValue($value) {
+//  protected function castAsDbValue($value) {
+  public function castAsDbValue($value) {
     switch (gettype($value)) {
       case TYPE_INTEGER:
       case TYPE_DOUBLE:
@@ -368,115 +376,79 @@ class DbQuery {
 
 
   // TODO - redo as callable usage with array_map/array_walk
-  /**
-   * Make string from DANGER item array
-   *
-   * This function is DANGER! It takes numeric indexes which translate to direct SQL string which can lead to SQL injection!
-   *
-   * @param array $where - array WHERE clauses which will not pass through SAFE filter
-   *
-   * @return array
-   */
-  protected function packIntKeyed($where) {
-    $result = array();
-
-    if (!is_array($where) || empty($where)) {
-      return $result;
-    }
-
-    foreach ($where as $key => $fieldValue) {
-      // Integer $fieldName means "leave as is" - for expressions and already processed fields
-      if (is_int($key)) {
-        $result[$key] = $fieldValue;
-      }
-    }
-
-    return $result;
-  }
-
-  /**
-   * Make field list safe. NOT DANGER
-   *
-   * This function is NOT DANGER
-   * Make SQL-safe assignment/equal compare string from (field => value) pair
-   *
-   * @param array $fieldValues - array of pair $fieldName => $fieldValue
-   *
-   * @return array
-   */
-  protected function fieldEqValue($fieldValues) {
-    $result = array();
-
-    if (!is_array($fieldValues) || empty($fieldValues)) {
-      return $result;
-    }
-
-    foreach ($fieldValues as $fieldName => $fieldValue) {
-      // Integer $fieldName is DANGER! They skipped there!
-      if (!is_int($fieldName)) {
-        $result[$fieldName] = $this->quote($fieldName) . " = " . $this->castAsDbValue($fieldValue);
-      }
-    }
-
-    return $result;
-  }
-
-  // INSERT ... VALUES
-  public function safeFields($fields) {
-    $result = array();
-
-    if (!is_array($fields) || empty($fields)) {
-      return $result;
-    }
-
-    // For now $key is INTEGERS
-    foreach ($fields as $key => $value) {
-      $result[$key] = $this->quote($value);
-    }
-
-    return $result;
-  }
-
-  public function safeValuesScalar($values) {
-    $result = array();
-
-    if (!is_array($values) || empty($values)) {
-      return $result;
-    }
-
-    foreach ($values as $key => $value) {
-      $result[$key] = $this->castAsDbValue($value);
-    }
-
-    return $result;
-  }
-
-  /**
-   * Make fields adjustment safe. FUNCTION IS NOT DANGER
-   *
-   * Convert "key => value" pair to string "`key` = `key` + (value)"
-   *
-   * @param array $fields - array of pair $fieldName => $fieldValue
-   *
-   * @return array
-   */
-  protected function safeFieldsAdjust($fields) {
-    $result = array();
-
-    if (!is_array($fields) || empty($fields)) {
-      return $result;
-    }
-
-    foreach ($fields as $fieldName => $fieldValue) {
-      // Integer $fieldName means "leave as is" - for expressions and already processed fields
-      if (is_string($fieldName)) {
-        $result[$fieldName] = "`{$fieldName}` = `{$fieldName}` + (" . $this->castAsDbValue($fieldValue) . ")";
-      }
-    }
-
-    return $result;
-  }
-
+//  /**
+//   * Make string from DANGER item array
+//   *
+//   * This function is DANGER! It takes numeric indexes which translate to direct SQL string which can lead to SQL injection!
+//   *
+//   * @param array $where - array WHERE clauses which will not pass through SAFE filter
+//   *
+//   * @return array
+//   */
+//  protected function packIntKeyed($where) {
+//    $result = array();
+//
+//    if (!is_array($where) || empty($where)) {
+//      return $result;
+//    }
+//
+//    foreach ($where as $key => $fieldValue) {
+//      // Integer $fieldName means "leave as is" - for expressions and already processed fields
+//      if (is_int($key)) {
+//        $result[$key] = $fieldValue;
+//      }
+//    }
+//
+//    return $result;
+//  }
+//
+//  // INSERT ... VALUES
+//  public function safeFields($fields) {
+//    return HelperArray::map($fields, array($this, 'quote'));
+//  }
+//
+//  public function safeValuesScalar($values) {
+//    return HelperArray::map($values, array($this, 'castAsDbValue'));
+//  }
+//
+//  /**
+//   * Make field list safe. NOT DANGER
+//   *
+//   * This function is NOT DANGER
+//   * Make SQL-safe assignment/equal compare string from (field => value) pair
+//   *
+//   * @param array $fieldValues - array of pair $fieldName => $fieldValue
+//   *
+//   * @return array
+//   */
+//  protected function fieldEqValue($fieldValues) {
+//    return HelperArray::map($fieldValues, array($this, 'makeFieldEqualValue'), true);
+//  }
+//
+//  /**
+//   * Make fields adjustment safe. FUNCTION IS NOT DANGER
+//   *
+//   * Convert "key => value" pair to string "`key` = `key` + (value)"
+//   *
+//   * @param array $fields - array of pair $fieldName => $fieldValue
+//   *
+//   * @return array
+//   */
+//  protected function safeFieldsAdjust($fields) {
+//    return HelperArray::map($fields, array($this, 'makeAdjustString'), true);
+//  }
+//
+//
+//  protected function buildValuesDanger() {
+//    $this->build[] = implode(',', $this->valuesDanger);
+//  }
+//
+//  // ONLY FOR SCALAR VALUES!!!
+//  // NOT DANGER!
+//  protected function buildValuesScalar() {
+//    $this->build[] = implode(',', HelperArray::map($this->values, array($this, 'castAsDbValue')));
+//  }
+//
 
   protected function buildCommand() {
     switch ($this->command) {
@@ -507,13 +479,15 @@ class DbQuery {
     if ($safeValuesDanger = implode(',', $this->valuesDanger)) {
       $safeFields[] = &$safeValuesDanger;
     }
-    if ($safeFieldsEqualValues = implode(',', $this->fieldEqValue($this->values))) {
+//    if ($safeFieldsEqualValues = implode(',', $this->fieldEqValue($this->values))) {
+    if ($safeFieldsEqualValues = implode(',', HelperArray::map($this->values, array($this, 'makeFieldEqualValue'), true))) {
       $safeFields[] = &$safeFieldsEqualValues;
     }
     if ($safeAdjustDanger = implode(',', $this->adjustDanger)) {
       $safeFields[] = &$safeAdjustDanger;
     }
-    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($this->adjust))) {
+//    if ($safeAdjust = implode(',', $this->safeFieldsAdjust($this->adjust))) {
+    if ($safeAdjust = implode(',', HelperArray::map($this->adjust, array($this, 'makeAdjustString'), true))) {
       $safeFields[] = &$safeAdjust;
     }
     $safeFieldsString = implode(',', $safeFields);
@@ -526,17 +500,7 @@ class DbQuery {
 
   // INSERT ... VALUES
   protected function buildFieldNames() {
-    $this->build[] = implode(',', $this->safeFields($this->fields));
-  }
-
-  protected function buildValuesDanger() {
-    $this->build[] = implode(',', $this->valuesDanger);
-  }
-
-  // ONLY FOR SCALAR VALUES!!!
-  // NOT DANGER!
-  protected function buildValuesScalar() {
-    $this->build[] = implode(',', $this->safeValuesScalar($this->values));
+    $this->build[] = implode(',', HelperArray::map($this->fields, array($this, 'quote')));
   }
 
   /**
@@ -547,7 +511,7 @@ class DbQuery {
     $compiled = array();
 
     foreach ($this->values as $valuesVector) {
-      $compiled[] = '(' . implode(',', $this->safeValuesScalar($valuesVector)) . ')';
+      $compiled[] = '(' . implode(',', HelperArray::map($valuesVector, array($this, 'castAsDbValue'))) . ')';
     }
 
     $this->build[] = implode(',', $compiled);
@@ -558,9 +522,7 @@ class DbQuery {
     $safeWhere = implode(
       ' AND ',
       $this->whereDanger +
-      // TODO - remove onlyDanger with $this->where
-      $this->packIntKeyed($this->where) +
-      $this->fieldEqValue($this->where)
+      HelperArray::map($this->where, array($this, 'makeFieldEqualValue'), true)
     );
 
     if (!empty($safeWhere)) {

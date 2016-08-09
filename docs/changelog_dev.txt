@@ -1181,6 +1181,7 @@ WORKING ON
 
     - ЕЩЕ РАЗ ПРОВЕРИТЬ, что бы просто $where, приходящие в DbQuery не содержали опасных условий
         - и убрать потом перепаковку в DbQuery::buildWhere() и там же убрать ненужную packIntKeyed
+    - и по $values
 
     - doUpdate
         - doUpdateReallyComplex - DANGER
