@@ -1165,6 +1165,12 @@ classSupernova::$gc->cacheOperator
 // TODO - fleets
     - Дедлочит флоты
 
+- Поэкспериментировать с наследованием Closure: ClosureExporter, ClosureImporter итд
+    - Что бы не указывать тип Closure при запихивании его в контейнер
+    - НЕ РАБОТАЕТ. Может __invoke()?
+        - Нет особого смысла - только усложнение кода
+
+
 - Работа с count()
     - https://www.percona.com/blog/2007/04/10/count-vs-countcol/
 
@@ -1175,15 +1181,11 @@ classSupernova::$gc->cacheOperator
 
 
 WORKING ON
-    - Прописать интерфейсы для Entity
-        - связанных объектов (Buddy)
-        - V2Unit
-
-    - Поэкспериментировать с наследованием Closure: ClosureExporter, ClosureImporter итд
-        - Что бы не указывать тип Closure при запихивании его в контейнер
-        - НЕ РАБОТАЕТ. Может __invoke()?
+    - Тесты для entity и контейнеров
 
     - Дефолтные значения для полей в Entity
+
+    - GMP для больших чисел http://php.net/manual/en/book.gmp.php
 
 
     !! Работаем над тестами для DbQuery

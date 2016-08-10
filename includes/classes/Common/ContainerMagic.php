@@ -37,7 +37,7 @@ class ContainerMagic implements IMagicAccess {
   }
 
   public function __get($name) {
-    return $this->values[$name];
+    return array_key_exists($name, $this->values) ? $this->values[$name] : null;
   }
 
 }
