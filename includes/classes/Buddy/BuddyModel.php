@@ -2,8 +2,6 @@
 
 namespace Buddy;
 
-use classSupernova;
-use db_mysql;
 use DbEmptyIterator;
 use DbMysqliResultIterator;
 use DBStaticMessages;
@@ -49,9 +47,8 @@ class BuddyModel extends \Entity {
     ),
   );
 
-  // TODO - remove public static function db_buddy_update_status($buddy_id, $status) {
   public function db_buddy_update_status($status) {
-    classSupernova::$db->doUpdateRowSet(
+    static::$dbStatic->doUpdateRowSet(
       TABLE_BUDDY,
       array(
         'BUDDY_STATUS' => $status,
@@ -61,7 +58,7 @@ class BuddyModel extends \Entity {
       )
     );
 
-    return classSupernova::$db->db_affected_rows();
+    return static::$dbStatic->db_affected_rows();
   }
 
   /**
@@ -88,14 +85,12 @@ class BuddyModel extends \Entity {
   }
 
   /**
-   * @param db_mysql $db
-   * @param mixed    $user_id
+   * @param mixed $user_id
    *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  // TODO - make it non-static
-  public static function db_buddy_list_by_user($db, $user_id) {
-    return ($user_id = idval($user_id)) ? $db->doSelectIterator(
+  public function db_buddy_list_by_user($user_id) {
+    return ($user_id = idval($user_id)) ? static::$dbStatic->doSelectIterator(
       "SELECT
       b.*,
       IF(b.BUDDY_OWNER_ID = {$user_id}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,

@@ -51,7 +51,8 @@ class BuddyView {
 
     empty($template_result) ? $template_result = array() : false;
 
-    foreach (BuddyModel::db_buddy_list_by_user($gc->db, $user['id']) as $row) {
+//    foreach (BuddyModel::db_buddy_list_by_user_static($gc->db, $user['id']) as $row) {
+    foreach (\classSupernova::$gc->buddy->db_buddy_list_by_user($user['id']) as $row) {
       $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
 
       $row['BUDDY_ACTIVE'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE;

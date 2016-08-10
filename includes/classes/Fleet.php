@@ -333,12 +333,13 @@ class Fleet extends UnitContainer {
   }
 
   /**
-   * @param array $template_result
    * @param array $playerRow
    * @param array $planetRow
+   *
+   * @return array
    */
   // TODO - redo to unit/unitlist renderer
-  public function renderAvailableShips(&$template_result, $playerRow, $planetRow) {
+  public function renderAvailableShips($playerRow, $planetRow) {
     $record_index = 0;
     $ship_list = array();
     foreach (Fleet::$snGroupFleet as $n => $unit_id) {
@@ -364,9 +365,7 @@ class Fleet extends UnitContainer {
 
     sortUnitRenderedList($ship_list, classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT], classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE]);
 
-    foreach ($ship_list as $ship_data) {
-      $template_result['.']['ships'][] = $ship_data;
-    }
+    return $ship_list;
   }
 
   public function isEmpty() {
@@ -1492,7 +1491,7 @@ class Fleet extends UnitContainer {
     }
 
     // TODO - redo to unitlist render/unit render
-    $this->renderAvailableShips($template_result, $this->dbOwnerRow, $this->dbSourcePlanetRow);
+    $template_result['.']['ships'] = $this->renderAvailableShips($this->dbOwnerRow, $this->dbSourcePlanetRow);
 
     $this->renderShipSortOptions($template_result);
 

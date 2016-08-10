@@ -82,7 +82,7 @@ $testData = array(
   // checkOnlyFlyingUnits
   array(FLIGHT_SHIPS_UNMOVABLE, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_EXPLORE, array(SHIP_SATTELITE_SOLAR => 1), 0, 10, 0, 0, $noResources, $noResources),
 
-  // 'checkResourcesPositive'     => FLIGHT_RESOURCES_NEGATIVE,
+  // checkResourcesPositive
   array(FLIGHT_RESOURCES_NEGATIVE, FLEET_PAGE_MISSION, $testUser, $testPlanetRow, new Vector(1, 1, 11, PT_PLANET), MT_EXPLORE, array(SHIP_SMALL_FIGHTER_LIGHT => 1, RES_DEUTERIUM => -1), 0, 10, 0, 0, $noResources, $noResources),
 
   // checkNotTooFar

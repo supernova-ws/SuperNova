@@ -7,7 +7,7 @@
  */
 class Entity implements \Common\IMagicAccess, \Common\IEntity {
   const ENTITY_DB_ID_INCLUDE = true;
-  const ENTITY_DB_ID_EXCLUDE = true;
+  const ENTITY_DB_ID_EXCLUDE = false;
 
   /**
    * Link to DB which used by this Entity
