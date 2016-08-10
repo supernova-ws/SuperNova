@@ -236,7 +236,7 @@ class BuddyModel extends \Entity {
     $this->playerSenderId = idval($cBuddy->playerId);
     $this->playerOwnerId = idval($new_friend_row['id']);
     $this->buddyStatusId = BUDDY_REQUEST_WAITING;
-    $this->requestText = $cBuddy->new_request_text_unsafe;
+    $this->requestText = $cBuddy->requestText;
 
     static::$rowOperator->insert($this);
     throw new BuddyException('buddy_err_adding_none', ERR_NONE);

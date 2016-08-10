@@ -13,13 +13,29 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   protected $properties = array();
 
   /**
+   * Name of table for this entity
+   *
+   * @var string $tableName
+   */
+  protected $tableName = '_table';
+  /**
+   * Name of key field field in this table
+   *
+   * @var string $idField
+   */
+  protected $idField = 'id';
+
+
+  /**
    * Array of accessors - getters/setters/etc
    *
    * Getter is a callable like
-   *    function ($value) use ($that) {}
+   *    function () use ($that) {}
+   *  or Pimple-like (P_CONTAINER_GETTER_PIMPLE)
+   *    function ($this) {}
    *
    * Setter is a callable like
-   *    function () use ($that) {}
+   *    function ($value) use ($that) {}
    *
    * Importer is a callable like
    *    function (&$row) use ($this) {}
@@ -34,6 +50,29 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   public function setProperties($properties) {
     $this->properties = $properties;
   }
+  public function setTableName($value) {
+    $this->tableName = $value;
+  }
+  public function setIdField($value) {
+    $this->idField = $value;
+  }
+  /**
+   * Gets entity's table name
+   *
+   * @return string
+   */
+  public function getTableName() {
+    return $this->tableName;
+  }
+
+  /**
+   * @return string
+   */
+  public function getIdFieldName() {
+    return $this->idField;
+  }
+
+
 
   /**
    * Is container contains no data
@@ -57,7 +96,10 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   }
 
   public function __set($name, $value) {
-    if (is_callable($this->accessors[P_CONTAINER_SETTER][$name])) {
+
+    if(is_callable($value)) {
+      $this->accessors[P_CONTAINER_GETTER_PIMPLE][$name] = $value;
+    } elseif (is_callable($this->accessors[P_CONTAINER_SETTER][$name])) {
       call_user_func($this->accessors[P_CONTAINER_SETTER][$name], $value);
     } else {
       $this->values[$name] = $value;
@@ -65,7 +107,9 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   }
 
   public function __get($name) {
-    if (is_callable($this->accessors[P_CONTAINER_GETTER][$name])) {
+    if (is_callable($this->accessors[P_CONTAINER_GETTER_PIMPLE][$name])) {
+      return call_user_func($this->accessors[P_CONTAINER_GETTER_PIMPLE][$name], $this);
+    } elseif (is_callable($this->accessors[P_CONTAINER_GETTER][$name])) {
       return call_user_func($this->accessors[P_CONTAINER_GETTER][$name]);
     } else {
       return $this->values[$name];
@@ -90,7 +134,7 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
     }
   }
 
-  public function exportRow() {
+  public function exportRow($withDbId = Entity::ENTITY_DB_ID_INCLUDE) {
     $row = array();
 
     foreach ($this->properties as $propertyName => $propertyData) {

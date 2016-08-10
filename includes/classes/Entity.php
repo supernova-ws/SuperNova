@@ -76,6 +76,8 @@ class Entity implements \Common\IMagicAccess, \Common\IEntity {
 
     $this->_container = new static::$_containerName();
     $this->_container->setProperties(static::$_properties);
+    $this->_container->setTableName(static::$tableName);
+    $this->_container->setIdField(static::$idField);
   }
 
   /**
