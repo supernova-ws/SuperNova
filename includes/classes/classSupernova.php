@@ -100,85 +100,13 @@ class classSupernova {
     }
   }
 
-  // que_process не всегда должна работать в режиме прямой работы с БД !! Она может работать и в режиме эмуляции
-  // !!!!!!!! После que_get брать не [0] элемент, а first() - тогда можно в индекс элемента засовывать que_id из таблицы
-
-
   public static function init_0_prepare() {
     // Отключаем magic_quotes
-    ini_get('magic_quotes_sybase') ? die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...') : false;
-    if (@get_magic_quotes_gpc()) {
-      $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-      array_walk_recursive($gpcr, function (&$value, $key) {
-        $value = stripslashes($value);
-      });
-    }
-    if (function_exists('set_magic_quotes_runtime')) {
-      @set_magic_quotes_runtime(0);
-      @ini_set('magic_quotes_runtime', 0);
-      @ini_set('magic_quotes_sybase', 0);
-    }
+    // Removed magic quotes handling - targeting for PHP 5.4+
   }
 
   public static function init_1_globalContainer() {
     static::$gc = new GlobalContainer();
-    $gc = static::$gc;
-
-    // Default db
-    $gc->db = function ($c) {
-      classSupernova::$db = $db = new db_mysql($c);
-      $db->sn_db_connect();
-
-      return $db;
-    };
-
-    $gc->debug = function ($c) {
-      return new debug();
-    };
-
-    $gc->cache = function ($c) {
-      return new classCache(classSupernova::$cache_prefix);
-    };
-
-    $gc->config = function ($c) {
-      return new classConfig(classSupernova::$cache_prefix);
-    };
-
-    $gc->localePlayer = function (GlobalContainer $c) {
-      return new classLocale($c->config->server_locale_log_usage);
-    };
-
-    $gc->dbRowOperator = function ($c) {
-      return new DbRowDirectOperator($c);
-    };
-
-    $gc->buddyClass = 'Buddy\BuddyModel';
-    $gc->buddyModel = $gc->factory(function (GlobalContainer $c) {
-      return new $c->buddyClass($c);
-    });
-
-    $gc->query = $gc->factory(function (GlobalContainer $c) {
-      return new DbQueryConstructor($c->db);
-    });
-
-    $gc->unit = $gc->factory(function (GlobalContainer $c) {
-      return new \V2Unit\V2UnitModel($c);
-    });
-
-    $gc->cacheOperator = function(GlobalContainer $gc) {
-      return new SnDbCachedOperator($gc);
-    };
-
-    $gc->snCacheClass = 'SnCache';
-    $gc->snCache = function(GlobalContainer $gc) {
-      return $gc->db->snCache;
-//      return new SnCache($gc);
-    };
-
-// TODO
-//    $container->vector = $container->factory(function (GlobalContainer $c) {
-//      return new Vector($c->db);
-//    });
   }
 
   public static function init_3_load_config_file() {

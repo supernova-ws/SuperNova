@@ -103,7 +103,6 @@ global $auth;
 
 classSupernova::init_0_prepare();
 classSupernova::init_1_globalContainer();
-//classSupernova::init_1_constants();
 classSupernova::init_3_load_config_file();
 
 // required for db.php

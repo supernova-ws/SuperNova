@@ -64,6 +64,7 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
    * @param GlobalContainer $gc
    */
   public function __construct($gc) {
+    // TODO - remove. No dependenceon container - we should extract all needed info here
     $this->gc = $gc;
     $this->model = new static::$modelClass($gc);
     static::$dbStatic = $gc->db;
@@ -109,7 +110,7 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
 
     foreach ($this->properties as $propertyName => $propertyData) {
       if (is_callable($this->accessors[P_CONTAINER_IMPORTER][$propertyName])) {
-        call_user_func($this->accessors[P_CONTAINER_IMPORTER][$propertyName], &$row);
+        call_user_func_array($this->accessors[P_CONTAINER_IMPORTER][$propertyName], array(&$row));
       } elseif (!empty($propertyData[P_DB_FIELD])) {
         $this->$propertyName = $row[$propertyData[P_DB_FIELD]];
       }
@@ -121,7 +122,7 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
     $row = array();
     foreach ($this->properties as $propertyName => $propertyData) {
       if (is_callable($this->accessors[P_CONTAINER_EXPORTER][$propertyName])) {
-        call_user_func($this->accessors[P_CONTAINER_EXPORTER][$propertyName], &$row);
+        call_user_func_array($this->accessors[P_CONTAINER_EXPORTER][$propertyName], array(&$row));
       } elseif (!empty($propertyData[P_DB_FIELD])) {
         $row[$propertyData[P_DB_FIELD]] = $this->$propertyName;
       }

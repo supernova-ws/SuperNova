@@ -1183,6 +1183,8 @@ WORKING ON
         - Что бы не указывать тип Closure при запихивании его в контейнер
         - НЕ РАБОТАЕТ. Может __invoke()?
 
+    - Дефолтные значения для полей в Entity
+
 
     !! Работаем над тестами для DbQuery
         - // TODO - split all DANGER works in DbQuery

@@ -96,18 +96,12 @@ class V2UnitContainer extends \EntityContainer {
    * BuddyContainer constructor.
    *
    * @param GlobalContainer $gc
-   * @param array           $user
    */
-  public function __construct($gc, $user = array()) {
+  public function __construct($gc) {
     parent::__construct($gc);
 
     $that = $this;
 
-//    $this->assignAccessor('type', P_CONTAINER_GETTER,
-//      function () use ($that) {
-//        return $that->type;
-//      }
-//    );
     $this->assignAccessor('type', P_CONTAINER_SETTER,
       function ($value) use ($that) {
         $that->type = $value;
@@ -170,13 +164,19 @@ class V2UnitContainer extends \EntityContainer {
 
   public function isEmpty() {
     return
-      $this->buddyStatusId === null
+      empty($this->playerOwnerId)
       ||
-      $this->buddyStatusId === BUDDY_REQUEST_NOT_SET
+      is_null($this->locationType)
       ||
-      empty($this->playerSenderId)
+      $this->locationType === LOC_NONE
       ||
-      empty($this->playerOwnerId);
+      empty($this->locationId)
+      ||
+      empty($this->type)
+      ||
+      empty($this->snId)
+      ||
+      empty($this->level);
   }
 
 }
