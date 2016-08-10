@@ -5,8 +5,6 @@
 
 /**
  * Created by Gorlum 10.08.2016 12:40
- *
- * @property int|float $dbId Entity DB ID
  */
 interface IEntityContainer {
   /**

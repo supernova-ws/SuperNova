@@ -1,7 +1,7 @@
 <?php
 
 namespace Common;
-use EntityContainer;
+
 use IEntityContainer;
 
 interface IEntityOperator {

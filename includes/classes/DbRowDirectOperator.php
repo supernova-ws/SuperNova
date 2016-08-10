@@ -9,7 +9,7 @@
 class DbRowDirectOperator implements \Common\IEntityOperator {
 
   /**
-   * @param IEntityContainer $cEntity
+   * @param EntityContainer $cEntity
    *
    * @return array
    */
@@ -24,7 +24,7 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   }
 
   /**
-   * @param IEntityContainer $cEntity
+   * @param EntityContainer $cEntity
    *
    * @return int
    */
@@ -42,7 +42,7 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   }
 
   /**
-   * @param IEntityContainer $cEntity
+   * @param EntityContainer $cEntity
    *
    * @return int|string
    */

@@ -5,6 +5,7 @@ use \Common\GlobalContainer;
 /**
  * Class EntityContainer
  *
+ * @property int|float $dbId Entity DB ID
  */
 class EntityContainer extends V2PropertyContainer implements IEntityContainer {
   const ENTITY_DB_ID_INCLUDE = true;
