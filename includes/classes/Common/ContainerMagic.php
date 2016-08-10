@@ -15,13 +15,16 @@ class ContainerMagic implements IMagicAccess {
    */
   protected $values = array();
 
-  /**
-   * Is container contains no data
-   *
-   * @return bool
-   */
   public function isEmpty() {
     return empty($this->values);
+  }
+
+  public function __set($name, $value) {
+    $this->values[$name] = $value;
+  }
+
+  public function __get($name) {
+    return isset($this->values[$name]) ? $this->values[$name] : null;
   }
 
   public function __isset($name) {
@@ -32,12 +35,9 @@ class ContainerMagic implements IMagicAccess {
     unset($this->values[$name]);
   }
 
-  public function __set($name, $value) {
-    $this->values[$name] = $value;
-  }
 
-  public function __get($name) {
-    return array_key_exists($name, $this->values) ? $this->values[$name] : null;
+  public function clear() {
+    $this->values = array();
   }
 
 }

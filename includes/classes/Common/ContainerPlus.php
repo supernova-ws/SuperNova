@@ -32,4 +32,22 @@ class ContainerPlus extends Container implements IMagicAccess, IMagicCall {
     return call_user_func_array($this->$name, $arguments);
   }
 
+  /**
+   * Is container contains no data
+   *
+   * @return bool
+   */
+  public function isEmpty() {
+    throw new \Exception(get_class() . '::isEmpty() not implemented - inherited from ContainerPlus');
+  }
+
+  /**
+   * Clears container contents
+   *
+   * @return mixed
+   */
+  public function clear() {
+    throw new \Exception(get_class() . '::clear() not implemented - inherited from ContainerPlus');
+  }
+
 }

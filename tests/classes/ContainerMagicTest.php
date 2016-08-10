@@ -34,6 +34,7 @@ class ContainerMagicTest extends PHPUnit_Framework_TestCase {
    * @covers ::__set
    * @covers ::__unset
    * @covers ::isEmpty
+   * @covers ::clear
    */
   public function test__get() {
     $this->assertTrue($this->object->isEmpty());
@@ -51,6 +52,10 @@ class ContainerMagicTest extends PHPUnit_Framework_TestCase {
     $this->assertFalse(isset($this->object->test));
     $this->assertNull($this->object->test);
     $this->assertAttributeEquals(array(), 'values', $this->object);
+
+    $this->object->test = 'value';
+    $this->object->clear();
+    $this->assertTrue($this->object->isEmpty());
   }
 
 }

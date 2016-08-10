@@ -1,9 +1,10 @@
 <?php
 
 namespace Common;
+
 use Exception;
 
-interface IPropertyContainer {
+interface IPropertyContainer extends IMagicAccess {
   /**
    * Is container contains no data
    *
@@ -35,18 +36,9 @@ interface IPropertyContainer {
    */
   public function assignAccessor($varName, $type, $callable);
 
-//  /**
-//   * Imports data from DB row (array of 'fieldName' => 'value') into container
-//   *
-//   * @param array $row
-//   */
-//  public function importRow($row);
-//
-//  /**
-//   * Exports container state into DB row (array of 'fieldName' => 'value')
-//   *
-//   * @return array
-//   */
-//  public function exportRow();
 
+  /**
+   * Clears only properties which declared in $properties array
+   */
+  public function clearProperties();
 }

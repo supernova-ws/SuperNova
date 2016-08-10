@@ -1181,7 +1181,14 @@ classSupernova::$gc->cacheOperator
 
 
 WORKING ON
-    - Тесты для entity и контейнеров
+    - clear -> clearProperties
+
+    - public function assignAccessor($varName, $type, $callable)
+        - batch assign
+
+    ? Тесты для entity и контейнеров
+        - V2PropertyContainer - тесты
+            - __unset - добавить ансеттеры????
 
     - Дефолтные значения для полей в Entity
 

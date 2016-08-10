@@ -23,6 +23,7 @@ interface IMagicAccess {
    * Magic getter
    *
    * @param string $name
+   *
    * @return mixed
    */
   public function __get($name);
@@ -31,6 +32,7 @@ interface IMagicAccess {
    * Magic checker for property set
    *
    * @param string $name
+   *
    * @return boolean
    */
   public function __isset($name);
@@ -41,5 +43,20 @@ interface IMagicAccess {
    * @param string $name
    */
   public function __unset($name);
+
+
+  /**
+   * Is container contains no data
+   *
+   * @return bool
+   */
+  public function isEmpty();
+
+  /**
+   * Clears container contents
+   *
+   * @return mixed
+   */
+  public function clear();
 
 }
