@@ -35,18 +35,18 @@ interface IPropertyContainer {
    */
   public function assignAccessor($varName, $type, $callable);
 
-  /**
-   * Imports data from DB row (array of 'fieldName' => 'value') into container
-   *
-   * @param array $row
-   */
-  public function importRow($row);
-
-  /**
-   * Exports container state into DB row (array of 'fieldName' => 'value')
-   *
-   * @return array
-   */
-  public function exportRow();
+//  /**
+//   * Imports data from DB row (array of 'fieldName' => 'value') into container
+//   *
+//   * @param array $row
+//   */
+//  public function importRow($row);
+//
+//  /**
+//   * Exports container state into DB row (array of 'fieldName' => 'value')
+//   *
+//   * @return array
+//   */
+//  public function exportRow();
 
 }

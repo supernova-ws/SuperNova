@@ -153,7 +153,7 @@ class classSupernova {
     };
 
     $gc->buddyClass = 'Buddy\BuddyModel';
-    $gc->buddy = $gc->factory(function (GlobalContainer $c) {
+    $gc->buddyModel = $gc->factory(function (GlobalContainer $c) {
       return new $c->buddyClass($c);
     });
 

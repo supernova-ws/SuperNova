@@ -209,9 +209,9 @@ class DBStaticMessages {
   }
 
   /**
-   * @param \Buddy\BuddyRoutingParams $cBuddy
-   * @param string                    $localeSubjectId
-   * @param string                    $localeTextId
+   * @param \Buddy\BuddyContainer $cBuddy
+   * @param string                $localeSubjectId
+   * @param string                $localeTextId
    */
   public static function msgSendFromPlayerBuddy($cBuddy, $localeSubjectId, $localeTextId) {
     static::msgSendFromPlayer(

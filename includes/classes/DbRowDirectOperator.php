@@ -3,36 +3,38 @@
 /**
  * Class DbRowDirectOperator
  *
- * Handle Entity storing/loading operations
+ * Handle EntityModel storing/loading operations
  */
 
 class DbRowDirectOperator implements \Common\IEntityOperator {
 
   /**
-   * @param \Common\IEntity $entity
+   * @param IEntityContainer $cEntity
    *
    * @return array
    */
-  public function getById($entity) {
+  public function getById($cEntity) {
     $stmt = classSupernova::$gc->query
-      ->setIdField($entity->getIdFieldName())
+      ->setIdField($cEntity->getIdFieldName())
       ->field('*')
-      ->from($entity->getTableName())
-      ->where($entity->getIdFieldName() . ' = "' . $entity->dbId . '"');
+      ->from($cEntity->getTableName())
+      ->where($cEntity->getIdFieldName() . ' = "' . $cEntity->dbId . '"');
 
     return $stmt->selectRow();
   }
 
   /**
-   * @param \Common\IEntity $entity
+   * @param IEntityContainer $cEntity
+   *
+   * @return int
    */
-  public function deleteById($entity) {
-    $db = $entity->getDbStatic();
+  public function deleteById($cEntity) {
+    $db = $cEntity->getDbStatic();
 
     $db->doDeleteRow(
-      $entity->getTableName(),
+      $cEntity->getTableName(),
       array(
-        $entity->getIdFieldName() => $entity->dbId,
+        $cEntity->getIdFieldName() => $cEntity->dbId,
       )
     );
 
@@ -40,20 +42,22 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   }
 
   /**
-   * @param \Common\IEntity $entity
+   * @param IEntityContainer $cEntity
+   *
+   * @return int|string
    */
-  public function insert($entity) {
-    $db = $entity->getDbStatic();
+  public function insert($cEntity) {
+    $db = $cEntity->getDbStatic();
 
-    $row = $entity->exportRowWithoutId();
+    $row = $cEntity->exportRowWithoutId();
     if (empty($row)) {
-      // TODO Exceptiion
+      // TODO Exception
       return 0;
     }
-    $db->doInsertSet($entity->getTableName(), $row);
+    $db->doInsertSet($cEntity->getTableName(), $row);
 
-    // TODO Exceptiion if db_insert_id() is empty
-    return $entity->dbId = $db->db_insert_id();
+    // TODO Exception if db_insert_id() is empty
+    return $cEntity->dbId = $db->db_insert_id();
   }
 
 }

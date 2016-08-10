@@ -1,23 +1,25 @@
 <?php
 
 namespace Common;
+use EntityContainer;
+use IEntityContainer;
 
 interface IEntityOperator {
   /**
-   * @param IEntity $entity
+   * @param IEntityContainer $cEntity
    *
    * @return array
    */
-  public function getById($entity);
+  public function getById($cEntity);
 
   /**
-   * @param IEntity $entity
+   * @param IEntityContainer $cEntity
    */
-  public function deleteById($entity);
+  public function deleteById($cEntity);
 
   /**
-   * @param IEntity $entity
+   * @param IEntityContainer $cEntity
    */
-  public function insert($entity);
+  public function insert($cEntity);
 
 }

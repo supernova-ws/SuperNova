@@ -15,7 +15,7 @@ namespace Common;
  * @property \classConfig         $config
  * @property \classLocale         $localePlayer
  * @property string               $buddyClass
- * @property \Buddy\BuddyModel    $buddy
+ * @property \Buddy\BuddyModel    $buddyModel
  * @property \V2Unit\V2UnitModel  $unit
  * @property \DbQueryConstructor  $query
  * @property \DbRowDirectOperator $dbRowOperator

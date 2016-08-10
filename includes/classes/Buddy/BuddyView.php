@@ -9,28 +9,29 @@ use Common\GlobalContainer;
 class BuddyView {
 
   /**
-   * @param BuddyRoutingParams $cBuddy
+   * @param GlobalContainer $gc
+   * @param BuddyContainer $cBuddy
    *
    * @return \template
    */
-  public function makeTemplate($cBuddy) {
-    $playerLocale = $cBuddy->gc->localePlayer;
+  public function makeTemplate($gc, $cBuddy) {
+    $playerLocale = $gc->localePlayer;
 
     $result = array();
     sn_db_transaction_start();
     try {
-      $cBuddy->model->route($cBuddy);
+      $cBuddy->getModel()->route($cBuddy);
     } catch (BuddyException $e) {
       $exceptionCode = \ResultMessages::parseException($e, $result);
 
       $exceptionCode == ERR_NONE ? sn_db_transaction_commit() : sn_db_transaction_rollback();
     }
     sn_db_transaction_rollback();
-    unset($buddy);
+
 
     empty($template_result) ? $template_result = array() : false;
 
-    foreach ($cBuddy->model->db_buddy_list_by_user($cBuddy->playerId) as $row) {
+    foreach ($cBuddy->getModel()->db_buddy_list_by_user($cBuddy) as $row) {
       $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
 
       $row['BUDDY_ACTIVE'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE;

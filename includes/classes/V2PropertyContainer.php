@@ -13,20 +13,6 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   protected $properties = array();
 
   /**
-   * Name of table for this entity
-   *
-   * @var string $tableName
-   */
-  protected $tableName = '_table';
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idField
-   */
-  protected $idField = 'id';
-
-
-  /**
    * Array of accessors - getters/setters/etc
    *
    * Getter is a callable like
@@ -50,29 +36,6 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   public function setProperties($properties) {
     $this->properties = $properties;
   }
-  public function setTableName($value) {
-    $this->tableName = $value;
-  }
-  public function setIdField($value) {
-    $this->idField = $value;
-  }
-  /**
-   * Gets entity's table name
-   *
-   * @return string
-   */
-  public function getTableName() {
-    return $this->tableName;
-  }
-
-  /**
-   * @return string
-   */
-  public function getIdFieldName() {
-    return $this->idField;
-  }
-
-
 
   /**
    * Is container contains no data
@@ -116,37 +79,10 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
     }
   }
 
-  public function importRow($row) {
-    // TODO - reset container in more convinient way
-    $this->values = array();
-
-    if(empty($row)) {
-      return;
-    }
-
+  public function clear() {
     foreach ($this->properties as $propertyName => $propertyData) {
-      if (is_callable($this->accessors[P_CONTAINER_IMPORTER][$propertyName])) {
-        call_user_func($this->accessors[P_CONTAINER_IMPORTER][$propertyName], &$row);
-      } elseif (!empty($propertyData[P_DB_FIELD])) {
-        $this->$propertyName = $row[$propertyData[P_DB_FIELD]];
-      }
-      // Otherwise it's internal field - filled and used internally
+      unset($this->values[$propertyName]);
     }
-  }
-
-  public function exportRow($withDbId = Entity::ENTITY_DB_ID_INCLUDE) {
-    $row = array();
-
-    foreach ($this->properties as $propertyName => $propertyData) {
-      if (is_callable($this->accessors[P_CONTAINER_EXPORTER][$propertyName])) {
-        call_user_func($this->accessors[P_CONTAINER_EXPORTER][$propertyName], &$row);
-      } elseif (!empty($propertyData[P_DB_FIELD])) {
-        $row[$propertyData[P_DB_FIELD]] = $this->$propertyName;
-      }
-      // Otherwise it's internal field - filled and used internally
-    }
-
-    return $row;
   }
 
 }

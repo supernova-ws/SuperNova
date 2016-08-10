@@ -1119,7 +1119,7 @@ Call Stack
     - Объединить с Заметками
     - Чистить таблицу buddy, а затем связать ID по констраинтам с {{user}}
 
-// TODO - Entity - сделать трейт TMagicArray - реализацию IMagicAccess, которая обращается к свойствам через интерфейс ArrayAccess
+// TODO - EntityModel - сделать трейт TMagicArray - реализацию IMagicAccess, которая обращается к свойствам через интерфейс ArrayAccess
 
 
 // TODO - Друзья
@@ -1132,7 +1132,7 @@ Call Stack
         - remove transaction related function from db.php
             - global transaction start function - for all DBs
                 - WHy WE FUCKING SHOULD EVER NEED IT?!!!
-                    - Each Entity should handle transaction by themselves !!!!!!!!!!
+                    - Each EntityModel should handle transaction by themselves !!!!!!!!!!
                     - Otherwise - it's wrong architecture design
                     - Yep, it's wrong design - but currently we working with wat we have
                 - So we NEED this functions if working across DBs - i.e. Global Auth
@@ -1175,6 +1175,15 @@ classSupernova::$gc->cacheOperator
 
 
 WORKING ON
+    - Прописать интерфейсы для Entity
+        - связанных объектов (Buddy)
+        - V2Unit
+
+    - Поэкспериментировать с наследованием Closure: ClosureExporter, ClosureImporter итд
+        - Что бы не указывать тип Closure при запихивании его в контейнер
+        - НЕ РАБОТАЕТ. Может __invoke()?
+
+
     !! Работаем над тестами для DbQuery
         - // TODO - split all DANGER works in DbQuery
         - Переделать одинаковые циклища
