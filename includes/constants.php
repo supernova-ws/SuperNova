@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a52.0');
+define('SN_VERSION', '41a52.1');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1215,11 +1215,11 @@ define('P_DB_ROW_EXPORT', 'exportFieldsToRow'); // Callable to fill row on prope
 define('P_DB_ROW_METHOD_IMPORT_V2', 'importFieldFromRowMethodV2'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
 define('P_DB_ROW_METHOD_EXPORT_V2', 'exportFieldToRowMethodV2'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
 
-define("P_CONTAINER_SETTER", 'set'); //+
-define("P_CONTAINER_GETTER", 'get'); //+
-define("P_CONTAINER_UNSETTER", 'unset'); //+
-define("P_CONTAINER_IMPORTER", 'import'); //+
-define("P_CONTAINER_EXPORTER", 'export'); //+
+define("P_CONTAINER_SET", '__set'); // DO NOT CHANGE!!!
+define("P_CONTAINER_GET", '__get'); // DO NOT CHANGE!!!
+define("P_CONTAINER_UNSET", '__unset'); // DO NOT CHANGE!!!
+define("P_CONTAINER_IMPORT", 'import');
+define("P_CONTAINER_EXPORT", 'export');
 
 define('P_DB_TYPE', 'propertyType'); // PHP type of property. Also supports in-game types like 'id'
 define('P_DB_FIELD', 'dbField'); // Field name in DB

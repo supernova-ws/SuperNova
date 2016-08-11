@@ -59,44 +59,38 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
     }
   }
 
+  protected function performMagic($name, $value, $processor) {
+    if (
+      !empty($this->accessors[$name][$processor])
+      &&
+      is_callable($this->accessors[$name][$processor])
+    ) {
+      return call_user_func($this->accessors[$name][$processor], $this, $value);
+    } else {
+      return parent::$processor($name, $value);
+    }
+  }
+
   public function __set($name, $value) {
     if(is_callable($value)) {
-      $this->accessors[$name][P_CONTAINER_GETTER] = $value;
-    } elseif (!empty($this->accessors[$name][P_CONTAINER_SETTER]) && is_callable($this->accessors[$name][P_CONTAINER_SETTER])) {
-      call_user_func($this->accessors[$name][P_CONTAINER_SETTER], $this, $value);
-    } else {
-      parent::__set($name, $value);
+      $this->accessors[$name][P_CONTAINER_GET] = $value;
+    } else{
+      $this->performMagic($name, $value, P_CONTAINER_SET);
     }
   }
 
   public function __get($name) {
-    if (
-      !empty($this->accessors[$name][P_CONTAINER_GETTER])
-      &&
-      is_callable($this->accessors[$name][P_CONTAINER_GETTER])
-    ) {
-      return call_user_func($this->accessors[$name][P_CONTAINER_GETTER], $this);
-    } else {
-      return parent::__get($name);
-    }
+    return $this->performMagic($name, null, P_CONTAINER_GET);
+  }
+
+  public function __unset($name) {
+    $this->performMagic($name, null, P_CONTAINER_UNSET);
   }
 
   public function __isset($name) {
     // TODO - or here already can isset($this->name) ????
     $value = $this->$name;
     return isset($value);
-  }
-
-  public function __unset($name) {
-    if (
-      !empty($this->accessors[$name][P_CONTAINER_UNSETTER])
-      &&
-      is_callable($this->accessors[$name][P_CONTAINER_UNSETTER])
-    ) {
-      return call_user_func($this->accessors[$name][P_CONTAINER_UNSETTER], $this);
-    } else {
-      return parent::__unset($name);
-    }
   }
 
   public function clearProperties() {

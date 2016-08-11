@@ -124,7 +124,7 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
       ) {
         call_user_func_array($this->accessors[$propertyName][$processor], array($this, &$row, $propertyName, $fieldName));
       } elseif ($fieldName) {
-        if($processor == P_CONTAINER_IMPORTER) {
+        if($processor == P_CONTAINER_IMPORT) {
           $this->$propertyName = $row[$fieldName];
         } else {
           $row[$fieldName] = $this->$propertyName;
@@ -142,7 +142,7 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
       return true;
     }
 
-    $this->processRow($row, P_CONTAINER_IMPORTER);
+    $this->processRow($row, P_CONTAINER_IMPORT);
 
     return true;
   }
@@ -152,7 +152,7 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
    */
   public function exportRow() {
     $row = array();
-    $this->processRow($row, P_CONTAINER_EXPORTER);
+    $this->processRow($row, P_CONTAINER_EXPORT);
 
     return $row;
   }

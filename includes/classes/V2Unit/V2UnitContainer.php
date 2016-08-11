@@ -102,7 +102,7 @@ class V2UnitContainer extends \EntityContainer {
 
     $that = $this;
 
-    $this->assignAccessor('type', P_CONTAINER_SETTER,
+    $this->assignAccessor('type', P_CONTAINER_SET,
       function ($that, $value) {
         $that->type = $value;
         $array = get_unit_param($value);
@@ -117,7 +117,7 @@ class V2UnitContainer extends \EntityContainer {
 
     // This crap code is until php 5.4+. There we can use $this binding for lambdas
     $fieldName = $this->properties[$propertyName = 'timeStart'][P_DB_FIELD];
-    $this->assignAccessor($propertyName, P_CONTAINER_IMPORTER,
+    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT,
       function (V2UnitContainer $that, &$row, $propertyName, $fieldName) use ($fieldName) {
         if (isset($row[$fieldName])) {
           $dateTime = new \DateTime($row[$fieldName]);
@@ -127,7 +127,7 @@ class V2UnitContainer extends \EntityContainer {
         $that->$propertyName = $dateTime;
       }
     );
-    $this->assignAccessor($propertyName, P_CONTAINER_EXPORTER,
+    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT,
       function (V2UnitContainer $that, &$row, $propertyName, $fieldName) use ($fieldName) {
         $dateTime = $that->$propertyName;
         if ($dateTime instanceof \DateTime) {
@@ -139,7 +139,7 @@ class V2UnitContainer extends \EntityContainer {
     );
 
     $fieldName = $this->properties[$propertyName = 'timeFinish'][P_DB_FIELD];
-    $this->assignAccessor($propertyName, P_CONTAINER_IMPORTER,
+    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT,
       function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
         if (isset($row[$fieldName])) {
           $dateTime = new \DateTime($row[$fieldName]);
@@ -149,7 +149,7 @@ class V2UnitContainer extends \EntityContainer {
         $that->$propertyName = $dateTime;
       }
     );
-    $this->assignAccessor($propertyName, P_CONTAINER_EXPORTER,
+    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT,
       function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
         $dateTime = $that->$propertyName;
         if ($dateTime instanceof \DateTime) {
