@@ -116,9 +116,9 @@ class V2UnitContainer extends \EntityContainer {
     );
 
     // This crap code is until php 5.4+. There we can use $this binding for lambdas
-    $fieldName = $this->properties[$propertyName = 'timeStart'][P_DB_FIELD];
+    $propertyName = 'timeStart';
     $this->assignAccessor($propertyName, P_CONTAINER_IMPORT,
-      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) use ($fieldName) {
+      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
         if (isset($row[$fieldName])) {
           $dateTime = new \DateTime($row[$fieldName]);
         } else {
@@ -128,7 +128,7 @@ class V2UnitContainer extends \EntityContainer {
       }
     );
     $this->assignAccessor($propertyName, P_CONTAINER_EXPORT,
-      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) use ($fieldName) {
+      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
         $dateTime = $that->$propertyName;
         if ($dateTime instanceof \DateTime) {
           $row[$fieldName] = $dateTime->format(FMT_DATE_TIME_SQL);
@@ -138,7 +138,7 @@ class V2UnitContainer extends \EntityContainer {
       }
     );
 
-    $fieldName = $this->properties[$propertyName = 'timeFinish'][P_DB_FIELD];
+    $propertyName = 'timeFinish';
     $this->assignAccessor($propertyName, P_CONTAINER_IMPORT,
       function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
         if (isset($row[$fieldName])) {
