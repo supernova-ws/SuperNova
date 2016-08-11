@@ -5,6 +5,14 @@ use \Common\GlobalContainer;
 /**
  * Class EntityContainer
  *
+ * Support export/import accessors
+ *
+ * Importer is a callable like
+ *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
+ *
+ * Exporter is a callable like
+ *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
+ *
  * @property int|float $dbId Entity DB ID
  */
 class EntityContainer extends V2PropertyContainer implements IEntityContainer {
@@ -102,37 +110,49 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
     return $this->idField;
   }
 
-  public function importRow($row) {
-    $this->clear();
-
-    if (empty($row)) {
-      return;
-    }
-
+  /**
+   * @param array  $row
+   * @param string $processor
+   */
+  protected function processRow(&$row, $processor) {
     foreach ($this->properties as $propertyName => $propertyData) {
-      if (is_callable($this->accessors[P_CONTAINER_IMPORTER][$propertyName])) {
-        call_user_func_array($this->accessors[P_CONTAINER_IMPORTER][$propertyName], array(&$row));
-      } elseif (!empty($propertyData[P_DB_FIELD])) {
-        $this->$propertyName = $row[$propertyData[P_DB_FIELD]];
+      $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
+      if (
+        !empty($this->accessors[$propertyName][$processor])
+        &&
+        is_callable($this->accessors[$propertyName][$processor])
+      ) {
+        call_user_func_array($this->accessors[$propertyName][$processor], array($this, &$row, $propertyName, $fieldName));
+      } elseif ($fieldName) {
+        if($processor == P_CONTAINER_IMPORTER) {
+          $this->$propertyName = $row[$fieldName];
+        } else {
+          $row[$fieldName] = $this->$propertyName;
+        }
       }
       // Otherwise it's internal field - filled and used internally
     }
+
   }
 
-  protected function exportRow($withDbId = self::ENTITY_DB_ID_INCLUDE) {
-    $row = array();
-    foreach ($this->properties as $propertyName => $propertyData) {
-      if (is_callable($this->accessors[P_CONTAINER_EXPORTER][$propertyName])) {
-        call_user_func_array($this->accessors[P_CONTAINER_EXPORTER][$propertyName], array(&$row));
-      } elseif (!empty($propertyData[P_DB_FIELD])) {
-        $row[$propertyData[P_DB_FIELD]] = $this->$propertyName;
-      }
-      // Otherwise it's internal field - filled and used internally
+  public function importRow($row) {
+    $this->clearProperties();
+
+    if (empty($row)) {
+      return true;
     }
 
-    if ($withDbId == self::ENTITY_DB_ID_EXCLUDE) {
-      unset($row[$this->getIdFieldName()]);
-    }
+    $this->processRow($row, P_CONTAINER_IMPORTER);
+
+    return true;
+  }
+
+  /**
+   * @return array
+   */
+  public function exportRow() {
+    $row = array();
+    $this->processRow($row, P_CONTAINER_EXPORTER);
 
     return $row;
   }
@@ -140,15 +160,12 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
   /**
    * @return array
    */
-  public function exportRowWithoutId() {
-    return $this->exportRow(self::ENTITY_DB_ID_EXCLUDE);
-  }
+  public function exportRowNoId() {
+    $row = $this->exportRow();
 
-  /**
-   * @return array
-   */
-  public function exportRowWithId() {
-    return $this->exportRow(self::ENTITY_DB_ID_INCLUDE);
+    unset($row[$this->getIdFieldName()]);
+
+    return $row;
   }
 
   // TODO - load from self DB
@@ -175,11 +192,11 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
     return empty($this->dbId);
   }
 
-  public function insert(){
+  public function insert() {
     static::$rowOperator->insert($this);
   }
 
-  public function delete(){
+  public function delete() {
     static::$rowOperator->deleteById($this);
   }
 

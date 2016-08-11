@@ -49,7 +49,7 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
   public function insert($cEntity) {
     $db = $cEntity->getDbStatic();
 
-    $row = $cEntity->exportRowWithoutId();
+    $row = $cEntity->exportRowNoId();
     if (empty($row)) {
       // TODO Exception
       return 0;

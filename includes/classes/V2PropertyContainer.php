@@ -3,6 +3,26 @@
 use \Common\ContainerMagic;
 use \Common\IPropertyContainer;
 
+/**
+ * Class V2PropertyContainer
+ *
+ * Support accessors for properties: getter, setter, unsetter
+ *
+ * Below $that - is a shortcut for container object which will be passed to accessor
+ *
+ * Getter is a callable like
+ *    function ($this) {}
+ *
+ * Setter is a callable like
+ *    function ($that, $value)  {}
+ *
+ * Unsetter is a callable like
+ *    function ($that) {}
+ *
+ * Use setDirect() and getDirect() methods to access same variable for setter/getter function!
+ * If setter works with other object properties it needs an unsetter to handle clearProperties() method
+ *
+ */
 class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
 
   /**
@@ -14,27 +34,6 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
 
   /**
    * Array of accessors - getters/setters/etc
-   *
-   * Getter is a callable like
-   *    function () use ($that) {}
-   *  or Pimple-like (P_CONTAINER_GETTER_PIMPLE)
-   *    function ($this) {}
-   *
-   * Setter is a callable like
-   *    function ($value) use ($that) {}
-   *
-   * Unsetter is a callable like
-   *    function () use ($that) {}
-   *
-   * Use setDirect() and getDirect() methods to access same variable for setter/getter function!
-   * If setter works with other object properties it needs an unsetter to handle clearProperties() method
-   *
-   *
-   * Importer is a callable like
-   *    function (&$row) use ($this) {}
-   *
-   * Exporter is a callable like
-   *    function (&$row) use ($this) {}
    *
    * @var callable[][]
    */
@@ -62,9 +61,9 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
 
   public function __set($name, $value) {
     if(is_callable($value)) {
-      $this->accessors[$name][P_CONTAINER_GETTER_PIMPLE] = $value;
+      $this->accessors[$name][P_CONTAINER_GETTER] = $value;
     } elseif (!empty($this->accessors[$name][P_CONTAINER_SETTER]) && is_callable($this->accessors[$name][P_CONTAINER_SETTER])) {
-      call_user_func($this->accessors[$name][P_CONTAINER_SETTER], $value);
+      call_user_func($this->accessors[$name][P_CONTAINER_SETTER], $this, $value);
     } else {
       parent::__set($name, $value);
     }
@@ -72,17 +71,11 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
 
   public function __get($name) {
     if (
-      !empty($this->accessors[$name][P_CONTAINER_GETTER_PIMPLE])
-      &&
-      is_callable($this->accessors[$name][P_CONTAINER_GETTER_PIMPLE])
-    ) {
-      return call_user_func($this->accessors[$name][P_CONTAINER_GETTER_PIMPLE], $this);
-    } elseif (
       !empty($this->accessors[$name][P_CONTAINER_GETTER])
       &&
       is_callable($this->accessors[$name][P_CONTAINER_GETTER])
     ) {
-      return call_user_func($this->accessors[$name][P_CONTAINER_GETTER]);
+      return call_user_func($this->accessors[$name][P_CONTAINER_GETTER], $this);
     } else {
       return parent::__get($name);
     }
@@ -100,7 +93,7 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
       &&
       is_callable($this->accessors[$name][P_CONTAINER_UNSETTER])
     ) {
-      return call_user_func($this->accessors[$name][P_CONTAINER_UNSETTER]);
+      return call_user_func($this->accessors[$name][P_CONTAINER_UNSETTER], $this);
     } else {
       return parent::__unset($name);
     }
@@ -108,7 +101,6 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
 
   public function clearProperties() {
     foreach ($this->properties as $propertyName => $propertyData) {
-//      unset($this->values[$propertyName]);
       unset($this->$propertyName);
     }
   }

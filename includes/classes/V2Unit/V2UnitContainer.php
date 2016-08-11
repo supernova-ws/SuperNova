@@ -103,7 +103,7 @@ class V2UnitContainer extends \EntityContainer {
     $that = $this;
 
     $this->assignAccessor('type', P_CONTAINER_SETTER,
-      function ($value) use ($that) {
+      function ($that, $value) {
         $that->type = $value;
         $array = get_unit_param($value);
         $that->unitInfo = $array;
@@ -118,18 +118,18 @@ class V2UnitContainer extends \EntityContainer {
     // This crap code is until php 5.4+. There we can use $this binding for lambdas
     $fieldName = $this->properties[$propertyName = 'timeStart'][P_DB_FIELD];
     $this->assignAccessor($propertyName, P_CONTAINER_IMPORTER,
-      function (&$row) use ($that, $fieldName) {
+      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) use ($fieldName) {
         if (isset($row[$fieldName])) {
           $dateTime = new \DateTime($row[$fieldName]);
         } else {
           $dateTime = null;
         }
-        $that->timeStart = $dateTime;
+        $that->$propertyName = $dateTime;
       }
     );
     $this->assignAccessor($propertyName, P_CONTAINER_EXPORTER,
-      function (&$row) use ($that, $fieldName) {
-        $dateTime = $that->timeStart;
+      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) use ($fieldName) {
+        $dateTime = $that->$propertyName;
         if ($dateTime instanceof \DateTime) {
           $row[$fieldName] = $dateTime->format(FMT_DATE_TIME_SQL);
         } else {
@@ -140,18 +140,18 @@ class V2UnitContainer extends \EntityContainer {
 
     $fieldName = $this->properties[$propertyName = 'timeFinish'][P_DB_FIELD];
     $this->assignAccessor($propertyName, P_CONTAINER_IMPORTER,
-      function (&$row) use ($that, $fieldName) {
+      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
         if (isset($row[$fieldName])) {
           $dateTime = new \DateTime($row[$fieldName]);
         } else {
           $dateTime = null;
         }
-        $that->timeFinish = $dateTime;
+        $that->$propertyName = $dateTime;
       }
     );
     $this->assignAccessor($propertyName, P_CONTAINER_EXPORTER,
-      function (&$row) use ($that, $fieldName) {
-        $dateTime = $that->timeFinish;
+      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
+        $dateTime = $that->$propertyName;
         if ($dateTime instanceof \DateTime) {
           $row[$fieldName] = $dateTime->format(FMT_DATE_TIME_SQL);
         } else {

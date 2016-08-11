@@ -50,7 +50,7 @@ interface IEntityContainer {
    *
    * @return array
    */
-  public function exportRowWithoutId();
+  public function exportRowNoId();
 
   /**
    * Exports object properties to DB row state WITHOUT ID
@@ -59,7 +59,7 @@ interface IEntityContainer {
    *
    * @return array
    */
-  public function exportRowWithId();
+  public function exportRow();
 
   /**
    * Trying to load object info by buddy ID - if it is supplied
