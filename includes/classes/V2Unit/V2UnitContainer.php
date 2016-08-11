@@ -100,11 +100,9 @@ class V2UnitContainer extends \EntityContainer {
   public function __construct($gc) {
     parent::__construct($gc);
 
-    $that = $this;
-
     $this->assignAccessor('type', P_CONTAINER_SET,
-      function ($that, $value) {
-        $that->type = $value;
+      function (V2UnitContainer $that, $value) {
+        $that->setDirect('type', $value);
         $array = get_unit_param($value);
         $that->unitInfo = $array;
         // Mandatory
@@ -117,49 +115,12 @@ class V2UnitContainer extends \EntityContainer {
 
     // This crap code is until php 5.4+. There we can use $this binding for lambdas
     $propertyName = 'timeStart';
-    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT,
-      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
-        if (isset($row[$fieldName])) {
-          $dateTime = new \DateTime($row[$fieldName]);
-        } else {
-          $dateTime = null;
-        }
-        $that->$propertyName = $dateTime;
-      }
-    );
-    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT,
-      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
-        $dateTime = $that->$propertyName;
-        if ($dateTime instanceof \DateTime) {
-          $row[$fieldName] = $dateTime->format(FMT_DATE_TIME_SQL);
-        } else {
-          $row[$fieldName] = null;
-        }
-      }
-    );
+    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
+    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
 
     $propertyName = 'timeFinish';
-    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT,
-      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
-        if (isset($row[$fieldName])) {
-          $dateTime = new \DateTime($row[$fieldName]);
-        } else {
-          $dateTime = null;
-        }
-        $that->$propertyName = $dateTime;
-      }
-    );
-    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT,
-      function (V2UnitContainer $that, &$row, $propertyName, $fieldName) {
-        $dateTime = $that->$propertyName;
-        if ($dateTime instanceof \DateTime) {
-          $row[$fieldName] = $dateTime->format(FMT_DATE_TIME_SQL);
-        } else {
-          $row[$fieldName] = null;
-        }
-      }
-    );
-
+    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
+    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
   }
 
   public function isEmpty() {

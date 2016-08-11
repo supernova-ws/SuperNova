@@ -25,6 +25,7 @@ use \classSupernova;
  * @property \SnDbCachedOperator     $cacheOperator - really DB record operator. But let it be
  * @property string                  $snCacheClass
  * @property \SnCache                $snCache
+ * @property \Common\Types           $types
  */
 class GlobalContainer extends ContainerPlus {
 
@@ -43,6 +44,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->debug = function ($c) {
       return new \debug();
+    };
+
+    $gc->types = function ($c) {
+      return new \Common\Types();
     };
 
     $gc->cache = function ($c) {

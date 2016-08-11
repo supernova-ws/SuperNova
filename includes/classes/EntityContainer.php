@@ -64,7 +64,7 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
    *
    * @var array[] $properties
    */
-  protected $properties = array();
+//  protected $properties = array();
 
 
   /**

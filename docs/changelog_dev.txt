@@ -1157,6 +1157,7 @@ classSupernova::$gc->cacheOperator
     - https://en.wikipedia.org/wiki/Readers–writer_lock
     - https://en.wikipedia.org/wiki/Mutual_exclusion
 
+- GMP для больших чисел http://php.net/manual/en/book.gmp.php
 
 // TODO
     - Notes и Messages - унифицировать интерфейс выбора диапазонов
@@ -1180,11 +1181,20 @@ classSupernova::$gc->cacheOperator
 
 
 
-WORKING ON
-    - clear -> clearProperties
+$unit = classSupernova::$gc->unitContainer;
+$unit->dbId = 1;
+$unit->loadTry();
+var_dump($unit);
+pdie();
 
-    - public function assignAccessor($varName, $type, $callable)
-        - batch assign
+
+
+WORKING ON
+    !! accessors is REALLY PART OF MODEL!
+        - or should be static inside container
+            - better - model
+        - properties, table, idfieldname - back to model!
+
 
     ? Тесты для entity и контейнеров
         - V2PropertyContainer - тесты
@@ -1192,12 +1202,6 @@ WORKING ON
 
     - Дефолтные значения для полей в Entity
 
-    - GMP для больших чисел http://php.net/manual/en/book.gmp.php
-
-
-    !! Работаем над тестами для DbQuery
-        - // TODO - split all DANGER works in DbQuery
-        - Переделать одинаковые циклища
 
     - ЕЩЕ РАЗ ПРОВЕРИТЬ, что бы просто $where, приходящие в DbQuery не содержали опасных условий
         - и убрать потом перепаковку в DbQuery::buildWhere() и там же убрать ненужную packIntKeyed

@@ -28,6 +28,8 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   /**
    * Property descriptions
    *
+   * propertyName => array()
+   *
    * @var array[]
    */
   protected $properties = array();
@@ -47,6 +49,10 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
     parent::__set($name, $value);
   }
 
+  public function getDirect($name) {
+    parent::__get($name);
+  }
+
   public function assignAccessor($varName, $type, $callable) {
     if (empty($callable)) {
       return;
@@ -59,7 +65,7 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
     }
   }
 
-  protected function performMagic($name, $value, $processor) {
+  protected function performMagic($processor, $name, $value = null) {
     if (
       !empty($this->accessors[$name][$processor])
       &&
@@ -75,16 +81,16 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
     if(is_callable($value)) {
       $this->accessors[$name][P_CONTAINER_GET] = $value;
     } else{
-      $this->performMagic($name, $value, P_CONTAINER_SET);
+      $this->performMagic(P_CONTAINER_SET, $name, $value);
     }
   }
 
   public function __get($name) {
-    return $this->performMagic($name, null, P_CONTAINER_GET);
+    return $this->performMagic(P_CONTAINER_GET, $name, null);
   }
 
   public function __unset($name) {
-    $this->performMagic($name, null, P_CONTAINER_UNSET);
+    $this->performMagic(P_CONTAINER_UNSET, $name, null);
   }
 
   public function __isset($name) {
