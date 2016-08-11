@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a51.60');
+define('SN_VERSION', '41a51.61');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1214,6 +1214,7 @@ define('P_DB_ROW_METHOD_IMPORT_V2', 'importFieldFromRowMethodV2'); // Name of fu
 define('P_DB_ROW_METHOD_EXPORT_V2', 'exportFieldToRowMethodV2'); // Name of function that receives $db_row and $this as parameters to extract info from $this to $db_row
 
 define("P_CONTAINER_SETTER", 'setters');
+define("P_CONTAINER_UNSETTER", 'unsetters');
 define("P_CONTAINER_GETTER", 'getters');
 define("P_CONTAINER_GETTER_PIMPLE", 'gettersPimple');
 define("P_CONTAINER_IMPORTER", 'importers');

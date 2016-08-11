@@ -18,7 +18,6 @@ class DbEscape {
 
 /**
  * Class DbQueryTest
- * @package classes
  * @coversDefaultClass \DBAL\DbQuery
  */
 class DbQueryTest extends PHPUnit_Framework_TestCase {
