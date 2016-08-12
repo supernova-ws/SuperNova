@@ -69,8 +69,7 @@ class DbEmptyIterator extends DbResultIterator {
   }
 
   protected function fetchCurrentRow() {
-    // TODO: Implement fetchCurrentRow() method.
-    $this->currentRow = false;
+    $this->currentRow = null;
   }
 
   /**

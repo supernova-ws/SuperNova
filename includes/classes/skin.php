@@ -224,9 +224,6 @@ class skin {
       }
 
       // Проверка на _inherit
-
-
-//      pdump($this->config);
     }
 
     // Пытаемся скомпилировать _no_image заранее
@@ -248,7 +245,7 @@ class skin {
    * Возвращает строку для вывода в компилированном темплейте PTL
    *
    * @param string   $image_tag
-   * @param template $template
+   * @param template|null $template
    *
    * @return string
    */
@@ -295,7 +292,7 @@ class skin {
    * Ресолвит переменные и парсит тэг
    *
    * @param string   $image_tag
-   * @param template $template
+   * @param template|null $template
    *
    * @return string
    */

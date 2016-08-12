@@ -45,7 +45,7 @@ if($ally_tag) {
 
   message(str_replace('%s', $ally_tag_unsafe, classLocale::$lang['ally_been_maked']), str_replace('%s', $ally_tag_unsafe, classLocale::$lang['ally_maked']));
 } else {
-  $page .= parsetemplate(gettemplate('ali_external_make'), classLocale::$lang);
+  $page .= parsetemplate(gettemplate('ali_external_make'));
 }
 
 display($page, classLocale::$lang['make_alliance']);

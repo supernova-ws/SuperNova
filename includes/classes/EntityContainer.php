@@ -88,11 +88,11 @@ class EntityContainer extends ContainerAccessors {
   }
 
   public function isEmpty() {
-    return empty($this->dbId);
+    return empty($this->values);
   }
 
   public function isNew() {
-    return empty($this->dbId);
+    return empty($this->values);
   }
 
   /**

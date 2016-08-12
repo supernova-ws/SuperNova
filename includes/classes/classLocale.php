@@ -35,7 +35,7 @@ class classLocale implements ArrayAccess {
 
     $this->container = array();
 
-    if(classSupernova::$cache->_MODE != CACHER_NO_CACHE && !classSupernova::$config->locale_cache_disable) {
+    if(classSupernova::$cache->getMode() != CACHER_NO_CACHE && !classSupernova::$config->locale_cache_disable) {
       $this->cache = classSupernova::$cache;
       classSupernova::log_file('locale.__constructor: Cache is present');
 //$this->cache->unset_by_prefix($this->cache_prefix); // TODO - remove? 'cause debug!
@@ -134,7 +134,7 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
 
 
   public function usage_stat_load() {
-    $this->stat_usage = classSupernova::$cache->lng_stat_usage  = array(); // TODO for debug
+    $this->stat_usage = classSupernova::$cache->lng_stat_usage  = array();
     if(empty($this->stat_usage)) {
       $query = classSupernova::$db->doSelect("SELECT * FROM `{{lng_usage_stat}}`");
       while($row = db_fetch($query)) {

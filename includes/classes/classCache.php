@@ -34,6 +34,7 @@ define('CACHER_LOCK_SLEEP', 10000);
  *
  *
  * @property bool _INITIALIZED
+ * @property array lng_stat_usage - Array for locale strings usage statistics
  * @property array tables
  *
  * @package supernova
@@ -47,6 +48,13 @@ class classCache {
   protected $prefix;
 
   protected static $cacheObject;
+
+  /**
+   * @return int
+   */
+  public function getMode() {
+    return static::$mode;
+  }
 
   public function __construct($prefIn = 'CACHE_', $init_mode = false) {
     if (!($init_mode === false || $init_mode === CACHER_NO_CACHE || ($init_mode === CACHER_XCACHE && extension_loaded('xcache')))) {
@@ -86,50 +94,25 @@ class classCache {
   // Here comes low-level functions - those that directly works with cacher engines
   // -------------------------------------------------------------------------
   public function __set($name, $value) {
-    switch ($name) {
-      case '_MODE':
-        throw new UnexpectedValueException('You can not change cacher mode on-the-fly!');
+    switch (self::$mode) {
+      case CACHER_NO_CACHE:
+        self::$data[$this->prefix . $name] = $value;
       break;
 
-      case '_PREFIX':
-        $this->prefix = $value;
-      break;
-
-      default:
-        switch (self::$mode) {
-          case CACHER_NO_CACHE:
-            self::$data[$this->prefix . $name] = $value;
-          break;
-
-          case CACHER_XCACHE:
-            xcache_set($this->prefix . $name, $value);
-          break;
-        }
+      case CACHER_XCACHE:
+        xcache_set($this->prefix . $name, $value);
       break;
     }
   }
 
   public function __get($name) {
-    switch ($name) {
-      case '_MODE':
-        return self::$mode;
+    switch (self::$mode) {
+      case CACHER_NO_CACHE:
+        return self::$data[$this->prefix . $name];
       break;
 
-      case '_PREFIX':
-        return $this->prefix;
-      break;
-
-      default:
-        switch (self::$mode) {
-          case CACHER_NO_CACHE:
-            return self::$data[$this->prefix . $name];
-          break;
-
-          case CACHER_XCACHE:
-            return xcache_get($this->prefix . $name);
-          break;
-
-        }
+      case CACHER_XCACHE:
+        return xcache_get($this->prefix . $name);
       break;
     }
 

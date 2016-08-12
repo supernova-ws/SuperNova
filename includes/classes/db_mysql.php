@@ -291,10 +291,10 @@ class db_mysql {
    */
   public function doSelectDanger($table, $fields, $where = array(), $isOneRecord = DB_RECORDS_ALL, $forUpdate = DB_SELECT_PLAIN) {
     // TODO - TEMPORARY UNTIL DbQuery
-    if(!empty($where)) {
+    if (!empty($where)) {
       foreach ($where as $key => &$value) {
-        if(!is_int($key)) {
-          $value = "`$key` = '" . $this->db_escape($value). "'";
+        if (!is_int($key)) {
+          $value = "`$key` = '" . $this->db_escape($value) . "'";
         }
       }
     }
@@ -304,8 +304,7 @@ class db_mysql {
       " FROM `{{{$table}}}`" .
       (!empty($where) ? ' WHERE ' . implode(' AND ', $where) : '') .
       ($isOneRecord == DB_RECORD_ONE ? ' LIMIT 1' : '') .
-      ($forUpdate == DB_SELECT_FOR_UPDATE ? ' FOR UPDATE' : '')
-    ;
+      ($forUpdate == DB_SELECT_FOR_UPDATE ? ' FOR UPDATE' : '');
 
     return $this->doSql($query);
   }
@@ -352,7 +351,7 @@ class db_mysql {
    * @param string   $table
    * @param array    $fields
    * @param string[] $valuesDanger
-   * @param bool     $replace
+   * @param int      $replace
    *
    * @return array|bool|mysqli_result|null
    * @deprecated
@@ -372,6 +371,7 @@ class db_mysql {
   public function doInsertComplex($query) {
     return $this->doSql($query);
   }
+
   /**
    * @param string $table
    * @param array  $fieldsAndValues
@@ -382,6 +382,7 @@ class db_mysql {
   public function doInsertSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
     return $this->doSet($table, $fieldsAndValues, $replace);
   }
+
   /**
    * Values should be passed as-is
    *
@@ -412,6 +413,7 @@ class db_mysql {
   public function doReplaceSet($table, $fieldsAndValues) {
     return $this->doSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
   }
+
   /**
    * Values should be passed as-is
    *
@@ -447,7 +449,6 @@ class db_mysql {
   }
 
 
-
   /**
    * @param $DbQuery DbQuery
    */
@@ -468,12 +469,10 @@ class db_mysql {
       ->setTable($table)
       ->setValues($fieldsSet)
       ->setAdjust($fieldsAdjust)
-
       // TODO - separate danger WHEREs
       ->setWhereArray($where)
       ->setWhereArrayDanger($whereDanger)
       ->setOneRow($isOneRecord)
-
       ->update();
 
     return $this->doSql($query);
@@ -559,9 +558,6 @@ class db_mysql {
   public function doDeleteSql($query) {
     return $this->doSql($query);
   }
-
-
-
 
 
   /**

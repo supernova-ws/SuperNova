@@ -77,7 +77,13 @@ function sn_chat_add_model() {
   define('IN_AJAX', true);
   $skip_fleet_update = true;
 
-  if(classSupernova::$config->_MODE != CACHER_NO_CACHE && classSupernova::$config->chat_timeout && SN_TIME_MICRO - classSupernova::$config->array_get('users', $user['id'], 'chat_last_activity') > classSupernova::$config->chat_timeout) {
+  if(
+    classSupernova::$config->getMode() != CACHER_NO_CACHE
+    &&
+    classSupernova::$config->chat_timeout
+    &&
+    SN_TIME_MICRO - classSupernova::$config->array_get('users', $user['id'], 'chat_last_activity') > classSupernova::$config->chat_timeout
+  ) {
     die();
   }
 
@@ -111,7 +117,15 @@ function sn_chat_msg_view($template = null) {
   $last_message = '';
   $alliance = 0;
   $template_result['.']['chat'] = array();
-  if(!$history && classSupernova::$config->_MODE != CACHER_NO_CACHE && classSupernova::$config->chat_timeout && SN_TIME_MICRO - classSupernova::$config->array_get('users', $user['id'], 'chat_last_activity') > classSupernova::$config->chat_timeout) {
+  if(
+    !$history
+    &&
+    classSupernova::$config->getMode() != CACHER_NO_CACHE
+    &&
+    classSupernova::$config->chat_timeout
+    &&
+    SN_TIME_MICRO - classSupernova::$config->array_get('users', $user['id'], 'chat_last_activity') > classSupernova::$config->chat_timeout
+  ) {
     $result['disable'] = true;
     $template_result['.']['chat'][] = array(
       'TIME'    => date(FMT_DATE_TIME, htmlentities(SN_CLIENT_TIME_LOCAL, ENT_QUOTES, 'utf-8')),

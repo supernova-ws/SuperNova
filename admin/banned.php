@@ -43,7 +43,8 @@ if($mode == 'banit' && $action) {
     $BanTime += $secs;
 //    $BannedUntil = SN_TIME_NOW + $BanTime;
 
-    sys_admin_player_ban($user, $player_banned_row, $BanTime, $is_vacation = sys_get_param_int('isVacation'), sys_get_param_str_unsafe('why'));
+    $is_vacation = sys_get_param_int('isVacation') ? true : false;
+    sys_admin_player_ban($user, $player_banned_row, $BanTime, $is_vacation, sys_get_param_str_unsafe('why'));
 
     $adm_bn_isbn = classLocale::$lang['adm_bn_isbn'];
     $adm_bn_thpl = classLocale::$lang['adm_bn_thpl'];

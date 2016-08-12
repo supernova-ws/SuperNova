@@ -121,6 +121,13 @@ class debug {
     return $result;
   }
 
+  /**
+   * @param mixed $dump
+   * @param bool $force_base
+   * @param bool $deadlock
+   *
+   * @return array|void
+   */
   public function dump($dump = false, $force_base = false, $deadlock = false) {
     global $user, $planetrow;
 
@@ -242,6 +249,12 @@ class debug {
     }
   }
 
+  /**
+   * @param        $message
+   * @param string $title
+   * @param int    $log_code
+   * @param mixed $dump
+   */
   public function warning($message, $title = 'System Message', $log_code = 300, $dump = false) {
     global $user, $sys_log_disabled;
 

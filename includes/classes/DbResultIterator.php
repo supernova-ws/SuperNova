@@ -19,7 +19,7 @@ abstract class DbResultIterator implements Iterator, Countable {
    */
   protected $position;
   /**
-   * @var array
+   * @var array|null
    */
   protected $currentRow;
 

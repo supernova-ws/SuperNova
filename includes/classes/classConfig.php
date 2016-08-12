@@ -82,6 +82,7 @@
  * @property float  game_speed_expedition // Expedition speed. 1 means "normal"
  * @property int    game_user_changename  // Is user allowed to change name after registration?
  * @property int    game_user_changename_cost  // Change name cost for paid changename
+ * @property int    game_users_online_timeout - timeout to count user not online
  * @property string game_watchlist
  * @property array  game_watchlist_array
  * @property string geoip_whois_url
@@ -150,6 +151,7 @@
  * @property int    server_que_length_research  //
  * @property int    server_que_length_structures  //
  * @property string server_start_date  //
+ * @property string server_email  // Server email
  * @property int    server_updater_check_auto  // Server autocheck version
  * @property int    server_updater_check_last  // Server last check time
  * @property int    server_updater_check_period  // Server autocheck period
@@ -160,12 +162,14 @@
  * @property string stats_hide_player_list
  * @property int    stats_hide_pm_link
  * @property int    stats_history_days  // За сколько дней хранить статистику в базе
+ * @property string stats_php_memory
  * @property string stats_schedule
  * @property bool   tpl_allow_php // Allow template to include PHP code. SHOULD BE ALWAYS DISABLE!!!!!!!!
  * @property bool   tpl_minifier // Template minifier
  * @property int    uni_price_galaxy
  * @property int    uni_price_system
  * @property int    upd_lock_time  // How long update will lock table. Also update increment time when it requires
+ * @property string url_dark_matter // URL to purchase Dark Matter
  * @property string url_faq
  * @property string url_forum
  * @property string url_purchase_metamatter
@@ -278,6 +282,8 @@ class classConfig extends classPersistent {
     'game_user_changename'      => 2, // Is user allowed to change name after registration?
     'game_user_changename_cost' => 100000, // Change name cost for paid changename
 
+    'game_users_online_timeout' => 900, // Timeout to count user not online
+
     'initial_fields'            => 163,
 
     // Interface - UserBanner
@@ -371,6 +377,8 @@ class classConfig extends classPersistent {
     'server_que_length_research'   => '1', //
     'server_que_length_structures' => '5', //
 
+    'server_email' => '', // Server email
+
     'server_start_date' => '', //
 
     'server_updater_check_auto'   => 0, // Server autocheck version
@@ -384,6 +392,7 @@ class classConfig extends classPersistent {
     'stats_hide_admins'      => 1,
     'stats_hide_player_list' => '',
     'stats_hide_pm_link'     => 0,
+    'stats_php_memory'       => '1024M', // Memory limit for memory consuming operations, i.e. stat calculations
     'stats_schedule'         => '04:00:00',
 
     'tpl_allow_php' => 0, // Allow template to include PHP code. SHOULD BE ALWAYS DISABLE!!!!!!!!
@@ -394,6 +403,7 @@ class classConfig extends classPersistent {
 
     'upd_lock_time' => 60, // How long update will lock table. Also update increment time when it requires
 
+    'url_dark_matter'         => '',
     'url_faq'                 => '',
     'url_forum'               => '',
     'url_purchase_metamatter' => '',
