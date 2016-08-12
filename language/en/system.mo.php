@@ -18,7 +18,6 @@
 *
 * @package language
 * @system [English]
-* @version 41a52.8
 *
 */
 
