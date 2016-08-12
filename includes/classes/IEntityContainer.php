@@ -8,35 +8,25 @@
  */
 interface IEntityContainer {
   /**
-   * @return \db_mysql
+   * IEntityContainer constructor.
    */
-  public function getDbStatic();
+  public function __construct();
 
   /**
-   * Gets entity's table name
+   * Set properties data from external source
    *
-   * @return string
+   * 'propertyName' => array(
+   *    P_DB_FIELD => 'fieldNameInDb',
+   * )
+   *
+   * @param array $properties
    */
-  public function getTableName();
-
-  public function setTableName($value);
+  public function setProperties($properties);
 
   /**
-   * Gets entity's DB ID field name (which is unique within entity set)
-   *
-   * @return string
+   * Clears only properties which declared in $properties array
    */
-  public function getIdFieldName();
-
-  public function setIdField($value);
-
-
-  /**
-   * BuddyContainer constructor.
-   *
-   * @param \Common\GlobalContainer $gc
-   */
-  public function __construct($gc);
+  public function clearProperties();
 
   /**
    * Import DB row state into object properties
@@ -44,13 +34,6 @@ interface IEntityContainer {
    * @param array $row
    */
   public function importRow($row);
-
-  /**
-   * Exports object properties to DB row state with ID
-   *
-   * @return array
-   */
-  public function exportRowNoId();
 
   /**
    * Exports object properties to DB row state WITHOUT ID
@@ -62,13 +45,13 @@ interface IEntityContainer {
   public function exportRow();
 
   /**
-   * Trying to load object info by buddy ID - if it is supplied
-   *
    * @return bool
    */
-  public function loadTry();
-
   public function isEmpty();
 
+  /**
+   * @return bool
+   */
   public function isNew();
+
 }

@@ -6,20 +6,27 @@ use IEntityContainer;
 
 interface IEntityOperator {
   /**
-   * @param IEntityContainer $cEntity
+   * @param IEntityModel $cModel
+   * @param int|string   $dbId
    *
    * @return array
    */
-  public function getById($cEntity);
+  public function getById($cModel, $dbId);
 
   /**
-   * @param IEntityContainer $cEntity
+   * @param IEntityModel $cModel
+   * @param int|string   $dbId
+   *
+   * @return int
    */
-  public function deleteById($cEntity);
+  public function deleteById($cModel, $dbId);
 
   /**
-   * @param IEntityContainer $cEntity
+   * @param IEntityModel $cModel
+   * @param array        $row
+   *
+   * @return int|string
    */
-  public function insert($cEntity);
+  public function insert($cModel, $row);
 
 }

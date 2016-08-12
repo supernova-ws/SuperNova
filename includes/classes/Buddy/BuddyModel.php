@@ -19,9 +19,20 @@ use DBStaticUser;
  */
 class BuddyModel extends \EntityModel {
 
-  protected static $tableName = 'buddy';
-  protected static $idField = 'BUDDY_ID';
+  /**
+   * Name of table for this entity
+   *
+   * @var string $tableName
+   */
+  protected $tableName = 'buddy';
+  /**
+   * Name of key field field in this table
+   *
+   * @var string $idField
+   */
+  protected $idField = 'BUDDY_ID';
   protected static $exceptionClass = 'BuddyException';
+  protected static $entityContainerClass = 'Buddy\BuddyContainer';
 
 
   /**
@@ -30,7 +41,7 @@ class BuddyModel extends \EntityModel {
    * @return int
    */
   public function db_buddy_update_status($cBuddy) {
-    $db = $cBuddy->getDbStatic();
+    $db = static::$dbStatic;
     $db->doUpdateRowSet(
       TABLE_BUDDY,
       array(
@@ -45,15 +56,16 @@ class BuddyModel extends \EntityModel {
   }
 
   /**
-   * @param BuddyContainer $cBuddy
+   * @param $playerIdUnsafe
+   * @param $newFriendIdUnsafe
    *
    * @throws BuddyException
    */
-  public function db_buddy_check_relation($cBuddy) {
-    $playerIdSafe = idval($cBuddy->playerId);
-    $newFriendIdSafe = idval($cBuddy->newFriendIdSafe);
+  public function db_buddy_check_relation($playerIdUnsafe, $newFriendIdUnsafe) {
+    $playerIdSafe = idval($playerIdUnsafe);
+    $newFriendIdSafe = idval($newFriendIdUnsafe);
 
-    $result = $cBuddy->getDbStatic()->doSelectFetchValue(
+    $result = static::$dbStatic->doSelectFetchValue(
       "SELECT `BUDDY_ID` 
       FROM `{{buddy}}` 
       WHERE
@@ -70,12 +82,12 @@ class BuddyModel extends \EntityModel {
   }
 
   /**
-   * @param BuddyContainer $cBuddy
+   * @param mixed $playerId
    *
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
-  public function db_buddy_list_by_user($cBuddy) {
-    return ($user_id = idval($cBuddy->playerId)) ? $cBuddy->getDbStatic()->doSelectIterator(
+  public function db_buddy_list_by_user($playerId) {
+    return ($user_id = idval($playerId)) ? static::$dbStatic->doSelectIterator(
       "SELECT
       b.*,
       IF(b.BUDDY_OWNER_ID = {$user_id}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,
@@ -101,16 +113,16 @@ class BuddyModel extends \EntityModel {
    *
    * @throws BuddyException
    */
-  public function accept($cBuddy) {
-    if ($cBuddy->mode != 'accept') {
+  public function accept($cBuddy, $params) {
+    if ($params->mode != 'accept') {
       return;
     }
 
-    if ($cBuddy->playerSenderId == $cBuddy->playerId) {
+    if ($cBuddy->playerSenderId == $params->playerId) {
       throw new BuddyException('buddy_err_accept_own', ERR_ERROR);
     }
 
-    if ($cBuddy->playerOwnerId != $cBuddy->playerId) {
+    if ($cBuddy->playerOwnerId != $params->playerId) {
       throw new BuddyException('buddy_err_accept_alien', ERR_ERROR);
     }
 
@@ -129,7 +141,7 @@ class BuddyModel extends \EntityModel {
     $cBuddy->buddyStatusId = BUDDY_REQUEST_ACTIVE;
     $result = $this->db_buddy_update_status($cBuddy);
     if ($result) {
-      DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, 'buddy_msg_accept_title', 'buddy_msg_accept_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($params, 'buddy_msg_accept_title', 'buddy_msg_accept_text');
       throw new BuddyException('buddy_err_accept_none', ERR_NONE);
     } else {
       throw new BuddyException('buddy_err_accept_internal', ERR_ERROR);
@@ -145,31 +157,31 @@ class BuddyModel extends \EntityModel {
    *
    * @throws BuddyException
    */
-  public function decline($cBuddy) {
-    if ($cBuddy->mode != 'delete') {
+  public function deleteRequest($cBuddy, $params) {
+    if ($params->mode != 'delete') {
       return;
     }
 
-    $playerId = $cBuddy->playerId;
+    $playerId = $params->playerId;
 
-    if ($cBuddy->playerSenderId != $cBuddy->playerId && $cBuddy->playerOwnerId != $cBuddy->playerId) {
+    if ($cBuddy->playerSenderId != $params->playerId && $cBuddy->playerOwnerId != $params->playerId) {
       throw new BuddyException('buddy_err_delete_alien', ERR_ERROR);
     }
 
     if ($cBuddy->buddyStatusId == BUDDY_REQUEST_ACTIVE) {
       // Existing friendship
-      $cBuddy->newFriendIdSafe = $cBuddy->playerSenderId == $playerId ? $cBuddy->playerOwnerId : $cBuddy->playerSenderId;
-      DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
+      $params->newFriendIdSafe = $cBuddy->playerSenderId == $playerId ? $cBuddy->playerOwnerId : $cBuddy->playerSenderId;
+      DBStaticMessages::msgSendFromPlayerBuddy($params, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
-      $cBuddy->delete();
+      static::$rowOperator->deleteById($this, $cBuddy->dbId);
       throw new BuddyException('buddy_err_unfriend_none', ERR_NONE);
     } elseif ($cBuddy->playerSenderId == $playerId) {
       // Player's outcoming request - either denied or waiting
-      $cBuddy->delete();
+      static::$rowOperator->deleteById($this, $cBuddy->dbId);
       throw new BuddyException('buddy_err_delete_own', ERR_NONE);
     } elseif ($cBuddy->buddyStatusId == BUDDY_REQUEST_WAITING) {
       // Deny incoming request
-      DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, 'buddy_msg_deny_title', 'buddy_msg_deny_text');
+      DBStaticMessages::msgSendFromPlayerBuddy($params, 'buddy_msg_deny_title', 'buddy_msg_deny_text');
 
       $cBuddy->buddyStatusId = BUDDY_REQUEST_DENIED;
       $this->db_buddy_update_status($cBuddy);
@@ -191,61 +203,65 @@ class BuddyModel extends \EntityModel {
       $new_friend_row = DBStaticUser::db_user_by_username($newFriendNameUnsafe, true, '`id`, `username`');
     }
 
+    if (empty($new_friend_row['id'])) {
+      throw new BuddyException('buddy_err_unknown_player', ERR_ERROR);
+    }
+
     return $new_friend_row;
   }
 
   /**
-   * @param BuddyContainer $cBuddy
+   * @param BuddyContainer $params
    *
    * @throws BuddyException
    */
-  public function beFriend($cBuddy) {
-    if (empty($cBuddy->newFriendIdSafe) && empty($cBuddy->new_friend_name_unsafe)) {
+  public function beFriend($params) {
+    if (empty($params->newFriendIdSafe) && empty($params->new_friend_name_unsafe)) {
       return;
     }
 
-    $new_friend_row = $this->getNewFriend($cBuddy->newFriendIdSafe, $cBuddy->new_friend_name_unsafe);
-
-    if (empty($new_friend_row) || empty($new_friend_row['id'])) {
-      throw new BuddyException('buddy_err_unknown_player', ERR_ERROR);
-    }
-
-    if ($new_friend_row['id'] == $cBuddy->playerId) {
+    $new_friend_row = $this->getNewFriend($params->newFriendIdSafe, $params->new_friend_name_unsafe);
+    if ($new_friend_row['id'] == $params->playerId) {
       throw new BuddyException('buddy_err_adding_self', ERR_ERROR);
     }
 
-    $cBuddy->newFriendIdSafe = $new_friend_row['id'];
-    $this->db_buddy_check_relation($cBuddy);
-    DBStaticMessages::msgSendFromPlayerBuddy($cBuddy, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
+    $this->db_buddy_check_relation($params->playerId, $new_friend_row['id']);
+    $params->newFriendIdSafe = $new_friend_row['id'];
+    DBStaticMessages::msgSendFromPlayerBuddy($params, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
 
-    $cBuddy->playerSenderId = $cBuddy->playerId;
+    $cBuddy = new BuddyContainer();
+    $cBuddy->playerSenderId = $params->playerId;
     $cBuddy->playerOwnerId = $new_friend_row['id'];
     $cBuddy->buddyStatusId = BUDDY_REQUEST_WAITING;
+    $cBuddy->requestText = $params->requestText;
 
-    $cBuddy->insert();
+    $row = $this->exportRowNoId($cBuddy);
+    $cBuddy->dbId = static::$rowOperator->insert($this, $row);
     throw new BuddyException('buddy_err_adding_none', ERR_NONE);
   }
 
   /**
-   * @param BuddyContainer $cBuddy
+   * @param BuddyContainer $params
    *
    * @throws BuddyException
    */
-  public function route($cBuddy) {
+  public function route($params) {
     // Trying to load buddy record with supplied dbId
-    if ($cBuddy->buddy_id) {
-      $cBuddy->dbId = $cBuddy->buddy_id;
-      if (!$cBuddy->loadTry()) {
+    if ($params->buddy_id) {
+      $cBuddy = $this->loadTry($params->buddy_id);
+      if (!$cBuddy) {
         throw new BuddyException('buddy_err_not_exist', ERR_ERROR);
       }
-    }
 
-    // Trying to accept buddy request
-    $this->accept($cBuddy);
-    // Trying to decline buddy request. If it's own request - it will be deleted
-    $this->decline($cBuddy);
-    // New request?
-    $this->beFriend($cBuddy);
+      // Trying to accept buddy request
+      $this->accept($cBuddy, $params);
+      // Trying to decline buddy request. If it's own request - it will be deleted
+      $this->deleteRequest($cBuddy, $params);
+    } else {
+      // New request?
+      // TODO !!!!!!!!!!!!!!!!!!
+      $this->beFriend($params);
+    }
   }
 
 }

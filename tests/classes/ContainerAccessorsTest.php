@@ -5,19 +5,19 @@
  */
 
 /**
- * Class V2PropertyContainerTest
- * @coversDefaultClass V2PropertyContainer
+ * Class ContainerAccessorsTest
+ * @coversDefaultClass ContainerAccessors
  */
-class V2PropertyContainerTest extends PHPUnit_Framework_TestCase {
+class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
 
   /**
-   * @var V2PropertyContainer $object
+   * @var ContainerAccessors $object
    */
   protected $object;
 
   public function setUp() {
     parent::setUp();
-    $this->object = new V2PropertyContainer();
+    $this->object = new ContainerAccessors();
   }
 
   public function tearDown() {
@@ -35,14 +35,6 @@ class V2PropertyContainerTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::setProperties
-   */
-  public function testSetProperties() {
-    $this->object->setProperties(array('p1' => array()));
-    $this->assertAttributeEquals(array('p1' => array()), 'properties', $this->object);
-  }
-
-  /**
    * @covers ::assignAccessor
    */
   public function testAssignAccessor() {
@@ -53,7 +45,7 @@ class V2PropertyContainerTest extends PHPUnit_Framework_TestCase {
     $this->object->assignAccessor('test', P_CONTAINER_GET, $lambda);
     $this->assertAttributeEquals(array('test' => array(P_CONTAINER_GET => $lambda)), 'accessors', $this->object);
 
-    $this->setExpectedException('Exception', 'Error assigning callable in V2PropertyContainer! Callable typed [' . P_CONTAINER_GET . '] is not a callable or not accessible in the scope');
+    $this->setExpectedException('Exception', 'Error assigning callable in ContainerAccessors! Callable typed [' . P_CONTAINER_GET . '] is not a callable or not accessible in the scope');
     $this->object->assignAccessor('test', P_CONTAINER_GET, 1);
   }
 
@@ -63,7 +55,7 @@ class V2PropertyContainerTest extends PHPUnit_Framework_TestCase {
    */
   public function test__set() {
     // Basic setter/getter
-    $this->object->setProperties(array('p1' => array()));
+//    $this->object->setProperties(array('p1' => array()));
     // Setter test
     $this->object->p1 = 'v1';
     // Getter test
@@ -84,10 +76,8 @@ class V2PropertyContainerTest extends PHPUnit_Framework_TestCase {
 
 
     // Testing lambda setter/getter
-    // Needs until PHP 5.4
-    $that = $this->object;
     // Installing setter
-    $this->object->assignAccessor('p1', P_CONTAINER_SET, function(V2PropertyContainer $that, $value) {$that->setDirect('p2', $value . '3');});
+    $this->object->assignAccessor('p1', P_CONTAINER_SET, function(ContainerAccessors $that, $value) {$that->setDirect('p2', $value . '3');});
     $this->object->p1 = 'v2';
     // Setting value
     $this->assertEquals('v23', $this->object->p2);
@@ -98,27 +88,6 @@ class V2PropertyContainerTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals('v34', $this->object->p2);
   }
 
-  /**
-   * @covers ::clearProperties
-   * @covers ::__unset
-   */
-  public function testClearProperties() {
-    $this->assertAttributeEquals(array(), 'values', $this->object);
-
-    $this->object->setProperties(array('p1' => array(), 'p3' => array()));
-    $this->object->assignAccessor('p3', P_CONTAINER_SET, function(V2PropertyContainer $that, $value) {$that->setDirect('p4', $value);});
-    $this->object->assignAccessor('p3', P_CONTAINER_UNSET, function(V2PropertyContainer $that) {unset($that->p4);});
-
-    $this->object->p1 = 'v1';
-    $this->object->p2 = 'v2';
-    $this->object->p3 = 'v4';
-    // Internal consistency test
-    $this->assertAttributeEquals(array('p1' => 'v1', 'p2' => 'v2', 'p4' => 'v4'), 'values', $this->object);
-
-    $this->object->clearProperties();
-    // Internal consistency test
-    $this->assertAttributeEquals(array('p2' => 'v2'), 'values', $this->object);
-  }
 
   /**
    * @covers ::__isset
@@ -126,8 +95,7 @@ class V2PropertyContainerTest extends PHPUnit_Framework_TestCase {
   public function test__isset() {
     $this->assertAttributeEquals(array(), 'values', $this->object);
 
-    $this->object->setProperties(array('p1' => array(), 'p2' => array(), 'p4' => array()));
-    $that = $this->object;
+//    $this->object->setProperties(array('p1' => array(), 'p2' => array(), 'p4' => array()));
     $this->object->assignAccessor('p2', P_CONTAINER_GET, function($c) {return $c->p3;});
     $this->object->p4 = function ($c) {return $c->p5;};
     $this->object->assignAccessor('p6', P_CONTAINER_GET, function($c) {return $c->p7;});

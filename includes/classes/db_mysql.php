@@ -111,7 +111,7 @@ class db_mysql {
     }
 
     if (empty($this->dbsettings)) {
-      $this->load_db_settings(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
+      $this->load_db_settings(SN_ROOT_PHYSICAL . "config.php");
     }
 
     // TODO - фатальные (?) ошибки на каждом шагу. Хотя - скорее Эксепшны

@@ -20,6 +20,7 @@ use Common\GlobalContainer;
  * property int $count // TODO
  * @property \DateTime $timeStart
  * @property \DateTime $timeFinish
+ *
  * @property bool      $isStackable
  * @property string    $locationDefaultType
  * @property int       $bonusType // TODO - Optional?
@@ -33,21 +34,9 @@ class V2UnitContainer extends \EntityContainer {
    */
   protected $model;
 
-  protected static $exceptionClass = 'EntityException';
+//  protected static $exceptionClass = 'EntityException';
   protected static $modelClass = 'V2Unit\V2UnitModel';
 
-  /**
-   * Name of table for this entity
-   *
-   * @var string $tableName
-   */
-  protected $tableName = 'unit';
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idField
-   */
-  protected $idField = 'unit_id';
   /**
    * Property list
    *
@@ -98,9 +87,21 @@ class V2UnitContainer extends \EntityContainer {
    * @param GlobalContainer $gc
    */
   public function __construct($gc) {
-    parent::__construct($gc);
+    parent::__construct();
 
     $this->assignAccessor('type', P_CONTAINER_SET,
+      function (V2UnitContainer $that, $value) {
+        $that->setDirect('type', $value);
+        $array = get_unit_param($value);
+        $that->unitInfo = $array;
+        // Mandatory
+        $that->isStackable = empty($array[P_STACKABLE]) ? false : true;
+        $that->locationDefaultType = empty($array[P_LOCATION_DEFAULT]) ? LOC_NONE : $array[P_LOCATION_DEFAULT];
+        // Optional
+        $that->bonusType = empty($array[P_BONUS_TYPE]) ? BONUS_NONE : $array[P_BONUS_TYPE];
+      }
+    );
+    $this->assignAccessor('type', P_CONTAINER_UNSET,
       function (V2UnitContainer $that, $value) {
         $that->setDirect('type', $value);
         $array = get_unit_param($value);

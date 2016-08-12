@@ -2,8 +2,6 @@
 
 namespace Buddy;
 
-use Common\GlobalContainer;
-
 /**
  * Class BuddyContainer
  *
@@ -35,18 +33,6 @@ class BuddyContainer extends \EntityContainer {
   protected static $modelClass = 'Buddy\BuddyModel';
 
   /**
-   * Name of table for this entity
-   *
-   * @var string $tableName
-   */
-  protected $tableName = 'buddy';
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idField
-   */
-  protected $idField = 'BUDDY_ID';
-  /**
    * Property list
    *
    * @var array $properties
@@ -72,11 +58,10 @@ class BuddyContainer extends \EntityContainer {
   /**
    * BuddyContainer constructor.
    *
-   * @param GlobalContainer $gc
-   * @param array           $user
+   * @param array $user
    */
-  public function __construct($gc, $user = array()) {
-    parent::__construct($gc);
+  public function __construct($user = array()) {
+    parent::__construct();
 
     $this->buddy_id = sys_get_param_id('buddy_id');
     $this->mode = sys_get_param_str('mode');

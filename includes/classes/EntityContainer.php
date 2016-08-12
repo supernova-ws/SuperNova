@@ -5,7 +5,7 @@ use \Common\GlobalContainer;
 /**
  * Class EntityContainer
  *
- * Support export/import accessors
+ * Introduces linked models and export/import operations
  *
  * Importer is a callable like
  *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
@@ -15,46 +15,9 @@ use \Common\GlobalContainer;
  *
  * @property int|float $dbId Entity DB ID
  */
-class EntityContainer extends V2PropertyContainer implements IEntityContainer {
-  const ENTITY_DB_ID_INCLUDE = true;
-  const ENTITY_DB_ID_EXCLUDE = false;
-
-  /**
-   * @var EntityModel $model
-   */
-  protected $model;
+class EntityContainer extends ContainerAccessors implements IEntityContainer {
   protected static $exceptionClass = 'EntityException';
-  protected static $modelClass = 'EntityModel';
 
-  /**
-   * @var  \Common\GlobalContainer $gc
-   */
-  protected $gc;
-  /**
-   * Link to DB which used by this EntityModel
-   *
-   * @var \db_mysql $dbStatic
-   * deprecated - replace with container ID like 'db' or 'dbAuth'
-   */
-  protected static $dbStatic;
-  /**
-   * Service to work with rows
-   *
-   * @var \DbRowDirectOperator $rowOperator
-   */
-  protected static $rowOperator;
-  /**
-   * Name of table for this entity
-   *
-   * @var string $tableName
-   */
-  protected $tableName = '_table';
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idField
-   */
-  protected $idField = 'id';
   /**
    * Property list and description
    *
@@ -64,50 +27,29 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
    *
    * @var array[] $properties
    */
-//  protected $properties = array();
+  protected $properties = array();
+
+
+//  /**
+//   * @var  \Common\GlobalContainer $gc
+//   */
+//  protected $gc;
 
 
   /**
    * BuddyContainer constructor.
    *
-   * @param GlobalContainer $gc
    */
-  public function __construct($gc) {
+  public function __construct() {
     // TODO - remove. No dependenceon container - we should extract all needed info here
-    $this->gc = $gc;
-    $this->model = new static::$modelClass($gc);
-    static::$dbStatic = $gc->db;
-    static::$rowOperator = $gc->dbRowOperator;
+//    $this->gc = $gc;
+//    $this->model = new static::$modelClass($gc);
+//    static::$dbStatic = $gc->db;
+//    static::$rowOperator = $gc->dbRowOperator;
   }
 
-  /**
-   * @return EntityModel
-   */
-  public function getModel() {
-    return $this->model;
-  }
-
-  /**
-   * @return \db_mysql
-   */
-  public function getDbStatic() {
-    return static::$dbStatic;
-  }
-
-  public function setTableName($value) {
-    $this->tableName = $value;
-  }
-
-  public function getTableName() {
-    return $this->tableName;
-  }
-
-  public function setIdField($value) {
-    $this->idField = $value;
-  }
-
-  public function getIdFieldName() {
-    return $this->idField;
+  public function setProperties($properties) {
+    $this->properties = $properties;
   }
 
   /**
@@ -157,32 +99,6 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
     return $row;
   }
 
-  /**
-   * @return array
-   */
-  public function exportRowNoId() {
-    $row = $this->exportRow();
-
-    unset($row[$this->getIdFieldName()]);
-
-    return $row;
-  }
-
-  // TODO - load from self DB
-  public function loadTry() {
-    $row = static::$rowOperator->getById($this);
-
-    if (empty($row)) {
-      $this->dbId = 0;
-
-      return false;
-    } else {
-      $this->importRow($row);
-    }
-
-    return true;
-  }
-
   public function isEmpty() {
     // TODO - empty container - only properties
     return empty($this->dbId);
@@ -192,12 +108,10 @@ class EntityContainer extends V2PropertyContainer implements IEntityContainer {
     return empty($this->dbId);
   }
 
-  public function insert() {
-    static::$rowOperator->insert($this);
-  }
-
-  public function delete() {
-    static::$rowOperator->deleteById($this);
+  public function clearProperties() {
+    foreach ($this->properties as $propertyName => $propertyData) {
+      unset($this->$propertyName);
+    }
   }
 
 }

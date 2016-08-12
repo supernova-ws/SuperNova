@@ -14,5 +14,20 @@ namespace V2Unit;
  *
  */
 class V2UnitModel extends \EntityModel {
+  /**
+   * Name of table for this entity
+   *
+   * @var string $tableName
+   */
+  protected $tableName = 'unit';
+  /**
+   * Name of key field field in this table
+   *
+   * @var string $idField
+   */
+  protected $idField = 'unit_id';
+
+  protected static $exceptionClass = 'EntityException';
+  protected static $entityContainerClass = 'V2Unit\V2UnitContainer';
 
 }

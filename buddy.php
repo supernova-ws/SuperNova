@@ -15,5 +15,5 @@ lng_include('buddy');
  */
 global $user;
 $view = new BuddyView();
-$cBuddy = new \Buddy\BuddyContainer(classSupernova::$gc, $user);
+$cBuddy = new \Buddy\BuddyContainer($user);
 display($view->makeTemplate(classSupernova::$gc, $cBuddy));

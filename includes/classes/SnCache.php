@@ -51,7 +51,6 @@ class SnCache {
    */
   public function __construct($gc, $db) {
     $this->db = $db;
-//var_dump($this->db);pdie();
   }
 
 

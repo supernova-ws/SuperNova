@@ -8,56 +8,39 @@
 
 class DbRowDirectOperator implements \Common\IEntityOperator {
 
-  /**
-   * @param EntityContainer $cEntity
-   *
-   * @return array
-   */
-  public function getById($cEntity) {
+  public function getById($cModel, $dbId) {
     $stmt = classSupernova::$gc->query
-      ->setIdField($cEntity->getIdFieldName())
+      ->setIdField($cModel->getIdFieldName())
       ->field('*')
-      ->from($cEntity->getTableName())
-      ->where($cEntity->getIdFieldName() . ' = "' . $cEntity->dbId . '"');
+      ->from($cModel->getTableName())
+      ->where($cModel->getIdFieldName() . ' = "' . $dbId . '"');
 
     return $stmt->selectRow();
   }
 
-  /**
-   * @param EntityContainer $cEntity
-   *
-   * @return int
-   */
-  public function deleteById($cEntity) {
-    $db = $cEntity->getDbStatic();
+  public function deleteById($cModel, $dbId) {
+    $db = $cModel->getDbStatic();
 
     $db->doDeleteRow(
-      $cEntity->getTableName(),
+      $cModel->getTableName(),
       array(
-        $cEntity->getIdFieldName() => $cEntity->dbId,
+        $cModel->getIdFieldName() => $dbId,
       )
     );
 
     return $db->db_affected_rows();
   }
 
-  /**
-   * @param EntityContainer $cEntity
-   *
-   * @return int|string
-   */
-  public function insert($cEntity) {
-    $db = $cEntity->getDbStatic();
-
-    $row = $cEntity->exportRowNoId();
+  public function insert($cModel, $row) {
     if (empty($row)) {
       // TODO Exception
       return 0;
     }
-    $db->doInsertSet($cEntity->getTableName(), $row);
+    $db = $cModel->getDbStatic();
+    $db->doInsertSet($cModel->getTableName(), $row);
 
     // TODO Exception if db_insert_id() is empty
-    return $cEntity->dbId = $db->db_insert_id();
+    return $db->db_insert_id();
   }
 
 }

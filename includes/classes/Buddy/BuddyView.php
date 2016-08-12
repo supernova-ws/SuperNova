@@ -20,7 +20,7 @@ class BuddyView {
     $result = array();
     sn_db_transaction_start();
     try {
-      $cBuddy->getModel()->route($cBuddy);
+      $gc->buddyModel->route($cBuddy);
     } catch (BuddyException $e) {
       $exceptionCode = \ResultMessages::parseException($e, $result);
 
@@ -31,7 +31,7 @@ class BuddyView {
 
     empty($template_result) ? $template_result = array() : false;
 
-    foreach ($cBuddy->getModel()->db_buddy_list_by_user($cBuddy) as $row) {
+    foreach ($gc->buddyModel->db_buddy_list_by_user($cBuddy->playerId) as $row) {
       $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
 
       $row['BUDDY_ACTIVE'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE;

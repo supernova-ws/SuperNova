@@ -1,10 +1,10 @@
 <?php
 
 use \Common\ContainerMagic;
-use \Common\IPropertyContainer;
+use \Common\IContainerAccessors;
 
 /**
- * Class V2PropertyContainer
+ * Class ContainerAccessors
  *
  * Support accessors for properties: getter, setter, unsetter
  *
@@ -23,27 +23,13 @@ use \Common\IPropertyContainer;
  * If setter works with other object properties it needs an unsetter to handle clearProperties() method
  *
  */
-class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
-
-  /**
-   * Property descriptions
-   *
-   * propertyName => array()
-   *
-   * @var array[]
-   */
-  protected $properties = array();
-
+class ContainerAccessors extends ContainerMagic implements IContainerAccessors {
   /**
    * Array of accessors - getters/setters/etc
    *
    * @var callable[][]
    */
   protected $accessors = array();
-
-  public function setProperties($properties) {
-    $this->properties = $properties;
-  }
 
   public function setDirect($name, $value) {
     parent::__set($name, $value);
@@ -65,6 +51,15 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
     }
   }
 
+  /**
+   * Performs $processor operation on property with specified name
+   *
+   * @param string     $processor
+   * @param string     $name
+   * @param null|mixed $value
+   *
+   * @return mixed
+   */
   protected function performMagic($processor, $name, $value = null) {
     if (
       !empty($this->accessors[$name][$processor])
@@ -78,9 +73,9 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   }
 
   public function __set($name, $value) {
-    if(is_callable($value)) {
+    if (is_callable($value)) {
       $this->accessors[$name][P_CONTAINER_GET] = $value;
-    } else{
+    } else {
       $this->performMagic(P_CONTAINER_SET, $name, $value);
     }
   }
@@ -96,13 +91,8 @@ class V2PropertyContainer extends ContainerMagic implements IPropertyContainer {
   public function __isset($name) {
     // TODO - or here already can isset($this->name) ????
     $value = $this->$name;
-    return isset($value);
-  }
 
-  public function clearProperties() {
-    foreach ($this->properties as $propertyName => $propertyData) {
-      unset($this->$propertyName);
-    }
+    return isset($value);
   }
 
 }

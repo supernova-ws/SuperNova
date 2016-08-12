@@ -209,17 +209,17 @@ class DBStaticMessages {
   }
 
   /**
-   * @param \Buddy\BuddyContainer $cBuddy
-   * @param string                $localeSubjectId
-   * @param string                $localeTextId
+   * @param        $params
+   * @param string $localeSubjectId
+   * @param string $localeTextId
    */
-  public static function msgSendFromPlayerBuddy($cBuddy, $localeSubjectId, $localeTextId) {
+  public static function msgSendFromPlayerBuddy($params, $localeSubjectId, $localeTextId) {
     static::msgSendFromPlayer(
-      $cBuddy->playerId,
-      $cBuddy->playerNameAndCoordinates,
-      $cBuddy->newFriendIdSafe,
+      $params->playerId,
+      $params->playerNameAndCoordinates,
+      $params->newFriendIdSafe,
       classLocale::$lang[$localeSubjectId],
-      sprintf(classLocale::$lang[$localeTextId], $cBuddy->playerName)
+      sprintf(classLocale::$lang[$localeTextId], $params->playerName)
     );
   }
 

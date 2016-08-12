@@ -1188,6 +1188,9 @@ var_dump($unit);
 pdie();
 
 
+- Make method/function a closure - to rid off array() callables
+    - http://php.net/manual/en/reflectionmethod.getclosure.php
+
 
 WORKING ON
     !! accessors is REALLY PART OF MODEL!
@@ -1196,8 +1199,32 @@ WORKING ON
         - properties, table, idfieldname - back to model!
 
 
+-	modified:   includes/classes/DbRowDirectOperator.php
+    -	modified:   includes/classes/Common/IEntityOperator.php
+    - $cEntity - not needed
+
+#	modified:   includes/classes/Buddy/BuddyContainer.php
+#	modified:   includes/classes/Buddy/BuddyModel.php
+#	modified:   includes/classes/Buddy/BuddyView.php
+#	modified:   includes/classes/Common/IEntityModel.php
+#	modified:   includes/classes/EntityModel.php
+#	modified:   includes/classes/EntityContainer.php
+#	modified:   includes/classes/IEntityContainer.php
+#	modified:   includes/classes/V2Unit/V2UnitContainer.php
+#	modified:   includes/classes/V2Unit/V2UnitModel.php
+
++	modified:   includes/classes/Common/IContainerAccessors.php
++	modified:   includes/classes/ContainerAccessors.php
++	modified:   tests/classes/ContainerAccessorsTest.php
++	modified:   includes/classes/db_mysql.php
+
+#	modified:   tests/classes/EntityContainerTest.php
+
+
+
+
     ? Тесты для entity и контейнеров
-        - V2PropertyContainer - тесты
+        - ContainerAccessors - тесты
             - __unset - добавить ансеттеры????
 
     - Дефолтные значения для полей в Entity
