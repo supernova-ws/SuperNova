@@ -14,6 +14,6 @@ lng_include('buddy');
  * @var array $user
  */
 global $user;
+$paramBuddy = new \Buddy\BuddyParams($user);
 $view = new BuddyView();
-$cBuddy = new \Buddy\BuddyContainer($user);
-display($view->makeTemplate(classSupernova::$gc, $cBuddy));
+display($view->makeTemplate(classSupernova::$gc, $paramBuddy));

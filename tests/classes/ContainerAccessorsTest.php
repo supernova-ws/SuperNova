@@ -27,11 +27,26 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::setDirect
+   * @covers ::getDirect
+   * @covers ::unsetDirect
+   * @covers ::setAccessors
    */
   public function testSetDirect() {
     // Setting really returned field
     $this->object->setDirect('p1', 'v1');
     $this->assertEquals('v1', $this->object->p1);
+    $this->assertEquals('v1', $this->object->getDirect('p1'));
+    $this->object->unsetDirect('p1');
+    $this->assertEquals(null, $this->object->p1);
+  }
+
+  /**
+   * @covers ::setAccessors
+   */
+  public function testSetAccessors() {
+    $this->object->setAccessors(array('test'));
+
+    $this->assertAttributeEquals(array('test'), 'accessors', $this->object);
   }
 
   /**
@@ -52,6 +67,8 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
   /**
    * @covers ::__set
    * @covers ::__get
+   * @covers ::__unset
+   * @covers ::performMagic
    */
   public function test__set() {
     // Basic setter/getter
@@ -63,7 +80,7 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
     // Internal consistency test
     $this->assertAttributeEquals(array('p1' => 'v1'), 'values', $this->object);
 
-    // Setting pimple-like getter. It will return value of p3 when accessing p1
+    // Setting getter. It will return value of p3 when accessing p1
     $lambda = function ($c) {return $c->p3;};
     // Setter test to work with callable
     $this->object->p1 = $lambda;
@@ -86,6 +103,19 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
     // Installing getter for p2. It will return modified value of p3
     $this->object->assignAccessor('p2', P_CONTAINER_GET, function($c) {return $c->p3 . '4';});
     $this->assertEquals('v34', $this->object->p2);
+
+    // Testing trivial unsetter
+    unset($this->object->p3);
+    $this->assertEquals(null, $this->object->p3);
+    // p3 should be unset
+    $this->assertAttributeEquals(array('p1' => 'v1', 'p2' => 'v23'), 'values', $this->object);
+
+    // Testing lambda unsetter
+    $this->object->assignAccessor('p1', P_CONTAINER_UNSET, function(ContainerAccessors $that) {$that->unsetDirect('p2');});
+    unset($this->object->p1);
+    $this->assertEquals(null, $this->object->p1);
+    // p2 should be unset via unsetter
+    $this->assertAttributeEquals(array('p1' => 'v1',), 'values', $this->object);
   }
 
 
@@ -116,6 +146,5 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
     $this->assertFalse(isset($this->object->p6));
     $this->assertFalse(isset($this->object->p8));
   }
-
 
 }

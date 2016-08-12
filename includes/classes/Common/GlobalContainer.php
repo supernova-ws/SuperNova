@@ -16,16 +16,15 @@ use \classSupernova;
  * @property \classCache             $cache
  * @property \classConfig            $config
  * @property \classLocale            $localePlayer
- * @property string                  $buddyClass
- * @property \Buddy\BuddyModel       $buddyModel
- * @property \V2Unit\V2UnitModel     $unitModel
- * @property \V2Unit\V2UnitContainer $unitContainer
  * @property \DbQueryConstructor     $query
  * @property \DbRowDirectOperator    $dbRowOperator
  * @property \SnDbCachedOperator     $cacheOperator - really DB record operator. But let it be
  * @property string                  $snCacheClass
  * @property \SnCache                $snCache
  * @property \Common\Types           $types
+ * @property string                  $buddyClass
+ * @property \Buddy\BuddyModel       $buddyModel
+ * @property \V2Unit\V2UnitModel     $unitModel
  */
 class GlobalContainer extends ContainerPlus {
 
@@ -79,7 +78,6 @@ class GlobalContainer extends ContainerPlus {
       return $gc->db->snCache;
     };
 
-
     $gc->buddyClass = 'Buddy\BuddyModel';
     $gc->buddyModel = function (GlobalContainer $c) {
       return new $c->buddyClass($c);
@@ -88,10 +86,6 @@ class GlobalContainer extends ContainerPlus {
     $gc->unitModel = function (GlobalContainer $c) {
       return new \V2Unit\V2UnitModel($c);
     };
-    $gc->unitContainer = $gc->factory(function (GlobalContainer $c) {
-      return new \V2Unit\V2UnitContainer($c);
-    });
-
   }
 
 }

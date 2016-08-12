@@ -1181,9 +1181,8 @@ classSupernova::$gc->cacheOperator
 
 
 
-$unit = classSupernova::$gc->unitContainer;
-$unit->dbId = 1;
-$unit->loadTry();
+$unitModel = classSupernova::$gc->unitModel;
+$unit = $unitModel->loadTry(1);
 var_dump($unit);
 pdie();
 
@@ -1198,27 +1197,10 @@ WORKING ON
             - better - model
         - properties, table, idfieldname - back to model!
 
-
--	modified:   includes/classes/DbRowDirectOperator.php
-    -	modified:   includes/classes/Common/IEntityOperator.php
-    - $cEntity - not needed
-
-#	modified:   includes/classes/Buddy/BuddyContainer.php
-#	modified:   includes/classes/Buddy/BuddyModel.php
-#	modified:   includes/classes/Buddy/BuddyView.php
-#	modified:   includes/classes/Common/IEntityModel.php
-#	modified:   includes/classes/EntityModel.php
-#	modified:   includes/classes/EntityContainer.php
-#	modified:   includes/classes/IEntityContainer.php
-#	modified:   includes/classes/V2Unit/V2UnitContainer.php
-#	modified:   includes/classes/V2Unit/V2UnitModel.php
-
-+	modified:   includes/classes/Common/IContainerAccessors.php
-+	modified:   includes/classes/ContainerAccessors.php
-+	modified:   tests/classes/ContainerAccessorsTest.php
-+	modified:   includes/classes/db_mysql.php
-
-#	modified:   tests/classes/EntityContainerTest.php
+    - Добавить $model в EntityContainer что бы не надо было иметь собственные переменные и заполнять их?
+    - isEmpty, isNew перенести в модель - только модель может оценивать пустой контейнер или новый
+    - clearProperties() -> назад в clear()
+        - EntityContainer всегда содержит только пропертя. Всё остальное - либо в полях, либо в DI
 
 
 

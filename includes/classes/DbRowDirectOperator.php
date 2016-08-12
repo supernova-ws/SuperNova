@@ -6,8 +6,14 @@
  * Handle EntityModel storing/loading operations
  */
 
-class DbRowDirectOperator implements \Common\IEntityOperator {
+class DbRowDirectOperator {
 
+  /**
+   * @param \EntityModel $cModel
+   * @param int|string   $dbId
+   *
+   * @return array
+   */
   public function getById($cModel, $dbId) {
     $stmt = classSupernova::$gc->query
       ->setIdField($cModel->getIdFieldName())
@@ -18,6 +24,12 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
     return $stmt->selectRow();
   }
 
+  /**
+   * @param \EntityModel $cModel
+   * @param int|string   $dbId
+   *
+   * @return int
+   */
   public function deleteById($cModel, $dbId) {
     $db = $cModel->getDbStatic();
 
@@ -31,6 +43,12 @@ class DbRowDirectOperator implements \Common\IEntityOperator {
     return $db->db_affected_rows();
   }
 
+  /**
+   * @param \EntityModel $cModel
+   * @param array        $row
+   *
+   * @return int|string
+   */
   public function insert($cModel, $row) {
     if (empty($row)) {
       // TODO Exception

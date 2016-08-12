@@ -209,9 +209,9 @@ class DBStaticMessages {
   }
 
   /**
-   * @param        $params
-   * @param string $localeSubjectId
-   * @param string $localeTextId
+   * @param \Buddy\BuddyParams $params
+   * @param string             $localeSubjectId
+   * @param string             $localeTextId
    */
   public static function msgSendFromPlayerBuddy($params, $localeSubjectId, $localeTextId) {
     static::msgSendFromPlayer(
@@ -375,7 +375,7 @@ class DBStaticMessages {
         $classFieldNameCurrent = static::$snMessageClassList[$current_class]['name'];
         $classFieldNameNew = static::$snMessageClassList[MSG_TYPE_NEW]['name'];
         $SubUpdateQrySet[$classFieldNameCurrent] = 0;
-        $SubUpdateQryAdjust[$classFieldNameNew] = - $player[$classFieldNameCurrent];
+        $SubUpdateQryAdjust[$classFieldNameNew] = -$player[$classFieldNameCurrent];
         $SubSelectQry = "AND `message_type` = '{$current_class}'";
 
         $player[static::$snMessageClassList[MSG_TYPE_NEW]['name']] -= $player[static::$snMessageClassList[$current_class]['name']];
@@ -532,14 +532,13 @@ LIMIT
   }
 
 
-
   /**
    * @param $delete_date
    * @param $int_type_selected
    */
   public static function db_message_list_delete_by_date($delete_date, $int_type_selected) {
     $where = array();
-    if($int_type_selected >= 0) {
+    if ($int_type_selected >= 0) {
       $where['message_type'] = $int_type_selected;
     }
     classSupernova::$db->doDeleteDanger(

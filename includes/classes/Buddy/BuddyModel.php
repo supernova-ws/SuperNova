@@ -31,9 +31,26 @@ class BuddyModel extends \EntityModel {
    * @var string $idField
    */
   protected $idField = 'BUDDY_ID';
-  protected static $exceptionClass = 'BuddyException';
-  protected static $entityContainerClass = 'Buddy\BuddyContainer';
+  protected $exceptionClass = 'BuddyException';
+  protected $entityContainerClass = 'Buddy\BuddyContainer';
 
+  protected $properties = array(
+    'dbId'           => array(
+      P_DB_FIELD => 'BUDDY_ID',
+    ),
+    'playerSenderId' => array(
+      P_DB_FIELD => 'BUDDY_SENDER_ID',
+    ),
+    'playerOwnerId'  => array(
+      P_DB_FIELD => 'BUDDY_OWNER_ID',
+    ),
+    'buddyStatusId'  => array(
+      P_DB_FIELD => 'BUDDY_STATUS',
+    ),
+    'requestText'    => array(
+      P_DB_FIELD => 'BUDDY_REQUEST',
+    ),
+  );
 
   /**
    * @param BuddyContainer $cBuddy
@@ -41,7 +58,7 @@ class BuddyModel extends \EntityModel {
    * @return int
    */
   public function db_buddy_update_status($cBuddy) {
-    $db = static::$dbStatic;
+    $db = $this->dbStatic;
     $db->doUpdateRowSet(
       TABLE_BUDDY,
       array(
@@ -65,7 +82,7 @@ class BuddyModel extends \EntityModel {
     $playerIdSafe = idval($playerIdUnsafe);
     $newFriendIdSafe = idval($newFriendIdUnsafe);
 
-    $result = static::$dbStatic->doSelectFetchValue(
+    $result = $this->dbStatic->doSelectFetchValue(
       "SELECT `BUDDY_ID` 
       FROM `{{buddy}}` 
       WHERE
@@ -87,7 +104,7 @@ class BuddyModel extends \EntityModel {
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
   public function db_buddy_list_by_user($playerId) {
-    return ($user_id = idval($playerId)) ? static::$dbStatic->doSelectIterator(
+    return ($user_id = idval($playerId)) ? $this->dbStatic->doSelectIterator(
       "SELECT
       b.*,
       IF(b.BUDDY_OWNER_ID = {$user_id}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,
@@ -110,6 +127,7 @@ class BuddyModel extends \EntityModel {
 
   /**
    * @param BuddyContainer $cBuddy
+   * @param BuddyParams    $params
    *
    * @throws BuddyException
    */
@@ -154,6 +172,7 @@ class BuddyModel extends \EntityModel {
    * If it is own request - it will be deleted
    *
    * @param BuddyContainer $cBuddy
+   * @param BuddyParams    $params
    *
    * @throws BuddyException
    */
@@ -173,11 +192,11 @@ class BuddyModel extends \EntityModel {
       $params->newFriendIdSafe = $cBuddy->playerSenderId == $playerId ? $cBuddy->playerOwnerId : $cBuddy->playerSenderId;
       DBStaticMessages::msgSendFromPlayerBuddy($params, 'buddy_msg_unfriend_title', 'buddy_msg_unfriend_text');
 
-      static::$rowOperator->deleteById($this, $cBuddy->dbId);
+      $this->rowOperator->deleteById($this, $cBuddy->dbId);
       throw new BuddyException('buddy_err_unfriend_none', ERR_NONE);
     } elseif ($cBuddy->playerSenderId == $playerId) {
       // Player's outcoming request - either denied or waiting
-      static::$rowOperator->deleteById($this, $cBuddy->dbId);
+      $this->rowOperator->deleteById($this, $cBuddy->dbId);
       throw new BuddyException('buddy_err_delete_own', ERR_NONE);
     } elseif ($cBuddy->buddyStatusId == BUDDY_REQUEST_WAITING) {
       // Deny incoming request
@@ -202,7 +221,6 @@ class BuddyModel extends \EntityModel {
     } elseif ($newFriendNameUnsafe) {
       $new_friend_row = DBStaticUser::db_user_by_username($newFriendNameUnsafe, true, '`id`, `username`');
     }
-
     if (empty($new_friend_row['id'])) {
       throw new BuddyException('buddy_err_unknown_player', ERR_ERROR);
     }
@@ -211,7 +229,7 @@ class BuddyModel extends \EntityModel {
   }
 
   /**
-   * @param BuddyContainer $params
+   * @param BuddyParams $params
    *
    * @throws BuddyException
    */
@@ -229,26 +247,26 @@ class BuddyModel extends \EntityModel {
     $params->newFriendIdSafe = $new_friend_row['id'];
     DBStaticMessages::msgSendFromPlayerBuddy($params, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
 
-    $cBuddy = new BuddyContainer();
+    $cBuddy = $this->getContainer();
     $cBuddy->playerSenderId = $params->playerId;
     $cBuddy->playerOwnerId = $new_friend_row['id'];
     $cBuddy->buddyStatusId = BUDDY_REQUEST_WAITING;
-    $cBuddy->requestText = $params->requestText;
+    $cBuddy->requestText = $params->request_text_unsafe;
 
     $row = $this->exportRowNoId($cBuddy);
-    $cBuddy->dbId = static::$rowOperator->insert($this, $row);
+    $cBuddy->dbId = $this->rowOperator->insert($this, $row);
     throw new BuddyException('buddy_err_adding_none', ERR_NONE);
   }
 
   /**
-   * @param BuddyContainer $params
+   * @param BuddyParams $params
    *
    * @throws BuddyException
    */
   public function route($params) {
     // Trying to load buddy record with supplied dbId
     if ($params->buddy_id) {
-      $cBuddy = $this->loadTry($params->buddy_id);
+      $cBuddy = $this->loadById($params->buddy_id);
       if (!$cBuddy) {
         throw new BuddyException('buddy_err_not_exist', ERR_ERROR);
       }
@@ -258,8 +276,6 @@ class BuddyModel extends \EntityModel {
       // Trying to decline buddy request. If it's own request - it will be deleted
       $this->deleteRequest($cBuddy, $params);
     } else {
-      // New request?
-      // TODO !!!!!!!!!!!!!!!!!!
       $this->beFriend($params);
     }
   }

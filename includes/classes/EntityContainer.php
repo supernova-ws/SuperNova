@@ -1,7 +1,5 @@
 <?php
 
-use \Common\GlobalContainer;
-
 /**
  * Class EntityContainer
  *
@@ -12,12 +10,8 @@ use \Common\GlobalContainer;
  *
  * Exporter is a callable like
  *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
- *
- * @property int|float $dbId Entity DB ID
  */
-class EntityContainer extends ContainerAccessors implements IEntityContainer {
-  protected static $exceptionClass = 'EntityException';
-
+class EntityContainer extends ContainerAccessors {
   /**
    * Property list and description
    *
@@ -30,24 +24,11 @@ class EntityContainer extends ContainerAccessors implements IEntityContainer {
   protected $properties = array();
 
 
-//  /**
-//   * @var  \Common\GlobalContainer $gc
-//   */
-//  protected $gc;
-
-
   /**
-   * BuddyContainer constructor.
+   * Set properties data from external source
    *
+   * @param array $properties
    */
-  public function __construct() {
-    // TODO - remove. No dependenceon container - we should extract all needed info here
-//    $this->gc = $gc;
-//    $this->model = new static::$modelClass($gc);
-//    static::$dbStatic = $gc->db;
-//    static::$rowOperator = $gc->dbRowOperator;
-  }
-
   public function setProperties($properties) {
     $this->properties = $properties;
   }
@@ -66,7 +47,7 @@ class EntityContainer extends ContainerAccessors implements IEntityContainer {
       ) {
         call_user_func_array($this->accessors[$propertyName][$processor], array($this, &$row, $propertyName, $fieldName));
       } elseif ($fieldName) {
-        if($processor == P_CONTAINER_IMPORT) {
+        if ($processor == P_CONTAINER_IMPORT) {
           $this->$propertyName = $row[$fieldName];
         } else {
           $row[$fieldName] = $this->$propertyName;
@@ -77,19 +58,26 @@ class EntityContainer extends ContainerAccessors implements IEntityContainer {
 
   }
 
+  /**
+   * Import DB row state into object properties
+   *
+   * @param array $row
+   */
   public function importRow($row) {
     $this->clearProperties();
 
-    if (empty($row)) {
-      return true;
+    if (is_array($row) && !empty($row)) {
+      $this->processRow($row, P_CONTAINER_IMPORT);
     }
-
-    $this->processRow($row, P_CONTAINER_IMPORT);
 
     return true;
   }
 
   /**
+   * Exports object properties to DB row state WITHOUT ID
+   *
+   * Useful for INSERT operations
+   *
    * @return array
    */
   public function exportRow() {
@@ -100,7 +88,6 @@ class EntityContainer extends ContainerAccessors implements IEntityContainer {
   }
 
   public function isEmpty() {
-    // TODO - empty container - only properties
     return empty($this->dbId);
   }
 
@@ -108,6 +95,9 @@ class EntityContainer extends ContainerAccessors implements IEntityContainer {
     return empty($this->dbId);
   }
 
+  /**
+   * Clears only properties which declared in $properties array
+   */
   public function clearProperties() {
     foreach ($this->properties as $propertyName => $propertyData) {
       unset($this->$propertyName);

@@ -1,7 +1,6 @@
 <?php
 
 use \Common\ContainerMagic;
-use \Common\IContainerAccessors;
 
 /**
  * Class ContainerAccessors
@@ -23,7 +22,7 @@ use \Common\IContainerAccessors;
  * If setter works with other object properties it needs an unsetter to handle clearProperties() method
  *
  */
-class ContainerAccessors extends ContainerMagic implements IContainerAccessors {
+class ContainerAccessors extends ContainerMagic {
   /**
    * Array of accessors - getters/setters/etc
    *
@@ -31,14 +30,56 @@ class ContainerAccessors extends ContainerMagic implements IContainerAccessors {
    */
   protected $accessors = array();
 
+  /**
+   * @param array $array
+   */
+  public function setAccessors($array) {
+    $this->accessors = $array;
+  }
+
+  /**
+   * Direct access to parent class setter
+   *
+   * @param string $name
+   * @param mixed  $value
+   *
+   * @return mixed
+   */
   public function setDirect($name, $value) {
-    parent::__set($name, $value);
+    ContainerMagic::__set($name, $value);
   }
 
+  /**
+   * Direct access to parent class getter
+   *
+   * @param string $name
+   *
+   * @return mixed
+   */
   public function getDirect($name) {
-    parent::__get($name);
+    return ContainerMagic::__get($name);
   }
 
+  /**
+   * Direct access to parent class unsetter
+   *
+   * @param string $name
+   */
+  public function unsetDirect($name) {
+    ContainerMagic::__unset($name);
+  }
+
+  /**
+   * Assign accessor to a named variable
+   *
+   * Different accessors have different signatures - you should look carefully before assigning accessor
+   *
+   * @param string   $varName
+   * @param string   $type - getter/setter/importer/exporter/etc
+   * @param callable $callable
+   *
+   * @throws Exception
+   */
   public function assignAccessor($varName, $type, $callable) {
     if (empty($callable)) {
       return;
