@@ -198,7 +198,7 @@ class EntityModel  {
 
 
   /**
-   * @param mixed $dbId
+   * @param int|string $dbId
    *
    * @return \EntityContainer|false
    */
