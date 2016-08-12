@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a6.64
+* @version 41a52.8
 *
 */
 
@@ -741,7 +741,6 @@ $a_lang_array = (array(
   'sys_dark_matter_obtain_text' => 'You acquring <span class="dark_matter">Dark Matter</span> in game process: while gained levels for raids to enemy planets, researching technologies, building and destroying buildings.
     Also sometimes expeditions can gain you some <span class="dark_matter">DM</span>.',
 
-//  'sys_dark_matter_obtain_text_convert' => '<br />Besides, you can convert Metamatter to Dark Matter. <a href="metamatter.php" class="link">More about Metamatter</a>',
   'sys_dark_matter_obtain_text_convert' => '<br />If you lack <span class="dark_matter">Dark Matter</span> - purchase the <span class="metamatter">Metamatter</span>. If you have not enough <span class="dark_matter">DM</span> needed amount of <span class="metamatter">Metamatter</span> would be used instead of <span class="dark_matter">DM</span>',
 
   'sys_msg_err_update_dm' => 'Error updating DM quantity!',
