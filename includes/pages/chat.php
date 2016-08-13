@@ -3,6 +3,8 @@
  * chat.php
  * Main chat window
  *
+ * @see classSupernova::$sn_mvc
+ *
  * Changelog:
  * 4.0 copyright © 2009-2012 Gorlum for http://supernova.ws
  * [!] Another rewrite
@@ -21,12 +23,6 @@
  * 1.2 by Ihor
  * 1.0 Shoutbox copyright © 2008 by e-Zobar for XNova
  **/
-/*
-sn_mvc['model']['chat'][] = 'sn_chat_model';
-sn_mvc['model']['chat_add'][] = 'sn_chat_add_model';
-sn_mvc['view']['chat'][] = 'sn_chat_view';
-sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
-*/
 function sn_chat_model() {
   global $user, $template_result;
 

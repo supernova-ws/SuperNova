@@ -7,9 +7,15 @@
  *   [!] Full rewrote
 */
 
-function stat_tpl_assign(&$template, $selected, $array_name, $array, $sn_group_stat_common) {
-  global $who;
-
+/**
+ * @param $who
+ * @param template $template
+ * @param $selected
+ * @param $array_name
+ * @param $array
+ * @param $sn_group_stat_common
+ */
+function stat_tpl_assign($who, &$template, $selected, $array_name, $array, $sn_group_stat_common) {
   // $sn_group_stat_common = sn_get_groups('STAT_COMMON');
   foreach($array as $key => $value) {
     if($array_name == 'type' && $who == 2 && !in_array($key, $sn_group_stat_common)) {
@@ -47,7 +53,7 @@ $subject_list = array(
 if(!$source) {
   $subject_list[2] = array('header' => classLocale::$lang['stat_allys']);
 }
-stat_tpl_assign($template, $who, 'subject', $subject_list, $sn_group_stat_common);
+stat_tpl_assign($who, $template, $who, 'subject', $subject_list, $sn_group_stat_common);
 
 $stat_types = array(
    STAT_TOTAL => array(
@@ -98,7 +104,7 @@ $stat_types = array(
      'type' => 'lvl_raid',
   ),
 );
-stat_tpl_assign($template, $type, 'type', $stat_types, $sn_group_stat_common);
+stat_tpl_assign($who, $template, $type, 'type', $stat_types, $sn_group_stat_common);
 
 $Rank = $stat_types[$type]['type'];
 
@@ -122,7 +128,7 @@ for($i = 0; $i <= $page_count; $i++) {
 }
 
 $range = $range > $record_count ? $record_count : $range;
-stat_tpl_assign($template, $range, 'range', $pages, $sn_group_stat_common);
+stat_tpl_assign($who, $template, $range, 'range', $pages, $sn_group_stat_common);
 
 while ($row = db_fetch($query)) {
   $row_stat = array(
