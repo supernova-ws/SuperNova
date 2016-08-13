@@ -1,28 +1,30 @@
 <?php
 
 // ------------------------------------------------------------------------------------------------------------------------------
-function sn_sys_load_php_files($dir_name, $load_extension = 'php', $modules = false) {
-  if(file_exists($dir_name)) {
-    $dir = opendir($dir_name);
-    while(($file = readdir($dir)) !== false) {
-      if($file == '..' || $file == '.') {
-        continue;
-      }
+function sn_sys_load_php_files($dir_name, $load_extension = '.php', $modules = false) {
+  if(!file_exists($dir_name) || !is_dir($dir_name)) {
+    return;
+  }
 
-      $full_filename = $dir_name . $file;
-      if($modules && is_dir($full_filename)) {
-        if(file_exists($full_filename = "{$full_filename}/{$file}.{$load_extension}")) {
-          require_once($full_filename);
-          // Registering module
-          if(class_exists($file)) {
-            new $file($full_filename);
-          }
+  $dir = opendir($dir_name);
+  while (($file = readdir($dir)) !== false) {
+    if ($file == '..' || $file == '.') {
+      continue;
+    }
+
+    $full_filename = $dir_name . $file;
+    if ($modules && is_dir($full_filename)) {
+      if (file_exists($full_filename = "{$full_filename}/{$file}{$load_extension}")) {
+        require_once($full_filename);
+        // Registering module
+        if (class_exists($file)) {
+          new $file($full_filename);
         }
-      } else {
-        $extension = substr($full_filename, -strlen($load_extension));
-        if($extension == $load_extension) {
-          require_once($full_filename);
-        }
+      }
+    } else {
+      $extension = substr($full_filename, -strlen($load_extension));
+      if ($extension == $load_extension) {
+        require_once($full_filename);
       }
     }
   }

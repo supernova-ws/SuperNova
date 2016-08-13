@@ -66,7 +66,7 @@ if (($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param
       die();
     break;
   }
-  message($Message, classLocale::$lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
+  message($Message, classLocale::$lang['tech'][UNIT_ARTIFACTS], 'artifacts' . DOT_PHP_EX, 5);
 }
 
 $template = gettemplate('artifacts', true);

@@ -11,16 +11,12 @@ class classSupernova {
   public static $gc;
 
   /**
-   * ex $sn_mvc
-   *
-   * @var array
+   * @var array $sn_mvc
    */
   public static $sn_mvc = array();
 
   /**
-   * ex $functions
-   *
-   * @var array
+   * @var array $functions
    */
   public static $functions = array();
 
@@ -39,24 +35,17 @@ class classSupernova {
    */
   public static $db;
   public static $db_name = '';
-
   /**
-   * @var \DBAL\DbTransaction
+   * @var \DBAL\DbTransaction $transaction
    */
   public static $transaction;
-
-//  /**
-//   * @var SnCache $dbCache
-//   */
-//  public static $dbCache;
 
   /**
    * Настройки из файла конфигурации
    *
-   * @var string
+   * @var string $cache_prefix
    */
   public static $cache_prefix = '';
-
   public static $sn_secret_word = '';
 
   /**
@@ -66,14 +55,12 @@ class classSupernova {
    */
   public static $config;
 
-
   /**
-   * Кэш игры
+   * External cache
    *
    * @var classCache $cache
    */
   public static $cache;
-
 
   /**
    * @var core_auth $auth
@@ -83,7 +70,7 @@ class classSupernova {
 
   public static $user = array();
   /**
-   * @var userOptions
+   * @var userOptions $user_options
    */
   public static $user_options;
 
@@ -101,17 +88,11 @@ class classSupernova {
   }
 
   public static function init_0_prepare() {
-    // Отключаем magic_quotes
-    // Removed magic quotes handling - targeting for PHP 5.4+
-  }
-
-  public static function init_1_globalContainer() {
     static::$gc = new GlobalContainer();
   }
 
   public static function init_3_load_config_file() {
     $dbsettings = array();
-
     require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
     self::$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : $dbsettings['prefix'];
     self::$db_name = $dbsettings['name'];

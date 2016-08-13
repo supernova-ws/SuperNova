@@ -74,8 +74,7 @@ define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS
 define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
-define('PHP_EX', $phpEx); // PHP extension on this server
-define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
+define('DOT_PHP_EX', '.' . $phpEx); // PHP extension on this server
 
 
 header('Content-type: text/html; charset=utf-8');
@@ -102,7 +101,6 @@ require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
 global $auth;
 
 classSupernova::init_0_prepare();
-classSupernova::init_1_globalContainer();
 classSupernova::init_3_load_config_file();
 
 // required for db.php
@@ -144,7 +142,7 @@ $HTTP_ACCEPT_LANGUAGE = DEFAULT_LANG;
 require_once(SN_ROOT_PHYSICAL . "includes/template" . DOT_PHP_EX);
 $template_result = array('.' => array('result' => array()));
 
-sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
+sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", DOT_PHP_EX);
 
 
 // Подключаем все модули
@@ -154,7 +152,7 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 // Конфиг - часть манифеста?
 classSupernova::$auth = new core_auth();
 
-sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
+sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", DOT_PHP_EX, true);
 // Здесь - потому что core_auth модуль лежит в другом каталоге и его нужно инициализировать отдельно
 
 // Подключаем дефолтную страницу
