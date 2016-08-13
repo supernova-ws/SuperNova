@@ -106,7 +106,7 @@ class db_mysql {
   public function sn_db_connect($external_db_settings = null) {
     $this->db_disconnect();
 
-    if (!empty($external_db_settings) && is_array($external_db_settings)) {
+    if (is_array($external_db_settings) && !empty($external_db_settings)) {
       $this->dbsettings = $external_db_settings;
     }
 
@@ -259,16 +259,11 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function doSql($query, $skip_query_check = false) {
-    $prevState = false;
-    if ($skip_query_check) {
-      $prevState = $this->skipQueryCheck;
-      $this->skipQueryCheck = true;
-    }
+    $prevState = $this->skipQueryCheck;
+    $this->skipQueryCheck = $skip_query_check;
     // TODO - disable watch ??
     $result = $this->queryDriver($query);
-    if ($skip_query_check) {
-      $this->skipQueryCheck = $prevState;
-    }
+    $this->skipQueryCheck = $prevState;
 
     return $result;
   }
@@ -504,10 +499,11 @@ class db_mysql {
    * @return DbQuery
    */
   protected function buildDeleteQuery($table, $where, $isOneRecord = DB_RECORDS_ALL) {
-    return DbQuery::build($this)
-      ->setTable($table)
-      ->setWhereArray($where)
-      ->setOneRow($isOneRecord);
+    return
+      DbQuery::build($this)
+        ->setTable($table)
+        ->setWhereArray($where)
+        ->setOneRow($isOneRecord);
   }
 
   /**
@@ -518,7 +514,11 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function doDeleteWhere($table, $where, $isOneRecord = DB_RECORDS_ALL) {
-    return $this->doSql($this->buildDeleteQuery($table, $where, $isOneRecord)->delete());
+    return
+      $this->doSql(
+        $this->buildDeleteQuery($table, $where, $isOneRecord)
+          ->delete()
+      );
   }
 
   /**
@@ -535,7 +535,12 @@ class db_mysql {
    * @deprecated
    */
   public function doDeleteDanger($table, $where, $whereDanger) {
-    return $this->doSql($this->buildDeleteQuery($table, $where, DB_RECORDS_ALL)->setWhereArrayDanger($whereDanger)->delete());
+    return
+      $this->doSql(
+        $this->buildDeleteQuery($table, $where, DB_RECORDS_ALL)
+          ->setWhereArrayDanger($whereDanger)
+          ->delete()
+      );
   }
 
   /**
