@@ -7,7 +7,7 @@
  *
  * @property int|float|string $dbId EntityModel unique ID for entire entities' set
  */
-class EntityModel  {
+class EntityModel {
   /**
    * Link to DB which used by this EntityModel
    *
@@ -137,9 +137,6 @@ class EntityModel  {
   }
 
 
-
-
-
   /**
    * @param array $array
    *
@@ -162,6 +159,7 @@ class EntityModel  {
    * Useful for INSERT operations
    *
    * @param \EntityContainer $cEntity
+   *
    * @return array
    */
   public function exportRow($cEntity) {
@@ -172,6 +170,7 @@ class EntityModel  {
    * Exports object properties to DB row state with ID
    *
    * @param \EntityContainer $cEntity
+   *
    * @return array
    */
   public function exportRowNoId($cEntity) {
@@ -193,6 +192,7 @@ class EntityModel  {
     $container = new $this->entityContainerClass();
     $container->setProperties($this->properties);
     $container->setAccessors($this->accessors);
+
     return $container;
   }
 
@@ -211,6 +211,24 @@ class EntityModel  {
     }
 
     return $cEntity;
+  }
+
+  /**
+   * @param EntityContainer $cEntity
+   *
+   * @return bool
+   */
+  public function isEmpty($cEntity) {
+    return $cEntity->isEmpty();
+  }
+
+  /**
+   * @param EntityContainer $cEntity
+   *
+   * @return bool
+   */
+  public function isNew($cEntity) {
+    return $cEntity->isEmpty();
   }
 
 }

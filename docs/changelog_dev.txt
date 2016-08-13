@@ -1191,6 +1191,50 @@ pdie();
     - http://php.net/manual/en/reflectionmethod.getclosure.php
 
 
+- buyable
+    - can be bought
+    - have a price
+    - have time to build
+- buildable
+    - Implies
+        - buyable
+- combat
+    - have combat stats
+- defense
+    - Implies
+- bonus
+    - Grants a bonus on certain level - user, planet, fleet, etc
+- ship
+    - flying
+        - have consumption
+        - have speed
+        - have cargo size
+        - ? fuel tanks - усложнение. Ненужное?
+    - transport
+        - have resource capability
+    - recycler
+        - can recycle
+    - colonizer
+        - can create colony
+    - spy
+        - can fly to espionage
+    - carrier
+        - can carry other ships
+        - have max carry size
+        - have max carry amount
+- missile
+
+- structure
+    - factory
+    - mine
+    - storage
+
+- resource
+    - debris
+    - lootable
+    - transportable
+
+
 WORKING ON
     !! accessors is REALLY PART OF MODEL!
         - or should be static inside container

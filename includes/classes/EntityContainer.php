@@ -87,14 +87,6 @@ class EntityContainer extends ContainerAccessors {
     return $row;
   }
 
-  public function isEmpty() {
-    return empty($this->values);
-  }
-
-  public function isNew() {
-    return empty($this->values);
-  }
-
   /**
    * Clears only properties which declared in $properties array
    */

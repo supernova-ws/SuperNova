@@ -97,6 +97,7 @@ class V2UnitModel extends \EntityModel {
     $that->locationDefaultType = empty($array[P_LOCATION_DEFAULT]) ? LOC_NONE : $array[P_LOCATION_DEFAULT];
     // Optional
     $that->bonusType = empty($array[P_BONUS_TYPE]) ? BONUS_NONE : $array[P_BONUS_TYPE];
+    $that->features = array(); //new FeatureList();
   }
 
   public function unsetType(V2UnitContainer $that, $value) {
@@ -117,7 +118,7 @@ class V2UnitModel extends \EntityModel {
    */
   // TODO - move to unitCaptain
   public function validateCaptainVsUser($unitCaptain, $userId) {
-    if (!is_object($unitCaptain) || $unitCaptain->isNew() || $unitCaptain->isEmpty()) {
+    if (!is_object($unitCaptain) || $this->isNew($unitCaptain) || $this->isEmpty($unitCaptain)) {
       throw new $this->$exceptionClass('module_unit_captain_error_not_found', ERR_ERROR);
     }
     if ($unitCaptain->snId != UNIT_CAPTAIN) {
@@ -129,6 +130,28 @@ class V2UnitModel extends \EntityModel {
     if ($unitCaptain->locationType != LOC_PLANET) {
       throw new $this->$exceptionClass('module_unit_captain_error_wrong_location', ERR_ERROR);
     }
+  }
+
+  /**
+   * @param V2UnitContainer $cUnit
+   *
+   * @return bool
+   */
+  public function isEmpty($cUnit) {
+    return
+      empty($cUnit->playerOwnerId)
+      ||
+      is_null($cUnit->locationType)
+      ||
+      $cUnit->locationType === LOC_NONE
+      ||
+      empty($cUnit->locationId)
+      ||
+      empty($cUnit->type)
+      ||
+      empty($cUnit->snId)
+      ||
+      empty($cUnit->level);
   }
 
 }

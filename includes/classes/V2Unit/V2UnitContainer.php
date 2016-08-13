@@ -25,25 +25,9 @@ namespace V2Unit;
  * @property int        $bonusType
  * @property array      $unitInfo - full info about unit
  *
+ * @property            $features - unit feature list
+ *
  * @package V2Unit
  */
 class V2UnitContainer extends \EntityContainer {
-
-  public function isEmpty() {
-    return
-      empty($this->playerOwnerId)
-      ||
-      is_null($this->locationType)
-      ||
-      $this->locationType === LOC_NONE
-      ||
-      empty($this->locationId)
-      ||
-      empty($this->type)
-      ||
-      empty($this->snId)
-      ||
-      empty($this->level);
-  }
-
 }
