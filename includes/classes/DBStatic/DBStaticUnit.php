@@ -185,10 +185,10 @@ class DBStaticUnit {
 
 
   /**
-   * @param      $unit_id
-   * @param      $unit_value
-   * @param      $user
-   * @param null $planet_id
+   * @param                  $unit_id
+   * @param                  $unit_value
+   * @param                  $user
+   * @param null|array|mixed $planet_id
    *
    * @return bool
    */

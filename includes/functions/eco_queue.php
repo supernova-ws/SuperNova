@@ -76,12 +76,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     }
 
     $unit_id = sys_get_param_int('unit_id');
-    /*
-    if(!$unit_id && is_array($unit_list = sys_get_param('fmenge')))
-    {
-      foreach($unit_list as $unit_id => $unit_amount) if($unit_amount) break;
-    }
-    */
     if(!$unit_id) {
       throw new exception('{Нет идентификатора юнита - сообщите Администрации}', ERR_ERROR); // TODO EXCEPTION
     }
@@ -107,17 +101,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
         throw new exception('{Это здание нельзя строить на ' . ($planet['planet_type'] == PT_PLANET ? 'планете' : 'луне'), ERR_ERROR); // TODO EXCEPTION
       }
     }
-    /*
     // TODO Разделить очереди для Верфи и Обороны
-    elseif($que_id == QUE_HANGAR)
-    {
-      $que_data['mercenary'] = in_array($unit_id, sn_get_groups('defense')) ? MRC_FORTIFIER : MRC_ENGINEER;
-    }
-    elseif($que_id == QUE_HANGAR)
-    {
-      $que_data['mercenary'] = in_array($unit_id, sn_get_groups('defense')) ? MRC_FORTIFIER : MRC_ENGINEER;
-    }
-    */
 
 
     sn_db_transaction_start();
@@ -171,10 +155,6 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     }
 
     // TODO Переделать eco_unit_busy для всех типов зданий
-    //  if(eco_unit_busy($user, $planet, $que, $unit_id))
-    //  {
-    //    die('Unit busy'); // TODO EXCEPTION
-    //  }
     if(get_unit_param($unit_id, P_STACKABLE)) {
       // TODO Поле 'max_Lot_size' для ограничения размера стэка в очереди - то ли в юниты, то ли в очередь
       if(in_array($unit_id, $group_missile = sn_get_groups(GROUP_STR_MISSILES))) {
@@ -198,16 +178,10 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     } else {
       $unit_amount = 1;
       if($que_id == QUE_STRUCTURES) {
-        // if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $que['sectors'][$planet['id']] <= 0)
         $sectors_qued = is_array($in_que) ? array_sum($in_que) : 0;
         if($build_mode == BUILD_CREATE && eco_planet_fields_max($planet) - $planet['field_current'] - $sectors_qued <= 0) {
           throw new exception('{Не хватает секторов на планете}', ERR_ERROR); // TODO EXCEPTION
         }
-        // И что это я такое написал? Зачем?
-        //if($build_mode == BUILD_DESTROY && $planet['field_current'] <= $que['amounts'][$que_id])
-        //{
-        //  die('Too much buildings'); // TODO EXCEPTION
-        //}
       }
       $build_multiplier = $build_mode == BUILD_CREATE ? 1 : -1;
       $new_unit_level = $unit_level + $unit_amount * $build_multiplier;
@@ -327,7 +301,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
       'STATUS'  => ERR_NONE,
       'MESSAGE' => '{Строительство начато}',
     );
-  } catch(exception $e) {
+  } catch(Exception $e) {
     sn_db_transaction_rollback();
     $operation_result = array(
       'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
@@ -369,7 +343,6 @@ function que_recalculate($old_que) {
     $new_que['ques'][$row['que_type']][$row['que_player_id']][intval($row['que_planet_id'])][] = &$new_que['items'][$last_id];
 
     // Это мы можем посчитать по длине очереди в players и planets
-    //$ques['used_slots'][$row['que_type']][$row['que_player_id']][intval($row['que_planet_id'])][$row['que_unit_id']]++;
   }
 
   return $new_que;
@@ -495,7 +468,6 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
   } else {
     sn_db_transaction_rollback();
   }
-//die();
   header("Location: {$_SERVER['PHP_SELF']}?mode={$que_type}" . "&ally_id=" . sys_get_param_id('ally_id'));
 }
 
@@ -553,18 +525,16 @@ function que_tpl_parse(&$template, $que_type, $user, $planet = array(), $que = n
   }
 }
 
-
-/*
+/**
+ * @param                  $user
+ *        - (integer) - обрабатываются глообальные очереди пользователя
+ * @param array|mixed|null $planet
+ *        - null - обработка очередей планет не производится
+ *        - (integer) - обрабатываются локальные очереди для планеты. Нужно, например, в обработчике флотов
+ *        - // TODO    false/0 - обрабатываются очереди всех планет по $user_id
+ * @param int              $on_time
  *
- * Эта процедура должна вызываться исключительно в транзакции!!!
- *
- * $user_id
- *   (integer) - обрабатываются глообальные очереди пользователя
- * $planet_id
- *   null - обработка очередей планет не производится
- * // TODO    false/0 - обрабатываются очереди всех планет по $user_id
- *   (integer) - обрабатываются локальные очереди для планеты. Нужно, например, в обработчике флотов
- *
+ * @return array
  */
 function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
   sn_db_transaction_check(true);
@@ -576,7 +546,6 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
 
   $time_left[$user['id']][0] = max(0, $on_time - $user['que_processed']);
   if($planet === null && !$time_left[$user['id']][0]) {
-    // TODO
     return $que;
   }
 

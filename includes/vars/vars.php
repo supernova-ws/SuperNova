@@ -163,33 +163,6 @@ $sn_diplomacy_relation_list = array(
     'enter_delay' => -1,
     'exit_delay'  => 0,
   ),
-  /*
-  ALLY_DIPLOMACY_CONFEDERATION => array(
-    'relation_id' => ALLY_DIPLOMACY_CONFEDERATION,
-    'enter_delay' => -1,
-    'exit_delay'  => config->fleet_bashing_war_delay,
-  ),
-  ALLY_DIPLOMACY_FEDERATION    => array(
-    'relation_id' => ALLY_DIPLOMACY_FEDERATION,
-    'enter_delay' => -1,
-    'exit_delay'  => config->fleet_bashing_war_delay,
-  ),
-  ALLY_DIPLOMACY_UNION         => array(
-    'relation_id' => ALLY_DIPLOMACY_UNION,
-    'enter_delay' => -1,
-    'exit_delay'  => config->fleet_bashing_war_delay,
-  ),
-  ALLY_DIPLOMACY_MASTER        => array(
-    'relation_id' => ALLY_DIPLOMACY_MASTER,
-    'enter_delay' => -1,
-    'exit_delay'  => 0,
-  ),
-  ALLY_DIPLOMACY_SLAVE         => array(
-    'relation_id' => ALLY_DIPLOMACY_SLAVE,
-    'enter_delay' => -1,
-    'exit_delay'  => config->fleet_bashing_war_delay,
-  )
-  */
 );
 
 // factor -> price_factor, perhour_factor
@@ -300,11 +273,7 @@ $sn_data += array(
           2 => 0.0010,
         ),
       ),
-      /*
-      FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT => array(
-        'chance' => 10,
-      ),
-      */
+      // FLT_EXPEDITION_OUTCOME_FOUND_ARTIFACT
     ),
 
     // Planet structures list
@@ -462,9 +431,6 @@ $sn_data += array(
     // Resources that can be tradeable in market trader AND be a quest_rewards
     'quest_rewards'    => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_DARK_MATTER => RES_DARK_MATTER,),
 
-//      // Ques list
-//      'ques' => array(QUE_STRUCTURES, QUE_HANGAR, QUE_RESEARCH),
-
     'STAT_COMMON' => array(STAT_TOTAL => STAT_TOTAL, STAT_FLEET => STAT_FLEET, STAT_TECH => STAT_TECH, STAT_BUILDING => STAT_BUILDING, STAT_DEFENSE => STAT_DEFENSE, STAT_RESOURCE => STAT_RESOURCE,),
     'STAT_PLAYER' => array(STAT_RAID_TOTAL => STAT_RAID_TOTAL, STAT_RAID_WON => STAT_RAID_WON, STAT_RAID_LOST => STAT_RAID_LOST, STAT_LVL_BUILDING => STAT_LVL_BUILDING, STAT_LVL_TECH => STAT_LVL_TECH, STAT_LVL_RAID => STAT_LVL_RAID,),
 
@@ -506,7 +472,6 @@ $sn_data += array(
         'fleet_update_skip' => true,
       ),
     ),
-    // 'chat_frame' => 'modules/chat_advanced/chat_advanced',
 
     'contact'       => array(
       'allow_anonymous' => true,
@@ -624,14 +589,3 @@ $sn_powerup_buy_discounts = array(
   PERIOD_MONTH_2 => 0.9,
   PERIOD_MONTH_3 => 0.8,
 );
-
-/*
-foreach($sn_data as $unitID => $unitData)
-{
-  if(!isset($sn_data[$unitID]['cost']['metal']))
-  {
-    continue;
-  }
-  $sn_data[$unitID]['armor'] = ($sn_data[$unitID]['cost']['metal'] + $sn_data[$unitID]['cost']['crystal'])/10;
-}
-*/
