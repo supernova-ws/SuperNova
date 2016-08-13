@@ -4,6 +4,8 @@
  * Created by Gorlum 17.04.2015 6:37
  */
 
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
 use Vector\Vector;
 
 function sys_user_vacation($user) {

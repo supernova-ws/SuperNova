@@ -8,6 +8,8 @@
  * @version 2.0 copyright (c) 2010-2012 by Gorlum for http://supernova.ws
  */
 
+use DBStatic\DBStaticUser;
+
 classSupernova::$sn_mvc['i18n']['imperator'] = array(
   'overview' => 'overview',
 );

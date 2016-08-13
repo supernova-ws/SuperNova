@@ -1,6 +1,8 @@
 <?php
 
 // Wrappers for functions
+use DBStatic\DBStaticNote;
+use DBStatic\DBStaticPlanet;
 
 /**
  * @param $u_dpath

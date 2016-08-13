@@ -1,5 +1,8 @@
 <?php
 
+use DBStatic\DBStaticAlly;
+use DBStatic\DBStaticUser;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(classSupernova::$config->game_mode == GAME_BLITZ) {

@@ -9,7 +9,6 @@
 class DbMysqliResultIterator extends DbResultIterator {
   protected function fetchCurrentRow() {
     $this->currentRow = $this->_result->fetch_assoc();
-    // TODO: Implement fetchCurrentRow() method.
   }
 
   /**

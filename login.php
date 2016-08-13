@@ -9,6 +9,8 @@
  * @copyright 2008 by ?????? for XNova
  */
 
+use DBStatic\DBStaticUser;
+
 define('LOGIN_LOGOUT', true);
 
 $allow_anonymous = true;

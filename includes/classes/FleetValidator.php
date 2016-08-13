@@ -1,4 +1,5 @@
 <?php
+use DBStatic\DBStaticFleetBashing;
 
 /**
  * Class FleetValidator

@@ -7,6 +7,8 @@
  * @copyright 2008 by Chlorel for XNova
  */
 
+use \DBStatic\DBStaticMessages;
+
 defined('INSIDE') || die();
 
 $sn_menu_extra = array();

@@ -6,6 +6,8 @@
  * @copyright 2014 by Gorlum for http://supernova.ws/
  */
 
+use DBStatic\DBStaticUser;
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);

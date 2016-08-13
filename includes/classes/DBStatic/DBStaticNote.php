@@ -1,5 +1,10 @@
 <?php
 
+namespace DBStatic;
+use classSupernova;
+use Exception;
+use mysqli_result;
+
 class DBStaticNote {
 
   public static function db_note_get_id_and_owner($note_id_edit) {

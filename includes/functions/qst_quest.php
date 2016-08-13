@@ -1,5 +1,10 @@
 <?php
 
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
+
 function qst_render_page() {
   global $user, $template;
 

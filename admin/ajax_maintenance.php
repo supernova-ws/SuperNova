@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticUser;
+
 define('IN_ADMIN', true);
 
 require('../includes/init.' . substr(strrchr(__FILE__, '.'), 1));

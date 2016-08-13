@@ -1,5 +1,7 @@
 <?php
 
+use \DBStatic\DBStaticUnit;
+
 /**
  * Class UnitList
  * Indexed by DB_ID - as it should be!

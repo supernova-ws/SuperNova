@@ -9,6 +9,8 @@
  *
  **/
 
+use DBStatic\DBStaticUser;
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);

@@ -4,6 +4,12 @@
 // Open Source
 // V1
 //
+use DBStatic\DBStaticFleetMissile;
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
+
 function COE_missileAttack($defenceTech, $attackerTech, $MIPs, $structures, $targetedStructure = '0') {
   // Here we select which part of defense should take damage: structure or shield
   // $damageTo = P_SHIELD;

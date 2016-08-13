@@ -1,5 +1,10 @@
 <?php
 
+use DBStatic\DBStaticFleetACS;
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
+
 $classLocale = classLocale::$lang;
 
 if(SN_IN_FLEET !== true) {

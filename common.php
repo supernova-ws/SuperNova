@@ -7,6 +7,8 @@
  * @version 1.1 Security checks by Gorlum for http://supernova.ws
  */
 
+use DBStatic\DBStaticUser;
+
 require_once('includes/init.php');
 
 global $template_result, $user;

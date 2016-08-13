@@ -1,5 +1,9 @@
 <?php
 
+namespace DBStatic;
+use classSupernova;
+use mysqli_result;
+
 class DBStaticFleetMissile {
 
   public static function db_missile_insert($target_coord, $user, $planetrow, $arrival, $fleet_ship_count, $target_structure) {

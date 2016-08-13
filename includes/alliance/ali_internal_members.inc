@@ -1,5 +1,8 @@
 <?php
 
+use DBStatic\DBStaticAlly;
+use DBStatic\DBStaticUser;
+
 $classLocale = classLocale::$lang;
 
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {

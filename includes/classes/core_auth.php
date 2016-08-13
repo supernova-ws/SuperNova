@@ -1,20 +1,22 @@
 <?php
 
 // define("DEBUG_AUTH", true);
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticUser;
 
 /**
  * Статический над-класс, который обеспечивает интерфейс авторизации для остального кода
  *
  * Created by Gorlum 21.04.2015 3:51
  *
- * version #41a51.43#
+ * version #41a52.18#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a51.43# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a52.18# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -216,7 +218,7 @@ class core_auth extends sn_module {
 
     // Если у нас провайдеры не дают имени и пользователь не дал свой вариант - это у нас первый логин в игру
     if (!$this->player_suggested_name) {
-      $max_user_id = DBStaticUser::getMaxId(); // 4.5
+      $max_user_id = classSupernova::$db->doSelectFetchValue("SELECT `id` FROM `{{users}}` ORDER BY `id` DESC LIMIT 1");
       // TODO - предлагать имя игрока по локали
 
       // Проверить наличие такого имени в истории имён

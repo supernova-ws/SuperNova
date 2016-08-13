@@ -6,6 +6,8 @@
  *
  */
 
+use DBStatic\DBStaticUser;
+
 classSupernova::$sn_mvc['view']['contact'][] = 'sn_contact_view';
 
 function sn_contact_view($template = null) {

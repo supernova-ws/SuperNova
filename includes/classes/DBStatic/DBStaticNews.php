@@ -1,5 +1,10 @@
 <?php
 
+namespace DBStatic;
+use classSupernova;
+use mysqli_result;
+use template;
+
 class DBStaticNews {
 
   public static function db_news_update_set($announce_time, $text_unsafe, $detail_url_unsafe, $announce_id) {
@@ -45,8 +50,8 @@ class DBStaticNews {
 
   /**
    * @param template $template
-   * @param $query_where
-   * @param $query_limit
+   * @param          $query_where
+   * @param          $query_limit
    *
    * @return array|bool|mysqli_result|null
    */

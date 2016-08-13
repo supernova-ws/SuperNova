@@ -8,6 +8,7 @@
  * @copyright 2008 by ??????? for XNova
  */
 
+use DBStatic\DBStaticUnit;
 use Vector\Vector;
 
 define('INSIDE'  , true);

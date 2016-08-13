@@ -1,4 +1,6 @@
 <?php
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
 
 /**
  * Class Player

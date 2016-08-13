@@ -1,5 +1,9 @@
 <?php
 
+namespace DBStatic;
+
+use classSupernova;
+use mysqli_result;
 use Vector\Vector;
 
 class DBStaticPlanet {
@@ -162,15 +166,15 @@ class DBStaticPlanet {
    * @param array $planetRowFieldChanges - array of $resourceId => $amount
    * @param int   $planetId
    *
-   * @see DBStaticUser::db_user_update_resources
    * // TODO - DEDUPLICATE
+   * @see DBStaticUser::db_user_update_resources
    */
   public static function db_planet_update_resources($planetRowFieldChanges, $planetId) {
     $fields = array();
     foreach ($planetRowFieldChanges as $resourceId => $value) {
       $fields[pname_resource_name($resourceId)] = $value;
     }
-    if(!empty($fields)) {
+    if (!empty($fields)) {
       classSupernova::$gc->db->doUpdateRowAdjust(
         TABLE_PLANETS,
         array(),
@@ -184,7 +188,7 @@ class DBStaticPlanet {
 
   /**
    * @param        $planet_id
-   * @param array $set
+   * @param array  $set
    *
    * @return array|bool|mysqli_result|null
    */
@@ -194,7 +198,7 @@ class DBStaticPlanet {
 
   /**
    * @param        $planet_id
-   * @param array $adjust
+   * @param array  $adjust
    *
    * @return array|bool|mysqli_result|null
    */
@@ -214,7 +218,7 @@ class DBStaticPlanet {
       'system' => $ui_system,
       'planet' => $ui_planet,
     );
-    if(intval($ui_planet_type)) {
+    if (intval($ui_planet_type)) {
       $where['planet_type'] = $ui_planet_type;
     }
     classSupernova::$gc->cacheOperator->db_upd_record_list(
@@ -245,7 +249,7 @@ class DBStaticPlanet {
   }
 
   /**
-   * @param $ui_owner_id
+   * @param       $ui_owner_id
    * @param array $set
    */
   public static function db_planet_set_by_owner($ui_owner_id, $set) {
@@ -272,7 +276,7 @@ class DBStaticPlanet {
     classSupernova::$gc->cacheOperator->db_del_record_by_id(LOC_PLANET, $planet_id);
     classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT, array(
       'unit_location_type' => LOC_PLANET,
-      'unit_location_id' => $planet_id,
+      'unit_location_id'   => $planet_id,
     ));
 
     // Очереди очистятся автоматически по FOREIGN KEY
@@ -287,7 +291,7 @@ class DBStaticPlanet {
     classSupernova::$gc->cacheOperator->db_del_record_list(LOC_PLANET, array('id_owner' => $si_owner_id));
     classSupernova::$gc->cacheOperator->db_del_record_list(LOC_UNIT, array(
       'unit_location_type' => LOC_PLANET,
-      'unit_player_id' => $si_owner_id,
+      'unit_player_id'     => $si_owner_id,
     ));
 
     // Очереди очистятся автоматически по FOREIGN KEY

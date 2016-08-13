@@ -8,6 +8,11 @@ Reference: https://bugs.php.net/bug.php?id=50394
 
 */
 
+use DBStatic\DBStaticAlly;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
+
 require_once('general_pname.php');
 
 /**

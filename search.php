@@ -10,6 +10,8 @@
  * @copyright 2008 by ??????? for XNova
  */
 
+use DBStatic\DBStaticAlly;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(classSupernova::$config->game_mode == GAME_BLITZ) {

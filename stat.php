@@ -6,6 +6,8 @@
  * 2.0 copyright (c) 2010-2012 by Gorlum for http://supernova.ws
  *   [!] Full rewrote
 */
+use DBStatic\DBStaticAlly;
+use DBStatic\DBStaticUser;
 
 /**
  * @param $who

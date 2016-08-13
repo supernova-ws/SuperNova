@@ -1,5 +1,9 @@
 <?php
 
+namespace DBStatic;
+use classSupernova;
+use mysqli_result;
+
 class DBStaticSurveyAnswer {
 
   public static function db_survey_answer_insert($survey_id, $survey_answer_text_unsafe) {

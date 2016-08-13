@@ -1344,7 +1344,7 @@ classSupernova::$gc->cacheOperator
 
 - admin/add_moon.php - какие-то непонятки
     - $PlanetID = sys_get_param_id('user');
-    - $PlanetSelected = DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
+    - $PlanetSelected = DBStatic\DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
     - хотя вроде работаем с планетой
 
 
@@ -1390,7 +1390,7 @@ function idval($value, $default = 0) { - переделать под int|string
 
     - V2Unit
         sn_db_unit_changeset_prepare
-        - внести в класс DBStaticUnit::public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null)
+        - внести в класс DBStatic\DBStaticUnit::public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null)
 
     - classLocale => SnLocale
 

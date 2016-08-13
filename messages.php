@@ -36,6 +36,8 @@
  *
  */
 
+use DBStatic\DBStaticMessages;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('messages');

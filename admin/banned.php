@@ -10,6 +10,8 @@
  * @version 1.0  - copyright 2008 by Chlorel for XNova
  *
  */
+use DBStatic\DBStaticUser;
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);

@@ -22,6 +22,8 @@
  *
  **/
 
+use DBStatic\DBStaticPlanet;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 /**

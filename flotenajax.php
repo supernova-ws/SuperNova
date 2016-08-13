@@ -14,6 +14,11 @@
  * @copyright 2008 By Chlorel for XNova
  **/
 
+use DBStatic\DBStaticFleetMissile;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('IN_AJAX', true);

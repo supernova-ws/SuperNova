@@ -1,5 +1,10 @@
 <?php
 
+namespace DBStatic;
+use classLocale;
+use classSupernova;
+use mysqli_result;
+
 class DBStaticAlly {
 
 // ALLY *************************************************************************************************************
@@ -266,11 +271,11 @@ class DBStaticAlly {
    */
   public static function db_ally_negotiation_delete_extended($negotiatorId, $userAllyId) {
     classSupernova::$gc->db->doDeleteWhere(TABLE_ALLIANCE_NEGOTIATION, array(
-      'alliance_negotiation_id' => $negotiatorId,
+      'alliance_negotiation_id'            => $negotiatorId,
       'alliance_negotiation_contr_ally_id' => $userAllyId,
     ));
     classSupernova::$gc->db->doDeleteWhere(TABLE_ALLIANCE_NEGOTIATION, array(
-      'alliance_negotiation_id' => $userAllyId,
+      'alliance_negotiation_id'            => $userAllyId,
       'alliance_negotiation_contr_ally_id' => $negotiatorId,
     ));
   }
@@ -314,7 +319,7 @@ class DBStaticAlly {
       TABLE_ALLIANCE_REQUESTS,
       array(
         'request_denied' => ALLY_REQUEST_DENIED,
-        'request_text' => classLocale::$lang['ali_req_deny_reason'],
+        'request_text'   => classLocale::$lang['ali_req_deny_reason'],
       ),
       array(
         'id_user' => $id,

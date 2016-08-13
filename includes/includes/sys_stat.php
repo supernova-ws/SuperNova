@@ -1,4 +1,8 @@
 <?php
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticQue;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
 
 /**
  * sys_stat_functions.php

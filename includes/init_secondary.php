@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticUser;
+
 $classLocale = classLocale::$lang;
 
 if(classSupernova::$config->server_updater_check_auto && classSupernova::$config->server_updater_check_last + classSupernova::$config->server_updater_check_period <= SN_TIME_NOW) {

@@ -30,20 +30,23 @@
 
 //define('SN_RENDER_NAVBAR_PLANET', false);
 
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 //$ccc = 0;
-//foreach(DBStaticUser::db_user_list_non_bots() as $ip) {
+//foreach(DBStatic\DBStaticUser::db_user_list_non_bots() as $ip) {
 //  $ccc++;
 //}
 //pdump($ccc);
 //
-//foreach(DBStaticUser::db_user_list_non_bots() as $ip) {
+//foreach(DBStatic\DBStaticUser::db_user_list_non_bots() as $ip) {
 //  pdump($ip['id']);
 //  $ccc++;
 //}
 //
-//pdump(DBStaticUser::db_user_list_non_bots());
+//pdump(DBStatic\DBStaticUser::db_user_list_non_bots());
 
 lng_include('overview');
 

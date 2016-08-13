@@ -1,5 +1,8 @@
 <?php
 
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+
 $classLocale = classLocale::$lang;
 
 if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true) {

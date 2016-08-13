@@ -1,5 +1,9 @@
 <?php
 
+namespace DBStatic;
+use classSupernova;
+use mysqli_result;
+
 class DBStaticChat {
 
   // Chat *************************************************************************************************************

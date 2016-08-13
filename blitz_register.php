@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
 use Vector\Vector;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));

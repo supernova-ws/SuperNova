@@ -1,4 +1,7 @@
 <?php
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
 
 /**
  * options.php

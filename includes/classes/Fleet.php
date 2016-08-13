@@ -1,4 +1,9 @@
 <?php
+use DBStatic\DBStaticFleetACS;
+use DBStatic\DBStaticNote;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
 use Vector\Vector;
 
 /**

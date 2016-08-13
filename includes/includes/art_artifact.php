@@ -1,5 +1,11 @@
 <?php
 
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticQue;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
+
 function art_use(&$user, &$planetrow, $unit_id) {
   $classLocale = classLocale::$lang;
 

@@ -1,5 +1,10 @@
 <?php
 
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticQue;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
+
 function que_get_unit_que($unit_id) {
   $que_type = false;
   foreach(sn_get_groups('ques') as $que_id => $que_data) {

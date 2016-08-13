@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticAlly;
+
 function ali_rank_list_save($ranks) {
   global $user;
 

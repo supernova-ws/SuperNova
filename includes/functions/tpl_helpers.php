@@ -1,6 +1,8 @@
 <?php
 
 // Compare function to sort fleet in time order
+use DBStatic\DBStaticFleetACS;
+
 function tpl_assign_fleet_compare($a, $b) {
   if($a['fleet']['OV_THIS_PLANET'] == $b['fleet']['OV_THIS_PLANET']) {
     if($a['fleet']['OV_LEFT'] == $b['fleet']['OV_LEFT']) {

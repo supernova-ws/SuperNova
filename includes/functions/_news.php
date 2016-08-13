@@ -1,4 +1,7 @@
 <?php
+use DBStatic\DBStaticNews;
+use DBStatic\DBStaticSurveyAnswer;
+use DBStatic\DBStaticSurveyVote;
 
 /**
  * @param template $template

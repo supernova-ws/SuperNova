@@ -1,4 +1,5 @@
 <?php
+use DBStatic\DBStaticUser;
 
 /**
  *
@@ -448,11 +449,12 @@ class classConfig extends classPersistent {
    * @param string $optionName
    */
   public function repackExistsOptionPlayerIdString($optionName) {
-    sn_db_transaction_start();
-    $this->db_loadItem($optionName);
-    $this->db_saveItem($optionName, DBStaticUser::filterIdListStringRepack($this->db_loadItem($optionName)));
-    classSupernova::$debug->warning('Repacked game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
-    sn_db_transaction_commit();
+    // TODO
+//    sn_db_transaction_start();
+//    $this->db_loadItem($optionName);
+//    $this->db_saveItem($optionName, DBStaticUser::filterIdListStringRepack($this->db_loadItem($optionName)));
+//    classSupernova::$debug->warning('Repacked game_watchlist', 'System maintenance', LOG_INFO_MAINTENANCE);
+//    sn_db_transaction_commit();
   }
 
 }

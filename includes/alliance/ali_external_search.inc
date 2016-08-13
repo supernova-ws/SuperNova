@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticAlly;
+
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
   classSupernova::$debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
 }

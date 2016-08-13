@@ -2,6 +2,8 @@
 
 // ------------------------------------------------------------------
 // unit_captain overrides
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
 use Mission\Mission;
 
 /**

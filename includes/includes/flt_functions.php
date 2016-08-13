@@ -1,5 +1,10 @@
 <?php
 
+use DBStatic\DBStaticFleetACS;
+use DBStatic\DBStaticFleetBashing;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
 use Vector\Vector;
 
 function flt_fleet_speed($user, $fleet) {

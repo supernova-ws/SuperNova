@@ -7,6 +7,8 @@
  * @copyright 2014 Gorlum for http://supernova.ws
  */
 
+use DBStatic\DBStaticPlanet;
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);

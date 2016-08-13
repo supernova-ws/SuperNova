@@ -1,5 +1,10 @@
 <?php
 
+namespace DBStatic;
+use classLocale;
+use classSupernova;
+use mysqli_result;
+
 class DBStaticFleetACS {
 
   /* ACS ****************************************************************************************************************/

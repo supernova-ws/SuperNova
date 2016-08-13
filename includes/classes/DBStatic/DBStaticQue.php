@@ -1,5 +1,9 @@
 <?php
 
+namespace DBStatic;
+use classSupernova;
+use mysqli_result;
+
 class DBStaticQue {
 
   /*
@@ -48,23 +52,6 @@ class DBStaticQue {
 
     return que_recalculate($ques);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   public static function db_que_list_stat() {

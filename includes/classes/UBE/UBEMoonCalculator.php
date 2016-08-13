@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticPlanet;
+
 class UBEMoonCalculator {
   /**
    * @var int

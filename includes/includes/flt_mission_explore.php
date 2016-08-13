@@ -1,6 +1,8 @@
 <?php
 
 // Used by Festival
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticUser;
 use Mission\Mission;
 
 function mission_expedition_result_adjust(&$result) { return sn_function_call(__FUNCTION__, array(&$result)); }

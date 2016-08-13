@@ -4,8 +4,8 @@ namespace Buddy;
 
 use DbEmptyIterator;
 use DbMysqliResultIterator;
-use DBStaticMessages;
-use DBStaticUser;
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticUser;
 
 /**
  * Class BuddyModel

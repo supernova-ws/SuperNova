@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticUnit;
+
 lng_include('mrc_mercenary');
 
 function mrc_officer_accessible(&$user, $mercenary_id) {

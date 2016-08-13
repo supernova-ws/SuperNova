@@ -1,4 +1,6 @@
 <?php
+use DBStatic\DBStaticChat;
+
 /**
  * chat.php
  * Main chat window

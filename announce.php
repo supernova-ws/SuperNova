@@ -8,6 +8,11 @@
  * based on admin/activeplanet.php (c) 2008 for XNova
  */
 
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticNews;
+use DBStatic\DBStaticSurvey;
+use DBStatic\DBStaticSurveyAnswer;
+
 $allow_anonymous = true;
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 

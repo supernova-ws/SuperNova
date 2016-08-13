@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
 use Vector\Vector;
 
 function uni_create_planet_get_density($position_data, $user_row, $planet_sectors) {

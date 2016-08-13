@@ -1,5 +1,10 @@
 <?php
 
+namespace DBStatic;
+
+use classSupernova;
+use mysqli_result;
+
 class DBStaticUnit {
 
   public static function db_unit_time_restrictions($date = SN_TIME_NOW) {
@@ -94,7 +99,7 @@ class DBStaticUnit {
   }
 
   /**
-   * @param $unit_id
+   * @param       $unit_id
    * @param array $set - SET fields
    * @param array $adjust - ADJUST fields
    *

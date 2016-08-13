@@ -15,7 +15,7 @@ function sys_maintenance() {
     ),
     // Cleaning ACS table from empty records
     array(
-      'callable'      => 'DBStaticFleetACS::db_fleet_aks_purge',
+      'callable'      => 'DBStatic\DBStaticFleetACS::db_fleet_aks_purge',
       'result'        => false,
       'error'         => '',
       'affected_rows' => 0,

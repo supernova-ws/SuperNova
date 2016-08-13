@@ -1,5 +1,10 @@
 <?php
 
+class DbStaticFixture {
+  public static $_table = '_table';
+  public static $_idField = 'id';
+}
+
 /**
  * Class DbQueryConstructorTest
  *
@@ -130,7 +135,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
    * @covers ::getParamsFromStaticClass
    */
   public function testBuild() {
-    $this->assertEquals('DbQueryConstructor', get_class($test = DbQueryConstructor::build(null)->getParamsFromStaticClass('DBStaticRecord')));
+    $this->assertEquals('DbQueryConstructor', get_class($test = DbQueryConstructor::build(null)->getParamsFromStaticClass('DbStaticFixture')));
 
     $this->assertEquals('_table', $test->table);
     $this->assertEquals('id', $test->idField);
@@ -213,7 +218,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
    * @covers ::getParamsFromStaticClass
    */
   public function testGetParamsFromStaticClass() {
-    $this->assertEquals($this->object, $this->object->getParamsFromStaticClass('DBStaticRecord'));
+    $this->assertEquals($this->object, $this->object->getParamsFromStaticClass('DbStaticFixture'));
 
     $this->assertEquals('_table', $this->object->table);
     $this->assertEquals('id', $this->object->idField);
@@ -314,7 +319,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
 //      " GROUP BY u.id
 //    ORDER BY user_as_ally, {$sort} ASC");
 
-//    $test = DBStaticUser::buildSelectNoFields()
+//    $test = DBStatic\DBStaticUser::buildSelectNoFields()
 //      ->fromAlias('u')
 //      ->field('u.*')
 ////      ->field(DbSqlLiteral::build()->count('r.id', 'referral_count'))

@@ -1,5 +1,8 @@
 <?php
 
+namespace DBStatic;
+use classSupernova;
+
 class DBStaticSurvey {
 
   public static function db_survey_delete_by_id($announce_id) {

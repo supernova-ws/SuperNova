@@ -8,6 +8,8 @@
  * @version 1
  * @copyright 2008 By e-Zobar for XNova
  */
+use DBStatic\DBStaticChat;
+
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);

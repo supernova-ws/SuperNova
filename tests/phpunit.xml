@@ -3,8 +3,6 @@
 >
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="false">
-            <!--<file>../includes/classes/DBStaticRecord.php</file>-->
-            <!--<file>../includes/classes/DbSqlAware.php</file>-->
             <!--<file>../includes/classes/HelperArray.php</file>-->
             <directory suffix=".php">../includes/classes/</directory>
 

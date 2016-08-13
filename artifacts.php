@@ -15,6 +15,9 @@
 
 global $user, $planetrow;
 
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('infos');

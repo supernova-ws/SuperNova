@@ -240,7 +240,7 @@ class DbQueryConstructor extends DbSqlAware {
 
   /**
    * @param db_mysql|null $db
-   * @param string|object|DBStaticRecord|DbSqlAware $className
+   * @param string|object|DbSqlAware $className
    *
    * @return static
    */

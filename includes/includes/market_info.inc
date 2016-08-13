@@ -1,5 +1,8 @@
 <?php
 
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticUser;
+
 $classLocale = classLocale::$lang;
 
 if(!defined('SN_IN_MARKET') || SN_IN_MARKET !== true)

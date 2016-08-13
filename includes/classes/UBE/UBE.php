@@ -1,5 +1,11 @@
 <?php
 
+use DBStatic\DBStaticFleetACS;
+use DBStatic\DBStaticFleetBashing;
+use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUnit;
+use DBStatic\DBStaticUser;
 use Mission\Mission;
 
 class UBE {

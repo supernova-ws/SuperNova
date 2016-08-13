@@ -1,5 +1,13 @@
 <?php
 
+namespace DBStatic;
+
+use classLocale;
+use classSupernova;
+use DBStatic\DBStaticUser;
+use mysqli_result;
+use template;
+
 class DBStaticMessages {
   public static $snMessageClassList = array(
     MSG_TYPE_NEW       => array(

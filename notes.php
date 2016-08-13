@@ -8,6 +8,7 @@
  *     [!] Wrote from scratch
  */
 
+use DBStatic\DBStaticNote;
 use Vector\Vector;
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));

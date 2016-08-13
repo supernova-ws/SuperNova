@@ -11,6 +11,8 @@
  * @copyright 2008 by Pada for XNova.project.es
  */
 
+use DBStatic\DBStaticPlanet;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('overview');

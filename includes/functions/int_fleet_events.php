@@ -1,5 +1,7 @@
 <?php
 
+use DBStatic\DBStaticPlanet;
+use DBStatic\DBStaticUser;
 use Vector\Vector;
 
 function flt_parse_objFleetList_to_events(FleetList $objFleetList, $planet_scanned = false) {
