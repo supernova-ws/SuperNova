@@ -11,20 +11,20 @@ use \classSupernova;
  *
  * @package Pimple
  *
- * @property \debug                  $debug
- * @property \db_mysql               $db
- * @property \classCache             $cache
- * @property \classConfig            $config
- * @property \classLocale            $localePlayer
- * @property \DbQueryConstructor     $query
- * @property \DbRowDirectOperator    $dbRowOperator
- * @property \SnDbCachedOperator     $cacheOperator - really DB record operator. But let it be
- * @property string                  $snCacheClass
- * @property \SnCache                $snCache
- * @property \Common\Types           $types
- * @property string                  $buddyClass
- * @property \Buddy\BuddyModel       $buddyModel
- * @property \V2Unit\V2UnitModel     $unitModel
+ * @property \debug               $debug
+ * @property \db_mysql            $db
+ * @property \classCache          $cache
+ * @property \classConfig         $config
+ * @property \classLocale         $localePlayer
+ * @property \DbQueryConstructor  $query
+ * @property \DbRowDirectOperator $dbGlobalRowOperator
+ * @property \SnDbCachedOperator  $cacheOperator - really DB record operator. But let it be
+ * @property string               $snCacheClass
+ * @property \SnCache             $snCache
+ * @property \Common\Types        $types
+ * @property string               $buddyClass
+ * @property \Buddy\BuddyModel    $buddyModel
+ * @property \V2Unit\V2UnitModel  $unitModel
  */
 class GlobalContainer extends ContainerPlus {
 
@@ -61,8 +61,8 @@ class GlobalContainer extends ContainerPlus {
       return new \classLocale($c->config->server_locale_log_usage);
     };
 
-    $gc->dbRowOperator = function ($c) {
-      return new \DbRowDirectOperator($c);
+    $gc->dbGlobalRowOperator = function (GlobalContainer $c) {
+      return new \DbRowDirectOperator($c->db);
     };
 
     $gc->query = $gc->factory(function (GlobalContainer $c) {

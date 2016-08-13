@@ -772,6 +772,9 @@ class db_mysql {
     return $this->driver->mysql_num_rows($result);
   }
 
+  /**
+   * @return int -1 means error
+   */
   public function db_affected_rows() {
     return $this->driver->mysql_affected_rows();
   }

@@ -108,6 +108,7 @@ class V2UnitModel extends \EntityModel {
     unset($that->locationDefaultType);
     // Optional
     unset($that->bonusType);
+    unset($that->features);
   }
 
   /**

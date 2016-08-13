@@ -3,20 +3,16 @@
 /**
  * Class EntityModel
  *
+ * This class have only one instance - i.e. is a service
  * Describes persistent entity - which can be loaded from/stored to storage
  *
  * @property int|float|string $dbId EntityModel unique ID for entire entities' set
  */
 class EntityModel {
   /**
-   * Link to DB which used by this EntityModel
-   *
-   * @var \db_mysql $dbStatic
-   * deprecated - replace with container ID like 'db' or 'dbAuth'
-   */
-  protected $dbStatic;
-  /**
    * Service to work with rows
+   *
+   * ALL DB ACCESS SHOULD BE DONE VIA ROW OPERATOR! NO DIRECT ACCESS TO DB IS ALLOWED!
    *
    * @var \DbRowDirectOperator $rowOperator
    */
@@ -82,19 +78,8 @@ class EntityModel {
    * @param \Common\GlobalContainer $gc
    */
   public function __construct($gc) {
-    $this->dbStatic = $gc->db;
-    $this->rowOperator = $gc->dbRowOperator;
-  }
-
-  /**
-   * Returns link to DB used by entity
-   *
-   * DB can be differ for different entity. For ex. - UNIT EntityModel will use standard DB while AUTH entity would prefer dbAuth
-   *
-   * @return db_mysql
-   */
-  public function getDbStatic() {
-    return $this->dbStatic;
+    // Here own rowOperator can be made - if needed to operate other, non-global, DB
+    $this->rowOperator = $gc->dbGlobalRowOperator;
   }
 
   /**
@@ -162,7 +147,7 @@ class EntityModel {
    *
    * @return array
    */
-  public function exportRow($cEntity) {
+  protected function exportRow($cEntity) {
     return $cEntity->exportRow();
   }
 
@@ -173,7 +158,7 @@ class EntityModel {
    *
    * @return array
    */
-  public function exportRowNoId($cEntity) {
+  protected function exportRowNoId($cEntity) {
     $row = $this->exportRow($cEntity);
 
     unset($row[$this->getIdFieldName()]);

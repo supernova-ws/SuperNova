@@ -61,8 +61,7 @@ class BuddyModel extends \EntityModel {
    * @return int
    */
   public function db_buddy_update_status($cBuddy) {
-    $db = $this->dbStatic;
-    $db->doUpdateRowSet(
+    return $this->rowOperator->doUpdateRowSetAffected(
       TABLE_BUDDY,
       array(
         'BUDDY_STATUS' => $cBuddy->buddyStatusId,
@@ -71,8 +70,6 @@ class BuddyModel extends \EntityModel {
         'BUDDY_ID' => $cBuddy->dbId,
       )
     );
-
-    return $db->db_affected_rows();
   }
 
   /**
@@ -85,7 +82,7 @@ class BuddyModel extends \EntityModel {
     $playerIdSafe = idval($playerIdUnsafe);
     $newFriendIdSafe = idval($newFriendIdUnsafe);
 
-    $result = $this->dbStatic->doSelectFetchValue(
+    $result = $this->rowOperator->doSelectFetchValue(
       "SELECT `BUDDY_ID` 
       FROM `{{buddy}}` 
       WHERE
@@ -107,7 +104,7 @@ class BuddyModel extends \EntityModel {
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
   public function db_buddy_list_by_user($playerId) {
-    return ($user_id = idval($playerId)) ? $this->dbStatic->doSelectIterator(
+    return ($user_id = idval($playerId)) ? $this->rowOperator->doSelectIterator(
       "SELECT
       b.*,
       IF(b.BUDDY_OWNER_ID = {$user_id}, b.BUDDY_SENDER_ID, b.BUDDY_OWNER_ID) AS BUDDY_USER_ID,

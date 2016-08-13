@@ -1246,7 +1246,11 @@ WORKING ON
     - clearProperties() -> назад в clear()
         - EntityContainer всегда содержит только пропертя. Всё остальное - либо в полях, либо в DI
 
+    - INSERT INTO ON DUPLICATE KEY UPDATE - вместо REPLACE!!!!!!!!!!
+        - http://php.net/manual/en/mysqli.affected-rows.php - comments
 
+
+    - Move doXXX functions from db_mysql to dbRowOperator
 
 
     ? Тесты для entity и контейнеров

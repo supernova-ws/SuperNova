@@ -5,8 +5,17 @@
  *
  * Handle EntityModel storing/loading operations
  */
-
 class DbRowDirectOperator {
+  protected $db;
+
+  /**
+   * DbRowDirectOperator constructor.
+   *
+   * @param db_mysql $db
+   */
+  public function __construct($db) {
+    $this->db = $db;
+  }
 
   /**
    * @param \EntityModel $cModel
@@ -31,7 +40,7 @@ class DbRowDirectOperator {
    * @return int
    */
   public function deleteById($cModel, $dbId) {
-    $db = $cModel->getDbStatic();
+    $db = $this->db;
 
     $db->doDeleteRow(
       $cModel->getTableName(),
@@ -54,11 +63,31 @@ class DbRowDirectOperator {
       // TODO Exception
       return 0;
     }
-    $db = $cModel->getDbStatic();
+    $db = $this->db;
     $db->doInsertSet($cModel->getTableName(), $row);
 
     // TODO Exception if db_insert_id() is empty
     return $db->db_insert_id();
+  }
+
+  public function doSelectFetchValue($query) {
+    return $this->db->doSelectFetchValue($query);
+  }
+
+  /**
+   * Returns iterator to iterate through mysqli_result
+   *
+   * @param string $query
+   *
+   * @return DbEmptyIterator|DbMysqliResultIterator
+   */
+  public function doSelectIterator($query) {
+    return $this->db->doSelectIterator($query);
+  }
+
+  public function doUpdateRowSetAffected($table, $fieldsAndValues, $where) {
+    $this->db->doUpdateRowSet($table, $fieldsAndValues, $where);
+    return $this->db->db_affected_rows();
   }
 
 }
