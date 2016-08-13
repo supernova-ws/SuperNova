@@ -90,7 +90,7 @@ function sn_imperator_view($template = null) {
     $reverse_min_max = strpos($stat_type, '_RANK') !== false;
     $stat_type_data['MIN'] = $reverse_min_max ? max($stat_type_data['DATA']) : min($stat_type_data['DATA']);
     $stat_type_data['MAX'] = $reverse_min_max ? min($stat_type_data['DATA']) : max($stat_type_data['DATA']);
-    $stat_type_data['AVG'] = average($stat_type_data['DATA']);
+    $stat_type_data['AVG'] = \Common\snMath::average($stat_type_data['DATA']);
     foreach($stat_type_data['DATA'] as $key => $value) {
       // $stat_type_data['PERCENT'][$key] = $stat_type_data['MAX'] - $value ? ($stat_type_data['MAX'] - $stat_type_data['MIN']) / ($stat_type_data['MAX'] - $value) : 100;
       $stat_type_data['PERCENT'][$key] = ($stat_type_data['MAX'] - $value ? ($value - $stat_type_data['MIN']) / ($stat_type_data['MAX'] - $stat_type_data['MIN']) : 1) * 100;

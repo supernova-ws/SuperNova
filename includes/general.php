@@ -8,7 +8,6 @@ Reference: https://bugs.php.net/bug.php?id=50394
 
 */
 
-require_once('general/math.php');
 require_once('general_pname.php');
 
 /**
@@ -122,32 +121,23 @@ function get_exchange_rate($currency_symbol) {
 /**
  * pretty_number implementation for SuperNova
  *
- * $n - number to format
- * $floor: (ignored if $limit set)
- * integer   - floors to $floor numbers after decimal points
- * true      - floors number before format
- * otherwise - floors to 2 numbers after decimal points
- * $color:
- * true    - colors number to green if positive or zero; red if negative
- * 0
- * numeric - colors number to green if less then $color; red if greater
- * $limit:
- * 0/false - proceed with $floor
- * numeric - divides number to segments by power of $limit and adds 'k' for each segment
- * makes sense for 1000, but works with any number
- * generally converts "15000" to "15k", "2000000" to "2kk" etc
- * $style
- * null  - standard result
- * true  - return only style class for current params
- * false - return array('text' => $ret, 'class' => $class), where $ret - unstyled
- */
-
-/**
- * @param float     $n
- * @param int|bool  $floor
+ * @param float     $n - number to format
+ * @param int|bool  $floor - (ignored if $limit set)
+ *    - integer   - floors to $floor numbers after decimal points
+ *    - true      - floors number before format
+ *    - otherwise - floors to 2 numbers after decimal points
  * @param int|bool  $color
- * @param int|bool  $limit
+ *    - true    - colors number to green if positive or zero; red if negative
+ *    - 0
+ *    - numeric - colors number to green if less then $color; red if greater
+ * @param int|bool  $limit - generally converts "15000" to "15k", "2000000" to "2kk" etc
+ *    - 0/false - proceed with $floor
+ *    - numeric - divides number to segments by power of $limit and adds 'k' for each segment
+ *        - makes sense for 1000, but works with any number
  * @param bool|null $style
+ *    - null  - standard result
+ *    - true  - return only style class for current params
+ *    - false - return array('text' => $ret, 'class' => $class), where $ret - unstyled
  *
  * @return array|float|string
  */
@@ -816,7 +806,7 @@ function player_nick_compact($nick_array) {
 function player_nick_uncompact($nick_string) {
   try {
     $result = unserialize($nick_string);
-  } catch (exception $e) {
+  } catch (Exception $e) {
     $result = strpos($nick_string, ':{i:') ? null : $nick_string; // fallback if it is already string - for old chat strings, for example
   }
 
@@ -1118,11 +1108,11 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
 
   try {
     if ($planetrow['planet_type'] != PT_PLANET) {
-      throw new exception(classLocale::$lang['ov_core_err_not_a_planet'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['ov_core_err_not_a_planet'], ERR_ERROR);
     }
 
     if ($planetrow['density_index'] == ($new_density_index = sys_get_param_id('density_type'))) {
-      throw new exception(classLocale::$lang['ov_core_err_same_density'], ERR_WARNING);
+      throw new Exception(classLocale::$lang['ov_core_err_same_density'], ERR_WARNING);
     }
 
     sn_db_transaction_start();
@@ -1134,13 +1124,13 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     $density_price_chart = planet_density_price_chart($planetrow);
     if (!isset($density_price_chart[$new_density_index])) {
       // Hack attempt
-      throw new exception(classLocale::$lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['ov_core_err_denisty_type_wrong'], ERR_ERROR);
     }
 
     $user_dark_matter = mrc_get_level($user, null, RES_DARK_MATTER);
     $transmute_cost = $density_price_chart[$new_density_index];
     if ($user_dark_matter < $transmute_cost) {
-      throw new exception(classLocale::$lang['ov_core_err_no_dark_matter'], ERR_ERROR);
+      throw new Exception(classLocale::$lang['ov_core_err_no_dark_matter'], ERR_ERROR);
     }
 
     $sn_data_planet_density = sn_get_groups('planet_density');
@@ -1171,11 +1161,10 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
     DBStaticPlanet::db_planet_update_set_by_id(
       $planetrow['id'],
       array(
-        'density' => $new_density,
+        'density'       => $new_density,
         'density_index' => $new_density_index,
       )
     );
-
 
 
     sn_db_transaction_commit();
@@ -1186,7 +1175,7 @@ function sn_sys_planet_core_transmute(&$user, &$planetrow) {
       'STATUS'  => ERR_NONE,
       'MESSAGE' => sprintf(classLocale::$lang['ov_core_err_none'], classLocale::$lang['uni_planet_density_types'][$planet_density_index], classLocale::$lang['uni_planet_density_types'][$new_density_index], $new_density),
     );
-  } catch (exception $e) {
+  } catch (Exception $e) {
     sn_db_transaction_rollback();
     $result = array(
       'STATUS'  => $e->getCode(),

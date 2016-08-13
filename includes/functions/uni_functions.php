@@ -82,10 +82,10 @@ function uni_create_planet($Galaxy, $System, $Position, $PlanetOwnerID, $planet_
   $planet_image = $position_data['planet_images'][mt_rand(0, count($position_data['planet_images']) - 1)];
   $planet_image .= 'planet' . $planet_images[$planet_image][mt_rand(0, count($planet_images[$planet_image]) - 1)];
 
-  $t_max = sn_rand_gauss_range($position_data['t_max_min'], $position_data['t_max_max'], true, 1.3, true);
-  $t_min = $t_max - sn_rand_gauss_range($position_data['t_delta_min'], $position_data['t_delta_max'], true, 1.3, true);
+  $t_max = \Common\snMath::sn_rand_gauss_range($position_data['t_max_min'], $position_data['t_max_max'], true, 1.3, true);
+  $t_min = $t_max - \Common\snMath::sn_rand_gauss_range($position_data['t_delta_min'], $position_data['t_delta_max'], true, 1.3, true);
 
-  $planet_sectors = sn_rand_gauss_range($position_data['size_min'], $position_data['size_max'], true, 1.7, true);
+  $planet_sectors = \Common\snMath::sn_rand_gauss_range($position_data['size_min'], $position_data['size_max'], true, 1.7, true);
 //  $planet_diameter = round(pow($planet_sectors, 2) * 1000);
   $planet_diameter = round(sqrt($planet_sectors) * 1000);
 
