@@ -324,6 +324,17 @@ class db_mysql {
     return is_array($row) ? reset($row) : null;
   }
 
+  /**
+   * @param DbResultIterator $iterator
+   *
+   * @return mixed
+   */
+  public function getDbIteratorFirstValue($iterator) {
+    $iterator->rewind();
+    $row = $iterator->current();
+    return array_pop($row);
+  }
+
 
   // INSERT/REPLACE
   protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {

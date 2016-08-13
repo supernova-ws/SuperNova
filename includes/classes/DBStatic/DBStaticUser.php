@@ -3,8 +3,6 @@
 namespace DBStatic;
 
 use classSupernova;
-use DbEmptyIterator;
-use DbMysqliResultIterator;
 use DbResultIterator;
 use mysqli_result;
 
@@ -12,32 +10,63 @@ use mysqli_result;
  * Class DBStatic\DBStaticUser
  */
 class DBStaticUser {
-//  public static $_table = 'users';
-//  public static $_idField = 'id';
 
-  // TODO - это вообще-то надо хранить в конфигурации
   /**
+   * @param mixed $user
+   */
+  // TODO - remove!
+  public static function validateUserRecord($user) {
+    if (!is_array($user)) {
+      // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
+      pdump(debug_backtrace());
+      die('USER is not ARRAY');
+    }
+    if (!isset($user['id']) || !$user['id']) {
+      // TODO - remove later
+      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
+      pdump($user);
+      pdump(debug_backtrace());
+      die('USER[id] пустой');
+    }
+  }
+
+  /**
+   * @param array $playerArray
+   *
    * @return string
    */
-  public static function getLastRegisteredUserName() {
-    $query =
-      "SELECT `username` 
-      FROM `{{users}}` 
-      WHERE 
-        `user_as_ally` IS NULL 
-        AND 
-        `user_bot` = " . USER_BOT_PLAYER . " 
-      ORDER BY `id` DESC 
-      LIMIT 1"
-    ;
-    $result = classSupernova::$db->doSelectFetchValue($query);
+  // TODO - remove or use something else
+  public static function renderNameAndCoordinates($playerArray) {
+    return "{$playerArray['username']} " . uni_render_coordinates($playerArray);
+  }
 
-//    $query =
-//      static::buildDBQ()
-//        ->field('username')
-//        ->where('`user_as_ally` IS NULL')
-//        ->orderBy(array('`id` DESC'));
-//    $result = (string)$query->selectValue();
+  /**
+   * @return DbResultIterator
+   */
+  protected static function playerSelectIterator($fields, $orderBy = '', $forUpdate = false, $groupHaving = '', $where = '', $limit = '') {
+    $query = array(
+      "SELECT ",
+      $fields,
+      " FROM `{{users}}` 
+      WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER,
+    );
+    if ($where) {
+      $query[] = " AND ({$where})";
+    }
+    if ($groupHaving) {
+      $query[] = " {$groupHaving}";
+    }
+    if ($orderBy) {
+      $query[] = " ORDER BY {$orderBy}";
+    }
+    if ($limit) {
+      $query[] = " LIMIT {$limit}";
+    }
+    if ($forUpdate) {
+      $query[] = " FOR UPDATE";
+    }
+    $result = classSupernova::$db->doSelectIterator(implode('', $query));
 
     return $result;
   }
@@ -46,42 +75,91 @@ class DBStaticUser {
    * @return DbResultIterator
    */
   public static function db_player_list_export_blitz_info() {
-    $query =
-      "SELECT `id`, `username`, `total_rank`, `total_points`, `onlinetime` 
-      FROM `{{users}}` 
-      WHERE 
-        `user_as_ally` IS NULL 
-        AND 
-        `user_bot` = " . USER_BOT_PLAYER . " 
-      ORDER BY `id`";
-    $result = classSupernova::$db->doSelectIterator($query);
-
-
-//    $result = static::buildDBQ()
-//      ->fields(array('id', 'username', 'total_rank', 'total_points', 'onlinetime',))
-//      ->where('`user_as_ally` IS NULL')
-//      ->orderBy(array('`id`'))
-//      ->selectIterator();
-
-    return $result;
+    return static::playerSelectIterator('`id`, `username`, `total_rank`, `total_points`, `onlinetime`', '`id` ASC');
   }
 
   /**
    * @return DbResultIterator
    */
   public static function db_user_list_non_bots() {
-    $query = "SELECT `id` FROM `{{users}}` WHERE `user_as_ally` IS NULL AND `user_bot` = " . USER_BOT_PLAYER . " FOR UPDATE;";
+    return static::playerSelectIterator('`id`', '', true);
+  }
+
+  /**
+   * @return DbResultIterator
+   */
+  public static function db_user_list_admin_multiaccounts() {
+    return static::playerSelectIterator(
+      'COUNT(`id`) AS `ip_count`, 
+      `user_lastip`',
+      'COUNT(`id`) DESC',
+      false,
+      'GROUP BY `user_lastip` HAVING COUNT(`id`) > 1',
+      '`user_lastip` IS NOT NULL'
+    );
+  }
+
+  // TODO - это вообще-то надо хранить в конфигурации
+  /**
+   * @return string
+   */
+  public static function getLastRegisteredUserName() {
+    $iterator = static::playerSelectIterator('`username`', '`id` DESC', false, '', '', '1');
+
+    return classSupernova::$db->getDbIteratorFirstValue($iterator);
+  }
+
+  /**
+   * @param bool $online
+   *
+   * @return int
+   */
+  public static function db_user_count($online = false) {
+    $iterator = static::playerSelectIterator('COUNT(`id`)', '', false, '', ($online ? '`onlinetime` > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''));
+
+    return intval(classSupernova::$db->getDbIteratorFirstValue($iterator));
+  }
+
+  public static function db_user_list_admin_sorted($sort, $online = false) {
+    $query = "SELECT
+          u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm
+      FROM
+          {{users}} as u
+          LEFT JOIN
+              {{referrals}} as r on r.id_partner = u.id
+      WHERE " .
+      ($online ? "`onlinetime` >= " . intval(SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : 'user_as_ally IS NULL') .
+      " GROUP BY u.id
+      ORDER BY user_as_ally, {$sort} ASC";
     $result = classSupernova::$db->doSelectIterator($query);
 
-//    $query =
-//      static::buildDBQ()
-//        ->field('id')
-//        ->where("`user_as_ally` IS NULL")
-//        ->where("`user_bot` = " . USER_BOT_PLAYER)
-//        ->setForUpdate();
-//    $result = $query->selectIterator();
+    return $result;
+  }
+
+  public static function db_user_list_to_celebrate($config_user_birthday_range) {
+    $query = "SELECT
+        `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
+        CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`,
+        DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`
+      FROM
+        `{{users}}`
+      WHERE
+        `user_as_ally` IS NULL
+        AND `user_bot` = " . USER_BOT_PLAYER . "
+        AND `user_birthday` IS NOT NULL
+        AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
+      HAVING
+        `days_after_birthday` >= 0 AND `days_after_birthday` < {$config_user_birthday_range} 
+      FOR UPDATE";
+
+    $result = classSupernova::$db->doSelectIterator($query);
 
     return $result;
+  }
+
+
+  public static function lockAllRecords() {
+    classSupernova::$db->doSelect("SELECT 1 FROM `{{users}}` FOR UPDATE");
   }
 
   public static function db_user_lock_with_target_owner_and_acs($user, $planet = array()) {
@@ -95,80 +173,6 @@ class DBStaticUser {
     classSupernova::$db->doSelect($query);
   }
 
-  /**
-   * @param bool $online
-   *
-   * @return int
-   */
-  public static function db_user_count($online = false) {
-    return intval(classSupernova::$db->doSelectFetchValue(
-      "SELECT COUNT(`id`) AS `user_count` 
-      FROM `{{users}}` 
-      WHERE 
-        `user_as_ally` IS NULL" .
-      ($online ? ' AND `onlinetime` > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : '')
-    ));
-  }
-
-  public static function db_user_list_admin_sorted($sort, $online = false) {
-    $query = "SELECT
-          u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm
-      FROM
-          {{users}} as u
-          LEFT JOIN
-              {{referrals}} as r on r.id_partner = u.id
-      WHERE " .
-        ($online ? "`onlinetime` >= " . intval(SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : 'user_as_ally IS NULL') .
-      " GROUP BY u.id
-      ORDER BY user_as_ally, {$sort} ASC";
-    $result = classSupernova::$db->doSelectIterator($query);
-
-//    $query = static::buildDBQ()
-//      ->setAlias('u')
-//      ->field('u.*')
-//      ->fieldCount('r.id', 'referral_count')
-//      ->fieldSingleFunction('sum', 'r.dark_matter', 'referral_dm')
-//      ->join('LEFT JOIN {{referrals}} as r on r.id_partner = u.id')
-//      ->where($online ? "`onlinetime` >= " . intval(SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : 'user_as_ally IS NULL')
-//      ->groupBy('u.id')
-//      ->orderBy("user_as_ally, {$sort} ASC");
-//
-//    $result = $query->selectIterator();
-
-    return $result;
-  }
-
-  public static function db_user_list_to_celebrate($config_user_birthday_range) {
-    $query = "SELECT
-        `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
-        CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`,
-        DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`
-      FROM
-        `{{users}}`
-      WHERE
-        `user_birthday` IS NOT NULL
-        AND `user_as_ally` IS NULL
-        AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
-      HAVING
-        `days_after_birthday` >= 0 AND `days_after_birthday` < {$config_user_birthday_range} FOR UPDATE";
-
-    $result = classSupernova::$db->doSelectIterator($query);
-
-    return $result;
-  }
-
-  /**
-   * @return DbEmptyIterator|DbMysqliResultIterator
-   */
-  public static function db_user_list_admin_multiaccounts() {
-    $query = "SELECT COUNT(*) AS `ip_count`, `user_lastip`
-      FROM `{{users}}`
-      WHERE `user_as_ally` IS NULL
-      GROUP BY `user_lastip`
-      HAVING COUNT(*) > 1";
-
-    return classSupernova::$db->doSelectIterator($query);
-  }
 
   public static function db_player_list_blitz_delete_players() {
     classSupernova::$db->doDeleteDanger(
@@ -180,9 +184,7 @@ class DBStaticUser {
     );
   }
 
-  /**
-   * @deprecated - NEVER change DM amount directly w/o logging!
-   */
+  // TODO - NEVER change DM amount directly w/o logging!
   public static function db_player_list_blitz_set_50k_dm() {
     classSupernova::$db->doUpdateTableSet(
       TABLE_USERS,
@@ -193,7 +195,6 @@ class DBStaticUser {
     );
 
   }
-
 
   /**
    * Выбирает записи игроков по списку их ID
@@ -214,7 +215,6 @@ class DBStaticUser {
     return $user_list;
   }
 
-
   public static function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
     // TODO Проверить, кстати - а везде ли нужно выбирать юзеров или где-то все-таки ищутся Альянсы ?
     if (!($username_unsafe = trim($username_unsafe))) {
@@ -228,7 +228,6 @@ class DBStaticUser {
           // проверяем поле
           // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
           if ((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe))) {
-            // $user_as_ally = intval($user_data['user_as_ally']);
             $user_as_ally = idval($user_data['user_as_ally']);
             if ($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally)) {
               $user = $user_data;
@@ -309,7 +308,6 @@ class DBStaticUser {
       )) ? $user : false;
   }
 
-
   /**
    * @param       $ally_id
    * @param       $ally_rank_id
@@ -332,36 +330,11 @@ class DBStaticUser {
   }
 
   /**
-   * @param array $playerArray
-   */
-  public static function renderNameAndCoordinates($playerArray) {
-    return "{$playerArray['username']} " . uni_render_coordinates($playerArray);
-  }
-
-  /**
-   * @param mixed $user
-   */
-  public static function validateUserRecord($user) {
-    if (!is_array($user)) {
-      // TODO - remove later
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
-      pdump(debug_backtrace());
-      die('USER is not ARRAY');
-    }
-    if (!isset($user['id']) || !$user['id']) {
-      // TODO - remove later
-      print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
-      pdump($user);
-      pdump(debug_backtrace());
-      die('USER[id] пустой');
-    }
-  }
-
-  /**
    * @param array $playerRowFieldChanges - array of $resourceId => $amount
    * @param int   $userId
    *
    * // TODO - DEDUPLICATE
+   *
    * @see DBStaticPlanet::db_planet_update_resources
    */
   public static function db_user_update_resources($playerRowFieldChanges, $userId) {
@@ -379,10 +352,6 @@ class DBStaticUser {
         )
       );
     }
-  }
-
-  public static function lockAllRecords() {
-    classSupernova::$db->doSelect("SELECT 1 FROM `{{users}}` FOR UPDATE");
   }
 
 }
