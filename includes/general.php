@@ -25,7 +25,7 @@ function sn_function_call($func_name, $func_arg = array()) {
   // All data in classSupernova::$functions should be normalized to valid 'callable' state: '<function_name>'|array('<object_name>', '<method_name>')
   $result = null;
 
-  if (is_array(classSupernova::$functions[$func_name]) && !is_callable(classSupernova::$functions[$func_name])) {
+  if (!empty(classSupernova::$functions[$func_name]) && is_array(classSupernova::$functions[$func_name]) && !is_callable(classSupernova::$functions[$func_name])) {
     // Chain-callable functions should be made as following:
     // 1. Never use incomplete calls with parameters "by default"
     // 2. Reserve last parameter for cumulative result

@@ -2,6 +2,13 @@
 
 namespace V2Unit;
 
+/**
+ * Class V2UnitList
+ *
+ * @method V2UnitContainer current()
+ *
+ * @package V2Unit
+ */
 class V2UnitList extends \SplObjectStorage {
 
   public function load($location) {

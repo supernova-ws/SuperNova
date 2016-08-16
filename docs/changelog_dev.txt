@@ -1280,7 +1280,7 @@ foreach($iterator as $key => $value) {
 
 die();
 
-
+    !! Посмотреть - нельзя ли обойтись без итератора и сделать всё в пределах V2UnitList ?
 
     !! accessors is REALLY PART OF MODEL!
         - or should be static inside container

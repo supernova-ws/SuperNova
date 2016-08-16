@@ -103,6 +103,8 @@ class classSupernova {
   public static function init_global_objects() {
     self::$debug = self::$gc->debug;
     self::$db = self::$gc->db;
+    self::$db->sn_db_connect();
+
     self::$user_options = new userOptions(0);
 
     // Initializing global 'cacher' object

@@ -36,7 +36,6 @@ class GlobalContainer extends ContainerPlus {
     // Default db
     $gc->db = function ($c) {
       classSupernova::$db = $db = new \db_mysql($c);
-      $db->sn_db_connect();
 
       return $db;
     };
