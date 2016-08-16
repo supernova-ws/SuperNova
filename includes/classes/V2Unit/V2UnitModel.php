@@ -75,8 +75,8 @@ class V2UnitModel extends \EntityModel {
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
-    $this->assignAccessor('type', P_CONTAINER_SET, array($this, 'setType'));
-    $this->assignAccessor('type', P_CONTAINER_UNSET, array($this, 'unsetType'));
+    $this->assignAccessor('snId', P_CONTAINER_SET, array($this, 'setSnId'));
+    $this->assignAccessor('snId', P_CONTAINER_UNSET, array($this, 'unsetSnId'));
 
     // This crap code is until php 5.4+. There we can use $this binding for lambdas
     $propertyName = 'timeStart';
@@ -88,19 +88,25 @@ class V2UnitModel extends \EntityModel {
     $this->assignAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
   }
 
-  public function setType(V2UnitContainer $that, $value) {
-    $that->setDirect('type', $value);
+  public function setSnId(V2UnitContainer $that, $value) {
+    $that->setDirect('snId', $value);
+
     $array = get_unit_param($value);
     $that->unitInfo = $array;
+    $that->type = $array[P_UNIT_TYPE];
     // Mandatory
     $that->isStackable = empty($array[P_STACKABLE]) ? false : true;
     $that->locationDefaultType = empty($array[P_LOCATION_DEFAULT]) ? LOC_NONE : $array[P_LOCATION_DEFAULT];
     // Optional
     $that->bonusType = empty($array[P_BONUS_TYPE]) ? BONUS_NONE : $array[P_BONUS_TYPE];
-    $that->features = array(); //new FeatureList();
+    // TODO - Записывать перечень фич для модуля, определяемых по его типу
+    // А фичи сначала должны быть где-то зарегестрированы - в каком-то сервис-локаторе
+    // Что-то типа classSupernova::registerUnitFeature
+    // Кэш фич для разных типов юнитов
+    $that->features = array(); //new FeatureList($that->unitInfo['features']);
   }
 
-  public function unsetType(V2UnitContainer $that, $value) {
+  public function unsetSnId(V2UnitContainer $that) {
     unset($that->type);
     unset($that->unitInfo);
     // Mandatory
@@ -153,6 +159,18 @@ class V2UnitModel extends \EntityModel {
       empty($cUnit->snId)
       ||
       empty($cUnit->level);
+  }
+
+  /**
+   * @param V2UnitContainer $cUnit
+   * @param string $featureName
+   *
+   * return UnitFeature
+   *
+   * @return mixed|null
+   */
+  public function feature($cUnit, $featureName) {
+    return isset($cUnit->features[$featureName]) ? $cUnit->features[$featureName] : null;
   }
 
 }

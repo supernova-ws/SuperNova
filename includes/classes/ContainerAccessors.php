@@ -117,6 +117,9 @@ class ContainerAccessors extends ContainerMagic {
     if (is_callable($value)) {
       $this->accessors[$name][P_CONTAINER_GET] = $value;
     } else {
+//var_dump('__set');
+//var_dump($name);
+//var_dump($value);
       $this->performMagic(P_CONTAINER_SET, $name, $value);
     }
   }

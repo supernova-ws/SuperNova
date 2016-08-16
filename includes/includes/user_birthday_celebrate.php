@@ -1,6 +1,7 @@
 <?php
 
 use DBStatic\DBStaticMessages;
+use DBStatic\DBStaticUser;
 
 function sn_user_birthday_celebrate() {
   sn_db_transaction_start();

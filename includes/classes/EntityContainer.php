@@ -38,6 +38,7 @@ class EntityContainer extends ContainerAccessors {
    * @param string $processor
    */
   protected function processRow(&$row, $processor) {
+//var_dump($row);
     foreach ($this->properties as $propertyName => $propertyData) {
       $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
       if (
@@ -48,7 +49,7 @@ class EntityContainer extends ContainerAccessors {
         call_user_func_array($this->accessors[$propertyName][$processor], array($this, &$row, $propertyName, $fieldName));
       } elseif ($fieldName) {
         if ($processor == P_CONTAINER_IMPORT) {
-          $this->$propertyName = $row[$fieldName];
+          $this->$propertyName = isset($row[$fieldName]) ? $row[$fieldName] : null;
         } else {
           $row[$fieldName] = $this->$propertyName;
         }

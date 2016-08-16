@@ -1195,6 +1195,7 @@ pdie();
     - can be bought
     - have a price
     - have time to build
+- upgradable
 - buildable
     - Implies
         - buyable
@@ -1234,8 +1235,53 @@ pdie();
     - lootable
     - transportable
 
+- Фича - выполняет только одну функцию или может быть много?
+
+
+- Бой
+    - Использовать нормальное распределение вместо равномерного
+        - Возможно - с достаточно пологим колоколом
 
 // TODO WORKING ON -----------------------------------------------------------------------------------------------------
+
+$unitList = new \V2Unit\V2UnitList();
+$model = classSupernova::$gc->unitModel;
+
+$unit = $model->getContainer();
+$unit->importRow(array('unit_snid' => RES_METAL));
+$unitList->attach($unit);
+unset($unit);
+
+$unit = $model->getContainer();
+$unit->importRow(array('unit_snid' => STRUC_ALLY_DEPOSIT));
+$unitList->attach($unit);
+unset($unit);
+
+$unit = $model->getContainer();
+$unit->importRow(array('unit_snid' => RES_CRYSTAL));
+$unitList->attach($unit);
+unset($unit);
+
+$iterator = new \V2Unit\V2UnitIterator($unitList);
+$iterator->setFilterType(UNIT_STRUCTURES);
+$iterator->setFilterType(UNIT_RESOURCES);
+
+$i = 0;
+foreach($iterator as $key => $value) {
+//  pdump($value->type, '$value->type');
+  pdump($value->snId, '$value->snId');
+
+//  pdump($iterator->valid(), '$iterator->valid()');
+//  if($i++ > 10) die();
+//  var_dump($i);
+//  var_dump($key);
+//  var_dump($value);
+}
+
+die();
+
+
+
     !! accessors is REALLY PART OF MODEL!
         - or should be static inside container
             - better - model
@@ -1301,11 +1347,6 @@ pdie();
 
     - uni_create_moon $RetValue = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET, $planet);
         - переделать на по месту генерируемый массив, а не на использование переменной $planet
-
-    - Убрать (после переделки doUpdate)
-        - sn_db_field_set_is_safe
-        - sn_db_field_set_make_safe
-        - sn_db_field_set_safe_flag_clear
 
 
     // TODO - redo as callable usage with array_map/array_walk
