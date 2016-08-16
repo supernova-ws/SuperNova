@@ -11,6 +11,9 @@ namespace V2Unit;
  */
 class V2UnitList extends \SplObjectStorage {
 
+  /**
+   * @param $location - Typed location with ID
+   */
   public function load($location) {
     /**
      *
