@@ -126,27 +126,3 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
   }
 
 }
-
-
-
-// + public function attach ($object, $data = null) {}
-// + public function detach ($object) {}
-// # public function contains ($object) {}
-//public function addAll ($storage) {}
-//public function removeAll ($storage) {}
-//public function removeAllExcept ($storage) {}
-// # public function getInfo () {}
-// + public function setInfo ($data) {}
-// # public function count () {}
-// # public function rewind () {}
-// # public function valid () {}
-// # public function key () {}
-// # public function current () {}
-// # public function next () {}
-// + public function unserialize ($serialized) {}
-// # public function serialize () {}
-// # public function offsetExists ($object) {}
-// + public function offsetSet ($object, $data = null) {}
-// + public function offsetUnset ($object) {}
-// # public function offsetGet ($object) {}
-// # public function getHash($object) {}
