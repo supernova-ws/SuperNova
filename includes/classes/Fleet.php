@@ -328,6 +328,13 @@ class Fleet extends UnitContainer {
    */
   public $validator;
 
+
+  /**
+   * @var UnitList $unitList
+   */
+  protected $unitList = null;
+
+
   /**
    * Fleet constructor.
    */

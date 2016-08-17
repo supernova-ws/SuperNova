@@ -11,6 +11,7 @@ namespace V2Unit;
  * Second iteration of revised Unit
  *
  * @method V2UnitContainer getContainer()
+ * @method V2UnitContainer fromArray(array $array)
  *
  * @package V2Unit
  *
@@ -30,7 +31,7 @@ class V2UnitModel extends \EntityModel {
    */
   protected $idField = 'unit_id';
 
-  protected $exceptionClass = 'EntityException';
+//  protected $exceptionClass = 'EntityException';
   protected $entityContainerClass = 'V2Unit\V2UnitContainer';
 
   protected $properties = array(

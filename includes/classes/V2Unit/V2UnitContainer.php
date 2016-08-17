@@ -30,4 +30,11 @@ namespace V2Unit;
  * @package V2Unit
  */
 class V2UnitContainer extends \EntityContainer {
+
+  protected $featureLocator;
+
+  public function setFeatureLocator($featureLocator) {
+    $this->featureLocator = $featureLocator;
+  }
+
 }
