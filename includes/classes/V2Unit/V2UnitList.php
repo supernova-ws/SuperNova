@@ -1,6 +1,9 @@
 <?php
 
 namespace V2Unit;
+
+use Common\IndexedObjectStorage;
+use Common\IUnitLocationV2;
 use DBStatic\DBStaticUnit;
 
 /**
@@ -10,45 +13,25 @@ use DBStatic\DBStaticUnit;
  *
  * @package V2Unit
  */
-class V2UnitList extends \SplObjectStorage {
-
+class V2UnitList extends IndexedObjectStorage {
   /**
-   * @var array
-   */
-  protected $unitBySnId;
-
-  /**
+   *
    */
   public function load($locationType, $locationId) {
 
-    if(!($unitRows = DBStaticUnit::db_get_unit_list_by_location(0, $locationType, $locationId))) {
-      return null;
+    if (!($unitRows = DBStaticUnit::db_get_unit_list_by_location(0, $locationType, $locationId))) {
+      return;
     }
 
     $model = \classSupernova::$gc->unitModel;
-    foreach($unitRows as $dbId => $unitRow) {
+    foreach ($unitRows as $dbId => $unitRow) {
       $unit = $model->fromArray($unitRow);
-      $this->attach($unit);
-      if($unit->snId) {
-        $this->unitBySnId[$unit->snId] = $unit;
-      }
+      $this->attach($unit, intval($unit->snId));
     }
+  }
 
-    /**
-     *
-     *
+  public function loadFromContainer() {
 
-
-     foreach(unitsInLocation($location) as $unit_row) {
-       $unit_obj = new V2Unit()->load($unit_row);
-        $this->attach($unit_obj, $unit_obj->dbId);
-     }
-
-
-
-
-     *
-     */
   }
 
 }

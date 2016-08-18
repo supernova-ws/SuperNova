@@ -932,9 +932,6 @@ TODO - Теперь можно атаковать ракетами свои же
     - Если миссия указана (переход с Закладки или Вселенной) - строго проверять соответствие
 
 
-// TODO - СЕЕЕЕЕЕЕЕЕЕЕЕЕЕЦЧАС!!!!!!!!!!!!!!!!!! REWRITE!!!!!!!!
-      // If HOLD is selected AND it is real mission (page 3)...
-      'checkMissionHoldPossibleAndReal'      => array(
 
 // TODO
     - Переделать весь код в LF и настроить GIT работать вот так вот
@@ -952,110 +949,6 @@ http://www.hongkiat.com/blog/css-scroll-bar/
     - А затем добавить его использование в литерал и в стэйтмент
 
 
-    return static::prepareExecute(
-      "SELECT
-        `id`, `username`, `user_birthday`, `user_birthday_celebrated`,
-        CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`,
-        DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`
-      FROM
-        `{{users}}`
-      WHERE
-        `user_birthday` IS NOT NULL
-        AND (`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE)
-        AND `user_as_ally` IS NULL
-      HAVING
-        `days_after_birthday` >= 0
-        AND `days_after_birthday` < :birthdayRange FOR UPDATE",
-      array(
-        ':birthdayRange' => $config_user_birthday_range,
-      )
-    );
-
-    build()
-    ->command('SELECT')
-    ->field('id')
-    ->field('username')
-    ->field('user_birthday')
-    ->field('user_birthday_celebrated')
-    ->literal(CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d')) AS `current_birthday`)
-    ->literal(DATEDIFF(CURRENT_DATE, CONCAT(YEAR(CURRENT_DATE), DATE_FORMAT(`user_birthday`, '-%m-%d'))) AS `days_after_birthday`)
-    ->table('users')
-    ->where(`user_birthday` IS NOT NULL)
-    ->where((`user_birthday_celebrated` IS NULL OR DATE_ADD(`user_birthday_celebrated`, INTERVAL 1 YEAR) < CURRENT_DATE))
-    ->where(`user_as_ally` IS NULL)
-    ->having(`days_after_birthday` >= 0)
-    ->having(`days_after_birthday` < :birthdayRange)
-    ->forUpdate(true)
-    ->param(':birthdayRange', $config_user_birthday_range)
-    ->prepareExecute();
-
-
-
-
-      DELETE {{unit}}
-      FROM {{unit}}
-      LEFT JOIN {{planets}} ON id = unit_location_id
-      WHERE unit_location_type = 1 AND unit_type = 99 AND (
-        (planet_type = 1 AND unit_snid IN (41, 42, 43))
-        OR
-        (planet_type = 3 AND unit_snid NOT IN (14, 15, 21, 34, 41, 42, 43))
-      )
-
-
-
-
-  // New interface
-  public function _operation($value) {
-    if (empty($value)) {
-      throw new ExceptionDbOperationEmpty();
-    }
-
-    $value = strtoupper($value);
-
-    if (!in_array($value, self::$allowedOperations)) {
-      throw new ExceptionDbOperationRestricted();
-    }
-
-    $this->operation = $value;
-
-    return $this;
-  }
-
-  public function _field($value, $alias = '') {
-    $this->fields[] = array($value, $alias);
-
-    return $this;
-  }
-
-  public function _literal($value, $alias = '') {
-    $this->fields[] = array(new DbSqlLiteral($db = null, $value), $alias);
-
-    return $this;
-  }
-
-  public function _table($value, $alias = '') {
-    // Будет использоваться как основная таблица:
-    // SELECT ... FROM _table
-    // DELETE _table FROM ..., возможно, _table
-    // INSERT INTO  _table ...
-    $this->table = array($value, $alias);
-
-    return $this;
-  }
-
-  public function _where($value) {
-    $this->where[] = new DbSqlLiteral($db = null, $value);
-
-    return $this;
-  }
-
-
-
-
-
-
-
-
 
 replacing
     msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false) {
@@ -1065,18 +958,6 @@ replacing
 
 Пересчитывать планеты не всегда, а с задержкой в 1 минуту - в частности, в Империи
 
-RREWORK TO OBJECT
-
-function flt_fleet_speed($user, $fleet) {
-
-
-REWORK TO EMPTY()
-
-Fleet::$snGroupFleet
-Заменить проверки:
-    - sn_get_groups('fleet') -> UnitShip::is_ship($unit_id)
-    - sn_get_groups('resources_loot') -> UnitResourceLoot::is_resource($unit_id)
-
 
 LAMBDA FUNCTION - FROM ANONYMOUS - запихивать анонимные функции в переменные для реюза
 FUNCTION (
@@ -1084,8 +965,6 @@ FUNCTION (
 
 Показывать в Обзоре Империи обломки на орбитах
 
-
-// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же
 
 // TODO - заметки. Сделать время ДО которого заметка будет висеть прилепленной или ПОСЛЕ которого она появится в прилепленных
 
@@ -1119,34 +998,7 @@ Call Stack
     - Объединить с Заметками
     - Чистить таблицу buddy, а затем связать ID по констраинтам с {{user}}
 
-// TODO - EntityModel - сделать трейт TMagicArray - реализацию IMagicAccess, которая обращается к свойствам через интерфейс ArrayAccess
-
-
-// TODO - Друзья
-    - BuddyModel - вынести все обращения к rowOperator из модели
-        - Наверное, возвращать специальный тип объекта, который будет указывать, что именно делать с моделью
-            - Хотя тут просто - по isNew, isChanged, isDeleted можно всякое определить
-    - Ну и заодно - избавиться от контейнера - вынести его наружу
-
-// TODO -    Транзакции внести в DB
-        - remove transaction related function from db.php
-            - global transaction start function - for all DBs
-                - WHy WE FUCKING SHOULD EVER NEED IT?!!!
-                    - Each EntityModel should handle transaction by themselves !!!!!!!!!!
-                    - Otherwise - it's wrong architecture design
-                    - Yep, it's wrong design - but currently we working with wat we have
-                - So we NEED this functions if working across DBs - i.e. Global Auth
-                    - OR - we should redesign architecture
-
 classSupernova::$db - replace with GC calls
-
-classSupernova::$gc->snCache->
-    - check where used and make DI
-    - also check for other modules
-
-classSupernova::$gc->cacheOperator
-    - check where used and make DI
-    - also check for other modules
 
 Статистика
     - Посмотреть в пересчёте статистики, что бы были прямые SQL запросы без блокировки
@@ -1181,280 +1033,21 @@ classSupernova::$gc->cacheOperator
 
 
 
-$unitModel = classSupernova::$gc->unitModel;
-$unit = $unitModel->loadTry(1);
-var_dump($unit);
-pdie();
-
-
 - Make method/function a closure - to rid off array() callables
     - http://php.net/manual/en/reflectionmethod.getclosure.php
-
-
-- buyable
-    - can be bought
-    - have a price
-    - have time to build
-- upgradable
-- buildable
-    - Implies
-        - buyable
-- combat
-    - have combat stats
-- defense
-    - Implies
-- bonus
-    - Grants a bonus on certain level - user, planet, fleet, etc
-- ship
-    - flying
-        - have consumption
-        - have speed
-        - have cargo size
-        - ? fuel tanks - усложнение. Ненужное?
-    - transport
-        - have resource capability
-    - recycler
-        - can recycle
-    - colonizer
-        - can create colony
-    - spy
-        - can fly to espionage
-    - carrier
-        - can carry other ships
-        - have max carry size
-        - have max carry amount
-- missile
-
-- structure
-    - factory
-    - mine
-    - storage
-
-- resource
-    - debris
-    - lootable
-    - transportable
-
-- Фича - выполняет только одну функцию или может быть много?
 
 
 - Бой
     - Использовать нормальное распределение вместо равномерного
         - Возможно - с достаточно пологим колоколом
 
-// TODO WORKING ON -----------------------------------------------------------------------------------------------------
-
-$unitList = new \V2Unit\V2UnitList();
-$model = classSupernova::$gc->unitModel;
-
-$unit = $model->getContainer();
-$unit->importRow(array('unit_snid' => RES_METAL));
-$unitList->attach($unit);
-unset($unit);
-
-$unit = $model->getContainer();
-$unit->importRow(array('unit_snid' => STRUC_ALLY_DEPOSIT));
-$unitList->attach($unit);
-unset($unit);
-
-$unit = $model->getContainer();
-$unit->importRow(array('unit_snid' => RES_CRYSTAL));
-$unitList->attach($unit);
-unset($unit);
-
-$iterator = new \V2Unit\V2UnitIterator($unitList);
-$iterator->setFilterType(UNIT_STRUCTURES);
-$iterator->setFilterType(UNIT_RESOURCES);
-
-$i = 0;
-foreach($iterator as $key => $value) {
-//  pdump($value->type, '$value->type');
-  pdump($value->snId, '$value->snId');
-
-//  pdump($iterator->valid(), '$iterator->valid()');
-//  if($i++ > 10) die();
-//  var_dump($i);
-//  var_dump($key);
-//  var_dump($value);
-}
-
-die();
-
-    !! Альфа выставлена в SERIALIZABLE!!!
-        - Посмотреть, есть ли дедлоки!
-        - И какова скорость работы
-        - Может всех так переставить
 
 
-    !! Посмотреть - нельзя ли обойтись без итератора и сделать всё в пределах V2UnitList ?
+!! Альфа выставлена в SERIALIZABLE!!!
+    - Посмотреть, есть ли дедлоки!
+    - И какова скорость работы
+    - Может всех так переставить
 
-    !! accessors is REALLY PART OF MODEL!
-        - or should be static inside container
-            - better - model
-        - properties, table, idfieldname - back to model!
-
-    - Добавить $model в EntityContainer что бы не надо было иметь собственные переменные и заполнять их?
-    - isEmpty, isNew перенести в модель - только модель может оценивать пустой контейнер или новый
-    - clearProperties() -> назад в clear()
-        - EntityContainer всегда содержит только пропертя. Всё остальное - либо в полях, либо в DI
-
-    - INSERT INTO ON DUPLICATE KEY UPDATE - вместо REPLACE!!!!!!!!!!
-        - http://php.net/manual/en/mysqli.affected-rows.php - comments
-
-
-    - Move doXXX functions from db_mysql to dbRowOperator
-
-
-    ? Тесты для entity и контейнеров
-        - ContainerAccessors - тесты
-            - __unset - добавить ансеттеры????
-
-    - Дефолтные значения для полей в Entity
-
-
-    - ЕЩЕ РАЗ ПРОВЕРИТЬ, что бы просто $where, приходящие в DbQuery не содержали опасных условий
-        - и убрать потом перепаковку в DbQuery::buildWhere() и там же убрать ненужную packIntKeyed
-    - и по $values
-
-    - doUpdate
-        - doUpdateReallyComplex - DANGER
-            - rewrite to danger
-        - db_user_set_by_id - дедупликация
-        - doUpdateWhere ??? - protected
-
-    - Потом doUpdateWhere - в dbQuery
-
-    - db.php::function db_change_resources(&$user, &$planet, $unit_list)
-
-    ? class DbQuery
-        - Для выноса функций, которые не должны быть в DbQuery
-        + doDelete
-            + doDeleteDanger
-            + doDeleteWhere
-            + doDeleteRow
-            + doDeleteSimple
-        - doReplace
-            - doValuesDeprecated -> doValues
-        - doInsert
-        - doUpdate
-
-    - Пересмотреть вызовы update-insert-replace-delete
-        - и там где в $where есть опасные конструкции - заменить на отдельные вызовы
-        - опасные конструкции - там, где не указано поле, а берется условие целиком
-    - DBQuery
-        - добавить в код
-
-
-    - Добавить возврат db_affected_rows() и db_last_insert_id
-        - Insert
-        - Delete
-        - Update
-
-
-    - uni_create_moon $RetValue = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET, $planet);
-        - переделать на по месту генерируемый массив, а не на использование переменной $planet
-
-
-    // TODO - redo as callable usage with array_map/array_walk
-        - public function safeValues($values) {
-        - public function safeFields($fields) {
-        - protected function safeFieldsAndValues($fields) {
-
-
-    - SnCache
-        - move out unit-related
-        - make simple SnCache implementation - just read from DB
-        - // TODO - looks like cache not working
-
-public function db_del_record_list($location_type, $condition) {
-    - отследить использование $condition и устранить по возможности
-    - под сложные кондишны сделать отдельную функцию, которую потом легко можно будет депрекейтить
-
-// TODO
-    - каждая таблица должна сама уметь управлять своим кэшем. Наверное
-
-classSupernova::$db - replace with GC calls
-
-classSupernova::$gc->snCache->
-    - check where used and make DI
-    - also check for other modules
-
-classSupernova::$gc->cacheOperator
-    - check where used and make DI
-    - also check for other modules
-
-
-- function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
-    - make it use ID
-    - развязать апдейт юзера и апдейт планеты
-        - но проследить, что апдейт планеты ПОТЕНЦИАЛЬНО может влиять на юзера - хотя нигде это, вроде, не используется
-
-- admin/add_moon.php - какие-то непонятки
-    - $PlanetID = sys_get_param_id('user');
-    - $PlanetSelected = DBStatic\DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
-    - хотя вроде работаем с планетой
-
-
-classSupernova::$gc->cacheOperator->db_del_record_list - unsafe params
-
-function idval($value, $default = 0) { - переделать под int|string
-    - может даже ввести новый тип numeric
-
-    - log_file - тоже вынести из classSupernova
-
-    - wrap cache items in objects - to rid off &
-
-    - Fleet
-        - сделать группы динамическими, что бы избавится от порнографии типа
-                if (empty(Fleet::$snGroupFleet)) {
-                  Fleet::$snGroupFleet = sn_get_groups('fleet');
-                  Fleet::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', GROUP_STR_MISSILES));
-                  Fleet::$snGroupRecyclers = sn_get_groups('flt_recyclers');
-                }
-    - И вообще - посмотреть на статические переменные, которые нужно инициализировать!
-
-
-    - public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null) {
-        - Эксепшны и обработка
-
-    - EntityContainer
-        - SETted values cannot be ADJUSTed
-        - ADJUSTed values cannot be SETted
-
-    - OPERATOR is in essence an API - try to rename
-
-    - SnCache
-        - сделать проперти ???????? динамическими
-        - сделать DI в $db
-            - каждая ДБ обладает своим кэшем
-        - переделать систему кэширования
-
-    - self: -> static: в объектах
-        - внимательно посмотреть, где опечатка и где это действительно нужно
-
-    - Fleet - доделать/переделать
-
-
-    - V2Unit
-        sn_db_unit_changeset_prepare
-        - внести в класс DBStatic\DBStaticUnit::public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null)
-
-    - classLocale => SnLocale
-
-    - doquery()
-         - db->doDeleteRow
-
-$unit = classSupernova::$gc->unit;
-//var_dump($unit);
-$unit->dbId = 1;
-$row = classSupernova::$gc->dbRowOperator->getById($unit);
-pdump($row);
-$unit->importRow($row);
-pdump($unit->timeStart, '$unit->timeStart');
-pdump($unit->playerOwnerId, '$unit->playerOwnerId');
-pdump($unit->dbId, '$unit->dbId');
-pdump($unit->exportRowWithId());
-pdie();
 
 
 

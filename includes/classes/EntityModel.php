@@ -139,9 +139,7 @@ class EntityModel {
 
 
   /**
-   * Exports object properties to DB row state WITHOUT ID
-   *
-   * Useful for INSERT operations
+   * Exports object properties to DB row state with ID
    *
    * @param \EntityContainer $cEntity
    *
@@ -152,14 +150,16 @@ class EntityModel {
   }
 
   /**
-   * Exports object properties to DB row state with ID
+   * Exports object properties to DB row state WITHOUT ID
+   *
+   * Useful for INSERT operations
    *
    * @param \EntityContainer $cEntity
    *
    * @return array
    */
   protected function exportRowNoId($cEntity) {
-    $row = $this->exportRow($cEntity);
+    $row = $cEntity->exportRow();
 
     unset($row[$this->getIdFieldName()]);
 

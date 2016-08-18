@@ -26,7 +26,6 @@ use V2Unit\V2UnitList;
 class V2FleetContainer extends \EntityContainer {
 
   public function __construct() {
-//    $this->assignAccessor();
   }
 
 }

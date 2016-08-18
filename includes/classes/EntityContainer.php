@@ -75,9 +75,7 @@ class EntityContainer extends ContainerAccessors {
   }
 
   /**
-   * Exports object properties to DB row state WITHOUT ID
-   *
-   * Useful for INSERT operations
+   * Exports object properties to DB row state with ID
    *
    * @return array
    */

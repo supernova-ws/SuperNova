@@ -5,18 +5,47 @@
 
 namespace V2Fleet;
 
+use Common\IUnitLocationV2;
+use V2Unit\V2UnitContainer;
 use V2Unit\V2UnitList;
+use V2Unit\V2UnitModel;
 use Vector\Vector;
 
 /**
  * Class V2FleetModel
  *
  * @method V2FleetContainer getContainer()
- * @method V2FleetContainer fromArray(array $array)
+ * method V2FleetContainer fromArray(array $array)
+ * @method V2FleetContainer loadById(mixed $dbId)
  *
  * @package V2Fleet
  */
-class V2FleetModel extends \EntityModel {
+class V2FleetModel extends \EntityModel implements IUnitLocationV2 {
+  protected $locationType = LOC_FLEET;
+
+  /**
+   * Return location type
+   *
+   * @param \EntityContainer $cEntity
+   *
+   * @return int
+   */
+  public function getLocationType($cEntity) {
+    return $this->locationType;
+  }
+
+  /**
+   * Return location ID
+   *
+   * @param \EntityContainer $cEntity
+   *
+   * @return mixed
+   */
+  public function getLocationId($cEntity) {
+    return $cEntity->dbId;
+  }
+
+
   /**
    * Name of table for this entity
    *
@@ -47,18 +76,19 @@ class V2FleetModel extends \EntityModel {
 //    'fleet_start_type'         => array(P_DB_FIELD => 'fleet_start_type'),
 
     'fleet_end_planet_id' => array(P_DB_FIELD => 'fleet_end_planet_id'),
+    'fleet_target_owner'  => array(P_DB_FIELD => 'fleet_target_owner'),
 
 //    'fleet_end_galaxy'         => array(P_DB_FIELD => 'fleet_end_galaxy'),
 //    'fleet_end_system'         => array(P_DB_FIELD => 'fleet_end_system'),
 //    'fleet_end_planet'         => array(P_DB_FIELD => 'fleet_end_planet'),
 //    'fleet_end_type'           => array(P_DB_FIELD => 'fleet_end_type'),
 
-    'fleet_resource_metal'     => array(P_DB_FIELD => 'fleet_resource_metal'),
-    'fleet_resource_crystal'   => array(P_DB_FIELD => 'fleet_resource_crystal'),
-    'fleet_resource_deuterium' => array(P_DB_FIELD => 'fleet_resource_deuterium'),
-    'fleet_target_owner'       => array(P_DB_FIELD => 'fleet_target_owner'),
-    'fleet_group'              => array(P_DB_FIELD => 'fleet_group'),
-    'fleet_mess'               => array(P_DB_FIELD => 'fleet_mess'),
+//    'fleet_resource_metal'     => array(P_DB_FIELD => 'fleet_resource_metal'),
+//    'fleet_resource_crystal'   => array(P_DB_FIELD => 'fleet_resource_crystal'),
+//    'fleet_resource_deuterium' => array(P_DB_FIELD => 'fleet_resource_deuterium'),
+
+    'groupId' => array(P_DB_FIELD => 'fleet_group'),
+    'status'  => array(P_DB_FIELD => 'fleet_mess'),
 
     'vectorDeparture' => array(P_DB_FIELD => 'fleet_start_galaxy'),
     'vectorArrive'    => array(P_DB_FIELD => 'fleet_end_galaxy'),
@@ -78,6 +108,15 @@ class V2FleetModel extends \EntityModel {
     $this->assignAccessor('vectorDeparture', P_CONTAINER_EXPORT, array($this, 'exportVector'));
     $this->assignAccessor('vectorArrive', P_CONTAINER_IMPORT, array($this, 'importVector'));
     $this->assignAccessor('vectorArrive', P_CONTAINER_EXPORT, array($this, 'exportVector'));
+
+    $this->assignAccessor('units', P_CONTAINER_GET, function (V2FleetContainer $that) {
+      if(is_null($units = $that->getDirect('units'))) {
+        $units = new V2UnitList();
+        $that->setDirect('units', $units);
+      }
+
+      return $units;
+    });
   }
 
   public function importVector(V2FleetContainer $that, array &$row, $propertyName, $fieldName) {
@@ -99,22 +138,30 @@ class V2FleetModel extends \EntityModel {
   }
 
   /**
-   * @param int|string $dbId
+   * @param array $array
    *
-   * @return V2FleetContainer|false
+   * @return V2FleetContainer
    */
-  public function loadById($dbId) {
-    if ($fleet = parent::loadById($dbId)) {
-      /**
-       * @var V2FleetContainer $fleet
-       */
-      // Loading units
-      $units = new V2UnitList();
-      $units->load(LOC_FLEET, $dbId);
-      $fleet->units = $units;
+  public function fromArray($array) {
+    /**
+     * @var V2FleetContainer $cFleet
+     */
+    $cFleet = parent::fromArray($array);
+
+    $cFleet->units->load($this->getLocationType($cFleet), $this->getLocationId($cFleet));
+
+    foreach (array(
+      RES_METAL     => 'fleet_resource_metal',
+      RES_CRYSTAL   => 'fleet_resource_crystal',
+      RES_DEUTERIUM => 'fleet_resource_deuterium',
+    ) as $resourceId => $fieldName) {
+      $unit = \classSupernova::$gc->unitModel->getContainer();
+      $unit->snId = $resourceId;
+      $unit->level = $array[$fieldName];
+      $cFleet->units->attach($unit, $resourceId);
     }
 
-    return $fleet;
+    return $cFleet;
   }
 
 }

@@ -756,7 +756,7 @@ class db_mysql {
    *
    * @return array|null
    */
-  public function db_fetch(&$query) {
+  public function db_fetch($query) {
     $microtime = microtime(true);
     $result = $this->driver->mysql_fetch_assoc($query);
     $this->time_mysql_total += microtime(true) - $microtime;

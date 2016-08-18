@@ -1,0 +1,356 @@
+- EntityModel
+    - Базовый класс для персистентной энтити
+    - Знает
+        - структуру данных контейнера - $properties
+        - как сохранить себя в базу, используя rowOperator
+    - Умеет:
+        - экспортнуть себя в массив
+        - импортнуть себя из массива
+        - прочитаться из базы по ID, используя rowOperator
+        - сохранится в базу:
+            - вставится в базу, если энтити новая, используя rowOperator
+            - обновится в базе, если энтити существует, используя rowOperator
+            - удалится из базы, если энтити пустая, используя rowOperator
+
+
+- Сложные энтити:
+    - Данные об энтити содержатся более чем в одной таблицы
+    - К "данным" относится то, без чего энтити не имеет смысл
+        - Например - юниты у флота. Без юнитов флот является пустым
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же
+
+
+// TODO - EntityModel - сделать трейт TMagicArray - реализацию IMagicAccess, которая обращается к свойствам через интерфейс ArrayAccess
+
+
+// TODO - Друзья
+    - BuddyModel - вынести все обращения к rowOperator из модели
+        - Наверное, возвращать специальный тип объекта, который будет указывать, что именно делать с моделью
+            - Хотя тут просто - по isNew, isChanged, isDeleted можно всякое определить
+    - Ну и заодно - избавиться от контейнера - вынести его наружу
+
+// TODO -    Транзакции внести в DB
+        - remove transaction related function from db.php
+            - global transaction start function - for all DBs
+                - WHy WE FUCKING SHOULD EVER NEED IT?!!!
+                    - Each EntityModel should handle transaction by themselves !!!!!!!!!!
+                    - Otherwise - it's wrong architecture design
+                    - Yep, it's wrong design - but currently we working with wat we have
+                - So we NEED this functions if working across DBs - i.e. Global Auth
+                    - OR - we should redesign architecture
+
+
+classSupernova::$gc->snCache->
+    - check where used and make DI
+    - also check for other modules
+
+classSupernova::$gc->cacheOperator
+    - check where used and make DI
+    - also check for other modules
+
+
+// TODO WORKING ON -----------------------------------------------------------------------------------------------------
+
+$unitModel = classSupernova::$gc->unitModel;
+$unit = $unitModel->loadTry(1);
+var_dump($unit);
+pdie();
+
+
+$unitList = new \V2Unit\V2UnitList();
+$model = classSupernova::$gc->unitModel;
+
+$unit = $model->getContainer();
+$unit->importRow(array('unit_snid' => RES_METAL));
+$unitList->attach($unit);
+unset($unit);
+
+$unit = $model->getContainer();
+$unit->importRow(array('unit_snid' => STRUC_ALLY_DEPOSIT));
+$unitList->attach($unit);
+unset($unit);
+
+$unit = $model->getContainer();
+$unit->importRow(array('unit_snid' => RES_CRYSTAL));
+$unitList->attach($unit);
+unset($unit);
+
+$iterator = new \V2Unit\V2UnitIterator($unitList);
+$iterator->setFilterType(UNIT_STRUCTURES);
+$iterator->setFilterType(UNIT_RESOURCES);
+
+$i = 0;
+foreach($iterator as $key => $value) {
+//  pdump($value->type, '$value->type');
+  pdump($value->snId, '$value->snId');
+
+//  pdump($iterator->valid(), '$iterator->valid()');
+//  if($i++ > 10) die();
+//  var_dump($i);
+//  var_dump($key);
+//  var_dump($value);
+}
+
+die();
+
+
+$model = new \V2Fleet\V2FleetModel(classSupernova::$gc);
+$fleet = $model->loadById(8);
+var_dump($fleet->units);
+pdie();
+
+
+- buyable
+    - can be bought
+    - have a price
+    - have time to build
+- upgradable
+- buildable
+    - Implies
+        - buyable
+- combat
+    - have combat stats
+- defense
+    - Implies
+- bonus
+    - Grants a bonus on certain level - user, planet, fleet, etc
+- ship
+    - flying
+        - have consumption
+        - have speed
+        - have cargo size
+        - ? fuel tanks - усложнение. Ненужное?
+    - transport
+        - have resource capability
+    - recycler
+        - can recycle
+    - colonizer
+        - can create colony
+    - spy
+        - can fly to espionage
+    - carrier
+        - can carry other ships
+        - have max carry size
+        - have max carry amount
+- missile
+
+- structure
+    - factory
+    - mine
+    - storage
+
+- resource
+    - debris
+    - lootable
+    - transportable
+
+- Фича - выполняет только одну функцию или может быть много?
+
+
+    !! Посмотреть - нельзя ли обойтись без итератора и сделать всё в пределах V2UnitList ?
+
+    !! accessors is REALLY PART OF MODEL!
+        - or should be static inside container
+            - better - model
+        - properties, table, idfieldname - back to model!
+
+    - Добавить $model в EntityContainer что бы не надо было иметь собственные переменные и заполнять их?
+    - isEmpty, isNew перенести в модель - только модель может оценивать пустой контейнер или новый
+    - clearProperties() -> назад в clear()
+        - EntityContainer всегда содержит только пропертя. Всё остальное - либо в полях, либо в DI
+
+    - INSERT INTO ON DUPLICATE KEY UPDATE - вместо REPLACE!!!!!!!!!!
+        - http://php.net/manual/en/mysqli.affected-rows.php - comments
+
+
+    - Move doXXX functions from db_mysql to dbRowOperator
+
+
+    ? Тесты для entity и контейнеров
+        - ContainerAccessors - тесты
+            - __unset - добавить ансеттеры????
+
+    - Дефолтные значения для полей в Entity
+
+
+    - ЕЩЕ РАЗ ПРОВЕРИТЬ, что бы просто $where, приходящие в DbQuery не содержали опасных условий
+        - и убрать потом перепаковку в DbQuery::buildWhere() и там же убрать ненужную packIntKeyed
+    - и по $values
+
+    - doUpdate
+        - doUpdateReallyComplex - DANGER
+            - rewrite to danger
+        - db_user_set_by_id - дедупликация
+        - doUpdateWhere ??? - protected
+
+    - Потом doUpdateWhere - в dbQuery
+
+    - db.php::function db_change_resources(&$user, &$planet, $unit_list)
+
+    ? class DbQuery
+        - Для выноса функций, которые не должны быть в DbQuery
+        + doDelete
+            + doDeleteDanger
+            + doDeleteWhere
+            + doDeleteRow
+            + doDeleteSimple
+        - doReplace
+            - doValuesDeprecated -> doValues
+        - doInsert
+        - doUpdate
+
+    - Пересмотреть вызовы update-insert-replace-delete
+        - и там где в $where есть опасные конструкции - заменить на отдельные вызовы
+        - опасные конструкции - там, где не указано поле, а берется условие целиком
+    - DBQuery
+        - добавить в код
+
+
+    - Добавить возврат db_affected_rows() и db_last_insert_id
+        - Insert
+        - Delete
+        - Update
+
+
+    - uni_create_moon $RetValue = classSupernova::$gc->cacheOperator->db_ins_record(LOC_PLANET, $planet);
+        - переделать на по месту генерируемый массив, а не на использование переменной $planet
+
+
+    // TODO - redo as callable usage with array_map/array_walk
+        - public function safeValues($values) {
+        - public function safeFields($fields) {
+        - protected function safeFieldsAndValues($fields) {
+
+
+    - SnCache
+        - move out unit-related
+        - make simple SnCache implementation - just read from DB
+        - // TODO - looks like cache not working
+
+public function db_del_record_list($location_type, $condition) {
+    - отследить использование $condition и устранить по возможности
+    - под сложные кондишны сделать отдельную функцию, которую потом легко можно будет депрекейтить
+
+// TODO
+    - каждая таблица должна сама уметь управлять своим кэшем. Наверное
+
+classSupernova::$db - replace with GC calls
+
+classSupernova::$gc->snCache->
+    - check where used and make DI
+    - also check for other modules
+
+classSupernova::$gc->cacheOperator
+    - check where used and make DI
+    - also check for other modules
+
+
+- function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no_user_update = false) {
+    - make it use ID
+    - развязать апдейт юзера и апдейт планеты
+        - но проследить, что апдейт планеты ПОТЕНЦИАЛЬНО может влиять на юзера - хотя нигде это, вроде, не используется
+
+- admin/add_moon.php - какие-то непонятки
+    - $PlanetID = sys_get_param_id('user');
+    - $PlanetSelected = DBStatic\DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
+    - хотя вроде работаем с планетой
+
+
+classSupernova::$gc->cacheOperator->db_del_record_list - unsafe params
+
+function idval($value, $default = 0) { - переделать под int|string
+    - может даже ввести новый тип numeric
+
+    - log_file - тоже вынести из classSupernova
+
+    - wrap cache items in objects - to rid off &
+
+    - Fleet
+        - сделать группы динамическими, что бы избавится от порнографии типа
+                if (empty(Fleet::$snGroupFleet)) {
+                  Fleet::$snGroupFleet = sn_get_groups('fleet');
+                  Fleet::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', GROUP_STR_MISSILES));
+                  Fleet::$snGroupRecyclers = sn_get_groups('flt_recyclers');
+                }
+    - И вообще - посмотреть на статические переменные, которые нужно инициализировать!
+
+
+    - public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null) {
+        - Эксепшны и обработка
+
+    - EntityContainer
+        - SETted values cannot be ADJUSTed
+        - ADJUSTed values cannot be SETted
+
+    - OPERATOR is in essence an API - try to rename
+
+    - SnCache
+        - сделать проперти ???????? динамическими
+        - сделать DI в $db
+            - каждая ДБ обладает своим кэшем
+        - переделать систему кэширования
+
+    - self: -> static: в объектах
+        - внимательно посмотреть, где опечатка и где это действительно нужно
+
+    - Fleet - доделать/переделать
+
+
+    - V2Unit
+        sn_db_unit_changeset_prepare
+        - внести в класс DBStatic\DBStaticUnit::public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null)
+
+    - classLocale => SnLocale
+
+    - doquery()
+         - db->doDeleteRow
+
+$unit = classSupernova::$gc->unit;
+//var_dump($unit);
+$unit->dbId = 1;
+$row = classSupernova::$gc->dbRowOperator->getById($unit);
+pdump($row);
+$unit->importRow($row);
+pdump($unit->timeStart, '$unit->timeStart');
+pdump($unit->playerOwnerId, '$unit->playerOwnerId');
+pdump($unit->dbId, '$unit->dbId');
+pdump($unit->exportRowWithId());
+pdie();
+
