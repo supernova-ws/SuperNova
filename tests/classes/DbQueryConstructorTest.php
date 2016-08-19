@@ -1,5 +1,9 @@
 <?php
 
+use Exception\ExceptionDBFieldEmpty;
+use Exception\ExceptionDbOperationEmpty;
+use Exception\ExceptionDbOperationRestricted;
+
 class DbStaticFixture {
   public static $_table = '_table';
   public static $_idField = 'id';
@@ -289,7 +293,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
    * @dataProvider dataSelectFieldsToStringExceptionDataProvider
    *
    * @covers ::selectFieldsToString
-   * @expectedException ExceptionDBFieldEmpty
+   * @expectedException Exception\ExceptionDBFieldEmpty
    */
   public function testSelectFieldsToStringException($badValue) {
     invokeMethod($this->object, 'selectFieldsToString', array($badValue));
@@ -300,7 +304,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
   // __toString --------------------------------------------------------------------------------------------------------
   /**
    * @covers ::__toString
-   * @expectedException ExceptionDbOperationEmpty
+   * @expectedException Exception\ExceptionDbOperationEmpty
    */
   public function test__toStringExceptionDbOperationEmpty() {
     $this->object->operation = '';
@@ -309,7 +313,7 @@ class DbQueryConstructorTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::__toString
-   * @expectedException ExceptionDbOperationRestricted
+   * @expectedException Exception\ExceptionDbOperationRestricted
    */
   public function test__toStringExceptionDbOperationRestricted() {
 //    return doquery("SELECT u.*, COUNT(r.id) AS referral_count, SUM(r.dark_matter) AS referral_dm FROM {{users}} as u

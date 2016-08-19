@@ -1,4 +1,6 @@
 <?php
+use Exception\ExceptionPropertyNotExists;
+use Exception\ExceptionPropertyAccess;
 
 /**
  * Class PropertyHiderTested
@@ -172,7 +174,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::checkPropertyExists
-   * @expectedException ExceptionPropertyNotExists
+   * @expectedException Exception\ExceptionPropertyNotExists
    */
   public function testCheckPropertyExistsException() {
     invokeMethod($this->object, 'checkPropertyExists', array('nonExistsInClassProperty'));
@@ -203,7 +205,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
    * @dataProvider dataSetGetException
    *
    * @covers ::__get
-   * @expectedException ExceptionPropertyNotExists
+   * @expectedException Exception\ExceptionPropertyNotExists
    */
   public function test__getExceptionPropertyNotExists($badPropertyName) {
     $test = $this->object->$badPropertyName;
@@ -236,7 +238,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
    * @dataProvider dataSetGetException
    *
    * @covers ::_setUnsafe
-   * @expectedException ExceptionPropertyNotExists
+   * @expectedException Exception\ExceptionPropertyNotExists
    */
   public function test_setUnsafeExceptionPropertyNotExists($badPropertyName) {
     invokeMethod($this->object, '_setUnsafe', array($badPropertyName, 0));
@@ -350,10 +352,10 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
    *
    * @dataProvider dataPropertyMethodResultException
    * @covers ::propertyMethodResult
-   * expectedException ExceptionTypeUnsupported
+   * expectedException Exception\ExceptionTypeUnsupported
    */
   public function testExceptionTypeUnsupported($varName, $value) {
-    $this->setExpectedExceptionRegExp('ExceptionTypeUnsupported', '/Type .+ is unsupported in PropertyHider::propertyMethodResult/i');
+    $this->setExpectedExceptionRegExp('Exception\ExceptionTypeUnsupported', '/Type .+ is unsupported in PropertyHider::propertyMethodResult/i');
     $this->object->$varName = $value;
     invokeMethod($this->object, 'propertyMethodResult', array($varName, null, ''));
   }
@@ -384,7 +386,7 @@ class PropertyHiderTest extends PHPUnit_Framework_TestCase {
    * Test exception when trying to set in already adjusted property
    *
    * @covers ::checkOverwriteAdjusted
-   * @expectedException PropertyAccessException
+   * @expectedException Exception\ExceptionPropertyAccess
    */
   public function testPropertyAccessException() {
     $this->assertEquals(-2, $this->object->test);

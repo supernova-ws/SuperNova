@@ -1,5 +1,6 @@
 <?php
 use DBStatic\DBStaticFleetBashing;
+use Exception\ExceptionFleetInvalid;
 
 /**
  * Class FleetValidator
@@ -80,7 +81,7 @@ class FleetValidator {
 //      // Still cheap
 ////      $this->restrict2ToAllowedMissions();
 ////      $this->restrict2ToAllowedPlanetTypes();
-//    } catch (ExceptionFleetInvalid $e) {
+//    } catch (Exception\ExceptionFleetInvalid $e) {
 ////pdump($e->getCode(), '$e->getCode()');
 ////pdump($e->getMessage(), '$e->getMessage()');
 //      if ($e->getCode() != FLIGHT_ALLOWED) {
@@ -112,7 +113,7 @@ class FleetValidator {
 //      // Still cheap
 ////      $this->restrict2ToAllowedMissions();
 ////      $this->restrict2ToAllowedPlanetTypes();
-//    } catch (ExceptionFleetInvalid $e) {
+//    } catch (Exception\ExceptionFleetInvalid $e) {
 ////pdump($e->getCode(), '$e->getCode()');
 ////pdump($e->getMessage(), '$e->getMessage()');
 //      if ($e->getCode() != FLIGHT_ALLOWED) {

@@ -1,4 +1,7 @@
 <?php
+use Exception\ExceptionPropertyNotExists;
+use Exception\ExceptionTypeUnsupported;
+use Exception\ExceptionPropertyAccess;
 
 /**
  * Class PropertyHider - Hides properties from visibility
@@ -82,7 +85,7 @@ abstract class PropertyHider extends stdClass {
 
   protected function checkOverwriteAdjusted($name) {
     if (array_key_exists($name, $this->propertiesAdjusted)) {
-      throw new PropertyAccessException('Property [' . get_called_class() . '::' . $name . '] already was adjusted so no SET is possible until dbSave', ERR_ERROR);
+      throw new ExceptionPropertyAccess('Property [' . get_called_class() . '::' . $name . '] already was adjusted so no SET is possible until dbSave', ERR_ERROR);
     }
   }
 

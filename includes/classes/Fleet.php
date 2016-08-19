@@ -4,6 +4,8 @@ use DBStatic\DBStaticNote;
 use DBStatic\DBStaticPlanet;
 use DBStatic\DBStaticUnit;
 use DBStatic\DBStaticUser;
+use Exception\ExceptionFleetInvalid;
+use Exception\ExceptionPropertyAccess;
 use Vector\Vector;
 
 /**
@@ -1014,7 +1016,7 @@ class Fleet extends UnitContainer {
    */
   public function resourcesSet($resource_list) {
     if (!empty($this->propertiesAdjusted['resource_list'])) {
-      throw new PropertyAccessException('Property "resource_list" already was adjusted so no SET is possible until dbSave in ' . get_called_class() . '::unitSetResourceList', ERR_ERROR);
+      throw new ExceptionPropertyAccess('Property "resource_list" already was adjusted so no SET is possible until dbSave in ' . get_called_class() . '::unitSetResourceList', ERR_ERROR);
     }
     $this->resourcesAdjust($resource_list, true);
   }
@@ -1779,7 +1781,7 @@ class Fleet extends UnitContainer {
 //      $validator->validate();
 //    } catch (Exception $e) {
 //      // TODO - MESSAGE BOX
-//      if($e instanceof ExceptionFleetInvalid) {
+//      if($e instanceof Exception\ExceptionFleetInvalid) {
 //        sn_db_transaction_rollback();
 //        pdie(classLocale::$lang['fl_attack_error'][$e->getCode()]);
 //      } else {

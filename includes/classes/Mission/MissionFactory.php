@@ -3,7 +3,7 @@
 namespace Mission;
 
 use \Fleet;
-use \ExceptionFleetInvalid;
+use Exception\ExceptionFleetInvalid;
 
 /**
  * Created by Gorlum 23.07.2016 14:35
@@ -29,7 +29,7 @@ class MissionFactory {
    * @param Fleet $fleet
    *
    * @return Mission
-   * @throws ExceptionFleetInvalid
+   * @throws \Exception\ExceptionFleetInvalid
    */
   public static function build($missionType, $fleet) {
     if (!empty(self::$missions[$missionType]) && class_exists($className = __NAMESPACE__ . '\\' . self::$missions[$missionType])) {

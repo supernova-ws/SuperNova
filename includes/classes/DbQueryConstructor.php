@@ -1,4 +1,7 @@
 <?php
+use Exception\ExceptionDBFieldEmpty;
+use Exception\ExceptionDbOperationEmpty;
+use Exception\ExceptionDbOperationRestricted;
 
 /**
  * Class DbQueryConstructor

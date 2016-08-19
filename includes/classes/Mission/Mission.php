@@ -73,7 +73,7 @@ class Mission {
   public function validate() {
     try {
       $result = $this->fleet->validator->checkMissionRestrictions(static::$conditionsLocal);
-    } catch (\ExceptionFleetInvalid $e) {
+    } catch (\Exception\ExceptionFleetInvalid $e) {
       $result = $e->getCode();
     }
 
