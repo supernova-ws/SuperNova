@@ -3,6 +3,7 @@
 namespace Common;
 
 use \classSupernova;
+use V2Fleet\V2FleetModel;
 
 /**
  * Class GlobalContainer
@@ -25,6 +26,7 @@ use \classSupernova;
  * @property string               $buddyClass
  * @property \Buddy\BuddyModel    $buddyModel
  * @property \V2Unit\V2UnitModel  $unitModel
+ * @property V2FleetModel         $fleetModel
  */
 class GlobalContainer extends ContainerPlus {
 
@@ -84,6 +86,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->unitModel = function (GlobalContainer $c) {
       return new \V2Unit\V2UnitModel($c);
+    };
+
+    $gc->fleetModel = function (GlobalContainer $c) {
+      return new V2FleetModel($c);
     };
   }
 

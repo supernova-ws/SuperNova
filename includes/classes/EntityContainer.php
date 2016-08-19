@@ -3,96 +3,54 @@
 /**
  * Class EntityContainer
  *
- * Introduces linked models and export/import operations
  *
- * Importer is a callable like
- *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
- *
- * Exporter is a callable like
- *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
+ * @property array $row - Entity row read from DB
  */
 class EntityContainer extends ContainerAccessors {
   /**
-   * Property list and description
-   *
-   * propertyName => array(
-   *    P_DB_FIELD => 'dbFieldName', - directly converts property to field and vice versa
-   * )
-   *
-   * @var array[] $properties
+   * @var EntityModel $model
    */
-  protected $properties = array();
-
+  protected $model;
 
   /**
-   * Set properties data from external source
-   *
-   * @param array $properties
+   * EntityContainer constructor.
+   * @param EntityModel $model
    */
-  public function setProperties($properties) {
-    $this->properties = $properties;
+  public function __construct($model) {
+    $this->model = $model;
   }
 
   /**
-   * @param array  $row
-   * @param string $processor
+   * @param EntityModel $model
    */
-  protected function processRow(&$row, $processor) {
-//var_dump($row);
-    foreach ($this->properties as $propertyName => $propertyData) {
-      $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
-      if (
-        !empty($this->accessors[$propertyName][$processor])
-        &&
-        is_callable($this->accessors[$propertyName][$processor])
-      ) {
-        call_user_func_array($this->accessors[$propertyName][$processor], array($this, &$row, $propertyName, $fieldName));
-      } elseif ($fieldName) {
-        if ($processor == P_CONTAINER_IMPORT) {
-          $this->$propertyName = isset($row[$fieldName]) ? $row[$fieldName] : null;
-        } else {
-          $row[$fieldName] = $this->$propertyName;
-        }
-      }
-      // Otherwise it's internal field - filled and used internally
-    }
-
+  public function setModel(EntityModel $model) {
+    $this->model = $model;
   }
 
   /**
-   * Import DB row state into object properties
+   * @return EntityModel
+   */
+  public function getModel() {
+    return $this->model;
+  }
+
+  /**
+   * @param string   $varName
+   * @param string   $processor
+   * @param callable $callable
+   */
+  public function setAccessor($varName, $processor, $callable) {
+    $this->model->setAccessor($varName, $processor, $callable);
+  }
+
+  /**
+   * @param $varName
+   * @param $processor
    *
-   * @param array $row
+   * @return callable|null
    */
-  public function importRow($row) {
-    $this->clearProperties();
-
-    if (is_array($row) && !empty($row)) {
-      $this->processRow($row, P_CONTAINER_IMPORT);
-    }
-
-    return true;
-  }
-
-  /**
-   * Exports object properties to DB row state with ID
-   *
-   * @return array
-   */
-  public function exportRow() {
-    $row = array();
-    $this->processRow($row, P_CONTAINER_EXPORT);
-
-    return $row;
-  }
-
-  /**
-   * Clears only properties which declared in $properties array
-   */
-  public function clearProperties() {
-    foreach ($this->properties as $propertyName => $propertyData) {
-      unset($this->$propertyName);
-    }
+  protected function getAccessor($varName, $processor) {
+    return $this->model->getAccessor($varName, $processor);
   }
 
 }

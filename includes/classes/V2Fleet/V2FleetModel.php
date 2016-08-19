@@ -5,7 +5,6 @@
 
 namespace V2Fleet;
 
-use Common\IUnitLocationV2;
 use V2Unit\V2UnitContainer;
 use V2Unit\V2UnitList;
 use V2Unit\V2UnitModel;
@@ -20,7 +19,7 @@ use Vector\Vector;
  *
  * @package V2Fleet
  */
-class V2FleetModel extends \EntityModel implements IUnitLocationV2 {
+class V2FleetModel extends \EntityModel {
   protected $locationType = LOC_FLEET;
 
   /**
@@ -99,17 +98,13 @@ class V2FleetModel extends \EntityModel implements IUnitLocationV2 {
     'timeReturn'    => array(P_DB_FIELD => 'fleet_end_time'),
 
     'units' => array(),
+    'isReturning' => array(),
   );
 
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
-    $this->assignAccessor('vectorDeparture', P_CONTAINER_IMPORT, array($this, 'importVector'));
-    $this->assignAccessor('vectorDeparture', P_CONTAINER_EXPORT, array($this, 'exportVector'));
-    $this->assignAccessor('vectorArrive', P_CONTAINER_IMPORT, array($this, 'importVector'));
-    $this->assignAccessor('vectorArrive', P_CONTAINER_EXPORT, array($this, 'exportVector'));
-
-    $this->assignAccessor('units', P_CONTAINER_GET, function (V2FleetContainer $that) {
+    $this->setAccessor('units', P_CONTAINER_GET, function (V2FleetContainer $that) {
       if(is_null($units = $that->getDirect('units'))) {
         $units = new V2UnitList();
         $that->setDirect('units', $units);
@@ -117,24 +112,33 @@ class V2FleetModel extends \EntityModel implements IUnitLocationV2 {
 
       return $units;
     });
+
+    $this->setAccessor('isReturning', P_CONTAINER_GET, function (V2FleetContainer $that) {
+      return $that->status == 1;
+    });
+
+    $this->setAccessor('vectorDeparture', P_CONTAINER_IMPORT, array($this, 'importVector'));
+    $this->setAccessor('vectorDeparture', P_CONTAINER_EXPORT, array($this, 'exportVector'));
+    $this->setAccessor('vectorArrive', P_CONTAINER_IMPORT, array($this, 'importVector'));
+    $this->setAccessor('vectorArrive', P_CONTAINER_EXPORT, array($this, 'exportVector'));
   }
 
-  public function importVector(V2FleetContainer $that, array &$row, $propertyName, $fieldName) {
+  public function importVector(V2FleetContainer $that, $propertyName, $fieldName) {
     $prefix = $propertyName == 'vectorDeparture' ? 'fleet_start_' : 'fleet_end_';
     $that->$propertyName = new Vector(
-      $row[$prefix . 'galaxy'],
-      $row[$prefix . 'system'],
-      $row[$prefix . 'planet'],
-      $row[$prefix . 'type']
+      $that->row[$prefix . 'galaxy'],
+      $that->row[$prefix . 'system'],
+      $that->row[$prefix . 'planet'],
+      $that->row[$prefix . 'type']
     );
   }
 
-  public function exportVector(V2FleetContainer $that, array &$row, $propertyName, $fieldName) {
+  public function exportVector(V2FleetContainer $that, $propertyName, $fieldName) {
     $prefix = $propertyName == 'vectorDeparture' ? 'fleet_start_' : 'fleet_end_';
-    $row[$prefix . 'galaxy'] = $that->$propertyName->galaxy;
-    $row[$prefix . 'system'] = $that->$propertyName->system;
-    $row[$prefix . 'planet'] = $that->$propertyName->planet;
-    $row[$prefix . 'type'] = $that->$propertyName->type;
+    $that->row[$prefix . 'galaxy'] = $that->$propertyName->galaxy;
+    $that->row[$prefix . 'system'] = $that->$propertyName->system;
+    $that->row[$prefix . 'planet'] = $that->$propertyName->planet;
+    $that->row[$prefix . 'type'] = $that->$propertyName->type;
   }
 
   /**

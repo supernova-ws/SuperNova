@@ -4,6 +4,7 @@
  */
 
 namespace Buddy;
+use Common\ContainerPlus;
 
 /**
  * Class BuddyParams
@@ -20,21 +21,23 @@ namespace Buddy;
  * @property string           $playerName
  * @property string           $playerNameAndCoordinates
  */
-class BuddyParams extends \ContainerAccessors {
+class BuddyParams extends ContainerPlus  {
 
   /**
    * BuddyParams constructor.
    *
    * @param array $user
    */
-  public function __construct($user = array()) {
+  public function __construct(array $values = array()) {
+    parent::__construct($values);
+
     $this->buddy_id = sys_get_param_id('buddy_id');
     $this->mode = sys_get_param_str('mode');
     $this->newFriendIdSafe = sys_get_param_id('request_user_id');
     $this->new_friend_name_unsafe = sys_get_param_str_unsafe('request_user_name');
     $this->request_text_unsafe = sys_get_param_str_unsafe('request_text');
 
-    $this->playerArray = $user;
+//    $this->playerArray = $user;
 
     $this->playerId = function (BuddyParams $cBuddy) {
       return $cBuddy->playerArray['id'];

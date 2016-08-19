@@ -42,8 +42,6 @@ class ContainerAccessors extends ContainerMagic {
    *
    * @param string $name
    * @param mixed  $value
-   *
-   * @return mixed
    */
   public function setDirect($name, $value) {
     ContainerMagic::__set($name, $value);
@@ -75,39 +73,47 @@ class ContainerAccessors extends ContainerMagic {
    * Different accessors have different signatures - you should look carefully before assigning accessor
    *
    * @param string   $varName
-   * @param string   $type - getter/setter/importer/exporter/etc
+   * @param string   $processor - type of accessor getter/setter/importer/exporter/etc
    * @param callable $callable
    *
    * @throws Exception
    */
-  public function assignAccessor($varName, $type, $callable) {
+  public function setAccessor($varName, $processor, $callable) {
     if (empty($callable)) {
       return;
     }
 
-    if (is_callable($callable)) {
-      $this->accessors[$varName][$type] = $callable;
-    } else {
-      throw new Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $type . '] is not a callable or not accessible in the scope');
+    if (!is_callable($callable)) {
+      throw new Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $processor . '] is not a callable or not accessible in the scope');
     }
+
+    $this->accessors[$varName][$processor] = $callable;
+  }
+
+  /**
+   * @param $varName
+   * @param $processor
+   *
+   * @return callable|null
+   */
+  protected function getAccessor($varName, $processor) {
+    return isset($this->accessors[$varName][$processor]) ? $this->accessors[$varName][$processor] : null;
   }
 
   /**
    * Performs $processor operation on property with specified name
    *
-   * @param string     $processor
    * @param string     $name
+   * @param string     $processor
    * @param null|mixed $value
    *
    * @return mixed
    */
-  protected function performMagic($processor, $name, $value = null) {
-    if (
-      !empty($this->accessors[$name][$processor])
-      &&
-      is_callable($this->accessors[$name][$processor])
-    ) {
-      return call_user_func($this->accessors[$name][$processor], $this, $value);
+  protected function performMagic($name, $processor, $value = null) {
+    if ($accessor = $this->getAccessor($name, $processor)) {
+      return call_user_func($accessor, $this, $value);
+//    if (isset($this->accessors[$name][$processor])) {
+//      return call_user_func($this->accessors[$name][$processor], $this, $value);
     } else {
       return parent::$processor($name, $value);
     }
@@ -115,21 +121,18 @@ class ContainerAccessors extends ContainerMagic {
 
   public function __set($name, $value) {
     if (is_callable($value)) {
-      $this->accessors[$name][P_CONTAINER_GET] = $value;
+      $this->setAccessor($name, P_CONTAINER_GET, $value);
     } else {
-//var_dump('__set');
-//var_dump($name);
-//var_dump($value);
-      $this->performMagic(P_CONTAINER_SET, $name, $value);
+      $this->performMagic($name, P_CONTAINER_SET, $value);
     }
   }
 
   public function __get($name) {
-    return $this->performMagic(P_CONTAINER_GET, $name, null);
+    return $this->performMagic($name, P_CONTAINER_GET, null);
   }
 
   public function __unset($name) {
-    $this->performMagic(P_CONTAINER_UNSET, $name, null);
+    $this->performMagic($name, P_CONTAINER_UNSET, null);
   }
 
   public function __isset($name) {

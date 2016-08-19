@@ -253,8 +253,8 @@ class BuddyModel extends \EntityModel {
     $cBuddy->buddyStatusId = BUDDY_REQUEST_WAITING;
     $cBuddy->requestText = $params->request_text_unsafe;
 
-    $row = $this->exportRowNoId($cBuddy);
-    $cBuddy->dbId = $this->rowOperator->insert($this, $row);
+    $this->exportRowNoId($cBuddy);
+    $cBuddy->dbId = $this->rowOperator->insert($this, $cBuddy->row);
     throw new BuddyException('buddy_err_adding_none', ERR_NONE);
   }
 

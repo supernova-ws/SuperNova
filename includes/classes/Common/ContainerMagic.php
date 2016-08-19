@@ -77,8 +77,6 @@ class ContainerMagic {
 
   /**
    * Clears container contents
-   *
-   * @return mixed
    */
   public function clear() {
     $this->values = array();

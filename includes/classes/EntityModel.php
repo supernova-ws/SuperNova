@@ -6,6 +6,16 @@
  * This class have only one instance - i.e. is a service
  * Describes persistent entity - which can be loaded from/stored to storage
  *
+ *
+ * Introduces linked models and export/import operations
+ *
+ * Importer is a callable like
+ *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
+ *
+ * Exporter is a callable like
+ *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
+ *
+ *
  * @property int|float|string $dbId EntityModel unique ID for entire entities' set
  */
 class EntityModel {
@@ -59,18 +69,27 @@ class EntityModel {
    */
   protected $accessors = array();
 
-  protected function assignAccessor($varName, $type, $callable) {
+  public function setAccessor($varName, $processor, $callable) {
     if (empty($callable)) {
       return;
     }
 
     if (is_callable($callable)) {
-      $this->accessors[$varName][$type] = $callable;
+      $this->accessors[$varName][$processor] = $callable;
     } else {
-      throw new \Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $type . '] is not a callable or not accessible in the scope');
+      throw new \Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $processor . '] is not a callable or not accessible in the scope');
     }
   }
 
+  /**
+   * @param $varName
+   * @param $processor
+   *
+   * @return callable|null
+   */
+  public function getAccessor($varName, $processor) {
+    return isset($this->accessors[$varName][$processor]) ? $this->accessors[$varName][$processor] : null;
+  }
 
   /**
    * EntityModel constructor.
@@ -123,6 +142,42 @@ class EntityModel {
 
 
   /**
+   * @param \EntityContainer $that
+   * @param string           $processor
+   */
+  protected function processRow($that, $processor) {
+    foreach ($this->properties as $propertyName => $propertyData) {
+      $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
+      if (isset($this->accessors[$propertyName][$processor])) {
+        call_user_func_array($this->accessors[$propertyName][$processor], array($that, $propertyName, $fieldName));
+      } elseif ($fieldName) {
+        if ($processor == P_CONTAINER_IMPORT) {
+          $that->$propertyName = isset($that->row[$fieldName]) ? $that->row[$fieldName] : null;
+        } else {
+          $that->row += array($fieldName => $that->$propertyName);
+        }
+      }
+      // Otherwise it's internal field - filled and used internally
+    }
+  }
+
+  /**
+   * Import DB row state into object properties
+   *
+   * @param EntityContainer $cEntity
+   * @param array           $row
+   */
+  protected function importRow($cEntity, $row) {
+//    $this->clearProperties($cEntity);
+    $cEntity->clear();
+    $cEntity->row = $row;
+
+    if (is_array($row) && !empty($row)) {
+      $this->processRow($cEntity, P_CONTAINER_IMPORT);
+    }
+  }
+
+  /**
    * @param array $array
    *
    * @return \EntityContainer
@@ -132,7 +187,7 @@ class EntityModel {
      * @var EntityContainer $cEntity
      */
     $cEntity = $this->getContainer();
-    $cEntity->importRow($array);
+    $this->importRow($cEntity, $array);
 
     return $cEntity;
   }
@@ -142,11 +197,10 @@ class EntityModel {
    * Exports object properties to DB row state with ID
    *
    * @param \EntityContainer $cEntity
-   *
-   * @return array
    */
-  protected function exportRow($cEntity) {
-    return $cEntity->exportRow();
+  public function exportRow($cEntity) {
+    $cEntity->row = array();
+    $this->processRow($cEntity, P_CONTAINER_EXPORT);
   }
 
   /**
@@ -155,17 +209,14 @@ class EntityModel {
    * Useful for INSERT operations
    *
    * @param \EntityContainer $cEntity
-   *
-   * @return array
    */
   protected function exportRowNoId($cEntity) {
-    $row = $cEntity->exportRow();
+    $this->exportRow($cEntity);
 
-    unset($row[$this->getIdFieldName()]);
-
-    return $row;
+    if ($this->getIdFieldName() != '') {
+      unset($cEntity->row[$this->getIdFieldName()]);
+    }
   }
-
 
   /**
    * @return \EntityContainer
@@ -174,9 +225,9 @@ class EntityModel {
     /**
      * @var \EntityContainer $container
      */
-    $container = new $this->entityContainerClass();
-    $container->setProperties($this->properties);
-    $container->setAccessors($this->accessors);
+    $container = new $this->entityContainerClass($this);
+//    $container->setProperties($this->properties);
+//    $container->setAccessors($this->accessors);
 
     return $container;
   }
@@ -215,5 +266,16 @@ class EntityModel {
   public function isNew($cEntity) {
     return $cEntity->isEmpty();
   }
+
+//  /**
+//   * Clears only properties which declared in $properties array
+//   *
+//   * @param EntityContainer $cEntity
+//   */
+//  public function clearProperties($cEntity) {
+//    foreach ($this->properties as $propertyName => $propertyData) {
+//      unset($cEntity->$propertyName);
+//    }
+//  }
 
 }

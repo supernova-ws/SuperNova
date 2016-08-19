@@ -12,7 +12,7 @@ class Types {
    */
   public function castAs($type, $value) {
     // TODO: Here should be some conversions to property type
-    switch ($type) {
+    switch($type) {
       case TYPE_INTEGER:
         $value = intval($value);
       break;
@@ -45,21 +45,31 @@ class Types {
     return $value;
   }
 
-  public function dateTimeImport($that, &$row, $propertyName, $fieldName) {
-    if (isset($row[$fieldName])) {
-      $dateTime = new \DateTime($row[$fieldName]);
+  /**
+   * @param \EntityContainer $that
+   * @param string           $propertyName
+   * @param string           $fieldName
+   */
+  public function dateTimeImport($that, $propertyName, $fieldName) {
+    if (isset($that->row[$fieldName])) {
+      $dateTime = new \DateTime($that->row[$fieldName]);
     } else {
       $dateTime = null;
     }
     $that->$propertyName = $dateTime;
   }
 
-  public function dateTimeExport($that, &$row, $propertyName, $fieldName) {
+  /**
+   * @param \EntityContainer $that
+   * @param string           $propertyName
+   * @param string           $fieldName
+   */
+  public function dateTimeExport($that, $propertyName, $fieldName) {
     $dateTime = $that->$propertyName;
     if ($dateTime instanceof \DateTime) {
-      $row[$fieldName] = $dateTime->format(FMT_DATE_TIME_SQL);
+      $that->row[$fieldName] = $dateTime->format(FMT_DATE_TIME_SQL);
     } else {
-      $row[$fieldName] = null;
+      $that->row[$fieldName] = null;
     }
   }
 

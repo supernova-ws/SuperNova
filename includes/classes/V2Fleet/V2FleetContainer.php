@@ -11,6 +11,7 @@ use V2Unit\V2UnitList;
 /**
  * Class V2FleetContainer
  *
+ * Entity Properties
  * @property mixed      $dbId
  * @property mixed      $ownerId
  * @property int        $missionType
@@ -18,14 +19,14 @@ use V2Unit\V2UnitList;
  * @property int        $timeArrive
  * @property int        $timeComplete
  * @property int        $timeReturn
+ * @property int        $status
  *
  * @property V2UnitList $units
+ *
+ * Functionals
+ * @property bool       $isReturning
  *
  * @package V2Fleet
  */
 class V2FleetContainer extends \EntityContainer {
-
-  public function __construct() {
-  }
-
 }

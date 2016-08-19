@@ -76,17 +76,17 @@ class V2UnitModel extends \EntityModel {
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
-    $this->assignAccessor('snId', P_CONTAINER_SET, array($this, 'setSnId'));
-    $this->assignAccessor('snId', P_CONTAINER_UNSET, array($this, 'unsetSnId'));
+    $this->setAccessor('snId', P_CONTAINER_SET, array($this, 'setSnId'));
+    $this->setAccessor('snId', P_CONTAINER_UNSET, array($this, 'unsetSnId'));
 
     // This crap code is until php 5.4+. There we can use $this binding for lambdas
     $propertyName = 'timeStart';
-    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
-    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
+    $this->setAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
+    $this->setAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
 
     $propertyName = 'timeFinish';
-    $this->assignAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
-    $this->assignAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
+    $this->setAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
+    $this->setAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
   }
 
   public function setSnId(V2UnitContainer $that, $value) {

@@ -3,7 +3,6 @@
 namespace V2Unit;
 
 use Common\IndexedObjectStorage;
-use Common\IUnitLocationV2;
 use DBStatic\DBStaticUnit;
 
 /**
