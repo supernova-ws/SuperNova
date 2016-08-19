@@ -11,7 +11,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a52.18# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a52.34# copyright © 2009-2015 Gorlum',
 
     'root_relative' => '',
 

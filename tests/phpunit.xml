@@ -3,8 +3,8 @@
 >
     <filter>
         <whitelist processUncoveredFilesFromWhitelist="false">
-            <!--<file>../includes/classes/HelperArray.php</file>-->
-            <directory suffix=".php">../includes/classes/</directory>
+            <!--<file>../classes/HelperArray.php</file>-->
+            <directory suffix=".php">../classes/</directory>
 
             <!--<directory suffix=".php">../</directory>-->
             <exclude>

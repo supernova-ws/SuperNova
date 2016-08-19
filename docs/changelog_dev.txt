@@ -2753,7 +2753,7 @@ BONUS_ABILITY - deprecated ???
         - По умолчанию используется db_mysql_v5. В случае проблем с PHP у хостера можно попробовать использовать db_mysql_v4
         - Подробнее о разнице в интерфейсах MySQL API можно прочитать тут: http://php.net/manual/en/mysqlinfo.api.choosing.php
         - Так же можно написать свой драйвер по примеру предоставленных. Результаты его методов должны эмулировать поведение MySQL
-        - Драйвера находятся в каталоге /includes/classes/
+        - Драйвера находятся в каталоге /classes/
     В auth_local избавились от F_INPUT
 
 [!] Код/СН
@@ -2945,7 +2945,7 @@ BONUS_ABILITY - deprecated ???
 
 2015-08-13 18:20:58 40a7.1
 [~] Код
-    Кодировка файла includes/classes/core_classes.php изменен на UTF-8
+    Кодировка файла classes/core_classes.php изменен на UTF-8
     Добавлен список блокировки родительских записей для поддержки LOC_FLEET
     Добавлено сохранение NULL в db_changeset как NULL в MySQL
     Добавлена новая отладочная функция print_rr()
@@ -4876,7 +4876,7 @@ BONUS_ABILITY - deprecated ???
     Исправлена ошибка отправки многострочных сообщений
 
 [@] Код
-    Исправлено предупреждение в /includes/classes/supernova.php line 125
+    Исправлено предупреждение в /classes/supernova.php line 125
 
 
 2014-10-22 21:26:13 39a13.7
@@ -13020,7 +13020,7 @@ player_vacation_time). Добавлена опция player_delete_time
 
 2010-10-13 09:39
 [@] Добавлены  новые   переменные   game_default_language,   game_default_skin,
-    game_default_template. Подробнее см. includes/classes/cache.php . Их  можно
+    game_default_template. Подробнее см. classes/cache.php . Их  можно
     изменить на странице настройки сервера
 [@] Отформатирован update.php в PCG1
 

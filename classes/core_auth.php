@@ -9,14 +9,14 @@ use DBStatic\DBStaticUser;
  *
  * Created by Gorlum 21.04.2015 3:51
  *
- * version #41a52.18#
+ * version #41a52.34#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a52.18# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a52.34# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -166,7 +166,7 @@ class core_auth extends sn_module {
   public function __assign_vars() {
     return array(
       'sn_data[pages]' => array(
-        'player_register' => 'includes/classes/core_auth',
+        'player_register' => 'classes/core_auth',
       ),
     );
   }

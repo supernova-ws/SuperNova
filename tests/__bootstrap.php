@@ -11,7 +11,7 @@ $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PT
 require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
 require_once SN_ROOT_PHYSICAL . 'includes/general.php';
 
-empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'includes/classes/' : false;
+empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'classes/' : false;
 spl_autoload_register(function ($class) use ($classRoot) {
   $class = str_replace('\\', '/', $class);
   if (file_exists($classRoot . $class . '.php')) {

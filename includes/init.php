@@ -81,7 +81,7 @@ header('Content-type: text/html; charset=utf-8');
 ob_start();
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
-empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'includes/classes/' : false;
+empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'classes/' : false;
 spl_autoload_register(function ($class) use ($classRoot) {
   $class = str_replace('\\', '/', $class);
   if (file_exists($classRoot . $class . '.php')) {

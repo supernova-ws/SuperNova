@@ -1085,7 +1085,7 @@ Project "SuperNova.WS" Release 39 "2014 annual joint operation report"
       - DEBUG_SQL_ONLINE - включает лог SQL-запросов в таблицу `logs`. Так же подразумевает DEBUG_SQL_COMMENT
     Теперь можно отключить защиту от взаимодействия аккаунтов с одним IP выставив в таблице `config` параметр `game_multiaccount_enabled` в 1
     Убраны BOM-префиксы в исходниках - таким образом, восстановлена работа создания баннера на странице "Заработай ТМ" и, собственно, сама генерация баннера
-    Исправлено предупреждение в /includes/classes/supernova.php line 125
+    Исправлено предупреждение в /classes/supernova.php line 125
     Исправлено предупреждение Warning: Invalid argument supplied for foreach() in includes/db.php on line 365
     Исправлено предупреждение в uni_coordinates_valid()
     Поставлены заглушки для будущей поддержки GeoIP

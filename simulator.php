@@ -32,7 +32,7 @@ if($_POST['submit'] || $execute)
   $replay = sn_ube_simulator_encode_replay($sym_defender, 'D');
   $replay .= sn_ube_simulator_encode_replay($sym_attacker, 'A');
 
-  require_once('includes/classes/UBE/UBE.php');
+  require_once('classes/UBE/UBE.php');
   UBE::display_simulator($sym_attacker, $sym_defender);
 }
 else
