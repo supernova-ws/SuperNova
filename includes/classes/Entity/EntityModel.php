@@ -1,7 +1,10 @@
 <?php
+namespace Entity;
+
+use Entity\EntityContainer;
 
 /**
- * Class EntityModel
+ * Class Entity\EntityModel
  *
  * This class have only one instance - i.e. is a service
  * Describes persistent entity - which can be loaded from/stored to storage
@@ -16,7 +19,6 @@
  *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
  *
  *
- * @property int|float|string $dbId EntityModel unique ID for entire entities' set
  */
 class EntityModel {
   /**
@@ -33,22 +35,24 @@ class EntityModel {
    * @var string $tableName
    */
   protected $tableName = '_table';
+
   /**
    * Name of key field field in this table
    *
    * @var string $idField
    */
+  // TODO - remove
   protected $idField = 'id';
 
   /**
    * Name of exception class that would be thrown
    *
    * Uses for calling when you don't know which exact exception should be called
-   * On EntityModel's children should be used exception class name
+   * On Entity\EntityModel's children should be used exception class name
    *
    * @var string $exceptionClass
    */
-  protected $exceptionClass = 'EntityException';
+  protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = '\EntityContainer';
 
   /**
@@ -63,93 +67,31 @@ class EntityModel {
   protected $properties = array();
 
   /**
-   * Array of accessors - getters/setters/etc
-   *
-   * @var callable[][]
+   * @var \Common\Accessors $accessors
    */
-  protected $accessors = array();
+  protected $accessors;
 
-  public function setAccessor($varName, $processor, $callable) {
-    if (empty($callable)) {
-      return;
-    }
-
-    if (is_callable($callable)) {
-      $this->accessors[$varName][$processor] = $callable;
-    } else {
-      throw new \Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $processor . '] is not a callable or not accessible in the scope');
-    }
-  }
 
   /**
-   * @param $varName
-   * @param $processor
-   *
-   * @return callable|null
-   */
-  public function getAccessor($varName, $processor) {
-    return isset($this->accessors[$varName][$processor]) ? $this->accessors[$varName][$processor] : null;
-  }
-
-  /**
-   * EntityModel constructor.
+   * Entity\EntityModel constructor.
    *
    * @param \Common\GlobalContainer $gc
    */
   public function __construct($gc) {
     // Here own rowOperator can be made - if needed to operate other, non-global, DB
     $this->rowOperator = $gc->dbGlobalRowOperator;
+    $this->accessors = new \Common\Accessors();
   }
 
   /**
-   * @return \DbRowDirectOperator
-   */
-  public function getRowOperator() {
-    return $this->rowOperator;
-  }
-
-  /**
-   * @param string $value
-   */
-  public function setTableName($value) {
-    $this->tableName = $value;
-  }
-
-  /**
-   * Gets entity's table name
-   *
-   * @return string
-   */
-  public function getTableName() {
-    return $this->tableName;
-  }
-
-  /**
-   * @param string $value
-   */
-  public function setIdFieldName($value) {
-    $this->idField = $value;
-  }
-
-  /**
-   * Gets entity's DB ID field name (which is unique within entity set)
-   *
-   * @return string
-   */
-  public function getIdFieldName() {
-    return $this->idField;
-  }
-
-
-  /**
-   * @param \EntityContainer $that
-   * @param string           $processor
+   * @param \Entity\EntityContainer $that
+   * @param string                  $processor
    */
   protected function processRow($that, $processor) {
     foreach ($this->properties as $propertyName => $propertyData) {
       $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
-      if (isset($this->accessors[$propertyName][$processor])) {
-        call_user_func_array($this->accessors[$propertyName][$processor], array($that, $propertyName, $fieldName));
+      if ($this->accessors->haveAccessor($propertyName, $processor)) {
+        $this->accessors->invokeProcessor($propertyName, $processor, array($that, $propertyName, $fieldName));
       } elseif ($fieldName) {
         if ($processor == P_CONTAINER_IMPORT) {
           $that->$propertyName = isset($that->row[$fieldName]) ? $that->row[$fieldName] : null;
@@ -167,9 +109,8 @@ class EntityModel {
    * @param EntityContainer $cEntity
    * @param array           $row
    */
-  protected function importRow($cEntity, $row) {
-//    $this->clearProperties($cEntity);
-    $cEntity->clear();
+  public function importRow($cEntity, $row) {
+    $cEntity->clear(); // ????????????????????? clearProperties($cEntity)
     $cEntity->row = $row;
 
     if (is_array($row) && !empty($row)) {
@@ -180,23 +121,22 @@ class EntityModel {
   /**
    * @param array $array
    *
-   * @return \EntityContainer
+   * @return \Entity\EntityContainer
    */
   public function fromArray($array) {
     /**
      * @var EntityContainer $cEntity
      */
-    $cEntity = $this->getContainer();
+    $cEntity = $this->buildContainer();
     $this->importRow($cEntity, $array);
 
     return $cEntity;
   }
 
-
   /**
    * Exports object properties to DB row state with ID
    *
-   * @param \EntityContainer $cEntity
+   * @param \Entity\EntityContainer $cEntity
    */
   public function exportRow($cEntity) {
     $cEntity->row = array();
@@ -204,26 +144,11 @@ class EntityModel {
   }
 
   /**
-   * Exports object properties to DB row state WITHOUT ID
-   *
-   * Useful for INSERT operations
-   *
-   * @param \EntityContainer $cEntity
+   * @return \Entity\EntityContainer
    */
-  protected function exportRowNoId($cEntity) {
-    $this->exportRow($cEntity);
-
-    if ($this->getIdFieldName() != '') {
-      unset($cEntity->row[$this->getIdFieldName()]);
-    }
-  }
-
-  /**
-   * @return \EntityContainer
-   */
-  public function getContainer() {
+  public function buildContainer() {
     /**
-     * @var \EntityContainer $container
+     * @var \Entity\EntityContainer $container
      */
     $container = new $this->entityContainerClass($this);
 //    $container->setProperties($this->properties);
@@ -236,7 +161,7 @@ class EntityModel {
   /**
    * @param int|string $dbId
    *
-   * @return \EntityContainer|false
+   * @return \Entity\EntityContainer|false
    */
   public function loadById($dbId) {
     $row = $this->rowOperator->getById($this, $dbId);
@@ -263,19 +188,81 @@ class EntityModel {
    *
    * @return bool
    */
+  // TODO - Loaded flag ?????
   public function isNew($cEntity) {
     return $cEntity->isEmpty();
   }
 
+
 //  /**
 //   * Clears only properties which declared in $properties array
 //   *
-//   * @param EntityContainer $cEntity
+//   * @param Entity\EntityContainer $cEntity
 //   */
 //  public function clearProperties($cEntity) {
 //    foreach ($this->properties as $propertyName => $propertyData) {
 //      unset($cEntity->$propertyName);
 //    }
 //  }
+
+
+  /**
+   * @return \DbRowDirectOperator
+   */
+  public function getRowOperator() {
+    return $this->rowOperator;
+  }
+
+  /**
+   * @param string $value
+   */
+  public function setTableName($value) {
+    $this->tableName = $value;
+  }
+
+  /**
+   * Gets entity's table name
+   *
+   * @return string
+   */
+  public function getTableName() {
+    return $this->tableName;
+  }
+
+//  /**
+//   * @param string $value
+//   */
+//  public function setIdFieldName($value) {
+//    $this->idField = $value;
+//  }
+//  /**
+//   * Gets entity's DB ID field name (which is unique within entity set)
+//   *
+//   * @return string
+//   */
+//  public function getIdFieldName() {
+//    return $this->idField;
+//  }
+
+  /**
+   * @return array[]
+   */
+  public function getProperties() {
+    return $this->properties;
+  }
+
+  /**
+   * @param $array
+   */
+  public function extendProperties($array) {
+    $this->properties += $array;
+  }
+
+  /**
+   * @return \Common\Accessors
+   */
+  public function getAccessors() {
+    return $this->accessors;
+  }
 
 }

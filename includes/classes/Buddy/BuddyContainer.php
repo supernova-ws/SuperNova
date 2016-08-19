@@ -16,7 +16,7 @@ namespace Buddy;
  *
  * @package Buddy
  */
-class BuddyContainer extends \EntityContainer {
+class BuddyContainer extends \Entity\KeyedContainer {
 
   public function isEmpty() {
     return

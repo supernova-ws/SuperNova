@@ -10,7 +10,7 @@ namespace V2Unit;
  *
  * @method V2UnitModel getModel()
  *
- * @property int|string $dbId Entity DB ID
+ * property int|string $dbId Entity DB ID
  * @property int|string $playerOwnerId
  * @property int        $locationType
  * @property int|string $locationId
@@ -29,7 +29,7 @@ namespace V2Unit;
  *
  * @package V2Unit
  */
-class V2UnitContainer extends \EntityContainer {
+class V2UnitContainer extends \Entity\KeyedContainer {
 
   protected $featureLocator;
 

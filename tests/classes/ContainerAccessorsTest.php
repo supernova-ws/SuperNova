@@ -40,29 +40,29 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(null, $this->object->p1);
   }
 
-  /**
-   * @covers ::setAccessors
-   */
-  public function testSetAccessors() {
-    $this->object->setAccessors(array('test'));
+//  /**
+//   * @covers ::setAccessors
+//   */
+//  public function testSetAccessors() {
+//    $this->object->setAccessors(array('test'));
+//
+//    $this->assertAttributeEquals(array('test'), 'accessors', $this->object);
+//  }
 
-    $this->assertAttributeEquals(array('test'), 'accessors', $this->object);
-  }
-
-  /**
-   * @covers ::assignAccessor
-   */
-  public function testAssignAccessor() {
-    $this->object->setAccessor('test', P_CONTAINER_GET, null);
-    $this->assertAttributeEquals(array(), 'accessors', $this->object);
-
-    $lambda = function(){};
-    $this->object->setAccessor('test', P_CONTAINER_GET, $lambda);
-    $this->assertAttributeEquals(array('test' => array(P_CONTAINER_GET => $lambda)), 'accessors', $this->object);
-
-    $this->setExpectedException('Exception', 'Error assigning callable in ContainerAccessors! Callable typed [' . P_CONTAINER_GET . '] is not a callable or not accessible in the scope');
-    $this->object->setAccessor('test', P_CONTAINER_GET, 1);
-  }
+//  /**
+//   * @covers ::assignAccessor
+//   */
+//  public function testAssignAccessor() {
+//    $this->object->setAccessor('test', P_CONTAINER_GET, null);
+//    $this->assertAttributeEquals(array(), 'accessors', $this->object);
+//
+//    $lambda = function(){};
+//    $this->object->setAccessor('test', P_CONTAINER_GET, $lambda);
+//    $this->assertAttributeEquals(array('test' => array(P_CONTAINER_GET => $lambda)), 'accessors', $this->object);
+//
+//    $this->setExpectedException('Exception', 'Error assigning callable in ContainerAccessors! Callable typed [' . P_CONTAINER_GET . '] is not a callable or not accessible in the scope');
+//    $this->object->setAccessor('test', P_CONTAINER_GET, 1);
+//  }
 
   /**
    * @covers ::__set

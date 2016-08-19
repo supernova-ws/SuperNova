@@ -2,7 +2,7 @@
 
 namespace Buddy;
 
-use EntityException;
+use Entity\EntityException;
 
 class BuddyException extends EntityException {
 

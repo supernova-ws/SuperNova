@@ -10,14 +10,14 @@ namespace V2Unit;
  *
  * Second iteration of revised Unit
  *
- * @method V2UnitContainer getContainer()
+ * @method V2UnitContainer buildContainer()
  * @method V2UnitContainer fromArray(array $array)
  *
  * @package V2Unit
  *
  */
 
-class V2UnitModel extends \EntityModel {
+class V2UnitModel extends \Entity\KeyedModel {
   /**
    * Name of table for this entity
    *
@@ -31,62 +31,101 @@ class V2UnitModel extends \EntityModel {
    */
   protected $idField = 'unit_id';
 
-//  protected $exceptionClass = 'EntityException';
+//  protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Unit\V2UnitContainer';
 
-  protected $properties = array(
-    'dbId'                => array(
-      P_DB_FIELD => 'unit_id',
-    ),
-    'playerOwnerId'       => array(
-      P_DB_FIELD => 'unit_player_id',
-    ),
-    'locationType'        => array(
-      P_DB_FIELD => 'unit_location_type',
-    ),
-    'locationId'          => array(
-      P_DB_FIELD => 'unit_location_id',
-    ),
-    'type'                => array(
-      P_DB_FIELD => 'unit_type',
-    ),
-    'snId'                => array(
-      P_DB_FIELD => 'unit_snid',
-    ),
-    // Order is important!
-    // TODO - split dbLevel to level and count
-    'level'               => array(
-      P_DB_FIELD => 'unit_level',
-    ),
-    'count'               => array(),
-    // TODO - move to child class
-    'timeStart'           => array(
-      P_DB_FIELD => 'unit_time_start',
-    ),
-    'timeFinish'          => array(
-      P_DB_FIELD => 'unit_time_finish',
-    ),
-    // Do we need it? Or internal no info/getters/setters should be ignored?
-    'unitInfo'            => array(),
-    'isStackable'         => array(),
-    'locationDefaultType' => array(),
-    'bonusType'           => array(),
-  );
+//  protected $properties = array(
+//    'dbId'                => array(
+//      P_DB_FIELD => 'unit_id',
+//    ),
+//    'playerOwnerId'       => array(
+//      P_DB_FIELD => 'unit_player_id',
+//    ),
+//    'locationType'        => array(
+//      P_DB_FIELD => 'unit_location_type',
+//    ),
+//    'locationId'          => array(
+//      P_DB_FIELD => 'unit_location_id',
+//    ),
+//    'type'                => array(
+//      P_DB_FIELD => 'unit_type',
+//    ),
+//    'snId'                => array(
+//      P_DB_FIELD => 'unit_snid',
+//    ),
+//    // Order is important!
+//    // TODO - split dbLevel to level and count
+//    'level'               => array(
+//      P_DB_FIELD => 'unit_level',
+//    ),
+//    'count'               => array(),
+//    // TODO - move to child class
+//    'timeStart'           => array(
+//      P_DB_FIELD => 'unit_time_start',
+//    ),
+//    'timeFinish'          => array(
+//      P_DB_FIELD => 'unit_time_finish',
+//    ),
+//    // Do we need it? Or internal no info/getters/setters should be ignored?
+//    'unitInfo'            => array(),
+//    'isStackable'         => array(),
+//    'locationDefaultType' => array(),
+//    'bonusType'           => array(),
+//  );
 
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
-    $this->setAccessor('snId', P_CONTAINER_SET, array($this, 'setSnId'));
-    $this->setAccessor('snId', P_CONTAINER_UNSET, array($this, 'unsetSnId'));
+
+    $this->extendProperties(
+      array(
+        'playerOwnerId'       => array(
+          P_DB_FIELD => 'unit_player_id',
+        ),
+        'locationType'        => array(
+          P_DB_FIELD => 'unit_location_type',
+        ),
+        'locationId'          => array(
+          P_DB_FIELD => 'unit_location_id',
+        ),
+        'type'                => array(
+          P_DB_FIELD => 'unit_type',
+        ),
+        'snId'                => array(
+          P_DB_FIELD => 'unit_snid',
+        ),
+        // Order is important!
+        // TODO - split dbLevel to level and count
+        'level'               => array(
+          P_DB_FIELD => 'unit_level',
+        ),
+        'count'               => array(),
+        // TODO - move to child class
+        'timeStart'           => array(
+          P_DB_FIELD => 'unit_time_start',
+        ),
+        'timeFinish'          => array(
+          P_DB_FIELD => 'unit_time_finish',
+        ),
+        // Do we need it? Or internal no info/getters/setters should be ignored?
+        'unitInfo'            => array(),
+        'isStackable'         => array(),
+        'locationDefaultType' => array(),
+        'bonusType'           => array(),
+      )
+    );
+
+    $this->accessors->setAccessor('snId', P_CONTAINER_SET, array($this, 'setSnId'));
+    $this->accessors->setAccessor('snId', P_CONTAINER_UNSET, array($this, 'unsetSnId'));
 
     // This crap code is until php 5.4+. There we can use $this binding for lambdas
     $propertyName = 'timeStart';
-    $this->setAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
-    $this->setAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
+    $this->accessors->setAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
+    $this->accessors->setAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
 
     $propertyName = 'timeFinish';
-    $this->setAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
-    $this->setAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
+    $this->accessors->setAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
+    $this->accessors->setAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
   }
 
   public function setSnId(V2UnitContainer $that, $value) {
@@ -122,7 +161,7 @@ class V2UnitModel extends \EntityModel {
    * @param V2UnitContainer $unitCaptain
    * @param int|string      $userId
    *
-   * @throws \EntityException
+   * @throws \Entity\EntityException
    */
   // TODO - move to unitCaptain
   public function validateCaptainVsUser($unitCaptain, $userId) {
@@ -164,7 +203,7 @@ class V2UnitModel extends \EntityModel {
 
   /**
    * @param V2UnitContainer $cUnit
-   * @param string $featureName
+   * @param string          $featureName
    *
    * return UnitFeature
    *

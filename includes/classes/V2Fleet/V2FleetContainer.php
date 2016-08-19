@@ -12,7 +12,7 @@ use V2Unit\V2UnitList;
  * Class V2FleetContainer
  *
  * Entity Properties
- * @property mixed      $dbId
+ * property mixed      $dbId
  * @property mixed      $ownerId
  * @property int        $missionType
  * @property int        $timeDeparture
@@ -28,5 +28,5 @@ use V2Unit\V2UnitList;
  *
  * @package V2Fleet
  */
-class V2FleetContainer extends \EntityContainer {
+class V2FleetContainer extends \Entity\KeyedContainer {
 }

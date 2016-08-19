@@ -3,10 +3,11 @@
 /**
  * Created by Gorlum 12.08.2016 15:24
  */
+use Entity\EntityContainer;
 
 /**
  * Class EntityContainerTest
- * @coversDefaultClass EntityContainer
+ * @coversDefaultClass Entity\EntityContainer
  */
 
 class EntityContainerTest extends PHPUnit_Framework_TestCase {
@@ -24,7 +25,7 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
   public function setUp() {
     parent::setUp();
 //    $this->gc = new \Common\GlobalContainer();
-//    $this->object = new EntityContainer($this->gc);
+//    $this->object = new Entity\EntityContainer($this->gc);
   }
 
   public function tearDown() {
@@ -34,7 +35,7 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::setProperties
+   * covers ::setProperties
    */
   public function testSetProperties() {
 //    $this->object->setProperties(array('p1' => array()));
@@ -42,7 +43,7 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::clearProperties
+   * covers ::clearProperties
    * @covers ::__unset
    */
   public function testClearProperties() {

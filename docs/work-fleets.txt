@@ -1,4 +1,4 @@
-class EntityContainer extends ContainerAccessors
+class Entity\EntityContainer extends ContainerAccessors
     - один из этих двух классов нэ нужэн
 
 
@@ -20,7 +20,7 @@ flying_fleets.php
 
 
 
-- EntityModel
+- Entity\EntityModel
     - Базовый класс для персистентной энтити
     - Знает
         - структуру данных контейнера - $properties
@@ -80,7 +80,7 @@ flying_fleets.php
 // TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же
 
 
-// TODO - EntityModel - сделать трейт TMagicArray - реализацию IMagicAccess, которая обращается к свойствам через интерфейс ArrayAccess
+// TODO - Entity\EntityModel - сделать трейт TMagicArray - реализацию IMagicAccess, которая обращается к свойствам через интерфейс ArrayAccess
 
 
 // TODO - Друзья
@@ -93,7 +93,7 @@ flying_fleets.php
         - remove transaction related function from db.php
             - global transaction start function - for all DBs
                 - WHy WE FUCKING SHOULD EVER NEED IT?!!!
-                    - Each EntityModel should handle transaction by themselves !!!!!!!!!!
+                    - Each Entity\EntityModel should handle transaction by themselves !!!!!!!!!!
                     - Otherwise - it's wrong architecture design
                     - Yep, it's wrong design - but currently we working with wat we have
                 - So we NEED this functions if working across DBs - i.e. Global Auth
@@ -120,17 +120,17 @@ pdie();
 $unitList = new \V2Unit\V2UnitList();
 $model = classSupernova::$gc->unitModel;
 
-$unit = $model->getContainer();
+$unit = $model->buildContainer();
 $unit->importRow(array('unit_snid' => RES_METAL));
 $unitList->attach($unit);
 unset($unit);
 
-$unit = $model->getContainer();
+$unit = $model->buildContainer();
 $unit->importRow(array('unit_snid' => STRUC_ALLY_DEPOSIT));
 $unitList->attach($unit);
 unset($unit);
 
-$unit = $model->getContainer();
+$unit = $model->buildContainer();
 $unit->importRow(array('unit_snid' => RES_CRYSTAL));
 $unitList->attach($unit);
 unset($unit);
@@ -214,10 +214,10 @@ pdie();
             - better - model
         - properties, table, idfieldname - back to model!
 
-    - Добавить $model в EntityContainer что бы не надо было иметь собственные переменные и заполнять их?
+    - Добавить $model в Entity\EntityContainer что бы не надо было иметь собственные переменные и заполнять их?
     - isEmpty, isNew перенести в модель - только модель может оценивать пустой контейнер или новый
     - clearProperties() -> назад в clear()
-        - EntityContainer всегда содержит только пропертя. Всё остальное - либо в полях, либо в DI
+        - Entity\EntityContainer всегда содержит только пропертя. Всё остальное - либо в полях, либо в DI
 
     - INSERT INTO ON DUPLICATE KEY UPDATE - вместо REPLACE!!!!!!!!!!
         - http://php.net/manual/en/mysqli.affected-rows.php - comments
@@ -338,7 +338,7 @@ function idval($value, $default = 0) { - переделать под int|string
     - public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null) {
         - Эксепшны и обработка
 
-    - EntityContainer
+    - Entity\EntityContainer
         - SETted values cannot be ADJUSTed
         - ADJUSTed values cannot be SETted
 

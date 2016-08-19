@@ -46,9 +46,9 @@ class Types {
   }
 
   /**
-   * @param \EntityContainer $that
-   * @param string           $propertyName
-   * @param string           $fieldName
+   * @param \Entity\EntityContainer $that
+   * @param string                  $propertyName
+   * @param string                  $fieldName
    */
   public function dateTimeImport($that, $propertyName, $fieldName) {
     if (isset($that->row[$fieldName])) {
@@ -60,9 +60,9 @@ class Types {
   }
 
   /**
-   * @param \EntityContainer $that
-   * @param string           $propertyName
-   * @param string           $fieldName
+   * @param \Entity\EntityContainer $that
+   * @param string                  $propertyName
+   * @param string                  $fieldName
    */
   public function dateTimeExport($that, $propertyName, $fieldName) {
     $dateTime = $that->$propertyName;

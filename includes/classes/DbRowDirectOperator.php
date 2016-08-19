@@ -3,7 +3,7 @@
 /**
  * Class DbRowDirectOperator
  *
- * Handle EntityModel storing/loading operations
+ * Handle Entity\EntityModel storing/loading operations
  */
 class DbRowDirectOperator {
   protected $db;
@@ -18,8 +18,8 @@ class DbRowDirectOperator {
   }
 
   /**
-   * @param \EntityModel $cModel
-   * @param int|string   $dbId
+   * @param \Entity\KeyedModel $cModel
+   * @param int|string          $dbId
    *
    * @return array
    */
@@ -34,8 +34,8 @@ class DbRowDirectOperator {
   }
 
   /**
-   * @param \EntityModel $cModel
-   * @param int|string   $dbId
+   * @param \Entity\KeyedModel $cModel
+   * @param int|string          $dbId
    *
    * @return int
    */
@@ -53,8 +53,8 @@ class DbRowDirectOperator {
   }
 
   /**
-   * @param \EntityModel $cModel
-   * @param array        $row
+   * @param \Entity\EntityModel $cModel
+   * @param array               $row
    *
    * @return int|string
    */

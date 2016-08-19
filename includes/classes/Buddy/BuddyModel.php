@@ -10,7 +10,7 @@ use DBStatic\DBStaticUser;
 /**
  * Class BuddyModel
  *
- * @method BuddyContainer getContainer()
+ * @method BuddyContainer buildContainer()
  * @method BuddyContainer loadById(int|string $dbId)
  *
  * property int|float|string $playerSenderId Who makes buddy request
@@ -20,7 +20,7 @@ use DBStatic\DBStaticUser;
  *
  * @package Buddy
  */
-class BuddyModel extends \EntityModel {
+class BuddyModel extends \Entity\KeyedModel{
 
   /**
    * Name of table for this entity
@@ -54,6 +54,30 @@ class BuddyModel extends \EntityModel {
       P_DB_FIELD => 'BUDDY_REQUEST',
     ),
   );
+
+  public function __construct(\Common\GlobalContainer $gc) {
+    parent::__construct($gc);
+    $this->extendProperties(
+        array(
+//      'dbId'           => array(
+//        P_DB_FIELD => 'BUDDY_ID',
+//      ),
+      'playerSenderId' => array(
+        P_DB_FIELD => 'BUDDY_SENDER_ID',
+      ),
+      'playerOwnerId'  => array(
+        P_DB_FIELD => 'BUDDY_OWNER_ID',
+      ),
+      'buddyStatusId'  => array(
+        P_DB_FIELD => 'BUDDY_STATUS',
+      ),
+      'requestText'    => array(
+        P_DB_FIELD => 'BUDDY_REQUEST',
+      ),
+    )
+
+    );
+  }
 
   /**
    * @param BuddyContainer $cBuddy
@@ -247,7 +271,7 @@ class BuddyModel extends \EntityModel {
     $params->newFriendIdSafe = $new_friend_row['id'];
     DBStaticMessages::msgSendFromPlayerBuddy($params, 'buddy_msg_adding_title', 'buddy_msg_adding_text');
 
-    $cBuddy = $this->getContainer();
+    $cBuddy = $this->buildContainer();
     $cBuddy->playerSenderId = $params->playerId;
     $cBuddy->playerOwnerId = $new_friend_row['id'];
     $cBuddy->buddyStatusId = BUDDY_REQUEST_WAITING;

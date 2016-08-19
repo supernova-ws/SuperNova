@@ -1,8 +1,11 @@
 <?php
 
+namespace Entity;
+
+use ContainerAccessors;
+
 /**
- * Class EntityContainer
- *
+ * Class Entity\EntityContainer
  *
  * @property array $row - Entity row read from DB
  */
@@ -13,11 +16,19 @@ class EntityContainer extends ContainerAccessors {
   protected $model;
 
   /**
-   * EntityContainer constructor.
+   * @var \Common\Accessors $accessors
+   */
+  protected $accessors;
+
+  /** @noinspection PhpMissingParentConstructorInspection */
+  /**
+   * Entity\EntityContainer constructor.
+   *
    * @param EntityModel $model
    */
   public function __construct($model) {
     $this->model = $model;
+    $this->accessors = $model->getAccessors();
   }
 
   /**
@@ -32,25 +43,6 @@ class EntityContainer extends ContainerAccessors {
    */
   public function getModel() {
     return $this->model;
-  }
-
-  /**
-   * @param string   $varName
-   * @param string   $processor
-   * @param callable $callable
-   */
-  public function setAccessor($varName, $processor, $callable) {
-    $this->model->setAccessor($varName, $processor, $callable);
-  }
-
-  /**
-   * @param $varName
-   * @param $processor
-   *
-   * @return callable|null
-   */
-  protected function getAccessor($varName, $processor) {
-    return $this->model->getAccessor($varName, $processor);
   }
 
 }

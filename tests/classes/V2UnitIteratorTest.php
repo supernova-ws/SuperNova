@@ -26,17 +26,17 @@ class V2UnitIteratorTest extends PHPUnit_Framework_TestCase {
 //    $unitList = new \V2Unit\V2UnitList();
 //    $model = new \V2Unit\V2UnitModel(new \Common\GlobalContainer());
 //
-//    $unit = $model->getContainer();
+//    $unit = $model->buildContainer();
 //    $unit->importRow(array('unit_snid' => RES_METAL));
 //    $unitList->attach($unit);
 //    unset($unit);
 //
-//    $unit = $model->getContainer();
+//    $unit = $model->buildContainer();
 //    $unit->importRow(array('unit_snid' => STRUC_ALLY_DEPOSIT));
 //    $unitList->attach($unit);
 //    unset($unit);
 //
-//    $unit = $model->getContainer();
+//    $unit = $model->buildContainer();
 //    $unit->importRow(array('unit_snid' => RES_CRYSTAL));
 //    $unitList->attach($unit);
 //    unset($unit);
