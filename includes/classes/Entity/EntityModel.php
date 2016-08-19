@@ -1,8 +1,6 @@
 <?php
 namespace Entity;
 
-use Entity\EntityContainer;
-
 /**
  * Class Entity\EntityModel
  *
@@ -18,8 +16,8 @@ use Entity\EntityContainer;
  * Exporter is a callable like
  *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
  *
- *
  */
+
 class EntityModel {
   /**
    * Service to work with rows
@@ -39,10 +37,10 @@ class EntityModel {
   /**
    * Name of key field field in this table
    *
-   * @var string $idField
+   * @var string $idFieldName
    */
   // TODO - remove
-  protected $idField = 'id';
+  protected $idFieldName = 'id';
 
   /**
    * Name of exception class that would be thrown
@@ -53,7 +51,7 @@ class EntityModel {
    * @var string $exceptionClass
    */
   protected $exceptionClass = 'Entity\EntityException';
-  protected $entityContainerClass = '\EntityContainer';
+  protected $entityContainerClass = '\Entity\EntityContainer';
 
   /**
    * Property list and description
@@ -84,16 +82,16 @@ class EntityModel {
   }
 
   /**
-   * @param \Entity\EntityContainer $that
-   * @param string                  $processor
+   * @param EntityContainer $that
+   * @param string                  $accessor
    */
-  protected function processRow($that, $processor) {
+  protected function processRow($that, $accessor) {
     foreach ($this->properties as $propertyName => $propertyData) {
       $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
-      if ($this->accessors->haveAccessor($propertyName, $processor)) {
-        $this->accessors->invokeProcessor($propertyName, $processor, array($that, $propertyName, $fieldName));
+      if ($this->accessors->haveAccessor($propertyName, $accessor)) {
+        $this->accessors->invokeAccessor($propertyName, $accessor, array($that, $propertyName, $fieldName));
       } elseif ($fieldName) {
-        if ($processor == P_CONTAINER_IMPORT) {
+        if ($accessor == P_CONTAINER_IMPORT) {
           $that->$propertyName = isset($that->row[$fieldName]) ? $that->row[$fieldName] : null;
         } else {
           $that->row += array($fieldName => $that->$propertyName);
@@ -110,7 +108,7 @@ class EntityModel {
    * @param array           $row
    */
   public function importRow($cEntity, $row) {
-    $cEntity->clear(); // ????????????????????? clearProperties($cEntity)
+    $cEntity->clear();
     $cEntity->row = $row;
 
     if (is_array($row) && !empty($row)) {
@@ -121,7 +119,7 @@ class EntityModel {
   /**
    * @param array $array
    *
-   * @return \Entity\EntityContainer
+   * @return EntityContainer
    */
   public function fromArray($array) {
     /**
@@ -136,7 +134,7 @@ class EntityModel {
   /**
    * Exports object properties to DB row state with ID
    *
-   * @param \Entity\EntityContainer $cEntity
+   * @param EntityContainer $cEntity
    */
   public function exportRow($cEntity) {
     $cEntity->row = array();
@@ -144,35 +142,17 @@ class EntityModel {
   }
 
   /**
-   * @return \Entity\EntityContainer
+   * @return EntityContainer
    */
   public function buildContainer() {
     /**
-     * @var \Entity\EntityContainer $container
+     * @var EntityContainer $container
      */
     $container = new $this->entityContainerClass($this);
-//    $container->setProperties($this->properties);
-//    $container->setAccessors($this->accessors);
 
     return $container;
   }
 
-
-  /**
-   * @param int|string $dbId
-   *
-   * @return \Entity\EntityContainer|false
-   */
-  public function loadById($dbId) {
-    $row = $this->rowOperator->getById($this, $dbId);
-    if (empty($row)) {
-      return false;
-    } else {
-      $cEntity = $this->fromArray($row);
-    }
-
-    return $cEntity;
-  }
 
   /**
    * @param EntityContainer $cEntity
@@ -197,7 +177,7 @@ class EntityModel {
 //  /**
 //   * Clears only properties which declared in $properties array
 //   *
-//   * @param Entity\EntityContainer $cEntity
+//   * @param EntityContainer $cEntity
 //   */
 //  public function clearProperties($cEntity) {
 //    foreach ($this->properties as $propertyName => $propertyData) {

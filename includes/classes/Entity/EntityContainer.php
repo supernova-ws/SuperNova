@@ -2,7 +2,7 @@
 
 namespace Entity;
 
-use ContainerAccessors;
+use Common\ContainerAccessors;
 
 /**
  * Class Entity\EntityContainer

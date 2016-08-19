@@ -50,8 +50,8 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
 //    $this->assertAttributeEquals(array(), 'values', $this->object);
 //
 //    $this->object->setProperties(array('p1' => array(), 'p3' => array()));
-//    $this->object->assignAccessor('p3', P_CONTAINER_SET, function(ContainerAccessors $that, $value) {$that->setDirect('p4', $value);});
-//    $this->object->assignAccessor('p3', P_CONTAINER_UNSET, function(ContainerAccessors $that) {unset($that->p4);});
+//    $this->object->assignAccessor('p3', P_CONTAINER_SET, function(Common\ContainerAccessors $that, $value) {$that->setDirect('p4', $value);});
+//    $this->object->assignAccessor('p3', P_CONTAINER_UNSET, function(Common\ContainerAccessors $that) {unset($that->p4);});
 //
 //    $this->object->p1 = 'v1';
 //    $this->object->p2 = 'v2';

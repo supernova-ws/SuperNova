@@ -54,9 +54,9 @@ class V2FleetModel extends \Entity\KeyedModel {
   /**
    * Name of key field field in this table
    *
-   * @var string $idField
+   * @var string $idFieldName
    */
-  protected $idField = 'fleet_id';
+  protected $idFieldName = 'fleet_id';
 
 //  protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Fleet\V2FleetContainer';

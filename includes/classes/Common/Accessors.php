@@ -21,83 +21,65 @@ class Accessors {
    */
   protected $accessors = array();
 
-
   /**
+   * Assign accessor to a named variable
+   *
+   * Different accessors have different signatures - you should look carefully before assigning accessor
+   *
    * @param string   $varName
-   * @param string   $processor
+   * @param string   $accessor - type of accessor getter/setter/importer/exporter/etc
    * @param callable $callable
    *
    * @throws \Exception
    */
-  public function setAccessor($varName, $processor, $callable) {
+  public function setAccessor($varName, $accessor, $callable) {
     if (empty($callable)) {
       return;
     }
 
     if (is_callable($callable)) {
-      $this->accessors[$varName][$processor] = $callable;
+      $this->accessors[$varName][$accessor] = $callable;
     } else {
-      throw new \Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $processor . '] is not a callable or not accessible in the scope');
+      throw new \Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $accessor . '] is not a callable or not accessible in the scope');
     }
   }
 
   /**
+   * Gets accessor for later use
+   *
    * @param string $varName
-   * @param string $processor
+   * @param string $accessor
    *
    * @return callable|null
    */
-  public function getAccessor($varName, $processor) {
-    return isset($this->accessors[$varName][$processor]) ? $this->accessors[$varName][$processor] : null;
+  public function getAccessor($varName, $accessor) {
+    return isset($this->accessors[$varName][$accessor]) ? $this->accessors[$varName][$accessor] : null;
   }
 
   /**
    * @param string $varName
-   * @param string $processor
+   * @param string $accessor
    *
    * @return bool
    */
-  public function haveAccessor($varName, $processor) {
-    return isset($this->accessors[$varName][$processor]);
+  public function haveAccessor($varName, $accessor) {
+    return isset($this->accessors[$varName][$accessor]);
   }
 
-  // TODO
-
-//  /**
-//   * @param \Entity\EntityModel     $model
-//   * @param \Entity\EntityContainer $container
-//   * @param string           $processor
-//   */
-//  protected function processRow($model, $container, $processor) {
-//    foreach ($model->getProperties() as $propertyName => $propertyData) {
-//      $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
-//      if ($this->haveAccessor($propertyName, $processor)) {
-//        call_user_func_array($this->getAccessor($propertyName, $processor), array($container, $propertyName, $fieldName));
-//      } elseif ($fieldName) {
-//        if ($processor == P_CONTAINER_IMPORT) {
-//          $container->$propertyName = isset($container->row[$fieldName]) ? $container->row[$fieldName] : null;
-//        } else {
-//          $container->row += array($fieldName => $container->$propertyName);
-//        }
-//      }
-//      // Otherwise it's internal field - filled and used internally
-//    }
-//  }
-
   /**
-   * @param $varName
-   * @param $processor
-   * @param array $params
+   * @param string $varName
+   * @param string $accessor
+   * @param array  $params
    *
    * @return mixed
    * @throws \Exception
    */
-  public function invokeProcessor($varName, $processor, $params) {
-    if(!$this->haveAccessor($varName, $processor)) {
-      throw new \Exception('No processor found '); // TODO - add more sense
+  public function invokeAccessor($varName, $accessor, $params) {
+    if (!$this->haveAccessor($varName, $accessor)) {
+      throw new \Exception("No [{$accessor}] accessor found for variable [{$varName}] on " . get_called_class() . "::" . __METHOD__);
     }
 
-    return call_user_func_array($this->getAccessor($varName, $processor), $params);
+    return call_user_func_array($this->getAccessor($varName, $accessor), $params);
   }
 
 }

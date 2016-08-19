@@ -27,9 +27,9 @@ class V2UnitModel extends \Entity\KeyedModel {
   /**
    * Name of key field field in this table
    *
-   * @var string $idField
+   * @var string $idFieldName
    */
-  protected $idField = 'unit_id';
+  protected $idFieldName = 'unit_id';
 
 //  protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Unit\V2UnitContainer';

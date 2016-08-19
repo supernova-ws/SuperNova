@@ -31,9 +31,9 @@ class BuddyModel extends \Entity\KeyedModel{
   /**
    * Name of key field field in this table
    *
-   * @var string $idField
+   * @var string $idFieldName
    */
-  protected $idField = 'BUDDY_ID';
+  protected $idFieldName = 'BUDDY_ID';
   protected $exceptionClass = 'BuddyException';
   protected $entityContainerClass = 'Buddy\BuddyContainer';
 

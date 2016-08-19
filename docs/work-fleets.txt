@@ -1,4 +1,14 @@
-class Entity\EntityContainer extends ContainerAccessors
+Раскидать классы по неймспейсам
+    - Перед этим пересчитать индексы
+
+
+
+
+
+
+
+
+class Entity\EntityContainer extends Common\ContainerAccessors
     - один из этих двух классов нэ нужэн
 
 
@@ -227,7 +237,7 @@ pdie();
 
 
     ? Тесты для entity и контейнеров
-        - ContainerAccessors - тесты
+        - Common\ContainerAccessors - тесты
             - __unset - добавить ансеттеры????
 
     - Дефолтные значения для полей в Entity

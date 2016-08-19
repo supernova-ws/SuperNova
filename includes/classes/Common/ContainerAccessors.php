@@ -1,9 +1,11 @@
 <?php
 
+namespace Common;
+
 use \Common\ContainerMagic;
 
 /**
- * Class ContainerAccessors
+ * Class Common\ContainerAccessors
  *
  * Support accessors for properties: getter, setter, unsetter
  *
@@ -40,65 +42,26 @@ class ContainerAccessors extends ContainerMagic {
   }
 
   /**
-   * Assign accessor to a named variable
+   * Performs accessor operation on property with specified name
    *
-   * Different accessors have different signatures - you should look carefully before assigning accessor
-   *
-   * @param string   $varName
-   * @param string   $processor - type of accessor getter/setter/importer/exporter/etc
-   * @param callable $callable
-   *
-   * @throws Exception
-   */
-  public function setAccessor($varName, $processor, $callable) {
-    $this->accessors->setAccessor($varName, $processor, $callable);
-  }
-
-  /**
-   * @param $varName
-   * @param $processor
-   *
-   * @return callable|null
-   */
-  protected function getAccessor($varName, $processor) {
-    return $this->accessors->getAccessor($varName, $processor);
-  }
-
-  /**
-   * Performs $processor operation on property with specified name
-   *
-   * @param string     $name
-   * @param string     $processor
+   * @param string     $varName
+   * @param string     $accessor
    * @param null|mixed $value
    *
    * @return mixed
    */
-  protected function performMagic($name, $processor, $value = null) {
-    if ($accessor = $this->getAccessor($name, $processor)) {
-      return call_user_func($accessor, $this, $value);
+  protected function performMagic($varName, $accessor, $value = null) {
+    if ($this->accessors->haveAccessor($varName, $accessor)) {
+      return $this->accessors->invokeAccessor($varName, $accessor, array($this, $value));
     } else {
-      return parent::$processor($name, $value);
+      return parent::$accessor($varName, $value);
     }
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   public function __set($name, $value) {
     if (is_callable($value)) {
-      $this->setAccessor($name, P_CONTAINER_GET, $value);
+      $this->accessors->setAccessor($name, P_CONTAINER_GET, $value);
     } else {
       $this->performMagic($name, P_CONTAINER_SET, $value);
     }
@@ -118,23 +81,6 @@ class ContainerAccessors extends ContainerMagic {
 
     return isset($value);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   /**
