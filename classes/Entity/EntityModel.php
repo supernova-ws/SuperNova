@@ -1,8 +1,10 @@
 <?php
 namespace Entity;
 
+use \Common\Accessors;
+
 /**
- * Class Entity\EntityModel
+ * Class EntityModel
  *
  * This class have only one instance - i.e. is a service
  * Describes persistent entity - which can be loaded from/stored to storage
@@ -57,7 +59,7 @@ class EntityModel {
   protected $properties = array();
 
   /**
-   * @var \Common\Accessors $accessors
+   * @var Accessors $accessors
    */
   protected $accessors;
 
@@ -70,12 +72,12 @@ class EntityModel {
   public function __construct($gc) {
     // Here own rowOperator can be made - if needed to operate other, non-global, DB
     $this->rowOperator = $gc->dbGlobalRowOperator;
-    $this->accessors = new \Common\Accessors();
+    $this->accessors = new Accessors();
   }
 
   /**
    * @param EntityContainer $that
-   * @param string                  $accessor
+   * @param string          $accessor
    */
   protected function processRow($that, $accessor) {
     foreach ($this->properties as $propertyName => $propertyData) {
@@ -101,9 +103,8 @@ class EntityModel {
    */
   public function importRow($cEntity, $row) {
     $cEntity->clear();
-    $cEntity->row = $row;
-
     if (is_array($row) && !empty($row)) {
+      $cEntity->row = $row;
       $this->processRow($cEntity, P_CONTAINER_IMPORT);
     }
   }
@@ -204,7 +205,7 @@ class EntityModel {
   }
 
   /**
-   * @return \Common\Accessors
+   * @return Accessors
    */
   public function getAccessors() {
     return $this->accessors;

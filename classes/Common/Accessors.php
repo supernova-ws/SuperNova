@@ -35,19 +35,17 @@ class Accessors {
   public function setAccessor($varName, $accessor, $callable) {
     if (empty($callable)) {
       return;
-    }
-
-    if (is_callable($callable)) {
-      // Converting method array-callable to closure
-      if(is_array($callable) && count($callable) == 2 && is_object($callable[0])) {
-        $method = new \ReflectionMethod($callable[0], $callable[1]);
-        $callable = $method->getClosure($callable[0]);
-      }
-
-      $this->accessors[$varName][$accessor] = $callable;
-    } else {
+    } elseif (!is_callable($callable)) {
       throw new \Exception('Error assigning callable in ' . get_called_class() . '::setAccessor()! Callable typed [' . $accessor . '] is not a callable or not accessible in the scope');
     }
+
+    // Converting method array-callable to closure
+    if (is_array($callable) && count($callable) == 2 && is_object($callable[0])) {
+      $method = new \ReflectionMethod($callable[0], $callable[1]);
+      $callable = $method->getClosure($callable[0]);
+    }
+
+    $this->accessors[$varName][$accessor] = $callable;
   }
 
   /**
