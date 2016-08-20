@@ -27,8 +27,7 @@ class EntityContainer extends ContainerAccessors {
    * @param EntityModel $model
    */
   public function __construct($model) {
-    $this->model = $model;
-    $this->accessors = $model->getAccessors();
+    $this->setModel($model);
   }
 
   /**
@@ -36,6 +35,7 @@ class EntityContainer extends ContainerAccessors {
    */
   public function setModel(EntityModel $model) {
     $this->model = $model;
+    $this->accessors = $model->getAccessors();
   }
 
   /**

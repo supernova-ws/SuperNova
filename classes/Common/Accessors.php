@@ -38,9 +38,15 @@ class Accessors {
     }
 
     if (is_callable($callable)) {
+      // Converting method array-callable to closure
+      if(is_array($callable) && count($callable) == 2 && is_object($callable[0])) {
+        $method = new \ReflectionMethod($callable[0], $callable[1]);
+        $callable = $method->getClosure($callable[0]);
+      }
+
       $this->accessors[$varName][$accessor] = $callable;
     } else {
-      throw new \Exception('Error assigning callable in ' . get_called_class() . '! Callable typed [' . $accessor . '] is not a callable or not accessible in the scope');
+      throw new \Exception('Error assigning callable in ' . get_called_class() . '::setAccessor()! Callable typed [' . $accessor . '] is not a callable or not accessible in the scope');
     }
   }
 

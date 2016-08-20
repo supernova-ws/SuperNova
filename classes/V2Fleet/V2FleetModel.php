@@ -5,21 +5,19 @@
 
 namespace V2Fleet;
 
-use V2Unit\V2UnitContainer;
 use V2Unit\V2UnitList;
-use V2Unit\V2UnitModel;
 use Vector\Vector;
+use Entity\KeyedModel;
 
 /**
  * Class V2FleetModel
  *
  * @method V2FleetContainer buildContainer()
- * method V2FleetContainer fromArray(array $array)
  * @method V2FleetContainer loadById(mixed $dbId)
  *
  * @package V2Fleet
  */
-class V2FleetModel extends \Entity\KeyedModel {
+class V2FleetModel extends KeyedModel {
   protected $locationType = LOC_FLEET;
 
   /**

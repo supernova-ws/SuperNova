@@ -35,14 +35,6 @@ class EntityModel {
   protected $tableName = '_table';
 
   /**
-   * Name of key field field in this table
-   *
-   * @var string $idFieldName
-   */
-  // TODO - remove
-  protected $idFieldName = 'id';
-
-  /**
    * Name of exception class that would be thrown
    *
    * Uses for calling when you don't know which exact exception should be called
@@ -174,18 +166,6 @@ class EntityModel {
   }
 
 
-//  /**
-//   * Clears only properties which declared in $properties array
-//   *
-//   * @param EntityContainer $cEntity
-//   */
-//  public function clearProperties($cEntity) {
-//    foreach ($this->properties as $propertyName => $propertyData) {
-//      unset($cEntity->$propertyName);
-//    }
-//  }
-
-
   /**
    * @return \DbRowDirectOperator
    */
@@ -208,21 +188,6 @@ class EntityModel {
   public function getTableName() {
     return $this->tableName;
   }
-
-//  /**
-//   * @param string $value
-//   */
-//  public function setIdFieldName($value) {
-//    $this->idField = $value;
-//  }
-//  /**
-//   * Gets entity's DB ID field name (which is unique within entity set)
-//   *
-//   * @return string
-//   */
-//  public function getIdFieldName() {
-//    return $this->idField;
-//  }
 
   /**
    * @return array[]
