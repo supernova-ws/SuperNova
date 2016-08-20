@@ -5,6 +5,7 @@
 
 namespace V2Fleet;
 
+use Common\V2Location;
 use V2Unit\V2UnitList;
 use Vector\Vector;
 use Entity\KeyedModel;
@@ -18,30 +19,7 @@ use Entity\KeyedModel;
  * @package V2Fleet
  */
 class V2FleetModel extends KeyedModel {
-  protected $locationType = LOC_FLEET;
-
-  /**
-   * Return location type
-   *
-   * @param \Entity\EntityContainer $cEntity
-   *
-   * @return int
-   */
-  public function getLocationType($cEntity) {
-    return $this->locationType;
-  }
-
-  /**
-   * Return location ID
-   *
-   * @param \Entity\KeyedContainer $cEntity
-   *
-   * @return mixed
-   */
-  public function getLocationId($cEntity) {
-    return $cEntity->dbId;
-  }
-
+  protected $location;
 
   /**
    * Name of table for this entity
@@ -101,6 +79,31 @@ class V2FleetModel extends KeyedModel {
       )
     );
 
+    $this->accessors->setAccessor('location', P_CONTAINER_GET, function (V2FleetContainer $that) {
+      if (is_null($location = $that->getDirect('location'))) {
+        $location = new V2Location(LOC_FLEET);
+        $that->setDirect('location', $location);
+      }
+
+      return $location;
+    });
+
+    $this->accessors->setAccessor('dbId', P_CONTAINER_SET, function (V2FleetContainer $that, $value) {
+      $that->setDirect('dbId', $value);
+      $that->location->setLocationId($value);
+    });
+
+    $this->accessors->setAccessor('ownerId', P_CONTAINER_SET, function (V2FleetContainer $that, $value) {
+      $that->setDirect('ownerId', $value);
+      $that->location->setLocationPlayerId($value);
+    });
+
+    $this->accessors->setAccessor('vectorDeparture', P_CONTAINER_IMPORT, array($this, 'importVector'));
+    $this->accessors->setAccessor('vectorDeparture', P_CONTAINER_EXPORT, array($this, 'exportVector'));
+    $this->accessors->setAccessor('vectorArrive', P_CONTAINER_IMPORT, array($this, 'importVector'));
+    $this->accessors->setAccessor('vectorArrive', P_CONTAINER_EXPORT, array($this, 'exportVector'));
+
+
     $this->accessors->setAccessor('units', P_CONTAINER_GET, function (V2FleetContainer $that) {
       if (is_null($units = $that->getDirect('units'))) {
         $units = new V2UnitList();
@@ -111,13 +114,9 @@ class V2FleetModel extends KeyedModel {
     });
 
     $this->accessors->setAccessor('isReturning', P_CONTAINER_GET, function (V2FleetContainer $that) {
-      return $that->status == 1;
+      return $that->status == FLEET_FLAG_RETURNING;
     });
 
-    $this->accessors->setAccessor('vectorDeparture', P_CONTAINER_IMPORT, array($this, 'importVector'));
-    $this->accessors->setAccessor('vectorDeparture', P_CONTAINER_EXPORT, array($this, 'exportVector'));
-    $this->accessors->setAccessor('vectorArrive', P_CONTAINER_IMPORT, array($this, 'importVector'));
-    $this->accessors->setAccessor('vectorArrive', P_CONTAINER_EXPORT, array($this, 'exportVector'));
   }
 
   public function importVector(V2FleetContainer $that, $propertyName, $fieldName) {
@@ -149,7 +148,7 @@ class V2FleetModel extends KeyedModel {
      */
     $cFleet = parent::fromArray($array);
 
-    $cFleet->units->load($this->getLocationType($cFleet), $this->getLocationId($cFleet));
+    $cFleet->units->load($cFleet->location);
 
     foreach (array(
       RES_METAL     => 'fleet_resource_metal',

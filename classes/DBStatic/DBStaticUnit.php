@@ -3,6 +3,7 @@
 namespace DBStatic;
 
 use classSupernova;
+use Common\V2Location;
 use mysqli_result;
 
 class DBStaticUnit {
@@ -15,6 +16,10 @@ class DBStaticUnit {
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
 
+
+  public static function getUnitListByV2Location(V2Location $v2Location) {
+    return static::db_get_unit_by_location($v2Location->getLocationPlayerId(), $v2Location->getLocationType(), $v2Location->getLocationId());
+  }
 
   /**
    * @param int $user_id

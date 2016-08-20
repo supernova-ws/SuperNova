@@ -6,6 +6,7 @@
 namespace V2Fleet;
 
 
+use Common\V2Location;
 use V2Unit\V2UnitList;
 
 /**
@@ -22,6 +23,7 @@ use V2Unit\V2UnitList;
  * @property int        $status
  *
  * @property V2UnitList $units
+ * @property V2Location $location
  *
  * Functionals
  * @property bool       $isReturning

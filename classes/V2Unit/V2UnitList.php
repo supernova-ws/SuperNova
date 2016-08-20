@@ -3,6 +3,7 @@
 namespace V2Unit;
 
 use Common\IndexedObjectStorage;
+use Common\V2Location;
 use DBStatic\DBStaticUnit;
 
 /**
@@ -13,12 +14,9 @@ use DBStatic\DBStaticUnit;
  * @package V2Unit
  */
 class V2UnitList extends IndexedObjectStorage {
-  /**
-   *
-   */
-  public function load($locationType, $locationId) {
 
-    if (!($unitRows = DBStaticUnit::db_get_unit_list_by_location(0, $locationType, $locationId))) {
+  public function load(V2Location $location) {
+    if (!($unitRows = DBStaticUnit::getUnitListByV2Location($location))) {
       return;
     }
 
