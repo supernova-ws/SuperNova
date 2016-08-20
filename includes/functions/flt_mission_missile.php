@@ -168,7 +168,7 @@ function coe_o_missile_calculate() {
       }
 
       $fleetRow['fleet_start_type'] = PT_PLANET;
-      $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
+      $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, FLEET_START_PREFIX, false, 'name');
 
       $message_vorlage = sprintf(classLocale::$lang['mip_body_attack'], $fleetRow['fleet_amount'],
         addslashes($sourcePlanet['name']), $fleetRow['fleet_start_galaxy'], $fleetRow['fleet_start_system'], $fleetRow['fleet_start_planet'],

@@ -6,6 +6,7 @@
 namespace V2Fleet;
 
 use Common\V2Location;
+use DBStatic\DBStaticFleetACS;
 use V2Unit\V2UnitList;
 use Vector\Vector;
 use Entity\KeyedModel;
@@ -41,15 +42,15 @@ class V2FleetModel extends KeyedModel {
     parent::__construct($gc);
 
     $this->extendProperties(array(
-        'ownerId'     => array(P_DB_FIELD => 'fleet_owner',),
-        'missionType' => array(P_DB_FIELD => 'fleet_mission'),
+      'ownerId'           => array(P_DB_FIELD => 'fleet_owner',),
+      'arriveOwnerId'     => array(P_DB_FIELD => 'fleet_target_owner'),
+      'departurePlanetId' => array(P_DB_FIELD => 'fleet_start_planet_id'),
+      'arrivePlanetId'    => array(P_DB_FIELD => 'fleet_end_planet_id'),
 
-        'fleet_amount'          => array(P_DB_FIELD => 'fleet_amount'),
-        'fleet_start_planet_id' => array(P_DB_FIELD => 'fleet_start_planet_id'),
+      'missionType' => array(P_DB_FIELD => 'fleet_mission'),
+      'status'      => array(P_DB_FIELD => 'fleet_mess'),
+      'groupId'     => array(P_DB_FIELD => 'fleet_group'),
 
-
-        'fleet_end_planet_id' => array(P_DB_FIELD => 'fleet_end_planet_id'),
-        'fleet_target_owner'  => array(P_DB_FIELD => 'fleet_target_owner'),
 
 //    'fleet_start_galaxy'       => array(P_DB_FIELD => 'fleet_start_galaxy'),
 //    'fleet_start_system'       => array(P_DB_FIELD => 'fleet_start_system'),
@@ -63,21 +64,19 @@ class V2FleetModel extends KeyedModel {
 //    'fleet_resource_crystal'   => array(P_DB_FIELD => 'fleet_resource_crystal'),
 //    'fleet_resource_deuterium' => array(P_DB_FIELD => 'fleet_resource_deuterium'),
 
-        'groupId' => array(P_DB_FIELD => 'fleet_group'),
-        'status'  => array(P_DB_FIELD => 'fleet_mess'),
 
-        'vectorDeparture' => array(P_DB_FIELD => 'fleet_start_galaxy'),
-        'vectorArrive'    => array(P_DB_FIELD => 'fleet_end_galaxy'),
+      'vectorDeparture' => array(P_DB_FIELD => 'fleet_start_galaxy'),
+      'vectorArrive'    => array(P_DB_FIELD => 'fleet_end_galaxy'),
 
-        'timeDeparture' => array(P_DB_FIELD => 'start_time'),
-        'timeArrive'    => array(P_DB_FIELD => 'fleet_start_time'),
-        'timeComplete'  => array(P_DB_FIELD => 'fleet_end_stay'),
-        'timeReturn'    => array(P_DB_FIELD => 'fleet_end_time'),
+      'timeDeparture' => array(P_DB_FIELD => 'start_time'),
+      'timeArrive'    => array(P_DB_FIELD => 'fleet_start_time'),
+      'timeComplete'  => array(P_DB_FIELD => 'fleet_end_stay'),
+      'timeReturn'    => array(P_DB_FIELD => 'fleet_end_time'),
 
-        'units'       => array(),
-        'isReturning' => array(),
-      )
-    );
+      'shipsCount'  => array(P_DB_FIELD => 'fleet_amount'),
+      'units'       => array(),
+      'isReturning' => array(),
+    ));
 
     $this->accessors->setAccessor('location', P_CONTAINER_GET, function (V2FleetContainer $that) {
       if (is_null($location = $that->getDirect('location'))) {
@@ -119,22 +118,20 @@ class V2FleetModel extends KeyedModel {
 
   }
 
-  public function importVector(V2FleetContainer $that, $propertyName, $fieldName) {
-    $prefix = $propertyName == 'vectorDeparture' ? 'fleet_start_' : 'fleet_end_';
-    $that->$propertyName = new Vector(
-      $that->row[$prefix . 'galaxy'],
-      $that->row[$prefix . 'system'],
-      $that->row[$prefix . 'planet'],
-      $that->row[$prefix . 'type']
-    );
+  public function importVector(V2FleetContainer $that, $propertyName) {
+    if($propertyName == 'vectorDeparture') {
+      $that->vectorDeparture = Vector::convertToVector($that->row, FLEET_START_PREFIX);
+    } else {
+      $that->vectorArrive = Vector::convertToVector($that->row, FLEET_END_PREFIX);
+    }
   }
 
-  public function exportVector(V2FleetContainer $that, $propertyName, $fieldName) {
-    $prefix = $propertyName == 'vectorDeparture' ? 'fleet_start_' : 'fleet_end_';
-    $that->row[$prefix . 'galaxy'] = $that->$propertyName->galaxy;
-    $that->row[$prefix . 'system'] = $that->$propertyName->system;
-    $that->row[$prefix . 'planet'] = $that->$propertyName->planet;
-    $that->row[$prefix . 'type'] = $that->$propertyName->type;
+  public function exportVector(V2FleetContainer $that, $propertyName) {
+    if($propertyName == 'vectorDeparture') {
+      $that->row += $that->vectorDeparture->toArray(FLEET_START_PREFIX);
+    } else {
+      $that->row += $that->vectorArrive->toArray(FLEET_END_PREFIX);
+    }
   }
 
   /**
@@ -155,13 +152,52 @@ class V2FleetModel extends KeyedModel {
       RES_CRYSTAL   => 'fleet_resource_crystal',
       RES_DEUTERIUM => 'fleet_resource_deuterium',
     ) as $resourceId => $fieldName) {
-      $unit = \classSupernova::$gc->unitModel->buildContainer();
-      $unit->snId = $resourceId;
-      $unit->level = $array[$fieldName];
-      $cFleet->units->attach($unit, $resourceId);
+      $cFleet->units->unitAdd($resourceId, $array[$fieldName]);
     }
 
     return $cFleet;
+  }
+
+  /**
+   * Forcibly returns fleet before time outs
+   */
+  public function commandReturn(V2FleetContainer $cFleet) {
+    if($cFleet->isReturning) {
+      return;
+    }
+
+    // Marking fleet as returning
+    $cFleet->status = FLEET_FLAG_RETURNING;
+
+    // If fleet not yet arrived - return time is equal already fled time
+    if($cFleet->timeArrive <= SN_TIME_NOW) {
+      $returnTime = SN_TIME_NOW - $cFleet->timeDeparture;
+    } else {
+      // Arrived fleet on mission will return in same time as it takes to get to the destination
+      $returnTime = $cFleet->timeArrive - $cFleet->timeDeparture;
+    }
+//    $ReturnFlyingTime = ($cFleet->timeComplete != 0 && $cFleet->timeArrive < SN_TIME_NOW ? $cFleet->timeArrive : SN_TIME_NOW) - $cFleet->timeDeparture + SN_TIME_NOW + 1;
+    $cFleet->timeReturn = SN_TIME_NOW + $returnTime;
+
+    // Считаем, что флот уже долетел
+    $cFleet->timeArrive = SN_TIME_NOW;
+    // Отменяем работу в точке назначения
+    $cFleet->timeComplete = 0;
+    // Убираем флот из группы
+    $oldGroupId = $cFleet->groupId;
+    $cFleet->groupId = 0;
+
+    // Записываем изменения в БД
+    $this->dbSave($cFleet);
+
+    if ($oldGroupId) {
+      // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
+      DBStaticFleetACS::db_fleet_aks_purge();
+    }
+  }
+
+  public function dbSave($cFleet) {
+
   }
 
 }

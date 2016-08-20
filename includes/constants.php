@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a52.38');
+define('SN_VERSION', '41a52.39');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1660,3 +1660,6 @@ define('DB_SELECT_FOR_UPDATE', true);
 
 define('FLEET_FLAG_FLYING', 0);
 define('FLEET_FLAG_RETURNING', 1);
+
+define('FLEET_START_PREFIX', 'fleet_start_');
+define('FLEET_END_PREFIX', 'fleet_end_');

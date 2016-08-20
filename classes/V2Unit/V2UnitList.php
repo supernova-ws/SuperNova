@@ -31,4 +31,15 @@ class V2UnitList extends IndexedObjectStorage {
 
   }
 
+  public function unitAdd($snId, $level) {
+    if($this->indexIsSet($snId)) {
+      $this->indexGetObject($snId)->$level += $level;
+    } else {
+      $unit = \classSupernova::$gc->unitModel->buildContainer();
+      $unit->snId = $snId;
+      $unit->level = $level;
+      $this->attach($unit, $snId);
+    }
+  }
+
 }

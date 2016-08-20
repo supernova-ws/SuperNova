@@ -16,6 +16,15 @@ class IndexedObjectStorage extends \SplObjectStorage {
   protected $index = array();
 
   /**
+   * @param mixed $index
+   *
+   * @return bool
+   */
+  public function indexIsSet($index) {
+    return array_key_exists($index, $this->index);
+  }
+
+  /**
    * Unassign index from object
    *
    * @param object $object
@@ -50,13 +59,22 @@ class IndexedObjectStorage extends \SplObjectStorage {
     }
   }
 
+  public function setInfo($data) {
+    if ($this->valid()) {
+      $this->indexUnset($this->current());
+      $this->indexSet($this->current(), $data);
+    }
+    // Changing data in storage
+    parent::setInfo($data);
+  }
+
   /**
    * @param mixed $index
    *
    * @return mixed|null
    */
   public function indexGetObject($index) {
-    return array_key_exists($index, $this->index) ? $this->index[$index] : null;
+    return $this->indexIsSet($index) ? $this->index[$index] : null;
   }
 
   /**
@@ -80,14 +98,13 @@ class IndexedObjectStorage extends \SplObjectStorage {
     parent::attach($object, $data);
   }
 
-  public function offsetSet($object, $data = null) {
-    $this->attach($object, $data);
-  }
-
-
   public function detach($object) {
     $this->indexUnset($object);
     parent::detach($object);
+  }
+
+  public function offsetSet($object, $data = null) {
+    $this->attach($object, $data);
   }
 
   public function offsetUnset($object) {
@@ -110,7 +127,6 @@ class IndexedObjectStorage extends \SplObjectStorage {
 
   public function removeAllExcept($storage) {
     parent::removeAllExcept($storage);
-
     $this->indexRebuild();
   }
 
@@ -118,18 +134,7 @@ class IndexedObjectStorage extends \SplObjectStorage {
     // Unserialize DOES NOT removes existing objects AND creates object copies making duplicates
     // So be careful
     parent::unserialize($serialized);
-
     $this->indexRebuild();
   }
-
-  public function setInfo($data) {
-    if ($this->valid()) {
-      $this->indexUnset($this->current());
-      $this->indexSet($this->current(), $data);
-    }
-    // Changing data in storage
-    parent::setInfo($data);
-  }
-
 
 }

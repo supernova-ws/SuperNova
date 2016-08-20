@@ -131,6 +131,22 @@ class Vector {
   }
 
   /**
+   * @param string $prefix
+   *
+   * @return array
+   */
+  public function toArray($prefix = '') {
+    $array = array(
+      $prefix . 'galaxy' => $this->galaxy,
+      $prefix . 'system' => $this->system,
+      $prefix . 'planet' => $this->planet,
+      $prefix . 'type'   => $this->type,
+    );
+
+    return $array;
+  }
+
+  /**
    * @param array $coordinates
    * @param bool  $returnZero
    *

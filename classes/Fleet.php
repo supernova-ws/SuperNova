@@ -713,7 +713,7 @@ class Fleet extends UnitContainer {
       return;
     }
 
-//      $planet_start = db_planet_by_vector($irak_original, 'fleet_start_', false, 'name');
+//      $planet_start = db_planet_by_vector($irak_original, FLEET_START_PREFIX, false, 'name');
 //      $irak_original['fleet_start_name'] = $planet_start['name'];
     $this->missile_target = $missile_db_row['primaer'];
 
