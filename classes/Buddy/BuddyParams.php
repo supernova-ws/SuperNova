@@ -26,7 +26,7 @@ class BuddyParams extends ContainerPlus  {
   /**
    * BuddyParams constructor.
    *
-   * @param array $user
+   * @param array $values
    */
   public function __construct(array $values = array()) {
     parent::__construct($values);
@@ -36,8 +36,6 @@ class BuddyParams extends ContainerPlus  {
     $this->newFriendIdSafe = sys_get_param_id('request_user_id');
     $this->new_friend_name_unsafe = sys_get_param_str_unsafe('request_user_name');
     $this->request_text_unsafe = sys_get_param_str_unsafe('request_text');
-
-//    $this->playerArray = $user;
 
     $this->playerId = function (BuddyParams $cBuddy) {
       return $cBuddy->playerArray['id'];

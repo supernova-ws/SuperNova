@@ -36,7 +36,7 @@ class V2FleetModel extends \Entity\KeyedModel {
   /**
    * Return location ID
    *
-   * @param \Entity\EntityContainer $cEntity
+   * @param \Entity\KeyedContainer $cEntity
    *
    * @return mixed
    */
@@ -58,48 +58,8 @@ class V2FleetModel extends \Entity\KeyedModel {
    */
   protected $idFieldName = 'fleet_id';
 
-//  protected $exceptionClass = 'Entity\EntityException';
+  protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Fleet\V2FleetContainer';
-
-//  protected $properties = array(
-//    'dbId'        => array(P_DB_FIELD => 'fleet_id',),
-//    'ownerId'     => array(P_DB_FIELD => 'fleet_owner',),
-//    'missionType' => array(P_DB_FIELD => 'fleet_mission'),
-//
-//    'fleet_amount'          => array(P_DB_FIELD => 'fleet_amount'),
-//    'fleet_start_planet_id' => array(P_DB_FIELD => 'fleet_start_planet_id'),
-//
-////    'fleet_start_galaxy'       => array(P_DB_FIELD => 'fleet_start_galaxy'),
-////    'fleet_start_system'       => array(P_DB_FIELD => 'fleet_start_system'),
-////    'fleet_start_planet'       => array(P_DB_FIELD => 'fleet_start_planet'),
-////    'fleet_start_type'         => array(P_DB_FIELD => 'fleet_start_type'),
-//
-//    'fleet_end_planet_id' => array(P_DB_FIELD => 'fleet_end_planet_id'),
-//    'fleet_target_owner'  => array(P_DB_FIELD => 'fleet_target_owner'),
-//
-////    'fleet_end_galaxy'         => array(P_DB_FIELD => 'fleet_end_galaxy'),
-////    'fleet_end_system'         => array(P_DB_FIELD => 'fleet_end_system'),
-////    'fleet_end_planet'         => array(P_DB_FIELD => 'fleet_end_planet'),
-////    'fleet_end_type'           => array(P_DB_FIELD => 'fleet_end_type'),
-//
-////    'fleet_resource_metal'     => array(P_DB_FIELD => 'fleet_resource_metal'),
-////    'fleet_resource_crystal'   => array(P_DB_FIELD => 'fleet_resource_crystal'),
-////    'fleet_resource_deuterium' => array(P_DB_FIELD => 'fleet_resource_deuterium'),
-//
-//    'groupId' => array(P_DB_FIELD => 'fleet_group'),
-//    'status'  => array(P_DB_FIELD => 'fleet_mess'),
-//
-//    'vectorDeparture' => array(P_DB_FIELD => 'fleet_start_galaxy'),
-//    'vectorArrive'    => array(P_DB_FIELD => 'fleet_end_galaxy'),
-//
-//    'timeDeparture' => array(P_DB_FIELD => 'start_time'),
-//    'timeArrive'    => array(P_DB_FIELD => 'fleet_start_time'),
-//    'timeComplete'  => array(P_DB_FIELD => 'fleet_end_stay'),
-//    'timeReturn'    => array(P_DB_FIELD => 'fleet_end_time'),
-//
-//    'units'       => array(),
-//    'isReturning' => array(),
-//  );
 
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
@@ -111,19 +71,18 @@ class V2FleetModel extends \Entity\KeyedModel {
         'fleet_amount'          => array(P_DB_FIELD => 'fleet_amount'),
         'fleet_start_planet_id' => array(P_DB_FIELD => 'fleet_start_planet_id'),
 
-//    'fleet_start_galaxy'       => array(P_DB_FIELD => 'fleet_start_galaxy'),
-//    'fleet_start_system'       => array(P_DB_FIELD => 'fleet_start_system'),
-//    'fleet_start_planet'       => array(P_DB_FIELD => 'fleet_start_planet'),
-//    'fleet_start_type'         => array(P_DB_FIELD => 'fleet_start_type'),
 
         'fleet_end_planet_id' => array(P_DB_FIELD => 'fleet_end_planet_id'),
         'fleet_target_owner'  => array(P_DB_FIELD => 'fleet_target_owner'),
 
+//    'fleet_start_galaxy'       => array(P_DB_FIELD => 'fleet_start_galaxy'),
+//    'fleet_start_system'       => array(P_DB_FIELD => 'fleet_start_system'),
+//    'fleet_start_planet'       => array(P_DB_FIELD => 'fleet_start_planet'),
+//    'fleet_start_type'         => array(P_DB_FIELD => 'fleet_start_type'),
 //    'fleet_end_galaxy'         => array(P_DB_FIELD => 'fleet_end_galaxy'),
 //    'fleet_end_system'         => array(P_DB_FIELD => 'fleet_end_system'),
 //    'fleet_end_planet'         => array(P_DB_FIELD => 'fleet_end_planet'),
 //    'fleet_end_type'           => array(P_DB_FIELD => 'fleet_end_type'),
-
 //    'fleet_resource_metal'     => array(P_DB_FIELD => 'fleet_resource_metal'),
 //    'fleet_resource_crystal'   => array(P_DB_FIELD => 'fleet_resource_crystal'),
 //    'fleet_resource_deuterium' => array(P_DB_FIELD => 'fleet_resource_deuterium'),

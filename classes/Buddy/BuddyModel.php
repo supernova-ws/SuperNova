@@ -59,9 +59,6 @@ class BuddyModel extends \Entity\KeyedModel{
     parent::__construct($gc);
     $this->extendProperties(
         array(
-//      'dbId'           => array(
-//        P_DB_FIELD => 'BUDDY_ID',
-//      ),
       'playerSenderId' => array(
         P_DB_FIELD => 'BUDDY_SENDER_ID',
       ),

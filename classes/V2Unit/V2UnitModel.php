@@ -31,51 +31,11 @@ class V2UnitModel extends \Entity\KeyedModel {
    */
   protected $idFieldName = 'unit_id';
 
-//  protected $exceptionClass = 'Entity\EntityException';
+  protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Unit\V2UnitContainer';
-
-//  protected $properties = array(
-//    'dbId'                => array(
-//      P_DB_FIELD => 'unit_id',
-//    ),
-//    'playerOwnerId'       => array(
-//      P_DB_FIELD => 'unit_player_id',
-//    ),
-//    'locationType'        => array(
-//      P_DB_FIELD => 'unit_location_type',
-//    ),
-//    'locationId'          => array(
-//      P_DB_FIELD => 'unit_location_id',
-//    ),
-//    'type'                => array(
-//      P_DB_FIELD => 'unit_type',
-//    ),
-//    'snId'                => array(
-//      P_DB_FIELD => 'unit_snid',
-//    ),
-//    // Order is important!
-//    // TODO - split dbLevel to level and count
-//    'level'               => array(
-//      P_DB_FIELD => 'unit_level',
-//    ),
-//    'count'               => array(),
-//    // TODO - move to child class
-//    'timeStart'           => array(
-//      P_DB_FIELD => 'unit_time_start',
-//    ),
-//    'timeFinish'          => array(
-//      P_DB_FIELD => 'unit_time_finish',
-//    ),
-//    // Do we need it? Or internal no info/getters/setters should be ignored?
-//    'unitInfo'            => array(),
-//    'isStackable'         => array(),
-//    'locationDefaultType' => array(),
-//    'bonusType'           => array(),
-//  );
 
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
-
 
     $this->extendProperties(
       array(
