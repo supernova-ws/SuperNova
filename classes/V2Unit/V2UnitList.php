@@ -2,7 +2,8 @@
 
 namespace V2Unit;
 
-use Common\IndexedObjectStorage;
+use Common\GlobalContainer;
+use Common\ObjectCollection;
 use Common\V2Location;
 use DBStatic\DBStaticUnit;
 
@@ -13,33 +14,47 @@ use DBStatic\DBStaticUnit;
  *
  * @package V2Unit
  */
-class V2UnitList extends IndexedObjectStorage {
+class V2UnitList extends ObjectCollection {
+
+  /**
+   * @var V2UnitModel $unitModel;
+   */
+  protected $unitModel;
+
+  public function __construct(GlobalContainer $gc) {
+    $this->unitModel = $gc->unitModel;
+  }
 
   public function load(V2Location $location) {
     if (!($unitRows = DBStaticUnit::getUnitListByV2Location($location))) {
       return;
     }
 
-    $model = \classSupernova::$gc->unitModel;
     foreach ($unitRows as $dbId => $unitRow) {
-      $unit = $model->fromArray($unitRow);
-      $this->attach($unit, intval($unit->snId));
+      $unit = $this->unitModel->fromArray($unitRow);
+      $this[intval($unit->snId)] = $unit;
     }
-  }
-
-  public function loadFromContainer() {
-
   }
 
   public function unitAdd($snId, $level) {
-    if($this->indexIsSet($snId)) {
-      $this->indexGetObject($snId)->$level += $level;
-    } else {
-      $unit = \classSupernova::$gc->unitModel->buildContainer();
-      $unit->snId = $snId;
-      $unit->level = $level;
-      $this->attach($unit, $snId);
-    }
+    $this[$snId] = $this->unitModel->buildContainer($snId, $level);
+  }
+
+  /**
+   * Function called when index already exists
+   *
+   * Can be used by child object
+   *
+   * @param V2UnitContainer $newUnit
+   * @param int             $snId
+   *
+   * @throws \Exception
+   */
+  protected function indexDuplicated($newUnit, $snId) {
+    // TODO - error if not stackable
+    $this[$snId]->level += $newUnit->level;
+
+    return false;
   }
 
 }

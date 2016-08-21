@@ -40,10 +40,11 @@ class Accessors {
     }
 
     // Converting method array-callable to closure
-    if (is_array($callable) && count($callable) == 2 && is_object($callable[0])) {
-      $method = new \ReflectionMethod($callable[0], $callable[1]);
-      $callable = $method->getClosure($callable[0]);
-    }
+    // Require PHP 5.4 !!!!!!!!!!
+//    if (is_array($callable) && count($callable) == 2 && is_object($callable[0])) {
+//      $method = new \ReflectionMethod($callable[0], $callable[1]);
+//      $callable = $method->getClosure($callable[0]);
+//    }
 
     $this->accessors[$varName][$accessor] = $callable;
   }

@@ -37,28 +37,46 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
     $o1 = new stdClass();
     $o2 = new stdClass();
 
+    // indexGetObject - null value
+    $this->assertNull($s->indexGetObject(null));
+    $this->assertEquals(0, $s->count());
+
+    // attach
+    $s->attach($o1, 'i1');
+    $this->assertEquals(1, $s->count());
+    $this->assertEquals('i1', $s[$o1]);
+    $this->assertEquals('i1', $s->offsetGet($o1));
+    $this->assertEquals($o1, $s->indexGetObject('i1'));
+    // detach
+    $s->detach($o1);
+    $this->assertEquals(0, $s->count());
+    $this->assertNull( $s->indexGetObject('i1'));
+
     // attach
     $s->attach($o1, 'i3');
+    // Index replacement on reattach
     $s->attach($o1, 'i1');
+    $this->assertEquals(1, $s->count());
+    $this->assertEquals('i1', $s[$o1]);
+    $this->assertEquals($o1, $s->indexGetObject('i1'));
+    $this->assertNull($s->indexGetObject('i3'));
+
     // offsetSet
     $s[$o2] = 'i2';
-
+    $this->assertEquals(2, $s->count());
     // offsetGet
-    $this->assertEquals('i1', $s[$o1]);
     $this->assertEquals('i2', $s[$o2]);
-
     // indexGetObject
-    $this->assertEquals($o1, $s->indexGetObject('i1'));
     $this->assertEquals($o2, $s->indexGetObject('i2'));
-    $this->assertNull($s->indexGetObject('i3'));
-    $this->assertNull($s->indexGetObject(null));
 
     // detach
     $s->detach($o1);
+    $this->assertEquals(1, $s->count());
     $this->assertNull($s->indexGetObject('i1'));
     $this->assertEquals(array('i2' => $o2), getPrivatePropertyValue($s, $this->indexesName));
     // offsetUnset
     unset($s[$o2]);
+    $this->assertEquals(0, $s->count());
     $this->assertNull($s->indexGetObject('i2'));
     $this->assertEquals(array(), getPrivatePropertyValue($s, $this->indexesName));
 
@@ -71,7 +89,7 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
     $this->assertNull($s->indexGetObject('i1'));
     $this->assertEquals($o1, $s->indexGetObject('i3'));
     $this->assertEquals(array('i3' => $o1), getPrivatePropertyValue($s, $this->indexesName));
-
+    $this->assertEquals(1, $s->count());
 
     // unserialize
     $str = $s->serialize();
@@ -80,7 +98,9 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
     $s->unserialize($str);
     $this->assertEquals($o1, $s->indexGetObject('i3'));
     $this->assertEquals(array('i3' => $o1), getPrivatePropertyValue($s, $this->indexesName));
+    $this->assertEquals(1, $s->count());
     $s->detach($s->indexGetObject('i3'));
+    $this->assertEquals(0, $s->count());
 
     // addAll
     $s->attach($o1, 'i1');

@@ -9,6 +9,12 @@ use \SplObjectStorage;
 
 /**
  * Class IndexedObjectStorage
+ *
+ * Maintains per-method compatibility with SplObjectStorage
+ * Introduces new methods:
+ *    - check index existence
+ *    - Get object by index
+ *
  * @package Common
  */
 class IndexedObjectStorage extends \SplObjectStorage {
@@ -25,14 +31,61 @@ class IndexedObjectStorage extends \SplObjectStorage {
   }
 
   /**
+   * @param mixed $index
+   *
+   * @return mixed|null
+   */
+  public function indexGetObject($index) {
+    return $this->indexIsSet($index) ? $this->index[$index] : null;
+  }
+
+  public function offsetSet($object, $data = null) {
+    $this->attach($object, $data);
+  }
+
+  public function offsetUnset($object) {
+    $this->detach($object);
+    parent::offsetUnset($object);
+  }
+
+
+  /**
    * Unassign index from object
    *
    * @param object $object
    */
   protected function indexUnset($object) {
-    if (($oldData = SplObjectStorage::offsetGet($object)) !== null) {
+    if (($oldData = parent::offsetGet($object)) !== null) {
       unset($this->index[$oldData]);
     }
+  }
+
+  /**
+   * Function called when index already exists
+   *
+   * Can be used by child object
+   *
+   * @param $object
+   * @param $data
+   *
+   * @throws \Exception
+   */
+  protected function indexDuplicated($object, $data) {
+    throw new \Exception('Duplicate index [' . $data . '] in ' . __CLASS__);
+  }
+
+  /**
+   * Function called when index is empty
+   *
+   * To use with child object
+   *
+   * @param $object
+   *
+   * @return bool
+   */
+  protected function indexEmpty($object) {
+    // Do something if index is empty
+    return true;
   }
 
   /**
@@ -43,39 +96,51 @@ class IndexedObjectStorage extends \SplObjectStorage {
    * @param object     $object
    * @param mixed|null $data - null means remove index
    *
-   * @throws \Exception
+   * @return bool
    */
+  // Set indexes for existing objects
   protected function indexSet($object, $data = null) {
     // When calling indexSet - $object already SHOULD not have index associated in this concrete implementation
 
     // Checking if index free. NULL index is always free
     if (isset($this->index[$data])) {
-      throw new \Exception('Duplicate index [' . $data . '] in ' . __CLASS__);
-    }
-
-    if ($data !== null) {
+      return $this->indexDuplicated($object, $data);
+    } elseif ($data === null) {
+      return $this->indexEmpty($object);
+    } else {
       // Assigning index
       $this->index[$data] = $object;
+      return true;
     }
+  }
+
+  public function attach($object, $data = null) {
+    // If object already in storage - removing it's index from $indexes
+    if ($this->contains($object)) {
+      $this->indexUnset($object);
+    }
+    if($this->indexSet($object, $data)) {
+      // Attaches object only if index sets successfully
+      parent::attach($object, $data);
+    }
+  }
+
+  public function detach($object) {
+    $this->indexUnset($object);
+    parent::detach($object);
   }
 
   public function setInfo($data) {
     if ($this->valid()) {
+      // Removing index from current object - if any
       $this->indexUnset($this->current());
+      // Setting new index for current object
       $this->indexSet($this->current(), $data);
+      // Changing object data in storage - giving to
+      parent::setInfo($data);
     }
-    // Changing data in storage
-    parent::setInfo($data);
   }
 
-  /**
-   * @param mixed $index
-   *
-   * @return mixed|null
-   */
-  public function indexGetObject($index) {
-    return $this->indexIsSet($index) ? $this->index[$index] : null;
-  }
 
   /**
    * Rebuild index
@@ -88,30 +153,6 @@ class IndexedObjectStorage extends \SplObjectStorage {
       $this->next();
     }
   }
-
-  public function attach($object, $data = null) {
-    // If $object in storage - removing it's index from $indexes
-    if ($this->contains($object)) {
-      $this->indexUnset($object);
-    }
-    $this->indexSet($object, $data);
-    parent::attach($object, $data);
-  }
-
-  public function detach($object) {
-    $this->indexUnset($object);
-    parent::detach($object);
-  }
-
-  public function offsetSet($object, $data = null) {
-    $this->attach($object, $data);
-  }
-
-  public function offsetUnset($object) {
-    $this->detach($object);
-    parent::offsetUnset($object);
-  }
-
 
   public function addAll($storage) {
     // Adding new elements from storage

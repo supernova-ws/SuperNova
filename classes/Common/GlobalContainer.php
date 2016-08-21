@@ -10,23 +10,30 @@ use V2Fleet\V2FleetModel;
  *
  * Used to describe internal structures of container
  *
- * @package Pimple
- *
  * @property \debug               $debug
+ * @property \Common\Types        $types
+ *
  * @property \db_mysql            $db
- * @property \classCache          $cache
- * @property \classConfig         $config
- * @property \classLocale         $localePlayer
  * @property \DbQueryConstructor  $query
  * @property \DbRowDirectOperator $dbGlobalRowOperator
  * @property \SnDbCachedOperator  $cacheOperator - really DB record operator. But let it be
+ *
+ * @property \classCache          $cache
+ * @property \classConfig         $config
+ * @property \classLocale         $localePlayer
+ *
  * @property string               $snCacheClass
  * @property \SnCache             $snCache
- * @property \Common\Types        $types
+ *
  * @property string               $buddyClass
  * @property \Buddy\BuddyModel    $buddyModel
+ *
  * @property \V2Unit\V2UnitModel  $unitModel
+ * @property \V2Unit\V2UnitList   $unitList
+ *
  * @property V2FleetModel         $fleetModel
+ *
+ * @package Common
  */
 class GlobalContainer extends ContainerPlus {
 
@@ -87,6 +94,9 @@ class GlobalContainer extends ContainerPlus {
     $gc->unitModel = function (GlobalContainer $c) {
       return new \V2Unit\V2UnitModel($c);
     };
+    $gc->unitList = $this->factory(function (GlobalContainer $c) {
+      return new \V2Unit\V2UnitList($c);
+    });
 
     $gc->fleetModel = function (GlobalContainer $c) {
       return new V2FleetModel($c);

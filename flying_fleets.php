@@ -8,10 +8,9 @@ if (!empty($_POST['return']) && is_array($_POST['return'])) {
   foreach ($_POST['return'] as $fleet_id) {
     if ($fleet_id = idval($fleet_id)) {
       sn_db_transaction_start();
-      $fleetV2 = classSupernova::$gc->fleetModel->loadById($fleet_id);
-      if ($fleetV2->ownerId == $user['id']) {
-        classSupernova::$gc->fleetModel->commandReturn($fleetV2);
-      } elseif ($fleetV2->dbId && $fleetV2->ownerId != $user['id']) {
+      try {
+        classSupernova::$gc->fleetModel->commandReturn($user['id'], $fleet_id);
+      } catch (Exception $e) {
         sn_db_transaction_rollback();
         classSupernova::$debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(
           'base_dump'      => true,

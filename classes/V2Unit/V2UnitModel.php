@@ -10,7 +10,6 @@ namespace V2Unit;
  *
  * Second iteration of revised Unit
  *
- * @method V2UnitContainer buildContainer()
  * @method V2UnitContainer fromArray(array $array)
  *
  * @package V2Unit
@@ -86,6 +85,19 @@ class V2UnitModel extends \Entity\KeyedModel {
     $propertyName = 'timeFinish';
     $this->accessors->setAccessor($propertyName, P_CONTAINER_IMPORT, array($gc->types, 'dateTimeImport'));
     $this->accessors->setAccessor($propertyName, P_CONTAINER_EXPORT, array($gc->types, 'dateTimeExport'));
+  }
+
+  /**
+   * @return V2UnitContainer
+   */
+  public function buildContainer($snId = 0, $level = 0) {
+    /**
+     * @var V2UnitContainer $unit
+     */
+    $unit = parent::buildContainer();
+    $unit->snId = $snId;
+    $unit->level = $level;
+    return $unit;
   }
 
   public function setSnId(V2UnitContainer $that, $value) {

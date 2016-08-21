@@ -5,9 +5,13 @@
 
 
 
+- больше тестов для IndexedObjectStorage по работе без индексов
 
 
-
+- unitInfo - кэшировать как-то...
+    - Уже парсенный, что ле?
+        - как раз в objectCollection!
+        - производный класс, который по offsetGet будет вытягивать нужное свойство и создавать класс с инфой, возвращя и кэшируя его
 
 class Entity\EntityContainer extends Common\ContainerAccessors
     - один из этих двух классов нэ нужэн
@@ -16,7 +20,7 @@ class Entity\EntityContainer extends Common\ContainerAccessors
 flying_fleets.php
           $fleetV2 = classSupernova::$gc->fleetModel->loadById($fleet_id);
           if ($fleetV2->ownerId == $user['id'] && !$objFleet->isReturning()) {
-            $objFleet->commandReturn();
+            $objFleet->doReturn();
           } elseif ($objFleet->dbId && $objFleet->playerOwnerId != $user['id']) {
             sn_db_transaction_rollback();
             classSupernova::$debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(

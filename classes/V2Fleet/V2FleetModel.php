@@ -105,7 +105,7 @@ class V2FleetModel extends KeyedModel {
 
     $this->accessors->setAccessor('units', P_CONTAINER_GET, function (V2FleetContainer $that) {
       if (is_null($units = $that->getDirect('units'))) {
-        $units = new V2UnitList();
+        $units = \classSupernova::$gc->unitList;
         $that->setDirect('units', $units);
       }
 
@@ -119,7 +119,7 @@ class V2FleetModel extends KeyedModel {
   }
 
   public function importVector(V2FleetContainer $that, $propertyName) {
-    if($propertyName == 'vectorDeparture') {
+    if ($propertyName == 'vectorDeparture') {
       $that->vectorDeparture = Vector::convertToVector($that->row, FLEET_START_PREFIX);
     } else {
       $that->vectorArrive = Vector::convertToVector($that->row, FLEET_END_PREFIX);
@@ -127,7 +127,7 @@ class V2FleetModel extends KeyedModel {
   }
 
   public function exportVector(V2FleetContainer $that, $propertyName) {
-    if($propertyName == 'vectorDeparture') {
+    if ($propertyName == 'vectorDeparture') {
       $that->row += $that->vectorDeparture->toArray(FLEET_START_PREFIX);
     } else {
       $that->row += $that->vectorArrive->toArray(FLEET_END_PREFIX);
@@ -158,11 +158,15 @@ class V2FleetModel extends KeyedModel {
     return $cFleet;
   }
 
+  protected function dbSave($cFleet) {
+    throw new \Exception('V2FleetModel::dbSave() is not yet implemented');
+  }
+
   /**
    * Forcibly returns fleet before time outs
    */
-  public function commandReturn(V2FleetContainer $cFleet) {
-    if($cFleet->isReturning) {
+  protected function doReturn(V2FleetContainer $cFleet) {
+    if ($cFleet->isReturning) {
       return;
     }
 
@@ -170,7 +174,7 @@ class V2FleetModel extends KeyedModel {
     $cFleet->status = FLEET_FLAG_RETURNING;
 
     // If fleet not yet arrived - return time is equal already fled time
-    if($cFleet->timeArrive <= SN_TIME_NOW) {
+    if ($cFleet->timeArrive <= SN_TIME_NOW) {
       $returnTime = SN_TIME_NOW - $cFleet->timeDeparture;
     } else {
       // Arrived fleet on mission will return in same time as it takes to get to the destination
@@ -196,8 +200,17 @@ class V2FleetModel extends KeyedModel {
     }
   }
 
-  public function dbSave($cFleet) {
+  public function commandReturn($userId, $fleet_id) {
+    $fleetV2 = $this->loadById($fleet_id);
+    if (!$fleetV2->dbId) {
+      return;
+    }
 
+    if ($fleetV2->ownerId != $userId) {
+      throw new \Exception('Hack attempt 302');
+    }
+
+    $this->doReturn($fleetV2);
   }
 
 }
