@@ -22,6 +22,18 @@ class Accessors {
   protected $accessors = array();
 
   /**
+   * @var bool[]
+   */
+  protected $shared = array();
+
+  /**
+   * Result of shared function execution
+   *
+   * @var array
+   */
+  protected $executed = array();
+
+  /**
    * @param string $varName
    * @param string $accessor
    *
@@ -42,7 +54,7 @@ class Accessors {
    *
    * @throws \Exception
    */
-  public function set($varName, $accessor, $callable) {
+  public function set($varName, $accessor, $callable, $shared = false) {
     if (empty($callable)) {
       return;
     } elseif (!is_callable($callable)) {
@@ -61,19 +73,22 @@ class Accessors {
     }
 
     $this->accessors[$varName . $accessor] = $callable;
+    if($shared) {
+      $this->shared[$varName . $accessor] = true;
+    }
   }
 
-  /**
-   * Gets accessor for later use
-   *
-   * @param string $varName
-   * @param string $accessor
-   *
-   * @return callable|null
-   */
-  public function get($varName, $accessor) {
-    return $this->exists($varName, $accessor) ? $this->accessors[$varName . $accessor] : null;
-  }
+//  /**
+//   * Gets accessor for later use
+//   *
+//   * @param string $varName
+//   * @param string $accessor
+//   *
+//   * @return callable|null
+//   */
+//  public function get($varName, $accessor) {
+//    return $this->exists($varName, $accessor) ? $this->accessors[$varName . $accessor] : null;
+//  }
 
   /**
    * @param string $varName
@@ -88,7 +103,16 @@ class Accessors {
       throw new \Exception("No [{$accessor}] accessor found for variable [{$varName}] on " . get_called_class() . "::" . __METHOD__);
     }
 
-    return call_user_func_array($this->get($varName, $accessor), $params);
+    $functionName = $varName . $accessor;
+
+    if(isset($this->shared[$functionName])) {
+      if(!array_key_exists($functionName, $this->executed)) {
+        $this->executed[$functionName] = call_user_func_array($this->accessors[$functionName], $params);
+      }
+      return $this->executed[$functionName];
+    }
+
+    return call_user_func_array($this->accessors[$functionName], $params);
   }
 
 }
