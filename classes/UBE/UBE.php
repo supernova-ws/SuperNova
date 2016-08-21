@@ -714,4 +714,4 @@ function ube_attack_prepare_fleet_from_object(UBEFleet $UBEFleet) { return sn_fu
  * @return mixed
  *
  */
-function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube, &$result)); }
+function flt_planet_capture_from_object(UBE $ube) { return sn_function_call(__FUNCTION__, array($ube)); }

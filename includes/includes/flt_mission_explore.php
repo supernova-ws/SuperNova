@@ -17,8 +17,6 @@ function sn_mission_expedition_result_adjust(&$result) {
  *
  * @param $mission_data Mission
  *
- * @return int
- *
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_explore(&$mission_data) {
@@ -26,7 +24,7 @@ function flt_mission_explore(&$mission_data) {
   static $shipCostInMetalPerPiece, $rates;
 
   if(empty($mission_data->fleet_event) || $mission_data->fleet_event != EVENT_FLT_ACOMPLISH) {
-    return CACHE_NONE;
+    return;
   }
 
   $objFleet = $mission_data->fleet;
@@ -202,7 +200,7 @@ function flt_mission_explore(&$mission_data) {
     break;
   }
 
-  mission_expedition_result_adjust($result, $objFleet);
+  mission_expedition_result_adjust($result);
 
   if($found_dark_matter) {
     rpg_points_change($objFleet->playerOwnerId, RPG_EXPEDITION, $found_dark_matter, 'Expedition Bonus');
@@ -253,6 +251,4 @@ function flt_mission_explore(&$mission_data) {
   );
 
   $objFleet->markReturnedAndSave();
-
-  return CACHE_FLEET | CACHE_USER_SRC;
 }

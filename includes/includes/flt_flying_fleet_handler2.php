@@ -9,7 +9,7 @@ use Mission\Mission;
 /**
  * Handled by:
  *    - unit_captain
- * Overriden by:
+ * Overridden by:
  *    - none
  *
  * @param Fleet $objFleet
@@ -18,7 +18,7 @@ use Mission\Mission;
  *
  * @return mixed
  */
-function RestoreFleetToPlanet(&$objFleet, $start = true, $result = null) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start, &$result)); }
+function RestoreFleetToPlanet(&$objFleet, $start = true) { return sn_function_call(__FUNCTION__, array(&$objFleet, $start)); }
 
 // ------------------------------------------------------------------
 function flt_flyingFleetsSort($a, $b) {
@@ -247,12 +247,12 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     $objMission->dst_planet = $mission_data['dst_planet'] ? DBStaticPlanet::db_planet_by_vector($objFleet->target_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
     $objMission->fleet_event = $fleet_event['fleet_event'];
 
-//    // Fleet that have planet destination is returned
-//    if($mission_data['dst_planet'] && empty($objMission->dst_planet['id_owner'])) {
-//      $objFleet->markReturnedAndSave();
-//      sn_db_transaction_commit();
-//      continue;
-//    }
+    // Fleet that have planet destination is returned
+    if($mission_data['dst_planet'] && empty($objMission->dst_planet['id_owner'])) {
+      $objFleet->markReturnedAndSave();
+      sn_db_transaction_commit();
+      continue;
+    }
 
     if (!empty($objMission->dst_planet['id_owner'])) {
       $update_result = sys_o_get_updated($objMission->dst_planet['id_owner'], $objMission->dst_planet['id'], $objFleet->time_arrive_to_target);

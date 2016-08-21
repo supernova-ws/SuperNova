@@ -7,13 +7,9 @@ use \DBStatic\DBStaticMessages;
  *
  * @param $mission_data Mission
  *
- * @return int
- *
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_transport($mission_data) {
-  $result = CACHE_FLEET;
-
   $objFleet = $mission_data->fleet;
   $source_planet = &$mission_data->src_planet;
   $destination_planet = &$mission_data->dst_planet;
@@ -21,7 +17,7 @@ function flt_mission_transport($mission_data) {
   if(empty($destination_planet['id_owner'])) {
     $objFleet->markReturnedAndSave();
 
-    return $result;
+    return;
   }
 
   $fleet_resources = $objFleet->resourcesGetList();
@@ -37,8 +33,6 @@ function flt_mission_transport($mission_data) {
     DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_TRANSPORT, classLocale::$lang['sys_mess_tower'], classLocale::$lang['sys_mess_transport'], $Message);
   }
 
-  $result = $objFleet->resourcesUnload(false, $result);
+  $objFleet->resourcesUnload(false);
   $objFleet->markReturnedAndSave();
-
-  return $result;
 }

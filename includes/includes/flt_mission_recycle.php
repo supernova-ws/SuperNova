@@ -8,19 +8,11 @@ use \DBStatic\DBStaticMessages;
  *
  * @param $mission_data Mission
  *
- * @return int
- *
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_recycle($mission_data) {
   $objFleet = $mission_data->fleet;
   $destination_planet = &$mission_data->dst_planet;
-  if(empty($destination_planet['id'])) {
-    $objFleet->markReturnedAndSave();
-
-    return CACHE_FLEET;
-  }
-
   $RecyclerCapacity = 0;
   $OtherFleetCapacity = 0;
 
@@ -91,6 +83,4 @@ function flt_mission_recycle($mission_data) {
 
   $objFleet->resourcesAdjust($resources_recycled);
   $objFleet->markReturnedAndSave();
-
-  return CACHE_FLEET | CACHE_PLANET_DST;
 }

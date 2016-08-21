@@ -929,16 +929,14 @@ class Fleet extends UnitContainer {
    *
    * @param bool $start
    * @param int  $result
-   *
-   * @return int
    */
   // TODO - split to functions
-  public function shipsLand($start = true, &$result = CACHE_NOTHING) {
+  public function shipsLand($start = true) {
     sn_db_transaction_check(true);
 
     // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
     if ($this->isEmpty()) {
-      return $result;
+      return;
     }
 
     $coordinates = $start ? $this->launch_coordinates_typed() : $this->target_coordinates_typed();
@@ -968,16 +966,12 @@ class Fleet extends UnitContainer {
       }
 
       // Restoring resources to planet
-      $this->resourcesUnload($start, $result);
+      $this->resourcesUnload($start);
     }
 
-    $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
-
-    $result = RestoreFleetToPlanet($this, $start, $result);
+    RestoreFleetToPlanet($this, $start);
 
     $this->dbDelete();
-
-    return $result;
   }
 
 
@@ -1086,15 +1080,13 @@ class Fleet extends UnitContainer {
    * @param bool $start
    * @param bool $only_resources
    * @param int  $result
-   *
-   * @return int
    */
-  public function resourcesUnload($start = true, &$result = CACHE_NOTHING) {
+  public function resourcesUnload($start = true) {
     sn_db_transaction_check(true);
 
     // Если флот уже обработан - не существует или возращается - тогда ничего не делаем
     if (!$this->resourcesGetTotal()) {
-      return $result;
+      return;
     }
 
     $coordinates = $start ? $this->launch_coordinates_typed() : $this->target_coordinates_typed();
@@ -1126,10 +1118,6 @@ class Fleet extends UnitContainer {
     }
 
     $this->resourcesReset();
-
-    $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
-
-    return $result;
   }
 
 

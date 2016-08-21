@@ -7,8 +7,6 @@ use \DBStatic\DBStaticMessages;
  *
  * @param $mission_data Mission
  *
- * @return int
- *
  * @copyright 2008 by Gorlum for Project "SuperNova.WS"
  */
 function flt_mission_colonize(&$mission_data) {
@@ -42,7 +40,8 @@ function flt_mission_colonize(&$mission_data) {
           DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_colo_mess_from'], classLocale::$lang['sys_colo_mess_report'], $TheMessage);
 
           $objFleet->shipAdjustCount(SHIP_COLONIZER, -1);
-          return $objFleet->shipsLand(false);
+          $objFleet->shipsLand(false);
+          return;
         }
       }
     }
@@ -50,6 +49,4 @@ function flt_mission_colonize(&$mission_data) {
 
   $objFleet->markReturnedAndSave();
   DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_colo_mess_from'], classLocale::$lang['sys_colo_mess_report'], "{$classLocale['sys_colo_arrival']}{$TargetAddress}{$TheMessage}");
-
-  return CACHE_FLEET;
 }
