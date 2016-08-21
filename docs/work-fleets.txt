@@ -1,23 +1,15 @@
-- Должно фиксироваться только время отправления
-    - Время полёта и время миссии должно быть в секундах
-
-- В DB заменить везде planet_type на просто type
-
-
-
-- больше тестов для IndexedObjectStorage по работе без индексов
-
-
-- unitInfo - кэшировать как-то...
-    - Уже парсенный, что ле?
-        - как раз в objectCollection!
-        - производный класс, который по offsetGet будет вытягивать нужное свойство и создавать класс с инфой, возвращя и кэшируя его
-
 class Entity\EntityContainer extends Common\ContainerAccessors
     - один из этих двух классов нэ нужэн
+    - вообще-то тут надо добавить обработку изменений
+    - а еще добавить типизацию
 
-
-
+//  public function __set($name, $value) {
+//    if (is_callable($value)) {
+//      $this->accessors->set($name, P_CONTAINER_GET, $value);
+//    } else {
+//      $this->performMagic($name, P_CONTAINER_SET, $value);
+//    }
+//  }
 
 
 
@@ -56,33 +48,7 @@ class Entity\EntityContainer extends Common\ContainerAccessors
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же
-
-
-// TODO - Entity\EntityModel - сделать трейт TMagicArray - реализацию IMagicAccess, которая обращается к свойствам через интерфейс ArrayAccess
+- Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же
 
 
 // TODO - Друзья
@@ -110,56 +76,6 @@ classSupernova::$gc->cacheOperator
     - check where used and make DI
     - also check for other modules
 
-
-// TODO WORKING ON -----------------------------------------------------------------------------------------------------
-
-$unitModel = classSupernova::$gc->unitModel;
-$unit = $unitModel->loadTry(1);
-var_dump($unit);
-pdie();
-
-
-$unitList = new \V2Unit\V2UnitList();
-$model = classSupernova::$gc->unitModel;
-
-$unit = $model->buildContainer();
-$unit->importRow(array('unit_snid' => RES_METAL));
-$unitList->attach($unit);
-unset($unit);
-
-$unit = $model->buildContainer();
-$unit->importRow(array('unit_snid' => STRUC_ALLY_DEPOSIT));
-$unitList->attach($unit);
-unset($unit);
-
-$unit = $model->buildContainer();
-$unit->importRow(array('unit_snid' => RES_CRYSTAL));
-$unitList->attach($unit);
-unset($unit);
-
-$iterator = new \V2Unit\V2UnitIterator($unitList);
-$iterator->setFilterType(UNIT_STRUCTURES);
-$iterator->setFilterType(UNIT_RESOURCES);
-
-$i = 0;
-foreach($iterator as $key => $value) {
-//  pdump($value->type, '$value->type');
-  pdump($value->snId, '$value->snId');
-
-//  pdump($iterator->valid(), '$iterator->valid()');
-//  if($i++ > 10) die();
-//  var_dump($i);
-//  var_dump($key);
-//  var_dump($value);
-}
-
-die();
-
-
-$model = new \V2Fleet\V2FleetModel(classSupernova::$gc);
-$fleet = $model->loadById(8);
-var_dump($fleet->units);
-pdie();
 
 
 - buyable
@@ -367,6 +283,67 @@ function idval($value, $default = 0) { - переделать под int|string
     - doquery()
          - db->doDeleteRow
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// TODO WORKING ON -----------------------------------------------------------------------------------------------------
+
+
+$unitList = new \V2Unit\V2UnitList();
+$model = classSupernova::$gc->unitModel;
+
+$unit = $model->buildContainer();
+$unit->importRow(array('unit_snid' => RES_METAL));
+$unitList->attach($unit);
+unset($unit);
+
+$unit = $model->buildContainer();
+$unit->importRow(array('unit_snid' => STRUC_ALLY_DEPOSIT));
+$unitList->attach($unit);
+unset($unit);
+
+$unit = $model->buildContainer();
+$unit->importRow(array('unit_snid' => RES_CRYSTAL));
+$unitList->attach($unit);
+unset($unit);
+
+$iterator = new \V2Unit\V2UnitIterator($unitList);
+$iterator->setFilterType(UNIT_STRUCTURES);
+$iterator->setFilterType(UNIT_RESOURCES);
+
+$i = 0;
+foreach($iterator as $key => $value) {
+//  pdump($value->type, '$value->type');
+  pdump($value->snId, '$value->snId');
+
+//  pdump($iterator->valid(), '$iterator->valid()');
+//  if($i++ > 10) die();
+//  var_dump($i);
+//  var_dump($key);
+//  var_dump($value);
+}
+
+die();
+
+
+$model = new \V2Fleet\V2FleetModel(classSupernova::$gc);
+$fleet = $model->loadById(8);
+var_dump($fleet->units);
+pdie();
+
+
+
 $unit = classSupernova::$gc->unit;
 //var_dump($unit);
 $unit->dbId = 1;
@@ -379,3 +356,15 @@ pdump($unit->dbId, '$unit->dbId');
 pdump($unit->exportRowWithId());
 pdie();
 
+
+
+- Должно фиксироваться только время отправления
+    - Время полёта и время миссии должно быть в секундах
+
+- В DB заменить везде planet_type на просто type
+
+- Preemptive optimization!
+    - unitInfo - кэшировать как-то...
+        - Уже парсенный, что ле?
+            - как раз в objectCollection!
+            - производный класс, который по offsetGet будет вытягивать нужное свойство и создавать класс с инфой, возвращя и кэшируя его

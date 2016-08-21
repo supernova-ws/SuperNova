@@ -160,7 +160,7 @@ class V2FleetModel extends KeyedModel {
     return $cFleet;
   }
 
-  protected function dbSave($cFleet) {
+  protected function dbSave(V2FleetContainer $cFleet) {
     throw new \Exception('V2FleetModel::dbSave() is not yet implemented');
   }
 
@@ -182,7 +182,6 @@ class V2FleetModel extends KeyedModel {
       // Arrived fleet on mission will return in same time as it takes to get to the destination
       $returnTime = $cFleet->timeArrive - $cFleet->timeDeparture;
     }
-//    $ReturnFlyingTime = ($cFleet->timeComplete != 0 && $cFleet->timeArrive < SN_TIME_NOW ? $cFleet->timeArrive : SN_TIME_NOW) - $cFleet->timeDeparture + SN_TIME_NOW + 1;
     $cFleet->timeReturn = SN_TIME_NOW + $returnTime;
 
     // Считаем, что флот уже долетел

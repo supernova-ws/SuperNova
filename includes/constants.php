@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a52.50');
+define('SN_VERSION', '41a52.51');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -769,6 +769,7 @@ define('MARKET_NOT_A_SHIP'           ,  7);
 define('MARKET_NO_STOCK'             ,  8);
 define('MARKET_ZERO_RES_STOCK'       ,  9);
 define('MARKET_NEGATIVE_SHIPS'       , 10);
+define('MARKET_ZERO_RES'             , 11);
 
 define('MARKET_INFO_PLAYER'          , 12);
 define('MARKET_INFO_WRONG'           , 11);
