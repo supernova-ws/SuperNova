@@ -1,23 +1,3 @@
-СЕЙЧАС!!!!!!!!!
-
-flying_fleet_handler2.php
-//    // Fleet that have planet destination is returned
-//    if($mission_data['dst_planet'] && empty($objMission->dst_planet['id_owner'])) {
-//      $objFleet->markReturnedAndSave();
-//      sn_db_transaction_commit();
-//      continue;
-//    }
-И поубирать дополнительные проверки в функциях миссий
-
-
-
-
-
-
-
-
-
-
 - Должно фиксироваться только время отправления
     - Время полёта и время миссии должно быть в секундах
 
@@ -37,19 +17,6 @@ class Entity\EntityContainer extends Common\ContainerAccessors
     - один из этих двух классов нэ нужэн
 
 
-flying_fleets.php
-          $fleetV2 = classSupernova::$gc->fleetModel->loadById($fleet_id);
-          if ($fleetV2->ownerId == $user['id'] && !$objFleet->isReturning()) {
-            $objFleet->doReturn();
-          } elseif ($objFleet->dbId && $objFleet->playerOwnerId != $user['id']) {
-            sn_db_transaction_rollback();
-            classSupernova::$debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(
-                'base_dump' => true,
-                'fleet_owner_id' => $objFleet->playerOwnerId,
-                'user_id' => $user['id'])
-            );
-            die('Hack attempt 302');
-          }
 
 
 
