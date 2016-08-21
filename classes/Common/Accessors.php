@@ -17,9 +17,19 @@ class Accessors {
   /**
    * Array of accessors - getters/setters/etc
    *
-   * @var callable[][]
+   * @var callable[]
    */
   protected $accessors = array();
+
+  /**
+   * @param string $varName
+   * @param string $accessor
+   *
+   * @return bool
+   */
+  public function exists($varName, $accessor) {
+    return isset($this->accessors[$varName . $accessor]);
+  }
 
   /**
    * Assign accessor to a named variable
@@ -32,11 +42,11 @@ class Accessors {
    *
    * @throws \Exception
    */
-  public function setAccessor($varName, $accessor, $callable) {
+  public function set($varName, $accessor, $callable) {
     if (empty($callable)) {
       return;
     } elseif (!is_callable($callable)) {
-      throw new \Exception('Error assigning callable in ' . get_called_class() . '::setAccessor()! Callable typed [' . $accessor . '] is not a callable or not accessible in the scope');
+      throw new \Exception('Error assigning callable in ' . get_called_class() . '::set()! Callable typed [' . $accessor . '] is not a callable or not accessible in the scope');
     }
 
     // Converting method array-callable to closure
@@ -46,7 +56,11 @@ class Accessors {
 //      $callable = $method->getClosure($callable[0]);
 //    }
 
-    $this->accessors[$varName][$accessor] = $callable;
+    if($invoker = Invoker::build($callable)) {
+      $callable = $invoker;
+    }
+
+    $this->accessors[$varName . $accessor] = $callable;
   }
 
   /**
@@ -57,18 +71,8 @@ class Accessors {
    *
    * @return callable|null
    */
-  public function getAccessor($varName, $accessor) {
-    return isset($this->accessors[$varName][$accessor]) ? $this->accessors[$varName][$accessor] : null;
-  }
-
-  /**
-   * @param string $varName
-   * @param string $accessor
-   *
-   * @return bool
-   */
-  public function haveAccessor($varName, $accessor) {
-    return isset($this->accessors[$varName][$accessor]);
+  public function get($varName, $accessor) {
+    return $this->exists($varName, $accessor) ? $this->accessors[$varName . $accessor] : null;
   }
 
   /**
@@ -79,12 +83,12 @@ class Accessors {
    * @return mixed
    * @throws \Exception
    */
-  public function invokeAccessor($varName, $accessor, $params) {
-    if (!$this->haveAccessor($varName, $accessor)) {
+  public function execute($varName, $accessor, $params) {
+    if (!$this->exists($varName, $accessor)) {
       throw new \Exception("No [{$accessor}] accessor found for variable [{$varName}] on " . get_called_class() . "::" . __METHOD__);
     }
 
-    return call_user_func_array($this->getAccessor($varName, $accessor), $params);
+    return call_user_func_array($this->get($varName, $accessor), $params);
   }
 
 }

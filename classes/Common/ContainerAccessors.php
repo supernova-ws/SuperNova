@@ -51,8 +51,8 @@ class ContainerAccessors extends ContainerMagic {
    * @return mixed
    */
   protected function performMagic($varName, $accessor, $value = null) {
-    if ($this->accessors->haveAccessor($varName, $accessor)) {
-      return $this->accessors->invokeAccessor($varName, $accessor, array($this, $value));
+    if ($this->accessors->exists($varName, $accessor)) {
+      return $this->accessors->execute($varName, $accessor, array($this, $value));
     } else {
       return parent::$accessor($varName, $value);
     }
@@ -61,7 +61,7 @@ class ContainerAccessors extends ContainerMagic {
 
   public function __set($name, $value) {
     if (is_callable($value)) {
-      $this->accessors->setAccessor($name, P_CONTAINER_GET, $value);
+      $this->accessors->set($name, P_CONTAINER_GET, $value);
     } else {
       $this->performMagic($name, P_CONTAINER_SET, $value);
     }

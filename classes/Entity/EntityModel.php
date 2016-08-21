@@ -82,8 +82,8 @@ class EntityModel {
   protected function processRow($that, $accessor) {
     foreach ($this->properties as $propertyName => $propertyData) {
       $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
-      if ($this->accessors->haveAccessor($propertyName, $accessor)) {
-        $this->accessors->invokeAccessor($propertyName, $accessor, array($that, $propertyName, $fieldName));
+      if ($this->accessors->exists($propertyName, $accessor)) {
+        $this->accessors->execute($propertyName, $accessor, array($that, $propertyName, $fieldName));
       } elseif ($fieldName) {
         if ($accessor == P_CONTAINER_IMPORT) {
           $that->$propertyName = isset($that->row[$fieldName]) ? $that->row[$fieldName] : null;
