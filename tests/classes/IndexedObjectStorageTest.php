@@ -31,6 +31,8 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
    * @covers ::indexRebuild
    * @covers ::indexUnset
    * @covers ::indexSet
+   * @covers ::indexIsSet
+   * @covers ::indexEmpty
    */
   public function test() {
     $s = new \Common\IndexedObjectStorage();
@@ -43,6 +45,7 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
 
     // attach
     $s->attach($o1, 'i1');
+    $this->assertTrue($s->indexIsSet('i1'));
     $this->assertEquals(1, $s->count());
     $this->assertEquals('i1', $s[$o1]);
     $this->assertEquals('i1', $s->offsetGet($o1));
@@ -129,12 +132,17 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
     $this->assertTrue($s->contains($o2));
     $this->assertEquals($o2, $s->indexGetObject('i2'));
     $this->assertEquals(array('i2' => $o2), getPrivatePropertyValue($s, $this->indexesName));
+
+
+    $o3 = new stdClass();
+    $s->attach($o3);
   }
 
   /**
    * @covers ::indexRebuild
    * @covers ::indexUnset
    * @covers ::indexSet
+   * @covers ::indexDuplicated
    */
   public function testExceptionDuplicateIndex() {
     $s = new \Common\IndexedObjectStorage();

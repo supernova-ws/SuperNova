@@ -41,14 +41,14 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(null, $this->object->p1);
   }
 
-//  /**
-//   * @covers ::setAccessors
-//   */
-//  public function testSetAccessors() {
-//    $this->object->setAccessors(array('test'));
-//
-//    $this->assertAttributeEquals(array('test'), 'accessors', $this->object);
-//  }
+  /**
+   * @covers ::setAccessors
+   */
+  public function testSetAccessors() {
+    $this->object->setAccessors(array('test'));
+
+    $this->assertAttributeEquals(array('test'), 'accessors', $this->object);
+  }
 
 //  /**
 //   * @covers ::assignAccessor
@@ -156,6 +156,15 @@ class ContainerAccessorsTest extends PHPUnit_Framework_TestCase {
 
     $this->assertFalse(isset($this->object->p6));
     $this->assertFalse(isset($this->object->p8));
+  }
+
+  /**
+   * @covers ::__construct
+   */
+  public function test__construct() {
+    $object = new ContainerAccessors();
+    $this->assertAttributeInstanceOf('Common\Accessors', 'accessors', $object);
+    unset($object);
   }
 
 }
