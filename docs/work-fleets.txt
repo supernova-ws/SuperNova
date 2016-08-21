@@ -1,3 +1,41 @@
+EntityContainer
+  public function __set($name, $value) {
+    $properties = $this->model->getProperties();
+    if(isset($properties[$name][P_DB_FIELD_TYPE])) {
+      $value = \classSupernova::$gc->types->castAs($properties[$name][P_DB_FIELD_TYPE], $value);
+    }
+
+    parent::__set($name, $value);
+    $newValue = $this->__get($name);
+
+    // If no original value and new value is set - then we take new value as old value
+    if(empty($this->original[$name]) && !empty($newValue)) {
+      $this->original[$name] = $newValue;
+    } elseif(!empty($this->original[$name]) && $newValue != $this->original[$name]) {
+      // New value not equal original value
+      // We should update delta
+      // TODO - check for numeric
+      $this->delta[$name] = $this->original[$name] - $newValue;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+- EntityModel
+    - properties - надо сделать это отдельным объектом - что бы можно было сделать ссылку в контейнере
+
+
 class Entity\EntityContainer extends Common\ContainerAccessors
     - один из этих двух классов нэ нужэн
     - вообще-то тут надо добавить обработку изменений

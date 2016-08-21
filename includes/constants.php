@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a52.51');
+define('SN_VERSION', '41a52.52');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -1235,6 +1235,7 @@ define('P_METHOD_SET', 'funcSet'); // Setter name
 define('P_FUNC_GET', 'funcGet'); // Getter name
 define('P_VALUE', 'value');
 define('P_READ_ONLY', 'READ-ONLY');
+define('P_DB_FIELD_TYPE', 'dbFieldType');
 
 define('P_MAX_STACK', 'max');
 // Все просто 'name' и "name" заменены на P_NAME

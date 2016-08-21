@@ -44,9 +44,15 @@ class V2FleetModel extends KeyedModel {
     'departurePlanetId' => array(P_DB_FIELD => 'fleet_start_planet_id'),
     'arrivePlanetId'    => array(P_DB_FIELD => 'fleet_end_planet_id'),
 
-    'missionType' => array(P_DB_FIELD => 'fleet_mission'),
-    'status'      => array(P_DB_FIELD => 'fleet_mess'),
-    'groupId'     => array(P_DB_FIELD => 'fleet_group'),
+    'missionType' => array(
+      P_DB_FIELD      => 'fleet_mission',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
+    ),
+    'status'      => array(
+      P_DB_FIELD      => 'fleet_mess',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
+    ),
+    'groupId'     => array(P_DB_FIELD => 'fleet_group',),
 
 
 //    'fleet_start_galaxy'       => array(P_DB_FIELD => 'fleet_start_galaxy'),
@@ -65,10 +71,22 @@ class V2FleetModel extends KeyedModel {
     'vectorDeparture' => array(P_DB_FIELD => 'fleet_start_galaxy'),
     'vectorArrive'    => array(P_DB_FIELD => 'fleet_end_galaxy'),
 
-    'timeDeparture' => array(P_DB_FIELD => 'start_time'),
-    'timeArrive'    => array(P_DB_FIELD => 'fleet_start_time'),
-    'timeComplete'  => array(P_DB_FIELD => 'fleet_end_stay'),
-    'timeReturn'    => array(P_DB_FIELD => 'fleet_end_time'),
+    'timeDeparture' => array(
+      P_DB_FIELD      => 'start_time',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
+    ),
+    'timeArrive'    => array(
+      P_DB_FIELD      => 'fleet_start_time',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
+    ),
+    'timeComplete'  => array(
+      P_DB_FIELD      => 'fleet_end_stay',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
+    ),
+    'timeReturn'    => array(
+      P_DB_FIELD      => 'fleet_end_time',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
+    ),
 
     'shipsCount'  => array(P_DB_FIELD => 'fleet_amount'),
     'units'       => array(),

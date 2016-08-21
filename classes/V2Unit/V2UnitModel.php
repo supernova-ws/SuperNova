@@ -39,16 +39,19 @@ class V2UnitModel extends \Entity\KeyedModel {
       P_DB_FIELD => 'unit_player_id',
     ),
     'locationType'        => array(
-      P_DB_FIELD => 'unit_location_type',
+      P_DB_FIELD      => 'unit_location_type',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
     ),
     'locationId'          => array(
       P_DB_FIELD => 'unit_location_id',
     ),
     'type'                => array(
-      P_DB_FIELD => 'unit_type',
+      P_DB_FIELD      => 'unit_type',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
     ),
     'snId'                => array(
-      P_DB_FIELD => 'unit_snid',
+      P_DB_FIELD      => 'unit_snid',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
     ),
     // Order is important!
     // TODO - split dbLevel to level and count
@@ -58,10 +61,12 @@ class V2UnitModel extends \Entity\KeyedModel {
     'count'               => array(),
     // TODO - move to child class
     'timeStart'           => array(
-      P_DB_FIELD => 'unit_time_start',
+      P_DB_FIELD      => 'unit_time_start',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
     ),
     'timeFinish'          => array(
-      P_DB_FIELD => 'unit_time_finish',
+      P_DB_FIELD      => 'unit_time_finish',
+      P_DB_FIELD_TYPE => TYPE_INTEGER,
     ),
     // Do we need it? Or internal no info/getters/setters should be ignored?
     'unitInfo'            => array(),

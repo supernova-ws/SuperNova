@@ -20,6 +20,16 @@ class EntityContainer extends ContainerAccessors {
    */
   protected $accessors;
 
+  /**
+   * @var array $original
+   */
+  protected $original;
+
+  /**
+   * @var array $delta
+   */
+  protected $delta;
+
   /** @noinspection PhpMissingParentConstructorInspection */
   /**
    * Entity\EntityContainer constructor.
