@@ -1,6 +1,7 @@
 <?php
 use DBStatic\DBStaticPlanet;
 use Mission\Mission;
+use \DBStatic\DBStaticMessages;
 
 /**
  * Fleet mission "Recycle"
@@ -15,8 +16,7 @@ function flt_mission_recycle($mission_data) {
   $objFleet = $mission_data->fleet;
   $destination_planet = &$mission_data->dst_planet;
   if(empty($destination_planet['id'])) {
-    $objFleet->markReturned();
-    $objFleet->dbSave();
+    $objFleet->markReturnedAndSave();
 
     return CACHE_FLEET;
   }
@@ -90,8 +90,7 @@ function flt_mission_recycle($mission_data) {
   );
 
   $objFleet->resourcesAdjust($resources_recycled);
-  $objFleet->markReturned();
-  $objFleet->dbSave();
+  $objFleet->markReturnedAndSave();
 
   return CACHE_FLEET | CACHE_PLANET_DST;
 }

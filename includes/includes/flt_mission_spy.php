@@ -2,6 +2,7 @@
 
 use DBStatic\DBStaticPlanet;
 use Mission\Mission;
+use \DBStatic\DBStaticMessages;
 
 require_once('includes/includes/coe_simulator_helpers.php');
 

@@ -1,5 +1,6 @@
 <?php
 use Mission\Mission;
+use \DBStatic\DBStaticMessages;
 
 /**
  * Fleet mission "Recycle"
@@ -47,8 +48,7 @@ function flt_mission_colonize(&$mission_data) {
     }
   }
 
-  $objFleet->markReturned();
-  $objFleet->dbSave();
+  $objFleet->markReturnedAndSave();
   DBStaticMessages::msg_send_simple_message($objFleet->playerOwnerId, '', $objFleet->time_arrive_to_target, MSG_TYPE_SPY, classLocale::$lang['sys_colo_mess_from'], classLocale::$lang['sys_colo_mess_report'], "{$classLocale['sys_colo_arrival']}{$TargetAddress}{$TheMessage}");
 
   return CACHE_FLEET;

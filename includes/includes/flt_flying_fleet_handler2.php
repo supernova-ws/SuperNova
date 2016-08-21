@@ -238,7 +238,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     // TODO: Кэширование
     // TODO: Выбирать только нужные поля
 
-    $objMission = new Mission();
+    $objMission = new Mission($objFleet);
     $objMission->fleet = $objFleet;
     $objMission->src_user = $mission_data['src_user'] || $mission_data['src_planet'] ? DBStaticUser::db_user_by_id($objFleet->playerOwnerId, true) : null;
     $objMission->src_planet = $mission_data['src_planet'] ? DBStaticPlanet::db_planet_by_vector($objFleet->launch_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
@@ -247,7 +247,14 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     $objMission->dst_planet = $mission_data['dst_planet'] ? DBStaticPlanet::db_planet_by_vector($objFleet->target_coordinates_typed(), '', true, '`id`, `id_owner`, `name`') : null;
     $objMission->fleet_event = $fleet_event['fleet_event'];
 
-    if ($objMission->dst_planet && $objMission->dst_planet['id_owner']) {
+//    // Fleet that have planet destination is returned
+//    if($mission_data['dst_planet'] && empty($objMission->dst_planet['id_owner'])) {
+//      $objFleet->markReturnedAndSave();
+//      sn_db_transaction_commit();
+//      continue;
+//    }
+
+    if (!empty($objMission->dst_planet['id_owner'])) {
       $update_result = sys_o_get_updated($objMission->dst_planet['id_owner'], $objMission->dst_planet['id'], $objFleet->time_arrive_to_target);
       $objMission->dst_user = !empty($objMission->dst_user) ? $update_result['user'] : null;
       $objMission->dst_planet = $update_result['planet'];
@@ -258,35 +265,35 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       case MT_ACS:
       case MT_ATTACK:
       case MT_DESTROY:
-        flt_mission_attack($objMission); // Partially
+        flt_mission_attack($objMission);
       break;
 
       case MT_TRANSPORT:
-        flt_mission_transport($objMission); // OK
+        flt_mission_transport($objMission);
       break;
 
       case MT_HOLD:
-        flt_mission_hold($objMission); // OK
+        flt_mission_hold($objMission);
       break;
 
       case MT_RELOCATE:
-        flt_mission_relocate($objMission); // OK
+        flt_mission_relocate($objMission);
       break;
 
       case MT_EXPLORE:
-        flt_mission_explore($objMission); // OK
+        flt_mission_explore($objMission);
       break;
 
       case MT_RECYCLE:
-        flt_mission_recycle($objMission); // OK
+        flt_mission_recycle($objMission);
       break;
 
       case MT_COLONIZE:
-        flt_mission_colonize($objMission); // OK
+        flt_mission_colonize($objMission);
       break;
 
       case MT_SPY:
-        flt_mission_spy($objMission); // OK
+        flt_mission_spy($objMission);
       break;
 
       case MT_MISSILE:  // Missiles !!

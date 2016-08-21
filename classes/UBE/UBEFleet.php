@@ -466,7 +466,7 @@ class UBEFleet {
     $ship_count_lost = $this->unit_list->unitCountLost();
 
     $objFleet2 = new Fleet();
-    $objFleet2->setDbId($this->db_id);
+    $objFleet2->dbId = $this->db_id;
 
     // Если это была миссия Уничтожения И звезда смерти взорвалась И мы работаем с аттакерами - значит все аттакеры умерли
     if($this->is_attacker == UBE_PLAYER_IS_ATTACKER && $reapers_status == UBE_MOON_REAPERS_DIED) {
@@ -492,7 +492,7 @@ class UBEFleet {
 
       // Если защитник и не РМФ - отправляем флот назад
       if($this->is_attacker == UBE_PLAYER_IS_ATTACKER || ($this->is_attacker == UBE_PLAYER_IS_DEFENDER && !$is_small_fleet_recce)) {
-        $objFleet2->markReturned();
+        $objFleet2->is_returning = 1;
       }
       $objFleet2->dbSave();
     }

@@ -587,8 +587,6 @@ class Fleet extends UnitContainer {
   public function commandReturn() {
     $ReturnFlyingTime = ($this->_time_mission_job_complete != 0 && $this->_time_arrive_to_target < SN_TIME_NOW ? $this->_time_arrive_to_target : SN_TIME_NOW) - $this->_time_launch + SN_TIME_NOW + 1;
 
-    $this->markReturned();
-
     // Считаем, что флот уже долетел TODO
     $this->time_arrive_to_target = SN_TIME_NOW;
     // Убираем флот из группы
@@ -599,7 +597,7 @@ class Fleet extends UnitContainer {
     $this->time_return_to_source = $ReturnFlyingTime;
 
     // Записываем изменения в БД
-    $this->dbSave();
+    $this->markReturnedAndSave();
 
     if ($this->_group_id) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
@@ -643,21 +641,16 @@ class Fleet extends UnitContainer {
     );
   }
 
+  public function isReturning() {
+    return FLEET_FLAG_RETURNING == $this->_is_returning;
+  }
 
   /**
    * Sets object fields for fleet return
    */
-  public function markReturned() {
-    // TODO - Проверка - а не возвращается ли уже флот?
-    $this->is_returning = 1;
-  }
-
-  public function isReturning() {
-    return 1 == $this->_is_returning;
-  }
-
   public function markReturnedAndSave() {
-    $this->markReturned();
+    // TODO - Проверка - а не возвращается ли уже флот?
+    $this->is_returning = FLEET_FLAG_RETURNING;
     $this->dbSave();
   }
 
@@ -1133,7 +1126,6 @@ class Fleet extends UnitContainer {
     }
 
     $this->resourcesReset();
-    $this->markReturned();
 
     $result = CACHE_FLEET | ($start ? CACHE_PLANET_SRC : CACHE_PLANET_DST);
 

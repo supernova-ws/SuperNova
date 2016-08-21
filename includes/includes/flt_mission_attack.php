@@ -38,7 +38,5 @@ function flt_mission_attack($objMission) {
     return null;
   }
 
-//  require_once('classes/UBE/UBE.php');
-
   return UBE::flt_mission_attack($objMission);
 }

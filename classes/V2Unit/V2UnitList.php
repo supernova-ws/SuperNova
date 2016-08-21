@@ -32,12 +32,15 @@ class V2UnitList extends ObjectCollection {
 
     foreach ($unitRows as $dbId => $unitRow) {
       $unit = $this->unitModel->fromArray($unitRow);
-      $this[intval($unit->snId)] = $unit;
+      $this[$unit->snId] = $unit;
     }
   }
 
   public function unitAdd($snId, $level) {
-    $this[$snId] = $this->unitModel->buildContainer($snId, $level);
+    $unit = $this->unitModel->buildContainer();
+    $unit->snId = $snId;
+    $unit->level = $level;
+    $this[$snId] = $unit;
   }
 
   /**

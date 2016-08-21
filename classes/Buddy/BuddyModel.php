@@ -37,7 +37,7 @@ class BuddyModel extends \Entity\KeyedModel{
   protected $exceptionClass = 'BuddyException';
   protected $entityContainerClass = 'Buddy\BuddyContainer';
 
-  protected $properties = array(
+  private $newProperties = array(
     'dbId'           => array(
       P_DB_FIELD => 'BUDDY_ID',
     ),
@@ -54,27 +54,6 @@ class BuddyModel extends \Entity\KeyedModel{
       P_DB_FIELD => 'BUDDY_REQUEST',
     ),
   );
-
-  public function __construct(\Common\GlobalContainer $gc) {
-    parent::__construct($gc);
-    $this->extendProperties(
-        array(
-      'playerSenderId' => array(
-        P_DB_FIELD => 'BUDDY_SENDER_ID',
-      ),
-      'playerOwnerId'  => array(
-        P_DB_FIELD => 'BUDDY_OWNER_ID',
-      ),
-      'buddyStatusId'  => array(
-        P_DB_FIELD => 'BUDDY_STATUS',
-      ),
-      'requestText'    => array(
-        P_DB_FIELD => 'BUDDY_REQUEST',
-      ),
-    )
-
-    );
-  }
 
   /**
    * @param BuddyContainer $cBuddy

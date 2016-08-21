@@ -1,3 +1,23 @@
+СЕЙЧАС!!!!!!!!!
+
+flying_fleet_handler2.php
+//    // Fleet that have planet destination is returned
+//    if($mission_data['dst_planet'] && empty($objMission->dst_planet['id_owner'])) {
+//      $objFleet->markReturnedAndSave();
+//      sn_db_transaction_commit();
+//      continue;
+//    }
+И поубирать дополнительные проверки в функциях миссий
+
+
+
+
+
+
+
+
+
+
 - Должно фиксироваться только время отправления
     - Время полёта и время миссии должно быть в секундах
 

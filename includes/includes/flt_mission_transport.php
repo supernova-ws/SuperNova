@@ -1,5 +1,6 @@
 <?php
 use Mission\Mission;
+use \DBStatic\DBStaticMessages;
 
 /**
  * Fleet mission "Transport"
@@ -17,7 +18,7 @@ function flt_mission_transport($mission_data) {
   $source_planet = &$mission_data->src_planet;
   $destination_planet = &$mission_data->dst_planet;
 
-  if(!isset($destination_planet['id']) || !$destination_planet['id_owner']) {
+  if(empty($destination_planet['id_owner'])) {
     $objFleet->markReturnedAndSave();
 
     return $result;
@@ -37,7 +38,7 @@ function flt_mission_transport($mission_data) {
   }
 
   $result = $objFleet->resourcesUnload(false, $result);
-  $this->dbSave();
+  $objFleet->markReturnedAndSave();
 
   return $result;
 }

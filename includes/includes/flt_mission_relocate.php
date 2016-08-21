@@ -1,5 +1,6 @@
 <?php
 use Mission\Mission;
+use \DBStatic\DBStaticMessages;
 
 /**
  * Fleet mission "Relocate"

@@ -78,7 +78,7 @@ class V2FleetModel extends KeyedModel {
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
-    $this->extendProperties($this->newProperties);
+//    $this->extendProperties($this->newProperties);
 
     $this->accessors->set('location', P_CONTAINER_GET, function (V2FleetContainer $that) {
       if (is_null($location = $that->getDirect('location'))) {

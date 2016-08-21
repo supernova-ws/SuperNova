@@ -15,6 +15,8 @@ class KeyedModel extends EntityModel {
    */
   protected $idFieldName = 'id';
 
+  private $newProperties = array();
+
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
     $this->extendProperties(
@@ -24,6 +26,10 @@ class KeyedModel extends EntityModel {
         )
       )
     );
+
+    if(property_exists($this, 'newProperties')) {
+      $this->extendProperties($this->newProperties);
+    }
   }
 
   /**

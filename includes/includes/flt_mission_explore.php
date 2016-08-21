@@ -252,8 +252,7 @@ function flt_mission_explore(&$mission_data) {
     array('player_rpg_explore_xp' => +1)
   );
 
-  $objFleet->markReturned();
-  $objFleet->dbSave();
+  $objFleet->markReturnedAndSave();
 
   return CACHE_FLEET | CACHE_USER_SRC;
 }
