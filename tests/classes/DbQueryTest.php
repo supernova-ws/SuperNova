@@ -241,8 +241,9 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
       array('f1' => 'string', 'f2' => 1, 'f3' => null),
       array('f1' => 'v1', 'f2' => 2, 'f3' => null),
     ));
+    $this->object->setValuesDanger('(DANGER!)');
     invokeMethod($this->object, 'buildValuesVector', array());
-    $this->assertEquals("('string',1,NULL),('v1',2,NULL)", $this->object->__toString());
+    $this->assertEquals("(DANGER!),('string',1,NULL),('v1',2,NULL)", $this->object->__toString());
   }
 
 
