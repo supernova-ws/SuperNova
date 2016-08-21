@@ -1,37 +1,6 @@
-EntityContainer
-  protected function processNumeric($name, $value) {
-    if(!is_numeric($value)) {
-      return;
-    }
-
-    $newValue = $this->__get($name);
-
-    // If no original value and new value is set - then we take new value as old value
-    if(empty($this->original[$name]) && !empty($newValue)) {
-      $this->original[$name] = $newValue;
-    } elseif(!empty($this->original[$name]) && $newValue != $this->original[$name]) {
-      // New value not equal original value. We should update delta
-      $this->delta[$name] = $this->original[$name] - $newValue;
-    }
-  }
-
-  public function __set($name, $value) {
-    $properties = $this->model->getProperties();
-    if(isset($properties[$name][P_DB_FIELD_TYPE])) {
-      $value = \classSupernova::$gc->types->castAs($properties[$name][P_DB_FIELD_TYPE], $value);
-    }
-
-    parent::__set($name, $value);
-    $this->processNumeric($name, $value);
-  }
-
-
-
-
-
-
-
-
+- EntityContainer
+    - Теперь добавить методы для получения дельты и списка измененных полей
+        - Затем их использовать в dbSave()
 
 
 
@@ -41,19 +10,6 @@ EntityContainer
     - properties - надо сделать это отдельным объектом - что бы можно было сделать ссылку в контейнере
 
 
-class Entity\EntityContainer extends Common\ContainerAccessors
-    - один из этих двух классов нэ нужэн
-    - вообще-то тут надо добавить обработку изменений
-    - а еще добавить типизацию
-
-//  public function __set($name, $value) {
-//    if (is_callable($value)) {
-//      $this->accessors->set($name, P_CONTAINER_GET, $value);
-//    } else {
-//      $this->performMagic($name, P_CONTAINER_SET, $value);
-//    }
-//  }
-
 
 
 
@@ -61,12 +17,12 @@ class Entity\EntityContainer extends Common\ContainerAccessors
     - Базовый класс для персистентной энтити
     - Знает
         - структуру данных контейнера - $properties
-        - как сохранить себя в базу, используя rowOperator
+        - как сохранить контейнер в базу, используя rowOperator
     - Умеет:
-        - экспортнуть себя в массив
-        - импортнуть себя из массива
-        - прочитаться из базы по ID, используя rowOperator
-        - сохранится в базу:
+        - экспортнуть контейнер в массив
+        - импортнуть контейнер из массива
+        - прочитаться из базы по ID, используя rowOperator в контейнер
+        - сохранить в базу контейнер:
             - вставится в базу, если энтити новая, используя rowOperator
             - обновится в базе, если энтити существует, используя rowOperator
             - удалится из базы, если энтити пустая, используя rowOperator
