@@ -38,18 +38,15 @@ class V2FleetModel extends KeyedModel {
   protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Fleet\V2FleetContainer';
 
-  public function __construct(\Common\GlobalContainer $gc) {
-    parent::__construct($gc);
+  private $newProperties = array(
+    'ownerId'           => array(P_DB_FIELD => 'fleet_owner',),
+    'arriveOwnerId'     => array(P_DB_FIELD => 'fleet_target_owner'),
+    'departurePlanetId' => array(P_DB_FIELD => 'fleet_start_planet_id'),
+    'arrivePlanetId'    => array(P_DB_FIELD => 'fleet_end_planet_id'),
 
-    $this->extendProperties(array(
-      'ownerId'           => array(P_DB_FIELD => 'fleet_owner',),
-      'arriveOwnerId'     => array(P_DB_FIELD => 'fleet_target_owner'),
-      'departurePlanetId' => array(P_DB_FIELD => 'fleet_start_planet_id'),
-      'arrivePlanetId'    => array(P_DB_FIELD => 'fleet_end_planet_id'),
-
-      'missionType' => array(P_DB_FIELD => 'fleet_mission'),
-      'status'      => array(P_DB_FIELD => 'fleet_mess'),
-      'groupId'     => array(P_DB_FIELD => 'fleet_group'),
+    'missionType' => array(P_DB_FIELD => 'fleet_mission'),
+    'status'      => array(P_DB_FIELD => 'fleet_mess'),
+    'groupId'     => array(P_DB_FIELD => 'fleet_group'),
 
 
 //    'fleet_start_galaxy'       => array(P_DB_FIELD => 'fleet_start_galaxy'),
@@ -65,18 +62,23 @@ class V2FleetModel extends KeyedModel {
 //    'fleet_resource_deuterium' => array(P_DB_FIELD => 'fleet_resource_deuterium'),
 
 
-      'vectorDeparture' => array(P_DB_FIELD => 'fleet_start_galaxy'),
-      'vectorArrive'    => array(P_DB_FIELD => 'fleet_end_galaxy'),
+    'vectorDeparture' => array(P_DB_FIELD => 'fleet_start_galaxy'),
+    'vectorArrive'    => array(P_DB_FIELD => 'fleet_end_galaxy'),
 
-      'timeDeparture' => array(P_DB_FIELD => 'start_time'),
-      'timeArrive'    => array(P_DB_FIELD => 'fleet_start_time'),
-      'timeComplete'  => array(P_DB_FIELD => 'fleet_end_stay'),
-      'timeReturn'    => array(P_DB_FIELD => 'fleet_end_time'),
+    'timeDeparture' => array(P_DB_FIELD => 'start_time'),
+    'timeArrive'    => array(P_DB_FIELD => 'fleet_start_time'),
+    'timeComplete'  => array(P_DB_FIELD => 'fleet_end_stay'),
+    'timeReturn'    => array(P_DB_FIELD => 'fleet_end_time'),
 
-      'shipsCount'  => array(P_DB_FIELD => 'fleet_amount'),
-      'units'       => array(),
-      'isReturning' => array(),
-    ));
+    'shipsCount'  => array(P_DB_FIELD => 'fleet_amount'),
+    'units'       => array(),
+    'isReturning' => array(),
+  );
+
+  public function __construct(\Common\GlobalContainer $gc) {
+    parent::__construct($gc);
+
+    $this->extendProperties($this->newProperties);
 
     $this->accessors->setAccessor('location', P_CONTAINER_GET, function (V2FleetContainer $that) {
       if (is_null($location = $that->getDirect('location'))) {
