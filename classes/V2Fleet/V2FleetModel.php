@@ -38,7 +38,7 @@ class V2FleetModel extends KeyedModel {
   protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Fleet\V2FleetContainer';
 
-  private $newProperties = array(
+  protected $newProperties = array(
     'ownerId'           => array(P_DB_FIELD => 'fleet_owner',),
     'arriveOwnerId'     => array(P_DB_FIELD => 'fleet_target_owner'),
     'departurePlanetId' => array(P_DB_FIELD => 'fleet_start_planet_id'),

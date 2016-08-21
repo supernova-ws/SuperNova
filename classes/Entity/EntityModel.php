@@ -63,6 +63,7 @@ class EntityModel {
    */
   protected $accessors;
 
+  protected $newProperties = array();
 
   /**
    * Entity\EntityModel constructor.
@@ -73,6 +74,10 @@ class EntityModel {
     // Here own rowOperator can be made - if needed to operate other, non-global, DB
     $this->rowOperator = $gc->dbGlobalRowOperator;
     $this->accessors = new Accessors();
+
+    if(property_exists($this, 'newProperties') && !empty($this->newProperties)) {
+      $this->extendProperties($this->newProperties);
+    }
   }
 
   /**

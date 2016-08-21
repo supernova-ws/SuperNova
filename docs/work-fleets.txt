@@ -1,4 +1,20 @@
 EntityContainer
+  protected function processNumeric($name, $value) {
+    if(!is_numeric($value)) {
+      return;
+    }
+
+    $newValue = $this->__get($name);
+
+    // If no original value and new value is set - then we take new value as old value
+    if(empty($this->original[$name]) && !empty($newValue)) {
+      $this->original[$name] = $newValue;
+    } elseif(!empty($this->original[$name]) && $newValue != $this->original[$name]) {
+      // New value not equal original value. We should update delta
+      $this->delta[$name] = $this->original[$name] - $newValue;
+    }
+  }
+
   public function __set($name, $value) {
     $properties = $this->model->getProperties();
     if(isset($properties[$name][P_DB_FIELD_TYPE])) {
@@ -6,19 +22,8 @@ EntityContainer
     }
 
     parent::__set($name, $value);
-    $newValue = $this->__get($name);
-
-    // If no original value and new value is set - then we take new value as old value
-    if(empty($this->original[$name]) && !empty($newValue)) {
-      $this->original[$name] = $newValue;
-    } elseif(!empty($this->original[$name]) && $newValue != $this->original[$name]) {
-      // New value not equal original value
-      // We should update delta
-      // TODO - check for numeric
-      $this->delta[$name] = $this->original[$name] - $newValue;
-    }
+    $this->processNumeric($name, $value);
   }
-
 
 
 

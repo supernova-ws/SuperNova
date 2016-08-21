@@ -23,12 +23,12 @@ class EntityContainer extends ContainerAccessors {
   /**
    * @var array $original
    */
-  protected $original;
+  protected $original = array();
 
   /**
    * @var array $delta
    */
-  protected $delta;
+  protected $delta = array();
 
   /** @noinspection PhpMissingParentConstructorInspection */
   /**
@@ -53,6 +53,30 @@ class EntityContainer extends ContainerAccessors {
    */
   public function getModel() {
     return $this->model;
+  }
+
+  protected function processNumeric($name, $value) {
+    if(!is_int($value) && !is_float($value)) {
+      return;
+    }
+
+    // If no original value and new value is set - then we take new value as old value
+    if(empty($this->original[$name]) && !empty($value)) {
+      $this->original[$name] = $value;
+    } elseif(!empty($this->original[$name]) && $value != $this->original[$name]) {
+      // New value not equal original value. We should update delta
+      $this->delta[$name] = $value - $this->original[$name];
+    }
+  }
+
+  public function __set($name, $value) {
+    $properties = $this->model->getProperties();
+    if(isset($properties[$name][P_DB_FIELD_TYPE])) {
+      $value = \classSupernova::$gc->types->castAs($properties[$name][P_DB_FIELD_TYPE], $value);
+    }
+
+    parent::__set($name, $value);
+    $this->processNumeric($name, $value);
   }
 
 }

@@ -37,7 +37,7 @@ class BuddyModel extends \Entity\KeyedModel{
   protected $exceptionClass = 'BuddyException';
   protected $entityContainerClass = 'Buddy\BuddyContainer';
 
-  private $newProperties = array(
+  protected $newProperties = array(
     'dbId'           => array(
       P_DB_FIELD => 'BUDDY_ID',
     ),

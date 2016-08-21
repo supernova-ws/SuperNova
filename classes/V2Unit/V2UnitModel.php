@@ -34,7 +34,7 @@ class V2UnitModel extends \Entity\KeyedModel {
   protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Unit\V2UnitContainer';
 
-  private $newProperties = array(
+  protected $newProperties = array(
     'playerOwnerId'       => array(
       P_DB_FIELD => 'unit_player_id',
     ),
