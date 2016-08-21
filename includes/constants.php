@@ -4,7 +4,7 @@ defined('INSIDE') || die();
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a52.55');
+define('SN_VERSION', '41a52.56');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 define('METAMATTER_DEFAULT_LOT_SIZE', 20000);
@@ -38,8 +38,8 @@ define('UBE_MOON_DEBRIS_MAX_SPENT', UBE_MOON_PERCENT_MAX * UBE_MOON_DEBRIS_PER_P
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
-define('GAME_OGAME'    , 1);
-define('GAME_BLITZ'    , 2);
+define('GAME_OGAME', 1);
+define('GAME_BLITZ', 2);
 
 // Date & time range constants
 define('DATE_FOREVER', 2000000000);
@@ -52,14 +52,14 @@ define('PERIOD_MONTH', PERIOD_DAY * 30);
 define('PERIOD_YEAR', PERIOD_DAY * 365);
 define('PERIOD_FOREVER', PERIOD_YEAR * 100);
 
-define('PERIOD_MINUTE_2' , PERIOD_MINUTE * 2);
-define('PERIOD_MINUTE_3' , PERIOD_MINUTE * 3);
-define('PERIOD_MINUTE_5' , PERIOD_MINUTE * 5);
+define('PERIOD_MINUTE_2', PERIOD_MINUTE * 2);
+define('PERIOD_MINUTE_3', PERIOD_MINUTE * 3);
+define('PERIOD_MINUTE_5', PERIOD_MINUTE * 5);
 define('PERIOD_MINUTE_10', PERIOD_MINUTE * 10);
-define('PERIOD_DAY_3'    , PERIOD_DAY * 3);
-define('PERIOD_WEEK_2'   , PERIOD_WEEK * 2);
-define('PERIOD_MONTH_2'  , PERIOD_MONTH * 2);
-define('PERIOD_MONTH_3'  , PERIOD_MONTH * 3);
+define('PERIOD_DAY_3', PERIOD_DAY * 3);
+define('PERIOD_WEEK_2', PERIOD_WEEK * 2);
+define('PERIOD_MONTH_2', PERIOD_MONTH * 2);
+define('PERIOD_MONTH_3', PERIOD_MONTH * 3);
 
 define('FONT_SIZE_PERCENT_MIN', 56.25);
 define('FONT_SIZE_PERCENT_DEFAULT', 68.75);
@@ -115,25 +115,25 @@ define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', "`'\"\\/ |^&?<>[]{}()%;\n\r\t\v\f
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
 
 // Mot qui sont interdit a la saisie !
-$ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
+$ListCensure = array('/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 // Confirmation record types
-define('CONFIRM_REGISTRATION'  , 1);
+define('CONFIRM_REGISTRATION', 1);
 define('CONFIRM_PASSWORD_RESET', 2);
-define('CONFIRM_DELETE'        , 3);
+define('CONFIRM_DELETE', 3);
 
 define('AFFILIATE_MM_TO_REFERRAL_DM', 2);
 
 // Ally diplomacy statuses
-define('ALLY_DIPLOMACY_SELF'         , 'self');
-define('ALLY_DIPLOMACY_NEUTRAL'      , 'neutral');
-define('ALLY_DIPLOMACY_WAR'          , 'war');
-define('ALLY_DIPLOMACY_PEACE'        , 'peace');
+define('ALLY_DIPLOMACY_SELF', 'self');
+define('ALLY_DIPLOMACY_NEUTRAL', 'neutral');
+define('ALLY_DIPLOMACY_WAR', 'war');
+define('ALLY_DIPLOMACY_PEACE', 'peace');
 define('ALLY_DIPLOMACY_CONFEDERATION', 'confederation');
-define('ALLY_DIPLOMACY_FEDERATION'   , 'federation');
-define('ALLY_DIPLOMACY_UNION'        , 'union');
-define('ALLY_DIPLOMACY_MASTER'       , 'master');
-define('ALLY_DIPLOMACY_SLAVE'        , 'slave');
+define('ALLY_DIPLOMACY_FEDERATION', 'federation');
+define('ALLY_DIPLOMACY_UNION', 'union');
+define('ALLY_DIPLOMACY_MASTER', 'master');
+define('ALLY_DIPLOMACY_SLAVE', 'slave');
 
 define('ALLY_PROPOSE_SENT', 0);
 define('ALLY_PROPOSE_DENIED', 1);
@@ -142,13 +142,13 @@ define('ALLY_PROPOSE_DENIED', 1);
 define('ALLY_REQUEST_DENIED', 1);
 
 // Quest types
-define('QUEST_TYPE_BUILD'   , 1);
+define('QUEST_TYPE_BUILD', 1);
 define('QUEST_TYPE_RESEARCH', 2);
-define('QUEST_TYPE_COMBAT'  , 3);
+define('QUEST_TYPE_COMBAT', 3);
 
-define('QUEST_STATUS_NOT_STARTED' , 0);
-define('QUEST_STATUS_STARTED'     , 1);
-define('QUEST_STATUS_COMPLETE'    , 2);
+define('QUEST_STATUS_NOT_STARTED', 0);
+define('QUEST_STATUS_STARTED', 1);
+define('QUEST_STATUS_COMPLETE', 2);
 
 define('TYPE_EMPTY', '');
 define('TYPE_INTEGER', 'integer');
@@ -161,21 +161,21 @@ define('TYPE_STRING', 'string');
 
 // *** Combat-related constants
 // *** Mission Type constants starts with MT_
-define('MT_NONE'     ,  0);
-define('MT_EXPLORE'  , 15);
-define('MT_COLONIZE' ,  7);
-define('MT_RECYCLE'  ,  8);
+define('MT_NONE', 0);
+define('MT_EXPLORE', 15);
+define('MT_COLONIZE', 7);
+define('MT_RECYCLE', 8);
 
-define('MT_RELOCATE' ,  4);
+define('MT_RELOCATE', 4);
 
-define('MT_TRANSPORT',  3);
-define('MT_HOLD'     ,  5);
+define('MT_TRANSPORT', 3);
+define('MT_HOLD', 5);
 
-define('MT_MISSILE'  , 10);
-define('MT_SPY'      ,  6);
-define('MT_ATTACK'   ,  1);
-define('MT_ACS'      ,  2);
-define('MT_DESTROY'  ,  9);
+define('MT_MISSILE', 10);
+define('MT_SPY', 6);
+define('MT_ATTACK', 1);
+define('MT_ACS', 2);
+define('MT_DESTROY', 9);
 // 11, 12, 13, 14, 16...
 
 // *** Planet Target constants starts with PT_
@@ -183,49 +183,49 @@ define('PT_NONE', 0);
 define('PT_ALL', 0);
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
-define('PT_MOON'  , 3);
+define('PT_MOON', 3);
 
 // *** Unit locations - shows db table where unit belong
 // Also cache indexes
-define('LOC_NONE',    -1);
+define('LOC_NONE', -1);
 define('LOC_UNIVERSE', 0);
-define('LOC_PLANET',   1);
-define('LOC_DEBRIS',   2); // Translates to `planets` table planet_type = 1, `debris_*` fields
-define('LOC_MOON',     3); // Translates to `planets` table planet_type = 3
-define('LOC_USER',     4);
-define('LOC_FLEET',    5);
-define('LOC_ALLY',     6);
-define('LOC_UNIT_NUMERIC',     7);
-define('LOC_UNIT_LIST',     8);
+define('LOC_PLANET', 1);
+define('LOC_DEBRIS', 2); // Translates to `planets` table planet_type = 1, `debris_*` fields
+define('LOC_MOON', 3); // Translates to `planets` table planet_type = 3
+define('LOC_USER', 4);
+define('LOC_FLEET', 5);
+define('LOC_ALLY', 6);
+define('LOC_UNIT_NUMERIC', 7);
+define('LOC_UNIT_LIST', 8);
 
 // ТОЛЬКО ВНУТРЕНЕЕ!!!
-define('LOC_UNIT',    'LOC_UNIT');
-define('LOC_QUE',     'LOC_QUE');
-define('LOC_LOCATION','LOC_LOCATION');
-define('LOC_LOCKS','LOC_LOCKS');
+define('LOC_UNIT', 'LOC_UNIT');
+define('LOC_QUE', 'LOC_QUE');
+define('LOC_LOCATION', 'LOC_LOCATION');
+define('LOC_LOCKS', 'LOC_LOCKS');
 
 // *** Caching masks
-define('CACHE_NOTHING'    ,  0);
-define('CACHE_FLEET'      ,  1);
-define('CACHE_PLANET'     ,  2);
-define('CACHE_USER'       ,  4);
-define('CACHE_SOURCE'     ,  8);
+define('CACHE_NOTHING', 0);
+define('CACHE_FLEET', 1);
+define('CACHE_PLANET', 2);
+define('CACHE_USER', 4);
+define('CACHE_SOURCE', 8);
 define('CACHE_DESTINATION', 16);
-define('CACHE_EVENT'      , 32);
+define('CACHE_EVENT', 32);
 
-define('CACHE_USER_SRC'  , CACHE_USER | CACHE_SOURCE);
-define('CACHE_USER_DST'  , CACHE_USER | CACHE_DESTINATION);
+define('CACHE_USER_SRC', CACHE_USER | CACHE_SOURCE);
+define('CACHE_USER_DST', CACHE_USER | CACHE_DESTINATION);
 define('CACHE_PLANET_SRC', CACHE_PLANET | CACHE_SOURCE);
 define('CACHE_PLANET_DST', CACHE_PLANET | CACHE_DESTINATION);
-define('CACHE_COMBAT'    , CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION);
+define('CACHE_COMBAT', CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION);
 
-define('CACHE_ALL'       , CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION | CACHE_EVENT);
+define('CACHE_ALL', CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURCE | CACHE_DESTINATION | CACHE_EVENT);
 
-define('CACHE_NONE'      , CACHE_NOTHING); // Alias for me
+define('CACHE_NONE', CACHE_NOTHING); // Alias for me
 
 // *** Event types
 define('EVENT_FLEET_ARRIVE', 1);
-define('EVENT_FLEET_STAY'  , 2);
+define('EVENT_FLEET_STAY', 2);
 define('EVENT_FLEET_RETURN', 3);
 
 // *** Constants for changing DM
@@ -278,12 +278,11 @@ define('RPG_EVENT_BIRTHDAY', 45);
 define('RPG_EVENT_BIRTHDAY_COMPILED', 46);
 
 
-
 // Operation error status HARDCODE!
-define('ERR_NONE'               , 0); // No error
-define('ERR_WARNING'            , 1); // There is warning - something altering normal operation process
-define('ERR_ERROR'              , 2); // There is error - something permits operation from process
-define('ERR_HACK'               , 4); // Operation is qualified as hack attempt
+define('ERR_NONE', 0); // No error
+define('ERR_WARNING', 1); // There is warning - something altering normal operation process
+define('ERR_ERROR', 2); // There is error - something permits operation from process
+define('ERR_HACK', 4); // Operation is qualified as hack attempt
 // New GLOBAL operation results
 //define('RESULT_DEFAULT' , 0); // Default result - all went OK or result really doesn't matter
 //define('RESULT_WARNING' , 1);
@@ -459,7 +458,6 @@ define('LOG_ERR_INT_NOT_ENOUGH_DARK_MATTER', 506); // Ошибка снятия 
 define('LOG_DEBUG_SQL', 910); // Отладка SQL
 
 
-
 define('PASSWORD_LENGTH_MIN', 4);
 define('LOGIN_LENGTH_MIN', 4);
 
@@ -530,10 +528,6 @@ define('PASSWORD_RESTORE_ERROR_CODE_OK_BUT_NO_ACCOUNT_FOR_EMAIL', 45);
 define('PASSWORD_RESTORE_ERROR_CODE_EMPTY', 46);
 
 
-
-
-
-
 //throw new exception(REGISTER_ERROR_PLAYER_NAME_TRIMMED, ERR_ERROR);
 //throw new exception(REGISTER_ERROR_PLAYER_NAME_EMPTY, ERR_ERROR);
 //throw new exception(REGISTER_ERROR_PLAYER_NAME_RESTRICTED_CHARACTERS, ERR_ERROR);
@@ -576,16 +570,16 @@ define('AUTH_LEVEL', 'AUTH_LEVEL');
 //define('F_DEVICE_ID',     'F_DEVICE_ID');
 //define('F_DEVICE_CYPHER', 'F_DEVICE_CYPHER');
 
-define('F_PROVIDER_ID',   'F_PROVIDER_ID');
+define('F_PROVIDER_ID', 'F_PROVIDER_ID');
 // define('F_PROVIDER_LIST', 'F_PROVIDER_LIST');
 
 define('F_IMPERSONATE_STATUS', 'F_IMPERSONATE_STATUS');
 define('F_IMPERSONATE_OPERATOR', 'F_IMPERSONATE_OPERATOR');
 
-define('F_LOGIN_STATUS',  'F_LOGIN_STATUS');
+define('F_LOGIN_STATUS', 'F_LOGIN_STATUS');
 define('F_LOGIN_MESSAGE', 'F_LOGIN_MESSAGE');
 
-define('F_PLAYER_REGISTER_STATUS',  'F_PLAYER_REGISTER_STATUS');
+define('F_PLAYER_REGISTER_STATUS', 'F_PLAYER_REGISTER_STATUS');
 define('F_PLAYER_REGISTER_MESSAGE', 'F_PLAYER_REGISTER_MESSAGE');
 
 define('F_USER_ID', 'F_USER_ID');
@@ -627,71 +621,70 @@ define('F_GAME_DISABLE', 'F_GAME_DISABLE');
 define('F_GAME_DISABLE_REASON', 'F_GAME_DISABLE_REASON');
 
 
-
 // Option groups
-define('OPT_ALL',      0);
-define('OPT_MESSAGE',  1);
+define('OPT_ALL', 0);
+define('OPT_MESSAGE', 1);
 define('OPT_UNIVERSE', 2);
 define('OPT_INTERFACE', 3);
 
 // Message classes
-define('MSG_TYPE_OUTBOX'   ,  -1);
-define('MSG_TYPE_SPY'      ,   0);
-define('MSG_TYPE_PLAYER'   ,   1);
-define('MSG_TYPE_ALLIANCE' ,   2);
-define('MSG_TYPE_COMBAT'   ,   3);
-define('MSG_TYPE_RECYCLE'  ,   4);
-define('MSG_TYPE_TRANSPORT',   5);
-define('MSG_TYPE_ADMIN'    ,   6);
-define('MSG_TYPE_EXPLORE'  ,  15);
-define('MSG_TYPE_QUE'      ,  99);
-define('MSG_TYPE_NEW'      , 100);
+define('MSG_TYPE_OUTBOX', -1);
+define('MSG_TYPE_SPY', 0);
+define('MSG_TYPE_PLAYER', 1);
+define('MSG_TYPE_ALLIANCE', 2);
+define('MSG_TYPE_COMBAT', 3);
+define('MSG_TYPE_RECYCLE', 4);
+define('MSG_TYPE_TRANSPORT', 5);
+define('MSG_TYPE_ADMIN', 6);
+define('MSG_TYPE_EXPLORE', 15);
+define('MSG_TYPE_QUE', 99);
+define('MSG_TYPE_NEW', 100);
 
 // Attack verification statuses
-define('FLIGHT_NO_RESULT'           ,  -2);
-define('FLIGHT_ALLOWED_NEW'           ,  -1);
+define('FLIGHT_NO_RESULT', -2);
+define('FLIGHT_ALLOWED_NEW', -1);
 //define('FLIGHT_DO_NOTHING'           ,  0);
-define('FLIGHT_ALLOWED'           ,  0);
-define('FLIGHT_VECTOR_NO_TARGET'         ,  1);
-define('FLIGHT_PLAYER_OWN'               ,  2);
-define('FLIGHT_MISSION_IMPOSSIBLE'     ,  3);
-define('FLIGHT_MISSION_HOLD_NO_ALLY_DEPOSIT'   ,  4);
-define('FLIGHT_MISSION_RECYCLE_NO_DEBRIS'         ,  5);
-define('FLIGHT_PLAYER_VACATION'          ,  6);
-define('FLIGHT_PLAYER_SAME_IP'           ,  7);
-define('FLIGHT_PLAYER_BUFFING'           ,  8);
-define('FLIGHT_PLAYER_ADMIN'             ,  9);
-define('FLIGHT_PLAYER_NOOB'              , 10);
-define('FLIGHT_PLAYER_VACATION_OWN'      , 11);
-define('FLIGHT_MISSION_MISSILE_NO_SILO'           , 12);
-define('FLIGHT_MISSION_MISSILE_NO_MISSILES'        , 13);
-define('FLIGHT_SHIPS_NO_SHIPS'          , 14);
-define('FLIGHT_FLEET_NO_SLOTS'          , 15);
-define('FLIGHT_SHIPS_NOT_ENOUGH_OR_RESOURCES'          , 16);
-define('FLIGHT_SHIPS_NO_RECYCLERS'      , 17);
-define('FLIGHT_MISSION_SPY_NO_SPIES'          , 18);
-define('FLIGHT_SHIPS_NO_COLONIZER'      , 19);
-define('FLIGHT_MISSION_MISSILE_TOO_FAR'   , 20);
-define('FLIGHT_MISSION_MISSILE_WRONG_STRUCTURE'   , 21);
-define('FLIGHT_RESOURCES_FUEL_NOT_ENOUGH'           , 22);
-define('FLIGHT_RESOURCES_NOT_ENOUGH'      , 23);
-define('FLIGHT_MISSION_ACS_NOT_EXISTS'            , 24);
-define('FLIGHT_MISSION_ACS_MISSTARGET'    , 25);
-define('FLIGHT_FLEET_SPEED_WRONG'       , 26);
-define('FLIGHT_MISSION_ACS_TOO_LATE'      , 27);
-define('FLIGHT_MISSION_ATTACK_BASHING'           , 28);
-define('FLIGHT_MISSION_ATTACK_BASHING_WAR_DELAY' , 29);
-define('FLIGHT_MISSION_ACS_WRONG_TARGET'  , 30);
-define('FLIGHT_VECTOR_SAME_SOURCE'              , 31);
+define('FLIGHT_ALLOWED', 0);
+define('FLIGHT_VECTOR_NO_TARGET', 1);
+define('FLIGHT_PLAYER_OWN', 2);
+define('FLIGHT_MISSION_IMPOSSIBLE', 3);
+define('FLIGHT_MISSION_HOLD_NO_ALLY_DEPOSIT', 4);
+define('FLIGHT_MISSION_RECYCLE_NO_DEBRIS', 5);
+define('FLIGHT_PLAYER_VACATION', 6);
+define('FLIGHT_PLAYER_SAME_IP', 7);
+define('FLIGHT_PLAYER_BUFFING', 8);
+define('FLIGHT_PLAYER_ADMIN', 9);
+define('FLIGHT_PLAYER_NOOB', 10);
+define('FLIGHT_PLAYER_VACATION_OWN', 11);
+define('FLIGHT_MISSION_MISSILE_NO_SILO', 12);
+define('FLIGHT_MISSION_MISSILE_NO_MISSILES', 13);
+define('FLIGHT_SHIPS_NO_SHIPS', 14);
+define('FLIGHT_FLEET_NO_SLOTS', 15);
+define('FLIGHT_SHIPS_NOT_ENOUGH_OR_RESOURCES', 16);
+define('FLIGHT_SHIPS_NO_RECYCLERS', 17);
+define('FLIGHT_MISSION_SPY_NO_SPIES', 18);
+define('FLIGHT_SHIPS_NO_COLONIZER', 19);
+define('FLIGHT_MISSION_MISSILE_TOO_FAR', 20);
+define('FLIGHT_MISSION_MISSILE_WRONG_STRUCTURE', 21);
+define('FLIGHT_RESOURCES_FUEL_NOT_ENOUGH', 22);
+define('FLIGHT_RESOURCES_NOT_ENOUGH', 23);
+define('FLIGHT_MISSION_ACS_NOT_EXISTS', 24);
+define('FLIGHT_MISSION_ACS_MISSTARGET', 25);
+define('FLIGHT_FLEET_SPEED_WRONG', 26);
+define('FLIGHT_MISSION_ACS_TOO_LATE', 27);
+define('FLIGHT_MISSION_ATTACK_BASHING', 28);
+define('FLIGHT_MISSION_ATTACK_BASHING_WAR_DELAY', 29);
+define('FLIGHT_MISSION_ACS_WRONG_TARGET', 30);
+define('FLIGHT_VECTOR_SAME_SOURCE', 31);
 define('FLIGHT_RESOURCES_FORBIDDEN', 32);
-define('FLIGHT_MISSION_TRANSPORT_EMPTY_CARGO'   , 33);
-define('FLIGHT_SHIPS_NOT_ONLY_SPIES'       , 34);
-define('FLIGHT_FLEET_TOO_FAR'           , 35);
-define('FLIGHT_FLEET_OVERLOAD'        , 36);
-define('FLIGHT_MISSION_UNKNOWN'    , 37);
-define('FLIGHT_SHIPS_UNIT_WRONG'        , 38);
-define('FLIGHT_SHIPS_UNMOVABLE'        , 39);
-define('FLIGHT_SHIPS_NEGATIVE'  , 40);
+define('FLIGHT_MISSION_TRANSPORT_EMPTY_CARGO', 33);
+define('FLIGHT_SHIPS_NOT_ONLY_SPIES', 34);
+define('FLIGHT_FLEET_TOO_FAR', 35);
+define('FLIGHT_FLEET_OVERLOAD', 36);
+define('FLIGHT_MISSION_UNKNOWN', 37);
+define('FLIGHT_SHIPS_UNIT_WRONG', 38);
+define('FLIGHT_SHIPS_UNMOVABLE', 39);
+define('FLIGHT_SHIPS_NEGATIVE', 40);
 define('FLIGHT_RESOURCES_NEGATIVE', 41);
 define('FLIGHT_MISSION_MORATORIUM', 42);
 define('FLIGHT_PLAYER_CHILD_PROTECTION', 43);
@@ -736,128 +729,125 @@ define('FLEET_PAGE_SEND', 3);
 
 
 // *** Races - Homeworlds
-define('RACE_NONE'    , 0);
-define('RACE_EARTH'   , 1);
-define('RACE_MOON'    , 2);
-define('RACE_MERCURY' , 3);
-define('RACE_VENUS'   , 4);
-define('RACE_MARS'    , 5);
+define('RACE_NONE', 0);
+define('RACE_EARTH', 1);
+define('RACE_MOON', 2);
+define('RACE_MERCURY', 3);
+define('RACE_VENUS', 4);
+define('RACE_MARS', 5);
 define('RACE_ASTEROID', 6);
 // define('MARKET_INFO'         , 7);
 
 
-
 // *** Market variables
 // === Market blocks
-define('MARKET_ENTRY'        , 0);
-define('MARKET_RESOURCES'    , 1);
-define('MARKET_SCRAPPER'     , 2);
-define('MARKET_STOCKMAN'     , 3);
-define('MARKET_EXCHANGE'     , 4);
-define('MARKET_BANKER'       , 5);
-define('MARKET_PAWNSHOP'     , 6);
-define('MARKET_INFO'         , 7);
+define('MARKET_ENTRY', 0);
+define('MARKET_RESOURCES', 1);
+define('MARKET_SCRAPPER', 2);
+define('MARKET_STOCKMAN', 3);
+define('MARKET_EXCHANGE', 4);
+define('MARKET_BANKER', 5);
+define('MARKET_PAWNSHOP', 6);
+define('MARKET_INFO', 7);
 
 // === Market error statuses
-define('MARKET_NOTHING'              ,  0);
-define('MARKET_DEAL'                 ,  1);
-define('MARKET_DEAL_TRADE'           ,  2);
-define('MARKET_NO_DM'                ,  3);
-define('MARKET_NO_RESOURCES'         ,  4);
-define('MARKET_ZERO_DEAL'            ,  5);
-define('MARKET_NO_SHIPS'             ,  6);
-define('MARKET_NOT_A_SHIP'           ,  7);
-define('MARKET_NO_STOCK'             ,  8);
-define('MARKET_ZERO_RES_STOCK'       ,  9);
-define('MARKET_NEGATIVE_SHIPS'       , 10);
-define('MARKET_ZERO_RES'             , 11);
+define('MARKET_NOTHING', 0);
+define('MARKET_DEAL', 1);
+define('MARKET_DEAL_TRADE', 2);
+define('MARKET_NO_DM', 3);
+define('MARKET_NO_RESOURCES', 4);
+define('MARKET_ZERO_DEAL', 5);
+define('MARKET_NO_SHIPS', 6);
+define('MARKET_NOT_A_SHIP', 7);
+define('MARKET_NO_STOCK', 8);
+define('MARKET_ZERO_RES_STOCK', 9);
+define('MARKET_NEGATIVE_SHIPS', 10);
+define('MARKET_ZERO_RES', 11);
 
-define('MARKET_INFO_PLAYER'          , 12);
-define('MARKET_INFO_WRONG'           , 11);
+define('MARKET_INFO_PLAYER', 12);
+define('MARKET_INFO_WRONG', 11);
 define('MARKET_INFO_PLAYER_NOT_FOUND', 13);
-define('MARKET_INFO_PLAYER_WRONG'    , 14);
-define('MARKET_INFO_PLAYER_SAME'     , 15);
-
-
+define('MARKET_INFO_PLAYER_WRONG', 14);
+define('MARKET_INFO_PLAYER_SAME', 15);
 
 
 // *** Mercenary/talent bonus types
-define('BONUS_NONE'    ,            0);  // No bonus
-define('BONUS_PERCENT' ,            1);  // Percent on base value
-define('BONUS_ADD'     ,            2);  // Add
-define('BONUS_ABILITY' ,            3);  // Some ability
-define('BONUS_MULTIPLY',            4);  // Multiply by value
-define('BONUS_PERCENT_CUMULATIVE' , 5);  // Cumulative percent on base value
-define('BONUS_PERCENT_DEGRADED' ,   6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
-define('BONUS_SPEED',               7);  // Speed bonus
+define('BONUS_NONE', 0);  // No bonus
+define('BONUS_PERCENT', 1);  // Percent on base value
+define('BONUS_ADD', 2);  // Add
+define('BONUS_ABILITY', 3);  // Some ability
+define('BONUS_MULTIPLY', 4);  // Multiply by value
+define('BONUS_PERCENT_CUMULATIVE', 5);  // Cumulative percent on base value
+define('BONUS_PERCENT_DEGRADED', 6);  // Bonus amount degraded with increase as pow(bonus, level) (?)
+define('BONUS_SPEED', 7);  // Speed bonus
 
 // *** Action constant (build should be replaced with ACTION)
-define('BUILD_CREATE' ,  1);
+define('BUILD_CREATE', 1);
 define('BUILD_DESTROY', -1);
 define('BUILD_AUTOCONVERT', 2);
 
-define('ACTION_SELL'       , -1);
-define('ACTION_NOTHING'    ,  0);
-define('ACTION_BUY'        ,  1);
-define('ACTION_USE'        ,  2);
-define('ACTION_DELETE'     ,  3);
+define('ACTION_SELL', -1);
+define('ACTION_NOTHING', 0);
+define('ACTION_BUY', 1);
+define('ACTION_USE', 2);
+define('ACTION_DELETE', 3);
 
 // *** Check unit availability codes
-define('BUILD_ALLOWED'         , 0); // HARDCODED! DO NOT CHANGE!
+define('BUILD_ALLOWED', 0); // HARDCODED! DO NOT CHANGE!
 define('BUILD_REQUIRE_NOT_MEET', 1);
-define('BUILD_AMOUNT_WRONG'    , 2);
-define('BUILD_QUE_WRONG'       , 3);
-define('BUILD_QUE_UNIT_WRONG'  , 4);
-define('BUILD_INDESTRUCTABLE'  , 5);
-define('BUILD_NO_RESOURCES'    , 6);
-define('BUILD_NO_UNITS'        , 7);
-define('BUILD_UNIT_BUSY'       , 8);
-define('BUILD_QUE_FULL'        , 9);
-define('BUILD_SILO_FULL'       ,10);
-define('BUILD_MAX_REACHED'     ,11);
-define('BUILD_SECTORS_NONE'    ,12);
+define('BUILD_AMOUNT_WRONG', 2);
+define('BUILD_QUE_WRONG', 3);
+define('BUILD_QUE_UNIT_WRONG', 4);
+define('BUILD_INDESTRUCTABLE', 5);
+define('BUILD_NO_RESOURCES', 6);
+define('BUILD_NO_UNITS', 7);
+define('BUILD_UNIT_BUSY', 8);
+define('BUILD_QUE_FULL', 9);
+define('BUILD_SILO_FULL', 10);
+define('BUILD_MAX_REACHED', 11);
+define('BUILD_SECTORS_NONE', 12);
 define('BUILD_AUTOCONVERT_AVAILABLE', 13);
 
 
 // *** Que types
 define('QUE_STRUCTURES', 1);
-define('QUE_HANGAR'    , 4);
-define('QUE_RESEARCH'  , 7);
-define('QUE_MERCENARY' , 600); // UNIT_MERCENARIES
+define('QUE_HANGAR', 4);
+define('QUE_RESEARCH', 7);
+define('QUE_MERCENARY', 600); // UNIT_MERCENARIES
 // *** Subque types
-define('SUBQUE_PLANET'  , 1);
-define('SUBQUE_MOON'    , 3);
-define('SUBQUE_FLEET'   , 4);
-define('SUBQUE_DEFENSE' , 6);
+define('SUBQUE_PLANET', 1);
+define('SUBQUE_MOON', 3);
+define('SUBQUE_FLEET', 4);
+define('SUBQUE_DEFENSE', 6);
 define('SUBQUE_RESEARCH', 7);
 
 // *** Que items
-define('QI_UNIT_ID'   , 0);
-define('QI_AMOUNT'    , 1);
-define('QI_TIME'      , 2);
-define('QI_MODE'      , 3);
-define('QI_QUE_ID'    , 4);
-define('QI_QUE_TYPE'  , 4);
-define('QI_PLANET_ID' , 5);
+define('QI_UNIT_ID', 0);
+define('QI_AMOUNT', 1);
+define('QI_TIME', 2);
+define('QI_MODE', 3);
+define('QI_QUE_ID', 4);
+define('QI_QUE_TYPE', 4);
+define('QI_PLANET_ID', 5);
 
 
 // *** Units
 
 // *** Sort options
-define('SORT_ASCENDING' , 0);
+define('SORT_ASCENDING', 0);
 define('SORT_DESCENDING', 1);
 
-define('SORT_ID'             , 0);
-define('SORT_LOCATION'       , 1);
-define('SORT_NAME'           , 2);
-define('SORT_SIZE'           , 3);
-define('SORT_EMAIL'          , 4);
-define('SORT_IP'             , 5);
+define('SORT_ID', 0);
+define('SORT_LOCATION', 1);
+define('SORT_NAME', 2);
+define('SORT_SIZE', 3);
+define('SORT_EMAIL', 4);
+define('SORT_IP', 5);
 define('SORT_TIME_REGISTERED', 6);
 define('SORT_TIME_LAST_VISIT', 7);
-define('SORT_TIME_BAN_UNTIL' , 8);
-define('SORT_REFERRAL_COUNT' , 9);
-define('SORT_REFERRAL_DM'    , 10);
+define('SORT_TIME_BAN_UNTIL', 8);
+define('SORT_REFERRAL_COUNT', 9);
+define('SORT_REFERRAL_DM', 10);
 
 
 define('HULL_SIZE_TINY', 1);
@@ -1058,7 +1048,6 @@ define('PLANET_DENSITY_RICHNESS_GOOD', 2);
 define('PLANET_DENSITY_RICHNESS_PERFECT', 3);
 
 
-
 define('UNIT_AWARD', 2000); // Награды игрока 2.000-2.999
 define('UNIT_AWARD_ORDER', 2100); // Ордена за Выдающиеся Достижения - например, за спонсорство
 define('UNIT_AWARD_ORDER_SPONSOR_BRONZE', 2101);
@@ -1183,7 +1172,7 @@ define('UNIT_HIGHSPOT_GATHER_CHRISTMAS_SNOWFLAKE', 3128); // 99 - Снежинк
 
 define('UNIT_NEXT', 4000); // !!! Next unit start on 4000 !!!
 
-define('GROUP_PART',         800000);
+define('GROUP_PART', 800000);
 // Зарезервировано для запчастей: 800.001 - 899.999
 // define('GROUP_PART_HULL',    801000); // Корпуса - 1000 штук
 // define('GROUP_PART_ARMOR',   802000); // Броня - 1000 штук
@@ -1423,7 +1412,6 @@ define('PLANET_PLANET', 'PLANET_PLANET');
 define('PLANET_TYPE', 'PLANET_TYPE');
 
 
-
 // Modifier constants
 define('MODIFIER_NONE', 0);
 define('MODIFIER_RESOURCE_CAPACITY', 1);
@@ -1441,8 +1429,6 @@ define('SERVER_PLAYER_NAME_CHANGE_FREE', 1);
 define('SERVER_PLAYER_NAME_CHANGE_PAY', 2);
 
 
-
-
 define('FLT_EXPEDITION_OUTCOME_NONE', 0);
 define('FLT_EXPEDITION_OUTCOME_LOST_FLEET', 1);
 define('FLT_EXPEDITION_OUTCOME_FOUND_FLEET', 2);
@@ -1458,34 +1444,33 @@ define('EVENT_FLT_ACOMPLISH', 2); // Fleet ends his mission by timer
 define('EVENT_FLT_RETURN', 3); // Fleet returns to starting planet
 
 
-
 // define('NICK_ID',               -1);
-define('NICK_HTML',              0);
+define('NICK_HTML', 0);
 
-define('NICK_FIRST',             1);
-define('NICK_RACE',           1000);
-define('NICK_GENDER',         2000);
-define('NICK_AWARD',          3000);
-define('NICK_VACATION',       3500);
-define('NICK_BIRTHSDAY',      4000);
-define('NICK_PREMIUM',        5000);
-define('NICK_AUTH_LEVEL',     6000);
+define('NICK_FIRST', 1);
+define('NICK_RACE', 1000);
+define('NICK_GENDER', 2000);
+define('NICK_AWARD', 3000);
+define('NICK_VACATION', 3500);
+define('NICK_BIRTHSDAY', 4000);
+define('NICK_PREMIUM', 5000);
+define('NICK_AUTH_LEVEL', 6000);
 
-define('NICK_HIGHLIGHT',      6300);
-define('NICK_CLASS',          6450);
+define('NICK_HIGHLIGHT', 6300);
+define('NICK_CLASS', 6450);
 
-define('NICK_NICK_CLASS',     6600);
-define('NICK_NICK',           7000);
+define('NICK_NICK_CLASS', 6600);
+define('NICK_NICK', 7000);
 define('NICK_NICK_CLASS_END', 7300);
 
-define('NICK_ALLY_CLASS',     7600);
-define('NICK_ALLY',           8000);
+define('NICK_ALLY_CLASS', 7600);
+define('NICK_ALLY', 8000);
 define('NICK_ALLY_CLASS_END', 8300);
 
-define('NICK_CLASS_END',      8450);
-define('NICK_HIGHLIGHT_END',  8600);
+define('NICK_CLASS_END', 8450);
+define('NICK_HIGHLIGHT_END', 8600);
 
-define('NICK_LAST',           9999);
+define('NICK_LAST', 9999);
 
 // Настройки игрока
 define('PLAYER_OPTION_MENU_SORT', 1);
@@ -1558,7 +1543,6 @@ define('PLAYER_OPTION_SORT_ID', 5);
 define('PLAYER_OPTION_SORT_CREATE_TIME_LENGTH', 6);
 
 
-
 define('GENDER_UNKNOWN', 0);
 define('GENDER_MALE', 1);
 define('GENDER_FEMALE', 2);
@@ -1578,8 +1562,8 @@ define('LOG_ONLIINE_AGGREGATE_NONE', 0);
 define('LOG_ONLIINE_AGGREGATE_PERIOD_MINUTE_10', 1);
 
 define('BLITZ_REGISTER_DISABLED', 0);
-define('BLITZ_REGISTER_OPEN'    , 1);
-define('BLITZ_REGISTER_CLOSED'  , 2);
+define('BLITZ_REGISTER_OPEN', 1);
+define('BLITZ_REGISTER_CLOSED', 2);
 define('BLITZ_REGISTER_SHOW_LOGIN', 3);
 define('BLITZ_REGISTER_DISCLOSURE_NAMES', 4);
 
