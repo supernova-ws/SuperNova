@@ -56,14 +56,14 @@ class EntityContainer extends ContainerAccessors {
   }
 
   protected function processNumeric($name, $value) {
-    if(!is_int($value) && !is_float($value)) {
+    if (!is_int($value) && !is_float($value)) {
       return;
     }
 
     // If no original value and new value is set - then we take new value as old value
-    if(empty($this->original[$name]) && !empty($value)) {
+    if (empty($this->original[$name]) && !empty($value)) {
       $this->original[$name] = $value;
-    } elseif(!empty($this->original[$name]) && $value != $this->original[$name]) {
+    } elseif (!empty($this->original[$name]) && $value != $this->original[$name]) {
       // New value not equal original value. We should update delta
       $this->delta[$name] = $value - $this->original[$name];
     }
@@ -71,7 +71,7 @@ class EntityContainer extends ContainerAccessors {
 
   public function __set($name, $value) {
     $properties = $this->model->getProperties();
-    if(isset($properties[$name][P_DB_FIELD_TYPE])) {
+    if (isset($properties[$name][P_DB_FIELD_TYPE])) {
       $value = \classSupernova::$gc->types->castAs($properties[$name][P_DB_FIELD_TYPE], $value);
     }
 
