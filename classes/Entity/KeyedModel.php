@@ -5,25 +5,24 @@
 
 namespace Entity;
 
+/**
+ * Class KeyedModel
+ *
+ * @method KeyedContainer fromArray($array)
+ *
+ * @package Entity
+ */
 
 class KeyedModel extends EntityModel {
 
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idFieldName
-   */
-  protected $idFieldName = 'id';
-
-  protected $newProperties = array();
+  protected $newProperties = array(
+    'dbId' => array(
+      P_DB_FIELD => 'id',
+    ),
+  );
 
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
-    $this->extendProperties(array(
-      'dbId' => array(
-        P_DB_FIELD => $this->getIdFieldName(),
-      )
-    ));
   }
 
   /**
@@ -36,33 +35,33 @@ class KeyedModel extends EntityModel {
   protected function exportRowNoId($cEntity) {
     $this->exportRow($cEntity);
 
-    if ($this->getIdFieldName() != '') {
-      unset($cEntity->row[$this->getIdFieldName()]);
+    if (($idFieldName = $this->getIdFieldName()) != '') {
+      unset($cEntity->row[$idFieldName]);
     }
   }
 
   /**
    * @param int|string $dbId
    *
-   * @return EntityContainer|false
+   * @return KeyedContainer|false
    */
   public function loadById($dbId) {
     $row = $this->rowOperator->getById($this, $dbId);
     if (empty($row)) {
       return false;
-    } else {
-      $cEntity = $this->fromArray($row);
     }
+
+    $cEntity = $this->fromArray($row);
 
     return $cEntity;
   }
 
-
-  /**
-   * @param string $value
-   */
-  public function setIdFieldName($value) {
-    $this->idFieldName = $value;
+//  protected function load(KeyedContainer $cEntity) {
+//    throw new \Exception('EntityModel::dbSave() is not yet implemented');
+//  }
+//
+  protected function save(KeyedContainer $cEntity) {
+    throw new \Exception('EntityModel::dbSave() is not yet implemented');
   }
 
   /**
@@ -71,7 +70,7 @@ class KeyedModel extends EntityModel {
    * @return string
    */
   public function getIdFieldName() {
-    return $this->idFieldName;
+    return $this->properties['dbId'][P_DB_FIELD];
   }
 
 }

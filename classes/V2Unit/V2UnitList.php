@@ -15,7 +15,6 @@ use DBStatic\DBStaticUnit;
  * @package V2Unit
  */
 class V2UnitList extends ObjectCollection {
-
   /**
    * @var V2UnitModel $unitModel;
    */
@@ -58,6 +57,12 @@ class V2UnitList extends ObjectCollection {
     $this[$snId]->level += $newUnit->level;
 
     return false;
+  }
+
+  public function isEmpty() {
+    // TODO - sum of unit count
+
+    return $this->count() > 0;
   }
 
 }

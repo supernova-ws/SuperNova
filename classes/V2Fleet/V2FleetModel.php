@@ -28,17 +28,14 @@ class V2FleetModel extends KeyedModel {
    * @var string $tableName
    */
   protected $tableName = 'fleets';
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idFieldName
-   */
-  protected $idFieldName = 'fleet_id';
 
   protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Fleet\V2FleetContainer';
 
   protected $newProperties = array(
+    'dbId'                => array(
+      P_DB_FIELD => 'fleet_id',
+    ),
     'ownerId'           => array(P_DB_FIELD => 'fleet_owner',),
     'arriveOwnerId'     => array(P_DB_FIELD => 'fleet_target_owner'),
     'departurePlanetId' => array(P_DB_FIELD => 'fleet_start_planet_id'),
@@ -95,8 +92,6 @@ class V2FleetModel extends KeyedModel {
 
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
-
-//    $this->extendProperties($this->newProperties);
 
     $this->accessors->set(P_CONTAINER_GET, 'location', function (V2FleetContainer $that) {
       if (is_null($location = $that->getDirect('location'))) {
@@ -178,8 +173,17 @@ class V2FleetModel extends KeyedModel {
     return $cFleet;
   }
 
-  protected function dbSave(V2FleetContainer $cFleet) {
+  protected function save(V2FleetContainer $cFleet) {
     throw new \Exception('V2FleetModel::dbSave() is not yet implemented');
+  }
+
+  public function isEmpty(V2FleetContainer $cFleet) {
+    return
+      // Fleet is empty if not units in it
+      $cFleet->units->isEmpty()
+
+      // parent::isEmpty($cFleet)
+      ;
   }
 
   /**
@@ -211,7 +215,7 @@ class V2FleetModel extends KeyedModel {
     $cFleet->groupId = 0;
 
     // Записываем изменения в БД
-    $this->dbSave($cFleet);
+    $this->save($cFleet);
 
     if ($oldGroupId) {
       // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table

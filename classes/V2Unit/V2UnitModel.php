@@ -24,17 +24,14 @@ class V2UnitModel extends \Entity\KeyedModel {
    * @var string $tableName
    */
   protected $tableName = 'unit';
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idFieldName
-   */
-  protected $idFieldName = 'unit_id';
 
   protected $exceptionClass = 'Entity\EntityException';
   protected $entityContainerClass = 'V2Unit\V2UnitContainer';
 
   protected $newProperties = array(
+    'dbId'                => array(
+      P_DB_FIELD => 'unit_id',
+    ),
     'playerOwnerId'       => array(
       P_DB_FIELD => 'unit_player_id',
     ),

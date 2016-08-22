@@ -115,21 +115,6 @@ class EntityModel {
   }
 
   /**
-   * @param array $array
-   *
-   * @return EntityContainer
-   */
-  public function fromArray($array) {
-    /**
-     * @var EntityContainer $cEntity
-     */
-    $cEntity = $this->buildContainer();
-    $this->importRow($cEntity, $array);
-
-    return $cEntity;
-  }
-
-  /**
    * Exports object properties to DB row state with ID
    *
    * @param EntityContainer $cEntity
@@ -138,6 +123,20 @@ class EntityModel {
     $cEntity->row = array();
     $this->processRow($cEntity, P_CONTAINER_EXPORT);
   }
+
+
+  /**
+   * @param array $array
+   *
+   * @return EntityContainer
+   */
+  public function fromArray($array) {
+    $cEntity = $this->buildContainer();
+    $this->importRow($cEntity, $array);
+
+    return $cEntity;
+  }
+
 
   /**
    * @return EntityContainer
@@ -214,10 +213,6 @@ class EntityModel {
    */
   public function getAccessors() {
     return $this->accessors;
-  }
-
-  protected function dbSave(EntityContainer $cEntity) {
-    throw new \Exception('EntityModel::dbSave() is not yet implemented');
   }
 
 }

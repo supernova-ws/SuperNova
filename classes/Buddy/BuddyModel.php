@@ -21,19 +21,12 @@ use DBStatic\DBStaticUser;
  * @package Buddy
  */
 class BuddyModel extends \Entity\KeyedModel{
-
   /**
    * Name of table for this entity
    *
    * @var string $tableName
    */
   protected $tableName = 'buddy';
-  /**
-   * Name of key field field in this table
-   *
-   * @var string $idFieldName
-   */
-  protected $idFieldName = 'BUDDY_ID';
   protected $exceptionClass = 'BuddyException';
   protected $entityContainerClass = 'Buddy\BuddyContainer';
 
@@ -212,7 +205,8 @@ class BuddyModel extends \Entity\KeyedModel{
    * @param int    $newFriendIdSafe
    * @param string $newFriendNameUnsafe
    *
-   * @return array|bool|false|\mysqli_result|null
+   * @return array|false|null
+   * @throws BuddyException
    */
   protected function getNewFriend($newFriendIdSafe, $newFriendNameUnsafe) {
     $new_friend_row = array();

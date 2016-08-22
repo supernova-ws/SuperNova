@@ -11,6 +11,7 @@ namespace Common;
  * Class ObjectCollection
  *
  * Remaps ArrayAccess interface to work with indexed objects only
+ * Counts only indexed elements
  *
  * @package Common
  */
@@ -83,6 +84,15 @@ class ObjectCollection extends IndexedObjectStorage {
     if($this->offsetExists($offset)) {
       parent::offsetUnset($this->offsetGet($offset));
     }
+  }
+
+  /**
+   * Counts ONLY indexed elements
+   *
+   * @return int
+   */
+  public function count() {
+    return count($this->index);
   }
 
 }
