@@ -2,7 +2,9 @@
     - Теперь добавить методы для получения дельты и списка измененных полей
         - Затем их использовать в dbSave()
 
-
+- KeyedModel
+    - implement UPDATE
+    - check other implementations
 
 
 

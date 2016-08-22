@@ -13,11 +13,6 @@ use DBStatic\DBStaticUser;
  * @method BuddyContainer buildContainer()
  * @method BuddyContainer loadById(int|string $dbId)
  *
- * property int|float|string $playerSenderId Who makes buddy request
- * property int|float|string $playerOwnerId To whom this buddy request made
- * property int              $buddyStatusId Current buddy request status
- * property string           $requestText Request text
- *
  * @package Buddy
  */
 class BuddyModel extends \Entity\KeyedModel{

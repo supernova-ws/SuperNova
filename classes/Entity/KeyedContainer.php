@@ -9,6 +9,7 @@ namespace Entity;
  * Class KeyedContainer
  *
  * @property int|float|string $dbId Entity\EntityModel unique ID for entire entities' set
+ * @property bool             $isLoaded - This entity was loaded
  *
  * @package Entity
  */

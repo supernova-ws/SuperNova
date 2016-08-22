@@ -14,7 +14,6 @@ namespace Entity;
  */
 
 class KeyedModel extends EntityModel {
-
   protected $newProperties = array(
     'dbId' => array(
       P_DB_FIELD => 'id',
@@ -52,6 +51,7 @@ class KeyedModel extends EntityModel {
     }
 
     $cEntity = $this->fromArray($row);
+    $cEntity->isLoaded = true;
 
     return $cEntity;
   }
@@ -61,7 +61,28 @@ class KeyedModel extends EntityModel {
 //  }
 //
   protected function save(KeyedContainer $cEntity) {
-    throw new \Exception('EntityModel::dbSave() is not yet implemented');
+    if ($this->isEmpty($cEntity)) {
+      if ($cEntity->isLoaded) {
+        $this->rowOperator->deleteById($this, $cEntity->dbId);
+      } else {
+        throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
+      }
+    } else {
+      if (!$cEntity->dbId) {
+        $this->rowOperator->insert($this, $this->exportRowNoId($cEntity));
+//      } elseif ($this->isChanged($cEntity)) {
+//        // TODO - separate real changes from internal ones
+//        // Generate changeset row
+//        // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change
+//        // If row not empty - update
+//        $this->update($cEntity);
+      } else {
+        // TODO - or just save nothing ?????
+        throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
+      }
+    }
+
+    throw new \Exception('EntityModel::save() is not yet implemented');
   }
 
   /**
