@@ -60,10 +60,11 @@ class EntityContainer extends ContainerAccessors {
       return;
     }
 
+    $keyExists = array_key_exists($name, $this->original);
     // If no original value and new value is set - then we take new value as old value
-    if (empty($this->original[$name]) && !empty($value)) {
+    if (!$keyExists) {
       $this->original[$name] = $value;
-    } elseif (!empty($this->original[$name]) && $value != $this->original[$name]) {
+    } elseif ($keyExists && $value != $this->original[$name]) {
       // New value not equal original value. We should update delta
       $this->delta[$name] = $value - $this->original[$name];
     }

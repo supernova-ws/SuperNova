@@ -14,7 +14,7 @@ if (!empty($_POST['return']) && is_array($_POST['return'])) {
         sn_db_transaction_rollback();
         classSupernova::$debug->warning('Trying to return fleet that not belong to user', 'Hack attempt', 302, array(
           'base_dump'      => true,
-          'fleet_owner_id' => $fleetV2->ownerId,
+          'fleet_owner_id' => $e->getCode(),
           'user_id'        => $user['id']
         ));
         die('Hack attempt 302');

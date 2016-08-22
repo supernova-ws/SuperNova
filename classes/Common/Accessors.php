@@ -34,13 +34,13 @@ class Accessors {
   protected $executed = array();
 
   /**
-   * @param string $varName
    * @param string $accessor
+   * @param string $varName
    *
    * @return bool
    */
-  public function exists($varName, $accessor) {
-    return isset($this->accessors[$varName . $accessor]);
+  public function exists($accessor, $varName) {
+    return isset($this->accessors[$accessor . $varName]);
   }
 
   /**
@@ -48,13 +48,15 @@ class Accessors {
    *
    * Different accessors have different signatures - you should look carefully before assigning accessor
    *
-   * @param string   $varName
    * @param string   $accessor - type of accessor getter/setter/importer/exporter/etc
+   * @param string   $varName
    * @param callable $callable
+   *
+   * @param bool     $shared
    *
    * @throws \Exception
    */
-  public function set($varName, $accessor, $callable, $shared = false) {
+  public function set($accessor, $varName, $callable, $shared = false) {
     if (empty($callable)) {
       return;
     } elseif (!is_callable($callable)) {
@@ -62,57 +64,55 @@ class Accessors {
     }
 
     // Converting method array-callable to closure
-    // Require PHP 5.4 !!!!!!!!!!
+
+//    // This commented code require PHP 5.4+ !!!!!!!!!!
 //    if (is_array($callable) && count($callable) == 2 && is_object($callable[0])) {
 //      $method = new \ReflectionMethod($callable[0], $callable[1]);
 //      $callable = $method->getClosure($callable[0]);
 //    }
-
-    if($invoker = Invoker::build($callable)) {
+    if(is_array($callable) && ($invoker = Invoker::build($callable))) {
       $callable = $invoker;
     }
 
-    $this->accessors[$varName . $accessor] = $callable;
+    $functionName = $accessor . $varName;
+    $this->accessors[$functionName] = $callable;
     if($shared) {
-      $this->shared[$varName . $accessor] = true;
+      $this->shared[$functionName] = true;
     }
   }
 
-//  /**
-//   * Gets accessor for later use
-//   *
-//   * @param string $varName
-//   * @param string $accessor
-//   *
-//   * @return callable|null
-//   */
-//  public function get($varName, $accessor) {
-//    return $this->exists($varName, $accessor) ? $this->accessors[$varName . $accessor] : null;
-//  }
+  /**
+   * Gets accessor for later use
+   *
+   * @param string $accessor
+   *
+   * @param string $varName
+   *
+   * @return callable|null
+   */
+  public function get($accessor, $varName) {
+    return $this->exists($accessor, $varName) ? $this->accessors[$accessor . $varName] : null;
+  }
 
   /**
-   * @param string $varName
    * @param string $accessor
+   * @param string $varName
    * @param array  $params
    *
    * @return mixed
    * @throws \Exception
    */
-  public function execute($varName, $accessor, $params) {
-    if (!$this->exists($varName, $accessor)) {
+  public function execute($accessor, $varName, $params) {
+    if (!$this->exists($accessor, $varName)) {
       throw new \Exception("No [{$accessor}] accessor found for variable [{$varName}] on " . get_called_class() . "::" . __METHOD__);
     }
 
-    $functionName = $varName . $accessor;
-
-    if(isset($this->shared[$functionName])) {
-      if(!array_key_exists($functionName, $this->executed)) {
-        $this->executed[$functionName] = call_user_func_array($this->accessors[$functionName], $params);
-      }
-      return $this->executed[$functionName];
+    $functionName = $accessor . $varName;
+    if(!isset($this->shared[$functionName]) || !array_key_exists($functionName, $this->executed)) {
+      $this->executed[$functionName] = call_user_func_array($this->accessors[$functionName], $params);
     }
 
-    return call_user_func_array($this->accessors[$functionName], $params);
+    return $this->executed[$functionName];
   }
 
 }

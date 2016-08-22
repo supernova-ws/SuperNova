@@ -87,8 +87,8 @@ class EntityModel {
   protected function processRow($that, $accessor) {
     foreach ($this->properties as $propertyName => $propertyData) {
       $fieldName = !empty($propertyData[P_DB_FIELD]) ? $propertyData[P_DB_FIELD] : '';
-      if ($this->accessors->exists($propertyName, $accessor)) {
-        $this->accessors->execute($propertyName, $accessor, array($that, $propertyName, $fieldName));
+      if ($this->accessors->exists($accessor, $propertyName)) {
+        $this->accessors->execute($accessor, $propertyName, array($that, $propertyName, $fieldName));
       } elseif ($fieldName) {
         if ($accessor == P_CONTAINER_IMPORT) {
           $that->$propertyName = isset($that->row[$fieldName]) ? $that->row[$fieldName] : null;
@@ -214,6 +214,10 @@ class EntityModel {
    */
   public function getAccessors() {
     return $this->accessors;
+  }
+
+  protected function dbSave(EntityContainer $cEntity) {
+    throw new \Exception('EntityModel::dbSave() is not yet implemented');
   }
 
 }

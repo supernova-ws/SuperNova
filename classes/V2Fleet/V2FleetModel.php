@@ -98,7 +98,7 @@ class V2FleetModel extends KeyedModel {
 
 //    $this->extendProperties($this->newProperties);
 
-    $this->accessors->set('location', P_CONTAINER_GET, function (V2FleetContainer $that) {
+    $this->accessors->set(P_CONTAINER_GET, 'location', function (V2FleetContainer $that) {
       if (is_null($location = $that->getDirect('location'))) {
         $location = new V2Location(LOC_FLEET);
         $that->setDirect('location', $location);
@@ -107,23 +107,23 @@ class V2FleetModel extends KeyedModel {
       return $location;
     });
 
-    $this->accessors->set('dbId', P_CONTAINER_SET, function (V2FleetContainer $that, $value) {
+    $this->accessors->set(P_CONTAINER_SET, 'dbId', function (V2FleetContainer $that, $value) {
       $that->setDirect('dbId', $value);
       $that->location->setLocationId($value);
     });
 
-    $this->accessors->set('ownerId', P_CONTAINER_SET, function (V2FleetContainer $that, $value) {
+    $this->accessors->set(P_CONTAINER_SET, 'ownerId', function (V2FleetContainer $that, $value) {
       $that->setDirect('ownerId', $value);
       $that->location->setLocationPlayerId($value);
     });
 
-    $this->accessors->set('vectorDeparture', P_CONTAINER_IMPORT, array($this, 'importVector'));
-    $this->accessors->set('vectorDeparture', P_CONTAINER_EXPORT, array($this, 'exportVector'));
-    $this->accessors->set('vectorArrive', P_CONTAINER_IMPORT, array($this, 'importVector'));
-    $this->accessors->set('vectorArrive', P_CONTAINER_EXPORT, array($this, 'exportVector'));
+    $this->accessors->set(P_CONTAINER_IMPORT, 'vectorDeparture', array($this, 'importVector'));
+    $this->accessors->set(P_CONTAINER_EXPORT, 'vectorDeparture', array($this, 'exportVector'));
+    $this->accessors->set(P_CONTAINER_IMPORT, 'vectorArrive', array($this, 'importVector'));
+    $this->accessors->set(P_CONTAINER_EXPORT, 'vectorArrive', array($this, 'exportVector'));
 
 
-    $this->accessors->set('units', P_CONTAINER_GET, function (V2FleetContainer $that) {
+    $this->accessors->set(P_CONTAINER_GET, 'units', function (V2FleetContainer $that) {
       if (is_null($units = $that->getDirect('units'))) {
         $units = \classSupernova::$gc->unitList;
         $that->setDirect('units', $units);
@@ -132,7 +132,7 @@ class V2FleetModel extends KeyedModel {
       return $units;
     });
 
-    $this->accessors->set('isReturning', P_CONTAINER_GET, function (V2FleetContainer $that) {
+    $this->accessors->set(P_CONTAINER_GET, 'isReturning', function (V2FleetContainer $that) {
       return $that->status == FLEET_FLAG_RETURNING;
     });
 
@@ -226,7 +226,7 @@ class V2FleetModel extends KeyedModel {
     }
 
     if ($fleetV2->ownerId != $userId) {
-      throw new \Exception('Hack attempt 302');
+      throw new \Exception($fleetV2->ownerId, ERR_ERROR);
     }
 
     $this->doReturn($fleetV2);
