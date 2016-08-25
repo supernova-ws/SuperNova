@@ -56,7 +56,7 @@ class Accessors {
    *
    * @throws \Exception
    */
-  public function set($accessor, $varName, $callable, $shared = false) {
+  public function set($accessor, $varName, $callable, $shared = ACCESSOR_NORMAL) {
     if (empty($callable)) {
       return;
     } elseif (!is_callable($callable)) {
@@ -76,7 +76,7 @@ class Accessors {
 
     $functionName = $accessor . $varName;
     $this->accessors[$functionName] = $callable;
-    if($shared) {
+    if($shared == ACCESSOR_SHARED) {
       $this->shared[$functionName] = true;
     }
   }

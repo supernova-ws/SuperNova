@@ -33,7 +33,7 @@ class V2FleetModel extends KeyedModel {
   protected $entityContainerClass = 'V2Fleet\V2FleetContainer';
 
   protected $newProperties = array(
-    'dbId'                => array(
+    'dbId'              => array(
       P_DB_FIELD => 'fleet_id',
     ),
     'ownerId'           => array(P_DB_FIELD => 'fleet_owner',),
@@ -93,15 +93,6 @@ class V2FleetModel extends KeyedModel {
   public function __construct(\Common\GlobalContainer $gc) {
     parent::__construct($gc);
 
-    $this->accessors->set(P_CONTAINER_GET, 'location', function (V2FleetContainer $that) {
-      if (is_null($location = $that->getDirect('location'))) {
-        $location = new V2Location(LOC_FLEET);
-        $that->setDirect('location', $location);
-      }
-
-      return $location;
-    });
-
     $this->accessors->set(P_CONTAINER_SET, 'dbId', function (V2FleetContainer $that, $value) {
       $that->setDirect('dbId', $value);
       $that->location->setLocationId($value);
@@ -118,14 +109,21 @@ class V2FleetModel extends KeyedModel {
     $this->accessors->set(P_CONTAINER_EXPORT, 'vectorArrive', array($this, 'exportVector'));
 
 
+    $this->accessors->set(P_CONTAINER_GET, 'location', function (V2FleetContainer $that) {
+//      if (is_null($location = $that->getDirect('location'))) {}
+      $location = new V2Location(LOC_FLEET);
+      $that->setDirect('location', $location);
+
+      return $location;
+    }, ACCESSOR_SHARED);
+
     $this->accessors->set(P_CONTAINER_GET, 'units', function (V2FleetContainer $that) {
-      if (is_null($units = $that->getDirect('units'))) {
-        $units = \classSupernova::$gc->unitList;
-        $that->setDirect('units', $units);
-      }
+//      if (is_null($units = $that->getDirect('units'))) {}
+      $units = \classSupernova::$gc->unitList;
+      $that->setDirect('units', $units);
 
       return $units;
-    });
+    }, ACCESSOR_SHARED);
 
     $this->accessors->set(P_CONTAINER_GET, 'isReturning', function (V2FleetContainer $that) {
       return $that->status == FLEET_FLAG_RETURNING;
@@ -180,9 +178,7 @@ class V2FleetModel extends KeyedModel {
   public function isEmpty(V2FleetContainer $cFleet) {
     return
       // Fleet is empty if not units in it
-      $cFleet->units->isEmpty()
-
-      // parent::isEmpty($cFleet)
+      $cFleet->units->isEmpty()// parent::isEmpty($cFleet)
       ;
   }
 

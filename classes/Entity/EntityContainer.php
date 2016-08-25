@@ -55,21 +55,6 @@ class EntityContainer extends ContainerAccessors {
     return $this->model;
   }
 
-  protected function processNumeric($name, $value) {
-    if (!is_int($value) && !is_float($value)) {
-      return;
-    }
-
-    $keyExists = array_key_exists($name, $this->original);
-    // If no original value and new value is set - then we take new value as old value
-    if (!$keyExists) {
-      $this->original[$name] = $value;
-    } elseif ($keyExists && $value != $this->original[$name]) {
-      // New value not equal original value. We should update delta
-      $this->delta[$name] = $value - $this->original[$name];
-    }
-  }
-
   public function __set($name, $value) {
     $properties = $this->model->getProperties();
     if (isset($properties[$name][P_DB_FIELD_TYPE])) {
@@ -77,7 +62,20 @@ class EntityContainer extends ContainerAccessors {
     }
 
     parent::__set($name, $value);
-    $this->processNumeric($name, $value);
+    // If it is first assign - saving this value as original
+    if (!array_key_exists($name, $this->original)) {
+      $this->original[$name] = $value;
+    } // If it is not first assign
+    elseif ($value != $this->original[$name] && (is_int($value) || is_float($value))) {
+//      // New value not equal original value. We should update delta
+      $this->delta[$name] = $value - $this->original[$name];
+    }
+  }
+
+  public function clear() {
+    parent::clear();
+    $this->original = array();
+    $this->delta = array();
   }
 
 }

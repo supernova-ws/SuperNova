@@ -84,7 +84,6 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::__set
-   * @covers ::processNumeric
    */
   public function test__set() {
     // Integer properties SHOULD be affected
@@ -94,23 +93,22 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
     $this->assertAttributeEquals(array('int' => 2), 'original', $this->object);
     $this->assertAttributeEquals(array('int' => 1), 'delta', $this->object);
 
-    $original = array('int' => 2, 'float' => 3.0);
     $delta = array('int' => 1, 'float' => 4.0);
-    // Integer properties SHOULD be affected
+    // Float properties SHOULD be affected
     $this->object->__set('float', 3.0);
     $this->object->__set('float', 7.0);
     $this->assertEquals(7.0, $this->object->float);
-    $this->assertAttributeEquals($original, 'original', $this->object);
+    $this->assertAttributeEquals(array('int' => 2, 'float' => 3.0), 'original', $this->object);
     $this->assertAttributeEquals($delta, 'delta', $this->object);
 
     // Properties typed as STRING should not be affected
     $this->object->__set('str1', '1');
-    $this->assertAttributeEquals($original, 'original', $this->object);
+    $this->assertAttributeEquals(array('int' => 2, 'float' => 3.0, 'str1' => '1'), 'original', $this->object);
     $this->assertAttributeEquals($delta, 'delta', $this->object);
 
     // Not typed properties defaults to STRING
     $this->object->__set('str2', '2');
-    $this->assertAttributeEquals($original, 'original', $this->object);
+    $this->assertAttributeEquals(array('int' => 2, 'float' => 3.0, 'str1' => '1', 'str2' => '2'), 'original', $this->object);
     $this->assertAttributeEquals($delta, 'delta', $this->object);
   }
 

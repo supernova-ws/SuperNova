@@ -64,13 +64,16 @@ class KeyedModel extends EntityModel {
     if ($this->isEmpty($cEntity)) {
       if ($cEntity->isLoaded) {
         $this->rowOperator->deleteById($this, $cEntity->dbId);
+        $cEntity->isLoaded = false;
+        $cEntity->isDeleted = true;
       } else {
+        // Just created container and doesn't use it
         throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
       }
     } else {
       if (!$cEntity->dbId) {
-        $this->rowOperator->insert($this, $this->exportRowNoId($cEntity));
-//      } elseif ($this->isChanged($cEntity)) {
+        $cEntity->dbId = $this->rowOperator->insert($this, $this->exportRowNoId($cEntity));
+      } elseif ($cEntity->isChanged()) {
 //        // TODO - separate real changes from internal ones
 //        // Generate changeset row
 //        // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change

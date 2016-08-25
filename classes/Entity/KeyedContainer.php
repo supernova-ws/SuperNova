@@ -10,9 +10,14 @@ namespace Entity;
  *
  * @property int|float|string $dbId Entity\EntityModel unique ID for entire entities' set
  * @property bool             $isLoaded - This entity was loaded
+ * @property bool             $isDeleted - This entity was loaded
  *
  * @package Entity
  */
 class KeyedContainer extends EntityContainer {
+
+public function isChanged() {
+  return !empty($this->delta);
+}
 
 }
