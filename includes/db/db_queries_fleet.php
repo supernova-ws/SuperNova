@@ -13,7 +13,7 @@
  * @return int|string
  */
 function db_fleet_insert_set_safe_string($set_safe_string) {
-  if(!empty($set_safe_string)) {
+  if (!empty($set_safe_string)) {
     doquery("INSERT INTO `{{fleets}}` SET {$set_safe_string}");
     $fleet_id = db_insert_id();
   } else {
@@ -47,7 +47,7 @@ function db_fleet_get($fleet_id) {
  */
 function db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
   $fleet_id_safe = idval($fleet_id);
-  if(!empty($fleet_id_safe) && !empty($set_safe_string)) {
+  if (!empty($fleet_id_safe) && !empty($set_safe_string)) {
     $result = doquery("UPDATE `{{fleets}}` SET {$set_safe_string} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
   } else {
     $result = false;
@@ -65,7 +65,7 @@ function db_fleet_update_set_safe_string($fleet_id, $set_safe_string) {
  */
 function db_fleet_delete($fleet_id) {
   $fleet_id_safe = idval($fleet_id);
-  if(!empty($fleet_id_safe)) {
+  if (!empty($fleet_id_safe)) {
     $result = doquery("DELETE FROM {{fleets}} WHERE `fleet_id` = {$fleet_id_safe} LIMIT 1;");
   } else {
     $result = false;
@@ -131,7 +131,8 @@ function db_fleet_lock_flying($fleet_id, &$mission_data) {
  * @return int
  */
 function db_fleet_count($where_safe) {
-  $result = doquery("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe} FOR UPDATE", true);
+  // Removed FOR UPDATE to not messed with transactions
+  $result = doquery("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}", true);
 
   return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
 }
@@ -143,15 +144,15 @@ function db_fleet_count($where_safe) {
  *
  * @return array
  */
-function db_fleet_list($where_safe) {
+function db_fleet_list($where_safe, $for_update = DB_SELECT_FOR_UPDATE) {
   $row_list = array();
 
   $query = doquery(
     "SELECT * FROM `{{fleets}}`" .
     (!empty($where_safe) ? " WHERE {$where_safe}" : '') .
-    " FOR UPDATE;"
+    ($for_update == DB_SELECT_FOR_UPDATE ? " FOR UPDATE;" : '')
   );
-  while($row = db_fetch($query)) {
+  while ($row = db_fetch($query)) {
     $row_list[$row['fleet_id']] = $row;
   }
 
@@ -197,7 +198,7 @@ function fleet_update_set($fleet_id, $set, $delta = array()) {
   $fleet_id_safe = idval($fleet_id);
   $set_string_safe = db_set_make_safe_string($set);
   !empty($delta) ? $set_string_safe = implode(',', array($set_string_safe, db_set_make_safe_string($delta, true))) : false;
-  if(!empty($fleet_id_safe) && !empty($set_string_safe)) {
+  if (!empty($fleet_id_safe) && !empty($set_string_safe)) {
     $result = db_fleet_update_set_safe_string($fleet_id, $set_string_safe);
   }
 
@@ -237,7 +238,7 @@ function fleet_return_forced($fleet_row, $user) {
   );
   fleet_update_set($fleet_id, $fleet_set_update);
 
-  if($fleet_row['fleet_group']) {
+  if ($fleet_row['fleet_group']) {
     // TODO: Make here to delete only one AKS - by adding aks_fleet_count to AKS table
     db_fleet_aks_purge();
   }
@@ -252,7 +253,7 @@ function fleet_return_forced($fleet_row, $user) {
  */
 function fleet_send_back(&$fleet_row) {
   $fleet_id = round(!empty($fleet_row['fleet_id']) ? $fleet_row['fleet_id'] : $fleet_row);
-  if(!$fleet_id) {
+  if (!$fleet_id) {
     return false;
   }
 
@@ -275,7 +276,7 @@ function fleet_send_back(&$fleet_row) {
  */
 function fleet_count_flying($player_id, $mission_id = 0) {
   $player_id_safe = idval($player_id);
-  if(!empty($player_id_safe)) {
+  if (!empty($player_id_safe)) {
     $mission_id_safe = intval($mission_id);
     $result = db_fleet_count(
       "`fleet_owner` = {$player_id_safe}" .
@@ -318,7 +319,7 @@ function fleet_count_incoming($galaxy, $system, $planet) {
 function fleet_list_by_owner_id($fleet_owner_id) {
   $fleet_owner_id_safe = idval($fleet_owner_id);
 
-  return $fleet_owner_id_safe ? db_fleet_list("`fleet_owner` = {$fleet_owner_id_safe}") : array();
+  return $fleet_owner_id_safe ? db_fleet_list("`fleet_owner` = {$fleet_owner_id_safe}", DB_SELECT_PLAIN) : array();
 }
 
 /**
@@ -349,6 +350,7 @@ function fleet_list_by_planet_coords($galaxy, $system, $planet = 0, $planet_type
     ($planet_type != PT_ALL ? " AND fleet_end_type = {$planet_type} " : '') .
     ($for_phalanx ? '' : " AND fleet_mess = 0") .
     ")"
+    , DB_SELECT_PLAIN
   );
 }
 
@@ -370,6 +372,7 @@ function fleet_list_on_hold($galaxy, $system, $planet, $planet_type, $ube_time) 
     AND `fleet_start_time` <= {$ube_time}
     AND `fleet_end_stay` >= {$ube_time}
     AND `fleet_mess` = 0"
+    , DB_SELECT_FOR_UPDATE
   );
 }
 
@@ -390,6 +393,7 @@ function fleet_list_bashing($fleet_owner_id, $planet_row) {
     AND `fleet_owner` = {$fleet_owner_id}
     AND `fleet_mission` IN (" . MT_ATTACK . "," . MT_AKS . "," . MT_DESTROY . ")
     AND `fleet_mess` = 0"
+  , DB_SELECT_FOR_UPDATE
   );
 }
 
@@ -405,7 +409,9 @@ function fleet_list_current_tick() {
     OR
     (`fleet_end_stay` <= " . SN_TIME_NOW . " AND `fleet_end_stay` > 0 AND `fleet_mess` = 0)
     OR
-    (`fleet_end_time` <= " . SN_TIME_NOW . ")");
+    (`fleet_end_time` <= " . SN_TIME_NOW . ")"
+  , DB_SELECT_PLAIN
+  );
 }
 
 /**
@@ -416,7 +422,7 @@ function fleet_list_current_tick() {
  * @return array
  */
 function fleet_list_by_group($group_id) {
-  return db_fleet_list("`fleet_group` = {$group_id}");
+  return db_fleet_list("`fleet_group` = {$group_id}", DB_SELECT_FOR_UPDATE);
 }
 
 
@@ -429,14 +435,15 @@ function fleet_list_by_group($group_id) {
  *
  * @return array
  */
-function db_missile_list($where) {
+function db_missile_list($where, $for_update = DB_SELECT_FOR_UPDATE) {
   $row_list = array();
 
   $query = doquery(
     "SELECT * FROM `{{iraks}}`" .
     (!empty($where) ? " WHERE {$where}" : '') .
-    " FOR UPDATE;");
-  while($row = db_fetch($query)) {
+    ($for_update == DB_SELECT_FOR_UPDATE ? " FOR UPDATE" : '')
+  );
+  while ($row = db_fetch($query)) {
     $row_list[$row['id']] = $row;
   }
 
@@ -455,7 +462,7 @@ function db_missile_list($where) {
  * @return array
  */
 function fleet_and_missiles_list_by_coordinates($coordinates, $for_phalanx = false) {
-  if(empty($coordinates) || !is_array($coordinates)) {
+  if (empty($coordinates) || !is_array($coordinates)) {
     return array();
   }
 
@@ -475,6 +482,7 @@ function fleet_and_missiles_list_by_coordinates($coordinates, $for_phalanx = fal
       AND fleet_end_planet = {$coordinates['planet']}
       AND fleet_end_type = {$coordinates['planet_type']}
     )"
+  , DB_SELECT_PLAIN
   );
 
   missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
@@ -491,13 +499,13 @@ function fleet_and_missiles_list_by_coordinates($coordinates, $for_phalanx = fal
  */
 function fleet_and_missiles_list_incoming($owner_id) {
   $owner_id_safe = idval($owner_id);
-  if(empty($owner_id_safe)) {
+  if (empty($owner_id_safe)) {
     return array();
   }
 
   $where = "`fleet_owner` = '{$owner_id_safe}' OR `fleet_target_owner` = '{$owner_id_safe}'";
-  $fleet_db_list = db_fleet_list($where);
-  $missile_db_list = db_missile_list($where);
+  $fleet_db_list = db_fleet_list($where, DB_SELECT_PLAIN);
+  $missile_db_list = db_missile_list($where, DB_SELECT_PLAIN);
 
   missile_list_convert_to_fleet($missile_db_list, $fleet_db_list);
 

@@ -20,7 +20,7 @@ if($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
-if(SN_TIME_NOW >= classSupernova::$config->db_loadAll('var_stat_update_admin_forced') && SN_TIME_NOW >= classSupernova::$config->db_loadAll('var_stat_update_end'))
+if(SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_admin_forced') && SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_end'))
 {
   classSupernova::$config->db_saveItem('var_stat_update_admin_forced', SN_TIME_NOW + 120);
 
