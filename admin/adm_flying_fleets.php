@@ -19,7 +19,7 @@ if($user['authlevel'] < 3) {
 
 $template = gettemplate('admin/adm_flying_fleets', true);
 
-$all_flying_fleets = FleetList::dbGetFleetList();
+$all_flying_fleets = FleetList::dbGetFleetList('', DB_SELECT_PLAIN);
 foreach($all_flying_fleets->_container as $fleet_id => $objFleet) {
   $FleetOwner = DBStaticUser::db_user_by_id($objFleet->playerOwnerId);
   $TargetOwner = DBStaticUser::db_user_by_id($objFleet->target_owner_id);

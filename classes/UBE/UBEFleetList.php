@@ -298,7 +298,7 @@ class UBEFleetList extends FleetList {
    */
   public function ubeInitGetAttackers(Fleet $objFleet, UBEPlayerList $players) {
     if($objFleet->group_id) {
-      $fleets_added = $this->dbLoadWhere("`fleet_group` = {$objFleet->group_id}");
+      $fleets_added = $this->dbLoadWhere("`fleet_group` = {$objFleet->group_id}", DB_SELECT_FOR_UPDATE);
     } else {
       $this->ube_insert_from_Fleet($objFleet);
       $fleet_db_id = $objFleet->dbId;
@@ -323,6 +323,7 @@ class UBEFleetList extends FleetList {
         AND `fleet_start_time` <= {$objFleet->time_arrive_to_target}
         AND `fleet_end_stay` >= {$objFleet->time_arrive_to_target}
         AND `fleet_mess` = 0"
+      ,DB_SELECT_FOR_UPDATE
     );
     $players->ubeLoadPlayersAndSetSideFromFleetIdList($fleets_added, $this, UBE_PLAYER_IS_DEFENDER);
   }

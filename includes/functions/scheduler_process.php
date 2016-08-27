@@ -56,6 +56,9 @@ function scheduler_process() {
       classSupernova::$config->db_saveItem('var_stat_update_admin_forced', SN_TIME_SQL);
       classSupernova::$config->db_saveItem('var_stat_update_end', SN_TIME_SQL);
 
+      if($old_server_status == GAME_DISABLE_STAT) {
+        $old_server_status = GAME_DISABLE_NONE;
+      }
       classSupernova::$config->db_saveItem('game_disable', $old_server_status);
     } elseif($ts_scheduled_update > $ts_var_stat_update) {
       $timeout = strtotime(classSupernova::$config->db_loadItem('var_stat_update_end')) - SN_TIME_NOW;

@@ -90,24 +90,24 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
   */
 
-  if (classSupernova::$config->game_disable != GAME_DISABLE_NONE || $skip_fleet_update) {
+  if (
+    classSupernova::$config->game_disable != GAME_DISABLE_NONE
+    ||
+    $skip_fleet_update
+    ||
+    SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_last) <= classSupernova::$config->fleet_update_interval
+  ) {
     return;
   }
 
   sn_db_transaction_start();
-  if (classSupernova::$config->db_loadItem('game_disable') != GAME_DISABLE_NONE || SN_TIME_NOW - strtotime(classSupernova::$config->db_loadItem('fleet_update_last')) <= classSupernova::$config->fleet_update_interval) {
-    sn_db_transaction_rollback();
-
-    return;
-  }
-
 
   // Watchdog timer
   if (classSupernova::$config->db_loadItem('fleet_update_lock')) {
     if (defined('DEBUG_FLYING_FLEETS')) {
       $random = 0;
     } else {
-      $random = mt_rand(240, 300);
+      $random = mt_rand(90, 120);
     }
 
     if (SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_lock) <= $random) {
@@ -187,6 +187,14 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 //log_file('Обработка миссий');
   $sn_groups_mission = sn_get_groups('missions');
   foreach ($fleet_event_list as $fleet_event) {
+    // Watchdog timer
+    // If flying fleet handler works more then 10 seconds - stopping it
+    // Let next run handle rest of fleets
+    if(time() - SN_TIME_NOW > 10) {
+      $debug->warning('Flying fleet handler standard routine works more then 10 seconds - watchdog unlocked', 'FFH Warning', 504);
+      break;
+    }
+
     // TODO: Указатель тут потом сделать
     // TODO: СЕЙЧАС НАДО ПРОВЕРЯТЬ ПО БАЗЕ - А ЖИВОЙ ЛИ ФЛОТ?!
     if (empty($fleet_event['object'])) {

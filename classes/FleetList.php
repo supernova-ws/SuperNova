@@ -29,13 +29,13 @@ class FleetList extends ContainerArrayOfObject {
    * @return array - ID of added fleets
    *
    */
-  public function dbLoadWhere($where_safe = '') {
+  public function dbLoadWhere($where_safe = '', $for_update = DB_SELECT_FOR_UPDATE) {
     $fleets_added = array();
 
     $query = classSupernova::$db->doSelect(
       "SELECT * FROM `{{fleets}}`" .
       (!empty($where_safe) ? " WHERE {$where_safe}" : '') .
-      " FOR UPDATE;"
+      ($for_update == DB_SELECT_FOR_UPDATE ? " FOR UPDATE;" : '')
     );
     while($row = db_fetch($query)) {
       /**
@@ -64,9 +64,9 @@ class FleetList extends ContainerArrayOfObject {
    *
    */
   // DEPRECATED
-  public static function dbGetFleetList($where_safe = '') {
+  public static function dbGetFleetList($where_safe = '', $for_update = DB_SELECT_FOR_UPDATE) {
     $fleetList = new static();
-    $fleetList->dbLoadWhere($where_safe);
+    $fleetList->dbLoadWhere($where_safe, $for_update);
 
     return $fleetList;
   }
@@ -98,7 +98,7 @@ class FleetList extends ContainerArrayOfObject {
    * @return int
    */
   protected static function db_fleet_count($where_safe) {
-    $result = classSupernova::$db->doSelectFetch("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe} FOR UPDATE");
+    $result = classSupernova::$db->doSelectFetch("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}");
 
     return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
   }
@@ -123,7 +123,9 @@ class FleetList extends ContainerArrayOfObject {
     OR
     (`fleet_end_stay` <= " . SN_TIME_NOW . " AND `fleet_end_stay` > 0 AND `fleet_mess` = 0)
     OR
-    (`fleet_end_time` <= " . SN_TIME_NOW . ")");
+    (`fleet_end_time` <= " . SN_TIME_NOW . ")"
+      , DB_SELECT_PLAIN
+    );
   }
 
   /**
@@ -144,6 +146,7 @@ class FleetList extends ContainerArrayOfObject {
     AND `fleet_owner` = {$fleet_owner_id}
     AND `fleet_mission` IN (" . MT_ATTACK . "," . MT_ACS . "," . MT_DESTROY . ")
     AND `fleet_mess` = 0"
+      , DB_SELECT_FOR_UPDATE
     );
   }
 
@@ -155,7 +158,7 @@ class FleetList extends ContainerArrayOfObject {
   public static function dbGetFleetListByOwnerId($fleet_owner_id) {
     $fleet_owner_id_safe = idval($fleet_owner_id);
 
-    return $fleet_owner_id_safe ? static::dbGetFleetList("`fleet_owner` = {$fleet_owner_id_safe}") : null;
+    return $fleet_owner_id_safe ? static::dbGetFleetList("`fleet_owner` = {$fleet_owner_id_safe}", DB_SELECT_PLAIN) : null;
   }
 
   /**
@@ -184,7 +187,9 @@ class FleetList extends ContainerArrayOfObject {
       AND fleet_end_system = {$coordinates['system']}
       AND fleet_end_planet = {$coordinates['planet']}
       AND fleet_end_type = {$coordinates['planet_type']}
-    )");
+    )"
+      , DB_SELECT_PLAIN
+    );
 
     return $objFleetList;
   }
@@ -233,6 +238,7 @@ class FleetList extends ContainerArrayOfObject {
       ($planet_type != PT_ALL ? " AND fleet_end_type = {$planet_type} " : '') .
       ($for_phalanx ? '' : " AND fleet_mess = 0") .
       ")"
+      , DB_SELECT_PLAIN
     );
   }
 
@@ -241,11 +247,12 @@ class FleetList extends ContainerArrayOfObject {
    *
    * @param string $where
    */
-  public function dbMergeMissileList($where) {
+  public function dbMergeMissileList($where, $for_update = DB_SELECT_FOR_UPDATE) {
     $query = classSupernova::$db->doSelect(
       "SELECT * FROM `{{iraks}}`" .
       (!empty($where) ? " WHERE {$where}" : '') .
-      " FOR UPDATE;");
+      ($for_update == DB_SELECT_FOR_UPDATE ? " FOR UPDATE;" : '')
+    );
     while($missile_db_row = db_fetch($query)) {
       /**
        * @var Fleet $objFleet
@@ -274,8 +281,8 @@ class FleetList extends ContainerArrayOfObject {
 
     $where = "`fleet_owner` = '{$owner_id_safe}' OR `fleet_target_owner` = '{$owner_id_safe}'";
 
-    $objFleetList = FleetList::dbGetFleetList($where);
-    $objFleetList->dbMergeMissileList($where);
+    $objFleetList = FleetList::dbGetFleetList($where, DB_SELECT_PLAIN);
+    $objFleetList->dbMergeMissileList($where, DB_SELECT_PLAIN);
 
     return $objFleetList;
   }
