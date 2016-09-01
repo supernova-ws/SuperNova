@@ -215,4 +215,51 @@ class EntityModel {
     return $this->accessors;
   }
 
+  protected function delete(EntityContainer $cEntity) {
+    throw new \Exception(__CLASS__ . '::delete() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  protected function insert(EntityContainer $cEntity) {
+    $this->rowOperator->insert($this, $this->exportRow($cEntity));
+    // TODO - re-read record
+  }
+
+  protected function update(EntityContainer $cEntity) {
+    // TODO - separate real changes from internal ones
+    // Generate changeset row
+    // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change
+    // If row not empty - update
+    throw new \Exception(__CLASS__ . '::update() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  protected function unchanged(EntityContainer $cEntity){
+    // TODO - or just save nothing ?????
+//    throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
+    throw new \Exception(__CLASS__ . '::unchanged() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  protected function emptyAction(EntityContainer $cEntity) {
+    // Just created container and doesn't use it
+//    throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
+    throw new \Exception(__CLASS__ . '::emptyAction() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  protected function save(EntityContainer $cEntity) {
+    if ($this->isEmpty($cEntity)) {
+      if ($cEntity->isLoaded) {
+        $this->delete($cEntity);
+      } else {
+        $this->emptyAction($cEntity);
+      }
+    } else {
+      if (empty($cEntity->dbId)) {
+        $this->insert($cEntity);
+      } elseif (method_exists($cEntity, 'isChanged') && $cEntity->isChanged()) {
+        $this->update($cEntity);
+      } else {
+        $this->unchanged($cEntity);
+      }
+    }
+  }
+
 }

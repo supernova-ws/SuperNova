@@ -60,32 +60,35 @@ class KeyedModel extends EntityModel {
 //    throw new \Exception('EntityModel::dbSave() is not yet implemented');
 //  }
 //
-  protected function save(KeyedContainer $cEntity) {
-    if ($this->isEmpty($cEntity)) {
-      if ($cEntity->isLoaded) {
-        $this->rowOperator->deleteById($this, $cEntity->dbId);
-        $cEntity->isLoaded = false;
-        $cEntity->isDeleted = true;
-      } else {
-        // Just created container and doesn't use it
-        throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
-      }
-    } else {
-      if (!$cEntity->dbId) {
-        $cEntity->dbId = $this->rowOperator->insert($this, $this->exportRowNoId($cEntity));
-      } elseif ($cEntity->isChanged()) {
-//        // TODO - separate real changes from internal ones
-//        // Generate changeset row
-//        // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change
-//        // If row not empty - update
-//        $this->update($cEntity);
-      } else {
-        // TODO - or just save nothing ?????
-        throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
-      }
-    }
+  protected function delete(KeyedContainer $cEntity) {
+    $this->rowOperator->deleteById($this, $cEntity->dbId);
+    $cEntity->isLoaded = false;
+    $cEntity->isDeleted = true;
+    throw new \Exception('KeyedModel::delete() is not yet implemented');
+  }
 
-    throw new \Exception('EntityModel::save() is not yet implemented');
+  protected function insert(KeyedContainer $cEntity) {
+    $cEntity->dbId = $this->rowOperator->insert($this, $this->exportRowNoId($cEntity));
+  }
+
+  protected function update(KeyedContainer $cEntity) {
+    // TODO - separate real changes from internal ones
+    // Generate changeset row
+    // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change
+    // If row not empty - update
+    throw new \Exception('KeyedModel::update() is not yet implemented');
+  }
+
+  protected function unchanged(KeyedContainer $cEntity){
+    // TODO - or just save nothing ?????
+    // throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
+    // Do nothing
+  }
+
+  protected function emptyAction(KeyedContainer $cEntity) {
+    // Just created container and doesn't use it
+//    throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
+    // Do nothing
   }
 
   /**

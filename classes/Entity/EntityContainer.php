@@ -66,9 +66,12 @@ class EntityContainer extends ContainerAccessors {
     if (!array_key_exists($name, $this->original)) {
       $this->original[$name] = $value;
     } // If it is not first assign
-    elseif ($value != $this->original[$name] && (is_int($value) || is_float($value))) {
-//      // New value not equal original value. We should update delta
-      $this->delta[$name] = $value - $this->original[$name];
+    elseif ($value != $this->original[$name]) {
+      $this->delta[$name] = $value;
+      // New value not equal original value. We should update delta
+      if((is_int($value) || is_float($value))) {
+        $this->delta[$name] -= $this->original[$name];
+      }
     }
   }
 
@@ -76,6 +79,15 @@ class EntityContainer extends ContainerAccessors {
     parent::clear();
     $this->original = array();
     $this->delta = array();
+  }
+
+
+  public function isChanged() {
+    return !empty($this->delta);
+  }
+
+  public function getDeltas() {
+    return $this->delta;
   }
 
 }

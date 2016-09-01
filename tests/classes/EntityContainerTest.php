@@ -17,7 +17,7 @@ class EntityContainerTestModel extends \Entity\EntityModel {
     'str1' => array(
       P_DB_FIELD_TYPE => TYPE_STRING,
     ),
-    'str2' => array(
+    'notype' => array(
     ),
   );
 }
@@ -84,14 +84,23 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
 
   /**
    * @covers ::__set
+   * @covers ::clear
+   * @covers ::isChanged
+   * @covers ::getDeltas
    */
   public function test__set() {
     // Integer properties SHOULD be affected
     $this->object->__set('int', 2);
+
+    $this->assertFalse($this->object->isChanged());
+
     $this->object->__set('int', 3);
     $this->assertEquals(3, $this->object->int);
     $this->assertAttributeEquals(array('int' => 2), 'original', $this->object);
     $this->assertAttributeEquals(array('int' => 1), 'delta', $this->object);
+
+    $this->assertTrue($this->object->isChanged());
+    $this->assertEquals(array('int' => 1), $this->object->getDeltas());
 
     $delta = array('int' => 1, 'float' => 4.0);
     // Float properties SHOULD be affected
@@ -103,13 +112,25 @@ class EntityContainerTest extends PHPUnit_Framework_TestCase {
 
     // Properties typed as STRING should not be affected
     $this->object->__set('str1', '1');
+    $this->assertAttributeEquals(array('int' => 3, 'float' => 7.0, 'str1' => '1'), 'values', $this->object);
     $this->assertAttributeEquals(array('int' => 2, 'float' => 3.0, 'str1' => '1'), 'original', $this->object);
     $this->assertAttributeEquals($delta, 'delta', $this->object);
+    $this->object->__set('str1', '3');
+    $this->assertAttributeEquals(array('int' => 3, 'float' => 7.0, 'str1' => '3'), 'values', $this->object);
+    $this->assertAttributeEquals(array('int' => 2, 'float' => 3.0, 'str1' => '1'), 'original', $this->object);
+    $this->assertAttributeEquals(array('int' => 1, 'float' => 4.0, 'str1' => '3'), 'delta', $this->object);
 
     // Not typed properties defaults to STRING
-    $this->object->__set('str2', '2');
-    $this->assertAttributeEquals(array('int' => 2, 'float' => 3.0, 'str1' => '1', 'str2' => '2'), 'original', $this->object);
-    $this->assertAttributeEquals($delta, 'delta', $this->object);
+    $this->object->__set('notype', '2');
+    $this->object->__set('notype', '4');
+    $this->assertAttributeEquals(array('int' => 3, 'float' => 7.0, 'str1' => '3', 'notype' => '4'), 'values', $this->object);
+    $this->assertAttributeEquals(array('int' => 2, 'float' => 3.0, 'str1' => '1', 'notype' => '2'), 'original', $this->object);
+    $this->assertAttributeEquals(array('int' => 1, 'float' => 4.0, 'str1' => '3', 'notype' => '4'), 'delta', $this->object);
+
+    $this->object->clear();
+    $this->assertAttributeEquals(array(), 'values', $this->object);
+    $this->assertAttributeEquals(array(), 'original', $this->object);
+    $this->assertAttributeEquals(array(), 'delta', $this->object);
   }
 
 }

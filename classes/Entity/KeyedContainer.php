@@ -16,8 +16,5 @@ namespace Entity;
  */
 class KeyedContainer extends EntityContainer {
 
-public function isChanged() {
-  return !empty($this->delta);
-}
 
 }

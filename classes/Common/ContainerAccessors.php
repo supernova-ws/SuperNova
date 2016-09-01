@@ -2,8 +2,6 @@
 
 namespace Common;
 
-use \Common\ContainerMagic;
-
 /**
  * Class Common\ContainerAccessors
  *
