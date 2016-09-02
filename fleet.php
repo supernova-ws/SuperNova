@@ -46,6 +46,12 @@ $resources = array(
 $objFleet5 = new Fleet();
 $objFleet5->initDefaults($user, $planetrow, $targetVector, $target_mission, $ships, $fleet_group_mr, $speed_percent, 0, $captainId, $resources);
 
+//$mFleet = classSupernova::$gc->fleetModel;
+//$cFleet = $mFleet->buildContainer();
+//$cFleet->owner = $user;
+//$cFleet->departure = $planetrow;
+//$cFleet->vectorArrive = $targetVector;
+//$mFleet->fromArray();
 
 switch($fleet_page) {
   case 1:

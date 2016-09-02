@@ -120,14 +120,27 @@ class Vector {
    * @return static
    */
   public static function convertToVector($coordinates, $prefix = '') {
-    $galaxy = !empty($coordinates[$prefix . 'galaxy']) ? intval($coordinates[$prefix . 'galaxy']) : 0;
-    $system = !empty($coordinates[$prefix . 'system']) ? intval($coordinates[$prefix . 'system']) : 0;
-    $planet = !empty($coordinates[$prefix . 'planet']) ? intval($coordinates[$prefix . 'planet']) : 0;
-    $type = !empty($coordinates[$prefix . 'type'])
-      ? intval($coordinates[$prefix . 'type'])
-      : (!empty($coordinates[$prefix . 'planet_type']) ? intval($coordinates[$prefix . 'planet_type']) : 0);
+    $vector = new static();
+    $vector->convertToVectorDynamic($coordinates, $prefix);
 
-    return new static($galaxy, $system, $planet, $type);
+    return $vector;
+  }
+
+  /**
+   * @param array  $coordinates
+   * @param string $prefix
+   *
+   * @return static
+   */
+  public function convertToVectorDynamic($coordinates, $prefix = '') {
+    $this->galaxy = isset($coordinates[$prefix . 'galaxy']) ? intval($coordinates[$prefix . 'galaxy']) : 0;
+    $this->system = isset($coordinates[$prefix . 'system']) ? intval($coordinates[$prefix . 'system']) : 0;
+    $this->planet = isset($coordinates[$prefix . 'planet']) ? intval($coordinates[$prefix . 'planet']) : 0;
+    $this->type = isset($coordinates[$prefix . 'type'])
+      ? isset($coordinates[$prefix . 'type'])
+      : (isset($coordinates[$prefix . 'planet_type']) ? intval($coordinates[$prefix . 'planet_type']) : 0);
+
+    return $this;
   }
 
   /**

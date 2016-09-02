@@ -32,13 +32,17 @@ use Vector\Vector;
  * @property int        $timeComplete
  * @property int        $timeReturn
  *
- *
  * @property int|float  $shipsCount
  * @property V2UnitList $units
  * @property V2Location $location
  *
  * Functionals
  * @property bool       $isReturning
+ *
+ * @property array      $owner
+ * @property array      $departure
+ * @property array      $target
+ * @property array      $targetOwner
  *
  * @package V2Fleet
  */

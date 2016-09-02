@@ -103,8 +103,47 @@ class V2FleetModel extends KeyedModel {
       $that->location->setLocationPlayerId($value);
     });
 
+    $this->accessors->set(P_CONTAINER_SET, 'owner', function (V2FleetContainer $that, $value) {
+      $that->owner = $value;
+      if(isset($value['id'])) {
+        $that->ownerId = $value['id'];
+      } else {
+        $that->ownerId = 0;
+      }
+    });
+
+    $this->accessors->set(P_CONTAINER_SET, 'departure', function (V2FleetContainer $that, $value) {
+      $that->departure = $value;
+      if(isset($value['id'])) {
+        $that->departurePlanetId = $value['id'];
+        $that->vectorDeparture = $value;
+      } else {
+        $that->departurePlanetId = 0;
+      }
+    });
+
+    $this->accessors->set(P_CONTAINER_GET, 'vectorDeparture', function (V2FleetContainer $that) {
+      $vector = new Vector();
+      $that->setDirect('vectorDeparture', $vector);
+
+      return $vector;
+    }, ACCESSOR_SHARED);
+    $this->accessors->set(P_CONTAINER_SET, 'vectorDeparture', function (V2FleetContainer $that, $value) {
+      $vector = $that->vectorDeparture;
+
+      if(is_array($value)) {
+        $value = Vector::convertToVector($value);
+      }
+
+      if($value instanceof Vector) {
+        $vector->readFromVector($value);
+      } else {
+        throw new \Exception('V2Fleet::vectorDeparture setter - value is not a Vector or array!', ERR_ERROR);
+      }
+    });
     $this->accessors->set(P_CONTAINER_IMPORT, 'vectorDeparture', array($this, 'importVector'));
     $this->accessors->set(P_CONTAINER_EXPORT, 'vectorDeparture', array($this, 'exportVector'));
+
     $this->accessors->set(P_CONTAINER_IMPORT, 'vectorArrive', array($this, 'importVector'));
     $this->accessors->set(P_CONTAINER_EXPORT, 'vectorArrive', array($this, 'exportVector'));
 
