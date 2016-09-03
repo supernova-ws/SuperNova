@@ -3,6 +3,7 @@
 namespace Common;
 
 use \classSupernova;
+use Planet\PlanetRenderer;
 use V2Fleet\V2FleetModel;
 
 /**
@@ -32,6 +33,8 @@ use V2Fleet\V2FleetModel;
  * @property \V2Unit\V2UnitList   $unitList
  *
  * @property V2FleetModel         $fleetModel
+ *
+ * @property PlanetRenderer       $planetRenderer
  *
  *
  * @property array                $groupFleet
@@ -105,6 +108,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->fleetModel = function (GlobalContainer $c) {
       return new V2FleetModel($c);
+    };
+
+    $gc->planetRenderer = function (GlobalContainer $c) {
+      return new PlanetRenderer($c);
     };
 
     $gc->groupFleet = function (GlobalContainer $c) {

@@ -332,6 +332,11 @@ class Fleet extends UnitContainer {
    */
   protected $unitList = null;
 
+  /**
+   * @var \Planet\PlanetRenderer $planetRenderer
+   */
+  protected $planetRenderer;
+
 
   /**
    * Fleet constructor.
@@ -340,42 +345,8 @@ class Fleet extends UnitContainer {
     parent::__construct();
     $this->exists_missions = sn_get_groups('missions');
     $this->validator = new FleetValidator($this);
-  }
 
-  /**
-   * @param array $playerRow
-   * @param array $planetRow
-   *
-   * @return array
-   */
-  // TODO - redo to unit/unitlist renderer
-  public function renderAvailableShips($playerRow, $planetRow) {
-    $record_index = 0;
-    $ship_list = array();
-    foreach (classSupernova::$gc->groupFleet as $n => $unit_id) {
-      $unit_level = mrc_get_level($playerRow, $planetRow, $unit_id, false, true);
-      if ($unit_level <= 0) {
-        continue;
-      }
-      $ship_data = get_ship_data($unit_id, $playerRow);
-      $ship_list[$unit_id] = array(
-        '__INDEX'          => $record_index++,
-        'ID'               => $unit_id,
-        'NAME'             => classLocale::$lang['tech'][$unit_id],
-        'AMOUNT'           => $unit_level,
-        'AMOUNT_TEXT'      => pretty_number($unit_level),
-        'CONSUMPTION'      => $ship_data['consumption'],
-        'CONSUMPTION_TEXT' => pretty_number($ship_data['consumption']),
-        'SPEED'            => $ship_data['speed'],
-        'SPEED_TEXT'       => pretty_number($ship_data['speed']),
-        'CAPACITY'         => $ship_data['capacity'],
-        'CAPACITY_TEXT'    => pretty_number($ship_data['capacity']),
-      );
-    }
-
-    sortUnitRenderedList($ship_list, classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT], classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE]);
-
-    return $ship_list;
+    $this->planetRenderer = classSupernova::$gc->planetRenderer;
   }
 
   public function isEmpty() {
@@ -1361,96 +1332,6 @@ class Fleet extends UnitContainer {
     return $result;
   }
 
-
-  protected function renderFleet1TargetSelect(&$shortcut) {
-    global $note_priority_classes;
-
-    $name = !empty($shortcut['title']) ? $shortcut['title'] : $shortcut['name'];
-
-    $result = array(
-      'NAME'       => $name,
-      'GALAXY'     => $shortcut['galaxy'],
-      'SYSTEM'     => $shortcut['system'],
-      'PLANET'     => $shortcut['planet'],
-      'TYPE'       => $shortcut['planet_type'],
-      'TYPE_PRINT' => classLocale::$lang['fl_shrtcup'][$shortcut['planet_type']],
-    );
-
-    if (isset($shortcut['priority'])) {
-      $result += array(
-        'PRIORITY'       => $shortcut['priority'],
-        'PRIORITY_CLASS' => $note_priority_classes[$shortcut['priority']],
-      );
-    }
-
-    if (isset($shortcut['id'])) {
-      $result += array(
-        'ID' => $shortcut['id'],
-      );
-    }
-
-    return $result;
-  }
-
-  /**
-   * @return array
-   */
-  protected function renderFleetShortcuts() {
-    $result = array();
-
-    // Building list of shortcuts
-    $query = DBStaticNote::db_note_list_select_by_owner_and_planet($this->dbOwnerRow);
-    while ($row = db_fetch($query)) {
-      $result[] = $this->renderFleet1TargetSelect($row);
-    }
-
-    return $result;
-  }
-
-  /**
-   * Building list of own planets & moons
-   *
-   * @return array
-   */
-  protected function renderOwnPlanets() {
-    $result = array();
-
-    $colonies = DBStaticPlanet::db_planet_list_sorted($this->dbOwnerRow);
-    if (count($colonies) <= 1) {
-      return $result;
-    }
-
-    foreach ($colonies as $row) {
-      if ($row['id'] == $this->dbSourcePlanetRow['id']) {
-        continue;
-      }
-
-      $result[] = $this->renderFleet1TargetSelect($row);
-    }
-
-    return $result;
-  }
-
-  /**
-   * @return array
-   */
-  protected function renderACSList() {
-    $result = array();
-
-    $query = DBStaticFleetACS::db_acs_get_list();
-    while ($row = db_fetch($query)) {
-      $members = explode(',', $row['eingeladen']);
-      foreach ($members as $a => $b) {
-        if ($b == $this->dbOwnerRow['id']) {
-          $result[] = $this->renderFleet1TargetSelect($row);
-        }
-      }
-    }
-
-    return $result;
-  }
-
-
   /**
    * @param $template_result
    */
@@ -1481,7 +1362,7 @@ class Fleet extends UnitContainer {
     }
 
     // TODO - redo to unitlist render/unit render
-    $template_result['.']['ships'] = $this->renderAvailableShips($this->dbOwnerRow, $this->dbSourcePlanetRow);
+    $template_result['.']['ships'] = $this->planetRenderer->renderAvailableShips($this->dbOwnerRow, $this->dbSourcePlanetRow);
 
     $this->renderShipSortOptions($template_result);
 
@@ -1526,9 +1407,9 @@ class Fleet extends UnitContainer {
 
     $template_result['.']['fleets'][] = $this->renderFleet(SN_TIME_NOW);
     $template_result['.']['possible_planet_type_id'] = $this->renderAllowedPlanetTypes();
-    $template_result['.']['colonies'] = $this->renderOwnPlanets();
-    $template_result['.']['shortcut'] = $this->renderFleetShortcuts();
-    $template_result['.']['acss'] = $this->renderACSList();
+    $template_result['.']['colonies'] = $this->planetRenderer->renderOwnPlanets($this->dbOwnerRow, $this->dbSourcePlanetRow);
+    $template_result['.']['shortcut'] = $this->planetRenderer->renderPlanetShortcuts($this->dbOwnerRow);
+    $template_result['.']['acss'] = $this->planetRenderer->renderACSList($this->dbOwnerRow);
 
     $template_result += array(
       'speed_factor' => flt_server_flight_speed_multiplier(),
