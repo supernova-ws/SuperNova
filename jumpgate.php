@@ -35,7 +35,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         $jumpMade = false;
         foreach($ship_list as $ship_id => $ship_count)
         {
-          if(!in_array($ship_id, Fleet::$snGroupFleet))
+          if(!in_array($ship_id, classSupernova::$gc->groupFleet))
           {
             continue;
           }
@@ -109,7 +109,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
       }
     }
 
-    foreach(Fleet::$snGroupFleet as $Ship)
+    foreach(classSupernova::$gc->groupFleet as $Ship)
     {
       if(($ship_count = mrc_get_level($user, $planetrow, $Ship)) <= 0)
       {

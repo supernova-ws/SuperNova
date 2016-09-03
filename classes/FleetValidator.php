@@ -455,7 +455,7 @@ class FleetValidator {
    */
   protected function checkHaveRecyclers() {
     $recyclers = 0;
-    foreach (Fleet::$snGroupRecyclers as $recycler_id) {
+    foreach (classSupernova::$gc->groupRecyclers as $recycler_id) {
       $recyclers += $this->fleet->shipsGetTotalById($recycler_id);
     }
 

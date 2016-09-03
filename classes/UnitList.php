@@ -367,7 +367,7 @@ class UnitList extends ContainerArrayOfObject implements IDbRow, ILocation {
     $speeds = array();
     if (!empty($this->mapUnitIdToDb)) {
       foreach ($this->mapUnitIdToDb as $ship_id => $unit) {
-        if ($unit->count > 0 && in_array($unit->unitId, Fleet::$snGroupFleetAndMissiles)) {
+        if ($unit->count > 0 && in_array($unit->unitId, classSupernova::$gc->groupFleetAndMissiles)) {
           $single_ship_data = get_ship_data($unit->unitId, $user);
           $speeds[] = $single_ship_data['speed'];
         }

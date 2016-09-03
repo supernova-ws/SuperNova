@@ -89,7 +89,7 @@ function flt_mission_spy(&$mission_data) {
     $spy_message .= "</tr>";
     if($spy_diff >= 2) {
       $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', classLocale::$lang['tech'][UNIT_SHIPS], $target_user_row) . "</div>";
-      coe_compress_add_units(Fleet::$snGroupFleet, $target_planet_row, $combat_pack[0]);
+      coe_compress_add_units(classSupernova::$gc->groupFleet, $target_planet_row, $combat_pack[0]);
     }
     if($spy_diff >= 3) {
       $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'defense', classLocale::$lang['tech'][UNIT_DEFENCE], $target_user_row) . "</div>";
@@ -108,7 +108,7 @@ function flt_mission_spy(&$mission_data) {
     $simulator_link = sn_ube_simulator_encode_replay($combat_pack, 'D');
 
     $target_unit_list = 0;
-    foreach(Fleet::$snGroupFleet as $unit_id) {
+    foreach(classSupernova::$gc->groupFleet as $unit_id) {
       $target_unit_list += max(0, mrc_get_level($target_user_row, $target_planet_row, $unit_id, false, true));
     }
 

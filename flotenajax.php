@@ -88,7 +88,7 @@ function fleet_ajax() {
     break;
 
     case MT_RECYCLE:
-      foreach (Fleet::$snGroupRecyclers as $unit_id) {
+      foreach (classSupernova::$gc->groupRecyclers as $unit_id) {
         if ($unit_count = mrc_get_level($user, $planetrow, $unit_id)) {
           $fleet_array[$unit_id] = $unit_count;
         }

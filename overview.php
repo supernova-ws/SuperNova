@@ -430,7 +430,7 @@ switch($mode = sys_get_param_str('mode')) {
     $planet_fill = $planet_fill > 100 ? 100 : $planet_fill;
 
     $planet_recyclers_orbiting = 0;
-    foreach(Fleet::$snGroupRecyclers as $recycler_id) {
+    foreach(classSupernova::$gc->groupRecyclers as $recycler_id) {
       $planet_recyclers_orbiting += mrc_get_level($user, $planetrow, $recycler_id);
     }
 

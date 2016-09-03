@@ -15,7 +15,7 @@ function flt_fleet_speed($user, $fleet) {
   $speeds = array();
   if(!empty($fleet)) {
     foreach($fleet as $ship_id => $amount) {
-      if($amount && in_array($ship_id, Fleet::$snGroupFleetAndMissiles)) {
+      if($amount && in_array($ship_id, classSupernova::$gc->groupFleetAndMissiles)) {
         $single_ship_data = get_ship_data($ship_id, $user);
         $speeds[] = $single_ship_data['speed'];
       }
@@ -185,7 +185,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
   $recyclers = 0;
   $spies = 0;
   $resources = 0;
-  $ship_ids = Fleet::$snGroupFleet;
+  $ship_ids = classSupernova::$gc->groupFleet;
   $resource_ids = sn_get_groups('resources_loot');
   foreach($fleet as $ship_id => $ship_count) {
     $is_ship = in_array($ship_id, $ship_ids);
@@ -210,7 +210,7 @@ function sn_flt_can_attack($planet_src, $planet_dst, $fleet = array(), $mission,
         return $result = FLIGHT_SHIPS_UNMOVABLE;
       }
       $ships += $ship_count;
-      $recyclers += in_array($ship_id, Fleet::$snGroupRecyclers) ? $ship_count : 0;
+      $recyclers += in_array($ship_id, classSupernova::$gc->groupRecyclers) ? $ship_count : 0;
       $spies += $ship_id == SHIP_SPY ? $ship_count : 0;
     } elseif($is_resource) {
       $resources += $ship_count;
@@ -470,7 +470,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet_REAL_array, $mission, $opti
   $objFleet->group_id = $options['fleet_group'];
   $objFleet->dbInsert();
 
-  $sn_group_fleet = Fleet::$snGroupFleet;
+  $sn_group_fleet = classSupernova::$gc->groupFleet;
   $sn_group_resources_loot = sn_get_groups('resources_loot');
   $planetRowFieldChanges = array();
   foreach($fleet_REAL_array as $unit_id => $amount) {

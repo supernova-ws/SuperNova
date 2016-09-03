@@ -56,7 +56,7 @@ if(is_array($shipList)) {
       break;
     }
 
-    if(!in_array($shipID, Fleet::$snGroupFleet)) {
+    if(!in_array($shipID, classSupernova::$gc->groupFleet)) {
       classSupernova::$debug->warning('Hack Attempt', 'User supplied non-ship unit ID on Black Market page', 306);
       $intError = MARKET_NOT_A_SHIP;
       break;
@@ -136,7 +136,7 @@ if(is_array($shipList)) {
 $message = '';
 
 if(!classSupernova::$config->eco_stockman_fleet && classSupernova::$config->eco_stockman_fleet_populate) {
-  classSupernova::$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str(array_map(function($item){return mt_rand(1, 1000);}, Fleet::$snGroupFleet)));
+  classSupernova::$config->db_saveItem('eco_stockman_fleet', sys_unit_arr2str(array_map(function($item){return mt_rand(1, 1000);}, classSupernova::$gc->groupFleet)));
 }
 
 tpl_set_resource_info($template, $planetrow, array());
@@ -145,7 +145,7 @@ if(!$array) {
   $array = array();
 }
 
-$group_fleet = Fleet::$snGroupFleet;
+$group_fleet = classSupernova::$gc->groupFleet;
 foreach($array as $key => $value) {
   if($mode == MARKET_SCRAPPER) {
     $shipID = $value;

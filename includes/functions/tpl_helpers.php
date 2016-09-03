@@ -53,7 +53,7 @@ function tpl_parse_fleet_sn($fleet, $fleet_id) {
   );
 
   foreach($fleet as $ship_id => $ship_amount) {
-    if(in_array($ship_id, Fleet::$snGroupFleet)) {
+    if(in_array($ship_id, classSupernova::$gc->groupFleet)) {
       $single_ship_data = get_ship_data($ship_id, $user_data);
       $return['ships'][$ship_id] = array(
         'ID'          => $ship_id,
@@ -271,7 +271,7 @@ function flt_get_fleets_to_planet_by_array_of_Fleet($array_of_Fleet) {
   global $user;
 
   static $snGroupFleet;
-  !$snGroupFleet ? $snGroupFleet = Fleet::$snGroupFleet : false;
+  !$snGroupFleet ? $snGroupFleet = classSupernova::$gc->groupFleet : false;
 
   if(empty($array_of_Fleet)) {
     return false;

@@ -51,7 +51,7 @@ function flt_mission_explore(&$mission_data) {
   if(!$shipCostInMetalPerPiece) {
     $rates = get_resource_exchange();
 
-    foreach(Fleet::$snGroupFleet as $unit_id) {
+    foreach(classSupernova::$gc->groupFleet as $unit_id) {
       $unit_info = get_unit_param($unit_id);
       if($unit_info[P_UNIT_TYPE] != UNIT_SHIPS || !isset($unit_info['engine'][0]['speed']) || !$unit_info['engine'][0]['speed']) {
         continue;

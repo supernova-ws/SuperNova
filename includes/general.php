@@ -653,7 +653,7 @@ function get_engine_data($user, $engine_info) {
 
 function get_ship_data($ship_id, $user) {
   $ship_data = array();
-  if (in_array($ship_id, Fleet::$snGroupFleetAndMissiles)) {
+  if (in_array($ship_id, classSupernova::$gc->groupFleetAndMissiles)) {
     $engines = get_unit_param($ship_id, 'engine');
     empty($engines) ? $engines = array() : false;
     foreach ($engines as $engine_info) {

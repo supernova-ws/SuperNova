@@ -163,10 +163,6 @@ class Fleet extends UnitContainer {
 
 
   // New properties ****************************************************************************************************
-  public static $snGroupFleet = array();
-  public static $snGroupFleetAndMissiles = array();
-  public static $snGroupRecyclers = array();
-
   /**
    * `fleet_owner`
    *
@@ -356,7 +352,7 @@ class Fleet extends UnitContainer {
   public function renderAvailableShips($playerRow, $planetRow) {
     $record_index = 0;
     $ship_list = array();
-    foreach (Fleet::$snGroupFleet as $n => $unit_id) {
+    foreach (classSupernova::$gc->groupFleet as $n => $unit_id) {
       $unit_level = mrc_get_level($playerRow, $planetRow, $unit_id, false, true);
       if ($unit_level <= 0) {
         continue;
@@ -887,7 +883,7 @@ class Fleet extends UnitContainer {
   public function shipsGetCapacityRecyclers($recycler_info) {
     $recyclers_incoming_capacity = 0;
     foreach ($this->shipsIterator() as $unitId => $unit) {
-      if (!empty(static::$snGroupRecyclers[$unitId]) && $unit->count >= 1) {
+      if (!empty(classSupernova::$gc->groupRecyclers[$unitId]) && $unit->count >= 1) {
         $recyclers_incoming_capacity += $unit->count * $recycler_info[$unitId]['capacity'];
       }
     }
@@ -914,7 +910,7 @@ class Fleet extends UnitContainer {
    * @return bool
    */
   public function shipsAllFlying() {
-    return $this->unitList->unitsInGroup(static::$snGroupFleetAndMissiles);
+    return $this->unitList->unitsInGroup(classSupernova::$gc->groupFleetAndMissiles);
   }
 
   /**
@@ -1553,7 +1549,7 @@ class Fleet extends UnitContainer {
   public function fleetSpeed() {
     $maxSpeed = array();
     foreach ($this->shipsIterator() as $ship_id => $unit) {
-      if ($unit->count > 0 && !empty(static::$snGroupFleetAndMissiles[$ship_id])) {
+      if ($unit->count > 0 && !empty(classSupernova::$gc->groupFleetAndMissiles[$ship_id])) {
         $single_ship_data = get_ship_data($ship_id, $this->dbOwnerRow);
         $maxSpeed[$ship_id] = $single_ship_data['speed'];
       }
@@ -1928,10 +1924,4 @@ class Fleet extends UnitContainer {
     return $result;
   }
 
-}
-
-if (empty(Fleet::$snGroupFleet)) {
-  Fleet::$snGroupFleet = sn_get_groups('fleet');
-  Fleet::$snGroupFleetAndMissiles = sn_get_groups(array('fleet', GROUP_STR_MISSILES));
-  Fleet::$snGroupRecyclers = sn_get_groups('flt_recyclers');
 }

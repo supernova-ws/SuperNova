@@ -33,6 +33,11 @@ use V2Fleet\V2FleetModel;
  *
  * @property V2FleetModel         $fleetModel
  *
+ *
+ * @property array                $groupFleet
+ * @property array                $groupFleetAndMissiles
+ * @property array                $groupRecyclers
+ *
  * @package Common
  */
 class GlobalContainer extends ContainerPlus {
@@ -101,6 +106,19 @@ class GlobalContainer extends ContainerPlus {
     $gc->fleetModel = function (GlobalContainer $c) {
       return new V2FleetModel($c);
     };
+
+    $gc->groupFleet = function (GlobalContainer $c) {
+      return sn_get_groups('fleet');
+    };
+
+    $gc->groupFleetAndMissiles = function (GlobalContainer $c) {
+      return sn_get_groups(array('fleet', GROUP_STR_MISSILES));
+    };
+
+    $gc->groupRecyclers = function (GlobalContainer $c) {
+      return sn_get_groups('flt_recyclers');
+    };
+
   }
 
 }
