@@ -35,6 +35,7 @@ use V2Fleet\V2FleetModel;
  * @property V2FleetModel         $fleetModel
  *
  * @property PlanetRenderer       $planetRenderer
+ * @property \FleetRenderer       $fleetRenderer
  *
  *
  * @property array                $groupFleet
@@ -112,6 +113,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->planetRenderer = function (GlobalContainer $c) {
       return new PlanetRenderer($c);
+    };
+
+    $gc->fleetRenderer = function (GlobalContainer $c) {
+      return new \FleetRenderer($c);
     };
 
     $gc->groupFleet = function (GlobalContainer $c) {

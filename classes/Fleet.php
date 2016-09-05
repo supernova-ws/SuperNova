@@ -337,6 +337,11 @@ class Fleet extends UnitContainer {
    */
   protected $planetRenderer;
 
+  /**
+   * @var FleetRenderer
+   */
+  protected $fleetRenderer;
+
 
   /**
    * Fleet constructor.
@@ -347,6 +352,14 @@ class Fleet extends UnitContainer {
     $this->validator = new FleetValidator($this);
 
     $this->planetRenderer = classSupernova::$gc->planetRenderer;
+    $this->fleetRenderer = classSupernova::$gc->fleetRenderer;
+  }
+
+  /**
+   * @return UnitList
+   */
+  public function getUnitList() {
+    return $this->unitList;
   }
 
   public function isEmpty() {
@@ -1149,7 +1162,7 @@ class Fleet extends UnitContainer {
 
     $this->_time_launch = SN_TIME_NOW;
 
-    $this->renderParamCoordinates();
+    $this->fleetRenderer->renderParamCoordinates($this);
 
   }
 
@@ -1182,84 +1195,12 @@ class Fleet extends UnitContainer {
   }
 
 
-  protected function printErrorIfNoShips() {
-    if ($this->unitList->unitsCount() <= 0) {
-      message(classLocale::$lang['fl_err_no_ships'], classLocale::$lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
-    }
-  }
-
-  /**
-   */
-  public function renderParamCoordinates() {
-    global $template_result;
-    $template_result += array(
-      'thisgalaxy'      => $this->dbSourcePlanetRow['galaxy'],
-      'thissystem'      => $this->dbSourcePlanetRow['system'],
-      'thisplanet'      => $this->dbSourcePlanetRow['planet'],
-      'thisplanet_type' => $this->dbSourcePlanetRow['planet_type'],
-
-      'galaxy'         => $this->targetVector->galaxy,
-      'system'         => $this->targetVector->system,
-      'planet'         => $this->targetVector->planet,
-      'planet_type'    => $this->targetVector->type,
-      'target_mission' => $this->_mission_type,
-      'MISSION_NAME'   => $this->_mission_type ? classLocale::$lang['type_mission'][$this->_mission_type] : '',
-
-      'MT_COLONIZE' => MT_COLONIZE,
-    );
-  }
-
-
-  protected function renderFleetCoordinates($missionStartTimeStamp = SN_TIME_NOW, $timeMissionJob = 0) {
-    $timeToReturn = $this->travelData['duration'] * 2 + $timeMissionJob;
-
-    return array(
-      'ID'                 => 1,
-      'START_TYPE_TEXT_SH' => classLocale::$lang['sys_planet_type_sh'][$this->dbSourcePlanetRow['planet_type']],
-      'START_COORDS'       => uni_render_coordinates($this->dbSourcePlanetRow),
-      'START_NAME'         => $this->dbSourcePlanetRow['name'],
-      'START_TIME_TEXT'    => date(FMT_DATE_TIME, $missionStartTimeStamp + $timeToReturn + SN_CLIENT_TIME_DIFF),
-      'START_LEFT'         => floor($timeToReturn),
-      'END_TYPE_TEXT_SH'   =>
-        !empty($this->targetVector->type)
-          ? classLocale::$lang['sys_planet_type_sh'][$this->targetVector->type]
-          : '',
-      'END_COORDS'         => uniRenderVector($this->targetVector),
-      'END_NAME'           => !empty($this->dbTargetRow['name']) ? $this->dbTargetRow['name'] : '',
-      'END_TIME_TEXT'      => date(FMT_DATE_TIME, $missionStartTimeStamp + $this->travelData['duration'] + SN_CLIENT_TIME_DIFF),
-      'END_LEFT'           => floor($this->travelData['duration']),
-    );
-  }
-
-  /**
-   * @param int $missionStartTimeStamp
-   * @param int $timeMissionJob
-   *
-   * @return array
-   *
-   * @throws Exception
-   */
-  protected function renderFleet($missionStartTimeStamp = SN_TIME_NOW, $timeMissionJob = 0) {
-    $this->printErrorIfNoShips();
-
-    $result = $this->renderFleetCoordinates($missionStartTimeStamp, $timeMissionJob);
-    $result['.']['ships'] = $this->unitList->unitsRender();
-
-    return $result;
-  }
-
   /**
    * @return array
    */
   protected function renderAllowedMissions() {
     $result = array();
 
-    ksort($this->allowed_missions);
-    // If mission is not set - setting first mission from allowed
-    if (empty($this->_mission_type) && is_array($this->allowed_missions)) {
-      reset($this->allowed_missions);
-      $this->_mission_type = key($this->allowed_missions);
-    }
     foreach ($this->allowed_missions as $key => $value) {
       $result[] = array(
         'ID'   => $key,
@@ -1405,7 +1346,7 @@ class Fleet extends UnitContainer {
   public function fleetPage1() {
     global $template_result;
 
-    $template_result['.']['fleets'][] = $this->renderFleet(SN_TIME_NOW);
+    $template_result['.']['fleets'][] = $this->fleetRenderer->renderFleet($this, SN_TIME_NOW);
     $template_result['.']['possible_planet_type_id'] = $this->renderAllowedPlanetTypes();
     $template_result['.']['colonies'] = $this->planetRenderer->renderOwnPlanets($this->dbOwnerRow, $this->dbSourcePlanetRow);
     $template_result['.']['shortcut'] = $this->planetRenderer->renderPlanetShortcuts($this->dbOwnerRow);
@@ -1544,9 +1485,15 @@ class Fleet extends UnitContainer {
     pdump('FLIGHT_ALLOWED', FLIGHT_ALLOWED);
 //    pdump('// TODO - Сделать flletvalidator DI - внутре контейнер для методов, а методы - анонимные функции, вызывающие другие методы же', FLIGHT_ALLOWED);
 
+    ksort($this->allowed_missions);
+    // If mission is not set - setting first mission from allowed
+    if (empty($this->_mission_type) && is_array($this->allowed_missions)) {
+      reset($this->allowed_missions);
+      $this->_mission_type = key($this->allowed_missions);
+    }
     $template_result['.']['missions'] = $this->renderAllowedMissions();
 
-    $template_result['.']['fleets'][] = $this->renderFleet(SN_TIME_NOW);
+    $template_result['.']['fleets'][] = $this->fleetRenderer->renderFleet($this, SN_TIME_NOW);
 
     $max_duration =
       $this->_mission_type == MT_EXPLORE
@@ -1718,7 +1665,7 @@ class Fleet extends UnitContainer {
 //    $this->fleet->travelData['duration'] = $acsTimeToArrive;
 
 
-    $template_result['.']['fleets'][] = $this->renderFleet(SN_TIME_NOW, $timeMissionJob);
+    $template_result['.']['fleets'][] = $this->fleetRenderer->renderFleet($this, SN_TIME_NOW, $timeMissionJob);
 
     $template_result += array(
       'mission'         => classLocale::$lang['type_mission'][$this->_mission_type] . ($this->_mission_type == MT_EXPLORE || $this->_mission_type == MT_HOLD ? ' ' . pretty_time($timeMissionJob) : ''),
