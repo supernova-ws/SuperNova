@@ -75,6 +75,6 @@ switch($fleet_page) {
   break;
 
   default:
-    $objFleet5->fleetPage0();
+    $objFleet5->fleetPage0($template_result);
   break;
 }

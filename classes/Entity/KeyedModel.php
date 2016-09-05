@@ -60,18 +60,32 @@ class KeyedModel extends EntityModel {
 //    throw new \Exception('EntityModel::dbSave() is not yet implemented');
 //  }
 //
-  protected function delete(KeyedContainer $cEntity) {
+
+  /**
+   * @param KeyedContainer $cEntity
+   *
+   * @throws \Exception
+   */
+  protected function delete($cEntity) {
     $this->rowOperator->deleteById($this, $cEntity->dbId);
     $cEntity->isLoaded = false;
     $cEntity->isDeleted = true;
     throw new \Exception('KeyedModel::delete() is not yet implemented');
   }
 
-  protected function insert(KeyedContainer $cEntity) {
+  /**
+   * @param KeyedContainer $cEntity
+   */
+  protected function insert($cEntity) {
     $cEntity->dbId = $this->rowOperator->insert($this, $this->exportRowNoId($cEntity));
   }
 
-  protected function update(KeyedContainer $cEntity) {
+  /**
+   * @param KeyedContainer $cEntity
+   *
+   * @throws \Exception
+   */
+  protected function update($cEntity) {
     // TODO - separate real changes from internal ones
     // Generate changeset row
     // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change
@@ -79,13 +93,19 @@ class KeyedModel extends EntityModel {
     throw new \Exception('KeyedModel::update() is not yet implemented');
   }
 
-  protected function unchanged(KeyedContainer $cEntity){
+  /**
+   * @param KeyedContainer $cEntity
+   */
+  protected function unchanged($cEntity){
     // TODO - or just save nothing ?????
     // throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
     // Do nothing
   }
 
-  protected function emptyAction(KeyedContainer $cEntity) {
+  /**
+   * @param KeyedContainer $cEntity
+   */
+  protected function emptyAction($cEntity) {
     // Just created container and doesn't use it
 //    throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
     // Do nothing

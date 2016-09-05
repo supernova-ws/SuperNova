@@ -1194,108 +1194,10 @@ class Fleet extends UnitContainer {
     }
   }
 
-
-  /**
-   * @return array
-   */
-  protected function renderAllowedMissions() {
-    $result = array();
-
-    foreach ($this->allowed_missions as $key => $value) {
-      $result[] = array(
-        'ID'   => $key,
-        'NAME' => classLocale::$lang['type_mission'][$key],
-      );
-    };
-
-    return $result;
-  }
-
-  /**
-   * @param $max_duration
-   *
-   * @return array
-   */
-  protected function renderDuration($max_duration) {
-    $result = array();
-
-    if (!$max_duration) {
-      return $result;
-    }
-
-    $config_game_speed_expedition = ($this->_mission_type == MT_EXPLORE && classSupernova::$config->game_speed_expedition ? classSupernova::$config->game_speed_expedition : 1);
-    for ($i = 1; $i <= $max_duration; $i++) {
-      $result[] = array(
-        'ID'   => $i,
-        'TIME' => pretty_time(ceil($i * 3600 / $config_game_speed_expedition)),
-      );
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param array $planetResources
-   *
-   * @return array
-   */
-  // TODO - REDO to resource_id
-  protected function renderPlanetResources(&$planetResources) {
-    $result = array();
-
-    $i = 0;
-    foreach ($planetResources as $resource_id => $resource_amount) {
-      $result[] = array(
-        'ID'        => $i++, // $resource_id,
-        'ON_PLANET' => $resource_amount,
-        'TEXT'      => pretty_number($resource_amount),
-        'NAME'      => classLocale::$lang['tech'][$resource_id],
-      );
-    }
-
-    return $result;
-  }
-
-  /**
-   * @return array
-   */
-  protected function renderAllowedPlanetTypes() {
-    $result = array();
-
-    foreach ($this->allowed_planet_types as $possible_planet_type_id) {
-      $result[] = array(
-        'ID'         => $possible_planet_type_id,
-        'NAME'       => classLocale::$lang['sys_planet_type'][$possible_planet_type_id],
-        'NAME_SHORT' => classLocale::$lang['sys_planet_type_sh'][$possible_planet_type_id],
-      );
-    }
-
-    return $result;
-  }
-
-  /**
-   * @param $template_result
-   */
-  protected function renderShipSortOptions(&$template_result) {
-    foreach (classLocale::$lang['player_option_fleet_ship_sort'] as $sort_id => $sort_text) {
-      $template_result['.']['ship_sort_list'][] = array(
-        'VALUE' => $sort_id,
-        'TEXT'  => $sort_text,
-      );
-    }
-    $template_result += array(
-      'FLEET_SHIP_SORT'         => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT],
-      'FLEET_SHIP_SORT_INVERSE' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SORT_INVERSE],
-    );
-  }
-
-
   /**
    *
    */
-  public function fleetPage0() {
-    global $template_result;
-
+  public function fleetPage0(array $template_result) {
     lng_include('overview');
 
     if (empty($this->dbSourcePlanetRow)) {
@@ -1305,7 +1207,7 @@ class Fleet extends UnitContainer {
     // TODO - redo to unitlist render/unit render
     $template_result['.']['ships'] = $this->planetRenderer->renderAvailableShips($this->dbOwnerRow, $this->dbSourcePlanetRow);
 
-    $this->renderShipSortOptions($template_result);
+    $this->fleetRenderer->renderShipSortOptions($template_result);
 
     /**
      * @var Player $playerOwner
@@ -1347,7 +1249,7 @@ class Fleet extends UnitContainer {
     global $template_result;
 
     $template_result['.']['fleets'][] = $this->fleetRenderer->renderFleet($this, SN_TIME_NOW);
-    $template_result['.']['possible_planet_type_id'] = $this->renderAllowedPlanetTypes();
+    $template_result['.']['possible_planet_type_id'] = $this->fleetRenderer->renderAllowedPlanetTypes($this->allowed_planet_types);
     $template_result['.']['colonies'] = $this->planetRenderer->renderOwnPlanets($this->dbOwnerRow, $this->dbSourcePlanetRow);
     $template_result['.']['shortcut'] = $this->planetRenderer->renderPlanetShortcuts($this->dbOwnerRow);
     $template_result['.']['acss'] = $this->planetRenderer->renderACSList($this->dbOwnerRow);
@@ -1491,7 +1393,7 @@ class Fleet extends UnitContainer {
       reset($this->allowed_missions);
       $this->_mission_type = key($this->allowed_missions);
     }
-    $template_result['.']['missions'] = $this->renderAllowedMissions();
+    $template_result['.']['missions'] = $this->fleetRenderer->renderAllowedMissions($this->allowed_missions);
 
     $template_result['.']['fleets'][] = $this->fleetRenderer->renderFleet($this, SN_TIME_NOW);
 
@@ -1499,12 +1401,12 @@ class Fleet extends UnitContainer {
       $this->_mission_type == MT_EXPLORE
         ? get_player_max_expedition_duration($this->dbOwnerRow)
         : (isset($this->allowed_missions[MT_HOLD]) ? 12 : 0);
-    $template_result['.']['duration'] = $this->renderDuration($max_duration);
+    $template_result['.']['duration'] = $this->fleetRenderer->renderDuration($this->_mission_type, $max_duration);
 
-    $this->captainGet();
-    $template_result += $this->renderCaptain();
+    $this->captain = $this->captainGet();
+    $template_result += $this->renderCaptain($this->captain);
 
-    $template_result['.']['resources'] = $this->renderPlanetResources($planetResourcesWithoutConsumption);
+    $template_result['.']['resources'] = $this->fleetRenderer->renderPlanetResources($planetResourcesWithoutConsumption);
 
     $template_result += array(
       'planet_metal'     => $planetResourcesWithoutConsumption[RES_METAL],
@@ -1561,7 +1463,7 @@ class Fleet extends UnitContainer {
       RES_DEUTERIUM => max(0, floor(sys_get_param_float('resource2'))),
     );
 
-    $this->captainGet();
+    $this->captain = $this->captainGet();
 
     $this->travelData = $this->flt_travel_data($this->oldSpeedInTens);
 
@@ -1722,30 +1624,32 @@ class Fleet extends UnitContainer {
   /**
    */
   public function captainGet() {
-    $this->captain = array();
+    $result = array();
 
     /**
      * @var unit_captain $moduleCaptain
      */
     if (sn_module::isModuleActive('unit_captain')) {
       $moduleCaptain = sn_module::getModule('unit_captain');
-      $this->captain = $moduleCaptain->unit_captain_get($this->dbSourcePlanetRow['id']);
+      $result = $moduleCaptain->unit_captain_get($this->dbSourcePlanetRow['id']);
     }
+
+    return $result;
   }
 
   /**
    * @return array
    */
-  protected function renderCaptain() {
+  protected function renderCaptain($captainUnit) {
     $result = array();
 
-    if (!empty($this->captain['unit_id']) && $this->captain['unit_location_type'] == LOC_PLANET) {
+    if (!empty($captainUnit['unit_id']) && $captainUnit['unit_location_type'] == LOC_PLANET) {
       $result = array(
-        'CAPTAIN_ID'     => $this->captain['unit_id'],
-        'CAPTAIN_LEVEL'  => $this->captain['captain_level'],
-        'CAPTAIN_SHIELD' => $this->captain['captain_shield'],
-        'CAPTAIN_ARMOR'  => $this->captain['captain_armor'],
-        'CAPTAIN_ATTACK' => $this->captain['captain_attack'],
+        'CAPTAIN_ID'     => $captainUnit['unit_id'],
+        'CAPTAIN_LEVEL'  => $captainUnit['captain_level'],
+        'CAPTAIN_SHIELD' => $captainUnit['captain_shield'],
+        'CAPTAIN_ARMOR'  => $captainUnit['captain_armor'],
+        'CAPTAIN_ATTACK' => $captainUnit['captain_attack'],
       );
     }
 
