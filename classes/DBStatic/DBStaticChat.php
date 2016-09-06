@@ -49,7 +49,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_message_count_by_ally($alliance) {
-    $rows = classSupernova::$db->doSelectFetch("SELECT count(1) AS CNT FROM {{chat}} WHERE ally_id = '{$alliance}';");
+    $rows = classSupernova::$db->doSelectFetchArray("SELECT count(1) AS CNT FROM {{chat}} WHERE ally_id = '{$alliance}';");
 
     return $rows;
   }
@@ -157,7 +157,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_player_get($player_id, $fields) {
-    return classSupernova::$db->doSelectFetch("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1");
+    return classSupernova::$db->doSelectFetchArray("SELECT {$fields} FROM {{chat_player}} WHERE `chat_player_player_id` = {$player_id} LIMIT 1");
   }
 
 
@@ -194,7 +194,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_list_select_advanced($alliance, $user) {
-    $rows = classSupernova::$db->doSelectFetch("SELECT count(1) AS CNT
+    $rows = classSupernova::$db->doSelectFetchArray("SELECT count(1) AS CNT
           FROM {{chat}}
           WHERE
           (
@@ -244,7 +244,7 @@ class DBStaticChat {
    * @return array|bool|mysqli_result|null
    */
   public static function db_chat_player_select_id($user) {
-    $activity_row = classSupernova::$db->doSelectFetch("SELECT `chat_player_id` FROM {{chat_player}} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
+    $activity_row = classSupernova::$db->doSelectFetchArray("SELECT `chat_player_id` FROM {{chat_player}} WHERE `chat_player_player_id` = {$user['id']} LIMIT 1");
 
     return $activity_row;
   }

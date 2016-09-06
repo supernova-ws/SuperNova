@@ -53,7 +53,7 @@ class DBStaticSurveyAnswer {
    * @return array|bool|mysqli_result|null
    */
   public static function db_survey_answer_get($survey_id, $survey_vote_id) {
-    $is_answer_exists = classSupernova::$db->doSelectFetch("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};");
+    $is_answer_exists = classSupernova::$db->doSelectFetchArray("SELECT `survey_answer_id` FROM `{{survey_answers}}` WHERE survey_parent_id = {$survey_id} AND survey_answer_id = {$survey_vote_id};");
 
     return $is_answer_exists;
   }

@@ -15,7 +15,7 @@ use Entity\KeyedModel;
  * Class V2FleetModel
  *
  * @method V2FleetContainer buildContainer()
- * @method V2FleetContainer loadById(mixed $dbId)
+ * method V2FleetContainer loadById(mixed $dbId)
  *
  * @package V2Fleet
  */

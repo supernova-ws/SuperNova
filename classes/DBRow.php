@@ -161,7 +161,7 @@ abstract class DBRow extends PropertyHiderInObject implements IDbRow {
       $this->dbGetLockById($this->_dbId);
     }
 
-    $db_row = classSupernova::$db->doSelectFetch("SELECT * FROM `{{" . static::$_table . "}}` WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId . " LIMIT 1 FOR UPDATE;");
+    $db_row = classSupernova::$db->doSelectFetchArray("SELECT * FROM `{{" . static::$_table . "}}` WHERE `" . static::$_dbIdFieldName . "` = " . $this->_dbId . " LIMIT 1 FOR UPDATE;");
     if (empty($db_row)) {
       return;
     }

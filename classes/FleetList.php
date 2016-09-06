@@ -98,7 +98,7 @@ class FleetList extends ContainerArrayOfObject {
    * @return int
    */
   protected static function db_fleet_count($where_safe) {
-    $result = classSupernova::$db->doSelectFetch("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}");
+    $result = classSupernova::$db->doSelectFetchArray("SELECT COUNT(`fleet_id`) as 'fleet_count' FROM `{{fleets}}` WHERE {$where_safe}");
 
     return !empty($result['fleet_count']) ? intval($result['fleet_count']) : 0;
   }

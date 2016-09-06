@@ -54,7 +54,7 @@ function DeleteSelectedUser($UserID) {
   sn_db_transaction_start();
   $TheUser = DBStaticUser::db_user_by_id($UserID);
   if ( $TheUser['ally_id'] != 0 ) {
-    $TheAlly = classSupernova::$db->doSelectFetch("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';");
+    $TheAlly = classSupernova::$db->doSelectFetchArray("SELECT * FROM `{{alliance}}` WHERE `id` = '" . $TheUser['ally_id'] . "';");
     $TheAlly['ally_members'] -= 1;
     if ( $TheAlly['ally_members'] > 0 ) {
       classSupernova::$db->doUpdateRowSet(

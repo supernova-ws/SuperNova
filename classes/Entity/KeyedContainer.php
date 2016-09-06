@@ -10,7 +10,6 @@ namespace Entity;
  *
  * @property int|float|string $dbId Entity\EntityModel unique ID for entire entities' set
  *
- * @property bool             $dbStatus -
  *
  * @package Entity
  */

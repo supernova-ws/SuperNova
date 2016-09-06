@@ -50,7 +50,7 @@ function db_user_list_search($searchtext) {
 
 
 function db_unit_records_sum($unit_id, $user_skip_list_unit) {
-  return classSupernova::$db->doSelectFetch(
+  return classSupernova::$db->doSelectFetchArray(
     "SELECT unit_player_id, username, sum(unit_level) as unit_level
           FROM {{unit}} JOIN {{users}} AS u ON u.id = unit_player_id
           WHERE unit_player_id != 0 AND unit_snid = {$unit_id} {$user_skip_list_unit}
@@ -60,7 +60,7 @@ function db_unit_records_sum($unit_id, $user_skip_list_unit) {
 }
 
 function db_unit_records_plain($unit_id, $user_skip_list_unit) {
-  return classSupernova::$db->doSelectFetch(
+  return classSupernova::$db->doSelectFetchArray(
     "SELECT unit_player_id, username, unit_level
           FROM {{unit}} JOIN {{users}} AS u ON u.id = unit_player_id
           WHERE unit_player_id != 0 AND unit_snid = {$unit_id} {$user_skip_list_unit}
@@ -178,7 +178,7 @@ function db_referrals_list_by_id($user_id) {
 // TODO - вынести в отдельный класс
 function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $db_table_name, $db_value_field_name) {
   $current_value_safe = db_escape($current_value_unsafe);
-  $value_id = classSupernova::$db->doSelectFetch("SELECT `{$db_id_field_name}` FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE");
+  $value_id = classSupernova::$db->doSelectFetchArray("SELECT `{$db_id_field_name}` FROM {{{$db_table_name}}} WHERE `{$db_value_field_name}` = '{$current_value_safe}' LIMIT 1 FOR UPDATE");
   if (empty($value_id[$db_id_field_name])) {
     classSupernova::$db->doInsertSet($db_table_name, array(
       $db_value_field_name => $current_value_unsafe,
@@ -204,7 +204,7 @@ function db_player_name_exists($player_name_unsafe) {
 
   $player_name_safe = classSupernova::$db->db_escape($player_name_unsafe);
 
-  $player_name_exists = classSupernova::$db->doSelectFetch(
+  $player_name_exists = classSupernova::$db->doSelectFetchArray(
     "SELECT * 
     FROM `{{player_name_history}}` 
     WHERE `player_name` = '{$player_name_safe}' 
@@ -233,7 +233,7 @@ function db_player_name_history_replace($userId, $username_unsafe) {
  * @return array|bool|mysqli_result|null
  */
 function db_player_name_history_get_name_by_name($username_safe) {
-  $name_check = classSupernova::$db->doSelectFetch("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;");
+  $name_check = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{player_name_history}} WHERE `player_name` LIKE \"{$username_safe}\" LIMIT 1 FOR UPDATE;");
 
   return $name_check;
 }
@@ -250,7 +250,7 @@ function db_banned_list_select() {
  * @return array|bool|mysqli_result|null
  */
 function db_ban_list_get_details($user_row) {
-  $ban_details = classSupernova::$db->doSelectFetch("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1");
+  $ban_details = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{banned}} WHERE `ban_user_id` = {$user_row['id']} ORDER BY ban_id DESC LIMIT 1");
 
   return $ban_details;
 }
@@ -265,11 +265,11 @@ function db_blitz_reg_insert($userId, $current_round) {
 }
 
 function db_blitz_reg_get_id_by_player_and_round($user, $current_round) {
-  return classSupernova::$db->doSelectFetch("SELECT `id` FROM `{{blitz_registrations}}` WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;");
+  return classSupernova::$db->doSelectFetchArray("SELECT `id` FROM `{{blitz_registrations}}` WHERE `user_id` = {$user['id']} AND `round_number` = {$current_round} FOR UPDATE;");
 }
 
 function db_blitz_reg_count($current_round) {
-  return classSupernova::$db->doSelectFetch("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};");
+  return classSupernova::$db->doSelectFetchArray("SELECT count(`id`) AS `count` FROM {{blitz_registrations}} WHERE `round_number` = {$current_round};");
 }
 
 function db_blitz_reg_get_random_id($current_round) {
@@ -343,7 +343,7 @@ function db_blitz_reg_delete($userId, $current_round) {
 
 // Universe *************************************************************************************************************
 function db_universe_get_name($uni_galaxy, $uni_system = 0) {
-  $db_row = classSupernova::$db->doSelectFetch("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;");
+  $db_row = classSupernova::$db->doSelectFetchArray("select `universe_name` from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;");
 
   return $db_row['universe_name'];
 }
@@ -355,7 +355,7 @@ function db_universe_get_name($uni_galaxy, $uni_system = 0) {
  * @return array|bool|mysqli_result|null
  */
 function db_universe_get($uni_galaxy, $uni_system) {
-  $uni_row = classSupernova::$db->doSelectFetch("select * from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;");
+  $uni_row = classSupernova::$db->doSelectFetchArray("select * from `{{universe}}` where `universe_galaxy` = {$uni_galaxy} and `universe_system` = {$uni_system} limit 1;");
 
   return $uni_row;
 }
@@ -379,7 +379,7 @@ function db_universe_rename($uni_galaxy, $uni_system, $uni_row) {
 // Payment *************************************************************************************************************
 
 function db_payment_get($payment_id) {
-  return classSupernova::$db->doSelectFetch("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;");
+  return classSupernova::$db->doSelectFetchArray("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;");
 }
 
 /**
@@ -461,7 +461,7 @@ function db_log_delete_update_and_stat_calc() {
  * @return array|bool|mysqli_result|null
  */
 function db_log_get_by_id($detail) {
-  $errorInfo = classSupernova::$db->doSelectFetch("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;");
+  $errorInfo = classSupernova::$db->doSelectFetchArray("SELECT * FROM `{{logs}}` WHERE `log_id` = {$detail} LIMIT 1;");
 
   return $errorInfo;
 }
@@ -472,7 +472,7 @@ function db_log_get_by_id($detail) {
  * @return array|bool|mysqli_result|null
  */
 function db_log_count($i) {
-  $query = classSupernova::$db->doSelectFetch("SELECT COUNT(*) AS LOG_MESSAGES_TOTAL, {$i} AS LOG_MESSAGES_VISIBLE FROM `{{logs}}`;");
+  $query = classSupernova::$db->doSelectFetchArray("SELECT COUNT(*) AS LOG_MESSAGES_TOTAL, {$i} AS LOG_MESSAGES_VISIBLE FROM `{{logs}}`;");
 
   return $query;
 }
@@ -502,7 +502,7 @@ function db_counter_list_by_week() {
  * @return array|bool|mysqli_result|null
  */
 function db_browser_agent_get_by_id($user_last_browser_id) {
-  $temp = classSupernova::$db->doSelectFetch("SELECT browser_user_agent FROM {{security_browser}} WHERE `browser_id` = {$user_last_browser_id}");
+  $temp = classSupernova::$db->doSelectFetchArray("SELECT browser_user_agent FROM {{security_browser}} WHERE `browser_id` = {$user_last_browser_id}");
 
   return $temp['browser_user_agent'];
 }
@@ -534,7 +534,7 @@ function db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $commen
  * @return array|bool|mysqli_result|null
  */
 function db_referral_get_by_id($user_id_safe) {
-  $old_referral = classSupernova::$db->doSelectFetch("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;");
+  $old_referral = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{referrals}} WHERE `id` = {$user_id_safe} LIMIT 1 FOR UPDATE;");
 
   return $old_referral;
 }
@@ -593,7 +593,7 @@ function db_quest_list_get($query_add_select, $query_add_from, $query_add_where)
  * @return array|bool|mysqli_result|null
  */
 function db_quest_count() {
-  $query = classSupernova::$db->doSelectFetch("SELECT count(*) AS count FROM `{{quest}}`;");
+  $query = classSupernova::$db->doSelectFetchArray("SELECT count(*) AS count FROM `{{quest}}`;");
 
   return $query;
 }
@@ -604,7 +604,7 @@ function db_quest_count() {
  * @return array|bool|mysqli_result|null
  */
 function db_quest_get($quest_id) {
-  $quest = classSupernova::$db->doSelectFetch("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
+  $quest = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
 
   return $quest;
 }
@@ -646,7 +646,7 @@ function db_quest_update($quest_name_unsafe, $quest_type, $quest_description_uns
  * @return array|bool|mysqli_result|null
  */
 function db_stat_get_by_user($user_id) {
-  $StatRecord = classSupernova::$db->doSelectFetch("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};");
+  $StatRecord = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{statpoints}} WHERE `stat_type` = 1 AND `stat_code` = 1 AND `id_owner` = {$user_id};");
 
   return $StatRecord;
 }
@@ -668,7 +668,7 @@ function db_stat_get_by_user2($user_id) {
  * @return array|bool|mysqli_result|null
  */
 function db_payment_get_something($options) {
-  $payment = classSupernova::$db->doSelectFetch("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_external_id` = '{$options['payment_external_id']}' LIMIT 1 FOR UPDATE;");
+  $payment = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_external_id` = '{$options['payment_external_id']}' LIMIT 1 FOR UPDATE;");
 
   return $payment;
 }
@@ -679,7 +679,7 @@ function db_payment_get_something($options) {
  * @return array|bool|mysqli_result|null
  */
 function db_payment_get_something2($payment_external_id) {
-  $payment = classSupernova::$db->doSelectFetch("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_external_id` = '{$payment_external_id}' LIMIT 1 FOR UPDATE;");
+  $payment = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{payment}} WHERE `payment_module_name` = '{$this->manifest['name']}' AND `payment_external_id` = '{$payment_external_id}' LIMIT 1 FOR UPDATE;");
 
   return $payment;
 }

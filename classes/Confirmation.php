@@ -19,7 +19,7 @@ class Confirmation {
   public function db_confirmation_get_latest_by_type_and_email($confirmation_type_safe, $email_unsafe) {
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    return $this->db->doSelectFetch(
+    return $this->db->doSelectFetchArray(
       "SELECT * FROM {{confirmations}} WHERE
           `type` = {$confirmation_type_safe} AND `email` = '{$email_safe}' ORDER BY create_time DESC LIMIT 1;"
     );
@@ -33,7 +33,7 @@ class Confirmation {
     do {
       // Ну, если у нас > 999.999 подтверждений - тут нас ждут проблемы...
       $confirm_code_safe = $this->db->db_escape($confirm_code_unsafe = $this->make_password_reset_code());
-      $query = $this->db->doSelectFetch("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE");
+      $query = $this->db->doSelectFetchArray("SELECT `id` FROM {{confirmations}} WHERE `code` = '{$confirm_code_safe}' FOR UPDATE");
     } while($query);
 
     $this->db->doReplaceSet(TABLE_CONFIRMATIONS, array(
@@ -48,7 +48,7 @@ class Confirmation {
   public function db_confirmation_get_by_type_and_code($confirmation_type_safe, $confirmation_code_unsafe) {
     $confirmation_code_safe = $this->db->db_escape($confirmation_code_unsafe);
 
-    return $this->db->doSelectFetch(
+    return $this->db->doSelectFetchArray(
       "SELECT * 
       FROM {{confirmations}} 
       WHERE

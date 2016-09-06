@@ -42,6 +42,17 @@ abstract class DbResultIterator implements Iterator, Countable {
   }
 
   /**
+   * Gets first column value (if any) of current row
+   *
+   * @return mixed
+   */
+  public function getFirstColumn() {
+    $row = $this->valid() ? $this->current() : null;
+
+    return is_array($row) ? array_pop($row) : $row;
+  }
+
+  /**
    * Destructor
    * Frees the Result object
    */

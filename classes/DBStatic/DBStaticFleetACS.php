@@ -16,7 +16,7 @@ class DBStaticFleetACS {
   public static function db_acs_get_by_group_id($aks_id) {
     // TODO - safe
     $aks_id = intval($aks_id);
-    $result = classSupernova::$db->doSelectFetch("SELECT * FROM {{aks}} WHERE id = '{$aks_id}' LIMIT 1 FOR UPDATE;");
+    $result = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{aks}} WHERE id = '{$aks_id}' LIMIT 1 FOR UPDATE;");
 
     return is_array($result) && !empty($result) ? $result : array();
   }
@@ -50,7 +50,7 @@ class DBStaticFleetACS {
    * @return array|bool|mysqli_result|null
    */
   public static function db_acs_get_by_fleet($fleetid) {
-    $aks = classSupernova::$db->doSelectFetch("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;");
+    $aks = classSupernova::$db->doSelectFetchArray("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;");
 
     return $aks;
   }

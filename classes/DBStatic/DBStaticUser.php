@@ -64,7 +64,7 @@ class DBStaticUser {
     if ($forUpdate) {
       $query[] = " FOR UPDATE";
     }
-    $result = classSupernova::$db->doSelectIterator(implode('', $query));
+    $result = classSupernova::$db->getOperator()->doSelectIterator(implode('', $query));
 
     return $result;
   }
@@ -97,14 +97,14 @@ class DBStaticUser {
     );
   }
 
-  // TODO - это вообще-то надо хранить в конфигурации
   /**
    * @return string
    */
+  // TODO - это вообще-то надо хранить в конфигурации
   public static function getLastRegisteredUserName() {
     $iterator = static::playerSelectIterator('`username`', '`id` DESC', false, '', '', '1');
 
-    return classSupernova::$db->getDbIteratorFirstValue($iterator);
+    return $iterator->getFirstColumn();
   }
 
   /**
@@ -112,10 +112,11 @@ class DBStaticUser {
    *
    * @return int
    */
+  // TODO - это вообще-то надо хранить в конфигурации
   public static function db_user_count($online = false) {
     $iterator = static::playerSelectIterator('COUNT(`id`)', '', false, '', ($online ? '`onlinetime` > ' . (SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : ''));
 
-    return intval(classSupernova::$db->getDbIteratorFirstValue($iterator));
+    return intval($iterator->getFirstColumn());
   }
 
   public static function db_user_list_admin_sorted($sort, $online = false) {
@@ -129,7 +130,7 @@ class DBStaticUser {
       ($online ? "`onlinetime` >= " . intval(SN_TIME_NOW - classSupernova::$config->game_users_online_timeout) : 'user_as_ally IS NULL') .
       " GROUP BY u.id
       ORDER BY user_as_ally, {$sort} ASC";
-    $result = classSupernova::$db->doSelectIterator($query);
+    $result = classSupernova::$db->getOperator()->doSelectIterator($query);
 
     return $result;
   }
@@ -150,7 +151,7 @@ class DBStaticUser {
         `days_after_birthday` >= 0 AND `days_after_birthday` < {$config_user_birthday_range} 
       FOR UPDATE";
 
-    $result = classSupernova::$db->doSelectIterator($query);
+    $result = classSupernova::$db->getOperator()->doSelectIterator($query);
 
     return $result;
   }
@@ -240,7 +241,7 @@ class DBStaticUser {
       // Вытаскиваем запись
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
-      $user = classSupernova::$db->doSelectFetch(
+      $user = classSupernova::$db->doSelectFetchArray(
         "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'"
         . " FOR UPDATE"
       );

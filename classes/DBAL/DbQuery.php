@@ -101,72 +101,78 @@ class DbQuery {
   }
 
 
-  public function delete() {
+  public function select() {
     $this->build = array();
 
-    $this->command = static::DELETE;
-    $this->buildCommand();
+    $this->buildCommand(static::SELECT);
+    $this->build[] = ' *';
+    $this->build[] = " FROM " . $this->quoteTable($this->table);
     $this->buildWhere();
     $this->buildLimit();
 
-    return implode('', $this->build);
+    return $this->__toString();
+  }
+
+  public function delete() {
+    $this->build = array();
+
+    $this->buildCommand(static::DELETE);
+    $this->buildWhere();
+    $this->buildLimit();
+
+    return $this->__toString();
   }
 
   public function update() {
     $this->build = array();
 
-    $this->command = static::UPDATE;
-    $this->buildCommand();
+    $this->buildCommand(static::UPDATE);
     $this->buildSetFields();
     $this->buildWhere();
     $this->buildLimit();
 
-    return implode('', $this->build);
+    return $this->__toString();
   }
 
-  public function insertSet($replace) {
-    $this->build = array();
-
-    switch ($replace) {
+  /**
+   * @param int $replace
+   *
+   * @return string
+   */
+  protected function setInsertCommand($replace) {
+    switch($replace) {
       case DB_INSERT_IGNORE:
-        $this->command = static::INSERT_IGNORE;
+        $result = static::INSERT_IGNORE;
       break;
       case DB_INSERT_REPLACE:
-        $this->command = static::REPLACE;
+        $result = static::REPLACE;
       break;
       default:
-        $this->command = static::INSERT;
+        $result = static::INSERT;
       break;
     }
 
-    $this->buildCommand();
+    return $result;
+  }
+
+  public function insertSet($replace = DB_INSERT_PLAIN) {
+    $this->build = array();
+    $this->buildCommand($this->setInsertCommand($replace));
     $this->buildSetFields();
 
-    return implode('', $this->build);
+    return $this->__toString();
   }
 
-  public function insertBatch($replace) {
+  public function insertBatch($replace = DB_INSERT_PLAIN) {
     $this->build = array();
 
-    switch ($replace) {
-      case DB_INSERT_IGNORE:
-        $this->command = static::INSERT_IGNORE;
-      break;
-      case DB_INSERT_REPLACE:
-        $this->command = static::REPLACE;
-      break;
-      default:
-        $this->command = static::INSERT;
-      break;
-    }
-
-    $this->buildCommand();
+    $this->buildCommand($this->setInsertCommand($replace));
     $this->build[] = " (";
     $this->buildFieldNames();
     $this->build[] = ") VALUES ";
     $this->buildValuesVector();
 
-    return implode('', $this->build);
+    return $this->__toString();
   }
 
 
@@ -343,7 +349,7 @@ class DbQuery {
   }
 
   public function castAsDbValue($value) {
-    switch (gettype($value)) {
+    switch(gettype($value)) {
       case TYPE_INTEGER:
       case TYPE_DOUBLE:
         // do nothing
@@ -373,8 +379,8 @@ class DbQuery {
   }
 
 
-  protected function buildCommand() {
-    switch ($this->command) {
+  protected function buildCommand($command) {
+    switch($this->command = $command) {
       case static::UPDATE:
         $this->build[] = $this->command . " " . $this->quoteTable($this->table);
       break;
@@ -390,7 +396,7 @@ class DbQuery {
       break;
 
       case static::SELECT:
-        $this->build[] = $this->command . " ";
+        $this->build[] = $this->command;
       break;
     }
   }
@@ -431,7 +437,7 @@ class DbQuery {
   protected function buildValuesVector() {
     $compiled = array();
 
-    if(!empty($this->valuesDanger)) {
+    if (!empty($this->valuesDanger)) {
       $compiled = $this->valuesDanger;
     }
 

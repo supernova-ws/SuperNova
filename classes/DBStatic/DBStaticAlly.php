@@ -27,11 +27,11 @@ class DBStaticAlly {
   }
 
   public static function db_ally_request_get_by_user_id($player_id) {
-    return classSupernova::$db->doSelectFetch("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$player_id}' LIMIT 1;");
+    return classSupernova::$db->doSelectFetchArray("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$player_id}' LIMIT 1;");
   }
 
   public static function db_ally_count() {
-    $result = classSupernova::$db->doSelectFetch('SELECT COUNT(`id`) AS ally_count FROM `{{alliance}}`');
+    $result = classSupernova::$db->doSelectFetchArray('SELECT COUNT(`id`) AS ally_count FROM `{{alliance}}`');
 
     return isset($result['ally_count']) ? $result['ally_count'] : 0;
   }
@@ -42,7 +42,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_id($id_ally) {
-    $ally = classSupernova::$db->doSelectFetch("SELECT * FROM `{{alliance}}` WHERE `id` ='{$id_ally}' LIMIT 1");
+    $ally = classSupernova::$db->doSelectFetchArray("SELECT * FROM `{{alliance}}` WHERE `id` ='{$id_ally}' LIMIT 1");
 
     return $ally;
   }
@@ -65,7 +65,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_name_or_tag($ally_tag, $ally_name) {
-    $query = classSupernova::$db->doSelectFetch("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;");
+    $query = classSupernova::$db->doSelectFetchArray("SELECT ally_tag FROM {{alliance}} WHERE `ally_tag` = '{$ally_tag}' or `ally_name` = '{$ally_name}' LIMIT 1;");
 
     return $query;
   }
@@ -139,7 +139,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_by_tag($tag) {
-    $ally = classSupernova::$db->doSelectFetch("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;");
+    $ally = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{alliance}} WHERE ally_tag='{$tag}' LIMIT 1;");
 
     return $ally;
   }
@@ -161,7 +161,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_request_count_by_id($ally) {
-    $request = classSupernova::$db->doSelectFetch("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'");
+    $request = classSupernova::$db->doSelectFetchArray("SELECT COUNT(*) AS request_count FROM {{alliance_requests}} WHERE `id_ally` ='{$ally['id']}'");
 
     return $request;
   }
@@ -233,7 +233,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_negotiation_get_by_offer_id($offer_id) {
-    $negotiation = classSupernova::$db->doSelectFetch("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
+    $negotiation = classSupernova::$db->doSelectFetchArray("SELECT * FROM {{alliance_negotiation}} WHERE alliance_negotiation_id = {$offer_id} LIMIT 1;");
 
     return $negotiation;
   }
@@ -358,7 +358,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_members_by_user_as_ally(&$user) {
-    $alliance = classSupernova::$db->doSelectFetch("SELECT `ally_members` FROM {{alliance}} WHERE `ally_user_id` = {$user['id']}");
+    $alliance = classSupernova::$db->doSelectFetchArray("SELECT `ally_members` FROM {{alliance}} WHERE `ally_user_id` = {$user['id']}");
 
     return $alliance;
   }
@@ -409,7 +409,7 @@ class DBStaticAlly {
    * @return array|bool|mysqli_result|null
    */
   public static function db_ally_get_ally_count(&$user) {
-    $lab_level = classSupernova::$db->doSelectFetch("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1");
+    $lab_level = classSupernova::$db->doSelectFetchArray("SELECT ally_members AS effective_level FROM {{alliance}} WHERE id = {$user['user_as_ally']} LIMIT 1");
 
     return $lab_level;
   }

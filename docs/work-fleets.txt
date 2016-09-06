@@ -1,3 +1,24 @@
+db_mysql -> operator
+    - Использовать его для доступа к БД
+
+    - Operator НЕ ДОЛЖЕН ИМЕТЬ $db как проперть - это модель, он должен работать с инфой из энтитей
+        - Разве что - как дефолтную БД через getDb()
+            - А хотя фигли - у каждой БД свой Operator. Энтити сами выбирают себе БД и операторов
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 - Добавлено на живую Альфу. Последить за дедлоками
 - function fleet_list_by_planet_coords($galaxy, $system, $planet = 0, $planet_type = PT_ALL, $for_phalanx = false) {
     - на самом деле function db_fleet_list($where_safe, $for_update = true)
@@ -14,7 +35,34 @@
 
 
 
+in php 5,  what is the best way to destroy an object instance?
+For example:
+$myObj = new clsMyClass();
+... use the object
 
+unset($myObj) ;     // is this the best way?  Is  $myObj = NULL;  better?
+
+Do destructors defined in the class always run in either method above?
+
+Thanks in advance
+
+What you should do is add this Destructor to your class:
+
+   function DESTROY() {
+     settype(&$this, 'null');
+   }
+
+
+Then when you want to destroty the class you could just do:
+
+ $myClass->DESTROY();
+
+Or if you're not worried about function cleanup then you could just do:
+
+ settype($myClass,'null');
+
+
+PHP OOP is very strange.
 
 
 

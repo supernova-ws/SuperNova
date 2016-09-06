@@ -157,7 +157,7 @@ class Account {
 
     $account_id_safe = round(floatval($account_id_unsafe));
 
-    $account_row = $this->db->doSelectFetch("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}");
+    $account_row = $this->db->doSelectFetchArray("SELECT * FROM {{account}} WHERE `account_id` = {$account_id_safe}");
 
     return $this->assign_from_db_row($account_row);
   }
@@ -174,7 +174,7 @@ class Account {
 
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
 
-    $account_row = $this->db->doSelectFetch("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE");
+    $account_row = $this->db->doSelectFetchArray("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') FOR UPDATE");
 
     return $this->assign_from_db_row($account_row);
   }
@@ -191,7 +191,7 @@ class Account {
 
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account_row = $this->db->doSelectFetch("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;");
+    $account_row = $this->db->doSelectFetchArray("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;");
 
     return $this->assign_from_db_row($account_row);
   }
@@ -211,7 +211,7 @@ class Account {
     $account_name_safe = $this->db->db_escape($account_name_unsafe);
     $email_safe = $this->db->db_escape($email_unsafe);
 
-    $account = $this->db->doSelectFetch(
+    $account = $this->db->doSelectFetchArray(
       "SELECT * 
       FROM {{account}} 
       WHERE 

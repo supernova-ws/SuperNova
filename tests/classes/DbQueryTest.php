@@ -186,7 +186,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
   public function dataBuildCommand() {
     return array(
       array('', ''),
-      array('SELECT ', DbQuery::SELECT),
+      array('SELECT', DbQuery::SELECT),
       array('INSERT INTO `{{theTable}}`', DbQuery::INSERT),
       array('INSERT IGNORE INTO `{{theTable}}`', DbQuery::INSERT_IGNORE),
       array('REPLACE INTO `{{theTable}}`', DbQuery::REPLACE),
@@ -202,9 +202,9 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
    */
   public function testBuildCommand($expected, $command) {
     $this->object->setTable('theTable');
-    $property = getPrivateProperty($this->object, 'command');
-    $property->setValue($this->object, $command);
-    invokeMethod($this->object, 'buildCommand', array());
+//    $property = getPrivateProperty($this->object, 'command');
+//    $property->setValue($this->object, $command);
+    invokeMethod($this->object, 'buildCommand', array($command));
     $this->assertEquals($expected, $this->object->__toString());
   }
 
@@ -382,6 +382,23 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
       "REPLACE INTO `{{aT2}}` (`f1`,`f2`) VALUES " .
       "this IS danger!,('v1',1),('v2',2),('v3',3),('v4',4)",
       $this->object->insertBatch(DB_INSERT_REPLACE)
+    );
+  }
+
+  /**
+   * @covers ::select
+   */
+  public function testSelect() {
+    $this->object
+      ->setTable('aT')
+      // ->setFields(array('f1', 'f2')) // TODO - unused
+      ->setWhereArray(array('f1' => 's1'))
+      ->setWhereArrayDanger(array('f2' => '(f3 = 1 OR f3 = 2)'))
+      ->setOneRow(DB_RECORD_ONE)
+    ;
+    $this->assertEquals(
+      "SELECT * FROM `{{aT}}` WHERE (f3 = 1 OR f3 = 2) AND `f1` = 's1' LIMIT 1",
+      $this->object->select()
     );
   }
 

@@ -89,7 +89,7 @@ class RequestInfo {
     $this->device_cypher = $_COOKIE[SN_COOKIE_D];
     if($this->device_cypher) {
       $cypher_safe = db_escape($this->device_cypher);
-      $device_id = classSupernova::$db->doSelectFetch("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE");
+      $device_id = classSupernova::$db->doSelectFetchArray("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE");
       if(!empty($device_id['device_id'])) {
         $this->device_id = $device_id['device_id'];
       }
@@ -98,7 +98,7 @@ class RequestInfo {
     if($this->device_id <= 0) {
       do {
         $cypher_safe = db_escape($this->device_cypher = sys_random_string());
-        $row = classSupernova::$db->doSelectFetch("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE");
+        $row = classSupernova::$db->doSelectFetchArray("SELECT `device_id` FROM {{security_device}} WHERE `device_cypher` = '{$cypher_safe}' LIMIT 1 FOR UPDATE");
       } while (!empty($row));
       classSupernova::$db->doInsertSet(TABLE_SECURITY_DEVICE, array(
         'device_cypher' => $this->device_cypher,

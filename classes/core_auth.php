@@ -9,14 +9,14 @@ use DBStatic\DBStaticUser;
  *
  * Created by Gorlum 21.04.2015 3:51
  *
- * version #41a52.34#
+ * version #41a52.69#
  */
 class core_auth extends sn_module {
   public $manifest = array(
     'package'       => 'core',
     'name'          => 'auth',
     'version'       => '0a0',
-    'copyright'     => 'Project "SuperNova.WS" #41a52.34# copyright © 2009-2015 Gorlum',
+    'copyright'     => 'Project "SuperNova.WS" #41a52.69# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -218,7 +218,7 @@ class core_auth extends sn_module {
 
     // Если у нас провайдеры не дают имени и пользователь не дал свой вариант - это у нас первый логин в игру
     if (!$this->player_suggested_name) {
-      $max_user_id = classSupernova::$db->doSelectFetchValue("SELECT `id` FROM `{{users}}` ORDER BY `id` DESC LIMIT 1");
+      $max_user_id = classSupernova::$db->getOperator()->doSelectFetchValue("SELECT `id` FROM `{{users}}` ORDER BY `id` DESC LIMIT 1");
       // TODO - предлагать имя игрока по локали
 
       // Проверить наличие такого имени в истории имён

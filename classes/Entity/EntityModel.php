@@ -19,7 +19,6 @@ use \Common\Accessors;
  *    function ($that, &$row[, $propertyName[, $fieldName]]) {}
  *
  */
-
 class EntityModel {
   /**
    * Service to work with rows
@@ -75,7 +74,7 @@ class EntityModel {
     $this->rowOperator = $gc->dbGlobalRowOperator;
     $this->accessors = new Accessors();
 
-    if(property_exists($this, 'newProperties') && !empty($this->newProperties)) {
+    if (property_exists($this, 'newProperties') && !empty($this->newProperties)) {
       $this->extendProperties($this->newProperties);
     }
   }
@@ -124,7 +123,6 @@ class EntityModel {
     $this->processRow($cEntity, P_CONTAINER_EXPORT);
   }
 
-
   /**
    * @param array $array
    *
@@ -137,7 +135,6 @@ class EntityModel {
     return $cEntity;
   }
 
-
   /**
    * @return EntityContainer
    */
@@ -149,7 +146,6 @@ class EntityModel {
 
     return $container;
   }
-
 
   /**
    * @param EntityContainer $cEntity
@@ -170,6 +166,108 @@ class EntityModel {
     return $cEntity->isEmpty();
   }
 
+  //
+  // Save/load methods =================================================================================================
+
+  /**
+   * @param array $filter
+   *
+   * @return EntityContainer|false
+   */
+  public function load($filter) {
+    $cEntity = false;
+    $cEntity = $this->buildContainer();
+
+    return $cEntity;
+  }
+
+  /**
+   * @param EntityContainer $cEntity
+   */
+  protected function insert($cEntity) {
+    $this->rowOperator->insert($this, $this->exportRow($cEntity));
+    // TODO - re-read record
+  }
+
+  /**
+   * @param EntityContainer $cEntity
+   *
+   * @throws \Exception
+   */
+  protected function update($cEntity) {
+    // TODO - separate real changes from internal ones
+    // Generate changeset row
+    // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change
+    // If row not empty - update
+    throw new \Exception(__CLASS__ . '::update() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  /**
+   * @param EntityContainer $cEntity
+   *
+   * @throws \Exception
+   */
+  protected function delete($cEntity) {
+    throw new \Exception(__CLASS__ . '::delete() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  /**
+   * Method is called when trying to save DB_RECORD_LOADED but unchanged container
+   *
+   * Generally in this case no need in DB operations
+   * If any entity require to save empty data (for updating timestamp for ex.) it should override this method
+   *
+   * @param EntityContainer $cEntity
+   *
+   * @throws \Exception
+   */
+  protected function onSaveUnchanged($cEntity) {
+    // TODO - or just save nothing ?????
+//    throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
+    throw new \Exception(__CLASS__ . '::unchanged() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  /**
+   * Method is called when trying to save newly created DB_RECORD_NEW and Empty container
+   *
+   * If it is needed to really save empty container (for log purposes, for ex.) child should override this method
+   *
+   * @param EntityContainer $cEntity
+   *
+   * @throws \Exception
+   */
+  protected function onSaveNew($cEntity) {
+    // Just created container and doesn't use it
+//    throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
+    throw new \Exception(__CLASS__ . '::emptyAction() in ' . get_called_class() . 'is not yet implemented');
+  }
+
+  /**
+   * Saves entity to DB
+   *
+   * @param EntityContainer $cEntity
+   */
+  protected function save($cEntity) {
+    if ($this->isEmpty($cEntity)) {
+      if ($cEntity->isLoaded) {
+        $this->delete($cEntity);
+      } else {
+        $this->onSaveNew($cEntity);
+      }
+    } else {
+      if (empty($cEntity->dbId)) {
+        $this->insert($cEntity);
+      } elseif (method_exists($cEntity, 'isChanged') && $cEntity->isChanged()) {
+        $this->update($cEntity);
+      } else {
+        $this->onSaveUnchanged($cEntity);
+      }
+    }
+  }
+
+
+  //
+  // Protected properties accessors ====================================================================================
 
   /**
    * @return \DbRowDirectOperator
@@ -214,82 +312,5 @@ class EntityModel {
   public function getAccessors() {
     return $this->accessors;
   }
-
-  /**
-   * @param EntityContainer $cEntity
-   *
-   * @throws \Exception
-   */
-  protected function delete($cEntity) {
-    throw new \Exception(__CLASS__ . '::delete() in ' . get_called_class() . 'is not yet implemented');
-  }
-
-  /**
-   * @param EntityContainer $cEntity
-   */
-  protected function insert($cEntity) {
-    $this->rowOperator->insert($this, $this->exportRow($cEntity));
-    // TODO - re-read record
-  }
-
-  /**
-   * @param EntityContainer $cEntity
-   *
-   * @throws \Exception
-   */
-  protected function update($cEntity) {
-    // TODO - separate real changes from internal ones
-    // Generate changeset row
-    // Foreach all rows. If there is change and no delta - then put delta. Otherwise put change
-    // If row not empty - update
-    throw new \Exception(__CLASS__ . '::update() in ' . get_called_class() . 'is not yet implemented');
-  }
-
-  /**
-   * @param EntityContainer $cEntity
-   *
-   * @throws \Exception
-   */
-  protected function unchanged($cEntity){
-    // TODO - or just save nothing ?????
-//    throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
-    throw new \Exception(__CLASS__ . '::unchanged() in ' . get_called_class() . 'is not yet implemented');
-  }
-
-  /**
-   * @param EntityContainer $cEntity
-   *
-   * @throws \Exception
-   */
-  protected function emptyAction($cEntity) {
-    // Just created container and doesn't use it
-//    throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
-    throw new \Exception(__CLASS__ . '::emptyAction() in ' . get_called_class() . 'is not yet implemented');
-  }
-
-  protected function save(EntityContainer $cEntity) {
-    if ($this->isEmpty($cEntity)) {
-      if ($cEntity->isLoaded) {
-        $this->delete($cEntity);
-      } else {
-        $this->emptyAction($cEntity);
-      }
-    } else {
-      if (empty($cEntity->dbId)) {
-        $this->insert($cEntity);
-      } elseif (method_exists($cEntity, 'isChanged') && $cEntity->isChanged()) {
-        $this->update($cEntity);
-      } else {
-        $this->unchanged($cEntity);
-      }
-    }
-  }
-
-//  /**
-//   * @return EntityContainer
-//   */
-//  protected function load() {
-//
-//  }
 
 }

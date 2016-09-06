@@ -13,7 +13,7 @@ class DBStaticSurveyVote {
    * @return array|bool|mysqli_result|null
    */
   public static function db_survey_get_vote($announce, $user) {
-    return classSupernova::$db->doSelectFetch("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;");
+    return classSupernova::$db->doSelectFetchArray("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$announce['survey_id']} AND survey_vote_user_id = {$user['id']} LIMIT 1;");
   }
 
 
@@ -40,7 +40,7 @@ class DBStaticSurveyVote {
    * @return array|bool|mysqli_result|null
    */
   public static function db_survey_vote_get(&$user, $survey_id) {
-    $is_voted = classSupernova::$db->doSelectFetch("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;");
+    $is_voted = classSupernova::$db->doSelectFetchArray("SELECT `survey_vote_id` FROM `{{survey_votes}}` WHERE survey_parent_id = {$survey_id} AND survey_vote_user_id = {$user['id']} FOR UPDATE;");
 
     return $is_voted;
   }

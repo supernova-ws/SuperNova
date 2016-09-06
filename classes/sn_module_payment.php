@@ -813,7 +813,7 @@ abstract class sn_module_payment extends sn_module {
 
   protected function db_get_by_id($payment_id_unsafe) {
     $payment_id_internal_safe = $this->db->db_escape($payment_id_unsafe);
-    $payment = $this->db->doSelectFetch(
+    $payment = $this->db->doSelectFetchArray(
       "SELECT * 
       FROM {{payment}} 
       WHERE 

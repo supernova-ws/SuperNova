@@ -1,6 +1,7 @@
 <?php
 
 use \DBAL\DbQuery;
+use \DBAL\DbTransaction;
 
 /**
  * Created by Gorlum 01.09.2015 15:58
@@ -79,6 +80,11 @@ class db_mysql {
   public $snCache;
 
   /**
+   * @var DbRowDirectOperator $operator
+   */
+  protected $operator;
+
+  /**
    * db_mysql constructor.
    *
    * @param \Common\GlobalContainer $gc
@@ -86,6 +92,7 @@ class db_mysql {
   public function __construct($gc) {
     $this->transaction = new \DBAL\DbTransaction($gc, $this);
     $this->snCache = new $gc->snCacheClass($gc, $this);
+    $this->operator = new DbRowDirectOperator($this);
   }
 
   public function load_db_settings($configFile = '') {
@@ -269,7 +276,9 @@ class db_mysql {
   }
 
 
-  // SELECTS
+  // TODO - should be in DbRowDirectOperator eventually
+  // SQL operations ====================================================================================================
+  // SELECTS -----------------------------------------------------------------------------------------------------------
   public function doSelect($query) {
     return $this->doSql($query);
   }
@@ -283,6 +292,8 @@ class db_mysql {
    * @param bool   $isOneRecord
    *
    * @return array|bool|mysqli_result|null
+   *
+   * TODO - replace with appropriate DbQuery when it's be ready
    */
   public function doSelectDanger($table, $fields, $where = array(), $isOneRecord = DB_RECORDS_ALL, $forUpdate = DB_SELECT_PLAIN) {
     // TODO - TEMPORARY UNTIL DbQuery
@@ -305,38 +316,22 @@ class db_mysql {
   }
 
   /**
-   * @param string $query
+   * @param string $strSql
    *
    * @return array|null
-   */
-  public function doSelectFetch($query) {
-    return $this->db_fetch($this->doSelect($query));
-  }
-
-  /**
-   * @param string $query
    *
-   * @return mixed|null
+   * @deprecated
+   * TODO - УДАЛИТЬ
+   * Метод временно находится здесь - слишком много переписывать, что бы его отсюда вынести
    */
-  public function doSelectFetchValue($query) {
-    $row = $this->doSelectFetch($query);
-
-    return is_array($row) ? reset($row) : null;
-  }
-
-  /**
-   * @param DbResultIterator $iterator
-   *
-   * @return mixed
-   */
-  public function getDbIteratorFirstValue($iterator) {
-    $iterator->rewind();
-    $row = $iterator->current();
-    return array_pop($row);
+  public function doSelectFetchArray($strSql) {
+    return $this->operator->doSelectFetchArray($strSql);
   }
 
 
-  // INSERT/REPLACE
+
+  //
+  // INSERT/REPLACE ----------------------------------------------------------------------------------------------------
   protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
     $query = DbQuery::build($this)
       ->setTable($table)
@@ -347,7 +342,7 @@ class db_mysql {
   }
 
   // TODO - batch insert and replace here
-  // TODO - перед тем, как переделывать данные из депрекейтов - убедится, что
+  // перед тем, как переделывать данные из депрекейтов - убедится, что
   // null - это null, а не строка'NULL'
   /**
    * Values should be passed as-is
@@ -402,7 +397,6 @@ class db_mysql {
   public function doInsertValuesDeprecated($table, $fields, &$values) {
     return $this->doInsertBatchDanger($table, $fields, $values, DB_INSERT_PLAIN);
   }
-
 
 
   // REPLACERS
@@ -501,7 +495,8 @@ class db_mysql {
   }
 
 
-  // DELETERS
+  //
+  // DELETERS ----------------------------------------------------------------------------------------------------------
   /**
    * @param string $table
    * @param array  $where
@@ -576,27 +571,7 @@ class db_mysql {
   }
 
 
-  /**
-   * Returns iterator to iterate through mysqli_result
-   *
-   * @param string $query
-   *
-   * return DbResultIterator
-   *
-   * @return DbEmptyIterator|DbMysqliResultIterator
-   */
-  public function doSelectIterator($query) {
-    $queryResult = $this->doSelect($query);
-
-    if ($queryResult instanceof mysqli_result) {
-      $result = new DbMysqliResultIterator($queryResult);
-    } else {
-      $result = new DbEmptyIterator();
-    }
-
-    return $result;
-  }
-
+  // LOCKERS ----------------------------------------------------------------------------------------------------------
   /**
    * @param DbQueryConstructor $stmt
    * @param bool               $skip_query_check
@@ -612,6 +587,9 @@ class db_mysql {
     );
   }
 
+
+  //
+  // OTHER FUNCTIONS ----------------------------------------------------------------------------------------------------------
   // TODO Заменить это на новый логгер
   protected function security_watch_user_queries($query) {
     global $user;
@@ -643,7 +621,7 @@ class db_mysql {
 
     global $user, $dm_change_legit, $mm_change_legit;
 
-    switch (true) {
+    switch(true) {
       case stripos($query, 'RUNCATE TABL') != false:
       case stripos($query, 'ROP TABL') != false:
       case stripos($query, 'ENAME TABL') != false:
@@ -705,7 +683,7 @@ class db_mysql {
     $prefix_length = strlen($this->db_prefix);
 
     $tl = array();
-    while ($row = $this->db_fetch($query)) {
+    while($row = $this->db_fetch($query)) {
       foreach ($row as $table_name) {
         if (strpos($table_name, $this->db_prefix) === 0) {
           $table_name = substr($table_name, $prefix_length);
@@ -839,7 +817,7 @@ class db_mysql {
     if (is_bool($query)) {
       throw new Exception('Result of SHOW STATUS command is boolean - which should never happen. Connection to DB is lost?');
     }
-    while ($row = db_fetch($query)) {
+    while($row = db_fetch($query)) {
       $result[$row['Variable_name']] = $row['Value'];
     }
 
@@ -854,10 +832,19 @@ class db_mysql {
     return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
   }
 
+  /**
+   * @return DbRowDirectOperator
+   */
+  public function getOperator() {
+    return $this->operator;
+  }
+
+
+
   // Some wrappers to DbTransaction
   // Unused for now
   /**
-   * @return \DBAL\DbTransaction
+   * @return DbTransaction
    */
   public function getTransaction() {
     return $this->transaction;

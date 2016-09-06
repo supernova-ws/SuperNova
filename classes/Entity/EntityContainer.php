@@ -7,7 +7,9 @@ use Common\ContainerAccessors;
 /**
  * Class Entity\EntityContainer
  *
- * @property array $row - Entity row read from DB
+ * @property array $row      - Entity row read from/write to DB
+ * @property int   $dbStatus - Entity status related to DB
+ *
  */
 class EntityContainer extends ContainerAccessors {
   /**
@@ -30,6 +32,12 @@ class EntityContainer extends ContainerAccessors {
    */
   protected $delta = array();
 
+//  /**
+//   * @var int
+//   */
+//    // TODO - find usages and replace
+//  protected $dbStatus = DB_RECORD_NEW;
+
   /** @noinspection PhpMissingParentConstructorInspection */
   /**
    * Entity\EntityContainer constructor.
@@ -37,6 +45,7 @@ class EntityContainer extends ContainerAccessors {
    * @param EntityModel $model
    */
   public function __construct($model) {
+    $this->dbStatus = DB_RECORD_NEW;
     $this->setModel($model);
   }
 
@@ -69,7 +78,7 @@ class EntityContainer extends ContainerAccessors {
     elseif ($value != $this->original[$name]) {
       $this->delta[$name] = $value;
       // New value not equal original value. We should update delta
-      if((is_int($value) || is_float($value))) {
+      if ((is_int($value) || is_float($value))) {
         $this->delta[$name] -= $this->original[$name];
       }
     }
@@ -79,6 +88,7 @@ class EntityContainer extends ContainerAccessors {
     parent::clear();
     $this->original = array();
     $this->delta = array();
+    $this->dbStatus = DB_RECORD_NEW;
   }
 
 

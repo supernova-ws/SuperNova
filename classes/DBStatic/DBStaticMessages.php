@@ -473,7 +473,7 @@ class DBStaticMessages {
   }
 
   public static function db_message_count_outbox($user) {
-    $row = classSupernova::$db->doSelectFetch("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '{$user['id']}' AND message_type = 1 GROUP BY message_sender;");
+    $row = classSupernova::$db->doSelectFetchArray("SELECT COUNT(message_sender) AS message_count FROM {{messages}} WHERE `message_sender` = '{$user['id']}' AND message_type = 1 GROUP BY message_sender;");
 
     return intval($row['message_count']);
   }
@@ -512,7 +512,7 @@ LIMIT
    * @return array|bool|mysqli_result|null
    */
   public static function db_message_count_by_type($int_type_selected) {
-    $page_max = classSupernova::$db->doSelectFetch('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''));
+    $page_max = classSupernova::$db->doSelectFetchArray('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''));
 
     return $page_max;
   }

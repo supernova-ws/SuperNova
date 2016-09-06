@@ -56,11 +56,6 @@ class KeyedModel extends EntityModel {
     return $cEntity;
   }
 
-//  protected function load(KeyedContainer $cEntity) {
-//    throw new \Exception('EntityModel::dbSave() is not yet implemented');
-//  }
-//
-
   /**
    * @param KeyedContainer $cEntity
    *
@@ -95,7 +90,7 @@ class KeyedModel extends EntityModel {
   /**
    * @param KeyedContainer $cEntity
    */
-  protected function unchanged($cEntity){
+  protected function onSaveUnchanged($cEntity){
     // TODO - or just save nothing ?????
     // throw new \Exception('EntityModel isNotEmpty, have dbId and not CHANGED! It can\'t be!');
     // Do nothing
@@ -104,7 +99,7 @@ class KeyedModel extends EntityModel {
   /**
    * @param KeyedContainer $cEntity
    */
-  protected function emptyAction($cEntity) {
+  protected function onSaveNew($cEntity) {
     // Just created container and doesn't use it
 //    throw new \Exception('EntityModel isEmpty but not loaded! It can\'t be!');
     // Do nothing

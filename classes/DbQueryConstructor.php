@@ -441,29 +441,25 @@ class DbQueryConstructor extends DbSqlAware {
    * @return DbEmptyIterator|DbMysqliResultIterator
    */
   public function selectIterator() {
-    $result = $this->getDb()->doSelectIterator($this->select()->__toString());
+    $result = $this->getDb()->getOperator()->doSelectIterator($this->select()->__toString());
 
     return $result;
   }
 
   /**
-   * @param bool $skip_query_check
-   *
    * @return array
    */
-  public function selectRow() {
-    $result = $this->getDb()->doSelectFetch($this->select()->setFetchOne()->__toString());
+  public function selectRowToArray() {
+    $result = $this->getDb()->doSelectFetchArray($this->select()->setFetchOne()->__toString());
 
     return is_array($result) ? $result : array();
   }
 
   /**
-   * @param bool $skip_query_check
-   *
    * @return mixed|null
    */
   public function selectValue() {
-    $result = $this->selectRow();
+    $result = $this->selectRowToArray();
 
     return is_array($result) ? reset($result) : null;
   }
