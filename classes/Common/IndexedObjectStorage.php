@@ -70,7 +70,7 @@ class IndexedObjectStorage extends \SplObjectStorage {
    *
    * @throws \Exception
    */
-  protected function indexDuplicated($object, $data) {
+  protected function onObjectIndexDuplicated($object, $data) {
     throw new \Exception('Duplicate index [' . $data . '] in ' . __CLASS__);
   }
 
@@ -83,7 +83,7 @@ class IndexedObjectStorage extends \SplObjectStorage {
    *
    * @return bool
    */
-  protected function indexEmpty($object) {
+  protected function onObjectIndexEmpty($object) {
     // Do something if index is empty
     return true;
   }
@@ -104,9 +104,9 @@ class IndexedObjectStorage extends \SplObjectStorage {
 
     // Checking if index free. NULL index is always free
     if (isset($this->index[$data])) {
-      return $this->indexDuplicated($object, $data);
+      return $this->onObjectIndexDuplicated($object, $data);
     } elseif ($data === null) {
-      return $this->indexEmpty($object);
+      return $this->onObjectIndexEmpty($object);
     } else {
       // Assigning index
       $this->index[$data] = $object;

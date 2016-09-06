@@ -51,7 +51,7 @@ class KeyedModel extends EntityModel {
     }
 
     $cEntity = $this->fromArray($row);
-    $cEntity->isLoaded = true;
+    $cEntity->dbStatus = DB_RECORD_LOADED;
 
     return $cEntity;
   }
@@ -68,8 +68,7 @@ class KeyedModel extends EntityModel {
    */
   protected function delete($cEntity) {
     $this->rowOperator->deleteById($this, $cEntity->dbId);
-    $cEntity->isLoaded = false;
-    $cEntity->isDeleted = true;
+    $cEntity->dbStatus = DB_RECORD_DELETED;
     throw new \Exception('KeyedModel::delete() is not yet implemented');
   }
 

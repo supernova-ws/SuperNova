@@ -285,4 +285,11 @@ class EntityModel {
     }
   }
 
+//  /**
+//   * @return EntityContainer
+//   */
+//  protected function load() {
+//
+//  }
+
 }

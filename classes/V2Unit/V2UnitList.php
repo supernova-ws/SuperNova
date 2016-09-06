@@ -20,6 +20,10 @@ class V2UnitList extends ObjectCollection {
    */
   protected $unitModel;
 
+  protected $locatedAt;
+
+  protected $playerOwner;
+
   public function __construct(GlobalContainer $gc) {
     $this->unitModel = $gc->unitModel;
   }
@@ -52,7 +56,7 @@ class V2UnitList extends ObjectCollection {
    *
    * @throws \Exception
    */
-  protected function indexDuplicated($newUnit, $snId) {
+  protected function onObjectIndexDuplicated($newUnit, $snId) {
     // TODO - error if not stackable
     $this[$snId]->level += $newUnit->level;
 

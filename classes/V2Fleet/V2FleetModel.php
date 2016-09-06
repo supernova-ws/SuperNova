@@ -197,7 +197,7 @@ class V2FleetModel extends KeyedModel {
      */
     $cFleet = parent::fromArray($array);
 
-    $cFleet->units->load($cFleet->location);
+    // TODO - load unit info from array
 
     foreach (array(
       RES_METAL     => 'fleet_resource_metal',
@@ -209,6 +209,23 @@ class V2FleetModel extends KeyedModel {
 
     return $cFleet;
   }
+
+  /**
+   * @param int|string $dbId
+   *
+   * @return V2FleetContainer|false
+   */
+  public function loadById($dbId) {
+    /**
+     * @var V2FleetContainer $cFleet
+     */
+    $cFleet = parent::loadById($dbId);
+
+    $cFleet->units->load($cFleet->location);
+
+    return $cFleet;
+  }
+
 
   protected function save(V2FleetContainer $cFleet) {
     throw new \Exception('V2FleetModel::dbSave() is not yet implemented');
