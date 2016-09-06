@@ -165,12 +165,9 @@ class UBEReport {
       if(count($table_data) < 2) {
         continue;
       }
-//      foreach($table_data as &$record_data) {
-//        $record_data = '(' . implode(',', $record_data) . ')';
-//      }
-      $fields = $table_data[0];
-      unset($table_data[0]);
-      classSupernova::$db->doInsertValues($table_name, $table_data, $fields);
+      // Picking up field names
+      $fields = array_shift($table_data);
+      classSupernova::$db->doInsertBatch($table_name, $table_data, $fields, DB_INSERT_PLAIN);
     }
 
     return $ube->report_cypher;

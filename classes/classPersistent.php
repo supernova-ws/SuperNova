@@ -96,11 +96,11 @@ class classPersistent extends classCache {
         $qry[] = array($item_name, $item_value);
       }
     }
-    classSupernova::$gc->db->doReplaceValues(
+    classSupernova::$gc->db->doInsertBatch(
       $this->table_name, $qry, array(
-        $this->sql_index_field,
-        $this->sql_value_field,
-      )
+      $this->sql_index_field,
+      $this->sql_value_field,
+    ), DB_INSERT_REPLACE
     );
 
 

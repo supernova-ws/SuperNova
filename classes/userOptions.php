@@ -128,12 +128,12 @@ class userOptions extends oldArrayAccessNd {
         $value = array($this->user_id, $key, $value);
       }
 
-      classSupernova::$gc->db->doReplaceValues(
+      classSupernova::$gc->db->doInsertBatch(
         TABLE_PLAYER_OPTIONS, $this->to_write, array(
-          'player_id',
-          'option_id',
-          'value',
-        )
+        'player_id',
+        'option_id',
+        'value',
+      ), DB_INSERT_REPLACE
       );
 
 
@@ -365,12 +365,12 @@ class userOptionsOld implements ArrayAccess {
         $option_value = array($this->user_id, $option_id, $option_value);
       }
 
-      classSupernova::$gc->db->doReplaceValues(
+      classSupernova::$gc->db->doInsertBatch(
         TABLE_PLAYER_OPTIONS, $to_write, array(
-          'player_id',
-          'option_id',
-          'value',
-        )
+        'player_id',
+        'option_id',
+        'value',
+      ), DB_INSERT_REPLACE
       );
     }
   }

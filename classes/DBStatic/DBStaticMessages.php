@@ -135,17 +135,15 @@ class DBStaticMessages {
         return;
       }
 
-      classSupernova::$db->doInsertValues(
-        TABLE_MESSAGES, $insert_values, array(
-          'message_owner',
-          'message_sender',
-          'message_time',
-          'message_type',
-          'message_from',
-          'message_subject',
-          'message_text',
-        )
-      );
+      classSupernova::$db->doInsertBatch(TABLE_MESSAGES, $insert_values, array(
+        'message_owner',
+        'message_sender',
+        'message_time',
+        'message_type',
+        'message_from',
+        'message_subject',
+        'message_text',
+      ), DB_INSERT_PLAIN);
     }
     if (!empty($owners)) {
       // Danger - 'cause if IN clause

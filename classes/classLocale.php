@@ -152,15 +152,15 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
 //        }
 //        $value = '(' . implode(',', $value) .')';
 //      }
-      classSupernova::$gc->db->doReplaceValues(
+      classSupernova::$gc->db->doInsertBatch(
         'lng_usage_stat', $this->stat_usage_new, array(
-          'lang_code',
-          'string_id',
-          'file',
-          'line',
-          'is_empty',
-          'locale',
-        )
+        'lang_code',
+        'string_id',
+        'file',
+        'line',
+        'is_empty',
+        'locale',
+      ), DB_INSERT_REPLACE
       );
     }
   }

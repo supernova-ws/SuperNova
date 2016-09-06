@@ -193,13 +193,13 @@ class SnDbCachedOperator {
    */
   // TODO - Change $filter to only array class
   public function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
-    if(is_array($filter)) {
+    if (is_array($filter)) {
       // TODO - TEMPORARY
       $filterString = array();
-      if(!empty($filter)) {
+      if (!empty($filter)) {
         foreach ($filter as $key => $value) {
-          if(!is_int($key)) {
-            $value = "`$key` = '" . $this->db->db_escape($value). "'";
+          if (!is_int($key)) {
+            $value = "`$key` = '" . $this->db->db_escape($value) . "'";
           }
           $filterString[$key] = $value;
         }
@@ -207,7 +207,7 @@ class SnDbCachedOperator {
 
       $filterString = implode(',', $filterString);
     } else {
-      $filterString =  $filter;
+      $filterString = $filter;
     }
 
 
@@ -230,7 +230,7 @@ class SnDbCachedOperator {
               array("distinct({{{$location_info[P_TABLE_NAME]}}}.{$owner_data[P_OWNER_FIELD]}) AS parent_id"),
               $filter,
               // Always selecting all records for correctly perform FILTER locks
-               $fetch ? DB_RECORD_ONE : DB_RECORDS_ALL,
+              $fetch ? DB_RECORD_ONE : DB_RECORDS_ALL,
 //              DB_RECORDS_ALL,
               DB_SELECT_PLAIN
             );
@@ -242,7 +242,7 @@ class SnDbCachedOperator {
               ($filter ? ' WHERE ' . $filter : '') .
               ($fetch ? ' LIMIT 1' : ''));
           }
-          while ($row = db_fetch($query)) {
+          while($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
             if (!$this->snCache->cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
@@ -255,7 +255,7 @@ class SnDbCachedOperator {
             $parent_id_field = static::$location_info[$owner_location_type][P_ID];
             $this->db_get_record_list($owner_location_type,
               $parent_id_field . (
-                count($parent_id_list) > 1
+              count($parent_id_list) > 1
                 ? " IN ({$indexes_str})"
                 : " = {$indexes_str}"
               ),
@@ -282,7 +282,7 @@ class SnDbCachedOperator {
           . " FOR UPDATE"
         );
       }
-      while ($row = db_fetch($query)) {
+      while($row = db_fetch($query)) {
         // Caching record in row cache
         $this->snCache->cache_set($location_type, $row);
         // Making ref to cached record in query cache
@@ -429,16 +429,18 @@ class SnDbCachedOperator {
   public function db_ins_field_set($location_type, $field_set) {
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
     $result = $this->db->doInsertSet($table_name, $field_set);
-    if ($result) {
-      if ($this->db->db_affected_rows()) {
-        // Обновляем данные только если ряд был затронут
-        $record_id = $this->db->db_insert_id();
-        // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
-        $result = $this->db_get_record_by_id($location_type, $record_id);
-        // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
-        // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
-        $this->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
-      }
+    if (!$result) {
+      return $result;
+    }
+
+    if ($this->db->db_affected_rows()) {
+      // Обновляем данные только если ряд был затронут
+      $record_id = $this->db->db_insert_id();
+      // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
+      $result = $this->db_get_record_by_id($location_type, $record_id);
+      // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
+      // TODO - когда будет поддержка изменения индексов и локаций - можно будет вызывать её
+      $this->snCache->cache_clear($location_type, false); // Мягкий сброс - только $queries
     }
 
     return $result;

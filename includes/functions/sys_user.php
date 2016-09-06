@@ -117,7 +117,7 @@ function sys_admin_player_ban($banner, $banned, $term, $is_vacation = true, $rea
     'ban_issuer_id'    => $banner['id'],
     'ban_issuer_name'  => $banner['username'],
     'ban_issuer_email' => $banner['email'],
-  ));
+  ), array());
 
   DBStaticPlanet::db_planet_set_by_owner(
     $banned['id'],
@@ -156,7 +156,7 @@ function sys_admin_player_ban_unset($banner, $banned, $reasonUnsafe = '') {
     'ban_issuer_id'    => $banner['id'],
     'ban_issuer_name'  => $banner['username'],
     'ban_issuer_email' => $banner['email'],
-  ));
+  ), array());
 }
 
 function player_create($username_unsafe, $email_unsafe, $options) {

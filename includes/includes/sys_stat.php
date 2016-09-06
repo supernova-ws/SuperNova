@@ -60,26 +60,26 @@ function sys_stat_calculate_flush(&$data, $force = false) {
   }
 
   if(!empty($data)) {
-    classSupernova::$gc->db->doReplaceValues(
+    classSupernova::$gc->db->doInsertBatch(
       TABLE_STAT_POINTS, $data, array(
-        'id_owner',
-        'id_ally',
-        'stat_type',
-        'stat_code',
-        'tech_points',
-        'tech_count',
-        'build_points',
-        'build_count',
-        'defs_points',
-        'defs_count',
-        'fleet_points',
-        'fleet_count',
-        'res_points',
-        'res_count',
-        'total_points',
-        'total_count',
-        'stat_date',
-      )
+      'id_owner',
+      'id_ally',
+      'stat_type',
+      'stat_code',
+      'tech_points',
+      'tech_count',
+      'build_points',
+      'build_count',
+      'defs_points',
+      'defs_count',
+      'fleet_points',
+      'fleet_count',
+      'res_points',
+      'res_count',
+      'total_points',
+      'total_count',
+      'stat_date',
+    ), DB_INSERT_REPLACE
     );
 
   }

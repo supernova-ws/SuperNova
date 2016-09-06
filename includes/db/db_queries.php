@@ -182,7 +182,7 @@ function db_get_set_unique_id_value($current_value_unsafe, $db_id_field_name, $d
   if (empty($value_id[$db_id_field_name])) {
     classSupernova::$db->doInsertSet($db_table_name, array(
       $db_value_field_name => $current_value_unsafe,
-    ));
+    ), array());
 
     $variable_id = classSupernova::$db->db_insert_id();
   } else {
@@ -261,7 +261,7 @@ function db_blitz_reg_insert($userId, $current_round) {
   classSupernova::$db->doInsertSet(TABLE_BLITZ_REGISTRATIONS, array(
     'user_id'      => $userId,
     'round_number' => $current_round,
-  ), DB_INSERT_IGNORE);
+  ), array(), DB_INSERT_IGNORE);
 }
 
 function db_blitz_reg_get_id_by_player_and_round($user, $current_round) {
@@ -424,7 +424,7 @@ function db_payment_list_modules() {
 function db_log_online_insert() {
   classSupernova::$db->doInsertSet(TABLE_LOG_USERS_ONLINE, array(
     'online_count' => (int)classSupernova::$config->var_online_user_count,
-  ), DB_INSERT_IGNORE);
+  ), array(), DB_INSERT_IGNORE);
 }
 
 // Log *************************************************************************************************************
@@ -524,7 +524,7 @@ function db_log_dark_matter_insert($user_id, $change_type, $dark_matter, $commen
     'log_dark_matter_comment'  => (string)$comment_unsafe,
     'log_dark_matter_page'     => (string)$page_url_unsafe,
     'log_dark_matter_sender'   => $user_id,
-  ));
+  ), array());
 }
 
 // REFERRALS ***********************************************************************************************************
@@ -565,7 +565,7 @@ function db_referral_insert($partnerId, $userId) {
   classSupernova::$db->doInsertSet(TABLE_REFERRALS, array(
     'id'         => $userId,
     'id_partner' => $partnerId,
-  ));
+  ), array());
 }
 
 

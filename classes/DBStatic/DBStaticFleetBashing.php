@@ -24,7 +24,11 @@ class DBStaticFleetBashing {
    * @param $bashing_list
    */
   public static function db_bashing_insert($bashing_list) {
-    classSupernova::$db->doInsertValues(TABLE_BASHING, $bashing_list, array('bashing_user_id', 'bashing_planet_id', 'bashing_time'));
+    classSupernova::$db->doInsertBatch(TABLE_BASHING, $bashing_list, array(
+      'bashing_user_id',
+      'bashing_planet_id',
+      'bashing_time',
+    ), DB_INSERT_PLAIN);
   }
 
 }

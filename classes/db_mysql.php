@@ -341,17 +341,19 @@ class db_mysql {
   // null - это null, а не строка'NULL'
 
   /**
-   * @param string $table
-   * @param array  $valuesOptionallyKeyByFields
-   * @param int    $replace - DB_INSERT_PLAIN || DB_INSERT_IGNORE
+   * @param string        $table
+   * @param array|array[] $valuesOptionallyKeyByFields
+   * @param array         $fields
    *
-   * @return array|bool|mysqli_result|null
+   * @param int           $replace - DB_INSERT_PLAIN || DB_INSERT_IGNORE
+   *
+   * @return array|bool|mysqli_result|null TODO - избаватьися от $fields. Это поле нужно только при пакетной вставке - а поля вполне можно брать из общего массива
+   * TODO - избаватьися от $fields. Это поле нужно только при пакетной вставке - а поля вполне можно брать из общего массива
    */
-  public function doInsertSet($table, $valuesOptionallyKeyByFields, $replace = DB_INSERT_PLAIN) {
-//    $fields = array();
-//    ->setFields($fields)
+  public function doInsertSet($table, $valuesOptionallyKeyByFields, $fields = array(), $replace = DB_INSERT_PLAIN) {
     $query = DbQuery::build($this)
       ->setTable($table)
+      ->setFields($fields)
       ->setValues($valuesOptionallyKeyByFields)
       ->insert($replace);
 
@@ -362,20 +364,15 @@ class db_mysql {
    * Values should be passed as array of arrays
    *
    * @param string  $table
-   * @param array[] $valuesOptionallyKeyByFields
+   * @param array[] $valuesBatch
    * @param array   $fields
+   *
    * @param int     $replace
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doInsertValues($table, &$valuesOptionallyKeyByFields, $fields = array(), $replace = DB_INSERT_PLAIN) {
-    $strSql = DbQuery::build($this)
-      ->setTable($table)
-      ->setFields($fields)
-      ->setValues($valuesOptionallyKeyByFields)
-      ->insert($replace);
-
-    return $this->doSql($strSql);
+  public function doInsertBatch($table, &$valuesBatch, $fields, $replace) {
+    return $this->doInsertSet($table, $valuesBatch, $fields, $replace);
   }
 
   // Just to separate INSERTS from REPLACES
@@ -390,24 +387,17 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function doReplaceSet($table, $fieldsAndValues) {
-    return $this->doInsertSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
+    return $this->doInsertSet($table, $fieldsAndValues, array(), DB_INSERT_REPLACE);
   }
 
-  /**
-   * Values should be passed as array of arrays
-   *
-   * @param string  $table
-   * @param array[] $values
-   *
-   * @param array   $fields
-   *
-   * @return array|bool|mysqli_result|null
-   */
-  public function doReplaceValues($table, &$values, $fields = array()) {
-    return $this->doInsertValues($table, $values, $fields, DB_INSERT_REPLACE);
-  }
 
+  //
   // UPDATERS
+  // Deprecated
+  public function doUpdateAdjust($strSql) {
+    return $this->doSql($strSql);
+  }
+
   public function doUpdateReallyComplex($query) {
     return $this->doSql($query);
   }

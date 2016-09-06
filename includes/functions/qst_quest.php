@@ -61,14 +61,13 @@ function qst_render_page() {
           db_quest_update($quest_name_unsafe, $quest_type, $quest_description_unsafe, $quest_conditions, $quest_rewards, $quest_id);
         } else {
           classSupernova::$db->doInsertSet(
-            TABLE_QUEST,
-            array(
-              'quest_name'        => $quest_name,
-              'quest_type'        => $quest_type,
-              'quest_description' => $quest_description,
-              'quest_conditions'  => $quest_conditions,
-              'quest_rewards'     => $quest_rewards,
-            )
+            TABLE_QUEST, array(
+            'quest_name'        => $quest_name,
+            'quest_type'        => $quest_type,
+            'quest_description' => $quest_description,
+            'quest_conditions'  => $quest_conditions,
+            'quest_rewards'     => $quest_rewards,
+          ), array()
           );
         }
 
@@ -264,12 +263,11 @@ function qst_reward(&$user, &$rewards, &$quest_list) {
         DBStaticMessages::msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, classLocale::$lang['msg_from_admin'], classLocale::$lang['qst_msg_complete_subject'], $comment);
 
         classSupernova::$db->doInsertSet(
-          TABLE_QUEST_STATUS,
-          array(
-            'quest_status_quest_id' => $quest_id,
-            'quest_status_user_id'  => $user_id,
-            'quest_status_status'   => QUEST_STATUS_COMPLETE
-          )
+          TABLE_QUEST_STATUS, array(
+          'quest_status_quest_id' => $quest_id,
+          'quest_status_user_id'  => $user_id,
+          'quest_status_status'   => QUEST_STATUS_COMPLETE
+        ), array()
         );
       }
     }
