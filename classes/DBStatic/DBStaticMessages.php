@@ -121,7 +121,7 @@ class DBStaticMessages {
         sys_user_options_unpack($owner_row);
 
         if ($force || !$message_class['switchable'] || $owner_row["opt_{$message_class_name}"]) {
-          $insert_values[] = "('" . idval($owner) . "', '{$sender}', '{$timestamp}', '{$message_type}', '" . db_escape($from_unsafe) . "', '" . db_escape($subject_unsafe) . "', '" . db_escape($text_unsafe) . "')";
+          $insert_values[] = array(idval($owner), $sender, $timestamp, $message_type, $from_unsafe, $subject_unsafe, $text_unsafe);
         }
 
         // TODO - allow sending HTML email only from admin
@@ -135,9 +135,8 @@ class DBStaticMessages {
         return;
       }
 
-      classSupernova::$db->doInsertValuesDeprecated(
-        TABLE_MESSAGES,
-        array(
+      classSupernova::$db->doInsertValues(
+        TABLE_MESSAGES, $insert_values, array(
           'message_owner',
           'message_sender',
           'message_time',
@@ -145,8 +144,7 @@ class DBStaticMessages {
           'message_from',
           'message_subject',
           'message_text',
-        ),
-        $insert_values
+        )
       );
     }
     if (!empty($owners)) {

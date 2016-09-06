@@ -17,19 +17,23 @@ class ObjectCollectionTest extends PHPUnit_Framework_TestCase {
    * @covers ::offsetSet
    * @covers ::offsetGet
    * @covers ::offsetUnset
+   * @covers ::count
    */
   public function test() {
     $s = new \Common\ObjectCollection();
     $o1 = new stdClass();
 
+    $this->assertEquals(0, count($s));
     $this->assertFalse(isset($s['i1']));
     $this->assertNull($s['i1']);
 
     $s['i1'] = $o1;
+    $this->assertEquals(1, count($s));
     $this->assertTrue(isset($s['i1']));
     $this->assertEquals($o1, $s['i1']);
 
     unset($s['i1']);
+    $this->assertEquals(0, count($s));
     $this->assertFalse(isset($s['i1']));
     $this->assertNull($s['i1']);
   }

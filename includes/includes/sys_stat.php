@@ -60,9 +60,8 @@ function sys_stat_calculate_flush(&$data, $force = false) {
   }
 
   if(!empty($data)) {
-    classSupernova::$gc->db->doReplaceValuesDeprecated(
-      TABLE_STAT_POINTS,
-      array(
+    classSupernova::$gc->db->doReplaceValues(
+      TABLE_STAT_POINTS, $data, array(
         'id_owner',
         'id_ally',
         'stat_type',
@@ -80,8 +79,7 @@ function sys_stat_calculate_flush(&$data, $force = false) {
         'total_points',
         'total_count',
         'stat_date',
-      ),
-      $data
+      )
     );
 
   }
@@ -253,10 +251,29 @@ function sys_stat_calculate() {
     $user_points = array_sum($points[$user_id]);
     $user_counts = array_sum($counts[$user_id]);
 
-    $data[] = $q = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
-      "'{$points[$user_id][UNIT_STRUCTURES]}','{$counts[$user_id][UNIT_STRUCTURES]}','{$user_defence_points}','{$user_defence_counts}'," .
-      "'{$points[$user_id][UNIT_SHIPS]}','{$counts[$user_id][UNIT_SHIPS]}','{$points[$user_id][UNIT_RESOURCES]}','{$counts[$user_id][UNIT_RESOURCES]}'," .
-      "{$user_points},{$user_counts}," . SN_TIME_NOW . ")";
+//    $data[] = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
+//      "'{$points[$user_id][UNIT_STRUCTURES]}','{$counts[$user_id][UNIT_STRUCTURES]}','{$user_defence_points}','{$user_defence_counts}'," .
+//      "'{$points[$user_id][UNIT_SHIPS]}','{$counts[$user_id][UNIT_SHIPS]}','{$points[$user_id][UNIT_RESOURCES]}','{$counts[$user_id][UNIT_RESOURCES]}'," .
+//      "{$user_points},{$user_counts}," . SN_TIME_NOW . ")";
+    $data[] = array(
+      $user_id,
+      $ally_id,
+      1,
+      1,
+      $points[$user_id][UNIT_TECHNOLOGIES],
+      $counts[$user_id][UNIT_TECHNOLOGIES],
+      $points[$user_id][UNIT_STRUCTURES],
+      $counts[$user_id][UNIT_STRUCTURES],
+      $user_defence_points,
+      $user_defence_counts,
+      $points[$user_id][UNIT_SHIPS],
+      $counts[$user_id][UNIT_SHIPS],
+      $points[$user_id][UNIT_RESOURCES],
+      $counts[$user_id][UNIT_RESOURCES],
+      $user_points,
+      $user_counts,
+      SN_TIME_NOW,
+    );
 
     sys_stat_calculate_flush($data);
   }

@@ -380,13 +380,12 @@ pdie();
     $this->moon_calculator->db_apply_result($this->ube_planet_info, $destination_user_id);
 
     $bashing_list = array();
-    $players_sides = $this->players->get_player_sides();
-    foreach($players_sides as $player_id => $player_side) {
+    foreach($this->players->get_player_sides() as $player_id => $player_side) {
       if($player_side != UBE_PLAYER_IS_ATTACKER) {
         continue;
       }
       if($this->moon_calculator->get_status() != UBE_MOON_DESTROY_SUCCESS) {
-        $bashing_list[] = "({$player_id}, {$this->ube_planet_info[PLANET_ID]}, {$this->combat_timestamp})";
+        $bashing_list[] = array($player_id, $this->ube_planet_info[PLANET_ID], $this->combat_timestamp);
       }
       if($this->mission_type_id == MT_ATTACK && $this->is_defender_active_player) {
         $str_loose_or_win = $this->combat_result == UBE_COMBAT_RESULT_WIN ? 'raidswin' : 'raidsloose';

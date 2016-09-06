@@ -146,23 +146,21 @@ isset($this->container[$try_language][$offset]) ? $locale_cache_statistic['hits'
     if(!empty($this->stat_usage_new)) {
       classSupernova::$cache->lng_stat_usage = $this->stat_usage;
       classSupernova::$db->doSelect("SELECT 1 FROM `{{lng_usage_stat}}` LIMIT 1");
-      foreach($this->stat_usage_new as &$value) {
-        foreach($value as &$value2) {
-          $value2 = '"' . db_escape($value2) . '"';
-        }
-        $value = '(' . implode(',', $value) .')';
-      }
-      classSupernova::$gc->db->doReplaceValuesDeprecated(
-        'lng_usage_stat',
-        array(
+//      foreach($this->stat_usage_new as &$value) {
+//        foreach($value as &$value2) {
+//          $value2 = '"' . db_escape($value2) . '"';
+//        }
+//        $value = '(' . implode(',', $value) .')';
+//      }
+      classSupernova::$gc->db->doReplaceValues(
+        'lng_usage_stat', $this->stat_usage_new, array(
           'lang_code',
           'string_id',
           'file',
           'line',
           'is_empty',
           'locale',
-        ),
-        $this->stat_usage_new
+        )
       );
     }
   }

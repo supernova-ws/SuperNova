@@ -159,16 +159,18 @@ class UBEReport {
     $ube->rounds->sql_generate_unit_array($sql_perform['ube_report_unit'], $ube_report_id, $ube->fleet_list);
 
     // Пакетная вставка данных
-    foreach($sql_perform as $table_name => $table_data) {
+    // First row is a list of field names
+    foreach($sql_perform as $table_name => &$table_data) {
+      // If only field names in this table - doing nothing
       if(count($table_data) < 2) {
         continue;
       }
-      foreach($table_data as &$record_data) {
-        $record_data = '(' . implode(',', $record_data) . ')';
-      }
+//      foreach($table_data as &$record_data) {
+//        $record_data = '(' . implode(',', $record_data) . ')';
+//      }
       $fields = $table_data[0];
       unset($table_data[0]);
-      classSupernova::$db->doInsertValuesDeprecated($table_name, $fields, $table_data);
+      classSupernova::$db->doInsertValues($table_name, $table_data, $fields);
     }
 
     return $ube->report_cypher;

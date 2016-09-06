@@ -8,7 +8,7 @@ use Common\ContainerAccessors;
  * Class Entity\EntityContainer
  *
  * @property array $row      - Entity row read from/write to DB
- * @property int   $dbStatus - Entity status related to DB
+ * property int   $dbStatus - Entity status related to DB
  *
  */
 class EntityContainer extends ContainerAccessors {
@@ -32,11 +32,11 @@ class EntityContainer extends ContainerAccessors {
    */
   protected $delta = array();
 
-//  /**
-//   * @var int
-//   */
-//    // TODO - find usages and replace
-//  protected $dbStatus = DB_RECORD_NEW;
+  /**
+   * @var int
+   */
+  // TODO - Make private
+  public $dbStatus = DB_RECORD_NEW;
 
   /** @noinspection PhpMissingParentConstructorInspection */
   /**

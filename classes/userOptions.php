@@ -123,19 +123,17 @@ class userOptions extends oldArrayAccessNd {
     $update_cache = false;
 
     if(!empty($this->to_write)) {
-      foreach($this->to_write as $key => $cork) {
+      foreach($this->to_write as $key => &$value) {
         $value = is_array($this->data[$key]) ? serialize($this->data[$key]) : $this->data[$key]; // Сериализация для массивов при сохранении в БД
-        $this->to_write[$key] = "({$this->user_id}, '" . db_escape($key) . "', '" . db_escape($value) . "')";
+        $value = array($this->user_id, $key, $value);
       }
 
-      classSupernova::$gc->db->doReplaceValuesDeprecated(
-        TABLE_PLAYER_OPTIONS,
-        array(
+      classSupernova::$gc->db->doReplaceValues(
+        TABLE_PLAYER_OPTIONS, $this->to_write, array(
           'player_id',
           'option_id',
           'value',
-        ),
-        $this->to_write
+        )
       );
 
 
@@ -364,17 +362,15 @@ class userOptionsOld implements ArrayAccess {
 
       foreach($to_write as $option_id => &$option_value) {
         $option_value = is_array($this->data[$option_id]) ? serialize($this->data[$option_id]) : $this->data[$option_id]; // Сериализация для массивов при сохранении в БД
-        $to_write[$option_id] = "({$this->user_id}, '" . db_escape($option_id) . "', '" . db_escape($option_value) . "')";
+        $option_value = array($this->user_id, $option_id, $option_value);
       }
 
-      classSupernova::$gc->db->doReplaceValuesDeprecated(
-        TABLE_PLAYER_OPTIONS,
-        array(
+      classSupernova::$gc->db->doReplaceValues(
+        TABLE_PLAYER_OPTIONS, $to_write, array(
           'player_id',
           'option_id',
           'value',
-        ),
-        $to_write
+        )
       );
     }
   }

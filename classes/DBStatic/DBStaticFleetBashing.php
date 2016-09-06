@@ -24,7 +24,7 @@ class DBStaticFleetBashing {
    * @param $bashing_list
    */
   public static function db_bashing_insert($bashing_list) {
-    classSupernova::$db->doInsertValuesDeprecated(TABLE_BASHING, array('bashing_user_id', 'bashing_planet_id', 'bashing_time'), $bashing_list);
+    classSupernova::$db->doInsertValues(TABLE_BASHING, $bashing_list, array('bashing_user_id', 'bashing_planet_id', 'bashing_time'));
   }
 
 }

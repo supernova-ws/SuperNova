@@ -32,7 +32,7 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
    * @covers ::indexUnset
    * @covers ::indexSet
    * @covers ::indexIsSet
-   * @covers ::indexEmpty
+   * @covers ::onObjectIndexEmpty
    */
   public function test() {
     $s = new \Common\IndexedObjectStorage();
@@ -142,7 +142,7 @@ class IndexedObjectStorageTest extends PHPUnit_Framework_TestCase {
    * @covers ::indexRebuild
    * @covers ::indexUnset
    * @covers ::indexSet
-   * @covers ::indexDuplicated
+   * @covers ::onObjectIndexDuplicated
    */
   public function testExceptionDuplicateIndex() {
     $s = new \Common\IndexedObjectStorage();

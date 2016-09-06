@@ -1,3 +1,16 @@
+Unify
+    doInsertValues
+    doInsertSet
+
+Replaces also
+
+
+
+
+
+
+
+
 db_mysql -> operator
     - Использовать его для доступа к БД
 

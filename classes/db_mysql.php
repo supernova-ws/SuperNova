@@ -332,74 +332,53 @@ class db_mysql {
 
   //
   // INSERT/REPLACE ----------------------------------------------------------------------------------------------------
-  protected function doSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
-    $query = DbQuery::build($this)
-      ->setTable($table)
-      ->setValues($fieldsAndValues)
-      ->insertSet($replace);
-
+  public function doInsertComplex($query) {
     return $this->doSql($query);
   }
 
   // TODO - batch insert and replace here
   // перед тем, как переделывать данные из депрекейтов - убедится, что
   // null - это null, а не строка'NULL'
-  /**
-   * Values should be passed as-is
-   *
-   * DANGER! Values should be properly escaped before passing here
-   *
-   * @param string   $table
-   * @param array    $fields
-   * @param string[] $valuesDanger
-   * @param int      $replace
-   *
-   * @return array|bool|mysqli_result|null
-   * @deprecated
-   */
-  protected function doInsertBatchDanger($table, $fields, &$valuesDanger, $replace = DB_INSERT_PLAIN) {
-    $query = DbQuery::build($this)
-      ->setTable($table)
-      ->setFields($fields)
-      ->setValuesDanger($valuesDanger)
-      ->insertBatch($replace);
-
-    return $this->doSql($query);
-  }
-
-
-  // INSERTERS
-  public function doInsertComplex($query) {
-    return $this->doSql($query);
-  }
 
   /**
    * @param string $table
-   * @param array  $fieldsAndValues
+   * @param array  $valuesOptionallyKeyByFields
    * @param int    $replace - DB_INSERT_PLAIN || DB_INSERT_IGNORE
    *
    * @return array|bool|mysqli_result|null
    */
-  public function doInsertSet($table, $fieldsAndValues, $replace = DB_INSERT_PLAIN) {
-    return $this->doSet($table, $fieldsAndValues, $replace);
+  public function doInsertSet($table, $valuesOptionallyKeyByFields, $replace = DB_INSERT_PLAIN) {
+//    $fields = array();
+//    ->setFields($fields)
+    $query = DbQuery::build($this)
+      ->setTable($table)
+      ->setValues($valuesOptionallyKeyByFields)
+      ->insert($replace);
+
+    return $this->doSql($query);
   }
 
-  /**
-   * Values should be passed as-is
+  /**+
+   * Values should be passed as array of arrays
    *
-   * @param string   $table
-   * @param array    $fields
-   * @param string[] $values
+   * @param string  $table
+   * @param array[] $valuesOptionallyKeyByFields
+   * @param array   $fields
+   * @param int     $replace
    *
    * @return array|bool|mysqli_result|null
-   * @deprecated
    */
-  public function doInsertValuesDeprecated($table, $fields, &$values) {
-    return $this->doInsertBatchDanger($table, $fields, $values, DB_INSERT_PLAIN);
+  public function doInsertValues($table, &$valuesOptionallyKeyByFields, $fields = array(), $replace = DB_INSERT_PLAIN) {
+    $strSql = DbQuery::build($this)
+      ->setTable($table)
+      ->setFields($fields)
+      ->setValues($valuesOptionallyKeyByFields)
+      ->insert($replace);
+
+    return $this->doSql($strSql);
   }
 
-
-  // REPLACERS
+  // Just to separate INSERTS from REPLACES
   /**
    * Replaces record in DB
    *
@@ -411,23 +390,22 @@ class db_mysql {
    * @return array|bool|mysqli_result|null
    */
   public function doReplaceSet($table, $fieldsAndValues) {
-    return $this->doSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
+    return $this->doInsertSet($table, $fieldsAndValues, DB_INSERT_REPLACE);
   }
 
   /**
-   * Values should be passed as-is
+   * Values should be passed as array of arrays
    *
-   * @param string   $table
-   * @param array    $fields
-   * @param string[] $values
+   * @param string  $table
+   * @param array[] $values
+   *
+   * @param array   $fields
    *
    * @return array|bool|mysqli_result|null
-   * @deprecated
    */
-  public function doReplaceValuesDeprecated($table, $fields, &$values) {
-    return $this->doInsertBatchDanger($table, $fields, $values, DB_INSERT_REPLACE);
+  public function doReplaceValues($table, &$values, $fields = array()) {
+    return $this->doInsertValues($table, $values, $fields, DB_INSERT_REPLACE);
   }
-
 
   // UPDATERS
   public function doUpdateReallyComplex($query) {

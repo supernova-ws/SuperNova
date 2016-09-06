@@ -91,18 +91,16 @@ class classPersistent extends classCache {
     $qry = array();
     foreach ($item_list as $item_name => $item_value) {
       if ($item_name) {
-        $item_value = db_escape($item_value === null ? $this->$item_name : $item_value);
-        $item_name = db_escape($item_name);
-        $qry[] = "('{$item_name}', '{$item_value}')";
+        $item_value = $item_value === null ? $this->$item_name : $item_value;
+//        $item_name = $item_name;
+        $qry[] = array($item_name, $item_value);
       }
     }
-    classSupernova::$gc->db->doReplaceValuesDeprecated(
-      $this->table_name,
-      array(
+    classSupernova::$gc->db->doReplaceValues(
+      $this->table_name, $qry, array(
         $this->sql_index_field,
         $this->sql_value_field,
-      ),
-      $qry
+      )
     );
 
 

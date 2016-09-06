@@ -155,22 +155,22 @@ class DbQuery {
     return $result;
   }
 
-  public function insertSet($replace = DB_INSERT_PLAIN) {
+
+  public function insert($replace = DB_INSERT_PLAIN, $forceSingleInsert = false) {
     $this->build = array();
     $this->buildCommand($this->setInsertCommand($replace));
-    $this->buildSetFields();
 
-    return $this->__toString();
-  }
+    if(!$forceSingleInsert && is_array($this->fields) && !empty($this->fields)) {
+      // If there are fields - it's batch insert... unless it forced single insert
+      $this->build[] = " (";
+      $this->buildFieldNames(); // used $this->fields
+      $this->build[] = ") VALUES ";
+      $this->buildValuesVector(); // $this->valuesDanger + $this->values
+    } else {
+      // Otherwise - it's single field insert
+      $this->buildSetFields();
+    }
 
-  public function insertBatch($replace = DB_INSERT_PLAIN) {
-    $this->build = array();
-
-    $this->buildCommand($this->setInsertCommand($replace));
-    $this->build[] = " (";
-    $this->buildFieldNames();
-    $this->build[] = ") VALUES ";
-    $this->buildValuesVector();
 
     return $this->__toString();
   }
@@ -199,7 +199,7 @@ class DbQuery {
   }
 
   /**
-   * @param array $values
+   * @param array|array[] $values
    *
    * @return $this
    */
