@@ -22,10 +22,10 @@ filter:
 # Excluding minified files
 #        - "**.min.js"
 #        - "**.min.css"
-        - *.min.js
-#        - **.min.js
-        - *.min.css
-#        - **.min.css
+#        - *.min.js
+        - **.min.js
+#        - *.min.css
+        - **.min.css
 coding_style:
     php:
         indentation:
