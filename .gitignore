@@ -41,6 +41,7 @@ t.*
 !.gitignore
 !.gitattributes
 !.htaccess
+!.codeclimate.yml
 
 # Ignoring all files started with "__" - it's a local or global test files
 __*
