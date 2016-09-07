@@ -26,7 +26,9 @@ filter:
 #        - **/**.min.js
 #        - *.min.css
 #        - */*/*.min.css
-        - design/*/*.min.js
+        - design/*/*.min.css
+        - js/*/*.min.js
+#        - js/*.min.js
 coding_style:
     php:
         indentation:
