@@ -1,7 +1,6 @@
 <?php
 
 use Vector\Vector;
-
 use Common\GlobalContainer;
 
 class classSupernova {
