@@ -15,7 +15,7 @@ filter:
 #        - tests.int/**/*
         - vendor/*
 #        - "**/vendor/**/*"
-        - spec/**/*
+        - spec/*
 # Excluding Sypex Dumper files
         - admin/sxd/*
 #        - "admin/sxd/**/*"
@@ -23,9 +23,9 @@ filter:
 #        - "**.min.js"
 #        - "**.min.css"
         - *.min.js
-        - **.min.js
+#        - **.min.js
         - *.min.css
-        - **.min.css
+#        - **.min.css
 coding_style:
     php:
         indentation:
