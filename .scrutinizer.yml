@@ -9,18 +9,23 @@ build:
 filter:
     excluded_paths:
 ## Excluding Tests, Specs and Vendor Directories at any Level
-#        - tests/*
-        - tests/**/*
-        - tests.int/**/*
+        - tests/*
+#        - tests/**/*
+        - tests.int/*
+#        - tests.int/**/*
         - vendor/*
-        - "**/vendor/**/*"
+#        - "**/vendor/**/*"
         - spec/**/*
 # Excluding Sypex Dumper files
-#        - admin/sxd/*
-        - "admin/sxd/**/*"
+        - admin/sxd/*
+#        - "admin/sxd/**/*"
 # Excluding minified files
-        - "**.min.js"
-        - "**.min.css"
+#        - "**.min.js"
+#        - "**.min.css"
+        - *.min.js
+        - **.min.js
+        - *.min.css
+        - **.min.css
 coding_style:
     php:
         indentation:
