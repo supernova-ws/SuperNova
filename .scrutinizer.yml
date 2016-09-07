@@ -23,7 +23,7 @@ filter:
 #        - "**.min.js"
 #        - "**.min.css"
 #        - *.min.js
-        - **/*.min.js
+        - **/**.min.js
 #        - *.min.css
         - **/**.min.css
 coding_style:
