@@ -18,7 +18,7 @@ filter:
         - spec/
 # Excluding Sypex Dumper files
         - admin/sxd/*
-        - **/sxd/
+#        - **/sxd/
 #        - "admin/sxd/**/*"
 # Excluding minified files
 #        - "**.min.js"
