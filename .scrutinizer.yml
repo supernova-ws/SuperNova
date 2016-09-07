@@ -29,7 +29,7 @@ filter:
 #        - */*/*.min.css
         - design/*/*.min.css
         - js/*/*.min.js
-#        - js/*.min.js
+        - js/lib/*
 coding_style:
     php:
         indentation:

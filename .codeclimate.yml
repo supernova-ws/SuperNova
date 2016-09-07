@@ -39,6 +39,7 @@ exclude_paths:
 - tests/**/*
 - tests.int/**/*
 - spec/**/*
+- js/lib/**/*
 - "**/vendor/**/*"
 ## Excluding
 #- "admin/sxd/**/*"
