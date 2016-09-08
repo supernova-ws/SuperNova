@@ -1,10 +1,10 @@
 <!-- INCLUDE _result_message -->
 
 <script type="text/javascript"><!--
-var production = Array();
+var production = [];
 <!-- BEGIN production -->
   <!-- IF production.ID && production.LEVEL -->
-    production[{production.ID}] = [{production.LEVEL}];
+    production[Math.intVal('{production.ID}')] = [Math.floorVal('{production.LEVEL}')];
   <!-- ENDIF -->
 <!-- END production -->
 

@@ -1,4 +1,3 @@
-- В основном коде устаревшие функции jQuery bind(), live() и delegate() заменены на on(), a unbind() - на off()
 - .bind replaced with .on
   .unbind replaced with .off
   .delegate replaced with .on
