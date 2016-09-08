@@ -83,7 +83,7 @@ function eco_mrk_ship_recalc()
             sn_ainput_make_jquery();
             //sn_ainput_make('ships[{ships.ID}]', {max: ships[{ships.ID}]['count'], value: '{ships.AMOUNT}'});
 
-            jQuery('#ships{ships.ID}slide').bind('slide slidechange', eco_mrk_ship_recalc);
+            jQuery('#ships{ships.ID}slide').on('slide slidechange', eco_mrk_ship_recalc);
           </script>
         </td>
       </tr>

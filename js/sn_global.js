@@ -1,6 +1,16 @@
 if (typeof(window.LOADED_GLOBAL) === 'undefined') {
   var LOADED_GLOBAL = true;
 
+  // Constants
+  var CLASS_POSITIVE = "positive";
+
+  // Localization class
+  var language = {};
+
+  var x = "";
+  var e = null;
+  var sn_inframe = window.frameElement ? getFrameName(self) : false;
+
   // Fix to jQuery-UI improper tab handling
   $.fn.__tabs = $.fn.tabs;
   $.fn.tabs = function (a, b, c, d, e, f) {
@@ -10,6 +20,39 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       $(this).attr('href', base + href);
     });
     return $(this).__tabs(a, b, c, d, e, f);
+  };
+
+  /**
+   * Converts value to integer
+   *
+   * @param value
+   * @returns {int}
+   */
+  Math.intVal = function (value) {
+    var parsed = parseInt(value);
+    return parsed ? parsed : 0;
+    // return typeof parsed === 'number' && !isNaN(parsed) && parsed !== Infinity ? parsed : 0;
+  };
+
+  /**
+   * Converts value to float
+   *
+   * @param value
+   * @returns {float}
+   */
+  Math.floatVal = function (value) {
+    var parsed = parseFloat(value);
+    return parsed ? parsed : 0;
+  };
+
+  Math.roundVal = function (value) {
+    return Math.round(Math.floatVal(value));
+  };
+  Math.floorVal = function (value) {
+    return Math.floor(Math.floatVal(value));
+  };
+  Math.ceilVal = function (value) {
+    return Math.ceil(Math.floatVal(value));
   };
 
   /**
@@ -37,8 +80,13 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     return number2 ? Math.round((pixels < 0 ? -pixels : 0) + (number1 / number2 * pixels)) + 'px' : 0;
   };
 
-  var sn_inframe;
 
+  /**
+   * Gets name of supplied frame
+   *
+   * @param frame
+   * @returns {*}
+   */
   function getFrameName(frame) {
     for (var i = 0; i < parent.frames.length; i++) {
       if (parent.frames[i] === frame) {
@@ -47,15 +95,14 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
   }
 
-  sn_inframe = window.frameElement ? getFrameName(self) : false;
-  //if(sn_inframe = window.frameElement ? getFrameName(self) : false) {
-  //  if(sn_inframe != 'sn_frame_chat' && sn_inframe != 'sn_frame_main') {
-  //    top.location.href = SN_ROOT_VIRTUAL;
-  //  }
-  //}
-  //alert(sn_inframe);
-  //alert(top === self);
 
+  /**
+   * Delays function execution
+   *
+   * @param func
+   * @param wait
+   * @returns {number}
+   */
   var sn_delay = function (func, wait) {
     var args = Array.prototype.slice.call(arguments, 2);
     return setTimeout(function () {
@@ -63,6 +110,11 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     }, wait);
   };
 
+  /**
+   * Formats string, replacing {0}, {1}, {2} etc with zero, first, second etc param
+   *
+   * @returns {string}
+   */
   String.prototype.format = function () {
     var args = arguments;
     return this.replace(/\{\{|\}\}|\{(\d+)\}/g, function (m, n) {
@@ -76,16 +128,11 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     });
   };
 
-  var language = {};
-
-  var x = "";
-  var e = null;
-
-  //jQuery(document).ready(function () {
-  // Нельзя полагаться на document.ready() из-за возможных проблем с загрузкой скриптов со сторонних серверов!
-  function document_ready() {
-    // Натягиваем скины на элементы ввода
-    inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
+  /**
+   * Skins input elements
+   */
+  function skinInputs() {
+    var inputs = jQuery("input:not(.do-not-skin),button:not(.do-not-skin)");
     inputs.filter(':button, :submit, :reset').button(); // .addClass('ui-textfield');
     inputs.filter(':text, :password, :file').button().addClass('ui-textfield ui-input-text').off('keydown');
     // inputs.filter(':checkbox, :radio').addClass("ui-corner-all ui-state-default ui-textfield");
@@ -94,70 +141,75 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     jQuery('textarea:not(#ally_text)').button().addClass('ui-textfield ui-input-text').off('keydown');
 
     //inputs.filter(':checkbox, :radio').checkator();
+  }
 
-    // calc_elements();
+  function makeBlink() {
+    if (!jQuery.fx.off) {
+      jQuery('.blink').each(function () {
+        sn_blink(this);
+      });
+    }
+  }
+
+  //jQuery(document).ready(function () {
+  // Нельзя полагаться на document.ready() из-за возможных проблем с загрузкой скриптов со сторонних серверов!
+  function document_ready() {
+    var theBody = $('body');
+
+    // Натягиваем скины на элементы ввода
+    skinInputs();
 
     // Запуск таймеров
     if (typeof(sn_timer) === 'function') {
       sn_timer();
     }
 
-    $(document).on('click', '#font_minus, #font_normal, #font_plus', function () {
+    // It's here 'cause font manipulation is available only after DOM fully loaded
+    $('#font_minus, #font_normal, #font_plus').on('click', function () {
       var temp = FONT_SIZE;
-      $(this).attr('id') == 'font_plus' ? FONT_SIZE += FONT_SIZE_PERCENT_STEP :
-        ($(this).attr('id') == 'font_minus' ? FONT_SIZE -= FONT_SIZE_PERCENT_STEP : FONT_SIZE = FONT_SIZE_PERCENT_DEFAULT);
-      FONT_SIZE > FONT_SIZE_PERCENT_MAX ? FONT_SIZE = FONT_SIZE_PERCENT_MAX :
-        (FONT_SIZE < FONT_SIZE_PERCENT_MIN ? FONT_SIZE = FONT_SIZE_PERCENT_MIN : false);
 
-      new_size = (parseFloat($('body').css('font-size')) * FONT_SIZE / temp);
-      //console.log('old ' + $('body').css('font-size'));
-      //$('html').css('font-size', new_size + 'px');
+      switch ($(this).attr('id')) {
+        case 'font_plus':
+          FONT_SIZE += FONT_SIZE_PERCENT_STEP;
+          break;
+        case 'font_minus':
+          FONT_SIZE -= FONT_SIZE_PERCENT_STEP;
+          break;
+        default:
+          FONT_SIZE = FONT_SIZE_PERCENT_DEFAULT;
+          break;
+      }
 
+      FONT_SIZE = Math.min(FONT_SIZE, FONT_SIZE_PERCENT_MAX);
+      FONT_SIZE = Math.max(FONT_SIZE, FONT_SIZE_PERCENT_MIN);
 
-      //temp != FONT_SIZE ? $('*').css('font-size', new_size + 'px') : false;
-      temp != FONT_SIZE ? $('body').css('font-size', new_size + 'px') : false;
+      var new_size = Math.floatVal(theBody.css('font-size')) * FONT_SIZE / temp;
 
-      //console.log('new ' + $('body').css('font-size'));
-      //console.log('exp ' + new_size + 'px');
-
-      //Math.round(FONT_SIZE / temp * 100) != 100 ?
-      //  $('*').each(function() {
-      //    console.log($(this).css('font-size'));
-      //    $(this).css('font-size', (parseFloat($(this).css('font-size')) * FONT_SIZE / temp) + 'px');
-      //  }) : false;
-      //$('*').css('font-size', (FONT_SIZE / temp * 100) + '%');
-      //$('*').css('font-size', ($('html').css('font-size') * FONT_SIZE / temp) + 'px');
-
-
-      //console.log('old ' + $('html').css('font-size'));
-      //var currentFontSize = $('html').css('font-size');
-      //var currentFontSizeNum = parseFloat(currentFontSize, 10);
-      //var newFontSize = currentFontSizeNum*1.2;
-      //$('html').css('font-size', newFontSize);
-      //console.log(newFontSize);
-      //console.log('new ' + $('html').css('font-size'));
-
+      if (temp != FONT_SIZE) {
+        theBody.css('font-size', new_size + 'px');
+      }
 
       jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function (data) {
       });
     });
 
-    !jQuery.fx.off ? jQuery('.blink').each(function () {
-      sn_blink(this);
-    }) : false;
+    makeBlink();
   }
-
-  //);
 
   function sn_blink(that) {
     that = $(that);
-    that.animate({opacity: that.css('opacity') == 0 ? 1 : 0}, that.attr('duration') ? parseInt(that.attr('duration')) : 1000, function () {
-      sn_blink(this)
-    });
+    that.animate(
+      {opacity: that.css('opacity') == 0 ? 1 : 0},
+      that.attr('duration')
+        ? parseInt(that.attr('duration'))
+        : 1000,
+      function () {
+        sn_blink(this)
+      });
   }
 
-
-  $(document).on('click', '.password_show', function () {
+  $('.password_show').on('click', function () {
+    var button_value, input, type;
     input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
     if (input.attr('type') == 'password') {
       type = 'text';
@@ -169,7 +221,6 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
 
     var rep = $('<input type="' + type + '" maxlength="32" />').attr('name', input.attr('name')).attr("class", input.attr("class")).val(input.val()).insertBefore(input);
-    ;
     rep.attr("id", input.attr("id"));
 
     input.remove();
@@ -185,26 +236,32 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     location.reload();
   }
 
-  jQuery(document).on('click', '[news_toggle]', function () {
+  jQuery('[news_toggle]').on('click', function () {
     $('#news_' + $(this).attr('news_toggle')).show();
     $(this).remove();
   });
 
-  jQuery(document).on('click', '.survey_block [survey_id]', function () {
+  jQuery('.survey_block [survey_id]').on('click', function () {
     var survey_id = $(this).attr('survey_id');
     $('.survey_block [survey_id=' + survey_id + ']').removeClass('button_pseudo_pressed');
     $(this).addClass('button_pseudo_pressed');
     $('input:radio[name="survey[' + survey_id + ']"]').val([$(this).attr('answer_id')]);
   });
 
-  jQuery(document).on('click', '.button_pseudo', function () {
+  jQuery('.button_pseudo').on('click', function () {
     $(this).addClass('button_pseudo_pressed');
   });
 
-  jQuery(document).on('change', '#sort_elements,#sort_elements_inverse', function () {
-    jQuery.post($('#page_file_name').val() + '?mode=' + $('#mode').val() + '&sort_elements=' + $('#sort_elements').val() + '&sort_elements_inverse=' + ($('#sort_elements_inverse').is(':checked') ? '1' : '0'), function () {
-      sn_reload();
-    });
+  jQuery('#sort_elements,#sort_elements_inverse').on('change', function () {
+    jQuery.post(
+      $('#page_file_name').val()
+      + '?mode=' + $('#mode').val()
+      + '&sort_elements=' + $('#sort_elements').val()
+      + '&sort_elements_inverse=' + ($('#sort_elements_inverse').is(':checked') ? '1' : '0'),
+      function () {
+        sn_reload();
+      }
+    );
   });
 
   /* CHAT_ADVANCED specific */
@@ -231,18 +288,18 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     jQuery("#" + jQuery(this).attr('parent_id')).val(0).trigger('change', [event, ui]);
   });
   jQuery(document).on('click', "input:button[id$='ai_max']", function (event, ui) {
-    field_name = '#' + jQuery(this).attr('parent_id');
+    var field_name = '#' + jQuery(this).attr('parent_id');
     jQuery(field_name).val(parseInt(jQuery(field_name + 'slide').slider("option", "max"))).trigger('change', [event, ui]);
   });
   jQuery(document)
     .on('mousedown', "input:button[id$='ai_dec'],input:button[id$='ai_inc']", function (event, ui) {
-      that = jQuery(this);
+      var that = jQuery(this);
       var parentIEFix = jQuery('#' + that.attr('parent_id'));
       if (parentIEFix.is('[disabled]') || parentIEFix.is('[slider_ticks]')) {
         return;
       }
 
-      slider = jQuery("#" + that.attr('parent_id') + 'slide');
+      var slider = jQuery("#" + that.attr('parent_id') + 'slide');
 
       parentIEFix.attr('slider_ticks', 0)
         .attr('step_now', slider.slider('option', 'step'))
@@ -260,6 +317,9 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       if (ui != undefined && ui.type == 'slidechange') {
         return;
       }
+
+      var slider, value, min_slide, max_slide;
+
       slider = jQuery('#' + jQuery(this).attr('id') + 'slide');
       value = (value = parseInt(jQuery(this).val())) ? value : 0;
       value = value > (max_slide = parseInt(slider.slider("option", "max"))) ? max_slide :
@@ -273,7 +333,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       this.select();
     })
     .on('blur', "[ainput]", function (event, ui) {
-      that = jQuery(this);
+      var that = jQuery(this);
       that.val(parseInt(that.val()) ? that.val() : 0);
     })
   ;
@@ -306,6 +366,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   jQuery(document).on('click', "[go]", function () {
     var location = [], planet_id, mode, unit_id;
+    var planet_system, planet_planet, planet_type, mission;
 
     var target = jQuery(this).attr('target');
     var page = jQuery(this).attr('go');
@@ -371,7 +432,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   // Сбор ресурсов
   jQuery(document).on('click', ".unit_preview .icon_gather", function () {
-    that = $(this);
+    var that = $(this);
     document.location = 'fleet.php?fleet_page=5' + (typeof PLANET_ID !== 'undefined' && parseInt(PLANET_ID) ? '&cp=' + parseInt(PLANET_ID) : '')
       + (parseFloat(that.attr('metal')) ? '&metal=' + parseFloat(that.attr('metal')) : '')
       + (parseFloat(that.attr('crystal')) ? '&crystal=' + parseFloat(that.attr('crystal')) : '')
@@ -381,11 +442,13 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   function sn_ainput_mouselerate_jquery() {
     jQuery('[slider_ticks]').each(function () {
-      that = jQuery(this);
-      slider = jQuery("#" + that.attr('id') + 'slide');
+      var val, option_min, option_max, ticks;
+
+      var that = jQuery(this);
+      var slider = jQuery("#" + that.attr('id') + 'slide');
       val = (val = parseInt(that.val())) ? val : 0;
-      step_now = parseInt(that.attr('step_now'));
-      val_next = val + step_now * parseInt(that.attr('increase'));
+      var step_now = parseInt(that.attr('step_now'));
+      var val_next = val + step_now * parseInt(that.attr('increase'));
       val_next = val_next > (option_min = parseInt(slider.slider("option", "min"))) ? val_next : option_min;
       val_next = val_next < (option_max = parseInt(slider.slider("option", "max"))) ? val_next : option_max;
 
@@ -402,23 +465,25 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   function sn_ainput_make_jquery(field_name, options) {
     jQuery('ainput').each(function () {
-      col_span = 3;
+      var step_value, start_value, min_value, max_value;
 
-      old = jQuery(this);
+      var col_span = 3;
+
+      var old = jQuery(this);
       //min_value = (min_value = old.attr('min')) ? min_value : 0;
       //max_value = (max_value = old.attr('max')) ? max_value : 0;
       step_value = (step_value = old.attr('step')) ? step_value : 1; // TODO НЕ РАБОТАЕТ ИСПРАВИТЬ
       start_value = (start_value = old.val()) ? start_value : 0; // TODO НЕ РАБОТАЕТ ИСПРАВИТЬ
 
-      field_name_orig = old.attr('name');
+      var field_name_orig = old.attr('name');
 
       field_name = field_name_orig.replace('[', '').replace(']', '');
-      field_id = '#' + field_name;
+      var field_id = '#' + field_name;
 
-      slider_name = field_name + 'slide';
-      slider_id = "#" + slider_name;
+      var slider_name = field_name + 'slide';
+      var slider_id = "#" + slider_name;
 
-      new_element = '<table width="100%" class="markup">'; // main container - sets width
+      var new_element = '<table width="100%" class="markup">'; // main container - sets width
       new_element += '<tr>';
       if (!old.is('[disable_min]')) {
         new_element += '<td width="3em"><input type="button" value="0" parent_id="' + field_name + '" id="' + field_name + '_ai_zero" style="width: 3em"></td>';
@@ -507,7 +572,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       });
     jQuery("#" + field_name).val(jQuery(slider_id).slider("value"));
 
-    jQuery("#" + field_name).bind('keyup change', function (event, ui) {
+    jQuery("#" + field_name).on('keyup change', function (event, ui) {
       if (ui != undefined && ui.type == 'slidechange') {
         return;
       }
@@ -528,16 +593,16 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       slider.slider("value", value);
     }).button().addClass('ui-textfield');
 
-    jQuery("#" + field_name + 'zero').bind('click', function (event, ui) {
+    jQuery("#" + field_name + 'zero').on('click', function (event, ui) {
       jQuery("#" + field_name).val(0).trigger('change', [event, ui]);
     }).button();
 
-    jQuery("#" + field_name + 'max').bind('click', function (event, ui) {
+    jQuery("#" + field_name + 'max').on('click', function (event, ui) {
       jQuery("#" + field_name).val(jQuery(slider_id).slider("option", "max")).trigger('change', [event, ui]);
     }).button();
 
     jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc')
-      .bind('mousedown', function (event, ui) {
+      .on('mousedown', function (event, ui) {
         var element = jQuery("#" + field_name);
         if (element.is('[disabled]')) {
           return;
@@ -553,7 +618,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
         };
         sn_ainput_mouselerate();
       })
-      .bind('mouseup', function (event, ui) {
+      .on('mouseup', function (event, ui) {
           if (accelerated) {
             clearTimeout(accelerated['timeout']);
             accelerated = undefined;
@@ -625,18 +690,6 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     return false;
   }
 
-  /*
-   var mouseX, mouseY;
-   var clientX, clientY;
-   jQuery(document).mousemove(function (e) {
-   mouseX = e.pageX;
-   mouseY = e.pageY;
-
-   clientX = e.clientX;
-   clientY = e.clientY;
-   });
-   */
-
   function sn_show_hide(element, element_name) {
     var element_to_hide = jQuery("#" + element_name);
     var tag_name = element_to_hide[0].tagName;
@@ -658,31 +711,39 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       e.childNodes[0].data = window.document.forms[0].text.value.length;
   }
 
-  function sn_format_number(number, precission, style, max, plus_sign) {
-    var str_number, arr_int, nachkomma, Begriff, i, j, Extrakt, str_first, ret_val;
-    if (!precission) {
-      precission = 0;
-    }
+  /**
+   *
+   * @param num
+   * @param cssPositive
+   * @param limit
+   * @returns {string|*|string}
+   */
+  function numberGetCssClass(num, cssPositive, limit) {
+    num = Math.floatVal(num);
+    limit = Math.floatVal(limit);
 
-    if (!max) {
-      max = 0;
-    }
+    return Math.round(num - limit) == 0 ? "zero" : (
+      (limit > 0 && limit > num) || (limit <= 0 && -limit <= num) ? cssPositive : "negative"
+    );
+  }
 
-    // isNaN(number) || typeof number == 'undefined' ? number = 0 : false;
+  function numberFormat(num, precision, plus_sign) {
+    var str_number, arr_int, nachkomma, Begriff, i, j, Extrakt, str_first, result;
 
-    number = Math.round(number * Math.pow(10, precission)) / Math.pow(10, precission);
-    if (number > 0) {
-      str_number = number + '';
-    }
-    else {
-      str_number = (-number) + '';
+    precision = Math.intVal(precision);
+    num = Math.round(Math.floatVal(num) * Math.pow(10, precision)) / Math.pow(10, precision);
+
+    if (num > 0) {
+      str_number = num + '';
+    } else {
+      str_number = (-num) + '';
     }
     arr_int = str_number.split('.');
     if (!arr_int[0]) arr_int[0] = '0';
     if (!arr_int[1]) arr_int[1] = '';
-    if (arr_int[1].length < precission) {
+    if (arr_int[1].length < precision) {
       nachkomma = arr_int[1];
-      for (i = arr_int[1].length + 1; i <= precission; i++) {
+      for (i = arr_int[1].length + 1; i <= precision; i++) {
         nachkomma += '0';
       }
       arr_int[1] = nachkomma;
@@ -699,27 +760,51 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       arr_int[0] = str_first + arr_int[0];
     }
 
-    ret_val = arr_int[0] + (arr_int[1] ? ',' + arr_int[1] : '');
-    if (number < 0) {
-      ret_val = '-' + ret_val;
-    } else if (number > 0 && plus_sign) {
-      ret_val = '+' + ret_val;
+    result = arr_int[0] + (arr_int[1] ? ',' + arr_int[1] : '');
+    if (num < 0) {
+      result = '-' + result;
+    } else if (num > 0 && plus_sign) {
+      result = '+' + result;
     }
 
-    if (style) {
-      if (number == Math.abs(max)) {
-        ret_val = '<span class="neutral">' + ret_val + '</span>';
-      }
-      else if ((max > 0 && -number < -max) || (!max && number < 0) || (max < 0 && number < -max)) {
-        ret_val = '<span class="negative">' + ret_val + '</span>';
-      }
-      else {
-        ret_val = '<span class="' + style + '">' + ret_val + '</span>';
-      }
-    }
-
-    return ret_val;
+    return result;
   }
+
+  /**
+   *
+   * @param num
+   * @param precision
+   * @param cssPositive
+   * @param limit
+   * @param forcePlus
+   * @returns {string|*}
+   */
+  function sn_format_number(num, precision, cssPositive, limit, forcePlus) {
+    var result = numberFormat(num, precision, forcePlus);
+
+    if (cssPositive) {
+      result = '<span class="' + numberGetCssClass(num, cssPositive === true ? CLASS_POSITIVE : cssPositive, limit) + '">' + result + '</span>';
+    }
+
+    return result;
+  }
+
+  function elementPrettyNumber(element, num, limit) {
+    element.html(numberFormat(num))
+      .removeClass("positive zero negative")
+      .addClass(numberGetCssClass(num, "positive", limit));
+  }
+
+  function elementColorValue(element) {
+    element.html();
+  }
+
+  function elementIsEnabled(element) {
+    // Checking if elements is enabled
+    // TODO - можно ли упростить выражение?
+    return $(element).is(":enabled") && !($(this).attr("aria-disabled"));
+  }
+
 
   function sn_timestampToString(timestamp, useDays) {
     var strTime = '', tmp;

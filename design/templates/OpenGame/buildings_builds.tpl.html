@@ -1,20 +1,19 @@
 <h1>{PAGE_HEADER}</h1>
 
 <script type="text/javascript">
-var production = Array();
-var require = Array();
-var grants = Array();
-var unit_selected = null;
-var STACKABLE = '{STACKABLE}';
-var TEMPORARY = parseInt('{TEMPORARY}');
-var CAN_AUTOCONVERT = parseInt('{CAN_AUTOCONVERT}') ? parseInt('{CAN_AUTOCONVERT}') : 0;
-var MARKET_AUTOCONVERT_COST = parseInt('{MARKET_AUTOCONVERT_COST}') ? parseInt('{MARKET_AUTOCONVERT_COST}') : 0;
-var DARK_MATTER = parseInt('{DARK_MATTER}') ? parseInt('{DARK_MATTER}') : 0;
+var production = [];
+var require = [];
+var grants = [];
+var STACKABLE = Math.intVal('{STACKABLE}');
+var TEMPORARY = Math.intVal('{TEMPORARY}');
+var CAN_AUTOCONVERT = Math.intVal('{CAN_AUTOCONVERT}');
+var MARKET_AUTOCONVERT_COST = Math.intVal('{MARKET_AUTOCONVERT_COST}');
+var DARK_MATTER = Math.intVal('{DARK_MATTER}');
 
-var ALLY_ID = isNaN(ALLY_ID = '{ALLY_ID}') ? 0 : ALLY_ID;
-var PLANET_ID = isNaN(PLANET_ID = parseInt('{PLN_ID}')) ? 0 : PLANET_ID;
+var ALLY_ID = Math.intVal('{ALLY_ID}');
+var PLANET_ID = Math.intVal('{PLN_ID}');
 
-var que_id = '{QUE_ID}';
+var que_id = Math.intVal('{QUE_ID}');
 
 $.extend(language, {
   eco_que_clear_dialog_title: '{LA_eco_que_clear_dialog_title}',
@@ -61,79 +60,79 @@ $.extend(language, {
 });
 
 planet = {
-  fleet_own: '{FLEET_OWN_COUNT}',
+  fleet_own: Math.intVal('{FLEET_OWN_COUNT}'),
 
-  metal: '{METAL}',
-  crystal: '{CRYSTAL}',
-  deuterium: '{DEUTERIUM}',
-  dark_matter: '{DARK_MATTER}',
+  metal: Math.floatVal('{METAL}'),
+  crystal: Math.floatVal('{CRYSTAL}'),
+  deuterium: Math.floatVal('{DEUTERIUM}'),
+  dark_matter: Math.floatVal('{DARK_MATTER}'),
 
-  metal_incoming: '{METAL_INCOMING}',
-  crystal_incoming: '{CRYSTAL_INCOMING}',
-  deuterium_incoming: '{DEUTERIUM_INCOMING}',
+  metal_incoming: Math.floatVal('{METAL_INCOMING}'),
+  crystal_incoming: Math.floatVal('{CRYSTAL_INCOMING}'),
+  deuterium_incoming: Math.floatVal('{DEUTERIUM_INCOMING}'),
   dark_matter_incoming: 0,
 
-  que_has_place: '{QUE_HAS_PLACE}',
-  que_has_fields: '{QUE_HAS_FIELDS}',
-  fields_free: '{FIELDS_FREE}'
+  que_has_place: Math.intVal('{QUE_HAS_PLACE}'),
+  que_has_fields: Math.intVal('{QUE_HAS_FIELDS}'),
+  fields_free: Math.intVal('{FIELDS_FREE})'),
 };
 
 <!-- BEGIN production -->
   <!-- IF production.S_FIRST_ROW -->
-  var production_id_first = parseInt('{production.ID}');
+  var production_id_first = Math.intVal('{production.ID}');
   <!-- ENDIF -->
 
   <!-- IF .production.require -->
-  require[{production.ID}] = [
+  require[Math.intVal('{production.ID}')] = [
     <!-- BEGIN require -->
     {
       name: '{require.NAME}',
-      requerements_met: parseInt('{require.REQUEREMENTS_MET}'),
-      level_require: parseInt('{require.LEVEL_REQUIRE}'),
-      level: parseInt('{require.LEVEL}'),
-      level_basic: parseInt('{require.LEVEL_BASIC}'),
-      level_bonus: parseInt('{require.LEVEL_BONUS}'),
-      id: parseInt('{require.ID}'),
+      requerements_met: Math.intVal('{require.REQUEREMENTS_MET}'),
+      level_require: Math.intVal('{require.LEVEL_REQUIRE}'),
+      level: Math.intVal('{require.LEVEL}'),
+      level_basic: Math.intVal('{require.LEVEL_BASIC}'),
+      level_bonus: Math.intVal('{require.LEVEL_BONUS}'),
+      id: Math.intVal('{require.ID}'),
     },
     <!-- END require -->
   ];
   <!-- ENDIF -->
 
   <!-- IF .production.grants -->
-  grants[{production.ID}] = [
+  grants[Math.intVal('{production.ID}')] = [
     <!-- BEGIN grants -->
     {
       name: '{grants.NAME}',
-      requerements_met: parseInt('{grants.REQUEREMENTS_MET}'),
-      level_require: parseInt('{grants.LEVEL_REQUIRE}'),
-      level: parseInt('{grants.LEVEL}'),
-      level_basic: parseInt('{grants.LEVEL_BASIC}'),
-      level_bonus: parseInt('{grants.LEVEL_BONUS}'),
-      id: parseInt('{grants.ID}'),
+      requerements_met: Math.intVal('{grants.REQUEREMENTS_MET}'),
+      level_require: Math.intVal('{grants.LEVEL_REQUIRE}'),
+      level: Math.intVal('{grants.LEVEL}'),
+      level_basic: Math.intVal('{grants.LEVEL_BASIC}'),
+      level_bonus: Math.intVal('{grants.LEVEL_BONUS}'),
+      id: Math.intVal('{grants.ID}'),
     },
     <!-- END grants -->
   ];
   <!-- ENDIF -->
 
-  production[{production.ID}] = {
-    id: '{production.ID}',
+  production[Math.intVal('{production.ID}')] = {
+    id: Math.intVal('{production.ID}'),
     name: '{production.NAME}',
     'image': '{I_[production.ID]}',
-    level: '{production.LEVEL}',
+    level: Math.intVal('{production.LEVEL}'),
     level_bonus: '{production.LEVEL_BONUS}',
-    change: '{production.CHANGE}',
+    change: Math.floorVal('{production.CHANGE}'),
     description: '{production.DESCRIPTION}',
     unit_busy: '{production.UNIT_BUSY}',
     can_build: '{production.CAN_BUILD}',
-    can_autoconvert: parseInt('{production.CAN_AUTOCONVERT}') ? parseInt('{production.CAN_AUTOCONVERT}') : 0,
-    autoconvert_amount: parseInt('{production.AUTOCONVERT_AMOUNT}') ? parseInt('{production.AUTOCONVERT_AMOUNT}') : 0,
+    can_autoconvert: Math.intVal('{production.CAN_AUTOCONVERT}'),
+    autoconvert_amount: Math.intVal('{production.AUTOCONVERT_AMOUNT}'),
 
     metal: '{production.METAL}',
     crystal: '{production.CRYSTAL}',
     deuterium: '{production.DEUTERIUM}',
     dark_matter: '{production.DARK_MATTER}',
     time: '{production.TIME}',
-    time_seconds: parseInt('{production.TIME_SECONDS}'),
+    time_seconds: Math.intVal('{production.TIME_SECONDS}'),
     build_can: '{production.BUILD_CAN}',
     build_result: '{production.BUILD_RESULT}',
 
@@ -150,27 +149,27 @@ planet = {
     resource_map: [
       <!-- BEGIN resource -->
       {
-        'shield': '{resource.ACTUAL_SHIELD}',
-        'armor': '{resource.ACTUAL_ARMOR}',
-        'weapon': '{resource.ACTUAL_WEAPON}',
-        'speed': '{resource.ACTUAL_SPEED}',
-        'consumption': '{resource.ACTUAL_CONSUMPTION}',
-        'capacity': '{resource.ACTUAL_CAPACITY}',
+        'shield': Math.intVal('{resource.ACTUAL_SHIELD}'),
+        'armor': Math.intVal('{resource.ACTUAL_ARMOR}'),
+        'weapon': Math.intVal('{resource.ACTUAL_WEAPON}'),
+        'speed': Math.intVal('{resource.ACTUAL_SPEED}'),
+        'consumption': Math.intVal('{resource.ACTUAL_CONSUMPTION}'),
+        'capacity': Math.intVal('{resource.ACTUAL_CAPACITY}'),
 
-        'level': '{resource.LEVEL}',
-        'sys_metal': '{resource.R901}',
-        'metal_diff': '{resource.D901}',
-        'sys_crystal': '{resource.R902}',
-        'crystal_diff': '{resource.D902}',
-        'sys_deuterium': '{resource.R903}',
-        'deuterium_diff': '{resource.D903}',
-        'sys_energy': '{resource.R904}',
-        'energy_diff': '{resource.D904}',
+        'level': Math.floorVal('{resource.LEVEL}'),
+        'sys_metal': Math.floorVal('{resource.R901}'),
+        'metal_diff': Math.floorVal('{resource.D901}'),
+        'sys_crystal': Math.floorVal('{resource.R902}'),
+        'crystal_diff': Math.floorVal('{resource.D902}'),
+        'sys_deuterium': Math.floorVal('{resource.R903}'),
+        'deuterium_diff': Math.floorVal('{resource.D903}'),
+        'sys_energy': Math.floorVal('{resource.R904}'),
+        'energy_diff': Math.floorVal('{resource.D904}'),
 
-        'sys_colonies': '{resource.RCOLONIES_MAX}',
-        'sys_colonies_diff': '{resource.DCOLONIES_MAX}',
-        'sys_expeditions': '{resource.REXPEDITIONS_MAX}',
-        'sys_expeditions_diff': '{resource.DEXPEDITIONS_MAX}',
+        'sys_colonies': Math.intVal('{resource.RCOLONIES_MAX}'),
+        'sys_colonies_diff': Math.intVal('{resource.DCOLONIES_MAX}'),
+        'sys_expeditions': Math.intVal('{resource.REXPEDITIONS_MAX}'),
+        'sys_expeditions_diff': Math.intVal('{resource.DEXPEDITIONS_MAX}'),
       },
       <!-- END resource -->
     ]
@@ -274,11 +273,11 @@ planet = {
             <input type="hidden" name="action" />
 
             <!-- IF STACKABLE -->
-              <!-- DEFINE $CLASS_COST_CONTAINER = ' class="unit_create_stackable"' -->
+              <!-- DEFINE $CLASS_COST_CONTAINER = 'unit_create_stackable' -->
             <!-- ELSE -->
               <!-- DEFINE $CLASS_COST_CONTAINER = '' -->
             <!-- ENDIF -->
-            <div id="unit_cost_container" $CLASS_COST_CONTAINER align="left">
+            <div id="unit_cost_container" class="{$CLASS_COST_CONTAINER}" align="left">
               <div class="wrap">
                 <div id="unit_time_div" align="center">{STRING_BUILD_TIME}<span id="unit_time"></span></div>
                 <table style="font-size: {$FONT_SIZE};" id="unit_cost_table" class="border_image_small">
@@ -317,15 +316,33 @@ planet = {
             </div>
 
             <!-- IF STACKABLE -->
-              <div id="unit_create" class="unit_create_stackable">
+              <!-- DEFINE $CREATE_CLASS = 'unit_create_stackable' -->
+            <!-- ELSE -->
+              <!-- DEFINE $CREATE_CLASS = 'unit_create_level' -->
+            <!-- ENDIF -->
+
+            <!-- IF CAN_AUTOCONVERT -->
+              <!-- DEFINE $CLASS_AUTOCONVERT = 'zero' -->
+            <!-- ELSE -->
+              <!-- DEFINE $CLASS_AUTOCONVERT = 'negative' -->
+            <!-- ENDIF -->
+
+            <div id="unit_create" class="{$CREATE_CLASS}">
+              <!-- IF STACKABLE -->
                 <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
                 <div id="unit_create_stackable_autoconvert">
-                  <input type="checkbox" value="1" name="auto_convert" id="auto_convert" />
-                  <label for="auto_convert" id="auto_convert_label" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">{L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}</label>
+                  <input type="checkbox" value="1" name="auto_convert" id="auto_convert"/>
+                  <label for="auto_convert" id="auto_convert_label" class="{$CLASS_AUTOCONVERT}">
+                    {L_eco_bld_autoconvert}:
+                    {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}
+                  </label>
                 </div>
                 <!-- ENDIF -->
 
-                <div id="unit_max">{L_sys_maximum} <span id="unit_max_number"></span> / <span id="unit_max_number_autoconvert" class="<!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->"></span></div>
+                <div id="unit_max">
+                  {L_sys_maximum} <span id="unit_max_number">0</span> /
+                  <span id="unit_max_number_autoconvert" class="{$CLASS_AUTOCONVERT}">0</span>
+                </div>
                 <ainput type="text" name="unit_amount" id="unit_amount" max="0"></ainput>
                 <script type="text/javascript">
                   sn_ainput_make_jquery();
@@ -334,19 +351,21 @@ planet = {
                 <button id="unit_create_button" class="unit_create positive">
                   {STRING_CREATE}
                 </button>
-              </div>
-            <!-- ELSE -->
-              <div id="unit_create" class="unit_create_level">
-                <button id="unit_create_button" class="unit_create positive">
-                  {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
-                </button>
-                <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
-                <button id="unit_create_button_auto" class="unit_create_autoconvert <!-- IF CAN_AUTOCONVERT -->zero<!-- ELSE -->negative<!-- ENDIF -->">
-                  {STRING_CREATE} {LA_level} <span id="unit_create_level_auto"></span><br />
-                  {L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}
-                </button>
-                <!-- ENDIF -->
-              </div>
+              <!-- ELSE -->
+              <!-- IF ! PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE -->
+              <button id="unit_create_button_auto" class="unit_create_autoconvert {$CLASS_AUTOCONVERT}">
+                {STRING_CREATE} {LA_level} <span id="unit_create_level_auto"></span><br/>
+                {L_eco_bld_autoconvert}: {MARKET_AUTOCONVERT_COST_TEXT} {L_sys_dark_matter_sh}
+              </button>
+              <!-- ENDIF -->
+
+              <button id="unit_create_button" class="unit_create positive">
+                {STRING_CREATE} {LA_level} <span id="unit_create_level"></span>
+              </button>
+              <!-- ENDIF -->
+            </div>
+
+            <!-- IF ! STACKABLE -->
               <div id="unit_destroy" style="visibility: hidden">
                 <div id="unit_destroy_resources">&nbsp;</div>
                 <div id="unit_destroy_time">&nbsp;</div>
