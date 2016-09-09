@@ -1,6 +1,48 @@
-- .bind replaced with .on
-  .unbind replaced with .off
-  .delegate replaced with .on
+- Навести порядок в рабочей директории!
+    - вынести некоммиченные файлы из исходников
+    - разобраться, что творится в корне проекта
+
+- Перекомпилить апу
+
+
+Проапгрейдить jQuery
+Вставить черри-пиком патч во все рабочие ветки. Возможно - даже залить на живые серваки для тестов
+Потестить текущую ветку транка
+
+Не забыть залить изменения в ветки модулей
+
+git cherry-pick b95743b82fa61fac98dd0286ae793030632ae690
+
+
+41a3.5 - версия, где ветки разошлись
+
+X:\Documents\Projects\supernova\src>git status
+# On branch trunk
+# You are currently cherry-picking.
+#   (fix conflicts and run "git commit")
+#
+# Changes to be committed:
+#
+#       modified:   design/templates/OpenGame/buildings_builds.tpl.html
+#       modified:   design/templates/OpenGame/market_fleet.tpl.html
+#       modified:   design/templates/OpenGame/resources.tpl.html
+#       modified:   js/sn_notes.js
+#
+# Unmerged paths:
+#   (use "git add/rm <file>..." as appropriate to mark resolution)
+#
+#       both modified:      docs/changelog_dev.txt
+#       deleted by us:      docs/work-fleets.txt
+#       both modified:      js/build_unit.js
+#       both modified:      js/build_unit.min.js
+#       both modified:      js/sn_global.js
+#       both modified:      js/sn_global.min.js
+#       deleted by us:      js/sn_notes.min.js
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+
+
 
 
 
