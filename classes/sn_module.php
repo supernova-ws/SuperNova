@@ -12,7 +12,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a52.34# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a52.93# copyright © 2009-2014 Gorlum',
 
     'require'       => array(),
     'root_relative' => '',
@@ -238,20 +238,31 @@ class sn_module {
     }
   }
 
+  /**
+   * @param string     $arrayName - name of manifest fields to get data from
+   */
   protected function mergeArraySpecial($arrayName) {
-    if(empty($this->manifest[$arrayName]) || !is_array($this->manifest[$arrayName])) {
+    $this->mergeArrayParam($this->manifest[$arrayName], classSupernova::$sn_mvc[$arrayName]);
+  }
+
+  /**
+   * @param array $arrayFrom
+   * @param array $arrayMergeTo
+   */
+  protected function mergeArrayParam(&$arrayFrom, &$arrayMergeTo) {
+    if (!is_array($arrayFrom) || empty($arrayFrom)) {
       return;
     }
 
-    foreach($this->manifest[$arrayName] as $pageName => &$contentList) {
-      !isset(classSupernova::$sn_mvc[$arrayName][$pageName]) ? classSupernova::$sn_mvc[$arrayName][$pageName] = array() : false;
-      foreach($contentList as $contentName => &$content) {
-        classSupernova::$sn_mvc[$arrayName][$pageName][$contentName] = $content;
+    foreach ($arrayFrom as $pageName => &$contentList) {
+      !isset($arrayMergeTo[$pageName]) ? $arrayMergeTo[$pageName] = array() : false;
+      foreach ($contentList as $contentName => &$content) {
+        $arrayMergeTo[$pageName][$contentName] = $content;
       }
     }
   }
 
-  protected function mergeCss() { $this->mergeArraySpecial('css'); }
+  protected function mergeCss() { $this->mergeArrayParam($this->manifest['css'], classSupernova::$css); }
 
   protected function mergeJavascript() { $this->mergeArraySpecial('javascript'); }
 

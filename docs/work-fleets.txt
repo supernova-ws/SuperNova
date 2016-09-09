@@ -44,6 +44,13 @@ X:\Documents\Projects\supernova\src>git status
 
 
 
+css/js минифаеры - добавить в транка аналог
+    - пока используются оригиналы, а использование минифаеров отключено
+        - надо попеределывать пути как минимум в CSS
+
+function getMinifiedName($filename, $extension) {
+  // TODO - TURN ON!!!!
+
 
 
 
@@ -52,6 +59,13 @@ X:\Documents\Projects\supernova\src>git status
     - пример конфирма - при покупке сектора
     - пример алерта - АХЕЗ
 
+
+
+PhpStorm
+    - minifiers
+        $ProjectFileDir$\minified\.css\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.css
+        $ProjectFileDir$\minified\.js\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.js
+        $FileName$ -o $UnixSeparators($ProjectFileDir$\minified\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.css)$
 
 
 - build_unit.js - refactor

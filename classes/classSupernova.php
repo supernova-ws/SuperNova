@@ -14,6 +14,9 @@ class classSupernova {
    */
   public static $sn_mvc = array();
 
+  public static $css = array();
+  public static $js = array();
+
   /**
    * @var array $functions
    */

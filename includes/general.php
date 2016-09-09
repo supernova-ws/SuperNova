@@ -162,12 +162,12 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
   $suffix = '';
   if ($limit) {
     if ($ret > 0) {
-      while ($ret > $limit) {
+      while($ret > $limit) {
         $suffix .= 'k';
         $ret = round($ret / 1000);
       }
     } else {
-      while ($ret < -$limit) {
+      while($ret < -$limit) {
         $suffix .= 'k';
         $ret = round($ret / 1000);
       }
@@ -412,7 +412,7 @@ function sn_mrc_modify_value(&$user, $planet = array(), $mercenaries, $value, $b
     $mercenary = get_unit_param($mercenary_id);
     $mercenary_bonus = $mercenary['bonus'];
 
-    switch ($mercenary['bonus_type']) {
+    switch($mercenary['bonus_type']) {
       case BONUS_PERCENT_CUMULATIVE:
         $value *= 1 + $mercenary_level * $mercenary_bonus / 100;
       break;
@@ -837,7 +837,7 @@ function sn_player_nick_render_array_to_html($nick_array, &$result) {
   }
 
   if (isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {
-    switch ($nick_array[NICK_AUTH_LEVEL]) {
+    switch($nick_array[NICK_AUTH_LEVEL]) {
       case 4:
         $highlight = classSupernova::$config->chat_highlight_developer;
       break;
@@ -1479,7 +1479,7 @@ function nullIfEmpty($value) {
  */
 function sortUnitRenderedList(&$ListToSort, $sort_option, $sort_option_inverse) {
   if ($sort_option || $sort_option_inverse != PLAYER_OPTION_SORT_ORDER_PLAIN) {
-    switch ($sort_option) {
+    switch($sort_option) {
       case PLAYER_OPTION_SORT_NAME:
         $sort_option_field = 'NAME';
       break;
@@ -1531,4 +1531,30 @@ function checkReturnRef(&$ref1, &$ref2) {
 
 function setNull(&$item) {
   $item = null;
+}
+
+/**
+ * @param string $filename
+ * @param string $extension
+ *
+ * @return string
+ */
+function getMinifiedName($filename, $extension) {
+  // TODO - TURN ON!!!!
+//  // Checking for dedicated minified version in specialized folder
+//  if (file_exists(SN_ROOT_PHYSICAL . ($result = 'minified/' . $extension . '/' . $filename . '.min' . $extension))) {
+//  } // Fallback to shared minimized version in specialized folder
+//  elseif (file_exists(SN_ROOT_PHYSICAL . ($result = 'minified/' . $extension . '/' . basename($filename) . '.min' . $extension))) {
+//  } // Fallback to minified version in same folder
+//  else
+  if (file_exists(SN_ROOT_PHYSICAL . ($result = $filename . '.min' . $extension))) {
+  } // Fallback to full version in same folder
+  elseif (file_exists(SN_ROOT_PHYSICAL . ($result = $filename . $extension))) {
+  } // Final stand - looks like it's deprecated full-name-with-extension thing?
+  elseif (!file_exists(SN_ROOT_PHYSICAL . ($result = $filename))) {
+    // Still not exists? Then no use!
+    $result = '';
+  }
+
+  return $result;
 }

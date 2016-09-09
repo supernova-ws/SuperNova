@@ -266,25 +266,30 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     }
   }
 
-  empty(classSupernova::$sn_mvc['css']) ? classSupernova::$sn_mvc['css'] = array('' => array()) : false;
+
+
   $standard_css = array(
-    'design/css/jquery-ui.css'  => '',
-    'design/css/global.min.css' => '',
+    'design/css/jquery-ui'  => '',
+    'design/css/global' => '',
   );
-  $is_login ? $standard_css['design/css/login.min.css'] = '' : false;
+
+  $is_login ? $standard_css['design/css/login'] = '' : false;
+
   $standard_css += array(
-//    'design/css/design/css/global-ie.min.css' => '', // TODO
-    TEMPLATE_PATH . '/_template.min.css'                                  => '',
-    ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin.min.css' => '',
+//    'design/css/global-ie' => '', // TODO
+    TEMPLATE_PATH . '/_template'                                  => '',
+    ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin' => '',
   );
 
+  empty(classSupernova::$css) ? classSupernova::$css = array('' => array()) : false;
   // Prepending standard CSS files
-  classSupernova::$sn_mvc['css'][''] = array_merge($standard_css, classSupernova::$sn_mvc['css']['']);
-
-
-  foreach(classSupernova::$sn_mvc['css'] as $page_name => $script_list) {
+  classSupernova::$css[''] = array_merge($standard_css, classSupernova::$css[''], array('design/css/global_override' => ''));
+  foreach(classSupernova::$css as $page_name => $script_list) {
     if(empty($page_name) || $page_name == $sn_page_name) {
       foreach($script_list as $filename => $content) {
+        if(!($filename = getMinifiedName($filename, '.css'))) {
+          continue;
+        }
         $template_result['.']['css'][] = array(
           'FILE'    => $filename,
           'CONTENT' => $content,

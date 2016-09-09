@@ -18,74 +18,74 @@ body.body-auth {
 
 @media only screen and (min-width: 480px) {
   body.body-auth {
-    background-image: url(../images/background_0500_login.jpg);
+    background-image: url(/design/images/background_0500_login.jpg);
   }
 
   body.blitz_body-auth {
-    background-image: url(../images/background_blitz_login_0500.jpg);
+    background-image: url(/design/images/background_blitz_login_0500.jpg);
   }
 }
 
 @media only screen and (min-width: 580px) {
   body.body-auth {
-    background-image: url(../images/background_0600_login.jpg);
+    background-image: url(/design/images/background_0600_login.jpg);
   }
 
   body.blitz_body-auth {
-    background-image: url(../images/background_blitz_login_0600.jpg);
+    background-image: url(/design/images/background_blitz_login_0600.jpg);
   }
 }
 
 /* Desktops and laptops medium-res */
 @media only screen and (min-width: 760px) {
   body {
-    background-image: url(../images/background_0800_login.jpg);
+    background-image: url(/design/images/background_0800_login.jpg);
   }
 
   body.blitz_body-auth {
-    background-image: url(../images/background_blitz_login_0800.jpg);
+    background-image: url(/design/images/background_blitz_login_0800.jpg);
   }
 }
 
 /* Desktops and laptops ----------- */
 @media only screen and (min-width: 950px) {
   body.body-auth {
-    background-image: url(../images/background_1024_login.jpg);
+    background-image: url(/design/images/background_1024_login.jpg);
   }
 
   body.blitz_body-auth {
-    background-image: url(../images/background_blitz_login_1024.jpg);
+    background-image: url(/design/images/background_blitz_login_1024.jpg);
   }
 }
 
 @media only screen and (min-width: 1224px) {
   body.body-auth {
-    background-image: url(../images/background_1280_login.jpg);
+    background-image: url(/design/images/background_1280_login.jpg);
   }
 
   body.blitz_body-auth {
-    background-image: url(../images/background_blitz_login_1280.jpg);
+    background-image: url(/design/images/background_blitz_login_1280.jpg);
   }
 }
 
 /* Large screens ----------- */
 @media only screen and (min-width: 1550px) {
   body.body-auth {
-    background-image: url(../images/background_1600_login.jpg);
+    background-image: url(/design/images/background_1600_login.jpg);
   }
 
   body.blitz_body-auth {
-    background-image: url(../images/background_blitz_login_1600.jpg);
+    background-image: url(/design/images/background_blitz_login_1600.jpg);
   }
 }
 
 @media only screen and (min-width: 1824px) {
   body.body-auth {
-    background-image: url(../images/background_1920_login.jpg);
+    background-image: url(/design/images/background_1920_login.jpg);
   }
 
   body.blitz_body-auth {
-    background-image: url(../images/background_blitz_login_1920.jpg);
+    background-image: url(/design/images/background_blitz_login_1920.jpg);
   }
 }
 
