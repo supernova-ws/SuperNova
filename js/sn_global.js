@@ -1,4 +1,7 @@
 if (typeof(window.LOADED_GLOBAL) === 'undefined') {
+
+  /*global sn_inframe:true LOADED_GLOBAL:true*/
+  /*eslint no-undef: "error"*/
   var LOADED_GLOBAL = true;
 
   // Constants
@@ -9,7 +12,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
   var x = "";
   var e = null;
-  var sn_inframe = window.frameElement ? getFrameName(self) : false;
+  var sn_inframe;
 
   // Fix to jQuery-UI improper tab handling
   $.fn.__tabs = $.fn.tabs;
@@ -94,7 +97,19 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       }
     }
   }
+  sn_inframe = window.frameElement ? getFrameName(self) : false;
 
+  function sn_blink(that) {
+    that = $(that);
+    that.animate(
+      {opacity: that.css('opacity') == 0 ? 1 : 0},
+      that.attr('duration')
+        ? parseInt(that.attr('duration'))
+        : 1000,
+      function () {
+        sn_blink(this)
+      });
+  }
 
   /**
    * Delays function execution
@@ -194,18 +209,6 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     });
 
     makeBlink();
-  }
-
-  function sn_blink(that) {
-    that = $(that);
-    that.animate(
-      {opacity: that.css('opacity') == 0 ? 1 : 0},
-      that.attr('duration')
-        ? parseInt(that.attr('duration'))
-        : 1000,
-      function () {
-        sn_blink(this)
-      });
   }
 
   $('.password_show').on('click', function () {
