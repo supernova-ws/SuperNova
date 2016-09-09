@@ -166,30 +166,30 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
 
     // It's here 'cause font manipulation is available only after DOM fully loaded
     $('#font_minus, #font_normal, #font_plus').on('click', function () {
-      var temp = FONT_SIZE;
+      var temp = snFont.size;
 
       switch ($(this).attr('id')) {
         case 'font_plus':
-          FONT_SIZE += FONT_SIZE_PERCENT_STEP;
+          snFont.size += snFont.step;
           break;
         case 'font_minus':
-          FONT_SIZE -= FONT_SIZE_PERCENT_STEP;
+          snFont.size -= snFont.step;
           break;
         default:
-          FONT_SIZE = FONT_SIZE_PERCENT_DEFAULT;
+          snFont.size = snFont.sizeDefaultPercent;
           break;
       }
 
-      FONT_SIZE = Math.min(FONT_SIZE, FONT_SIZE_PERCENT_MAX);
-      FONT_SIZE = Math.max(FONT_SIZE, FONT_SIZE_PERCENT_MIN);
+      snFont.size = Math.min(snFont.size, snFont.max);
+      snFont.size = Math.max(snFont.size, snFont.min);
 
-      var new_size = Math.floatVal(theBody.css('font-size')) * FONT_SIZE / temp;
+      var new_size = Math.floatVal(theBody.css('font-size')) * snFont.size / temp;
 
-      if (temp != FONT_SIZE) {
+      if (temp != snFont.size) {
         theBody.css('font-size', new_size + 'px');
       }
 
-      jQuery.post("time_probe.php", {'font_size': FONT_SIZE + '%'}, function (data) {
+      jQuery.post("time_probe.php", {'font_size': snFont.size + '%'}, function (data) {
       });
     });
 
