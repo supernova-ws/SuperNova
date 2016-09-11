@@ -56,7 +56,7 @@ function changeMission(mission) {
 }
 
 function speed_percent() {
-  var sp = document.getElementsByName("speed")
+  var sp = document.getElementsByName("speed");
   return sp.length ? sp[0].value : 10;
 }
 

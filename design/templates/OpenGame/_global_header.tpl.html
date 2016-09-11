@@ -48,7 +48,6 @@
     </script>
 
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/jquery.js?{C_var_db_update}"></script>
-    <!--<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/lib/fm.checkator.jquery.js?{C_var_db_update}"></script>-->
     <script type="text/javascript">
       var SN_SOUND_ENABLED = parseInt('{SOUND_ENABLED}') ? parseInt('{SOUND_ENABLED}') : 0;
       var PLAYER_OPTION_ANIMATION_DISABLED = parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') ? parseInt('{PLAYER_OPTION_ANIMATION_DISABLED}') : 0;
@@ -108,17 +107,17 @@
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_global.min.js?{C_var_db_update}"></script>
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_sound.min.js?{C_var_db_update}"></script>
     <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}js/sn_timer.min.js?{C_var_db_update}"></script>
-    <!-- BEGIN js -->
-      <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{js.FILE}?{C_var_db_update}"></script>
-    <!-- END js -->
+    <!--&lt;!&ndash; BEGIN js &ndash;&gt;-->
+      <!--<script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{js.FILE}?{C_var_db_update}"></script>-->
+    <!--&lt;!&ndash; END js &ndash;&gt;-->
 
-    <!-- BEGIN javascript -->
-      <!-- IF javascript.CONTENT -->
-        <script type="text/javascript">{javascript.CONTENT}</script>
-      <!-- ELSEIF javascript.FILE -->
-        <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{javascript.FILE}?{C_var_db_update}"></script>
+    <!-- BEGIN js -->
+      <!-- IF js.CONTENT -->
+        <script type="text/javascript">{js.CONTENT}</script>
+      <!-- ELSEIF js.FILE -->
+        <script type="text/javascript" src="{D_SN_ROOT_VIRTUAL}{js.FILE}?{C_var_db_update}"></script>
       <!-- ENDIF -->
-    <!-- END javascript -->
+    <!-- END js -->
 
     <script type="text/javascript">
       /*global snFont:true*/

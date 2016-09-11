@@ -12,7 +12,7 @@ class sn_module {
     'package'   => 'core',
     'name'      => 'sn_module',
     'version'   => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a52.93# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a52.96# copyright © 2009-2014 Gorlum',
 
     'require'       => array(),
     'root_relative' => '',
@@ -264,7 +264,7 @@ class sn_module {
 
   protected function mergeCss() { $this->mergeArrayParam($this->manifest['css'], classSupernova::$css); }
 
-  protected function mergeJavascript() { $this->mergeArraySpecial('javascript'); }
+  protected function mergeJavascript() { $this->mergeArrayParam($this->manifest['js'], classSupernova::$js); }
 
   public function check_status() { }
 

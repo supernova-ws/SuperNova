@@ -1,3 +1,18 @@
+- "Планета"
+    - Ссылки на страницы построек на странице "Планета"
+- "Список планет":
+    - Отключать список планет справа на странице "Планета"
+        - Дать выбор:
+            - Спрятать
+            - Показывать только на странице "Планета"
+            - Показывать везде (кроме чата)
+        - Добавить автоформатирование по ширине через flex-box
+
+- Мобильная версия
+    - Возможность отключать таймеры
+    - Страница построек:
+        - Возможность отключать таблицу с подробным описанием юнитов
+
 - Навести порядок в рабочей директории!
     - вынести некоммиченные файлы из исходников
     - разобраться, что творится в корне проекта
@@ -5,42 +20,44 @@
 - Перекомпилить апу
 
 
-Проапгрейдить jQuery
+Проапгрейдить jQuery, ionstorm и прочие либы
+
+
 Вставить черри-пиком патч во все рабочие ветки. Возможно - даже залить на живые серваки для тестов
 Потестить текущую ветку транка
 
 Не забыть залить изменения в ветки модулей
 
 git cherry-pick b95743b82fa61fac98dd0286ae793030632ae690
+И после них - проверить и смерджить
+
+CONFLICTS many of them
+commit 0fb53648e57d531b974f4868549d92cc2275caec
+Date:   Fri Sep 9 16:49:45 2016 +0300
+    CODE-feat-41a52.93: New minifyinf sysyem (disabled for now)
+
+DONE trunk
+commit 8591a1931e76574ea29f9ae2265530453d90a6ab
+Date:   Fri Sep 9 03:56:42 2016 +0300
+    CODE-misc-41a52.92: Fooling ESLint...
+
+DONE trunk
+commit 7645d028f16f950172c85f4c36e2fa1951d6735f
+Date:   Fri Sep 9 03:52:53 2016 +0300
+    CODE-misc-41a52.91: Working on unGlobal JS vars
+
+- здесь только доки
+    commit 8d517e373ed7195e3e6c35335db9224a29b76cd7
+    Date:   Fri Sep 9 03:03:34 2016 +0300
+        DOC-misc-41a52.90: Doc changes
+
+DONE trunk
+b95743b82fa61fac98dd0286ae793030632ae690
 
 
 41a3.5 - версия, где ветки разошлись
 
-X:\Documents\Projects\supernova\src>git status
-# On branch trunk
-# You are currently cherry-picking.
-#   (fix conflicts and run "git commit")
-#
-# Changes to be committed:
-#
-#       modified:   design/templates/OpenGame/buildings_builds.tpl.html
-#       modified:   design/templates/OpenGame/market_fleet.tpl.html
-#       modified:   design/templates/OpenGame/resources.tpl.html
-#       modified:   js/sn_notes.js
-#
-# Unmerged paths:
-#   (use "git add/rm <file>..." as appropriate to mark resolution)
-#
-#       both modified:      docs/changelog_dev.txt
-#       deleted by us:      docs/work-fleets.txt
-#       both modified:      js/build_unit.js
-#       both modified:      js/build_unit.min.js
-#       both modified:      js/sn_global.js
-#       both modified:      js/sn_global.min.js
-#       deleted by us:      js/sn_notes.min.js
-#
-# Untracked files:
-#   (use "git add <file>..." to include in what will be committed)
+
 
 
 
@@ -52,6 +69,11 @@ function getMinifiedName($filename, $extension) {
   // TODO - TURN ON!!!!
 
 
+Модули
+    - menu_customize
+    - player_premium
+        - у обоих добавляются JS-через новый механизм
+            - проверить
 
 
 - JS
@@ -61,11 +83,6 @@ function getMinifiedName($filename, $extension) {
 
 
 
-PhpStorm
-    - minifiers
-        $ProjectFileDir$\minified\.css\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.css
-        $ProjectFileDir$\minified\.js\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.js
-        $FileName$ -o $UnixSeparators($ProjectFileDir$\minified\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.css)$
 
 
 - build_unit.js - refactor
@@ -580,3 +597,10 @@ pdie();
 
     "WHERE f.fleet_id = {$fleet_id_safe} GROUP BY 1 FOR UPDATE"
   );
+
+
+PhpStorm
+    - minifiers
+        $ProjectFileDir$\minified\.css\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.css
+        $ProjectFileDir$\minified\.js\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.js
+        $FileName$ -o $UnixSeparators($ProjectFileDir$\minified\$FileDirRelativeToProjectRoot$\$FileNameWithoutExtension$.min.css)$

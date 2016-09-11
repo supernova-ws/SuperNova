@@ -237,66 +237,42 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   $user_time_diff = playerTimeDiff::user_time_diff_get();
   $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
 
-  $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
-  if(strpos($font_size, '%') !== false) {
-    // Размер шрифта в процентах
-    $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
-  } elseif(strpos($font_size, 'px') !== false) {
-    // Размер шрифта в пикселях
-    $font_size = min(max(floatval($font_size), FONT_SIZE_PIXELS_MIN), FONT_SIZE_PIXELS_MAX) . 'px';
-  } else {
-    // Не мышонка, не лягушка...
-    $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;
-  }
+  $font_size = calculateFontSize();
 
   $template_result['LOGIN_LOGOUT'] = $is_login;
 
   $template = gettemplate('_global_header', true);
 
-  if(!empty(classSupernova::$sn_mvc['javascript'])) {
-    foreach(classSupernova::$sn_mvc['javascript'] as $page_name => $script_list) {
-      if(empty($page_name) || $page_name == $sn_page_name) {
-        foreach($script_list as $filename => $content) {
-          $template_result['.']['javascript'][] = array(
-            'FILE'    => $filename,
-            'CONTENT' => $content,
-          );
-        }
-      }
-    }
-  }
-
-
-
-  $standard_css = array(
-    'design/css/jquery-ui'  => '',
-    'design/css/global' => '',
+  $jsStandard = array(
+    'js/lib/jquery-ui'  => '',
+    'js/lib/ion.sound' => '',
+    'js/sn_global' => '',
+    'js/sn_sound' => '',
+    'js/sn_timer' => '',
   );
+  // Prepending standard JS files
+  classSupernova::$js[''] = array_merge($jsStandard, classSupernova::$js['']);
+  renderFileList(classSupernova::$js, 'js', $sn_page_name, $template_result);
 
-  $is_login ? $standard_css['design/css/login'] = '' : false;
 
-  $standard_css += array(
-//    'design/css/global-ie' => '', // TODO
-    TEMPLATE_PATH . '/_template'                                  => '',
-    ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin' => '',
+  classSupernova::$css[''] = array_merge(
+    array(
+      'design/css/jquery-ui' => '',
+      'design/css/global'    => '',
+    ),
+    $is_login ? array('design/css/login' => '') : array(),
+    array(
+      TEMPLATE_PATH . '/_template'                                  => '',
+      ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin' => '',
+      // 'design/css/global-ie' => '', // TODO
+    ),
+    classSupernova::$css[''],
+    array(
+      'design/css/global_override' => ''
+    )
   );
-
-  empty(classSupernova::$css) ? classSupernova::$css = array('' => array()) : false;
   // Prepending standard CSS files
-  classSupernova::$css[''] = array_merge($standard_css, classSupernova::$css[''], array('design/css/global_override' => ''));
-  foreach(classSupernova::$css as $page_name => $script_list) {
-    if(empty($page_name) || $page_name == $sn_page_name) {
-      foreach($script_list as $filename => $content) {
-        if(!($filename = getMinifiedName($filename, '.css'))) {
-          continue;
-        }
-        $template_result['.']['css'][] = array(
-          'FILE'    => $filename,
-          'CONTENT' => $content,
-        );
-      }
-    }
-  }
+  renderFileList(classSupernova::$css, 'css', $sn_page_name, $template_result);
 
   $classConfig = classSupernova::$config;
   $template->assign_vars(array(
@@ -378,6 +354,53 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   classSupernova::$db->db_disconnect();
 
   $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
+}
+
+/**
+ * @param $fileList
+ * @param $extension
+ * @param $sn_page_name
+ * @param $template_result
+ *
+ * @internal param $filename
+ * @internal param $content
+ */
+function renderFileList(&$fileList, $extension, $sn_page_name, &$template_result) {
+  if (empty($fileList)) {
+    return;
+  }
+  foreach ($fileList as $page_name => $script_list) {
+    if (empty($page_name) || $page_name == $sn_page_name) {
+      foreach ($script_list as $filename => $content) {
+        if (empty($content) && !($filename = getMinifiedName($filename, '.' . $extension))) {
+          continue;
+        }
+
+        $template_result['.'][$extension][] = array(
+          'FILE'    => $filename,
+          'CONTENT' => $content,
+        );
+      }
+    }
+  }
+}
+
+/**
+ * @return mixed|string
+ */
+function calculateFontSize() {
+  $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
+  if (strpos($font_size, '%') !== false) {
+    // Размер шрифта в процентах
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
+  } elseif (strpos($font_size, 'px') !== false) {
+    // Размер шрифта в пикселях
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PIXELS_MIN), FONT_SIZE_PIXELS_MAX) . 'px';
+  } else {
+    // Не мышонка, не лягушка...
+    $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;
+  }
+  return $font_size;
 }
 
 /**
