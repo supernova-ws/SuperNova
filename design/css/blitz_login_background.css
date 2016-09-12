@@ -57,11 +57,10 @@ and (min-width : 760px) {
 @media only screen
 and (min-width : 1224px) {
   /* Styles */
-  body 
-  {
-      background-image: url(/design/images/blitz_bg-unauthorized.jpg);
-      background-repeat: no-repeat;
-      background-size: 100% auto ;
+  body {
+    background-image: url(../images/blitz_bg-unauthorized.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% auto ;
     background-position: bottom 0px right 0px;
   }
 }
@@ -70,11 +69,10 @@ and (min-width : 1224px) {
 @media only screen
 and (min-width : 1824px) {
   /* Styles */
-  body 
-  {
-      background-image: url(/design/images/blitz_bg-unauthorized.jpg);
-      background-repeat: no-repeat;
-      background-size: 100% auto ;
+  body {
+    background-image: url(../images/blitz_bg-unauthorized.jpg);
+    background-repeat: no-repeat;
+    background-size: 100% auto ;
     background-position: bottom 0px right 0px;
   }
 }

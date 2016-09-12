@@ -78,6 +78,11 @@ textarea {
   border-color: blue;
 }
 
+.impersonate {
+  text-align: center;
+  color: orange;
+}
+
 
 .icon-info-cover {
   display: inline-block;
@@ -85,7 +90,7 @@ textarea {
   width: 100%; /* 1.454545454545em; */
   height: 100%; /* 1.454545454545em; */
 
-  background-image: url(/design/images/icon_help_32x32.png);
+  background-image: url(../images/icon_help_32x32.png);
   background-size: cover;
 }
 
@@ -94,7 +99,7 @@ textarea {
   height: 16px; /* 1.454545454545em; */
 }
 /* Icon file */
-.icons { background-image: url(/design/images/icons.png); }
+.icons { background-image: url(../images/icons.png); }
 .icon-plus {
   background-position: 0 0;
   display: inline-block; vertical-align: middle;
@@ -129,34 +134,34 @@ textarea {
   height:100%;
 
   background-size: contain;
-  background-image: url("/design/images/icon_plus.png");
+  background-image: url("../images/icon_plus.png");
 }
 .icon_minus:after {
-  background-image: url("/design/images/icon_minus.png");
+  background-image: url("../images/icon_minus.png");
 }
 .icon_info:after {
-  background-image: url("/design/images/icon_info.png");
+  background-image: url("../images/icon_info.png");
 }
 .icon_gather:after {
-  background-image: url("/design/images/icon_gather.png");
+  background-image: url("../images/icon_gather.png");
 }
 
 .i_icon_mail, .i_icon_mail_userlist {
-  background-image: url(/design/images/icon_mail.gif);
+  background-image: url(../images/icon_mail.gif);
   background-size: contain;
   width: 16px;
   height: 16px;
   display: inline-block;
 }
 .i_icon_delete_userlist {
-  background-image: url(/design/images/r1.png);
+  background-image: url(../images/r1.png);
   background-size: contain;
   width: 16px;
   height: 16px;
   display: inline-block;
 }
 .i_icon_impers_userlist {
-  background-image: url(/design/images/icon_impersonate.gif);
+  background-image: url(../images/icon_impersonate.gif);
   background-size: contain;
   width: 16px;
   height: 16px;
@@ -327,45 +332,45 @@ body.blitz_ {
 
 @media only screen and (min-width: 480px) {
   body.blitz_ {
-    background-image: url(/design/images/background_blitz_0500.jpg);
+    background-image: url(../images/background_blitz_0500.jpg);
   }
 }
 
 @media only screen and (min-width: 580px) {
   body.blitz_ {
-    background-image: url(/design/images/background_blitz_0600.jpg);
+    background-image: url(../images/background_blitz_0600.jpg);
   }
 }
 
 /* Desktops and laptops medium-res */
 @media only screen and (min-width: 760px) {
   body.blitz_ {
-    background-image: url(/design/images/background_blitz_0800.jpg);
+    background-image: url(../images/background_blitz_0800.jpg);
   }
 }
 
 /* Desktops and laptops ----------- */
 @media only screen and (min-width: 950px) {
   body.blitz_ {
-    background-image: url(/design/images/background_blitz_1024.jpg);
+    background-image: url(../images/background_blitz_1024.jpg);
   }
 }
 
 @media only screen and (min-width: 1224px) {
   body.blitz_ {
-    background-image: url(/design/images/background_blitz_1280.jpg);
+    background-image: url(../images/background_blitz_1280.jpg);
   }
 }
 
 /* Large screens ----------- */
 @media only screen and (min-width: 1550px) {
   body.blitz_ {
-    background-image: url(/design/images/background_blitz_1600.jpg);
+    background-image: url(../images/background_blitz_1600.jpg);
   }
 }
 
 @media only screen and (min-width: 1824px) {
   body.blitz_ {
-    background-image: url(/design/images/background_blitz_1920.jpg);
+    background-image: url(../images/background_blitz_1920.jpg);
   }
 }

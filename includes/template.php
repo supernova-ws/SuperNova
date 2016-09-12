@@ -244,6 +244,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   $template = gettemplate('_global_header', true);
 
   $jsStandard = array(
+    'js/lib/jquery' => '',
     'js/lib/jquery-ui'  => '',
     'js/lib/ion.sound' => '',
     'js/sn_global' => '',

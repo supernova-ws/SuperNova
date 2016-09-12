@@ -59,7 +59,7 @@ and (min-width : 1224px) {
   /* Styles */
   body 
   {
-      background-image: url(/design/images/bg-unauthorized.jpg);
+      background-image: url(../images/bg-unauthorized.jpg);
       background-repeat: no-repeat;
   }
 }
@@ -70,7 +70,7 @@ and (min-width : 1824px) {
   /* Styles */
   body 
   {
-      background-image: url(/design/images/bg-unauthorized.jpg);
+      background-image: url(../images/bg-unauthorized.jpg);
       background-repeat: no-repeat;
   }
 }

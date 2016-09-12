@@ -166,11 +166,11 @@ input, select, textarea, div.z {
 }
 
 .header, .th, .td, td.c, th.c_l, th.c_r, th.c_c, th.c_j, tr.c_l > th, tr.c_r > th, tr.c_c > th, tr.c_j > th {
-  background-image     : url("/skins/supernova-ivash/img/bg1.gif");
+  background-image     : url("img/bg1.gif");
 }
 
 td.l {
-  background-image     : url("/skins/supernova-ivash/img/bg2.gif");
+  background-image     : url("img/bg2.gif");
 }
 
 a:hover {
@@ -197,7 +197,7 @@ a:hover {
 }
 
 #left_menu th {
-  background-image: url("/skins/supernova-ivash/img/bg1.gif");
+  background-image: url("img/bg1.gif");
 }
 
 #left_menu th a {
@@ -219,7 +219,7 @@ div .ui-dialog-content table {
 
 /* Icon file */
 .icons {
-  background-image: url(/skins/supernova-ivash/images/icons.png) !important;
+  background-image: url(images/icons.png) !important;
 }
 
 div.ui-slider-range {
@@ -286,10 +286,10 @@ body:not(.no_border_image) .border_image_large
 
   /*border-width: 2.181818181818em 1em 2.272727272727em 2.272727272727em;*/
 
-  -moz-border-image:    url("/skins/supernova-ivash/images/border.png") 24 11 25 25 round round;
-  -o-border-image:      url("/skins/supernova-ivash/images/border.png") 24 11 25 25 round round;
-  -webkit-border-image: url("/skins/supernova-ivash/images/border.png") 24 11 25 25 round round;
-  border-image:         url("/skins/supernova-ivash/images/border.png") 24 11 25 25 round round;
+  -moz-border-image:    url("images/border.png") 24 11 25 25 round round;
+  -o-border-image:      url("images/border.png") 24 11 25 25 round round;
+  -webkit-border-image: url("images/border.png") 24 11 25 25 round round;
+  border-image:         url("images/border.png") 24 11 25 25 round round;
 }
 
 body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-dialog
@@ -299,10 +299,10 @@ body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-d
 
   /*border-width: 1em 1em 1em 1em;*/
 
-  -moz-border-image:    url("/skins/supernova-ivash/images/border_small.png") 11 11 11 11 round round;
-  -o-border-image:      url("/skins/supernova-ivash/images/border_small.png") 11 11 11 11 round round;
-  -webkit-border-image: url("/skins/supernova-ivash/images/border_small.png") 11 11 11 11 round round;
-  border-image:         url("/skins/supernova-ivash/images/border_small.png") 11 11 11 11 round round;
+  -moz-border-image:    url("images/border_small.png") 11 11 11 11 round round;
+  -o-border-image:      url("images/border_small.png") 11 11 11 11 round round;
+  -webkit-border-image: url("images/border_small.png") 11 11 11 11 round round;
+  border-image:         url("images/border_small.png") 11 11 11 11 round round;
 }
 
 div#tab_container > div {
@@ -392,39 +392,39 @@ Break points:
 
 /*@media only screen and (min-width: 480px) {*/
 /*body {*/
-/*background-image: url(/skins/supernova-ivash/img/background_0800.jpg);*/
+/*background-image: url(img/background_0800.jpg);*/
 /*}*/
 /*}*/
 
 /* Desktops and laptops medium-res */
 @media only screen and (min-width: 760px) {
   body {
-    background-image: url(/skins/supernova-ivash/img/background_0800.jpg);
+    background-image: url(img/background_0800.jpg);
   }
 }
 
 /* Desktops and laptops ----------- */
 @media only screen and (min-width: 950px) {
   body {
-    background-image: url(/skins/supernova-ivash/img/background_1024.jpg);
+    background-image: url(img/background_1024.jpg);
   }
 }
 
 @media only screen and (min-width: 1224px) {
   body {
-    background-image: url(/skins/supernova-ivash/img/background_1280.jpg);
+    background-image: url(img/background_1280.jpg);
   }
 }
 
 /* Large screens ----------- */
 @media only screen and (min-width: 1550px) {
   body {
-    background-image: url(/skins/supernova-ivash/img/background_1600.jpg);
+    background-image: url(img/background_1600.jpg);
   }
 }
 
 @media only screen and (min-width: 1824px) {
   body {
-    background-image: url(/skins/supernova-ivash/img/background_1920.jpg);
+    background-image: url(img/background_1920.jpg);
   }
 }
