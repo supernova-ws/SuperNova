@@ -34,27 +34,25 @@ git cherry-pick b95743b82fa61fac98dd0286ae793030632ae690
 
 
 
+commit 3e8bfe3fd599db7d60e75c8d81dac9da7f0f1867
+    CODE-fix-41a52.98: Fixed JS/CSS mess introduced in previous commits
+
 commit 80e1107d05b15609acf64215b3f78827b347c678
-Date:   Sun Sep 11 17:21:09 2016 +0300
     CODE-misc-41a52.97: Added minified files
 
 commit f9cb5a42eea94f4b02c08979e9a9f39bb95a9f44
-Date:   Sun Sep 11 17:19:56 2016 +0300
     CODE-misc-41a52.96: More advanced JS/CSS file processing
 
 CONFLICTS many of them
 commit 0fb53648e57d531b974f4868549d92cc2275caec
-Date:   Fri Sep 9 16:49:45 2016 +0300
     CODE-feat-41a52.93: New minifyinf sysyem (disabled for now)
 
 DONE trunk
 commit 8591a1931e76574ea29f9ae2265530453d90a6ab
-Date:   Fri Sep 9 03:56:42 2016 +0300
     CODE-misc-41a52.92: Fooling ESLint...
 
 DONE trunk
 commit 7645d028f16f950172c85f4c36e2fa1951d6735f
-Date:   Fri Sep 9 03:52:53 2016 +0300
     CODE-misc-41a52.91: Working on unGlobal JS vars
 
 - здесь только доки
