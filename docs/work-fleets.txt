@@ -56,6 +56,18 @@ git cherry-pick b95743b82fa61fac98dd0286ae793030632ae690
 
 
 
+ommit 6174c8474cc9f3fd17519cf0df57052adedf379d
+   CODE-fix-41a52.104: Fixed JS/CSS mess introduced in previous commits
+
+ommit ab0e6c89b7c00b513322230ea45b26ff0ffc881d
+   DOC-misc-41a52.103: Added HTML version of README
+
+ommit 1d82861897a3ba3efc23a3ea55e3487d84ca9d3c
+   CODE-misc-41a52.102: Removed unused minified files in separate dir
+
+ommit a1656ffe32d4bb83860ef51e000e66853e495066
+   CSS-misc-41a52.99: Added minified CSS global files
+
 commit 3e8bfe3fd599db7d60e75c8d81dac9da7f0f1867
     CODE-fix-41a52.98: Fixed JS/CSS mess introduced in previous commits
 
