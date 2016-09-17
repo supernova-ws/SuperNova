@@ -270,7 +270,6 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
 //log_file('Миссия');
     // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
-doquery("UPDATE {{logs}} SET log_text = 'Locking at " . SN_TIME_SQL . " - starting mission loop' WHERE log_id = {$lockId}");
     sn_db_transaction_start();
     $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
 
