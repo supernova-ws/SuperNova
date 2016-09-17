@@ -1,3 +1,8 @@
+СДЕАЛНО:
+    - trunk смерджен в modules
+    - modules синхронизирован с server/beta
+
+
 ПЛАН:
     - Домерджить CSS/JS минифаеры в trunk из work-fleets
     - Домерджить CSS/JS минифаеры в modules из work-fleets_modules
@@ -12,10 +17,35 @@
     - Изолировать работу с флотами в новой ветке
     - Смерджить текущий work-fleets с trunk без учёта работы с флотами
 
+git diff previous_release..current_release -- . ':!spec'
+
+
+[11:50:47] Aleksandr Omelchenko (Oracle): https://dev.mysql.com/doc/refman/5.6/en/innodb-memcached.html
+[17:23:31] Aleksandr Omelchenko (Oracle): http://www.stack.nl/~dimitri/doxygen/
+[18:15:43] Aleksandr Omelchenko (Oracle): https://habrahabr.ru/company/mosigra/blog/278095/
 
 
 
 
+- ОШИБКА!
+    - Нет константы UBE_CAPTURE_NOT_A_WIN и соответствующего текстового описания в
+        - trunk
+        - modules
+        - server/beta
+        - work-fleets
+        - ДА ВАЩЕ НИГДЕ НЕТУТЬ!
+
+- Чат
+    - Добавить команду /me
+
+
+
+
+Влито в modules
+commit df7efe3045e53a18a54911cf5879b416df6c45e9
+Author: Gorlum <gorlum@supernova.ws>
+Date:   Wed Sep 14 20:51:56 2016 +0300
+    MOD-game_skirmish-1a1-41a8.24: Initial release
 
 
 - https://davidwalsh.name/measuring-performance
