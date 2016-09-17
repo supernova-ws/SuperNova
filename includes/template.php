@@ -711,6 +711,7 @@ function parsetemplate($template, $array = false) {
     $template->assign_vars(array(
       'dpath'          => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
       'SN_TIME_NOW'    => SN_TIME_NOW,
+      'CURRENT_YEAR'   => date('Y', SN_TIME_NOW),
       'USER_AUTHLEVEL' => isset($user['authlevel']) ? $user['authlevel'] : -1,
       'SN_GOOGLE'      => defined('SN_GOOGLE'),
     ));
