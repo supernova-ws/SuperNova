@@ -1,16 +1,18 @@
 var unit_selected = null;
 
 function eco_struc_make_resource_row(unitData, resourceName) {
+  var resourceLeft, resourceLeftWithIncoming;
   // var costDestroy = intVal(unitData["destroy_" + resourceName]);
   var costBuild = Math.ceilVal(unitData[resourceName]);
-  var resourceLeft = Math.roundVal(planet[resourceName]) - costBuild;
-  var resourceLeftWithIncoming = resourceLeft + Math.floatVal(planet[resourceName + "_incoming"]);
   var resourceElement = $("#unit_" + resourceName);
 
   if (costBuild > 0) {
     if (STACKABLE) {
       costBuild *= Math.roundVal($("#unit_amount").val());
     }
+    resourceLeft = Math.roundVal(planet[resourceName]) - costBuild;
+    resourceLeftWithIncoming = resourceLeft + Math.floatVal(planet[resourceName + "_incoming"]);
+
     resourceElement.css({visibility: "visible", display: "table-row"});
 
     elementPrettyNumber($("#" + resourceName + "_price"), costBuild, planet[resourceName]);
