@@ -66,7 +66,7 @@ jQuery(document).ready(function (e) {
   });
 
   $(".unit_create,.unit_destroy").on('click', function (e) {
-    var result = elementIsEnabled(this);
+    var result = elementIsEnabled(this) || $(this).hasClass('icon_plus') || $(this).hasClass('icon_minus');
     if (result) {
       result = $(this).hasClass('unit_create') ? 'create' : 'destroy';
     }

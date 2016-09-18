@@ -103,8 +103,6 @@ global $auth;
 classSupernova::init_0_prepare();
 classSupernova::init_3_load_config_file();
 
-// required for db.php
-// Initializing global 'debug' object
 classSupernova::init_global_objects();
 
 // Отладка
