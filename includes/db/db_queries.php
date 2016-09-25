@@ -311,6 +311,6 @@ function db_player_name_exists($player_name_unsafe) {
  */
 // OK v4.7
 function db_player_get_max_id() {
-  $max_user_id = classSupernova::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{user}}`", true);
+  $max_user_id = classSupernova::$db->doquery("SELECT MAX(`id`) as `max_user_id` FROM `{{users}}`", true);
   return !empty($max_user_id['max_user_id']) ? $max_user_id['max_user_id'] : 0;
 }
