@@ -67,13 +67,17 @@ jQuery(document).ready(function (e) {
     return buildUnitProcessResult(e, result);
   });
 
-  $(".unit_create,.unit_destroy").on('click', function (e) {
+  $(".unit_create").on('click', function (e) {
     var result = elementIsEnabled(this) || $(this).hasClass('icon_plus') || $(this).hasClass('icon_minus');
     if (result) {
       result = $(this).hasClass('unit_create') ? 'create' : 'destroy';
     }
 
     return buildUnitProcessResult(e, result);
+  });
+
+  $(".unit_destroy").on('click', function (e) {
+    return buildUnitProcessResult(e, 'destroy');
   });
 
   $("#form_unit").on('keypress', function (e) {
