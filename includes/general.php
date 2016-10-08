@@ -1621,3 +1621,36 @@ function sec_player_ip() {
 
   return array_map('db_escape', $ip);
 }
+
+
+function price_matrix_templatize(&$price_matrix_plain, &$price_matrix_original, &$price_matrix_upgrade, $user_dark_matter) {
+  $prices = array();
+  foreach($price_matrix_original as $level_num => $level_data) {
+    $price_per_period = array();
+    foreach($level_data as $period => $price) {
+      $price_text = pretty_number($price, true, $user_dark_matter, false, false);
+      $price_per_period[$period] = array(
+        'PERIOD' => $period,
+        'PRICE_ORIGIN'  => $price,
+        'PRICE_ORIGIN_TEXT'  => $price_text['text'],
+        'PRICE_ORIGIN_CLASS'  => $price_text['class'],
+        'PRICE_UPGRADE' => $price_matrix_upgrade[$level_num][$period],
+        'PRICE_UPGRADE_TEXT' => pretty_number($price_matrix_upgrade[$level_num][$period], true),
+      );
+      if(isset($price_matrix_plain[$level_num][$period])) {
+        $price_per_period[$period] += array(
+          'PRICE_PLAIN_PERCENT'  => ceil(100 - ($price / $price_matrix_plain[$level_num][$period]) * 100),
+          'PRICE_PLAIN'  => $price_matrix_plain[$level_num][$period],
+          'PRICE_PLAIN_TEXT'  => pretty_number($price_matrix_plain[$level_num][$period], true),
+        );
+      }
+    }
+
+    $prices[$level_num] = array(
+      '.' => array('period' => $price_per_period),
+      'LEVEL'   => $level_num,
+    );
+  }
+
+  return $prices;
+}
