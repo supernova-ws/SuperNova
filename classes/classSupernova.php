@@ -12,7 +12,7 @@ class classSupernova {
   /**
    * @var array[] $design
    */
-  public $design = array(
+  public static $design = array(
     'bbcodes' => array(),
     'smiles' => array(),
   );
@@ -70,7 +70,7 @@ class classSupernova {
   public static $debug = null;
 
 
-  public $options = array();
+  public static $options = array();
 
 
   /*
@@ -1219,9 +1219,7 @@ class classSupernova {
   }
 
   public static function init_global_objects() {
-    global $supernova, $sn_cache, $config, $debug;
-
-    $supernova = new classSupernova();
+    global $sn_cache, $config, $debug;
 
     $debug = self::$debug = self::$gc->debug;
     self::$db = self::$gc->db;

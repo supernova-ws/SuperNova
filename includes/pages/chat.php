@@ -29,7 +29,7 @@ $sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
 */
 function sn_chat_model()
 {
-  global $config, $user, $template_result, $lang, $supernova;
+  global $config, $user, $template_result, $lang;
 
   $config->array_set('users', $user['id'], 'chat_last_activity', SN_TIME_MICRO);
   $config->array_set('users', $user['id'], 'chat_last_refresh', 0);
@@ -51,7 +51,7 @@ function sn_chat_model()
   }
 
   $template_result['.']['smiles'] = array();
-  foreach($supernova->design['smiles'] as $auth_level => $replaces) {
+  foreach(classSupernova::$design['smiles'] as $auth_level => $replaces) {
     if($auth_level > $user_auth_level) {
       continue;
     }

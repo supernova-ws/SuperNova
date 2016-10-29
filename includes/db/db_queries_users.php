@@ -48,7 +48,7 @@ function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
 
 
 
-// TODO Внести это всё в $supernova для HyperNova
+// TODO Внести это всё в supernova для HyperNova
 function db_user_last_registered_username() {
   return classSupernova::db_get_user_player_username_last_registered();
 }

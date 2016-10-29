@@ -96,10 +96,9 @@ require_once SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX;
 
 /**
  * @var classConfig $config
- * @var classSupernova $supernova
  * @var debug $debug
  */
-global $supernova, $sn_cache, $config, $auth, $debug;
+global $sn_cache, $config, $auth, $debug;
 
 classSupernova::init_0_prepare();
 classSupernova::init_3_load_config_file();
@@ -169,7 +168,7 @@ $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
 if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
   require_once($sn_page_name_file);
   if(is_array($sn_page_data['options'])) {
-    $supernova->options = array_merge($supernova->options, $sn_page_data['options']);
+    classSupernova::$options = array_merge(classSupernova::$options, $sn_page_data['options']);
   }
 //  $sn_page_data
 /*
@@ -403,7 +402,7 @@ $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc[
 execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
 global $skip_fleet_update;
-$skip_fleet_update = $skip_fleet_update || $supernova->options['fleet_update_skip'] || defined('IN_ADMIN');
+$skip_fleet_update = $skip_fleet_update || classSupernova::$options['fleet_update_skip'] || defined('IN_ADMIN');
 if(!$skip_fleet_update && SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_last) > classSupernova::$config->fleet_update_interval) {
   require_once(SN_ROOT_PHYSICAL . "includes/includes/flt_flying_fleet_handler2" . DOT_PHP_EX);
   flt_flying_fleet_handler($skip_fleet_update);
