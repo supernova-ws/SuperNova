@@ -5,7 +5,7 @@ class sn_module {
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a0.37# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a60.19# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',

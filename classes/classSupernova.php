@@ -1095,7 +1095,7 @@ class classSupernova {
         if($conditions['action'] == SQL_OP_DELETE && !$conditions[P_WHERE_STR]) continue; // Защита от случайного удаления всех данных в таблице
 
         if($conditions[P_LOCATION] != LOC_NONE) {
-          //die('spec ops supernova.php line 928 Добавить работу с кэшем юнитов итд');
+          //die('spec ops classSupernova.php line 928 Добавить работу с кэшем юнитов итд');
           switch($conditions['action'])
           {
             case SQL_OP_DELETE: $result = self::db_del_record_list($conditions[P_LOCATION], $conditions[P_WHERE_STR]) && $result; break;

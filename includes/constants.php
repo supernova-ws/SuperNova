@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a60.9');
+define('SN_VERSION', '41a60.19');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1557,3 +1557,16 @@ define('SKIN_IMAGE_TAG_PARAMS', 3);
 
 define('DB_SELECT_PLAIN', false);
 define('DB_SELECT_FOR_UPDATE', true);
+
+/**
+ * Defining some constants
+ */
+define('CACHER_NOT_INIT', -1);
+define('CACHER_NO_CACHE',  0);
+define('CACHER_XCACHE'  ,  1);
+
+define('CACHER_LOCK_WAIT', 5); // maximum cacher wait for table unlock in seconds. Can be float
+
+// max timeout cacher can sleep in waiting for unlockDefault = 10000 ms = 0.01s
+// really it will sleep mt_rand(100, CACHER_LOCK_SLEEP)
+define('CACHER_LOCK_SLEEP', 10000);
