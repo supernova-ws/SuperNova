@@ -1,6 +1,13 @@
 <?php
 
+use Vector\Vector;
+use Common\GlobalContainer;
+
 class classSupernova {
+  /**
+   * @var GlobalContainer $gc
+   */
+  public static $gc;
 
   /**
    * @var array[] $design
@@ -58,9 +65,9 @@ class classSupernova {
   public static $user_options;
 
   /**
-   * @var debug $debug_handler
+   * @var debug $debug
    */
-  private static $debug_handler = null;
+  public static $debug = null;
 
 
   public $options = array();
@@ -181,22 +188,11 @@ class classSupernova {
     ),
   );
 
-  /**
-   * @param $db db_mysql
-   */
-  public static function init_main_db($db) {
-    self::$db = $db;
-    self::$db->sn_db_connect();
-  }
-
 
   public static function log_file($message, $spaces = 0) {
-    if(self::$debug_handler) {
-      self::$debug_handler->log_file($message, $spaces);
+    if(self::$debug) {
+      self::$debug->log_file($message, $spaces);
     }
-  }
-  public static function debug_set_handler(&$debug) {
-    self::$debug_handler = $debug;
   }
 
   // Перепаковывает массив на заданную глубину, убирая поля с null
@@ -1178,19 +1174,7 @@ class classSupernova {
 
 
   public static function init_0_prepare () {
-    // Отключаем magic_quotes
-    ini_get('magic_quotes_sybase') ? die('SN is incompatible with \'magic_quotes_sybase\' turned on. Disable it in php.ini or .htaccess...') : false;
-    if(@get_magic_quotes_gpc()) {
-      $gpcr = array(&$_GET, &$_POST, &$_COOKIE, &$_REQUEST);
-      array_walk_recursive($gpcr, function (&$value, $key) {
-        $value = stripslashes($value);
-      });
-    }
-    if(function_exists('set_magic_quotes_runtime')) {
-      @set_magic_quotes_runtime(0);
-      @ini_set('magic_quotes_runtime', 0);
-      @ini_set('magic_quotes_sybase', 0);
-    }
+    static::$gc = new GlobalContainer();
   }
 
   public static function init_1_constants() {
@@ -1235,43 +1219,36 @@ class classSupernova {
   }
 
   public static function init_global_objects() {
-    /**
-     * @var classSupernova $supernova
-     */
-    global $supernova, $sn_cache, $config;
+    global $supernova, $sn_cache, $config, $debug;
+
+    $supernova = new classSupernova();
+
+    $debug = self::$debug = self::$gc->debug;
+    self::$db = self::$gc->db;
+    self::$db->sn_db_connect();
 
     self::$user_options = new userOptions(0);
 
-    /**
-     * @var classSupernova $supernova
-     */
-    $supernova = new classSupernova();
-
     // Initializing global 'cacher' object
-    static::$cache = new classCache(classSupernova::$cache_prefix);
-    $sn_cache = static::$cache;
-    empty($sn_cache->tables) && sys_refresh_tablelist();
-    empty($sn_cache->tables) && die('DB error - cannot find any table. Halting...');
+    $sn_cache = static::$cache = self::$gc->cache;
+    empty(static::$cache->tables) && sys_refresh_tablelist() && empty(static::$cache->tables) && die('DB error - cannot find any table. Halting...');
 
     // Initializing global "config" object
-    static::$config = new classConfig(classSupernova::$cache_prefix);
-    $config = static::$config;
-    //$config->db_prefix = classSupernova::$db_prefix;
-    //$config->secret_word = classSupernova::$sn_secret_word;
-    //$config->db_saveItem('secret_word', classSupernova::$sn_secret_word);
-    //$config->db_saveItem('db_prefix', classSupernova::$db_prefix);
-    //$config->db_saveItem('cache_prefix', classSupernova::$cache_prefix);
+    $config = static::$config = self::$gc->config;
+
+    // Initializing statics
+    Vector::_staticInit(static::$config);
   }
 
   public static function init_debug_state() {
     if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
       define('BE_DEBUG', true);
     }
-// define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
+    // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
     define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
     define('DEBUG_SQL_COMMENT_LONG', true); // Добавлять SQL запрос длинные комментарии. Не зависим от всех остальных параметров. Подойдет любое значение
     define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
-// Включаем нужные настройки
+    // Включаем нужные настройки
     defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR') ? define('DEBUG_SQL_ERROR', true) : false;
     defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
     defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;

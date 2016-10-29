@@ -18,8 +18,11 @@
 * Currently support is a bit limited - for example there is no "walk" function. However basic array abilities supported
 * You should NEVER operate with arrays inside of cacher and should ALWAYS use wrap-up functions
 *
+ * @property bool _INITIALIZED
+ * @property array lng_stat_usage - Array for locale strings usage statistics
+ * @property array tables
+ *
 * @package supernova
-*
 */
 class classCache {
   // CACHER_NOT_INIT - not initialized

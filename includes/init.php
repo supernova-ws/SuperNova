@@ -7,15 +7,16 @@ if(defined('INIT')) {
 
 define('INIT', true);
 
-// define('SN_DEBUG_LOG', true);
-
 // Замеряем начальные параметры
 define('SN_TIME_MICRO', microtime(true));
 define('SN_MEM_START', memory_get_usage());
 
-//define('SN_DEBUG_PDUMP_CALLER', true);
-
 version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3.2') : false;
+
+//define('DEBUG_UBE', true);
+//define('DEBUG_FLYING_FLEETS', true);
+//define('SN_DEBUG_LOG', true);
+//define('SN_DEBUG_PDUMP_CALLER', true);
 
 // Бенчмарк
 register_shutdown_function(function() {
@@ -23,9 +24,7 @@ register_shutdown_function(function() {
     return;
   }
 
-  global $user;
-
-  global $locale_cache_statistic;
+  global $user, $locale_cache_statistic;
 
   print('<hr><div class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
     (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .
@@ -46,7 +45,7 @@ register_shutdown_function(function() {
 !defined('INSTALL') ? define('INSTALL', false) : false;
 !defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
 
-global $phpEx, $sn_root_physical, $phpbb_root_path; // Это нужно для работы PTL
+global $phpEx, $phpbb_root_path; // Это нужно для работы PTL
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
 define('SN_TIME_ZONE_OFFSET', date('Z'));
 
@@ -60,7 +59,7 @@ if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
 }
 
 // Эти три строки должны быть В ЭТОМ ФАЙЛЕ, ПО ЭТОМУ ПУТИ и ПЕРЕД ЭТИМ ИНКЛЮДОМ!!!
-define('SN_ROOT_PHYSICAL', $sn_root_physical = str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
+define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
 $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
@@ -74,73 +73,36 @@ spl_autoload_register(function ($class) use ($classRoot) {
   }
 });
 
-$sn_root_relative = str_replace('\\', '/', getcwd());
-$sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
+$sn_root_relative = str_replace(array('\\', '//'), '/', getcwd() . '/');
 $sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
 $sn_root_relative .= basename($_SERVER['SCRIPT_NAME']);
 $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
 define('SN_ROOT_RELATIVE', $sn_root_relative);
 
-define('SN_ROOT_VIRTUAL' , 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
-define('SN_ROOT_VIRTUAL_PARENT' , str_replace('//google.', '//', SN_ROOT_VIRTUAL));
+define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
+define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
 
 $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
 define('PHP_EX', $phpEx); // PHP extension on this server
 define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
 
-
-require_once('constants.php');
-
-classSupernova::init_0_prepare();
-//classSupernova::init_1_constants();
-classSupernova::init_3_load_config_file();
-
 header('Content-type: text/html; charset=utf-8');
 ob_start();
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
-
-//require_once('classes/oldArrayAccessNd.php');
-
-// required for db.php
-// Initializing global 'debug' object
-global $debug;
-$debug = new debug();
-classSupernova::debug_set_handler($debug);
-
-require_once(SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX);
-//require_once('classes/db_mysql_v4.php');
-//require_once('classes/db_mysql_v5.php');
-//require_once('classes/db_mysql.php');
-classSupernova::init_main_db(new db_mysql());
-
-
-//require_once('classes/classCache.php');
-//require_once('classes/classLocale.php');
-//require_once('classes/template.php');
-//require_once('classes/template_compile.php');
-//require_once('classes/skin.php');
-//require_once('classes/sn_module.php');
-
-//require_once('classes/playerTimeDiff.php');
-
-//require_once('classes/RequestInfo.php');
-//require_once('classes/PlayerToAccountTranslate.php');
-//require_once('classes/Confirmation.php');
-//require_once('classes/Account.php');
-//require_once('classes/core_auth.php');
-// require_once('auth_provider.php');
-//require_once('classes/auth_abstract.php');
-//require_once('classes/auth_local.php');
-//require_once('classes/sn_module_payment.php');
-//require_once('classes/userOptions.php');
-require_once(SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX);
+require_once 'constants.php';
+require_once SN_ROOT_PHYSICAL . "includes/db" . DOT_PHP_EX;
+require_once SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX;
 
 /**
  * @var classConfig $config
  * @var classSupernova $supernova
+ * @var debug $debug
  */
-global $supernova, $sn_cache, $config, $auth;
+global $supernova, $sn_cache, $config, $auth, $debug;
+
+classSupernova::init_0_prepare();
+classSupernova::init_3_load_config_file();
 
 classSupernova::init_global_objects();
 

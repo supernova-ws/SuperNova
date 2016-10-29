@@ -1,5 +1,7 @@
 <?php
 
+use Common\GlobalContainer;
+
 /**
  * User: Gorlum
  * Date: 01.09.2015
@@ -57,12 +59,15 @@ class db_mysql {
    */
   public $time_mysql_total = 0.0;
 
-  public function __construct() {
-//    require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
-//
-//    $driver_name = empty($dbsettings['sn_driver']) ? 'db_mysql_v5' : $dbsettings['sn_driver'];
-//
-//    $this->driver = new $driver_name();
+  /**
+   * db_mysql constructor.
+   *
+   * @param GlobalContainer $gc
+   */
+  public function __construct($gc) {
+//    $this->transaction = new \DBAL\DbTransaction($gc, $this);
+//    $this->snCache = new $gc->snCacheClass($gc, $this);
+//    $this->operator = new DbRowDirectOperator($this);
   }
 
   function load_db_settings() {
