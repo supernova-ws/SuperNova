@@ -10,6 +10,8 @@
  *
  * @package supernova
  *
+ * @property string auth_vkontakte_app_id
+ * @property string auth_vkontakte_app_key
  */
 class classConfig extends classPersistent {
   protected $defaults = array(
@@ -33,6 +35,9 @@ class classConfig extends classPersistent {
 
     'allow_buffing'                => 0, // Disable buffing check for TRANSPORT missions
     'ally_help_weak'               => 0, // Allow strong players to HOLD on weak co-ally planets
+
+    'auth_vkontakte_app_id'        => '',
+    'auth_vkontakte_app_key'       => '',
 
     // User avatar and alliance logo
     'avatar_max_height'            => 128, // Maximum height
