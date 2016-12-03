@@ -1279,6 +1279,32 @@ switch($new_version) {
       upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
       upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
+
+    // 2016-12-03 20:36:46 41a61.0
+    if(empty($update_tables['auth_vkontakte_account'])) {
+      upd_create_table('auth_vkontakte_account', " (
+          `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+          `access_token` varchar(250) NOT NULL DEFAULT '',
+          `expires_in` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          `email` varchar(250) NOT NULL DEFAULT '',
+
+          `first_name` varchar(250) NOT NULL DEFAULT '',
+          `last_name` varchar(250) NOT NULL DEFAULT '',
+
+          `account_id` bigint(20) unsigned NULL COMMENT 'Account ID',
+
+          PRIMARY KEY (`user_id`),
+          CONSTRAINT `FK_vkontakte_account_id` FOREIGN KEY (`account_id`) REFERENCES `{{account}}` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
+      );
+    }
+//    upd_alter_table('auth_vkontakte_account',
+//      "
+//          ADD COLUMN `account_id` bigint(20) unsigned NULL COMMENT 'Account ID',
+//          ADD CONSTRAINT `FK_vkontakte_account_id` FOREIGN KEY (`account_id`) REFERENCES `{{account}}` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
+//      ",
+//      empty($update_tables['auth_vkontakte_account']['account_id']));
+
     // #ctv
 
     upd_do_query('COMMIT;', true);

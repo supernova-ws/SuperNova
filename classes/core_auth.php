@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a60.19#
+ * version #41a61.0#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a60.19# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a61.0# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -93,6 +93,8 @@ class core_auth extends sn_module {
    * @var int
    */
   static $login_status = LOGIN_UNDEFINED;
+  static $login_message = '';
+
   /**
    * Имя, предлагаемое пользователю в качестве имени игрока
    *
@@ -112,6 +114,10 @@ class core_auth extends sn_module {
    * @var auth_local[]
    */
   protected $provider_error_list = array();
+  /**
+   * @var string[]
+   */
+  protected $provider_error_messages = array();
   /**
    * Список юзеров (user_row - записей из `user`), доступных всем авторизированным аккаунтам
    *
@@ -307,7 +313,7 @@ class core_auth extends sn_module {
     }
 
     // $this->providers = array_reverse($this->providers, true); // НИНАДА! СН-аккаунт должен всегда авторизироваться первым!
-
+//pdump($this->providers);
     foreach($this->providers as $provider_id => $provider) {
       $login_status = $provider->login(); // OK v4.5
       self::flog(($provider->manifest['name'] . '->' . 'login_try - ') . (empty($provider->account->account_id) ? $lang['sys_login_messages'][$provider->account_login_status] : dump($provider)));
@@ -330,6 +336,11 @@ class core_auth extends sn_module {
       if(!empty($this->provider_error_list)) {
         // Если есть - выводим их
         self::$login_status = reset($this->provider_error_list);
+        $providerError = $this->providers[key($this->provider_error_list)]->account_login_message;
+
+        if(!empty($providerError)) {
+          self::$login_message = $providerError;
+        }
       }
       // Иначе - это первый запуск страницы. ИЛИ СПЕЦИАЛЬНОЕ ДЕЙСТВИЕ!
       // ...которые по факты должны обрабатываться в рамках provider->login()
@@ -726,6 +737,10 @@ class core_auth extends sn_module {
       $extra = explode(',', $extra);
       array_walk($extra,'trim');
       in_array(self::$device->device_id, $extra) and die();
+    }
+
+    if(self::$login_message) {
+      $result[F_LOGIN_MESSAGE] = self::$login_message;
     }
 
     $result[F_LOGIN_STATUS] = self::$login_status = empty($this->providers_authorised) ? self::$login_status : LOGIN_SUCCESS;

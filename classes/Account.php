@@ -56,6 +56,10 @@ class Account {
    */
   public $db;
 
+  protected $sn_root_path = SN_ROOT_RELATIVE;
+  protected $cookie_name = SN_COOKIE;
+  protected $cookie_name_impersonate = SN_COOKIE_I;
+
   protected $table_check = array(
     'account' => 'account',
     'log_metamatter' => 'log_metamatter',
@@ -76,7 +80,13 @@ class Account {
   }
   public function __construct($db = null) {
     $this->reset();
+
     $this->db = is_object($db) ? $db : classSupernova::$db;
+
+    $this->sn_root_path = SN_ROOT_RELATIVE;
+    $this->cookie_name = SN_COOKIE;
+    $this->cookie_name_impersonate = $this->cookie_name . AUTH_COOKIE_IMPERSONATE_SUFFIX;
+    $this->secret_word = classSupernova::$sn_secret_word;
 
     foreach($this->table_check as $table_name) {
       if(empty($this->db->table_list[$table_name])) {
@@ -189,9 +199,13 @@ class Account {
     $this->reset();
 
     $email_safe = $this->db->db_escape($email_unsafe);
+    if($email_safe) {
+      $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;", true);
 
-    $account_row = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE;", true);
-    return $this->assign_from_db_row($account_row);
+      return $this->assign_from_db_row($account_row);
+    } else {
+      return false;
+    }
   }
   /**
    * Возвращает аккаунт по имени или аккаунту - проверка уникальных значений
@@ -421,7 +435,66 @@ class Account {
     return $result;
   }
 
+  /**
+   *
+   * @return bool
+   * @throws Exception
+   */
+  public function cookieSet($rememberMe = false, $domain = null) {
+    if(!$this->is_exists) {
+      throw new Exception(LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET, ERR_ERROR);
+    }
 
-  // ------ UNUSED -----------------------------------------------------------------------------------------------------
+    $expire_time = $rememberMe ? SN_TIME_NOW + PERIOD_YEAR : 0;
+
+    $password_encoded = $this->password_encode_for_cookie($this->account_password);
+    $cookie = $this->account_id . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . $rememberMe;
+//    $this->flog("cookie_set() - Устанавливаем куку {$cookie}");
+
+    return sn_setcookie($this->cookie_name, $cookie, $expire_time, $this->sn_root_path, $domain);
+  }
+
+  /**
+   * Очищает куку аккаунта - совсем или восстанавливая куку текущего имперсонатора
+   */
+  // OK v4.1
+  public function cookieClear($domain = null) {
+    // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
+    if(!empty($_COOKIE[$this->cookie_name_impersonate])) {
+      sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name_impersonate], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $domain);
+      sn_setcookie($this->cookie_name_impersonate, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $domain);
+    } else {
+      sn_setcookie($this->cookie_name, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $domain);
+    }
+  }
+
+  public function cookieLogin(&$rememberMe = false) {
+    // Пытаемся войти по куке
+    if(!empty($_COOKIE[$this->cookie_name])) {
+      if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
+        list($account_id_unsafe, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $_COOKIE[$this->cookie_name]);
+      } else {
+        list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
+      }
+
+      if(
+        $this->db_get_by_id($account_id_unsafe)
+        && ($this->password_encode_for_cookie($this->account_password) == $cookie_password_hash_salted)
+      ) {
+        $rememberMe = intval($user_remember_me);
+
+        return true;
+      }
+    }
+
+    // Невалидная кука - чистим
+    $this->cookieClear();
+
+    return false;
+  }
+
+  protected function password_encode_for_cookie($password) {
+    return md5("{$password}--" . $this->secret_word);
+  }
 
 }

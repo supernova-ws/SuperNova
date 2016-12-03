@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a60.19# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #41a61.0# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -26,8 +26,6 @@ class auth_local extends auth_abstract {
   );
 
   public $provider_id = ACCOUNT_PROVIDER_LOCAL;
-  // TODO - private ??
-  //public $user = null;
 
   /**
    * Флаг входа в игру
@@ -60,16 +58,11 @@ class auth_local extends auth_abstract {
    */
   protected $remember_me = 1;
 
-  // TODO - должны быть PRIVATE
-  // public $data = array();
-
   /**
    * @var Confirmation
    */
   protected $confirmation = null;
 
-
-  // public $is_impersonating = false;
 
   protected $features = array(
     AUTH_FEATURE_EMAIL_CHANGE => AUTH_FEATURE_EMAIL_CHANGE,
@@ -89,47 +82,14 @@ class auth_local extends auth_abstract {
   protected $input_language_safe = '';
 
   protected $domain = null;
-  protected $sn_root_path = null;
+  protected $sn_root_path = SN_ROOT_RELATIVE;
   protected $cookie_name = SN_COOKIE;
   protected $cookie_name_impersonate = SN_COOKIE_I;
   protected $secret_word = '';
 
-//  public $login_methods_supported = array(
-//    // 'login_cookie' => 'login_cookie',
-//    // 'login_username' => 'login_username',
-//    // 'register_username' => 'register_username',
-//  );
-//  Пока не будем с этим заморачиваться. Будут юниттесты - будем плакать. А так - только лишний гемморой
-//  /**
-//   * Используемый менеджер авторизации
-//   *
-//   * @var auth $auth
-//   */
-//  protected $auth = null;
-//
-//  /**
-//   * Конструктор
-//   *
-//   * @param auth $auth
-//   */
-//  function __construct($auth) {
-//    parent::__construct(__FILE__);
-//
-//    $this->auth = $auth;
-//  }
-//  public function auth_manager_set($auth) {
-//    $this->auth = $auth;
-//  }
-//
-
-//  public function set_database($db = null) {
-//    $this->db = is_object($db) ? $db : classSupernova::$db;
-//  }
-
   /**
    * @param string $filename
    */
-  // OK v4.5
   public function __construct($filename = __FILE__) {
     parent::__construct($filename);
 
@@ -180,7 +140,6 @@ class auth_local extends auth_abstract {
    *
    * @param string $method_name
    */
-  // OK v4.5
   public function login() {
     // TODO Проверяем поддерживаемость метода
     // TODO Пытаемся залогиниться
@@ -208,7 +167,6 @@ class auth_local extends auth_abstract {
    *
    * @return array|bool|resource
    */
-  // OK v4.5
   public function password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe = null) {
     $result = parent::password_change($old_password_unsafe, $new_password_unsafe, $salt_unsafe);
     if($result) {
@@ -237,7 +195,6 @@ class auth_local extends auth_abstract {
    *
    * @return int|string
    */
-  // OK v4.6
   protected function password_reset_send_code() {
     global $lang, $config;
 
@@ -302,7 +259,6 @@ class auth_local extends auth_abstract {
    *
    * @return int|string
    */
-  // OK v4.6
   protected function password_reset_confirm() {
     global $lang, $config;
 
@@ -400,7 +356,6 @@ class auth_local extends auth_abstract {
   /**
    * Функция инициализирует данные провайдера - разворачивает куки, берет данные итд
    */
-  // OK v4.5
   protected function prepare() {
     $this->input_login_unsafe = sys_get_param_str_unsafe('username', sys_get_param_str_unsafe('email')); // TODO переделать эту порнографию
 
@@ -424,7 +379,6 @@ class auth_local extends auth_abstract {
    *
    * @return mixed
    */
-  // OK v4.5
   protected function register() {
     // TODO РЕГИСТРАЦИЯ ВСЕГДА ДОЛЖНА ЛОГИНИТЬ ПОЛЬЗОВАТЕЛЯ!
     $this->flog('Регистрация: начинаем. Провайдер ' . $this->provider_id);
@@ -496,37 +450,36 @@ class auth_local extends auth_abstract {
    *
    * @return int Результат попытки
    */
-  // OK v4.5
   protected function login_cookie() {
     if($this->account_login_status != LOGIN_UNDEFINED) {
       return $this->account_login_status;
     }
 
-    // Пытаемся войти по куке
-    if(!empty($_COOKIE[$this->cookie_name])) {
-// Кто хотел - уже сконвертировал старые куки в новые
-// Update оказывается - не все...
-      if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
-        list($account_id_unsafe, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $_COOKIE[$this->cookie_name]);
-      } else {
-        list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
-      }
+//    // Пытаемся войти по куке
+//    if(!empty($_COOKIE[$this->cookie_name])) {
+//      if(count(explode("/%/", $_COOKIE[$this->cookie_name])) < 4) {
+//        list($account_id_unsafe, $cookie_password_hash_salted, $user_remember_me) = explode(AUTH_COOKIE_DELIMETER, $_COOKIE[$this->cookie_name]);
+//      } else {
+//        list($account_id_unsafe, $user_name, $cookie_password_hash_salted, $user_remember_me) = explode("/%/", $_COOKIE[$this->cookie_name]);
+//      }
+//
+//      if(
+//        $this->account->db_get_by_id($account_id_unsafe)
+//        && ($this->password_encode_for_cookie($this->account->account_password) == $cookie_password_hash_salted)
+//      ) {
+//        $this->account_login_status = LOGIN_SUCCESS;
+//        $this->remember_me = intval($user_remember_me);
+//      }
+//    }
+//
+//    if($this->account_login_status != LOGIN_SUCCESS) {
+//      // Невалидная кука - чистим
+//      $this->cookie_clear();
+//    }
 
-      // $account = $this->db_account_get_by_id($account_id_unsafe);
-
-      if(
-        $this->account->db_get_by_id($account_id_unsafe)
-        && ($this->password_encode_for_cookie($this->account->account_password) == $cookie_password_hash_salted)
-      ) {
+    if($this->account->cookieLogin($rememberMe)) {
         $this->account_login_status = LOGIN_SUCCESS;
-        $this->remember_me = intval($user_remember_me);
-        // $this->data[F_ACCOUNT] = $account;
-      }
-    }
-
-    if($this->account_login_status != LOGIN_SUCCESS) {
-      // Невалидная кука - чистим
-      $this->cookie_clear();
+        $this->remember_me = intval($rememberMe);
     }
 
     return $this->account_login_status;
@@ -538,7 +491,6 @@ class auth_local extends auth_abstract {
    *
    * @return mixed
    */
-  // OK v4.5
   protected function login_username() {
     // TODO - Логин по старым именам
     try {
@@ -586,7 +538,6 @@ class auth_local extends auth_abstract {
    * @throws Exception
    *
    */
-  // OK v4.5
   // TODO - должен устанавливать куку исходя из пользователя, что бы пользователь мог логинится
   // TODO - или ставить мультикуку - хотя нахуя, спрашивается
   protected function cookie_set($account_to_impersonate = null) {
@@ -600,26 +551,27 @@ class auth_local extends auth_abstract {
       sn_setcookie($this->cookie_name_impersonate, $_COOKIE[$this->cookie_name], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
     }
 
-    $expire_time = $this->remember_me ? SN_TIME_NOW + PERIOD_YEAR : 0;
+//    $expire_time = $this->remember_me ? SN_TIME_NOW + PERIOD_YEAR : 0;
 
-    $password_encoded = $this->password_encode_for_cookie($this_account->account_password);
-    $cookie = $this_account->account_id . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . $this->remember_me;
-    $this->flog("cookie_set() - Устанавливаем куку {$cookie}");
-    return sn_setcookie($this->cookie_name, $cookie, $expire_time, $this->sn_root_path, $this->domain);
+//    $password_encoded = $this->password_encode_for_cookie($this_account->account_password);
+//    $cookie = $this_account->account_id . AUTH_COOKIE_DELIMETER . $password_encoded . AUTH_COOKIE_DELIMETER . $this->remember_me;
+    $this->flog("cookie_set() - Устанавливаем куку");
+
+    return $this_account->cookieSet($this->remember_me, $this->domain);
   }
 
   /**
    * Очищает куку аккаунта - совсем или восстанавливая куку текущего имперсонатора
    */
-  // OK v4.1
   protected function cookie_clear() {
-    // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
-    if(!empty($_COOKIE[$this->cookie_name_impersonate])) {
-      sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name_impersonate], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
-      sn_setcookie($this->cookie_name_impersonate, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
-    } else {
-      sn_setcookie($this->cookie_name, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
-    }
+    $this->account->cookieClear($this->domain);
+//    // Автоматически вообще-то - если установлена кука имперсонатора - то чистим обычную, а куку имперсонатора - копируем в неё
+//    if(!empty($_COOKIE[$this->cookie_name_impersonate])) {
+//      sn_setcookie($this->cookie_name, $_COOKIE[$this->cookie_name_impersonate], SN_TIME_NOW + PERIOD_YEAR, $this->sn_root_path, $this->domain);
+//      sn_setcookie($this->cookie_name_impersonate, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
+//    } else {
+//      sn_setcookie($this->cookie_name, '', SN_TIME_NOW - PERIOD_WEEK, $this->sn_root_path, $this->domain);
+//    }
   }
 
 
@@ -629,7 +581,6 @@ class auth_local extends auth_abstract {
    *
    * @throws Exception
    */
-  // OK v4.1
   protected function login_validate_input() {
     // Проверяем, что бы в начале и конце не было пустых символов
     // TODO - при копировании Эксель -> Опера - в конце образуются пустые места. Это не должно быть проблемой! Вынести проверку пароля в регистрацию!
@@ -646,7 +597,6 @@ class auth_local extends auth_abstract {
    *
    * @throws Exception
    */
-  // OK v4.5
   protected function register_validate_input() {
     // То, что не подходит для логина - не подходит и для регистрации
     $this->login_validate_input();
@@ -689,17 +639,16 @@ class auth_local extends auth_abstract {
 
 
 
-  // OK v4
-  protected function password_encode_for_cookie($password) {
-    return md5("{$password}--" . $this->secret_word);
-  }
-  // OK v4
+//  protected function password_encode_for_cookie($password) {
+//    return md5("{$password}--" . $this->secret_word);
+//  }
+
   protected function password_encode($password, $salt) {
 //    $class_name = $this->auth;
 //    return $class_name::password_encode($password, $salt);
     return core_auth::password_encode($password, $salt);
   }
-  // OK v4
+
   protected function password_salt_generate() {
 //    $class_name = $this->core_auth;
 //    return $class_name::password_salt_generate();
@@ -710,7 +659,6 @@ class auth_local extends auth_abstract {
    *
    * @return string
    */
-  // OK v4
   protected function make_random_password() {
     return core_auth::make_random_password();
   }

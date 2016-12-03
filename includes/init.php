@@ -299,7 +299,7 @@ if(!empty($user['id'])) {
 
 // Если сообщение пустое - заполняем его по коду
 $template_result[F_LOGIN_MESSAGE] =
-  isset($template_result[F_LOGIN_MESSAGE]) && $template_result[F_LOGIN_MESSAGE]
+  !empty($template_result[F_LOGIN_MESSAGE])
     ? $template_result[F_LOGIN_MESSAGE]
     : ($template_result[F_LOGIN_STATUS] != LOGIN_UNDEFINED
         ? $lang['sys_login_messages'][$template_result[F_LOGIN_STATUS]]

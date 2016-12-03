@@ -12,6 +12,8 @@
  *
  * @property string auth_vkontakte_app_id
  * @property string auth_vkontakte_app_key
+ * @property string auth_vkontakte_token
+ * @property int    $auth_vkontakte_token_expire
  */
 class classConfig extends classPersistent {
   protected $defaults = array(
@@ -38,6 +40,8 @@ class classConfig extends classPersistent {
 
     'auth_vkontakte_app_id'        => '',
     'auth_vkontakte_app_key'       => '',
+    'auth_vkontakte_token'         => '',
+    'auth_vkontakte_token_expire'  => '2000-01-01',
 
     // User avatar and alliance logo
     'avatar_max_height'            => 128, // Maximum height

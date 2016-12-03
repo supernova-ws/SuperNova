@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '40');
 define('SN_RELEASE', '40');
-define('SN_VERSION', '41a60.25');
+define('SN_VERSION', '41a61.0');
 define('SN_RELEASE_STABLE', '40d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -476,6 +476,8 @@ define('REGISTER_ERROR_PLAYER_NAME_EXISTS', 43);
 define('LOGIN_ERROR_NO_ACCOUNT_FOR_COOKIE_SET', 44);
 define('PASSWORD_RESTORE_ERROR_CODE_OK_BUT_NO_ACCOUNT_FOR_EMAIL', 45);
 define('PASSWORD_RESTORE_ERROR_CODE_EMPTY', 46);
+
+define('REGISTER_EXTERNAL_AUTH_ERROR', 1000);
 
 
 
@@ -1570,3 +1572,14 @@ define('CACHER_LOCK_WAIT', 5); // maximum cacher wait for table unlock in second
 // max timeout cacher can sleep in waiting for unlockDefault = 10000 ms = 0.01s
 // really it will sleep mt_rand(100, CACHER_LOCK_SLEEP)
 define('CACHER_LOCK_SLEEP', 10000);
+
+define('AUTH_LOGIN_EXTERNAL_NAME', 'auth_ext');
+define('AUTH_LOGIN_EXTERNAL_MODE', 'auth_mode');
+
+define('AUTH_VKONTAKTE', 'vkontakte');
+define('AUTH_VKONTAKTE_PARAM_STATE', 'state');
+define('AUTH_VKONTAKTE_PARAM_CODE', 'code');
+define('AUTH_VKONTAKTE_PARAM_ERROR', 'code');
+define('AUTH_VKONTAKTE_CODE_GET', 1);
+
+define('URL_PARAM_SEPARATOR', '*');
