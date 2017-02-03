@@ -5,15 +5,15 @@
 -- ----------------------------
 REPLACE INTO `sn_config` VALUES ('advGoogleLeftMenuCode',
                                 '<script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script>\r\n');
-REPLACE INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', 1);
+REPLACE INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
 REPLACE INTO `sn_config` VALUES ('adv_conversion_code_payment', '');
 REPLACE INTO `sn_config` VALUES ('adv_conversion_code_register', '');
 REPLACE INTO `sn_config` VALUES ('adv_seo_javascript', '');
 REPLACE INTO `sn_config` VALUES ('adv_seo_meta_description', '');
 REPLACE INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 REPLACE INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
-REPLACE INTO `sn_config` VALUES ('ali_bonus_brackets', 10);
-REPLACE INTO `sn_config` VALUES ('ali_bonus_brackets_divisor', 50);
+REPLACE INTO `sn_config` VALUES ('ali_bonus_brackets', '10');
+REPLACE INTO `sn_config` VALUES ('ali_bonus_brackets_divisor', '50');
 REPLACE INTO `sn_config` VALUES ('ali_bonus_divisor', '10000000');
 REPLACE INTO `sn_config` VALUES ('ali_bonus_members', '10');
 REPLACE INTO `sn_config` VALUES ('allow_buffing', '0');
@@ -26,13 +26,13 @@ REPLACE INTO `sn_config` VALUES ('chat_highlight_developer', '<span class=\"nick
 REPLACE INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
 REPLACE INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 REPLACE INTO `sn_config` VALUES ('chat_highlight_premium', '<span class=\"nick_premium\">$1</span>');
-REPLACE INTO `sn_config` VALUES ('chat_refresh_rate', 5);
+REPLACE INTO `sn_config` VALUES ('chat_refresh_rate', '5');
 REPLACE INTO `sn_config` VALUES ('chat_timeout', 15 * 60);
 REPLACE INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 REPLACE INTO `sn_config` VALUES ('crystal_basic_income', '20');
 REPLACE INTO `sn_config` VALUES ('db_manual_lock_enabled', '0');
 REPLACE INTO `sn_config` VALUES ('db_prefix', 'sn_');
-REPLACE INTO `sn_config` VALUES ('db_version', '40');
+REPLACE INTO `sn_config` VALUES ('db_version', '41');
 REPLACE INTO `sn_config` VALUES ('debug', '0');
 REPLACE INTO `sn_config` VALUES ('Defs_Cdr', '30');
 REPLACE INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -48,11 +48,6 @@ REPLACE INTO `sn_config` VALUES ('eco_stockman_fleet_populate', '1');
 REPLACE INTO `sn_config` VALUES ('empire_mercenary_base_period', 30 * 24 * 60 * 60);
 REPLACE INTO `sn_config` VALUES ('empire_mercenary_temporary', '1');
 REPLACE INTO `sn_config` VALUES ('energy_basic_income', '0');
-REPLACE INTO `sn_config` VALUES ('event_halloween_2015_code', '');
-REPLACE INTO `sn_config` VALUES ('event_halloween_2015_lock', '0');
-REPLACE INTO `sn_config` VALUES ('event_halloween_2015_timestamp', NOW());
-REPLACE INTO `sn_config` VALUES ('event_halloween_2015_unit', '0');
-REPLACE INTO `sn_config` VALUES ('event_halloween_2015_units_used', 'a:0:{}');
 REPLACE INTO `sn_config` VALUES ('fleet_bashing_attacks', 3);
 REPLACE INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60);
 REPLACE INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60);
@@ -60,7 +55,7 @@ REPLACE INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60);
 REPLACE INTO `sn_config` VALUES ('fleet_bashing_waves', 3);
 REPLACE INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 REPLACE INTO `sn_config` VALUES ('fleet_speed', '1');
-REPLACE INTO `sn_config` VALUES ('fleet_update_interval', 4);
+REPLACE INTO `sn_config` VALUES ('fleet_update_interval', '4');
 REPLACE INTO `sn_config` VALUES ('fleet_update_last', NOW());
 REPLACE INTO `sn_config` VALUES ('fleet_update_lock', '');
 REPLACE INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
@@ -85,7 +80,7 @@ REPLACE INTO `sn_config` VALUES ('game_speed', '1');
 REPLACE INTO `sn_config` VALUES ('game_speed_expedition', '1');
 REPLACE INTO `sn_config` VALUES ('game_users_online_timeout', 15 * 60);
 REPLACE INTO `sn_config` VALUES ('game_user_changename', '2');
-REPLACE INTO `sn_config` VALUES ('game_user_changename_cost', 100000);
+REPLACE INTO `sn_config` VALUES ('game_user_changename_cost', '100000');
 REPLACE INTO `sn_config` VALUES ('geoip_whois_url', 'https://who.is/whois-ip/ip-address/');
 REPLACE INTO `sn_config` VALUES ('initial_fields', '163');
 REPLACE INTO `sn_config` VALUES ('int_banner_background', 'design/images/banner.png');
@@ -119,11 +114,11 @@ REPLACE INTO `sn_config` VALUES ('payment_currency_exchange_wmu', '30');
 REPLACE INTO `sn_config` VALUES ('payment_currency_exchange_wmz', '1');
 REPLACE INTO `sn_config` VALUES ('payment_lot_price', '1');
 REPLACE INTO `sn_config` VALUES ('payment_lot_size', '2500');
-REPLACE INTO `sn_config` VALUES ('planet_capital_cost', 25000);
-REPLACE INTO `sn_config` VALUES ('planet_teleport_cost', 50000);
+REPLACE INTO `sn_config` VALUES ('planet_capital_cost', '25000');
+REPLACE INTO `sn_config` VALUES ('planet_teleport_cost', '50000');
 REPLACE INTO `sn_config` VALUES ('planet_teleport_timeout', 1 * 24 * 60 * 60);
 REPLACE INTO `sn_config` VALUES ('player_delete_time', 45 * 24 * 60 * 60);
-REPLACE INTO `sn_config` VALUES ('player_max_colonies', 9);
+REPLACE INTO `sn_config` VALUES ('player_max_colonies', '9');
 REPLACE INTO `sn_config` VALUES ('player_metamatter_immortal', '100000');
 REPLACE INTO `sn_config` VALUES ('player_vacation_time', 7 * 24 * 60 * 60);
 REPLACE INTO `sn_config` VALUES ('player_vacation_timeout', 7 * 24 * 60 * 60);
@@ -161,16 +156,16 @@ REPLACE INTO `sn_config` VALUES ('server_updater_check_period', 24 * 60 * 60);
 REPLACE INTO `sn_config` VALUES ('server_updater_check_result', '-1');
 REPLACE INTO `sn_config` VALUES ('server_updater_id', '0');
 REPLACE INTO `sn_config` VALUES ('server_updater_key', '');
-REPLACE INTO `sn_config` VALUES ('stats_hide_admins', 1);
+REPLACE INTO `sn_config` VALUES ('stats_hide_admins', '1');
 REPLACE INTO `sn_config` VALUES ('stats_hide_player_list', '');
-REPLACE INTO `sn_config` VALUES ('stats_hide_pm_link', 0);
-REPLACE INTO `sn_config` VALUES ('stats_history_days', 7);
+REPLACE INTO `sn_config` VALUES ('stats_hide_pm_link', '0');
+REPLACE INTO `sn_config` VALUES ('stats_history_days', '7');
 REPLACE INTO `sn_config` VALUES ('stats_minimal_interval', 10 * 60);
 REPLACE INTO `sn_config` VALUES ('stats_php_memory', '1024M');
 REPLACE INTO `sn_config` VALUES ('stats_schedule', '04:00:00');
-REPLACE INTO `sn_config` VALUES ('tpl_minifier', 1);
-REPLACE INTO `sn_config` VALUES ('ube_capture_points_diff', 2);
-REPLACE INTO `sn_config` VALUES ('uni_galaxy_distance', 20000);
+REPLACE INTO `sn_config` VALUES ('tpl_minifier', '1');
+REPLACE INTO `sn_config` VALUES ('ube_capture_points_diff', '2');
+REPLACE INTO `sn_config` VALUES ('uni_galaxy_distance', '20000');
 REPLACE INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 REPLACE INTO `sn_config` VALUES ('uni_price_system', '1000');
 REPLACE INTO `sn_config` VALUES ('upd_lock_time', '60');
@@ -179,10 +174,10 @@ REPLACE INTO `sn_config` VALUES ('url_faq', 'http://faq.supernova.ws/');
 REPLACE INTO `sn_config` VALUES ('url_forum', '');
 REPLACE INTO `sn_config` VALUES ('url_purchase_metamatter', '');
 REPLACE INTO `sn_config` VALUES ('url_rules', '');
-REPLACE INTO `sn_config` VALUES ('users_amount', 1);
+REPLACE INTO `sn_config` VALUES ('users_amount', '1');
 REPLACE INTO `sn_config` VALUES ('user_birthday_celebrate', '0');
 REPLACE INTO `sn_config` VALUES ('user_birthday_gift', '0');
-REPLACE INTO `sn_config` VALUES ('user_birthday_range', 30);
+REPLACE INTO `sn_config` VALUES ('user_birthday_range', '30');
 REPLACE INTO `sn_config` VALUES ('user_vacation_disable', '0');
 REPLACE INTO `sn_config` VALUES ('var_db_update', '0');
 REPLACE INTO `sn_config` VALUES ('var_db_update_end', '0');
@@ -207,16 +202,6 @@ SET
   `account_language` = 'ru';
 
 -- ----------------------------
--- Administrator's account translation to user record
--- ----------------------------
-REPLACE INTO `sn_account_translate`
-SET
-  `provider_id`         = 1,
-  `provider_account_id` = 1,
-  `user_id`             = 1,
-  `timestamp`           = NOW();
-
--- ----------------------------
 -- Administrator's user record
 -- Login: admin
 -- Password: admin
@@ -237,6 +222,16 @@ SET
   `register_time`  = UNIX_TIMESTAMP(NOW()),
   `onlinetime`     = UNIX_TIMESTAMP(NOW()),
   `noipcheck`      = 1;
+
+-- ----------------------------
+-- Administrator's account translation to user record
+-- ----------------------------
+REPLACE INTO `sn_account_translate`
+SET
+  `provider_id`         = 1,
+  `provider_account_id` = 1,
+  `user_id`             = 1,
+  `timestamp`           = NOW();
 
 -- ----------------------------
 -- Reserved 'admin' name
@@ -261,7 +256,6 @@ SET
   `planet_type` = 1,
   `last_update` = UNIX_TIMESTAMP(NOW());
 
-
 # -- ----------------------------
 # -- Administrator's in-game options
 # -- ----------------------------
@@ -277,3 +271,5 @@ SET
 #   ('1', '21', '0'),
 #   ('1', '22', '500')
 # ;
+
+SET FOREIGN_KEY_CHECKS = 1;

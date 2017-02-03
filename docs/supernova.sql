@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50141
 File Encoding         : 65001
 
-Date: 2015-12-06 13:48:52
+Date: 2017-02-03 16:09:08
 */
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -132,13 +132,13 @@ CREATE TABLE `sn_alliance` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance_diplomacy`;
 CREATE TABLE `sn_alliance_diplomacy` (
-  `alliance_diplomacy_id`              BIGINT(20) UNSIGNED                                                                       NOT NULL AUTO_INCREMENT,
-  `alliance_diplomacy_ally_id`         BIGINT(20) UNSIGNED                                                                                DEFAULT NULL,
-  `alliance_diplomacy_contr_ally_id`   BIGINT(20) UNSIGNED                                                                                DEFAULT NULL,
-  `alliance_diplomacy_contr_ally_name` VARCHAR(32)                                                                                        DEFAULT '',
-  `alliance_diplomacy_relation`        SET('neutral', 'war', 'peace', 'confederation', 'federation', 'union', 'master', 'slave') NOT NULL DEFAULT 'neutral',
-  `alliance_diplomacy_relation_last`   SET('neutral', 'war', 'peace', 'confederation', 'federation', 'union', 'master', 'slave') NOT NULL DEFAULT 'neutral',
-  `alliance_diplomacy_time`            INT(11)                                                                                   NOT NULL DEFAULT '0',
+  `alliance_diplomacy_id`              BIGINT(20) UNSIGNED                                                                        NOT NULL AUTO_INCREMENT,
+  `alliance_diplomacy_ally_id`         BIGINT(20) UNSIGNED                                                                                 DEFAULT NULL,
+  `alliance_diplomacy_contr_ally_id`   BIGINT(20) UNSIGNED                                                                                 DEFAULT NULL,
+  `alliance_diplomacy_contr_ally_name` VARCHAR(32)                                                                                         DEFAULT '',
+  `alliance_diplomacy_relation`        SET ('neutral', 'war', 'peace', 'confederation', 'federation', 'union', 'master', 'slave') NOT NULL DEFAULT 'neutral',
+  `alliance_diplomacy_relation_last`   SET ('neutral', 'war', 'peace', 'confederation', 'federation', 'union', 'master', 'slave') NOT NULL DEFAULT 'neutral',
+  `alliance_diplomacy_time`            INT(11)                                                                                    NOT NULL DEFAULT '0',
   PRIMARY KEY (`alliance_diplomacy_id`),
   UNIQUE KEY `alliance_diplomacy_id` (`alliance_diplomacy_id`),
   KEY `alliance_diplomacy_ally_id` (`alliance_diplomacy_ally_id`, `alliance_diplomacy_contr_ally_id`, `alliance_diplomacy_time`),
@@ -163,16 +163,16 @@ CREATE TABLE `sn_alliance_diplomacy` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_alliance_negotiation`;
 CREATE TABLE `sn_alliance_negotiation` (
-  `alliance_negotiation_id`              BIGINT(20) UNSIGNED                                                                       NOT NULL AUTO_INCREMENT,
-  `alliance_negotiation_ally_id`         BIGINT(20) UNSIGNED                                                                                DEFAULT NULL,
-  `alliance_negotiation_ally_name`       VARCHAR(32)                                                                                        DEFAULT '',
-  `alliance_negotiation_contr_ally_id`   BIGINT(20) UNSIGNED                                                                                DEFAULT NULL,
-  `alliance_negotiation_contr_ally_name` VARCHAR(32)                                                                                        DEFAULT '',
-  `alliance_negotiation_relation`        SET('neutral', 'war', 'peace', 'confederation', 'federation', 'union', 'master', 'slave') NOT NULL DEFAULT 'neutral',
-  `alliance_negotiation_time`            INT(11)                                                                                   NOT NULL DEFAULT '0',
+  `alliance_negotiation_id`              BIGINT(20) UNSIGNED                                                                        NOT NULL AUTO_INCREMENT,
+  `alliance_negotiation_ally_id`         BIGINT(20) UNSIGNED                                                                                 DEFAULT NULL,
+  `alliance_negotiation_ally_name`       VARCHAR(32)                                                                                         DEFAULT '',
+  `alliance_negotiation_contr_ally_id`   BIGINT(20) UNSIGNED                                                                                 DEFAULT NULL,
+  `alliance_negotiation_contr_ally_name` VARCHAR(32)                                                                                         DEFAULT '',
+  `alliance_negotiation_relation`        SET ('neutral', 'war', 'peace', 'confederation', 'federation', 'union', 'master', 'slave') NOT NULL DEFAULT 'neutral',
+  `alliance_negotiation_time`            INT(11)                                                                                    NOT NULL DEFAULT '0',
   `alliance_negotiation_propose`         TEXT,
   `alliance_negotiation_response`        TEXT,
-  `alliance_negotiation_status`          TINYINT(1)                                                                                NOT NULL DEFAULT '0',
+  `alliance_negotiation_status`          TINYINT(1)                                                                                 NOT NULL DEFAULT '0',
   PRIMARY KEY (`alliance_negotiation_id`),
   UNIQUE KEY `alliance_negotiation_id` (`alliance_negotiation_id`),
   KEY `alliance_negotiation_ally_id` (`alliance_negotiation_ally_id`, `alliance_negotiation_contr_ally_id`, `alliance_negotiation_time`),
@@ -260,6 +260,28 @@ CREATE TABLE `sn_announce` (
   COMMENT 'Announcer user name',
   PRIMARY KEY (`idAnnounce`),
   KEY `indTimeStamp` (`tsTimeStamp`)
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+-- ----------------------------
+-- Table structure for sn_auth_vkontakte_account
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_auth_vkontakte_account`;
+CREATE TABLE `sn_auth_vkontakte_account` (
+  `user_id`      BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `access_token` VARCHAR(250)        NOT NULL DEFAULT '',
+  `expires_in`   TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `email`        VARCHAR(250)        NOT NULL DEFAULT '',
+  `first_name`   VARCHAR(250)        NOT NULL DEFAULT '',
+  `last_name`    VARCHAR(250)        NOT NULL DEFAULT '',
+  `account_id`   BIGINT(20) UNSIGNED          DEFAULT NULL
+  COMMENT 'Account ID',
+  PRIMARY KEY (`user_id`),
+  KEY `FK_vkontakte_account_id` (`account_id`),
+  CONSTRAINT `FK_vkontakte_account_id` FOREIGN KEY (`account_id`) REFERENCES `sn_account` (`account_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
@@ -493,7 +515,8 @@ CREATE TABLE `sn_chat_player` (
   COMMENT 'Record ID',
   `chat_player_player_id`    BIGINT(20) UNSIGNED          DEFAULT NULL
   COMMENT 'Chat player record owner',
-  `chat_player_activity`     TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Last player activity in chat',
+  `chat_player_activity`     TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  COMMENT 'Last player activity in chat',
   `chat_player_invisible`    TINYINT(4)          NOT NULL DEFAULT '0'
   COMMENT 'Player invisibility',
   `chat_player_muted`        INT(11)             NOT NULL DEFAULT '0'
@@ -579,6 +602,131 @@ CREATE TABLE `sn_counter` (
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT `FK_counter_plain_url_id` FOREIGN KEY (`plain_url_id`) REFERENCES `sn_security_url` (`url_id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
+
+-- ----------------------------
+-- Table structure for sn_festival
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_festival`;
+CREATE TABLE `sn_festival` (
+  `id`     SMALLINT(5) UNSIGNED    NOT NULL AUTO_INCREMENT,
+  `start`  DATETIME                NOT NULL
+  COMMENT 'Festival start datetime',
+  `finish` DATETIME                NOT NULL
+  COMMENT 'Festival end datetime',
+  `name`   VARCHAR(255)
+           COLLATE utf8_unicode_ci NOT NULL DEFAULT ''
+  COMMENT 'Название акции/ивента',
+  PRIMARY KEY (`id`),
+  KEY `I_festival_date_range` (`start`, `finish`, `id`) USING BTREE
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_unicode_ci;
+
+-- ----------------------------
+-- Table structure for sn_festival_highspot
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_festival_highspot`;
+CREATE TABLE `sn_festival_highspot` (
+  `id`          INT(10) UNSIGNED        NOT NULL AUTO_INCREMENT,
+  `festival_id` SMALLINT(5) UNSIGNED             DEFAULT NULL,
+  `class`       TINYINT(3) UNSIGNED     NOT NULL DEFAULT '0'
+  COMMENT 'Highspot class',
+  `start`       DATETIME                NOT NULL
+  COMMENT 'Highspot start datetime',
+  `finish`      DATETIME                NOT NULL
+  COMMENT 'Highspot end datetime',
+  `name`        VARCHAR(255)
+                COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `I_highspot_order` (`start`, `finish`, `id`),
+  KEY `I_highspot_festival_id` (`festival_id`, `start`, `finish`, `id`) USING BTREE,
+  CONSTRAINT `FK_highspot_festival_id` FOREIGN KEY (`festival_id`) REFERENCES `sn_festival` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_unicode_ci;
+
+-- ----------------------------
+-- Table structure for sn_festival_highspot_activity
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_festival_highspot_activity`;
+CREATE TABLE `sn_festival_highspot_activity` (
+  `id`          INT(10) UNSIGNED             NOT NULL AUTO_INCREMENT,
+  `highspot_id` INT(10) UNSIGNED                      DEFAULT NULL,
+  `class`       SMALLINT(5) UNSIGNED         NOT NULL DEFAULT '0'
+  COMMENT 'Класс события - ID модуля события',
+  `type`        TINYINT(1) UNSIGNED          NOT NULL DEFAULT '0'
+  COMMENT 'Тип активити: 1 - триггер, 2 - хук',
+  `start`       DATETIME                     NOT NULL
+  COMMENT 'Запланированное время запуска',
+  `finish`      DATETIME                              DEFAULT NULL
+  COMMENT 'Реальное время запуска',
+  `params`      TEXT COLLATE utf8_unicode_ci NOT NULL
+  COMMENT 'Параметры активити в виде сериализованного архива',
+  PRIMARY KEY (`id`),
+  KEY `I_festival_activity_order` (`start`, `finish`, `id`) USING BTREE,
+  KEY `I_festival_activity_highspot_id` (`highspot_id`, `start`, `finish`, `id`) USING BTREE,
+  CONSTRAINT `FK_festival_activity_highspot_id` FOREIGN KEY (`highspot_id`) REFERENCES `sn_festival_highspot` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_unicode_ci;
+
+-- ----------------------------
+-- Table structure for sn_festival_unit
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_festival_unit`;
+CREATE TABLE `sn_festival_unit` (
+  `id`          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `highspot_id` INT(10) UNSIGNED             DEFAULT NULL,
+  `player_id`   BIGINT(20) UNSIGNED          DEFAULT NULL,
+  `unit_id`     BIGINT(20)          NOT NULL DEFAULT '0',
+  `unit_level`  BIGINT(20) UNSIGNED NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `I_festival_unit_player_id` (`player_id`, `highspot_id`) USING BTREE,
+  KEY `I_festival_unit_highspot_id` (`highspot_id`, `unit_id`, `player_id`) USING BTREE,
+  CONSTRAINT `FK_festival_unit_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `sn_festival_highspot` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_festival_unit_player` FOREIGN KEY (`player_id`) REFERENCES `sn_users` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8
+  COLLATE = utf8_unicode_ci;
+
+-- ----------------------------
+-- Table structure for sn_festival_unit_log
+-- ----------------------------
+DROP TABLE IF EXISTS `sn_festival_unit_log`;
+CREATE TABLE `sn_festival_unit_log` (
+  `id`          BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `highspot_id` INT(10) UNSIGNED             DEFAULT NULL,
+  `player_id`   BIGINT(20) UNSIGNED NOT NULL
+  COMMENT 'User ID',
+  `player_name` VARCHAR(32)         NOT NULL DEFAULT '',
+  `unit_id`     BIGINT(20) UNSIGNED NOT NULL DEFAULT '0',
+  `timestamp`   TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `unit_level`  INT(11)             NOT NULL DEFAULT '0',
+  `unit_image`  VARCHAR(255)        NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `I_festival_unit_log_player_id` (`player_id`, `highspot_id`, `id`) USING BTREE,
+  KEY `I_festival_unit_log_highspot_id` (`highspot_id`, `unit_id`, `player_id`) USING BTREE,
+  CONSTRAINT `FK_festival_unit_log_hispot` FOREIGN KEY (`highspot_id`) REFERENCES `sn_festival_highspot` (`id`)
+    ON DELETE CASCADE
+    ON UPDATE CASCADE,
+  CONSTRAINT `FK_festival_unit_log_player` FOREIGN KEY (`player_id`) REFERENCES `sn_users` (`id`)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 )
@@ -688,8 +836,7 @@ CREATE TABLE `sn_lng_usage_stat` (
               COLLATE utf8_unicode_ci NOT NULL,
   `line`      SMALLINT(6)             NOT NULL,
   `is_empty`  TINYINT(1)              NOT NULL,
-  `locale`    MEDIUMTEXT
-              COLLATE utf8_unicode_ci,
+  `locale`    MEDIUMTEXT COLLATE utf8_unicode_ci,
   PRIMARY KEY (`lang_code`, `string_id`, `file`, `line`, `is_empty`)
 )
   ENGINE = InnoDB
@@ -1024,7 +1171,8 @@ CREATE TABLE `sn_player_name_history` (
   COMMENT 'Player ID',
   `player_name` VARCHAR(32) NOT NULL
   COMMENT 'Historical player name',
-  `timestamp`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'When player changed name',
+  `timestamp`   TIMESTAMP   NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+  COMMENT 'When player changed name',
   PRIMARY KEY (`player_name`),
   KEY `I_player_name_history_id_name` (`player_id`, `player_name`),
   CONSTRAINT `FK_player_name_history_id` FOREIGN KEY (`player_id`) REFERENCES `sn_users` (`id`)
@@ -1194,12 +1342,13 @@ CREATE TABLE `sn_referrals` (
 -- ----------------------------
 DROP TABLE IF EXISTS `sn_security_browser`;
 CREATE TABLE `sn_security_browser` (
-  `browser_id`         BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+  `browser_id`         BIGINT(20) UNSIGNED     NOT NULL AUTO_INCREMENT,
   `browser_user_agent` VARCHAR(250)
-                       COLLATE latin1_bin  NOT NULL DEFAULT '',
-  `timestamp`          TIMESTAMP           NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                       CHARACTER SET utf8
+                       COLLATE utf8_unicode_ci NOT NULL DEFAULT '',
+  `timestamp`          TIMESTAMP               NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`browser_id`),
-  KEY `I_browser_user_agent` (`browser_user_agent`)
+  KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH
 )
   ENGINE = InnoDB
   DEFAULT CHARSET = latin1
@@ -1823,21 +1972,20 @@ CREATE TABLE `sn_users` (
   ENGINE = InnoDB
   DEFAULT CHARSET = utf8;
 
-
 -- ----------------------------
 -- Default server configuration
 -- ----------------------------
 INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuCode',
                                 '<script type=\"text/javascript\"><!--\r\ngoogle_ad_client = \"pub-1914310741599503\";\r\n/* oGame */\r\ngoogle_ad_slot = \"2544836773\";\r\ngoogle_ad_width = 125;\r\ngoogle_ad_height = 125;\r\n//-->\r\n</script>\r\n<script type=\"text/javascript\"\r\nsrc=\"http://pagead2.googlesyndication.com/pagead/show_ads.js\">\r\n</script>\r\n');
-INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', 1);
+INSERT INTO `sn_config` VALUES ('advGoogleLeftMenuIsOn', '1');
 INSERT INTO `sn_config` VALUES ('adv_conversion_code_payment', '');
 INSERT INTO `sn_config` VALUES ('adv_conversion_code_register', '');
 INSERT INTO `sn_config` VALUES ('adv_seo_javascript', '');
 INSERT INTO `sn_config` VALUES ('adv_seo_meta_description', '');
 INSERT INTO `sn_config` VALUES ('adv_seo_meta_keywords', '');
 INSERT INTO `sn_config` VALUES ('ali_bonus_algorithm', '0');
-INSERT INTO `sn_config` VALUES ('ali_bonus_brackets', 10);
-INSERT INTO `sn_config` VALUES ('ali_bonus_brackets_divisor', 50);
+INSERT INTO `sn_config` VALUES ('ali_bonus_brackets', '10');
+INSERT INTO `sn_config` VALUES ('ali_bonus_brackets_divisor', '50');
 INSERT INTO `sn_config` VALUES ('ali_bonus_divisor', '10000000');
 INSERT INTO `sn_config` VALUES ('ali_bonus_members', '10');
 INSERT INTO `sn_config` VALUES ('allow_buffing', '0');
@@ -1850,13 +1998,13 @@ INSERT INTO `sn_config` VALUES ('chat_highlight_developer', '<span class=\"nick_
 INSERT INTO `sn_config` VALUES ('chat_highlight_moderator', '<font color=green>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_operator', '<font color=red>$1</font>');
 INSERT INTO `sn_config` VALUES ('chat_highlight_premium', '<span class=\"nick_premium\">$1</span>');
-INSERT INTO `sn_config` VALUES ('chat_refresh_rate', 5);
+INSERT INTO `sn_config` VALUES ('chat_refresh_rate', '5');
 INSERT INTO `sn_config` VALUES ('chat_timeout', 15 * 60);
 INSERT INTO `sn_config` VALUES ('COOKIE_NAME', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('crystal_basic_income', '20');
 INSERT INTO `sn_config` VALUES ('db_manual_lock_enabled', '0');
 INSERT INTO `sn_config` VALUES ('db_prefix', 'sn_');
-INSERT INTO `sn_config` VALUES ('db_version', '40');
+INSERT INTO `sn_config` VALUES ('db_version', '41');
 INSERT INTO `sn_config` VALUES ('debug', '0');
 INSERT INTO `sn_config` VALUES ('Defs_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('deuterium_basic_income', '0');
@@ -1872,11 +2020,6 @@ INSERT INTO `sn_config` VALUES ('eco_stockman_fleet_populate', '1');
 INSERT INTO `sn_config` VALUES ('empire_mercenary_base_period', 30 * 24 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('empire_mercenary_temporary', '1');
 INSERT INTO `sn_config` VALUES ('energy_basic_income', '0');
-INSERT INTO `sn_config` VALUES ('event_halloween_2015_code', '');
-INSERT INTO `sn_config` VALUES ('event_halloween_2015_lock', '0');
-INSERT INTO `sn_config` VALUES ('event_halloween_2015_timestamp', NOW());
-INSERT INTO `sn_config` VALUES ('event_halloween_2015_unit', '0');
-INSERT INTO `sn_config` VALUES ('event_halloween_2015_units_used', 'a:0:{}');
 INSERT INTO `sn_config` VALUES ('fleet_bashing_attacks', 3);
 INSERT INTO `sn_config` VALUES ('fleet_bashing_interval', 30 * 60);
 INSERT INTO `sn_config` VALUES ('fleet_bashing_scope', 24 * 60 * 60);
@@ -1884,7 +2027,7 @@ INSERT INTO `sn_config` VALUES ('fleet_bashing_war_delay', 12 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('fleet_bashing_waves', 3);
 INSERT INTO `sn_config` VALUES ('Fleet_Cdr', '30');
 INSERT INTO `sn_config` VALUES ('fleet_speed', '1');
-INSERT INTO `sn_config` VALUES ('fleet_update_interval', 4);
+INSERT INTO `sn_config` VALUES ('fleet_update_interval', '4');
 INSERT INTO `sn_config` VALUES ('fleet_update_last', NOW());
 INSERT INTO `sn_config` VALUES ('fleet_update_lock', '');
 INSERT INTO `sn_config` VALUES ('game_adminEmail', 'root@localhost');
@@ -1909,7 +2052,7 @@ INSERT INTO `sn_config` VALUES ('game_speed', '1');
 INSERT INTO `sn_config` VALUES ('game_speed_expedition', '1');
 INSERT INTO `sn_config` VALUES ('game_users_online_timeout', 15 * 60);
 INSERT INTO `sn_config` VALUES ('game_user_changename', '2');
-INSERT INTO `sn_config` VALUES ('game_user_changename_cost', 100000);
+INSERT INTO `sn_config` VALUES ('game_user_changename_cost', '100000');
 INSERT INTO `sn_config` VALUES ('geoip_whois_url', 'https://who.is/whois-ip/ip-address/');
 INSERT INTO `sn_config` VALUES ('initial_fields', '163');
 INSERT INTO `sn_config` VALUES ('int_banner_background', 'design/images/banner.png');
@@ -1943,11 +2086,11 @@ INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmu', '30');
 INSERT INTO `sn_config` VALUES ('payment_currency_exchange_wmz', '1');
 INSERT INTO `sn_config` VALUES ('payment_lot_price', '1');
 INSERT INTO `sn_config` VALUES ('payment_lot_size', '2500');
-INSERT INTO `sn_config` VALUES ('planet_capital_cost', 25000);
-INSERT INTO `sn_config` VALUES ('planet_teleport_cost', 50000);
+INSERT INTO `sn_config` VALUES ('planet_capital_cost', '25000');
+INSERT INTO `sn_config` VALUES ('planet_teleport_cost', '50000');
 INSERT INTO `sn_config` VALUES ('planet_teleport_timeout', 1 * 24 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('player_delete_time', 45 * 24 * 60 * 60);
-INSERT INTO `sn_config` VALUES ('player_max_colonies', 9);
+INSERT INTO `sn_config` VALUES ('player_max_colonies', '9');
 INSERT INTO `sn_config` VALUES ('player_metamatter_immortal', '100000');
 INSERT INTO `sn_config` VALUES ('player_vacation_time', 7 * 24 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('player_vacation_timeout', 7 * 24 * 60 * 60);
@@ -1985,16 +2128,16 @@ INSERT INTO `sn_config` VALUES ('server_updater_check_period', 24 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('server_updater_check_result', '-1');
 INSERT INTO `sn_config` VALUES ('server_updater_id', '0');
 INSERT INTO `sn_config` VALUES ('server_updater_key', '');
-INSERT INTO `sn_config` VALUES ('stats_hide_admins', 1);
+INSERT INTO `sn_config` VALUES ('stats_hide_admins', '1');
 INSERT INTO `sn_config` VALUES ('stats_hide_player_list', '');
-INSERT INTO `sn_config` VALUES ('stats_hide_pm_link', 0);
-INSERT INTO `sn_config` VALUES ('stats_history_days', 7);
+INSERT INTO `sn_config` VALUES ('stats_hide_pm_link', '0');
+INSERT INTO `sn_config` VALUES ('stats_history_days', '7');
 INSERT INTO `sn_config` VALUES ('stats_minimal_interval', 10 * 60);
 INSERT INTO `sn_config` VALUES ('stats_php_memory', '1024M');
 INSERT INTO `sn_config` VALUES ('stats_schedule', '04:00:00');
-INSERT INTO `sn_config` VALUES ('tpl_minifier', 1);
-INSERT INTO `sn_config` VALUES ('ube_capture_points_diff', 2);
-INSERT INTO `sn_config` VALUES ('uni_galaxy_distance', 20000);
+INSERT INTO `sn_config` VALUES ('tpl_minifier', '1');
+INSERT INTO `sn_config` VALUES ('ube_capture_points_diff', '2');
+INSERT INTO `sn_config` VALUES ('uni_galaxy_distance', '20000');
 INSERT INTO `sn_config` VALUES ('uni_price_galaxy', '10000');
 INSERT INTO `sn_config` VALUES ('uni_price_system', '1000');
 INSERT INTO `sn_config` VALUES ('upd_lock_time', '60');
@@ -2003,10 +2146,10 @@ INSERT INTO `sn_config` VALUES ('url_faq', 'http://faq.supernova.ws/');
 INSERT INTO `sn_config` VALUES ('url_forum', '');
 INSERT INTO `sn_config` VALUES ('url_purchase_metamatter', '');
 INSERT INTO `sn_config` VALUES ('url_rules', '');
-INSERT INTO `sn_config` VALUES ('users_amount', 1);
+INSERT INTO `sn_config` VALUES ('users_amount', '1');
 INSERT INTO `sn_config` VALUES ('user_birthday_celebrate', '0');
 INSERT INTO `sn_config` VALUES ('user_birthday_gift', '0');
-INSERT INTO `sn_config` VALUES ('user_birthday_range', 30);
+INSERT INTO `sn_config` VALUES ('user_birthday_range', '30');
 INSERT INTO `sn_config` VALUES ('user_vacation_disable', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update', '0');
 INSERT INTO `sn_config` VALUES ('var_db_update_end', '0');
@@ -2085,7 +2228,6 @@ SET
   `planet_type` = 1,
   `last_update` = UNIX_TIMESTAMP(NOW());
 
-
 # -- ----------------------------
 # -- Administrator's in-game options
 # -- ----------------------------
@@ -2101,3 +2243,5 @@ SET
 #   ('1', '21', '0'),
 #   ('1', '22', '500')
 # ;
+
+SET FOREIGN_KEY_CHECKS = 1;
