@@ -50,12 +50,13 @@ if($config->db_version == DB_VERSION) {
   );
 }
 
-if($config->db_version < 26) {
-  $sys_log_disabled = true;
-}
-
 $upd_log = '';
 $new_version = floatval($config->db_version);
+if($new_version < 37) {
+  die('This version does not supports upgrades from SN below v37. Please, use SN v40 to upgrade old database.<br />
+Эта версия игры не поддерживает обновление движка версий ниже 37й. Пожалуйста, используйте SN v40 для апгрейда со старых версий игры.');
+}
+
 upd_check_key('upd_lock_time', 300, !isset($config->upd_lock_time));
 
 set_time_limit($config->upd_lock_time + 10);
@@ -76,9 +77,6 @@ upd_log_message('Table info loaded. Now looking DB for upgrades...');
 
 upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
 
-if($new_version < 37) {
-  require_once('update_old.php');
-}
 
 ini_set('memory_limit', '1024M');
 
@@ -1305,11 +1303,17 @@ switch($new_version) {
 //      ",
 //      empty($update_tables['auth_vkontakte_account']['account_id']));
 
+
+    upd_do_query('COMMIT;', true);
+    // 2017-02-03 16:10:49 41b1
+    $new_version = 41;
+
+  case 41:
+    upd_log_version_update();
     // #ctv
 
     upd_do_query('COMMIT;', true);
-//    $new_version = 41;
-
+    // $new_version = 42;
 }
 upd_log_message('Upgrade complete.');
 
