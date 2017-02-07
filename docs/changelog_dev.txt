@@ -154,6 +154,9 @@ BONUS_ABILITY - deprecated ???
 #ctv
 
 
+2017-02-07 08:08:51 41d0 Project "SuperNova.WS" Release 41
+[!] Project "SuperNova.WS" Release 41 "Festival batch fleet navbar"
+
 
 2017-02-03 18:05:28 41b2
 [~] Инсталляция
