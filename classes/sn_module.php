@@ -1,11 +1,17 @@
 <?php
 
 class sn_module {
+  /**
+   * SN version in which module was committed. Can be treated as version in which module guaranteed working
+   * @var string $versionCommitted
+   */
+  public $versionCommitted = '#42a6#';
+
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #41a60.19# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #42a6# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -231,5 +237,17 @@ class sn_module {
 
   function check_status() {
   }
-}
 
+  /**
+   * Register pages in $manifest['mvc']['pages'] for further use
+   *
+   * @param string[] $pages - array of records ['pageName' => 'pageFile']. 'pageFile' is currently unused
+   */
+  protected function __mvcRegisterPagesOld($pages) {
+    !is_array($this->manifest['mvc']['pages']) ? $this->manifest['mvc']['pages'] = array() : false;
+    if(is_array($pages) && !empty($pages)) {
+      $this->manifest['mvc']['pages'] = array_merge($this->manifest['mvc']['pages'], $pages);
+    }
+  }
+
+}
