@@ -9,7 +9,7 @@
  * Date: 21.04.2015
  * Time: 3:51
  *
- * version #41a61.0#
+ * version #42a4#
  */
 
 class core_auth extends sn_module {
@@ -17,7 +17,7 @@ class core_auth extends sn_module {
     'package' => 'core',
     'name' => 'auth',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a61.0# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #42a4# copyright © 2009-2015 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -28,6 +28,10 @@ class core_auth extends sn_module {
     'active' => true,
 
     'mvc' => array(
+      'pages' => array(
+        'player_register' => 'classes/core_auth'
+      ),
+
       'model' => array(
         'player_register' => array(
           'callable' => 'player_register_model',
@@ -162,21 +166,6 @@ class core_auth extends sn_module {
    * @var string
    */
   protected $server_name = '';
-
-  /**
-   * Присвоение переменных, которые нуждаются в позднем связывании - например, используют константы из манифеста
-   * или еще не обрабатываются стандартной процедурой инициализациии модуля
-   *
-   * @return array
-   */
-  // OK 4.7
-  public function __assign_vars() {
-    return array(
-      'sn_data[pages]' => array(
-        'player_register' => 'classes/core_auth',
-      ),
-    );
-  }
 
   /**
    * @param string $filename
