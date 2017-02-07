@@ -36,6 +36,7 @@ use \classSupernova;
 // *
 // * @property PlanetRenderer       $planetRenderer
 // * @property \FleetRenderer       $fleetRenderer
+// * @property $dbOperator - makes CRUD to DB:
  *
  *
  * @property array                $groupFleet
@@ -66,13 +67,17 @@ class GlobalContainer extends ContainerPlus {
 //      return new \Common\Types();
 //    };
 //
-    $gc->cache = function ($c) {
+    $gc->cache = function (GlobalContainer $c) {
       return new \classCache(classSupernova::$cache_prefix);
     };
 
-    $gc->config = function ($c) {
+    $gc->config = function (GlobalContainer $c) {
       return new \classConfig(classSupernova::$cache_prefix);
     };
+
+//    $gc->dbOperator = function (GlobalContainer $c) {
+//      return new \classConfig(classSupernova::$cache_prefix);
+//    };
 
 //    $gc->localePlayer = function (GlobalContainer $c) {
 //      return new \classLocale($c->config->server_locale_log_usage);

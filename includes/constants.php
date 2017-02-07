@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a7');
+define('SN_VERSION', '42a8');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -113,6 +113,15 @@ define('QUEST_TYPE_COMBAT'  , 3);
 define('QUEST_STATUS_NOT_STARTED' , 0);
 define('QUEST_STATUS_STARTED'     , 1);
 define('QUEST_STATUS_COMPLETE'    , 2);
+
+define('TYPE_EMPTY', '');
+define('TYPE_INTEGER', 'integer');
+define('TYPE_DOUBLE', 'double');
+define('TYPE_FLOAT', 'double'); // Just a nickname to match PHP used type 'float'
+define('TYPE_BOOLEAN', 'boolean');
+define('TYPE_NULL', 'NULL');
+define('TYPE_ARRAY', 'array');
+define('TYPE_STRING', 'string');
 
 // *** Combat-related constants
 // *** Mission Type constants starts with MT_

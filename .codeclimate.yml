@@ -1,0 +1,46 @@
+engines:
+  csslint:
+    enabled: true
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+      - javascript
+      - python
+      - php
+  eslint:
+    enabled: true
+  fixme:
+    enabled: true
+  phpmd:
+    enabled: true
+ratings:
+  paths:
+  - "**.css"
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+  - "**.module"
+  - "**.php"
+  - "**.py"
+  - "**.rb"
+#languages:
+#  Ruby: false
+#  JavaScript: true
+#  PHP: true
+#  Python: false
+exclude_paths:
+#- "**.min.js"
+#- "**.min.css"
+## Excluding Tests, Specs and Vendor Directories at any Level
+- "**/*.min.js"
+- "**/*.min.css"
+- tests/**/*
+- tests.int/**/*
+- spec/**/*
+- js/lib/**/*
+- "**/vendor/**/*"
+## Excluding
+#- "admin/sxd/**/*"
+- admin/sxd/**/*

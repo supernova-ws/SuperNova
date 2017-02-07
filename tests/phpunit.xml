@@ -1,0 +1,19 @@
+<phpunit
+        bootstrap="__bootstrap.php"
+>
+    <filter>
+        <whitelist processUncoveredFilesFromWhitelist="false">
+            <!--<file>../classes/HelperArray.php</file>-->
+            <directory suffix=".php">../classes/</directory>
+
+            <!--<directory suffix=".php">../</directory>-->
+            <exclude>
+                <directory>../.git/</directory>
+                <directory>../.local/</directory>
+                <directory>../__local/</directory>
+                <directory>../tests.int/</directory>
+                <directory>../admin/sxd/</directory>
+            </exclude>
+        </whitelist>
+    </filter>
+</phpunit>

@@ -1,0 +1,50 @@
+build:
+    tests:
+        override:
+            -
+                command: 'vendor/bin/phpunit --coverage-clover=some-file tests --config tests/phpunit.xml'
+                coverage:
+                    file: 'some-file'
+                    format: 'clover'
+filter:
+    excluded_paths:
+## Excluding Tests, Specs and Vendor Directories at any Level
+        - tests/
+#        - tests/**/*
+        - tests.int/
+#        - tests.int/**/*
+        - vendor/
+#        - "**/vendor/**/*"
+        - spec/
+# Excluding Sypex Dumper files
+        - admin/sxd/*
+#        - **/sxd/
+#        - "admin/sxd/**/*"
+# Excluding minified files
+#        - "**.min.js"
+#        - "**.min.css"
+#        - *.min.js
+#        - **/**.min.js
+#        - *.min.css
+#        - */*/*.min.css
+        - design/*/*.min.css
+        - js/*/*.min.js
+        - js/lib/*
+coding_style:
+    php:
+        indentation:
+            general:
+                size: 2
+        spaces:
+            around_operators:
+                concatenation: true
+        braces:
+            classes_functions:
+                class: end-of-line
+                function: end-of-line
+                closure: end-of-line
+        upper_lower_casing:
+            keywords:
+                general: lower
+            constants:
+                true_false_null: lower
