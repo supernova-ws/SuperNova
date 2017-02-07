@@ -74,6 +74,7 @@ REPLACE INTO `sn_config` VALUES ('game_multiaccount_enabled', '0');
 REPLACE INTO `sn_config` VALUES ('game_name', 'SuperNova');
 REPLACE INTO `sn_config` VALUES ('game_news_actual', '259200');
 REPLACE INTO `sn_config` VALUES ('game_news_overview', '3');
+REPLACE INTO `sn_config` VALUES ('game_news_overview_show', 2 * 7 * 24 * 60 * 60);
 REPLACE INTO `sn_config` VALUES ('game_noob_factor', '5');
 REPLACE INTO `sn_config` VALUES ('game_noob_points', '5000');
 REPLACE INTO `sn_config` VALUES ('game_speed', '1');

@@ -6,6 +6,9 @@
  * @param int    $query_limit
  */
 function nws_render(&$template, $query_where = '', $query_limit = 20) {
+  /**
+   * @var classConfig $config
+   */
   global $config, $user;
 
   $announce_list = doquery(

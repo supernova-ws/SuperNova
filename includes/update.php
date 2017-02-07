@@ -1296,22 +1296,18 @@ switch($new_version) {
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8;"
       );
     }
-//    upd_alter_table('auth_vkontakte_account',
-//      "
-//          ADD COLUMN `account_id` bigint(20) unsigned NULL COMMENT 'Account ID',
-//          ADD CONSTRAINT `FK_vkontakte_account_id` FOREIGN KEY (`account_id`) REFERENCES `{{account}}` (`account_id`) ON DELETE CASCADE ON UPDATE CASCADE
-//      ",
-//      empty($update_tables['auth_vkontakte_account']['account_id']));
-
 
     upd_do_query('COMMIT;', true);
+
     // 2017-02-03 16:10:49 41b1
     $new_version = 41;
 
   case 41:
     upd_log_version_update();
-    // #ctv
+    // 2017-02-07 09:43:45 42a0
+    upd_check_key('game_news_overview_show', 2 * 7 * 24 * 60 * 60, !isset($config->game_news_overview_show));
 
+    // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 42;
 }

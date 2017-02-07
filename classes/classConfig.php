@@ -10,10 +10,13 @@
  *
  * @package supernova
  *
- * @property string auth_vkontakte_app_id
- * @property string auth_vkontakte_app_key
- * @property string auth_vkontakte_token
+ * @property string $auth_vkontakte_app_id
+ * @property string $auth_vkontakte_app_key
+ * @property string $auth_vkontakte_token
  * @property int    $auth_vkontakte_token_expire
+ * @property int    $game_news_actual             How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
+ * @property int    $game_news_overview           How much last news to show in Overview page. Default - 3
+ * @property int    $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
  */
 class classConfig extends classPersistent {
   protected $defaults = array(
@@ -102,8 +105,9 @@ class classConfig extends classPersistent {
     'game_mode'                    => 0,           // 0 - SuperNova, 1 - oGame
     'game_name'                    => 'SuperNova', // Server name (would be on banners and on top of left menu)
 
-    'game_news_actual'             => 259200, // How long announcement would be marked as "New". In seconds. Default - 3 days
+    'game_news_actual'             => PERIOD_DAY_3, // How long announcement would be marked as "New". In seconds. Default - 3 days
     'game_news_overview'           => 3,    // How much last news to show in Overview page
+    'game_news_overview_show'      => PERIOD_WEEK_2,    // How long news will be shown in Overview page in seconds. Default - 2 weeks
     // Noob protection
     'game_noob_factor'             => 5,    // Multiplier to divide "stronger" and "weaker" users
     'game_noob_points'             => 5000, // Below this point user threated as noob. 0 to disable

@@ -537,7 +537,12 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
   if($config->game_news_overview) {
     $user_last_read_safe = intval($user['news_lastread']);
-    nws_render($template, "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}", $config->game_news_overview);
+    $newsSql = "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}";
+    $newsOverviewShowSeconds = intval($config->game_news_overview_show);
+    if($newsOverviewShowSeconds) {
+      $newsSql .= " AND `tsTimeStamp` >= DATE_SUB(NOW(), INTERVAL {$newsOverviewShowSeconds} SECOND)";
+    }
+    nws_render($template, $newsSql, $config->game_news_overview);
   }
 
   $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");

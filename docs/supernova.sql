@@ -2046,6 +2046,7 @@ INSERT INTO `sn_config` VALUES ('game_multiaccount_enabled', '0');
 INSERT INTO `sn_config` VALUES ('game_name', 'SuperNova');
 INSERT INTO `sn_config` VALUES ('game_news_actual', '259200');
 INSERT INTO `sn_config` VALUES ('game_news_overview', '3');
+INSERT INTO `sn_config` VALUES ('game_news_overview_show', 2 * 7 * 24 * 60 * 60);
 INSERT INTO `sn_config` VALUES ('game_noob_factor', '5');
 INSERT INTO `sn_config` VALUES ('game_noob_points', '5000');
 INSERT INTO `sn_config` VALUES ('game_speed', '1');
