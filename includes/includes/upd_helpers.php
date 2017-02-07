@@ -163,7 +163,7 @@ function upd_create_table($table_name, $declaration, $tableOptions = '') {
   if(!$update_tables[$table_name]) {
     upd_do_query('set foreign_key_checks = 0;', true);
     $declaration = trim($declaration);
-    if(mb_substr($declaration, 0, 1) != '(') {
+    if(substr($declaration, 0, 1) != '(') {
       $declaration = "($declaration)";
     }
     $tableOptions = trim($tableOptions);
