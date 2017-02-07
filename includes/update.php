@@ -1307,6 +1307,21 @@ switch($new_version) {
     // 2017-02-07 09:43:45 42a0
     upd_check_key('game_news_overview_show', 2 * 7 * 24 * 60 * 60, !isset($config->game_news_overview_show));
 
+    // 2017-02-07 12:25:29 42a2
+    upd_create_table('text',
+      "
+      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+      `parent` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Parent record. 0 - no parent',
+      `next` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Next text part. 0 - final part',
+      `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Text title',
+      `content` text COLLATE utf8_unicode_ci COMMENT 'Content - 64k fits to all!',
+      PRIMARY KEY (`id`),
+      KEY `I_text_parent` (`parent`),
+      KEY `I_text_next` (`next`)
+      ",
+      'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+    );
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 42;
