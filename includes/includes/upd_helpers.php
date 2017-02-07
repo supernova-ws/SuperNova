@@ -150,11 +150,26 @@ function upd_drop_table($table_name) {
   upd_unset_table_info($table_name);
 }
 
-function upd_create_table($table_name, $declaration) {
+/**
+ * @param string $table_name
+ * @param string $declaration
+ * @param string $tableOptions
+ *
+ * @return bool|mysqli_result
+ */
+function upd_create_table($table_name, $declaration, $tableOptions = '') {
   global $config, $update_tables;
 
   if(!$update_tables[$table_name]) {
     upd_do_query('set foreign_key_checks = 0;', true);
+    $declaration = trim($declaration);
+    if(mb_substr($declaration, 0, 1) != '(') {
+      $declaration = "($declaration)";
+    }
+    $tableOptions = trim($tableOptions);
+    if(!empty($tableOptions)) {
+      $declaration .= $tableOptions;
+    }
     $result = upd_do_query("CREATE TABLE IF NOT EXISTS `{$config->db_prefix}{$table_name}` {$declaration}");
     $error = db_error();
     if($error) {

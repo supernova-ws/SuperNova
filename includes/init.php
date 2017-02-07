@@ -163,20 +163,13 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
 // Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
 // Но нужно, пока у нас есть не MVC-страницы
-$sn_page_data = $sn_data['pages'][$sn_page_name];
+$sn_page_data = $sn_mvc['pages'][$sn_page_name];
 $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
 if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
   require_once($sn_page_name_file);
   if(is_array($sn_page_data['options'])) {
     classSupernova::$options = array_merge(classSupernova::$options, $sn_page_data['options']);
   }
-//  $sn_page_data
-/*
-  if(basename($sn_page_data) == $sn_page_data)
-  {
-    require_once('includes/pages/' . $sn_page_data . '.' . $phpEx);
-  }
-*/
 }
 
 // load_order:
@@ -245,13 +238,13 @@ unset($load_order);
 unset($sn_req);
 
 // А теперь проверяем - поддерживают ли у нас загруженный код такую страницу
-if(!isset($sn_data['pages'][$sn_page_name])) {
+// TODO - костыль, что бы работали старые модули. Убрать!
+if(is_array($sn_data['pages'])) {
+  $sn_mvc['pages'] = array_merge($sn_mvc['pages'], $sn_data['pages']);
+}
+if(!isset($sn_mvc['pages'][$sn_page_name])) {
   $sn_page_name = '';
 }
-
-
-
-// classSupernova::$db->sn_db_connect(); // Не нужно. Делаем раньше
 
 global $lang;
 $lang = new classLocale(classSupernova::$config->server_locale_log_usage);

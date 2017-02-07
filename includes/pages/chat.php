@@ -1,32 +1,9 @@
 <?php
 /**
- chat.php
-   Main chat window
+ * Copyright © 2009-2017 Gorlum for http://supernova.ws
+ *
+ */
 
- Changelog:
-   4.0 copyright © 2009-2012 Gorlum for http://supernova.ws
-     [!] Another rewrite
-     [+] preMVC-compatible
-   3.0 copyright © 2009-2011 Gorlum for http://supernova.ws
-     [!] Almost full rewrote
-     [+] Complies with PCG1
-   2.0 copyright © 2009-2010 Gorlum for http://supernova.ws
-     [+] Rewrote to remove unnecessary code dupes
-   1.5 copyright © 2009-2010 Gorlum for http://supernova.ws
-     [~] More DDoS-realted fixes
-   1.4 copyright © 2009-2010 Gorlum for http://supernova.ws
-     [~] DDoS-realted fixes
-   1.3 copyright © 2009-2010 Gorlum for http://supernova.ws
-     [~] Security checks for SQL-injection
-   1.2 by Ihor
-   1.0 Shoutbox copyright © 2008 by e-Zobar for XNova
-**/
-/*
-$sn_mvc['model']['chat'][] = 'sn_chat_model';
-$sn_mvc['model']['chat_add'][] = 'sn_chat_add_model';
-$sn_mvc['view']['chat'][] = 'sn_chat_view';
-$sn_mvc['view']['chat_msg'][] = 'sn_chat_msg_view';
-*/
 function sn_chat_model()
 {
   global $config, $user, $template_result, $lang;

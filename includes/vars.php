@@ -16,23 +16,72 @@ $sn_menu_extra = array();
 $sn_menu_admin_extra = array();
 
 $sn_mvc = array(
- 'model' => array(
-   'options' => array('sn_options_model'),
-   'chat' => array('sn_chat_model'),
-   'chat_add' => array('sn_chat_add_model'),
- ),
- 'view' => array(
-   'options' => array('sn_options_view'),
-   'chat' => array('sn_chat_view'),
-   'chat_msg' => array('sn_chat_msg_view'),
- ),
- 'controller' => array(),
- 'i18n' => array(
-   'options' => array(
-     'options' => 'options',
-     'messages' => 'messages',
-   ),
- ),
+  'model'      => array(
+    'options'  => array('sn_options_model'),
+    'chat'     => array('sn_chat_model'),
+    'chat_add' => array('sn_chat_add_model'),
+  ),
+  'view'       => array(
+    'options'       => array('sn_options_view'),
+    'chat'          => array('sn_chat_view'),
+    'chat_msg'      => array('sn_chat_msg_view'),
+    'battle_report' => array('sn_battle_report_view'),
+    'contact'       => array('sn_contact_view'),
+    'imperator'       => array('sn_imperator_view'),
+    'imperium'       => array('sn_imperium_view'),
+    'techtree'       => array('sn_techtree_view'),
+  ),
+  'controller' => array(),
+  'i18n'       => array(
+    'options' => array(
+      'options'  => 'options',
+      'messages' => 'messages',
+    ),
+    'imperator' => array(
+      'overview'  => 'overview',
+    ),
+  ),
+
+  'pages' => array(
+    'chat'     => array(
+      'filename' => 'chat',
+      'options'  => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
+    'chat_add' => array(
+      'filename' => 'chat',
+      'options'  => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
+    'chat_msg' => array(
+      'filename' => 'chat',
+      'options'  => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
+
+    'contact'       => array(
+      'allow_anonymous' => true,
+      'filename'        => 'contact',
+    ),
+    'imperator'     => array(
+      'filename' => 'imperator',
+    ),
+    'imperium'      => array(
+      'filename' => 'imperium',
+    ),
+    'options'       => array(
+      'filename' => 'options',
+    ),
+    'techtree'      => array(
+      'filename' => 'techtree',
+    ),
+    'battle_report' => array(
+      'filename' => 'battle_report',
+    ),
+  ),
 );
 
 $note_priority_classes = array(
@@ -1108,48 +1157,6 @@ mission = array(
     'STAT_COMMON' => array(STAT_TOTAL => STAT_TOTAL, STAT_FLEET => STAT_FLEET, STAT_TECH => STAT_TECH, STAT_BUILDING => STAT_BUILDING, STAT_DEFENSE => STAT_DEFENSE, STAT_RESOURCE => STAT_RESOURCE, ),
     'STAT_PLAYER' => array(STAT_RAID_TOTAL => STAT_RAID_TOTAL, STAT_RAID_WON => STAT_RAID_WON, STAT_RAID_LOST => STAT_RAID_LOST, STAT_LVL_BUILDING => STAT_LVL_BUILDING, STAT_LVL_TECH => STAT_LVL_TECH, STAT_LVL_RAID => STAT_LVL_RAID, ),
   ),
-
-  'pages' => array(
-    'chat' => array(
-      'filename' => 'chat',
-      'options' => array(
-        'fleet_update_skip' => true,
-      ),
-    ),
-    'chat_add' => array(
-      'filename' => 'chat',
-      'options' => array(
-        'fleet_update_skip' => true,
-      ),
-    ),
-    'chat_msg' => array(
-      'filename' => 'chat',
-      'options' => array(
-        'fleet_update_skip' => true,
-      ),
-    ),
-    // 'chat_frame' => 'modules/chat_advanced/chat_advanced',
-
-    'contact' => array(
-      'allow_anonymous' => true,
-      'filename' => 'contact',
-    ),
-    'imperator' => array(
-      'filename' => 'imperator',
-    ),
-    'imperium' => array(
-      'filename' => 'imperium',
-    ),
-    'options' => array(
-      'filename' => 'options',
-    ),
-    'techtree' => array(
-      'filename' => 'techtree',
-    ),
-    'battle_report' => array(
-      'filename' => 'battle_report',
-    ),
-  ),
 );
 
 $sn_data['techtree'] = array(
@@ -1243,14 +1250,3 @@ $sn_powerup_buy_discounts = array(
   PERIOD_MONTH_2   => 0.9,
   PERIOD_MONTH_3   => 0.8,
 );
-
-/*
-foreach($sn_data as $unitID => $unitData)
-{
-  if(!isset($sn_data[$unitID]['cost']['metal']))
-  {
-    continue;
-  }
-  $sn_data[$unitID]['armor'] = ($sn_data[$unitID]['cost']['metal'] + $sn_data[$unitID]['cost']['crystal'])/10;
-}
-*/

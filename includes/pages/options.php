@@ -3,18 +3,7 @@
 /**
  * options.php
  *
- * 1.1s - Security checks by Gorlum for http://supernova.ws
- * @version 1.0
- * @copyright 2008 by ??????? for XNova
- */
-/*
-$sn_mvc['model']['options'][] = 'sn_options_model';
-$sn_mvc['view']['options'][] = 'sn_options_view';
-
-$sn_mvc['i18n']['options'] = array(
-  'options' => 'options',
-  'messages' => 'messages',
-);
+ * @copyright (c) 2010-2017 by Gorlum for http://supernova.ws
  */
 
 function sn_options_model() {

@@ -1,8 +1,5 @@
 <?php
 
-//$sn_mvc['model']['battle_report'][] = 'sn_battle_report_model';
-$sn_mvc['view']['battle_report'][] = 'sn_battle_report_view';
-
 /**
  * @param null|template $template
  *

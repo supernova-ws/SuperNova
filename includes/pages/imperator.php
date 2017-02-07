@@ -5,14 +5,8 @@
  *
  * Player's information
  *
- * @version 2.0 copyright (c) 2010-2012 by Gorlum for http://supernova.ws
+ * @copyright (c) 2010-2017 by Gorlum for http://supernova.ws
  */
-
-$sn_mvc['i18n']['imperator'] = array(
-  'overview' => 'overview',
-);
-
-$sn_mvc['view']['imperator'][] = 'sn_imperator_view';
 
 function sn_imperator_view($template = null) {
   global $template_result, $config, $lang, $user;
