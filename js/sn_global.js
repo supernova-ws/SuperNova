@@ -852,6 +852,16 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       (format & 2 ? local_time.toTimeString().substring(0, 8) : '');
   }
 
+  jQuery(document).on('click', '#news_close', function (e) {
+    jQuery('#fresh_news_table').css('display', 'none');
+    jQuery.post('announce.php?only_hide_news=1');
+  });
+
+  jQuery(document).on('click', '#tutorial_close', function (e) {
+    jQuery('#tutorial_block').css('display', 'none');
+    // jQuery.post('announce.php?only_hide_news=1');
+  });
+
 }
 
 function snConfirm(params) {

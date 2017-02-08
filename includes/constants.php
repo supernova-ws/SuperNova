@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a8');
+define('SN_VERSION', '42a10');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1496,6 +1496,8 @@ define('PLAYER_OPTION_FLEET_SHIP_SELECT_OLD', 45);
 define('PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED', 46);
 define('PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY', 47);
 define('PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION', 48);
+define('PLAYER_OPTION_TUTORIAL_DISABLED', 49);
+define('PLAYER_OPTION_TUTORIAL_WINDOWED', 50);
 
 // -------------------
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);

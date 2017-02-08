@@ -629,6 +629,9 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'   => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
     'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
 
+    'PLAYER_OPTION_TUTORIAL_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_DISABLED],
+    'PLAYER_OPTION_TUTORIAL_WINDOWED' => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED],
+
     'SUBQUE_FLEET' => SUBQUE_FLEET,
     'QUE_RESEARCH' => QUE_RESEARCH,
     'QUE_STRUCTURES' => QUE_STRUCTURES,

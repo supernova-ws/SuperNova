@@ -376,6 +376,9 @@ function sn_options_view($template = null) {
     'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY],
     'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION'     => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION],
 
+    'PLAYER_OPTION_TUTORIAL_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_DISABLED],
+    'PLAYER_OPTION_TUTORIAL_WINDOWED'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED],
+
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data'      => htmlspecialchars($user['username']),
     'opt_mail1_data'      => $user['email'],

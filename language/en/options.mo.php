@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a3.2
+* @version 42a10
 *
 */
 
@@ -35,6 +35,7 @@ $a_lang_array = array(
   'opt_settings_info' => 'Player\'s info',
   'opt_alerts' => 'Alerts',
   'opt_common' => 'Common',
+  'opt_tutorial' => 'Tutorial',
 
   'opt_birthday' => 'Birthday',
 
@@ -94,10 +95,13 @@ $a_lang_array = array(
   'PLAYER_OPTION_ANIMATION_DISABLED' => 'Disable animation effects',
   'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => 'Disable progress bars',
 
-  'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD' => 'Использовать старый вид подбора кораблей во флот',
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => 'Не показывать скорость корабля',
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY' => 'Не показывать ёмкость трюмов корабля',
-  'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION' => 'Не показывать потребление топлива корабля',
+  'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD' => 'Use old fleet selection view',
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => 'Do not show ship speed',
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY' => 'Do not show ship capacity',
+  'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION' => 'Do not show ship fuel consumption',
+
+  'PLAYER_OPTION_TUTORIAL_DISABLED' => 'Disable tutorial',
+  'PLAYER_OPTION_TUTORIAL_WINDOWED' => 'Show tutorial in popup window',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',

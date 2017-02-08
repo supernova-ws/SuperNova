@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 41a3.2
+* @version 42a10
 *
 */
 
@@ -33,6 +33,7 @@ $a_lang_array = (array(
   'opt_settings_info' => 'Информация об игроке',
   'opt_alerts' => 'Уведомления',
   'opt_common' => 'Общие',
+  'opt_tutorial' => 'Обучение',
 
   'opt_birthday' => 'День рождения',
 
@@ -96,6 +97,9 @@ $a_lang_array = (array(
   'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => 'Не показывать скорость корабля',
   'PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY' => 'Не показывать ёмкость трюмов корабля',
   'PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION' => 'Не показывать потребление топлива корабля',
+
+  'PLAYER_OPTION_TUTORIAL_DISABLED' => 'Полностью отключить обучение',
+  'PLAYER_OPTION_TUTORIAL_WINDOWED' => 'Показывать обучающий текст во всплывающем окне (popup)',
 
   'opt_chk_skin' => 'Использовать оформление',
   'opt_adm_title' => 'Опции администрирования',

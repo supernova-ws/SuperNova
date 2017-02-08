@@ -86,6 +86,9 @@ class userOptions extends oldArrayAccessNd {
     PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED => 0,
     PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY => 0,
     PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION => 0,
+
+    PLAYER_OPTION_TUTORIAL_DISABLED => 0,
+    PLAYER_OPTION_TUTORIAL_WINDOWED => 0,
   );
 
   public $data = array(); // Container // TODO - make protected

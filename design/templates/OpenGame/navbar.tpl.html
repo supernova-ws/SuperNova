@@ -5,6 +5,9 @@
 <!-- DEFINE $NAVBAR_CLASS = '' -->
 <!-- ENDIF -->
 
+<!-- IF ! PLAYER_OPTION_TUTORIAL_DISABLED -->
+  <!-- INCLUDE tutorial -->
+<!-- ENDIF -->
 
 <div id="navbar_container" class="{$NAVBAR_CLASS}">
   <div class="header c_c border_image_small" id="navbar">
@@ -305,7 +308,7 @@
   <tr>
     <th class="c_c">
       {L_news_fresh}
-      <img class="fr pointer" onclick="jQuery.post('announce.php?only_hide_news=1');jQuery('#fresh_news_table').css('display', 'none');" src="{I_r1}" alt="{L_sys_close}" title="{L_sys_close}" style="width: 1.454545em; height: 1.454545em;" />
+      <img id="news_close" class="fr pointer image_close" src="{I_r1}" alt="{L_sys_close}" title="{L_sys_close}" />
     </th>
   </tr>
   <!-- INCLUDE news_list -->

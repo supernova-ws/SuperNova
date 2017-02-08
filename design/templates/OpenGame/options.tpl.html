@@ -192,6 +192,7 @@
     <div id="tab_interface" class="tabs">
       <ul id="tabs_interface-subtabs">
         <li><a href="#tab_interface-common">{L_opt_common}</a></li>
+        <li><a href="#tab_interface-tutorial">{L_opt_tutorial}</a></li>
         <!-- IF MENU_CUSTOMIZE -->
         <li><a href="#tab_interface-menu">{L_menu_customize_customization}</a></li>
         <!-- ENDIF -->
@@ -309,6 +310,26 @@
             </td>
           </tr>
 
+        </table>
+      </div>
+
+      <div id="tab_interface-tutorial">
+        <table class="no_border_image c_l">
+          <tr>
+            <td class="">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_TUTORIAL_DISABLED}]" value="0" />
+              <input type="checkbox" id="PLAYER_OPTION_TUTORIAL_DISABLED" name="options[{D_PLAYER_OPTION_TUTORIAL_DISABLED}]" value="1"<!-- IF PLAYER_OPTION_TUTORIAL_DISABLED --> checked<!-- ENDIF --> />
+              <label for="PLAYER_OPTION_TUTORIAL_DISABLED">{L_PLAYER_OPTION_TUTORIAL_DISABLED}</label>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="c_l">
+              <input type="hidden" name="options[{D_PLAYER_OPTION_TUTORIAL_WINDOWED}]" value="0" />
+              <input type="checkbox" id="PLAYER_OPTION_TUTORIAL_WINDOWED" name="options[{D_PLAYER_OPTION_TUTORIAL_WINDOWED}]" value="1"<!-- IF PLAYER_OPTION_TUTORIAL_WINDOWED --> checked<!-- ENDIF --> />
+              <label for="PLAYER_OPTION_TUTORIAL_WINDOWED">{L_PLAYER_OPTION_TUTORIAL_WINDOWED}</label>
+            </td>
+          </tr>
         </table>
       </div>
 
