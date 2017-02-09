@@ -65,6 +65,12 @@ class db_mysql_v5 {
   function mysql_query($query_string) {
     return $this->link->query($query_string);
   }
+
+  /**
+   * @param $query
+   *
+   * @return array|null
+   */
   function mysql_fetch_assoc(&$query) {
     return mysqli_fetch_assoc($query);
   }

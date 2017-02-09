@@ -1,6 +1,7 @@
 <?php
 
 namespace Common;
+
 use Pimple\Container;
 
 /**

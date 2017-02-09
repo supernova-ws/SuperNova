@@ -184,6 +184,15 @@ class db_mysql {
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }
 
+  /**
+   * @param \DBAL\DbQuery $dbQuery
+   *
+   * @return array|null
+   */
+  public function dbqSelectAndFetch(\DBAL\DbQuery $dbQuery) {
+    return $this->doquery($dbQuery->select(), true);
+  }
+
 
   function security_watch_user_queries($query) {
     // TODO Заменить это на новый логгер
@@ -297,6 +306,12 @@ class db_mysql {
     return $result;
 //    return $this->driver->mysql_query($query_string);
   }
+
+  /**
+   * @param $query
+   *
+   * @return array|null
+   */
   function db_fetch(&$query) {
     $microtime = microtime(true);
     $result = $this->driver->mysql_fetch_assoc($query);

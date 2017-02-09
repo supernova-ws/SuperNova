@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a10');
+define('SN_VERSION', '42a11');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1594,3 +1594,13 @@ define('AUTH_VKONTAKTE_PARAM_ERROR', 'code');
 define('AUTH_VKONTAKTE_CODE_GET', 1);
 
 define('URL_PARAM_SEPARATOR', '*');
+
+define('ACCESSOR_NORMAL', false);
+define('ACCESSOR_SHARED', true);
+
+define("P_ACCESSOR_SET", '__set'); // DO NOT CHANGE!!!
+define("P_ACCESSOR_GET", '__get'); // DO NOT CHANGE!!!
+define("P_ACCESSOR_UNSET", '__unset'); // DO NOT CHANGE!!!
+define("P_ACCESSOR_ISSET", '__isset'); // DO NOT CHANGE!!!
+define("P_ACCESSOR_IMPORT", 'import');
+define("P_ACCESSOR_EXPORT", 'export');
