@@ -46,9 +46,6 @@ class AccessorsV2 implements \IContainer {
    * @throws \Exception
    */
   public function __set($functionName, $callable) {
-//    if (empty($callable)) {
-//      return;
-//    } else
     if (!is_callable($callable)) {
       throw new \Exception(
         'Error assigning callable in '
