@@ -70,10 +70,15 @@ class AccessAccessorsTest extends PHPUnit_Framework_TestCase {
     $this->accessors->share('__setShareSet', function ($that, $varName, $value) {
       $that[$varName] = $value . 'ShareSet';
     });
-//    $this->accessors->__getVarModifySetGet = function ($that, $varName) {
-//      return $that[$varName] . 'Get';
-//    };
-
+    $this->accessors->share('__getShareGet', function ($that, $varName) {
+      return $that[$varName] . 'ShareGet';
+    });
+    $this->accessors->share('__setShareSetGet', function ($that, $varName, $value) {
+      $that[$varName] = $value . 'ShareSet';
+    });
+    $this->accessors->share('__getShareSetGet', function ($that, $varName) {
+      return $that[$varName] . 'ShareGet';
+    });
   }
 
   public function tearDown() {
@@ -82,17 +87,16 @@ class AccessAccessorsTest extends PHPUnit_Framework_TestCase {
   }
 
   /**
-   * @covers ::__get
-   * @covers ::__isset
-   * @covers ::__set
-   * @covers ::__unset
+   * @covers ::__construct
    * @covers ::isEmpty
    * @covers ::clear
    */
   public function test__get() {
-    $this->assertTrue($this->object->isEmpty());
-    $this->assertFalse(isset($this->object->test));
-    $this->assertNull($this->object->test);
+    $object = new AccessAccessors();
+
+    $this->assertTrue($object->isEmpty());
+    $this->assertFalse(isset($object->test));
+    $this->assertNull($object->test);
   }
 
   public function dataSetterGetter() {
@@ -113,9 +117,6 @@ class AccessAccessorsTest extends PHPUnit_Framework_TestCase {
       array('VarModifyGet', 5, '5Get'),
       // Value modification on set and get
       array('VarModifySetGet', 6, '6SetGet'),
-//      // Shared setters
-//      array('ShareSet', 7, '7ShareSet'),
-//      array('ShareSet', 8, '7ShareSet'),
     );
   }
 
@@ -125,8 +126,8 @@ class AccessAccessorsTest extends PHPUnit_Framework_TestCase {
    * @covers ::__isset
    * @covers ::__set
    * @covers ::__unset
+   * @covers ::__call
    * @covers ::isEmpty
-   * @covers ::performMagic
    *
    * @dataProvider dataSetterGetter
    */
@@ -146,33 +147,40 @@ class AccessAccessorsTest extends PHPUnit_Framework_TestCase {
   }
 
 
-  /**
-   * Testing shared accessors
-   */
-  public function testShared() {
-    $this->object->setAccessors($this->accessors);
-
-    $this->object->ShareSet = 7;
-    $this->assertEquals('7ShareSet', $this->object->ShareSet);
-//    var_dump('testA ' . $this->object->ShareSet);
-    $this->object->ShareSet = 9;
-//    var_dump('testA ' . $this->object->ShareSet);
-    $this->assertEquals('7ShareSet', $this->object->ShareSet);
-//    $this->assertTrue(isset($this->object->$varName));
-//    unset($this->object->$varName);
-//    $this->assertFalse(isset($this->object->$varName));
-//
-//    $this->assertTrue($this->object->isEmpty());
-//    die();
+  public function dataShared() {
+    return array(
+      array('ShareSet', '1ShareSet'),
+      array('ShareGet', '1ShareGet'),
+      array('ShareSetGet', '1ShareSetShareGet'),
+    );
   }
 
+  /**
+   * Testing shared accessors
+   *
+   * @covers ::setAccessors
+   * @covers ::__get
+   * @covers ::__set
+   * @covers ::__call
+   *
+   * @dataProvider dataShared
+   */
+  public function testShared($varName, $expected) {
+    $this->object->setAccessors($this->accessors);
+
+    $this->object->$varName = 1;
+    $this->assertEquals($expected, $this->object->$varName);
+    $this->object->$varName = 2;
+    $this->assertEquals($expected, $this->object->$varName);
+  }
 
 
   /**
    * @covers ::isEmpty
    * @covers ::clear
+   * @covers ::__get
+   * @covers ::__set
    * @covers ::__call
-   * @covers ::performMagic
    */
   public function testCall() {
     $this->object->setAccessors($this->accessors);
@@ -189,8 +197,13 @@ class AccessAccessorsTest extends PHPUnit_Framework_TestCase {
   /**
    * @covers ::isEmpty
    * @covers ::clear
+   * @covers ::__get
+   * @covers ::__set
    * @covers ::__call
-   * @covers ::performMagic
+   * @covers ::offsetGet
+   * @covers ::offsetSet
+   * @covers ::offsetExists
+   * @covers ::offsetUnset
    */
   public function testArrayAccess() {
     $this->object->setAccessors($this->accessors);
@@ -207,8 +220,10 @@ class AccessAccessorsTest extends PHPUnit_Framework_TestCase {
     $this->assertEquals(2, $this->object->VarModifySet);
     $this->assertEquals(2, $this->object['VarModifySet']);
 
-//    $this->object->clear();
-//    $this->assertTrue($this->object->isEmpty());
+    // Checking unset/isset
+    $this->assertTrue(isset($this->object['VarModifySet']));
+    unset($this->object['VarModifySet']);
+    $this->assertFalse(isset($this->object['VarModifySet']));
   }
 
 }
