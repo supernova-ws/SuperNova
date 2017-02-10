@@ -7,27 +7,22 @@ namespace Common;
  *
  * Support accessors for properties: getter, setter, unsetter
  *
- * Direct access to container made via ArrayAccess
- *
- * Below $that - is a shortcut for container object which will be passed to accessor
- *
+ * Direct access to container (passing accessors) made via ArrayAccess like
+ *     AccessAccessors[$propertyName]
  *
  * Signature to accessor call:
  *    function ($this, $varName = '', $arg...)
- *    If $varName omitted then no args can be supplied
- *    For setter - third argument is variable value
+ * $this - current object passing to accessor
+ * If $varName omitted then no args can be supplied
+ * For setter - third argument is variable value
  *
+ * Getter/Unsetter/Issetter is a callable like
+ *    function ($that) {}
  *
- * // * Getter is a callable like
- * // *    function ($this) {}
- * // *
- * // * Setter is a callable like
- * // *    function ($that, $value)  {}
- * // *
- * // * Unsetter is a callable like
- * // *    function ($that) {}
+ * Setter is a callable like
+ *    function ($that, $value)  {}
  *
- * To pass accessors and set/get property directly use ArrayAccess (i.e. AccessAccessors[$propertyName]
+ * To pass accessors and set/get property directly use ArrayAccess (i.e.
  *
  */
 class AccessAccessors implements \ArrayAccess {
@@ -60,69 +55,38 @@ class AccessAccessors implements \ArrayAccess {
     $this->accessors = $accessors;
   }
 
-//  /**
-//   * Performs accessor operation on property with specified name
-//   *
-//   * @param string     $accessor
-//   * @param string     $varName
-//   * @param null|mixed $value
-//   *
-//   * @return mixed
-//   */
-//  protected function performMagic($accessor, $varName = '', $value = null) {
-//    // $varName could be empty - thus we calling some object-wide function
-//    $functionName = $accessor . $varName;
-//    if (isset($this->accessors->$functionName)) {
-//      $args = func_get_args();
-//      $args[0] = $this;
-//      $result = $this->accessors->__call($functionName, $args);
-//
-//      return $result;
-//    } else {
-//      $result = $this->_data->$accessor($varName, $value);
-//    }
-//
-//    return $result;
-//  }
-
   public function __call($accessor, $arguments) {
 
     // $varName could be empty - thus we calling some object-wide function
     $functionName = $accessor . (!empty($arguments[0]) ? $arguments[0] : '');
     if (isset($this->accessors->$functionName)) {
-      // Inserting accessor name as first argument
+      // Inserting link to current object as first argument
       array_unshift($arguments, $this);
       $result = $this->accessors->__call($functionName, $arguments);
 
       return $result;
     } else {
       $result = call_user_func_array(array($this->_data, $accessor), $arguments);
-//      $result = $this->_data->$accessor($arguments[0], $arguments[1]);
     }
 
     return $result;
-//    return call_user_func_array(array($this, 'performMagic'), $arguments);
   }
 
 
   public function __set($name, $value) {
     $this->__call(P_ACCESSOR_SET, array($name, $value));
-//    $this->performMagic(P_ACCESSOR_SET, $name, $value);
   }
 
   public function __get($name) {
     return $this->__call(P_ACCESSOR_GET, array($name));
-//    return $this->performMagic(P_ACCESSOR_GET, $name, null);
   }
 
   public function __unset($name) {
     $this->__call(P_ACCESSOR_UNSET, array($name));
-//    $this->performMagic(P_ACCESSOR_UNSET, $name, null);
   }
 
   public function __isset($name) {
     return $this->__call(P_ACCESSOR_ISSET, array($name));
-//    return $this->performMagic(P_ACCESSOR_ISSET, $name, null);
   }
 
   public function isEmpty() {
