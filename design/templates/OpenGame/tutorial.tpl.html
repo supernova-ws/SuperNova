@@ -1,29 +1,55 @@
+<script type="text/javascript" src="js/tutorial.js"></script>
+
+<script type="text/javascript">
+// <!-- BEGIN tutorial -->
+tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
+// <!-- END tutorial -->
+</script>
+
 <div id="tutorial_block">
   <div id="tutorial_container" class="border_image_small">
     <div id="tutorial_header" class="contFJ th">
-      <div>Обучение</div>
+      <div>Обучение <span id="tutorial_header_additional"></span></div>
       <div><img id="tutorial_close" class="fr pointer image_close" src="{I_r1}" alt="{L_sys_close}"
                 title="{L_sys_close}"/></div>
     </div>
-    <div id="tutorial_text">
-      <img id="tutorial_text_adviser" src="design/images/adviser.gif"/>
-      {
-      Приветствуем вас в нашей Вселенной!<br/>
-      Я - ваш советник, который поможет вам освоится с управлением вашей Империей.<br/>
-      Вы всегда сможете отключить подсказки в "Настройках" игры - пункт меню "Настройки",<br/>
-      вкладка "Интерфейс", подвкладка "Обучение", пункт "Полностью отключить обучение", нажать кноппку "Сохранить
-      изменения".<br/>
-      Там же можно включить подсказки обратно, сняв галочку с вышкуказанного пункта и сохранив изменения.
-      }
+    <div>
+      <div id="tutorial_text_adviser"><img src="design/images/adviser.gif"/></div>
+      <div id="tutorial_text">
+      <!--{-->
+      <!--Приветствуем вас в нашей Вселенной!<br/>-->
+      <!--Я - ваш советник, который поможет вам освоится с управлением вашей Империей.<br/>-->
+      <!--Вы всегда сможете отключить подсказки в "Настройках" игры - пункт меню "Настройки",<br/>-->
+      <!--вкладка "Интерфейс", подвкладка "Обучение", пункт "Полностью отключить обучение", нажать кноппку "Сохранить-->
+      <!--изменения".<br/>-->
+      <!--Там же можно включить подсказки обратно, сняв галочку с вышкуказанного пункта и сохранив изменения.-->
+      <!--}-->
+      </div>
     </div>
     <div style="clear:left;"></div>
-    <div id="tutorial_buttons" class="contFJ">
-      <input type="button" id="tutorial_prev" name="tutorial_prev" value="<< prev"/>
-      <input type="button" id="tutorial_window" name="tutorial_window" value="window"/>
-      <input type="button" id="tutorial_next" name="tutorial_next" value="next >>"/>
+    <div id="tutorial_buttons">
+      <input type="hidden" id="tutorial_current" name="tutorial_current" value="{TUTORIAL_CURRENT}"/>
+      <table class="no_border_image markup" width="100%">
+        <tr>
+          <td class="c_l" width="20%">
+            <input type="button" class="hide" id="tutorial_button_prev" name="tutorial_button_prev" value="<< prev"/>
+          </td>
+          <td>
+            <input type="button" class="hide" id="tutorial_button_window" name="tutorial_button_window" value="window"/>
+          </td>
+          <td class="c_r" width="20%">
+            <input type="button" class="hide" id="tutorial_button_next" name="tutorial_button_next" value="next >>"/>
+            <input type="button" class="hide" id="tutorial_button_finish" name="tutorial_button_finish" value="finish" />
+          </td>
+        </tr>
+      </table>
     </div>
-    <div id="tutorial_footer">
+    <div id="tutorial_footer" class="hide">
       {Вы всегда можете отключить "Обучение" через пункт меню "Настройки"}
     </div>
   </div>
 </div>
+
+<script type="text/javascript">
+  tutorial_change();
+</script>

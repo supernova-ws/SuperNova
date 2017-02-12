@@ -378,36 +378,3 @@ body.blitz_ {
   width: 1.454545em;
   height: 1.454545em;
 }
-
-#tutorial_block {
-  /*display: none;*/
-}
-#tutorial_container {
-  padding: 0.5em;
-  max-width: 40em;
-  display: inline-block;
-}
-#tutorial_header {
-  padding: 0.5em;
-  font-size: 130%;
-  border: 1px solid red;
-}
-#tutorial_text {
-  padding: 0.5em;
-  text-align: justify;
-  border: 1px solid green;
-}
-#tutorial_text_adviser {
-  float: left;
-}
-#tutorial_text::after {
-  clear: both;
-}
-#tutorial_buttons {
-  padding: 0.5em;
-  border: 1px solid white;
-}
-#tutorial_footer {
-  padding: 0.5em;
-  border: 1px solid yellow;
-}

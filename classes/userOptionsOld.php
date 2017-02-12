@@ -60,6 +60,8 @@ class userOptionsOld implements ArrayAccess {
 
     PLAYER_OPTION_TUTORIAL_DISABLED => 0,
     PLAYER_OPTION_TUTORIAL_WINDOWED => 0,
+    PLAYER_OPTION_TUTORIAL_CURRENT => 1,
+    PLAYER_OPTION_TUTORIAL_FINISHED => 0,
   );
   public $data = array(); // Container // TODO - make protected
 

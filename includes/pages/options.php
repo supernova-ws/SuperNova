@@ -378,6 +378,7 @@ function sn_options_view($template = null) {
 
     'PLAYER_OPTION_TUTORIAL_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_DISABLED],
     'PLAYER_OPTION_TUTORIAL_WINDOWED'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED],
+    'PLAYER_OPTION_TUTORIAL_CURRENT'     => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT],
 
     'ADM_PROTECT_PLANETS' => $user['authlevel'] >= 3,
     'opt_usern_data'      => htmlspecialchars($user['username']),

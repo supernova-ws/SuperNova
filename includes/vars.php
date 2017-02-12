@@ -17,11 +17,15 @@ $sn_menu_admin_extra = array();
 
 $sn_mvc = array(
   'model'      => array(
+    'ajax'     => array('AjaxController::controller'),
+
     'options'  => array('sn_options_model'),
     'chat'     => array('sn_chat_model'),
     'chat_add' => array('sn_chat_add_model'),
   ),
   'view'       => array(
+    'ajax'     => array('AjaxController::view'),
+
     'options'       => array('sn_options_view'),
     'chat'          => array('sn_chat_view'),
     'chat_msg'      => array('sn_chat_msg_view'),
@@ -31,7 +35,8 @@ $sn_mvc = array(
     'imperium'       => array('sn_imperium_view'),
     'techtree'       => array('sn_techtree_view'),
   ),
-  'controller' => array(),
+  'controller' => array(
+  ),
   'i18n'       => array(
     'options' => array(
       'options'  => 'options',
@@ -80,6 +85,8 @@ $sn_mvc = array(
     ),
     'battle_report' => array(
       'filename' => 'battle_report',
+    ),
+    'ajax' => array(
     ),
   ),
 );

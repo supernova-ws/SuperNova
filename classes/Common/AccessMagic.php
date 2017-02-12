@@ -17,11 +17,26 @@ namespace Common;
 class AccessMagic implements \IContainer {
 
   /**
+   * @var GlobalContainer $services
+   */
+  protected $services;
+
+  /**
    * Property values
    *
    * @var array
    */
   protected $values = array();
+
+  /**
+   * AccessMagic constructor.
+   *
+   * @param GlobalContainer|null $services
+   */
+  public function __construct($services = null) {
+    $this->services = empty($services) ? \classSupernova::$gc : $services;
+  }
+
 
   /**
    * Magic setter
@@ -32,7 +47,6 @@ class AccessMagic implements \IContainer {
   public function __set($name, $value) {
     $this->values[$name] = $value;
   }
-
 
   /**
    * Magic getter

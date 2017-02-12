@@ -857,11 +857,6 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     jQuery.post('announce.php?only_hide_news=1');
   });
 
-  jQuery(document).on('click', '#tutorial_close', function (e) {
-    jQuery('#tutorial_block').css('display', 'none');
-    // jQuery.post('announce.php?only_hide_news=1');
-  });
-
 }
 
 function snConfirm(params) {

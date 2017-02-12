@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a14');
+define('SN_VERSION', '42a15');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1498,6 +1498,8 @@ define('PLAYER_OPTION_FLEET_SHIP_HIDE_CAPACITY', 47);
 define('PLAYER_OPTION_FLEET_SHIP_HIDE_CONSUMPTION', 48);
 define('PLAYER_OPTION_TUTORIAL_DISABLED', 49);
 define('PLAYER_OPTION_TUTORIAL_WINDOWED', 50);
+define('PLAYER_OPTION_TUTORIAL_CURRENT', 51);
+define('PLAYER_OPTION_TUTORIAL_FINISHED', 52);
 
 // -------------------
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);
@@ -1604,3 +1606,8 @@ define("P_ACCESSOR_UNSET", '__unset'); // DO NOT CHANGE!!!
 define("P_ACCESSOR_ISSET", '__isset'); // DO NOT CHANGE!!!
 define("P_ACCESSOR_IMPORT", 'import');
 define("P_ACCESSOR_EXPORT", 'export');
+
+define('HTML_ENCODE_PREFORM', 1); // perform HTML encoding
+define('HTML_ENCODE_NL2BR', 2); // should line breaks be converted to <br />
+define('HTML_ENCODE_STRIP_HTML', 4); // should HTML be cut from text
+define('HTML_ENCODE_JS_SAFE', 8); // should be string encoded for use in JavaScript

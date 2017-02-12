@@ -1,5 +1,7 @@
 <?php
 
+use \Pages\PageTutorial;
+
 // Wrappers for functions
 
 /**
@@ -218,9 +220,11 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
   $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
 
+  $isRenderGlobal = true;
   if(is_object($page)) {
     isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
     isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
+    isset($page->_rootref['GLOBAL']) ? $isRenderGlobal = $page->_rootref['GLOBAL'] : false;
 
     !$title && !empty($page->_rootref['PAGE_HEADER']) ? $title = $page->_rootref['PAGE_HEADER'] : false;
     !isset($page->_rootref['PAGE_HEADER']) && $title ? $page->assign_var('PAGE_HEADER', $title) : false;
@@ -251,94 +255,50 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 
   $template_result['LOGIN_LOGOUT'] = $is_login;
 
-  $template = gettemplate('_global_header', true);
+  if($isRenderGlobal) {
+    $template = gettemplate('_global_header', true);
 
-  if(!empty($sn_mvc['javascript'])) {
-    foreach($sn_mvc['javascript'] as $page_name => $script_list) {
-      if(empty($page_name) || $page_name == $sn_page_name) {
-        foreach($script_list as $filename => $content) {
-          $template_result['.']['javascript'][] = array(
-            'FILE'    => $filename,
-            'CONTENT' => $content,
-          );
-        }
-      }
-    }
+    tpl_global_header($template_result, $is_login);
+
+    $template->assign_vars(array(
+      'USER_AUTHLEVEL' => intval($user['authlevel']),
+
+      'FONT_SIZE'                        => $font_size,
+      'FONT_SIZE_PERCENT_DEFAULT_STRING' => FONT_SIZE_PERCENT_DEFAULT_STRING,
+
+      'SN_TIME_NOW'          => SN_TIME_NOW,
+      'LOGIN_LOGOUT'         => $is_login,
+      'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
+      //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
+      'TIME_DIFF_MEASURE'    => intval(
+        empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
+        &&
+        (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
+      ), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
+      //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
+
+      'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
+      '-meta-'                   => $metatags,
+      'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
+      'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
+      'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
+
+      'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+      'LANG_ENCODING'  => 'utf-8',
+      'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
+
+      'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
+      'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+      'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
+
+      // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
+      'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
+      'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
+    ));
+    $template->assign_recursive($template_result);
+    displayP(parsetemplate($template));
   }
 
-
-
-//    <!-- IF LOGIN_LOGOUT -->
-//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/{GAME_MODE_CSS_PREFIX}login_background.min.css?{C_var_db_update}" />
-//    <!-- ELSE -->
-//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}{GAME_MODE_CSS_PREFIX}skin_background.min.css?{C_var_db_update}" />
-//    <!-- ENDIF -->
-//    <!--<link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}{dpath}skin_server.css?{C_var_db_update}" />-->
-//    <link rel="stylesheet" type="text/css" href="{D_SN_ROOT_VIRTUAL}design/css/global_override.css?{C_var_db_update}" />
-  empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
-  $standard_css = array(
-    'design/css/jquery-ui.css' => '',
-    'design/css/global.min.css' => '',
-  );
-  $is_login ? $standard_css['design/css/login.min.css'] = '': false;
-  $standard_css += array(
-//    'design/css/design/css/global-ie.min.css' => '', // TODO
-    TEMPLATE_PATH . '/_template.min.css' => '',
-    ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin.min.css' => '',
-  );
-
-  // Prepending standard CSS files
-  $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
-
-
-  foreach($sn_mvc['css'] as $page_name => $script_list) {
-    if(empty($page_name) || $page_name == $sn_page_name) {
-      foreach($script_list as $filename => $content) {
-        $template_result['.']['css'][] = array(
-          'FILE'    => $filename,
-          'CONTENT' => $content,
-        );
-      }
-    }
-  }
-
-  $template->assign_vars(array(
-    'USER_AUTHLEVEL' => intval($user['authlevel']),
-
-    'FONT_SIZE'                        => $font_size,
-    'FONT_SIZE_PERCENT_DEFAULT_STRING' => FONT_SIZE_PERCENT_DEFAULT_STRING,
-
-    'SN_TIME_NOW'          => SN_TIME_NOW,
-    'LOGIN_LOGOUT'         => $is_login,
-    'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
-    //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
-    'TIME_DIFF_MEASURE'    => intval(
-      empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
-      &&
-      (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
-    ), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
-    //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
-
-    'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-    '-meta-'                   => $metatags,
-    'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
-    'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
-    'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
-
-    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
-    'LANG_ENCODING'  => 'utf-8',
-    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
-
-    'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
-    'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
-    'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
-
-    // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
-    'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
-    'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
-  ));
-  $template->assign_recursive($template_result);
-  displayP(parsetemplate($template));
 
   if(($isDisplayMenu || $in_admin) && !isset($_COOKIE['menu_disable'])) {
     // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
@@ -369,19 +329,70 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   displayP(parsetemplate(gettemplate('_content_footer', true)));
 
   // Global footer
-  $template = gettemplate('_global_footer', true);
-  $template->assign_vars(array(
-    'ADMIN_EMAIL' => $config->game_adminEmail,
-    'SN_TIME_NOW' => SN_TIME_NOW,
-    'SN_VERSION'  => SN_VERSION,
-  ));
-  displayP(parsetemplate($template));
+  if($isRenderGlobal) {
+    $template = gettemplate('_global_footer', true);
+    $template->assign_vars(array(
+      'ADMIN_EMAIL' => $config->game_adminEmail,
+      'SN_TIME_NOW' => SN_TIME_NOW,
+      'SN_VERSION'  => SN_VERSION,
+    ));
+    displayP(parsetemplate($template));
+  }
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
   sn_db_disconnect();
 
   $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
+}
+
+/**
+ * @param $template_result
+ * @param $is_login
+ */
+function tpl_global_header(&$template_result, $is_login) {
+  global $sn_mvc, $sn_page_name, $user;
+
+  if(!empty($sn_mvc['javascript'])) {
+    foreach($sn_mvc['javascript'] as $page_name => $script_list) {
+      if(empty($page_name) || $page_name == $sn_page_name) {
+        foreach($script_list as $filename => $content) {
+          $template_result['.']['javascript'][] = array(
+            'FILE'    => $filename,
+            'CONTENT' => $content,
+          );
+        }
+      }
+    }
+  }
+
+  empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
+  $standard_css = array(
+    'design/css/jquery-ui.css' => '',
+    'design/css/global.min.css' => '',
+  );
+  $is_login ? $standard_css['design/css/login.min.css'] = '': false;
+  $standard_css += array(
+//    'design/css/design/css/global-ie.min.css' => '', // TODO
+    TEMPLATE_PATH . '/_template.min.css' => '',
+    ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin.min.css' => '',
+  );
+
+  // Prepending standard CSS files
+  $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
+
+
+  foreach($sn_mvc['css'] as $page_name => $script_list) {
+    if(empty($page_name) || $page_name == $sn_page_name) {
+      foreach($script_list as $filename => $content) {
+        $template_result['.']['css'][] = array(
+          'FILE'    => $filename,
+          'CONTENT' => $content,
+        );
+      }
+    }
+  }
+
 }
 
 /**
@@ -479,17 +490,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   $GET_mode = sys_get_param_str('mode');
 
   $template = gettemplate('navbar', true);
-
   $template->assign_recursive($template_result);
-
-  /*
-  $planetrow = $planetrow ? $planetrow : $user['current_planet'];
-
-  sn_db_transaction_start();
-  $planetrow = sys_o_get_updated($user, $planetrow, SN_TIME_NOW);
-  sn_db_transaction_commit();
-  $planetrow = $planetrow['planet'];
-  */
 
   $ThisUsersPlanets = DBStaticPlanet::db_planet_list_sorted($user);
   // while ($CurPlanet = db_fetch($ThisUsersPlanets))
@@ -520,37 +521,19 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   que_tpl_parse($template, QUE_RESEARCH, $user, array(), null, !classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE]);
   que_tpl_parse($template, SUBQUE_FLEET, $user, $planetrow, null, true);
 
-  if(!empty($sn_mvc['navbar_prefix_button']) && is_array($sn_mvc['navbar_prefix_button'])) {
-    foreach($sn_mvc['navbar_prefix_button'] as $navbar_button_image => $navbar_button_url) {
-      $template->assign_block_vars('navbar_prefix_button', array(
-        'IMAGE' => $navbar_button_image,
-        'URL_RELATIVE' => $navbar_button_url,
-      ));
-    }
-  }
+  tpl_navbar_extra_buttons($sn_mvc, $template);
+  tpl_navbar_render_news($template, $user, $config);
+  tpl_navbar_render_notes($template, $user);
+  $tutorial_enabled = tpl_render_tutorial($template);
 
-  $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array($sn_mvc['navbar_prefix_button']) ? count($sn_mvc['navbar_prefix_button']) : 0);
+
+
+  $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
 
   $str_date_format = "%3$02d %2$0s %1$04d {$lang['top_of_year']} %4$02d:%5$02d:%6$02d";
   $time_now_parsed = getdate(SN_TIME_NOW);
   $time_local_parsed = getdate(defined('SN_CLIENT_TIME_LOCAL') ? SN_CLIENT_TIME_LOCAL : SN_TIME_NOW);
 
-  if($config->game_news_overview) {
-    $user_last_read_safe = intval($user['news_lastread']);
-    $newsSql = "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}";
-    $newsOverviewShowSeconds = intval($config->game_news_overview_show);
-    if($newsOverviewShowSeconds) {
-      $newsSql .= " AND `tsTimeStamp` >= DATE_SUB(NOW(), INTERVAL {$newsOverviewShowSeconds} SECOND)";
-    }
-    nws_render($template, $newsSql, $config->game_news_overview);
-  }
-
-  $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
-  while($note_row = db_fetch($notes_query)) {
-    note_assign($template, $note_row);
-  }
-
-  $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
   $template->assign_vars(array(
     'HALLOWEEN' => !empty($sn_module_list['event']['event_halloween_2015']) && $sn_module_list['event']['event_halloween_2015']->manifest['active'],
 
@@ -629,8 +612,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER'   => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_META_MATTER],
     'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE'         => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_RESEARCH_WIDE],
 
-    'PLAYER_OPTION_TUTORIAL_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_DISABLED],
-    'PLAYER_OPTION_TUTORIAL_WINDOWED' => classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED],
+    'TUTORIAL_ENABLED' => $tutorial_enabled,
 
     'SUBQUE_FLEET' => SUBQUE_FLEET,
     'QUE_RESEARCH' => QUE_RESEARCH,
@@ -646,6 +628,70 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   }
 
   return $template;
+}
+
+/**
+ * @param $template
+ * @param $user
+ */
+function tpl_navbar_render_notes(&$template, &$user) {
+  $notes_query = doquery("SELECT * FROM {{notes}} WHERE `owner` = {$user['id']} AND `sticky` = 1 ORDER BY priority DESC, time DESC");
+  while ($note_row = db_fetch($notes_query)) {
+    note_assign($template, $note_row);
+  }
+}
+
+/**
+ * @param $template
+ * @param $user
+ * @param $config
+ */
+function tpl_navbar_render_news(&$template, &$user, $config) {
+  if ($config->game_news_overview) {
+    $user_last_read_safe = intval($user['news_lastread']);
+    $newsSql = "WHERE UNIX_TIMESTAMP(`tsTimeStamp`) >= {$user_last_read_safe}";
+    $newsOverviewShowSeconds = intval($config->game_news_overview_show);
+    if ($newsOverviewShowSeconds) {
+      $newsSql .= " AND `tsTimeStamp` >= DATE_SUB(NOW(), INTERVAL {$newsOverviewShowSeconds} SECOND)";
+    }
+    nws_render($template, $newsSql, $config->game_news_overview);
+  }
+}
+
+/**
+ * @param array $sn_mvc
+ * @param template $template
+ */
+function tpl_navbar_extra_buttons(&$sn_mvc, $template) {
+  if (!empty($sn_mvc['navbar_prefix_button']) && is_array($sn_mvc['navbar_prefix_button'])) {
+    foreach ($sn_mvc['navbar_prefix_button'] as $navbar_button_image => $navbar_button_url) {
+      $template->assign_block_vars('navbar_prefix_button', array(
+        'IMAGE'        => $navbar_button_image,
+        'URL_RELATIVE' => $navbar_button_url,
+      ));
+    }
+  }
+  $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array($sn_mvc['navbar_prefix_button']) ? count($sn_mvc['navbar_prefix_button']) : 0);
+}
+
+/**
+ * @param template $template
+ */
+function tpl_render_tutorial($template) {
+  $block = new PageTutorial();
+
+  $htmlized = $block
+    ->setId(classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT])
+    ->setUserOptions(classSupernova::$user_options)
+    ->renderNavBar();
+
+  if(empty($htmlized)) {
+    return false;
+  }
+
+  $template->assign_recursive(array('.' => array('tutorial' => $htmlized)));
+
+  return true;
 }
 
 /**

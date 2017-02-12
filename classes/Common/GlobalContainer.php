@@ -13,35 +13,46 @@ use \classSupernova;
  *
  * @property \debug               $debug
 // * @property \Common\Types        $types
-// *
+* // *
  * @property \db_mysql            $db
 // * @property \DbQueryConstructor  $query
-// * @property \DbRowDirectOperator $dbGlobalRowOperator
-// * @property \SnDbCachedOperator  $cacheOperator - really DB record operator. But let it be
-// *
+* // * @property \DbRowDirectOperator $dbGlobalRowOperator
+* // * @property \SnDbCachedOperator  $cacheOperator - really DB record operator. But let it be
+* // *
  * @property \classCache          $cache
  * @property \classConfig         $config
 // * @property \classLocale         $localePlayer
-// *
-// * @property string               $snCacheClass
-// * @property \SnCache             $snCache
-// *
-// * @property string               $buddyClass
-// * @property \Buddy\BuddyModel    $buddyModel
-// *
-// * @property \V2Unit\V2UnitModel  $unitModel
-// * @property \V2Unit\V2UnitList   $unitList
-// *
-// * @property V2FleetModel         $fleetModel
-// *
-// * @property PlanetRenderer       $planetRenderer
-// * @property \FleetRenderer       $fleetRenderer
-// * @property $dbOperator - makes CRUD to DB:
+* // *
+* // * @property string               $snCacheClass
+* // * @property \SnCache             $snCache
+* // *
+* // * @property string               $buddyClass
+* // * @property \Buddy\BuddyModel    $buddyModel
+* // *
+* // * @property \V2Unit\V2UnitModel  $unitModel
+* // * @property \V2Unit\V2UnitList   $unitList
+* // *
+* // * @property V2FleetModel         $fleetModel
+* // *
+* // * @property PlanetRenderer       $planetRenderer
+* // * @property \FleetRenderer       $fleetRenderer
+* // * @property $dbOperator - makes CRUD to DB:
  *
  *
  * @property array                $groupFleet
  * @property array                $groupFleetAndMissiles
  * @property array                $groupRecyclers
+ *
+ *
+ *
+ *
+ * @property \TextModel           $textModel
+ * @property \Repository $repository
+ * @property \Storage $storage
+ *
+ *
+ *
+ *
  *
  * @package Common
  */
@@ -74,6 +85,21 @@ class GlobalContainer extends ContainerPlus {
     $gc->config = function (GlobalContainer $c) {
       return new \classConfig(classSupernova::$cache_prefix);
     };
+
+
+
+    $gc->textModel = function (GlobalContainer $c) {
+      return new \TextModel();
+    };
+
+    $gc->repository = function (GlobalContainer $c) {
+      return new \Repository();
+    };
+
+    $gc->storage = function (GlobalContainer $c) {
+      return new \Storage();
+    };
+
 
 //    $gc->dbOperator = function (GlobalContainer $c) {
 //      return new \classConfig(classSupernova::$cache_prefix);

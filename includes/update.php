@@ -437,7 +437,7 @@ switch($new_version) {
             $que_data[] = "({$user_id},{$planet_id},{$planet_id},1,{$que_item[2]},{$unit_id},1,{$que_item[3]},{$units_levels[$unit_id]},{$que_item[2]},'{$unit_cost}')";
           }
         }
- 
+
         // Конвертируем очередь верфи
         if($row['b_hangar_id']) {
           $return_resources = array(RES_METAL => 0, RES_CRYSTAL => 0, RES_DEUTERIUM => 0, );
@@ -1320,6 +1320,17 @@ switch($new_version) {
       KEY `I_text_next` (`next`)
       ",
       'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+    );
+
+    // 2017-02-12 19:11:37 42a15 - TODO - Merge with main table
+    upd_alter_table(
+      'text',
+      array(
+        "ADD COLUMN `context` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Tutorial context. 0 - main screen' AFTER `parent`",
+        "ADD COLUMN `prev` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Previous text part. 0 - first part' AFTER `context`",
+        "ADD COLUMN `next_alt` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Alternative next text part. 0 - final part' AFTER `next`",
+      ),
+      empty($update_tables['text']['next_alt'])
     );
 
     // #ctv

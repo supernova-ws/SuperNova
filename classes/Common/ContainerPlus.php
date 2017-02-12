@@ -11,7 +11,7 @@ use Pimple\Container;
  *
  * @package Pimple
  */
-class ContainerPlus extends Container {
+class ContainerPlus extends Container implements \IContainer {
 
   public function __set($name, $value) {
     $this->offsetSet($name, $value);
@@ -39,7 +39,8 @@ class ContainerPlus extends Container {
    * @return bool
    */
   public function isEmpty() {
-    throw new \Exception(get_class() . '::isEmpty() not implemented - inherited from ContainerPlus');
+    $keys = $this->keys(); // TODO PHP 5.5
+    return empty($keys);
   }
 
   /**

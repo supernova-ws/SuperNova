@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a10
+* @version 42a15
 *
 */
 
@@ -100,6 +100,7 @@ $a_lang_array = (array(
 
   'PLAYER_OPTION_TUTORIAL_DISABLED' => 'Полностью отключить обучение',
   'PLAYER_OPTION_TUTORIAL_WINDOWED' => 'Показывать обучающий текст во всплывающем окне (popup)',
+  'PLAYER_OPTION_TUTORIAL_CURRENT' => 'Сбросить обучение - обучение начнётся заново',
 
   'opt_chk_skin' => 'Использовать оформление',
   'opt_adm_title' => 'Опции администрирования',
