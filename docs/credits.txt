@@ -1,0 +1,28 @@
+js-cookie v2.1.3
+
+## Authors
+
+* [Klaus Hartl](https://github.com/carhartl)
+* [Fagner Brack](https://github.com/FagnerMartinsBrack)
+* And awesome [contributors](https://github.com/js-cookie/js-cookie/graphs/contributors)
+
+
+speedometer icon
+http://www.flaticon.com/free-icon/speedometer_52166#term=speed&page=1&position=11
+<div>Icons made by <a href="http://www.flaticon.com/authors/robin-kylander" title="Robin Kylander">Robin Kylander</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Jerrycan icon
+http://www.flaticon.com/free-icon/oil_85805#term=fuel&page=1&position=28
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Post it note+pin icon
+http://www.flaticon.com/free-icon/post-it_14489#term=pin&page=1&position=37
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Pin icon
+http://www.flaticon.com/free-icon/push-pin_69667#term=pin&page=1&position=57
+<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
+
+Advisor image
+Dune - The Battle for Arrakis - The Mentat Ammon by Grindguy
+http://grindguy.deviantart.com/art/Dune-The-Battle-for-Arrakis-The-Mentat-Ammon-446290900

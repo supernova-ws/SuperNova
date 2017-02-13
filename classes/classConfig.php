@@ -17,6 +17,8 @@
  * @property int    $game_news_actual             How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
  * @property int    $game_news_overview           How much last news to show in Overview page. Default - 3
  * @property int    $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
+ *
+ * @property int    $tutorial_first_item          ID of first item of tutorial
  */
 class classConfig extends classPersistent {
   protected $defaults = array(
@@ -227,6 +229,8 @@ class classConfig extends classPersistent {
     'stats_schedule'               => '04:00:00',
 
     'tpl_minifier'                 => 0, // Template minifier
+
+    'tutorial_first_item'          => 1,
 
     'uni_price_galaxy'             => 10000,
     'uni_price_system'             => 1000,

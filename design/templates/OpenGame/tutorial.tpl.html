@@ -8,9 +8,9 @@ tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
 
 <div id="tutorial_block">
   <div id="tutorial_container" class="border_image_small">
-    <div id="tutorial_header" class="contFJ th">
-      <div>Обучение <span id="tutorial_header_additional"></span></div>
-      <div><img id="tutorial_close" class="fr pointer image_close" src="{I_r1}" alt="{L_sys_close}"
+    <div id="tutorial_header" class="contFJ bg_title">
+      <div id="tutorial_header_text">Обучение <span id="tutorial_header_additional"></span></div>
+      <div><img id="tutorial_close" class="fr pointer image_close hide" src="{I_r1}" alt="{L_sys_close}"
                 title="{L_sys_close}"/></div>
     </div>
     <div>
@@ -22,13 +22,14 @@ tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
       <input type="hidden" id="tutorial_current" name="tutorial_current" value="{TUTORIAL_CURRENT}"/>
       <table class="no_border_image markup" width="100%">
         <tr>
-          <td class="c_l" width="20%">
+          <td class="c_l" width="33%">
             <input type="button" class="hide" id="tutorial_button_prev" name="tutorial_button_prev" value="{L_tutorial_prev}"/>
           </td>
           <td>
-            <input type="button" class="hide" id="tutorial_button_window" name="tutorial_button_window" value="{L_tutorial_window}"/>
+            <input type="button" class="hide" id="tutorial_button_window" name="tutorial_button_window" value="{L_tutorial_window}" data-windowed="1"/>
+            <input type="button" class="hide" id="tutorial_button_window_off" name="tutorial_button_window" value="{L_tutorial_window_off}" data-windowed="0"/>
           </td>
-          <td class="c_r" width="20%">
+          <td class="c_r" width="33%">
             <input type="button" class="hide" id="tutorial_button_next" name="tutorial_button_next" value="{L_tutorial_next}"/>
             <input type="button" class="hide" id="tutorial_button_finish" name="tutorial_button_finish" value="{L_tutorial_finish}" />
           </td>
@@ -41,4 +42,5 @@ tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
 
 <script type="text/javascript">
   tutorial_change();
+  tutorial_window_switch(tutorial_windowed.windowed);
 </script>

@@ -130,25 +130,12 @@ fleet_aks_invite (page4) - выставить список игроков-дру
 [22.01.2016 23:53:01] 	Сингулярность[БАС]>	В принципе - понятно, что сделать. Заменить надписи иконками и прописать цветовое кодирование для скорости. И сразу попустит
 
 
-speedometer icon
-http://www.flaticon.com/free-icon/speedometer_52166#term=speed&page=1&position=11
-<div>Icons made by <a href="http://www.flaticon.com/authors/robin-kylander" title="Robin Kylander">Robin Kylander</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-
-Jerrycan icon
-http://www.flaticon.com/free-icon/oil_85805#term=fuel&page=1&position=28
-<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-
-Post it note+pin icon
-http://www.flaticon.com/free-icon/post-it_14489#term=pin&page=1&position=37
-<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
-
-Pin icon
-http://www.flaticon.com/free-icon/push-pin_69667#term=pin&page=1&position=57
-<div>Icons made by <a href="http://www.freepik.com" title="Freepik">Freepik</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a>             is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0">CC BY 3.0</a></div>
 
 BONUS_ABILITY - deprecated ???
 
 На новых наградах 8 марта-2016 не отображается надписи
+
+инфа для размышления. добавить страницу заказа модулей в админку публичной версии игры
 
 
 
@@ -180,14 +167,35 @@ AccessorsV2
 
 
 Обучение
-    + Локализация кнопок и надписей
     + Проверить добавление новой записи
+    + Ресет - сбрасывать финишед
+    - Локализация кнопок и надписей - доделать в JS
     Окно
+        + Хранить настройки интерфейса - окно, позиция - в куках
+        - Менять размер окна ????
+        + Не меняется хеадер
+        - Окно перекрывается результатами голосования в голосовалке (?!) - проблемы с z-index?
+    Загнать настройки туториала в объект
     Парсинг bbCode
     Базовое обучение
     Сделать кнопку "Закрыть" рабочей как-то по-другому
 
 #ctv
+
+2017-02-13 13:44:18 42a17
+[+] Обучение
+    Теперь обучение можно открыть в окне
+        - По умолчанию окно открывается в правом нижнем углу страницы
+        - Окно прилеплено и не меняет местоположение при скролле
+        - Окно можно перемещать по странице, таская его за заголовок
+        - Статус обучения (на странице в навбаре или в окне), а так же положение окна на экране сохраняется в куках отдельно на каждом устройстве
+    Теперь можно задать ID первого текста из таблицы `text` в обучаловке - опция 'tutorial_first_item' в таблице `config`
+    Теперь при сбросе обучения так же сбрасывается статус "обучение завершено"
+[+] Лицензия
+    Добавлен файл docs/credits.txt для списка используемых материалов и соответствующих копирайтов
+
+[@] Код
+    Добавлена библиотека JS для поддержки кукесов
 
 
 2017-02-13 09:31:36 42a16
@@ -233,7 +241,7 @@ AccessorsV2
         - Опция показа Обучения во всплывающем окне (popup)
 
 [~] Новости
-    Переделана кнопка "ЗАкрыть" в блоке новостей - вынесены стили в CSS, а обработчик нажатия - в JS
+    Переделана кнопка "Закрыть" в блоке новостей - вынесены стили в CSS, а обработчик нажатия - в JS
 
 
 2017-02-07 16:57:17 42a8

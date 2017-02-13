@@ -85,6 +85,10 @@ function sn_options_model() {
 
     $player_options = sys_get_param('options');
     if(!empty($player_options)) {
+      if($player_options[PLAYER_OPTION_TUTORIAL_CURRENT] == classSupernova::$config->tutorial_first_item) {
+        $player_options[PLAYER_OPTION_TUTORIAL_FINISHED] = 0;
+      }
+
       array_walk($player_options, function (&$value) {
         // TODO - Когда будет больше параметров - сделать больше проверок
         $value = intval($value);

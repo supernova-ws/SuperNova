@@ -77,28 +77,6 @@ class PageTutorial {
   }
 
   /**
-   * @param int|string $id
-   *
-   * @return $this
-   */
-  public function setId($id) {
-    $this->id = $id;
-
-    return $this;
-  }
-
-  /**
-   * @param userOptions $userOptions
-   *
-   * @return $this
-   */
-  public function setUserOptions($userOptions) {
-    $this->userOptions = $userOptions;
-
-    return $this;
-  }
-
-  /**
    * @return array
    */
   public function renderBlock() {
@@ -130,6 +108,52 @@ class PageTutorial {
     }
 
     return $this->renderBlock();
+  }
+
+  /**
+   * @param \template $template
+   *
+   * @return bool - should tutorial block be included
+   */
+  public static function renderTemplate($template) {
+    $block = new self();
+
+    $htmlized = $block
+      ->setId(classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT])
+      ->setUserOptions(classSupernova::$user_options)
+      ->renderNavBar();
+
+    if (empty($htmlized)) {
+      return false;
+    }
+
+    $template->assign_recursive(array('.' => array('tutorial' => $htmlized)));
+    $template->assign_var('PLAYER_OPTION_TUTORIAL_WINDOWED', classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED]);
+
+    return true;
+  }
+
+  // Getters/Setters +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+  /**
+   * @param int|string $id
+   *
+   * @return $this
+   */
+  public function setId($id) {
+    $this->id = $id;
+
+    return $this;
+  }
+
+  /**
+   * @param userOptions $userOptions
+   *
+   * @return $this
+   */
+  public function setUserOptions($userOptions) {
+    $this->userOptions = $userOptions;
+
+    return $this;
   }
 
 }

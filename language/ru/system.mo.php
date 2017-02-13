@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #42a16#
+* @version #42a17#
 *
 */
 
@@ -1189,5 +1189,6 @@ $a_lang_array = (array(
   'tutorial_next' => 'Следующий >>',
   'tutorial_finish' => 'Завершить',
   'tutorial_window' => 'Открыть в окне',
+  'tutorial_window_off' => 'Вернуть на страницу',
 
 ));

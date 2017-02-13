@@ -44,6 +44,21 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
 
 */
 
+.bg_title {
+  background-color: #222D42;
+}
+
+.bg_header {
+  background-color: #13233E;
+}
+
+.bg_subheader {
+  background-color: #233452;
+}
+.bg_cell {
+  background-color: #344566;
+}
+
 body {
   color: #E6EBFB;
   background-color: #132544;

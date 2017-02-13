@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a16
+* @version 42a17
 *
 */
 
@@ -1159,5 +1159,6 @@ $a_lang_array = (array(
   'tutorial_next' => 'Prev >>',
   'tutorial_finish' => 'Finish',
   'tutorial_window' => 'Open in window',
+  'tutorial_window_off' => 'Return to page',
 
 ));

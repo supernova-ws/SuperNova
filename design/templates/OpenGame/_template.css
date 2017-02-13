@@ -3341,6 +3341,9 @@ td.error_message {
 
 
 
+.ui-dialog-titlebar-show {
+  display: block !important;
+}
 #tutorial_block {
   /*display: none;*/
 }
@@ -3350,7 +3353,7 @@ td.error_message {
   min-width: 40em;
   display: inline-block;
 }
-#tutorial_header {
+#tutorial_header, .tutorial_dialog_title {
   padding: 0.5em;
   font-size: 130%;
 }
@@ -3372,11 +3375,12 @@ td.error_message {
 #tutorial_button_next {
   margin-left: auto;
 }
-#tutorial_button_window {
+#tutorial_button_window, #tutorial_button_window_off {
   margin: 0 auto;
 }
 #tutorial_button_close {
 }
 #tutorial_footer {
   padding: 0.5em;
+  text-align: center;
 }

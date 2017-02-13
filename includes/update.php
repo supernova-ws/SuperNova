@@ -1333,6 +1333,9 @@ switch($new_version) {
       empty($update_tables['text']['next_alt'])
     );
 
+    // 2017-02-13 13:44:18 42a17
+    upd_check_key('tutorial_first_item', 1, !isset($config->tutorial_first_item));
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 42;

@@ -524,8 +524,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   tpl_navbar_extra_buttons($sn_mvc, $template);
   tpl_navbar_render_news($template, $user, $config);
   tpl_navbar_render_notes($template, $user);
-  $tutorial_enabled = tpl_render_tutorial($template);
-
+  $tutorial_enabled = PageTutorial::renderTemplate($template);
 
 
   $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);
@@ -674,25 +673,6 @@ function tpl_navbar_extra_buttons(&$sn_mvc, $template) {
   $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array($sn_mvc['navbar_prefix_button']) ? count($sn_mvc['navbar_prefix_button']) : 0);
 }
 
-/**
- * @param template $template
- */
-function tpl_render_tutorial($template) {
-  $block = new PageTutorial();
-
-  $htmlized = $block
-    ->setId(classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT])
-    ->setUserOptions(classSupernova::$user_options)
-    ->renderNavBar();
-
-  if(empty($htmlized)) {
-    return false;
-  }
-
-  $template->assign_recursive(array('.' => array('tutorial' => $htmlized)));
-
-  return true;
-}
 
 /**
  * @param template|string $template
