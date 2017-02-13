@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40c1.3
+* @version 42a16
 *
 */
 
@@ -1154,5 +1154,10 @@ $a_lang_array = (array(
   'sys_governor_none' => 'Governor not hired',
   'sys_governor_hire' => 'Hire Governor',
   'sys_governor_upgrade_or_change' => 'Upgrade or change Governor',
+
+  'tutorial_prev' => '<< Next',
+  'tutorial_next' => 'Prev >>',
+  'tutorial_finish' => 'Finish',
+  'tutorial_window' => 'Open in window',
 
 ));

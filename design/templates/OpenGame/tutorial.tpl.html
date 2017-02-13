@@ -15,16 +15,7 @@ tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
     </div>
     <div>
       <div id="tutorial_text_adviser"><img src="design/images/adviser.gif"/></div>
-      <div id="tutorial_text">
-      <!--{-->
-      <!--Приветствуем вас в нашей Вселенной!<br/>-->
-      <!--Я - ваш советник, который поможет вам освоится с управлением вашей Империей.<br/>-->
-      <!--Вы всегда сможете отключить подсказки в "Настройках" игры - пункт меню "Настройки",<br/>-->
-      <!--вкладка "Интерфейс", подвкладка "Обучение", пункт "Полностью отключить обучение", нажать кноппку "Сохранить-->
-      <!--изменения".<br/>-->
-      <!--Там же можно включить подсказки обратно, сняв галочку с вышкуказанного пункта и сохранив изменения.-->
-      <!--}-->
-      </div>
+      <div id="tutorial_text"></div>
     </div>
     <div style="clear:left;"></div>
     <div id="tutorial_buttons">
@@ -32,21 +23,19 @@ tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
       <table class="no_border_image markup" width="100%">
         <tr>
           <td class="c_l" width="20%">
-            <input type="button" class="hide" id="tutorial_button_prev" name="tutorial_button_prev" value="<< prev"/>
+            <input type="button" class="hide" id="tutorial_button_prev" name="tutorial_button_prev" value="{L_tutorial_prev}"/>
           </td>
           <td>
-            <input type="button" class="hide" id="tutorial_button_window" name="tutorial_button_window" value="window"/>
+            <input type="button" class="hide" id="tutorial_button_window" name="tutorial_button_window" value="{L_tutorial_window}"/>
           </td>
           <td class="c_r" width="20%">
-            <input type="button" class="hide" id="tutorial_button_next" name="tutorial_button_next" value="next >>"/>
-            <input type="button" class="hide" id="tutorial_button_finish" name="tutorial_button_finish" value="finish" />
+            <input type="button" class="hide" id="tutorial_button_next" name="tutorial_button_next" value="{L_tutorial_next}"/>
+            <input type="button" class="hide" id="tutorial_button_finish" name="tutorial_button_finish" value="{L_tutorial_finish}" />
           </td>
         </tr>
       </table>
     </div>
-    <div id="tutorial_footer" class="hide">
-      {Вы всегда можете отключить "Обучение" через пункт меню "Настройки"}
-    </div>
+    <div id="tutorial_footer" class="hide"></div>
   </div>
 </div>
 

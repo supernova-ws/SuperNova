@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #41a0.31#
+* @version #42a16#
 *
 */
 
@@ -1184,5 +1184,10 @@ $a_lang_array = (array(
   'sys_governor_none' => 'Губернатор не нанят',
   'sys_governor_hire' => 'Нанять Губернатора',
   'sys_governor_upgrade_or_change' => 'Улучшить или сменить Губернатора',
+
+  'tutorial_prev' => '<< Предыдущий',
+  'tutorial_next' => 'Следующий >>',
+  'tutorial_finish' => 'Завершить',
+  'tutorial_window' => 'Открыть в окне',
 
 ));
