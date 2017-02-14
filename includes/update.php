@@ -1307,34 +1307,36 @@ switch($new_version) {
     // 2017-02-07 09:43:45 42a0
     upd_check_key('game_news_overview_show', 2 * 7 * 24 * 60 * 60, !isset($config->game_news_overview_show));
 
-    // 2017-02-07 12:25:29 42a2
-    upd_create_table('text',
-      "
-      `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-      `parent` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Parent record. 0 - no parent',
-      `next` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Next text part. 0 - final part',
-      `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Text title',
-      `content` text COLLATE utf8_unicode_ci COMMENT 'Content - 64k fits to all!',
-      PRIMARY KEY (`id`),
-      KEY `I_text_parent` (`parent`),
-      KEY `I_text_next` (`next`)
-      ",
-      'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
-    );
-
-    // 2017-02-12 19:11:37 42a15 - TODO - Merge with main table
-    upd_alter_table(
-      'text',
-      array(
-        "ADD COLUMN `context` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Tutorial context. 0 - main screen' AFTER `parent`",
-        "ADD COLUMN `prev` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Previous text part. 0 - first part' AFTER `context`",
-        "ADD COLUMN `next_alt` bigint(20) unsigned NOT NULL DEFAULT '0' COMMENT 'Alternative next text part. 0 - final part' AFTER `next`",
-      ),
-      empty($update_tables['text']['next_alt'])
-    );
-
     // 2017-02-13 13:44:18 42a17
     upd_check_key('tutorial_first_item', 1, !isset($config->tutorial_first_item));
+
+    // 2017-02-14 17:13:45 42a20.11
+    // TODO - REMOVE DROP TABLE AND CONDITION!
+    if (!isset($update_indexes['text']['I_text_next_alt'])) {
+      upd_drop_table('text');
+      upd_create_table('text',
+        "
+        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `parent` bigint(20) unsigned DEFAULT NULL COMMENT 'Parent record. NULL - no parent',
+        `context` bigint(20) unsigned DEFAULT NULL COMMENT 'Tutorial context. NULL - main screen',
+        `prev` bigint(20) unsigned DEFAULT NULL COMMENT 'Previous text part. NULL - first part',
+        `next` bigint(20) unsigned DEFAULT NULL COMMENT 'Next text part. NULL - final part',
+        `next_alt` bigint(20) unsigned DEFAULT NULL COMMENT 'Alternative next text part. NULL - no alternative',
+        `title` varchar(255) COLLATE utf8_unicode_ci NOT NULL DEFAULT '' COMMENT 'Text title',
+        `content` text COLLATE utf8_unicode_ci COMMENT 'Content - 64k fits to all!',
+        PRIMARY KEY (`id`),
+        KEY `I_text_parent` (`parent`),
+        KEY `I_text_prev` (`prev`),
+        KEY `I_text_next` (`next`),
+        KEY `I_text_next_alt` (`next_alt`),
+        CONSTRAINT `FK_text_parent` FOREIGN KEY (`parent`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+        CONSTRAINT `FK_text_prev` FOREIGN KEY (`prev`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+        CONSTRAINT `FK_text_next` FOREIGN KEY (`next`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+        CONSTRAINT `FK_text_next_alt` FOREIGN KEY (`next_alt`) REFERENCES `{{text}}` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+        ",
+        'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+      );
+    }
 
     // #ctv
     upd_do_query('COMMIT;', true);
