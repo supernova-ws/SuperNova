@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a17');
+define('SN_VERSION', '42a18');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1611,3 +1611,6 @@ define('HTML_ENCODE_PREFORM', 1); // perform HTML encoding
 define('HTML_ENCODE_NL2BR', 2); // should line breaks be converted to <br />
 define('HTML_ENCODE_STRIP_HTML', 4); // should HTML be cut from text
 define('HTML_ENCODE_JS_SAFE', 8); // should be string encoded for use in JavaScript
+
+define('HTML_ENCODE_MULTILINE', HTML_ENCODE_PREFORM | HTML_ENCODE_NL2BR);
+define('HTML_ENCODE_MULTILINE_JS', HTML_ENCODE_MULTILINE | HTML_ENCODE_JS_SAFE);

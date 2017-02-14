@@ -35,7 +35,7 @@ class TextEntity extends \Common\ContainerPlus {
 
     // TODO
 //    $this->model = classSupernova::$gc->TextModel;
-    $this->model = new TextModel();
+    $this->model = new TextModel(classSupernova::$gc);
   }
 
   /**
@@ -48,6 +48,24 @@ class TextEntity extends \Common\ContainerPlus {
     }
 
     return $tutorial;
+  }
+
+  /**
+   * Return HTML-ized array of elements (if any)
+   *
+   * @param int $encodeOptions - HTML_ENCODE_xxx constants
+   *
+   * @return array
+   */
+  public function toArrayHtml($encodeOptions = HTML_ENCODE_MULTILINE) {
+    $result = $this->toArray();
+
+    if (!empty($result)) {
+      $result['title'] = HelperString::htmlEncode($result['title'], $encodeOptions);
+      $result['content'] = HelperString::htmlEncode($result['content'], $encodeOptions);
+    }
+
+    return $result;
   }
 
 //  public function get($textId) {

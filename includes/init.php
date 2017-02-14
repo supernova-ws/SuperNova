@@ -101,7 +101,6 @@ require_once SN_ROOT_PHYSICAL . "includes/init/init_functions" . DOT_PHP_EX;
 global $sn_cache, $config, $auth, $debug;
 
 classSupernova::init_0_prepare();
-classSupernova::init_3_load_config_file();
 
 classSupernova::init_global_objects();
 

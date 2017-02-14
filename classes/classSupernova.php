@@ -1174,40 +1174,6 @@ class classSupernova {
 
 
   public static function init_0_prepare () {
-    static::$gc = new GlobalContainer();
-  }
-
-  public static function init_1_constants() {
-//    global $phpEx, $phpbb_root_path; // Это нужно для работы PTL
-
-//    define('SN_TIME_NOW', intval(SN_TIME_MICRO));
-//    define('SN_TIME_ZONE_OFFSET', date('Z'));
-//
-//    define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
-//    define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
-
-//    if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
-//      define('SN_GOOGLE', true);
-//    }
-
-//    $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
-//    define('PHP_EX', $phpEx); // PHP extension on this server
-//    define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
-
-//    $sn_root_relative = str_replace('\\', '/', getcwd());
-//    $sn_root_relative .= $sn_root_relative[strlen($sn_root_relative) - 1] == '/' ? '' : '/';
-//    $sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
-//    $sn_root_relative .= basename($_SERVER['SCRIPT_NAME']);
-//    $sn_root_relative = str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']);
-//    define('SN_ROOT_RELATIVE', $sn_root_relative);
-
-//    define('SN_ROOT_VIRTUAL' , 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
-//    define('SN_ROOT_VIRTUAL_PARENT' , str_replace('//google.', '//', SN_ROOT_VIRTUAL));
-//
-//    $phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
-  }
-
-  public static function init_3_load_config_file() {
     $dbsettings = array();
 
     require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
@@ -1215,6 +1181,11 @@ class classSupernova {
     self::$cache_prefix = !empty($dbsettings['cache_prefix']) ? $dbsettings['cache_prefix'] : $dbsettings['prefix'];
     self::$db_name = $dbsettings['name'];
     self::$sn_secret_word = $dbsettings['secretword'];
+
+    static::$gc = new GlobalContainer(array(
+      'cachePrefix' => self::$cache_prefix,
+    ));
+
     unset($dbsettings);
   }
 
@@ -1227,7 +1198,7 @@ class classSupernova {
 
     self::$user_options = new userOptions(0);
 
-    // Initializing global 'cacher' object
+    // Initializing global 'cache' object
     $sn_cache = static::$cache = self::$gc->cache;
     empty(static::$cache->tables) && sys_refresh_tablelist() && empty(static::$cache->tables) && die('DB error - cannot find any table. Halting...');
 

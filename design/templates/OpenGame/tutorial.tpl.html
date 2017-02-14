@@ -1,9 +1,16 @@
 <script type="text/javascript" src="js/tutorial.js"></script>
 
 <script type="text/javascript">
-// <!-- BEGIN tutorial -->
-tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
-// <!-- END tutorial -->
+  $.extend(language, {
+    tutorial_error_load: '{LA_tutorial_error_load}',
+    tutorial_error_next: '{LA_tutorial_error_next}',
+    tutorial_error_prev: '{LA_tutorial_error_prev}'
+  });
+  //
+  <!-- BEGIN tutorial -->
+  tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
+  //
+  <!-- END tutorial -->
 </script>
 
 <div id="tutorial_block">
@@ -23,15 +30,20 @@ tutorial['{tutorial.KEY}'] = '{tutorial.VALUE}';
       <table class="no_border_image markup" width="100%">
         <tr>
           <td class="c_l" width="33%">
-            <input type="button" class="hide" id="tutorial_button_prev" name="tutorial_button_prev" value="{L_tutorial_prev}"/>
+            <input type="button" class="hide" id="tutorial_button_prev" name="tutorial_button_prev"
+                   value="{L_tutorial_prev}"/>
           </td>
           <td>
-            <input type="button" class="hide" id="tutorial_button_window" name="tutorial_button_window" value="{L_tutorial_window}" data-windowed="1"/>
-            <input type="button" class="hide" id="tutorial_button_window_off" name="tutorial_button_window" value="{L_tutorial_window_off}" data-windowed="0"/>
+            <input type="button" class="hide" id="tutorial_button_window" name="tutorial_button_window"
+                   value="{L_tutorial_window}" data-windowed="1"/>
+            <input type="button" class="hide" id="tutorial_button_window_off" name="tutorial_button_window"
+                   value="{L_tutorial_window_off}" data-windowed="0"/>
           </td>
           <td class="c_r" width="33%">
-            <input type="button" class="hide" id="tutorial_button_next" name="tutorial_button_next" value="{L_tutorial_next}"/>
-            <input type="button" class="hide" id="tutorial_button_finish" name="tutorial_button_finish" value="{L_tutorial_finish}" />
+            <input type="button" class="hide" id="tutorial_button_next" name="tutorial_button_next"
+                   value="{L_tutorial_next}"/>
+            <input type="button" class="hide" id="tutorial_button_finish" name="tutorial_button_finish"
+                   value="{L_tutorial_finish}"/>
           </td>
         </tr>
       </table>

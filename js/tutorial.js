@@ -51,7 +51,7 @@ function tutorialGet(action, errorEmpty) {
           tutorialError(errorEmpty);
         }
       } else {
-        tutorialError("{Ошибка загрузки туториала - попробуйте еще раз! В случае повторной ошибки - сообщите Администрации игры}");
+        tutorialError(language.tutorial_error_load);
       }
     },
     "json"
@@ -155,11 +155,11 @@ function tutorial_window_switch(windowed, reload) {
 jQuery(document).on("click", "#tutorial_close", tutorialClose);
 
 jQuery(document).on("click", "#tutorial_button_next", function (e) {
-  tutorialGet("ajaxNext", "{Ошибка: Не существует следующей страницы туториала - сообщите Администрации игры}");
+  tutorialGet("ajaxNext", language.tutorial_error_next);
 });
 
 jQuery(document).on("click", "#tutorial_button_prev", function (e) {
-  tutorialGet("ajaxPrev", "{Ошибка: Не существует предыдущей страницы туториала - сообщите Администрации игры}");
+  tutorialGet("ajaxPrev", language.tutorial_error_prev);
 });
 
 jQuery(document).on("click", "#tutorial_button_finish", function (e) {

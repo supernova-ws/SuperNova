@@ -524,7 +524,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
   tpl_navbar_extra_buttons($sn_mvc, $template);
   tpl_navbar_render_news($template, $user, $config);
   tpl_navbar_render_notes($template, $user);
-  $tutorial_enabled = PageTutorial::renderTemplate($template);
+  $tutorial_enabled = PageTutorial::renderNavBar($template);
 
 
   $premium_lvl = mrc_get_level($user, false, UNIT_PREMIUM, true, true);

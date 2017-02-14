@@ -4,6 +4,9 @@
  * Created by Gorlum 10.02.2017 0:07
  */
 
+use \Common\ContainerPlus;
+use \Common\GlobalContainer;
+
 /**
  * Class Repository
  *
@@ -12,9 +15,17 @@
 class Repository {
 
   /**
-   * @var \Common\ContainerPlus $repository
+   * @var ContainerPlus $repository
    */
   protected $repository;
+
+  /**
+   * Repository constructor.
+   *
+   * @param GlobalContainer $gc
+   */
+  public function __construct(GlobalContainer $gc) {
+  }
 
   /**
    * @param TextModel  $model
@@ -26,6 +37,7 @@ class Repository {
 
     // TODO - is_object()
 
+    // Index is fully qualified class name plus ID like Namespace\ClassName\$id
     $entityIndex = get_class($model) . '\\' . $id;
     if (!isset($this->repository[$entityIndex])) {
       $entity = $model->loadById($id);

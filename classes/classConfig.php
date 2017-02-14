@@ -10,6 +10,8 @@
  *
  * @package supernova
  *
+ * @property string $db_prefix - REMOVE! Just for compatibility!
+ *
  * @property string $auth_vkontakte_app_id
  * @property string $auth_vkontakte_app_key
  * @property string $auth_vkontakte_token

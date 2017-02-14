@@ -1,5 +1,7 @@
 <?php
 
+use \Common\GlobalContainer;
+
 /**
  * Created by Gorlum 09.02.2017 23:27
  */
@@ -20,12 +22,17 @@ class TextModel {
    */
   protected $textRecordDescription;
 
-  protected $entityClass = 'TextEntity';
+  protected $entityClass = '\TextEntity';
 
-  public function __construct() {
+  /**
+   * TextModel constructor.
+   *
+   * @param GlobalContainer $gc
+   */
+  public function __construct(GlobalContainer $gc) {
     $this->textRecordDescription = new TextRecordDescription();
-    $this->repository = classSupernova::$gc->repository;
-    $this->storage = classSupernova::$gc->storage;
+    $this->repository = $gc->repository;
+    $this->storage = $gc->storage;
   }
 
 
@@ -86,11 +93,11 @@ class TextModel {
    * @return TextEntity
    */
   public function next($textId) {
-    $currentText = classSupernova::$gc->textModel->getById($textId);
+    $currentText = $this->getById($textId);
     if (!$currentText->isEmpty() && $currentText->next) {
-      $next = classSupernova::$gc->textModel->getById($currentText->next);
+      $next = $this->getById($currentText->next);
       if ($next->isEmpty() && $currentText->next_alt) {
-        $next = classSupernova::$gc->textModel->getById($currentText->next_alt);
+        $next = $this->getById($currentText->next_alt);
       }
     }
 
@@ -107,9 +114,9 @@ class TextModel {
    * @return TextEntity
    */
   public function prev($textId) {
-    $currentText = classSupernova::$gc->textModel->getById($textId);
+    $currentText = $this->getById($textId);
     if (!$currentText->isEmpty() && $currentText->prev) {
-      $prev = classSupernova::$gc->textModel->getById($currentText->prev);
+      $prev = $this->getById($currentText->prev);
     }
 
     if(!isset($prev)) {

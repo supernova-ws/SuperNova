@@ -3,7 +3,18 @@
 /**
  * Created by Gorlum 10.02.2017 0:28
  */
+
+use \Common\GlobalContainer;
+
 class Storage {
+
+  /**
+   * Storage constructor.
+   *
+   * @param GlobalContainer $gc
+   */
+  public function __construct(GlobalContainer $gc) {
+  }
 
   /**
    * @param TextRecordDescription $recordDescription

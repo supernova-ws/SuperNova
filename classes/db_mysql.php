@@ -31,14 +31,6 @@ class db_mysql {
    * @var array
    */
   public $table_list = array();
-
-  /**
-   * Соединение с MySQL
-   *
-   * @var resource $link
-   */
-  // public $link;
-
   /**
    * Настройки БД
    *

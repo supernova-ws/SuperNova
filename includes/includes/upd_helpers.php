@@ -12,8 +12,7 @@ function upd_do_query($query, $no_log = false) {
     upd_log_message("Performing query '{$query}'");
   }
 
-  // classSupernova::$db->sn_db_connect();
-  if(!(strpos($query, '{{') === false)) {
+  if(strpos($query, '{{') !== false) {
     foreach($update_tables as $tableName => $cork) {
       $query = str_replace("{{{$tableName}}}", classSupernova::$db->db_prefix . $tableName, $query);
     }

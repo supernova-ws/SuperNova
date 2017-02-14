@@ -3,59 +3,52 @@
 namespace Common;
 
 use \classSupernova;
-//use Planet\PlanetRenderer;
-//use V2Fleet\V2FleetModel;
 
 /**
  * Class GlobalContainer
  *
  * Used to describe internal structures of container
  *
- * @property \debug               $debug
-// * @property \Common\Types        $types
-* // *
- * @property \db_mysql            $db
-// * @property \DbQueryConstructor  $query
-* // * @property \DbRowDirectOperator $dbGlobalRowOperator
-* // * @property \SnDbCachedOperator  $cacheOperator - really DB record operator. But let it be
-* // *
- * @property \classCache          $cache
- * @property \classConfig         $config
-// * @property \classLocale         $localePlayer
-* // *
-* // * @property string               $snCacheClass
-* // * @property \SnCache             $snCache
-* // *
-* // * @property string               $buddyClass
-* // * @property \Buddy\BuddyModel    $buddyModel
-* // *
-* // * @property \V2Unit\V2UnitModel  $unitModel
-* // * @property \V2Unit\V2UnitList   $unitList
-* // *
-* // * @property V2FleetModel         $fleetModel
-* // *
-* // * @property PlanetRenderer       $planetRenderer
-* // * @property \FleetRenderer       $fleetRenderer
-* // * @property $dbOperator - makes CRUD to DB:
+ * Variables ------------------------------------------------------------------------------------------------------------
+ * @property string       $cachePrefix
  *
+ * Services ------------------------------------------------------------------------------------------------------------
+ * @property \debug       $debug
+ * @property \db_mysql    $db
+ * @property \classCache  $cache
+ * @property \classConfig $config
+ * @property \Repository  $repository
+ * @property \Storage     $storage
  *
- * @property array                $groupFleet
- * @property array                $groupFleetAndMissiles
- * @property array                $groupRecyclers
- *
- *
- *
- *
- * @property \TextModel           $textModel
- * @property \Repository $repository
- * @property \Storage $storage
- *
- *
- *
- *
+ * Models --------------------------------------------------------------------------------------------------------------
+ * @property \TextModel   $textModel
  *
  * @package Common
+ *
  */
+
+// * Unused --------------------------------------------------------------------------------------------------------------
+// * @property \Common\Types        $types
+// * @property \DbQueryConstructor  $query
+// * @property \DbRowDirectOperator $dbGlobalRowOperator
+// * @property \SnDbCachedOperator $cacheOperator - really DB record operator. But let it be
+// * @property \classLocale         $localePlayer
+// *
+// * @property string $snCacheClass
+// * @property \SnCache $snCache
+// *
+// * @property string $buddyClass
+// * @property \Buddy\BuddyModel $buddyModel
+// *
+// * @property \V2Unit\V2UnitModel $unitModel
+// * @property \V2Unit\V2UnitList $unitList
+// *
+// * @property V2FleetModel $fleetModel
+// *
+// * @property PlanetRenderer $planetRenderer
+// * @property \FleetRenderer $fleetRenderer
+// * @property $dbOperator - makes CRUD to DB:
+
 class GlobalContainer extends ContainerPlus {
 
   public function __construct(array $values = array()) {
@@ -63,6 +56,7 @@ class GlobalContainer extends ContainerPlus {
 
     $gc = $this;
 
+    // Services --------------------------------------------------------------------------------------------------------
     // Default db
     $gc->db = function (GlobalContainer $c) {
       classSupernova::$db = new \db_mysql($c);
@@ -74,37 +68,38 @@ class GlobalContainer extends ContainerPlus {
       return new \debug();
     };
 
+    $gc->cache = function (GlobalContainer $gc) {
+      return new \classCache($gc->cachePrefix);
+    };
+
+    $gc->config = function (GlobalContainer $gc) {
+      return new \classConfig($gc->cachePrefix);
+    };
+
+
+    $gc->repository = function (GlobalContainer $gc) {
+      return new \Repository($gc);
+    };
+
+    $gc->storage = function (GlobalContainer $gc) {
+      return new \Storage($gc);
+    };
+
+
+    // Models ----------------------------------------------------------------------------------------------------------
+    $gc->textModel = function (GlobalContainer $gc) {
+      return new \TextModel($gc);
+    };
+
+
 //    $gc->types = function ($c) {
 //      return new \Common\Types();
 //    };
 //
-    $gc->cache = function (GlobalContainer $c) {
-      return new \classCache(classSupernova::$cache_prefix);
-    };
-
-    $gc->config = function (GlobalContainer $c) {
-      return new \classConfig(classSupernova::$cache_prefix);
-    };
-
-
-
-    $gc->textModel = function (GlobalContainer $c) {
-      return new \TextModel();
-    };
-
-    $gc->repository = function (GlobalContainer $c) {
-      return new \Repository();
-    };
-
-    $gc->storage = function (GlobalContainer $c) {
-      return new \Storage();
-    };
-
-
 //    $gc->dbOperator = function (GlobalContainer $c) {
 //      return new \classConfig(classSupernova::$cache_prefix);
 //    };
-
+//
 //    $gc->localePlayer = function (GlobalContainer $c) {
 //      return new \classLocale($c->config->server_locale_log_usage);
 //    };

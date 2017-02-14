@@ -6,16 +6,20 @@
 namespace Pages;
 
 use \classSupernova;
-use \HelperString;
 use \userOptions;
 
 class PageTutorial {
 
   protected $id = 1;
+
   /**
    * @var userOptions $userOptions
    */
   protected $userOptions;
+
+  public function __construct() {
+
+  }
 
   /**
    * Loading page data from page params
@@ -29,16 +33,56 @@ class PageTutorial {
      * @var \TextEntity $text
      */
     $text = classSupernova::$gc->textModel->$method($this->id);
+    $result = $text->toArrayHtml(HTML_ENCODE_MULTILINE_JS);
     if (!$text->isEmpty()) {
       classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT] = $text->id;
     }
-    $result = $text->toArray();
 
     return array(
       'tutorial' => $result,
     );
   }
 
+  /**
+   * @return array
+   */
+  protected function block2ValueList() {
+    $result = array();
+
+    $text = classSupernova::$gc->textModel->getById($this->id);
+    $array = $text->toArrayHtml(HTML_ENCODE_MULTILINE_JS);
+    foreach ($array as $key => $value) {
+      $result[] = array(
+        'KEY'   => $key,
+        'VALUE' => $value,
+      );
+    }
+
+    return $result;
+  }
+
+  /**
+   * @return bool
+   */
+  protected function isBlockEnabled() {
+    if ($this->userOptions[PLAYER_OPTION_TUTORIAL_DISABLED]) {
+      return false;
+    }
+
+    // Checking if there is new tutorial appears after user finished old one
+    if ($this->userOptions[PLAYER_OPTION_TUTORIAL_FINISHED]) {
+      $next = classSupernova::$gc->textModel->next($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT]);
+      if (!$next->isEmpty()) {
+        $this->userOptions[PLAYER_OPTION_TUTORIAL_FINISHED] = 0;
+      } else {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  // Page Actions ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   /**
    * Action 'ajax'
    *
@@ -57,80 +101,45 @@ class PageTutorial {
     return $this->ajaxRender('next');
   }
 
+  /**
+   * Returns ajax-ready prev element in chain
+   *
+   * @return array
+   */
   public function ajaxPrev() {
     return $this->ajaxRender('prev');
   }
 
+  /**
+   * Finishes current tutorial
+   */
   public function ajaxFinish() {
     classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_FINISHED] = 1;
   }
 
-  public function htmlize($jsSafe = false) {
-    $result = classSupernova::$gc->textModel->getById($this->id)->toArray();
-
-    if (!empty($result)) {
-      $result['title'] = HelperString::htmlEncode($result['title'], HTML_ENCODE_PREFORM | HTML_ENCODE_NL2BR | ($jsSafe ? HTML_ENCODE_JS_SAFE : 0));
-      $result['content'] = HelperString::htmlEncode($result['content'], HTML_ENCODE_PREFORM | HTML_ENCODE_NL2BR | ($jsSafe ? HTML_ENCODE_JS_SAFE : 0));
-    }
-
-    return $result;
-  }
-
-  /**
-   * @return array
-   */
-  public function renderBlock() {
-    $result = array();
-    foreach ($this->htmlize(true) as $key => $value) {
-      $result[] = array(
-        'KEY'   => $key,
-        'VALUE' => $value,
-      );
-    }
-
-    return $result;
-  }
-
-  public function renderNavBar() {
-    if ($this->userOptions[PLAYER_OPTION_TUTORIAL_DISABLED]) {
-      return false;
-    }
-
-    // Checking if there is new tutorial appears after user finished old one
-    if ($this->userOptions[PLAYER_OPTION_TUTORIAL_FINISHED]) {
-      $next = classSupernova::$gc->textModel->next($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT]);
-      if (!$next->isEmpty()) {
-        $this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT] = $next->id;
-        $this->userOptions[PLAYER_OPTION_TUTORIAL_FINISHED] = 0;
-      } else {
-        return false;
-      }
-    }
-
-    return $this->renderBlock();
-  }
-
+  // Renderers +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
   /**
    * @param \template $template
    *
    * @return bool - should tutorial block be included
    */
-  public static function renderTemplate($template) {
+  public static function renderNavBar($template) {
     $block = new self();
 
-    $htmlized = $block
-      ->setId(classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT])
+    if ($result = $block
       ->setUserOptions(classSupernova::$user_options)
-      ->renderNavBar();
-
-    if (empty($htmlized)) {
-      return false;
+      ->setId(classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT])
+      ->isBlockEnabled()
+    ) {
+      $template->assign_recursive(array(
+        '.' => array(
+          'tutorial' => $block->block2ValueList())
+      ));
     }
 
-    $template->assign_recursive(array('.' => array('tutorial' => $htmlized)));
-    $template->assign_var('PLAYER_OPTION_TUTORIAL_WINDOWED', classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED]);
+//    $template->assign_var('PLAYER_OPTION_TUTORIAL_WINDOWED', classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_WINDOWED]);
 
-    return true;
+    return $result;
   }
 
   // Getters/Setters +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
