@@ -190,8 +190,8 @@ while($offer = db_fetch($query))
     'NAME'     => $offer['ally_name'],
     'RELATION' => $lang['ali_dip_relations'][$offer['alliance_negotiation_relation']],
     'TIME'     => date(FMT_DATE_TIME, $offer['alliance_negotiation_time']),
-    'TEXT'     => cht_message_parse($offer['alliance_negotiation_propose'], false, AUTH_LEVEL_REGISTERED),
-    'RESPONSE' => cht_message_parse($offer['alliance_negotiation_response'], false, AUTH_LEVEL_REGISTERED),
+    'TEXT'     => BBCodeParser::parseStatic($offer['alliance_negotiation_propose'], false, AUTH_LEVEL_REGISTERED),
+    'RESPONSE' => BBCodeParser::parseStatic($offer['alliance_negotiation_response'], false, AUTH_LEVEL_REGISTERED),
     'STATUS'   => $offer['alliance_negotiation_status'],
     'OWNER'    => $offer['owner'],
   ));

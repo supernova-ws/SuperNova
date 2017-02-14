@@ -166,11 +166,6 @@ AccessorsV2
 
 Убрать classSupernova::$db_prefix и classConfig::db_prefix и сделать protected db::db_prefix
 
-
-cht_message_parse
-    - Проверить использование в модулях параметра $parsed - и убрать по возможности
-    - Заменить на BBCodeParser::parseStatic
-
 Обучение
     Продолжение туториала - добавление нового текста после окончания
         + Проверить добавление новой записи
@@ -193,7 +188,20 @@ cht_message_parse
 
 #ctv
 
-index.php?page=battle_report&cypher=$1
+
+Убрать cht_message_parse
+    + Заменить на BBCodeParser::parseStatic в основном коде
+    - Проверить использование в модулях параметра $parsed - и убрать по возможности
+
+Убрать function sys_bbcodeParse($text, $escaped = false, $author_auth = AUTH_LEVEL_REGISTERED)
+
+Убрать function sys_bbcodeUnParse($text, $escaped = false, $author_auth = AUTH_LEVEL_REGISTERED)
+    + Не используется в основном коде
+
+2017-02-14 13:17:28 42a20.3
+[@] Код
+    Убрано использование функции cht_message_parse() в основном коде
+
 
 2017-02-14 12:49:40 42a20.2
 [+] bbCode

@@ -8,8 +8,6 @@
  */
 
 // includes/functions/sys_bbcode.php +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-
 function cht_message_parse($msg, $escaped = false, $author_auth = AUTH_LEVEL_REGISTERED) {
   return BBCodeParser::parseStatic($msg, $escaped, $author_auth);
 }
