@@ -149,7 +149,7 @@ function sn_chat_msg_view($template = null)
       }
 
       $template_result['.']['chat'][] = array(
-        'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF)),
+        'TIME' => cht_message_parse(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF), false, AUTH_LEVEL_REGISTERED),
         'NICK' => $nick,
         'TEXT' => cht_message_parse($chat_row['message'], false, intval($chat_row['authlevel'])),
       );

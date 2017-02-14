@@ -71,6 +71,10 @@ spl_autoload_register(function ($class) use ($classRoot) {
   } elseif (file_exists($classRoot . 'UBE/' . $class . '.php')) {
     require_once $classRoot . 'UBE/' . $class . '.php';
   }
+
+  if(class_exists($class, false) && method_exists($class, '_constructorStatic')) {
+    $class::_constructorStatic();
+  }
 });
 
 $sn_root_relative = str_replace(array('\\', '//'), '/', getcwd() . '/');

@@ -9,6 +9,7 @@ Reference: https://bugs.php.net/bug.php?id=50394
 */
 
 require_once('general/math.php');
+require_once('general/compatibility.php');
 require_once('general_pname.php');
 
 function sn_function_call($func_name, $func_arg = array())
