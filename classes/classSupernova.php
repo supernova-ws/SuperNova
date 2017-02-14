@@ -1207,6 +1207,9 @@ class classSupernova {
 
     // Initializing statics
     Vector::_staticInit(static::$config);
+
+    // Initializing static bbCodeParser $design - it's a hack, rewrite
+    self::$gc->bbCodeParser;
   }
 
   public static function init_debug_state() {

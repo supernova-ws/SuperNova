@@ -19,6 +19,10 @@ class BBCodeParser {
    */
   protected static $smilesArray;
 
+  public function __construct(\Common\GlobalContainer $gc) {
+
+  }
+
   public static function _constructorStatic() {
     self::$bbCodeArray = &classSupernova::$design['bbcodes'];
     self::$smilesArray = &classSupernova::$design['smiles'];

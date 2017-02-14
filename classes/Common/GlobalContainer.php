@@ -10,18 +10,19 @@ use \classSupernova;
  * Used to describe internal structures of container
  *
  * Variables ------------------------------------------------------------------------------------------------------------
- * @property string       $cachePrefix
+ * @property string        $cachePrefix
  *
  * Services ------------------------------------------------------------------------------------------------------------
- * @property \debug       $debug
- * @property \db_mysql    $db
- * @property \classCache  $cache
- * @property \classConfig $config
- * @property \Repository  $repository
- * @property \Storage     $storage
+ * @property \debug        $debug
+ * @property \db_mysql     $db
+ * @property \classCache   $cache
+ * @property \classConfig  $config
+ * @property \Repository   $repository
+ * @property \Storage      $storage
+ * @property \BBCodeParser $bbCodeParser
  *
  * Models --------------------------------------------------------------------------------------------------------------
- * @property \TextModel   $textModel
+ * @property \TextModel    $textModel
  *
  * @package Common
  *
@@ -89,6 +90,10 @@ class GlobalContainer extends ContainerPlus {
     // Models ----------------------------------------------------------------------------------------------------------
     $gc->textModel = function (GlobalContainer $gc) {
       return new \TextModel($gc);
+    };
+
+    $gc->bbCodeParser = function (GlobalContainer $gc) {
+      return new \BBCodeParser($gc);
     };
 
 
