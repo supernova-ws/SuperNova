@@ -68,6 +68,24 @@ class TextEntity extends \Common\ContainerPlus {
     return $result;
   }
 
+  /**
+   * Return HTML-ized array of elements (if any)
+   *
+   * @param int $encodeOptions - HTML_ENCODE_xxx constants
+   *
+   * @return array
+   */
+  public function toArrayParsedBBC($encodeOptions = HTML_ENCODE_MULTILINE) {
+    $result = $this->toArray();
+
+    if (!empty($result)) {
+      $result['title'] = BBCodeParser::parseStatic($result['title'], AUTH_LEVEL_SYSTEM, $encodeOptions);
+      $result['content'] = BBCodeParser::parseStatic($result['content'], AUTH_LEVEL_SYSTEM, $encodeOptions);
+    }
+
+    return $result;
+  }
+
 //  public function get($textId) {
 //    $this->clear();
 //    $this->id = $textId;

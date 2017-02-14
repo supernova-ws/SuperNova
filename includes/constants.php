@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a20.8');
+define('SN_VERSION', '42a20.9');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -507,6 +507,7 @@ define('AUTH_LEVEL_MODERATOR', 1);
 define('AUTH_LEVEL_OPERATOR', 2);
 define('AUTH_LEVEL_ADMINISTRATOR', 3);
 define('AUTH_LEVEL_DEVELOPER', 4);
+define('AUTH_LEVEL_SYSTEM', 99);
 
 define('ACCOUNT_PROVIDER_NONE', 0);
 define('ACCOUNT_PROVIDER_LOCAL', 1);

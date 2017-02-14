@@ -19,12 +19,22 @@ class HelperString {
    */
   public static function htmlEncode($string, $params = HTML_ENCODE_PREFORM) {
     $params & HTML_ENCODE_STRIP_HTML ? $string = strip_tags($string) : false;
-    $params & HTML_ENCODE_PREFORM ? $string = htmlentities($string, ENT_COMPAT, 'UTF-8') : false;
+    $params & HTML_ENCODE_PREFORM ? $string = self::htmlSafe($string) : false;
     $params & HTML_ENCODE_NL2BR ? $string = self::nl2br($string) : false;
-    $params & HTML_ENCODE_JS_SAFE ? $string = str_replace(array("\r", "\n"), array('\r', '\n'), addslashes($string)) : false;
+    $params & HTML_ENCODE_JS_SAFE ? $string = self::jsSafe($string) : false;
 
     return $string;
   }
+
+  /**
+   * @param $string
+   *
+   * @return string
+   */
+  public static function htmlSafe($string) {
+    return htmlentities($string, ENT_COMPAT, 'UTF-8');
+  }
+
 
   /**
    * @param $string
@@ -33,6 +43,17 @@ class HelperString {
    */
   public static function nl2br($string) {
     return str_replace(array("\r", "\n"), '', nl2br($string));
+  }
+
+  /**
+   * Make string JS-safe
+   *
+   * @param $string
+   *
+   * @return mixed
+   */
+  public static function jsSafe($string) {
+    return str_replace(array("\r", "\n"), array('\r', '\n'), addslashes($string));
   }
 
   protected function explodeCallable(&$string) {

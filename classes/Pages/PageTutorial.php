@@ -33,7 +33,7 @@ class PageTutorial {
      * @var \TextEntity $text
      */
     $text = classSupernova::$gc->textModel->$method($this->id);
-    $result = $text->toArrayHtml(HTML_ENCODE_MULTILINE_JS);
+    $result = $text->toArrayParsedBBC(HTML_ENCODE_MULTILINE_JS);
     if (!$text->isEmpty()) {
       classSupernova::$user_options[PLAYER_OPTION_TUTORIAL_CURRENT] = $text->id;
     }
@@ -50,7 +50,7 @@ class PageTutorial {
     $result = array();
 
     $text = classSupernova::$gc->textModel->getById($this->id);
-    $array = $text->toArrayHtml(HTML_ENCODE_MULTILINE_JS);
+    $array = $text->toArrayParsedBBC(HTML_ENCODE_MULTILINE_JS);
     foreach ($array as $key => $value) {
       $result[] = array(
         'KEY'   => $key,

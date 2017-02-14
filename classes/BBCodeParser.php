@@ -60,7 +60,7 @@ class BBCodeParser {
       ),
     ));
 
-    self::$smilesArray = array_merge(self::$smilesArray, array(
+    self::$smilesArray = array_merge_recursive(self::$smilesArray, array(
       AUTH_LEVEL_REGISTERED => array(
         ':)'       => 'smile',
         ':p:'      => 'tongue',
@@ -135,13 +135,13 @@ class BBCodeParser {
    * Back-compatible parse function
    *
    * @param      $msg
-   * @param bool $escaped
    * @param int  $author_auth
+   * @param int  $encodeOptions - HTML_ENCODE_xxx constants. HTML_ENCODE_MULTILINE by default
    *
    * @return mixed
    */
-  public static function parseStatic($msg, $author_auth = AUTH_LEVEL_REGISTERED) {
-    $msg = HelperString::htmlEncode($msg, HTML_ENCODE_MULTILINE);
+  public static function parseStatic($msg, $author_auth = AUTH_LEVEL_REGISTERED, $encodeOptions = HTML_ENCODE_MULTILINE) {
+    $msg = HelperString::htmlEncode($msg, $encodeOptions);
 
     foreach (self::$bbCodeArray as $auth_level => $replaces) {
       if ($auth_level > $author_auth) {
