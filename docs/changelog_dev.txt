@@ -160,6 +160,7 @@ AccessorsV2
     - htmlentities($text, ENT_COMPAT, 'UTF-8');
     - Заменить nl2br хелпером ?
 
+Переделать README в markdown
 
 Мигрировать опции
     $options = sys_user_options_pack($user);
