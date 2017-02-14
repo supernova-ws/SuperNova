@@ -164,7 +164,6 @@ AccessorsV2
 Мигрировать опции
     $options = sys_user_options_pack($user);
 
-
 Убрать classSupernova::$db_prefix и classConfig::db_prefix и сделать protected db::db_prefix
 
 Обучение
@@ -181,10 +180,11 @@ AccessorsV2
         - Менять размер окна ????
     Код
         + public function htmlize($result, $jsSafe = false) { -> перенести в TextEntity/TextModel
-    - Загнать настройки туториала в объект
+    - Загнать настройки туториала в JS объект
     - Парсинг bbCode
     - Базовое обучение
     - Сделать кнопку "Закрыть" рабочей как-то по-другому
+
 
 #ctv
 
