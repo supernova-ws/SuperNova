@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #41a61.0# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #42a20.5# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -328,7 +328,7 @@ class auth_local extends auth_abstract {
           //    - игроки, привязанные только к этим аккаунтам
           // Значит им всем сразу скопом можно отправлять сообщения
           $message = sprintf($lang['sys_password_reset_message_body'], $new_password_unsafe);
-          $message = sys_bbcodeParse($message) . '<br><br>';
+          $message = HelperString::nl2br($message) . '<br><br>';
           // msg_send_simple_message($found_provider->data[F_USER_ID], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['sys_administration'], $lang['sys_login_register_message_title'], $message);
 
           foreach($users_translated as $user_id => $providers_list) {

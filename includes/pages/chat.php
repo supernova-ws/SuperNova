@@ -149,9 +149,9 @@ function sn_chat_msg_view($template = null)
       }
 
       $template_result['.']['chat'][] = array(
-        'TIME' => BBCodeParser::parseStatic(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF), false, AUTH_LEVEL_REGISTERED),
+        'TIME' => BBCodeParser::parseStatic(date(FMT_DATE_TIME, $chat_row['timestamp'] + SN_CLIENT_TIME_DIFF), AUTH_LEVEL_REGISTERED),
         'NICK' => $nick,
-        'TEXT' => BBCodeParser::parseStatic($chat_row['message'], false, intval($chat_row['authlevel'])),
+        'TEXT' => BBCodeParser::parseStatic($chat_row['message'], intval($chat_row['authlevel'])),
       );
 
       $last_message = max($last_message, $chat_row['messageid']);

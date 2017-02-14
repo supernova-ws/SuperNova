@@ -339,7 +339,7 @@ if(
 
 
 if($template_result[F_GAME_DISABLE] = classSupernova::$config->game_disable) {
-  $template_result[F_GAME_DISABLE_REASON] = sys_bbcodeParse(
+  $template_result[F_GAME_DISABLE_REASON] = HelperString::nl2br(
     classSupernova::$config->game_disable == GAME_DISABLE_REASON
       ? classSupernova::$config->game_disable_reason
       : $lang['sys_game_disable_reason'][classSupernova::$config->game_disable]

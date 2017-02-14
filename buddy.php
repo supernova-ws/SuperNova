@@ -152,7 +152,7 @@ sn_db_transaction_rollback();
 $query = db_buddy_list_by_user($user['id']);
 while($row = db_fetch($query))
 {
-  $row['BUDDY_REQUEST'] = sys_bbcodeParse($row['BUDDY_REQUEST']);
+  $row['BUDDY_REQUEST'] = HelperString::nl2br($row['BUDDY_REQUEST']);
 
   $row['BUDDY_ACTIVE'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_ACTIVE;
   $row['BUDDY_DENIED'] = $row['BUDDY_STATUS'] == BUDDY_REQUEST_DENIED;

@@ -140,8 +140,8 @@ class BBCodeParser {
    *
    * @return mixed
    */
-  public static function parseStatic($msg, $escaped = false, $author_auth = AUTH_LEVEL_REGISTERED) {
-    $msg = HelperString::htmlEncode($msg, HTML_ENCODE_PREFORM);
+  public static function parseStatic($msg, $author_auth = AUTH_LEVEL_REGISTERED) {
+    $msg = HelperString::htmlEncode($msg, HTML_ENCODE_MULTILINE);
 
     foreach (self::$bbCodeArray as $auth_level => $replaces) {
       if ($auth_level > $author_auth) {
@@ -163,7 +163,7 @@ class BBCodeParser {
       }
     }
 
-    return str_replace($escaped ? '\r\n' : "\r\n", '<br />', $msg);
+    return $msg;
   }
 
 }

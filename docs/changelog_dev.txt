@@ -157,9 +157,9 @@ AccessorsV2
     - добавить возможность мерджить пачку аццессоров - как массивом так и из другого AccessorsV2
 
 Заменить
-    function htmlEncode($text) {
-      return htmlentities($text, ENT_COMPAT, 'UTF-8');
-    }
+    - htmlentities($text, ENT_COMPAT, 'UTF-8');
+    - Заменить nl2br хелпером ?
+
 
 Мигрировать опции
     $options = sys_user_options_pack($user);
@@ -189,14 +189,11 @@ AccessorsV2
 #ctv
 
 
-Убрать cht_message_parse
-    + Заменить на BBCodeParser::parseStatic в основном коде
-    - Проверить использование в модулях параметра $parsed - и убрать по возможности
+2017-02-14 13:43:06 42a20.5
+[@] Код
+    Убрано использование функции cht_message_parse() в модулях
+    Убрано использование функции sys_bbcodeParse()
 
-Убрать function sys_bbcodeParse($text, $escaped = false, $author_auth = AUTH_LEVEL_REGISTERED)
-
-Убрать function sys_bbcodeUnParse($text, $escaped = false, $author_auth = AUTH_LEVEL_REGISTERED)
-    + Не используется в основном коде
 
 2017-02-14 13:17:28 42a20.3
 [@] Код

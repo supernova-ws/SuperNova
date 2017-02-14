@@ -1557,7 +1557,7 @@ function note_assign(&$template, $note_row) {
     'PLANET_TYPE' => intval($note_row['planet_type']),
     'PLANET_TYPE_TEXT' => $lang['sys_planet_type'][$note_row['planet_type']],
     'PLANET_TYPE_TEXT_SHORT' => $lang['sys_planet_type_sh'][$note_row['planet_type']],
-    'TEXT' => sys_bbcodeParse(htmlentities($note_row['text'], ENT_COMPAT, 'UTF-8')),
+    'TEXT' => HelperString::htmlEncode($note_row['text'], HTML_ENCODE_MULTILINE),
     'TEXT_EDIT' => htmlentities($note_row['text'], ENT_COMPAT, 'UTF-8'),
     'STICKY' => intval($note_row['sticky']),
   ));

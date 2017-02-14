@@ -30,7 +30,7 @@ while ($ally_request_row = db_fetch($query)) {
     'USER_ID'   => $ally_request_row['id_user'],
     'USER_NAME' => $ally_request_row['username'],
     'TIME'      => date(FMT_DATE_TIME, $ally_request_row['request_time']),
-    'TEXT'      => sys_bbcodeParse($ally_request_row['request_text']),
+    'TEXT'      => HelperString::nl2br($ally_request_row['request_text']),
     'DENIED'    => $ally_request_row['request_denied'],
   ));
 }
