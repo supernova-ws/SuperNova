@@ -69,6 +69,10 @@ class PageTutorial {
       return false;
     }
 
+    if (classSupernova::$gc->textModel->getById($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT])->isEmpty()) {
+      return false;
+    }
+
     // Checking if there is new tutorial appears after user finished old one
     if ($this->userOptions[PLAYER_OPTION_TUTORIAL_FINISHED]) {
       $next = classSupernova::$gc->textModel->next($this->userOptions[PLAYER_OPTION_TUTORIAL_CURRENT]);
