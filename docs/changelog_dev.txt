@@ -189,6 +189,8 @@ AccessorsV2
 
 Global message!
 
+bbCodeParser - отделить инициализациию массива $design иначе смайлики добавляются лишь костылём
+
 
 #ctv
 
