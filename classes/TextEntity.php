@@ -79,8 +79,8 @@ class TextEntity extends \Common\ContainerPlus {
     $result = $this->toArray();
 
     if (!empty($result)) {
-      $result['title'] = BBCodeParser::parseStatic($result['title'], AUTH_LEVEL_SYSTEM, $encodeOptions);
-      $result['content'] = BBCodeParser::parseStatic($result['content'], AUTH_LEVEL_SYSTEM, $encodeOptions);
+      $result['title'] = classSupernova::$gc->bbCodeParser->expandBbCode($result['title'], AUTH_LEVEL_SYSTEM, $encodeOptions);
+      $result['content'] = classSupernova::$gc->bbCodeParser->expandBbCode($result['content'], AUTH_LEVEL_SYSTEM, $encodeOptions);
     }
 
     return $result;

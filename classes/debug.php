@@ -52,7 +52,7 @@ class debug {
     $ident_change > 0 ? $ident += $ident_change * 2 : false;
   }
 
-  function debug() {
+  public function __construct() {
     $this->vars = $this->log = '';
     $this->numqueries = 0;
   }

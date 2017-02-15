@@ -19,6 +19,7 @@ use \classSupernova;
  * @property \classConfig  $config
  * @property \Repository   $repository
  * @property \Storage      $storage
+ * @property \Design       $design
  * @property \BBCodeParser $bbCodeParser
  *
  * Models --------------------------------------------------------------------------------------------------------------
@@ -86,14 +87,17 @@ class GlobalContainer extends ContainerPlus {
       return new \Storage($gc);
     };
 
-
-    // Models ----------------------------------------------------------------------------------------------------------
-    $gc->textModel = function (GlobalContainer $gc) {
-      return new \TextModel($gc);
+    $gc->design = function (GlobalContainer $gc) {
+      return new \Design($gc);
     };
 
     $gc->bbCodeParser = function (GlobalContainer $gc) {
       return new \BBCodeParser($gc);
+    };
+
+    // Models ----------------------------------------------------------------------------------------------------------
+    $gc->textModel = function (GlobalContainer $gc) {
+      return new \TextModel($gc);
     };
 
 

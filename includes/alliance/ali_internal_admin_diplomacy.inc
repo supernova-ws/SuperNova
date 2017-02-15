@@ -190,8 +190,8 @@ while($offer = db_fetch($query))
     'NAME'     => $offer['ally_name'],
     'RELATION' => $lang['ali_dip_relations'][$offer['alliance_negotiation_relation']],
     'TIME'     => date(FMT_DATE_TIME, $offer['alliance_negotiation_time']),
-    'TEXT'     => BBCodeParser::parseStatic($offer['alliance_negotiation_propose'], AUTH_LEVEL_REGISTERED),
-    'RESPONSE' => BBCodeParser::parseStatic($offer['alliance_negotiation_response'], AUTH_LEVEL_REGISTERED),
+    'TEXT'     => classSupernova::$gc->bbCodeParser->expandBbCode($offer['alliance_negotiation_propose'], AUTH_LEVEL_REGISTERED, HTML_ENCODE_MULTILINE),
+    'RESPONSE' => classSupernova::$gc->bbCodeParser->expandBbCode($offer['alliance_negotiation_response'], AUTH_LEVEL_REGISTERED, HTML_ENCODE_MULTILINE),
     'STATUS'   => $offer['alliance_negotiation_status'],
     'OWNER'    => $offer['owner'],
   ));

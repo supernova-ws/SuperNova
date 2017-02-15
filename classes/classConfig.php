@@ -21,6 +21,8 @@
  * @property int    $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
  *
  * @property int    $tutorial_first_item          ID of first item of tutorial
+ *
+ * @property int    $url_faq          URL of FAQ root
  */
 class classConfig extends classPersistent {
   protected $defaults = array(
