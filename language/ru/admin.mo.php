@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 41a2.0
+* @version 42a20.21
 *
 */
 
@@ -320,6 +320,7 @@ $a_lang_array = array(
   'adm_ver_version_db' => 'Версии базы данных',
   'adm_update_force' => 'Форсировать обновление с нуля',
   'adm_update_repeat' => 'Повторить предыдущее обновление',
+  'adm_ptl_test' => 'Тест работы phpBB Template Engine',
   'adm_lm_planet_edit' => 'Редактировать',
   'adm_planet_edit' => 'Редактирование планеты',
   'adm_planet_id' => 'Идентификатор планеты',
@@ -595,4 +596,6 @@ $a_lang_array = array(
   'admin_tab_advertise' => 'Реклама',
 
   'admin_tab_universe_main' => 'Вселенная',
+
+  'admin_ptl_test_la_' => "Single'Double\"Zero\0End",
 );

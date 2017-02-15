@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a20.20');
+define('SN_VERSION', '42a20.21');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1240,6 +1240,7 @@ define('ADM_TOOL_FORCE_ALL', 3);
 define('ADM_TOOL_FORCE_LAST', 4);
 define('ADM_TOOL_INFO_PHP', 5);
 define('ADM_TOOL_INFO_SQL', 6);
+define('ADM_PTL_TEST', 7);
 
 define('STAT_TOTAL', 0);
 define('STAT_FLEET', 1);

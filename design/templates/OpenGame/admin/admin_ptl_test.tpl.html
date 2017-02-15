@@ -1,0 +1,86 @@
+<table id="ptl_test_table">
+  <tr class="c_c">
+    <th>{Конструкция}</th>
+    <th>{Ожидание}</th>
+    <th>{Результат}</th>
+    <th>{OK?}</th>
+    <th>{Комментарий}</th>
+  </tr>
+  <tr>
+    <td>Testing JS code</td>
+    <td class="ptl_etalon">ETALON</td>
+    <td class="ptl_result">RESULT</td>
+    <td class="ptl_status"></td>
+    <th>Always should FAIL</th>
+  </tr>
+  <tr class="c_c">
+    <th colspan="5">Test is <span id="ptl_global_status"></span></th>
+  </tr>
+  <tr>
+    <td>&#123;VAR_VALUE&#125;</td>
+    <td class="ptl_etalon">VAR_VALUE</td>
+    <td class="ptl_result">{VAR_VALUE}</td>
+    <td class="ptl_status"></td>
+    <th>Root variable - existing</th>
+  </tr>
+  <tr>
+    <td>&#123;TEST_NOT_EXISTS&#125;</td>
+    <td class="ptl_etalon"></td>
+    <td class="ptl_result">{TEST_NOT_EXISTS}</td>
+    <td class="ptl_status"></td>
+    <th>Root variable - non-existing</th>
+  </tr>
+  <tr>
+    <td>&#123;АБВГД&#125;</td>
+    <td class="ptl_etalon">&#123;АБВГД&#125;</td>
+    <td class="ptl_result">{АБВГД}</td>
+    <td class="ptl_status"></td>
+    <th>Root variable - wrong name</th>
+  </tr>
+  <tr>
+    <td>&#123;$VAR&#125;</td>
+    <td class="ptl_etalon">$VARVALUE</td>
+    <!-- DEFINE $VAR = '$VARVALUE' -->
+    <td class="ptl_result">{$VAR}</td>
+    <td class="ptl_status"></td>
+    <th>DEFINE-d root variable - existing</th>
+  </tr>
+  <tr>
+    <td>&#123;$VAR_NOT_EXISTS&#125;</td>
+    <td class="ptl_etalon"></td>
+    <td class="ptl_result">{$VAR_NOT_EXISTS}</td>
+    <td class="ptl_status"></td>
+    <th>DEFINE-d root variable - non-existing</th>
+  </tr>
+  <tr>
+    <td>&#123;LA_admin_ptl_test_la_&#125;</td>
+    <td class="ptl_etalon">Single\'Double\"Zero\0End</td>
+    <td class="ptl_result">{LA_admin_ptl_test_la_}</td>
+    <td class="ptl_status"></td>
+    <th>JavaScript-safe language string</th>
+  </tr>
+  <tr>
+    <td>&#123;LA_surely_not_exists_string_test&#125;</td>
+    <td class="ptl_etalon">&#123; LA_surely_not_exists_string_test &#125;</td>
+    <td class="ptl_result">{LA_surely_not_exists_string_test}</td>
+    <td class="ptl_status"></td>
+    <th>JavaScript-safe language string - non-existing</th>
+  </tr>
+</table>
+
+<script type="text/javascript">
+  var ptlFailCount = 0;
+
+  function ptlTestResult(element, isOk) {
+    element.text((isOk ? "" : "NOT ") + 'PASSED').css('color', isOk ? 'lightgreen' : 'red');
+  }
+
+  $(".ptl_etalon").each(function () {
+    var parentCell = $(this).parent();
+    var isOk = parentCell.find(".ptl_etalon").html() === parentCell.find(".ptl_result").html();
+    !isOk ? ptlFailCount++ : false;
+    ptlTestResult(parentCell.find(".ptl_status"), isOk);
+  });
+
+  ptlTestResult($("#ptl_global_status"), ptlFailCount == 1);
+</script>

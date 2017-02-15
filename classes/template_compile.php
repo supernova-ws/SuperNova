@@ -343,7 +343,7 @@ class template_compile
     // If a template variable already exist, it will be used in favor of it...
     if (strpos($text_blocks, '{LA_') !== false)
     {
-      $text_blocks = preg_replace(/** @lang RegExp */'#\{LA_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['LA_\\1'])) ? \$this->_rootref['LA_\\1'] : ((isset(\$this->_rootref['L_\\1'])) ? addslashes(\$this->_rootref['L_\\1']) : ((isset(\$lang['\\1'])) ? addslashes(\$lang['\\1']) : '{ \\1 }'))); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{LA_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['LA_\\1'])) ? \$this->_rootref['LA_\\1'] : ((isset(\$this->_rootref['L_\\1'])) ? addslashes(\$this->_rootref['L_\\1']) : ((isset(\$lang['\\1'])) ? addslashes(\$lang['\\1']) : '{ LA_\\1 }'))); ?>", $text_blocks);
     }
 
     // Handle remaining varrefs

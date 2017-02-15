@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 41a2.0
+* @version 42a20.21
 *
 */
 
@@ -298,6 +298,7 @@ $a_lang_array = (array(
   'adm_ver_version_db' => 'Database version',
   'adm_update_force' => 'Force Update',
   'adm_update_repeat' => 'Repeat last system update',
+  'adm_ptl_test' => 'phpBB Template Engine test',
   'adm_lm_planet_edit' => 'Edit planet',
   'adm_planet_edit' => 'Edit planet',
   'adm_planet_id' => 'Planet ID',
@@ -560,4 +561,5 @@ $a_lang_array = (array(
 
   'adm_log_delete_update_info' => 'Delete info about maintenance and updates of stats, DB and engine',
 
+  'admin_ptl_test_la_' => "Single'Double\"Zero\0End",
 ));

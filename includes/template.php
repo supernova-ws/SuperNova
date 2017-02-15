@@ -224,6 +224,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   if(is_object($page)) {
     isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
     isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
+    isset($page->_rootref['PAGE_TITLE']) && empty($title) ? $title = $page->_rootref['PAGE_TITLE'] : false;
     isset($page->_rootref['GLOBAL']) ? $isRenderGlobal = $page->_rootref['GLOBAL'] : false;
 
     !$title && !empty($page->_rootref['PAGE_HEADER']) ? $title = $page->_rootref['PAGE_HEADER'] : false;
