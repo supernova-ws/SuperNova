@@ -12,6 +12,18 @@ class HelperArray {
    */
   const MERGE_PHP = 1;
 
+  /**
+   * Merges old array with new with array_merge_recursive()
+   * String keys replaced, numeric keys renumbered
+   */
+  const MERGE_RECURSIVE = 2;
+
+  /**
+   * Merges old array with new recursive
+   * String keys merged, numeric keys merged
+   */
+  const MERGE_RECURSIVE_NUMERIC = 3;
+
 
   /**
    * No array cloning - just stay with same objects
@@ -142,6 +154,16 @@ class HelperArray {
     switch ($mergeStrategy) {
       case self::MERGE_PHP:
         $arrayOld = array_merge($arrayOld, $arrayNew);
+      break;
+
+      case self::MERGE_RECURSIVE:
+        $arrayOld = array_merge_recursive($arrayOld, $arrayNew);
+      break;
+
+      case self::MERGE_RECURSIVE_NUMERIC:
+        foreach ($arrayNew as $key => $value) {
+          !isset($arrayOld[$key]) || !is_array($arrayOld[$key]) ? $arrayOld[$key] = $value : self::merge($arrayOld[$key], $value, self::MERGE_RECURSIVE_NUMERIC);
+        }
       break;
 
       default:
