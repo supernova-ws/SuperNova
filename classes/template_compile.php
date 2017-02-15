@@ -317,38 +317,38 @@ class template_compile
     // transform vars prefixed by I_ into skin-specific images with context
     if (strpos($text_blocks, '{I_') !== false && is_callable(array('skin', 'image_url')))
     {
-      $text_blocks = preg_replace('#\{I_([a-zA-Z0-9\-_\|\/\.\{\}\[\]\$]+)\}#', "<?php echo skin::image_url('\\1', \$this); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{I_([a-zA-Z0-9\-_\|\/\.\{\}\[\]\$]+)\}#', "<?php echo skin::image_url('\\1', \$this); ?>", $text_blocks);
     }
 
     // transform vars prefixed by C_ into global config value
     if (strpos($text_blocks, '{C_') !== false)
     {
-      $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['C_\\1']['\\2'])) ? \$this->_rootref['C_\\1']['\\2'] : ((isset(\$config->\\1['\\2'])) ? \$config->\\1['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
-      $text_blocks = preg_replace('#\{C_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['C_\\1'])) ? \$this->_rootref['C_\\1'] : ((isset(\$config->\\1)) ? \$config->\\1 : '{ C_\\1 }')); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{C_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['C_\\1']['\\2'])) ? \$this->_rootref['C_\\1']['\\2'] : ((isset(\$config->\\1['\\2'])) ? \$config->\\1['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{C_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['C_\\1'])) ? \$this->_rootref['C_\\1'] : ((isset(\$config->\\1)) ? \$config->\\1 : '{ C_\\1 }')); ?>", $text_blocks);
     }
     // transform vars prefixed by D_ into global defined constant
     if (strpos($text_blocks, '{D_') !== false)
     {
-      $text_blocks = preg_replace('#\{D_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['D_\\1'])) ? \$this->_rootref['D_\\1'] : ((defined('\\1')) ? \\1 : '{ D_\\1 }')); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{D_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['D_\\1'])) ? \$this->_rootref['D_\\1'] : ((defined('\\1')) ? \\1 : '{ D_\\1 }')); ?>", $text_blocks);
     }
     // transform vars prefixed by L_ into their language variable pendant if nothing is set within the tpldata array
     if (strpos($text_blocks, '{L_') !== false)
     {
-      $text_blocks = preg_replace('#\{L_([a-zA-Z0-9\-_]+)\[D_([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['L_\\1'][\\2])) ? \$this->_rootref['L_\\1'][\\2] : ((isset(\$lang['\\1'][\\2])) ? \$lang['\\1'][\\2] : '{ \\1[\\2] }')); ?>", $text_blocks);
-      $text_blocks = preg_replace('#\{L_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['L_\\1']['\\2'])) ? \$this->_rootref['L_\\1']['\\2'] : ((isset(\$lang['\\1']['\\2'])) ? \$lang['\\1']['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
-      $text_blocks = preg_replace('#\{L_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['L_\\1'])) ? \$this->_rootref['L_\\1'] : ((isset(\$lang['\\1'])) ? \$lang['\\1'] : '{ L_\\1 }')); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\[D_([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['L_\\1'][\\2])) ? \$this->_rootref['L_\\1'][\\2] : ((isset(\$lang['\\1'][\\2])) ? \$lang['\\1'][\\2] : '{ \\1[\\2] }')); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\[([a-zA-Z0-9\-_]*?)\]\}#', "<?php echo ((isset(\$this->_rootref['L_\\1']['\\2'])) ? \$this->_rootref['L_\\1']['\\2'] : ((isset(\$lang['\\1']['\\2'])) ? \$lang['\\1']['\\2'] : '{ \\1[\\2] }')); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{L_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['L_\\1'])) ? \$this->_rootref['L_\\1'] : ((isset(\$lang['\\1'])) ? \$lang['\\1'] : '{ L_\\1 }')); ?>", $text_blocks);
     }
 
     // Handle addslashed language variables prefixed with LA_
     // If a template variable already exist, it will be used in favor of it...
     if (strpos($text_blocks, '{LA_') !== false)
     {
-      $text_blocks = preg_replace('#\{LA_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['LA_\\1'])) ? \$this->_rootref['LA_\\1'] : ((isset(\$this->_rootref['L_\\1'])) ? addslashes(\$this->_rootref['L_\\1']) : ((isset(\$lang['\\1'])) ? addslashes(\$lang['\\1']) : '{ \\1 }'))); ?>", $text_blocks);
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{LA_([a-zA-Z0-9\-_]+)\}#', "<?php echo ((isset(\$this->_rootref['LA_\\1'])) ? \$this->_rootref['LA_\\1'] : ((isset(\$this->_rootref['L_\\1'])) ? addslashes(\$this->_rootref['L_\\1']) : ((isset(\$lang['\\1'])) ? addslashes(\$lang['\\1']) : '{ \\1 }'))); ?>", $text_blocks);
     }
 
     // Handle remaining varrefs
-    $text_blocks = preg_replace('#\{([a-zA-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_rootref['\\1'])) ? \$this->_rootref['\\1'] : ''; ?>", $text_blocks);
-    $text_blocks = preg_replace('#\{\$([a-zA-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_tpldata['DEFINE']['.']['\\1'])) ? \$this->_tpldata['DEFINE']['.']['\\1'] : ''; ?>", $text_blocks);
+    $text_blocks = preg_replace(/** @lang RegExp */'#\{([a-zA-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_rootref['\\1'])) ? \$this->_rootref['\\1'] : ''; ?>", $text_blocks);
+    $text_blocks = preg_replace(/** @lang RegExp */'#\{\$([a-zA-Z0-9\-_]+)\}#', "<?php echo (isset(\$this->_tpldata['DEFINE']['.']['\\1'])) ? \$this->_tpldata['DEFINE']['.']['\\1'] : ''; ?>", $text_blocks);
 
     return;
   }
