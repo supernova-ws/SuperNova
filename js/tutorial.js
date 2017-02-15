@@ -105,12 +105,22 @@ function tutorial_window_switch(windowed, reload) {
     jQuery("#tutorial_button_window").addClass("hide");
     jQuery("#tutorial_button_window_off").removeClass("hide");
 
+    var aPosition = {my: "right bottom", at: "right bottom"};
+    // Moving dialog window - if there are stored coordinates
+    if (typeof tutorial_windowed.position !== "undefined") {
+      aPosition = {
+        my: "left top",
+        // at: "top+" + tutorial_windowed.position.top + " left+" + tutorial_windowed.position.left
+        at: "left+" + tutorial_windowed.position.left + " top+" + tutorial_windowed.position.top
+      };
+    }
+
     // Dialog class
     tutorial_window.dialog({
       resizable: false,
       width: "auto",
       height: "auto",
-      position: {my: "right bottom", at: "right bottom"},
+      position: aPosition,
       "create": function (event) {
         $(event.target).dialog("widget")
         // Making window position stuck on screen
@@ -120,14 +130,6 @@ function tutorial_window_switch(windowed, reload) {
       },
       "open": function (event) {
         var dialogElement = $(event.target).parent();
-
-        // Moving dialog window - if there are stored coordinates
-        if (typeof tutorial_windowed.position !== "undefined") {
-          $(dialogElement).css({
-            "top": tutorial_windowed.position.top,
-            "left": tutorial_windowed.position.left
-          });
-        }
 
         // Moving tutorial header text to dialog title
         $("#tutorial_header_text").detach().appendTo(
