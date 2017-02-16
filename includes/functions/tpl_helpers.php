@@ -319,12 +319,22 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
   return $fleet_list;
 }
 
+/**
+ * @param template $template
+ * @param array    $planetrow
+ * @param array    $fleets_to_planet
+ * @param int      $round
+ */
 function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array(), $round = 0)
 {
+//  var_dump('DISABLE DEBUG IN NAVBAR!!!');
+
   $template->assign_vars(array(
     'RESOURCE_ROUNDING' => $round,
 
+    'PLANET_ENERGY' => $planetrow['energy_used'],
     'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, true),
+    'ENERGY_MAX_NUMBER' => $planetrow['energy_max'],
     'ENERGY_MAX' => pretty_number($planetrow['energy_max'], true, -$planetrow['energy_used']),
     'ENERGY_FILL' => round(($planetrow["energy_used"]/($planetrow["energy_max"]+1))*100,0),
 
@@ -332,6 +342,7 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'PLANET_METAL_TEXT' => pretty_number($planetrow["metal"], $round, $planetrow["metal_max"]),
     'PLANET_METAL_MAX' => round($planetrow["metal_max"], $round),
     'PLANET_METAL_MAX_TEXT' => pretty_number($planetrow["metal_max"], $round, -$planetrow["metal"]),
+//    'PLANET_METAL_MAX_TEXT' => 0, // TODO - REMOVE
     'PLANET_METAL_FILL' => round(($planetrow["metal"]/($planetrow["metal_max"]+1))*100,0),
     'PLANET_METAL_PERHOUR' => round($planetrow["metal_perhour"], 5),
     'PLANET_METAL_FLEET_TEXT' => pretty_number($fleets_to_planet[$planetrow['id']]['fleet']['METAL'], $round, true),
@@ -340,6 +351,7 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'PLANET_CRYSTAL_TEXT' => pretty_number($planetrow["crystal"], $round, $planetrow["crystal_max"]),
     'PLANET_CRYSTAL_MAX' => round($planetrow["crystal_max"], $round),
     'PLANET_CRYSTAL_MAX_TEXT' => pretty_number($planetrow["crystal_max"], $round, -$planetrow["crystal"]),
+//    'PLANET_CRYSTAL_MAX_TEXT' => 0, // TODO - REMOVE
     'PLANET_CRYSTAL_FILL' => round(($planetrow["crystal"]/($planetrow["crystal_max"]+1))*100,0),
     'PLANET_CRYSTAL_PERHOUR' => round($planetrow["crystal_perhour"], 5),
     'PLANET_CRYSTAL_FLEET_TEXT' => pretty_number($fleets_to_planet[$planetrow['id']]['fleet']['CRYSTAL'], $round, true),
@@ -348,6 +360,7 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'PLANET_DEUTERIUM_TEXT' => pretty_number($planetrow["deuterium"], $round, $planetrow["deuterium_max"]),
     'PLANET_DEUTERIUM_MAX' => round($planetrow["deuterium_max"], $round),
     'PLANET_DEUTERIUM_MAX_TEXT' => pretty_number($planetrow["deuterium_max"], $round, -$planetrow["deuterium"]),
+//    'PLANET_DEUTERIUM_MAX_TEXT' => 0, // TODO - REMOVE
     'PLANET_DEUTERIUM_FILL' => round(($planetrow["deuterium"]/($planetrow["deuterium_max"]+1))*100,0),
     'PLANET_DEUTERIUM_PERHOUR' => round($planetrow["deuterium_perhour"], 5),
     'PLANET_DEUTERIUM_FLEET_TEXT' => pretty_number($fleets_to_planet[$planetrow['id']]['fleet']['DEUTERIUM'], $round, true),

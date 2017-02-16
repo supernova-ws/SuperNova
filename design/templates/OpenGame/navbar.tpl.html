@@ -288,17 +288,23 @@
       </div>
       <!-- ENDIF -->
     </div>
-  </div>
 
-  <!-- IF SN_RENDER_NAVBAR_PLANET -->
+    <!-- IF SN_RENDER_NAVBAR_PLANET -->
     <!-- DEFINE $IN_NAVBAR = 1 -->
     <div>
-      <table class="border_image_small" id="navbar_resources">
-        <!-- INCLUDE navbar_resources -->
-      </table>
+      <!-- INCLUDE navbar_resources -->
     </div>
     <!-- DEFINE $IN_NAVBAR = 0 -->
-  <!-- ENDIF -->
+    <!-- ENDIF -->
+  </div>
+
+  <!--&lt;!&ndash; IF SN_RENDER_NAVBAR_PLANET &ndash;&gt;-->
+    <!--&lt;!&ndash; DEFINE $IN_NAVBAR = 1 &ndash;&gt;-->
+    <!--<div>-->
+      <!--&lt;!&ndash; INCLUDE navbar_resources &ndash;&gt;-->
+    <!--</div>-->
+    <!--&lt;!&ndash; DEFINE $IN_NAVBAR = 0 &ndash;&gt;-->
+  <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
 </div>
 
 <div id="navbar_refresh" class="button_pseudo" onclick="document.location.reload(true);">{L_topnav_refresh_page}</div>

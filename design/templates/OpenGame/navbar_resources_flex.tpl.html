@@ -1,0 +1,285 @@
+<style type="text/css">
+  /* Hiding resource tooltip pattern */
+  #navbar_resource_flex_tooltip_pattern
+  {
+    display: none;
+  }
+
+  #navbar_resources_flex, .navbar_resources_flex_resource > :nth-child(2) > *
+  {
+    /*font-size: 120%;*/
+  }
+
+  /** Flex container for navbar resources */
+  #navbar_resources_flex
+  {
+    display: flex;
+
+    justify-content: space-around;
+    align-content: space-around;
+
+    align-items: center;
+
+    flex-wrap: wrap;
+
+    /*border: 1px solid green;*/
+  }
+
+  /* Resource items */
+  #navbar_resources_flex > *
+  {
+    flex-basis: 15%; /* TODO - change to 20% when no box*/
+    flex-grow: 1;
+    flex-wrap: nowrap;
+
+    white-space: nowrap;
+
+    /*border: 1px solid blue;*/
+  }
+
+  /* Title - resource/alliance */
+  #navbar_resources_flex > div:first-child
+  {
+    flex-grow: 0;
+    height: 100%;
+  }
+
+  /* Resource item also is flex container */
+  .navbar_resources_flex_resource.cell
+  {
+    display: flex;
+    flex-wrap: nowrap;
+
+    align-items: center;
+    align-content: center;
+
+    justify-content: space-between;
+
+    cursor: pointer;
+
+    margin: 0 0.2em;
+    /* Overriding .cell padding */
+    padding: 0.1em 0.2em;
+    border-radius: 0.4em;
+  }
+
+  /* Resource amount div can grow*/
+  /* Both resource marker and resource amount aligned to right */
+  .navbar_resources_flex_resource > div
+  {
+    text-align: right;
+    flex-grow: 1;
+  }
+
+  /* But resource marker - can't */
+  .navbar_resources_flex_resource > div:first-child
+  {
+    flex-grow: 0;
+    margin-right: 0.2em;
+  }
+
+  /* Preparing amount cell for progress bar*/
+  .navbar_resources_flex_resource > :nth-child(2)
+  {
+    position: relative;
+    width: 100%;
+  }
+
+  /* Making resource amount on top of progress bar*/
+  .navbar_resources_flex_resource > :nth-child(2) > div:first-child
+  {
+    position: relative;
+    top: 0;
+
+    display: flex;
+    justify-content: flex-end;
+
+    width: 100%;
+    height: 100%;
+
+    z-index: 2;
+  }
+
+  /* Positioning amount number vertically centered*/
+  .navbar_resources_flex_resource > :nth-child(2) > div:first-child > *
+  {
+    align-self: center;
+  }
+
+  /* Hack for progressbar to not override amount */
+  .navbar_resources_flex_resource > :nth-child(2) .ui-progressbar-value
+  {
+    position: absolute;
+    top: 0;
+    z-index: 0;
+  }
+</style>
+
+<div id="navbar_resource_flex_tooltip_pattern">
+  <table class="no_border_image">
+    <tr class="c_c no_select">
+      <th colspan="2">&#123;0&#125;</th>
+    </tr>
+    <tr>
+      <td>{L_tech_storage}</td>
+      <td class="c_r">&#123;1&#125;</td>
+    </tr>
+    <tr>
+      <td>{L_tech_storage_max}</td>
+      <td class="c_r">&#123;2&#125;</td>
+    </tr>
+    <tr>
+      <td>Заполнение</td>
+      <td class="c_r">&#123;3&#125;%</td>
+    </tr>
+  </table>
+</div>
+
+<script type="text/javascript">
+  $.extend(language, {
+    sys_metal: '{LA_sys_metal}',
+    sys_crystal: '{LA_sys_crystal}',
+    sys_deuterium: '{LA_sys_deuterium}'
+  });
+</script>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $(".navbar_resources_flex_resource").tooltip({
+      items: ".navbar_resources_flex_resource",
+
+//      disabled: true,
+//      close: function( event, ui ) {
+//        $(this).tooltip('disable');
+//        /* instead of $(this) you could also use $(event.target) */
+//      },
+      "content": function () {
+        var
+          result = '',
+          that = $(this),
+          resourceName = that.attr("data-resource"),
+          resourceData;
+
+        if (that.is("[data-resource]") && resourceName && (resourceData = navbarResources[resourceName])) {
+          var resourceNameText, currentValue, fullness,
+            storage = Math.intVal(resourceData.max_value);
+          if (resourceData['resourceNameLongId']) {
+            resourceNameText = language[resourceData['resourceNameLongId']];
+          }
+          if (!resourceNameText) {
+            resourceNameText = resourceName;
+          }
+
+          if (timer = timerById("top_" + resourceName)) {
+            currentValue = timer['current'];
+          } else {
+            currentValue = resourceData.start_value;
+          }
+          currentValue = Math.intVal(currentValue);
+
+          fullness = storage ? Math.roundVal(currentValue / storage * 100) : '---';
+
+          result = $("#navbar_resource_flex_tooltip_pattern").html().format(resourceNameText, currentValue, storage, fullness);
+
+//            start_value: Math.floatVal('{PLANET_DEUTERIUM}'),
+//            per_second: Math.floatVal('{PLANET_DEUTERIUM_PERHOUR}' / 3600),
+//            max_value: Math.intVal('{PLANET_DEUTERIUM_MAX}'),
+//            round: Math.intVal('{RESOURCE_ROUNDING}')
+        }
+
+        return result;
+      }
+    });
+
+//    $(".navbar_resources_flex_resource > :nth-child(2)").each(function () {
+//      $(this).progressbar({
+//        value: 90,
+//        max: 100
+////      change: function() {
+////        progressLabel.text( progressbar.progressbar( "value" ) + "%" );
+////      },
+////      complete: function() {
+////        progressLabel.text( "Complete!" );
+////      }
+//      })
+//    });
+
+
+  });
+  $(document).on("click", ".navbar_resources_flex_resource", function () {
+    var that = $(this);
+
+    if ($(".ui-tooltip").length) {
+      that.tooltip("close");
+    } else {
+      that.tooltip("open");
+    }
+  });
+</script>
+
+<div id="navbar_resources_flex" class="header no_select" unselectable="on">
+  <div><!-- IF SN_IN_ALLY -->{L_sys_alliance}<!-- ELSE -->{L_sys_resources}<!-- ENDIF --></div>
+  <div class="cell navbar_resources_flex_resource" data-resource="metal">
+    <div>{L_sys_metal_sh}</div>
+    <div>
+      <div id="top_metal">
+        {PLANET_METAL_TEXT}
+      </div>
+    </div>
+    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <div>{PLANET_METAL_FLEET_TEXT}</div>
+    <!-- ENDIF -->
+  </div>
+  <div class="cell navbar_resources_flex_resource" data-resource="crystal">
+    <div>{L_sys_crystal_sh}</div>
+
+    <div>
+      <div id='top_crystal'>
+        {PLANET_CRYSTAL_TEXT}
+      </div>
+    </div>
+    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <div>{PLANET_CRYSTAL_FLEET_TEXT}</div>
+    <!-- ENDIF -->
+  </div>
+  <div class="navbar_resources_flex_resource cell" data-resource="deuterium">
+    <div>{L_sys_deuterium_sh}</div>
+
+    <div>
+      <div id='top_deuterium'>{PLANET_DEUTERIUM_TEXT}</div>
+    </div>
+    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <div>{PLANET_DEUTERIUM_FLEET_TEXT}</div>
+    <!-- ENDIF -->
+  </div>
+  <!-- IF SN_IN_ALLY -->
+  <div class="navbar_resources_flex_resource">
+    <div>{L_sys_dark_matter_sh}</div>
+    <div id='top_dark_matter'>{DARK_MATTER_TEXT}</div>
+    <div>&#x221e;</div>
+  </div>
+  <!-- ELSE -->
+  <!--<div class="navbar_resources_flex_resource cell" data-resource="energy">-->
+  <div class="navbar_resources_flex_resource cell">
+    <!--
+        &lt;!&ndash; IF ! SN_NAVBAR_HIDE_FLEETS &ndash;&gt; colspan="2"&lt;!&ndash; ENDIF &ndash;&gt;
+    -->
+    <div>{L_sys_energy_sh}</div>
+
+    <div>
+      <div>{ENERGY_BALANCE}</div>
+    </div>
+  </div>
+  <!-- ENDIF -->
+</div>
+
+<div class="c_l" nowrap></div>
+
+
+<!-- IF ! SN_IN_ALLY -->
+<div class="c_l" nowrap></div>
+<!-- ENDIF -->
+
+<!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+<div class="c_l" nowrap>{L_sys_fleet_and}</div>
+<!-- ENDIF -->

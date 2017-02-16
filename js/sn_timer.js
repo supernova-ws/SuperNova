@@ -200,14 +200,16 @@ if(window.LOADED_TIMER === undefined) {
 
         case TIMER_COUNTER: {
           // TODO - Проверка на is(':visible')
+          timer_options['round'] = timer_options['round'] === undefined ? 0 : parseInt(timer_options['round']);
+          timer_options['start_value'] = timer_options['start_value'] === undefined ? 0 : parseInt(timer_options['start_value']);
+          timer_options['per_second'] = timer_options['per_second'] === undefined ? 0 : parseFloat(timer_options['per_second']);
+
+          timer['current'] = timer_options['start_value'];
+
           if (timer['html_main'].length <= 0) {
             timer['active'] = false;
             break;
           }
-
-          timer_options['round'] = timer_options['round'] === undefined ? 0 : parseInt(timer_options['round']);
-          timer_options['start_value'] = timer_options['start_value'] === undefined ? 0 : parseInt(timer_options['start_value']);
-          timer_options['per_second'] = timer_options['per_second'] === undefined ? 0 : parseFloat(timer_options['per_second']);
           break;
         }
 
@@ -505,6 +507,7 @@ if(window.LOADED_TIMER === undefined) {
           infoText = sn_format_number(new_value, timer_options['round'], 'positive', timer_options['max_value']);
 
           timer['html_main'].html(infoText);
+          timer['current'] = new_value;
           break;
         }
 
@@ -526,4 +529,20 @@ if(window.LOADED_TIMER === undefined) {
     timer_is_started = false;
   }
 
+}
+
+function timerById(id) {
+  var timer = null;
+  for(var idNumeric in sn_timers) {
+    if(!sn_timers.hasOwnProperty(idNumeric)) {
+      continue;
+    }
+
+    if(sn_timers[idNumeric].id == id) {
+      timer = sn_timers[idNumeric];
+      break;
+    }
+
+  }
+  return timer;
 }
