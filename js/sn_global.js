@@ -180,7 +180,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
 
     // It's here 'cause font manipulation is available only after DOM fully loaded
-    $('#font_minus, #font_normal, #font_plus').on('click', function () {
+    $(document).on('click', '#font_minus, #font_normal, #font_plus', function () {
       var temp = snFont.size;
 
       switch ($(this).attr('id')) {
@@ -211,7 +211,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     makeBlink();
   }
 
-  $('.password_show').on('click', function () {
+  $(document).on('click', '.password_show', function () {
     var button_value, input, type;
     input = $(this).parent().find("[name=" + $(this).attr('show_element') + "]").hide();
     if (input.attr('type') == 'password') {
@@ -239,23 +239,23 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     location.reload();
   }
 
-  jQuery('[news_toggle]').on('click', function () {
+  jQuery(document).on('click', '[news_toggle]', function () {
     $('#news_' + $(this).attr('news_toggle')).show();
     $(this).remove();
   });
 
-  jQuery('.survey_block [survey_id]').on('click', function () {
+  jQuery(document).on('click', '.survey_block [survey_id]', function () {
     var survey_id = $(this).attr('survey_id');
     $('.survey_block [survey_id=' + survey_id + ']').removeClass('button_pseudo_pressed');
     $(this).addClass('button_pseudo_pressed');
     $('input:radio[name="survey[' + survey_id + ']"]').val([$(this).attr('answer_id')]);
   });
 
-  jQuery('.button_pseudo').on('click', function () {
+  jQuery(document).on('click', '.button_pseudo', function () {
     $(this).addClass('button_pseudo_pressed');
   });
 
-  jQuery('#sort_elements,#sort_elements_inverse').on('change', function () {
+  jQuery(document).on('change', '#sort_elements,#sort_elements_inverse', function () {
     jQuery.post(
       $('#page_file_name').val()
       + '?mode=' + $('#mode').val()
@@ -286,7 +286,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     }
   });
 
-// Хэндлеры для слайдеров
+  // Хэндлеры для слайдеров
   jQuery(document).on('click', "input:button[id$='_ai_zero']", function (event, ui) {
     jQuery("#" + jQuery(this).attr('parent_id')).val(0).trigger('change', [event, ui]);
   });
@@ -596,16 +596,16 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       slider.slider("value", value);
     }).button().addClass('ui-textfield');
 
-    jQuery("#" + field_name + 'zero').on('click', function (event, ui) {
+    jQuery(document).on('click', "#" + field_name + 'zero', function (event, ui) {
       jQuery("#" + field_name).val(0).trigger('change', [event, ui]);
     }).button();
 
-    jQuery("#" + field_name + 'max').on('click', function (event, ui) {
+    jQuery(document).on('click', "#" + field_name + 'max', function (event, ui) {
       jQuery("#" + field_name).val(jQuery(slider_id).slider("option", "max")).trigger('change', [event, ui]);
     }).button();
 
-    jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc')
-      .on('mousedown', function (event, ui) {
+    jQuery(document)
+      .on('mousedown', "#" + field_name + 'dec, ' + "#" + field_name + 'inc', function (event, ui) {
         var element = jQuery("#" + field_name);
         if (element.is('[disabled]')) {
           return;
@@ -621,19 +621,13 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
         };
         sn_ainput_mouselerate();
       })
-      .on('mouseup', function (event, ui) {
+      .on('mouseup', "#" + field_name + 'dec, ' + "#" + field_name + 'inc', function (event, ui) {
           if (accelerated) {
             clearTimeout(accelerated['timeout']);
             accelerated = undefined;
           }
         }
       ).button();
-
-    //jQuery('#' + field_name).button().addClass('ui-textfield');
-    //jQuery('#' + field_name + 'zero').button();
-    //jQuery('#' + field_name + 'dec').button();
-    //jQuery('#' + field_name + 'max').button();
-    //jQuery('#' + field_name + 'inc').button();
   }
 
   function sn_ainput_mouselerate() {
