@@ -1,10 +1,14 @@
 js-cookie v2.1.3
-
 ## Authors
-
 * [Klaus Hartl](https://github.com/carhartl)
 * [Fagner Brack](https://github.com/FagnerMartinsBrack)
 * And awesome [contributors](https://github.com/js-cookie/js-cookie/graphs/contributors)
+
+
+jQuery UI Touch Punch 0.2.3
+ * Copyright 2011–2014, Dave Furfero
+ * Dual licensed under the MIT or GPL Version 2 licenses.
+Downloaded from http://touchpunch.furf.com/
 
 
 speedometer icon
@@ -33,5 +37,4 @@ http://bogo-d.deviantart.com/art/Kingdom-Icons-212892514
 
 
 Energy icon
-
 <div>Icons made by <a href="http://www.flaticon.com/authors/kirill-kazachek" title="Kirill Kazachek">Kirill Kazachek</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC 3.0 BY</a></div>
