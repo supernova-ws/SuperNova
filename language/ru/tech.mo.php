@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40b0.1
+* @version 42a21.5
 *
 */
 
@@ -44,6 +44,8 @@ $a_lang_array = (array(
   'treeinfo' => '[i]',
   'comingsoon' => 'Скоро',
   'te_dt_tx_pre' => 'Слабая добыча',
+  'tech_fullness' => 'Заполнение',
+
   'type_mission' => array(
     MT_ATTACK => 'Атака',
     MT_AKS => 'Совместная атака',

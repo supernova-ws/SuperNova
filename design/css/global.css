@@ -395,3 +395,20 @@ body.blitz_ {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 }
+
+/* General wrapper class  */
+.flexible_wrapper
+{
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+
+  flex-basis: 0.1%;
+  flex-grow: 1;
+  flex-shrink: 1;
+}
+/* Add 'wrap' class to break points  */
+.flexible_wrapper.wrap
+{
+  flex-wrap: wrap;
+}

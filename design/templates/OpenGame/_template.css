@@ -3384,3 +3384,102 @@ td.error_message {
   padding: 0.5em;
   text-align: center;
 }
+
+
+
+
+/* Hiding resource tooltip pattern */
+#navbar_resource_flex_tooltip_pattern
+{
+  display: none;
+}
+
+.navbar_resources_flex
+{
+  /*font-size: 120%;*/
+}
+
+/** Flex container for navbar resources */
+.navbar_resources_flex
+{
+  display: flex;
+  flex-wrap: wrap;
+
+  justify-content: space-around;
+  align-content: space-around;
+  align-items: center;
+}
+
+/* Title - resource/alliance */
+.navbar_resources_flex_title
+{
+  flex-grow: 0;
+  flex-shrink: 5;
+  height: 100%;
+}
+
+/* Resource item also is flex container */
+.navbar_resources_flex_resource.cell
+{
+  justify-content: space-between;
+  align-items: center;
+  align-content: center;
+
+  cursor: pointer;
+
+  margin: 0 0.2em;
+  /* Overriding .cell padding */
+  padding: 0.1em 0.2em;
+  border-radius: 0.4em;
+}
+
+/* Resource amount div can grow*/
+/* Both resource marker and resource amount aligned to right */
+.navbar_resources_flex_resource > div
+{
+  text-align: right;
+  flex-grow: 1;
+}
+
+/* But resource marker - can't */
+.navbar_resources_flex_resource > div:first-child
+{
+  flex-grow: 0;
+  margin-right: 0.2em;
+}
+
+/* Preparing amount cell for progress bar*/
+.navbar_resources_flex_resource > :nth-child(2)
+{
+  position: relative;
+  width: 100%;
+}
+
+/* Making resource amount on top of progress bar*/
+.navbar_resources_flex_resource > :nth-child(2) > div:first-child
+{
+  position: relative;
+  top: 0;
+
+  display: flex;
+  justify-content: flex-end;
+
+  width: 100%;
+  height: 100%;
+
+  z-index: 2;
+}
+
+/* Positioning amount number vertically centered*/
+.navbar_resources_flex_resource > :nth-child(2) > div:first-child > *
+{
+  align-self: center;
+}
+
+/* Hack for progressbar to not override amount */
+.navbar_resources_flex_resource > :nth-child(2) .ui-progressbar-value
+{
+  position: absolute;
+  top: 0;
+  z-index: 0;
+}

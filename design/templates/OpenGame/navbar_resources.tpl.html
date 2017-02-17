@@ -15,7 +15,13 @@
 
 
 <script type="text/javascript">
-  var navbarResources = {
+  $.extend(language, {
+    sys_metal: '{LA_sys_metal}',
+    sys_crystal: '{LA_sys_crystal}',
+    sys_deuterium: '{LA_sys_deuterium}'
+  });
+
+  navbarResources = {
     "metal": {
       start_value: Math.floatVal('{PLANET_METAL}'),
       per_second: Math.floatVal('{PLANET_METAL_PERHOUR}' / 3600),

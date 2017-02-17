@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 42a21.5
 *
 */
 
@@ -44,6 +44,8 @@ $a_lang_array = (array(
   'treeinfo' => '[i]',
   'comingsoon' => 'Coming Soon',
   'te_dt_tx_pre' => 'Weak production',
+  'tech_fullness' => 'Fullness',
+
   'type_mission' => array(
     MT_ATTACK => 'Attack',
     MT_AKS => 'Joint Attack',

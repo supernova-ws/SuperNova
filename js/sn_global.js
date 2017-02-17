@@ -927,3 +927,72 @@ function snConfirm(params) {
 
   return false;
 }
+
+
+var navbarResources = {};
+$(document).ready(function () {
+  $(".navbar_resources_flex_resource").tooltip({
+    items: ".navbar_resources_flex_resource",
+
+//      disabled: true,
+//      close: function( event, ui ) {
+//        $(this).tooltip('disable');
+//        /* instead of $(this) you could also use $(event.target) */
+//      },
+    "content": function () {
+      var
+        result = '',
+        that = $(this),
+        resourceName = that.attr("data-resource"),
+        resourceData;
+
+      if (that.is("[data-resource]") && resourceName && (resourceData = navbarResources[resourceName])) {
+        var resourceNameText, currentValue, fullness,
+          storage = Math.intVal(resourceData.max_value);
+        if (resourceData['resourceNameLongId']) {
+          resourceNameText = language[resourceData['resourceNameLongId']];
+        }
+        if (!resourceNameText) {
+          resourceNameText = resourceName;
+        }
+
+        if (timer = timerById("top_" + resourceName)) {
+          currentValue = timer['current'];
+        } else {
+          currentValue = resourceData.start_value;
+        }
+        currentValue = Math.intVal(currentValue);
+
+        fullness = storage ? Math.roundVal(currentValue / storage * 100) : '---';
+
+        result = $("#navbar_resource_flex_tooltip_pattern").html().format(resourceNameText, currentValue, storage, fullness);
+      }
+
+      return result;
+    }
+  });
+
+//    $(".navbar_resources_flex_resource > :nth-child(2)").each(function () {
+//      $(this).progressbar({
+//        value: 90,
+//        max: 100
+////      change: function() {
+////        progressLabel.text( progressbar.progressbar( "value" ) + "%" );
+////      },
+////      complete: function() {
+////        progressLabel.text( "Complete!" );
+////      }
+//      })
+//    });
+
+
+});
+$(document).on("click", ".navbar_resources_flex_resource", function () {
+  var that = $(this);
+
+  if ($(".ui-tooltip").length) {
+    that.tooltip("close");
+  } else {
+    that.tooltip("open");
+  }
+});
