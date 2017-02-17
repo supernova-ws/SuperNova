@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a21.3');
+define('SN_VERSION', '42a21.4');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -125,6 +125,7 @@ define('TYPE_STRING', 'string');
 
 // *** Combat-related constants
 // *** Mission Type constants starts with MT_
+define('MT_NONE'     ,  0);
 define('MT_ATTACK'   ,  1);
 define('MT_AKS'      ,  2);
 define('MT_TRANSPORT',  3);
