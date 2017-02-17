@@ -603,6 +603,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'GAME_HANGAR_DISABLED'     => defined('GAME_HANGAR_DISABLED') && GAME_HANGAR_DISABLED,
 
     'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL'       => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_VERTICAL],
+    'PLAYER_OPTION_NAVBAR_PLANET_OLD'            => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_PLANET_OLD],
     'PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH'      => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_RESEARCH],
     'PLAYER_OPTION_NAVBAR_DISABLE_PLANET'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_PLANET],
     'PLAYER_OPTION_NAVBAR_DISABLE_HANGAR'        => classSupernova::$user_options[PLAYER_OPTION_NAVBAR_DISABLE_HANGAR],
@@ -814,12 +815,6 @@ function tpl_login_lang(&$template) {
  */
 function tpl_get_fleets_flying(&$user) {
   $fleet_flying_list = array();
-
-//  $fleet_flying_query = doquery("SELECT * FROM {{fleets}} WHERE fleet_owner = {$user['id']}");
-//  while($fleet_flying_row = db_fetch($fleet_flying_query)) {
-//    $fleet_flying_list[0][] = $fleet_flying_row;
-//    $fleet_flying_list[$fleet_flying_row['fleet_mission']][] = &$fleet_flying_list[0][count($fleet_flying_list) - 1];
-//  }
 
   $fleet_flying_list[0] = fleet_list_by_owner_id($user['id']);
   foreach($fleet_flying_list[0] as $fleet_id => $fleet_flying_row) {

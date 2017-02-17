@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a15
+* @version 42a21.7
 *
 */
 
@@ -103,6 +103,8 @@ $a_lang_array = array(
   'PLAYER_OPTION_TUTORIAL_DISABLED' => 'Disable tutorial',
   'PLAYER_OPTION_TUTORIAL_WINDOWED' => 'Show tutorial in popup window',
   'PLAYER_OPTION_TUTORIAL_CURRENT' => 'Reset tutorial - tutorial will starts from begin',
+
+  'PLAYER_OPTION_NAVBAR_PLANET_OLD' => 'Use old tabled planetbar',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',

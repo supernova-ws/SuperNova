@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a15
+* @version 42a21.7
 *
 */
 
@@ -77,6 +77,7 @@ $a_lang_array = (array(
   'opt_navbar_title' => 'Панель навигации',
   'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
   'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Вертикальная панель ресурсов',
+  'PLAYER_OPTION_NAVBAR_PLANET_OLD' => 'Использовать старый планет бар в виде таблицы',
   'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Широкая кнопка исследований (старый вид)',
   'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Отключить кнопку экспедиций',
   'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Отключить кнопку летящих флотов',
