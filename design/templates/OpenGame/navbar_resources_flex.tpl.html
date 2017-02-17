@@ -30,6 +30,7 @@
   {
     flex-basis: 15%; /* TODO - change to 20% when no box*/
     flex-grow: 1;
+    flex-shrink: 1;
     flex-wrap: nowrap;
 
     white-space: nowrap;
@@ -41,6 +42,7 @@
   #navbar_resources_flex > div:first-child
   {
     flex-grow: 0;
+    flex-shrink: 5;
     height: 100%;
   }
 
@@ -253,10 +255,12 @@
     <!-- ENDIF -->
   </div>
   <!-- IF SN_IN_ALLY -->
-  <div class="navbar_resources_flex_resource">
+  <div class="navbar_resources_flex_resource cell">
     <div>{L_sys_dark_matter_sh}</div>
-    <div id='top_dark_matter'>{DARK_MATTER_TEXT}</div>
-    <div>&#x221e;</div>
+
+    <div>
+      <div id='top_dark_matter'>{DARK_MATTER_TEXT}</div>
+    </div>
   </div>
   <!-- ELSE -->
   <!--<div class="navbar_resources_flex_resource cell" data-resource="energy">-->

@@ -1,12 +1,18 @@
 <!-- navbar_resources BOF -->
-
-<!-- IF $IN_NAVBAR && PLAYER_OPTION_NAVBAR_PLANET_VERTICAL && 0 -->
-  <!-- INCLUDE navbar_resources_vertical -->
-<!-- ELSEIF 1 -->
-  <!-- INCLUDE navbar_resources_flex -->
+<!-- IF $IN_NAVBAR  -->
+  <!-- IF $NAVBAR_PLANET_FLEX -->
+    <!-- INCLUDE navbar_resources_flex -->
+  <!-- ELSE -->
+    <!-- IF PLAYER_OPTION_NAVBAR_PLANET_VERTICAL -->
+      <!-- INCLUDE navbar_resources_vertical -->
+    <!-- ELSE -->
+      <!-- INCLUDE navbar_resources_horizontal -->
+    <!-- ENDIF -->
+  <!-- ENDIF -->
 <!-- ELSE -->
   <!-- INCLUDE navbar_resources_horizontal -->
 <!-- ENDIF -->
+
 
 <script type="text/javascript">
   var navbarResources = {
