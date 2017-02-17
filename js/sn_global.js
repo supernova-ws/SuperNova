@@ -931,8 +931,14 @@ function snConfirm(params) {
 
 var navbarResources = {};
 $(document).ready(function () {
+  var tooltipPosition = { my: "left top+15", at: "left bottom", collision: "flipfit" };
+  if(PLAYER_OPTION_NAVBAR_PLANET_VERTICAL) {
+    tooltipPosition = { my: "right-10 top", at: "left top", collision: "flipfit" }
+  }
+
   $(".navbar_resources_flex_resource").tooltip({
     items: ".navbar_resources_flex_resource",
+    position: tooltipPosition,
 
 //      disabled: true,
 //      close: function( event, ui ) {
@@ -965,7 +971,12 @@ $(document).ready(function () {
 
         fullness = storage ? Math.roundVal(currentValue / storage * 100) : '---';
 
-        result = $("#navbar_resource_flex_tooltip_pattern").html().format(resourceNameText, currentValue, storage, fullness);
+        result = $("#navbar_resource_flex_tooltip_pattern").html().format(
+          resourceNameText,
+          sn_format_number(currentValue),
+          sn_format_number(storage),
+          fullness
+        );
       }
 
       return result;

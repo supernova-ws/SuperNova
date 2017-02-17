@@ -3483,3 +3483,20 @@ td.error_message {
   top: 0;
   z-index: 0;
 }
+
+#navbar_container.vertical #navbar {
+  display: flex;
+  flex-wrap: nowrap;
+}
+#navbar_container.vertical #navbar_resources_flex {
+  flex-direction: column;
+  margin-left: 0.5em;
+  font-size: 120%;
+}
+#navbar_container.vertical #navbar_resources_flex .flexible_wrapper:not(.navbar_resources_flex_resource) {
+  flex-direction: column;
+}
+#navbar_container.vertical .flexible_wrapper.navbar_resources_flex_resource {
+  margin: 0.3em 0;
+  border: 1px solid green;
+}

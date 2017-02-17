@@ -9,8 +9,13 @@
   <!-- INCLUDE tutorial -->
 <!-- ENDIF -->
 
+<script type="text/javascript">
+  var PLAYER_OPTION_NAVBAR_PLANET_VERTICAL = Math.intVal('{PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}');
+</script>
+
 <div id="navbar_container" class="{$NAVBAR_CLASS}">
   <div class="header c_c border_image_small" id="navbar">
+    <div>
     <!-- IF NAVBAR_PREFIX_BUTTONS -->
     <div class="contF a50 flexW cell">
       <!-- BEGIN navbar_prefix_button -->
@@ -288,12 +293,13 @@
       </div>
       <!-- ENDIF -->
     </div>
+    </div>
 
     <!-- DEFINE $NAVBAR_PLANET_FLEX = 0 -->
 
     <!-- IF SN_RENDER_NAVBAR_PLANET && $NAVBAR_PLANET_FLEX -->
     <!-- DEFINE $IN_NAVBAR = 1 -->
-    <div>
+    <div id="navbar_resbar_wrapper">
       <!-- INCLUDE navbar_resources -->
     </div>
     <!-- DEFINE $IN_NAVBAR = 0 -->
