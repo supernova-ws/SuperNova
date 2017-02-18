@@ -1,5 +1,5 @@
 <!-- navbar_resources BOF -->
-<!-- IF $IN_NAVBAR  -->
+<!-- IF $IN_NAVBAR -->
   <!-- IF ! PLAYER_OPTION_NAVBAR_PLANET_OLD -->
     <!-- INCLUDE navbar_resources_flex -->
   <!-- ELSE -->
@@ -18,7 +18,8 @@
   $.extend(language, {
     sys_metal: '{LA_sys_metal}',
     sys_crystal: '{LA_sys_crystal}',
-    sys_deuterium: '{LA_sys_deuterium}'
+    sys_deuterium: '{LA_sys_deuterium}',
+    sys_energy: '{LA_sys_energy}'
   });
 
   navbarResources = {
@@ -44,7 +45,7 @@
       resourceNameLongId: 'sys_deuterium'
     },
     "energy": {
-      start_value: Math.floatVal('{PLANET_ENERGY}'),
+      start_value: Math.floatVal('{ENERGY_BALANCE_NUMBER}'),
       max_value: Math.floatVal('{ENERGY_MAX_NUMBER}'),
       resourceNameLongId: 'sys_energy'
     }

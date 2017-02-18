@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a21.8
+* @version 42a21.12
 *
 */
 
@@ -76,8 +76,11 @@ $a_lang_array = (array(
 
   'opt_navbar_title' => 'Панель навигации',
   'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
-  'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Вертикальная панель ресурсов',
+  'opt_navbar_resourcebar_description' => 'Ресурсбар - панель ресурсов',
+  'opt_navbar_buttons_title' => 'Настройка кнопок навбара',
+  'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Вертикальный ресурсбар',
   'PLAYER_OPTION_NAVBAR_PLANET_OLD' => 'Использовать старое отображение ресурсов в виде таблицы',
+  'PLAYER_OPTION_NAVBAR_PLANET_STORAGE' => 'Показывать ёмкость складов в ресурсбаре',
   'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Широкая кнопка исследований (старый вид)',
   'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Отключить кнопку экспедиций',
   'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Отключить кнопку летящих флотов',
@@ -180,7 +183,7 @@ $a_lang_array = (array(
     'opt_uni_avatar_user' => 'Показывать аватар пользователя',
     'opt_uni_avatar_ally' => 'Показывать логотип Альянса',
     'opt_int_struc_vertical' => 'Вертикальная очередь построек',
-    'opt_int_navbar_resource_force' => 'Всегда показывать планетарный навбар',
+    'opt_int_navbar_resource_force' => 'Всегда показывать ресурсбар',
     'opt_int_overview_planet_columns' => 'Количество колонок в списке планет',
     'opt_int_overview_planet_columns_hint' => '0 - рассчитать по максимальному количество рядов',
     'opt_int_overview_planet_rows' => 'Максимальное количество рядов в списке планет',

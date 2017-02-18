@@ -327,14 +327,14 @@ function flt_get_fleets_to_planet($planet, $fleet_db_list = 0)
  */
 function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array(), $round = 0)
 {
-//  var_dump('DISABLE DEBUG IN NAVBAR!!!');
-
   $template->assign_vars(array(
     'RESOURCE_ROUNDING' => $round,
 
     'PLANET_ENERGY' => $planetrow['energy_used'],
+    'ENERGY_BALANCE_NUMBER' => $planetrow['energy_max'] - $planetrow['energy_used'],
     'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, true),
     'ENERGY_MAX_NUMBER' => $planetrow['energy_max'],
+    'ENERGY_MAX_NUMBER_TEXT' => pretty_number($planetrow['energy_max'], true, -$planetrow['energy_used']),
     'ENERGY_MAX' => pretty_number($planetrow['energy_max'], true, -$planetrow['energy_used']),
     'ENERGY_FILL' => round(($planetrow["energy_used"]/($planetrow["energy_max"]+1))*100,0),
 

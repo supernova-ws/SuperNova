@@ -1,5 +1,3 @@
-<!-- DEFINE $PLANETBAR_VERTICAL = 1 -->
-
 <div id="navbar_resource_flex_tooltip_pattern">
   <table class="no_border_image">
     <tr class="c_c no_select">
@@ -32,11 +30,15 @@
   <div class="flexible_wrapper wrap">
     <div class="flexible_wrapper">
       <div class="cell navbar_resources_flex_resource flexible_wrapper" data-resource="metal">
-        <div><img class="image_close" src="design/images/icon_metal.png" /></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_metal.png" /></div>
+
         <div>
           <div id="top_metal">
             {PLANET_METAL_TEXT}
           </div>
+          <!-- IF PLAYER_OPTION_NAVBAR_PLANET_STORAGE -->
+          <div>{PLANET_METAL_MAX_TEXT}</div>
+          <!-- ENDIF -->
         </div>
         <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
         <div>{PLANET_METAL_FLEET_TEXT}</div>
@@ -44,12 +46,15 @@
       </div>
 
       <div class="cell navbar_resources_flex_resource flexible_wrapper" data-resource="crystal">
-        <div><img class="image_close" src="design/images/icon_crystal.png" /></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_crystal.png"/></div>
 
         <div>
           <div id='top_crystal'>
             {PLANET_CRYSTAL_TEXT}
           </div>
+          <!-- IF PLAYER_OPTION_NAVBAR_PLANET_STORAGE -->
+          <div>{PLANET_CRYSTAL_MAX_TEXT}</div>
+          <!-- ENDIF -->
         </div>
         <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
         <div>{PLANET_CRYSTAL_FLEET_TEXT}</div>
@@ -59,10 +64,13 @@
 
     <div class="flexible_wrapper">
       <div class="cell navbar_resources_flex_resource flexible_wrapper" data-resource="deuterium">
-        <div><img class="image_close" src="design/images/icon_deuterium.png" /></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_deuterium.png" /></div>
 
         <div>
           <div id='top_deuterium'>{PLANET_DEUTERIUM_TEXT}</div>
+          <!-- IF PLAYER_OPTION_NAVBAR_PLANET_STORAGE -->
+          <div>{PLANET_DEUTERIUM_MAX_TEXT}</div>
+          <!-- ENDIF -->
         </div>
         <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
         <div>{PLANET_DEUTERIUM_FLEET_TEXT}</div>
@@ -71,7 +79,7 @@
 
       <!-- IF SN_IN_ALLY -->
       <div class="cell navbar_resources_flex_resource flexible_wrapper">
-        <div><img class="image_close" src="design/images/icon_dark_matter.png" /></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_dark_matter.png" /></div>
 
         <div>
           <div id='top_dark_matter'>{DARK_MATTER_TEXT}</div>
@@ -79,10 +87,13 @@
       </div>
       <!-- ELSE -->
       <div class="cell navbar_resources_flex_resource flexible_wrapper" data-resource="energy">
-        <div><img class="image_close" src="design/images/icon_energy.png" /></div>
+        <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_energy.png" /></div>
 
         <div>
           <div>{ENERGY_BALANCE}</div>
+          <!-- IF PLAYER_OPTION_NAVBAR_PLANET_STORAGE -->
+          <div>{ENERGY_MAX_NUMBER_TEXT}</div>
+          <!-- ENDIF -->
         </div>
       </div>
       <!-- ENDIF -->

@@ -3416,6 +3416,7 @@ td.error_message {
   flex-grow: 0;
   flex-shrink: 5;
   height: 100%;
+  margin: 0.2em;
 }
 
 /* Resource item also is flex container */
@@ -3497,6 +3498,17 @@ td.error_message {
   flex-direction: column;
 }
 #navbar_container.vertical .flexible_wrapper.navbar_resources_flex_resource {
-  margin: 0.3em 0;
+  margin: 0.20em 0;
   border: 1px solid green;
+}
+
+.navbar_resource_image {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  align-items: center;
 }

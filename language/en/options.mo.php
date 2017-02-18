@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a21.8
+* @version 42a21.12
 *
 */
 
@@ -79,7 +79,9 @@ $a_lang_array = array(
 
   'opt_navbar_title' => 'Navigation Panel',
   'opt_navbar_description' => 'Панель навигации (или попросту "навбар") располагается в самом верху экрана. Этот раздел позволяет настроить вид навбара',
-  'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Vertical Resource Navbar',
+  'opt_navbar_resourcebar_description' => 'Resourcebar - resource panel',
+  'opt_navbar_buttons_title' => 'Setup navbar buttons',
+  'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Vertical resourcebar',
   'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Wide Research button (old look)',
   'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Disable Expeditions button',
   'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Disable Flying Fleets button',
@@ -105,6 +107,7 @@ $a_lang_array = array(
   'PLAYER_OPTION_TUTORIAL_CURRENT' => 'Reset tutorial - tutorial will starts from begin',
 
   'PLAYER_OPTION_NAVBAR_PLANET_OLD' => 'Use old tabled resource view',
+  'PLAYER_OPTION_NAVBAR_PLANET_STORAGE' => 'Show storage capacity in resourcebar',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',
@@ -182,7 +185,7 @@ $a_lang_array = array(
     'opt_uni_avatar_user' => 'Show user avatar',
     'opt_uni_avatar_ally' => 'Show Ally logo',
     'opt_int_struc_vertical' => 'Vertical structures que',
-    'opt_int_navbar_resource_force' => 'Always show planet navbar',
+    'opt_int_navbar_resource_force' => 'Always show resourcebar',
     'opt_int_overview_planet_columns' => 'Column count in planet list',
     'opt_int_overview_planet_columns_hint' => '0 - calculate by maximum row count',
     'opt_int_overview_planet_rows' => 'Maximum row count in planet list',
