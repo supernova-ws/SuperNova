@@ -229,7 +229,8 @@ class template
 
     if (defined('IN_ERROR_HANDLER'))
     {
-      if ((E_NOTICE & error_reporting()) == E_NOTICE)
+      $is_enotice = error_reporting();
+      if ((E_NOTICE & $is_enotice) == E_NOTICE)
       {
         error_reporting(error_reporting() ^ E_NOTICE);
       }

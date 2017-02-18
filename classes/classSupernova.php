@@ -971,7 +971,7 @@ class classSupernova {
 
 
 
-  public function db_changeset_delay($table_name, $table_data)
+  public static function db_changeset_delay($table_name, $table_data)
   {
     // TODO Применять ченджсет к записям
     static::$delayed_changset[$table_name] = is_array(static::$delayed_changset[$table_name]) ? static::$delayed_changset[$table_name] : array();
@@ -979,7 +979,7 @@ class classSupernova {
     static::$delayed_changset[$table_name] = array_merge(static::$delayed_changset[$table_name], $table_data);
   }
 
-  public function db_changeset_revert()
+  public static function db_changeset_revert()
   {
     // TODO Для этапа 1 - достаточно чистить только те таблицы, что были затронуты
     // Для этапа 2 - чистить только записи
@@ -987,7 +987,7 @@ class classSupernova {
     static::cache_clear_all(true);
   }
 
-  public function db_changeset_condition_compile(&$conditions, &$table_name = '') {
+  public static function db_changeset_condition_compile(&$conditions, &$table_name = '') {
     if(!$conditions[P_LOCATION] || $conditions[P_LOCATION] == LOC_NONE) {
       $conditions[P_LOCATION] = LOC_NONE;
       switch($table_name) {
@@ -1150,7 +1150,7 @@ class classSupernova {
 
   // TODO - это вообще-то надо хранить в конфигурации
   public static function db_get_user_player_username_last_registered() {
-    $user = static::db_query('SELECT * FROM {{users}} WHERE `user_as_ally` IS NULL ORDER BY `id` DESC', true);
+    $user = static::db_query('SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC', true);
     static::cache_set(LOC_USER, $user['id'], $user);
     return isset($user['username']) ? $user['username'] : '';
   }

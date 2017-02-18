@@ -596,16 +596,16 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
       slider.slider("value", value);
     }).button().addClass('ui-textfield');
 
-    jQuery(document).on('click', "#" + field_name + 'zero', function (event, ui) {
+    jQuery("#" + field_name + 'zero').on('click', function (event, ui) {
       jQuery("#" + field_name).val(0).trigger('change', [event, ui]);
     }).button();
 
-    jQuery(document).on('click', "#" + field_name + 'max', function (event, ui) {
+    jQuery("#" + field_name + 'max').on('click', function (event, ui) {
       jQuery("#" + field_name).val(jQuery(slider_id).slider("option", "max")).trigger('change', [event, ui]);
     }).button();
 
-    jQuery(document)
-      .on('mousedown', "#" + field_name + 'dec, ' + "#" + field_name + 'inc', function (event, ui) {
+    jQuery("#" + field_name + 'dec, ' + "#" + field_name + 'inc')
+      .on('mousedown', function (event, ui) {
         var element = jQuery("#" + field_name);
         if (element.is('[disabled]')) {
           return;
@@ -621,7 +621,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
         };
         sn_ainput_mouselerate();
       })
-      .on('mouseup', "#" + field_name + 'dec, ' + "#" + field_name + 'inc', function (event, ui) {
+      .on('mouseup', function (event, ui) {
           if (accelerated) {
             clearTimeout(accelerated['timeout']);
             accelerated = undefined;
