@@ -22,7 +22,7 @@
   <!-- ENDIF -->
 </tr>
 
-<!-- IF ! SN_IN_ALLY && (PLAYER_OPTION_NAVBAR_PLANET_STORAGE || ! $IN_NAVBAR) -->
+<!-- IF ! SN_IN_ALLY && (! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE || ! $IN_NAVBAR) -->
 <tr class="c_r">
   <th class="c_l" nowrap>{L_tech_storage_max}</th>
   <td>{PLANET_METAL_MAX_TEXT}</td>

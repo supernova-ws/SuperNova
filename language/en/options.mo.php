@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a21.12
+* @version 42a21.13
 *
 */
 
@@ -107,7 +107,7 @@ $a_lang_array = array(
   'PLAYER_OPTION_TUTORIAL_CURRENT' => 'Reset tutorial - tutorial will starts from begin',
 
   'PLAYER_OPTION_NAVBAR_PLANET_OLD' => 'Use old tabled resource view',
-  'PLAYER_OPTION_NAVBAR_PLANET_STORAGE' => 'Show storage capacity in resourcebar',
+  'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => 'Disable storage capacity in resourcebar',
 
   'opt_chk_skin' => 'Use skin',
   'opt_adm_title' => 'Administration options',

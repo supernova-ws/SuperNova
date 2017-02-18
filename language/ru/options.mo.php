@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a21.12
+* @version 42a21.13
 *
 */
 
@@ -80,7 +80,7 @@ $a_lang_array = (array(
   'opt_navbar_buttons_title' => 'Настройка кнопок навбара',
   'PLAYER_OPTION_NAVBAR_PLANET_VERTICAL' => 'Вертикальный ресурсбар',
   'PLAYER_OPTION_NAVBAR_PLANET_OLD' => 'Использовать старое отображение ресурсов в виде таблицы',
-  'PLAYER_OPTION_NAVBAR_PLANET_STORAGE' => 'Показывать ёмкость складов в ресурсбаре',
+  'PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE' => 'Отключить показ ёмкость складов в ресурсбаре',
   'PLAYER_OPTION_NAVBAR_RESEARCH_WIDE' => 'Широкая кнопка исследований (старый вид)',
   'PLAYER_OPTION_NAVBAR_DISABLE_EXPEDITIONS' => 'Отключить кнопку экспедиций',
   'PLAYER_OPTION_NAVBAR_DISABLE_FLYING_FLEETS' => 'Отключить кнопку летящих флотов',
