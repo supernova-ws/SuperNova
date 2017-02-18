@@ -300,13 +300,13 @@ class db_mysql {
   }
 
   /**
-   * @param $query
+   * @param mysqli_result $query_result
    *
    * @return array|null
    */
-  function db_fetch(&$query) {
+  function db_fetch(&$query_result) {
     $microtime = microtime(true);
-    $result = $this->driver->mysql_fetch_assoc($query);
+    $result = $this->driver->mysql_fetch_assoc($query_result);
     $this->time_mysql_total += microtime(true) - $microtime;
     return $result;
 //    return $this->driver->mysql_fetch_assoc($query);

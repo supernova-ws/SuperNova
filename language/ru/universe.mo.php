@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a22.0
+* @version 42a22.1
 *
 */
 
@@ -187,7 +187,7 @@ $a_lang_array = (array(
 
   'uni_colonize' => 'Послать колонизатор для основания колонии на позиции номер',
 
-  'uni_scan_start' => 'Включить режима сканирования',
+  'uni_scan_start' => 'Включить режим сканирования',
   'uni_scan_stop' => 'Выйти из режима сканирования',
 
 ));

@@ -67,12 +67,12 @@ class db_mysql_v5 {
   }
 
   /**
-   * @param $query
+   * @param mysqli_result $query_result
    *
    * @return array|null
    */
-  function mysql_fetch_assoc(&$query) {
-    return mysqli_fetch_assoc($query);
+  function mysql_fetch_assoc(&$query_result) {
+    return mysqli_fetch_assoc($query_result);
   }
   function mysql_fetch_row(&$query) {
     return mysqli_fetch_row($query);

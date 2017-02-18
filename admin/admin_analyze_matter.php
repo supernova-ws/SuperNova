@@ -1,0 +1,109 @@
+<?php
+/**
+ * Created by Gorlum 18.02.2017 19:37
+ */
+
+define('INSIDE', true);
+define('INSTALL', false);
+define('IN_ADMIN', true);
+
+require('../common.' . substr(strrchr(__FILE__, '.'), 1));
+
+if($user['authlevel'] < 3)
+{
+  AdminMessage($lang['adm_err_denied']);
+}
+/*
+$template = gettemplate("admin/add_moon", true);
+
+if(sys_get_param_str('mode') == 'addit')
+{
+  $PlanetID = sys_get_param_id('user');
+  $MoonName = sys_get_param_str('name');
+
+  sn_db_transaction_start();
+  $PlanetSelected = DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
+  uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], 0, $MoonName);
+  sn_db_transaction_commit();
+
+  AdminMessage($lang['addm_done'], $lang['addm_title']);
+}
+
+display($template, $lang['addm_title'], false, '', true);
+*/
+
+$constants = get_defined_constants(true);
+$rpgConstants = array();
+foreach($constants['user'] as $constantName => $constantValue) {
+  if(substr($constantName, 0, 4) == 'RPG_') {
+    $rpgConstants[$constantValue] = $constantName;
+  }
+}
+
+$spent = array();
+
+$result = classSupernova::$db->doquery("SELECT
+  CONCAT(log_dark_matter_reason, '_', IF(sign(sum(log_dark_matter_amount)) > 0, 1, -1)) as `BALANCE`,
+  log_dark_matter_reason as `REASON`,
+  sum(log_dark_matter_amount) as `DM_AMOUNT`,
+  count(log_dark_matter_amount) as `DM_COUNT`,
+  sign(sum(log_dark_matter_amount)) as `SIGN`
+FROM `{{log_dark_matter}}`
+GROUP BY log_dark_matter_reason, IF(sign((log_dark_matter_amount)) > 0, 1, -1) ORDER BY sum(log_dark_matter_amount) DESC;
+");
+
+while($row = classSupernova::$db->db_fetch($result)) {
+  $row['CONSTANT'] = $rpgConstants[$row['REASON']];
+
+  $row['DM_AMOUNT_TEXT'] = pretty_number($row['DM_AMOUNT']);
+
+//  $row['TOTAL_AMOUNT'] = $row['DM_AMOUNT'];
+//  $row['TOTAL_COUNT'] = $row['DM_COUNT'];
+//  $row['TOTAL_AMOUNT_TEXT'] = pretty_number($row['TOTAL_AMOUNT']);
+
+  $spent[$row['BALANCE']] = $row;
+}
+
+$result = classSupernova::$db->doquery("SELECT
+  CONCAT(reason, '_', IF(sign(sum(amount)) > 0, 1, -1)) as `BALANCE`,
+  reason as `REASON`,
+  sum(amount) as `MM_AMOUNT`,
+  count(amount) as `MM_COUNT`,
+  sign(sum(amount)) as `SIGN`
+FROM `{{log_metamatter}}`
+GROUP BY reason, if(sign((amount)) > 0, 1, -1) ORDER BY sum(amount) DESC;
+");
+
+while($row = classSupernova::$db->db_fetch($result)) {
+  if(empty($spent[$row['BALANCE']])) {
+    $spent[$row['BALANCE']] = array();
+  }
+
+  $row['CONSTANT'] = $rpgConstants[$row['REASON']];
+  $row['MM_AMOUNT_TEXT'] = pretty_number($row['MM_AMOUNT']);
+
+  $spent[$row['BALANCE']] = array_merge_recursive_numeric($spent[$row['BALANCE']], $row);
+}
+
+foreach($spent as &$row) {
+  @$row['TOTAL_COUNT'] = $row['MM_COUNT'] + $row['DM_COUNT'];
+  @$row['TOTAL_AMOUNT'] = $row['MM_AMOUNT'] + $row['DM_AMOUNT'];
+  @$row['TOTAL_AMOUNT_TEXT'] = pretty_number($row['TOTAL_AMOUNT']);
+  @$row['TOTAL_COUNT_TEXT'] = pretty_number($row['TOTAL_COUNT']);
+}
+
+usort($spent, function ($a, $b) {
+  return $a['TOTAL_AMOUNT'] < $b['TOTAL_AMOUNT'] ? -1 :
+    ($a['TOTAL_AMOUNT'] > $b['TOTAL_AMOUNT'] ? 1 : 0);
+});
+
+
+$template = gettemplate("admin/admin_analyze_matter", true);
+foreach ($spent as $row) {
+  $template->assign_block_vars('spent', $row);
+}
+$fromDate = classSupernova::$db->doquery("SELECT min(log_dark_matter_timestamp) FROM `{{log_dark_matter}}`;", true);
+$template->assign_var("MIN_DATE", reset($fromDate));
+
+
+display($template, '{Анализ расхода и прихода материи}', false, '', true);

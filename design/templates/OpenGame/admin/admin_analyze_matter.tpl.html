@@ -1,0 +1,29 @@
+<h2>{Данные с} {MIN_DATE}</h2>
+
+<table class="c_r">
+  <tr class="c_c">
+    <th rowspan="2">{Статья}</th>
+    <th colspan="2">{ВСЕГО}</th>
+    <th colspan="2">{ТМ}</th>
+    <th colspan="2">{ММ}</th>
+  </tr>
+  <tr class="c_c">
+    <th>{Сумма}</th>
+    <th>{Транзакции}</th>
+    <th>{Сумма}</th>
+    <th>{Транзакции}</th>
+    <th>{Сумма}</th>
+    <th>{Транзакции}</th>
+  </tr>
+  <!-- BEGIN spent -->
+  <tr>
+    <td class="c_l">{spent.CONSTANT} [{spent.REASON}]</td>
+    <td>{spent.TOTAL_AMOUNT_TEXT}</td>
+    <td>{spent.TOTAL_COUNT}</td>
+    <td>{spent.DM_AMOUNT_TEXT}</td>
+    <td>{spent.DM_COUNT}</td>
+    <td>{spent.MM_AMOUNT_TEXT}</td>
+    <td>{spent.MM_COUNT}</td>
+  </tr>
+  <!-- END spent -->
+</table>

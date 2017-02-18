@@ -492,6 +492,12 @@ $sn_menu_admin = array(
     'LINK'       => 'admin/admin_darkmatter.php',
     'AUTH_LEVEL' => 3,
   ),
+  'menu_admin_matter_analyze'   => array(
+    'TYPE'       => 'lang',
+    'ITEM'       => 'matter_analyze',
+    'LINK'       => 'admin/admin_analyze_matter.php',
+    'AUTH_LEVEL' => 3,
+  ),
 
   'menu_admin_metamatter_header'  => array(
     'LEVEL'      => 'header',

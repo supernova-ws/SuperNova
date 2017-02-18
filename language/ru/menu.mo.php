@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 42a22.1
 *
 */
 
@@ -123,4 +123,6 @@ $a_lang_array = (array(
 
   'menu_pin' => 'Закрепить меню',
   'menu_unpin' => 'Открепить меню',
+
+  'matter_analyze' => 'Баланс материи',
 ));
