@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 42a22.0
 *
 */
 
@@ -183,4 +183,8 @@ $a_lang_array = array(
   'uni_msg_admin_rename' => 'Player ID %d [%s] for %d DM gives to %s at [%s%s] new name: %s',
 
   'uni_colonize' => 'Send colonizer ship to make a Colony on position',
+
+  'uni_scan_start' => 'Start scanning mode',
+  'uni_scan_stop' => 'Exit scanning mode',
+
 );

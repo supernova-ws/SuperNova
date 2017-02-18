@@ -25,6 +25,7 @@ lng_include('universe');
 lng_include('stat');
 
 $mode       = sys_get_param_str('mode');
+$scan       = sys_get_param_str('scan');
 $uni_galaxy = sys_get_param_int('galaxy', $planetrow['galaxy']);
 $uni_system = sys_get_param_int('system', $planetrow['system']);
 $planet     = sys_get_param_int('planet', $planetrow['planet']);
@@ -397,5 +398,13 @@ $template->assign_vars(array(
      'PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE' => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE],
    )
 );
+
+if($scan) {
+  $template->assign_vars(array(
+    'MENU' => false,
+    'NAVBAR' => false,
+    'UNIVERSE_SCAN_MODE' => true,
+  ));
+}
 
 display(parsetemplate($template), $lang['sys_universe'], true, '', false);

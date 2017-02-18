@@ -1,4 +1,5 @@
-<table width=595 id="universe_main"><tbody>
+<table width=595 id="universe_main" class="{$SCAN_CLASS_NO_BORDER}"><tbody>
+<!-- IF ! UNIVERSE_SCAN_MODE -->
 <tr><th class="c_l" colspan="{COL_SPAN}">
   {L_sys_galaxy}&nbsp;[{galaxy}]&nbsp;<span class="ok">{GALAXY_NAME}</span>&nbsp;<span class="button_pseudo" go="galaxy" planet_system="0" mode="name"><!-- IF GALAXY_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></span>
   <span class="fr notice link_action button_pseudo" id="universe_legend">{L_Legend}</span>
@@ -8,6 +9,7 @@
   <span>{L_sys_system}&nbsp;[{galaxy}:{system}] <span class="ok">{SYSTEM_NAME}</span>&nbsp;<a class="link button_pseudo" href="galaxy.php?mode=name&galaxy={galaxy}&system={system}"><!-- IF SYSTEM_NAME -->{L_uni_rename}<!-- ELSE -->{L_uni_to_name}<!-- ENDIF --></a></span>
   <div style="height: 100%; display: inline-block; vertical-align: middle;"><!-- IF planets -->{L_gal_planets} {planets}<!-- ELSE -->{L_gal_planetNone}<!-- ENDIF --></div>
 </th></tr>
+<!-- ENDIF -->
 
 <tr class="c_c">
   <th>{L_Pos}</th>
@@ -37,6 +39,7 @@
   <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
 </tr>
 
+
 <!-- BEGIN galaxyrow -->
 
 <!-- IF galaxyrow.USER_ID && USER_ID != galaxyrow.USER_ID -->
@@ -45,7 +48,7 @@
   <!-- DEFINE $DIFFERENT_USER = 0 -->
 <!-- ENDIF -->
 
-<tr class="uni_planet_row" user_id="{galaxyrow.USER_ID}" ally_id="{galaxyrow.ALLY_ID}" planet_pos="{galaxyrow.PLANET_NUM}">
+<tr class="uni_planet_row {$SCAN_CLASS}" user_id="{galaxyrow.USER_ID}" ally_id="{galaxyrow.ALLY_ID}" planet_pos="{galaxyrow.PLANET_NUM}">
   <!-- IF galaxyrow.PLANET_ID -->
     <th width=30>
       {galaxyrow.PLANET_NUM}
@@ -202,21 +205,21 @@
     <!-- IF ACT_SPY -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-        <a class="button_pseudo" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_espionage.png" style="height: 1.5em" /></a>
+        <a class="button_pseudo {$SCAN_CLASS}" alt="{L_gl_espionner}" title="{L_gl_espionner}" onclick="doit({D_MT_SPY}, {galaxyrow.PLANET_NUM}, 1, {ACT_SPIO});"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_espionage.png" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_MISSILE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER && (! galaxyrow.USER_NOOB || galaxyrow.USER_ATTACKABLE) -->
-      <a class="button_pseudo missile_attack_prepare" planet_planet="{galaxyrow.PLANET_NUM}" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" ><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_missile.png" style="height: 1.5em" /></a>
+      <a class="button_pseudo {$SCAN_CLASS} missile_attack_prepare" planet_planet="{galaxyrow.PLANET_NUM}" alt="{L_gl_mipattack}" title="{L_gl_mipattack}" ><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_missile.png" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
     <!-- IF ACT_WRITE -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a class="button_pseudo" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
+      <a class="button_pseudo {$SCAN_CLASS}" href="messages.php?mode=write&id={galaxyrow.USER_ID}"><img src="{D_SN_ROOT_VIRTUAL}design/images/icon_mail.gif" alt="{L_gl_sendmess}" title="{L_gl_sendmess}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
@@ -230,7 +233,7 @@
     <!-- IF ACT_INFO -->
     <td class="c_c">
       <!-- IF $DIFFERENT_USER -->
-      <a class="button_pseudo" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{I_menu_empire_emperor}" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
+      <a class="button_pseudo {$SCAN_CLASS}" href="index.php?page=imperator&int_user_id={galaxyrow.USER_ID}"><img src="{I_menu_empire_emperor}" alt="{L_stat_details}" title="{L_stat_details}" style="height: 1.5em" /></a>
       <!-- ENDIF -->
     </td>
     <!-- ENDIF -->
@@ -244,7 +247,7 @@
   <!-- ELSE -->
     <td colspan="{COL_SPAN}" class="c_c">
       <!-- IF ! PLAYER_OPTION_UNIVERSE_DISABLE_COLONIZE -->
-        <span class="button_pseudo" go="fleet" planet_planet="{galaxyrow.PLANET_NUM}" mission="{D_MT_COLONIZE}">
+        <span class="button_pseudo {$SCAN_CLASS}" go="fleet" planet_planet="{galaxyrow.PLANET_NUM}" mission="{D_MT_COLONIZE}">
           {L_uni_colonize} {galaxyrow.PLANET_NUM}
         </span>
       <!-- ELSE -->
@@ -256,7 +259,7 @@
 <!-- END galaxyrow -->
 <tr>
   <th colspan="{COL_SPAN}" class="subheader">
-    <span class="button_pseudo ownexpedition" go="fleet" planet_planet="{PLANET_EXPEDITION}" mission="{D_MT_EXPLORE}">
+    <span class="button_pseudo {$SCAN_CLASS} ownexpedition" go="fleet" planet_planet="{PLANET_EXPEDITION}" mission="{D_MT_EXPLORE}">
       {L_gf_unknowsp}
     </span>
   </th>

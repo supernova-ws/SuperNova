@@ -90,32 +90,14 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
 <!-- ENDIF --><!-- END galaxyrow -->
 // --></script>
 
+<!-- IF UNIVERSE_SCAN_MODE -->
+  <!-- DEFINE $SCAN_CLASS = 'uni_scan' -->
+  <!-- DEFINE $SCAN_CLASS_NO_BORDER = 'no_border_image' -->
+<!-- ENDIF -->
 <br />
-<form action="galaxy.php?mode=1" method="post" id="galaxy_form">
-  <table class="border_image_small" style="margin-bottom: 1em;"><tbody>
-    <tr>
-      <td class="c" colspan="3"><label for="galaxy">{L_Galaxy}</label></td>
-      <td class="c" colspan="3"><label for="system">{L_Solar_system}</label></td>
-    </tr>
-    <tr>
-      <th class="c"><span class="button_pseudo" id="galaxyLeft">&lt;-</span></th>
-      <th class="c"><input name="galaxy" id="galaxy" value="{galaxy}" size="5" maxlength="3" tabindex="1" type="text" /></th>
-      <th class="c"><span class="button_pseudo" id="galaxyRight">-&gt;</span></th>
+<!-- INCLUDE universe_navigation -->
 
-      <th class="c"><span class="button_pseudo" id="systemLeft">&lt;-</span></th>
-      <th class="c"><input name="system" id="system" value="{system}" size="5" maxlength="3" tabindex="2" type="text" /></th>
-      <th class="c"><span class="button_pseudo" id="systemRight">-&gt;</span></th>
-    </tr>
-    <tr>
-      <th class="c_c" colspan="6" align="center">
-        <input value="{L_sys_goto}" type="submit">
-        <input type="hidden" id="auto" value="dr" >
-      </th>
-    </tr>
-  </tbody></table>
-</form>
-
-<!-- IF PLAYER_OPTION_UNIVERSE_OLD -->
+<!-- IF PLAYER_OPTION_UNIVERSE_OLD || UNIVERSE_SCAN_MODE -->
   <!-- INCLUDE universe_old -->
 <!-- ELSE -->
   <!-- INCLUDE universe_new -->
@@ -334,4 +316,6 @@ uni_row[{galaxyrow.PLANET_NUM}] = {
   </span>
 </span>
 
+<!-- IF ! UNIVERSE_SCAN_MODE -->
 <!-- INCLUDE page_hint -->
+<!-- ENDIF -->

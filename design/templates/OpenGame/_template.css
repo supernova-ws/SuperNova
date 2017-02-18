@@ -2197,7 +2197,7 @@ body:not(.no_border_image) .border_image_large
   border-image:         url("../../../design/images/border.png") 24 11 25 25 round round;
 }
 
-body:not(.no_border_image) .border_image_small, body:not(.no_border_image) .ui-dialog
+body:not(.no_border_image) .border_image_small:not(.no_border_image), body:not(.no_border_image) .ui-dialog
 {
   border: solid transparent;
   border-radius: 0.5em;
@@ -2442,6 +2442,16 @@ body:not(.no_border_image) [table_title]:before {
 
 .uni_show_user {
   min-width: 12em;
+}
+
+.uni_scan.uni_planet_row > * {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.uni_scan.button_pseudo  {
+  margin-top: 0;
+  margin-bottom: 0;
 }
 
 .uni_planet_row .uni_object_type { /* Тип объекта - планета/луна/обломки */

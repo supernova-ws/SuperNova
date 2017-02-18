@@ -1001,3 +1001,13 @@ $(document).on("click", ".navbar_resources_flex_resource", function () {
     that.tooltip("open");
   }
 });
+
+$(document).on("click", "#universeScanStart,#universeScanStop", function () {
+  $('#universe_scan_mode').val($('#universe_scan_mode').val() ? 0 : 1);
+  $('#galaxy_form').submit();
+});
+//
+// $(document).on("click", "", function () {
+//   $('#universe_scan_mode').val(0);
+//   $('#galaxy_form').submit();
+// });
