@@ -217,7 +217,9 @@ class template
   */
   function display($handle, $include_once = true)
   {
-    global $user, $phpbb_hook, $lang, $config;
+    global $phpbb_hook,
+          // This is used for accessing from compiled templates via include
+           $user, $lang, $config;
 
     if (!empty($phpbb_hook) && $phpbb_hook->call_hook(array(__CLASS__, __FUNCTION__), $handle, $include_once))
     {
