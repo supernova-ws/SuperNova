@@ -153,6 +153,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   $field_set = array(
     'server_name' => SN_ROOT_VIRTUAL,
     'register_time' => SN_TIME_NOW,
+    'news_lastread' => SN_TIME_NOW,
     'user_bot' => $options['user_bot'] = empty($options['user_bot']) ? USER_BOT_PLAYER : $options['total_points'],
 
     'username' => $username_unsafe,

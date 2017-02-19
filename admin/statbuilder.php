@@ -27,7 +27,7 @@ if(SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_admin_fo
   $script = '<script type="text/javascript">
   $(document).ready(function() {
     // send requests
-    $.post("scheduler.php?admin_update=1", function(result) {
+    $.post("scheduler.php?admin_update=1&' . SN_TIME_NOW . '", function(result) {
       // format result
       // alert(xml);
       // var result = [ $("message", xml).text() ];
