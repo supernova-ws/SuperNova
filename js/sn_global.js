@@ -924,6 +924,7 @@ function snConfirm(params) {
 
 
 var navbarResources = {};
+var PLAYER_OPTION_NAVBAR_PLANET_VERTICAL = 0;
 $(document).ready(function () {
   var tooltipPosition = { my: "left top+15", at: "left bottom", collision: "flipfit" };
   if(PLAYER_OPTION_NAVBAR_PLANET_VERTICAL) {

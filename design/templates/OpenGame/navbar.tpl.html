@@ -10,7 +10,7 @@
 <!-- ENDIF -->
 
 <script type="text/javascript">
-  var PLAYER_OPTION_NAVBAR_PLANET_VERTICAL = Math.intVal('{PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}');
+  PLAYER_OPTION_NAVBAR_PLANET_VERTICAL = Math.intVal('{PLAYER_OPTION_NAVBAR_PLANET_VERTICAL}');
 </script>
 
 <div id="navbar_container" class="{$NAVBAR_CLASS}">
@@ -42,7 +42,7 @@
     <div class="contF flexW header">
       <select size="1" onchange="changePlanet(this);" id="navbar_planet_select">
         <!-- BEGIN topnav_planets -->
-        <option{topnav_planets.SELECTED} value="{topnav_planets.ID}">{topnav_planets.COORDS}&nbsp;{topnav_planets.TYPE_TEXT}&nbsp;{topnav_planets.NAME}
+        <option {topnav_planets.SELECTED} value="{topnav_planets.ID}">{topnav_planets.COORDS}&nbsp;{topnav_planets.TYPE_TEXT}&nbsp;{topnav_planets.NAME}</option>
         <!-- END topnav_planets -->
       </select>
 
