@@ -15,6 +15,8 @@ var PLANET_ID = Math.intVal('{PLN_ID}');
 
 var que_id = Math.intVal('{QUE_ID}');
 
+var UNIT_TECHNOLOGIES = Math.intVal('{D_UNIT_TECHNOLOGIES}');
+
 $.extend(language, {
   eco_que_clear_dialog_title: '{LA_eco_que_clear_dialog_title}',
   eco_que_clear_dialog_text: '{LA_eco_que_clear_dialog_text}',
@@ -117,6 +119,7 @@ planet = {
   production[Math.intVal('{production.ID}')] = {
     id: Math.intVal('{production.ID}'),
     name: '{production.NAME}',
+    'unit_type': '{production.UNIT_TYPE}',
     'image': '{I_[production.ID]}',
     level: Math.intVal('{production.LEVEL}'),
     level_bonus: '{production.LEVEL_BONUS}',

@@ -311,7 +311,7 @@ function eco_struc_show_unit_info(unit_id, no_color) {
           $('#unit_destroy_time').html(unit['destroy_time']);
         }
 
-        if (planet['fields_free'] > 0 && unit['build_can'] != 0 && unit['build_result'] == 0) {
+        if ((planet['fields_free'] > 0 || unit['unit_type'] == UNIT_TECHNOLOGIES) && unit['build_can'] != 0 && unit['build_result'] == 0) {
           $('#unit_create_button').button('enable');
           $('#unit_create, #unit_create *').prop('disabled', false);
         }
