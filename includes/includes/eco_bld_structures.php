@@ -183,6 +183,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
       'ID'          => $unit_id,
       'NAME'        => $lang['tech'][$unit_id],
       'DESCRIPTION' => $lang['info'][$unit_id]['description_short'],
+      'UNIT_TYPE'   => $unit_info[P_UNIT_TYPE],
 
       'LEVEL_OLD'   => $level_base,
       'LEVEL_BONUS' => $level_bonus,
