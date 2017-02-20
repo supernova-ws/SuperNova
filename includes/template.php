@@ -571,7 +571,7 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
     'TOPNAV_CURRENT_PLANET_IMAGE' => $planetrow['image'],
     'TOPNAV_COLONIES_CURRENT'     => get_player_current_colonies($user),
     'TOPNAV_COLONIES_MAX'         => get_player_max_colonies($user),
-    'TOPNAV_MODE'                 => $GET_mode,
+    'NAVBAR_MODE'                 => $GET_mode,
 
     'TOPNAV_DARK_MATTER'            => mrc_get_level($user, '', RES_DARK_MATTER),
     'TOPNAV_DARK_MATTER_TEXT'       => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER)),

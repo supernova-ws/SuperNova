@@ -20,7 +20,6 @@ function nws_render(&$template, $query_where = '', $query_limit = 20) {
     {$query_where}
     ORDER BY `tsTimeStamp` DESC, idAnnounce" .
     ($query_limit ? " LIMIT {$query_limit}" : ''));
-
   $template->assign_var('NEWS_COUNT', db_num_rows($announce_list));
 
   $users = array();

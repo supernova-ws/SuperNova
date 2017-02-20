@@ -1012,3 +1012,17 @@ $(document).on("click", "#universeScanStart,#universeScanStop", function () {
 //   $('#universe_scan_mode').val(0);
 //   $('#galaxy_form').submit();
 // });
+
+var NAVBAR_MODE = 0;
+
+function changePlanet(obj) {
+  var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value + (NAVBAR_MODE ? '&mode=' + NAVBAR_MODE : '');
+  var regexp=/\?page\=(.*)/i;
+  var parsed = regexp.exec(window.location.href);
+  if(parsed) {
+    pathAdd = parsed[0].replace(/\&cp=\d*/i, '').replace(/\&mode=\d*/i, '') + '&' + pathAdd;
+  } else {
+    pathAdd = '?' + pathAdd;
+  }
+  window.location.href = window.location.pathname + pathAdd;
+}

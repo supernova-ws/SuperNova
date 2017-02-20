@@ -317,50 +317,18 @@
 
 <div id="navbar_refresh" class="button_pseudo" onclick="document.location.reload(true);">{L_topnav_refresh_page}</div>
 
-<!-- IF .announces && GAME_NEWS_OVERVIEW -->
-<table width=519 id="fresh_news_table" align="center" class="border_image_small">
-  <tr>
-    <th class="c_c">
-      {L_news_fresh}
-      <img id="news_close" class="fr pointer image_close" src="{I_r1}" alt="{L_sys_close}" title="{L_sys_close}" />
-    </th>
-  </tr>
-  <!-- INCLUDE news_list -->
-  <tr>
-    <th class="c_c">
-      <a class="link" href="announce.php">{L_news_all}</a>
-    </th>
-  </tr>
-</table>
+<!-- IF 1 || .announces && GAME_NEWS_OVERVIEW -->
+  <!-- INCLUDE navbar_news -->
 <!-- ENDIF -->
 
 <!-- IF .note -->
-<table id="note_table" align="center" class="border_image_small">
-  <tr>
-    <th colspan=2 class="c_c">
-      <a class="link" href="notes.php">{L_sys_notes}</a>
-    </th>
-  </tr>
-  <!-- INCLUDE note_list -->
-</table>
+  <!-- INCLUDE navbar_notes -->
 <!-- ENDIF -->
 
 <script type="text/javascript">
   sn_inframe ? $('#navbar_refresh').css('display', 'block') : false;
 
-  function changePlanet(obj) {
-    var pathAdd = 'cp=' + obj.options[obj.selectedIndex].value + ('{TOPNAV_MODE}' ? '&mode={TOPNAV_MODE}' : '');
-    regexp=/\?page\=(.*)/i;
-    var parsed = regexp.exec(window.location.href);
-    if(parsed) {
-      // pathAdd = parsed[0] + '&' + pathAdd;
-      pathAdd = parsed[0].replace(/\&cp=\d*/i, '').replace(/\&mode=\d*/i, '') + '&' + pathAdd;
-    } else {
-      pathAdd = '?' + pathAdd;
-    }
-    // alert(pathAdd);
-    window.location.href = window.location.pathname + pathAdd;
-  }
+  NAVBAR_MODE = Math.intVal('{NAVBAR_MODE}');
 
   sn_timers.unshift({
     'id': 'top_time_server',
