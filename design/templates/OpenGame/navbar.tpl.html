@@ -67,11 +67,11 @@
           <!-- DEFINE $QUE_ID = '{QUE_RESEARCH}' -->
 
           <!-- IF PLAYER_OPTION_NAVBAR_RESEARCH_WIDE -->
-            <!-- DEFINE $NAVBAR_BUTTON_RESEARCH_CLASS = 'wide' -->
+            <!-- DEFINE $NAVBAR_QUE_CLASS = 'wide' -->
             <!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_research}' -->
             <!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_navbar_research_wide}' -->
           <!-- ELSE -->
-            <!-- DEFINE $NAVBAR_BUTTON_RESEARCH_CLASS = '' -->
+            <!-- DEFINE $NAVBAR_QUE_CLASS = '' -->
             <!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_research_short}' -->
             <!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_navbar_research}' -->
           <!-- ENDIF -->
@@ -81,10 +81,10 @@
           <!-- INCLUDE navbar_button_techs -->
         <!-- ENDIF -->
 
-        <!-- DEFINE $NAVBAR_BUTTON_RESEARCH_CLASS = '' -->
-
         <!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_PLANET -->
           <!-- DEFINE $QUE_ID = '{QUE_STRUCTURES}' -->
+
+          <!-- DEFINE $NAVBAR_QUE_CLASS = '' -->
           <!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_structures}' -->
           <!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_[TOPNAV_CURRENT_PLANET_IMAGE]}' -->
           <!-- DEFINE $NAVBAR_QUE_HINT = '{TOPNAV_CURRENT_PLANET_NAME}' -->
@@ -95,6 +95,8 @@
 
         <!-- IF ! PLAYER_OPTION_NAVBAR_DISABLE_HANGAR && ! GAME_HANGAR_DISABLED -->
           <!-- DEFINE $QUE_ID = '{SUBQUE_FLEET}' -->
+
+          <!-- DEFINE $NAVBAR_QUE_CLASS = '' -->
           <!-- DEFINE $NAVBAR_QUE_NAME = '{L_sys_que_hangar}' -->
           <!-- DEFINE $NAVBAR_QUE_IMAGE = '{I_navbar_hangar}' -->
           <!-- DEFINE $NAVBAR_QUE_HINT = '{L_Shipyard}' -->
