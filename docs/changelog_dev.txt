@@ -296,6 +296,33 @@ JS/CSS
     $sn_mvc['css']
 
 
+#test {
+  z-index: 0;
+  color: red
+}
+
+.class_test {
+  color: white;
+  width: 40%;
+  position: absolute;
+  right: 0;
+  border: 1px solid red;
+  background-color: rgba(0,255,0,0.5);
+
+  z-index: -1;
+}
+
+$(document).ready(
+function() {
+  $('#test').append("<span class='class_test'>Q</span>");
+}
+);
+
+
+
+
+
+
 #ctv
 
 
@@ -305,6 +332,11 @@ JS/CSS
 
 
 - Плохо нажимается кнопко постройки в Опере
+
+
+2017-02-22 01:46:23 42a23.6
+[@] Код
+    Теперь при обмене ресурсов используется код RPG_MARKET_EXCHANGE = 35 вместо RPG_MARKET = 6
 
 
 2017-02-21 02:05:54 42a23.5

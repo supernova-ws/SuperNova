@@ -1338,6 +1338,11 @@ switch($new_version) {
       );
     }
 
+    // 2017-02-22 01:46:23 42a23.6
+    // RPG_MARKET = 6, RPG_MARKET_EXCHANGE = 35
+    upd_do_query("UPDATE `{{log_dark_matter}}` SET `log_dark_matter_reason` = " . 35 . " WHERE `log_dark_matter_reason` = " . 6);
+    upd_do_query("UPDATE `{{log_metamatter}}` SET `reason` = " . 35 . " WHERE `reason` = " . 6);
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 42;
