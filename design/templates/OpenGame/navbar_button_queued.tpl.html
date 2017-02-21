@@ -1,0 +1,50 @@
+<!-- INCLUDE eco_queue -->
+<div class="navbar_button {$NAVBAR_QUE_CLASS}" title="{$NAVBAR_QUE_HINT}" go_url="{$NAVBAR_QUE_URL}">
+  <img class="navbar_button_image" src="{$NAVBAR_QUE_IMAGE}" alt="{$NAVBAR_QUE_HINT}"/>
+
+  <!-- IF $QUE_NOT_EMPTY -->
+
+  <div class="a50 navbar_button_que">
+    <div class="bld_que_total_time_text topnav_{$QUE_ID}_hide_on_complete">
+      {L_que_slot_length}&nbsp;
+      <span id="topnav_{$QUE_ID}_slots"></span>
+    </div>
+
+    <div class="bld_que_total_bar topnav_{$QUE_ID}_hide_on_complete">
+      <div id="topnav_{$QUE_ID}_progress_bar" class="bld_que_total_progress_bar"></div>
+      <div id="topnav_{$QUE_ID}_total" class="bld_que_total_timer"></div>
+    </div>
+
+    <div class="navbar_button_que_current_unit">
+      <div>
+        <span id="topnav_{$QUE_ID}"></span>
+        <span id="topnav_{$QUE_ID}_units"></span>
+      </div>
+    </div>
+
+    <div class="que_slot_time_container que_item_0 topnav_{$QUE_ID}_hide_on_complete">
+      <div class="que_unit_time que_unit_progress_bar topnav_{$QUE_ID}_unit_bar_0"></div>
+      <div class="que_unit_time topnav_{$QUE_ID}_timer_0 a50"></div>
+    </div>
+
+    <div id="topnav_{$QUE_ID}_que" class="hide"></div>
+  </div>
+
+  <!-- ELSE -->
+
+  <span class="posLT w100 a50">
+    {$NAVBAR_QUE_NAME}
+  </span>
+
+  <span class="a50 navbar-container-button-que-empty">
+    {L_eco_que_empty}
+  </span>
+
+  <!-- IF $QUE_ID == QUE_STRUCTURES -->
+  <span id="topnav_colonies_counter_total" class="a50 posRB w100">
+    <span id='topnav_colonies_counter'>{TOPNAV_COLONIES_CURRENT}</span>/{TOPNAV_COLONIES_MAX}
+  </span>
+  <!-- ENDIF -->
+
+  <!-- ENDIF -->
+</div>

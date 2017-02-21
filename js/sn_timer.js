@@ -169,6 +169,8 @@ if(window.LOADED_TIMER === undefined) {
           timer['html_finish'] = $(timer.prefixId + '_finish:visible');
           timer['html_slots_current'] = $(timer.prefixId + '_slots');
           timer['html_queProgressBar'] = $(timer.prefixId + '_progress_bar');
+          // Unit amount/level in que
+          timer['html_timer_units'] = $(timer.prefixId + '_units');
           timer.queProgressBarWidth = timer['html_queProgressBar'].width() ? timer['html_queProgressBar'].width() : 0;
 
           timer['html_level_current'] = $(timer.prefixClass + '_level_0:visible');
@@ -286,6 +288,7 @@ if(window.LOADED_TIMER === undefined) {
     var timer, timerID, timeLeftTotalText, infoText, timer_options, local_time_plus, timeLeftText, new_value, hintText,
       timeLeft, timeSinceLastUpdate, que;
     var activeTimers = 0;
+    var textUnitsLeft = '';
 
     var time_local_now = new Date();
 
@@ -341,6 +344,8 @@ if(window.LOADED_TIMER === undefined) {
         }
 
         case TIMER_BUILD_QUE_V2: {
+          textUnitsLeft = '';
+
           timer['start_time'] = time_local_now;
 
           que = timer_options['que'];
@@ -382,7 +387,9 @@ if(window.LOADED_TIMER === undefined) {
             que[0][UNIT_TIME] -= timeSinceLastUpdate; // Вычитаем то, что могло остаться с прошлого юнита/стэка
             timeLeft = que[0][UNIT_TIME] <= 0 ? 1 : que[0][UNIT_TIME];
 
-            infoText = que[0][UNIT_NAME] + '<br />(' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
+            // infoText = que[0][UNIT_NAME] + '<br />(' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
+            infoText = que[0][UNIT_NAME];
+            textUnitsLeft = '(' + que[0][que[0][UNIT_LEVEL] ? UNIT_LEVEL : UNIT_AMOUNT] + ')';
             timeLeftText = sn_timestampToString(timeLeft);
             timeLeftTotalText = sn_timestampToString(timeLeft + timer_options['total']);
 
@@ -422,12 +429,19 @@ if(window.LOADED_TIMER === undefined) {
           if (timer['html_total_js'].length) {
             timer['html_total_js'].html(timeLeftTotalText);
           } else {
-            timeLeftText += (timeLeftText ? '<br>' : '') + timeLeftTotalText;
+            timeLeftText += (timeLeftText ? '<br />' : '') + timeLeftTotalText;
           }
-          if (timer['html_timer_current'].length) {
-            timer['html_timer_current'].html('<span>' + timeLeftText + '</span>');
+
+          if (timer['html_timer_units'].length) {
+            timer['html_timer_units'].html("<span>" + textUnitsLeft + "</span>");
           } else {
-            infoText += (infoText && timeLeftText ? '<br>' : '') + timeLeftText;
+            infoText && textUnitsLeft ? infoText += "<br />" + textUnitsLeft : false;
+          }
+
+          if (timer['html_timer_current'].length) {
+            timer['html_timer_current'].html("<span>" + timeLeftText + "</span>");
+          } else {
+            infoText += (infoText && timeLeftText ? "<br />" : "") + timeLeftText;
           }
 
           // ProgressBars
