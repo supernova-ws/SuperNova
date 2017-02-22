@@ -1,0 +1,16 @@
+<div id="__navbar_additions">
+
+<div id="navbar_refresh" class="button_pseudo" onclick="document.location.reload(true);">{L_topnav_refresh_page}</div>
+
+<script type="text/javascript">
+  sn_inframe ? $('#navbar_refresh').css('display', 'block') : false;
+</script>
+
+<!-- IF .announces && GAME_NEWS_OVERVIEW -->
+  <!-- INCLUDE navbar_news -->
+<!-- ENDIF -->
+
+<!-- IF .note -->
+  <!-- INCLUDE navbar_notes -->
+<!-- ENDIF -->
+</div>

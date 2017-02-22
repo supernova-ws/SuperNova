@@ -148,15 +148,17 @@ function tpl_menu_assign_to_template(&$sn_menu, &$template) {
 }
 
 /**
+ * @param template $template
+ *
  * @return template
  */
-function tpl_render_menu() {
+function tpl_render_menu($template) {
   global $user, $lang, $template_result, $sn_menu_admin_extra, $sn_menu_admin, $sn_menu, $sn_menu_extra;
 
   lng_include('admin');
 
-  $template = gettemplate('menu', true);
-  $template->assign_recursive($template_result);
+//  $template = gettemplate('menu', true);
+//  $template->assign_recursive($template_result);
 
   $template->assign_vars(array(
     'USER_AUTHLEVEL'      => $user['authlevel'],
@@ -231,6 +233,9 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     !isset($page->_rootref['PAGE_HEADER']) && $title ? $page->assign_var('PAGE_HEADER', $title) : false;
   }
 
+  $isDisplayMenu = ($isDisplayMenu || $in_admin) && !isset($_COOKIE['menu_disable']);
+  $isDisplayTopNav = $isDisplayTopNav && !$in_admin;
+
   if(empty($user['id']) || !is_numeric($user['id'])) {
     $isDisplayMenu = false;
     $isDisplayTopNav = false;
@@ -262,6 +267,9 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     tpl_global_header($template_result, $is_login);
 
     $template->assign_vars(array(
+      '__DISPLAY_MENU' => $isDisplayMenu,
+      '__DISPLAY_NAVBAR' => $isDisplayTopNav,
+
       'USER_AUTHLEVEL' => intval($user['authlevel']),
 
       'FONT_SIZE'                        => $font_size,
@@ -297,18 +305,29 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
       'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
     ));
     $template->assign_recursive($template_result);
+
+    if($isDisplayMenu) {
+      // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
+//      displayP(parsetemplate(tpl_render_menu($template)));
+      tpl_render_menu($template);
+    }
+
+    if($isDisplayTopNav) {
+      tpl_render_topnav($user, $planetrow, $template);
+    }
+
     displayP(parsetemplate($template));
   }
 
 
-  if(($isDisplayMenu || $in_admin) && !isset($_COOKIE['menu_disable'])) {
-    // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
-    displayP(parsetemplate(tpl_render_menu()));
-  }
+//  if(($isDisplayMenu || $in_admin) && !isset($_COOKIE['menu_disable'])) {
+//    // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
+//    displayP(parsetemplate(tpl_render_menu()));
+//  }
 
-  if($isDisplayTopNav && !$in_admin) {
-    displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
-  }
+//  if($isDisplayTopNav && !$in_admin) {
+//    displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
+//  }
 
   displayP(parsetemplate(gettemplate('_content_header', true)));
 
@@ -470,18 +489,20 @@ function tpl_topnav_event_build(&$template, $fleet_flying_list, $type = 'fleet')
 /**
  * @param array $user
  * @param array $planetrow
+ * @param template $template
  *
  * @return string|template
  */
-function tpl_render_topnav(&$user, $planetrow) { return sn_function_call('tpl_render_topnav', array(&$user, $planetrow)); }
+function tpl_render_topnav(&$user, $planetrow, $template) { return sn_function_call('tpl_render_topnav', array(&$user, $planetrow, $template)); }
 
 /**
  * @param array $user
  * @param array $planetrow
+ * @param template $template
  *
  * @return string|template
  */
-function sn_tpl_render_topnav(&$user, $planetrow) {
+function sn_tpl_render_topnav(&$user, $planetrow, $template) {
   global $lang, $config, $sn_module_list, $template_result, $sn_mvc;
 
   if(!is_array($user)) {
@@ -490,8 +511,8 @@ function sn_tpl_render_topnav(&$user, $planetrow) {
 
   $GET_mode = sys_get_param_str('mode');
 
-  $template = gettemplate('navbar', true);
-  $template->assign_recursive($template_result);
+//  $template = gettemplate('navbar', true);
+//  $template->assign_recursive($template_result);
 
   $ThisUsersPlanets = DBStaticPlanet::db_planet_list_sorted($user);
   // while ($CurPlanet = db_fetch($ThisUsersPlanets))

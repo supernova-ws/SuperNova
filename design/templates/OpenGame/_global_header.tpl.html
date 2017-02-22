@@ -163,6 +163,16 @@
       {ADV_SEO_JAVASCRIPT}
     <!-- ENDIF -->
 
-    <table class="markup" width="100%" id="global_page_markup">
-      <tr>
-        <td valign="top" align="center"><div style="margin: 0 auto" id="main_content_center">
+    <div id="__page">
+      <!-- IF .menu && __DISPLAY_MENU -->
+        <!-- INCLUDE menu -->
+      <!-- ENDIF -->
+      <div id="__navbar_wrapper">
+      <!-- IF __DISPLAY_NAVBAR -->
+        <!-- INCLUDE navbar -->
+      <!-- ENDIF -->
+        <div id="__content_wrapper">
+        <!-- IF __DISPLAY_NAVBAR_ADDITIONS -->
+          <!-- INCLUDE navbar_additions -->
+        <!-- ENDIF -->
+        <div id="__content">

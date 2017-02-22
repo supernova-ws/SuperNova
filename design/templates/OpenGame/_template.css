@@ -38,6 +38,43 @@ body {
   background-size: cover;
 }
 
+/* #__page = #__menu + #__navbar_wrapper */
+#__page {
+  display: flex;
+
+  /*border: 5px solid white;*/
+}
+#__menu {
+  /*display: inline-block;*/
+
+  /*border: 5px solid red;*/
+}
+/* #__navbar_wrapper = #navbar_container + #__content_wrapper*/
+#__navbar_wrapper {
+  flex-basis: 100%;
+  flex-shrink: 1;
+  flex-grow: 1;
+
+  /*border: 5px dashed teal;*/
+}
+#navbar_container {
+  /*border: 5px solid #5a70ff;*/
+}
+/* #__content_wrapper = #__navbar_additions + #__content */
+#__content_wrapper {
+  /*border: 5px solid red;*/
+}
+#__navbar_additions {
+  /*border: 5px solid purple;*/
+}
+/* #__content = {page rendered here} + #copyright */
+#__content {
+  /*border: 5px solid white;*/
+}
+#copyright {
+  /*border: 5px solid green;*/
+}
+
 img {
   border: 0;
 }
@@ -588,7 +625,7 @@ input[type=text].coordinate {
 }
 
 #note_table {
-  margin: 0.5em 0;
+  margin: 0.5em auto;
   max-width: 70em;
 }
 
@@ -3419,7 +3456,7 @@ td.error_message {
   justify-content: center;
   align-items: center;
 }
-#navbar_container.vertical {
+#navbar_container.resbar_v {
   flex-direction: row;
 
   align-items: flex-start;
@@ -3427,7 +3464,7 @@ td.error_message {
 
   text-align: left;
 }
-#navbar.vertical {
+#navbar.resbar_v {
   display: flex;
   flex-wrap: nowrap;
 
@@ -3440,7 +3477,7 @@ td.error_message {
   flex-grow: 1;
   justify-content: center;
 }
-.navbar_resources_flex.vertical {
+.navbar_resources_flex.resbar_v {
   flex-direction: column;
 }
 
@@ -3448,7 +3485,7 @@ td.error_message {
   display: flex;
   align-items: center;
 }
-.navbar_resources_flex.vertical .navbar_resources_flex_title {
+.navbar_resources_flex.resbar_v .navbar_resources_flex_title {
   display: block;
 }
 
@@ -3457,7 +3494,7 @@ td.error_message {
   flex-grow: 1;
   flex-wrap: wrap;
 }
-.navbar_resources_flex.vertical .navbar_resbar_flex_wrap2 {
+.navbar_resources_flex.resbar_v .navbar_resbar_flex_wrap2 {
   flex-direction: column;
   flex-wrap: nowrap;
 }
@@ -3467,7 +3504,7 @@ td.error_message {
   flex-grow: 1;
   flex-wrap: wrap;
 }
-.navbar_resources_flex.vertical .navbar_resbar_flex_wrap1 {
+.navbar_resources_flex.resbar_v .navbar_resbar_flex_wrap1 {
   flex-direction: column;
   flex-wrap: nowrap;
   justify-content: space-around;
@@ -3496,7 +3533,7 @@ td.error_message {
   }
 }
 
-.navbar_resources_flex.vertical .navbar_resources_flex_resource {
+.navbar_resources_flex.resbar_v .navbar_resources_flex_resource {
   flex-grow: 0;
   margin: 0;
   flex-basis: auto;

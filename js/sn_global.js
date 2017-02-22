@@ -1026,3 +1026,9 @@ function changePlanet(obj) {
   }
   window.location.href = window.location.pathname + pathAdd;
 }
+
+$(document).ready(
+  function() {
+    $('body').append($('#benchmark').detach());
+  }
+);

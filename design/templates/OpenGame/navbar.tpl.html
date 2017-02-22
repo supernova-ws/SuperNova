@@ -9,7 +9,7 @@
 
 
 <!-- IF $NAVBAR_RESOURCES_VERTICAL -->
-  <!-- DEFINE $NAVBAR_RESOURCES_CLASS = 'vertical' -->
+  <!-- DEFINE $NAVBAR_RESOURCES_CLASS = 'resbar_v' -->
 <!-- ELSE -->
   <!-- DEFINE $NAVBAR_RESOURCES_CLASS = '' -->
 <!-- ENDIF -->
@@ -244,19 +244,7 @@
 </div>
 <!-- DEFINE $IN_NAVBAR = 0 -->
 
-<div id="navbar_refresh" class="button_pseudo" onclick="document.location.reload(true);">{L_topnav_refresh_page}</div>
-
-<!-- IF .announces && GAME_NEWS_OVERVIEW -->
-  <!-- INCLUDE navbar_news -->
-<!-- ENDIF -->
-
-<!-- IF .note -->
-  <!-- INCLUDE navbar_notes -->
-<!-- ENDIF -->
-
 <script type="text/javascript">
-  sn_inframe ? $('#navbar_refresh').css('display', 'block') : false;
-
   NAVBAR_MODE = Math.intVal('{NAVBAR_MODE}');
 
   sn_timers.unshift({
