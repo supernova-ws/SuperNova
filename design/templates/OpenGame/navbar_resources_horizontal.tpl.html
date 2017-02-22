@@ -1,43 +1,43 @@
 <tr class="c_l">
   <th nowrap><!-- IF $NAVBAR_RESOURCES_ALLY -->{L_sys_alliance}<!-- ELSE -->{L_sys_resources}<!-- ENDIF --></th>
-  <th>{L_sys_metal}</th>
-  <th>{L_sys_crystal}</th>
-  <th>{L_sys_deuterium}</th>
+  <th data-resource="metal">{L_sys_metal}</th>
+  <th data-resource="crystal">{L_sys_crystal}</th>
+  <th data-resource="deuterium">{L_sys_deuterium}</th>
   <!-- IF $NAVBAR_RESOURCES_ALLY -->
   <th>{L_sys_dark_matter}</th>
   <!-- ELSE -->
-  <th<!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS --> colspan="2"<!-- ENDIF -->>{L_sys_energy}</th>
+  <th data-resource="energy">{L_sys_energy}</th>
   <!-- ENDIF -->
 </tr>
 
 <tr class="c_r">
   <th class="c_l" nowrap>{L_tech_storage}</th>
-  <td id='top_metal'>{PLANET_METAL_TEXT}</td>
-  <td id='top_crystal'>{PLANET_CRYSTAL_TEXT}</td>
-  <td id='top_deuterium'>{PLANET_DEUTERIUM_TEXT}</td>
+  <td id='top_metal' data-resource="metal">{PLANET_METAL_TEXT}</td>
+  <td id='top_crystal' data-resource="crystal">{PLANET_CRYSTAL_TEXT}</td>
+  <td id='top_deuterium' data-resource="deuterium">{PLANET_DEUTERIUM_TEXT}</td>
   <!-- IF $NAVBAR_RESOURCES_ALLY -->
   <td id='top_dark_matter'>{DARK_MATTER_TEXT}</td>
   <!-- ELSE -->
-  <td>{ENERGY_BALANCE}</td>
+  <td data-resource="energy">{ENERGY_BALANCE}</td>
   <!-- ENDIF -->
 </tr>
 
 <!-- IF ! $NAVBAR_RESOURCES_ALLY && (! $NAVBAR_RESOURCES_HIDE_STORAGE || ! $IN_NAVBAR) -->
 <tr class="c_r">
   <th class="c_l" nowrap>{L_tech_storage_max}</th>
-  <td>{PLANET_METAL_MAX_TEXT}</td>
-  <td>{PLANET_CRYSTAL_MAX_TEXT}</td>
-  <td>{PLANET_DEUTERIUM_MAX_TEXT}</td>
-  <td>{ENERGY_MAX}</td>
+  <td data-resource="metal">{PLANET_METAL_MAX_TEXT}</td>
+  <td data-resource="crystal">{PLANET_CRYSTAL_MAX_TEXT}</td>
+  <td data-resource="deuterium">{PLANET_DEUTERIUM_MAX_TEXT}</td>
+  <td data-resource="energy">{ENERGY_MAX}</td>
 </tr>
 <!-- ENDIF -->
 
 <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
 <tr class="c_r">
   <th class="c_l" nowrap>{L_sys_fleet_and}</th>
-  <td>{PLANET_METAL_FLEET_TEXT}</td>
-  <td>{PLANET_CRYSTAL_FLEET_TEXT}</td>
-  <td>{PLANET_DEUTERIUM_FLEET_TEXT}</td>
+  <td data-resource="metal">{PLANET_METAL_FLEET_TEXT}</td>
+  <td data-resource="crystal">{PLANET_CRYSTAL_FLEET_TEXT}</td>
+  <td data-resource="deuterium">{PLANET_DEUTERIUM_FLEET_TEXT}</td>
   <td>-</td>
 </tr>
 <!-- ENDIF -->

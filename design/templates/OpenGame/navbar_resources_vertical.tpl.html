@@ -9,7 +9,7 @@
     <!-- ENDIF -->
   </tr>
 
-  <tr class="c_r">
+  <tr class="c_r" data-resource="metal">
     <th class="c_l">{L_sys_metal}</th>
     <td id='top_metal'>{PLANET_METAL_TEXT}</td>
     <!-- IF ! $NAVBAR_RESOURCES_ALLY && ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
@@ -20,7 +20,7 @@
     <!-- ENDIF -->
   </tr>
 
-  <tr class="c_r">
+  <tr class="c_r" data-resource="crystal">
     <th class="c_l">{L_sys_crystal}</th>
     <td id='top_crystal'>{PLANET_CRYSTAL_TEXT}</td>
     <!-- IF ! $NAVBAR_RESOURCES_ALLY && ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
@@ -31,7 +31,7 @@
     <!-- ENDIF -->
   </tr>
 
-  <tr class="c_r">
+  <tr class="c_r" data-resource="deuterium">
     <th class="c_l">{L_sys_deuterium}</th>
     <td id='top_deuterium'>{PLANET_DEUTERIUM_TEXT}</td>
     <!-- IF ! $NAVBAR_RESOURCES_ALLY && ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
@@ -42,19 +42,25 @@
     <!-- ENDIF -->
   </tr>
 
+  <!-- IF $NAVBAR_RESOURCES_ALLY -->
   <tr class="c_r">
-    <!-- IF $NAVBAR_RESOURCES_ALLY -->
     <th class="c_l">{L_sys_dark_matter}</th>
     <td id='top_dark_matter'>{DARK_MATTER_TEXT}</td>
-    <!-- ELSE -->
-    <th<!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS --> colspan="2"<!-- ENDIF -->>{L_sys_energy}</th>
+
+    <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
+    <td>-</td>
+    <!-- ENDIF -->
+  </tr>
+  <!-- ELSE -->
+  <tr class="c_r" data-resource="energy">
+    <th class="c_l">{L_sys_energy}</th>
     <td>{ENERGY_BALANCE}</td>
     <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
     <td>{ENERGY_MAX}</td>
-    <!-- ENDIF -->
     <!-- ENDIF -->
 
     <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
     <td>-</td>
     <!-- ENDIF -->
   </tr>
+  <!-- ENDIF -->

@@ -993,7 +993,7 @@ $(document).ready(function () {
 
 
 });
-$(document).on("click", ".navbar_resources_flex_resource", function () {
+$(document).on("click", "[data-resource]", function () {
   var that = $(this);
 
   if ($(".ui-tooltip").length) {
