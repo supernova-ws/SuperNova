@@ -3488,6 +3488,14 @@ td.error_message {
 
   flex-basis: 0.1%;
 }
+
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+  /* IE10+ CSS styles go here */
+  .navbar_resources_flex_resource.cell {
+    flex-basis: auto;
+  }
+}
+
 .navbar_resources_flex.vertical .navbar_resources_flex_resource {
   flex-grow: 0;
   margin: 0;
