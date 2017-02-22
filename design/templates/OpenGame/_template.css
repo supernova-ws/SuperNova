@@ -3411,124 +3411,294 @@ td.error_message {
   display: none;
 }
 
-/** Flex container for navbar resources */
-.navbar_resources_flex
-{
+/*!** Flex container for navbar resources *!*/
+/*.navbar_resources_flex*/
+/*{*/
+  /*display: flex;*/
+  /*flex-wrap: wrap;*/
+
+  /*justify-content: space-around;*/
+  /*align-content: space-around;*/
+  /*align-items: center;*/
+/*}*/
+
+/*!* Title - resource/alliance *!*/
+/*.navbar_resources_flex_title*/
+/*{*/
+  /*flex-grow: 0;*/
+  /*flex-shrink: 5;*/
+  /*height: 100%;*/
+  /*margin: 0.2em;*/
+/*}*/
+
+/*!* Resource item also is flex container *!*/
+/*.navbar_resources_flex_resource.cell*/
+/*{*/
+  /*justify-content: space-between;*/
+  /*align-items: center;*/
+  /*align-content: center;*/
+
+  /*cursor: pointer;*/
+
+  /*margin: 0 0.2em;*/
+  /*!* Overriding .cell padding *!*/
+  /*padding: 0.1em 0.2em;*/
+  /*border-radius: 0.4em;*/
+/*}*/
+
+/*.navbar_resource_image {*/
+  /*display: flex;*/
+  /*flex-wrap: nowrap;*/
+  /*white-space: nowrap;*/
+
+  /*flex-grow: 0;*/
+  /*flex-shrink: 0;*/
+
+  /*align-items: center;*/
+/*}*/
+
+/*!* Resource amount div can grow*!*/
+/*!* Both resource marker and resource amount aligned to right *!*/
+/*.navbar_resources_flex_resource > div*/
+/*{*/
+  /*text-align: right;*/
+  /*flex-grow: 1;*/
+/*}*/
+
+/*!* But resource marker - can't *!*/
+/*.navbar_resources_flex_resource > div:first-child*/
+/*{*/
+  /*flex-grow: 0;*/
+  /*margin-right: 0.2em;*/
+/*}*/
+
+/*!* Preparing amount cell for progress bar*!*/
+/*.navbar_resources_flex_resource > :nth-child(2)*/
+/*{*/
+  /*position: relative;*/
+  /*width: 100%;*/
+/*}*/
+
+/*!* Making resource amount on top of progress bar*!*/
+/*.navbar_resources_flex_resource > :nth-child(2) > div:first-child*/
+/*{*/
+  /*position: relative;*/
+  /*top: 0;*/
+
+  /*display: flex;*/
+  /*justify-content: flex-end;*/
+
+  /*width: 100%;*/
+  /*height: 100%;*/
+
+  /*z-index: 2;*/
+/*}*/
+
+/*!* Positioning amount number vertically centered*!*/
+/*.navbar_resources_flex_resource > :nth-child(2) > div:first-child > **/
+/*{*/
+  /*align-self: center;*/
+/*}*/
+
+/*!* Hack for progressbar to not override amount *!*/
+/*.navbar_resources_flex_resource > :nth-child(2) .ui-progressbar-value*/
+/*{*/
+  /*position: absolute;*/
+  /*top: 0;*/
+  /*z-index: 0;*/
+/*}*/
+
+
+/*#navbar_container.vertical {*/
+  /*display: inline-flex;*/
+
+  /*flex-wrap: wrap;*/
+/*}*/
+/*#navbar.vertical {*/
+  /*display: flex;*/
+  /*flex-wrap: nowrap;*/
+/*}*/
+
+/*!*#navbar.vertical #navbar_resbar_wrapper {*!*/
+  /*!*flex-direction: column;*!*/
+  /*!*flex-wrap: wrap;*!*/
+  /*!*!*flex-grow: 1;*!*!*/
+/*!*}*!*/
+/*.test{*/
+
+/*}*/
+
+/*.navbar_resources_flex.vertical .flexible_wrapper.wrap*/
+/*{*/
+  /*flex: 0 1 auto;*/
+  /*flex-basis: auto;*/
+  /*flex-direction: row;*/
+  /*flex-flow: row;*/
+  /*flex-grow: 0;*/
+  /*flex-shrink: 1;*/
+  /*flex-wrap: nowrap;*/
+  /*justify-content: flex-start;*/
+
+/*}*/
+/*.navbar_resources_flex.vertical {*/
+  /*flex-grow: 1;*/
+  /*!*flex-shrink: 99;*!*/
+  /*flex-direction: column;*/
+  /*margin-left: 0.5em;*/
+  /*font-size: 120%;*/
+/*}*/
+
+/*.navbar_resources_flex.vertical .navbar_resources_flex_title {*/
+  /*height: auto;*/
+/*}*/
+
+/*.navbar_resources_flex.vertical .flexible_wrapper.wrap {*/
+  /*!*flex-direction: column;*!*/
+  /*!**!*/
+/*}*/
+/*.navbar_resources_flex.vertical .flexible_wrapper {*/
+  /*flex-direction: column;*/
+/*}*/
+/*.navbar_resources_flex.vertical .flexible_wrapper.navbar_resources_flex_resource {*/
+  /*flex-direction: row;*/
+  /*margin: 0.20em 0;*/
+  /*border: 1px solid green;*/
+/*}*/
+
+/*!*EXTRA*!*/
+
+/*#navbar_resources_flex {*/
+  /*align-items: stretch;*/
+/*}*/
+
+
+
+#navbar_container.vertical {
+  /*display: flex;*/
+
+  /*flex-wrap: wrap;*/
+}
+#navbar.vertical {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.navbar_resources_flex {
+  flex-wrap: wrap;
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+
+  border: 1px solid white;
+}
+.navbar_resources_flex.vertical {
+  flex-direction: column;
+}
+
+
+.navbar_resources_flex_title {
+  /*border: 1px solid yellow;*/
+}
+:not(.vertical) .navbar_resources_flex_title {
+  /*display: flex;*/
+  /*align-items: center;*/
+  /*justify-content: center;*/
+  /*flex-grow: 0.00001;*/
+}
+.vertical .navbar_resources_flex_title {
+  /*flex-grow: 0;*/
+}
+
+.navbar_resbar_flex_wrap2 {
+  /*border: 1px solid orange;*/
+  /*padding: 1px;*/
+  /*margin: 1px;*/
+}
+.navbar_resources_flex:not(.vertical) .navbar_resbar_flex_wrap2 {
   display: flex;
   flex-wrap: wrap;
+  flex-grow: 1;
+}
+.navbar_resources_flex.vertical .navbar_resbar_flex_wrap2 {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
 
+.navbar_resbar_flex_wrap1 {
+  /*border: 1px solid red;*/
+}
+.navbar_resources_flex:not(.vertical) .navbar_resbar_flex_wrap1 {
+  display: flex;
+  flex-wrap: wrap;
+  flex-grow: 1;
+}
+.navbar_resources_flex.vertical .navbar_resbar_flex_wrap1 {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
   justify-content: space-around;
-  align-content: space-around;
-  align-items: center;
 }
 
-/* Title - resource/alliance */
-.navbar_resources_flex_title
-{
-  flex-grow: 0;
-  flex-shrink: 5;
-  height: 100%;
-  margin: 0.2em;
-}
-
-/* Resource item also is flex container */
-.navbar_resources_flex_resource.cell
-{
-  justify-content: space-between;
-  align-items: center;
-  align-content: center;
-
+.navbar_resources_flex_resource.cell {
   cursor: pointer;
 
   margin: 0 0.2em;
   /* Overriding .cell padding */
   padding: 0.1em 0.2em;
   border-radius: 0.4em;
-}
 
-.navbar_resource_image {
-  display: flex;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-
-  flex-grow: 0;
-  flex-shrink: 0;
-
-  align-items: center;
-}
-
-/* Resource amount div can grow*/
-/* Both resource marker and resource amount aligned to right */
-.navbar_resources_flex_resource > div
-{
-  text-align: right;
-  flex-grow: 1;
-}
-
-/* But resource marker - can't */
-.navbar_resources_flex_resource > div:first-child
-{
-  flex-grow: 0;
-  margin-right: 0.2em;
-}
-
-/* Preparing amount cell for progress bar*/
-.navbar_resources_flex_resource > :nth-child(2)
-{
-  position: relative;
-  width: 100%;
-}
-
-/* Making resource amount on top of progress bar*/
-.navbar_resources_flex_resource > :nth-child(2) > div:first-child
-{
-  position: relative;
-  top: 0;
-
-  display: flex;
-  justify-content: flex-end;
-
-  width: 100%;
-  height: 100%;
-
-  z-index: 2;
-}
-
-/* Positioning amount number vertically centered*/
-.navbar_resources_flex_resource > :nth-child(2) > div:first-child > *
-{
-  align-self: center;
-}
-
-/* Hack for progressbar to not override amount */
-.navbar_resources_flex_resource > :nth-child(2) .ui-progressbar-value
-{
-  position: absolute;
-  top: 0;
-  z-index: 0;
-}
-
-
-#navbar_container.vertical {
-  display: inline-flex;
-
-  flex-wrap: wrap;
-}
-#navbar_container.vertical #navbar {
-  display: flex;
-  flex-wrap: nowrap;
-}
-.navbar_resources_flex.vertical {
-  flex-direction: column;
-  margin-left: 0.5em;
-  font-size: 120%;
-}
-.navbar_resources_flex.vertical .flexible_wrapper {
-  flex-direction: column;
-}
-.navbar_resources_flex.vertical .flexible_wrapper.navbar_resources_flex_resource {
-  flex-direction: row;
-  margin: 0.20em 0;
   border: 1px solid green;
 }
+:not(.vertical) .navbar_resources_flex_resource {
+  display: flex;
+  flex-grow: 1;
 
+  flex-basis: 0.1%;
+}
+.vertical .navbar_resources_flex_resource {
+  /*display: flex;*/
+  /*flex-grow: 1;*/
+  flex-grow: 0;
+  /*width: 100%;*/
+  margin: 0;
+}
+
+
+.navbar_resources_flex_resource > div {
+  border: 1px solid white;
+}
+
+:not(.vertical) .navbar_resources_flex_resource > div {
+  display: flex;
+  /*align-items: center;*/
+  /*align-content: center;*/
+  align-items: flex-end;
+  justify-content: center;
+  flex-direction: column;
+
+}
+
+
+:not(.vertical) .navbar_resources_flex_resource > div:not(.navbar_resource_image) {
+  flex-grow: 1;
+}
+.vertical .navbar_resources_flex_resource > div:not(.navbar_resource_image) {
+}
+
+
+.navbar_resource_image {  }
+
+
+
+
+
+
+/*  DEBUG */
+
+.navbar_resources_flex_resource.cell > div > * {
+  /*border: 1px solid red;*/
+}
+.navbar_resources_flex_resource.cell:not(.vertical) > div:not(.navbar_resource_image) {
+  /*height: 200px;*/
+}

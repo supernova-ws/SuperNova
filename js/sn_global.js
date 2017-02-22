@@ -931,8 +931,8 @@ $(document).ready(function () {
     tooltipPosition = { my: "right-10 top", at: "left top", collision: "flipfit" }
   }
 
-  $(".navbar_resources_flex_resource").tooltip({
-    items: ".navbar_resources_flex_resource",
+  $("[data-resource]").tooltip({
+    items: "[data-resource]",
     position: tooltipPosition,
 
 //      disabled: true,
