@@ -3491,7 +3491,7 @@ td.error_message {
 .navbar_resources_flex.vertical .navbar_resources_flex_resource {
   flex-grow: 0;
   margin: 0;
-  flex-basis: 25%;
+  flex-basis: auto;
 }
 
 .navbar_resources_flex_resource > div {
