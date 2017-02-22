@@ -1,10 +1,10 @@
   <tr class="c_l">
-    <th nowrap><!-- IF SN_IN_ALLY -->{L_sys_alliance}<!-- ELSE -->{L_sys_resources}<!-- ENDIF --></th>
+    <th nowrap><!-- IF $NAVBAR_RESOURCES_ALLY -->{L_sys_alliance}<!-- ELSE -->{L_sys_resources}<!-- ENDIF --></th>
     <th class="c_l" nowrap>{L_tech_storage}</th>
-    <!-- IF ! SN_IN_ALLY && ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+    <!-- IF ! $NAVBAR_RESOURCES_ALLY && ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
     <th class="c_l" nowrap>{L_tech_storage_max}</th>
     <!-- ENDIF -->
-    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
     <th class="c_l" nowrap>{L_sys_fleet_and}</th>
     <!-- ENDIF -->
   </tr>
@@ -12,10 +12,10 @@
   <tr class="c_r">
     <th class="c_l">{L_sys_metal}</th>
     <td id='top_metal'>{PLANET_METAL_TEXT}</td>
-    <!-- IF ! SN_IN_ALLY && ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE  -->
+    <!-- IF ! $NAVBAR_RESOURCES_ALLY && ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
     <td>{PLANET_METAL_MAX_TEXT}</td>
     <!-- ENDIF -->
-    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
     <td>{PLANET_METAL_FLEET_TEXT}</td>
     <!-- ENDIF -->
   </tr>
@@ -23,10 +23,10 @@
   <tr class="c_r">
     <th class="c_l">{L_sys_crystal}</th>
     <td id='top_crystal'>{PLANET_CRYSTAL_TEXT}</td>
-    <!-- IF ! SN_IN_ALLY && ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+    <!-- IF ! $NAVBAR_RESOURCES_ALLY && ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
     <td>{PLANET_CRYSTAL_MAX_TEXT}</td>
     <!-- ENDIF -->
-    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
     <td>{PLANET_CRYSTAL_FLEET_TEXT}</td>
     <!-- ENDIF -->
   </tr>
@@ -34,27 +34,27 @@
   <tr class="c_r">
     <th class="c_l">{L_sys_deuterium}</th>
     <td id='top_deuterium'>{PLANET_DEUTERIUM_TEXT}</td>
-    <!-- IF ! SN_IN_ALLY && ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+    <!-- IF ! $NAVBAR_RESOURCES_ALLY && ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
     <td>{PLANET_DEUTERIUM_MAX_TEXT}</td>
     <!-- ENDIF -->
-    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
     <td>{PLANET_DEUTERIUM_FLEET_TEXT}</td>
     <!-- ENDIF -->
   </tr>
 
   <tr class="c_r">
-    <!-- IF SN_IN_ALLY -->
+    <!-- IF $NAVBAR_RESOURCES_ALLY -->
     <th class="c_l">{L_sys_dark_matter}</th>
     <td id='top_dark_matter'>{DARK_MATTER_TEXT}</td>
     <!-- ELSE -->
-    <th<!-- IF ! SN_NAVBAR_HIDE_FLEETS --> colspan="2"<!-- ENDIF -->>{L_sys_energy}</th>
+    <th<!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS --> colspan="2"<!-- ENDIF -->>{L_sys_energy}</th>
     <td>{ENERGY_BALANCE}</td>
-    <!-- IF ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+    <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
     <td>{ENERGY_MAX}</td>
     <!-- ENDIF -->
     <!-- ENDIF -->
 
-    <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+    <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
     <td>-</td>
     <!-- ENDIF -->
   </tr>

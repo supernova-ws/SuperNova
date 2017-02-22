@@ -20,7 +20,7 @@
 
 <div id="navbar_resources_flex" class="navbar_resources_flex header no_select" unselectable="on">
   <div class="navbar_resources_flex_title">
-    <!-- IF SN_IN_ALLY -->
+    <!-- IF $NAVBAR_RESOURCES_ALLY -->
     {L_sys_alliance}
     <!-- ELSE -->
     {L_sys_resources}
@@ -36,11 +36,11 @@
           <div id="top_metal">
             {PLANET_METAL_TEXT}
           </div>
-          <!-- IF ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
           <div>{PLANET_METAL_MAX_TEXT}</div>
           <!-- ENDIF -->
         </div>
-        <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+        <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
         <div>{PLANET_METAL_FLEET_TEXT}</div>
         <!-- ENDIF -->
       </div>
@@ -52,11 +52,11 @@
           <div id='top_crystal'>
             {PLANET_CRYSTAL_TEXT}
           </div>
-          <!-- IF ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
           <div>{PLANET_CRYSTAL_MAX_TEXT}</div>
           <!-- ENDIF -->
         </div>
-        <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+        <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
         <div>{PLANET_CRYSTAL_FLEET_TEXT}</div>
         <!-- ENDIF -->
       </div>
@@ -68,16 +68,16 @@
 
         <div>
           <div id='top_deuterium'>{PLANET_DEUTERIUM_TEXT}</div>
-          <!-- IF ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
           <div>{PLANET_DEUTERIUM_MAX_TEXT}</div>
           <!-- ENDIF -->
         </div>
-        <!-- IF ! SN_NAVBAR_HIDE_FLEETS -->
+        <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
         <div>{PLANET_DEUTERIUM_FLEET_TEXT}</div>
         <!-- ENDIF -->
       </div>
 
-      <!-- IF SN_IN_ALLY -->
+      <!-- IF $NAVBAR_RESOURCES_ALLY -->
       <div class="cell navbar_resources_flex_resource flexible_wrapper">
         <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_dark_matter.png" /></div>
 
@@ -91,7 +91,7 @@
 
         <div>
           <div>{ENERGY_BALANCE}</div>
-          <!-- IF ! PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE -->
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
           <div>{ENERGY_MAX_NUMBER_TEXT}</div>
           <!-- ENDIF -->
         </div>

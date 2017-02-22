@@ -1,13 +1,18 @@
 <!-- navbar_resources BOF -->
+
 <!-- IF $IN_NAVBAR -->
-  <!-- IF ! PLAYER_OPTION_NAVBAR_PLANET_OLD -->
+  <!-- IF ! $NAVBAR_RESOURCES_OLD -->
     <!-- INCLUDE navbar_resources_flex -->
   <!-- ELSE -->
-    <!-- IF PLAYER_OPTION_NAVBAR_PLANET_VERTICAL -->
+    <div>
+      <table class="border_image_small" id="navbar_resources">
+    <!-- IF $NAVBAR_RESOURCES_VERTICAL -->
       <!-- INCLUDE navbar_resources_vertical -->
     <!-- ELSE -->
       <!-- INCLUDE navbar_resources_horizontal -->
     <!-- ENDIF -->
+      </table>
+    </div>
   <!-- ENDIF -->
 <!-- ELSE -->
   <!-- INCLUDE navbar_resources_horizontal -->
