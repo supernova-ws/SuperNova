@@ -456,12 +456,6 @@ input[type=text].coordinate {
   display: inline-block;
 }
 
-#navbar_container.vertical {
-  display: inline-flex;
-
-  flex-wrap: wrap;
-}
-
 #navbar {
   margin: auto;
   background-color: transparent;
@@ -3402,6 +3396,12 @@ td.error_message {
   text-align: center;
 }
 
+[go_url] {
+  cursor: pointer;
+}
+
+
+
 
 
 
@@ -3409,11 +3409,6 @@ td.error_message {
 #navbar_resource_flex_tooltip_pattern
 {
   display: none;
-}
-
-.navbar_resources_flex
-{
-  /*font-size: 120%;*/
 }
 
 /** Flex container for navbar resources */
@@ -3449,6 +3444,17 @@ td.error_message {
   /* Overriding .cell padding */
   padding: 0.1em 0.2em;
   border-radius: 0.4em;
+}
+
+.navbar_resource_image {
+  display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+
+  flex-grow: 0;
+  flex-shrink: 0;
+
+  align-items: center;
 }
 
 /* Resource amount div can grow*/
@@ -3502,34 +3508,27 @@ td.error_message {
   z-index: 0;
 }
 
+
+#navbar_container.vertical {
+  display: inline-flex;
+
+  flex-wrap: wrap;
+}
 #navbar_container.vertical #navbar {
   display: flex;
   flex-wrap: nowrap;
 }
-#navbar_container.vertical #navbar_resources_flex {
+.navbar_resources_flex.vertical {
   flex-direction: column;
   margin-left: 0.5em;
   font-size: 120%;
 }
-#navbar_container.vertical #navbar_resources_flex .flexible_wrapper:not(.navbar_resources_flex_resource) {
+.navbar_resources_flex.vertical .flexible_wrapper {
   flex-direction: column;
 }
-#navbar_container.vertical .flexible_wrapper.navbar_resources_flex_resource {
+.navbar_resources_flex.vertical .flexible_wrapper.navbar_resources_flex_resource {
+  flex-direction: row;
   margin: 0.20em 0;
   border: 1px solid green;
 }
 
-.navbar_resource_image {
-  display: flex;
-  flex-wrap: nowrap;
-  white-space: nowrap;
-
-  flex-grow: 0;
-  flex-shrink: 0;
-
-  align-items: center;
-}
-
-[go_url] {
-  cursor: pointer;
-}

@@ -18,7 +18,7 @@
   </table>
 </div>
 
-<div id="navbar_resources_flex" class="navbar_resources_flex header no_select" unselectable="on">
+<div id="navbar_resources_flex" class="navbar_resources_flex header no_select {$NAVBAR_RESOURCES_CLASS}" unselectable="on">
   <div class="navbar_resources_flex_title">
     <!-- IF $NAVBAR_RESOURCES_ALLY -->
     {L_sys_alliance}
@@ -82,7 +82,13 @@
         <div class="navbar_resource_image"><img class="image_close" src="design/images/icon_dark_matter.png" /></div>
 
         <div>
-          <div id='top_dark_matter'>{DARK_MATTER_TEXT}</div>
+          <div id='top_dark_matter'>
+            <!-- IF DARK_MATTER_TEXT -->
+            {DARK_MATTER_TEXT}
+            <!-- ELSE -->
+            0
+            <!-- ENDIF -->
+          </div>
         </div>
       </div>
       <!-- ELSE -->
