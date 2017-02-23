@@ -167,12 +167,22 @@
       <!-- IF .menu && __DISPLAY_MENU -->
         <!-- INCLUDE menu -->
       <!-- ENDIF -->
-      <div id="__navbar_wrapper">
+
+<!-- DEFINE $NAVBAR_VERTICAL = 0 -->
+
+      <!-- IF $NAVBAR_VERTICAL -->
+        <!-- DEFINE $NAVBAR_VERTICAL_CLASS = 'navbar_v' -->
+      <!-- ENDIF -->
+
+
+      <div id="__navbar_wrapper" class="{$NAVBAR_VERTICAL_CLASS}">
       <!-- IF __DISPLAY_NAVBAR -->
         <!-- INCLUDE navbar -->
       <!-- ENDIF -->
         <div id="__content_wrapper">
+          <div id="__addition_wrapper">
         <!-- IF __DISPLAY_NAVBAR_ADDITIONS -->
           <!-- INCLUDE navbar_additions -->
         <!-- ENDIF -->
         <div id="__content">
+          <table class="markup" width="100%"><tr><td align="center">

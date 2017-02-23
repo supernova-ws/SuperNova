@@ -41,39 +41,31 @@ body {
 /* #__page = #__menu + #__navbar_wrapper */
 #__page {
   display: flex;
-
-  /*border: 5px solid white;*/
 }
 #__menu {
-  /*display: inline-block;*/
-
-  /*border: 5px solid red;*/
 }
 /* #__navbar_wrapper = #navbar_container + #__content_wrapper*/
 #__navbar_wrapper {
   flex-basis: 100%;
   flex-shrink: 1;
   flex-grow: 1;
-
-  /*border: 5px dashed teal;*/
 }
 #navbar_container {
-  /*border: 5px solid #5a70ff;*/
 }
 /* #__content_wrapper = #__navbar_additions + #__content */
 #__content_wrapper {
-  /*border: 5px solid red;*/
+  /* for all that matters*/
+  flex-basis: 100%;
+  text-align: center;
 }
 #__navbar_additions {
-  /*border: 5px solid purple;*/
 }
 /* #__content = {page rendered here} + #copyright */
 #__content {
-  /*border: 5px solid white;*/
 }
 #copyright {
-  /*border: 5px solid green;*/
 }
+
 
 img {
   border: 0;
@@ -3440,8 +3432,6 @@ td.error_message {
 
 
 
-
-
 /* Hiding resource tooltip pattern */
 #navbar_resource_flex_tooltip_pattern
 {
@@ -3525,7 +3515,6 @@ td.error_message {
 
   flex-basis: 0.1%;
 }
-
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
   /* IE10+ CSS styles go here */
   .navbar_resources_flex_resource.cell {
@@ -3545,7 +3534,36 @@ td.error_message {
   justify-content: center;
   flex-direction: column;
 }
-
 .navbar_resources_flex_resource > div:not(.navbar_resource_image) {
   flex-grow: 1;
+}
+
+
+
+
+
+
+#navbar_container {
+  /*border: 5px solid #5a70ff;*/
+}
+#__content_wrapper {
+  /*border: 5px solid yellow;*/
+}
+#__navbar_wrapper {
+  /*border: 5px dashed teal;*/
+}
+#__page {
+  /*border: 5px solid white;*/
+}
+#__menu {
+  /*border: 5px solid red;*/
+}
+#__navbar_additions {
+  /*border: 5px solid purple;*/
+}
+#__content {
+  /*border: 5px solid white;*/
+}
+#copyright {
+  /*border: 5px solid green;*/
 }

@@ -7,6 +7,11 @@
 <!-- DEFINE $NAVBAR_RESOURCES_ALLY = '{SN_IN_ALLY}' -->
 <!-- DEFINE $NAVBAR_RESOURCES_HIDE_STORAGE = '{PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE}' -->
 
+<!-- IF $NAVBAR_VERTICAL -->
+  <!--DEFINE $NAVBAR_VERTICAL_CLASS = 'navbar_v' -->
+  <!-- DEFINE $NAVBAR_RESOURCES_VERTICAL = 1 -->
+  <!-- DEFINE $NAVBAR_RESOURCES_OLD = 0 -->
+<!-- ENDIF -->
 
 <!-- IF $NAVBAR_RESOURCES_VERTICAL -->
   <!-- DEFINE $NAVBAR_RESOURCES_CLASS = 'resbar_v' -->
@@ -44,9 +49,9 @@
 </div>
 
 <!-- DEFINE $IN_NAVBAR = 1 -->
-<div id="navbar_container" class="{$NAVBAR_RESOURCES_CLASS}">
-  <div class="header c_c border_image_small {$NAVBAR_RESOURCES_CLASS}" id="navbar">
-    <div>
+<div id="navbar_container" class="{$NAVBAR_RESOURCES_CLASS} {$NAVBAR_VERTICAL_CLASS}">
+  <div class="header c_c border_image_small {$NAVBAR_RESOURCES_CLASS} {$NAVBAR_VERTICAL_CLASS}" id="navbar">
+    <div id="navbar_main">
       <!-- IF NAVBAR_PREFIX_BUTTONS -->
       <div class="contF a50 flexW cell">
         <!-- BEGIN navbar_prefix_button -->
@@ -70,8 +75,9 @@
       </div>
       <!-- ENDIF -->
 
-      <div class="contF flexW header">
-        <select size="1" onchange="changePlanet(this);" id="navbar_planet_select">
+      <div id="navbar_planet_and_time">
+      <div class="contF flexW header" id="navbar_planet_wrapper">
+        <select size="1" onchange="changePlanet(this);" id="navbar_planet_select" style="max-width: 20em">
           <!-- BEGIN topnav_planets -->
           <option {topnav_planets.SELECTED} value="{topnav_planets.ID}">{topnav_planets.COORDS}&nbsp;{topnav_planets.TYPE_TEXT}&nbsp;{topnav_planets.NAME}</option>
           <!-- END topnav_planets -->
@@ -82,15 +88,16 @@
 
       <div class="contF flexW cell" id="navbar-container-time">
         <div class="navbar-container-time-item c_c">
-          <div class="ok">{L_time_local}: <span id="top_time">{TIME_TEXT_LOCAL}</span></div>
-          <div>{L_time_server}: <span id="top_time_server">{TIME_TEXT}</span></div>
+          <div class="ok"><span id="navbar_time_local_title">{L_time_local}: </span><span id="top_time">{TIME_TEXT_LOCAL}</span></div>
+          <div id="navbar_time_server"><span id="navbar_time_server_title">{L_time_server}: </span><span id="top_time_server">{TIME_TEXT}</span></div>
         </div>
 
-        <div class="contF">
+        <div class="contF" id="navbar_font_wrapper">
           <button id="font_minus">Шрифт -</button>
           <button id="font_normal">Норма</button>
           <button id="font_plus">Шрифт +</button>
         </div>
+      </div>
       </div>
 
       <div class="header" id="navbar-container-button">

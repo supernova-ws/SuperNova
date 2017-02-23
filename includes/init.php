@@ -26,7 +26,7 @@ register_shutdown_function(function() {
 
   global $user, $locale_cache_statistic;
 
-  print('<hr><div id="benchmark" class="benchmark">Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
+  print('<div id="benchmark" class="benchmark"><hr>Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
     (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .
     (class_exists('classSupernova') && is_object(classSupernova::$db) ? ', DB time: ' . classSupernova::$db->time_mysql_total . 'ms' : '') .
     '</div>');
