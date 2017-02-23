@@ -11,7 +11,7 @@
     <td class="ptl_etalon">ETALON</td>
     <td class="ptl_result">RESULT</td>
     <td class="ptl_status"></td>
-    <th>Always should FAIL</th>
+    <th>Self-test - always should FAIL</th>
   </tr>
   <tr class="c_c">
     <th colspan="5">Test is <span id="ptl_global_status"></span></th>
@@ -66,6 +66,27 @@
     <td class="ptl_status"></td>
     <th>JavaScript-safe language string - non-existing</th>
   </tr>
+
+  <tr>
+    <th colspan="5" class="c_c">
+      Image compilation
+    </th>
+  </tr>
+  <tr>
+    <td>&#123;I_navbar_research&#125;</td>
+    <td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png</td>
+    <td class="ptl_result">{I_navbar_research}</td>
+    <td class="ptl_status"></td>
+    <th>Image URL translation</th>
+  </tr>
+  <tr>
+    <td>&#123;I_navbar_research|html&#125;</td>
+    <td class="ptl_etalon"><img src="{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png"/></td>
+    <td class="ptl_result">{I_navbar_research|html}</td>
+    <td class="ptl_status"></td>
+    <th>General image</th>
+  </tr>
+
 </table>
 
 <script type="text/javascript">

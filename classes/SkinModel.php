@@ -10,13 +10,13 @@ class SkinModel {
   protected $gc;
 
   /**
-   * @var skin[] $skins
+   * @var SkinInterface[] $skins
    */
   // TODO - lazy loading
   protected $skins;
 
   /**
-   * @var skin $activeSkin
+   * @var SkinInterface $activeSkin
    */
   protected $activeSkin;
 
@@ -26,6 +26,11 @@ class SkinModel {
   }
 
 
+  /**
+   * SkinModel constructor.
+   *
+   * @param \Common\GlobalContainer $gc
+   */
   public function __construct(\Common\GlobalContainer $gc) {
     $this->gc = $gc;
     $this->skins = array();
@@ -33,15 +38,45 @@ class SkinModel {
     global $user;
 
     // Берем текущий скин
-    $skinName = $this->sanitizeSkinName(!empty($user['dpath']) ? $user['dpath'] : DEFAULT_SKINPATH);
-    strpos($skinName, 'skins/') !== false ? $skinName = substr($skinName, 6) : false;
-    strpos($skinName, '/') !== false ? $skinName = str_replace('/', '', $skinName) : false;
+    $this->activeSkin = $this->getSkin(!empty($user['dpath']) ? $user['dpath'] : DEFAULT_SKINPATH);
+  }
 
-    // Загружены ли уже данные по текущему скину?
-    if(empty($this->skins[$skinName])) {
+  /**
+   * Returns skin with skin name. Loads it - if it is required
+   *
+   * @param string $skinName
+   *
+   * @return SkinInterface
+   */
+  public function getSkin($skinName) {
+    $skinName = $this->sanitizeSkinName($skinName);
+
+    if (empty($this->skins[$skinName])) {
       // Прогружаем текущий скин
-      $this->activeSkin = $this->skins[$skinName] = new skin($skinName);
+      $this->skins[$skinName] = $this->loadSkin($skinName);
     }
+
+    return $this->skins[$skinName];
+  }
+
+  public function getImageCurrent($image_tag, $template) {
+    return $this->activeSkin->compile_image($image_tag, $template);
+  }
+
+  /**
+   * Loads skin
+   *
+   * @param string $skinName
+   *
+   * @return SkinInterface
+   */
+  protected function loadSkin($skinName) {
+    $skinClass = $this->gc->skinEntityClass;
+
+    $skin = new $skinClass($skinName, $this);
+//    $skin->load();
+
+    return $skin;
   }
 
 

@@ -44,8 +44,25 @@ INI-файл:
  * - Подстановка картинок из родителя при отсутствии данных в skin.ini или физическом отутствии файла
  * - Заглушка _NO_IMAGE при отсутствии картинки (опция _no_image в skin.ini)
  */
+class SkinV2 implements SkinInterface {
+  /**
+   * @var string $iniFileName
+   */
+  protected $iniFileName = 'skin.ini';
 
-class skin {
+  /**
+   * @var SkinModel $model
+   */
+  protected $model;
+
+
+
+
+
+
+
+
+
 
   /**
    * Флаг инициализации статического объекта
@@ -79,12 +96,6 @@ class skin {
    * @var string
    */
   protected $root_physical_absolute = '';
-  /**
-   * Флаг присутсвия конфигурации
-   *
-   * @var bool
-   */
-  protected $is_ini_present = false;
   /**
    * Родительский скин
    *
@@ -142,116 +153,49 @@ class skin {
    * @return string
    */
   public static function image_url($image_tag, $template) {
-    // Инициализируем текущий скин
-    !static::$is_init ? static::init() : false;
-
-    return static::$active->compile_image($image_tag, $template);
-  }
-
-  /**
-   * Инициализация харнилища скинов
-   */
-  protected static function init() {
-    if(static::$is_init) {
-      return;
-    }
-
-    classSupernova::$gc->skinModel->init();
-
-    global $user;
-    // Читаем конфиг и парсим
-    // Берем текущий скин
-    $skin_path = !empty($user['dpath']) ? $user['dpath'] : DEFAULT_SKINPATH;
-    strpos($skin_path, 'skins/') !== false ? $skin_path = substr($skin_path, 6) : false;
-    strpos($skin_path, '/') !== false ? $skin_path = str_replace('/', '', $skin_path) : false;
-
-    // Загружены ли уже данные по текущему скину?
-    if(empty(static::$skin_list[$skin_path])) {
-      // Прогружаем текущий скин
-      static::$skin_list[$skin_path] = new skin($skin_path);
-      static::$active = static::$skin_list[$skin_path];
-    }
-
-// В $user['dpath'] 'skins/xnova/'
-//    {D_SN_ROOT_VIRTUAL}{dpath}skin.css?{C_var_db_update}
-
-    // Ресолвим инхериты - нужен кэш для объектов skin
-    // Инхериты парсятся рекурсивным вызовом конструктора для кэша объектов skin
-    // Перекрываем наше ихним
-
-    static::$is_init = true;
+    return classSupernova::$gc->skinModel->getImageCurrent($image_tag, $template);
   }
 
   /**
    * skin constructor.
    *
    * @param mixed|null|string $skinName
+   * @param SkinModel         $skinModel
    */
-  public function __construct($skinName = DEFAULT_SKINPATH) {
-    strpos($skinName, 'skins/') !== false ? $skinName = substr($skinName, 6) : false;
-    strpos($skinName, '/') !== false ? $skinName = str_replace('/', '', $skinName) : false;
-
-    $this->root_http_relative = 'skins/' . $skinName . '/'; // Пока стоит base="" в body SN_ROOT_VIRTUAL - не нужен
-    $this->root_physical_absolute = SN_ROOT_PHYSICAL . 'skins/' . $skinName . '/';
+  public function __construct($skinName = DEFAULT_SKINPATH, $skinModel) {
+    $this->model = $skinModel;
     $this->name = $skinName;
+
+    $this->root_http_relative = 'skins/' . $this->name . '/'; // Пока стоит base="" в body SN_ROOT_VIRTUAL - не нужен
+    $this->root_physical_absolute = SN_ROOT_PHYSICAL . $this->root_http_relative;
     // Искать скин среди пользовательских - когда будет конструктор скинов
     // Может не быть файла конфигурации - тогда используется всё "по дефаулту". Т.е. поданная строка - это именно имя файла
 
-    $this->is_ini_present = false;
-    // Проверка на корректность и существование пути
-    if(is_file($this->root_physical_absolute . 'skin.ini')) {
-      // Пытаемся распарсить файл
+    $this->loadIniFile();
 
-      // По секциям? images и config? Что бы не копировать конфигурацию? Или просто unset(__inherit) а затем заново записать
-      $this->config = parse_ini_file($this->root_physical_absolute . 'skin.ini');
-      if(!empty($this->config)) {
-
-        $this->is_ini_present = true;
-
-        if(!empty($this->config['_inherit'])) {
-          // Если скин наследует себя...
-          if($this->config['_inherit'] == $skinName) {
-            // TODO - определять более сложные случаи циклических ссылок в _inherit
-            die('">circular skin inheritance!');
-          }
-          if(empty(static::$skin_list[$this->config['_inherit']])) {
-            static::$skin_list[$this->config['_inherit']] = new skin($this->config['_inherit']);
-          }
-          $this->parent = static::$skin_list[$this->config['_inherit']];
-        }
-      } else {
-        $this->config = array();
-      }
-
-      // Проверка на _inherit
-    }
-
-    // Пытаемся скомпилировать _no_image заранее
-    if(!empty($this->config[SKIN_IMAGE_MISSED_FIELD])) {
-      $this->container[SKIN_IMAGE_MISSED_FIELD] = $this->compile_try_path(SKIN_IMAGE_MISSED_FIELD, $this->config[SKIN_IMAGE_MISSED_FIELD]);
-    }
-
-    // Если нет заглушки
-    if(empty($this->container[SKIN_IMAGE_MISSED_FIELD])) {
-      $this->container[SKIN_IMAGE_MISSED_FIELD] = empty($this->parent)
-        // Если нет парента - берем хардкод
-        ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
-        // Если есть парент - берем у парента. У предков всегда всё есть
-        : $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null);
-    }
+// _no_image должен быть всегда - либо в самом классе, либо в парент-классе
+// TODO - добавить стандартную компиляцию
+//    // Пытаемся скомпилировать _no_image заранее
+//    if(!empty($this->config[SKIN_IMAGE_MISSED_FIELD])) {
+//      $this->container[SKIN_IMAGE_MISSED_FIELD] = $this->compile_try_path(SKIN_IMAGE_MISSED_FIELD, $this->config[SKIN_IMAGE_MISSED_FIELD]);
+//    }
+//
+//    // Если нет заглушки
+//    if(empty($this->container[SKIN_IMAGE_MISSED_FIELD])) {
+//      $this->container[SKIN_IMAGE_MISSED_FIELD] = empty($this->parent)
+//        // Если нет парента - берем хардкод
+//        ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
+//        // Если есть парент - берем у парента. У предков всегда всё есть
+//        : $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null);
+//    }
 
     return $this;
   }
 
   /**
-   * Возвращает строку для вывода в компилированном темплейте PTL
-   *
-   * @param string   $image_tag
-   * @param template $template
-   *
-   * @return string
+   * @inheritdoc
    */
-  protected function compile_image($image_tag, $template) {
+  public function compile_image($image_tag, $template) {
 //    // Если у нас есть скомпилированная строка для данного тэга - возвращаем строку. Больше ничего делать не надо
 //    if(!empty($this->image_path_list[$image_tag])) {
 //      return $this->image_path_list[$image_tag];
@@ -262,7 +206,7 @@ class skin {
     $image_tag = $this->image_tag_parse($image_tag, $template);
 
     // Проверяем наличие ключа RIT в хранилища. В нём не может быть несуществующих файлов по построению
-    if(!empty($this->container[$image_tag[SKIN_IMAGE_TAG_RESOLVED]])) {
+    if (!empty($this->container[$image_tag[SKIN_IMAGE_TAG_RESOLVED]])) {
       return $this->container[$image_tag[SKIN_IMAGE_TAG_RESOLVED]];
     }
 
@@ -280,7 +224,7 @@ class skin {
     // Нет - image ID не является путём к файлу. Пора обратиться к предкам за помощью...
     // Пытаемся вытащить путь из родителя и применить к нему свои параметры
     // Тащим по ID изображения, а не по ТЭГУ - мало ли что там делает с путём родитель и как преобразовывает его в строку?
-    if(empty($this->container[$image_id]) && !empty($this->parent)) {
+    if (empty($this->container[$image_id]) && !empty($this->parent)) {
       $this->container[$image_id] = $this->parent->compile_image($image_id, $template);
 
       // Если у родителя нет картинки - он вернет пустую строку. Тогда нам надо использовать заглушку - свою или родительскую
@@ -301,18 +245,18 @@ class skin {
   protected function image_tag_parse($image_tag, $template) {
     $image_tag_ptl_resolved = $image_tag;
     // Есть переменные из темплейта ?
-    if(strpos($image_tag_ptl_resolved, '[') !== false && is_object($template)) {
+    if (strpos($image_tag_ptl_resolved, '[') !== false && is_object($template)) {
       // Что бы лишний раз не запускать регексп
       // TODO - многоуровневые вложения ?! Надо ли и где их можно применить
       preg_match_all('#(\[.+?\])#', $image_tag_ptl_resolved, $matches);
-      foreach($matches[0] as &$match) {
+      foreach ($matches[0] as &$match) {
         $var_name = str_replace(array('[', ']'), '', $match);
-        if(strpos($var_name, '.') !== false) {
+        if (strpos($var_name, '.') !== false) {
           // Вложенная переменная темплейта - на текущем уровне
           // TODO Вложенная переменная из корня через "!"
           list($block_name, $block_var) = explode('.', $var_name);
           isset($template->_block_value[$block_name][$block_var]) ? $image_tag_ptl_resolved = str_replace($match, $template->_block_value[$block_name][$block_var], $image_tag_ptl_resolved) : false;
-        } elseif(strpos($var_name, '$') !== false) {
+        } elseif (strpos($var_name, '$') !== false) {
           // Корневой DEFINE
           $define_name = substr($var_name, 1);
           isset($template->_tpldata['DEFINE']['.'][$define_name]) ? $image_tag_ptl_resolved = str_replace($match, $template->_tpldata['DEFINE']['.'][$define_name], $image_tag_ptl_resolved) : false;
@@ -323,7 +267,7 @@ class skin {
       }
     }
 
-    if(strpos($image_tag_ptl_resolved, '|') !== false) {
+    if (strpos($image_tag_ptl_resolved, '|') !== false) {
       $params = explode('|', $image_tag_ptl_resolved);
       $image_id = $params[0];
       unset($params[0]);
@@ -387,11 +331,11 @@ class skin {
     $image_string = $this->container[$image_tag];
 
     // Нет параметров - просто возвращаем значение по $image_name из контейнера
-    if(!empty($params) && is_array($params)) {
+    if (!empty($params) && is_array($params)) {
       // Здесь автоматически произойдёт упорядочивание параметров
 
       // Параметр 'html' - выводить изображение в виде HTML-тэга
-      if(in_array('html', $params)) {
+      if (in_array('html', $params)) {
         $image_tag = $image_tag . '|html';
         $image_string = '<img src="' . $image_string . '" />';
         $this->container[$image_tag] = $image_string;
@@ -399,6 +343,40 @@ class skin {
     }
 
     return $image_string;
+  }
+
+  /**
+   * Loads skin configuration
+   */
+  protected function loadIniFile() {
+    // Проверка на корректность и существование пути
+    if (!is_file($this->root_physical_absolute . $this->iniFileName)) {
+      return;
+    }
+
+    // Пытаемся распарсить файл
+    // По секциям? images и config? Что бы не копировать конфигурацию? Или просто unset(__inherit) а затем заново записать
+    $aConfig = parse_ini_file($this->root_physical_absolute . $this->iniFileName);
+    if (empty($aConfig)) {
+      return;
+    }
+
+    $this->config = $aConfig;
+
+    // Проверка на _inherit
+    if (!empty($this->config['_inherit'])) {
+      $parentName = $this->config['_inherit'];
+
+      // Если скин наследует себя...
+      if ($parentName == $this->name) {
+        // TODO - определять более сложные случаи циклических ссылок в _inherit
+        // TODO - throw exception
+        die('">circular skin inheritance!');
+      }
+
+      $this->parent = $this->model->getSkin($parentName);
+    }
+
   }
 
 }

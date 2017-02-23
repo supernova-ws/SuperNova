@@ -24,7 +24,7 @@ use \classSupernova;
  *
  * Models --------------------------------------------------------------------------------------------------------------
  * @property \TextModel    $textModel
- * @property string        $skinModelClass
+ * @property string        $skinEntityClass
  * @property \SkinModel    $skinModel
  *
  * @package Common
@@ -98,7 +98,7 @@ class GlobalContainer extends ContainerPlus {
     };
 
     // Models ----------------------------------------------------------------------------------------------------------
-    $gc->skinModelClass = 'SkinV2';
+    $gc->skinEntityClass = 'SkinV2';
     $gc->skinModel = function (GlobalContainer $gc) {
       return new \SkinModel($gc);
     };
