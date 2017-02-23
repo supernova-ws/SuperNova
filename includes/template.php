@@ -5,15 +5,17 @@ use \Pages\PageTutorial;
 // Wrappers for functions
 
 /**
+ * Get template name from path to skin
+ *
  * @param $u_dpath
  *
  * @return mixed
  */
-function gettemplatename($u_dpath) {
+function getSkinPathTemplate($u_dpath) {
   static $template_names = array();
 
   if(!isset($template_names[$u_dpath])) {
-    $template_names[$u_dpath] = file_exists(SN_ROOT_PHYSICAL . $u_dpath . 'tmpl.ini') ? sys_file_read(SN_ROOT_PHYSICAL . $u_dpath . 'tmpl.ini') : TEMPLATE_NAME;
+    $template_names[$u_dpath] = file_exists(SN_ROOT_PHYSICAL . $u_dpath . '_template.ini') ? sys_file_read(SN_ROOT_PHYSICAL . $u_dpath . '_template.ini') : TEMPLATE_NAME;
   }
 
   return $template_names[$u_dpath];
@@ -759,11 +761,11 @@ function parsetemplate($template, $array = false) {
 /**
  * @param array|string  $files
  * @param template|bool $template
- * @param string|bool   $template_path
+ * @param string|null   $template_path - path to template
  *
  * @return template
  */
-function gettemplate($files, $template = false, $template_path = false) {
+function gettemplate($files, $template = false, $template_path = null) {
   global $sn_mvc, $sn_page_name, $user;
 
   $template_ex = '.tpl.html';
@@ -777,8 +779,9 @@ function gettemplate($files, $template = false, $template_path = false) {
   !is_object($template) ? $template = new template() : false;
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
-  $tmpl_name = gettemplatename($user['dpath']);
-  $template->set_custom_template(($template_path ? $template_path : SN_ROOT_PHYSICAL . 'design/templates/') . $tmpl_name . '/', $tmpl_name, TEMPLATE_DIR);
+  $templateName = getSkinPathTemplate($user['dpath']);
+  !$template_path || !is_string($template_path) ? $template_path = SN_ROOT_PHYSICAL . 'design/templates/' : false;
+  $template->set_custom_template($template_path . $templateName . '/', $templateName, TEMPLATE_DIR);
 
   // TODO ГРЯЗНЫЙ ХАК! Это нужно, что бы по возможности перезаписать инфу из языковых пакетов модулей там, где она была перезаписана раньше инфой из основного пакета. Почему?
   //  - сначала грузятся модули и их языковые пакеты
