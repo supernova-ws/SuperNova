@@ -18,6 +18,7 @@ INI-файл:
 Вызов в темплейте
    {I_<id>|парам1|парам2|...} - {I_abort|html}
    {I_<путь к картинке от корня скина>|парам1|парам2|...} - {I_img/e.jpg|html}
+   {I_<путь к картинке от корня движка>|парам1|парам2|...} - {I_/img/e.jpg|html}
    {I_[<имя переменной в темплейте>]} - будет подставлено имя соответствующей переменной в момент выполнения. Поддерживаются:
        - Корневые значения, например {I_[UNIT_ID]}
        - Значения в блоках, например {I_[production.ID]}
@@ -46,13 +47,10 @@ INI-файл:
  */
 class SkinV2 implements SkinInterface {
   const PARAM_HTML = 'html';
-  const PARAM_HEIGHT = 'height';
-  const PARAM_WIDTH = 'width';
-
-  const INDEX_TAG_RAW = 0;
-  const INDEX_CACHE_KEY = 1;
-  const INDEX_RESOLVED = 2;
-  const INDEX_PARAMS = 3;
+  const PARAM_HTML_HEIGHT = 'height';
+  const PARAM_HTML_WIDTH = 'width';
+  // Use skin for image
+  const PARAM_SKIN = 'skin';
 
   /**
    * @var string $iniFileName
@@ -115,10 +113,12 @@ class SkinV2 implements SkinInterface {
    * @var string[] $allowedParams
    */
   protected $allowedParams = array(
-    self::PARAM_HTML => '',
+    self::PARAM_HTML        => '',
     // Will be dumped for all tags which have |html
-    self::PARAM_HEIGHT => self::PARAM_HTML,
-    self::PARAM_WIDTH => self::PARAM_HTML,
+    self::PARAM_HTML_HEIGHT => self::PARAM_HTML,
+    self::PARAM_HTML_WIDTH  => self::PARAM_HTML,
+
+    self::PARAM_SKIN => '',
   );
   /**
    * Список полностью отрендеренных путей
@@ -132,6 +132,13 @@ class SkinV2 implements SkinInterface {
    * @var string $name
    */
   public $name = '';
+
+  /**
+   * Cached value of no image string
+   *
+   * @var string $noImage
+   */
+  protected $noImage;
 
   /*
 
@@ -178,22 +185,28 @@ class SkinV2 implements SkinInterface {
     // Может не быть файла конфигурации - тогда используется всё "по дефаулту". Т.е. поданная строка - это именно имя файла
 
     $this->loadIniFile();
+    $this->setParentFromConfig();
 
-// _no_image должен быть всегда - либо в самом классе, либо в парент-классе
-// TODO - добавить стандартную компиляцию
-//    // Пытаемся скомпилировать _no_image заранее
-//    if(!empty($this->config[SKIN_IMAGE_MISSED_FIELD])) {
-//      $this->container[SKIN_IMAGE_MISSED_FIELD] = $this->compile_try_path(SKIN_IMAGE_MISSED_FIELD, $this->config[SKIN_IMAGE_MISSED_FIELD]);
-//    }
-//
-//    // Если нет заглушки
-//    if(empty($this->container[SKIN_IMAGE_MISSED_FIELD])) {
-//      $this->container[SKIN_IMAGE_MISSED_FIELD] = empty($this->parent)
-//        // Если нет парента - берем хардкод
-//        ? $this->container[SKIN_IMAGE_MISSED_FIELD] = SN_ROOT_VIRTUAL . SKIN_IMAGE_MISSED_FILE_PATH
-//        // Если есть парент - берем у парента. У предков всегда всё есть
-//        : $this->parent->compile_image(SKIN_IMAGE_MISSED_FIELD, null);
-//    }
+    // Пытаемся скомпилировать _no_image заранее
+    $model = $this->model;
+    $noImageID = $model::NO_IMAGE_ID;
+    $noImagePath = $model::NO_IMAGE_PATH;
+
+    // Заглушка на самый крайний случай - когда скин является корневым и у него нет _no_image
+    if (empty($this->config[$noImageID]) && !$this->parent) {
+      // Если нет парента - берем хардкод
+      // Используем стандартный файл из движка
+      $this->container[$noImageID] = $this->compile_try_path($noImageID, $noImagePath);
+      // Проверка, что файл - отсутствует. Если да - это повреждение движка
+      // TODO - throw exception
+      empty($this->container[$noImageID]) ? die('Game file missing: ' . $noImagePath) : false;
+    } else {
+      $this->container[$noImageID] = $this->imageFromPTLTag(
+        new PTLTag(SKIN_IMAGE_MISSED_FIELD, null, $this->allowedParams)
+      );
+    }
+
+    $this->noImage = $this->container[$noImageID];
 
     return $this;
   }
@@ -201,50 +214,41 @@ class SkinV2 implements SkinInterface {
   /**
    * @inheritdoc
    */
-  public function compile_image($image_tag, $template) {
-//    // Если у нас есть скомпилированная строка для данного тэга - возвращаем строку. Больше ничего делать не надо
-//    if(!empty($this->image_path_list[$image_tag])) {
-//      return $this->image_path_list[$image_tag];
-//    }
+  public function imageFromStringTag($stringTag, $template) {
+    return $this->imageFromPTLTag(new PTLTag($stringTag, $template, $this->allowedParams));
+  }
 
-    // Ресолвим переменные template в $image_tag - получаем Resolved Image Tag (RIT)
-    // Их названия - в квадратных скобочках типа [ID] или даже [production.ID]
-
-    $ptlTag = new PTLTag($image_tag, $template, $this->allowedParams);
-    $image_tag = array(
-      self::INDEX_TAG_RAW   => $ptlTag->raw,
-      self::INDEX_CACHE_KEY => $ptlTag->cacheKey,
-      self::INDEX_RESOLVED  => $ptlTag->resolved,
-      self::INDEX_PARAMS    => $ptlTag->params,
-    );
-
+  /**
+   * @inheritdoc
+   */
+  public function imageFromPTLTag($ptlTag) {
     // Проверяем наличие ключа RIT в хранилища. В нём не может быть несуществующих файлов по построению
-    if (!empty($this->container[$image_tag[self::INDEX_CACHE_KEY]])) {
-      return $this->container[$image_tag[self::INDEX_CACHE_KEY]];
+    if (!empty($this->container[$ptlTag->cacheKey])) {
+      return $this->container[$ptlTag->cacheKey];
     }
 
     // Шорткат
-    $image_id = $image_tag[self::INDEX_RESOLVED];
+    $imageId = $ptlTag->resolved;
 
     // Нет ключа RIT в контейнере - обсчёт пути для RIT из конфигурации
-    empty($this->container[$image_id]) && !empty($this->config[$image_id])
-      ? $this->compile_try_path($image_id, $this->config[$image_id])
+    empty($this->container[$imageId]) && !empty($this->config[$imageId])
+      ? $this->compile_try_path($imageId, $this->config[$imageId])
       : false;
 
     // Всё еще пусто? Может у нас не image ID, а просто путь к файлу?
-    empty($this->container[$image_id]) ? $this->compile_try_path($image_id, $image_id) : false;
+    empty($this->container[$imageId]) ? $this->compile_try_path($imageId, $imageId) : false;
 
     // Нет - image ID не является путём к файлу. Пора обратиться к предкам за помощью...
     // Пытаемся вытащить путь из родителя и применить к нему свои параметры
     // Тащим по ID изображения, а не по ТЭГУ - мало ли что там делает с путём родитель и как преобразовывает его в строку?
-    if (empty($this->container[$image_id]) && !empty($this->parent)) {
-      $this->container[$image_id] = $this->parent->compile_image($image_id, $template);
-
-      // Если у родителя нет картинки - он вернет пустую строку. Тогда нам надо использовать заглушку - свою или родительскую
-      empty($this->container[$image_id]) ? $this->container[$image_id] = $this->compile_image(SKIN_IMAGE_MISSED_FIELD, $template) : false;
+    if (empty($this->container[$imageId]) && !empty($this->parent)) {
+      $this->container[$imageId] = $this->parent->imageFromPTLTag(new PTLTag($imageId, $ptlTag->template, $this->allowedParams));
     }
 
-    return !empty($this->container[$image_id]) ? $this->apply_params($image_tag) : '';
+    // Если у родителя нет картинки - он вернет пустую строку. Тогда нам надо использовать заглушку - свою или родительскую
+    empty($this->container[$imageId]) ? $this->container[$imageId] = $this->noImage : false;
+
+    return !empty($this->container[$imageId]) ? $this->apply_params($ptlTag) : '';
   }
 
   /**
@@ -256,52 +260,59 @@ class SkinV2 implements SkinInterface {
    * @return string
    */
   protected function compile_try_path($image_id, $file_path) {
-    // Если первый символ пути '/' - значит это путь от HTTP-корня
-    // Откусываем его и пользуем остальное
-    $relative_path = strpos($file_path, '/') !== 0 ? $this->root_http_relative . $file_path : substr($file_path, 1);
+    $relative_path = strpos($file_path, '/') !== 0
+      ? $this->root_http_relative . $file_path
+      // Если первый символ пути '/' - значит это путь от HTTP-корня
+      // Откусываем символ и пользуем остальное в качестве пути
+      : substr($file_path, 1);
 
     return is_file(SN_ROOT_PHYSICAL . $relative_path) ? $this->container[$image_id] = SN_ROOT_VIRTUAL . $relative_path : '';
   }
 
   /**
-   * @param $ini_image_id_plain
-   * @param $params
+   * @param PTLTag $ptlTag
    *
    * @return string
    */
-  protected function apply_params($image_tag_input) {
-    $params = $image_tag_input[self::INDEX_PARAMS];
-    $cacheKey = $image_tag_input[self::INDEX_RESOLVED];
-
-    $image_string = $this->container[$cacheKey];
-
-    // Нет параметров - просто возвращаем значение по $image_name из контейнера
-    if (!empty($params) && is_array($params)) {
-      // Здесь автоматически произойдёт упорядочивание параметров
-
-      // Параметр 'html' - выводить изображение в виде HTML-тэга
-      if (array_key_exists(self::PARAM_HTML, $params)) {
-        $cacheKey = $cacheKey . '|' . self::PARAM_HTML;
-
-        $htmlParams = '';
-        $paramsNoHtml = $params;
-        unset($paramsNoHtml[self::PARAM_HTML]);
-        // Just dump other params
-        foreach ($paramsNoHtml as $name => $data) {
-          if($this->allowedParams[$name] != self::PARAM_HTML) {
-            continue;
-          }
-
-          $htmlParams .= ' ' . $name . '=' . $data;
-          $cacheKey .= '|' . $name . '=' . $data;
-        }
-
-        $image_string = "<img src=\"{$image_string}\" {$htmlParams} />";
-        $this->container[$cacheKey] = $image_string;
-      }
+  protected function apply_params(PTLTag $ptlTag) {
+    if (!is_object($ptlTag) || empty($ptlTag->params) || !is_array($ptlTag->params)) {
+      return $this->container[$ptlTag->resolved];
     }
 
-    return $image_string;
+    $params = $ptlTag->params;
+    $image_string = $this->container[$ptlTag->resolved];
+
+    // Здесь автоматически произойдёт упорядочивание параметров
+
+    // Параметр 'skin' - использовать изображение из другого скина
+    if (array_key_exists(self::PARAM_SKIN, $params)) {
+      if ($params[self::PARAM_SKIN] == $this->name) {
+        // If skin - is this skin - then removing this param from list
+        $ptlTag->removeParam(self::PARAM_SKIN);
+      }
+
+      $skin = $this->model->getSkin($params[self::PARAM_SKIN]);
+      $image_string = $skin->imageFromStringTag($ptlTag->resolved, $ptlTag->template);
+    }
+
+    // Параметр 'html' - выводить изображение в виде HTML-тэга
+    if (array_key_exists(self::PARAM_HTML, $params)) {
+      $htmlParams = '';
+      $paramsNoHtml = $params;
+      unset($paramsNoHtml[self::PARAM_HTML]);
+      // Just dump other params
+      foreach ($paramsNoHtml as $name => $data) {
+        if ($this->allowedParams[$name] != self::PARAM_HTML) {
+          continue;
+        }
+
+        $htmlParams .= ' ' . $name . '=' . $data;
+      }
+
+      $image_string = "<img src=\"{$image_string}\" {$htmlParams} />";
+    }
+
+    return $this->container[$ptlTag->cacheKey] = $image_string;
   }
 
   /**
@@ -321,21 +332,23 @@ class SkinV2 implements SkinInterface {
     }
 
     $this->config = $aConfig;
+  }
 
+  protected function setParentFromConfig() {
     // Проверка на _inherit
-    if (!empty($this->config['_inherit'])) {
-      $parentName = $this->config['_inherit'];
-
-      // Если скин наследует себя...
-      if ($parentName == $this->name) {
-        // TODO - определять более сложные случаи циклических ссылок в _inherit
-        // TODO - throw exception
-        die('">circular skin inheritance!');
-      }
-
-      $this->parent = $this->model->getSkin($parentName);
+    if (empty($this->config['_inherit'])) {
+      return;
     }
 
+    $parentName = $this->config['_inherit'];
+    // Если скин наследует себя...
+    if ($parentName == $this->name) {
+      // TODO - определять более сложные случаи циклических ссылок в _inherit
+      // TODO - throw exception
+      die('">circular skin inheritance!');
+    }
+
+    $this->parent = $this->model->getSkin($parentName);
   }
 
 }

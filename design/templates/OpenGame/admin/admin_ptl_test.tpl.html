@@ -73,6 +73,14 @@
     </th>
   </tr>
   <tr>
+    <td>&#123;I_NO_IMAGE&#125;</td>
+    <td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}design/images/_no_image.png</td>
+    <td class="ptl_result">{I_NO_IMAGE}</td>
+    <td class="ptl_status"></td>
+    <th>No image exists</th>
+  </tr>
+
+  <tr>
     <td>&#123;I_navbar_research&#125;</td>
     <td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png</td>
     <td class="ptl_result">{I_navbar_research}</td>
@@ -94,15 +102,48 @@
     <th>General image with attributes - height 20%, width 20%</th>
   </tr>
 
+  <!--<tr>-->
+    <!--<td>&#123;I_navbar_research|html&#125;</td>-->
+    <!--<td class="ptl_etalon"><img src="{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png"/></td>-->
+    <!--<td class="ptl_result">{I_navbar_research|html}</td>-->
+    <!--<td class="ptl_status"></td>-->
+    <!--<th>General image</th>-->
+  <!--</tr>-->
+
+
+
+  <!--<tr>-->
+    <!--<td>&#123;I_NO_IMAGE&#125;</td>-->
+    <!--<td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png</td>-->
+    <!--<td class="ptl_result">-->
+      <!--&lt;!&ndash; BEGIN q &ndash;&gt;-->
+      <!--&lt;!&ndash; BEGIN w &ndash;&gt;-->
+      <!--&lt;!&ndash; BEGIN e &ndash;&gt;-->
+      <!--{I_[e.E1]}-->
+      <!--&lt;!&ndash; END e &ndash;&gt;-->
+      <!--&lt;!&ndash; END w &ndash;&gt;-->
+      <!--&lt;!&ndash; END q &ndash;&gt;-->
+    <!--</td>-->
+    <!--<td class="ptl_status"></td>-->
+    <!--<th>No image exists</th>-->
+  <!--</tr>-->
+
+
   <tr>
-    <td>&#123;I_NO_IMAGE&#125;</td>
-    <td class="ptl_etalon"><img src="{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png" height="20%" width="20%"/></td>
-    <td class="ptl_result">{I_NO_IMAGE}</td>
+    <td>&#123;I_navbar_research|skin=supernova-ivash&#125;</td>
+    <td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}skins/supernova-ivash/navbar/navbar_research_64x64.png</td>
+    <td class="ptl_result">{I_navbar_research|skin=supernova-ivash}</td>
     <td class="ptl_status"></td>
     <th>No image exists</th>
   </tr>
 
-
+  <tr>
+    <td>&#123;I_navbar_research|skin=supernova-ivash|html&#125;</td>
+    <td class="ptl_etalon"><img src="http://localhost/supernova_trunk/skins/supernova-ivash/navbar/navbar_research_64x64.png" /></td>
+    <td class="ptl_result">{I_navbar_research|skin=supernova-ivash|html}</td>
+    <td class="ptl_status"></td>
+    <th>Image param 'skin' - directly get image from other skin</th>
+  </tr>
 
   <!--<tr>-->
     <!--<td>&#123;I_[$PLANET_GOVERNOR_ID]|html|height="100%"&#125;</td>-->

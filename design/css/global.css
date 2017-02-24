@@ -412,3 +412,7 @@ body.blitz_ {
 {
   flex-wrap: wrap;
 }
+
+.xdebug-var-dump {
+  text-align: left;
+}

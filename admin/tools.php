@@ -116,6 +116,14 @@ switch ($mode) {
       'VAR_VALUE' => 'VAR_VALUE',
     ));
 
+    $template->assign_block_vars('q', array('Q1' => 'q1',));
+    $template->assign_block_vars('q.w', array('W1' => 'w1',));
+    $template->assign_block_vars('q.w.e', array('E1' => 'e1',));
+
+    $template->assign_block_vars('q', array('Q2' => 'q2',));
+    $template->assign_block_vars('q.w', array('W2' => 'w2',));
+    $template->assign_block_vars('q.w.e', array('E2' => 'e2',));
+
     display($template, null, false, '', true);
   break;
 }

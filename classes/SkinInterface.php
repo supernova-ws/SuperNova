@@ -8,11 +8,20 @@ interface SkinInterface {
   /**
    * Возвращает строку для вывода в компилированном темплейте PTL
    *
-   * @param string   $image_tag
+   * @param PTLTag $ptlTag
+   *
+   * @return string
+   */
+  public function imageFromPTLTag($ptlTag);
+
+  /**
+   * Compiles image string from string
+   *
+   * @param string   $stringTag
    * @param template $template
    *
    * @return string
    */
-  public function compile_image($image_tag, $template);
+  public function imageFromStringTag($stringTag, $template);
 
 }

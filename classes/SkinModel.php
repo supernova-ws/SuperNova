@@ -4,6 +4,9 @@
  * Created by Gorlum 23.02.2017 12:20
  */
 class SkinModel {
+  const NO_IMAGE_ID = '_no_image';
+  const NO_IMAGE_PATH = '/design/images/_no_image.png';
+
   /**
    * @var \Common\GlobalContainer $gc
    */
@@ -60,11 +63,11 @@ class SkinModel {
   }
 
   public function getImageCurrent($image_tag, $template) {
-    return $this->activeSkin->compile_image($image_tag, $template);
+    return $this->activeSkin->imageFromStringTag($image_tag, $template);
   }
 
   public function getImageFrom($skinName, $image_tag, $template) {
-    return $this->getSkin($skinName)->compile_image($image_tag, $template);
+    return $this->getSkin($skinName)->imageFromStringTag($image_tag, $template);
   }
 
   /**
