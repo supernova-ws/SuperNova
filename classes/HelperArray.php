@@ -212,7 +212,6 @@ class HelperArray {
    * @param int   $level
    */
   public static function array_repack(&$array, $level = 0) {
-    // TODO $lock_table не нужна тут
     if (!is_array($array)) {
       return;
     }
@@ -227,6 +226,31 @@ class HelperArray {
         }
       }
     }
+  }
+
+
+  /**
+   * Parses array of stringified parameters to array of parameter
+   *
+   * Stringified parameter is a string of "<parmName><delimeter><paramValue>"
+   *
+   * @param array|string $array
+   * @param string       $delimiter
+   *
+   * @return array
+   */
+  public static function parseParamStrings($array, $delimiter = '=') {
+    !is_array($array) ? $array = array((string)$array) : false;
+
+    $result = array();
+    foreach ($array as $param) {
+      $exploded = explode($delimiter, $param);
+      $paramName = $exploded[0];
+      unset($exploded[0]);
+      $result[$paramName] = implode($delimiter, $exploded);
+    }
+
+    return $result;
   }
 
 }

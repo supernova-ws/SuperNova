@@ -13,7 +13,7 @@
   <div class="unit_preview" id="unit{production.ID}" unit_id="{production.ID}">
     <div onclick="document.location='overview.php?mode=manage&cp={$PLANET_ID}'">
       <span class="posFill">
-        <img src="{I_[$PLANET_GOVERNOR_ID]}" height="100%">
+        {I_[$PLANET_GOVERNOR_ID]|html|height="100%"}
       </span>
 
       <span class="posT icon_alpha">

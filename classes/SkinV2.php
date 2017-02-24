@@ -45,6 +45,15 @@ INI-файл:
  * - Заглушка _NO_IMAGE при отсутствии картинки (опция _no_image в skin.ini)
  */
 class SkinV2 implements SkinInterface {
+  const PARAM_HTML = 'html';
+  const PARAM_HEIGHT = 'height';
+  const PARAM_WIDTH = 'width';
+
+  const INDEX_TAG_RAW = 0;
+  const INDEX_CACHE_KEY = 1;
+  const INDEX_RESOLVED = 2;
+  const INDEX_PARAMS = 3;
+
   /**
    * @var string $iniFileName
    */
@@ -54,14 +63,6 @@ class SkinV2 implements SkinInterface {
    * @var SkinModel $model
    */
   protected $model;
-
-
-
-
-
-
-
-
 
 
   /**
@@ -99,7 +100,7 @@ class SkinV2 implements SkinInterface {
   /**
    * Родительский скин
    *
-   * @var skin|null
+   * @var SkinInterface|null
    */
   protected $parent = null;
   /**
@@ -111,9 +112,14 @@ class SkinV2 implements SkinInterface {
   /**
    * Сортированный список поддерживаемых параметров
    *
-   * @var string[] $params_order
+   * @var string[] $allowedParams
    */
-  protected $params_order = array('html'); // , 'test', 'skin'
+  protected $allowedParams = array(
+    self::PARAM_HTML => '',
+    // Will be dumped for all tags which have |html
+    self::PARAM_HEIGHT => self::PARAM_HTML,
+    self::PARAM_WIDTH => self::PARAM_HTML,
+  );
   /**
    * Список полностью отрендеренных путей
    *
@@ -203,15 +209,22 @@ class SkinV2 implements SkinInterface {
 
     // Ресолвим переменные template в $image_tag - получаем Resolved Image Tag (RIT)
     // Их названия - в квадратных скобочках типа [ID] или даже [production.ID]
-    $image_tag = $this->image_tag_parse($image_tag, $template);
+
+    $ptlTag = new PTLTag($image_tag, $template, $this->allowedParams);
+    $image_tag = array(
+      self::INDEX_TAG_RAW   => $ptlTag->raw,
+      self::INDEX_CACHE_KEY => $ptlTag->cacheKey,
+      self::INDEX_RESOLVED  => $ptlTag->resolved,
+      self::INDEX_PARAMS    => $ptlTag->params,
+    );
 
     // Проверяем наличие ключа RIT в хранилища. В нём не может быть несуществующих файлов по построению
-    if (!empty($this->container[$image_tag[SKIN_IMAGE_TAG_RESOLVED]])) {
-      return $this->container[$image_tag[SKIN_IMAGE_TAG_RESOLVED]];
+    if (!empty($this->container[$image_tag[self::INDEX_CACHE_KEY]])) {
+      return $this->container[$image_tag[self::INDEX_CACHE_KEY]];
     }
 
     // Шорткат
-    $image_id = $image_tag[SKIN_IMAGE_TAG_IMAGE_ID];
+    $image_id = $image_tag[self::INDEX_RESOLVED];
 
     // Нет ключа RIT в контейнере - обсчёт пути для RIT из конфигурации
     empty($this->container[$image_id]) && !empty($this->config[$image_id])
@@ -235,58 +248,6 @@ class SkinV2 implements SkinInterface {
   }
 
   /**
-   * Ресолвит переменные и парсит тэг
-   *
-   * @param string   $image_tag
-   * @param template $template
-   *
-   * @return string
-   */
-  protected function image_tag_parse($image_tag, $template) {
-    $image_tag_ptl_resolved = $image_tag;
-    // Есть переменные из темплейта ?
-    if (strpos($image_tag_ptl_resolved, '[') !== false && is_object($template)) {
-      // Что бы лишний раз не запускать регексп
-      // TODO - многоуровневые вложения ?! Надо ли и где их можно применить
-      preg_match_all('#(\[.+?\])#', $image_tag_ptl_resolved, $matches);
-      foreach ($matches[0] as &$match) {
-        $var_name = str_replace(array('[', ']'), '', $match);
-        if (strpos($var_name, '.') !== false) {
-          // Вложенная переменная темплейта - на текущем уровне
-          // TODO Вложенная переменная из корня через "!"
-          list($block_name, $block_var) = explode('.', $var_name);
-          isset($template->_block_value[$block_name][$block_var]) ? $image_tag_ptl_resolved = str_replace($match, $template->_block_value[$block_name][$block_var], $image_tag_ptl_resolved) : false;
-        } elseif (strpos($var_name, '$') !== false) {
-          // Корневой DEFINE
-          $define_name = substr($var_name, 1);
-          isset($template->_tpldata['DEFINE']['.'][$define_name]) ? $image_tag_ptl_resolved = str_replace($match, $template->_tpldata['DEFINE']['.'][$define_name], $image_tag_ptl_resolved) : false;
-        } else {
-          // Корневая переменная темплейта
-          isset($template->_rootref[$var_name]) ? $image_tag_ptl_resolved = str_replace($match, $template->_rootref[$var_name], $image_tag_ptl_resolved) : false;
-        }
-      }
-    }
-
-    if (strpos($image_tag_ptl_resolved, '|') !== false) {
-      $params = explode('|', $image_tag_ptl_resolved);
-      $image_id = $params[0];
-      unset($params[0]);
-      $params = $this->reorder_params($params);
-      $image_tag_ptl_resolved = implode('|', array_merge(array($image_tag_ptl_resolved), $params));
-    } else {
-      $params = array();
-      $image_id = $image_tag_ptl_resolved;
-    }
-
-    return array(
-      SKIN_IMAGE_TAG_RAW      => $image_tag,
-      SKIN_IMAGE_TAG_RESOLVED => $image_tag_ptl_resolved,
-      SKIN_IMAGE_TAG_IMAGE_ID => $image_id,
-      SKIN_IMAGE_TAG_PARAMS   => $params,
-    );
-  }
-
-  /**
    * Проверка физического наличия файла с картинкой
    *
    * @param string $image_id
@@ -302,21 +263,6 @@ class SkinV2 implements SkinInterface {
     return is_file(SN_ROOT_PHYSICAL . $relative_path) ? $this->container[$image_id] = SN_ROOT_VIRTUAL . $relative_path : '';
   }
 
-
-  /**
-   * Переупорядочивает параметры в определенном порядке
-   *
-   * Параметры не транзитивны, а их порядок может влиять на вывод - чисто теоретически
-   *
-   * @param string[] $params
-   *
-   * @return string[]
-   */
-  protected function reorder_params($params) {
-    // Быстро и грубо. Если будут более сложные параметры - надо будет переделать
-    return array_intersect($this->params_order, $params);
-  }
-
   /**
    * @param $ini_image_id_plain
    * @param $params
@@ -324,21 +270,34 @@ class SkinV2 implements SkinInterface {
    * @return string
    */
   protected function apply_params($image_tag_input) {
-    $ini_image_id_plain = $image_tag_input[SKIN_IMAGE_TAG_IMAGE_ID];
-    $params = $image_tag_input[SKIN_IMAGE_TAG_PARAMS];
+    $params = $image_tag_input[self::INDEX_PARAMS];
+    $cacheKey = $image_tag_input[self::INDEX_RESOLVED];
 
-    $image_tag = $ini_image_id_plain;
-    $image_string = $this->container[$image_tag];
+    $image_string = $this->container[$cacheKey];
 
     // Нет параметров - просто возвращаем значение по $image_name из контейнера
     if (!empty($params) && is_array($params)) {
       // Здесь автоматически произойдёт упорядочивание параметров
 
       // Параметр 'html' - выводить изображение в виде HTML-тэга
-      if (in_array('html', $params)) {
-        $image_tag = $image_tag . '|html';
-        $image_string = '<img src="' . $image_string . '" />';
-        $this->container[$image_tag] = $image_string;
+      if (array_key_exists(self::PARAM_HTML, $params)) {
+        $cacheKey = $cacheKey . '|' . self::PARAM_HTML;
+
+        $htmlParams = '';
+        $paramsNoHtml = $params;
+        unset($paramsNoHtml[self::PARAM_HTML]);
+        // Just dump other params
+        foreach ($paramsNoHtml as $name => $data) {
+          if($this->allowedParams[$name] != self::PARAM_HTML) {
+            continue;
+          }
+
+          $htmlParams .= ' ' . $name . '=' . $data;
+          $cacheKey .= '|' . $name . '=' . $data;
+        }
+
+        $image_string = "<img src=\"{$image_string}\" {$htmlParams} />";
+        $this->container[$cacheKey] = $image_string;
       }
     }
 

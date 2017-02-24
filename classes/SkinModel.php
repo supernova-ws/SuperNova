@@ -63,6 +63,19 @@ class SkinModel {
     return $this->activeSkin->compile_image($image_tag, $template);
   }
 
+  public function getImageFrom($skinName, $image_tag, $template) {
+    return $this->getSkin($skinName)->compile_image($image_tag, $template);
+  }
+
+  /**
+   * Switches active skin
+   *
+   * @param $skinName
+   */
+  public function switchActive($skinName) {
+    $this->activeSkin = $this->getSkin($skinName);
+  }
+
   /**
    * Loads skin
    *
