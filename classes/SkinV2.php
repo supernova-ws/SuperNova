@@ -73,13 +73,13 @@ class SkinV2 implements SkinInterface {
    * Список скинов
    * TODO Переделать под контейнер
    *
-   * @var skin[] $skin_list
+   * @var self[] $skin_list
    */
   protected static $skin_list = array();
   /**
    * Текущий скин
    *
-   * @var null|skin
+   * @var self|null
    */
   protected static $active = null;
 
