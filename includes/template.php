@@ -270,7 +270,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 
     $template->assign_vars(array(
       '__DISPLAY_MENU' => $isDisplayMenu,
-      '__DISPLAY_NAVBAR' => $isDisplayTopNav,
+      'GLOBAL_DISPLAY_NAVBAR' => $isDisplayTopNav,
 
       'USER_AUTHLEVEL' => intval($user['authlevel']),
 

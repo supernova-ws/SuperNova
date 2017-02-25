@@ -314,6 +314,11 @@ class template_compile
 
     // This will handle the remaining root-level varrefs
 
+    // Prefix R_ means "render this block again". Only one level of rendering supported to avoid circular references
+    if (strpos($text_blocks, '{R_') !== false) {
+      $text_blocks = preg_replace(/** @lang RegExp */'#\{R_([a-zA-Z0-9\-_\.\$\[\]]+)\}#', "<?php \$this->reRender('\\1'); ?>", $text_blocks);
+    }
+
     // transform vars prefixed by I_ into skin-specific images with context
     if (strpos($text_blocks, '{I_') !== false && is_callable(array('SkinV2', 'image_url'))) {
       $text_blocks = preg_replace(/** @lang RegExp */'#\{I_(.+?)\}#', "<?php echo SkinV2::image_url('\\1', \$this); ?>", $text_blocks);

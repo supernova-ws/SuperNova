@@ -113,8 +113,137 @@ switch ($mode) {
     $template->assign_vars(array(
       'PAGE_TITLE' => $lang['adm_ptl_test'],
 
+      'VAR'                => 'VALUE',
+      'RENDER_VAR'         => '{VAR}',
+      'RENDER_DEFINED_VAR' => '{$VAR}',
+
+
       'VAR_VALUE' => 'VAR_VALUE',
+
+      'RENDER_VAR_VALUE'       => '{VAR_VALUE}',
+      'RENDER_NAVBAR_RESEARCH' => '{I_navbar_research|html}',
     ));
+
+    $template->assign_block_vars('render_test_block', array(
+      'BLOCK_VAR' => '{VAR}',
+    ));
+
+
+    $tests = array(
+      array('HEADER' => '{VAR} and {$VAR} Variables'),
+      array(
+        'SAMPLE'      => '{VAR}',
+        'EXPECTED'    => 'VALUE',
+        'DESCRIPTION' => 'Root variable - existing',
+      ),
+      array(
+        'SAMPLE'      => '{VAR_NOT_EXISTS}',
+        'EXPECTED'    => '',
+        'DESCRIPTION' => 'Root variable - non-existing',
+      ),
+      array(
+        'SAMPLE'      => '{АБВГД}',
+        'EXPECTED'    => '{АБВГД}',
+        'DESCRIPTION' => 'Root variable - wrong name',
+      ),
+      array(
+        'SAMPLE'      => '{$VAR}',
+        'EXPECTED'    => '$VALUE',
+        'DESCRIPTION' => 'DEFINE-d variable - existing',
+      ),
+      array(
+        'SAMPLE'      => '{$VAR_NOT_EXISTS}',
+        'EXPECTED'    => '',
+        'DESCRIPTION' => 'DEFINE-d variable - non-existing',
+      ),
+      array(
+        'SAMPLE'      => '{$АБВГД}',
+        'EXPECTED'    => '{$АБВГД}',
+        'DESCRIPTION' => 'DEFINE-d variable - wrong name',
+      ),
+
+      array('HEADER' => '{L_xxx} and {LA_xxx} - Language'),
+      array(
+        'SAMPLE'      => '{L_admin_ptl_test_la_}',
+        'EXPECTED'    => 'Single\'Double"ZeroEnd',
+        'DESCRIPTION' => 'Language string',
+      ),
+      array(
+        'SAMPLE'      => '{LA_admin_ptl_test_la_}',
+        'EXPECTED'    => 'Single\\\'Double\"Zero\0End',
+        'DESCRIPTION' => 'JavaScript-safe language string',
+      ),
+      array(
+        'SAMPLE'      => '{L_surely_not_exists_string_test}',
+        'EXPECTED'    => '{ L_surely_not_exists_string_test }',
+        'DESCRIPTION' => 'Language string - non-existing',
+      ),
+      array(
+        'SAMPLE'      => '{LA_surely_not_exists_string_test}',
+        'EXPECTED'    => '{ LA_surely_not_exists_string_test }',
+        'DESCRIPTION' => 'JS-safe language string - non-existing',
+      ),
+
+      array('HEADER' => '{I_xxx} - Image rendering'),
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_NO_IMAGE|height=\"20%\"|width=\"20%\"") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'design/images/_no_image.png') . "<br /><img src=\"{$imgPath}\" height=\"20%\" width=\"20%\" />",
+        'DESCRIPTION' => 'Image - not existing',
+      ),
+
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_/design/images/icon_note_pinned_64x64.png") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'design/images/icon_note_pinned_64x64.png') . "<br /><img src=\"{$imgPath}\" />",
+        'DESCRIPTION' => 'Direct image access by absolute path',
+      ),
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_images/border_small.png") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'skins/EpicBlue/images/border_small.png') . "<br /><img src=\"{$imgPath}\" />",
+        'DESCRIPTION' => 'Access image in skin by relative path',
+      ),
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_navbar_research") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'design/images/navbar_research_64x64.png') . "<br /><img src=\"{$imgPath}\" />",
+        'DESCRIPTION' => 'Image direct access by ID in skin.ini',
+      ),
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_navbar_research|skin=supernova-ivash") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'skins/supernova-ivash/navbar/navbar_research_64x64.png') . "<br /><img src=\"{$imgPath}\" />",
+        'DESCRIPTION' => 'Param \'skin\' - get image by Image ID from other skin',
+      ),
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_navbar_research|height=\"20%\"|width=\"20%\"") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'design/images/navbar_research_64x64.png') . "<br /><img src=\"{$imgPath}\" height=\"20%\" width=\"20%\" />",
+        'DESCRIPTION' => 'Image attributes - height 20%, width 20%',
+      ),
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_navbar_research|skin=supernova-ivash|height=\"40px\"") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'skins/supernova-ivash/navbar/navbar_research_64x64.png') . "<br /><img src=\"{$imgPath}\" height=\"40px\" />",
+        'DESCRIPTION' => 'Param \'skin\' with other params',
+      ),
+
+      array(
+        'SAMPLE'      => '{R_[RENDER_NAVBAR_RESEARCH]}',
+        'EXPECTED'    => '<img src="' . SN_ROOT_VIRTUAL . 'design/images/navbar_research_64x64.png"/>',
+        'DESCRIPTION' => 'Re-rendering image',
+      ),
+
+      array('HEADER' => 'Blocks'),
+    );
+
+//    $tests = array(
+//      array('HEADER' => '!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!'),
+//      array(
+//        'SAMPLE'      => '{L_admin_ptl_test_la_}',
+//        'EXPECTED'    => 'Single\'Double"ZeroEnd',
+//        'DESCRIPTION' => 'Language string',
+//      ),
+//    );
+
+    foreach ($tests as $test) {
+      $test['CONSTRUCTION'] = str_replace(array('{', '}'), array('&#123;', '&#125;'), $test['SAMPLE']);
+      $template->assign_block_vars('test', $test);
+    }
 
     $template->assign_block_vars('q', array('Q1' => 'q1',));
     $template->assign_block_vars('q.w', array('W1' => 'w1',));

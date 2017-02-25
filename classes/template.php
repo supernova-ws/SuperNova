@@ -60,6 +60,15 @@ class template
   var $parsed = false;
 
   /**
+   * @var template_compile|null $compiler
+   */
+  var $compiler = null;
+
+  public function __construct() {
+    $this->compiler = new template_compile($this);
+  }
+
+  /**
   * Set template location
   * @access public
   */
@@ -328,7 +337,7 @@ class template
       $this->files_template[$handle] = $user->theme['template_inherits_id'];
     }
 
-    $compile = new template_compile($this);
+    $compile = $this->compiler;
 
     // If we don't have a file assigned to this handle, die.
     if (!isset($this->files[$handle]))
@@ -741,6 +750,25 @@ class template
     }
   }
 
-}
+  public function reRender($stringTag) {
+    // This is used to access global vars
+    global $lang, $config, $user;
 
-?>
+    $tplTag = new PTLTag($stringTag, $this);
+    $result = $tplTag->resolved;
+    $this->compiler->compile_var_tags($result);
+    eval('?>' . $result . '<?php;');
+
+//    if(strpos($stringTag, '$') !== false) {
+//      // Processing template DEFINE-d variables
+//    }
+//    elseif(strpos($stringTag, '.') !== false) {
+//      // Processing block variables
+//    }
+//    else { //if(isset($this->_rootref[$stringTag])) {
+//    }
+
+    return $result;
+  }
+
+}

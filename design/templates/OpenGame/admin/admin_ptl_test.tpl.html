@@ -1,3 +1,9 @@
+<h1>Test is <span id="ptl_global_status"></span></h1>
+
+<!-- DEFINE $BLACK = 'black_moon' -->
+{I_[$BLACK]}<br />
+{I_s_[$BLACK]}
+
 <table id="ptl_test_table">
   <tr class="c_c">
     <th>{Конструкция}</th>
@@ -8,152 +14,106 @@
   </tr>
   <tr>
     <td>Testing JS code</td>
-    <td class="ptl_etalon">ETALON</td>
+    <td class="ptl_etalon">SAMPLE</td>
     <td class="ptl_result">RESULT</td>
     <td class="ptl_status"></td>
     <th>Self-test - always should FAIL</th>
   </tr>
-  <tr class="c_c">
-    <th colspan="5">Test is <span id="ptl_global_status"></span></th>
-  </tr>
-  <tr>
-    <td>&#123;VAR_VALUE&#125;</td>
-    <td class="ptl_etalon">VAR_VALUE</td>
-    <td class="ptl_result">{VAR_VALUE}</td>
-    <td class="ptl_status"></td>
-    <th>Root variable - existing</th>
-  </tr>
-  <tr>
-    <td>&#123;TEST_NOT_EXISTS&#125;</td>
-    <td class="ptl_etalon"></td>
-    <td class="ptl_result">{TEST_NOT_EXISTS}</td>
-    <td class="ptl_status"></td>
-    <th>Root variable - non-existing</th>
-  </tr>
-  <tr>
-    <td>&#123;АБВГД&#125;</td>
-    <td class="ptl_etalon">&#123;АБВГД&#125;</td>
-    <td class="ptl_result">{АБВГД}</td>
-    <td class="ptl_status"></td>
-    <th>Root variable - wrong name</th>
-  </tr>
-  <tr>
-    <td>&#123;$VAR&#125;</td>
-    <td class="ptl_etalon">$VARVALUE</td>
-    <!-- DEFINE $VAR = '$VARVALUE' -->
-    <td class="ptl_result">{$VAR}</td>
-    <td class="ptl_status"></td>
-    <th>DEFINE-d root variable - existing</th>
-  </tr>
-  <tr>
-    <td>&#123;$VAR_NOT_EXISTS&#125;</td>
-    <td class="ptl_etalon"></td>
-    <td class="ptl_result">{$VAR_NOT_EXISTS}</td>
-    <td class="ptl_status"></td>
-    <th>DEFINE-d root variable - non-existing</th>
-  </tr>
-  <tr>
-    <td>&#123;LA_admin_ptl_test_la_&#125;</td>
-    <td class="ptl_etalon">Single\'Double\"Zero\0End</td>
-    <td class="ptl_result">{LA_admin_ptl_test_la_}</td>
-    <td class="ptl_status"></td>
-    <th>JavaScript-safe language string</th>
-  </tr>
-  <tr>
-    <td>&#123;LA_surely_not_exists_string_test&#125;</td>
-    <td class="ptl_etalon">&#123; LA_surely_not_exists_string_test &#125;</td>
-    <td class="ptl_result">{LA_surely_not_exists_string_test}</td>
-    <td class="ptl_status"></td>
-    <th>JavaScript-safe language string - non-existing</th>
-  </tr>
 
   <tr>
     <th colspan="5" class="c_c">
-      Image compilation
+      Self-test - does &#123;R_xxx&#125; directives working. IF ANY OF THIS FAIL - OTHER TEST IS WRONG
     </th>
   </tr>
-  <tr>
-    <td>&#123;I_NO_IMAGE&#125;</td>
-    <td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}design/images/_no_image.png</td>
-    <td class="ptl_result">{I_NO_IMAGE}</td>
-    <td class="ptl_status"></td>
-    <th>No image exists</th>
-  </tr>
 
+<!--
   <tr>
-    <td>&#123;I_navbar_research&#125;</td>
-    <td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png</td>
-    <td class="ptl_result">{I_navbar_research}</td>
+    <td>&#123;VAR&#125;</td>
+    <td class="ptl_etalon">VALUE</td>
+    <td class="ptl_result">{VAR}</td>
     <td class="ptl_status"></td>
-    <th>Image URL translation</th>
+    <th>Root variable VAR for testing</th>
   </tr>
   <tr>
-    <td>&#123;I_navbar_research|html&#125;</td>
-    <td class="ptl_etalon"><img src="{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png"/></td>
-    <td class="ptl_result">{I_navbar_research|html}</td>
+    <td>&#123;RENDER_VAR&#125;</td>
+    <td class="ptl_etalon">&#123;VAR&#125;</td>
+    <td class="ptl_result">{RENDER_VAR}</td>
     <td class="ptl_status"></td>
-    <th>General image</th>
+    <th>Renderer for VAR</th>
   </tr>
-  <tr>
-    <td>&#123;I_navbar_research|html|height="20%"|width="20%"&#125;</td>
-    <td class="ptl_etalon"><img src="{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png" height="20%" width="20%"/></td>
-    <td class="ptl_result">{I_navbar_research|html|height="20%"|width="20%"}</td>
-    <td class="ptl_status"></td>
-    <th>General image with attributes - height 20%, width 20%</th>
-  </tr>
-
-  <!--<tr>-->
-    <!--<td>&#123;I_navbar_research|html&#125;</td>-->
-    <!--<td class="ptl_etalon"><img src="{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png"/></td>-->
-    <!--<td class="ptl_result">{I_navbar_research|html}</td>-->
-    <!--<td class="ptl_status"></td>-->
-    <!--<th>General image</th>-->
-  <!--</tr>-->
-
-
-
-  <!--<tr>-->
-    <!--<td>&#123;I_NO_IMAGE&#125;</td>-->
-    <!--<td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png</td>-->
-    <!--<td class="ptl_result">-->
-      <!--&lt;!&ndash; BEGIN q &ndash;&gt;-->
-      <!--&lt;!&ndash; BEGIN w &ndash;&gt;-->
-      <!--&lt;!&ndash; BEGIN e &ndash;&gt;-->
-      <!--{I_[e.E1]}-->
-      <!--&lt;!&ndash; END e &ndash;&gt;-->
-      <!--&lt;!&ndash; END w &ndash;&gt;-->
-      <!--&lt;!&ndash; END q &ndash;&gt;-->
-    <!--</td>-->
-    <!--<td class="ptl_status"></td>-->
-    <!--<th>No image exists</th>-->
-  <!--</tr>-->
-
+-->
 
   <tr>
-    <td>&#123;I_navbar_research|skin=supernova-ivash&#125;</td>
-    <td class="ptl_etalon">{D_SN_ROOT_VIRTUAL}skins/supernova-ivash/navbar/navbar_research_64x64.png</td>
-    <td class="ptl_result">{I_navbar_research|skin=supernova-ivash}</td>
+    <td>&#123;R_[RENDER_VAR]&#125;</td>
+    <td class="ptl_etalon">VALUE</td>
+    <td class="ptl_result">{R_[RENDER_VAR]}</td>
     <td class="ptl_status"></td>
-    <th>No image exists</th>
+    <th>Rendering VAR</th>
   </tr>
 
+  <!-- DEFINE $VAR = '$VALUE' -->
+<!--
   <tr>
-    <td>&#123;I_navbar_research|skin=supernova-ivash|html&#125;</td>
-    <td class="ptl_etalon"><img src="http://localhost/supernova_trunk/skins/supernova-ivash/navbar/navbar_research_64x64.png" /></td>
-    <td class="ptl_result">{I_navbar_research|skin=supernova-ivash|html}</td>
+    <td>&#123;$VAR&#125;</td>
+    <td class="ptl_etalon">$VALUE</td>
+    <td class="ptl_result">{$VAR}</td>
     <td class="ptl_status"></td>
-    <th>Image param 'skin' - directly get image from other skin</th>
+    <th>Defined variable $VAR for testing</th>
+  </tr>
+  <tr>
+    <td>&#123;RENDER_DEFINED_VAR&#125;</td>
+    <td class="ptl_etalon">&#123;$VAR&#125;</td>
+    <td class="ptl_result">{RENDER_DEFINED_VAR}</td>
+    <td class="ptl_status"></td>
+    <th>Renderer for DEFINE-d $VAR</th>
+  </tr>
+-->
+  <tr>
+    <td>&#123;R_[RENDER_DEFINED_VAR]&#125;</td>
+    <td class="ptl_etalon">$VALUE</td>
+    <td class="ptl_result">{R_[RENDER_DEFINED_VAR]}</td>
+    <td class="ptl_status"></td>
+    <th>Rendering DEFINE-d $VAR</th>
   </tr>
 
-  <!--<tr>-->
-    <!--<td>&#123;I_[$PLANET_GOVERNOR_ID]|html|height="100%"&#125;</td>-->
-    <!--<td class="ptl_etalon"><img src="{D_SN_ROOT_VIRTUAL}design/images/navbar_research_64x64.png" height="100%" /></td>-->
-    <!--<td class="ptl_result">{I_[$PLANET_GOVERNOR_ID]|html|height="100%"}</td>-->
-    <!--<td class="ptl_status"></td>-->
-    <!--<th>General image with attributes - height 100%</th>-->
-  <!--</tr>-->
+  <!-- BEGIN render_test_block -->
+<!--
+  <tr>
+    <td>&#123;render_test_block.BLOCK_VAR&#125;</td>
+    <td class="ptl_etalon">&#123;VAR&#125;</td>
+    <td class="ptl_result">{render_test_block.BLOCK_VAR}</td>
+    <td class="ptl_status"></td>
+    <th>What we will render now</th>
+  </tr>
+-->
+  <tr>
+    <td>&#123;R_[render_test_block.BLOCK_VAR]&#125;</td>
+    <td class="ptl_etalon">VALUE</td>
+    <td class="ptl_result">{R_[render_test_block.BLOCK_VAR]}</td>
+    <td class="ptl_status"></td>
+    <th>Rendering result for block var "{render_test_block.BLOCK_VAR}"</th>
+  </tr>
+  <!-- END render_test_block -->
 
+  <!-- BEGIN test -->
+  <!-- IF test.HEADER -->
+  <tr>
+    <th colspan="5" class="c_c">
+      {test.HEADER}
+    </th>
+  </tr>
+  <!-- ELSE -->
+  <tr>
+    <td>{test.CONSTRUCTION}</td>
+    <td class="ptl_etalon">{test.EXPECTED}</td>
+    <td class="ptl_result">{R_[test.SAMPLE]}</td>
+    <td class="ptl_status"></td>
+    <th>{test.DESCRIPTION}</th>
+  </tr>
+  <!-- ENDIF -->
+  <!-- END test -->
 </table>
+
 
 <script type="text/javascript">
   var ptlFailCount = 0;
