@@ -42,7 +42,7 @@
     });
 
     jQuery(document).on('click', '#user_list tr td:first-child, #user_list tr td:nth-child(2)', function(){
-      document.location = "admin/admin_user.php?uid=" + jQuery(this).parent().attr('uid');
+      document.location = "index.php?page=admin/user_view&uid=" + jQuery(this).parent().attr('uid');
     });
   </script>
 

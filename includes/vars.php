@@ -34,6 +34,8 @@ $sn_mvc = array(
     'imperator'       => array('sn_imperator_view'),
     'imperium'       => array('sn_imperium_view'),
     'techtree'       => array('sn_techtree_view'),
+
+    'admin/user_view'       => array('sn_admin_user_view_view'),
   ),
   'controller' => array(
   ),
@@ -48,6 +50,13 @@ $sn_mvc = array(
   ),
 
   'pages' => array(
+    'admin/user_view' => array(
+      'filename' => 'admin/user_view',
+      'options'  => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
+
     'chat'     => array(
       'filename' => 'chat',
       'options'  => array(
