@@ -269,7 +269,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     tpl_global_header($template_result, $is_login);
 
     $template->assign_vars(array(
-      '__DISPLAY_MENU' => $isDisplayMenu,
+      'GLOBAL_DISPLAY_MENU' => $isDisplayMenu,
       'GLOBAL_DISPLAY_NAVBAR' => $isDisplayTopNav,
 
       'USER_AUTHLEVEL' => intval($user['authlevel']),

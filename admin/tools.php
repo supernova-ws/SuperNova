@@ -223,6 +223,18 @@ switch ($mode) {
       ),
 
       array(
+        'SAMPLE'      => "{" . ($tag = "I_[\$BLACK]") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'skins/EpicBlue/planeten/black_moon.jpg') . "<br /><img src=\"{$imgPath}\" />",
+        'DESCRIPTION' => 'DEFINE-d test',
+      ),
+
+      array(
+        'SAMPLE'      => "{" . ($tag = "I_s_[\$BLACK]") . "}<br />{{$tag}|html}",
+        'EXPECTED'    => ($imgPath = SN_ROOT_VIRTUAL . 'skins/EpicBlue/planeten/small/s_black_moon.jpg') . "<br /><img src=\"{$imgPath}\" />",
+        'DESCRIPTION' => 'DEFINE-d and prefix test',
+      ),
+
+      array(
         'SAMPLE'      => '{R_[RENDER_NAVBAR_RESEARCH]}',
         'EXPECTED'    => '<img src="' . SN_ROOT_VIRTUAL . 'design/images/navbar_research_64x64.png"/>',
         'DESCRIPTION' => 'Re-rendering image',
@@ -244,14 +256,6 @@ switch ($mode) {
       $test['CONSTRUCTION'] = str_replace(array('{', '}'), array('&#123;', '&#125;'), $test['SAMPLE']);
       $template->assign_block_vars('test', $test);
     }
-
-    $template->assign_block_vars('q', array('Q1' => 'q1',));
-    $template->assign_block_vars('q.w', array('W1' => 'w1',));
-    $template->assign_block_vars('q.w.e', array('E1' => 'e1',));
-
-    $template->assign_block_vars('q', array('Q2' => 'q2',));
-    $template->assign_block_vars('q.w', array('W2' => 'w2',));
-    $template->assign_block_vars('q.w.e', array('E2' => 'e2',));
 
     display($template, null, false, '', true);
   break;
