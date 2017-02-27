@@ -1,3 +1,8 @@
+<!-- IF $NAVBAR_RESOURCES_ALLY -->
+<!-- DEFINE $NAVBAR_RESOURCES_HIDE_STORAGE = 1 -->
+<!-- DEFINE $NAVBAR_RESOURCES_HIDE_FLEETS = 1 -->
+<!-- ENDIF -->
+
 <div id="navbar_resources_flex" class="navbar_resources_flex header no_select {$NAVBAR_RESOURCES_CLASS}">
   <div class="navbar_resources_flex_title">
     <!-- IF $NAVBAR_RESOURCES_ALLY -->
@@ -34,13 +39,15 @@
           <div id='top_crystal'>
             {PLANET_CRYSTAL_TEXT}
           </div>
+
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
           <div>{PLANET_CRYSTAL_MAX_TEXT}</div>
           <!-- ENDIF -->
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
+          <div>{PLANET_CRYSTAL_FLEET_TEXT}</div>
+          <!-- ENDIF -->
         </div>
-        <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
-        <div>{PLANET_CRYSTAL_FLEET_TEXT}</div>
-        <!-- ENDIF -->
       </div>
     </div>
 
@@ -52,14 +59,16 @@
           <div id='top_deuterium'>
             {PLANET_DEUTERIUM_TEXT}
           </div>
+
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
           <div>{PLANET_DEUTERIUM_MAX_TEXT}</div>
           <!-- ENDIF -->
+
+          <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
+          <div>{PLANET_DEUTERIUM_FLEET_TEXT}</div>
+          <!-- ENDIF -->
         </div>
 
-        <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
-        <div>{PLANET_DEUTERIUM_FLEET_TEXT}</div>
-        <!-- ENDIF -->
       </div>
 
       <!-- IF ! $NAVBAR_RESOURCES_ALLY -->
@@ -68,6 +77,7 @@
 
         <div>
           <div>{ENERGY_BALANCE}</div>
+
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
           <div>{ENERGY_MAX_NUMBER_TEXT}</div>
           <!-- ENDIF -->
