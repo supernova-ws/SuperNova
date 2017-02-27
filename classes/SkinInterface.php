@@ -6,6 +6,13 @@
 interface SkinInterface {
 
   /**
+   * Get skin name
+   *
+   * @return string
+   */
+  public function getName();
+
+  /**
    * Возвращает строку для вывода в компилированном темплейте PTL
    *
    * @param PTLTag $ptlTag
@@ -22,6 +29,6 @@ interface SkinInterface {
    *
    * @return string
    */
-  public function imageFromStringTag($stringTag, $template);
+  public function imageFromStringTag($stringTag, $template = null);
 
 }

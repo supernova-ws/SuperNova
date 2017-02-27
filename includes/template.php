@@ -7,18 +7,18 @@ use \Pages\PageTutorial;
 /**
  * Get template name from path to skin
  *
- * @param $u_dpath
+ * @param $userSkinPath
  *
  * @return mixed
  */
-function getSkinPathTemplate($u_dpath) {
+function getSkinPathTemplate($userSkinPath) {
   static $template_names = array();
 
-  if(!isset($template_names[$u_dpath])) {
-    $template_names[$u_dpath] = file_exists(SN_ROOT_PHYSICAL . $u_dpath . '_template.ini') ? sys_file_read(SN_ROOT_PHYSICAL . $u_dpath . '_template.ini') : TEMPLATE_NAME;
+  if(!isset($template_names[$userSkinPath])) {
+    $template_names[$userSkinPath] = file_exists(SN_ROOT_PHYSICAL . $userSkinPath . '_template.ini') ? sys_file_read(SN_ROOT_PHYSICAL . $userSkinPath . '_template.ini') : TEMPLATE_NAME;
   }
 
-  return $template_names[$u_dpath];
+  return $template_names[$userSkinPath];
 }
 
 /**
@@ -397,7 +397,7 @@ function tpl_global_header(&$template_result, $is_login) {
   $standard_css += array(
 //    'design/css/design/css/global-ie.min.css' => '', // TODO
     TEMPLATE_PATH . '/_template.min.css' => '',
-    ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'skin.min.css' => '',
+    classSupernova::$gc->theUser->getSkinPath() . 'skin.min.css' => '',
   );
 
   // Prepending standard CSS files
@@ -734,7 +734,6 @@ function parsetemplate($template, $array = false) {
     }
 
     $template->assign_vars(array(
-      'dpath'          => $user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH,
       'SN_TIME_NOW'    => SN_TIME_NOW,
       'CURRENT_YEAR'   => date('Y', SN_TIME_NOW),
       'USER_AUTHLEVEL' => isset($user['authlevel']) ? $user['authlevel'] : -1,
@@ -779,7 +778,7 @@ function gettemplate($files, $template = false, $template_path = null) {
   !is_object($template) ? $template = new template() : false;
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
-  $templateName = getSkinPathTemplate($user['dpath']);
+  $templateName = getSkinPathTemplate(classSupernova::$gc->theUser->getSkinPath());
   !$template_path || !is_string($template_path) ? $template_path = SN_ROOT_PHYSICAL . 'design/templates/' : false;
   $template->set_custom_template($template_path . $templateName . '/', $templateName, TEMPLATE_DIR);
 

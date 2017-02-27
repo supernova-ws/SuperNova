@@ -49,7 +49,6 @@ if ($_POST && $mode == "change") {
     message("<font color=\"lime\">Херня на польском</font>", "Complete", "../overview." . PHP_EX, 3);
   }
 } else {
-  $parse['dpath'] = $dpath;
   $parse['debug'] = (classSupernova::$config->debug == 1) ? " checked='checked'/":'';
   $page .= parsetemplate(gettemplate('admin/messall_body'), $parse);
   display($page, '', false,'', true);

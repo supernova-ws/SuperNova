@@ -296,8 +296,6 @@ $DestroyTPL = '';
 $TableHeadTPL = '';
 
 $parse = $lang;
-// Données de base
-$parse['dpath'] = $dpath;
 $parse['name'] = $lang['tech'][$unit_id];
 $parse['image'] = $unit_id;
 $parse['description'] = $lang['info'][$unit_id]['description'];

@@ -22,6 +22,9 @@ use \classSupernova;
  * @property \Design       $design
  * @property \BBCodeParser $bbCodeParser
  *
+ * Dummy objects -------------------------------------------------------------------------------------------------------
+ * @property \TheUser      $theUser
+ *
  * Models --------------------------------------------------------------------------------------------------------------
  * @property \TextModel    $textModel
  * @property string        $skinEntityClass
@@ -96,6 +99,13 @@ class GlobalContainer extends ContainerPlus {
     $gc->bbCodeParser = function (GlobalContainer $gc) {
       return new \BBCodeParser($gc);
     };
+
+
+    // Dummy objects ---------------------------------------------------------------------------------------------------
+    $gc->theUser = function (GlobalContainer $gc) {
+      return new \TheUser($gc);
+    };
+
 
     // Models ----------------------------------------------------------------------------------------------------------
     $gc->skinEntityClass = 'SkinV2';

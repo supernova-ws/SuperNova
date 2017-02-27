@@ -174,7 +174,6 @@ if ($i != $ally['ally_members'])
 $template->assign_vars(array(
   'mode' => $mode . ($edit ? "&edit=" . $edit : ''),
   'ADMIN_MODE' => $user_can_kick,
-  'dpath' => SN_ROOT_VIRTUAL . $dpath,
   'onlineMessage' => $user_admin ? $lang['ali_sys_lastActive'] : $lang['Online'],
   'memberCount' => count($userList),
   'memberslist' => $page_list,
@@ -182,5 +181,3 @@ $template->assign_vars(array(
 ));
 
 display(parsetemplate($template), $lang['members_admin']);
-
-?>

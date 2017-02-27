@@ -38,10 +38,8 @@ class SkinModel {
     $this->gc = $gc;
     $this->skins = array();
 
-    global $user;
-
     // Берем текущий скин
-    $this->activeSkin = $this->getSkin(!empty($user['dpath']) ? $user['dpath'] : DEFAULT_SKINPATH);
+    $this->activeSkin = $this->getSkin(classSupernova::$gc->theUser->getSkinPath());
   }
 
   /**
@@ -62,8 +60,14 @@ class SkinModel {
     return $this->skins[$skinName];
   }
 
-  public function getImageCurrent($image_tag, $template) {
-    return $this->activeSkin->imageFromStringTag($image_tag, $template);
+  /**
+   * @param string        $image_tag
+   * @param template|null $template
+   *
+   * @return string
+   */
+  public function getImageCurrent($image_tag, $template = null) {
+    return $this->getImageFrom($this->activeSkin->getName(), $image_tag, $template);
   }
 
   public function getImageFrom($skinName, $image_tag, $template) {
@@ -90,6 +94,7 @@ class SkinModel {
     $skinClass = $this->gc->skinEntityClass;
 
     $skin = new $skinClass($skinName, $this);
+
 //    $skin->load();
 
     return $skin;

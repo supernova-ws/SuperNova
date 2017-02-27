@@ -36,11 +36,6 @@ function sn_options_model() {
           die();
         }
 
-//        $is_building = doquery("SELECT * FROM `{{fleets}}` WHERE `fleet_owner` = '{$user['id']}' LIMIT 1;", true);
-//        if($is_building) {
-//          message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
-//          die();
-//        }
         if(fleet_count_flying($user['id'])) {
           message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
           die();
@@ -54,9 +49,6 @@ function sn_options_model() {
 
         $query = classSupernova::db_get_record_list(LOC_PLANET, "`id_owner` = {$user['id']}");
         foreach($query as $planet) {
-          // $planet = sys_o_get_updated($user, $planet, SN_TIME_NOW);
-          // $planet = $planet['planet'];
-
           DBStaticPlanet::db_planet_set_by_id($planet['id'],
             "last_update = " . SN_TIME_NOW . ", energy_used = '0', energy_max = '0',
             metal_perhour = '{$config->metal_basic_income}', crystal_perhour = '{$config->crystal_basic_income}', deuterium_perhour = '{$config->deuterium_basic_income}',
@@ -156,31 +148,11 @@ function sn_options_model() {
     }
 
     $user['email'] = sys_get_param_str('db_email');
-//    if(!$template_result[F_ACCOUNT]['account_email'] && ($email_2 = sys_get_param_str('db_email2'))) {
-//      core_auth::email_set($email_2);
-//    }
-    $user['dpath'] = sys_get_param_str('dpath');
+    classSupernova::$gc->theUser->setSkinPath('skins/' . sys_get_param_str('skin_name') . '/');
     $user['lang'] = sys_get_param_str('langer', $user['lang']);
-
-//    if($lang->lng_switch($user['lang'])) {
-//      lng_include('options');
-//      lng_include('messages');
-//    }
 
     $user['design'] = sys_get_param_int('design');
     $user['noipcheck'] = sys_get_param_int('noipcheck');
-    // $user['spio_anz'] = sys_get_param_int('spio_anz');
-    // $user['settings_fleetactions'] = sys_get_param_int('settings_fleetactions', 1);
-    // $user['settings_tooltiptime'] = sys_get_param_int('settings_tooltiptime');
-    // $user['settings_esp'] = sys_get_param_int('settings_esp');
-    // $user['settings_wri'] = sys_get_param_int('settings_wri');
-    // $user['settings_bud'] = sys_get_param_int('settings_bud');
-    // $user['settings_mis'] = sys_get_param_int('settings_mis');
-    // $user['settings_statistics'] = sys_get_param_int('settings_statistics');
-    // $user['settings_info'] = sys_get_param_int('settings_info');
-    // $user['settings_rep'] = sys_get_param_int('settings_rep');
-    // $user['planet_sort']  = sys_get_param_int('settings_sort');
-    // $user['planet_sort_order'] = sys_get_param_int('settings_order');
     $user['deltime'] = !sys_get_param_int('deltime') ? 0 : ($user['deltime'] ? $user['deltime'] : SN_TIME_NOW + $config->player_delete_time);
 
     $gender = sys_get_param_int('gender', $user['gender']);
@@ -254,7 +226,7 @@ function sn_options_model() {
 
     $user_options_safe = db_escape($user['options']);
     db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
-      `dpath` = '{$user['dpath']}', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
+      `dpath` = '" . classSupernova::$gc->theUser->getSkinPath() . "', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe}', `gender` = {$user['gender']}
       {$user_birthday}"
     );
@@ -285,18 +257,13 @@ function sn_options_view($template = null) {
 
   $template = gettemplate('options', $template);
 
-//  $template_result['.']['skin_list'][] = array(
-//    'NAME'  => $lang['select_skin_path'],
-//    'VALUE' => '',
-//  );
-
   $dir = dir(SN_ROOT_PHYSICAL . 'skins');
   while(($entry = $dir->read()) !== false) {
     if(is_dir("skins/{$entry}") && $entry[0] != '.') {
       $template_result['.']['skin_list'][] = array(
         'VALUE'    => $entry,
         'NAME'     => $entry,
-        'SELECTED' => $user['dpath'] == "skins/{$entry}/",
+        'SELECTED' => classSupernova::$gc->theUser->getSkinName() == $entry,
       );
     }
   }
@@ -309,15 +276,7 @@ function sn_options_view($template = null) {
       'SELECTED' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT] == $key,
     );
   }
-  /*
-    foreach($lang['opt_planet_sort_ascending'] as $key => &$value) {
-      $template_result['.']['planet_sort_ascending'][] = array(
-        'VALUE' => $key,
-        'NAME'  => $value,
-        'SELECTED' => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE] == $key,
-      );
-    }
-  */
+
   foreach($lang['sys_gender_list'] as $key => $value) {
     $template_result['.']['gender_list'][] = array(
       'VALUE'    => $key,
@@ -349,14 +308,10 @@ function sn_options_view($template = null) {
   $time_now_parsed = getdate($user['deltime']);
 
   $user_time_diff = playerTimeDiff::user_time_diff_get();
-  // $player_options = player_load_option($user);
   $template->assign_vars(array(
     'USER_ID'      => $user['id'],
 
-    // 'AUTH_PROVIDER' => $template_result[F_PROVIDER_ID],
     'ACCOUNT_NAME' => sys_safe_output(classSupernova::$auth->account->account_name),
-
-//    'ACCOUNT_NAME' => sys_safe_output($account['account_name']),
 
     'USER_AUTHLEVEL' => $user['authlevel'],
 
@@ -391,7 +346,6 @@ function sn_options_view($template = null) {
     'opt_usern_data'      => htmlspecialchars($user['username']),
     'opt_mail1_data'      => $user['email'],
     'opt_mail2_data'      => sys_safe_output(classSupernova::$auth->account->account_email),
-    'OPT_DPATH_DATA'      => $user['dpath'],
 
     'PLAYER_OPTION_PLANET_SORT_INVERSE'    => classSupernova::$user_options[PLAYER_OPTION_PLANET_SORT_INVERSE],
     'PLAYER_OPTION_FLEET_SPY_DEFAULT'      => classSupernova::$user_options[PLAYER_OPTION_FLEET_SPY_DEFAULT],
@@ -427,7 +381,6 @@ function sn_options_view($template = null) {
     'user_settings_bud'        => classSupernova::$user_options[PLAYER_OPTION_UNIVERSE_ICON_BUDDY],
 
     'user_time_diff_forced' => $user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED],
-    // '_user_time_diff' => SN_CLIENT_TIME_DIFF,
 
     'adm_pl_prot' => $user['admin_protection'],
 

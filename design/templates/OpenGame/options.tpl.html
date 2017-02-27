@@ -242,8 +242,7 @@
           <tr>
             <th>{L_skins_example}</th>
             <th><input name="design"{opt_sskin_data} style="display:none" type="checkbox" id="design" />
-              <input name="dpath" style="display:none" maxlength="80" size="28" value="{OPT_DPATH_DATA}" type="text">&nbsp;
-              <select name="dpaths" size="1" onchange="document.fOptions.dpath.value = 'skins/' + this.value+'/';">
+              <select name="skin_name" size="1">
                 <!-- BEGIN skin_list -->
                 <option value="{skin_list.VALUE}"<!-- IF skin_list.SELECTED --> selected<!-- ENDIF -->>{skin_list.NAME}</option>
                 <!-- END skin_list -->

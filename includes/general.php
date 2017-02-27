@@ -973,17 +973,31 @@ function player_nick_render_array_to_html($nick_array){return sn_function_call('
 function sn_player_nick_render_array_to_html($nick_array, &$result) {
   global $config, $user;
 
+  static $iconCache = array();
+
+  if(empty($iconCache['gender_' . $nick_array[NICK_GENDER]])) {
+    $iconCache['gender_' . $nick_array[NICK_GENDER]] = classSupernova::$gc->skinModel->getImageCurrent("gender_{$nick_array[NICK_GENDER]}|html");
+    $iconCache['icon_vacation'] = classSupernova::$gc->skinModel->getImageCurrent('icon_vacation|html');
+    $iconCache['icon_birthday'] = classSupernova::$gc->skinModel->getImageCurrent('icon_birthday|html');
+  }
+  $iconGender = $iconCache['gender_' . $nick_array[NICK_GENDER]];
+
   // ALL STRING ARE UNSAFE!!!
   if(isset($nick_array[NICK_BIRTHSDAY])) {
-    $result[NICK_BIRTHSDAY] = '<img src="design/images/birthday.png" />';
+//    $result[NICK_BIRTHSDAY] = '<img src="design/images/birthday.png" />';
+    $result[NICK_BIRTHSDAY] = $iconCache['icon_birthday'];
   }
 
   if(isset($nick_array[NICK_VACATION])) {
-    $result[NICK_VACATION] = '<img src="design/images/icon_vacation.png" />';
+//    $result[NICK_VACATION] = '<img src="design/images/icon_vacation.png" />';
+//    $result[NICK_VACATION] = classSupernova::$gc->skinModel->getImageCurrent('icon_vacation|html');
+    $result[NICK_VACATION] = $iconCache['icon_vacation'];
   }
 
   if(isset($nick_array[NICK_GENDER])) {
-    $result[NICK_GENDER] = '<img src="' . ($user['dpath'] ? $user['dpath'] : DEFAULT_SKINPATH) . 'images/gender_' . $nick_array[NICK_GENDER] . '.png" />';
+//    $result[NICK_GENDER] = '<img src="' . classSupernova::$gc->theUser->getSkinPath() . 'images/gender_' . $nick_array[NICK_GENDER] . '.png" />';
+//    $result[NICK_GENDER] = classSupernova::$gc->skinModel->getImageCurrent("gender_{$nick_array[NICK_GENDER]}|html");
+    $result[NICK_GENDER] = $iconGender;
   }
 
   if(isset($nick_array[NICK_AUTH_LEVEL]) || isset($nick_array[NICK_PREMIUM])) {

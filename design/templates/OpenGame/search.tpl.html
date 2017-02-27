@@ -46,7 +46,7 @@
       <th>
         <img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" />
         <!-- IF ! STATS_HIDE_PM_LINK --><img src="design/images/icon_mail.gif" alt="{L_srch_action_pm}" title="{L_srch_action_pm}" /><!-- ENDIF -->
-        <img src="{dpath}img/b.gif" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" />
+        <img src="{I_icon_buddy}" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" />
         {L_srch_player_name}
       </th>
       <th>{L_sys_alliance}</th>
@@ -60,7 +60,7 @@
             <img src="{I_menu_empire_emperor}" border="0" alt="{L_stat_details}" />
           </a>
           <!-- IF ! STATS_HIDE_PM_LINK --><a href="messages.php?mode=write&id={search_result.PLAYER_ID}"><img src="design/images/icon_mail.gif" alt="{L_srch_action_pm}" title="{L_srch_action_pm}" /></a><!-- ENDIF -->
-          <a href="buddy.php?request_user_id={search_result.PLAYER_ID}" alt="{L_srch_action_buddy}"><img src="{dpath}img/b.gif" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" /></a>
+          <a href="buddy.php?request_user_id={search_result.PLAYER_ID}" alt="{L_srch_action_buddy}"><img src="{I_icon_buddy}" alt="{L_srch_action_buddy}" title="{L_srch_action_buddy}" border="0" /></a>
           {search_result.PLAYER_NAME}
           <!-- IF search_result.PLAYER_NAME != search_result.PLAYER_NAME_OLD -->
             ({L_srch_aka} <span class="warning">{search_result.PLAYER_NAME_OLD}</span>)

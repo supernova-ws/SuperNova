@@ -40,18 +40,23 @@ class PTLTag {
   /**
    * Ресолвит переменные и парсит тэг
    *
-   * @param string   $stringTag - tag from PTL
-   * @param template $template - template object which used to resolve tags
-   * @param array    $allowedParamsAsKeys - array of param name as a key like array('paramName' => mixed)
+   * @param string        $stringTag - tag from PTL
+   * @param template|null $template - template object which used to resolve tags
+   * @param array         $allowedParamsAsKeys - array of param name as a key like array('paramName' => mixed)
    */
-  public function __construct($stringTag, $template, $allowedParamsAsKeys = array()) {
+  public function __construct($stringTag, $template = null, $allowedParamsAsKeys = array()) {
     $this->template = $template;
     $this->raw = $stringTag;
 
     // Separating params - so there are will be no false-positives for template's variable names
-    $this->params = explode('|', $this->raw);
-    $this->resolved = $this->params[0];
-    unset($this->params[0]);
+    if(strpos($this->raw, '|') !== false) {
+      $this->params = explode('|', $this->raw);
+      $this->resolved = $this->params[0];
+      unset($this->params[0]);
+    } else {
+      $this->params = array();
+      $this->resolved = $this->raw;
+    }
 
     // Is there any template variables? Template variables passed in square brackets
     if (strpos($this->resolved, '[') !== false && is_object($this->template)) {

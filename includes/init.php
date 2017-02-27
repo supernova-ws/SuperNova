@@ -316,8 +316,6 @@ if(defined('DEBUG_AUTH') && DEBUG_AUTH && !defined('IN_AJAX')) {
 
 // Это уже переключаемся на пользовательский язык с откатом до языка в параметрах запроса
 $lang->lng_switch(sys_get_param_str('lang'));
-global $dpath;
-$dpath = $user["dpath"] ? $user["dpath"] : DEFAULT_SKINPATH;
 
 classSupernova::$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
   ? define('INSTALL_MODE', GAME_DISABLE_INSTALL)

@@ -322,6 +322,8 @@ autoexpanded textarea
 http://codepen.io/vsync/pen/frudD
 
 
+- Таки унифицировать опции
+      - $options = sys_user_options_unpack($user);
 
 
 
@@ -353,8 +355,35 @@ http://codepen.io/vsync/pen/frudD
         - Сделать хранение только имени скина, а не пути к скину
 
 
+Упростить вот это вот всё
+  public function getImageCurrent($image_tag, $template = null) {
+    return $this->getImageFrom($this->activeSkin->getName(), $image_tag, $template);
+  }
+
+  public function getImageFrom($skinName, $image_tag, $template) {
+    return $this->getSkin($skinName)->imageFromStringTag($image_tag, $template);
+  }
+        $skin = $this->model->getSkin($params[self::PARAM_SKIN]);
+        $image_string = $skin->imageFromStringTag($ptlTag->resolved, $ptlTag->template);
+
+Убрать
+        navbar_v
+        Упростить вёрстку
+
+displayP - сделать вывод в общий блок
+
+
 
 #ctv
+
+
+
+2017-02-27 21:52:44 42a25.2
+[@] Код
+    Добавлен класс-эмулятор текущего пользователя TheUser - для замены $dpath
+    Рендерер ников использует скины для получения иконок ДР, пола и отпуска
+    Из кода убрано использвание $dpath - остался только в базе
+
 
 2017-02-27 14:26:36 42a25.1
 [%] Навбар

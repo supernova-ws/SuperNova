@@ -131,7 +131,7 @@ class SkinV2 implements SkinInterface {
    *
    * @var string $name
    */
-  public $name = '';
+  protected $name = '';
 
   /**
    * Cached value of no image string
@@ -214,7 +214,14 @@ class SkinV2 implements SkinInterface {
   /**
    * @inheritdoc
    */
-  public function imageFromStringTag($stringTag, $template) {
+  public function getName() {
+    return $this->name;
+  }
+
+  /**
+   * @inheritdoc
+   */
+  public function imageFromStringTag($stringTag, $template = null) {
     return $this->imageFromPTLTag(new PTLTag($stringTag, $template, $this->allowedParams));
   }
 
@@ -289,10 +296,10 @@ class SkinV2 implements SkinInterface {
       if ($params[self::PARAM_SKIN] == $this->name) {
         // If skin - is this skin - then removing this param from list
         $ptlTag->removeParam(self::PARAM_SKIN);
+      } else {
+        $skin = $this->model->getSkin($params[self::PARAM_SKIN]);
+        $image_string = $skin->imageFromStringTag($ptlTag->resolved, $ptlTag->template);
       }
-
-      $skin = $this->model->getSkin($params[self::PARAM_SKIN]);
-      $image_string = $skin->imageFromStringTag($ptlTag->resolved, $ptlTag->template);
     }
 
     // Параметр 'html' - выводить изображение в виде HTML-тэга
