@@ -370,7 +370,7 @@ function sn_display($page, $title = '') {
       $page_item->files = array_reverse($page_item->files);
       $result_added = true;
     }
-    $pageOutput[] = displayP($page_item, true);
+    $pageOutput[] = templateRenderToHtml($page_item);
   }
 
 
@@ -727,15 +727,25 @@ function tpl_navbar_extra_buttons(&$sn_mvc, $template) {
   $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array($sn_mvc['navbar_prefix_button']) ? count($sn_mvc['navbar_prefix_button']) : 0);
 }
 
-
 /**
  * @param template|string $template
- * @return string|null
  */
-function displayP($template, $returnOutput = false) {
+function templateRenderToHtml($template) {
   $output = null;
 
   ob_start();
+  displayP($template);
+  $output = ob_get_contents();
+  ob_end_clean();
+
+  return $output;
+}
+
+
+/**
+ * @param template|string $template
+ */
+function displayP($template) {
   if(is_object($template)) {
     if(empty($template->parsed)) {
       parsetemplate($template);
@@ -747,15 +757,33 @@ function displayP($template, $returnOutput = false) {
   } else {
     print($template);
   }
+}
 
-  if($returnOutput) {
-    $output = ob_get_contents();
-    ob_end_clean();
-  } else {
-    ob_end_flush();
+/**
+ * @param template $template
+ * @param array|bool      $array
+ *
+ * @return mixed
+ */
+function templateObjectParse($template, $array = false) {
+  global $user;
+
+  if(!empty($array) && is_array($array)) {
+    foreach($array as $key => $data) {
+      $template->assign_var($key, $data);
+    }
   }
 
-  return $output;
+  $template->assign_vars(array(
+    'SN_TIME_NOW'    => SN_TIME_NOW,
+    'CURRENT_YEAR'   => date('Y', SN_TIME_NOW),
+    'USER_AUTHLEVEL' => isset($user['authlevel']) ? $user['authlevel'] : -1,
+    'SN_GOOGLE'      => defined('SN_GOOGLE'),
+  ));
+
+  $template->parsed = true;
+
+  return $template;
 }
 
 /**
@@ -766,24 +794,7 @@ function displayP($template, $returnOutput = false) {
  */
 function parsetemplate($template, $array = false) {
   if(is_object($template)) {
-    global $user;
-
-    if(!empty($array) && is_array($array)) {
-      foreach($array as $key => $data) {
-        $template->assign_var($key, $data);
-      }
-    }
-
-    $template->assign_vars(array(
-      'SN_TIME_NOW'    => SN_TIME_NOW,
-      'CURRENT_YEAR'   => date('Y', SN_TIME_NOW),
-      'USER_AUTHLEVEL' => isset($user['authlevel']) ? $user['authlevel'] : -1,
-      'SN_GOOGLE'      => defined('SN_GOOGLE'),
-    ));
-
-    $template->parsed = true;
-
-    return $template;
+    return templateObjectParse($template, $array);
   } else {
     $search[] = '#\{L_([a-z0-9\-_]*?)\[([a-z0-9\-_]*?)\]\}#Ssie';
     $replace[] = '((isset($lang[\'\1\'][\'\2\'])) ? $lang[\'\1\'][\'\2\'] : \'{L_\1[\2]}\');';

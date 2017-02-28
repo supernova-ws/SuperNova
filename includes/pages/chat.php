@@ -177,10 +177,8 @@ function sn_chat_msg_view($template = null)
   else
   {
     $result['last_message'] = $last_message;
-    ob_start();
-    displayP($template);
-    $result['html'] = ob_get_contents();
-    ob_end_clean();
+    $result['html'] = templateRenderToHtml($template);
+
     print(json_encode($result));
   }
   die();
