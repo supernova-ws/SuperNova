@@ -34,8 +34,6 @@ foreach ($lang['changelog'] as $a => $b)
 $parse['body'] = $body;
 
 $page .= parsetemplate(gettemplate('changelog_body'), $parse);
-display($page, "Changelog", false, '', true);
+display($page, "Changelog");
 
 // Created by Perberos. All rights reversed (C) 2006
-
-?>

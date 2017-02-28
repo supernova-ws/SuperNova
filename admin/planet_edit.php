@@ -59,4 +59,4 @@ $template->assign_vars(array(
   'PAGE_HINT' => $lang['adm_planet_edit_hint'],
 ));
 
-display($template, $lang['adm_am_ttle'], false, '', true);
+display($template, $lang['adm_am_ttle']);

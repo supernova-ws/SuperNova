@@ -64,7 +64,7 @@ if(sys_get_param('str_delete_date') && checkdate($month = sys_get_param_id('dele
 }
 
 
-$page_max = doquery('SELECT COUNT(*) AS `max` FROM {{messages}}' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''), true);
+$page_max = doquery('SELECT COUNT(*) AS `max` FROM `{{messages}}`' . ($int_type_selected >= 0 ? " WHERE `message_type` = {$int_type_selected};" : ''), true);
 $page_max = ceil($page_max['max'] / 25);
 
 $int_page_current = min(sys_get_param_id('int_page_current', 1), $page_max);
@@ -83,68 +83,6 @@ for($i = 1; $i <= $page_max; $i++)
   $template->assign_block_vars('page', array('NUMBER' => $i));
 }
 
-
-/*
-$Prev       = ( !empty($_POST['prev'])   ) ? true : false;
-$Next       = ( !empty($_POST['next'])   ) ? true : false;
-$DelSel     = ( !empty($_POST['delsel']) ) ? true : false;
-$DelDat     = ( !empty($_POST['deldat']) ) ? true : false;
-$CurrPage   = ( !empty($_POST['curr'])   ) ? $_POST['curr'] : 1;
-$SelType    = $_POST['type'];
-$SelPage    = $_POST['page'];
-
-$ViewPage = 1;
-if($type_selected != $SelType)
-{
-  $type_selected = $SelType;
-  $ViewPage = 1;
-}
-elseif($CurrPage != $SelPage)
-{
-  $ViewPage = ( !empty($SelPage) ) ? $SelPage : 1;
-}
-
-if ($Prev == true)
-{
-    $CurrPage -= 1;
-    if ($CurrPage >= 1) {
-        $ViewPage = $CurrPage;
-    } else {
-        $ViewPage = 1;
-    }
-}
-elseif($Next   == true)
-{
-    $Mess      = doquery("SELECT COUNT(*) AS `max` FROM {{messages}} WHERE `message_type` = '". $int_type_selected ."';", '', true);
-    $MaxPage   = ceil ( ($Mess['max'] / 25) );
-    $CurrPage += 1;
-    if ($CurrPage <= $MaxPage) {
-    $ViewPage = $CurrPage;
-    } else {
-    $ViewPage = $MaxPage;
-    }
-}
-elseif($DelSel == true)
-{
-    foreach($_POST['sele'] as $MessId => $Value) {
-        if ($Value = "on") {
-            doquery ( "DELETE FROM {{messages}} WHERE `message_id` = '". $MessId ."';");
-        }
-    }
-}
-elseif($DelDat == true)
-{
-    $SelDay    = $_POST['selday'];
-    $SelMonth  = $_POST['selmonth'];
-    $SelYear   = $_POST['selyear'];
-    $LimitDate = mktime (0,0,0, $SelMonth, $SelDay, $SelYear );
-    if ($LimitDate != false) {
-        doquery ( "DELETE FROM {{messages}} WHERE `message_time` <= '". $LimitDate ."';");
-        doquery ( "DELETE FROM {{rw}} WHERE `time` <= '". $LimitDate ."';");
-    }
-}
-*/
-
 $StartRec = ($int_page_current - 1) * 25;
 
 $Messages = db_message_list_admin_by_type($int_type_selected, $StartRec);
@@ -162,4 +100,4 @@ $template->assign_vars(array(
   'TYPE_SELECTED' => $int_type_selected,
 ));
 
-display(parsetemplate($template, $parse), $lang['mlst_title'], false, '', true);
+display(parsetemplate($template, $parse), $lang['mlst_title']);

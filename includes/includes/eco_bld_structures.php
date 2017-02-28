@@ -412,5 +412,5 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
   $template->assign_recursive($template_result);
 
-  display(parsetemplate($template)); // , $lang['Builds']
+  display($template);
 }

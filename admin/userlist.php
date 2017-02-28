@@ -15,9 +15,12 @@ define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $config, $lang, $user;
+
 if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
+  sys_redirect(SN_ROOT_VIRTUAL . 'admin/banned.php');
 }
+
+AdminCheckLevel();
 
 ini_set('memory_limit', classSupernova::$config->stats_php_memory ? classSupernova::$config->stats_php_memory : '256M');
 
@@ -112,4 +115,4 @@ $template->assign_vars(array(
   'PAGE_HEADER' => $is_players_online_page ? $lang['adm_ul_title_online'] : $lang['adm_ul_title'],
 ));
 
-display($template, '', false, '', true);
+display($template);

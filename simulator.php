@@ -55,7 +55,13 @@ if($_POST['submit'] || $execute)
 
   $template = gettemplate('ube_combat_report', true);
   $template->assign_recursive($template_result);
-  display($template, '', false, '', false, false, true);
+
+  $template->assign_vars(array(
+    'MENU' => false,
+    'NAVBAR' => false,
+  ));
+
+  display($template);
 }
 else
 {
@@ -109,5 +115,8 @@ else
     'UNIT_GOVERNORS' => UNIT_GOVERNORS,
   ));
 
-  display($template, $lang['coe_combatSimulator'], false);
+  $template->assign_vars(array(
+    'NAVBAR' => false,
+  ));
+  display($template, $lang['coe_combatSimulator']);
 }

@@ -73,4 +73,4 @@ else
   $template->assign_vars($query);
 }
 
-display($template, $lang['adm_er_ttle'], false, '', true);
+display($template, $lang['adm_er_ttle']);

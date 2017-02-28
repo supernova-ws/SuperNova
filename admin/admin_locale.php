@@ -233,4 +233,4 @@ if($domain) {
   }
 }
 
-display($template, $lang['adm_lng_title'], false, '', true);
+display($template, $lang['adm_lng_title']);

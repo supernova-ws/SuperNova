@@ -23,6 +23,4 @@ $template = gettemplate('quest', true);
 
 qst_render_page();
 
-display($template, $lang['qst_quests'], false, '', true);
-
-?>
+display($template, $lang['qst_quests']);

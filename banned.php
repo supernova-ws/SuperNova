@@ -34,5 +34,3 @@ while($ban_row = db_fetch($query))
 
 $template->assign_var('BANNED_COUNT', $i);
 display(parsetemplate($template));
-
-?>

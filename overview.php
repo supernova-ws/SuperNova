@@ -433,7 +433,6 @@ switch($mode = sys_get_param_str('mode')) {
       'ADMIN_EMAIL'           => classSupernova::$config->game_adminEmail,
 
       'PLANET_GOVERNOR_ID'    => $planetrow['PLANET_GOVERNOR_ID'],
-//      'PLANET_GOVERNOR_LEVEL' => $planetrow['PLANET_GOVERNOR_LEVEL'] mrc_get_level($user, $planetrow,),
       'PLANET_GOVERNOR_LEVEL' => $governor_level,
       'PLANET_GOVERNOR_LEVEL_PLUS' => mrc_get_level($user, $planetrow, $planetrow['PLANET_GOVERNOR_ID']) - $governor_level,
       'PLANET_GOVERNOR_NAME'  => $lang['tech'][$planetrow['PLANET_GOVERNOR_ID']],
@@ -449,6 +448,8 @@ switch($mode = sys_get_param_str('mode')) {
       'SECTOR_CAN_BUY'        => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
       'SECTOR_COST'           => $sector_cost,
       'SECTOR_COST_TEXT'      => pretty_number($sector_cost),
+
+      'PAGE_HEADER'      => "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]",
     ));
     tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);
 
@@ -456,6 +457,6 @@ switch($mode = sys_get_param_str('mode')) {
       $template->assign_block_vars('result', $a_result);
     }
 
-    display($template, "{$lang['ov_overview']} - {$lang['sys_planet_type'][$planetrow['planet_type']]} {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]");
+    display($template);
   break;
 }

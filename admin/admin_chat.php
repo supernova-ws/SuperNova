@@ -32,11 +32,11 @@ if ($delete)
 }
 elseif ($deleteall == 'yes')
 {
-  doquery("DELETE FROM {{chat}};");
+  doquery("DELETE FROM `{{chat}}`;");
 }
 
 // Affichage des messages
-$query = doquery("SELECT * FROM {{chat}} ORDER BY messageid DESC LIMIT 25;");
+$query = doquery("SELECT * FROM `{{chat}}` ORDER BY messageid DESC LIMIT 25;");
 $i = 0;
 while ($e = db_fetch($query))
 {
@@ -51,6 +51,5 @@ while ($e = db_fetch($query))
 }
 $parse['msg_num'] = $i;
 
-display(parsetemplate(gettemplate('admin/admin_chat'), $parse), "Chat", false, '', true);
-
-?>
+$parsetemplate = parsetemplate(gettemplate('admin/admin_chat'), $parse);
+display($parsetemplate, "Chat");

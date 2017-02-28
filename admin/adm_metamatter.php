@@ -71,4 +71,4 @@ if($message) {
   $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
 }
 
-display($template, $lang['adm_mm_title'], false, '', true);
+display($template, $lang['adm_mm_title']);

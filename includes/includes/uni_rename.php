@@ -69,4 +69,5 @@
     'PAGE_HINT'   => $lang['uni_name_page_hint'],
   ));
 
-  display($template, $lang['sys_universe'] . ' - ' . $lang['uni_naming'], true, '', false);
+$pageTitle = $lang['sys_universe'] . ' - ' . $lang['uni_naming'];
+display($template, $pageTitle);

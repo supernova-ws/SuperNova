@@ -407,4 +407,4 @@ if($scan) {
   ));
 }
 
-display(parsetemplate($template), $lang['sys_universe'], true, '', false);
+display(parsetemplate($template), $lang['sys_universe']);

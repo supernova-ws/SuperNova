@@ -159,4 +159,4 @@ $template->assign_vars(array(
   'STATS_HIDE_PM_LINK' => classSupernova::$config->stats_hide_pm_link || $source,
 ));
 
-display($template, $lang['stat_header'], !empty($user), '', false, !empty($user));
+display($template, $lang['stat_header']);

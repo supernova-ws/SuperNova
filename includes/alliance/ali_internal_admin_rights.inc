@@ -71,5 +71,3 @@ if (count($ranks))
 }
 
 display(parsetemplate($template), $lang['ali_adm_rights_title']);
-
-?>

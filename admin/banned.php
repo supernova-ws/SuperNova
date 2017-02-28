@@ -73,4 +73,5 @@ elseif($mode == 'unbanit' && $action)
 $parse['name'] = $name_output;
 $parse['mode'] = $mode;
 
-display(parsetemplate(gettemplate("admin/admin_ban", true), $parse), $lang['adm_ban_title'], false, '', true);
+$parsetemplate = parsetemplate(gettemplate("admin/admin_ban", true), $parse);
+display($parsetemplate, $lang['adm_ban_title']);

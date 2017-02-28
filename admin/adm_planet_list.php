@@ -53,4 +53,4 @@ $template->assign_vars(array(
   'PARENT_COLUMN' => $table_parent_columns,
 ));
 
-display($template, $page_title, false, '', true);
+display($template, $page_title);

@@ -232,5 +232,5 @@ function mrc_mercenary_render($user) {
     'DARK_MATTER' => $user_dark_matter,
   ));
 
-  display(parsetemplate($template), $lang['tech'][$mode]);
+  display($template, $lang['tech'][$mode]);
 }

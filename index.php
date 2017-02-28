@@ -15,11 +15,8 @@ if(isset($sn_page_name) || ($sn_page_name = isset($_GET['page']) ? trim(strip_ta
     if(!empty($template_result) && is_object($template)) {
       $template->assign_recursive($template_result);
     }
-//    var_dump($template);
-//    die();
 
-
-    display($template, '', true, '', defined('IN_ADMIN') && (IN_ADMIN === true), true);
+    display($template);
   }
 }
 

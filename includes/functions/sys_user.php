@@ -24,13 +24,16 @@ function sys_user_vacation($user) {
     $template = gettemplate('vacation', true);
 
     $template->assign_vars(array(
+      'MENU' => false,
+      'NAVBAR' => false,
+
       'NAME' => $user['username'],
       'VACATION_END' => date(FMT_DATE_TIME, $user['vacation']),
       'CAN_LEAVE' => $user['vacation'] <= SN_TIME_NOW,
       'RANDOM' => mt_rand(1, 2),
     ));
 
-    display(parsetemplate($template), '', false, '', false, false);
+    display(parsetemplate($template));
   }
 
   return false;

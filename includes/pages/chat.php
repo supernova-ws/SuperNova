@@ -171,7 +171,8 @@ function sn_chat_msg_view($template = null)
 
   if($history)
   {
-    display($template, "{$lang['chat_history']} - {$lang[$alliance ? 'chat_ally' : 'chat_common']}", true, '', false, true);
+    $pageTitle = "{$lang['chat_history']} - {$lang[$alliance ? 'chat_ally' : 'chat_common']}";
+    display($template, $pageTitle);
   }
   else
   {

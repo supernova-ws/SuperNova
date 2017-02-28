@@ -25,6 +25,4 @@ if ($mode != "delet")
 }
 
 $Page = parsetemplate($PageTpl, $parse);
-display($Page, $lang['adminpanel'], false, '', true);
-
-?>
+display($Page, $lang['adminpanel']);

@@ -171,5 +171,4 @@ if (isset($GET_action)) {
 }
 
 $page = parsetemplate( $PanelMainTPL, $parse );
-display( $page, $lang['panel_mainttl'], false, '', true );
-?>
+display( $page, $lang['panel_mainttl']);

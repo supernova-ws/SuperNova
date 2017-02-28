@@ -34,4 +34,4 @@ if(sys_get_param_str('mode') == 'addit')
   AdminMessage($lang['addm_done'], $lang['addm_title']);
 }
 
-display($template, $lang['addm_title'], false, '', true);
+display($template, $lang['addm_title']);

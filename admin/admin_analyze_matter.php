@@ -13,24 +13,6 @@ if($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);
 }
-/*
-$template = gettemplate("admin/add_moon", true);
-
-if(sys_get_param_str('mode') == 'addit')
-{
-  $PlanetID = sys_get_param_id('user');
-  $MoonName = sys_get_param_str('name');
-
-  sn_db_transaction_start();
-  $PlanetSelected = DBStaticPlanet::db_planet_by_id($PlanetID, true, '`galaxy`, `system`, `planet`, `id_owner`');
-  uni_create_moon($PlanetSelected['galaxy'], $PlanetSelected['system'], $PlanetSelected['planet'], $PlanetSelected['id_owner'], 0, $MoonName);
-  sn_db_transaction_commit();
-
-  AdminMessage($lang['addm_done'], $lang['addm_title']);
-}
-
-display($template, $lang['addm_title'], false, '', true);
-*/
 
 $constants = get_defined_constants(true);
 $rpgConstants = array();
@@ -106,4 +88,4 @@ $fromDate = classSupernova::$db->doquery("SELECT min(log_dark_matter_timestamp) 
 $template->assign_var("MIN_DATE", reset($fromDate));
 
 
-display($template, '{Анализ расхода и прихода материи}', false, '', true);
+display($template, '{Анализ расхода и прихода материи}');

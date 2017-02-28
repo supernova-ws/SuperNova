@@ -43,7 +43,7 @@ switch ($mode) {
       'STRING' => htmlentities($string),
       'MD5'    => md5($string),
     ));
-    display($template, $lang['adm_tools_md5_header'], false, '', true);
+    display($template, $lang['adm_tools_md5_header']);
   break;
 
   case ADM_TOOL_FORCE_ALL:
@@ -104,7 +104,7 @@ switch ($mode) {
       'TABLE_FOOTER'  => 'test',
     ));
 
-    display($template, null, false, '', true);
+    display($template);
   break;
 
   case ADM_PTL_TEST:
@@ -257,8 +257,9 @@ switch ($mode) {
       $template->assign_block_vars('test', $test);
     }
 
-    display($template, null, false, '', true);
+    display($template);
   break;
 }
 
-display(parsetemplate(gettemplate("admin/admin_tools", true)), $lang['adm_bn_ttle'], false, '', true);
+$template = parsetemplate(gettemplate("admin/admin_tools", true));
+display($template, $lang['adm_bn_ttle']);

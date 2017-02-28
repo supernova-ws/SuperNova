@@ -21,16 +21,32 @@ function getSkinPathTemplate($userSkinPath) {
   return $template_names[$userSkinPath];
 }
 
+function AdminCheckLevel() {
+  global $user, $lang;
+
+  if($user['authlevel'] < 1) {
+    AdminMessage($lang['adm_err_denied'], 'Error', SN_ROOT_VIRTUAL . 'overview.php');
+  }
+}
+
 /**
  * @param        $mes
  * @param string $title
  * @param string $dest
  * @param int    $time
  */
-function AdminMessage($mes, $title = 'Error', $dest = '', $time = 3) {
-  $page = parsetemplate(gettemplate('admin/message_body'), array('title' => $title, 'mes' => $mes,));
+function AdminMessage($mes, $title = 'Error', $dest = '', $time = 5) {
+  $template = gettemplate('admin/message_body', true);
+  $template->assign_vars(array(
+    'GLOBAL_META_TAGS'      => $dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL={$dest}\">" : '',
+    'GLOBAL_DISPLAY_NAVBAR' => false,
 
-  display($page, $title, false, ($dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL=javascript:self.location='{$dest}';\">" : ''), true);
+    'title' => $title,
+    'mes'   => $mes,
+    'DEST'  => $dest,
+  ));
+
+  display($template, $title);
 }
 
 /**
@@ -43,12 +59,15 @@ function AdminMessage($mes, $title = 'Error', $dest = '', $time = 3) {
 function message($mes, $title = 'Error', $dest = '', $time = 5, $show_header = true) {
   $template = gettemplate('message_body', true);
   $template->assign_vars(array(
+    'GLOBAL_META_TAGS' => $dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL={$dest}\">" : '',
+    'GLOBAL_DISPLAY_NAVBAR' => $show_header,
+
     'title' => $title,
     'mes'   => $mes,
     'DEST'  => $dest,
   ));
 
-  display($template, $title, $show_header, (($dest != '') ? "<meta http-equiv=\"refresh\" content=\"{$time};url={$dest}\">" : ""), false);
+  display($template, $title);
 }
 
 /**
@@ -205,8 +224,8 @@ function tpl_render_menu($template) {
  *
  * @return mixed
  */
-function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $AdminPage = false, $isDisplayMenu = true, $exitStatus = true) {
-  return sn_function_call('display', array($page, $title, $isDisplayTopNav, $metatags, $isDisplayMenu, $exitStatus));
+function display($page, $title = '') {
+  return sn_function_call('display', array($page, $title));
 }
 
 /**
@@ -218,17 +237,27 @@ function display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $A
  * @param bool|true       $isDisplayMenu
  * @param bool|int|string $exitStatus - Код или сообщение выхода
  */
-function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '', $isDisplayMenu = true, $exitStatus = true) {
+function sn_display($page, $title = '') {
   global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
+
+  $isDisplayTopNav = true;
+  $metatags = '';
+  $isDisplayMenu = true;
+  $exitStatus = true;
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
   $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
 
   $isRenderGlobal = true;
   if(is_object($page)) {
+    isset($page->_rootref['GLOBAL_DISPLAY_MENU']) ? $isDisplayMenu = $page->_rootref['GLOBAL_DISPLAY_MENU'] : false;
     isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
+
+    isset($page->_rootref['GLOBAL_DISPLAY_NAVBAR']) ? $isDisplayTopNav = $page->_rootref['GLOBAL_DISPLAY_NAVBAR'] : false;
     isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
+
     isset($page->_rootref['PAGE_TITLE']) && empty($title) ? $title = $page->_rootref['PAGE_TITLE'] : false;
+
     isset($page->_rootref['GLOBAL']) ? $isRenderGlobal = $page->_rootref['GLOBAL'] : false;
 
     !$title && !empty($page->_rootref['PAGE_HEADER']) ? $title = $page->_rootref['PAGE_HEADER'] : false;
@@ -239,6 +268,11 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
   $isDisplayTopNav = $isDisplayTopNav && !$in_admin;
 
   if(empty($user['id']) || !is_numeric($user['id'])) {
+    $isDisplayMenu = false;
+    $isDisplayTopNav = false;
+  }
+
+  if(defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true) {
     $isDisplayMenu = false;
     $isDisplayTopNav = false;
   }
@@ -263,9 +297,14 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
 
   $template_result['LOGIN_LOGOUT'] = $is_login;
 
-  if($isRenderGlobal) {
-    $template = gettemplate('_global_header', true);
+  $template = gettemplate('_page', true);
+  $template->assign_vars(array(
+    'GLOBAL_DISPLAY_WRAP' => $isRenderGlobal,
+  ));
 
+  $metatags = isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : $metatags;
+
+  if($isRenderGlobal) {
     tpl_global_header($template_result, $is_login);
 
     $template->assign_vars(array(
@@ -289,7 +328,7 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
       //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
 
       'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-      '-meta-'                   => $metatags,
+      'GLOBAL_META_TAGS'                   => $metatags,
       'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
       'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
       'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
@@ -309,8 +348,6 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
     $template->assign_recursive($template_result);
 
     if($isDisplayMenu) {
-      // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
-//      displayP(parsetemplate(tpl_render_menu($template)));
       tpl_render_menu($template);
     }
 
@@ -318,21 +355,9 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
       tpl_render_topnav($user, $planetrow, $template);
     }
 
-    displayP(parsetemplate($template));
   }
 
-
-//  if(($isDisplayMenu || $in_admin) && !isset($_COOKIE['menu_disable'])) {
-//    // $AdminPage = $AdminPage ? $user['authlevel'] : 0;
-//    displayP(parsetemplate(tpl_render_menu()));
-//  }
-
-//  if($isDisplayTopNav && !$in_admin) {
-//    displayP(parsetemplate(tpl_render_topnav($user, $planetrow)));
-//  }
-
-  displayP(parsetemplate(gettemplate('_content_header', true)));
-
+  $pageOutput = array();
   !is_array($page) ? $page = array($page) : false;
   $result_added = false;
   foreach($page as $page_item) {
@@ -345,21 +370,24 @@ function sn_display($page, $title = '', $isDisplayTopNav = true, $metatags = '',
       $page_item->files = array_reverse($page_item->files);
       $result_added = true;
     }
-    displayP($page_item);
+    $pageOutput[] = displayP($page_item, true);
   }
 
-  displayP(parsetemplate(gettemplate('_content_footer', true)));
 
   // Global footer
   if($isRenderGlobal) {
-    $template = gettemplate('_global_footer', true);
     $template->assign_vars(array(
       'ADMIN_EMAIL' => $config->game_adminEmail,
       'SN_TIME_NOW' => SN_TIME_NOW,
       'SN_VERSION'  => SN_VERSION,
     ));
-    displayP(parsetemplate($template));
   }
+
+  $template->assign_vars(array(
+    'GLOBAL_PAGE_CONTENT' => implode('', $pageOutput),
+  ));
+
+  displayP(parsetemplate($template));
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
@@ -702,8 +730,12 @@ function tpl_navbar_extra_buttons(&$sn_mvc, $template) {
 
 /**
  * @param template|string $template
+ * @return string|null
  */
-function displayP($template) {
+function displayP($template, $returnOutput = false) {
+  $output = null;
+
+  ob_start();
   if(is_object($template)) {
     if(empty($template->parsed)) {
       parsetemplate($template);
@@ -715,6 +747,15 @@ function displayP($template) {
   } else {
     print($template);
   }
+
+  if($returnOutput) {
+    $output = ob_get_contents();
+    ob_end_clean();
+  } else {
+    ob_end_flush();
+  }
+
+  return $output;
 }
 
 /**

@@ -55,6 +55,4 @@ if ($mode == 'addit')
 }
 $Page = parsetemplate($PageTpl, $parse);
 
-display($Page, $lang['adm_am_ttle'], false, '', true);
-
-?>
+display($Page, $lang['adm_am_ttle']);

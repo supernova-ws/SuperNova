@@ -29,7 +29,8 @@ if ($user_request['id_ally'])
     $lang['request_text'] = sprintf($lang['ali_req_waiting'], $ally['ally_tag']);
   }
 
-  display(gettemplate('ali_request_waiting', true), $lang['ali_req_title']);
+  $template = gettemplate('ali_request_waiting', true);
+  display($template, $lang['ali_req_title']);
 }
 
 $id_ally = sys_get_param_id('a');
@@ -64,5 +65,3 @@ $template->assign_vars(array(
 ));
 
 display($template, $lang['ali_req_title']);
-
-?>

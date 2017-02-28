@@ -130,5 +130,3 @@ function ali_render(){$func_args = func_get_args();return sn_function_call(__FUN
 ali_render();
 
 display($template, "{$lang['your_alliance']} [{$ally['ally_name']}]");
-
-?>

@@ -26,5 +26,3 @@ $page_title = $lang['Send_circular_mail'];
 
 $page .= parsetemplate(gettemplate('ali_admin_mail'), $lang);
 display($page, $page_title);
-
-?>

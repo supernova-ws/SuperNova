@@ -27,7 +27,8 @@ foreach($lang['changelog'] as $a => $b)
 $parse = $lang;
 $parse['body'] = $body;
 
-display(parsetemplate(gettemplate('changelog_body'), $parse), "Change Log");
+$parsetemplate = parsetemplate(gettemplate('changelog_body'), $parse);
+display($parsetemplate, "Change Log");
 
 // Created by Perberos. All rights reversed (C) 2006
 

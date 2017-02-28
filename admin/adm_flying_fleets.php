@@ -38,4 +38,4 @@ foreach($all_flying_fleets as $fleet_id => $CurrentFleet) {
   }
 }
 
-display($template, $lang['flt_title'], false, '', true);
+display($template, $lang['flt_title']);
