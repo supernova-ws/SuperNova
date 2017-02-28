@@ -100,4 +100,4 @@ $template->assign_vars(array(
   'TYPE_SELECTED' => $int_type_selected,
 ));
 
-display(parsetemplate($template, $parse), $lang['mlst_title']);
+display($template, $lang['mlst_title']);

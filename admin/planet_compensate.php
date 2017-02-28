@@ -131,7 +131,7 @@ $template->assign_vars(array(
   'username' => $username,
 ));
 
-display(parsetemplate($template, $parse), $lang['adm_pl_comp_title']);
+display($template, $lang['adm_pl_comp_title']);
 
 function killer_add_planet($planet)
 {

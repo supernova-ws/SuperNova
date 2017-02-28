@@ -125,6 +125,10 @@ $sn_ali_admin_internal = array(
     'include' => 'alliance/ali_internal_admin_diplomacy.inc',
     'title' => 'ali_dip_title'
   ),
+  'mail' => array(
+    'include' => 'alliance/ali_internal_admin_mail.inc',
+    'title' => 'Send_circular_mail'
+  ),
   'default' => array(
     'include' => 'alliance/ali_internal_admin.inc',
   ),

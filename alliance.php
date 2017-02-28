@@ -43,7 +43,7 @@ if(!$user['ally_id'])
       break;
 
       default:
-        $parsetemplate = parsetemplate(gettemplate('ali_external', true));
+        $parsetemplate = gettemplate('ali_external', true);
         display($parsetemplate, $lang['alliance']);
       break;
     }

@@ -1,26 +1,25 @@
 <?php
 
 /**
- *
- * Project "SuperNova.WS" copyright (c) 2009-2012 Gorlum
- * Release 34
+ * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
+ * @version #42a25.7#
  *
  * userlist.php v2
- *
 **/
 
 define('INSIDE', true);
 define('INSTALL', false);
 define('IN_ADMIN', true);
+
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
+
+AdminCheckLevel(AUTH_LEVEL_MODERATOR);
 
 global $config, $lang, $user;
 
 if($user['authlevel'] < 3) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/banned.php');
 }
-
-AdminCheckLevel();
 
 ini_set('memory_limit', classSupernova::$config->stats_php_memory ? classSupernova::$config->stats_php_memory : '256M');
 

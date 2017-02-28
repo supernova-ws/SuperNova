@@ -39,4 +39,4 @@ $template->assign_vars(array(
   'ally_tag' => $ally['ally_tag'],
 ));
 
-display(parsetemplate($template), $lang['requests_admin']);
+display($template, $lang['requests_admin']);

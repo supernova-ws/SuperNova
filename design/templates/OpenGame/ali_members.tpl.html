@@ -3,17 +3,14 @@
 <!-- ELSE -->
   <!-- DEFINE $COLSPAN = 8 -->
 <!-- ENDIF -->
-<br />
+<h1>{L_Members_list} / {L_ali_sys_totalMembers}: {memberCount}</h1>
+
+<!-- IF ADMIN_MODE -->
+<a class="button_pseudo link" href="alliance.php?mode=admin">{L_ali_adm_return}</a><br/>
+<!-- ENDIF -->
+
 <table>
-  <tr>
-    <td class="c" colspan="{$COLSPAN}">
-      <span class="fl">{L_Members_list} / {L_ali_sys_totalMembers}: {memberCount}</span>
-      <!-- IF ADMIN_MODE -->
-        <a class="fr" href="alliance.php?mode=admin">{L_ali_adm_return}</a>
-      <!-- ENDIF -->
-    </td>
-  </tr>
-  <tr>
+  <tr class="c_c">
     <th>{L_Number}</th>
     <th><a href="alliance.php?mode={mode}&sort1=1&sort2={s}">{L_ali_sys_memberName}</a></th>
     <th><img src="design/images/icon_mail.gif" border=0 alt="{L_sys_write_message}"></th>
@@ -49,8 +46,6 @@
       <!-- ENDIF -->
     </tr>
   <!-- END member -->
-
-  <tr>
-    <th class="c_c link" colspan="{$COLSPAN}"><a href="alliance.php">{L_ali_sys_main_page}</a></th>
-  </tr>
 </table>
+
+<a class="button_pseudo link" href="alliance.php">{L_ali_sys_main_page}</a>

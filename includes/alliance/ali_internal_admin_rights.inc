@@ -1,5 +1,7 @@
 <?php
 
+global $lang, $debug;
+
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
@@ -70,4 +72,4 @@ if (count($ranks))
   }
 }
 
-display(parsetemplate($template), $lang['ali_adm_rights_title']);
+display($template, $lang['ali_adm_rights_title']);

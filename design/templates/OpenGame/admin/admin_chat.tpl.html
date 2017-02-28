@@ -1,12 +1,28 @@
-<h2>{adm_ch_ttle}</h2>
+<h1>{PAGE_HEADER}</h1>
+
 <table width="100%">
-<tr class="c_c">
-<th>{adm_ch_idmsg}</th>
-<th>{adm_ch_time}</th>
-<th>{adm_ch_play}</th>
-<th>{adm_ch_chat}</th>
-<th width="16px"><img src="design/images/r1.png"></th>
-</tr>
-{msg_list}
-<tr><th class=b colspan=5>{msg_num}&nbsp;{adm_ch_nbs} [<a href="admin/admin_chat.php?deleteall=yes">{adm_ch_clear}</a>]</th></tr>
+  <tr class="c_c">
+    <th>{L_adm_ch_idmsg}</th>
+    <th>{L_adm_ch_time}</th>
+    <th>{L_adm_ch_play}</th>
+    <th>{L_adm_ch_chat}</th>
+    <th width="16px"><img src="design/images/r1.png"></th>
+  </tr>
+
+  <!-- BEGIN message -->
+  <tr class="c_l">
+    <td>{message.ID}</td>
+    <td>{message.TIMESTAMP}</td>
+    <td>{message.PLAYER_NAME}</td>
+    <td width="100%">{message.MESSAGE}</td>
+    <td><a href="admin/admin_chat.php?delete={message.ID}"><img src="design/images/r1.png"></a>
+    </td>
+  </tr>
+  <!-- END message -->
+
+  <tr class="c_c">
+    <th colspan="5">
+      {msg_num}&nbsp;{L_adm_ch_nbs} [<a href="admin/admin_chat.php?deleteall=yes">{L_adm_ch_clear}</a>]
+    </th>
+  </tr>
 </table>

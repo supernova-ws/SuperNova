@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a18
+* @version 42a25.7
 *
 */
 
@@ -116,7 +116,7 @@ $a_lang_array = (array(
 
   'sys_reset'           => "Reset",
   'sys_send'            => "Send",
-  'sys_characters'      => "Characters",
+  'sys_characters'      => "characters",
   'sys_back'            => "Back",
   'sys_return'          => "Return",
   'sys_delete'          => "Delete",

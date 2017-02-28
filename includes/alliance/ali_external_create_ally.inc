@@ -44,9 +44,6 @@ if($ally_tag)
 
   message(str_replace('%s', $ally_tag_raw, $lang['ally_been_maked']), str_replace('%s', $ally_tag_raw, $lang['ally_maked']));
 }
-else
-{
-  $page .= parsetemplate(gettemplate('ali_external_make'), $lang);
-}
 
-display($page, $lang['make_alliance']);
+$template = gettemplate('ali_external_make', true);
+display($template, $lang['make_alliance']);

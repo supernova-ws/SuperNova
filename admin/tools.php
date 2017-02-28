@@ -261,5 +261,8 @@ switch ($mode) {
   break;
 }
 
-$template = parsetemplate(gettemplate("admin/admin_tools", true));
-display($template, $lang['adm_bn_ttle']);
+$template = gettemplate("admin/admin_tools", true);
+$template->assign_vars(array(
+  'PAGE_HEADER' => $lang['adm_tools'],
+));
+display($template);

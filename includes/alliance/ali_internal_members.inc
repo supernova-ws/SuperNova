@@ -180,4 +180,4 @@ $template->assign_vars(array(
   's' => $sort2,
 ));
 
-display(parsetemplate($template), $lang['members_admin']);
+display($template, $lang['members_admin']);

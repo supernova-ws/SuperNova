@@ -107,13 +107,6 @@ $template->assign_vars(array(
 $relations = ali_relations($ally['id']);
 foreach($relations as $relation)
 {
-  /*
-  if($relation['alliance_diplomacy_contr_ally_id'] == $user['ally_id'])
-  {
-    $contr_ally = doquery("SELECT ally_name FROM {{alliance}} WHERE `id` = {$relation['alliance_diplomacy_ally_id']} LIMIT 1;", '', true);
-    $relation['alliance_diplomacy_contr_ally_name'] = $contr_ally['ally_name'];
-  }
-  */
   if($relation['alliance_diplomacy_contr_ally_id'] && $relation['alliance_diplomacy_ally_id'])
   {
     $template->assign_block_vars('relation', array(
@@ -124,9 +117,7 @@ foreach($relations as $relation)
   }
 }
 
-$template = parsetemplate($template, $lang);
-
 function ali_render(){$func_args = func_get_args();return sn_function_call(__FUNCTION__, $func_args);}
 ali_render();
 
-display($template, "{$lang['your_alliance']} [{$ally['ally_name']}]");
+display($template, "{$lang['alliance']} [{$ally['ally_name']}]");

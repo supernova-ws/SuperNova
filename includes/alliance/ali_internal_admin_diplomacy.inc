@@ -197,4 +197,4 @@ while($offer = db_fetch($query))
   ));
 }
 
-display(parsetemplate($template), $page_title);
+display($template, $page_title);

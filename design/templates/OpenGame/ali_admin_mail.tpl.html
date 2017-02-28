@@ -1,30 +1,26 @@
-<br />
-<form action="alliance.php?mode=circular" method="post">
-  <table width=519>
-	<tr>
-	  <td class="c" colspan=2>{Send_circular_mail}</td>
-	</tr>
-	<tr>
-	  <th>{Destiny}</th>
-	  <th>
-		<select name="r">
-		  {r_list}
-		</select>
-	  </th>
-	</tr>
+<h1>{PAGE_HEADER}</h1>
+<a class="button_pseudo link" href="alliance.php?mode=admin">{L_ali_adm_return}</a><br/>
 
-	<tr>
-	  <th>{Text_mail} (<span id="cntChars">0</span> / 5000 {ali_req_characters})</th>
-	  <th>
-	    <textarea name="text" cols="60" rows="10" onkeyup="cntchar(5000)"></textarea>
-	  </th>
-	</tr>
-	<tr>
-	  <td class="c"><a href="alliance.php">{Back}</a></td>
-	  <td class="c">
-		<input type="reset" value="{Clear}">
-		<input type="submit" value="{Send}">
-	  </td>
-	</tr>
-  </table>
+<form action="alliance.php?mode=circular" method="post">
+  <div style="display: inline-block" class="border_image_large">
+    <div class="header">
+      {L_Destiny}
+
+      <select name="r">
+        <option value="-1">{L_All_players}</option>
+        <!-- BEGIN ranks -->
+        <option value="{ranks.VALUE}">{ranks.NAME}</option>
+        <!-- END ranks -->
+      </select>
+    </div>
+    <div class="cell">
+      {L_Text_mail}<br/>
+      <textarea name="text" cols="60" rows="10" onkeyup="cntchar(5000)"></textarea><br/>
+      <span id="cntChars">0</span> / 5000 {L_ali_req_characters}
+    </div>
+    <div class="header contFJ">
+      <input type="reset" value="{L_Clear}">
+      <input type="submit" value="{L_Send}">
+    </div>
+  </div>
 </form>

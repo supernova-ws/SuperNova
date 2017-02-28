@@ -170,4 +170,4 @@ foreach($lang_list as $lang_id => $lang_data) {
   ));
 }
 
-display(parsetemplate($template), $lang['adm_opt_title']);
+display($template, $lang['adm_opt_title']);

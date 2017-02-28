@@ -31,4 +31,4 @@ $template->assign_vars(array(
   'RESOURCE_MULTIPLIER_PLAIN' => game_resource_multiplier(true),
 ));
 
-display(parsetemplate($template));
+display($template);

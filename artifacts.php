@@ -119,4 +119,4 @@ $template->assign_vars(array(
   'PAGE_HINT' => $lang['art_page_hint'],
 ));
 
-display(parsetemplate($template), $lang['tech'][UNIT_ARTIFACTS]);
+display($template, $lang['tech'][UNIT_ARTIFACTS]);

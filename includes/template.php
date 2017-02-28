@@ -21,10 +21,10 @@ function getSkinPathTemplate($userSkinPath) {
   return $template_names[$userSkinPath];
 }
 
-function AdminCheckLevel() {
+function AdminCheckLevel($level = 3) {
   global $user, $lang;
 
-  if($user['authlevel'] < 1) {
+  if($user['authlevel'] < $level) {
     AdminMessage($lang['adm_err_denied'], 'Error', SN_ROOT_VIRTUAL . 'overview.php');
   }
 }
@@ -387,7 +387,7 @@ function sn_display($page, $title = '') {
     'GLOBAL_PAGE_CONTENT' => implode('', $pageOutput),
   ));
 
-  displayP(parsetemplate($template));
+  displayP($template);
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 

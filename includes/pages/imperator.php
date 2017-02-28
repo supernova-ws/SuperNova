@@ -173,5 +173,5 @@ function sn_imperator_view($template = null) {
     'SAME_USER'            => $same_user,
   ));
 
-  return parsetemplate($template);
+  return $template;
 }
