@@ -26,9 +26,16 @@ register_shutdown_function(function() {
 
   global $user, $locale_cache_statistic;
 
-  print('<div id="benchmark" class="benchmark"><hr>Benchmark ' . (microtime(true) - SN_TIME_MICRO) . 's, memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
+  $now = microtime(true);
+  $totalTime = round($now - SN_TIME_MICRO, 6);
+  $executionTime = round(SN_TIME_RENDER_START - SN_TIME_MICRO, 6);
+  $displayTime = round($now - SN_TIME_RENDER_START, 6);
+
+  $otherTime = defined('SN_TIME_RENDER_START') ? " (exec: {$executionTime}, display: {$displayTime})" : '';
+
+  print('<div id="benchmark" class="benchmark"><hr>Benchmark ' . $totalTime . 's' . $otherTime . ', memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
     (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .
-    (class_exists('classSupernova') && is_object(classSupernova::$db) ? ', DB time: ' . classSupernova::$db->time_mysql_total . 'ms' : '') .
+    (class_exists('classSupernova') && is_object(classSupernova::$db) ? ', DB time: ' . round(classSupernova::$db->time_mysql_total, 6) . 's' : '') .
     '</div>');
   if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
     echo '<a href="badqrys.txt" target="_blank" style="color:red">', 'HACK ALERT!', '</a>';

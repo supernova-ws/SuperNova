@@ -225,6 +225,10 @@ function tpl_render_menu($template) {
  * @return mixed
  */
 function display($page, $title = '') {
+  if(!defined('SN_TIME_RENDER_START')) {
+    define('SN_TIME_RENDER_START', microtime(true));
+  }
+
   return sn_function_call('display', array($page, $title));
 }
 
