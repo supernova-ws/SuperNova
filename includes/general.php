@@ -155,7 +155,7 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
   $n = floatval($n);
   if(is_int($floor))
   {
-    $n = round($n, $floor); // , PHP_ROUND_HALF_DOWN
+    $n = round($n, $floor);
   }
   elseif($floor === true)
   {

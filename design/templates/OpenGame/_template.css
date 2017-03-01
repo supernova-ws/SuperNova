@@ -2737,6 +2737,9 @@ body:not(.no_border_image) [table_title]:before {
 .ok, .success, .positive, button.positive, button.ok, .ui-button.ok {
   color: lime;
 }
+.info, button.info, .ui-button.info {
+  color: #00B7F3;
+}
 .notice, .zero, .neutral, button.neutral, button.zero {
   color: yellow;
 }
@@ -2746,7 +2749,7 @@ body:not(.no_border_image) [table_title]:before {
 .error, .negative, button.negative, button.error {
   color: red;
 }
-.white {
+.white, .zero_number {
   color: white;
 }
 .ok_bg, .success_bg, .positive_bg {

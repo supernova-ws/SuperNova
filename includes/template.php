@@ -545,11 +545,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
 
   $GET_mode = sys_get_param_str('mode');
 
-//  $template = gettemplate('navbar', true);
-//  $template->assign_recursive($template_result);
-
   $ThisUsersPlanets = DBStaticPlanet::db_planet_list_sorted($user);
-  // while ($CurPlanet = db_fetch($ThisUsersPlanets))
   foreach($ThisUsersPlanets as $CurPlanet) {
     if($CurPlanet['destruyed']) {
       continue;

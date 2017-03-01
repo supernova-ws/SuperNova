@@ -8,3 +8,6 @@
 *.zip binary
 *.rar binary
 *.gz binary
+
+*.min.js diff=nodiff
+*.min.css diff=nodiff
