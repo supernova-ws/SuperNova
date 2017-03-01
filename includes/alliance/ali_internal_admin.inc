@@ -10,8 +10,6 @@ if(!$user_admin) {
 
 $template = gettemplate('ali_admin', $template);
 
-// $parse = $lang;
-
 $text_list = array(
   1 => array ('db_field' => 'ally_description', 'text_type' => 'Public_text_of_alliance'),
   2 => array ('db_field' => 'ally_text', 'text_type' => 'Internal_text'),

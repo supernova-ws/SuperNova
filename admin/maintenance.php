@@ -12,6 +12,8 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
+global $lang, $user;
+
 if ($user['authlevel'] < 3)
 {
   AdminMessage($lang['adm_err_denied']);

@@ -338,11 +338,6 @@ class template
 
     global $db;
 
-    if (!class_exists('template_compile'))
-    {
-      include($this->rootPhysical . 'includes/functions_template' . DOT_PHP_EX);
-    }
-
     // Inheritance - we point to another template file for this one. Equality is also used for store_db
     if (isset($user->theme['template_inherits_id']) && $user->theme['template_inherits_id'] && !file_exists($this->files[$handle]))
     {
