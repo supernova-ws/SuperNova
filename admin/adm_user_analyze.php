@@ -12,9 +12,9 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
-}
+global $lang, $user;
+
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 // define('SESSION_INTERRUPT', 15*60); // Можно увеличить до 4 часов - никито не может сидеть 2 суток с перерывом менее 4 часов
 // define('SUSPICIOUS_LONG', 2 * 60*60); // Тогда это увеличиваем до, скажем суток - и там смотрим

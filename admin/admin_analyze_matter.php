@@ -9,10 +9,9 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3)
-{
-  AdminMessage($lang['adm_err_denied']);
-}
+global $lang, $user;
+
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 $constants = get_defined_constants(true);
 $rpgConstants = array();

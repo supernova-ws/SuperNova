@@ -19,9 +19,9 @@ if(!sn_module_get_active_count('payment')) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
 }
 
-if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
-}
+global $lang, $user;
+
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 $template = gettemplate("admin/adm_metamatter", true);
 

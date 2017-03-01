@@ -11,10 +11,9 @@ define('INSTALL', false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-// if($user['authlevel'] < 1)
-if ($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
-}
+global $lang, $user;
+
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 $mode = sys_get_param_int('mode');
 
@@ -97,7 +96,6 @@ switch ($mode) {
     }
 
     $template->assign_vars(array(
-      'PAGE_TITLE'    => $lang['adm_bn_ttle'],
       'PAGE_HEADER'   => $lang['adm_tool_sql_page_header'],
       'COLUMN_NAME_1' => $lang['adm_tool_sql_param_name'],
       'COLUMN_NAME_2' => $lang['adm_tool_sql_param_value'],

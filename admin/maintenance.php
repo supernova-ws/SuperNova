@@ -14,10 +14,9 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-if ($user['authlevel'] < 3)
-{
-  AdminMessage($lang['adm_err_denied']);
-}
+global $lang, $user;
+
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 $script = '
 <script type="text/javascript">

@@ -15,9 +15,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
-}
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 $template = gettemplate("admin/admin_darkmatter", true);
 

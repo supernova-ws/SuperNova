@@ -3,11 +3,9 @@
 function sn_admin_user_view_view($template = null) {
   define('IN_ADMIN', true);
 
-  global $user, $lang;
+  global $lang;
 
-  if ($user['authlevel'] < 3) {
-    AdminMessage($lang['adm_err_denied']);
-  }
+  AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
   lng_include('admin');
 

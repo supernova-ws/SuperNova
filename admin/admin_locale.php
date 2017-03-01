@@ -13,9 +13,9 @@ define('IN_ADMIN'  , true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
-}
+global $lang, $user;
+
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 function adm_lng_assign_string($lang_id, $locale_string_name, $value) {
   global $locale_string_template, $languages_info, $languages, $domain;

@@ -14,11 +14,9 @@ define('INSTALL' , false);
 define('IN_ADMIN', true);
 require_once('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-// if($user['authlevel'] < 1)
-if($user['authlevel'] < 3)
-{
-  AdminMessage($lang['adm_err_denied']);
-}
+global $lang, $user;
+
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 if(SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_admin_forced') && SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_end'))
 {

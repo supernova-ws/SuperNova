@@ -8,10 +8,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $config, $lang, $user;
 
-// if($user['authlevel'] < 1)
-if($user['authlevel'] < 3) {
-  AdminMessage($lang['adm_err_denied']);
-}
+AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
 
 $planet_active = sys_get_param_int('planet_active');
 if(!$planet_active) {
