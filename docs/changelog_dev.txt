@@ -341,8 +341,16 @@ http://codepen.io/vsync/pen/frudD
 
 - Переделать управление альянсом на табы
 
+дубликаты assign_recursive - поубирать
+
 - Больше тестов богу тестов!
     - Проверить работу _inherit в скинах
+
+История чата - добавить нормальную паджинацию
+
+MENU => GLOBAL_DISPLAY_MENU
+NAVBAR => GLOBAL_DISPLAY_NAVBAR
+Работа PAGE_TITLE и PAGE_HEADER
 
 - Вертикальный навбар
     - Переключение темплейтов
@@ -373,26 +381,13 @@ http://codepen.io/vsync/pen/frudD
         navbar_v
         Упростить вёрстку
 
-Убрать $parse
-
-
-История чата - добавить нормальную паджинацию
-
-
-MENU => GLOBAL_DISPLAY_MENU
-NAVBAR => GLOBAL_DISPLAY_NAVBAR
-
-Работа PAGE_TITLE и PAGE_HEADER
-
-AdminCheckLevel()
 
 Император
     - сделать выбор и настройку выводить статистику за Х дней
-    - Для себя
-    - Для других
+        - Для себя
+        - Для других
     - Вертикальная статистика
 
-дубликаты assign_recursive - поубирать
 
 
 
