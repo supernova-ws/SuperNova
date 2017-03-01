@@ -334,7 +334,7 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'ENERGY_BALANCE_NUMBER' => $planetrow['energy_max'] - $planetrow['energy_used'],
     'ENERGY_BALANCE' => pretty_number($planetrow['energy_max'] - $planetrow['energy_used'], true, true),
     'ENERGY_MAX_NUMBER' => $planetrow['energy_max'],
-    'ENERGY_MAX_NUMBER_TEXT' => pretty_number($planetrow['energy_max'], $planetrow['energy_used']),
+    'ENERGY_MAX_NUMBER_TEXT' => Tools::numberPercentSpan($planetrow['energy_max'], $planetrow['energy_used']),
     'ENERGY_MAX' => pretty_number($planetrow['energy_max'], true, -$planetrow['energy_used']),
     'ENERGY_FILL' => round(($planetrow["energy_used"]/($planetrow["energy_max"]+1))*100,0),
 
