@@ -46,11 +46,12 @@ class template_compile
   var $block_else_level = array();
 
   /**
-  * constuctor
-  */
-  function template_compile(&$template)
-  {
-    $this->template = &$template;
+   * template_compile constructor.
+   *
+   * @param template $template
+   */
+  public function __construct($template) {
+    $this->template = $template;
   }
 
   /**

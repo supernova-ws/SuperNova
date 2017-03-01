@@ -64,7 +64,20 @@ class template
    */
   var $compiler = null;
 
-  public function __construct() {
+  /**
+   * Physical root for template search
+   *
+   * @var string $rootPhysical
+   */
+  public $rootPhysical = '';
+
+  /**
+   * template constructor.
+   *
+   * @param string $rootPhysical - physical location of game root
+   */
+  public function __construct($rootPhysical = SN_ROOT_PHYSICAL) {
+    $this->rootPhysical = $rootPhysical;
     $this->compiler = new template_compile($this);
   }
 
@@ -74,12 +87,12 @@ class template
   */
   function set_template()
   {
-    global $phpbb_root_path, $user;
+    global $user;
 
-    if (file_exists($phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template'))
+    if (file_exists($this->rootPhysical. 'styles/' . $user->theme['template_path'] . '/template'))
     {
-      $this->root = $phpbb_root_path . 'styles/' . $user->theme['template_path'] . '/template';
-      $this->cachepath = $phpbb_root_path . 'cache/tpl_' . str_replace('_', '-', $user->theme['template_path']) . '_';
+      $this->root = $this->rootPhysical . 'styles/' . $user->theme['template_path'] . '/template';
+      $this->cachepath = $this->rootPhysical . 'cache/tpl_' . str_replace('_', '-', $user->theme['template_path']) . '_';
 
       if ($this->orig_tpl_storedb === null)
       {
@@ -96,7 +109,7 @@ class template
 
       if ($user->theme['template_inherits_id'])
       {
-        $this->inherit_root = $phpbb_root_path . 'styles/' . $user->theme['template_inherit_path'] . '/template';
+        $this->inherit_root = $this->rootPhysical . 'styles/' . $user->theme['template_inherit_path'] . '/template';
       }
     }
     else
@@ -115,7 +128,7 @@ class template
   */
   function set_custom_template($template_path, $template_name, $fallback_template_path = false)
   {
-    global $phpbb_root_path, $user;
+    global $user;
 
     // Make sure $template_path has no ending slash
     if (substr($template_path, -1) == '/')
@@ -124,7 +137,7 @@ class template
     }
 
     $this->root = $template_path;
-    $this->cachepath = $phpbb_root_path . 'cache/ctpl_' . str_replace('_', '-', $template_name) . '_';
+    $this->cachepath = $this->rootPhysical . 'cache/ctpl_' . str_replace('_', '-', $template_name) . '_';
 
     if ($fallback_template_path !== false)
     {
@@ -323,11 +336,11 @@ class template
       return $filename;
     }
 
-    global $db, $phpbb_root_path;
+    global $db;
 
     if (!class_exists('template_compile'))
     {
-      include($phpbb_root_path . 'includes/functions_template' . DOT_PHP_EX);
+      include($this->rootPhysical . 'includes/functions_template' . DOT_PHP_EX);
     }
 
     // Inheritance - we point to another template file for this one. Equality is also used for store_db
@@ -703,9 +716,7 @@ class template
   */
   function _php_include($filename)
   {
-    global $phpbb_root_path;
-
-    $file = $phpbb_root_path . $filename;
+    $file = $this->rootPhysical . $filename;
 
     if (!file_exists($file))
     {

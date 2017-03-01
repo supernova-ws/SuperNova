@@ -1,0 +1,10 @@
+# Disable index list
+Options -Indexes
+
+<Files ~ "\.html$">
+  order allow,deny
+  deny from all
+</Files>
+
+# Deny access to all dotted fields and folders
+RedirectMatch 404 /\..*$

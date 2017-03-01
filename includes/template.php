@@ -815,23 +815,19 @@ function parsetemplate($template, $array = false) {
 
 /**
  * @param array|string  $files
- * @param template|bool $template
+ * @param template|null $template
  * @param string|null   $template_path - path to template
  *
  * @return template
  */
-function gettemplate($files, $template = false, $template_path = null) {
+function gettemplate($files, $template = null, $template_path = null) {
   global $sn_mvc, $sn_page_name, $user;
 
   $template_ex = '.tpl.html';
 
-  if($template === false) {
-    return sys_file_read(TEMPLATE_DIR . '/' . $files . $template_ex);
-  }
-
   is_string($files) ? $files = array(basename($files) => $files) : false;
 
-  !is_object($template) ? $template = new template() : false;
+  !is_object($template) ? $template = new template(SN_ROOT_PHYSICAL) : false;
   //$template->set_custom_template($template_path ? $template_path : TEMPLATE_DIR, TEMPLATE_NAME, TEMPLATE_DIR);
 
   $templateName = getSkinPathTemplate(classSupernova::$gc->theUser->getSkinPath());

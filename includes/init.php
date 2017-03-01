@@ -52,7 +52,7 @@ register_shutdown_function(function() {
 !defined('INSTALL') ? define('INSTALL', false) : false;
 !defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
 
-global $phpEx, $phpbb_root_path; // Это нужно для работы PTL
+global $phpEx; // Это нужно для работы PTL
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
 define('SN_TIME_ZONE_OFFSET', date('Z'));
 
@@ -68,7 +68,6 @@ if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
 // Эти три строки должны быть В ЭТОМ ФАЙЛЕ, ПО ЭТОМУ ПУТИ и ПЕРЕД ЭТИМ ИНКЛЮДОМ!!!
 define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
-$phpbb_root_path = SN_ROOT_PHYSICAL; // Это нужно для работы PTL
 
 empty($classRoot) ? $classRoot = SN_ROOT_PHYSICAL . 'classes/' : false;
 spl_autoload_register(function ($class) use ($classRoot) {
