@@ -49,9 +49,6 @@ class template
   // this will hash handle names to the compiled/uncompiled code for that handle.
   var $compiled_code = array();
 
-  // this for compatibility with old templates
-  var $parse = array();
-
   /**
    * Is template already parsed with SN code?
    *

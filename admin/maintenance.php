@@ -19,8 +19,6 @@ if ($user['authlevel'] < 3)
   AdminMessage($lang['adm_err_denied']);
 }
 
-$parse = $lang;
-
 $script = '
 <script type="text/javascript">
 $(document).ready(function() {
