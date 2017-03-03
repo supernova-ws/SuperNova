@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a21.5
+* @version 42a25.19
 *
 */
 
@@ -30,6 +30,9 @@ if (!defined('INSIDE')) die();
 $a_lang_array = (array(
   'tech_storage_max' => 'Размер склада',
   'tech_storage' => 'На складе',
+  'tech_storage_energy' => 'Потребление',
+  'tech_storage_energy_max' => 'Производство',
+  'tech_storage_energy_fullness' => 'Загрузка',
   'Tech' => 'Технология',
   'Requirements' => 'Требуется',
   'No_requirements' => 'Нет требований',

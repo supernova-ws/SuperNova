@@ -3436,7 +3436,7 @@ td.error_message {
 
 
 /* Hiding resource tooltip pattern */
-#navbar_resource_flex_tooltip_pattern
+#navbar_resource_flex_tooltip_pattern, #navbar_resource_flex_tooltip_pattern_energy
 {
   display: none;
 }

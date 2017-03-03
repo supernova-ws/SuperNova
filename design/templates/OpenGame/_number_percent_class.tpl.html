@@ -1,0 +1,23 @@
+<!-- IF ! $T_MAXIMUM -->
+<!-- DEFINE $T_MAXIMUM = 0 -->
+<!-- ENDIF -->
+<!-- IF ! $T_VALUE -->
+<!-- DEFINE $T_VALUE = 0 -->
+<!-- ENDIF -->
+<!-- IF ! $T_MAXIMUM && ! $T_VALUE -->
+<!-- DEFINE $T_VALUE_CLASS = 'zero_number' -->
+<!-- ELSEIF $T_VALUE > $T_MAXIMUM -->
+<!-- DEFINE $T_VALUE_CLASS = 'error' -->
+<!-- ELSEIF $T_VALUE == $T_MAXIMUM -->
+<!-- DEFINE $T_VALUE_CLASS = 'warning' -->
+<!-- ELSEIF ! $T_MAXIMUM  -->
+<!-- DEFINE $T_VALUE_CLASS = 'zero_number' -->
+<!-- ELSEIF $T_VALUE / $T_MAXIMUM  > 0.9 -->
+<!-- DEFINE $T_VALUE_CLASS = 'warning' -->
+<!-- ELSEIF $T_VALUE / $T_MAXIMUM  > 0.75 -->
+<!-- DEFINE $T_VALUE_CLASS = 'notice' -->
+<!-- ELSEIF $T_VALUE / $T_MAXIMUM  > 0.50 -->
+<!-- DEFINE $T_VALUE_CLASS = 'info' -->
+<!-- ELSE -->
+<!-- DEFINE $T_VALUE_CLASS = 'ok' -->
+<!-- ENDIF -->

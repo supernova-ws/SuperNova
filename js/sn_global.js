@@ -922,6 +922,82 @@ function snConfirm(params) {
   return false;
 }
 
+/**
+ * Calculates CSS class based on (value / maximum) expression - i.e. class for fill rate
+ *
+ * @param {number} value
+ * @param {number} maximum
+ * @returns {string}
+ */
+function numberCssClass(value, maximum) {
+  var result;
+  maximum = Math.floatVal(maximum);
+  value = Math.floatVal(value);
+
+  switch (true) {
+    case maximum == 0 && value == 0:
+      result = 'zero_number';
+      break;
+    case value > maximum:
+      result = 'error';
+      break;
+    case value == maximum:
+      result = 'warning';
+      break;
+    case maximum == 0:
+      result = 'zero_number';
+      break;
+
+    case (percent = value / maximum) > 0.9:
+      result = 'warning';
+      break;
+    case percent > 0.75:
+      result = 'notice';
+      break;
+    case percent > 0.50:
+      result = 'info';
+      break;
+    default:
+      result = 'ok';
+      break;
+  }
+
+  return result;
+}
+
+/**
+ * For current value returns CSS-style from numberCssClass() with maximum value
+ *
+ * @param {number} maximum
+ * @returns {string}
+ */
+Number.prototype.classByMaximum = function (maximum) {
+  return numberCssClass(this, maximum);
+};
+
+/**
+ * For current value returns <span> styled with numberCssClass()
+ *
+ * @param {number} maximum
+ * @param {boolean} format
+ * @returns {string}
+ */
+Number.prototype.spanByMaximum = function (maximum, format) {
+  var output = format ? sn_format_number(this) : this;
+  return "<span class=\"" + this.classByMaximum(maximum) + "\">" + output + "</span>";
+};
+
+/**
+ * For maximum value returns <span> styled with numberCssClass()
+ *
+ * @param {number} value
+ * @param {boolean} format
+ * @returns {string}
+ */
+Number.prototype.spanByValue = function (value, format) {
+  var output = format ? sn_format_number(this) : this;
+  return "<span class=\"" + numberCssClass(value, this) + "\">" + output + "</span>";
+};
 
 var navbarResources = {};
 var PLAYER_OPTION_NAVBAR_PLANET_VERTICAL = 0;
@@ -962,14 +1038,21 @@ $(document).ready(function () {
         } else {
           currentValue = resourceData.start_value;
         }
-        currentValue = Math.intVal(currentValue);
+        currentValue = Math.floatVal(currentValue);
 
-        fullness = storage ? Math.roundVal(currentValue / storage * 100) : '---';
+        if(resourceName == "energy") {
+          result = $("#navbar_resource_flex_tooltip_pattern_energy");
+          currentValue = Math.roundVal(resourceData.used_value);
+        } else {
+          result = $("#navbar_resource_flex_tooltip_pattern");
+        }
 
-        result = $("#navbar_resource_flex_tooltip_pattern").html().format(
+        fullness = storage ? Math.roundVal(currentValue / storage * 100).spanByMaximum(100, true) : '---';
+
+        result = result.html().format(
           resourceNameText,
-          sn_format_number(currentValue),
-          sn_format_number(storage),
+          currentValue.spanByMaximum(storage, true),
+          storage.spanByValue(currentValue, true),
           fullness
         );
       }

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a21.5
+* @version 42a25.19
 *
 */
 
@@ -31,6 +31,9 @@ if (!defined('INSIDE')) die();
 $a_lang_array = (array(
   'tech_storage_max' => 'Max. storage capacity',
   'tech_storage' => 'In storage',
+  'tech_storage_energy' => 'Consumption',
+  'tech_storage_energy_max' => 'Production',
+  'tech_storage_energy_fullness' => 'Load',
   'Tech' => 'Technology',
   'Requirements' => 'Requirements',
   'Metal' => 'Metal',

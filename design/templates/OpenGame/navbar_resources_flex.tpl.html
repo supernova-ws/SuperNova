@@ -23,7 +23,12 @@
           </div>
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
-          <div>{PLANET_METAL_MAX_TEXT}</div>
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{PLANET_METAL_MAX}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_METAL}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{PLANET_METAL_MAX_NO_COLOR}</span>
+          </div>
           <!-- ENDIF -->
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
@@ -41,7 +46,12 @@
           </div>
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
-          <div>{PLANET_CRYSTAL_MAX_TEXT}</div>
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{PLANET_CRYSTAL_MAX}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_CRYSTAL}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{PLANET_CRYSTAL_MAX_NO_COLOR}</span>
+          </div>
           <!-- ENDIF -->
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
@@ -61,7 +71,12 @@
           </div>
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
-          <div>{PLANET_DEUTERIUM_MAX_TEXT}</div>
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{PLANET_DEUTERIUM_MAX}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_DEUTERIUM}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{PLANET_DEUTERIUM_MAX_NO_COLOR}</span>
+          </div>
           <!-- ENDIF -->
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_FLEETS -->
@@ -79,7 +94,12 @@
           <div>{ENERGY_BALANCE}</div>
 
           <!-- IF ! $NAVBAR_RESOURCES_HIDE_STORAGE -->
-          <div>{ENERGY_MAX_NUMBER_TEXT}</div>
+          <div>
+            <!-- DEFINE $T_MAXIMUM = '{ENERGY_MAX_NUMBER}' -->
+            <!-- DEFINE $T_VALUE = '{PLANET_ENERGY}' -->
+            <!-- INCLUDE _number_percent_class -->
+            <span class="{$T_VALUE_CLASS}">{ENERGY_MAX_NUMBER_TEXT_NO_COLOR}</span>
+          </div>
           <!-- ENDIF -->
         </div>
       </div>

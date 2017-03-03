@@ -421,6 +421,24 @@ pretty_number
 #ctv
 
 
+
+2017-03-03 14:21:48 42a25.19
+[~] Навбар
+    Ресурсбар:
+        - Цветовое кодирование к количеству производимой энергии в ресурсбаре
+        - Цветовое кодирование к попапам в ресурсбаре
+        - Отдельный попап для энергии, выводящий потребление
+
+[@] Код
+    В JS добавлены аналоги Tools::fillPercentStyle():
+        - Number.prototype.spanByValue()
+        - Number.prototype.spanByMaximum()
+    В TPL добавлены аналоги Tools::fillPercentStyle():
+        - _number_percent_class.tpl.html
+        - _number_color_value.tpl.html
+        - _number_color_maximum.tpl.html
+
+
 2017-03-01 16:41:39 42a25.18
 [%] Навбар
     Исправлена ошибка отображения производимой энергии
