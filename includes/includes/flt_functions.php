@@ -530,7 +530,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     {
       $fleet_ship_count += $amount;
       $fleet_string     .= "{$unit_id},{$amount};";
-      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$amount, $user, $from['id']);
+      $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, -$amount, $user, $from['id']);
     }
     elseif(in_array($unit_id, sn_get_groups('resources_loot')))
     {
@@ -613,7 +613,7 @@ function flt_t_send_fleet($user, &$from, $to, $fleet, $mission, $options = array
     'fields' => $planet_fields,
   );
 
-  db_changeset_apply($db_changeset);
+  OldDbChangeSet::db_changeset_apply($db_changeset);
 
   // $internal_transaction = false;sn_db_transaction_rollback(); // TODO - REMOVE !!!!!!!!!!!!!!!!!!
 

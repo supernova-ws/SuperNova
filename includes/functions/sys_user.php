@@ -178,7 +178,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   !empty($options['salt']) ? $field_set['salt'] = $options['salt'] : false;
   !empty($options['password_encoded_unsafe']) ? $field_set['password'] = $options['password_encoded_unsafe'] : false;
 
-  $user_new = classSupernova::db_ins_field_set(LOC_USER, $field_set);
+  $user_new = db_ins_field_set($field_set);
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
     $options['galaxy'] = $config->LastSettedGalaxyPos;
     $options['system'] = $config->LastSettedSystemPos;

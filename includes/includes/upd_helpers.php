@@ -199,14 +199,14 @@ function upd_db_unit_by_location($user_id = 0, $location_type, $location_id, $un
 function upd_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
   if(!is_array($user)) {
     // TODO - remove later
-    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: upd_db_unit_changeset_prepare() - USER is not ARRAY</h1>');
     pdump(debug_backtrace());
     die('USER is not ARRAY');
   }
 
   if(!isset($user['id']) || !$user['id']) {
     // TODO - remove later
-    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_unit_changeset_prepare() - USER[id] пустой</h1>');
+    print('<h1>СООБЩИТЕ ЭТО АДМИНУ: upd_db_unit_changeset_prepare() - USER[id] пустой</h1>');
     pdump($user);
     pdump(debug_backtrace());
     die('USER[id] пустой');

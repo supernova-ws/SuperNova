@@ -64,7 +64,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
       $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
       foreach($fleet_array as $ship_id => $ship_count) {
         if($ship_count) {
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($ship_id, $ship_count, $user, $planet_arrival['id']);
+          $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($ship_id, $ship_count, $user, $planet_arrival['id']);
         }
       }
     } else {
@@ -81,7 +81,7 @@ function sn_RestoreFleetToPlanet(&$fleet_row, $start = true, $only_resources = f
   }
 
   if(!empty($db_changeset)) {
-    db_changeset_apply($db_changeset);
+    OldDbChangeSet::db_changeset_apply($db_changeset);
   }
 
   DBStaticPlanet::db_planet_set_by_id($planet_arrival['id'],

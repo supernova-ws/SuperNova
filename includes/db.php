@@ -15,7 +15,6 @@ function db_change_units_perform($query, $tablename, $object_id) {
   $query = implode(',', $query);
   if($query && $object_id) {
     return classSupernova::db_upd_record_by_id($tablename == 'users' ? LOC_USER : LOC_PLANET, $object_id, $query);
-    // return doquery("UPDATE {{{$tablename}}} SET {$query} WHERE `id` = '{$object_id}' LIMIT 1;");
   }
 }
 
@@ -102,17 +101,13 @@ function sn_db_perform($table, $values, $type = 'insert', $options = false) {
 }
 
 
-
-function sn_db_field_set_is_safe(&$field_set) {
-  return !empty($field_set['__IS_SAFE']);
-}
-function sn_db_field_set_safe_flag_clear(&$field_set) {
-  unset($field_set['__IS_SAFE']);
-}
-function sn_db_field_set_safe_flag_set(&$field_set) {
-  $field_set['__IS_SAFE'] = true;
-}
-function sn_db_field_set_make_safe($field_set, $serialize = false) {
+/**
+ * @param $field_set
+ *
+ * @return array
+ * @deprecated
+ */
+function sn_db_field_set_make_safe($field_set) {
   if(!is_array($field_set)) {
     die('$field_set is not an array!');
   }
@@ -131,7 +126,8 @@ function sn_db_field_set_make_safe($field_set, $serialize = false) {
 
       case is_array($value):
       case is_object($value):
-        $serialize ? $value = serialize($value) : die('$value is object or array with no $serialize');
+        // $serialize ? $value = serialize($value) :
+        die('$value is object or array with no $serialize');
 
       case is_string($value):
         $value = '"' . db_escape($value) . '"';
@@ -147,27 +143,39 @@ function sn_db_field_set_make_safe($field_set, $serialize = false) {
     $result[$field] = $value;
   }
 
-  sn_db_field_set_safe_flag_set($field_set);
-
   return $result;
 }
-function db_field_set_create($table_name, $field_set) {
-  !sn_db_field_set_is_safe($field_set) ? $field_set = sn_db_field_set_make_safe($field_set) : false;
-  sn_db_field_set_safe_flag_clear($field_set);
+
+/**
+ * @param $field_set
+ *
+ * @return array|bool|false|mysqli_result|null
+ * @deprecated
+ */
+function db_ins_field_set($field_set) {
+  $field_set = sn_db_field_set_make_safe($field_set);
 
   $values = implode(',', $field_set);
   $fields = implode(',', array_keys($field_set));
 
-  return classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ($fields) VALUES ($values);");
+  $table_name = classSupernova::$location_info[LOC_USER][P_TABLE_NAME];
+  if($result = classSupernova::db_query("INSERT INTO `{{{$table_name}}}` ({$fields}) VALUES ({$values});")) {
+    if(classSupernova::$db->db_affected_rows()) {
+      // Обновляем данные только если ряд был затронут
+      $record_id = db_insert_id();
+      // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
+      $result = classSupernova::db_get_record_by_id(LOC_USER, $record_id);
+      // Очищаем второстепенные кэши - потому что вставленная запись могла повлиять на результаты запросов или локация или еще чего
+      classSupernova::cache_clear(LOC_USER, false); // Мягкий сброс - только $queries
+    }
+  }
+
+  return $result;
 }
 
 
-function sn_db_unit_changeset_prepare($unit_id, $unit_value, $user, $planet_id = null) {
-  return classSupernova::db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id);
-}
-function db_changeset_apply($db_changeset) {
-  return classSupernova::db_changeset_apply($db_changeset);
-}
+
+
 /**
  * Функция проверяет статус транзакции
  *

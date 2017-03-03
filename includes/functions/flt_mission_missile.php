@@ -139,20 +139,19 @@ function coe_o_missile_calculate() {
       $missiles = $fleetRow['fleet_amount']; // Number of MIP
       if ($interceptors >= $missiles) {
         $message = $lang['mip_all_destroyed'];
-        $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$missiles, $targetUser, $target_planet_row['id']);
+        $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit(UNIT_DEF_MISSILE_INTERCEPTOR, -$missiles, $targetUser, $target_planet_row['id']);
       } else {
         if($interceptors) {
           $message = sprintf($lang['mip_destroyed'], $interceptors);
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
+          $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit(UNIT_DEF_MISSILE_INTERCEPTOR, -$interceptors, $targetUser, $target_planet_row['id']);
         }
-//        $message .= $lang['mip_defense_destroyed'];
 
         $attackResult = COE_missileAttack($targetUser, $rowAttacker, $missiles - $interceptors, $planetDefense, $fleetRow['primaer']);
 
         foreach($attackResult['structures'] as $key => $structure) {
           $destroyed = $planetDefense[$key][0] - $structure[0];
           if($destroyed) {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($key, -$destroyed, $targetUser, $target_planet_row['id']);
+            $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($key, -$destroyed, $targetUser, $target_planet_row['id']);
 
             $message .= "&nbsp;&nbsp;{$lang['tech'][$key]} - {$destroyed} {$lang['quantity']}<br>";
           }
@@ -163,10 +162,8 @@ function coe_o_missile_calculate() {
 
           DBStaticPlanet::db_planet_set_by_id($target_planet_row['id'], "`metal` = `metal` + {$attackResult['metal']}, `crystal` = `crystal` + {$attackResult['crystal']}");
         }
-
-//        $message .= "{$lang['mip_recycled']}{$lang['Metal']}: {$attackResult['metal']}, {$lang['Crystal']}: {$attackResult['crystal']}<br>";
       }
-      db_changeset_apply($db_changeset);
+      OldDbChangeSet::db_changeset_apply($db_changeset);
 
       $fleetRow['fleet_start_type'] = PT_PLANET;
       $sourcePlanet = DBStaticPlanet::db_planet_by_vector($fleetRow, 'fleet_start_', false, 'name');
@@ -176,7 +173,6 @@ function coe_o_missile_calculate() {
         addslashes($target_planet_row['name']), $fleetRow['fleet_end_galaxy'], $fleetRow['fleet_end_system'], $fleetRow['fleet_end_planet']);
 
       empty($message) ? $message = $lang['mip_no_defense'] : false;
-      // empty($message) && ($message = $lang['mip_no_defense']);
 
       msg_send_simple_message ( $fleetRow['fleet_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );
       msg_send_simple_message ( $fleetRow['fleet_target_owner'], '', SN_TIME_NOW, MSG_TYPE_SPY, $lang['mip_sender_amd'], $lang['mip_subject_amd'], $message_vorlage . $message );

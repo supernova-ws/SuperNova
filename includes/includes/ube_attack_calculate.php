@@ -1134,15 +1134,13 @@ function sn_ube_combat_result_apply(&$combat_data)
         elseif($units_lost)
         {
           // Планета - записываем в ИД юнита его потери только если есть потери
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA], $planet_id);
+          $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, -$units_lost, $combat_data[UBE_PLAYERS][$destination_user_id][UBE_PLAYER_DATA], $planet_id);
         }
       }
 
       if($fleet_id)
       {
         // Для флотов перегенерируем массив как одно вхождение в SET SQL-запроса
-//        $fleet_query = implode(';', $fleet_query);
-//        $fleet_query = array("`fleet_array` = '{$fleet_query}'");
         $fleet_query = array(
           'fleet_array' => implode(';', $fleet_query),
         );
@@ -1226,7 +1224,7 @@ function sn_ube_combat_result_apply(&$combat_data)
       }
       if(!empty($db_changeset)) // Сохраняем изменения юнитов на планете - если они есть
       {
-        db_changeset_apply($db_changeset);
+        OldDbChangeSet::db_changeset_apply($db_changeset);
       }
     }
   }

@@ -420,13 +420,17 @@ pretty_number
 Позаменять global:
     - $debug
     - $lang
+    - $config
+    - $user (!)
 
 
-Расшить работу с чейндсетами
+Расшить работу с чейнджсетами
     static::db_changeset_revert();
     static::db_changeset_apply();
 
 
+
+!!!!!! Вылить утром на живой
 
 
 #ctv

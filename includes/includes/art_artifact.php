@@ -66,16 +66,13 @@ function art_use(&$user, &$planetrow, $unit_id)
 
         $artifact_deploy = get_unit_param($unit_id, P_DEPLOY);
 
-        // $deployment_str = '';
         $sectors_used = 0;
         foreach($artifact_deploy as $deploy_unit_id => $deploy_unit_level)
         {
           if(!($levels_deployed = max(0, $deploy_unit_level - mrc_get_level($user, $planetrow, $deploy_unit_id, true, true))))
             continue;
           $sectors_used += $levels_deployed;
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($deploy_unit_id, $levels_deployed, $user, $planetrow['id']);
-          //$deploy_unit_name = get_unit_param($deploy_unit_id, P_NAME);
-          //$deployment_str .= ",`{$deploy_unit_name}` = GREATEST(`{$deploy_unit_name}`, {$deploy_unit_level})";
+          $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($deploy_unit_id, $levels_deployed, $user, $planetrow['id']);
         }
 
         if($sectors_used == 0)
@@ -146,8 +143,8 @@ function art_use(&$user, &$planetrow, $unit_id)
     }
     if($unit_level != $artifact_level_old)
     {
-      $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_level - $artifact_level_old, $user);
-      db_changeset_apply($db_changeset);
+      $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, $unit_level - $artifact_level_old, $user);
+      OldDbChangeSet::db_changeset_apply($db_changeset);
     }
   }
   else

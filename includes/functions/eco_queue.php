@@ -665,7 +665,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
 
       if(is_array($unit_changes[$player_id][$planet_id])) {
         foreach($unit_changes[$player_id][$planet_id] as $unit_id => $unit_amount) {
-          $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_amount, $user, $planet_id ? $planet_id : null);
+          $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, $unit_amount, $user, $planet_id ? $planet_id : null);
         }
       }
     }
@@ -718,7 +718,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     }
   }
 
-  db_changeset_apply($db_changeset);
+  OldDbChangeSet::db_changeset_apply($db_changeset);
 
   // TODO Сообщения о постройке
 

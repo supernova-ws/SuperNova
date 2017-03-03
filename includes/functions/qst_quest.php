@@ -348,9 +348,8 @@ function qst_reward(&$user, &$rewards, &$quest_list)
           }
           else // Проверим на юниты
           {
-            $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, $unit_amount, $user_row, $planet_id);
+            $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, $unit_amount, $user_row, $planet_id);
           }
-          // unit
         }
 
         if(!empty($local_changeset))
@@ -368,7 +367,7 @@ function qst_reward(&$user, &$rewards, &$quest_list)
       }
     }
 
-    classSupernova::db_changeset_apply($db_changeset);
+    OldDbChangeSet::db_changeset_apply($db_changeset);
   }
 }
 

@@ -187,7 +187,7 @@ function sn_fleet_page3() {
   $db_changeset = array();
   foreach ($fleetarray as $Ship => $Count) {
     $FleetStorage    += get_unit_param($Ship, P_CAPACITY) * $Count;
-    $db_changeset['unit'][] = sn_db_unit_changeset_prepare($Ship, -$Count, $user, $planetrow['id']);
+    $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($Ship, -$Count, $user, $planetrow['id']);
   }
   $fleet_array = sys_unit_arr2str($fleetarray);
   $FleetShipCount  += array_sum($fleetarray);
@@ -231,7 +231,7 @@ function sn_fleet_page3() {
   $fleet_id = fleet_insert_set($fleet_set);
 
   DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`metal` = `metal` - {$TransMetal}, `crystal` = `crystal` - {$TransCrystal}, `deuterium` = `deuterium` - {$TransDeuterium} - {$consumption}");
-  db_changeset_apply($db_changeset);
+  OldDbChangeSet::db_changeset_apply($db_changeset);
 
   $template = gettemplate('fleet3', true);
 

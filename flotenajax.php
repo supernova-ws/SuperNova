@@ -106,11 +106,9 @@ $db_changeset = array();
 foreach($fleet_array as $unit_id => $unit_count)
 {
   $FleetDBArray[] = "{$unit_id},{$unit_count}";
-  // $db_changeset[]  = "`{$unit_db_name}` = `{$unit_db_name}` - {$unit_count}";
-  $db_changeset['unit'][] = sn_db_unit_changeset_prepare($unit_id, -$unit_count, $user, $planetrow);
+  $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, -$unit_count, $user, $planetrow);
 }
 $FleetDBArray = implode(';', $FleetDBArray);
-// $db_changeset  = implode(',', $db_changeset);
 
 $fleet_ship_count = array_sum($fleet_array);
 
@@ -185,7 +183,7 @@ else
 }
 
 DBStaticPlanet::db_planet_set_by_id($planetrow['id'], "`deuterium` = `deuterium` - {$travel_data['consumption']}");
-db_changeset_apply($db_changeset);
+OldDbChangeSet::db_changeset_apply($db_changeset);
 sn_db_transaction_commit();
 
 $ships_sent = array();

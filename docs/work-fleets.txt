@@ -392,9 +392,6 @@ function idval($value, $default = 0) { - переделать под int|string
     - Fleet - доделать/переделать
 
 
-    - V2Unit
-        sn_db_unit_changeset_prepare
-        - внести в класс DBStatic\DBStaticUnit::public static function dbUpdateOrInsertUnit($unit_id, $unit_value, $user, $planet_id = null)
 
     - classLocale => SnLocale
 
