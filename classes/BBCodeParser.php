@@ -14,7 +14,7 @@ class BBCodeParser {
     $this->design = $gc->design;
   }
 
-  protected function applyElements(&$elements, $text, $authorAccessLevel = AUTH_LEVEL_REGISTERED) {
+  protected function applyElements($elements, $text, $authorAccessLevel = AUTH_LEVEL_REGISTERED) {
     foreach ($elements as $auth_level => $element) {
       if ($auth_level > $authorAccessLevel) {
         continue;
