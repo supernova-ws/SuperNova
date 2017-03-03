@@ -422,6 +422,13 @@ pretty_number
     - $lang
 
 
+Расшить работу с чейндсетами
+    static::db_changeset_revert();
+    static::db_changeset_apply();
+
+
+
+
 #ctv
 
 

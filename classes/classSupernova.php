@@ -80,8 +80,6 @@ class classSupernova {
   // Для LOC_QUE внутренний ИД - это тип очереди, а информация - массив ссылок на `que`
   public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
 
-  public static $delayed_changset = array(); // Накопительный массив изменений
-
   // Кэш индексов - ключ MD5-строка от суммы ключевых строк через | - менять | на что-то другое перед поиском и назад - после поиска
   // Так же в индексах могут быть двойные вхождения - например, названия планет да и вообще
   // Придумать спецсимвол для NULL
@@ -357,10 +355,6 @@ class classSupernova {
   public static function db_transaction_commit() {
     static::db_transaction_check(true);
 
-    if(!empty(static::$delayed_changset)) {
-      static::db_changeset_apply(static::$delayed_changset, true);
-    }
-    static::$delayed_changset = array();
     static::cache_lock_unset_all();
     doquery('COMMIT');
 
@@ -371,10 +365,6 @@ class classSupernova {
   }
   public static function db_transaction_rollback() {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
-    if(!empty(static::$delayed_changset)) {
-      static::db_changeset_revert();
-    }
-    static::$delayed_changset = array();
     static::cache_lock_unset_all();
     doquery('ROLLBACK');
 
@@ -878,20 +868,6 @@ class classSupernova {
 
 
 
-//  public static function db_unit_list_in_fleet_by_user($user_id, $location_id, $for_update)
-//  {
-//    return doquery(
-//      "SELECT *
-//      FROM {{fleets}} AS f
-//        JOIN {{unit}} AS u ON u.`unit_location_id` = f.fleet_id
-//      WHERE
-//        f.fleet_owner = {$user_id} AND
-//        (f.fleet_start_planet_id = {$location_id} OR f.fleet_end_planet_id = {$location_id})
-//        AND u.`unit_location_type` = " . LOC_FLEET .
-//      " AND " . static::db_unit_time_restrictions() .
-//      ($for_update ? ' FOR UPDATE' : '')
-//      , true);
-//  }
 
 
 
@@ -970,14 +946,6 @@ class classSupernova {
   }
 
 
-
-  public static function db_changeset_delay($table_name, $table_data)
-  {
-    // TODO Применять ченджсет к записям
-    static::$delayed_changset[$table_name] = is_array(static::$delayed_changset[$table_name]) ? static::$delayed_changset[$table_name] : array();
-    // TODO - На самом деле дурацкая оптимизация, если честно - может быть идентичные записи с идентичными дельтами - и привет. Но не должны, конечно
-    static::$delayed_changset[$table_name] = array_merge(static::$delayed_changset[$table_name], $table_data);
-  }
 
   public static function db_changeset_revert()
   {
@@ -1068,14 +1036,6 @@ class classSupernova {
     if(!is_array($db_changeset) || empty($db_changeset)) return $result;
 
     foreach($db_changeset as $table_name => &$table_data) {
-      // TODO - delayed changeset
-      /*
-      if(static::db_transaction_check(false) && !$flush_delayed && ($table_name == 'users' || $table_name == 'planets' || $table_name == 'unit'))
-      {
-        static::db_changeset_delay($table_name, $table_data);
-        continue;
-      }
-      */
       foreach($table_data as $record_id => &$conditions) {
         static::db_changeset_condition_compile($conditions, $table_name);
 
