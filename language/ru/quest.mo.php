@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a25.26
+* @version 42a26.0
 *
 */
 
@@ -32,8 +32,9 @@ $a_lang_array = (array(
   'qst_quest_of' => 'квеста',
   'qst_name' => 'Название',
   'qst_description' => 'Описание',
-  'qst_conditions' => 'Требования',
-  'qst_rewards' => 'Награда',
+  'qst_adm_conditions' => 'Требования',
+  'qst_conditions' => 'Нужно построить/исследовать',
+  'qst_rewards' => 'Награда за выполнение квеста',
   'qst_total' => 'Квестов',
   'qst_status' => 'Статус',
   'qst_status_list' => array(

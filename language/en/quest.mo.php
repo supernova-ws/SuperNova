@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 42a26.0
 *
 */
 
@@ -34,7 +34,8 @@ $a_lang_array = (array(
   'qst_quest_of' => 'quest',
   'qst_name' => 'Name',
   'qst_description' => 'Description',
-  'qst_conditions' => 'Condition',
+  'qst_adm_conditions' => 'Requirements',
+  'qst_conditions' => 'Need to build/research',
   'qst_rewards' => 'Reward',
   'qst_total' => 'Quests',
   'qst_status' => 'Status',
