@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a26.0');
+define('SN_VERSION', '42a26.1');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -110,6 +110,7 @@ define('QUEST_TYPE_BUILD'   , 1);
 define('QUEST_TYPE_RESEARCH', 2);
 define('QUEST_TYPE_COMBAT'  , 3);
 
+define('QUEST_STATUS_ALL' , -1);
 define('QUEST_STATUS_NOT_STARTED' , 0);
 define('QUEST_STATUS_STARTED'     , 1);
 define('QUEST_STATUS_COMPLETE'    , 2);
@@ -1505,6 +1506,7 @@ define('PLAYER_OPTION_TUTORIAL_CURRENT', 51);
 define('PLAYER_OPTION_TUTORIAL_FINISHED', 52);
 define('PLAYER_OPTION_NAVBAR_PLANET_OLD', 53);
 define('PLAYER_OPTION_NAVBAR_PLANET_DISABLE_STORAGE', 54);
+define('PLAYER_OPTION_QUEST_LIST_FILTER', 55);
 
 // -------------------
 define('PLAYER_OPTION_MENU_HIDE_SHOW_BUTTON_FIXED', 0);

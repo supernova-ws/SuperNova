@@ -3570,3 +3570,85 @@ td.error_message {
 #copyright {
   /*border: 5px solid green;*/
 }
+
+
+
+.quest_list
+{
+  max-width: 70em;
+}
+
+.quest_filter_wrapper
+{
+  padding: 1em;
+  font-size: 120%;
+}
+
+.quest_admin_wrapper {
+  margin: 0.5em;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+
+.quest_admin_buttons
+{
+  margin: 0;
+  flex-shrink: 100;
+  flex-grow: 0.01;
+  flex-basis: 1%;
+}
+
+.quest_wrapper
+{
+  flex-shrink: 1;
+  flex-grow: 1;
+  flex-basis: 1%;
+}
+
+.quest_header.header
+{
+  font-size: 120%;
+  margin: 0.5em;
+  padding: 0.5em;
+}
+
+.quest_name
+{
+
+}
+
+.quest_status
+{
+
+}
+
+.quest_description.cell
+{
+  text-align: justify;
+  margin: 0.5em;
+  padding: 0.5em;
+}
+
+.quest_details
+{
+  flex-wrap: wrap;
+  align-items: stretch;
+}
+
+.quest_details > div
+{
+  flex-grow: 1;
+  margin: 0.5em;
+  padding: 0.5em;
+}
+
+.quest_details ul
+{
+  padding-left: 0;
+}
+
+.quest_details li
+{
+  margin-left: 2em;
+}

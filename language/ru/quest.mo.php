@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a26.0
+* @version 42a26.1
 *
 */
 
@@ -38,10 +38,13 @@ $a_lang_array = (array(
   'qst_total' => 'Квестов',
   'qst_status' => 'Статус',
   'qst_status_list' => array(
+    QUEST_STATUS_ALL => '-- Все квесты --',
     QUEST_STATUS_NOT_STARTED => 'Не&nbsp;начат',
     QUEST_STATUS_STARTED => 'Начат',
     QUEST_STATUS_COMPLETE => 'Выполнен',
   ),
+
+  'qst_filter_by_status' => 'Показывать квесты со статусом',
 
   'qst_add' => 'Добавление квеста',
   'qst_edit' => 'Редактирование квеста',

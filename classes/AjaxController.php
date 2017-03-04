@@ -38,12 +38,15 @@ class AjaxController {
     $mode = sys_get_param_str('mode');
 
     if(class_exists($className = 'Pages\\Page' . ucfirst($mode))) {
+      /**
+       * @var \Pages\IPage $page
+       */
       $page = new $className();
       if(method_exists($page, 'loadParams')) {
         $page->loadParams();
       }
 
-      if(method_exists($page, $action = sys_get_param('action'))) {
+      if(method_exists($page, $action = sys_get_param('action')) && $page->checkAction($action)) {
         $result = $page->$action();
         is_array($result) ? HelperArray::merge($template_result['AJAX'], $result) : false;
       }

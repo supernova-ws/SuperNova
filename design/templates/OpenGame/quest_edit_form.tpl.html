@@ -1,0 +1,62 @@
+<table width="519">
+  <form action="admin/adm_quest.php" method="post" name="fForm">
+    <input type="hidden" name="mode" value="{mode}">
+    <input type="hidden" name="id" value="{QUEST_ID}">
+
+    <tr>
+      <td class="c" colspan=2><!-- IF mode == 'edit' -->{L_qst_edit}<!-- ELSEIF mode == 'copy' -->{L_qst_copy}
+        <!-- ELSE -->{L_qst_add}<!-- ENDIF --></td>
+    </tr>
+    <tr>
+      <td>{L_qst_name}</td>
+      <td>
+        <input class="fl" name="QUEST_NAME" size="50" maxlength="255" value="{QUEST_NAME}">
+        <span class="fr"><!-- IF mode == 'edit' -->{L_qst_mode_edit}<!-- ELSEIF mode == 'copy' -->{L_qst_mode_copy}
+          <!-- ELSE -->{L_qst_mode_add}<!-- ENDIF --></span>
+      </td>
+    </tr>
+
+    <tr>
+      <td valign="top">{L_qst_description}</td>
+      <td><textarea name="QUEST_DESCRIPTION" cols=40 rows=5 width="80%">{QUEST_DESCRIPTION}</textarea></td>
+    </tr>
+    <tr class="c_l">
+      <td>{L_qst_adm_conditions}</td>
+      <td class="c_l">
+        <input name="QUEST_UNIT_AMOUNT" size="15" maxlength="15" value="{QUEST_UNIT_AMOUNT}"> x
+        <select name="QUEST_UNIT_ID">
+          <!-- BEGIN allowed_unit -->
+          <option value="{allowed_unit.ID}"<!-- IF allowed_unit.ID == QUEST_UNIT_ID --> selected<!-- ENDIF -->
+          >{allowed_unit.NAME}</option>
+          <!-- END allowed_unit -->
+        </select>
+      </td>
+    </tr>
+    <tr class="c_l">
+      <td>{L_qst_rewards}</td>
+      <td>
+        <!-- BEGIN quest_rewards_list -->
+        <input name="QUEST_REWARDS_LIST[{quest_rewards_list.ID}]" size="15" maxlength="15"
+               value="{quest_rewards_list.AMOUNT}"> {quest_rewards_list.NAME}<br/>
+        <!-- END quest_rewards_list -->
+      </td>
+      <!-- IF false -->
+      <td>
+        <input name="QUEST_REWARDS_AMOUNT" size="15" maxlength="15" value="{QUEST_REWARDS_AMOUNT}"> x
+        <select name="QUEST_REWARDS_ID">
+          <!-- BEGIN allowed_reward -->
+          <option value="{allowed_reward.ID}"<!-- IF allowed_reward.ID == QUEST_REWARDS_ID --> selected<!-- ENDIF -->
+          >{allowed_reward.NAME}</option>
+          <!-- END allowed_reward -->
+        </select>
+      </td>
+      <!-- ENDIF -->
+    </tr>
+    <tr>
+      <td colspan="2" class="c_c">
+        <input type="submit" name="confirm"
+               value="<!-- IF mode == 'edit' -->{L_qst_edit}<!-- ELSEIF mode == 'copy' -->{L_qst_copy}<!-- ELSE -->{L_qst_add}<!-- ENDIF -->">
+      </td>
+    </tr>
+  </form>
+</table>

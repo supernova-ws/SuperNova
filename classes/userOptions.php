@@ -93,6 +93,8 @@ class userOptions extends oldArrayAccessNd {
     PLAYER_OPTION_TUTORIAL_WINDOWED => 0,
     PLAYER_OPTION_TUTORIAL_CURRENT => 1,
     PLAYER_OPTION_TUTORIAL_FINISHED => 0,
+
+    PLAYER_OPTION_QUEST_LIST_FILTER => QUEST_STATUS_ALL,
   );
 
   public $data = array(); // Container // TODO - make protected

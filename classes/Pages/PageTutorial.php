@@ -8,7 +8,14 @@ namespace Pages;
 use \classSupernova;
 use \userOptions;
 
-class PageTutorial {
+class PageTutorial extends PageAjax {
+
+  protected $allowedActions = array(
+    'ajax' => true,
+    'ajaxNext' => true,
+    'ajaxPrev' => true,
+    'ajaxFinish' => true,
+  );
 
   protected $id = 1;
 
@@ -17,12 +24,8 @@ class PageTutorial {
    */
   protected $userOptions;
 
-  public function __construct() {
-
-  }
-
   /**
-   * Loading page data from page params
+   * @inheritdoc
    */
   public function loadParams() {
     $this->id = sys_get_param_id('id', 1);

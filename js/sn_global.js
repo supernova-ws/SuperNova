@@ -1090,11 +1090,6 @@ $(document).on("click", "#universeScanStart,#universeScanStop", function () {
   $('#universe_scan_mode').val($('#universe_scan_mode').val() ? 0 : 1);
   $('#galaxy_form').submit();
 });
-//
-// $(document).on("click", "", function () {
-//   $('#universe_scan_mode').val(0);
-//   $('#galaxy_form').submit();
-// });
 
 var NAVBAR_MODE = 0;
 
@@ -1115,3 +1110,15 @@ $(document).ready(
     $('body').append($('#benchmark').detach());
   }
 );
+
+$(document).on('change', '#filterQuestStatus', function () {
+  var that = $(this);
+
+  jQuery.get(
+    SN_ROOT_VIRTUAL + "index.php?page=ajax&mode=quest&action=saveFilter&filterQuestStatus=" + that.val(),
+    function(data) {
+      sn_reload();
+    },
+    "json"
+  );
+})

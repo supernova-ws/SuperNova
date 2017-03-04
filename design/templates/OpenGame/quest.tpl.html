@@ -1,150 +1,25 @@
 <h1>{L_qst_quests}</h1>
 <h3>{L_qst_total}:&nbsp;{TOTAL}</h3>
 <!-- IF IN_ADMIN && ! USER_ID -->
-<table width="519">
-  <form action="admin/adm_quest.php" method="post" name="fForm">
-    <input type="hidden" name="mode" value="{mode}">
-    <input type="hidden" name="id" value="{QUEST_ID}">
-
-    <tr>
-      <td class="c" colspan=2><!-- IF mode == 'edit' -->{L_qst_edit}<!-- ELSEIF mode == 'copy' -->{L_qst_copy}
-        <!-- ELSE -->{L_qst_add}<!-- ENDIF --></td>
-    </tr>
-    <tr>
-      <td>{L_qst_name}</td>
-      <td>
-        <input class="fl" name="QUEST_NAME" size="50" maxlength="255" value="{QUEST_NAME}">
-        <span class="fr"><!-- IF mode == 'edit' -->{L_qst_mode_edit}<!-- ELSEIF mode == 'copy' -->{L_qst_mode_copy}
-          <!-- ELSE -->{L_qst_mode_add}<!-- ENDIF --></span>
-      </td>
-    </tr>
-
-    <tr>
-      <td valign="top">{L_qst_description}</td>
-      <td><textarea name="QUEST_DESCRIPTION" cols=40 rows=5 width="80%">{QUEST_DESCRIPTION}</textarea></td>
-    </tr>
-    <tr class="c_l">
-      <td>{L_qst_adm_conditions}</td>
-      <td class="c_l">
-        <input name="QUEST_UNIT_AMOUNT" size="15" maxlength="15" value="{QUEST_UNIT_AMOUNT}"> x
-        <select name="QUEST_UNIT_ID">
-          <!-- BEGIN allowed_unit -->
-          <option value="{allowed_unit.ID}"<!-- IF allowed_unit.ID == QUEST_UNIT_ID --> selected<!-- ENDIF -->
-          >{allowed_unit.NAME}</option>
-          <!-- END allowed_unit -->
-        </select>
-      </td>
-    </tr>
-    <tr class="c_l">
-      <td>{L_qst_rewards}</td>
-      <td>
-        <!-- BEGIN quest_rewards_list -->
-        <input name="QUEST_REWARDS_LIST[{quest_rewards_list.ID}]" size="15" maxlength="15"
-               value="{quest_rewards_list.AMOUNT}"> {quest_rewards_list.NAME}<br/>
-        <!-- END quest_rewards_list -->
-      </td>
-      <!-- IF false -->
-      <td>
-        <input name="QUEST_REWARDS_AMOUNT" size="15" maxlength="15" value="{QUEST_REWARDS_AMOUNT}"> x
-        <select name="QUEST_REWARDS_ID">
-          <!-- BEGIN allowed_reward -->
-          <option value="{allowed_reward.ID}"<!-- IF allowed_reward.ID == QUEST_REWARDS_ID --> selected<!-- ENDIF -->
-          >{allowed_reward.NAME}</option>
-          <!-- END allowed_reward -->
-        </select>
-      </td>
-      <!-- ENDIF -->
-    </tr>
-    <tr>
-      <td colspan="2" class="c_c">
-        <input type="submit" name="confirm"
-               value="<!-- IF mode == 'edit' -->{L_qst_edit}<!-- ELSEIF mode == 'copy' -->{L_qst_copy}<!-- ELSE -->{L_qst_add}<!-- ENDIF -->">
-      </td>
-    </tr>
-  </form>
-</table>
+<!-- INCLUDE quest_edit_form -->
 <br>
 <!-- ENDIF -->
 
-<style type="text/css">
-  .quest_list
-  {
-    max-width: 70em;
-  }
+<div class="quest_list border_image_large">
+  <div class="quest_filter_wrapper">
+    <label for="filterQuestStatus">{L_qst_filter_by_status}</label>
+    <select name="filterQuestStatus" id="filterQuestStatus">
+      <!-- BEGIN status -->
+      <!-- IF status.ID == PLAYER_OPTION_QUEST_LIST_FILTER -->
+      <!-- DEFINE $STATUS_SELECTED = 'selected' -->
+      <!-- ELSE -->
+      <!-- DEFINE $STATUS_SELECTED = '' -->
+      <!-- ENDIF -->
+      <option value="{status.ID}" {$STATUS_SELECTED}>{status.NAME}</option>
+      <!-- END status -->
+    </select>
+  </div>
 
-  .quest_admin_wrapper {
-    margin: 0.5em;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: space-between;
-  }
-
-  .quest_admin_buttons
-  {
-    margin: 0;
-    flex-shrink: 100;
-    flex-grow: 0.01;
-    flex-basis: 1%;
-  }
-
-  .quest_wrapper
-  {
-    flex-shrink: 1;
-    flex-grow: 1;
-    flex-basis: 1%;
-  }
-
-  .quest_header.header
-  {
-    font-size: 120%;
-    margin: 0.5em;
-    padding: 0.5em;
-  }
-
-  .quest_name
-  {
-
-  }
-
-  .quest_status
-  {
-
-  }
-
-  .quest_description.cell
-  {
-    text-align: justify;
-    /*margin: 0.5em 0;*/
-    margin: 0.5em;
-    padding: 0.5em;
-  }
-
-  .quest_details
-  {
-    flex-wrap: wrap;
-    align-items: stretch;
-  }
-
-  .quest_details > div
-  {
-    flex-grow: 1;
-    margin: 0.5em;
-    padding: 0.5em;
-    /*border: 1px solid red;*/
-  }
-
-  .quest_details ul
-  {
-    padding-left: 0;
-  }
-
-  .quest_details li
-  {
-    margin-left: 2em;
-  }
-</style>
-
-<div class="quest_list border_image_large ">
   <!-- BEGIN quest -->
   <!-- IF quest.QUEST_STATUS == QUEST_STATUS_COMPLETE -->
   <!-- DEFINE $QUEST_CLASS = 'success' -->
@@ -160,11 +35,10 @@
         <div class="quest_name">
           {quest.QUEST_NAME}
         </div>
-        <!-- IF USER_ID -->
+
         <div class="quest_status">
-          <span class="">{quest.QUEST_STATUS_NAME}</span>
+          {quest.QUEST_STATUS_NAME}
         </div>
-        <!-- ENDIF -->
       </div>
 
       <div class="quest_description cell">

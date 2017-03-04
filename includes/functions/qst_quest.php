@@ -131,7 +131,14 @@ function qst_render_page()
     $user_id = $user['id'];
   }
 
-  $quest_list = qst_get_quests($user_id);
+  $filterStatus = false;
+  if(classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER] == 0) {
+    $filterStatus = null;
+  } elseif(classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER] != -1) {
+    $filterStatus = classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER];
+  }
+
+  $quest_list = qst_get_quests($user_id, $filterStatus);
   $template->assign_vars(array(
     'AUTHLEVEL' => $user['authlevel'],
     'TOTAL'     => count($quest_list),
@@ -139,10 +146,19 @@ function qst_render_page()
     'USER_ID'   => $user_id,
     'IN_ADMIN'  => $in_admin,
 
-    'QUEST_STATUS_NOT_STARTED'  => QUEST_STATUS_NOT_STARTED,
-    'QUEST_STATUS_STARTED'  => QUEST_STATUS_STARTED,
-    'QUEST_STATUS_COMPLETE'  => QUEST_STATUS_COMPLETE,
+    'QUEST_STATUS_NOT_STARTED' => QUEST_STATUS_NOT_STARTED,
+    'QUEST_STATUS_STARTED'     => QUEST_STATUS_STARTED,
+    'QUEST_STATUS_COMPLETE'    => QUEST_STATUS_COMPLETE,
+
+    'PLAYER_OPTION_QUEST_LIST_FILTER' => classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER],
   ));
+
+  foreach ($lang['qst_status_list'] as $statusId => $statusName) {
+    $template->assign_block_vars('status', array(
+      'ID' => $statusId,
+      'NAME' => $statusName,
+    ));
+  }
 
   if($quest)
   {
