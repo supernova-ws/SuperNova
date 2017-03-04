@@ -72,7 +72,11 @@ class debug {
   }
 
   function compact_backtrace($backtrace, $long_comment = false) {
-    static $exclude_functions = array('doquery', 'db_query', 'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id');
+    static $exclude_functions = array(
+//      'doquery',
+//      'db_query_select', 'db_query_delete', 'db_query_insert', 'db_query_update',
+//      'db_get_record_list', 'db_user_by_id', 'db_get_user_by_id'
+    );
 
     $result = array();
     $transaction_id = classSupernova::db_transaction_check(false) ? classSupernova::$transaction_id : classSupernova::$transaction_id++;
@@ -92,16 +96,12 @@ class debug {
 
       $file = str_replace(SN_ROOT_PHYSICAL, '', str_replace('\\', '/', $a_trace['file']));
 
-      // $result[] = "{$function} ({$a_trace['line']})'{$file}'";
       $result[] = "{$function} - '{$file}' Line {$a_trace['line']}";
 
       if(!$long_comment) {
         break;
       }
     }
-
-
-    // $result = implode(',', $result);
 
     return $result;
   }
@@ -134,7 +134,6 @@ class debug {
       }
     }
 
-//    if($deadlock && ($q = db_fetch(classSupernova::$db->__db_query('SHOW ENGINE INNODB STATUS')))) {
     if($deadlock && ($q = db_fetch(classSupernova::$db->mysql_get_innodb_status()))) {
       $error_backtrace['deadlock'] = explode("\n", $q['Status']);
       $error_backtrace['locks'] = classSupernova::$locks;

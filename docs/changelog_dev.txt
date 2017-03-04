@@ -432,13 +432,28 @@ pretty_number
 
 !!!!!! Вылить утром на живой
 
+!!!!!! Сделать интерфейс для подарков на 8е марта
+
+
+Use DbQuery:
+    public static function db_ins_record($location_type, $set) {
+    public static function db_del_record_by_id($location_type, $safe_record_id)
+    public static function db_del_record_list($location_type, $condition)
+
 
 #ctv
 
 
+2017-03-04 10:26:45 42a25.24
+[@] Рефакторинг
+    PHP Strict - устранены нотисы вызова AjaxController::view() в /includes/general.php
+    Расшит метод classSupernova::db_query на 4 разных
+    Некоторые устаревшие функции доступа к БД заменены операциями через \DBAL\DbQuery
+
+
 2017-03-03 21:40:35 42a25.20
 [@] Рефакторинг
-    PHP Strict - убраны нотисы в BBCodeParse.php
+    PHP Strict - устранены нотисы в BBCodeParse.php
 
 
 2017-03-03 14:21:48 42a25.19

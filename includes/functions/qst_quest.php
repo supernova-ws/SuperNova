@@ -1,5 +1,7 @@
 <?php
 
+use \DBAL\DbQuery;
+
 function qst_render_page()
 {
   global $lang, $user, $template, $config;
@@ -64,27 +66,31 @@ function qst_render_page()
 
         if($mode == 'edit')
         {
-          $quest_name        = db_escape($quest_name);
-          $quest_description = db_escape($quest_description);
-          doquery(
-            "UPDATE {{quest}} SET
-              `quest_name` = '{$quest_name}',
-              `quest_type` = '{$quest_type}',
-              `quest_description` = '{$quest_description}',
-              `quest_conditions` = '$quest_conditions',
-              `quest_rewards` = '{$quest_rewards}'
-            WHERE `quest_id` = {$quest_id} LIMIT 1;"
-          );
+          DbQuery::build()
+            ->setTable('quest')
+            ->setValues(array(
+              'quest_name' => $quest_name,
+              'quest_type' => $quest_type,
+              'quest_description' => $quest_description,
+              'quest_conditions' => $quest_conditions,
+              'quest_rewards' => $quest_rewards,
+            ))
+            ->setWhereArray(array('quest_id' => $quest_id))
+            ->setOneRow()
+            ->doUpdate();
         }
         else
         {
-          sn_db_perform('{{quest}}', array(
-            'quest_name' => $quest_name,
-            'quest_type' => $quest_type,
-            'quest_description' => $quest_description,
-            'quest_conditions' => $quest_conditions,
-            'quest_rewards' => $quest_rewards,
-          ));
+          DbQuery::build()
+            ->setTable('quest')
+            ->setValues(array(
+              'quest_name' => $quest_name,
+              'quest_type' => $quest_type,
+              'quest_description' => $quest_description,
+              'quest_conditions' => $quest_conditions,
+              'quest_rewards' => $quest_rewards,
+            ))
+            ->doInsert();
         }
 
         // TODO: Add mass mail for new quests
@@ -317,11 +323,14 @@ function qst_reward(&$user, &$rewards, &$quest_list)
 
         msg_send_simple_message($user['id'], 0, SN_TIME_NOW, MSG_TYPE_ADMIN, $lang['msg_from_admin'], $lang['qst_msg_complete_subject'], $comment);
 
-        sn_db_perform('{{quest_status}}', array(
-          'quest_status_quest_id' => $quest_id,
-          'quest_status_user_id'  => $user_id,
-          'quest_status_status'   => QUEST_STATUS_COMPLETE
-        ));
+        DbQuery::build()
+          ->setTable('quest_status')
+          ->setValues(array(
+            'quest_status_quest_id' => $quest_id,
+            'quest_status_user_id'  => $user_id,
+            'quest_status_status'   => QUEST_STATUS_COMPLETE
+          ))
+          ->doInsert();
       }
 
   $group_resources = sn_get_groups('resources_loot');

@@ -57,7 +57,7 @@ class AjaxController {
    *
    * @return template|null
    */
-  public function view($template = null) {
+  public static function view($template = null) {
     global $template_result;
 
     $template->assign_var('AJAX_RENDERED', json_encode($template_result['AJAX']));

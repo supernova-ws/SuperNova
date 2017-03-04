@@ -1,5 +1,7 @@
 <?php
 
+use \DBAL\DbQuery;
+
 if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 {
   $debug->error("Attempt to call ALLIANCE page mode {$mode} directly - not from alliance.php", 'Forbidden', 403);
@@ -49,20 +51,21 @@ if(sys_get_param_str('ali_dip_offer_make'))
   $relation_current = $sn_diplomacy_relation_list[$relation_current_id];
   if($relation_new['enter_delay'] == -1 || $relation_current['exit_delay'] == -1)
   {
-    sn_db_perform('{{alliance_negotiation}}',
-      array(
-        'alliance_negotiation_ally_id' => $user['ally_id'],
-        'alliance_negotiation_ally_name' => $user['ally_name'],
-        'alliance_negotiation_contr_ally_id' => $alliance_negotiation_contr_ally_id,
+    DbQuery::build()
+      ->setTable('alliance_negotiation')
+      ->setValues(array(
+        'alliance_negotiation_ally_id'         => $user['ally_id'],
+        'alliance_negotiation_ally_name'       => $user['ally_name'],
+        'alliance_negotiation_contr_ally_id'   => $alliance_negotiation_contr_ally_id,
         'alliance_negotiation_contr_ally_name' => $contr_ally_row['ally_name'],
-        'alliance_negotiation_relation' => $alliance_negotiation_relation,
-        'alliance_negotiation_time' => SN_TIME_NOW,
-        'alliance_negotiation_propose' => $alliance_negotiation_propose,
-        'alliance_negotiation_status' =>  ALLY_PROPOSE_SEND
-      )
-  );
+        'alliance_negotiation_relation'        => $alliance_negotiation_relation,
+        'alliance_negotiation_time'            => SN_TIME_NOW,
+        'alliance_negotiation_propose'         => $alliance_negotiation_propose,
+        'alliance_negotiation_status'          => ALLY_PROPOSE_SEND
+      ))
+      ->doInsert();
 
-  $accept_offer = false;
+    $accept_offer = false;
   }
   else
   {
@@ -123,24 +126,27 @@ if($accept_offer)
 {
   sn_db_transaction_start();
 
-  // TODO: Make sn_db_perform() multirow
-  sn_db_perform('{{alliance_diplomacy}}',
-    array(
-      'alliance_diplomacy_ally_id' => $user['ally_id'],
-      'alliance_diplomacy_contr_ally_id' => $negotiation['alliance_negotiation_ally_id'],
+  DbQuery::build()
+    ->setTable('alliance_diplomacy')
+    ->setValues(array(
+      'alliance_diplomacy_ally_id'         => $user['ally_id'],
+      'alliance_diplomacy_contr_ally_id'   => $negotiation['alliance_negotiation_ally_id'],
       'alliance_diplomacy_contr_ally_name' => $negotiation['alliance_negotiation_ally_name'],
-      'alliance_diplomacy_relation' => $negotiation['alliance_negotiation_relation'],
-      'alliance_diplomacy_time' => SN_TIME_NOW
-    ));
+      'alliance_diplomacy_relation'        => $negotiation['alliance_negotiation_relation'],
+      'alliance_diplomacy_time'            => SN_TIME_NOW,
+    ))
+    ->doInsert();
 
-  sn_db_perform('{{alliance_diplomacy}}',
-    array(
-      'alliance_diplomacy_ally_id' => $negotiation['alliance_negotiation_ally_id'],
-      'alliance_diplomacy_contr_ally_id' => $user['ally_id'],
+  DbQuery::build()
+    ->setTable('alliance_diplomacy')
+    ->setValues(array(
+      'alliance_diplomacy_ally_id'         => $negotiation['alliance_negotiation_ally_id'],
+      'alliance_diplomacy_contr_ally_id'   => $user['ally_id'],
       'alliance_diplomacy_contr_ally_name' => $user['ally_name'],
-      'alliance_diplomacy_relation' => $negotiation['alliance_negotiation_relation'],
-      'alliance_diplomacy_time' => SN_TIME_NOW
-    ));
+      'alliance_diplomacy_relation'        => $negotiation['alliance_negotiation_relation'],
+      'alliance_diplomacy_time'            => SN_TIME_NOW,
+    ))
+    ->doInsert();
 
   doquery(
     "DELETE FROM {{alliance_negotiation}}

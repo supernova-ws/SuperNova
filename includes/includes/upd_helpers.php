@@ -126,17 +126,13 @@ function upd_alter_table($table, $alters, $condition = true) {
   // foreach($alters as $table_name => )
   $qry = "ALTER TABLE {$config->db_prefix}{$table} {$alters};";
 
-  //$result = db_query($qry);
   $result = upd_do_query($qry);
   $error = db_error();
   if($error) {
     die("Altering error for table `{$table}`: {$error}<br />{$alters_print}");
   }
 
-//  if(strpos('RENAME TO', strtoupper(implode(',', $alters))) === false)
-  {
-    upd_load_table_info($table, false);
-  }
+  upd_load_table_info($table, false);
 
   return $result;
 }

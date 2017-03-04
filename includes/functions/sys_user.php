@@ -178,7 +178,10 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   !empty($options['salt']) ? $field_set['salt'] = $options['salt'] : false;
   !empty($options['password_encoded_unsafe']) ? $field_set['password'] = $options['password_encoded_unsafe'] : false;
 
-  $user_new = db_ins_field_set($field_set);
+  $dbq = new \DBAL\DbQuery();
+  doquery($dbq->setTable('users')->setValues($field_set)->insert());
+  $user_new = db_user_by_id(db_insert_id());
+
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {
     $options['galaxy'] = $config->LastSettedGalaxyPos;
     $options['system'] = $config->LastSettedSystemPos;
@@ -187,7 +190,6 @@ function player_create($username_unsafe, $email_unsafe, $options) {
     $segment++;
     $options['planet'] = mt_rand(1 + $segment * $segment_size, ($segment + 1) * $segment_size);
 
-    // $new_planet_id = 0;
     while(true) {
       if($options['planet'] > $config->game_maxPlanet) {
         $options['planet'] = mt_rand(0, $segment_size - 1) + 1;
@@ -206,7 +208,6 @@ function player_create($username_unsafe, $email_unsafe, $options) {
           'LastSettedSystemPos' => $options['system'],
           'LastSettedPlanetPos' => $options['planet'],
         ));
-        // $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $username_unsafe . ' ' . $lang['sys_capital'], true, $options['planet_options']);
         break;
       }
       $options['planet'] += 3;
@@ -214,11 +215,6 @@ function player_create($username_unsafe, $email_unsafe, $options) {
   }
   $new_planet_id = uni_create_planet($options['galaxy'], $options['system'], $options['planet'], $user_new['id'], $lang['sys_capital'], true, $options['planet_options']);
 
-//  db_user_set_by_id($user_new['id'],
-//    "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
-//    `galaxy` = '{$options['galaxy']}', `system` = '{$options['$system']}', `planet` = '{$options['$planet']}',
-//    `parent_account_id` = {$account['account_id']}"
-//  );
   db_user_set_by_id($user_new['id'],
     "`id_planet` = '{$new_planet_id}', `current_planet` = '{$new_planet_id}',
     `galaxy` = '{$options['galaxy']}', `system` = '{$options['system']}', `planet` = '{$options['planet']}'"

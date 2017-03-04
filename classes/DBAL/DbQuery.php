@@ -162,6 +162,13 @@ class DbQuery {
     return $result;
   }
 
+  public function doInsert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
+    return doquery($this->insert($replace, $forceSingleInsert));
+  }
+
+  public function doUpdate() {
+    return doquery($this->update());
+  }
 
   public function insert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
     $this->build = array();
@@ -199,7 +206,7 @@ class DbQuery {
    *
    * @return $this
    */
-  public function setOneRow($oneRow = self::DB_RECORDS_ALL) {
+  public function setOneRow($oneRow = self::DB_RECORD_ONE) {
     $this->isOneRow = $oneRow;
 
     return $this;
