@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 42a25.26
 *
 */
 
@@ -37,7 +37,7 @@ $a_lang_array = (array(
   'qst_total' => 'Квестов',
   'qst_status' => 'Статус',
   'qst_status_list' => array(
-    QUEST_STATUS_NOT_STARTED => 'Не&nbsp;выполнен',
+    QUEST_STATUS_NOT_STARTED => 'Не&nbsp;начат',
     QUEST_STATUS_STARTED => 'Начат',
     QUEST_STATUS_COMPLETE => 'Выполнен',
   ),

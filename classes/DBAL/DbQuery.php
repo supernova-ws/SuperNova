@@ -170,6 +170,20 @@ class DbQuery {
     return doquery($this->update());
   }
 
+  /**
+   * @return array|bool|\mysqli_result|null
+   */
+  public function doSelect() {
+    return doquery($this->select());
+  }
+
+  /**
+   * @return array|null
+   */
+  public function doSelectFetch() {
+    return doquery($this->select(), true);
+  }
+
   public function insert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
     $this->build = array();
 

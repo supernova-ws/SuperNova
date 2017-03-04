@@ -646,6 +646,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
     'TOPNAV_EXPEDITIONS_TOTAL'  => get_player_max_expeditons($user),
 
     'TOPNAV_QUEST_COMPLETE' => get_quest_amount_complete($user['id']),
+    'TOPNAV_QUEST_IN_PROGRESS' => get_quest_amount_in_progress($user['id']),
 
     'GAME_NEWS_OVERVIEW'       => $config->game_news_overview,
     'GAME_RESEARCH_DISABLED'   => defined('GAME_RESEARCH_DISABLED') && GAME_RESEARCH_DISABLED,

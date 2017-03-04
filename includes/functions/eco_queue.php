@@ -678,6 +678,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
     $quest_list = qst_get_quests($user['id']);
     $quest_triggers = qst_active_triggers($quest_list);
     $quest_rewards = array();
+    $quest_statuses = array();
 
 
     $xp_incoming = array();
@@ -698,11 +699,16 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
           if(is_array($quest_triggers)) {
             // TODO: Check mutiply condition quests
             $quest_trigger_list = array_keys($quest_triggers, $unit_id);
+
             if(is_array($quest_trigger_list)) {
               foreach($quest_trigger_list as $quest_id) {
-                if($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE && $quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new) {
-                  $quest_rewards[$quest_id][$user_id][$planet_id] = $quest_list[$quest_id]['quest_rewards_list'];
-                  $quest_list[$quest_id]['quest_status_status'] = QUEST_STATUS_COMPLETE;
+                if ($quest_list[$quest_id]['quest_status_status'] != QUEST_STATUS_COMPLETE) {
+                  if ($quest_list[$quest_id]['quest_unit_amount'] <= $unit_level_new) {
+                    $quest_rewards[$quest_id][$user_id][$planet_id] = $quest_list[$quest_id]['quest_rewards_list'];
+                    $quest_statuses[$quest_id] = QUEST_STATUS_COMPLETE;
+                  } else {
+                    $quest_statuses[$quest_id] = QUEST_STATUS_STARTED;
+                  }
                 }
               }
             }
@@ -711,7 +717,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
       }
     }
     // TODO: Изменить начисление награды за квесты на ту планету, на которой происходил ресеч
-    qst_reward($user, $quest_rewards, $quest_list);
+    qst_reward($user, $quest_rewards, $quest_list, $quest_statuses);
 
     foreach($xp_incoming as $que_id => $xp) {
       rpg_level_up($user, $que_id == QUE_RESEARCH ? RPG_TECH : RPG_STRUCTURE, $xp / 1000);

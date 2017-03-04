@@ -123,7 +123,7 @@ function qst_render_page()
         $quest = doquery("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
       break;
     }
-    $query = doquery("SELECT count(*) AS count FROM {{quest}};", '', true);
+    $query = doquery("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
     $config->db_saveItem('quest_total', $query['count']);
   }
   elseif(!$user_id)
@@ -138,6 +138,10 @@ function qst_render_page()
     'mode'      => $mode,
     'USER_ID'   => $user_id,
     'IN_ADMIN'  => $in_admin,
+
+    'QUEST_STATUS_NOT_STARTED'  => QUEST_STATUS_NOT_STARTED,
+    'QUEST_STATUS_STARTED'  => QUEST_STATUS_STARTED,
+    'QUEST_STATUS_COMPLETE'  => QUEST_STATUS_COMPLETE,
   ));
 
   if($quest)
@@ -296,20 +300,61 @@ function qst_active_triggers($quest_list)
   return $quest_triggers;
 }
 
-function qst_reward(&$user, &$rewards, &$quest_list)
+/**
+ * @param $user
+ * @param $rewards
+ * @param $quest_list
+ * @param integer[] $quest_statuses
+ */
+function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses)
 {
-  if(empty($rewards)) return;
+  if(empty($quest_statuses)) return;
 
   global $lang;
+
+  foreach ($quest_statuses as $quest_id => $quest_status) {
+    $quest_list[$quest_id]['quest_status_status'] = $quest_status;
+
+    $questStatus = DbQuery::build()
+      ->setTable('quest_status')
+      ->setWhereArray(array(
+        'quest_status_quest_id' => $quest_id,
+        'quest_status_user_id'  => $user['id'],
+      ))
+      ->doSelectFetch();
+
+    if (empty($questStatus)) {
+      DbQuery::build()
+        ->setTable('quest_status')
+        ->setValues(array(
+          'quest_status_quest_id' => $quest_id,
+          'quest_status_user_id'  => $user['id'],
+          'quest_status_status'   => $quest_status
+        ))
+        ->doInsert();
+    } elseif($questStatus['quest_status_status'] != $quest_status) {
+      DbQuery::build()
+        ->setTable('quest_status')
+        ->setWhereArray(array(
+          'quest_status_quest_id' => $quest_id,
+          'quest_status_user_id'  => $user['id'],
+        ))
+        ->setValues(array(
+          'quest_status_status'   => $quest_status
+        ))
+        ->doUpdate();
+    }
+  }
+
+  if(empty($rewards)) return;
 
   $db_changeset = array();
   $total_rewards = array();
   $comment_dm = '';
 
-  foreach($rewards as $quest_id => $user_data)
-    foreach($user_data as $user_id => $planet_data)
-      foreach($planet_data as $planet_id => $reward_list)
-      {
+  foreach($rewards as $quest_id => $user_data) {
+    foreach($user_data as $user_id => $planet_data) {
+      foreach($planet_data as $planet_id => $reward_list) {
         $comment = sprintf($lang['qst_msg_complete_body'], $quest_list[$quest_id]['quest_name']);
         $comment_dm .= isset($reward_list[RES_DARK_MATTER]) ? $comment : '';
 
@@ -332,6 +377,8 @@ function qst_reward(&$user, &$rewards, &$quest_list)
           ))
           ->doInsert();
       }
+    }
+  }
 
   $group_resources = sn_get_groups('resources_loot');
   $quest_rewards_allowed = sn_get_groups('quest_rewards');
@@ -382,14 +429,10 @@ function qst_reward(&$user, &$rewards, &$quest_list)
 
 function get_quest_amount_complete($user_id)
 {
-  // TODO: Make it faster - rewrite SQL?
   return count(qst_get_quests($user_id, QUEST_STATUS_COMPLETE));
 }
 
-// TODO: Move here quest comlpletion checks
-// TODO: Check mutiply condition quests
-/*
-function qst_check_completion(&$user, &$planet, )
+function get_quest_amount_in_progress($user_id)
 {
+  return count(qst_get_quests($user_id, QUEST_STATUS_STARTED));
 }
-*/
