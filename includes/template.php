@@ -714,18 +714,39 @@ function tpl_navbar_render_news(&$template, &$user, $config) {
 
 /**
  * @param array $sn_mvc
+ * @param string $blockName
+ *
+ * @return array|false
+ */
+function render_button_block(&$sn_mvc, $blockName) {
+  $result = false;
+
+  if (!empty($sn_mvc[$blockName]) && is_array($sn_mvc[$blockName])) {
+    foreach ($sn_mvc[$blockName] as $navbar_button_image => $navbar_button_url) {
+      $result[] = array(
+        'IMAGE'        => $navbar_button_image,
+        'URL_RELATIVE' => $navbar_button_url,
+      );
+    }
+
+    $result = array(
+      '.' => array(
+        $blockName =>
+          $result
+      ),
+    );
+  }
+
+  return $result;
+}
+
+/**
+ * @param array $sn_mvc
  * @param template $template
  */
 function tpl_navbar_extra_buttons(&$sn_mvc, $template) {
-  if (!empty($sn_mvc['navbar_prefix_button']) && is_array($sn_mvc['navbar_prefix_button'])) {
-    foreach ($sn_mvc['navbar_prefix_button'] as $navbar_button_image => $navbar_button_url) {
-      $template->assign_block_vars('navbar_prefix_button', array(
-        'IMAGE'        => $navbar_button_image,
-        'URL_RELATIVE' => $navbar_button_url,
-      ));
-    }
-  }
-  $template->assign_var('NAVBAR_PREFIX_BUTTONS', is_array($sn_mvc['navbar_prefix_button']) ? count($sn_mvc['navbar_prefix_button']) : 0);
+  ($block = render_button_block($sn_mvc, 'navbar_prefix_button')) ? $template->assign_recursive($block) : false;
+  ($block = render_button_block($sn_mvc, 'navbar_main_button')) ? $template->assign_recursive($block) : false;
 }
 
 /**

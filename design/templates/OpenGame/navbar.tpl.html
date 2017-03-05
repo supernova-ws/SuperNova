@@ -72,7 +72,7 @@
 <div id="navbar_container" class="{$NAVBAR_RESOURCES_CLASS} {$NAVBAR_VERTICAL_CLASS}">
   <div class="header c_c border_image_small {$NAVBAR_RESOURCES_CLASS} {$NAVBAR_VERTICAL_CLASS}" id="navbar">
     <div id="navbar_main">
-      <!-- IF NAVBAR_PREFIX_BUTTONS -->
+      <!-- IF .navbar_prefix_button -->
       <div class="contF a50 flexW cell">
         <!-- BEGIN navbar_prefix_button -->
         <div class="navbar-festival_button">
@@ -257,6 +257,15 @@
           </a>
         </div>
         <!-- ENDIF -->
+
+        <!-- BEGIN navbar_main_button -->
+        <div class="navbar-festival_button">
+          <a class="w100 h100" href="{navbar_main_button.URL_RELATIVE}" >
+            <img class="w100 h100" src="{navbar_main_button.IMAGE}" />
+          </a>
+        </div>
+        <!-- END navbar_main_button -->
+
       </div>
     </div>
 

@@ -32,7 +32,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
    * @returns {int}
    */
   Math.intVal = function (value) {
-    var parsed = parseInt(value);
+    var parsed = parseInt(value, 10);
     return parsed ? parsed : 0;
     // return typeof parsed === 'number' && !isNaN(parsed) && parsed !== Infinity ? parsed : 0;
   };
@@ -104,7 +104,7 @@ if (typeof(window.LOADED_GLOBAL) === 'undefined') {
     that.animate(
       {opacity: that.css('opacity') == 0 ? 1 : 0},
       that.attr('duration')
-        ? parseInt(that.attr('duration'))
+        ? parseInt(that.attr('duration'), 10)
         : 1000,
       function () {
         sn_blink(this)

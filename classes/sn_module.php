@@ -5,13 +5,13 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed working
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#42a6#';
+  public $versionCommitted = '#42a26.4#';
 
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #42a6# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #42a26.4# copyright © 2009-2014 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -231,6 +231,12 @@ class sn_module {
     if(!empty($this->manifest['navbar_prefix_button']) && is_array($this->manifest['navbar_prefix_button'])) {
       foreach($this->manifest['navbar_prefix_button'] as $button_image => $button_url_relative) {
         $sn_mvc['navbar_prefix_button'][$button_image] = $button_url_relative;
+      }
+    }
+
+    if(!empty($this->manifest['navbar_main_button']) && is_array($this->manifest['navbar_main_button'])) {
+      foreach($this->manifest['navbar_main_button'] as $button_image => $button_url_relative) {
+        $sn_mvc['navbar_main_button'][$button_image] = $button_url_relative;
       }
     }
   }

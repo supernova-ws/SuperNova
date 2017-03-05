@@ -1343,6 +1343,23 @@ switch($new_version) {
     upd_do_query("UPDATE `{{log_dark_matter}}` SET `log_dark_matter_reason` = " . 35 . " WHERE `log_dark_matter_reason` = " . 6);
     upd_do_query("UPDATE `{{log_metamatter}}` SET `reason` = " . 35 . " WHERE `reason` = " . 6);
 
+    // 2017-03-06 00:43:16 42a26.4
+    if (empty($update_tables['festival_gifts'])) {
+      upd_create_table('festival_gifts',
+        "
+        `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+        `highspot_id` int(10) unsigned DEFAULT NULL,
+        `from` bigint(20) unsigned DEFAULT NULL,
+        `to` bigint(20) unsigned DEFAULT NULL,
+        `amount` bigint(20) unsigned NOT NULL,
+        PRIMARY KEY (`id`),
+        KEY `I_highspot_id` (`highspot_id`,`from`,`to`) USING BTREE,
+        KEY `I_to_from` (`highspot_id`,`to`,`from`) USING BTREE
+        ",
+        'ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci'
+      );
+    }
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 42;
