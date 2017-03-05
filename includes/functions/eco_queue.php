@@ -675,7 +675,7 @@ function que_process(&$user, $planet = null, $on_time = SN_TIME_NOW) {
 
   // TODO: Re-enable quests for Alliances
   if(!empty($unit_changes) && !$user['user_as_ally']) {
-    $quest_list = qst_get_quests($user['id']);
+    $quest_list = qst_get_quests($user['id'], QUEST_STATUS_ALL);
     $quest_triggers = qst_active_triggers($quest_list);
     $quest_rewards = array();
     $quest_statuses = array();

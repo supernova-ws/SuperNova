@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a26.1
+* @version 42a26.2
 *
 */
 
@@ -43,7 +43,8 @@ $a_lang_array = (array(
     QUEST_STATUS_ALL => '-- All quests --',
     QUEST_STATUS_NOT_STARTED => 'Not&nbsp;started',
     QUEST_STATUS_STARTED => 'Started',
-    QUEST_STATUS_COMPLETE => 'Complete',
+    QUEST_STATUS_EXCEPT_COMPLETE => 'All&nbsp;-&nbsp;except&nbsp;completed',
+    QUEST_STATUS_COMPLETE => 'Completed',
   ),
 
   'qst_filter_by_status' => 'Show quest by status',

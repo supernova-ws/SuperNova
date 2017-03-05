@@ -25,6 +25,7 @@ class PageQuest extends PageAjax {
   protected function checkParams() {
     static $statuses = array(
       QUEST_STATUS_ALL => '',
+      QUEST_STATUS_EXCEPT_COMPLETE => '',
       QUEST_STATUS_NOT_STARTED => '',
       QUEST_STATUS_STARTED => '',
       QUEST_STATUS_COMPLETE => '',

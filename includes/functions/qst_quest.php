@@ -131,14 +131,7 @@ function qst_render_page()
     $user_id = $user['id'];
   }
 
-  $filterStatus = false;
-  if(classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER] == 0) {
-    $filterStatus = null;
-  } elseif(classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER] != -1) {
-    $filterStatus = classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER];
-  }
-
-  $quest_list = qst_get_quests($user_id, $filterStatus);
+  $quest_list = qst_get_quests($user_id, classSupernova::$user_options[PLAYER_OPTION_QUEST_LIST_FILTER]);
   $template->assign_vars(array(
     'AUTHLEVEL' => $user['authlevel'],
     'TOTAL'     => count($quest_list),
@@ -207,22 +200,26 @@ function qst_render_page()
   }
 }
 
-function qst_get_quests($user_id = false, $status = false)
+function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL)
 {
   $quest_list = array();
 
   if($user_id)
   {
-    if($status !== false)
+    if($status !== QUEST_STATUS_ALL)
     {
-      $query_add_where = "AND qs.quest_status_status ";
-      if($status == null)
+      $query_add_where = "";
+      if($status == null || $status == QUEST_STATUS_NOT_STARTED)
       {
-        $query_add_where .= "IS NULL";
+        $query_add_where .= "AND qs.quest_status_status IS NULL";
+      }
+      elseif ($status == QUEST_STATUS_EXCEPT_COMPLETE)
+      {
+        $query_add_where .= "AND (qs.quest_status_status IS NULL OR qs.quest_status_status = " . QUEST_STATUS_STARTED . ")";
       }
       else
       {
-        $query_add_where .= "= {$status}";
+        $query_add_where .= "AND qs.quest_status_status = {$status}";
       }
     }
     $query_add_select = ", qs.quest_status_progress, qs.quest_status_status";
