@@ -107,6 +107,13 @@ function upd_load_table_info($prefix_table_name, $prefixed = true) {
   }
 }
 
+/**
+ * @param string   $table
+ * @param string[] $alters
+ * @param bool     $condition
+ *
+ * @return bool|mysqli_result|void
+ */
 function upd_alter_table($table, $alters, $condition = true) {
   global $config, $update_tables;
 

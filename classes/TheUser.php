@@ -32,9 +32,7 @@ class TheUser {
   public function getSkinName() {
     global $user;
 
-    $skinName = !empty($user['dpath']) ? $user['dpath'] : DEFAULT_SKINPATH;
-    strpos($skinName, 'skins/') !== false ? $skinName = substr($skinName, 6) : false;
-    $skinName = str_replace('/', '', $skinName);
+    $skinName = !empty($user['skin']) ? $user['skin'] : DEFAULT_SKIN_NAME;
 
     return $skinName;
   }
@@ -47,12 +45,13 @@ class TheUser {
   }
 
   /**
-   * @param string $skinPath
+   * Set skin name
+   *
+   * @param string $skinName
    */
-  public function setSkinPath($skinPath) {
+  public function setSkinName($skinName) {
     global $user;
 
-    $user['dpath'] = $skinPath;
+    $user['skin'] = $skinName;
   }
-
 }

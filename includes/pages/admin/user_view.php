@@ -130,7 +130,8 @@ function sn_admin_user_view_view($template = null) {
     ),
     'Основные настройки интерфейса' => array(
       'lang',
-      'dpath',
+      'template',
+      'skin',
       'design',
     ),
     'Новости и сообщения'           => array(

@@ -138,6 +138,7 @@ define('TEMPLATE_NAME'    , classSupernova::$config->game_default_template ? cla
 define('TEMPLATE_PATH'    , 'design/templates/' . TEMPLATE_NAME);
 define('TEMPLATE_DIR'     , SN_ROOT_PHYSICAL . TEMPLATE_PATH);
 define('DEFAULT_SKINPATH' , classSupernova::$config->game_default_skin ? classSupernova::$config->game_default_skin : 'skins/EpicBlue/');
+define('DEFAULT_SKIN_NAME', substr(DEFAULT_SKINPATH, 6, -1));
 define('DEFAULT_LANG'     , classSupernova::$config->game_default_language ? classSupernova::$config->game_default_language : 'ru');
 define('FMT_DATE'         , classSupernova::$config->int_format_date ? classSupernova::$config->int_format_date : 'd.m.Y');
 define('FMT_TIME'         , classSupernova::$config->int_format_time ? classSupernova::$config->int_format_time : 'H:i:s');

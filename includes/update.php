@@ -1360,6 +1360,42 @@ switch($new_version) {
       );
     }
 
+    // 2017-03-11 20:09:51 42a26.15
+    if(empty($update_tables['users']['skin'])) {
+      upd_alter_table(
+        'users',
+        array(
+          "ADD COLUMN `template` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'OpenGame' AFTER `que_processed`",
+          "ADD COLUMN `skin` VARCHAR(64) CHARSET utf8 COLLATE utf8_unicode_ci NOT NULL DEFAULT 'EpicBlue' AFTER `template`",
+        ),
+        empty($update_tables['users']['skin'])
+      );
+
+      $query = upd_do_query("SELECT `id`, `dpath` FROM `{{users}}` FOR UPDATE");
+      while ($row = db_fetch($query)) {
+        $skinName = '';
+        if (!$row['dpath']) {
+          $skinName = 'EpicBlue';
+        } elseif (substr($row['dpath'], 0, 6) == 'skins/') {
+          $skinName = substr($row['dpath'], 6, -1);
+        } else {
+          $skinName = $row['dpath'];
+        }
+        if ($skinName) {
+          $skinName = db_escape($skinName);
+          upd_do_query("UPDATE `{{users}}` SET `skin` = '{$skinName}' WHERE `id` = {$row['id']};");
+        }
+      }
+    }
+
+    upd_alter_table(
+      'users',
+      array(
+        "DROP COLUMN `dpath`",
+      ),
+      !empty($update_tables['users']['dpath'])
+    );
+
     // #ctv
     upd_do_query('COMMIT;', true);
     // $new_version = 42;

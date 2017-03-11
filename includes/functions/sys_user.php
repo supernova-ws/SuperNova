@@ -164,7 +164,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
     'email_2' => $email_unsafe,
 
     'lang' => $options['language_iso'] ? $options['language_iso'] : DEFAULT_LANG,
-    'dpath' => DEFAULT_SKINPATH,
+    'skin' => DEFAULT_SKIN_NAME,
 
     'total_points' => $options['total_points'] = empty($options['total_points']) ? 0 : $options['total_points'],
 

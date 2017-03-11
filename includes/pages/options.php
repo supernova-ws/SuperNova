@@ -148,7 +148,7 @@ function sn_options_model() {
     }
 
     $user['email'] = sys_get_param_str('db_email');
-    classSupernova::$gc->theUser->setSkinPath('skins/' . sys_get_param_str('skin_name') . '/');
+    classSupernova::$gc->theUser->setSkinName(sys_get_param_str('skin_name'));
     $user['lang'] = sys_get_param_str('langer', $user['lang']);
 
     $user['design'] = sys_get_param_int('design');
@@ -226,7 +226,7 @@ function sn_options_model() {
 
     $user_options_safe = db_escape($user['options']);
     db_user_set_by_id($user['id'], "`email` = '{$user['email']}', `lang` = '{$user['lang']}', `avatar` = '{$user['avatar']}',
-      `dpath` = '" . classSupernova::$gc->theUser->getSkinPath() . "', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
+      `skin` = '" . classSupernova::$gc->theUser->getSkinName() . "', `design` = '{$user['design']}', `noipcheck` = '{$user['noipcheck']}',
       `deltime` = '{$user['deltime']}', `vacation` = '{$user['vacation']}', `options` = '{$user_options_safe}', `gender` = {$user['gender']}
       {$user_birthday}"
     );
