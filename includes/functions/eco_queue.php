@@ -315,7 +315,7 @@ function que_build($user, $planet, $build_mode = BUILD_CREATE, $redirect = true)
     sn_db_transaction_commit();
 
     if($redirect) {
-      sys_redirect_js("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
+      sys_redirect("{$_SERVER['PHP_SELF']}?mode=" . sys_get_param_str('mode') . "&ally_id=" . sys_get_param_id('ally_id'));
     }
 
     $operation_result = array(
@@ -467,7 +467,7 @@ function que_delete($que_type, $user = array(), $planet = array(), $clear = fals
     sn_db_transaction_rollback();
   }
 
-  sys_redirect_js("{$_SERVER['PHP_SELF']}?mode={$que_type}" . "&ally_id=" . sys_get_param_id('ally_id'));
+  sys_redirect("{$_SERVER['PHP_SELF']}?mode={$que_type}" . "&ally_id=" . sys_get_param_id('ally_id'));
 }
 
 
