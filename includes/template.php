@@ -254,6 +254,8 @@ function sn_display($page, $title = '') {
 
   $isRenderGlobal = true;
   if(is_object($page)) {
+    isset($page->_rootref['GLOBAL']) ? $isRenderGlobal = $page->_rootref['GLOBAL'] : false;
+
     isset($page->_rootref['GLOBAL_DISPLAY_MENU']) ? $isDisplayMenu = $page->_rootref['GLOBAL_DISPLAY_MENU'] : false;
     isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
 
@@ -261,9 +263,6 @@ function sn_display($page, $title = '') {
     isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
 
     isset($page->_rootref['PAGE_TITLE']) && empty($title) ? $title = $page->_rootref['PAGE_TITLE'] : false;
-
-    isset($page->_rootref['GLOBAL']) ? $isRenderGlobal = $page->_rootref['GLOBAL'] : false;
-
     !$title && !empty($page->_rootref['PAGE_HEADER']) ? $title = $page->_rootref['PAGE_HEADER'] : false;
     !isset($page->_rootref['PAGE_HEADER']) && $title ? $page->assign_var('PAGE_HEADER', $title) : false;
   }
@@ -284,55 +283,38 @@ function sn_display($page, $title = '') {
   !empty($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page, 'view', '');
 
   // Global header
-  $user_time_diff = playerTimeDiff::user_time_diff_get();
-  $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
-
-  $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
-  if(strpos($font_size, '%') !== false) {
-    // Размер шрифта в процентах
-    $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
-  } elseif(strpos($font_size, 'px') !== false) {
-    // Размер шрифта в пикселях
-    $font_size = min(max(floatval($font_size), FONT_SIZE_PIXELS_MIN), FONT_SIZE_PIXELS_MAX) . 'px';
-  } else {
-    // Не мышонка, не лягушка...
-    $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;
-  }
-
   $template_result['LOGIN_LOGOUT'] = $is_login;
 
-  $template = gettemplate('_page', true);
-  $template->assign_vars(array(
-    'GLOBAL_DISPLAY_WRAP' => $isRenderGlobal,
-  ));
-
-  $metatags = isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : $metatags;
-
   if($isRenderGlobal) {
+    $user_time_diff = playerTimeDiff::user_time_diff_get();
+    $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
+    $measureTimeDiff = intval(
+      empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
+      &&
+      (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
+    );
+
+    $template = gettemplate('_page_20_header', true);
+
     tpl_global_header($template_result, $is_login);
 
+    $metatags = isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : $metatags;
     $template->assign_vars(array(
       'GLOBAL_DISPLAY_MENU' => $isDisplayMenu,
       'GLOBAL_DISPLAY_NAVBAR' => $isDisplayTopNav,
 
       'USER_AUTHLEVEL' => intval($user['authlevel']),
 
-      'FONT_SIZE'                        => $font_size,
+      'FONT_SIZE'                        => playerFontSize(),
       'FONT_SIZE_PERCENT_DEFAULT_STRING' => FONT_SIZE_PERCENT_DEFAULT_STRING,
 
       'SN_TIME_NOW'          => SN_TIME_NOW,
       'LOGIN_LOGOUT'         => $is_login,
       'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
-      //'TIME_DIFF'                => SN_CLIENT_TIME_DIFF,
-      'TIME_DIFF_MEASURE'    => intval(
-        empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
-        &&
-        (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
-      ), // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
-      //'TIME_UTC_OFFSET'          => defined('SN_CLIENT_TIME_UTC_OFFSET') ? SN_CLIENT_TIME_UTC_OFFSET : '',
+      'TIME_DIFF_MEASURE'    => $measureTimeDiff, // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
 
       'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-      'GLOBAL_META_TAGS'                   => $metatags,
+      'GLOBAL_META_TAGS'         => $metatags,
       'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
       'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
       'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
@@ -358,46 +340,71 @@ function sn_display($page, $title = '') {
     if($isDisplayTopNav) {
       tpl_render_topnav($user, $planetrow, $template);
     }
-
+    displayP($template);
   }
 
-  $pageOutput = array();
+  // Page content
   !is_array($page) ? $page = array($page) : false;
   $result_added = false;
   foreach($page as $page_item) {
     if(!$result_added && is_object($page_item) && isset($page_item->_tpldata['result'])) {
-      $page_item = gettemplate('_result_message', $page_item);
-      $temp = $page_item->files['_result_message'];
-      unset($page_item->files['_result_message']);
-      $page_item->files = array_reverse($page_item->files);
-      $page_item->files['_result_message'] = $temp;
-      $page_item->files = array_reverse($page_item->files);
+      $resultTemplate = gettemplate('_result_message');
+      $resultTemplate->_tpldata = $page_item->_tpldata;
+      displayP($resultTemplate);
+//      $page_item = gettemplate('_result_message', $page_item);
+//      $temp = $page_item->files['_result_message'];
+//      unset($page_item->files['_result_message']);
+//      $page_item->files = array_reverse($page_item->files);
+//      $page_item->files['_result_message'] = $temp;
+//      $page_item->files = array_reverse($page_item->files);
       $result_added = true;
     }
-    $pageOutput[] = templateRenderToHtml($page_item);
-  }
 
+    displayP($page_item);
+  }
 
   // Global footer
   if($isRenderGlobal) {
-    $template->assign_vars(array(
-      'ADMIN_EMAIL' => $config->game_adminEmail,
-      'SN_TIME_NOW' => SN_TIME_NOW,
-      'SN_VERSION'  => SN_VERSION,
+    $templateFooter = gettemplate('_page_90_footer', true);
+
+    $templateFooter->assign_vars(array(
+      'SN_TIME_NOW'  => SN_TIME_NOW,
+      'SN_VERSION'   => SN_VERSION,
+      'ADMIN_EMAIL'  => $config->game_adminEmail,
+      'CURRENT_YEAR' => date('Y', SN_TIME_NOW),
     ));
+
+    displayP($templateFooter);
   }
-
-  $template->assign_vars(array(
-    'GLOBAL_PAGE_CONTENT' => implode('', $pageOutput),
-  ));
-
-  displayP($template);
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
 
   sn_db_disconnect();
 
   $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
+}
+
+/**
+ * @return mixed|string
+ */
+function playerFontSize() {
+  $font_size = !empty($_COOKIE[SN_COOKIE_F]) ? $_COOKIE[SN_COOKIE_F] : classSupernova::$user_options[PLAYER_OPTION_BASE_FONT_SIZE];
+  if (strpos($font_size, '%') !== false) {
+    // Размер шрифта в процентах
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PERCENT_MIN), FONT_SIZE_PERCENT_MAX) . '%';
+
+    return $font_size;
+  } elseif (strpos($font_size, 'px') !== false) {
+    // Размер шрифта в пикселях
+    $font_size = min(max(floatval($font_size), FONT_SIZE_PIXELS_MIN), FONT_SIZE_PIXELS_MAX) . 'px';
+
+    return $font_size;
+  } else {
+    // Не мышонка, не лягушка...
+    $font_size = FONT_SIZE_PERCENT_DEFAULT_STRING;
+
+    return $font_size;
+  }
 }
 
 /**
@@ -798,7 +805,6 @@ function templateObjectParse($template, $array = false) {
 
   $template->assign_vars(array(
     'SN_TIME_NOW'    => SN_TIME_NOW,
-    'CURRENT_YEAR'   => date('Y', SN_TIME_NOW),
     'USER_AUTHLEVEL' => isset($user['authlevel']) ? $user['authlevel'] : -1,
     'SN_GOOGLE'      => defined('SN_GOOGLE'),
   ));
