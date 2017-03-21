@@ -21,8 +21,4 @@ if(isset($sn_page_name) || ($sn_page_name = isset($_GET['page']) ? trim(strip_ta
 }
 
 // Добавить обработку редиректов со старых страниц
-
-ob_start();
-header('location: overview.php');
-ob_end_flush();
-die();
+sys_redirect('overview.php');

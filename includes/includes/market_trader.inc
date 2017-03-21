@@ -96,9 +96,7 @@ function eco_mrk_trader($user, $planetrow = null) {
 
       $intError = MARKET_DEAL_TRADE;
       $_SERVER['REQUEST_URI'] = ($has_message = strpos($_SERVER['REQUEST_URI'], '&message=')) ? substr($_SERVER['REQUEST_URI'], 0, $has_message) : $_SERVER['REQUEST_URI'];
-      header("Location: {$_SERVER['REQUEST_URI']}&message={$intError}");
-      ob_end_flush();
-      die();
+      sys_redirect("{$_SERVER['REQUEST_URI']}&message={$intError}");
     }
     sn_db_transaction_rollback();
     $template->assign_block_vars('result', array(

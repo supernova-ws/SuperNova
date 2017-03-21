@@ -17,7 +17,7 @@ if ($user_request['id_ally'])
   if (sys_get_param_str('bcancel'))
   {
     doquery("DELETE FROM {{alliance_requests}} WHERE `id_user` = {$user['id']};");
-    header('Location: alliance.php');
+    sys_redirect('alliance.php');
   }
 
   if($user_request['request_denied'])
@@ -38,7 +38,7 @@ $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
   doquery("INSERT INTO {{alliance_requests}} SET `id_user` = {$user['id']}, `id_ally`='{$id_ally}', request_text ='{$POST_text}', request_time=" . SN_TIME_NOW . ";");
-  header('Location: alliance.php');
+  sys_redirect('alliance.php');
 }
 
 $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);

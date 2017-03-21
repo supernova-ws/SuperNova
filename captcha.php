@@ -12,7 +12,7 @@ $s = imagecolorallocate($tuval,0,0,0);
 imagefill($tuval,0,0,$s);
 imageline($tuval,20,50,$en,$boy,$b);
 imagestring($tuval,3,27,7,$sayi,$b);
-Header("content-type:image/gif");
+header("content-type:image/gif");
 imagegif($tuval);
 imagedestroy($tuval);
 ?>

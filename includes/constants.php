@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a27.5');
+define('SN_VERSION', '42a27.6');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1626,3 +1626,6 @@ define('HTML_ENCODE_JS_SAFE', 8); // should be string encoded for use in JavaScr
 
 define('HTML_ENCODE_MULTILINE', HTML_ENCODE_PREFORM | HTML_ENCODE_NL2BR);
 define('HTML_ENCODE_MULTILINE_JS', HTML_ENCODE_MULTILINE | HTML_ENCODE_JS_SAFE);
+
+define('PAGE_OPTION_EARLY_HEADER', 'early_header');
+define('PAGE_OPTION_TITLE', 'page_title');

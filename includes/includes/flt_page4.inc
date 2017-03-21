@@ -7,8 +7,7 @@ if(SN_IN_FLEET !== true) {
 $fleetid = sys_get_param_id('fleetid');
 
 if(!is_numeric($fleetid) || empty($fleetid)) {
-  header("Location: fleet.php");
-  exit();
+  sys_redirect("fleet.php");
 }
 
 $fleet = db_fleet_get($fleetid);

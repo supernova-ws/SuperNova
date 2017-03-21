@@ -19,7 +19,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $config;
+global $config, $template_result;
 
 lng_include('universe');
 lng_include('stat');
@@ -400,9 +400,9 @@ $template->assign_vars(array(
 );
 
 if($scan) {
-  $template->assign_vars(array(
-    'MENU' => false,
-    'NAVBAR' => false,
+  $template_result = array_merge($template_result, array(
+    'GLOBAL_DISPLAY_MENU' => false,
+    'GLOBAL_DISPLAY_NAVBAR' => false,
     'UNIVERSE_SCAN_MODE' => true,
   ));
 }

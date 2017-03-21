@@ -211,8 +211,7 @@ switch ($mode) {
     }
 
     if(sys_get_param_int('return')) {
-      header('Location: messages.php');
-      die();
+      sys_redirect('messages.php');
     }
 
     $template = gettemplate('msg_message_list', true);

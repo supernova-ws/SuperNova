@@ -172,8 +172,7 @@ if($domain) {
       fclose($file_handler);
     }
 
-    header("Location: admin_locale.php?domain={$domain}");
-    die();
+    sys_redirect("admin_locale.php?domain={$domain}");
   }
 
   foreach($languages_info as $lang_id => $lang_data) {

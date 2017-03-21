@@ -45,9 +45,7 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
           OldDbChangeSet::db_changeset_apply($db_changeset);
           rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
           sn_db_transaction_commit();
-          header("Location: artifacts.php#{$unit_id}");
-          ob_end_flush();
-          die();
+          sys_redirect("artifacts.php#{$unit_id}");
         }
         else
         {
@@ -63,9 +61,7 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
 
     case ACTION_USE:
       art_use($user, $planetrow, $unit_id);
-      header("Location: artifacts.php#{$unit_id}");
-      ob_end_flush();
-      die();
+      sys_redirect("artifacts.php#{$unit_id}");
     break;
   }
   message($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);

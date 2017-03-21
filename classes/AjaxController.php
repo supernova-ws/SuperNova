@@ -25,10 +25,10 @@ class AjaxController {
       $template = gettemplate('_ajax', true);
     }
 
-    $template->assign_vars(array(
-      'MENU' => false,
-      'NAVBAR' => false,
-      'GLOBAL' => false,
+    $template_result = array_merge($template_result, array(
+      'GLOBAL_DISPLAY_HEADER' => false,
+      'GLOBAL_DISPLAY_MENU' => false,
+      'GLOBAL_DISPLAY_NAVBAR' => false,
 
       'IN_AJAX' => true,
     ));

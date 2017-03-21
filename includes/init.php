@@ -122,8 +122,9 @@ require_once(SN_ROOT_PHYSICAL . "includes/general" . DOT_PHP_EX);
 
 init_update(classSupernova::$config);
 
+global $sn_page_name;
 // Initializing constants
-$sn_page_name_original = isset($_GET['page'])
+$sn_page_name = $sn_page_name_original = isset($_GET['page'])
   ? trim(strip_tags($_GET['page']))
   : str_replace(DOT_PHP_EX, '', str_replace(SN_ROOT_RELATIVE, '', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])));
 define('INITIAL_PAGE', $sn_page_name_original);
@@ -172,6 +173,7 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "modules/", PHP_EX, true);
 // По нормальным делам её надо подключать в порядке загрузки обработчиков
 // Сейчас мы делаем это здесь только для того, что бы содержание дефолтной страницы оказалось вверху. Что не факт, что нужно всегда
 // Но нужно, пока у нас есть не MVC-страницы
+global $sn_mvc;
 $sn_page_data = $sn_mvc['pages'][$sn_page_name];
 $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
 if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {

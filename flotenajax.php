@@ -18,7 +18,7 @@ include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 define('IN_AJAX', true);
 
-header("Content-type: text/html; charset=utf-8");
+setHeader("Content-type: text/html; charset=utf-8");
 lng_include('universe');
 lng_include('fleet');
 require_once('includes/includes/flt_functions.php');

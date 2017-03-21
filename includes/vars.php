@@ -12,9 +12,12 @@ if (!defined('INSIDE'))
   die('Hack attempt!');
 }
 
+global $sn_menu_extra, $sn_menu_admin_extra;
+
 $sn_menu_extra = array();
 $sn_menu_admin_extra = array();
 
+global $sn_mvc;
 $sn_mvc = array(
   'model'      => array(
     'ajax'     => array('AjaxController::controller'),
@@ -96,6 +99,16 @@ $sn_mvc = array(
       'filename' => 'battle_report',
     ),
     'ajax' => array(
+    ),
+
+    'buildings' => array(
+      PAGE_OPTION_EARLY_HEADER => true,
+      // PAGE_OPTION_TITLE => 'buildings',
+    ),
+
+    'overview' => array(
+      PAGE_OPTION_EARLY_HEADER => true,
+      // PAGE_OPTION_TITLE => 'buildings',
     ),
   ),
 );

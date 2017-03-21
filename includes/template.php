@@ -244,109 +244,31 @@ function display($page, $title = '') {
 function sn_display($page, $title = '') {
   global $debug, $user, $planetrow, $config, $lang, $template_result, $sn_mvc, $sn_page_name;
 
-  $isDisplayTopNav = true;
-  $metatags = '';
-  $isDisplayMenu = true;
+  !empty($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page, 'view', '');
+
   $exitStatus = true;
+  $template_result['LOGIN_LOGOUT'] = $inLoginLogout = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
 
-  $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
-  $is_login = defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true;
-
-  $isRenderGlobal = true;
   if(is_object($page)) {
-    isset($page->_rootref['GLOBAL']) ? $isRenderGlobal = $page->_rootref['GLOBAL'] : false;
-
-    isset($page->_rootref['GLOBAL_DISPLAY_MENU']) ? $isDisplayMenu = $page->_rootref['GLOBAL_DISPLAY_MENU'] : false;
-    isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
-
-    isset($page->_rootref['GLOBAL_DISPLAY_NAVBAR']) ? $isDisplayTopNav = $page->_rootref['GLOBAL_DISPLAY_NAVBAR'] : false;
-    isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
-
     isset($page->_rootref['PAGE_TITLE']) && empty($title) ? $title = $page->_rootref['PAGE_TITLE'] : false;
     !$title && !empty($page->_rootref['PAGE_HEADER']) ? $title = $page->_rootref['PAGE_HEADER'] : false;
     !isset($page->_rootref['PAGE_HEADER']) && $title ? $page->assign_var('PAGE_HEADER', $title) : false;
   }
 
-  $isDisplayMenu = ($isDisplayMenu || $in_admin) && !isset($_COOKIE['menu_disable']);
-  $isDisplayTopNav = $isDisplayTopNav && !$in_admin;
-
-  if(empty($user['id']) || !is_numeric($user['id'])) {
-    $isDisplayMenu = false;
-    $isDisplayTopNav = false;
-  }
-
-  if(defined('LOGIN_LOGOUT') && LOGIN_LOGOUT === true) {
-    $isDisplayMenu = false;
-    $isDisplayTopNav = false;
-  }
-
-  !empty($sn_mvc['view']['']) and execute_hooks($sn_mvc['view'][''], $page, 'view', '');
+  $isRenderGlobal = is_object($page) && isset($template_result['GLOBAL_DISPLAY_HEADER']) ? $template_result['GLOBAL_DISPLAY_HEADER'] : true;
 
   // Global header
-  $template_result['LOGIN_LOGOUT'] = $is_login;
-
   if($isRenderGlobal) {
-    $user_time_diff = playerTimeDiff::user_time_diff_get();
-    $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
-    $measureTimeDiff = intval(
-      empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
-      &&
-      (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
-    );
-
-    $template = gettemplate('_page_20_header', true);
-
-    tpl_global_header($template_result, $is_login);
-
-    $metatags = isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : $metatags;
-    $template->assign_vars(array(
-      'GLOBAL_DISPLAY_MENU' => $isDisplayMenu,
-      'GLOBAL_DISPLAY_NAVBAR' => $isDisplayTopNav,
-
-      'USER_AUTHLEVEL' => intval($user['authlevel']),
-
-      'FONT_SIZE'                        => playerFontSize(),
-      'FONT_SIZE_PERCENT_DEFAULT_STRING' => FONT_SIZE_PERCENT_DEFAULT_STRING,
-
-      'SN_TIME_NOW'          => SN_TIME_NOW,
-      'LOGIN_LOGOUT'         => $is_login,
-      'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
-      'TIME_DIFF_MEASURE'    => $measureTimeDiff, // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
-
-      'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-      'GLOBAL_META_TAGS'         => $metatags,
-      'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
-      'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
-      'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
-
-      'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
-      'LANG_ENCODING'  => 'utf-8',
-      'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
-
-      'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
-      'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
-      'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
-
-      // 'IMPERSONATING'            => $template_result[F_IMPERSONATE_STATUS] != LOGIN_UNDEFINED ? sprintf($lang['sys_impersonated_as'], $user['username'], classSupernova::$auth->account->account_name) : '',
-      'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
-      'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
-    ));
-    $template->assign_recursive($template_result);
-
-    if($isDisplayMenu) {
-      tpl_render_menu($template);
-    }
-
-    if($isDisplayTopNav) {
-      tpl_render_topnav($user, $planetrow, $template);
-    }
-    displayP($template);
+    renderHeader($page, $title, $template_result, $inLoginLogout, $user, $config, $lang, $planetrow);
   }
 
   // Page content
   !is_array($page) ? $page = array($page) : false;
   $result_added = false;
   foreach($page as $page_item) {
+    /**
+     * @var template $page_item
+     */
     if(!$result_added && is_object($page_item) && isset($page_item->_tpldata['result'])) {
       $resultTemplate = gettemplate('_result_message');
       $resultTemplate->_tpldata = $page_item->_tpldata;
@@ -359,22 +281,13 @@ function sn_display($page, $title = '') {
 //      $page_item->files = array_reverse($page_item->files);
       $result_added = true;
     }
-
+    $page_item->assign_recursive($template_result);
     displayP($page_item);
   }
 
   // Global footer
   if($isRenderGlobal) {
-    $templateFooter = gettemplate('_page_90_footer', true);
-
-    $templateFooter->assign_vars(array(
-      'SN_TIME_NOW'  => SN_TIME_NOW,
-      'SN_VERSION'   => SN_VERSION,
-      'ADMIN_EMAIL'  => $config->game_adminEmail,
-      'CURRENT_YEAR' => date('Y', SN_TIME_NOW),
-    ));
-
-    displayP($templateFooter);
+    renderFooter();
   }
 
   $user['authlevel'] >= 3 && $config->debug ? $debug->echo_log() : false;;
@@ -382,6 +295,121 @@ function sn_display($page, $title = '') {
   sn_db_disconnect();
 
   $exitStatus and die($exitStatus === true ? 0 : $exitStatus);
+}
+
+/**
+ * @param $page
+ * @param $title
+ * @param $template_result
+ * @param $inLoginLogout
+ * @param $user
+ * @param $config
+ * @param $lang
+ * @param $planetrow
+ */
+function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, $config, $lang, $planetrow) {
+  if(classSupernova::$headerRendered) {
+    return;
+  }
+
+  ob_end_flush();
+
+  ob_start();
+  $isDisplayTopNav = true;
+  $isDisplayMenu = true;
+
+  isset($template_result['GLOBAL_DISPLAY_MENU']) ? $isDisplayMenu = $template_result['GLOBAL_DISPLAY_MENU'] : false;
+  isset($template_result['GLOBAL_DISPLAY_NAVBAR']) ? $isDisplayTopNav = $template_result['GLOBAL_DISPLAY_NAVBAR'] : false;
+
+  if (is_object($page)) {
+    isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
+    isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;
+  }
+
+  $inAdmin = defined('IN_ADMIN') && IN_ADMIN === true;
+  $isDisplayMenu = ($isDisplayMenu || $inAdmin) && !isset($_COOKIE['menu_disable']);
+  $isDisplayTopNav = $isDisplayTopNav && !$inAdmin;
+
+  if ($inLoginLogout || empty($user['id']) || !is_numeric($user['id'])) {
+    $isDisplayMenu = false;
+    $isDisplayTopNav = false;
+  }
+
+  $user_time_diff = playerTimeDiff::user_time_diff_get();
+  $user_time_measured_unix = intval(isset($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) ? strtotime($user_time_diff[PLAYER_OPTION_TIME_DIFF_MEASURE_TIME]) : 0);
+  $measureTimeDiff = intval(
+    empty($user_time_diff[PLAYER_OPTION_TIME_DIFF_FORCED])
+    &&
+    (SN_TIME_NOW - $user_time_measured_unix > PERIOD_HOUR || $user_time_diff[PLAYER_OPTION_TIME_DIFF] == '')
+  );
+
+  $template = gettemplate('_page_20_header', true);
+
+  tpl_global_header($template_result, $inLoginLogout);
+
+  $template->assign_vars(array(
+    'GLOBAL_DISPLAY_MENU'   => $isDisplayMenu,
+    'GLOBAL_DISPLAY_NAVBAR' => $isDisplayTopNav,
+
+    'USER_AUTHLEVEL' => intval($user['authlevel']),
+
+    'FONT_SIZE'                        => playerFontSize(),
+    'FONT_SIZE_PERCENT_DEFAULT_STRING' => FONT_SIZE_PERCENT_DEFAULT_STRING,
+
+    'SN_TIME_NOW'          => SN_TIME_NOW,
+    'LOGIN_LOGOUT'         => $template_result['LOGIN_LOGOUT'],
+    'GAME_MODE_CSS_PREFIX' => $config->game_mode == GAME_BLITZ ? 'blitz_' : '',
+    'TIME_DIFF_MEASURE'    => $measureTimeDiff, // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
+
+    'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
+    'GLOBAL_META_TAGS'         => isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : '',
+    'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
+    'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
+    'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
+
+    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+    'LANG_ENCODING'  => 'utf-8',
+    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
+
+    'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
+    'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
+    'PLAYER_OPTION_PROGRESS_BARS_DISABLED' => classSupernova::$user_options[PLAYER_OPTION_PROGRESS_BARS_DISABLED],
+
+    'IMPERSONATING'                        => !empty($template_result[F_IMPERSONATE_STATUS]) ? sprintf($lang['sys_impersonated_as'], $user['username'], $template_result[F_IMPERSONATE_OPERATOR]) : '',
+    'PLAYER_OPTION_DESIGN_DISABLE_BORDERS' => classSupernova::$user_options[PLAYER_OPTION_DESIGN_DISABLE_BORDERS],
+  ));
+  $template->assign_recursive($template_result);
+
+  if ($isDisplayMenu) {
+    tpl_render_menu($template);
+  }
+
+  if ($isDisplayTopNav) {
+    tpl_render_topnav($user, $planetrow, $template);
+  }
+
+  displayP($template);
+  ob_end_flush();
+
+  classSupernova::$headerRendered = true;
+
+  ob_start();
+}
+
+/**
+ * @internal param $config
+ */
+function renderFooter() {
+  $templateFooter = gettemplate('_page_90_footer', true);
+
+  $templateFooter->assign_vars(array(
+    'SN_TIME_NOW'  => SN_TIME_NOW,
+    'SN_VERSION'   => SN_VERSION,
+    'ADMIN_EMAIL'  => classSupernova::$config->game_adminEmail,
+    'CURRENT_YEAR' => date('Y', SN_TIME_NOW),
+  ));
+
+  displayP($templateFooter);
 }
 
 /**
@@ -412,7 +440,7 @@ function playerFontSize() {
  * @param $is_login
  */
 function tpl_global_header(&$template_result, $is_login) {
-  global $sn_mvc, $sn_page_name, $user;
+  global $sn_mvc, $sn_page_name;
 
   if(!empty($sn_mvc['javascript'])) {
     foreach($sn_mvc['javascript'] as $page_name => $script_list) {

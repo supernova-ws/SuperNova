@@ -728,6 +728,33 @@ function sys_redirect($url)
   die();
 }
 
+/**
+ * Redirects via JS-script
+ *
+ * @param string $url
+ */
+function sys_redirect_js($url)
+{
+  ob_end_flush();
+
+  $redirectTemplate = gettemplate('_redirect');
+  $redirectTemplate->assign_vars(array(
+    'URL' => js_safe_string($url),
+  ));
+
+  display($redirectTemplate);
+  die();
+}
+
+/**
+ * Wrapper for header() function
+ *
+ * @param string $header
+ */
+function setHeader($header) {
+  header($header);
+}
+
 // TODO Для полноценного функионирования апдейтера пакет функций, включая эту должен быть вынесен раньше - или грузить general.php до апдейтера
 function sys_get_unit_location($user, $planet, $unit_id){return sn_function_call('sys_get_unit_location', array($user, $planet, $unit_id));}
 function sn_sys_get_unit_location($user, $planet, $unit_id)

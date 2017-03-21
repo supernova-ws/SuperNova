@@ -415,4 +415,6 @@ body.blitz_ {
 
 .xdebug-var-dump {
   text-align: left;
+  font-size: 1.5rem;
+  background-color: #222;
 }

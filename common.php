@@ -9,7 +9,7 @@
 
 require_once('includes/init.php');
 
-global $debug, $template_result, $user;
+global $debug, $template_result, $user, $lang, $planetrow;
 
 // Напоминание для Администрации, что игра отключена
 if($template_result[F_GAME_DISABLE]) {
@@ -61,3 +61,9 @@ if(defined('IN_ADMIN') && IN_ADMIN === true) {
 require_once('includes/vars_menu.php');
 
 sys_user_options_unpack($user);
+
+global $sn_page_name, $sn_mvc;
+if(!empty($sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_EARLY_HEADER])) {
+  $title = !empty($sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_TITLE]) ? $sn_mvc['pages'][INITIAL_PAGE][PAGE_OPTION_TITLE] : '';
+  renderHeader($page, $title, $template_result, false, $user, classSupernova::$config, $lang, $planetrow);
+}
