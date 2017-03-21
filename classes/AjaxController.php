@@ -33,7 +33,7 @@ class AjaxController {
       'IN_AJAX' => true,
     ));
 
-    $template_result += $merge;
+    $template->assign_vars($merge);
 
     !is_array($template_result['AJAX']) ? $template_result['AJAX'] = array() : false;
 

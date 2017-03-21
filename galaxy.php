@@ -405,6 +405,10 @@ if($scan) {
     'GLOBAL_DISPLAY_NAVBAR' => false,
     'UNIVERSE_SCAN_MODE' => true,
   ));
+
+  $template->assign_vars(array(
+    'UNIVERSE_SCAN_MODE' => true,
+  ));
 }
 
 display($template, $lang['sys_universe']);
