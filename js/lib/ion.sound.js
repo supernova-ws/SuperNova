@@ -1,26 +1,1087 @@
-﻿// Ion.Sound | version 3.0.7 | https://github.com/IonDen/ion.sound
-(function(l,e,n,r){l.ion=l.ion||{};if(!ion.sound){var m=function(a){a||(a="undefined");if(l.console){console.warn&&"function"===typeof console.warn?console.warn(a):console.log&&"function"===typeof console.log&&console.log(a);var g=n&&n("#debug");if(g&&g.length){var b=g.html();g.html(b+a+"<br/>")}}},f=function(a,b){var c;b=b||{};for(c in a)a.hasOwnProperty(c)&&(b[c]=a[c]);return b};if("function"!==typeof Audio&&"object"!==typeof Audio)e=function(){m("HTML5 Audio is not supported in this browser")},
-ion.sound=e,ion.sound.play=e,ion.sound.stop=e,ion.sound.pause=e,ion.sound.preload=e,ion.sound.destroy=e,e();else{e=/iPad|iPhone|iPod/.test(e.appVersion);var q=0,c={},d={},b;!c.supported&&e?c.supported=["mp3","mp4","aac"]:c.supported||(c.supported=["mp3","ogg","mp4","aac","wav"]);ion.sound=function(a){f(a,c);c.path=c.path||"";c.volume=c.volume||1;c.preload=c.preload||!1;c.multiplay=c.multiplay||!1;c.loop=c.loop||!1;c.sprite=c.sprite||null;c.scope=c.scope||null;c.ready_callback=c.ready_callback||null;
-c.ended_callback=c.ended_callback||null;if(q=c.sounds.length)for(b=0;b<q;b++){a=c.sounds[b];var g=a.alias||a.name;d[g]||(d[g]=new p(a),d[g].init())}else m("No sound-files provided!")};ion.sound.VERSION="3.0.7";ion.sound._method=function(a,c,e){if(c)d[c]&&d[c][a](e);else for(b in d)if(d.hasOwnProperty(b)&&d[b])d[b][a](e)};ion.sound.preload=function(a,b){b=b||{};f({preload:!0},b);ion.sound._method("init",a,b)};ion.sound.destroy=function(a){ion.sound._method("destroy",a);if(a)d[a]=null;else for(b in d)d.hasOwnProperty(b)&&
-d[b]&&(d[b]=null)};ion.sound.play=function(a,b){ion.sound._method("play",a,b)};ion.sound.stop=function(a,b){ion.sound._method("stop",a,b)};ion.sound.pause=function(a,b){ion.sound._method("pause",a,b)};ion.sound.volume=function(a,b){ion.sound._method("volume",a,b)};n&&(n.ionSound=ion.sound);e=l.AudioContext||l.webkitAudioContext;var h;e&&(h=new e);var p=function(a){this.options=f(c);delete this.options.sounds;f(a,this.options);this.request=null;this.streams={};this.result={};this.ext=0;this.url="";
-this.autoplay=this.no_file=this.decoded=this.loaded=!1};p.prototype={init:function(a){a&&f(a,this.options);this.options.preload&&this.load()},destroy:function(){var a;for(b in this.streams)(a=this.streams[b])&&a.destroy();this.streams={};this.result=null;this.options=this.options.buffer=null;this.request&&(this.request.removeEventListener("load",this.ready.bind(this),!1),this.request.removeEventListener("error",this.error.bind(this),!1),this.request.abort(),this.request=null)},createUrl:function(){var a=
-(new Date).valueOf();this.url=this.options.path+encodeURIComponent(this.options.name)+"."+this.options.supported[this.ext]+"?"+a},load:function(){this.no_file?m('No sources for "'+this.options.name+'" sound :('):this.request||(this.createUrl(),this.request=new XMLHttpRequest,this.request.open("GET",this.url,!0),this.request.responseType="arraybuffer",this.request.addEventListener("load",this.ready.bind(this),!1),this.request.addEventListener("error",this.error.bind(this),!1),this.request.send())},
-reload:function(){this.ext++;this.options.supported[this.ext]?this.load():(this.no_file=!0,m('No sources for "'+this.options.name+'" sound :('))},ready:function(a){this.result=a.target;4!==this.result.readyState?this.reload():200!==this.result.status&&0!==this.result.status?(m(this.url+" was not found on server!"),this.reload()):(this.request.removeEventListener("load",this.ready.bind(this),!1),this.request.removeEventListener("error",this.error.bind(this),!1),this.request=null,this.loaded=!0,this.decode())},
-decode:function(){h&&h.decodeAudioData(this.result.response,this.setBuffer.bind(this),this.error.bind(this))},setBuffer:function(a){this.options.buffer=a;this.decoded=!0;a={name:this.options.name,alias:this.options.alias,ext:this.options.supported[this.ext],duration:this.options.buffer.duration};this.options.ready_callback&&"function"===typeof this.options.ready_callback&&this.options.ready_callback.call(this.options.scope,a);if(this.options.sprite)for(b in this.options.sprite)this.options.start=
-this.options.sprite[b][0],this.options.end=this.options.sprite[b][1],this.streams[b]=new k(this.options,b);else this.streams[0]=new k(this.options);this.autoplay&&(this.autoplay=!1,this.play())},error:function(){this.reload()},play:function(a){delete this.options.part;a&&f(a,this.options);if(!this.loaded)this.autoplay=!0,this.load();else if(!this.no_file&&this.decoded)if(this.options.sprite)if(this.options.part)this.streams[this.options.part].play(this.options);else for(b in this.options.sprite)this.streams[b].play(this.options);
-else this.streams[0].play(this.options)},stop:function(a){if(this.options.sprite)if(a)this.streams[a.part].stop();else for(b in this.options.sprite)this.streams[b].stop();else this.streams[0].stop()},pause:function(a){if(this.options.sprite)if(a)this.streams[a.part].pause();else for(b in this.options.sprite)this.streams[b].pause();else this.streams[0].pause()},volume:function(a){if(a)if(f(a,this.options),this.options.sprite)if(this.options.part)(a=this.streams[this.options.part])&&a.setVolume(this.options);
-else for(b in this.options.sprite)(a=this.streams[b])&&a.setVolume(this.options);else(a=this.streams[0])&&a.setVolume(this.options)}};var k=function(a,b){this.alias=a.alias;this.name=a.name;this.sprite_part=b;this.buffer=a.buffer;this.start=a.start||0;this.end=a.end||this.buffer.duration;this.multiplay=a.multiplay||!1;this.volume=a.volume||1;this.scope=a.scope;this.ended_callback=a.ended_callback;this.setLoop(a);this.gain=this.source=null;this.paused=this.playing=!1;this.time_offset=this.time_played=
-this.time_ended=this.time_started=0};k.prototype={destroy:function(){this.stop();this.source=this.buffer=null;this.gain&&this.gain.disconnect();this.source&&this.source.disconnect();this.source=this.gain=null},setLoop:function(a){this.loop=!0===a.loop?9999999:"number"===typeof a.loop?+a.loop-1:!1},update:function(a){this.setLoop(a);"volume"in a&&(this.volume=a.volume)},play:function(a){a&&this.update(a);if(this.multiplay||!this.playing)this.gain=h.createGain(),this.source=h.createBufferSource(),this.source.buffer=
-this.buffer,this.source.connect(this.gain),this.gain.connect(h.destination),this.gain.gain.value=this.volume,this.source.onended=this.ended.bind(this),this._play()},_play:function(){var a,b;this.paused?(a=this.start+this.time_offset,b=this.end-this.time_offset):(a=this.start,b=this.end);0>=b?this.clear():("function"===typeof this.source.start?this.source.start(0,a,b):this.source.noteOn(0,a,b),this.playing=!0,this.paused=!1,this.time_started=(new Date).valueOf())},stop:function(){this.playing&&this.source&&
-("function"===typeof this.source.stop?this.source.stop(0):this.source.noteOff(0));this.clear()},pause:function(){this.paused?this.play():this.playing&&(this.source&&this.source.stop(0),this.paused=!0)},ended:function(){this.playing=!1;this.time_ended=(new Date).valueOf();this.time_played=(this.time_ended-this.time_started)/1E3;this.time_offset+=this.time_played;if(this.time_offset>=this.end||.015>this.end-this.time_offset)this._ended(),this.clear(),this.loop&&(this.loop--,this.play())},_ended:function(){var a=
-{name:this.name,alias:this.alias,part:this.sprite_part,start:this.start,duration:this.end};this.ended_callback&&"function"===typeof this.ended_callback&&this.ended_callback.call(this.scope,a)},clear:function(){this.time_offset=this.time_played=0;this.playing=this.paused=!1},setVolume:function(a){this.volume=a.volume;this.gain&&(this.gain.gain.value=this.volume)}};h||(function(){var a=new Audio,b=a.canPlayType("audio/mpeg"),e=a.canPlayType("audio/ogg"),a=a.canPlayType('audio/mp4; codecs="mp4a.40.2"'),
-d,f;for(f=0;f<c.supported.length;f++)d=c.supported[f],b||"mp3"!==d||c.supported.splice(f,1),e||"ogg"!==d||c.supported.splice(f,1),a||"aac"!==d||c.supported.splice(f,1),a||"mp4"!==d||c.supported.splice(f,1)}(),p.prototype={init:function(a){a&&f(a,this.options);this.inited=!0;this.options.preload&&this.load()},destroy:function(){var a;for(b in this.streams)(a=this.streams[b])&&a.destroy();this.streams={};this.inited=this.loaded=!1},load:function(){var a;this.options.preload=!0;this.options._ready=this.ready;
-this.options._scope=this;if(this.options.sprite)for(b in this.options.sprite)a=this.options.sprite[b],this.options.start=a[0],this.options.end=a[1],this.streams[b]=new k(this.options,b);else this.streams[0]=new k(this.options)},ready:function(a){this.loaded||(this.loaded=!0,a={name:this.options.name,alias:this.options.alias,ext:this.options.supported[this.ext],duration:a},this.options.ready_callback&&"function"===typeof this.options.ready_callback&&this.options.ready_callback.call(this.options.scope,
-a),this.autoplay&&(this.autoplay=!1,this.play()))},play:function(a){if(this.inited)if(delete this.options.part,a&&f(a,this.options),console.log(1),this.loaded)if(this.options.sprite)if(this.options.part)this.streams[this.options.part].play(this.options);else for(b in this.options.sprite)this.streams[b].play(this.options);else this.streams[0].play(this.options);else this.options.preload?this.autoplay=!0:(this.autoplay=!0,this.load())},stop:function(a){if(this.inited)if(this.options.sprite)if(a)this.streams[a.part].stop();
-else for(b in this.options.sprite)this.streams[b].stop();else this.streams[0].stop()},pause:function(a){if(this.inited)if(this.options.sprite)if(a)this.streams[a.part].pause();else for(b in this.options.sprite)this.streams[b].pause();else this.streams[0].pause()},volume:function(a){if(a)if(f(a,this.options),this.options.sprite)if(this.options.part)(a=this.streams[this.options.part])&&a.setVolume(this.options);else for(b in this.options.sprite)(a=this.streams[b])&&a.setVolume(this.options);else(a=
-this.streams[0])&&a.setVolume(this.options)}},k=function(a,b){this.name=a.name;this.alias=a.alias;this.sprite_part=b;this.multiplay=a.multiplay;this.volume=a.volume;this.preload=a.preload;this.path=c.path;this.start=a.start||0;this.end=a.end||0;this.scope=a.scope;this.ended_callback=a.ended_callback;this._scope=a._scope;this._ready=a._ready;this.setLoop(a);this.url=this.sound=null;this.loaded=!1;this.played_time=this.paused_time=this.start_time=0;this.init()},k.prototype={init:function(){this.sound=
-new Audio;this.sound.volume=this.volume;this.createUrl();this.sound.addEventListener("ended",this.ended.bind(this),!1);this.sound.addEventListener("canplaythrough",this.can_play_through.bind(this),!1);this.sound.addEventListener("timeupdate",this._update.bind(this),!1);this.load()},destroy:function(){this.stop();this.sound.removeEventListener("ended",this.ended.bind(this),!1);this.sound.removeEventListener("canplaythrough",this.can_play_through.bind(this),!1);this.sound.removeEventListener("timeupdate",
-this._update.bind(this),!1);this.sound=null;this.loaded=!1},createUrl:function(){var a=(new Date).valueOf();this.url=this.path+encodeURIComponent(this.name)+"."+c.supported[0]+"?"+a},can_play_through:function(){this.preload&&this.ready()},load:function(){this.sound.src=this.url;this.sound.preload=this.preload?"auto":"none";this.preload&&this.sound.load()},setLoop:function(a){this.loop=!0===a.loop?9999999:"number"===typeof a.loop?+a.loop-1:!1},update:function(a){this.setLoop(a);"volume"in a&&(this.volume=
-a.volume)},ready:function(){!this.loaded&&this.sound&&(this.loaded=!0,this._ready.call(this._scope,this.sound.duration),this.end||(this.end=this.sound.duration))},play:function(a){a&&this.update(a);!this.multiplay&&this.playing||this._play()},_play:function(){if(this.paused)this.paused=!1;else try{this.sound.currentTime=this.start}catch(a){}this.playing=!0;this.start_time=(new Date).valueOf();this.sound.volume=this.volume;this.sound.play()},stop:function(){if(this.playing){this.paused=this.playing=
-!1;this.sound.pause();this.clear();try{this.sound.currentTime=this.start}catch(a){}}},pause:function(){this.paused?this._play():(this.playing=!1,this.paused=!0,this.sound.pause(),this.paused_time=(new Date).valueOf(),this.played_time+=this.paused_time-this.start_time)},_update:function(){this.start_time&&(this.played_time+((new Date).valueOf()-this.start_time))/1E3>=this.end&&this.playing&&(this.stop(),this._ended())},ended:function(){this.playing&&(this.stop(),this._ended())},_ended:function(){this.playing=
-!1;var a={name:this.name,alias:this.alias,part:this.sprite_part,start:this.start,duration:this.end};this.ended_callback&&"function"===typeof this.ended_callback&&this.ended_callback.call(this.scope,a);this.loop&&setTimeout(this.looper.bind(this),15)},looper:function(){this.loop--;this.play()},clear:function(){this.paused_time=this.played_time=this.start_time=0},setVolume:function(a){this.volume=a.volume;this.sound&&(this.sound.volume=this.volume)}})}}})(window,navigator,window.jQuery||window.$);
+﻿/**
+ * Ion.Sound
+ * version 3.0.7 Build 89
+ * © Denis Ineshin, 2016
+ *
+ * Project page:    http://ionden.com/a/plugins/ion.sound/en.html
+ * GitHub page:     https://github.com/IonDen/ion.sound
+ *
+ * Released under MIT licence:
+ * http://ionden.com/a/plugins/licence-en.html
+ */
+
+;(function (window, navigator, $, undefined) {
+    "use strict";
+
+    window.ion = window.ion || {};
+
+    if (ion.sound) {
+        return;
+    }
+
+    var warn = function (text) {
+        if (!text) text = "undefined";
+
+        if (window.console) {
+            if (console.warn && typeof console.warn === "function") {
+                console.warn(text);
+            } else if (console.log && typeof console.log === "function") {
+                console.log(text);
+            }
+
+            var d = $ && $("#debug");
+            if (d && d.length) {
+                var a = d.html();
+                d.html(a + text + '<br/>');
+            }
+        }
+    };
+
+    var extend = function (parent, child) {
+        var prop;
+        child = child || {};
+
+        for (prop in parent) {
+            if (parent.hasOwnProperty(prop)) {
+                child[prop] = parent[prop];
+            }
+        }
+
+        return child;
+    };
+
+
+
+    /**
+     * DISABLE for unsupported browsers
+     */
+
+    if (typeof Audio !== "function" && typeof Audio !== "object") {
+        var func = function () {
+            warn("HTML5 Audio is not supported in this browser");
+        };
+        ion.sound = func;
+        ion.sound.play = func;
+        ion.sound.stop = func;
+        ion.sound.pause = func;
+        ion.sound.preload = func;
+        ion.sound.destroy = func;
+        func();
+        return;
+    }
+
+
+
+    /**
+     * CORE
+     * - creating sounds collection
+     * - public methods
+     */
+
+    var is_iOS = /iPad|iPhone|iPod/.test(navigator.appVersion),
+        sounds_num = 0,
+        settings = {},
+        sounds = {},
+        i;
+
+
+
+    if (!settings.supported && is_iOS) {
+        settings.supported = ["mp3", "mp4", "aac"];
+    } else if (!settings.supported) {
+        settings.supported = ["mp3", "ogg", "mp4", "aac", "wav"];
+    }
+
+    var createSound = function (obj) {
+        var name = obj.alias || obj.name;
+
+        if (!sounds[name]) {
+            sounds[name] = new Sound(obj);
+            sounds[name].init();
+        }
+    };
+
+    ion.sound = function (options) {
+        extend(options, settings);
+
+        settings.path = settings.path || "";
+        settings.volume = settings.volume || 1;
+        settings.preload = settings.preload || false;
+        settings.allow_caching = settings.allow_caching || false;
+        settings.multiplay = settings.multiplay || false;
+        settings.loop = settings.loop || false;
+        settings.sprite = settings.sprite || null;
+        settings.scope = settings.scope || null;
+        settings.ready_callback = settings.ready_callback || null;
+        settings.ended_callback = settings.ended_callback || null;
+
+        sounds_num = settings.sounds.length;
+
+        if (!sounds_num) {
+            warn("No sound-files provided!");
+            return;
+        }
+
+        for (i = 0; i < sounds_num; i++) {
+            createSound(settings.sounds[i]);
+        }
+    };
+
+    ion.sound.VERSION = "3.0.7";
+
+    ion.sound._method = function (method, name, options) {
+        if (name) {
+            sounds[name] && sounds[name][method](options);
+        } else {
+            for (i in sounds) {
+                if (!sounds.hasOwnProperty(i) || !sounds[i]) {
+                    continue;
+                }
+
+                sounds[i][method](options);
+            }
+        }
+    };
+
+    ion.sound.preload = function (name, options) {
+        options = options || {};
+        extend({preload: true}, options);
+
+        ion.sound._method("init", name, options);
+    };
+
+    ion.sound.destroy = function (name) {
+        ion.sound._method("destroy", name);
+
+        if (name) {
+            sounds[name] = null;
+        } else {
+            for (i in sounds) {
+                if (!sounds.hasOwnProperty(i)) {
+                    continue;
+                }
+                if (sounds[i]) {
+                    sounds[i] = null;
+                }
+            }
+        }
+    };
+
+    ion.sound.play = function (name, options) {
+        ion.sound._method("play", name, options);
+    };
+
+    ion.sound.stop = function (name, options) {
+        ion.sound._method("stop", name, options);
+    };
+
+    ion.sound.pause = function (name, options) {
+        ion.sound._method("pause", name, options);
+    };
+
+    ion.sound.volume = function (name, options) {
+        ion.sound._method("volume", name, options);
+    };
+
+    if ($) {
+        $.ionSound = ion.sound;
+    }
+
+
+
+    /**
+     * Web Audio API core
+     * - for most advanced browsers
+     */
+
+    var AudioContext = window.AudioContext || window.webkitAudioContext,
+        audio;
+
+    if (AudioContext) {
+        audio = new AudioContext();
+    }
+
+
+    var Sound = function (options) {
+        this.options = extend(settings);
+        delete this.options.sounds;
+        extend(options, this.options);
+
+        this.request = null;
+        this.streams = {};
+        this.result = {};
+        this.ext = 0;
+        this.url = "";
+
+        this.loaded = false;
+        this.decoded = false;
+        this.no_file = false;
+        this.autoplay = false;
+    };
+
+    Sound.prototype = {
+        init: function (options) {
+            if (options) {
+                extend(options, this.options);
+            }
+
+            if (this.options.preload) {
+                this.load();
+            }
+        },
+
+        destroy: function () {
+            var stream;
+
+            for (i in this.streams) {
+                stream = this.streams[i];
+
+                if (stream) {
+                    stream.destroy();
+                    stream = null;
+                }
+            }
+            this.streams = {};
+            this.result = null;
+            this.options.buffer = null;
+            this.options = null;
+
+            if (this.request) {
+                this.request.removeEventListener("load", this.ready.bind(this), false);
+                this.request.removeEventListener("error", this.error.bind(this), false);
+                this.request.abort();
+                this.request = null;
+            }
+        },
+
+        createUrl: function () {
+            this.url = this.options.path + encodeURIComponent(this.options.name) + "." + this.options.supported[this.ext];
+            if(!this.options.allow_caching) {
+              var no_cache = new Date().valueOf();
+              this.url += "?" + no_cache;
+            }
+        },
+
+        load: function () {
+            if (this.no_file) {
+                warn("No sources for \"" + this.options.name + "\" sound :(");
+                return;
+            }
+
+            if (this.request) {
+                return;
+            }
+
+            this.createUrl();
+
+            this.request = new XMLHttpRequest();
+            this.request.open("GET", this.url, true);
+            this.request.responseType = "arraybuffer";
+            this.request.addEventListener("load", this.ready.bind(this), false);
+            this.request.addEventListener("error", this.error.bind(this), false);
+
+            this.request.send();
+        },
+
+        reload: function () {
+            this.ext++;
+
+            if (this.options.supported[this.ext]) {
+                this.load();
+            } else {
+                this.no_file = true;
+                warn("No sources for \"" + this.options.name + "\" sound :(");
+            }
+        },
+
+        ready: function (data) {
+            this.result = data.target;
+
+            if (this.result.readyState !== 4) {
+                this.reload();
+                return;
+            }
+
+            if (this.result.status !== 200 && this.result.status !== 0) {
+                warn(this.url + " was not found on server!");
+                this.reload();
+                return;
+            }
+
+            this.request.removeEventListener("load", this.ready.bind(this), false);
+            this.request.removeEventListener("error", this.error.bind(this), false);
+            this.request = null;
+            this.loaded = true;
+            //warn("Loaded: " + this.options.name + "." + settings.supported[this.ext]);
+
+            this.decode();
+        },
+
+        decode: function () {
+            if (!audio) {
+                return;
+            }
+
+            audio.decodeAudioData(this.result.response, this.setBuffer.bind(this), this.error.bind(this));
+        },
+
+        setBuffer: function (buffer) {
+            this.options.buffer = buffer;
+            this.decoded = true;
+            //warn("Decoded: " + this.options.name + "." + settings.supported[this.ext]);
+
+            var config = {
+                name: this.options.name,
+                alias: this.options.alias,
+                ext: this.options.supported[this.ext],
+                duration: this.options.buffer.duration
+            };
+
+            if (this.options.ready_callback && typeof this.options.ready_callback === "function") {
+                this.options.ready_callback.call(this.options.scope, config);
+            }
+
+            if (this.options.sprite) {
+
+                for (i in this.options.sprite) {
+                    this.options.start = this.options.sprite[i][0];
+                    this.options.end = this.options.sprite[i][1];
+                    this.streams[i] = new Stream(this.options, i);
+                }
+
+            } else {
+
+                this.streams[0] = new Stream(this.options);
+
+            }
+
+            if (this.autoplay) {
+                this.autoplay = false;
+                this.play();
+            }
+        },
+
+        error: function () {
+            this.reload();
+        },
+
+        play: function (options) {
+            delete this.options.part;
+
+            if (options) {
+                extend(options, this.options);
+            }
+
+            if (!this.loaded) {
+                this.autoplay = true;
+                this.load();
+
+                return;
+            }
+
+            if (this.no_file || !this.decoded) {
+                return;
+            }
+
+            if (this.options.sprite) {
+                if (this.options.part) {
+                    this.streams[this.options.part].play(this.options);
+                } else {
+                    for (i in this.options.sprite) {
+                        this.streams[i].play(this.options);
+                    }
+                }
+            } else {
+                this.streams[0].play(this.options);
+            }
+        },
+
+        stop: function (options) {
+            if (this.options.sprite) {
+
+                if (options) {
+                    this.streams[options.part].stop();
+                } else {
+                    for (i in this.options.sprite) {
+                        this.streams[i].stop();
+                    }
+                }
+
+            } else {
+                this.streams[0].stop();
+            }
+        },
+
+        pause: function (options) {
+            if (this.options.sprite) {
+
+                if (options) {
+                    this.streams[options.part].pause();
+                } else {
+                    for (i in this.options.sprite) {
+                        this.streams[i].pause();
+                    }
+                }
+
+            } else {
+                this.streams[0].pause();
+            }
+        },
+
+        volume: function (options) {
+            var stream;
+
+            if (options) {
+                extend(options, this.options);
+            } else {
+                return;
+            }
+
+            if (this.options.sprite) {
+                if (this.options.part) {
+                    stream = this.streams[this.options.part];
+                    stream && stream.setVolume(this.options);
+                } else {
+                    for (i in this.options.sprite) {
+                        stream = this.streams[i];
+                        stream && stream.setVolume(this.options);
+                    }
+                }
+            } else {
+                stream = this.streams[0];
+                stream && stream.setVolume(this.options);
+            }
+        }
+    };
+
+
+
+    var Stream = function (options, sprite_part) {
+        this.alias = options.alias;
+        this.name = options.name;
+        this.sprite_part = sprite_part;
+
+        this.buffer = options.buffer;
+        this.start = options.start || 0;
+        this.end = options.end || this.buffer.duration;
+        this.multiplay = options.multiplay || false;
+        this.volume = options.volume || 1;
+        this.scope = options.scope;
+        this.ended_callback = options.ended_callback;
+
+        this.setLoop(options);
+
+        this.source = null;
+        this.gain = null;
+        this.playing = false;
+        this.paused = false;
+
+        this.time_started = 0;
+        this.time_ended = 0;
+        this.time_played = 0;
+        this.time_offset = 0;
+    };
+
+    Stream.prototype = {
+        destroy: function () {
+            this.stop();
+
+            this.buffer = null;
+            this.source = null;
+
+            this.gain && this.gain.disconnect();
+            this.source && this.source.disconnect();
+            this.gain = null;
+            this.source = null;
+        },
+
+        setLoop: function (options) {
+            if (options.loop === true) {
+                this.loop = 9999999;
+            } else if (typeof options.loop === "number") {
+                this.loop = +options.loop - 1;
+            } else {
+                this.loop = false;
+            }
+        },
+
+        update: function (options) {
+            this.setLoop(options);
+            if ("volume" in options) {
+                this.volume = options.volume;
+            }
+        },
+
+        play: function (options) {
+            if (options) {
+                this.update(options);
+            }
+
+            if (!this.multiplay && this.playing) {
+                return;
+            }
+
+            this.gain = audio.createGain();
+            this.source = audio.createBufferSource();
+            this.source.buffer = this.buffer;
+            this.source.connect(this.gain);
+            this.gain.connect(audio.destination);
+            this.gain.gain.value = this.volume;
+
+            this.source.onended = this.ended.bind(this);
+
+            this._play();
+        },
+
+        _play: function () {
+            var start,
+                end;
+
+            if (this.paused) {
+                start = this.start + this.time_offset;
+                end = this.end - this.time_offset;
+            } else {
+                start = this.start;
+                end = this.end;
+            }
+
+            if (end <= 0) {
+                this.clear();
+                return;
+            }
+
+            if (typeof this.source.start === "function") {
+                this.source.start(0, start, end);
+            } else {
+                this.source.noteOn(0, start, end);
+            }
+
+            this.playing = true;
+            this.paused = false;
+            this.time_started = new Date().valueOf();
+        },
+
+        stop: function () {
+            if (this.playing && this.source) {
+                if (typeof this.source.stop === "function") {
+                    this.source.stop(0);
+                } else {
+                    this.source.noteOff(0);
+                }
+            }
+
+            this.clear();
+        },
+
+        pause: function () {
+            if (this.paused) {
+                this.play();
+                return;
+            }
+
+            if (!this.playing) {
+                return;
+            }
+
+            this.source && this.source.stop(0);
+            this.paused = true;
+        },
+
+        ended: function () {
+            this.playing = false;
+            this.time_ended = new Date().valueOf();
+            this.time_played = (this.time_ended - this.time_started) / 1000;
+            this.time_offset += this.time_played;
+
+            if (this.time_offset >= this.end || this.end - this.time_offset < 0.015) {
+                this._ended();
+                this.clear();
+
+                if (this.loop) {
+                    this.loop--;
+                    this.play();
+                }
+            }
+        },
+
+        _ended: function () {
+            var config = {
+                name: this.name,
+                alias: this.alias,
+                part: this.sprite_part,
+                start: this.start,
+                duration: this.end
+            };
+
+            if (this.ended_callback && typeof this.ended_callback === "function") {
+                this.ended_callback.call(this.scope, config);
+            }
+        },
+
+        clear: function () {
+            this.time_played = 0;
+            this.time_offset = 0;
+            this.paused = false;
+            this.playing = false;
+        },
+
+        setVolume: function (options) {
+            this.volume = options.volume;
+
+            if (this.gain) {
+                this.gain.gain.value = this.volume;
+            }
+        }
+    };
+
+    if (audio) {
+        return;
+    }
+
+
+
+    /**
+     * Fallback for HTML5 audio
+     * - for not so modern browsers
+     */
+
+    var checkSupport = function () {
+        var sound = new Audio(),
+            can_play_mp3 = sound.canPlayType('audio/mpeg'),
+            can_play_ogg = sound.canPlayType('audio/ogg'),
+            can_play_aac = sound.canPlayType('audio/mp4; codecs="mp4a.40.2"'),
+            item, i;
+
+        for (i = 0; i < settings.supported.length; i++) {
+            item = settings.supported[i];
+
+            if (!can_play_mp3 && item === "mp3") {
+                settings.supported.splice(i, 1);
+            }
+
+            if (!can_play_ogg && item === "ogg") {
+                settings.supported.splice(i, 1);
+            }
+
+            if (!can_play_aac && item === "aac") {
+                settings.supported.splice(i, 1);
+            }
+
+            if (!can_play_aac && item === "mp4") {
+                settings.supported.splice(i, 1);
+            }
+        }
+
+        sound = null;
+    };
+    checkSupport();
+
+
+
+    Sound.prototype = {
+        init: function (options) {
+            if (options) {
+                extend(options, this.options);
+            }
+
+            this.inited = true;
+
+            if (this.options.preload) {
+                this.load();
+            }
+        },
+
+        destroy: function () {
+            var stream;
+
+            for (i in this.streams) {
+                stream = this.streams[i];
+
+                if (stream) {
+                    stream.destroy();
+                    stream = null;
+                }
+            }
+            this.streams = {};
+            this.loaded = false;
+            this.inited = false;
+        },
+
+        load: function () {
+            var part;
+
+            this.options.preload = true;
+            this.options._ready = this.ready;
+            this.options._scope = this;
+
+            if (this.options.sprite) {
+
+                for (i in this.options.sprite) {
+                    part = this.options.sprite[i];
+
+                    this.options.start = part[0];
+                    this.options.end = part[1];
+
+                    this.streams[i] = new Stream(this.options, i);
+                }
+
+            } else {
+
+                this.streams[0] = new Stream(this.options);
+
+            }
+        },
+
+        ready: function (duration) {
+            if (this.loaded) {
+                return;
+            }
+
+            this.loaded = true;
+
+            var config = {
+                name: this.options.name,
+                alias: this.options.alias,
+                ext: this.options.supported[this.ext],
+                duration: duration
+            };
+
+            if (this.options.ready_callback && typeof this.options.ready_callback === "function") {
+                this.options.ready_callback.call(this.options.scope, config);
+            }
+
+            if (this.autoplay) {
+                this.autoplay = false;
+                this.play();
+            }
+        },
+
+        play: function (options) {
+            if (!this.inited) {
+                return;
+            }
+
+            delete this.options.part;
+
+            if (options) {
+                extend(options, this.options);
+            }
+
+            console.log(1);
+            if (!this.loaded) {
+                if (!this.options.preload) {
+                    this.autoplay = true;
+                    this.load();
+                } else {
+                    this.autoplay = true;
+                }
+
+                return;
+            }
+
+            if (this.options.sprite) {
+                if (this.options.part) {
+                    this.streams[this.options.part].play(this.options);
+                } else {
+                    for (i in this.options.sprite) {
+                        this.streams[i].play(this.options);
+                    }
+                }
+            } else {
+                this.streams[0].play(this.options);
+            }
+        },
+
+        stop: function (options) {
+            if (!this.inited) {
+                return;
+            }
+
+            if (this.options.sprite) {
+
+                if (options) {
+                    this.streams[options.part].stop();
+                } else {
+                    for (i in this.options.sprite) {
+                        this.streams[i].stop();
+                    }
+                }
+
+            } else {
+                this.streams[0].stop();
+            }
+        },
+
+        pause: function (options) {
+            if (!this.inited) {
+                return;
+            }
+
+            if (this.options.sprite) {
+
+                if (options) {
+                    this.streams[options.part].pause();
+                } else {
+                    for (i in this.options.sprite) {
+                        this.streams[i].pause();
+                    }
+                }
+
+            } else {
+                this.streams[0].pause();
+            }
+        },
+
+        volume: function (options) {
+            var stream;
+
+            if (options) {
+                extend(options, this.options);
+            } else {
+                return;
+            }
+
+            if (this.options.sprite) {
+                if (this.options.part) {
+                    stream = this.streams[this.options.part];
+                    stream && stream.setVolume(this.options);
+                } else {
+                    for (i in this.options.sprite) {
+                        stream = this.streams[i];
+                        stream && stream.setVolume(this.options);
+                    }
+                }
+            } else {
+                stream = this.streams[0];
+                stream && stream.setVolume(this.options);
+            }
+        }
+    };
+
+
+
+    Stream = function (options, sprite_part) {
+        this.name = options.name;
+        this.alias = options.alias;
+        this.sprite_part = sprite_part;
+
+        this.multiplay = options.multiplay;
+        this.volume = options.volume;
+        this.preload = options.preload;
+        this.allow_caching = options.allow_caching;
+        this.path = settings.path;
+        this.start = options.start || 0;
+        this.end = options.end || 0;
+        this.scope = options.scope;
+        this.ended_callback = options.ended_callback;
+
+        this._scope = options._scope;
+        this._ready = options._ready;
+
+        this.setLoop(options);
+
+        this.sound = null;
+        this.url = null;
+        this.loaded = false;
+
+        this.start_time = 0;
+        this.paused_time = 0;
+        this.played_time = 0;
+
+        this.init();
+    };
+
+    Stream.prototype = {
+        init: function () {
+            this.sound = new Audio();
+            this.sound.volume = this.volume;
+
+            this.createUrl();
+
+            this.sound.addEventListener("ended", this.ended.bind(this), false);
+            this.sound.addEventListener("canplaythrough", this.can_play_through.bind(this), false);
+            this.sound.addEventListener("timeupdate", this._update.bind(this), false);
+
+            this.load();
+        },
+
+        destroy: function () {
+            this.stop();
+
+            this.sound.removeEventListener("ended", this.ended.bind(this), false);
+            this.sound.removeEventListener("canplaythrough", this.can_play_through.bind(this), false);
+            this.sound.removeEventListener("timeupdate", this._update.bind(this), false);
+
+            this.sound = null;
+            this.loaded = false;
+        },
+
+        createUrl: function () {
+            var rand = new Date().valueOf();
+            this.url = this.path + encodeURIComponent(this.name) + "." + settings.supported[0] + "?" + rand;
+        },
+
+        can_play_through: function () {
+            if (this.preload) {
+                this.ready();
+            }
+        },
+
+        load: function () {
+            this.sound.src = this.url;
+            this.sound.preload = this.preload ? "auto" : "none";
+            if (this.preload) {
+                this.sound.load();
+            }
+        },
+
+        setLoop: function (options) {
+            if (options.loop === true) {
+                this.loop = 9999999;
+            } else if (typeof options.loop === "number") {
+                this.loop = +options.loop - 1;
+            } else {
+                this.loop = false;
+            }
+        },
+
+        update: function (options) {
+            this.setLoop(options);
+
+            if ("volume" in options) {
+                this.volume = options.volume;
+            }
+        },
+
+        ready: function () {
+            if (this.loaded || !this.sound) {
+                return;
+            }
+
+            this.loaded = true;
+            this._ready.call(this._scope, this.sound.duration);
+
+            if (!this.end) {
+                this.end = this.sound.duration;
+            }
+        },
+
+        play: function (options) {
+            if (options) {
+                this.update(options);
+            }
+
+            if (!this.multiplay && this.playing) {
+                return;
+            }
+
+            this._play();
+        },
+
+        _play: function () {
+            if (this.paused) {
+                this.paused = false;
+            } else {
+                try {
+                    this.sound.currentTime = this.start;
+                } catch (e) {}
+            }
+
+            this.playing = true;
+            this.start_time = new Date().valueOf();
+            this.sound.volume = this.volume;
+            this.sound.play();
+        },
+
+        stop: function () {
+            if (!this.playing) {
+                return;
+            }
+
+            this.playing = false;
+            this.paused = false;
+            this.sound.pause();
+            this.clear();
+
+            try {
+                this.sound.currentTime = this.start;
+            } catch (e) {}
+        },
+
+        pause: function () {
+            if (this.paused) {
+                this._play();
+            } else {
+                this.playing = false;
+                this.paused = true;
+                this.sound.pause();
+                this.paused_time = new Date().valueOf();
+                this.played_time += this.paused_time - this.start_time;
+            }
+        },
+
+        _update: function () {
+            if (!this.start_time) {
+                return;
+            }
+
+            var current_time = new Date().valueOf(),
+                played_time = current_time - this.start_time,
+                played = (this.played_time + played_time) / 1000;
+
+            if (played >= this.end) {
+                if (this.playing) {
+                    this.stop();
+                    this._ended();
+                }
+            }
+        },
+
+        ended: function () {
+            if (this.playing) {
+                this.stop();
+                this._ended();
+            }
+        },
+
+        _ended: function () {
+            this.playing = false;
+
+            var config = {
+                name: this.name,
+                alias: this.alias,
+                part: this.sprite_part,
+                start: this.start,
+                duration: this.end
+            };
+
+            if (this.ended_callback && typeof this.ended_callback === "function") {
+                this.ended_callback.call(this.scope, config);
+            }
+
+            if (this.loop) {
+                setTimeout(this.looper.bind(this), 15);
+            }
+        },
+
+        looper: function () {
+            this.loop--;
+            this.play();
+        },
+
+        clear: function () {
+            this.start_time = 0;
+            this.played_time = 0;
+            this.paused_time = 0;
+        },
+
+        setVolume: function (options) {
+            this.volume = options.volume;
+
+            if (this.sound) {
+                this.sound.volume = this.volume;
+            }
+        }
+    };
+
+} (window, navigator, window.jQuery || window.$));

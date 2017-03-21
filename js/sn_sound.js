@@ -29,6 +29,7 @@ $(document).ready(function() {
     path: "sounds/",
     multiplay: true,
     preload: true,
+    allow_caching: true,
     volume: 1.0
   });
 
