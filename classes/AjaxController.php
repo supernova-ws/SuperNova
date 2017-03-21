@@ -25,13 +25,15 @@ class AjaxController {
       $template = gettemplate('_ajax', true);
     }
 
-    $template_result = array_merge($template_result, array(
+    $template_result = array_merge($template_result, $merge = array(
       'GLOBAL_DISPLAY_HEADER' => false,
       'GLOBAL_DISPLAY_MENU' => false,
       'GLOBAL_DISPLAY_NAVBAR' => false,
 
       'IN_AJAX' => true,
     ));
+
+    $template_result += $merge;
 
     !is_array($template_result['AJAX']) ? $template_result['AJAX'] = array() : false;
 

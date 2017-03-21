@@ -281,7 +281,7 @@ function sn_display($page, $title = '') {
 //      $page_item->files = array_reverse($page_item->files);
       $result_added = true;
     }
-    $page_item->assign_recursive($template_result);
+//    $page_item->assign_recursive($template_result);
     displayP($page_item);
   }
 
