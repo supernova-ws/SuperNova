@@ -107,7 +107,7 @@ $sn_mvc = array(
     ),
 
     'overview' => array(
-      PAGE_OPTION_EARLY_HEADER => true,
+      // PAGE_OPTION_EARLY_HEADER => true,
       // PAGE_OPTION_TITLE => 'buildings',
     ),
   ),
