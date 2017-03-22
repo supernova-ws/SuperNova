@@ -56,17 +56,17 @@ switch($action)
     if(($metalvendre!=0 && $metalsouhait==0) ||($cristalvendre!=0 && $cristalsouhait==0) || ($deutvendre!=0 && $deutsouhait==0))
     {
       doquery("INSERT INTO {{annonce}} SET `user` ='{$users['username']}', `galaxie` ='{$users['galaxy']}', `systeme` ='{$users['system']}', `metala` ='{$metalvendre}', `cristala` ='{$cristalvendre}', `deuta` ='{$deutvendre}', `metals` ='{$metalsouhait}', `cristals` ='{$cristalsouhait}', `deuts` ='{$deutsouhait}'");
-      message ($lang['Your_announce_was_recorded'], $lang['announce_status'],"annonce.php");
+      messageBox ($lang['Your_announce_was_recorded'], $lang['announce_status'],"annonce.php");
     }
     else
     {
-      message ($lang['Your_announce_not_recorded'], $lang['announce_status'],"annonce.php?action=1");
+      messageBox ($lang['Your_announce_not_recorded'], $lang['announce_status'],"annonce.php?action=1");
     }
   break;
 
   case 3://Suppression d'annonce
     doquery("DELETE FROM {{annonce}} WHERE `id` = {$GET_id}");
-    message ($lang['Your_announce_was_deleted'], $lang['announce_status'],"annonce.php");
+    messageBox ($lang['Your_announce_was_deleted'], $lang['announce_status'],"annonce.php");
   break;
 
   default://Sinon on affiche la liste des annonces

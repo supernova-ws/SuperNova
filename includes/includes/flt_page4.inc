@@ -12,22 +12,22 @@ if(!is_numeric($fleetid) || empty($fleetid)) {
 
 $fleet = db_fleet_get($fleetid);
 if(!$fleet) {
-  message($lang['fl_fleet_not_exists'], $lang['fl_error']);
+  messageBox($lang['fl_fleet_not_exists'], $lang['fl_error']);
 }
 //$query = doquery("SELECT * FROM `{{fleets}}` WHERE fleet_id = '{$fleetid}'");
 //if(db_num_rows($query) != 1) {
-//  message($lang['fl_fleet_not_exists'], $lang['fl_error']);
+//  messageBox($lang['fl_fleet_not_exists'], $lang['fl_error']);
 //}
 //
 //$fleet = db_fetch($query);
 
 if ($fleet['fleet_start_time'] <= SN_TIME_NOW || $fleet['fleet_end_time'] < SN_TIME_NOW || $fleet['fleet_mess'] == 1) {
-  message($lang['fl_isback'], $lang['fl_error']);
+  messageBox($lang['fl_isback'], $lang['fl_error']);
 }
 
 if($fleet['fleet_owner'] != $user['id']) {
   $debug->warning($lang['fl_aks_hack_wrong_fleet'],'Wrong Fleet Owner',301);
-  message($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
+  messageBox($lang['fl_aks_hack_wrong_fleet'], $lang['fl_error']);
 }
 
 $aks = doquery("SELECT * from `{{aks}}` WHERE `flotten` = {$fleetid} LIMIT 1;", '', true);
@@ -42,7 +42,7 @@ if($userToAdd_unsafe) {
   $userToAddID = $userToAddID['id'];
 
   if($fleet['fleet_target_owner'] == $userToAddID) {
-    message($lang['flt_aks_player_same'], $lang['fl_error']);
+    messageBox($lang['flt_aks_player_same'], $lang['fl_error']);
   }
 
   if($userToAddID) {
@@ -71,7 +71,7 @@ if($userToAdd_unsafe) {
         $fleet['fleet_group'] = $aks['id'];
         $fleet['fleet_mission'] = MT_AKS;
       } else {
-        message($lang['fl_aks_already_in_aks'], $lang['fl_error']);
+        messageBox($lang['fl_aks_already_in_aks'], $lang['fl_error']);
       }
     }
 
@@ -84,7 +84,7 @@ if($userToAdd_unsafe) {
     }
 
     if(count($invited_ar) >= 5) {
-      message($lang['flt_aks_error_too_much_players'], $lang['fl_error']);
+      messageBox($lang['flt_aks_error_too_much_players'], $lang['fl_error']);
     }
 
     if($isUserExists) {

@@ -3652,3 +3652,18 @@ td.error_message {
 {
   margin-left: 2em;
 }
+
+
+.admin_message_box {
+  display: inline-block;
+
+  text-align: center;
+
+  max-width: 50em;
+
+  margin: 1em auto;
+}
+
+.admin_message_box .cell, .admin_message_box .header, .admin_message_box .subheader {
+  padding: 0.5em;
+}

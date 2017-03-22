@@ -16,7 +16,7 @@ require_once('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 if(SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_admin_forced') && SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_end'))
 {
@@ -36,11 +36,11 @@ if(SN_TIME_NOW >= classSupernova::$config->db_loadItem('var_stat_update_admin_fo
   });
   </script>';
 
-  AdminMessage("{$script}<img src=\"design/images/progressbar.gif\"><br>{$lang['sys_wait']}", $lang['adm_stat_title'], '', 120);
+  messageBoxAdmin("{$script}<img src=\"design/images/progressbar.gif\"><br>{$lang['sys_wait']}", $lang['adm_stat_title'], '', 0);
 }
 else
 {
-  AdminMessage($lang['adm_stat_already_started'], $lang['adm_stat_title'], 'admin/overview.php', 5);
+  messageBoxAdmin($lang['adm_stat_already_started'], $lang['adm_stat_title'], 'admin/overview.php');
 }
 
 // require_once('../scheduler.php');

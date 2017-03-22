@@ -6,7 +6,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 }
 /*
 if (!$user_can_kick)
-  message($lang['Denied_access'], $lang['Members_list']);
+  messageBox($lang['Denied_access'], $lang['Members_list']);
 */
 // Changing rank for single user
 $id_user = sys_get_param_id('id_user');

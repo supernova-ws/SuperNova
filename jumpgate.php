@@ -69,7 +69,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
     $RetMessage = $lang['gate_wait_star'] ." - ". pretty_time($NextJumpTime);
   }
   sn_db_transaction_commit();
-  message($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
+  messageBox($RetMessage, $lang['tech'][STRUC_MOON_GATE], "jumpgate.php", 10);
 } else {
   $template = gettemplate('jumpgate', true);
   if(mrc_get_level($user, $planetrow, STRUC_MOON_GATE) > 0)
@@ -118,7 +118,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
   }
   else
   {
-    message($lang['gate_no_src_ga'], $lang['tech'][STRUC_MOON_GATE], "overview.php", 10);
+    messageBox($lang['gate_no_src_ga'], $lang['tech'][STRUC_MOON_GATE], "overview.php", 10);
   }
 }
 

@@ -32,18 +32,18 @@ function sn_options_model() {
       sn_db_transaction_start();
       if($user['authlevel'] < 3) {
         if($user['vacation_next'] > SN_TIME_NOW) {
-          message($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
+          messageBox($lang['opt_vacation_err_timeout'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
 
         if(fleet_count_flying($user['id'])) {
-          message($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
+          messageBox($lang['opt_vacation_err_your_fleet'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
 
         $que = que_get($user['id'], false);
         if(!empty($que)) {
-          message($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
+          messageBox($lang['opt_vacation_err_que'], $lang['Error'], 'index.php?page=options', 5);
           die();
         }
 

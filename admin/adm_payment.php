@@ -3,7 +3,7 @@
 /**
  * adm_payment.php
  *
- * @version #42a25.14#
+ * @version #42a27.15#
  * @copyright 2013-2015 by Gorlum for http://supernova.ws
 */
 
@@ -16,7 +16,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $template  = gettemplate('admin/adm_payment', true);
 

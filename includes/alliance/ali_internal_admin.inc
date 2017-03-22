@@ -5,7 +5,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
 }
 
 if(!$user_admin) {
-  message($lang['Denied_access'], $lang['ally_admin']);
+  messageBox($lang['Denied_access'], $lang['ally_admin']);
 }
 
 $template = gettemplate('ali_admin', $template);
@@ -109,7 +109,7 @@ elseif(sys_get_param_str('isTransfer') && $idNewLeader = sys_get_param_id('idNew
 {
   if(!$isAllyOwner)
   {
-    message($lang['Denied_access'], $lang['ally_admin']);
+    messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
 
   $newLeader = db_user_by_id($idNewLeader, false, `ally_id`);
@@ -127,7 +127,7 @@ elseif(sys_get_param_str('isDisband') && sys_get_param_str('isConfirmDisband'))
 {
   if(!$isAllyOwner)
   {
-    message($lang['Denied_access'], $lang['ally_admin']);
+    messageBox($lang['Denied_access'], $lang['ally_admin']);
   }
   sn_db_transaction_start();
   doquery("DELETE FROM {{alliance}} WHERE id='{$ally['id']}';");

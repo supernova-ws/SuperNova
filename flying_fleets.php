@@ -24,7 +24,7 @@ lng_include('overview');
 lng_include('fleet');
 
 if(!$planetrow) {
-  message($lang['fl_noplanetrow'], $lang['fl_error']);
+  messageBox($lang['fl_noplanetrow'], $lang['fl_error']);
 }
 
 $template = gettemplate('flying_fleets', true);

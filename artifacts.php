@@ -64,7 +64,7 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
       sys_redirect("artifacts.php#{$unit_id}");
     break;
   }
-  message($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
+  messageBox($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
 }
 
 $template = gettemplate('artifacts', true);

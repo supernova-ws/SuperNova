@@ -60,7 +60,7 @@ $MaxFleets = GetMaxFleets($user);
 //$FlyingFleets = $FlyingFleets['Number'];
 $FlyingFleets = fleet_count_flying($user['id']);
 if($MaxFleets <= $FlyingFleets && $fleet_page && $fleet_page != 4) {
-  message($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
+  messageBox($lang['fl_noslotfree'], $lang['fl_error'], "fleet." . PHP_EX, 5);
 }
 
 $MaxExpeditions = get_player_max_expeditons($user);
@@ -112,7 +112,7 @@ switch ($fleet_page) {
           $target_mission = MT_COLONIZE;
           $planet_type = PT_PLANET;
         } else {
-          message ("<font color=\"red\"><b>". $lang['fl_no_planet_type'] ."</b></font>", $lang['fl_error']);
+          messageBox ("<font color=\"red\"><b>". $lang['fl_no_planet_type'] ."</b></font>", $lang['fl_error']);
         }
       } else {
         $recyclers = 0;

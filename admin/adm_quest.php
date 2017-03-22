@@ -15,7 +15,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_OPERATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_OPERATOR);
 
 lng_include('quest');
 $template = gettemplate('quest', true);

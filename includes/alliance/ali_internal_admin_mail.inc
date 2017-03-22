@@ -8,13 +8,13 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 }
 
 if (!$user_can_send_mails) {
-  message($lang['Denied_access'], $lang['Send_circular_mail']);
+  messageBox($lang['Denied_access'], $lang['Send_circular_mail']);
 }
 
 $POST_text = sys_get_param_str('text');
 if ($POST_text)
 {
-  message($lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_int('r')), $lang['Circular_sended'], "alliance.php", '');
+  messageBox($lang['members_who_recived_message'] . msg_ali_send($POST_text, $lang['ali_adm_msg_subject'], sys_get_param_int('r')), $lang['Circular_sended'], "alliance.php", '');
 }
 
 $page = gettemplate('ali_admin_mail', true);

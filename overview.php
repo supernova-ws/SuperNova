@@ -149,12 +149,12 @@ switch($mode = sys_get_param_str('mode')) {
           DBStaticPlanet::db_planet_set_by_id($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           DBStaticPlanet::db_planet_set_by_parent($user['current_planet'], "`destruyed`='{$destroyed}', `id_owner`=0");
           db_user_set_by_id($user['id'], '`current_planet` = `id_planet`');
-          message($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
+          messageBox($lang['ov_delete_ok'], $lang['colony_abandon'], 'overview.php?mode=manage');
         } else {
-          message($lang['ov_delete_wrong_planet'], $lang['colony_abandon'], 'overview.php?mode=manage');
+          messageBox($lang['ov_delete_wrong_planet'], $lang['colony_abandon'], 'overview.php?mode=manage');
         }
       } else {
-        message($lang['ov_delete_wrong_pass'] , $lang['colony_abandon'], 'overview.php?mode=manage');
+        messageBox($lang['ov_delete_wrong_pass'] , $lang['colony_abandon'], 'overview.php?mode=manage');
       }
     } elseif(
       ($hire = sys_get_param_int('hire')) && in_array($hire, sn_get_groups('governors'))

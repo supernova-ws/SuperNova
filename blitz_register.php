@@ -8,7 +8,7 @@ if($user['authlevel'] < AUTH_LEVEL_DEVELOPER) {
   );
 
   if($error_message) {
-    message($lang[$error_message], $lang['sys_error'], 'overview.php', 10);
+    messageBox($lang[$error_message], $lang['sys_error'], 'overview.php', 10);
     die();
   }
 

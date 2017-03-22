@@ -101,13 +101,13 @@ function sn_fleet_page3() {
 
   if ($errorlist) {
     sn_db_transaction_rollback();
-    message ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
+    messageBox ("<span class='error'><ul>{$errorlist}</ul></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, false);
   }
 
   // On verifie s'il y a assez de vaisseaux sur la planete !
   foreach ($fleetarray as $Ship => $Count) {
     if ($Count > mrc_get_level($user, $planetrow, $Ship)) {
-      message ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+      messageBox ("<span class='error'><b>{$lang['fl_fleet_err']}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
     }
   }
 
@@ -148,12 +148,12 @@ function sn_fleet_page3() {
   $cant_attack = flt_can_attack($planetrow, $TargetPlanet, $fleetarray, $target_mission, $options);
 
   if($cant_attack !== ATTACK_ALLOWED) {
-    message("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
+    messageBox("<span class='error'><b>{$lang['fl_attack_error'][$cant_attack]}</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 99);
   }
 
   $speed_possible = array(10, 9, 8, 7, 6, 5, 4, 3, 2, 1);
   if (!in_array($speed_percent, $speed_possible)) {
-    message ("<span class='error'><b>". $lang['fl_cheat_speed'] ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    messageBox ("<span class='error'><b>". $lang['fl_cheat_speed'] ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $fleet['start_time'] = $duration + SN_TIME_NOW;
@@ -176,7 +176,7 @@ function sn_fleet_page3() {
 
   if($aks && $target_mission == MT_AKS) {
     if ($fleet['start_time']>$aks['ankunft']) {
-      message ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
+      messageBox ($lang['fl_aks_too_slow'] . 'Fleet arrival: ' . date(FMT_DATE_TIME,$fleet['start_time']) . " AKS arrival: " .date(FMT_DATE_TIME,$aks['ankunft']), $lang['fl_error']);
     }
     $fleet['start_time'] = $aks['ankunft'];
     $fleet['end_time'] = $aks['ankunft'] + $duration;
@@ -194,13 +194,13 @@ function sn_fleet_page3() {
   $FleetStorage        -= $consumption;
 
   if ( $StorageNeeded > $FleetStorage) {
-    message ("<span class='error'><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    messageBox ("<span class='error'><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if ($planetrow['deuterium'] < $TransDeuterium + $consumption) {
-    message ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    messageBox ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
-    message ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    messageBox ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
 
   $fleet_set = array(

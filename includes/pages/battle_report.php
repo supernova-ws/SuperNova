@@ -19,7 +19,7 @@ function sn_battle_report_view($template = null) {
       'PAGE_HEADER' => $lang['ube_report_info_page_header'],
     ));
   } else {
-    message($lang['sys_msg_ube_report_err_not_found'], $lang['sys_error']);
+    messageBox($lang['sys_msg_ube_report_err_not_found'], $lang['sys_error']);
   }
 
   return $template;

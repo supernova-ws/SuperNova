@@ -9,7 +9,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-AdminCheckLevel(AUTH_LEVEL_MODERATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_MODERATOR);
 
 global $lang, $user;
 
@@ -45,12 +45,12 @@ if ($mode == 'banit' && $action) {
     $DoneMessage = sprintf($lang['adm_bn_errr'], $name_output);
   }
 
-  AdminMessage($DoneMessage, $lang['adm_ban_title']);
+  messageBoxAdmin($DoneMessage, $lang['adm_ban_title']);
 } elseif ($mode == 'unbanit' && $action) {
   sys_admin_player_ban_unset($user, $player_banned_row, ($reason = sys_get_param_str('why')) ? $reason : $lang['sys_unbanned']);
 
   $DoneMessage = $lang['adm_unbn_thpl'] . " " . $name_output . " " . $lang['adm_unbn_isbn'];
-  AdminMessage($DoneMessage, $lang['adm_unbn_ttle']);
+  messageBoxAdmin($DoneMessage, $lang['adm_unbn_ttle']);
 };
 
 $parsetemplate = gettemplate("admin/admin_ban", true);

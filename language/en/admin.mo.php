@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a20.21
+* @version 42a27.15
 *
 */
 
@@ -562,4 +562,7 @@ $a_lang_array = (array(
   'adm_log_delete_update_info' => 'Delete info about maintenance and updates of stats, DB and engine',
 
   'admin_ptl_test_la_' => "Single'Double\"Zero\0End",
+
+  'admin_title_access_denied' => 'Access denied',
+
 ));

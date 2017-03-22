@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #42a25.7#
+ * @version #42a27.15#
  **/
 
 define('INSIDE', true);
@@ -11,7 +11,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 global $user, $lang;
 

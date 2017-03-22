@@ -5,13 +5,13 @@ function sn_admin_user_view_view($template = null) {
 
   global $lang;
 
-  AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+  messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
   lng_include('admin');
 
   $user_id = sys_get_param_id('uid');
   if (!($user_row = db_user_by_id($user_id))) {
-    AdminMessage(sprintf($lang['adm_dm_user_none'], $user_id));
+    messageBoxAdmin(sprintf($lang['adm_dm_user_none'], $user_id));
   }
 
   $template = gettemplate('admin/admin_user', true);

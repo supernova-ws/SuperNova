@@ -21,7 +21,7 @@ if(!sn_module_get_active_count('payment')) {
 
 global $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $template = gettemplate("admin/adm_metamatter", true);
 

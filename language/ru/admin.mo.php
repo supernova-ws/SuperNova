@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a20.21
+* @version 42a27.15
 *
 */
 
@@ -598,4 +598,7 @@ $a_lang_array = array(
   'admin_tab_universe_main' => 'Вселенная',
 
   'admin_ptl_test_la_' => "Single'Double\"Zero\0End",
+
+  'admin_title_access_denied' => 'Доступ запрещен',
+
 );

@@ -14,9 +14,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-global $lang, $user;
-
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $script = '
 <script type="text/javascript">
@@ -27,4 +25,4 @@ $(document).ready(function() {
 });
 </script>';
 
-AdminMessage($script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title']);
+messageBoxAdmin($script . '<img src=design/images/progressbar.gif><br>' . $lang['sys_wait'], $lang['adm_maintenance_title']);

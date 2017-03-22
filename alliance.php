@@ -3,7 +3,7 @@
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 if(classSupernova::$config->game_mode == GAME_BLITZ) {
-  message($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
+  messageBox($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
   die();
 }
 
@@ -55,7 +55,7 @@ sn_ali_fill_user_ally($user);
 if(!isset($user['ally']))
 {
   db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
-  message($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
+  messageBox($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
 }
 $ally = &$user['ally'];
 /*

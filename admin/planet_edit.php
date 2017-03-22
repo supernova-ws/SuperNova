@@ -8,9 +8,9 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-AdminMessage('Временно не работает');
+messageBoxAdmin('Временно не работает');
 
 require("includes/admin_planet_edit.inc" . DOT_PHP_EX);
 

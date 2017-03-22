@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #42a25.7#
+ * @version #42a27.15#
  *
  * userlist.php v2
 **/
@@ -13,7 +13,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-AdminCheckLevel(AUTH_LEVEL_MODERATOR);
+messageBoxAdminAccessDenied(10);
 
 global $config, $lang, $user;
 
@@ -56,7 +56,7 @@ if(($action = sys_get_param_int('action')) && ($user_id = sys_get_param_id('uid'
     }
   } else {
     // Restricted try to delete user higher or equal level
-    AdminMessage($lang['adm_err_denied']);
+    messageBoxAdmin($lang['adm_err_denied']);
   }
 }
 

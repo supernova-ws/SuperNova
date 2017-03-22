@@ -11,7 +11,7 @@ if($mode == 'exit')
 {
   if ($ally['ally_owner'] == $user['id'])
   {
-    message($lang['Owner_cant_go_out'], $lang['Alliance']);
+    messageBox($lang['Owner_cant_go_out'], $lang['Alliance']);
   }
 
   if (sys_get_param_int('ali_info_leave_confirm'))
@@ -21,7 +21,7 @@ if($mode == 'exit')
     DBStaticAlly::db_ally_list_recalc_counts();
     sn_db_transaction_commit();
     $lang['Go_out_welldone'] = str_replace("%s", $ally_name, $lang['Go_out_welldone']);
-    message(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
+    messageBox(sprintf($lang['ali_info_leave_success'], $ally['ally_name']), $lang['sys_alliance']);
   }
 }
 elseif($mode == 'ainfo')
@@ -39,7 +39,7 @@ elseif($mode == 'ainfo')
 
   if(!$ally)
   {
-    message($lang['ali_sys_notFound'], $lang['Ally_info_1']);
+    messageBox($lang['ali_sys_notFound'], $lang['Ally_info_1']);
   }
 
   if(!$ally['ally_description'])

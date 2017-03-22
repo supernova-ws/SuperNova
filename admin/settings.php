@@ -15,7 +15,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $template = gettemplate('admin/settings', true);
 

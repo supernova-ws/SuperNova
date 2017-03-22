@@ -8,7 +8,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $config, $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 $planet_active = sys_get_param_int('planet_active');
 if(!$planet_active) {

@@ -7,7 +7,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 
 if ($user['ally_id'])
 {
-  message($lang['ali_req_inAlly'], $lang['ali_req_title']);
+  messageBox($lang['ali_req_inAlly'], $lang['ali_req_title']);
 }
 
 if ($user_request['id_ally'])
@@ -45,12 +45,12 @@ $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$id_ally}'", true);
 
 if(!$ally)
 {
-  message($lang['ali_sys_notFound'], $lang['ali_req_title']);
+  messageBox($lang['ali_sys_notFound'], $lang['ali_req_title']);
 }
 
 if($ally['ally_request_notallow'])
 {
-  message($lang['ali_req_not_allowed'], $lang['ali_req_title']);
+  messageBox($lang['ali_req_not_allowed'], $lang['ali_req_title']);
 }
 
 $text_apply = $ally['ally_request'] ? $ally['ally_request'] : $lang['ali_req_template'];

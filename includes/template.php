@@ -21,67 +21,62 @@ function getSkinPathTemplate($userSkinPath) {
   return $template_names[$userSkinPath];
 }
 
-function AdminCheckLevel($level = 3) {
+/**
+ * @param string    $message
+ * @param string    $title
+ * @param string    $redirectTo
+ * @param int       $timeout
+ * @param bool|true $showHeader
+ */
+function messageBox($message, $title = '', $redirectTo = '', $timeout = 5, $showHeader = true) {
+  global $lang;
+
+  if (empty($title)) {
+    $title = $lang['sys_error'];
+  }
+
+  $template = gettemplate('message_body', true);
+  $template->assign_vars(array(
+    'GLOBAL_DISPLAY_NAVBAR' => $showHeader,
+
+    'TITLE'       => $title,
+    'MESSAGE'     => $message,
+    'REDIRECT_TO' => $redirectTo,
+    'TIMEOUT'     => $timeout,
+  ));
+
+  display($template, $title);
+}
+
+/**
+ * Admin message box
+ *
+ * @see messageBox()
+ */
+function messageBoxAdmin($message, $title = '', $redirectTo = '', $timeout = 5) {
+  messageBox($message, $title, $redirectTo, $timeout, false);
+}
+
+function messageBoxAdminAccessDenied($level = AUTH_LEVEL_ADMINISTRATOR) {
   global $user, $lang;
 
   if($user['authlevel'] < $level) {
-    AdminMessage($lang['adm_err_denied'], 'Error', SN_ROOT_VIRTUAL . 'overview.php');
+    messageBoxAdmin($lang['adm_err_denied'], $lang['admin_title_access_denied'], SN_ROOT_VIRTUAL . 'overview.php');
   }
 }
 
 /**
- * @param        $mes
- * @param string $title
- * @param string $dest
- * @param int    $time
+ * @param $menu
+ * @param $extra
  */
-function AdminMessage($mes, $title = 'Error', $dest = '', $time = 5) {
-  $template = gettemplate('admin/message_body', true);
-  $template->assign_vars(array(
-    'GLOBAL_META_TAGS'      => $dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL={$dest}\">" : '',
-    'GLOBAL_DISPLAY_NAVBAR' => false,
-
-    'title' => $title,
-    'mes'   => $mes,
-    'DEST'  => $dest,
-  ));
-
-  display($template, $title);
-}
-
-/**
- * @param           $mes
- * @param string    $title
- * @param string    $dest
- * @param int       $time
- * @param bool|true $show_header
- */
-function message($mes, $title = 'Error', $dest = '', $time = 5, $show_header = true) {
-  $template = gettemplate('message_body', true);
-  $template->assign_vars(array(
-    'GLOBAL_META_TAGS' => $dest ? "<meta http-equiv=\"refresh\" content=\"{$time};URL={$dest}\">" : '',
-    'GLOBAL_DISPLAY_NAVBAR' => $show_header,
-
-    'title' => $title,
-    'mes'   => $mes,
-    'DEST'  => $dest,
-  ));
-
-  display($template, $title);
-}
-
-/**
- * @param $sn_menu
- * @param $sn_menu_extra
- */
-function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
-  if(empty($sn_menu) || empty($sn_menu_extra)) {
+function tpl_menu_merge_extra(&$menu, &$extra) {
+  if(empty($menu) || empty($extra)) {
     return;
   }
 
-  foreach($sn_menu_extra as $menu_item_id => $menu_item) {
+  foreach($extra as $menu_item_id => $menu_item) {
     if(empty($menu_item['LOCATION'])) {
-      $sn_menu[$menu_item_id] = $menu_item;
+      $menu[$menu_item_id] = $menu_item;
       continue;
     }
 
@@ -96,28 +91,28 @@ function tpl_menu_merge_extra(&$sn_menu, &$sn_menu_extra) {
     }
 
     if($item_location) {
-      $menu_keys = array_keys($sn_menu);
+      $menu_keys = array_keys($menu);
       $insert_position = array_search($item_location, $menu_keys);
       if($insert_position === false) {
-        $insert_position = count($sn_menu) - 1;
+        $insert_position = count($menu) - 1;
         $is_positioned = '+';
         $item_location = '';
       }
     } else {
-      $insert_position = $is_positioned == '-' ? 0 : count($sn_menu);
+      $insert_position = $is_positioned == '-' ? 0 : count($menu);
     }
 
     $insert_position += $is_positioned == '+' ? 1 : 0;
-    $spliced = array_splice($sn_menu, $insert_position, count($sn_menu) - $insert_position);
-    $sn_menu[$menu_item_id] = $menu_item;
+    $spliced = array_splice($menu, $insert_position, count($menu) - $insert_position);
+    $menu[$menu_item_id] = $menu_item;
 
     if(!$is_positioned && $item_location) {
       unset($spliced[$item_location]);
     }
-    $sn_menu = array_merge($sn_menu, $spliced);
+    $menu = array_merge($menu, $spliced);
   }
 
-  $sn_menu_extra = array();
+  $extra = array();
 }
 
 /**
@@ -345,7 +340,24 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
 
   $template = gettemplate('_page_20_header', true);
 
-  tpl_global_header($template_result, $inLoginLogout);
+  renderJavaScript();
+
+  renderCss($inLoginLogout);
+
+  $template->assign_vars(array(
+    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
+    'LANG_ENCODING'  => 'utf-8',
+    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
+
+    'SN_ROOT_VIRTUAL' => SN_ROOT_VIRTUAL,
+
+    'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
+    'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
+
+    // WARNING! This can be set by page!
+    // CHANGE CODE TO MAKE IT IMPOSSIBLE!
+    'GLOBAL_META_TAGS'         => isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : '',
+  ));
 
   $template->assign_vars(array(
     'GLOBAL_DISPLAY_MENU'   => $isDisplayMenu,
@@ -362,14 +374,7 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
     'TIME_DIFF_MEASURE'    => $measureTimeDiff, // Проводить замер только если не выставлен флаг форсированного замера И (иссяк интервал замера ИЛИ замера еще не было)
 
     'title'                    => ($title ? "{$title} - " : '') . "{$lang['sys_server']} {$config->game_name} - {$lang['sys_supernova']}",
-    'GLOBAL_META_TAGS'         => isset($page->_rootref['GLOBAL_META_TAGS']) ? $page->_rootref['GLOBAL_META_TAGS'] : '',
-    'ADV_SEO_META_DESCRIPTION' => $config->adv_seo_meta_description,
-    'ADV_SEO_META_KEYWORDS'    => $config->adv_seo_meta_keywords,
     'ADV_SEO_JAVASCRIPT'       => $config->adv_seo_javascript,
-
-    'LANG_LANGUAGE'  => $lang['LANG_INFO']['LANG_NAME_ISO2'],
-    'LANG_ENCODING'  => 'utf-8',
-    'LANG_DIRECTION' => $lang['LANG_INFO']['LANG_DIRECTION'],
 
     'SOUND_ENABLED'                        => classSupernova::$user_options[PLAYER_OPTION_SOUND_ENABLED],
     'PLAYER_OPTION_ANIMATION_DISABLED'     => classSupernova::$user_options[PLAYER_OPTION_ANIMATION_DISABLED],
@@ -440,48 +445,65 @@ function playerFontSize() {
  * @param $is_login
  */
 function tpl_global_header(&$template_result, $is_login) {
-  global $sn_mvc, $sn_page_name;
+  renderJavaScript();
 
-  if(!empty($sn_mvc['javascript'])) {
-    foreach($sn_mvc['javascript'] as $page_name => $script_list) {
-      if(empty($page_name) || $page_name == $sn_page_name) {
-        foreach($script_list as $filename => $content) {
-          $template_result['.']['javascript'][] = array(
-            'FILE'    => $filename,
-            'CONTENT' => $content,
-          );
-        }
-      }
-    }
-  }
+  renderCss($is_login);
+}
+
+/**
+ * @param $is_login
+ */
+function renderCss($is_login) {
+  global $sn_mvc, $sn_page_name, $template_result;
 
   empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
+
   $standard_css = array(
-    'design/css/jquery-ui.css' => '',
+    'design/css/jquery-ui.css'  => '',
     'design/css/global.min.css' => '',
   );
-  $is_login ? $standard_css['design/css/login.min.css'] = '': false;
+  $is_login ? $standard_css['design/css/login.min.css'] = '' : false;
   $standard_css += array(
 //    'design/css/design/css/global-ie.min.css' => '', // TODO
-    TEMPLATE_PATH . '/_template.min.css' => '',
+    TEMPLATE_PATH . '/_template.min.css'                         => '',
     classSupernova::$gc->theUser->getSkinPath() . 'skin.min.css' => '',
   );
 
   // Prepending standard CSS files
   $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
 
+  renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'css');
+}
 
-  foreach($sn_mvc['css'] as $page_name => $script_list) {
-    if(empty($page_name) || $page_name == $sn_page_name) {
-      foreach($script_list as $filename => $content) {
-        $template_result['.']['css'][] = array(
+/**
+ */
+function renderJavaScript() {
+  global $sn_mvc, $sn_page_name, $template_result;
+
+  renderFileListInclude($template_result, $sn_mvc, $sn_page_name, 'javascript');
+}
+
+/**
+ * @param array   $template_result
+ * @param array[] $sn_mvc
+ * @param string  $sn_page_name
+ * @param string  $fileType - 'css' or 'javascript'
+ */
+function renderFileListInclude(&$template_result, &$sn_mvc, $sn_page_name, $fileType) {
+  if (empty($sn_mvc[$fileType])) {
+    return;
+  }
+
+  foreach ($sn_mvc[$fileType] as $page_name => $script_list) {
+    if (empty($page_name) || $page_name == $sn_page_name) {
+      foreach ($script_list as $filename => $content) {
+        $template_result['.'][$fileType][] = array(
           'FILE'    => $filename,
           'CONTENT' => $content,
         );
       }
     }
   }
-
 }
 
 /**
@@ -873,7 +895,7 @@ function parsetemplate($template, $array = false) {
  * @return template
  */
 function gettemplate($files, $template = null, $template_path = null) {
-  global $sn_mvc, $sn_page_name, $user;
+  global $sn_mvc, $sn_page_name;
 
   $template_ex = '.tpl.html';
 

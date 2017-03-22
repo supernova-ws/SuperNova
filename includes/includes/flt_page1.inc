@@ -62,7 +62,7 @@ foreach($ships as $ship_id => $ship_count) {
 }
 
 if(empty($fleet['fleetarray'])) {
-  message($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
+  messageBox($lang['fl_err_no_ships'], $lang['fl_error'], 'fleet' . DOT_PHP_EX, 5);
 }
 
 // Building list of shortcuts

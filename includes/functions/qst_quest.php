@@ -103,7 +103,7 @@ function qst_render_page()
       }
       catch (Exception $e)
       {
-        message($e->getMessage(), $lang['sys_error']);
+        messageBox($e->getMessage(), $lang['sys_error']);
       }
 
       $mode = '';

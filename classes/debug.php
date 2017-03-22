@@ -213,7 +213,7 @@ class debug {
 
       $sys_stop_log_hit = true;
       $sys_log_disabled = true;
-      !function_exists('message') ? die($message) : message($message, 'Ошибка', '', 0, false);
+      !function_exists('messageBox') ? die($message) : messageBox($message, 'Ошибка', '', 0, false);
     } else {
 //        // TODO Здесь надо писать в файло
       ob_start();

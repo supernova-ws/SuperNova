@@ -5,7 +5,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true) {
 }
 
 if (!$user_admin_applications) {
-  message($lang['Denied_access'], $lang['requests_admin']);
+  messageBox($lang['Denied_access'], $lang['requests_admin']);
 }
 
 $d = sys_get_param_id('d');

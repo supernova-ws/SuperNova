@@ -48,7 +48,7 @@ function sn_imperator_view($template = null) {
 //  }
 
   if(!$user_data) {
-    message($lang['imp_imperator_none'], $lang['sys_error'], 'index.php', 10);
+    messageBox($lang['imp_imperator_none'], $lang['sys_error'], 'index.php', 10);
     die();
   }
 

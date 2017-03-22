@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a25.7
+* @version 42a27.15
 *
 */
 
@@ -1164,5 +1164,7 @@ $a_lang_array = (array(
   'tutorial_error_load' => "Error loading tutorial - try again. If error persists - please contact game Administration",
   'tutorial_error_next' => "Error - there is no next page in tutorial - please contact game Administration",
   'tutorial_error_prev' => "Error - there is no previous page in tutorial - please contact game Administration",
+
+  'sys_click_here_to_continue' => 'Click here to continue',
 
 ));

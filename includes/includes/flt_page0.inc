@@ -23,7 +23,7 @@ if(SN_IN_FLEET !== true) {
 lng_include('overview');
 
 if(!$planetrow) {
-  message($lang['fl_noplanetrow'], $lang['fl_error']);
+  messageBox($lang['fl_noplanetrow'], $lang['fl_error']);
 }
 
 $template = gettemplate('fleet0', true);

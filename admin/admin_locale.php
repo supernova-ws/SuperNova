@@ -15,7 +15,7 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 global $lang, $user;
 
-AdminCheckLevel(AUTH_LEVEL_ADMINISTRATOR);
+messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 function adm_lng_assign_string($lang_id, $locale_string_name, $value) {
   global $locale_string_template, $languages_info, $languages, $domain;

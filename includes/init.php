@@ -359,7 +359,7 @@ if($template_result[F_GAME_DISABLE] = classSupernova::$config->game_disable) {
     &&
     !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))
   ) {
-    message($template_result[F_GAME_DISABLE_REASON], classSupernova::$config->game_name);
+    messageBox($template_result[F_GAME_DISABLE_REASON], classSupernova::$config->game_name);
     ob_end_flush();
     die();
   }
@@ -374,7 +374,7 @@ if($template_result[F_BANNED_STATUS] && !$skip_ban_check) {
 
   $bantime = date(FMT_DATE_TIME, $template_result[F_BANNED_STATUS]);
   // TODO: Add ban reason. Add vacation time. Add message window
-  message("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
+  messageBox("{$lang['sys_banned_msg']} {$bantime}", $lang['ban_title']);
   die("{$lang['sys_banned_msg']} {$bantime}");
 }
 

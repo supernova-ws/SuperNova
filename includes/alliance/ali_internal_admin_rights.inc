@@ -8,7 +8,7 @@ if(!defined('SN_IN_ALLY') || SN_IN_ALLY !== true)
 }
 
 if (!$user_admin) {
-  message($lang['Denied_access'], $lang['ali_adm_rights_title']);
+  messageBox($lang['Denied_access'], $lang['ali_adm_rights_title']);
 };
 
 $template = gettemplate('ali_admin_rights', true);
@@ -45,7 +45,7 @@ if ($d && isset($ranks[$d]))
 {
   if(count($ranks) == 1)
   {
-    message($lang['ali_adm_lastRank'], $lang['ali_adm_rights_title']);
+    messageBox($lang['ali_adm_lastRank'], $lang['ali_adm_rights_title']);
   }
   array_splice($ranks, $d, 1);
   db_user_list_set_by_ally_and_rank($ally['id'], $d, '`ally_rank_id`=`ally_rank_id` - 1');
