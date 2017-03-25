@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #42a27.15#
+ * @version #42a27.18#
  *
  * userlist.php v2
 **/
@@ -13,7 +13,7 @@ define('IN_ADMIN', true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-messageBoxAdminAccessDenied(10);
+messageBoxAdminAccessDenied(3);
 
 global $config, $lang, $user;
 
