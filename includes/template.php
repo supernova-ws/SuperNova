@@ -451,6 +451,27 @@ function tpl_global_header(&$template_result, $is_login) {
 }
 
 /**
+ * Checks if minified/full-size CSS file exists - and adds it if any
+ *
+ * @param $cssFileName
+ * @param &$cssArray
+ *
+ * @return bool
+ */
+function cssAddFileName($cssFileName, &$cssArray) {
+  $result = false;
+  if(file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.min.css')) {
+    $cssArray[$cssFileName . '.min.css'] = '';
+    $result = true;
+  } elseif(file_exists(SN_ROOT_PHYSICAL . $cssFileName . '.css')) {
+    $cssArray[$cssFileName . '.css'] = '';
+    $result = true;
+  }
+
+  return $result;
+}
+
+/**
  * @param $is_login
  */
 function renderCss($is_login) {
@@ -458,16 +479,13 @@ function renderCss($is_login) {
 
   empty($sn_mvc['css']) ? $sn_mvc['css'] = array('' => array()) : false;
 
-  $standard_css = array(
-    'design/css/jquery-ui.css'  => '',
-    'design/css/global.min.css' => '',
-  );
-  $is_login ? $standard_css['design/css/login.min.css'] = '' : false;
-  $standard_css += array(
-//    'design/css/design/css/global-ie.min.css' => '', // TODO
-    TEMPLATE_PATH . '/_template.min.css'                         => '',
-    classSupernova::$gc->theUser->getSkinPath() . 'skin.min.css' => '',
-  );
+  $standard_css = array();
+  cssAddFileName('design/css/jquery-ui', $standard_css);
+  cssAddFileName('design/css/global', $standard_css);
+  $is_login ? cssAddFileName('design/css/login', $standard_css) : false;
+  cssAddFileName(TEMPLATE_PATH . '/_template', $standard_css);
+  cssAddFileName(classSupernova::$gc->theUser->getSkinPath() . 'skin', $standard_css);
+  cssAddFileName('design/css/global_override', $standard_css);
 
   // Prepending standard CSS files
   $sn_mvc['css'][''] = array_merge($standard_css, $sn_mvc['css']['']);
