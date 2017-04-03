@@ -32,12 +32,23 @@ if(sys_get_param_str('isSaveOptions')) {
 
   $ally_changeset = array();
   if(($new_tag = sys_get_param_str_unsafe('tag', $ally['ally_tag'])) && $new_tag != $ally['ally_tag']) {
+    $new_tag_unsafe = $new_tag;
     $new_tag = db_escape($new_tag);
+    $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_tag($new_tag);
+    if(!empty($isTaggedAllyExists)) {
+      messageBox(sprintf($lang['ally_message_tag_exists'], $new_tag_unsafe), '', 'alliance.php?mode=admin&edit=ally');
+    }
     $ally_changeset[] = "`ally_tag`='{$new_tag}'";
     db_user_set_by_id($ally['ally_user_id'], "`username`='[{$new_tag}]'");
   }
+
   if(($new_name = sys_get_param_str_unsafe('name', $ally['ally_name'])) && $new_name != $ally['ally_name']) {
+    $new_name_unsafe = $new_name;
     $new_name = db_escape($new_name);
+    $isTaggedAllyExists = DBStaticAlly::db_ally_get_by_name($new_name);
+    if(!empty($isTaggedAllyExists)) {
+      messageBox(sprintf($lang['ally_message_name_exists'], $new_name_unsafe), '', 'alliance.php?mode=admin&edit=ally');
+    }
     $ally_changeset[] = "`ally_name`='{$new_name}'";
   }
 
@@ -63,41 +74,6 @@ if(sys_get_param_str('isSaveOptions')) {
     doquery("UPDATE {{alliance}} SET " . implode(',', $ally_changeset) . " WHERE `id`='{$ally['id']}' LIMIT 1;");
     sys_redirect('alliance.php?mode=admin&edit=ally');
   }
-/*
-  $old_tag = $ally['ally_tag'];
-  $old_name = $ally['ally_name'];
-  $old_rank = $ally['ally_owner_range'];
-
-  $ally['ally_name'] = sys_get_param_str('name');
-  $ally['ally_tag']  = sys_get_param_str('tag');
-  $ally['ally_owner_range'] = sys_get_param_str('owner_range');
-  if($ally['ally_tag'] && $ally['ally_name'] && $ally['ally_owner_range']) {
-    $ally['ally_web'] = strip_tags(sys_get_param_str('web'));
-    $ally['ally_request_notallow'] = sys_get_param_str('request_notallow');
-
-    sn_db_transaction_start();
-    doquery("UPDATE {{alliance}} SET
-        `ally_name`='{$ally['ally_name']}',
-        `ally_tag`='{$ally['ally_tag']}',
-        `ally_owner_range`='{$ally['ally_owner_range']}',
-        `ally_image`='{$ally['ally_image']}',
-        `ally_web`='{$ally['ally_web']}',
-        `ally_request_notallow`='{$ally['ally_request_notallow']}'
-      WHERE `id`='{$ally['id']}' LIMIT 1;");
-
-    if($ally['ally_tag'] != db_escape($old_tag)) {
-      db_user_set_by_id($ally['ally_user_id'], "`username`='[{$ally['ally_tag']}]'");
-    }
-    sn_db_transaction_commit();
-  }
-  else
-  {
-    $ally['ally_name'] = $old_name;
-    $ally['ally_tag']  = $old_tag;
-    $ally['ally_owner_range'] = $old_rank;
-  }
-*/
-//  $ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}';", '', true);
 }
 elseif(sys_get_param_str('isSaveText'))
 {

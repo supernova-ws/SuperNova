@@ -58,6 +58,17 @@ class DBStaticAlly {
 
   /**
    * @param $ally_name
+   *
+   * @return array|bool|mysqli_result|null
+   */
+  public static function db_ally_get_by_name($ally_name) {
+    $query = doquery("SELECT ally_name FROM {{alliance}} WHERE `ally_name` = '{$ally_name}' LIMIT 1;", true);
+
+    return $query;
+  }
+
+  /**
+   * @param $ally_name
    * @param $ally_tag
    * @param $user
    */

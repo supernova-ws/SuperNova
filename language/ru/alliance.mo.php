@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 42a28.2
 *
 */
 
@@ -273,4 +273,8 @@ $a_lang_array = (array(
 
   'ali_res_alliance_bonus' => 'Бонусы Альянса',
   'ali_res_alliance_bonus_players' => 'Количество участников для получения бонуса',
+
+  'ally_message_tag_exists' => 'Альянс с тэгом [%1$s] уже существует',
+  'ally_message_name_exists' => 'Альянс с именем "%1$s" уже существует',
+
 ));

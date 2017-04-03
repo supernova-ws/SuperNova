@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 42a28.2
 *
 */
 
@@ -277,5 +277,8 @@ $a_lang_array = (array(
 
   'ali_res_alliance_bonus' => 'Alliance\'s Bonuses',
   'ali_res_alliance_bonus_players' => 'Minimal members count to obtain bonus',
+
+  'ally_message_tag_exists' => 'There is already exists Alliance with tag [%1$s]',
+  'ally_message_name_exists' => 'There is already exists Alliance with name "%1$s"',
 
 ));
