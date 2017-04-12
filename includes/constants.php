@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a28.4');
+define('SN_VERSION', '42a28.9');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1629,3 +1629,8 @@ define('HTML_ENCODE_MULTILINE_JS', HTML_ENCODE_MULTILINE | HTML_ENCODE_JS_SAFE);
 
 define('PAGE_OPTION_EARLY_HEADER', 'early_header');
 define('PAGE_OPTION_TITLE', 'page_title');
+
+define('FIELD_MVC', 'mvc');
+define('FIELD_MODEL', 'model');
+define('FIELD_VIEW', 'view');
+define('THIS_STRING', '$this');

@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a27.15
+* @version 42a28.9
 *
 */
 
@@ -1166,5 +1166,7 @@ $a_lang_array = (array(
   'tutorial_error_prev' => "Error - there is no previous page in tutorial - please contact game Administration",
 
   'sys_click_here_to_continue' => 'Click here to continue',
+
+  'sys_module_error_not_found' => 'Award module "%1$s" not found or disabled!',
 
 ));

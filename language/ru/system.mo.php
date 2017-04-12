@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #42a27.15#
+* @version #42a28.9#
 *
 */
 
@@ -1196,5 +1196,7 @@ $a_lang_array = (array(
   'tutorial_error_prev' => "Ошибка: Не существует предыдущей страницы туториала - сообщите Администрации игры",
 
   'sys_click_here_to_continue' => 'Кликните здесь, что бы продолжить',
+
+  'sys_module_error_not_found' => 'Модуль наград "%1$s" не найден или отключён!',
 
 ));

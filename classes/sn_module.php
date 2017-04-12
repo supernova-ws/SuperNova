@@ -2,16 +2,16 @@
 
 class sn_module {
   /**
-   * SN version in which module was committed. Can be treated as version in which module guaranteed working
+   * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#42a26.4#';
+  public $versionCommitted = '#42a28.9#';
 
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #42a26.4# copyright © 2009-2014 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #42a28.9# copyright © 2009-2017 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',

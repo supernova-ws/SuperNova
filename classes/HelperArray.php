@@ -253,4 +253,42 @@ class HelperArray {
     return $result;
   }
 
+  /**
+   * Finds maximum value of field in subarrays
+   *
+   * @param array[] $array
+   * @param mixed   $fieldName
+   *
+   * @return float|null
+   */
+  public static function maxValueByField(&$array, $fieldName) {
+    return array_reduce($array, function ($carry, $item) use ($fieldName) {
+      if(is_array($item) && isset($item[$fieldName]) && (!isset($carry) || $carry < $item[$fieldName])) {
+        $carry = $item[$fieldName];
+      }
+
+      return $carry;
+    });
+  }
+
+  /**
+   * @param $array
+   * @param $fieldName
+   */
+  public static function topRecordsByField(&$array, $fieldName) {
+    $maxValue = self::maxValueByField($array, $fieldName);
+
+    return
+      array_reduce($array,
+        function ($carry, $item) use (&$fieldName, $maxValue) {
+          if(is_array($item) && isset($item[$fieldName]) && $item[$fieldName] == $maxValue) {
+            $carry[] = $item;
+          }
+
+          return $carry;
+        },
+        array()
+      );
+  }
+
 }
