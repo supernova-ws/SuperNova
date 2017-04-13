@@ -160,6 +160,18 @@ switch ($mode) {
         'DESCRIPTION' => 'DEFINE-d variable - wrong name',
       ),
 
+      array('HEADER' => '{C_xxx} - Config'),
+      array(
+        'SAMPLE'      => '{C___ptl_test}',
+        'EXPECTED'    => 'config_ptl_test',
+        'DESCRIPTION' => 'Config variable',
+      ),
+      array(
+        'SAMPLE'      => '{C___ptl_test_array[value]}',
+        'EXPECTED'    => 'config_ptl_test_array',
+        'DESCRIPTION' => 'Config array variable',
+      ),
+
       array('HEADER' => '{L_xxx} and {LA_xxx} - Language'),
       array(
         'SAMPLE'      => '{L_admin_ptl_test_la_}',
@@ -249,6 +261,9 @@ switch ($mode) {
 //        'DESCRIPTION' => 'Language string',
 //      ),
 //    );
+
+    classSupernova::$config->__ptl_test = 'config_ptl_test';
+    classSupernova::$config->__ptl_test_array = array('value' => 'config_ptl_test_array');
 
     foreach ($tests as $test) {
       $test['CONSTRUCTION'] = str_replace(array('{', '}'), array('&#123;', '&#125;'), $test['SAMPLE']);
