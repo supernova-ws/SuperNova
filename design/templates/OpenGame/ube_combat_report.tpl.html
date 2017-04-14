@@ -1,7 +1,4 @@
 <h1>{PAGE_HEADER}</h1>
-<!-- IF UBE_REPORT_CYPHER -->
-<div>{L_ube_report_info_page_header_cypher} {UBE_REPORT_CYPHER}</div>
-<!-- ENDIF -->
 
 <table style="margin-top: 1em;">
   <tr>
@@ -55,17 +52,6 @@
     </td>
   </tr>
 
-  <!-- IF UBE_REPORT_CYPHER -->
-    <tr>
-      <td>
-        {L_ube_report_info_link}
-      </td>
-      <td colspan="2" class="c_c">
-        <a class="link battle_report_link" href="index.php?page=battle_report&cypher={UBE_REPORT_CYPHER}">{UBE_REPORT_CYPHER}</a>
-      </td>
-    </tr>
-  <!-- ENDIF -->
-
   <!-- IF UBE_SFR -->
     <tr>
       <td colspan="3" class="c_c notice">
@@ -107,7 +93,7 @@
               {L_ube_report_moon_reapers_failure}
             <!-- ENDIF --><br />
 
-            {L_ube_report_moon_reapers_outcome} {UBE_MOON_REAPERS_DIE_CHANCE}%. 
+            {L_ube_report_moon_reapers_outcome} {UBE_MOON_REAPERS_DIE_CHANCE}%.
             <!-- IF UBE_MOON_REAPERS == UBE_MOON_REAPERS_RETURNED -->
               {L_ube_report_moon_reapers_survive}
             <!-- ELSE -->
@@ -184,14 +170,45 @@
 <!-- ENDIF -->
 
 
+  <!-- IF UBE_REPORT_CYPHER -->
+  <tr>
+    <td class="c_c transparent_cell" colspan="3" style="padding-top: 1em;">
+      <h3>{L_ube_report_info_page_header_cypher}</h3>
+    </td>
+  </tr>
 
+  <tr>
+    <td>
+      {L_ube_report_info_page_header_cypher}
+    </td>
+    <td colspan="2" class="c_c">
+      {UBE_REPORT_CYPHER}
+    </td>
+  </tr>
 
+  <tr>
+    <td>
+      {L_ube_report_info_link}
+    </td>
+    <td colspan="2" class="c_c">
+      <a class="link battle_report_link" href="index.php?page=battle_report&cypher={UBE_REPORT_CYPHER}">{UBE_REPORT_CYPHER}</a>
+    </td>
+  </tr>
 
-
-
-
-
-
+  <tr>
+    <td>
+      <!--<label for="ube_cypher_bbcode">{L_ube_report_info_bbcode}</label>-->
+      {L_ube_report_info_bbcode}
+    </td>
+    <td colspan="2" class="c_c">
+      <div style="min-width: 30em;">
+        <input type="text" readonly="readonly" value="[ube={UBE_REPORT_CYPHER}]" id="ube_cypher_bbcode"
+               style="width: 90%"/>
+      </div>
+      <!--[ube={UBE_REPORT_CYPHER}]-->
+    </td>
+  </tr>
+  <!-- ENDIF -->
 
 
 
