@@ -16,14 +16,23 @@
  * @property string $auth_vkontakte_app_key
  * @property string $auth_vkontakte_token
  * @property int    $auth_vkontakte_token_expire
+ *
+ * @property string $game_name             Server name as it would be seen through game
+ *
  * @property int    $game_news_actual             How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
  * @property int    $game_news_overview           How much last news to show in Overview page. Default - 3
  * @property int    $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
+ *
+ * @property int    $menu_server_name_disabled    => 0
+ * @property int    $menu_launch_date_disabled    => 0
+ * @property int    $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
+ * @property int    $menu_server_logo_disabled    => 0
  *
  * @property int    $tutorial_first_item          ID of first item of tutorial
  *
  * @property int    $url_faq          URL of FAQ root
  */
+
 class classConfig extends classPersistent {
   protected $defaults = array(
     // SEO meta
@@ -150,6 +159,11 @@ class classConfig extends classPersistent {
     'locale_cache_disable'         => 0, // Disable locale caching
 
     'metal_basic_income'           => 40,
+
+    'menu_server_name_disabled'    => 0,
+    'menu_launch_date_disabled'    => 0,
+    'menu_server_logo'             => MENU_SERVER_LOGO_DEFAULT,
+    'menu_server_logo_disabled'    => 0,
 
     'payment_currency_default'      => 'USD',
     'payment_currency_exchange_dm_' => 20000,

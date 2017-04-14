@@ -310,6 +310,7 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
   ob_end_flush();
 
   ob_start();
+//  pdump(microtime(true) - SN_TIME_MICRO, 'Header render started');
   $isDisplayTopNav = true;
   $isDisplayMenu = true;
 
