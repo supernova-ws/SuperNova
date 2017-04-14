@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a28.9
+* @version 42a28.17
 *
 */
 
@@ -814,7 +814,8 @@ $a_lang_array = (array(
   'ube_report_info_outcome_win' => 'Attacker win',
   'ube_report_info_outcome_loss' => 'Attacker lost',
   'ube_report_info_outcome_draw' => 'Draw',
-  'ube_report_info_link' => 'Link to battle rport',
+  'ube_report_info_link' => 'Link to battle report',
+  'ube_report_info_bbcode' => 'BBCode for posting in chat',
   'ube_report_info_sfr' => 'Battle finshed in one round by attacker loss<br />Possible SFR',
   'ube_report_info_debris' => 'Debris on orbit',
   'ube_report_info_loot' => 'Loot',

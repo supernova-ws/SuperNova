@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #42a28.9#
+* @version #42a28.17#
 *
 */
 
@@ -830,6 +830,7 @@ $a_lang_array = (array(
   'ube_report_info_outcome_loss' => 'Атакующий проиграл бой',
   'ube_report_info_outcome_draw' => 'Бой закончился ничьей',
   'ube_report_info_link' => 'Ссылка на боевой отчет',
+  'ube_report_info_bbcode' => 'BBCode для вставки в чат',
   'ube_report_info_sfr' => 'Бой закончился за один раунд проигрышем атакующего<br />Вероятна РМФ',
   'ube_report_info_debris' => 'Обломки на орбите',
   'ube_report_info_loot' => 'Добыча',
