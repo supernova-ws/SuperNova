@@ -284,7 +284,8 @@ textarea {
 /* One-line vertically centered, space distributed non-wrapping  */
 .contF,
 .contFJ,
-.contFS
+.contFS,
+.contFC
 {
   display: flex;
 
@@ -307,6 +308,11 @@ textarea {
 .contFE {
   text-align: right;
   justify-content: flex-end;
+}
+/* CONTainer Flex Center*/
+.contFC {
+  justify-content: center;
+  align-items: center;
 }
 
 .flexW {

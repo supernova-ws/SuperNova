@@ -2,30 +2,33 @@
 
 <!-- INCLUDE fleet_miniatures -->
 
-<table border="0" cellpadding="0" cellspacing="1">
- <tr>
-   <th class="c_l">{L_flt_aks_players_in_aks}</th>
- </tr>
- <tr>
-   <td align="center">
-     <select size="5">
-       <!-- BEGIN invited -->
-         <option>{invited.NAME}</option>
-       <!-- END invited -->
-     </select>
-   </td>
- </tr>
+<div class="contFC">
+  <div class="border_image_large">
 
- <tr>
-   <td>
-     <form action="fleet.php?fleet_page=4" method="POST">
-       <input type="hidden" name="fleetid" value="{FLEET_ID}">
-       {L_flt_aks_player_invite} <input name="addtogroup" type="text" /> <input type="submit" value="{L_flt_aks_player_invite_do}" />
-     </form>
-     <!-- IF MESSAGE -->
-     <br />{MESSAGE}
-     <!-- ENDIF -->
-   </td>
- </tr>
-</table>
-<br/>
+    <div class="cell">
+      <form action="fleet.php?fleet_page=4" method="POST">
+        <input type="hidden" name="fleetid" value="{FLEET_ID}">
+
+        <label for="fleetAcsAddName">{L_flt_aks_player_invite}</label>
+        <input id="fleetAcsAddName" name="addtogroup" type="text"/>
+        <input type="submit" value="{L_flt_aks_player_invite_do}"/>
+      </form>
+      <!-- IF MESSAGE -->
+      <br/>{MESSAGE}
+      <!-- ENDIF -->
+    </div>
+
+    <div class="header">
+      {L_flt_aks_players_in_aks}
+    </div>
+
+    <div class="subheader">
+      <select size="5" style="overflow-y: auto">
+        <!-- BEGIN invited -->
+        <option>{invited.NAME}</option>
+        <!-- END invited -->
+      </select>
+    </div>
+
+  </div>
+</div>
