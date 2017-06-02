@@ -41,15 +41,21 @@ class classPersistent extends classCache {
     return self::$cacheObject;
   }
 
+  /**
+   * @param string $index
+   *
+   * @return string|null
+   */
   public function db_loadItem($index) {
     $result = null;
     if($index) {
       $index_safe = db_escape($index);
-      $result = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
-      // В две строки - что бы быть уверенным в порядке выполнения
-      $result = $result[$this->sql_value_field];
-      $this->$index = $result;
+      $queryResult = doquery("SELECT `{$this->sql_value_field}` FROM `{{{$this->table_name}}}` WHERE `{$this->sql_index_field}` = '{$index_safe}' FOR UPDATE", true);
+      if(is_array($queryResult) && !empty($queryResult)) {
+        $this->$index = $result = $queryResult[$this->sql_value_field];
+      }
     }
+
     return $result;
   }
 

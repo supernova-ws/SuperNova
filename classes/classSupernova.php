@@ -1003,4 +1003,21 @@ class classSupernova {
 
   }
 
+  /**
+   * @param int    $newStatus
+   * @param string $newMessage
+   *
+   * @return int
+   */
+  public static function gameDisable($newStatus = GAME_DISABLE_REASON, $newMessage = '') {
+    $old_server_status = intval(self::$config->db_loadItem('game_disable'));
+    self::$config->db_saveItem('game_disable', $newStatus);
+
+    return $old_server_status;
+  }
+
+  public static function gameEnable() {
+    self::$config->db_saveItem('game_disable', GAME_DISABLE_NONE);
+  }
+
 }

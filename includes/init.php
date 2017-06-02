@@ -154,6 +154,8 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . "includes/functions/", PHP_EX);
 
 
 
+global $lang;
+$lang = new classLocale(classSupernova::$config->server_locale_log_usage);
 
 
 
@@ -257,8 +259,6 @@ if(!isset($sn_mvc['pages'][$sn_page_name])) {
   $sn_page_name = '';
 }
 
-global $lang;
-$lang = new classLocale(classSupernova::$config->server_locale_log_usage);
 $lang->lng_switch(sys_get_param_str('lang'));
 
 

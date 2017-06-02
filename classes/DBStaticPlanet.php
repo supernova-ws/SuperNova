@@ -46,19 +46,19 @@ class DBStaticPlanet {
     return DBStaticPlanet::db_planet_by_gspt_safe($galaxy, $system, $planet, $planet_type, $for_update, $fields);
   }
 
-  /**
-   * @param Vector $vector
-   * @param bool   $for_update
-   * @param string $fields
-   *
-   * @return array
-   */
-  public static function db_planet_by_vector_object($vector, $for_update = false, $fields = '*') {
-    $planet_type = $vector->type == PT_DEBRIS ? PT_PLANET : $vector->type;
-    $result = DBStaticPlanet::db_planet_by_gspt_safe($vector->galaxy, $vector->system, $vector->planet, $planet_type, $for_update, $fields);
-
-    return !empty($result) ? $result : array();
-  }
+//  /**
+//   * @param Vector $vector
+//   * @param bool   $for_update
+//   * @param string $fields
+//   *
+//   * @return array
+//   */
+//  public static function db_planet_by_vector_object($vector, $for_update = false, $fields = '*') {
+//    $planet_type = $vector->type == PT_DEBRIS ? PT_PLANET : $vector->type;
+//    $result = DBStaticPlanet::db_planet_by_gspt_safe($vector->galaxy, $vector->system, $vector->planet, $planet_type, $for_update, $fields);
+//
+//    return !empty($result) ? $result : array();
+//  }
 
   public static function db_planet_by_parent($parent_id, $for_update = false, $fields = '*') {
     if(!($parent_id = idval($parent_id))) {

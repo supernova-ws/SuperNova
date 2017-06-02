@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a28.24');
+define('SN_VERSION', '42a28.29');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -141,6 +141,7 @@ define('MT_MISSILE'  , 10);
 define('MT_EXPLORE'  , 15);
 
 // *** Planet Target constants starts with PT_
+define('PT_NONE', 0);
 define('PT_ALL', 0);
 define('PT_PLANET', 1);
 define('PT_DEBRIS', 2);
