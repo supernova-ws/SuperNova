@@ -150,3 +150,13 @@ function linear_calc(&$linear, $from = 0, $debug = false)
   }
 }
 
+/**
+ * Get number's sign
+ *
+ * @param int|float $number
+ *
+ * @return int
+ */
+function sign($number) {
+  return ($number > 0) - ($number < 0);
+}
