@@ -79,6 +79,12 @@ class PlayerToAccountTranslate {
     return $account_translation;
   }
 
+  /**
+   * @param int|string $user_id_unsafe
+   * @param int        $provider_id_unsafe
+   *
+   * @return array - array[playerId][providerId][providerAccountId]
+   */
   public static function db_translate_get_account_by_user_id($user_id_unsafe, $provider_id_unsafe = 0) {
     static::init();
 

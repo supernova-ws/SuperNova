@@ -226,6 +226,27 @@ class Account {
     $account = $this->db->doquery("SELECT * FROM {{account}} WHERE LOWER(`account_name`) = LOWER('{$account_name_safe}') OR LOWER(`account_name`) = LOWER('{$email_safe}') OR LOWER(`account_email`) = LOWER('{$email_safe}') FOR UPDATE", true);
     return $this->assign_from_db_row($account);
   }
+
+  /**
+   * @param int|string $player_id_unsafe - player ID
+   *
+   * @return bool
+   */
+  public function dbGetByPlayerId($player_id_unsafe) {
+    $translation = PlayerToAccountTranslate::db_translate_get_account_by_user_id($player_id_unsafe, core_auth::$main_provider->provider_id);
+    if (empty($translation[$player_id_unsafe][core_auth::$main_provider->provider_id])) {
+      return false;
+    }
+
+    $account_translation = reset($translation[$player_id_unsafe][core_auth::$main_provider->provider_id]);
+    if (empty($account_translation['provider_account_id'])) {
+      return false;
+    }
+
+    return $this->db_get_by_id($account_translation['provider_account_id']);
+  }
+
+
   /**
    * Создает аккаунт
    *

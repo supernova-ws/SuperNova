@@ -1,15 +1,15 @@
 <?php
 
-use Exceptions\ExceptionSnLocalized;
-
 /**
- * dark_matter.php
+ * admin_darkmatter.php
  *
  * Adjust Dark Matter quantity
  *
- * @version 1.0 (c) copyright 2010 by Gorlum for http://supernova.ws/
+ * @version 2.0 (c) copyright 2010-2017 by Gorlum for http://supernova.ws/
  *
  */
+
+use Exceptions\ExceptionSnLocalized;
 
 define('INSIDE', true);
 define('INSTALL', false);
@@ -29,27 +29,23 @@ messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 function admin_dark_matter_model($lang, $user) {
   $points = sys_get_param_float('points');
   $reason_unsafe = sys_get_param_str_unsafe('reason');
-  $userIdOrName_unsafe = sys_get_param_str_unsafe('id_user');
+  $playerIdOrName_unsafe = sys_get_param_str_unsafe('playerId');
 
   // If no points and no username - nothing to do
-  if (!$points && !$userIdOrName_unsafe) {
+  if (!$points && !$playerIdOrName_unsafe) {
     return;
   }
 
   if (!$points) {
     throw new ExceptionSnLocalized('adm_dm_no_quant', ERR_ERROR);
   }
-  if (empty($userIdOrName_unsafe)) {
+  if (empty($playerIdOrName_unsafe)) {
     throw new ExceptionSnLocalized('adm_dm_no_dest', ERR_ERROR);
   }
 
-  $row = db_user_by_id($userIdOrName_unsafe, false, 'id, username');
+  $row = dbPlayerByIdOrName($playerIdOrName_unsafe, false, 'id, username');
   if (empty($row['id'])) {
-    $row = db_user_by_username($userIdOrName_unsafe, false, 'id, username', true, true);
-  }
-
-  if (empty($row['id'])) {
-    throw new ExceptionSnLocalized('adm_dm_user_none', ERR_ERROR, null, array($userIdOrName_unsafe));
+    throw new ExceptionSnLocalized('adm_dm_user_none', ERR_ERROR, null, array($playerIdOrName_unsafe));
   }
 
   // Does anything post to DB?
@@ -79,7 +75,7 @@ function admin_dark_matter_model($lang, $user) {
 function admin_dark_matter_view($template = null) {
   global $user, $lang;
 
-  $userIdOrName_unsafe = sys_get_param_str_unsafe('id_user');
+  $playerIdOrName_unsafe = sys_get_param_str_unsafe('playerId');
   $points = sys_get_param_float('points');
   $reason_unsafe = sys_get_param_str_unsafe('reason');
 
@@ -95,9 +91,9 @@ function admin_dark_matter_view($template = null) {
 
     if ($e->getCode() != ERR_NONE) {
       $template->assign_vars(array(
-        'ID_USER' => $userIdOrName_unsafe,
-        'POINTS'  => $points,
-        'REASON'  => $reason_unsafe,
+        'PLAYER_ID' => sys_safe_output($playerIdOrName_unsafe),
+        'POINTS'    => $points,
+        'REASON'    => sys_safe_output($reason_unsafe),
       ));
     };
 

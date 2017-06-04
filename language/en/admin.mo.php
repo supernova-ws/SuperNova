@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a29.3
+* @version 42a29.4
 *
 */
 
@@ -183,6 +183,9 @@ $a_lang_array = (array(
   'adm_er_nbs' => 'Total log records:',
   'adm_er_text' => 'Log record',
   'adm_er_bktr' => 'Debugging information',
+
+
+
   'adm_dm_title' => 'Change the number of dark matter',
   'adm_dm_planet' => 'ID, Coordinates or name of the planet',
   'adm_dm_oruser' => 'Or',
@@ -200,6 +203,9 @@ $a_lang_array = (array(
   'adm_dm_planet_conflict_id' => 'Planet named "%1$s" and the planet with ID %1$s .<br>try using the coordinates of the planet.',
   'adm_dm_planet_conflict_name' => 'Multiple planets named "%1$s".<br>try using coordinates or ID planet.',
   'adm_dm_planet_conflict_coords' => 'Planet named "%1$s" and the planet coordinates %1$s.<br>try using the ID of the planet.',
+
+  'adm_mm_change_hint' => 'User IDs searched first. If not found - name search performed',
+
   'adm_apply' => 'Apply',
   'adm_maint' => 'Servicing',
   'adm_backup' => 'Backup',
@@ -555,7 +561,6 @@ $a_lang_array = (array(
   'adm_stat_already_started' => 'Statistics already updated just now',
 
   'adm_dm_change_hint' => 'User IDs searched first. If not found - name search performed',
-  'adm_mm_change_hint' => 'User IDs searched first. If not found - name search performed',
 
   'adm_matter_change_log_record' => 'Through admin interface for user {%1$d} %2$s by user {%3$s} %4$s reason "%5$s"',
 

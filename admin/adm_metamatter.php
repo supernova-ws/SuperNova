@@ -1,13 +1,15 @@
 <?php
 
 /**
- * dark_matter.php
+ * adm_meta_matter.php
  *
- * Adjust Dark Matter quantity
+ * Adjust Meta Matter quantity
  *
- * @version 1.0 (c) copyright 2013 by Gorlum for http://supernova.ws
+ * @version 2.0 (c) copyright 2013-2017 by Gorlum for http://supernova.ws
  *
  */
+
+use Exceptions\ExceptionSnLocalized;
 
 define('INSIDE', true);
 define('INSTALL', false);
@@ -19,58 +21,130 @@ if(!sn_module_get_active_count('payment')) {
   sys_redirect(SN_ROOT_VIRTUAL . 'admin/overview.php');
 }
 
-global $lang, $user;
-
 messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-$template = gettemplate("admin/adm_metamatter", true);
-
-$message = '';
-$reason_unsafe = '';
-$message_status = ERR_ERROR;
-
-if($points = sys_get_param_float('points')) {
-  try {
-    $username = sys_get_param_str_unsafe('id_user');
-    $reason_unsafe = sys_get_param_str('reason');
-    if(empty($username)) {
-      throw new Exception($lang['adm_mm_no_dest']);
-    }
-
-    $an_account = new Account(classSupernova::$auth->account->db);
-    if(!$an_account->db_get_by_id($username) && !$an_account->db_get_by_name($username) && !$an_account->db_get_by_email($username)) {
-      throw new Exception(sprintf($lang['adm_mm_user_none'], $username));
-    }
-
-    if(!$an_account->metamatter_change(RPG_ADMIN, $points, sprintf(
-      $lang['adm_matter_change_log_record'],
-      $an_account->account_id, db_escape($an_account->account_name),
-      $user['id'], db_escape($user['username']),
-      db_escape(sys_get_param_str('reason'))
-    ))) {
-      throw new Exception($lang['adm_mm_add_err']);
-    }
-    $message = sprintf($lang['adm_mm_user_added'], $an_account->account_name, $an_account->account_id, pretty_number($points));
-    $isNoError = true;
-    $message_status = ERR_NONE;
-  } catch (Exception $e) {
-    $message = $e->getMessage();
+/**
+ * @param      $lang
+ * @param      $user
+ * @param      $accountIdOrName_unsafe
+ * @param      $playerIdOrName_unsafe
+ * @param      $points
+ * @param      $reason_unsafe
+ * @param bool $confirmed
+ *
+ * @throws ExceptionSnLocalized
+ */
+function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerIdOrName_unsafe, $points, $reason_unsafe, $confirmed) {
+  // If no points and no username - nothing to do
+  if (!$points && !$playerIdOrName_unsafe && !$accountIdOrName_unsafe) {
+    return;
   }
-//} elseif($id_user) {
-//  // Points is empty but destination is set - this again means error
-//  $message = $lang['adm_mm_no_quant'];
+
+  if (!$points) {
+    throw new ExceptionSnLocalized('adm_mm_err_points_empty', ERR_ERROR);
+  }
+
+  $account = new Account(classSupernova::$auth->account->db);
+
+  if (!empty($accountIdOrName_unsafe)) {
+    if (
+      !$account->db_get_by_id($accountIdOrName_unsafe)
+      &&
+      !$account->db_get_by_name($accountIdOrName_unsafe)
+      &&
+      !$account->db_get_by_email($accountIdOrName_unsafe)
+    ) {
+      throw new ExceptionSnLocalized('adm_mm_err_account_not_found', ERR_ERROR);
+    }
+  } elseif (!empty($playerIdOrName_unsafe)) {
+    $row = dbPlayerByIdOrName($playerIdOrName_unsafe, false, 'id, username');
+    if (empty($row['id'])) {
+      throw new ExceptionSnLocalized('adm_mm_err_player_not_found', ERR_ERROR, null, array($playerIdOrName_unsafe));
+    }
+
+    if (!$account->dbGetByPlayerId($row['id'])) {
+      throw new ExceptionSnLocalized('adm_mm_err_player_no_account', ERR_ERROR, null, array($playerIdOrName_unsafe));
+    }
+  } else {
+    throw new ExceptionSnLocalized('adm_mm_err_account_and_player_empty', ERR_ERROR);
+  }
+
+  if (!$account->metamatter_change(RPG_ADMIN, $points,
+    sprintf(
+      $lang['adm_mm_msg_change_mm_log_record'],
+      $account->account_id,
+      $account->account_name,
+      $user['id'],
+      $user['username'],
+      $reason_unsafe,
+      core_auth::$main_provider->account->account_id,
+      core_auth::$main_provider->account->account_name,
+      !empty($row['id']) ? $row['id'] : 0,
+      !empty($row['username']) ? $row['username'] : ''
+    )
+  )
+  ) {
+    throw new ExceptionSnLocalized($lang['adm_mm_err_mm_change_failed'], ERR_ERROR);
+  }
+
+  $sprintfPayload = array(
+    $account->account_name,
+    $account->account_id,
+    pretty_number($points),
+    !empty($row['id']) ? $row['id'] : 0,
+    !empty($row['username']) ? $row['username'] : ''
+  );
+
+  if ($confirmed) {
+    throw new ExceptionSnLocalized('adm_mm_msg_mm_changed', ERR_NONE, null, $sprintfPayload);
+  } else {
+    throw new ExceptionSnLocalized('adm_mm_msg_confirm_mm_change', ERR_WARNING, null, $sprintfPayload);
+  }
+
 }
 
-if($message_status == ERR_ERROR) {
-  $template->assign_vars(array(
-    'ID_USER' => $username,
-    'POINTS' => $points,
-    'REASON' => $reason_unsafe,
-  ));
-};
 
-if($message) {
-  $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
+/**
+ * @param array       $user
+ * @param classLocale $lang
+ */
+function admin_meta_matter_view($user, $lang) {
+  $accountIdOrName_unsafe = sys_get_param_str_unsafe('accountId');
+  $playerIdOrName_unsafe = sys_get_param_str_unsafe('playerId');
+  $points = sys_get_param_float('points');
+  $reason_unsafe = sys_get_param_str_unsafe('reason');
+  $confirmed = sys_get_param('confirm_mm_change');
+  $confirmed = !empty($confirmed); // can't use empty() or isset() with function result in PHP 5.3
+
+  $template = gettemplate("admin/adm_metamatter", true);
+
+  try {
+    admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerIdOrName_unsafe, $points, $reason_unsafe, $confirmed);
+  } catch (ExceptionSnLocalized $e) {
+    $template->assign_block_vars('result', array(
+      'MESSAGE' => $e->getMessageLocalized(),
+      'STATUS'  => $e->getCode() ? $e->getCode() : ERR_NONE,
+    ));
+
+    if ($e->getCode() != ERR_NONE) {
+      $template->assign_vars(array(
+        'ACCOUNT_ID' => sys_safe_output($accountIdOrName_unsafe),
+        'PLAYER_ID'  => sys_safe_output($playerIdOrName_unsafe),
+        'POINTS'     => $points,
+        'REASON'     => sys_safe_output($reason_unsafe),
+      ));
+    };
+
+    if ($e->getCode() == ERR_WARNING) {
+      $template->assign_vars(array(
+        'NEED_CONFIRMATION' => 1,
+      ));
+    }
+  }
+
+  display($template, $lang['adm_dm_title']);
 }
 
-display($template, $lang['adm_mm_title']);
+global $user, $lang;
+
+admin_meta_matter_view($user, $lang);

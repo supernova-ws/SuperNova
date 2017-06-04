@@ -14,6 +14,24 @@ function db_user_by_username($username_unsafe, $for_update = false, $fields = '*
   return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
 }
 /**
+ * @param        $username_unsafe
+ * @param bool   $for_update
+ * @param string $fields
+ * @param null   $player
+ * @param bool   $like
+ *
+ * @return array|false
+ * @deprecated
+ */
+function dbPlayerByIdOrName($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
+  $row = db_user_by_id($username_unsafe, $for_update, $fields, $player);
+  if (empty($row['id'])) {
+    $row = db_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
+  }
+
+  return !is_array($row) || empty($row['id']) ? false : $row;
+}
+/**
 * @deprecated
 */
 function db_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
