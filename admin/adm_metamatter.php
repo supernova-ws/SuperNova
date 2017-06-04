@@ -69,24 +69,6 @@ function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerI
     throw new ExceptionSnLocalized('adm_mm_err_account_and_player_empty', ERR_ERROR);
   }
 
-  if (!$account->metamatter_change(RPG_ADMIN, $points,
-    sprintf(
-      $lang['adm_mm_msg_change_mm_log_record'],
-      $account->account_id,
-      $account->account_name,
-      $user['id'],
-      $user['username'],
-      $reason_unsafe,
-      core_auth::$main_provider->account->account_id,
-      core_auth::$main_provider->account->account_name,
-      !empty($row['id']) ? $row['id'] : 0,
-      !empty($row['username']) ? $row['username'] : ''
-    )
-  )
-  ) {
-    throw new ExceptionSnLocalized($lang['adm_mm_err_mm_change_failed'], ERR_ERROR);
-  }
-
   $sprintfPayload = array(
     $account->account_name,
     $account->account_id,
@@ -96,6 +78,24 @@ function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerI
   );
 
   if ($confirmed) {
+    if (!$account->metamatter_change(RPG_ADMIN, $points,
+      sprintf(
+        $lang['adm_mm_msg_change_mm_log_record'],
+        $account->account_id,
+        $account->account_name,
+        $user['id'],
+        $user['username'],
+        $reason_unsafe,
+        core_auth::$main_provider->account->account_id,
+        core_auth::$main_provider->account->account_name,
+        !empty($row['id']) ? $row['id'] : 0,
+        !empty($row['username']) ? $row['username'] : ''
+      )
+    )
+    ) {
+      throw new ExceptionSnLocalized($lang['adm_mm_err_mm_change_failed'], ERR_ERROR);
+    }
+
     throw new ExceptionSnLocalized('adm_mm_msg_mm_changed', ERR_NONE, null, $sprintfPayload);
   } else {
     throw new ExceptionSnLocalized('adm_mm_msg_confirm_mm_change', ERR_WARNING, null, $sprintfPayload);
