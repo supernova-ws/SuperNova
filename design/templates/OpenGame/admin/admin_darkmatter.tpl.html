@@ -1,27 +1,29 @@
 <h2>{L_adm_dm_title}</h2>
 
 <form action="" method="post">
-  <table width="305"><tbody>
-    <tr><td class="c" colspan="2">{L_adm_dm_title}</td></tr>
+  <table width="305">
+    <tbody>
+    <tr>
+      <td class="c" colspan="2">{L_adm_dm_title}</td>
+    </tr>
     <tr>
       <th>{L_adm_dm_user}</th>
-      <th><input name="id_user" type="text" value="{ID_USER}"/><br />{L_adm_dm_change_hint}</th>
+      <th>
+        <input name="id_user" type="text" value="{ID_USER}"/><br/>
+        {L_adm_dm_change_hint}
+      </th>
     </tr>
-<!--
-    <tr><td class="c_l" colspan="2">{L_adm_dm_oruser}</td></tr>
-    <tr>
-      <th>{L_adm_dm_planet}</th>
-      <th><input name="id_planet" type="text" value="{ID_PLANET}"/></th>
-    </tr>
--->
     <tr>
       <th>{L_dark_matter}</th>
-      <th><input name="points" type="text" value="{POINTS}" /></th>
+      <th><input name="points" type="text" value="{POINTS}"/></th>
     </tr>
     <tr>
       <th>{L_adm_reason}</th>
-      <th><input name="reason" type="text" value="{REASON}" /></th>
+      <th><input name="reason" type="text" value="{REASON}"/></th>
     </tr>
-    <tr><th colspan="2"><input type="Submit" value="{L_adm_apply}" /></th></tr>
-  </tbody></table>
+    <tr>
+      <th colspan="2"><input type="Submit" value="{L_adm_apply}"/></th>
+    </tr>
+    </tbody>
+  </table>
 </form>

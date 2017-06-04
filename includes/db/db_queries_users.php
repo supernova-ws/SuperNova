@@ -1,11 +1,21 @@
 <?php
 
+/**
+ * @deprecated
+ */
 function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
   return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);
 }
+
+/**
+ * @deprecated
+ */
 function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
   return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
 }
+/**
+* @deprecated
+*/
 function db_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
   return classSupernova::db_get_user_by_email($email_unsafe, $use_both, $for_update, $fields);
 }
@@ -16,24 +26,39 @@ function sn_db_user_by_account_name($account_name_unsafe, &$result = null) {
   return empty($result) ? $result = db_user_by_account(db_account_by_name($account_name_unsafe)) : $result;
 }
 */
+/**
+ * @deprecated
+ */
 function db_user_list($user_filter = '', $for_update = false, $fields = '*') {
   return classSupernova::db_get_record_list(LOC_USER, $user_filter);
 }
 
 
 
+/**
+ * @deprecated
+ */
 function db_user_set_by_id($user_id, $set) {
   return classSupernova::db_upd_record_by_id(LOC_USER, $user_id, $set);
   // return classSupernova::db_set_user_by_id($user_id, $set);
 }
 
 
+/**
+ * @deprecated
+ */
 function db_user_list_set_mass_mail(&$owners_list, $set) {
   return classSupernova::db_upd_record_list(LOC_USER, !empty($owners_list) ? '`id` IN (' . implode(',', $owners_list) . ');' : '', $set);
 }
+/**
+ * @deprecated
+ */
 function db_user_list_set_by_ally_and_rank($ally_id, $ally_rank_id, $set) {
   return classSupernova::db_upd_record_list(LOC_USER, "`ally_id`={$ally_id} AND `ally_rank_id` >= {$ally_rank_id}", $set);
 }
+/**
+ * @deprecated
+ */
 function db_user_list_set_ally_deprecated_convert_ranks($ally_id, $i, $rank_id) {
   return classSupernova::db_upd_record_list(LOC_USER, "`ally_id` = {$ally_id} AND `ally_rank_id`={$rank_id}", "`ally_rank_id` = {$i}");
 }
@@ -49,6 +74,9 @@ function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
 
 
 // TODO Внести это всё в supernova для HyperNova
+/**
+ * @deprecated
+ */
 function db_user_last_registered_username() {
   return classSupernova::db_get_user_player_username_last_registered();
 }

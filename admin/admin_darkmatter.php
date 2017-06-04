@@ -1,5 +1,7 @@
 <?php
 
+use Exceptions\ExceptionSnLocalized;
+
 /**
  * dark_matter.php
  *
@@ -17,54 +19,93 @@ require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
 messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-$template = gettemplate("admin/admin_darkmatter", true);
-
-$message = '';
-$message_status = ERR_ERROR;
-
-if($points = sys_get_param_float('points')) {
-// If points not empty...
+/**
+ * @param $lang
+ * @param $user
+ *
+ * @throws ExceptionSnLocalized
+ *
+ */
+function admin_dark_matter_model($lang, $user) {
+  $points = sys_get_param_float('points');
   $reason_unsafe = sys_get_param_str_unsafe('reason');
-  if($username = sys_get_param_str_unsafe('id_user')) {
-    $row = db_user_by_id($username, false, 'id, username', true, true);
-    if(!isset($row['id'])) {
-      $row = db_user_by_username($username, false, 'id, username', true, true);
-    }
-    if(is_array($row) && isset($row['id'])) {
-      // Does anything post to DB?
-      if(rpg_points_change(
-        $row['id'],
-        RPG_ADMIN,
-        $points,
-        sprintf($lang['adm_matter_change_log_record'], $row['id'], db_escape($row['username']), $user['id'], db_escape($user['username']), db_escape(sys_get_param_str('reason')))
-      )) {
-        $message = sprintf($lang['adm_dm_user_added'], $row['username'], $row['id'], pretty_number($points));
-        $isNoError = true;
-        $message_status = ERR_NONE;
-      } else {
-        // No? We will say it to user...
-        $message = $lang['adm_dm_add_err'];
-      }
-    }
-  } else {
-    // Points not empty but destination is not set - this means error
-    $message = $lang['adm_dm_no_dest'];
+  $userIdOrName_unsafe = sys_get_param_str_unsafe('id_user');
+
+  // If no points and no username - nothing to do
+  if (!$points && !$userIdOrName_unsafe) {
+    return;
   }
-} elseif($id_user) {
-  // Points is empty but destination is set - this again means error
-  $message = $lang['adm_dm_no_quant'];
+
+  if (!$points) {
+    throw new ExceptionSnLocalized('adm_dm_no_quant', ERR_ERROR);
+  }
+  if (empty($userIdOrName_unsafe)) {
+    throw new ExceptionSnLocalized('adm_dm_no_dest', ERR_ERROR);
+  }
+
+  $row = db_user_by_id($userIdOrName_unsafe, false, 'id, username');
+  if (empty($row['id'])) {
+    $row = db_user_by_username($userIdOrName_unsafe, false, 'id, username', true, true);
+  }
+
+  if (empty($row['id'])) {
+    throw new ExceptionSnLocalized('adm_dm_user_none', ERR_ERROR, null, array($userIdOrName_unsafe));
+  }
+
+  // Does anything post to DB?
+  if (!rpg_points_change(
+    $row['id'],
+    RPG_ADMIN,
+    $points,
+    sprintf($lang['adm_matter_change_log_record'], $row['id'], $row['username'], $user['id'], $user['username'], $reason_unsafe)
+  )
+  ) {
+    // No? We will say it to user...
+    throw new ExceptionSnLocalized('adm_dm_add_err', ERR_ERROR);
+  }
+
+  throw new ExceptionSnLocalized(
+    'adm_dm_user_added',
+    ERR_NONE,
+    null,
+    array($row['username'], $row['id'], pretty_number($points))
+  );
 }
 
-if(!$isNoError) {
-  $template->assign_vars(array(
-    'ID_USER' => $id_user,
-    'POINTS' => $points,
-    'REASON' => $reason_unsafe,
-  ));
-};
 
-if($message) {
-  $template->assign_block_vars('result', array('MESSAGE' => $message, 'STATUS' => $message_status ? $message_status : ERR_NONE));
+/**
+ * @param $template |null $template
+ */
+function admin_dark_matter_view($template = null) {
+  global $user, $lang;
+
+  $userIdOrName_unsafe = sys_get_param_str_unsafe('id_user');
+  $points = sys_get_param_float('points');
+  $reason_unsafe = sys_get_param_str_unsafe('reason');
+
+  $template = gettemplate("admin/admin_darkmatter", true);
+
+  try {
+    admin_dark_matter_model($lang, $user);
+  } catch (ExceptionSnLocalized $e) {
+    $template->assign_block_vars('result', array(
+      'MESSAGE' => $e->getMessageLocalized(),
+      'STATUS'  => $e->getCode() ? $e->getCode() : ERR_NONE,
+    ));
+
+    if ($e->getCode() != ERR_NONE) {
+      $template->assign_vars(array(
+        'ID_USER' => $userIdOrName_unsafe,
+        'POINTS'  => $points,
+        'REASON'  => $reason_unsafe,
+      ));
+    };
+
+  }
+
+  display($template, $lang['adm_dm_title']);
+
+  return $template;
 }
 
-display($template, $lang['adm_dm_title']);
+admin_dark_matter_view();

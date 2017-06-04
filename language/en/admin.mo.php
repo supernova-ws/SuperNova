@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a27.15
+* @version 42a29.3
 *
 */
 
@@ -187,11 +187,12 @@ $a_lang_array = (array(
   'adm_dm_planet' => 'ID, Coordinates or name of the planet',
   'adm_dm_oruser' => 'Or',
   'adm_dm_user' => 'ID or username',
-  'adm_dm_no_quant' => 'Specify the number Dark Matter(positive-Negative-for charging, removal)',
-  'adm_dm_no_dest' => 'Specify the user or planet to edit Dark Matter',
-  'adm_dm_add_err' => 'It look like during charging Dark Matter Occured.',
-  'adm_dm_user_none' => 'Error: could not find user with ID or name %s',
-  'adm_dm_user_added' => 'Number of Dark Matter user: [%s] (ID: %d) has been successfully changed to %s Dark Matter.',
+  'adm_or_large' => 'OR',
+  'adm_dm_no_quant' => 'Specify amount of Dark Matter (negative - for removal)',
+  'adm_dm_no_dest' => 'Specify the player ID or name to change Dark Matter',
+  'adm_dm_add_err' => 'It look like during charging Dark Matter error occured.',
+  'adm_dm_user_none' => 'Error: could not find user with ID or name "%s"',
+  'adm_dm_user_added' => 'Dark Matter on user [%2$d] "%1$s" succesfully changed by %3$s DM',
   'adm_dm_user_conflict' => 'Error locating user: looks like the Database is the user and with the same name, and with the same ID',
   'adm_dm_planet_none' => 'Error locating planet: Planet ID is not found, coordinates or name %s',
   'adm_dm_planet_added' => 'The user ID number DM %1$d (owner of planet %4$s %2$s ID %3$d) successfully renamed to %5$d DM.',
@@ -554,6 +555,7 @@ $a_lang_array = (array(
   'adm_stat_already_started' => 'Statistics already updated just now',
 
   'adm_dm_change_hint' => 'User IDs searched first. If not found - name search performed',
+  'adm_mm_change_hint' => 'User IDs searched first. If not found - name search performed',
 
   'adm_matter_change_log_record' => 'Through admin interface for user {%1$d} %2$s by user {%3$s} %4$s reason "%5$s"',
 
