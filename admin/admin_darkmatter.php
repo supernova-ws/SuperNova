@@ -24,6 +24,7 @@ $message_status = ERR_ERROR;
 
 if($points = sys_get_param_float('points')) {
 // If points not empty...
+  $reason_unsafe = sys_get_param_str_unsafe('reason');
   if($username = sys_get_param_str_unsafe('id_user')) {
     $row = db_user_by_id($username, false, 'id, username', true, true);
     if(!isset($row['id'])) {
@@ -58,7 +59,7 @@ if(!$isNoError) {
   $template->assign_vars(array(
     'ID_USER' => $id_user,
     'POINTS' => $points,
-    'REASON' => $reason,
+    'REASON' => $reason_unsafe,
   ));
 };
 

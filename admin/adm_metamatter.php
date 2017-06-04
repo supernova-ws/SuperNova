@@ -26,11 +26,13 @@ messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 $template = gettemplate("admin/adm_metamatter", true);
 
 $message = '';
+$reason_unsafe = '';
 $message_status = ERR_ERROR;
 
 if($points = sys_get_param_float('points')) {
   try {
     $username = sys_get_param_str_unsafe('id_user');
+    $reason_unsafe = sys_get_param_str('reason');
     if(empty($username)) {
       throw new Exception($lang['adm_mm_no_dest']);
     }
@@ -63,7 +65,7 @@ if($message_status == ERR_ERROR) {
   $template->assign_vars(array(
     'ID_USER' => $username,
     'POINTS' => $points,
-    'REASON' => $reason,
+    'REASON' => $reason_unsafe,
   ));
 };
 
