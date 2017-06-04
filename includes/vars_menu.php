@@ -497,6 +497,7 @@ $sn_menu_admin = array(
     'AUTH_LEVEL' => 3,
   ),
   'menu_admin_dark_matter'   => array(
+    'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'dark_matter',
     'LINK'       => 'admin/admin_darkmatter.php',
