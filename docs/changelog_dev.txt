@@ -599,6 +599,10 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+2017-06-08 17:03:55 42a29.6
+[@] Код
+    Поддержка core_festival 5a4.0+
+
 
 2017-06-04 19:55:31 42a29.4
 [+] Админка/Изменение ММ
