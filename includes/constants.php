@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a29.7');
+define('SN_VERSION', '42a29.8');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1020,6 +1020,13 @@ define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_SILVER', 2313); // День Рожде
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_GOLD', 2314); // День Рождения СН - 2017
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_PLATINUM', 2315); // День Рождения СН - 2017
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_DIAMOND', 2316); // День Рождения СН - 2017
+
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_SIMPLE', 2317); // День Рождения СН - 2016
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_BRONZE', 2318); // День Рождения СН - 2016
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_SILVER', 2319); // День Рождения СН - 2016
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_GOLD', 2320); // День Рождения СН - 2016
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_PLATINUM', 2321); // День Рождения СН - 2016
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_DIAMOND', 2322); // День Рождения СН - 2016
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
