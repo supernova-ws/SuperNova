@@ -266,7 +266,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     $workTime = microtime(true) - $workBegin;
     if ($workTime > GAME_FLEET_HANDLER_MAX_TIME) {
       $debug->warning(sprintf(
-        'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d events. Last event: mission %4$d event %6$s (%5$ss)',
+        'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d events. Last event: mission %4$s event %6$s (%5$ss)',
         number_format($workTime, 4),
         GAME_FLEET_HANDLER_MAX_TIME,
         $eventsProcessed,
