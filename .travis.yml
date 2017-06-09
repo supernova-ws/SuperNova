@@ -3,6 +3,7 @@ branches:
   only:
     - work-fleets
     - master
+    - trunk
 
 
 # see http://about.travis-ci.org/docs/user/languages/php/ for more hints
