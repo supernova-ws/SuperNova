@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a29.14');
+define('SN_VERSION', '42a29.15');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -184,6 +184,7 @@ define('CACHE_ALL'       , CACHE_FLEET | CACHE_PLANET | CACHE_USER | CACHE_SOURC
 define('CACHE_NONE'      , CACHE_NOTHING); // Alias for me
 
 // *** Event types
+define('EVENT_FLEET_NONE', 0);
 define('EVENT_FLEET_ARRIVE', 1);
 define('EVENT_FLEET_STAY'  , 2);
 define('EVENT_FLEET_RETURN', 3);

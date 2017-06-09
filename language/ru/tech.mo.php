@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a25.19
+* @version 42a29.15
 *
 */
 
@@ -61,6 +61,12 @@ $a_lang_array = (array(
     MT_DESTROY => 'Уничтожение',
     MT_MISSILE => 'Ракетная атака',
     MT_EXPLORE => 'Экспедиция',
+  ),
+  'fleet_events' => array(
+    EVENT_FLEET_NONE   => 'Нет события',
+    EVENT_FLEET_ARRIVE => 'Прибытие',
+    EVENT_FLEET_STAY   => 'Удержание/Экспедиция',
+    EVENT_FLEET_RETURN => 'Возвращение',
   ),
 
   'tech' => array(

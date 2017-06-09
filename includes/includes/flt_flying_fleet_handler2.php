@@ -152,7 +152,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   [*] Но не раньше, чем переписать все миссии
 
   */
-  global $config, $debug;
+  global $config, $debug, $lang;
 
   if(
     $config->game_disable != GAME_DISABLE_NONE
@@ -252,19 +252,27 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
 
 //log_file('Обработка миссий');
+  $lastEventBegin = microtime(true);
+  $lastMission = MT_NONE;
   $eventsProcessed = 0;
+  $lastEvent = EVENT_FLEET_NONE;
+
   $sn_groups_mission = sn_get_groups('missions');
   foreach($fleet_event_list as $fleet_event) {
+    $lastEventEnd = microtime(true);
     // Watchdog timer
     // If flying fleet handler works more then 10 seconds - stopping it
     // Let next run handle rest of fleets
     $workTime = microtime(true) - $workBegin;
     if ($workTime > GAME_FLEET_HANDLER_MAX_TIME) {
       $debug->warning(sprintf(
-        'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d events',
+        'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d events. Last event: mission %4$d event %6$s (%5$ss)',
         number_format($workTime, 4),
         GAME_FLEET_HANDLER_MAX_TIME,
-        $eventsProcessed
+        $eventsProcessed,
+        $lang['type_mission'][$lastMission],
+        number_format($lastEventEnd - $lastEventBegin, 4),
+        $lang['fleet_events'][$lastEvent]
       ),
         'FFH Warning',
         504
@@ -280,6 +288,9 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       continue;
     }
 
+    $lastEventBegin = microtime(true);
+    $lastMission = $fleet_row['fleet_mission'];
+    $lastEvent = $fleet_event['fleet_event'];
     $eventsProcessed++;
 
 //log_file('Миссия');

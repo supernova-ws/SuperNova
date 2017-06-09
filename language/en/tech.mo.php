@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a25.19
+* @version 42a29.15
 *
 */
 
@@ -61,6 +61,12 @@ $a_lang_array = (array(
     MT_DESTROY => 'Destruction',
     MT_MISSILE => 'Missile attack',
     MT_EXPLORE => 'Expedition',
+  ),
+  'fleet_events' => array(
+    EVENT_FLEET_NONE   => 'No event',
+    EVENT_FLEET_ARRIVE => 'Arriving',
+    EVENT_FLEET_STAY   => 'Hold/Expedition',
+    EVENT_FLEET_RETURN => 'Return',
   ),
 
   'tech' => array(
