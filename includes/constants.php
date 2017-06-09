@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a29.8');
+define('SN_VERSION', '42a29.14');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -1650,3 +1650,5 @@ define('FIELD_VIEW', 'view');
 define('THIS_STRING', '$this');
 
 define('MENU_SERVER_LOGO_DEFAULT', 'design/images/supernova.png');
+
+define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can work

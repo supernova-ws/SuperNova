@@ -164,6 +164,8 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
     return;
   }
 
+
+  $workBegin = microtime(true);
   sn_db_transaction_start();
 
   // Watchdog timer
@@ -250,13 +252,23 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
 
 
 //log_file('Обработка миссий');
+  $eventsProcessed = 0;
   $sn_groups_mission = sn_get_groups('missions');
   foreach($fleet_event_list as $fleet_event) {
     // Watchdog timer
     // If flying fleet handler works more then 10 seconds - stopping it
     // Let next run handle rest of fleets
-    if(time() - SN_TIME_NOW > 10) {
-      $debug->warning('Flying fleet handler standard routine works more then 10 seconds - watchdog unlocked', 'FFH Warning', 504);
+    $workTime = microtime(true) - $workBegin;
+    if ($workTime > GAME_FLEET_HANDLER_MAX_TIME) {
+      $debug->warning(sprintf(
+        'Flying fleet handler works %1$s (> %2$s) seconds - skip rest. Processed %3$d events',
+        number_format($workTime, 4),
+        GAME_FLEET_HANDLER_MAX_TIME,
+        $eventsProcessed
+      ),
+        'FFH Warning',
+        504
+      );
       break;
     }
 
@@ -267,6 +279,8 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
       // Fleet was destroyed in course of previous actions
       continue;
     }
+
+    $eventsProcessed++;
 
 //log_file('Миссия');
     // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
