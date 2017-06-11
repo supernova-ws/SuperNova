@@ -3,7 +3,17 @@
 use Vector\Vector;
 use Common\GlobalContainer;
 
+/**
+ * Class classSupernova
+ *
+ * Singleton
+ */
 class classSupernova {
+  /**
+   * @var classSupernova $_sn
+   */
+  protected static $_sn;
+
   /**
    * @var GlobalContainer $gc
    */
@@ -184,6 +194,21 @@ class classSupernova {
       ),
     ),
   );
+
+  /**
+   * @return classSupernova
+   */
+  public static function sn() {
+    if(!isset(self::$_sn)) {
+      self::$_sn = new self();
+    }
+
+    return self::$_sn;
+  }
+
+  public function __construct() {
+
+  }
 
 
   public static function log_file($message, $spaces = 0) {
@@ -943,7 +968,7 @@ class classSupernova {
   }
 
 
-  public static function init_0_prepare () {
+  public static function loadFileSettings () {
     $dbsettings = array();
 
     require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
@@ -952,7 +977,7 @@ class classSupernova {
     self::$db_name = $dbsettings['name'];
     self::$sn_secret_word = $dbsettings['secretword'];
 
-    static::$gc = new GlobalContainer(array(
+    self::$gc = new GlobalContainer(array(
       'cachePrefix' => self::$cache_prefix,
     ));
 
@@ -977,30 +1002,6 @@ class classSupernova {
 
     // Initializing statics
     Vector::_staticInit(static::$config);
-  }
-
-  public static function init_debug_state() {
-    if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
-      define('BE_DEBUG', true);
-    }
-    // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
-    define('DEBUG_SQL_ERROR', true); // Выводить в сообщении об ошибке так же полный дамп запросов за сессию. Подойдет любое значение
-    define('DEBUG_SQL_COMMENT_LONG', true); // Добавлять SQL запрос длинные комментарии. Не зависим от всех остальных параметров. Подойдет любое значение
-    define('DEBUG_SQL_COMMENT', true); // Добавлять комментарии прямо в SQL запрос. Подойдет любое значение
-    // Включаем нужные настройки
-    defined('DEBUG_SQL_ONLINE') && !defined('DEBUG_SQL_ERROR') ? define('DEBUG_SQL_ERROR', true) : false;
-    defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
-    defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
-
-    if(defined('BE_DEBUG') || static::$config->debug) {
-      @define('BE_DEBUG', true);
-      @ini_set('display_errors', 1);
-      @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
-    } else {
-      @define('BE_DEBUG', false);
-      @ini_set('display_errors', 0);
-    }
-
   }
 
   /**

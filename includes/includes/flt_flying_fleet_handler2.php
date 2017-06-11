@@ -124,7 +124,7 @@ function log_file($msg) {
 }
 
 // ------------------------------------------------------------------
-function flt_flying_fleet_handler($skip_fleet_update = false) {
+function flt_flying_fleet_handler($fleetUpdateSkip = false) {
   /*
 
   [*] Нужно ли заворачивать ВСЕ в одну транзакцию?
@@ -157,7 +157,7 @@ function flt_flying_fleet_handler($skip_fleet_update = false) {
   if(
     $config->game_disable != GAME_DISABLE_NONE
     ||
-    $skip_fleet_update
+    $fleetUpdateSkip
     ||
     SN_TIME_NOW - strtotime($config->fleet_update_last) <= $config->fleet_update_interval
   ) {

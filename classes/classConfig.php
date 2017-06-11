@@ -17,18 +17,27 @@
  * @property string $auth_vkontakte_token
  * @property int    $auth_vkontakte_token_expire
  *
- * @property string $game_name             Server name as it would be seen through game
+ * @property string $COOKIE_NAME                  => 'SuperNova'
  *
- * @property int    $game_maxGalaxy               => 5,
- * @property int    $game_maxSystem               => 199,
- * @property int    $game_maxPlanet               => 15,
+ * @property string $game_default_language        => 'ru'
+ * @property string $game_default_skin            => 'skins/EpicBlue/'
+ * @property string $game_default_template        => 'OpenGame'
+ *
+ * @property int    $game_maxGalaxy               => 5
+ * @property int    $game_maxSystem               => 199
+ * @property int    $game_maxPlanet               => 15
+ *
+ * @property string $game_name                    Server name as it would be seen through game
  *
  * @property int    $game_news_actual             How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
  * @property int    $game_news_overview           How much last news to show in Overview page. Default - 3
  * @property int    $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
  *
- * @property int    $game_noob_factor             => 5,    // Multiplier to divide "stronger" and "weaker" users
- * @property int    $game_noob_points             => 5000, // Below this point user threated as noob. 0 to disable
+ * @property int    $game_noob_factor             => 5    // Multiplier to divide "stronger" and "weaker" users
+ * @property int    $game_noob_points             => 5000 // Below this point user threated as noob. 0 to disable
+ *
+ * @property string $int_format_date              => 'd.m.Y' // Date default format
+ * @property string $int_format_time              => 'H:i:s' // Time default format
  *
  * @property int    $menu_server_name_disabled    => 0
  * @property int    $menu_launch_date_disabled    => 0
@@ -40,6 +49,7 @@
  * @property int    $url_faq                      URL of FAQ root
  *
  * @property int    $users_amount                 => 1 - Total users count
+ *
  */
 class classConfig extends classPersistent {
   protected $defaults = array(

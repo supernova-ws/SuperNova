@@ -2750,6 +2750,9 @@ body:not(.no_border_image) [table_title]:before {
 .white, .zero_number {
   color: white;
 }
+.info_bg {
+  color: #005472;
+}
 .ok_bg, .success_bg, .positive_bg {
   background-color: #004400;
 }

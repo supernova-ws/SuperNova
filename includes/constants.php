@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '41');
 define('SN_RELEASE', '41');
-define('SN_VERSION', '42a29.20');
+define('SN_VERSION', '42a30.0');
 define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
 
 // Game type constants starts with GAME_
@@ -83,6 +83,7 @@ define('LOGIN_REGISTER_CHARACTERS_PROHIBITED', "`'\"\\/ |^&?<>[]{}()%;\n\r\t\v\f
 define('SN_SYS_SEC_CHARS_ALLOWED', 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789');
 
 // Mot qui sont interdit a la saisie !
+global $ListCensure;
 $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 // Confirmation record types
