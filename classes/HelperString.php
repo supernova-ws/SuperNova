@@ -83,4 +83,8 @@ class HelperString {
     return $string;
   }
 
+  public static function camelToUnderscore($string) {
+    return strtolower(trim(preg_replace('/[A-Z]/', '_\0', $string), '_'));
+  }
+
 }

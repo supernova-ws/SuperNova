@@ -52,6 +52,13 @@ class db_mysql {
   public $time_mysql_total = 0.0;
 
   /**
+   * DB schemes
+   *
+   * @var \DBAL\Schema|null $schema
+   */
+  protected static $schema = null;
+
+  /**
    * db_mysql constructor.
    *
    * @param GlobalContainer $gc
@@ -60,6 +67,14 @@ class db_mysql {
 //    $this->transaction = new \DBAL\DbTransaction($gc, $this);
 //    $this->snCache = new $gc->snCacheClass($gc, $this);
 //    $this->operator = new DbRowDirectOperator($this);
+  }
+
+  public function schema() {
+    if(!isset(self::$schema)) {
+      self::$schema = new \DBAL\Schema($this);
+    }
+
+    return self::$schema;
   }
 
   function load_db_settings() {
@@ -90,7 +105,7 @@ class db_mysql {
       $this->connected = $this->connected || $this->driver_connect();
 
       if($this->connected) {
-        $this->table_list = $this->db_get_table_list();
+        $this->table_list = $this->schema()->getSnTables();
         // TODO Проверка на пустоту
       }
     } else {
@@ -140,8 +155,7 @@ class db_mysql {
 
     $sql = $query;
     if(strpos($sql, '{{') !== false) {
-//     foreach($sn_cache->tables as $tableName) {
-      foreach($this->table_list as $tableName) {
+      foreach($this->schema()->getSnTables() as $tableName) {
         $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
       }
     }
@@ -260,27 +274,6 @@ class db_mysql {
         die($message);
         break;
     }
-  }
-
-  function db_get_table_list($prefixed_only = true) {
-    $query = $this->mysql_get_table_list();
-
-    $prefix_length = strlen($this->db_prefix);
-
-    $tl = array();
-    while($row = $this->db_fetch($query)) {
-      foreach($row as $table_name) {
-        if(strpos($table_name, $this->db_prefix) === 0) {
-          $table_name = substr($table_name, $prefix_length);
-        } elseif($prefixed_only) {
-          continue;
-        }
-        // $table_name = str_replace($db_prefix, '', $table_name);
-        $tl[$table_name] = $table_name;
-      }
-    }
-
-    return $tl;
   }
 
   function mysql_get_table_list() {

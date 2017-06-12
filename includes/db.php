@@ -132,6 +132,3 @@ function db_get_host_info() {
 function db_server_stat() {
   return classSupernova::$db->db_get_server_stat();
 }
-function db_get_table_list() {
-  return classSupernova::$db->db_get_table_list();
-}

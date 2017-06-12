@@ -613,6 +613,15 @@ FleetLock - блокировать в МЛФ записи в зависимос�
         - $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 
+$this->table_list = $this->schema()->getSnTables();
+function sys_refresh_tablelist() {
+
+
+
+2017-06-12 14:32:20 43a0.0
+[@] Код
+    Добавлен класс DBAL\Schema()
+
 
 2017-06-12 09:24:47 42c0
 [!] Project "SuperNova.WS" Release 42 "8th anniversary" Release Candidate
