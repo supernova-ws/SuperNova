@@ -203,10 +203,10 @@ class debug {
 
     if(!$sys_log_disabled) {
       $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '" . time() . "', `log_code` = '" . db_escape($error_code) . "', `log_sender` = '" . db_escape($user['id']) . "',
+        `log_time` = '" . time() . "', `log_code` = '" . db_escape($error_code) . "', `log_sender` = '" . ($user['id'] ? db_escape($user['id']) : 0) . "',
         `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
         `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
-        ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
+        ", `log_dump` = '" . ($error_backtrace ? db_escape(serialize($error_backtrace)) : '') . "'" . ";";
       doquery($query, '', false, true) or die($fatal_error . db_error());
 
       $message = "Пожалуйста, свяжитесь с админом, если ошибка повторится. Ошибка №: <b>" . db_insert_id() . "</b>";
@@ -240,10 +240,10 @@ class debug {
 
     if(!$sys_log_disabled) {
       $query = "INSERT INTO `{{logs}}` SET
-        `log_time` = '" . time() . "', `log_code` = '" . db_escape($log_code) . "', `log_sender` = '" . db_escape($user['id']) . "',
+        `log_time` = '" . time() . "', `log_code` = '" . db_escape($log_code) . "', `log_sender` = '" . ($user['id'] ? db_escape($user['id']) : 0) . "',
         `log_username` = '" . db_escape($user['user_name']) . "', `log_title` = '" . db_escape($title) . "',  `log_text` = '" . db_escape($message) . "',
         `log_page` = '" . db_escape(strpos($_SERVER['SCRIPT_NAME'], SN_ROOT_RELATIVE) === false ? $_SERVER['SCRIPT_NAME'] : substr($_SERVER['SCRIPT_NAME'], strlen(SN_ROOT_RELATIVE))) . "'" .
-        ($error_backtrace ? ", `log_dump` = '" . db_escape(serialize($error_backtrace)) . "'" : '') . ";";
+        ", `log_dump` = '" . ($error_backtrace ? db_escape(serialize($error_backtrace)) : '') . "'" . ";";
       doquery($query, '', false, true);
     } else {
 //        // TODO Здесь надо писать в файло
