@@ -2,10 +2,10 @@
 
 defined('INSIDE') or die('Hacking attempt');
 
-define('DB_VERSION', '41');
-define('SN_RELEASE', '41');
-define('SN_VERSION', '42c1');
-define('SN_RELEASE_STABLE', '41d0'); // Latest stable release
+define('DB_VERSION', '42');
+define('SN_RELEASE', '42');
+define('SN_VERSION', '42c2');
+define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
