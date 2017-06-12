@@ -26,6 +26,10 @@ version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE 
 !defined('INSTALL') ? define('INSTALL', false) : false;
 !defined('IN_PHPBB') ? define('IN_PHPBB', true) : false;
 
+header('Content-type: text/html; charset=utf-8');
+ob_start();
+ini_set('error_reporting', E_ALL ^ E_NOTICE);
+
 // Installing autoloader
 require_once SN_ROOT_PHYSICAL . 'includes/_autoloader.php';
 
@@ -33,14 +37,14 @@ require_once SN_ROOT_PHYSICAL . 'includes/_autoloader.php';
 SnBootstrap::install_benchmark();
 SnBootstrap::init_constants_1();
 
+require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
+require_once(SN_ROOT_PHYSICAL . 'includes/vars.php');
+
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
-
-
-
-header('Content-type: text/html; charset=utf-8');
-ob_start();
-ini_set('error_reporting', E_ALL ^ E_NOTICE);
+require_once(SN_ROOT_PHYSICAL . 'includes/general.php');
+require_once(SN_ROOT_PHYSICAL . 'includes/template.php');
+sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'includes/functions/', PHP_EX);
 
 classSupernova::loadFileSettings();
 classSupernova::init_global_objects();
@@ -48,12 +52,6 @@ classSupernova::init_global_objects();
 // Отладка
 // define('BE_DEBUG', true); // Отладка боевого движка
 SnBootstrap::init_debug_state();
-
-require_once(SN_ROOT_PHYSICAL . 'includes/vars.php');
-require_once(SN_ROOT_PHYSICAL . 'includes/general.php');
-require_once(SN_ROOT_PHYSICAL . 'includes/template.php');
-
-sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'includes/functions/', PHP_EX);
 
 SnBootstrap::performUpdate(classSupernova::$config);
 

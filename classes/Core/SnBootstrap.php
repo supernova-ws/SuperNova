@@ -67,8 +67,6 @@ class SnBootstrap {
     $phpEx = strpos($phpEx = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $phpEx : '';
     define('PHP_EX', $phpEx); // PHP extension on this server
     define('DOT_PHP_EX', '.' . PHP_EX); // PHP extension on this server
-
-    require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
   }
 
   public static function init_debug_state() {
