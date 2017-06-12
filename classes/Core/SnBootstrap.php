@@ -141,7 +141,6 @@ class SnBootstrap {
         sn_db_transaction_commit();
 
         require_once($update_file);
-        sys_refresh_tablelist();
 
         $current_time = time();
         $config->db_saveItem('var_db_update', $current_time);

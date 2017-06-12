@@ -81,4 +81,15 @@ class Schema {
     return $this->tablesSn;
   }
 
+  /**
+   * Checks if SN table exists
+   *
+   * @param $tableName
+   *
+   * @return bool
+   */
+  public function isSnTableExists($tableName) {
+    return isset($this->getSnTables()[$tableName]);
+  }
+
 }

@@ -88,9 +88,9 @@ class Account {
     $this->cookie_name_impersonate = $this->cookie_name . AUTH_COOKIE_IMPERSONATE_SUFFIX;
     $this->secret_word = classSupernova::$sn_secret_word;
 
-    $tableName = $this->db->schema()->getSnTables();
+    $snTableNames = $this->db->schema()->getSnTables();
     foreach($this->table_check as $table_name) {
-      if(empty($tableName[$table_name])) {
+      if(empty($snTableNames[$table_name])) {
         die('Если вы видите это сообщение первый раз после обновления релиза - просто перегрузите страницу.<br />
               В противном случае - сообщите Администрации сервера об ошибке.<br/>
               Не хватает таблицы для работы системы авторизации: ' . $table_name);

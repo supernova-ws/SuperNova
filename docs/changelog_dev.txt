@@ -613,9 +613,17 @@ FleetLock - блокировать в МЛФ записи в зависимос�
         - $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 
-$this->table_list = $this->schema()->getSnTables();
-function sys_refresh_tablelist() {
 
+#ctv
+
+
+
+2017-06-12 14:59:17 43a0.2
+[!] PHP
+    Для работы СН требуется PHP не ниже 5.5
+
+[@] Код
+    Убрано использование sys_refresh_tablelist()
 
 
 2017-06-12 14:32:20 43a0.0

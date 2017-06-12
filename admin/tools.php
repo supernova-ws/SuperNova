@@ -20,7 +20,7 @@ $mode = sys_get_param_int('mode');
 switch ($mode) {
   case ADM_TOOL_CONFIG_RELOAD:
     classSupernova::$config->db_loadAll();
-    sys_refresh_tablelist();
+    classSupernova::$db->schema()->clear();
 
     classSupernova::$config->db_loadItem('game_watchlist');
     if (classSupernova::$config->game_watchlist) {

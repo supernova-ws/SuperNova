@@ -15,7 +15,7 @@ define('SN_MEM_START', memory_get_usage());
 define('SN_ROOT_PHYSICAL', str_replace('\\', '/', realpath(dirname(__DIR__))) . '/');
 define('SN_ROOT_PHYSICAL_STR_LEN', strlen(SN_ROOT_PHYSICAL));
 
-version_compare(PHP_VERSION, '5.3.2') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version > 5.3.2') : false;
+version_compare(PHP_VERSION, '5.5') < 0 ? die('FATAL ERROR: SuperNova REQUIRE PHP version >= 5.5') : false;
 
 //define('DEBUG_UBE', true);
 //define('DEBUG_FLYING_FLEETS', true);

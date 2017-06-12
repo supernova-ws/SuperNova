@@ -179,7 +179,7 @@ function upd_create_table($table_name, $declaration, $tableOptions = '') {
     }
     upd_do_query('set foreign_key_checks = 1;', true);
     upd_load_table_info($table_name, false);
-    sys_refresh_tablelist();
+    classSupernova::$db->schema()->clear();
   }
 
   return $result;

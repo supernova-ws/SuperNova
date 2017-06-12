@@ -1427,8 +1427,7 @@ if($user['authlevel'] >= 3) {
   print(str_replace("\r\n", '<br>', $upd_log));
 }
 */
-unset($sn_cache->tables);
-sys_refresh_tablelist();
+classSupernova::$db->schema()->clear();
 
 upd_log_message('Restoring server status');
 $config->db_saveItem('game_disable', $old_server_status);

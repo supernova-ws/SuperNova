@@ -26,12 +26,6 @@ class db_mysql {
    */
   public $db_prefix = '';
   /**
-   * Список таблиц в БД
-   *
-   * @var array
-   */
-  public $table_list = array();
-  /**
    * Настройки БД
    *
    * @var array
@@ -104,9 +98,8 @@ class db_mysql {
 
       $this->connected = $this->connected || $this->driver_connect();
 
-      if($this->connected) {
-        $this->table_list = $this->schema()->getSnTables();
-        // TODO Проверка на пустоту
+      if($this->connected && empty($this->schema()->getSnTables())) {
+        die('DB error - cannot find any table. Halting...');
       }
     } else {
       $this->connected = false;
