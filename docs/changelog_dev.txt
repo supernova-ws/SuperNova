@@ -599,12 +599,24 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+Релиз 42:
+    - сделать
+Релиз 43:
+    - PHP 5.4 + PHP 7 compatibility
+    - Убрать патчи по 39й включительно
+    - Интегрировать модули GIT-сабмодулями
+
 FleetLock - блокировать в МЛФ записи в зависимости от типа ивента - отдельно по прибытию, удержанию, возвращению
 
 [*] Убрать global
         - global $ListCensure;
         - $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
+
+
+2017-06-12 09:24:47 42c0
+[!] Project "SuperNova.WS" Release 42 "8th anniversary" Release Candidate
+    Обновлён файл docs/changelog.txt
 
 
 2017-06-11 11:11:21 42a30.0
