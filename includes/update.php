@@ -1396,9 +1396,17 @@ switch($new_version) {
       !empty($update_tables['users']['dpath'])
     );
 
-    // #ctv
+    // 2017-06-12 13:47:36 42c1
     upd_do_query('COMMIT;', true);
-    // $new_version = 42;
+    $new_version = 42;
+
+  case 42:
+    upd_do_query('COMMIT;', true);
+
+  // #ctv
+
+//    $new_version = 43;
+
 }
 upd_log_message('Upgrade complete.');
 
