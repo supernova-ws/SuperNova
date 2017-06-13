@@ -38,7 +38,6 @@ SnBootstrap::install_benchmark();
 SnBootstrap::init_constants_1();
 
 require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
-require_once(SN_ROOT_PHYSICAL . 'includes/vars.php');
 
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
