@@ -177,9 +177,7 @@ function player_create($username_unsafe, $email_unsafe, $options) {
 
   !empty($options['salt']) ? $field_set['salt'] = $options['salt'] : false;
   !empty($options['password_encoded_unsafe']) ? $field_set['password'] = $options['password_encoded_unsafe'] : false;
-
-  $dbq = new \DBAL\DbQuery();
-  doquery($dbq->setTable('users')->setValues($field_set)->insert());
+  \DBAL\DbQuery::build()->setTable('users')->setValues($field_set)->doInsert();
   $user_new = db_user_by_id(db_insert_id());
 
   if(!($options['galaxy'] && $options['system'] && $options['planet'])) {

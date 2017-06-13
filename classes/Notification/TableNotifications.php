@@ -9,7 +9,6 @@ namespace Notification;
 use DBAL\ActiveRecord;
 
 class TableNotifications extends ActiveRecord {
-  protected static $_tableName = '';
 
 
 }

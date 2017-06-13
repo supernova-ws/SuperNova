@@ -326,7 +326,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
       "INSERT INTO `{{aT}}`" .
       " SET  f3 = 5 ,`f1` = 's1'," .
       " f7 = f7 + 2 ,`f5` = `f5` + (1),`f6` = `f6` + (-1)",
-      $this->object->insert(DbQuery::DB_INSERT_PLAIN)
+      invokeMethod($this->object, 'insert', array(DbQuery::DB_INSERT_PLAIN))
     );
 
     $this->object->setTable('aT2')->setAdjust(array('f25' => 21, 'f26' => -21));
@@ -335,7 +335,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
       " SET  f3 = 5 ,`f1` = 's1'," .
       " f7 = f7 + 2 ,`f5` = `f5` + (1),`f6` = `f6` + (-1)," .
       "`f25` = `f25` + (21),`f26` = `f26` + (-21)",
-      $this->object->insert(DbQuery::DB_INSERT_IGNORE)
+      invokeMethod($this->object, 'insert', array(DbQuery::DB_INSERT_IGNORE))
     );
 
     $this->object->setTable('aT2')->setAdjust(array('f36' => -31));
@@ -344,7 +344,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
       " SET  f3 = 5 ,`f1` = 's1'," .
       " f7 = f7 + 2 ,`f5` = `f5` + (1),`f6` = `f6` + (-1)," .
       "`f25` = `f25` + (21),`f26` = `f26` + (-21),`f36` = `f36` + (-31)",
-      $this->object->insert(DbQuery::DB_INSERT_REPLACE)
+      invokeMethod($this->object, 'insert', array(DbQuery::DB_INSERT_REPLACE))
     );
   }
 
@@ -365,7 +365,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
       "INSERT INTO `{{aT}}` (`f1`,`f2`) VALUES " .
       "('v1',1)"
       ,
-      $this->object->insert(DbQuery::DB_INSERT_PLAIN)
+      invokeMethod($this->object, 'insert', array(DbQuery::DB_INSERT_PLAIN))
     );
 
     $this->object
@@ -376,7 +376,7 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
       "INSERT IGNORE INTO `{{aT2}}` (`f1`,`f2`) VALUES " .
       "('v1',1),('v2',2)"
       ,
-      $this->object->insert(DbQuery::DB_INSERT_IGNORE)
+      invokeMethod($this->object, 'insert', array(DbQuery::DB_INSERT_IGNORE))
     );
 
     $this->object
@@ -386,8 +386,9 @@ class DbQueryTest extends PHPUnit_Framework_TestCase {
     ;
     $this->assertEquals(
       "REPLACE INTO `{{aT2}}` (`f1`,`f2`) VALUES " .
-      "this IS danger!,('v1',1),('v2',2),('v3',3),('v4',4)",
-      $this->object->insert(DbQuery::DB_INSERT_REPLACE)
+      "this IS danger!,('v1',1),('v2',2),('v3',3),('v4',4)"
+      ,
+      invokeMethod($this->object, 'insert', array(DbQuery::DB_INSERT_REPLACE))
     );
   }
 

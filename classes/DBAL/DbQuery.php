@@ -184,7 +184,7 @@ class DbQuery {
     return doquery($this->select(), true);
   }
 
-  public function insert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
+  protected function insert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
     $this->build = array();
 
     $this->buildCommand($this->setInsertCommand($replace));
