@@ -49,6 +49,9 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'includes/functions/', PHP_EX);
 classSupernova::loadFileSettings();
 classSupernova::init_global_objects();
 
+// AFTER init global objects 'cause vars.php uses some from config
+require_once(SN_ROOT_PHYSICAL . 'includes/vars.php');
+
 // Отладка
 // define('BE_DEBUG', true); // Отладка боевого движка
 SnBootstrap::init_debug_state();
