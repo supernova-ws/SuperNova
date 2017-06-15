@@ -4,8 +4,45 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a0.7');
+define('SN_VERSION', '43a0.8');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
+
+define('SN_TIME_NOW', intval(SN_TIME_MICRO));
+define('SN_TIME_ZONE_OFFSET', date('Z'));
+
+define('FMT_DATE_TIME_SQL', 'Y-m-d H:i:s');
+define('SN_TIME_SQL', date(FMT_DATE_TIME_SQL, SN_TIME_NOW));
+
+define('SN_TIME_NOW_GMT_STRING', gmdate(DATE_ATOM, SN_TIME_NOW));
+
+// Getting relative HTTP root to game resources
+// I.e. in https://server.com/supernova/index.php SN_ROOT_RELATIVE will become '/supernova/'
+// It needed to make game work on subfolders and do not mess with cookies
+// Not very accurate - heavily relies on filesystem paths and may fail on complicate web server setups
+$sn_root_relative = str_replace(array('\\', '//'), '/', getcwd() . '/');
+$sn_root_relative = str_replace(SN_ROOT_PHYSICAL, '', $sn_root_relative);
+$sn_root_relative = $sn_root_relative . basename($_SERVER['SCRIPT_NAME']);
+// Removing script name to obtain HTTP root
+define('SN_ROOT_RELATIVE', str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']));
+
+define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
+
+if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
+  define('SN_GOOGLE', true);
+}
+define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
+
+// PHP extension on this server
+define('PHP_EX', strpos($temp = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $temp : 'php');
+// Dotted PHP extension on this server
+define('DOT_PHP_EX', '.' . PHP_EX);
+
+define(
+  'INITIAL_PAGE',
+  isset($_GET['page'])
+    ? trim(strip_tags($_GET['page']))
+    : str_replace(DOT_PHP_EX, '', str_replace(SN_ROOT_RELATIVE, '', str_replace('\\', '/', $_SERVER['SCRIPT_NAME'])))
+);
 
 // Game type constants starts with GAME_
 define('GAME_SUPERNOVA', 0);
@@ -1654,3 +1691,6 @@ define('THIS_STRING', '$this');
 define('MENU_SERVER_LOGO_DEFAULT', 'design/images/supernova.png');
 
 define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can work
+
+define('WATCHDOG_TIME_UNIX', 0);
+define('WATCHDOG_TIME_SQL', 1);

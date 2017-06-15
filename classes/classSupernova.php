@@ -1022,4 +1022,13 @@ class classSupernova {
     self::$config->db_saveItem('game_disable', GAME_DISABLE_NONE);
   }
 
+  /**
+   * Is game disabled?
+   *
+   * @return bool
+   */
+  public static function gameIsDisabled() {
+    return self::$config->game_disable != GAME_DISABLE_NONE;
+  }
+
 }

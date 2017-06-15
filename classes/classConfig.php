@@ -19,6 +19,10 @@
  *
  * @property string $COOKIE_NAME                  => 'SuperNova'
  *
+ * @property int    $fleet_update_interval        => 4 second  // how often fleets should be updated
+ * @property int    $fleet_update_last            => SN_TIME_NOW // unixtime - when fleet was updated last
+ * @property int    $fleet_update_lock            => ''  // SQL time when lock was acquired
+ *
  * @property string $game_default_language        => 'ru'
  * @property string $game_default_skin            => 'skins/EpicBlue/'
  * @property string $game_default_template        => 'OpenGame'
@@ -119,6 +123,7 @@ class classConfig extends classPersistent {
     'fleet_speed' => 1,
 
     'fleet_update_interval' => 4,
+    'fleet_update_lock'     => '', // SQL time when lock was acquired
 
     'game_adminEmail'       => 'root@localhost',    // Admin's email to show to users
     'game_counter'          => 0,  // Does built-in page hit counter is on?

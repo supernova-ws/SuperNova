@@ -398,23 +398,6 @@ function fleet_list_bashing($fleet_owner_id, $planet_row) {
 }
 
 /**
- * Gets active fleets on current tick for Flying Fleet Handler
- *
- * @return array
- */
-function fleet_list_current_tick() {
-  return db_fleet_list(
-    "
-    (`fleet_start_time` <= " . SN_TIME_NOW . " AND `fleet_mess` = 0)
-    OR
-    (`fleet_end_stay` <= " . SN_TIME_NOW . " AND `fleet_end_stay` > 0 AND `fleet_mess` = 0)
-    OR
-    (`fleet_end_time` <= " . SN_TIME_NOW . ")"
-  , DB_SELECT_PLAIN
-  );
-}
-
-/**
  * Get fleets in group
  *
  * @param $group_id

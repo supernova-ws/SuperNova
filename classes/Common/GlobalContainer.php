@@ -3,6 +3,7 @@
 namespace Common;
 
 use \classSupernova;
+use Core\Watchdog;
 
 /**
  * Class GlobalContainer
@@ -10,25 +11,27 @@ use \classSupernova;
  * Used to describe internal structures of container
  *
  * Variables ------------------------------------------------------------------------------------------------------------
- * @property string        $cachePrefix
+ * @property string           $cachePrefix
  *
  * Services ------------------------------------------------------------------------------------------------------------
- * @property \debug        $debug
- * @property \db_mysql     $db
- * @property \classCache   $cache
- * @property \classConfig  $config
- * @property \Repository   $repository
- * @property \Storage      $storage
- * @property \Design       $design
- * @property \BBCodeParser $bbCodeParser
+ * @property \debug           $debug
+ * @property \db_mysql        $db
+ * @property \classCache      $cache
+ * @property \classConfig     $config
+ * @property \Repository      $repository
+ * @property \Storage         $storage
+ * @property \Design          $design
+ * @property \BBCodeParser    $bbCodeParser
+ * @property \FleetDispatcher $fleetDispatcher
+ * @property Watchdog         $watchdog
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
- * @property \TheUser      $theUser
+ * @property \TheUser         $theUser
  *
  * Models --------------------------------------------------------------------------------------------------------------
- * @property \TextModel    $textModel
- * @property string        $skinEntityClass
- * @property \SkinModel    $skinModel
+ * @property \TextModel       $textModel
+ * @property string           $skinEntityClass
+ * @property \SkinModel       $skinModel
  *
  * @package Common
  *
@@ -98,6 +101,14 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->bbCodeParser = function (GlobalContainer $gc) {
       return new \BBCodeParser($gc);
+    };
+
+    $gc->fleetDispatcher = function (GlobalContainer $gc) {
+      return new \FleetDispatcher($gc);
+    };
+
+    $gc->watchdog = function (GlobalContainer $gc) {
+      return new Watchdog($gc);
     };
 
 

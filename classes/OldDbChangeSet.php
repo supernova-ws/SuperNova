@@ -14,6 +14,15 @@
  */
 class OldDbChangeSet {
 
+  /**
+   * @param      $unit_id
+   * @param      $unit_value
+   * @param      $user
+   * @param null $planet_id
+   *
+   * @return array
+   * @deprecated
+   */
   public static function db_changeset_prepare_unit($unit_id, $unit_value, $user, $planet_id = null)
   {
     if(!is_array($user))
@@ -159,6 +168,12 @@ class OldDbChangeSet {
     $conditions[P_QUERY_STR] = $conditions[P_ACTION_STR] . ' ' . $conditions[P_FIELDS_STR] . (' WHERE ' . $conditions[P_WHERE_STR]);
   }
 
+  /**
+   * @param $db_changeset
+   *
+   * @return bool
+   * @deprecated
+   */
   public static function db_changeset_apply($db_changeset) {
     $result = true;
     if(!is_array($db_changeset) || empty($db_changeset)) return $result;

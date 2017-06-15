@@ -33,12 +33,11 @@ ini_set('error_reporting', E_ALL ^ E_NOTICE);
 // Installing autoloader
 require_once SN_ROOT_PHYSICAL . 'includes/_autoloader.php';
 
-// Бенчмарк
-SnBootstrap::install_benchmark();
-SnBootstrap::init_constants_1();
 
 require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
 
+// Бенчмарк
+SnBootstrap::install_benchmark();
 // Loading functions - can't be inserted into function
 require_once SN_ROOT_PHYSICAL . 'includes/db.php';
 require_once(SN_ROOT_PHYSICAL . 'includes/general.php');
@@ -57,8 +56,25 @@ SnBootstrap::init_debug_state();
 
 SnBootstrap::performUpdate(classSupernova::$config);
 
-SnBootstrap::init_constants_from_db();
-
+// init constants from db
+// Moved from SnBootstrap for phpStorm autocomplete
+// Shoud be removed someday - there should NOT be constants that depends on configuration!
+define('SN_COOKIE', (classSupernova::$config->COOKIE_NAME ? classSupernova::$config->COOKIE_NAME : 'SuperNova') . (defined('SN_GOOGLE') ? '_G' : ''));
+define('SN_COOKIE_I', SN_COOKIE . AUTH_COOKIE_IMPERSONATE_SUFFIX);
+define('SN_COOKIE_D', SN_COOKIE . '_D');
+define('SN_COOKIE_T', SN_COOKIE . '_T'); // Time measure cookie
+define('SN_COOKIE_F', SN_COOKIE . '_F'); // Font size cookie
+define('SN_COOKIE_U', SN_COOKIE . '_U'); // Current user cookie aka user ID
+define('SN_COOKIE_U_I', SN_COOKIE_U . AUTH_COOKIE_IMPERSONATE_SUFFIX); // Current impersonator user cookie aka impersonator user ID
+define('TEMPLATE_NAME', classSupernova::$config->game_default_template ? classSupernova::$config->game_default_template : 'OpenGame');
+define('TEMPLATE_PATH', 'design/templates/' . TEMPLATE_NAME);
+define('TEMPLATE_DIR', SN_ROOT_PHYSICAL . TEMPLATE_PATH);
+define('DEFAULT_SKINPATH', classSupernova::$config->game_default_skin ? classSupernova::$config->game_default_skin : 'skins/EpicBlue/');
+define('DEFAULT_SKIN_NAME', substr(DEFAULT_SKINPATH, 6, -1));
+define('DEFAULT_LANG', classSupernova::$config->game_default_language ? classSupernova::$config->game_default_language : 'ru');
+define('FMT_DATE', classSupernova::$config->int_format_date ? classSupernova::$config->int_format_date : 'd.m.Y');
+define('FMT_TIME', classSupernova::$config->int_format_time ? classSupernova::$config->int_format_time : 'H:i:s');
+define('FMT_DATE_TIME', FMT_DATE . ' ' . FMT_TIME);
 
 
 /**
@@ -315,6 +331,7 @@ define('SN_CLIENT_TIME_DIFF', $time_diff = $user_time_diff[PLAYER_OPTION_TIME_DI
 define('SN_CLIENT_TIME_LOCAL', SN_TIME_NOW + SN_CLIENT_TIME_DIFF);
 define('SN_CLIENT_TIME_DIFF_GMT', $user_time_diff[PLAYER_OPTION_TIME_DIFF]); // Разница в GMT-времени между клиентом и сервером. Реальная разница в ходе часов
 
+// ...to controller
 !empty($user) && sys_get_param_id('only_hide_news') ? die(nws_mark_read($user)) : false;
 !empty($user) && sys_get_param_id('survey_vote') ? die(survey_vote($user)) : false;
 
@@ -323,11 +340,14 @@ $sn_page_name && !empty($sn_mvc['i18n'][$sn_page_name]) ? lng_load_i18n($sn_mvc[
 
 execute_hooks($sn_mvc['model'][''], $template, 'model', '');
 
-global $skip_fleet_update;
-$skip_fleet_update = $skip_fleet_update || classSupernova::$options['fleet_update_skip'] || defined('IN_ADMIN') || defined('IN_AJAX');
-if(!$skip_fleet_update && SN_TIME_NOW - strtotime(classSupernova::$config->fleet_update_last) > classSupernova::$config->fleet_update_interval) {
-  require_once(SN_ROOT_PHYSICAL . 'includes/includes/flt_flying_fleet_handler2.php');
-  flt_flying_fleet_handler($skip_fleet_update);
-}
+// classSupernova::$config->fleet_update_last
+classSupernova::$gc->watchdog->checkConfigTimeDiff(
+  'fleet_update_last',
+  classSupernova::$config->fleet_update_interval,
+  // Promise
+  function () {classSupernova::$gc->fleetDispatcher->dispatch();},
+  WATCHDOG_TIME_SQL,
+  false
+);
 
 scheduler_process();
