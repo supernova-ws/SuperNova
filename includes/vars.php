@@ -100,6 +100,11 @@ $sn_mvc = array(
     ),
     'ajax' => array(
     ),
+    'time_probe' => array(
+      'options'  => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
 
     'buildings' => array(
       // PAGE_OPTION_EARLY_HEADER => true,

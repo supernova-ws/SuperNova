@@ -44,12 +44,8 @@ class FleetDispatcher {
   }
 
   public function dispatch() {
-    global $skip_fleet_update;
-
-    $skip_fleet_update = $skip_fleet_update || classSupernova::$options['fleet_update_skip'] || defined('IN_ADMIN') || defined('IN_AJAX');
-
     if (
-      $skip_fleet_update
+      classSupernova::$options['fleet_update_skip']
       ||
       classSupernova::gameIsDisabled()
       ||

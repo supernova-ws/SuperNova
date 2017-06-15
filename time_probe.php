@@ -2,9 +2,6 @@
 
 define('IN_AJAX', true);
 
-global $skip_fleet_update;
-$skip_fleet_update = true;
-
 require_once('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 /*

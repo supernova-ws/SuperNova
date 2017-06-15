@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a0.11');
+define('SN_VERSION', '43a0.13');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1641,11 +1641,6 @@ define('DB_SELECT_FOR_UPDATE', true);
 /**
  * Defining some constants
  */
-define('CACHER_NOT_INIT', -1);
-define('CACHER_NO_CACHE',  0);
-define('CACHER_XCACHE'  ,  1);
-
-
 define('AUTH_LOGIN_EXTERNAL_NAME', 'auth_ext');
 define('AUTH_LOGIN_EXTERNAL_MODE', 'auth_mode');
 

@@ -114,11 +114,19 @@ sn_sys_load_php_files(SN_ROOT_PHYSICAL . 'modules/', PHP_EX, true);
 // Но нужно, пока у нас есть не MVC-страницы
 $sn_page_data = $sn_mvc['pages'][$sn_page_name];
 $sn_page_name_file = 'includes/pages/' . $sn_page_data['filename'] . DOT_PHP_EX;
-if($sn_page_name && isset($sn_page_data) && file_exists($sn_page_name_file)) {
-  require_once($sn_page_name_file);
+if($sn_page_name) {
+  // Merging page options to global option pull
   if(is_array($sn_page_data['options'])) {
     classSupernova::$options = array_merge(classSupernova::$options, $sn_page_data['options']);
   }
+
+  if(isset($sn_page_data) && file_exists($sn_page_name_file)) {
+    require_once($sn_page_name_file);
+  }
+}
+
+if((defined('IN_AJAX') && IN_AJAX === true) || (defined('IN_ADMIN') && IN_ADMIN === true)) {
+  classSupernova::$options['fleet_update_skip'] = true;
 }
 
 // load_order:
