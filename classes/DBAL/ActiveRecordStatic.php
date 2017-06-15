@@ -13,7 +13,7 @@ namespace DBAL;
  */
 
 abstract class ActiveRecordStatic {
-  const IGNORE_PREFIX = 'table_';
+  const IGNORE_PREFIX = 'Table';
 
   protected static $_primaryIndexField = 'id';
   protected static $_tableName = '';
@@ -157,10 +157,12 @@ abstract class ActiveRecordStatic {
    *
    */
   protected static function fillTableName() {
-    static::$_tableName = \HelperString::camelToUnderscore(basename(get_called_class()));
-    if (strpos(static::$_tableName, static::IGNORE_PREFIX) === 0) {
-      static::$_tableName = substr(static::$_tableName, strlen(static::IGNORE_PREFIX));
+    $temp = explode('\\', get_called_class());
+    $className = end($temp);
+    if (strpos($className, static::IGNORE_PREFIX) === 0) {
+      $className = substr($className, strlen(static::IGNORE_PREFIX));
     }
+    static::$_tableName = \HelperString::camelToUnderscore($className);
   }
 
   /**
