@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a0.9');
+define('SN_VERSION', '43a0.11');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1645,11 +1645,6 @@ define('CACHER_NOT_INIT', -1);
 define('CACHER_NO_CACHE',  0);
 define('CACHER_XCACHE'  ,  1);
 
-define('CACHER_LOCK_WAIT', 5); // maximum cacher wait for table unlock in seconds. Can be float
-
-// max timeout cacher can sleep in waiting for unlockDefault = 10000 ms = 0.01s
-// really it will sleep mt_rand(100, CACHER_LOCK_SLEEP)
-define('CACHER_LOCK_SLEEP', 10000);
 
 define('AUTH_LOGIN_EXTERNAL_NAME', 'auth_ext');
 define('AUTH_LOGIN_EXTERNAL_MODE', 'auth_mode');

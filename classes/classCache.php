@@ -2,7 +2,7 @@
 /**
  *
  * @package supernova
- * @version #43a0.9#
+ * @version #43a0.11#
  * @copyright (c) 2009-2017 Gorlum for http://supernova.ws
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
@@ -25,28 +25,32 @@
  * @package supernova
  */
 class classCache implements ArrayAccess {
+  const CACHER_NOT_INIT = -1;
+  const CACHER_NO_CACHE = 0;
+  const CACHER_XCACHE = 1;
+
   // CACHER_NOT_INIT - not initialized
   // CACHER_NO_CACHE - no cache - array() used
   // CACHER_XCACHE   - xCache
-  protected static $mode = CACHER_NOT_INIT;
+  protected static $mode = self::CACHER_NOT_INIT;
   protected static $data;
   protected $prefix;
 
   protected static $cacheObject;
 
   public function __construct($prefIn = 'CACHE_', $init_mode = false) {
-    if (!($init_mode === false || $init_mode === CACHER_NO_CACHE || ($init_mode === CACHER_XCACHE && extension_loaded('xcache')))) {
+    if (!($init_mode === false || $init_mode === self::CACHER_NO_CACHE || ($init_mode === self::CACHER_XCACHE && extension_loaded('xcache')))) {
       throw new UnexpectedValueException('Wrong work mode or current mode does not supported on your server');
     }
 
     $this->prefix = $prefIn;
-    if (extension_loaded('xcache') && ($init_mode === CACHER_XCACHE || $init_mode === false)) {
-      if (self::$mode === CACHER_NOT_INIT) {
-        self::$mode = CACHER_XCACHE;
+    if (extension_loaded('xcache') && ($init_mode === self::CACHER_XCACHE || $init_mode === false)) {
+      if (self::$mode === self::CACHER_NOT_INIT) {
+        self::$mode = self::CACHER_XCACHE;
       }
     } else {
-      if (self::$mode === CACHER_NOT_INIT) {
-        self::$mode = CACHER_NO_CACHE;
+      if (self::$mode === self::CACHER_NOT_INIT) {
+        self::$mode = self::CACHER_NO_CACHE;
         if (!self::$data) {
           self::$data = array();
         }
@@ -94,11 +98,11 @@ class classCache implements ArrayAccess {
   // -------------------------------------------------------------------------
   public function __set($name, $value) {
     switch (self::$mode) {
-      case CACHER_NO_CACHE:
+      case self::CACHER_NO_CACHE:
         self::$data[$this->prefix . $name] = $value;
       break;
 
-      case CACHER_XCACHE:
+      case self::CACHER_XCACHE:
         xcache_set($this->prefix . $name, $value);
       break;
     }
@@ -106,11 +110,11 @@ class classCache implements ArrayAccess {
 
   public function __get($name) {
     switch (self::$mode) {
-      case CACHER_NO_CACHE:
+      case self::CACHER_NO_CACHE:
         return self::$data[$this->prefix . $name];
       break;
 
-      case CACHER_XCACHE:
+      case self::CACHER_XCACHE:
         return xcache_get($this->prefix . $name);
       break;
     }
@@ -120,11 +124,11 @@ class classCache implements ArrayAccess {
 
   public function __isset($name) {
     switch (self::$mode) {
-      case CACHER_NO_CACHE:
+      case self::CACHER_NO_CACHE:
         return isset(self::$data[$this->prefix . $name]);
       break;
 
-      case CACHER_XCACHE:
+      case self::CACHER_XCACHE:
         return xcache_isset($this->prefix . $name) && ($this->__get($name) !== null);
       break;
     }
@@ -134,11 +138,11 @@ class classCache implements ArrayAccess {
 
   public function __unset($name) {
     switch (self::$mode) {
-      case CACHER_NO_CACHE:
+      case self::CACHER_NO_CACHE:
         unset(self::$data[$this->prefix . $name]);
       break;
 
-      case CACHER_XCACHE:
+      case self::CACHER_XCACHE:
         xcache_unset($this->prefix . $name);
       break;
     }
@@ -151,14 +155,14 @@ class classCache implements ArrayAccess {
     } : false;
 
     switch (self::$mode) {
-      case CACHER_NO_CACHE:
+      case self::CACHER_NO_CACHE:
 //        array_walk(self::$data, create_function('&$v,$k,$p', 'if(strpos($k, $p) === 0)$v = NULL;'), $this->prefix.$prefix_unset);
         array_walk(self::$data, $array_clear, $this->prefix . $prefix_unset);
 
         return true;
       break;
 
-      case CACHER_XCACHE:
+      case self::CACHER_XCACHE:
         if (!function_exists('xcache_unset_by_prefix')) {
           return false;
         }
@@ -261,7 +265,7 @@ class classCache implements ArrayAccess {
 
   public function dumpData() {
     switch (self::$mode) {
-      case CACHER_NO_CACHE:
+      case self::CACHER_NO_CACHE:
         return dump(self::$data, $this->prefix);
       break;
 

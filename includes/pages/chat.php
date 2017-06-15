@@ -58,7 +58,7 @@ function sn_chat_add_model()
   define('IN_AJAX', true);
   $skip_fleet_update = true;
 
-  if($config->getMode() != CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
+  if($config->getMode() != classCache::CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
   {
     die();
   }
@@ -94,7 +94,7 @@ function sn_chat_msg_view($template = null)
   $last_message = '';
   $alliance = 0;
   $template_result['.']['chat'] = array();
-  if(!$history && $config->getMode() != CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
+  if(!$history && $config->getMode() != classCache::CACHER_NO_CACHE && $config->chat_timeout && SN_TIME_MICRO - $config->array_get('users', $user['id'], 'chat_last_activity') > $config->chat_timeout)
   {
     $result['disable'] = true;
     $template_result['.']['chat'][] = array(
