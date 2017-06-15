@@ -21,6 +21,11 @@ class classPersistent extends classCache {
 
   protected $defaults = array();
 
+  /**
+   * @var bool $force
+   */
+  protected $force = false;
+
   public function __construct($gamePrefix = 'sn_', $table_name = 'table') {
     parent::__construct("{$gamePrefix}{$table_name}_");
     $this->table_name = $table_name;
@@ -106,9 +111,36 @@ class classPersistent extends classCache {
 
     // И только после взятия блокировок - меняем значения в кэше
     foreach($item_list as $item_name => $item_value) {
-      if($item_name && $item_value !== NULL) {
-        $this->$item_name = $item_value;
+      if($item_name) {
+        $this->__set($item_name, $item_value);
       }
     }
   }
+
+  /**
+   * Makes cache to pass next operation to DB - whether it read or write
+   */
+  public function pass() {
+    $this->force = true;
+    return $this;
+  }
+
+  public function __get($name) {
+    if($this->force) {
+      $this->force = false;
+      $this->db_loadItem($name);
+    }
+
+    return parent::__get($name);
+  }
+
+  public function __set($name, $value) {
+    if($this->force) {
+      $this->force = false;
+      $this->db_saveItem($name, $value);
+    }
+
+    parent::__set($name, $value);
+  }
+
 }

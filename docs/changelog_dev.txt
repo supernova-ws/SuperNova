@@ -635,7 +635,7 @@ https://money.yandex.ru/embed/quickpay/small.xml
 [*] // init constants from db - TODO - REMOVE
 
 
-Конфиг - метод force(), означающий, что следующую настройку нужно брать из базы
+Конфиг - метод force()/store()/direct()/pass(), означающий, что следующую настройку нужно брать из базы
 
 [*] Проверить все таймлимиты - и использовать константы:
     - TIMEOUT_SHORT
@@ -653,7 +653,26 @@ https://money.yandex.ru/embed/quickpay/small.xml
 [*] Убрать global $skip_fleet_update;
 
 
+
+class classCache implements ArrayAccess {
+    - deprecate:
+        - const PREFIX = '_PREFIX';
+        - const MODE = '_MODE';
+
+
+Поменять _MODE в модулях
+
+
+Константы кэшера - запихнуть в кэшер
+  protected static $mode = CACHER_NOT_INIT;
+
+
 #ctv
+
+
+2017-06-15 06:32:06 43a0.9
+[@] Код
+    classPersistent: добавлен метод pass(), заставляющий читать/писать следующую переменную из/в БД
 
 
 2017-06-15 04:44:57 43a0.8

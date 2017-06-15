@@ -262,9 +262,8 @@ class FleetDispatcher {
 //log_file('Миссия');
       // TODO Обернуть всё в транзакции. Начинать надо заранее, блокируя все таблицы внутренним локом SELECT 1 FROM {{users}}
       sn_db_transaction_start();
-      // TODO - здесь должно быть не SN_TIME_SQL!!!!!!!!!!!
       // а текущее время
-      $config->db_saveItem('fleet_update_last', SN_TIME_SQL);
+      $config->db_saveItem('fleet_update_last', date(FMT_DATE_TIME_SQL, time()));
 
       $mission_data = $sn_groups_mission[$fleet_row['fleet_mission']];
       // Формируем запрос, блокирующий сразу все нужные записи
