@@ -105,22 +105,26 @@ abstract class ActiveRecord {
     return $result;
   }
 
-  public static function insert($values) {
-    $dbq = static::prepareDbQuery()
-      ->setValues()
-      ->doInsert();
+  public function __construct(\db_mysql $db = null) {
+
+  }
+
+  public function save() {
+//    $dbq = static::prepareDbQuery()
+//      ->setValues()
+//      ->doInsert();
   }
 
   /**
    * Fills table name based on class if it is empty
    *
-   * Namespaces does not count - only class name took into account
+   * Namespaces does not count - only class name taken into account
    * Class name converted from CamelCase to underscore_name
    * Prefix "Table" is ignored - can be override
    *
    * Examples:
-   * \Namespace\ClassName will map to table `class_name`
-   * \NameSpace\TableLongName will map to table `long_name`
+   * Class \Namespace\ClassName will map to table `class_name`
+   * Class \NameSpace\TableLongName will map to table `long_name`
    *
    */
   protected static function fillTableName() {
