@@ -121,8 +121,14 @@ abstract class ActiveRecordStatic {
     return $result;
   }
 
+  /**
+   * ActiveRecordStatic constructor.
+   *
+   * @param \db_mysql|null $db
+   */
   public function __construct(\db_mysql $db = null) {
-
+    if(empty($db)) {
+    }
   }
 
   public function save() {
