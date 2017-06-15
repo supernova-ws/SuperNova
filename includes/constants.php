@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a0.13');
+define('SN_VERSION', '43a0.15');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -285,6 +285,7 @@ define('ERR_NONE'               , 0); // No error
 define('ERR_WARNING'            , 1); // There is warning - something altering normal operation process
 define('ERR_ERROR'              , 2); // There is error - something permits operation from process
 define('ERR_HACK'               , 4); // Operation is qualified as hack attempt
+define('ERR_NOTICE'             , 8); // There is notice - nothing really critical but operator should know
 // New GLOBAL operation results
 //define('RESULT_DEFAULT' , 0); // Default result - all went OK or result really doesn't matter
 //define('RESULT_WARNING' , 1);
@@ -1684,3 +1685,5 @@ define('GAME_FLEET_HANDLER_MAX_TIME', 3); // How long Flying Fleet Handler can w
 
 define('WATCHDOG_TIME_UNIX', 0);
 define('WATCHDOG_TIME_SQL', 1);
+
+define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);

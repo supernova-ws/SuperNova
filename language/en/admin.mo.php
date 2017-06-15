@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a29.4
+* @version 43a0.15
 *
 */
 
@@ -30,6 +30,8 @@ if (!defined('INSIDE')) die();
 
 
 $a_lang_array = (array(
+  'menu_admin_ally' => 'Alliances',
+
   'adm_tool_md5_header' => 'Password encoding (MD5)',
   'adm_tool_md5_hash' => 'MD5 hash',
   'adm_tool_md5_encode' => '[ Encode ]',

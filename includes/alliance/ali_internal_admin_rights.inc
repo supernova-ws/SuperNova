@@ -13,8 +13,7 @@ if (!$user_admin) {
 
 $template = gettemplate('ali_admin_rights', true);
 
-$new_rank_name = sys_get_param_str('newRankName');
-if ($new_rank_name)
+if ($new_rank_name = sys_get_param_str('newRankName'))
 {
   foreach($ally_rights as $fieldName)
   {
@@ -25,8 +24,7 @@ if ($new_rank_name)
   $ranks[] = $newRank;
 }
 
-$rankListInput = sys_get_param('u');
-if (is_array($rankListInput))
+if (is_array($rankListInput = sys_get_param('u')))
 {
   unset($ranks);
 

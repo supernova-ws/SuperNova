@@ -25,6 +25,8 @@ $sn_mvc = array(
     'options'  => array('sn_options_model'),
     'chat'     => array('sn_chat_model'),
     'chat_add' => array('sn_chat_add_model'),
+
+    'admin/admin_ally'       => array('sn_admin_ally_model'),
   ),
   'view'       => array(
     'ajax'     => array('AjaxController::view'),
@@ -39,6 +41,7 @@ $sn_mvc = array(
     'techtree'       => array('sn_techtree_view'),
 
     'admin/user_view'       => array('sn_admin_user_view_view'),
+    'admin/admin_ally'       => array('sn_admin_ally_view'),
   ),
   'controller' => array(
   ),
@@ -55,6 +58,13 @@ $sn_mvc = array(
   'pages' => array(
     'admin/user_view' => array(
       'filename' => 'admin/user_view',
+      'options'  => array(
+        'fleet_update_skip' => true,
+      ),
+    ),
+
+    'admin/admin_ally' => array(
+      'filename' => 'admin/admin_ally',
       'options'  => array(
         'fleet_update_skip' => true,
       ),
@@ -191,6 +201,7 @@ $tableList = array( 'aks', 'alliance', 'alliance_requests', 'announce', 'annonce
 
 $sn_image_allowed_extensions = array('png', 'jpg', 'jpeg', 'gif');
 
+global $ally_rights;
 $ally_rights = array(
   0 => 'name',
   1 => 'mail',

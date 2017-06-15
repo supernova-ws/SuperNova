@@ -6,9 +6,9 @@
 namespace Notification;
 
 
-use DBAL\ActiveRecord;
+use DBAL\ActiveRecordStatic;
 
-class TableNotifications extends ActiveRecord {
+class TableNotifications extends ActiveRecordStatic {
 
 
 }

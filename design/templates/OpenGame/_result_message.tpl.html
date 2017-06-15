@@ -9,9 +9,11 @@
             <ul id="global_status_list">
       <!-- ENDIF -->
         <!-- IF result.STATUS == 0 -->
-          <!-- DEFINE $RESULT_CLASS = 'positive' -->
+          <!-- DEFINE $RESULT_CLASS = 'ok' -->
         <!-- ELSEIF result.STATUS == 1 -->
           <!-- DEFINE $RESULT_CLASS = 'warning' -->
+        <!-- ELSEIF result.STATUS == 8 -->
+          <!-- DEFINE $RESULT_CLASS = 'notice' -->
         <!-- ELSE -->
           <!-- DEFINE $RESULT_CLASS = 'error' -->
         <!-- ENDIF -->

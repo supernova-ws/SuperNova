@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 42a29.4
+* @version 43a0.15
 *
 */
 
@@ -28,6 +28,8 @@ if (!defined('INSIDE')) die();
 
 
 $a_lang_array = array(
+  'menu_admin_ally' => 'Альянсы',
+
   'adm_tool_md5_header' => 'Генерация и шифрование пароля (MD5)',
   'adm_tool_md5_hash' => 'Хэш MD5',
   'adm_tool_md5_encode' => '[ Зашифровать ]',
@@ -609,4 +611,6 @@ $a_lang_array = array(
   'adm_mm_msg_mm_changed'               => 'У аккаунта [%2$d] "%1$s" (игрок [%4$s] "%5$s") количество ММ успешно изменено на <span class="metamatter">%3$s ММ</span>',
   'adm_mm_msg_confirm_mm_change'        => 'Подтвердите изменение ММ у аккаунт [%2$d] "%1$s" (игрок [%4$s] "%5$s") на <span class="metamatter">%3$s ММ</span>',
   'adm_mm_msg_change_mm_log_record'     => 'Админ [%6$s] "%7$s" (игрок [%3$s] "%4$s") причина "%5$s" для [%1$d] "%2$s" (игрок [%8$d] "%9$s")',
+
+  'admin_ally_list' => 'Список Альянсов',
 );

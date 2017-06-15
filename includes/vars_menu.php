@@ -549,6 +549,14 @@ $sn_menu_admin = array(
     'AUTH_LEVEL' => 3,
   ),
 
+  'menu_admin_ally' => array(
+    'LEVEL'      => 'header',
+    'TYPE'       => 'lang',
+    'ITEM'       => 'menu_admin_ally',
+    'LINK'       => 'index.php?page=admin/admin_ally',
+    'AUTH_LEVEL' => 3,
+  ),
+
   'menu_admin_universe'            => array(
     'LEVEL'      => 'header',
     'TYPE'       => 'lang',

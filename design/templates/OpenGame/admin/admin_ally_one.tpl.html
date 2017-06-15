@@ -1,0 +1,147 @@
+<script type="text/javascript">
+  var ADMIN_ALLY_ID = Math.intVal('{ID}');
+</script>
+
+<style type="text/css">
+  td[data-member_id] {
+    cursor: pointer;
+  }
+</style>
+
+<h1>{PAGE_HEADER}</h1>
+
+<table>
+  <!--
+    <tr>
+      <td>ID</td>
+      <td>{ID}</td>
+    </tr>
+  -->
+  <tr>
+    <td>TAG</td>
+    <td>{TAG}</td>
+  </tr>
+  <tr>
+    <td>NAME</td>
+    <td>{NAME}</td>
+  </tr>
+  <tr>
+    <td>CREATED</td>
+    <td>{CREATED}</td>
+  </tr>
+  <tr>
+    <td>OWNER_ID</td>
+    <td>{OWNER_ID}</td>
+  </tr>
+  <tr>
+    <td>DESCRIPTION</td>
+    <td>{DESCRIPTION}</td>
+  </tr>
+  <tr>
+    <td>WEB_PAGE</td>
+    <td>{WEB_PAGE}</td>
+  </tr>
+  <tr>
+    <td>TEXT_INTERNAL</td>
+    <td>{TEXT_INTERNAL}</td>
+  </tr>
+  <tr>
+    <td>HAVE_LOGO</td>
+    <td>{HAVE_LOGO}</td>
+  </tr>
+  <tr>
+    <td>REQUEST_TEMPLATE</td>
+    <td>{REQUEST_TEMPLATE}</td>
+  </tr>
+  <tr>
+    <td>REQUESTS_NOT_ALLOWED</td>
+    <td>{REQUESTS_NOT_ALLOWED}</td>
+  </tr>
+  <tr>
+    <td>OWNER_RANK_NAME</td>
+    <td>{OWNER_RANK_NAME}</td>
+  </tr>
+  <tr>
+    <td>MEMBER_COUNT</td>
+    <td>{MEMBER_COUNT}</td>
+  </tr>
+  <tr>
+    <td>STAT_POSITION</td>
+    <td>{STAT_POSITION}</td>
+  </tr>
+  <tr>
+    <td>STAT_POINTS</td>
+    <td>{STAT_POINTS}</td>
+  </tr>
+  <tr>
+    <td>TITLE_LIST_UNPARSED</td>
+    <td>{TITLE_LIST_UNPARSED}</td>
+  </tr>
+  <tr>
+    <td>OLD_TITLE_LIST</td>
+    <td>{OLD_TITLE_LIST}</td>
+  </tr>
+  <tr>
+    <td>PARENT_PLAYER_ID</td>
+    <td>{PARENT_PLAYER_ID}</td>
+  </tr>
+</table>
+
+<table id="js_admin_alliance_members">
+  <tr class="c_c">
+    <th>OWNER</th>
+    <th>PLAYER</th>
+    <th>TITLE</th>
+    <th>RIGHTS</th>
+    <th>ONLINE</th>
+    <th>VACATION</th>
+    <th>BAN</th>
+  </tr>
+
+  <!-- BEGIN members -->
+
+  <!-- IF ! members.OWNER -->
+  <!-- DEFINE $PLAYER_CLASS = '' -->
+  <!-- ELSEIF SN_TIME_NOW - members.OWNER > ALLIANCE_HEAD_INACTIVE_TIMEOUT -->
+  <!-- DEFINE $PLAYER_CLASS = 'error' -->
+  <!-- ELSE -->
+  <!-- DEFINE $PLAYER_CLASS = 'ok' -->
+  <!-- ENDIF -->
+  <tr class="{$PLAYER_CLASS}">
+    <td data-member_id="{members.PLAYER_ID}" data-is_owner="{members.OWNER}">
+      <!-- IF members.OWNER -->
+      { ВЛАДЕЛЕЦ }
+      <!-- ELSE -->
+      { ПЕРЕДАТЬ }
+      <!-- ENDIF -->
+    </td>
+    <td>[{members.PLAYER_ID}] {members.PLAYER_NAME}</td>
+    <td>[{members.TITLE_ID}] {members.TITLE}</td>
+    <td>{members.RIGHTS}</td>
+    <td>{members.ONLINE_SQL}</td>
+    <td>
+      <!-- IF members.VACATION -->
+      {members.VACATION_SQL}
+      <!-- ELSE -->
+      -
+      <!-- ENDIF -->
+    </td>
+    <td>
+      <!-- IF members.BAN -->
+      {members.BAN_SQL}
+      <!-- ELSE -->
+      -
+      <!-- ENDIF -->
+    </td>
+  </tr>
+  <!-- END members -->
+
+</table>
+
+<script type="text/javascript">
+  $('#js_admin_alliance_members').on('click', 'td[data-member_id]', function (e) {
+    if(!Math.intVal($(this).data('is_owner'))) {
+      sn_redirect("index.php?page=admin/admin_ally&ally_id=" + ADMIN_ALLY_ID + "&action=pass&new_owner_id=" + $(this).data('member_id'));
+    }
+  });
+</script>

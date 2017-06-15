@@ -7,13 +7,13 @@ namespace DBAL;
 
 
 /**
- * Class ActiveRecord
+ * Class ActiveRecordStatic
  *
  * @package DBAL
  */
 
-abstract class ActiveRecord {
-  const TABLE = 'table_';
+abstract class ActiveRecordStatic {
+  const IGNORE_PREFIX = 'table_';
 
   protected static $_primaryIndexField = 'id';
   protected static $_tableName = '';
@@ -43,7 +43,7 @@ abstract class ActiveRecord {
   /**
    * Finds records by params in DB
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]. Pass [] to find all records in DB
    *
    * @return bool|\mysqli_result
    */
@@ -52,15 +52,12 @@ abstract class ActiveRecord {
       $where = [static::$_primaryIndexField => $where];
     }
 
+    $dbq = static::prepareDbQuery();
     if (!empty($where)) {
-      $result = static::prepareDbQuery()
-        ->setWhereArray($where)
-        ->doSelect();
-    } else {
-      $result = false;
+      $dbq->setWhereArray($where);
     }
 
-    return $result;
+    return $dbq->doSelect();
   }
 
   /**
@@ -68,7 +65,7 @@ abstract class ActiveRecord {
    *
    * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
    *
-   * @return array - [$field_name => $field_value]
+   * @return string[] - [$field_name => $field_value]
    */
   public static function findOne($where) {
     $result = empty($dbq = static::find($where)) ? [] : static::db()->db_fetch($dbq);
@@ -81,7 +78,7 @@ abstract class ActiveRecord {
    *
    * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
    *
-   * @return array - [(int) => [$field_name => $field_value]]
+   * @return string[][] - [(int) => [$field_name => $field_value]]
    */
   public static function findAll($where) {
     return empty($dbq = static::find($where)) ? [] : $dbq->fetch_all(MYSQL_ASSOC);
@@ -92,7 +89,7 @@ abstract class ActiveRecord {
    *
    * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
    *
-   * @return array - [$record_db_id => [$field_name => $field_value]]
+   * @return string[][] - [$record_db_id => [$field_name => $field_value]]
    */
   public static function findAllIndexed($where) {
     $result = [];
@@ -100,6 +97,25 @@ abstract class ActiveRecord {
       while ($row = static::db()->db_fetch($dbq)) {
         $result[$row[static::$_primaryIndexField]] = $row;
       }
+    }
+
+    return $result;
+  }
+
+  /**
+   * Normalize array
+   *
+   * Basically - uppercase all field names to make it use in PTL
+   * Can be override by descendants to make more convinient, clear and robust indexes
+   *
+   * @param array $array
+   *
+   * @return array
+   */
+  public static function ptlArray(array $array) {
+    $result = [];
+    foreach ($array as $key => $value) {
+      $result[strtoupper($key)] = $value;
     }
 
     return $result;
@@ -116,6 +132,19 @@ abstract class ActiveRecord {
   }
 
   /**
+   * @param $array
+   *
+   * @return array|bool|\mysqli_result|null
+   */
+  public static function updateFromArray($array) {
+    return
+      static::prepareDbQuery()
+        ->setValues($array)
+        ->setWhereArray([static::$_primaryIndexField => $array[static::$_primaryIndexField]])
+        ->doUpdate();
+  }
+
+  /**
    * Fills table name based on class if it is empty
    *
    * Namespaces does not count - only class name taken into account
@@ -129,8 +158,8 @@ abstract class ActiveRecord {
    */
   protected static function fillTableName() {
     static::$_tableName = \HelperString::camelToUnderscore(basename(get_called_class()));
-    if (strpos(static::$_tableName, static::TABLE) === 0) {
-      static::$_tableName = substr(static::$_tableName, strlen(static::TABLE));
+    if (strpos(static::$_tableName, static::IGNORE_PREFIX) === 0) {
+      static::$_tableName = substr(static::$_tableName, strlen(static::IGNORE_PREFIX));
     }
   }
 

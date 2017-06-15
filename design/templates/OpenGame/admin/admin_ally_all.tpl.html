@@ -1,0 +1,59 @@
+<h1>{PAGE_HEADER}</h1>
+
+<!-- DEFINE $COLSPAN = '14' -->
+<table id="js_admin_alliance">
+  <tr class="c_c">
+    <th>ID</th>
+    <th>TAG</th>
+    <th>NAME</th>
+    <th>CREATED</th>
+    <th>OWNER_ID</th>
+    <!--<th>DESCRIPTION</th>-->
+    <!--<th>WEB_PAGE</th>-->
+    <!--<th>TEXT_INTERNAL</th>-->
+    <th>HAVE_LOGO</th>
+    <!--<th>REQUEST_TEMPLATE</th>-->
+    <th>REQUESTS_NOT_ALLOWED</th>
+    <th>OWNER_RANK_NAME</th>
+    <th>MEMBER_COUNT</th>
+    <th>STAT_POSITION</th>
+    <th>STAT_POINTS</th>
+    <!--<th>TITLE_LIST_UNPARSED</th>-->
+    <!--<th>OLD_TITLE_LIST</th>-->
+    <!--<th>PARENT_PLAYER_ID</th>-->
+  </tr>
+
+  <!-- BEGIN ally -->
+  <tr data-ally-id="{ally.ID}">
+    <td>{ally.ID}</td>
+    <td>{ally.TAG}</td>
+    <td>{ally.NAME}</td>
+    <td>{ally.CREATED_SQL}</td>
+    <td>{ally.OWNER_ID}</td>
+    <!--<td>{ally.DESCRIPTION}</td>-->
+    <!--<td>{ally.WEB_PAGE}</td>-->
+    <!--<td>{ally.TEXT_INTERNAL}</td>-->
+    <td>{ally.HAVE_LOGO}</td>
+    <!--<td>{ally.REQUEST_TEMPLATE}</td>-->
+    <td>{ally.REQUESTS_NOT_ALLOWED}</td>
+    <td>{ally.OWNER_RANK_NAME}</td>
+    <td>{ally.MEMBER_COUNT}</td>
+    <td>{ally.STAT_POSITION}</td>
+    <td>{ally.STAT_POINTS}</td>
+    <!--<td>{ally.TITLE_LIST_UNPARSED}</td>-->
+    <!--<td>{ally.OLD_TITLE_LIST}</td>-->
+    <!--<td>{ally.PARENT_PLAYER_ID}</td>-->
+  </tr>
+  <!-- BEGINELSE ally -->
+  <tr>
+    <td colspan="{$COLSPAN}">{ НЕТ АЛЬЯНСОВ }</td>
+  </tr>
+  <!-- END ally -->
+
+</table>
+
+<script type="text/javascript">
+  $('#js_admin_alliance').on('click', 'td', function (e) {
+    sn_redirect("index.php?page=admin/admin_ally&ally_id=" + $(this).parent().data('ally-id'));
+  });
+</script>

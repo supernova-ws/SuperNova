@@ -610,18 +610,6 @@ https://money.yandex.ru/embed/quickpay/small.xml
         - $ListCensure = array ( '/</', '/>/', '/script/i', '/doquery/i', '/http/i', '/javascript/i');
 
 
-[*] Админка: УПРАВЛЕНИЕ АЛЬЯНСАМИ!
-    - просмотр
-        - Владелец
-        - Список игроков
-            - ИД, аккаунт
-            - онлайн
-            - отпуск
-    - передача
-
-[*] Watchdog
-
-
 [*] class OldDbChangeSet
     - deprecate
 
@@ -634,8 +622,6 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 [*] // init constants from db - TODO - REMOVE
 
-
-Конфиг - метод force()/store()/direct()/pass(), означающий, что следующую настройку нужно брать из базы
 
 [*] Проверить все таймлимиты - и использовать константы:
     - TIMEOUT_SHORT
@@ -650,10 +636,31 @@ https://money.yandex.ru/embed/quickpay/small.xml
         - diff($mark)
         - format($mark)
 
+[*] Аккаунт для поисковых пауков
 
+
+[*] DB:
+        - `alliance`:
+            - Убрать поле ally_request_waiting
+
+    global $ally_rights;
+
+
+[*] Полноценный ActiveRecord - не статический
 
 #ctv
 
+
+2017-06-15 20:48:17 43a0.15
+[!] Админка/Альянсы
+    Добавлена страница для просмотра списка Альянсов
+    Добавлена страница для просмотра отдельного Альянса:
+        - Дамп записи Альянса;
+        - Список игроков с рангами, онлайном, отпуском, баном;
+        - Передача Альянса другому игроку;
+        - Цветовое кодирование Главы:
+            - Зеленый - активен на протяжении 30 дней;
+            - Красный - неактивен.
 
 
 2017-06-15 06:59:23 43a0.13
@@ -683,7 +690,7 @@ https://money.yandex.ru/embed/quickpay/small.xml
     Удалены апдейты по релиз 39 включительно
 
 [@] Код
-    Класс ActiveRecord: добавлено семейство методов find()
+    Класс ActiveRecordStatic: добавлено семейство методов find()
     \DBAL\DbQuery::insert() теперь является protected. Тесты переписаны соответственно
 
 
