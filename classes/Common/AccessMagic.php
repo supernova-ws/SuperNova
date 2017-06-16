@@ -33,7 +33,7 @@ class AccessMagic implements \IContainer {
    *
    * @param GlobalContainer|null $services
    */
-  public function __construct($services = null) {
+  public function __construct(GlobalContainer $services = null) {
     $this->services = empty($services) ? \classSupernova::$gc : $services;
   }
 
@@ -56,7 +56,7 @@ class AccessMagic implements \IContainer {
    * @return mixed
    */
   public function __get($name) {
-    return isset($this->$name) ? $this->values[$name] : null;
+    return $this->__isset($name) ? $this->values[$name] : null;
   }
 
   /**

@@ -13,7 +13,7 @@ class TablePlayer extends ActiveRecordStatic {
   protected static $_tableName = 'users';
 
 
-  public static function updateFromArray($array) {
+  public static function updateFromArray(array $array) {
     // Removing authlevel for
     // a) not to trigger hack warnings
     // b) make to use special functions

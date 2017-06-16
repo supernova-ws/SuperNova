@@ -47,7 +47,7 @@ class AllianceStatic {
 
   }
 
-  public static function titleMembers($memberList, $allianceRendered) {
+  public static function titleMembers($memberList, TableAlliance $alliance) {
     global $ally_rights;
 
     $copy = $ally_rights;
@@ -58,7 +58,7 @@ class AllianceStatic {
       return $result;
     }
 
-    $titleList = self::parseTitleList($allianceRendered['TITLE_LIST_UNPARSED']);
+    $titleList = self::parseTitleList($alliance->titleList);
     self::compileTitleRights($titleList);
 
 
@@ -76,9 +76,9 @@ class AllianceStatic {
         'TITLE_ID'     => $playerRecord['ally_rank_id'],
         'RIGHTS'       => $titleList[$playerRecord['ally_rank_id']]['rights'],
       ];
-      if ($playerRecord['id'] == $allianceRendered['OWNER_ID']) {
+      if ($playerRecord['id'] == $alliance->ownerId) {
         $temp = array_merge($temp, [
-          'TITLE'    => $allianceRendered['OWNER_RANK_NAME'],
+          'TITLE'    => $alliance->ownerRankName,
           'TITLE_ID' => -1,
           'RIGHTS'   => implode(',', $copy),
           'OWNER'    => true,
@@ -94,11 +94,11 @@ class AllianceStatic {
   public static function passAlliance($allyId, $newOwnerId) {
     try {
       sn_db_transaction_start();
-      if (empty($alliance = \Alliance\TableAlliance::findOne($allyId))) {
+      if (empty($alliance = \Alliance\TableAlliance::findOneObject($allyId))) {
         throw new \Exception('{ Альянс с указанным ID не найден }', ERR_ERROR);
       }
 
-      if ($newOwnerId == $alliance['ally_owner']) {
+      if ($newOwnerId == $alliance->ownerId) {
         throw new \Exception('{ Указанный пользователь уже является владельцем указанного Альянса }', ERR_NOTICE);
       }
 
@@ -118,8 +118,8 @@ class AllianceStatic {
         throw new \Exception('{ Ошибка изменения ранга у нового владельца }', ERR_ERROR);
       }
 
-      $alliance['ally_owner'] = $newOwnerId;
-      if (!TableAlliance::updateFromArray($alliance)) {
+      $alliance->ownerId = $newOwnerId;
+      if (!TableAlliance::updateFromArray($alliance->getValuesArray())) {
         throw new \Exception('{ Ошибка изменения владельца Альянса }', ERR_ERROR);
       }
 

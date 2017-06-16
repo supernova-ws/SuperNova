@@ -41,15 +41,15 @@ function sn_admin_ally_view_one($template = null, $allyId) {
 
   $template = gettemplate('admin/admin_ally_one', $template);
 
-  $alliance = \Alliance\TableAlliance::findOne($allyId);
+  $alliance = \Alliance\TableAlliance::findOneObject($allyId);
 
   if (empty($alliance)) {
     return $template;
   }
 
-  $render = \Alliance\TableAlliance::ptlArray($alliance);
+  $render = $alliance->ptlFromObject();
   $memberList = \Alliance\AllianceStatic::getMemberList($render['ID']);
-  $titledMembers = \Alliance\AllianceStatic::titleMembers($memberList, $render);
+  $titledMembers = \Alliance\AllianceStatic::titleMembers($memberList, $alliance);
 
   $template_result['.']['members'] = $titledMembers;
 
@@ -70,10 +70,10 @@ function sn_admin_ally_view_all($template = null) {
 
   $template = gettemplate('admin/admin_ally_all', $template);
 
-  foreach (\Alliance\TableAlliance::findAll([]) as $alliance) {
-    $rendered = \Alliance\TableAlliance::ptlArray($alliance);
-    $rendered['CREATED_SQL'] = date(FMT_DATE_TIME_SQL, $rendered['CREATED']);
-    $rendered['STAT_POINTS_TEXT'] = pretty_number($rendered['STAT_POINTS']);
+  foreach (\Alliance\TableAlliance::findAllObjects([]) as $alliance) {
+    $rendered = $alliance->ptlFromObject();
+    $rendered['CREATED_SQL'] = date(FMT_DATE_TIME_SQL, $alliance->createdUnixTime);
+    $rendered['STAT_POINTS_TEXT'] = pretty_number($alliance->statPoints);
     $template->assign_block_vars('ally', $rendered);
   };
 

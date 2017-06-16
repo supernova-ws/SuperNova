@@ -647,8 +647,16 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 
 [*] Полноценный ActiveRecord - не статический
+        - Сделать нормальный update()
+        - Переделать find() на работу с объектами - переименовать итд
 
 #ctv
+
+
+
+2017-06-16 13:20:43 43a1.2
+[@] Код
+    Начата переделка ActiveRecordStatic в нормальный ActiveRecord
 
 
 2017-06-16 13:15:07 43a1.1

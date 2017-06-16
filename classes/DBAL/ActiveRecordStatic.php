@@ -5,18 +5,25 @@
 
 namespace DBAL;
 
+use Common\AccessLogged;
+use Common\GlobalContainer;
+
 
 /**
  * Class ActiveRecordStatic
  *
+ * @property int|string $id
+ *
  * @package DBAL
  */
-
-abstract class ActiveRecordStatic {
+abstract class ActiveRecordStatic extends AccessLogged {
   const IGNORE_PREFIX = 'Table';
 
   protected static $_primaryIndexField = 'id';
   protected static $_tableName = '';
+
+  // AR's service fields
+  protected $_isNew = true;
 
   /**
    * Get table name
@@ -124,11 +131,10 @@ abstract class ActiveRecordStatic {
   /**
    * ActiveRecordStatic constructor.
    *
-   * @param \db_mysql|null $db
+   * @param GlobalContainer|null $services
    */
-  public function __construct(\db_mysql $db = null) {
-    if(empty($db)) {
-    }
+  public function __construct(GlobalContainer $services = null) {
+    parent::__construct($services);
   }
 
   public function save() {
@@ -138,11 +144,11 @@ abstract class ActiveRecordStatic {
   }
 
   /**
-   * @param $array
+   * @param array $array
    *
    * @return array|bool|\mysqli_result|null
    */
-  public static function updateFromArray($array) {
+  public static function updateFromArray(array $array) {
     return
       static::prepareDbQuery()
         ->setValues($array)
@@ -176,6 +182,92 @@ abstract class ActiveRecordStatic {
    */
   protected static function prepareDbQuery() {
     return DbQuery::build(static::db())->setTable(static::tableName());
+  }
+
+  protected function fillFields($array) {
+    foreach ($array as $name => $value) {
+      if ($name == static::$_primaryIndexField) {
+        $name = 'id';
+      }
+      $record->__set($name, $value);
+    }
+  }
+
+  public function getValuesArray() {
+    return $this->values;
+  }
+
+
+  /**
+   * @param $array
+   *
+   * @return static|bool
+   */
+  public static function fromArray($array) {
+    if (!is_array($array) || empty($array)) {
+      return false;
+    }
+
+    $record = new static();
+    $record->fillFields($array);
+
+    return $record;
+  }
+
+  /**
+   * Gets first ActiveRecord by $where
+   *
+   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   *
+   * @return static|bool
+   */
+  public static function findOneObject($where) {
+    $record = static::fromArray(static::findOne($where));
+    if (!empty($record)) {
+      $record->_isNew = false;
+    }
+
+    return $record;
+  }
+
+  /**
+   * @param array $records
+   *
+   * @return array|static[]
+   */
+  public static function fromArrayList($records) {
+    if (is_array($records) && !empty($records)) {
+      foreach ($records as &$record) {
+        $record = static::fromArray($record);
+        $record->_isNew = false;
+      }
+    } else {
+      $records = [];
+    }
+
+    return $records;
+  }
+
+  /**
+   * Gets all ActiveRecords by $where
+   *
+   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   *
+   * @return array|static[] - [(int) => static]
+   */
+  public static function findAllObjects($where) {
+    return static::fromArrayList(static::findAll($where));
+  }
+
+  /**
+   * Gets all ActiveRecords by $where - array indexed by record IDs
+   *
+   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   *
+   * @return array|static[] - [$record_db_id => static]
+   */
+  public static function findAllIndexedObjects($where) {
+    return static::fromArrayList(static::findAllIndexed($where));
   }
 
 }
