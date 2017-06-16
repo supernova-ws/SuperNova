@@ -10,13 +10,7 @@
 
 <h1>{PAGE_HEADER}</h1>
 
-<table>
-  <!--
-    <tr>
-      <td>ID</td>
-      <td>{ID}</td>
-    </tr>
-  -->
+<table class="c_l">
   <tr>
     <td>TAG</td>
     <td>{TAG}</td>
@@ -87,7 +81,7 @@
   </tr>
 </table>
 
-<table id="js_admin_alliance_members">
+<table id="js_admin_alliance_members" class="c_l">
   <tr class="c_c">
     <th>OWNER</th>
     <th>PLAYER</th>
@@ -118,15 +112,15 @@
     <td>[{members.PLAYER_ID}] {members.PLAYER_NAME}</td>
     <td>[{members.TITLE_ID}] {members.TITLE}</td>
     <td>{members.RIGHTS}</td>
-    <td>{members.ONLINE_SQL}</td>
-    <td>
+    <td class="c_c">{members.ONLINE_SQL}</td>
+    <td class="c_c">
       <!-- IF members.VACATION -->
       {members.VACATION_SQL}
       <!-- ELSE -->
       -
       <!-- ENDIF -->
     </td>
-    <td>
+    <td class="c_c">
       <!-- IF members.BAN -->
       {members.BAN_SQL}
       <!-- ELSE -->
