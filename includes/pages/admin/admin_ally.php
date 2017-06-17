@@ -41,13 +41,13 @@ function sn_admin_ally_view_one($template = null, $allyId) {
 
   $template = gettemplate('admin/admin_ally_one', $template);
 
-  $alliance = \Alliance\TableAlliance::findOneObject($allyId);
+  $alliance = \Alliance\TableAlliance::findOne($allyId);
 
   if (empty($alliance)) {
     return $template;
   }
 
-  $render = $alliance->ptlFromObject();
+  $render = $alliance->ptlArray();
   $memberList = \Alliance\AllianceStatic::getMemberList($render['ID']);
   $titledMembers = \Alliance\AllianceStatic::titleMembers($memberList, $alliance);
 
@@ -70,8 +70,8 @@ function sn_admin_ally_view_all($template = null) {
 
   $template = gettemplate('admin/admin_ally_all', $template);
 
-  foreach (\Alliance\TableAlliance::findAllObjects([]) as $alliance) {
-    $rendered = $alliance->ptlFromObject();
+  foreach (\Alliance\TableAlliance::findAll([]) as $alliance) {
+    $rendered = $alliance->ptlArray();
     $rendered['CREATED_SQL'] = date(FMT_DATE_TIME_SQL, $alliance->createdUnixTime);
     $rendered['STAT_POINTS_TEXT'] = pretty_number($alliance->statPoints);
     $template->assign_block_vars('ally', $rendered);

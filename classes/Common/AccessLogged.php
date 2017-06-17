@@ -33,6 +33,10 @@ class AccessLogged extends AccessMagic {
 
   public function __set($name, $value) {
     if (array_key_exists($name, $this->values)) {
+      if(array_key_exists($name, $this->_deltas)) {
+        throw new \Exception(get_called_class() . '::' . $name . ' already INCREMENTED/DECREMENTED - can not CHANGE', ERR_ERROR);
+      }
+
       $this->_changes[$name] = $value;
     } else {
       $this->_startValues[$name] = $value;
@@ -48,7 +52,11 @@ class AccessLogged extends AccessMagic {
    * @param int|float $value Default: 1
    */
   public function inc($name, $value = 1) {
-    $this->__set($name, $this->__get($name) + $value);
+    if(array_key_exists($name, $this->_changes)) {
+      throw new \Exception(get_called_class() . '::' . $name . ' already changed - can not use INCREMENT', ERR_ERROR);
+    }
+    $this->_deltas[$name] += $value;
+    parent::__set($name, parent::__get($name) + $value);
   }
 
   /**
@@ -58,7 +66,11 @@ class AccessLogged extends AccessMagic {
    * @param int|float $value Default: 1
    */
   public function dec($name, $value = 1) {
-    $this->__set($name, $this->__get($name) - $value);
+    if(array_key_exists($name, $this->_changes)) {
+      throw new \Exception(get_called_class() . '::' . $name . ' already changed - can not use DECREMENT', ERR_ERROR);
+    }
+    $this->_deltas[$name] -= $value;
+    parent::__set($name, parent::__get($name) - $value);
   }
 
   public function getChanges() {

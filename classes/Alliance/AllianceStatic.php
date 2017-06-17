@@ -94,7 +94,7 @@ class AllianceStatic {
   public static function passAlliance($allyId, $newOwnerId) {
     try {
       sn_db_transaction_start();
-      if (empty($alliance = \Alliance\TableAlliance::findOneObject($allyId))) {
+      if (empty($alliance = \Alliance\TableAlliance::findOne($allyId))) {
         throw new \Exception('{ Альянс с указанным ID не найден }', ERR_ERROR);
       }
 
@@ -102,24 +102,24 @@ class AllianceStatic {
         throw new \Exception('{ Указанный пользователь уже является владельцем указанного Альянса }', ERR_NOTICE);
       }
 
-      if (!empty($ownerArray = db_user_by_id($newOwnerId))) {
-        $ownerArray['ally_rank_id'] = 0;
-        if (!TablePlayer::updateFromArray($ownerArray)) {
+      if (!empty($oldOwner = TablePlayer::findOne($alliance->ownerId))) {
+        $oldOwner->ally_rank_id = 0;
+        if (!$oldOwner->update()) {
           throw new \Exception('{ Ошибка изменения ранга у старого владельца }', ERR_ERROR);
         }
       }
 
-      if (empty($newOwnerArray = db_user_by_id($newOwnerId))) {
+      if (empty($newOwner = TablePlayer::findOne($newOwnerId))) {
         throw new \Exception('{ Новый владелец Альянса не найден }', ERR_ERROR);
       }
 
-      $newOwnerArray['ally_rank_id'] = 0;
-      if (!TablePlayer::updateFromArray($newOwnerArray)) {
+      $newOwner->ally_rank_id = 0;
+      if (!$newOwner->update()) {
         throw new \Exception('{ Ошибка изменения ранга у нового владельца }', ERR_ERROR);
       }
 
       $alliance->ownerId = $newOwnerId;
-      if (!TableAlliance::updateFromArray($alliance->getValuesArray())) {
+      if (!$alliance->update()) {
         throw new \Exception('{ Ошибка изменения владельца Альянса }', ERR_ERROR);
       }
 

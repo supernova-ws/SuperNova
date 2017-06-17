@@ -654,6 +654,11 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 
 
+2017-06-17 15:35:00 43a1.3
+[@] Код
+    ActiveRecordStatic переделан в обычный ActiveRecord
+
+
 2017-06-16 13:20:43 43a1.2
 [@] Код
     Начата переделка ActiveRecordStatic в нормальный ActiveRecord
