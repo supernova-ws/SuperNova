@@ -31,7 +31,9 @@ ob_start();
 ini_set('error_reporting', E_ALL ^ E_NOTICE);
 
 // Installing autoloader
-require_once SN_ROOT_PHYSICAL . 'includes/_autoloader.php';
+require_once SN_ROOT_PHYSICAL . 'classes/Core/Autoloader.php';
+\Core\Autoloader::registerRelative('classes/');
+\Core\Autoloader::registerRelative('classes/UBE/');
 
 
 require_once SN_ROOT_PHYSICAL . 'includes/constants.php';
