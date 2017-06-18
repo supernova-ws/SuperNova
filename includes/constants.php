@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a1.5');
+define('SN_VERSION', '43a1.8');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1067,6 +1067,10 @@ define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_SILVER', 2319); // День Рожде
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_GOLD', 2320); // День Рождения СН - 2016
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_PLATINUM', 2321); // День Рождения СН - 2016
 define('UNIT_AWARD_MEMORY_SUPER_BORN_2016_DIAMOND', 2322); // День Рождения СН - 2016
+
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_3RD', 2323); // Лучший Гость - День Рождения СН - 2016
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_2ND', 2324); // Лучший Гость - День Рождения СН - 2016
+define('UNIT_AWARD_MEMORY_SUPER_BORN_2017_BEST_1ST', 2325); // Лучший Гость - День Рождения СН - 2016
 
 define('UNIT_AWARD_PENNANT', 2400); // Переходящий вымпел - индикация статуса на сервере: "Топ-1", "Топ", "Сабтоп", "Самый большой флот" итд
 define('UNIT_AWARD_BADGE', 2600); // Бейджики/значки за ачивки - например, "Построил 1000 кораблей"
