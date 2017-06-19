@@ -1,6 +1,5 @@
 {
     "require-dev": {
-        "phpspec/prophecy": "1.6.0",
-        "phpunit/phpunit": "4.8.*"
+        "phpunit/phpunit": "5.*"
     }
 }

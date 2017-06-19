@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a1.9');
+define('SN_VERSION', '43a1.10');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -25,9 +25,11 @@ $sn_root_relative = $sn_root_relative . basename($_SERVER['SCRIPT_NAME']);
 // Removing script name to obtain HTTP root
 define('SN_ROOT_RELATIVE', str_replace($sn_root_relative, '', $_SERVER['SCRIPT_NAME']));
 
-define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_SERVER['HTTP_HOST'] . SN_ROOT_RELATIVE);
+$_server_http_host = isset($_SERVER['HTTP_HOST']) ? $_SERVER['HTTP_HOST'] : '';
+define('SN_ROOT_VIRTUAL', 'http' . (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' ? 's' : '') . '://' . $_server_http_host . SN_ROOT_RELATIVE);
 
-if(strpos(strtolower($_SERVER['SERVER_NAME']), 'google.') !== false) {
+$_server_server_name = isset($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : '';
+if(strpos(strtolower($_server_server_name), 'google.') !== false) {
   define('SN_GOOGLE', true);
 }
 define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
