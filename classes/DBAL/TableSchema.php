@@ -29,9 +29,9 @@ class TableSchema {
    */
   public $indexes;
   /**
-   * @var \array[] $foreign
+   * @var \array[] $constraints
    */
-  public $foreign;
+  public $constraints;
 
   /**
    * TableSchema constructor.
@@ -47,7 +47,7 @@ class TableSchema {
 
     $this->fields = $this->db->mysql_get_fields($this->tableName);
     $this->indexes = $this->db->mysql_get_indexes($this->tableName);
-    $this->foreign = $this->db->mysql_get_foreign($this->tableName);
+    $this->constraints = $this->db->mysql_get_constraints($this->tableName);
   }
 
 }

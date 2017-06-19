@@ -322,12 +322,12 @@ class db_mysql {
    *
    * @return array[]
    */
-  public function mysql_get_foreign($tableName_unsafe) {
+  public function mysql_get_constraints($tableName_unsafe) {
     $result = [];
 
     $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
 
-    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name). "' AND TABLE_NAME = '{$prefixedTableName_safe}' AND REFERENCED_TABLE_NAME is not null;");
+    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name). "' AND `TABLE_NAME` = '{$prefixedTableName_safe}' AND `REFERENCED_TABLE_NAME` IS NOT NULL;");
     while($r1 = db_fetch($q1)) {
       $indexName = $r1['CONSTRAINT_NAME'];
 

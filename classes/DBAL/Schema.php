@@ -27,7 +27,7 @@ class Schema {
   /**
    * @var TableSchema[] $tableSchemas
    */
-  protected $tableSchemas;
+  protected $tableSchemas = [];
 
   public function __construct(\db_mysql $db) {
     $this->db = $db;
@@ -40,6 +40,7 @@ class Schema {
   public function clear() {
     $this->tablesAll = null;
     $this->tablesSn = null;
+    $this->tableSchemas = [];
   }
 
   protected function loadTableNamesFromDb() {
@@ -100,6 +101,11 @@ class Schema {
     return isset($this->getSnTables()[$tableName]);
   }
 
+  /**
+   * @param string $tableName
+   *
+   * @return TableSchema
+   */
   public function getTableSchema($tableName) {
     if(empty($this->tableSchemas[$tableName])) {
       $this->tableSchemas[$tableName] = new TableSchema($tableName, $this);
