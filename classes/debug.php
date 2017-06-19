@@ -161,6 +161,14 @@ class debug {
       $error_backtrace['backtrace'] = debug_backtrace();
       unset($error_backtrace['backtrace'][1]);
       unset($error_backtrace['backtrace'][0]);
+
+      // Converting object instances to object names
+      foreach ($error_backtrace['backtrace'] as &$backtrace) {
+        if(is_object($backtrace['object'])) {
+          $backtrace['object'] = get_class($backtrace['object']);
+        }
+      }
+
       // $error_backtrace['query_log'] = "\r\n\r\nQuery log\r\n<table><tr><th>Number</th><th>Query</th><th>Page</th><th>Table</th><th>Rows</th></tr>{$this->log}</table>\r\n";
       $error_backtrace['$_GET'] = $_GET;
       $error_backtrace['$_POST'] = $_POST;

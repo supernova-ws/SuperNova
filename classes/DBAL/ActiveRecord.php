@@ -191,6 +191,15 @@ abstract class ActiveRecord extends AccessLogged {
   }
 
   /**
+   * @param array $properties
+   */
+  public function fromProperties(array $properties) {
+    foreach ($properties as $name => $value) {
+      $this->__set($name, $value);
+    }
+  }
+
+  /**
    * Normalize array
    *
    * Basically - uppercase all field names to make it use in PTL
@@ -276,6 +285,12 @@ abstract class ActiveRecord extends AccessLogged {
     return $this->reload();
   }
 
+  public function flush() {
+    $this->values = $this->_startValues;
+    $this->_deltas = [];
+    $this->_changes = [];
+    $this->_isNew = empty($this->id);
+  }
 
 
   /**
@@ -360,13 +375,5 @@ abstract class ActiveRecord extends AccessLogged {
     $this->fromProperties(static::translateNames($fields, self::FIELDS_TO_PROPERTIES));
   }
 
-  /**
-   * @param array $properties
-   */
-  public function fromProperties(array $properties) {
-    foreach ($properties as $name => $value) {
-      $this->__set($name, $value);
-    }
-  }
 
 }

@@ -276,6 +276,77 @@ class db_mysql {
     return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
   }
 
+  /**
+   * @param string $tableName_unsafe
+   *
+   * @return array[]
+   */
+  public function mysql_get_fields($tableName_unsafe) {
+    $result = [];
+
+    $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
+    $q1 = $this->db_sql_query("SHOW FULL COLUMNS FROM `{$prefixedTableName_safe}`;");
+    while($r1 = db_fetch($q1)) {
+      $result[$r1['Field']] = $r1;
+    }
+    return $result;
+  }
+
+  /**
+   * @param string $tableName_unsafe
+   *
+   * @return array[]
+   */
+  public function mysql_get_indexes($tableName_unsafe) {
+    $result = [];
+
+    $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
+    $q1 = $this->db_sql_query("SHOW INDEX FROM {$prefixedTableName_safe};");
+    while($r1 = db_fetch($q1)) {
+      $indexName = $r1['Key_name'];
+
+      $result[$indexName]['name'] = $r1['Key_name'];
+      $result[$indexName]['signature'][] = $r1['Column_name'];
+      $result[$indexName]['fields'][$r1['Column_name']] = $r1;
+    }
+
+    foreach ($result as &$indexDescription) {
+      $indexDescription['signature'] = implode(',', $indexDescription['signature']);
+    }
+
+    return $result;
+  }
+
+  /**
+   * @param string $tableName_unsafe
+   *
+   * @return array[]
+   */
+  public function mysql_get_foreign($tableName_unsafe) {
+    $result = [];
+
+    $prefixedTableName_safe = $this->db_escape($this->db_prefix . $tableName_unsafe);
+
+    $q1 = $this->db_sql_query("SELECT * FROM `information_schema`.`KEY_COLUMN_USAGE` WHERE `TABLE_SCHEMA` = '" . db_escape(classSupernova::$db_name). "' AND TABLE_NAME = '{$prefixedTableName_safe}' AND REFERENCED_TABLE_NAME is not null;");
+    while($r1 = db_fetch($q1)) {
+      $indexName = $r1['CONSTRAINT_NAME'];
+
+      $table_referenced = str_replace($this->db_prefix, '', $r1['REFERENCED_TABLE_NAME']);
+
+      $result[$indexName]['name'] = $indexName;
+      $result[$indexName]['signature'][] = "{$r1['COLUMN_NAME']}=>{$table_referenced}.{$r1['REFERENCED_COLUMN_NAME']}";
+      $r1['REFERENCED_TABLE_NAME'] = $table_referenced;
+      $r1['TABLE_NAME'] = $tableName_unsafe;
+      $result[$indexName]['fields'][$r1['COLUMN_NAME']] = $r1;
+    }
+
+    foreach ($result as &$constraint) {
+      $constraint['signature'] = implode(',', $constraint['signature']);
+    }
+
+    return $result;
+  }
+
 
   function db_sql_query($query_string) {
     $microtime = microtime(true);

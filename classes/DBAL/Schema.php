@@ -24,9 +24,17 @@ class Schema {
    */
   protected $tablesSn = null;
 
+  /**
+   * @var TableSchema[] $tableSchemas
+   */
+  protected $tableSchemas;
 
   public function __construct(\db_mysql $db) {
     $this->db = $db;
+  }
+
+  public function getDb() {
+    return $this->db;
   }
 
   public function clear() {
@@ -90,6 +98,14 @@ class Schema {
    */
   public function isSnTableExists($tableName) {
     return isset($this->getSnTables()[$tableName]);
+  }
+
+  public function getTableSchema($tableName) {
+    if(empty($this->tableSchemas[$tableName])) {
+      $this->tableSchemas[$tableName] = new TableSchema($tableName, $this);
+    }
+
+    return $this->tableSchemas[$tableName];
   }
 
 }

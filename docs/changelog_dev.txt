@@ -649,6 +649,11 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+2017-06-19 16:09:10 43a1.12
+[@] Код
+    Класс TableSсhema - получение схемы таблицы
+
+
 2017-06-19 12:17:46 43a1.11
 [@] Код
     Работа над ActiveRecord
