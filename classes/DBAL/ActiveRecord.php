@@ -17,7 +17,7 @@ use Common\GlobalContainer;
  * @package DBAL
  */
 abstract class ActiveRecord extends AccessLogged {
-  const IGNORE_PREFIX = 'Table';
+  const IGNORE_PREFIX = 'Record';
 
   const FIELDS_TO_PROPERTIES = true;
   const PROPERTIES_TO_FIELDS = false;
@@ -42,12 +42,43 @@ abstract class ActiveRecord extends AccessLogged {
   protected $_isNew = true;
 
   /**
-   * ActiveRecord constructor.
+   * Get table name
    *
-   * @param GlobalContainer|null $services
+   * @return string
    */
-  public function __construct(GlobalContainer $services = null) {
-    parent::__construct($services);
+  public static function tableName() {
+    if (empty(static::$_tableName)) {
+      static::tableFromClass();
+    }
+
+    return static::$_tableName;
+  }
+
+  /**
+   * Get used DB
+   *
+   * @return \db_mysql
+   */
+  public static function db() {
+    return \classSupernova::$db;
+  }
+
+  /**
+   * Instate ActiveRecord from array of field values
+   *
+   * @param string[] $fields List of field values [$fieldName => $fieldValue]
+   *
+   * @return static|bool
+   */
+  public static function build(array $properties = []) {
+    if (!is_array($properties) || empty($properties)) {
+      return false;
+    }
+
+    $record = new static();
+    $record->fromProperties($properties);
+
+    return $record;
   }
 
   /**
@@ -78,7 +109,7 @@ abstract class ActiveRecord extends AccessLogged {
    * @return static|bool
    */
   public static function findOne($where) {
-    $record = static::fromArray(static::findOneArray($where));
+    $record = static::build(static::translateNames(static::findOneArray($where)));
     if (!empty($record)) {
       $record->_isNew = false;
     }
@@ -104,32 +135,9 @@ abstract class ActiveRecord extends AccessLogged {
    *
    * @return array|static[] - [$record_db_id => static]
    */
-  public static function findAllIndexedObjects($where) {
+  public static function findAllIndexed($where) {
     return static::fromArrayList(static::findAllIndexedArray($where));
   }
-
-  /**
-   * Get table name
-   *
-   * @return string
-   */
-  public static function tableName() {
-    if (empty(static::$_tableName)) {
-      static::fillTableName();
-    }
-
-    return static::$_tableName;
-  }
-
-  /**
-   * Get used DB
-   *
-   * @return \db_mysql
-   */
-  public static function db() {
-    return \classSupernova::$db;
-  }
-
 
   /**
    * Gets first record by $where
@@ -174,6 +182,15 @@ abstract class ActiveRecord extends AccessLogged {
   }
 
   /**
+   * ActiveRecord constructor.
+   *
+   * @param GlobalContainer|null $services
+   */
+  public function __construct(GlobalContainer $services = null) {
+    parent::__construct($services);
+  }
+
+  /**
    * Normalize array
    *
    * Basically - uppercase all field names to make it use in PTL
@@ -189,6 +206,77 @@ abstract class ActiveRecord extends AccessLogged {
 
     return $result;
   }
+
+  /**
+   * Reload current record from ID
+   *
+   * @return bool
+   */
+  public function reload() {
+    $recordId = $this->id;
+    if (empty($recordId)) {
+      return false;
+    }
+
+    $this->_isNew = true;
+    $this->flush();
+
+    $this->_isNew = false;
+    $fields = static::findOneArray($this->id);
+    if (empty($fields)) {
+      return false;
+    }
+
+    $this->fromFields($fields);
+
+    return true;
+  }
+
+  /**
+   * @return array|bool|\mysqli_result|null
+   */
+  public function insert() {
+    if ($this->isEmpty()) {
+      return false;
+    }
+    if (!$this->_isNew) {
+      return false;
+    }
+
+
+    if (!($result = static::prepareDbQuery()
+      ->setValues(static::translateNames($this->values, self::PROPERTIES_TO_FIELDS))
+      ->doInsert())
+    ) {
+      return false;
+    }
+
+    $this->id = \classSupernova::$db->db_insert_id();
+
+    return $this->reload();
+  }
+
+  /**
+   * @return array|bool|\mysqli_result|null
+   */
+  public function update() {
+    if (empty($this->_changes) && empty($this->_deltas)) {
+      return true;
+    }
+
+    if (!($result = static::prepareDbQuery()
+      ->setValues(empty($this->_changes) ? [] : static::translateNames($this->_changes, self::PROPERTIES_TO_FIELDS))
+      ->setAdjust(empty($this->_deltas) ? [] : static::translateNames($this->_deltas, self::PROPERTIES_TO_FIELDS))
+      ->setWhereArray([static::$_primaryIndexField => $this->id])
+      ->doUpdate())
+    ) {
+      return false;
+    }
+
+    return $this->reload();
+  }
+
+
 
   /**
    * Converts property-indexed value array to field-indexed via translation table
@@ -213,37 +301,6 @@ abstract class ActiveRecord extends AccessLogged {
   }
 
   /**
-   * @return array|bool|\mysqli_result|null
-   */
-  public function update() {
-    if (empty($this->_changes) && empty($this->_deltas)) {
-      return true;
-    }
-
-    if ($result = static::prepareDbQuery()
-      ->setValues(empty($this->_changes) ? [] : static::translateNames($this->_changes, self::PROPERTIES_TO_FIELDS))
-      ->setAdjust(empty($this->_deltas) ? [] : static::translateNames($this->_deltas, self::PROPERTIES_TO_FIELDS))
-      ->setWhereArray([static::$_primaryIndexField => $this->id])
-      ->doUpdate()
-    ) {
-      $this->flush();
-    };
-
-    return $result;
-  }
-
-  /**
-   * @return array|bool|\mysqli_result|null
-   */
-  public function insert() {
-    die('not implemented');
-  }
-
-  public function save() {
-    die('not implemented');
-  }
-
-  /**
    * Calculate table name by class name and fills internal property
    *
    * Namespaces does not count - only class name taken into account
@@ -257,7 +314,7 @@ abstract class ActiveRecord extends AccessLogged {
    * Can be override to provide different name
    *
    */
-  protected static function fillTableName() {
+  protected static function tableFromClass() {
     $temp = explode('\\', get_called_class());
     $className = end($temp);
     if (strpos($className, static::IGNORE_PREFIX) === 0) {
@@ -273,37 +330,6 @@ abstract class ActiveRecord extends AccessLogged {
     return DbQuery::build(static::db())->setTable(static::tableName());
   }
 
-  protected function fillProperties($array) {
-    $array = static::translateNames($array, self::FIELDS_TO_PROPERTIES);
-    foreach ($array as $name => $value) {
-      if ($name == static::$_primaryIndexField) {
-        $name = 'id';
-      }
-
-      $this->__set($name, $value);
-    }
-  }
-
-
-  /**
-   * Instate ActiveRecord from array
-   *
-   * @param $array
-   *
-   * @return static|bool
-   */
-  public static function fromArray($array) {
-    if (!is_array($array) || empty($array)) {
-      return false;
-    }
-
-    $record = new static();
-    $record->fillProperties($array);
-
-    return $record;
-  }
-
-
   /**
    * @param array $records
    *
@@ -312,7 +338,11 @@ abstract class ActiveRecord extends AccessLogged {
   protected static function fromArrayList($records) {
     if (is_array($records) && !empty($records)) {
       foreach ($records as &$record) {
-        $record = static::fromArray($record);
+        if (!is_array($record) || empty($record)) {
+          continue;
+        }
+
+        $record = static::build($record);
         $record->_isNew = false;
       }
     } else {
@@ -320,6 +350,23 @@ abstract class ActiveRecord extends AccessLogged {
     }
 
     return $records;
+  }
+
+
+  /**
+   * @param string[] $fields List of field values [$fieldName => $fieldValue]
+   */
+  protected function fromFields(array $fields) {
+    $this->fromProperties(static::translateNames($fields, self::FIELDS_TO_PROPERTIES));
+  }
+
+  /**
+   * @param array $properties
+   */
+  public function fromProperties(array $properties) {
+    foreach ($properties as $name => $value) {
+      $this->__set($name, $value);
+    }
   }
 
 }

@@ -6,7 +6,7 @@
 namespace Alliance;
 
 
-use Player\TablePlayer;
+use Player\RecordPlayer;
 
 class AllianceStatic {
 
@@ -47,7 +47,7 @@ class AllianceStatic {
 
   }
 
-  public static function titleMembers($memberList, TableAlliance $alliance) {
+  public static function titleMembers($memberList, RecordAlliance $alliance) {
     global $ally_rights;
 
     $copy = $ally_rights;
@@ -94,7 +94,7 @@ class AllianceStatic {
   public static function passAlliance($allyId, $newOwnerId) {
     try {
       sn_db_transaction_start();
-      if (empty($alliance = \Alliance\TableAlliance::findOne($allyId))) {
+      if (empty($alliance = \Alliance\RecordAlliance::findOne($allyId))) {
         throw new \Exception('{ Альянс с указанным ID не найден }', ERR_ERROR);
       }
 
@@ -102,14 +102,14 @@ class AllianceStatic {
         throw new \Exception('{ Указанный пользователь уже является владельцем указанного Альянса }', ERR_NOTICE);
       }
 
-      if (!empty($oldOwner = TablePlayer::findOne($alliance->ownerId))) {
+      if (!empty($oldOwner = RecordPlayer::findOne($alliance->ownerId))) {
         $oldOwner->ally_rank_id = 0;
         if (!$oldOwner->update()) {
           throw new \Exception('{ Ошибка изменения ранга у старого владельца }', ERR_ERROR);
         }
       }
 
-      if (empty($newOwner = TablePlayer::findOne($newOwnerId))) {
+      if (empty($newOwner = RecordPlayer::findOne($newOwnerId))) {
         throw new \Exception('{ Новый владелец Альянса не найден }', ERR_ERROR);
       }
 

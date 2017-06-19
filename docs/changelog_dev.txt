@@ -646,12 +646,12 @@ https://money.yandex.ru/embed/quickpay/small.xml
     global $ally_rights;
 
 
-[*] Полноценный ActiveRecord - не статический
-        - Сделать нормальный update()
-        - Переделать find() на работу с объектами - переименовать итд
-
 #ctv
 
+
+2017-06-19 12:17:46 43a1.11
+[@] Код
+    Работа над ActiveRecord
 
 
 2017-06-17 15:35:00 43a1.3

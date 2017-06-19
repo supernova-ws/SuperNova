@@ -41,7 +41,7 @@ function sn_admin_ally_view_one($template = null, $allyId) {
 
   $template = gettemplate('admin/admin_ally_one', $template);
 
-  $alliance = \Alliance\TableAlliance::findOne($allyId);
+  $alliance = \Alliance\RecordAlliance::findOne($allyId);
 
   if (empty($alliance)) {
     return $template;
@@ -70,7 +70,7 @@ function sn_admin_ally_view_all($template = null) {
 
   $template = gettemplate('admin/admin_ally_all', $template);
 
-  foreach (\Alliance\TableAlliance::findAll([]) as $alliance) {
+  foreach (\Alliance\RecordAlliance::findAll([]) as $alliance) {
     $rendered = $alliance->ptlArray();
     $rendered['CREATED_SQL'] = date(FMT_DATE_TIME_SQL, $alliance->createdUnixTime);
     $rendered['STAT_POINTS_TEXT'] = pretty_number($alliance->statPoints);

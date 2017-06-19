@@ -10,7 +10,7 @@ use DBAL\ActiveRecord;
 
 
 /**
- * Class TablePlayer
+ * Class RecordPlayer
  *
  * @package Player
  *
@@ -94,7 +94,7 @@ use DBAL\ActiveRecord;
  * @property $server_name
  *
  */
-class TablePlayer extends ActiveRecord {
+class RecordPlayer extends ActiveRecord {
   protected static $_tableName = 'users';
 
 }

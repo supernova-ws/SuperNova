@@ -86,7 +86,7 @@ class AccessLogged extends AccessMagic {
    *
    * Makes current values a start one and resets changes/deltas
    */
-  public function flush() {
+  public function ♦flush() {
     $this->_startValues = $this->values;
     $this->_changes = [];
     $this->_deltas = [];

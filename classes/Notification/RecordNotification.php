@@ -8,7 +8,7 @@ namespace Notification;
 
 use DBAL\ActiveRecord;
 
-class TableNotifications extends ActiveRecord {
-
+class RecordNotification extends ActiveRecord {
+  protected static $_tableName = 'notifications';
 
 }

@@ -9,7 +9,7 @@ namespace Alliance;
 use DBAL\ActiveRecord;
 
 /**
- * Class TableAlliance
+ * Class RecordAlliance
  *
  * @package Alliance
  *
@@ -31,7 +31,7 @@ use DBAL\ActiveRecord;
  * @property string     $oldTitleList
  * @property int|string $parentPlayerRecordId
  */
-class TableAlliance extends ActiveRecord {
+class RecordAlliance extends ActiveRecord {
 
   protected static $_fieldsToProperties = [
     'ally_tag'              => 'tag',
