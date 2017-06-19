@@ -197,6 +197,8 @@ abstract class ActiveRecord extends AccessLogged {
     foreach ($properties as $name => $value) {
       $this->__set($name, $value);
     }
+
+    $this->defaultValues();
   }
 
   /**
@@ -252,9 +254,11 @@ abstract class ActiveRecord extends AccessLogged {
       return false;
     }
 
+    $this->defaultValues();
+    $fields = static::translateNames($this->values, self::PROPERTIES_TO_FIELDS);
 
     if (!($result = static::prepareDbQuery()
-      ->setValues(static::translateNames($this->values, self::PROPERTIES_TO_FIELDS))
+      ->setValues($fields)
       ->doInsert())
     ) {
       return false;
@@ -262,7 +266,8 @@ abstract class ActiveRecord extends AccessLogged {
 
     $this->id = \classSupernova::$db->db_insert_id();
 
-    return $this->reload();
+//    return $this->reload();
+    return true;
   }
 
   /**
@@ -273,6 +278,8 @@ abstract class ActiveRecord extends AccessLogged {
       return true;
     }
 
+    $this->defaultValues();
+
     if (!($result = static::prepareDbQuery()
       ->setValues(empty($this->_changes) ? [] : static::translateNames($this->_changes, self::PROPERTIES_TO_FIELDS))
       ->setAdjust(empty($this->_deltas) ? [] : static::translateNames($this->_deltas, self::PROPERTIES_TO_FIELDS))
@@ -282,7 +289,8 @@ abstract class ActiveRecord extends AccessLogged {
       return false;
     }
 
-    return $this->reload();
+//    return $this->reload();
+    return true;
   }
 
   public function flush() {
@@ -375,5 +383,36 @@ abstract class ActiveRecord extends AccessLogged {
     $this->fromProperties(static::translateNames($fields, self::FIELDS_TO_PROPERTIES));
   }
 
+  protected function getPropertyName($fieldName) {
+    return empty(static::$_fieldsToProperties[$fieldName]) ? $fieldName : static::$_fieldsToProperties[$fieldName];
+  }
+
+  protected function getFieldName($propertyName) {
+    $fieldName = array_search($propertyName, static::$_fieldsToProperties);
+    return $fieldName === false ? $propertyName : $fieldName;
+  }
+
+  protected function defaultValues() {
+    $tableFieldList = $this->db()->schema()->getTableSchema(static::tableName())->fields;
+    var_dump($tableFieldList);
+    foreach ($tableFieldList as $fieldName => $fieldData) {
+      if(array_key_exists(static::$_fieldsToProperties[$fieldName], $this->values)) {
+        continue;
+      }
+
+      // Skipping auto increment fields
+      if(strpos($fieldData['Extra'],'auto_increment') !== false) {
+        continue;
+      }
+
+      $propertyName = $this->getPropertyName($fieldName);
+      if($fieldData['Type'] == 'timestamp' && $fieldData['Default'] == 'CURRENT_TIMESTAMP') {
+        $this->__set($propertyName, SN_TIME_SQL);
+        continue;
+      }
+
+      $this->__set($propertyName, $fieldData['Default']);
+    }
+  }
 
 }

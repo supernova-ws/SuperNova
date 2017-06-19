@@ -8,7 +8,24 @@ namespace Notification;
 
 use DBAL\ActiveRecord;
 
+/**
+ * Class RecordNotification
+ *
+ * @package Notification
+ *
+ * @property string     $createdSql
+ * @property int|string $ownerId
+ * @property string     $text
+ *
+ *
+ */
 class RecordNotification extends ActiveRecord {
   protected static $_tableName = 'notifications';
+
+  protected static $_fieldsToProperties = [
+    'timestamp' => 'createdSql',
+    'owner'     => 'ownerId',
+    'text'      => 'text',
+  ];
 
 }
