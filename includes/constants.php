@@ -4,7 +4,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a1.14');
+define('SN_VERSION', '43a1.15');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1693,3 +1693,9 @@ define('WATCHDOG_TIME_UNIX', 0);
 define('WATCHDOG_TIME_SQL', 1);
 
 define('ALLIANCE_HEAD_INACTIVE_TIMEOUT', PERIOD_DAY * 30);
+
+define('EVENT_ANY', -2);
+define('EVENT_ALL', -1);
+define('EVENT_NONE', 0);
+
+define('STR_OBSERVER_ENTRY_METHOD_NAME', '_update');

@@ -1,22 +1,21 @@
 <?php
+
 /**
  * Created by Gorlum 12.06.2017 14:47
  */
 
 namespace Notification;
 
-
 use DBAL\ActiveRecord;
 
 /**
  * Class RecordNotification
  *
- * @package Notification
- *
  * @property string     $createdSql
  * @property int|string $ownerId
  * @property string     $text
  *
+ * @package Notification
  *
  */
 class RecordNotification extends ActiveRecord {

@@ -4,6 +4,7 @@ namespace Common;
 
 use \classSupernova;
 use Core\Watchdog;
+use Event\EventBus;
 
 /**
  * Class GlobalContainer
@@ -18,12 +19,13 @@ use Core\Watchdog;
  * @property \db_mysql        $db
  * @property \classCache      $cache
  * @property \classConfig     $config
- * @property \Repository      $repository
+ * @property \Core\Repository $repository
  * @property \Storage         $storage
  * @property \Design          $design
  * @property \BBCodeParser    $bbCodeParser
  * @property \FleetDispatcher $fleetDispatcher
  * @property Watchdog         $watchdog
+ * @property EventBus         $eventBus
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
  * @property \TheUser         $theUser
@@ -88,7 +90,7 @@ class GlobalContainer extends ContainerPlus {
 
 
     $gc->repository = function (GlobalContainer $gc) {
-      return new \Repository($gc);
+      return new \Core\Repository($gc);
     };
 
     $gc->storage = function (GlobalContainer $gc) {
@@ -111,6 +113,9 @@ class GlobalContainer extends ContainerPlus {
       return new Watchdog($gc);
     };
 
+    $gc->eventBus = function (GlobalContainer $gc) {
+      return new EventBus($gc);
+    };
 
     // Dummy objects ---------------------------------------------------------------------------------------------------
     $gc->theUser = function (GlobalContainer $gc) {

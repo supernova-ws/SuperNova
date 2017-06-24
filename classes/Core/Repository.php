@@ -4,11 +4,15 @@
  * Created by Gorlum 10.02.2017 0:07
  */
 
+namespace Core;
+
 use \Common\ContainerPlus;
 use \Common\GlobalContainer;
+use TextEntity;
+use TextModel;
 
 /**
- * Class Repository
+ * Class Core\Repository
  *
  * Holds current entity objects
  */
@@ -20,11 +24,17 @@ class Repository {
   protected $repository;
 
   /**
-   * Repository constructor.
+   * @var GlobalContainer $gc
+   */
+  protected $gc;
+
+  /**
+   * Core\Repository constructor.
    *
    * @param GlobalContainer $gc
    */
   public function __construct(GlobalContainer $gc) {
+    $this->gc = $gc;
   }
 
   /**
@@ -32,6 +42,7 @@ class Repository {
    * @param int|string $id
    *
    * @return TextEntity
+   * @deprecated
    */
   public function getById($model, $id) {
 
@@ -49,6 +60,18 @@ class Repository {
     }
 
     return $entity;
+  }
+
+  public function get($entityClass, $id) {
+
+  }
+
+  protected function getPool($entityClass) {
+
+  }
+
+  public function registerFactory($factory) {
+
   }
 
 }
