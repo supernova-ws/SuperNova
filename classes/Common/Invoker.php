@@ -13,6 +13,7 @@ namespace Common;
  * Supports method callable (2 element array), function callable (string) and lambda-functions
  *
  * @package Common
+ * @deprecated
  */
 
 class Invoker {

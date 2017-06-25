@@ -38,6 +38,15 @@ abstract class ActiveRecord extends AccessLogged {
    */
   protected static $_fieldsToProperties = [];
 
+  /**
+   * Property name translations to field names
+   *
+   * Cached structure
+   *
+   * @var string[] $_propertiesToFields
+   */
+  private static $_propertiesToFields = [];
+
   // AR's service fields
   protected $_isNew = true;
 
@@ -66,7 +75,7 @@ abstract class ActiveRecord extends AccessLogged {
   /**
    * Instate ActiveRecord from array of field values
    *
-   * @param string[] $fields List of field values [$fieldName => $fieldValue]
+   * @param array $fields List of field values [$propertyName => $propertyValue]
    *
    * @return static|bool
    */
@@ -289,7 +298,6 @@ abstract class ActiveRecord extends AccessLogged {
       return false;
     }
 
-//    return $this->reload();
     return true;
   }
 
@@ -302,18 +310,36 @@ abstract class ActiveRecord extends AccessLogged {
 
 
   /**
+   * Translate field name to property name
+   *
+   * @param $fieldName
+   *
+   * @return string
+   */
+  protected static function getPropertyName($fieldName) {
+    return empty(static::$_fieldsToProperties[$fieldName]) ? $fieldName : static::$_fieldsToProperties[$fieldName];
+  }
+
+  protected function getFieldName($propertyName) {
+    $fieldName = array_search($propertyName, static::$_fieldsToProperties);
+    return $fieldName === false ? $propertyName : $fieldName;
+  }
+
+  /**
    * Converts property-indexed value array to field-indexed via translation table
    *
-   * @param array $propertyNamed
-   * @param bool  $fieldToProperties - translation direction: true - field to props. false - prop to fields
+   * @param array $names
+   * @param bool  $fieldToProperties - translation direction:
+   *    - self::FIELDS_TO_PROPERTIES - field to props.
+   *    - self::PROPERTIES_TO_FIELDS - prop to fields
    *
    * @return array
    */
-  protected static function translateNames(array $propertyNamed, $fieldToProperties = self::FIELDS_TO_PROPERTIES) {
+  protected static function translateNames(array $names, $fieldToProperties = self::FIELDS_TO_PROPERTIES) {
     $translations = $fieldToProperties == self::FIELDS_TO_PROPERTIES ? static::$_fieldsToProperties : array_flip(static::$_fieldsToProperties);
 
     $result = [];
-    foreach ($propertyNamed as $name => $value) {
+    foreach ($names as $name => $value) {
       if (!empty($translations[$name])) {
         $name = $translations[$name];
       }
@@ -377,26 +403,16 @@ abstract class ActiveRecord extends AccessLogged {
 
 
   /**
-   * @param string[] $fields List of field values [$fieldName => $fieldValue]
+   * @param array $fields List of field values [$fieldName => $fieldValue]
    */
   protected function fromFields(array $fields) {
     $this->fromProperties(static::translateNames($fields, self::FIELDS_TO_PROPERTIES));
   }
 
-  protected function getPropertyName($fieldName) {
-    return empty(static::$_fieldsToProperties[$fieldName]) ? $fieldName : static::$_fieldsToProperties[$fieldName];
-  }
-
-  protected function getFieldName($propertyName) {
-    $fieldName = array_search($propertyName, static::$_fieldsToProperties);
-    return $fieldName === false ? $propertyName : $fieldName;
-  }
-
   protected function defaultValues() {
     $tableFieldList = $this->db()->schema()->getTableSchema(static::tableName())->fields;
-    var_dump($tableFieldList);
     foreach ($tableFieldList as $fieldName => $fieldData) {
-      if(array_key_exists(static::$_fieldsToProperties[$fieldName], $this->values)) {
+      if(array_key_exists($propertyName = static::getPropertyName($fieldName), $this->values)) {
         continue;
       }
 
@@ -405,7 +421,6 @@ abstract class ActiveRecord extends AccessLogged {
         continue;
       }
 
-      $propertyName = $this->getPropertyName($fieldName);
       if($fieldData['Type'] == 'timestamp' && $fieldData['Default'] == 'CURRENT_TIMESTAMP') {
         $this->__set($propertyName, SN_TIME_SQL);
         continue;

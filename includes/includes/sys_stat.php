@@ -195,12 +195,21 @@ function sys_stat_calculate() {
     $counts[$user_id] = array_map('floor', $counts[$user_id]);
 
     $ally_id = $ally_id ? $ally_id : 'NULL';
-    $user_defence_points = $points[$user_id][UNIT_DEFENCE] + $points[$user_id][UNIT_DEF_MISSILES];
-    $user_defence_counts = $counts[$user_id][UNIT_DEFENCE] + $counts[$user_id][UNIT_DEF_MISSILES];
+    $user_defence_points = 0 + $points[$user_id][UNIT_DEFENCE] + $points[$user_id][UNIT_DEF_MISSILES];
+    $user_defence_counts = 0 + $counts[$user_id][UNIT_DEFENCE] + $counts[$user_id][UNIT_DEF_MISSILES];
     $user_points = array_sum($points[$user_id]);
     $user_counts = array_sum($counts[$user_id]);
 
-    $data[] = $q = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
+    !isset($points[$user_id][UNIT_TECHNOLOGIES]) ? $points[$user_id][UNIT_TECHNOLOGIES] = 0 : false;
+    !isset($counts[$user_id][UNIT_TECHNOLOGIES]) ? $counts[$user_id][UNIT_TECHNOLOGIES] = 0 : false;
+    !isset($points[$user_id][UNIT_STRUCTURES]) ? $points[$user_id][UNIT_STRUCTURES] = 0 : false;
+    !isset($counts[$user_id][UNIT_STRUCTURES]) ? $counts[$user_id][UNIT_STRUCTURES] = 0 : false;
+    !isset($points[$user_id][UNIT_SHIPS]) ? $points[$user_id][UNIT_SHIPS] = 0 : false;
+    !isset($counts[$user_id][UNIT_SHIPS]) ? $counts[$user_id][UNIT_SHIPS] = 0 : false;
+    !isset($points[$user_id][UNIT_RESOURCES]) ? $points[$user_id][UNIT_RESOURCES] = 0 : false;
+    !isset($counts[$user_id][UNIT_RESOURCES]) ? $counts[$user_id][UNIT_RESOURCES] = 0 : false;
+
+    $data[] = "({$user_id},{$ally_id},1,1,'{$points[$user_id][UNIT_TECHNOLOGIES]}','{$counts[$user_id][UNIT_TECHNOLOGIES]}'," .
       "'{$points[$user_id][UNIT_STRUCTURES]}','{$counts[$user_id][UNIT_STRUCTURES]}','{$user_defence_points}','{$user_defence_counts}'," .
       "'{$points[$user_id][UNIT_SHIPS]}','{$counts[$user_id][UNIT_SHIPS]}','{$points[$user_id][UNIT_RESOURCES]}','{$counts[$user_id][UNIT_RESOURCES]}'," .
       "{$user_points},{$user_counts}," . SN_TIME_NOW . ")";

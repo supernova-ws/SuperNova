@@ -654,6 +654,10 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 [*] Кэширование схем БД/таблиц
 
+[*] AR - проверка существования полей в схеме БД
+
+[*] deprecate Invoker class
+
 
 #ctv
 
