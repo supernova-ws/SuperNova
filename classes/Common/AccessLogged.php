@@ -11,6 +11,9 @@ namespace Common;
  * @package Common
  */
 class AccessLogged extends AccessMagic {
+  const ACCESS_SET = null;
+  const ACCESS_DELTA_INC = +1;
+  const ACCESS_DELTA_DEC = -1;
 
   /**
    * Starting values of properties
@@ -31,11 +34,28 @@ class AccessLogged extends AccessMagic {
    */
   protected $_deltas = [];
 
-  public function __set($name, $value) {
-    if (array_key_exists($name, $this->values)) {
-      if(array_key_exists($name, $this->_deltas)) {
-        throw new \Exception(get_called_class() . '::' . $name . ' already INCREMENTED/DECREMENTED - can not CHANGE', ERR_ERROR);
-      }
+  /**
+   * Stored delta value which would be applied on next __set() call
+   *
+   * @var int|float $_currentDelta
+   */
+  protected $_currentDelta = self::ACCESS_SET;
+
+  protected function blockChange($name) {
+    if (array_key_exists($name, $this->_deltas)) {
+      throw new \Exception(get_called_class() . '::' . $name . ' already INCREMENTED/DECREMENTED - can not CHANGE', ERR_ERROR);
+    }
+  }
+
+  protected function blockDelta($name) {
+    if (array_key_exists($name, $this->_changes)) {
+      throw new \Exception(get_called_class() . '::' . $name . ' already changed - can not use DELTA', ERR_ERROR);
+    }
+  }
+
+  protected function valueSet($name, $value) {
+    if ($this->__isset($name)) {
+      $this->blockChange($name);
 
       $this->_changes[$name] = $value;
     } else {
@@ -45,32 +65,85 @@ class AccessLogged extends AccessMagic {
     parent::__set($name, $value);
   }
 
-  /**
-   * Increments field by value
-   *
-   * @param string    $name
-   * @param int|float $value Default: 1
-   */
-  public function inc($name, $value = 1) {
-    if(array_key_exists($name, $this->_changes)) {
-      throw new \Exception(get_called_class() . '::' . $name . ' already changed - can not use INCREMENT', ERR_ERROR);
-    }
+  protected function valueDelta($name, $value) {
+    $this->blockDelta($name);
+
+    !isset($this->_deltas[$name]) ? $this->_deltas[$name] = 0 : false;
+    !isset($this->_startValues[$name]) ? $this->_startValues[$name] = 0 : false;
+
+    $value *= $this->_currentDelta === self::ACCESS_DELTA_DEC ? -1 : +1;
+
     $this->_deltas[$name] += $value;
+
     parent::__set($name, parent::__get($name) + $value);
+
+    $this->_currentDelta = self::ACCESS_SET;
+  }
+
+  public function __set($name, $value) {
+    if ($this->_currentDelta === self::ACCESS_SET) {
+      $this->valueSet($name, $value);
+    } else {
+      $this->valueDelta($name, $value);
+    }
+  }
+
+//  /**
+//   * Changes field by value
+//   *
+//   * Changes only $values and $_deltas
+//   *
+//   * @param string    $name
+//   * @param int|float $value Default: 1
+//   */
+//  public function delta($name, $value = 1) {
+//    $this->valueDelta($name, $value);
+//  }
+//
+//  /**
+//   * Increments property by value
+//   *
+//   * Changes only $values and $_deltas
+//   *
+//   * @param string    $name
+//   * @param int|float $value Default: 1
+//   */
+//  public function inc($name, $value = 1) {
+//    $this->delta($name, +$value);
+//  }
+//
+//  /**
+//   * Decrements property by value
+//   *
+//   * Changes only $values and $_deltas
+//   *
+//   * @param string    $name
+//   * @param int|float $value Default: 1
+//   */
+//  public function dec($name, $value = 1) {
+//    $this->delta($name, -$value);
+//  }
+
+  /**
+   * Mark next set operation as delta increment
+   *
+   * @return $this
+   */
+  public function inc() {
+    $this->_currentDelta = self::ACCESS_DELTA_INC;
+
+    return $this;
   }
 
   /**
-   * Decrements field by value
+   * Mark next set operation as delta decrement
    *
-   * @param string    $name
-   * @param int|float $value Default: 1
+   * @return $this
    */
-  public function dec($name, $value = 1) {
-    if(array_key_exists($name, $this->_changes)) {
-      throw new \Exception(get_called_class() . '::' . $name . ' already changed - can not use DECREMENT', ERR_ERROR);
-    }
-    $this->_deltas[$name] -= $value;
-    parent::__set($name, parent::__get($name) - $value);
+  public function dec() {
+    $this->_currentDelta = self::ACCESS_DELTA_DEC;
+
+    return $this;
   }
 
   public function getChanges() {

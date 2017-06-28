@@ -658,8 +658,15 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 [*] deprecate Invoker class
 
+[*] AccessLogged::_startValues - не нужны?!
+
 
 #ctv
+
+
+2017-06-28 09:17:53 43a1.17
+[@] Код
+    Класс AccessLogged и тесты для него
 
 
 2017-06-24 07:46:31 43a1.15

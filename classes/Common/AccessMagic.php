@@ -79,6 +79,14 @@ class AccessMagic implements \IContainer {
     unset($this->values[$name]);
   }
 
+  /**
+   * Extracts values as array [$propertyName => $propertyValue]
+   *
+   * @return array
+   */
+  public function asArray() {
+    return $this->values;
+  }
 
   /**
    * Is container contains no data

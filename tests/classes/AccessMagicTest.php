@@ -34,6 +34,7 @@ class AccessMagicTest extends PHPUnit_Framework_TestCase {
    * @covers ::__set
    * @covers ::__unset
    * @covers ::isEmpty
+   * @covers ::asArray
    * @covers ::clear
    */
   public function test__get() {
@@ -46,6 +47,8 @@ class AccessMagicTest extends PHPUnit_Framework_TestCase {
     $this->assertAttributeEquals(array('test' => 'value'), 'values', $this->object);
     $this->assertTrue(isset($this->object->test));
     $this->assertEquals('value', $this->object->test);
+
+    $this->assertAttributeEquals($this->object->asArray(), 'values', $this->object);
 
     unset($this->object->test);
     $this->assertTrue($this->object->isEmpty());
