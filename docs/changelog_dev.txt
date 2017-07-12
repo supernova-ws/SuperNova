@@ -661,7 +661,16 @@ https://money.yandex.ru/embed/quickpay/small.xml
 [*] AccessLogged::_startValues - не нужны?!
 
 
+[*] ActiveRecordAbstract
+    - вынести всё, относящееся к работе с DB в отдельные функции
+    - Унаследовать от этого класса ActiveRecord и перекрыть абстрактные методы
+    - Написать тесты
+
 #ctv
+
+2017-07-12 05:26:44 43a1.18
+[@] Код
+    Работа над ActiveRecords
 
 
 2017-06-28 09:17:53 43a1.17

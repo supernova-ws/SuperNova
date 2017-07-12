@@ -155,11 +155,11 @@ class AccessLogged extends AccessMagic {
   }
 
   /**
-   * Flushes changes
+   * Accepts changes
    *
    * Makes current values a start one and resets changes/deltas
    */
-  public function flush() {
+  public function acceptChanges() {
     $this->_startValues = $this->values;
     $this->_changes = [];
     $this->_deltas = [];
@@ -167,7 +167,7 @@ class AccessLogged extends AccessMagic {
 
   public function clear() {
     parent::clear();
-    $this->flush();
+    $this->acceptChanges();
   }
 
 }

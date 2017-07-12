@@ -19,9 +19,20 @@ use TextModel;
 class Repository {
 
   /**
-   * @var ContainerPlus $repository
+   * "Not an Object" marker
    */
-  protected $repository;
+  const NaO = '\\NaO';
+
+
+  /**
+   * @var ContainerPlus $_repository
+   */
+  protected $_repository;
+
+ /**
+   * @var ContainerPlus $_oldRepo
+   */
+  protected $_oldRepo;
 
   /**
    * @var GlobalContainer $gc
@@ -50,20 +61,36 @@ class Repository {
 
     // Index is fully qualified class name plus ID like Namespace\ClassName\$id
     $entityIndex = get_class($model) . '\\' . $id;
-    if (!isset($this->repository[$entityIndex])) {
+    if (!isset($this->_oldRepo[$entityIndex])) {
       $entity = $model->loadById($id);
       if ($entity && !$entity->isEmpty()) {
-        $this->repository[$entityIndex] = $entity;
+        $this->_oldRepo[$entityIndex] = $entity;
       }
     } else {
-      $entity = $this->repository[$entityIndex];
+      $entity = $this->_oldRepo[$entityIndex];
     }
 
     return $entity;
   }
 
-  public function get($entityClass, $id) {
+  /**
+   * Returns collection name for supplied object
+   *
+   * @param $object
+   *
+   * @return string
+   */
+  protected function getCollectionName($object) {
+    return is_object($object) ? get_class($object) : self::NaO;
+  }
 
+  public function get($entityClass, $id) {
+    $entityIndex = get_class($entityClass) . '\\' . $id;
+    if(!isset($this->_repository[$entityIndex])) {
+
+    }
+
+    return $this->_repository[$entityIndex];
   }
 
   protected function getPool($entityClass) {

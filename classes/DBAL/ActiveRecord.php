@@ -12,12 +12,15 @@ use Common\GlobalContainer;
 /**
  * Class ActiveRecord
  *
+ * Represent table in DB/one record in DB. Breaking SRP with joy!
+ *
  * @property int|string $id - Record ID name would be normalized to 'id'
  *
  * @package DBAL
  */
 abstract class ActiveRecord extends AccessLogged {
   const IGNORE_PREFIX = 'Record';
+  const ID_PROPERTY_NAME = 'id';
 
   const FIELDS_TO_PROPERTIES = true;
   const PROPERTIES_TO_FIELDS = false;
@@ -57,7 +60,7 @@ abstract class ActiveRecord extends AccessLogged {
    */
   public static function tableName() {
     if (empty(static::$_tableName)) {
-      static::tableFromClass();
+      static::$_tableName = static::calcTableName();
     }
 
     return static::$_tableName;
@@ -91,20 +94,20 @@ abstract class ActiveRecord extends AccessLogged {
   }
 
   /**
-   * Finds records by params in DB
+   * Finds records by property - equivalent of SELECT ... WHERE ... AND ...
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]. Pass [] to find all records in DB
+   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return bool|\mysqli_result
    */
-  public static function find($where) {
-    if (!is_array($where)) {
-      $where = [static::$_primaryIndexField => $where];
+  public static function find($propertyFilter) {
+    if (!is_array($propertyFilter)) {
+      $propertyFilter = [self::ID_PROPERTY_NAME => $propertyFilter];
     }
 
     $dbq = static::prepareDbQuery();
-    if (!empty($where)) {
-      $dbq->setWhereArray($where);
+    if (!empty($propertyFilter)) {
+      $dbq->setWhereArray(static::translateNames($propertyFilter, static::PROPERTIES_TO_FIELDS));
     }
 
     return $dbq->doSelect();
@@ -113,13 +116,13 @@ abstract class ActiveRecord extends AccessLogged {
   /**
    * Gets first ActiveRecord by $where
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return static|bool
    */
-  public static function findOne($where) {
-    $record = static::build(static::translateNames(static::findOneArray($where)));
-    if (!empty($record)) {
+  public static function findFirst($propertyFilter) {
+    $record = static::build(static::translateNames(static::findRecord($propertyFilter)));
+    if (is_object($record)) {
       $record->_isNew = false;
     }
 
@@ -129,34 +132,34 @@ abstract class ActiveRecord extends AccessLogged {
   /**
    * Gets all ActiveRecords by $where
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return array|static[] - [(int) => static]
    */
-  public static function findAll($where) {
-    return static::fromArrayList(static::findAllArray($where));
+  public static function findAll($propertyFilter) {
+    return static::fromRecordList(static::findRecordsAll($propertyFilter));
   }
 
   /**
    * Gets all ActiveRecords by $where - array indexed by record IDs
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return array|static[] - [$record_db_id => static]
    */
-  public static function findAllIndexed($where) {
-    return static::fromArrayList(static::findAllIndexedArray($where));
+  public static function findAllIndexed($propertyFilter) {
+    return static::fromRecordList(static::findRecordsAllIndexed($propertyFilter));
   }
 
   /**
    * Gets first record by $where
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return string[] - [$field_name => $field_value]
    */
-  public static function findOneArray($where) {
-    $result = empty($dbq = static::find($where)) ? [] : static::db()->db_fetch($dbq);
+  public static function findRecord($propertyFilter) {
+    $result = empty($dbq = static::find($propertyFilter)) ? [] : static::db()->db_fetch($dbq);
 
     return empty($result) ? [] : $result;
   }
@@ -164,24 +167,24 @@ abstract class ActiveRecord extends AccessLogged {
   /**
    * Gets all records by $where
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   * @param array|mixed $propertyFilter - ID of record to find OR [$property_name => $property_value]
    *
    * @return string[][] - [(int) => [$field_name => $field_value]]
    */
-  public static function findAllArray($where) {
-    return empty($dbq = static::find($where)) ? [] : $dbq->fetch_all(MYSQL_ASSOC);
+  public static function findRecordsAll($propertyFilter) {
+    return empty($dbq = static::find($propertyFilter)) ? [] : $dbq->fetch_all(MYSQL_ASSOC);
   }
 
   /**
    * Gets all records by $where - array indexes is a record IDs
    *
-   * @param array|mixed $where - ID of found record OR [$field_name => $field_value]
+   * @param array|mixed $propertyFilter - ID of record to find OR [$property_name => $property_value]
    *
    * @return string[][] - [$record_db_id => [$field_name => $field_value]]
    */
-  public static function findAllIndexedArray($where) {
+  public static function findRecordsAllIndexed($propertyFilter) {
     $result = [];
-    if (!empty($dbq = static::find($where))) {
+    if (!empty($dbq = static::find($propertyFilter))) {
       while ($row = static::db()->db_fetch($dbq)) {
         $result[$row[static::$_primaryIndexField]] = $row;
       }
@@ -238,16 +241,15 @@ abstract class ActiveRecord extends AccessLogged {
       return false;
     }
 
-    $this->_isNew = true;
-    $this->flush();
+    $this->acceptChanges();
 
-    $this->_isNew = false;
-    $fields = static::findOneArray($this->id);
+    $fields = static::findRecord($recordId);
     if (empty($fields)) {
       return false;
     }
 
     $this->fromFields($fields);
+    $this->_isNew = false;
 
     return true;
   }
@@ -274,6 +276,8 @@ abstract class ActiveRecord extends AccessLogged {
     }
 
     $this->id = \classSupernova::$db->db_insert_id();
+    $this->acceptChanges();
+    $this->_isNew = false;
 
 //    return $this->reload();
     return true;
@@ -298,13 +302,13 @@ abstract class ActiveRecord extends AccessLogged {
       return false;
     }
 
+    $this->acceptChanges();
+
     return true;
   }
 
-  public function flush() {
-    $this->values = $this->_startValues;
-    $this->_deltas = [];
-    $this->_changes = [];
+  public function acceptChanges() {
+    parent::acceptChanges();
     $this->_isNew = empty($this->id);
   }
 
@@ -320,8 +324,9 @@ abstract class ActiveRecord extends AccessLogged {
     return empty(static::$_fieldsToProperties[$fieldName]) ? $fieldName : static::$_fieldsToProperties[$fieldName];
   }
 
-  protected function getFieldName($propertyName) {
+  protected static function getFieldName($propertyName) {
     $fieldName = array_search($propertyName, static::$_fieldsToProperties);
+
     return $fieldName === false ? $propertyName : $fieldName;
   }
 
@@ -362,14 +367,17 @@ abstract class ActiveRecord extends AccessLogged {
    *
    * Can be override to provide different name
    *
+   * @return string - table name in DB
+   *
    */
-  protected static function tableFromClass() {
+  protected static function calcTableName() {
     $temp = explode('\\', get_called_class());
     $className = end($temp);
     if (strpos($className, static::IGNORE_PREFIX) === 0) {
       $className = substr($className, strlen(static::IGNORE_PREFIX));
     }
-    static::$_tableName = \HelperString::camelToUnderscore($className);
+
+    return \HelperString::camelToUnderscore($className);
   }
 
   /**
@@ -380,25 +388,30 @@ abstract class ActiveRecord extends AccessLogged {
   }
 
   /**
-   * @param array $records
+   * @param array $records - array of DB records [(int) => [$name => $value]]
+   * @param bool  $doNameTranslation - should names be translated (true - for field records, false - for property records)
    *
    * @return array|static[]
    */
-  protected static function fromArrayList($records) {
+  protected static function fromRecordList($records, $doNameTranslation = true) {
+    $result = [];
     if (is_array($records) && !empty($records)) {
-      foreach ($records as &$record) {
-        if (!is_array($record) || empty($record)) {
+      foreach ($records as $key => $recordArray) {
+        if (!is_array($recordArray) || empty($recordArray)) {
           continue;
         }
 
-        $record = static::build($record);
-        $record->_isNew = false;
+        $doNameTranslation ? $recordArray = static::translateNames($recordArray) : false;
+
+        $theRecord = static::build($recordArray);
+        if (is_object($theRecord)) {
+          $theRecord->_isNew = false;
+          $result[$key] = $theRecord;
+        }
       }
-    } else {
-      $records = [];
     }
 
-    return $records;
+    return $result;
   }
 
 
@@ -412,16 +425,16 @@ abstract class ActiveRecord extends AccessLogged {
   protected function defaultValues() {
     $tableFieldList = $this->db()->schema()->getTableSchema(static::tableName())->fields;
     foreach ($tableFieldList as $fieldName => $fieldData) {
-      if(array_key_exists($propertyName = static::getPropertyName($fieldName), $this->values)) {
+      if (array_key_exists($propertyName = static::getPropertyName($fieldName), $this->values)) {
         continue;
       }
 
       // Skipping auto increment fields
-      if(strpos($fieldData['Extra'],'auto_increment') !== false) {
+      if (strpos($fieldData['Extra'], 'auto_increment') !== false) {
         continue;
       }
 
-      if($fieldData['Type'] == 'timestamp' && $fieldData['Default'] == 'CURRENT_TIMESTAMP') {
+      if ($fieldData['Type'] == 'timestamp' && $fieldData['Default'] == 'CURRENT_TIMESTAMP') {
         $this->__set($propertyName, SN_TIME_SQL);
         continue;
       }

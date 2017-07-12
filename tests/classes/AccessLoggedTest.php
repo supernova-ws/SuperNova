@@ -97,7 +97,7 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
    * @covers ::getDeltas
    * @covers ::blockDelta
    * @covers ::clear
-   * @covers ::flush
+   * @covers ::acceptChanges
    */
   public function testDelta() {
     // Checking base inc()
@@ -129,7 +129,7 @@ class AccessLoggedTest extends \PHPUnit_Framework_TestCase {
     $this->object->changed = 7;
     $this->object->changed = 8;
     $this->assertAttributeEquals(['changed' => 8], '_changes', $this->object);
-    $this->object->flush();
+    $this->object->acceptChanges();
     $this->assertAttributeEquals(['fromZero' => 5, 'fromZeroDec' => -5, 'changed' => 8], 'values', $this->object);
     $this->assertAttributeEquals(['fromZero' => 5, 'fromZeroDec' => -5, 'changed' => 8], '_startValues', $this->object);
     $this->assertAttributeEquals([], '_deltas', $this->object);
