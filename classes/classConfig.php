@@ -48,6 +48,8 @@
  * @property int    $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
  * @property int    $menu_server_logo_disabled    => 0
  *
+ * @property int    stats_history_days            => 14, // За сколько дней хранить статистику в базе
+ *
  * @property int    $tutorial_first_item          ID of first item of tutorial
  *
  * @property int    $url_faq                      URL of FAQ root
@@ -308,7 +310,7 @@ class classConfig extends classPersistent {
   }
 
   public static function getInstance($gamePrefix = 'sn_', $table_name = 'config') {
-    if(!isset(self::$cacheObject)) {
+    if (!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }

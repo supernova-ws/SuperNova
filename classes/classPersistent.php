@@ -111,7 +111,7 @@ class classPersistent extends classCache {
 
     // И только после взятия блокировок - меняем значения в кэше
     foreach($item_list as $item_name => $item_value) {
-      if($item_name) {
+      if($item_name && $item_value !== null) {
         $this->__set($item_name, $item_value);
       }
     }
