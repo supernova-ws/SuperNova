@@ -92,6 +92,10 @@ class db_mysql_v5 {
   function mysql_error() {
     return mysqli_error($this->link);
   }
+
+  /**
+   * @return int|string
+   */
   function mysql_insert_id() {
     return mysqli_insert_id($this->link);
   }

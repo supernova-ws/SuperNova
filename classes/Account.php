@@ -384,6 +384,15 @@ class Account {
   }
 
   // OK 4.8
+
+  /**
+   * @param int               $change_type
+   * @param float             $metamatter
+   * @param string|array|bool $comment
+   * @param bool              $already_changed
+   *
+   * @return array|bool|int|mysqli_result|null|string
+   */
   public function metamatter_change($change_type, $metamatter, $comment = false, $already_changed = false) {
     global $debug, $mm_change_legit, $config;
 

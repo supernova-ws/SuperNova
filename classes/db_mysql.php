@@ -405,6 +405,10 @@ class db_mysql {
   function db_error() {
     return $this->driver->mysql_error();
   }
+
+  /**
+   * @return int|string
+   */
   function db_insert_id() {
     return $this->driver->mysql_insert_id();
   }

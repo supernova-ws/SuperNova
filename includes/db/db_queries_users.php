@@ -2,6 +2,13 @@
 
 /**
  * @deprecated
+ *
+ * @param int|string $user_id_unsafe
+ * @param bool       $for_update
+ * @param string     $fields
+ * @param null       $player
+ *
+ * @return array|false
  */
 function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
   return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);

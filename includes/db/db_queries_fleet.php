@@ -142,7 +142,7 @@ function db_fleet_count($where_safe) {
  *
  * @param string $where_safe
  *
- * @return array
+ * @return array[]
  */
 function db_fleet_list($where_safe, $for_update = DB_SELECT_FOR_UPDATE) {
   $row_list = array();

@@ -789,6 +789,11 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+2017-09-24 22:50:09 43a1.26
+[@] Код
+    /admin/admin_metamatter.php:81 - Исправлена ошибка сравнения вместо использования empty()
+
+
 2017-09-24 22:35:54 43a1.25
 [@] Код
     /admin/admin_locale.php:122 - more strict string sanitizing

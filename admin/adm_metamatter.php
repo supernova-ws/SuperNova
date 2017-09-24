@@ -24,13 +24,13 @@ if(!sn_module_get_active_count('payment')) {
 messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 /**
- * @param      $lang
- * @param      $user
- * @param      $accountIdOrName_unsafe
- * @param      $playerIdOrName_unsafe
- * @param      $points
- * @param      $reason_unsafe
- * @param bool $confirmed
+ * @param       $lang
+ * @param       $user
+ * @param       $accountIdOrName_unsafe
+ * @param       $playerIdOrName_unsafe
+ * @param float $points
+ * @param       $reason_unsafe
+ * @param bool  $confirmed
  *
  * @throws ExceptionSnLocalized
  */
@@ -78,7 +78,9 @@ function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerI
   );
 
   if ($confirmed) {
-    if (!$account->metamatter_change(RPG_ADMIN, $points,
+    if (empty($account->metamatter_change(
+      RPG_ADMIN,
+      $points,
       sprintf(
         $lang['adm_mm_msg_change_mm_log_record'],
         $account->account_id,
@@ -91,8 +93,7 @@ function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerI
         !empty($row['id']) ? $row['id'] : 0,
         !empty($row['username']) ? $row['username'] : ''
       )
-    )
-    ) {
+    ))) {
       throw new ExceptionSnLocalized($lang['adm_mm_err_mm_change_failed'], ERR_ERROR);
     }
 
