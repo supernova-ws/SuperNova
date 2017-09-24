@@ -32,7 +32,7 @@ class classSupernova {
    *
    * @var string
    */
-  public static $cache_prefix = '';
+  public static $cache_prefix = 'sn_';
   // public static $db_prefix = '';
   public static $sn_secret_word = '';
 
@@ -977,9 +977,7 @@ class classSupernova {
     self::$db_name = $dbsettings['name'];
     self::$sn_secret_word = $dbsettings['secretword'];
 
-    self::$gc = new GlobalContainer(array(
-      'cachePrefix' => self::$cache_prefix,
-    ));
+    self::services();
 
     unset($dbsettings);
   }
@@ -1029,6 +1027,17 @@ class classSupernova {
    */
   public static function gameIsDisabled() {
     return self::$config->game_disable != GAME_DISABLE_NONE;
+  }
+
+
+  public static function services() {
+    if(empty(self::$gc)) {
+      self::$gc = new GlobalContainer(array(
+        'cachePrefix' => self::$cache_prefix,
+      ));
+    }
+
+    return self::$gc;
   }
 
 }

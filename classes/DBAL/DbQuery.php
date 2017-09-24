@@ -162,6 +162,12 @@ class DbQuery {
     return $result;
   }
 
+  /**
+   * @param int  $replace
+   * @param bool $forceSingleInsert
+   *
+   * @return bool
+   */
   public function doInsert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
     return doquery($this->insert($replace, $forceSingleInsert));
   }
@@ -184,6 +190,12 @@ class DbQuery {
     return doquery($this->select(), true);
   }
 
+  /**
+   * @param int  $replace
+   * @param bool $forceSingleInsert
+   *
+   * @return string
+   */
   protected function insert($replace = self::DB_INSERT_PLAIN, $forceSingleInsert = false) {
     $this->build = array();
 

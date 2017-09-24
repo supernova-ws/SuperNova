@@ -1,10 +1,16 @@
 <?php
 
+if(defined('__SN_CONSTANTS_DEFINED') && __SN_CONSTANTS_DEFINED === true) {
+  return;
+}
+
+define('__SN_CONSTANTS_DEFINED', true);
+
 defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a1.19');
+define('SN_VERSION', '43a1.21');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1699,3 +1705,7 @@ define('EVENT_ALL', -1);
 define('EVENT_NONE', 0);
 
 define('STR_OBSERVER_ENTRY_METHOD_NAME', '_update');
+
+define('SN_SQL_TYPE_NAME_TIMESTAMP', 'timestamp');
+define('SN_SQL_DEFAULT_CURRENT_TIMESTAMP', 'CURRENT_TIMESTAMP');
+define('SN_SQL_EXTRA_AUTO_INCREMENT', 'auto_increment');

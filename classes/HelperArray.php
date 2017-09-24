@@ -291,4 +291,8 @@ class HelperArray {
       );
   }
 
+  public static function intersectByKeys(array &$array1, array &$array2) {
+    return array_uintersect_assoc($array1, $array2, function ($a, $b) {return 0;});
+  }
+
 }
