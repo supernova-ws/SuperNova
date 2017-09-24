@@ -149,10 +149,9 @@ class debug {
     }
 
     if($base_dump) {
-      if(is_array($this->log_array) && count($this->log_array) > 0) {
-        ;
-      }
-      {
+      if(!is_array($this->log_array) || empty($this->log_array)) {
+        $this->log_array = [];
+      } else {
         foreach($this->log_array as $log) {
           $error_backtrace['queries'][] = $log;
         }
@@ -163,9 +162,21 @@ class debug {
       unset($error_backtrace['backtrace'][0]);
 
       // Converting object instances to object names
+
       foreach ($error_backtrace['backtrace'] as &$backtrace) {
         if(is_object($backtrace['object'])) {
           $backtrace['object'] = get_class($backtrace['object']);
+        }
+
+        if(empty($backtrace['args'])) {
+          continue;
+        }
+
+        // Doing same conversion for backtrace params
+        foreach($backtrace['args'] as &$arg) {
+          if(is_object($arg)) {
+            $arg = 'object::' . get_class($arg);
+          }
         }
       }
 
