@@ -27,6 +27,9 @@
  * @property string $game_default_skin            => 'skins/EpicBlue/'
  * @property string $game_default_template        => 'OpenGame'
  *
+ * @property int    $game_disable                 => GAME_DISABLE_INSTALL - Current game status - see GAME_DISABLE_xxx
+ * @property string $game_disable_reason          => 'SuperNova is in maintenance mode! Please return later!' - Status for custom disable reason
+ *
  * @property int    $game_maxGalaxy               => 5
  * @property int    $game_maxSystem               => 199
  * @property int    $game_maxPlanet               => 15
@@ -48,13 +51,21 @@
  * @property int    $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
  * @property int    $menu_server_logo_disabled    => 0
  *
- * @property int    stats_history_days            => 14, // За сколько дней хранить статистику в базе
+ * @property int    $stats_history_days           => 14, // За сколько дней хранить статистику в базе
+ * @property string $stats_minimal_interval       => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
+ * @property string $stats_schedule               => '04:00:00' - Schedule for running stat updates - see readme.txt
+ * @property string $var_stat_update              => '0' - SQL_DATE_TIME - when stat update was started
+ * @property string $var_stat_update_end          => '0' - SQL_DATE_TIME - ?????????
+ * @property string $var_stat_update_admin_forced => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
+ * @property string $var_stat_update_next         => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
+ * @property string $var_stat_update_msg          => 'Update never started' - Last stat update message
  *
  * @property int    $tutorial_first_item          ID of first item of tutorial
  *
  * @property int    $url_faq                      URL of FAQ root
  *
  * @property int    $users_amount                 => 1 - Total users count
+ *
  *
  */
 class classConfig extends classPersistent {
@@ -269,6 +280,7 @@ class classConfig extends classPersistent {
     'stats_hide_admins'      => 1,
     'stats_hide_player_list' => '',
     'stats_hide_pm_link'     => 0,
+    'stats_minimal_interval' => STATS_RUN_INTERVAL_MINIMUM, // Minimal stats interval
     'stats_schedule'         => '04:00:00',
 
     'tpl_minifier' => 0, // Template minifier

@@ -29,15 +29,18 @@ function getSkinPathTemplate($userSkinPath) {
  * @param bool|true $showHeader
  */
 function messageBox($message, $title = '', $redirectTo = '', $timeout = 5, $showHeader = true) {
-  global $lang;
+  global $lang, $template_result;
 
   if (empty($title)) {
     $title = $lang['sys_error'];
   }
 
   $template = gettemplate('message_body', true);
+
+  $template_result['GLOBAL_DISPLAY_NAVBAR'] = $showHeader;
+
   $template->assign_vars(array(
-    'GLOBAL_DISPLAY_NAVBAR' => $showHeader,
+//    'GLOBAL_DISPLAY_NAVBAR' => $showHeader,
 
     'TITLE'       => $title,
     'MESSAGE'     => $message,
@@ -317,6 +320,7 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
   isset($template_result['GLOBAL_DISPLAY_MENU']) ? $isDisplayMenu = $template_result['GLOBAL_DISPLAY_MENU'] : false;
   isset($template_result['GLOBAL_DISPLAY_NAVBAR']) ? $isDisplayTopNav = $template_result['GLOBAL_DISPLAY_NAVBAR'] : false;
 
+  // TODO: DEPRECATED! Use $template_result to turn menu and navbar or ond off!
   if (is_object($page)) {
     isset($page->_rootref['MENU']) ? $isDisplayMenu = $page->_rootref['MENU'] : false;
     isset($page->_rootref['NAVBAR']) ? $isDisplayTopNav = $page->_rootref['NAVBAR'] : false;

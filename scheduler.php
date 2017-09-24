@@ -22,9 +22,7 @@ require_once('includes/init.php');
 
 define('IN_AJAX', true);
 
-// require_once('includes/includes/scheduler_process.php');
-
-if(($result = scheduler_process()) && !defined('IN_ADMIN')) {
+if(($result = StatUpdateLauncher::scheduler_process()) && !defined('IN_ADMIN')) {
   $result = htmlspecialchars($result, ENT_QUOTES, 'UTF-8');
   print(json_encode($result));
 }

@@ -198,16 +198,6 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = 
 }
 
 
-function db_stat_list_update_user_stats()
-{
-  return doquery("UPDATE {{users}} AS u JOIN {{statpoints}} AS sp ON sp.id_owner = u.id AND sp.stat_code = 1 AND sp.stat_type = 1 SET u.total_rank = sp.total_rank, u.total_points = sp.total_points WHERE user_as_ally IS NULL;");
-}
-
-function db_stat_list_update_ally_stats()
-{
-  return doquery("UPDATE {{alliance}} AS a JOIN {{statpoints}} AS sp ON sp.id_ally = a.id AND sp.stat_code = 1 AND sp.stat_type = 2 SET a.total_rank = sp.total_rank, a.total_points = sp.total_points;");
-}
-
 function db_stat_list_delete_ally_player()
 {
   return doquery('DELETE s FROM {{statpoints}} AS s JOIN {{users}} AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL');

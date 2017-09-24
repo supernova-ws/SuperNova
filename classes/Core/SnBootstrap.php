@@ -12,7 +12,7 @@ class SnBootstrap {
 
   public static function install_benchmark() {
     register_shutdown_function(function () {
-      if(defined('IN_AJAX')) {
+      if (defined('IN_AJAX')) {
         return;
       }
 
@@ -23,17 +23,25 @@ class SnBootstrap {
       $executionTime = round(SN_TIME_RENDER_START - SN_TIME_MICRO, 6);
       $displayTime = round($now - SN_TIME_RENDER_START, 6);
 
-      $otherTime = defined('SN_TIME_RENDER_START') ? " (exec: {$executionTime}, display: {$displayTime})" : '';
-
-      print('<div id="benchmark" class="benchmark"><hr>Benchmark ' . $totalTime . 's' . $otherTime . ', memory: ' . number_format(memory_get_usage() - SN_MEM_START) .
-        (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '') .
-        (class_exists('classSupernova') && is_object(classSupernova::$db) ? ', DB time: ' . round(classSupernova::$db->time_mysql_total, 6) . 's' : '') .
-        '</div>');
-      if($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
+      print(
+        '<div id="benchmark" class="benchmark"><hr>[' . SN_TIME_SQL . '] '
+        . 'Benchmark ' . $totalTime . 's'
+        . (defined('SN_TIME_RENDER_START')
+          ?
+          " (exec: {$executionTime}s" .
+          ", display: {$displayTime}s"
+          . (class_exists('classSupernova') && is_object(classSupernova::$db) ? ', DB: ' . round(classSupernova::$db->time_mysql_total, 6) . 's' : '')
+          . ")"
+          : ''
+        )
+        . ', memory: ' . number_format(memory_get_usage() - SN_MEM_START)
+        . (!empty($locale_cache_statistic['misses']) ? ', LOCALE MISSED' : '')
+        . '</div>');
+      if ($user['authlevel'] >= 2 && file_exists(SN_ROOT_PHYSICAL . 'badqrys.txt') && @filesize(SN_ROOT_PHYSICAL . 'badqrys.txt') > 0) {
         echo '<a href="badqrys.txt" target="_blank" style="color:red">', 'HACK ALERT!', '</a>';
       }
 
-      if(!empty($locale_cache_statistic['misses'])) {
+      if (!empty($locale_cache_statistic['misses'])) {
         print('<!--');
         pdump($locale_cache_statistic);
         print('-->');
@@ -42,7 +50,7 @@ class SnBootstrap {
   }
 
   public static function init_debug_state() {
-    if($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
+    if ($_SERVER['SERVER_NAME'] == 'localhost' && !defined('BE_DEBUG')) {
       define('BE_DEBUG', true);
     }
     // define('DEBUG_SQL_ONLINE', true); // Полный дамп запросов в рил-тайме. Подойдет любое значение
@@ -54,7 +62,7 @@ class SnBootstrap {
     defined('DEBUG_SQL_ERROR') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
     defined('DEBUG_SQL_COMMENT_LONG') && !defined('DEBUG_SQL_COMMENT') ? define('DEBUG_SQL_COMMENT', true) : false;
 
-    if(defined('BE_DEBUG') || classSupernova::$config->debug) {
+    if (defined('BE_DEBUG') || classSupernova::$config->debug) {
       @define('BE_DEBUG', true);
       @ini_set('display_errors', 1);
       @error_reporting(E_ALL ^ E_NOTICE ^ E_DEPRECATED);
@@ -70,7 +78,7 @@ class SnBootstrap {
    */
   public static function performUpdate(&$config) {
     $update_file = SN_ROOT_PHYSICAL . "includes/update.php";
-    if(
+    if (
       !file_exists($update_file)
       ||
       (
@@ -82,9 +90,9 @@ class SnBootstrap {
       return;
     }
 
-    if(defined('IN_ADMIN')) {
+    if (defined('IN_ADMIN')) {
       sn_db_transaction_start(); // Для защиты от двойного запуска апдейта - начинаем транзакцию. Так запись в базе будет блокирована
-      if(SN_TIME_NOW >= $config->db_loadItem('var_db_update_end')) {
+      if (SN_TIME_NOW >= $config->db_loadItem('var_db_update_end')) {
         $config->db_saveItem('var_db_update_end', SN_TIME_NOW + ($config->upd_lock_time ? $config->upd_lock_time : 300));
         sn_db_transaction_commit();
 
@@ -93,7 +101,7 @@ class SnBootstrap {
         $current_time = time();
         $config->db_saveItem('var_db_update', $current_time);
         $config->db_saveItem('var_db_update_end', $current_time);
-      } elseif(filemtime($update_file) > $config->var_db_update) {
+      } elseif (filemtime($update_file) > $config->var_db_update) {
         $timeout = $config->var_db_update_end - SN_TIME_NOW;
         die(
         "Обновляется база данных. Рассчетное время окончания - {$timeout} секунд (время обновления может увеличиваться). Пожалуйста, подождите...<br />

@@ -82,12 +82,6 @@ class classPersistent extends classCache {
   }
 
   public function db_saveAll() {
-//    $toSave = array();
-//    foreach($this->defaults as $field => $value) {
-//      $toSave[$field] = NULL;
-//    }
-//    $this->db_saveItem($toSave);
-    // Для того, что бы не лезть в кэш за каждым айтемом, а сразу все известные переменные сохранить
     $this->db_saveItem(array_combine(array_keys($this->defaults), array_fill(0, count($this->defaults), null)));
   }
 
@@ -118,10 +112,23 @@ class classPersistent extends classCache {
   }
 
   /**
-   * Makes cache to pass next operation to DB - whether it read or write
+   * Instructs cache to pass next operation to DB - whether it read or write
+   *
+   * This allows more transparency when accessing variables. So
+   *    $this->db_loadItem('variable_name')
+   * converts to
+   *    $this->pass()->variable_name
+   * Latest makes IDE aware of operation with variables and makes navigation and code refactoring (i.e. variable renaming) much easier
+   * Same work with saving items directly to DB:
+   *    $this->db_saveItem('variable_name', $value)
+   * becomes
+   *    $this->pass()->variable_name = $value;
+   *
+   * @return $this
    */
   public function pass() {
     $this->force = true;
+
     return $this;
   }
 

@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a1.21');
+define('SN_VERSION', '43a1.22');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -99,6 +99,7 @@ define('MAX_ATTACK_ROUNDS', 10);
 //define('MAX_OVERFLOW', 1);
 define('BASE_STORAGE_SIZE', 500000);
 define('HIDE_1ST_FROM_STATS', 0);
+define('STATS_RUN_INTERVAL_MINIMUM', PERIOD_MINUTE_10); // Minimal interval to run stat updates
 define('HIDE_BUILDING_RECORDS', 0);
 define('SHOW_ADMIN', 1);
 

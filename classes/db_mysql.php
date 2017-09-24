@@ -131,8 +131,31 @@ class db_mysql {
     return !$this->connected;
   }
 
+  /**
+   * @param int    $errno
+   * @param string $errstr
+   * @param string $errfile
+   * @param int    $errline
+   * @param array  $errcontext
+   */
+  public function handlerQueryWarning($errno, $errstr, $errfile, $errline, $errcontext) {
+    static $alreadyHandled;
+
+    // Error was suppressed with the @-operator
+    if (0 === error_reporting()) {
+      return false;
+    }
+
+    if(!$alreadyHandled) {
+      print(SN_TIME_SQL . '<br />Server is busy. Please try again in several minutes...<br />Сервер занят. Попробуйте снова через несколько минут...<br />Server zanyat. Poprobujte snova cherez neskolko minut...');
+      $alreadyHandled = true;
+    }
+
+    return true;
+  }
+
   function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
-    global $numqueries, $debug, $sn_cache, $config;
+    global $numqueries, $debug, $config;
 
     if(!is_string($table)) {
       $fetch = $table;
@@ -178,7 +201,9 @@ class db_mysql {
       $sql = $sql_commented;
     }
 
+    set_error_handler([$this, 'handlerQueryWarning']);
     $sqlquery = $this->db_sql_query($sql) or $debug->error(db_error()."<br />$sql<br />",'SQL Error');
+    restore_error_handler();
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
   }

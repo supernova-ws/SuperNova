@@ -276,19 +276,7 @@ classSupernova::$config->db_loadItem('game_disable') == GAME_DISABLE_INSTALL
   ? define('INSTALL_MODE', GAME_DISABLE_INSTALL)
   : false;
 
-if(
-  classSupernova::$config->game_disable == GAME_DISABLE_STAT
-  &&
-  SN_TIME_NOW - strtotime(classSupernova::$config->db_loadItem('var_stat_update_end')) > 600
-) {
-  $next_run = date(FMT_DATE_TIME_SQL, sys_schedule_get_prev_run(classSupernova::$config->stats_schedule, classSupernova::$config->var_stat_update, true));
-  classSupernova::$config->db_saveItem('game_disable', GAME_DISABLE_NONE);
-  classSupernova::$config->db_saveItem('var_stat_update', SN_TIME_SQL);
-  classSupernova::$config->db_saveItem('var_stat_update_next', $next_run);
-  classSupernova::$config->db_saveItem('var_stat_update_end', SN_TIME_SQL);
-  $debug->warning('Stat worked too long - watchdog unlocked', 'Stat WARNING');
-}
-
+StatUpdateLauncher::unlock();
 
 if($template_result[F_GAME_DISABLE] = classSupernova::$config->game_disable) {
   $template_result[F_GAME_DISABLE_REASON] = HelperString::nl2br(
@@ -305,7 +293,7 @@ if($template_result[F_GAME_DISABLE] = classSupernova::$config->game_disable) {
     &&
     !(defined('INSTALL_MODE') && defined('LOGIN_LOGOUT'))
   ) {
-    messageBox($template_result[F_GAME_DISABLE_REASON], classSupernova::$config->game_name);
+    messageBox($template_result[F_GAME_DISABLE_REASON], classSupernova::$config->game_name, '', 5, false);
     ob_end_flush();
     die();
   }
@@ -360,4 +348,4 @@ classSupernova::$gc->watchdog->checkConfigTimeDiff(
   false
 );
 
-scheduler_process();
+StatUpdateLauncher::scheduler_process();
