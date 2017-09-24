@@ -117,14 +117,14 @@ while($row = db_fetch($aks_madnessred)) {
 }
 
 $template->assign_vars(array(
-  'usedfleet'       => str_rot13(base64_encode(serialize($fleet['fleetarray']))),
+  'usedfleet'       => str_rot13(base64_encode(json_encode($fleet['fleetarray']))),
 
   'speed_factor'     => flt_server_flight_speed_multiplier(),
   "t{$planet_type}" => 'SELECTED',
 
 //  'target_mission'  => $target_mission,
 
-  'ships'           => str_rot13(base64_encode(serialize($ships))),
+//  'ships'           => str_rot13(base64_encode(serialize($ships))),
 
   'fleet_speed'     => flt_fleet_speed($user, $fleet['fleetarray']),
   'fleet_capacity'  => $fleet['capacity'],

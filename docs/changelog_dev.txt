@@ -792,6 +792,15 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+
+2017-09-24 23:52:53 43a1.28
+[@] Код
+    Флоты:
+        - serialize/unserialize для usedfleet заменено на пару json_encode/json_decode
+        - /includes/include/flt_page1.php:127 - закомментирована как неиспользуемая
+              //'ships'           => str_rot13(base64_encode(serialize($ships))),
+
+
 2017-09-24 22:50:09 43a1.26
 [@] Код
     /admin/admin_metamatter.php:81 - Исправлена ошибка сравнения вместо использования empty()

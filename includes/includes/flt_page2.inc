@@ -110,6 +110,7 @@ function sn_fleet_page2() {
 
     // 'TableTitle' => $TableTitle,
 
+
     'speedallsmin' => sys_get_param_float('speedallsmin'),
     'speed' => sys_get_param_int('speed') ,
 
