@@ -211,7 +211,7 @@ class debug {
     sn_db_transaction_rollback();
 
     if(classSupernova::$config->debug == 1) {
-      echo "<h2>{$title}</h2><br><font color=red>{$message}</font><br><hr>";
+      echo "<h2>{$title}</h2><br><font color=red>" . htmlspecialchars($message) . "</font><br><hr>";
       echo "<table>{$this->log}</table>";
     }
 

@@ -9,7 +9,7 @@ class auth_local extends auth_abstract {
     'package' => 'auth',
     'name' => 'local',
     'version' => '0a0',
-    'copyright' => 'Project "SuperNova.WS" #42a20.5# copyright © 2009-2015 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a1.27# copyright © 2009-2015 Gorlum',
 
     // 'require' => array('auth_provider'),
     'root_relative' => '',
@@ -240,6 +240,10 @@ class auth_local extends auth_abstract {
       sn_db_transaction_start();
       $confirm_code_unsafe = $this->confirmation->db_confirmation_get_unique_code_by_type_and_email(CONFIRM_PASSWORD_RESET, $email_unsafe); // OK 4.5
       sn_db_transaction_commit();
+
+      if(!is_email($email_unsafe)) {
+        classSupernova::$debug->error("Email is invalid: '{$email_unsafe}'", 'Invalid email for password restoration');
+      }
 
       @$result = mymail($email_unsafe,
         sprintf($lang['log_lost_email_title'], $config->game_name),

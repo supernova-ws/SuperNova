@@ -119,8 +119,8 @@ function adm_lng_write_string($string_name, $string_value, $ident = '  ', $strin
   $string_name_new = $string_name_new ? $string_name_new : "'{$string_name}'";
   fwrite($file_handler, "{$ident}{$string_name_new} => ");
   if(isset($string_value[$lang_id]) && !is_array($string_value[$lang_id])) {
-//    fwrite($file_handler, "'" . str_replace(array("\\", "'"), array('\\\\', "\\'"), $string_value[$lang_id]) . "',");
-    fwrite($file_handler, "'" . addslashes($string_value[$lang_id]) . "',");
+    fwrite($file_handler, "'" . str_replace(array("\\", "'"), array('\\\\', "\\'"), $string_value[$lang_id]) . "',");
+//    fwrite($file_handler, "'" . addslashes($string_value[$lang_id]) . "',");
   } else {
     $string_name_prefix = $string_name_prefix . "[{$string_name}]";
     fwrite($file_handler, "array(\r\n");
@@ -146,7 +146,7 @@ $domain = sys_get_param_str('domain');
 
 if($domain) {
   $lang_new = sys_get_param('lang_new');
-  if(!empty($lang_new)) {
+  if(!empty($lang_new) && is_array($lang_new)) {
     $constants = get_defined_constants(true);
     $constants = $constants['user'];
     ksort($constants);

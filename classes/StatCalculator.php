@@ -14,7 +14,10 @@ class StatCalculator {
    * @var int
    */
   public static $memoryStart = 0;
-  public static $timeLastOperation = 0;
+  /**
+   * @var float
+   */
+  public static $timeLastOperation = 0.0;
 
   public static function sta_set_time_limit($sta_update_msg = 'updating something', $next_step = true) {
     global $config, $debug, $sta_update_step;

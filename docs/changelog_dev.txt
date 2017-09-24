@@ -716,6 +716,9 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 [*] Заменить serialize/unserialize на json_encode/json_decode
 
+[*] Разобраться с mail.ru
+        - http://php.net/manual/en/function.mail.php
+
 
 [*] Возмещение
     - !!! Наверное, всё-таки, юниты - ресы можно передать и так

@@ -297,7 +297,7 @@ class db_mysql {
   function mysql_get_table_list() {
     return $this->db_sql_query('SHOW TABLES;');
   }
-  function mysql_get_innodb_status() {
+  public function mysql_get_innodb_status() {
     return $this->db_sql_query('SHOW ENGINE INNODB STATUS;');
   }
 
