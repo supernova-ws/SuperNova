@@ -33,10 +33,10 @@ class StatCalculator {
     $sta_update_msg = "Update in progress. Step {$sta_update_step}/14: {$sta_update_msg}.\r\nMemory usage: "
       . number_format(memory_get_usage(true) - static::$memoryStart)
       . "\r\nPrevious operation time: " . number_format($nowMicro - static::$timeLastOperation, 5);
-    static::$timeLastOperation = $nowMicro;
 
     $config->pass()->var_stat_update_msg = $sta_update_msg;
     if ($next_step) {
+      static::$timeLastOperation = $nowMicro;
       $debug->warning($sta_update_msg, 'Stat update', LOG_INFO_STAT_PROCESS);
     }
   }
