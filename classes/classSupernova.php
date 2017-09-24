@@ -1030,6 +1030,9 @@ class classSupernova {
   }
 
 
+  /**
+   * @return GlobalContainer
+   */
   public static function services() {
     if(empty(self::$gc)) {
       self::$gc = new GlobalContainer(array(

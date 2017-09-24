@@ -118,7 +118,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Instate ActiveRecord from array of field values - even if it is empty
    *
-   * @param array $fields List of field values [$propertyName => $propertyValue]
+   * @param array $properties List of field values [$propertyName => $propertyValue]
    *
    * @return static
    */
@@ -132,7 +132,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Instate ActiveRecord from array of field values
    *
-   * @param array $fields List of field values [$propertyName => $propertyValue]
+   * @param array $properties List of field values [$propertyName => $propertyValue]
    *
    * @return static|bool
    */
@@ -270,7 +270,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * @return bool
    */
   public function reload() {
-    $recordId = $this->id;
+    //$recordId = $this->id;
+    $recordId = $this->{self::ID_PROPERTY_NAME};
     if (empty($recordId)) {
       return false;
     }
@@ -306,7 +307,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
       return false;
     }
 
-    $this->id = $this->dbLastInsertId();
+    //$this->id = $this->dbLastInsertId();
+    $this->{self::ID_PROPERTY_NAME} = $this->dbLastInsertId();
     $this->acceptChanges();
     $this->_isNew = false;
 
@@ -455,7 +457,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     $fieldName = array_search($propertyName, static::$_fieldsToProperties);
     if (
       // No translation found for property name
-      !$fieldName
+      $fieldName === false
       &&
       // AND Property name is not among translatable field names
       !static::haveTranslationToProperty($propertyName)

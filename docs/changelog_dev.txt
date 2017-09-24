@@ -780,7 +780,31 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 [*] При расчёте статы не лочить всё сразу - или не держать лок так долго
 
+
+[*] ActiveRecordAbstract - разбить на два-три класса
+
+
+[*] scheduler_process - sys_maintenance подвесить выше для того, что бы удалять лишние Альянсы/юниты ДО расчётов
+
 #ctv
+
+
+2017-09-24 22:35:54 43a1.25
+[@] Код
+    /admin/admin_locale.php:122 - more strict string sanitizing
+        //fwrite($file_handler, "'" . str_replace(array("\\", "'"), array('\\\\', "\\'"), $string_value[$lang_id]) . "',");
+        fwrite($file_handler, "'" . addslashes($string_value[$lang_id]) . "',");
+    ActiveRecordAbstract
+        - Fixed phpDoc
+        - Replaced direct field name 'id' with aliased class constant
+            - :273
+                //$recordId = $this->id;
+                $recordId = $this->{self::ID_PROPERTY_NAME};
+            - :310
+                //$this->id = $this->dbLastInsertId();
+                $this->{self::ID_PROPERTY_NAME} = $this->dbLastInsertId();
+        - :460 - Fixed loose comparsion
+    HelperString: removed debug code
 
 
 2017-09-24 19:31:43 43a1.24

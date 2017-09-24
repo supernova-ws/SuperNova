@@ -65,8 +65,6 @@ class HelperString {
   }
 
   protected function encode2ndValue(&$value) {
-    var_dump($value);
-
     if (is_array($value) && !empty($value)) {
       $value[count($value) - 1] = self::htmlEncode($value[count($value) - 1]);
     }
