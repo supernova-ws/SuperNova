@@ -6,7 +6,29 @@ build:
                 coverage:
                     file: 'some-file'
                     format: 'clover'
+     environment:
+         php: 5.6
+     nodes:
+         tests: true
+         analysis:
+             tests:
+                 override:
+                     -
+                         command: phpcs-run
+                         use_website_config: true
+checks:
+     php:
+         fix_php_opening_tag: false
+         remove_php_closing_tag: true
+         no_mixed_inline_html: false
+         require_braces_around_control_structures: false
+         psr2_control_structure_declaration: false
+         avoid_superglobals: false
+         security_vulnerabilities: true
+         no_exit: false
 filter:
+#     excluded_paths:
+#         - admin/sxd/*
     excluded_paths:
 ## Excluding Tests, Specs and Vendor Directories at any Level
         - tests/
