@@ -6,16 +6,16 @@ build:
                 coverage:
                     file: 'some-file'
                     format: 'clover'
-     environment:
-         php: 5.6
-     nodes:
-         tests: true
-         analysis:
-             tests:
-                 override:
-                     -
-                         command: phpcs-run
-                         use_website_config: true
+    environment:
+        php: 5.6
+    nodes:
+        tests: true
+        analysis:
+            tests:
+                override:
+                    -
+                        command: phpcs-run
+                        use_website_config: true
 checks:
      php:
          fix_php_opening_tag: false
