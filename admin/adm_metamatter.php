@@ -24,13 +24,13 @@ if(!sn_module_get_active_count('payment')) {
 messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
 /**
- * @param       $lang
- * @param       $user
- * @param       $accountIdOrName_unsafe
- * @param       $playerIdOrName_unsafe
- * @param float $points
- * @param       $reason_unsafe
- * @param bool  $confirmed
+ * @param classLocale $lang
+ * @param array       $user
+ * @param string      $accountIdOrName_unsafe
+ * @param string      $playerIdOrName_unsafe
+ * @param float       $points
+ * @param string      $reason_unsafe
+ * @param bool        $confirmed
  *
  * @throws ExceptionSnLocalized
  */
