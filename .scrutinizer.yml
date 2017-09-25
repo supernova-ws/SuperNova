@@ -1,21 +1,21 @@
 build:
-#    tests:
-#        override:
-#            -
-#                command: 'vendor/bin/phpunit --coverage-clover=some-file tests --config tests/phpunit.xml'
-#                coverage:
-#                    file: 'some-file'
-#                    format: 'clover'
+    tests:
+        override:
+            -
+                command: 'vendor/bin/phpunit --coverage-clover=some-file tests --config tests/phpunit.xml'
+                coverage:
+                    file: 'some-file'
+                    format: 'clover'
     environment:
         php: 5.6
-    nodes:
-        tests: true
-        analysis:
-            tests:
-                override:
-                    -
-                        command: phpcs-run
-                        use_website_config: true
+#    nodes:
+#        tests: true
+#        analysis:
+#            tests:
+#                override:
+#                    -
+#                        command: phpcs-run
+#                        use_website_config: true
 checks:
      php:
          fix_php_opening_tag: false
@@ -31,7 +31,7 @@ filter:
 #         - admin/sxd/*
     excluded_paths:
 ## Excluding Tests, Specs and Vendor Directories at any Level
-        - tests/
+#        - tests/
 #        - tests/**/*
         - tests.int/
 #        - tests.int/**/*
