@@ -1,11 +1,11 @@
 build:
-    tests:
-        override:
-            -
-                command: 'vendor/bin/phpunit --coverage-clover=some-file tests --config tests/phpunit.xml'
-                coverage:
-                    file: 'some-file'
-                    format: 'clover'
+#    tests:
+#        override:
+#            -
+#                command: 'vendor/bin/phpunit --coverage-clover=some-file tests --configuration tests/phpunit.xml'
+#                coverage:
+#                    file: 'some-file'
+#                    format: 'clover'
     environment:
         php: 5.6
 #    nodes:
@@ -31,7 +31,7 @@ filter:
 #         - admin/sxd/*
     excluded_paths:
 ## Excluding Tests, Specs and Vendor Directories at any Level
-#        - tests/
+        - tests/
 #        - tests/**/*
         - tests.int/
 #        - tests.int/**/*
