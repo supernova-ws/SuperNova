@@ -284,31 +284,23 @@ switch($mode = sys_get_param_str('mode')) {
 
     $fleet_id = 1;
 
-    $fleet_list = fleet_and_missiles_list_incoming($user['id']);
-    $fleets = flt_parse_fleets_to_events($fleet_list);
+    $fleets = flt_parse_fleets_to_events(fleet_and_missiles_list_incoming($user['id']));
 
     $planet_count = 0;
     $planets_query = DBStaticPlanet::db_planet_list_sorted($user, false, '*');
-    foreach($planets_query as $an_id => $UserPlanet) {
+    foreach($planets_query as $an_id => $planetRecord) {
       sn_db_transaction_start();
-      $UserPlanet = sys_o_get_updated($user, $UserPlanet['id'], SN_TIME_NOW, false, true);
+      $updatedData = sys_o_get_updated($user, $planetRecord['id'], SN_TIME_NOW, false, true);
       sn_db_transaction_commit();
-      $list_planet_que = $UserPlanet['que'];
-      $UserPlanet = $UserPlanet['planet'];
+//      $list_planet_que = $updatedData['que'];
+//      $planetUpdated = $updatedData['planet'];
 
-      $template_planet = tpl_parse_planet($UserPlanet);
+      $templatizedPlanet = tpl_parse_planet($updatedData['planet'], $fleets_to_planet);
 
-      $planet_fleet_id = 0;
-      $fleet_list = $template_planet['fleet_list'];
-      if($fleet_list['own']['count']) {
-        $planet_fleet_id = "p{$UserPlanet['id']}";
-        $fleets_to_planet[$UserPlanet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], $planet_fleet_id);
-//        $fleet_id++;tpl_parse_fleet_sn
-      }
-      if($UserPlanet['planet_type'] == PT_MOON) {
+      if($planetRecord['planet_type'] == PT_MOON) {
         continue;
       }
-      $moon = DBStaticPlanet::db_planet_by_parent($UserPlanet['id']);
+      $moon = DBStaticPlanet::db_planet_by_parent($planetRecord['id']);
       if($moon) {
         $moon_fill = min(100, floor($moon['field_current'] / eco_planet_fields_max($moon) * 100));
       } else {
@@ -316,9 +308,7 @@ switch($mode = sys_get_param_str('mode')) {
       }
 
       $moon_fleets = flt_get_fleets_to_planet($moon);
-      $template->assign_block_vars('planet', array_merge($template_planet, array(
-        'PLANET_FLEET_ID'  => $planet_fleet_id,
-
+      $template->assign_block_vars('planet', array_merge($templatizedPlanet, array(
         'MOON_ID'      => $moon['id'],
         'MOON_NAME'    => $moon['name'],
         'MOON_IMG'     => $moon['image'],

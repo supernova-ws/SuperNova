@@ -198,14 +198,11 @@ function tpl_parse_planet_que($que, $planet, $que_id)
   return $hangar_que;
 }
 
-function tpl_parse_planet($planet)
+function tpl_parse_planet($planet, &$fleets)
 {
   global $lang;
 
-  $fleet_list = flt_get_fleets_to_planet($planet);
-
   $que = que_get($planet['id_owner'], $planet['id'], false);
-
   $structure_que = tpl_parse_planet_que($que, $planet, QUE_STRUCTURES); // TODO Заменить на que_tpl_parse_element($que_element);
   $structure_que_first = is_array($structure_que['que']) ? reset($structure_que['que']) : array();
   $hangar_que = tpl_parse_planet_que($que, $planet, SUBQUE_FLEET); // TODO Заменить на que_tpl_parse_element($que_element);
@@ -242,17 +239,21 @@ function tpl_parse_planet($planet)
     'FIELDS_MAX'    => eco_planet_fields_max($planet),
     'FILL'          => min(100, floor($planet['field_current'] / eco_planet_fields_max($planet) * 100)),
 
-    'FLEET_OWN'     => $fleet_list['own']['count'],
-    'FLEET_ENEMY'   => $fleet_list['enemy']['count'],
-    'FLEET_NEUTRAL' => $fleet_list['neutral']['count'],
-
-    'fleet_list'    => $fleet_list,
+    'fleet_list'      => $fleet_list = flt_get_fleets_to_planet($planet),
+    'FLEET_OWN'       => $fleet_list['own']['count'],
+    'FLEET_ENEMY'     => $fleet_list['enemy']['count'],
+    'FLEET_NEUTRAL'   => $fleet_list['neutral']['count'],
+    'PLANET_FLEET_ID' => !empty($fleet_list['own']['count']) ? getUniqueFleetId($planet) : 0,
 
     'PLANET_GOVERNOR_ID' => $planet['PLANET_GOVERNOR_ID'],
     'PLANET_GOVERNOR_NAME' => $lang['tech'][$planet['PLANET_GOVERNOR_ID']],
     'PLANET_GOVERNOR_LEVEL' => $planet['PLANET_GOVERNOR_LEVEL'],
     'PLANET_GOVERNOR_LEVEL_MAX' => get_unit_param($planet['PLANET_GOVERNOR_ID'], P_MAX_STACK),
   );
+
+  if (!empty($fleet_list['own']['count'])) {
+    $fleets[$planet['id']] = tpl_parse_fleet_sn($fleet_list['own']['total'], $result['PLANET_FLEET_ID']);
+  }
 
   if(!empty($que['ques'][QUE_STRUCTURES][$planet['id_owner']][$planet['id']]))
   {

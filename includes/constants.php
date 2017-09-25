@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a1.32');
+define('SN_VERSION', '43a1.33');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -39,6 +39,8 @@ if(strpos(strtolower($_server_server_name), 'google.') !== false) {
   define('SN_GOOGLE', true);
 }
 define('SN_ROOT_VIRTUAL_PARENT', str_replace('//google.', '//', SN_ROOT_VIRTUAL));
+
+define('FLEET_ID_TEMPLATE', 'f%sown');
 
 // PHP extension on this server
 define('PHP_EX', strpos($temp = substr(strrchr(__FILE__, '.'), 1), '/') === false ? $temp : 'php');

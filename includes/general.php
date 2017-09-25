@@ -369,12 +369,19 @@ function GetPhalanxRange($phalanx_level)
   return $phalanx_level > 1 ? pow($phalanx_level, 2) - 1 : 0;
 }
 
+/**
+ * @param array $planet
+ *
+ * @return bool
+ */
 function CheckAbandonPlanetState(&$planet)
 {
   if($planet['destruyed'] && $planet['destruyed'] <= SN_TIME_NOW)
   {
     DBStaticPlanet::db_planet_delete_by_id($planet['id']);
+    return true;
   }
+  return false;
 }
 
 function eco_get_total_cost($unit_id, $unit_level)
@@ -1723,4 +1730,15 @@ function sn_sys_load_php_files($dir_name, $load_extension = 'php', $modules = fa
       }
     }
   }
+}
+
+/**
+ * Returns unique string ID for total fleets on planet
+ *
+ * @param array $planetTemplatized
+ *
+ * @return int|string
+ */
+function getUniqueFleetId($planetTemplatized) {
+  return empty($planetTemplatized['id']) ? 0 : sprintf(FLEET_ID_TEMPLATE, $planetTemplatized['id']);
 }
