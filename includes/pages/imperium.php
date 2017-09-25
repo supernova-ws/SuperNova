@@ -71,10 +71,13 @@ function sn_imperium_view($template = null) {
           break;
         }
 
+        $level_plus['LEVEL_PLUS_GREEN_TEXT'] = ($level_plus['LEVEL_PLUS_GREEN'] > 0 ? '+' : '') . pretty_number($level_plus['LEVEL_PLUS_GREEN']);
+        $level_plus['LEVEL_PLUS_YELLOW_TEXT'] = ($level_plus['LEVEL_PLUS_YELLOW'] > 0 ? '+' : '') . pretty_number($level_plus['LEVEL_PLUS_YELLOW']);
         $block_vars[] = array_merge($level_plus, array(
-          'ID'    => $planet['id'],
-          'TYPE'  => $planet['planet_type'],
-          'LEVEL' => $unit_level_plain == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $unit_level_plain,
+          'ID'         => $planet['id'],
+          'TYPE'       => $planet['planet_type'],
+          'LEVEL'      => $unit_level_plain == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $unit_level_plain,
+          'LEVEL_TEXT' => $unit_level_plain == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : pretty_number($unit_level_plain),
         ));
         $unit_count += $unit_level_plain;
         $unit_count_abs += $unit_level_plain + abs($level_plus['LEVEL_PLUS_YELLOW']) + abs($level_plus['LEVEL_PLUS_GREEN']);
@@ -94,12 +97,15 @@ function sn_imperium_view($template = null) {
         $unit_green = $imperiumStats['units'][$unit_id]['LEVEL_PLUS_GREEN'];
         $unit_yellow = $imperiumStats['units'][$unit_id]['LEVEL_PLUS_YELLOW'];
         $template->assign_block_vars('prods.planet', array(
-          'ID'                => 0,
-          'LEVEL'             => $unit_count,
-          'LEVEL_PLUS_GREEN'  => $unit_green == 0 ? '' : ($unit_green > 0 ? "+{$unit_green}" : $unit_green),
-          'LEVEL_PLUS_YELLOW' => $unit_yellow == 0 ? '' : ($unit_yellow > 0 ? "+{$unit_yellow}" : $unit_yellow),
-          'PERCENT'           => $unit_is_factory ? '' : -1,
-          'FACTORY'           => $unit_is_factory,
+          'ID'                     => 0,
+          'LEVEL'                  => $unit_count,
+          'LEVEL_TEXT'             => pretty_number($unit_count),
+          'LEVEL_PLUS_GREEN'       => $unit_green,
+          'LEVEL_PLUS_YELLOW'      => $unit_yellow,
+          'LEVEL_PLUS_GREEN_TEXT'  => $unit_green == 0 ? '' : (($unit_green > 0 ? '+' : '') . pretty_number($unit_green)),
+          'LEVEL_PLUS_YELLOW_TEXT' => $unit_yellow == 0 ? '' : (($unit_yellow > 0 ? '+' : '') . pretty_number($unit_yellow)),
+          'PERCENT'                => $unit_is_factory ? '' : -1,
+          'FACTORY'                => $unit_is_factory,
         ));
       }
     }
@@ -140,6 +146,8 @@ function sn_imperium_view($template = null) {
     'PLANET_DENSITY_RICHNESS_AVERAGE' => PLANET_DENSITY_RICHNESS_AVERAGE,
     'PLANET_DENSITY_RICHNESS_GOOD'    => PLANET_DENSITY_RICHNESS_GOOD,
     'PLANET_DENSITY_RICHNESS_PERFECT' => PLANET_DENSITY_RICHNESS_PERFECT,
+
+    'PAGE_HEADER' => $lang['imp_overview'],
   ));
 
   return $template;
@@ -185,7 +193,7 @@ function imperiumStoreMinesLoad($user) {
  *
  * @return array
  */
-function imperiumAssignFleetsAndCalculateTotal($template, $planets, $lang) {
+function imperiumAssignFleetsAndCalculateTotal($template, &$planets, $lang) {
   $planet_density = sn_get_groups('planet_density');
 
   $imperiumStats = array();
@@ -195,6 +203,15 @@ function imperiumAssignFleetsAndCalculateTotal($template, $planets, $lang) {
   $fleets = [];
   foreach ($planets as $planetId => &$planet) {
     $templatizedPlanet = tpl_parse_planet($planet, $fleets);
+
+    foreach ([RES_METAL, RES_CRYSTAL, RES_DEUTERIUM] as $resourceId) {
+      if (empty($templatizedPlanet['fleet_list']['own']['total'][$resourceId])) {
+        $templatizedPlanet['RES_' . $resourceId] = 0;
+      } else {
+        $templatizedPlanet['RES_' . $resourceId] = $templatizedPlanet['fleet_list']['own']['total'][$resourceId];
+        $templatizedPlanet['RES_' . $resourceId . '_TEXT'] = pretty_number($templatizedPlanet['fleet_list']['own']['total'][$resourceId]);
+      }
+    }
 
     $template->assign_block_vars('planet', array_merge($templatizedPlanet, array(
       'METAL_CUR'  => pretty_number($planet['metal'], true, $planet['caps']['total_storage'][RES_METAL]),
@@ -217,10 +234,10 @@ function imperiumAssignFleetsAndCalculateTotal($template, $planets, $lang) {
       'DENSITY_CLASS_TEXT' => $lang['uni_planet_density_types'][$planet['density_index']],
     )));
 
-//    $planet['fleet_list'] = $planet_template['fleet_list'];
-//    $planet['BUILDING_ID'] = $planet_template['BUILDING_ID'];
-//    $planet['hangar_que'] = $planet_template['hangar_que'];
-//    $planet['full_que'] = $list_planet_que;
+    $planet['fleet_list'] = $templatizedPlanet['fleet_list'];
+    $planet['BUILDING_ID'] = $templatizedPlanet['BUILDING_ID'];
+    $planet['hangar_que'] = $templatizedPlanet['hangar_que'];
+    $planet['full_que'] = $templatizedPlanet;
 
     $imperiumStats['fields'] += $planet['field_current'];
     $imperiumStats['metal'] += $planet['metal'];

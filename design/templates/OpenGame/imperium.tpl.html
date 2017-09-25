@@ -100,6 +100,9 @@
       <!-- ENDIF -->
       <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
         {planet.METAL_CUR}<br />
+        <!-- IF planet.RES_901 > 0 -->
+        <span class="neutral">+{planet.RES_901_TEXT}</span><br />
+        <!-- ENDIF -->
         <span class="{$FIELD_COLOR}">{planet.METAL_PROD}</span>
       </td>
     <!-- END planet -->
@@ -118,6 +121,9 @@
       <!-- ENDIF -->
       <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
         {planet.CRYSTAL_CUR}<br />
+        <!-- IF planet.RES_902 > 0 -->
+        <span class="neutral">+{planet.RES_902_TEXT}</span><br />
+        <!-- ENDIF -->
         <span class="{$FIELD_COLOR}">{planet.CRYSTAL_PROD}</span>
       </td>
     <!-- END planet -->
@@ -135,7 +141,11 @@
         <!-- DEFINE $FIELD_COLOR = 'positive' -->
       <!-- ENDIF -->
       <td<!-- IF planet.ID --> go="res" planet_id="{planet.ID}"<!-- ENDIF -->>
-        {planet.DEUTERIUM_CUR}<br /><span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span>
+        {planet.DEUTERIUM_CUR}<br />
+        <!-- IF planet.RES_903 > 0 -->
+        <span class="neutral">+{planet.RES_903_TEXT}</span><br />
+        <!-- ENDIF -->
+        <span class="{$FIELD_COLOR}">{planet.DEUTERIUM_PROD}</span>
       </td>
     <!-- END planet -->
   </tr>
@@ -187,7 +197,7 @@
             <span style="width: {prods.planet.PERCENT}%;" class="{$FIELD_COLOR}"></span>
           <!-- ENDIF -->
           <span>
-            {prods.planet.LEVEL}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><span class="neutral">{prods.planet.LEVEL_PLUS_YELLOW}</span><!-- ENDIF -->
+            {prods.planet.LEVEL_TEXT}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN_TEXT}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><span class="neutral">{prods.planet.LEVEL_PLUS_YELLOW_TEXT}</span><!-- ENDIF -->
             <!-- IF prods.planet.FACTORY && prods.planet.PERCENT >= 0 -->
               <br />
               <select name="percent[{prods.ID}][{prods.planet.ID}]" <!-- IF prods.planet.ID == 0 -->selector="{prods.ID}"<!-- ENDIF -->>
