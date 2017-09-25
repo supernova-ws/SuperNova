@@ -120,6 +120,8 @@ if($aks['eingeladen'] && is_array($members = classSupernova::db_get_record_list(
 
 $i++;
 $fleet_row = db_fleet_get($fleetid);
+
+if(is_array($fleet_row) && !empty($fleet_row)) {
 $planet_start = DBStaticPlanet::db_planet_by_id($fleet_row['fleet_start_planet_id']);
 $fleet_row['fleet_start_name'] = !empty($planet_start['name']) ? $planet_start['name'] : '';
 $planet_end = DBStaticPlanet::db_planet_by_id($fleet_row['fleet_end_planet_id']);
@@ -129,6 +131,7 @@ $fleet_data = tpl_parse_fleet_db($fleet_row, $i, $user);
 $template->assign_block_vars('fleets', $fleet_data['fleet']);
 foreach($fleet_data['ships'] as $ship_data) {
   $template->assign_block_vars('fleets.ships', $ship_data);
+}
 }
 
 display($template, $lang['fl_title']);
