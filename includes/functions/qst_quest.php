@@ -2,61 +2,49 @@
 
 use \DBAL\DbQuery;
 
-function qst_render_page()
-{
+function qst_render_page() {
   global $lang, $user, $template, $config;
 
   $user_id = sys_get_param_id('user_id', false);
-  $mode    = sys_get_param_str('mode');
+  $mode = sys_get_param_str('mode');
 
-  $quest_units_allowed  = sn_get_groups(array('structures', 'tech', 'fleet', 'defense'));
+  $quest_units_allowed = sn_get_groups(array('structures', 'tech', 'fleet', 'defense'));
   $quest_reward_allowed = sn_get_groups('quest_rewards');
 
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
 
-  if($in_admin)
-  {
+  if ($in_admin) {
     $quest_id = sys_get_param_id('id');
     $quest_name = sys_get_param_str_unsafe('QUEST_NAME');
-    if(!empty($quest_name))
-    {
+    if (!empty($quest_name)) {
       $quest_description = sys_get_param_str_unsafe('QUEST_DESCRIPTION');
-      try
-      {
+      try {
         $quest_rewards_list = sys_get_param('QUEST_REWARDS_LIST');
         $quest_rewards = array();
-        foreach($quest_rewards_list as $quest_rewards_id => $quest_rewards_amount)
-        {
-          if(!in_array($quest_rewards_id, $quest_reward_allowed))
-          {
+        foreach ($quest_rewards_list as $quest_rewards_id => $quest_rewards_amount) {
+          if (!in_array($quest_rewards_id, $quest_reward_allowed)) {
             throw new Exception($lang['qst_adm_err_reward_type']);
           }
 
-          if($quest_rewards_amount < 0)
-          {
+          if ($quest_rewards_amount < 0) {
             throw new Exception($lang['qst_adm_err_reward_amount']);
-          }
-          elseif($quest_rewards_amount > 0)
-          {
+          } elseif ($quest_rewards_amount > 0) {
             $quest_rewards[] = "{$quest_rewards_id},{$quest_rewards_amount}";
           }
         }
-        if(empty($quest_rewards))
-        {
+        if (empty($quest_rewards)) {
           throw new Exception($lang['qst_adm_err_reward_empty']);
         }
 
         $quest_rewards = implode(';', $quest_rewards);
 
         $quest_unit_id = sys_get_param_int('QUEST_UNIT_ID');
-        if(!in_array($quest_unit_id, $quest_units_allowed))
-        {
+        if (!in_array($quest_unit_id, $quest_units_allowed)) {
           throw new Exception($lang['qst_adm_err_unit_id']);
         }
 
         $quest_unit_amount = sys_get_param_float('QUEST_UNIT_AMOUNT');
-        if($quest_unit_amount <= 0)
-        {
+        if ($quest_unit_amount <= 0) {
           throw new Exception($lang['qst_adm_err_unit_amount']);
         }
         $quest_conditions = "{$quest_unit_id},{$quest_unit_amount}";
@@ -64,31 +52,28 @@ function qst_render_page()
         // TODO: Change quest type
         $quest_type = 0;
 
-        if($mode == 'edit')
-        {
+        if ($mode == 'edit') {
           DbQuery::build()
             ->setTable('quest')
             ->setValues(array(
-              'quest_name' => $quest_name,
-              'quest_type' => $quest_type,
+              'quest_name'        => $quest_name,
+              'quest_type'        => $quest_type,
               'quest_description' => $quest_description,
-              'quest_conditions' => $quest_conditions,
-              'quest_rewards' => $quest_rewards,
+              'quest_conditions'  => $quest_conditions,
+              'quest_rewards'     => $quest_rewards,
             ))
             ->setWhereArray(array('quest_id' => $quest_id))
             ->setOneRow()
             ->doUpdate();
-        }
-        else
-        {
+        } else {
           DbQuery::build()
             ->setTable('quest')
             ->setValues(array(
-              'quest_name' => $quest_name,
-              'quest_type' => $quest_type,
+              'quest_name'        => $quest_name,
+              'quest_type'        => $quest_type,
               'quest_description' => $quest_description,
-              'quest_conditions' => $quest_conditions,
-              'quest_rewards' => $quest_rewards,
+              'quest_conditions'  => $quest_conditions,
+              'quest_rewards'     => $quest_rewards,
             ))
             ->doInsert();
         }
@@ -100,17 +85,14 @@ function qst_render_page()
           msg_send_simple_message('*', 0, 0, MSG_TYPE_PLAYER, $lang['sys_administration'], $lang['news_title'], $text);
         }
         */
-      }
-      catch (Exception $e)
-      {
+      } catch (Exception $e) {
         messageBox($e->getMessage(), $lang['sys_error']);
       }
 
       $mode = '';
     };
 
-    switch($mode)
-    {
+    switch ($mode) {
       case 'del':
         doquery("DELETE FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
         $mode = '';
@@ -125,9 +107,7 @@ function qst_render_page()
     }
     $query = doquery("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
     $config->db_saveItem('quest_total', $query['count']);
-  }
-  elseif(!$user_id)
-  {
+  } elseif (!$user_id) {
     $user_id = $user['id'];
   }
 
@@ -148,34 +128,27 @@ function qst_render_page()
 
   foreach ($lang['qst_status_list'] as $statusId => $statusName) {
     $template->assign_block_vars('status', array(
-      'ID' => $statusId,
+      'ID'   => $statusId,
       'NAME' => $statusName,
     ));
   }
 
-  if($quest)
-  {
+  if ($quest) {
     $quest_templatized = qst_templatize(qst_quest_parse($quest, false));
-  }
-  else
-  {
+  } else {
     $quest_templatized['quest_rewards_list'] = array();
   }
 
-  foreach($quest_reward_allowed as $unit_id)
-  {
+  foreach ($quest_reward_allowed as $unit_id) {
     $found = false;
-    foreach($quest_templatized['quest_rewards_list'] as $quest_templatized_reward)
-    {
-      if($quest_templatized_reward['ID'] == $unit_id)
-      {
+    foreach ($quest_templatized['quest_rewards_list'] as $quest_templatized_reward) {
+      if ($quest_templatized_reward['ID'] == $unit_id) {
         $found = true;
         break;
       }
     }
 
-    if(!$found)
-    {
+    if (!$found) {
       $quest_templatized['quest_rewards_list'][$unit_id] = array(
         'ID'     => $unit_id,
         'NAME'   => $lang['tech'][$unit_id],
@@ -186,13 +159,11 @@ function qst_render_page()
 
   qst_assign_to_template($template, $quest_templatized);
 
-  foreach($quest_list as $quest_data)
-  {
+  foreach ($quest_list as $quest_data) {
     qst_assign_to_template($template, qst_templatize($quest_data, true), 'quest');
   }
 
-  foreach($quest_units_allowed as $unit_id)
-  {
+  foreach ($quest_units_allowed as $unit_id) {
     $template->assign_block_vars('allowed_unit', array(
       'ID'   => $unit_id,
       'NAME' => $lang['tech'][$unit_id],
@@ -200,25 +171,17 @@ function qst_render_page()
   }
 }
 
-function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL)
-{
+function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL) {
   $quest_list = array();
 
-  if($user_id)
-  {
-    if($status !== QUEST_STATUS_ALL)
-    {
+  if ($user_id) {
+    if ($status !== QUEST_STATUS_ALL) {
       $query_add_where = "";
-      if($status == null || $status == QUEST_STATUS_NOT_STARTED)
-      {
+      if ($status == null || $status == QUEST_STATUS_NOT_STARTED) {
         $query_add_where .= "AND qs.quest_status_status IS NULL";
-      }
-      elseif ($status == QUEST_STATUS_EXCEPT_COMPLETE)
-      {
+      } elseif ($status == QUEST_STATUS_EXCEPT_COMPLETE) {
         $query_add_where .= "AND (qs.quest_status_status IS NULL OR qs.quest_status_status = " . QUEST_STATUS_STARTED . ")";
-      }
-      else
-      {
+      } else {
         $query_add_where .= "AND qs.quest_status_status = {$status}";
       }
     }
@@ -233,35 +196,27 @@ function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL)
     ;"
   );
 
-  while($quest = db_fetch($query))
-  {
+  while ($quest = db_fetch($query)) {
     $quest_list[$quest['quest_id']] = qst_quest_parse($quest);
   }
 
   return $quest_list;
 }
 
-function qst_assign_to_template(&$template, $quest_templatized, $block_name = false)
-{
-  if($block_name)
-  {
+function qst_assign_to_template(&$template, $quest_templatized, $block_name = false) {
+  if ($block_name) {
     $template->assign_block_vars($block_name, $quest_templatized);
-  }
-  else
-  {
+  } else {
     $template->assign_vars($quest_templatized);
-    if(!empty($quest_templatized['quest_rewards_list']))
-    {
-      foreach($quest_templatized['quest_rewards_list'] as $quest_reward)
-      {
+    if (!empty($quest_templatized['quest_rewards_list'])) {
+      foreach ($quest_templatized['quest_rewards_list'] as $quest_reward) {
         $template->assign_block_vars(($block_name ? $block_name . '.' : '') . 'quest_rewards_list', $quest_reward);
       }
     }
   }
 }
 
-function qst_quest_parse($quest)
-{
+function qst_quest_parse($quest) {
   list($quest['quest_unit_id'], $quest['quest_unit_amount']) = explode(',', $quest['quest_conditions']);
 
   $quest['quest_rewards_list'] = sys_unit_str2arr($quest['quest_rewards']);
@@ -269,13 +224,11 @@ function qst_quest_parse($quest)
   return $quest;
 }
 
-function qst_templatize($quest, $for_display = true)
-{
+function qst_templatize($quest, $for_display = true) {
   global $lang;
 
   $tmp = array();
-  foreach($quest['quest_rewards_list'] as $quest_reward_id => $quest_reward_amount)
-  {
+  foreach ($quest['quest_rewards_list'] as $quest_reward_id => $quest_reward_amount) {
     $tmp[] = array(
       'ID'     => $quest_reward_id,
       'NAME'   => $for_display ? str_replace(' ', '&nbsp;', $lang['tech'][$quest_reward_id]) : $lang['tech'][$quest_reward_id],
@@ -298,13 +251,10 @@ function qst_templatize($quest, $for_display = true)
   );
 }
 
-function qst_active_triggers($quest_list)
-{
+function qst_active_triggers($quest_list) {
   $quest_triggers = array();
-  foreach($quest_list as $quest_id => $quest)
-  {
-    if($quest['quest_status_status'] != QUEST_STATUS_COMPLETE)
-    {
+  foreach ($quest_list as $quest_id => $quest) {
+    if ($quest['quest_status_status'] != QUEST_STATUS_COMPLETE) {
       list($quest_unit_id, $quest_unit_amount) = explode(',', $quest['quest_conditions']);
       $quest_triggers[$quest_id] = $quest_unit_id;
     }
@@ -314,14 +264,15 @@ function qst_active_triggers($quest_list)
 }
 
 /**
- * @param $user
- * @param $rewards
- * @param $quest_list
+ * @param           $user
+ * @param           $rewards
+ * @param           $quest_list
  * @param integer[] $quest_statuses
  */
-function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses)
-{
-  if(empty($quest_statuses)) return;
+function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses) {
+  if (empty($quest_statuses)) {
+    return;
+  }
 
   global $lang;
 
@@ -345,7 +296,7 @@ function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses)
           'quest_status_status'   => $quest_status
         ))
         ->doInsert();
-    } elseif($questStatus['quest_status_status'] != $quest_status) {
+    } elseif ($questStatus['quest_status_status'] != $quest_status) {
       DbQuery::build()
         ->setTable('quest_status')
         ->setWhereArray(array(
@@ -353,27 +304,28 @@ function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses)
           'quest_status_user_id'  => $user['id'],
         ))
         ->setValues(array(
-          'quest_status_status'   => $quest_status
+          'quest_status_status' => $quest_status
         ))
         ->doUpdate();
     }
   }
 
-  if(empty($rewards)) return;
+  if (empty($rewards)) {
+    return;
+  }
 
   $db_changeset = array();
   $total_rewards = array();
   $comment_dm = '';
 
-  foreach($rewards as $quest_id => $user_data) {
-    foreach($user_data as $user_id => $planet_data) {
-      foreach($planet_data as $planet_id => $reward_list) {
+  foreach ($rewards as $quest_id => $user_data) {
+    foreach ($user_data as $user_id => $planet_data) {
+      foreach ($planet_data as $planet_id => $reward_list) {
         $comment = sprintf($lang['qst_msg_complete_body'], $quest_list[$quest_id]['quest_name']);
         $comment_dm .= isset($reward_list[RES_DARK_MATTER]) ? $comment : '';
 
         $comment_reward = array();
-        foreach($reward_list as $unit_id => $unit_amount)
-        {
+        foreach ($reward_list as $unit_id => $unit_amount) {
           $comment_reward[] = $unit_amount . ' ' . $lang['tech'][$unit_id];
           $total_rewards[$user_id][$planet_id][$unit_id] += $unit_amount;
         }
@@ -395,42 +347,35 @@ function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses)
 
   $group_resources = sn_get_groups('resources_loot');
   $quest_rewards_allowed = sn_get_groups('quest_rewards');
-  if(!empty($total_rewards))
-  {
-    foreach($total_rewards as $user_id => $planet_data)
-    {
+  if (!empty($total_rewards)) {
+    foreach ($total_rewards as $user_id => $planet_data) {
       $user_row = classSupernova::db_get_record_by_id(LOC_USER, $user_id);
-      foreach($planet_data as $planet_id => $unit_data)
-      {
+      foreach ($planet_data as $planet_id => $unit_data) {
         $local_changeset = array();
-        foreach($unit_data as $unit_id => $unit_amount)
-        {
-          if(!isset($quest_rewards_allowed[$unit_id])) continue;
+        foreach ($unit_data as $unit_id => $unit_amount) {
+          if (!isset($quest_rewards_allowed[$unit_id])) {
+            continue;
+          }
 
-          if($unit_id == RES_DARK_MATTER)
-          {
+          if ($unit_id == RES_DARK_MATTER) {
             rpg_points_change($user['id'], RPG_QUEST, $unit_amount, $comment_dm);
-          }
-          elseif(isset($group_resources[$unit_id]))
-          {
+          } elseif (isset($group_resources[$unit_id])) {
             $local_changeset[pname_resource_name($unit_id)] = array('delta' => $unit_amount);
-          }
-          else // Проверим на юниты
+          } else // Проверим на юниты
           {
             $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, $unit_amount, $user_row, $planet_id);
           }
         }
 
-        if(!empty($local_changeset))
-        {
+        if (!empty($local_changeset)) {
           $planet_id = $planet_id == 0 && isset($user_row['id_planet']) ? $user_row['id_planet'] : $planet_id;
           $db_changeset[$planet_id ? 'planets' : 'users'][] = array(
-            'action' => SQL_OP_UPDATE,
+            'action'  => SQL_OP_UPDATE,
             P_VERSION => 1,
-            'where' => array(
+            'where'   => array(
               "id" => $planet_id ? $planet_id : $user_id,
             ),
-            'fields' => $local_changeset,
+            'fields'  => $local_changeset,
           );
         }
       }
@@ -440,12 +385,10 @@ function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses)
   }
 }
 
-function get_quest_amount_complete($user_id)
-{
+function get_quest_amount_complete($user_id) {
   return count(qst_get_quests($user_id, QUEST_STATUS_COMPLETE));
 }
 
-function get_quest_amount_in_progress($user_id)
-{
+function get_quest_amount_in_progress($user_id) {
   return count(qst_get_quests($user_id, QUEST_STATUS_STARTED));
 }

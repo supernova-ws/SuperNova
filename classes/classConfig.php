@@ -51,6 +51,8 @@
  * @property int    $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
  * @property int    $menu_server_logo_disabled    => 0
  *
+ * @property int    $quest_total                  => 0, // Total number of quests
+ *
  * @property int    $stats_history_days           => 14, // За сколько дней хранить статистику в базе
  * @property string $stats_minimal_interval       => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
  * @property string $stats_schedule               => '04:00:00' - Schedule for running stat updates - see readme.txt
