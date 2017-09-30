@@ -22,6 +22,8 @@
   V1.0 Created by Perberos. All rights reversed (C) 2006
 */
 
+global $user, $planetrow, $lang;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 $template_result = is_array($template_result) ? $template_result : array();
 
@@ -228,7 +230,11 @@ switch($fleet_page) {
   break;
 
   case 5:
-    require('includes/includes/flt_page5.inc');
+    $template = gettemplate('fleet5', true);
+    $pageFleet5Gathering = new \Deprecated\PageFleet5Gathering();
+    $pageFleet5Gathering->modelFleet5Gathering($user, $planetrow, $template);
+    // Building list of own planets & moons
+    $pageFleet5Gathering->viewPage5Gathering($user, $planetrow, $template);
   break;
 
   default:

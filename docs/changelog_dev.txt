@@ -816,6 +816,13 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 
 
+2017-09-30 10:41:09 43a2.10
+[@] Код
+    Флоты/Своз ресурсов:
+        - /includes/includes/flt_page5.inc - преобразован в класс \Deprecated\PageFleet5Gathering.php
+        - Из темплейта fleet5.tpl.html извлечён JS-код
+        - Рефакторинг
+
 
 2017-09-30 07:56:16 43a2.8
 [~] Интерфейс/Наёмники+Планы

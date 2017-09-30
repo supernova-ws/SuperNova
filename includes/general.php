@@ -277,6 +277,27 @@ function sys_get_param_escaped($param_name, $default = '') {
   return db_escape(sys_get_param($param_name, $default));
 }
 
+/**
+ * Get list of units from environment ($_GET, $_POST etc)
+ *
+ * @param string $param_name
+ * @param array  $default
+ *
+ * @return float[] - [int $unitId] => float $unitAmount
+ */
+function sys_get_param_unit_array($param_name, $default = []) {
+  $result = $default;
+
+  if (is_array($params = sys_get_param($param_name)) && !empty($params)) {
+    $result = [];
+    foreach (sys_get_param('resources') as $unitId => $unitAmount) {
+      $result[intval($unitId)] = floatval($unitAmount);
+    }
+  }
+
+  return $result;
+}
+
 /*
 function sys_get_param_safe($param_name, $default = '')
 {
