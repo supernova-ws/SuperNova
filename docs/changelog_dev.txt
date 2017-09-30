@@ -812,6 +812,10 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+2017-09-30 05:53:35 43a2.4
+[@] Код
+    \Deprecated\PageMercenary - рефакторинг
+
 
 2017-09-30 05:42:07 43a2.3
 [@] Код

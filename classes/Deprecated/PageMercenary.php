@@ -11,20 +11,41 @@ use \DBStaticUnit;
 
 class PageMercenary {
 
+  /**
+   * @var \classConfig $config
+   */
+  protected $config;
+
+  /**
+   * What we purchasing - Plans or Mercenaries?
+   * @var int $mode
+   */
+  protected $mode = UNIT_MERCENARIES; // Or UNIT_PLANS
+
+  /**
+   * If purchased units are permanent?
+   * @var bool $isUnitsPermanent
+   */
+  protected $isUnitsPermanent = false;
+
   public function __construct() {
     lng_include('mrc_mercenary');
+    $this->config = classSupernova::$config;
+  }
+
+  protected function loadParams() {
+    $this->mode = sys_get_param_int('mode', UNIT_MERCENARIES);
+    $this->mode = in_array($this->mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $this->mode : UNIT_MERCENARIES;
   }
 
 
   public function mrc_mercenary_render($user) {
-    global $config, $lang, $sn_powerup_buy_discounts;
+    global $lang, $sn_powerup_buy_discounts;
 
-    $mode = sys_get_param_int('mode', UNIT_MERCENARIES);
-    $mode = in_array($mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $mode : UNIT_MERCENARIES;
-    $is_permanent = $mode == UNIT_PLANS || !$config->empire_mercenary_temporary;
+    $this->isUnitsPermanent = $this->mode == UNIT_PLANS || !$this->config->empire_mercenary_temporary;
 
     if ($mercenary_id = sys_get_param_int('mercenary_id')) {
-      $operation_result = $this->mrc_mercenary_hire($mode, $user, $mercenary_id);
+      $operation_result = $this->mrc_mercenary_hire($this->mode, $user, $mercenary_id);
     }
 
     lng_include('infos');
@@ -39,15 +60,15 @@ class PageMercenary {
       $template->assign_block_vars('period', array(
         'LENGTH'   => $hire_period,
         'TEXT'     => $lang['mrc_period_list'][$hire_period],
-        'DISCOUNT' => $hire_period / $config->empire_mercenary_base_period * $hire_discount,
-        'SELECTED' => $hire_period == $config->empire_mercenary_base_period,
+        'DISCOUNT' => $hire_period / $this->config->empire_mercenary_base_period * $hire_discount,
+        'SELECTED' => $hire_period == $this->config->empire_mercenary_base_period,
       ));
     }
 
     $user_dark_matter = mrc_get_level($user, '', RES_DARK_MATTER);
-    $cost_alliance_multiplyer = (SN_IN_ALLY === true && $mode == UNIT_PLANS ? $config->ali_bonus_members : 1);
+    $cost_alliance_multiplyer = (SN_IN_ALLY === true && $this->mode == UNIT_PLANS ? $this->config->ali_bonus_members : 1);
     $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
-    foreach (sn_get_groups($mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id) {
+    foreach (sn_get_groups($this->mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id) {
       {
         $mercenary = get_unit_param($mercenary_id);
         $mercenary_bonus = $mercenary['bonus'];
@@ -69,7 +90,7 @@ class PageMercenary {
         $mercenary_level = mrc_get_level($user, null, $mercenary_id, false, true);
         $mercenary_level_bonus = max(0, mrc_get_level($user, null, $mercenary_id) - $mercenary_level);
         $total_cost_old = 0;
-        if ($is_permanent) {
+        if ($this->isUnitsPermanent) {
           $total_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level);
           $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER] * $cost_alliance_multiplyer;
         }
@@ -98,7 +119,7 @@ class PageMercenary {
         ));
 
         $upgrade_cost = 1;
-        for ($i = $config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++) {
+        for ($i = $this->config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++) {
           $total_cost = eco_get_total_cost($mercenary_id, $i);
           $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
           $upgrade_cost = $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old;
@@ -111,14 +132,14 @@ class PageMercenary {
     }
 
     $template->assign_vars(array(
-      'PAGE_HEADER'                => $lang['tech'][$mode],
-      'MODE'                       => $mode,
-      'IS_PERMANENT'               => intval($is_permanent),
-      'EMPIRE_MERCENARY_TEMPORARY' => $config->empire_mercenary_temporary,
+      'PAGE_HEADER'                => $lang['tech'][$this->mode],
+      'MODE'                       => $this->mode,
+      'IS_PERMANENT'               => intval($this->isUnitsPermanent),
+      'EMPIRE_MERCENARY_TEMPORARY' => $this->config->empire_mercenary_temporary,
       'DARK_MATTER'                => $user_dark_matter,
     ));
 
-    display($template, $lang['tech'][$mode]);
+    display($template, $lang['tech'][$this->mode]);
   }
 
   protected function mrc_mercenary_hire($mode, $user, $mercenary_id) {
@@ -220,7 +241,7 @@ class PageMercenary {
 
   protected function mrc_officer_accessible(&$user, $mercenary_id) {
     $mercenary_info = get_unit_param($mercenary_id);
-    if (classSupernova::$config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS) {
+    if ($this->config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS) {
       return true;
     }
 

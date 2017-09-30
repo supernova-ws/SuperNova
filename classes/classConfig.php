@@ -12,6 +12,8 @@
  *
  * @property string $db_prefix - REMOVE! Just for compatibility!
  *
+ * @property string $ali_bonus_members           => 10, // Minimum alliance size to start using bonus
+ *
  * @property string $auth_vkontakte_app_id
  * @property string $auth_vkontakte_app_key
  * @property string $auth_vkontakte_token
@@ -19,6 +21,7 @@
  *
  * @property string $COOKIE_NAME                  => 'SuperNova'
  *
+ * @property int    $empire_mercenary_base_period => PERIOD_MONTH, // Base hire period for price calculations
  * @property int    $empire_mercenary_temporary   => 0, // Temporary empire-wide mercenaries
  *
  * @property int    $fleet_update_interval        => 4 second  // how often fleets should be updated
@@ -90,7 +93,7 @@ class classConfig extends classPersistent {
     'ali_bonus_brackets'           => 10, // Brackets count for ALI_BONUS_BY_RANK
     'ali_bonus_brackets_divisor'   => 10,// Bonus divisor for ALI_BONUS_BY_RANK
     'ali_bonus_divisor'            => 10000000, // Rank divisor for ALI_BONUS_BY_POINTS
-    'ali_bonus_members'            => 10, // Minumum alliace size to start using bonus
+    'ali_bonus_members'            => 10, // Minimum alliance size to start using bonus
 
     'allow_buffing'  => 0, // Disable buffing check for TRANSPORT missions
     'ally_help_weak' => 0, // Allow strong players to HOLD on weak co-ally planets
