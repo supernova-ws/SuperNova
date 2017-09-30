@@ -69,14 +69,15 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;
 
   $unit_data = get_unit_param($unit_id);
-  // $unit_db_name = &$unit_data[P_NAME];
 
   $unit_factor = $unit_data[P_COST][P_FACTOR] ? $unit_data[P_COST][P_FACTOR] : 1;
   $price_increase = pow($unit_factor, $unit_level);
 
+  $resources_loot = sn_get_groups('resources_loot');
+
   $can_build   = isset($unit_data[P_MAX_STACK]) && $unit_data[P_MAX_STACK] ? $unit_data[P_MAX_STACK] : 1000000000000;
   $can_destroy = 1000000000000;
-  $time = 0;
+  $cost[P_OPTIONS][P_TIME_RAW] = 0;
   $only_dark_matter = 0;
   $cost_in_metal = 0;
   foreach($unit_data[P_COST] as $resource_id => $resource_amount) {
@@ -87,10 +88,12 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
     $cost[BUILD_CREATE][$resource_id] = round($resource_cost);
     $cost[BUILD_DESTROY][$resource_id] = round($resource_cost / 2);
 
-    $resource_db_name = pname_resource_name($resource_id);
-    $cost_in_metal += $cost[BUILD_CREATE][$resource_id] * $config->__get("rpg_exchange_{$resource_db_name}");
-    if(in_array($resource_id, sn_get_groups('resources_loot'))) {
-      $time += $resource_cost * $config->__get("rpg_exchange_{$resource_db_name}") / $rpg_exchange_deuterium;
+    $currentResourceExchange = $config->__get('rpg_exchange_' . pname_resource_name($resource_id));
+
+    $cost_in_metal += $cost[BUILD_CREATE][$resource_id] * $currentResourceExchange;
+
+    if(in_array($resource_id, $resources_loot)) {
+      $cost[P_OPTIONS][P_TIME_RAW] += $resource_cost * $currentResourceExchange / $rpg_exchange_deuterium;
       $resource_got = mrc_get_level($user, $planet, $resource_id);
     } elseif($resource_id == RES_DARK_MATTER) {
       $resource_got = mrc_get_level($user, null, $resource_id);
@@ -106,11 +109,8 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   }
 
   $resources_normalized = 0;
-  $resources_loot = sn_get_groups('resources_loot');
   foreach($resources_loot as $resource_id) {
-    $resource_db_name = pname_resource_name($resource_id);
-    $resource_got = mrc_get_level($user, $planet, $resource_id);
-    $resources_normalized += floor($resource_got) * $config->__get("rpg_exchange_{$resource_db_name}");
+    $resources_normalized += floor(mrc_get_level($user, $planet, $resource_id)) * $config->__get('rpg_exchange_' . pname_resource_name($resource_id));
   }
 
   $cost[BUILD_AUTOCONVERT] = $only_dark_matter != RES_DARK_MATTER ? max(!empty($unit_data[P_MAX_STACK]) ? $unit_data[P_MAX_STACK] : 0, floor($resources_normalized / $cost_in_metal)) : 0;
@@ -122,21 +122,23 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
   $cost['CAN'][BUILD_DESTROY] = $can_destroy;
 
   $cost[P_OPTIONS][P_ONLY_DARK_MATTER] = $only_dark_matter = $only_dark_matter == RES_DARK_MATTER;
-  $cost[P_OPTIONS][P_TIME_RAW] = $time = $time * 60 * 60 / get_game_speed() / 2500;
+  $cost[P_OPTIONS][P_TIME_RAW] = $cost[P_OPTIONS][P_TIME_RAW] * 60 * 60 / get_game_speed() / 2500;
 
   // TODO - Вынести в отдельную процедуру расчёт стоимости
   if($only_cost) {
     return $cost;
   }
 
+  $cost[RES_TIME][BUILD_CREATE] = $cost[P_OPTIONS][P_TIME_RAW];
+
   $cost['RESULT'][BUILD_CREATE] = eco_can_build_unit($user, $planet, $unit_id);
   $cost['RESULT'][BUILD_CREATE] = $cost['RESULT'][BUILD_CREATE] == BUILD_ALLOWED ? ($cost['CAN'][BUILD_CREATE] ? BUILD_ALLOWED : BUILD_NO_RESOURCES) : $cost['RESULT'][BUILD_CREATE];
 
-  $mercenary = 0;
   $cost['RESULT'][BUILD_DESTROY] = BUILD_INDESTRUCTABLE;
+
+  $mercenary = 0;
   if(in_array($unit_id, sn_get_groups('structures'))) {
-    $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
-    $mercenary = MRC_ENGINEER;
+    $cost[RES_TIME][BUILD_CREATE] *= pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_ROBOT) + 1);
     $cost['RESULT'][BUILD_DESTROY] =
       mrc_get_level($user, $planet, $unit_id, false, true)
         ? ($cost['CAN'][BUILD_DESTROY]
@@ -144,27 +146,28 @@ function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_co
             : BUILD_NO_RESOURCES
           )
         : BUILD_NO_UNITS;
+    $mercenary = MRC_ENGINEER;
   } elseif(in_array($unit_id, sn_get_groups('tech'))) {
     $lab_level = eco_get_lab_max_effective_level($user, intval($unit_data['require'][STRUC_LABORATORY]));
-    $time = $time / $lab_level;
+    $cost[RES_TIME][BUILD_CREATE] /= $lab_level;
     $mercenary = MRC_ACADEMIC;
   } elseif(in_array($unit_id, sn_get_groups('defense'))) {
-    $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1) ;
+    $cost[RES_TIME][BUILD_CREATE] *= pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1) ;
     $mercenary = MRC_FORTIFIER;
   } elseif(in_array($unit_id, sn_get_groups('fleet'))) {
-    $time = $time * pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
+    $cost[RES_TIME][BUILD_CREATE] *= pow(0.5, mrc_get_level($user, $planet, STRUC_FACTORY_NANO)) / (mrc_get_level($user, $planet, STRUC_FACTORY_HANGAR) + 1);
     $mercenary = MRC_ENGINEER;
   }
 
   if($mercenary) {
-    $time = $time / mrc_modify_value($user, $planet, $mercenary, 1);
+    $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_CREATE] / mrc_modify_value($user, $planet, $mercenary, 1);
   }
 
   if(in_array($unit_id, sn_get_groups('governors')) || $only_dark_matter) {
     $cost[RES_TIME][BUILD_CREATE] = $cost[RES_TIME][BUILD_DESTROY] = 0;
   } else {
-    $cost[RES_TIME][BUILD_CREATE]  = round($time >= 1 ? $time : 1);
-    $cost[RES_TIME][BUILD_DESTROY] = round($time / 2 <= 1 ? 1 : $time / 2);
+    $cost[RES_TIME][BUILD_CREATE]  = round($cost[RES_TIME][BUILD_CREATE] > 1 ? $cost[RES_TIME][BUILD_CREATE] : 1);
+    $cost[RES_TIME][BUILD_DESTROY] = round($cost[RES_TIME][BUILD_CREATE] / 2 > 1 ? $cost[RES_TIME][BUILD_CREATE] / 2 : 1);
   }
 
   return $cost;
