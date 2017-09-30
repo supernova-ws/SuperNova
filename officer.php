@@ -13,6 +13,6 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-include("includes/includes/mrc_mercenary.php");
-
-mrc_mercenary_render($user);
+global $user;
+$thePage = new \Deprecated\PageMercenary();
+$thePage->mrc_mercenary_render($user);

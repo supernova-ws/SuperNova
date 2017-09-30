@@ -19,6 +19,8 @@
  *
  * @property string $COOKIE_NAME                  => 'SuperNova'
  *
+ * @property int    $empire_mercenary_temporary   => 0, // Temporary empire-wide mercenaries
+ *
  * @property int    $fleet_update_interval        => 4 second  // how often fleets should be updated
  * @property int    $fleet_update_last            => SN_TIME_NOW // unixtime - when fleet was updated last
  * @property int    $fleet_update_lock            => ''  // SQL time when lock was acquired
