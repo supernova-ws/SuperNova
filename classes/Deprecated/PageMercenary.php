@@ -40,9 +40,9 @@ class PageMercenary {
   /**
    * Multiplier for Alliance's purchases
    *
-   * @var float $cost_alliance_multiplyer
+   * @var float $cost_alliance_multiplier
    */
-  protected $cost_alliance_multiplyer;
+  protected $cost_alliance_multiplier;
 
   public function __construct() {
     global $lang, $sn_powerup_buy_discounts;
@@ -60,7 +60,8 @@ class PageMercenary {
     $this->mode = sys_get_param_int('mode', UNIT_MERCENARIES);
     $this->mode = in_array($this->mode, array(UNIT_MERCENARIES, UNIT_PLANS)) ? $this->mode : UNIT_MERCENARIES;
 
-    $this->cost_alliance_multiplyer = min(1, SN_IN_ALLY === true && $this->mode == UNIT_PLANS ? $this->config->ali_bonus_members : 1);
+    $this->isUnitsPermanent = $this->mode == UNIT_PLANS || !$this->config->empire_mercenary_temporary;
+    $this->cost_alliance_multiplier = min(1, SN_IN_ALLY === true && $this->mode == UNIT_PLANS ? $this->config->ali_bonus_members : 1);
   }
 
 
@@ -70,27 +71,9 @@ class PageMercenary {
   public function mrc_mercenary_render($user) {
     $this->loadParams();
 
-    $operation_result = [];
-
-    $this->isUnitsPermanent = $this->mode == UNIT_PLANS || !$this->config->empire_mercenary_temporary;
-
-    if ($mercenary_id = sys_get_param_int('mercenary_id')) {
-      try {
-        $this->mrc_mercenary_hire($user, $mercenary_id);
-      } catch (Exception $e) {
-        sn_db_transaction_rollback();
-        $operation_result = array(
-          'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
-          'MESSAGE' => $this->lang[$e->getMessage()],
-        );
-      }
-
-      return $operation_result;
-    }
-
-
     $template = gettemplate('mrc_mercenary_hire', true);
 
+    $operation_result = $this->modelMercenaryHire($user);
     if (!empty($operation_result)) {
       $template->assign_block_vars('result', $operation_result);
     }
@@ -98,8 +81,6 @@ class PageMercenary {
     $this->fillDiscountTable($template);
 
     $user_dark_matter = mrc_get_level($user, '', RES_DARK_MATTER);
-//    $cost_alliance_multiplyer = (SN_IN_ALLY === true && $this->mode == UNIT_PLANS ? $this->config->ali_bonus_members : 1);
-//    $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
     foreach (sn_get_groups($this->mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id) {
       $mercenary = get_unit_param($mercenary_id);
       $mercenary_bonus = $mercenary['bonus'];
@@ -123,10 +104,10 @@ class PageMercenary {
       $total_cost_old = 0;
       if ($this->isUnitsPermanent) {
         $total_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level);
-        $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER] * $this->cost_alliance_multiplyer;
+        $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER] * $this->cost_alliance_multiplier;
       }
       $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
-      $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $this->cost_alliance_multiplyer;
+      $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $this->cost_alliance_multiplier;
       $mercenary_unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
       $mercenary_time_start = strtotime($mercenary_unit['unit_time_start']);
       $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
@@ -152,13 +133,25 @@ class PageMercenary {
       $upgrade_cost = 1;
       for ($i = $this->config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++) {
         $total_cost = eco_get_total_cost($mercenary_id, $i);
-        $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $this->cost_alliance_multiplyer;
+        $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $this->cost_alliance_multiplier;
         $upgrade_cost = $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old;
         $template->assign_block_vars('officer.level', array(
           'VALUE' => $i,
           'PRICE' => $upgrade_cost,
         ));
       }
+
+      if (!empty($mercenary['require'])) {
+        foreach ($mercenary['require'] as $requireUnitId => $requireLevel) {
+          $template->assign_block_vars('officer.require', $q = [
+            'ID'             => $requireUnitId,
+            'LEVEL_GOT'      => mrc_get_level($user, [], $requireUnitId),
+            'LEVEL_REQUIRED' => $requireLevel,
+            'NAME'           => \HelperString::htmlSafe($this->lang['tech'][$requireUnitId])
+          ]);
+        }
+      }
+
     }
 
     $template->assign_vars(array(
@@ -210,31 +203,13 @@ class PageMercenary {
     } else {
       $darkmater_cost = 0;
     }
-    $darkmater_cost *= $this->cost_alliance_multiplyer;
+    $darkmater_cost *= $this->cost_alliance_multiplier;
 
     if (mrc_get_level($user, null, RES_DARK_MATTER) < $darkmater_cost) {
       throw new Exception('mrc_msg_error_no_resource', ERR_ERROR);
     }
 
-    if (($darkmater_cost && $mercenary_level) || !$this->isUnitsPermanent) {
-      $unit_row = DBStaticUnit::db_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
-      if (is_array($unit_row) && ($dismiss_left_days = floor((strtotime($unit_row['unit_time_finish']) - SN_TIME_NOW) / PERIOD_DAY))) {
-        $dismiss_full_cost = eco_get_total_cost($mercenary_id, $unit_row['unit_level']);
-        $dismiss_full_cost = $dismiss_full_cost[BUILD_CREATE][RES_DARK_MATTER];
-
-        $dismiss_full_days = round((strtotime($unit_row['unit_time_finish']) - strtotime($unit_row['unit_time_start'])) / PERIOD_DAY);
-        /*
-                print(sprintf($this->lang['mrc_mercenary_dismissed_log'], $this->lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
-                  $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)
-                  ));
-        */
-        rpg_points_change($user['id'], RPG_MERCENARY_DISMISSED, 0,
-          sprintf($this->lang['mrc_mercenary_dismissed_log'], $this->lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
-            $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)
-          ));
-      }
-      DBStaticUnit::db_unit_list_delete($user['id'], LOC_USER, $user['id'], $mercenary_id);
-    }
+    $this->mercenaryDismiss($user, $mercenary_id, $darkmater_cost, $mercenary_level);
 
     if ($darkmater_cost && $mercenary_level) {
       DBStaticUnit::db_unit_set_insert(
@@ -257,19 +232,21 @@ class PageMercenary {
 
   protected function mrc_officer_accessible(&$user, $mercenary_id) {
     $mercenary_info = get_unit_param($mercenary_id);
+
     if ($this->config->empire_mercenary_temporary || $mercenary_info[P_UNIT_TYPE] == UNIT_PLANS) {
       return true;
     }
 
-    if (isset($mercenary_info[P_REQUIRE])) {
-      foreach ($mercenary_info[P_REQUIRE] as $unit_id => $unit_level) {
-        if (mrc_get_level($user, null, $unit_id) < $unit_level) {
-          return false;
-        }
-      }
-    }
-
-    return true;
+//    if (isset($mercenary_info[P_REQUIRE])) {
+//      foreach ($mercenary_info[P_REQUIRE] as $unit_id => $unit_level) {
+//        if (mrc_get_level($user, null, $unit_id) < $unit_level) {
+//          return false;
+//        }
+//      }
+//    }
+//
+//    return true;
+    return eco_can_build_unit($user, [], $mercenary_id) == BUILD_ALLOWED;
   }
 
   /**
@@ -284,6 +261,53 @@ class PageMercenary {
         'SELECTED' => $hire_period == $this->config->empire_mercenary_base_period,
       ));
     }
+  }
+
+  /**
+   * @param $user
+   *
+   * @return array
+   */
+  protected function modelMercenaryHire($user) {
+    $operation_result = [];
+    if ($mercenary_id = sys_get_param_int('mercenary_id')) {
+      try {
+        $this->mrc_mercenary_hire($user, $mercenary_id);
+      } catch (Exception $e) {
+        sn_db_transaction_rollback();
+        $operation_result = array(
+          'STATUS'  => in_array($e->getCode(), array(ERR_NONE, ERR_WARNING, ERR_ERROR)) ? $e->getCode() : ERR_ERROR,
+          'MESSAGE' => $this->lang[$e->getMessage()],
+        );
+      }
+    }
+
+    return $operation_result;
+  }
+
+  /**
+   * @param array $user
+   * @param int   $mercenary_id
+   * @param float $darkmater_cost
+   * @param int   $mercenary_level
+   */
+  protected function mercenaryDismiss($user, $mercenary_id, $darkmater_cost, $mercenary_level) {
+    if ((!$darkmater_cost || !$mercenary_level) && $this->isUnitsPermanent) {
+      return;
+    }
+
+    $unit_row = DBStaticUnit::db_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+    if (is_array($unit_row) && ($dismiss_left_days = floor((strtotime($unit_row['unit_time_finish']) - SN_TIME_NOW) / PERIOD_DAY))) {
+      $dismiss_full_cost = eco_get_total_cost($mercenary_id, $unit_row['unit_level']);
+      $dismiss_full_cost = $dismiss_full_cost[BUILD_CREATE][RES_DARK_MATTER];
+
+      $dismiss_full_days = round((strtotime($unit_row['unit_time_finish']) - strtotime($unit_row['unit_time_start'])) / PERIOD_DAY);
+      rpg_points_change($user['id'], RPG_MERCENARY_DISMISSED, 0,
+        sprintf($this->lang['mrc_mercenary_dismissed_log'], $this->lang['tech'][$mercenary_id], $mercenary_id, $dismiss_full_cost, $dismiss_full_days,
+          $unit_row['unit_time_start'], $unit_row['unit_time_finish'], $dismiss_left_days, floor($dismiss_full_cost * $dismiss_left_days / $dismiss_full_days)
+        ));
+    }
+    DBStaticUnit::db_unit_list_delete($user['id'], LOC_USER, $user['id'], $mercenary_id);
   }
 
 }

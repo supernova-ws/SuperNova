@@ -1,5 +1,5 @@
 <h1>{PAGE_HEADER}</h1>
-<!-- INCLUDE _result_message -->
+<!-- !INCLUDE _result_message -->
 
 <table width="535">
   <tr>
@@ -57,7 +57,7 @@ function mrc_change(mercenary_id)
 
           <div class="ok w100 posLB a50">&nbsp;</div>
 
-          <!-- IF officer.HIRE_END -->
+          <!-- IF officer.HIRE_END && ! IS_PERMANENT -->
             <!-- IF officer.HIRE_LEFT_PERCENT >= 50 -->
             <!-- DEFINE $OFFICER_CLASS_BG = 'positive_bg' -->
             <!-- ELSEIF officer.HIRE_LEFT_PERCENT >= 25 -->
@@ -73,11 +73,6 @@ function mrc_change(mercenary_id)
           <div class="posLB w100">
             {L_sys_level}
             {officer.LEVEL}<!-- IF officer.LEVEL_BONUS --><span class="bonus">+{officer.LEVEL_BONUS}</span><!-- ENDIF -->/{officer.LEVEL_MAX}
-
-            <!--&lt;!&ndash; IF officer.HIRE_END &ndash;&gt;-->
-            <!--{L_mrc_up_to} {officer.HIRE_END}-->
-            <!--&lt;!&ndash; ENDIF &ndash;&gt;-->
-
           </div>
 
           <!-- IF officer.LEVEL >= officer.LEVEL_MAX -->
@@ -90,7 +85,27 @@ function mrc_change(mercenary_id)
       </th>
 
       <th align=justify>
-        {officer.DESCRIPTION}<br><br>
+        {officer.DESCRIPTION}
+        <!-- IF IS_PERMANENT && officer.require -->
+        <div id="unit_require_wrapper">
+          <div class="c_l neutral">{L_wiki_requrements}</div>
+          <ul id="unit_require">
+            <!-- BEGIN require -->
+              <!-- IF require.LEVEL_GOT >= require.LEVEL_REQUIRED -->
+              <!-- DEFINE $MERC_REQ_CLASS = 'positive' -->
+              <!-- ELSE -->
+              <!-- DEFINE $MERC_REQ_CLASS = 'negative' -->
+              <!-- ENDIF -->
+
+              <li class="{$MERC_REQ_CLASS}">
+                {require.NAME} {require.LEVEL_GOT}/{require.LEVEL_REQUIRED}
+                <!--+ (!isNaN(req['level_basic']) ? ' ' + req['level_basic'] + (req['level_bonus'] ? '<span class="bonus">+' + req['level_bonus'] + '</span>' : '') + '/' + req['level_require'] : '')-->
+              </li>
+            <!-- END require -->
+          </ul>
+        </div>
+        <!-- ENDIF -->
+        <br><br>
         <div align="center">
           <div class="positive" align="center">{officer.BONUS} {officer.EFFECT}</div><br />
 
@@ -105,7 +120,7 @@ function mrc_change(mercenary_id)
               <!-- ENDIF -->
 
               {officer.LEVEL}<!-- IF officer.LEVEL_BONUS --><span class="bonus">+{officer.LEVEL_BONUS}</span><!-- ENDIF -->/{officer.LEVEL_MAX}
-              <!-- IF officer.HIRE_END -->
+              <!-- IF ! IS_PERMANENT && officer.HIRE_END -->
                 {L_mrc_up_to} {officer.HIRE_END}
                 <input type="submit" value="{L_mrc_dismiss}" onclick="return confirm('{LA_mrc_dismiss_confirm}');"><br />
                 <span class="warning">{L_mrc_dismiss_before_hire}</span>
@@ -114,7 +129,7 @@ function mrc_change(mercenary_id)
             <!-- ENDIF -->
 
             <!-- IF (! officer.LEVEL && ! IS_PERMANENT) || (officer.LEVEL < officer.LEVEL_MAX && IS_PERMANENT) -->
-              <!-- IF .officer.level -->
+              <!-- IF .officer.level && officer.CAN_BUY -->
                 {L_sys_level}
                 <select name="mercenary_level" id="level_{officer.ID}" onchange="mrc_change({officer.ID});">
                   <!-- BEGIN level -->
