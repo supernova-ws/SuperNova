@@ -112,7 +112,6 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   unset($uni_galaxyRowMoon);
   unset($uni_galaxyRowUser);
   unset($uni_galaxyRowAlly);
-  unset($allyquery);
 
   $templatizedMoon = [];
 
@@ -133,55 +132,55 @@ for ($Planet = 1; $Planet < $config_game_max_planet; $Planet++) {
   }
   $uni_galaxyRowUser = $cached['users'][$uni_galaxyRowPlanet['id_owner']];
 
-  if (!$uni_galaxyRowUser['id']) {
-    $debug->warning("Planet '{$uni_galaxyRowPlanet['name']}' [{$uni_galaxy}:{$uni_system}:{$Planet}] has no owner!", 'Userless planet', 503);
-    $uni_galaxyRowPlanet['destruyed'] = SN_TIME_NOW + 60 * 60 * 24;
-    $uni_galaxyRowPlanet['id_owner'] = 0;
-    DBStaticPlanet::db_planet_set_by_id($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
+  // Checking if there is planet owner record
+  if (empty($uni_galaxyRowUser)) {
+    // If there is planet owner but planet not destroyed - marking as destroyed
+    if ($uni_galaxyRowPlanet['id_owner'] && empty($uni_galaxyRowPlanet['destruyed'])) {
+      $debug->warning("Planet '{$uni_galaxyRowPlanet['name']}' [{$uni_galaxy}:{$uni_system}:{$Planet}] has no owner!", 'Userless planet', 503);
+      $uni_galaxyRowPlanet['destruyed'] = SN_TIME_NOW + 60 * 60 * 24;
+      $uni_galaxyRowPlanet['id_owner'] = 0;
+      DBStaticPlanet::db_planet_set_by_id($uni_galaxyRowPlanet['id'], "id_owner = 0, destruyed = {$uni_galaxyRowPlanet['destruyed']}");
+    }
   } else {
-    $planetcount++;
-    if ($uni_galaxyRowUser['ally_id']) {
-      if ($cached['allies'][$uni_galaxyRowUser['ally_id']]) {
-        $allyquery = $cached['allies'][$uni_galaxyRowUser['ally_id']];
-      } else {
-        /** @noinspection SqlResolve */
-        $allyquery = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
-        $cached['allies'][$uni_galaxyRowUser['ally_id']] = $allyquery;
-      }
+    if ($uni_galaxyRowUser['ally_id'] && !isset($cached['allies'][$uni_galaxyRowUser['ally_id']])) {
+      /** @noinspection SqlResolve */
+      $cached['allies'][$uni_galaxyRowUser['ally_id']] = doquery("SELECT * FROM `{{alliance}}` WHERE `id` = '{$uni_galaxyRowUser['ally_id']}';", '', true);
     }
+  }
 
-    $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_PLANET]);
+  $planetcount++;
+
+  $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_PLANET]);
+  if (!empty($fleets_to_planet['own']['count'])) {
+    $planet_fleet_id = getUniqueFleetId($planet_list[$Planet][PT_PLANET]);
+    $fleetsTotalIncomeOwn[$planet_list[$Planet][PT_PLANET]['id']] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $planet_fleet_id);
+  }
+
+  if (
+    !empty($planet_list[$Planet][PT_MOON])
+    &&
+    ($uni_galaxyRowMoon = $planet_list[$Planet][PT_MOON])
+    &&
+    (
+      empty($uni_galaxyRowMoon['destruyed'])
+      ||
+      !CheckAbandonPlanetState($uni_galaxyRowMoon)
+    )
+  ) {
+    $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_MOON]);
     if (!empty($fleets_to_planet['own']['count'])) {
-      $planet_fleet_id = getUniqueFleetId($planet_list[$Planet][PT_PLANET]);
-      $fleetsTotalIncomeOwn[$planet_list[$Planet][PT_PLANET]['id']] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $planet_fleet_id);
+      $moon_fleet_id = getUniqueFleetId($uni_galaxyRowMoon);
+      $fleetsTotalIncomeOwn[$uni_galaxyRowMoon['id']] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $moon_fleet_id);
+    } else {
+      $moon_fleet_id = 0;
     }
-
-    if (
-      !empty($planet_list[$Planet][PT_MOON])
-      &&
-      ($uni_galaxyRowMoon = $planet_list[$Planet][PT_MOON])
-      &&
-      (
-        empty($uni_galaxyRowMoon['destruyed'])
-        ||
-        !CheckAbandonPlanetState($uni_galaxyRowMoon)
-      )
-    ) {
-      $fleets_to_planet = flt_get_fleets_to_planet(false, $fleet_list[$Planet][PT_MOON]);
-      if (!empty($fleets_to_planet['own']['count'])) {
-        $moon_fleet_id = getUniqueFleetId($uni_galaxyRowMoon);
-        $fleetsTotalIncomeOwn[$uni_galaxyRowMoon['id']] = tpl_parse_fleet_sn($fleets_to_planet['own']['total'], $moon_fleet_id);
-      } else {
-        $moon_fleet_id = 0;
-      }
-      $templatizedMoon = [
-        'MOON_NAME_JS'  => js_safe_string($uni_galaxyRowMoon['name']),
-        'MOON_IMAGE'    => $uni_galaxyRowMoon['image'],
-        'MOON_DIAMETER' => number_format($uni_galaxyRowMoon['diameter'], 0, '', '.'),
-        'MOON_TEMP'     => number_format($uni_galaxyRowMoon['temp_min'], 0, '', '.'),
-        'MOON_FLEET_ID' => $moon_fleet_id,
-      ];
-    }
+    $templatizedMoon = [
+      'MOON_NAME_JS'  => js_safe_string($uni_galaxyRowMoon['name']),
+      'MOON_IMAGE'    => $uni_galaxyRowMoon['image'],
+      'MOON_DIAMETER' => number_format($uni_galaxyRowMoon['diameter'], 0, '', '.'),
+      'MOON_TEMP'     => number_format($uni_galaxyRowMoon['temp_min'], 0, '', '.'),
+      'MOON_FLEET_ID' => $moon_fleet_id,
+    ];
   }
 
   $debrisTemplatized = [];

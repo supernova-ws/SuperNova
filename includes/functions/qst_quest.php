@@ -2,111 +2,30 @@
 
 use \DBAL\DbQuery;
 
-function qst_render_page() {
-  global $lang, $user, $template, $config;
+function roughQuestRenderWrapper() {
+  global $lang, $user;
+  lng_include('quest');
 
-  $user_id = sys_get_param_id('user_id', false);
-  $mode = sys_get_param_str('mode');
+  $template = gettemplate('quest', true);
+  qst_render_page($lang, $user, $template);
 
-  $quest_units_allowed = sn_get_groups(array('structures', 'tech', 'fleet', 'defense'));
-  $quest_reward_allowed = sn_get_groups('quest_rewards');
+  display($template, $lang['qst_quests']);
+}
 
+/**
+ * @param classLocale $lang
+ * @param array       $user
+ * @param template    $template
+ */
+function qst_render_page(classLocale $lang, array $user, template $template) {
+  $questCurrentManaged = null;
   $in_admin = defined('IN_ADMIN') && IN_ADMIN === true;
 
+  $user_id = sys_get_param_id('user_id', false);
+  $currentMode = sys_get_param_str('mode');
+
   if ($in_admin) {
-    $quest_id = sys_get_param_id('id');
-    $quest_name = sys_get_param_str_unsafe('QUEST_NAME');
-    if (!empty($quest_name)) {
-      $quest_description = sys_get_param_str_unsafe('QUEST_DESCRIPTION');
-      try {
-        $quest_rewards_list = sys_get_param('QUEST_REWARDS_LIST');
-        $quest_rewards = array();
-        foreach ($quest_rewards_list as $quest_rewards_id => $quest_rewards_amount) {
-          if (!in_array($quest_rewards_id, $quest_reward_allowed)) {
-            throw new Exception($lang['qst_adm_err_reward_type']);
-          }
-
-          if ($quest_rewards_amount < 0) {
-            throw new Exception($lang['qst_adm_err_reward_amount']);
-          } elseif ($quest_rewards_amount > 0) {
-            $quest_rewards[] = "{$quest_rewards_id},{$quest_rewards_amount}";
-          }
-        }
-        if (empty($quest_rewards)) {
-          throw new Exception($lang['qst_adm_err_reward_empty']);
-        }
-
-        $quest_rewards = implode(';', $quest_rewards);
-
-        $quest_unit_id = sys_get_param_int('QUEST_UNIT_ID');
-        if (!in_array($quest_unit_id, $quest_units_allowed)) {
-          throw new Exception($lang['qst_adm_err_unit_id']);
-        }
-
-        $quest_unit_amount = sys_get_param_float('QUEST_UNIT_AMOUNT');
-        if ($quest_unit_amount <= 0) {
-          throw new Exception($lang['qst_adm_err_unit_amount']);
-        }
-        $quest_conditions = "{$quest_unit_id},{$quest_unit_amount}";
-
-        // TODO: Change quest type
-        $quest_type = 0;
-
-        if ($mode == 'edit') {
-          DbQuery::build()
-            ->setTable('quest')
-            ->setValues(array(
-              'quest_name'        => $quest_name,
-              'quest_type'        => $quest_type,
-              'quest_description' => $quest_description,
-              'quest_conditions'  => $quest_conditions,
-              'quest_rewards'     => $quest_rewards,
-            ))
-            ->setWhereArray(array('quest_id' => $quest_id))
-            ->setOneRow()
-            ->doUpdate();
-        } else {
-          DbQuery::build()
-            ->setTable('quest')
-            ->setValues(array(
-              'quest_name'        => $quest_name,
-              'quest_type'        => $quest_type,
-              'quest_description' => $quest_description,
-              'quest_conditions'  => $quest_conditions,
-              'quest_rewards'     => $quest_rewards,
-            ))
-            ->doInsert();
-        }
-
-        // TODO: Add mass mail for new quests
-        /*
-        if(sys_get_param_int('news_mass_mail'))
-        {
-          msg_send_simple_message('*', 0, 0, MSG_TYPE_PLAYER, $lang['sys_administration'], $lang['news_title'], $text);
-        }
-        */
-      } catch (Exception $e) {
-        messageBox($e->getMessage(), $lang['sys_error']);
-      }
-
-      $mode = '';
-    };
-
-    switch ($mode) {
-      case 'del':
-        doquery("DELETE FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;");
-        $mode = '';
-      break;
-
-      case 'edit':
-        $template->assign_var('QUEST_ID', $quest_id);
-
-      case 'copy':
-        $quest = doquery("SELECT * FROM {{quest}} WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
-      break;
-    }
-    $query = doquery("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
-    $config->db_saveItem('quest_total', $query['count']);
+    $questCurrentManaged = questPageModelManage($lang, $template, $currentMode);
   } elseif (!$user_id) {
     $user_id = $user['id'];
   }
@@ -115,7 +34,7 @@ function qst_render_page() {
   $template->assign_vars(array(
     'AUTHLEVEL' => $user['authlevel'],
     'TOTAL'     => count($quest_list),
-    'mode'      => $mode,
+    'mode'      => $currentMode,
     'USER_ID'   => $user_id,
     'IN_ADMIN'  => $in_admin,
 
@@ -133,13 +52,101 @@ function qst_render_page() {
     ));
   }
 
-  if ($quest) {
-    $quest_templatized = qst_templatize(qst_quest_parse($quest, false));
+  if (!empty($questCurrentManaged)) {
+    $quest_templatized = qst_templatize(qst_quest_parse($questCurrentManaged));
   } else {
-    $quest_templatized['quest_rewards_list'] = array();
+    $quest_templatized['quest_rewards_list'] = [];
   }
 
-  foreach ($quest_reward_allowed as $unit_id) {
+  questTemplatizeReward($quest_templatized, $lang);
+
+  qst_assign_to_template($template, $quest_templatized);
+
+  foreach ($quest_list as $quest_data) {
+    qst_assign_to_template($template, qst_templatize($quest_data, true), 'quest');
+  }
+
+  foreach (questUnitsAllowed() as $unit_id) {
+    $template->assign_block_vars('allowed_unit', array(
+      'ID'   => $unit_id,
+      'NAME' => $lang['tech'][$unit_id],
+    ));
+  }
+}
+
+/**
+ * @param classLocale $lang
+ * @param template    $template
+ * @param string      $mode
+ */
+function questPageModelManage(classLocale $lang, template $template, &$mode) {
+  $questManaged = null;
+
+  $quest_id = sys_get_param_id('id');
+  $quest_name = sys_get_param_str_unsafe('QUEST_NAME');
+  if (!empty($quest_name)) {
+    try {
+      // TODO: Change quest type
+      $quest_type = 0;
+      $theQuery = DbQuery::build()
+        ->setTable('quest')
+        ->setValues([
+          'quest_type'        => $quest_type,
+          'quest_name'        => $quest_name,
+          'quest_description' => sys_get_param_str_unsafe('QUEST_DESCRIPTION'),
+          'quest_conditions'  => questGetConditionFromParams($lang),
+          'quest_rewards'     => questGetRewardsStringFromParams($lang),
+        ]);
+
+      if ($mode == 'edit') {
+        $theQuery
+          ->setWhereArray(['quest_id' => $quest_id])
+          ->setOneRow()
+          ->doUpdate();
+      } else {
+        $theQuery->doInsert();
+      }
+
+      // TODO: Add mass mail for new quests
+      /*
+      if(sys_get_param_int('news_mass_mail')) {
+        msg_send_simple_message('*', 0, 0, MSG_TYPE_PLAYER, $lang['sys_administration'], $lang['news_title'], $text);
+      }
+      */
+    } catch (Exception $e) {
+      messageBox($e->getMessage(), $lang['sys_error']);
+    }
+
+    $mode = '';
+  }
+
+  switch ($mode) {
+    case 'del':
+      doquery("DELETE FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;");
+      $mode = '';
+    break;
+
+    /** @noinspection PhpMissingBreakStatementInspection */
+    case 'edit':
+      $template->assign_var('QUEST_ID', $quest_id);
+
+    case 'copy':
+      $questManaged = doquery("SELECT * FROM `{{quest}}` WHERE `quest_id` = {$quest_id} LIMIT 1;", '', true);
+    break;
+  }
+
+  $query = doquery("SELECT count(*) AS count FROM `{{quest}}`;", '', true);
+  classSupernova::$config->pass()->quest_total = $query['count'];
+
+  return $questManaged;
+}
+
+/**
+ * @param array       $quest_templatized
+ * @param classLocale $lang
+ */
+function questTemplatizeReward(&$quest_templatized, $lang) {
+  foreach (questAllowedRewardsList() as $unit_id) {
     $found = false;
     foreach ($quest_templatized['quest_rewards_list'] as $quest_templatized_reward) {
       if ($quest_templatized_reward['ID'] == $unit_id) {
@@ -156,19 +163,69 @@ function qst_render_page() {
       );
     }
   }
+}
 
-  qst_assign_to_template($template, $quest_templatized);
+/**
+ * @param $lang
+ *
+ * @return string
+ * @throws Exception
+ */
+function questGetRewardsStringFromParams($lang) {
+  $quest_reward_allowed = questAllowedRewardsList();
+  $quest_rewards = [];
+  foreach (sys_get_param('QUEST_REWARDS_LIST') as $quest_rewards_id => $quest_rewards_amount) {
+    if (!in_array($quest_rewards_id, $quest_reward_allowed)) {
+      throw new Exception($lang['qst_adm_err_reward_type']);
+    }
 
-  foreach ($quest_list as $quest_data) {
-    qst_assign_to_template($template, qst_templatize($quest_data, true), 'quest');
+    $quest_rewards_amount = round($quest_rewards_amount);
+    if ($quest_rewards_amount < 0) {
+      throw new Exception($lang['qst_adm_err_reward_amount']);
+    } elseif ($quest_rewards_amount > 0) {
+      $quest_rewards[intval($quest_rewards_id)] = $quest_rewards_amount;
+    }
   }
-
-  foreach ($quest_units_allowed as $unit_id) {
-    $template->assign_block_vars('allowed_unit', array(
-      'ID'   => $unit_id,
-      'NAME' => $lang['tech'][$unit_id],
-    ));
+  if (empty($quest_rewards)) {
+    throw new Exception($lang['qst_adm_err_reward_empty']);
   }
+  $quest_rewards_string = sys_unit_arr2str($quest_rewards);
+
+  return $quest_rewards_string;
+}
+
+/**
+ * @param $lang
+ *
+ * @return string
+ * @throws Exception
+ */
+function questGetConditionFromParams($lang) {
+  $quest_unit_id = sys_get_param_int('QUEST_UNIT_ID');
+  if (!in_array($quest_unit_id, questUnitsAllowed())) {
+    throw new Exception($lang['qst_adm_err_unit_id']);
+  }
+  $quest_unit_amount = sys_get_param_float('QUEST_UNIT_AMOUNT');
+  if ($quest_unit_amount <= 0) {
+    throw new Exception($lang['qst_adm_err_unit_amount']);
+  }
+  $quest_conditions = "{$quest_unit_id},{$quest_unit_amount}";
+
+  return $quest_conditions;
+}
+
+/**
+ * @return array
+ */
+function questAllowedRewardsList() {
+  return sn_get_groups('quest_rewards');
+}
+
+/**
+ * @return array
+ */
+function questUnitsAllowed() {
+  return sn_get_groups(['structures', 'tech', 'fleet', 'defense']);
 }
 
 function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL) {
@@ -191,7 +248,7 @@ function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL) {
 
   $query = doquery(
     "SELECT q.* {$query_add_select}
-      FROM {{quest}} AS q {$query_add_from}
+      FROM `{{quest}}` AS q {$query_add_from}
       WHERE 1 {$query_add_where}
     ;"
   );
@@ -203,6 +260,11 @@ function qst_get_quests($user_id = false, $status = QUEST_STATUS_ALL) {
   return $quest_list;
 }
 
+/**
+ * @param template    $template
+ * @param array       $quest_templatized
+ * @param string|bool $block_name
+ */
 function qst_assign_to_template(&$template, $quest_templatized, $block_name = false) {
   if ($block_name) {
     $template->assign_block_vars($block_name, $quest_templatized);
@@ -346,7 +408,7 @@ function qst_reward(&$user, &$rewards, &$quest_list, &$quest_statuses) {
   }
 
   $group_resources = sn_get_groups('resources_loot');
-  $quest_rewards_allowed = sn_get_groups('quest_rewards');
+  $quest_rewards_allowed = questAllowedRewardsList();
   if (!empty($total_rewards)) {
     foreach ($total_rewards as $user_id => $planet_data) {
       $user_row = classSupernova::db_get_record_by_id(LOC_USER, $user_id);

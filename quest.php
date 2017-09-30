@@ -12,9 +12,4 @@ define('INSTALL' , false);
 
 require('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-lng_include('quest');
-$template = gettemplate('quest', true);
-
-qst_render_page();
-
-display($template, $lang['qst_quests']);
+roughQuestRenderWrapper();

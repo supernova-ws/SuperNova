@@ -13,13 +13,6 @@ define('IN_ADMIN'  , true);
 
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $lang, $user;
-
 messageBoxAdminAccessDenied(AUTH_LEVEL_OPERATOR);
 
-lng_include('quest');
-$template = gettemplate('quest', true);
-
-qst_render_page();
-
-display($template, $lang['qst_quests']);
+roughQuestRenderWrapper();
