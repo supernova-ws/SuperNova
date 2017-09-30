@@ -69,65 +69,63 @@ class PageMercenary {
     $cost_alliance_multiplyer = (SN_IN_ALLY === true && $this->mode == UNIT_PLANS ? $this->config->ali_bonus_members : 1);
     $cost_alliance_multiplyer = $cost_alliance_multiplyer >= 1 ? $cost_alliance_multiplyer : 1;
     foreach (sn_get_groups($this->mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id) {
-      {
-        $mercenary = get_unit_param($mercenary_id);
-        $mercenary_bonus = $mercenary['bonus'];
-        $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
-        switch ($mercenary['bonus_type']) {
-          case BONUS_PERCENT:
-            $mercenary_bonus = "{$mercenary_bonus}% ";
-          break;
+      $mercenary = get_unit_param($mercenary_id);
+      $mercenary_bonus = $mercenary['bonus'];
+      $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
+      switch ($mercenary['bonus_type']) {
+        case BONUS_PERCENT:
+          $mercenary_bonus = "{$mercenary_bonus}% ";
+        break;
 
-          case BONUS_ABILITY:
-            $mercenary_bonus = '';
-          break;
+        case BONUS_ABILITY:
+          $mercenary_bonus = '';
+        break;
 
-          case BONUS_ADD:
-          default:
-          break;
-        }
+        case BONUS_ADD:
+        default:
+        break;
+      }
 
-        $mercenary_level = mrc_get_level($user, null, $mercenary_id, false, true);
-        $mercenary_level_bonus = max(0, mrc_get_level($user, null, $mercenary_id) - $mercenary_level);
-        $total_cost_old = 0;
-        if ($this->isUnitsPermanent) {
-          $total_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level);
-          $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER] * $cost_alliance_multiplyer;
-        }
-        $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
+      $mercenary_level = mrc_get_level($user, null, $mercenary_id, false, true);
+      $mercenary_level_bonus = max(0, mrc_get_level($user, null, $mercenary_id) - $mercenary_level);
+      $total_cost_old = 0;
+      if ($this->isUnitsPermanent) {
+        $total_cost_old = eco_get_total_cost($mercenary_id, $mercenary_level);
+        $total_cost_old = $total_cost_old[BUILD_CREATE][RES_DARK_MATTER] * $cost_alliance_multiplyer;
+      }
+      $total_cost = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
+      $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
+      $mercenary_unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+      $mercenary_time_start = strtotime($mercenary_unit['unit_time_start']);
+      $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
+      $template->assign_block_vars('officer', array(
+        'ID'                => $mercenary_id,
+        'NAME'              => $lang['tech'][$mercenary_id],
+        'DESCRIPTION'       => $lang['info'][$mercenary_id]['description'],
+        'EFFECT'            => $lang['info'][$mercenary_id]['effect'],
+        'COST'              => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
+        'COST_TEXT'         => pretty_number($total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old, 0, $user_dark_matter),
+        'LEVEL'             => $mercenary_level,
+        'LEVEL_BONUS'       => $mercenary_level_bonus,
+        'LEVEL_MAX'         => $mercenary['max'],
+        'BONUS'             => $mercenary_bonus,
+        'BONUS_TYPE'        => $mercenary['bonus_type'],
+        'HIRE_END'          => $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW ? date(FMT_DATE_TIME, $mercenary_time_finish) : '',
+        'HIRE_LEFT_PERCENT' => $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW
+          ? round(($mercenary_time_finish - SN_TIME_NOW) / ($mercenary_time_finish - $mercenary_time_start) * 100, 1)
+          : 0,
+        'CAN_BUY'           => $this->mrc_officer_accessible($user, $mercenary_id),
+      ));
+
+      $upgrade_cost = 1;
+      for ($i = $this->config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++) {
+        $total_cost = eco_get_total_cost($mercenary_id, $i);
         $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
-        $mercenary_unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
-        $mercenary_time_start = strtotime($mercenary_unit['unit_time_start']);
-        $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
-        $template->assign_block_vars('officer', array(
-          'ID'                => $mercenary_id,
-          'NAME'              => $lang['tech'][$mercenary_id],
-          'DESCRIPTION'       => $lang['info'][$mercenary_id]['description'],
-          'EFFECT'            => $lang['info'][$mercenary_id]['effect'],
-          'COST'              => $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old,
-          'COST_TEXT'         => pretty_number($total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old, 0, $user_dark_matter),
-          'LEVEL'             => $mercenary_level,
-          'LEVEL_BONUS'       => $mercenary_level_bonus,
-          'LEVEL_MAX'         => $mercenary['max'],
-          'BONUS'             => $mercenary_bonus,
-          'BONUS_TYPE'        => $mercenary['bonus_type'],
-          'HIRE_END'          => $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW ? date(FMT_DATE_TIME, $mercenary_time_finish) : '',
-          'HIRE_LEFT_PERCENT' => $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW
-            ? round(($mercenary_time_finish - SN_TIME_NOW) / ($mercenary_time_finish - $mercenary_time_start) * 100, 1)
-            : 0,
-          'CAN_BUY'           => $this->mrc_officer_accessible($user, $mercenary_id),
+        $upgrade_cost = $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old;
+        $template->assign_block_vars('officer.level', array(
+          'VALUE' => $i,
+          'PRICE' => $upgrade_cost,
         ));
-
-        $upgrade_cost = 1;
-        for ($i = $this->config->empire_mercenary_temporary ? 1 : $mercenary_level + 1; $mercenary['max'] ? ($i <= $mercenary['max']) : $upgrade_cost <= $user_dark_matter; $i++) {
-          $total_cost = eco_get_total_cost($mercenary_id, $i);
-          $total_cost[BUILD_CREATE][RES_DARK_MATTER] *= $cost_alliance_multiplyer;
-          $upgrade_cost = $total_cost[BUILD_CREATE][RES_DARK_MATTER] - $total_cost_old;
-          $template->assign_block_vars('officer.level', array(
-            'VALUE' => $i,
-            'PRICE' => $upgrade_cost,
-          ));
-        }
       }
     }
 
