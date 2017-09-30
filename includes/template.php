@@ -1058,3 +1058,30 @@ function tpl_assign_select(&$template, $name, $values) {
     ));
   }
 }
+
+/**
+ * Renders unit bonus from unit data
+ *
+ * @param array $unitInfo
+ *
+ * @return string
+ */
+function tpl_render_unit_bonus_data($unitInfo) {
+  $strBonus = $unitInfo['bonus'];
+  $strBonus = $strBonus >= 0 ? "+{$strBonus}" : "{$strBonus}";
+  switch ($unitInfo['bonus_type']) {
+    case BONUS_PERCENT:
+      $strBonus = "{$strBonus}% ";
+    break;
+
+    case BONUS_ABILITY:
+      $strBonus = '';
+    break;
+
+    case BONUS_ADD:
+    default:
+    break;
+  }
+
+  return $strBonus;
+}

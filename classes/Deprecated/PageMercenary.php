@@ -83,21 +83,7 @@ class PageMercenary {
     $user_dark_matter = mrc_get_level($user, '', RES_DARK_MATTER);
     foreach (sn_get_groups($this->mode == UNIT_PLANS ? 'plans' : 'mercenaries') as $mercenary_id) {
       $mercenary = get_unit_param($mercenary_id);
-      $mercenary_bonus = $mercenary['bonus'];
-      $mercenary_bonus = $mercenary_bonus >= 0 ? "+{$mercenary_bonus}" : "{$mercenary_bonus}";
-      switch ($mercenary['bonus_type']) {
-        case BONUS_PERCENT:
-          $mercenary_bonus = "{$mercenary_bonus}% ";
-        break;
-
-        case BONUS_ABILITY:
-          $mercenary_bonus = '';
-        break;
-
-        case BONUS_ADD:
-        default:
-        break;
-      }
+      $mercenary_bonus = tpl_render_unit_bonus_data($mercenary);
 
       $mercenary_level = mrc_get_level($user, null, $mercenary_id, false, true);
       $mercenary_level_bonus = max(0, mrc_get_level($user, null, $mercenary_id) - $mercenary_level);

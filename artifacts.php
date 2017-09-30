@@ -13,6 +13,8 @@
 *
 */
 
+global $lang, $user, $planetrow;
+
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
 lng_include('infos');
@@ -75,24 +77,7 @@ foreach($sn_group_artifacts as $artifact_id)
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
   {
     $artifact_data = get_unit_param($artifact_id);
-    $artifact_data_bonus = $artifact_data['bonus'];
-    $artifact_data_bonus = $artifact_data_bonus >= 0 ? "+{$artifact_data_bonus}" : "{$artifact_data_bonus}";
-    switch($artifact_data['bonus_type'])
-    {
-      case BONUS_PERCENT:
-        $artifact_data_bonus = "{$artifact_data_bonus}% ";
-      break;
-
-      case BONUS_ADD:
-      break;
-
-      case BONUS_ABILITY:
-        $artifact_data_bonus = '';
-      break;
-
-      default:
-      break;
-    }
+    $artifact_data_bonus = tpl_render_unit_bonus_data($artifact_data);
 
     $template->assign_block_vars('artifact', array(
       'ID'          => $artifact_id,
