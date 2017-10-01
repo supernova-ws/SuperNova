@@ -58,12 +58,12 @@
  *
  * @property int        $quest_total                  => 0, // Total number of quests
  *
- * @property string     $server_updater_check_auto'   => 0, // Server autocheck version
- * @property int        $server_updater_check_last'   => 0, // Server last check time
- * @property int        $server_updater_check_period' => PERIOD_DAY, // Server autocheck period
- * @property int        $server_updater_check_result' => SNC_VER_NEVER, // Server last check result
- * @property int|string $server_updater_id'           => 0, // Server ID on update server
- * @property string     $server_updater_key'          => '', // Server key on update server
+ * @property string     $server_updater_check_auto    => 0, // Server autocheck version
+ * @property int        $server_updater_check_last    => 0, // Server last check time
+ * @property int        $server_updater_check_period  => PERIOD_DAY, // Server autocheck period
+ * @property int        $server_updater_check_result  => SNC_VER_NEVER, // Server last check result
+ * @property int|string $server_updater_id            => 0, // Server ID on update server
+ * @property string     $server_updater_key           => '', // Server key on update server
  *
  * @property int        $stats_history_days           => 14, // За сколько дней хранить статистику в базе
  * @property string     $stats_minimal_interval       => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
