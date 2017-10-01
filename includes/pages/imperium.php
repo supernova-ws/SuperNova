@@ -14,7 +14,7 @@
 function sn_imperium_view($template = null) {
   global $user, $lang;
 
-  imperiumStoreMinesLoad($user);
+  imperiumAdjustMinesPercent($user);
 
   list($planets, $ques) = getUpdatedUserPlanetsAndQues($user);
 
@@ -26,91 +26,158 @@ function sn_imperium_view($template = null) {
 
   $imperiumStats = imperiumAssignFleetsAndCalculateTotal($template, $planets, $lang);
 
-  $sn_group_factories = sn_get_groups('factories');
-  foreach (
-    [
-      UNIT_STRUCTURES         => 'structures',
-      UNIT_STRUCTURES_SPECIAL => 'structures',
-      UNIT_SHIPS              => 'fleet',
-      UNIT_DEFENCE            => 'defense',
-    ] as $unit_group_id => $mode
-  ) {
+  $groupsToStructures = [
+    UNIT_STRUCTURES         => 'structures',
+    UNIT_STRUCTURES_SPECIAL => 'structures',
+    UNIT_SHIPS              => 'fleet',
+    UNIT_DEFENCE            => 'defense',
+  ];
+  foreach ($groupsToStructures as $unit_group_id => $internalGroupName) {
     $template->assign_block_vars('prods', array(
       'NAME' => $lang['tech'][$unit_group_id],
     ));
-    $unit_group = get_unit_param('techtree', $unit_group_id);
-    foreach ($unit_group as $unit_id) {
-      $unit_count = $unit_count_abs = 0;
-      $block_vars = array();
-      $unit_is_factory = in_array($unit_id, $sn_group_factories) && get_unit_param($unit_id, P_MINING_IS_MANAGED);
-      foreach ($planets as $planet) {
-        $unit_level_plain = mrc_get_level($user, $planet, $unit_id, false, true);
-
-        $level_plus['FACTORY'] = $unit_is_factory;
-        $level_plus['LEVEL_PLUS_YELLOW'] = 0;
-        $level_plus['LEVEL_PLUS_GREEN'] = 0;
-
-        $level_plus['PERCENT'] = $unit_is_factory ? ($unit_level_plain ? $planet[pname_factory_production_field_name($unit_id)] * 10 : -1) : -1;
-        switch ($mode) {
-
-          /** @noinspection PhpMissingBreakStatementInspection */
-          case 'fleet':
-            $level_plus['LEVEL_PLUS_YELLOW'] = $planet['fleet_list']['own']['total'][$unit_id] <= 0 ? $planet['fleet_list']['own']['total'][$unit_id] : "+{$planet['fleet_list']['own']['total'][$unit_id]}";
-            $imperiumStats['units'][$unit_id]['LEVEL_PLUS_YELLOW'] += floatval($level_plus['LEVEL_PLUS_YELLOW']);
-
-          case 'structures':
-          case 'defense':
-            $level_plus_build = $ques[$planet['id']]['in_que'][que_get_unit_que($unit_id)][$user['id']][$planet['id']][$unit_id];
-            if ($level_plus_build) {
-              $level_plus['LEVEL_PLUS_GREEN'] = $level_plus_build < 0 ? $level_plus_build : "+{$level_plus_build}";
-              $imperiumStats['units'][$unit_id]['LEVEL_PLUS_GREEN'] += floatval($level_plus['LEVEL_PLUS_GREEN']);
-            }
-          break;
-
-          default:
-          break;
-        }
-
-        $level_plus['LEVEL_PLUS_GREEN_TEXT'] = ($level_plus['LEVEL_PLUS_GREEN'] > 0 ? '+' : '') . pretty_number($level_plus['LEVEL_PLUS_GREEN']);
-        $level_plus['LEVEL_PLUS_YELLOW_TEXT'] = ($level_plus['LEVEL_PLUS_YELLOW'] > 0 ? '+' : '') . pretty_number($level_plus['LEVEL_PLUS_YELLOW']);
-        $block_vars[] = array_merge($level_plus, array(
-          'ID'         => $planet['id'],
-          'TYPE'       => $planet['planet_type'],
-          'LEVEL'      => $unit_level_plain == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : $unit_level_plain,
-          'LEVEL_TEXT' => $unit_level_plain == 0 && !$level_plus['LEVEL_PLUS_YELLOW'] && !$level_plus['LEVEL_PLUS_GREEN'] ? '-' : pretty_number($unit_level_plain),
-        ));
-        $unit_count += $unit_level_plain;
-        $unit_count_abs += $unit_level_plain + abs($level_plus['LEVEL_PLUS_YELLOW']) + abs($level_plus['LEVEL_PLUS_GREEN']);
-      }
-
-      if ($unit_count_abs) {
-        $template->assign_block_vars('prods', array(
-          'ID'    => $unit_id,
-          'FIELD' => 'unit_' . $unit_id, // TODO Делать это прямо в темплейте
-          'NAME'  => $lang['tech'][$unit_id],
-          'MODE'  => $mode,
-        ));
-
-        foreach ($block_vars as $block_var) {
-          $template->assign_block_vars('prods.planet', $block_var);
-        }
-        $unit_green = $imperiumStats['units'][$unit_id]['LEVEL_PLUS_GREEN'];
-        $unit_yellow = $imperiumStats['units'][$unit_id]['LEVEL_PLUS_YELLOW'];
-        $template->assign_block_vars('prods.planet', array(
-          'ID'                     => 0,
-          'LEVEL'                  => $unit_count,
-          'LEVEL_TEXT'             => pretty_number($unit_count),
-          'LEVEL_PLUS_GREEN'       => $unit_green,
-          'LEVEL_PLUS_YELLOW'      => $unit_yellow,
-          'LEVEL_PLUS_GREEN_TEXT'  => $unit_green == 0 ? '' : (($unit_green > 0 ? '+' : '') . pretty_number($unit_green)),
-          'LEVEL_PLUS_YELLOW_TEXT' => $unit_yellow == 0 ? '' : (($unit_yellow > 0 ? '+' : '') . pretty_number($unit_yellow)),
-          'PERCENT'                => $unit_is_factory ? '' : -1,
-          'FACTORY'                => $unit_is_factory,
-        ));
-      }
-    }
+    imperiumTemplatizeUnitGroup($user, $template, $unit_group_id, $planets, $internalGroupName, $imperiumStats, $ques, $lang);
   }
 
+  imperiumTemplatizeTotalStats($template, $lang, $imperiumStats);
+
+  $user = imperiumTemplatizeGlobal($template, $user, $lang);
+
+  return $template;
+}
+
+/**
+ * @param array       $user
+ * @param template    $template
+ * @param int         $unit_group_id
+ * @param array[]     $planets
+ * @param string      $internalGroupName
+ * @param array       $imperiumStats
+ * @param array[]     $ques
+ * @param classLocale $lang
+ */
+function imperiumTemplatizeUnitGroup(&$user, $template, $unit_group_id, $planets, $internalGroupName, $imperiumStats, $ques, $lang) {
+  $sn_group_factories = sn_get_groups('factories');
+
+  foreach (get_unit_param('techtree', $unit_group_id) as $unit_id) {
+    $unit_count = $unit_count_abs = 0;
+    $block_vars = array();
+    $unit_is_factory = in_array($unit_id, $sn_group_factories) && get_unit_param($unit_id, P_MINING_IS_MANAGED);
+    foreach ($planets as $planet) {
+      $unit_level_plain = mrc_get_level($user, $planet, $unit_id, false, true);
+
+      $level_plus = [
+        'ID'   => $planet['id'],
+        'TYPE' => $planet['planet_type'],
+
+        'LEVEL_PLUS_YELLOW' => 0,
+        'LEVEL_PLUS_GREEN'  => 0,
+        'PERCENT'           => $unit_is_factory ? ($unit_level_plain ? $planet[pname_factory_production_field_name($unit_id)] * 10 : -1) : -1,
+        'FACTORY'           => $unit_is_factory,
+      ];
+      switch ($internalGroupName) {
+        /** @noinspection PhpMissingBreakStatementInspection */
+        case 'fleet':
+          $level_plus['LEVEL_PLUS_YELLOW'] = floatval($planet['fleet_list']['own']['total'][$unit_id]);
+          $imperiumStats['units'][$unit_id]['LEVEL_PLUS_YELLOW'] += $level_plus['LEVEL_PLUS_YELLOW'];
+
+        case 'structures':
+        case 'defense':
+          $level_plus['LEVEL_PLUS_GREEN'] = floatval($ques[$planet['id']]['in_que'][que_get_unit_que($unit_id)][$user['id']][$planet['id']][$unit_id]);
+          $imperiumStats['units'][$unit_id]['LEVEL_PLUS_GREEN'] += $level_plus['LEVEL_PLUS_GREEN'];
+        break;
+
+        default:
+        break;
+      }
+      $unitsPresentOrChanged = $unit_level_plain + abs($level_plus['LEVEL_PLUS_YELLOW']) + abs($level_plus['LEVEL_PLUS_GREEN']);
+
+      $unit_count += $unit_level_plain;
+      $unit_count_abs += $unitsPresentOrChanged;
+
+      $block_vars[] = array_merge($level_plus, array(
+        'LEVEL'                  => $unitsPresentOrChanged ? $unit_level_plain : '-',
+        'LEVEL_TEXT'             => $unitsPresentOrChanged ? pretty_number($unit_level_plain) : '-',
+        'LEVEL_PLUS_GREEN_TEXT'  => ($level_plus['LEVEL_PLUS_GREEN'] > 0 ? '+' : '') . pretty_number($level_plus['LEVEL_PLUS_GREEN']),
+        'LEVEL_PLUS_YELLOW_TEXT' => ($level_plus['LEVEL_PLUS_YELLOW'] > 0 ? '+' : '') . pretty_number($level_plus['LEVEL_PLUS_YELLOW']),
+      ));
+    }
+
+    imperiumAddTotalImperiumUnitBlock($template, $internalGroupName, $imperiumStats, $lang, $unit_count_abs, $unit_id, $block_vars, $unit_count, $unit_is_factory);
+  }
+}
+
+/**
+ * @param template    $template
+ * @param string      $internalGroupName
+ * @param array       $imperiumStats
+ * @param classLocale $lang
+ * @param float       $unit_count_abs
+ * @param int         $unit_id
+ * @param array       $block_vars
+ * @param int         $unit_count
+ * @param bool        $unit_is_factory
+ */
+function imperiumAddTotalImperiumUnitBlock($template, $internalGroupName, $imperiumStats, $lang, $unit_count_abs, $unit_id, $block_vars, $unit_count, $unit_is_factory) {
+  if ($unit_count_abs) {
+    $template->assign_block_vars('prods', array(
+      'ID'    => $unit_id,
+      'FIELD' => 'unit_' . $unit_id, // TODO Делать это прямо в темплейте
+      'NAME'  => $lang['tech'][$unit_id],
+      'MODE'  => $internalGroupName,
+    ));
+
+    foreach ($block_vars as $block_var) {
+      $template->assign_block_vars('prods.planet', $block_var);
+    }
+    $unit_green = $imperiumStats['units'][$unit_id]['LEVEL_PLUS_GREEN'];
+    $unit_yellow = $imperiumStats['units'][$unit_id]['LEVEL_PLUS_YELLOW'];
+    $template->assign_block_vars('prods.planet', array(
+      'ID'                     => 0,
+      'LEVEL'                  => $unit_count,
+      'LEVEL_TEXT'             => pretty_number($unit_count),
+      'LEVEL_PLUS_GREEN'       => $unit_green,
+      'LEVEL_PLUS_YELLOW'      => $unit_yellow,
+      'LEVEL_PLUS_GREEN_TEXT'  => $unit_green == 0 ? '' : (($unit_green > 0 ? '+' : '') . pretty_number($unit_green)),
+      'LEVEL_PLUS_YELLOW_TEXT' => $unit_yellow == 0 ? '' : (($unit_yellow > 0 ? '+' : '') . pretty_number($unit_yellow)),
+      'PERCENT'                => $unit_is_factory ? '' : -1,
+      'FACTORY'                => $unit_is_factory,
+    ));
+  }
+}
+
+/**
+ * @param template    $template
+ * @param array       $user
+ * @param classLocale $lang
+ *
+ * @return mixed
+ */
+function imperiumTemplatizeGlobal($template, $user, $lang) {
+  $template->assign_vars(array(
+    'COLONIES_CURRENT' => get_player_current_colonies($user),
+    'COLONIES_MAX'     => get_player_max_colonies($user),
+
+    'EXPEDITIONS_CURRENT' => fleet_count_flying($user['id'], MT_EXPLORE),
+    'EXPEDITIONS_MAX'     => get_player_max_expeditons($user),
+
+    'PLANET_DENSITY_RICHNESS_NORMAL'  => PLANET_DENSITY_RICHNESS_NORMAL,
+    'PLANET_DENSITY_RICHNESS_AVERAGE' => PLANET_DENSITY_RICHNESS_AVERAGE,
+    'PLANET_DENSITY_RICHNESS_GOOD'    => PLANET_DENSITY_RICHNESS_GOOD,
+    'PLANET_DENSITY_RICHNESS_PERFECT' => PLANET_DENSITY_RICHNESS_PERFECT,
+
+    'PAGE_HEADER' => $lang['imp_overview'],
+  ));
+
+  return $user;
+}
+
+/**
+ * @param template    $template
+ * @param classLocale $lang
+ * @param array       $imperiumStats
+ */
+function imperiumTemplatizeTotalStats($template, $lang, $imperiumStats) {
   $template->assign_block_vars('planet', array_merge(array(
     'ID'   => 0,
     'NAME' => $lang['sys_total'],
@@ -133,24 +200,6 @@ function sn_imperium_view($template = null) {
     'TEMP_MIN' => $imperiumStats['temp_min'],
     'TEMP_MAX' => $imperiumStats['temp_max'],
   )));
-
-
-  $template->assign_vars(array(
-    'COLONIES_CURRENT' => get_player_current_colonies($user),
-    'COLONIES_MAX'     => get_player_max_colonies($user),
-
-    'EXPEDITIONS_CURRENT' => fleet_count_flying($user['id'], MT_EXPLORE),
-    'EXPEDITIONS_MAX'     => get_player_max_expeditons($user),
-
-    'PLANET_DENSITY_RICHNESS_NORMAL'  => PLANET_DENSITY_RICHNESS_NORMAL,
-    'PLANET_DENSITY_RICHNESS_AVERAGE' => PLANET_DENSITY_RICHNESS_AVERAGE,
-    'PLANET_DENSITY_RICHNESS_GOOD'    => PLANET_DENSITY_RICHNESS_GOOD,
-    'PLANET_DENSITY_RICHNESS_PERFECT' => PLANET_DENSITY_RICHNESS_PERFECT,
-
-    'PAGE_HEADER' => $lang['imp_overview'],
-  ));
-
-  return $template;
 }
 
 /**
@@ -158,7 +207,7 @@ function sn_imperium_view($template = null) {
  *
  * @param array $user
  */
-function imperiumStoreMinesLoad($user) {
+function imperiumAdjustMinesPercent($user) {
   if (!sys_get_param('save_production') || !is_array($production = sys_get_param('percent')) || empty($production)) {
     return;
   }
