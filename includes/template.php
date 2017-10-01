@@ -1067,8 +1067,7 @@ function tpl_assign_select(&$template, $name, $values) {
  * @return string
  */
 function tpl_render_unit_bonus_data($unitInfo) {
-  $strBonus = $unitInfo['bonus'];
-  $strBonus = $strBonus >= 0 ? "+{$strBonus}" : "{$strBonus}";
+  $strBonus = tplAddPlus($unitInfo['bonus']);
   switch ($unitInfo['bonus_type']) {
     case BONUS_PERCENT:
       $strBonus = "{$strBonus}% ";
@@ -1084,4 +1083,27 @@ function tpl_render_unit_bonus_data($unitInfo) {
   }
 
   return $strBonus;
+}
+
+/**
+ * Converts number to string then adds "+" sign for positive AND ZERO numbers
+ *
+ * @param float $value
+ *
+ * @return string
+ */
+function tplAddPlus($value) {
+  return ($value >= 0 ? '+' : '') . $value;
+}
+
+
+/**
+ * Convert number to prettified string then adds "+" sign for positive AND ZERO numbers
+ *
+ * @param float $value
+ *
+ * @return string
+ */
+function tplPrettyPlus($value) {
+  return ($value >= 0 ? '+' : '') . pretty_number($value);
 }

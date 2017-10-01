@@ -2745,19 +2745,19 @@ body:not(.no_border_image) [table_title]:before {
   color: orange;
 }
 .error, .negative, button.negative, button.error {
-  color: red;
+  color: #FF0000; /* red */
 }
 .white, .zero_number {
   color: white;
 }
 .info_bg {
-  color: #005472;
+  background-color: #005472;
 }
 .ok_bg, .success_bg, .positive_bg {
   background-color: #004400;
 }
 .notice_bg, .zero_bg, .neutral_bg {
-  background-color: #AAAA00 !important;
+  background-color: #888800 !important;
 }
 .warning_bg {
   background-color: #924200;

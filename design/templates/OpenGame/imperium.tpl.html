@@ -184,15 +184,15 @@
       <td <!-- IF prods.planet.FACTORY && prods.planet.PERCENT != -1 -->ecd<!-- ELSE -->ecs<!-- ENDIF -->>
           <!-- IF prods.planet.PERCENT >= 0 -->
             <!-- IF prods.planet.PERCENT <= 0 -->
-              <!-- DEFINE $FIELD_COLOR = '' -->
-            <!-- ELSEIF prods.planet.PERCENT < 50 -->
               <!-- DEFINE $FIELD_COLOR = 'negative_bg' -->
-            <!-- ELSEIF prods.planet.PERCENT < 80 -->
+            <!-- ELSEIF prods.planet.PERCENT < 50 -->
               <!-- DEFINE $FIELD_COLOR = 'warning_bg' -->
-            <!-- ELSEIF prods.planet.PERCENT < 100 -->
+            <!-- ELSEIF prods.planet.PERCENT < 80 -->
               <!-- DEFINE $FIELD_COLOR = 'neutral_bg' -->
-            <!-- ELSE -->
+            <!-- ELSEIF prods.planet.PERCENT < 100 -->
               <!-- DEFINE $FIELD_COLOR = 'positive_bg' -->
+            <!-- ELSE -->
+              <!-- DEFINE $FIELD_COLOR = 'info_bg' -->
             <!-- ENDIF -->
             <span style="width: {prods.planet.PERCENT}%;" class="{$FIELD_COLOR}"></span>
           <!-- ENDIF -->
@@ -200,9 +200,22 @@
             {prods.planet.LEVEL_TEXT}<!-- IF prods.planet.LEVEL_PLUS_GREEN --><span class="{$PLUS_CLASS}">{prods.planet.LEVEL_PLUS_GREEN_TEXT}</span><!-- ENDIF --><!-- IF prods.planet.LEVEL_PLUS_YELLOW --><span class="neutral">{prods.planet.LEVEL_PLUS_YELLOW_TEXT}</span><!-- ENDIF -->
             <!-- IF prods.planet.FACTORY && prods.planet.PERCENT >= 0 -->
               <br />
-              <select name="percent[{prods.ID}][{prods.planet.ID}]" <!-- IF prods.planet.ID == 0 -->selector="{prods.ID}"<!-- ENDIF -->>
+              <select class="{$FIELD_COLOR}" name="percent[{prods.ID}][{prods.planet.ID}]" <!-- IF prods.planet.ID == 0 -->selector="{prods.ID}"<!-- ENDIF -->>
                 <!-- IF prods.planet.ID == 0 --><option>-</option><!-- ENDIF -->
-                <!-- BEGIN !percent --><option value="{percent.PERCENT}"<!-- IF prods.planet.PERCENT === percent.PERCENT --> selected<!-- ENDIF -->>{percent.PERCENT}%</option><!-- END !percent -->
+                <!-- BEGIN !percent -->
+                  <!-- IF percent.PERCENT <= 0 -->
+                  <!-- DEFINE $FIELD_COLOR = 'negative' -->
+                  <!-- ELSEIF percent.PERCENT < 50 -->
+                  <!-- DEFINE $FIELD_COLOR = 'warning' -->
+                  <!-- ELSEIF percent.PERCENT < 80 -->
+                  <!-- DEFINE $FIELD_COLOR = 'neutral' -->
+                  <!-- ELSEIF percent.PERCENT < 100 -->
+                  <!-- DEFINE $FIELD_COLOR = 'positive' -->
+                  <!-- ELSE -->
+                  <!-- DEFINE $FIELD_COLOR = 'info' -->
+                  <!-- ENDIF -->
+                  <option class="{$FIELD_COLOR}" value="{percent.PERCENT}"<!-- IF prods.planet.PERCENT === percent.PERCENT --> selected<!-- ENDIF -->>{percent.PERCENT}%</option>
+                <!-- END !percent -->
               </select>
             <!-- ENDIF -->
           </span>

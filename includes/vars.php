@@ -26,6 +26,8 @@ $sn_mvc = array(
     'chat'     => array('sn_chat_model'),
     'chat_add' => array('sn_chat_add_model'),
 
+    'imperium'       => ['\Deprecated\PageImperium::modelStatic'],
+
     'admin/admin_ally'       => array('sn_admin_ally_model'),
   ),
   'view'       => array(
@@ -37,7 +39,7 @@ $sn_mvc = array(
     'battle_report' => array('sn_battle_report_view'),
     'contact'       => array('sn_contact_view'),
     'imperator'       => array('sn_imperator_view'),
-    'imperium'       => array('sn_imperium_view'),
+    'imperium'       => ['\Deprecated\PageImperium::viewStatic'],
     'techtree'       => array('sn_techtree_view'),
 
     'admin/user_view'       => array('sn_admin_user_view_view'),
@@ -96,9 +98,7 @@ $sn_mvc = array(
     'imperator'     => array(
       'filename' => 'imperator',
     ),
-    'imperium'      => array(
-      'filename' => 'imperium',
-    ),
+    'imperium'      => [],
     'options'       => array(
       'filename' => 'options',
     ),
