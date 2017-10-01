@@ -63,7 +63,17 @@ function eco_get_lab_max_effective_level(&$user, $lab_require)
   return $user['research_effective_level'][$lab_require];
 }
 
-function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false) {
+/**
+ * @param array      $user
+ * @param array      $planet
+ * @param int        $unit_id
+ * @param int|string $unit_level
+ * @param bool       $only_cost
+ * @param array|null $info
+ *
+ * @return mixed
+ */
+function eco_get_build_data(&$user, $planet, $unit_id, $unit_level = 0, $only_cost = false, $info = null) {
   global $config;
 
   $rpg_exchange_deuterium = $config->rpg_exchange_deuterium;

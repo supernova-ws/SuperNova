@@ -209,7 +209,7 @@ $lang->lng_switch(sys_get_param_str('lang'));
 
 
 if(classSupernova::$config->server_updater_check_auto && classSupernova::$config->server_updater_check_last + classSupernova::$config->server_updater_check_period <= SN_TIME_NOW) {
-  include(SN_ROOT_PHYSICAL . 'ajax_version_check' . DOT_PHP_EX);
+  \Tools\VersionCheckerDeprecated::performCheckVersion();
 }
 
 if(classSupernova::$config->user_birthday_gift && SN_TIME_NOW - classSupernova::$config->user_birthday_celebrate > PERIOD_DAY) {

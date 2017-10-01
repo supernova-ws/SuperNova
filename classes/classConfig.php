@@ -10,68 +10,75 @@
  *
  * @package supernova
  *
- * @property string $db_prefix - REMOVE! Just for compatibility!
+ * @property string     $db_prefix - REMOVE! Just for compatibility!
  *
- * @property string $ali_bonus_members           => 10, // Minimum alliance size to start using bonus
+ * @property string     $ali_bonus_members           => 10, // Minimum alliance size to start using bonus
  *
- * @property string $auth_vkontakte_app_id
- * @property string $auth_vkontakte_app_key
- * @property string $auth_vkontakte_token
- * @property int    $auth_vkontakte_token_expire
+ * @property string     $auth_vkontakte_app_id
+ * @property string     $auth_vkontakte_app_key
+ * @property string     $auth_vkontakte_token
+ * @property int        $auth_vkontakte_token_expire
  *
- * @property string $COOKIE_NAME                  => 'SuperNova'
+ * @property string     $COOKIE_NAME                  => 'SuperNova'
  *
- * @property int    $empire_mercenary_base_period => PERIOD_MONTH, // Base hire period for price calculations
- * @property int    $empire_mercenary_temporary   => 0, // Temporary empire-wide mercenaries
+ * @property int        $empire_mercenary_base_period => PERIOD_MONTH, // Base hire period for price calculations
+ * @property int        $empire_mercenary_temporary   => 0, // Temporary empire-wide mercenaries
  *
- * @property int    $fleet_update_interval        => 4 second  // how often fleets should be updated
- * @property int    $fleet_update_last            => SN_TIME_NOW // unixtime - when fleet was updated last
- * @property int    $fleet_update_lock            => ''  // SQL time when lock was acquired
+ * @property int        $fleet_update_interval        => 4 second  // how often fleets should be updated
+ * @property int        $fleet_update_last            => SN_TIME_NOW // unixtime - when fleet was updated last
+ * @property int        $fleet_update_lock            => ''  // SQL time when lock was acquired
  *
- * @property string $game_default_language        => 'ru'
- * @property string $game_default_skin            => 'skins/EpicBlue/'
- * @property string $game_default_template        => 'OpenGame'
+ * @property string     $game_default_language        => 'ru'
+ * @property string     $game_default_skin            => 'skins/EpicBlue/'
+ * @property string     $game_default_template        => 'OpenGame'
  *
- * @property int    $game_disable                 => GAME_DISABLE_INSTALL - Current game status - see GAME_DISABLE_xxx
- * @property string $game_disable_reason          => 'SuperNova is in maintenance mode! Please return later!' - Status for custom disable reason
+ * @property int        $game_disable                 => GAME_DISABLE_INSTALL - Current game status - see GAME_DISABLE_xxx
+ * @property string     $game_disable_reason          => 'SuperNova is in maintenance mode! Please return later!' - Status for custom disable reason
  *
- * @property int    $game_maxGalaxy               => 5
- * @property int    $game_maxSystem               => 199
- * @property int    $game_maxPlanet               => 15
+ * @property int        $game_maxGalaxy               => 5
+ * @property int        $game_maxSystem               => 199
+ * @property int        $game_maxPlanet               => 15
  *
- * @property string $game_name                    Server name as it would be seen through game
+ * @property string     $game_name                    Server name as it would be seen through game
  *
- * @property int    $game_news_actual             How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
- * @property int    $game_news_overview           How much last news to show in Overview page. Default - 3
- * @property int    $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
+ * @property int        $game_news_actual             How long announcement would be marked as "New". In seconds. Default - 3 days PERIOD_DAY_3
+ * @property int        $game_news_overview           How much last news to show in Overview page. Default - 3
+ * @property int        $game_news_overview_show      How long news will be shown in Overview page in seconds. Default - 2 weeks. 0 - show all
  *
- * @property int    $game_noob_factor             => 5    // Multiplier to divide "stronger" and "weaker" users
- * @property int    $game_noob_points             => 5000 // Below this point user threated as noob. 0 to disable
+ * @property int        $game_noob_factor             => 5    // Multiplier to divide "stronger" and "weaker" users
+ * @property int        $game_noob_points             => 5000 // Below this point user threated as noob. 0 to disable
  *
- * @property string $int_format_date              => 'd.m.Y' // Date default format
- * @property string $int_format_time              => 'H:i:s' // Time default format
+ * @property string     $int_format_date              => 'd.m.Y' // Date default format
+ * @property string     $int_format_time              => 'H:i:s' // Time default format
  *
- * @property int    $menu_server_name_disabled    => 0
- * @property int    $menu_launch_date_disabled    => 0
- * @property int    $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
- * @property int    $menu_server_logo_disabled    => 0
+ * @property int        $menu_server_name_disabled    => 0
+ * @property int        $menu_launch_date_disabled    => 0
+ * @property int        $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
+ * @property int        $menu_server_logo_disabled    => 0
  *
- * @property int    $quest_total                  => 0, // Total number of quests
+ * @property int        $quest_total                  => 0, // Total number of quests
  *
- * @property int    $stats_history_days           => 14, // За сколько дней хранить статистику в базе
- * @property string $stats_minimal_interval       => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
- * @property string $stats_schedule               => '04:00:00' - Schedule for running stat updates - see readme.txt
- * @property string $var_stat_update              => '0' - SQL_DATE_TIME - when stat update was started
- * @property string $var_stat_update_end          => '0' - SQL_DATE_TIME - ?????????
- * @property string $var_stat_update_admin_forced => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
- * @property string $var_stat_update_next         => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
- * @property string $var_stat_update_msg          => 'Update never started' - Last stat update message
+ * @property string     $server_updater_check_auto'   => 0, // Server autocheck version
+ * @property int        $server_updater_check_last'   => 0, // Server last check time
+ * @property int        $server_updater_check_period' => PERIOD_DAY, // Server autocheck period
+ * @property int        $server_updater_check_result' => SNC_VER_NEVER, // Server last check result
+ * @property int|string $server_updater_id'           => 0, // Server ID on update server
+ * @property string     $server_updater_key'          => '', // Server key on update server
  *
- * @property int    $tutorial_first_item          ID of first item of tutorial
+ * @property int        $stats_history_days           => 14, // За сколько дней хранить статистику в базе
+ * @property string     $stats_minimal_interval       => STATS_RUN_INTERVAL_MINIMUM -  Minimal interval between stat runs in seconds. Default - 600s aka 10 minutes
+ * @property string     $stats_schedule               => '04:00:00' - Schedule for running stat updates - see readme.txt
+ * @property string     $var_stat_update              => '0' - SQL_DATE_TIME - when stat update was started
+ * @property string     $var_stat_update_end          => '0' - SQL_DATE_TIME - ?????????
+ * @property string     $var_stat_update_admin_forced => '0' - SQL_DATE_TIME - Last time when update was triggered from admin console
+ * @property string     $var_stat_update_next         => ''  - SQL_DATE_TIME - Next time where stat update scheduled to run
+ * @property string     $var_stat_update_msg          => 'Update never started' - Last stat update message
  *
- * @property int    $url_faq                      URL of FAQ root
+ * @property int        $tutorial_first_item          ID of first item of tutorial
  *
- * @property int    $users_amount                 => 1 - Total users count
+ * @property int        $url_faq                      URL of FAQ root
+ *
+ * @property int        $users_amount                 => 1 - Total users count
  *
  *
  */

@@ -815,6 +815,11 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+2017-10-01 11:45:30 43a2.15
+[~] Проверка верcии движка
+        - /ajax_version_check.php преобразован в класс \Tools\VersionCheckerDeprecated
+        - В init.php переделан вызов версион-чекера
+
 
 2017-09-30 10:41:09 43a2.10
 [@] Код
