@@ -5,6 +5,7 @@ namespace Common;
 use \classSupernova;
 use Core\Watchdog;
 use Event\EventBus;
+use Meta\Economic\EconomicHelper;
 
 /**
  * Class GlobalContainer
@@ -26,6 +27,8 @@ use Event\EventBus;
  * @property \FleetDispatcher $fleetDispatcher
  * @property Watchdog         $watchdog
  * @property EventBus         $eventBus
+ *
+ * @property EconomicHelper   $economicHelper
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
  * @property \TheUser         $theUser
@@ -115,6 +118,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->eventBus = function (GlobalContainer $gc) {
       return new EventBus($gc);
+    };
+
+    $gc->economicHelper = function (GlobalContainer $gc) {
+      return new EconomicHelper($gc);
     };
 
     // Dummy objects ---------------------------------------------------------------------------------------------------

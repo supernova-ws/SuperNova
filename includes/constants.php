@@ -10,7 +10,11 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a2.15');
+define('SN_VERSION', '43a2.16
+42
+42
+42c2
+');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -840,6 +844,9 @@ define('HULL_SIZE_MEDIUM', 3);
 define('HULL_SIZE_LARGE', 4);
 define('HULL_SIZE_HUGE', 5);
 
+
+// === UNITS
+define('UNIT_ANY', 0);
 
 // === Structures
 define('UNIT_STRUCTURES', 99);

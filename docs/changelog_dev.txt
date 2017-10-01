@@ -815,6 +815,17 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+2017-10-01 13:25:49 43a2.16
+42
+42
+42c2
+
+[@] Код
+    Добавлен класс \Meta\Economic\EconomicHelper
+        - Метод ::getResourcesExchange() - бывш. general.php::get_resource_exchange()
+        - Юнит-тесты
+
+
 2017-10-01 11:45:30 43a2.15
 [~] Проверка верcии движка
         - /ajax_version_check.php преобразован в класс \Tools\VersionCheckerDeprecated

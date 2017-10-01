@@ -1325,25 +1325,13 @@ function sn_module_get_active_count($group = '*') {
   return $active_modules;
 }
 
+/**
+ * Gets current exchange rates
+ *
+ * @return float[] - [int resourceId] -> [float configuredExchangeRate]
+ */
 function get_resource_exchange() {
-  static $rates;
-
-  if (!$rates) {
-    global $config;
-
-    $rates = array(
-      RES_METAL       => 'rpg_exchange_metal',
-      RES_CRYSTAL     => 'rpg_exchange_crystal',
-      RES_DEUTERIUM   => 'rpg_exchange_deuterium',
-      RES_DARK_MATTER => 'rpg_exchange_darkMatter',
-    );
-
-    foreach ($rates as &$rate) {
-      $rate = classSupernova::$config->$rate;
-    }
-  }
-
-  return $rates;
+  return classSupernova::$gc->economicHelper->getResourcesExchange();
 }
 
 function get_unit_cost_in(&$cost, $in_resource = RES_METAL) {
