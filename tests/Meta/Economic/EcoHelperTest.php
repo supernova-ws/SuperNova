@@ -9,7 +9,7 @@ use \Common\GlobalContainer;
 use \classConfig;
 
 /**
- * Class EcoBuildDataTest
+ * Class EcoHelperTest
  * @coversDefaultClass \Meta\Economic\EconomicHelper
  *
  * @package Meta\Economic
@@ -17,7 +17,7 @@ use \classConfig;
  *
  * Testing cost calculations
  */
-class EcoBuildDataTest extends \PHPUnit_Framework_TestCase {
+class EcoHelperTest extends \PHPUnit_Framework_TestCase {
 
   /**
    * @var EconomicHelper $object
