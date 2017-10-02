@@ -236,9 +236,7 @@ class template
   */
   function display($handle, $include_once = true)
   {
-    global $phpbb_hook,
-          // This is used for accessing from compiled templates via include
-           $user, $lang, $config;
+    global $phpbb_hook;
 
     if (!empty($phpbb_hook) && $phpbb_hook->call_hook(array(__CLASS__, __FUNCTION__), $handle, $include_once))
     {
@@ -263,7 +261,8 @@ class template
     }
     else
     {
-      eval(' ?>' . $this->compiled_code[$handle] . '<?php ');
+/*      eval(' ?>' . $this->compiled_code[$handle] . '<?php ');*/
+      $this->evaluate($this->compiled_code[$handle]);
     }
 
     return true;
@@ -677,8 +676,6 @@ class template
   */
   function _tpl_include($filename, $include = true)
   {
-    global $lang, $config;
-
     $handle = $filename;
     $this->filename[$handle] = $filename;
     $this->files[$handle] = $this->root . '/' . $filename;
@@ -691,14 +688,14 @@ class template
 
     if ($include)
     {
-      global $user;
 
       if ($filename)
       {
         include($filename);
         return;
       }
-      eval(' ?>' . $this->compiled_code[$handle] . '<?php ');
+/*      eval(' ?>' . $this->compiled_code[$handle] . '<?php ');*/
+      $this->evaluate($this->compiled_code[$handle]);
     }
   }
 
@@ -753,16 +750,28 @@ class template
     }
   }
 
+  /**
+   * This function will be called from compiled template to re-render variables - i.e. allow late binding of values aka accessing variable value by it's name in template var
+   *
+   * @param string $stringTag
+   *
+   * @return mixed|string
+   */
   public function reRender($stringTag) {
-    // This is used to access global vars
-    global $lang, $config, $user;
-
     $tplTag = new PTLTag($stringTag, $this);
     $result = $tplTag->resolved;
     $this->compiler->compile_var_tags($result);
-    eval('?>' . $result);
+/*    eval(' ?>' . $result . '<?php ');*/
+    $this->evaluate($result);
 
     return $result;
+  }
+
+  protected function evaluate($code) {
+    // This is used to access global vars
+    global $lang, $config, $user;
+
+    eval(' ?>' . $code . '<?php ');
   }
 
 }
