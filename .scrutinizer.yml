@@ -18,14 +18,24 @@ build:
 #                        use_website_config: true
 checks:
      php:
-         fix_php_opening_tag: false
-         remove_php_closing_tag: true
-         no_mixed_inline_html: false
-         require_braces_around_control_structures: false
-         psr2_control_structure_declaration: false
-         avoid_superglobals: false
-         security_vulnerabilities: true
-         no_exit: false
+        avoid_superglobals: false
+        check_method_contracts:
+            verify_interface_like_constraints: true
+            verify_documented_constraints: true
+            verify_parent_constraints: true
+        fix_php_opening_tag: false
+        remove_php_closing_tag: true
+        no_exit: false
+        no_long_variable_names:
+            maximum: '30'
+        no_mixed_inline_html: false
+        parameter_doc_comments: true
+        psr2_control_structure_declaration: false
+        require_braces_around_control_structures: false
+        return_doc_comments: true
+        security_vulnerabilities: true
+        simplify_boolean_return: true
+
 filter:
 #     excluded_paths:
 #         - admin/sxd/*
