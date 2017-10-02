@@ -51,6 +51,11 @@ class classSupernova {
    */
   public static $cache;
 
+  /**
+   * @var classLocale $lang
+   */
+  public static $lang;
+
 
   /**
    * @var core_auth $auth

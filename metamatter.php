@@ -23,7 +23,7 @@ $template = gettemplate('metamatter', true);
 // $player_currency_default = player_load_option($user, PLAYER_OPTION_CURRENCY_DEFAULT);
 $player_currency_default = classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT];
 $player_currency = sys_get_param_str('player_currency', $player_currency_default);
-empty($lang['pay_currency_list'][$player_currency]) ? ($player_currency =  $player_currency_default ? $player_currency_default : classSupernova::$config->payment_currency_default) : false;
+empty(classSupernova::$lang['pay_currency_list'][$player_currency]) ? ($player_currency =  $player_currency_default ? $player_currency_default : classSupernova::$config->payment_currency_default) : false;
 // $player_currency_default != $player_currency ? player_save_option($user, PLAYER_OPTION_CURRENCY_DEFAULT, $player_currency) : false;
 $player_currency_default != $player_currency ? classSupernova::$user_options[PLAYER_OPTION_CURRENCY_DEFAULT] = $player_currency : false;
 
@@ -72,7 +72,7 @@ if(isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus_
         'SUM' => $sum,
         'DISCOUNT' => $discount * 100,
         'DISCOUNT_ONE' => 1 + $discount,
-        'TEXT' => sprintf($lang['pay_mm_bonus_each'], pretty_number($sum), round($discount * 100)),
+        'TEXT' => sprintf(classSupernova::$lang['pay_mm_bonus_each'], pretty_number($sum), round($discount * 100)),
       ));
       $prev_discount = $discount;
     }
@@ -84,17 +84,17 @@ if($payment_id = sys_get_param_id('payment_id')) {
   $payment = doquery("SELECT * FROM {{payment}} WHERE `payment_id` = {$payment_id} LIMIT 1;", true);
   if($payment && $payment['payment_user_id'] == $user['id']) {
     if($payment['payment_status'] == PAYMENT_STATUS_COMPLETE) {
-      $template->assign_block_vars('result', array('MESSAGE' => sprintf($lang['pay_msg_mm_purchase_complete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name'], $payment['payment_dark_matter_gained'])));
+      $template->assign_block_vars('result', array('MESSAGE' => sprintf(classSupernova::$lang['pay_msg_mm_purchase_complete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name'], $payment['payment_dark_matter_gained'])));
     }
     if($payment['payment_status'] == PAYMENT_STATUS_NONE) {
       $template->assign_block_vars('result', array(
-        'MESSAGE' => sprintf($lang['pay_msg_mm_purchase_incomplete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name']),
+        'MESSAGE' => sprintf(classSupernova::$lang['pay_msg_mm_purchase_incomplete'], $payment['payment_dark_matter_paid'], $payment['payment_module_name']),
         'STATUS' => 1,
       ));
     }
     if($payment['payment_test']) {
       $template->assign_block_vars('result', array(
-        'MESSAGE' => sprintf($lang['pay_msg_mm_purchase_test']),
+        'MESSAGE' => sprintf(classSupernova::$lang['pay_msg_mm_purchase_test']),
         'STATUS' => -1,
       ));
     }
@@ -143,7 +143,7 @@ foreach($payment_methods_available as $payment_type_id => $payment_methods) {
 
   $template_result['.']['payment'][$payment_type_id] =array(
     'ID' => $payment_type_id,
-    'NAME' => $lang['pay_methods'][$payment_type_id],
+    'NAME' => classSupernova::$lang['pay_methods'][$payment_type_id],
   );
   foreach($payment_methods as $payment_method_id => $module_list) {
     if(empty($module_list)) {
@@ -151,7 +151,7 @@ foreach($payment_methods_available as $payment_type_id => $payment_methods) {
     }
     $template_result['.']['payment'][$payment_type_id]['.']['method'][$payment_method_id] = array(
       'ID'         => $payment_method_id,
-      'NAME'       => $lang['pay_methods'][$payment_method_id],
+      'NAME'       => classSupernova::$lang['pay_methods'][$payment_method_id],
       'IMAGE'      => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'])
         ? sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['image'] : '',
       'NAME_FORCE' => isset(sn_module_payment::$payment_methods[$payment_type_id][$payment_method_id]['name']),
@@ -192,13 +192,13 @@ if($payment_type_selected && $payment_method_selected) {
   foreach($payment_methods_available[$payment_type_selected][$payment_method_selected] as $module_name => $temp) {
     $template->assign_block_vars('payment_module', array(
       'ID' => $module_name,
-      'NAME' => $lang["module_{$module_name}_name"],
-      'DESCRIPTION' => $lang["module_{$module_name}_description"],
+      'NAME' => classSupernova::$lang["module_{$module_name}_name"],
+      'DESCRIPTION' => classSupernova::$lang["module_{$module_name}_description"],
     ));
   }
 }
 
-foreach($lang['pay_currency_list'] as $key => $value) {
+foreach(classSupernova::$lang['pay_currency_list'] as $key => $value) {
   $course = get_exchange_rate($key);
   if(!$course) {
     continue;
@@ -251,7 +251,7 @@ if($request['metamatter'] && $payment_module) {
         'PAY_LINK_URL' => $pay_link['PAY_LINK_URL'],
       ));
     } else {
-      throw new exception($lang['pay_msg_request_paylink_unsupported'], ERR_ERROR);
+      throw new exception(classSupernova::$lang['pay_msg_request_paylink_unsupported'], ERR_ERROR);
     }
   } catch(exception $e) {
     $template->assign_block_vars('result', $response = array(
@@ -283,17 +283,17 @@ $bonus_percent = round(sn_module_payment::bonus_calculate($request['metamatter']
 $income_metamatter_text = pretty_number(sn_module_payment::bonus_calculate($request['metamatter']), true, true);
 
 $template->assign_vars(array(
-  'PAGE_HEADER' => $lang['sys_metamatter'],
+  'PAGE_HEADER' => classSupernova::$lang['sys_metamatter'],
 
   'URL_PURCHASE' => classSupernova::$config->url_purchase_metamatter,
 
   'PAYMENT_TYPE' => $payment_type_selected,
   'PAYMENT_METHOD' => $payment_method_selected,
-  'PAYMENT_METHOD_NAME' => $lang['pay_methods'][$payment_method_selected],
+  'PAYMENT_METHOD_NAME' => classSupernova::$lang['pay_methods'][$payment_method_selected],
 
   'PAYMENT_MODULE' => $payment_module,
-  'PAYMENT_MODULE_NAME' => $lang["module_{$payment_module}_name"],
-  'PAYMENT_MODULE_DESCRIPTION' => $lang["module_{$payment_module}_description"],
+  'PAYMENT_MODULE_NAME' => classSupernova::$lang["module_{$payment_module}_name"],
+  'PAYMENT_MODULE_DESCRIPTION' => classSupernova::$lang["module_{$payment_module}_description"],
 
   'PLAYER_CURRENCY' => $player_currency,
   'PLAYER_CURRENCY_PRICE_PER_MM' => sn_module_payment::currency_convert(1, $player_currency, 'MM_', 10),
@@ -305,22 +305,22 @@ $template->assign_vars(array(
   'UNIT_AMOUNT_TEXT_COST_BASE' => pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
 
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number(get_mm_cost(), true, true),
-  'PAYMENT_CURRENCY_DEFAULT_TEXT' => $lang['pay_currency_list'][classSupernova::$config->payment_currency_default],
+  'PAYMENT_CURRENCY_DEFAULT_TEXT' => classSupernova::$lang['pay_currency_list'][classSupernova::$config->payment_currency_default],
 
   'METAMATTER' => mrc_get_level($user, '', RES_METAMATTER),
 
-  'METAMATTER_COST_TEXT' => sprintf($lang['pay_mm_buy_conversion_cost'],
+  'METAMATTER_COST_TEXT' => sprintf(classSupernova::$lang['pay_mm_buy_conversion_cost'],
     pretty_number($request['metamatter'], true, true),
     pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $currency), 2, true),
     $currency),
   'METAMATTER_COST_BONUS_TEXT' => $bonus_percent
-    ? sprintf($lang['pay_mm_buy_real_income'], pretty_number($bonus_percent, true, true), $income_metamatter_text)
+    ? sprintf(classSupernova::$lang['pay_mm_buy_real_income'], pretty_number($bonus_percent, true, true), $income_metamatter_text)
     : '',
 
-  'DARK_MATTER_DESCRIPTION' => $lang['info'][RES_DARK_MATTER]['description'],
+  'DARK_MATTER_DESCRIPTION' => classSupernova::$lang['info'][RES_DARK_MATTER]['description'],
 
   'PAYMENT_AVAILABLE' => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
 
 ));
 
-display($template, $lang['sys_metamatter']);
+display($template, classSupernova::$lang['sys_metamatter']);

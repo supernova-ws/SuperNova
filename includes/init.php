@@ -92,7 +92,7 @@ $sn_page_name = INITIAL_PAGE;
 global $template_result;
 $template_result = array('.' => array('result' => array()));
 
-$lang = new classLocale(classSupernova::$config->server_locale_log_usage);
+classSupernova::$lang = $lang = new classLocale(classSupernova::$config->server_locale_log_usage);
 
 
 global $sn_data, $sn_mvc;
