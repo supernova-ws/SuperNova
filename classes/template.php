@@ -760,16 +760,7 @@ class template
     $tplTag = new PTLTag($stringTag, $this);
     $result = $tplTag->resolved;
     $this->compiler->compile_var_tags($result);
-    eval('?>' . $result . '<?php;');
-
-//    if(strpos($stringTag, '$') !== false) {
-//      // Processing template DEFINE-d variables
-//    }
-//    elseif(strpos($stringTag, '.') !== false) {
-//      // Processing block variables
-//    }
-//    else { //if(isset($this->_rootref[$stringTag])) {
-//    }
+    eval('?>' . $result);
 
     return $result;
   }
