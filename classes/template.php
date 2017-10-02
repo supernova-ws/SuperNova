@@ -236,6 +236,9 @@ class template
   */
   function display($handle, $include_once = true)
   {
+    /**
+     * @var phpbb_hook $phpbb_hook
+     */
     global $phpbb_hook;
 
     if (!empty($phpbb_hook) && $phpbb_hook->call_hook(array(__CLASS__, __FUNCTION__), $handle, $include_once))
