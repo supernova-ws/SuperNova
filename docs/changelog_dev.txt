@@ -824,6 +824,8 @@ https://money.yandex.ru/embed/quickpay/small.xml
 [*] Убрать \phpbb_hook из кода и ссылки на его использование
 
 
+[*] !!!! Логгировать изменения емейлов!
+
 #ctv
 
 
