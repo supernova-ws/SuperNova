@@ -1,11 +1,11 @@
 build:
-#    tests:
-#        override:
-#            -
-#                command: 'vendor/bin/phpunit --coverage-clover=some-file tests --configuration tests/phpunit.xml'
-#                coverage:
-#                    file: 'some-file'
-#                    format: 'clover'
+    tests:
+        override:
+            -
+                command: 'vendor/bin/phpunit --coverage-clover=some-file tests --configuration tests/phpunit.xml'
+                coverage:
+                    file: 'some-file'
+                    format: 'clover'
     environment:
         php: 5.6
 #    nodes:
