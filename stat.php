@@ -127,7 +127,7 @@ while ($row = db_fetch($query)) {
     'ID' => $row['id'],
     'RANK'        => $row['rank'],
     'RANK_CHANGE' => $row['rank_old'] ? $row['rank_old'] - $row['rank'] : 0,
-    'POINTS' => pretty_number($row['points']),
+    'POINTS' => HelperString::numberFloorAndFormat($row['points']),
   );
 
   if($who == 1) {
@@ -138,7 +138,7 @@ while ($row = db_fetch($query)) {
 //      // TODO - Добавлять реальное имя игрока на Блице для закрытого раунда
   } else {
     $row_stat['MEMBERS'] = $row['ally_members'];
-    $row_stat['POINTS_PER_MEMBER'] = pretty_number(floor($row['points'] / $row['ally_members']));
+    $row_stat['POINTS_PER_MEMBER'] = HelperString::numberFloorAndFormat(floor($row['points'] / $row['ally_members']));
     $row_stat['NAME'] = $row['name'];
   }
 

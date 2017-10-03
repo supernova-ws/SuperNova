@@ -91,11 +91,11 @@ function flt_mission_spy(&$mission_data)
     $spy_message .= " ({$lang['Player_']} '{$target_user_row['username']}') {$lang['On_']} ";
     $spy_message .= date(FMT_DATE_TIME, $fleet_row['fleet_end_time']);
     $spy_message .= "</td></tr><tr>";
-    $spy_message .= "<td width=220>{$lang['sys_metal']}</td><td width=220 align=right>" . pretty_number($target_planet_row['metal']) . "</td>";
-    $spy_message .= "<td width=220>{$lang['sys_crystal']}</td></td><td width=220 align=right>" . pretty_number($target_planet_row['crystal']) . "</td>";
+    $spy_message .= "<td width=220>{$lang['sys_metal']}</td><td width=220 align=right>" . HelperString::numberFloorAndFormat($target_planet_row['metal']) . "</td>";
+    $spy_message .= "<td width=220>{$lang['sys_crystal']}</td></td><td width=220 align=right>" . HelperString::numberFloorAndFormat($target_planet_row['crystal']) . "</td>";
     $spy_message .= "</tr><tr>";
-    $spy_message .= "<td width=220>{$lang['sys_deuterium']}</td><td width=220 align=right>" . pretty_number($target_planet_row['deuterium'])  . "</td>";
-    $spy_message .= "<td width=220>{$lang['sys_energy']}</td><td width=220 align=right>" . pretty_number($target_planet_row['energy_max']) . "</td>";
+    $spy_message .= "<td width=220>{$lang['sys_deuterium']}</td><td width=220 align=right>" . HelperString::numberFloorAndFormat($target_planet_row['deuterium'])  . "</td>";
+    $spy_message .= "<td width=220>{$lang['sys_energy']}</td><td width=220 align=right>" . HelperString::numberFloorAndFormat($target_planet_row['energy_max']) . "</td>";
     $spy_message .= "</tr>";
     if ($spy_diff >= 2)
     {

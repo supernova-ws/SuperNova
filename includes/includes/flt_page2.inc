@@ -44,7 +44,7 @@ function sn_fleet_page2() {
       $template->assign_block_vars('fleets.ships', array(
         'ID'          => $ship_id,
         'AMOUNT'      => $ship_count,
-        'AMOUNT_TEXT' => pretty_number($ship_count),
+        'AMOUNT_TEXT' => HelperString::numberFloorAndFormat($ship_count),
 //        'CONSUMPTION' => $ship_base_data['consumption'],
 //        'SPEED'       => $ship_base_data['speed'],
         'NAME'        => $lang['tech'][$ship_id],
@@ -85,7 +85,7 @@ function sn_fleet_page2() {
     $template->assign_block_vars('resources', array(
       'ID' => $i,
       'ON_PLANET' => floor($amount),
-      'TEXT' => pretty_number($amount),
+      'TEXT' => HelperString::numberFloorAndFormat($amount),
       'NAME' => $lang['sys_' . $sn_group_resources[$i]],
     ));
   }

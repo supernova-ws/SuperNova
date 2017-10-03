@@ -20,6 +20,11 @@ function sn_admin_planet_edit_mode(&$template, &$admin_planet_edit_mode_list)
 }
 
 function admin_planet_edit_template(&$template, $edit_planet_row, $mode){return sn_function_call('admin_planet_edit_template', array(&$template, $edit_planet_row, $mode));}
+/**
+ * @param template $template
+ * @param $edit_planet_row
+ * @param $mode
+ */
 function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
 {
   global $lang;
@@ -36,7 +41,7 @@ function sn_admin_planet_edit_template(&$template, $edit_planet_row, $mode)
     $template->assign_block_vars('unit', array(
       'ID'    => $unit_id,
       'NAME'  => $name_list[$unit_id],
-      'TEXT'  => pretty_number(mrc_get_level($user, $edit_planet_row, $unit_id, false, true)),
+      'TEXT'  => HelperString::numberFloorAndFormat(mrc_get_level($user, $edit_planet_row, $unit_id, false, true)),
       'VALUE' => '',
     ));
   }

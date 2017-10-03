@@ -56,7 +56,7 @@ foreach($show_groups as $unit_group_id => $mode)
         $template->assign_block_vars('records', array(
           'UNIT' => $unit_name,
           'USER' => $data_row['username'] ? js_safe_string($data_row['username']) : $lang['rec_rien'],
-          'COUNT' => $data_row['unit_level'] ? pretty_number($data_row['unit_level']) : $lang['rec_rien'],
+          'COUNT' => $data_row['unit_level'] ? HelperString::numberFloorAndFormat($data_row['unit_level']) : $lang['rec_rien'],
         ));
       }
     }

@@ -31,13 +31,13 @@ if($unit_type == UNIT_SHIPS) {
   $ship_data = get_ship_data($unit_id, $user);
 
   $template_result += array(
-    'BASE_SPEED'         => pretty_number($ship_data['speed_base']),
-    'ACTUAL_SPEED'       => pretty_number($ship_data['speed']),
-    'BASE_CONSUMPTION'   => pretty_number($ship_data['consumption_base']),
-    'ACTUAL_CONSUMPTION' => pretty_number($ship_data['consumption']),
+    'BASE_SPEED'         => HelperString::numberFloorAndFormat($ship_data['speed_base']),
+    'ACTUAL_SPEED'       => HelperString::numberFloorAndFormat($ship_data['speed']),
+    'BASE_CONSUMPTION'   => HelperString::numberFloorAndFormat($ship_data['consumption_base']),
+    'ACTUAL_CONSUMPTION' => HelperString::numberFloorAndFormat($ship_data['consumption']),
 
-    'BASE_CAPACITY'   => pretty_number($unit_data['capacity']),
-    'ACTUAL_CAPACITY' => pretty_number($ship_data['capacity']),
+    'BASE_CAPACITY'   => HelperString::numberFloorAndFormat($unit_data['capacity']),
+    'ACTUAL_CAPACITY' => HelperString::numberFloorAndFormat($ship_data['capacity']),
   );
 
   $engine_template_info = array();
@@ -48,10 +48,10 @@ if($unit_type == UNIT_SHIPS) {
       'NAME'               => $lang['tech'][$unit_engine_data['tech']],
       'MIN_LEVEL'          => $unit_engine_data['min_level'],
       'USER_TECH_LEVEL'    => mrc_get_level($user, null, $unit_engine_data['tech']),
-      'BASE_SPEED'         => pretty_number($unit_engine_data['speed_base']),
-      'BASE_CONSUMPTION'   => pretty_number($unit_engine_data['consumption_base']),
-      'ACTUAL_SPEED'       => pretty_number($unit_engine_data['speed']),
-      'ACTUAL_CONSUMPTION' => pretty_number($unit_engine_data['consumption']),
+      'BASE_SPEED'         => HelperString::numberFloorAndFormat($unit_engine_data['speed_base']),
+      'BASE_CONSUMPTION'   => HelperString::numberFloorAndFormat($unit_engine_data['consumption_base']),
+      'ACTUAL_SPEED'       => HelperString::numberFloorAndFormat($unit_engine_data['speed']),
+      'ACTUAL_CONSUMPTION' => HelperString::numberFloorAndFormat($unit_engine_data['consumption']),
     );
   }
   $template_result['.']['engine'] = $engine_template_info;
@@ -89,13 +89,13 @@ if(in_array($unit_id, $sn_data_group_combat)) {
   $template_result['.']['volley'] = $volley_arr;
 
   $template_result += array(
-    'BASE_ARMOR'  => pretty_number($unit_data['armor']),
-    'BASE_SHIELD' => pretty_number($unit_data['shield']),
-    'BASE_WEAPON' => pretty_number($unit_data['attack']),
+    'BASE_ARMOR'  => HelperString::numberFloorAndFormat($unit_data['armor']),
+    'BASE_SHIELD' => HelperString::numberFloorAndFormat($unit_data['shield']),
+    'BASE_WEAPON' => HelperString::numberFloorAndFormat($unit_data['attack']),
 
-    'ACTUAL_ARMOR'  => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_data['armor'])),
-    'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_data['shield'])),
-    'ACTUAL_WEAPON' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_data['attack'])),
+    'ACTUAL_ARMOR'  => HelperString::numberFloorAndFormat(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_data['armor'])),
+    'ACTUAL_SHIELD' => HelperString::numberFloorAndFormat(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_data['shield'])),
+    'ACTUAL_WEAPON' => HelperString::numberFloorAndFormat(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_data['attack'])),
   );
 
 }

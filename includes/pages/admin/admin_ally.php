@@ -73,7 +73,7 @@ function sn_admin_ally_view_all($template = null) {
   foreach (\Alliance\RecordAlliance::findAll([]) as $alliance) {
     $rendered = $alliance->ptlArray();
     $rendered['CREATED_SQL'] = date(FMT_DATE_TIME_SQL, $alliance->createdUnixTime);
-    $rendered['STAT_POINTS_TEXT'] = pretty_number($alliance->statPoints);
+    $rendered['STAT_POINTS_TEXT'] = HelperString::numberFloorAndFormat($alliance->statPoints);
     $template->assign_block_vars('ally', $rendered);
   };
 

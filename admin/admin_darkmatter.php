@@ -64,7 +64,7 @@ function admin_dark_matter_model($lang, $user) {
     'adm_dm_user_added',
     ERR_NONE,
     null,
-    array($row['username'], $row['id'], pretty_number($points))
+    array($row['username'], $row['id'], HelperString::numberFloorAndFormat($points))
   );
 }
 

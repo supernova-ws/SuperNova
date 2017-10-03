@@ -104,7 +104,7 @@ if($TargetPlanet = sys_get_param_id('jmpto'))
         'SHIP_ID'         => $Ship,
         'SHIP_NAME'       => $lang['tech'][$Ship],
         'SHIP_COUNT'      => $ship_count,
-        'SHIP_COUNT_TEXT' => pretty_number($ship_count),
+        'SHIP_COUNT_TEXT' => HelperString::numberFloorAndFormat($ship_count),
       ));
     }
 

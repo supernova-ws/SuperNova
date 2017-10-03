@@ -36,7 +36,7 @@ GROUP BY log_dark_matter_reason, IF(sign((log_dark_matter_amount)) > 0, 1, -1) O
 while($row = classSupernova::$db->db_fetch($result)) {
   $row['CONSTANT'] = $rpgConstants[$row['REASON']];
 
-  $row['DM_AMOUNT_TEXT'] = pretty_number($row['DM_AMOUNT']);
+  $row['DM_AMOUNT_TEXT'] = HelperString::numberFloorAndFormat($row['DM_AMOUNT']);
 
 //  $row['TOTAL_AMOUNT'] = $row['DM_AMOUNT'];
 //  $row['TOTAL_COUNT'] = $row['DM_COUNT'];
@@ -61,7 +61,7 @@ while($row = classSupernova::$db->db_fetch($result)) {
   }
 
   $row['CONSTANT'] = $rpgConstants[$row['REASON']];
-  $row['MM_AMOUNT_TEXT'] = pretty_number($row['MM_AMOUNT']);
+  $row['MM_AMOUNT_TEXT'] = HelperString::numberFloorAndFormat($row['MM_AMOUNT']);
 
   $spent[$row['BALANCE']] = array_merge_recursive_numeric($spent[$row['BALANCE']], $row);
 }
@@ -69,8 +69,8 @@ while($row = classSupernova::$db->db_fetch($result)) {
 foreach($spent as &$row) {
   @$row['TOTAL_COUNT'] = $row['MM_COUNT'] + $row['DM_COUNT'];
   @$row['TOTAL_AMOUNT'] = $row['MM_AMOUNT'] + $row['DM_AMOUNT'];
-  @$row['TOTAL_AMOUNT_TEXT'] = pretty_number($row['TOTAL_AMOUNT']);
-  @$row['TOTAL_COUNT_TEXT'] = pretty_number($row['TOTAL_COUNT']);
+  @$row['TOTAL_AMOUNT_TEXT'] = HelperString::numberFloorAndFormat($row['TOTAL_AMOUNT']);
+  @$row['TOTAL_COUNT_TEXT'] = HelperString::numberFloorAndFormat($row['TOTAL_COUNT']);
 }
 
 usort($spent, function ($a, $b) {

@@ -513,14 +513,14 @@ function sn_ube_report_round_fleet(&$combat_data, $round)
         $ship_template = array(
           'ID' => $unit_id,
           'NAME' => $lang['tech'][$unit_id],
-          'ATTACK' => pretty_number($fleet_data[UBE_ATTACK][$unit_id]),
-          'SHIELD' => pretty_number($shields_original),
-          'SHIELD_LOST' => pretty_number($shields_original - $fleet_data[UBE_SHIELD][$unit_id]),
-          'ARMOR' => pretty_number($fleet_data_prev[UBE_ARMOR][$unit_id]),
-          'ARMOR_LOST' => pretty_number($fleet_data_prev[UBE_ARMOR][$unit_id] - $fleet_data[UBE_ARMOR][$unit_id]),
-          'UNITS' => pretty_number($fleet_data_prev[UBE_COUNT][$unit_id]),
-          'UNITS_LOST' => pretty_number($fleet_data_prev[UBE_COUNT][$unit_id] - $fleet_data[UBE_COUNT][$unit_id]),
-          'UNITS_BOOM' => pretty_number($fleet_data[UBE_UNITS_BOOM][$unit_id]),
+          'ATTACK' => HelperString::numberFloorAndFormat($fleet_data[UBE_ATTACK][$unit_id]),
+          'SHIELD' => HelperString::numberFloorAndFormat($shields_original),
+          'SHIELD_LOST' => HelperString::numberFloorAndFormat($shields_original - $fleet_data[UBE_SHIELD][$unit_id]),
+          'ARMOR' => HelperString::numberFloorAndFormat($fleet_data_prev[UBE_ARMOR][$unit_id]),
+          'ARMOR_LOST' => HelperString::numberFloorAndFormat($fleet_data_prev[UBE_ARMOR][$unit_id] - $fleet_data[UBE_ARMOR][$unit_id]),
+          'UNITS' => HelperString::numberFloorAndFormat($fleet_data_prev[UBE_COUNT][$unit_id]),
+          'UNITS_LOST' => HelperString::numberFloorAndFormat($fleet_data_prev[UBE_COUNT][$unit_id] - $fleet_data[UBE_COUNT][$unit_id]),
+          'UNITS_BOOM' => HelperString::numberFloorAndFormat($fleet_data[UBE_UNITS_BOOM][$unit_id]),
         );
 
         $fleet_template['.']['ship'][] = $ship_template;
@@ -548,7 +548,7 @@ function sn_ube_report_table_render(&$array, $header)
       {
         $result[] = array(
           'NAME' => $lang['tech'][$unit_id],
-          'LOSS' => pretty_number($unit_count),
+          'LOSS' => HelperString::numberFloorAndFormat($unit_count),
         );
       }
     }
@@ -626,7 +626,7 @@ function sn_ube_report_generate(&$combat_data, &$template_result)
     {
       $debris[] = array(
         'NAME' => $lang['tech'][$resource_id],
-        'AMOUNT' => pretty_number($resource_amount),
+        'AMOUNT' => HelperString::numberFloorAndFormat($resource_amount),
       );
     }
   }

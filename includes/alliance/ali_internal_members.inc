@@ -158,7 +158,7 @@ foreach($userList as $userRow)
     'GALAXY' => $userRow['galaxy'],
     'SYSTEM' => $userRow['system'],
     'PLANET' => $userRow['planet'],
-    'POINTS' => pretty_number($userRow['total_points']),
+    'POINTS' => HelperString::numberFloorAndFormat($userRow['total_points']),
     'ONLINE' => '<font color=' . $tmp . '</font>',
     'RANK' => $ally_range,
     'REGISTER_TIME' => date(FMT_DATE_TIME, $userRow['ally_register_time']),

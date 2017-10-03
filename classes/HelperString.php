@@ -85,4 +85,16 @@ class HelperString {
     return strtolower(trim(preg_replace(/** @lang RegExp */ '/(?<!^)[A-Z]/', '_\0', $string), '_'));
   }
 
+  /**
+   * Formats number to string in Cyrillic format
+   *
+   * @param int|float $number
+   * @param int       $decimals
+   *
+   * @return string
+   */
+  public static function numberFloorAndFormat($number, $decimals = 0) {
+    return number_format(floor($number), $decimals, ',', '.');
+  }
+
 }

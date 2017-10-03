@@ -53,7 +53,7 @@ foreach($ships as $ship_id => $ship_count) {
     $template->assign_block_vars('fleets.ships', array(
       'ID'          => $ship_id,
       'AMOUNT'      => $ship_count,
-      'AMOUNT_TEXT' => pretty_number($ship_count),
+      'AMOUNT_TEXT' => HelperString::numberFloorAndFormat($ship_count),
       'CONSUMPTION' => $ship_base_data['consumption'],
       'SPEED'       => $ship_base_data['speed'],
       'NAME'        => $lang['tech'][$ship_id],
@@ -129,7 +129,7 @@ $template->assign_vars(array(
   'fleet_speed'     => flt_fleet_speed($user, $fleet['fleetarray']),
   'fleet_capacity'  => $fleet['capacity'],
 
-  'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
+  'PLANET_DEUTERIUM'   => HelperString::numberFloorAndFormat($planetrow['deuterium']),
 
   'PAGE_HINT'       => $lang['fl_page1_hint'],
 ));

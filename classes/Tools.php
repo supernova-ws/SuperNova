@@ -69,7 +69,7 @@ class Tools {
    * @see Tools::fillPercentStyle
    */
   public static function numberPercentSpan($value, $sample) {
-    return "<span class=\"" . self::fillPercentStyle($value, $sample) . "\">" . pretty_number($value) . "</span>";
+    return "<span class=\"" . self::fillPercentStyle($value, $sample) . "\">" . HelperString::numberFloorAndFormat($value) . "</span>";
   }
 
 }

@@ -705,11 +705,11 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
     'NAVBAR_MODE'                 => $GET_mode,
 
     'TOPNAV_DARK_MATTER'            => mrc_get_level($user, '', RES_DARK_MATTER),
-    'TOPNAV_DARK_MATTER_TEXT'       => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER)),
+    'TOPNAV_DARK_MATTER_TEXT'       => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_DARK_MATTER)),
     'TOPNAV_DARK_MATTER_PLAIN'      => mrc_get_level($user, '', RES_DARK_MATTER, false, true),
     'TOPNAV_DARK_MATTER_PLAIN_TEXT' => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER, false, true)),
     'TOPNAV_METAMATTER'             => mrc_get_level($user, '', RES_METAMATTER),
-    'TOPNAV_METAMATTER_TEXT'        => pretty_number(mrc_get_level($user, '', RES_METAMATTER)),
+    'TOPNAV_METAMATTER_TEXT'        => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_METAMATTER)),
 
     // TODO ГРЯЗНЫЙ ХАК!!!
     'TOPNAV_PAYMENT'                => sn_module_get_active_count('payment') && !defined('SN_GOOGLE'),
@@ -1105,5 +1105,5 @@ function tplAddPlus($value) {
  * @return string
  */
 function tplPrettyPlus($value) {
-  return ($value >= 0 ? '+' : '') . pretty_number($value);
+  return ($value >= 0 ? '+' : '') . HelperString::numberFloorAndFormat($value);
 }

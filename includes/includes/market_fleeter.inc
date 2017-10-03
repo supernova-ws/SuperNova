@@ -73,7 +73,7 @@ if(is_array($shipList)) {
       $total[$resID] += $resCount;
     }
 
-    $message .= "<li>{$lang['tech'][$shipID]}: " . pretty_number($shipCount);
+    $message .= "<li>{$lang['tech'][$shipID]}: " . HelperString::numberFloorAndFormat($shipCount);
   }
 
   if($mode == MARKET_STOCKMAN && $intError == MARKET_DEAL) {
@@ -99,7 +99,7 @@ if(is_array($shipList)) {
       // $newrow[$resID] = $planetrow[$resID] + $resCount * (-$multiplier);
       $qry[] = "`{$resource_name}` = `{$resource_name}` + ({$resCount})";
 
-      $message .= "<li>" . $lang['sys_' . $resource_name] . ": " . pretty_number(abs($resCount));
+      $message .= "<li>" . $lang['sys_' . $resource_name] . ": " . HelperString::numberFloorAndFormat(abs($resCount));
     }
     $message .= "</ul>";
 

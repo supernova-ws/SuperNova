@@ -72,7 +72,7 @@ function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerI
   $sprintfPayload = array(
     $account->account_name,
     $account->account_id,
-    pretty_number($points),
+    HelperString::numberFloorAndFormat($points),
     !empty($row['id']) ? $row['id'] : 0,
     !empty($row['username']) ? $row['username'] : ''
   );

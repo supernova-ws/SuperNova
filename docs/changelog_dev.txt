@@ -826,19 +826,39 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 [*] !!!! Логгировать изменения емейлов!
 
+
+Заменить pretty_number в модулях
+
+mrc_get_level - разбить на разные функции:
+    - unitGetLevelOnUser
+    - итд
+
+Заменить двойные кавычки одинарными
+
+Листание сообщений (?)
+
+Шпионаж - генерировать отчёты не в форме текста
+
+
+
 #ctv
+
+
+2017-10-03 23:58:20 43a3.4
+[@] Код
+    Вызов pretty_number() заменён на HelperString::numberFloorAndFormat там, где было простое форматирование чисел
 
 
 2017-10-02 22:47:16 43a2.26
 [@] Код
     PTL:
-        - Добавлен класс \phpbb_hook из phpBB 3 для поддержки работы PTL (из phpBB3/includes/hooks/index.php)
+        - Добавлен класс \phpbb_hook из phpBB3 для поддержки работы PTL (из phpBB3 /includes/hooks/index.php)
         - Прописан phpDoc для хинтов класса
 
 
 2017-10-02 22:36:38 43a2.25
 [@] Код
-    PTL - Вызов eval() инкапсулирован в отдельный метод \template()->evaluate() для облегчения игнора
+    PTL - Вызов eval() инкапсулирован в отдельный метод \template()->evaluate() для облегчения игнора предупреждений в code sniffers
 
 
 2017-10-02 22:13:00 43a2.24

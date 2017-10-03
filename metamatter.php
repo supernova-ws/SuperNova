@@ -72,7 +72,7 @@ if(isset(sn_module_payment::$bonus_table) && is_array(sn_module_payment::$bonus_
         'SUM' => $sum,
         'DISCOUNT' => $discount * 100,
         'DISCOUNT_ONE' => 1 + $discount,
-        'TEXT' => sprintf(classSupernova::$lang['pay_mm_bonus_each'], pretty_number($sum), round($discount * 100)),
+        'TEXT' => sprintf(classSupernova::$lang['pay_mm_bonus_each'], HelperString::numberFloorAndFormat($sum), round($discount * 100)),
       ));
       $prev_discount = $discount;
     }
@@ -206,9 +206,9 @@ foreach(classSupernova::$lang['pay_currency_list'] as $key => $value) {
   $template->assign_block_vars('exchange', array(
     'SYMBOL' => $key,
     'TEXT' => $value,
-    'COURSE_DIRECT' => pretty_number($course, 4),
-    'COURSE_REVERSE' => pretty_number(1 / $course, 4),
-    'MM_PER_CURRENCY' => pretty_number(sn_module_payment::currency_convert(1, $key, 'MM_')),
+    'COURSE_DIRECT' => HelperString::numberFloorAndFormat($course, 4),
+    'COURSE_REVERSE' => HelperString::numberFloorAndFormat(1 / $course, 4),
+    'MM_PER_CURRENCY' => HelperString::numberFloorAndFormat(sn_module_payment::currency_convert(1, $key, 'MM_')),
     'LOT_PRICE' => sn_module_payment::currency_convert(get_mm_cost(), 'MM_', $key),
     'DEFAULT' => $key == classSupernova::$config->payment_currency_default,
   ));
@@ -268,13 +268,13 @@ foreach($unit_available_amount_list as $unit_amount => $discount) {
   $template->assign_block_vars('mm_amount', array(
     'VALUE' => $unit_amount,
     // 'PRICE' => $temp,
-    'PRICE_TEXT' => pretty_number($temp, 2),
+    'PRICE_TEXT' => HelperString::numberFloorAndFormat($temp, 2),
     'CURRENCY' => $player_currency,
     'DISCOUNT' => $discount,
     'DISCOUNT_PERCENT' => $discount * 100,
     'DISCOUNTED' => $unit_amount * (1 + $discount),
-    'TEXT' => pretty_number($unit_amount),
-    'TEXT_DISCOUNTED' => pretty_number($unit_amount * (1 + $discount)),
+    'TEXT' => HelperString::numberFloorAndFormat($unit_amount),
+    'TEXT_DISCOUNTED' => HelperString::numberFloorAndFormat($unit_amount * (1 + $discount)),
   ));
 }
 
@@ -299,10 +299,10 @@ $template->assign_vars(array(
   'PLAYER_CURRENCY_PRICE_PER_MM' => sn_module_payment::currency_convert(1, $player_currency, 'MM_', 10),
 
   'UNIT_AMOUNT' => (float)$request['metamatter'],
-  'UNIT_AMOUNT_TEXT' => pretty_number($request['metamatter']),
+  'UNIT_AMOUNT_TEXT' => HelperString::numberFloorAndFormat($request['metamatter']),
   'UNIT_AMOUNT_BONUS_PERCENT' => $bonus_percent,
   'UNIT_AMOUNT_TEXT_DISCOUNTED' => $income_metamatter_text,
-  'UNIT_AMOUNT_TEXT_COST_BASE' => pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
+  'UNIT_AMOUNT_TEXT_COST_BASE' => HelperString::numberFloorAndFormat(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
 
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number(get_mm_cost(), true, true),
   'PAYMENT_CURRENCY_DEFAULT_TEXT' => classSupernova::$lang['pay_currency_list'][classSupernova::$config->payment_currency_default],

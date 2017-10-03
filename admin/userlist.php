@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #42a27.18#
+ * @version #43a3.4#
  *
  * userlist.php v2
 **/
@@ -92,12 +92,12 @@ while($user_row = db_fetch($query)) {
     'TIME_PLAYED' => date(FMT_DATE_TIME_SQL, $user_row['onlinetime']),
     'ACTIVITY' => pretty_time(SN_TIME_NOW - $user_row['onlinetime']),
     'REFERRAL_COUNT' => $user_row['referral_count'],
-    'REFERRAL_DM' => pretty_number($user_row['referral_dm'], true),
+    'REFERRAL_DM' => HelperString::numberFloorAndFormat($user_row['referral_dm']),
     'BANNED' => $user_row['banaday'] ? date(FMT_DATE_TIME_SQL, $user_row['banaday']) : 0,
     'BAN_DATE' => date(FMT_DATE_TIME_SQL, $ban_details['ban_time']),
     'BAN_ISSUER' => $ban_details['ban_issuer_name'],
     'BAN_REASON' => $ban_details['ban_reason'],
-    'METAMATTER' => pretty_number($user_row['metamatter_total'], true),
+    'METAMATTER' => HelperString::numberFloorAndFormat($user_row['metamatter_total']),
     'ACTION' => $user_row['authlevel'] < $user['authlevel'],
     'RESTRICTED' => $user['authlevel'] < 3,
   ) + $geoip_info);

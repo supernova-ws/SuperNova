@@ -1032,7 +1032,7 @@ function sn_ube_message_send(&$combat_data)
       continue;
     }
 
-    $text_defender .= "{$lang['tech'][$resource_id]}: " . pretty_number($resource_amount) . '<br />';
+    $text_defender .= "{$lang['tech'][$resource_id]}: " . HelperString::numberFloorAndFormat($resource_amount) . '<br />';
   }
   if($text_defender)
   {

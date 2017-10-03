@@ -6,6 +6,7 @@
 namespace Deprecated;
 
 use \DBStaticPlanet;
+use \HelperString;
 
 class PageFleet5Gathering {
 
@@ -94,11 +95,11 @@ class PageFleet5Gathering {
           'METAL'          => floor($planetRecord['metal']),
           'CRYSTAL'        => floor($planetRecord['crystal']),
           'DEUTERIUM'      => floor($planetRecord['deuterium']),
-          'METAL_TEXT'     => pretty_number($planetRecord['metal']),
-          'CRYSTAL_TEXT'   => pretty_number($planetRecord['crystal']),
-          'DEUTERIUM_TEXT' => pretty_number($planetRecord['deuterium']),
+          'METAL_TEXT'     => HelperString::numberFloorAndFormat($planetRecord['metal']),
+          'CRYSTAL_TEXT'   => HelperString::numberFloorAndFormat($planetRecord['crystal']),
+          'DEUTERIUM_TEXT' => HelperString::numberFloorAndFormat($planetRecord['deuterium']),
           'RESOURCES'      => $planetResources,
-          'RESOURCES_TEXT' => pretty_number($planetResources),
+          'RESOURCES_TEXT' => HelperString::numberFloorAndFormat($planetResources),
 
           'FLEET'               => $fleet,
           'FLEET_CAPACITY'      => $fleetFullCapacity,
@@ -139,7 +140,7 @@ class PageFleet5Gathering {
    * @param array $resources_taken
    * @param array $planet_db_data
    *
-   * @return array
+   * @return float
    */
   protected function calcPlanetResources(&$user, $resources_taken, $planet_db_data) {
     $planet_resources = 0;
@@ -265,9 +266,9 @@ class PageFleet5Gathering {
 
     $template->assign_vars([
       'PAGE_HINT'      => $this->lang['fl_page5_hint'],
-      'METAL_NEED'     => pretty_number(max(0, -sys_get_param_float('metal'))),
-      'CRYSTAL_NEED'   => pretty_number(max(0, -sys_get_param_float('crystal'))),
-      'DEUTERIUM_NEED' => pretty_number(max(0, -sys_get_param_float('deuterium'))),
+      'METAL_NEED'     => HelperString::numberFloorAndFormat(max(0, -sys_get_param_float('metal'))),
+      'CRYSTAL_NEED'   => HelperString::numberFloorAndFormat(max(0, -sys_get_param_float('crystal'))),
+      'DEUTERIUM_NEED' => HelperString::numberFloorAndFormat(max(0, -sys_get_param_float('deuterium'))),
     ]);
 
     tpl_set_resource_info($template, $planetrow, []);

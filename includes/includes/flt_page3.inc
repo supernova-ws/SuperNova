@@ -194,10 +194,10 @@ function sn_fleet_page3() {
   $FleetStorage        -= $consumption;
 
   if ( $StorageNeeded > $FleetStorage) {
-    messageBox ("<span class='error'><b>". $lang['fl_nostoragespa'] . pretty_number($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    messageBox ("<span class='error'><b>". $lang['fl_nostoragespa'] . HelperString::numberFloorAndFormat($StorageNeeded - $FleetStorage) ."</b></span>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if ($planetrow['deuterium'] < $TransDeuterium + $consumption) {
-    messageBox ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . pretty_number($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
+    messageBox ("<font color=\"red\"><b>". $lang['fl_no_deuterium'] . HelperString::numberFloorAndFormat($TransDeuterium + $consumption - $planetrow['deuterium']) ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
   }
   if (($planetrow['metal'] < $TransMetal) || ($planetrow['crystal'] < $TransCrystal)) {
     messageBox ("<font color=\"red\"><b>". $lang['fl_no_resources'] ."</b></font>", $lang['fl_error'], 'fleet' . DOT_PHP_EX, 2);
@@ -274,7 +274,7 @@ function sn_fleet_page3() {
       $template->assign_block_vars('fleets.ships', array(
         'ID'          => $ship_id,
         'AMOUNT'      => $ship_count,
-        'AMOUNT_TEXT' => pretty_number($ship_count),
+        'AMOUNT_TEXT' => HelperString::numberFloorAndFormat($ship_count),
 //        'CONSUMPTION' => $ship_base_data['consumption'],
 //        'SPEED'       => $ship_base_data['speed'],
         'NAME'        => $lang['tech'][$ship_id],
@@ -284,9 +284,9 @@ function sn_fleet_page3() {
 
   $template->assign_vars(array(
     'mission' => $lang['type_mission'][$target_mission] . ($target_mission == MT_EXPLORE || $target_mission == MT_HOLD ? ' ' . pretty_time($StayDuration) : ''),
-    'dist' => pretty_number($distance),
-    'speed' => pretty_number($fleet_speed),
-    'deute_need' => pretty_number($consumption),
+    'dist' => HelperString::numberFloorAndFormat($distance),
+    'speed' => HelperString::numberFloorAndFormat($fleet_speed),
+    'deute_need' => HelperString::numberFloorAndFormat($consumption),
     'from' => "{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}",
     'time_go' => date(FMT_DATE_TIME, $fleet['start_time']),
     'time_go_local' => date(FMT_DATE_TIME, $fleet['start_time'] + SN_CLIENT_TIME_DIFF),

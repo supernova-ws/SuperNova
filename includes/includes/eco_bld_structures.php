@@ -234,18 +234,18 @@ function sn_eco_build($que_type, &$auser, &$planet) {
 
     if($unit_stackable) {
       $level_production_base = array(
-        'ACTUAL_SHIELD' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_info['shield'])),
-        'ACTUAL_ARMOR'  => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_info['armor'])),
-        'ACTUAL_WEAPON' => pretty_number(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_info['attack'])),
+        'ACTUAL_SHIELD' => HelperString::numberFloorAndFormat(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_SHIELD), $unit_info['shield'])),
+        'ACTUAL_ARMOR'  => HelperString::numberFloorAndFormat(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_ARMOR), $unit_info['armor'])),
+        'ACTUAL_WEAPON' => HelperString::numberFloorAndFormat(mrc_modify_value($user, false, array(MRC_ADMIRAL, TECH_WEAPON), $unit_info['attack'])),
       );
 
       if($unit_info[P_UNIT_TYPE] == UNIT_SHIPS) {
         $ship_data = get_ship_data($unit_id, $user);
 
         $level_production_base += array(
-          'ACTUAL_SPEED'       => pretty_number($ship_data['speed']),
-          'ACTUAL_CONSUMPTION' => pretty_number($ship_data['consumption']),
-          'ACTUAL_CAPACITY'    => pretty_number($ship_data['capacity']),
+          'ACTUAL_SPEED'       => HelperString::numberFloorAndFormat($ship_data['speed']),
+          'ACTUAL_CONSUMPTION' => HelperString::numberFloorAndFormat($ship_data['consumption']),
+          'ACTUAL_CAPACITY'    => HelperString::numberFloorAndFormat($ship_data['capacity']),
         );
       }
 
@@ -389,7 +389,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'PLANET_TYPE'      => $planet['planet_type'],
     'SECTOR_CAN_BUY'   => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
     'SECTOR_COST'      => $sector_cost,
-    'SECTOR_COST_TEXT' => pretty_number($sector_cost),
+    'SECTOR_COST_TEXT' => HelperString::numberFloorAndFormat($sector_cost),
 
     'STACKABLE' => $unit_stackable,
 
@@ -401,7 +401,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
     'U_opt_int_struc_vertical' => $user['option_list'][OPT_INTERFACE]['opt_int_struc_vertical'],
 
     'MARKET_AUTOCONVERT_COST'              => market_get_autoconvert_cost(),
-    'MARKET_AUTOCONVERT_COST_TEXT'         => pretty_number(market_get_autoconvert_cost()),
+    'MARKET_AUTOCONVERT_COST_TEXT'         => HelperString::numberFloorAndFormat(market_get_autoconvert_cost()),
     'CAN_AUTOCONVERT'                      => $user_dark_matter >= market_get_autoconvert_cost(),
     'BUILD_AUTOCONVERT_AVAILABLE'          => BUILD_AUTOCONVERT_AVAILABLE,
     'PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE' => classSupernova::$user_options[PLAYER_OPTION_BUILD_AUTOCONVERT_HIDE],

@@ -120,7 +120,7 @@ function eco_mrk_trader($user, $planetrow = null) {
       'ID'         => $resource_id,
       'NAME'       => $lang['tech'][$resource_id],
       'AVAIL'      => $amount,
-      'AVAIL_TEXT' => pretty_number($amount),
+      'AVAIL_TEXT' => HelperString::numberFloorAndFormat($amount),
       'SPENT'      => ($intError == MARKET_DEAL) ? 0 : max(0, $tradeList[$resource_id]),
       'RATE'       => $rates[$resource_id],
     ));

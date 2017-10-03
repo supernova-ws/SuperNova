@@ -39,13 +39,13 @@ foreach(sn_get_groups('fleet') as $n => $unit_id) {
       'ID'          => $unit_id,
       'NAME'        => $lang['tech'][$unit_id],
       'AMOUNT'      => $unit_level,
-      'AMOUNT_TEXT' => pretty_number($unit_level),
+      'AMOUNT_TEXT' => HelperString::numberFloorAndFormat($unit_level),
       'CONSUMPTION' => $ship_data['consumption'],
-      'CONSUMPTION_TEXT' => pretty_number($ship_data['consumption']),
+      'CONSUMPTION_TEXT' => HelperString::numberFloorAndFormat($ship_data['consumption']),
       'SPEED'       => $ship_data['speed'],
-      'SPEED_TEXT'  => pretty_number($ship_data['speed']),
+      'SPEED_TEXT'  => HelperString::numberFloorAndFormat($ship_data['speed']),
       'CAPACITY'    => $ship_data['capacity'],
-      'CAPACITY_TEXT'    => pretty_number($ship_data['capacity']),
+      'CAPACITY_TEXT'    => HelperString::numberFloorAndFormat($ship_data['capacity']),
     );
   }
 }
@@ -101,8 +101,8 @@ $template->assign_vars(array(
 
   'speed_factor'       => flt_server_flight_speed_multiplier(),
 
-  'PLANET_RESOURCES'   => pretty_number($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium']),
-  'PLANET_DEUTERIUM'   => pretty_number($planetrow['deuterium']),
+  'PLANET_RESOURCES'   => HelperString::numberFloorAndFormat($planetrow['metal'] + $planetrow['crystal'] + $planetrow['deuterium']),
+  'PLANET_DEUTERIUM'   => HelperString::numberFloorAndFormat($planetrow['deuterium']),
 
   'PLAYER_OPTION_FLEET_SHIP_SELECT_OLD' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_SELECT_OLD],
   'PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED' => classSupernova::$user_options[PLAYER_OPTION_FLEET_SHIP_HIDE_SPEED],

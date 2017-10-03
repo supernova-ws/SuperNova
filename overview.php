@@ -232,7 +232,7 @@ switch ($mode = sys_get_param_str('mode')) {
       'PLANET_FILL_BAR'      => $planet_fill,
       'SECTOR_CAN_BUY'       => $sector_cost <= $user_dark_matter,
       'SECTOR_COST'          => $sector_cost,
-      'SECTOR_COST_TEXT'     => pretty_number($sector_cost),
+      'SECTOR_COST_TEXT'     => HelperString::numberFloorAndFormat($sector_cost),
       'planet_field_current' => $planetrow['field_current'],
       'planet_field_max'     => eco_planet_fields_max($planetrow),
 
@@ -399,13 +399,13 @@ switch ($mode = sys_get_param_str('mode')) {
       'NEW_LEVEL_MINER' => $level_miner,
       'NEW_LEVEL_RAID'  => $level_raid,
 
-      'planet_diameter'      => pretty_number($planetrow['diameter']),
+      'planet_diameter'      => HelperString::numberFloorAndFormat($planetrow['diameter']),
       'planet_field_current' => $planetrow['field_current'],
       'planet_field_max'     => eco_planet_fields_max($planetrow),
       'PLANET_FILL'          => floor($planetrow['field_current'] / eco_planet_fields_max($planetrow) * 100),
       'PLANET_FILL_BAR'      => $planet_fill,
-      'metal_debris'         => pretty_number($planetrow['debris_metal']),
-      'crystal_debris'       => pretty_number($planetrow['debris_crystal']),
+      'metal_debris'         => HelperString::numberFloorAndFormat($planetrow['debris_metal']),
+      'crystal_debris'       => HelperString::numberFloorAndFormat($planetrow['debris_crystal']),
       'PLANET_RECYCLERS'     => $planet_recyclers_orbiting,
       'planet_image'         => $planetrow['image'],
       'planet_temp_min'      => $planetrow['temp_min'],
@@ -435,7 +435,7 @@ switch ($mode = sys_get_param_str('mode')) {
 
       'SECTOR_CAN_BUY'   => $sector_cost <= mrc_get_level($user, null, RES_DARK_MATTER),
       'SECTOR_COST'      => $sector_cost,
-      'SECTOR_COST_TEXT' => pretty_number($sector_cost),
+      'SECTOR_COST_TEXT' => HelperString::numberFloorAndFormat($sector_cost),
 
       'PAGE_HEADER' => classSupernova::$lang['ov_overview']. " - " . classSupernova::$lang['sys_planet_type'][$planetrow['planet_type']] . " {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]",
     ));

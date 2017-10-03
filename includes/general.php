@@ -125,27 +125,28 @@ function get_exchange_rate($currency_symbol) {
 /**
  * pretty_number implementation for SuperNova
  *
- * $n - number to format
- * $floor: (ignored if $limit set)
- * integer   - floors to $floor numbers after decimal points
- * true      - floors number before format
- * otherwise - floors to 2 numbers after decimal points
- * $color:
- * true    - colors number to green if positive or zero; red if negative
- * 0
- * numeric - colors number to green if less then $color; red if greater
- * $limit:
- * 0/false - proceed with $floor
- * numeric - divides number to segments by power of $limit and adds 'k' for each segment
- * makes sense for 1000, but works with any number
- * generally converts "15000" to "15k", "2000000" to "2kk" etc
- * $style
- * null  - standard result
- * true  - return only style class for current params
- * false - return array('text' => $ret, 'class' => $class), where $ret - unstyled
+ * @param mixed          $n - number to format
+ * @param int|true|mixed $floor - (ignored if $condense set)
+ *    integer   - rounds to $floor digits after decimal point
+ *    true      - floors number before format
+ *    otherwise - equivalent of $floor = 2 - rounds to 2 digits after decimal point
+ * @param float|bool - $color - color coding of returned value
+ *    false   - no color coding
+ *    true    - default color coding: class 'positive' if number > 0, class 'negative' if number < 0, class "zero" otherwise
+ *    numeric - formatting using $color as trashold
+ *        - positive or 0: class 'positive' if number < $color, class 'negative' if number > $color, class "zero" otherwise
+ *        - negative: class 'zero' if $n = -$color, class 'negative' if number < -$color, 'positive' if number > -$color
+ * @param false|float    $condense - condensing number by replacing each $condense by 'k'
+ *      Generally converts "15000" to "15k", "2000000" to "2kk" etc. Makes sense for 1000, but works with any number
+ *        - 0/false - proceed with $floor
+ *        - numeric - $floor ignored. Divides number to segments by param and adds 'k' for each segment
+ * @param null|bool      $output - manages output type. Works only if $color !== false
+ *    null  - standard output: <span>-formatted number with appropriate "style"
+ *    true  - return only style class for current params
+ *    false - return ['text' => string $ret, 'class' => string $class], where $ret - non-styled number and $class - appropriate class
  */
 
-function pretty_number($n, $floor = true, $color = false, $limit = false, $style = null) {
+function pretty_number($n, $floor = true, $color = false, $condense = false, $output = null) {
   $n = floatval($n);
   if (is_int($floor)) {
     $n = round($n, $floor);
@@ -159,21 +160,21 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
   $ret = $n;
 
   $suffix = '';
-  if ($limit) {
+  if ($condense = floatval($condense)) {
     if ($ret > 0) {
-      while ($ret > $limit) {
+      while ($ret > $condense) {
         $suffix .= 'k';
         $ret = round($ret / 1000);
       }
     } else {
-      while ($ret < -$limit) {
+      while ($ret < -$condense) {
         $suffix .= 'k';
         $ret = round($ret / 1000);
       }
     }
   }
 
-  $ret = number_format($ret, $floor, ',', '.');
+  $ret = HelperString::numberFloorAndFormat($ret, $floor);
   $ret .= $suffix;
 
   if ($color !== false) {
@@ -185,10 +186,10 @@ function pretty_number($n, $floor = true, $color = false, $limit = false, $style
       $class = ($n == -$color) ? 'zero' : ($n < -$color ? 'negative' : 'positive');
     }
 
-    if (!isset($style)) {
+    if (!isset($output)) {
       $ret = "<span class='{$class}'>{$ret}</span>";
     } else {
-      $ret = $style ? $ret = $class : $ret = array('text' => $ret, 'class' => $class);
+      $ret = $output ? $ret = $class : $ret = array('text' => $ret, 'class' => $class);
     }
   }
 
@@ -1548,13 +1549,13 @@ function price_matrix_templatize(&$price_matrix_plain, &$price_matrix_original, 
         'PRICE_ORIGIN_TEXT'  => $price_text['text'],
         'PRICE_ORIGIN_CLASS' => $price_text['class'],
         'PRICE_UPGRADE'      => $price_matrix_upgrade[$level_num][$period],
-        'PRICE_UPGRADE_TEXT' => pretty_number($price_matrix_upgrade[$level_num][$period], true),
+        'PRICE_UPGRADE_TEXT' => HelperString::numberFloorAndFormat($price_matrix_upgrade[$level_num][$period]),
       );
       if (isset($price_matrix_plain[$level_num][$period])) {
         $price_per_period[$period] += array(
           'PRICE_PLAIN_PERCENT' => ceil(100 - ($price / $price_matrix_plain[$level_num][$period]) * 100),
           'PRICE_PLAIN'         => $price_matrix_plain[$level_num][$period],
-          'PRICE_PLAIN_TEXT'    => pretty_number($price_matrix_plain[$level_num][$period], true),
+          'PRICE_PLAIN_TEXT'    => HelperString::numberFloorAndFormat($price_matrix_plain[$level_num][$period]),
         );
       }
     }
