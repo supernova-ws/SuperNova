@@ -241,6 +241,9 @@ class template
      */
     global $phpbb_hook;
 
+    // This is used to access global vars
+    global $lang, $config, $user;
+
     if (!empty($phpbb_hook) && $phpbb_hook->call_hook(array(__CLASS__, __FUNCTION__), $handle, $include_once))
     {
       if ($phpbb_hook->hook_return(array(__CLASS__, __FUNCTION__)))
@@ -679,6 +682,9 @@ class template
   */
   function _tpl_include($filename, $include = true)
   {
+    // This is used to access global vars
+    global $lang, $config, $user;
+
     $handle = $filename;
     $this->filename[$handle] = $filename;
     $this->files[$handle] = $this->root . '/' . $filename;
