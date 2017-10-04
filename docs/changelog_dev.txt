@@ -859,7 +859,17 @@ https://money.yandex.ru/embed/quickpay/small.xml
     - Добавить индикатор конверсии ММ в ТМ при нехватке для апгрейда?
 
 
+      'COST_TEXT'       => HelperString::numberFloorAndFormat($density_cost),
+      'COST_TEXT_CLASS' => prettyNumberGetClass($density_cost, $user_dark_matter),
+
+
 #ctv
+
+
+
+2017-10-04 01:39:39 43a3.8
+[@] Код
+    Вызов pretty_number() убран почти отовсюду
 
 
 2017-10-04 01:21:05 43a3.6

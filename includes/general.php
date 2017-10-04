@@ -1585,12 +1585,11 @@ function price_matrix_templatize(&$price_matrix_plain, &$price_matrix_original, 
   foreach ($price_matrix_original as $level_num => $level_data) {
     $price_per_period = array();
     foreach ($level_data as $period => $price) {
-      $price_text = pretty_number($price, true, $user_dark_matter, false, false);
       $price_per_period[$period] = array(
         'PERIOD'             => $period,
         'PRICE_ORIGIN'       => $price,
-        'PRICE_ORIGIN_TEXT'  => $price_text['text'],
-        'PRICE_ORIGIN_CLASS' => $price_text['class'],
+        'PRICE_ORIGIN_TEXT'  => HelperString::numberFloorAndFormat($price),
+        'PRICE_ORIGIN_CLASS' => prettyNumberGetClass($price, $user_dark_matter),
         'PRICE_UPGRADE'      => $price_matrix_upgrade[$level_num][$period],
         'PRICE_UPGRADE_TEXT' => HelperString::numberFloorAndFormat($price_matrix_upgrade[$level_num][$period]),
       );
