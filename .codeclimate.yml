@@ -49,3 +49,5 @@ exclude_paths:
 ## Excluding
 #- "admin/sxd/**/*"
 - admin/sxd/**/*
+# Excluding vars* files because of many false-positive duplicate detections
+- includes/vars*
