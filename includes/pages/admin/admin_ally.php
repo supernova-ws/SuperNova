@@ -41,7 +41,7 @@ function sn_admin_ally_view_one($template = null, $allyId) {
 
   $template = gettemplate('admin/admin_ally_one', $template);
 
-  $alliance = \Alliance\RecordAlliance::findFirst($allyId);
+  $alliance = \Alliance\RecordAlliance::findById($allyId);
 
   if (empty($alliance)) {
     return $template;
