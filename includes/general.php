@@ -123,6 +123,29 @@ function get_exchange_rate($currency_symbol) {
 }
 
 /**
+ * @param int|float      $number
+ * @param true|int|float $compareTo
+ *    true             - compare to zero from above i.e. resources amount ($number > 0 for positive)
+ *    numeric positive - compare to $compareTo from below i.e. price with resource amount ($number < $compareTo for positive)
+ *    numeric negative - compare to -$compareTo from above i.e. resource amount with price ($n > -$compareTo for positive)
+ *
+ * @return string
+ */
+function prettyNumberGetClass($number, $compareTo) {
+  $n = floor($number);
+
+  if ($compareTo === true) {
+    $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
+  } elseif ($compareTo >= 0) {
+    $class = $n == $compareTo ? 'zero' : ($n < $compareTo ? 'positive' : 'negative');
+  } else {
+    $class = ($n == -$compareTo) ? 'zero' : ($n < -$compareTo ? 'negative' : 'positive');
+  }
+
+  return $class;
+}
+
+/**
  * pretty_number implementation for SuperNova
  *
  * @param mixed          $n - number to format
@@ -178,18 +201,12 @@ function pretty_number($n, $floor = true, $color = false, $condense = false, $ou
   $ret .= $suffix;
 
   if ($color !== false) {
-    if ($color === true) {
-      $class = $n == 0 ? 'zero' : ($n > 0 ? 'positive' : 'negative');
-    } elseif ($color >= 0) {
-      $class = $n == $color ? 'zero' : ($n < $color ? 'positive' : 'negative');
-    } else {
-      $class = ($n == -$color) ? 'zero' : ($n < -$color ? 'negative' : 'positive');
-    }
+    $class = prettyNumberGetClass($n, $color);
 
     if ($output === null) {
       $ret = "<span class='{$class}'>{$ret}</span>";
     } else {
-      $ret = $output ? $ret = $class : $ret = array('text' => $ret, 'class' => $class);
+      $ret = $output ? $class : ['text' => $ret, 'class' => $class];
     }
   }
 
@@ -203,22 +220,32 @@ function pretty_number($n, $floor = true, $color = false, $condense = false, $ou
  *
  * @return string
  *
- * @deprecated - should be replaced in templates
+ * // TODO - this should be made in templates
  */
 function prettyNumberStyledDefault($number) {
+  return prettyNumberStyledCompare($number, true);
+}
+
+/**
+ * @param int|float $number
+ * @param int|float $compareTo
+ *
+ * @return string
+ *
+ * // TODO - this should be made in templates
+ */
+function prettyNumberStyledCompare($number, $compareTo) {
   return
-    '<span class="' . (floor($number) == 0 ? 'zero' : (floor($number) > 0 ? 'positive' : 'negative')) . '">' .
+    '<span class="' . prettyNumberGetClass($number, $compareTo) . '">' .
     HelperString::numberFloorAndFormat($number) .
-    "</span>";
+    '</span>';
 }
 
 // ----------------------------------------------------------------------------------------------------------------
 function pretty_time($seconds) {
-  global $lang;
-
   $day = floor($seconds / (24 * 3600));
 
-  return sprintf("%s%02d:%02d:%02d", $day ? "{$day}{$lang['sys_day_short']} " : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
+  return sprintf('%s%02d:%02d:%02d', $day ? $day . classSupernova::$lang['sys_day_short'] . ' ' : '', floor($seconds / 3600 % 24), floor($seconds / 60 % 60), floor($seconds / 1 % 60));
 }
 
 // ----------------------------------------------------------------------------------------------------------------

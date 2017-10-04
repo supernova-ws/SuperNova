@@ -844,9 +844,30 @@ https://money.yandex.ru/embed/quickpay/small.xml
 [*] HelperString::numberFloorAndFormat() - избавиться и перенести формат на сторону темплейта
 
 
+[*] resources.tpl.html - Заменить код
+            <script type="text/javascript">
+              jQuery("#density_type").change(function(){
+                selected = jQuery("#density_type option:selected");
+                $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
+    //            Math.intVal(selected.attr("rest")) <= 0 ? $("#transmute_button").attr("disabled", 1) : $("#transmute_button").removeAttr("disabled");
+                $("#transmute_button").button({disabled: parseInt(selected.attr("rest")) <= 0 || selected.attr("current") == '1'});
+              });
+    на вызов кусков из planet_manage.js - см.
+      .on('change', "#density_type", function () {
+
+    И вообще - использовать planet_manage.min.js
+    - Добавить индикатор конверсии ММ в ТМ при нехватке для апгрейда?
+
 
 #ctv
 
+
+2017-10-04 01:21:05 43a3.6
+[%] Интерфейс/Ресурсы
+    Исправлена невозможность смены ядра планеты
+
+[@] Код
+    Вызов pretty_number() заменён на prettyNumberStyledCompare()
 
 
 2017-10-04 00:30:00 43a3.5

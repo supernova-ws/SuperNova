@@ -402,7 +402,7 @@ function sn_options_view($template = null) {
     'SERVER_NAME_CHANGE_PAY'     => $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY,
     'SERVER_NAME_CHANGE_ENABLED' => $config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_FREE || ($config->game_user_changename == SERVER_PLAYER_NAME_CHANGE_PAY && mrc_get_level($user, $planetrow, RES_DARK_MATTER) >= $config->game_user_changename_cost),
 
-    'DARK_MATTER' => pretty_number($config->game_user_changename_cost, true, mrc_get_level($user, $planetrow, RES_DARK_MATTER)),
+    'DARK_MATTER' => prettyNumberStyledCompare($config->game_user_changename_cost, mrc_get_level($user, $planetrow, RES_DARK_MATTER)),
 
     'PAGE_HEADER' => $lang['opt_header'],
   ));

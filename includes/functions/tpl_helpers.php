@@ -351,11 +351,11 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'ENERGY_MAX_NUMBER' => $planetrow['energy_max'],
     'ENERGY_MAX_NUMBER_TEXT_NO_COLOR' => HelperString::numberFloorAndFormat($planetrow['energy_max']),
     'ENERGY_MAX_NUMBER_TEXT' => Tools::numberPercentSpan($planetrow['energy_max'], $planetrow['energy_used']),
-    'ENERGY_MAX' => pretty_number($planetrow['energy_max'], true, -$planetrow['energy_used']),
+    'ENERGY_MAX' => prettyNumberStyledCompare($planetrow['energy_max'], -$planetrow['energy_used']),
     'ENERGY_FILL' => round(($planetrow["energy_used"]/($planetrow["energy_max"]+1))*100,0),
 
     'PLANET_METAL' => floor($planetrow["metal"]),
-    'PLANET_METAL_TEXT' => pretty_number($planetrow["metal"], true, $planetrow["metal_max"]),
+    'PLANET_METAL_TEXT' => prettyNumberStyledCompare($planetrow["metal"], $planetrow["metal_max"]),
     'PLANET_METAL_MAX' => floor($planetrow["metal_max"]),
     'PLANET_METAL_MAX_TEXT' => Tools::numberPercentSpan($planetrow["metal_max"], $planetrow["metal"]),
     'PLANET_METAL_MAX_NO_COLOR' => HelperString::numberFloorAndFormat($planetrow["metal_max"]),
@@ -364,7 +364,7 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'PLANET_METAL_FLEET_TEXT' => prettyNumberStyledDefault($fleets_to_planet[$planetrow['id']]['fleet']['METAL']),
 
     'PLANET_CRYSTAL' => floor($planetrow["crystal"]),
-    'PLANET_CRYSTAL_TEXT' => pretty_number($planetrow["crystal"], true, $planetrow["crystal_max"]),
+    'PLANET_CRYSTAL_TEXT' => prettyNumberStyledCompare($planetrow["crystal"], $planetrow["crystal_max"]),
     'PLANET_CRYSTAL_MAX' => floor($planetrow["crystal_max"]),
     'PLANET_CRYSTAL_MAX_TEXT' => Tools::numberPercentSpan($planetrow["crystal_max"], $planetrow["crystal"]),
     'PLANET_CRYSTAL_MAX_NO_COLOR' => HelperString::numberFloorAndFormat($planetrow["crystal_max"]),
@@ -373,7 +373,7 @@ function tpl_set_resource_info(&$template, $planetrow, $fleets_to_planet = array
     'PLANET_CRYSTAL_FLEET_TEXT' => prettyNumberStyledDefault($fleets_to_planet[$planetrow['id']]['fleet']['CRYSTAL']),
 
     'PLANET_DEUTERIUM' => floor($planetrow["deuterium"]),
-    'PLANET_DEUTERIUM_TEXT' => pretty_number($planetrow["deuterium"], true, $planetrow["deuterium_max"]),
+    'PLANET_DEUTERIUM_TEXT' => prettyNumberStyledCompare($planetrow["deuterium"], $planetrow["deuterium_max"]),
     'PLANET_DEUTERIUM_MAX' => floor($planetrow["deuterium_max"]),
     'PLANET_DEUTERIUM_MAX_TEXT' => Tools::numberPercentSpan($planetrow["deuterium_max"], $planetrow["deuterium"]),
     'PLANET_DEUTERIUM_MAX_NO_COLOR' => HelperString::numberFloorAndFormat($planetrow["deuterium_max"]),

@@ -273,13 +273,13 @@ class PageImperium {
       }
 
       $template->assign_block_vars('planet', array_merge($templatizedPlanet, [
-        'METAL_CUR'  => pretty_number($planet['metal'], true, $planet['caps']['total_storage'][RES_METAL]),
+        'METAL_CUR'  => prettyNumberStyledCompare($planet['metal'], $planet['caps']['total_storage'][RES_METAL]),
         'METAL_PROD' => HelperString::numberFloorAndFormat($planet['caps']['total'][RES_METAL]),
 
-        'CRYSTAL_CUR'  => pretty_number($planet['crystal'], true, $planet['caps']['total_storage'][RES_CRYSTAL]),
+        'CRYSTAL_CUR'  => prettyNumberStyledCompare($planet['crystal'], $planet['caps']['total_storage'][RES_CRYSTAL]),
         'CRYSTAL_PROD' => HelperString::numberFloorAndFormat($planet['caps']['total'][RES_CRYSTAL]),
 
-        'DEUTERIUM_CUR'  => pretty_number($planet['deuterium'], true, $planet['caps']['total_storage'][RES_DEUTERIUM]),
+        'DEUTERIUM_CUR'  => prettyNumberStyledCompare($planet['deuterium'], $planet['caps']['total_storage'][RES_DEUTERIUM]),
         'DEUTERIUM_PROD' => HelperString::numberFloorAndFormat($planet['caps']['total'][RES_DEUTERIUM]),
 
         'ENERGY_CUR' => prettyNumberStyledDefault($planet['caps'][RES_ENERGY][BUILD_CREATE] - $planet['caps'][RES_ENERGY][BUILD_DESTROY]),

@@ -103,7 +103,7 @@ class PageFleet5Gathering {
 
           'FLEET'               => $fleet,
           'FLEET_CAPACITY'      => $fleetFullCapacity,
-          'FLEET_CAPACITY_TEXT' => pretty_number($fleetFullCapacity, true, -$planetResources),
+          'FLEET_CAPACITY_TEXT' => prettyNumberStyledCompare($fleetFullCapacity, -$planetResources),
 
           'RESULT' => $result,
 //          'MESSAGE' => $this->lang['fl_attack_error'][$result],

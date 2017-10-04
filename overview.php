@@ -238,10 +238,10 @@ switch ($mode = sys_get_param_str('mode')) {
 
       'CAN_TELEPORT'         => $can_teleport['result'] == ERR_NONE,
       'CAN_NOT_TELEPORT_MSG' => $can_teleport['message'],
-      'TELEPORT_COST_TEXT'   => pretty_number(classSupernova::$config->planet_teleport_cost, true, $user_dark_matter),
+      'TELEPORT_COST_TEXT'   => prettyNumberStyledCompare(classSupernova::$config->planet_teleport_cost, $user_dark_matter),
 
       'CAN_CAPITAL'       => $user_dark_matter >= classSupernova::$config->planet_capital_cost,
-      'CAPITAL_COST_TEXT' => pretty_number(classSupernova::$config->planet_capital_cost, true, $user_dark_matter),
+      'CAPITAL_COST_TEXT' => prettyNumberStyledCompare(classSupernova::$config->planet_capital_cost, $user_dark_matter),
 
       'PLANET_DENSITY_INDEX' => $planet_density_index,
       'PLANET_CORE_TEXT'     => classSupernova::$lang['uni_planet_density_types'][$planet_density_index],
@@ -272,7 +272,6 @@ switch ($mode = sys_get_param_str('mode')) {
     $template = gettemplate('planet_overview', true);
 
     $user_dark_matter = mrc_get_level($user, false, RES_DARK_MATTER);
-
     $planet_density_index = $planetrow['density_index'];
     $density_price_chart = planet_density_price_chart($planetrow);
     tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
