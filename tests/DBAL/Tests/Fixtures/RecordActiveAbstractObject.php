@@ -7,6 +7,7 @@ namespace DBAL\Tests\Fixtures;
 
 
 use DBAL\ActiveRecordAbstract;
+use DBAL\DbFieldDescription;
 
 class RecordActiveAbstractObject extends ActiveRecordAbstract {
   protected static $_tableName = '';
@@ -14,60 +15,57 @@ class RecordActiveAbstractObject extends ActiveRecordAbstract {
     'timestamp_current' => 'timestampCurrent',
   ];
 
-  /**
-   * @inheritdoc
-   */
-  protected static function dbGetTableFields() {
-    return
-      [
-        'id'                =>
-          [
-            'Field'      => 'id',
-            'Type'       => 'bigint(20) unsigned',
-            'Collation'  => null,
-            'Null'       => 'NO',
-            'Key'        => 'PRI',
-            'Default'    => null,
-            'Extra'      => 'auto_increment',
-            'Privileges' => 'select,insert,update,references',
-            'Comment'    => '',
-          ],
-        'timestamp_current' =>
-          [
-            'Field'      => 'timestamp_current',
-            'Type'       => 'timestamp',
-            'Collation'  => null,
-            'Null'       => 'NO',
-            'Key'        => '',
-            'Default'    => 'CURRENT_TIMESTAMP',
-            'Extra'      => 'on update CURRENT_TIMESTAMP',
-            'Privileges' => 'select,insert,update,references',
-            'Comment'    => '',
-          ],
-        'varchar'           =>
-          [
-            'Field'      => 'varchar',
-            'Type'       => 'varchar(32)',
-            'Collation'  => 'utf8_general_ci',
-            'Null'       => 'YES',
-            'Key'        => 'UNI',
-            'Default'    => '',
-            'Extra'      => '',
-            'Privileges' => 'select,insert,update,references',
-            'Comment'    => '',
-          ],
-        'null'              =>
-          [
-            'Field'      => 'varchar',
-            'Type'       => 'varchar(32)',
-            'Collation'  => 'utf8_general_ci',
-            'Null'       => 'YES',
-            'Key'        => 'UNI',
-            'Default'    => null,
-            'Extra'      => '',
-            'Privileges' => 'select,insert,update,references',
-            'Comment'    => '',
-          ],
+  protected static function dbGetFieldsDescription() {
+    $result = [];
+    foreach([
+      'id'                =>
+        [
+          'Field'      => 'id',
+          'Type'       => 'bigint(20) unsigned',
+          'Collation'  => null,
+          'Null'       => 'NO',
+          'Key'        => 'PRI',
+          'Default'    => null,
+          'Extra'      => 'auto_increment',
+          'Privileges' => 'select,insert,update,references',
+          'Comment'    => '',
+        ],
+      'timestamp_current' =>
+        [
+          'Field'      => 'timestamp_current',
+          'Type'       => 'timestamp',
+          'Collation'  => null,
+          'Null'       => 'NO',
+          'Key'        => '',
+          'Default'    => 'CURRENT_TIMESTAMP',
+          'Extra'      => 'on update CURRENT_TIMESTAMP',
+          'Privileges' => 'select,insert,update,references',
+          'Comment'    => '',
+        ],
+      'varchar'           =>
+        [
+          'Field'      => 'varchar',
+          'Type'       => 'varchar(32)',
+          'Collation'  => 'utf8_general_ci',
+          'Null'       => 'YES',
+          'Key'        => 'UNI',
+          'Default'    => '',
+          'Extra'      => '',
+          'Privileges' => 'select,insert,update,references',
+          'Comment'    => '',
+        ],
+      'null'              =>
+        [
+          'Field'      => 'null',
+          'Type'       => 'varchar(32)',
+          'Collation'  => 'utf8_general_ci',
+          'Null'       => 'YES',
+          'Key'        => 'UNI',
+          'Default'    => null,
+          'Extra'      => '',
+          'Privileges' => 'select,insert,update,references',
+          'Comment'    => '',
+        ],
 //        'owner'             =>
 //          [
 //            'Field'      => 'ally_owner',
@@ -104,7 +102,12 @@ class RecordActiveAbstractObject extends ActiveRecordAbstract {
 //            'Privileges' => 'select,insert,update,references',
 //            'Comment'    => '',
 //          ],
-      ];
+    ] as $fieldData) {
+      $dbf = new DbFieldDescription();
+      $result[$fieldData['Field']] = $dbf->fromMySqlDescription($fieldData);
+    }
+
+    return $result;
   }
 
   /**

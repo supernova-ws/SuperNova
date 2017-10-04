@@ -23,15 +23,20 @@ class TableSchema {
   /**
    * @var \array[] $fields
    */
-  public $fields;
+  public $fields = [];
+
+  /**
+   * @var DbFieldDescription[] $fieldsObject
+   */
+  public $fieldsObject = [];
   /**
    * @var \array[] $indexes
    */
-  public $indexes;
+  public $indexes = [];
   /**
    * @var \array[] $constraints
    */
-  public $constraints;
+  public $constraints = [];
 
   /**
    * TableSchema constructor.
@@ -48,6 +53,17 @@ class TableSchema {
     $this->fields = $this->db->mysql_get_fields($this->tableName);
     $this->indexes = $this->db->mysql_get_indexes($this->tableName);
     $this->constraints = $this->db->mysql_get_constraints($this->tableName);
+
+    $this->fillFields();
+  }
+
+  protected function fillFields() {
+    $this->fieldsObject = [];
+    foreach ($this->fields as $fieldData) {
+      $dbf = new DbFieldDescription();
+      $dbf->fromMySqlDescription($fieldData);
+      $this->fieldsObject[$dbf->Field] = $dbf;
+    }
   }
 
 }

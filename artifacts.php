@@ -24,41 +24,53 @@ include('includes/includes/art_artifact.php');
 
 $sn_group_artifacts = sn_get_groups('artifacts');
 
+/**
+ * @param $user
+ * @param $unit_id
+ * @param $planetrow
+ * @param $lang
+ *
+ * @return string
+ */
+function art_buy($user, $unit_id, $planetrow, $lang) {
+  $Message = '';
+  sn_db_transaction_start();
+
+  $user = db_user_by_id($user['id'], true);
+  $artifact_level = mrc_get_level($user, array(), $unit_id, true);
+
+  $build_data = eco_get_build_data($user, $planetrow, $unit_id, $artifact_level, true);
+  $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
+
+  // TODO: more correct check - with "FOR UPDATE"
+  if (mrc_get_level($user, null, RES_DARK_MATTER) >= $darkmater_cost) {
+    $unit_max_stack = get_unit_param($unit_id, P_MAX_STACK);
+    if (!isset($unit_max_stack) || $unit_max_stack > mrc_get_level($user, $planetrow, $unit_id)) {
+      if (!DBStaticUnit::dbUserAdd($user['id'], $unit_id, 1)) {
+        $Message = '{Ошибка записи в БД}';
+      } else {
+        rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
+        sn_db_transaction_commit();
+        sys_redirect("artifacts.php#{$unit_id}");
+      }
+    } else {
+      $Message = $lang['off_maxed_out'];
+    }
+  } else {
+    $Message = $lang['sys_no_points'];
+  }
+  sn_db_transaction_rollback();
+
+  return $Message;
+}
+
 if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_int('unit_id'), $sn_group_artifacts))
 {
+  $Message = '';
   switch($action)
   {
     case ACTION_BUY:
-      sn_db_transaction_start();
-
-      $user = db_user_by_id($user['id'], true);
-      $artifact_level = mrc_get_level($user, array(), $unit_id, true);
-
-      $build_data = eco_get_build_data($user, $planetrow, $unit_id, $artifact_level, true);
-      $darkmater_cost = $build_data[BUILD_CREATE][RES_DARK_MATTER];
-
-      // TODO: more correct check - with "FOR UPDATE"
-      if(mrc_get_level($user, null, RES_DARK_MATTER) >= $darkmater_cost)
-      {
-        $unit_max_stack = get_unit_param($unit_id, P_MAX_STACK);
-        if(!isset($unit_max_stack) || $unit_max_stack > mrc_get_level($user, $planetrow, $unit_id))
-        {
-          $db_changeset['unit'][] = OldDbChangeSet::db_changeset_prepare_unit($unit_id, 1, $user);
-          OldDbChangeSet::db_changeset_apply($db_changeset);
-          rpg_points_change($user['id'], RPG_ARTIFACT, -($darkmater_cost), "Spent for artifact {$lang['tech'][$unit_id]} ID {$unit_id}");
-          sn_db_transaction_commit();
-          sys_redirect("artifacts.php#{$unit_id}");
-        }
-        else
-        {
-          $Message = $lang['off_maxed_out'];
-        }
-      }
-      else
-      {
-        $Message = $lang['sys_no_points'];
-      }
-      sn_db_transaction_rollback();
+      $Message = art_buy($user, $unit_id, $planetrow, $lang);
     break;
 
     case ACTION_USE:
@@ -69,13 +81,14 @@ if(($action = sys_get_param_int('action')) && in_array($unit_id = sys_get_param_
   messageBox($Message, $lang['tech'][UNIT_ARTIFACTS], 'artifacts.' . PHP_EX, 5);
 }
 
+$user = db_user_by_id($user['id'], true);
+
 $template = gettemplate('artifacts', true);
 
 foreach($sn_group_artifacts as $artifact_id)
 {
-  $artifact_level = mrc_get_level($user, array(), $artifact_id, true);
+  $artifact_level = mrc_get_level($user, [], $artifact_id, true);
   $build_data = eco_get_build_data($user, $planetrow, $artifact_id, $artifact_level);
-  {
     $artifact_data = get_unit_param($artifact_id);
     $artifact_data_bonus = tpl_render_unit_bonus_data($artifact_data);
 
@@ -92,7 +105,6 @@ foreach($sn_group_artifacts as $artifact_id)
       'BONUS_TYPE'  => $artifact_data['bonus_type'],
       'CAN_BUY'     => $build_data['CAN'][BUILD_CREATE],
     ));
-  }
 }
 
 $template->assign_vars(array(

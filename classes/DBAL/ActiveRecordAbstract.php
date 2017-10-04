@@ -9,18 +9,22 @@ use Common\AccessLogged;
 use Common\GlobalContainer;
 use Exceptions\DbalFieldInvalidException;
 
+/**
+ * Class ActiveRecordAbstract
+ * @package DBAL
+ *
+ * Adds some DB functionality
+ */
 abstract class ActiveRecordAbstract extends AccessLogged {
   const FIELDS_TO_PROPERTIES = true;
   const PROPERTIES_TO_FIELDS = false;
 
   const IGNORE_PREFIX = 'Record';
-  const ID_PROPERTY_NAME = 'id';
 
   /**
    * @var \db_mysql $db
    */
   protected static $db;
-
   /**
    * Table name for current Active Record
    *
@@ -32,27 +36,11 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   protected static $_tableName = '';
   /**
-   * Autoincrement index field name in DB
-   * Would be normalized to 'id' ($id class property)
-   *
-   * @var string $_primaryIndexField
-   */
-  protected static $_primaryIndexField = 'id';
-
-  /**
    * Field name translations to property names
    *
    * @var string[] $_fieldsToProperties
    */
   protected static $_fieldsToProperties = [];
-  /**
-   * Property name translations to field names
-   *
-   * Cached structure
-   *
-   * @var string[] $_propertiesToFields
-   */
-  private static $_propertiesToFields = [];
 
   // AR's service fields
   /**
@@ -62,47 +50,9 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   protected $_isNew = true;
 
-  // ABSTRACT METHODS - need override ==================================================================================
-
-  /**
-   * @return bool
-   */
-  abstract protected function dbInsert();
-
-  /**
-   * Asks DB for last insert ID
-   *
-   * @return int|string
-   */
-  abstract protected function dbLastInsertId();
-
-  /**
-   * @return bool
-   */
-  abstract protected function dbUpdate();
 
 
-  /**
-   * Get used DB
-   *
-   * @return \db_mysql
-   */
-  public static function db() {
-    empty(static::$db) ? static::$db = \classSupernova::services()->db : false;
 
-    return static::$db;
-  }
-
-  /**
-   * @return array[]
-   */
-  protected static function dbGetTableFields() {
-    return static::db()->schema()->getTableSchema(static::tableName())->fields;
-  }
-
-  public static function setDb(\db_mysql $db) {
-    static::$db = $db;
-  }
 
   /**
    * Get table name
@@ -113,6 +63,24 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     empty(static::$_tableName) ? static::$_tableName = static::calcTableName() : false;
 
     return static::$_tableName;
+  }
+
+  /**
+   * @param \db_mysql $db
+   */
+  public static function setDb(\db_mysql $db) {
+    static::$db = $db;
+  }
+
+  /**
+   * Get DB
+   *
+   * @return \db_mysql
+   */
+  public static function db() {
+    empty(static::$db) ? static::$db = \classSupernova::services()->db : false;
+
+    return static::$db;
   }
 
   /**
@@ -147,15 +115,11 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Finds records by property - equivalent of SELECT ... WHERE ... AND ...
    *
-   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
+   * @param array|mixed $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return bool|\mysqli_result
    */
   public static function find($propertyFilter) {
-    if (!is_array($propertyFilter)) {
-      $propertyFilter = [self::ID_PROPERTY_NAME => $propertyFilter];
-    }
-
     $dbq = static::dbPrepareQuery();
     if (!empty($propertyFilter)) {
       $dbq->setWhereArray(static::translateNames($propertyFilter, static::PROPERTIES_TO_FIELDS));
@@ -183,28 +147,10 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    *
    * @param array|mixed $propertyFilter - ID of record to find OR [$property_name => $property_value]
    *
-   * @return string[][] - [(int) => [$field_name => $field_value]]
+   * @return array[] - [(int) => [$field_name => $field_value]]
    */
   public static function findRecordsAll($propertyFilter) {
     return empty($mysqliResult = static::find($propertyFilter)) ? [] : $mysqliResult->fetch_all(MYSQLI_ASSOC);
-  }
-
-  /**
-   * Gets all records by $where - array indexes is a record IDs
-   *
-   * @param array|mixed $propertyFilter - ID of record to find OR [$property_name => $property_value]
-   *
-   * @return string[][] - [$record_db_id => [$field_name => $field_value]]
-   */
-  public static function findRecordsAllIndexed($propertyFilter) {
-    $result = [];
-    if (!empty($mysqliResult = static::find($propertyFilter))) {
-      while ($row = $mysqliResult->fetch_assoc()) {
-        $result[$row[static::$_primaryIndexField]] = $row;
-      }
-    }
-
-    return $result;
   }
 
   /**
@@ -238,17 +184,6 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     return static::fromRecordList(static::findRecordsAll($propertyFilter));
   }
 
-  /**
-   * Gets all ActiveRecords by $where - array indexed by record IDs
-   *
-   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
-   *
-   * @return array|static[] - [$record_db_id => static]
-   */
-  public static function findAllIndexed($propertyFilter) {
-    return static::fromRecordList(static::findRecordsAllIndexed($propertyFilter));
-  }
-
 
   /**
    * ActiveRecord constructor.
@@ -259,38 +194,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     parent::__construct($services);
   }
 
-  public function acceptChanges() {
-    parent::acceptChanges();
-    $this->_isNew = empty($this->id);
-  }
-
   /**
-   * Reload current record from ID
-   *
    * @return bool
-   */
-  public function reload() {
-    //$recordId = $this->id;
-    $recordId = $this->{self::ID_PROPERTY_NAME};
-    if (empty($recordId)) {
-      return false;
-    }
-
-    $this->acceptChanges();
-
-    $fields = static::findRecordFirst($recordId);
-    if (empty($fields)) {
-      return false;
-    }
-
-    $this->fromFields($fields);
-    $this->_isNew = false;
-
-    return true;
-  }
-
-  /**
-   * @return array|bool|\mysqli_result|null
    */
   // TODO - do a check that all fields present in stored data. I.e. no empty fields with no defaults
   public function insert() {
@@ -307,30 +212,8 @@ abstract class ActiveRecordAbstract extends AccessLogged {
       return false;
     }
 
-    //$this->id = $this->dbLastInsertId();
-    $this->{self::ID_PROPERTY_NAME} = $this->dbLastInsertId();
     $this->acceptChanges();
     $this->_isNew = false;
-
-//    return $this->reload();
-    return true;
-  }
-
-  /**
-   * @return array|bool|\mysqli_result|null
-   */
-  public function update() {
-    if (empty($this->_changes) && empty($this->_deltas)) {
-      return true;
-    }
-
-    $this->defaultValues();
-
-    if (!$this->dbUpdate()) {
-      return false;
-    }
-
-    $this->acceptChanges();
 
     return true;
   }
@@ -352,6 +235,21 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     return $result;
   }
 
+  /**
+   * Get default value for field
+   *
+   * @param string $propertyName
+   *
+   * @return mixed
+   */
+  public function getDefault($propertyName) {
+    $fieldName = self::getFieldName($propertyName);
+
+    return
+      isset(static::dbGetFieldsDescription()[$fieldName]->Default)
+        ? static::dbGetFieldsDescription()[$fieldName]->Default
+        : null;
+  }
 
   /**
    * Returns default value if original value not set
@@ -364,39 +262,24 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     return $this->__isset($propertyName) ? parent::__get($propertyName) : $this->getDefault($propertyName);
   }
 
-  /**
-   * Protects object from setting non-existing property
-   *
-   * @param string $propertyName
-   */
-  protected function shieldName($propertyName) {
-    if (!self::haveProperty($propertyName)) {
-      throw new DbalFieldInvalidException(sprintf(
-        '{{{ Свойство \'%1$s\' не существует в ActiveRecord \'%2$s\' }}}', $propertyName, get_called_class()
-      ));
-    }
-  }
-
   public function __set($propertyName, $value) {
     $this->shieldName($propertyName);
     parent::__set($propertyName, $value);
   }
 
-  /**
-   * Get default value for field
-   *
-   * @param string $propertyName
-   *
-   * @return mixed
-   */
-  public function getDefault($propertyName) {
-    $fieldName = self::getFieldName($propertyName);
 
-    return
-      isset(static::dbGetTableFields()[$fieldName]['Default'])
-        ? static::dbGetTableFields()[$fieldName]['Default']
-        : null;
-  }
+
+
+
+
+
+
+
+
+
+
+
+
 
   /**
    * Calculate table name by class name and fills internal property
@@ -425,6 +308,24 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   }
 
   /**
+   * Get table fields description
+   *
+   * @return DbFieldDescription[]
+   */
+  protected static function dbGetFieldsDescription() {
+    return static::db()->schema()->getTableSchema(static::tableName())->fieldsObject;
+  }
+
+  /**
+   * Prepares DbQuery object for further operations
+   *
+   * @return DbQuery
+   */
+  protected static function dbPrepareQuery() {
+    return DbQuery::build(static::db())->setTable(static::tableName());
+  }
+
+  /**
    * Is there translation for this field name to property name
    *
    * @param string $fieldName
@@ -443,7 +344,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * @return bool
    */
   protected static function haveField($fieldName) {
-    return !empty(static::dbGetTableFields()[$fieldName]);
+    return !empty(static::dbGetFieldsDescription()[$fieldName]);
   }
 
   /**
@@ -512,8 +413,6 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   // TODO - Throw exception on incorrect field
   protected static function translateNames(array $names, $fieldToProperties = self::FIELDS_TO_PROPERTIES) {
-    $translations = $fieldToProperties == self::FIELDS_TO_PROPERTIES ? static::$_fieldsToProperties : array_flip(static::$_fieldsToProperties);
-
     $result = [];
     foreach ($names as $name => $value) {
       $exists = $fieldToProperties == self::FIELDS_TO_PROPERTIES ? static::haveField($name) : static::haveProperty($name);
@@ -521,9 +420,10 @@ abstract class ActiveRecordAbstract extends AccessLogged {
         continue;
       }
 
-      if (!empty($translations[$name])) {
-        $name = $translations[$name];
-      }
+      $name =
+        $fieldToProperties == self::FIELDS_TO_PROPERTIES
+          ? static::getPropertyName($name)
+          : static::getFieldName($name);
       $result[$name] = $value;
     }
 
@@ -536,7 +436,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * Empty records and non-records (non-subarrays) are ignored
    * Function maintains record indexes
    *
-   * @param array $records - array of DB records [(int) => [$name => $value]]
+   * @param array[] $records - array of DB records [(int) => [$name => $value]]
    * @param bool  $fieldToProperties - should names be translated (true - for field records, false - for property records)
    *
    * @return array|static[]
@@ -556,6 +456,9 @@ abstract class ActiveRecordAbstract extends AccessLogged {
         $theRecord = static::build($recordArray);
         if (is_object($theRecord)) {
           $theRecord->_isNew = false;
+//          if(!empty($theRecord->id)) {
+//            $key = $theRecord->id;
+//          }
           $result[$key] = $theRecord;
         }
       }
@@ -564,37 +467,23 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     return $result;
   }
 
-  /**
-   * Prepares DbQuery object for further operations
-   *
-   * @return DbQuery
-   */
-  protected static function dbPrepareQuery() {
-    return DbQuery::build(static::db())->setTable(static::tableName());
-  }
-
-  protected static function dbFetch(\mysqli_result $mysqliResult) {
-    return $mysqliResult->fetch_assoc();
-  }
-
-
   protected function defaultValues() {
-    foreach (static::dbGetTableFields() as $fieldName => $fieldData) {
+    foreach (static::dbGetFieldsDescription() as $fieldName => $fieldData) {
       if (array_key_exists($propertyName = static::getPropertyName($fieldName), $this->values)) {
         continue;
       }
 
       // Skipping auto increment fields
-      if (strpos($fieldData['Extra'], SN_SQL_EXTRA_AUTO_INCREMENT) !== false) {
+      if (strpos($fieldData->Extra, SN_SQL_EXTRA_AUTO_INCREMENT) !== false) {
         continue;
       }
 
-      if ($fieldData['Type'] == SN_SQL_TYPE_NAME_TIMESTAMP && $fieldData['Default'] == SN_SQL_DEFAULT_CURRENT_TIMESTAMP) {
+      if ($fieldData->Type == SN_SQL_TYPE_NAME_TIMESTAMP && $fieldData->Default == SN_SQL_DEFAULT_CURRENT_TIMESTAMP) {
         $this->__set($propertyName, SN_TIME_SQL);
         continue;
       }
 
-      $this->__set($propertyName, $fieldData['Default']);
+      $this->__set($propertyName, $fieldData->Default);
     }
   }
 
@@ -624,6 +513,29 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    */
   protected function fromFields(array $fields) {
     $this->fromProperties(static::translateNames($fields, self::FIELDS_TO_PROPERTIES));
+  }
+
+  /**
+   * @return bool
+   */
+  protected function dbInsert() {
+    return
+      static::dbPrepareQuery()
+        ->setValues(static::translateNames($this->values, self::PROPERTIES_TO_FIELDS))
+        ->doInsert();
+  }
+
+  /**
+   * Protects object from setting non-existing property
+   *
+   * @param string $propertyName
+   */
+  protected function shieldName($propertyName) {
+    if (!self::haveProperty($propertyName)) {
+      throw new DbalFieldInvalidException(sprintf(
+        '{{{ Свойство \'%1$s\' не существует в ActiveRecord \'%2$s\' }}}', $propertyName, get_called_class()
+      ));
+    }
   }
 
 }

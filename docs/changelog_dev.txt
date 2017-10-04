@@ -835,6 +835,26 @@ https://money.yandex.ru/embed/quickpay/small.xml
 #ctv
 
 
+
+#ctv
+
+OldDbChangeSet - избавиться
+
+ActiveRecord не транслирует ID-поле в $this->id - и тесты этого не ловят!
+    - ActiveRecordAbstract надо разбивать на подклассы
+    - В следующем классе должны быть операции с ID и методы DELETE, UPDATE, findById
+    - Проверить все унаследованные от ActiveRecordAbstract классы - что бы они по-прежнему работали корректно
+    - И тесты
+
+ActiveRecordAbstract
+    - Вынести вниз функционал пересчёта имён полей в названия свойств
+
+
+2017-10-04 08:37:41 43a3.14
+[@] Код
+    Рефакторинг ActiveRecordAbstract
+
+
 2017-10-04 02:57:26 43a3.12
 [@] Код
     Функция pretty_number() убрана из кода

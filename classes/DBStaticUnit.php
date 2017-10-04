@@ -56,8 +56,8 @@ class DBStaticUnit {
     WHERE unit_player_id = {$user_id} AND unit_location_type = " . LOC_PLANET . " AND unit_level > 0 AND unit_snid IN (" . STRUC_LABORATORY . ", " . STRUC_LABORATORY_NANO . ");");
   }
 
-  public static function db_unit_set_by_id($unit_id, $set) {
-    return classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_id, $set);
+  public static function db_unit_set_by_id($unit_record_id, $set) {
+    return classSupernova::db_upd_record_by_id(LOC_UNIT, $unit_record_id, $set);
   }
 
   /**
@@ -104,6 +104,43 @@ class DBStaticUnit {
       unit_time_finish = FROM_UNIXTIME(" . (SN_TIME_NOW + $default_length) . ")
     WHERE unit_type = " . UNIT_MERCENARIES
     );
+  }
+
+  public static function dbUserAdd($playerId, $unitSnId, $level) {
+    if (!($unitRecord = \Unit\RecordUnit::findFirst([
+      'unit_player_id'     => $playerId,
+      'unit_location_type' => LOC_USER,
+      'unit_location_id'   => $playerId,
+      'unit_snid'          => $unitSnId,
+    ]))) {
+      if ($level < 0) {
+        return false;
+      }
+
+      // New unit
+      $unitRecord = \Unit\RecordUnit::build([
+        'unit_player_id'     => $playerId,
+        'unit_location_type' => LOC_USER,
+        'unit_location_id'   => $playerId,
+        'unit_type'          => get_unit_param($unitSnId, P_UNIT_TYPE),
+        'unit_snid'          => $unitSnId,
+        'unit_level'         => $level,
+      ]);
+
+//      var_dump($unitRecord);die();
+
+      return $unitRecord->insert();
+    } else {
+      if ($unitRecord->unit_level + $level < 0) {
+        return false;
+      }
+
+      $unitRecord->inc()->unit_level = $level;
+
+      return $unitRecord->update();
+    }
+
+
   }
 
 }
