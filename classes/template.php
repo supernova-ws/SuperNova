@@ -267,7 +267,6 @@ class template
     }
     else
     {
-/*      eval(' ?>' . $this->compiled_code[$handle] . '<?php ');*/
       $this->evaluate($this->compiled_code[$handle]);
     }
 
@@ -703,7 +702,6 @@ class template
         include($filename);
         return;
       }
-/*      eval(' ?>' . $this->compiled_code[$handle] . '<?php ');*/
       $this->evaluate($this->compiled_code[$handle]);
     }
   }
@@ -770,7 +768,6 @@ class template
     $tplTag = new PTLTag($stringTag, $this);
     $result = $tplTag->resolved;
     $this->compiler->compile_var_tags($result);
-/*    eval(' ?>' . $result . '<?php ');*/
     $this->evaluate($result);
 
     return $result;

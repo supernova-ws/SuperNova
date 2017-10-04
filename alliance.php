@@ -2,7 +2,7 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
-if(classSupernova::$config->game_mode == GAME_BLITZ) {
+if (classSupernova::$config->game_mode == GAME_BLITZ) {
   messageBox($lang['sys_blitz_page_disabled'], $lang['sys_error'], 'overview.php', 10);
   die();
 }
@@ -14,22 +14,16 @@ lng_include('alliance');
 
 $mode = sys_get_param_str('mode');
 
-if($mode == 'ainfo')
-{
+if ($mode == 'ainfo') {
   include('includes/alliance/ali_info.inc');
 }
 
-if(!$user['ally_id'])
-{
+if (!$user['ally_id']) {
   $user_request = doquery("SELECT * FROM {{alliance_requests}} WHERE `id_user` ='{$user['id']}' LIMIT 1;", '', true);
-  if($user_request['id_user'])
-  {
+  if ($user_request['id_user']) {
     require('includes/alliance/ali_external_request.inc');
-  }
-  else
-  {
-    switch($mode)
-    {
+  } else {
+    switch ($mode) {
       case 'search':
         require('includes/alliance/ali_external_search.inc');
       break;
@@ -52,8 +46,7 @@ if(!$user['ally_id'])
 
 sn_ali_fill_user_ally($user);
 //$ally = doquery("SELECT * FROM {{alliance}} WHERE `id` ='{$user['ally_id']}'", '', true);
-if(!isset($user['ally']))
-{
+if (!isset($user['ally'])) {
   db_user_set_by_id($user['id'], "`ally_id` = null, `ally_name` = null, `ally_register_time` = 0, `ally_rank_id` = 0");
   messageBox($lang['ali_sys_notFound'], $lang['your_alliance'], 'alliance.php');
 }
@@ -81,22 +74,18 @@ $rights_old = array(
 
 // This piece converting old ally data to new one
 //  unset($ally['ranklist']);
-if(!$ally['ranklist'] && $ally['ally_ranks'])
-{
+if (!$ally['ranklist'] && $ally['ally_ranks']) {
   $ally_ranks = unserialize($ally['ally_ranks']);
   $i = 0;
-  foreach($ally_ranks as $rank_id => $rank)
-  {
-    foreach($ally_rights as $key => $value)
-    {
+  foreach ($ally_ranks as $rank_id => $rank) {
+    foreach ($ally_rights as $key => $value) {
       $ranks[$i][$value] = $rank[$rights_old[$key]];
     }
     db_user_list_set_ally_deprecated_convert_ranks($user['ally_id'], $i, $rank_id);
     $i++;
   }
 
-  if(!empty($ranks))
-  {
+  if (!empty($ranks)) {
     ali_rank_list_save($ranks);
   }
 }
@@ -114,28 +103,32 @@ $user_can_edit_rights = $user_admin = $ranks[$user['ally_rank_id']]['admin'] || 
 
 $edit = sys_get_param_str('edit');
 ally_pre_call();
-switch($mode)
-{
+switch ($mode) {
   case 'admin':
-    if(!array_key_exists($edit , $sn_ali_admin_internal))
-    {
+    if (!array_key_exists($edit, $sn_ali_admin_internal)) {
       $edit = 'default';
     }
-    if($sn_ali_admin_internal[$edit]['include'])
-    {
+    if ($sn_ali_admin_internal[$edit]['include']) {
       require("includes/{$sn_ali_admin_internal[$edit]['include']}");
     }
-    if(isset($sn_ali_admin_internal[$edit]['function']) && is_callable($sn_ali_admin_internal[$edit]['function']))
-    {
+    if (isset($sn_ali_admin_internal[$edit]['function']) && is_callable($sn_ali_admin_internal[$edit]['function'])) {
       call_user_func($sn_ali_admin_internal[$edit]['function']);
     }
   break;
 
-  case 'memberslist':  require('includes/alliance/ali_internal_members.inc'); break;
-  case 'circular':     require('includes/alliance/ali_internal_admin_mail.inc'); break;
-  default:             require('includes/alliance/ali_info.inc'); break;
+  case 'memberslist':
+    require('includes/alliance/ali_internal_members.inc');
+  break;
+  case 'circular':
+    require('includes/alliance/ali_internal_admin_mail.inc');
+  break;
+  default:
+    require('includes/alliance/ali_info.inc');
+  break;
 }
 
-function ally_pre_call(){$func_args = func_get_args();return sn_function_call('ally_pre_call', $func_args);}
+function ally_pre_call() {
+  $func_args = func_get_args();
 
-?>
+  return sn_function_call('ally_pre_call', $func_args);
+}

@@ -2,7 +2,7 @@
 /**
  *
  * @package supernova
- * @version #43a0.11#
+ * @version #43a3.17#
  * @copyright (c) 2009-2017 Gorlum for http://supernova.ws
  * @license http://opensource.org/licenses/gpl-license.php GNU Public License
  *
@@ -248,7 +248,8 @@ class classCache implements ArrayAccess {
     }
     $this->unset_by_prefix($name[0]);
 
-    for ($i = 1; $i < count($name); $i++) {
+    $count = count($name);
+    for ($i = 1; $i < $count; $i++) {
       $cName = "{$name[$i]}_COUNT";
       $cName1 = "{$name[$i-1]}_COUNT";
 

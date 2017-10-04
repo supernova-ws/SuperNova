@@ -23,18 +23,19 @@ class db_mysql_v5 {
    * @var bool
    */
   public $connected = false;
+
   // public $dbsettings = array();
 
-  function mysql_connect($settings) {
+  public function mysql_connect($settings) {
     global $debug;
 
     static $need_keys = array('server', 'user', 'pass', 'name', 'prefix');
 
-    if($this->connected) {
+    if ($this->connected) {
       return true;
     }
 
-    if(empty($settings) || !is_array($settings) || array_intersect($need_keys, array_keys($settings)) != $need_keys) {
+    if (empty($settings) || !is_array($settings) || array_intersect($need_keys, array_keys($settings)) != $need_keys) {
       $debug->error_fatal('There is missconfiguration in your config.php. Check it again');
     }
 
@@ -49,20 +50,20 @@ class db_mysql_v5 {
 
 
     $this->mysql_query("/*!40101 SET NAMES 'utf8' */")
-      or $debug->error_fatal('DB error - cannot set names 1 error #' . $this->link->errno, $this->link->error);
+    or $debug->error_fatal('DB error - cannot set names 1 error #' . $this->link->errno, $this->link->error);
     $this->mysql_query("SET NAMES 'utf8';")
-      or $debug->error_fatal('DB error - cannot set names 2 error #' . $this->link->errno, $this->link->error);
+    or $debug->error_fatal('DB error - cannot set names 2 error #' . $this->link->errno, $this->link->error);
 
     //mysql_select_db($settings['name']) or $debug->error_fatal('DB error - cannot find DB on server', $this->mysql_error());
     $this->mysql_query('SET SESSION TRANSACTION ISOLATION LEVEL ' . self::DB_MYSQL_TRANSACTION_SERIALIZABLE . ';')
-      or $debug->error_fatal('DB error - cannot set desired isolation level error #' . $this->link->errno, $this->link->error);
+    or $debug->error_fatal('DB error - cannot set desired isolation level error #' . $this->link->errno, $this->link->error);
 
     $this->connected = true;
 
     return true;
   }
 
-  function mysql_query($query_string) {
+  public function mysql_query($query_string) {
     return $this->link->query($query_string);
   }
 
@@ -71,17 +72,20 @@ class db_mysql_v5 {
    *
    * @return array|null
    */
-  function mysql_fetch_assoc(&$query_result) {
+  public function mysql_fetch_assoc(&$query_result) {
     return mysqli_fetch_assoc($query_result);
   }
-  function mysql_fetch_row(&$query) {
+
+  public function mysql_fetch_row(&$query) {
     return mysqli_fetch_row($query);
   }
-  function mysql_real_escape_string($unescaped_string) {
+
+  public function mysql_real_escape_string($unescaped_string) {
     return mysqli_real_escape_string($this->link, $unescaped_string);
   }
-  function mysql_close_link() {
-    if(is_object($this->link)) {
+
+  public function mysql_close_link() {
+    if (is_object($this->link)) {
       $this->link->close();
       $this->connected = false;
       unset($this->link);
@@ -89,32 +93,39 @@ class db_mysql_v5 {
 
     return true;
   }
-  function mysql_error() {
+
+  public function mysql_error() {
     return mysqli_error($this->link);
   }
 
   /**
    * @return int|string
    */
-  function mysql_insert_id() {
+  public function mysql_insert_id() {
     return mysqli_insert_id($this->link);
   }
-  function mysql_num_rows(&$result) {
+
+  public function mysql_num_rows(&$result) {
     return mysqli_num_rows($result);
   }
-  function mysql_affected_rows() {
+
+  public function mysql_affected_rows() {
     return mysqli_affected_rows($this->link);
   }
-  function mysql_get_client_info() {
+
+  public function mysql_get_client_info() {
     return mysqli_get_client_info();
   }
-  function mysql_get_server_info() {
+
+  public function mysql_get_server_info() {
     return mysqli_get_server_info($this->link);
   }
-  function mysql_get_host_info() {
+
+  public function mysql_get_host_info() {
     return mysqli_get_host_info($this->link);
   }
-  function mysql_stat() {
+
+  public function mysql_stat() {
     return mysqli_stat($this->link);
   }
 }
