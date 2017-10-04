@@ -839,7 +839,6 @@ https://money.yandex.ru/embed/quickpay/small.xml
 [*] Шпионаж - генерировать отчёты не в форме текста
 
 
-[*] Заменить pretty_number в модулях
 [*] prettyNumberStyledDefault() - избавиться и перенести формат на сторону темплейта
 [*] HelperString::numberFloorAndFormat() - избавиться и перенести формат на сторону темплейта
 
@@ -854,13 +853,10 @@ https://money.yandex.ru/embed/quickpay/small.xml
               });
     на вызов кусков из planet_manage.js - см.
       .on('change', "#density_type", function () {
-
-    И вообще - использовать planet_manage.min.js
+    - И вообще - использовать planet_manage.min.js
     - Добавить индикатор конверсии ММ в ТМ при нехватке для апгрейда?
 
 
-      'COST_TEXT'       => HelperString::numberFloorAndFormat($density_cost),
-      'COST_TEXT_CLASS' => prettyNumberGetClass($density_cost, $user_dark_matter),
 
 
 #ctv

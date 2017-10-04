@@ -206,9 +206,9 @@ foreach(classSupernova::$lang['pay_currency_list'] as $key => $value) {
   $template->assign_block_vars('exchange', array(
     'SYMBOL' => $key,
     'TEXT' => $value,
-    'COURSE_DIRECT' => HelperString::numberFloorAndFormat($course, 4),
-    'COURSE_REVERSE' => HelperString::numberFloorAndFormat(1 / $course, 4),
-    'MM_PER_CURRENCY' => HelperString::numberFloorAndFormat(sn_module_payment::currency_convert(1, $key, 'MM_')),
+    'COURSE_DIRECT' => HelperString::numberFormat($course, 4),
+    'COURSE_REVERSE' => HelperString::numberFormat(1 / $course, 4),
+    'MM_PER_CURRENCY' => HelperString::numberFormat(sn_module_payment::currency_convert(1, $key, 'MM_'), 2),
     'LOT_PRICE' => sn_module_payment::currency_convert(get_mm_cost(), 'MM_', $key),
     'DEFAULT' => $key == classSupernova::$config->payment_currency_default,
   ));
@@ -268,7 +268,7 @@ foreach($unit_available_amount_list as $unit_amount => $discount) {
   $template->assign_block_vars('mm_amount', array(
     'VALUE' => $unit_amount,
     // 'PRICE' => $temp,
-    'PRICE_TEXT' => HelperString::numberFloorAndFormat($temp, 2),
+    'PRICE_TEXT' => HelperString::numberFormat($temp, 2),
     'CURRENCY' => $player_currency,
     'DISCOUNT' => $discount,
     'DISCOUNT_PERCENT' => $discount * 100,
@@ -302,7 +302,7 @@ $template->assign_vars(array(
   'UNIT_AMOUNT_TEXT' => HelperString::numberFloorAndFormat($request['metamatter']),
   'UNIT_AMOUNT_BONUS_PERCENT' => $bonus_percent,
   'UNIT_AMOUNT_TEXT_DISCOUNTED' => $income_metamatter_text,
-  'UNIT_AMOUNT_TEXT_COST_BASE' => HelperString::numberFloorAndFormat(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
+  'UNIT_AMOUNT_TEXT_COST_BASE' => HelperString::numberFormat(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
 
   'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => prettyNumberStyledDefault(get_mm_cost()),
   'PAYMENT_CURRENCY_DEFAULT_TEXT' => classSupernova::$lang['pay_currency_list'][classSupernova::$config->payment_currency_default],

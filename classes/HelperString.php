@@ -86,15 +86,25 @@ class HelperString {
   }
 
   /**
-   * Formats number to string in Cyrillic format
+   * Just format number to Cyrillic format
+   *
+   * @param int|float $number
+   * @param int       $decimals
+   */
+  public static function numberFormat($number, $decimals) {
+    return number_format($number, $decimals, ',', '.');
+  }
+
+  /**
+   * Formats FLOORED (!) number to string in Cyrillic format
    *
    * @param int|float $number
    * @param int       $decimals
    *
    * @return string
    */
-  public static function numberFloorAndFormat($number, $decimals = 0) {
-    return number_format(floor($number), $decimals, ',', '.');
+  public static function numberFloorAndFormat($number) {
+    return static::numberFormat(floor($number), 0);
   }
 
 }

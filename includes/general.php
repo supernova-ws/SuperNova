@@ -1580,6 +1580,16 @@ function sec_player_ip() {
 }
 
 
+/**
+ * @param $price_matrix_plain
+ * @param $price_matrix_original
+ * @param $price_matrix_upgrade
+ * @param $user_dark_matter
+ *
+ * @return array
+ *
+ * Used in player_premium and interface_batch_operation modules
+ */
 function price_matrix_templatize(&$price_matrix_plain, &$price_matrix_original, &$price_matrix_upgrade, $user_dark_matter) {
   $prices = array();
   foreach ($price_matrix_original as $level_num => $level_data) {
