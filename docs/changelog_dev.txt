@@ -867,6 +867,11 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 
 
+2017-10-04 01:59:42 43a3.9
+[@] Код
+    Вызов pretty_number() убран из базового кода
+
+
 2017-10-04 01:39:39 43a3.8
 [@] Код
     Вызов pretty_number() убран почти отовсюду

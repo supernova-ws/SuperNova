@@ -311,8 +311,9 @@ $template->assign_vars(array(
 
   'METAMATTER_COST_TEXT' => sprintf(classSupernova::$lang['pay_mm_buy_conversion_cost'],
     prettyNumberStyledDefault($request['metamatter']),
-    pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $currency), 2, true),
-    $currency),
+    number_format($mmWish = sn_module_payment::currency_convert($request['metamatter'], 'MM_', $currency), 2, ',', '.'),
+    $currency,
+    prettyNumberGetClass($mmWish, true)),
   'METAMATTER_COST_BONUS_TEXT' => $bonus_percent
     ? sprintf(classSupernova::$lang['pay_mm_buy_real_income'], prettyNumberStyledDefault($bonus_percent), $income_metamatter_text)
     : '',
