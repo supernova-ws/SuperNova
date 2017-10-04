@@ -806,22 +806,10 @@ https://money.yandex.ru/embed/quickpay/small.xml
 [*] scheduler_process - sys_maintenance подвесить выше для того, что бы удалять лишние Альянсы/юниты ДО расчётов
 
 
-[*] Уменьшить размер тяжелых страниц за счёт переноса данных в JS и динамической генерации страницы на стороне клиента
-        - Страницы:
-            - Админка - список игроков
-            - Админка - платежи
-            - Сообщения - список сообщений
-        - Оставить вариант для статической генерации?
-        - Делать псевдо-темплейтами? С автозаменой автоматических полей на поля из массива?
-
-
 [*] Экспа
         - Искать чертежи по кусочкам. По 10к на кусочек
 
 [*] Наёмники - цена для Альянсов должна быть выше кратно
-
-
-[*] que_get_unit_que($unit_id) - убрать вообще. Прописать доступные очереди в описании юнитов, а так же основную очередь
 
 
 [*] template - модификаторы показа через параметры {VALUE|parms...}, что бы не надо было везде дублировать через pretty_number
@@ -840,19 +828,6 @@ https://money.yandex.ru/embed/quickpay/small.xml
 
 [*] Шпионаж - генерировать отчёты не в форме текста
 
-
-[*] resources.tpl.html - Заменить код
-            <script type="text/javascript">
-              jQuery("#density_type").change(function(){
-                selected = jQuery("#density_type option:selected");
-                $("#transmutation_cost").html(selected.attr("html")).removeClass().addClass(selected.attr("html_class"));
-    //            Math.intVal(selected.attr("rest")) <= 0 ? $("#transmute_button").attr("disabled", 1) : $("#transmute_button").removeAttr("disabled");
-                $("#transmute_button").button({disabled: parseInt(selected.attr("rest")) <= 0 || selected.attr("current") == '1'});
-              });
-    на вызов кусков из planet_manage.js - см.
-      .on('change', "#density_type", function () {
-    - И вообще - использовать planet_manage.min.js
-    - Добавить индикатор конверсии ММ в ТМ при нехватке для апгрейда?
 
 
 
