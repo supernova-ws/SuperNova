@@ -282,7 +282,7 @@ class PageImperium {
         'DEUTERIUM_CUR'  => pretty_number($planet['deuterium'], true, $planet['caps']['total_storage'][RES_DEUTERIUM]),
         'DEUTERIUM_PROD' => HelperString::numberFloorAndFormat($planet['caps']['total'][RES_DEUTERIUM]),
 
-        'ENERGY_CUR' => pretty_number($planet['caps'][RES_ENERGY][BUILD_CREATE] - $planet['caps'][RES_ENERGY][BUILD_DESTROY], true, true),
+        'ENERGY_CUR' => prettyNumberStyledDefault($planet['caps'][RES_ENERGY][BUILD_CREATE] - $planet['caps'][RES_ENERGY][BUILD_DESTROY]),
         'ENERGY_MAX' => HelperString::numberFloorAndFormat($planet['caps'][RES_ENERGY][BUILD_CREATE]),
 
         'TEMP_MIN' => $planet['temp_min'],

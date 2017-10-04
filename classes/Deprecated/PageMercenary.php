@@ -106,7 +106,7 @@ class PageMercenary {
         'DESCRIPTION'       => $this->lang['info'][$mercenary_id]['description'],
         'EFFECT'            => $this->lang['info'][$mercenary_id]['effect'],
         'COST'              => $nextLevelCostDM - $currentUnitCostDM,
-        'COST_TEXT'         => pretty_number($nextLevelCostDM - $currentUnitCostDM, 0, $user_dark_matter),
+        'COST_TEXT'         => pretty_number($nextLevelCostDM - $currentUnitCostDM, true, $user_dark_matter),
         'LEVEL'             => $mercenary_level,
         'LEVEL_BONUS'       => $mercenary_level_bonus,
         'LEVEL_MAX'         => $mercenary['max'],

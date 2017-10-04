@@ -707,7 +707,7 @@ function sn_tpl_render_topnav(&$user, $planetrow, $template) {
     'TOPNAV_DARK_MATTER'            => mrc_get_level($user, '', RES_DARK_MATTER),
     'TOPNAV_DARK_MATTER_TEXT'       => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_DARK_MATTER)),
     'TOPNAV_DARK_MATTER_PLAIN'      => mrc_get_level($user, '', RES_DARK_MATTER, false, true),
-    'TOPNAV_DARK_MATTER_PLAIN_TEXT' => pretty_number(mrc_get_level($user, '', RES_DARK_MATTER, false, true)),
+    'TOPNAV_DARK_MATTER_PLAIN_TEXT' => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_DARK_MATTER, false, true)),
     'TOPNAV_METAMATTER'             => mrc_get_level($user, '', RES_METAMATTER),
     'TOPNAV_METAMATTER_TEXT'        => HelperString::numberFloorAndFormat(mrc_get_level($user, '', RES_METAMATTER)),
 

@@ -439,7 +439,7 @@ switch ($mode = sys_get_param_str('mode')) {
 
       'PAGE_HEADER' => classSupernova::$lang['ov_overview']. " - " . classSupernova::$lang['sys_planet_type'][$planetrow['planet_type']] . " {$planetrow['name']} [{$planetrow['galaxy']}:{$planetrow['system']}:{$planetrow['planet']}]",
     ));
-    tpl_set_resource_info($template, $planetrow, $fleets_to_planet, 2);
+    tpl_set_resource_info($template, $planetrow, $fleets_to_planet);
 
     foreach ($result as &$a_result) {
       $template->assign_block_vars('result', $a_result);

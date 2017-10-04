@@ -186,7 +186,7 @@ function pretty_number($n, $floor = true, $color = false, $condense = false, $ou
       $class = ($n == -$color) ? 'zero' : ($n < -$color ? 'negative' : 'positive');
     }
 
-    if (!isset($output)) {
+    if ($output === null) {
       $ret = "<span class='{$class}'>{$ret}</span>";
     } else {
       $ret = $output ? $ret = $class : $ret = array('text' => $ret, 'class' => $class);
@@ -194,6 +194,22 @@ function pretty_number($n, $floor = true, $color = false, $condense = false, $ou
   }
 
   return $ret;
+}
+
+/**
+ * Return number floored, formatted and styled with "span"
+ *
+ * @param int|float $number
+ *
+ * @return string
+ *
+ * @deprecated - should be replaced in templates
+ */
+function prettyNumberStyledDefault($number) {
+  return
+    '<span class="' . (floor($number) == 0 ? 'zero' : (floor($number) > 0 ? 'positive' : 'negative')) . '">' .
+    HelperString::numberFloorAndFormat($number) .
+    "</span>";
 }
 
 // ----------------------------------------------------------------------------------------------------------------

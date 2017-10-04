@@ -280,7 +280,7 @@ foreach($unit_available_amount_list as $unit_amount => $discount) {
 
 $currency = $payment_module ? sn_module_payment::$payment_methods[$payment_type_selected][$payment_method_selected]['currency'] : '';
 $bonus_percent = round(sn_module_payment::bonus_calculate($request['metamatter'], true, true) * 100);
-$income_metamatter_text = pretty_number(sn_module_payment::bonus_calculate($request['metamatter']), true, true);
+$income_metamatter_text = prettyNumberStyledDefault(sn_module_payment::bonus_calculate($request['metamatter']));
 
 $template->assign_vars(array(
   'PAGE_HEADER' => classSupernova::$lang['sys_metamatter'],
@@ -304,17 +304,17 @@ $template->assign_vars(array(
   'UNIT_AMOUNT_TEXT_DISCOUNTED' => $income_metamatter_text,
   'UNIT_AMOUNT_TEXT_COST_BASE' => HelperString::numberFloorAndFormat(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $player_currency), 2),
 
-  'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => pretty_number(get_mm_cost(), true, true),
+  'PAYMENT_CURRENCY_EXCHANGE_DEFAULT' => prettyNumberStyledDefault(get_mm_cost()),
   'PAYMENT_CURRENCY_DEFAULT_TEXT' => classSupernova::$lang['pay_currency_list'][classSupernova::$config->payment_currency_default],
 
   'METAMATTER' => mrc_get_level($user, '', RES_METAMATTER),
 
   'METAMATTER_COST_TEXT' => sprintf(classSupernova::$lang['pay_mm_buy_conversion_cost'],
-    pretty_number($request['metamatter'], true, true),
+    prettyNumberStyledDefault($request['metamatter']),
     pretty_number(sn_module_payment::currency_convert($request['metamatter'], 'MM_', $currency), 2, true),
     $currency),
   'METAMATTER_COST_BONUS_TEXT' => $bonus_percent
-    ? sprintf(classSupernova::$lang['pay_mm_buy_real_income'], pretty_number($bonus_percent, true, true), $income_metamatter_text)
+    ? sprintf(classSupernova::$lang['pay_mm_buy_real_income'], prettyNumberStyledDefault($bonus_percent), $income_metamatter_text)
     : '',
 
   'DARK_MATTER_DESCRIPTION' => classSupernova::$lang['info'][RES_DARK_MATTER]['description'],
