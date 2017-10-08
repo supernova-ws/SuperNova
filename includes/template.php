@@ -407,7 +407,6 @@ function renderHeader($page, $title, &$template_result, $inLoginLogout, &$user, 
 }
 
 /**
- * @internal param $config
  */
 function renderFooter() {
   $templateFooter = gettemplate('_page_90_footer', true);

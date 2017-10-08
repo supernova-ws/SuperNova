@@ -37,7 +37,18 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
   return $list;
 }
 
-function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = false, $force = false)
+/**
+ * @param      $owners
+ * @param      $sender
+ * @param      $timestamp
+ * @param      $message_type
+ * @param      $from
+ * @param      $subject
+ * @param      $text
+ * @param bool $escaped - is $from, $subject and $text escaped?
+ * @param bool $force
+ */
+function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = STRING_NEED_ESCAPING, $force = false)
 {
   global $config, $user, $sn_message_class_list;
 
@@ -53,7 +64,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     $owners = array($owners);
   }
 
-  if(!$escaped)
+  if($escaped == STRING_NEED_ESCAPING)
   {
     $from = db_escape($from);
     $subject = db_escape($subject);

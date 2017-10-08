@@ -54,6 +54,8 @@ class PageMercenary {
     $this->config = classSupernova::$config;
     $this->lang = $lang;
     $this->sn_powerup_buy_discounts = $sn_powerup_buy_discounts;
+
+    $this->loadParams();
   }
 
   protected function loadParams() {
@@ -70,8 +72,6 @@ class PageMercenary {
    * @param array $user
    */
   public function mrc_mercenary_render($user) {
-    $this->loadParams();
-
     $template = gettemplate('mrc_mercenary_hire');
 
     $operation_result = $this->modelMercenaryHire($user);

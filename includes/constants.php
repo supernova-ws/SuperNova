@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a3.19');
+define('SN_VERSION', '43a4.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1715,3 +1715,6 @@ define('STR_OBSERVER_ENTRY_METHOD_NAME', '_update');
 define('SN_SQL_TYPE_NAME_TIMESTAMP', 'timestamp');
 define('SN_SQL_DEFAULT_CURRENT_TIMESTAMP', 'CURRENT_TIMESTAMP');
 define('SN_SQL_EXTRA_AUTO_INCREMENT', 'auto_increment');
+
+define('STRING_IS_ESCAPED', true);
+define('STRING_NEED_ESCAPING', false);
