@@ -332,7 +332,6 @@ class PageMessage extends PageDeprecated {
 
     $template = gettemplate('msg_message_list', true);
     while ($message_row = db_fetch($message_query)) {
-      var_dump($message_row);
       $template->assign_block_vars('messages', array(
         'ID'   => $message_row['message_id'],
         'DATE' => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
