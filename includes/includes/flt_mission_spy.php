@@ -38,7 +38,7 @@ function flt_spy_scan($target_planet, $group_name, $section_title, $target_user 
   {
     if(($unit_amount = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0)
     {
-      $result .= "<tr><td align=\"left\" colspan=\"3\">{$lang['tech'][$unit_id]}</td><td align=\"right\">{$unit_amount}</td></tr>";
+      $result .= "<tr><td align=\"left\" colspan=\"3\">{$lang['tech'][$unit_id]}</td><td align=\"right\">" . HelperString::numberFloorAndFormat($unit_amount) . "</td></tr>";
     }
 
     /*
