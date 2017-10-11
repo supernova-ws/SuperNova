@@ -299,7 +299,17 @@ switch($new_version) {
     $new_version = 42;
 
   case 42:
+    // 2017-10-11 09:51:49 43a4.3
+    upd_alter_table(
+      'messages',
+      array(
+        "ADD COLUMN `message_json` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `message_text`",
+      ),
+      empty($update_tables['messages']['message_json'])
+    );
+
     upd_do_query('COMMIT;', true);
+
 
   // #ctv
 
