@@ -202,13 +202,17 @@ class FleetDispatcher {
       MT_TRANSPORT => 'flt_mission_transport',
       MT_RELOCATE  => 'flt_mission_relocate',
       MT_HOLD      => 'flt_mission_hold',
-      MT_SPY       => 'flt_mission_spy',
+      MT_SPY       => '',
       MT_COLONIZE  => 'flt_mission_colonize',
       MT_RECYCLE   => 'flt_mission_recycle',
 //    MT_MISSILE => 'flt_mission_missile.php',
       MT_EXPLORE   => 'flt_mission_explore',
     );
     foreach ($missions_used as $mission_id => $cork) {
+      if(empty($mission_files[$mission_id])) {
+        continue;
+      }
+
       require_once(SN_ROOT_PHYSICAL . "includes/includes/{$mission_files[$mission_id]}" . DOT_PHP_EX);
     }
 
@@ -354,7 +358,12 @@ class FleetDispatcher {
         break;
 
         case MT_SPY:
-          $mission_result = flt_mission_spy($mission_data);
+          require_once('includes/includes/coe_simulator_helpers.php');
+
+          $theMission = \Fleet\MissionEspionage::buildFromArray($mission_data);
+          $theMission->flt_mission_spy();
+
+          unset($theMission);
         break;
 
         case MT_MISSILE:  // Missiles !!

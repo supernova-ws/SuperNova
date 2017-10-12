@@ -1,53 +1,53 @@
 <?php
-
-require_once('includes/includes/coe_simulator_helpers.php');
-
 /**
- * MissionCaseSpy.php
- *
- * V2 optimizations; correctly works mission
- * @version 1
- * @copyright 2008
+ * Created by Gorlum 11.10.2017 13:16
  */
-// ----------------------------------------------------------------------------------------------------------------
-function coe_compress_add_units($unit_group, $target_planet, &$compress_data, $target_user = array()) {
-  foreach ($unit_group as $unit_id) {
-    if (($unit_count = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0) {
-      $compress_data[$unit_id] = $unit_count;
+
+namespace Fleet;
+
+use \classSupernova;
+use \HelperString;
+use \DBStaticPlanet;
+
+class MissionEspionage extends MissionData {
+
+  public function flt_mission_spy() {
+    $lang = classSupernova::$lang;
+
+    if (!isset($this->dst_user['id']) || !isset($this->dst_planet['id']) || !isset($this->src_user['id'])) {
+      fleet_send_back($this->fleet);
+
+      return;
     }
-  }
-}
 
-function flt_spy_scan($target_planet, $group_name, $section_title, $target_user = array()) {
-  global $lang;
+    $spy_detected = false;
 
-  $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
-  foreach (sn_get_groups($group_name) as $unit_id) {
-    if (($unit_amount = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0) {
-      $result .= "<tr><td align=\"left\" colspan=\"3\">{$lang['tech'][$unit_id]}</td><td align=\"right\">" . HelperString::numberFloorAndFormat($unit_amount) . "</td></tr>";
+    $fleet_array = sys_unit_str2arr($this->fleet['fleet_array']);
+    if ($fleet_array[SHIP_SPY] >= 1) {
+      $spy_detected = $this->doSpying($lang);
     }
-  }
 
-  return $result;
-}
-
-function flt_mission_spy(&$mission_data) {
-  global $lang;
-
-  $fleet_row = &$mission_data['fleet'];
-  $target_user_row = &$mission_data['dst_user'];
-  $target_planet_row = &$mission_data['dst_planet'];
-  $spying_user_row = &$mission_data['src_user'];
-  $spying_planet_row = &$mission_data['src_planet'];
-
-  if (!isset($target_user_row['id']) || !isset($target_planet_row['id']) || !isset($spying_user_row['id'])) {
-    fleet_send_back($fleet_row);
+    if (!$spy_detected) {
+      fleet_send_back($this->fleet['fleet_array']);
+    }
 
     return;
   }
 
-  $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
-  if ($fleet_array[SHIP_SPY] > 0) {
+  /**
+   * @param $lang
+   *
+   * @return bool
+   */
+  protected function doSpying($lang) {
+    $fleet_row = &$this->fleet;
+    $target_user_row = &$this->dst_user;
+    $target_planet_row = &$this->dst_planet;
+    $spying_user_row = &$this->src_user;
+    $spying_planet_row = &$this->src_planet;
+
+    $fleet_array = sys_unit_str2arr($fleet_row['fleet_array']);
+
     $TargetSpyLvl = GetSpyLevel($target_user_row);
     $CurrentSpyLvl = GetSpyLevel($spying_user_row);
     $spy_diff_empire = $CurrentSpyLvl - $TargetSpyLvl;
@@ -73,20 +73,20 @@ function flt_mission_spy(&$mission_data) {
     $spy_message .= "<td width=220>{$lang['sys_energy']}</td><td width=220 align=right>" . HelperString::numberFloorAndFormat($target_planet_row['energy_max']) . "</td>";
     $spy_message .= "</tr>";
     if ($spy_diff >= 2) {
-      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'fleet', $lang['tech'][UNIT_SHIPS], $target_user_row) . "</div>";
-      coe_compress_add_units(sn_get_groups('fleet'), $target_planet_row, $combat_pack[0]);
+      $spy_message .= "<div class='spy_medium'>" . $this->flt_spy_scan($target_planet_row, 'fleet', $lang['tech'][UNIT_SHIPS], $target_user_row) . "</div>";
+      $this->coe_compress_add_units(sn_get_groups('fleet'), $target_planet_row, $combat_pack[0]);
     }
     if ($spy_diff >= 3) {
-      $spy_message .= "<div class='spy_medium'>" . flt_spy_scan($target_planet_row, 'defense', $lang['tech'][UNIT_DEFENCE], $target_user_row) . "</div>";
-      coe_compress_add_units(sn_get_groups('defense_active'), $target_planet_row, $combat_pack[0]);
+      $spy_message .= "<div class='spy_medium'>" . $this->flt_spy_scan($target_planet_row, 'defense', $lang['tech'][UNIT_DEFENCE], $target_user_row) . "</div>";
+      $this->coe_compress_add_units(sn_get_groups('defense_active'), $target_planet_row, $combat_pack[0]);
     }
     if ($spy_diff >= 5) {
-      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'structures', $lang['tech'][UNIT_STRUCTURES], $target_user_row) . "</div>";
+      $spy_message .= "<div class='spy_long'>" . $this->flt_spy_scan($target_planet_row, 'structures', $lang['tech'][UNIT_STRUCTURES], $target_user_row) . "</div>";
     }
 
     if ($spy_diff_empire >= 0) {
-      $spy_message .= "<div class='spy_long'>" . flt_spy_scan($target_planet_row, 'tech', $lang['tech'][UNIT_TECHNOLOGIES], $target_user_row) . "</div>";
-      coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_planet_row, $combat_pack[0], $target_user_row);
+      $spy_message .= "<div class='spy_long'>" . $this->flt_spy_scan($target_planet_row, 'tech', $lang['tech'][UNIT_TECHNOLOGIES], $target_user_row) . "</div>";
+      $this->coe_compress_add_units(array(TECH_WEAPON, TECH_SHIELD, TECH_ARMOR), $target_planet_row, $combat_pack[0], $target_user_row);
     }
     // TODO: Наемники, губернаторы, артефакты и прочее имперское
 
@@ -132,17 +132,32 @@ function flt_mission_spy(&$mission_data) {
         "`debris_metal` = `debris_metal` + " . floor($spy_probes * $spy_cost[RES_METAL] * 0.3) . ", `debris_crystal` = `debris_crystal` + " . floor($spy_probes * $spy_cost[RES_CRYSTAL] * 0.3));
 
       $target_message .= "<br />{$lang['sys_mess_spy_destroyed_enemy']}";
-
-      $result = CACHE_FLEET | CACHE_PLANET_DST;
-    } else {
-      $result = CACHE_FLEET;
     }
     msg_send_simple_message($target_user_id, '', $fleet_row['fleet_start_time'], MSG_TYPE_SPY, $lang['sys_mess_spy_control'], $lang['sys_mess_spy_activity'], $target_message);
+
+    return $spy_detected;
   }
 
-  if (!$spy_detected) {
-    fleet_send_back($fleet_row);
+
+  protected function flt_spy_scan($target_planet, $group_name, $section_title, $target_user = array()) {
+    global $lang;
+
+    $result = "<tr><td class=\"c\" colspan=\"4\">{$section_title}</td></tr>";
+    foreach (sn_get_groups($group_name) as $unit_id) {
+      if (($unit_amount = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0) {
+        $result .= "<tr><td align=\"left\" colspan=\"3\">{$lang['tech'][$unit_id]}</td><td align=\"right\">" . HelperString::numberFloorAndFormat($unit_amount) . "</td></tr>";
+      }
+    }
+
+    return $result;
   }
 
-  return $result;
+  protected function coe_compress_add_units($unit_group, $target_planet, &$compress_data, $target_user = array()) {
+    foreach ($unit_group as $unit_id) {
+      if (($unit_count = mrc_get_level($target_user, $target_planet, $unit_id, false, true)) > 0) {
+        $compress_data[$unit_id] = $unit_count;
+      }
+    }
+  }
+
 }

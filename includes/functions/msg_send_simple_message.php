@@ -47,8 +47,9 @@ function msg_ali_send($message, $subject, $ally_rank_id = 0, $ally_id = 0)
  * @param      $text
  * @param bool $escaped - is $from, $subject and $text escaped?
  * @param bool $force
+ * @param bool $json
  */
-function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = STRING_NEED_ESCAPING, $force = false)
+function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $from, $subject, $text, $escaped = STRING_NEED_ESCAPING, $force = false, $json = false)
 {
   global $config, $user, $sn_message_class_list;
 
