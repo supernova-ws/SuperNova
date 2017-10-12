@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 42a28.17
+* @version 43a4.6
 *
 */
 
@@ -285,16 +285,18 @@ $a_lang_array = (array(
   'sys_rapport_build_time' 	=> 'Report generation time %s seconds',
   'sys_mess_tower' 		=> 'Transport',
   'sys_coe_lost_contact' 		=> 'You lost contact with your fleet',
-  'sys_spy_maretials' 		=> 'Raw material',
+  'sys_spy_activity' => 'There is some spy activity around your planets',
+  'sys_spy_materials' 		=> 'Raw material',
   'sys_spy_fleet' 			=> 'Fleet',
   'sys_spy_defenses' 		=> 'Defence',
   'sys_mess_qg' 			=> 'Fleet command',
   'sys_mess_spy_report' 		=> 'Spy Report',
   'sys_mess_spy_lostproba' 	=> 'Accuracy of information received by the Spy probe %d %% ',
   'sys_mess_spy_detect_chance' 	=> 'Detection chance %d%%',
+  'sys_mess_spy_detect_chance_no_percent' 	=> 'Detection chance',
   'sys_mess_spy_control' 		=> 'Counter-intelligence',
   'sys_mess_spy_activity' 		=> 'Spy activity',
-  'sys_mess_spy_ennemyfleet' 	=> 'Alien fleet with planet',
+  'sys_mess_spy_enemy_fleet' 	=> 'Alien fleet with planet',
   'sys_mess_spy_seen_at'		=> 'was discovered near the planet',
   'sys_mess_spy_destroyed'		=> 'Spy fleet was destroyed',
   'sys_mess_spy_destroyed_enemy'		=> 'Enemy spy fleet was destroyed',

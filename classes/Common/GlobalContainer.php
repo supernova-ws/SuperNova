@@ -3,9 +3,12 @@
 namespace Common;
 
 use \classSupernova;
-use Core\Watchdog;
-use Event\EventBus;
-use Meta\Economic\EconomicHelper;
+use \General;
+use \Core\Watchdog;
+use \Core\Repository;
+use \Event\EventBus;
+use \Meta\Economic\EconomicHelper;
+
 
 /**
  * Class GlobalContainer
@@ -28,6 +31,7 @@ use Meta\Economic\EconomicHelper;
  * @property Watchdog         $watchdog
  * @property EventBus         $eventBus
  *
+ * @property General          $general
  * @property EconomicHelper   $economicHelper
  *
  * Dummy objects -------------------------------------------------------------------------------------------------------
@@ -79,7 +83,8 @@ class GlobalContainer extends ContainerPlus {
       return classSupernova::$db;
     };
 
-    $gc->debug = function (GlobalContainer $c) {
+    $gc->debug = function (/** @noinspection PhpUnusedParameterInspection */
+      GlobalContainer $c) {
       return new \debug();
     };
 
@@ -93,7 +98,7 @@ class GlobalContainer extends ContainerPlus {
 
 
     $gc->repository = function (GlobalContainer $gc) {
-      return new \Core\Repository($gc);
+      return new Repository($gc);
     };
 
     $gc->storage = function (GlobalContainer $gc) {
@@ -118,6 +123,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->eventBus = function (GlobalContainer $gc) {
       return new EventBus($gc);
+    };
+
+    $gc->general = function (GlobalContainer $gc) {
+      return new General($gc);
     };
 
     $gc->economicHelper = function (GlobalContainer $gc) {

@@ -36,9 +36,18 @@ class MissionEspionageReport {
   public $fleetTime = 0;
 
   public $attackerPlayerId = 0;
+  public $attackerPlayerName = '';
+  public $attackerPlayerAllyTag = '';
+  public $attackerPlanetId = 0;
+  public $attackerPlanetName = '';
+  public $attackerPlanetGalaxy = 0;
+  public $attackerPlanetSystem = 0;
+  public $attackerPlanetPlanet = 0;
+  public $attackerPlanetPlanetType = PT_NONE;
 
   public $targetPlayerId = 0;
-
+  public $targetPlayerName = '';
+  public $targetPlayerAllyTag = '';
   public $targetPlanetId = 0;
   public $targetPlanetName = '';
   public $targetPlanetGalaxy = 0;
@@ -60,7 +69,8 @@ class MissionEspionageReport {
    *
    * @var null|float $detectionChance
    */
-  public $detectionChance = null;
+//  public $detectionChance = null;
+  public $detectionTrashold = null;
 
   public $enemyShips = 0;
 
@@ -74,25 +84,34 @@ class MissionEspionageReport {
     $this->fleetTime = $missionData->fleet['fleet_end_time'];
 
     $this->attackerPlayerId = $missionData->src_user['id'];
+    $this->attackerPlayerName = $missionData->src_user['username'];
+    $this->attackerPlayerAllyTag = $missionData->src_user['ally_tag'];
+    $this->attackerPlanetId = $missionData->src_planet['id'];
+    $this->attackerPlanetName = $missionData->src_planet['name'];
+    $this->attackerPlanetGalaxy = intval($missionData->src_planet['galaxy']);
+    $this->attackerPlanetSystem = intval($missionData->src_planet['system']);
+    $this->attackerPlanetPlanet = intval($missionData->src_planet['planet']);
+    $this->attackerPlanetPlanetType = intval($missionData->src_planet['planet_type']);
 
     $this->targetPlayerId = $missionData->dst_user['id'];
-
+    $this->targetPlayerName = $missionData->dst_user['username'];
+    $this->targetPlayerAllyTag = $missionData->dst_user['ally_tag'];
     $this->targetPlanetId = $missionData->dst_planet['id'];
     $this->targetPlanetName = $missionData->dst_planet['name'];
-    $this->targetPlanetGalaxy = $missionData->dst_planet['galaxy'];
-    $this->targetPlanetSystem = $missionData->dst_planet['system'];
-    $this->targetPlanetPlanet = $missionData->dst_planet['planet'];
-    $this->targetPlanetPlanetType = $missionData->dst_planet['planet_type'];
+    $this->targetPlanetGalaxy = intval($missionData->dst_planet['galaxy']);
+    $this->targetPlanetSystem = intval($missionData->dst_planet['system']);
+    $this->targetPlanetPlanet = intval($missionData->dst_planet['planet']);
+    $this->targetPlanetPlanetType = intval($missionData->dst_planet['planet_type']);
 
-    $this->targetSpyLevel = GetSpyLevel($missionData->dst_user);
-    $this->attackerSpyLevel = GetSpyLevel($missionData->src_user);
+    $this->targetSpyLevel = intval(GetSpyLevel($missionData->dst_user));
+    $this->attackerSpyLevel = intval(GetSpyLevel($missionData->src_user));
 
     $this->fleetUnits = sys_unit_str2arr($missionData->fleet['fleet_array']);
 
-    $this->spiedUnits[RES_METAL] = $missionData->dst_planet['metal'];
-    $this->spiedUnits[RES_CRYSTAL] = $missionData->dst_planet['crystal'];
-    $this->spiedUnits[RES_DEUTERIUM] = $missionData->dst_planet['deuterium'];
-    $this->spiedUnits[RES_ENERGY] = $missionData->dst_planet['energy_max'];
+    $this->spiedUnits[RES_METAL] = floor($missionData->dst_planet['metal']);
+    $this->spiedUnits[RES_CRYSTAL] = floor($missionData->dst_planet['crystal']);
+    $this->spiedUnits[RES_DEUTERIUM] = floor($missionData->dst_planet['deuterium']);
+    $this->spiedUnits[RES_ENERGY] = floor($missionData->dst_planet['energy_max']);
 
     $this->enemyShips = 0;
     foreach (sn_get_groups('fleet') as $unit_id) {
@@ -123,8 +142,8 @@ class MissionEspionageReport {
    */
   public function addUnit($unitId, $unitAmount) {
     if (($unitAmount = floor($unitAmount)) >= 1) {
-      $this->spiedUnits[$unitId] = $unitAmount;
-      $this->simulatorLink;
+      $this->spiedUnits[intval($unitId)] = floor($unitAmount);
+      $this->simulatorLink = '';
     }
   }
 
@@ -150,6 +169,18 @@ class MissionEspionageReport {
    */
   public function getDetectionChance() {
     return $this->getProbesNumber() * $this->enemyShips / 4 * pow(2, -$this->getEmpireSpyDiff());
+  }
+
+  public function getDetectionTrashold() {
+    if ($this->detectionTrashold === null) {
+      $this->detectionTrashold = mt_rand(0, 99);
+    }
+
+    return $this->detectionTrashold;
+  }
+
+  public function isSpyDetected() {
+    return $this->getDetectionChance() > 99 || $this->getDetectionTrashold() > $this->getDetectionChance();
   }
 
 }

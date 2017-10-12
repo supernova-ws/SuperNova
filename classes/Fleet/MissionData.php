@@ -6,6 +6,8 @@
 namespace Fleet;
 
 
+use Common\GlobalContainer;
+
 class MissionData {
   /**
    * @var array|null
@@ -36,6 +38,25 @@ class MissionData {
    * @var array|null
    */
   public $fleet_event;
+
+  /**
+   * @var \General $general
+   */
+  protected $general;
+
+  /**
+   * MissionData constructor.
+   */
+  public function __construct() {
+    $this->general = \classSupernova::$gc->general;
+  }
+
+  /**
+   * @param GlobalContainer $gc
+   */
+  public function changeGc($gc) {
+    $this->general = $gc->general;
+  }
 
   /**
    * @param $mission_data

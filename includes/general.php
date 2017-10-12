@@ -1082,6 +1082,11 @@ function sn_get_unit_param($unit_id, $param_name = null, $user = null, $planet =
   return $result;
 }
 
+/**
+ * @param string|string[] $groups
+ *
+ * @return array|array[]
+ */
 function sn_get_groups($groups) { return sn_function_call('sn_get_groups', array($groups, &$result)); }
 
 function sn_sn_get_groups($groups, &$result) {

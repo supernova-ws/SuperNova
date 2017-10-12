@@ -90,12 +90,12 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
     // TODO Добавить $timestamp - рассылка может быть и отсроченной
     // TODO Добавить $sender - рассылка может быть и от кого-то
     db_message_insert_all($message_type, $from, $subject, $text);
-    $owners = array();
+    $owners = [];
   }
   else
   {
-    $insert_values = array();
-    $insert_template = "('%u'," . str_replace('%', '%%', " '{$sender}', '{$timestamp}', '{$message_type}', '{$from}', '{$subject}', '{$text}')");
+    $insert_values = [];
+    $insert_template = "('%u'," . str_replace('%', '%%', " '{$sender}', '{$timestamp}', '{$message_type}', '{$from}', '{$subject}', '{$text}', '" . intval($json) . "')");
 
     foreach ($owners as $owner)
     {
@@ -116,7 +116,11 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
 
       if($message_class_email && $config->game_email_pm && $owner_row["opt_email_{$message_class_name}"])
       {
-        @$result = mymail($owner_row['email'], $subject, $text_unescaped, '', true);
+        if($message_type == MSG_TYPE_SPY) {
+          @$result = mymail($owner_row['email'], $subject, classSupernova::$lang['sys_spy_activity'], '', true);
+        } else {
+          @$result = mymail($owner_row['email'], $subject, $text_unescaped, '', true);
+        }
       }
     }
 
@@ -125,7 +129,7 @@ function msg_send_simple_message($owners, $sender, $timestamp, $message_type, $f
       return;
     }
 
-    doquery($QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`) ' .
+    doquery($QryInsertMessage = 'INSERT INTO {{messages}} (`message_owner`, `message_sender`, `message_time`, `message_type`, `message_from`, `message_subject`, `message_text`, `message_json`) ' .
       'VALUES ' . implode(',', $insert_values));
   }
   db_user_list_set_mass_mail($owners, "`{$message_class_name}` = `{$message_class_name}` + 1, `{$message_class_name_total}` = `{$message_class_name_total}` + 1");

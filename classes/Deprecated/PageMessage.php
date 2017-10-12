@@ -8,6 +8,8 @@ namespace Deprecated;
 use \classSupernova;
 use \classLocale;
 use \DBAL\DbQuery;
+use Fleet\MissionEspionageReport;
+use Pm\DecodeEspionage;
 use \template;
 
 /**
@@ -299,6 +301,8 @@ class PageMessage extends PageDeprecated {
    * @return template
    */
   protected function viewMessageList() {
+    require_once('includes/includes/coe_simulator_helpers.php');
+
     if ($this->current_class == MSG_TYPE_OUTBOX) {
       $message_query = db_message_list_outbox_by_user_id($this->playerId);
     } else {
@@ -332,12 +336,27 @@ class PageMessage extends PageDeprecated {
 
     $template = gettemplate('msg_message_list', true);
     while ($message_row = db_fetch($message_query)) {
+      $text = $message_row['message_text'];
+      if($message_row['message_json']) {
+        if($message_row['message_type'] == MSG_TYPE_SPY) {
+          $text = DecodeEspionage::decode(MissionEspionageReport::fromJson($text));
+        } else {
+          $text = '{ Unauthorised access - please contact Administration! }';
+        }
+
+      } else {
+        if(in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender']) {
+          $text = htmlspecialchars($message_row['message_text']);
+        }
+        $text = nl2br($text);
+      }
+
       $template->assign_block_vars('messages', array(
         'ID'   => $message_row['message_id'],
         'DATE' => date(FMT_DATE_TIME, $message_row['message_time'] + SN_CLIENT_TIME_DIFF),
         'FROM' => htmlspecialchars($message_row['message_from']),
         'SUBJ' => htmlspecialchars($message_row['message_subject']),
-        'TEXT' => in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender'] ? nl2br(htmlspecialchars($message_row['message_text'])) : nl2br($message_row['message_text']),
+        'TEXT' => $text,
 
         'FROM_ID'        => $message_row['message_sender'],
         'SUBJ_SANITIZED' => htmlspecialchars($message_row['message_subject']),

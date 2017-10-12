@@ -1205,6 +1205,19 @@ mission = array(
 
     'STAT_COMMON' => array(STAT_TOTAL => STAT_TOTAL, STAT_FLEET => STAT_FLEET, STAT_TECH => STAT_TECH, STAT_BUILDING => STAT_BUILDING, STAT_DEFENSE => STAT_DEFENSE, STAT_RESOURCE => STAT_RESOURCE, ),
     'STAT_PLAYER' => array(STAT_RAID_TOTAL => STAT_RAID_TOTAL, STAT_RAID_WON => STAT_RAID_WON, STAT_RAID_LOST => STAT_RAID_LOST, STAT_LVL_BUILDING => STAT_LVL_BUILDING, STAT_LVL_TECH => STAT_LVL_TECH, STAT_LVL_RAID => STAT_LVL_RAID, ),
+
+    GROUP_GROUP_ID_TO_NAMES => [
+      UNIT_STRUCTURES   => 'structures',
+      UNIT_TECHNOLOGIES => 'tech',
+      UNIT_SHIPS        => 'fleet',
+      UNIT_DEFENCE      => 'defense',
+      UNIT_MERCENARIES  => 'mercenaries',
+      UNIT_GOVERNORS    => 'governors',
+      UNIT_RESOURCES    => 'resources_all',
+      UNIT_ARTIFACTS    => 'artifacts',
+      UNIT_PLANS        => 'plans',
+    ],
+
   ),
 );
 
@@ -1222,7 +1235,13 @@ $sn_data['techtree'] = array(
 );
 
 //All resources
-$sn_data[UNIT_GROUP]['all'] = array_merge($sn_data[UNIT_GROUP]['structures'], $sn_data[UNIT_GROUP]['tech'], $sn_data[UNIT_GROUP]['fleet'], $sn_data[UNIT_GROUP]['defense'], $sn_data[UNIT_GROUP]['mercenaries']);
+$sn_data[UNIT_GROUP]['all'] = array_merge(
+  $sn_data[UNIT_GROUP]['structures'],
+  $sn_data[UNIT_GROUP]['tech'],
+  $sn_data[UNIT_GROUP]['fleet'],
+  $sn_data[UNIT_GROUP]['defense'],
+  $sn_data[UNIT_GROUP]['mercenaries']
+);
 
 $sn_data[UNIT_GROUP]['ques'] = array(
   QUE_STRUCTURES => array(

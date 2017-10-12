@@ -52,7 +52,7 @@ You can look at actual JQ link for theme in /design/css/jquery-ui.css
   background-color: #13233E;
 }
 
-.bg_subheader {
+.bg_subheader, tr > th.bg_subheader, tr > td.bg_subheader {
   background-color: #233452;
 }
 .bg_cell {

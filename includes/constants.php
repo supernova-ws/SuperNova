@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a4.5');
+define('SN_VERSION', '43a4.6');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -842,10 +842,14 @@ define('HULL_SIZE_HUGE', 5);
 
 
 // === UNITS
+define('GROUP_GROUP_ID_TO_NAMES', 'group_id_to_names');
+
 define('UNIT_ANY', 0);
 
 // === Structures
 define('UNIT_STRUCTURES', 99);
+define('UNIT_STRUCTURES_PLANET', 98);
+define('UNIT_STRUCTURES_ALL', 96);
 define('STRUC_MINE_METAL', 1);
 define('STRUC_MINE_CRYSTAL', 2);
 define('STRUC_MINE_DEUTERIUM', 3);
@@ -1718,3 +1722,4 @@ define('SN_SQL_EXTRA_AUTO_INCREMENT', 'auto_increment');
 
 define('STRING_IS_ESCAPED', true);
 define('STRING_NEED_ESCAPING', false);
+define('STRING_IS_JSON_ENCODED', true);

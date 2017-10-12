@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version #42a28.17#
+* @version #43a4.6#
 *
 */
 
@@ -298,16 +298,18 @@ $a_lang_array = (array(
   'sys_rapport_build_time' 	=> 'Время генерации страницы %s секунд',
   'sys_mess_tower' 		=> 'Транспорт',
   'sys_coe_lost_contact' 		=> 'Связь с вашим флотом потеряна',
-  'sys_spy_maretials' 		=> 'Сырьё на',
+  'sys_spy_activity' => 'Наблюдается шпионская активность возле ваших планет',
+  'sys_spy_materials' 		=> 'Сырьё на',
   'sys_spy_fleet' 			=> 'Флот',
   'sys_spy_defenses' 		=> 'Оборона',
   'sys_mess_qg' 			=> 'Командование флотом',
   'sys_mess_spy_report' 		=> 'Шпионский доклад',
   'sys_mess_spy_lostproba' 	=> 'Погрешность информации, полученной спутником %d %% ',
   'sys_mess_spy_detect_chance' 	=> 'Шанс обнаружения вашего разведывательного флота %d%%',
+  'sys_mess_spy_detect_chance_no_percent' 	=> 'Шанс обнаружения вашего разведывательного флота',
   'sys_mess_spy_control' 		=> 'Контрразведка',
   'sys_mess_spy_activity' 		=> 'Шпионская активность',
-  'sys_mess_spy_ennemyfleet' 	=> 'Чужой флот с планеты',
+  'sys_mess_spy_enemy_fleet' 	=> 'Чужой флот с планеты',
   'sys_mess_spy_seen_at'		=> 'был обнаружен возле планеты',
   'sys_mess_spy_destroyed'		=> 'Разведывательный флот был уничтожен',
   'sys_mess_spy_destroyed_enemy'		=> 'Вражеский шпионский флот уничтожен',
