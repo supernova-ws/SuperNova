@@ -865,6 +865,25 @@ ActiveRecordAbstract
     - Вынести вниз функционал пересчёта имён полей в названия свойств
 
 
+
+$stdobj = json_decode($json_encoded_myClassInstance);  //JSON to stdClass
+$temp = serialize($stdobj);                   //stdClass to serialized
+
+//Now we reach in and change the class of the serialized object
+$temp = preg_replace('@^O:8:"stdClass":@','O:7:"MyClass":',$temp);
+
+//Unserialize and walk away like nothing happend
+$myClassInstance = unserialize($temp);   // Presto a php Class
+
+
+#ctv
+
+
+2017-10-12 12:07:40 43a4.5
+[@] Код
+    Рефакторинг \Fleet\MissionEspionage
+
+
 2017-10-12 10:03:45 43a4.4
 [@] Код
     Рефакторинг /includes/includes/flt_mission_spy.php -> \Fleet\MissionEspionage
