@@ -62,7 +62,7 @@ class MissionEspionageReport {
 
   public $spiedUnits = [];
 
-  public $simulatorLink = '';
+  private $simulatorLink = '';
 
   /**
    * Chance for target to detect spying fleet
@@ -70,7 +70,7 @@ class MissionEspionageReport {
    * @var null|float $detectionChance
    */
 //  public $detectionChance = null;
-  public $detectionTrashold = null;
+  public $rolledChance = null;
 
   public $enemyShips = 0;
 
@@ -167,20 +167,21 @@ class MissionEspionageReport {
    *
    * @return float|null
    */
-  public function getDetectionChance() {
+  public function getDetectionTrashold() {
     return $this->getProbesNumber() * $this->enemyShips / 4 * pow(2, -$this->getEmpireSpyDiff());
   }
 
-  public function getDetectionTrashold() {
-    if ($this->detectionTrashold === null) {
-      $this->detectionTrashold = mt_rand(0, 99);
+  public function rollChance() {
+    if ($this->rolledChance === null) {
+      $this->rolledChance = mt_rand(0, 99);
     }
 
-    return $this->detectionTrashold;
+    return $this->rolledChance;
   }
 
   public function isSpyDetected() {
-    return $this->getDetectionChance() > 99 || $this->getDetectionTrashold() > $this->getDetectionChance();
+    return $this->rollChance() < $this->getDetectionTrashold();
+//    return $this->getDetectionChance() > 99 || $this->getDetectionTrashold() > $this->getDetectionChance();
   }
 
 }

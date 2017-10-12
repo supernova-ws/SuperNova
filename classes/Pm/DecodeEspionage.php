@@ -62,7 +62,7 @@ class DecodeEspionage {
       'TARGET_PLANET_TYPE' => $missionReport->targetPlanetPlanetType,
       'TARGET_PLANET_TYPE_TEXT_SH' => $lang['sys_planet_type_sh'][$missionReport->targetPlanetPlanetType],
 
-      'SPIES_DETECTION_CHANCE' => round($missionReport->getDetectionChance()),
+      'SPIES_DETECTION_CHANCE' => round($missionReport->getDetectionTrashold()),
       'SPIES_DESTROYED' => $missionReport->isSpyDetected(),
 
       'SIMULATOR_DATA' => $missionReport->getSimulatorLink(),
