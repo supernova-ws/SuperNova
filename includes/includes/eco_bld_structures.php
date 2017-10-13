@@ -127,7 +127,7 @@ function sn_eco_build($que_type, &$auser, &$planet) {
   $planet_fields_que = is_array($in_que) ? -array_sum($in_que) : 0;
   $planet_fields_free = max(0, $planet_fields_max - $planet_fields_current + $planet_fields_que);
   $planet_fields_queable = $que_type != QUE_STRUCTURES || $planet_fields_free > 0;
-  $sn_modifiers_resource = sn_get_groups('modifiers');
+  $sn_modifiers_resource = sn_get_groups(GROUP_MODIFIERS_NAME);
   $sn_modifiers_resource = $sn_modifiers_resource[MODIFIER_RESOURCE_PRODUCTION];
   $sn_groups_density = sn_get_groups('planet_density');
   $density_info = $sn_groups_density[$planet['density_index']][UNIT_RESOURCES];

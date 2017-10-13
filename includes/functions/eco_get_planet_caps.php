@@ -1,13 +1,13 @@
 <?php
 
-function eco_get_planet_caps_modify_production(&$item, $key, $data) {
-  static $modifiers;
-
-  if(!$modifiers) {
-    $modifiers = sn_get_groups('modifiers');
-  }
-  $item = floor(mrc_modify_value($data['user'], $data['planet'], $modifiers[MODIFIER_RESOURCE_PRODUCTION], $item));
-}
+//function eco_get_planet_caps_modify_production(&$item, $key, $data) {
+//  static $modifiers;
+//
+//  if(!$modifiers) {
+//    $modifiers = sn_get_groups(GROUP_MODIFIERS_NAME);
+//  }
+//  $item = floor(mrc_modify_value($data['user'], $data['planet'], $modifiers[MODIFIER_RESOURCE_PRODUCTION], $item));
+//}
 
 function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0) {
   // TODO Считать $production_time для термоядерной электростанции
@@ -16,7 +16,7 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0) {
   static $sn_group_modifiers, $config_resource_multiplier, $config_resource_multiplier_plain, $config_eco_scale_storage;
 
   if(!$sn_group_modifiers) {
-    $sn_group_modifiers = sn_get_groups('modifiers');
+    $sn_group_modifiers = sn_get_groups(GROUP_MODIFIERS_NAME);
     $config_resource_multiplier = game_resource_multiplier();
     $config_resource_multiplier_plain = game_resource_multiplier(true);
     $config_eco_scale_storage = $config->eco_scale_storage ? $config_resource_multiplier_plain : 1;
@@ -58,7 +58,12 @@ function eco_get_planet_caps(&$user, &$planet_row, $production_time = 0) {
     }
   }
 
-  array_walk_recursive($caps['production_full'], 'eco_get_planet_caps_modify_production', array('user' => $user, 'planet' => $planet_row));
+//  array_walk_recursive($caps['production_full'], 'eco_get_planet_caps_modify_production', array('user' => $user, 'planet' => $planet_row));
+  foreach ($caps['production_full'] as &$resourceProductionTable) {
+    foreach ($resourceProductionTable as $mineId => &$mineProduction) {
+      $mineProduction = floor(mrc_modify_value($user, $planet_row, [MRC_TECHNOLOGIST], $mineProduction));
+    }
+  }
 
   foreach($caps['production_full'] as $resource_id => $resource_data) {
     $caps['total_production_full'][$resource_id] = array_sum($resource_data);

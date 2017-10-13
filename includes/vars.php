@@ -1188,7 +1188,7 @@ mission = array(
     'resources_trader' => array(RES_METAL => RES_METAL, RES_CRYSTAL => RES_CRYSTAL, RES_DEUTERIUM => RES_DEUTERIUM, RES_DARK_MATTER => RES_DARK_MATTER),
 
     // List of data modifiers
-    'modifiers' => array(
+    GROUP_MODIFIERS_NAME => array(
       MODIFIER_RESOURCE_CAPACITY => array(
         MRC_STOCKMAN => MRC_STOCKMAN,
       ),
