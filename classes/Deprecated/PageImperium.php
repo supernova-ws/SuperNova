@@ -273,17 +273,17 @@ class PageImperium {
       }
 
       $template->assign_block_vars('planet', array_merge($templatizedPlanet, [
-        'METAL_CUR'  => prettyNumberStyledCompare($planet['metal'], $planet['caps']['total_storage'][RES_METAL]),
-        'METAL_PROD' => HelperString::numberFloorAndFormat($planet['caps']['total'][RES_METAL]),
+        'METAL_CUR'  => prettyNumberStyledCompare($planet['metal'], $planet['metal_max']),
+        'METAL_PROD' => HelperString::numberFloorAndFormat($planet['metal_perhour']),
 
-        'CRYSTAL_CUR'  => prettyNumberStyledCompare($planet['crystal'], $planet['caps']['total_storage'][RES_CRYSTAL]),
-        'CRYSTAL_PROD' => HelperString::numberFloorAndFormat($planet['caps']['total'][RES_CRYSTAL]),
+        'CRYSTAL_CUR'  => prettyNumberStyledCompare($planet['crystal'], $planet['crystal_max']),
+        'CRYSTAL_PROD' => HelperString::numberFloorAndFormat($planet['crystal_perhour']),
 
-        'DEUTERIUM_CUR'  => prettyNumberStyledCompare($planet['deuterium'], $planet['caps']['total_storage'][RES_DEUTERIUM]),
-        'DEUTERIUM_PROD' => HelperString::numberFloorAndFormat($planet['caps']['total'][RES_DEUTERIUM]),
+        'DEUTERIUM_CUR'  => prettyNumberStyledCompare($planet['deuterium'], $planet['deuterium_max']),
+        'DEUTERIUM_PROD' => HelperString::numberFloorAndFormat($planet['deuterium_perhour']),
 
-        'ENERGY_CUR' => prettyNumberStyledDefault($planet['caps'][RES_ENERGY][BUILD_CREATE] - $planet['caps'][RES_ENERGY][BUILD_DESTROY]),
-        'ENERGY_MAX' => HelperString::numberFloorAndFormat($planet['caps'][RES_ENERGY][BUILD_CREATE]),
+        'ENERGY_CUR' => prettyNumberStyledDefault($planet['energy_max'] - $planet['energy_used']),
+        'ENERGY_MAX' => HelperString::numberFloorAndFormat($planet['energy_max']),
 
         'TEMP_MIN' => $planet['temp_min'],
         'TEMP_MAX' => $planet['temp_max'],
@@ -315,10 +315,10 @@ class PageImperium {
       $imperiumStats['energy'] += $planet['energy_max'] - $planet['energy_used'];
 
       $imperiumStats['fields_max'] += eco_planet_fields_max($planet);
-      $imperiumStats['metal_perhour'] += $planet['caps']['total'][RES_METAL];
-      $imperiumStats['crystal_perhour'] += $planet['caps']['total'][RES_CRYSTAL];
-      $imperiumStats['deuterium_perhour'] += $planet['caps']['total'][RES_DEUTERIUM];
-      $imperiumStats['energy_max'] += $planet['caps'][RES_ENERGY][BUILD_CREATE];
+      $imperiumStats['metal_perhour'] += $planet['metal_perhour'];
+      $imperiumStats['crystal_perhour'] += $planet['crystal_perhour'];
+      $imperiumStats['deuterium_perhour'] += $planet['deuterium_perhour'];
+      $imperiumStats['energy_max'] += $planet['energy_max'];
 
       $imperiumStats['temp_min'] = min($planet['temp_min'], $imperiumStats['temp_min']);
       $imperiumStats['temp_max'] = max($planet['temp_max'], $imperiumStats['temp_max']);
