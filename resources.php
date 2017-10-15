@@ -24,14 +24,20 @@
 
 include('common.' . substr(strrchr(__FILE__, '.'), 1));
 
+use \Meta\Economic\ResourceCalculations;
+
+/**
+ * @param $resource_id
+ * @param ResourceCalculations $capsObj
+ */
 function int_calc_storage_bar($resource_id, $capsObj)
 {
   global $lang, $template, $planetrow, $user;
 
-  $totalProduction      = $capsObj->total[$resource_id];
-  $storage_fill         = $capsObj->total_storage[$resource_id] ? floor(mrc_get_level($user, $planetrow, $resource_id) / $capsObj->total_storage[$resource_id] * 100) : 0;
+  $totalProduction      = $capsObj->getProduction($resource_id);
+  $storage_fill         = $capsObj->getStorage($resource_id) ? floor(mrc_get_level($user, $planetrow, $resource_id) / $capsObj->getStorage($resource_id) * 100) : 0;
 
-  $template->assign_block_vars('resources', array(
+  $template->assign_block_vars('resources', [
     'NAME'        => $lang["sys_" . pname_resource_name($resource_id)],
 
     'HOURLY'      => prettyNumberStyledDefault($totalProduction),
@@ -41,7 +47,7 @@ function int_calc_storage_bar($resource_id, $capsObj)
 
     'STORAGE'     => intval($storage_fill),
     'BAR'         => min($storage_fill, 100),
-  ));
+  ]);
 };
 
 $ValidList['percent'] = array (  0,  10,  20,  30,  40,  50,  60,  70,  80,  90, 100 );
@@ -95,16 +101,16 @@ for ($Option = 10; $Option >= 0; $Option--)
  ));
 }
 
-$capsObj = new \Meta\Economic\ResourceCalculations();
+$capsObj = new ResourceCalculations();
 $capsObj->eco_get_planet_caps($user, $planetrow, 3600);
 
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_basic_income'],
 
-  'METAL_TYPE'     => prettyNumberStyledDefault($capsObj->production[RES_METAL][0]),
-  'CRYSTAL_TYPE'   => prettyNumberStyledDefault($capsObj->production[RES_CRYSTAL][0]),
-  'DEUTERIUM_TYPE' => prettyNumberStyledDefault($capsObj->production[RES_DEUTERIUM][0]),
-  'ENERGY_TYPE'    => prettyNumberStyledDefault($capsObj->production[RES_ENERGY][0]),
+  'METAL_TYPE'     => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_METAL][0]),
+  'CRYSTAL_TYPE'   => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_CRYSTAL][0]),
+  'DEUTERIUM_TYPE' => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_DEUTERIUM][0]),
+  'ENERGY_TYPE'    => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_ENERGY][0]),
 ));
 
 foreach($sn_group_factories as $unit_id)
@@ -120,15 +126,15 @@ foreach($sn_group_factories as $unit_id)
       'LEVEL_BONUS'    => mrc_get_level($user, $planetrow, $unit_id) - $level_plain,
       'LEVEL_TYPE'     => ($unit_id > 200) ? $lang['quantity'] : $lang['level'],
 
-      'METAL_TYPE'     => prettyNumberStyledDefault($capsObj->production[RES_METAL][$unit_id]),
-      'CRYSTAL_TYPE'   => prettyNumberStyledDefault($capsObj->production[RES_CRYSTAL][$unit_id]),
-      'DEUTERIUM_TYPE' => prettyNumberStyledDefault($capsObj->production[RES_DEUTERIUM][$unit_id]),
-      'ENERGY_TYPE'    => prettyNumberStyledDefault($capsObj->production[RES_ENERGY][$unit_id]),
+      'METAL_TYPE'     => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_METAL][$unit_id]),
+      'CRYSTAL_TYPE'   => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_CRYSTAL][$unit_id]),
+      'DEUTERIUM_TYPE' => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_DEUTERIUM][$unit_id]),
+      'ENERGY_TYPE'    => prettyNumberStyledDefault($capsObj->productionCurrentMatrix[RES_ENERGY][$unit_id]),
 
-      'METAL_FULL'     => prettyNumberStyledDefault($capsObj->production_full[RES_METAL][$unit_id]),
-      'CRYSTAL_FULL'   => prettyNumberStyledDefault($capsObj->production_full[RES_CRYSTAL][$unit_id]),
-      'DEUTERIUM_FULL' => prettyNumberStyledDefault($capsObj->production_full[RES_DEUTERIUM][$unit_id]),
-      'ENERGY_FULL'    => prettyNumberStyledDefault($capsObj->production_full[RES_ENERGY][$unit_id]),
+      'METAL_FULL'     => prettyNumberStyledDefault($capsObj->productionFullMatrix[RES_METAL][$unit_id]),
+      'CRYSTAL_FULL'   => prettyNumberStyledDefault($capsObj->productionFullMatrix[RES_CRYSTAL][$unit_id]),
+      'DEUTERIUM_FULL' => prettyNumberStyledDefault($capsObj->productionFullMatrix[RES_DEUTERIUM][$unit_id]),
+      'ENERGY_FULL'    => prettyNumberStyledDefault($capsObj->productionFullMatrix[RES_ENERGY][$unit_id]),
 
       'P_MINING_IS_MANAGED' => get_unit_param($unit_id, P_MINING_IS_MANAGED),
     ));
@@ -143,15 +149,15 @@ tpl_planet_density_info($template, $density_price_chart, $user_dark_matter);
 $template->assign_block_vars('production', array(
   'TYPE'           => $lang['res_total'],
 
-  'METAL_TYPE'     => prettyNumberStyledDefault($capsObj->total[RES_METAL]),
-  'CRYSTAL_TYPE'   => prettyNumberStyledDefault($capsObj->total[RES_CRYSTAL]),
-  'DEUTERIUM_TYPE' => prettyNumberStyledDefault($capsObj->total[RES_DEUTERIUM]),
-  'ENERGY_TYPE'    => prettyNumberStyledDefault($capsObj->total[RES_ENERGY]),
+  'METAL_TYPE'     => prettyNumberStyledDefault($capsObj->getProduction(RES_METAL)),
+  'CRYSTAL_TYPE'   => prettyNumberStyledDefault($capsObj->getProduction(RES_CRYSTAL)),
+  'DEUTERIUM_TYPE' => prettyNumberStyledDefault($capsObj->getProduction(RES_DEUTERIUM)),
+  'ENERGY_TYPE'    => prettyNumberStyledDefault($capsObj->getProduction(RES_ENERGY)),
 
-  'METAL_FULL'     => prettyNumberStyledDefault($capsObj->total_production_full[RES_METAL]),
-  'CRYSTAL_FULL'   => prettyNumberStyledDefault($capsObj->total_production_full[RES_CRYSTAL]),
-  'DEUTERIUM_FULL' => prettyNumberStyledDefault($capsObj->total_production_full[RES_DEUTERIUM]),
-  'ENERGY_FULL'    => prettyNumberStyledDefault($capsObj->total_production_full[RES_ENERGY]),
+  'METAL_FULL'     => prettyNumberStyledDefault($capsObj->getProductionFull(RES_METAL)),
+  'CRYSTAL_FULL'   => prettyNumberStyledDefault($capsObj->getProductionFull(RES_CRYSTAL)),
+  'DEUTERIUM_FULL' => prettyNumberStyledDefault($capsObj->getProductionFull(RES_DEUTERIUM)),
+  'ENERGY_FULL'    => prettyNumberStyledDefault($capsObj->getProductionFull(RES_ENERGY)),
 ));
 
 int_calc_storage_bar(RES_METAL, $capsObj);
