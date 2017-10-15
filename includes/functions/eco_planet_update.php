@@ -52,13 +52,11 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
   $planet['prev_update'] = $planet['last_update'];
   $planet['last_update'] += $ProductionTime;
 
-  /*
-  $que = eco_que_process($user, $planet, $ProductionTime);
-  $hangar_built = $ProductionTime && !$simulation ? eco_bld_que_hangar($user, $planet, $ProductionTime) : array();
-  */
-
   // TODO ЭТО НАДО ДЕЛАТЬ ТОЛЬКО ПРИ СПЕЦУСЛОВИЯХ
-  $caps_real = eco_get_planet_caps($user, $planet, $ProductionTime);
+
+  if($ProductionTime > 0) {
+  $capsObj = new \Meta\Economic\ResourceCalculations();
+  $capsObj->eco_get_planet_caps($user, $planet, 3600);
   $resources_increase = array(
     RES_METAL => 0,
     RES_CRYSTAL => 0,
@@ -69,8 +67,9 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
     case PT_PLANET:
       foreach($resources_increase as $resource_id => &$increment) {
         $resource_name = pname_resource_name($resource_id);
-        $increment = $caps_real['total'][$resource_id] * $ProductionTime / 3600;
-        $store_free = $caps_real['total_storage'][$resource_id] - $planet[$resource_name];
+
+        $increment = $planet[$resource_name . '_perhour'] * $ProductionTime / 3600;
+        $store_free = $planet[$resource_name . '_max'] - $planet[$resource_name];
         $increment = min($increment, max(0, $store_free));
 
         if($planet[$resource_name] + $increment < 0 && !$simulation) {
@@ -78,7 +77,6 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
           $debug->warning("Player ID {$user['id']} have negative resources on ID {$planet['id']}.{$planet['planet_type']} [{$planet['galaxy']}:{$planet['system']}:{$planet['planet']}]. Difference {$planet[$resource_name]} of {$resource_name}", 'Negative Resources', 501);
         }
         $planet[$resource_name] += $increment;
-        $planet[$resource_name . '_perhour'] = $caps_real['total'][$resource_id];
       }
     break;
 
@@ -101,16 +99,16 @@ function sys_o_get_updated($user, $planet, $UpdateTime, $simulation = false, $no
     }
   }
 
-  if($simulation) {
-    return array('user' => $user, 'planet' => $planet, 'que' => $que);
-  }
-
+  // Saving data if not a simulation
+ if(!$simulation) {
   DBStaticPlanet::db_planet_set_by_id($planet['id'],
     "`last_update` = '{$planet['last_update']}', `field_current` = {$planet['field_current']},
     `metal` = `metal` + '{$resources_increase[RES_METAL]}', `crystal` = `crystal` + '{$resources_increase[RES_CRYSTAL]}', `deuterium` = `deuterium` + '{$resources_increase[RES_DEUTERIUM]}',
     `metal_perhour` = '{$planet['metal_perhour']}', `crystal_perhour` = '{$planet['crystal_perhour']}', `deuterium_perhour` = '{$planet['deuterium_perhour']}',
     `energy_used` = '{$planet['energy_used']}', `energy_max` = '{$planet['energy_max']}'"
   );
+  }
+  }
 
   return array('user' => $user, 'planet' => $planet, 'que' => $que);
 }

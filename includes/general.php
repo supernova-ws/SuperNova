@@ -75,16 +75,12 @@ function sn_get_game_speed($plain = false, &$result) {
 function flt_server_flight_speed_multiplier($plain = false) { return sn_function_call('flt_server_flight_speed_multiplier', array($plain, &$result)); }
 
 function sn_flt_server_flight_speed_multiplier($plain = false, &$result) {
-  global $config;
-
   return $result = classSupernova::$config->fleet_speed;
 }
 
 function game_resource_multiplier($plain = false) { return sn_function_call('game_resource_multiplier', array($plain, &$result)); }
 
 function sn_game_resource_multiplier($plain = false, &$result) {
-  global $config;
-
   return $result = classSupernova::$config->resource_multiplier;
 }
 

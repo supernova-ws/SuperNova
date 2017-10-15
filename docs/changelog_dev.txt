@@ -876,6 +876,9 @@ ActiveRecordAbstract
 
 #ctv
 
+2017-10-15 11:54:26 43a5.0
+[@] Код
+    Рефакторинг /includes/functions/eco_get_planet_caps.php -> \Meta\Economic\ResourceCalculations
 
 
 2017-10-13 00:55:41 43a4.9
