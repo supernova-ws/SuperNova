@@ -285,6 +285,9 @@ function sn_eco_build($que_type, &$auser, &$planet) {
           ) {
             $level_production['R' . $resource_id] = $resource_income;
             $level_production['D' . $resource_id] = $resource_income - $level_production_base[$resource_id];
+            if($level_production['D' . $resource_id] == 0) {
+              $level_production['D' . $resource_id] = '-';
+            }
           }
         }
         $production['.']['resource'][] = $level_production;
@@ -305,10 +308,10 @@ function sn_eco_build($que_type, &$auser, &$planet) {
         $level_production['D' . UNIT_PLAYER_COLONIES_MAX] = $level_production['R' . UNIT_PLAYER_COLONIES_MAX] - $level_production_base[UNIT_PLAYER_COLONIES_MAX];
         $production['.']['resource'][] = $level_production;
 
-        $level_production_base = array(
-          UNIT_PLAYER_EXPEDITIONS_MAX => $level_production['R' . UNIT_PLAYER_EXPEDITIONS_MAX],
-          UNIT_PLAYER_COLONIES_MAX    => $level_production['R' . UNIT_PLAYER_COLONIES_MAX],
-        );
+//        $level_production_base = array(
+//          UNIT_PLAYER_EXPEDITIONS_MAX => $level_production['R' . UNIT_PLAYER_EXPEDITIONS_MAX],
+//          UNIT_PLAYER_COLONIES_MAX    => $level_production['R' . UNIT_PLAYER_COLONIES_MAX],
+//        );
       }
     }
 
