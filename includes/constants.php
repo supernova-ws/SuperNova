@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a5.3');
+define('SN_VERSION', '43a6.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -74,6 +74,7 @@ define('PERIOD_MINUTE_2' , PERIOD_MINUTE * 2);
 define('PERIOD_MINUTE_3' , PERIOD_MINUTE * 3);
 define('PERIOD_MINUTE_5' , PERIOD_MINUTE * 5);
 define('PERIOD_MINUTE_10', PERIOD_MINUTE * 10);
+define('PERIOD_MINUTE_15', PERIOD_MINUTE * 15);
 define('PERIOD_DAY_3'    , PERIOD_DAY * 3);
 define('PERIOD_WEEK_2'   , PERIOD_WEEK * 2);
 define('PERIOD_MONTH_2'  , PERIOD_MONTH * 2);
@@ -1324,6 +1325,7 @@ define('ADM_TOOL_FORCE_LAST', 4);
 define('ADM_TOOL_INFO_PHP', 5);
 define('ADM_TOOL_INFO_SQL', 6);
 define('ADM_PTL_TEST', 7);
+define('ADM_COUNTER_RECALC', 8);
 
 define('STAT_TOTAL', 0);
 define('STAT_FLEET', 1);

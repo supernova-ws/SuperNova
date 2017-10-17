@@ -18,6 +18,11 @@ messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 $mode = sys_get_param_int('mode');
 
 switch ($mode) {
+  case ADM_COUNTER_RECALC:
+    $t = new \General\LogCounterShrinker(classSupernova::$gc);
+    $t->process();
+  break;
+
   case ADM_TOOL_CONFIG_RELOAD:
     classSupernova::$config->db_loadAll();
     classSupernova::$db->schema()->clear();

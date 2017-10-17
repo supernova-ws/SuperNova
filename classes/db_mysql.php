@@ -1,6 +1,7 @@
 <?php
 
-use Common\GlobalContainer;
+use \Common\GlobalContainer;
+use \DBAL\DbMysqliResultIterator;
 
 /**
  * User: Gorlum
@@ -206,6 +207,16 @@ class db_mysql {
     restore_error_handler();
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+  }
+
+  /**
+   * @param string $query
+   * @param bool   $skip_query_check
+   *
+   * @return DbMysqliResultIterator
+   */
+  public function selectIterator($query, $skip_query_check = false) {
+    return new DbMysqliResultIterator($this->doquery($query, '', false, $skip_query_check));
   }
 
   /**

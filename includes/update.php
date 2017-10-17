@@ -21,7 +21,7 @@
    [!] DB code updates
 */
 
-if(!defined('INIT')) {
+if (!defined('INIT')) {
 //  include_once('init.php');
   die('Unauthorized access');
 }
@@ -40,11 +40,11 @@ $config->debug = 0;
 
 
 //$config->db_loadItem('db_version');
-if($config->db_version == DB_VERSION) {
-} elseif($config->db_version > DB_VERSION) {
+if ($config->db_version == DB_VERSION) {
+} elseif ($config->db_version > DB_VERSION) {
   $config->db_saveItem('var_db_update_end', SN_TIME_NOW);
   die(
-    'Internal error! Auotupdater detects DB version greater then can be handled!<br />
+  'Internal error! Auotupdater detects DB version greater then can be handled!<br />
     Possible you have out-of-date SuperNova version<br />
     Please upgrade your server from <a href="http://github.com/supernova-ws/SuperNova">GIT repository</a>'
   );
@@ -53,7 +53,7 @@ if($config->db_version == DB_VERSION) {
 $upd_log = '';
 $new_version = floatval($config->db_version);
 $minVersion = 40;
-if($new_version < $minVersion) {
+if ($new_version < $minVersion) {
   die("This version does not supports upgrades from SN below v{$minVersion}. Please, use SN v42 to upgrade old database.<br />
 Эта версия игры не поддерживает обновление движка версий ниже v{$minVersion}. Пожалуйста, используйте SN v42 для апгрейда со старых версий игры.");
 }
@@ -68,10 +68,10 @@ $old_server_status = $config->db_loadItem('game_disable');
 $config->db_saveItem('game_disable', GAME_DISABLE_UPDATE);
 
 upd_log_message('Server disabled. Loading table info...');
-$update_tables  = array();
+$update_tables = array();
 $update_indexes = array();
 $query = upd_do_query('SHOW TABLES;', true);
-while($row = db_fetch_row($query)) {
+while ($row = db_fetch_row($query)) {
   upd_load_table_info($row[0]);
 }
 upd_log_message('Table info loaded. Now looking DB for upgrades...');
@@ -81,11 +81,11 @@ upd_do_query('SET FOREIGN_KEY_CHECKS=0;', true);
 
 ini_set('memory_limit', '1024M');
 
-switch($new_version) {
+switch ($new_version) {
   case 40:
     upd_log_version_update();
 
-    if(empty($update_tables['festival'])) {
+    if (empty($update_tables['festival'])) {
       upd_create_table('festival', " (
           `id` smallint(5) unsigned NOT NULL AUTO_INCREMENT,
           `start` datetime NOT NULL COMMENT 'Festival start datetime',
@@ -126,7 +126,7 @@ switch($new_version) {
       );
     }
 
-    if(empty($update_tables['festival_unit'])) {
+    if (empty($update_tables['festival_unit'])) {
       upd_create_table('festival_unit', " (
           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
           `highspot_id` int(10) unsigned DEFAULT NULL,
@@ -143,7 +143,7 @@ switch($new_version) {
     }
 
     // 2015-12-21 06:06:09 41a0.12
-    if(empty($update_tables['festival_unit_log'])) {
+    if (empty($update_tables['festival_unit_log'])) {
       upd_create_table('festival_unit_log', " (
           `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
           `highspot_id` int(10) unsigned DEFAULT NULL,
@@ -171,13 +171,13 @@ switch($new_version) {
       $update_tables['security_browser']['browser_user_agent']['Collation'] == 'latin1_bin'
     );
 
-    if($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
+    if ($update_indexes_full['security_browser']['I_browser_user_agent']['browser_user_agent']['Index_type'] == 'BTREE') {
       upd_alter_table('security_browser', "DROP KEY `I_browser_user_agent`", true);
       upd_alter_table('security_browser', "ADD KEY `I_browser_user_agent` (`browser_user_agent`) USING HASH", true);
     }
 
     // 2016-12-03 20:36:46 41a61.0
-    if(empty($update_tables['auth_vkontakte_account'])) {
+    if (empty($update_tables['auth_vkontakte_account'])) {
       upd_create_table('auth_vkontakte_account', " (
           `user_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
           `access_token` varchar(250) NOT NULL DEFAULT '',
@@ -259,7 +259,7 @@ switch($new_version) {
     }
 
     // 2017-03-11 20:09:51 42a26.15
-    if(empty($update_tables['users']['skin'])) {
+    if (empty($update_tables['users']['skin'])) {
       upd_alter_table(
         'users',
         array(
@@ -300,18 +300,33 @@ switch($new_version) {
 
   case 42:
     // 2017-10-11 09:51:49 43a4.3
-    upd_alter_table(
-      'messages',
-      array(
-        "ADD COLUMN `message_json` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `message_text`",
-      ),
-      empty($update_tables['messages']['message_json'])
-    );
+    upd_alter_table('messages', [
+      "ADD COLUMN `message_json` tinyint(1) unsigned NOT NULL DEFAULT 0 AFTER `message_text`",
+    ], empty($update_tables['messages']['message_json']));
 
+
+    // 2017-10-17 09:49:24 43a6.0
+    // Removing old index i_user_id
+    upd_alter_table('counter', [
+      'DROP KEY `i_user_id`'
+    ], !empty($update_indexes_full['counter']['i_user_id']));
+    // Adding new index I_counter_user_id
+    upd_alter_table('counter', [
+      'ADD KEY `I_counter_user_id` (`user_id`, `device_id`, `browser_id`, `user_ip`, `user_proxy`)'
+    ], empty($update_indexes_full['counter']['I_counter_user_id']));
+
+    // Adding new field visit_length
+    upd_alter_table('counter', [
+      "ADD COLUMN `visit_length` int unsigned NOT NULL DEFAULT 0 AFTER `visit_time`",
+    ], empty($update_tables['counter']['visit_length']));
+
+    // Adding key for logger update
+    upd_alter_table('counter', [
+      'ADD KEY `I_counter_visit_time` (`visit_time`, `counter_id`)'
+    ], empty($update_indexes_full['counter']['I_counter_visit_time']));
+
+    // #ctv
     upd_do_query('COMMIT;', true);
-
-
-  // #ctv
 
 //    $new_version = 43;
 
@@ -322,7 +337,7 @@ upd_do_query('SET FOREIGN_KEY_CHECKS=1;', true);
 
 classSupernova::$cache->unset_by_prefix('lng_');
 
-if($new_version) {
+if ($new_version) {
   $config->db_saveItem('db_version', $new_version);
   upd_log_message("<font color=green>DB version is now {$new_version}</font>");
 } else {

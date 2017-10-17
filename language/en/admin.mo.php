@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a0.15
+* @version 43a6.0
 *
 */
 
@@ -308,6 +308,7 @@ $a_lang_array = (array(
   'adm_update_force' => 'Force Update',
   'adm_update_repeat' => 'Repeat last system update',
   'adm_ptl_test' => 'phpBB Template Engine test',
+  'adm_counter_recalc' => 'Recalc `counter` table',
   'adm_lm_planet_edit' => 'Edit planet',
   'adm_planet_edit' => 'Edit planet',
   'adm_planet_id' => 'Planet ID',

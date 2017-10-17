@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 43a0.15
+* @version 43a6.0
 *
 */
 
@@ -316,6 +316,7 @@ $a_lang_array = array(
   'adm_update_force' => 'Форсировать обновление с нуля',
   'adm_update_repeat' => 'Повторить предыдущее обновление',
   'adm_ptl_test' => 'Тест работы phpBB Template Engine',
+  'adm_counter_recalc' => 'Пересчитать таблицу `counter`',
   'adm_lm_planet_edit' => 'Редактировать',
   'adm_planet_edit' => 'Редактирование планеты',
   'adm_planet_id' => 'Идентификатор планеты',

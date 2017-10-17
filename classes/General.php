@@ -9,13 +9,12 @@ use \Common\GlobalContainer;
  * Class General
  *
  * Wrapper for /includes/general.php
- * Will make unittesting easier
+ * Will make unit testing easier
  *
  */
 class General {
 
   protected $gc;
-
 
   /**
    * General constructor.
@@ -25,7 +24,6 @@ class General {
   public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;
   }
-
 
   /**
    * @param string|string[] $groupNameList
