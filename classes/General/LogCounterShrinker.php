@@ -15,6 +15,7 @@ use Common\GlobalContainer;
  * @package General
  */
 class LogCounterShrinker extends VisitMerger {
+  const RESERVE_WEEKS = 0; // How much weeks of logs left unshrinked
   const PLAYER_ACTIVITY_MAX_INTERVAL = PERIOD_MINUTE_15;
   const BATCH_DELETE_PER_LOOP = 1000;
   const BATCH_UPDATE_PER_LOOP = 1000;
@@ -60,15 +61,14 @@ class LogCounterShrinker extends VisitMerger {
     }
 
     while (
-      ($iter = $this->gc->db->selectIterator($q =
+      ($iter = $this->gc->db->selectIterator(
         "SELECT * 
         FROM `{{counter}}`
-        WHERE `visit_time` < DATE_SUB(NOW(), INTERVAL 3 WEEK)
+        WHERE `visit_time` < DATE_SUB(NOW(), INTERVAL " . static::RESERVE_WEEKS . " WEEK)
         AND `counter_id` > {$this->batchEnd} 
         ORDER BY `visit_time`, `counter_id` 
-        LIMIT {$this->batchSize}
-        ;")
-      )
+        LIMIT {$this->batchSize};"
+      ))
       &&
       $iter->count()
     ) {
