@@ -11,7 +11,7 @@ define('INSTALL', false);
 define('IN_ADMIN', true);
 require('../common.' . substr(strrchr(__FILE__, '.'), 1));
 
-global $lang, $user;
+global $lang, $user, $template_result;
 
 messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
@@ -19,8 +19,17 @@ $mode = sys_get_param_int('mode');
 
 switch ($mode) {
   case ADM_COUNTER_RECALC:
+    $template_result['.']['result'][] = [
+      'STATUS'  => ERR_NONE,
+      'MESSAGE' => number_format(memory_get_usage()) . ' - memory Before',
+    ];
     $t = new \General\LogCounterShrinker(classSupernova::$gc);
     $t->process();
+    unset($t);
+    $template_result['.']['result'][] = [
+      'STATUS'  => ERR_NONE,
+      'MESSAGE' => number_format(memory_get_usage()) . ' - memory After',
+    ];
   break;
 
   case ADM_TOOL_CONFIG_RELOAD:
@@ -283,4 +292,7 @@ $template = gettemplate("admin/admin_tools", true);
 $template->assign_vars(array(
   'PAGE_HEADER' => $lang['adm_tools'],
 ));
+
+$template->assign_recursive($template_result);
+
 display($template);

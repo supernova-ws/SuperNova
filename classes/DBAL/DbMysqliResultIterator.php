@@ -29,13 +29,16 @@ class DbMysqliResultIterator implements Iterator {
    *
    * @param mysqli_result|bool $mysqli_result
    */
-  public function __construct(mysqli_result $mysqli_result) {
+  public function __construct($mysqli_result) {
     $this->mysqli_result = $mysqli_result;
+    $this->rewind();
   }
 
   public function rewind() {
-    $this->mysqli_result->data_seek(0);
-    $this->next();
+    if ($this->mysqli_result instanceof mysqli_result) {
+      $this->mysqli_result->data_seek(0);
+      $this->next();
+    }
     $this->counter = $this->valid() ? 0 : null;
   }
 
@@ -54,6 +57,10 @@ class DbMysqliResultIterator implements Iterator {
 
   public function current() {
     return $this->currentRow;
+  }
+
+  public function count() {
+    return $this->mysqli_result instanceof mysqli_result ? $this->mysqli_result->num_rows : 0;
   }
 
 }

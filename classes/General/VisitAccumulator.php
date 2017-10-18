@@ -18,6 +18,7 @@ class VisitAccumulator {
   public $userId = 0;
   public $time = 0;
   public $length = 0;
+  public $hits = 1;
   public $deviceId = 0;
   public $browserId = 0;
   public $ip = 0;
@@ -34,6 +35,7 @@ class VisitAccumulator {
     $me->counterId = $row['counter_id'];
     $me->time = strtotime($row['visit_time']);
     $me->length = $row['visit_length'];
+    $me->hits = $row['hits'];
     $me->deviceId = $row['device_id'];
     $me->browserId = $row['browser_id'];
     $me->ip = $row['user_ip'];

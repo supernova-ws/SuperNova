@@ -26,7 +26,12 @@ abstract class VisitMerger {
    * @var VisitAccumulator[] $data
    */
   protected $data = [];
-  protected $toDelete = [];
+  /**
+   * List of IDs of log record that was merged with upper ones
+   *
+   * @var array $mergedIds
+   */
+  protected $mergedIds = [];
 
   /**
    * @var Iterator|null
@@ -39,6 +44,11 @@ abstract class VisitMerger {
    * @var int $_extendTime
    */
   protected $_extendTime = 0;
+
+  protected $prevBatchStart = 0;
+  protected $prevBatchEnd = 0;
+  protected $batchStart = 0;
+  protected $batchEnd = 0;
 
   /**
    * General constructor.
@@ -66,32 +76,31 @@ abstract class VisitMerger {
    */
   abstract protected function isSameVisit($sign, $logRecord);
 
-  protected function addMoreTime() {
-    $this->_extendTime ? set_time_limit($this->_extendTime) : false;
-  }
-
   /**
    * Class entry point
    */
-  public function process() {
-    $this->data = [];
-    $this->toDelete = [];
+  public function process($cutTails = true) {
+    $this->prevBatchStart = $this->batchStart;
+    $this->prevBatchEnd = $this->batchEnd;
+    if ($this->iterator->valid()) {
+      $logRecord = VisitAccumulator::build($this->iterator->current());
+      $this->batchStart = $logRecord->counterId;
+    }
 
     foreach ($this->iterator as $row) {
       $this->addMoreTime();
-      $this->processRow($row);
+      $logRecord = VisitAccumulator::build($row);
+      $this->processRecord($logRecord);
     }
+    $this->batchEnd = isset($logRecord) ? $logRecord->counterId : $this->batchStart;
 
     $this->cutTails();
-
   }
 
   /**
-   * @param array $row
+   * @param VisitAccumulator $logRecord
    */
-  protected function processRow($row) {
-    $logRecord = VisitAccumulator::build($row);
-
+  protected function processRecord($logRecord) {
     $sign = $this->calcSignature($logRecord);
 
     if (!isset($this->data[$sign])) {
@@ -162,8 +171,11 @@ abstract class VisitMerger {
       $this->data[$sign]->length
     );
 
+    // Adding hit count
+    $this->data[$sign]->hits += $logRecord->hits;
+
     // Marking current log record for deletion
-    $this->toDelete[$sign][] = $logRecord->counterId;
+    $this->mergedIds[$sign][] = $logRecord->counterId;
   }
 
   /**
@@ -184,9 +196,19 @@ abstract class VisitMerger {
   protected function resetVisit($sign, $logRecord) {
     $this->flushVisit($sign);
 
-    $this->toDelete[$sign] = [];
+    $this->mergedIds[$sign] = [];
     // Current row now is a visit start
     $this->data[$sign] = $logRecord;
+  }
+
+
+  protected function addMoreTime() {
+    $this->_extendTime ? set_time_limit($this->_extendTime) : false;
+  }
+
+  protected function resetArrays() {
+    $this->data = [];
+    $this->mergedIds = [];
   }
 
 }

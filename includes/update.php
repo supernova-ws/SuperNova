@@ -325,6 +325,11 @@ switch ($new_version) {
       'ADD KEY `I_counter_visit_time` (`visit_time`, `counter_id`)'
     ], empty($update_indexes_full['counter']['I_counter_visit_time']));
 
+    // 2017-10-18 09:27:27 43a6.1
+    upd_alter_table('counter', [
+      "ADD COLUMN `hits` int unsigned NOT NULL DEFAULT 1 AFTER `visit_length`",
+    ], empty($update_tables['counter']['hits']));
+
     // #ctv
     upd_do_query('COMMIT;', true);
 

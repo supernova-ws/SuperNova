@@ -155,6 +155,16 @@ class db_mysql {
     return true;
   }
 
+  public function prefixReplace($sql) {
+    if (strpos($sql, '{{') !== false) {
+      foreach ($this->schema()->getSnTables() as $tableName) {
+        $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
+      }
+    }
+
+    return $sql;
+  }
+
   public function doquery($query, $table = '', $fetch = false, $skip_query_check = false) {
     global $numqueries, $debug, $config;
 
@@ -170,12 +180,13 @@ class db_mysql {
     $this->security_watch_user_queries($query);
     $skip_query_check or $this->security_query_check_bad_words($query);
 
-    $sql = $query;
-    if (strpos($sql, '{{') !== false) {
-      foreach ($this->schema()->getSnTables() as $tableName) {
-        $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
-      }
-    }
+    $sql = $this->prefixReplace($query);
+//    $sql = $query;
+//    if (strpos($sql, '{{') !== false) {
+//      foreach ($this->schema()->getSnTables() as $tableName) {
+//        $sql = str_replace("{{{$tableName}}}", $this->db_prefix . $tableName, $sql);
+//      }
+//    }
 
     if ($config->debug) {
       $numqueries++;
@@ -204,6 +215,16 @@ class db_mysql {
 
     set_error_handler([$this, 'handlerQueryWarning']);
     $sqlquery = $this->db_sql_query($sql) or $debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
+    restore_error_handler();
+
+    return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
+  }
+
+  public function doQueryFast($query, $fetch = false) {
+    $sql = $this->prefixReplace($query);
+
+    set_error_handler([$this, 'handlerQueryWarning']);
+    $sqlquery = $this->db_sql_query($sql) or classSupernova::$debug->error(db_error() . "<br />$sql<br />", 'SQL Error');
     restore_error_handler();
 
     return $fetch ? $this->db_fetch($sqlquery) : $sqlquery;
