@@ -16,6 +16,12 @@ build:
 #                    -
 #                        command: phpcs-run
 #                        use_website_config: true
+    nodes:
+        analysis:
+            project_setup:
+                override: true
+            tests:
+                override: [php-scrutinizer-run]
 checks:
      php:
         avoid_superglobals: false
@@ -62,6 +68,8 @@ filter:
         - design/*/*.min.css
         - js/*/*.min.js
         - js/lib/*
+    dependency_paths:
+        - vendor/
 coding_style:
     php:
         indentation:
