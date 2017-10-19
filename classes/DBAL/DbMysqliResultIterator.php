@@ -5,10 +5,10 @@
 
 namespace DBAL;
 
-use \Iterator;
 use \mysqli_result;
+use Interfaces\ICountableIterator;
 
-class DbMysqliResultIterator implements Iterator {
+class DbMysqliResultIterator implements ICountableIterator {
   /**
    * @var mysqli_result|false $mysqli_result
    */

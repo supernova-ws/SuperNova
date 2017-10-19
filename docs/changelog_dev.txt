@@ -895,9 +895,44 @@ $debug - зацикливается, если ошибка произошла в
 
 Полные исходные логи счётчика - в бэкапе от 2017-10-18 13:31
 
+Проверить работу cutTails = true в VisitMerger
+
+Вести историю мьютов
+При бане/мьюте - выдавать историю банов и мьютов
+
+- ТАКИ НЕТ -    Теперь корректно обрабатываются визиты, находящиеся на стыке пакетов
+
+- Сделать ОТДЕЛЬНЫЙ индикатор ресурсов для Альянса - что бы было видно, сколько ресов у игрока
+- ВЕЗДЕ включить индикатор ресурсов - проверить, где это реально не нужно
+
+- https://webdevwonders.com/dom-storage-super-cookie/
+// Set a session_id if sessionStorage object is available
+if (window.sessionStorage) {
+    var session_id = "2bf039d0-f0c1-11df-ae7e-3137382e3633";
+    window.sessionStorage.setItem("session_id", session_id);
+}
+// Try to retrieve the user_id if localStorage object is available
+// or set a new user_id if user_id isn't set yet
+if (window.localStorage) {
+    var user_id = window.localStorage.getItem("user_id");
+    if (!user_id) {
+        user_id = "6b67ce02-c61e-11df-96b2-38352e313833";
+        window.localStorage.setItem("user_id", user_id);
+    }
+}
+
 
 #ctv
 
+
+2017-10-19 20:26:27 43a6.5
+[~] Админка/Перепаковка счётчиков посещений (СП)
+    Теперь выводится результат перепаковки
+    Теперь считается количество обработанных записей
+    Теперь неизменённые записи не записываются в БД
+    Добавлен счётчик обработанных и пропущенных записей
+    Добавлено новое условие прерывания обработки - если разница между ID обработанных записей меньше размера пакета
+    Добавлено дополнительное время на операцию удаления записей
 
 
 2017-10-18 09:27:27 43a6.1

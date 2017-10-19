@@ -5,9 +5,9 @@
 
 namespace General;
 
+use Common\EmptyCountableIterator;
 use \Common\GlobalContainer;
-use \Iterator;
-use \EmptyIterator;
+use Interfaces\ICountableIterator;
 
 /**
  * Class VisitMerger
@@ -17,6 +17,17 @@ use \EmptyIterator;
  * @package General
  */
 abstract class VisitMerger {
+  const PLAYER_ACTIVITY_MAX_INTERVAL = PERIOD_MINUTE_15;
+
+  public $maxInterval = self::PLAYER_ACTIVITY_MAX_INTERVAL;
+  /**
+   * Time to extend PHP execution time each loop
+   *
+   * @var int $_extendTime
+   */
+  protected $_extendTime = 30;
+
+
   /**
    * @var GlobalContainer $gc
    */
@@ -34,21 +45,20 @@ abstract class VisitMerger {
   protected $mergedIds = [];
 
   /**
-   * @var Iterator|null
+   * @var ICountableIterator|null
    */
   protected $iterator = null;
-
-  /**
-   * Time to extend PHP execution time each loop
-   *
-   * @var int $_extendTime
-   */
-  protected $_extendTime = 0;
 
   protected $prevBatchStart = 0;
   protected $prevBatchEnd = 0;
   protected $batchStart = 0;
   protected $batchEnd = 0;
+  /**
+   * Records processed in current batch - read from DB
+   *
+   * @var int $batchProcessed
+   */
+  protected $batchProcessed = 0;
 
   /**
    * General constructor.
@@ -57,10 +67,13 @@ abstract class VisitMerger {
    */
   public function __construct(GlobalContainer $gc) {
     $this->gc = $gc;
-    $this->iterator = new EmptyIterator();
+    $this->iterator = new EmptyCountableIterator();
   }
 
-  public function setIterator(Iterator $iterator) {
+  /**
+   * @param ICountableIterator $iterator
+   */
+  public function setIterator(ICountableIterator $iterator) {
     $this->iterator = $iterator;
   }
 
@@ -74,14 +87,23 @@ abstract class VisitMerger {
    *
    * @return bool
    */
-  abstract protected function isSameVisit($sign, $logRecord);
+  protected function isSameVisit($sign, $logRecord) {
+    return $this->data[$sign]->time + $this->data[$sign]->length + $this->maxInterval >= $logRecord->time;
+  }
 
   /**
    * Class entry point
+   *
+   * @param bool $cutTails - should we cut tails?
+   *
+   * @return array - []|['STATUS' => (int)errorLevel, 'MESSAGE' => (string)message]
    */
   public function process($cutTails = true) {
+    $this->batchProcessed = 0;
+
     $this->prevBatchStart = $this->batchStart;
     $this->prevBatchEnd = $this->batchEnd;
+
     if ($this->iterator->valid()) {
       $logRecord = VisitAccumulator::build($this->iterator->current());
       $this->batchStart = $logRecord->counterId;
@@ -91,10 +113,15 @@ abstract class VisitMerger {
       $this->addMoreTime();
       $logRecord = VisitAccumulator::build($row);
       $this->processRecord($logRecord);
+      $this->batchProcessed++;
     }
     $this->batchEnd = isset($logRecord) ? $logRecord->counterId : $this->batchStart;
 
-    $this->cutTails();
+    if ($cutTails) {
+      $this->cutTails();
+    }
+
+    return [];
   }
 
   /**
@@ -103,7 +130,7 @@ abstract class VisitMerger {
   protected function processRecord($logRecord) {
     $sign = $this->calcSignature($logRecord);
 
-    if (!isset($this->data[$sign])) {
+    if (empty($this->data[$sign])) {
       $this->newVisit($sign, $logRecord);
     } else {
       if ($this->isSameVisit($sign, $logRecord)) {
@@ -119,10 +146,8 @@ abstract class VisitMerger {
    */
   protected function cutTails() {
     foreach ($this->data as $sign => $tails) {
-      if ($tails->length > 0) {
-        $this->addMoreTime();
-        $this->resetVisit($sign, $tails);
-      }
+      $this->addMoreTime();
+      $this->resetVisit($sign, null);
     }
   }
 
@@ -152,6 +177,7 @@ abstract class VisitMerger {
    */
   protected function newVisit($sign, $logRecord) {
     $this->data[$sign] = $logRecord;
+    $this->mergedIds[$sign] = [];
   }
 
 
@@ -179,7 +205,7 @@ abstract class VisitMerger {
   }
 
   /**
-   * Called in resetVisit to perform necessary storage operations for current visit and deletion data
+   * Called in resetVisit to perform necessary storage operations for current visit - if any
    *
    * Doing nothing here - just a callback to easy override in successors
    *
@@ -190,17 +216,21 @@ abstract class VisitMerger {
   /**
    * Closing previous visit and starting new one
    *
-   * @param string           $sign
-   * @param VisitAccumulator $logRecord
+   * @param string                $sign
+   * @param VisitAccumulator|null $logRecord
    */
   protected function resetVisit($sign, $logRecord) {
+    // Making any necessary operations on current visit data before they went to thrash
     $this->flushVisit($sign);
 
-    $this->mergedIds[$sign] = [];
+    unset($this->mergedIds[$sign]);
     // Current row now is a visit start
-    $this->data[$sign] = $logRecord;
+    if ($logRecord === null) {
+      unset($this->data[$sign]);
+    } else {
+      $this->data[$sign] = $logRecord;
+    }
   }
-
 
   protected function addMoreTime() {
     $this->_extendTime ? set_time_limit($this->_extendTime) : false;

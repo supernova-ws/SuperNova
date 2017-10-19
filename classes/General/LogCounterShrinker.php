@@ -6,6 +6,7 @@
 namespace General;
 
 use Common\GlobalContainer;
+use \DBAL\DbMysqliResultIterator;
 
 /**
  * Class LogCounterShrinker
@@ -16,15 +17,11 @@ use Common\GlobalContainer;
  */
 class LogCounterShrinker extends VisitMerger {
   const RESERVE_WEEKS = 0; // How much weeks of logs left unshrinked
-  const PLAYER_ACTIVITY_MAX_INTERVAL = PERIOD_MINUTE_15;
   const BATCH_DELETE_PER_LOOP = 1000;
   const BATCH_UPDATE_PER_LOOP = 1000;
   const BATCH_DELETE_PER_QUERY = 25;
 
-  public $maxInterval = 0;
   protected $batchSize = 10000;
-
-  protected $_debug = false;
 
   /**
    * @var array
@@ -35,12 +32,17 @@ class LogCounterShrinker extends VisitMerger {
    */
   protected $batchUpdate = [];
 
+  /**
+   * Records skipped in current batch - not changed during process
+   *
+   * @var int $batchSkipped
+   */
+  protected $batchSkipped = 0;
+  protected $totalProcessed = 0;
+
+
   public function __construct(GlobalContainer $gc) {
     parent::__construct($gc);
-
-    $this->maxInterval = static::PLAYER_ACTIVITY_MAX_INTERVAL;
-
-    $this->_extendTime = 30;
   }
 
   /**
@@ -49,56 +51,82 @@ class LogCounterShrinker extends VisitMerger {
    *
    * @return bool
    */
-  protected function isSameVisit($sign, $logRecord) {
-    return $this->data[$sign]->time + $this->data[$sign]->length + $this->maxInterval >= $logRecord->time;
-  }
 
-  public function process($cutTails = true) {
-    ini_set('memory_limit', '1000M');
-
-    if ($this->_debug) {
-      print("<table>");
-    }
-
-    while (
-      ($iter = $this->gc->db->selectIterator(
-        "SELECT * 
+  /**
+   * @return DbMysqliResultIterator
+   */
+  protected function buildIterator() {
+    return $this->gc->db->selectIterator(
+      "SELECT * 
         FROM `{{counter}}`
         WHERE `visit_time` < DATE_SUB(NOW(), INTERVAL " . static::RESERVE_WEEKS . " WEEK)
         AND `counter_id` > {$this->batchEnd} 
         ORDER BY `visit_time`, `counter_id` 
         LIMIT {$this->batchSize};"
-      ))
-      &&
-      $iter->count()
-    ) {
+    );
+  }
+
+
+  /**
+   * @inheritdoc
+   */
+  public function process($cutTails = true) {
+    ini_set('memory_limit', '1000M');
+
+    $result = [];
+
+    while (($iter = $this->buildIterator()) && $iter->count()) {
       $this->setIterator($iter);
 
       parent::process(false);
 
+      $this->batchSave();
+
+      $this->totalProcessed += $this->batchProcessed;
+
       if ($this->prevBatchStart == $this->batchStart && $this->prevBatchEnd == $this->batchEnd) {
-        die("{Зациклились с размером блока {$this->batchSize} - [{$this->batchStart},{$this->batchEnd}]}");
+        $result = [
+          'STATUS'  => ERR_WARNING,
+          'MESSAGE' => "{Зациклились с размером блока {$this->batchSize} - [{$this->batchStart},{$this->batchEnd}].",
+        ];
+        break;
       }
 
-      $this->batchSave();
+      if ($this->batchProcessed < $this->batchSize) {
+        $result = [
+          'STATUS'  => ERR_WARNING,
+          'MESSAGE' => "{Размер текущего блока {$this->batchProcessed} меньше максимального {$this->batchSize} между ID [{$this->batchStart},{$this->batchEnd}].",
+        ];
+        break;
+      }
     }
 
     $this->cutTails();
     $this->batchSave(true);
 
-    if ($this->_debug) {
-      print("</table>");
+    if (is_array($result)) {
+      $result['MESSAGE'] .= " {Обработано} {$this->totalProcessed}, {пропущено} {$this->batchSkipped}";
     }
+
+    return $result;
   }
 
   protected function batchSave($forceSave = false) {
     $this->gc->db->doQueryFast('START TRANSACTION');
+
     if (count($this->batchDelete) >= static::BATCH_DELETE_PER_LOOP || $forceSave) {
       $this->deleteMergedRecords($this->batchDelete);
       $this->batchDelete = [];
     }
+
     if (count($this->batchUpdate) >= static::BATCH_UPDATE_PER_LOOP || $forceSave) {
       foreach ($this->batchUpdate as $record) {
+        if (!$record->isChanged()) {
+          $this->batchSkipped++;
+          continue;
+        }
+
+        $this->addMoreTime();
         $this->gc->db->doQueryFast(
           'UPDATE `{{counter}}`
           SET ' .
@@ -109,24 +137,18 @@ class LogCounterShrinker extends VisitMerger {
       }
       $this->batchUpdate = [];
     }
+
     $this->gc->db->doQueryFast('COMMIT');
   }
 
   protected function flushVisit($sign) {
-    $this->batchUpdate[] = $this->data[$sign];
-    is_array($this->mergedIds[$sign]) ? $this->batchDelete = array_merge($this->batchDelete, $this->mergedIds[$sign]) : false;
+    if (!empty($this->data[$sign])) {
+      $this->batchUpdate[] = $this->data[$sign];
+    }
 
-//    $this->gc->db->doQueryFast('START TRANSACTION');
-//    $this->gc->db->doQueryFast(
-//      'UPDATE `{{counter}}`
-//      SET `visit_length` = ' . $this->data[$sign]->length . '
-//      WHERE `counter_id` = ' . $this->data[$sign]->counterId . ';'
-//    );
-//
-//    if (!empty($this->mergedIds[$sign]) && is_array($this->mergedIds[$sign])) {
-//      $this->deleteMergedRecords($this->mergedIds[$sign]);
-//    }
-//    $this->gc->db->doQueryFast('COMMIT');
+    if (!empty($this->mergedIds[$sign]) && is_array($this->mergedIds[$sign])) {
+      $this->batchDelete = array_merge($this->batchDelete, $this->mergedIds[$sign]);
+    }
   }
 
 
@@ -144,6 +166,7 @@ class LogCounterShrinker extends VisitMerger {
     foreach ($array as $recordDeleteId) {
       $tempArray[] = $recordDeleteId;
       if ($i++ > static::BATCH_DELETE_PER_QUERY) {
+        $this->addMoreTime();
         $this->dbDeleteExecute($tempArray);
         $i = 0;
       }
@@ -161,34 +184,6 @@ class LogCounterShrinker extends VisitMerger {
   protected function dbDeleteExecute(&$toDeleteArray) {
     $this->gc->db->doQueryFast('DELETE FROM `{{counter}}` WHERE `counter_id` IN (' . implode(',', $toDeleteArray) . ')');
     $toDeleteArray = [];
-  }
-
-
-  // DEBUG FUNCTIONS ===================================================================================================
-
-//  protected function newVisit($sign, $logRecord) {
-//    // TODO - remove debug
-//    $this->dump($logRecord, $sign, "new visit");
-//    parent::newVisit($sign, $logRecord);
-//  }
-//
-//  protected function resetVisit($sign, $logRecord) {
-//    // TODO - remove debug
-//    $this->dump($logRecord, $sign, "prevVisitLength = {$this->data[$sign]->length}. restarting visit");
-//    parent::resetVisit($sign, $logRecord);
-//  }
-
-  /**
-   * @param VisitAccumulator $logRecord
-   * @param string           $sign
-   * @param string           $message
-   */
-  protected function dump($logRecord, $sign, $message) {
-    if (!$this->_debug) {
-      return;
-    }
-    $visitTimeStr = date(FMT_DATE_TIME_SQL, $logRecord->time);
-    print("<tr><td>{$visitTimeStr}</td><td>[{$sign}]</td><td>{$message}</td></tr>");
   }
 
 }

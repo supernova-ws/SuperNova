@@ -24,6 +24,9 @@ class VisitAccumulator {
   public $ip = 0;
   public $proxies = 0;
 
+  public $defaultLength = 0;
+  public $defaultHits = 1;
+
   /**
    * @param $row
    *
@@ -41,6 +44,14 @@ class VisitAccumulator {
     $me->ip = $row['user_ip'];
     $me->proxies = $row['user_proxy'];
 
+    $me->defaultLength = $me->length;
+    $me->defaultHits = $me->hits;
+
     return $me;
   }
+
+  public function isChanged() {
+    return $this->defaultLength != $this->length || $this->defaultHits != $this->hits;
+  }
+
 }

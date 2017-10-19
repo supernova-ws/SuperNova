@@ -24,7 +24,7 @@ switch ($mode) {
       'MESSAGE' => number_format(memory_get_usage()) . ' - memory Before',
     ];
     $t = new \General\LogCounterShrinker(classSupernova::$gc);
-    $t->process();
+    $template_result['.']['result'][] = $t->process();
     unset($t);
     $template_result['.']['result'][] = [
       'STATUS'  => ERR_NONE,
