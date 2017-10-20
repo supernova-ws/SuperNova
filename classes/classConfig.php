@@ -80,6 +80,7 @@
  *
  * @property int        $users_amount                 => 1 - Total users count
  *
+ * @property int        $var_online_user_count        => 0, // Current online user count
  *
  */
 class classConfig extends classPersistent {
@@ -322,12 +323,14 @@ class classConfig extends classPersistent {
     'var_db_update'     => 0, // Time of last DB update
     'var_db_update_end' => 0, // Time when last DB update should end. Need to prevent duplicate update
 
-    'var_news_last'       => 0, // Last news post time
+    'var_news_last' => 0, // Last news post time
+
+    'var_online_user_count' => 0, // Current online user count
 
     // Statistic
-    'var_stat_update'     => 0,
-    'var_stat_update_end' => 0,
-    'var_stat_update_msg' => 'Update never started',
+    'var_stat_update'       => 0,
+    'var_stat_update_end'   => 0,
+    'var_stat_update_msg'   => 'Update never started',
 
   );
 
@@ -336,7 +339,7 @@ class classConfig extends classPersistent {
   }
 
   public static function getInstance($gamePrefix = 'sn_', $table_name = 'config') {
-    if (!isset(self::$cacheObject)) {
+    if(!isset(self::$cacheObject)) {
       $className = get_class();
       self::$cacheObject = new $className($gamePrefix, $table_name);
     }
