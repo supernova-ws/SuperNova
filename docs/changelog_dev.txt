@@ -927,6 +927,19 @@ if (window.localStorage) {
 Экспу - в бинарные логи
 
 
+Рассылка Альянса - одним письмом
+
+
+Illegal mix of collations (latin1_bin,IMPLICIT) and (utf8_general_ci,COERCIBLE) for operation '='
+/* tID 6
+(db_mysql)db_mysql->doquery() - 'includes/db.php' Line 102
+doquery() - 'classes/RequestInfo.php' Line 94
+(RequestInfo)RequestInfo->__construct() - 'classes/core_auth.php' Line 183
+(core_auth)core_auth->__construct() - 'includes/init.php' Line 108
+include() - 'login.php' Line 16
+ */ SELECT `device_id` FROM beta_security_device WHERE `device_cypher` = '1\0
+
+
 #ctv
 
 
