@@ -940,7 +940,31 @@ include() - 'login.php' Line 16
  */ SELECT `device_id` FROM beta_security_device WHERE `device_cypher` = '1\0
 
 
+
+Ёмкость хранилища:
+$levelPremium = $level + $premium
+$base = function($levelPremium)
+
+applyBonus($base, MRC_STOCKMAN)
+*= $storageScaling
+
+bonusData - описание бонуса, в хранилище $bonusDataList[snid]
+
+
+
+Производство ресурсов:
+
+
+
+
+
+
 #ctv
+
+
+2017-10-24 06:15:11 43a6.15
+[~] Навбар
+    Добавлена поддержка изменения ТМ/ММ во время работы страницы
 
 
 2017-10-20 05:23:19 43a6.6
