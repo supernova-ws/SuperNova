@@ -71,7 +71,7 @@ class MissionEspionage extends MissionData {
   }
 
   protected function dbApplyChanges() {
-    if ($this->missionReport->isSpyDetected()) {
+    if (is_object($this->missionReport) && $this->missionReport->isSpyDetected()) {
       db_fleet_delete($this->fleet['fleet_id']);
 
       $debris_planet_id = $this->dst_planet['planet_type'] == PT_PLANET ? $this->dst_planet['id'] : $this->dst_planet['parent_planet'];

@@ -1,6 +1,6 @@
 <?php
 
-require_once('includes/includes/ube_attack_calculate.php');
+require_once(SN_ROOT_PHYSICAL . 'includes/includes/ube_attack_calculate.php');
 
 /*
   copyright © 2009-2014 Gorlum for http://supernova.ws

@@ -111,7 +111,7 @@ $ques = array(
   // Удаляются сообщения, старше  4 недель, кроме личных и Альянсовских
   'DELETE FROM {{messages}} WHERE
     UNIX_TIMESTAMP() - message_time > 4*7 * 24 * 60 * 60 AND
-    message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ');',
+    message_type NOT IN (' . MSG_TYPE_PLAYER . ', ' . MSG_TYPE_ALLIANCE . ', ' . MSG_TYPE_ADMIN . ');',
   // Удаляются сообщения у пользователей, которые неактивны больше 4 недель - кроме личных и Альянсовских
   'DELETE m FROM `{{users}}` AS u
   JOIN {{messages}} AS m ON m.message_owner = u.id

@@ -289,11 +289,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 240000,
-//    'crystal' => 400000,
-//    'deuterium' => 160000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   TECH_EXPEDITION => array(
@@ -308,11 +303,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 4000,
-//    'crystal' => 8000,
-//    'deuterium' => 4000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   TECH_COLONIZATION => array(
@@ -327,11 +317,6 @@ $sn_data += array(
       RES_ENERGY    => 0,
       'factor' => 2,
     ),
-//    'metal' => 1000,
-//    'crystal' => 4000,
-//    'deuterium' => 1000,
-//    'energy' => 0,
-//    'factor' => 2,
   ),
 
   TECH_ASTROTECH => array(

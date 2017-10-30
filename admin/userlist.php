@@ -2,7 +2,7 @@
 
 /**
  * Project "SuperNova.WS" copyright (c) 2009-2017 Gorlum
- * @version #43a3.4#
+ * @version #43a6.18#
  *
  * userlist.php v2
 **/
@@ -37,6 +37,7 @@ $sort_fields = array(
   SORT_TIME_BAN_UNTIL => 'banaday',
   SORT_REFERRAL_COUNT => 'referral_count',
   SORT_REFERRAL_DM => 'referral_dm',
+  SORT_VACATION => 'vacation',
 );
 $sort = sys_get_param_int('sort', SORT_ID);
 $sort = $sort_fields[$sort] ? $sort : SORT_ID;
@@ -100,6 +101,8 @@ while($user_row = db_fetch($query)) {
     'METAMATTER' => HelperString::numberFloorAndFormat($user_row['metamatter_total']),
     'ACTION' => $user_row['authlevel'] < $user['authlevel'],
     'RESTRICTED' => $user['authlevel'] < 3,
+    'EMAIL' => $user_row['email_2'],
+    'VACATION' => $user_row['vacation'] ? date(FMT_DATE_TIME_SQL, $user_row['vacation']) : '-',
   ) + $geoip_info);
 }
 

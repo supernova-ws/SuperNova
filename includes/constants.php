@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a6.15');
+define('SN_VERSION', '43a6.18');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -833,6 +833,7 @@ define('SORT_TIME_LAST_VISIT', 7);
 define('SORT_TIME_BAN_UNTIL' , 8);
 define('SORT_REFERRAL_COUNT' , 9);
 define('SORT_REFERRAL_DM'    , 10);
+define('SORT_VACATION'       , 11);
 
 
 define('HULL_SIZE_TINY', 1);

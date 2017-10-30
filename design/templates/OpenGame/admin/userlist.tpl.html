@@ -13,6 +13,8 @@
     <th rowspan="2">{L_adm_ov_activ}</th>
     <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_TIME_BAN_UNTIL}">{L_adm_ul_time_banned}</a></th>
     <!-- IF ! RESTRICTED -->
+    <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_VACATION}">{L_sys_vacation_in}</a></th>
+    <th rowspan="2">{L_adm_ul_mail}</th>
     <th rowspan="2"><a href="{PAGE_URL}?sort={D_SORT_IP}">{L_sys_ip}</a></th>
     <!-- IF GEOIP -->
     <th rowspan="2">{L_geoip}</th>
@@ -68,8 +70,10 @@
       </a>
     </td>
 
-
     <!-- IF ! RESTRICTED -->
+    <td>{user.VACATION}</td>
+    <td>{user.EMAIL}</td>
+
     <td>
       <div style="display: flex; justify-content: space-between;">
         <!-- IF user.IP_MULTI -->

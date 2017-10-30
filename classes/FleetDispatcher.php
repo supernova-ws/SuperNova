@@ -358,7 +358,7 @@ class FleetDispatcher {
         break;
 
         case MT_SPY:
-          require_once('includes/includes/coe_simulator_helpers.php');
+          require_once(SN_ROOT_PHYSICAL . 'includes/includes/coe_simulator_helpers.php');
 
           $theMission = \Fleet\MissionEspionage::buildFromArray($mission_data);
           $theMission->flt_mission_spy();
