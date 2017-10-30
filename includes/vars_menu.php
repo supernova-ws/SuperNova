@@ -1,6 +1,6 @@
 <?php
 
-if(!defined('INSIDE')) {
+if (!defined('INSIDE')) {
   die('Hack attempt!');
 }
 
@@ -45,7 +45,7 @@ $sn_menu = array(
     ),
   */
 
-  'menu_server_name'  => array(
+  'menu_server_name'   => array(
     'LEVEL'    => 'text',
     'CLASS'    => 'menu_text_t',
     'ITEM'     => $config->game_name,
@@ -53,7 +53,7 @@ $sn_menu = array(
     'HIDEABLE' => 3,
     'DISABLED' => !empty($config->game_name) && !empty($config->menu_server_name_disabled),
   ),
-  'menu_server_launch'  => array(
+  'menu_server_launch' => array(
     'LEVEL'    => 'text',
     'CLASS'    => 'menu_text_t',
     'ITEM'     => "{$lang['sys_from']} {$config->server_start_date}",
@@ -61,7 +61,7 @@ $sn_menu = array(
     'HIDEABLE' => 3,
     'DISABLED' => !empty($config->menu_launch_date_disabled),
   ),
-  'menu_server_logo'  => array(
+  'menu_server_logo'   => array(
     'LEVEL'    => 'text',
     'CLASS'    => 'menu_text_b',
     'TYPE'     => 'image',
@@ -72,7 +72,7 @@ $sn_menu = array(
     'HIDEABLE' => 3,
     'DISABLED' => !empty($config->menu_server_logo_disabled),
   ),
-  'menu_admin'        => array(
+  'menu_admin'         => array(
     'LEVEL'    => 'header',
     'ITEM'     => $lang['user_level'][$user['authlevel']],
     'LINK'     => 'admin/overview.php',
@@ -80,7 +80,7 @@ $sn_menu = array(
     'HIDEABLE' => 3,
     'DISABLED' => $user['authlevel'] < 1,
   ),
-  'menu_impersonator' => array(
+  'menu_impersonator'  => array(
     'LEVEL'    => 'header',
     'TYPE'     => 'lang',
     'ITEM'     => 'sys_impersonate_done',
@@ -472,38 +472,38 @@ $sn_menu_admin = array(
       $sn_version_check_class[$config->server_updater_check_result] . '">' . $lang['adm_opt_ver_response_short'][$config->server_updater_check_result] . '</div>',
   ),
 
-  'USER_AUTHLEVEL_NAME'      => array(
+  'USER_AUTHLEVEL_NAME'       => array(
     'LEVEL' => 'header',
 //    'TYPE' => 'lang',
 //    'ITEM'  => 'user_level[USER_LEVEL]',
     'ITEM'  => $lang['user_level'][$user['authlevel']],
   ),
-  'menu_admin_overview'      => array(
+  'menu_admin_overview'       => array(
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_over',
     'LINK'       => 'admin/overview.php',
     'AUTH_LEVEL' => 3,
   ),
-  'menu_admin_quests'        => array(
+  'menu_admin_quests'         => array(
     'TYPE'       => 'lang',
     'ITEM'       => 'qst_quests',
     'LINK'       => 'admin/adm_quest.php',
     'AUTH_LEVEL' => 3,
   ),
-  'menu_admin_configuration' => array(
+  'menu_admin_configuration'  => array(
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_conf',
     'LINK'       => 'admin/settings.php',
     'AUTH_LEVEL' => 3,
   ),
-  'menu_admin_dark_matter'   => array(
+  'menu_admin_dark_matter'    => array(
     'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'dark_matter',
     'LINK'       => 'admin/admin_darkmatter.php',
     'AUTH_LEVEL' => 3,
   ),
-  'menu_admin_matter_analyze'   => array(
+  'menu_admin_matter_analyze' => array(
     'TYPE'       => 'lang',
     'ITEM'       => 'matter_analyze',
     'LINK'       => 'admin/admin_analyze_matter.php',
