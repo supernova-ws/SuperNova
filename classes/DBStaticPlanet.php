@@ -16,7 +16,7 @@ class DBStaticPlanet {
    * @return array|null
    */
   public static function db_planet_by_id($planet_id, $for_update = false, $fields = '*') {
-    $result = classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id, $for_update, $fields);
+    $result = classSupernova::db_get_record_by_id(LOC_PLANET, $planet_id);
 
     return empty($result) ? null : $result;
   }

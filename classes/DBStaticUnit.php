@@ -11,7 +11,7 @@ class DBStaticUnit {
   }
 
   public static function db_unit_by_id($unit_id, $for_update = false, $fields = '*') {
-    $unit = classSupernova::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
+    $unit = classSupernova::db_get_record_by_id(LOC_UNIT, $unit_id);
     if (is_array($unit)) {
       _SnCacheInternal::unit_linkLocatorToData($unit, $unit_id);
     }

@@ -2,7 +2,6 @@
 
 require_once('db_helpers.php');
 
-require_once('db_queries_account.php');
 require_once('db_queries_users.php');
 require_once('db_queries_fleet.php');
 

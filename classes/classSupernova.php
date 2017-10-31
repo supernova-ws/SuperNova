@@ -330,15 +330,12 @@ class classSupernova {
    * @param int|array $record_id_unsafe
    *    <p>int - ID записи</p>
    *    <p>array - запись пользователя с установленным полем P_ID</p>
-   * @param bool      $for_update @deprecated
-   * @param string    $fields @deprecated список полей или '*'/'' для всех полей
-   * @param bool      $skip_lock Указывает на то, что не нужно блокировать запись //TODO и не нужно сохранять в кэше
    *
    * @return array|false
    *    <p>false - Нет записи с указанным ID</p>
    *    <p>array - запись</p>
    */
-  public static function db_get_record_by_id($location_type, $record_id_unsafe, $for_update = false, $fields = '*', $skip_lock = false) {
+  public static function db_get_record_by_id($location_type, $record_id_unsafe) {
     $id_field = static::$location_info[$location_type][P_ID];
     $record_id_safe = idval(is_array($record_id_unsafe) && isset($record_id_unsafe[$id_field]) ? $record_id_unsafe[$id_field] : $record_id_unsafe);
 
