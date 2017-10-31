@@ -111,7 +111,7 @@ class StatCalculator {
       }
     }
     unset($user_list);
-    classSupernova::cache_clear(LOC_USER, true);
+    _SnCacheInternal::cache_clear(LOC_USER, true);
 
     static::sta_set_time_limit('calculating planets stats');
     $i = 0;

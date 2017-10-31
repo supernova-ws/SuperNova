@@ -428,7 +428,6 @@ pretty_number
 
 
 Расшить работу с чейнджсетами
-    static::db_changeset_revert();
     static::db_changeset_apply();
 
 
@@ -1015,6 +1014,11 @@ REAL Planets: pcs x players
 
 
 #ctv
+
+
+2017-10-31 00:52:03 43a7.0
+[@] Код
+    Из класса classSupernova в отдельный класс _SnCacheInternal вынесены все операции с внутренним кэшем
 
 
 2017-10-30 20:33:48 43a6.18
