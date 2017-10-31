@@ -19,24 +19,29 @@ class _SnCacheInternal {
   public static $locator = array(); // Кэширует соответствия между расположением объектов - в частности юнитов и очередей
 
 
-
   public static function array_repack(&$array, $level = 0) {
     // TODO $lock_table не нужна тут
-    if(!is_array($array)) return;
+    if (!is_array($array)) {
+      return;
+    }
 
-    foreach($array as $key => &$value) {
-      if($value === null) {
+    foreach ($array as $key => &$value) {
+      if ($value === null) {
         unset($array[$key]);
-      } elseif($level > 0 && is_array($value)) {
+      } elseif ($level > 0 && is_array($value)) {
         _SnCacheInternal::array_repack($value, $level - 1);
-        if(empty($value)) unset($array[$key]);
+        if (empty($value)) {
+          unset($array[$key]);
+        }
       }
     }
   }
 
   public static function cache_repack($location_type, $record_id = 0) {
     // Если есть $user_id - проверяем, а надо ли перепаковывать?
-    if($record_id && isset(_SnCacheInternal::$data[$location_type][$record_id]) && _SnCacheInternal::$data[$location_type][$record_id] !== null) return;
+    if ($record_id && isset(_SnCacheInternal::$data[$location_type][$record_id]) && _SnCacheInternal::$data[$location_type][$record_id] !== null) {
+      return;
+    }
 
     _SnCacheInternal::array_repack(_SnCacheInternal::$data[$location_type]);
     _SnCacheInternal::array_repack(_SnCacheInternal::$locator[$location_type], 3); // TODO У каждого типа локации - своя глубина!!!! Но можно и глубже ???
@@ -45,9 +50,9 @@ class _SnCacheInternal {
 
   public static function cache_clear($location_type, $hard = true) {
     //print("<br />CACHE CLEAR {$cache_id} " . ($hard ? 'HARD' : 'SOFT') . "<br />");
-    if($hard && !empty(_SnCacheInternal::$data[$location_type])) {
+    if ($hard && !empty(_SnCacheInternal::$data[$location_type])) {
       // Здесь нельзя делать unset - надо записывать NULL, что бы это отразилось на зависимых записях
-      array_walk(_SnCacheInternal::$data[$location_type], function(&$item){$item = null;});
+      array_walk(_SnCacheInternal::$data[$location_type], function (&$item) { $item = null; });
     }
     _SnCacheInternal::$locator[$location_type] = array();
     _SnCacheInternal::$queries[$location_type] = [];
@@ -77,6 +82,7 @@ class _SnCacheInternal {
   public static function cache_get($location_type, $record_id) {
     return isset(_SnCacheInternal::$data[$location_type][$record_id]) ? _SnCacheInternal::$data[$location_type][$record_id] : null;
   }
+
   public static function cache_isset($location_type, $record_id) {
     return isset(_SnCacheInternal::$data[$location_type][$record_id]) && _SnCacheInternal::$data[$location_type][$record_id] !== null;
   }
@@ -94,10 +100,12 @@ class _SnCacheInternal {
   */
   public static function cache_set($location_type, $record_id, $record, $force_overwrite = false, $skip_lock = false) {
     // нет идентификатора - выход
-    if(!($record_id = $record[classSupernova::$location_info[$location_type][P_ID]])) return;
+    if (!($record_id = $record[classSupernova::$location_info[$location_type][P_ID]])) {
+      return;
+    }
 
     $in_transaction = classSupernova::db_transaction_check(false);
-    if(
+    if (
       $force_overwrite
       ||
       // Не заменяются заблокированные записи во время транзакции
@@ -106,7 +114,7 @@ class _SnCacheInternal {
       !_SnCacheInternal::cache_isset($location_type, $record_id)
     ) {
       _SnCacheInternal::$data[$location_type][$record_id] = $record;
-      if($in_transaction && !$skip_lock) {
+      if ($in_transaction && !$skip_lock) {
         _SnCacheInternal::cache_lock_set($location_type, $record_id);
       }
     }
@@ -115,7 +123,7 @@ class _SnCacheInternal {
   // TODO - 1 вхождение
   public static function cache_unset($cache_id, $safe_record_id) {
     // $record_id должен быть проверен заранее !
-    if(isset(_SnCacheInternal::$data[$cache_id][$safe_record_id]) && _SnCacheInternal::$data[$cache_id][$safe_record_id] !== null) {
+    if (isset(_SnCacheInternal::$data[$cache_id][$safe_record_id]) && _SnCacheInternal::$data[$cache_id][$safe_record_id] !== null) {
       // Выставляем запись в null
       _SnCacheInternal::$data[$cache_id][$safe_record_id] = null;
       // Очищаем кэш мягко - что бы удалить очистить связанные данные - кэш локаций и кэш запоросов и всё, что потребуется впредь
@@ -126,6 +134,7 @@ class _SnCacheInternal {
   public static function cache_lock_get($location_type, $record_id) {
     return isset(_SnCacheInternal::$locks[$location_type][$record_id]);
   }
+
   // TODO - 1 вхождение
   public static function cache_lock_set($location_type, $record_id) {
     return _SnCacheInternal::$locks[$location_type][$record_id] = true; // Не всегда - от результата
@@ -133,12 +142,12 @@ class _SnCacheInternal {
 
   // TODO - unused
   public static function cache_lock_unset($location_type, $record_id) {
-    if(isset(_SnCacheInternal::$locks[$location_type][$record_id]))
+    if (isset(_SnCacheInternal::$locks[$location_type][$record_id])) {
       unset(_SnCacheInternal::$locks[$location_type][$record_id]);
+    }
+
     return true; // Не всегда - от результата
   }
-
-
 
 
 }

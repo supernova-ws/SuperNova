@@ -104,16 +104,16 @@ class classSupernova {
   public static $location_info = array(
     LOC_USER => array(
       P_TABLE_NAME => 'users',
-      P_ID => 'id',
+      P_ID         => 'id',
       P_OWNER_INFO => array(),
     ),
 
     LOC_PLANET => array(
       P_TABLE_NAME => 'planets',
-      P_ID => 'id',
+      P_ID         => 'id',
       P_OWNER_INFO => array(
         LOC_USER => array(
-          P_LOCATION => LOC_USER,
+          P_LOCATION    => LOC_USER,
           P_OWNER_FIELD => 'id_owner',
         ),
       ),
@@ -121,10 +121,10 @@ class classSupernova {
 
     LOC_UNIT => array(
       P_TABLE_NAME => 'unit',
-      P_ID => 'unit_id',
+      P_ID         => 'unit_id',
       P_OWNER_INFO => array(
         LOC_USER => array(
-          P_LOCATION => LOC_USER,
+          P_LOCATION    => LOC_USER,
           P_OWNER_FIELD => 'unit_player_id',
         ),
       ),
@@ -132,20 +132,20 @@ class classSupernova {
 
     LOC_QUE => array(
       P_TABLE_NAME => 'que',
-      P_ID => 'que_id',
+      P_ID         => 'que_id',
       P_OWNER_INFO => array(
         array(
-          P_LOCATION => LOC_USER,
+          P_LOCATION    => LOC_USER,
           P_OWNER_FIELD => 'que_player_id',
         ),
 
         array(
-          P_LOCATION => LOC_PLANET,
+          P_LOCATION    => LOC_PLANET,
           P_OWNER_FIELD => 'que_planet_id_origin',
         ),
 
         array(
-          P_LOCATION => LOC_PLANET,
+          P_LOCATION    => LOC_PLANET,
           P_OWNER_FIELD => 'que_planet_id',
         ),
       ),
@@ -153,25 +153,25 @@ class classSupernova {
 
     LOC_FLEET => array(
       P_TABLE_NAME => 'fleets',
-      P_ID => 'fleet_id',
+      P_ID         => 'fleet_id',
       P_OWNER_INFO => array(
         array(
-          P_LOCATION => LOC_USER,
+          P_LOCATION    => LOC_USER,
           P_OWNER_FIELD => 'fleet_owner',
         ),
 
         array(
-          P_LOCATION => LOC_USER,
+          P_LOCATION    => LOC_USER,
           P_OWNER_FIELD => 'fleet_target_owner',
         ),
 
         array(
-          P_LOCATION => LOC_PLANET,
+          P_LOCATION    => LOC_PLANET,
           P_OWNER_FIELD => 'fleet_start_planet_id',
         ),
 
         array(
-          P_LOCATION => LOC_PLANET,
+          P_LOCATION    => LOC_PLANET,
           P_OWNER_FIELD => 'fleet_end_planet_id',
         ),
       ),
@@ -182,7 +182,7 @@ class classSupernova {
    * @return classSupernova
    */
   public static function sn() {
-    if(!isset(self::$_sn)) {
+    if (!isset(self::$_sn)) {
       self::$_sn = new self();
     }
 
@@ -195,7 +195,7 @@ class classSupernova {
 
 
   public static function log_file($message, $spaces = 0) {
-    if(self::$debug) {
+    if (self::$debug) {
       self::$debug->log_file($message, $spaces);
     }
   }
@@ -205,6 +205,7 @@ class classSupernova {
 
 
   // TODO Вынести в отдельный объект
+
   /**
    * Эта функция проверяет статус транзакции
    *
@@ -214,17 +215,18 @@ class classSupernova {
    *   <p>null - транзакция НЕ должна быть запущена</p>
    *   <p>true - транзакция должна быть запущена - для совместимости с $for_update</p>
    *   <p>false - всё равно - для совместимости с $for_update</p>
+   *
    * @return bool Текущий статус транзакции
    */
   public static function db_transaction_check($status = null) {
     $error_msg = false;
-    if($status && !static::$db_in_transaction) {
+    if ($status && !static::$db_in_transaction) {
       $error_msg = 'No transaction started for current operation';
-    } elseif($status === null && static::$db_in_transaction) {
+    } elseif ($status === null && static::$db_in_transaction) {
       $error_msg = 'Transaction is already started';
     }
 
-    if($error_msg) {
+    if ($error_msg) {
       // TODO - Убрать позже
       print('<h1>СООБЩИТЕ ЭТО АДМИНУ: sn_db_transaction_check() - ' . $error_msg . '</h1>');
       $backtrace = debug_backtrace();
@@ -235,6 +237,7 @@ class classSupernova {
 
     return static::$db_in_transaction;
   }
+
   public static function db_transaction_start($level = '') {
     global $config;
 
@@ -245,7 +248,7 @@ class classSupernova {
     static::$transaction_id++;
     doquery('START TRANSACTION');
 
-    if($config->db_manual_lock_enabled) {
+    if ($config->db_manual_lock_enabled) {
       $config->db_loadItem('var_db_manually_locked');
       $config->db_saveItem('var_db_manually_locked', SN_TIME_SQL);
     }
@@ -253,10 +256,12 @@ class classSupernova {
     static::$db_in_transaction = true;
     _SnCacheInternal::$locator = array();
     _SnCacheInternal::$queries = array();
+
     //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
 
     return static::$transaction_id;
   }
+
   public static function db_transaction_commit() {
     static::db_transaction_check(true);
 
@@ -268,6 +273,7 @@ class classSupernova {
 
     return static::$transaction_id++;
   }
+
   public static function db_transaction_rollback() {
     // static::db_transaction_check(true); // TODO - вообще-то тут тоже надо проверять есть ли транзакция
     _SnCacheInternal::cache_lock_unset_all();
@@ -276,8 +282,10 @@ class classSupernova {
     //print('<br/>TRANSACTION ROLLBACK id' . static::$transaction_id . '<hr />');
     static::$db_in_transaction = false;
     static::$transaction_id++;
+
     return static::$transaction_id;
   }
+
   /**
    * Блокирует указанные таблицу/список таблиц
    *
@@ -287,10 +295,11 @@ class classSupernova {
    */
   public static function db_lock_tables($tables) {
     $tables = is_array($tables) ? $tables : array($tables => '');
-    foreach($tables as $table_name => $condition) {
+    foreach ($tables as $table_name => $condition) {
       self::$db->doquery("SELECT 1 FROM {{{$table_name}}}" . ($condition ? ' WHERE ' . $condition : ''));
     }
   }
+
   public static function db_query_select($query, $fetch = false, $skip_lock = false) {
     $select = strpos(strtoupper($query), 'SELECT') !== false;
 
@@ -301,12 +310,15 @@ class classSupernova {
 
     return $result;
   }
+
   public static function db_query_update($query) {
     return self::$db->doquery($query, false);
   }
+
   public static function db_query_delete($query) {
     return self::$db->doquery($query, false);
   }
+
   public static function db_query_insert($query) {
     return self::$db->doquery($query, false);
   }
@@ -314,13 +326,14 @@ class classSupernova {
   /**
    * Возвращает информацию о записи по её ID
    *
-   * @param int $location_type
+   * @param int       $location_type
    * @param int|array $record_id_unsafe
    *    <p>int - ID записи</p>
    *    <p>array - запись пользователя с установленным полем P_ID</p>
-   * @param bool $for_update @deprecated
-   * @param string $fields @deprecated список полей или '*'/'' для всех полей
-   * @param bool $skip_lock Указывает на то, что не нужно блокировать запись //TODO и не нужно сохранять в кэше
+   * @param bool      $for_update @deprecated
+   * @param string    $fields @deprecated список полей или '*'/'' для всех полей
+   * @param bool      $skip_lock Указывает на то, что не нужно блокировать запись //TODO и не нужно сохранять в кэше
+   *
    * @return array|false
    *    <p>false - Нет записи с указанным ID</p>
    *    <p>array - запись</p>
@@ -336,14 +349,14 @@ class classSupernova {
   public static function db_get_record_list($location_type, $filter = '', $fetch = false, $no_return = false) {
     $query_cache = &_SnCacheInternal::$queries[$location_type][$filter];
 
-    if(!isset($query_cache) || $query_cache === null) {
+    if (!isset($query_cache) || $query_cache === null) {
       $location_info = &static::$location_info[$location_type];
       $id_field = $location_info[P_ID];
       $query_cache = array();
 
-      if(static::db_transaction_check(false)) {
+      if (static::db_transaction_check(false)) {
         // Проходим по всем родителям данной записи
-        foreach($location_info[P_OWNER_INFO] as $owner_data) {
+        foreach ($location_info[P_OWNER_INFO] as $owner_data) {
           $owner_location_type = $owner_data[P_LOCATION];
           $parent_id_list = array();
           // Выбираем родителей данного типа и соответствующие ИД текущего типа
@@ -357,14 +370,15 @@ class classSupernova {
             true
           );
 
-          while($row = db_fetch($query)) {
+          while ($row = db_fetch($query)) {
             // Исключаем из списка родительских ИД уже заблокированные записи
-            if(!_SnCacheInternal::cache_lock_get($owner_location_type, $row['parent_id']))
+            if (!_SnCacheInternal::cache_lock_get($owner_location_type, $row['parent_id'])) {
               $parent_id_list[$row['parent_id']] = $row['parent_id'];
+            }
           }
 
           // Если все-таки какие-то записи еще не заблокированы - вынимаем текущие версии из базы
-          if($indexes_str = implode(',', $parent_id_list)) {
+          if ($indexes_str = implode(',', $parent_id_list)) {
             $parent_id_field = static::$location_info[$owner_location_type][P_ID];
             static::db_get_record_list($owner_location_type,
               $parent_id_field . (count($parent_id_list) > 1 ? " IN ({$indexes_str})" : " = {$indexes_str}"), $fetch, true);
@@ -375,35 +389,40 @@ class classSupernova {
       $query = static::db_query_select(
         "SELECT * FROM {{{$location_info[P_TABLE_NAME]}}}" . (($filter = trim($filter)) ? " WHERE {$filter}" : '')
       );
-      while($row = db_fetch($query)) {
+      while ($row = db_fetch($query)) {
         _SnCacheInternal::cache_set($location_type, $row[$id_field], $row);
         $query_cache[$row[$id_field]] = &_SnCacheInternal::$data[$location_type][$row[$id_field]];
       }
     }
 
-    if($no_return) {
+    if ($no_return) {
       return true;
     } else {
       $result = false;
-      if(is_array($query_cache)) {
-        foreach($query_cache as $key => $value) {
+      if (is_array($query_cache)) {
+        foreach ($query_cache as $key => $value) {
           $result[$key] = $value;
-          if($fetch) break;
+          if ($fetch) {
+            break;
+          }
         }
       }
+
       return $fetch ? (is_array($result) ? reset($result) : false) : $result;
     }
   }
 
   public static function db_upd_record_by_id($location_type, $record_id, $set) {
-    if(!($record_id = idval($record_id)) || !($set = trim($set))) return false;
+    if (!($record_id = idval($record_id)) || !($set = trim($set))) {
+      return false;
+    }
 
     $location_info = &static::$location_info[$location_type];
     $id_field = $location_info[P_ID];
     $table_name = $location_info[P_TABLE_NAME];
-    if($result = static::db_query_update("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
+    if ($result = static::db_query_update("UPDATE {{{$table_name}}} SET {$set} WHERE `{$id_field}` = {$record_id}")) // TODO Как-то вернуть может быть LIMIT 1 ?
     {
-      if(static::$db->db_affected_rows()) {
+      if (static::$db->db_affected_rows()) {
         // Обновляем данные только если ряд был затронут
         // TODO - переделать под работу со структурированными $set
 
@@ -417,15 +436,18 @@ class classSupernova {
 
     return $result;
   }
+
   public static function db_upd_record_list($location_type, $condition, $set) {
-    if(!($set = trim($set))) return false;
+    if (!($set = trim($set))) {
+      return false;
+    }
 
     $condition = trim($condition);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
-    if($result = static::db_query_update("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
+    if ($result = static::db_query_update("UPDATE {{{$table_name}}} SET " . $set . ($condition ? ' WHERE ' . $condition : ''))) {
 
-      if(static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
+      if (static::$db->db_affected_rows()) { // Обновляем данные только если ряд был затронут
         // Поскольку нам неизвестно, что и как обновилось - сбрасываем кэш этого типа полностью
         // TODO - когда будет структурированный $condition и $set - перепаковывать данные
         _SnCacheInternal::cache_clear($location_type, true);
@@ -438,8 +460,8 @@ class classSupernova {
   public static function db_ins_record($location_type, $set) {
     $set = trim($set);
     $table_name = static::$location_info[$location_type][P_TABLE_NAME];
-    if($result = static::db_query_insert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
-      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+    if ($result = static::db_query_insert("INSERT INTO `{{{$table_name}}}` SET {$set}")) {
+      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         $record_id = db_insert_id();
         // Вытаскиваем запись целиком, потому что в $set могли быть "данные по умолчанию"
@@ -453,16 +475,16 @@ class classSupernova {
     return $result;
   }
 
-  public static function db_del_record_by_id($location_type, $safe_record_id)
-  {
-    if(!($safe_record_id = idval($safe_record_id))) return false;
+  public static function db_del_record_by_id($location_type, $safe_record_id) {
+    if (!($safe_record_id = idval($safe_record_id))) {
+      return false;
+    }
 
     $location_info = &static::$location_info[$location_type];
     $id_field = $location_info[P_ID];
     $table_name = $location_info[P_TABLE_NAME];
-    if($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}"))
-    {
-      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+    if ($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE `{$id_field}` = {$safe_record_id}")) {
+      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         _SnCacheInternal::cache_unset($location_type, $safe_record_id);
       }
@@ -470,16 +492,17 @@ class classSupernova {
 
     return $result;
   }
-  public static function db_del_record_list($location_type, $condition)
-  {
-    if(!($condition = trim($condition))) return false;
+
+  public static function db_del_record_list($location_type, $condition) {
+    if (!($condition = trim($condition))) {
+      return false;
+    }
 
     $location_info = &static::$location_info[$location_type];
     $table_name = $location_info[P_TABLE_NAME];
 
-    if($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}"))
-    {
-      if(static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
+    if ($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
+      if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
       {
         // Обнуление кэша, потому что непонятно, что поменялось
         _SnCacheInternal::cache_clear($location_type);
@@ -492,69 +515,68 @@ class classSupernova {
 
 
   // Работа с пользователями
+
   /**
    * Возвращает информацию о пользователе по его ID
    *
    * @param int|array $user_id_unsafe
    *    <p>int - ID пользователя</p>
    *    <p>array - запись пользователя с установленным полем ['id']</p>
-   * @param bool $for_update @deprecated
-   * @param string $fields @deprecated список полей или '*'/'' для всех полей
-   * @param null $player
+   * @param bool      $for_update @deprecated
+   * @param string    $fields @deprecated список полей или '*'/'' для всех полей
+   * @param null      $player
    * @param bool|null $player Признак выбора записи пользователь типа "игрок"
    *    <p>null - Можно выбрать запись любого типа</p>
    *    <p>true - Выбирается только запись типа "игрок"</p>
    *    <p>false - Выбирается только запись типа "альянс"</p>
+   *
    * @return array|false
    *    <p>false - Нет записи с указанным ID и $player</p>
    *    <p>array - запись типа $user</p>
    */
-  public static function db_get_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null)
-  {
+  public static function db_get_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
     $user = static::db_get_record_by_id(LOC_USER, $user_id_unsafe, $for_update, $fields);
 
     return (is_array($user) &&
-    (
-      $player === null
-      ||
-      ($player === true && !$user['user_as_ally'])
-      ||
-      ($player === false && $user['user_as_ally'])
-    )) ? $user : false;
+      (
+        $player === null
+        ||
+        ($player === true && !$user['user_as_ally'])
+        ||
+        ($player === false && $user['user_as_ally'])
+      )) ? $user : false;
   }
-  public static function db_get_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false)
-  {
+
+  public static function db_get_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
     // TODO Проверить, кстати - а везде ли нужно выбирать юзеров или где-то все-таки ищутся Альянсы ?
-    if(!($username_unsafe = trim($username_unsafe))) return false;
+    if (!($username_unsafe = trim($username_unsafe))) {
+      return false;
+    }
 
     $user = null;
-    if(is_array(_SnCacheInternal::$data[LOC_USER]))
-    foreach(_SnCacheInternal::$data[LOC_USER] as $user_id => $user_data)
-    {
-      if(is_array($user_data) && isset($user_data['username']))
-      {
-        // проверяем поле
-        // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
-        if((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe)))
-        {
-          // $user_as_ally = intval($user_data['user_as_ally']);
-          $user_as_ally = idval($user_data['user_as_ally']);
-          if($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally))
-          {
-            $user = $user_data;
-            break;
+    if (is_array(_SnCacheInternal::$data[LOC_USER])) {
+      foreach (_SnCacheInternal::$data[LOC_USER] as $user_id => $user_data) {
+        if (is_array($user_data) && isset($user_data['username'])) {
+          // проверяем поле
+          // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
+          if ((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe))) {
+            // $user_as_ally = intval($user_data['user_as_ally']);
+            $user_as_ally = idval($user_data['user_as_ally']);
+            if ($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally)) {
+              $user = $user_data;
+              break;
+            }
           }
         }
       }
     }
 
-    if($user === null)
-    {
+    if ($user === null) {
       // Вытаскиваем запись
       $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
 
       $user = static::db_query_select(
-        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '='). " '{$username_safe}'",
+        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'",
         true
       );
       _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
@@ -562,16 +584,19 @@ class classSupernova {
 
     return $user;
   }
+
   // UNUSED
   public static function db_get_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
-    if(!($email_unsafe = strtolower(trim($email_unsafe)))) return false;
+    if (!($email_unsafe = strtolower(trim($email_unsafe)))) {
+      return false;
+    }
 
     $user = null;
-    if(is_array(_SnCacheInternal::$data[LOC_USER])) {
-      foreach(_SnCacheInternal::$data[LOC_USER] as $user_id => $user_data) {
-        if(is_array($user_data) && isset($user_data['email_2'])) {
+    if (is_array(_SnCacheInternal::$data[LOC_USER])) {
+      foreach (_SnCacheInternal::$data[LOC_USER] as $user_id => $user_data) {
+        if (is_array($user_data) && isset($user_data['email_2'])) {
           // проверяем поле
-          if(strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email']) == $email_unsafe)) {
+          if (strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email']) == $email_unsafe)) {
             $user = $user_data;
             break;
           }
@@ -579,7 +604,7 @@ class classSupernova {
       }
     }
 
-    if($user === null) {
+    if ($user === null) {
       // Вытаскиваем запись
       $email_safe = db_escape($email_unsafe);
       $user = static::db_query_select(
@@ -592,11 +617,12 @@ class classSupernova {
 
     return $user;
   }
+
   public static function db_get_user_by_where($where_safe, $for_update = false, $fields = '*') {
     $user = null;
     // TODO переделать на индексы
 
-    if($user === null && !empty($where_safe)) {
+    if ($user === null && !empty($where_safe)) {
       // Вытаскиваем запись
       $user = static::db_query_select(
         "SELECT * FROM {{users}} WHERE {$where_safe}",
@@ -610,71 +636,53 @@ class classSupernova {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  public static function db_unit_time_restrictions($date = SN_TIME_NOW)
-  {
+  public static function db_unit_time_restrictions($date = SN_TIME_NOW) {
     $date = is_numeric($date) ? "FROM_UNIXTIME({$date})" : "'{$date}'";
+
     return
       "(unit_time_start IS NULL OR unit_time_start <= {$date}) AND
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
-  public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*')
-  {
+
+  public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*') {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
     $unit = static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
-    if(is_array($unit))
-    {
+    if (is_array($unit)) {
       _SnCacheInternal::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &_SnCacheInternal::$data[LOC_UNIT][$unit_id];
     }
 
     return $unit;
   }
 
-  public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id)
-  {
-    if(!($location_type = idval($location_type)) || !($location_id = idval($location_id))) return false;
+  public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id) {
+    if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
+      return false;
+    }
 
-    if(!isset(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id]))
-    {
+    if (!isset(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id])) {
       $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
-      if(is_array($got_data))
-      {
-        foreach($got_data as $unit_id => $unit_data)
-        {
+      if (is_array($got_data)) {
+        foreach ($got_data as $unit_id => $unit_data) {
           _SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id][$unit_data['unit_snid']] = &_SnCacheInternal::$data[LOC_UNIT][$unit_id];
         }
       }
     }
 
     $result = false;
-    if(is_array(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id])) {
-      foreach(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id] as $key => $value) {
+    if (is_array(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id])) {
+      foreach (_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id] as $key => $value) {
         $result[$key] = $value;
       }
     }
 
     return $result;
   }
-  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*')
-  {
+
+  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
     static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
     return $unit_snid ? _SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : _SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id];
   }
-
-
 
 
   /*
@@ -696,10 +704,8 @@ class classSupernova {
    * TODO Переформатировать вывод данных, что бы можно было возвращать данные по всем планетам и юзерам в одном запросе: добавить подмассивы 'que', 'planets', 'players'
    *
    */
-  public static function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false)
-  {
-    if(!$user_id)
-    {
+  public static function db_que_list_by_type_location($user_id, $planet_id = null, $que_type = false, $for_update = false) {
+    if (!$user_id) {
       pdump(debug_backtrace());
       die('No user_id for que_get_que()');
     }
@@ -708,15 +714,18 @@ class classSupernova {
 
     $query = array();
 
-    if($user_id = idval($user_id))
+    if ($user_id = idval($user_id)) {
       $query[] = "`que_player_id` = {$user_id}";
+    }
 
-    if($que_type == QUE_RESEARCH || $planet_id === null)
+    if ($que_type == QUE_RESEARCH || $planet_id === null) {
       $query[] = "`que_planet_id` IS NULL";
-    elseif($planet_id)
+    } elseif ($planet_id) {
       $query[] = "(`que_planet_id` = {$planet_id}" . ($que_type ? '' : ' OR que_planet_id IS NULL') . ")";
-    if($que_type)
+    }
+    if ($que_type) {
       $query[] = "`que_type` = {$que_type}";
+    }
 
     $ques['items'] = static::db_get_record_list(LOC_QUE, implode(' AND ', $query));
 
@@ -803,15 +812,6 @@ class classSupernova {
   // !!!!!!!! После que_get брать не [0] элемент, а first() - тогда можно в индекс элемента засовывать que_id из таблицы
 
 
-
-
-
-
-
-
-
-
-
   // TODO - это вообще-то надо хранить в конфигурации
   public static function db_get_user_player_username_last_registered() {
     $user = static::db_query_select(
@@ -819,6 +819,7 @@ class classSupernova {
       true
     );
     _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user);
+
     return isset($user['username']) ? $user['username'] : '';
   }
 
@@ -832,7 +833,7 @@ class classSupernova {
   }
 
 
-  public static function loadFileSettings () {
+  public static function loadFileSettings() {
     $dbsettings = array();
 
     require(SN_ROOT_PHYSICAL . "config" . DOT_PHP_EX);
@@ -898,7 +899,7 @@ class classSupernova {
    * @return GlobalContainer
    */
   public static function services() {
-    if(empty(self::$gc)) {
+    if (empty(self::$gc)) {
       self::$gc = new GlobalContainer(array(
         'cachePrefix' => self::$cache_prefix,
       ));
