@@ -512,98 +512,12 @@ class classSupernova {
 
 
 
-  // Работа с пользователями
-
-  /**
-   * Возвращает информацию о пользователе по его ID
-   *
-   * @param int|array $user_id_unsafe
-   *    <p>int - ID пользователя</p>
-   *    <p>array - запись пользователя с установленным полем ['id']</p>
-   * @param bool      $for_update @deprecated
-   * @param string    $fields @deprecated список полей или '*'/'' для всех полей
-   * @param null      $player
-   * @param bool|null $player Признак выбора записи пользователь типа "игрок"
-   *    <p>null - Можно выбрать запись любого типа</p>
-   *    <p>true - Выбирается только запись типа "игрок"</p>
-   *    <p>false - Выбирается только запись типа "альянс"</p>
-   *
-   * @return array|false
-   *    <p>false - Нет записи с указанным ID и $player</p>
-   *    <p>array - запись типа $user</p>
-   */
-  public static function db_get_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-    $user = static::db_get_record_by_id(LOC_USER, $user_id_unsafe, $for_update, $fields);
-
-    return (is_array($user) &&
-      (
-        $player === null
-        ||
-        ($player === true && !$user['user_as_ally'])
-        ||
-        ($player === false && $user['user_as_ally'])
-      )) ? $user : false;
-  }
-
-  /**
-   * @param        $where_safe
-   * @param bool   $for_update
-   * @param string $fields
-   *
-   * @return array|null
-   */
-  public static function db_get_user_by_where($where_safe, $for_update = false, $fields = '*') {
-    $user = null;
-
-    if (!empty($where_safe)) {
-      // Вытаскиваем запись
-      $user = static::db_query_select(
-        "SELECT * FROM {{users}} WHERE {$where_safe}",
-        true
-      );
-
-      _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
-    }
-
-    return $user;
-  }
-
-
-  /**
-   * @param string $username_unsafe
-   * @param null   $player
-   * @param bool   $like
-   *
-   * @return array|null
-   */
-  public static function db_get_user_by_username($username_unsafe, $player = null, $like = false) {
-    if (!($username_unsafe = trim($username_unsafe))) {
-      return null;
-    }
-
-    $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
-
-    $user = static::db_get_user_by_where("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'");
-
-    return $user;
-  }
-
   public static function db_unit_time_restrictions($date = SN_TIME_NOW) {
     $date = is_numeric($date) ? "FROM_UNIXTIME({$date})" : "'{$date}'";
 
     return
       "(unit_time_start IS NULL OR unit_time_start <= {$date}) AND
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
-  }
-
-  public static function db_get_unit_by_id($unit_db_id, $for_update = false, $fields = '*') {
-    // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
-    $unit = static::db_get_record_by_id(LOC_UNIT, $unit_db_id, $for_update, $fields);
-    if (is_array($unit)) {
-      _SnCacheInternal::unit_linkLocatorToData($unit, $unit_db_id);
-    }
-
-    return $unit;
   }
 
   /**
@@ -629,16 +543,6 @@ class classSupernova {
 
     return _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id);
   }
-
-  public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
-    static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
-
-    return
-      !$unit_snid
-        ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
-        : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
-  }
-
 
   /*
    * С $for_update === true эта функция должна вызываться только из транзакции! Все соответствующие записи в users и planets должны быть уже блокированы!
@@ -761,31 +665,6 @@ class classSupernova {
 
 
 
-
-
-  // que_process не всегда должна работать в режиме прямой работы с БД !! Она может работать и в режиме эмуляции
-  // !!!!!!!! После que_get брать не [0] элемент, а first() - тогда можно в индекс элемента засовывать que_id из таблицы
-
-
-  // TODO - это вообще-то надо хранить в конфигурации
-  public static function db_get_user_player_username_last_registered() {
-    $user = static::db_query_select(
-      'SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC',
-      true
-    );
-    _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user);
-
-    return isset($user['username']) ? $user['username'] : '';
-  }
-
-  // Это для поиска по кэшу
-  protected static function db_get_record_by_field($location_type) {
-  }
-
-  // Для модулей - регистрация юнитов
-  public static function unit_register() {
-
-  }
 
 
   public static function loadFileSettings() {

@@ -1,24 +1,72 @@
 <?php
 
 /**
- * @deprecated
+ * Возвращает информацию о пользователе по его ID
  *
- * @param int|string $user_id_unsafe
- * @param bool       $for_update
- * @param string     $fields
- * @param null       $player
+ * @param int|array $user_id_unsafe
+ *    <p>int - ID пользователя</p>
+ *    <p>array - запись пользователя с установленным полем ['id']</p>
+ * @param bool      $for_update @deprecated
+ * @param string    $fields @deprecated список полей или '*'/'' для всех полей
+ * @param null      $player
+ * @param bool|null $player Признак выбора записи пользователь типа "игрок"
+ *    <p>null - Можно выбрать запись любого типа</p>
+ *    <p>true - Выбирается только запись типа "игрок"</p>
+ *    <p>false - Выбирается только запись типа "альянс"</p>
  *
  * @return array|false
+ *    <p>false - Нет записи с указанным ID и $player</p>
+ *    <p>array - запись типа $user</p>
+ * @deprecated
  */
 function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $player = null) {
-  return classSupernova::db_get_user_by_id($user_id_unsafe, $for_update, $fields, $player);
+  $user = classSupernova::db_get_record_by_id(LOC_USER, $user_id_unsafe);
+
+  return (is_array($user) &&
+    (
+      $player === null
+      ||
+      ($player === true && !$user['user_as_ally'])
+      ||
+      ($player === false && $user['user_as_ally'])
+    )) ? $user : false;
+}
+
+/**
+ * @param        $where_safe
+ *
+ * @return array|null
+ * @deprecated
+ */
+function db_get_user_by_where($where_safe) {
+  $user = null;
+
+  if (!empty($where_safe)) {
+    // Вытаскиваем запись
+    $user = classSupernova::db_query_select(
+      "SELECT * FROM {{users}} WHERE {$where_safe}",
+      true
+    );
+
+    _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
+  }
+
+  return $user;
 }
 
 /**
  * @deprecated
  */
 function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
-  return classSupernova::db_get_user_by_username($username_unsafe, $player, $like);
+  if (!($username_unsafe = trim($username_unsafe))) {
+    return null;
+  }
+
+  $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
+
+  $user = db_get_user_by_where("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'");
+
+  return $user;
 }
 /**
  * @param        $username_unsafe
@@ -88,16 +136,24 @@ function db_user_change_active_planet_to_capital($user_id, $captured_planet) {
 
 // TODO Внести это всё в supernova для HyperNova
 /**
+ * @return string
  * @deprecated
+ * TODO - это вообще-то надо хранить в конфигурации
  */
 function db_user_last_registered_username() {
-  return classSupernova::db_get_user_player_username_last_registered();
+  $user = classSupernova::db_query_select(
+    'SELECT * FROM `{{users}}` WHERE `user_as_ally` IS NULL ORDER BY `id` DESC',
+    true
+  );
+  _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user);
+
+  return isset($user['username']) ? $user['username'] : '';
 }
 
 function db_user_count($online = false) {
   global $config;
 
-  $result = doquery('SELECT COUNT(id) AS user_count FROM {{users}} WHERE user_as_ally IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - $config->game_users_online_timeout) : ''), true);
+  $result = doquery('SELECT COUNT(`id`) AS user_count FROM `{{users}}` WHERE `user_as_ally` IS NULL' . ($online ? ' AND onlinetime > ' . (SN_TIME_NOW - $config->game_users_online_timeout) : ''), true);
   return isset($result['user_count']) ? $result['user_count'] : 0;
 }
 
@@ -123,13 +179,13 @@ function db_user_list_online_sorted($TypeSort) {
   return doquery(
     "SELECT `id` AS `ID`, `username` AS `NAME`, `ally_name` AS `ALLY`, `total_points` AS `STAT_POINTS`,
       `onlinetime` AS `ACTIVITY`
-    FROM {{users}}
+    FROM `{{users}}`
     WHERE `onlinetime` >= ". (SN_TIME_NOW - $config->game_users_online_timeout) ." ORDER BY user_as_ally, `". $TypeSort ."` ASC;");
 }
 
 
 function db_user_list_admin_multiaccounts() {
-  return doquery("SELECT COUNT(*) as ip_count, user_lastip FROM {{users}} WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
+  return doquery("SELECT COUNT(*) as ip_count, `user_lastip` FROM `{{users}}` WHERE user_as_ally IS NULL GROUP BY user_lastip HAVING COUNT(*) > 1;");
 }
 
 

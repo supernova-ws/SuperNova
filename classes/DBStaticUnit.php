@@ -11,12 +11,22 @@ class DBStaticUnit {
   }
 
   public static function db_unit_by_id($unit_id, $for_update = false, $fields = '*') {
-    return classSupernova::db_get_unit_by_id($unit_id, $for_update, $fields);
+    $unit = classSupernova::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
+    if (is_array($unit)) {
+      _SnCacheInternal::unit_linkLocatorToData($unit, $unit_id);
+    }
+
+    return $unit;
   }
 
   public static function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
     // apply time restrictions ????
-    return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid);
+    classSupernova::db_get_unit_list_by_location($user_id, $location_type, $location_id);
+
+    return
+      !$unit_snid
+        ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
+        : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {

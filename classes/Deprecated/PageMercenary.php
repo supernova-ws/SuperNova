@@ -96,7 +96,7 @@ class PageMercenary {
       $nextLevelCostData = eco_get_total_cost($mercenary_id, $mercenary_level + 1);
       $nextLevelCostDM = $nextLevelCostData[BUILD_CREATE][RES_DARK_MATTER] * $this->cost_alliance_multiplier;
 
-      $mercenary_unit = classSupernova::db_get_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
+      $mercenary_unit = DBStaticUnit::db_unit_by_location($user['id'], LOC_USER, $user['id'], $mercenary_id);
       $mercenary_time_start = strtotime($mercenary_unit['unit_time_start']);
       $mercenary_time_finish = strtotime($mercenary_unit['unit_time_finish']);
       $unitIsOutdated = $mercenary_time_finish && $mercenary_time_finish >= SN_TIME_NOW;
