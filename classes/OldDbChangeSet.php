@@ -46,7 +46,7 @@ class OldDbChangeSet {
     $location_id = $unit_location == LOC_USER ? $user['id'] : $planet_id;
     $location_id = $location_id ? $location_id : 'NULL';
 
-    $temp = DBStaticUnit::db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
+    $temp = DBStaticUnit::db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id);
     if(!empty($temp['unit_id']))
     {
       $db_changeset = array(

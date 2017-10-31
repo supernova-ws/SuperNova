@@ -1023,7 +1023,6 @@ REAL Planets: pcs x players
 classSupernova::db_get_unit_list_by_location
 
 db_unit_by_location()
-db_user_by_id()
 db_planet_by_id()
 
 
