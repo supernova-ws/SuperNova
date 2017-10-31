@@ -107,7 +107,7 @@ try
   }
   elseif($new_friend_name = sys_get_param_str_unsafe('request_user_name'))
   {
-    $new_friend_row = db_user_by_username($new_friend_name, true, '`id`, `username`');
+    $new_friend_row = db_user_by_username($new_friend_name);
     $new_friend_name = db_escape($new_friend_name);
   }
 

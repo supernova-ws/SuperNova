@@ -42,7 +42,7 @@ if($info_action)
         }
         if(!is_array($user_info))
         {
-          $user_info = db_user_by_username($user_info_name_unsafe, true, '`id`, `username`', true, true);
+          $user_info = db_user_by_username($user_info_name_unsafe, true);
         }
         if(!is_array($user_info))
         {

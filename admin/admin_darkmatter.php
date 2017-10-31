@@ -43,7 +43,7 @@ function admin_dark_matter_model($lang, $user) {
     throw new ExceptionSnLocalized('adm_dm_no_dest', ERR_ERROR);
   }
 
-  $row = dbPlayerByIdOrName($playerIdOrName_unsafe, false, 'id, username');
+  $row = dbPlayerByIdOrName($playerIdOrName_unsafe);
   if (empty($row['id'])) {
     throw new ExceptionSnLocalized('adm_dm_user_none', ERR_ERROR, null, array($playerIdOrName_unsafe));
   }

@@ -57,7 +57,7 @@ function db_get_user_by_where($where_safe) {
 /**
  * @deprecated
  */
-function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
+function db_user_by_username($username_unsafe, $like = false) {
   if (!($username_unsafe = trim($username_unsafe))) {
     return null;
   }
@@ -78,10 +78,10 @@ function db_user_by_username($username_unsafe, $for_update = false, $fields = '*
  * @return array|false
  * @deprecated
  */
-function dbPlayerByIdOrName($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
-  $row = db_user_by_id($username_unsafe, $for_update, $fields, $player);
+function dbPlayerByIdOrName($username_unsafe, $player = null, $like = false) {
+  $row = db_user_by_id($username_unsafe, false, '*', $player);
   if (empty($row['id'])) {
-    $row = db_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
+    $row = db_user_by_username($username_unsafe, $like);
   }
 
   return !is_array($row) || empty($row['id']) ? false : $row;

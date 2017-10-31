@@ -57,7 +57,7 @@ function admin_meta_matter_model($lang, $user, $accountIdOrName_unsafe, $playerI
       throw new ExceptionSnLocalized('adm_mm_err_account_not_found', ERR_ERROR);
     }
   } elseif (!empty($playerIdOrName_unsafe)) {
-    $row = dbPlayerByIdOrName($playerIdOrName_unsafe, false, 'id, username');
+    $row = dbPlayerByIdOrName($playerIdOrName_unsafe);
     if (empty($row['id'])) {
       throw new ExceptionSnLocalized('adm_mm_err_player_not_found', ERR_ERROR, null, array($playerIdOrName_unsafe));
     }

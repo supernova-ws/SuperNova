@@ -10,7 +10,7 @@ class DBStaticUnit {
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
 
-  public static function db_unit_by_id($unit_id, $for_update = false, $fields = '*') {
+  public static function db_unit_by_id($unit_id) {
     $unit = classSupernova::db_get_record_by_id(LOC_UNIT, $unit_id);
     if (is_array($unit)) {
       _SnCacheInternal::unit_linkLocatorToData($unit, $unit_id);

@@ -38,7 +38,7 @@ $userToAdd_unsafe = sys_get_param_str_unsafe('addtogroup');
 
 if($userToAdd_unsafe) {
   $userToAdd = db_escape($userToAdd_unsafe);
-  $userToAddID = db_user_by_username($userToAdd_unsafe, false, 'id', true, true);
+  $userToAddID = db_user_by_username($userToAdd_unsafe, true);
   $userToAddID = $userToAddID['id'];
 
   if($fleet['fleet_target_owner'] == $userToAddID) {

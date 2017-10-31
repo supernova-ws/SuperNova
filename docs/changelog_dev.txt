@@ -1022,10 +1022,8 @@ REAL Planets: pcs x players
 - И вообще - вынести из classSupernova все явные обращения к конкретным таблицам/сущностям
 classSupernova::db_get_unit_list_by_location
 
-db_user_by_username()
 db_unit_by_location()
 db_user_by_id()
-db_unit_by_id()
 db_planet_by_id()
 
 
