@@ -47,7 +47,7 @@ class OldDbChangeSet {
     $location_id = $location_id ? $location_id : 'NULL';
 
     $temp = DBStaticUnit::db_unit_by_location($user['id'], $unit_location, $location_id, $unit_id, true, 'unit_id');
-    if($temp['unit_id'])
+    if(!empty($temp['unit_id']))
     {
       $db_changeset = array(
         'action' => SQL_OP_UPDATE,

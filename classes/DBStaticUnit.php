@@ -16,7 +16,7 @@ class DBStaticUnit {
 
   public static function db_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
     // apply time restrictions ????
-    return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid, $for_update, $fields);
+    return classSupernova::db_get_unit_by_location($user_id, $location_type, $location_id, $unit_snid);
   }
 
   public static function db_unit_count_by_user_and_type_and_snid($user_id, $unit_type = 0, $unit_snid = 0) {

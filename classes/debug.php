@@ -145,7 +145,6 @@ class debug {
             (isset($location_data['name']) ? $location_data['name'] : $location_id);
         }
       }
-      $error_backtrace['cSN_queries'] = _SnCacheInternal::$queries;
     }
 
     if($base_dump) {

@@ -18,7 +18,7 @@ function db_user_by_id($user_id_unsafe, $for_update = false, $fields = '*', $pla
  * @deprecated
  */
 function db_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
-  return classSupernova::db_get_user_by_username($username_unsafe, $for_update, $fields, $player, $like);
+  return classSupernova::db_get_user_by_username($username_unsafe, $player, $like);
 }
 /**
  * @param        $username_unsafe
@@ -38,19 +38,7 @@ function dbPlayerByIdOrName($username_unsafe, $for_update = false, $fields = '*'
 
   return !is_array($row) || empty($row['id']) ? false : $row;
 }
-/**
-* @deprecated
-*/
-function db_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
-  return classSupernova::db_get_user_by_email($email_unsafe, $use_both, $for_update, $fields);
-}
 
-/*
-function    db_user_by_account_name($account_name_unsafe, &$result = null) {return sn_function_call(__FUNCTION__, array($account_name_unsafe, &$result));}
-function sn_db_user_by_account_name($account_name_unsafe, &$result = null) {
-  return empty($result) ? $result = db_user_by_account(db_account_by_name($account_name_unsafe)) : $result;
-}
-*/
 /**
  * @deprecated
  */

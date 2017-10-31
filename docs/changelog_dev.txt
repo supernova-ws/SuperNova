@@ -1013,6 +1013,14 @@ REAL Planets: pcs x players
 [*] Ежедневно в рамках обновления статы синхронизировать статус с аккаунта на юзера и начислять медальки
 
 
+Проверить на модулях
+    - db_get_user_by_username
+    - db_get_user_by_where
+    - db_get_record_by_id - количество параметров и сократить
+Избавиться от
+    - _SnCacheInternal::$queries
+
+
 #ctv
 
 

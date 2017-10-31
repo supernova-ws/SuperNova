@@ -254,8 +254,8 @@ class classSupernova {
     }
 
     static::$db_in_transaction = true;
-    _SnCacheInternal::$locator = array();
-    _SnCacheInternal::$queries = array();
+    _SnCacheInternal::cache_locator_unset_all();
+    _SnCacheInternal::cache_queries_unset_all();
 
     //print('<hr/>TRANSACTION START id' . static::$transaction_id . '<br />');
 
@@ -340,7 +340,6 @@ class classSupernova {
    */
   public static function db_get_record_by_id($location_type, $record_id_unsafe, $for_update = false, $fields = '*', $skip_lock = false) {
     $id_field = static::$location_info[$location_type][P_ID];
-    // $record_id = intval(is_array($record_id) && isset($record_id[$id_field]) ? $record_id[$id_field] : $record_id);
     $record_id_safe = idval(is_array($record_id_unsafe) && isset($record_id_unsafe[$id_field]) ? $record_id_unsafe[$id_field] : $record_id_unsafe);
 
     return static::db_get_record_list($location_type, "`{$id_field}` = {$record_id_safe}", true, false);
@@ -498,8 +497,7 @@ class classSupernova {
       return false;
     }
 
-    $location_info = &static::$location_info[$location_type];
-    $table_name = $location_info[P_TABLE_NAME];
+    $table_name = static::$location_info[$location_type][P_TABLE_NAME];
 
     if ($result = static::db_query_delete("DELETE FROM `{{{$table_name}}}` WHERE {$condition}")) {
       if (static::$db->db_affected_rows()) // Обновляем данные только если ряд был затронут
@@ -547,82 +545,17 @@ class classSupernova {
       )) ? $user : false;
   }
 
-  public static function db_get_user_by_username($username_unsafe, $for_update = false, $fields = '*', $player = null, $like = false) {
-    // TODO Проверить, кстати - а везде ли нужно выбирать юзеров или где-то все-таки ищутся Альянсы ?
-    if (!($username_unsafe = trim($username_unsafe))) {
-      return false;
-    }
-
-    $user = null;
-    if (is_array(_SnCacheInternal::$data[LOC_USER])) {
-      foreach (_SnCacheInternal::$data[LOC_USER] as $user_id => $user_data) {
-        if (is_array($user_data) && isset($user_data['username'])) {
-          // проверяем поле
-          // TODO Возможно есть смысл всегда искать по strtolower - но может игрок захочет переименоваться с другим регистром? Проверить!
-          if ((!$like && $user_data['username'] == $username_unsafe) || ($like && strtolower($user_data['username']) == strtolower($username_unsafe))) {
-            // $user_as_ally = intval($user_data['user_as_ally']);
-            $user_as_ally = idval($user_data['user_as_ally']);
-            if ($player === null || ($player === true && !$user_as_ally) || ($player === false && $user_as_ally)) {
-              $user = $user_data;
-              break;
-            }
-          }
-        }
-      }
-    }
-
-    if ($user === null) {
-      // Вытаскиваем запись
-      $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
-
-      $user = static::db_query_select(
-        "SELECT * FROM {{users}} WHERE `username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'",
-        true
-      );
-      _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
-    }
-
-    return $user;
-  }
-
-  // UNUSED
-  public static function db_get_user_by_email($email_unsafe, $use_both = false, $for_update = false, $fields = '*') {
-    if (!($email_unsafe = strtolower(trim($email_unsafe)))) {
-      return false;
-    }
-
-    $user = null;
-    if (is_array(_SnCacheInternal::$data[LOC_USER])) {
-      foreach (_SnCacheInternal::$data[LOC_USER] as $user_id => $user_data) {
-        if (is_array($user_data) && isset($user_data['email_2'])) {
-          // проверяем поле
-          if (strtolower($user_data['email_2']) == $email_unsafe || ($use_both && strtolower($user_data['email']) == $email_unsafe)) {
-            $user = $user_data;
-            break;
-          }
-        }
-      }
-    }
-
-    if ($user === null) {
-      // Вытаскиваем запись
-      $email_safe = db_escape($email_unsafe);
-      $user = static::db_query_select(
-        "SELECT * FROM {{users}} WHERE LOWER(`email_2`) = '{$email_safe}'" . ($use_both ? " OR LOWER(`email`) = '{$email_safe}'" : ''),
-        true
-      );
-
-      _SnCacheInternal::cache_set(LOC_USER, $user['id'], $user); // В кэш-юзер так же заполнять индексы
-    }
-
-    return $user;
-  }
-
+  /**
+   * @param        $where_safe
+   * @param bool   $for_update
+   * @param string $fields
+   *
+   * @return array|null
+   */
   public static function db_get_user_by_where($where_safe, $for_update = false, $fields = '*') {
     $user = null;
-    // TODO переделать на индексы
 
-    if ($user === null && !empty($where_safe)) {
+    if (!empty($where_safe)) {
       // Вытаскиваем запись
       $user = static::db_query_select(
         "SELECT * FROM {{users}} WHERE {$where_safe}",
@@ -636,6 +569,25 @@ class classSupernova {
   }
 
 
+  /**
+   * @param string $username_unsafe
+   * @param null   $player
+   * @param bool   $like
+   *
+   * @return array|null
+   */
+  public static function db_get_user_by_username($username_unsafe, $player = null, $like = false) {
+    if (!($username_unsafe = trim($username_unsafe))) {
+      return null;
+    }
+
+    $username_safe = db_escape($like ? strtolower($username_unsafe) : $username_unsafe); // тут на самом деле strtolower() лишняя, но пусть будет
+
+    $user = static::db_get_user_by_where("`username` " . ($like ? 'LIKE' : '=') . " '{$username_safe}'");
+
+    return $user;
+  }
+
   public static function db_unit_time_restrictions($date = SN_TIME_NOW) {
     $date = is_numeric($date) ? "FROM_UNIXTIME({$date})" : "'{$date}'";
 
@@ -644,44 +596,47 @@ class classSupernova {
     (unit_time_finish IS NULL OR unit_time_finish = '1970-01-01 03:00:00' OR unit_time_finish >= {$date})";
   }
 
-  public static function db_get_unit_by_id($unit_id, $for_update = false, $fields = '*') {
+  public static function db_get_unit_by_id($unit_db_id, $for_update = false, $fields = '*') {
     // TODO запихивать в $data[LOC_LOCATION][$location_type][$location_id]
-    $unit = static::db_get_record_by_id(LOC_UNIT, $unit_id, $for_update, $fields);
+    $unit = static::db_get_record_by_id(LOC_UNIT, $unit_db_id, $for_update, $fields);
     if (is_array($unit)) {
-      _SnCacheInternal::$locator[LOC_UNIT][$unit['unit_location_type']][$unit['unit_location_id']][$unit['unit_snid']] = &_SnCacheInternal::$data[LOC_UNIT][$unit_id];
+      _SnCacheInternal::unit_linkLocatorToData($unit, $unit_db_id);
     }
 
     return $unit;
   }
 
+  /**
+   * @param int $user_id
+   * @param     $location_type
+   * @param     $location_id
+   *
+   * @return array|false
+   */
   public static function db_get_unit_list_by_location($user_id = 0, $location_type, $location_id) {
     if (!($location_type = idval($location_type)) || !($location_id = idval($location_id))) {
       return false;
     }
 
-    if (!isset(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id])) {
+    if (!_SnCacheInternal::unit_locatorIsSet($location_type, $location_id)) {
       $got_data = static::db_get_record_list(LOC_UNIT, "unit_location_type = {$location_type} AND unit_location_id = {$location_id} AND " . static::db_unit_time_restrictions());
       if (is_array($got_data)) {
-        foreach ($got_data as $unit_id => $unit_data) {
-          _SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id][$unit_data['unit_snid']] = &_SnCacheInternal::$data[LOC_UNIT][$unit_id];
+        foreach ($got_data as $unit_db_id => $unitRow) {
+          _SnCacheInternal::unit_linkLocatorToData($unitRow, $unit_db_id);
         }
       }
     }
 
-    $result = false;
-    if (is_array(_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id])) {
-      foreach (_SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id] as $key => $value) {
-        $result[$key] = $value;
-      }
-    }
-
-    return $result;
+    return _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id);
   }
 
   public static function db_get_unit_by_location($user_id = 0, $location_type, $location_id, $unit_snid = 0, $for_update = false, $fields = '*') {
     static::db_get_unit_list_by_location($user_id, $location_type, $location_id);
 
-    return $unit_snid ? _SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id][$unit_snid] : _SnCacheInternal::$locator[LOC_UNIT][$location_type][$location_id];
+    return
+      !$unit_snid
+        ? _SnCacheInternal::unit_locatorGetAllFromLocation($location_type, $location_id)
+        : _SnCacheInternal::unit_locatorGetUnitFromLocation($location_type, $location_id, $unit_snid);
   }
 
 
