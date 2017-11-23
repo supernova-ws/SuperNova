@@ -1036,6 +1036,25 @@ db_planet_by_id()
     - Придумать что-то другое, что бы гарантировать удаление, даже если луна не сканируется
 
 
+Такой конфиг ставит стату раком
+var_stat_update	2017-11-11 04:08:30
+var_stat_update_admin_forced	2017-11-04 14:31:13
+var_stat_update_end	1510453157
+var_stat_update_msg	Update in progress. Step 14/14: updating Allys current rank and points.
+
+
+var_scheduler_active
+var_stats_lastUpdated	0
+var_stats_schedule	d@04:00:00
+var_stat_update	2017-11-11 04:08:50
+var_stat_update_admin_forced	2017-11-04 14:36:52
+var_stat_update_end	1510452767
+var_stat_update_msg	Update in progress. Step 14/14: updating Allys current rank and points.
+Memory usage: 3,670,016
+Previous operation time: 0.01690
+var_stat_update_next	2017-11-12 04:00:00
+
+
 #ctv
 
 
