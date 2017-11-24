@@ -330,6 +330,12 @@ switch ($new_version) {
       "ADD COLUMN `hits` int unsigned NOT NULL DEFAULT 1 AFTER `visit_length`",
     ], empty($update_tables['counter']['hits']));
 
+    // 2017-11-24 05:07:29 43a7.16
+    upd_alter_table('festival_highspot', [
+      "ADD COLUMN `params` text NOT NULL DEFAULT '' COMMENT 'Параметры хайспота в виде JSON-encoded' AFTER `name`",
+    ], empty($update_tables['festival_highspot']['params']));
+
+
     // #ctv
     upd_do_query('COMMIT;', true);
 

@@ -5,13 +5,13 @@ class sn_module {
    * SN version in which module was committed. Can be treated as version in which module guaranteed to work
    * @var string $versionCommitted
    */
-  public $versionCommitted = '#43a0.0#';
+  public $versionCommitted = '#43a7.16#';
 
   public $manifest = array(
     'package' => 'core',
     'name' => 'sn_module',
     'version' => '1c0',
-    'copyright' => 'Project "SuperNova.WS" #43a0.0# copyright © 2009-2017 Gorlum',
+    'copyright' => 'Project "SuperNova.WS" #43a7.16# copyright © 2009-2017 Gorlum',
 
 //    'require' => null,
     'root_relative' => '',
@@ -53,9 +53,32 @@ class sn_module {
     'page' => array(),
   );
 
+  /**
+   * New way to add functions instead of manifest['functions']
+   *
+   * [
+   *   (string)$functionName => [
+   *     (callable)$callable,
+   *     (string)'methodName',                             // Local method name aka $this->methodName
+   *     (callable array)[$this|objectName, 'methodName'], // Callable array
+   *   ],
+   * ]
+   *
+   * @var array $functions
+   */
+  protected $functions = [];
+
   protected $config = array();
 
   protected $module_full_class_path = __FILE__;
+
+  /**
+   * @param string $functionName
+   * @param callable $callable
+   */
+  public function addFunctionHook($functionName, $callable) {
+    $this->functions[$functionName][] = $callable;
+  }
 
   /**
    * Динамическое назначение переменных
@@ -185,6 +208,13 @@ class sn_module {
     // Overriding function if any
     global $functions;
     sn_sys_handler_add($functions, $this->manifest['functions'], $this);
+
+    foreach($this->functions as $functionName => $callableList) {
+      !is_array($callableList) ? $callableList = [$callableList] : false;
+      foreach($callableList as $callable) {
+        sys_handler_add_one($functions, $functionName, $callable, static::class, '');
+      }
+    }
 
     // Patching game menu - if any
     global $sn_menu_extra, $sn_menu_admin_extra;

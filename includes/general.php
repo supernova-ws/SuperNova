@@ -821,39 +821,52 @@ function sn_sys_sector_buy($redirect = 'overview.php') {
 function sn_sys_handler_add(&$functions, $handler_list, $class_module_name = '', $sub_type = '') {
   if (isset($handler_list) && is_array($handler_list) && !empty($handler_list)) {
     foreach ($handler_list as $function_name => $function_data) {
-      if (is_string($function_data)) {
-        $override_with = &$function_data;
-      } elseif (isset($function_data['callable'])) {
-        $override_with = &$function_data['callable'];
-      }
-
-      $overwrite = $override_with[0] == '*';
-      if ($overwrite) {
-        $override_with = substr($override_with, 1);
-      }
-
-      if (($point_position = strpos($override_with, '.')) === false && $class_module_name) {
-        $override_with = array($class_module_name, $override_with);
-      } elseif ($point_position == 0) {
-        $override_with = substr($override_with, 1);
-      } elseif ($point_position > 0) {
-        $override_with = array(substr($override_with, 0, $point_position), substr($override_with, $point_position + 1));
-      }
-
-      if ($overwrite) {
-        $functions[$function_name] = array();
-      } elseif (!isset($functions[$function_name])) {
-        $functions[$function_name] = array();
-        $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
-        //if(is_callable($sn_function_name))
-        {
-          $functions[$function_name][] = $sn_function_name;
-        }
-      }
-
-      $functions[$function_name][] = $function_data;
+      sys_handler_add_one($functions, $function_name, $function_data, $class_module_name, $sub_type);
     }
   }
+}
+
+/**
+ * Adding one handler for specific function name
+ *
+ * @param callable[]   $functions
+ * @param string       $function_name
+ * @param string|array $function_data
+ * @param string       $class_module_name
+ * @param string       $sub_type
+ */
+function sys_handler_add_one(&$functions, $function_name, $function_data, $class_module_name, $sub_type) {
+  if(is_string($function_data)) {
+    $override_with = &$function_data;
+  } elseif(isset($function_data['callable'])) {
+    $override_with = &$function_data['callable'];
+  }
+
+  $overwrite = $override_with[0] == '*';
+  if($overwrite) {
+    $override_with = substr($override_with, 1);
+  }
+
+  if(($point_position = strpos($override_with, '.')) === false && $class_module_name) {
+    $override_with = array($class_module_name, $override_with);
+  } elseif($point_position == 0) {
+    $override_with = substr($override_with, 1);
+  } elseif($point_position > 0) {
+    $override_with = array(substr($override_with, 0, $point_position), substr($override_with, $point_position + 1));
+  }
+
+  if($overwrite) {
+    $functions[$function_name] = array();
+  } elseif(!isset($functions[$function_name])) {
+    $functions[$function_name] = array();
+    $sn_function_name = 'sn_' . $function_name . ($sub_type ? '_' . $sub_type : '');
+    //if(is_callable($sn_function_name))
+    {
+      $functions[$function_name][] = $sn_function_name;
+    }
+  }
+
+  $functions[$function_name][] = $function_data;
 }
 
 // TODO - поменять название
