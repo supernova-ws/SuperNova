@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a7.16');
+define('SN_VERSION', '43a8.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1728,3 +1728,6 @@ define('STRING_NEED_ESCAPING', false);
 define('STRING_IS_JSON_ENCODED', true);
 
 define('GROUP_MODIFIERS_NAME', 'modifiers');
+
+define('PAGE_SIZE_MINIMUM', 5);
+define('PAGE_SIZE_DEFAULT', 20);

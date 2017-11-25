@@ -6,24 +6,15 @@
 namespace DBAL;
 
 use \mysqli_result;
-use Interfaces\ICountableIterator;
 
-class DbMysqliResultIterator implements ICountableIterator {
-  /**
-   * @var mysqli_result|false $mysqli_result
-   */
-  private $mysqli_result;
-
-  /**
-   * @var int|float|null
-   */
-  private $counter = null;
-  /**
-   * @var array|null $currentRow
-   */
-  private $currentRow = null;
-
-
+/**
+ * Class DbMysqliResultIterator
+ *
+ * Simplest implementation of DbAbstractResultIterator - getting result from constructor
+ *
+ * @package DBAL
+ */
+class DbMysqliResultIterator extends DbAbstractResultIterator {
   /**
    * DbMysqliResultIterator constructor.
    *
@@ -31,36 +22,8 @@ class DbMysqliResultIterator implements ICountableIterator {
    */
   public function __construct($mysqli_result) {
     $this->mysqli_result = $mysqli_result;
+
     $this->rewind();
-  }
-
-  public function rewind() {
-    if ($this->mysqli_result instanceof mysqli_result) {
-      $this->mysqli_result->data_seek(0);
-      $this->next();
-    }
-    $this->counter = $this->valid() ? 0 : null;
-  }
-
-  public function valid() {
-    return $this->currentRow !== null;
-  }
-
-  public function next() {
-    $this->currentRow = $this->mysqli_result instanceof mysqli_result ? $this->mysqli_result->fetch_assoc() : null;
-    $this->counter++;
-  }
-
-  public function key() {
-    return $this->counter;
-  }
-
-  public function current() {
-    return $this->currentRow;
-  }
-
-  public function count() {
-    return $this->mysqli_result instanceof mysqli_result ? $this->mysqli_result->num_rows : 0;
   }
 
 }
