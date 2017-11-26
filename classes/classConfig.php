@@ -56,6 +56,8 @@
  * @property int        $menu_server_logo             => MENU_SERVER_LOGO_DEFAULT
  * @property int        $menu_server_logo_disabled    => 0
  *
+ * @property int|float  $player_metamatter_immortal   => 100000, // MM amount to reward account with Immortal status
+ *
  * @property int        $quest_total                  => 0, // Total number of quests
  *
  * @property string     $server_updater_check_auto    => 0, // Server autocheck version
@@ -240,7 +242,7 @@ class classConfig extends classPersistent {
     'player_vacation_time'    => PERIOD_WEEK, //
     'player_vacation_timeout' => PERIOD_WEEK, //
 
-    'player_metamatter_immortal' => 100000,
+    'player_metamatter_immortal' => 100000, // MM amount to reward account with Immortal status
 
     // Quests
     'quest_total'                => 0, // Total number of quests

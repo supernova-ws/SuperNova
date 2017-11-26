@@ -342,7 +342,7 @@ switch ($new_version) {
         FROM `{{account}}` AS acc
           JOIN `{{account_translate}}` AS trans ON trans.provider_id = 1 AND trans.provider_account_id = acc.account_id
           LEFT JOIN `{{player_award}}` AS award ON award.award_id = 2301 AND award.player_id = trans.user_id
-        WHERE acc.account_metamatter_total >= 100000 AND award.id IS NULL;"
+        WHERE acc.account_metamatter_total >= {$config->player_metamatter_immortal} AND award.id IS NULL;"
     );
 
     // #ctv
