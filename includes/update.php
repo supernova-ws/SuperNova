@@ -335,6 +335,15 @@ switch ($new_version) {
       "ADD COLUMN `params` text NOT NULL DEFAULT '' COMMENT 'Параметры хайспота в виде JSON-encoded' AFTER `name`",
     ], empty($update_tables['festival_highspot']['params']));
 
+    // 2017-11-26 06:40:25 43a8.3
+    upd_do_query(
+      "INSERT INTO `{{player_award}}` (award_type_id, award_id, player_id, awarded)
+        SELECT 2300, 2301, trans.user_id, acc.account_immortal
+        FROM `{{account}}` AS acc
+          JOIN `{{account_translate}}` AS trans ON trans.provider_id = 1 AND trans.provider_account_id = acc.account_id
+          LEFT JOIN `{{player_award}}` AS award ON award.award_id = 2301 AND award.player_id = trans.user_id
+        WHERE acc.account_metamatter_total >= 100000 AND award.id IS NULL;"
+    );
 
     // #ctv
     upd_do_query('COMMIT;', true);

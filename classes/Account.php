@@ -394,7 +394,7 @@ class Account {
    * @return array|bool|int|mysqli_result|null|string
    */
   public function metamatter_change($change_type, $metamatter, $comment = false, $already_changed = false) {
-    global $debug, $mm_change_legit, $config;
+    global $debug, $mm_change_legit, $config, $sn_module;
 
     if(!$this->is_exists || !($metamatter = round(floatval($metamatter)))) {
       $debug->error('Ошибка при попытке манипуляции с ММ');
@@ -415,13 +415,15 @@ class Account {
         "UPDATE {{account}}
         SET
           `account_metamatter` = `account_metamatter` + '{$metamatter}'" .
-          ($metamatter_total_delta ? ", `account_immortal` = IF(`account_metamatter_total` + '{$metamatter_total_delta}' >= {$config->player_metamatter_immortal}, NOW(), `account_immortal`), `account_metamatter_total` = `account_metamatter_total` + '{$metamatter_total_delta}'" : '') .
+          ($metamatter_total_delta ? ", `account_immortal` = IF(`account_metamatter_total` + '{$metamatter_total_delta}' >= {$config->player_metamatter_immortal} AND `account_immortal` IS NULL, NOW(), `account_immortal`), `account_metamatter_total` = `account_metamatter_total` + '{$metamatter_total_delta}'" : '') .
         " WHERE `account_id` = {$account_id_safe}"
       );
       if(!$result) {
         $debug->error("Error adjusting Metamatter for player ID {$this->account_id} (Player Not Found?) with {$metamatter}. Reason: {$comment}", 'Metamatter Change', 402);
       }
       $result = classSupernova::$db->db_affected_rows();
+
+      $this->awardImmortal($metamatter, $config, $sn_module);
     }
 
     if(empty(core_auth::$user['id'])) {
@@ -526,6 +528,27 @@ class Account {
 
   protected function password_encode_for_cookie($password) {
     return md5("{$password}--" . $this->secret_word);
+  }
+
+  /**
+   * @param int|float      $metamatter
+   * @param classConfig    $config
+   * @param player_award[] $sn_module
+   */
+  protected function awardImmortal($metamatter, $config, $sn_module) {
+    if ($this->account_metamatter + $metamatter >= $config->player_metamatter_immortal && is_object($sn_module['player_award'])) {
+      $account_translation = PlayerToAccountTranslate::db_translate_get_users_from_account_list(ACCOUNT_PROVIDER_LOCAL, $this->account_id);
+      if (!empty($account_translation)) {
+        reset($account_translation);
+        $thisUserId = key($account_translation);
+        if ($thisUserId) {
+          $thisUser = ['id' => $thisUserId];
+          if (!mrc_get_level($thisUser, [], UNIT_AWARD_MEMORY_IMMORTAL, true)) {
+            $sn_module['player_award']->award($thisUserId, UNIT_AWARD_MEMORY, UNIT_AWARD_MEMORY_IMMORTAL);
+          }
+        }
+      }
+    }
   }
 
 }
