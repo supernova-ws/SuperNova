@@ -20,6 +20,8 @@ class PagingRenderer {
    */
   protected $pager;
 
+  protected $delta = PAGING_SIZE_MAX_DELTA;
+
   protected $result = [];
 
   protected $current;
@@ -30,7 +32,18 @@ class PagingRenderer {
 
   public function __construct(DbSqlPaging $pager, $rootUrl = '') {
     $this->pager = $pager;
-    $this->rootUrl = URLHelper::addParam($rootUrl, self::KEYWORD . '=');
+    $this->rootUrl = URLHelper::addParam($rootUrl, self::KEYWORD);
+  }
+
+  /**
+   * @param int $delta
+   *
+   * @return $this
+   */
+  public function setDelta($delta) {
+    $this->delta = $delta;
+
+    return $this;
   }
 
   protected function href($pageNum, $link, $style = '', $href = true, $active = true) {
@@ -46,11 +59,11 @@ class PagingRenderer {
   protected function addNumbers() {
     $this->from = max(
       1,
-      $this->current - PAGING_SIZE_MAX_DELTA - max(0, $this->current + PAGING_SIZE_MAX_DELTA - $this->total)
+      $this->current - $this->delta - max(0, $this->current + $this->delta - $this->total)
     );
     $this->to = min(
       $this->total,
-      $this->current + PAGING_SIZE_MAX_DELTA - min(0, $this->current - PAGING_SIZE_MAX_DELTA - 1)
+      $this->current + $this->delta - min(0, $this->current - $this->delta - 1)
     );
 
     for ($i = $this->from; $i <= $this->to; $i++) {

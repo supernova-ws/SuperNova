@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a8.1');
+define('SN_VERSION', '43a8.2');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -1733,4 +1733,5 @@ define('GROUP_MODIFIERS_NAME', 'modifiers');
 define('PAGING_PAGE_SIZE_MINIMUM', 5); // Minimum page size
 define('PAGING_PAGE_SIZE_DEFAULT', 10); // Default page size
 define('PAGING_PAGE_SIZE_DEFAULT_MESSAGES', 10); // Default page size for messaging
+define('PAGING_PAGE_SIZE_DEFAULT_PAYMENTS', 25); // Default page size for payments
 define('PAGING_SIZE_MAX_DELTA', 3); // Maximum delta from current page to write all pages numbers when paging

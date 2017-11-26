@@ -3,7 +3,7 @@
 /**
  * adm_payment.php
  *
- * @version #42a27.15#
+ * @version #43a8.2#
  * @copyright 2013-2015 by Gorlum for http://supernova.ws
 */
 
@@ -46,14 +46,30 @@ $flt_module = sys_get_param_str('flt_module');
 $flt_status = sys_get_param_int('flt_status', -1);
 $flt_test = sys_get_param_int('flt_test', 0);
 
-$query = doquery("SELECT * FROM `{{payment}}` WHERE 1 " .
+//var_dump($_SERVER);
+//var_dump(SN_ROOT_RELATIVE);
+//var_dump(SN_ROOT_VIRTUAL);
+//die();
+
+//$query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
+
+
+//$query = classSupernova::$gc->db->selectIterator(
+$query = new \DBAL\DbSqlPaging(
+  "SELECT * FROM `{{payment}}` WHERE 1 " .
 ($flt_payer > 0 ? "AND payment_user_id = {$flt_payer} " : '') .
 ($flt_status >= 0 ? "AND payment_status = {$flt_status} " : '') .
 ($flt_test >= 0 ? "AND payment_test = {$flt_test} " : '') .
 ($flt_module ? "AND payment_module_name = '{$flt_module}' " : '') .
-" ORDER BY payment_id desc");
+" ORDER BY payment_id desc", PAGING_PAGE_SIZE_DEFAULT_PAYMENTS, sys_get_param_int(\Helpers\PagingRenderer::KEYWORD));
 
-while($row = db_fetch($query)) {
+$pager = new \Helpers\PagingRenderer($query, 'admin/adm_payment.php?' . $_SERVER['QUERY_STRING']);
+$pager->setDelta(10);
+//var_dump($pager);
+
+
+//while($row = db_fetch($query)) {
+foreach($query as $row) {
   $row2 = array();
   foreach($row as $key => $value) {
     $row2[strtoupper($key)] = $value;
@@ -66,6 +82,8 @@ $template->assign_vars(array(
   'FLT_STATUS' => $flt_status,
   'FLT_TEST' => $flt_test,
   'FLT_MODULE' => $flt_module,
+
+  'PAGER_PAYMENTS' => $pager->render(),
 ));
 
 display($template, $lang['adm_pay']);

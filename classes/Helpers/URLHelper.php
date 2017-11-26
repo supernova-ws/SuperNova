@@ -8,8 +8,24 @@ namespace Helpers;
 
 class URLHelper {
 
-  public static function addParam($url, $param) {
-    return $url . (strpos($url, '?') === false ? '?' : '&') . $param;
+  public static function addParam($url, $param, $value = '') {
+    list($urlItself, $strParams) = explode('?', $url);
+
+    $paramList = explode('&', $strParams);
+    foreach ($paramList as $key => $val) {
+      list($thisName, $thisParam) = explode('=', $val);
+      if ($thisName == $param) {
+        unset($paramList[$key]);
+      }
+    }
+
+    if(!empty($paramList)) {
+      $strParams = implode('&', $paramList);
+    }
+
+    $url = $urlItself . '?' . $strParams;
+
+    return $url . (strpos($url, '?') === false ? '?' : '&') . $param . '=' . $value;
   }
 
 }

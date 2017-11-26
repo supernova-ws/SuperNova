@@ -1,8 +1,8 @@
-<!-- * @version #40a2.2# -->
+<!-- * @version #43a8.2# -->
 
 <h2>{PAGE_HEADER}</h2>
 
-<form method="POST" name="filter">
+<form method="GET" name="filter">
 <table>
   <tr>
     <th class="c_c" colspan="3">
@@ -50,6 +50,14 @@
     </th>
   </tr>
 
+  <!-- IF .payment && PAGER_PAYMENTS -->
+  <tr class="c_c">
+    <td colspan="13" class="subheader">
+      {PAGER_PAYMENTS}
+    </td>
+  </tr>
+  <!-- ENDIF -->
+
   <tr>
     <th class="c_c">{L_adm_pay_th_payer_id}</th>
     <th class="c_c">{L_adm_pay_th_payer_name}</th>
@@ -96,5 +104,14 @@
     <td>{payment.PAYMENT_EXTERNAL_CURRENCY}</TD>
   </tr>
   <!-- END payment -->
+
+  <!-- IF .payment && PAGER_PAYMENTS -->
+  <tr class="c_c">
+    <td colspan="13" class="subheader">
+      {PAGER_PAYMENTS}
+    </td>
+  </tr>
+  <!-- ENDIF -->
+
 </table>
 </form>
