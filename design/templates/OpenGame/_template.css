@@ -3671,3 +3671,34 @@ td.error_message {
 .admin_message_box .cell, .admin_message_box .header, .admin_message_box .subheader {
   padding: 0.5em;
 }
+
+.paging {
+  font-size: 125%;
+}
+
+.paging > * {
+  /*border: 1px solid red;*/
+}
+
+.paging .first-last {
+  /*color: green;*/
+}
+.paging .prev-next {
+  /*color: red;*/
+}
+.paging .ellipsis {
+  /*color: orange;*/
+}
+.paging .before-after {
+  /*color: darkblue;*/
+}
+.paging .inactive {
+  color: darkgrey;
+}
+.paging .ellipsis {
+  color: grey;
+}
+.paging .current {
+  color: lightblue;
+  font-size: 125%;
+}

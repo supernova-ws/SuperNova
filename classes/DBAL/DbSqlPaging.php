@@ -19,7 +19,7 @@ use mysqli_result;
 class DbSqlPaging extends DbAbstractResultIterator {
   protected $db = null;
   protected $sqlQuery;
-  protected $pageSize = PAGE_SIZE_DEFAULT;
+  protected $pageSize = PAGING_PAGE_SIZE_DEFAULT;
   protected $currentPage = 1;
 
   /**
@@ -30,9 +30,9 @@ class DbSqlPaging extends DbAbstractResultIterator {
    * @param int            $currentPage
    * @param \db_mysql|null $db
    */
-  public function __construct($sqlQuery, $pageSize = PAGE_SIZE_DEFAULT, $currentPage = 1, $db = null) {
+  public function __construct($sqlQuery, $pageSize = PAGING_PAGE_SIZE_DEFAULT, $currentPage = 1, $db = null) {
     $this->sqlQuery = $sqlQuery;
-    $this->pageSize = max(intval($pageSize), PAGE_SIZE_MINIMUM);
+    $this->pageSize = max(intval($pageSize), PAGING_PAGE_SIZE_MINIMUM);
     $this->currentPage = max(intval($currentPage), 1);
 
     $this->db = isset($db) ? $db : \classSupernova::$gc->db;

@@ -81,18 +81,20 @@ function db_buddy_list_by_user($user_id)
 }
 
 
-
-
+/**
+ * @param $user_id
+ *
+ * @return \DBAL\DbMysqliResultIterator|EmptyIterator
+ */
 function db_message_list_outbox_by_user_id($user_id)
 {
-  // return ($user_id = intval($user_id))
   return ($user_id = idval($user_id))
-    ? doquery("SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
+    ? new \DBAL\DbSqlPaging("SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
           {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
        FROM
          {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$user_id}' AND `message_type` = 1
-       ORDER BY `message_time` DESC;")
-    : false;
+       ORDER BY `message_time` DESC;", PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD))
+    : new EmptyIterator();
 }
 
 
@@ -199,7 +201,7 @@ function db_stat_list_statistic($who, $is_common_stat, $Rank, $start, $source = 
 
 function db_stat_list_delete_ally_player()
 {
-  return doquery('DELETE s FROM {{statpoints}} AS s JOIN {{users}} AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL');
+  return doquery('DELETE s FROM `{{statpoints}}` AS s JOIN `{{users}}` AS u ON u.id = s.id_owner WHERE s.id_ally IS NULL AND u.user_as_ally IS NOT NULL');
 }
 
 

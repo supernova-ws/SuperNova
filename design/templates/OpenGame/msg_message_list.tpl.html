@@ -12,34 +12,36 @@
   <input type="hidden" name="message_class" value="{MESSAGE_CLASS}">
 
   <table width="519">
+    <!-- IF MESSAGE_CLASS != -1 -->
     <tr>
-      <!-- IF MESSAGE_CLASS != -1 -->
       <th colspan="4">
         {L_sys_delete}
         <select onchange="document.getElementById('message_range').options[this.selectedIndex].selected='true'" id="message_range2" name="message_range2">
           <option>{L_msg_mark_select}</option>
           <option value="checked">{L_msg_mark_checked}</option>
-          <option value="unchecked">{L_msg_mark_unchecked}</option>
-          <option value="class">{L_msg_mark_class}</option>
-          <option value="all">{L_msg_mark_all}</option>
+          <!--<option value="unchecked">{L_msg_mark_unchecked}</option>-->
+          <option value="class" class="warning">{L_msg_mark_class} "{MESSAGE_CLASS_TEXT}"</option>
+          <option value="all" class="error">{L_msg_mark_all}</option>
         </select>
         <input name="msg_delete" value="{L_sys_delete}" type="submit">
       </th>
     </tr>
-<!--
-    <tr>
-      <th style="color: rgb(242, 204, 74);" colspan="4">
-        <input name="category" value="{MESSAGE_CLASS}" type="hidden">
-        <input onchange="document.getElementById('fullreports').checked=this.checked" id="fullreports2" name="fullreports2" type="checkbox">{L_mess_partialreport}
-      </th>
+    <!-- ENDIF -->
+
+    <!-- IF .messages && PAGER_MESSAGES -->
+    <tr class="c_c">
+      <td colspan="4" class="subheader">
+        {PAGER_MESSAGES}
+      </td>
     </tr>
--->  
+    <!-- ENDIF -->
 
     <tr>
+      <!-- IF MESSAGE_CLASS != -1 -->
       <th class="c_c" width="20">
         <input type="checkbox" onchange="jQuery('.msg_checkbox').attr('checked', jQuery(this).is(':checked'));">
       </th>
-    <!-- ENDIF -->
+      <!-- ENDIF -->
       <th class="c_c" width="120">{L_msg_date}</th>
       <th class="c_c">
         <!-- IF MESSAGE_CLASS == -1 -->
@@ -88,23 +90,24 @@
     </tr>
   <!-- END messages -->
 
-  <!-- IF MESSAGE_CLASS != -1 -->
-<!--
-    <tr>
-      <th style="color: rgb(242, 204, 74);" colspan="4">
-        <input onchange="document.getElementById('fullreports2').checked=this.checked" id="fullreports" name="fullreports" type="checkbox">{L_mess_partialreport}
-      </th>
+    <!-- IF .messages && PAGER_MESSAGES -->
+    <tr class="c_c">
+      <td colspan="4" class="subheader">
+        {PAGER_MESSAGES}
+      </td>
     </tr>
--->
+    <!-- ENDIF -->
+
+  <!-- IF MESSAGE_CLASS != -1 -->
     <tr>
       <th colspan="4">
         {L_sys_delete}
         <select onchange="document.getElementById('message_range2').options[this.selectedIndex].selected='true'" id="message_range" name="message_range">
           <option>{L_msg_mark_select}</option>
           <option value="checked">{L_msg_mark_checked}</option>
-          <option value="unchecked">{L_msg_mark_unchecked}</option>
-          <option value="class">{L_msg_mark_class}</option>
-          <option value="all">{L_msg_mark_all}</option>
+          <!--<option value="unchecked">{L_msg_mark_unchecked}</option>-->
+          <option value="class" class="warning">{L_msg_mark_class} "{MESSAGE_CLASS_TEXT}"</option>
+          <option value="all" class="error">{L_msg_mark_all}</option>
         </select>
         <input name="msg_delete" value="{L_sys_delete}" type="submit">
       </th>

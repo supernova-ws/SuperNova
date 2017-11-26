@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 40a17.0
+* @version 43a8.1
 *
 */
 
@@ -37,7 +37,7 @@ $a_lang_array = array(
   'msg_mark_select' => '-- SELECT RANGE --',
   'msg_mark_checked' => 'Marked messages',
   'msg_mark_unchecked' => 'Unmarked messages',
-  'msg_mark_class' => 'All messages in current category',
+  'msg_mark_class' => 'All messages in category',
   'msg_mark_all' => 'ALL PERSONAL MESSAGES',
   'msg_select_all' => 'Select All',
   'msg_date' => 'Date',

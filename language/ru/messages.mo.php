@@ -16,7 +16,7 @@
 *
 * @package language
 * @system [Russian]
-* @version 40a17.0
+* @version 43a8.1
 *
 */
 
@@ -34,7 +34,7 @@ $a_lang_array = (array(
   'msg_mark_select' => '-- ВЫБЕРИТЕ ДИАПАЗОН --',
   'msg_mark_checked' => 'Отмеченные сообщения',
   'msg_mark_unchecked' => 'Неотмеченные сообщения',
-  'msg_mark_class' => 'Все сообщения данной категории',
+  'msg_mark_class' => 'Все сообщения категории',
   'msg_mark_all' => 'ВСЕ личные сообщения',
   'msg_select_all' => 'Выбрать все',
   'msg_date' => 'Дата',

@@ -8,7 +8,9 @@ namespace Deprecated;
 use \classSupernova;
 use \classLocale;
 use \DBAL\DbQuery;
+use DBAL\DbSqlPaging;
 use Fleet\MissionEspionageReport;
+use Helpers\PagingRenderer;
 use Pm\DecodeEspionage;
 use \template;
 
@@ -37,13 +39,13 @@ class PageMessage extends PageDeprecated {
   const MESSAGES_MODE_MESSAGES = 'show';
 
   const MESSAGES_DELETE_RANGE_NONE = '';
-  const MESSAGES_DELETE_RANGE_UNCHECKED = 'unchecked';
+//  const MESSAGES_DELETE_RANGE_UNCHECKED = 'unchecked';
   const MESSAGES_DELETE_RANGE_CHECKED = 'checked';
   const MESSAGES_DELETE_RANGE_CLASS = 'class';
   const MESSAGES_DELETE_RANGE_ALL = 'all';
 
   const MESSAGES_DELETE_RANGES_ALLOWED = [
-    self::MESSAGES_DELETE_RANGE_UNCHECKED,
+//    self::MESSAGES_DELETE_RANGE_UNCHECKED,
     self::MESSAGES_DELETE_RANGE_CHECKED,
     self::MESSAGES_DELETE_RANGE_CLASS,
     self::MESSAGES_DELETE_RANGE_ALL,
@@ -243,7 +245,7 @@ class PageMessage extends PageDeprecated {
 
   protected function modelDelete() {
     // No range specified - nothing to do
-    if($this->deleteRange == static::MESSAGES_DELETE_RANGE_NONE) {
+    if ($this->deleteRange == static::MESSAGES_DELETE_RANGE_NONE) {
       return;
     }
     // Сurrent range is CHECKED and NO messages marked - nothing to do
@@ -267,15 +269,15 @@ class PageMessage extends PageDeprecated {
     $query_add = '';
 
     switch ($this->deleteRange) {
-      case static::MESSAGES_DELETE_RANGE_UNCHECKED:
+//      case static::MESSAGES_DELETE_RANGE_UNCHECKED:
         /** @noinspection PhpMissingBreakStatementInspection */
       case static::MESSAGES_DELETE_RANGE_CHECKED:
         $query_add = implode(',', $this->markedMessageIdList);
         if ($query_add) {
           $query_add = "IN ({$query_add})";
-          if ($this->deleteRange == static::MESSAGES_DELETE_RANGE_UNCHECKED) {
-            $query_add = "NOT {$query_add}";
-          }
+//          if ($this->deleteRange == static::MESSAGES_DELETE_RANGE_UNCHECKED) {
+//            $query_add = "NOT {$query_add}";
+//          }
           $query_add = " AND `message_id` {$query_add}";
         }
 
@@ -303,8 +305,15 @@ class PageMessage extends PageDeprecated {
   protected function viewMessageList() {
     require_once('includes/includes/coe_simulator_helpers.php');
 
+    $pager = null;
+
     if ($this->current_class == MSG_TYPE_OUTBOX) {
-      $message_query = db_message_list_outbox_by_user_id($this->playerId);
+//      $message_query = db_message_list_outbox_by_user_id($this->playerId);
+      $message_query = "SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
+          {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
+       FROM
+         {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$this->playerId}' AND `message_type` = 1
+       ORDER BY `message_time` DESC;";
     } else {
       if ($this->current_class == MSG_TYPE_NEW) {
         $SubUpdateQry = array();
@@ -331,21 +340,32 @@ class PageMessage extends PageDeprecated {
         FROM `{{messages}}` 
         WHERE `message_owner` = '{$this->playerId}' {$SubSelectQry} 
         ORDER BY `message_time` DESC;";
-      $message_query = doquery($message_query);
+//      $message_query = classSupernova::$gc->db->selectIterator($message_query);
     }
+    $message_query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
+    $pager = new PagingRenderer($message_query, 'messages.php?mode=show&message_class=' . $this->current_class);
 
     $template = gettemplate('msg_message_list', true);
-    while ($message_row = db_fetch($message_query)) {
+//    while ($message_row = db_fetch($message_query)) {
+    foreach ($message_query as $message_row) {
       $text = $message_row['message_text'];
-      if($message_row['message_json']) {
-        if($message_row['message_type'] == MSG_TYPE_SPY) {
-          $text = DecodeEspionage::decode(MissionEspionageReport::fromJson($text));
-        } else {
-          $text = '{ Unauthorised access - please contact Administration! }';
-        }
+      if ($message_row['message_json']) {
+        switch ($message_row['message_type']) {
+          case MSG_TYPE_SPY:
+            $text = DecodeEspionage::decode(MissionEspionageReport::fromJson($text));
+          break;
+          default:
+            $text = '{ Unauthorised access - please contact Administration! }';
+          break;
 
+        }
+//        if($message_row['message_type'] == MSG_TYPE_SPY) {
+//          $text = DecodeEspionage::decode(MissionEspionageReport::fromJson($text));
+//        } else {
+//          $text = '{ Unauthorised access - please contact Administration! }';
+//        }
       } else {
-        if(in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender']) {
+        if (in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender']) {
           $text = htmlspecialchars($message_row['message_text']);
         }
         $text = nl2br($text);
@@ -369,6 +389,7 @@ class PageMessage extends PageDeprecated {
     $template->assign_vars(array(
       "MESSAGE_CLASS"      => $this->current_class,
       "MESSAGE_CLASS_TEXT" => $current_class_text,
+      "PAGER_MESSAGES"     => $pager ? $pager->render() : '',
     ));
 
     return $template;
@@ -501,8 +522,9 @@ class PageMessage extends PageDeprecated {
 
     $this->markedMessageIdList = [];
     $unsafeMarkList = sys_get_param('mark', []);
-    foreach($unsafeMarkList as $unsafeMark) {
-      if(!empty($unsafeMark = idval($unsafeMark))) {
+
+    foreach ($unsafeMarkList as $unsafeMark) {
+      if (!empty($unsafeMark = idval($unsafeMark))) {
         $this->markedMessageIdList[] = $unsafeMark;
       }
     }
