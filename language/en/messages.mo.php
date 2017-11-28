@@ -18,7 +18,7 @@
 *
 * @package language
 * @system [English]
-* @version 43a8.1
+* @version 43a8.7
 *
 */
 
@@ -40,6 +40,8 @@ $a_lang_array = array(
   'msg_mark_class' => 'All messages in category',
   'msg_mark_all' => 'ALL PERSONAL MESSAGES',
   'msg_select_all' => 'Select All',
+  'msg_delete_checked' => 'Delete marked messages',
+  'msg_show_all' => 'Show all',
   'msg_date' => 'Date',
   'msg_from' => 'From',
   'msg_recipient' => 'To',
@@ -55,6 +57,12 @@ $a_lang_array = array(
   'msg_err_no_text' => 'You can not send empty message',
   'msg_err_self_send' => 'You can not send message to yourself',
   'msg_del_class' => 'Delete all messages in this category',
-  'msg_page_hint_class' => '<ul>    <li>Category "All messages" contains messages sent by you AND did not yet deleted by recipient.    You can not delete messages from this category</li>    <li>To delete all messages of one category press delete icon in according row</li>    <li>Deleting messages from category "All messages" will lead to clear whole messagebox</li>    <li>Slow connection and/or large ammount of messages on one category can lead to unability to browse through messages.        In such case you should clear according message category and/or clear whole messagebox</li>  </ul>',
+  'msg_page_hint_class' =>
+    '<ul>
+      <li>Category "Sent messages" contains messages sent by you AND did not yet deleted by recipient. You can not delete messages from this category</li>
+      <li>To delete all messages of one category press delete icon in according row</li>
+      <li>Deleting messages from category "All messages" will lead to clear whole messagebox</li>
+      <li>Slow connection and/or large ammount of messages on one category can lead to unability to browse through messages. In such case you should clear according message category and/or clear whole messagebox</li>
+    </ul>',
   'msg_header_dialog' => 'Dialog with',
 );

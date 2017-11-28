@@ -85,6 +85,8 @@ class PageMessage extends PageDeprecated {
    */
   protected $recipient_id_unsafe = 0;
 
+  protected $showAll = false;
+
   /**
    * @var string $subject_unsafe
    */
@@ -253,19 +255,6 @@ class PageMessage extends PageDeprecated {
       return;
     }
 
-//    $query_add = '';
-//
-//    $q = DbQuery::build()
-//      ->setTable('messages')
-//      ->setWhereArray([`message_owner` => $this->playerId]);
-//
-//    if ($this->current_class != MSG_TYPE_OUTBOX && $this->current_class != MSG_TYPE_NEW) {
-//      $query_add .= " AND `message_type` = {$this->current_class}";
-//
-//      $q->setWhereArray([`message_type` => $this->current_class]);
-//    }
-//
-
     $query_add = '';
 
     switch ($this->deleteRange) {
@@ -285,8 +274,6 @@ class PageMessage extends PageDeprecated {
       case static::MESSAGES_DELETE_RANGE_CLASS:
         if ($this->current_class != MSG_TYPE_OUTBOX && $this->current_class != MSG_TYPE_NEW) {
           $query_add .= " AND `message_type` = {$this->current_class}";
-
-//          $q->setWhereArray([`message_type` => $this->current_class]);
         }
       case static::MESSAGES_DELETE_RANGE_ALL:
         $query_add = $query_add ? $query_add : true;
@@ -308,7 +295,6 @@ class PageMessage extends PageDeprecated {
     $pager = null;
 
     if ($this->current_class == MSG_TYPE_OUTBOX) {
-//      $message_query = db_message_list_outbox_by_user_id($this->playerId);
       $message_query = "SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
           {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
        FROM
@@ -340,13 +326,16 @@ class PageMessage extends PageDeprecated {
         FROM `{{messages}}` 
         WHERE `message_owner` = '{$this->playerId}' {$SubSelectQry} 
         ORDER BY `message_time` DESC;";
-//      $message_query = classSupernova::$gc->db->selectIterator($message_query);
     }
-    $message_query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
-    $pager = new PagingRenderer($message_query, 'messages.php?mode=show&message_class=' . $this->current_class);
+
+    if($this->showAll) {
+      $message_query = $this->db->selectIterator($message_query);
+    } else {
+      $message_query = new DbSqlPaging($message_query, PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD));
+      $pager = new PagingRenderer($message_query, 'messages.php?mode=show&message_class=' . $this->current_class);
+    }
 
     $template = gettemplate('msg_message_list', true);
-//    while ($message_row = db_fetch($message_query)) {
     foreach ($message_query as $message_row) {
       $text = $message_row['message_text'];
       if ($message_row['message_json']) {
@@ -359,11 +348,6 @@ class PageMessage extends PageDeprecated {
           break;
 
         }
-//        if($message_row['message_type'] == MSG_TYPE_SPY) {
-//          $text = DecodeEspionage::decode(MissionEspionageReport::fromJson($text));
-//        } else {
-//          $text = '{ Unauthorised access - please contact Administration! }';
-//        }
       } else {
         if (in_array($message_row['message_type'], array(MSG_TYPE_PLAYER, MSG_TYPE_ALLIANCE)) && $message_row['message_sender']) {
           $text = htmlspecialchars($message_row['message_text']);
@@ -497,6 +481,10 @@ class PageMessage extends PageDeprecated {
       $this->mode = static::MESSAGES_MODE_CATEGORIES;
     } else {
       $this->mode = sys_get_param_str('msg_delete') ? static::MESSAGES_MODE_DELETE : sys_get_param_str('mode');
+    }
+
+    if($this->showAll = sys_get_param_str('msg_show_all') ? true : false) {
+      $this->mode = static::MESSAGES_MODE_MESSAGES;
     }
 
     $this->loadParamsCompose();

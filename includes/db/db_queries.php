@@ -81,21 +81,6 @@ function db_buddy_list_by_user($user_id)
 }
 
 
-/**
- * @param $user_id
- *
- * @return \DBAL\DbMysqliResultIterator|EmptyIterator
- */
-function db_message_list_outbox_by_user_id($user_id)
-{
-  return ($user_id = idval($user_id))
-    ? new \DBAL\DbSqlPaging("SELECT {{messages}}.message_id, {{messages}}.message_owner, {{users}}.id AS message_sender, {{messages}}.message_time,
-          {{messages}}.message_type, {{users}}.username AS message_from, {{messages}}.message_subject, {{messages}}.message_text
-       FROM
-         {{messages}} LEFT JOIN {{users}} ON {{users}}.id = {{messages}}.message_owner WHERE `message_sender` = '{$user_id}' AND `message_type` = 1
-       ORDER BY `message_time` DESC;", PAGING_PAGE_SIZE_DEFAULT_MESSAGES, sys_get_param_int(PagingRenderer::KEYWORD))
-    : new EmptyIterator();
-}
 
 
 

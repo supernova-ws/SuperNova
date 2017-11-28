@@ -4,28 +4,45 @@
     var new_win = window.open(target_url,win_name,'resizable=yes,scrollbars=yes,menubar=no,toolbar=no,width=550,height=280,top=0,left=0');
     new_win.focus();
   }
+
+  $(document).on('click', '.js_message_delete', function () {
+    $(".js_message_range").val("checked");
+  });
+
+  $(document).on('change', '.js_message_checkbox_all', function () {
+    $('.msg_checkbox').attr('checked', $(this).is(':checked'));
+    $(".js_message_delete").button($(this).is(':checked') ? "enable" : "disable");
+  });
+
+  $(document).on('change', '.msg_checkbox', function () {
+    var someOneChecked = false, allIsChecked = true;
+    var js_message_checkbox_all = $('.js_message_checkbox_all');
+    $('.msg_checkbox').each(function () {
+      someOneChecked = someOneChecked || $(this).is(':checked');
+      allIsChecked = allIsChecked && $(this).is(':checked');
+    });
+    $(".js_message_delete").button(someOneChecked ? "enable" : "disable");
+
+    if(js_message_checkbox_all.attr('checked') && !someOneChecked) {
+      js_message_checkbox_all.attr('checked', false);
+    }
+
+    if(!js_message_checkbox_all.attr('checked') && allIsChecked) {
+      js_message_checkbox_all.attr('checked', true);
+    }
+  });
 </script>
 
 <h2>{L_msg_page_header}</h2>
 <h3>{MESSAGE_CLASS_TEXT}</h3>
 <form action="messages.php" method="post">
-  <input type="hidden" name="message_class" value="{MESSAGE_CLASS}">
+  <input type="hidden" name="mode" value="show" />
+  <input type="hidden" name="message_class" value="{MESSAGE_CLASS}" />
+  <input type="hidden" name="message_range" value="" class="js_message_range" />
 
   <table width="519">
     <!-- IF MESSAGE_CLASS != -1 -->
-    <tr>
-      <th colspan="4">
-        {L_sys_delete}
-        <select onchange="document.getElementById('message_range').options[this.selectedIndex].selected='true'" id="message_range2" name="message_range2">
-          <option>{L_msg_mark_select}</option>
-          <option value="checked">{L_msg_mark_checked}</option>
-          <!--<option value="unchecked">{L_msg_mark_unchecked}</option>-->
-          <option value="class" class="warning">{L_msg_mark_class} "{MESSAGE_CLASS_TEXT}"</option>
-          <option value="all" class="error">{L_msg_mark_all}</option>
-        </select>
-        <input name="msg_delete" value="{L_sys_delete}" type="submit">
-      </th>
-    </tr>
+    <!-- INCLUDE msg_message_list_paging -->
     <!-- ENDIF -->
 
     <!-- IF .messages && PAGER_MESSAGES -->
@@ -39,7 +56,7 @@
     <tr>
       <!-- IF MESSAGE_CLASS != -1 -->
       <th class="c_c" width="20">
-        <input type="checkbox" onchange="jQuery('.msg_checkbox').attr('checked', jQuery(this).is(':checked'));">
+        <input type="checkbox" class="js_message_checkbox_all" />
       </th>
       <!-- ENDIF -->
       <th class="c_c" width="120">{L_msg_date}</th>
@@ -53,24 +70,24 @@
       <th class="c_c">{L_msg_subject}</th>
     </tr>
   <!-- BEGIN messages -->
-    <tr>
+    <tr class="c_c">
       <!-- IF MESSAGE_CLASS != -1 -->
-        <th>
-          <input name="mark[{messages.ID}]" value="{messages.ID}" type="checkbox" class="msg_checkbox">
-        </th>
+        <td class="subheader">
+          <input name="mark[{messages.ID}]" value="{messages.ID}" type="checkbox" class="msg_checkbox" />
+        </td>
       <!-- ENDIF -->    	
-      <th>{messages.DATE}</th>
-      <th>
+      <td class="subheader">{messages.DATE}</td>
+      <td class="subheader">
         <!-- IF messages.FROM_ID -->
           <a href="messages.php?mode=write&id={messages.FROM_ID}&subject={L_msg_answer_prefix}{messages.SUBJ_SANITIZED}">
             <img src="design/images/icon_mail.gif" alt="{L_msg_answer}" border="0">
           </a>
         <!-- ENDIF -->
         {messages.FROM}
-      </th>
-      <th>
+      </td>
+      <td class="subheader">
         {messages.SUBJ}
-      </th>
+      </td>
     </tr>
     <tr id='mess{messages.ID}'>
       <!-- IF MESSAGE_CLASS != -1 -->
@@ -98,20 +115,8 @@
     </tr>
     <!-- ENDIF -->
 
-  <!-- IF MESSAGE_CLASS != -1 -->
-    <tr>
-      <th colspan="4">
-        {L_sys_delete}
-        <select onchange="document.getElementById('message_range2').options[this.selectedIndex].selected='true'" id="message_range" name="message_range">
-          <option>{L_msg_mark_select}</option>
-          <option value="checked">{L_msg_mark_checked}</option>
-          <!--<option value="unchecked">{L_msg_mark_unchecked}</option>-->
-          <option value="class" class="warning">{L_msg_mark_class} "{MESSAGE_CLASS_TEXT}"</option>
-          <option value="all" class="error">{L_msg_mark_all}</option>
-        </select>
-        <input name="msg_delete" value="{L_sys_delete}" type="submit">
-      </th>
-    </tr>
-  <!-- ENDIF -->
+    <!-- IF MESSAGE_CLASS != -1 -->
+    <!-- INCLUDE msg_message_list_paging -->
+    <!-- ENDIF -->
   </table>
 </form>
