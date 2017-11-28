@@ -3,7 +3,8 @@
 </script>
 
 <style type="text/css">
-  td[data-member_id] {
+  td[data-member_id]
+  {
     cursor: pointer;
   }
 </style>
@@ -12,20 +13,12 @@
 
 <table class="c_l">
   <tr>
-    <td>TAG</td>
-    <td>{TAG}</td>
-  </tr>
-  <tr>
-    <td>NAME</td>
-    <td>{NAME}</td>
-  </tr>
-  <tr>
     <td>CREATED</td>
-    <td>{CREATED}</td>
+    <td>{CREATED_TEXT} ({CREATED})</td>
   </tr>
   <tr>
-    <td>OWNER_ID</td>
-    <td>{OWNER_ID}</td>
+    <td>OWNER</td>
+    <td>[{OWNER_ID}] {OWNER_NAME_SAFE}</td>
   </tr>
   <tr>
     <td>DESCRIPTION</td>
@@ -65,15 +58,23 @@
   </tr>
   <tr>
     <td>STAT_POINTS</td>
-    <td>{STAT_POINTS}</td>
+    <td>{STAT_POINTS_TEXT}</td>
   </tr>
   <tr>
-    <td>TITLE_LIST_UNPARSED</td>
-    <td>{TITLE_LIST_UNPARSED}</td>
-  </tr>
-  <tr>
-    <td>OLD_TITLE_LIST</td>
-    <td>{OLD_TITLE_LIST}</td>
+    <td>TITLE_LIST_PARSED</td>
+    <td class="c_l">
+      <!-- IF .title -->
+      <table class="border_image_small" align="left">
+        <!-- BEGIN title -->
+        <tr>
+          <td class="c_r">{title.INDEX}</td>
+          <td>{title.NAME_SAFE}</td>
+          <td>{title.RIGHTS_TEXT}</td>
+        </tr>
+        <!-- END title -->
+      </table>
+      <!-- ENDIF -->
+    </td>
   </tr>
   <tr>
     <td>PARENT_PLAYER_ID</td>
@@ -95,11 +96,11 @@
   <!-- BEGIN members -->
 
   <!-- IF ! members.OWNER -->
-  <!-- DEFINE $PLAYER_CLASS = '' -->
+    <!-- DEFINE $PLAYER_CLASS = '' -->
   <!-- ELSEIF SN_TIME_NOW - members.ONLINE > ALLIANCE_HEAD_INACTIVE_TIMEOUT -->
-  <!-- DEFINE $PLAYER_CLASS = 'error' -->
+    <!-- DEFINE $PLAYER_CLASS = 'error' -->
   <!-- ELSE -->
-  <!-- DEFINE $PLAYER_CLASS = 'ok' -->
+    <!-- DEFINE $PLAYER_CLASS = 'ok' -->
   <!-- ENDIF -->
   <tr class="{$PLAYER_CLASS}">
     <td data-member_id="{members.PLAYER_ID}" data-is_owner="{members.OWNER}">
@@ -134,7 +135,7 @@
 
 <script type="text/javascript">
   $('#js_admin_alliance_members').on('click', 'td[data-member_id]', function (e) {
-    if(!Math.intVal($(this).data('is_owner'))) {
+    if (!Math.intVal($(this).data('is_owner'))) {
       sn_redirect("index.php?page=admin/admin_ally&ally_id=" + ADMIN_ALLY_ID + "&action=pass&new_owner_id=" + $(this).data('member_id'));
     }
   });

@@ -536,18 +536,20 @@ $sn_menu_admin = array(
     'LEVEL' => 'header',
     'TYPE'  => 'lang',
     'ITEM'  => 'player',
+    'LINK'       => 'admin/userlist.php',
+    'AUTH_LEVEL' => 3,
   ),
   'menu_admin_player_ban'  => array(
     'TYPE' => 'lang',
     'ITEM' => 'adm_ban_unban',
     'LINK' => 'admin/banned.php',
   ),
-  'menu_admin_player_list' => array(
-    'TYPE'       => 'lang',
-    'ITEM'       => 'adm_plrlst',
-    'LINK'       => 'admin/userlist.php',
-    'AUTH_LEVEL' => 3,
-  ),
+//  'menu_admin_player_list' => array(
+//    'TYPE'       => 'lang',
+//    'ITEM'       => 'adm_plrlst',
+//    'LINK'       => 'admin/userlist.php',
+//    'AUTH_LEVEL' => 3,
+//  ),
 
   'menu_admin_ally' => array(
     'LEVEL'      => 'header',
@@ -557,13 +559,14 @@ $sn_menu_admin = array(
     'AUTH_LEVEL' => 3,
   ),
 
-  'menu_admin_universe'            => array(
-    'LEVEL'      => 'header',
-    'TYPE'       => 'lang',
-    'ITEM'       => 'sys_universe',
-    'AUTH_LEVEL' => 3,
-  ),
+//  'menu_admin_universe'            => array(
+//    'LEVEL'      => 'header',
+//    'TYPE'       => 'lang',
+//    'ITEM'       => 'sys_universe',
+//    'AUTH_LEVEL' => 3,
+//  ),
   'menu_admin_planet_list_active'  => array(
+    'LEVEL'      => 'header',
     'TYPE'       => 'lang',
     'ITEM'       => 'adm_planet_active',
     'LINK'       => 'admin/adm_planet_list.php?planet_active=1',

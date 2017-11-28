@@ -55,8 +55,6 @@ class RecordAlliance extends ActiveRecord {
 
 
   /**
-   * @param array $array
-   *
    * @return array
    */
   public function ptlArray() {

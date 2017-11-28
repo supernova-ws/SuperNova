@@ -424,3 +424,12 @@ body.blitz_ {
   font-size: 1.5rem;
   background-color: #222;
 }
+
+tr.highlight:hover {
+  color: lightblue;
+  text-decoration: underline;
+}
+
+tr.highlight.notice:hover {
+   color: #d3ffe6;
+}

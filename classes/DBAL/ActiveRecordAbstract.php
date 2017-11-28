@@ -51,9 +51,6 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   protected $_isNew = true;
 
 
-
-
-
   /**
    * Get table name
    *
@@ -115,7 +112,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Finds records by property - equivalent of SELECT ... WHERE ... AND ...
    *
-   * @param array|mixed $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
+   * @param array $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return bool|\mysqli_result
    */
@@ -131,7 +128,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Gets first record by $where
    *
-   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
+   * @param array $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return string[] - [$field_name => $field_value]
    */
@@ -145,7 +142,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Gets all records by $where
    *
-   * @param array|mixed $propertyFilter - ID of record to find OR [$property_name => $property_value]
+   * @param array $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return array[] - [(int) => [$field_name => $field_value]]
    */
@@ -156,7 +153,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Gets first ActiveRecord by $where
    *
-   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
+   * @param array $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return static|bool
    */
@@ -176,7 +173,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
   /**
    * Gets all ActiveRecords by $where
    *
-   * @param array|mixed $propertyFilter - ID of record to find OR [$propertyName => $propertyValue]. Pass [] to find all records in table
+   * @param array $propertyFilter - [$propertyName => $propertyValue]. Pass [] to find all records in table
    *
    * @return array|static[] - [(int) => static]
    */
@@ -266,19 +263,6 @@ abstract class ActiveRecordAbstract extends AccessLogged {
     $this->shieldName($propertyName);
     parent::__set($propertyName, $value);
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
   /**
@@ -437,7 +421,7 @@ abstract class ActiveRecordAbstract extends AccessLogged {
    * Function maintains record indexes
    *
    * @param array[] $records - array of DB records [(int) => [$name => $value]]
-   * @param bool  $fieldToProperties - should names be translated (true - for field records, false - for property records)
+   * @param bool    $fieldToProperties - should names be translated (true - for field records, false - for property records)
    *
    * @return array|static[]
    */

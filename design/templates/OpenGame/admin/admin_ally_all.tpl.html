@@ -13,7 +13,7 @@
     <th>TAG</th>
     <th>NAME</th>
     <th>CREATED</th>
-    <th>OWNER_ID</th>
+    <th>OWNER</th>
     <th>LOGO</th>
     <th>REQ_LOCK</th>
     <th>OWNER_RANK_NAME</th>
@@ -23,12 +23,25 @@
   </tr>
 
   <!-- BEGIN ally -->
-  <tr data-ally-id="{ally.ID}">
+  <!-- IF ally.OWNER_ID -->
+  <!-- DEFINE $ALLY_CLASS = '' -->
+  <!-- ELSE -->
+  <!-- DEFINE $ALLY_CLASS = 'notice' -->
+  <!-- ENDIF -->
+
+
+  <tr data-ally-id="{ally.ID}" class="highlight {$ALLY_CLASS}">
     <td class="c_r">{ally.ID}</td>
     <td class="c_l">{ally.TAG}</td>
     <td class="c_l">{ally.NAME}</td>
-    <td>{ally.CREATED_SQL}</td>
-    <td class="c_r">{ally.OWNER_ID}</td>
+    <td>{ally.CREATED_TEXT}</td>
+    <td class="c_l">
+      <!-- IF ally.OWNER_NAME_SAFE -->
+      [{ally.OWNER_ID}] {ally.OWNER_NAME_SAFE}
+      <!-- ELSE -->
+      { N/A }
+      <!-- ENDIF -->
+    </td>
     <td>{ally.HAVE_LOGO}</td>
     <td>{ally.REQUESTS_NOT_ALLOWED}</td>
     <td>{ally.OWNER_RANK_NAME}</td>

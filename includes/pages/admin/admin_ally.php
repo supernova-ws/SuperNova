@@ -18,15 +18,23 @@ function sn_admin_ally_model($template = null) {
     ($newOwnerId = sys_get_param_id('new_owner_id'))
   ) {
     try {
-      \Alliance\AllianceStatic::passAlliance($allyId, $newOwnerId);
+      if (empty($alliance = \Alliance\Alliance::findById($allyId))) {
+        throw new \Exception('{ Альянс с указанным ID не найден }', ERR_ERROR);
+      }
+      if (empty($newOwnerMember = $alliance->getMemberList()->getById($newOwnerId))) {
+        throw new \Exception('{ Новый владелец Альянса не найден }', ERR_ERROR);
+      }
+
+      $alliance->pass($newOwnerMember);
+
       $template_result['.']['result'][] = [
         'MESSAGE' => '{ Альянс успешно передан другому игроку }',
-        'STATUS' => ERR_NONE,
+        'STATUS'  => ERR_NONE,
       ];
     } catch (Exception $e) {
       $template_result['.']['result'][] = [
         'MESSAGE' => $e->getMessage(),
-        'STATUS' => $e->getCode(),
+        'STATUS'  => $e->getCode(),
       ];
     }
   }
@@ -35,27 +43,20 @@ function sn_admin_ally_model($template = null) {
 }
 
 function sn_admin_ally_view_one($template = null, $allyId) {
-  messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
-
   global $template_result;
 
+  messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
+
   $template = gettemplate('admin/admin_ally_one', $template);
-
-  $alliance = \Alliance\RecordAlliance::findById($allyId);
-
-  if (empty($alliance)) {
+  if (empty($alliance = \Alliance\Alliance::findById($allyId))) {
     return $template;
   }
 
-  $render = $alliance->ptlArray();
-  $memberList = \Alliance\AllianceStatic::getMemberList($render['ID']);
-  $titledMembers = \Alliance\AllianceStatic::titleMembers($memberList, $alliance);
+  $template_result['.']['members'] = $alliance->getMemberList()->asPtl();
 
-  $template_result['.']['members'] = $titledMembers;
-
-  $template->assign_vars($render);
+  $template->assign_recursive($alliance->asPtl());
   $template->assign_vars([
-    'PAGE_HEADER'                    => '{ Альянс }' . ' [' . $render['ID'] . '] ' . ' [' . $render['TAG'] . '] ' . $render['NAME'],
+    'PAGE_HEADER'                    => '{ Альянс }' . ' [' . $alliance->id . '] ' . ' [' . $alliance->tag . '] ' . $alliance->name,
     'ALLIANCE_HEAD_INACTIVE_TIMEOUT' => ALLIANCE_HEAD_INACTIVE_TIMEOUT,
     'SN_TIME_NOW'                    => SN_TIME_NOW,
   ]);
@@ -66,19 +67,14 @@ function sn_admin_ally_view_one($template = null, $allyId) {
 function sn_admin_ally_view_all($template = null) {
   messageBoxAdminAccessDenied(AUTH_LEVEL_ADMINISTRATOR);
 
-  global $lang;
-
   $template = gettemplate('admin/admin_ally_all', $template);
 
-  foreach (\Alliance\RecordAlliance::findAll([]) as $alliance) {
-    $rendered = $alliance->ptlArray();
-    $rendered['CREATED_SQL'] = date(FMT_DATE_TIME_SQL, $alliance->createdUnixTime);
-    $rendered['STAT_POINTS_TEXT'] = HelperString::numberFloorAndFormat($alliance->statPoints);
-    $template->assign_block_vars('ally', $rendered);
+  foreach (\Alliance\Alliance::findAll([]) as $alliance) {
+    $template->assign_block_vars('ally', $alliance->asPtl());
   };
 
   $template->assign_vars([
-    'PAGE_HEADER' => $lang['admin_ally_list'],
+    'PAGE_HEADER' => classSupernova::$lang['admin_ally_list'],
   ]);
 
   return $template;

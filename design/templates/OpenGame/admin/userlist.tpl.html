@@ -1,3 +1,23 @@
+<script type="text/javascript">
+  jQuery(document).on('click', '.i_icon_mail_userlist', function(){
+    document.location = "messages.php?mode=write&id=" + jQuery(this).parent().parent().attr('uid');
+  });
+
+  jQuery(document).on('click', '.i_icon_delete_userlist', function(){
+    if(confirm('!{LA_adm_ul_delete_confirm} ' + jQuery(this).parent().parent().attr('uname'))) {
+      document.location = "admin/userlist.php?sort={SORT}&action={D_ACTION_DELETE}&uid=" + jQuery(this).parent().parent().attr('uid');
+    }
+  });
+
+  jQuery(document).on('click', '.i_icon_impers_userlist', function(){
+    document.location = "admin/userlist.php?sort={SORT}&action={D_ACTION_USE}&uid=" + jQuery(this).parent().parent().attr('uid');
+  });
+
+  jQuery(document).on('click', '#user_list tr td:first-child, #user_list tr td:nth-child(2)', function(){
+    document.location = "index.php?page=admin/user_view&uid=" + jQuery(this).parent().attr('uid');
+  });
+</script>
+
 <h2>{PAGE_HEADER} ({USER_COUNT})</h2>
 
 <table id="user_list">
@@ -28,28 +48,8 @@
     <th><a href="{PAGE_URL}?sort={D_SORT_REFERRAL_DM}">{L_adm_ul_dms}</a></th>
   </tr>
 
-  <script type="text/javascript">
-    jQuery(document).on('click', '.i_icon_mail_userlist', function(){
-      document.location = "messages.php?mode=write&id=" + jQuery(this).parent().parent().attr('uid');
-    });
-
-    jQuery(document).on('click', '.i_icon_delete_userlist', function(){
-      if(confirm('!{LA_adm_ul_delete_confirm} ' + jQuery(this).parent().parent().attr('uname'))) {
-        document.location = "admin/userlist.php?sort={SORT}&action={D_ACTION_DELETE}&uid=" + jQuery(this).parent().parent().attr('uid');
-      }
-    });
-
-    jQuery(document).on('click', '.i_icon_impers_userlist', function(){
-      document.location = "admin/userlist.php?sort={SORT}&action={D_ACTION_USE}&uid=" + jQuery(this).parent().parent().attr('uid');
-    });
-
-    jQuery(document).on('click', '#user_list tr td:first-child, #user_list tr td:nth-child(2)', function(){
-      document.location = "index.php?page=admin/user_view&uid=" + jQuery(this).parent().attr('uid');
-    });
-  </script>
-
   <!-- BEGIN user -->
-  <tr uid="{user.ID}" uname="{user.NAME_HTML}">
+  <tr uid="{user.ID}" uname="{user.NAME_HTML}" class="highlight">
     <td>{user.ID}</td>
     <td>{user.NAME}</td>
     <!-- IF METAMATTER -->

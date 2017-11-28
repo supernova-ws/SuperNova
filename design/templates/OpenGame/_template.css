@@ -3317,9 +3317,6 @@ td[go]:hover { /* Skin specific */
 .unit_border_selected {
   border-color: #6B90D3;  /* Reserved for unit_preview border color */
 }
-#user_list tr:hover {
-  color: yellow;
-}
 
 /* Chat ************************************************************************************************************* */
 #shoutbox tr  {
