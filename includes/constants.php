@@ -10,7 +10,7 @@ defined('INSIDE') or die('Hacking attempt');
 
 define('DB_VERSION', '42');
 define('SN_RELEASE', '42');
-define('SN_VERSION', '43a8.8');
+define('SN_VERSION', '43a9.0');
 define('SN_RELEASE_STABLE', '42c2'); // Latest stable release
 
 define('SN_TIME_NOW', intval(SN_TIME_MICRO));
@@ -207,6 +207,7 @@ define('LOC_MOON',     3); // Translates to `planets` table planet_type = 3
 define('LOC_USER',     4);
 define('LOC_FLEET',    5);
 define('LOC_ALLY',     6);
+define('LOC_SERVER',   7); // Located on server
 
 // ТОЛЬКО ВНУТРЕНЕЕ!!!
 define('LOC_UNIT',    'LOC_UNIT');

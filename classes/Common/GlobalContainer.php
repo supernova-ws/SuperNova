@@ -2,6 +2,7 @@
 
 namespace Common;
 
+use Bonus\BonusCatalog;
 use \classSupernova;
 use \General;
 use \Core\Watchdog;
@@ -30,6 +31,8 @@ use \Meta\Economic\EconomicHelper;
  * @property \FleetDispatcher $fleetDispatcher
  * @property Watchdog         $watchdog
  * @property EventBus         $eventBus
+ *
+ * @property BonusCatalog     $bonusCatalog
  *
  * @property General          $general
  * @property EconomicHelper   $economicHelper
@@ -123,6 +126,10 @@ class GlobalContainer extends ContainerPlus {
 
     $gc->eventBus = function (GlobalContainer $gc) {
       return new EventBus($gc);
+    };
+
+    $gc->bonusCatalog = function (GlobalContainer $gc) {
+      return new BonusCatalog($gc);
     };
 
     $gc->general = function (GlobalContainer $gc) {
